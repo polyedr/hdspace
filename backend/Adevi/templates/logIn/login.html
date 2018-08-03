@@ -1,0 +1,77 @@
+
+<head>
+    <meta charset="utf-8">
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>
+        Adevi | Login Page
+    </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+     {% load static %}
+    <link rel="stylesheet" href="{% static 'css/application.css' %}" type="text/css"/>
+</head>
+<body>
+    <div class="unauthorized-left" style="background-color:#151A23;background-size: cover;">
+        <div class="unauthorized-logo-wrapper">
+            <span class="unauthorized-logo" style="color:white" title="Adevi">
+                <img style="width:63px;height:60px;display: inline-block;" src="/static/media/img/adevi.jpg" alt="Adevi">
+                <span style="font-size:72px">ADEVI</span>
+                <h5>
+                    AI Assistant for Designers
+                </h5>
+            </span>
+        </div>
+        <div class="unauthorized-container">
+            <div class="unauthorized-intro">
+                <h1>
+                    Welcome
+                </h1>
+                <h3>
+                    Register for Adevi account here.
+                </h3>
+                <h5 style="margin-top:50px">
+                    Some text if required
+                </h5>
+                <a href="/register" class="button button-primary" title="Register here">
+                    register here
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="unauthorized-right" style="background-color:#1ab394">
+        <div class="unauthorized-container login-form">
+            <div class="unauthorized-form">
+                <h3>
+                    Login to your account
+                </h3>
+                <form method="post" id="uwauth-authentication-adapter-generic-form-authform-1" name="authForm"
+                    action="#" class="form-inverted">
+                    {% csrf_token %}
+                    <div class="form-item">
+                        <div class="form-output">
+                            <input name="username" id="auth-username" placeholder="Username" class="form-control"
+                            type="text" value="" style="background-color: #1ab394;border-bottom: 1px solid rgba(153, 221, 201, 0.49);">
+
+                        </div>
+                    </div>
+                    <div class="form-item">
+                        <div class="form-output">
+                            <input type="password" name="password" autocomplete="off" id="auth-password" placeholder="Password"
+                                   class="form-control" value="" style="background-color: #1ab394;border-bottom: 1px solid rgba(153, 221, 201, 0.49);">
+
+                        </div>
+                    </div>
+                    <input type="hidden" name="__auth__" id="authForm-__auth__" value="sql">
+                    <div class="form-button">
+                        <input class="button button-secondary" type="submit" value="Login" name="submit-1" id="authForm-submit-1">
+                    </div>
+                    {% if logErr %}
+                        <br/>
+                        <p style="color: #c14040">{{ logErr }}</p>
+                    {% endif %}
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,487 @@
+
+     <div class="ibox-title col-xs-12" style="background-color: #2f4050; border: none; border-radius: 5px; overflow: hidden;padding-bottom: 0px;">
+         <div class="container-lib">
+             <div class="grid">
+                 <div class="row" style="margin-top:0; text-align: center;">
+                    <div class="row" style="height: 100%;">
+                        <!-- image gallery -->
+                        <div id="gallary-tab-container" class="col-xs-12" >
+                            <div id="tabs-lib" class="tabs-container" >
+                                <ul class="nav nav-tabs" style="border-bottom: none;">
+                                    <li class="active" style="width: 200px;border-right-width: 0;margin-bottom: 1px;" id="projectAssets"><a id="project_asset_tab" data-toggle="tab" onclick="" style="border-right-width:0;border-radius: 5px;"><span>Project Assets</span></a></li>
+                                    <li class="" style="width: 200px;border-left-width: 0;margin-left: 1px;" id="accountAssets"><a id="account_asset_tab" data-toggle="tab" onclick="" style="border-left-width:0;border-radius: 5px;"><span>Account Assets</span></a></li>
+                                    <li class="" style="width: 200px;margin-bottom: 1px;" id="galleryAssets"><a id="gallary_tab" data-toggle="tab" onclick="" style="border-radius: 5px;"><span>Gallery Assets</span></a></li>
+                                    <li class="center" style="width: 51px;float: right;" onclick="closeLibrary()">
+                                        <b id="gallary_tab" class="colorHover" style="border-radius: 5px;padding-right: 0;padding-left: 0;">
+                                            <button class="btn btn-primary btn-xs" >
+                                                Cancel
+                                            </button>
+                                        </b>
+                                    </li>
+                                </ul>
+
+                                <div class="tab-content-lib ibox-content" style="padding:0;border-radius: 5px;border-color: #495e71;height: 500px">
+                                    <!--file explorer-->
+                                    <div class="file-explorer col-xs-3" style="height:100%;padding:7px 0;background-color: #2f4050;">
+{#                                        <div class="nw-folder" style="height:40px;padding:10px;">#}
+{#                                            <span id="add-folder" style="float:left; font-size:smaller;margin-left:10px;cursor: pointer;"><i class="fa fa-plus" style="color:#18a689; margin-right:5px"></i>NEW FOLDER</span>#}
+{#                                        </div>#}
+                                        <div id="buildTree" class="col-xs-12" style="padding: 0;">
+
+                                        </div>
+                                    </div>
+                                    <!--file viewer-->
+                                    <div class=" file-viewer col-xs-9" style="border-left:1px solid;border-color:#495e71;height:100%; padding:0;background-color: #2f4050;min-height: 695px;">
+                                          <!--add item-->
+                                        <div class="add-item " style="height:40px;padding:10px;float:left;">
+                                             <span id="selectAll"  style=" display: inline-block;margin-right: 5px;">
+                                                <input id="selectAllChecbox" type="checkbox" name="" value=""> Select All<br>
+                                            </span>
+                                            <span id="add-asset" data-toggle="collapse" data-target="#resource" onclick="sortImageByNamedesDummy()">
+                                                <i class="fa fa-plus" style="margin-right:5px"></i>
+                                                NEW ASSET
+                                            </span>
+                                            <span id="add-frm-web" style="margin-left: 25px;" onclick="addImageToImagaContainerDummy()">
+                                                <i class="fa fa-plus" style="margin-right:5px"></i>
+                                                ADD FROM WEB
+                                            </span>
+
+                                        </div>
+                                          <!--option for library-->
+                                          <!--sort list-->
+                                        <div class="sort-list" >
+                                             <span  class="sort-span" >
+                                                 <b >
+                                                     <input type='radio' value='1' name='radio' id='rad-name'/>
+                                                     <label for='rad-name'>Name </label>
+                                                 </b>
+                                             </span>
+                                             <span class="sort-span">
+                                                 <b>
+                                                     <input type='radio' value='2' name='radio' id='rad-type'/>
+                                                     <label for='rad-type'>Type </label>
+                                                 </b>
+                                             </span>
+                                             <span  class="sort-span" onclick="deleteMultipleImages()" >
+                                                 <b>
+                                                     <input type='radio' value='3' name='radio' id='rad-size'/>
+                                                     <label for='rad-size'>Size </label>
+                                                 </b>
+                                             </span>
+                                             <span  class="sort-span">
+                                                 <b>
+                                                    <input type='radio' value='4' name='radio' id='rad-modified'/>
+                                                    <label for='rad-modified'>modified </label>
+                                                 </b>
+                                             </span>
+                                             <span id="view1" class="sort-span">
+                                                 <b>
+                                                     <input type='radio' value='5' name='radview' id='rad-listView'/>
+                                                     <label for='rad-listView'>
+                                                         <i class="fa fa-bars fa-1g" ></i>
+                                                     </label>
+                                                 </b>
+                                             </span>
+                                            <span id="view2" class="sort-span">
+                                                <b>
+                                                    <input type='radio' value='6' name='radview' id='rad-thumbView'/>
+                                                     <label for='rad-thumbView'>
+                                                         <i class="fa fa-th-large"></i>
+                                                     </label>
+                                                </b>
+                                            </span>
+                                        </div>
+                                        <!--resource upload conatianer-->
+                                        <div class="resourceUploadContainer col-xs-12 collapse" id="resource" style="padding: 0px;">
+                                           <div class="uploadChooser ibox" style="padding: 0px;background-color: #2f4050;">
+                                               <div class="ibox-content col-xs-12" style="padding: 15px;background-color: #2f4050;border:none;">
+                                                    <div class="center col-xs-3" id="uploadResourceDisplay" style="height: 185.75px;padding: 0 15px 0 0">
+                                                        <div class="tab-content" style=" height: 100%; width: 100%;">
+                                                            <div class="tabs-container ui-sortable-handle" style="height: 191px;">
+                                                                <div id="" class="tab-pane active" style="height: 100%;">
+                                                                     <div class="panel-body" style="padding:0%;border:none;height:100%;background-color: #beebff14;">
+                                                                        <div class="grey-ibox-upload">
+                                                                            <div id="imgPreviewResource"  style="padding:0%;height:100%;" onclick=""></div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="center col-xs-9" id="uploadResourcebtn" style="height: 185.75px;padding:0;">
+                                                        <div class="tab-content" style="
+                                                            height: 100%;
+                                                            width: 100%;">
+                                                            <div class="tabs-container ui-sortable-handle" style="height: 191px;">
+                                                                <div id="" class="tab-pane active" style="height: 100%;">
+                                                                    <div class="panel-body" style="padding:0%;height:100%;border:none;background-color: #beebff14;">
+                                                                        <label for="uploadResourceFile"  style="width: 100%;height: 100%;cursor: pointer;margin: 0%;">
+                                                                            <div class="grey-ibox-upload">
+                                                                                <div id="remove-on-click-resource" class="" style="left: 0%;top: 0%;right: 0%;bottom: 0%;">
+                                                                                    <div id="upload-visibility-resource" class="" style="z-index: 10;">
+                                                                                        <i id="remove-fa-download-resource-on-click" class="fa fa-upload absolute w3-display-middle" style="font-size:235%; color: #b5b4b4; z-index: 50" aria-hidden="true"></i>
+                                                                                    </div>
+                                                                                   <!--<img id="imgHide" alt="image" style="width: 100%;height: 100%;opacity: 0.1;" src="/static/media/img/Upload001.jpg">-->
+                                                                                </div>
+                                                                                <form id="uploadImgResource" action="#uploaded" method="POST" enctype="multipart/form-data" style="margin: 0;">
+                                                                                    {% csrf_token %}
+                                                                                    <input type="hidden" name="csrfmiddlewaretoken" value="RUa9jp8t2JEBQihtQPfisWXRY5G9b7sYIkMd0gzm4LupB8cwJcDrVJoa9Hi6RP7e">
+                                                                                    <input type="file" accept="image/*" name="myResourcefile" id='uploadResourceFile' class="input-file">
+                                                                                    <input type="hidden" name="resourceFilename" id="filenameResource">
+                                                                                    <input type="hidden" name="projectuploadResource" id="projectuploadnameResource">
+                                                                                    <input type="hidden" name="typeLIB" id="fileTypeLIB">
+                                                                                    <input type="hidden" name="sizeLIB" id="fileSixeLIB">
+                                                                                    <input type="hidden" name="lastModifiedLIB" id="fileLastMLIB">
+                                                                                </form>
+                                                                            </div>
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                           </div>
+                                        </div>
+                                        <!--resource  conatianer-->
+                                        <div class="resourceContainer col-xs-12" style="padding: 0px">
+                                            <div class="ibox " style="padding: 0 15px;background-color: #2f4050;height: 309px;">
+                                                <div class="ibox-title"  style="text-align:center;padding: 15px;border:none;background-color: #beebff14">
+                                                    <span id="imageLibraryProject" style="text-transform:none;color: #18a689;">{{ projectName }}</span>
+                                                </div>
+                                                <div class="ibox-content" id="imgSortContainter"  style="height:100%;border-width: 1px;border-style: solid;border-color: #2f405087;background-color: #2f4050;overflow-y: auto;min-height: 600px" >
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                 </div>
+             </div>
+         </div>
+     </div>
+     <script>
+         {#$('#buildTree').jstree({#}
+         {#   'core' : {#}
+         {#       'data' : {#}
+         {#           "url" : "http://127.0.0.1:8000/index/?name=projectsLibraryDB",#}
+         {#           "data" : function (node) {#}
+         {#               return { "id" : node.id };#}
+         {#           },#}
+         {#           "check_callback" : true#}
+         {#       }#}
+         {#   },#}
+         {#   "plugins" : ["contextmenu"]#}
+         //});
+         {#$("#buildTree").jstree({#}
+         {#   "core" : {#}
+         {#       "data" : [#}
+         {#           { "text" : "Project Assets", "children" : [#}
+         {#                   { "text" : '{{ i.projectName }}' }#}
+         {#               ],#}
+         {#               "state" : {"opened" : true, "selected" : true}#}
+         {#           }#}
+         {#       ],#}
+         {#       "check_callback" : true,#}
+         {#       "themes" : {#}
+         {#           "dots": false // no connecting dots between dots#}
+         {#       }#}
+         {#   },//so that modifying operations work#}
+         {#   "plugins" : ["dnd","contextmenu"]#}
+         //});
+
+
+
+           {#$('#add-folder').on('click', function() {#}
+         {#    var getUL, getLI, getLength, createLi, createI, createA, createAI, add;#}
+         {#    getUL = $('#buildTree').find('ul:eq(1)');#}
+         {#    console.log('ul');#}
+         {#    console.log(getUL);#}
+         {#    getLI = getUL.find('li');#}
+         {#    console.log('li');#}
+         {#    console.log(getLI);#}
+         {#    getLength = getLI.length + 1;#}
+         {#    console.log('getLength');#}
+         {#    console.log(getLength);#}
+         {#    //Create Li tag#}
+         {#    createLi = document.createElement('LI');#}
+         {#    createLi.setAttribute('role', 'treeitem');#}
+         {#    createLi.setAttribute('aria-selected', 'false');#}
+         {#    createLi.setAttribute('aria-level', '2');#}
+         {#    createLi.setAttribute('aria-labelledby', 'j1_' + getLength + '_anchor');#}
+         {#    createLi.setAttribute('id', 'j1_' + getLength);#}
+         {#    createLi.setAttribute('class', 'jstree-node  jstree-leaf');#}
+         {#    getUL.append(createLi);#}
+         {##}
+         {#    //Create i tag#}
+         {#    createI = document.createElement('I');#}
+         {#    createI.setAttribute('class', 'jstree-icon jstree-ocl fa');#}
+         {#    createI.setAttribute('role', 'presentation');#}
+         {#    createI.setAttribute('onclick', 'checkExpansion()');#}
+         {#    createLi.append(createI);#}
+         {##}
+         {#    //Create a tag#}
+         {#    createA = document.createElement('A');#}
+         {#    createA.setAttribute('class', 'jstree-anchor');#}
+         {#    createA.setAttribute('href', '#');#}
+         {#    createA.setAttribute('tabindex', '-1');#}
+         {#    createA.setAttribute('id', 'j1_' + getLength + '_anchor');#}
+         {#    createLi.append(createA);#}
+         {##}
+         {#    //Create child of a tag i tag#}
+         {#    createAI = document.createElement('I');#}
+         {#    createAI.setAttribute('class', 'jstree-icon jstree-themeicon fa fa-folder');#}
+         {#    createAI.setAttribute('role', 'presentation');#}
+         {#    createA.append(createAI);#}
+         {#    createA.innerHTML += 'Untitled';#}
+         //})
+     </script>
+    <script>
+         function checkExpansion(){
+                alert("checckexpansion");
+         }
+         $('body').click(function(){
+             var jstreej = $('.jstree-leaf').find('i');
+             jstreej.removeClass('fa-angle-right');
+            // $('.imageHolder').removeClass('selectedHolder');
+         });
+
+
+        function closeLibrary(){
+            $('#libraryModal').modal('hide');
+            location.replace('http://127.0.0.1:8000/index/');
+        }
+        $(".resourceUploadContainer").on('shown.bs.collapse', function(){
+            $('#uploadResourcebtn').removeClass('col-xs-9').addClass('col-xs-12');
+            $('#uploadResourceDisplay').css("display","none");
+
+        });
+        $(".resourceUploadContainer").on('hidden.bs.collapse', function(){
+            $('#uploadResourcebtn').removeClass('col-xs-9').addClass('col-xs-12');
+            $('#uploadResourceDisplay').css("display","none");
+        });
+
+            //change  title Image library  according to  click
+        $('#buildTree').on("click.jstree", function (e) {
+            var targetClick = e.target.innerText;
+            passToAjax(targetClick);
+        });
+
+        function passToAjax(getSelectedProj){
+            $('#imageLibraryProject').text(getSelectedProj);
+            $.ajax({
+                type: 'GET',
+                url: '/index/',
+                name: 'getImgLibAllProj',
+                data: {
+                    'name' : 'getImgLibAllProj',
+                    'curProj': getSelectedProj
+                },
+                success: function(data){
+                    createImgContainer(data[0], data[1], data[2], data[3], data[4]);
+                    console.log('paths');
+                    console.log(data);
+                },
+                error: function(jqXHR, status, err){
+                    console.log(jqXHR.responseText);
+                }
+            });
+        }
+
+        function uploadImageToLib(){
+                     swal({
+                title: "Enter Image Name",
+                type: "input",
+                showCancelButton: false,
+                closeOnConfirm: false,
+                inputPlaceholder: "Enter text here"
+            }, function (inputValue) {
+                if (inputValue === false) {
+                   // document.getElementById('preview1').src = '';
+                    return false;
+                }
+                if (inputValue === "") {
+                    swal.showInputError("You need to write something!");
+                    return false;
+                }
+
+                else {
+                    swal.close();
+                    $('#uploadResourcebtn').removeClass('col-xs-9').addClass('col-xs-12');
+                    alert($('.previewImage').attr('src'));
+                    addImageToImagaContainer();
+                    $('#uploadResourceDisplay').css("display","none");
+
+                }
+            });
+
+
+            }
+            $(document).on('click', function (event) {
+                if (!$(event.target).closest('.imageHolder').length) {
+                    // ... clicked on the 'body', but not inside of imageHolder
+                    $('.imageHolder').removeClass('selectedHolder');
+                }
+            });
+            //select individual image
+            function itemcontainerClick(el) {
+                $('.imageHolder').removeClass('selectedHolder');
+                $( "#selectAllChecbox" ).prop( "checked", false );
+                $(el).addClass('selectedHolder');
+
+            }
+
+
+            $(document).on('click', '.imageHolder', function(e) {
+                if(e.shiftKey) {
+                     //Shift-Click
+                    $(this).addClass('selectedHolder');
+                    return ;
+                }
+
+                itemcontainerClick(this);
+                console.log(e.classname);
+            });
+
+
+
+        // sort based on  name
+        function sortImageByNameAsc() {
+             var $divs = $("div.item-containter");
+             var alphabeticallyOrderedDivs = $divs.sort(function (a, b) {
+                return $(a).find('.imgName p').text() > $(b).find('.imgName p').text();
+            });
+            $("#imgSortContainter").html(alphabeticallyOrderedDivs);
+        }
+        {# function sortImageByNameDes() {#}
+        {#     var $divs = $("div.item-containter");#}
+        {#     var alphabeticallyOrderedDivs = $divs.sort(function (a, b) {#}
+        {#        return $(a).find("p").text() < $(b).find("p").text();#}
+        {#    });#}
+        {#    $("#imgSortContainter").html(alphabeticallyOrderedDivs);#}
+        {##}
+        //}
+            //sort by type
+         function sortImageByType() {
+             var $divs = $("div.item-containter");
+             var alphabeticallyOrderedDivs = $divs.sort(function (a, b) {
+                return $(a).find('.imgType p').text() > $(b).find(".imgType p").text();
+            });
+            $("#imgSortContainter").html(alphabeticallyOrderedDivs);
+        }
+
+              //sort by size
+         function sortImageBySize() {
+             var $divs = $("div.item-containter");
+             var numericallyOrderedDivs = $divs.sort(function (a, b) {
+                return $(a).find('.imgType span').text() > $(b).find(".imgType span").text();
+            });
+            $("#imgSortContainter").html(numericallyOrderedDivs);
+        }
+
+
+             //sort by date
+         function sortImageByDate() {
+             var $divs = $("div.item-containter");
+             var alphabeticallyOrderedDivs = $divs.sort(function (a, b) {
+                return $(a).find('.imgModified p').text() > $(b).find(".imgModified p").text();
+            });
+            $("#imgSortContainter").html(alphabeticallyOrderedDivs);
+        }
+
+
+
+        $('#rad-name').on('click', function () {
+            sortImageByNameAsc();
+        });
+         $('#rad-type').on('click', function () {
+            sortImageByType();
+        });
+          $('#rad-size').on('click', function () {
+            sortImageBySize();
+        });
+        $('#rad-modified').on('click', function () {
+            sortImageByDate();
+        });
+         // display Images as list
+        function displayAsList() {
+            $('.item-containter').addClass('col-xs-12');
+            $('.item-containter').addClass('listViewLib');
+            $('.item-containter').css('border-bottom','1px solid #495e71');
+            $('.imageWrapper-lib').addClass('col-xs-12');
+            $('.imageHolder').addClass('col-xs-2');
+            $('.imageDetail').removeClass('col-xs-12');
+            $('.imageDetail').addClass('col-xs-10');
+            $('.imgType').removeClass('hidden');
+            $('.imgSize').removeClass('hidden');
+            $('.imgModified').removeClass('hidden');
+            $('.img-span-name').removeClass('hidden');
+        }
+            // display images as thumb
+        function displayAsThumb() {
+            $('.item-containter').removeClass('col-xs-12');
+            $('.item-containter').removeClass('listViewLib');
+            $('.item-containter').css('border-bottom','0px solid #e7eaec');
+            $('.imageWrapper-lib').removeClass('col-xs-12');
+            $('.imageHolder').removeClass('col-xs-2');
+            $('.imageDetail').removeClass('col-xs-10');
+            $('.imageDetail').addClass('col-xs-12');
+            $('.imgType').addClass('hidden');
+            $('.imgSize').addClass('hidden');
+            $('.imgModified').addClass('hidden');
+            $('.img-span-name').addClass('hidden');
+        }
+        $('#view1').on('click', function () {
+         displayAsList();
+        });
+
+          $('#view2').on('click', function () {
+            displayAsThumb();
+        });
+
+    function deleteImage(e){
+        swal({
+            title: 'Do you want to delete this Image?',
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dd6b55',
+            cancelButtonColor: '#999',
+            confirmButtonText: 'Yes!',
+            cancelButtonText: 'No',
+            closeOnConfirm: true
+        },function (isConfirm) {
+            if (isConfirm) {
+
+                console.log(e);
+               $(e).closest('.item-containter') .remove();
+
+            }
+
+        });
+    }
+    function deleteMultipleImages() {
+     var holders=   $('#imgSortContainter').find('.selectedHolder');
+     for( var i=0;i<holders.length;i++){
+          $(holders[i]).closest('.item-containter') .remove();
+
+     }
+     //alert(holders.length);
+    }
+        $('#selectAllChecbox').on('change',function() {
+            if(this.checked) {
+
+            $('.imageHolder').addClass('selectedHolder');
+
+            }
+            else{
+            $('.imageHolder').removeClass('selectedHolder');
+
+            }
+
+        });
+
+    </script>
+

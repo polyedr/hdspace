@@ -1,0 +1,60 @@
+{%extends "virtualize/header.html" %}
+
+
+{% block content%}
+    <div id="wrapper" style="overflow-y: unset;">
+        <script src="https://cdn.rawgit.com/vast-engineering/jquery-popup-overlay/1.7.13/jquery.popupoverlay.js"></script>
+        <div id="uploadFirstScreen" class="row" style="position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(15%,50%);
+            z-index: 1;
+            display: none;">
+            <div class="col-xs-2" id="uploadSection" style="min-width:175px;display:inline">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <span>upload my page</span>
+                    </div>
+                    <div class="ibox-content" style="height:220.75px">
+                        {%include "customize/includes/uploadSelector.html" %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {%include "customize/includes/navbarHome.html" with projectsin=assignProjects %}
+        <div id="page-wrapper" class="gray-bg">
+            {%include "customize/includes/wrapperHeader.html" %}
+            {% if msg %}
+                <div class="alert alert-danger">
+                    {{ msg }}
+                </div>
+            {% endif %}
+            {%include "customize/includes/contentHome.html" %}
+            {%include "customize/includes/wrapperFooter.html" %}
+            <!-- Modal -->
+            <div id="libraryModal" class="modal fade" role="dialog">
+                <div class="modal-dialog modal-lg" style="height: 740px;width: 1150px;">
+                    <!-- Modal content-->
+                    <div class="modal-content" style="height: inherit;background-color: #2f4050;">
+                        <div class="modal-body" style="padding: 0;">
+                            {%include "customize/includes/library.html" %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="fullscreen" class="hide-content" style="z-index: 10000000000;
+            width: 100%;
+            height: 100vh;
+            top: 0;
+            left: 0;
+            position: absolute;">
+            </div>
+        </div>
+{#        {%include "customize/includes/rightSidebar.html" %}#}
+        {% include "customize/includes/rightSidebarUpdated.html" with userInfo=users projectsin=assignProjects projectsin2=activeProject hireingtableall=hiringtable notificationNewProject=notifyProject whichUserHire=chatHireuserList guestuser=guestalllists allactivity=activity mongouser=finalMongoUsers projectComment=proComments %}
+    </div>
+    <div id="container-inside-frame-top" class = " absolute ajax-loader hide-content" >
+
+    </div>
+{% endblock %}
+

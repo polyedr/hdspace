@@ -1,0 +1,432 @@
+/*
+Extra styling class to main.css
+Created by Nikko, 21 Jun 2107
+ */
+
+.header-text{
+    color:#676a6c;
+    font-size: 16px;
+    font-weight: 400;
+    font-family: Open Sans;
+}
+.single-space{
+    line-height:0.3em;
+}
+
+.color-gray{
+    color:#cccccc
+}
+.text-10px{
+    font-size:10px;
+}
+
+
+
+.container-main-content {
+    width: 100%;
+    height: 100%;
+    display: table;
+    margin-bottom: 100px;
+}
+
+.size-laptop-default{
+   /* width: 800px;
+    height: 500px;*/
+    width: 800px;
+    height: 500px;
+
+}
+.size-laptop{
+    width: 1200px;
+    height: 1000px;
+}
+.general-size-laptop{
+    width: 100%;
+    height: 84.09%;
+    margin-top: 1.25%;
+    overflow-x: scroll;
+    overflow-y: scroll;
+    position: relative;
+}
+.size-mobile{
+    width:370px;
+    height:650px;
+}
+
+.general-size-mobile{
+    width:288px;
+    height:480px;
+    overflow-x: auto;
+    overflow-y: auto;
+    position: relative;
+}
+
+.size-tablet{
+    width:600px;
+    height:700px;
+}
+.general-size-tablet{
+    width:470px;
+    height:515px;
+    overflow-x: scroll;
+    overflow-y: scroll;
+    position: relative;
+}
+.size-slide{
+    display: block;
+    width:100%;
+    height: 200px;
+    overflow: auto;
+    border: double;
+    background-color: cornsilk;
+}
+.slide-container{
+    overflow: hidden;
+}
+
+.background-laptop{
+    background-image: url("../img/laptop.png");
+    background-size: 777px 490px;
+    padding-top: 3%;
+    background-repeat: no-repeat;
+}
+.background-laptop-chromebook11{
+    background-image: url("../img/chromebook11.png");
+    background-size: 905px 777px;
+    padding-left: 305px;
+    padding-top: 217px;
+    background-repeat: no-repeat;
+}
+.background-mobile{
+    background-image: url("../img/phone.png");
+    background-size: 370px 650px;
+    padding-left: 50px;
+    padding-top: 85px;
+}
+.background-mobile-iphone{
+    background-image: url("../img/iPhone.png");
+    background-size: 481px 410px;
+    padding-left: 94px;
+    padding-top: 185px;
+    background-repeat: no-repeat;
+}
+
+.background-mobile-iphone4{
+    background-image: url("../img/iPhone4.png");
+    background-size: 460px 428px;
+    padding-left: 95px;
+    padding-top: 185px;
+    background-repeat: no-repeat;
+}
+.background-mobile-nexus4{
+    background-image: url("../img/nexus4.png");
+    background-size: 694px 590px;
+    padding-left: 52px;
+    padding-top: 135px;
+    background-repeat: no-repeat;
+}
+
+.background-mobile-androidOne{
+    background-image: url("../img/androidOne.png");
+    background-size: 295px 532px;
+    padding-left: 85px;
+    padding-top: 131px;
+    background-repeat: no-repeat;
+}
+
+.background-mobile-googlePixel{
+    background-image: url("../img/googlePixel.png");
+    background-size: 589px 586px;
+    padding-left: 65px;
+    padding-top: 123px;
+    background-repeat: no-repeat;
+}
+
+.background-tablet{
+    background-image: url("../img/tablet.png");
+    background-size: 544px 622px;
+    padding-left: 66px;
+    padding-top: 93px;
+    background-repeat: no-repeat;
+}
+
+.background-tablet-surfacePro4{
+    background-image: url("../img/surfacePro4.png");
+    background-size: 562px 678px;
+    padding-left: 70px;
+    padding-top: 92px;
+    background-repeat: no-repeat;
+}
+
+.background-tablet-ipad{
+    background-image: url("../img/ipad.png");
+    background-size: 600px 632px;
+    padding-left: 65px;
+    padding-top: 93px;
+    background-repeat: no-repeat;
+}
+
+.content-inside-frame-laptop{
+    display: inline;
+    overflow:auto;
+    margin-left: 11.4%;
+    width: 76.1%;
+    height: 100%;
+    background-color: blue;
+}
+.content-inside-frame-laptop-size1{
+    display: inline;
+    overflow-y:auto;
+    overflow-x:scroll;
+    width: 10.1in;
+    height: 5.7in;
+    background-color: red;
+}
+.content-inside-frame-laptop-size2{
+    display: inline;
+    overflow-y:auto;
+    overflow-x:scroll;
+    width: 1280px;
+    height: 850px;
+    background-color: orange;
+}
+.content-inside-frame-laptop-size3{
+    display: inline;
+    overflow-y:auto;
+    overflow-x:scroll;
+    width: 1280px;
+    height: 800px;
+    background-color: blue;
+}
+
+.content-inside-frame-laptop-size4{
+    display: inline;
+    overflow-y:auto;
+    overflow-x:scroll;
+    width: 1440px;
+    height: 900px;
+    background-color: black;
+}
+
+.content-inside-frame-mobile{
+    display: inline;
+    overflow-y:auto;
+    overflow-x:scroll;
+    width: 285px;
+    height: 480px;
+}
+.content-inside-frame-mobile-size1{
+    display: inline;
+    overflow-y:auto;
+    overflow-x:scroll;
+    width: 1.9in;
+    height: 2.9in;
+    background-color: blue;
+}
+
+.content-inside-frame-mobile-size2{
+    display: inline;
+    overflow-y:auto;
+    overflow-x:scroll;
+    width: 2.0in;
+    height: 2.9in;
+    background-color: orange;
+}
+.content-inside-frame-mobile-size3{
+    display: inline;
+    overflow-y:auto;
+    overflow-x:scroll;
+    width: 2.82in;
+    height: 3.76in;
+    background-color: red;
+}
+
+.content-inside-frame-mobile-size4{
+    display: inline;
+    overflow-y:auto;
+    overflow-x:scroll;
+    width: 2.2in;
+    height: 3.9in;
+    background-color: green;
+}
+
+.content-inside-frame-mobile-size5{
+    display: inline;
+    overflow-y:auto;
+    overflow-x:scroll;
+    width: 2.5in;
+    height: 4.4in;
+    background-color: yellow;
+}
+.content-inside-frame-mobile-size6{
+    display: inline;
+    overflow-y:auto;
+    overflow-x:scroll;
+    width: 480px;
+    height: 853px;
+    background-color: purple;
+}
+.content-inside-frame-mobile-size7{
+    display: inline;
+    overflow-y:auto;
+    overflow-x:scroll;
+    width: 384px;
+    height: 640px;
+    background-color: yellow;
+}
+.content-inside-frame-mobile-size8{
+    display: inline;
+    overflow-y:auto;
+    overflow-x:scroll;
+    width: 360px;
+    height: 960px;
+    background-color: grey;
+}
+
+
+.content-inside-frame-tablet{
+    display: inline;
+    overflow-y:auto;
+    overflow-x:scroll;
+    width: 468px;
+    height: 500px;
+    background-color: darkgreen;
+}
+
+.content-inside-frame-tablet-size1{
+    display: inline;
+    overflow-y:auto;
+    overflow-x:scroll;
+    width: 6.9in;
+    height: 10.3in;
+    background-color: blue;
+}
+.content-inside-frame-tablet-size2{
+    display: inline;
+    overflow-y:auto;
+    overflow-x:scroll;
+    width: 5.8in;
+    height: 7.8in;
+    background-color: orange;
+}
+.content-inside-frame-tablet-size3{
+    display: inline;
+    overflow-y:auto;
+    overflow-x:scroll;
+    width: 1024px;
+    height: 1366px;
+    background-color: black;
+}
+.content-inside-frame-tablet-size4{
+    display: inline;
+    overflow-y:auto;
+    overflow-x:scroll;
+    width: 410px;
+    height: 960px;
+    background-color: red;
+}
+.content-inside-frame-tablet-size5{
+    display: inline;
+    overflow-y:auto;
+    overflow-x:scroll;
+    width: 600px;
+    height: 960px;
+    background-color: purple;
+}
+.content-inside-frame-tablet-size6{
+    display: inline;
+    overflow-y:auto;
+    overflow-x:scroll;
+    width: 768px;
+    height: 1366px;
+    background-color: pink;
+}
+.content-inside-frame-tablet-size7{
+    display: inline;
+    overflow-y:auto;
+    overflow-x:scroll;
+    width: 1000px;
+    height: 1500px;
+    background-color: green;
+}
+.content-inside-frame-tablet-size8{
+    display: inline;
+    overflow-y:auto;
+    overflow-x:scroll;
+    width: 960px;
+    height: 1440px;
+    background-color: orange;
+}
+.content-inside-frame-tablet-size9{
+    display: inline;
+    overflow-y:auto;
+    overflow-x:scroll;
+    width: 912px;
+    height: 1368px;
+    background-color: grey;
+}
+
+.dropbtn {
+    background-color: #4CAF50;
+    color: white;
+    padding: 16px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 5px 0px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-content a:hover {
+    background-color: #f1f1f1
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.dropdown:hover .dropbtn {
+    background-color: #1cc09e;
+    color: white;
+}
+
+
+.scrollbar
+{
+	float: left;
+	height: 300px;
+	width: 65px;
+	background: #F5F5F5;
+	overflow-y: scroll;
+	margin-bottom: 25px;
+}
+
+.arrow{
+    width: 10px;
+    height: 10px;
+    top:0px;
+    left:0px;
+}
+
+.hide-button{
+    z-index:1000;
+}
