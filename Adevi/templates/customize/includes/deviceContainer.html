@@ -1,0 +1,279 @@
+<!-- Laptop Tab --><html><head></head><body><div class="ibox-tools" style="display:none">
+            <div id="slideelem">
+                <div class="ibox">
+                    <div class="ibox-title" style="border-color: #1ab394;border-style: solid solid solid solid;
+                             border-width: 2px 2px;
+                             border-radius: 5px;">
+                        <p>Are you sure you want to delete this element?</p><br/>
+                        <div class="w3-display-middle">
+                            <button class="btn btn-primary btn-xs slide_close" id="deleteElementYes" onclick="deleteElement(document.getElementById('test').innerHTML)">Yes</button>
+                            <button class="btn btn-primary btn-xs slide_close" id="deleteElementNo" onclick="$('#slideelem').popup('hide');">No</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="slidewidg">
+                <div class="ibox">
+                    <div class="ibox-title" style="border-color: #1ab394;border-style: solid solid solid solid;
+                             border-width: 2px 2px;
+                             border-radius: 5px;">
+                        <p>Are you sure you want to delete this widget?</p><br/>
+                        <div class="w3-display-middle">
+                            <button class="btn btn-primary btn-xs slide_close" id="deleteElementYes" onclick="deleteWidget(document.getElementById('test').innerHTML)">Yes</button>
+                            <button class="btn btn-primary btn-xs slide_close" id="deleteElementNo" onclick="$('#slidewidg').popup('hide');">No</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane active" id="tab-3">
+            <div class="panel-body" id="panel-id" style="padding:0px;">
+                <div class="ibox-title" id="containerTitle" style="border-width: 0; text-align: center; border-bottom: 1px solid #e7eaec;padding:15px;">
+                    <div style="float: left; margin-left: 5%;">
+                        <p class="hidden" id="test">None selected</p>
+                        <div class="dropdown" style="border-radius: 12px;">
+                            <button class="btn btn-default btn-primary btn-sm dropbtn" onclick="undo()" style="border-radius: 100%;"><i class="fa fa-undo"></i></button>
+                        </div>
+                        <div class="dropdown" style="border-radius: 12px;">
+                            <button class="btn btn-default btn-primary btn-sm dropbtn" onclick="redo()" style="border-radius: 100%;"><i class="fa fa-repeat"></i></button>
+                        </div>
+                        <script type="text/javascript">
+                        $(window).bind("resize", function () {
+                            if ($(this).width() > 981) {
+                                {#document.getElementById('tablet').style = 'width: 80px;';#}
+                                {#document.getElementById('mobile').style = 'width: 80px;';#}
+                            } else if ($(this).width() < 981 && $(this).width() > 768) {
+                                {#document.getElementById('tablet').style = 'width: 80px;';#}
+                                {#document.getElementById('mobile').style = 'width: 80px;';#}
+                            };
+
+                            if ($(this).width() < 768) {
+                                {#document.getElementById('tablet').style = 'width: 80px; margin-left: 80px; margin-top: -50px;';#}
+                                {#document.getElementById('mobile').style = 'width: 80px; margin-left: 160px; margin-top: -50px;';#}
+                            };
+                        });
+                        var index = 0;
+                        var timeStamp = '';
+                        function changeElementEvent(data) {
+                            console.log('Undo/redo: '+index );
+                            var id = 'id'+String(data[0]);
+                            var event = data[1];
+                            console.log(data);
+
+                            var element = document.getElementById(id);
+
+                            if('location' in event){
+                                var parentWidth = document.getElementById('container-inside-frame').offsetWidth;
+                                var parentHeight = document.getElementById('container-inside-frame').offsetHeight;
+                                var location = event['location'];
+                                var x0 = location['x0'];
+                                var y0 = location['y0'];
+                                var x1 = location['x1'];
+                                var y1 = location['y1'];
+
+                                element.style.left = x0 / 100 * parentWidth;
+                                element.style.top = y0 / 100 * parentHeight;
+                                element.style.width = (x1 - x0) / 100 * parentWidth;
+                                element.style.height = (y1 - y0) / 100 * parentHeight;
+                            }
+                            else if('fontColor' in event){
+                                var fontcolor = event['fontColor'];
+                                element.style.color = fontcolor;
+                            }
+                            else if('fontSize' in event){
+                                var fontSize = event['fontSize'];
+                                element.style.fontSize = fontSize;
+                            }
+                            else if('fontFamily' in event){
+                                var fontFamily = event['fontFamily'];
+                                element.style.fontFamily = fontFamily;
+                            }
+                            else if('changedStyle' in event){
+                                var styleEvent = event['changedStyle'];
+                                element.style.backgroundColor = styleEvent['bgcolor'];
+                                element.style.borderColor = styleEvent['borderColor'];
+                                element.style.borderRadius = styleEvent['borderRadius'] +'px';
+                                element.style.textAlign = styleEvent['textAlign'];
+                                element.style.textIndent = styleEvent['textIndent'];
+                                element.style.zIndex = styleEvent['zIndex'];
+                            }
+                            else if('background-color' in event){
+                                var backgroundColor = event['background-color'];
+                                var backgroundElm = document.getElementById('classContainer-selector');
+                                backgroundElm.style.backgroundColor = backgroundColor
+                            }
+                            else if('locked' in event){
+                                console.log(id);
+                                if(event['locked']) {
+                                    lockElement(id);
+                                }
+                                else{
+                                    unLockElement(id);
+                                }
+                            }
+                            else if('name' in event){
+                                var name = event['name'];
+                                element.innerHTML = name;
+                                element.value = name;
+                                element.placeholder = name;
+                            }
+                            else if('deletedElement' in event){
+                                console.log('Bring back the element');
+                                console.log(element);
+                                element.style.display = '';
+                            }
+                        }
+                        function undo() {
+                            //var url = document.URL;
+                            //if (url == "http://localhost:8000/index/" || url == "http://127.0.0.1:8000/index/"
+                            //|| url == "http://127.0.0.1:8000/index/#") {
+
+                            $.ajax({
+                                type: 'POST',
+                                url: '/index/',
+                                data: {
+                                    'name': 'undo',
+                                    'index': index
+                                },
+                                success: function(data){
+                                    changeElementEvent(data);
+                                }
+                            });
+
+                            index += 1;
+
+                                 //window.location.href = "/index/1";
+                             //}
+
+                             //else if (url != 'http://127.0.0.1:8000/index/') {
+                             //   var eventLEvel = document.URL.slice(28);
+
+                             //    $.ajax({
+                             //        type: 'POST',
+                             //        url: '/index/',
+                             //        data: {
+                             //            'name': 'undo',
+                             //            'index': eventLEvel
+                             //        }
+                             //    });
+                             //    //window.location.href = "/index/"+(parseInt(eventLEvel)+1);
+
+                             //}
+                        }
+                        function redo() {
+                            if (index <= 0){
+                                index = 0;
+                            }
+                            // var url = document.URL;
+                            // if (url != 'http://127.0.0.1:8000/index/') {
+                                //var eventLEvel = document.URL.slice(28);
+
+                            $.ajax({
+                                type: 'POST',
+                                url: '/index/',
+                                data: {
+                                    'name': 'redo',
+                                    'index': index
+                                },
+                                success: function(data){
+                                    changeElementEvent(data);
+
+                                }
+                            });
+
+                            if (index <= 0){
+                                index = 0;
+                            }
+                            else {
+                                index -= 1;
+                            }
+                            //window.location.href = "/index/"+(parseInt(eventLEvel)-1);
+
+                            //}
+                            //if (url == 'http://127.0.0.1:8000/index/1') {
+
+                            //    var eventLEvel = document.URL.slice(28);
+
+                            //    $.ajax({
+                            //        type: 'POST',
+                            //        url: '/index/',
+                            //        data: {
+                            //            'name': 'redo',
+                            //            'index': eventLEvel
+                            //        }
+                            //    });
+                            //    //window.location.href = "/index/";
+                            //}
+
+
+                        }
+                    </script>
+                        <style>
+                            #checkBoxSnap { display:none; } /* to hide the checkbox itself */
+                            #checkBoxSnap + label:before {
+                              font-family: FontAwesome;
+                              display: inline-block;
+                            }
+
+                            #checkBoxSnap + label:before { content: "\f10c"; font-size: 100%;color:#c1c1c1;margin-top: 0.4px;
+                            margin-right: 2px;
+                            float: left;} /* unchecked icon */
+
+                            #checkBoxSnap:checked + label:before { content: "\f05d"; font-size: 100%;color:#18a689;margin-top: 0.4px;
+                            margin-right: 2px;
+                            float: left; } /* checked icon */
+                        </style>
+                    </div>
+                    {% if currentPage != Null %}
+                        <span class="ok" id="retrieveCurrentPage" style="text-transform: none;">{{ currentPage }}</span>
+                    {% endif %}
+                        <input checked="" id="checkBoxSnap" style="float:right;margin-top:-5px;" type="checkbox"/>
+                        <label for="checkBoxSnap" style="display:inline;font-size: 12px; font-weight: 400;margin-bottom: 0px;
+                            padding-right: 5%;float:right;margin-top:3px;">
+                            <div style="display:inline">
+                                <span style="color:#c1c1c1">Align Elements</span>
+                            </div>
+                        </label>
+                </div>
+                <div class="col-lg-12 testing" id="midCol" style="width: 100%; background-color: white;">
+                    <div class="w3-container" style="height:100%;">
+                        <div class="size-laptop-default background-laptop column-main-content inline" id="device-frame" style="max-height: 860px;width: 100%;height: 100%;margin-top:15px;">
+                            <div class="general-size-laptop" id="general-contain" style="margin-left:4%; height:100%;">
+                                <drag-resize id="drag-resizeId"></drag-resize>
+                                <div class="content-inside-frame-laptop absolute" id="container-inside-frame" style="height:inherit;">
+                                    {% if screenHTML == '' %}
+                                    <section id="deviceClassContainer" class="classContainer" style="background-color:black; height:inherit;">
+                                        <br/>
+                                        <br/>
+                                        <h1 style="color: white; text-align:center;"><i class="fa fa-arrow-circle-o-left" aria-hidden="true"
+                                        style="-ms-transform: rotate(45deg); / IE 9 /
+                                            -webkit-transform: rotate(45deg); / Chrome, Safari, Opera /
+                                            transform: rotate(45deg);"></i>Please upload your very first page!</h1>
+                                        <p style="text-align:center; color: gray">Expand the "Uploads & My pages" tab and upload your very first screenshot!</p>
+                                    </section>
+                                    {% else %}
+                                    <div class="objectx" id="objectx" style="display:none; width:0px; height:100%; position:absolute;
+                                        z-index: 1000; border-left: 1px solid yellow;"></div>
+                                    <div class="objecty" id="objecty" style="display:none; width:100%; height:0px; position:absolute;
+                                        z-index: 1000; border-bottom: 1px solid yellow;"></div>
+                                        {% autoescape on %}{{ screenHTML|safe|escape }}{% endautoescape  %}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+<script>
+    $(document).ready(function () {
+        $('#slideelem').popup();
+    });
+    $("#slideelem").keyup(function(event) {
+    if (event.keyCode === 13) {
+        $("#deleteElementYes").click();
+    }
+});
+</script>
+</body></html>
