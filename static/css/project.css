@@ -1,0 +1,126 @@
+:root {
+    --black-color: #1C1F28;
+    --green-color: #1ab394;
+    --white-color: #ffffff;
+}
+
+.project-bg {
+    background-color: var(--black-color);
+}
+
+.border-r-0 {
+    border-radius: 0;
+}
+
+.img-circle {
+    max-width: 50px;
+    object-fit: cover;
+    object-position: center;
+}
+
+@-moz-keyframes spin {
+    100% {
+        -moz-transform: rotate(360deg);
+    }
+}
+
+@-webkit-keyframes spin {
+    100% {
+        -webkit-transform: rotate(360deg);
+    }
+}
+
+@keyframes spin {
+    100% {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}
+
+/* welcome section */
+.welcome-screen {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding-left: 150px;
+    color: var(--white-color);
+    height: 50vh;
+    margin-top: 25vh;
+}
+
+.welcome-screen h1 {
+    font-size: 72px;
+}
+
+.welcome-screen h2 {
+    font-size: 56px;
+}
+
+.welcome-screen p {
+    font-size: 24px;
+    font-weight: normal;
+}
+
+/* end welcome section */
+
+/* login section */
+.login-wrapper {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    height: 100vh;
+    background-color: var(--green-color);
+    padding-left: 80px;
+    padding-right: 80px;
+    color: var(--black-color);
+}
+
+.login-wrapper h2 {
+    font-weight: 600;
+}
+
+.login-wrapper form .form-group {
+    margin-top: 30px;
+}
+
+.login-wrapper form .btn {
+    margin-top: 10px;
+}
+
+.login-wrapper form .btn i {
+    animation: spin 0.5s linear infinite;
+    -webkit-animation: spin 0.5s linear infinite;
+    -moz-animation: spin 0.5s linear infinite;
+}
+
+.transparent-input {
+    background-color: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+    font-size: 15px;
+    padding-bottom: 20px;
+    padding-left: 0;
+    color: var(--black-color);
+}
+
+.transparent-input::placeholder {
+    transition: all 0.2s;
+    color: var(--black-color);
+}
+
+.transparent-input:focus {
+    border: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+    color: var(--white-color);
+}
+
+.transparent-input:focus::placeholder {
+    color: var(--white-color);
+}
+
+p.tip-block a {
+    font-size: smaller;
+    color: white;
+}
+
+/* end login section */

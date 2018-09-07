@@ -1,0 +1,50 @@
+{% extends "base_auth.html" %}
+{% load staticfiles %}
+{% load widget_tweaks %}
+{% block content %}
+<div class="container-fluid h-150">
+  <div class="row animated fadeInDown">
+    <div class="col-md-7 welcome-screen">
+
+      <div class="div">
+        <h1>ADEVI</h1>
+        <p>AI Assistant for Designers</p>
+      </div>
+
+      <div class="div">
+        <h2>Welcome</h2>
+        <p>Register for ADEVI account here.</p>
+      </div>
+      
+      <div class="div">
+        <a href="{% url 'accounts:registration' %}" class="btn btn-primary btn-lg border-r-0">Register Here</a>
+      </div>
+    </div>
+    <div class="col-md-5 login-wrapper">
+      <h2>Login to your account</h2>
+      <form action="{% url 'accounts:login' %}" method="POST">
+        <div class="form-group">
+          <input type="text" name="username" class="form-control transparent-input" placeholder="Username or Email">
+          <p class="text-danger validate_error">This field is required.</p>
+        </div>
+        <div class="form-group">
+          <input type="password" name="password" class="form-control transparent-input" placeholder="Password">
+          <p class="text-danger validate_error">This field is required.</p>
+        </div>
+        <button type="submit" id="login" class="btn btn-default btn-lg border-r-0" data-text="LOGIN">
+          <i class="fa fa-spinner loading"></i>
+          LOGIN
+        </button>
+      </form>
+      <p class="tip-block">
+        <a href="{% url 'accounts:forgot_password' %}">Forgot password?</a>
+      </p>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+
+<script src="{% static 'js/login.js' %}"></script>
+
+{% endblock %}

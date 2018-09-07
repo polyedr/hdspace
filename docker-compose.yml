@@ -1,0 +1,38 @@
+version: "2"
+
+services:
+  project_img:
+    build: .
+    image: project_image:latest
+
+  project_app:
+    image: project_image:latest
+    volumes:
+      - .:/project
+
+  db:
+    image: mongo:latest
+    env_file: .env
+    volumes:
+      - ./.docker-data/mongo:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${DB_USER}
+      - MONGO_INITDB_ROOT_PASSWORD=${DB_PASSWORD}
+    ports:
+      - "27017:27017"
+
+  project:
+    extends: project_app
+    depends_on:
+      - db
+    command: ./wait-for-it.sh db:27017 -- python manage.py runserver 0:8000
+    ports:
+      - "8000:8000"
+
+  packages:
+    extends: project_app
+    volumes:
+      - .:/host
+
+volumes:
+  db:

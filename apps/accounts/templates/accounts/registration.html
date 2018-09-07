@@ -1,0 +1,52 @@
+{% extends "base_auth.html" %}
+{% load staticfiles %}
+{% load widget_tweaks %}
+{% block content %}
+
+<div class="container-fluid h-150">
+  <div class="row animated fadeInDown">
+    <div class="col-md-7 welcome-screen">
+
+      <div class="div">
+        <h1>ADEVI</h1>
+        <p>AI Assistant for Designers</p>
+      </div>
+
+      <div class="div">
+        <h2>Register</h2>
+      </div>
+
+      <div class="div">
+        <a href="{% url 'accounts:login' %}" class="btn btn-primary btn-lg border-r-0">I ALREADY HAVE AN ACCOUNT</a>
+      </div>
+    </div>
+    <div class="col-md-5 login-wrapper">
+      <form id="signUpForm" action="{% url 'accounts:registration' %}" method="POST">
+        {% csrf_token %}
+        {% for field in form %}
+        <div class="form-group">
+          <label for="id_{{ field.name }}">{{ field.label }}</label>
+          {{ field|add_class:"form-control transparent-input" }}
+          <p class="text-danger validate_error">This field is required.</p>
+          {% for error in field.errors %}
+          <div class="invalid-feedback d-block my-3">{{ error|escape }}</div>
+          {% endfor %}
+
+        </div>
+        {% endfor %}
+        {% for error in form.non_field_errors %}
+        <div class="invalid-feedback d-block mb-3">{{ error|escape }}</div>
+        {% endfor %}
+
+        <button type="submit" id="signUp" class="btn btn-default btn-lg border-r-0 float-left">Sign Up</button>
+
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+
+<script src="{% static 'js/registration.js' %}"></script>
+
+{% endblock %}

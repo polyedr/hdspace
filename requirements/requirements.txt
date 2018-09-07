@@ -1,0 +1,7 @@
+Django==2.0.3
+django-environ==0.4.4
+djongo==1.2.29
+Pillow==5.1.0
+parse==1.8.4
+Unipath==1.1
+django-widget-tweaks==1.4.2

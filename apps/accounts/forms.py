@@ -1,0 +1,105 @@
+from django import forms
+from django.contrib.auth import password_validation
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
+
+from .models import Profile
+from .utils import emails
+
+__all__ = (
+    "SignUpForm",
+    "LoginForm",
+    "ForgotPasswordForm",
+    "ResetPasswordForm",
+)
+
+
+class SignUpForm(UserCreationForm):
+    email = forms.EmailField()
+    first_name = forms.CharField()
+    last_name = forms.CharField()
+
+    class Meta:
+        model = User
+        fields = (
+            "username", "first_name", "last_name", "email",
+            "password1", "password2",
+        )
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        username = self.cleaned_data.get('username')
+        if email and User.objects.filter(email=email).exclude(username=username).exists():
+            raise forms.ValidationError('A user with that email already exists.')
+        return email
+
+
+class LoginForm(forms.Form):
+    username = forms.CharField(
+        label="Email or Username",
+    )
+    password = forms.CharField(
+        label="Password",
+        strip=False,
+        widget=forms.PasswordInput,
+    )
+
+
+class ForgotPasswordForm(forms.Form):
+    email = forms.EmailField(widget=forms.TextInput(attrs={'type': 'email', 'placeholder': 'Email Address'}))
+
+    def clean_email(self):
+        email = self.cleaned_data.get("email")
+        profile = Profile.objects.filter(user__email=email).select_related("user").first()
+        if not profile:
+            raise forms.ValidationError("Invalid email address.")
+
+        if not profile.user.is_active:
+            raise forms.ValidationError("Please activate your account.")
+
+        profile.reset_password_token = Profile.generate_token()
+        profile.save()
+
+        emails.send_forgot_password_request(
+            email=profile.user.email,
+            reset_password_url_path=profile.get_reset_password_url()
+        )
+
+        return profile.user.email
+
+
+class ResetPasswordForm(forms.Form):
+
+    def __init__(self, *args, **kwargs):
+        self.reset_token = kwargs.pop("reset_token", None)
+        super(ResetPasswordForm, self).__init__(*args, **kwargs)
+
+    password1 = forms.CharField(
+        strip=False,
+        widget=forms.PasswordInput(attrs={'placeholder': 'Password'}),
+        help_text=password_validation.password_validators_help_text_html(),
+    )
+    password2 = forms.CharField(
+        widget=forms.PasswordInput(attrs={'placeholder': 'Password confirmation'}),
+        strip=False,
+        help_text="Enter the same password as before, for verification.",
+    )
+
+    def clean(self):
+        password1 = self.cleaned_data["password1"]
+        password2 = self.cleaned_data["password2"]
+
+        if password1 and password2 and password1 != password2:
+            raise forms.ValidationError("Passwords didn't match.")
+
+        profile = Profile.objects.filter(reset_password_token=self.reset_token).select_related("user").first()
+        if not profile:
+            raise forms.ValidationError("Invalid or expired token.")
+
+        profile.reset_password_token = None
+        profile.user.set_password(self.cleaned_data["password1"])
+
+        profile.user.save()
+        profile.save()
+
+        return self.cleaned_data
