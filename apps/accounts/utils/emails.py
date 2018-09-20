@@ -1,4 +1,5 @@
 from django.conf import settings
+
 from core.utils import send_email, build_absolute_url
 
 __all__ = (

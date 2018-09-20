@@ -42,11 +42,15 @@ INSTALLED_APPS = [
 
 EXTERNAL_APPS = [
     "widget_tweaks",
+    'paypal.standard.ipn',
 ]
 
 PROJECT_APPS = [
     "core",
     "accounts",
+    "projects",
+    # "threads",
+    "payments",
 ]
 
 INSTALLED_APPS.extend(EXTERNAL_APPS + PROJECT_APPS)
@@ -109,7 +113,7 @@ DATABASES = {
         'NAME': ENV.str("DB_NAME", "db"),
         'HOST': ENV.str("DB_HOST", "db"),
         'PORT': ENV.int("DB_PORT", 27017),
-        'USER':  ENV.str("DB_USER"),
+        'USER': ENV.str("DB_USER"),
         'PASSWORD': ENV.str("DB_PASSWORD"),
     }
 }
@@ -146,7 +150,6 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
@@ -157,13 +160,19 @@ STATICFILES_DIRS = [
 STATIC_ROOT = BASE_DIR.child("collectstatic")
 
 MEDIA_ROOT = BASE_DIR.child("media")
+MEDIA_URL = '/media/'
 
 # Email settings
 EMAIL_BASE_TEMPLATE = "email/base.html"
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-
+EMAIL_HOST = ENV.str("EMAIL_HOST", "localhost")
+EMAIL_PORT = ENV.int("EMAIL_PORT", 25)
+EMAIL_BACKEND_CONFIG = ENV.str("EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend")
 DEFAULT_FROM_EMAIL = "from@example.com"
 
-SITE_NAME = ""
+SITE_NAME = "PM"
 BASE_URL = ENV.str("BASE_URL", "http://localhost:8000")
 LOGIN_REDIRECT_URL = "/accounts/dashboard/"
+
+# Django PayPal settings
+PAYPAL_RECEIVER_EMAIL = ENV.str("PAYPAL_RECEIVER_EMAIL", None)
+PAYPAL_TEST = ENV.str("PAYPAL_TEST", True)

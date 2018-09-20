@@ -7,5 +7,5 @@ class AnonymousRequiredMixin(AccessMixin):
     """Verify that the current user is NOT authenticated."""
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:
-            return redirect(reverse("accounts:dashboard"))
+            return redirect(reverse("projects:dashboard"))
         return super().dispatch(request, *args, **kwargs)

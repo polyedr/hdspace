@@ -21,10 +21,18 @@ services:
     ports:
       - "27017:27017"
 
+  mailhog:
+    image: mailhog/mailhog
+    restart: always
+    ports:
+    - "1025:1025"
+    - "8025:8025"
+
   project:
     extends: project_app
     depends_on:
       - db
+      - mailhog
     command: ./wait-for-it.sh db:27017 -- python manage.py runserver 0:8000
     ports:
       - "8000:8000"

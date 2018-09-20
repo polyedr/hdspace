@@ -2,6 +2,8 @@ import pytest
 import parse
 
 from django.urls import reverse
+from django.contrib.messages import get_messages
+
 from core.utils import build_absolute_url
 from accounts.factories import UserFactory
 from accounts.models import Profile
@@ -43,7 +45,9 @@ def test_signup(client, mailoutbox, settings):
 
     response = client.post(reverse("accounts:registration"), payload)
     assert response.status_code == 302
-    assert response['Location'] == reverse("accounts:login")
+    messages = list(get_messages(response.wsgi_request))
+    assert str(messages[0]) == "You have successfully registered."
+    assert response["Location"] == reverse("accounts:login")
     assert len(mailoutbox) == 1
 
     msg = mailoutbox[0]
@@ -52,9 +56,8 @@ def test_signup(client, mailoutbox, settings):
         site_name=settings.SITE_NAME
     )
     assert msg.to == [payload["email"]]
-
     match = parse.search(
-        """<p>{:s}Please click <a href="{email_confirmation_url}">here</a> to confirm you email address.{:s}</p>""",
+        """{:s}<a href="{email_confirmation_url}" class="btn-primary">Confirm email address</a>{:s}""",
         msg.body,
     )
     assert match is not None
@@ -85,7 +88,7 @@ def test_signup_duplicate_username(client, user_with_password):
 
     payload = dict(
         username=user_with_password.username,
-        email='mail@example.com',
+        email="mail@example.com",
         first_name="firstName",
         last_name="lastName",
         password1="pa88word",
@@ -100,8 +103,8 @@ def test_signup_duplicate_username(client, user_with_password):
 def test_signup_password_match_invalid(client):
 
     payload = dict(
-        username='username',
-        email='mail@example.com',
+        username="username",
+        email="mail@example.com",
         first_name="firstName",
         last_name="lastName",
         password1="pa88word",
@@ -142,7 +145,7 @@ def test_email_confirmation_invalid(client):
     )
 
     assert response.status_code == 302
-    assert response['Location'] == reverse("accounts:login")
+    assert response["Location"] == reverse("accounts:login")
 
 
 @pytest.mark.django_db
@@ -152,7 +155,7 @@ def test_forgot_password(client, mailoutbox, settings, user_with_password):
 
     response = client.post(reverse("accounts:forgot_password"), payload)
     assert response.status_code == 302
-    assert response['Location'] == reverse("accounts:login")
+    assert response["Location"] == reverse("accounts:login")
 
     assert len(mailoutbox) == 1
 
@@ -164,7 +167,7 @@ def test_forgot_password(client, mailoutbox, settings, user_with_password):
     assert msg.to == [payload["email"]]
 
     match = parse.search(
-        """<p>{:s}Please click <a href="{reset_password_url}">here</a> to reset your password.{:s}</p>""",
+        """<a href="{reset_password_url}" class="btn-primary">Reset your password</a>""",
         msg.body,
     )
     assert match is not None
