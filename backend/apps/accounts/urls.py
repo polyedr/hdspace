@@ -11,7 +11,9 @@ auth_patterns = [
 ]
 
 profile_patterns = [
-    path("dashboard/", profile.DashboardView.as_view(), name="dashboard"),
+    path("profile/", profile.ProfileView.as_view(), name="profile"),
+    path("change-password/", profile.ChangePasswordView.as_view(), name="change_password"),
+    path("change-avatar/", profile.ChangeAvatarView.as_view(), name="change_avatar"),
 ]
 
 app_name = "accounts"

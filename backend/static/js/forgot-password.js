@@ -1,15 +1,16 @@
 (function () {
     'use strict';
 
-    hideShowErrors(['.validate_error'], false);
+    toggleErrors(['.validate_error'], false);
 
-     $('#forgot').on('click', function (e) {
-         e.preventDefault();
-         var formValid = validateForm(['#id_email'])
+    $('#forgot').on('click', function (e) {
+        e.preventDefault();
+        toggleErrors(['.back_error'], false);
+        var formValid = validateForm(['#id_email']);
 
-         if(!formValid){
-             $('#forgotForm').submit();
-         }
-     })
+        if (!formValid) {
+            $('#forgotForm').submit();
+        }
+    });
 
 })();

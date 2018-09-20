@@ -11,6 +11,9 @@ __all__ = (
     "LoginForm",
     "ForgotPasswordForm",
     "ResetPasswordForm",
+    "UpdateProfileForm",
+    "ChangePasswordForm",
+    "AvatarUploadForm",
 )
 
 
@@ -27,10 +30,10 @@ class SignUpForm(UserCreationForm):
         )
 
     def clean_email(self):
-        email = self.cleaned_data.get('email')
-        username = self.cleaned_data.get('username')
+        email = self.cleaned_data.get("email")
+        username = self.cleaned_data.get("username")
         if email and User.objects.filter(email=email).exclude(username=username).exists():
-            raise forms.ValidationError('A user with that email already exists.')
+            raise forms.ValidationError("A user with that email already exists.")
         return email
 
 
@@ -46,7 +49,7 @@ class LoginForm(forms.Form):
 
 
 class ForgotPasswordForm(forms.Form):
-    email = forms.EmailField(widget=forms.TextInput(attrs={'type': 'email', 'placeholder': 'Email Address'}))
+    email = forms.EmailField(widget=forms.TextInput(attrs={"type": "email", "placeholder": "Email Address"}))
 
     def clean_email(self):
         email = self.cleaned_data.get("email")
@@ -76,11 +79,11 @@ class ResetPasswordForm(forms.Form):
 
     password1 = forms.CharField(
         strip=False,
-        widget=forms.PasswordInput(attrs={'placeholder': 'Password'}),
+        widget=forms.PasswordInput(attrs={"placeholder": "Password"}),
         help_text=password_validation.password_validators_help_text_html(),
     )
     password2 = forms.CharField(
-        widget=forms.PasswordInput(attrs={'placeholder': 'Password confirmation'}),
+        widget=forms.PasswordInput(attrs={"placeholder": "Password confirmation"}),
         strip=False,
         help_text="Enter the same password as before, for verification.",
     )
@@ -103,3 +106,49 @@ class ResetPasswordForm(forms.Form):
         profile.save()
 
         return self.cleaned_data
+
+
+class UpdateProfileForm(forms.ModelForm):
+    email = forms.EmailField()
+    first_name = forms.CharField()
+    last_name = forms.CharField()
+    username = forms.CharField()
+
+    class Meta:
+        model = User
+        fields = (
+            "username", "first_name", "last_name", "email"
+        )
+
+
+class ChangePasswordForm(forms.Form):
+    old_password = forms.CharField(
+        label="Current Password",
+        strip=False,
+        widget=forms.PasswordInput,
+    )
+
+    password1 = forms.CharField(
+        label="New Password",
+        strip=False,
+        widget=forms.PasswordInput,
+        help_text=password_validation.password_validators_help_text_html(),
+    )
+    password2 = forms.CharField(
+        label="Confirm New Password",
+        strip=False,
+        widget=forms.PasswordInput,
+    )
+
+    def clean(self):
+        password1 = self.cleaned_data["password1"]
+        password2 = self.cleaned_data["password2"]
+
+        if password1 and password2 and password1 != password2:
+            raise forms.ValidationError("Passwords didn't match.")
+
+        return self.cleaned_data
+
+
+class AvatarUploadForm(forms.Form):
+    avatar = forms.ImageField()

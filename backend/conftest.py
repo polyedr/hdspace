@@ -1,6 +1,6 @@
 import pytest
 
-from ..factories import UserFactory
+from apps.accounts.factories import UserFactory
 
 
 @pytest.fixture

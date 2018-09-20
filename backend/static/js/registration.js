@@ -1,7 +1,7 @@
 (function () {
     'use strict';
-    $("body").removeClass("gray-bg");
-    hideShowErrors(['.validate_error'], false);
+    $('body').removeClass('gray-bg');
+    toggleErrors(['.validate_error'], false);
 
      $('#signUp').on('click', function (e) {
          e.preventDefault();
@@ -11,12 +11,12 @@
              '#id_last_name',
              '#id_email',
              '#id_password1',
-         ])
+         ]);
 
          var password_match = checkPassword(
              $('#id_password1').val(),
              $('#id_password2').val(),
-         )
+         );
 
          if(!formValid && !password_match){
              $('#signUpForm').submit();

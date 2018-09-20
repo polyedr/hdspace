@@ -1,6 +1,7 @@
 {% extends "base_auth.html" %}
 {% load staticfiles %}
 {% load widget_tweaks %}
+
 {% block content %}
 <div class="container-fluid h-150">
   <div class="row animated fadeInDown">
@@ -15,7 +16,7 @@
         <h2>Welcome</h2>
         <p>Register for ADEVI account here.</p>
       </div>
-      
+
       <div class="div">
         <a href="{% url 'accounts:registration' %}" class="btn btn-primary btn-lg border-r-0">Register Here</a>
       </div>

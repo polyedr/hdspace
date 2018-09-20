@@ -123,4 +123,16 @@ p.tip-block a {
     color: white;
 }
 
+p.tip-login a {
+    font-size: smaller;
+    color: var(--green-color);
+}
+
+.validate_error, .back_error {
+    padding-top: 3px;
+}
 /* end login section */
+
+.profile-element .dropdown-toggle {
+    background-color: transparent!important;
+}

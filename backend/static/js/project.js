@@ -1,0 +1,300 @@
+(function () {
+    'use strict';
+    
+    var posX = 0;
+    var posY = 0;
+    var width = 0;
+    var height = 0;
+    var oldPosX = 0;
+    var oldPosY = 0;
+    var downFlag = false;
+    var currentBlock;
+    var screenEventId;
+
+
+    function guid() {
+        return Math.random().toString(36).substr(2, 9);
+    }
+
+    function findPosition(oElement) {
+        if (typeof(oElement.offsetParent) !== 'undefined') {
+            for (var posX = 0, posY = 0; oElement; oElement = oElement.offsetParent) {
+                posX += oElement.offsetLeft;
+                posY += oElement.offsetTop;
+            }
+            return [posX, posY];
+        }
+        else {
+            return [oElement.x, oElement.y];
+        }
+    }
+
+    function getCoordinates(e) {
+        posX = 0;
+        posY = 0;
+        downFlag = true;
+        var imgPos = findPosition(screenImg);
+        if (!e) {
+            e = window.event;
+        }
+        if (e.pageX || e.pageY) {
+            posX = e.pageX;
+            posY = e.pageY;
+        }
+        else if (e.clientX || e.clientY) {
+            posX = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
+            posY = e.clientY + document.body.scrollTop + document.documentElement.scrollTop;
+        }
+        posX = posX - imgPos[0];
+        posY = posY - imgPos[1];
+
+        oldPosX = posX - imgPos[0];
+        oldPosY = posY - imgPos[1];
+    }
+
+    function getMovePositions(e) {
+        var move = [];
+        var imgPos;
+        var moveX = 0;
+        var moveY = 0;
+        posY = 0;
+        imgPos = findPosition(screenImg);
+        if (!e) {
+            e = window.event;
+        }
+        if (e.pageX || e.pageY) {
+            moveX = e.pageX;
+            moveY = e.pageY;
+        }
+        else if (e.clientX || e.clientY) {
+            moveX = e.clientX + document.body.scrollLeft
+                + document.documentElement.scrollLeft;
+            moveY = e.clientY + document.body.scrollTop
+                + document.documentElement.scrollTop;
+        }
+        move[0] = moveX - imgPos[0];
+        move[1] = moveY - imgPos[1];
+        return move;
+
+    }
+
+    function imageMoveHeightWidth(move) {
+        var select = document.getElementById('currentArea');
+        width = Math.abs(move[0] - posX);
+        height = Math.abs(move[1] - posY);
+        if (move.clientX < posX) {
+            posX = move[0] ;
+            width = Math.abs(oldPosX - posX);
+        }
+        if (move.clientY < posY) {
+            posY = move[1];
+            height = Math.abs(oldPosY - posY);
+        }
+        if (select) {
+            select.style.top = posY + 'px';
+            select.style.left = posX + 'px';
+            select.style.width = width + 'px';
+            select.style.height = height + 'px';
+        } else {
+            var iDiv = document.createElement('div');
+            iDiv.style.top = posY + 'px';
+            iDiv.style.left = posX + 'px';
+            iDiv.style.width = width + 'px';
+            iDiv.style.height = height + 'px';
+            iDiv.style.border = '1px solid #2A9FD8';
+            iDiv.style.position = 'absolute';
+            iDiv.style.background = 'rgba(0,173,255,.54)';
+            iDiv.style.backgroundImage = 'url(' + window.hotspot + ')';
+            iDiv.style.backgroundPosition = '100% 100%';
+            iDiv.style.backgroundRepeat = 'no-repeat';
+            iDiv.setAttribute('id', 'currentArea');
+            currentBlock = guid();
+            iDiv.setAttribute('uuid', currentBlock);
+            document.getElementById('screenImage').appendChild(iDiv);
+            var clone = $('#adjacent-content').html();
+            iDiv.insertAdjacentHTML('afterBegin', clone);
+        }
+    }
+
+    var screenImg = document.getElementById('image');
+    $('#modalDeleteButton').hide();
+    $('#image').mousedown(function () {
+        getCoordinates()
+    });
+
+
+    $('#image').mousemove(function () {
+        if (downFlag) {
+            var move = getMovePositions();
+            imageMoveHeightWidth(move)
+        }
+    });
+
+    $('#image').mouseup(function () {
+        $('#modalForm')[0].reset();
+        $('#screenModal').modal();
+        $('#currentArea').removeAttr('id');
+        downFlag = false;
+        $('#modalDeleteButton').hide();
+    });
+
+    function draggable() {
+        $('#screenImage div').draggable(
+            {
+                drag: function () {
+                    var imgPos = findPosition(screenImg);
+                    var offset = $(this).offset();
+                    posX = offset.left-imgPos[0];
+                    posY = offset.top-imgPos[1];
+                },
+                stop: function (event, ui) {
+                    var url = $(this).data('update_event_position');
+                    $.ajax({
+                        url: url,
+                        method: 'POST',
+                        data: {
+                            csrfmiddlewaretoken: window.csrftoken,
+                            x: posX,
+                            y: posY,
+                        },
+                        success: function (response) {
+
+                        }
+                    });
+                }
+            });
+    }
+
+    draggable();
+
+    $(document).on('mousedown', '.ui-resizable-handle', function () {
+        var $element = $(this).parent();
+        posX = $element.data('x');
+        posY = $element.data('y');
+        oldPosX = $element.data('x');
+        oldPosY = $element.data('y');
+        $element.attr('id', 'currentArea');
+        downFlag = true;
+    });
+
+    $(document).on('click', '.existed', function () {
+        toggleErrors(['.validate_error'], false);
+        $('#screenModal').modal();
+        $('#id_link_to').val($(this).data('link_to'));
+        $('#id_href').val($(this).data('href'));
+        var new_window = $(this).data('new_window');
+        var checked = new_window === 'True' || new_window === true;
+        $('#id_new_window').prop('checked', checked);
+        screenEventId = $(this).data('screenEventId');
+        $('#modalDeleteButton').show();
+        posX = $(this).data('x');
+        posY = $(this).data('y');
+        width = $(this).data('width');
+        height = $(this).data('height');
+    });
+
+    toggleErrors(['.validate_error'], false);
+
+    $('#screenModal').on('hidden.bs.modal', function () {
+        if (currentBlock) {
+            $('div[uuid=' + currentBlock + ']').remove();
+        }
+    });
+
+    $('#id_link_to').change(function () {
+        var link_to = $(this).val();
+        if (link_to === 'external') {
+            $('#id_event').hide();
+        } else {
+            $('#id_event').show();
+        }
+    });
+
+    $('#modalDeleteButton').on('click', function (e) {
+        var $deleted_event = $('div[data-screenEventId=' + screenEventId + ']');
+        var url = $deleted_event.data('delete_url');
+        $.ajax({
+            url: url,
+            method: 'POST',
+            data: {
+                csrfmiddlewaretoken: window.csrftoken,
+                screenEventId: screenEventId
+            },
+            success: function (response) {
+                if (response) {
+                    $('#screenModal').modal('hide');
+                    $deleted_event.remove();
+                }
+            }
+        });
+    });
+
+    $('#modalButton').on('click', function (e) {
+        e.preventDefault();
+        var link_to = $('#id_link_to').val();
+        var $element;
+        if (screenEventId) {
+            $element = $('div[data-screenEventId=' + screenEventId + ']');
+        } else {
+            $element = $('div[uuid=' + currentBlock + ']');
+        }
+        if (link_to) {
+            var url = $(this).data('url');
+            var formValid = validateForm([
+                '#id_link_to',
+                '#id_href',
+            ]);
+            if (!formValid) {
+                var href = $('#id_href').val();
+                var new_window = $('#id_new_window').is(':checked');
+                var event = $('#id_event').val();
+                $.ajax({
+                    url: url,
+                    method: 'POST',
+                    data: {
+                        csrfmiddlewaretoken: window.csrftoken,
+                        link_to: link_to,
+                        href: href,
+                        x: posX,
+                        y: posY,
+                        width: width,
+                        height: height,
+                        new_window: new_window,
+                        event: event,
+                        screenEventId: screenEventId,
+                    },
+                    success: function (response) {
+                        var response_data = jQuery.parseJSON(response['screen_event']);
+                        var data = response_data[0].fields;
+                        $element.attr('data-href', data.href);
+                        $element.attr('data-x', data.x);
+                        $element.attr('data-y', data.y);
+                        $element.attr('data-width', data.width);
+                        $element.attr('data-height', data.height);
+                        $element.attr('data-event', data.event);
+                        $element.attr('data-link_to', data.link_to);
+                        $element.attr('data-new_window', data.new_window);
+                        $element.attr('data-delete_url', response.delete_url);
+                        $element.attr('data-update_event_position', response.update_url);
+                        $element.attr('data-screenEventId', response_data[0].pk);
+                        $element.addClass('existed');
+                        currentBlock = '';
+                        $('#screenModal').modal('hide');
+                        draggable();
+                    }
+                });
+            }
+        } else {
+            $('#id_link_to').next('p').show();
+        }
+    });
+    
+    $('.add-screen').on('click', function () {
+        $('#id_image').trigger( 'click' );
+    });
+
+     $('#id_image').change(function () {
+         $('#addScreenForm').submit();
+     });
+
+})();
