@@ -63,9 +63,9 @@
         <div class="card card-outline-secondary">
           <div class="card-body">
             {% for screen in screens %}
-            <a href="{% url 'projects:screen' project_id=project.pk screen_id=screen.pk %}">
-              <img class="w-100 screen-img" src="{{screen.image.url}}">
-            </a>
+              <a href="#">
+              <img class="w-100 screen-img"
+                   src="{{screen.image.url}}" data-event_url="{% url 'projects:screen_events' pk=screen.pk %}"></a>
             {% endfor %}
           </div>
         </div>
@@ -77,8 +77,7 @@
 <div class="row">
   <div class="col-lg-12">
     <div class="col-lg-8  m-t-md">
-      <div class="ibox-content">
-        <ul class="nav nav-tabs">
+        <ul class="nav nav-tabs project-ul">
           <li class="nav-item">
             <a class="nav-link active" href="#"><i class="fa fa-laptop" aria-hidden="true"></i></a>
           </li>
@@ -89,10 +88,28 @@
             <a class="nav-link" href="#"><i class="fa fa-mobile" aria-hidden="true"></i></a>
           </li>
         </ul>
-      </div>
     </div>
     <div class="col-lg-4 m-t-md">
-      <div class="ibox-content">
+      <div class="ibox-content pag_menu">
+        <h3 class="text-center">{{project.name}}</h3>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-12">
+    <div class="col-lg-8">
+      <div class="ibox-content ">
+        <div class="col-lg-3">
+          <span class="glyphicon left1 glyphicon-repeat"></span>
+          <span class="glyphicon  glyphicon-repeat"></span>
+        </div>
+        <div class="col-lg-6">
+          <span class="text-center"></span>
+        </div>
+         <span class="text-center">{{project.name}}</span>
+      </div>
+    </div>
+    <div class="col-lg-4">
+      <div class="ibox-content pag_menu">
         <h3 class="text-center">{{project.name}}</h3>
       </div>
     </div>
@@ -101,7 +118,7 @@
 <div class="row">
   <div class="col-lg-12">
     <div class="col-lg-8">
-      <div class="ibox-content">
+      <div class="ibox-content ">
         <div id="screenImage" class="screenContainer">
           <img src="{{screens.0.image.url}}" id="image" class="edited-image" border="0"/>
           {% for screen_event in screen_events %}
@@ -133,14 +150,18 @@
         </div>
       </div>
     </div>
-    <div class="col-lg-4">
-      <div class="ibox-content">
-        <h3 class="text-center">{{project.name}}</h3>
+    <div class="col-lg-4 el-div">
+      <div class="ibox-content elements">
+        <p class="elements-p" >Elements</p>
+        <hr/>
+        <h3 class="text-center">Click element to activate</h3>
       </div>
     </div>
-    <div class="col-lg-4">
+    <div class="col-lg-4 el-div">
       <div class="ibox-content">
-        <h3>Elements</h3>
+          <p class="elements-p" >Prediction Table</p>
+          <hr/>
+          <h3 class="text-center">Click element to activate</h3>
       </div>
     </div>
   </div>

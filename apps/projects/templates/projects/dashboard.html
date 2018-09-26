@@ -4,12 +4,13 @@
 {% block underheader %}
 
 
-<div class="row wrapper border-bottom white-bg page-heading">
+<div class="row wrapper border-bottom white-bg page-heading" xmlns="http://www.w3.org/1999/html">
   <div class="col-sm-4">
-    <h2>Projects</h2>
+    <h2>All Projects</h2>
   </div>
   <div class="col-sm-8">
     <div class="title-action">
+      <a href="" class="btn btn-primary">Your Cart</a>
       <a href="" class="btn btn-primary" data-toggle="modal" data-target="#myModal">Create a project</a>
     </div>
   </div>
@@ -30,25 +31,35 @@
         <table class="table table-striped">
           <thead>
           <tr>
-            <th>#</th>
-            <th>Name</th>
-            <th>Data</th>
-            <th>Owner</th>
-            <th>Value</th>
+            <th></th>
+            <th>Project Status</th>
+            <th>Project Name</th>
+            <th>Total Pages</th>
+            <th>All Pages</th>
+            <th>Actions</th>
           </tr>
           </thead>
           <tbody>
           {% for project in projects %}
             <tr>
-              <td>1</td>
+              <td><input type="checkbox" value="{{project.id}}"/></td>
+              <td class="text-green">{{project.project.status}}</td>
               <td><a href="{% url 'projects:project' pk=project.project.id %}">{{ project.project.name }}</a></td>
               <td><span class="line">5,3,2,-1</span></td>
               <td>{{ project.user.get_full_name }}</td>
-              <td class="text-navy"><i class="fa fa-level-up"></i> 40%</td>
+              <td class="text-navy">
+                <i class="fa fa-credit-card"></i>
+                <a href="{% url 'projects:delete-project' pk=project.project.id %}"><i class="fa fa-trash"></i></a>
+              </td>
             </tr>
           {% endfor %}
           </tbody>
         </table>
+        <div class="col-sm-12">
+          <div class="title-action">
+            <button class="btn btn-primary">Checkout all selected projects</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
