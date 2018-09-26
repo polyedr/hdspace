@@ -2,40 +2,40 @@ from paypal.standard.forms import PayPalPaymentsForm
 
 from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.urls import reverse
 
-from core.utils import build_absolute_url
+from core.views.seo import SEOViewMixin
+from .utils import get_payment_package
+from .models import Package
 
 
 __all__ = (
     "SubscriptionPlanView",
     "PaymentSuccessView",
     "PaymentCancelView",
+    "PaypalPackageView",
 )
 
 
-class SubscriptionPlanView(LoginRequiredMixin, TemplateView):
+class SubscriptionPlanView(LoginRequiredMixin, SEOViewMixin, TemplateView):
     template_name = "payments/plans.html"
+    page_title = "Subscription plans"
 
     def get(self, request, *args, **kwargs):
         context = self.get_context_data()
-        paypal_standard = {
-            "cmd": "_xclick-subscriptions",
-            "a3": "1",
-            "p3": 1,
-            "t3": "M",
-            "src": "1",
-            "sra": "1",
-            "no_note": "1",
-            "item_name": "Standard Subscription",
-            "notify_url": build_absolute_url(reverse("paypal-ipn")),
-            "return": build_absolute_url(reverse("payments:success")),
-            "cancel_return": build_absolute_url(reverse("payments:cancel")),
-            "custom": "standard_{}".format(request.user.id),
-        }
+        context["packages"] = Package.objects.all()
+        return self.render_to_response(context)
 
-        context["standard_form"] = PayPalPaymentsForm(initial=paypal_standard, button_type="subscribe")
 
+class PaypalPackageView(LoginRequiredMixin, TemplateView):
+    template_name = "payments/paypal.html"
+
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data()
+        package_id = kwargs.pop("pk")
+        package = Package.objects.get(pk=package_id)
+        paypal_standard = get_payment_package(request.user.id, package.id, package.full_price)
+
+        context["form"] = PayPalPaymentsForm(initial=paypal_standard, button_type="subscribe")
         return self.render_to_response(context)
 
 

@@ -18,6 +18,8 @@ __all__ = (
     "ProjectScreenView",
     "DeleteScreenEventView",
     "UpdateEventPositionView",
+    "ScreenEventsView",
+    "DeleteProjectView",
 )
 
 
@@ -62,14 +64,24 @@ class ProjectView(LoginRequiredMixin, TemplateView):
         context = self.get_context_data()
         project = kwargs.pop("pk")
         context["screens"] = ProjectScreen.objects.filter(project=project)
-        screen = ProjectScreen.objects.order_by("-pk")[0]
-        context["screen_events"] = ScreenEvent.objects.filter(screen=screen.id)
+        screen = None
+        if context["screens"]:
+            screen = context["screens"][0]
+            context["screen_events"] = ScreenEvent.objects.filter(screen=screen.id)
         if "form" not in kwargs:
             context["form"] = ScreenUploadForm()
             context["screen_form"] = ScreenEventForm()
             context["screen"] = screen
             context["project"] = Project.objects.get(pk=project)
         return self.render_to_response(context)
+
+
+class DeleteProjectView(LoginRequiredMixin, View):
+    def get(self, request, *args, **kwargs):
+        project = kwargs.pop("pk")
+        Project.objects.filter(pk=project).delete()
+        messages.success(request, "Project has been deleted successfully.")
+        return HttpResponseRedirect(reverse("projects:dashboard"))
 
 
 class AddProjectScreenView(LoginRequiredMixin, View):
@@ -126,7 +138,7 @@ class ProjectScreenView(LoginRequiredMixin, View):
 class DeleteScreenEventView(LoginRequiredMixin, View):
 
     def post(self, request, *args, **kwargs):
-        screen_event_id = request.POST["screen_event_id"]
+        screen_event_id = request.POST["screenEventId"]
         ScreenEvent.objects.filter(pk=screen_event_id).delete()
         return JsonResponse({"msg": "Event has been deleted successfully."})
 
@@ -143,5 +155,30 @@ class UpdateEventPositionView(LoginRequiredMixin, View):
             )
             msg = "Positions have been updated successfully."
         else:
-            msg = "Invalid data"
+            msg = "Invalid data."
         return JsonResponse({"msg": msg})
+
+
+class ScreenEventsView(LoginRequiredMixin, View):
+
+    def get(self, request, *args, **kwargs):
+        screen_id = kwargs.pop("pk")
+        screen = ProjectScreen.objects.get(pk=screen_id)
+        events = ScreenEvent.objects.filter(screen=screen_id)
+        screen_events = []
+        for event in events:
+            screen_event = dict(
+                event=event.event,
+                link_to=event.link_to,
+                href=event.href,
+                new_window=event.new_window,
+                height=event.height,
+                width=event.width,
+                x=event.x,
+                y=event.y,
+                pk=event.pk,
+                delete_url=event.get_event_delete_url(),
+                update_url=event.get_update_event_position_url(),
+            )
+            screen_events.append(screen_event)
+        return JsonResponse({"screen_events": screen_events, "save_url": screen.get_screen_url()}, safe=False)

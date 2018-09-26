@@ -45,11 +45,8 @@
             posX = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
             posY = e.clientY + document.body.scrollTop + document.documentElement.scrollTop;
         }
-        posX = posX - imgPos[0];
-        posY = posY - imgPos[1];
-
-        oldPosX = posX - imgPos[0];
-        oldPosY = posY - imgPos[1];
+        posX = oldPosX = posX - imgPos[0];
+        posY = oldPosY = posY - imgPos[1];
     }
 
     function getMovePositions(e) {
@@ -57,7 +54,6 @@
         var imgPos;
         var moveX = 0;
         var moveY = 0;
-        posY = 0;
         imgPos = findPosition(screenImg);
         if (!e) {
             e = window.event;
@@ -80,14 +76,14 @@
 
     function imageMoveHeightWidth(move) {
         var select = document.getElementById('currentArea');
-        width = Math.abs(move[0] - posX);
-        height = Math.abs(move[1] - posY);
-        if (move.clientX < posX) {
-            posX = move[0] ;
+        width = Math.abs(move.clientX - posX);
+        height = Math.abs(move.clientY - posY);
+        if(move.clientX < posX){
+            posX = move.clientX;
             width = Math.abs(oldPosX - posX);
         }
-        if (move.clientY < posY) {
-            posY = move[1];
+        if(move.clientY < posY){
+            posY = move.clientY;
             height = Math.abs(oldPosY - posY);
         }
         if (select) {
@@ -119,13 +115,16 @@
     var screenImg = document.getElementById('image');
     $('#modalDeleteButton').hide();
     $('#image').mousedown(function () {
-        getCoordinates()
+        getCoordinates();
     });
 
 
-    $('#image').mousemove(function () {
+    $('#image').mousemove(function (event) {
+        var move = {}
+        var positions = getMovePositions();
+        move.clientX = positions[0]
+        move.clientY = positions[1]
         if (downFlag) {
-            var move = getMovePositions();
             imageMoveHeightWidth(move)
         }
     });
@@ -167,15 +166,6 @@
 
     draggable();
 
-    $(document).on('mousedown', '.ui-resizable-handle', function () {
-        var $element = $(this).parent();
-        posX = $element.data('x');
-        posY = $element.data('y');
-        oldPosX = $element.data('x');
-        oldPosY = $element.data('y');
-        $element.attr('id', 'currentArea');
-        downFlag = true;
-    });
 
     $(document).on('click', '.existed', function () {
         toggleErrors(['.validate_error'], false);
@@ -185,7 +175,7 @@
         var new_window = $(this).data('new_window');
         var checked = new_window === 'True' || new_window === true;
         $('#id_new_window').prop('checked', checked);
-        screenEventId = $(this).data('screenEventId');
+        screenEventId = $(this).data('screen_event_id');
         $('#modalDeleteButton').show();
         posX = $(this).data('x');
         posY = $(this).data('y');
@@ -211,7 +201,7 @@
     });
 
     $('#modalDeleteButton').on('click', function (e) {
-        var $deleted_event = $('div[data-screenEventId=' + screenEventId + ']');
+        var $deleted_event = $('div[data-screen_event_id=' + screenEventId + ']');
         var url = $deleted_event.data('delete_url');
         $.ajax({
             url: url,
@@ -229,12 +219,30 @@
         });
     });
 
+    function addElementData($element, data) {
+        $element.attr({
+            'data-href': data.href,
+            'data-x': data.x,
+            'data-y': data.y,
+            'data-width': data.width,
+            'data-height': data.height,
+            'data-event': data.event,
+            'data-link_to': data.link_to,
+            'data-new_window': data.new_window,
+            'data-delete_url': data.delete_url,
+            'data-update_event_position': data.update_url,
+            'data-screen_event_id': data.pk
+        });
+
+        return $element
+    }
+
     $('#modalButton').on('click', function (e) {
         e.preventDefault();
         var link_to = $('#id_link_to').val();
         var $element;
         if (screenEventId) {
-            $element = $('div[data-screenEventId=' + screenEventId + ']');
+            $element = $('div[data-screen_event_id=' + screenEventId + ']');
         } else {
             $element = $('div[uuid=' + currentBlock + ']');
         }
@@ -266,17 +274,10 @@
                     success: function (response) {
                         var response_data = jQuery.parseJSON(response['screen_event']);
                         var data = response_data[0].fields;
-                        $element.attr('data-href', data.href);
-                        $element.attr('data-x', data.x);
-                        $element.attr('data-y', data.y);
-                        $element.attr('data-width', data.width);
-                        $element.attr('data-height', data.height);
-                        $element.attr('data-event', data.event);
-                        $element.attr('data-link_to', data.link_to);
-                        $element.attr('data-new_window', data.new_window);
-                        $element.attr('data-delete_url', response.delete_url);
-                        $element.attr('data-update_event_position', response.update_url);
-                        $element.attr('data-screenEventId', response_data[0].pk);
+                        data['pk'] = response_data[0].pk;
+                        data['delete_url'] = response.delete_url;
+                        data['update_url'] = response.update_url;
+                        addElementData($element, data);
                         $element.addClass('existed');
                         currentBlock = '';
                         $('#screenModal').modal('hide');
@@ -287,6 +288,36 @@
         } else {
             $('#id_link_to').next('p').show();
         }
+    });
+
+    $('.screen-img').on('click', function () {
+        var url = $(this).data('event_url');
+        var src = $(this).attr('src');
+        $.ajax({
+            url: url,
+            method: 'GET',
+            success: function (response) {
+                if (response) {
+                    $('#modalButton').attr('data-url', response.save_url)
+                    $('#screenImage .existed').remove();
+                    $('#screenImage img').attr('src', src);
+                    $.each(response['screen_events'], function (index, value) {
+                        var $eventBox = $('#adjacent-content').clone(true, true);
+                        $eventBox = addElementData($eventBox, value);
+                        $eventBox.css({
+                            'top': value.y,
+                            'left': value.x,
+                            'width': value.width,
+                            'height': value.height,
+                        });
+                        $eventBox.addClass('existed')
+                        $eventBox.removeAttr('id');
+                        $('#screenImage').append($eventBox);
+                        draggable();
+                    })
+                }
+            }
+        });
     });
     
     $('.add-screen').on('click', function () {

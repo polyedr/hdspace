@@ -15,8 +15,20 @@ __all__ = (
 
 
 class Project(TimeStampedModel):
+    STATUS_PAID = "paid"
+    STATUS_PENDING = "pending"
+    STATUS_CHOICES = (
+        (STATUS_PAID, "Paid"),
+        (STATUS_PENDING, "Pending"),
+    )
+
     name = models.CharField(max_length=250)
+    status = models.CharField(choices=STATUS_CHOICES, default=STATUS_PENDING, max_length=20)
     members = models.ManyToManyField(User, through="ProjectMember")
+
+    def get_project_url(self):
+        return reverse("projects:project",
+                       kwargs={"pk": self.pk})
 
     def __str__(self):
         return self.name
