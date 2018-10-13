@@ -175,3 +175,25 @@ margin-top: 20px;
 .screen-imgs-container {
     height: auto;
 }
+
+.bottom-toolbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #252837;
+}
+
+.bottom-toolbar .btn {
+  border-radius: 0;
+  color: #fff;
+  background-color: transparent;
+  padding: 20px 22px;
+}
+.bottom-toolbar .btn .glyphicon {
+  vertical-align: middle;
+}
+
+.bottom-toolbar .btn.active {
+  background-color: rgba(0,0,0,.3);
+}

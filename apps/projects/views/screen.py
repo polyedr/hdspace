@@ -1,9 +1,9 @@
 from django.views.generic.base import View
+from django.views.generic import TemplateView
 from django.urls import reverse
 from django.http import JsonResponse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core import serializers
-
 
 from projects.forms import ScreenEventForm, ScreenUploadForm
 from projects.models import Project, ProjectScreen, ScreenEvent
@@ -14,6 +14,7 @@ __all__ = (
     "ProjectScreenView",
     "DeleteScreenView",
     "ProjectScreenPreviewView",
+    "EditScreenView",
 )
 
 
@@ -78,6 +79,7 @@ class AddProjectScreenView(LoginRequiredMixin, View):
                 "url": screen.image.url,
                 "preview_url": screen.get_preview_url(),
                 "save_url": screen.get_screen_url(),
+                "edit_screen_url": screen.get_edit_screen_url(),
                 "event_url": reverse("projects:screen_events", kwargs={"pk": screen.pk}),
             })
         else:
@@ -109,3 +111,19 @@ class ProjectScreenPreviewView(LoginRequiredMixin, View):
         )
 
         return JsonResponse(context)
+
+
+class EditScreenView(LoginRequiredMixin, TemplateView):
+    template_name = "projects/edit-screen.html"
+
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data()
+
+        screen = kwargs.pop("screen_id")
+        project = kwargs.pop("project_id")
+        context["screen_form"] = ScreenEventForm()
+        context["screen"] = ProjectScreen.objects.get(pk=screen)
+        context["screens"] = ProjectScreen.objects.filter(project=project)
+        context["screen_events"] = ScreenEvent.objects.filter(screen=screen)
+
+        return self.render_to_response(context)

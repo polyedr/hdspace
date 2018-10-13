@@ -47,8 +47,17 @@ class Project(TimeStampedModel):
 
 
 class ProjectTask(TimeStampedModel):
+
+    TASK_CREATED = "created"
+    TASK_COMPLETED = "completed"
+    TASK_STATUS = (
+        (TASK_CREATED, "CREATED"),
+        (TASK_COMPLETED, "COMPLETED"),
+    )
+
     title = models.CharField(max_length=250)
     description = models.TextField()
+    status = models.CharField(choices=TASK_STATUS, default=TASK_CREATED, max_length=32)
 
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     creator = models.ForeignKey(User, related_name="creator", on_delete=models.CASCADE)
@@ -78,6 +87,9 @@ class ProjectScreen(TimeStampedModel):
 
     def get_preview_url(self):
         return reverse("projects:preview", kwargs={"token": self.project.preview, "pk": self.pk})
+
+    def get_edit_screen_url(self):
+        return reverse("projects:edit_screen", kwargs={"project_id": self.project.pk, "screen_id": self.pk})
 
     def __str__(self):
         return self.project.name

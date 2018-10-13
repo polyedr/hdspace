@@ -8,8 +8,8 @@ from payments.cart import Cart
 from core.views.seo import SEOViewMixin
 from threads.models import Thread, UserThread, Message
 from projects.forms import (
-    CreateProjectForm, ScreenUploadForm, ScreenEventForm,
-    ProjectInvitationForm, AddTaskForm
+    CreateProjectForm, ScreenUploadForm, ProjectInvitationForm,
+    AddTaskForm
 )
 from projects.models import (
     Project, ProjectScreen, ScreenEvent,
@@ -87,16 +87,10 @@ class ProjectView(LoginRequiredMixin, TemplateView):
         context = self.get_context_data()
         project = kwargs.pop("pk")
         context["screens"] = ProjectScreen.objects.filter(project=project)
-        screen = None
-        if context["screens"]:
-            screen = context["screens"][0]
-            context["screen_events"] = ScreenEvent.objects.filter(screen=screen.id)
         if "form" not in kwargs:
             context["form"] = ScreenUploadForm()
-            context["screen_form"] = ScreenEventForm()
             context["invite_form"] = ProjectInvitationForm()
             context["add_task_form"] = AddTaskForm(project)
-            context["screen"] = screen
             context["project"] = Project.objects.get(pk=project)
             context["project_members"] = ProjectMember.objects.filter(project=project)
             context["tasks"] = ProjectTask.objects.filter(project=project)

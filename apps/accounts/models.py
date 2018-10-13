@@ -81,8 +81,6 @@ class TeamMember(TimeStampedModel):
 
 class Team(TimeStampedModel):
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
-    team_name = models.CharField(max_length=250)
-    logo = models.ImageField(upload_to=utils.get_file_path, blank=True)
     members = models.ManyToManyField(TeamMember)
 
     def __str__(self):
