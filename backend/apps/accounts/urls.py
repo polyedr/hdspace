@@ -1,5 +1,5 @@
 from django.urls import path, include
-from .views import auth, profile
+from .views import auth, profile, team
 
 auth_patterns = [
     path("login/", auth.LoginView.as_view(), name="login"),
@@ -16,8 +16,15 @@ profile_patterns = [
     path("change-avatar/", profile.ChangeAvatarView.as_view(), name="change_avatar"),
 ]
 
+team_patterns = [
+    path("teams/", team.TeamView.as_view(), name="teams"),
+    path("new-team/", team.CreateTeamView.as_view(), name="new_team"),
+    path("delete-team/<int:pk>/", team.DeleteTeamView.as_view(), name="delete_team"),
+]
+
 app_name = "accounts"
 urlpatterns = [
     path("", include(auth_patterns)),
     path("", include(profile_patterns)),
+    path("", include(team_patterns)),
 ]

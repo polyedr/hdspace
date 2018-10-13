@@ -7,12 +7,13 @@ from django.core.mail import EmailMessage
 __all__ = (
     "send_email",
     "build_absolute_url",
+    "render_body",
 )
 
 Recipient_s = Union[List[str], Tuple[str], str]
 
 
-def render_body(template_name: str, context: dict = None) -> str:
+def render_body(template_name: str, context: dict = None, base_template: str = settings.EMAIL_BASE_TEMPLATE) -> str:
     """
     Load template by given name, pass it context
     and render as a string.
@@ -20,7 +21,7 @@ def render_body(template_name: str, context: dict = None) -> str:
     if context is None:
         context = dict()
 
-    context["base_template"] = context.get("base_template", settings.EMAIL_BASE_TEMPLATE)
+    context["base_template"] = context.get("base_template", base_template)
     template = loader.get_template(template_name)
     return template.render(context)
 

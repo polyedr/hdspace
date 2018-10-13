@@ -1,0 +1,32 @@
+{% extends base_template %}
+{% load filename %}
+
+{% block content %}
+  <div id="screenImage" class="screenContainer">
+      {% for screen in project.projectscreen_set.all %}
+        {% for screen_event in screen.screenevent_set.all %}
+          <div id="screen_{{screen_event.pk}}" class="screen_images">
+            <img src="{{ screen.image.name|filename }}" class="edited-image" border="0"/>
+            <div
+                        class="existed"
+                        style='top:{{screen_event.y}}px;
+                        width:{{screen_event.width}}px;
+                        left:{{screen_event.x}}px;
+                        height:{{screen_event.height}}px;'
+                        data-href="{{screen_event.href}}"
+                        data-x="{{screen_event.x}}"
+                        data-y="{{screen_event.y}}"
+                        data-width="{{screen_event.width}}"
+                        data-height="{{screen_event.height}}"
+                        data-event="{{screen_event.event}}"
+                        data-link_to="{{screen_event.link_to}}"
+                        data-new_window="{{screen_event.new_window}}"
+                        data-screen_event_id="{{screen_event.pk}}"
+                >
+            </div>
+          </div>
+        {% endfor %}
+      {% endfor %}
+  </div>
+
+{% endblock %}

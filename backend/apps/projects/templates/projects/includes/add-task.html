@@ -1,0 +1,27 @@
+{% load widget_tweaks %}
+<div class="modal inmodal" id="addTaskModal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span
+                class="sr-only">Close</span></button>
+      </div>
+      <form id="addTaskForm" action="" method="POST">
+        <div class="modal-body">
+            {% csrf_token %}
+            {% for field in form %}
+              <div class="form-group">
+                <label for="id_{{ field.name }}">{{ field.label }}</label>
+                {{ field|add_class:"form-control" }}
+                <p class="text-danger validate_error">This field is required.</p>
+              </div>
+            {% endfor %}
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="modalCloseButton"class="btn btn-white" data-dismiss="modal">Close</button>
+          <button type="submit" id="addTaskButton" class="btn btn-primary" data-url="{% url 'projects:add_project_task' pk=project_id %}" data-project_id="{{ project_id }}">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

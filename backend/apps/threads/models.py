@@ -3,6 +3,7 @@ from django.db import models
 from django.urls import reverse
 from django.utils import timezone
 
+from projects.models import Project
 from .utils import cached_property
 
 __all__ = (
@@ -14,16 +15,16 @@ __all__ = (
 
 class Thread(models.Model):
 
-    subject = models.CharField(max_length=150)
     users = models.ManyToManyField(User, through="UserThread")
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.subject
+        return self.project.name
 
     @classmethod
-    def inbox(cls, user):
+    def inbox(cls, user, project):
         cls.current_user = user
-        return cls.objects.filter(userthread__user=user)
+        return cls.objects.filter(userthread__user=user, project=project)
 
     def get_absolute_url(self):
         return reverse("threads:list", args=[self.pk])
@@ -81,3 +82,6 @@ class UserThread(models.Model):
 
     thread = models.ForeignKey(Thread, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.thread.project.name

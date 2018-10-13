@@ -8,9 +8,8 @@
         <i class="fa fa-laptop modal-icon"></i>
         <h4 class="modal-title">Create Project</h4>
       </div>
-      <form id="modalForm" action="{% url 'projects:create_project' %}" method="POST">
+      <form id="modalForm" action="" method="POST">
         <div class="modal-body">
-            {% csrf_token %}
             {% for field in form %}
               <div class="form-group">
                 {{ field|add_class:"form-control" }}
@@ -20,7 +19,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" id="modalCloseButton" class="btn btn-white" data-dismiss="modal">Close</button>
-          <button type="button" id="modalButton" class="btn btn-primary">Create</button>
+          <button type="button" id="CreateProjectButton" class="btn btn-primary" data-url="{% url 'projects:create_project' %}">Create</button>
         </div>
       </form>
     </div>

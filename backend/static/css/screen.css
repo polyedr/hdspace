@@ -70,3 +70,108 @@
 .special-index-z {
     z-index: 90;
 }
+
+.project-screens{
+  display: none;
+}
+
+.selected-img{
+    opacity: 0.1;
+}
+
+.project-img {
+    cursor: pointer;
+    width: 80px;
+    height: 90px;
+    margin-bottom: 5px;
+    margin-right: 5px;
+}
+
+.close{
+    position: absolute;
+    top: 0px;
+    right: 5px;
+}
+
+.scr-img{
+    position: relative;
+}
+.section_reveret  {
+  min-height: 500px;
+    background-color: #ffffff;
+}
+.section-upload-img {
+margin-top: 20px;
+}
+
+.img-default {
+    width: 100%;
+    height: 120px;
+
+}
+
+.img-def {
+    left: 45%;
+}
+.fa-laptop:before {
+    content: "\f109";
+    font-size: 30px;
+}
+
+.fa-mobile-phone:before,
+.fa-mobile:before,
+.fa-tablet:before {
+    font-size: 30px;
+}
+
+.invite {
+    padding-top: 50px;
+    padding-top: 50px;
+}
+.members-email,.members-icon {
+    padding: 20px 0;
+}
+
+.btn-circle.btn-lg {
+    float: right;
+    margin-top: -36px;
+}
+
+.close-list {
+    top: -5px;
+    right: 30px;
+}
+
+.ibox-title {
+    border-width: 0;
+}
+
+#id_new_window {
+    vertical-align: middle;
+    margin-top: 0;
+    margin-right: 3px;
+}
+
+.project-ul > li > a {
+    padding-top : 15px;
+}
+
+.project-ul > li > a.active {
+    background-color: #fff;
+}
+
+.screen-img-wrap {
+    width: 88px;
+    margin-right: 10px;
+    display: inline-block;
+}
+.screen-img-wrap img {
+    width: 100%;
+}
+.screen-img-wrap a {
+    right: 2px;
+    top: 0;
+}
+.screen-imgs-container {
+    height: auto;
+}

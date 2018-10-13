@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 from .base import *  # noqa
+from celery.schedules import crontab
 
 
 # Quick-start development settings - unsuitable for production
@@ -43,13 +44,14 @@ INSTALLED_APPS = [
 EXTERNAL_APPS = [
     "widget_tweaks",
     'paypal.standard.ipn',
+    'social_django',
 ]
 
 PROJECT_APPS = [
     "core",
     "accounts",
     "projects",
-    # "threads",
+    "threads",
     "payments",
 ]
 
@@ -64,6 +66,8 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "social_django.middleware.SocialAuthExceptionMiddleware",
+    'core.middleware.activeuser_middleware.active_user_middleware'
 ]
 
 # Django Debug Toolbar settings
@@ -97,6 +101,8 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "core.context_processors.get_projects",
+                "social_django.context_processors.backends",
+                "social_django.context_processors.login_redirect",
             ],
         },
     },
@@ -163,8 +169,29 @@ STATIC_ROOT = BASE_DIR.child("collectstatic")
 MEDIA_ROOT = BASE_DIR.child("media")
 MEDIA_URL = '/media/'
 
+
+# Redis settings
+REDIS_URL = "redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_PATH}".format(
+    REDIS_HOST=ENV.str("REDIS_HOST", "127.0.0.1"),
+    REDIS_PORT="6379",
+    REDIS_PATH="0",
+)
+
+# Celery settings
+# http://docs.celeryproject.org/en/latest/django/first-steps-with-django.html
+
+CELERY_BROKER_URL = REDIS_URL
+CELERY_BEAT_SCHEDULE = {
+    'check_user_subscription': {
+        'task': 'core.tasks.check_user_subscription',
+        'schedule': crontab(minute=59, hour=23)
+    }
+}
+
+
 # Email settings
 EMAIL_BASE_TEMPLATE = "email/base.html"
+DOWNLOAD_BASE_TEMPLATE = "base_download.html"
 EMAIL_HOST = ENV.str("EMAIL_HOST", "localhost")
 EMAIL_PORT = ENV.int("EMAIL_PORT", 25)
 EMAIL_BACKEND_CONFIG = ENV.str("EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend")
@@ -172,8 +199,33 @@ DEFAULT_FROM_EMAIL = "from@example.com"
 
 SITE_NAME = "PM"
 BASE_URL = ENV.str("BASE_URL", "http://localhost:8000")
-LOGIN_REDIRECT_URL = "/accounts/dashboard/"
+LOGIN_REDIRECT_URL = "/"
 
 # Django PayPal settings
 PAYPAL_RECEIVER_EMAIL = ENV.str("PAYPAL_RECEIVER_EMAIL", None)
 PAYPAL_TEST = ENV.str("PAYPAL_TEST", True)
+CART_SESSION_ID = 'cart'
+
+# Social Auth
+SOCIAL_AUTH_FACEBOOK_KEY = ENV.int("SOCIAL_AUTH_FACEBOOK_KEY", 199947097440935)
+SOCIAL_AUTH_FACEBOOK_SECRET = ENV.str("SOCIAL_AUTH_FACEBOOK_SECRET", "560593e1d7e86fdee6ba0cb121ad9729")
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = ENV.str("SOCIAL_AUTH_GOOGLE_OAUTH2_KEY", None)
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = ENV.str("SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET", "Iu7_-la7rdyuOjQKw8ao3dKL")
+
+AUTHENTICATION_BACKENDS = (
+    'social_core.backends.facebook.FacebookOAuth2',
+    'social_core.backends.google.GoogleOAuth2',
+    'django.contrib.auth.backends.ModelBackend',
+)
+
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'default-cache'
+    }
+}
+
+USER_ONLINE_TIMEOUT = 300
+USER_LASTSEEN_TIMEOUT = 60 * 60 * 24 * 7

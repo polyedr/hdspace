@@ -14,6 +14,7 @@ __all__ = (
     "UpdateProfileForm",
     "ChangePasswordForm",
     "AvatarUploadForm",
+    "CreateTeamForm",
 )
 
 
@@ -152,3 +153,22 @@ class ChangePasswordForm(forms.Form):
 
 class AvatarUploadForm(forms.Form):
     avatar = forms.ImageField()
+
+
+class CreateTeamForm(forms.Form):
+    first_name = forms.CharField(label="First Name")
+    last_name = forms.CharField(label="Last Name")
+    email = forms.EmailField()
+    password = forms.CharField(
+        strip=False,
+        widget=forms.PasswordInput,
+        help_text=password_validation.password_validators_help_text_html(),
+    )
+    username = forms.CharField(label="User Name")
+    position = forms.CharField()
+    charge = forms.CharField(label="Hourly Charge")
+    time_log = forms.CharField(label="Time Log")
+    description = forms.CharField(widget=forms.Textarea)
+    available = forms.BooleanField(required=False)
+    avatar = forms.ImageField(label="Profile Image")
+    logo = forms.ImageField()

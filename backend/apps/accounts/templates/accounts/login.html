@@ -22,6 +22,7 @@
       </div>
     </div>
     <div class="col-md-5 login-wrapper">
+
       <h2>Login to your account</h2>
       <form action="{% url 'accounts:login' %}" method="POST">
         <div class="form-group">
@@ -40,6 +41,14 @@
       <p class="tip-block">
         <a href="{% url 'accounts:forgot_password' %}">Forgot password?</a>
       </p>
+       <div class="row ">
+        <div class="col-lg-6 ">
+         <a class="btn facebook-btn" href="{% url 'social:begin' 'facebook' %}"><i class="fa fa-facebook text-navy"></i> Facebook</a>
+        </div>
+      <div class="col-lg-6">
+        <a class="btn google-btn" href="{% url 'social:begin' 'google-oauth2' %}"><i class="fa fa-google text-navy"></i> Google</a>
+      </div>
+    </div>
     </div>
   </div>
 </div>

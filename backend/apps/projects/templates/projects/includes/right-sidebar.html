@@ -1,0 +1,145 @@
+{% load widget_tweaks %}
+<div id="right-sidebar">
+  <div class="sidebar-container">
+
+    <ul class="nav nav-tabs navs-4">
+
+      <li class="active"><a data-toggle="tab" href="#tab-1">
+        Chat
+      </a></li>
+      <li><a data-toggle="tab" href="#tab-2">
+        Projects
+      </a></li>
+      <li><a data-toggle="tab" href="#tab-3">
+        Activity
+      </a></li>
+      <li><a data-toggle="tab" href="#tab-4">
+        Invite
+      </a></li>
+    </ul>
+
+    <div class="tab-content">
+
+      <div id="tab-1" class="tab-pane active">
+
+        <div class="sidebar-title">
+          <h3 data-toggle="modal" data-target="#chatMembers"><i class="fa fa-comments-o"></i> {{ project_members.count }} participants</h3>
+          <button id="addTask" class="btn btn-primary btn-circle btn-lg" type="button" data-toggle="modal" data-target="#addTaskModal" title="Add project task"><i class="fa fa-plus"></i></button>
+        </div>
+
+        <div class="row">
+         <div class="col-lg-12">
+            <div class="ibox chat-view">
+              <div class="ibox-title">
+                <span class="text-green">{{ project.name }}</span> project chat room
+              </div>
+              <div class="ibox-content">
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="chat-discussion" data-id="{{request.user.pk}}" data-username="{{request.user.username}}" data-path="{{ thread.get_absolute_url }}" data-chat="{{ thread.get_chat_url }}">
+
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-lg-12">
+                    <div class="chat-message-form">
+                      <div class="form-group">
+                          <textarea class="form-control message-input write_msg" name="message" placeholder="Enter message text"></textarea>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+         </div>
+        </div>
+      </div>
+      <div id="tab-2" class="tab-pane">
+
+        <div class="sidebar-title">
+          <h3><i class="fa fa-cube"></i> Latest projects</h3>
+          <small><i class="fa fa-tim"></i> You have {{ projects|length }} project{{ projects|length|pluralize:",s" }}.</small>
+        </div>
+
+        <ul class="sidebar-list">
+          <li>
+            <a href="#">
+              <div class="small pull-right m-t-xs">9 hours ago</div>
+              <h4>Business valuation</h4>
+              It is a long established fact that a reader will be distracted.
+
+              <div class="small">Completion with: 22%</div>
+              <div class="progress progress-mini">
+                <div style="width: 22%;" class="progress-bar progress-bar-warning"></div>
+              </div>
+              <div class="small text-muted m-t-xs">Project end: 4:00 pm - 12.06.2014</div>
+            </a>
+          </li>
+        </ul>
+      </div>
+      <div id="tab-3" class="tab-pane">
+
+        <div class="sidebar-title">
+          <h3><i class="fa fa-clock-o"></i> Project Activity</h3>
+        </div>
+        <ul class="sidebar-list">
+          {% for task in tasks %}
+            <li>
+              <a href="#">
+                <h4>{{ task.title }}</h4>
+                <span>{{ task.description }}</span>
+                <div class="small text-muted m-t-xs">Created: {{ task.created }}</div>
+              </a>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+      <div id="tab-4" class="tab-pane">
+        <div class="sidebar-title">
+          <h3><i class="fa fa-envelope" aria-hidden="true"></i> Invite People to project</h3>
+        </div>
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="ibox-content text-center invite">
+              <form id="inviteUserForm" action="" method="post">
+                {% for field in form %}
+                  <div class="form-group row">
+                    <div class="col-lg-12 ">
+                      {{ field|add_class:"form-control" }}
+                      <p class="text-danger validate_error">This field is required.</p>
+                    </div>
+                  </div>
+                {% endfor %}
+                <div class="form-group">
+                  <div class="col-lg-12">
+                    <button id="inviteUser" class="btn btn-primary" type="submit" data-url="{% url 'projects:invite' pk=project.pk %}">Invite</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+<div id="msg_form" class="chat-message left hide">
+  <span class="message-avatar-wrap online">
+    <img class="message-avatar" src="" alt="" >
+  </span>
+  <div class="message">
+    <a class="message-author" href="#"> </a>
+    <span class="message-date"></span>
+    <span class="message-content"></span>
+  </div>
+</div>
+
+<li id="projectActivityItem" class="hide">
+  <a href="#">
+    <h4></h4>
+    <span></span>
+    <div class="small text-muted m-t-xs">Created: <span></span></div>
+  </a>
+</li>

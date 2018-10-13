@@ -4,6 +4,7 @@ from core.utils import send_email, build_absolute_url
 
 __all__ = (
     "send_email_address_confirmation",
+    "send_forgot_password_request",
 )
 
 

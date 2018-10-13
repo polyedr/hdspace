@@ -7,6 +7,7 @@ from core.models import TimeStampedModel
 
 __all__ = (
     "Package",
+    "UserSubscription",
 )
 
 
@@ -35,6 +36,9 @@ class UserSubscription(TimeStampedModel):
     active = models.BooleanField(default=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     package = models.ForeignKey(Package, on_delete=models.CASCADE)
+    paid_projects = models.IntegerField(default=0)
+    start_date = models.DateField(auto_now_add=True)
+    end_date = models.DateField(auto_now_add=True)
 
     def __str__(self):
         return self.user.username

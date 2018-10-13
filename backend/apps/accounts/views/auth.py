@@ -6,6 +6,8 @@ from django.db.models import Q
 from django.contrib import messages
 from django.contrib.auth.models import User
 
+from projects.models import ProjectInvitation, ProjectMember
+from threads.models import Thread, UserThread
 from accounts.mixins import AnonymousRequiredMixin
 from accounts.models import Profile
 from accounts.forms import *  # noqa
@@ -45,7 +47,7 @@ class LoginView(AnonymousRequiredMixin, SEOViewMixin, TemplateView):
             if not user.is_active:
                 return JsonResponse(status=400, data={"msg": "Please activate your account."})
 
-            login(request, user)
+            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
             return JsonResponse({"redirect_url": reverse("projects:dashboard")})
         else:
             return JsonResponse(status=400, data={"msg": "Invalid username or password."})
@@ -70,7 +72,20 @@ class RegistrationView(AnonymousRequiredMixin, SEOViewMixin, TemplateView):
             user.profile.email_confirmation_token = Profile.generate_token()
             user.is_active = False
             user.save()
+            invitations = ProjectInvitation.objects.filter(email=user.email)
+            for invitation in invitations:
+                if invitation.is_active:
+                    ProjectMember.objects.create(
+                        project=invitation.project,
+                        user=user,
+                    )
 
+                    thread = Thread.objects.get(project=invitation.project)
+                    UserThread.objects.create(
+                        thread=thread,
+                        user=user,
+                    )
+                    invitation.delete()
             emails.send_email_address_confirmation(
                 email=user.email,
                 email_confirmation_path=user.profile.get_confirmation_url(),

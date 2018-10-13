@@ -8,6 +8,4 @@
         location.href = window.plan;
     });
 
-
-
 })();

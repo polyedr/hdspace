@@ -1,75 +1,123 @@
 {% extends "base.html" %}
 {% load staticfiles %}
-
-{% block underheader %}
-
-
-<div class="row wrapper border-bottom white-bg page-heading" xmlns="http://www.w3.org/1999/html">
-  <div class="col-sm-4">
-    <h2>All Projects</h2>
-  </div>
-  <div class="col-sm-8">
-    <div class="title-action">
-      <a href="" class="btn btn-primary">Your Cart</a>
-      <a href="" class="btn btn-primary" data-toggle="modal" data-target="#myModal">Create a project</a>
-    </div>
-  </div>
-</div>
-
-
-{% endblock %}
-
+{% load checked %}
 
 {% block content %}
 {% include "projects/includes/modal.html" with form=form %}
 
-<div class="row">
-  <div class="col-sm-12">
-    <div class="ibox float-e-margins">
-      <div class="ibox-content m-t-md">
+<div class="wrapper wrapper-content animated fadeInRight">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="ibox float-e-margins">
+        <div class="ibox-title">
+          <div class="row">
+            <div class="col-lg-8 text-center">
+              <h5 class="text-navy ">All Projects</h5>
 
-        <table class="table table-striped">
-          <thead>
-          <tr>
-            <th></th>
-            <th>Project Status</th>
-            <th>Project Name</th>
-            <th>Total Pages</th>
-            <th>All Pages</th>
-            <th>Actions</th>
-          </tr>
-          </thead>
-          <tbody>
-          {% for project in projects %}
-            <tr>
-              <td><input type="checkbox" value="{{project.id}}"/></td>
-              <td class="text-green">{{project.project.status}}</td>
-              <td><a href="{% url 'projects:project' pk=project.project.id %}">{{ project.project.name }}</a></td>
-              <td><span class="line">5,3,2,-1</span></td>
-              <td>{{ project.user.get_full_name }}</td>
-              <td class="text-navy">
-                <i class="fa fa-credit-card"></i>
-                <a href="{% url 'projects:delete-project' pk=project.project.id %}"><i class="fa fa-trash"></i></a>
-              </td>
-            </tr>
-          {% endfor %}
-          </tbody>
-        </table>
-        <div class="col-sm-12">
-          <div class="title-action">
-            <button class="btn btn-primary">Checkout all selected projects</button>
+            </div>
+            <div class="col-lg-4">
+              <div class="ibox-tools">
+
+                <a href="{% url 'payments:cart' %}" class="btn btn-primary"><i class="fa fa-shopping-cart"
+                                                                               aria-hidden="true"></i>
+                  Your Cart</a>
+                <a href="" class="btn btn-primary" data-toggle="modal" data-target="#myModal">Create a project</a>
+
+              </div>
+            </div>
           </div>
         </div>
+
+        <div class="ibox-content">
+          <div class="col-lg-4">
+            <div class="form-group">
+              <div class="input-group">
+                <input type="text" class="form-control">
+                <span class="input-group-btn">
+                  <button type="button" class="btn btn-primary">Go!</button>
+                </span>
+              </div>
+
+            </div>
+          </div>
+          <table class="table" id="projectsList">
+            <thead class="thead-dark">
+            <tr>
+              <th></th>
+              <th>Project Status</th>
+              <th>Project Name</th>
+              <th>Total Pages</th>
+              <th>All Pages</th>
+              <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for project in projects %}
+            <tr>
+              <td>
+                {% if request.user == project.user %}
+                  <input type="checkbox" value="{{project.id}}" {% if project.id|checked:cart %}checked{% endif %}
+                           class="checkProject"/>
+                {% endif %}
+              </td>
+              <td class="text-green">{{project.status}}</td>
+              <td><a href="{% url 'projects:project' pk=project.id %}">{{ project.name }}</a></td>
+              <td><span class="line">{{ project.number_of_screens }}</span></td>
+              <td>
+                {% for screen in project.projectscreen_set.all %}
+                  <a href="{{ screen.get_preview_url }}"><img class="img-circle" src="{{ screen.get_image }}" /></a>
+                {% endfor %}
+              </td>
+              <td class="text-navy">
+                {% if request.user == project.user %}
+                  {% if project.status == "paid" %}
+                    <a href="{% url 'projects:download' pk=project.id %}" ><i class="fa fa-download"></i></a>
+                  {% else %}
+                    <a href="{% url 'payments:project_pay' %}" class="payProject" data-project_id="{{project.id}}"><i class="fa fa-credit-card" ></i></a>
+                  {% endif %}
+                    <a data-href="{% url 'projects:delete_project' %}" data-project_id="{{ project.id }}" class="delete_project"><i class="fa fa-trash"></i></a>
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="title-action p-0">
+                <a href="{% url 'payments:project_pay' %}" class="btn btn-primary">Checkout all selected projects</a>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
 </div>
-
-
-
+<table id="new-projects" class="hide">
+  <tbody>
+    <tr>
+      <td><input type="checkbox" value="" class="checkProject"/></td>
+      <td class="text-green">pending</td>
+      <td><a href=""></a></td>
+      <td><span class="line">0</span></td>
+      <td></td>
+      <td class="text-navy">
+        <a href="{% url 'payments:project_pay' %}" class="payProject" data-project_id=""><i class="fa fa-credit-card"></i></a>
+        <a data-href="{% url 'projects:delete_project' %}" data-project_id="" class="delete_project"><i class="fa fa-trash"></i></a>
+      </td>
+    </tr>
+  </tbody>
+</table>
 {% endblock %}
 
 {% block extra_js %}
+
+<script type="text/javascript">
+    window.cartUrL = "{% url 'payments:add_delete' %}";
+</script>
 
 <script src="{% static 'js/dashboard.js' %}"></script>
 

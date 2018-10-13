@@ -170,7 +170,6 @@ h5 {
 .nav-header {
   padding: 33px 25px;
   background-color: #2f4050;
-  background-image: url("patterns/header-profile.png");
 }
 .pace-done .nav-header {
   transition: all 0.4s;
@@ -3373,10 +3372,10 @@ body.tour-open .animated {
   overflow: hidden;
   position: fixed;
   top: 60px;
-  width: 260px !important;
+  width: 320px !important;
   z-index: 1009;
   bottom: 0;
-  right: -260px;
+  right: -320px;
 }
 #right-sidebar.sidebar-open {
   right: 0;
@@ -3652,7 +3651,7 @@ video {
 }
 .title-action {
   text-align: right;
-  padding-top: 30px;
+
 }
 .ibox-content h1,
 .ibox-content h2,
@@ -3733,6 +3732,8 @@ body.body-small .footer.fixed {
 .table-bordered {
   border: 1px solid #EBEBEB;
 }
+
+}
 .table-bordered > thead > tr > th,
 .table-bordered > thead > tr > td {
   background-color: #F5F5F6;
@@ -3756,7 +3757,7 @@ body.body-small .footer.fixed {
 .table > thead > tr > td,
 .table > tbody > tr > td,
 .table > tfoot > tr > td {
-  border-top: 1px solid #e7eaec;
+  border-bottom: 1px solid #e7eaec;
   line-height: 1.42857;
   padding: 8px;
   vertical-align: top;
@@ -3946,6 +3947,9 @@ code {
   border-style: solid solid none;
   border-width: 1px 0;
 }
+.imbox-content-height {
+  height: 171px;
+}
 .ibox-footer {
   color: inherit;
   border-top: 1px solid #e7eaec;
@@ -3996,7 +4000,6 @@ table.table-mail tr td {
   margin: 0 0 7px;
   padding: 0;
   text-overflow: ellipsis;
-  float: left;
 }
 .ibox-title .label {
   float: left;
@@ -8592,14 +8595,15 @@ body.md-skin {
 
 .screen-img {
     width: 80px;
-    height: 90px;
+    height: 120px;
     margin-bottom: 5px;
     margin-right: 5px;
+    cursor: pointer;
 }
 
 .edited-image{
-   width: 650px;
-   height: 500px;
+   width: 674px;
+   height: 400px;
 }
 .pag_menu {
   padding: 13px 20px 8px 20px;
@@ -8687,4 +8691,41 @@ padding: 24px 20px 10px 25px;
 
 .pad {
     padding: 0px;
+}
+
+.thead-dark {
+  background-color: #f7f7f7 !important;
+}
+.pading {
+  padding: 0;
+}
+.img-Color-transfer {
+  width: 81%!important;
+}
+.facebook-btn {
+  width: 100%;
+
+  border: none;
+  margin-bottom: 4px;
+  background-color: #ffffff;
+}
+
+.google-btn {
+  width: 100%;
+
+   border: none;
+    background-color: #ffffff;
+}
+
+.media-img {
+    max-width: 60px;
+    max-height: 60px;
+}
+
+.fa{
+  cursor: pointer;
+}
+
+.text-green{
+  color: #1ab394;
 }

@@ -1,14 +1,14 @@
-from projects.models import ProjectMember
+from projects.models import Project
 
 
 def get_projects(request):
     projects_list = []
     if request.user.is_authenticated:
-        projects = ProjectMember.objects.filter(user=request.user, is_active=True)
+        projects = Project.objects.filter(user=request.user)
         for project in projects:
             new_project = dict(
-                name=project.project.name,
-                url=project.project.get_project_url()
+                name=project.name,
+                url=project.get_project_url()
             )
             projects_list.append(new_project)
     return {

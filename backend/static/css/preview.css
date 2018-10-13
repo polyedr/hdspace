@@ -1,0 +1,7 @@
+.existed {
+    opacity: 0;
+}
+
+#screenImage img {
+    cursor: pointer;
+}

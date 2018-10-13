@@ -1,12 +1,14 @@
 from django import forms
 
-from .models import ScreenEvent
+from .models import ScreenEvent, ProjectMember, ProjectScreen
 
 __all__ = (
     "CreateProjectForm",
     "ScreenUploadForm",
     "ScreenEventForm",
     "PositionUpdateForm",
+    "ProjectInvitationForm",
+    "AddTaskForm",
 )
 
 
@@ -17,10 +19,14 @@ class CreateProjectForm(forms.Form):
     )
 
 
-class ScreenUploadForm(forms.Form):
+class ScreenUploadForm(forms.ModelForm):
     image = forms.ImageField(
         label="Upload New Screen",
     )
+
+    class Meta:
+        model = ProjectScreen
+        fields = ('image',)
 
 
 class ScreenEventForm(forms.Form):
@@ -34,8 +40,35 @@ class ScreenEventForm(forms.Form):
     y = forms.IntegerField(label="", widget=forms.HiddenInput())
     width = forms.IntegerField(label="", widget=forms.HiddenInput())
     height = forms.IntegerField(label="", widget=forms.HiddenInput())
+    link_screen = forms.IntegerField(label="", widget=forms.HiddenInput(), required=False)
 
 
 class PositionUpdateForm(forms.Form):
     x = forms.IntegerField()
     y = forms.IntegerField()
+
+
+class ProjectInvitationForm(forms.Form):
+    name = forms.CharField(
+        label="",
+        widget=forms.TextInput(attrs={"placeholder": "Name"}))
+    email = forms.EmailField(
+        label="",
+        widget=forms.TextInput(attrs={"placeholder": "Email address"}),
+    )
+
+
+class AddTaskForm(forms.Form):
+
+    def __init__(self, project, *args, **kwargs):
+        super(AddTaskForm, self).__init__(*args, **kwargs)
+        self.fields['owner'] = forms.ChoiceField(
+            choices=[("", "Select task owner")] + [(member.user.id, str(member.user.username))
+                                                   for member in ProjectMember.objects.filter(project=project)]
+        )
+
+    title = forms.CharField(widget=forms.TextInput(attrs={"placeholder": "Title"}))
+
+    description = forms.CharField(widget=forms.Textarea(attrs={"placeholder": "Description"}))
+
+    owner = forms.ChoiceField(widget=forms.Select(), required=True)
