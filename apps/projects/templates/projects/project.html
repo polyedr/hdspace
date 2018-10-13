@@ -8,165 +8,201 @@
 
 {% endblock %}
 
-{% block underheader %}
+{% block rightsidetoggle %}
+  <a class="right-sidebar-toggle">
+    <i class="fa fa-tasks"></i>
+  </a>
+{% endblock rightsidetoggle %}
 
-
-<div class="row wrapper border-bottom white-bg page-heading">
-  <div class="col-sm-4">
-    <h2>Project</h2>
-  </div>
-</div>
-
-
+{% block rightsidebar %}
+  {% include "projects/includes/right-sidebar.html" with form=invite_form project=project project_members=project_members projects=projects %}
 {% endblock %}
+
 {% block content %}
 <div class="row">
   <div class="col-lg-12">
-    <div class="col-lg-3 m-t-md">
-      <div class="ibox-content">
-        <h3 class="text-center">Upload project screen</h3>
+    <div class="row">
+      <div class="col-lg-3 m-t-md">
+        <div class="ibox-content">
+          <h3 class="text-center text-navy">Upload project screen</h3>
+        </div>
       </div>
-    </div>
-    <div class="col-lg-9 m-t-md">
-      <div class="ibox-content">
-        <h3 class="text-center">{{project.name}}</h3>
+      <div class="col-lg-9 m-t-md">
+        <div class="ibox-content">
+          <h3 class="text-center text-navy">{{project.name}}</h3>
+        </div>
       </div>
     </div>
   </div>
 </div>
 <div class="row">
   <div class="col-lg-12">
-    <div class="col-lg-3">
-      <div class="ibox-content">
-        <div class="card-body">
-          <form id="addScreenForm" action="{% url 'projects:add_screen' pk=project.pk %}" method="post"
-                enctype="multipart/form-data">
-            {% csrf_token %}
+    <div class="row">
+      <div class="col-lg-3">
+        <div class="ibox-content">
+          <div class="card-body">
             <div class="col-lg-12">
-              <div class="img-default col-md-2 col-md-offset-3 add-screen">
+              <div class="img-default col-md-2  add-screen js-upload-photos">
                 <img src="{% static 'img/upload.png' %}" class="img-def"/>
               </div>
             </div>
-            {% for field in form %}
-            <div class="form-group row">
-              <div class="col-lg-9">
-                {{ field|add_class:"form-control hide" }}
+            <div class="col-lg-12">
+              <div class="progress hide">
+                <div class="progress-bar" role="progressbar" style="width: 0%;">0%</div>
               </div>
             </div>
-            {% endfor %}
-          </form>
-        </div>
-      </div>
-    </div>
-    <div class="col-lg-9">
-      <div class="ibox-content">
-        <div class="card card-outline-secondary">
-          <div class="card-body">
-            {% for screen in screens %}
-              <a href="#">
-              <img class="w-100 screen-img"
-                   src="{{screen.image.url}}" data-event_url="{% url 'projects:screen_events' pk=screen.pk %}"></a>
-            {% endfor %}
+            <div class="form-group row">
+              <div class="col-lg-9">
+                <input id="fileupload" type="file" name="image" multiple
+                 class="hide"
+                 data-url="{% url 'projects:add_screen' %}"
+                 data-form-data='{"csrfmiddlewaretoken": "{{ csrf_token }}", "projectId": "{{ project.pk }}"}'>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </div>
-</div>
 
-<div class="row">
-  <div class="col-lg-12">
-    <div class="col-lg-8  m-t-md">
-        <ul class="nav nav-tabs project-ul">
-          <li class="nav-item">
-            <a class="nav-link active" href="#"><i class="fa fa-laptop" aria-hidden="true"></i></a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#"><i class="fa fa-tablet" aria-hidden="true"></i></a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#"><i class="fa fa-mobile" aria-hidden="true"></i></a>
-          </li>
-        </ul>
-    </div>
-    <div class="col-lg-4 m-t-md">
-      <div class="ibox-content pag_menu">
-        <h3 class="text-center">{{project.name}}</h3>
-      </div>
-    </div>
-  </div>
-  <div class="col-lg-12">
-    <div class="col-lg-8">
-      <div class="ibox-content ">
-        <div class="col-lg-3">
-          <span class="glyphicon left1 glyphicon-repeat"></span>
-          <span class="glyphicon  glyphicon-repeat"></span>
+      <div class="col-lg-9">
+        <div class="col-lg-12 ibox-content imbox-content-height screen-imgs-container">
+          <div class="card card-outline-secondary">
+            <div class="card-body image-list-body">
+              {% for screen in screens %}
+                <div class="screen-img-wrap scr-img">
+                  <a data-href="{% url 'projects:delete_screen' %}" data-screen-id={{screen.pk}} type="button" class="close close-list screen-delete"
+                     aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </a>
+                  <img class="w-100 screen-img"
+                       src="{{screen.image.url}}" data-preview_url="{{screen.get_preview_url}}"
+                       data-screen-save-url="{{ screen.get_screen_url }}"
+                       data-event_url="{% url 'projects:screen_events' pk=screen.pk %}">
+                </div>
+              {% endfor %}
+            </div>
+          </div>
         </div>
-        <div class="col-lg-6">
-          <span class="text-center"></span>
-        </div>
-         <span class="text-center">{{project.name}}</span>
-      </div>
-    </div>
-    <div class="col-lg-4">
-      <div class="ibox-content pag_menu">
-        <h3 class="text-center">{{project.name}}</h3>
       </div>
     </div>
   </div>
 </div>
-<div class="row">
-  <div class="col-lg-12">
-    <div class="col-lg-8">
-      <div class="ibox-content ">
-        <div id="screenImage" class="screenContainer">
-          <img src="{{screens.0.image.url}}" id="image" class="edited-image" border="0"/>
-          {% for screen_event in screen_events %}
-          <div
-                  class="existed"
-                  style='top:{{screen_event.y}}px;
-              width:{{screen_event.width}}px;
-              left:{{screen_event.x}}px;
-              height:{{screen_event.height}}px;'
-                  data-href="{{screen_event.href}}"
-                  data-x="{{screen_event.x}}"
-                  data-y="{{screen_event.y}}"
-                  data-width="{{screen_event.width}}"
-                  data-height="{{screen_event.height}}"
-                  data-event="{{screen_event.event}}"
-                  data-link_to="{{screen_event.link_to}}"
-                  data-new_window="{{screen_event.new_window}}"
-                  data-screen_event_id="{{screen_event.pk}}"
-                  data-delete_url="{{screen_event.get_event_delete_url}}"
-                  data-update_event_position="{{screen_event.get_update_event_position_url}}"
-          >
-            <div class="ui-resizable-handle ui-resizable-ne"></div>
-            <div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se"
-            ></div>
-            <div class="ui-resizable-handle ui-resizable-sw"></div>
-            <div class="ui-resizable-handle ui-resizable-nw"></div>
+<div class="section-upload-img">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-lg-8">
+        <nav class="border-bottom">
+          <ul class="nav nav-tabs project-ul">
+            <li class="nav-item">
+              <a class="nav-link active" href="#"><i class="fa fa-laptop" aria-hidden="true"></i></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#"><i class="fa fa-tablet" aria-hidden="true"></i></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#"><i class="fa fa-mobile" aria-hidden="true"></i></a>
+            </li>
+          </ul>
+        </nav>
+        <div class="section_reveret w-100">
+          <div class="ibox-content border-bottom">
+
+            <div class="row ">
+              <div class="col-lg-3">
+                <span class="glyphicon left1 glyphicon-repeat"></span>
+                <span class="glyphicon  glyphicon-repeat"></span>
+              </div>
+              <div class="col-lg-6 text-center">
+                <span class=" text-navy">{{project.name}}</span>
+              </div>
+              <div class="col-lg-3 text-center">
+                {% if screen.get_image %}
+                  <a href="{{screen.get_preview_url}}" id="previewBtn" class="btn btn-primary">Preview</a>
+                {% endif %}
+                <!--<i class="fa fa-check-circle-o text-center text-navy" aria-hidden="true"> Align Elements</i>-->
+              </div>
+            </div>
           </div>
-          {% endfor %}
+          <div id="screenImage" class="screenContainer">
+          {% if screen.get_image %}
+            <img src="{{screens.0.image.url}}" id="image" class="edited-image" border="0"/>
+            {% for screen_event in screen_events %}
+            <div
+                    class="existed"
+                    style='top:{{screen_event.y}}px;
+                width:{{screen_event.width}}px;
+                left:{{screen_event.x}}px;
+                height:{{screen_event.height}}px;'
+                    data-href="{{screen_event.href}}"
+                    data-x="{{screen_event.x}}"
+                    data-y="{{screen_event.y}}"
+                    data-width="{{screen_event.width}}"
+                    data-height="{{screen_event.height}}"
+                    data-event="{{screen_event.event}}"
+                    data-link_to="{{screen_event.link_to}}"
+                    data-new_window="{{screen_event.new_window}}"
+                    data-screen_event_id="{{screen_event.pk}}"
+                    data-delete_url="{{screen_event.get_event_delete_url}}"
+                    data-update_event_position="{{screen_event.get_update_event_position_url}}"
+            >
+              <div class="ui-resizable-handle ui-resizable-ne"></div>
+              <div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se"
+              ></div>
+              <div class="ui-resizable-handle ui-resizable-sw"></div>
+              <div class="ui-resizable-handle ui-resizable-nw"></div>
+            </div>
+            {% endfor %}
+          {% endif %}
+        </div>
         </div>
       </div>
-    </div>
-    <div class="col-lg-4 el-div">
-      <div class="ibox-content elements">
-        <p class="elements-p" >Elements</p>
-        <hr/>
-        <h3 class="text-center">Click element to activate</h3>
-      </div>
-    </div>
-    <div class="col-lg-4 el-div">
-      <div class="ibox-content">
-          <p class="elements-p" >Prediction Table</p>
+
+
+      <div class="col-lg-4">
+        <div class="ibox-content elements">
+          <p class="elements-p text-navy text-left">Page Menu</p>
           <hr/>
-          <h3 class="text-center">Click element to activate</h3>
+          <h3 class="text-center text-navy">Click element to activate</h3>
+        </div>
+
+      </div>
+      <div class="col-lg-4">
+        <div class="ibox-content elements">
+          <p class="elements-p text-navy text-left">Elements</p>
+          <hr/>
+          <h3 class="text-center text-navy">Click element to activate</h3>
+        </div>
+
+      </div>
+      <div class="col-lg-4">
+        <div class="ibox-content elements">
+          <p class="elements-p text-navy text-left">Prediction Table</p>
+          <hr/>
+          <h3 class="text-center text-navy">Click element to activate</h3>
+        </div>
+
+      </div>
+      <div class="col-lg-4">
+        <div class="ibox-content elements">
+          <div class="row">
+            <div class="col-lg-6 pading">
+              <h3 class="text-center text-navy">Layout Variations</h3>
+               <hr/>
+            </div>
+            <div class="col-lg-6 pading border-right">
+              <h3 class="text-center text-navy">Color Transfer</h3>
+
+             <hr/>
+              <div class="img-default img-Color-transfer   ">
+                  <img src="/static/img/upload.png" class="img-def">
+                </div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
 </div>
-
 <div id="adjacent-content">
   <div class="ui-resizable-handle special-index-z ui-resizable-ne"></div>
   <div class="ui-resizable-handle special-index-z ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se"></div>
@@ -174,13 +210,25 @@
   <div class="ui-resizable-handle special-index-z ui-resizable-nw"></div>
 </div>
 
-{% include "projects/includes/screen.html" with form=screen_form  url=screen.get_screen_url %}
+<div id="screen-image-content" class="screen-img-wrap scr-img hide">
+  <a data-href="{% url 'projects:delete_screen' %}" data-screen-id="" type="button" class="close close-list screen-delete"
+     aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </a>
+  <img class="w-100 screen-img" src="" data-preview_url="" data-screen-save-url="" data-event_url="">
+</div>
+
+{% include "projects/includes/screen.html" with form=screen_form  url=screen.get_screen_url select_screens=screens %}
+{% include "projects/includes/chat-members.html" with project_members=project_members %}
+{% include "projects/includes/add-task.html" with form=add_task_form  project_members=project_members project_id=project.id %}
 {% endblock %}
 
 {% block extra_js %}
 <script type="text/javascript">
     window.hotspot = "{% static 'img/hotspot-corner.png' %}";
 </script>
+<script src="{% static 'js/moment.min.js' %}"></script>
+<script src="{% static 'js/plugins/jquery.fileupload.js' %}"></script>
 <script src="{% static 'js/project.js' %}"></script>
 
 {% endblock %}

@@ -1,5 +1,9 @@
 from functools import wraps
 
+__all__ = (
+    "cached_property",
+)
+
 
 def cached_property(func):
     cache_name = "_{}".format(func.__name__)

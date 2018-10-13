@@ -28,11 +28,27 @@ services:
     - "1025:1025"
     - "8025:8025"
 
+  redis:
+    image: redis:3.2
+    volumes:
+      - redis:/data
+
+  celery:
+    extends: project_app
+    depends_on:
+      - db
+      - redis
+    command: ./wait-for-it.sh db:5432 -- celery -A project worker -l info
+    environment:
+      C_FORCE_ROOT: "1"
+
   project:
     extends: project_app
     depends_on:
       - db
       - mailhog
+      - redis
+      - celery
     command: ./wait-for-it.sh db:27017 -- python manage.py runserver 0:8000
     ports:
       - "8000:8000"
@@ -44,3 +60,4 @@ services:
 
 volumes:
   db:
+  redis:

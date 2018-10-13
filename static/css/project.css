@@ -136,3 +136,38 @@ p.tip-login a {
 .profile-element .dropdown-toggle {
     background-color: transparent!important;
 }
+
+.left .message-avatar-wrap {
+    float: left;
+    margin-right: 10px;
+    position: relative;
+}
+
+.right.message-avatar-wrap {
+    float: right;
+    margin-left: 10px;
+    position: relative;
+}
+
+.message-avatar-wrap .message-avatar {
+    margin-right: 0 !important;
+    margin-left: 0 !important;
+}
+
+.message-avatar-wrap:after {
+    content: '';
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    right: -2px;
+    bottom: -2px;
+    border-radius: 100%;
+}
+
+.message-avatar-wrap.online:after {
+    background-color: #6db237;
+}
+
+.message-avatar-wrap.offline:after {
+    background-color: #dbdbdb;
+}

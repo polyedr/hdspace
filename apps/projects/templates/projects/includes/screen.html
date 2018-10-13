@@ -11,11 +11,21 @@
             {% csrf_token %}
             {% for field in form.visible_fields %}
               <div class="form-group">
+                {% if field.name != "new_window" %}
+                  {{ field|add_class:"form-control" }}
+                {% else %}
+                  {{ field }}
+                {% endif %}
                 <label for="id_{{ field.name }}">{{ field.label }}</label>
-                {{ field|add_class:"form-control" }}
                 <p class="text-danger validate_error">This field is required.</p>
               </div>
             {% endfor %}
+            {{form.link_screen}}
+            <div class="project-screens">
+             {% for select_screen in select_screens %}
+              <img class="w-100 project-img" src="{{select_screen.image.url}}" data-screen-id="{{select_screen.id}}" />
+             {% endfor %}
+            </div>
         </div>
         <div class="modal-footer">
           <button type="button" id="modalCloseButton"class="btn btn-white" data-dismiss="modal">Close</button>

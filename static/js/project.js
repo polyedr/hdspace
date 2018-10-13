@@ -1,6 +1,10 @@
 (function () {
     'use strict';
-    
+
+    // messaging
+    var last_pk = 0;
+
+
     var posX = 0;
     var posY = 0;
     var width = 0;
@@ -11,6 +15,8 @@
     var currentBlock;
     var screenEventId;
 
+
+    var saveUrl = $('#modalButton').data('url');
 
     function guid() {
         return Math.random().toString(36).substr(2, 9);
@@ -186,6 +192,7 @@
     toggleErrors(['.validate_error'], false);
 
     $('#screenModal').on('hidden.bs.modal', function () {
+        $('.project-screens img').removeClass('selected-img');
         if (currentBlock) {
             $('div[uuid=' + currentBlock + ']').remove();
         }
@@ -194,10 +201,22 @@
     $('#id_link_to').change(function () {
         var link_to = $(this).val();
         if (link_to === 'external') {
+            $('.project-screens').hide();
             $('#id_event').hide();
+            $('#id_href').show();
+             $('#id_new_window').show();
         } else {
+            $('.project-screens').show();
             $('#id_event').show();
+            $('#id_href').hide();
+            $('#id_new_window').hide();
         }
+    });
+
+    $('.project-img').on('click', function () {
+        $('#id_link_screen').val($(this).data('screen-id'));
+        $('.project-img').removeClass('selected-img');
+        $(this).addClass('selected-img');
     });
 
     $('#modalDeleteButton').on('click', function (e) {
@@ -247,17 +266,19 @@
             $element = $('div[uuid=' + currentBlock + ']');
         }
         if (link_to) {
-            var url = $(this).data('url');
-            var formValid = validateForm([
-                '#id_link_to',
-                '#id_href',
-            ]);
+            if(link_to === 'external'){
+                var validate_list = ['#id_link_to', '#id_href']
+            }else {
+                var validate_list = ['#id_link_to']
+            }
+            var formValid = validateForm(validate_list);
             if (!formValid) {
                 var href = $('#id_href').val();
                 var new_window = $('#id_new_window').is(':checked');
                 var event = $('#id_event').val();
+                var link_screen = $('#id_link_screen').val();
                 $.ajax({
-                    url: url,
+                    url: saveUrl,
                     method: 'POST',
                     data: {
                         csrfmiddlewaretoken: window.csrftoken,
@@ -269,6 +290,7 @@
                         height: height,
                         new_window: new_window,
                         event: event,
+                        link_screen: link_screen,
                         screenEventId: screenEventId,
                     },
                     success: function (response) {
@@ -293,13 +315,16 @@
     $('.screen-img').on('click', function () {
         var url = $(this).data('event_url');
         var src = $(this).attr('src');
+        var previewUrl = $(this).data('preview_url');
+        saveUrl = $(this).data('screen-save-url');
+        $('#previewBtn').attr('href', previewUrl);
+        $('#screenImage .existed').remove();
         $.ajax({
             url: url,
             method: 'GET',
             success: function (response) {
                 if (response) {
                     $('#modalButton').attr('data-url', response.save_url)
-                    $('#screenImage .existed').remove();
                     $('#screenImage img').attr('src', src);
                     $.each(response['screen_events'], function (index, value) {
                         var $eventBox = $('#adjacent-content').clone(true, true);
@@ -320,12 +345,228 @@
         });
     });
     
-    $('.add-screen').on('click', function () {
-        $('#id_image').trigger( 'click' );
-    });
-
-     $('#id_image').change(function () {
-         $('#addScreenForm').submit();
+     $(".js-upload-photos").click(function () {
+        $("#fileupload").click();
      });
 
+     $("#fileupload").fileupload({
+        dataType: 'json',
+        sequentialUploads: true,
+        start: function (e) {
+            $(".progress").removeClass("hide");
+        },
+        stop: function (e) {
+            $(".progress").addClass("hide");
+        },
+        progressall: function (e, data) {
+          var progress = parseInt(data.loaded / data.total * 100, 10);
+          var strProgress = progress + "%";
+          $(".progress-bar").css({"width": strProgress});
+          $(".progress-bar").text(strProgress);
+        },
+        done: function (e, data) {
+          var response = data.result;
+          if (response.is_valid) {
+            var $eventBox = $('#screen-image-content').clone(true, true);
+            $eventBox.removeAttr('id');
+            $eventBox.removeClass('hide');
+            $eventBox.find('img').attr('src', response.url);
+            $eventBox.find('img').attr('data-preview_url', response.preview_url);
+            $eventBox.find('img').attr('data-screen-save-url', response.save_url);
+            $eventBox.find('img').attr('data-event_url', response.event_url);
+            $eventBox.find('a').attr('data-screen-id', response.pk);
+            $(".image-list-body").append($eventBox);
+            $(".progress").addClass("hide");
+            showNotifications("success", response.msg);
+          } else{
+              showNotifications("error", response.msg);
+          }
+        }
+     });
+
+    $('#addTaskButton').on('click', function (e) {
+        e.preventDefault();
+        var url = $(this).data('url');
+        var projectId = $(this).data('project_id');
+        var title = $('#id_title').val();
+        var description = $('#id_description').val();
+        var owner = $('#id_owner').val();
+
+        $.ajax({
+            url: url,
+            method: 'POST',
+            data: {
+                csrfmiddlewaretoken: window.csrftoken,
+                title: title,
+                description: description,
+                owner: owner,
+                projectId: projectId,
+            },
+            success: function (response) {
+                var $activityItem = $('#projectActivityItem').clone(true, true);
+                $activityItem.removeClass('hide');
+                $activityItem.find('h4').text(response.title);
+                $activityItem.find('span').text(response.description);
+                $activityItem.find('div span').text(moment(response.created).format('ll'));
+                $('.sidebar-list').append($activityItem);
+                $('#addTaskModal').modal('hide');
+                showNotifications("success", response.msg);
+            },
+            error: function (xhr, status, error) {
+                var response = jQuery.parseJSON(xhr.responseText);
+                showNotifications("error", response.msg);
+            }
+        });
+    });
+
+     $('.deleteMember').on('click', function () {
+        var member_id = $(this).data('member_id');
+        var url = $(this).data('member_url');
+        $.ajax({
+            url: url,
+            method: 'POST',
+            data: {
+                csrfmiddlewaretoken: window.csrftoken,
+                memberId: member_id,
+            },
+            success: function (response) {
+                $('#chatMembers').modal('hide');
+            }
+        });
+     });
+
+     function getThreadMessages(status) {
+        var user_id = $('.chat-discussion').attr("data-id");
+        var messagesUrl = $('.chat-discussion').attr("data-path");
+        $.ajax({
+            url: messagesUrl,
+            method: 'GET',
+            data: {
+                status: status,
+                last_pk: last_pk,
+            },
+            dataType: 'json',
+            success: function (response) {
+                if (response["messages"]) {
+                    $.each(response["messages"], function (index, value) {
+                        last_pk = value.pk;
+                        var $msgForm = $('#msg_form').clone(true, true);
+                        $msgForm.find('.message-avatar').attr('src', value.avatar);
+                        var message_date = moment(value.sent_at).format('MMM Do, h:mm a');
+                        $msgForm.find('.message-date').text(message_date);
+                        $msgForm.find('.message-content').text(value.content);
+                        $msgForm.removeClass("hide");
+                        if(!value.online){
+                            $msgForm.find('.message-avatar-wrap').removeClass("online");
+                            $msgForm.find('.message-avatar-wrap').addClass("offline");
+                        }
+                        if(parseInt(user_id) !== parseInt(value.sender_id)) {
+                            $msgForm.removeClass("left");
+                            $msgForm.addClass("right");
+                        }else{
+                            $msgForm.removeClass("right");
+                            $msgForm.addClass("left");
+                        }
+                        $msgForm.find('.message-author').text( value.username);
+                        $(".chat-discussion").append($msgForm);
+                    });
+                    $('.chat-discussion').scrollTop($('.chat-discussion')[0].scrollHeight);
+                }
+            }
+        });
+    }
+
+    function sendMessage(){
+        var message = $(".write_msg").val();
+        var chatUrl = $('.chat-discussion').attr('data-chat');
+        var username = $('.chat-discussion').data('username');
+        if (message) {
+            $.ajax({
+                url: chatUrl,
+                method: 'POST',
+                data: {
+                    message: message,
+                    csrfmiddlewaretoken: window.csrftoken
+                },
+                success: function (response) {
+                    if (response.status) {
+                        var $msgForm = $('#msg_form').clone();
+                        $msgForm.removeClass("hide");
+                        $msgForm.removeClass("right");
+                        $msgForm.addClass("left");
+                        var message_date = moment(response.sent_at).format('MMM Do, h:mm a');
+                        $msgForm.find('.message-date').text(message_date);
+                        $msgForm.find('.message-content').text(message);
+                        $msgForm.find('.message-author').text(username);
+                        $msgForm.find('.message-avatar').attr('src', response.avatar);
+                        $(".chat-discussion").append($msgForm);
+                        $(".write_msg").val('');
+                        $('.chat-discussion').scrollTop($('.chat-discussion')[0].scrollHeight);
+                    }
+                }
+            });
+        }
+    }
+
+    $(".write_msg").keypress(function (e) {
+        var code = (e.keyCode ? e.keyCode : e.which);
+        if (parseInt(code) === 13) {
+            e.preventDefault();
+            sendMessage();
+        }
+    });
+
+    getThreadMessages();
+
+    setInterval(function () {
+        getThreadMessages(true);
+    }, 300000);
+
+    $('.screen-delete').on('click', function (e) {
+        var url = $(this).data('href');
+        var screenId = $(this).data('screen-id');
+        $(this).parent('div').remove();
+        $.ajax({
+            url: url,
+            method: 'POST',
+            data: {
+                csrfmiddlewaretoken: window.csrftoken,
+                screenId: screenId,
+            },
+            success: function (response) {
+                showNotifications("success", response.msg);
+            },
+        });
+    });
+
+    $('#inviteUser').on('click', function (e) {
+        e.preventDefault();
+        var name = $('#id_name').val();
+        var email = $('#id_email').val();
+        var url = $(this).data('url');
+
+        var formValid = validateForm([
+             '#id_name',
+             '#id_email',
+         ]);
+        if(!formValid) {
+            $.ajax({
+                url: url,
+                method: 'POST',
+                data: {
+                    csrfmiddlewaretoken: window.csrftoken,
+                    name: name,
+                    email: email,
+                },
+                success: function (response) {
+                    showNotifications("success", response.msg);
+                    $('#inviteUserForm')[0].reset();
+                },
+                error: function (xhr, status, error) {
+                    var response = jQuery.parseJSON(xhr.responseText)
+                    showNotifications("error", response.msg);
+                }
+            });
+        }
+    })
 })();
