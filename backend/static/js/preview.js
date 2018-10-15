@@ -6,9 +6,9 @@
     };
 
     $('#image').on('click', function () {
-        $('.existed').css("opacity", "1")
+        $('.existed').css("opacity", "1");
         setTimeout(function(){
-            $('.existed').css("opacity", "0")
+            $('.existed').css("opacity", "0");
         },300);
     });
 
@@ -70,6 +70,6 @@
                 }
             });
         }
-    })
+    });
 
 })();

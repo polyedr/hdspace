@@ -1,43 +1,35 @@
 {% load staticfiles %}
-
-{% block extra_css %}
-<link href="{% static 'css/style.css' %}" rel="stylesheet">
-<link href="{% static 'css/screen.css' %}" rel="stylesheet">
-<link href="{% static 'css/preview.css' %}" rel="stylesheet">
-
-{% endblock %}
-
-{% block content %}
-  <div id="screenImage" class="screenContainer">
-          <img src="{{screen.get_image}}" id="image" class="edited-image" border="0"/>
-          {% for screen_event in screen_events %}
-          <div
-                  class="existed"
-                  style='top:{{screen_event.y}}px;
-              width:{{screen_event.width}}px;
-              left:{{screen_event.x}}px;
-              height:{{screen_event.height}}px;'
-                  data-href="{{screen_event.href}}"
-                  data-x="{{screen_event.x}}"
-                  data-y="{{screen_event.y}}"
-                  data-width="{{screen_event.width}}"
-                  data-height="{{screen_event.height}}"
-                  data-event="{{screen_event.event}}"
-                  data-link_to="{{screen_event.link_to}}"
-                  data-new_window="{{screen_event.new_window}}"
-                  data-screen_event_id="{{screen_event.pk}}"
-                  data-link_screen="{{screen_event.link_screen}}"
-                  data-preview="{{screen_event.screen.project.preview}}"
-          >
-          </div>
-          {% endfor %}
+<html>
+  <head>
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/screen.css' %}" rel="stylesheet">
+  </head>
+  <body>
+    <div id="screenImage" class="screenContainer">
+      <img src="{{screen.get_image}}" id="image" class="edited-image" border="0"/>
+      {% for screen_event in screen_events %}
+        <div
+                class="existed"
+                style='top:{{screen_event.y}}px;
+            width:{{screen_event.width}}px;
+            left:{{screen_event.x}}px;
+            height:{{screen_event.height}}px;'
+                data-href="{{screen_event.href}}"
+                data-x="{{screen_event.x}}"
+                data-y="{{screen_event.y}}"
+                data-width="{{screen_event.width}}"
+                data-height="{{screen_event.height}}"
+                data-event="{{screen_event.event}}"
+                data-link_to="{{screen_event.link_to}}"
+                data-new_window="{{screen_event.new_window}}"
+                data-screen_event_id="{{screen_event.pk}}"
+                data-link_screen="{{screen_event.link_screen}}"
+                data-preview="{{screen_event.screen.project.preview}}">
         </div>
-<div id="adjacent-content" class="existed"></div>
-
-{% endblock %}
-
-{% block extra_js %}
-<script src="{% static 'js/jquery-3.1.1.min.js' %}"></script>
-<script src="{% static 'js/preview.js' %}"></script>
-
-{% endblock %}
+      {% endfor %}
+    </div>
+    <div id="adjacent-content" class="existed"></div>
+    <script src="{% static 'js/jquery-3.1.1.min.js' %}"></script>
+    <script src="{% static 'js/preview.js' %}"></script>
+  </body>
+</html>

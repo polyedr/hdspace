@@ -2,14 +2,22 @@
     'use strict';
 
     // messaging
-     var last_pk = 0;
+    var last_pk = 0;
+    var workflowScreenId = '';
+    var screenStatus = '';
+    var statusColor = {
+        'on_hold': 'backgroundGreen',
+        'in_progress': 'backgroundBlue',
+        'review': 'backgroundRed',
+        'approved': 'backgroundOrange',
+    };
 
-     toggleErrors(['.validate_error'], false);
-     $(".js-upload-photos").click(function () {
+    toggleErrors(['.validate_error'], false);
+    $(".js-upload-photos").click(function () {
         $("#fileupload").click();
      });
 
-     $("#fileupload").fileupload({
+    $("#fileupload").fileupload({
         dataType: 'json',
         sequentialUploads: true,
         start: function (e) {
@@ -80,7 +88,7 @@
         });
     });
 
-     $('.deleteMember').on('click', function () {
+    $('.deleteMember').on('click', function () {
         var member_id = $(this).data('member_id');
         var url = $(this).data('member_url');
         $.ajax({
@@ -96,7 +104,7 @@
         });
      });
 
-     function getThreadMessages(status) {
+    function getThreadMessages(status) {
         var user_id = $('.chat-discussion').attr("data-id");
         var messagesUrl = $('.chat-discussion').attr("data-path");
         $.ajax({
@@ -181,12 +189,12 @@
 
     setInterval(function () {
         getThreadMessages(true);
-    }, 300000);
+    }, 3000);
 
     $('.screen-delete').on('click', function (e) {
         var url = $(this).data('href');
         var screenId = $(this).data('screen-id');
-        $(this).parent('div').remove();
+        $(this).parent('div').parent('div').remove();
         $.ajax({
             url: url,
             method: 'POST',
@@ -230,4 +238,92 @@
             });
         }
     })
+
+
+
+    $('.workflow-list img').on('click', function () {
+        $('#workflowModal').modal();
+        var assignee = $(this).data('asignee-user-name');
+        $('#assignedUser').text(assignee);
+        workflowScreenId = $(this).data('screen-id');
+        screenStatus = $(this).data('screen-status');
+        for (var key in statusColor) {
+            $('#statusChange').removeClass(statusColor[key])
+        }
+        $('#statusChange').addClass(statusColor[screenStatus])
+    });
+
+    $(document).on('click', '#collaboratordDropdown a', function () {
+        var assignee = $(this).data('assigne');
+        var assignee_name = $(this).text();
+        $('#assignedUser').text(assignee_name);
+        var url = $('#collaboratordDropdown').data('url');
+        $.ajax({
+            url: url,
+            method: 'POST',
+            data: {
+                csrfmiddlewaretoken: window.csrftoken,
+                assignee: assignee,
+                screenId: workflowScreenId,
+            },
+            success: function (response) {
+                showNotifications("success", response.msg);
+                $('#collaboratordDropdown').removeClass('show');
+                $(".workflow-list img[data-screen-id="+ workflowScreenId + "]" ).attr('data-asignee-user-name', assignee_name)
+            },
+        });
+    });
+
+    $(document).on('click', '#assignedUser', function () {
+        $('#collaboratordDropdown').toggleClass("show");
+        $('#statusDropdown').removeClass('show');
+    });
+
+    $(document).on('keyup', '#searchInput', function () {
+        var input, filter, ul, li, a, i, div;
+        input = document.getElementById("searchInput");
+        filter = input.value.toUpperCase();
+        div = document.getElementById("collaboratordDropdown");
+        a = div.getElementsByTagName("a");
+        for (i = 0; i < a.length; i++) {
+            if (a[i].innerHTML.toUpperCase().indexOf(filter) > -1) {
+                a[i].style.display = "";
+            } else {
+                a[i].style.display = "none";
+            }
+        }
+    });
+
+    $('#workflowModal').on('hidden.bs.modal', function () {
+        $('#collaboratordDropdown').removeClass('show');
+        $('#statusDropdown').removeClass('show');
+    });
+
+    $(document).on('click', '#statusChange', function () {
+        $('#statusDropdown').toggleClass("show");
+        $('#collaboratordDropdown').removeClass('show');
+        $( "#statusDropdown li[data-status="+ screenStatus + "]" ).addClass("active-status");
+    });
+
+    $(document).on('click', '#statusDropdown li', function () {
+        var status = $(this).data('status');
+        var url = $('#statusDropdown').data('url');
+        $(this).addClass("active-status");
+        $('#statusChange').addClass(statusColor[status])
+        $.ajax({
+            url: url,
+            method: 'POST',
+            data: {
+                csrfmiddlewaretoken: window.csrftoken,
+                status: status,
+                screenId: workflowScreenId,
+            },
+            success: function (response) {
+                showNotifications("success", response.msg);
+                $('#statusDropdown').toggleClass('show');
+                $(".workflow-list img[data-screen-id="+ workflowScreenId + "]" ).attr('data-screen-status', status)
+            },
+        });
+    });
+
 })();

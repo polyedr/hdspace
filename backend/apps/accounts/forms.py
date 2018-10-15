@@ -165,6 +165,7 @@ class CreateTeamForm(forms.Form):
         help_text=password_validation.password_validators_help_text_html(),
     )
     username = forms.CharField(label="User Name")
+    team_name = forms.CharField(label="Team Name")
     position = forms.CharField()
     charge = forms.CharField(label="Hourly Charge")
     time_log = forms.CharField(label="Time Log")

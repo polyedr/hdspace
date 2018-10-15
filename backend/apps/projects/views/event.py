@@ -2,6 +2,7 @@ from django.views.generic.base import View
 from django.http import JsonResponse
 from django.contrib.auth.mixins import LoginRequiredMixin
 
+from core.utils import build_absolute_url
 from projects.forms import PositionUpdateForm
 from projects.models import ScreenEvent, ProjectScreen
 
@@ -43,9 +44,16 @@ class ScreenEventsView(LoginRequiredMixin, View):
                 pk=event.pk,
                 delete_url=event.get_event_delete_url(),
                 update_url=event.get_update_event_position_url(),
+                link_screen=event.link_screen,
+                screen__project__preview=event.screen.project.preview,
+                screen__project__pk=event.screen.project.pk,
             )
             screen_events.append(screen_event)
-        return JsonResponse({"screen_events": screen_events, "save_url": screen.get_screen_url()}, safe=False)
+        return JsonResponse({
+            "screen_events": screen_events,
+            "save_url": screen.get_screen_url(),
+            "preview_absolute_url": build_absolute_url(screen.get_preview_url()),
+        }, safe=False)
 
 
 class UpdateEventPositionView(LoginRequiredMixin, View):

@@ -92,6 +92,11 @@ class ProjectView(LoginRequiredMixin, TemplateView):
             context["invite_form"] = ProjectInvitationForm()
             context["add_task_form"] = AddTaskForm(project)
             context["project"] = Project.objects.get(pk=project)
+
+            context["in_hold_screens"] = ProjectScreen.objects.filter(status=ProjectScreen.SCREEN_ON_HOLD)
+            context["in_progress_screens"] = ProjectScreen.objects.filter(status=ProjectScreen.SCREEN_IN_PROGRESS)
+            context["in_review_screens"] = ProjectScreen.objects.filter(status=ProjectScreen.SCREEN_REVIEW)
+            context["approved_screens"] = ProjectScreen.objects.filter(status=ProjectScreen.SCREEN_APPROVED)
             context["project_members"] = ProjectMember.objects.filter(project=project)
             context["tasks"] = ProjectTask.objects.filter(project=project)
             context["thread"] = Thread.ordered(Thread.inbox(request.user, project))[0]
