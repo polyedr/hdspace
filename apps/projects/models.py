@@ -17,6 +17,7 @@ __all__ = (
     "ProjectTask",
     "ProjectActivity",
     "ProjectInvitation",
+    "ScreenAssignee",
 )
 
 
@@ -76,7 +77,20 @@ class ProjectActivity(TimeStampedModel):
 
 
 class ProjectScreen(TimeStampedModel):
+    SCREEN_ON_HOLD = "on_hold"
+    SCREEN_IN_PROGRESS = "in_progress"
+    SCREEN_REVIEW = "review"
+    SCREEN_APPROVED = "approved"
+    SCREEN_STATUS = (
+        (SCREEN_ON_HOLD, "ON_HOLD"),
+        (SCREEN_IN_PROGRESS, "IN_PROGRESS"),
+        (SCREEN_REVIEW, "REVIEW"),
+        (SCREEN_APPROVED, "APPROVED"),
+    )
+
     image = models.ImageField(upload_to=utils.get_file_path, blank=True)
+    status = models.CharField(choices=SCREEN_STATUS, default=SCREEN_IN_PROGRESS, max_length=32)
+
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
 
     def get_image(self):
@@ -92,7 +106,7 @@ class ProjectScreen(TimeStampedModel):
         return reverse("projects:edit_screen", kwargs={"project_id": self.project.pk, "screen_id": self.pk})
 
     def __str__(self):
-        return self.project.name
+        return f'{self.pk}'
 
 
 class ScreenEvent(TimeStampedModel):
@@ -155,3 +169,11 @@ class ProjectMember(TimeStampedModel):
 
     def __str__(self):
         return self.project.name
+
+
+class ScreenAssignee(TimeStampedModel):
+    screen = models.ForeignKey(ProjectScreen, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.user.username

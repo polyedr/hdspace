@@ -19,45 +19,10 @@
 {% endblock %}
 
 {% block content %}
-<div class="row">
-  <div class="col-lg-12">
-    <div class="row">
-      <div class="col-lg-3 m-t-md">
-        <div class="ibox-content">
-          <h3 class="text-center text-navy">Upload project screen</h3>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-<div class="row">
-  <div class="col-lg-12">
-    <div class="row">
-      <div class="col-lg-3">
-        <div class="ibox-content">
-          <div class="card-body">
-            <div class="col-lg-12">
-              <div class="img-default col-md-2  add-screen js-upload-photos">
-                <img src="{% static 'img/upload.png' %}" class="img-def"/>
-              </div>
-            </div>
-            <div class="col-lg-12">
-              <div class="progress hide">
-                <div class="progress-bar" role="progressbar" style="width: 0%;">0%</div>
-              </div>
-            </div>
-            <div class="form-group row">
-              <div class="col-lg-12">
-                <input id="fileupload" type="file" name="image" multiple
-                 class="hide"
-                 data-url="{% url 'projects:add_screen' %}"
-                 data-form-data='{"csrfmiddlewaretoken": "{{ csrf_token }}", "projectId": "{{ project.pk }}"}'>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
 
+<div class="row">
+  <div class="col-lg-12">
+    <div class="row">
       <div class="col-lg-12 m-t-md">
         <div class="ibox-content">
           <h3 class="text-center text-navy">{{project.name}}</h3>
@@ -66,21 +31,140 @@
 
       <div class="col-lg-12">
         <div class="col-lg-12 ibox-content imbox-content-height screen-imgs-container">
-          <div class="card card-outline-secondary">
-            <div class="card-body image-list-body">
+          <nav class="navbar">
+            <div class="pull-left">
+              <ul class="nav nav-tabs">
+                <li class="active"><a href="#screens" data-toggle="tab">Screens</a></li>
+                <li><a href="#workflow" data-toggle="tab">Workflow</a></li>
+              </ul>
+            </div>
+
+            <div class="pull-right">
+              <input id="fileupload" type="file" name="image" multiple
+                 class="hide"
+                 data-url="{% url 'projects:add_screen' %}"
+                 data-form-data='{"csrfmiddlewaretoken": "{{ csrf_token }}", "projectId": "{{ project.pk }}"}'>
+              <button class="btn btn-primary add-screen js-upload-photos">
+                <span class="glyphicon glyphicon-cloud-upload"></span>
+                New screen
+              </button>
+            </div>
+            <div class="pull-right">
+              <div class="progress hide">
+                <div class="progress-bar" role="progressbar" style="width: 0%;">0%</div>
+              </div>
+            </div>
+          </nav>
+          <div class="card card-outline-secondary mt-1">
+            <div class="tab-content">
+              <div id="screens" class="tab-pane fade in active">
+                <div class="card-body image-list-body">
               {% for screen in screens %}
                 <div class="screen-img-wrap scr-img">
-                  <a data-href="{% url 'projects:delete_screen' %}" data-screen-id={{screen.pk}} type="button" class="close close-list screen-delete"
-                     aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                  </a>
-                  <a href="{{ screen.get_edit_screen_url }}"><img class="w-100 screen-img"
+                  <div class="screen-img-actions">
+                    <a data-href="{% url 'projects:delete_screen' %}" data-screen-id={{screen.pk}} type="button" class="screen-delete"
+                       aria-label="Close">
+                      <span class="glyphicon glyphicon-trash"></span>
+                    </a>
+                    <a href="{{ screen.get_edit_screen_url }}">
+                      <span class="glyphicon glyphicon-pencil"></span>
+                    </a>
+                  </div>
+
+                  <img class="w-100 screen-img"
                        src="{{screen.image.url}}" data-preview_url="{{screen.get_preview_url}}"
                        data-screen-save-url="{{ screen.get_screen_url }}"
-                       data-event_url="{% url 'projects:screen_events' pk=screen.pk %}"></a>
+                       data-event_url="{% url 'projects:screen_events' pk=screen.pk %}">
                 </div>
               {% endfor %}
             </div>
+              </div>
+              <div id="workflow" class="tab-pane fade">
+                <div class="row">
+                  <div class="col-sm-12 col-md-3">
+                    <div class="panel panel-default panel-workflow">
+                      <div class="panel-heading">On Hold <span>({{ in_hold_screens|length }})</span></div>
+                      <div class="panel-body">
+                        <ul class="list-group workflow-list">
+                          {% for in_hold in in_hold_screens %}
+                            <li class="list-group-item">
+                              <div class="media">
+                                <div class="media-left">
+                                 {% with in_hold.screenassignee_set.all|first as assignee %}
+                                    <img src="{{ in_hold.get_image }}" alt="" data-screen-status="{{ in_hold.status }}" data-screen-id="{{ in_hold.pk }}" data-asignee-user-name="{{ assignee.user.profile }}">
+                                 {% endwith %}
+                                </div>
+                              </div>
+                            </li>
+                          {% endfor %}
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-12 col-md-3">
+                    <div class="panel panel-default panel-workflow">
+                      <div class="panel-heading">In Progress <span>({{ in_progress_screens|length }})</span></div>
+                      <div class="panel-body">
+                        <ul class="list-group workflow-list">
+                          {% for in_progress in in_progress_screens %}
+                            <li class="list-group-item">
+                              <div class="media">
+                                <div class="media-left">
+                                  {% with in_progress.screenassignee_set.all|first as assignee %}
+                                    <img src="{{ in_progress.get_image }}" alt="" data-screen-status="{{ in_progress.status }}" data-screen-id="{{ in_progress.pk }}" data-asignee-user-name="{{ assignee.user.profile }}"  />
+                                  {% endwith %}
+                                </div>
+                              </div>
+                            </li>
+                          {% endfor %}
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-12 col-md-3">
+                    <div class="panel panel-default panel-workflow">
+                      <div class="panel-heading">Need review <span>({{ in_review_screens|length }})</span></div>
+                      <div class="panel-body">
+                        <ul class="list-group workflow-list">
+                          {% for in_review in in_review_screens %}
+                            <li class="list-group-item">
+                              <div class="media">
+                                <div class="media-left">
+                                  {% with in_review.screenassignee_set.all|first as assignee %}
+                                    <img src="{{ in_review.get_image }}" alt="" data-screen-status="{{ in_review.status }}" data-screen-id="{{ in_review.pk }}" data-asignee-user-name="{{ assignee.user.profile }}">
+                                  {% endwith %}
+                                </div>
+                              </div>
+                            </li>
+                          {% endfor %}
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-12 col-md-3">
+                    <div class="panel panel-default panel-workflow">
+                      <div class="panel-heading">Approved <span>({{ approved_screens|length }})</span></div>
+                      <div class="panel-body">
+                        <ul class="list-group workflow-list">
+                          {% for approved in approved_screens %}
+                            <li class="list-group-item">
+                              <div class="media">
+                                <div class="media-left">
+                                  {% with approved.screenassignee_set.all|first as assignee %}
+                                    <img src="{{ approved.get_image }}" alt="" data-screen-status="{{ approved.status }}" data-screen-id="{{ approved.pk }}" data-asignee-user-name="{{ assignee.user.profile }}">
+                                  {% endwith %}
+                                </div>
+                              </div>
+                            </li>
+                          {% endfor %}
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
       </div>
@@ -95,15 +179,21 @@
 </div>
 
 <div id="screen-image-content" class="screen-img-wrap scr-img hide">
-  <a data-href="{% url 'projects:delete_screen' %}" data-screen-id="" type="button" class="close close-list screen-delete"
-     aria-label="Close">
-    <span aria-hidden="true">&times;</span>
-  </a>
-  <a href="" ><img class="w-100 screen-img" src="" data-preview_url="" data-screen-save-url="" data-event_url=""></a>
+  <div class="screen-img-actions">
+    <a data-href="{% url 'projects:delete_screen' %}" data-screen-id="" type="button" class="screen-delete"
+       aria-label="Close">
+      <span class="glyphicon glyphicon-trash"></span>
+    </a>
+    <a href="{{ screen.get_edit_screen_url }}">
+      <span class="glyphicon glyphicon-pencil"></span>
+    </a>
+  </div>
+  <img class="w-100 screen-img" src="" data-preview_url="" data-screen-save-url="" data-event_url="" />
 </div>
 
 {% include "projects/includes/chat-members.html" with project_members=project_members %}
 {% include "projects/includes/add-task.html" with form=add_task_form  project_members=project_members project_id=project.id %}
+{% include "projects/includes/workflow-modal.html" with project_members=project_members %}
 {% endblock %}
 
 {% block extra_js %}

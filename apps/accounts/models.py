@@ -62,26 +62,41 @@ class Profile(TimeStampedModel):
             return False
 
     def __str__(self):
-        return self.user.email
+        return f'{self.user.first_name} {self.user.last_name}'
 
 
 class TeamMember(TimeStampedModel):
+
+    ROLE_ADMIN = "admin"
+    ROLE_MEMBER = "member"
+    MEMBER_ROLE = (
+        (ROLE_ADMIN, "ADMIN"),
+        (ROLE_MEMBER, "MEMBER"),
+    )
+
     charge = models.DecimalField(max_digits=10, decimal_places=2)
     time_log = models.DecimalField(max_digits=10, decimal_places=2)
     position = models.CharField(max_length=250)
-    description = models.TextField()
     available = models.BooleanField(default=False)
     date_joined = models.DateField(auto_now_add=True)
-    logo = models.ImageField(upload_to=utils.get_file_path, blank=True)
+    role = models.CharField(choices=MEMBER_ROLE, default=ROLE_MEMBER, max_length=32)
+
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.charge
+        return self.user.get_full_name()
 
 
 class Team(TimeStampedModel):
+    description = models.TextField()
+    logo = models.ImageField(upload_to=utils.get_file_path, blank=True)
+    team_name = models.CharField(max_length=250)
+
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     members = models.ManyToManyField(TeamMember)
 
+    def get_image(self) -> str:
+        return self.logo.url
+
     def __str__(self):
-        return self.owner.email
+        return self.team_name

@@ -4,6 +4,7 @@ from django.views.generic import TemplateView
 from django.views.generic.base import View
 from django.contrib import messages
 from django.urls import reverse
+from django.db.models import Q
 from django.contrib.auth.models import User
 
 from core.views.seo import SEOViewMixin
@@ -19,15 +20,23 @@ __all__ = (
 
 class TeamView(LoginRequiredMixin, SEOViewMixin, TemplateView):
     template_name = "accounts/team.html"
-    page_title = "Team Members"
+    page_title = "All Teams"
 
     def get(self, request, *args, **kwargs):
         context = self.get_context_data()
-        try:
-            team = Team.objects.get(owner=request.user)
-            context["members"] = team.members.all()
-        except Team.DoesNotExist:
-            context["members"] = None
+        context["members"] = TeamMember.objects.filter(user=request.user).values(
+            "id",
+            "available",
+            "charge",
+            "time_log",
+            "position",
+            "user__first_name",
+            "user__last_name",
+            "user__username",
+            "team__team_name",
+            "team__logo",
+            "user__profile__avatar",
+        )
         return self.render_to_response(context)
 
 
@@ -49,35 +58,48 @@ class CreateTeamView(LoginRequiredMixin, SEOViewMixin, TemplateView):
 
         if form.is_valid():
             data = form.cleaned_data
-            user = User.objects.create(
-                first_name=data["first_name"],
-                last_name=data["last_name"],
-                username=data["username"],
-                email=data["email"],
-                is_active=True,
-            )
-            user.set_password(data["password"])
-            user.profile.avatar = data["avatar"]
-            user.save()
+            user = User.objects.filter(Q(username=data["username"]) | Q(email=data["email"])).first()
+            if user is None:
+                user = User.objects.create(
+                    first_name=data["first_name"],
+                    last_name=data["last_name"],
+                    username=data["username"],
+                    email=data["email"],
+                    is_active=True,
+                )
+                user.set_password(data["password"])
+                user.profile.avatar = data["avatar"]
+                user.save()
 
             member = TeamMember.objects.create(
                 charge=data["charge"],
                 time_log=data["time_log"],
                 position=data["position"],
-                description=data["description"],
                 available=data["available"],
-                logo=data["logo"],
+                role=TeamMember.ROLE_ADMIN,
                 user=user,
             )
-            try:
-                team = Team.objects.get(owner=request.user.pk)
-            except Team.DoesNotExist:
-                team = Team.objects.create(
-                    owner=request.user,
-                )
+
+            team = Team.objects.create(
+                logo=data["logo"],
+                description=data["description"],
+                team_name=data["team_name"],
+                owner=request.user,
+            )
             team.members.add(member)
 
-            messages.success(request, "You team has been added successfully.")
+            if request.user.username != data["username"]:
+                member = TeamMember.objects.create(
+                    charge=0,
+                    time_log=0,
+                    position='Owner',
+                    available=True,
+                    role=TeamMember.ROLE_MEMBER,
+                    user=request.user,
+                )
+                team.members.add(member)
+
+            messages.success(request, "Your team has been created successfully.")
             return HttpResponseRedirect(reverse("accounts:teams"))
         else:
             return self.render_to_response(status=400, context=self.get_context_data(

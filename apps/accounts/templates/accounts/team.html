@@ -38,6 +38,7 @@
               <th>First Name</th>
               <th>Last Name</th>
               <th>User Name</th>
+              <th>Team Name</th>
               <th>Position</th>
               <th>Hourly Charge</th>
               <th>Time Log</th>
@@ -51,15 +52,16 @@
               {% for member in members %}
                 <tr>
                   <td>{{ member.id }}</td>
-                  <td>{{ member.user.first_name }}</td>
-                  <td>{{ member.user.last_name }}</td>
-                  <td>{{ member.user.username }}</td>
+                  <td>{{ member.user__first_name }}</td>
+                  <td>{{ member.user__last_name }}</td>
+                  <td>{{ member.user__username }}</td>
+                  <td>{{ member.team__team_name }}</td>
                   <td>{{ member.position }}</td>
                   <td>{{ member.charge }}</td>
                   <td>{{ member.time_log }}</td>
-                  <td>{% if member.available %}Yes {% else %} No {% endif %}</td>
-                  <td><img class="media-img" src="/media/{{ member.user.profile.avatar }}" /></td>
-                  <td><img class="media-img" src="/media/{{ member.logo }}" /></td>
+                  <td>{% if member.available %} Yes {% else %} No {% endif %}</td>
+                  <td><img class="media-img" src="{% if member.user__profile__avata %} /media/{{ member.user__profile__avatar }} {% else %} {% static 'img/profile_empty.png' %} {% endif %}" /></td>
+                  <td><img class="media-img" src="/media/{{ member.team__logo }}" /></td>
                   <td><a href="{% url 'accounts:delete_team' pk=member.id %}"><i class="fa fa-trash"></i></a></td>
                 </tr>
               {% endfor %}

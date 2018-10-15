@@ -50,6 +50,7 @@ class DownloadProjectView(LoginRequiredMixin, View):
             index_file.write(index_html)
             index_file.close()
             filenames.append(index_page)
+            filenames.append("static/js/jquery-3.1.1.min.js")
 
             s = BytesIO()
 
@@ -93,7 +94,6 @@ class ProjectInviteView(LoginRequiredMixin, View):
                 invitation_data["user"] = user
 
             project_member = ProjectInvitation.objects.filter(email=data["email"], project=project).first()
-            print(project_member)
             if project_member is not None:
                 return JsonResponse({
                     "msg": "User with this email already has been invited to this project"

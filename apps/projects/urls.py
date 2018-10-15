@@ -31,6 +31,8 @@ screen_patterns = [
     path("screen/<int:project_id>/<int:screen_id>/", screen.ProjectScreenView.as_view(), name="screen"),
     path("delete-screen/", screen.DeleteScreenView.as_view(), name="delete_screen"),
     path("add-screen/", screen.AddProjectScreenView.as_view(), name="add_screen"),
+    path("assign-screen/", screen.AssignScreenView.as_view(), name="assign_screen"),
+    path("change-status/", screen.ChangeScreenStatusView.as_view(), name="change_status"),
     path("edit-screen/<int:project_id>/<int:screen_id>/", screen.EditScreenView.as_view(), name="edit_screen"),
     path("screen-preview/<str:token>/<int:pk>/", screen.ProjectScreenPreviewView.as_view(), name="screenpreview"),
 ]

@@ -4,9 +4,11 @@ from django.urls import reverse
 from django.http import JsonResponse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core import serializers
+from django.contrib.auth.models import User
 
+from core.utils import build_absolute_url
 from projects.forms import ScreenEventForm, ScreenUploadForm
-from projects.models import Project, ProjectScreen, ScreenEvent
+from projects.models import Project, ProjectScreen, ScreenEvent, ScreenAssignee
 
 
 __all__ = (
@@ -15,6 +17,8 @@ __all__ = (
     "DeleteScreenView",
     "ProjectScreenPreviewView",
     "EditScreenView",
+    "AssignScreenView",
+    "ChangeScreenStatusView",
 )
 
 
@@ -72,6 +76,10 @@ class AddProjectScreenView(LoginRequiredMixin, View):
             project = Project.objects.get(pk=project_id)
             screen.project = project
             screen.save()
+            ScreenAssignee.objects.create(
+                screen=screen,
+                user=request.user,
+            )
             return JsonResponse({
                 "is_valid": True,
                 "msg": "Project screen successfully added.",
@@ -91,23 +99,32 @@ class ProjectScreenPreviewView(LoginRequiredMixin, View):
     # noinspection PyMethodMayBeStatic
     def get(self, request, *args, **kwargs):
         screen_id = kwargs.pop("pk")
-        screen_events = ScreenEvent.objects.filter(screen=screen_id).values(
-            "href",
-            "x",
-            "y",
-            "width",
-            "height",
-            "event",
-            "link_to",
-            "new_window",
-            "pk",
-            "link_screen",
-            "screen__project__preview",
-        )
+        events = ScreenEvent.objects.filter(screen=screen_id)
+        screen_events = []
+        for event in events:
+            screen_event = dict(
+                event=event.event,
+                link_to=event.link_to,
+                href=event.href,
+                new_window=event.new_window,
+                height=event.height,
+                width=event.width,
+                x=event.x,
+                y=event.y,
+                pk=event.pk,
+                delete_url=event.get_event_delete_url(),
+                update_url=event.get_update_event_position_url(),
+                link_screen=event.link_screen,
+                screen__project__preview=event.screen.project.preview,
+                screen__project__pk=event.screen.project.pk,
+            )
+            screen_events.append(screen_event)
+
         screen = ProjectScreen.objects.get(id=screen_id)
         context = dict(
             image=screen.get_image(),
-            events=list(screen_events),
+            preview_absolute_url=build_absolute_url(screen.get_preview_url()),
+            events=screen_events,
         )
 
         return JsonResponse(context)
@@ -127,3 +144,25 @@ class EditScreenView(LoginRequiredMixin, TemplateView):
         context["screen_events"] = ScreenEvent.objects.filter(screen=screen)
 
         return self.render_to_response(context)
+
+
+class AssignScreenView(LoginRequiredMixin, View):
+
+    # noinspection PyMethodMayBeStatic
+    def post(self, request, *args, **kwargs):
+        screen_id = request.POST["screenId"]
+        assignee = request.POST["assignee"]
+        screen = ProjectScreen.objects.get(id=screen_id)
+        user = User.objects.get(pk=assignee)
+        ScreenAssignee.objects.filter(screen=screen).update(user=user)
+        return JsonResponse({"msg": "Screen has been successfully assigned."})
+
+
+class ChangeScreenStatusView(LoginRequiredMixin, View):
+
+    # noinspection PyMethodMayBeStatic
+    def post(self, request, *args, **kwargs):
+        screen_id = request.POST["screenId"]
+        status = request.POST["status"]
+        ProjectScreen.objects.filter(pk=screen_id).update(status=status)
+        return JsonResponse({"msg": "Screen status has been successfully changed."})

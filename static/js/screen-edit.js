@@ -1,6 +1,9 @@
 (function () {
     'use strict';
 
+    const EDITMODE = 'edit';
+    const PREVIEWMODE = 'preview';
+
     var posX = 0;
     var posY = 0;
     var width = 0;
@@ -10,6 +13,7 @@
     var downFlag = false;
     var currentBlock;
     var screenEventId;
+    var mode = EDITMODE;
 
 
     function guid() {
@@ -115,26 +119,33 @@
     var screenImg = document.getElementById('image');
     $('#modalDeleteButton').hide();
     $('#image').mousedown(function () {
-        getCoordinates();
+        if(mode == EDITMODE) {
+            getCoordinates();
+        }
     });
 
 
     $('#image').mousemove(function (event) {
-        var move = {}
-        var positions = getMovePositions();
-        move.clientX = positions[0]
-        move.clientY = positions[1]
-        if (downFlag) {
-            imageMoveHeightWidth(move)
+        if(mode == EDITMODE) {
+            var move = {}
+            var positions = getMovePositions();
+            move.clientX = positions[0]
+            move.clientY = positions[1]
+            if (downFlag) {
+                imageMoveHeightWidth(move)
+            }
         }
     });
 
     $('#image').mouseup(function () {
-        $('#modalForm')[0].reset();
-        $('#screenModal').modal();
-        $('#currentArea').removeAttr('id');
-        downFlag = false;
-        $('#modalDeleteButton').hide();
+        if(mode == EDITMODE) {
+            $('#modalForm')[0].reset();
+            $('#screenModal').modal();
+            $('#currentArea').removeAttr('id');
+            downFlag = false;
+            $('#modalDeleteButton').hide();
+            $('.project-screens img').removeClass('selected-img');
+        }
     });
 
     function draggable() {
@@ -166,23 +177,6 @@
 
     draggable();
 
-
-    $(document).on('click', '.existed', function () {
-        toggleErrors(['.validate_error'], false);
-        $('#screenModal').modal();
-        $('#id_link_to').val($(this).data('link_to'));
-        $('#id_href').val($(this).data('href'));
-        var new_window = $(this).data('new_window');
-        var checked = new_window === 'True' || new_window === true;
-        $('#id_new_window').prop('checked', checked);
-        screenEventId = $(this).data('screen_event_id');
-        $('#modalDeleteButton').show();
-        posX = $(this).data('x');
-        posY = $(this).data('y');
-        width = $(this).data('width');
-        height = $(this).data('height');
-    });
-
     toggleErrors(['.validate_error'], false);
 
     $('#screenModal').on('hidden.bs.modal', function () {
@@ -191,9 +185,8 @@
         }
     });
 
-    $('#id_link_to').change(function () {
-        var link_to = $(this).val();
-        if (link_to === 'external') {
+    function showHideInputs(link_to, link_screen=''){
+        if (link_to === 'external' || link_to == '') {
             $('.project-screens').hide();
             $('#id_event').hide();
             $('#id_href').show();
@@ -203,7 +196,13 @@
             $('#id_event').show();
             $('#id_href').hide();
             $('#id_new_window').hide();
+            $(".project-screens img[data-screen-id="+ link_screen + "]" ).addClass('selected-img')
         }
+    }
+
+    $('#id_link_to').change(function () {
+        var link_to = $(this).val();
+        showHideInputs(link_to);
     });
 
     $('.project-img').on('click', function () {
@@ -243,7 +242,10 @@
             'data-new_window': data.new_window,
             'data-delete_url': data.delete_url,
             'data-update_event_position': data.update_url,
-            'data-screen_event_id': data.pk
+            'data-screen_event_id': data.pk,
+            'data-link_screen': data.link_screen,
+            'data-preview': data.screen__project__preview,
+            'data-project_id': data.screen__project__pk,
         });
 
         return $element
@@ -307,36 +309,136 @@
         }
     });
 
-    $('.screen-img').on('click', function () {
-        var url = $(this).data('event_url');
-        var src = $(this).attr('src');
-        var previewUrl = $(this).data('preview_url');
-        $('#previewBtn').attr('href', previewUrl);
-        $.ajax({
-            url: url,
-            method: 'GET',
-            success: function (response) {
-                if (response) {
-                    $('#modalButton').attr('data-url', response.save_url)
-                    $('#screenImage .existed').remove();
-                    $('#screenImage img').attr('src', src);
-                    $.each(response['screen_events'], function (index, value) {
-                        var $eventBox = $('#adjacent-content').clone(true, true);
-                        $eventBox = addElementData($eventBox, value);
-                        $eventBox.css({
-                            'top': value.y,
-                            'left': value.x,
-                            'width': value.width,
-                            'height': value.height,
-                        });
-                        $eventBox.addClass('existed')
-                        $eventBox.removeAttr('id');
-                        $('#screenImage').append($eventBox);
-                        draggable();
-                    })
-                }
-            }
-        });
+    var copyButton = document.getElementById('copyButton');
+    var clipboard = new ClipboardJS(copyButton);
+
+    $('.share-button').on('click', function () {
+       $('#shareScreen').modal();
     });
 
+    $('#bottomPanel button').on('click', function () {
+        var dataMode = $(this).data('mode');
+        if(dataMode) {
+            mode = dataMode;
+            if(mode == PREVIEWMODE){
+                $('#screenImage div').draggable("disable");
+                $('.existed').css("opacity", "0");
+            }else {
+                draggable();
+                $('.existed').css("opacity", "1");
+            }
+        }
+        $('#bottomPanel button').removeClass('active');
+        $(this).addClass('active');
+    });
+
+    //  preview model code
+
+    $(document).on('click', '#image', function () {
+        if(mode == PREVIEWMODE) {
+            $('.existed').css("opacity", "1");
+            setTimeout(function () {
+                $('.existed').css("opacity", "0");
+            }, 300);
+        }
+    });
+
+    $(document).on('click', '.existed', function () {
+        if(mode == EDITMODE) {
+            toggleErrors(['.validate_error'], false);
+            $('#screenModal').modal();
+            var link_to = $(this).data('link_to');
+            $('#id_link_to').val(link_to);
+            $('#id_href').val($(this).data('href'));
+            var new_window = $(this).data('new_window');
+            var checked = new_window === 'True' || new_window === true;
+            $('#id_new_window').prop('checked', checked);
+            screenEventId = $(this).data('screen_event_id');
+            $('#modalDeleteButton').show();
+            posX = $(this).data('x');
+            posY = $(this).data('y');
+            width = $(this).data('width');
+            height = $(this).data('height');
+            var link_screen = $(this).data('link_screen');
+            showHideInputs(link_to, link_screen);
+        }
+
+        if(mode == PREVIEWMODE) {
+            var link_to = $(this).data('link_to');
+            if (link_to == 'external') {
+                var new_window = $(this).data('new_window');
+                var href = $(this).data('href');
+                if (new_window == "True") {
+                    window.open(href, '_blank');
+                } else {
+                    location.href = href;
+                }
+            } else {
+                mode=PREVIEWMODE;
+                var preview = $(this).data('preview');
+                var link_screen = $(this).data('link_screen');
+                var projectId = $(this).data('project_id');
+                var path = preview + '/' + link_screen + '/';
+                var changePath = '/edit-screen/' + projectId + '/' + link_screen + '/';
+                var requestPath = '/screen-preview/' + path;
+                $.ajax({
+                    url: requestPath,
+                    method: 'GET',
+                    success: function (response) {
+                        if (response) {
+                            $('#screenImage .existed').remove();
+                            $('#screenImage img').attr('src', response.image);
+                            $.each(response.events, function (index, value) {
+                                var $eventBox = $('#adjacent-content').clone(true, true);
+                                $eventBox = addElementData($eventBox, value);
+                                $eventBox.css({
+                                    'top': value.y,
+                                    'left': value.x,
+                                    'width': value.width,
+                                    'height': value.height,
+                                });
+                                $eventBox.removeAttr('id');
+                                $('#screenImage').append($eventBox);
+                            })
+                            $('#shareLink').val(response.preview_absolute_url);
+                            window.history.pushState(null, null, changePath);
+                        }
+                    }
+                });
+            }
+        }
+    });
+
+    window.onpopstate = function () {
+        if(mode == PREVIEWMODE) {
+            var url = window.location.pathname;
+            var res = url.split("/");
+            var projectId = res[2];
+            var screenId = res[3];
+            var path = projectId + '/' + screenId + '/';
+            var requestPath = '/screen-preview/' + path;
+            $.ajax({
+                url: requestPath,
+                method: 'GET',
+                success: function (response) {
+                    if (response) {
+                        $('#screenImage .existed').remove();
+                        $('#screenImage img').attr('src', response.image);
+                        $.each(response.events, function (index, value) {
+                            var $eventBox = $('#adjacent-content').clone(true, true);
+                            $eventBox = addElementData($eventBox, value);
+                            $eventBox.css({
+                                'top': value.y,
+                                'left': value.x,
+                                'width': value.width,
+                                'height': value.height,
+                            });
+                            $eventBox.removeAttr('id');
+                            $('#screenImage').append($eventBox);
+                        })
+                    }
+                }
+            });
+        }
+    };
 })();
