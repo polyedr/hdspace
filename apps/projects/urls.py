@@ -1,6 +1,6 @@
 from django.urls import path, include
 
-from .views import screen, project, event, project_event
+from .views import screen, project, event, project_event, task
 
 app_name = "projects"
 
@@ -15,16 +15,24 @@ project_patterns = [
 project_event_patterns = [
     path("download/<int:pk>/", project_event.DownloadProjectView.as_view(), name="download"),
     path("invite/<int:pk>/", project_event.ProjectInviteView.as_view(), name="invite"),
+    path("invite-user/", project_event.UserInviteView.as_view(), name="invite_user"),
     path("accept-decline/<str:invitation_token>/<str:status>/",
          project_event.AcceptDeclineInvitationView.as_view(), name="accept_decline"),
     path("delete-member/", project_event.DeleteChatMemberView.as_view(), name="delete_member"),
-    path("add-task/<int:pk>/", project_event.AddProjectTaskView.as_view(), name="add_project_task"),
 ]
 
 event_patterns = [
     path("delete-screen-event/", event.DeleteScreenEventView.as_view(), name="delete_screen_event"),
     path("screen-events/<int:pk>/", event.ScreenEventsView.as_view(), name="screen_events"),
     path("update-event-position/<int:pk>/", event.UpdateEventPositionView.as_view(), name="update_event_position"),
+]
+
+task_patterns = [
+    path("add-task/<int:pk>/", task.AddProjectTaskView.as_view(), name="add_project_task"),
+    path("add-sub-tusk/", task.AddSubTaskView.as_view(), name="add_sub_task"),
+    path("assign-task/", task.AssignTaskView.as_view(), name="assign_task"),
+    path("delete-task/", task.DeleteTaskView.as_view(), name="delete_task"),
+    path("edit-task/", task.EditTaskView.as_view(), name="edit_task"),
 ]
 
 screen_patterns = [
@@ -42,4 +50,5 @@ urlpatterns = [
     path("", include(screen_patterns)),
     path("", include(event_patterns)),
     path("", include(project_event_patterns)),
+    path("", include(task_patterns)),
 ]

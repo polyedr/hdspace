@@ -32,6 +32,7 @@ class Project(TimeStampedModel):
     name = models.CharField(max_length=250)
     preview = models.CharField(max_length=60)
     status = models.CharField(choices=STATUS_CHOICES, default=STATUS_PENDING, max_length=20)
+    duplicated = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True)
     user = models.ForeignKey(User, related_name="user", on_delete=models.CASCADE)
     members = models.ManyToManyField(User, related_name="members", through="ProjectMember")
 
@@ -45,24 +46,6 @@ class Project(TimeStampedModel):
 
     def __str__(self):
         return self.name
-
-
-class ProjectTask(TimeStampedModel):
-
-    TASK_CREATED = "created"
-    TASK_COMPLETED = "completed"
-    TASK_STATUS = (
-        (TASK_CREATED, "CREATED"),
-        (TASK_COMPLETED, "COMPLETED"),
-    )
-
-    title = models.CharField(max_length=250)
-    description = models.TextField()
-    status = models.CharField(choices=TASK_STATUS, default=TASK_CREATED, max_length=32)
-
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
-    creator = models.ForeignKey(User, related_name="creator", on_delete=models.CASCADE)
-    owner = models.ForeignKey(User, related_name="owner", on_delete=models.CASCADE)
 
 
 class ProjectActivity(TimeStampedModel):
@@ -154,6 +137,7 @@ class ProjectInvitation(TimeStampedModel):
     invitation_token = models.CharField(max_length=16)
     is_active = models.BooleanField(default=False)
     email = models.CharField(max_length=250)
+    role = models.CharField(max_length=250, null=True, blank=True)
 
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -164,11 +148,41 @@ class ProjectInvitation(TimeStampedModel):
 
 
 class ProjectMember(TimeStampedModel):
+    STATUS_CREATOR = "creator"
+    STATUS_MEMBER = "member"
+    MEMBER_STATUS = (
+        (STATUS_CREATOR, "CREATOR"),
+        (STATUS_MEMBER, "MEMBER"),
+    )
+    role = models.CharField(max_length=250, null=True, blank=True)
+    status = models.CharField(choices=MEMBER_STATUS, default=STATUS_MEMBER, max_length=32)
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.project.name
+
+
+class ProjectTask(TimeStampedModel):
+
+    TASK_CREATED = "created"
+    TASK_COMPLETED = "completed"
+    TASK_STATUS = (
+        (TASK_CREATED, "CREATED"),
+        (TASK_COMPLETED, "COMPLETED"),
+    )
+
+    title = models.CharField(max_length=250)
+    description = models.TextField()
+    status = models.CharField(choices=TASK_STATUS, default=TASK_CREATED, max_length=32)
+
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    creator = models.ForeignKey(ProjectMember, related_name="creator", on_delete=models.CASCADE)
+    owner = models.ForeignKey(ProjectMember, related_name="owner", on_delete=models.CASCADE)
+    sub_task = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name="subtask")
+
+    def __str__(self):
+        return self.title
 
 
 class ScreenAssignee(TimeStampedModel):

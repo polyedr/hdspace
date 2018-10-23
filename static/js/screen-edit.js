@@ -296,6 +296,7 @@
                         data['pk'] = response_data[0].pk;
                         data['delete_url'] = response.delete_url;
                         data['update_url'] = response.update_url;
+                        data['screen__project__pk'] = response.project_id;
                         addElementData($element, data);
                         $element.addClass('existed');
                         currentBlock = '';

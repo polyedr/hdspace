@@ -141,7 +141,7 @@ p.tip-login a {
     position: relative;
 }
 
-.right.message-avatar-wrap {
+.right .message-avatar-wrap {
     float: right;
     margin-left: 10px;
     position: relative;
@@ -168,4 +168,135 @@ p.tip-login a {
 
 .message-avatar-wrap.offline:after {
     background-color: #dbdbdb;
+}
+
+.mb-0 {
+    margin-bottom: 0;
+}
+
+.flex-1 {
+    flex: 1;
+}
+
+.flex {
+    display: flex;
+}
+
+.flex-row {
+    flex-direction: row;
+}
+
+.flex-center-main-axis {
+    align-items: center;
+}
+
+.flex-space-between {
+    justify-content: space-between;
+}
+
+.right-panels .panel-heading {
+    background-color: #fff;
+    color: #18a689;
+}
+
+.right-panels .panel {
+    margin-bottom: 5px;
+}
+
+.right-border {
+    border-right: solid 1px #dbdbdb;
+}
+
+.layout-variations > .panel {
+    flex: 1;
+    width: 50%;
+    border-radius: 0;
+}
+.layout-variations > .panel:first-child {
+    border-right: 0;
+}
+
+.nav-tabs > li.active > a, 
+.nav-tabs > li.active > a:hover, 
+.nav-tabs > li.active > a:focus {
+    background-color: #fff;
+}
+
+.tab-heading h5 {
+    margin-top: 0;
+    margin-bottom: 0;
+    color: #18a689;
+    font-size: 16px;
+    font-weight: 400;
+}
+
+.tab-heading .align-btn {
+    border: none;
+    background-color: transparent;
+    padding: 0;
+}
+
+.tab-heading .align-btn i {
+    color: #18a689;
+}
+
+.rotate-buttons button {
+    border: solid 1px #dbdbdb;
+    background-color: transparent;
+    width: 26px;
+    height: 26px;
+    -webkit-border-radius: 100%;
+    -moz-border-radius: 100%;
+    border-radius: 100%;
+}
+
+.w-100 {
+    width: 100%;
+    height: auto;
+}
+
+.msg-textarea-wrapper {
+    position: relative;
+}
+
+.msg-textarea-wrapper .btn-primary {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+}
+
+.search-result .row {
+    max-height: 155px;
+    overflow-y: auto;
+}
+
+.search-result-img {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.task-actions {
+    color: #fff;
+}
+
+.dropdown-menu.dropdown-menu-right {
+    right: 0;
+    left: auto;
+}
+
+.dropdown-menu li {
+    padding: 0!important;
+    color: #333;
+}
+
+.dropdown-menu li a {
+    margin: 0;
+}
+
+.chat-discussion .chat-message.right .message {
+    text-align: left;
+}
+
+.chat-discussion .chat-message.right .message-date {
+    float: right;
 }

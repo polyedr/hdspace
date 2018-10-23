@@ -19,7 +19,8 @@
         </div>
         <div class="modal-footer">
           <button type="button" id="modalCloseButton"class="btn btn-white" data-dismiss="modal">Close</button>
-          <button type="submit" id="addTaskButton" class="btn btn-primary" data-url="{% url 'projects:add_project_task' pk=project_id %}" data-project_id="{{ project_id }}">Save</button>
+          <button type="submit" id="addTaskButton" class="btn btn-primary" data-url="{% url 'projects:add_project_task' pk=project_id %}" data-sub-url="{% url 'projects:add_sub_task'%}"data-project_id="{{ project_id }}">Save</button>
+          <button type="submit" id="editTaskButton" class="btn btn-primary" data-url="{% url 'projects:edit_task'%}" data-project_id="{{ project_id }}">Edit</button>
         </div>
       </form>
     </div>

@@ -9,6 +9,7 @@
             '#id_first_name',
             '#id_last_name',
             '#id_email',
+            '#id_role',
         ]);
 
         if (!formValid) {

@@ -19,7 +19,7 @@ services:
       - MONGO_INITDB_ROOT_USERNAME=${DB_USER}
       - MONGO_INITDB_ROOT_PASSWORD=${DB_PASSWORD}
     ports:
-      - "27017:27017"
+      - "27018:27018"
 
   mailhog:
     image: mailhog/mailhog
@@ -49,7 +49,7 @@ services:
       - mailhog
       - redis
       - celery
-    command: ./wait-for-it.sh db:27017 -- python manage.py runserver 0:8000
+    command: ./wait-for-it.sh db:27018 -- python manage.py runserver 0:8000
     ports:
       - "8000:8000"
 

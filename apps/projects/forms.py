@@ -1,6 +1,7 @@
 from django import forms
 
 from .models import ScreenEvent, ProjectMember, ProjectScreen
+from accounts.models import Profile
 
 __all__ = (
     "CreateProjectForm",
@@ -49,9 +50,20 @@ class PositionUpdateForm(forms.Form):
 
 
 class ProjectInvitationForm(forms.Form):
+
+    def __init__(self, *args, **kwargs):
+        super(ProjectInvitationForm, self).__init__(*args, **kwargs)
+        self.fields["role"] = forms.ChoiceField(
+            choices=[("", "Select a Position")] + [(role[0], role[0])
+                                                   for role in Profile.USER_ROLE]
+        )
+
     name = forms.CharField(
         label="",
         widget=forms.TextInput(attrs={"placeholder": "Name"}))
+    role = forms.CharField(
+        label="",
+        widget=forms.TextInput(attrs={"placeholder": "Role"}))
     email = forms.EmailField(
         label="",
         widget=forms.TextInput(attrs={"placeholder": "Email address"}),
@@ -63,7 +75,7 @@ class AddTaskForm(forms.Form):
     def __init__(self, project, *args, **kwargs):
         super(AddTaskForm, self).__init__(*args, **kwargs)
         self.fields['owner'] = forms.ChoiceField(
-            choices=[("", "Select task owner")] + [(member.user.id, str(member.user.username))
+            choices=[("", "Select task owner")] + [(member.id, str(member.user.username))
                                                    for member in ProjectMember.objects.filter(project=project)]
         )
 

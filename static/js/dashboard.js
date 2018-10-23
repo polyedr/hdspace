@@ -21,7 +21,7 @@
         });
     }
 
-    $('.checkProject').change(function() {
+    $(document).on("change",".checkProject",function(e) {
         var project = $(this).val();
         var checked = false;
         if ($(this).is(':checked')) {

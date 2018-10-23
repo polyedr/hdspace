@@ -12,10 +12,10 @@ from django.conf import settings
 
 from core.utils import render_body
 from threads.models import Thread, UserThread
-from projects.forms import ProjectInvitationForm, AddTaskForm
+from projects.forms import ProjectInvitationForm
 from projects.models import (
     Project, ProjectScreen, ProjectInvitation,
-    ProjectMember, ProjectTask
+    ProjectMember
 )
 from projects.utils import emails
 
@@ -24,8 +24,8 @@ __all__ = (
     "ProjectInviteView",
     "AcceptDeclineInvitationView",
     "DeleteChatMemberView",
-    "AddProjectTaskView",
     "DownloadProjectView",
+    "UserInviteView",
 )
 
 
@@ -86,6 +86,7 @@ class ProjectInviteView(LoginRequiredMixin, View):
                 project=project,
                 is_active=False,
                 email=data["email"],
+                role=data["role"],
                 invitation_token=ProjectInvitation.generate_token(),
                 user=None,
             )
@@ -123,7 +124,8 @@ class AcceptDeclineInvitationView(View):
             invitation = ProjectInvitation.objects.get(invitation_token=token)
             if status == "accept":
                 if invitation.user_id is not None:
-                    ProjectMember.objects.create(
+                    member = ProjectMember.objects.create(
+                        role=invitation.role,
                         project=invitation.project,
                         user=invitation.user,
                     )
@@ -131,7 +133,7 @@ class AcceptDeclineInvitationView(View):
                     thread = Thread.objects.get(project=invitation.project)
                     UserThread.objects.create(
                         thread=thread,
-                        user=invitation.user,
+                        user=member,
                     )
                     invitation.delete()
                 else:
@@ -157,30 +159,42 @@ class DeleteChatMemberView(LoginRequiredMixin, View):
         return JsonResponse({"msg": "Member has been deleted successfully."})
 
 
-class AddProjectTaskView(LoginRequiredMixin, View):
+class UserInviteView(LoginRequiredMixin, View):
 
     # noinspection PyMethodMayBeStatic
-    def post(self, request, *args, **kwargs):
+    def post(self, request):
+        user_id = request.POST["userId"]
         project_id = request.POST["projectId"]
-        form = AddTaskForm(project_id, data=request.POST)
-        if form.is_valid():
-            data = form.cleaned_data
-            project = Project.objects.get(pk=project_id)
-            user = User.objects.get(pk=data["owner"])
-            task = ProjectTask.objects.create(
-                title=data["title"],
-                description=data["description"],
-                creator=request.user,
-                owner=user,
-                project=project,
-            )
+        user = User.objects.get(pk=user_id)
+        project = Project.objects.get(pk=project_id)
+        member = ProjectMember.objects.filter(project=project, user=user).first()
+        if member is not None:
             return JsonResponse({
-                "msg": "Project task has been created successfully.",
-                "title": task.title,
-                "description": task.description,
-                "created": task.created,
-            })
-        else:
-            return JsonResponse({
-                "msg": "Invalid data",
+                "msg": "User with this email already project member."
             }, status=400)
+
+        invitation_data = dict(
+            project=project,
+            is_active=False,
+            email=user.email,
+            role=user.profile.role,
+            invitation_token=ProjectInvitation.generate_token(),
+            user=user,
+        )
+
+        project_member = ProjectInvitation.objects.filter(email=user.email, project=project).first()
+        if project_member is not None:
+            return JsonResponse({
+                "msg": "User with this email already has been invited to this project"
+            }, status=400)
+        else:
+            invite = ProjectInvitation.objects.create(**invitation_data)
+            emails.invitation_email(
+                email=user.email,
+                project=project,
+                accept_path=reverse("projects:accept_decline",
+                                    kwargs={"invitation_token": invite.invitation_token, "status": "accept"}),
+                descline_path=reverse("projects:accept_decline",
+                                      kwargs={"invitation_token": invite.invitation_token, "status": "decline"}),
+            )
+            return JsonResponse({"msg": "User has been successfully invited."})

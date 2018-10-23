@@ -19,11 +19,27 @@ __all__ = (
 
 
 class Profile(TimeStampedModel):
+    ROLE_DESIGNER = "Designer"
+    ROLE_DEVELOPER = "Developer"
+    ROLE_ADMINISTRATOR = "Administrator"
+    ROLE_MARKETING = "Marketing"
+    ROLE_EXPERT = "Expert"
+    ROLE_COMMUNICATION = "Communication"
+    USER_ROLE = (
+        (ROLE_DESIGNER, "DESIGNER"),
+        (ROLE_DEVELOPER, "DEVELOPER"),
+        (ROLE_ADMINISTRATOR, "ADMINISTRATOR"),
+        (ROLE_MARKETING, "MARKETING"),
+        (ROLE_EXPERT, "EXPERT"),
+        (ROLE_COMMUNICATION, "COMMUNICATION"),
+    )
     email_confirmation_token = models.CharField(max_length=64, editable=False, null=True)
     reset_password_token = models.CharField(max_length=64, editable=False, null=True)
     invitation_token = models.CharField(max_length=64, editable=False, null=True)
     avatar = models.ImageField(upload_to=utils.get_file_path, blank=True)
-
+    approved = models.BooleanField(default=False)
+    role = models.CharField(choices=USER_ROLE, default=ROLE_DESIGNER, max_length=32)
+    hourly_rate = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     def get_confirmation_url(self) -> str:
@@ -77,8 +93,8 @@ class TeamMember(TimeStampedModel):
     charge = models.DecimalField(max_digits=10, decimal_places=2)
     time_log = models.DecimalField(max_digits=10, decimal_places=2)
     position = models.CharField(max_length=250)
-    available = models.BooleanField(default=False)
     date_joined = models.DateField(auto_now_add=True)
+    is_active = models.BooleanField(default=False)
     role = models.CharField(choices=MEMBER_ROLE, default=ROLE_MEMBER, max_length=32)
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -91,6 +107,7 @@ class Team(TimeStampedModel):
     description = models.TextField()
     logo = models.ImageField(upload_to=utils.get_file_path, blank=True)
     team_name = models.CharField(max_length=250)
+    available = models.BooleanField(default=False)
 
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     members = models.ManyToManyField(TeamMember)

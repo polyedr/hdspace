@@ -15,7 +15,7 @@
 {% endblock rightsidetoggle %}
 
 {% block rightsidebar %}
-  {% include "projects/includes/right-sidebar.html" with form=invite_form project=project project_members=project_members projects=projects %}
+  {% include "projects/includes/right-sidebar.html" with project_members=project_members search_user_form=search_user_form form=invite_form project=project project_members=project_members projects=projects project_member_user=project_member_user thread=thread %}
 {% endblock %}
 
 {% block content %}
@@ -167,6 +167,94 @@
 
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-12 m-t-md">
+    <div class="row">
+      <div class="col-lg-8">
+    <ul class="nav nav-tabs">
+      <li class="active"><a href="#notebook" data-toggle="tab"><i class="fa fa-laptop"></i></a></li>
+      <li><a href="#tablet" data-toggle="tab"><i class="fa fa-tablet"></i></a></li>
+      <li><a href="#mobile" data-toggle="tab"><i class="fa fa-mobile-phone"></i></a></li>
+    </ul>
+    <div class="panel panel-default">
+      <div class="panel-body">
+        <div class="tab-content">
+          <div id="notebook" class="tab-pane fade in active">
+            <div class="flex flex-space-between flex-center-main-axis tab-heading">
+              <div class="rotate-buttons">
+                <button><i class="fa fa-rotate-left"></i></button>
+                <button><i class="fa fa-rotate-right"></i></button>
+              </div>
+              <h5>lasdoalsdoasldoasdlaosdl</h5>
+              <div>
+                <button class="align-btn"><i class="glyphicon glyphicon-ok-sign"></i> Align Elements</button>
+              </div>
+            </div>
+            <div class="m-t-md">
+              <img class="w-100" src="https://dummyimage.com/600x400/000/fff" alt="">
+            </div>
+          </div>
+          <div id="tablet" class="tab-pane fade"></div>
+          <div id="mobile" class="tab-pane fade"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+      <div class="col-lg-4 right-panels">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            Pages Menu
+          </div>
+          <div class="panel-body">
+            <div class="row flex">
+              <div class="col-md-4 border-right">
+                <select class="form-control">
+                  <option>+</option>
+                </select>
+              </div>
+              <div class="col-md-8">
+                text
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            Elements
+          </div>
+          <div class="panel-body">
+            text
+          </div>
+        </div>
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            Prediction table
+          </div>
+          <div class="panel-body">
+            text
+          </div>
+        </div>
+        <div class="layout-variations flex flex-row">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              Layout Variations
+            </div>
+            <div class="panel-body">
+              text
+            </div>
+          </div>
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              Color Transfer
+            </div>
+            <div class="panel-body">
+              <img src="{% static 'img/upload.png'%}" class="img-responsive" alt="">
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>

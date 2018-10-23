@@ -24,4 +24,81 @@
         }
     });
 
+    $('#connectTeamButton').on('click', function (e) {
+        $('#connectTeam').modal();
+    });
+
+    $('#id_connect_team_name').on('keyup', function () {
+        var url = $(this).data('url');
+        var teamName = $(this).val();
+        if(teamName) {
+            $.ajax({
+                url: url,
+                method: 'POST',
+                data: {
+                    csrfmiddlewaretoken: window.csrftoken,
+                    teamName: teamName,
+                },
+                success: function (response) {
+                    $('.dropdown-menu').html('');
+                    if (response.length) {
+                        $('.team_match').hide();
+                        $.each(response, function (index, value) {
+                            var $html = '<li data-team-id=' + value.id + '><a href="#">' + value.team_name + '</a></li>';
+                            $('.dropdown-menu').append($html);
+                        });
+                    }else{
+                        $('.team_match').show();
+                    }
+                },
+            });
+        }else{
+            $('.dropdown-menu').html('');
+            $('.team_match').hide();
+        }
+    });
+
+    $(document).on('click', '.dropdown-menu li', function () {
+        var teamId = $(this).attr('data-team-id');
+        var teamName = $(this).text();
+        $('#id_connect_team_name').val(teamName);
+        $('#team_profile').val(teamId);
+    });
+
+    $('#SaveTeamButton').on('click', function (e) {
+        var teamId = $('#team_profile').val();
+        var url = $(this).data('url');
+        var position = $('#id_connect_position').val();
+        var charge = $('#id_hourly_rate').val();
+        var formValid = validateForm([
+            '#id_connect_position',
+            '#id_hourly_rate',
+        ]);
+        if(!teamId){
+            $('.team_name_error').show();
+        }else{
+            $('.team_name_error').hide();
+        }
+
+        if(teamId && !formValid){
+            $.ajax({
+                url: url,
+                method: 'POST',
+                data: {
+                    csrfmiddlewaretoken: window.csrftoken,
+                    teamId: teamId,
+                    position: position,
+                    hourly_rate: charge,
+                },
+                success: function (response) {
+                    showNotifications("success", response.msg);
+                },
+                error: function (xhr, status, error) {
+                    var response = jQuery.parseJSON(xhr.responseText)
+                    showNotifications("error", response.msg);
+                }
+            });
+        }
+    });
+
 })();

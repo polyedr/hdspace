@@ -17,6 +17,9 @@
             <div class="col-lg-12 text-center">
               <h5 class="text-navy ">Create New Team</h5>
             </div>
+            <div class="col-lg-12 float-left text-right">
+              <button id="connectTeamButton" class="btn btn-primary" type="submit">Connect existing team</button>
+            </div>
           </div>
         </div>
 
@@ -30,7 +33,7 @@
                   {% if field.name == "available" %}
                      {{ field|attr:"data-switchery:true"|add_class:"js-switch" }}
                   {% else %}
-                    {{ field|add_class:"form-control" }}
+                    {{ field|attr:"autocomplete:off"|add_class:"form-control" }}
                   {% endif %}
                   <p class="text-danger validate_error">This field is required.</p>
                   {% for error in field.errors %}
@@ -54,6 +57,7 @@
     </div>
   </div>
 </div>
+{% include "accounts/includes/connect.html"  with form=join_form %}
 {% endblock %}
 
 {% block extra_js %}
