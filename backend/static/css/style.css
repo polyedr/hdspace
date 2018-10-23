@@ -3372,10 +3372,10 @@ body.tour-open .animated {
   overflow: hidden;
   position: fixed;
   top: 60px;
-  width: 320px !important;
+  width: 520px !important;
   z-index: 1009;
   bottom: 0;
-  right: -320px;
+  right: -520px;
 }
 #right-sidebar.sidebar-open {
   right: 0;
@@ -8711,4 +8711,8 @@ padding: 24px 20px 10px 25px;
 
 .text-green{
   color: #1ab394;
+}
+
+.search_team{
+  width: 100%;
 }

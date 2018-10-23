@@ -5,6 +5,7 @@
     var last_pk = 0;
     var workflowScreenId = '';
     var screenStatus = '';
+    var currentTaskId = 0;
     var statusColor = {
         'on_hold': 'backgroundGreen',
         'in_progress': 'backgroundBlue',
@@ -15,7 +16,7 @@
     toggleErrors(['.validate_error'], false);
     $(".js-upload-photos").click(function () {
         $("#fileupload").click();
-     });
+    });
 
     $("#fileupload").fileupload({
         dataType: 'json',
@@ -56,6 +57,9 @@
     $('#addTaskButton').on('click', function (e) {
         e.preventDefault();
         var url = $(this).data('url');
+        if(currentTaskId){
+            var url = $(this).data('sub-url');
+        }
         var projectId = $(this).data('project_id');
         var title = $('#id_title').val();
         var description = $('#id_description').val();
@@ -70,6 +74,7 @@
                 description: description,
                 owner: owner,
                 projectId: projectId,
+                taskId:currentTaskId,
             },
             success: function (response) {
                 var $activityItem = $('#projectActivityItem').clone(true, true);
@@ -77,7 +82,9 @@
                 $activityItem.find('h4').text(response.title);
                 $activityItem.find('span').text(response.description);
                 $activityItem.find('div span').text(moment(response.created).format('ll'));
-                $('.sidebar-list').append($activityItem);
+                $activityItem.attr('data-task-id', response.id);
+                $activityItem.find('ul li[data-member-id=' + response.owner + ']').addClass('active');
+                $('.addTaskList').append($activityItem);
                 $('#addTaskModal').modal('hide');
                 showNotifications("success", response.msg);
             },
@@ -87,6 +94,110 @@
             }
         });
     });
+
+    $('#editTaskButton').on('click', function (e) {
+        e.preventDefault();
+        var url = $(this).data('url');
+        var title = $('#id_title').val();
+        var description = $('#id_description').val();
+        var owner = $('#id_owner').val();
+        var projectId = $(this).data('project_id');
+
+        $.ajax({
+            url: url,
+            method: 'POST',
+            data: {
+                csrfmiddlewaretoken: window.csrftoken,
+                title: title,
+                description: description,
+                owner: owner,
+                taskId: currentTaskId,
+                projectId: projectId,
+            },
+            success: function (response) {
+                var $editTaskItem = $('ul li[data-task-id=' + currentTaskId + ']');
+                $editTaskItem.find('h4').text(title);
+                $editTaskItem.find('.task-description').text(description);
+                $('#addTaskModal').modal('hide');
+                $editTaskItem.find('ul li').removeClass('active');
+                $editTaskItem.find('ul li[data-member-id=' + owner + ']').addClass('active');
+                showNotifications("success", response.msg);
+            },
+            error: function (xhr, status, error) {
+                var response = jQuery.parseJSON(xhr.responseText);
+                showNotifications("error", response.msg);
+            }
+        });
+    });
+
+    $('#addTaskModal').on('hidden.bs.modal', function () {
+        $('#addTaskButton').show();
+        $('#editTaskButton').hide();
+        $('#addTaskForm')[0].reset();
+        currentTaskId = '';
+    });
+
+    $(document).on('click', '.deleteButton', function () {
+        var taskId = $(this).closest('.task-list').attr('data-task-id');
+        var url = $('.addTaskList').data('task-delete-url');
+        var $assign = $(this);
+        $.ajax({
+            url: url,
+            method: 'POST',
+            data: {
+                csrfmiddlewaretoken: window.csrftoken,
+                taskId: taskId,
+            },
+            success: function (response) {
+                $assign.closest('.task-list').remove();
+                showNotifications("success", response.msg);
+            }
+        });
+    });
+
+    $(document).on('click', '.subButton', function () {
+        var $closest = $(this).closest('.task-list');
+        currentTaskId = $closest.attr('data-task-id');
+        toggleErrors(['.validate_error'], false);
+        $('#addTaskModal').modal();
+        $('#addTaskButton').show();
+        $('#editTaskButton').hide();
+    });
+
+    $(document).on('click', '.editButton', function () {
+        var $closest = $(this).closest('.task-list');
+        currentTaskId = $closest.attr('data-task-id');
+        toggleErrors(['.validate_error'], false);
+        $('#addTaskModal').modal();
+        $('#id_title').val($closest.find('h4').text())
+        $('#id_description').val($closest.find('.task-description').text())
+        var member = $closest.find('.active').attr('data-member-id');
+        $("#id_owner").find('option[value=' + member + ']').attr("selected", "selected");
+        $('#addTaskButton').hide();
+        $('#editTaskButton').show();
+    });
+
+    $(document).on('click', '.assigneeTask li', function () {
+        var url = $('.addTaskList').data('assign-url');
+        var memberId = $(this).attr('data-member-id');
+        var taskId = $(this).closest('.task-list').attr('data-task-id');
+        var $assign = $(this);
+        $.ajax({
+            url: url,
+            method: 'POST',
+            data: {
+                csrfmiddlewaretoken: window.csrftoken,
+                memberId: memberId,
+                taskId: taskId,
+            },
+            success: function (response) {
+                $assign.closest('ul li').removeClass('active');
+                $assign.addClass('active');
+                showNotifications("success", response.msg);
+            }
+        });
+    });
+
 
     $('.deleteMember').on('click', function () {
         var member_id = $(this).data('member_id');
@@ -106,6 +217,8 @@
 
     function getThreadMessages(status) {
         var user_id = $('.chat-discussion').attr("data-id");
+        var memberId = $('.chat-discussion').data("member-user");
+        var owner = $('.chat-discussion').data("project-owner");
         var messagesUrl = $('.chat-discussion').attr("data-path");
         $.ajax({
             url: messagesUrl,
@@ -123,20 +236,38 @@
                         $msgForm.find('.message-avatar').attr('src', value.avatar);
                         var message_date = moment(value.sent_at).format('MMM Do, h:mm a');
                         $msgForm.find('.message-date').text(message_date);
-                        $msgForm.find('.message-content').text(value.content);
+                        $msgForm.find('.message-content').text('');
+                        if(value.file_name) {
+                            $msgForm.find('.message-content').append('<a href=' + value.file + ' download>' + value.file_name + '</a>');
+                        }else{
+                            $msgForm.find('.message-content').text(value.content);
+                        }
                         $msgForm.removeClass("hide");
                         if(!value.online){
                             $msgForm.find('.message-avatar-wrap').removeClass("online");
                             $msgForm.find('.message-avatar-wrap').addClass("offline");
                         }
-                        if(parseInt(user_id) !== parseInt(value.sender_id)) {
+                        if(parseInt(memberId) !== parseInt(value.sender_id)) {
                             $msgForm.removeClass("left");
                             $msgForm.addClass("right");
                         }else{
                             $msgForm.removeClass("right");
                             $msgForm.addClass("left");
                         }
-                        $msgForm.find('.message-author').text( value.username);
+                        $msgForm.find('.message-author').text(value.username);
+                        $msgForm.find('.author-role').text('(' + value.role + ')');
+                        $msgForm.find('.author-role').attr('data-author-id', value.sender_id);
+                        if(parseInt(user_id) === parseInt(owner)){
+                            if(!value.file_name) {
+                                $msgForm.find('.message-edit').attr('data-message-id', value.message_id);
+                            }else{
+                                $msgForm.find('.message-edit').remove();
+                            }
+                            $msgForm.find('.message-delete').attr('data-message-id', value.message_id);
+                        }else{
+                            $msgForm.find('.message-edit').remove();
+                            $msgForm.find('.message-delete').remove();
+                        }
                         $(".chat-discussion").append($msgForm);
                     });
                     $('.chat-discussion').scrollTop($('.chat-discussion')[0].scrollHeight);
@@ -144,6 +275,34 @@
             }
         });
     }
+
+    $(document).on('click', '.author-role', function () {
+        var memberId = $(this).attr('data-author-id');
+        var projectId = $('.chat-discussion').data('project-id');
+        var owner = $('.chat-discussion').data('project-owner');
+    });
+
+    $(document).on('click', '.message-delete', function () {
+        var messageId = $(this).attr('data-message-id');
+        var projectId = $('.chat-discussion').data('project-id');
+        var url = $('.chat-discussion').data('delete-message-url');
+        var $message = $(this);
+        $.ajax({
+            url: url,
+            method: 'POST',
+            data: {
+                messageId: messageId,
+                projectId: projectId,
+                csrfmiddlewaretoken: window.csrftoken
+            },
+            success: function (response) {
+                if(response.msg){
+                    $message.closest('.chat-message').remove();
+                    showNotifications("success", response.msg);
+                }
+            }
+        });
+    });
 
     function sendMessage(){
         var message = $(".write_msg").val();
@@ -168,6 +327,8 @@
                         $msgForm.find('.message-content').text(message);
                         $msgForm.find('.message-author').text(username);
                         $msgForm.find('.message-avatar').attr('src', response.avatar);
+                        $msgForm.find('.author-role').text('(' + response.role + ')');
+                        $msgForm.find('.author-role').attr('data-author-id', response.sender_id);
                         $(".chat-discussion").append($msgForm);
                         $(".write_msg").val('');
                         $('.chat-discussion').scrollTop($('.chat-discussion')[0].scrollHeight);
@@ -191,10 +352,41 @@
         getThreadMessages(true);
     }, 3000);
 
+    $(".js-upload-message").click(function () {
+        $("#messagefileupload").click();
+    });
+
+    $("#messagefileupload").fileupload({
+        dataType: 'json',
+        sequentialUploads: true,
+        done: function (e, data) {
+          var response = data.result;
+          if (response.is_valid) {
+            var username = $('.chat-discussion').data('username');
+            var $msgForm = $('#msg_form').clone();
+            $msgForm.removeClass("hide");
+            $msgForm.removeClass("right");
+            $msgForm.addClass("left");
+            var message_date = moment(response.sent_at).format('MMM Do, h:mm a');
+            $msgForm.find('.message-date').text(message_date);
+            $msgForm.find('.message-content').text('');
+            $msgForm.find('.message-content').append('<a href='+response.file+' download>'+ response.file_name +'</a>');
+            $msgForm.find('.message-author').text(username);
+            $msgForm.find('.message-avatar').attr('src', response.avatar);
+            $msgForm.find('.author-role').text('(' + response.role + ')');
+            $msgForm.find('.author-role').attr('data-author-id', response.sender_id);
+            $(".chat-discussion").append($msgForm);
+            $('.chat-discussion').scrollTop($('.chat-discussion')[0].scrollHeight);
+          } else{
+              showNotifications("error", response.msg);
+          }
+        }
+     });
+
     $('.screen-delete').on('click', function (e) {
         var url = $(this).data('href');
         var screenId = $(this).data('screen-id');
-        $(this).parent('div').parent('div').remove();
+        var $deleted = $(this);
         $.ajax({
             url: url,
             method: 'POST',
@@ -208,15 +400,18 @@
         });
     });
 
+    // Invite
     $('#inviteUser').on('click', function (e) {
         e.preventDefault();
         var name = $('#id_name').val();
+        var role = $('#id_role').val();
         var email = $('#id_email').val();
         var url = $(this).data('url');
 
         var formValid = validateForm([
              '#id_name',
              '#id_email',
+             '#id_role',
          ]);
         if(!formValid) {
             $.ajax({
@@ -226,6 +421,7 @@
                     csrfmiddlewaretoken: window.csrftoken,
                     name: name,
                     email: email,
+                    role: role,
                 },
                 success: function (response) {
                     showNotifications("success", response.msg);
@@ -237,14 +433,83 @@
                 }
             });
         }
-    })
+    });
 
+    $('#searchUser').on('click', function (e) {
+       e.preventDefault();
+       var url = $(this).data('url');
+       var position = $('#id_position').val();
 
+       var formValid = validateForm([
+             '#id_position',
+       ]);
+       if(!formValid) {
+           $.ajax({
+                url: url,
+                method: 'POST',
+                data: {
+                    csrfmiddlewaretoken: window.csrftoken,
+                    position: position,
+                },
+                success: function (response) {
+                    if(response["users"]) {
+                        $.each(response["users"], function (index, value) {
+                            var $inviteForm = $('#searchUserInvite').clone(true, true);
+                            $inviteForm.removeClass('hide');
+                            $inviteForm.removeAttr('id');
+                            $inviteForm.find('.team-name').text(value.teammember__team__team_name);
+                            $inviteForm.find('.user-name').text(value.first_name + ' ' + value.last_name);
+                            $inviteForm.find('.label').text(parseInt(value.profile__hourly_rate) + '$/hr');
+                            $inviteForm.find('.block').text(value.profile__role);
+                            if(value.profile__avatar) {
+                                $inviteForm.find('img').attr('src', 'media/' + value.avatar);
+                            }else{
+                                $inviteForm.find('img').attr('src', response["no_image"]);
+                            }
+                            $inviteForm.find('button').attr('data-user-id', value.pk);
+                            $('.search-result .row').append($inviteForm);
+                        });
+                    }
+                },
+                error: function (xhr, status, error) {
+                    var response = jQuery.parseJSON(xhr.responseText)
+                    showNotifications("error", response.msg);
+                }
+            });
+       }
+    });
+
+    $(document).on('click', '#inviteSearchedUser', function () {
+        var url = $(this).attr('data-url');
+        var projectId = $(this).attr('data-project-id');
+        var userId = $(this).attr('data-user-id');
+        $.ajax({
+            url: url,
+            method: 'POST',
+            data: {
+                csrfmiddlewaretoken: window.csrftoken,
+                userId: userId,
+                projectId: projectId,
+            },
+            success: function (response) {
+                showNotifications("success", response.msg);
+                $('#inviteUserForm')[0].reset();
+            },
+            error: function (xhr, status, error) {
+                var response = jQuery.parseJSON(xhr.responseText)
+                showNotifications("error", response.msg);
+            }
+        });
+    });
 
     $('.workflow-list img').on('click', function () {
         $('#workflowModal').modal();
         var assignee = $(this).data('asignee-user-name');
-        $('#assignedUser').text(assignee);
+        if(assignee.length > 1){
+            $('#assignedUser').text(assignee);
+        }else{
+            $('#assignedUser').text('No assignee');
+        }
         workflowScreenId = $(this).data('screen-id');
         screenStatus = $(this).data('screen-status');
         for (var key in statusColor) {
@@ -309,7 +574,7 @@
         var status = $(this).data('status');
         var url = $('#statusDropdown').data('url');
         $(this).addClass("active-status");
-        $('#statusChange').addClass(statusColor[status])
+        $('#statusChange').addClass(statusColor[status]);
         $.ajax({
             url: url,
             method: 'POST',
@@ -321,9 +586,10 @@
             success: function (response) {
                 showNotifications("success", response.msg);
                 $('#statusDropdown').toggleClass('show');
-                $(".workflow-list img[data-screen-id="+ workflowScreenId + "]" ).attr('data-screen-status', status)
+                $(".workflow-list img[data-screen-id="+ workflowScreenId + "]" ).attr('data-screen-status', status);
             },
         });
     });
+
 
 })();

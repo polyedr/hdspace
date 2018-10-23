@@ -53,6 +53,7 @@ class ProjectScreenView(LoginRequiredMixin, View):
                 "screen_event": serializers.serialize("json", [screen_event]),
                 "update_url": screen_event.get_update_event_position_url(),
                 "delete_url": screen_event.get_event_delete_url(),
+                "project_id": screen.project.pk,
             }, safe=False)
 
 
@@ -142,6 +143,7 @@ class EditScreenView(LoginRequiredMixin, TemplateView):
         context["screen"] = ProjectScreen.objects.get(pk=screen)
         context["screens"] = ProjectScreen.objects.filter(project=project)
         context["screen_events"] = ScreenEvent.objects.filter(screen=screen)
+        context["project_id"] = project
 
         return self.render_to_response(context)
 

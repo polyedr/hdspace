@@ -464,3 +464,7 @@ button:focus {
 .active-status {
     font-weight: 600;
 }
+
+#page-wrapper {
+    padding-bottom: 50px;
+}

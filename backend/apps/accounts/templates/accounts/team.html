@@ -59,7 +59,7 @@
                   <td>{{ member.position }}</td>
                   <td>{{ member.charge }}</td>
                   <td>{{ member.time_log }}</td>
-                  <td>{% if member.available %} Yes {% else %} No {% endif %}</td>
+                  <td>{% if member.team__available %} Yes {% else %} No {% endif %}</td>
                   <td><img class="media-img" src="{% if member.user__profile__avata %} /media/{{ member.user__profile__avatar }} {% else %} {% static 'img/profile_empty.png' %} {% endif %}" /></td>
                   <td><img class="media-img" src="/media/{{ member.team__logo }}" /></td>
                   <td><a href="{% url 'accounts:delete_team' pk=member.id %}"><i class="fa fa-trash"></i></a></td>

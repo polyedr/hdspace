@@ -15,6 +15,8 @@ __all__ = (
     "ChangePasswordForm",
     "AvatarUploadForm",
     "CreateTeamForm",
+    "SearchUserForm",
+    "JoinTeamForm",
 )
 
 
@@ -110,15 +112,25 @@ class ResetPasswordForm(forms.Form):
 
 
 class UpdateProfileForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super(UpdateProfileForm, self).__init__(*args, **kwargs)
+        self.fields["role"] = forms.ChoiceField(
+            choices=[("", "Select a Role")] + [(role[0], role[0])
+                                               for role in Profile.USER_ROLE]
+        )
+
     email = forms.EmailField()
     first_name = forms.CharField()
     last_name = forms.CharField()
     username = forms.CharField()
+    hourly_rate = forms.CharField(label="Hourly Rate")
+    role = forms.ChoiceField(widget=forms.Select(), required=True)
 
     class Meta:
         model = User
         fields = (
-            "username", "first_name", "last_name", "email"
+            "username", "first_name", "last_name", "email",
         )
 
 
@@ -153,6 +165,33 @@ class ChangePasswordForm(forms.Form):
 
 class AvatarUploadForm(forms.Form):
     avatar = forms.ImageField()
+
+
+class SearchUserForm(forms.Form):
+
+    def __init__(self, *args, **kwargs):
+        super(SearchUserForm, self).__init__(*args, **kwargs)
+        self.fields["position"] = forms.ChoiceField(
+            choices=[("", "Select a Position")] + [(role[0], role[0])
+                                                   for role in Profile.USER_ROLE]
+        )
+
+    position = forms.ChoiceField(widget=forms.Select(), required=True)
+
+
+class JoinTeamForm(forms.Form):
+
+    def __init__(self, *args, **kwargs):
+        super(JoinTeamForm, self).__init__(*args, **kwargs)
+        self.fields["connect_position"] = forms.ChoiceField(
+            choices=[("", "Select a Position")] + [(role[0], role[0])
+                                                   for role in Profile.USER_ROLE]
+        )
+
+    team_name = forms.CharField(label="Team Name", required=False)
+    hourly_rate = forms.CharField(label="Hourly Charge")
+    team_id = forms.CharField(widget=forms.HiddenInput())
+    connect_position = forms.ChoiceField(widget=forms.Select(), required=True)
 
 
 class CreateTeamForm(forms.Form):

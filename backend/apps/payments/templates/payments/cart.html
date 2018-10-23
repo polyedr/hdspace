@@ -30,7 +30,7 @@
               <tr>
                 <td>{{project.id}}</td>
                 <td><a href="{% url 'projects:project' pk=project.id %}">{{ project.name }}</a></td>
-                <td class="text-navy">
+                <td>
                   <i class="fa fa-trash checkProject" data-project_id="{{project.id}}"></i>
                 </td>
               </tr>

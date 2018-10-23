@@ -75,15 +75,17 @@ class RegistrationView(AnonymousRequiredMixin, SEOViewMixin, TemplateView):
             invitations = ProjectInvitation.objects.filter(email=user.email)
             for invitation in invitations:
                 if invitation.is_active:
-                    ProjectMember.objects.create(
+                    member = ProjectMember.objects.create(
                         project=invitation.project,
                         user=user,
+                        status=ProjectMember.STATUS_MEMBER,
+                        role=invitation.role,
                     )
 
                     thread = Thread.objects.get(project=invitation.project)
                     UserThread.objects.create(
                         thread=thread,
-                        user=user,
+                        user=member,
                     )
                     invitation.delete()
             emails.send_email_address_confirmation(

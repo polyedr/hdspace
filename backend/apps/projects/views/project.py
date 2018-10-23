@@ -11,6 +11,8 @@ from projects.forms import (
     CreateProjectForm, ScreenUploadForm, ProjectInvitationForm,
     AddTaskForm
 )
+
+from accounts.forms import SearchUserForm
 from projects.models import (
     Project, ProjectScreen, ScreenEvent,
     ProjectMember, ProjectTask
@@ -55,17 +57,24 @@ class CreateProjectView(LoginRequiredMixin, View):
                 user=request.user,
                 preview=Project.generate_preview_token(),
             )
+            member = ProjectMember.objects.create(
+                role=request.user.profile.role,
+                status=ProjectMember.STATUS_CREATOR,
+                project=project,
+                user=request.user,
+            )
+
             thread = Thread.objects.create(
                 project=project
             )
             UserThread.objects.create(
                 thread=thread,
-                user=request.user,
+                user=member,
             )
             new_message = f'Project Management chat for {project.name}'
             Message.objects.create(
                 thread=thread,
-                sender=request.user,
+                sender=member,
                 content=new_message,
             )
             return JsonResponse({
@@ -99,8 +108,10 @@ class ProjectView(LoginRequiredMixin, TemplateView):
             context["approved_screens"] = ProjectScreen.objects.filter(status=ProjectScreen.SCREEN_APPROVED)
             context["project_members"] = ProjectMember.objects.filter(project=project)
             context["tasks"] = ProjectTask.objects.filter(project=project)
-            context["thread"] = Thread.ordered(Thread.inbox(request.user, project))[0]
+            context["project_member_user"] = ProjectMember.objects.get(user=request.user, project=project)
+            context["thread"] = Thread.ordered(Thread.inbox(context["project_member_user"], project))[0]
             context["projects"] = Project.objects.filter(user=request.user)
+            context["search_user_form"] = SearchUserForm()
             return self.render_to_response(context)
 
 

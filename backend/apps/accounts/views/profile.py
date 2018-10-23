@@ -29,6 +29,8 @@ class ProfileView(LoginRequiredMixin, SEOViewMixin, TemplateView):
                 email=user.email,
                 first_name=user.first_name,
                 last_name=user.last_name,
+                hourly_rate=user.profile.hourly_rate,
+                role=user.profile.role,
             )
 
             context["form"] = UpdateProfileForm(initial=initial)
@@ -41,7 +43,11 @@ class ProfileView(LoginRequiredMixin, SEOViewMixin, TemplateView):
         user = request.user
         form = UpdateProfileForm(data=request.POST, instance=user)
         if form.is_valid():
+            data = form.cleaned_data
             user = form.save()
+            user.profile.role = data["role"]
+            user.profile.hourly_rate = data["hourly_rate"]
+            user.save()
             update_session_auth_hash(request, user)
             messages.success(request, "Your profile has been updated successfully.")
             return HttpResponseRedirect(reverse("accounts:profile"))

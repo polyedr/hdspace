@@ -1,9 +1,9 @@
-from django.contrib.auth.models import User
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
 
-from projects.models import Project
+from accounts.utils import utils
+from projects.models import Project, ProjectMember
 from .utils import cached_property
 
 __all__ = (
@@ -15,7 +15,7 @@ __all__ = (
 
 class Thread(models.Model):
 
-    users = models.ManyToManyField(User, through="UserThread")
+    users = models.ManyToManyField(ProjectMember, through="UserThread")
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -62,16 +62,19 @@ class Thread(models.Model):
     @classmethod
     def ordered(cls, objs):
         objs = list(objs)
-        objs.sort(key=lambda o: o.latest_message.sent_at, reverse=True)
+        if len(objs) > 1:
+            objs.sort(key=lambda o: o.latest_message.sent_at, reverse=True)
         return objs
 
 
 class Message(models.Model):
 
     thread = models.ForeignKey(Thread, related_name="messages", on_delete=models.CASCADE)
-    sender = models.ForeignKey(User, on_delete=models.CASCADE)
+    sender = models.ForeignKey(ProjectMember, on_delete=models.CASCADE)
     sent_at = models.DateTimeField(default=timezone.now)
     content = models.TextField()
+    file = models.FileField(upload_to=utils.get_file_path, blank=True)
+    file_name = models.CharField(max_length=250)
     unread = models.BooleanField(default=True)
 
     def __str__(self):
@@ -81,7 +84,7 @@ class Message(models.Model):
 class UserThread(models.Model):
 
     thread = models.ForeignKey(Thread, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(ProjectMember, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.thread.project.name

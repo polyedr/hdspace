@@ -42,6 +42,9 @@
   </div>
   <div class="bottom-toolbar">
     <div id="bottomPanel" class="container text-center">
+      <a href="{% url 'projects:project' pk=project_id %}" type="button" class="btn btn-link btn-lg ">
+        <span class="glyphicon glyphicon-arrow-left"></span>
+      </a>
       <button type="button" class="btn btn-link btn-lg" data-mode="preview">
         <span class="glyphicon glyphicon-eye-open"></span>
       </button>
@@ -51,6 +54,7 @@
       <button type="button" class="btn btn-link btn-lg share-button">
         <span class="glyphicon glyphicon-share-alt"></span>
       </button>
+
     </div>
   </div>
   <div id="adjacent-content" class="existed">
