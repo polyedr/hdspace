@@ -27,41 +27,28 @@
           <h3 data-toggle="modal" data-target="#chatMembers"><i class="fa fa-comments-o"></i> {{ project_members.count }} participants</h3>
         </div>
 
-        <div class="row">
-         <div class="col-lg-12">
-            <div class="ibox chat-view">
-              <div class="ibox-title">
-                <span class="text-green">{{ project.name }}</span> project chat room
-              </div>
-              <div class="ibox-content">
-                <div class="row">
-                  <div class="col-md-12">
-                    <div class="chat-discussion" data-delete-message-url="{% url 'threads:delete' %}" data-edit-message-url="{{'sdfdsf'}}" data-project-id="{{ project.id }}" data-id="{{request.user.pk}}" data-member-user="{{project_member_user.id}}" data-username="{{request.user.username}}" data-path="{{ thread.get_absolute_url }}" data-chat="{{ thread.get_chat_url }}" data-project-owner="{{project.user.id}}">
-
-                    </div>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-lg-12">
-                    <div class="chat-message-form">
-                      <div class="form-group">
-                        <input id="messagefileupload" type="file" name="file"
-                           class="hide"
-                           data-url="{% url 'threads:add_message_file' %}"
-                           data-form-data='{"csrfmiddlewaretoken": "{{ csrf_token }}", "threadId": "{{ thread.pk }}", "projectId": "{{ project.pk }}"}'>
-                          <div class="msg-textarea-wrapper">
-                            <button class="btn btn-primary js-upload-message">
-                              <span class="glyphicon glyphicon-cloud-upload"></span>
-                            </button>
-                            <textarea class="form-control message-input write_msg" name="message" placeholder="Enter message text"></textarea>
-                          </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+        <div class="ibox chat-view">
+          <div class="ibox-title">
+            <span class="text-green">{{ project.name }}</span> project chat room
+          </div>
+          <div class="ibox-content">
+            <div class="chat-discussion"  data-user-status-url="{% url 'accounts:user_status' %}" data-change-role-url="{% url 'projects:edite_role' %}"data-edit-message-path="{% url 'threads:edit' %}" data-delete-message-url="{% url 'threads:delete' %}" data-edit-message-url="{{'sdfdsf'}}" data-project-id="{{ project.id }}" data-id="{{request.user.pk}}" data-member-user="{{project_member_user.id}}" data-username="{{request.user.username}}" data-path="{{ thread.get_absolute_url }}" data-chat="{{ thread.get_chat_url }}" data-project-owner="{{project.user.id}}">
             </div>
-         </div>
+          </div>
+          <div class="chat-message-form">
+            <div class="form-group">
+              <input id="messagefileupload" type="file" name="file"
+                 class="hide"
+                 data-url="{% url 'threads:add_message_file' %}"
+                 data-form-data='{"csrfmiddlewaretoken": "{{ csrf_token }}", "threadId": "{{ thread.pk }}", "projectId": "{{ project.pk }}"}'>
+                <div class="msg-textarea-wrapper">
+                  <button class="btn btn-primary js-upload-message">
+                    <span class="glyphicon glyphicon-cloud-upload"></span>
+                  </button>
+                  <textarea class="form-control message-input write_msg" name="message" placeholder="Enter message text"></textarea>
+                </div>
+            </div>
+          </div>
         </div>
       </div>
       <div id="tab-2" class="tab-pane">
@@ -72,7 +59,7 @@
           <button id="addTask" class="btn btn-primary btn-circle btn-lg" type="button" data-toggle="modal" data-target="#addTaskModal" title="Add project task"><i class="fa fa-plus"></i></button>
         </div>
 
-        <ul class="sidebar-list addTaskList" data-task-edit-url="{% url 'projects:edit_task'%}" data-task-delete-url="{% url 'projects:delete_task'%}" data-assign-url="{% url 'projects:assign_task'%}">
+        <ul class="sidebar-list addTaskList"  data-task-edit-url="{% url 'projects:edit_task'%}" data-task-delete-url="{% url 'projects:delete_task'%}" data-assign-url="{% url 'projects:assign_task'%}">
           {% for task in tasks %}
             <li data-task-id="{{task.pk}}" class="task-list">
               <h4>{{ task.title }}</h4>
@@ -161,10 +148,19 @@
     <img class="message-avatar" src="" alt="" >
   </span>
   <div class="message">
-    <a class="author-role" href="#" data-author-id=""> </a>
+    <div class="dropdown-wrap">
+      <a class="author-role" href="#" data-author-id=""> </a>
+      <ul class="dropdown-links">
+        {% for role in user_roles %}
+          <li>{{role}}</li>
+        {% endfor %}
+      </ul>
+    </div>
+
     <a class="message-author" href="#"> </a>
     <span class="message-date"></span>
-    <span class="message-content"></span>
+    <span class="message-file"></span>
+    <input class="message-content" type="text" value="" disabled>
     <span class="message-edit" data-message-id=""><a>Edit</a></span>
     <span class="message-delete" data-message-id=""><a>Delete</a></span>
   </div>

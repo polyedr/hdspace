@@ -16,6 +16,7 @@ project_event_patterns = [
     path("download/<int:pk>/", project_event.DownloadProjectView.as_view(), name="download"),
     path("invite/<int:pk>/", project_event.ProjectInviteView.as_view(), name="invite"),
     path("invite-user/", project_event.UserInviteView.as_view(), name="invite_user"),
+    path("edite-role/", project_event.EditMemberRoleView.as_view(), name="edite_role"),
     path("accept-decline/<str:invitation_token>/<str:status>/",
          project_event.AcceptDeclineInvitationView.as_view(), name="accept_decline"),
     path("delete-member/", project_event.DeleteChatMemberView.as_view(), name="delete_member"),

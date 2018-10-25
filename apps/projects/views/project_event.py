@@ -26,6 +26,7 @@ __all__ = (
     "DeleteChatMemberView",
     "DownloadProjectView",
     "UserInviteView",
+    "EditMemberRoleView",
 )
 
 
@@ -198,3 +199,14 @@ class UserInviteView(LoginRequiredMixin, View):
                                       kwargs={"invitation_token": invite.invitation_token, "status": "decline"}),
             )
             return JsonResponse({"msg": "User has been successfully invited."})
+
+
+class EditMemberRoleView(LoginRequiredMixin, View):
+
+    # noinspection PyMethodMayBeStatic
+    def post(self, request, *args, **kwargs):
+        role = request.POST["role"]
+        member = request.POST["authorId"]
+        ProjectMember.objects.filter(pk=member).update(role=role)
+
+        return JsonResponse({})

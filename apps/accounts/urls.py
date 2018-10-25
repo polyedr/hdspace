@@ -26,6 +26,7 @@ team_patterns = [
 
 user_patterns = [
     path("search-user/", user.SearchUserView.as_view(), name="search_user"),
+    path("user-status/", user.UserStatusView.as_view(), name="user_status"),
 ]
 
 app_name = "accounts"
