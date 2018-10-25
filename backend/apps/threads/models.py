@@ -87,4 +87,4 @@ class UserThread(models.Model):
     user = models.ForeignKey(ProjectMember, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.thread.project.name
+        return self.user.user.username

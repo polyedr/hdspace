@@ -6,6 +6,7 @@
     var workflowScreenId = '';
     var screenStatus = '';
     var currentTaskId = 0;
+    var authorId = 0;
     var statusColor = {
         'on_hold': 'backgroundGreen',
         'in_progress': 'backgroundBlue',
@@ -53,6 +54,10 @@
           }
         }
      });
+
+    $('#addTask').on('click', function (e) {
+        $('#editTaskButton').hide();
+    });
 
     $('#addTaskButton').on('click', function (e) {
         e.preventDefault();
@@ -102,6 +107,7 @@
         var description = $('#id_description').val();
         var owner = $('#id_owner').val();
         var projectId = $(this).data('project_id');
+        $('#editTaskButton').hide();
 
         $.ajax({
             url: url,
@@ -233,16 +239,18 @@
                     $.each(response["messages"], function (index, value) {
                         last_pk = value.pk;
                         var $msgForm = $('#msg_form').clone(true, true);
+                        $msgForm.removeAttr('id');
                         $msgForm.find('.message-avatar').attr('src', value.avatar);
                         var message_date = moment(value.sent_at).format('MMM Do, h:mm a');
                         $msgForm.find('.message-date').text(message_date);
-                        $msgForm.find('.message-content').text('');
+                        $msgForm.find('.message-content').val('');
                         if(value.file_name) {
-                            $msgForm.find('.message-content').append('<a href=' + value.file + ' download>' + value.file_name + '</a>');
+                            $msgForm.find('.message-file').append('<a href=' + value.file + ' download>' + value.file_name + '</a>');
                         }else{
-                            $msgForm.find('.message-content').text(value.content);
+                            $msgForm.find('.message-content').val(value.content);
                         }
                         $msgForm.removeClass("hide");
+                        $msgForm.find('.message-avatar-wrap').attr('data-author-id', value.sender_id);
                         if(!value.online){
                             $msgForm.find('.message-avatar-wrap').removeClass("online");
                             $msgForm.find('.message-avatar-wrap').addClass("offline");
@@ -270,16 +278,64 @@
                         }
                         $(".chat-discussion").append($msgForm);
                     });
-                    $('.chat-discussion').scrollTop($('.chat-discussion')[0].scrollHeight);
+                    $('.ibox-content').scrollTop($('.chat-discussion')[0].scrollHeight);
                 }
             }
         });
     }
 
+     $(document).on('click', '.dropdown-links li', function () {
+        var role = $(this).text();
+        var url = $('.chat-discussion').data("change-role-url");
+        var $authorRole = $(this);
+        if(role){
+            $.ajax({
+                url: url,
+                method: 'POST',
+                data: {
+                    authorId: authorId,
+                    role: role,
+                    csrfmiddlewaretoken: window.csrftoken
+                },
+                success: function (response) {
+                    $('.author-role[data-author-id=' + authorId + ']').text('(' + role + ')');
+                }
+            });
+        }
+    });
+
     $(document).on('click', '.author-role', function () {
-        var memberId = $(this).attr('data-author-id');
-        var projectId = $('.chat-discussion').data('project-id');
-        var owner = $('.chat-discussion').data('project-owner');
+        $(this).next('ul').toggle();
+        authorId = $(this).attr('data-author-id');
+    });
+
+    $(document).on('keypress', '.message-content', function (e) {
+        var code = (e.keyCode ? e.keyCode : e.which);
+        if (parseInt(code) === 13) {
+            e.preventDefault();
+            var message = $(this).val();
+            var $edit = $(this);
+            var messageId = $(this).next('span').attr('data-message-id');
+            var url = $('.chat-discussion').data("edit-message-path");
+            if(message) {
+                $.ajax({
+                    url: url,
+                    method: 'POST',
+                    data: {
+                        messageId: messageId,
+                        message: message,
+                        csrfmiddlewaretoken: window.csrftoken
+                    },
+                    success: function (response) {
+                        if (response.msg) {
+                            $edit.val(message);
+                            $edit.prop('disabled', true);
+                            showNotifications("success", response.msg);
+                        }
+                    }
+                });
+            }
+        }
     });
 
     $(document).on('click', '.message-delete', function () {
@@ -308,6 +364,8 @@
         var message = $(".write_msg").val();
         var chatUrl = $('.chat-discussion').attr('data-chat');
         var username = $('.chat-discussion').data('username');
+        var user_id = $('.chat-discussion').attr("data-id");
+        var owner = $('.chat-discussion').data("project-owner");
         if (message) {
             $.ajax({
                 url: chatUrl,
@@ -318,24 +376,59 @@
                 },
                 success: function (response) {
                     if (response.status) {
-                        var $msgForm = $('#msg_form').clone();
+                        var $msgForm = $('#msg_form').clone(true, true);
+                        $msgForm.removeAttr('id');
                         $msgForm.removeClass("hide");
                         $msgForm.removeClass("right");
                         $msgForm.addClass("left");
                         var message_date = moment(response.sent_at).format('MMM Do, h:mm a');
                         $msgForm.find('.message-date').text(message_date);
-                        $msgForm.find('.message-content').text(message);
+                        $msgForm.find('.message-content').val(message);
                         $msgForm.find('.message-author').text(username);
                         $msgForm.find('.message-avatar').attr('src', response.avatar);
                         $msgForm.find('.author-role').text('(' + response.role + ')');
                         $msgForm.find('.author-role').attr('data-author-id', response.sender_id);
+                        if(parseInt(user_id) === parseInt(owner)){
+                            $msgForm.find('.message-edit').attr('data-message-id', response.message_id);
+                            $msgForm.find('.message-delete').attr('data-message-id', response.message_id);
+                        }else{
+                            $msgForm.find('.message-edit').remove();
+                            $msgForm.find('.message-delete').remove();
+                        }
                         $(".chat-discussion").append($msgForm);
                         $(".write_msg").val('');
-                        $('.chat-discussion').scrollTop($('.chat-discussion')[0].scrollHeight);
+                        $('.ibox-content').scrollTop($('.chat-discussion')[0].scrollHeight);
                     }
                 }
             });
         }
+    }
+
+    function getProjectMembers(){
+        var url = $('.chat-discussion').data('user-status-url');
+        var projectId = $('.chat-discussion').data('project-id');
+        $.ajax({
+            url: url,
+            method: 'POST',
+            data: {
+                projectId: projectId,
+                csrfmiddlewaretoken: window.csrftoken
+            },
+            success: function (response) {
+                if (response['members']) {
+                    $.each(response['members'], function (index, value) {
+                        console.log(value)
+                         $('.message-avatar-wrap[data-author-id=' + value.member_id + ']').removeClass('online');
+                         $('.message-avatar-wrap[data-author-id=' + value.member_id + ']').removeClass('offline');
+                         if(value.status){
+                            $('.message-avatar-wrap[data-author-id=' + value.member_id + ']').addClass('online');
+                         }else {
+                            $('.message-avatar-wrap[data-author-id=' + value.member_id + ']').addClass('offline');
+                         }
+                    })
+                }
+            }
+        });
     }
 
     $(".write_msg").keypress(function (e) {
@@ -352,6 +445,10 @@
         getThreadMessages(true);
     }, 3000);
 
+    setInterval(function () {
+        getProjectMembers();
+    }, 60000);
+
     $(".js-upload-message").click(function () {
         $("#messagefileupload").click();
     });
@@ -363,7 +460,9 @@
           var response = data.result;
           if (response.is_valid) {
             var username = $('.chat-discussion').data('username');
-            var $msgForm = $('#msg_form').clone();
+            var user_id = $('.chat-discussion').attr("data-id");
+            var owner = $('.chat-discussion').data("project-owner");
+            var $msgForm = $('#msg_form').clone(true, true);
             $msgForm.removeClass("hide");
             $msgForm.removeClass("right");
             $msgForm.addClass("left");
@@ -375,6 +474,13 @@
             $msgForm.find('.message-avatar').attr('src', response.avatar);
             $msgForm.find('.author-role').text('(' + response.role + ')');
             $msgForm.find('.author-role').attr('data-author-id', response.sender_id);
+            if(parseInt(user_id) === parseInt(owner)){
+                $msgForm.find('.message-edit').attr('data-message-id', value.message_id);
+                $msgForm.find('.message-delete').attr('data-message-id', value.message_id);
+            }else{
+                $msgForm.find('.message-edit').remove();
+                $msgForm.find('.message-delete').remove();
+            }
             $(".chat-discussion").append($msgForm);
             $('.chat-discussion').scrollTop($('.chat-discussion')[0].scrollHeight);
           } else{
@@ -568,6 +674,12 @@
         $('#statusDropdown').toggleClass("show");
         $('#collaboratordDropdown').removeClass('show');
         $( "#statusDropdown li[data-status="+ screenStatus + "]" ).addClass("active-status");
+    });
+
+    $(document).on('click', '.message-edit', function () {
+        $('.message-content').prop('disabled', true);
+        var $prevInput = $(this).prev('input');
+        $prevInput.prop('disabled', function(i, v) { return !v; });
     });
 
     $(document).on('click', '#statusDropdown li', function () {

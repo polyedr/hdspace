@@ -18,6 +18,7 @@ __all__ = (
 
 class MessageListView(LoginRequiredMixin, View):
 
+    # noinspection PyMethodMayBeStatic
     def get(self, request, *args, **kwargs):
         thread = Thread.objects.get(pk=kwargs.get("pk"))
         messages = Message.objects.filter(thread=thread)
@@ -52,6 +53,7 @@ class MessageListView(LoginRequiredMixin, View):
 
 class ChatView(LoginRequiredMixin, View):
 
+    # noinspection PyMethodMayBeStatic
     def post(self, request, **kwargs):
         new_message = request.POST.get("message")
         thread = Thread.objects.get(pk=kwargs.get("pk"))
@@ -69,12 +71,14 @@ class ChatView(LoginRequiredMixin, View):
             "avatar": message.sender.user.profile.get_image(),
             "role": message.sender.role,
             "sender_id": message.sender.id,
+            "message_id": message.id,
         })
         return JsonResponse(context)
 
 
 class DeleteView(LoginRequiredMixin, View):
 
+    # noinspection PyMethodMayBeStatic
     def post(self, request, **kwargs):
         project = request.POST["projectId"]
         message = request.POST["messageId"]
@@ -89,8 +93,15 @@ class DeleteView(LoginRequiredMixin, View):
 
 class EditView(LoginRequiredMixin, View):
 
+    # noinspection PyMethodMayBeStatic
     def post(self, request, **kwargs):
-        pass
+        message_id = request.POST["messageId"]
+        message = request.POST["message"]
+        Message.objects.filter(pk=message_id).update(
+            content=message
+        )
+
+        return JsonResponse({"msg": "Message has been edited successfully."})
 
 
 class AddMessageFileView(LoginRequiredMixin, View):

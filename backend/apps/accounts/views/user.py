@@ -5,9 +5,11 @@ from django.contrib.staticfiles.templatetags.staticfiles import static
 
 from accounts.forms import SearchUserForm
 from django.contrib.auth.models import User
+from projects.models import ProjectMember, Project
 
 __all__ = (
     "SearchUserView",
+    "UserStatusView",
 )
 
 
@@ -33,3 +35,20 @@ class SearchUserView(LoginRequiredMixin, View):
             return JsonResponse({"users": list(users), "no_image": no_image})
         else:
             return JsonResponse({"msg": "Position field required."}, status=400)
+
+
+class UserStatusView(LoginRequiredMixin, View):
+
+    # noinspection PyMethodMayBeStatic
+    def post(self, request):
+        projectId = request.POST["projectId"]
+        project = Project.objects.get(pk=projectId)
+        members = ProjectMember.objects.filter(project=project)
+
+        context = dict()
+        context["members"] = [dict(
+            member_id=member.pk,
+            status=member.user.profile.online(),
+        ) for member in members]
+
+        return JsonResponse(context)
