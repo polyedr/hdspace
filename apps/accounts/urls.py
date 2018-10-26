@@ -20,8 +20,11 @@ team_patterns = [
     path("teams/", team.TeamView.as_view(), name="teams"),
     path("new-team/", team.CreateTeamView.as_view(), name="new_team"),
     path("delete-team/<int:pk>/", team.DeleteTeamView.as_view(), name="delete_team"),
+    path("delete-team-member/", team.DeleteTeamMemberView.as_view(), name="delete_team_member"),
+    path("activate-team-member/", team.ActivateTeamMemberView.as_view(), name="activate_team_member"),
     path("search-team/", team.SearchTeamView.as_view(), name="search_team"),
     path("join-team/", team.JoinTeamView.as_view(), name="join_team"),
+    path("team-management/", team.TeamManagement.as_view(), name="team_management"),
 ]
 
 user_patterns = [

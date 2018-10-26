@@ -34,6 +34,9 @@ task_patterns = [
     path("assign-task/", task.AssignTaskView.as_view(), name="assign_task"),
     path("delete-task/", task.DeleteTaskView.as_view(), name="delete_task"),
     path("edit-task/", task.EditTaskView.as_view(), name="edit_task"),
+    path("management/", task.TaskManagementView.as_view(), name="management"),
+    path("tracking/", task.TaskTimeTrackingView.as_view(), name="tracking"),
+    path("stop-tracking/", task.StopTaskTimeTrackingView.as_view(), name="stop_tracking"),
 ]
 
 screen_patterns = [

@@ -342,13 +342,16 @@ p.tip-login a {
     padding-bottom: 95px;
     /*display: flex;*/
     /*flex-direction: column;*/
-    height: calc(100% - 66px);
+    height: calc(100% - 135px);
 }
-.ibox-content {
+.sidebar-open.sidebar-top .chat-view {
+    height: calc(100% - 70px);
+}
+.chat-view .ibox-content {
     overflow-y: auto;
     max-height: 100%;
 }
-.ibox-title {
+.chat-view .ibox-title {
     position: absolute;
     top: 0;
     left: 0;

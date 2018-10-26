@@ -1,3 +1,6 @@
+import math
+
+
 from typing import List, Tuple, Union
 
 from django.template import loader
@@ -8,7 +11,9 @@ __all__ = (
     "send_email",
     "build_absolute_url",
     "render_body",
+    "date_difference",
 )
+
 
 Recipient_s = Union[List[str], Tuple[str], str]
 
@@ -60,3 +65,7 @@ def build_absolute_url(path: str) -> str:
         base_url=settings.BASE_URL,
         path=path,
     )
+
+
+def date_difference(new, old):
+    return math.floor((new - old).seconds / 60)

@@ -1,9 +1,12 @@
-from django.views.generic.base import View
+from django.utils import timezone
+
+from django.views.generic.base import View, TemplateView
 from django.http import JsonResponse
 from django.contrib.auth.mixins import LoginRequiredMixin
 
+from core.utils import date_difference
 from projects.forms import AddTaskForm
-from projects.models import Project, ProjectMember, ProjectTask
+from projects.models import Project, ProjectMember, ProjectTask, TaskTime
 
 
 __all__ = (
@@ -12,6 +15,9 @@ __all__ = (
     "DeleteTaskView",
     "EditTaskView",
     "AddSubTaskView",
+    "TaskManagementView",
+    "TaskTimeTrackingView",
+    "StopTaskTimeTrackingView",
 )
 
 
@@ -54,9 +60,19 @@ class AssignTaskView(LoginRequiredMixin, View):
         task_id = request.POST["taskId"]
         member_id = request.POST["memberId"]
         member = ProjectMember.objects.get(pk=member_id)
+        task = ProjectTask.objects.get(pk=task_id)
         ProjectTask.objects.filter(pk=task_id).update(
             owner=member,
         )
+        try:
+            task_time = TaskTime.objects.get(task=task, stoped=False)
+            if task_time.member != member:
+                task_time.track_time = task_time.track_time + date_difference(timezone.now(), task_time.started)
+                task_time.stoped = True
+                task_time.started = None
+                task_time.save()
+        except TaskTime.DoesNotExist:
+            pass
 
         return JsonResponse({
             "msg": "Task has been successfully assigned.",
@@ -98,6 +114,7 @@ class EditTaskView(LoginRequiredMixin, View):
 
 
 class AddSubTaskView(LoginRequiredMixin, View):
+
     # noinspection PyMethodMayBeStatic
     def post(self, request, *args, **kwargs):
         project_id = request.POST["projectId"]
@@ -129,3 +146,85 @@ class AddSubTaskView(LoginRequiredMixin, View):
             return JsonResponse({
                 "msg": "Invalid data",
             }, status=400)
+
+
+class TaskManagementView(LoginRequiredMixin, TemplateView):
+    template_name = "projects/management.html"
+
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data()
+
+        tasks = ProjectTask.objects.filter(owner__user=request.user).values(
+            "id",
+            "title",
+            "description"
+        )
+        tasks = list(tasks)
+
+        try:
+            member = ProjectMember.objects.get(user=request.user)
+            track_times = TaskTime.objects.filter(member=member).values(
+                "task__pk",
+                "stoped",
+                "track_time",
+            )
+            track_times = list(track_times)
+
+            for task in tasks:
+                for track_time in track_times:
+                    if task["id"] == track_time["task__pk"]:
+                        task["stoped"] = track_time["stoped"]
+                        task["track_time"] = track_time["track_time"]
+                    else:
+                        task["stoped"] = True
+                        task["track_time"] = 0
+            context["tasks"] = tasks
+        except ProjectMember.DoesNotExist:
+            context["tasks"] = ""
+        return self.render_to_response(context)
+
+
+class TaskTimeTrackingView(LoginRequiredMixin, View):
+
+    # noinspection PyMethodMayBeStatic
+    def post(self, request, *args, **kwargs):
+        task_id = request.POST["taskId"]
+        task = ProjectTask.objects.get(pk=task_id)
+        member = ProjectMember.objects.get(project=task.project, user=request.user)
+        try:
+            task_time = TaskTime.objects.get(member=member)
+            task_time.started = timezone.now()
+            task_time.stoped = False
+            task_time.save()
+        except TaskTime.DoesNotExist:
+            TaskTime.objects.create(
+                track_time=0,
+                started=timezone.now(),
+                stoped=False,
+                task=task,
+                member=member,
+            )
+
+        return JsonResponse({
+            "msg": "Task time is started tracking.",
+        })
+
+
+class StopTaskTimeTrackingView(LoginRequiredMixin, View):
+
+    # noinspection PyMethodMayBeStatic
+    def post(self, request, *args, **kwargs):
+        task_id = request.POST["taskId"]
+        task = ProjectTask.objects.get(pk=task_id)
+        member = ProjectMember.objects.get(project=task.project, user=request.user)
+        try:
+            task_time = TaskTime.objects.get(member=member, stoped=False)
+            task_time.track_time = task_time.track_time + date_difference(timezone.now(), task_time.started)
+            task_time.stoped = True
+            task_time.save()
+        except TaskTime.DoesNotExist:
+            pass
+
+        return JsonResponse({
+            "msg": "Task tracking stoped.",
+        })

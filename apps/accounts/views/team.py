@@ -16,8 +16,11 @@ __all__ = (
     "TeamView",
     "CreateTeamView",
     "DeleteTeamView",
+    "DeleteTeamMemberView",
+    "ActivateTeamMemberView",
     "SearchTeamView",
     "JoinTeamView",
+    "TeamManagement",
 )
 
 
@@ -27,7 +30,7 @@ class TeamView(LoginRequiredMixin, SEOViewMixin, TemplateView):
 
     def get(self, request, *args, **kwargs):
         context = self.get_context_data()
-        context["members"] = TeamMember.objects.filter(user=request.user).values(
+        context["members"] = TeamMember.objects.filter(role=TeamMember.ROLE_ADMIN, team__owner=request.user).values(
             "id",
             "charge",
             "time_log",
@@ -54,7 +57,10 @@ class CreateTeamView(LoginRequiredMixin, SEOViewMixin, TemplateView):
         if "form" not in kwargs:
             context["form"] = self.form
             context["join_form"] = JoinTeamForm()
-
+        try:
+            context["member"] = TeamMember.objects.get(user=request.user)
+        except TeamMember.DoesNotExist:
+            context["member"] = ''
         return self.render_to_response(context)
 
     def post(self, request, *args, **kwargs):
@@ -75,6 +81,13 @@ class CreateTeamView(LoginRequiredMixin, SEOViewMixin, TemplateView):
                 user.profile.avatar = data["avatar"]
                 user.save()
 
+            try:
+                TeamMember.objects.get(user=user)
+                messages.error(request, "User with this email/username already another team member.")
+                return HttpResponseRedirect(reverse("accounts:new_team"))
+            except TeamMember.DoesNotExist:
+                pass
+
             member = TeamMember.objects.create(
                 charge=data["charge"],
                 time_log=data["time_log"],
@@ -92,16 +105,6 @@ class CreateTeamView(LoginRequiredMixin, SEOViewMixin, TemplateView):
                 owner=request.user,
             )
             team.members.add(member)
-
-            if request.user.username != data["username"]:
-                member = TeamMember.objects.create(
-                    charge=0,
-                    time_log=0,
-                    position='Owner',
-                    role=TeamMember.ROLE_MEMBER,
-                    user=request.user,
-                )
-                team.members.add(member)
 
             messages.success(request, "Your team has been created successfully.")
             return HttpResponseRedirect(reverse("accounts:teams"))
@@ -122,6 +125,24 @@ class DeleteTeamView(LoginRequiredMixin, View):
         return HttpResponseRedirect(reverse("accounts:teams"))
 
 
+class DeleteTeamMemberView(LoginRequiredMixin, View):
+
+    # noinspection PyMethodMayBeStatic
+    def post(self, request, *args, **kwargs):
+        member = request.POST["member"]
+        TeamMember.objects.filter(pk=member).delete()
+        return JsonResponse({"msg": "Team has been deleted successfully."})
+
+
+class ActivateTeamMemberView(LoginRequiredMixin, View):
+
+    # noinspection PyMethodMayBeStatic
+    def post(self, request, *args, **kwargs):
+        member = request.POST["member"]
+        TeamMember.objects.filter(pk=member).update(is_active=True)
+        return JsonResponse({"msg": "Team has been activated successfully."})
+
+
 class SearchTeamView(LoginRequiredMixin, View):
 
     # noinspection PyMethodMayBeStatic
@@ -140,18 +161,50 @@ class JoinTeamView(LoginRequiredMixin, View):
         form = JoinTeamForm(request.POST)
         if form.is_valid():
             data = request.POST
-            team_id = data["teamId"]
+            team_id = data["team_id"]
             team = Team.objects.get(pk=team_id)
-            member = TeamMember.objects.create(
-                charge=data["hourly_rate"],
-                time_log=0,
-                position=data["position"],
-                role=TeamMember.ROLE_MEMBER,
-                is_active=False,
-                user=request.user,
-            )
-            team.members.add(member)
+
+            try:
+                TeamMember.objects.get(user=request.user)
+                return JsonResponse({"msg": "You already connected to another team."}, status=400)
+            except TeamMember.DoesNotExist:
+                member = TeamMember.objects.create(
+                    charge=data["hourly_rate"],
+                    time_log=0,
+                    position=data["connect_position"],
+                    role=TeamMember.ROLE_MEMBER,
+                    is_active=False,
+                    user=request.user,
+                )
+                team.members.add(member)
 
             return JsonResponse({"msg": "You have connected successfully."})
         else:
             return JsonResponse({"msg": "Invalid form data."}, status=400)
+
+
+class TeamManagement(LoginRequiredMixin, TemplateView):
+    template_name = "accounts/team_management.html"
+
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data()
+        member = TeamMember.objects\
+            .filter(role=TeamMember.ROLE_ADMIN, user=request.user)\
+            .values("team__pk", "team__team_name")\
+            .first()
+
+        if member is not None:
+            context["name"] = member["team__team_name"]
+            context["team_id"] = member["team__pk"]
+            context["members"] = TeamMember.objects.filter(team__pk=member["team__pk"]).values(
+                "id",
+                "charge",
+                "time_log",
+                "position",
+                "is_active",
+                "user__first_name",
+                "user__last_name",
+                "user__username",
+                "user__profile__avatar",
+            )
+        return self.render_to_response(context)

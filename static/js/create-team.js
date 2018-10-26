@@ -45,7 +45,7 @@
                         $('.team_match').hide();
                         $.each(response, function (index, value) {
                             var $html = '<li data-team-id=' + value.id + '><a href="#">' + value.team_name + '</a></li>';
-                            $('.dropdown-menu').append($html);
+                            $('.search_team .dropdown-menu').append($html);
                         });
                     }else{
                         $('.team_match').show();
@@ -86,12 +86,13 @@
                 method: 'POST',
                 data: {
                     csrfmiddlewaretoken: window.csrftoken,
-                    teamId: teamId,
-                    position: position,
+                    team_id: teamId,
+                    connect_position: position,
                     hourly_rate: charge,
                 },
                 success: function (response) {
                     showNotifications("success", response.msg);
+                    $('#connectTeam').modal('hide');
                 },
                 error: function (xhr, status, error) {
                     var response = jQuery.parseJSON(xhr.responseText)

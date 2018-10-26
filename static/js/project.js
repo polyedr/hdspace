@@ -558,23 +558,30 @@
                     position: position,
                 },
                 success: function (response) {
-                    if(response["users"]) {
+                    if(response["users"].length > 0) {
                         $.each(response["users"], function (index, value) {
                             var $inviteForm = $('#searchUserInvite').clone(true, true);
                             $inviteForm.removeClass('hide');
                             $inviteForm.removeAttr('id');
-                            $inviteForm.find('.team-name').text(value.teammember__team__team_name);
+                            if(value.teammember__team__team_name){
+                                var team_name = value.teammember__team__team_name;
+                            }else{
+                                var team_name = 'No team';
+                            }
+                            $inviteForm.find('.team-name').text(team_name);
                             $inviteForm.find('.user-name').text(value.first_name + ' ' + value.last_name);
                             $inviteForm.find('.label').text(parseInt(value.profile__hourly_rate) + '$/hr');
                             $inviteForm.find('.block').text(value.profile__role);
                             if(value.profile__avatar) {
-                                $inviteForm.find('img').attr('src', 'media/' + value.avatar);
+                                $inviteForm.find('img').attr('src', '/media/' + value.profile__avatar);
                             }else{
                                 $inviteForm.find('img').attr('src', response["no_image"]);
                             }
                             $inviteForm.find('button').attr('data-user-id', value.pk);
                             $('.search-result .row').append($inviteForm);
                         });
+                    }else{
+                         $('.search-result .row').html('');
                     }
                 },
                 error: function (xhr, status, error) {
