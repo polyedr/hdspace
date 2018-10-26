@@ -17,9 +17,11 @@
             <div class="col-lg-12 text-center">
               <h5 class="text-navy ">Create New Team</h5>
             </div>
-            <div class="col-lg-12 float-left text-right">
-              <button id="connectTeamButton" class="btn btn-primary" type="submit">Connect existing team</button>
-            </div>
+            {% if member == '' %}
+              <div class="col-lg-12 float-left text-right">
+                <button id="connectTeamButton" class="btn btn-primary" type="submit">Connect existing team</button>
+              </div>
+            {% endif %}
           </div>
         </div>
 

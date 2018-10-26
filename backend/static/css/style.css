@@ -8716,3 +8716,7 @@ padding: 24px 20px 10px 25px;
 .search_team{
   width: 100%;
 }
+
+.search_team > ul{
+  width: 100%;
+}

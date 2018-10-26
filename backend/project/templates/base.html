@@ -65,7 +65,21 @@
           <a href="{% url 'payments:plans' %}"><i class="fa fa-credit-card"></i> <span class="nav-label">Payment Package</span></a>
         </li>
         <li>
-          <a href="{% url 'accounts:teams' %}"><i class="fa fa-th-large"></i> <span class="nav-label">Team Profile</span></a>
+          <a href="{% url 'accounts:teams' %}">
+            <i class="fa fa-th-large"></i>
+            <span class="nav-label">Team Profile</span>
+          </a>
+        </li>
+        <li>
+          <a href="#">
+            <i class="fa fa-users"></i>
+            <span class="nav-label">Admin Management</span>
+             <span class="fa arrow"></span>
+          </a>
+          <ul class="nav nav-second-level">
+            <li><a href="{% url 'accounts:team_management' %}">Team Managment</a></li>
+            <li><a href="{% url 'projects:management' %}">Task Mangement</a></li>
+          </ul>
         </li>
       </ul>
 

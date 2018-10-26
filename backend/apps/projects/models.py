@@ -18,6 +18,7 @@ __all__ = (
     "ProjectActivity",
     "ProjectInvitation",
     "ScreenAssignee",
+    "TaskTime",
 )
 
 
@@ -183,6 +184,18 @@ class ProjectTask(TimeStampedModel):
 
     def __str__(self):
         return self.title
+
+
+class TaskTime(TimeStampedModel):
+
+    track_time = models.IntegerField(default=0)
+    started = models.DateTimeField(blank=True)
+    stoped = models.BooleanField(default=True)
+    task = models.ForeignKey(ProjectTask, on_delete=models.CASCADE)
+    member = models.ForeignKey(ProjectMember, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.member.user.username
 
 
 class ScreenAssignee(TimeStampedModel):

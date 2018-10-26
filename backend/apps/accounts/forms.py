@@ -205,7 +205,9 @@ class CreateTeamForm(forms.Form):
     )
     username = forms.CharField(label="User Name")
     team_name = forms.CharField(label="Team Name")
-    position = forms.CharField()
+    position = forms.ChoiceField(widget=forms.Select(),
+                                 choices=[("", "Select a Position")] + [(role[0], role[0])
+                                 for role in Profile.USER_ROLE])
     charge = forms.CharField(label="Hourly Charge")
     time_log = forms.CharField(label="Time Log")
     description = forms.CharField(widget=forms.Textarea)
