@@ -189,19 +189,19 @@ CELERY_BEAT_SCHEDULE = {
 }
 
 
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = "smtp.gmail.com"
-EMAIL_USE_TLS = True
-EMAIL_PORT = 587
-EMAIL_HOST_USER = "davittovmasyan26@gmail.com"
-EMAIL_HOST_PASSWORD = "davit123"
+# EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+# EMAIL_HOST = "smtp.gmail.com"
+# EMAIL_USE_TLS = True
+# EMAIL_PORT = 587
+# EMAIL_HOST_USER = "davittovmasyan26@gmail.com"
+# EMAIL_HOST_PASSWORD = "davit123"
 
 # Email settings
 EMAIL_BASE_TEMPLATE = "email/base.html"
 DOWNLOAD_BASE_TEMPLATE = "base_download.html"
-# EMAIL_HOST = ENV.str("EMAIL_HOST", "localhost")
-# EMAIL_PORT = ENV.int("EMAIL_PORT", 25)
-# EMAIL_BACKEND_CONFIG = ENV.str("EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend")
+EMAIL_HOST = ENV.str("EMAIL_HOST", "localhost")
+EMAIL_PORT = ENV.int("EMAIL_PORT", 25)
+EMAIL_BACKEND_CONFIG = ENV.str("EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend")
 DEFAULT_FROM_EMAIL = "from@example.com"
 
 SITE_NAME = "PM"

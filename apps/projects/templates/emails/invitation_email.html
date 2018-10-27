@@ -1,41 +1,25 @@
 {% extends base_template %}
-
+{% load staticfiles %}
 
 {% block content %}
 
-<table class="body-wrap">
-  <tr>
-    <td></td>
-    <td class="container" width="600">
-      <div class="content">
-        <table class="main" width="100%" cellpadding="0" cellspacing="0">
-          <tr>
-            <td class="content-wrap">
-              <table cellpadding="0" cellspacing="0">
-                <tr>
-                  <td class="content-block">
-                    <h3>Invitation to collaborate on the "{{ name }}" project</h3>
-                  </td>
-                </tr>
-                <tr>
-                  <td class="content-block">
-                    Accept or Decline. Click on the button below and follow instructions.
-                  </td>
-                </tr>
-                <tr>
-                  <td class="content-block aligncenter">
-                    <a href="{{ invite_accept_url }}" class="btn-primary">Accept</a>
-                    <a href="{{ invite_decline_url }}" class="btn-primary">Decline</a>
-                  </td>
-                </tr>
-              </table>
-            </td>
-          </tr>
-        </table>
-      </div>
-    </td>
-    <td></td>
-  </tr>
-</table>
+<tr>
+  <td style="text-align: center">
+    <img src="{{site_name}}{% static 'img/sar.png' %}" alt="">
+    <h1 style="font-size: 31px;color: #1CC09F; margin-top: -106px;text-transform: uppercase;font-weight: bold">Invitation to collaborate on the "{{ name }}" project</h1>
+
+  </td>
+</tr>
+<tr>
+  <td style="background: #ecf4f9;text-align: center;">
+    <p style="color: #5D7B93;margin: 0;width: 73%;margin: 0 auto">
+      <a>
+        Accept or Decline. Click on the button below and follow instructions.
+      </a>
+    </p>
+    <a href="{{ invite_accept_url }}" style="padding: 14px 35px;border-radius: 100px;border: none;cursor: pointer;background: #1CC09F;color: #ffffff;margin-top: 35px ">Accept</a>
+    <a href="{{ invite_decline_url }}" style="padding: 14px 35px;border-radius: 100px;border: none;cursor: pointer;background: #1CC09F;color: #ffffff;margin-top: 35px ">Decline</a>
+  </td>
+</tr>
 
 {% endblock %}
