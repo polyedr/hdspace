@@ -1,30 +1,26 @@
 {% extends base_template %}
-
+{% load staticfiles %}
 
 {% block content %}
 
-<table class="body-wrap">
-  <tr>
-    <td></td>
-    <td class="container" width="600">
-      <div class="content">
-        <table class="main" width="100%" cellpadding="0" cellspacing="0">
-          <tr>
-            <td class="content-wrap">
-              <table cellpadding="0" cellspacing="0">
-                <tr>
-                  <td class="content-block">
-                    <h3>Invitation to collaborate on the "{{ name }}" project declined by "{{ email }}"</h3>
-                  </td>
-                </tr>
-              </table>
-            </td>
-          </tr>
-        </table>
-      </div>
-    </td>
-    <td></td>
-  </tr>
-</table>
+<tr>
+  <td style="text-align: center">
+    <img src="{{site_name}}{% static 'img/sar.png' %}" alt="">
+    <h1 style="font-size: 31px;color: #1CC09F; margin-top: -106px;text-transform: uppercase;font-weight: bold">Invitation to collaborate on the "{{ name }}"</h1>
+
+  </td>
+</tr>
+<tr>
+  <td style="background: #ecf4f9;text-align: center;">
+    <p style="color: #5D7B93;margin: 0;width: 73%;margin: 0 auto">
+      <a>
+         Project collaboration declined by "{{ email }}"
+      </a>
+    </p>
+  </td>
+</tr>
 
 {% endblock %}
+
+
+{% block content %}

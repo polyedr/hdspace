@@ -27,6 +27,7 @@ def render_body(template_name: str, context: dict = None, base_template: str = s
         context = dict()
 
     context["base_template"] = context.get("base_template", base_template)
+    context["site_name"] = settings.BASE_URL
     template = loader.get_template(template_name)
     return template.render(context)
 
