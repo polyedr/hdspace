@@ -11,7 +11,6 @@
         var url = $('form').attr('action');
         var username = $.trim($('input[name="username"]').val());
         var password = $.trim($('input[name="password"]').val());
-        var csrf_token = $('meta[name="csrf-token"]').attr('content');
         if (!validateForm(['input[name="username"]', 'input[name="password"]'])) {
             toggleErrors(['.loading']);
             $.ajax({
@@ -20,7 +19,7 @@
                 data: {
                     username: username,
                     password: password,
-                    csrfmiddlewaretoken: csrf_token
+                    csrfmiddlewaretoken: window.csrftoken,
                 },
                 success: function (response) {
                     if (response) {
