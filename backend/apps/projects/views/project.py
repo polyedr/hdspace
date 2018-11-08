@@ -1,3 +1,4 @@
+from urllib.parse import quote_plus
 from django.views.generic.base import View
 from django.views.generic import TemplateView
 from django.db.models import Q, Count
@@ -6,16 +7,17 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 from payments.cart import Cart
 from core.views.seo import SEOViewMixin
+from core.utils import build_absolute_url
 from threads.models import Thread, UserThread, Message
 from projects.forms import (
     CreateProjectForm, ScreenUploadForm, ProjectInvitationForm,
-    AddTaskForm
+    AddTaskForm, ScreenEventForm
 )
 
 from accounts.forms import SearchUserForm
 from projects.models import (
     Project, ProjectScreen, ScreenEvent,
-    ProjectMember, ProjectTask
+    ProjectMember, ProjectTask, ProjectActivity
 )
 from accounts.models import Profile
 
@@ -78,6 +80,7 @@ class CreateProjectView(LoginRequiredMixin, View):
                 sender=member,
                 content=new_message,
             )
+
             return JsonResponse({
                 "msg": "Your project has been created successfully.",
                 "pk": project.id,
@@ -114,6 +117,12 @@ class ProjectView(LoginRequiredMixin, TemplateView):
             context["thread"] = Thread.ordered(Thread.inbox(context["project_member_user"], project))[0]
             context["projects"] = Project.objects.filter(user=request.user)
             context["search_user_form"] = SearchUserForm()
+            context["activities"] = ProjectActivity.objects.filter(project=project).order_by('-created')
+            context["screen_form"] = ScreenEventForm()
+            context["project_name"] = quote_plus(context["project"].name)
+            if context["screens"]:
+                context["screen_events"] = ScreenEvent.objects.filter(screen=context["screens"][0])
+
             return self.render_to_response(context)
 
 
@@ -125,7 +134,11 @@ class ProjectPreviewView(LoginRequiredMixin, TemplateView):
         screen_id = kwargs.pop("pk")
 
         context["screen_events"] = ScreenEvent.objects.filter(screen=screen_id)
-        context["screen"] = ProjectScreen.objects.get(id=screen_id)
+        screen = ProjectScreen.objects.get(id=screen_id)
+        context["image"] = build_absolute_url(screen.get_image())
+        context["url"] = build_absolute_url(screen.get_preview_url())
+        context["title"] = screen.project.name
+        context["screen"] = screen
 
         return self.render_to_response(context)
 

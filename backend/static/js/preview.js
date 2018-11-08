@@ -5,6 +5,7 @@
         location.reload();
     };
 
+
     $('#image').on('click', function () {
         $('.existed').css("opacity", "1");
         setTimeout(function(){

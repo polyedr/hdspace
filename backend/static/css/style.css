@@ -177,7 +177,7 @@ h5 {
 ul.nav-second-level {
   background: #293846;
 }
-.nav > li.active {
+.nav > li.screen-img-wrap scr-imgactive {
   border-left: 4px solid #19aa8d;
   background: #293846;
 }
@@ -1677,6 +1677,8 @@ div.dt-button-info {
 /* CIRCLE */
 .img-circle {
   border-radius: 50%;
+  max-width: 50px;
+ min-height: 50px;
 }
 .btn-circle {
   width: 30px;
@@ -3372,10 +3374,10 @@ body.tour-open .animated {
   overflow: hidden;
   position: fixed;
   top: 60px;
-  width: 520px !important;
+  width: 378px !important;
   z-index: 1009;
   bottom: 0;
-  right: -520px;
+  right: -378px;
 }
 #right-sidebar.sidebar-open {
   right: 0;
@@ -5270,7 +5272,8 @@ dd.project-people {
   padding: 0;
 }
 .chat-message {
-  padding: 10px 20px;
+  padding: 10px 0px;
+  display: flex;
 }
 .message-avatar {
   height: 48px;
@@ -5288,6 +5291,7 @@ dd.project-people {
   margin-left: 10px;
 }
 .message {
+  width: 100%;
   background-color: #fff;
   border: 1px solid #e7eaec;
   text-align: left;
@@ -5304,7 +5308,7 @@ dd.project-people {
 }
 .chat-discussion .chat-message.left .message {
   text-align: left;
-  margin-left: 55px;
+
 }
 .chat-discussion .chat-message.right .message {
   text-align: right;

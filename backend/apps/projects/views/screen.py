@@ -8,7 +8,11 @@ from django.contrib.auth.models import User
 
 from core.utils import build_absolute_url
 from projects.forms import ScreenEventForm, ScreenUploadForm
-from projects.models import Project, ProjectScreen, ScreenEvent, ScreenAssignee
+from projects.models import (
+    Project, ProjectScreen, ScreenEvent,
+    ScreenAssignee, ProjectActivity
+)
+from projects.utils import emails
 
 
 __all__ = (
@@ -19,6 +23,7 @@ __all__ = (
     "EditScreenView",
     "AssignScreenView",
     "ChangeScreenStatusView",
+    "ShareScreenView",
 )
 
 
@@ -81,6 +86,12 @@ class AddProjectScreenView(LoginRequiredMixin, View):
                 screen=screen,
                 user=request.user,
             )
+            ProjectActivity.objects.create(
+                type=ProjectActivity.ADDED_SCREEN,
+                member=request.user,
+                project=project,
+            )
+
             return JsonResponse({
                 "is_valid": True,
                 "msg": "Project screen successfully added.",
@@ -125,6 +136,7 @@ class ProjectScreenPreviewView(LoginRequiredMixin, View):
         context = dict(
             image=screen.get_image(),
             preview_absolute_url=build_absolute_url(screen.get_preview_url()),
+            screen_save_url=build_absolute_url(screen.get_screen_url()),
             events=screen_events,
         )
 
@@ -168,3 +180,19 @@ class ChangeScreenStatusView(LoginRequiredMixin, View):
         status = request.POST["status"]
         ProjectScreen.objects.filter(pk=screen_id).update(status=status)
         return JsonResponse({"msg": "Screen status has been successfully changed."})
+
+
+class ShareScreenView(LoginRequiredMixin, View):
+
+    # noinspection PyMethodMayBeStatic
+    def post(self, request, *args, **kwargs):
+        screen_id = request.POST["screenId"]
+        email = request.POST["email"]
+        screen = ProjectScreen.objects.get(pk=screen_id)
+        emails.share_link_email(
+            email=email,
+            project=screen.project.name,
+            share_link=screen.get_preview_url(),
+            username=request.user.get_full_name()
+        )
+        return JsonResponse({"msg": "Screen has been successfully shared."})

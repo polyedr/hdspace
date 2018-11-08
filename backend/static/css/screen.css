@@ -324,8 +324,9 @@
     margin-right: 10px;
     color: #e2e3e3;
 }
-#shareLink {
-    width: 400px;
+
+.share-link {
+    width: 400px !important;
 }
 .modal-footer {
   margin-top: 0;

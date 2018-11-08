@@ -176,7 +176,9 @@ class SearchUserForm(forms.Form):
                                                    for role in Profile.USER_ROLE]
         )
 
-    position = forms.ChoiceField(widget=forms.Select(), required=True)
+    position = forms.ChoiceField(widget=forms.Select(), required=False)
+    rate_from = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Rate from'}), required=False)
+    rate_to = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Rate to'}), required=False)
 
 
 class JoinTeamForm(forms.Form):
