@@ -6,7 +6,10 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 from core.utils import date_difference
 from projects.forms import AddTaskForm
-from projects.models import Project, ProjectMember, ProjectTask, TaskTime
+from projects.models import (
+    Project, ProjectMember, ProjectTask,
+    TaskTime, ProjectActivity
+)
 
 
 __all__ = (
@@ -37,6 +40,11 @@ class AddProjectTaskView(LoginRequiredMixin, View):
                 description=data["description"],
                 creator=creator,
                 owner=member,
+                project=project,
+            )
+            ProjectActivity.objects.create(
+                type=ProjectActivity.TASK_CREATED,
+                member=request.user,
                 project=project,
             )
             return JsonResponse({
@@ -84,7 +92,13 @@ class DeleteTaskView(LoginRequiredMixin, View):
     # noinspection PyMethodMayBeStatic
     def post(self, request, *args, **kwargs):
         task_id = request.POST["taskId"]
-        ProjectTask.objects.filter(pk=task_id).delete()
+        task = ProjectTask.objects.filter(pk=task_id).first()
+        ProjectActivity.objects.create(
+            type=ProjectActivity.TASK_REMOVED,
+            member=request.user,
+            project=task.project,
+        )
+        task.delete()
         return JsonResponse({"msg": "Task has been deleted successfully."})
 
 
@@ -161,26 +175,22 @@ class TaskManagementView(LoginRequiredMixin, TemplateView):
         )
         tasks = list(tasks)
 
-        try:
-            member = ProjectMember.objects.get(user=request.user)
-            track_times = TaskTime.objects.filter(member=member).values(
-                "task__pk",
-                "stoped",
-                "track_time",
-            )
-            track_times = list(track_times)
+        track_times = TaskTime.objects.filter(member__user=request.user).values(
+            "task__pk",
+            "stoped",
+            "track_time",
+        )
+        track_times = list(track_times)
 
-            for task in tasks:
-                for track_time in track_times:
-                    if task["id"] == track_time["task__pk"]:
-                        task["stoped"] = track_time["stoped"]
-                        task["track_time"] = track_time["track_time"]
-                    else:
-                        task["stoped"] = True
-                        task["track_time"] = 0
-            context["tasks"] = tasks
-        except ProjectMember.DoesNotExist:
-            context["tasks"] = ""
+        for task in tasks:
+            for track_time in track_times:
+                if task["id"] == track_time["task__pk"]:
+                    task["stoped"] = track_time["stoped"]
+                    task["track_time"] = track_time["track_time"]
+                else:
+                    task["stoped"] = True
+                    task["track_time"] = 0
+        context["tasks"] = tasks
         return self.render_to_response(context)
 
 

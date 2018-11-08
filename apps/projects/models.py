@@ -49,17 +49,6 @@ class Project(TimeStampedModel):
         return self.name
 
 
-class ProjectActivity(TimeStampedModel):
-    EVENT_CREATE = "create"
-    ACTIVITY_TYPES = (
-        (EVENT_CREATE, "CREATE"),
-    )
-
-    type = models.CharField(choices=ACTIVITY_TYPES, default=EVENT_CREATE, max_length=32)
-
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
-
-
 class ProjectScreen(TimeStampedModel):
     SCREEN_ON_HOLD = "on_hold"
     SCREEN_IN_PROGRESS = "in_progress"
@@ -134,6 +123,17 @@ class ScreenEvent(TimeStampedModel):
         return self.screen.project.name
 
 
+class ScreenComment(TimeStampedModel):
+    text = models.TextField()
+    x = models.IntegerField()
+    y = models.IntegerField()
+
+    screen = models.ForeignKey(ProjectScreen, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.text
+
+
 class ProjectInvitation(TimeStampedModel):
     invitation_token = models.CharField(max_length=16)
     is_active = models.BooleanField(default=False)
@@ -204,3 +204,28 @@ class ScreenAssignee(TimeStampedModel):
 
     def __str__(self):
         return self.user.username
+
+
+class ProjectActivity(models.Model):
+    TASK_CREATED = "task_created"
+    CHAT_TASK_CREATED = "chat_task_created"
+    TASK_REMOVED = "task_removed"
+    ADDED_SCREEN = "screen_added"
+    USER_INVITED = "user_invited"
+    SHARED_PROTOTYPE = "shared_prototype"
+    ACTIVITY_TYPES = (
+        (TASK_CREATED, "task created"),
+        (TASK_REMOVED, "task completed"),
+        (CHAT_TASK_CREATED, "task removed"),
+        (ADDED_SCREEN, "screen added"),
+        (USER_INVITED, "user invited"),
+        (SHARED_PROTOTYPE, "shared prototype"),
+    )
+    type = models.CharField(choices=ACTIVITY_TYPES, default=TASK_CREATED, max_length=250)
+
+    member = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.type

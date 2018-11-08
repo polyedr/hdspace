@@ -8,13 +8,23 @@
         <i class="fa fa-share-alt modal-icon"></i>
         <span class="modal-title">Share Screen</span>
       </div>
-      <div class="modal-body text-center">
+
+      <div class="modal-body share-modal">
+        <label>Copy this private url to share:</label>
         <div class="form-inline">
           <div class="form-group">
-            <input id="shareLink" class="form-control input-group" value="{{ preview_url|preview_path }}">
+            <input id="shareLink" class="form-control input-group share-link" value="{{ preview_url|preview_path }}">
           </div>
           <button id="copyButton" class="btn btn-success" data-clipboard-target="#shareLink">Copy</button>
         </div>
+        <label>Email this private url to share:</label>
+        <div class="form-inline">
+          <div class="form-group">
+            <input id="email_share" class="form-control input-group share-link" name="email_share">
+          </div>
+          <button class="btn btn-success" id="sharePrototype" data-url="{% url 'projects:share_screen' %}">Send</button>
+        </div>
+
       </div>
     </div>
   </div>

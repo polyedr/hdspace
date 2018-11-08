@@ -7,6 +7,7 @@
     var screenStatus = '';
     var currentTaskId = 0;
     var authorId = 0;
+    var taskMessages = {};
     var statusColor = {
         'on_hold': 'backgroundGreen',
         'in_progress': 'backgroundBlue',
@@ -46,8 +47,10 @@
             $eventBox.find('img').attr('data-event_url', response.event_url);
             $eventBox.find('a:nth-child(1)').attr('data-screen-id', response.pk);
             $eventBox.find('a:nth-child(2)').attr('href', response.edit_screen_url);
+            $eventBox.find('.message-avatar-wrap').addClass('not-selected-msg');
             $(".image-list-body").append($eventBox);
             $(".progress").addClass("hide");
+            $(".screen_actions").show();
             showNotifications("success", response.msg);
           } else{
               showNotifications("error", response.msg);
@@ -92,6 +95,9 @@
                 $('.addTaskList').append($activityItem);
                 $('#addTaskModal').modal('hide');
                 showNotifications("success", response.msg);
+                $('#addChatTask').hide();
+                $('#addTaskButton').hide();
+                $('.add-to-task').prop('checked', false);
             },
             error: function (xhr, status, error) {
                 var response = jQuery.parseJSON(xhr.responseText);
@@ -179,7 +185,6 @@
         $('#id_description').val($closest.find('.task-description').text())
         var member = $closest.find('.active').attr('data-member-id');
         $("#id_owner").find('option[value=' + member + ']').attr("selected", "selected");
-        $('#addTaskButton').hide();
         $('#editTaskButton').show();
     });
 
@@ -245,9 +250,13 @@
                         $msgForm.find('.message-date').text(message_date);
                         $msgForm.find('.message-content').val('');
                         if(value.file_name) {
+                            $msgForm.find('.add-to-task').remove();
                             $msgForm.find('.message-file').append('<a href=' + value.file + ' download>' + value.file_name + '</a>');
+                            $msgForm.find('.message-avatar-wrap').addClass('not-selected-msg');
                         }else{
                             $msgForm.find('.message-content').val(value.content);
+                            $msgForm.find('.add-to-task').attr('data-message-id', value.message_id);
+                            $msgForm.find('.add-to-task').attr('data-message-text', value.content);
                         }
                         $msgForm.removeClass("hide");
                         $msgForm.find('.message-avatar-wrap').attr('data-author-id', value.sender_id);
@@ -277,8 +286,8 @@
                             $msgForm.find('.message-delete').remove();
                         }
                         $(".chat-discussion").append($msgForm);
+                        $('.ibox-content').scrollTop($('.chat-discussion')[0].scrollHeight);
                     });
-                    $('.ibox-content').scrollTop($('.chat-discussion')[0].scrollHeight);
                 }
             }
         });
@@ -385,6 +394,8 @@
                         $msgForm.find('.message-date').text(message_date);
                         $msgForm.find('.message-content').val(message);
                         $msgForm.find('.message-author').text(username);
+                        $msgForm.find('.add-to-task').attr('data-message-id', response.message_id);
+                        $msgForm.find('.add-to-task').attr('data-message-text', message);
                         $msgForm.find('.message-avatar').attr('src', response.avatar);
                         $msgForm.find('.author-role').text('(' + response.role + ')');
                         $msgForm.find('.author-role').attr('data-author-id', response.sender_id);
@@ -397,8 +408,8 @@
                         }
                         $(".chat-discussion").append($msgForm);
                         $(".write_msg").val('');
-                        $('.ibox-content').scrollTop($('.chat-discussion')[0].scrollHeight);
                     }
+                    $('.ibox-content').scrollTop($('.chat-discussion')[0].scrollHeight);
                 }
             });
         }
@@ -469,25 +480,30 @@
             var message_date = moment(response.sent_at).format('MMM Do, h:mm a');
             $msgForm.find('.message-date').text(message_date);
             $msgForm.find('.message-content').text('');
-            $msgForm.find('.message-content').append('<a href='+response.file+' download>'+ response.file_name +'</a>');
+            $msgForm.find('.message-file').append('<a href='+response.file+' download>'+ response.file_name +'</a>');
             $msgForm.find('.message-author').text(username);
+            $msgForm.find('.add-to-task').remove();
             $msgForm.find('.message-avatar').attr('src', response.avatar);
             $msgForm.find('.author-role').text('(' + response.role + ')');
             $msgForm.find('.author-role').attr('data-author-id', response.sender_id);
             if(parseInt(user_id) === parseInt(owner)){
-                $msgForm.find('.message-edit').attr('data-message-id', value.message_id);
-                $msgForm.find('.message-delete').attr('data-message-id', value.message_id);
+                $msgForm.find('.message-edit').attr('data-message-id', response.message_id);
+                $msgForm.find('.message-delete').attr('data-message-id', response.message_id);
             }else{
                 $msgForm.find('.message-edit').remove();
                 $msgForm.find('.message-delete').remove();
             }
             $(".chat-discussion").append($msgForm);
-            $('.chat-discussion').scrollTop($('.chat-discussion')[0].scrollHeight);
+            $('.ibox-content').scrollTop($('.chat-discussion')[0].scrollHeight);
           } else{
               showNotifications("error", response.msg);
           }
         }
      });
+
+    if ($(".screen-image-exist").length == 1) {
+        $(".screen_actions").hide();
+    }
 
     $('.screen-delete').on('click', function (e) {
         var url = $(this).data('href');
@@ -502,6 +518,12 @@
             },
             success: function (response) {
                 showNotifications("success", response.msg);
+                $deleted.parent('div').parent('div').remove();
+                 if ($(".screen-image-exist").length == 1) {
+                    $(".screen_actions").hide();
+                    $('#screenImage div').remove()
+                    $('#screenImage img').attr("src", "")
+                }
             },
         });
     });
@@ -545,51 +567,50 @@
        e.preventDefault();
        var url = $(this).data('url');
        var position = $('#id_position').val();
+       var rate_from = $('#id_rate_from').val();
+       var rate_to = $('#id_rate_to').val();
 
-       var formValid = validateForm([
-             '#id_position',
-       ]);
-       if(!formValid) {
-           $.ajax({
-                url: url,
-                method: 'POST',
-                data: {
-                    csrfmiddlewaretoken: window.csrftoken,
-                    position: position,
-                },
-                success: function (response) {
-                    if(response["users"].length > 0) {
-                        $.each(response["users"], function (index, value) {
-                            var $inviteForm = $('#searchUserInvite').clone(true, true);
-                            $inviteForm.removeClass('hide');
-                            $inviteForm.removeAttr('id');
-                            if(value.teammember__team__team_name){
-                                var team_name = value.teammember__team__team_name;
-                            }else{
-                                var team_name = 'No team';
-                            }
-                            $inviteForm.find('.team-name').text(team_name);
-                            $inviteForm.find('.user-name').text(value.first_name + ' ' + value.last_name);
-                            $inviteForm.find('.label').text(parseInt(value.profile__hourly_rate) + '$/hr');
-                            $inviteForm.find('.block').text(value.profile__role);
-                            if(value.profile__avatar) {
-                                $inviteForm.find('img').attr('src', '/media/' + value.profile__avatar);
-                            }else{
-                                $inviteForm.find('img').attr('src', response["no_image"]);
-                            }
-                            $inviteForm.find('button').attr('data-user-id', value.pk);
-                            $('.search-result .row').append($inviteForm);
-                        });
-                    }else{
-                         $('.search-result .row').html('');
-                    }
-                },
-                error: function (xhr, status, error) {
-                    var response = jQuery.parseJSON(xhr.responseText)
-                    showNotifications("error", response.msg);
+       $.ajax({
+            url: url,
+            method: 'POST',
+            data: {
+                csrfmiddlewaretoken: window.csrftoken,
+                position: position,
+                rate_from: rate_from,
+                rate_to: rate_to,
+            },
+            success: function (response) {
+                if(response["users"].length > 0) {
+                    $.each(response["users"], function (index, value) {
+                        var $inviteForm = $('#searchUserInvite').clone(true, true);
+                        $inviteForm.removeClass('hide');
+                        $inviteForm.removeAttr('id');
+                        if(value.teammember__team__team_name){
+                            var team_name = value.teammember__team__team_name;
+                        }else{
+                            var team_name = 'No team';
+                        }
+                        $inviteForm.find('.team-name').text(team_name);
+                        $inviteForm.find('.user-name').text(value.first_name + ' ' + value.last_name);
+                        $inviteForm.find('.label').text(parseInt(value.profile__hourly_rate) + '$/hr');
+                        $inviteForm.find('.block').text(value.profile__role);
+                        if(value.profile__avatar) {
+                            $inviteForm.find('img').attr('src', '/media/' + value.profile__avatar);
+                        }else{
+                            $inviteForm.find('img').attr('src', response["no_image"]);
+                        }
+                        $inviteForm.find('button').attr('data-user-id', value.pk);
+                        $('.search-result .row').append($inviteForm);
+                    });
+                }else{
+                     $('.search-result .row').html('');
                 }
-            });
-       }
+            },
+            error: function (xhr, status, error) {
+                var response = jQuery.parseJSON(xhr.responseText)
+                showNotifications("error", response.msg);
+            }
+        });
     });
 
     $(document).on('click', '#inviteSearchedUser', function () {
@@ -710,5 +731,32 @@
         });
     });
 
+    $('#addChatTask').hide();
+    $(document).on('click', '#addChatTask', function () {
+        $('#editTaskButton').hide();
+        var out = [];
+        for (var key in taskMessages) {
+            out.push(taskMessages[key]);
+        }
+        var description = out.join("\n");
+        $('#id_description').text(description);
+    });
+
+    $(document).on('click', '.add-to-task', function () {
+        var message_id = $(this).attr('data-message-id');
+        var content = $(this).attr('data-message-text');
+        if($(this).is(':checked')){
+            taskMessages[message_id] = content;
+        }else{
+            delete taskMessages[message_id];
+        }
+
+        if($('.add-to-task').is(':checked')){
+            $('#addChatTask').show();
+        }else{
+            $('#addChatTask').hide();
+        }
+
+    });
 
 })();

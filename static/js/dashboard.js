@@ -53,6 +53,13 @@
         });
     });
 
+    $('#id_name').keypress(function(e){
+        if(e.which == 13){
+            e.preventDefault();
+            $('#CreateProjectButton').click();
+        }
+    });
+
     $('#CreateProjectButton').on('click', function (e) {
 
          var formValid = validateForm([
@@ -70,14 +77,8 @@
                     name: name
                 },
                 success: function (response) {
-                    var $project = $('#new-projects').clone(true, true);
-                    $project.find('tr td:nth-child(1) input').attr('value', response.pk);
-                    $project.find('tr td:nth-child(3) a').text(response.name);
-                    $project.find('tr td:nth-child(3) a').attr('href', response.project_url);
-                    $project.find('tr td:nth-child(6) a').attr('data-project_id', response.pk);
-                    $('#projectsList tbody').prepend('<tr>' + $project.find('tr').html() + '</tr>');
                     showNotifications("success", response.msg);
-                    $('#myModal').modal('hide');
+                    location.href=response.project_url
                 },
                 error: function (xhr, status, error) {
                     var response = jQuery.parseJSON(xhr.responseText);

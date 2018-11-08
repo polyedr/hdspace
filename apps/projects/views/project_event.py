@@ -15,7 +15,7 @@ from threads.models import Thread, UserThread
 from projects.forms import ProjectInvitationForm
 from projects.models import (
     Project, ProjectScreen, ProjectInvitation,
-    ProjectMember
+    ProjectMember, ProjectActivity
 )
 from projects.utils import emails
 
@@ -102,6 +102,11 @@ class ProjectInviteView(LoginRequiredMixin, View):
                 }, status=400)
             else:
                 invite = ProjectInvitation.objects.create(**invitation_data)
+                ProjectActivity.objects.create(
+                    type=ProjectActivity.USER_INVITED,
+                    member=request.user,
+                    project=project,
+                )
                 emails.invitation_email(
                     email=data["email"],
                     project=project,
@@ -190,6 +195,11 @@ class UserInviteView(LoginRequiredMixin, View):
             }, status=400)
         else:
             invite = ProjectInvitation.objects.create(**invitation_data)
+            ProjectActivity.objects.create(
+                type=ProjectActivity.USER_INVITED,
+                member=request.user,
+                project=project,
+            )
             emails.invitation_email(
                 email=user.email,
                 project=project,
