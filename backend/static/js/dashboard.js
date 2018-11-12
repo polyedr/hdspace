@@ -49,6 +49,10 @@
             },
             success: function (response) {
                 showNotifications("success", response.msg);
+                console.log(response.projects);
+                if(!response.projects){
+                    $('.shopping-cart').hide();
+                }
             },
         });
     });
