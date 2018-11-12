@@ -1,10 +1,12 @@
 from django.urls import path, include
+from django.views.generic import RedirectView
 
 from .views import screen, project, event, project_event, task
 
 app_name = "projects"
 
 project_patterns = [
+    path("", RedirectView.as_view(url='/projects')),
     path("projects/", project.DashboardView.as_view(), name="dashboard"),
     path("create-project/", project.CreateProjectView.as_view(), name="create_project"),
     path("project/<int:pk>/", project.ProjectView.as_view(), name="project"),

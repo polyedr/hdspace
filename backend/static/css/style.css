@@ -8704,6 +8704,20 @@ padding: 24px 20px 10px 25px;
   color: #ffffff;
 }
 
+.twitter-btn {
+  width: 100%;
+  border: none;
+  background-color: #4099FF;
+  color: #ffffff;
+}
+
+.linkedin-btn {
+  width: 100%;
+  border: none;
+  background-color: #007bb6;
+  color: #ffffff;
+}
+
 .media-img {
     max-width: 60px;
     max-height: 60px;

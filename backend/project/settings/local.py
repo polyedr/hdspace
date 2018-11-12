@@ -220,9 +220,18 @@ SOCIAL_AUTH_FACEBOOK_SECRET = ENV.str("SOCIAL_AUTH_FACEBOOK_SECRET", "560593e1d7
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = ENV.str("SOCIAL_AUTH_GOOGLE_OAUTH2_KEY", None)
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = ENV.str("SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET", "Iu7_-la7rdyuOjQKw8ao3dKL")
 
+SOCIAL_AUTH_TWITTER_KEY = ENV.str("SOCIAL_AUTH_TWITTER_KEY", "")
+SOCIAL_AUTH_TWITTER_SECRET = ENV.str("SOCIAL_AUTH_TWITTER_SECRET", "")
+
+SOCIAL_AUTH_LINKEDIN_KEY = ENV.str("SOCIAL_AUTH_LINKEDIN_KEY", "775lu1w7x3uvci")
+SOCIAL_AUTH_LINKEDIN_SECRET = ENV.str("SOCIAL_AUTH_LINKEDIN_SECRET", "USlZYcBnCsIFjm48")
+
+
 AUTHENTICATION_BACKENDS = (
     'social_core.backends.facebook.FacebookOAuth2',
     'social_core.backends.google.GoogleOAuth2',
+    'social_core.backends.linkedin.LinkedinOAuth',
+    'social_core.backends.twitter.TwitterOAuth',
     'django.contrib.auth.backends.ModelBackend',
 )
 
