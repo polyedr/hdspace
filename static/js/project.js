@@ -45,8 +45,11 @@
             $eventBox.find('img').attr('data-preview_url', response.preview_url);
             $eventBox.find('img').attr('data-screen-save-url', response.save_url);
             $eventBox.find('img').attr('data-event_url', response.event_url);
-            $eventBox.find('a:nth-child(1)').attr('data-screen-id', response.pk);
-            $eventBox.find('a:nth-child(2)').attr('href', response.edit_screen_url);
+            $eventBox.find('img').attr('screen-id', response.pk);
+            $eventBox.find('a').attr('data-screen-id', response.pk);
+            // $eventBox.find('a:nth-child(2)').attr('href', response.edit_screen_url);
+            $eventBox.find('a:nth-child(2)').attr('data-event_url', response.event_url);
+            $eventBox.find('a:nth-child(2)').attr('data-get-screen-url', response.save_url);
             $eventBox.find('.message-avatar-wrap').addClass('not-selected-msg');
             $(".image-list-body").append($eventBox);
             $(".progress").addClass("hide");

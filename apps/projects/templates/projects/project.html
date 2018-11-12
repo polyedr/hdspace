@@ -66,7 +66,7 @@
                        aria-label="Close">
                       <span class="glyphicon glyphicon-trash"></span>
                     </a>
-                    <a href="#" data-screen-id={{screen.pk}} data-event_url="{% url 'projects:screen_events' pk=screen.pk %}" data-get-screen-url={{screen.get_screen_url}} class="edit_prototype">
+                    <a href="#" data-screen-id="{{screen.pk}}" data-event_url="{% url 'projects:screen_events' pk=screen.pk %}" data-get-screen-url="{{screen.get_screen_url}}" class="edit_prototype">
                       <span class="glyphicon glyphicon-pencil"></span>
                     </a>
                   </div>
@@ -311,11 +311,11 @@
        aria-label="Close">
       <span class="glyphicon glyphicon-trash"></span>
     </a>
-    <a href="{{ screen.get_edit_screen_url }}">
+    <a href="#" data-screen-id="" data-event_url="" data-get-screen-url="" class="edit_prototype">
       <span class="glyphicon glyphicon-pencil"></span>
     </a>
   </div>
-  <img class="w-100 screen-img" src="" data-preview_url="" data-screen-save-url="" data-event_url="" />
+  <img class="w-100 screen-img" src="" screen-id="" data-preview_url="" data-screen-save-url="" data-event_url="" />
 </div>
 
 {% include "projects/includes/screen.html" with form=screen_form  url=screens.0.get_screen_url select_screens=screens %}

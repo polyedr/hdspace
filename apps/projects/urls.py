@@ -5,7 +5,7 @@ from .views import screen, project, event, project_event, task
 app_name = "projects"
 
 project_patterns = [
-    path("", project.DashboardView.as_view(), name="dashboard"),
+    path("projects/", project.DashboardView.as_view(), name="dashboard"),
     path("create-project/", project.CreateProjectView.as_view(), name="create_project"),
     path("project/<int:pk>/", project.ProjectView.as_view(), name="project"),
     path("preview/<str:token>/<int:pk>/", project.ProjectPreviewView.as_view(), name="preview"),

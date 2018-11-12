@@ -149,4 +149,5 @@ class DeleteProjectView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         project = request.POST["projectId"]
         Project.objects.filter(pk=project).delete()
-        return JsonResponse({"msg": "Project has been deleted successfully."})
+        projects = Project.objects.filter(user=request.user)
+        return JsonResponse({"msg": "Project has been deleted successfully.", "projects": len(projects)})
