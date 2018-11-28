@@ -53,6 +53,7 @@ PROJECT_APPS = [
     "projects",
     "threads",
     "payments",
+    "virtualize",
 ]
 
 INSTALLED_APPS.extend(EXTERNAL_APPS + PROJECT_APPS)
@@ -119,7 +120,7 @@ DATABASES = {
         'ENGINE': 'djongo',
         'NAME': ENV.str("DB_NAME", "db"),
         'HOST': ENV.str("DB_HOST", "db"),
-        'PORT': ENV.int("DB_PORT", 27018),
+        'PORT': ENV.int("DB_PORT", 27017),
         'USER': ENV.str("DB_USER"),
         'PASSWORD': ENV.str("DB_PASSWORD"),
     }

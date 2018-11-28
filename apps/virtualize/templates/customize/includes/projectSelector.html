@@ -1,0 +1,234 @@
+{%extends "virtualize/header_projects.html" %}
+{% block content %}
+
+    <div id="wrapper" style="overflow-y: unset;">
+        <div id="loadingSubmitPage" style="position: fixed; width: 100%;height: 100%; z-index: 1000000;background-color: rgba(0,0,0,0.95);">
+            <i class="fa fa-spinner fa-pulse fa-3x fa-fw" style="position: sticky; color: #18a689; top: 48%;left: 48%; font-size: 500%;"></i>
+            <span class="sr-only">Loading...</span>
+        </div>
+        {% include "customize/includes/navbarHome_Projects.html" %}
+        <div id="page-wrapper" class="gray-bg">
+
+            {%include "customize/includes/wrapperHeader_Projects.html" %}
+            {%include "customize/includes/wrapperFooter.html" %}
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="wrapper wrapper-content animated fadeInUp">
+                        <div class="ibox">
+                            <div class="ibox-title center" style="padding: 15px;">
+                                <span>
+                                    All projects
+                                </span>
+                                <div class="ibox-tools" style="float: right;margin-top: -4.5px;">
+                                    <a class="btn btn-primary btn-sm" onclick="createProjectFunction()">
+                                        Create new project
+                                    </a>
+                                    <form id="createNewProject" class="hidden" method="POST" enctype="multipart/form-data">
+                                        <input type="hidden" id="newprojectname" name="projectName"/>
+                                        <input type="file" name="createProject" id="createProject"/>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="ibox-content">
+                                <div class="row m-b-sm">
+                                    <div class="col-xs-3" style="float: left;">
+                                        <div class="input-group">
+                                            <input type="text" placeholder="Search" class="input-sm form-control">
+                                            <span class="input-group-btn">
+                                                <button type="button" class="btn btn-sm btn-primary">
+                                                    Go!
+                                                </button>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="databaseProjects" class="project-list">
+                                    <table id="datatables-example" class="table table-hover">
+                                        <tbody>
+                                            <tr style="background-color: #eee;">
+                                                <th class="project-title" style="width:10%">
+                                                    <a>
+                                                        Project Status
+                                                    </a>
+                                                </th>
+                                                <th class="project-title" style="width:35%">
+                                                    <a>
+                                                        Project Name
+                                                    </a>
+                                                </th>
+                                                <th class="project-title" style="width:10%">
+                                                    <a href="#">
+                                                        Total Pages
+                                                    </a>
+                                                </th>
+                                                <th class="project-title" style="width:40%">
+                                                    <a href="#">
+                                                        All Pages
+                                                    </a>
+                                                </th>
+                                                <th class="project-title" style="width:5%">
+                                                    <a href="#">
+                                                        Action
+                                                    </a>
+                                                </th>
+                                            </tr>
+                                            {% for ap in assignProjects %}
+                                            {% if ap.accept_status == 'accepted' %}
+                                                <tr>
+                                                    <td class="project-status" style="width:10%">
+                                                    {% if ap.status == 'running' %}
+                                                        <span class="label label-primary">Collaborating</span>
+                                                    {% endif %}
+                                                    </td>
+                                                    <td class="project-title" style="width:25%">
+                                                        {{ ap.projectName }}
+                                                        <br/>
+                                                        <small>
+                                                            Created date: {{ ap.hire_date|date:"D d M Y" }}
+                                                        </small>
+                                                    </td>
+                                                    <td class="project-completion" style="width:10%">{{ap.screenshotsamount}}</td>
+                                                    <td class="project-people" style="width:30%;text-align: left;">
+                                                        {% if ap.screenshots != 'There are no pages for this project.'  %}
+                                                            {% for screen in ap.screenshots %}
+                                                                <a class="btn-default" onclick="selectScreenshot('{{ ap.id }}','{{ screen.0 }}')" style="float: left; width: auto; height: auto; margin-bottom: 5px;">
+                                                                <img alt="image" class="img" src="/static/dirty_static/users/{{ screen.2 }}"></a>
+                                                            {% endfor %}
+                                                        {% else %}
+                                                            {{ ap.screenshots }}
+                                                        {% endif %}
+                                                    </td>
+                                                    <td>
+                                                        <p class="pro_owner">Project Owner: <strong>{{ap.hiredBy}}</strong></p>
+                                                    </td>
+                                                    <td></td>
+                                                    <td></td>
+                                                </tr>
+                                            {% endif %}
+                                            {% endfor %}
+                                            {% for p in projects %}
+                                            <form action="/projects/" id="selectProject{{ p.id }}" method="POST" enctype="multipart/form-data">
+                                                <input type="hidden" value="{{ p.id }}" name="selectProject"/>
+                                                <input type="hidden" value="empty" name="screenshot" id="screenshot{{ p.id }}"/>
+                                            </form>
+                                            <tr>
+                                                <td class="project-status" style="width:10%">
+                                                    <span class="label label-primary">
+                                                        {{ p.status }}
+                                                    </span>
+                                                </td>
+                                                <td onclick="document.getElementById('selectProject{{ p.id }}').submit()"
+                                                    class="project-title" style="width:40%">
+                                                    {{ p.projectName }}
+                                                    <br/>
+                                                    <small>
+                                                        Created {{ p.dateCreated }}
+                                                    </small>
+                                                </td>
+                                                <td onclick="document.getElementById('selectProject{{ p.id }}').submit()"
+                                                    class="project-completion" style="width:10%">{{ p.screenshotsamount }}
+                                                </td>
+                                                <td class="project-people" style="width:30%;text-align: left;">
+                                                    {% if p.screenshots != 'There are no pages for this project.'  %}
+                                                        {% for screen in p.screenshots %}
+                                                            <a class="btn-default" onclick="selectScreenshot('{{ p.id }}','{{ screen.0 }}')" style="float: left; width: auto; height: auto; margin-bottom: 5px;">
+                                                            <img alt="image" class="img" src="/static/dirty_static/users/{{ screen.2 }}"></a>
+                                                        {% endfor %}
+                                                    {% else %}
+                                                        {{ p.screenshots }}
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    {% for asp in assign %}
+                                                        {% if asp.projectid == p.id and asp.accept_status == 'not_accepted' %}
+                                                            <p></p>
+                                                        {% elif asp.projectid == p.id and asp.accept_status == 'accepted' %}
+                                                            <p style="color: green;">You hired <strong>{{asp.hiredusername}}</strong>: Accepted</p>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </td>
+
+                                                <td>
+                                                    <form action="/userContacts" method="POST" name="usrcontcts" enctype="multipart/form-data">
+                                                        {% csrf_token %}
+                                                        <input type="hidden" value="{{ p.id }}" name="selectProject"/>
+                                                        <input type="hidden" value="empty" name="screenshot" id="screenshot{{ p.id }}"/>
+                                                        <input type="hidden" name="pname" value="{{ p.projectName }}">
+                                                        <button type="submit" id="getUserBtn" class="btn btn-success"><i class="fa fa-user-circle"></i>Select User</button>
+                                                    </form>
+                                                </td>
+                                                <td class="project-actions" style="width:10%">
+                                                    <button id="delproject" class="btn btn-default btn-primary btn-sm dropbtn" onclick="deleteProject('{{ p.id }}')"><i class="fa fa-trash"></i></button>
+                                                </td>
+                                            </tr>
+                                            {% empty %}
+                                                <tr><td style="width: 35%;">You have not created any Project yet. Please create your first project.</td></tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {%include "customize/includes/rightSidebarUpdated.html" with userInfo=users projectsin=assignProjects projectsin2=activeProject hireingtableall=hiringtable notificationNewProject=notifyProject whichUserHire=chatHireuserList guestuser=guestalllists allactivity=activity mongouser=finalMongoUsers %}
+    </div>
+    <script>
+    $(document).ready(function(){
+        $('#loading-example-btn').click(function () {
+            btn = $(this);
+            simpleLoad(btn, true)
+            simpleLoad(btn, false)
+        });
+        $('#loadingSubmitPage').css("display","none");
+    });
+    function simpleLoad(btn, state) {
+        if (state) {
+            btn.children().addClass('fa-spin');
+            btn.contents().last().replaceWith(" Loading");
+        } else {
+            setTimeout(function () {
+                btn.children().removeClass('fa-spin');
+                btn.contents().last().replaceWith(" Refresh");
+            }, 2000);
+        }
+    }
+    </script>
+    <script>
+        function createProjectFunction() {
+            swal({
+                title: "Enter Project Name",
+                type: "input",
+                showCancelButton: false,
+                closeOnConfirm: false,
+                allowEscapeKey: false,
+                closeOnClickOutside: false,
+                inputPlaceholder: "Enter text here"
+                }, function (inputValue) {
+                    if (inputValue === false) return false;
+                    if (inputValue === "") {
+                        swal.showInputError("You need to write something!");
+                        return false
+                    }
+                    else {
+                        swal.close();
+                        document.getElementById('newprojectname').innerHTML = inputValue;
+                        document.getElementById('newprojectname').value = inputValue;
+                        document.getElementById('createNewProject').submit();
+                        //swal("Nice!", "You wrote: " + inputValue, "success");
+                        loadScreen();
+                    }
+                }
+            );
+        }
+        function selectScreenshot(projectid, screenid){
+            document.getElementById('screenshot'+projectid).value = screenid;
+            document.getElementById('selectProject'+projectid).submit();
+        }
+    </script>
+{% endblock %}
+
+
+

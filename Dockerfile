@@ -2,6 +2,7 @@ FROM python:3.6
 
 ENV LC_ALL C.UTF-8
 ENV PYTHONUNBUFFERED 1
+ENV PYTHONDONTWRITEBYTECODE 1
 
 RUN apt-get update && apt-get install --no-install-recommends -y \
   vim \

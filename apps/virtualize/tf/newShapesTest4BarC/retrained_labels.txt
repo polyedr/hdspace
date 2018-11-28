@@ -1,0 +1,12 @@
+calendar
+circle parent 
+rectangle parent 
+rectangle with round border parent 
+rectangle with round sides parent 
+widgets
+barchart
+dotted line and stars
+dotted lines
+icon
+line
+logo

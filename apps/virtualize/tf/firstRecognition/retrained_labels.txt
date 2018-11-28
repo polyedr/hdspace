@@ -1,0 +1,7 @@
+rectangle
+barchart
+calendar
+icon
+logo
+maps
+piechart

@@ -1,0 +1,184 @@
+
+    <div class="col-xs-12">
+        <div id="scroll" style="max-width: 100%!important; overflow-x: auto; overflow-y: hidden; white-space: nowrap!important;">
+            <table id="datatables-example" class="table" style="margin-bottom:0;" onmouseup="saveMovedScreenshot()">
+                <tr id="screenSelectorContent" class="sortable ui-sortable" data-id="2" data-parent="1" data-level="2"
+                    style="max-height: 110px !important;">
+                    {% for project in screenHTMLwork %}
+                        <td style="border: none; text-align: center; width: 5.876288659793814vw; height: 35px; max-width: 200px !important; padding-bottom: 11px;" class="
+">
+                            <div class="col-xs-2 tabs-container" style="
+                                max-width: 187.22px !important;
+                                width: 114px;
+                                position: relative;
+                                left: 0;
+                                top: 0;
+                                padding: 0;
+                                ">
+                                <ul class="nav nav-tabs">
+                                    <li class="active move-visibility" style="width:80%;">
+                                        <a data-toggle="tab" href="#tab-10" style="border:none;padding: 3px 5px;cursor:move">
+                                            <i class="fa fa-arrows" style="margin-right: 0px; color: #b5b4b4;"></i>
+                                        </a>
+                                    </li>
+                                    <li class="active move-visibility" style="width:20%;">
+                                        <a data-toggle="tab" href="#tab-10" style="border:none;padding: 3px 5px;width:100%;
+                                            cursor:pointer;padding-bottom: 0%;">
+                                            <form method="POST"  enctype="multipart/form-data" style="margin-bottom: 0%;">
+                                                {% csrf_token %}
+                                                <button class="slide_open"
+                                                        onclick= "delTrigger('{{ project.2 }}')"
+                                                        data-toggle="tab" href="#tab-10"
+                                                        name="deletePage"
+                                                        style="width: inherit;
+                                                        border: none;
+                                                        margin-bottom: 0%;
+                                                        padding: 0%;
+                                                        margin-right: 3.5%;
+                                                        background-color: white"
+                                                        value="{{ project.2 }}">
+                                                    <i class="fa fa-times" style="margin-right: 0px; color: #b5b4b4;"></i>
+                                                </button>
+                                            </form>
+                                        </a>
+                                    </li>
+                                    <script>"use strict";
+                                        function delTrigger(id) {
+                                            {#$('#slide').popup('show');#}
+                                            {#document.getElementById('idToDelte').value = id;#}
+                                            swal({
+                                                title: 'Do you want to delete this Screenshot?',
+                                                type: 'warning',
+                                                showCancelButton: true,
+                                                confirmButtonColor: '#dd6b55',
+                                                cancelButtonColor: '#999',
+                                                confirmButtonText: 'Yes!',
+                                                cancelButtonText: 'No',
+                                                closeOnConfirm: false
+                                            },function (isConfirm) {
+                                                if (isConfirm) {
+                                                    document.getElementById('idToDelte').value = id;
+                                                    deletePage();
+                                                    swal.close();
+                                                }
+                                            });
+                                        }
+                                    </script>
+                                    <div style="height: 38px; padding-bottom: 10px">
+                                        <li class="active" style="width:100%">
+                                            <a data-toggle="tab" href="#tab-10" style="border:none;padding: 3px 5px;width:100%; padding-bottom: 0%;">
+                                                <h4 id= "{{ project.2 }}" name="changeName" ondblclick="updatePageName(this.id)"
+                                                class="text-responsive1" value ="{{ project.2 }}"
+                                                style="margin:0px;width: 100%;
+                                                height: 100%;
+                                                overflow: hidden;
+                                                text-overflow: ellipsis;">
+                                                    <abbr id="edi" class="checkImageNameScreenshotSelector"  title="{{ project.0 }}" style=" text-decoration: none !important; border-bottom: none !important; white-space: nowrap; cursor: url(http://www.cursor.cc/cursor/263/42/cursor.png), auto;" contenteditable='true' onclick="$(this).focus();">{{ project.0 }}</abbr>
+                                                </h4>
+                                            </a>
+                                        </li>
+                                    </div>
+                                </ul>
+                                <div class="tab-pane active imageOutliner">
+                                    <div class="panel-body" style="display:inline;border:none;padding: 0;margin: 0;">
+                                        <table style="height: 100%; width: 100%; margin: 5% 0;">
+                                            <tbody>
+                                                <tr>
+                                                    <td align="center" style="padding: 0%;">
+                                                        <div class="wrapper wrapper-content" style="border-style:none;padding: 0;">
+                                                            <div class="row" style="margin: 0;">
+                                                                <div>
+                                                                    <div class="window" style="margin:0;">
+                                                                        <div style="width: 100px;
+                                                                            height: 136px;
+                                                                            position: relative;">
+                                                                            {% autoescape on %}{{ project.1|safe|escape }}{% endautoescape  %}
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <form method="POST" enctype="multipart/form-data" onmousedown="saveMovedScreenshot()" style="max-width: 114px!important;
+                                    height: 148px;
+                                    background-color: transparent;
+                                    border:none;
+                                    padding: 6px;
+                                    width: 100%;
+                                    position: absolute;
+                                    top: 60%;
+                                    left: 50%;
+                                    transform: translate(-50%,-50%);">
+                                    {% csrf_token %}
+                                    <input type="hidden" value="{{ project.2 }}" name="selectScreenshot">
+                                    <button id="{{ project.0 }}"
+                                        style="max-width: 114px!important;
+                                        height: 148px;
+                                        background-color: transparent;
+                                        border:none;
+                                        padding: 6px;
+                                        width: 100%;
+                                        position: absolute;
+                                        top: 50%;
+                                        left: 50%;
+                                        transform: translate(-50%,-50%);">
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    {% endfor %}
+                </tr>
+            </table>
+        </div>
+        <div class="ibox-tools" style="display:none">
+            <div>
+                <div class="ibox">
+                    <div class="ibox-title" style="border-color: #1ab394;border-style: solid solid solid solid;
+                     border-width: 2px 2px;
+                     border-radius: 5px;">
+                    <p>Are you sure you want to delete the page?</p><br/>
+                    <div class="w3-display-middle">
+                        <input id="idToDelte" type="hidden">
+                        <button class="btn btn-primary btn-xs slide_close">Yes</button>
+                        <button class="btn btn-primary btn-xs slide_close">No</button>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+        <script>"use strict";
+            $(document).ready(function () {
+                var  screenCount = $('#datatables-example').find('h4').length;
+                var tblwidth= 137.50*screenCount;
+                document.getElementById('datatables-example').style= "width:" + tblwidth + "px; margin-bottom:0;";
+            });
+    </script>
+
+    <script>"use strict";
+        function deletePage() {
+            var id = document.getElementById('idToDelte').value;
+            $.ajax({
+                type: 'POST',
+                url: 'index',
+                name: 'deletePage',
+                data: {
+                    'deletePage': id
+                },
+                success: function (data) {
+                    var result = data;
+                    console.log(result);
+                },
+                error: function (jqXHR, status, err) {
+                    console.log(jqXHR.responseText);
+                }
+            });
+            document.getElementById('loadingSubmitPage').style.display = '';
+            location.reload();
+        }
+    </script>

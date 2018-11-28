@@ -1,0 +1,134 @@
+<html><head></head><body>
+    <div class="ibox-title">
+        <span id="colorTitle">Color Transfer</span>
+        {% if colorIsBeingTransferd == False %}
+            <!--<form enctype="multipart/form-data" method="POST" onsubmit="loadScreen();" style="margin-bottom: 0%; display: inline;">
+                <input type="hidden" name="csrfmiddlewaretoken" value="AmumTeoDJRUGDz1b237O1j1MUrFe8P07eR96d0FJPbgmkYB3pruJH78CmZlQ3lpv">
+                <button id="submitField" onclick="$('#colorTransferUploadId').trigger('click'); return false;" style="
+                    margin-top: 7px;
+                    margin-right: -4px;
+                    float:right;
+                    padding: 0px;
+                    border-top-width: 0px;
+                    border-right-width: 0px;
+                    border-bottom-width: 0px;
+                    border-left-width: 0px;
+                    width:12px;
+                    height:10px;
+                    background-color: white;
+                    ">
+                    <a href="#">
+                        <i class="faAdevi fa fa-plus" aria-hidden="true"></i>
+                    </a>
+                </button>
+                <input id="colorTransferUploadId" onchange="this.form.submit();loadScreen();" class="input-file" data-multiple-caption="{count} files selected" id="styleImg" name="styleImg" type="file"/>
+
+            </form>-->
+        {% endif %}
+    </div>
+    <div id="tab-body-color" class="ibox-content" style="padding: 10px 20px 10px 20px;height:442px">
+        <div class="row" style="width:100%; min-width: 8.3%; margin-top:1%;margin:0%;">
+            <!--<button class="btn btn-default" id="buttonUpCT" style="width:100%;min-width: 8.3%;border:none;height: 3%;
+                padding-top: 0%;background-color:white">
+                <a href="#">
+                    <i aria-hidden="true" class="fa fa-chevron-up" style="color:#c1c1c1"></i>
+                </a>
+            </button>-->
+
+        {% if colorIsBeingTransferd == False %}
+             {% include "customize/includes/upload_colorTransfer.html" %}
+        {% endif %}
+            {% if screen == 'none' or screen == '' %}
+                <h4>None</h4>
+            {% else %}
+                <div class="laptop-dimension" id="sortableSlidesCT" style="overflow-x: hidden; white-space: nowrap;height: 285px;">
+                <form enctype="multipart/form-data" id="colorTransferSelect" method="POST" style="margin-bottom: 0px;">
+                    {% csrf_token %}
+                    <input id="submitFieldColor" name="colorTransfer" type="hidden" value=""/>
+                </form>
+                    <ul class="nav nav-pills nav-stacked-laptop" id="sortableR" role="tablist">
+                        {% if colorIsBeingTransferd %}
+                            <li id="loadingColor" style="margin-left: 25%;">
+                                <i class="fa fa-spinner fa-pulse fa-3x fa-fw" style="position: sticky; color: #18a689; top: 48%; font-size: 500%;"></i>
+                                <span class="sr-only">Loading...</span>
+                            </li>
+                            <div id="doneColor" style="display: none;white-space: normal;">
+                                Color transfer is done, please reload the page to see the results.
+                                <a href="/index/" style="display: inline">
+                                    <i class="faAdevi fa fa-refresh" aria-hidden="true"></i>
+                                </a>
+                            </div>
+
+                            <script>
+                                var colorstate = true;
+                                function ajaxGetStateColor() {
+                                    $.ajax({
+                                        type: 'GET',
+                                        url: '/index/',
+                                        name: 'checkState',
+                                        data: {
+                                            'name': 'checkState',
+                                            'state': 'colorRunning'
+                                        },
+                                        success: function(data){
+                                            colorstate = data;
+                                        },
+                                        error: function(jqXHR, status, err){
+                                            console.log(jqXHR.responseText);
+                                        }
+                                    });
+                                }
+
+                                setInterval(function() {
+                                    if (colorstate == true) {
+                                        ajaxGetStateColor();
+                                    }
+                                    else if (colorstate == false){
+                                        document.getElementById('loadingColor').style.display = 'none';
+                                        document.getElementById('doneColor').style.display = '';
+                                    }
+                                }, 5000);
+                            </script>
+
+                        {% else %}
+
+                            {% if colorTransfer == '' %}
+
+                            {% else %}
+                                {% autoescape on %}{{ colorTransfer|safe|escape }}{% endautoescape  %}
+                            {% endif %}
+
+                        {% endif %}
+
+                        <!--<button name="colorTransfer" style="height: 11.030927835051545vh; background-color:transparent; border:none;"
+                                value="{{ user }}/pages/{{ screen }}/colorTransfer/lum.png">
+                                <img id="color1" class="colours" src = "/static/dirty_static/users/{{ user }}/pages/{{ screen }}/colorTransfer/lum.png"
+                                     onerror=this.src="/static/dirty_static/img/nopicyet.png" />
+                            </button>-->
+                    </ul>
+            </div>
+            {% endif %}
+            <!--<button class="btn btn-default" id="buttonDownCT" style="width:100%;min-width: 8.3%;border:none;height: 3%;
+                padding-top: 0%;margin-bottom:0%;background-color:white">
+                <a href="#">
+                    <i aria-hidden="true" class="fa fa-chevron-down" style="color:#c1c1c1"></i>
+                </a>
+            </button>-->
+        </div>
+    </div>
+    <!--<script>-->
+    <!--$('#buttonUpCT').click(function() {-->
+      <!--event.preventDefault();-->
+      <!--$('#sortableSlidesCT').animate({-->
+        <!--scrollTop: "-=200px"-->
+      <!--}, "normal");-->
+    <!--});-->
+
+    <!--$('#buttonDownCT').click(function() {-->
+        <!--event.preventDefault();-->
+        <!--$('#sortableSlidesCT').animate({-->
+        <!--scrollTop: "+=200px"-->
+        <!--}, "normal");-->
+    <!--});-->
+    <!--</script>-->
+</body></html>
