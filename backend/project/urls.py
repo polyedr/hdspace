@@ -20,6 +20,7 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path("", include("projects.urls", namespace="projects")),
+    path("", include("virtualize.urls", namespace="virtualize")),
     path("accounts/", include("accounts.urls", namespace="accounts")),
     path("payments/", include("payments.urls", namespace="payments")),
     path("threads/", include("threads.urls", namespace="threads")),

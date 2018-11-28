@@ -1,0 +1,488 @@
+    <div class="col-xs-12" style="padding:0px;margin-bottom: 3px;">
+        <div class="wrapper wrapper-content" style="padding: 0px;">
+            <div class="ibox" style="margin-bottom: 5px;">
+                <div class="ibox-title">
+                    <span>Elements</span>
+                    <div id="saveButton" style="float:right; display: none;">
+                        <div id="textAlignId" style="display:inline">
+                            <input class="edit-radio" type="radio" onchange="changeElementTools('radio1');" id="editradio1" name="edittextAlign">
+                            <label for="editradio1" style="margin-right: 2px;margin-bottom:0px"></label>
+                            <input class="edit-radio"  type="radio" onchange="changeElementTools('radio2');" id="editradio2" name="edittextAlign">
+                            <label for="editradio2" style="margin-right: 2px;margin-bottom:0px"></label>
+                            <input class="edit-radio"  type="radio" onchange="changeElementTools('radio3');" id="editradio3" name="edittextAlign">
+                            <label for="editradio3" style="margin-right: 5px;margin-bottom:0px"></label>
+                            <div class="divider" style="width: 1px;height: 15px;display: inline-block;margin:-1px;background-color: #ebedef;"></div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="ibox-content col-xs-12" style="padding: 5px 5px 5px 5px;">
+                    <div id="elementMenuBarGray" style="width:100%;height: 5%;position: relative; z-index: 1;
+                        left: 0px;top: 0px;">
+                        <span class="w3-display-middle" style="color:#1ab394ad;text-align:center"><strong>Select an element to activate</strong></span>
+                    </div>
+                    <div id="backgroundTableMenu" style="display: none;">
+                        <div id="editbackgroundcolor" class="col-xs-3" style="padding-right: 0px;padding-bottom: 5px;border-right: 1px solid #eaecee;min-width:86px;padding-left:0px;text-align:center;">
+                            <h5 style="float:left;color: #18a689;margin-bottom: 0px;margin-left:25px;">
+                                BG Color
+                            </h5>
+                            <br/>
+                            <div id="backgroundColorElm"  style="float:left;display: inline;margin-left:29px;">
+                                <input id="editbackgroundcolorINPUT" onchange="changeElementTools('background');" type="text" name="edit-backgroundcolor" style="width:40px;background:transparent;padding:1px 2px 1px 2px;margin-top:8px;">
+                            </div>
+                        </div>
+                        <div id="changeLink" class="col-xs-3" style="padding-right: 0px;padding-bottom: 4px;border-right: 1px solid #eaecee;min-width:86px;padding-left:0px;text-align:center;">
+                            <h5 style="float:left;color: #18a689;margin-bottom: 0px;margin-left:30px;">
+                                Link
+                            </h5>
+                            <form id="changeURL" action="/index/" method="POST" enctype="multipart/form-data" name="updateURL"
+                                  style="margin-bottom:0px;padding:0px;width:100%;" class="col-xs-11">
+                                <input name="name" type="hidden" value="updateURL">
+                                <input id="idForURL" name="id" type="hidden" value="">
+                                <input id="hrefURL" name="hrefURL" type="hidden" value="">
+                                <div id="displayOnLinkHover" class="dropdown" style="float:left;display: inline;margin-left: 21px;">
+                                    <button class="btn btn-default btn-sm dropbtn" data-toggle="dropdown" style="border-radius: 3px;
+                                        padding-bottom: 5px;
+                                        padding-top: 5px;
+                                        margin-top: 8px;
+                                        margin-bottom:4px;">
+                                        <span class="fa fa-link"><b class="caret" style="margin-left: 5px;"></b></span>
+                                    </button>
+                                    <ul class="dropdown-menu animated fadeInRight m-t-xs" id="optionList" style="width:100%;min-width:270px;max-height:130px;overflow-x:auto;">
+                                        <li style="display:inline;">
+                                            <input id="hrefURL" name="href" type="text" placeholder="Enter URL" style="width:70%;height: 22.5px;padding-top: 0px;padding-bottom: 2px;margin-top:3px;margin-left:3px;">
+                                            <button id="buttonChangeURL" class="btn btn-primary btn-xs" style="margin-bottom:0px;" type="submit">
+                                                Update
+                                            </button>
+                                        </li>
+                                        <li style="display:inline;">
+                                            <form id="goToPage" onsubmit="return goToPageUrl();" action="/index/" method="POST" enctype="multipart/form-data"
+                                                class="col-xs-1" style="padding: 0px;margin-bottom: 0px;padding-top: 2.8%;text-align: left;">
+                                                <input id="pageId" name="page" type="hidden" value=""/>
+                                                <input name="name" type="hidden" value="goToPage">
+                                                <button style="
+                                                    margin-top: 11px;
+                                                    margin-right: 0px;
+                                                    float:right;
+                                                    padding: 0px;
+                                                    border-top-width: 0px;
+                                                    border-right-width: 0px;
+                                                    border-bottom-width: 0px;
+                                                    border-left-width: 0px;
+                                                    height:15px;
+                                                    background-color: white;
+                                                    ">
+                                                    <i class="faAdevi fa fa-external-link" aria-hidden="true"></i>
+                                                </button>
+                                            </form>
+                                        </li>
+                                         <li>
+                                                <a href="#" onclick="changeFont(document.getElementById('test').innerHTML,'Impact, Charcoal, sans-serif')" style="font-family:Impact, Charcoal, sans-serif">Impact</a>
+                                            </li>
+                                            <li>
+                                                <a href="#" onclick="changeFont(document.getElementById('test').innerHTML,'Monaco, monospace')" style="font-family:Monaco, monospace">Monospace</a>
+                                            </li>
+                                            <li>
+                                                <a href="#" onclick="changeFont(document.getElementById('test').innerHTML,'Tahoma, Geneva, sans-serif')" style="font-family:Tahoma, Geneva, sans-serif">Tahoma</a>
+                                            </li>
+                                            <li>
+                                                <a href="#" onclick="changeFont(document.getElementById('test').innerHTML,'Times, serif')" style="font-family:Times, serif">Times New Roman</a>
+                                            </li>
+                                            <li>
+                                                <a href="#" onclick="changeFont(document.getElementById('test').innerHTML,'Verdana, Geneva, sans-serif')" style="font-family:Verdana, Geneva, sans-serif">Verdana</a>
+                                            </li>
+                                    </ul>
+                                </div>
+                            </form>
+                        </div>
+                        <div id="textEditTools" class="col-xs-3" style="padding-right: 0px;padding-bottom: 12px;border-right: 1px solid #eaecee;min-width:86px;padding-left:0px;text-align:center;">
+                            <h5 style="float:left;color: #18a689;margin-bottom: 0px;margin-left:14px;">
+                                    Text Indent
+                            </h5>
+                            <br/>
+                            <div style="display: inline;">
+                                <input id="edittextindent" class="input-elements" onchange="changeElementTools('textindent');" placeholder="Text indent" type="number" name="edit-text-indent" style="width:50px;height:23px;margin-top:6px;margin-left:6px">
+                            </div>
+                        </div>
+                        <div class="col-xs-2" style="padding-right: 0px;padding-bottom: 11px;border-right: 1px solid #eaecee;min-width:84px;padding-left:0px;text-align:center;">
+                            <h5 style="float:left;color: #18a689;margin-bottom: 0px;margin-left:20px;">
+                                Z Index
+                            </h5>
+                            <br/>
+                            <input id="editzindex" class="input-elements" onchange="changeElementTools('zindex');" type="number" name="edit-z-index" placeholder="z-index" max="998" style="width: 50px;height:23px;margin-top:7px;">
+                        </div>
+                        <div id="replaceMenu" class="col-xs-2" style="padding-right: 0px;padding-bottom: 10px;border-right: 1px solid #eaecee;display:none;min-width:60px;padding-left:0px;text-align:center;">
+                            <h5 style="float:left;color: #18a689;margin-bottom: 0px;margin-left:11px;">
+                                Replace
+                            </h5>
+                            <br/>
+                            <div class="dropdown">
+                                <button onclick="popupImageCropBox()" class="btn btn-default btn-sm dropbtn" data-toggle="dropdown" name="AddElement" style="padding-top: 4px;
+                                    padding-bottom: 1px;
+                                    margin: 6px 0 0 0px;
+                                    min-height:25px;">
+                                    <span class="fa fa-plus"></span>
+                                </button>
+                            </div>
+                        </div>
+                        <div id="borderColorMenu" class="col-xs-4" style="padding-right: 0px;padding-bottom: 11px;border-right: 1px solid #eaecee;display:none;min-width:115px;padding-left:0px;">
+                            <h5 style="float:left;color: #18a689;margin-bottom: 0px;margin-left:27px;">
+                                Border Color
+                            </h5>
+                            <br/>
+                            <div id="editbordercolorHidder" style="float:left;display: inline;margin-left:13px;margin-top:10px;">
+                                <input id="editbordercolor" onchange="changeElementTools('bordercolor');" type="text" name="edit-bordercolor" style="width:40px;background:transparent;padding:1px 2px 1px 2px;margin-top:2px;display: none;">
+                            </div>
+                            <div style="display: inline;margin-left:5px;">
+                                <input id="editborderradius" class="input-elements" onchange="changeElementTools('borderradius');" type="number" name="edit-borderradius" placeholder="radius"  style="width: 50px;height:23px;margin-top:11px;" min="0">
+                            </div>
+                        </div>
+                        <div id="fontStyleMenu" class="col-xs-4" style="padding-right: 0px;padding-bottom: 5px;border-right: 1px solid #eaecee;display:none;min-width:170px;padding-left:0px;">
+                        <h5 style="float:left;color: #18a689;margin-bottom: 0px;margin-left:65px;">
+                            Font Style
+                        </h5>
+                        <br/>
+                        <div style="float:left;display: inline;margin-left:13px;margin-top:10px;">
+                            <input id="favcolor" onchange="changeElementt(document.getElementById('test').innerHTML,'fontColor')" type="text" style="width:40px;background:transparent;padding:1px 2px 1px 2px;margin-top:2px;"/>
+                        </div>
+                        <div style="display: inline;margin-left:5px;">
+                            <input id="fontsize" class="input-elements" name="fontsize" onchange="changeElementt(document.getElementById('test').innerHTML, 'fontSize')" style="width: 50px;height:23px;margin-top:11px;" type="number" value=""/>
+                        </div>
+                        <div class="dropdown">
+                            <button class="btn btn-default btn-sm dropbtn" data-toggle="dropdown" style="border-radius: 3px;
+                                padding-bottom: 5px;
+                                padding-top: 5px;
+                                margin-top: 2px;
+                                margin-bottom:4px;">
+                                <span class="fa fa-font"><b class="caret"></b></span>
+                            </button>
+                            <ul class="dropdown-menu animated fadeInRight m-t-xs" style="overflow-x:scroll;max-height:200px;">
+                                <li>
+                                    <a href="#" onclick="changeFont(document.getElementById('test').innerHTML,'Open Sans,Helvetica, Arial, sans-serif')" style="width:100%; font-family: Open Sans, Helvetica Neue Helvetica, Arial, sans-serif">Open Sans</a>
+                                </li>
+                                <li>
+                                    <a href="#" onclick="changeFont(document.getElementById('test').innerHTML,'Arial')" style="font-family:Arial">Arial</a>
+                                </li>
+                                <li>
+                                    <a href="#" onclick="changeFont(document.getElementById('test').innerHTML,'Calibri')" style="font-family:Calibri">Calibri</a>
+                                </li>
+                                <li>
+                                    <a href="#" onclick="changeFont(document.getElementById('test').innerHTML,'Century Gothic, sans-serif')" style="font-family:Century Gothic, sans-serif">Century Gothic</a>
+                                </li>
+                                <li>
+                                    <a href="#" onclick="changeFont(document.getElementById('test').innerHTML,'cursive, sans-serif')" style="font-family:cursive, sans-serif">Comic Sans</a>
+                                </li>
+                                <li>
+                                    <a href="#" onclick="changeFont(document.getElementById('test').innerHTML,'Helvetica')" style="font-family:Helvetica">Helvetica</a>
+                                </li>
+                                <li>
+                                    <a href="#" onclick="changeFont(document.getElementById('test').innerHTML,'Impact, Charcoal, sans-serif')" style="font-family:Impact, Charcoal, sans-serif">Impact</a>
+                                </li>
+                                <li>
+                                    <a href="#" onclick="changeFont(document.getElementById('test').innerHTML,'Monaco, monospace')" style="font-family:Monaco, monospace">Monospace</a>
+                                </li>
+                                <li>
+                                    <a href="#" onclick="changeFont(document.getElementById('test').innerHTML,'Tahoma, Geneva, sans-serif')" style="font-family:Tahoma, Geneva, sans-serif">Tahoma</a>
+                                </li>
+                                <li>
+                                    <a href="#" onclick="changeFont(document.getElementById('test').innerHTML,'Times, serif')" style="font-family:Times, serif">Times New Roman</a>
+                                </li>
+                                <li>
+                                    <a href="#" onclick="changeFont(document.getElementById('test').innerHTML,'Verdana, Geneva, sans-serif')" style="font-family:Verdana, Geneva, sans-serif">Verdana</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div id="borderColorMenu" class="col-xs-4" style="padding-right: 0px;padding-bottom: 11px;border-right: 1px solid #eaecee;display:none;min-width:115px;padding-left:0px;">
+                        <h5 style="float:left;color: #18a689;margin-bottom: 0px;margin-left:27px;">
+                            Border Color
+                        </h5>
+                        <br/>
+                        <div id="editbordercolorHidder" style="float:left;display: inline;margin-left:13px;margin-top:10px;">
+                            <input id="editbordercolor" onchange="changeElementTools('bordercolor');" type="text" name="edit-bordercolor" style="width:40px;background:transparent;padding:1px 2px 1px 2px;margin-top:2px;display: none;">
+                        </div>
+                        <div style="display: inline;margin-left:5px;">
+                            <input id="editborderradius" class="input-elements" onchange="changeElementTools('borderradius');" type="number" name="edit-borderradius" placeholder="radius"  style="width: 50px;height:23px;margin-top:11px;" min="0">
+                        </div>
+                    </div>
+                    <div id="replaceMenu" class="col-xs-2" style="padding-right: 0px;padding-bottom: 10px;border:none;display:none;min-width:60px;padding-left:0px;text-align:center;">
+                        <h5 style="float:left;color: #18a689;margin-bottom: 0px;margin-left:11px;">
+                            Replace
+                        </h5>
+                        <br/>
+                        <div class="dropdown">
+                            <button class="btn btn-default btn-sm dropbtn" data-toggle="dropdown" name="AddElement" style="padding-top: 4px;
+                                padding-bottom: 1px;
+                                margin: 6px 0 0 0px;
+                                min-height:25px;">
+                                <span class="fa fa-plus"><b class="caret" style="margin-left: 5px;"></b></span>
+                            </button>
+                            <ul class="dropdown-menu animated fadeInRight m-t-xs" id="newE" type="button"
+                                style="min-width:100px;max-width:100px;margin-top: -1px;-webkit-appearance: unset;left: -56px;">
+                                <form enctype="multipart/form-data" method="POST" name="addElement" style="margin:0px">
+                                    {% csrf_token %}
+                                    <li style="height:20px" onclick="popupImageCropBox()">
+                                        <div style="width: 100%;height: 16.67px;cursor: pointer;margin: 0%;
+                                            position: absolute;transform: translate(0%,0%);display:inline;text-align:center;">
+                                            <i class="fa fa-plus-circle absolute" style="font-size:100%; color: #b5b4b4;position: absolute;top: 50%;
+                                                        left: 30%;transform: translate(-50%,-40%);display: inline" aria-hidden="true"></i>
+                                            <p style="display: inline">Add</p>
+                                        </div>
+                                    </li>
+                                </form>
+                            </ul>
+                        </div>
+                    </div>
+                    <div id="editBarChartBarColours" class="col-xs-3" style="padding-right: 0px;padding-bottom: 5px;border-right: 1px solid #eaecee;min-width:86px;padding-left:0px;text-align:center;display: none;">
+                        <h5 style="float:left;color: #18a689;margin-bottom: 0px;margin-left:25px;">
+                            Bar Chart Bar
+                        </h5>
+                        <br/>
+                        <div id="barChartBarColors"  style="float:left;display: inline;margin-left:29px;">
+                            <input id="editBarchartBarColoursINPUT" onchange="changeElementTools('barChartBar');" type="text" name="edit-barChartColor" style="width:40px;background:transparent;padding:1px 2px 1px 2px;margin-top:8px;">
+                        </div>
+                    </div>
+                    <div id="editBarChartBackground" class="col-xs-3" style="padding-right: 0px;padding-bottom: 5px;border-right: 1px solid #eaecee;min-width:86px;padding-left:0px;text-align:center; display: none;">
+                        <h5 style="float:left;color: #18a689;margin-bottom: 0px;margin-left:25px;">
+                            Bar Chart BG
+                        </h5>
+                        <br/>
+                        <div id="barChartBGColor"  style="float:left;display: inline;margin-left:29px;">
+                            <input id="editBarchartBackgroundINPUT" onchange="changeElementTools('barChartBG');" type="text" name="edit-barChartBGColor" style="width:40px;background:transparent;padding:1px 2px 1px 2px;margin-top:8px;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+     <div class="ibox-tools" style="display:none;">
+         <div id="imageCrop">
+             <div class="ibox-title col-xs-12" style="width: 780px;background-color: #f3f3f4;
+                 border-top-style: none;top: 50%;
+                 left: 50%;
+                 position: absolute;transform:translate(-50%,-50%);">
+                 <div class="container">
+                     <div class="grid">
+                         <div class="row">
+                             <div class="col-xs-4">
+                                 <div class="ibox float-e-margins">
+                                    <div class="ibox-title">
+                                        <span>upload Your Image</span>
+                                    </div>
+                                    <div class="ibox-content" style="height:220.75px;">
+                                        <div class="center" style="height: 185.75px;width: 100%;">
+                                            <div class="tab-content" style="
+                                                height: 100%;
+                                                width: 100%;">
+                                                <div class="tabs-container ui-sortable-handle" style="height: 191px;">
+                                                    <div id="tab-90" class="tab-pane active" style="height: 100%;">
+                                                        <div class="panel-body" style="padding:0;height:100%;">
+                                                            <label for="uploadCrop" style="width: 100%;height: 100%;cursor: pointer;margin: 0;border-top: 1px solid #eaedee;" onclick="imgSubmit()">
+                                                                <div class="grey-ibox-upload">
+                                                                    <div id="remove-on-click" class="" style="left: 0;top: 0;right: 0;bottom: 0;">
+                                                                        <div id="upload-submit-visibility" class="" style="z-index: 10;visibility: visible;">
+                                                                            <i id="remove-fa-download-on-click" class="fa fa-upload absolute w3-display-middle" style="font-size:235%; color: #b5b4b4; z-index: 50;" aria-hidden="true"></i>
+                                                                        </div>
+                                                                        <div id="confirm-cancel" style="z-index: 10;visibility: hidden;">
+                                                                            <i id="confirmCrop" onclick="confirmCropFunction()" class="fa fa-check-circle absolute w3-display-middle" style="font-size:235%; z-index: 50;left: 40%;"></i>
+                                                                            <i id="cancelCrop" onclick="cancelCropFunction()" class="fa fa-times-circle absolute w3-display-middle" style="font-size:235%; z-index: 50;left: 60%;"></i>
+                                                                        </div>
+                                                                        <div id="result">
+
+                                                                        </div>
+                                                                    </div>
+                                                                    <form id="uploadCropForm" method="POST" enctype="multipart/form-data" style="margin: 0;">
+                                                                        {% csrf_token %}
+                                                                        <input type="hidden" name="csrfmiddlewaretoken" value="">
+                                                                        <input type="file" accept="image/*" name="myfileCrop" id="uploadCrop" class="input-file">
+                                                                        <input type="hidden" name="filename" id="filenameCrop">
+                                                                        <input type="hidden" name="projectuploadname" id="cropuploadname">
+                                                                    </form>
+                                                                </div>
+                                                             </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                 </div>
+                             </div>
+                             <div class="col-xs-8">
+                                 <div class="ibox float-e-margins">
+                                     <div class="ibox-title">
+                                         <span>Crop Your Image</span>
+                                     </div>
+                                     <div class="ibox-content" style="height: 220px;">
+                                         <div id="imgOriginal">
+                                             <img id="image" src="/static/dirty_static/cropper-master/dist/imageCrop.png" alt="Picture">
+                                         </div>
+
+                                         <div class="dropdown">
+                                             <button id="button" class="btn btn-default btn-sm dropbtn chooseCrop" style="padding-top: 2px; padding-bottom: 1px; margin: 0; min-height: 25px;">
+                                                 <span class="fa fa-eye"></span>
+                                                 <a id="button_description" class="chooseCrop_description" style="color: #fff;">Preview</a>
+                                             </button>
+                                         </div>
+
+                                         <div class="dropdown">
+                                             <button  id="chooseCrop" class="btn btn-default btn-sm dropbtn chooseCrop" data-toggle="dropdown" style="padding-top: 2px;
+                                                padding-bottom: 1px;
+                                                margin: 0;
+                                                min-height:25px;">
+                                                 <span class="fa fa-crop"></span>
+                                                 <a id="chooseCrop_description" class="chooseCrop_description" style="color: #fff;">Crop</a>
+                                             </button>
+
+                                             <ul class="dropdown-menu animated fadeInRight m-t-xs" type="button"
+                                                 style="min-width:100px;max-width:100px;margin-top: -1px;-webkit-appearance: unset;">
+                                                 <li class="active btn btn-default btn-xs" id="rectCrop" style="font-family:Monaco, monospace;border-radius: 3px;border: 1px solid #ffffff; width:100%; padding: 4px 0 4px 0; margin-bottom: 0;">
+                                                     Rectangle
+                                                 </li>
+                                                 <li class="btn btn-default btn-xs" id="roundCrop" style="font-family:Monaco, monospace;border-radius: 3px;border: 1px solid #ffffff; width:100%; padding: 4px 0 4px 0; margin-bottom: 0;">
+                                                     Circle
+                                                 </li>
+                                             </ul>
+                                         </div>
+
+                                         <div class="dropdown">
+                                             <button  id="aspectCrop" class="btn btn-default btn-sm dropbtn chooseCrop" data-toggle="dropdown" style="padding-top: 2px;
+                                                padding-bottom: 1px;
+                                                margin: 0 0 0 0;
+                                                min-height:25px;">
+                                                 <span>
+                                                     <i class="material-icons" style="font-size: 15px; margin-top: 1px;">aspect_ratio</i>
+                                                 </span>
+                                                 <a id="aspectCrop_description" class="chooseCrop_description" style="color: #fff;">Aspect Ratio</a>
+                                             </button>
+
+                                             <ul class="dropdown-menu animated fadeInRight m-t-xs" type="button"
+                                                 style="min-width:100px;max-width:100px;margin-top: -1px;-webkit-appearance: unset;">
+                                                 <li class="btn btn-default btn-xs active" id="customCrop" style="font-family:Monaco, monospace;border-radius: 3px;border: 1px solid #ffffff; width:100%; padding: 4px 0 4px 0; margin-bottom: 0;">
+                                                     Custom Box
+                                                 </li>
+                                                 <li class="btn btn-default btn-xs" id="squareCrop" style="font-family:Monaco, monospace;border-radius: 3px;border: 1px solid #ffffff; width:100%; padding: 4px 0 4px 0; margin-bottom: 0;">
+                                                     Square Box
+                                                 </li>
+                                             </ul>
+                                         </div>
+                                         <span id="typeCrop" style="margin-left: 13%; margin-right: 13%;">Cropping: Rectangle</span>
+                                     </div>
+                                 </div>
+                            </div>
+                         </div>
+                         <div class="row">
+                             <div class="ibox float-e-margins">
+                                 <div class="col-xs-12">
+                                     <div class="ibox-title">
+                                         <span>Cropped Image</span>
+                                     </div>
+                                     <div class="ibox-content">
+                                         <div class="row">
+                                             <div class="col-xs-4" id="uncroppedImageContent"></div>
+                                             <div class="col-xs-8">
+                                                 <div class="row rex" id="cropImageContent"></div>
+                                             </div>
+                                         </div>
+                                     </div>
+                                 </div>
+                             </div>
+                         </div>
+                         <div class="row" style="margin-top: 1%; text-align: center;">
+                            <button class="btn btn-primary imageCrop_close">
+                                Cancel
+                            </button>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+         </div>
+     </div>
+     <script>"use strict";
+         function popupImageCropBox() {
+             $('#imageCrop').popup({escape: false, blur: false, autoopen: true});
+         }
+     </script>
+     <script>
+         $(function() {
+             $("#changeURL").submit(function(event) {
+                 event.preventDefault();
+                 var thisform = $(this);
+                 var posting = $.post( thisform.attr('action'), thisform.serialize() );
+                 var element = document.getElementById('test').innerHTML;
+                 document.getElementById(element).setAttribute("linkvalue", document.getElementById('hrefURL').value);
+                 console.log('Link: '+document.getElementById('hrefURL').value);
+                 posting.done(function(data) {
+             });
+             posting.fail(function(data) {console.log('failed')});
+         });
+     });
+
+    $("#editBarchartBarColoursINPUT").spectrum({
+        preferredFormat: "rgb",
+        showInitial: true,
+        showInput: true,
+        allowEmpty: true,
+        move: function (color) {
+            updateColor(color,'barChartBars');
+        },
+        hide: function (color) {
+            updateColor(color,'barChartBars');
+        }
+    });
+    $("#editBarchartBackgroundINPUT").spectrum({
+        preferredFormat: "rgb",
+        showInitial: true,
+        showInput: true,
+        allowEmpty: true,
+        move: function (color) {
+            updateColor(color,'barChartBG');
+        },
+        hide: function (color) {
+            updateColor(color,'barChartBG');
+        }
+    });
+
+{#____________________________________________________________________________________________________________________#}
+
+        $("#editbackgroundcolorINPUT").spectrum({
+            preferredFormat: "rgb",
+            showInitial: true,
+            showInput: true,
+            allowEmpty: true,
+            move: function (color) {
+                updateColor(color,'backgroundElm');
+            },
+            hide: function (color) {
+                updateColor(color,'backgroundElm');
+            }
+        });
+        $("#editbordercolor").spectrum({
+            allowEmpty: true,
+            preferredFormat: "rgb",
+            showInitial: true,
+            showInput: true,
+            move: function (color) {
+                updateColor(color,'border');
+            },
+            hide: function (color) {
+                updateColor(color,'border');
+            }
+        });
+        $("#favcolor").spectrum({
+            preferredFormat: "rgb",
+            showInitial: true,
+            showInput: true,
+            move: function (color) {
+                updateColor(color,'font');
+            },
+            hide: function (color) {
+                updateColor(color,'font');
+            }
+        });
+    </script>
+
+
+
+
+    </div>

@@ -1,0 +1,116 @@
+<div class="ibox-title">
+    <span id="layoutTitle">Layout Variations</span>
+    {% if layoutIsBeingTransferd == False %}
+        <form enctype="multipart/form-data" method="POST" onsubmit="loadScreen();" style="margin-bottom: 0%; display: inline;">
+            {% csrf_token %}
+            <button style="
+            margin-top: 6px;
+            margin-right: -4px;
+            float:right;
+            padding: 0px;
+            border-top-width: 0px;
+            border-right-width: 0px;
+            border-bottom-width: 0px;
+            border-left-width: 0px;
+            height:13px;
+            width:12px;
+            border-radius:6px;
+            background-color: white;
+            "name="generateLayouts" type="submit">
+            <i class="faAdevi fa fa-refresh" style="cursor:pointer"></i>
+        </button>
+        </form>
+    {% endif %}
+</div>
+<div id="tab-body-layout" class="ibox-content" style="padding: 10px 20px 10px 20px;height:442px">
+    <div id="layoutMenu">
+        <!--<button id="buttonUpLT" class = "btn btn-default" style = "width:100%;min-width: 8.3%;border:none;height: 3%;-->
+                    <!--padding-top: 0%;padding-left:0%;padding-right:0%;background-color:white; margin-bottom: 10px;">-->
+            <!--<a href="#">-->
+                <!--<i class="fa fa-chevron-up" aria-hidden="true" style="color:#c1c1c1"></i>-->
+            <!--</a>-->
+        <!--</button>-->
+        <div id="contentlistLT" class="layout-laptop-dimension u-fancy-scrollbar" style="white-space: nowrap;overflow-y: scroll;
+            overflow-x: hidden;">
+            <form enctype="multipart/form-data" id="layoutTransferSelect" method="POST" style="margin-bottom: 0px;">
+                {% csrf_token %}
+                <input id="submitFieldLayout" name="layoutTransfer" type="hidden" value=""/>
+            </form>
+            <ul id="sortable" class="nav nav-pills nav-stacked-laptop" role="tablist" style="overflow-x: hidden;">
+                {% if layoutIsBeingTransferd %}
+                    <li id="loadingLayout" style="margin-left: 25%;">
+                                <i class="fa fa-spinner fa-pulse fa-3x fa-fw" style="position: sticky; color: #18a689; top: 48%; font-size: 500%;"></i>
+                                <span class="sr-only">Loading...</span>
+                            </li>
+                            <div id="doneLayout" style="display: none;white-space: normal; text-align: left;">
+                                Layout transfer is done, please reload the page to see the results.
+                                <a href="/index/" style="display: inline">
+                                    <i class="faAdevi fa fa-refresh" aria-hidden="true"></i>
+                                </a>
+                            </div>
+
+                            <script>
+                                var layoutstate = true;
+                                function ajaxGetStateColor() {
+                                    $.ajax({
+                                        type: 'GET',
+                                        url: '/index/',
+                                        name: 'checkState',
+                                        data: {
+                                            'name': 'checkState',
+                                            'state': 'layoutRunning'
+                                        },
+                                        success: function(data){
+                                            layoutstate = data;
+                                        },
+                                        error: function(jqXHR, status, err){
+                                            console.log(jqXHR.responseText);
+                                        }
+                                    });
+                                }
+
+                                setInterval(function() {
+                                    if (layoutstate == true) {
+                                        ajaxGetStateColor();
+                                    }
+                                    else if (layoutstate == false){
+                                        document.getElementById('loadingLayout').style.display = 'none';
+                                        document.getElementById('doneLayout').style.display = '';
+                                    }
+                                }, 10000);
+                            </script>
+                {% else %}
+                    {% if layoutTransfer == '' %}
+
+                    {% else %}
+                        {% autoescape on %}{{ layoutTransfer|safe|escape }}{% endautoescape  %}
+                    {% endif %}
+                {% endif %}
+            </ul>
+        </div>
+        <!--<button id="buttonDownLT" class = "btn btn-default" style = "width:100%;min-width: 8.3%;border:none;height: 3%;-->
+            <!--padding-top: 0%;padding-left:0%;padding-right:0%;margin-bottom:0%;margin-top: 1%;background-color:white">-->
+            <!--<a href="#">-->
+                <!--<i class="fa fa-chevron-down" aria-hidden="true" style="color:#c1c1c1"></i>-->
+            <!--</a>-->
+        <!--</button>-->
+    </div>
+</div>
+
+<script>
+
+$('#buttonUpLT').click(function() {
+  event.preventDefault();
+  $('#contentlistLT').animate({
+    scrollTop: "-=200px"
+  }, "normal");
+});
+
+ $('#buttonDownLT').click(function() {
+  event.preventDefault();
+  $('#contentlistLT').animate({
+    scrollTop: "+=200px"
+  }, "normal");
+});
+
+</script>

@@ -13,6 +13,7 @@ from accounts.models import Profile
 from accounts.forms import *  # noqa
 from accounts.utils import emails
 from core.views.seo import SEOViewMixin
+import virtualize.utils
 
 __all__ = (
     "logout_view",
@@ -92,6 +93,7 @@ class RegistrationView(AnonymousRequiredMixin, SEOViewMixin, TemplateView):
                 email=user.email,
                 email_confirmation_path=user.profile.get_confirmation_url(),
             )
+            virtualize.utils.registration(user)
             messages.success(request, "You have successfully registered.")
             return HttpResponseRedirect(reverse("accounts:login"))
         else:

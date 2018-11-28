@@ -1,0 +1,1286 @@
+<html xmlns="http://www.w3.org/1999/html">
+<body onload="checkLocked()" class="mini-navbar pace-done">
+{% block content%}
+
+    <div class="wrapper wrapper-content">
+        <!-- Upload and My pages -->
+        <div id="indexPageContent" class="row">
+            <div class="col-xs-2" id="uploadSection12" style="min-width:175px;display:inline">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <span>upload my page</span>
+                    </div>
+                    <div class="ibox-content" style="height:220.75px">
+                        {%include "customize/includes/upload.html" %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-10" id="projectSection" style="display:inline;">
+                <div class="ibox float-e-margins">
+                    {% if projectName == '' %}
+                        <span id="projectName" style="text-transform:none;">{{ projectName }}</span>
+                        <form id="uploadNewProjectName" method="POST" enctype="multipart/form-data">
+                            <input class="hidden" type="hidden" name="name" value="setProjectName"/>
+                            <input class="hidden" type="text" id="newprojectname" placeholder="Enter the project name" name="project"/>
+                            <input class="hidden btn btn-primary btn-xs slide_close" type="submit" name="createProject" value="Create" onsubmit="return onSubmit()">
+                        </form>
+                    {% else %}
+                    <div id="titleOfProject" class="ibox-title" style="text-align:center;padding: 15px;">
+                        <span id="projectName" style="text-transform:none;color: #18a689;">{{ projectName }}</span>
+                        <!-- Collapse option -->
+{#                        <div id="hideAtPrototypeOff" class="ibox-tools hidden" style="float: right;">#}
+{#                            <a class="collapse-link">#}
+{#                                <i class="fa fa-chevron-up"></i>#}
+{#                            </a>#}
+{#                        </div>#}
+                        <!-- Button for Applying Design -->
+                        <div id="keepPopUpOpen" class="dropdown" style="float: left;">
+                            <button class="btn btn-default btn-sm dropbtn" style="margin-top:-2px;" data-toggle="dropdown" name="AddElement">
+                                <span class="fa fa-paint-brush"><b class="caret" style="margin-left: 5px;"></b></span>
+                            </button>
+                            <!-- dropdown option for applying design -->
+                            <ul class="dropdown-menu animated fadeInRight" id="applyDesignDropD" type="button" style="min-width:80px;max-width:80px;margin-top: -1px;-webkit-appearance: unset;left: -32px;padding: 5px;">
+                                    <input type="hidden" name="name" value="applyDesign">
+                                    <input type="hidden" name="id" id="applyDesign">
+                                    <input type="checkbox" id="colorsAD" name="type" value="colors"> Colors<br/>
+                                    <input type="checkbox" id="stylesAD" name="type" value="styles"> Styles<br/>
+                                    <button name="nextColorStyle" class="btn btn-primary btn-xs"
+                                        style="width:100%;margin: 5px 0 0;" onclick="popupScreenSelector()">
+                                        Next
+                                    </button>
+                            </ul>
+                        </div>
+                    </div>
+                    {% endif %}
+                    <!-- Screen Selector pop-up to apply design -->
+                     <div class="ibox-tools" style="display:none;">
+                        <!-- select the Master screenshot -->
+                        <div id="ScreenSelectorBox">
+                            <div class="ibox-title center">
+                                <span id="changeTitleDesign">Select The Master Screen</span>
+                                <div class="ibox-tools" style="float: right;">
+                                    <a onclick="cancelDesignApplication()" style="float: right;">
+                                        <i class="fa fa-times"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 ibox-content" style="padding: 0 10px;">
+                                <div id="scroll" style="max-width: 100%!important; overflow-x: auto; white-space: nowrap!important;">
+                                    <table id="datatables-example-design" class="table" style="margin-bottom:0px;">
+                                        <tr class="sortable ui-sortable" data-id="2" data-parent="1" data-level="2"
+                                            style="max-height: 110px !important;">
+                                            {% for i in pageArray %}
+                                            <td style="border: none; text-align: center; width: 5.876288659793814vw; height: 110px; max-width: 200px !important; padding-bottom: 11px;" class="ui-sortable-handle">
+                                                <div class="col-xs-2 tabs-container" style="
+                                                    max-width: 187.22px !important;
+                                                    width: 114px;
+                                                    position: relative;
+                                                    left: 0;
+                                                    top: 0;
+                                                    transform: translate(10%, 0);
+                                                    padding: 0;">
+                                                    <ul class="nav nav-tabs">
+                                                        <li class="active" style="width:100%">
+                                                            <a data-toggle="tab" href="#tab-10" style="border:none;padding: 3px 5px;width:100%;
+                                                                              padding-bottom: 0%;">
+                                                                <h4 id= "{{ i.id }}" name="changeName" ondblclick="updatePageName(this.id)"
+                                                                class="text-responsive1" value ="{{ i.id }}"
+                                                                style="margin:0px;width: 100%;
+                                                                height: 100%;
+                                                                overflow: hidden;
+                                                                text-overflow: ellipsis;"><abbr class="checkImageName" title="{{ i.screenName }}" style="text-decoration: none; white-space: nowrap;">{{ i.screenName }}</abbr></h4>
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                    <div class="tab-pane active">
+                                                        <div class="panel-body" style="display:inline;border:none;padding: 0px;margin: 0px;">
+                                                            <form method="POST" enctype="multipart/form-data" style="margin-bottom: 5%;">
+                                                                {% csrf_token %}
+                                                                <div style="max-width: 114px!important;
+                                                                        height: 148px;
+                                                                        background-color:transparent;
+                                                                        border:none;
+                                                                        padding: 6px;">
+                                                                    <table style="height: 100%;">
+                                                                        <tbody>
+                                                                            <tr>
+{#                                                                                <input type="hidden" value="{{ i.id }}" name="selectScreenshot">#}
+                                                                                <td class="defaultDesign" align="center" style="padding: 0;">
+                                                                                    <img class="imageDesign" src="/static/dirty_static/users/{{ i.image }}"
+                                                                                        style="max-height: 136px; max-width: 100px; margin: 0;
+                                                                                        border: 1px solid #c1c1c1;width: 100%;height: auto;">
+                                                                                    <i class="move-visibility checkIconSelectedDesign" aria-hidden="true" data-popup-ordinal="0" style="
+                                                                                        position: absolute;
+                                                                                        width: 20px;
+                                                                                        height: 20px;
+                                                                                        z-index: 10000;
+                                                                                        left: 50%;
+                                                                                        top: 50%;
+                                                                                        transform: translate(240%,-50%);
+                                                                                        background-color: #b5b4b4;
+                                                                                        border-radius: 50%;
+                                                                                        cursor:pointer;
+                                                                                        visibility: visible;
+                                                                                        ">
+                                                                                        <i class="fa fa-check" style="color: white;margin: 12%;"></i>
+                                                                                    </i>
+                                                                                    <i class="checkIconDeselectDesign" aria-hidden="true" data-popup-ordinal="0" style="
+                                                                                        position: absolute;
+                                                                                        width: 20px;
+                                                                                        height: 20px;
+                                                                                        z-index: 10000;
+                                                                                        left: 50%;
+                                                                                        top: 50%;
+                                                                                        transform: translate(240%,-50%);
+                                                                                        background-color: #b5b4b400;
+                                                                                        border-radius: 50%;
+                                                                                        cursor: pointer;
+                                                                                        visibility: hidden;
+                                                                                        ">
+                                                                                        <i class="fa fa-check" style="color: #18a689;margin: 12%;"></i>
+                                                                                    </i>
+                                                                                </td>
+                                                                                <td class="Design hidden" align="center" style="padding: 0;">
+                                                                                    <img class="imageDesignScreen" src="/static/dirty_static/users/{{ i.image }}"
+                                                                                        style="max-height: 136px; max-width: 100px; margin: 0;
+                                                                                        border: 1px solid #c1c1c1;width: 100%;height: auto;">
+                                                                                    <i class="move-visibility CisDesignToScreen" aria-hidden="true" data-popup-ordinal="0" style="
+                                                                                        position: absolute;
+                                                                                        width: 20px;
+                                                                                        height: 20px;
+                                                                                        z-index: 10000;
+                                                                                        left: 50%;
+                                                                                        top: 50%;
+                                                                                        transform: translate(240%,-50%);
+                                                                                        background-color: #b5b4b4;
+                                                                                        border-radius: 50%;
+                                                                                        cursor:pointer;
+                                                                                        visibility: visible;
+                                                                                        ">
+                                                                                        <i class="fa fa-check" style="color: white;margin: 12%;"></i>
+                                                                                    </i>
+                                                                                    <i class="CidDesignToScreen" aria-hidden="true" data-popup-ordinal="0" style="
+                                                                                        position: absolute;
+                                                                                        width: 20px;
+                                                                                        height: 20px;
+                                                                                        z-index: 10000;
+                                                                                        left: 50%;
+                                                                                        top: 50%;
+                                                                                        transform: translate(240%,-50%);
+                                                                                        background-color: #b5b4b400;
+                                                                                        border-radius: 50%;
+                                                                                        cursor: pointer;
+                                                                                        visibility: hidden;
+                                                                                        ">
+                                                                                        <i class="fa fa-check" style="color: #18a689;margin: 12%;"></i>
+                                                                                    </i>
+                                                                                </td>
+                                                                            </tr>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            {% endfor %}
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                            <br/><br/>
+                            <div id="optionAvailability" class="ibox-content col-xs-12 hidden center">
+                                <button id="btnIdNext"  name="applyColorStyle" class="btn btn-primary btn-xs" style="width: 40px;margin: 5px 0 0;" onclick="selectorTransferNext()">
+                                    Next
+                                </button>
+                                <button id="btnIdBack"  name="applyColorStyle" class="btn btn-primary btn-xs hidden" style="width: 40px;margin: 5px 0 0;" onclick="selectorTransferBack()">
+                                    Back
+                                </button>
+                                <button id="btnIdSelectAll"  name="applyColorStyle" class="btn btn-primary btn-xs hidden" style="width: 60px;margin: 5px 0 0;" onclick="selectorTransferSelectAll()">
+                                    Select All
+                                </button>
+                                <button id="btnIdDeselectAll"  name="applyColorStyle" class="btn btn-primary btn-xs hidden" style="width: 75px;margin: 5px 0 0;" onclick="selectorTransferDeselectAll()">
+                                    Deselect All
+                                </button>
+                                <button id="btnIdApply"  name="applyColorStyle" class="btn btn-primary btn-xs hidden" style="width: 42px;margin: 5px 0 0;" onclick="selectorTransferApply()">
+                                    Apply
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Upload Screen pop-up if no screenshot -->
+                    <div id="popupCloser" class="ibox-tools" style="display:none;">
+                        <div id="CheckUploadScreen">
+                            <div id="reduceOnUpload" class="ibox-title col-xs-12" style="width: 780px;height: 426px;background-color: #f3f3f4;
+                                border-top-style: none;">
+                                <div class="col-xs-12 ibox-title" id="uploadSectionPop" style="padding-bottom:0;display:inline;">
+                                    <div class="ibox-content col-xs-3" style="padding: 0;
+                                        border-top: none;">
+                                        <div class="ibox-title center col-xs-12" style="border-style: solid;
+                                            border-right: 1px solid #e7eaec;
+                                            border-left: 1px solid #e7eaec;">
+                                            <span>upload my page</span>
+                                        </div>
+                                        <div class="ibox-content col-xs-12" style="height:191.75px;padding: 0;">
+                                            {%include "customize/includes/uploadSelector.html" %}
+                                        </div>
+                                    </div>
+                                    <div class="ibox-title col-xs-9" style="padding: 0;border: none;">
+                                        <div class="ibox-content col-xs-12" style="border: none;padding-left: 0;
+                                            padding-right:0px;margin-left: 6px">
+                                            <div class="center">
+                                                <span style="font-size: 22px;text-transform: none;">Upload UI Drawing or Sketch, or GUI Screenshot, or Document</span><br/><br/>
+                                            </div>
+                                            <span style="text-indent: 20px;color: grey;"><i class="fa fa-file-image-o"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Drawings: .png, .jpg, .jpeg, .gif (icon)</span><br/><br/>
+                                            <span style="text-indent: 20px;color: grey;"><i class="fa fa-file-image-o"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GUI screenshot: .png, .jpg, .jpeg, .gif (icon)</span><br/><br/>
+                                            <span style="text-indent: 20px;color: grey;"><i class="fa fa-file-o"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Document (RAD, Scope Document etc): .doc, .docx, *.pdf (doc icon)</span><br/><br/>
+                                            <div class="center">
+                                                <span id="hideSpanOnUpload" class="" style="font-size: 20px;color: grey;">OR</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="hideOnUpload" class="ibox-title col-xs-12" style="padding-top: 0;padding-bottom: 0px;visibility: visible;height: 109px;">
+                                    <div id="parentHideOnUpload" class="ibox-content col-xs-12" style="padding: 0;
+                                        border-top: none;height: 107px;">
+                                        <div class="center">
+                                            <span style="font-size: 22px;text-transform: none;">Search For A Basic Layout Using Keywords or Natural Language</span><br/><br/>
+                                            <nav class="navbar navbar-static-top white-bg" role="navigation" style="margin-bottom: 0;">
+                                                <div class="navbar-header ibox-title col-xs-12" style="padding: 0;
+                                                    border: 1px solid #e7eaec;">
+                                                    <div class="ibox-content col-xs-12" style="border: none;padding: 0;height: 47px;">
+                                                        <div class="col-xs-1" style="padding: 0;
+                                                            border-right: 1px solid #e7eaec;">
+                                                            <i class="fa fa-search" style="padding-top: 17px;padding-bottom: 16px;"></i>
+                                                        </div>
+                                                        <div class="col-xs-11" style="padding: 0;padding-left: 10px;">
+                                                            <form role="search" class="navbar-form-custom" method="post" action="#" style="margin-bottom: 0;width: 100%;">
+                                                                <div class="form-group" style="height:  inherit;">
+                                                                    <input type="text" placeholder="Search for something..."
+                                                                           class="form-control" name="top-search" id="upload-search"
+                                                                           onkeyup="visibleSuggestions()" style="margin-top: 0%;padding:  0;height:  inherit;">
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </nav>
+                                            <div id="searchSuggestionResult" class="ibox-title col-xs-12 hidden" style="padding: 10px 0 0;">
+                                                <div class="ibox-content col-xs-12" style="border-left: 1px solid #e8ebed;
+                                                    border-right: 1px solid #e8ebed;border-bottom: 1px solid #e8ebed;padding: 0;">
+                                                    <div id="tabs" class="tabs-container">
+                                                        <ul class="nav nav-tabs" style="height:42px;">
+                                                            <li id="screens_li" class="" style="width: 120px;"><a id="screens_tab" data-toggle="tab"
+                                                               onclick="screenContainer()">Screens</a>
+                                                            </li>
+                                                            <li id="widgets_li" class="" style="width: 120px;"><a id="widgets_tab" data-toggle="tab"
+                                                               onclick="widgetsContainer()">Widgets</a>
+                                                            </li>
+                                                        </ul>
+                                                        <div class="tab-content-2" style="margin:5px; overflow:auto;">
+                                                            <div id="widgetsHidder" class="tab-content" style="visibility: hidden;height: auto;"></div>
+                                                            <div id="screensHidder" class="tab-content" style="visibility: hidden;height: auto;"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="approveButton" class="ibox-title col-xs-12" style="padding: 0;padding-top: 10px;visibility: hidden;">
+                                                <div class="ibox-content col-xs-12" style="padding: 0;border: none;">
+                                                    <button type="submit" name="acceptScreenshots" class="btn btn-primary"
+                                                            style="width:25%;">Approve</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ibox-content" style="padding: 1px 20px 9px 20px;max-height: 222.22px;">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="vr-all" >
+                                    {%include "customize/includes/screenshotSelector.html" %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Workflow Container -->
+        <div id="workflowDisappearer" class="col-xs-12" style="padding: 0;z-index:-10000;margin-top: -500%;">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title center">
+                    <span class="center">Workflow</span>
+                    <div class="ibox-tools" style="float: right;">
+                        <a class="collaps"  id="workflwHide"  onclick="collapseWorkFlow('up')" style="float: left;">
+                            <i class="fa fa-chevron-up" id="btnhideWorkflw"></i>
+                        </a>
+                        <a class="collaps"  id="workflwShow" onclick="collapseWorkFlow('down')" style="float: left;">
+                            <i class="fa fa-chevron-down  hidden" id="btnshowWorkflw"></i>
+                        </a>
+                        <a onclick="closeWorkflow()" style="float: right;">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content" id="workFlw">
+                    <div id="loadingWorkflow" style="position: absolute;
+                        width: 97%;
+                        height: 335px;
+                        z-index: 1000000;
+                        padding: 0;
+                        background-color: transparent; visibility: visible;">
+                        <i class="fa fa-spinner fa-pulse fa-3x fa-fw" style="position: absolute; color: #18a689; top: 25%;left: 47%; transform:translate(-50%,-50%);"></i>
+                        <span style="position: absolute;
+                            color: #18a689;
+                            top: 42%;
+                            left: 50%;
+                            transform: translate(-50%,-50%);">Processing Workflow...
+                        </span>
+                    </div>
+                    {%include "customize/includes/workflowIndex.html" %}
+                </div>
+            </div>
+        </div>
+        <!-- Middle Column Device Container -->
+        <div id="changeheightonTabclickI" class="row" style="max-height:2400px;">
+            <!-- Device Preview Column -->
+            <div id="MCtestRotation" class="col-xs-8" style="padding-bottom:15px;">
+                <div id="tabs" class="tabs-container">
+                    <ul class="nav nav-tabs" style="height:50px;">
+                        <li id="laptopTab" class="active" style="width: 80px;"><a id="tab1" data-toggle="tab" href="#tab-3" onclick="changeIDLaptop()"><i class="fa fa-laptop fa-2x"></i></a></li>
+                        <li id="tabletTab" class="" style="width: 80px;"><a id="tab2" data-toggle="tab" href="#tab-3" onclick="changeIDTablet()"><i class="fa fa-tablet fa-2x"></i></a></li>
+                        <li id="mobileTab" class="" style="width: 80px;"><a id="tab3" data-toggle="tab" href="#tab-3" onclick="changeIDMobile()"><i class="fa fa-mobile fa-2x"></i></a></li>
+                        <li class="center" style="width: 165px;height: 50px;float: right;"><b id="tab3PA" class="colorHover" onclick="loadPrototype()">Prototype Mode</b></li>
+                        <li id="rotate-tablet1" class="active" style="width: 80px; visibility: hidden;"><a id="tab4" onclick="testRotateTablet()"><img alt="image" src="/static/dirty_static/img/rotateSmartphone.svg" style="width: 25px"></a></li>
+                        <li id="rotate-tablet2" class="active" style="width: 80px; visibility: hidden;"><a id="tab5" onclick="testRotateTablet2()"><img alt="image" src="/static/dirty_static/img/rotateSmartphone.svg" style="width: 25px"></a></li>
+                        <li id="rotate-phone1" class="active" style="width: 80px; visibility: hidden;"><a id="tab6" onclick="testRotatePhone()"><img alt="image" src="/static/dirty_static/img/rotateSmartphone.svg" style="width: 25px"></a></li>
+                        <li id="rotate-phone2" class="active" style="width: 80px; visibility: hidden;"><a id="tab7" onclick="testRotatePhone2()"><img alt="image" src="/static/dirty_static/img/rotateSmartphone.svg" style="width: 25px"></a></li>
+                    </ul>
+                    <script>
+                        var checkDeviceType = 'WebApp';
+                        function ajaxGetStateCheckDevice() {
+                            $.ajax({
+                                type: 'GET',
+                                url: '/index/',
+                                name: 'checkDeviceType',
+                                data: {
+                                    'name': 'checkDeviceType',
+                                    'state': 'device_page'
+                                },
+                                success: function(data){
+                                    checkDeviceType = data;
+                                },
+                                error: function(jqXHR, status, err){
+                                    console.log(jqXHR.responseText);
+                                }
+                            });
+                        }
+                        $(document).ready(function(){
+                            var timesRun = 0, interval, noOfTimes, webApp, mobileApp;
+                            interval = setInterval(function() {
+                                timesRun += 1;
+                                noOfTimes = 5;
+                                webApp = 'WebApp';
+                                mobileApp = 'MobileApp';
+                                if (checkDeviceType === webApp) {
+                                    console.log("check device type is successful and it's Web App");
+                                    $('#laptopTab').addClass('active');
+                                    $('#tabletTab').removeClass('active');
+                                    $('#mobileTab').removeClass('active');
+                                    changeIDLaptop();
+                                    ajaxGetStateCheckDevice();
+                                    if(timesRun === noOfTimes){
+                                        console.log('clear interval');
+                                        $('#loadingSubmitPage').css("display","none");
+                                        clearInterval(interval);
+                                    }
+                                }
+                                else if (checkDeviceType === mobileApp){
+                                    console.log("check device type is successful and it's Mobile App");
+                                    $('#laptopTab').removeClass('active');
+                                    $('#tabletTab').removeClass('active');
+                                    $('#mobileTab').addClass('active');
+                                    $('#rotate-tablet1').removeClass('active');
+                                    $('#rotate-tablet2').removeClass('active');
+                                    $('#rotate-phone1').removeClass('active');
+                                    $('#rotate-phone2').removeClass('active');
+                                    changeIDMobile();
+                                    if(timesRun === noOfTimes){
+                                        console.log('clear interval');
+                                        $('#loadingSubmitPage').css("display","none");
+                                        clearInterval(interval);
+                                    }
+                                }
+                            }, 1000);
+                        })
+                    </script>
+                    <div id="tab-body" class="tab-content">
+                        {%include "customize/includes/deviceContainer.html" %}
+                    </div>
+                </div>
+            </div>
+            <!-- Pages Menu Column -->
+            <div id="pageCol" class="col-xs-4" style="max-width: 33.33333333%;min-width: 33.33333333%;">
+                <div class="ibox float-e-margins" style="margin-bottom:10px">
+                    {%include "customize/includes/pagesMenu.html" %}
+                </div>
+            </div>
+            <!-- Gradient option -->
+            <div id="pageCol" class="col-xs-4" style="max-width: 33.33333333%;min-width: 33.33333333%;">
+                <div class="ibox float-e-margins" style="margin-bottom:10px">
+                    {%include "customize/includes/gradientOption.html" %}
+                </div>
+            </div>
+            <!-- Element Menu Column -->
+            <div id="elementCol" class="col-xs-4" style="max-width: 33.33333333%;min-width: 33.33333333%;">
+                <div class="ibox float-e-margins" style="margin-bottom:10px">
+                    {%include "customize/includes/elementMenu.html" %}
+                </div>
+            </div>
+            <!-- Prediction Column -->
+            <div id="predictionCol" class="col-xs-4" style="max-width: 33.33333333%;min-width: 33.33333333%;margin-bottom: 3px;">
+                <div class="ibox float-e-margins" style="margin-bottom:10px">
+                    {%include "customize/includes/prediction.html" %}
+                </div>
+            </div>
+            <!-- Layout Variations Column -->
+            <div id="layout2" class="col-xs-2" style="max-width: 16.66666667%;min-width: 14%;padding-right: 1px;">
+                <div class="ibox float-e-margins">
+                    {%include "customize/includes/layoutTransfer.html" %}
+                </div>
+            </div>
+            <!-- Color Transfer Column -->
+            <div id="col-width" class="col-xs-2" style="max-width: 16.66666667%;min-width: 14%;padding-left: 1px;">
+                <div class="ibox float-e-margins">
+                    {%include "customize/includes/colorTransfer.html" %}
+                </div>
+            </div>
+        </div>
+        <!--Prototype Container-->
+        <div id="changeheightonTabclickPU" class="row wrapper wrapper-content hidden" >
+            {% include "customize/prototype.html" %}
+        </div>
+    </div>
+    <script>
+
+            function changeIDLaptop(){
+                changeAspectRatioLaptop();
+                console.log('weebApp');
+                $.ajax({
+                type:'POST',
+                url: '/index/',
+                data: {
+                    'name': 'device_Page',
+                    'device':'WebApp'
+                }
+                });
+            }
+
+            function changeIDTablet(){
+                changeAspectRatioTablet();
+                console.log('TabApp');
+                $.ajax({
+                type:'POST',
+                url: '/index/',
+                data: {
+                    'name': 'device_Page',
+                    'device':'TabletApp'
+                }
+                });
+            }
+
+            function changeIDMobile(){
+                changeAspectRatioPhone();
+                console.log('MobileApp');
+                $.ajax({
+                type:'POST',
+                url: '/index/',
+                data: {
+                    'name': 'device_Page',
+                    'device':'MobileApp'
+                }
+                });
+            }
+
+
+             function changeAspectRatioLaptop(){
+                 $('#tab-body').removeClass('tab-content-tablet tab-content-phone').addClass('tab-content');
+                 $('#tab-3').removeClass('tab-pane-phone tab-pane-tablet').addClass('tab-pane');
+                 $('#panel-id').removeClass('panel-body-phone panel-body-tablet').addClass('panel-body');
+                 $('#midCol').removeClass('testing-phone testing-tablet').addClass('testing');
+                 $('#device-frame').removeClass('size-tablet background-tablet background-tablet-rotate size-mobile background-mobile background-mobile-rotate').addClass('size-laptop-default background-laptop');
+                 $('#general-contain').removeClass('general-size-tablet general-size-mobile').addClass('general-size-laptop');
+                 $('#container-inside-frame').removeClass('content-inside-frame-tablet content-inside-frame-mobile').addClass('content-inside-frame-laptop');
+                 if ($(window).width() < 768) {
+                     document.getElementById('rotate-tablet1').style = 'width: 80px;visibility: hidden;margin-left:240px;margin-top:-50px;';
+                     document.getElementById('rotate-tablet2').style = 'width: 80px;visibility: hidden;margin-left:240px;margin-top:-45px;';
+                     document.getElementById('rotate-phone1').style = 'width: 80px;visibility: hidden;margin-left:240px;margin-top:-40px;';
+                     document.getElementById('rotate-phone2').style = 'width: 80px;visibility: hidden;margin-left:240px;margin-top:-40px;';
+                 } else {
+                     document.getElementById('rotate-tablet1').style = 'width: 80px;visibility: hidden;';
+                     document.getElementById('rotate-tablet2').style = 'width: 80px;visibility: hidden;margin-left:-80px;';
+                     document.getElementById('rotate-phone1').style = 'width: 80px;visibility: hidden;margin-left:-80px;';
+                     document.getElementById('rotate-phone2').style = 'width: 80px;visibility: hidden;margin-left:-80px;';
+                 }
+                 document.getElementById('panel-id').style = 'padding:0px;';
+                 document.getElementById('general-contain').style = 'margin-left:4%; height:98.8%;';
+                 document.getElementById('container-inside-frame').style = 'height:inherit;';
+                 try{
+                     recheckDeviceCont();
+                 }catch{
+                     console.log ("Couldn't recheck Device; search for Aardvark");
+                 }
+                 checkSize();
+             }
+
+            function changeAspectRatioTablet(){
+                $('#tab-body').removeClass('tab-content tab-content-phone').addClass('tab-content-tablet');
+                $('#tab-3').removeClass('tab-pane tab-pane-phone').addClass('tab-pane-tablet');
+                $('#panel-id').removeClass('panel-body-phone panel-body').addClass('panel-body-tablet');
+                $('#midCol').removeClass('testing-phone testing').addClass('testing-tablet');
+                $('#device-frame').removeClass('size-laptop-default background-laptop background-tablet-rotate size-mobile background-mobile background-mobile-rotate').addClass('size-tablet background-tablet');
+                $('#general-contain').removeClass('general-size-laptop general-size-mobile').addClass('general-size-tablet');
+                $('#container-inside-frame').removeClass('content-inside-frame-laptop content-inside-frame-mobile').addClass('content-inside-frame-tablet');
+                if ($(window).width() < 768) {
+                    document.getElementById('rotate-tablet1').style = 'width: 80px;visibility: visible;margin-left:240px;margin-top:-50px;';
+                    document.getElementById('rotate-tablet2').style = 'width: 80px;visibility: hidden;margin-left:240px;margin-top:-45px;';
+                    document.getElementById('rotate-phone1').style = 'width: 80px;visibility: hidden;margin-left:240px;margin-top:-40px;';
+                    document.getElementById('rotate-phone2').style = 'width: 80px;visibility: hidden;margin-left:240px;margin-top:-40px;';
+                } else {
+                    document.getElementById('rotate-tablet1').style = 'width: 80px;visibility: visible;';
+                    document.getElementById('rotate-tablet2').style = 'width: 80px;visibility: hidden;margin-left:-80px;';
+                    document.getElementById('rotate-phone1').style = 'width: 80px;visibility: hidden;margin-left:-80px;';
+                    document.getElementById('rotate-phone2').style = 'width: 80px;visibility: hidden;margin-left:-80px;';
+                }
+                document.getElementById('panel-id').style = 'height:1995px;padding:0';
+                document.getElementById('device-frame').style = 'width:75%;height:100%;position: absolute;top: 50%;left: 50%;transform: translate(-50%,-50%);margin-top:15px';
+                document.getElementById('general-contain').style = 'margin-left:4%;height:100%;margin-top:-2%;';
+                document.getElementById('container-inside-frame').style = 'height:inherit;';
+            }
+
+            function changeAspectRatioPhone(){
+                $('#tab-body').removeClass('tab-content tab-content-tablet').addClass('tab-content-phone');
+                $('#tab-3').removeClass('tab-pane tab-pane-tablet').addClass('tab-pane-phone');
+                $('#panel-id').removeClass('panel-body-tablet panel-body').addClass('panel-body-phone');
+                $('#midCol').removeClass('testing-tablet testing').addClass('testing-phone');
+                $('#device-frame').removeClass('size-laptop-default background-laptop size-tablet background-tablet background-tablet-rotate background-mobile-rotate').addClass('size-mobile background-mobile');
+                $('#general-contain').removeClass('general-size-laptop general-size-tablet').addClass('general-size-mobile');
+                $('#container-inside-frame').removeClass('content-inside-frame-laptop content-inside-frame-tablet').addClass('content-inside-frame-mobile');
+                if ($(window).width() < 768) {
+                    document.getElementById('rotate-tablet1').style = 'width: 80px;visibility: hidden;margin-left:240px;margin-top:-50px;';
+                    document.getElementById('rotate-tablet2').style = 'width: 80px;visibility: hidden;margin-left:240px;margin-top:-45px;';
+                    document.getElementById('rotate-phone1').style = 'width: 80px;visibility: visible;margin-left:240px;margin-top:-40px;';
+                    document.getElementById('rotate-phone2').style = 'width: 80px;visibility: hidden;margin-left:240px;margin-top:-40px;';
+                } else {
+                    document.getElementById('rotate-tablet1').style = 'width: 80px;visibility: hidden;';
+                    document.getElementById('rotate-tablet2').style = 'width: 80px;visibility: hidden;margin-left:-80px;';
+                    document.getElementById('rotate-phone1').style = 'width: 80px;visibility: visible;margin-left:-80px;';
+                    document.getElementById('rotate-phone2').style = 'width: 80px;visibility: hidden;margin-left:-80px;';
+                }
+                document.getElementById('panel-id').style = 'height:2000px;;padding:0';
+                document.getElementById('device-frame').style = 'width:50%;height:98%;position: absolute;top: 49%;left: 50%;transform: translate(-50%,-50%);margin-top:15px';
+                document.getElementById('general-contain').style = 'margin-left:6%;height:99%;margin-top:-1%;';
+                document.getElementById('container-inside-frame').style = 'height:inherit;';
+            }
+
+            function testRotateTablet() {
+                $('#device-frame').removeClass('background-tablet').addClass('background-tablet-rotate');
+                document.getElementById('device-frame').style = 'width:100%;height:60%;position: absolute;left: 51%;transform: translate(-50%,0%);margin-top:15px';
+                document.getElementById('general-contain').style = 'margin-left:7%;height:94%;margin-top:-8.5%;padding-bottom:0px';
+                document.getElementById('container-inside-frame').style = 'height:inherit;width:82.5%;';
+                if ($(window).width() < 768) {
+                    document.getElementById('rotate-tablet1').style = 'width: 80px;visibility: hidden;margin-left:240px;margin-top:-50px;';
+                    document.getElementById('rotate-tablet2').style = 'width: 80px;visibility: visible;margin-left:240px;margin-top:-45px;';
+                } else {
+                    document.getElementById('rotate-tablet1').style = 'width: 80px;visibility: hidden;';
+                    document.getElementById('rotate-tablet2').style = 'width: 80px;visibility: visible;margin-left:-80px;';
+                }
+                $.ajax({
+                type:'POST',
+                url: '/index/',
+                data: {
+                    'name': 'device_Page',
+                    'device':'TableAppRotate'
+                }
+                });
+            }
+
+            function testRotateTablet2() {
+                $('#device-frame').removeClass('background-tablet-rotate').addClass('background-tablet');
+                document.getElementById('device-frame').style = 'width:75%;height:100%;position: absolute;top: 50%;left: 50%;transform: translate(-50%,-50%);margin-top:15px';
+                document.getElementById('general-contain').style = 'margin-left:4%;height:100%;margin-top:-2%;';
+                document.getElementById('container-inside-frame').style = 'height:inherit;';
+                if ($(window).width() < 768) {
+                    document.getElementById('rotate-tablet1').style = 'width: 80px;visibility: visible;margin-left:240px;margin-top:-50px;';
+                    document.getElementById('rotate-tablet2').style = 'width: 80px;visibility: hidden;margin-left:240px;margin-top:-45px;';
+                } else {
+                    document.getElementById('rotate-tablet1').style = 'width: 80px;visibility: visible;';
+                    document.getElementById('rotate-tablet2').style = 'width: 80px;visibility: hidden;margin-left:-80px;';
+                }
+                $.ajax({
+                type:'POST',
+                url: '/index/',
+                data: {
+                    'name': 'device_Page',
+                    'device':'TableApp'
+                }
+                });
+            }
+
+            function testRotatePhone() {
+                $('#device-frame').removeClass('background-mobile').addClass('background-mobile-rotate');
+                document.getElementById('device-frame').style = 'width:98%;height:50%;position: absolute;left: 50%;transform: translate(-50%,0%);margin-top:15px';
+                document.getElementById('general-contain').style = 'margin-left:11%;height:93.5%;margin-top:-17%;padding-bottom:0px';
+                document.getElementById('container-inside-frame').style = 'height:inherit;width:78%;';
+                if ($(window).width() < 768) {
+                    document.getElementById('rotate-phone1').style = 'width: 80px;visibility: hidden;margin-left:240px;margin-top:-40px;';
+                    document.getElementById('rotate-phone2').style = 'width: 80px;visibility: visible;margin-left:240px;margin-top:-40px;';
+                } else {
+                    document.getElementById('rotate-phone1').style = 'width: 80px;visibility: hidden;margin-left:-80px;';
+                    document.getElementById('rotate-phone2').style = 'width: 80px;visibility: visible;margin-left:-80px;';
+                }
+                $.ajax({
+                type:'POST',
+                url: '/index/',
+                data: {
+                    'name': 'device_Page',
+                    'device':'MobileAppRotate'
+                }
+                });
+            }
+
+            function testRotatePhone2() {
+                $('#device-frame').removeClass('background-mobile-rotate').addClass('background-mobile');
+                document.getElementById('device-frame').style = 'width:50%;height:98%;position: absolute;top: 49%;left: 50%;transform: translate(-50%,-50%);margin-top:15px';
+                document.getElementById('general-contain').style = 'margin-left:6%;height:99%;margin-top:-1%;';
+                document.getElementById('container-inside-frame').style = 'height:inherit;';
+                if ($(window).width() < 768) {
+                    document.getElementById('rotate-phone1').style = 'width: 80px;visibility: visible;margin-left:240px;margin-top:-40px;';
+                    document.getElementById('rotate-phone2').style = 'width: 80px;visibility: hidden;margin-left:240px;margin-top:-40px;';
+                } else {
+                    document.getElementById('rotate-phone1').style = 'width: 80px;visibility: visible;margin-left:-80px;';
+                    document.getElementById('rotate-phone2').style = 'width: 80px;visibility: hidden;margin-left:-80px;';
+                }
+                $.ajax({
+                type:'POST',
+                url: '/index/',
+                data: {
+                    'name': 'device_Page',
+                    'device':'MobileApp'
+                }
+                });
+            }
+    </script>
+    <script>
+
+        function popupScreenSelector(){
+            // getting the values of the checked items
+            var bool_colors = document.getElementById('colorsAD').checked;
+            var bool_styles = document.getElementById('stylesAD').checked;
+            console.log("colors: "+ bool_colors);
+            console.log("styles: "+ bool_styles);
+
+            if (bool_colors || bool_styles){
+                //Check if only one screen exists
+
+                 $("#keepPopUpOpen").on('click', function(event) {
+                     event.stopPropagation();
+                 })
+
+
+                var noOfScreen = $('#datatables-example-design').find('h4').length;
+                if (noOfScreen === 1 ){
+                    var timer = 2, // timer in seconds
+                    isTimerStarted = false;
+                    (function customSwal() {
+                        swal({
+                            title: "Upload 1 more Screen for this option",
+                            text: "Closing in " + timer + " seconds...",
+                            timer: !isTimerStarted ? timer * 1000 : undefined,
+                            showConfirmButton: false
+                        });
+                        isTimerStarted = true;
+                        if(timer) {
+                            timer--;
+                            setTimeout(customSwal, 1000);
+                        }
+                        else{
+                            console.log('closed');
+                            swal.close();
+                        }
+                    })();
+                }
+                else if (noOfScreen > 1){
+                    $('#ScreenSelectorBox').popup({ escape: false, blur: false, autoopen: true });
+                    intervalCUS();
+                    function intervalCUS(){
+                        var internal, timesRun = 0, noOfTimes;
+                        internal = setInterval(function(){
+                            timesRun += 1;
+                            noOfTimes = 50;
+                            $('#ScreenSelectorBox_background').attr('style', 'opacity: 0.95;visibility: visible;background-color: rgb(0, 0, 0);position: fixed;top: 0px;right: 0px;bottom: 0px;left: 0px;z-index: 100000;');
+                            if(timesRun === noOfTimes){
+                                clearInterval(internal);
+                            }
+                        },1);
+                    }
+                    $('#keepPopUpOpen').removeClass('open');
+                }
+            }
+            else{
+                var timer = 2, // timer in seconds
+                isTimerStarted = false;
+                (function customSwal() {
+                    swal({
+                        title: "Select either color or style",
+                        text: "Closing in " + timer + " seconds...",
+                        timer: !isTimerStarted ? timer * 1000 : undefined,
+                        showConfirmButton: false
+                    });
+                    isTimerStarted = true;
+                    if(timer > 0) {
+                        console.log('running');
+                        timer--;
+                        setTimeout(customSwal, 1000);
+                    }
+                    else{
+                        console.log('closed');
+                        swal.close();
+                    }
+                })();
+            }
+        }
+
+        function cancelDesignApplication() {
+            $('#ScreenSelectorBox').popup('hide');
+            $('.checkIconDeselectDesign').attr('style', 'top:0;position:absolute;visibility:hidden');
+            $('.imageDesign').attr('style', 'max-height: 136px; max-width: 100px; margin: 0;opacity:1;border: 1px solid #c1c1c159;width: 100%;height: auto;');
+            $('.imageDesignScreen').attr('style', 'max-height: 136px; max-width: 100px; margin: 0;opacity:1;border: 1px solid #c1c1c159;width: 100%;height: auto;');
+            $('.checkIconSelectedDesign').attr('style', 'position: absolute;width: 20px;height: 20px;z-index: 10000;left: 50%;top: 50%;transform: translate(240%,-50%);background-color: #b5b4b4;border-radius: 50%;cursor:pointer;visibility:visible');
+            $('#optionAvailability').addClass('hidden');
+            $('.currentlyChecked').removeClass('hidden currentlyChecked');
+            $('.defaultDesign').removeClass('hidden');
+            $('.Design').addClass('hidden');
+            $('#btnIdNext').removeClass('hidden');
+            $('#btnIdBack').addClass('hidden');
+            $('#btnIdApply').addClass('hidden');
+            $('#btnIdSelectAll').addClass('hidden');
+            $('#btnIdDeselectAll').addClass('hidden');
+            $('#changeTitleDesign').html('Select The Master Screen');
+            $('.CidDesignToScreen').attr('style', 'top:0;position:absolute;visibility:hidden');
+            $('.CisDesignToScreen').attr('style', 'position: absolute;width: 20px;height: 20px;z-index: 10000;left: 50%;top: 50%;transform: translate(240%,-50%);background-color: #b5b4b4;border-radius: 50%;cursor:pointer;visibility:visible');
+            setTimeout(function(){
+                $('#keepPopUpOpen').addClass('open');
+            },50);
+            event.preventDefault();
+        }
+    </script>
+    <script>
+        $(document).ready(function(){
+            var identifyCurrentScreen, currentPage, imageName, i, findAllPageName, internal, noOfTimes, display, findAllImage, noOfScreen, timesRun = 0;
+            var prjname= document.getElementById("projectName").innerHTML;
+            if(!prjname) {
+                $('#loadingSubmitPage').css("display","none");
+                swal({
+                    title: "Enter Project Name",
+                    type: "input",
+                    showCancelButton: false,
+                    closeOnConfirm: false,
+                    allowEscapeKey: false,
+                    closeOnClickOutside: false,
+                    inputPlaceholder: "Enter text here"
+                }, function (inputValue) {
+                    if (inputValue === false) return false;
+                    if (inputValue === "") {
+                        swal.showInputError("You need to write something!");
+                        return false
+                    }
+                    else {
+                    swal.close();
+                        document.getElementById('newprojectname').innerHTML = inputValue;
+                        document.getElementById('newprojectname').value = inputValue;
+                        document.getElementById('uploadNewProjectName').submit();
+                        //swal("Nice!", "You wrote: " + inputValue, "success");
+                        loadScreen();
+                    }
+                    setTimeout(function () {
+                        $("#newprojectname").focus();
+                    }, 100);
+                    $('#my_popup_project').popup('show');
+                    function uploadProjectName() {
+                        document.getElementById('newprojectname').style.display = '';
+                        document.getElementById('newscreenname').style.display = 'none';
+
+
+                        document.getElementById('newprojectname').focus();
+                        var project = document.getElementById('newprojectname').value;
+                        if (project === null || project == '') {
+                        return false;
+                        }
+                        else {
+                        $('#my_popup_project').popup('hide');
+                        loadScreen();
+                        }
+                    }
+                });
+            }
+            //Check if Screenshots existence, else pop-up to upload screen
+            noOfScreen = $('#datatables-example-design').find('h4').length;
+            if (noOfScreen === 0 && prjname){
+                $('#loadingSubmitPage').css("display","none");
+                $('#CheckUploadScreen').popup({ escape: false, blur: false, autoopen: true });
+                intervalLoop();
+                function intervalLoop(){
+                    console.log('interval function');
+                    internal = setInterval(function(){
+                        timesRun += 1;
+                        noOfTimes = 50;
+                        $('#CheckUploadScreen_background').attr('style', 'opacity: 0.95;visibility: visible;background-color: rgb(0, 0, 0);position: fixed;top: 0px;right: 0px;bottom: 0px;left: 0px;z-index: 100000;');
+                        console.log('interval timer');
+                        if(timesRun === noOfTimes){
+                            clearInterval(internal);
+                            console.log('interval function else');
+                        }
+                    },1);
+                }
+            }
+            //Check if selected page is a Working Page in device container
+            currentPage = $('#retrieveCurrentPage').html();
+            findAllPageName = $('#datatables-example').find('.checkImageNameScreenshotSelector');
+            findAllImage = $('#datatables-example').find('.imageOutliner');
+            console.log(currentPage);
+            for(i = 0;i < findAllPageName.length;i++) {
+                imageName = findAllPageName[i].innerHTML;
+                console.log(imageName);
+                console.log('I am checking if the current screen exists!');
+                if (currentPage.toLowerCase() === imageName.toLowerCase()){
+                    console.log('This is a current Screen');
+                    findAllImage[i].setAttribute('class', 'changeBorderOfScreen');
+                    identifyCurrentScreen = findAllImage[i].className;
+                    console.log(identifyCurrentScreen);
+                    display = findAllImage[i].getAttribute('src');
+                    console.log(display);
+                    findAllImage[i].setAttribute('style', 'border: 2px solid #18a689;');
+                }else {
+                    console.log('No Current Screen');
+                }
+            }
+        });
+        var mid, gmid, glistOfScreens = [], screens = [];
+        function selectorTransferNext(){
+            var midTag = $('h4').closest('.currentlyChecked').find('h4');
+            console.log("mid bhim");
+            console.log(midTag);
+            console.log(midTag[0].innerText);
+            mid = midTag[0].innerText;
+            setMasterscreenshot(mid);
+            $('.currentlyChecked').addClass('hidden');
+            $('#changeTitleDesign').html('Select The Screens To Transfer Design To');
+            $('.defaultDesign').addClass('hidden');
+            $('.Design').removeClass('hidden');
+            $('#btnIdNext').addClass('hidden');
+            $('#btnIdBack').removeClass('hidden');
+            $('#btnIdSelectAll').removeClass('hidden');
+            checkIfAllScChecked();
+        }
+
+        function selectorTransferBack(){
+            $('.currentlyChecked').removeClass('hidden');
+            $('#changeTitleDesign').html('Select The Master Screen');
+            $('.defaultDesign').removeClass('hidden');
+            $('.Design').addClass('hidden');
+            $('#btnIdNext').removeClass('hidden');
+            $('#btnIdBack').addClass('hidden');
+            $('#btnIdApply').addClass('hidden');
+            $('#btnIdSelectAll').addClass('hidden');
+            $('#btnIdDeselectAll').addClass('hidden');
+        }
+
+        function selectorTransferSelectAll() {
+            $('#datatables-example-design').find('.CisDesignToScreen').attr('style', 'top:0;position:absolute;visibility:hidden');
+            $('#datatables-example-design').find('.imageDesignScreen').attr('style', 'max-height: 136px; max-width: 100px; margin: 0;opacity:0.5;border: 2px solid orange;width: 100%;height: auto;');
+            $('#datatables-example-design').find('.CidDesignToScreen').attr('style', 'position: absolute;width: 20px;height: 20px;z-index: 10000;left: 50%;top: 50%;transform: translate(240%,-50%);background-color: #b5b4b400;border-radius: 50%;cursor:pointer;visibility:visible');
+            $('#btnIdSelectAll').addClass('hidden');
+            $('#btnIdDeselectAll').removeClass('hidden');
+            $('#optionAvailability').removeClass('hidden');
+            $('#btnIdApply').removeClass('hidden');
+        }
+
+        function selectorTransferDeselectAll(){
+            $('#datatables-example-design').find('.CisDesignToScreen').attr('style', 'position: absolute;width: 20px;height: 20px;z-index: 10000;left: 50%;top: 50%;transform: translate(240%,-50%);background-color: #b5b4b4;border-radius: 50%;cursor:pointer;visibility:visible');
+            $('#datatables-example-design').find('.imageDesignScreen').attr('style', 'max-height: 136px; max-width: 100px; margin: 0;opacity:1;border: 1px solid #c1c1c159;width: 100%;height: auto;');
+            $('#datatables-example-design').find('.CidDesignToScreen').attr('style', 'top:0;position:absolute;visibility:hidden');
+            $('#btnIdSelectAll').removeClass('hidden');
+            $('#btnIdDeselectAll').addClass('hidden');
+            $('#btnIdApply').addClass('hidden');
+        }
+        function setMasterscreenshot(msid){
+            gmid = msid;
+        }
+        function getMasterScreenshot(){
+            return gmid;
+        }
+        function setListofScreens(listScreens){
+            glistOfScreens = listScreens;
+        }
+        function getListofScreens(){
+            return glistOfScreens;
+        }
+
+        function selectorTransferApply(){
+            //Add functions for submitting the selected screen(May need a form in html)
+            // need id of masterscreenshot and
+            var mid = getMasterScreenshot();
+            // list of screenshot to be transfered
+            var tdTag = $('#ScreenSelectorBox').find('td');
+            var h4 = $('.CheckedSTD').find('ul').find('abbr');
+            for(var i=0,j=0;i<tdTag.length;i++){
+                var screenStyle = tdTag[i].className;
+                if(screenStyle === 'ui-sortable-handle CheckedSTD'){
+                    addH4(h4[j].title);
+                    j++;
+                    window.location.reload()
+                }
+            }
+            setListofScreens(screens);
+            screens = [];
+            var listOfScreens = getListofScreens();
+            console.log('listOfScreens');
+            console.log(listOfScreens);
+            console.log("mid in selectorTransferApply fn");
+            console.log(mid);
+            // getting the values of the checked items
+            var bool_colors = document.getElementById('colorsAD').checked;
+            var bool_styles = document.getElementById('stylesAD').checked;
+            console.log("colors: "+ bool_colors);
+            console.log("styles: "+ bool_styles);
+
+            // both colors and styles are checked
+            if(bool_colors && bool_styles){
+                $.ajax({
+                    type: 'POST',
+                    url: '/index/',
+                    name: 'colorsAD',
+                    dataType: 'json',
+                    data: {
+                            'colorsAD' : 'colorsAD',
+                            'color' : bool_colors,
+                            'style' : bool_styles,
+                            'mid': mid,
+                            'screensTD': JSON.stringify(listOfScreens)
+                    },
+                    success: function (data) {
+                          location.reload();
+{#                        window.location.reload();#}
+                    }
+
+                });
+            }
+            // only colors checkbox is checked
+            else if(bool_colors){
+                $.ajax({
+                    type: 'POST',
+                    url: '/index/',
+                    name: 'colorsAD',
+                    dataType: 'json',
+                    data: {
+                            'colorsAD' : 'colorsAD',
+                            'color' : bool_colors,
+                            'style' : 'False',
+                            'mid': mid,
+                            'screensTD': JSON.stringify(listOfScreens)
+                    },
+                    success: function (data) {
+{#                        window.location.reload();#}
+                    }
+                });
+            }
+            // only styles checkbox is checked
+            else if(bool_styles){
+                $.ajax({
+                    type: 'POST',
+                    url: '/index/',
+                    name: 'colorsAD',
+                    dataType: 'json',
+                    data: {
+                            'colorsAD' : 'colorsAD',
+                            'color' : 'False',
+                            'style' : bool_styles,
+                            'mid': mid,
+                            'screensTD': JSON.stringify(listOfScreens)
+                    },
+                    success: function (data) {
+{#                        window.location.reload();#}
+                    }
+                });
+            }
+
+        }
+        function addH4(val){
+            screens.push(val);
+        }
+        $(document).ready(function() {
+             var target;
+            $('.CisDesignToScreen').on('click', function (e) {
+                target = $(e.target);
+                //Delay Changing the styles and classes
+                setTimeout(function() {
+                    target.closest('td').find('.CisDesignToScreen').attr('style', 'top:0;position:absolute;visibility:hidden');
+                    target.closest('td').find('img').attr('style', 'max-height: 136px; max-width: 100px; margin: 0;opacity:0.5;border: 2px solid orange;width: 100%;height: auto;');
+                    target.closest('td').find('.CidDesignToScreen').attr('style', 'position: absolute;width: 20px;height: 20px;z-index: 10000;left: 50%;top: 50%;transform: translate(240%,-50%);background-color: #b5b4b400;border-radius: 50%;cursor:pointer;visibility:visible');
+                    target.parents('td').eq(1).addClass('CheckedSTD');
+                    $('#optionAvailability').removeClass('hidden');
+                    $('#btnIdApply').removeClass('hidden');
+                },20);
+                checkIfAllScChecked();
+            });
+
+            $('.CidDesignToScreen').on('click', function (e) {
+                target = $(e.target);
+                target.closest('td').find('.CidDesignToScreen').attr('style', 'top:0;position:absolute;visibility:hidden');
+                target.closest('td').find('img').attr('style', 'max-height: 136px; max-width: 100px; margin: 0;opacity:1;border: 1px solid #c1c1c159;width: 100%;height: auto;');
+                target.closest('td').find('.CisDesignToScreen').attr('style', 'position: absolute;width: 20px;height: 20px;z-index: 10000;left: 50%;top: 50%;transform: translate(240%,-50%);background-color: #b5b4b4;border-radius: 50%;cursor:pointer;visibility:visible');
+                target.parents('td').eq(1).removeClass('CheckedSTD');
+                checkIfScreenIsChecked();
+            });
+        });
+
+        function checkIfAllScChecked(){
+            var getAllStyle, i, checkIfAllChecked, count, style, decreaseCount;
+            //Check if all screens are checked
+            setTimeout(function(){
+                checkIfAllChecked = $('#datatables-example-design').find('.CidDesignToScreen');
+                count = 0;
+                for(i=0;i<checkIfAllChecked.length;i++){
+                    getAllStyle = checkIfAllChecked[i].getAttribute('style');
+                    console.log(getAllStyle);
+                    style = 'position: absolute;width: 20px;height: 20px;z-index: 10000;left: 50%;top: 50%;transform: translate(240%,-50%);background-color: #b5b4b400;border-radius: 50%;cursor:pointer;visibility:visible';
+                    if (getAllStyle === style){
+                        count += 1;
+                        console.log('Adding 1 to the count');
+                        decreaseCount = checkIfAllChecked.length - 1;
+                        if (count === decreaseCount){
+                            console.log('Deselect all button should appear and select all disappear');
+                            $('#btnIdSelectAll').addClass('hidden');
+                            $('#btnIdDeselectAll').removeClass('hidden');
+                            $('#btnIdApply').removeClass('hidden');
+                        } else{
+                            console.log('Hide Deselect All Button');
+                            $('#btnIdDeselectAll').removeClass('hidden');
+                        }
+                    } else{
+                        console.log('Nothing done, again for loop');
+                    }
+                }
+            },21);
+        }
+
+        function checkIfScreenIsChecked() {
+            var getAllStyle, innerHTMLofVisible, innerHTMLofInvisible, checkIfChecked, i, dontCheckHiddenScreen, getAllClass;
+            console.log('i am now executed');
+            checkIfChecked = $('#datatables-example-design').find('.CisDesignToScreen');
+            dontCheckHiddenScreen = $('#datatables-example-design').find('td');
+            //Display all found class specified above
+            console.log(checkIfChecked);
+            for (i = 0; i < checkIfChecked.length; i++) {
+                getAllStyle = checkIfChecked[i].getAttribute('style');
+                getAllClass = dontCheckHiddenScreen[i].getAttribute('class');
+                //Display style of all classes
+                console.log(getAllStyle);
+                console.log(getAllClass);
+                innerHTMLofVisible = "position: absolute;width: 20px;height: 20px;z-index: 10000;left: 50%;top: 50%;transform: translate(240%,-50%);background-color: #b5b4b4;border-radius: 50%;cursor:pointer;visibility:visible";
+                innerHTMLofInvisible = "top:0;position:absolute;visibility:hidden";
+                if (getAllClass === 'ui-sortable-handle currentlyChecked hidden') {
+                    console.log('I will exit the condition and jump to "for loop condition"');
+                }
+                else {
+                    console.log('Starting to check if screens are selected or not');
+                    console.log(getAllClass);
+                    if (getAllStyle === innerHTMLofVisible) {
+                        console.log('All Screens are unchecked');
+                        $('#btnIdNext').addClass('hidden');
+                        $('#btnIdBack').removeClass('hidden');
+                        $('#btnIdSelectAll').removeClass('hidden');
+                        $('#btnIdDeselectAll').addClass('hidden');
+                        $('#btnIdApply').addClass('hidden');
+                        checkIfAllScChecked();
+                    } else if (getAllStyle === innerHTMLofInvisible) {
+                        console.log('One or more Screens still checked');
+                        $('#btnIdNext').addClass('hidden');
+                        $('#btnIdBack').removeClass('hidden');
+                        $('#btnIdSelectAll').removeClass('hidden');
+                        $('#btnIdApply').removeClass('hidden');
+                        $('#btnIdDeselectAll').removeClass('hidden');
+                        console.log('I am Breaking(Uncheck all to avoid break)');
+                        break;
+                    }
+                }
+            }
+        }
+
+
+
+            $('.checkIconSelectedDesign').on('click', function (e) {
+                var findAllStatOfCheck, checkedInnerHTML, identifyCurrentScreen, findAllStatOfUncheck, imgOutlineCheck, findAllImage, identifyImageOutlined, findAllStatOfClass;
+                var target, i;
+                target = $(e.target);
+                //Check if master screen is already checked
+                $('td').removeClass('currentlyChecked');
+                //Delay Changing the styles and classes
+                setTimeout(function() {
+                    target.parents('td').eq(1).addClass('currentlyChecked');
+                    target.closest('td').find('.checkIconSelectedDesign').attr('style', 'top:0;position:absolute;visibility:hidden');
+                    target.closest('td').find('img').attr('style', 'max-height: 136px; max-width: 100px; margin: 0;opacity:0.5;border: 2px solid blue;width: 100%;height: auto;');
+                    target.closest('td').find('.checkIconDeselectDesign').attr('style', 'position: absolute;width: 20px;height: 20px;z-index: 10000;left: 50%;top: 50%;transform: translate(240%,-50%);background-color: #b5b4b400;border-radius: 50%;cursor:pointer;visibility:visible');
+                    $('#optionAvailability').removeClass('hidden');
+                },50);
+                //Checking if already master screen is checked
+                findAllStatOfCheck = $('#datatables-example-design').find('.checkIconDeselectDesign');
+                findAllStatOfUncheck = $('#datatables-example-design').find('.checkIconSelectedDesign');
+                findAllImage = $('#datatables-example-design').find('.imageDesign');
+                console.log('I am checking if already screen is checked @ master');
+                for(i = 0;i < findAllStatOfCheck.length;i++) {
+                    console.log('Displaying all found checked screen');
+                    identifyCurrentScreen = findAllStatOfCheck[i].getAttribute('style');
+                    identifyImageOutlined = findAllImage[i].getAttribute('style');
+                    console.log(identifyCurrentScreen);
+                    console.log(identifyImageOutlined);
+                    checkedInnerHTML = 'position: absolute;width: 20px;height: 20px;z-index: 10000;left: 50%;top: 50%;transform: translate(240%,-50%);background-color: #b5b4b400;border-radius: 50%;cursor:pointer;visibility:visible';
+                    if (identifyCurrentScreen === checkedInnerHTML){
+                        console.log('There is a checked master screen already, Change CSS');
+                        findAllStatOfCheck[i].setAttribute('style', 'top:0;position:absolute;visibility:hidden');
+                        findAllStatOfUncheck[i].setAttribute('style', 'position: absolute;width: 20px;height: 20px;z-index: 10000;left: 50%;top: 50%;transform: translate(240%,-50%);background-color: #b5b4b4;border-radius: 50%;cursor:pointer;visibility:visible');
+                        imgOutlineCheck = 'max-height: 136px; max-width: 100px; margin: 0;opacity:0.5;border: 2px solid blue;width: 100%;height: auto;';
+                        if (identifyImageOutlined === imgOutlineCheck){
+                            findAllImage[i].setAttribute('style', 'max-height: 136px; max-width: 100px; margin: 0;opacity:1;border: 1px solid #c1c1c159;width: 100%;height: auto;');
+                        }
+                    }
+                }
+            });
+
+
+            $('.checkIconDeselectDesign').on('click', function (e) {
+                var target;
+                target = $(e.target);
+                target.parents('td').eq(1).removeClass('currentlyChecked');
+                target.closest('td').find('.checkIconDeselectDesign').attr('style', 'top:0;position:absolute;visibility:hidden');
+                target.closest('td').find('img').attr('style', 'max-height: 136px; max-width: 100px; margin: 0;opacity:1;border: 1px solid #c1c1c159;width: 100%;height: auto;');
+                target.closest('td').find('.checkIconSelectedDesign').attr('style', 'position: absolute;width: 20px;height: 20px;z-index: 10000;left: 50%;top: 50%;transform: translate(240%,-50%);background-color: #b5b4b4;border-radius: 50%;cursor:pointer;visibility:visible');
+                $('#optionAvailability').addClass('hidden');
+                console.log('i am here');
+            });
+    </script>
+
+    <script>
+        function collapseWorkFlow(state){
+            if(state === 'up'){
+                $('#btnhideWorkflw').addClass("hidden");
+                $('#btnshowWorkflw').removeClass("hidden");
+                $('#workFlw').addClass("hidden");
+            }
+            if(state === 'down'){
+                $('#btnshowWorkflw').addClass("hidden");
+                $('#btnhideWorkflw').removeClass("hidden");
+                $('#workFlw').removeClass("hidden");
+            }
+        }
+    </script>
+    <!-- no need of tempSuggestions top screen menu for now
+    <script>
+        window.onload = function() {
+            console.log('ajaxPosted');
+            $.ajax({
+                type: 'GET',
+                url: '/index/',
+                name: 'getScreenOfSuggestionsL1',
+                data: {
+                    'name': 'getScreenOfSuggestionsL1',
+                },
+                success: function (data) {
+                    console.log('getScreenOfSuggestions DATAL1');
+                    console.log(data);
+                    console.log('{{ user }}');
+                    for (var i = 0; i < data.length; i++) {
+                        console.log('getScreenOfSuggestions DATAL1');
+                        console.log(data[i]);
+                        console.log(data[i][0]);
+                        console.log(data[i][1]);
+                        $('#imgContainerL1' + data[i][1]).html(data[i][0]);
+                        $('#titleSuggL1' + data[i][1]).attr('title', data[i][0]);
+                    }
+                }
+            })
+            $.ajax({
+                type: 'GET',
+                url: '/index/',
+                name: 'getScreenOfSuggestionsL2',
+                data: {
+                    'name': 'getScreenOfSuggestionsL2',
+                },
+                success: function (data) {
+                    console.log('getScreenOfSuggestions DATAL2');
+                    console.log(data);
+                    console.log('{{ user }}');
+                    for (var i = 0; i < data.length; i++) {
+                        console.log('getScreenOfSuggestions DATAL2');
+                        console.log(data[i]);
+                        console.log(data[i][0]);
+                        console.log(data[i][1]);
+                        console.log('getScreenOfSuggestions DATAL2 delayed');
+                        $('#imgContainerL2' + data[i][1]).html(data[i][0]);
+                        $('#titleSuggL2' + data[i][1]).attr('title', data[i][0]);
+                    }
+                }
+            })
+            $.ajax({
+                type: 'GET',
+                url: '/index/',
+                name: 'getScreenOfSuggestionsL3',
+                data: {
+                    'name': 'getScreenOfSuggestionsL3'
+                },
+                success: function (data) {
+                    console.log('getScreenOfSuggestions DATAL3');
+                    console.log(data);
+                    console.log('{{ user }}');
+                    for (var i = 0; i < data.length; i++) {
+                        console.log('getScreenOfSuggestions DATAL3');
+                        console.log(data[i]);
+                        console.log(data[i][0]);
+                        console.log(data[i][1]);
+                        $('#imgContainerL3' + data[i][1]).html(data[i][0]);
+                        $('#titleSuggL3' + data[i][1]).attr('title', data[i][0]);
+                    }
+                }
+            })
+            $.ajax({
+                type: 'GET',
+                url: '/index/',
+                name: 'getScreenOfSuggestionsL4',
+                data: {
+                    'name': 'getScreenOfSuggestionsL4'
+                },
+                success: function (data) {
+                    console.log('getScreenOfSuggestions DATAL4');
+                    console.log(data);
+                    console.log('{{ user }}');
+                    for (var i = 0; i < data.length; i++) {
+                        console.log('getScreenOfSuggestions DATAL4');
+                        console.log(data[i]);
+                        console.log(data[i][0]);
+                        console.log(data[i][1]);
+                        $('#imgContainerL4' + data[i][1]).html(data[i][0]);
+                        $('#titleSuggL4' + data[i][1]).attr('title', data[i][0]);
+                    }
+                }
+            })
+        }
+    </script>
+    -->
+
+
+{% endblock %}
