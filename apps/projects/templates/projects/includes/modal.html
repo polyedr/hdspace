@@ -1,0 +1,27 @@
+{% load widget_tweaks %}
+<div class="modal inmodal" id="myModal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content animated bounceInRight">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span
+                class="sr-only">Close</span></button>
+        <i class="fa fa-laptop modal-icon"></i>
+        <h4 class="modal-title">Create Project</h4>
+      </div>
+      <form id="modalForm" action="" method="POST">
+        <div class="modal-body">
+            {% for field in form %}
+              <div class="form-group">
+                {{ field|add_class:"form-control" }}
+                <p class="text-danger validate_error">This field is required.</p>
+              </div>
+            {% endfor %}
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="modalCloseButton" class="btn btn-white" data-dismiss="modal">Close</button>
+          <button type="button" id="CreateProjectButton" class="btn btn-primary" data-url="{% url 'projects:create_project' %}">Create</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

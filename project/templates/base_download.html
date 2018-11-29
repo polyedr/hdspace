@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <style>
+    .screenContainer {
+      position: relative;
+      color: white;
+      overflow: hidden;
+    }
+    .screenContainer div .existed{
+      border: 1px solid #2A9FD8;
+      position: absolute;
+      background: rgba(0, 173, 255, .54);
+      background-position: 100% 100%;
+      background-repeat: no-repeat;
+    }
+    .existed {
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    #screenImage img {
+        cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+{% block content %}
+
+{% endblock content %}
+<script src="jquery-3.1.1.min.js"></script>
+<script type="text/javascript">
+  $(function() {
+      $('.screen_images').on('click', function () {
+          $('.existed').css("opacity", "1");
+          setTimeout(function () {
+              $('.existed').css("opacity", "0");
+          }, 300);
+      });
+
+      $('.existed').on('click', function () {
+          var link_to = $(this).data('link_to');
+          if (link_to == 'external') {
+              var new_window = $(this).data('new_window');
+              var href = $(this).data('href');
+              if (new_window == "True") {
+                  window.open(href, '_blank');
+              } else {
+                  location.href = href;
+              }
+          } else {
+              var link_screen = $(this).data('link_screen');
+              $('.screen_images').hide();
+              $('#screen_' + link_screen).show();
+          }
+      });
+  });
+</script>
+</body>
+</html>

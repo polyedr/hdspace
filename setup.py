@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 setup(
-    name="adevi",
+    name="adevi_project",
     version="0.1",
-    package_dir={"": "apps", "meduza": "./meduza"},
-    packages=find_packages("apps") + ["meduza"],
+    package_dir={"": "apps", "project": "./project"},
+    packages=find_packages("apps") + ["project"],
 )
