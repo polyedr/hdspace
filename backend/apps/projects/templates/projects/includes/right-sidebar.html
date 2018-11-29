@@ -1,0 +1,224 @@
+{% load widget_tweaks %}
+{% load staticfiles %}
+<div id="right-sidebar">
+  <div class="sidebar-container">
+
+    <ul class="nav nav-tabs navs-4">
+
+      <li class="active"><a data-toggle="tab" href="#tab-1">
+        Chat
+      </a></li>
+      <li><a data-toggle="tab" href="#tab-2">
+        Tasks
+      </a></li>
+      <li><a data-toggle="tab" href="#tab-3">
+        Activity
+      </a></li>
+      <li><a data-toggle="tab" href="#tab-4">
+        Invite
+      </a></li>
+    </ul>
+
+    <div class="tab-content">
+
+      <div id="tab-1" class="tab-pane active">
+
+        <div class="sidebar-title">
+          <h3 data-toggle="modal" data-target="#chatMembers"><i class="fa fa-comments-o"></i> {{ project_members.count }} participants</h3>
+          <button id="addChatTask" class="btn btn-primary" type="button" data-toggle="modal" data-target="#addTaskModal" >Add Task</button>
+        </div>
+
+        <div class="ibox chat-view">
+          <div class="ibox-title">
+            <span class="text-green">{{ project.name }}</span> project chat room
+          </div>
+          <div class="ibox-content">
+            <div class="chat-discussion"  data-user-status-url="{% url 'accounts:user_status' %}" data-change-role-url="{% url 'projects:edite_role' %}"data-edit-message-path="{% url 'threads:edit' %}" data-delete-message-url="{% url 'threads:delete' %}" data-edit-message-url="{{'sdfdsf'}}" data-project-id="{{ project.id }}" data-id="{{request.user.pk}}" data-member-user="{{project_member_user.id}}" data-username="{{request.user.username}}" data-path="{{ thread.get_absolute_url }}" data-chat="{{ thread.get_chat_url }}" data-project-owner="{{project.user.id}}">
+            </div>
+          </div>
+          <div class="chat-message-form">
+            <div class="form-group">
+              <input id="messagefileupload" type="file" name="file"
+                 class="hide"
+                 data-url="{% url 'threads:add_message_file' %}"
+                 data-form-data='{"csrfmiddlewaretoken": "{{ csrf_token }}", "threadId": "{{ thread.pk }}", "projectId": "{{ project.pk }}"}'>
+                <div class="msg-textarea-wrapper">
+                  <button class="btn btn-primary js-upload-message">
+                    <span class="glyphicon glyphicon-cloud-upload"></span>
+                  </button>
+                  <textarea class="form-control message-input write_msg" name="message" placeholder="Enter message text"></textarea>
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="tab-2" class="tab-pane">
+
+        <div class="sidebar-title">
+          <h3><i class="fa fa-cube"></i> Latest projects</h3>
+          <small><i class="fa fa-tim"></i> You have {{ projects|length }} project{{ projects|length|pluralize:",s" }}.</small>
+          <button id="addTask" class="btn btn-primary btn-circle btn-lg" type="button" data-toggle="modal" data-target="#addTaskModal" title="Add project task"><i class="fa fa-plus"></i></button>
+        </div>
+
+        <ul class="sidebar-list addTaskList"  data-task-edit-url="{% url 'projects:edit_task'%}" data-task-delete-url="{% url 'projects:delete_task'%}" data-assign-url="{% url 'projects:assign_task'%}">
+          {% for task in tasks %}
+            <li data-task-id="{{task.pk}}" class="task-list">
+              <h4>{{ task.title }}</h4>
+              <span class="task-description">{{ task.description }}</span>
+              <div class="flex flex-row flex-space-between">
+                <div class="small text-muted m-t-xs">Created: <span>{{ task.created }}</span></div>
+                <div class="task-actions">
+                  <a href="#" class="btn btn-xs btn-primary subButton" title="Add Sub Task"><i class="fa fa-plus"></i></a>
+                  <a href="#" class="btn btn-xs btn-info editButton"><i class="fa fa-pencil "></i></a>
+                  <a href="#" class="btn btn-xs btn-danger deleteButton"><i class="fa fa-trash"></i></a>
+                  <div class="dropdown">
+                    <button class="btn btn-xs btn-primary dropdown-toggle"  type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                      <i class="fa fa-tasks"></i>
+                    </button>
+                    <ul class="assigneeTask dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu1">
+                      {% for member in project_members %}
+                        {% if task.owner.user.pk == member.user.pk %}
+                           <li class="active" data-member-id="{{member.pk}}"><a href="#">{{ member.user.get_full_name }}</a></li>
+                        {% else %}
+                           <li><a href="#" data-member-id="{{member.pk}}">{{ member.user.get_full_name }}</a></li>
+                        {% endif %}
+                      {% endfor %}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+      <div id="tab-3" class="tab-pane">
+
+        <div class="sidebar-title">
+          <h3><i class="fa fa-clock-o"></i> Project Activity</h3>
+        </div>
+        <ul class="sidebar-list">
+          {% for activity in activities %}
+            <li>
+              {% if activity.type == "task_created" %}
+                <h4>New Task</h4>
+              <span class="task-description">A new task created by <span>{{ activity.member.get_full_name }}</span></span>
+              {% elif activity.type == "task_removed" %}
+                <h4>Remove Task</h4>
+              <span class="task-description">Task Removed by <span>{{ activity.member.get_full_name }}</span></span>
+              {% elif activity.type == "screen_added" %}
+                <h4>New screem</h4>
+                <span class="task-description">New screen added by <span>{{ activity.member.get_full_name }}</span></span>
+              {% elif activity.type == "user_invited" %}
+                <h4>User Invitation</h4>
+                <span class="task-description">New user invited to the project by <span>{{ activity.member.get_full_name }}</span></span>
+              {% endif %}
+              <div class="flex flex-row flex-space-between">
+                <div class="small text-muted m-t-xs">Created: <span>{{ activity.created|date:'N J, Y H:i' }}</span></div>
+              </div>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+      <div id="tab-4" class="tab-pane">
+        <div class="sidebar-title">
+          <h3><i class="fa fa-envelope" aria-hidden="true"></i> Invite People to project</h3>
+        </div>
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="ibox-content text-center invite">
+              <form id="inviteUserForm" action="" method="post">
+                {% for field in form %}
+                  <div class="form-group row">
+                    <div class="col-lg-12 ">
+                      {{ field|add_class:"form-control" }}
+                      <p class="text-danger validate_error">This field is required.</p>
+                    </div>
+                  </div>
+                {% endfor %}
+                <button id="inviteUser" class="btn btn-primary" type="submit" data-url="{% url 'projects:invite' pk=project.pk %}">Invite</button>
+              </form>
+
+              <form action="" method="post">
+                <div class="flex flex-row m-t-md">
+                  {% for field in search_user_form %}
+                    <div class="form-group flex-1 mb-0">
+                        {{ field|add_class:"form-control" }}
+                    </div>
+                  {% endfor %}
+                   <button id="searchUser" class="btn btn-primary" type="button" data-url="{% url 'accounts:search_user' %}"><i class="glyphicon glyphicon-search"></i></button>
+                </div>
+              </form>
+
+              <div class="search-result m-t-md">
+                <div class="row">
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+  <div id="msg_form" class="chat-message left hide">
+  <input type="checkbox" class="add-to-task">
+  <span class="message-avatar-wrap online">
+    <img class="message-avatar" src="" alt="" >
+  </span>
+  <div class="message">
+    <div class="dropdown-wrap">
+      <a class="author-role" href="#" data-author-id=""> </a>
+      <ul class="dropdown-links">
+        {% for role in user_roles %}
+          <li>{{role}}</li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <a class="message-author" href="#"> </a>
+    <span class="message-date"></span>
+    <span class="message-file"></span>
+    <input class="message-content" type="text" value="" disabled>
+    <span class="message-edit" data-message-id=""><a>Edit</a></span>
+    <span class="message-delete" data-message-id=""><a>Delete</a></span>
+  </div>
+</div>
+
+<li id="projectActivityItem" class="hide task-list">
+  <h4>{{ task.title }}</h4>
+  <span class="task-description"></span>
+  <div class="flex flex-row flex-space-between">
+    <div class="small text-muted m-t-xs">Created: <span></span></div>
+    <div class="task-actions">
+      <a href="#" class="btn btn-xs btn-primary subButton"><i class="fa fa-plus"></i></a>
+      <a href="#" class="btn btn-xs btn-info editButton"><i class="fa fa-pencil "></i></a>
+      <a href="#" class="btn btn-xs btn-danger deleteButton"><i class="fa fa-trash"></i></a>
+      <div class="dropdown">
+        <button class="btn btn-xs btn-primary dropdown-toggle taskAssignButton" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+          <i class="fa fa-tasks"></i>
+        </button>
+        <ul class="assigneeTask dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu1">
+          {% for member in project_members %}
+               <li class="" data-member-id="{{member.user.pk}}"><a href="#">{{ member.user.get_full_name }}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+</li>
+
+<!--search for Invite-->
+
+<div id="searchUserInvite" class="col-sm-4 text-center hide">
+  <strong class="team-name">Awesome team</strong>
+  <img src="{% static 'img/profile_empty.png' %}" class="img-circle img-responsive search-result-img" alt="">
+  <strong class="user-name">Isaak Albenis</strong>
+  <span class="block">Web Developer</span>
+  <div class="text-center m-b-sm">
+     <span class="label label-default">$80</span>
+  </div>
+  <button id="inviteSearchedUser" data-url="{% url 'projects:invite_user' %}" class="btn btn-xs btn-primary" type="button" data-user-id="" data-project-id="{{project.pk}}">Invite</button>
+</div>
+

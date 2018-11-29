@@ -1,0 +1,180 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <meta charset="UTF-8">
+  <title>{% block title %}{% if page_title %}{{ page_title }} | {% endif %} Website{% endblock %}</title>
+
+  <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+  <link href="{% static 'font-awesome/css/font-awesome.css' %}" rel="stylesheet">
+
+  <link href="{% static 'css/animate.css' %}" rel="stylesheet">
+  <link href="{% static 'css/plugins/toastr.min.css' %}" rel="stylesheet">
+  <link href="{% static 'css/style.css' %}" rel="stylesheet">
+  <link href="{% static 'css/project.css' %}" rel="stylesheet">
+
+  {% block extra_css %}
+  {% endblock %}
+
+</head>
+<body>
+
+<div id="wrapper">
+  <nav class="navbar-default navbar-static-side" role="navigation">
+    <div class="sidebar-collapse">
+      <ul class="nav metismenu" id="side-menu">
+        <li class="nav-header">
+          <div class="dropdown profile-element">
+            <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+              <span>
+              <img alt="image" class="img-circle" src="{{request.user.profile.get_image}}"/>
+            </span>
+              <span class="clear">
+                <span class="block m-t-xs">
+                  <strong class="font-bold">{{request.user.get_full_name}}</strong>
+               </span>
+              </span>
+            </a>
+            <ul class="dropdown-menu animated fadeInRight m-t-xs">
+              <li><a href="{% url 'accounts:profile' %}">Profile</a></li>
+              <li><a href="contacts.html">Settings</a></li>
+              <li class="divider"></li>
+              <li><a href="{% url 'accounts:logout' %}">Logout</a></li>
+            </ul>
+          </div>
+          <div class="logo-element">
+            PM+
+          </div>
+        </li>
+        <li class="active">
+          <a href="{% url 'projects:dashboard' %}">
+            <i class="fa fa-th-large"></i>
+            <span class="nav-label">Projects</span>
+            <span class="fa arrow"></span>
+          </a>
+          <ul class="nav nav-second-level">
+            <li><a href="{% url 'projects:dashboard' %}">All Projects</a></li>
+            {% for project in projects_list %}
+               <li><a href="{{project.url}}">{{project.name}}</a></li>
+            {% endfor %}
+          </ul>
+        </li>
+        <li>
+          <a href="{% url 'payments:plans' %}"><i class="fa fa-credit-card"></i> <span class="nav-label">Payment Package</span></a>
+        </li>
+        <li>
+          <a href="{% url 'accounts:teams' %}">
+            <i class="fa fa-th-large"></i>
+            <span class="nav-label">Team Profile</span>
+          </a>
+        </li>
+        <li>
+          <a href="#">
+            <i class="fa fa-users"></i>
+            <span class="nav-label">Admin Management</span>
+             <span class="fa arrow"></span>
+          </a>
+          <ul class="nav nav-second-level">
+            <li><a href="{% url 'accounts:team_management' %}">Team Managment</a></li>
+            <li><a href="{% url 'projects:management' %}">Task Mangement</a></li>
+          </ul>
+        </li>
+      </ul>
+
+    </div>
+  </nav>
+
+  <div id="page-wrapper" class="gray-bg">
+    <div class="row border-bottom">
+      <nav class="navbar navbar-static-top grey-bg" role="navigation" style="margin-bottom: 0">
+        <div class="navbar-header">
+          <a class="navbar-minimalize minimalize-styl-2 btn btn-primary" href="#"><i class="fa fa-bars"></i> </a>
+        </div>
+        <ul class="nav navbar-top-links navbar-right ">
+          <li>
+            <span class="m-r-sm text-muted welcome-message">Welcome to PM+</span>
+          </li>
+          <li class="dropdown">
+            <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
+              <i class="fa fa-bell"></i> <span class="label label-primary">8</span>
+            </a>
+            <ul class="dropdown-menu dropdown-alerts">
+              <li>
+                <a href="mailbox.html">
+                  <div>
+                    <i class="fa fa-envelope fa-fw"></i> You have 16 messages
+                    <span class="pull-right text-muted small">4 minutes ago</span>
+                  </div>
+                </a>
+              </li>
+              <li class="divider"></li>
+              <li>
+                <a href="profile.html">
+                  <div>
+                    <i class="fa fa-twitter fa-fw"></i> 3 New Followers
+                    <span class="pull-right text-muted small">12 minutes ago</span>
+                  </div>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <li>
+            {% block rightsidetoggle %}
+
+            {% endblock rightsidetoggle %}
+          </li>
+        </ul>
+
+      </nav>
+    </div>
+
+
+    {% block underheader %}
+
+    {% endblock underheader %}
+
+    <div class="">
+      {% block content %}
+
+      {% endblock content %}
+    </div>
+
+
+    <div class="footer">
+      <div class="pull-right">
+      </div>
+      <div>
+        <strong>Copyright</strong> Example Company &copy; {% now "Y" %}
+      </div>
+    </div>
+  </div>
+
+  {% block rightsidebar %}
+
+  {% endblock rightsidebar %}
+
+
+</div>
+<script type="text/javascript">
+    window.csrftoken = '{{ csrf_token }}';
+</script>
+
+
+{% include "includes/javascript.html" %}
+
+<script>
+    {% if messages %}
+        {% for message in messages %}
+           showNotifications('{{ message.tags }}', '{{ message }}');
+        {% endfor %}
+    {% endif %}
+</script>
+
+{% block extra_js %}
+
+{% endblock extra_js %}
+
+</body>
+</html>

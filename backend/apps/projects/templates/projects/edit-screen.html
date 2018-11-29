@@ -1,0 +1,79 @@
+{% load staticfiles %}
+<html>
+  <head>
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'font-awesome/css/font-awesome.css' %}" rel="stylesheet">
+    <link href="{% static 'css/plugins/toastr.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/screen.css' %}" rel="stylesheet">
+  </head>
+  <body>
+  <div id="screenImage" class="screenContainer">
+      {% if screen.get_image %}
+        <img src="{{screen.get_image}}" id="image" class="edited-image" border="0"/>
+        {% for screen_event in screen_events %}
+          <div
+                  class="existed"
+                  style='top:{{screen_event.y}}px;
+              width:{{screen_event.width}}px;
+              left:{{screen_event.x}}px;
+              height:{{screen_event.height}}px;'
+                  data-href="{{screen_event.href}}"
+                  data-x="{{screen_event.x}}"
+                  data-y="{{screen_event.y}}"
+                  data-width="{{screen_event.width}}"
+                  data-height="{{screen_event.height}}"
+                  data-event="{{screen_event.event}}"
+                  data-link_to="{{screen_event.link_to}}"
+                  data-new_window="{{screen_event.new_window}}"
+                  data-screen_event_id="{{screen_event.pk}}"
+                  data-delete_url="{{screen_event.get_event_delete_url}}"
+                  data-link_screen="{{screen_event.link_screen}}"
+                  data-preview="{{screen_event.screen.project.preview}}"
+                  data-project_id="{{screen_event.screen.project.pk}}"
+                  data-preveiew_absolute_url=""
+                  data-update_event_position="{{screen_event.get_update_event_position_url}}">
+            <div class="ui-resizable-handle ui-resizable-ne"></div>
+            <div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se"></div>
+            <div class="ui-resizable-handle ui-resizable-sw"></div>
+            <div class="ui-resizable-handle ui-resizable-nw"></div>
+          </div>
+        {% endfor %}
+    {% endif %}
+  </div>
+  <div class="bottom-toolbar">
+    <div id="bottomPanel" class="container text-center">
+      <a href="{% url 'projects:project' pk=project_id %}" type="button" class="btn btn-link btn-lg ">
+        <span class="glyphicon glyphicon-arrow-left"></span>
+      </a>
+      <button type="button" class="btn btn-link btn-lg" data-mode="preview">
+        <span class="glyphicon glyphicon-eye-open"></span>
+      </button>
+      <button type="button" class="btn btn-link btn-lg active" data-mode="edit">
+        <span class="glyphicon glyphicon-picture"></span>
+      </button>
+      <button type="button" class="btn btn-link btn-lg share-button">
+        <span class="glyphicon glyphicon-share-alt"></span>
+      </button>
+
+    </div>
+  </div>
+  <div id="adjacent-content" class="existed">
+    <div class="ui-resizable-handle special-index-z ui-resizable-ne"></div>
+    <div class="ui-resizable-handle special-index-z ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se"></div>
+    <div class="ui-resizable-handle special-index-z ui-resizable-sw"></div>
+    <div class="ui-resizable-handle special-index-z ui-resizable-nw"></div>
+  </div>
+  {% include "projects/includes/screen.html" with form=screen_form  url=screen.get_screen_url select_screens=screens %}
+  {% include "projects/includes/share-screen.html" with preview_url=screen.get_preview_url  %}
+  <script type="text/javascript">
+    window.csrftoken = '{{ csrf_token }}';
+  </script>
+  <script src="{% static 'js/jquery-3.1.1.min.js' %}"></script>
+  <script src="{% static 'js/plugins/jquery-ui.min.js' %}"></script>
+  <script src="{% static 'js/plugins/toastr.min.js' %}"></script>
+  <script src="{% static 'js/plugins/clipboard.min.js' %}"></script>
+  <script src="{% static 'js/bootstrap.min.js' %}"></script>
+  <script src="{% static 'js/scripts.js' %}"></script>
+  <script src="{% static 'js/screen-edit.js' %}"></script>
+  </body>
+</html>

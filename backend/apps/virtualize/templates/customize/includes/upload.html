@@ -1,0 +1,201 @@
+    <div class="center" style="height: 185.75px;width: 100%;">
+        <div class="tab-content" style="
+            height: 100%;
+            width: 100%;">
+            <div class="tabs-container ui-sortable-handle" style="height: 191px;">
+                <div id="tab-90" class="tab-pane active" style="height: 100%;">
+                    <div class="panel-body" style="padding:0%;height:100%;">
+                        <label for="imgUploadUploader" onclick="popNewUploader()" style="width: 100%;height: 100%;cursor: pointer;margin: 0%;border-top: 1px solid #eaedee;">
+                            <div class="grey-ibox-upload">
+                                <div id="remove-on-click" class="" style="left: 0%;top: 0%;right: 0%;bottom: 0%;">
+                                    <div id="upload-visibility" class="" style="z-index: 10;">
+                                        <i id="remove-fa-download-on-click" class="fa fa-upload absolute w3-display-middle" style="font-size:235%; color: #b5b4b4; z-index: 50" aria-hidden="true"></i>
+                                    </div>
+                                </div>
+                                <form id="uploadNewScreenshotForm" method="POST" enctype="multipart/form-data" style="margin: 0;">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="csrfmiddlewaretoken" value="RUa9jp8t2JEBQihtQPfisWXRY5G9b7sYIkMd0gzm4LupB8cwJcDrVJoa9Hi6RP7e">
+                                    <input type="file" accept="image/*" name="myfile" id="imgUploadUploader" class="input-file">
+                                    <input type="hidden" name="filename" id="filename">
+                                    <input type="hidden" name="projectuploadname" id="projectuploadname">
+                                </form>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="popupNewSuggester" class="ibox-tools" style="display:none;">
+        <div id="newPopupForUpload">
+            <div id="changeItOnUpload" class="ibox-title col-xs-12" style="width: 780px;height: 330px;background-color: #f3f3f4;
+                border-top-style: none;">
+                <div class="col-xs-12 ibox-title" id="uploadSectionPopOnUpload" style="display:inline;">
+                    <div class="ibox-content col-xs-3" onclick="submitUploadedScreen()" style="padding: 0;
+                        border-top: none;cursor: pointer;">
+                        <div class="ibox-title center col-xs-12" style="border-style: solid;
+                            border-right: 1px solid #e7eaec;
+                            border-left: 1px solid #e7eaec;">
+                            <span>Click to Upload Without Applying Design</span>
+                        </div>
+                        <div class="ibox-content col-xs-12" style="height:191.75px;padding: 0;">
+                            {%include "customize/includes/uploadIndexPage.html" %}
+                        </div>
+                    </div>
+                    <div class="ibox-title col-xs-9" style="padding: 0;border: none;">
+                        <div class="ibox-content col-xs-12" style="
+                            border: none;
+                            padding: 0;
+                            margin-left: 6px;
+                            ">
+                            <div id="noneOptionsAvailable" class="center">
+                                <span class="fa fa-ban fa-4x"></span><br><br>
+                                <span style="font-size: 30px;">Options Not Available</span><br><br>
+                                <span>Choose Page First</span><br/><br/>
+                                <button type="submit" name="cancelScreenshot" class="btn btn-primary" style="width:15%;" onclick="checkForCancellation()">
+                                    Close
+                                </button>
+                            </div>
+                            <div id="optionSelectorMoreScreen" class="hidden" style="padding: 0 15px;">
+                                <span class="left" style="width: 100%;padding: 0 20px 20px 0;">Apply</span>
+                                <form enctype="multipart/form-data" onsubmit="return finalCheck()" method="POST" name="processDesign" style="margin: 0 20px;">
+                                    <input type="hidden" name="csrfmiddlewaretoken" value="nsJrIU6rWiN0l6VO2N4eF7IaBudDfcTSHjlUvOrBhaMXFd7zpLLQUpo2MZZVdl1t">
+                                    <input type="hidden" name="name" value="processDesign">
+                                    <input type="hidden" name="id" id="processDesign">
+                                    <input type="checkbox" name="type" value="colors"> Colors<br>
+                                    <input type="checkbox" name="type" value="styles"> Styles<br>
+                                    <button type="submit" name="changeElement" class="btn btn-primary btn-xs" style="width: 15%;margin: 5px 0 0;" onclick="applySelectedDesign()">
+                                        Apply
+                                    </button><br><br>
+                                    <span class="" style="padding-top: 10px">OR</span><br><br>
+                                    <button type="submit" name="changeElement" class="btn btn-primary btn-xs" style="width:50%;margin: 5px 0 0;" onclick="showWidgetsContainer()">
+                                        Select Seperate Elements or Widgets
+                                    </button>
+                                </form>
+                            </div>
+                            <div id="optionSelectorOneScreen" class="center hidden">
+                                <span class="center" style="font-size: 30px;">What would you like to apply?</span><br><br>
+                                <form enctype="multipart/form-data" onsubmit="return finalCheck()" method="POST" name="processDesign" style="margin:6px">
+                                    <input type="hidden" name="csrfmiddlewaretoken" value="nsJrIU6rWiN0l6VO2N4eF7IaBudDfcTSHjlUvOrBhaMXFd7zpLLQUpo2MZZVdl1t">
+                                    <input type="hidden" name="name" value="processDesign">
+                                    <input type="hidden" name="id" id="processDesign">
+                                    <input type="checkbox" name="type" value="colors"> Colors<br>
+                                    <input type="checkbox" name="type" value="styles"> Styles<br>
+                                    <button type="submit" name="changeElement" class="btn btn-primary btn-xs" style="width:10%;margin: 5px 0 0;">
+                                        Apply
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="allWidgets" class="ibox-title col-xs-12 hidden" style="padding: 10px 0 0;">
+                        <div class="ibox-content col-xs-12" style="border-left: 1px solid #e8ebed;
+                            border-right: 1px solid #e8ebed;border-bottom: 1px solid #e8ebed;padding: 0;">
+                            <div id="widgetsInvisibility" class="tab-content" style="visibility: visible;height: auto;">
+                                <div class="ibox-title col-xs-12" style="padding-top: 5px;padding-left: 0;min-height: 8px;">
+                                    <span class="left m-0 col-xs-6" style="padding-left: 5px;">Select the Widgets below</span>
+                                    <div class="col-xs-6" style="padding-right: 0;">
+                                        <button id="btnSelect" name="changeElement" class="btn btn-primary btn-xs" style="width:18%;margin-right: -10px;float: right;" onclick="selectAllScreen()">
+                                            Select All
+                                        </button>
+                                    </div>
+                                    <div class="col-xs-6" style="padding-right: 0;">
+                                        <button id="btnDeselect" name="changeElement" class="btn btn-primary btn-xs hidden" style="width:22%;margin-right: -10px;float: right;" onclick="deSelectAllScreen()">
+                                            Deselect All
+                                        </button>
+                                    </div>
+                                </div>
+                                {% include "customize/includes/getAllWidget.html" %}
+                            </div>
+                        </div>
+                    </div>
+                    <div id="approveButtonSelect" class="ibox-title col-xs-12 hidden center" style="padding: 0;padding-top: 10px;">
+                        <div class="ibox-content col-xs-12" style="padding: 0;border: none;">
+                            <button type="submit" name="acceptScreenshot" class="btn btn-primary" style="width:15%;">
+                                Approve
+                            </button>
+                            <button type="submit" name="cancelScreenshot" class="btn btn-primary" style="width:15%;" onclick="checkForCancellation()">
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            function readURL(input) {
+                if (input.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        var img = $('.imgHide');
+                        img.attr('src', e.target.result);
+                        img.attr('style', 'width: 100%;height: 100%;opacity: 1;max-width:90%; max-height:90%; z-index: 0;padding: 2px;border: 1px solid #1ab3946b;');
+                        $('#noneOptionsAvailable').addClass('hidden');
+                        var screen = $("h4[id]").length;
+                        if (screen < 2 ){
+                            $(document).ready(function () {
+                                $('#optionSelectorOneScreen').removeClass('hidden');
+                            });
+                        }else {
+                            $('#optionSelectorMoreScreen').removeClass('hidden');
+                        }
+                    };
+                    reader.readAsDataURL(input.files[0]);
+                }
+            }
+            $('#imgUploadUploader').change(function(){
+                readURL(this);
+            });
+        });
+
+        function popNewUploader(){
+            $('#popupNewSuggester').popup({ escape: false, blur: false, autoopen: true });
+        }
+
+        function checkForCancellation() {
+            $('#popupNewSuggester').popup('hide');
+            $('#allWidgets').addClass('hidden');
+            $('#changeItOnUpload').attr('style', 'width: 780px;height: 330px;background-color: #f3f3f4;border-top-style: none;');
+            $('#approveButtonSelect').addClass('hidden');
+            $('.checkIconSelectedUpload').attr('style', 'position: absolute;width: 30%;height: 27%;z-index: 10000;left: 33%;top: 50%;transform: translate(-50%,-50%);background-color: #b5b4b4;border-radius: 50%;cursor:pointer;');
+            $('.crossDisapearUpload').attr('style', 'position: absolute;width: 30%;height: 27%;z-index: 10000;left: 65%;top: 50%;transform: translate(-50%,-50%);background-color: #b5b4b4;border-radius: 50%;cursor:pointer;');
+            $('.checkIconDeselectUpload').attr('style', 'visibility:hidden;');
+            $('.imgHideWidgetsUpload').attr('style', 'width:100%;height:100%;opacity:1;');
+
+        }
+
+        function showWidgetsContainer(){
+            $('#allWidgets').removeClass('hidden');
+            $('#changeItOnUpload').attr('style', 'width: 780px;height: 538px;background-color: #f3f3f4;border-top-style: none;');
+        }
+
+        function selectAllScreen() {
+            $('.checkIconUpload').attr('style', 'color: #18a689;margin: 12%;');
+            $('.checkIconDeselectUpload').attr('style', 'position: absolute;width: 30%;height: 27%;z-index: 10000;left: 50%;top: 50%;transform: translate(-50%,-50%);background-color: #b5b4b400;border-radius: 50%;cursor:pointer');
+            $('.crossDisapearUpload').attr('style', 'visibility:hidden;');
+            $('.crossDisapearUpload').innerHTML = '';
+            $('.checkIconSelectedUpload').attr('style', 'visibility:hidden;');
+            $('.checkIconSelectedUpload').innerHTML = '';
+            $('.imgHideWidgetsUpload').attr('style', 'width:100%;height:100%;opacity:0.5;');
+            $('#approveButtonSelect').removeClass('hidden');
+            $('#changeItOnUpload').attr('style', 'width: 780px;height: 585px;background-color: #f3f3f4;border-top-style: none;');
+            $('#btnDeselect').removeClass('hidden');
+            $('#btnSelect').addClass('hidden');
+        }
+
+        function deSelectAllScreen() {
+            $('.crossDisapearUpload').attr('style', 'position: absolute;width: 30%;height: 27%;z-index: 10000;left: 65%;top: 50%;transform: translate(-50%,-50%);background-color: #b5b4b4;border-radius: 50%;cursor:pointer;');
+            $('.crossDisapearUpload').innerHTML = '<i class="fa fa-close fa-2x" style="color: white;margin: 12%;"></i>';
+            $('.checkIconSelectedUpload').attr('style', 'position: absolute;width: 30%;height: 27%;z-index: 10000;left: 33%;top: 50%;transform: translate(-50%,-50%);background-color: #b5b4b4;border-radius: 50%;cursor:pointer;');
+            $('.checkIconSelectedUpload').innerHTML = '<i class="fa fa-check fa-2x" style="color: white;margin: 12%;"></i>';
+            $('.checkIconDeselectUpload').attr('style', 'visibility:hidden;');
+            $('.imgHideWidgetsUpload').attr('style', 'width:100%;height:100%;opacity:1;');
+            $('#approveButtonSelect').addClass('hidden');
+            $('#changeItOnUpload').attr('style', 'width: 780px;height: 538px;background-color: #f3f3f4;border-top-style: none;');
+            $('#btnSelect').removeClass('hidden');
+            $('#btnDeselect').addClass('hidden');
+        }
+    </script>

@@ -1,0 +1,32 @@
+<div class="modal inmodal" id="chatMembers" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span
+                class="sr-only">Close</span></button>
+      </div>
+      {% for member in project_members %}
+        {% if member.status != "creator" %}
+          <div class="row">
+            <div class="col-lg-4 text-center">
+              <img class="img-circle" src="{{ member.user.profile.get_image }}" />
+            </div>
+            <div class="col-lg-4 text-center">
+              <div class="members-email">
+                {{ member.user.email }}
+              </div>
+            </div>
+            <div class="col-lg-4 text-center ">
+               <div class="members-icon">
+                 <i class="fa fa-trash deleteMember" data-member_id="{{member.id}}" data-member_url="{% url 'projects:delete_member' %}"></i>
+               </div>
+            </div>
+          </div>
+        {% endif %}
+      {% endfor %}
+      <div class="modal-footer">
+        <button type="button" id="modalCloseButton"class="btn btn-white" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
