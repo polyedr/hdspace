@@ -6,14 +6,14 @@ from django.db.models import Q
 from django.contrib import messages
 from django.contrib.auth.models import User
 
-from projects.models import ProjectInvitation, ProjectMember
-from threads.models import Thread, UserThread
-from accounts.mixins import AnonymousRequiredMixin
-from accounts.models import Profile
-from accounts.forms import *  # noqa
-from accounts.utils import emails
-from core.views.seo import SEOViewMixin
-import virtualize.utils
+from apps.projects.models import ProjectInvitation, ProjectMember
+from apps.threads.models import Thread, UserThread
+from apps.accounts.mixins import AnonymousRequiredMixin
+from apps.accounts.models import Profile
+from apps.accounts.forms import *  # noqa
+from apps.accounts.utils import emails
+from apps.core.views.seo import SEOViewMixin
+import apps.virtualize.utils
 
 __all__ = (
     "logout_view",
@@ -93,7 +93,7 @@ class RegistrationView(AnonymousRequiredMixin, SEOViewMixin, TemplateView):
                 email=user.email,
                 email_confirmation_path=user.profile.get_confirmation_url(),
             )
-            virtualize.utils.registration(user)
+            apps.virtualize.utils.registration(user)
             messages.success(request, "You have successfully registered.")
             return HttpResponseRedirect(reverse("accounts:login"))
         else:

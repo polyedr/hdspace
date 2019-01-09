@@ -2,9 +2,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
 from django.views.generic.base import View
 
-from threads.forms import FileUploadForm
+from apps.threads.forms import FileUploadForm
 
-from projects.models import ProjectMember, Project
+from apps.projects.models import ProjectMember, Project
 from .models import Thread, Message
 
 __all__ = (

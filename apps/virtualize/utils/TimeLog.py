@@ -1,5 +1,5 @@
 import virtualize.validate
-from .models import *
+from virtualize.models import *
 
 start = ""
 end = ""

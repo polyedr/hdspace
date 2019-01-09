@@ -1,138 +1,43 @@
-import numpy as np
-from django.db import models
-from mongoengine import *
-from pymongo import MongoClient
-from bson.objectid import ObjectId
-from datetime import datetime
+import pymongo
+import re
 import pytz
 import substring
 
+from bson.objectid import ObjectId
+from datetime import datetime
 
-class UserRoles(models.Model):
-    class Meta:
-        managed = False
-        permissions = (
-            ("admin", "Can do all"),
-            ("data_validator", "Can validate data"),
-            ("basic_user", "Can upload screenshots"),
-        )
+from django.shortcuts import render
 
+from virtualize.display import set_html_layout, set_html_color
+from virtualize.utils.elementUtils import search_new_element, getStylesDb
+from virtualize.utils.screenshotUtils import getScreenName, getScreen_Name, getCurrentScreenName
+from virtualize.utils.widgetsUtils import fillWidget, fillGraphics
 
-class Screenshots(Document):
-    image = StringField(required=True)
-    status = StringField(required=True)
-    user_id = StringField(required=False)
-    pageName = StringField(required=True)
-    screenName = StringField(required=True)
+client = pymongo.MongoClient('localhost', 27017)  # maxPoolSize=50
+db = client.MeduzaDb
+db_main = client.mainDB
 
 
-class Document(Document):
-    description = models.CharField(max_length=255, blank=True)
-    document = models.FileField(upload_to='documents/')
-    uploaded_at = models.DateTimeField(auto_now_add=True)
+# class Document(Document):
+#     description = models.CharField(max_length=255, blank=True)
+#     document = models.FileField(upload_to='documents/')
+#     uploaded_at = models.DateTimeField(auto_now_add=True)
 
 
 def user(url, user_id, name, scname):
-    user = Screenshots.objects.create(
-        user_id=str(user_id),
-        image=str(url),
-        status='pending',
-        pageName=str(name),
-        screenName=str(scname)
-    )
-    user.save()
+    db.screenshots.insert({
+        'user_id': str(user_id),
+        'image': str(url),
+        'status': 'pending',
+        'pageName': str(name),
+        'screenName': str(scname)
+    })
     print(str(url) + ' has been saved')
 
+    screen_id = db.screenshots.find_one({'user_id':str(user_id),'image': str(url), 'screenName': str(scname)})['_id']
+    db.tempPage.update({'userId': str(user_id)},{'$set': {'screenshots': str(screen_id)}})
+
     return url
-
-
-client = MongoClient('mongodb://mongo:mongo@db')  # maxPoolSize=50
-db = client.MeduzaDb
-
-'''SEGMENTATION DataModels'''
-# Insert total number of elemeent
-
-
-def save_segmentation(screenShotId, numberOfElements, elementPositioning, elementPositioningPercentage,
-                      elementSize, croppedLocation, elementCount, screenShotIndex, croppedName,results_1):
-
-    for screenShot in range(1):  # len(screenShotId)):
-
-        for element in range(numberOfElements[screenShot]):
-            active = ''
-            print(elementPositioning[screenShot][element])
-            c = elementPositioning[screenShot][element]
-            s = elementSize[screenShot][element]
-            print('SSSSSSSSSSSSSSSS')
-            print(element)
-            x0_ = str(c[0])
-            y0_ = str(c[1])
-            x1_ = str(c[2])
-            y1_ = str(c[3])
-            aux0 = x0_.split(':')
-            auy0 = y0_.split(':')
-            aux1 = x1_.split(':')
-            auy1 = y1_.split(':')
-            x0 = int(aux0[1])
-            y0 = int(auy0[1])
-            x1 = int(aux1[1])
-            y1 = int(auy1[1])
-            h = int(s['horizontal'])
-            v = int(s['vertical'])
-
-            print("Smalllllll")
-            a = (x1 - x0)
-            b = (y1 - y0)
-            print(a)
-            print(b)
-            if a > 30 or b > 30:
-                if v > 90 and h > 90:
-                    print('Full screen')
-                    active = 'no'
-                else:
-                    active = 'yes'
-            else:
-                active = 'no'
-                print('Deleting')
-            for r in range(len(results_1)):
-                current_root = croppedLocation[screenShot] + "/" + str(element) + ' ' + str(croppedName)
-
-            db.segmentation.insert({
-                'screenshot_id': screenShotId[screenShot],
-                'totalElements': numberOfElements[screenShot],
-                'elementLocationPixels': elementPositioning[screenShot][element],
-                'elementLocationPercentage': elementPositioningPercentage[screenShot][element],
-                'elementSizePercentage': elementSize[screenShot][element],
-                'elementRoot': croppedLocation[screenShot] + "/" + str(element) + ' ' + str(croppedName),
-                'elementIndex': 'Element ' + str(elementCount[screenShot][element]),
-                'screenshotIndex': screenShotIndex[screenShot],
-                'status': 'identified',
-                'active': active,
-                'result_cnn_1': 'unknown'
-            })
-
-
-def save_ocr(ocrText):
-
-    for loop in range(len(ocrText)):
-        if str(ocrText[loop]['name']) != '':
-
-            db.ocr.insert({
-                'name': str(ocrText[loop]['name']),
-                'root': str(ocrText[loop]['root']),
-                'segmentation_id': str(ocrText[loop]['id']),
-                'linenumber': str(ocrText[loop]['linenumber'])
-            })
-# status == 'Identified by OCR'
-
-
-def save_inception(finalName, elementId):
-    for index in range(len(finalName)):  # len(elementId)):
-        db.inception.insert({
-            'results': 'to be done with all CNNs',  # certainty[index],
-            'elementName': {'name': str(finalName[index]['name']), 'highest': str(finalName[index]['highestResult'])},
-            'segmentation_id': str(elementId[index])
-        })
 
 
 def saveCurrent(date, id, location, fontcolor, fontSize, fontFamily, borderColor,
@@ -385,8 +290,6 @@ def saveCurrent(date, id, location, fontcolor, fontSize, fontFamily, borderColor
         'timeZone': 'Australia/Melbourne'
     }, w=1)
 
-''' MONGO MODELS'''
-
 
 def insert(collection, collectionKey, collectionValues):
     collection.insert({
@@ -407,85 +310,99 @@ def findAll(collection, collectionKey):
 
 
 def findMultiple(collection, collectionKey, searchwords):
-    results = collection.find({collectionKey: searchwords})
+
+    results = []
+    try:
+        results = collection.find({collectionKey: searchwords})
+    except pymongo.errors.OperationFailure as e:
+        print('Mongo Data Base Error ' + e)
     return results
 
 
 def findOne(collection, collectionKey, searchword):
 
     msg = 'failed to find: ' + searchword + '. '
-    result = []
-    if collection.find_one({collectionKey: searchword}) != None:
+    result = None
+    if collectionKey == '_id':
+        try:
+            result = collection.find_one({collectionKey: ObjectId(searchword)})
+        except pymongo.errors.OperationFailure as e:
+            print('Mongo Data Base Error ' + e)
+    else:
+        try:
+            result = collection.find_one({collectionKey: searchword})
+        except pymongo.errors.OperationFailure as e:
+            print('Mongo Data Base Error ' + e)
+    if result is not None:
         msg = 'find ' + searchword + ' with success. '
-        result = collection.find_one({collectionKey: searchword})
         print(msg)
-
     else:
         print(msg)
         return
     return result
 
 
-def deleteOne(collection, collectionKey, searchword):
-    msg = 'delete ' + searchword + ' failed.'
-    if collection.find_one({collectionKey: searchword}) == None:
-        msg = 'Cant delete ' + searchword + ', it is not in the database. '
-    elif collection.find_one({collectionKey: searchword}) != None:
-        collection.update({collectionKey: searchword}, {"$pull": {collectionKey: searchword}})
-        msg = searchword + ' is deleted. '
-    print(msg)
+def findTypeDb(type):
+    element = []
+    collection = db[type].find({'seg_id': id, 'state': 'active'})
+    for col in collection:
+        element.append(col)
+    return element
 
 
-def deleteMany(collection, collectionKey, searchwords):
-    for i in range(len(searchwords)):
-        deleteOne(collection, collectionKey, searchwords[i])
+def findChildDb(type):
+    elementChild = []
+    collection = db[type].find({'level': {'child': id}, 'state': 'active'})
+    for col in collection:
+        elementChild.append(col)
+    return elementChild
 
 
-def findOneUpdate(collection, collectionKey, searchword, replacement):
-    msg = ''
-    strl = None
-    if collection.find_one({collectionKey: searchword}) != None:
-        collection.update({collectionKey: searchword}, {'$set': {collectionKey + ".$": replacement}})
-        msg += 'find ' + searchword + ' and update to ' + replacement + ' with succes. '
-        if collection.find_one({collectionKey: searchword}) == None:
-            msg += searchword + ' it is not in this database. '
-    else:
-        msg = 'failed to find ' + searchword + ' and update to ' + replacement + '. '
-    print(msg)
-    return strl
+def find_all_projects_user_status(user, status):
+
+    result = []
+    try:
+        results = db.projects.find({'user_id': user, 'status': status})
+    except pymongo.errors.OperationFailure as e:
+        print('Mongo Data Base Error ' + e)
+    return results
 
 
-def updateOne(collection, collectionKey, searchword, collectionReplacement, replacement):
-    msg = 'failed to update ' + collectionReplacement + ' to ' + replacement + '. '
-    if (collectionKey == '_id'):
-        if collection.find_one({collectionKey: ObjectId(searchword)}) != None:
-            collection.update({collectionKey: ObjectId(searchword)}, {'$set': {collectionReplacement: replacement}})
-            msg = collectionReplacement + ' updated to ' + replacement + ' with succes. '
-    else:
-        if collection.find_one({collectionKey: searchword}) != None:
-            collection.update({collectionKey: searchword}, {'$set': {collectionReplacement: replacement}})
-            msg = collectionReplacement + ' updated to ' + replacement + ' with succes. '
-    print(msg)
+def find_one_project_user_status(userId, status):
+
+    result = None
+    try:
+        results = db.projects.find_one({'user_id': userId, 'status': status})
+    except pymongo.errors.OperationFailure as e:
+        print('Mongo Data Base Error ' + e)
+    return results
 
 
-def updateMultiple(collection, collectionKey, searchwords, replacements):
-    for i in range(len(searchwords)):
-        updateOne(collection, collectionKey, searchwords[i], replacements[i])
+def find_all_image_library(userId, project_name):
+
+    result = []
+    try:
+        results = db.saveImageLibrary.find({'user_id': userId, 'projectName': project_name})
+    except pymongo.errors.OperationFailure as e:
+        print('Mongo Data Base Error ' + e)
+    return results
 
 
-def updateLocation(collection,id,location):
-    print('updating location')
-    element = db[str(collection)].find_one({'_id':ObjectId(id)})
-    if element != None:
-        db[str(collection)].update({'_id':ObjectId(id)},{
-            '$set':{
-                'location':location
-            }
-        })
+def find_one_image_library(userId, project_name):
+
+    result = None
+    try:
+        results = db.saveImageLibrary.find_one({'user_id': userId, 'projectName': project_name})
+    except pymongo.errors.OperationFailure as e:
+        print('Mongo Data Base Error ' + e)
+    return results
 
 
 def getCollectionIDs(collection, username):
-    collection = db[str(collection)]
+    if collection == 'auth_user':
+        collection = db_main[str(collection)]
+    else:
+        collection = db[str(collection)]
     cursor = collection.find({})
     screenShotId = ''
     for document in cursor:
@@ -500,495 +417,14 @@ def getCollectionIDs(collection, username):
     return screenShotId
 
 
-def getScreenName(screenshotId):
-    collection = db.screenshots
-    cursorList = collection.find({'_id': screenshotId})
-    for cursor in cursorList:
-        scname = cursor['screenName']
-    return scname
-
-
-def getScreenshotName(collection, userId, screenshotId):
-
-    print('im userId: '+str(userId))
-    collection = db[str(collection)]
-    cursor = collection.find({'_id': ObjectId(str(screenshotId))})
-    screenShotName = ''
-    for document in cursor:
-        if str(userId) == str(document['user_id']):
-            if str(document['status']) != 'inactive':
-                screenShotName = (str(document['image']))
-
-    return screenShotName
-
-
-def savePrediction(seg_id, type, name, location, root, children, screenshot_id,date):
-
-    db.predictions.insert({
-        'segmentation_id': seg_id,
-        'type':  type,
-        'name':  name,
-        'score': 0,
-        'location': location,
-        'root': root,
-        'state': 'active',
-        'children': children,
-        'screenshot_id': screenshot_id,
-        'timeStamp': str(date),
-        'timeZone': 'Australia/Melbourne'
-    })
-
-    db.styles.insert({
-        'segmentation_id': seg_id,
-        'fontFamily': 'Helvetica, Arial, sans-serif',
-        'fontSize': '',
-        'fontColor': '',
-        'borderColor': 'transparent',
-        'background-gradient': '',
-        'borderRadius': '',
-        'bgcolor': '',
-        'boxShadow': '',
-        'textAlign': '',
-        'textIndent': 0,
-        'textShadow': '',
-        'link': '',
-        'linkColor': '',
-        'animationType': '',
-        'zIndex': 'auto',
-        'timeStamp': str(date),
-        'timeZone': 'Australia/Melbourne'
-    })
-
-
-def getLineNumbers(seg_id):
-    listOcr = findOne(db.ocr, 'segmentation_id', seg_id)
-    return int(listOcr['linenumber'])
-
-
-def getRoot(segId):
-    collection = db['segmentation']
-    cursor = collection.find_one({'_id': ObjectId(segId)})
-    if str(segId) == str(cursor['_id']):
-        return str(cursor['elementRoot'])
-
-
-'''META-CUSTOM DataModels'''
-
-
-def getPrediction(ids):
-    collection = db['predictions']
-    cursor = collection.find({})
-    predictions = []
-    for document in cursor:
-        if str(document['segmentation_id']) in ids:
-            if document['state'] == 'active':
-                seg_id = document['segmentation_id']
-                type = document['type']
-                name = document['name']
-                score = document['score']
-                location = document['location']
-                root = document['root']
-                children = document['children']
-                screenshotId = document['screenshot_id']
-                predictions.append({'id': seg_id, 'type': type, 'name': name, 'location': location,'score':score, 'root': root,
-                                    'children': children, 'screenshot_id':screenshotId})
-
-    return predictions
-
-
-def updatePredictions(classid, fontSize, fontColor, borderColor, borderRadius, bgcolor, textAlign,textIndent):
-    collection = db['styles']
-    collection.update({'segmentation_id': classid}, {'$set': {
-        'fontSize': fontSize,
-        'fontColor': fontColor,
-        'borderColor': borderColor,
-        'borderRadius': borderRadius,
-        'bgcolor': bgcolor,
-        'textAlign': textAlign,
-        'textIndent': textIndent
-    }})
-
-
-def updateColor(classid, fontColor, borderColor, bgcolor):
-    collection = db['styles']
-    collection.update({'segmentation_id': classid}, {'$set': {
-        'fontColor': fontColor,
-        'borderColor': borderColor,
-        'bgcolor': bgcolor,
-    }})
-
-
-def get_bstyles_barChart(elementId):
-
-    collection = db['styles']
-    cursor = collection.find({})
-    bstyles = ''
-    for document in cursor:
-        if str(document['segmentation_id']) == elementId:
-            bstyles = {'bgcolor': document['bgcolor'],
-                       'barChartBG': document['barChartBG'],
-                       'barChartBar': document['barChartBar'],
-                       'bordercolor': document['borderColor'],
-                       'borderRadius': document['borderRadius'],
-                       'zIndex': document['zIndex']}
-    return bstyles
-
-
-def get_bstyles(elementId):
-
-    collection = db['styles']
-    cursor = collection.find({})
-    bstyles = ''
-    for document in cursor:
-        if str(document['segmentation_id']) == elementId:
-            bstyles = {'bgcolor': document['bgcolor'],
-                       'bordercolor': document['borderColor'],
-                       'borderRadius': document['borderRadius'],
-                       'zIndex': document['zIndex']}
-    return bstyles
-
-
-def get_fstyles(elementId):
-    collection = db['styles']
-    cursor = collection.find({})
-    fstyles = ''
-    for document in cursor:
-        if str(document['segmentation_id']) == elementId:
-            fstyles = {'fontSize': document['fontSize'],
-                       'fontColor': document['fontColor'],
-                       'textAlign': document['textAlign'],
-                       'textIndent': document['textIndent'],
-                       'fontFamily': document['fontFamily'],
-                       'link': document['link']}
-    return fstyles
-
-
-def getPredictionByScreenShotId(id):
-    collectionseg = db['segmentation']
-    cursorseg = collectionseg.find({})
-    segmentationids = []
-    for document in cursorseg:
-        if str(document['screenshot_id']) == str(id):
-            segmentationids.append(str(document['_id']))
-
-    collection = db['predictions']
-    cursor = collection.find({})
-    predictions = []
-    for document in cursor:
-        if str(document['segmentation_id']) in segmentationids:
-            if document['state'] == 'active':
-                seg_id = document['segmentation_id']
-                type = document['type']
-                name = document['name']
-                location = document['location']
-                score = document['score']
-                root = document['root']
-                children = document['children']
-                screenshotId = document['screenshot_id']
-                predictions.append({'id': seg_id, 'type': type, 'name': name,'score':score, 'location': location, 'root': root,
-                                    'children': children, 'screenshot_id': screenshotId})
-    return predictions
-
-
-def getPredictionByScreenShotName(screenId):
-    collectionseg = db['segmentation']
-    cursorseg = collectionseg.find({})
-    segmentationids = []
-    for document in cursorseg:
-        if str(document['screenshot_id']) == str(screenId):
-            segmentationids.append(str(document['_id']))
-    collection = db['predictions']
-    cursor = collection.find({})
-    predictions = []
-    for document in cursor:
-        if str(document['segmentation_id']) in segmentationids:
-            if document['state'] == 'active':
-                seg_id = document['segmentation_id']
-                type = document['type']
-                name = document['name']
-                location = document['location']
-                root = document['root']
-                score = document['score']
-                children = document['children']
-                screenshotId = document['screenshot_id']
-                predictions.append({'id': seg_id, 'type': type, 'name': name,'score':score, 'location': location, 'root': root,
-                                    'children': children, 'screenshot_id': screenshotId})
-
-    return predictions
-
-
-def save_collection(collection, array, screenshot_id, date):
-    for element in range(len(array)):
-        for e in range(len(array[element])):
-            if e == 0:
-                collection.insert({
-                    'level': {'parent': array[element]['child']['id']},
-                    'seg_id': array[element]['parent']['id'],
-                    'type': array[element]['parent']['type'],
-                    'name': array[element]['parent']['name'],
-                    'location': array[element]['parent']['location'],
-                    'root': array[element]['parent']['root'],
-                    'screenshot_id': screenshot_id,
-                    'state': 'active',
-                    'locked': False,
-                    'timeStamp': str(date),
-                    'timeZone': 'Australia/Melbourne'
-                })
-            if e == 1:
-                collection.insert({
-                    'level': {'child': array[element]['parent']['id']},
-                    'seg_id': array[element]['child']['id'],
-                    'type': array[element]['child']['type'],
-                    'name': array[element]['child']['name'],
-                    'location': array[element]['child']['location'],
-                    'root': array[element]['child']['root'],
-                    'screenshot_id': screenshot_id,
-                    'state': 'active',
-                    'locked': False,
-                    'timeStamp': str(date),
-                    'timeZone': 'Australia/Melbourne'
-                })
-
-
-def retrive_collection(screenshot_id):
-
-    cursor = (db.events.find({'screenshot_id': screenshot_id}).sort([('timeStamp', -1)]).limit(1))
-    action = ''
-    event = ''
-    for document in cursor:
-        event = document['collection']
-
-    collection = db[event+'_events']
-    cursor = (collection.find({'screenshot_id': screenshot_id}).sort([('timeStamp', -1)]).limit(1))
-    for document in cursor:
-        action = document
-    action = {'collection': event, 'event': action}
-    return action
-
-
-def save_text_collection(collection, array, screenshot_id,date):
-    for element in range(len(array)):
-        collection.insert({
-            'level': {'parent': array[element]['children']},
-            'seg_id': array[element]['id'],
-            'type': array[element]['type'],
-            'name': array[element]['name'],
-            'location': array[element]['location'],
-            'root': array[element]['root'],
-            'screenshot_id': screenshot_id,
-            'state': 'active',
-            'locked': False,
-            'timeStamp': str(date),
-            'timeZone': 'Australia/Melbourne'
-        })
-
-
-# New elements Database
-def save_new_elements(class_id,screenshot_id,type,name,location,date, path):
-        db.newElements.insert({
-            'class_id': class_id,
-            'screenshot_id': screenshot_id,
-            'type': type,
-            'name': name,
-            'location': location,
-            'state': 'active',
-            'locked': False,
-            'root': path,
-            'timeStamp': str(date),
-            'timeZone': 'Australia/Melbourne'
-        })
-
-
-def save_new_style(element_id, fontSize, fontFamily, fontColor, borderColor,borderRadius,bgColor,textAlign,textIndent,link,zIndex):
-    db.newStyle.insert({
-        'element_id': element_id,
-        'fontFamily': fontFamily,
-        'fontSize': fontSize,
-        'fontColor': fontColor,
-        'borderColor': borderColor,
-        'borderRadius': borderRadius,
-        'bgcolor': bgColor,
-        'textAlign': textAlign,
-        'textIndent': textIndent,
-        'link': link,
-        'zIndex': zIndex
-    })
-
-
-def save_new_style_BarChart(element_id, fontSize, fontFamily, fontColor, borderColor,borderRadius,bgColor,textAlign,textIndent,link,zIndex):
-    db.newStyle.insert({
-        'element_id': element_id,
-        'fontFamily': fontFamily,
-        'fontSize': fontSize,
-        'fontColor': fontColor,
-        'borderColor': borderColor,
-        'borderRadius': borderRadius,
-        'bgcolor': bgColor,
-        'textAlign': textAlign,
-        'textIndent': textIndent,
-        'link': link,
-        'zIndex': zIndex,
-        'barChartBar': "rgb(255,255,255)",
-        'barChartBG': "rgb(0,0,0)",
-        "data": "[{index: 0,value: 12},{index: 1,value: 12},{index: 2,value: 12}]"
-    })
-
-
-
-def search_new_element(id):
-    collection = db.newElements
-    return collection.find_one({'class_id': id})
-
-
-def get_new_bstyles(elementId):
-
-    collection = db['newStyle']
-    cursor = collection.find({})
-    bstyles = ''
-    for document in cursor:
-        if str(document['element_id']) == elementId:
-            bstyles = {'bgcolor': document['bgcolor'],
-                       'borderColor': document['borderColor'],
-                       'borderRadius': document['borderRadius'],
-                       'zIndex': document['zIndex']}
-    return bstyles
-
-def get_new_barChart_styles(elementId):
-
-    collection = db['newStyle']
-    cursor = collection.find({})
-    bstyles = ''
-    for document in cursor:
-        if str(document['element_id']) == elementId:
-            bstyles = {'bgcolor': document['bgcolor'],
-                       'borderColor': document['borderColor'],
-                       'borderRadius': document['borderRadius'],
-                       'zIndex': document['zIndex'],
-                       'barChartBG':document['barChartBG'],
-                       'barChartBar':document['barChartBar'],
-                       'data':document['data']}
-    return bstyles
-
-
-def get_new_fstyles(elementId):
-    collection = db['newStyle']
-    cursor = collection.find({})
-    fstyles = ''
-    for document in cursor:
-        if str(document['element_id']) == elementId:
-            fstyles = {'fontSize': document['fontSize'],
-                       'fontColor': document['fontColor'],
-                       'textAlign': document['textAlign'],
-                       'textIndent': document['textIndent'],
-                       'fontFamily': document['fontFamily'],
-                       'link': document['link']}
-    return fstyles
-
-def get_collection(collection, screenshotId):
-    array = []
-    cursor = collection.find({'screenshot_id': screenshotId})
-    for document in cursor:
-        if document['state'] == 'active':
-            array.append(document)
-        else:
-            print('this element is inactive: ' + str(document))
-    if collection == db.widgets:
-        print('widgets are scalable for database changes')
-        print(array)
-        print(screenshotId)
-
-    return array
-
-
-def get_collection_layouts(screenshot_id, id, index):
-    location = ''
-
-    prediction_layouts_cursor = db.layoutsTemplates.find({'screenshot_id': str(screenshot_id)})
-    document = prediction_layouts_cursor[index - 1]
-    print('check this for me!')
-    for doc in document['layouts_template']:
-        if str(doc) == id:
-            print('I am the same: ' +str(id))
-            print(document['layouts_template'])
-            print(document['layouts_template'][id])
-            location = document['layouts_template'][id]
-
-    return location
-
-
-def get_collection_layout(collection, screenshotId):
-    array = []
-    cursor = collection.find({'screenshot_id': screenshotId})
-
-    for document in cursor:
-
-        array.append(document)
-
-    return array
-
-
-def update_font_size(collection, seg_id, searchkey, replacement):
-
-    if searchkey == 'fontSize':
-
-        collection.update({'segmentation_id': seg_id}, {
-            '$set':
-                {
-                    searchkey: replacement
-                }
-        })
-    else:
-        db.styles.update({'segmentation_id': seg_id}, {
-            '$set':
-                {
-                    searchkey: replacement
-                }
-        })
-    print('collection: styles \n with seg_id: '+str(seg_id)+'\n with key: '+str(searchkey)+'\n has been updated to: '+str(replacement))
-
-
-def undoEvent(screenshotId, index):
-
-    collection = db.events
-    cursor = collection.find({'screenshot_id': screenshotId}).sort([('timeStamp', -1)]).limit(1+int(index))
-    for i in cursor:
-        event = i
-    return event
-
-
-def redoEvent(screenshotId, index):
-
-    collection = db.events
-    cursor = collection.find({'screenshot_id': screenshotId}).sort([('timeStamp', -1)]).limit(int(index))
-    for i in cursor:
-        event = i
-    return event
-
-
-def getLatestScreenshot(userId):
-    collecion = db.tempPage
-    return collecion.find_one({'userId': userId})
-
-
-def setScreenshot(userId, screenshot_id,projectName):
-    collection = db.tempPage
-
-    if collection.find_one({'userId': userId}) != None:
-        collection.update({'userId': userId}, {
-                    '$set':
-                        {
-                            'screenshot_id': screenshot_id
-                        }
-                })
-    else:
-        collection.insert({
-            'userId': userId,
-            'projectName': projectName,
-            'screenshot_id': screenshot_id,
-            'screenHeight': '',
-            'screenWidth': '',
-
-        })
+def get_project_two_search_keys(user_id, project_name):
+
+    result = None
+    try:
+        result = db.projects.find_one({'user_id': user_id, 'projectName': project_name})
+    except (AttributeError, pymongo.errors.OperationFailure) as e:
+        print('Mongo Data Base Error ' + e)
+    return result
 
 
 def save_layouts():
@@ -1065,7 +501,7 @@ def save_layouts():
 
 def saveMetrix(secHeight, secWidth, widthLayouts, heightLayouts, userId, screenshotId, projectName,device):
 
-    if db.tempPage.find_one({'userId': userId}) != None and db.tempPage.find_one({}) != None:
+    if db.tempPage.find_one({'userId': userId}) is not None and db.tempPage.find_one({}) is not None:
         db.tempPage.update({'userId': userId}, {'$set':
             {'screenHeight': secHeight, 'screenWidth': secWidth,'device_page': device}
         })
@@ -1091,284 +527,11 @@ def getMetrix(userId, val):
     return db.tempPage.find_one({'userId': userId})[str(val)]
 
 
-# UPDATE Page Name
-def update_page_name( pageName, screenshotId):
-    collections = db.screenshots
-
-    if collections.find_one({'_id': ObjectId(str(screenshotId))}) != None:
-        collections.update({'_id': ObjectId(str(screenshotId))}, {
-            '$set':
-                {
-                'pageName': str(pageName)
-                }
-        })
-    else:
-        print('something went wrong')
-    print(str(screenshotId))
-
-
-def checkLocation(posL, posT, width, height, screenshotId):
-
-    collection_buttons = db.buttons.find({'screenshot_id': screenshotId})
-    collection_frames = db.frames.find({'screenshot_id': screenshotId})
-    collection_hyperlinks = db.hyperLinks.find({'screenshot_id': screenshotId})
-    collection_paragraphs = db.paragraphs.find({'screenshot_id': screenshotId})
-    collection_pictures = db.pictures.find({'screenshot_id': screenshotId})
-    collection_textBoxes = db.textBoxes.find({'screenshot_id': screenshotId})
-    collection_textArea = db.textArea.find({'screenshot_id': screenshotId})
-    collection_newElements = db.newElements.find({'screenshot_id': screenshotId})
-
-    if (check(collection_buttons,posL, posT, width, height) == 0) and \
-        (check(collection_frames,posL, posT, width, height) == 0) and \
-        (check(collection_hyperlinks,posL, posT, width, height) == 0) and \
-        (check(collection_paragraphs,posL, posT, width, height) == 0) and \
-        (check(collection_pictures,posL, posT, width, height) == 0) and \
-        (check(collection_textBoxes,posL, posT, width, height) == 0) and \
-        (check(collection_textArea,posL, posT, width, height) == 0) and \
-        (check(collection_newElements,posL, posT, width, height) == 0):
-        return 0
-    else:
-        return 1
-
-
-def check(collection, posL, posT, width, height):
-    for col in collection:
-        if(posL <= float(col['location']['x0']) <= (posL+width)) and \
-        (posL <= float(col['location']['x1']) <= (posL+width)) and \
-        (posT <= float(col['location']['y0']) <= (posT+height)) and \
-        (posT <= float(col['location']['y1']) <= (posT+height)):
-            print('col:')
-            print(col)
-            return 1
-    return 0
-
-
-def checkPics(screenshotId):
-    array = []
-    cursor = db.segmentation.find({'screenshot_id': screenshotId})
-    cursorImg = db.pictures.find({'screenshot_id': screenshotId})
-    cursorLogo = db.logo.find({'screenshot_id': screenshotId})
-    cursorIncon = db.icon.find({'screenshot_id': screenshotId})
-
-
-    for doc in cursorImg:
-
-        img = db.segmentation.find_one({'_id':ObjectId(doc['seg_id'])})
-
-        if doc['state'] == 'active' and doc['locked'] == False:
-            if(img != None):
-                array.append({
-                    'name': doc['name'],
-                    'location': img['elementLocationPercentage'],
-                    'root': img['elementRoot']
-                })
-            else:
-                print('img empty!')
-    for doc in cursorLogo:
-
-        img = db.segmentation.find_one({'_id':ObjectId(doc['seg_id'])})
-
-        if doc['state'] == 'active' and doc['locked'] == False:
-            if(img != None):
-                array.append({
-                    'name': doc['name'],
-                    'location': img['elementLocationPercentage'],
-                    'root': img['elementRoot']
-                })
-            else:
-                print('img empty!')
-
-    for doc in cursorIncon:
-
-        img = db.segmentation.find_one({'_id':ObjectId(doc['seg_id'])})
-
-        if doc['state'] == 'active' and doc['locked'] == False:
-            if(img != None):
-                array.append({
-                    'name': doc['name'],
-                    'location': img['elementLocationPercentage'],
-                    'root': img['elementRoot']
-                })
-            else:
-                print('img empty!')
-    return array
-
-
-def getCurrentScreenName(id):
-    try:
-        return db.screenshots.find_one({'_id': ObjectId(str(id))})['screenName'].capitalize()
-    except:
-        return None
-
-
-def insertEvent(screenid, segid, collection, type, old, new):
-    date = datetime.now(pytz.timezone('Australia/Melbourne'))
-    db['events'].insert({
-        'screenshot_id': screenid,
-        'seg_id': segid,
-        'collection': collection,
-        'oldEvent': {type: old},
-        'newEvent': {type: new},
-        'timeStamp': str(date),
-        'timeZone': 'Australia/Melbourne'
-    })
-
-def hex_to_rgb(value):
-    value = value.lstrip('#')
-    lv = len(value)
-    return 'rgb'+str(tuple(int(value[i:i + lv // 3], 16) for i in range(0, lv, lv // 3)))+''
-
-
 def getUserPicture(username):
     try:
         return db['user'].find_one({'username':username})['profilePicture']
     except:
         print('')
-
-def updateChildLocation(item,savePath, screenshotId, combinationId, amountOfKids, width, height):
-
-    from PIL import Image
-    img = Image.open(item['root'])
-    print(item)
-    from virtualize.textboxSep import elementTextboxExtraction
-    testCropImgList, foundLinesY = elementTextboxExtraction(img, amountOfKids)
-    print(amountOfKids)
-    print('check me!')
-    print(str(testCropImgList))
-    print(str(foundLinesY))
-
-    for i in range(len(foundLinesY)):
-        for j in range(len(foundLinesY)):
-            if i != j:
-                if foundLinesY[i] == foundLinesY[j]:
-                    print('I AM THE SAME')
-                    return combinationId
-
-    import os
-    try:
-        for dash in range(len(testCropImgList)):
-            root = '_' + str(item['id']) + '_' + str(dash) + '.jpg'
-            testCropImgList[dash].save(os.path.join(savePath, root))
-
-            if dash == 0:
-                YBottom = float(item['location'][1][3:])
-                YTop = float(item['location'][1][3:])+foundLinesY[0]
-
-            elif dash == len(testCropImgList)-1:
-                YBottom =float(item['location'][1][3:]) + foundLinesY[dash-1]
-                YTop = float(item['location'][3][3:])
-
-            else:
-                YBottom = float(item['location'][1][3:])+foundLinesY[dash-1]
-                YTop = float(item['location'][1][3:])+foundLinesY[dash]
-
-
-            print('extraY:')
-            print(YBottom)
-            print(YTop)
-            locationPixels = ['x0'+str(float(item['location'][0][3:])),
-                'y0' + str(float(YBottom)),
-                'x1' + str(float(item['location'][2][3:])),
-                'y1' + str(float(YTop))]
-            x0 = float(item['location'][0][3:]) * 100 / width
-            y0 = (float(YBottom)) * 100 / height
-            x1 = float(item['location'][2][3:]) * 100 / width
-            y1 = (float(YTop)) * 100 / height
-
-            location = {'x0': float(x0), 'y0': float(y0), 'x1': float(x1), 'y1': float(y1)}
-            date = datetime.now(pytz.timezone('Australia/Melbourne'))
-
-            db.segmentation.insert({
-                'screenshot_id': screenshotId,
-                'totalElements': str('TEMP:'+item['id']),
-                'elementLocationPixels': locationPixels,
-                'elementLocationPercentage': location,
-                'elementSizePercentage': location,
-                'elementRoot': savePath+'/'+root,
-                'elementIndex': 'ElementChild ' + str(dash),
-                'screenshotIndex': 0,
-                'status': 'identified'
-            })
-            newId = db.segmentation.find_one({'totalElements': 'TEMP:' + str(item['id'])})['_id']
-            print('NEW ID: '+str(newId))
-            db.segmentation.update({'totalElements': str('TEMP:' + item['id'])}, {'$set': {'totalElements': amountOfKids}})
-            savePrediction(str(newId), str(item['type']), str(item['name']),location , savePath+'/'+root, [], screenshotId, date)
-
-
-            # db.predictions.update({'segmentation_id': 'TEMP:'+str(item['id'])},{'$set':{'segmentation_id':str(newId)}})
-            # db.styles.update({'segmentation_id': 'TEMP:'+str(item['id'])},{'$set':{'segmentation_id':str(newId)}})
-            #disable old
-            combinationId.append(str(newId))
-
-        print(combinationId)
-        combinationId.remove(str(item['id']))
-        print(combinationId)
-
-        db.predictions.update({'segmentation_id': item['id']},{'$set':{'state':'inactive'}})
-    except:
-        print('cant do this now')
-
-    print(foundLinesY)
-    print(testCropImgList)
-    print(combinationId)
-
-    return combinationId
-
-def updateChildPredictions(Array):
-    print('lets update those sons of a bitches')
-
-    print(Array)
-
-    index = 1
-
-    for item in Array:
-        if 'parent' in item:
-            if len(item['parent']['children']) > 1:
-                print('now the fun begins')
-                parentId = item['parent']['id']
-                childId = item['child']['id']
-                print(item['parent']['location']['y1'])
-                item['parent']['location']['y1'] = (item['parent']['location']['y1']/len(item['parent']['children']))*index
-                print(item['parent']['location']['y1'])
-    print(Array)
-
-
-    return Array
-    # return {'x0': float(x0), 'y0': float(y0), 'x1': float(x1), 'y1': float(y1)}
-
-
-def childinrange(childs):
-    #childs gives an array of id and check every child when going through
-    collection = []
-    for kid in childs:
-        collection.append(db.segmentation.find_one({'_id': ObjectId(str(kid))}))
-    print(collection)
-    range = 5
-    for i in collection:
-        for j in collection:
-            if str(i['_id'])!=str(j['_id']) :
-                if np.absolute(i['elementLocationPercentage']['y0'] - j['elementLocationPercentage']['y0']) < range and np.absolute(i['elementLocationPercentage']['y0'] - j['elementLocationPercentage']['y0']) < range:
-                    if np.absolute(i['elementLocationPercentage']['y1'] - j['elementLocationPercentage']['y1']) < range and np.absolute(i['elementLocationPercentage']['y1'] - j['elementLocationPercentage']['y1']) < range:
-                        print('TRUEEEEEE')
-                        print(i)
-                        print(j)
-                        return True
-    print('FALSEEEEE')
-    return False
-
-
-def checkKids(children,seg_id):
-    childs = []
-    for child in range(len(children)):
-        print(child)
-        if children[child][0] == seg_id:
-            print(children[child])
-            childs.append(children[child][1])
-            for kids in range(len(children)):
-                print(kids)
-                if children[kids][0] == children[child][1]:
-                    childs.append(children[kids][1])
-    return childs
 
 
 def getColorPalette(screenId):
@@ -1505,3 +668,450 @@ def updateLayout(colleciton, id, location):
         db[colleciton].update({'seg_id': id},{'$set':{'location':{
             'x0':float(location['x0']),'y0':float(location['y0']),'x1':float(location['x1']),'y1':float(location['y1'])
         }}})
+
+
+def insert_project(project, user_id, date):
+    db.projects.insert({'projectName': project,
+                        'user_id': user_id,
+                        'screenshots': [],
+                        'status': 'pending',
+                        'dateCreated': str(date),
+                        'comment': [],
+                        'groupCommentCode': 0,
+                        'updated_date': str(date)})
+    db.tempPage.update({'userId': user_id}, {'$set': {'projectName': project, 'screenshot_id': ''}})
+    db.storageLibrary.update({'user_Id': user_id}, {'$set': {'text': 'Project: ' + project.title()}})
+
+
+def save_image_library(userId, selectedProject, filename, myfileLib, fileTypeL, fileSizeL, fileLModifiedL):
+    db.saveImageLibrary.insert({
+        'userId': userId,
+        'projectName': selectedProject.lower(),
+        'path': filename,
+        'originalFileName': str(myfileLib)[:-4],
+        'fileType': fileTypeL,
+        'fileSize': fileSizeL,
+        'fileLastModified': fileLModifiedL
+    })
+    db.lastActivityLibrary.update({'user': userId}, {'$set': {'currentlySelectedProj': selectedProject.lower()}})
+
+
+def insert_project(project, userId, date):
+    db.projects.insert({'projectName': project,
+                        'user_id': userId,
+                        'screenshots': [],
+                        'status': 'pending',
+                        'dateCreated': str(date),
+                        'comment': [],
+                        'groupCommentCode': 0,
+                        'updated_date': str(date)
+                        })
+    projectName = project
+    db.tempPage.update({'userId': userId}, {'$set': {'projectName': projectName}})
+    allProject = list(db.projects.find())
+    size = int(len(allProject))
+    db.storageLibrary.insert(
+        {
+            'id': size + 1,
+            'user_id': userId,
+            'text': 'Project: ' + projectName.title(),
+            'children': [{
+                'id': '',
+                'text': ''
+            }]
+        }
+    )
+
+
+def getAllProjects(userId, currentUser):
+    print('getting all the projects for workflow')
+    var = []
+    project = db.tempPage.find_one({'userId': userId})
+    if project is not None and project['projectName'] != '':
+        screenids = db.projects.find_one({'user_id': userId, 'projectName': project['projectName']})
+        for id in screenids['screenshots']:
+            if str(id) != '':
+                screen = db.screenshots.find_one({'_id': ObjectId(str(id))})
+                if screen['status'] != 'inactive':
+                    var.append([screen['image'][int(len(str(currentUser))) + 7:-4], screen['pageName'], screen['screenName']])
+    html = []
+    css = []
+    import codecs
+    for page in var:
+        try:
+            pagehtml = codecs.open('./static/dirty_static/users/' + currentUser + '/pages/' + page[0] + '/testing.html',
+                                   mode='r', encoding='UTF-8')
+            pagename = page[2]
+            html.append([pagename, pagehtml.read()])
+            pagehtml.close()
+        except:
+            html.append('')
+        try:
+            pagecss = codecs.open('./static/dirty_static/users/' + currentUser + '/pages/' + page[0]
+                                  + '/css/testingCss.css', mode='r', encoding='UTF-8')
+            css.append(pagecss.read())
+            pagecss.close()
+        except:
+            css.append('')
+    return html, css
+
+
+def getColorTransferHtml(currentUser, screenshotName):
+    files = [currentUser + '/pages/' + screenshotName + '/colorTransfer/linear.png',
+             currentUser + '/pages/' + screenshotName + '/colorTransfer/lum.png',
+             currentUser + '/pages/' + screenshotName + '/colorTransfer/lum2.png',
+             currentUser + '/pages/' + screenshotName + '/colorTransfer/matchStyle.png',
+             currentUser + '/pages/' + screenshotName + '/colorTransfer/outmatch.png']
+    newHtml = ''
+    try:
+        for i in range(len(files)):
+            newHtml += str(set_html_color(str(files[i][:-4]), i, str(files[i])))
+    except:
+        print('this screen is just made')
+
+    return newHtml
+
+
+def getLayoutHtml(currentUser, screenshotName):
+    files = [currentUser + '/pages/' + screenshotName + '.png',
+             currentUser + '/pages/' + screenshotName + '.png',
+             currentUser + '/pages/' + screenshotName + '.png',
+             currentUser + '/pages/' + screenshotName + '.png',
+             currentUser + '/pages/' + screenshotName + '.png',
+             currentUser + '/pages/' + screenshotName + '.png']
+    newHtml = ''
+    try:
+        for i in range(len(files)):
+            newHtml += str(set_html_layout(str(files[i]), i+1, i+1))
+    except:
+        print('this screen is just made LAYOUTS')
+
+    return newHtml
+
+
+def getProjectPage(screenshotName, currentUser):
+    print('retrieve the correct html for page2')
+    try:
+        import codecs
+        pagehtml = codecs.open('./static/dirty_static/users/' + currentUser+'/pages/' + screenshotName
+                               + '/testing.html', mode='r', encoding='UTF-8')
+        html = pagehtml.read()
+        pagehtml.close()
+    except:
+        html = ''
+    return html
+
+
+def getProjectPageSuggestions(screenshotSID, currentUser):
+    print('retrieve the correct html for suggestions dropdown menu')
+    try:
+        getPathFS = db.screenshots.find_one({'_id': screenshotSID})['pageName']
+        import codecs
+        pagehtml = codecs.open('./static/dirty_static/users/' + currentUser +'/pages/' + getPathFS
+                               + '/testingSuggestions.html', mode='r', encoding='UTF-8')
+        htmlSugg = pagehtml.read()
+        pagehtml.close()
+    except:
+        htmlSugg = ''
+    return htmlSugg
+
+
+def getRSuggestions(screenshotSID):
+    print('retrieve the correct html for suggestions dropdown menu')
+    try:
+        getPathFS = db.screenshots.find_one({'_id': screenshotSID})['pageName']
+    except:
+        getPathFS = ''
+    return getPathFS
+
+
+def getProjectPagePro(screenshotName, currentUser):
+    print('retrieve the Pro correct html for page2')
+    var1 = []
+    html = []
+    user = db.user.find_one({'username': currentUser})
+    userId1 = user['_id']
+    try:
+        sc_id = db.screenshots.find_one({'pageName': screenshotName})
+        project1 = db.tempPage.find_one({'screenshot_id': str(sc_id['_id'])})
+        scree_id = db.projects.find_one({'user_id': str(userId1), 'projectName': str(project1['projectName'])})
+        arSc = scree_id['screenshots']
+        for id1 in arSc:
+            screen = db.screenshots.find_one({'_id': ObjectId(str(id1))})
+            if str(screen['status']) != 'inactive':
+                var1.append([screen['image'][int(len(str(currentUser))) + 7:-4], screen['pageName'],
+                             screen['screenName']])
+
+        import codecs
+        for page in var1:
+            pagehtml1 = codecs.open('./static/dirty_static/users/' + currentUser + '/pages/' + page[0]
+                                    + '/testingPro.html',mode='r', encoding='UTF-8')
+            screenName = page[2]
+            html.append([screenName, pagehtml1.read()])
+            pagehtml1.close()
+
+    except:
+        html = ''
+    return html
+
+
+def getProjectPageAndCss(screenshotName, currentUser):
+    print('retrieve the correct html and css for page2')
+    try:
+        import codecs
+        pagehtml = codecs.open('./static/dirty_static/users/' + currentUser+'/pages/'+ screenshotName
+                               + '/testing.html', mode='r', encoding='UTF-8')
+        html = pagehtml.read()
+        pagehtml.close()
+        pagecss = codecs.open('./static/dirty_static/users/' + currentUser+'/pages/'+ screenshotName
+                              + '/css/testingCss.css', mode='r', encoding='UTF-8')
+        css = pagecss.read()
+        pagecss.close()
+    except:
+        html = ''
+        css = ''
+    return css
+
+
+def getProjects(userId):
+    print('getting the projects for this user!')
+    jsonProjects = []
+    projects = db.projects.find({'user_id': userId})
+    for project in projects:
+        screens = []
+        screen = 'There are no pages for this project.'
+        length = 0
+        for screenid in project['screenshots']:
+            if db.screenshots.find_one({'_id': ObjectId(screenid)})['status'] != 'inactive':
+                curScreen = db.screenshots.find_one({'_id': ObjectId(screenid)})
+                screens.append([
+                    str(curScreen['_id']),
+                    str(curScreen['pageName']),
+                    str(curScreen['image'])
+                ])
+
+                screen = screens
+                length = len(screens)
+        if project['status'] != 'inactive':
+            jsonProjects.append({
+                'id': str(project['_id']),
+                'status' : str(project['status']),
+                'projectName': project['projectName'].capitalize(),
+                'user_id': project['user_id'],
+                'screenshotsamount': length,
+                'screenshots': screen,
+                'dateCreated': (project['dateCreated'])
+            })
+
+    return jsonProjects
+
+
+def getProjectPageWork(userId):
+    print('retrieve the Pro correct html for page2 in workflow container')
+    html = []
+    currentUser = db.user.find_one({'_id': ObjectId(userId)})['username']
+
+    try:
+        print('projectName')
+        temp = db.tempPage.find_one({'userId': userId})
+        currentProject = db.projects.find_one({'user_id': userId, 'projectName': str(temp['projectName'])})
+        project_screen = currentProject['screenshots']
+        screenshots = db.screenshots.find({'user_id': str(userId)})
+        for screen in screenshots:
+            if str(screen['_id']) in project_screen:
+                screenshotName = screen['pageName']
+                screenName = screen['screenName']
+                elId = str(screen['_id'])
+                import codecs
+                pagehtml2 = codecs.open('./static/dirty_static/users/' + currentUser
+                                        +'/pages/' + screenshotName
+                                        + '/testingWork.html', mode='r', encoding='UTF-8')
+                html.append([screenName, pagehtml2.read(), elId])
+                pagehtml2.close()
+    except:
+        html.append('')
+
+    return html
+
+
+def getProjectPageWorkCSS(userId,projectName, currentScreen):
+    print('retrieve the Pro correct html for page2 in workflow container')
+    print(projectName)
+    css = []
+    path = []
+
+    try:
+        project = db.projects.find_one({'user_id': userId, 'projectName': projectName})
+        pName = str(project['_id'])
+        p = pName.split('/')
+        screenshots = db.screenshots.find({'user_id': userId})
+        currentUser = db.user.find_one({'_id': ObjectId(userId)})['username']
+
+        for screen in screenshots:
+            if screen['status'] != 'inactive':
+                screenshotName = screen['pageName']
+                screenName = screen['screenName']
+
+                if screenshotName.split('/')[0] == projectName:
+                    import codecs
+                    try:
+                        if screenshotName.split('/')[1] != currentScreen.split('/')[1]:
+                            path.append(currentUser + '/pages/' + screenshotName +
+                                        '/css/testingCss.css')
+                        pagecss = codecs.open('./static/dirty_static/users/'
+                                              + currentUser + '/pages/' + screenshotName
+                                              + '/css/testingCss.css',
+                                            mode='r', encoding='UTF-8')
+                        css.append(pagecss.read())
+                        pagecss.close()
+                    except:
+                        continue
+    except:
+        css.append('')
+
+    return path
+
+
+def getSuggestion(userId, projectName):
+    print('Iside Suggestions')
+    currentProject = db.projects.find_one({'projectName':str(projectName),
+                                           'user_id':str(userId)})
+    s1 = []
+    s2 = []
+    s3 = []
+    s4 = []
+    suggestions = []
+    if currentProject != None:
+        project_id = str(currentProject['_id'])
+        suggest = db.tempSuggestions.find_one({'project_id':project_id})
+        if suggest !=None:
+            data_1 = suggest['Level_1']
+            data_2 = suggest['Level_2']
+            data_3 = suggest['Level_3']
+            data_4 = suggest['Level_4']
+            for d1 in data_1:
+                label = db.suggestionsTable.find_one({'code':str(d1),
+                                                      'Level': 'level_1'})
+                s1.append([d1,label['description']])
+            for d2 in data_2:
+                label = db.suggestionsTable.find_one({'code':str(d2[0]),
+                                                      'Level': 'level_2'})
+                s2.append([d2,label['description']])
+            for d3 in data_3:
+                label = db.suggestionsTable.find_one({'code':str(d3),
+                                                      'Level': 'level_3'})
+                s3.append([d3,label['description']])
+            for d4 in data_4:
+                label = db.suggestionsTable.find_one({'code':str(d4[0]),
+                                                      'Level': 'level_4'})
+                s4.append([d4,label['description']])
+
+        else:
+            print('There are not suggestions')
+
+    else:
+        print("There are some issues with the project")
+
+    suggestions.append(s1)
+    suggestions.append(s2)
+    suggestions.append(s3)
+    suggestions.append(s4)
+    return suggestions
+
+
+def fillPageArray(userId, projectName):
+    pageArray = []
+    project = db.projects.find_one({'user_id': userId,
+                                    'projectName': projectName})
+    print('filling up the page!')
+    try:
+        for screenid in project['screenshots']:
+            screen = db.screenshots.find_one({'_id': ObjectId(str(screenid))})
+            if str(screen['status']) != 'inactive':
+               pageArray.append(
+                   {'id': str(screen['_id']),
+                    'image': screen['image'],
+                    'status': screen['status'],
+                    'user_id': screen['user_id'],
+                    'image_name': str(screen['pageName']),
+                    'screenName': getScreenName(screen['_id'])
+                    }
+                )
+    except:
+        print('Nonething yet')
+
+    return pageArray
+
+
+def searchEnquiry(key):
+
+    reg = re.compile(key)
+
+    screens = db.saveScreens.find({'screenName': reg})  # returns a dictionary
+    screens_desc = db.saveScreens.find({'screenDescription': reg})
+
+    widgets = db.saveWidgets.find({'widgetName': reg})  # returns a dictionary
+    widgets_desc = db.saveWidgets.find({'widgetDescription': reg})
+
+    search_results = [[], []]
+
+    temp_snsd = set()
+    temp_wnwd = set()
+
+    for doc in screens:
+        temp_snsd.add(str(doc['screenName']))
+
+    for doc in screens_desc:
+        temp_snsd.add(str(doc['screenName']))
+
+    search_results[0].extend(list(temp_snsd))
+
+    for doc in widgets:
+        temp_wnwd.add(str(doc['widgetName']))
+
+    for doc in widgets_desc:
+        temp_wnwd.add(str(doc['widgetName']))
+
+    search_results[1].extend(list(temp_wnwd))
+
+    return search_results
+
+
+def html_render(url, currentUser, page, projectName, request, screenshotName, userId,screenId, layoutIsBeingTransferd,
+                colorIsBeingTransferd, workflowBeingMagic, html, css, ScreenSIDFDJANGO):
+    return render(request, url,
+                  {
+                      'pageArray': fillPageArray(userId, projectName),
+                      'screen': screenshotName,
+                      'screenName': getScreen_Name(screenshotName),
+                      'projectName': projectName.capitalize(),
+                      'page': page,
+                      'userName': currentUser,
+                      'currentProfilePic': getUserPicture(currentUser),
+                      'currentPage': getCurrentScreenName(screenId),
+                      'colorTransfer': getColorTransferHtml(currentUser, screenshotName),
+                      'screenHTML': getProjectPage(screenshotName, currentUser),
+                      # 'screenHTMLpro': getProjectPagePro(screenshotName, currentUser),
+                      # 'screenHTMLwork': getProjectPageWork(userId),
+                      'screenHTMLsuggestions': getProjectPageSuggestions(ScreenSIDFDJANGO, currentUser),
+                      'screenCSSpro': getProjectPageAndCss(screenshotName, currentUser),
+                      'screenCSSwork': getProjectPageWorkCSS(userId, projectName, screenshotName),
+                      'colorTransferUploadIMG': str(currentUser) + '/pages/' + str(screenshotName)
+                                                + '/colorTransfer/styles/colorTransfer.jpg',
+                      'layoutTransfer': getLayoutHtml(currentUser, screenshotName),
+                      'colorPalette': getColorPalette(screenId),
+                      'layoutIsBeingTransferd': layoutIsBeingTransferd,
+                      'colorIsBeingTransferd': colorIsBeingTransferd,
+                      'workflowBeingMagic': workflowBeingMagic,
+                      'suggestionsL1': getSuggestion(userId,projectName)[0],
+                      'suggestionsL2': getSuggestion(userId,projectName)[1],
+                      'suggestionsL3': getSuggestion(userId,projectName)[2],
+                      'suggestionsL4': getSuggestion(userId,projectName)[3],
+                      'projects': getProjects(userId),
+                      'projectsHTML': html,
+                      'projectsCSS': css,
+                      'AllWidget': fillWidget(),
+                      'AllGraphics': fillGraphics(),
+                      'aniStyles': getStylesDb()
+                  }
+                  )

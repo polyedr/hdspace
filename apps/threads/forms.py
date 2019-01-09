@@ -1,6 +1,6 @@
 from django import forms
 
-from threads.models import Message
+from apps.threads.models import Message
 
 
 __all__ = (

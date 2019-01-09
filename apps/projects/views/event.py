@@ -2,9 +2,9 @@ from django.views.generic.base import View
 from django.http import JsonResponse
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from core.utils import build_absolute_url
-from projects.forms import PositionUpdateForm
-from projects.models import ScreenEvent, ProjectScreen
+from apps.core.utils import build_absolute_url
+from apps.projects.forms import PositionUpdateForm
+from apps.projects.models import ScreenEvent, ProjectScreen
 
 
 __all__ = (

@@ -6,16 +6,17 @@ Created on Thu Nov 16 13:23:59 2017
 """
 
 
+import os
+import os.path
+
 ########################  START SEGMENTATION, INCEPTION AND OCR ####################
 import cv2
 import numpy as np
 from PIL import Image
+from scipy import ndimage
 from skimage.filters import scharr
 from skimage.measure import label, regionprops
 from skimage.morphology import skeletonize
-import os.path
-import os
-from scipy import ndimage
 
 
 class regionR:
@@ -765,7 +766,7 @@ def nonOverlapElem(InputList,width,height):
     return tot_nonOverlapUnverified
 
 def segmentationFirstLayer(myFile_name,inputImgPath,coco_model_v,tensorflow_model_v, cropDirectory = ""):
-    from virtualize.inference_segmentation import cocoTextDetection_model,tensorflowClassDetection_model
+    from virtualize.segmentation.inference_segmentation import cocoTextDetection_model,tensorflowClassDetection_model
     from copy import deepcopy
     with Image.open(inputImgPath) as img:
         width, height = img.size

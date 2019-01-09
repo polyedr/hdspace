@@ -4,7 +4,7 @@ import calendar
 from django.contrib import messages
 from django.urls import reverse
 
-from core.utils import build_absolute_url
+from apps.core.utils import build_absolute_url
 
 __all__ = (
     "get_payment_package",

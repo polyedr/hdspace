@@ -1,5 +1,5 @@
-from pymongo import MongoClient
-from .models import getLineNumbers, updatePredictions, save_collection, save_text_collection, updateColor
+import pymongo
+from virtualize.utils.metaCustomUtils import *
 from PIL import Image
 from skimage import color, measure
 from skimage import io
@@ -8,13 +8,13 @@ import pytz
 
 
 def metaProgramming(combination, myFile, state):
-    client = MongoClient('mongodb://mongo:mongo@db')  # maxPoolSize=50
+    client = pymongo.MongoClient('localhost', 27017)  # maxPoolSize=50
     db = client.MeduzaDb
 
     viewHeight = 294.859
     viewWidth = 904.812
 
-    with Image.open('static/users/' + str(myFile)) as img:
+    with Image.open('media/' + str(myFile)) as img:
         widthScreen, heightScreen = img.size
     print('width' + str(widthScreen))
     print('height of this ' + str(heightScreen))
@@ -689,7 +689,7 @@ def metaProgramming(combination, myFile, state):
         print("image", pictureArray)
 
         print('this is my image root, dont change: ' + str(myFile))
-        mainImage = io.imread('static/users/' + str(myFile))  # facebookLogin root
+        mainImage = io.imread('media/' + str(myFile))  # facebookLogin root
 
         transferColors = []
 
@@ -1251,7 +1251,7 @@ def metaProgramming(combination, myFile, state):
         try:
             print(ParentElementL1)
             parent = ParentElementL1[l - 1]['location']
-            mainImage = io.imread('static/users/' + str(myFile))
+            mainImage = io.imread('media/' + str(myFile))
             colorr = mainImage[int(int(parent['y0']) * heightScreen / 100 - 2)][
                 int(int(parent['x0']) * widthScreen / 100 - 2)]
         except:

@@ -5,8 +5,8 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.urls import reverse
 
-from core.models import TimeStampedModel
-from accounts.utils import utils
+from apps.core.models import TimeStampedModel
+from apps.accounts.utils import utils
 
 
 __all__ = (

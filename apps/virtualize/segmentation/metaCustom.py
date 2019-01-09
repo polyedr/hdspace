@@ -1,17 +1,20 @@
-from .models import *
+from virtualize.models import *
 from PIL import Image
 from skimage import io, color, measure
 import re
 from skimage import io
 from datetime import datetime, date
+import pymongo
+from virtualize.utils.metaCustomUtils import *
+from virtualize.utils.screenshotUtils import getLatestScreenshot
 
-client = MongoClient('mongodb://mongo:mongo@db')  # maxPoolSize=50
+client = pymongo.MongoClient('localhost', 27017)  # maxPoolSize=50
 db = client.MeduzaDb
 
 
 def metaCustom(currentUser, myFile, screenshot_id, state):
 
-    with Image.open('static/users/' + str(myFile)) as img:
+    with Image.open('media/' + str(myFile)) as img:
         widthScreen, heightScreen = img.size
 
     ButtonArray = get_collection(db.buttons, screenshot_id)
@@ -43,41 +46,41 @@ def metaCustom(currentUser, myFile, screenshot_id, state):
             croppedFileName = str(myFile[int(len(str(currentUser))) + 7:-4])
             import os
             try:
-                os.stat('static/users/' + str(currentUser) + '/pages/' + croppedFileName + '/')
+                os.stat('media/users/' + str(currentUser) + '/' + croppedFileName + '/')
             except:
-                os.mkdir('static/users/' + str(currentUser) + '/pages/' + croppedFileName + '/')
+                os.mkdir('media/users/' + str(currentUser) + '/' + croppedFileName + '/')
             # Root Project HTML Page
             pagehtml = open(
-                'static/users/' + str(currentUser) + '/pages/' + croppedFileName + '/' + titleHtml + '.html',
+                'media/users/' + str(currentUser) + '/' + croppedFileName + '/' + titleHtml + '.html',
                 mode='w', encoding='UTF-8')
             pagehtml.write(
                 '<section id="classContainer-selector" class="classContainer' + screenshot_id + '" style="height:100%;">')
 
             # Root Project html for?
             pagehtml1 = open(
-                'static/users/' + str(currentUser) + '/pages/' + croppedFileName + '/' + titleHtml + 'Pro.html',
+                'media/users/' + str(currentUser) + '/' + croppedFileName + '/' + titleHtml + 'Pro.html',
                 mode='w', encoding='UTF-8')
             pagehtml1.write(
                 '<section id="classContainer-selectorPro" class="classContainer' + screenshot_id + ' dafuk " style="height:100%;">')
             # Root Project html for?
             pagehtml2 = open(
-                'static/users/' + str(currentUser) + '/pages/' + croppedFileName + '/' + titleHtml + 'Work.html',
+                'media/users/' + str(currentUser) + '/' + croppedFileName + '/' + titleHtml + 'Work.html',
                 mode='w', encoding='UTF-8')
             pagehtml2.write(
                 '<section id="classContainer-selectorWork" class="classContainer' + screenshot_id + '" style="height:100%;">')
             # Root Project html for?
             pagehtml3 = open(
-                'static/users/' + str(currentUser) + '/pages/' + croppedFileName + '/' + titleHtml + 'Suggestions.html',
+                'media/users/' + str(currentUser) + '/' + croppedFileName + '/' + titleHtml + 'Suggestions.html',
                 mode='w', encoding='UTF-8')
             pagehtml3.write(
                 '<section class="classContainer' + screenshot_id + '" style="height:100%;">')
             # root css page
             try:
-                os.stat('static/users/' + str(currentUser) + '/pages/' + croppedFileName + '/' + 'CSS/')
+                os.stat('media/users/' + str(currentUser) + '/' + croppedFileName + '/' + 'CSS/')
             except:
-                os.mkdir('static/users/' + str(currentUser) + '/pages/' + croppedFileName + '/' + 'CSS/')
+                os.mkdir('media/users/' + str(currentUser) + '/' + croppedFileName + '/' + 'CSS/')
             pagecss = open(
-                'static/users/' + str(currentUser) + '/pages/' + croppedFileName + '/' + 'CSS/' + titleCssJS + '.css',
+                'media/users/' + str(currentUser) + '/' + croppedFileName + '/' + 'CSS/' + titleCssJS + '.css',
                 'w')
             return pagehtml, pagecss, pagehtml1, pagehtml2, pagehtml3
 
@@ -6215,7 +6218,7 @@ def metaCustom(currentUser, myFile, screenshot_id, state):
         print("logo", logoArray)
 
         print('this is my image root, dont change: ' + str(myFile))
-        mainImage = io.imread('static/users/' + str(myFile))  # facebookLogin root
+        mainImage = io.imread('media/' + str(myFile))  # facebookLogin root
 
         '#CREATING ADDITIONAL NEW ELEMENT '
         print('new element: ' + str(newElementsArray))
@@ -6408,7 +6411,7 @@ def metaCustom(currentUser, myFile, screenshot_id, state):
 
                 elif elementType == 'image':
 
-                    icon_path = 'static/users/' + str(e['root'])
+                    icon_path = 'media/' + str(e['root'])
                     classid = e['class_id']
                     width = str(float(e['location']['x1']) - float(e['location']['x0']))
                     height = str(float(e['location']['y1']) - float(e['location']['y0']))
@@ -6427,7 +6430,7 @@ def metaCustom(currentUser, myFile, screenshot_id, state):
                 elif elementType == 'map-2':
                     print("map-2")
                     print(e['root'])
-                    icon_path = 'static/users' + str(e['root'])
+                    icon_path = 'media/' + str(e['root'])
                     print('MALL')
                     print(icon_path)
                     classid = e['class_id']
@@ -6496,7 +6499,7 @@ def metaCustom(currentUser, myFile, screenshot_id, state):
 
                 elif elementType == 'bar-2':
                     print("bar-2")
-                    icon_path = 'static/users/' + str(e['root'])
+                    icon_path = 'media/' + str(e['root'])
                     classid = e['class_id']
                     print(classid)
                     width = str(float(e['location']['x1']) - float(e['location']['x0']))
@@ -6515,7 +6518,7 @@ def metaCustom(currentUser, myFile, screenshot_id, state):
                     create_C3_barChart(icon_path, classid, width, height, positionL, positionT, link, zIndex, bordercolor,barChartBG, barChartBar, data)
                 elif elementType == 'bar-3':
                     print("bar-3")
-                    icon_path = 'static/users/' + str(e['root'])
+                    icon_path = 'media/' + str(e['root'])
                     classid = e['class_id']
                     width = str(float(e['location']['x1']) - float(e['location']['x0']))
                     height = str(float(e['location']['y1']) - float(e['location']['y0']))
@@ -6534,7 +6537,7 @@ def metaCustom(currentUser, myFile, screenshot_id, state):
                                     barChartBG, barChartBar, data)
 
                 elif elementType == 'calendar-1':
-                    icon_path = 'static/users/' + str(e['root'])
+                    icon_path = 'media/' + str(e['root'])
                     classid = e['class_id']
                     width = str(float(e['location']['x1']) - float(e['location']['x0']))
                     height = str(float(e['location']['y1']) - float(e['location']['y0']))
@@ -6548,7 +6551,7 @@ def metaCustom(currentUser, myFile, screenshot_id, state):
                     borderRadius = styles['borderRadius']
                     create_calendarPro2(icon_path, classid, width, height, positionL, positionT, link)
                 elif elementType == 'calendar-2':
-                    icon_path = 'static/users/' + str(e['root'])
+                    icon_path = 'media/' + str(e['root'])
                     classid = e['class_id']
                     width = str(float(e['location']['x1']) - float(e['location']['x0']))
                     height = str(float(e['location']['y1']) - float(e['location']['y0']))
@@ -6563,7 +6566,7 @@ def metaCustom(currentUser, myFile, screenshot_id, state):
                     create_calendarPro2(icon_path, classid, width, height, positionL, positionT, link)
 
                 elif elementType == 'pie-1':
-                    icon_path = 'static/users/' + str(e['root'])
+                    icon_path = 'media/' + str(e['root'])
                     classid = e['class_id']
                     width = str(float(e['location']['x1']) - float(e['location']['x0']))
                     height = str(float(e['location']['y1']) - float(e['location']['y0']))
@@ -6577,7 +6580,7 @@ def metaCustom(currentUser, myFile, screenshot_id, state):
                     borderRadius = styles['borderRadius']
                     create_C3_pieChart_1(icon_path, classid, width, height, positionL, positionT, link,zIndex)
                 elif elementType == 'pie-4':
-                    icon_path = 'static/users/' + str(e['root'])
+                    icon_path = 'media/' + str(e['root'])
                     classid = e['class_id']
                     width = str(float(e['location']['x1']) - float(e['location']['x0']))
                     height = str(float(e['location']['y1']) - float(e['location']['y0']))
@@ -7845,41 +7848,41 @@ def metaColorTransfer(currentUser, myFile, screenshot_id, folder, index, colors)
             import os
             if (folder == '/layouts/'):
                 try:
-                    os.stat('static/users/' + str(currentUser) + '/pages/' + croppedFileName + folder)
+                    os.stat('media/' + str(currentUser) + '/' + croppedFileName + folder)
 
                 except:
-                    os.mkdir('static/users/' + str(currentUser) + '/pages/' + croppedFileName + folder)
+                    os.mkdir('media/' + str(currentUser) + '/' + croppedFileName + folder)
                 pagehtml = open(
-                    'static/users/' + str(currentUser) + '/pages/' + croppedFileName + folder + titleHtml + '.html',
+                    'media/' + str(currentUser) + '/' + croppedFileName + folder + titleHtml + '.html',
                     mode='w', encoding='UTF-8')
                 pagehtml.write('<section class="layouts">')
 
                 try:
-                    os.stat('static/users/' + str(currentUser) + '/pages/' + croppedFileName + folder + 'css/')
+                    os.stat('media/' + str(currentUser) + '/' + croppedFileName + folder + 'css/')
                 except:
-                    os.mkdir('static/users/' + str(currentUser) + '/pages/' + croppedFileName + folder + 'css/')
+                    os.mkdir('media/' + str(currentUser) + '/' + croppedFileName + folder + 'css/')
                 pagecss = open(
-                    'static/users/' + str(
-                        currentUser) + '/pages/' + croppedFileName + folder + 'css/' + titleCssJS + '.css',
+                    'media/' + str(
+                        currentUser) + '/' + croppedFileName + folder + 'css/' + titleCssJS + '.css',
                     'w')  # root css page
             else:
                 try:
-                    os.stat('static/users/' + str(currentUser) + '/pages/' + croppedFileName + '/')
+                    os.stat('media/' + str(currentUser) + '/' + croppedFileName + '/')
 
                 except:
-                    os.mkdir('static/users/' + str(currentUser) + '/pages/' + croppedFileName + '/')
+                    os.mkdir('media/' + str(currentUser) + '/' + croppedFileName + '/')
                 pagehtml = open(
-                    'static/users/' + str(currentUser) + '/pages/' + croppedFileName + '/' + titleHtml + '.html',
+                    'static/users/' + str(currentUser) + '/' + croppedFileName + '/' + titleHtml + '.html',
                     mode='w', encoding='UTF-8')
                 pagehtml.write('<section class="colorTransfer" style="background-color:' + colors[0] + '">')
 
                 try:
-                    os.stat('static/users/' + str(currentUser) + '/pages/' + croppedFileName + '/' + 'css/')
+                    os.stat('media/' + str(currentUser) + '/' + croppedFileName + '/' + 'css/')
                 except:
-                    os.mkdir('static/users/' + str(currentUser) + '/pages/' + croppedFileName + '/' + 'css/')
+                    os.mkdir('media/' + str(currentUser) + '/' + croppedFileName + '/' + 'css/')
                 pagecss = open(
-                    'static/users/' + str(
-                        currentUser) + '/pages/' + croppedFileName + '/' + 'css/' + titleCssJS + '.css',
+                    'media/' + str(
+                        currentUser) + '/' + croppedFileName + '/' + 'css/' + titleCssJS + '.css',
                     'w')  # root css page
             ###
 
@@ -8735,9 +8738,9 @@ def metaColorTransfer(currentUser, myFile, screenshot_id, folder, index, colors)
                     bgcolor = styles['bgcolor']
                     bordercolor = styles['borderColor']
                     borderRadius = styles['borderRadius']
-                    if state =='load':
-                        create_hyperLink(str(classid), str(text_string), positionL,
-                                         positionT, str(fontSize), fontColor, width, textAlign, fontFamily, '')
+                    # if state =='load':
+                    create_hyperLink(str(classid), str(text_string), positionL,
+                                    positionT, str(fontSize), fontColor, width, textAlign, fontFamily, '')
 
                 elif elementType == 'paragraph':
 
@@ -8887,7 +8890,7 @@ def metaColorTransfer(currentUser, myFile, screenshot_id, folder, index, colors)
 
                 elif elementType == 'image':
 
-                    icon_path = 'static/users/' + str(e['root'])
+                    icon_path = 'media/' + str(e['root'])
                     classid = e['class_id'][index:]
                     width = str(float(e['location']['x1']) - float(e['location']['x0']))
                     height = str(float(e['location']['y1']) - float(e['location']['y0']))
@@ -9365,7 +9368,7 @@ def metaColorTransfer(currentUser, myFile, screenshot_id, folder, index, colors)
                 print(path)
                 print(croppedFileName)
                 imgName = path.split('/')
-                icon_path = 'static/users/' + currentUser + '/pages/' + croppedFileName + '/' + imgName[
+                icon_path = 'media/' + currentUser + '/' + croppedFileName + '/' + imgName[
                     len(imgName) - 1]
                 print(icon_path)
             else:
@@ -9398,7 +9401,7 @@ def metaColorTransfer(currentUser, myFile, screenshot_id, folder, index, colors)
                 print(path)
                 print(croppedFileName)
                 imgName = path.split('/')
-                icon_path = 'static/users/' + currentUser + '/pages/' + croppedFileName + '/' + imgName[
+                icon_path = 'media/' + currentUser + '/' + croppedFileName + '/' + imgName[
                     len(imgName) - 1]
                 print(icon_path)
             else:
@@ -9431,7 +9434,7 @@ def metaColorTransfer(currentUser, myFile, screenshot_id, folder, index, colors)
                 print(path)
                 print(croppedFileName)
                 imgName = path.split('/')
-                icon_path = 'static/users/' + currentUser + '/pages/' + croppedFileName + '/' + imgName[
+                icon_path = 'media/' + currentUser + '/' + croppedFileName + '/' + imgName[
                     len(imgName) - 1]
                 print(icon_path)
             else:
@@ -9464,7 +9467,7 @@ def metaColorTransfer(currentUser, myFile, screenshot_id, folder, index, colors)
                 print(path)
                 print(croppedFileName)
                 imgName = path.split('/')
-                icon_path = 'static/users/' + currentUser + '/pages/' + croppedFileName + '/' + imgName[
+                icon_path = 'media/' + currentUser + '/' + croppedFileName + '/' + imgName[
                     len(imgName) - 1]
                 print(icon_path)
             else:

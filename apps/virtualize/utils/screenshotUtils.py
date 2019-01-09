@@ -1,0 +1,131 @@
+import pymongo
+from bson import ObjectId
+
+client = pymongo.MongoClient('localhost', 27017)  # maxPoolSize=50
+db = client.MeduzaDb
+
+
+def getScreenShotDetails(name, user):
+
+    screen = None
+    try:
+        screen = db.screenshots.find_one({'pageName': str(name), 'user_id': user})
+    except (AttributeError, pymongo.errors.OperationFailure) as e:
+        print('Mongo Data Base Error ' + e)
+    return screen
+
+
+def getScreenName(screenshotId):
+    collection = db.screenshots
+    cursorList = collection.find({'_id': screenshotId})
+    for cursor in cursorList:
+        scname = cursor['screenName']
+    return scname
+
+
+def getScreenshotName(collection, userId, screenshotId):
+
+    print('im userId: '+str(userId))
+    collection = db[str(collection)]
+    screenShotName = 'None at this point'
+    if screenshotId != '':
+        try:
+            cursor = collection.find({'_id': ObjectId(str(screenshotId))})
+        except AssertionError as error:
+            print(error)
+        else:
+            for doc in cursor:
+                if str(userId) == str(doc['user_id']):
+                    if str(doc['status']) != 'inactive':
+                        screenShotName = (str(doc['image']))
+
+    return screenShotName
+
+
+def getLatestScreenshot(userId):
+
+    item = None
+    collecion = db.tempPage
+    try:
+        item = collecion.find_one({'userId': userId})
+    except (AttributeError, pymongo.errors.OperationFailure) as e:
+        print('Mongo Data Base Error ' + e)
+    return item
+
+
+def setScreenshot(userId, screenshot_id,projectName):
+    collection = db.tempPage
+
+    if collection.find_one({'userId': userId}) != None:
+        collection.update({'userId': userId}, {
+                    '$set':
+                        {
+                            'screenshot_id': screenshot_id
+                        }
+                })
+    else:
+        collection.insert({
+            'userId': userId,
+            'projectName': projectName,
+            'screenshot_id': screenshot_id,
+            'screenHeight': '',
+            'screenWidth': '',
+
+        })
+
+
+def update_page_name( pageName, screenshotId):
+    collections = db.screenshots
+
+    if collections.find_one({'_id': ObjectId(str(screenshotId))}) != None:
+        collections.update({'_id': ObjectId(str(screenshotId))}, {
+            '$set':
+                {
+                'pageName': str(pageName)
+                }
+        })
+    else:
+        print('something went wrong')
+    print(str(screenshotId))
+
+
+def getCurrentScreenName(id):
+    try:
+        return db.screenshots.find_one({'_id': ObjectId(str(id))})['screenName'].capitalize()
+    except:
+        return None
+
+
+def delete_link(id):
+    screenName = db.screenshots.find_one({'_id':ObjectId(id)})['screenName']
+    sc = db.styles.find({'link': str(screenName)})
+    for s in sc:
+        db.styles.update({'_id':s['_id']},{
+            '$set': {
+                'link': ''
+            }
+        })
+
+
+def delete_page(page, userId):
+    db.screenshots.update({'_id': ObjectId(page)}, {'$set': {'status': 'inactive'}})
+    currentProject = db.tempPage.find_one({'userId': str(userId)})
+    project = db.projects.find_one({'user_id': str(userId), 'projectName': str(currentProject['projectName'])})
+    db.docRecognition.remove({'screenshot_id': page})
+    delete_link(page)
+    update_screen = []
+    for s in project['screenshots']:
+        if str(s) != str(page):
+            update_screen.append(s)
+    db.projects.update({'_id': project['_id']}, {'$set': {'screenshots': update_screen}})
+
+
+def getScreen_Name(screenshotName):
+    sName = ''
+    try:
+        scName = db.screenshots.find_one({'pageName': screenshotName})
+        sName = scName['screenName']
+    except:
+        print("nothing")
+    return sName
+

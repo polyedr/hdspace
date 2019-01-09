@@ -8,7 +8,7 @@ from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.core.cache import cache
 from django.conf import settings
 
-from core.models import TimeStampedModel
+from apps.core.models import TimeStampedModel
 from .utils import utils
 
 __all__ = (

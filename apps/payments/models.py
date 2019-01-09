@@ -2,7 +2,7 @@ from django.db import models
 from django.urls import reverse
 from django.contrib.auth.models import User
 
-from core.models import TimeStampedModel
+from apps.core.models import TimeStampedModel
 
 
 __all__ = (
