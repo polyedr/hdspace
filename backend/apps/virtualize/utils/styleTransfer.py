@@ -1,5 +1,6 @@
 from pymongo import MongoClient
-from .models import get_collection
+from virtualize.utils.metaCustomUtils import get_collection
+
 
 
 client = MongoClient('mongodb://mongo:mongo@db')  # maxPoolSize=50

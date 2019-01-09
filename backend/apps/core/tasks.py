@@ -1,7 +1,7 @@
 from datetime import datetime
 from celery import task
 
-from payments.models import UserSubscription
+from apps.payments.models import UserSubscription
 
 __all__ = (
     "check_user_subscription",

@@ -4,9 +4,9 @@ from django.views.generic.base import View, TemplateView
 from django.http import JsonResponse
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from core.utils import date_difference
-from projects.forms import AddTaskForm
-from projects.models import (
+from apps.core.utils import date_difference
+from apps.projects.forms import AddTaskForm
+from apps.projects.models import (
     Project, ProjectMember, ProjectTask,
     TaskTime, ProjectActivity
 )

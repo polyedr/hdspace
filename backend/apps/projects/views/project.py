@@ -4,23 +4,24 @@ from django.views.generic import TemplateView
 from django.db.models import Q, Count
 from django.http import JsonResponse
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import redirect
 
-from payments.cart import Cart
-from core.views.seo import SEOViewMixin
-from core.utils import build_absolute_url
-from threads.models import Thread, UserThread, Message
-from projects.forms import (
+from apps.payments.cart import Cart
+from apps.core.views.seo import SEOViewMixin
+from apps.core.utils import build_absolute_url
+from apps.threads.models import Thread, UserThread, Message
+from apps.projects.forms import (
     CreateProjectForm, ScreenUploadForm, ProjectInvitationForm,
     AddTaskForm, ScreenEventForm
 )
 
-from accounts.forms import SearchUserForm
-from projects.models import (
+from apps.accounts.forms import SearchUserForm
+from apps.projects.models import (
     Project, ProjectScreen, ScreenEvent,
     ProjectMember, ProjectTask, ProjectActivity
 )
-from accounts.models import Profile
-
+from apps.accounts.models import Profile
+from projects.utils.project_db_synchronization import create_project_data_db, delete_project_data_db, select_project
 
 __all__ = (
     "DashboardView",
@@ -36,6 +37,7 @@ class DashboardView(LoginRequiredMixin, SEOViewMixin, TemplateView):
     page_title = "Projects"
 
     def get(self, request, *args, **kwargs):
+        print('Running DAshboard')
         context = self.get_context_data()
         projects = Project.objects.annotate(number_of_screens=Count('projectscreen')).filter(
             Q(user=request.user) |
@@ -47,6 +49,10 @@ class DashboardView(LoginRequiredMixin, SEOViewMixin, TemplateView):
             context["form"] = CreateProjectForm()
 
         return self.render_to_response(context)
+
+    def post(self, request, *args, **kwargs):
+        select_project(request.user, request.POST['project'])
+        return redirect('/index/', code=302)
 
 
 class CreateProjectView(LoginRequiredMixin, View):
@@ -80,6 +86,9 @@ class CreateProjectView(LoginRequiredMixin, View):
                 sender=member,
                 content=new_message,
             )
+            print('Project')
+            create_project_data_db(project.name, project.id, request.user)
+            print('Project created')
 
             return JsonResponse({
                 "msg": "Your project has been created successfully.",
@@ -106,7 +115,6 @@ class ProjectView(LoginRequiredMixin, TemplateView):
             context["add_task_form"] = AddTaskForm(project)
             context["project"] = Project.objects.get(pk=project)
             context["user_roles"] = [role[0] for role in Profile.USER_ROLE]
-
             context["in_hold_screens"] = ProjectScreen.objects.filter(status=ProjectScreen.SCREEN_ON_HOLD)
             context["in_progress_screens"] = ProjectScreen.objects.filter(status=ProjectScreen.SCREEN_IN_PROGRESS)
             context["in_review_screens"] = ProjectScreen.objects.filter(status=ProjectScreen.SCREEN_REVIEW)
@@ -150,4 +158,6 @@ class DeleteProjectView(LoginRequiredMixin, View):
         project = request.POST["projectId"]
         Project.objects.filter(pk=project).delete()
         projects = Project.objects.filter(user=request.user)
+
+        delete_project_data_db(project, request.user)
         return JsonResponse({"msg": "Project has been deleted successfully.", "projects": len(projects)})

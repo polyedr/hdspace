@@ -48,12 +48,13 @@ EXTERNAL_APPS = [
 ]
 
 PROJECT_APPS = [
-    "core",
-    "accounts",
-    "projects",
-    "threads",
-    "payments",
-    "virtualize",
+    'apps.threads',
+    'apps.payments',
+    'apps.virtualize',
+    'apps.core',
+    'apps.accounts',
+    'apps.projects',
+
 ]
 
 INSTALLED_APPS.extend(EXTERNAL_APPS + PROJECT_APPS)
@@ -121,8 +122,8 @@ DATABASES = {
         'NAME': ENV.str("DB_NAME", "db"),
         'HOST': ENV.str("DB_HOST", "db"),
         'PORT': ENV.int("DB_PORT", 27017),
-        'USER': ENV.str("DB_USER"),
-        'PASSWORD': ENV.str("DB_PASSWORD"),
+        # 'USER': ENV.str("DB_USER"),
+        # 'PASSWORD': ENV.str("DB_PASSWORD"),
     }
 }
 

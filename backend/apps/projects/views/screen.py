@@ -6,13 +6,13 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core import serializers
 from django.contrib.auth.models import User
 
-from core.utils import build_absolute_url
-from projects.forms import ScreenEventForm, ScreenUploadForm
-from projects.models import (
+from apps.core.utils import build_absolute_url
+from apps.projects.forms import ScreenEventForm, ScreenUploadForm
+from apps.projects.models import (
     Project, ProjectScreen, ScreenEvent,
     ScreenAssignee, ProjectActivity
 )
-from projects.utils import emails
+from apps.projects.utils import emails
 
 
 __all__ = (

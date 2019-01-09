@@ -1,4 +1,4 @@
-from projects.models import Project
+from apps.projects.models import Project
 
 
 def get_projects(request):

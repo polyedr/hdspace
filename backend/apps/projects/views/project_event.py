@@ -10,14 +10,14 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.conf import settings
 
-from core.utils import render_body
-from threads.models import Thread, UserThread
-from projects.forms import ProjectInvitationForm
-from projects.models import (
+from apps.core.utils import render_body
+from apps.threads.models import Thread, UserThread
+from apps.projects.forms import ProjectInvitationForm
+from apps.projects.models import (
     Project, ProjectScreen, ProjectInvitation,
     ProjectMember, ProjectActivity
 )
-from projects.utils import emails
+from apps.projects.utils import emails
 
 
 __all__ = (

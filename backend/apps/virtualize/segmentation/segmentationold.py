@@ -1,12 +1,10 @@
-from virtualize import selectiveSegmentationv4e2
-from .models import *
-from datetime import datetime
-import pytz
+from virtualize.models import *
+from virtualize.segmentation import segmentThreshTestVold
+from virtualize.utils.screenshotUtils import setScreenshot
 
 
-def run(myFile, coco_model, tensorflow_model, CurrentUser, projectName):
+def run(myFile, CurrentUser, projectName):
 
-    import matplotlib.pyplot as plt
     import numpy as np
     from PIL import Image
     from skimage.filters import threshold_otsu, scharr
@@ -14,27 +12,20 @@ def run(myFile, coco_model, tensorflow_model, CurrentUser, projectName):
     from skimage.morphology import closing, square
     from skimage import io, color
     import os
-    from scipy import misc, ndimage
+    from scipy import ndimage
     from pymongo import MongoClient
-    from virtualize.models import save_segmentation, save_ocr, save_inception, childinrange
-    from virtualize.metaprogramming import metaProgramming
-
+    from virtualize.utils.metaCustomUtils import *
+    from virtualize.segmentation.metaprogramming import metaProgramming
     ########################  START SEGMENTATION, INCEPTION AND OCR ####################
 
     client = MongoClient('mongodb://mongo:mongo@db')  # maxPoolSize=50
     db = client.MeduzaDb
     # db.add_user('meduzaUser1', 'Test123', roles=[{'role': 'readWrite', 'db': 'testdb'}])
-    img_raw = Image.open('static/users/' + str(myFile))
-    width, height = img_raw.size
-    new_width = int(width * 1.02)
-    new_height = int(height * 1.02)
-    img = Image.new('RGB', (new_width, new_height), (255, 255, 255))
-    img.paste(img_raw, ((new_width - width) // 2, (new_height - height) // 2))
-    img.save('static/users/' + str(myFile))
     with Image.open('static/users/' + str(myFile)) as img:
         width, height = img.size
     print('width' + str(width))
     print('height' + str(height))
+    device = ''
 
     # RUN SEGMENTATION
     if 1 == 1:
@@ -107,17 +98,13 @@ def run(myFile, coco_model, tensorflow_model, CurrentUser, projectName):
             minY = []
             maxY = []
             # Get the bbox of each element
-            elementName = str(myFile[:len(myFile) - 4])
-            savePath = "static/users/" + str(elementName) + "/cropped_elements"
 
             '''Ram's Code'''
-            inputImgPath = 'static/users/' + str(imagesRoot[screen])
-            multList, coco_text_idx = selectiveSegmentationv4e2.segmentationFirstLayer(str(savePath),inputImgPath,coco_model,tensorflow_model,myFile)
-            # multList, mserList = segmentThreshTestVold.SegmentationMSERThresh('static/users/' + str(imagesRoot[screen]), [])
+            multList, mserList = segmentThreshTestVold.SegmentationMSERThresh('static/users/' + str(imagesRoot[screen]), [])
             regionList = list( multList)
             print('Numbers of list')
             print(len(multList))
-            print(len(coco_text_idx))
+            print(len(mserList))
             print("Victor Region Number")
             print(len(regionList))
             for region in regionList:
@@ -216,10 +203,10 @@ def run(myFile, coco_model, tensorflow_model, CurrentUser, projectName):
         recognize = run_recognition([], croppedFullLocation, [], [], [], 'cnnFirstModels')
         cnn_level_1 = []
         # for i in range(len(croppedFullLocation)):
-            # aux0 = recognize[0]['results']
-            # aux1 = aux0[i]['score']
-            # aux2 = aux0[i]['name']
-            # cnn_level_1.append([croppedFullLocation[i],aux2,aux1])
+        #     aux0 = recognize[0]['results']
+        #     aux1 = aux0[i]['score']
+        #     aux2 = aux0[i]['name']
+        #     cnn_level_1.append([croppedFullLocation[i],aux2,aux1])
 
         print('Finish First Cnn')
         print(recognize[0])
@@ -235,8 +222,6 @@ def run(myFile, coco_model, tensorflow_model, CurrentUser, projectName):
         except ImportError:
             from PIL import Image
         import pytesseract
-
-        ## Uncomment this line is you are using Windows
 
         # pytesseract.pytesseract.tesseract_cmd = 'C:\\Program Files (x86)\\Tesseract-OCR\\tesseract'
 
@@ -279,7 +264,7 @@ def run(myFile, coco_model, tensorflow_model, CurrentUser, projectName):
 
                     newImg = ndimage.percentile_filter(croppedWithSpace, percentile=82, size=3) * [-1, -1, -1]
                     im2 = Image.fromarray(np.uint8(newImg * 255))
-                    plt.imshow(newImg)
+                    #plt.imshow(newImg)
                     # plt.imsave(savePath + str(screenShot) + '.' + str(couple) + '.1' + '.jpg', newImg)
                     ocr3 = pytesseract.image_to_string(im2, lang='eng')  # .open(
                     # savePath + str(screenShot) + '.' + str(couple) + '.jpg'), lang='eng')
@@ -459,8 +444,11 @@ def run(myFile, coco_model, tensorflow_model, CurrentUser, projectName):
                 cursor = collection.find({})
                 for document in cursor:
                     if str(segId[index]['id']) == str(document['segmentation_id']):
+                        print('vzr SCORE Test')
+                        print(str((document['elementName']['highest'])))
                         elementCNN.append({
                             'results': (document['elementName']['name']),
+                            'scoreCnn': (document['elementName']['highest']),
                             'segId': (document['segmentation_id']),
                             'type': 'shape'})
 
@@ -499,6 +487,7 @@ def run(myFile, coco_model, tensorflow_model, CurrentUser, projectName):
                     if elementLocation[loop]['segId'] == elementCNN[loop2]['segId']:
                         cnnShapes.append({'location': elementLocation[loop]['location'],
                                           'name': elementCNN[loop2]['results'],
+                                          'scoreCnn': elementCNN[loop2]['scoreCnn'],
                                           'type': 'shapes',
                                           'id': elementCNN[loop2]['segId']})
 
@@ -523,7 +512,7 @@ def run(myFile, coco_model, tensorflow_model, CurrentUser, projectName):
                 while t1 < len(elementName):
                     if onlyOcr[t]['id'] == elementName[t1]['segId']:
                         onlyOcr2.append({'type': 'ocr', 'id': onlyOcr[t]['id'],\
-                                         'name': elementName[t1]['name'], 'location': onlyOcr[t]['location']})
+                                         'name': elementName[t1]['name'],'scoreCnn': [], 'location': onlyOcr[t]['location']})
                     t1 = t1 + 1
                 t = t + 1
 
@@ -595,7 +584,7 @@ def run(myFile, coco_model, tensorflow_model, CurrentUser, projectName):
             while o < len(onlyOcr2):
                 for u in ocrText:
                     if onlyOcr2[o]['id'] == u['id']:
-                        onlyOcr2[o] = {'type': onlyOcr2[o]['type'], 'name': onlyOcr2[o]['name'],'id': onlyOcr2[o]['id'
+                        onlyOcr2[o] = {'type': onlyOcr2[o]['type'], 'name': onlyOcr2[o]['name'],'scoreCnn':[],'id': onlyOcr2[o]['id'
                         ], 'location': onlyOcr2[o]['location'], 'root': u['root']}
                 o = o + 1
 
@@ -609,7 +598,8 @@ def run(myFile, coco_model, tensorflow_model, CurrentUser, projectName):
         location = cnnShapes2[i]['location']
         type = cnnShapes2[i]['type']
         name = cnnShapes2[i]['name']
-        cnnResults.append({'type': type, 'name': name, 'id': segmentedId, 'location': location, 'root': root})
+        scoreCnn = cnnShapes2[i]['scoreCnn']
+        cnnResults.append({'type': type, 'name': name, 'scoreCnn': scoreCnn, 'id': segmentedId, 'location': location, 'root': root})
 
     combination = cnnResults + onlyOcr2
     combinationId = []
@@ -636,6 +626,7 @@ def run(myFile, coco_model, tensorflow_model, CurrentUser, projectName):
             seg_id = combination[k]['id']
             type = combination[k]['type']
             name = combination[k]['name']
+            scoreCnn = combination[k]['scoreCnn']
             x0 = float(combination[k]['location'][0][3:]) * 100 / width
             y0 = float(combination[k]['location'][1][3:]) * 100 / height
             x1 = float(combination[k]['location'][2][3:]) * 100 / width
@@ -658,8 +649,7 @@ def run(myFile, coco_model, tensorflow_model, CurrentUser, projectName):
                         combinationId = updateChildLocation(combination[k],savePath, screenshotId[0], combinationId, len(textBoxKids), width, height)
 
             date = datetime.now(pytz.timezone('Australia/Melbourne'))
-
-            savePrediction(seg_id, type, name, location, root, childs, screenshotId[0], date)
+            savePrediction(seg_id, type, name, scoreCnn, location, root, childs, screenshotId[0], date)
 
     # predictions ('id': 'type': 'name': 'location': 'root': )
 
@@ -673,10 +663,10 @@ def run(myFile, coco_model, tensorflow_model, CurrentUser, projectName):
     userId = getCollectionIDs('user', CurrentUser)
     setScreenshot(userId, screenshotId[0], projectName)
 
-    metaProgramming(predictions, myFile, 'save')
+    metaProgramming(predictions, CurrentUser, myFile, 'save')
 
 
-        # INCEPTION DIFFERENT MODELS RUNNING FUNCTIONS
+# INCEPTION DIFFERENT MODELS RUNNING FUNCTIONS
 def run_recognition(elementId, elementRoot, segmentationLocation, screenshotIndex, status,cnn):
     import tensorflow as tf
 
@@ -779,3 +769,4 @@ def update_segmentation_db(screenshotId):
             print('deleting')
 
     return 1
+
