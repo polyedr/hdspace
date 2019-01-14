@@ -1,12 +1,11 @@
-from virtualize.models import *
+from apps.virtualize.models import *
 from PIL import Image
 from skimage import io, color, measure
 import re
 from skimage import io
 from datetime import datetime, date
-import pymongo
-from virtualize.utils.metaCustomUtils import *
-from virtualize.utils.screenshotUtils import getLatestScreenshot
+from apps.virtualize.utils.metaCustomUtils import *
+from apps.virtualize.utils.screenshotUtils import getLatestScreenshot
 
 client = pymongo.MongoClient('localhost', 27017)  # maxPoolSize=50
 db = client.MeduzaDb
@@ -46,41 +45,41 @@ def metaCustom(currentUser, myFile, screenshot_id, state):
             croppedFileName = str(myFile[int(len(str(currentUser))) + 7:-4])
             import os
             try:
-                os.stat('media/users/' + str(currentUser) + '/' + croppedFileName + '/')
+                os.stat('static/users/' + str(currentUser) + '/' + croppedFileName + '/')
             except:
-                os.mkdir('media/users/' + str(currentUser) + '/' + croppedFileName + '/')
+                os.mkdir('static/users/' + str(currentUser) + '/' + croppedFileName + '/')
             # Root Project HTML Page
             pagehtml = open(
-                'media/users/' + str(currentUser) + '/' + croppedFileName + '/' + titleHtml + '.html',
+                'static/users/' + str(currentUser) + '/' + croppedFileName + '/' + titleHtml + '.html',
                 mode='w', encoding='UTF-8')
             pagehtml.write(
                 '<section id="classContainer-selector" class="classContainer' + screenshot_id + '" style="height:100%;">')
 
             # Root Project html for?
             pagehtml1 = open(
-                'media/users/' + str(currentUser) + '/' + croppedFileName + '/' + titleHtml + 'Pro.html',
+                'static/users/' + str(currentUser) + '/' + croppedFileName + '/' + titleHtml + 'Pro.html',
                 mode='w', encoding='UTF-8')
             pagehtml1.write(
                 '<section id="classContainer-selectorPro" class="classContainer' + screenshot_id + ' dafuk " style="height:100%;">')
             # Root Project html for?
             pagehtml2 = open(
-                'media/users/' + str(currentUser) + '/' + croppedFileName + '/' + titleHtml + 'Work.html',
+                'static/users/' + str(currentUser) + '/' + croppedFileName + '/' + titleHtml + 'Work.html',
                 mode='w', encoding='UTF-8')
             pagehtml2.write(
                 '<section id="classContainer-selectorWork" class="classContainer' + screenshot_id + '" style="height:100%;">')
             # Root Project html for?
             pagehtml3 = open(
-                'media/users/' + str(currentUser) + '/' + croppedFileName + '/' + titleHtml + 'Suggestions.html',
+                'static/users/' + str(currentUser) + '/' + croppedFileName + '/' + titleHtml + 'Suggestions.html',
                 mode='w', encoding='UTF-8')
             pagehtml3.write(
                 '<section class="classContainer' + screenshot_id + '" style="height:100%;">')
             # root css page
             try:
-                os.stat('media/users/' + str(currentUser) + '/' + croppedFileName + '/' + 'CSS/')
+                os.stat('static/users/' + str(currentUser) + '/' + croppedFileName + '/' + 'css/')
             except:
-                os.mkdir('media/users/' + str(currentUser) + '/' + croppedFileName + '/' + 'CSS/')
+                os.mkdir('static/users/' + str(currentUser) + '/' + croppedFileName + '/' + 'css/')
             pagecss = open(
-                'media/users/' + str(currentUser) + '/' + croppedFileName + '/' + 'CSS/' + titleCssJS + '.css',
+                'static/users/' + str(currentUser) + '/' + croppedFileName + '/' + 'css/' + titleCssJS + '.css',
                 'w')
             return pagehtml, pagecss, pagehtml1, pagehtml2, pagehtml3
 
@@ -6205,7 +6204,7 @@ def metaCustom(currentUser, myFile, screenshot_id, state):
         pagehtml2 = pages_creation[3]
         pagehtml3 = pages_creation[4]
 
-        userId = getCollectionIDs('user', currentUser)
+        userId = getCollectionIDs('accounts_user', currentUser)
         screenwidthOnePercent = float(getLatestScreenshot(userId)['screenWidth']) / 100
 
         print('after \n')
@@ -7774,7 +7773,7 @@ def addElement(currentUser, filename, screenshot_id, action):
             icon_name = str(filename)
             ty_cond = icon_name[:-2]
             typ = icon_name
-            icon_path = '/static/dirty_static/widgets/' + icon_name
+            icon_path = '/media/widgets/' + icon_name
         print(icon_name)
         print(icon_path)
         print(ty_cond)
@@ -7848,40 +7847,40 @@ def metaColorTransfer(currentUser, myFile, screenshot_id, folder, index, colors)
             import os
             if (folder == '/layouts/'):
                 try:
-                    os.stat('media/' + str(currentUser) + '/' + croppedFileName + folder)
+                    os.stat('static/users/' + str(currentUser) + '/' + croppedFileName + folder)
 
                 except:
-                    os.mkdir('media/' + str(currentUser) + '/' + croppedFileName + folder)
+                    os.mkdir('static/users/' + str(currentUser) + '/' + croppedFileName + folder)
                 pagehtml = open(
-                    'media/' + str(currentUser) + '/' + croppedFileName + folder + titleHtml + '.html',
+                    'static/users/' + str(currentUser) + '/' + croppedFileName + folder + titleHtml + '.html',
                     mode='w', encoding='UTF-8')
                 pagehtml.write('<section class="layouts">')
 
                 try:
-                    os.stat('media/' + str(currentUser) + '/' + croppedFileName + folder + 'css/')
+                    os.stat('static/users/' + str(currentUser) + '/' + croppedFileName + folder + 'css/')
                 except:
-                    os.mkdir('media/' + str(currentUser) + '/' + croppedFileName + folder + 'css/')
+                    os.mkdir('static/users/' + str(currentUser) + '/' + croppedFileName + folder + 'css/')
                 pagecss = open(
-                    'media/' + str(
+                    'static/users/' + str(
                         currentUser) + '/' + croppedFileName + folder + 'css/' + titleCssJS + '.css',
                     'w')  # root css page
             else:
                 try:
-                    os.stat('media/' + str(currentUser) + '/' + croppedFileName + '/')
+                    os.stat('static/users/' + str(currentUser) + '/' + croppedFileName + '/')
 
                 except:
-                    os.mkdir('media/' + str(currentUser) + '/' + croppedFileName + '/')
+                    os.mkdir('static/users/' + str(currentUser) + '/' + croppedFileName + '/')
                 pagehtml = open(
                     'static/users/' + str(currentUser) + '/' + croppedFileName + '/' + titleHtml + '.html',
                     mode='w', encoding='UTF-8')
                 pagehtml.write('<section class="colorTransfer" style="background-color:' + colors[0] + '">')
 
                 try:
-                    os.stat('media/' + str(currentUser) + '/' + croppedFileName + '/' + 'css/')
+                    os.stat('static/users/' + str(currentUser) + '/' + croppedFileName + '/' + 'css/')
                 except:
-                    os.mkdir('media/' + str(currentUser) + '/' + croppedFileName + '/' + 'css/')
+                    os.mkdir('static/users/' + str(currentUser) + '/' + croppedFileName + '/' + 'css/')
                 pagecss = open(
-                    'media/' + str(
+                    'static/users/' + str(
                         currentUser) + '/' + croppedFileName + '/' + 'css/' + titleCssJS + '.css',
                     'w')  # root css page
             ###
@@ -8603,7 +8602,7 @@ def metaColorTransfer(currentUser, myFile, screenshot_id, folder, index, colors)
         titleCss = 'testingCss'
         pages_creation = create_page_Html_and_Css_and_js(path, titleHtml, titleCss)
 
-        userId = getCollectionIDs('user', currentUser)
+        userId = getCollectionIDs('accounts_user', currentUser)
         pagehtml = pages_creation[0]
         pagecss = pages_creation[1]
 

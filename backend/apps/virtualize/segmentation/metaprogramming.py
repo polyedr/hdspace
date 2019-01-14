@@ -1,5 +1,5 @@
 import pymongo
-from virtualize.utils.metaCustomUtils import *
+from apps.virtualize.utils.metaCustomUtils import *
 from PIL import Image
 from skimage import color, measure
 from skimage import io

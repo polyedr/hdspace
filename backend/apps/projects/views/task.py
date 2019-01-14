@@ -137,7 +137,8 @@ class AddSubTaskView(LoginRequiredMixin, View):
         if form.is_valid():
             data = form.cleaned_data
             project = Project.objects.get(pk=project_id)
-            member = ProjectMember.objects.get(project=project, user=data["owner"])
+            # owner_user = User.objects.get(pk=data["owner"])
+            member = ProjectMember.objects.get(pk=data["owner"])
             creator = ProjectMember.objects.get(project=project, user=request.user)
             parent_task = ProjectTask.objects.get(pk=task_id)
             task = ProjectTask.objects.create(

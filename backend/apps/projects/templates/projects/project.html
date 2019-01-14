@@ -187,6 +187,7 @@
                 <!--<button><i class="fa fa-rotate-right"></i></button>-->
                 <div class="screen_actions">
                   <button id="prototype">Prototype</button>
+                  <button id="comment">Comment</button>
                   <button type="button" class="share-button">Share Prototype</button>
                   <a href="" class="facebook-share">
                     <i class="fa fa-facebook-square fa-2x" style="color:#3B5998"></i>
@@ -203,8 +204,16 @@
                 <button class="align-btn"><i class="glyphicon glyphicon-ok-sign"></i> Align Elements</button>
               </div>
             </div>
-            <div class="m-t-md screenContainer" id="screenImage" >
+            <div class="m-t-md screenContainer" id="screenImage">
               <img src="{{ screens.0.get_image }}" id="image"  border="0" alt="">
+                {% for screen_comment in screen_comments %}
+                  <div class="comment" style='top:{{screen_comment.y}}px;
+                    left:{{screen_comment.x}}px;'
+                     data-x="{{screen_comment.x}}"
+                     data-y="{{screen_comment.y}}"
+                     data-comment-id="{{screen_comment.id}}"
+                  >{{ forloop.counter }}</div>
+                {% endfor %}
                {% for screen_event in screen_events %}
                   <div
                           class="existed"
@@ -233,6 +242,13 @@
                     <div class="ui-resizable-handle ui-resizable-nw"></div>
                   </div>
                 {% endfor %}
+              <div id="commentModal">
+                <div class="comments-list"></div>
+                <div class="new-comment">
+                  <textarea name="comment" id="comment_text"></textarea>
+                  <input type="button" id="send_comment" value="Send" class="btn btn-small btn-primary">
+                </div>
+              </div>
             </div>
           </div>
           <div id="tablet" class="tab-pane fade"></div>
@@ -298,12 +314,65 @@
     </div>
   </div>
 </div>
+
+<div class="comment-item" id="comment-item">
+  <div class="comment-left">
+    <img src="" alt="">
+    <button class="edit-comment" data-comment-edit=""><i class="fa fa-pencil"></i></button>
+    <button class="delete-comment" data-comment-delete=""><i class="fa fa-trash" ></i></button>
+  </div>
+  <div class="comment-body">
+    <div>
+      <strong></strong>
+      <small></small>
+    </div>
+    <input class="comment-content" type="text" data-comment-edit="" value="" disabled/>
+  </div>
+</div>
+<!--<div id="commentModal">-->
+  <!--<div class="comments-list">-->
+    <!--<div class="comment-item">-->
+      <!--<div class="comment-left">-->
+        <!--<img src="http://localhost:8000/media/images/projects/projectscreen/b53e3000-68e5-43f9-868b-640ce2c71d39.jpg" alt="">-->
+        <!--<button><i class="fa fa-pencil"></i></button>-->
+      <!--</div>-->
+      <!--<div class="comment-body">-->
+        <!--<div>-->
+          <!--<strong>Kalabok Kalabokyan</strong>-->
+          <!--<small>(a week ago)</small>-->
+        <!--</div>-->
+        <!--<p>Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet</p>-->
+      <!--</div>-->
+    <!--</div>-->
+    <!--<div class="comment-item">-->
+      <!--<div class="comment-left">-->
+        <!--<img src="http://localhost:8000/media/images/projects/projectscreen/b53e3000-68e5-43f9-868b-640ce2c71d39.jpg" alt="">-->
+        <!--<button><i class="fa fa-pencil"></i></button>-->
+      <!--</div>-->
+      <!--<div class="comment-body">-->
+        <!--<div>-->
+          <!--<strong>Kalabok Kalabokyan</strong>-->
+          <!--<small>(a week ago)</small>-->
+        <!--</div>-->
+        <!--<textarea readonly>Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet</textarea>-->
+      <!--</div>-->
+    <!--</div>-->
+  <!--</div>-->
+  <!--<div class="new-comment">-->
+    <!--<textarea name="comment"></textarea>-->
+    <!--<input type="button" id="send_comment" value="Send" class="btn btn-small btn-primary">-->
+  <!--</div>-->
+<!--</div>-->
+
+
 <div id="adjacent-content" class="existed">
   <div class="ui-resizable-handle special-index-z ui-resizable-ne"></div>
   <div class="ui-resizable-handle special-index-z ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se"></div>
   <div class="ui-resizable-handle special-index-z ui-resizable-sw"></div>
   <div class="ui-resizable-handle special-index-z ui-resizable-nw"></div>
 </div>
+
+<div id="comment_content" class="comment"></div>
 
 <div id="screen-image-content" class="screen-img-wrap scr-img screen-image-exist hide">
   <div class="screen-img-actions">
@@ -326,12 +395,6 @@
 {% include "projects/includes/workflow-modal.html" with project_members=project_members %}
 {% endblock %}
 
-<div id="adjacent-content" class="existed">
-  <div class="ui-resizable-handle special-index-z ui-resizable-ne"></div>
-  <div class="ui-resizable-handle special-index-z ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se"></div>
-  <div class="ui-resizable-handle special-index-z ui-resizable-sw"></div>
-  <div class="ui-resizable-handle special-index-z ui-resizable-nw"></div>
-</div>
 {% block extra_js %}
 <script type="text/javascript">
     window.hotspot = "{% static 'img/hotspot-corner.png' %}";

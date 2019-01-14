@@ -62,32 +62,65 @@
 
         <ul class="sidebar-list addTaskList"  data-task-edit-url="{% url 'projects:edit_task'%}" data-task-delete-url="{% url 'projects:delete_task'%}" data-assign-url="{% url 'projects:assign_task'%}">
           {% for task in tasks %}
-            <li data-task-id="{{task.pk}}" class="task-list">
-              <h4>{{ task.title }}</h4>
-              <span class="task-description">{{ task.description }}</span>
-              <div class="flex flex-row flex-space-between">
-                <div class="small text-muted m-t-xs">Created: <span>{{ task.created }}</span></div>
-                <div class="task-actions">
-                  <a href="#" class="btn btn-xs btn-primary subButton" title="Add Sub Task"><i class="fa fa-plus"></i></a>
-                  <a href="#" class="btn btn-xs btn-info editButton"><i class="fa fa-pencil "></i></a>
-                  <a href="#" class="btn btn-xs btn-danger deleteButton"><i class="fa fa-trash"></i></a>
-                  <div class="dropdown">
-                    <button class="btn btn-xs btn-primary dropdown-toggle"  type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                      <i class="fa fa-tasks"></i>
-                    </button>
-                    <ul class="assigneeTask dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu1">
-                      {% for member in project_members %}
-                        {% if task.owner.user.pk == member.user.pk %}
-                           <li class="active" data-member-id="{{member.pk}}"><a href="#">{{ member.user.get_full_name }}</a></li>
-                        {% else %}
-                           <li><a href="#" data-member-id="{{member.pk}}">{{ member.user.get_full_name }}</a></li>
-                        {% endif %}
-                      {% endfor %}
-                    </ul>
+
+            {% if not task.sub_task %}
+              <li data-task-id="{{task.pk}}" class="task-list">
+                <h4>{{ task.title }}</h4>
+                <span class="task-description">{{ task.description }}</span>
+                <div class="flex flex-row flex-space-between">
+                  <div class="small text-muted m-t-xs">Created: <span>{{ task.created }}</span></div>
+                  <div class="task-actions">
+                    <a href="#" class="btn btn-xs btn-primary subButton" title="Add Sub Task"><i class="fa fa-plus"></i></a>
+                    <a href="#" class="btn btn-xs btn-info editButton"><i class="fa fa-pencil "></i></a>
+                    <a href="#" class="btn btn-xs btn-danger deleteButton"><i class="fa fa-trash"></i></a>
+                    <div class="dropdown">
+                      <button class="btn btn-xs btn-primary dropdown-toggle"  type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                        <i class="fa fa-tasks"></i>
+                      </button>
+                      <ul class="assigneeTask dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu1">
+                        {% for member in project_members %}
+                          {% if task.owner.user.pk == member.user.pk %}
+                            <li class="active" data-member-id="{{member.pk}}"><a href="#">{{ member.user.get_full_name }}</a></li>
+                          {% else %}
+                            <li><a href="#" data-member-id="{{member.pk}}">{{ member.user.get_full_name }}</a></li>
+                          {% endif %}
+                        {% endfor %}
+                      </ul>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </li>
+              </li>
+            {% endif %}
+
+            {% for sub in tasks %}
+              {% ifequal sub.sub_task task %}
+              <li data-task-id="{{sub.pk}}" data-parent-id="{{task.pk}}" class="task-list subtask">
+                  <h4>{{ sub.title }}</h4>
+                  <span class="task-description">{{ sub.description }}</span>
+                  <div class="flex flex-row flex-space-between">
+                    <div class="small text-muted m-t-xs">Created: <span>{{ sub.created }}</span></div>
+                    <div class="task-actions">
+                      <a href="#" class="btn btn-xs btn-info editButton"><i class="fa fa-pencil "></i></a>
+                      <a href="#" class="btn btn-xs btn-danger deleteButton"><i class="fa fa-trash"></i></a>
+                      <div class="dropdown">
+                        <button class="btn btn-xs btn-primary dropdown-toggle"  type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                          <i class="fa fa-tasks"></i>
+                        </button>
+                        <ul class="assigneeTask dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu1">
+                          {% for member in project_members %}
+                            {% if sub.owner.user.pk == member.user.pk %}
+                              <li class="active" data-member-id="{{member.pk}}"><a href="#">{{ member.user.get_full_name }}</a></li>
+                            {% else %}
+                              <li><a href="#" data-member-id="{{member.pk}}">{{ member.user.get_full_name }}</a></li>
+                            {% endif %}
+                          {% endfor %}
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              {% endifequal %}
+            {% endfor %}
           {% endfor %}
         </ul>
       </div>
@@ -111,6 +144,9 @@
               {% elif activity.type == "user_invited" %}
                 <h4>User Invitation</h4>
                 <span class="task-description">New user invited to the project by <span>{{ activity.member.get_full_name }}</span></span>
+              {% elif activity.type == "screen_comment" %}
+                <h4>New comment</h4>
+                <span class="task-description">New comment created by <span>{{ activity.member.get_full_name }}</span></span>
               {% endif %}
               <div class="flex flex-row flex-space-between">
                 <div class="small text-muted m-t-xs">Created: <span>{{ activity.created|date:'N J, Y H:i' }}</span></div>

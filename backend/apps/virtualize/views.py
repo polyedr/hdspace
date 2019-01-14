@@ -6,15 +6,14 @@ from django.shortcuts import render
 from django.utils.cache import add_never_cache_headers
 from django.views.decorators.csrf import csrf_exempt
 
-from apps.virtualize.display import set_html_color, set_html_layout
 from apps.virtualize.models import *
 from apps.virtualize.segmentation.segmentation import run
-from virtualize.segmentation.inference_segmentation import initiateCocoDetection, initiateTensorflowDetection
-from virtualize.segmentation.metaCustom import metaCustom, addElement
-from virtualize.utils.elementUtils import *
-from virtualize.utils.screenshotUtils import *
-from virtualize.utils.styleTransfer import propertyTransfer
-from virtualize.utils.widgetsUtils import move_widget
+from apps.virtualize.segmentation.inference_segmentation import initiateCocoDetection, initiateTensorflowDetection
+from apps.virtualize.segmentation.metaCustom import metaCustom, addElement
+from apps.virtualize.utils.elementUtils import *
+from apps.virtualize.utils.screenshotUtils import *
+from apps.virtualize.utils.styleTransfer import propertyTransfer
+from apps.virtualize.utils.widgetsUtils import move_widget
 
 coco_model_global = []
 tensorflow_model_global = []
@@ -32,7 +31,7 @@ class NoCachingMiddleware(object):
 def main_request_core(request):
     currentUser = str(request.user)
     print('im user ' + currentUser)
-    userId = getCollectionIDs('auth_user', currentUser)
+    userId = getCollectionIDs('accounts_user', currentUser)
     print('my current user Id is:')
     print(str(userId))
 
@@ -82,7 +81,11 @@ def main_request_core(request):
             request.session['height'] = str(secHeight)
             request.session['width'] = str(secWidth)
             screenshotId = getLatestScreenshot(userId)['screenshot_id']
-            device = findOne(db.screenshots, '_id', screenshotId)['device_type']
+            device_collection = findOne(db.screenshots, '_id', screenshotId)
+            if device_collection is not None:
+                device = device_collection['device_type']
+            else:
+                device = ''
             saveMetrix(secHeight, secWidth, widthLayouts, heightLayouts, userId, screenshotId, projectName, device)
             return html_render('customize/page2.html', currentUser, page, projectName, request, screenshotName,
                                userId, screenshotId, layoutIsBeingTransferd, colorIsBeingTransferd, workflowBeingMagic,
@@ -161,6 +164,8 @@ def main_request_core(request):
 
             element = request.GET
             id = element['id'][2:]
+            print('IDDDD')
+            print(id)
             image = []
             elementName = ''
             ocr = []
@@ -393,7 +398,7 @@ def main_request_core(request):
 
         elif str(request.GET['name']) == 'getProjectName':
             print('We are running getProjectName GET')
-            project_details = findOne(db.projects, 'user_id', userId)
+            project_details = findOne(db_main.projects_project, 'user_id', ObjectId(userId))
             if project_details is None:
                 print('empty project')
                 project_name = ''
@@ -406,7 +411,7 @@ def main_request_core(request):
         elif str(request.GET['name']) == 'getPages':
             print('We are running getPages GET')
             pages = []
-            screenshotId = list(findMultiple(db.screenshots, 'user_id', userId))
+            screenshotId = list(findMultiple(db.screenshots, 'user_id', srt(userId)))
             size = int(len(screenshotId) - 1)
             project = get_project_two_search_keys(userId, projectName)
             while size >= 0:
@@ -540,7 +545,7 @@ def main_request_core(request):
                         fileTL = str(allProjectL[inte]['fileType'])
                         fileSL = str(allProjectL[inte]['fileSize'])
                         fileLML = str(allProjectL[inte]['fileLastModified'])
-                        imgPages.append('/static/dirty_static/users/' + projectsN)
+                        imgPages.append('/media/users/' + projectsN)
                         imgName.append(fileN)
                         imgType.append(fileTL)
                         imgSize.append(fileSL)
@@ -785,7 +790,8 @@ def main_request_core(request):
             order = request.POST['updateScreenshotOrder']
             import json
             result = json.loads(order)
-            db.projects.update({'user_id': userId, 'projectName': projectName}, {'$set': {'screenshots': result}})
+            db_main.projects_project.update({'user_id': ObjectId(userId), 'name': projectName},
+                                            {'$set': {'screenshots': result}})
 
         elif 'changedStyle' in request.POST:
             print('We are running changedStyle POST')
@@ -929,7 +935,7 @@ def main_request_core(request):
                     'screen': screenshotName,
                     'currentPage': getCurrentScreenName(screenshotId),
                     'colorTransfer': getColorTransferHtml(currentUser, screenshotName),
-                    'screenHTML': getProjectPage(screenshotName, currentUser),
+                    'screenHTML': getProjectPage(screenshotName, currentUser, projectName),
                     'userName': currentUser,
                     'currentProfilePic': getUserPicture(currentUser),
                     'colorTransferUploadIMG': str(currentUser) + '/pages/' + str(
@@ -947,7 +953,7 @@ def main_request_core(request):
                 print(image_type)
 
             projectName = getLatestScreenshot(userId)['projectName']
-            filename = fs.save(str(currentUser) + '/pages/' + projectName + '/' + myfile.name, myfile)
+            filename = fs.save('users/' + str(currentUser) + '/pages/' + projectName + '/' + myfile.name, myfile)
             name = filename[int(len(str(currentUser)) + 7):-4]
 
             if user(url=filename, user_id=userId, name=name, scname=scname):
@@ -969,13 +975,14 @@ def main_request_core(request):
                         print('some coco model shit ', coco_model)
                         print('some cnn model shit', tensorflow_model)
                 run(filename, coco_model, tensorflow_model, currentUser, projectName)
-                screenshotId = getLatestScreenshot(userId)['screenshot_id']
+                screenshotId = getLatestScreenshot(str(userId))['screenshot_id']
 
-                screenshotsId = db.projects.find_one({'user_id': userId, 'projectName': projectName})['screenshots']
+                screenshotsId = db_main.projects_project.find_one({'user_id': ObjectId(userId),
+                                                                   'name': projectName})['screenshots']
 
                 screenshotsId.insert(0, screenshotId)
 
-                db.projects.update({'user_id': userId, 'projectName': projectName},
+                db_main.projects_project.update({'user_id': ObjectId(userId), 'name': projectName},
                                    {'$set': {'screenshots': screenshotsId}})
 
                 page = str(getScreenshotName('screenshots', userId, str(screenshotId))[
@@ -1089,7 +1096,7 @@ def main_request_core(request):
                     date = datetime.now(pytz.timezone('Australia/Melbourne'))
                     insert_link_style(srcid, link, date)
                 # if element is linked from other than active screen
-                pro = db.projects.find_one({'projectName': projectName, 'user_id': str(userId)})
+                pro = db_main.projects_project.find_one({'name': projectName, 'user_id': ObjectId(userId)})
                 if pro is not None:
                     screens = pro['screenshots']
                     for s in screens:
@@ -1114,7 +1121,7 @@ def main_request_core(request):
                     db.newStyle.update({'element_id': src_id}, {'$set': {'link': target_sc}})
 
                 # if element is linked from other than active screen
-                pro = db.projects.find_one({'projectName': projectName, 'user_id': str(userId)})
+                pro = db_main.projects_project.find_one({'name': projectName, 'user_id': ObjectId(userId)})
                 if pro is not None:
                     screens = pro['screenshots']
                     for s in screens:
@@ -1198,7 +1205,7 @@ def main_request_core(request):
 @csrf_exempt
 def projects(request):
     currentUser = str(request.user)
-    userId = getCollectionIDs('user', currentUser)
+    userId = getCollectionIDs('accounts_user', currentUser)
     print('Project POST')
     print(request.POST)
 
@@ -1210,8 +1217,8 @@ def projects(request):
                 print('Projectname cant be empty')
             else:
                 date = datetime.now(pytz.timezone('Australia/Melbourne'))
-                db.projects.insert({'projectName': project,
-                                    'user_id': userId,
+                db_main.projects_project.insert({'name': project,
+                                    'user_id': ObjectId(userId),
                                     'screenshots': [],
                                     'status': 'pending',
                                     'comment': [],
@@ -1222,7 +1229,7 @@ def projects(request):
                 return redirect('/index/', code=302)
         elif 'selectProject' in request.POST:
             print('select a project')
-            project = db.projects.find_one({'_id': ObjectId(str(request.POST['selectProject']))})
+            project = db_main.projects.find_one({'_id': ObjectId(str(request.POST['selectProject']))})
             try:
                 screenshotid = project['screenshots'][0]
             except:
@@ -1243,8 +1250,8 @@ def projects(request):
 
         elif 'deleteProject' in request.POST:
             projectId = request.POST['deleteProject']
-            db.projects.update({'_id': ObjectId(projectId)}, {'$set': {'status': 'inactive'}})
-            project = db.projects.find_one({'user_id': userId, 'status':'pending'})
+            db_main.projects_project.update({'_id': ObjectId(projectId)}, {'$set': {'status': 'inactive'}})
+            project = db_main.projects_project.find_one({'user_id': userId, 'status':'pending'})
             try:
                 if project['status'] != 'inactive':
                     latestProject = project['projectName']

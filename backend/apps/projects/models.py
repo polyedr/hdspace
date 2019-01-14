@@ -2,7 +2,7 @@ import secrets
 import uuid
 
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.urls import reverse
 
 from apps.core.models import TimeStampedModel
@@ -19,6 +19,8 @@ __all__ = (
     "ProjectInvitation",
     "ScreenAssignee",
     "TaskTime",
+    "ScreenComment",
+    "Comment",
 )
 
 
@@ -34,8 +36,8 @@ class Project(TimeStampedModel):
     preview = models.CharField(max_length=60)
     status = models.CharField(choices=STATUS_CHOICES, default=STATUS_PENDING, max_length=20)
     duplicated = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True)
-    user = models.ForeignKey(User, related_name="user", on_delete=models.CASCADE)
-    members = models.ManyToManyField(User, related_name="members", through="ProjectMember")
+    user = models.ForeignKey(get_user_model(), related_name="user", on_delete=models.CASCADE)
+    members = models.ManyToManyField(get_user_model(), related_name="members", through="ProjectMember")
 
     @staticmethod
     def generate_preview_token():
@@ -44,6 +46,7 @@ class Project(TimeStampedModel):
     def get_project_url(self):
         return reverse("projects:project",
                        kwargs={"pk": self.pk})
+
 
     def __str__(self):
         return self.name
@@ -79,7 +82,7 @@ class ProjectScreen(TimeStampedModel):
         return reverse("projects:edit_screen", kwargs={"project_id": self.project.pk, "screen_id": self.pk})
 
     def __str__(self):
-        return f'{self.pk}'
+        return '{}'.format(self.pk)
 
 
 class ScreenEvent(TimeStampedModel):
@@ -124,14 +127,16 @@ class ScreenEvent(TimeStampedModel):
 
 
 class ScreenComment(TimeStampedModel):
-    text = models.TextField()
     x = models.IntegerField()
     y = models.IntegerField()
 
     screen = models.ForeignKey(ProjectScreen, on_delete=models.CASCADE)
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
 
-    def __str__(self):
-        return self.text
+
+class Comment(TimeStampedModel):
+    text = models.TextField()
+    comment = models.ForeignKey(ScreenComment, related_name='comment', on_delete=models.CASCADE)
 
 
 class ProjectInvitation(TimeStampedModel):
@@ -141,10 +146,10 @@ class ProjectInvitation(TimeStampedModel):
     role = models.CharField(max_length=250, null=True, blank=True)
 
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
 
     @staticmethod
-    def generate_token() -> uuid:
+    def generate_token():
         return uuid.uuid4()
 
 
@@ -158,7 +163,7 @@ class ProjectMember(TimeStampedModel):
     role = models.CharField(max_length=250, null=True, blank=True)
     status = models.CharField(choices=MEMBER_STATUS, default=STATUS_MEMBER, max_length=32)
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
 
     def __str__(self):
         return self.project.name
@@ -200,7 +205,7 @@ class TaskTime(TimeStampedModel):
 
 class ScreenAssignee(TimeStampedModel):
     screen = models.ForeignKey(ProjectScreen, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
 
     def __str__(self):
         return self.user.username
@@ -213,6 +218,7 @@ class ProjectActivity(models.Model):
     ADDED_SCREEN = "screen_added"
     USER_INVITED = "user_invited"
     SHARED_PROTOTYPE = "shared_prototype"
+    SCREEN_COMMENT = "screen_comment"
     ACTIVITY_TYPES = (
         (TASK_CREATED, "task created"),
         (TASK_REMOVED, "task completed"),
@@ -220,10 +226,11 @@ class ProjectActivity(models.Model):
         (ADDED_SCREEN, "screen added"),
         (USER_INVITED, "user invited"),
         (SHARED_PROTOTYPE, "shared prototype"),
+        (SCREEN_COMMENT, "screen comment"),
     )
     type = models.CharField(choices=ACTIVITY_TYPES, default=TASK_CREATED, max_length=250)
 
-    member = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    member = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, null=True)
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True)
 

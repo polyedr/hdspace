@@ -3,6 +3,7 @@ from bson import ObjectId
 
 client = pymongo.MongoClient('localhost', 27017)  # maxPoolSize=50
 db = client.MeduzaDb
+db_main = client.mainDB
 
 
 def getScreenShotDetails(name, user):
@@ -26,6 +27,9 @@ def getScreenName(screenshotId):
 def getScreenshotName(collection, userId, screenshotId):
 
     print('im userId: '+str(userId))
+    print(collection)
+    print(userId)
+    print(screenshotId)
     collection = db[str(collection)]
     screenShotName = 'None at this point'
     if screenshotId != '':
@@ -33,8 +37,11 @@ def getScreenshotName(collection, userId, screenshotId):
             cursor = collection.find({'_id': ObjectId(str(screenshotId))})
         except AssertionError as error:
             print(error)
+            print('Error screen Name')
         else:
             for doc in cursor:
+                print('I am get screen NAme')
+                print(doc)
                 if str(userId) == str(doc['user_id']):
                     if str(doc['status']) != 'inactive':
                         screenShotName = (str(doc['image']))
@@ -47,7 +54,7 @@ def getLatestScreenshot(userId):
     item = None
     collecion = db.tempPage
     try:
-        item = collecion.find_one({'userId': userId})
+        item = collecion.find_one({'userId': str(userId)})
     except (AttributeError, pymongo.errors.OperationFailure) as e:
         print('Mongo Data Base Error ' + e)
     return item
@@ -110,14 +117,14 @@ def delete_link(id):
 def delete_page(page, userId):
     db.screenshots.update({'_id': ObjectId(page)}, {'$set': {'status': 'inactive'}})
     currentProject = db.tempPage.find_one({'userId': str(userId)})
-    project = db.projects.find_one({'user_id': str(userId), 'projectName': str(currentProject['projectName'])})
+    project = db_main.projects_project.find_one({'user_id': ObjectId(userId), 'name': str(currentProject['projectName'])})
     db.docRecognition.remove({'screenshot_id': page})
     delete_link(page)
     update_screen = []
     for s in project['screenshots']:
         if str(s) != str(page):
             update_screen.append(s)
-    db.projects.update({'_id': project['_id']}, {'$set': {'screenshots': update_screen}})
+    db_main.projects_project.update({'_id': project['_id']}, {'$set': {'screenshots': update_screen}})
 
 
 def getScreen_Name(screenshotName):

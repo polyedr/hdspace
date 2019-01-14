@@ -4,7 +4,6 @@ from django.urls import reverse
 from django.http import JsonResponse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core import serializers
-from django.contrib.auth.models import User
 
 from apps.core.utils import build_absolute_url
 from apps.projects.forms import ScreenEventForm, ScreenUploadForm
@@ -13,6 +12,7 @@ from apps.projects.models import (
     ScreenAssignee, ProjectActivity
 )
 from apps.projects.utils import emails
+from apps.accounts.models import User
 
 
 __all__ = (

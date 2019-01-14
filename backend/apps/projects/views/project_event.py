@@ -2,7 +2,6 @@ import os
 import zipfile
 from io import BytesIO
 
-from django.contrib.auth.models import User
 from django.views.generic.base import View
 from django.urls import reverse
 from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
@@ -18,6 +17,7 @@ from apps.projects.models import (
     ProjectMember, ProjectActivity
 )
 from apps.projects.utils import emails
+from apps.accounts.models import User
 
 
 __all__ = (

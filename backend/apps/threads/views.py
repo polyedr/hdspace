@@ -35,7 +35,7 @@ class MessageListView(LoginRequiredMixin, View):
             content=message.content,
             pk=message.pk,
             sent_at=message.sent_at,
-            sender_id=message.sender.id,
+            sender_id=message.sender.pk,
             status=message.sender.status,
             role=message.sender.role,
             online=message.sender.user.profile.online(),

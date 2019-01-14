@@ -1,5 +1,5 @@
 from pymongo import MongoClient
-from virtualize.utils.metaCustomUtils import get_collection
+from apps.virtualize.utils.metaCustomUtils import get_collection
 
 
 

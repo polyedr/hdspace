@@ -15,7 +15,7 @@ def write_into_display_div(username, screenshotName):
     div = "container-inside-frame"
 
     if (screenshotName != None):
-        pagehtml = codecs.open('./static/dirty_static/users/'+username+'/pages/'+screenshotName+'/testing.html', mode='r', encoding='UTF-8')
+        pagehtml = codecs.open('./media/users/'+username+'/pages/'+screenshotName+'/testing.html', mode='r', encoding='UTF-8')
         html = pagehtml.read()
         pagehtml.close()
     elif (screenshotName == None):
@@ -88,7 +88,7 @@ def write_into_layouts(username, screenshotName):
     div = "container-inside-frame"
 
     if (screenshotName != None):
-        pagehtml = codecs.open('./static/dirty_static/users/'+username+'/pages/'+screenshotName+'/testing.html', mode='r', encoding='UTF-8')
+        pagehtml = codecs.open('./media/users/'+username+'/pages/'+screenshotName+'/testing.html', mode='r', encoding='UTF-8')
         html = pagehtml.read()
         pagehtml.close()
     elif (screenshotName == None):
@@ -149,7 +149,7 @@ def write_into_layouts(username, screenshotName):
 def set_html_color(file, index, value):
 
     div = "colorTransfer"+str(index)
-    pagehtml = codecs.open('./static/dirty_static/users/' + file +'/testing.html', mode='r', encoding='UTF-8')
+    pagehtml = codecs.open('./media/users/' + file +'/testing.html', mode='r', encoding='UTF-8')
     html = pagehtml.read()
     pagehtml.close()
 
@@ -216,9 +216,10 @@ def write_into_colortransfer(newHtml):
         c = c + 1
     '''
 
+
 def set_html_layout(file, index, value):
     div = "layoutTransfer" + str(index)
-    pagehtml = codecs.open('./static/dirty_static/users/' + file[:-4] + '/layouts/testing'+str(index)+'.html', mode='r', encoding='UTF-8')
+    pagehtml = codecs.open('./media/users/' + file[:-4] + '/layouts/testing'+str(index)+'.html', mode='r', encoding='UTF-8')
     html = pagehtml.read()
     pagehtml.close()
 
