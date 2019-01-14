@@ -1,7 +1,7 @@
 from django import forms
 
 from .models import ScreenEvent, ProjectMember, ProjectScreen
-from accounts.models import Profile
+from apps.accounts.models import Profile
 
 __all__ = (
     "CreateProjectForm",

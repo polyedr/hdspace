@@ -1,8 +1,8 @@
 from django.db import models
 from django.urls import reverse
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 
-from core.models import TimeStampedModel
+from apps.core.models import TimeStampedModel
 
 
 __all__ = (
@@ -34,7 +34,7 @@ class Package(TimeStampedModel):
 
 class UserSubscription(TimeStampedModel):
     active = models.BooleanField(default=False)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     package = models.ForeignKey(Package, on_delete=models.CASCADE)
     paid_projects = models.IntegerField(default=0)
     start_date = models.DateField(auto_now_add=True)

@@ -1,7 +1,7 @@
 from django.urls import path, include
 from django.views.generic import RedirectView
 
-from .views import screen, project, event, project_event, task
+from .views import screen, project, event, project_event, task, comment
 
 app_name = "projects"
 
@@ -52,10 +52,17 @@ screen_patterns = [
     path("screen-preview/<str:token>/<int:pk>/", screen.ProjectScreenPreviewView.as_view(), name="screenpreview"),
 ]
 
+comment_patterns = [
+    path("screen-comments/<int:screen_id>/<int:pk>/", comment.ScreenCommentsView.as_view(), name="screen_events"),
+    path("new-comment/", comment.ScreenCommentView.as_view(), name="new_comment"),
+    path("edit-comment/", comment.EditView.as_view(), name="edit_comment"),
+    path("delete-comment/", comment.DeleteCommentView.as_view(), name="delete_comment"),
+]
 urlpatterns = [
     path("", include(project_patterns)),
     path("", include(screen_patterns)),
     path("", include(event_patterns)),
     path("", include(project_event_patterns)),
     path("", include(task_patterns)),
+    path("", include(comment_patterns)),
 ]

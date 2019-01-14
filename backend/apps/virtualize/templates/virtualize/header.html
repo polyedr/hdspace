@@ -60,35 +60,35 @@
     <script src="{% static 'dirty_static/cropper-master/dist/cropper.js' %}" type='text/javascript'></script>
 
     <link class="getMeOnAddNewEle" rel="stylesheet"
-          href="{% static 'dirty_static/users/' %}{{ user }}/pages/{{ screen }}/css/testingCss.css?{% now 'U' %}" type="text/css"/>
+          href="{% static 'users/' %}{{ user }}/{{ screen }}/css/testingCss.css?{% now 'U' %}" type="text/css"/>
 
 
     {% for style in screenCSSwork %}
-        <link rel="stylesheet" href= "{% static 'dirty_static/users/'%}{{ style }}?{% now 'U' %}" type="text/css"/>
+        <link rel="stylesheet" href= "{% static 'users/'%}{{ style }}?{% now 'U' %}" type="text/css"/>
     {% endfor %}
 
     <!-- layouts -->
     {% if layoutTransfer == '' %}
 
     {% else %}
-        <link rel="stylesheet" href="{% static 'dirty_static/users/' %}{{ user }}/pages/{{ screen }}/layouts/css/testingCss1.css?{% now "U" %}" type="text/css"/>
-        <link rel="stylesheet" href="{% static 'dirty_static/users/' %}{{ user }}/pages/{{ screen }}/layouts/css/testingCss2.css?{% now "U" %}" type="text/css"/>
-        <link rel="stylesheet" href="{% static 'dirty_static/users/' %}{{ user }}/pages/{{ screen }}/layouts/css/testingCss3.css?{% now "U" %}" type="text/css"/>
-        <link rel="stylesheet" href="{% static 'dirty_static/users/' %}{{ user }}/pages/{{ screen }}/layouts/css/testingCss4.css?{% now "U" %}" type="text/css"/>
-        <link rel="stylesheet" href="{% static 'dirty_static/users/' %}{{ user }}/pages/{{ screen }}/layouts/css/testingCss5.css?{% now "U" %}" type="text/css"/>
-        <link rel="stylesheet" href="{% static 'dirty_static/users/' %}{{ user }}/pages/{{ screen }}/layouts/css/testingCss6.css?{% now "U" %}" type="text/css"/>
+        <link rel="stylesheet" href="{% static 'users/' %}{{ user }}/{{ screen }}/layouts/css/testingCss1.css?{% now "U" %}" type="text/css"/>
+        <link rel="stylesheet" href="{% static 'users/' %}{{ user }}/{{ screen }}/layouts/css/testingCss2.css?{% now "U" %}" type="text/css"/>
+        <link rel="stylesheet" href="{% static 'users/' %}{{ user }}/{{ screen }}/layouts/css/testingCss3.css?{% now "U" %}" type="text/css"/>
+        <link rel="stylesheet" href="{% static 'users/' %}{{ user }}/{{ screen }}/layouts/css/testingCss4.css?{% now "U" %}" type="text/css"/>
+        <link rel="stylesheet" href="{% static 'users/' %}{{ user }}/{{ screen }}/layouts/css/testingCss5.css?{% now "U" %}" type="text/css"/>
+        <link rel="stylesheet" href="{% static 'users/' %}{{ user }}/{{ screen }}/layouts/css/testingCss6.css?{% now "U" %}" type="text/css"/>
     {% endif %}
 
     {% if colorTransfer == '' %}
 
     {% else %}
         <!-- color transfer-->
-        <link rel="stylesheet" href="{% static 'dirty_static/users/' %}{{ user }}/pages/{{ screen }}/colorTransfer/linear/css/testingCss.css?{% now "U" %}" type="text/css"/>
-        <link rel="stylesheet" href="{% static 'dirty_static/users/' %}{{ user }}/pages/{{ screen }}/colorTransfer/lum/css/testingCss.css?{% now "U" %}" type="text/css"/>
-        <link rel="stylesheet" href="{% static 'dirty_static/users/' %}{{ user }}/pages/{{ screen }}/colorTransfer/lum2/css/testingCss.css?{% now "U" %}" type="text/css"/>
-        <!--<link rel="stylesheet" href="{% static 'dirty_static/users/' %}{{ user }}/pages/{{ screen }}/colorTransfer/lumStyle/css/testingCss.css?{% now "U" %}" type="text/css"/>-->
-        <link rel="stylesheet" href="{% static 'dirty_static/users/' %}{{ user }}/pages/{{ screen }}/colorTransfer/matchStyle/css/testingCss.css?{% now "U" %}" type="text/css"/>
-        <link rel="stylesheet" href="{% static 'dirty_static/users/' %}{{ user }}/pages/{{ screen }}/colorTransfer/outmatch/css/testingCss.css?{% now "U" %}" type="text/css"/>
+        <link rel="stylesheet" href="{% static 'users/' %}{{ user }}/{{ screen }}/colorTransfer/linear/css/testingCss.css?{% now "U" %}" type="text/css"/>
+        <link rel="stylesheet" href="{% static 'users/' %}{{ user }}/{{ screen }}/colorTransfer/lum/css/testingCss.css?{% now "U" %}" type="text/css"/>
+        <link rel="stylesheet" href="{% static 'users/' %}{{ user }}/{{ screen }}/colorTransfer/lum2/css/testingCss.css?{% now "U" %}" type="text/css"/>
+        <!--<link rel="stylesheet" href="{% static 'users/' %}{{ user }}/{{ screen }}/colorTransfer/lumStyle/css/testingCss.css?{% now "U" %}" type="text/css"/>-->
+        <link rel="stylesheet" href="{% static 'users/' %}{{ user }}/{{ screen }}/colorTransfer/matchStyle/css/testingCss.css?{% now "U" %}" type="text/css"/>
+        <link rel="stylesheet" href="{% static 'users/' %}{{ user }}/{{ screen }}/colorTransfer/outmatch/css/testingCss.css?{% now "U" %}" type="text/css"/>
     {% endif %}
 
     <!-- My Pages sortable  -->

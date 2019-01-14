@@ -6,8 +6,8 @@ from django.urls import reverse
 from django.views.generic import TemplateView
 from django.views.generic.base import View
 
-from accounts.forms import UpdateProfileForm, ChangePasswordForm, AvatarUploadForm
-from core.views.seo import SEOViewMixin
+from apps.accounts.forms import UpdateProfileForm, ChangePasswordForm, AvatarUploadForm
+from apps.core.views.seo import SEOViewMixin
 
 __all__ = (
     "ProfileView",

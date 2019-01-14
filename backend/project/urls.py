@@ -19,11 +19,11 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path("", include("projects.urls", namespace="projects")),
-    path("", include("virtualize.urls", namespace="virtualize")),
-    path("accounts/", include("accounts.urls", namespace="accounts")),
-    path("payments/", include("payments.urls", namespace="payments")),
-    path("threads/", include("threads.urls", namespace="threads")),
+    path("", include("apps.projects.urls", namespace="projects")),
+    path("", include("apps.virtualize.urls", namespace="virtualize")),
+    path("accounts/", include("apps.accounts.urls", namespace="accounts")),
+    path("payments/", include("apps.payments.urls", namespace="payments")),
+    path("threads/", include("apps.threads.urls", namespace="threads")),
     path("paypal/", include("paypal.standard.ipn.urls")),
     path("oauth/", include('social_django.urls', namespace='social')),
     path('admin/', admin.site.urls),

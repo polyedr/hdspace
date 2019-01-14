@@ -1,21 +1,28 @@
 import uuid
 import datetime
 
+from djongo.models import ObjectIdField
+
 from django.urls import reverse
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractUser
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.core.cache import cache
 from django.conf import settings
 
-from core.models import TimeStampedModel
+from apps.core.models import TimeStampedModel
 from .utils import utils
 
 __all__ = (
+    "User",
     "Profile",
     "Team",
     "TeamMember",
 )
+
+
+class User(AbstractUser):
+    _id = ObjectIdField()
 
 
 class Profile(TimeStampedModel):

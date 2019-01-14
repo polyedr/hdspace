@@ -2,9 +2,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
 from django.views.generic.base import View
 
-from threads.forms import FileUploadForm
+from apps.threads.forms import FileUploadForm
 
-from projects.models import ProjectMember, Project
+from apps.projects.models import ProjectMember, Project
 from .models import Thread, Message
 
 __all__ = (
@@ -35,7 +35,7 @@ class MessageListView(LoginRequiredMixin, View):
             content=message.content,
             pk=message.pk,
             sent_at=message.sent_at,
-            sender_id=message.sender.id,
+            sender_id=message.sender.pk,
             status=message.sender.status,
             role=message.sender.role,
             online=message.sender.user.profile.online(),

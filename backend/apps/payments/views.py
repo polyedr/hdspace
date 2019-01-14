@@ -8,7 +8,7 @@ from django.db.models import F
 from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from core.views.seo import SEOViewMixin
+from apps.core.views.seo import SEOViewMixin
 from .utils import *  # noqa
 from .models import *  # noqa
 from .cart import Cart

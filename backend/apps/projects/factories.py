@@ -13,7 +13,6 @@ class ProjectFactory(factory.DjangoModelFactory):
 
 class ProjectMemberFactory(factory.DjangoModelFactory):
 
-    is_active = True
     role = "owner"
 
     class Meta:

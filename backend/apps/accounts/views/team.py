@@ -6,11 +6,10 @@ from django.contrib import messages
 from django.urls import reverse
 from django.http import JsonResponse
 from django.db.models import Q
-from django.contrib.auth.models import User
 
-from core.views.seo import SEOViewMixin
-from accounts.forms import CreateTeamForm, JoinTeamForm
-from accounts.models import Team, TeamMember
+from apps.core.views.seo import SEOViewMixin
+from apps.accounts.forms import CreateTeamForm, JoinTeamForm
+from apps.accounts.models import Team, TeamMember, User
 
 __all__ = (
     "TeamView",

@@ -8,24 +8,6 @@ from core.tests.utils import create_image
 
 
 @pytest.mark.django_db
-def test_profile_update(client, user_with_password):
-
-    client.login(username=user_with_password.username, password="password")
-
-    payload = dict(
-        first_name="John",
-        last_name="Doe",
-        username="admin",
-        email="admin@gmail.com"
-    )
-
-    response = client.post(reverse("accounts:profile"), payload)
-
-    assert response.status_code == 302
-    assert response["Location"] == reverse("accounts:profile")
-
-
-@pytest.mark.django_db
 def test_change_password(client, user_with_password):
     client.login(username=user_with_password.username, password="password")
 

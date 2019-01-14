@@ -2,8 +2,8 @@ from django.db import models
 from django.urls import reverse
 from django.utils import timezone
 
-from accounts.utils import utils
-from projects.models import Project, ProjectMember
+from apps.accounts.utils import utils
+from apps.projects.models import Project, ProjectMember
 from .utils import cached_property
 
 __all__ = (
