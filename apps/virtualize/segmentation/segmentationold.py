@@ -1,6 +1,6 @@
-from virtualize.models import *
-from virtualize.segmentation import segmentThreshTestVold
-from virtualize.utils.screenshotUtils import setScreenshot
+from apps.virtualize.models import *
+from apps.virtualize.segmentation import segmentThreshTestVold
+from apps.virtualize.utils.screenshotUtils import setScreenshot
 
 
 def run(myFile, CurrentUser, projectName):
@@ -660,7 +660,7 @@ def run(myFile, CurrentUser, projectName):
     print(len(predictions))
     print(predictions)
 
-    userId = getCollectionIDs('user', CurrentUser)
+    userId = getCollectionIDs('accounts_user', CurrentUser)
     setScreenshot(userId, screenshotId[0], projectName)
 
     metaProgramming(predictions, CurrentUser, myFile, 'save')

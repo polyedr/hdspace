@@ -3,6 +3,7 @@
 
     const EDITMODE = 'edit';
     const PREVIEWMODE = 'preview';
+    const COMMENTMODE = 'comment';
 
     var posX = 0;
     var posY = 0;
@@ -15,6 +16,7 @@
     var screenEventId;
     var currentScreenId = $(".scr-img:first").data('screen-id');
     var mode = EDITMODE;
+    var commentId;
 
 
     function setShareUrl(url) {
@@ -334,6 +336,11 @@
     });
 
     $('#prototype').on('click', function () {
+        $('.comment').hide();
+        $('.existed').show();
+        $('#commentModal').hide();
+        $('.non_existed_comment').remove()
+        $('.comment').css("opacity", "0");
         if(mode == EDITMODE){
             $('.existed').css("opacity", "0");
             mode = PREVIEWMODE;
@@ -343,6 +350,169 @@
             mode = EDITMODE
         }
     });
+
+    $('.comment').css("opacity", "0");
+    $('#comment').on('click', function () {
+        mode = COMMENTMODE;
+        $('.comment').show();
+        $('.existed').hide();
+        $('.comment').css("opacity", "1");
+        // $('#screenImage div').draggable( "disable" )
+    })
+
+     $('#image').on('click', function (event) {
+        $('#commentModal').hide()
+        $('#commentModal .comments-list').html('')
+        $('.non_existed_comment').remove()
+        if(mode == COMMENTMODE) {
+            getCoordinates();
+            var x = posX-18;
+            var y = posY-18;
+            var number = $('.screenContainer .comment').length + 1;
+            $( "<div class='comment non_existed_comment' data-x=" + posX +  " data-y=" + posY + "  style='top:"+ y + "px; left:" + x + "px'>" + number + "</div>" )
+                .insertAfter( "#image" );
+
+            var popupX = posX + 18;
+            var popupY = posY + 18;
+            $('#commentModal').css({display:"block", top:popupY + 'px', left: popupX + 'px'});
+            commentId = '';
+        }
+    });
+    $("#commentModal").hide();
+     $(document).on('click', '.comment', function () {
+         commentId = '';
+         $('#commentModal').hide()
+         $('.comments-list').html('')
+         $('.non_existed_comment').remove()
+
+         var x = parseInt($(this).attr('data-x'));
+         var y = parseInt($(this).attr('data-y'));
+         var popupX = x + 39;
+         var popupY = y + 39;
+         var comment_id = $(this).attr('data-comment-id');
+         if(comment_id){
+            commentId = comment_id;
+            var requestPath = '/screen-comments/' + currentScreenId + '/' + comment_id;
+            $.ajax({
+                url: requestPath,
+                method: 'GET',
+                success: function (response) {
+                    if (response) {
+                        $.each(response.screen_comments, function (index, value) {
+                            var $commentItem = $('#comment-item').clone(true, true)
+                            $commentItem.removeAttr('id');
+                            $commentItem.find('img').attr('src', value.image);
+                            $commentItem.find('input').val(value.comment);
+                            $commentItem.find('strong').text(value.user);
+                            $commentItem.find('small').text('(' + moment(value.created).format('ll') + ')');
+
+                            $commentItem.find('.edit-comment').attr('data-comment-edit',  value.id);
+                            $commentItem.find('.delete-comment').attr('data-comment-delete',  value.id);
+                            $commentItem.find('.comment-content').attr('data-comment-edit',  value.id);
+
+                            $('#commentModal .comments-list').append($commentItem);
+                        })
+                    }
+                }
+            });
+         }
+         $('#commentModal').css({display:"block", top:popupY + 'px', left: popupX + 'px'});
+     });
+
+     $(document).on('click', '.edit-comment', function () {
+        $('.comment-content').prop('disabled', true);
+        var comment_id = $(this).attr('data-comment-edit');
+        var $prevInput = $("input[data-comment-edit=" + comment_id + "]");
+        $prevInput.prop('disabled', function(i, v) { return !v; });
+    });
+
+     $(document).on('click', '.delete-comment', function () {
+         var comment_id = $(this).attr('data-comment-delete');
+         var url = '/delete-comment/';
+          var $comment = $(this);
+         if(comment_id){
+             $.ajax({
+                url: url,
+                method: 'POST',
+                data: {
+                    comment_id: comment_id,
+                    csrfmiddlewaretoken: window.csrftoken
+                },
+                success: function (response) {
+                    if (response.msg) {
+                        $comment.closest('.comment-item').remove();
+                    }
+                }
+            });
+         }
+     });
+
+     $(document).on('keypress', '.comment-content', function (e) {
+        var code = (e.keyCode ? e.keyCode : e.which);
+        if (parseInt(code) === 13) {
+            e.preventDefault();
+            var comment = $(this).val();
+            var $edit = $(this);
+            var commentId = $(this).attr('data-comment-edit');
+            var url = '/edit-comment/';
+            if(comment) {
+                $.ajax({
+                    url: url,
+                    method: 'POST',
+                    data: {
+                        comment_id: commentId,
+                        comment: comment,
+                        csrfmiddlewaretoken: window.csrftoken
+                    },
+                    success: function (response) {
+                        if (response.msg) {
+                            $edit.val(comment);
+                            $edit.prop('disabled', true);
+                            $('#commentModal').hide();
+                        }
+                    }
+                });
+            }
+        }
+    });
+
+     $(document).on('click', '#send_comment', function () {
+         var comment = $('#comment_text').val();
+         if(comment){
+             var requestPath = '/new-comment/'
+             $.ajax({
+                url: requestPath,
+                method: 'POST',
+                data: {
+                    csrfmiddlewaretoken: window.csrftoken,
+                    comment: comment,
+                    commen_id: commentId,
+                    x: posX,
+                    y: posY,
+                    screen_id: currentScreenId
+                },
+                success: function (response) {
+                    if (response) {
+                        var $commentItem = $('#comment-item').clone(true, true)
+                        $commentItem.removeAttr('id');
+                        $commentItem.find('img').attr('src', response.image);
+                        $commentItem.find('input').val(response.comment);
+                        $commentItem.find('strong').text(response.user);
+                        $commentItem.find('small').text('(' + moment(response.created).format('ll') + ')');
+
+                        $commentItem.find('.edit-comment').attr('data-comment-edit',  response.id);
+                        $commentItem.find('.comment-content').attr('data-comment-edit',  response.id);
+                        $('#commentModal .comments-list').append($commentItem);
+                        $('#commentModal').hide();
+                        commentId = '';
+                        $('#comment_text').val('');
+                        $('.non_existed_comment').attr('data-comment-id', response.comment_id)
+                        $('.comment').removeClass('non_existed_comment');
+                    }
+                }
+            });
+         }
+     })
 
     //  preview model code
 
@@ -426,7 +596,6 @@
         $('#modalButton').attr('data-url', screenUrl);
         var src = $( "img[screen-id=" + currentScreenId + "]" ).attr("src");
         $("#screenImage img").attr("src", src);
-        $("#screenImage div").remove();
         mode = EDITMODE;
         var url = $(this).data("event_url");
 
@@ -436,6 +605,7 @@
             success: function (response) {
                 if (response) {
                     $('#screenImage .existed').remove();
+                     $("#screenImage .comment").remove();
                     $('#screenImage img').attr('src', response.image);
                     $.each(response.screen_events, function (index, value) {
                         var $eventBox = $('#adjacent-content').clone(true, true);
@@ -449,6 +619,21 @@
                         $eventBox.removeAttr('id');
                         $('#screenImage').append($eventBox);
                     })
+
+                    $.each(response.screen_comments, function (index, value) {
+                        var $commentBox = $('#comment_content').clone(true, true);
+                        $commentBox.css({
+                            'top': value.y,
+                            'left': value.x,
+                        });
+                        $commentBox.text(value.index);
+                        $commentBox.removeAttr('id');
+                        $commentBox.attr('data-comment-id', value.id);
+                        $commentBox.attr('data-x', value.x);
+                        $commentBox.attr('data-y', value.y);
+                        $('#screenImage').prepend($commentBox);
+                    })
+
                     $('#shareLink').val(response.preview_absolute_url);
                     setShareUrl(response.preview_absolute_url);
                 }

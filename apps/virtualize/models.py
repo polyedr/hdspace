@@ -8,10 +8,10 @@ from datetime import datetime
 
 from django.shortcuts import render
 
-from virtualize.display import set_html_layout, set_html_color
-from virtualize.utils.elementUtils import search_new_element, getStylesDb
-from virtualize.utils.screenshotUtils import getScreenName, getScreen_Name, getCurrentScreenName
-from virtualize.utils.widgetsUtils import fillWidget, fillGraphics
+from apps.virtualize.display import set_html_layout, set_html_color
+from apps.virtualize.utils.elementUtils import search_new_element, getStylesDb
+from apps.virtualize.utils.screenshotUtils import getScreenName, getScreen_Name, getCurrentScreenName
+from apps.virtualize.utils.widgetsUtils import fillWidget, fillGraphics
 
 client = pymongo.MongoClient('localhost', 27017)  # maxPoolSize=50
 db = client.MeduzaDb
@@ -35,7 +35,7 @@ def user(url, user_id, name, scname):
     print(str(url) + ' has been saved')
 
     screen_id = db.screenshots.find_one({'user_id':str(user_id),'image': str(url), 'screenName': str(scname)})['_id']
-    db.tempPage.update({'userId': str(user_id)},{'$set': {'screenshots': str(screen_id)}})
+    db.tempPage.update({'userId': str(user_id)},{'$set': {'screenshot_id': str(screen_id)}})
 
     return url
 
@@ -323,7 +323,7 @@ def findOne(collection, collectionKey, searchword):
 
     msg = 'failed to find: ' + searchword + '. '
     result = None
-    if collectionKey == '_id':
+    if collectionKey == '_id' and searchword != '':
         try:
             result = collection.find_one({collectionKey: ObjectId(searchword)})
         except pymongo.errors.OperationFailure as e:
@@ -362,7 +362,7 @@ def find_all_projects_user_status(user, status):
 
     result = []
     try:
-        results = db.projects.find({'user_id': user, 'status': status})
+        results = db_main.projects_project.find({'user_id': ObjectId(user), 'status': status})
     except pymongo.errors.OperationFailure as e:
         print('Mongo Data Base Error ' + e)
     return results
@@ -372,7 +372,7 @@ def find_one_project_user_status(userId, status):
 
     result = None
     try:
-        results = db.projects.find_one({'user_id': userId, 'status': status})
+        results = db_main.projects_project.find_one({'user_id': ObjectId(userId), 'status': status})
     except pymongo.errors.OperationFailure as e:
         print('Mongo Data Base Error ' + e)
     return results
@@ -399,7 +399,7 @@ def find_one_image_library(userId, project_name):
 
 
 def getCollectionIDs(collection, username):
-    if collection == 'auth_user':
+    if collection == 'accounts_user':
         collection = db_main[str(collection)]
     else:
         collection = db[str(collection)]
@@ -421,7 +421,7 @@ def get_project_two_search_keys(user_id, project_name):
 
     result = None
     try:
-        result = db.projects.find_one({'user_id': user_id, 'projectName': project_name})
+        result = db_main.projects_project.find_one({'user_id': ObjectId(user_id), 'name': project_name})
     except (AttributeError, pymongo.errors.OperationFailure) as e:
         print('Mongo Data Base Error ' + e)
     return result
@@ -500,18 +500,20 @@ def save_layouts():
 
 
 def saveMetrix(secHeight, secWidth, widthLayouts, heightLayouts, userId, screenshotId, projectName,device):
+    print('Im saveMetrix')
 
-    if db.tempPage.find_one({'userId': userId}) is not None and db.tempPage.find_one({}) is not None:
-        db.tempPage.update({'userId': userId}, {'$set':
+    if db.tempPage.find_one({'userId': str(userId)}) is not None and db.tempPage.find_one({}) is not None:
+        db.tempPage.update({'userId': str(userId)}, {'$set':
             {'screenHeight': secHeight, 'screenWidth': secWidth,'device_page': device}
         })
     else:
+        print('Im saveMetrix else')
         db.tempPage.insert({
-            'userId': userId,
+            'userId': str(userId),
             'projectName': projectName,
             'screenshot_id': screenshotId,
-            'screenHeight': secHeight,
-            'screenWidth': secWidth,
+            'screenHeight': float(secHeight),
+            'screenWidth': float(secWidth),
             'device_page': device,
             'current_device_page': device,
             'layoutsHeight': heightLayouts,
@@ -671,14 +673,11 @@ def updateLayout(colleciton, id, location):
 
 
 def insert_project(project, user_id, date):
-    db.projects.insert({'projectName': project,
-                        'user_id': user_id,
+    db_main.projects_project.insert({'name': project,
+                        'user_id': ObjectId(user_id),
                         'screenshots': [],
-                        'status': 'pending',
-                        'dateCreated': str(date),
-                        'comment': [],
-                        'groupCommentCode': 0,
-                        'updated_date': str(date)})
+                        'status': 'pending'
+                                     })
     db.tempPage.update({'userId': user_id}, {'$set': {'projectName': project, 'screenshot_id': ''}})
     db.storageLibrary.update({'user_Id': user_id}, {'$set': {'text': 'Project: ' + project.title()}})
 
@@ -697,18 +696,14 @@ def save_image_library(userId, selectedProject, filename, myfileLib, fileTypeL, 
 
 
 def insert_project(project, userId, date):
-    db.projects.insert({'projectName': project,
-                        'user_id': userId,
+    db_main.projects_project.insert({'name': project,
+                        'user_id': ObjectId(userId),
                         'screenshots': [],
-                        'status': 'pending',
-                        'dateCreated': str(date),
-                        'comment': [],
-                        'groupCommentCode': 0,
-                        'updated_date': str(date)
+                        'status': 'pending'
                         })
     projectName = project
     db.tempPage.update({'userId': userId}, {'$set': {'projectName': projectName}})
-    allProject = list(db.projects.find())
+    allProject = list(db_main.projects_project.find())
     size = int(len(allProject))
     db.storageLibrary.insert(
         {
@@ -727,8 +722,9 @@ def getAllProjects(userId, currentUser):
     print('getting all the projects for workflow')
     var = []
     project = db.tempPage.find_one({'userId': userId})
+    project_name = project['projectName']
     if project is not None and project['projectName'] != '':
-        screenids = db.projects.find_one({'user_id': userId, 'projectName': project['projectName']})
+        screenids = db_main.projects_project.find_one({'user_id': ObjectId(userId), 'name': project['projectName']})
         for id in screenids['screenshots']:
             if str(id) != '':
                 screen = db.screenshots.find_one({'_id': ObjectId(str(id))})
@@ -739,7 +735,7 @@ def getAllProjects(userId, currentUser):
     import codecs
     for page in var:
         try:
-            pagehtml = codecs.open('./static/dirty_static/users/' + currentUser + '/pages/' + page[0] + '/testing.html',
+            pagehtml = codecs.open('./static/users/' + currentUser + '/' + page[0] + '/testing.html',
                                    mode='r', encoding='UTF-8')
             pagename = page[2]
             html.append([pagename, pagehtml.read()])
@@ -747,7 +743,7 @@ def getAllProjects(userId, currentUser):
         except:
             html.append('')
         try:
-            pagecss = codecs.open('./static/dirty_static/users/' + currentUser + '/pages/' + page[0]
+            pagecss = codecs.open('./static/users/' + currentUser + '/' + page[0]
                                   + '/css/testingCss.css', mode='r', encoding='UTF-8')
             css.append(pagecss.read())
             pagecss.close()
@@ -789,15 +785,19 @@ def getLayoutHtml(currentUser, screenshotName):
     return newHtml
 
 
-def getProjectPage(screenshotName, currentUser):
+def getProjectPage(screenshotName, currentUser, project_name):
     print('retrieve the correct html for page2')
+    print(screenshotName)
+    print(currentUser)
+    print(project_name)
     try:
         import codecs
-        pagehtml = codecs.open('./static/dirty_static/users/' + currentUser+'/pages/' + screenshotName
+        pagehtml = codecs.open('./static/users/' + currentUser + '/' + screenshotName
                                + '/testing.html', mode='r', encoding='UTF-8')
         html = pagehtml.read()
         pagehtml.close()
     except:
+        print("Victor")
         html = ''
     return html
 
@@ -807,7 +807,7 @@ def getProjectPageSuggestions(screenshotSID, currentUser):
     try:
         getPathFS = db.screenshots.find_one({'_id': screenshotSID})['pageName']
         import codecs
-        pagehtml = codecs.open('./static/dirty_static/users/' + currentUser +'/pages/' + getPathFS
+        pagehtml = codecs.open('./static/users/' + currentUser +'/pages/' + getPathFS
                                + '/testingSuggestions.html', mode='r', encoding='UTF-8')
         htmlSugg = pagehtml.read()
         pagehtml.close()
@@ -829,12 +829,13 @@ def getProjectPagePro(screenshotName, currentUser):
     print('retrieve the Pro correct html for page2')
     var1 = []
     html = []
-    user = db.user.find_one({'username': currentUser})
+    user = db_main.accounts_user.find_one({'username': currentUser})
     userId1 = user['_id']
     try:
         sc_id = db.screenshots.find_one({'pageName': screenshotName})
         project1 = db.tempPage.find_one({'screenshot_id': str(sc_id['_id'])})
-        scree_id = db.projects.find_one({'user_id': str(userId1), 'projectName': str(project1['projectName'])})
+        project_name = project1['projectName']
+        scree_id = db_main.projects_project.find_one({'user_id': ObjectId(userId1), 'name': str(project1['projectName'])})
         arSc = scree_id['screenshots']
         for id1 in arSc:
             screen = db.screenshots.find_one({'_id': ObjectId(str(id1))})
@@ -844,7 +845,7 @@ def getProjectPagePro(screenshotName, currentUser):
 
         import codecs
         for page in var1:
-            pagehtml1 = codecs.open('./static/dirty_static/users/' + currentUser + '/pages/' + page[0]
+            pagehtml1 = codecs.open('./static/users/' + currentUser + '/' + page[0]
                                     + '/testingPro.html',mode='r', encoding='UTF-8')
             screenName = page[2]
             html.append([screenName, pagehtml1.read()])
@@ -855,15 +856,15 @@ def getProjectPagePro(screenshotName, currentUser):
     return html
 
 
-def getProjectPageAndCss(screenshotName, currentUser):
+def getProjectPageAndCss(screenshotName, currentUser, project_name):
     print('retrieve the correct html and css for page2')
     try:
         import codecs
-        pagehtml = codecs.open('./static/dirty_static/users/' + currentUser+'/pages/'+ screenshotName
+        pagehtml = codecs.open('./static/users/' + currentUser + '/' + screenshotName
                                + '/testing.html', mode='r', encoding='UTF-8')
         html = pagehtml.read()
         pagehtml.close()
-        pagecss = codecs.open('./static/dirty_static/users/' + currentUser+'/pages/'+ screenshotName
+        pagecss = codecs.open('./static/users/' + currentUser + '/' + screenshotName
                               + '/css/testingCss.css', mode='r', encoding='UTF-8')
         css = pagecss.read()
         pagecss.close()
@@ -876,7 +877,7 @@ def getProjectPageAndCss(screenshotName, currentUser):
 def getProjects(userId):
     print('getting the projects for this user!')
     jsonProjects = []
-    projects = db.projects.find({'user_id': userId})
+    projects = db_main.projects_project.find({'user_id': ObjectId(userId)})
     for project in projects:
         screens = []
         screen = 'There are no pages for this project.'
@@ -896,11 +897,10 @@ def getProjects(userId):
             jsonProjects.append({
                 'id': str(project['_id']),
                 'status' : str(project['status']),
-                'projectName': project['projectName'].capitalize(),
+                'projectName': project['name'].capitalize(),
                 'user_id': project['user_id'],
                 'screenshotsamount': length,
-                'screenshots': screen,
-                'dateCreated': (project['dateCreated'])
+                'screenshots': screen
             })
 
     return jsonProjects
@@ -909,12 +909,13 @@ def getProjects(userId):
 def getProjectPageWork(userId):
     print('retrieve the Pro correct html for page2 in workflow container')
     html = []
-    currentUser = db.user.find_one({'_id': ObjectId(userId)})['username']
+    currentUser = db_main.accounts_user.find_one({'_id': ObjectId(userId)})['username']
 
     try:
         print('projectName')
-        temp = db.tempPage.find_one({'userId': userId})
-        currentProject = db.projects.find_one({'user_id': userId, 'projectName': str(temp['projectName'])})
+        temp = db.tempPage.find_one({'userId': str(userId)})
+        project_name = temp['projectName']
+        currentProject = db_main.projects_project.find_one({'user_id': ObjectId(userId), 'name': str(temp['projectName'])})
         project_screen = currentProject['screenshots']
         screenshots = db.screenshots.find({'user_id': str(userId)})
         for screen in screenshots:
@@ -923,8 +924,7 @@ def getProjectPageWork(userId):
                 screenName = screen['screenName']
                 elId = str(screen['_id'])
                 import codecs
-                pagehtml2 = codecs.open('./static/dirty_static/users/' + currentUser
-                                        +'/pages/' + screenshotName
+                pagehtml2 = codecs.open('./static/users/' + currentUser + '/' + screenshotName
                                         + '/testingWork.html', mode='r', encoding='UTF-8')
                 html.append([screenName, pagehtml2.read(), elId])
                 pagehtml2.close()
@@ -941,11 +941,11 @@ def getProjectPageWorkCSS(userId,projectName, currentScreen):
     path = []
 
     try:
-        project = db.projects.find_one({'user_id': userId, 'projectName': projectName})
+        project = db_main.projects_project.find_one({'user_id': ObjectId(userId), 'name': projectName})
         pName = str(project['_id'])
         p = pName.split('/')
         screenshots = db.screenshots.find({'user_id': userId})
-        currentUser = db.user.find_one({'_id': ObjectId(userId)})['username']
+        currentUser = db_main.accounts_user.find_one({'_id': ObjectId(userId)})['username']
 
         for screen in screenshots:
             if screen['status'] != 'inactive':
@@ -956,10 +956,10 @@ def getProjectPageWorkCSS(userId,projectName, currentScreen):
                     import codecs
                     try:
                         if screenshotName.split('/')[1] != currentScreen.split('/')[1]:
-                            path.append(currentUser + '/pages/' + screenshotName +
+                            path.append(currentUser + '/' + screenshotName +
                                         '/css/testingCss.css')
-                        pagecss = codecs.open('./static/dirty_static/users/'
-                                              + currentUser + '/pages/' + screenshotName
+                        pagecss = codecs.open('./static/users/'
+                                              + currentUser + '/' + screenshotName
                                               + '/css/testingCss.css',
                                             mode='r', encoding='UTF-8')
                         css.append(pagecss.read())
@@ -974,17 +974,17 @@ def getProjectPageWorkCSS(userId,projectName, currentScreen):
 
 def getSuggestion(userId, projectName):
     print('Iside Suggestions')
-    currentProject = db.projects.find_one({'projectName':str(projectName),
-                                           'user_id':str(userId)})
+    currentProject = db_main.projects_project.find_one({'name':str(projectName),
+                                           'user_id':ObjectId(userId)})
     s1 = []
     s2 = []
     s3 = []
     s4 = []
     suggestions = []
-    if currentProject != None:
+    if currentProject is not None:
         project_id = str(currentProject['_id'])
         suggest = db.tempSuggestions.find_one({'project_id':project_id})
-        if suggest !=None:
+        if suggest is not None:
             data_1 = suggest['Level_1']
             data_2 = suggest['Level_2']
             data_3 = suggest['Level_3']
@@ -1021,8 +1021,8 @@ def getSuggestion(userId, projectName):
 
 def fillPageArray(userId, projectName):
     pageArray = []
-    project = db.projects.find_one({'user_id': userId,
-                                    'projectName': projectName})
+    project = db_main.projects_project.find_one({'user_id': ObjectId(userId),
+                                    'name': projectName})
     print('filling up the page!')
     try:
         for screenid in project['screenshots']:
@@ -1090,11 +1090,11 @@ def html_render(url, currentUser, page, projectName, request, screenshotName, us
                       'currentProfilePic': getUserPicture(currentUser),
                       'currentPage': getCurrentScreenName(screenId),
                       'colorTransfer': getColorTransferHtml(currentUser, screenshotName),
-                      'screenHTML': getProjectPage(screenshotName, currentUser),
-                      # 'screenHTMLpro': getProjectPagePro(screenshotName, currentUser),
-                      # 'screenHTMLwork': getProjectPageWork(userId),
+                      'screenHTML': getProjectPage(screenshotName, currentUser, projectName),
+                      'screenHTMLpro': getProjectPagePro(screenshotName, currentUser),
+                      'screenHTMLwork': getProjectPageWork(userId),
                       'screenHTMLsuggestions': getProjectPageSuggestions(ScreenSIDFDJANGO, currentUser),
-                      'screenCSSpro': getProjectPageAndCss(screenshotName, currentUser),
+                      'screenCSSpro': getProjectPageAndCss(screenshotName, currentUser, projectName),
                       'screenCSSwork': getProjectPageWorkCSS(userId, projectName, screenshotName),
                       'colorTransferUploadIMG': str(currentUser) + '/pages/' + str(screenshotName)
                                                 + '/colorTransfer/styles/colorTransfer.jpg',

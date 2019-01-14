@@ -1,14 +1,16 @@
 import pymongo
 
+from bson.objectid import ObjectId
 from django.http import HttpResponse, HttpResponseRedirect
 
-from virtualize.models import setScreenshot, getScreenshotName, getCollectionIDs, getLatestScreenshot
-from virtualize.views import getProjectPageAndCss
+from apps.virtualize.models import setScreenshot, getScreenshotName, getCollectionIDs, getLatestScreenshot
+from apps.virtualize.views import getProjectPageAndCss
 
 
 
 client = pymongo.MongoClient('localhost', 27017)  # maxPoolSize=50
 db = client.MeduzaDb
+db_main = client.mainDB
 
 def prototypePage(request):
     try:
@@ -16,11 +18,11 @@ def prototypePage(request):
         print(request.GET['link'])
         page = request.GET['link']
         currentUser = str(request.user)
-        userId = getCollectionIDs('user', currentUser)
+        userId = getCollectionIDs('accounts_user', currentUser)
         screenshots = db.screenshots.find({'user_id': userId, 'pageName': page})
 
         projectName = getLatestScreenshot(userId)['projectName']
-        project = db.projects.find_one({'projectName': projectName, 'user_id': userId})['screenshots']
+        project = db_main.projects_project.find_one({'name': projectName, 'user_id': ObjectId(userId)})['screenshots']
         print('check over here')
         for screen in screenshots:
             print(str(screen['_id']))
@@ -30,7 +32,7 @@ def prototypePage(request):
                 setScreenshot(userId, screenshotId, projectName)
                 screenshotName = str(
                 getScreenshotName('screenshots', userId, str(screenshotId))[int(len(str(currentUser))) + 7:-4])
-        curProject = getProjectPageAndCss(screenshotName, currentUser)
+        curProject = getProjectPageAndCss(screenshotName, currentUser, projectName)
         jsondata = []
         jsondata.append(curProject[0])
         jsondata.append(curProject[1])

@@ -56,15 +56,10 @@ def test_signup(client, mailoutbox, settings):
         site_name=settings.SITE_NAME
     )
     assert msg.to == [payload["email"]]
-    match = parse.search(
-        """{:s}<a href="{email_confirmation_url}" class="btn-primary">Confirm email address</a>{:s}""",
-        msg.body,
-    )
-    assert match is not None
 
     profile = Profile.objects.filter(user__email=payload["email"]).first()
 
-    assert match["email_confirmation_url"] == build_absolute_url(profile.get_confirmation_url())
+    assert build_absolute_url(profile.get_confirmation_url()) in msg.body
 
 
 @pytest.mark.django_db
@@ -166,15 +161,9 @@ def test_forgot_password(client, mailoutbox, settings, user_with_password):
     )
     assert msg.to == [payload["email"]]
 
-    match = parse.search(
-        """<a href="{reset_password_url}" class="btn-primary">Reset your password</a>""",
-        msg.body,
-    )
-    assert match is not None
-
     profile = Profile.objects.filter(user__email=payload["email"]).first()
 
-    assert match["reset_password_url"] == build_absolute_url(profile.get_reset_password_url())
+    assert build_absolute_url(profile.get_reset_password_url()) in msg.body
 
 
 @pytest.mark.django_db

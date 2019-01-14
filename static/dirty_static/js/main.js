@@ -54,8 +54,14 @@ $(document).ready(function () {
 });
 $(window).on('load', function() {
     //device size
-    var widthSection = document.getElementById('classContainer-selector').clientWidth;
-    var heightSection = document.getElementById('classContainer-selector').clientHeight;
+    if (document.getElementById('classContainer-selector') == null){
+        var widthSection = 0;
+        var heightSection = 0;
+    }else {
+        console.log(document.getElementById('classContainer-selector'))
+        var widthSection = document.getElementById('classContainer-selector').clientWidth;
+        var heightSection = document.getElementById('classContainer-selector').clientHeight;
+    }
 
     //Layouts sizes
 

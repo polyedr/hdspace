@@ -14,7 +14,7 @@ services:
     image: mongo:latest
     env_file: .env
     volumes:
-      - ./.docker-data/mongo:/data/db
+      - db:/data/db
     environment:
       - MONGO_INITDB_ROOT_USERNAME=${DB_USER}
       - MONGO_INITDB_ROOT_PASSWORD=${DB_PASSWORD}
@@ -23,7 +23,6 @@ services:
 
   mailhog:
     image: mailhog/mailhog
-    restart: always
     ports:
     - "1025:1025"
     - "8025:8025"

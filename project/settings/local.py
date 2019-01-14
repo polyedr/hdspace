@@ -30,7 +30,6 @@ INTERNAL_IPS = ENV.list("INTERNAL_IPS", default=("127.0.0.1", ))
 
 # Application definition
 
-# Application definition
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -145,6 +144,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTH_USER_MODEL = 'accounts.User'
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/

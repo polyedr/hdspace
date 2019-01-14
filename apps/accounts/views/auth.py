@@ -4,12 +4,11 @@ from django.views.generic import TemplateView
 from django.contrib.auth import logout, login
 from django.db.models import Q
 from django.contrib import messages
-from django.contrib.auth.models import User
 
 from apps.projects.models import ProjectInvitation, ProjectMember
 from apps.threads.models import Thread, UserThread
 from apps.accounts.mixins import AnonymousRequiredMixin
-from apps.accounts.models import Profile
+from apps.accounts.models import Profile, User
 from apps.accounts.forms import *  # noqa
 from apps.accounts.utils import emails
 from apps.core.views.seo import SEOViewMixin
