@@ -61,7 +61,14 @@
                 {% endif %}
               </td>
               <td class="text-green">{{project.status}}</td>
-              <td><a href="{% url 'projects:project' pk=project.id %}">{{ project.name }}</a></td>
+              <td>
+                  <form id="selectProject" method="POST" action="">
+                    {% csrf_token %}
+                      <input type="submit" id="submitBtn{{ project.id }}" name="project" value="{{ project.id }}" style="display:none;" />
+                    <a href="javascript:;" onclick="$('#submitBtn{{ project.id }}').click();">{{ project.name }}</a>
+                  </form>
+              </td>
+{#              <td><a href="{% url 'projects:project' pk=project.id %}">{{ project.name }}</a></td>#}
               <td><span class="line">{{ project.number_of_screens }}</span></td>
               <td>
                 {% for screen in project.projectscreen_set.all %}

@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth import password_validation
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 
 from .models import Profile
 from .utils import emails
@@ -26,7 +26,7 @@ class SignUpForm(UserCreationForm):
     last_name = forms.CharField()
 
     class Meta:
-        model = User
+        model = get_user_model()
         fields = (
             "username", "first_name", "last_name", "email",
             "password1", "password2",
@@ -35,7 +35,7 @@ class SignUpForm(UserCreationForm):
     def clean_email(self):
         email = self.cleaned_data.get("email")
         username = self.cleaned_data.get("username")
-        if email and User.objects.filter(email=email).exclude(username=username).exists():
+        if email and get_user_model().objects.filter(email=email).exclude(username=username).exists():
             raise forms.ValidationError("A user with that email already exists.")
         return email
 
@@ -124,11 +124,11 @@ class UpdateProfileForm(forms.ModelForm):
     first_name = forms.CharField()
     last_name = forms.CharField()
     username = forms.CharField()
-    hourly_rate = forms.CharField(label="Hourly Rate")
-    role = forms.ChoiceField(widget=forms.Select(), required=True)
+    hourly_rate = forms.CharField(label="Hourly Rate", required=False)
+    role = forms.ChoiceField(widget=forms.Select(), required=False)
 
     class Meta:
-        model = User
+        model = get_user_model()
         fields = (
             "username", "first_name", "last_name", "email",
         )

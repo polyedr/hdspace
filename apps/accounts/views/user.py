@@ -3,8 +3,8 @@ from django.views.generic.base import View
 from django.http import JsonResponse
 from django.contrib.staticfiles.templatetags.staticfiles import static
 
-from django.contrib.auth.models import User
-from projects.models import ProjectMember, Project
+from apps.accounts.models import User
+from apps.projects.models import ProjectMember, Project
 
 __all__ = (
     "SearchUserView",

@@ -4,9 +4,9 @@ from django.views.generic.base import View, TemplateView
 from django.http import JsonResponse
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from core.utils import date_difference
-from projects.forms import AddTaskForm
-from projects.models import (
+from apps.core.utils import date_difference
+from apps.projects.forms import AddTaskForm
+from apps.projects.models import (
     Project, ProjectMember, ProjectTask,
     TaskTime, ProjectActivity
 )
@@ -137,7 +137,8 @@ class AddSubTaskView(LoginRequiredMixin, View):
         if form.is_valid():
             data = form.cleaned_data
             project = Project.objects.get(pk=project_id)
-            member = ProjectMember.objects.get(project=project, user=data["owner"])
+            # owner_user = User.objects.get(pk=data["owner"])
+            member = ProjectMember.objects.get(pk=data["owner"])
             creator = ProjectMember.objects.get(project=project, user=request.user)
             parent_task = ProjectTask.objects.get(pk=task_id)
             task = ProjectTask.objects.create(
