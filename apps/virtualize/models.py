@@ -915,7 +915,7 @@ def getProjectPageWork(userId):
         print('projectName')
         temp = db.tempPage.find_one({'userId': str(userId)})
         project_name = temp['projectName']
-        currentProject = db_main.projects_project.find_one({'user_id': ObjectId(userId), 'name': str(temp['projectName'])})
+        currentProject = db_main.projects_project.find_one({'user_id': ObjectId(userId), 'name': str(project_name)})
         project_screen = currentProject['screenshots']
         screenshots = db.screenshots.find({'user_id': str(userId)})
         for screen in screenshots:
@@ -931,12 +931,13 @@ def getProjectPageWork(userId):
     except:
         html.append('')
 
+    print(html)
+
     return html
 
 
 def getProjectPageWorkCSS(userId,projectName, currentScreen):
-    print('retrieve the Pro correct html for page2 in workflow container')
-    print(projectName)
+    print('retrieve the Pro correct css for page2 in workflow container')
     css = []
     path = []
 
@@ -951,11 +952,10 @@ def getProjectPageWorkCSS(userId,projectName, currentScreen):
             if screen['status'] != 'inactive':
                 screenshotName = screen['pageName']
                 screenName = screen['screenName']
-
-                if screenshotName.split('/')[0] == projectName:
+                if screenshotName.split('/')[1] == projectName:
                     import codecs
                     try:
-                        if screenshotName.split('/')[1] != currentScreen.split('/')[1]:
+                        if screenshotName.split('/')[2] != currentScreen.split('/')[2]:
                             path.append(currentUser + '/' + screenshotName +
                                         '/css/testingCss.css')
                         pagecss = codecs.open('./static/users/'
@@ -968,7 +968,6 @@ def getProjectPageWorkCSS(userId,projectName, currentScreen):
                         continue
     except:
         css.append('')
-
     return path
 
 

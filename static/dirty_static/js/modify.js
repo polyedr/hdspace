@@ -852,7 +852,7 @@ function getPredictions(id){
     function ajaxGetPredictions(){
         return $.ajax({
                 type : 'GET',
-                url : 'index',
+                url : '/index/',
                 name : 'getPredictions',
                 data : {'name':'getPredictions','id': id},
                 success: function(data){
@@ -1428,7 +1428,7 @@ function getCurrentEditing(){
     function ajaxGetPages(){
         return $.ajax({
             type : 'GET',
-            url : 'index',
+            url : '/index/',
             name : 'getPages',
             data : {'name':'getPages'},
             success: function(data){

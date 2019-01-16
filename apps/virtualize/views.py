@@ -411,7 +411,7 @@ def main_request_core(request):
         elif str(request.GET['name']) == 'getPages':
             print('We are running getPages GET')
             pages = []
-            screenshotId = list(findMultiple(db.screenshots, 'user_id', srt(userId)))
+            screenshotId = list(findMultiple(db.screenshots, 'user_id', str(userId)))
             size = int(len(screenshotId) - 1)
             project = get_project_two_search_keys(userId, projectName)
             while size >= 0:

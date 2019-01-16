@@ -47,7 +47,7 @@ def metaCustom(currentUser, myFile, screenshot_id, state):
             try:
                 os.stat('static/users/' + str(currentUser) + '/' + croppedFileName + '/')
             except:
-                os.mkdir('static/users/' + str(currentUser) + '/' + croppedFileName + '/')
+                os.makedirs('static/users/' + str(currentUser) + '/' + croppedFileName + '/')
             # Root Project HTML Page
             pagehtml = open(
                 'static/users/' + str(currentUser) + '/' + croppedFileName + '/' + titleHtml + '.html',
