@@ -1,5 +1,4 @@
 from django.urls import re_path, path
-
 from apps.virtualize import views
 
 app_name = "virtualize"

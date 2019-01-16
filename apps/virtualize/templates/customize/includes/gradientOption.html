@@ -53,7 +53,7 @@
                                         var pagesResultType, pagesResultAngle, getLinearRadial, getAngle, noTwo, noFour;
                                         $.ajax({
                                             type : 'GET',
-                                            url : 'index',
+                                            url : '/index/',
                                             name : 'getMode',
                                             data : {
                                                 'name':'getMode'
@@ -166,7 +166,7 @@
                 function updateBGC() {
                     $.ajax({
                         type: 'GET',
-                        url: 'index',
+                        url: '/index/',
                         name: 'getBackgroundImageGradient',
                         data: {
                             'name': 'getBackgroundImageGradient'
