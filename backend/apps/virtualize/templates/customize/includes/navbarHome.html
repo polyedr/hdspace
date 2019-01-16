@@ -20,9 +20,7 @@ overflow: unset;">
                                        data-popup-ordinal="0" style="color: white;"></i>
                                     </div>
                                     <img  alt="image" class="img-circle" src="/static/dirty_static/users/{{ currentProfilePic }}?{% now "U" %}"
-                                        onerror="this.src='/static/dirty_static/img/nopicyet.png'" style="object-fit: cover;
-                                        width: 104px;
-                                        height: 104px;">
+                                        onerror="this.src='/static/dirty_static/img/nopicyet.png'" style="object-fit: cover; width: 104px; height: 104px;">
                                 </div>
                                 <input type="hidden" name="profilePicture" value="{{ userName }}">
                                 <input id="profilePicId" type="file" name="profilePictureimg" onchange="this.form.submit();" accept="image/*" class="hidden">

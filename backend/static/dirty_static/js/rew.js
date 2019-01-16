@@ -1231,7 +1231,7 @@
     function approved_click(item_list){
         $.ajax({
             type: 'POST',
-            url: 'index',
+            url: '/index/',
             name: 'approve',
             traditional: true,
             data:{
@@ -1247,7 +1247,7 @@
 
         $.ajax({
             type: 'POST',
-            url: 'index',
+            url: '/index/',
             name: 'search',
             data: {
                 'name': 'search',
@@ -1354,7 +1354,7 @@
 
         $.ajax({
             type: 'POST',
-            url: 'index',
+            url: '/index/',
             name: 'search',
             data: {
                 'name': 'search',
@@ -1870,7 +1870,7 @@
         // $('#linkListPro').addClass('hidden');
         $.ajax({
             type : 'POST',
-            url : 'index',
+            url : '/index/',
             name : 'updateURL',
             data : {'name':'updateURL',
             'id':id,

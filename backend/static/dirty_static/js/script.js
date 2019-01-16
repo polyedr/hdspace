@@ -2136,8 +2136,8 @@
             $('#searchBarT').addClass('col-xs-7').removeClass('col-xs-1 col-xs-2 col-xs-12 col-xs-3 col-xs-4 col-xs-5 col-xs-6 col-xs-9 col-xs-8 col-xs-10 col-xs-11');
             document.getElementById('searchBarT').style.left = '-15px';
             document.getElementById('rightMenuT').style.width = '5%';
-            document.getElementById('arrow').style.marginTop = '20px';
-            document.getElementById('arrow').style.width = '2%';
+            // document.getElementById('arrow').style.marginTop = '20px';
+            // document.getElementById('arrow').style.width = '2%';
             document.getElementById('notification').style.height = '40px';
             console.log('Hellooooooooo');
         }
