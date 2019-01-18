@@ -88,7 +88,6 @@
                 gradientFix += "<div class='sp-" + i + "'></div>";
             }
         }
-
         return [
             "<div class='sp-container sp-hidden'>",
                 "<div class='sp-palette-container'>",
@@ -124,13 +123,12 @@
                     "<div class='sp-button-container sp-cf'>",
                         "<a class='sp-cancel' href='#'></a>",
 //                        "<button type='button' class='sp-choose'></button>",
-                            "<button type='button' id='chooseID' class='sp-choose' onclick='testfuntionsupun()'></button>",
+                            "<button type='button' id='chooseID' class='sp-choose' onclick='/*testfuntionsupun();*/ updateServerRecentColors();'></button>",
                     "</div>",
                 "</div>",
             "</div>"
         ].join("");
     })();
-
 
 
     function paletteTemplate (p, color, className, opts) {
@@ -143,7 +141,7 @@
                 c += (tinycolor.equals(color, current)) ? " sp-thumb-active" : "";
                 var formattedString = tiny.toString(opts.preferredFormat || "rgb");
                 var swatchStyle = rgbaSupport ? ("background-color:" + tiny.toRgbString()) : "filter:" + tiny.toFilter();
-                html.push('<span title="' + formattedString + '" data-color="' + tiny.toRgbString() + '" class="' + c + '"><span class="sp-thumb-inner" style="' + swatchStyle + ';" /></span>');
+                html.push('<span title="' + formattedString + '" data-color="' + tiny.toRgbString() + '" class="' + c + '" id="' + "colorChoice" + (i+1) +'"><span class="sp-thumb-inner" style="' + swatchStyle + ';" /></span>');
             } else {
                 var cls = 'sp-clear-display';
                 html.push($('<div />')
