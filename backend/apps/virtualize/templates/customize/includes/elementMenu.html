@@ -1,212 +1,196 @@
     <div class="col-xs-12" style="padding:0px;margin-bottom: 3px;">
         <div class="wrapper wrapper-content" style="padding: 0px;">
-            <div class="ibox" style="margin-bottom: 5px;">
+            <div class="ibox" style="margin-bottom: 0px;">
                 <div class="ibox-title">
                     <span>Elements</span>
-                    <div id="saveButton" style="float:right; display: none;">
-                        <div id="textAlignId" style="display:inline">
-                            <input class="edit-radio" type="radio" onchange="changeElementTools('radio1');" id="editradio1" name="edittextAlign">
-                            <label for="editradio1" style="margin-right: 2px;margin-bottom:0px"></label>
-                            <input class="edit-radio"  type="radio" onchange="changeElementTools('radio2');" id="editradio2" name="edittextAlign">
-                            <label for="editradio2" style="margin-right: 2px;margin-bottom:0px"></label>
-                            <input class="edit-radio"  type="radio" onchange="changeElementTools('radio3');" id="editradio3" name="edittextAlign">
-                            <label for="editradio3" style="margin-right: 5px;margin-bottom:0px"></label>
-                            <div class="divider" style="width: 1px;height: 15px;display: inline-block;margin:-1px;background-color: #ebedef;"></div>
-                        </div>
-
                     </div>
                 </div>
                 <div class="ibox-content col-xs-12" style="padding: 5px 5px 5px 5px;">
+                    <!-- Displayed when NO element is selected -->
                     <div id="elementMenuBarGray" style="width:100%;height: 5%;position: relative; z-index: 1;
                         left: 0px;top: 0px;">
                         <span class="w3-display-middle" style="color:#1ab394ad;text-align:center"><strong>Select an element to activate</strong></span>
                     </div>
+                    <!-- Displayed when an element IS selected -->
                     <div id="backgroundTableMenu" style="display: none;">
-                        <div id="editbackgroundcolor" class="col-xs-3" style="padding-right: 0px;padding-bottom: 5px;border-right: 1px solid #eaecee;min-width:86px;padding-left:0px;text-align:center;">
-                            <h5 style="float:left;color: #18a689;margin-bottom: 0px;margin-left:25px;">
-                                BG Color
-                            </h5>
-                            <br/>
-                            <div id="backgroundColorElm"  style="float:left;display: inline;margin-left:29px;">
-                                <input id="editbackgroundcolorINPUT" onchange="changeElementTools('background');" type="text" name="edit-backgroundcolor" style="width:40px;background:transparent;padding:1px 2px 1px 2px;margin-top:8px;">
+                        <div id="backgroundContainer" style=" display: grid; grid-row-gap: 5%;">
+                            <div id="bgTitleContainer">
+                                <h5 id="bgTitle" class="elemMenuText">Background</h5>
                             </div>
-                        </div>
-                        <div id="changeLink" class="col-xs-3" style="padding-right: 0px;padding-bottom: 4px;border-right: 1px solid #eaecee;min-width:86px;padding-left:0px;text-align:center;">
-                            <h5 style="float:left;color: #18a689;margin-bottom: 0px;margin-left:30px;">
-                                Link
-                            </h5>
-                            <form id="changeURL" action="/index/" method="POST" enctype="multipart/form-data" name="updateURL"
-                                  style="margin-bottom:0px;padding:0px;width:100%;" class="col-xs-11">
-                                <input name="name" type="hidden" value="updateURL">
-                                <input id="idForURL" name="id" type="hidden" value="">
-                                <input id="hrefURL" name="hrefURL" type="hidden" value="">
-                                <div id="displayOnLinkHover" class="dropdown" style="float:left;display: inline;margin-left: 21px;">
-                                    <button class="btn btn-default btn-sm dropbtn" data-toggle="dropdown" style="border-radius: 3px;
-                                        padding-bottom: 5px;
-                                        padding-top: 5px;
-                                        margin-top: 8px;
-                                        margin-bottom:4px;">
-                                        <span class="fa fa-link"><b class="caret" style="margin-left: 5px;"></b></span>
-                                    </button>
-                                    <ul class="dropdown-menu animated fadeInRight m-t-xs" id="optionList" style="width:100%;min-width:270px;max-height:130px;overflow-x:auto;">
-                                        <li style="display:inline;">
-                                            <input id="hrefURL" name="href" type="text" placeholder="Enter URL" style="width:70%;height: 22.5px;padding-top: 0px;padding-bottom: 2px;margin-top:3px;margin-left:3px;">
-                                            <button id="buttonChangeURL" class="btn btn-primary btn-xs" style="margin-bottom:0px;" type="submit">
-                                                Update
-                                            </button>
-                                        </li>
-                                        <li style="display:inline;">
-                                            <form id="goToPage" onsubmit="return goToPageUrl();" action="/index/" method="POST" enctype="multipart/form-data"
-                                                class="col-xs-1" style="padding: 0px;margin-bottom: 0px;padding-top: 2.8%;text-align: left;">
-                                                <input id="pageId" name="page" type="hidden" value=""/>
-                                                <input name="name" type="hidden" value="goToPage">
-                                                <button style="
-                                                    margin-top: 11px;
-                                                    margin-right: 0px;
-                                                    float:right;
-                                                    padding: 0px;
-                                                    border-top-width: 0px;
-                                                    border-right-width: 0px;
-                                                    border-bottom-width: 0px;
-                                                    border-left-width: 0px;
-                                                    height:15px;
-                                                    background-color: white;
-                                                    ">
-                                                    <i class="faAdevi fa fa-external-link" aria-hidden="true"></i>
-                                                </button>
-                                            </form>
-                                        </li>
-                                         <li>
-                                                <a href="#" onclick="changeFont(document.getElementById('test').innerHTML,'Impact, Charcoal, sans-serif')" style="font-family:Impact, Charcoal, sans-serif">Impact</a>
-                                            </li>
-                                            <li>
-                                                <a href="#" onclick="changeFont(document.getElementById('test').innerHTML,'Monaco, monospace')" style="font-family:Monaco, monospace">Monospace</a>
-                                            </li>
-                                            <li>
-                                                <a href="#" onclick="changeFont(document.getElementById('test').innerHTML,'Tahoma, Geneva, sans-serif')" style="font-family:Tahoma, Geneva, sans-serif">Tahoma</a>
-                                            </li>
-                                            <li>
-                                                <a href="#" onclick="changeFont(document.getElementById('test').innerHTML,'Times, serif')" style="font-family:Times, serif">Times New Roman</a>
-                                            </li>
-                                            <li>
-                                                <a href="#" onclick="changeFont(document.getElementById('test').innerHTML,'Verdana, Geneva, sans-serif')" style="font-family:Verdana, Geneva, sans-serif">Verdana</a>
-                                            </li>
-                                    </ul>
+                            <div id="bgColorContainer" style="
+    display: grid;
+    grid-template-columns: 35% 60%;
+
+">
+                                <div id="bgColorSelector">
+                                    <div id="editbackgroundcolor" class="col-xs-3">
+                                        <div id="backgroundColorElm" style="margin-left: -3px;">
+                                            <input id="editbackgroundcolorINPUT" onchange="changeElementTools('background');" type="text" name="edit-backgroundcolor" style="width: 40px; background: transparent; padding: 1px 2px; margin-top: 8px; display: none;">
+                                        </div>
+                                    </div>
                                 </div>
-                            </form>
-                        </div>
-                        <div id="textEditTools" class="col-xs-3" style="padding-right: 0px;padding-bottom: 12px;border-right: 1px solid #eaecee;min-width:86px;padding-left:0px;text-align:center;">
-                            <h5 style="float:left;color: #18a689;margin-bottom: 0px;margin-left:14px;">
-                                    Text Indent
-                            </h5>
-                            <br/>
-                            <div style="display: inline;">
-                                <input id="edittextindent" class="input-elements" onchange="changeElementTools('textindent');" placeholder="Text indent" type="number" name="edit-text-indent" style="width:50px;height:23px;margin-top:6px;margin-left:6px">
+                                <div id="bgRecentColors" style="grid-template-rows: auto;display: grid;align-content: center;" data-colors="4" data-filled="0">
+    <div id="bgRow1">
+        <i class="material-icons" style="float: left; margin-right: 3px;color: #18a689; font-size: 20px;">color_lens </i>
+                                    <span class="recentColor" id="bgClr1"></span>
+                                    <span class="recentColor" id="bgClr2"></span>
+                                    <span class="recentColor" id="bgClr3"></span>
+                                    <span class="recentColor" id="bgClr4"></span>
+    </div>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-xs-2" style="padding-right: 0px;padding-bottom: 11px;border-right: 1px solid #eaecee;min-width:84px;padding-left:0px;text-align:center;">
-                            <h5 style="float:left;color: #18a689;margin-bottom: 0px;margin-left:20px;">
-                                Z Index
-                            </h5>
-                            <br/>
-                            <input id="editzindex" class="input-elements" onchange="changeElementTools('zindex');" type="number" name="edit-z-index" placeholder="z-index" max="998" style="width: 50px;height:23px;margin-top:7px;">
+                        <div id="fontContainer" style=" margin-top: 20px;">
+                            <div id="fontTitleContainer">
+                                <h5 id="fontTitle" class="elemMenuText">Font</h5>
+                            </div>
+                            <div id="fontContents" style="margin-top: -9px; display: grid; grid-template-columns: auto auto auto; grid-column-gap: 2%">
+                                <div id="fontStyleContainer" style="display: grid; grid-template-columns: auto auto auto">
+                                    <div style="float:left;display: inline;margin-left:13px;margin-top:10px;" class="fontInputElements">
+                                        <input id="favcolor" onchange="changeElementt(document.getElementById('test').innerHTML,'fontColor')" type="text" style="width:40px;background:transparent;padding:1px 2px 1px 2px;margin-top:2px;"/>
+                                    </div>
+                                <div class="fontInputElements">
+                                    <input id="fontsize" class="input-elements" placeholder="Size" name="fontsize" onchange="changeElementt(document.getElementById('test').innerHTML, 'fontSize')" style="width: 50px;height:23px;" type="number" value="">
+                                </div>
+                                <div class="dropdown fontInputElements">
+                                                        <button class="btn btn-default btn-sm dropbtn" data-toggle="dropdown" style="border-radius: 3px;
+                                                            padding-bottom: 5px;
+                                                            padding-top: 5px;
+                                                            " aria-expanded="true">
+                                                            <span class="fa fa-font"><b class="caret"></b></span>
+                                                        </button>
+                                                        <ul class="dropdown-menu animated fadeInRight m-t-xs" style="overflow-x:scroll;max-height:200px;">
+                                                            <li>
+                                                                <a href="#" onclick="changeFont(document.getElementById('test').innerHTML,'Open Sans,Helvetica, Arial, sans-serif')" style="width:100%; font-family: Open Sans, Helvetica Neue Helvetica, Arial, sans-serif">Open Sans</a>
+                                                            </li>
+                                                            <li>
+                                                                <a href="#" onclick="changeFont(document.getElementById('test').innerHTML,'Arial')" style="font-family:Arial">Arial</a>
+                                                            </li>
+                                                            <li>
+                                                                <a href="#" onclick="changeFont(document.getElementById('test').innerHTML,'Calibri')" style="font-family:Calibri">Calibri</a>
+                                                            </li>
+                                                            <li>
+                                                                <a href="#" onclick="changeFont(document.getElementById('test').innerHTML,'Century Gothic, sans-serif')" style="font-family:Century Gothic, sans-serif">Century Gothic</a>
+                                                            </li>
+                                                            <li>
+                                                                <a href="#" onclick="changeFont(document.getElementById('test').innerHTML,'cursive, sans-serif')" style="font-family:cursive, sans-serif">Comic Sans</a>
+                                                            </li>
+                                                            <li>
+                                                                <a href="#" onclick="changeFont(document.getElementById('test').innerHTML,'Helvetica')" style="font-family:Helvetica">Helvetica</a>
+                                                            </li>
+                                                            <li>
+                                                                <a href="#" onclick="changeFont(document.getElementById('test').innerHTML,'Impact, Charcoal, sans-serif')" style="font-family:Impact, Charcoal, sans-serif">Impact</a>
+                                                            </li>
+                                                            <li>
+                                                                <a href="#" onclick="changeFont(document.getElementById('test').innerHTML,'Monaco, monospace')" style="font-family:Monaco, monospace">Monospace</a>
+                                                            </li>
+                                                            <li>
+                                                                <a href="#" onclick="changeFont(document.getElementById('test').innerHTML,'Tahoma, Geneva, sans-serif')" style="font-family:Tahoma, Geneva, sans-serif">Tahoma</a>
+                                                            </li>
+                                                            <li>
+                                                                <a href="#" onclick="changeFont(document.getElementById('test').innerHTML,'Times, serif')" style="font-family:Times, serif">Times New Roman</a>
+                                                            </li>
+                                                            <li>
+                                                                <a href="#" onclick="changeFont(document.getElementById('test').innerHTML,'Verdana, Geneva, sans-serif')" style="font-family:Verdana, Geneva, sans-serif">Verdana</a>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                </div>
+                                <div id="fontAlignmentContainer" style="display: grid; grid-template-columns: auto auto">
+                                    <div id="saveButton" class="fontInputElements" style="margin-left: 5%;">
+                                        <div id="textAlignId">
+                                            <input class="edit-radio" type="radio" onchange="changeElementTools('radio1');" id="editradio1" name="edittextAlign">
+                                            <label for="editradio1" style="margin-right: 2px;margin-bottom:0px"></label>
+                                            <input class="edit-radio"  type="radio" onchange="changeElementTools('radio2');" id="editradio2" name="edittextAlign">
+                                            <label for="editradio2" style="margin-right: 2px;margin-bottom:0px"></label>
+                                            <input class="edit-radio"  type="radio" onchange="changeElementTools('radio3');" id="editradio3" name="edittextAlign">
+                                            <label for="editradio3" style="margin-right: 5px;margin-bottom:0px"></label>
+                                        </div>
+                                    </div>
+                                    <div id="textEditTools" class="fontInputElements">
+                                        <input id="edittextindent" class="input-elements" onchange="changeElementTools('textindent');" placeholder="Indent" type="number" name="edit-text-indent" style="width:50px;height:23px;">
+                                    </div>
+
+                                </div>
+                            </div>
                         </div>
-                        <div id="replaceMenu" class="col-xs-2" style="padding-right: 0px;padding-bottom: 10px;border-right: 1px solid #eaecee;display:none;min-width:60px;padding-left:0px;text-align:center;">
-                            <h5 style="float:left;color: #18a689;margin-bottom: 0px;margin-left:11px;">
+                        <div id="borderContainer" style="grid-row-gap: 5%;display: grid;/* margin-top: 0px; */grid-template-rows: 30% auto;">
+                            <div id="borderTitleContainer">
+                                <h5 id="borderTitle" class="elemMenuText">Border</h5>
+                            </div>
+                            <div id="borderContentsContainer" style="display: grid;grid-template-columns: auto auto;margin-top: -3px;justify-content: start; grid-column-gap: 1.3%">
+                                <div id="borderColorMenu">
+                                    <div id="editbordercolorHidder" class="fontInputElements" style="margin-left: 13px;">
+                                        <input id="editbordercolor" onchange="changeElementTools('bordercolor');" type="text" name="edit-bordercolor" style="width:40px;background:transparent;padding:1px 2px 1px 2px;margin-top:2px;display: none;">
+                                    </div>
+                                </div>
+                                <div id="borderRadiusContainer">
+                                    <div>
+                                         <button class="radiusBtn" type="button">Sharp</button>
+                                        <button class="radiusBtn" type="button" style="border-radius: 100px;">Round</button>
+                                        <input id="editborderradius" class="input-elements fontInputElements" onchange="changeElementTools('borderradius');" type="number" name="edit-borderradius" placeholder="Radius" style="width: 50px;height:23px;" min="0">
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+                        <div id="nonColourOptionsContainer" style="display: grid; grid-template-columns: auto auto auto; grid-column-gap: 3%; height: 70px;">
+                            <!-- Placement (Z-ndex); Brings elements forward or pushes them back -->
+                            <div id="zIndex">
+                                <h5 class="elemMenuText">
+                                    Placement
+                                </h5>
+                                <br/>
+                                <input id="editzindex" class="input-elements" onchange="changeElementTools('zindex');" type="number" name="edit-z-index" placeholder="z-index" max="998" style="width: 50px;height:23px;margin-top: -20px; margin-left: 13px;">
+                            </div>
+                            <div id="changeLink">
+                                        <h5 class="elemMenuText">
+                                            Link
+                                        </h5>
+                                        <form id="changeURL" action="/index/" method="POST" enctype="multipart/form-data" name="updateURL">
+                                            <input name="name" type="hidden" value="updateURL">
+                                            <input id="idForURL" name="id" type="hidden" value="">
+                                            <input id="hrefURL" name="hrefURL" type="hidden" value="">
+                                            <div id="displayOnLinkHover" class="dropdown fontInputElements" style="display: inline;margin-left: 5px;">
+                                                <button class="btn btn-default btn-sm dropbtn" data-toggle="dropdown" style="border-radius: 3px;
+                                                    padding-bottom: 5px;
+                                                    padding-top: 5px;">
+                                                    <span class="fa fa-link">
+                                                        <b class="caret" style="margin-left: 5px;"></b>
+                                                    </span>
+                                                </button>
+                                                <ul class="dropdown-menu animated fadeInRight m-t-xs" id="optionList" style="width:100%;min-width:270px;max-height:130px;overflow-x:auto;">
+                                                    <li>
+                                                        <a onclick="changeUrl('apps')" value="apps">apps</a>
+                                                        <a onclick="changeUrl('facebook')" value="facebook">facebook</a>
+                                                        <a onclick="changeUrl('form')" value="form">form</a>
+                                                        <a onclick="changeUrl('skype')" value="skype">skype</a>
+                                                        <a onclick="changeUrl('Facebook login')" value="Facebook login">Facebook login</a>
+                                                        <a onclick="changeUrl('Registration')" value="Registration">Registration</a>
+                                                    </li>
+                                                </ul>
+                                            </div></form>
+
+                                    </div>
+                            <div id="replaceMenu">
+                            <h5 class="elemMenuText">
                                 Replace
                             </h5>
                             <br/>
-                            <div class="dropdown">
-                                <button onclick="popupImageCropBox()" class="btn btn-default btn-sm dropbtn" data-toggle="dropdown" name="AddElement" style="padding-top: 4px;
-                                    padding-bottom: 1px;
-                                    margin: 6px 0 0 0px;
-                                    min-height:25px;">
+                            <div class="dropdown fontInputElements">
+                                <button onclick="popupImageCropBox()" class="btn btn-default btn-sm dropbtn" data-toggle="dropdown" name="AddElement" style="margin-left: 15px;
+                                        padding-top: 4px;
+                                        padding-bottom: 1px;
+                                        min-height: 25px;
+                                        margin-top: -31px;">
                                     <span class="fa fa-plus"></span>
                                 </button>
                             </div>
                         </div>
-                        <div id="borderColorMenu" class="col-xs-4" style="padding-right: 0px;padding-bottom: 11px;border-right: 1px solid #eaecee;display:none;min-width:115px;padding-left:0px;">
-                            <h5 style="float:left;color: #18a689;margin-bottom: 0px;margin-left:27px;">
-                                Border Color
-                            </h5>
-                            <br/>
-                            <div id="editbordercolorHidder" style="float:left;display: inline;margin-left:13px;margin-top:10px;">
-                                <input id="editbordercolor" onchange="changeElementTools('bordercolor');" type="text" name="edit-bordercolor" style="width:40px;background:transparent;padding:1px 2px 1px 2px;margin-top:2px;display: none;">
-                            </div>
-                            <div style="display: inline;margin-left:5px;">
-                                <input id="editborderradius" class="input-elements" onchange="changeElementTools('borderradius');" type="number" name="edit-borderradius" placeholder="radius"  style="width: 50px;height:23px;margin-top:11px;" min="0">
-                            </div>
                         </div>
-                        <div id="fontStyleMenu" class="col-xs-4" style="padding-right: 0px;padding-bottom: 5px;border-right: 1px solid #eaecee;display:none;min-width:170px;padding-left:0px;">
-                        <h5 style="float:left;color: #18a689;margin-bottom: 0px;margin-left:65px;">
-                            Font Style
-                        </h5>
-                        <br/>
-                        <div style="float:left;display: inline;margin-left:13px;margin-top:10px;">
-                            <input id="favcolor" onchange="changeElementt(document.getElementById('test').innerHTML,'fontColor')" type="text" style="width:40px;background:transparent;padding:1px 2px 1px 2px;margin-top:2px;"/>
-                        </div>
-                        <div style="display: inline;margin-left:5px;">
-                            <input id="fontsize" class="input-elements" name="fontsize" onchange="changeElementt(document.getElementById('test').innerHTML, 'fontSize')" style="width: 50px;height:23px;margin-top:11px;" type="number" value=""/>
-                        </div>
-                        <div class="dropdown">
-                            <button class="btn btn-default btn-sm dropbtn" data-toggle="dropdown" style="border-radius: 3px;
-                                padding-bottom: 5px;
-                                padding-top: 5px;
-                                margin-top: 2px;
-                                margin-bottom:4px;">
-                                <span class="fa fa-font"><b class="caret"></b></span>
-                            </button>
-                            <ul class="dropdown-menu animated fadeInRight m-t-xs" style="overflow-x:scroll;max-height:200px;">
-                                <li>
-                                    <a href="#" onclick="changeFont(document.getElementById('test').innerHTML,'Open Sans,Helvetica, Arial, sans-serif')" style="width:100%; font-family: Open Sans, Helvetica Neue Helvetica, Arial, sans-serif">Open Sans</a>
-                                </li>
-                                <li>
-                                    <a href="#" onclick="changeFont(document.getElementById('test').innerHTML,'Arial')" style="font-family:Arial">Arial</a>
-                                </li>
-                                <li>
-                                    <a href="#" onclick="changeFont(document.getElementById('test').innerHTML,'Calibri')" style="font-family:Calibri">Calibri</a>
-                                </li>
-                                <li>
-                                    <a href="#" onclick="changeFont(document.getElementById('test').innerHTML,'Century Gothic, sans-serif')" style="font-family:Century Gothic, sans-serif">Century Gothic</a>
-                                </li>
-                                <li>
-                                    <a href="#" onclick="changeFont(document.getElementById('test').innerHTML,'cursive, sans-serif')" style="font-family:cursive, sans-serif">Comic Sans</a>
-                                </li>
-                                <li>
-                                    <a href="#" onclick="changeFont(document.getElementById('test').innerHTML,'Helvetica')" style="font-family:Helvetica">Helvetica</a>
-                                </li>
-                                <li>
-                                    <a href="#" onclick="changeFont(document.getElementById('test').innerHTML,'Impact, Charcoal, sans-serif')" style="font-family:Impact, Charcoal, sans-serif">Impact</a>
-                                </li>
-                                <li>
-                                    <a href="#" onclick="changeFont(document.getElementById('test').innerHTML,'Monaco, monospace')" style="font-family:Monaco, monospace">Monospace</a>
-                                </li>
-                                <li>
-                                    <a href="#" onclick="changeFont(document.getElementById('test').innerHTML,'Tahoma, Geneva, sans-serif')" style="font-family:Tahoma, Geneva, sans-serif">Tahoma</a>
-                                </li>
-                                <li>
-                                    <a href="#" onclick="changeFont(document.getElementById('test').innerHTML,'Times, serif')" style="font-family:Times, serif">Times New Roman</a>
-                                </li>
-                                <li>
-                                    <a href="#" onclick="changeFont(document.getElementById('test').innerHTML,'Verdana, Geneva, sans-serif')" style="font-family:Verdana, Geneva, sans-serif">Verdana</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div id="borderColorMenu" class="col-xs-4" style="padding-right: 0px;padding-bottom: 11px;border-right: 1px solid #eaecee;display:none;min-width:115px;padding-left:0px;">
-                        <h5 style="float:left;color: #18a689;margin-bottom: 0px;margin-left:27px;">
-                            Border Color
-                        </h5>
-                        <br/>
-                        <div id="editbordercolorHidder" style="float:left;display: inline;margin-left:13px;margin-top:10px;">
-                            <input id="editbordercolor" onchange="changeElementTools('bordercolor');" type="text" name="edit-bordercolor" style="width:40px;background:transparent;padding:1px 2px 1px 2px;margin-top:2px;display: none;">
-                        </div>
-                        <div style="display: inline;margin-left:5px;">
-                            <input id="editborderradius" class="input-elements" onchange="changeElementTools('borderradius');" type="number" name="edit-borderradius" placeholder="radius"  style="width: 50px;height:23px;margin-top:11px;" min="0">
-                        </div>
-                    </div>
                     <div id="replaceMenu" class="col-xs-2" style="padding-right: 0px;padding-bottom: 10px;border:none;display:none;min-width:60px;padding-left:0px;text-align:center;">
-                        <h5 style="float:left;color: #18a689;margin-bottom: 0px;margin-left:11px;">
+                        <h5 class="elemMenuText">
                             Replace
                         </h5>
                         <br/>
@@ -233,7 +217,7 @@
                             </ul>
                         </div>
                     </div>
-                    <div id="editBarChartBarColours" class="col-xs-3" style="padding-right: 0px;padding-bottom: 5px;border-right: 1px solid #eaecee;min-width:86px;padding-left:0px;text-align:center;display: none;">
+                    <div id="editBarChartBarColours" class="col-xs-3" style="padding-right: 0px;padding-bottom: 5px;min-width:86px;padding-left:0px;text-align:center;display: none;">
                         <h5 style="float:left;color: #18a689;margin-bottom: 0px;margin-left:25px;">
                             Bar Chart Bar
                         </h5>
@@ -242,7 +226,7 @@
                             <input id="editBarchartBarColoursINPUT" onchange="changeElementTools('barChartBar');" type="text" name="edit-barChartColor" style="width:40px;background:transparent;padding:1px 2px 1px 2px;margin-top:8px;">
                         </div>
                     </div>
-                    <div id="editBarChartBackground" class="col-xs-3" style="padding-right: 0px;padding-bottom: 5px;border-right: 1px solid #eaecee;min-width:86px;padding-left:0px;text-align:center; display: none;">
+                    <div id="editBarChartBackground" class="col-xs-3" style="padding-right: 0px;padding-bottom: 5px;min-width:86px;padding-left:0px;text-align:center; display: none;">
                         <h5 style="float:left;color: #18a689;margin-bottom: 0px;margin-left:25px;">
                             Bar Chart BG
                         </h5>
@@ -251,7 +235,6 @@
                             <input id="editBarchartBackgroundINPUT" onchange="changeElementTools('barChartBG');" type="text" name="edit-barChartBGColor" style="width:40px;background:transparent;padding:1px 2px 1px 2px;margin-top:8px;">
                         </div>
                     </div>
-                </div>
             </div>
         </div>
     </div>
@@ -398,91 +381,5 @@
              </div>
          </div>
      </div>
-     <script>"use strict";
-         function popupImageCropBox() {
-             $('#imageCrop').popup({escape: false, blur: false, autoopen: true});
-         }
-     </script>
-     <script>
-         $(function() {
-             $("#changeURL").submit(function(event) {
-                 event.preventDefault();
-                 var thisform = $(this);
-                 var posting = $.post( thisform.attr('action'), thisform.serialize() );
-                 var element = document.getElementById('test').innerHTML;
-                 document.getElementById(element).setAttribute("linkvalue", document.getElementById('hrefURL').value);
-                 console.log('Link: '+document.getElementById('hrefURL').value);
-                 posting.done(function(data) {
-             });
-             posting.fail(function(data) {console.log('failed')});
-         });
-     });
-
-    $("#editBarchartBarColoursINPUT").spectrum({
-        preferredFormat: "rgb",
-        showInitial: true,
-        showInput: true,
-        allowEmpty: true,
-        move: function (color) {
-            updateColor(color,'barChartBars');
-        },
-        hide: function (color) {
-            updateColor(color,'barChartBars');
-        }
-    });
-    $("#editBarchartBackgroundINPUT").spectrum({
-        preferredFormat: "rgb",
-        showInitial: true,
-        showInput: true,
-        allowEmpty: true,
-        move: function (color) {
-            updateColor(color,'barChartBG');
-        },
-        hide: function (color) {
-            updateColor(color,'barChartBG');
-        }
-    });
-
-{#____________________________________________________________________________________________________________________#}
-
-        $("#editbackgroundcolorINPUT").spectrum({
-            preferredFormat: "rgb",
-            showInitial: true,
-            showInput: true,
-            allowEmpty: true,
-            move: function (color) {
-                updateColor(color,'backgroundElm');
-            },
-            hide: function (color) {
-                updateColor(color,'backgroundElm');
-            }
-        });
-        $("#editbordercolor").spectrum({
-            allowEmpty: true,
-            preferredFormat: "rgb",
-            showInitial: true,
-            showInput: true,
-            move: function (color) {
-                updateColor(color,'border');
-            },
-            hide: function (color) {
-                updateColor(color,'border');
-            }
-        });
-        $("#favcolor").spectrum({
-            preferredFormat: "rgb",
-            showInitial: true,
-            showInput: true,
-            move: function (color) {
-                updateColor(color,'font');
-            },
-            hide: function (color) {
-                updateColor(color,'font');
-            }
-        });
-    </script>
-
-
-
 
     </div>

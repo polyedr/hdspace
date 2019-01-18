@@ -78,7 +78,6 @@
                         {% endfor %}
                     </ul>
 
-                    <!--<a href="/projects/"><i class="fa fa-sitemap"></i> <span class="nav-label">Projects</span> </a>-->
                 </li>
                 <li class="divider"></li>
 
@@ -94,17 +93,3 @@
             </ul>
         </div>
     </nav>
-    <script>
-        $("#profile-pic").click(function(e) {
-            $("#profile-pic-Upload").click();
-        });
-        function fasterPreview( uploader ) {
-            if ( uploader.files && uploader.files[0] ){
-                  $('#profile-pic').attr('src',
-                     window.URL.createObjectURL(uploader.files[0]) );
-            }
-        }
-        $("#profile-pic-Upload").change(function(){
-            fasterPreview( this );
-        });
-    </script>
