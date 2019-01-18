@@ -216,6 +216,9 @@ outline: 0;
 input {
     border: 1px solid #e7eaec;
 }
+input[type="checkbox"] {
+    margin-right: 10%;
+}
 /* Let's get this party started */
 ::-webkit-scrollbar {
     width: 5px;
@@ -239,12 +242,14 @@ input {
 
 .ibox-title span{
     color:#18a689;
-    text-transform:capitalize;
+}
+
+.ibox-title button {
+    margin-right: 2px;
 }
 
 abbr{
     color:#18a689;
-    text-transform:capitalize;
 }
 
 #profile-pic-Upload
@@ -3273,7 +3278,7 @@ a.forum-item-title:hover {
 }
 .tabs-container .nav-tabs > li {
   float: left;
-  margin-bottom: -1px;
+  /* margin-bottom: -1px; */
 }
 .tabs-container .tab-pane .panel-body {
   border-top: none;

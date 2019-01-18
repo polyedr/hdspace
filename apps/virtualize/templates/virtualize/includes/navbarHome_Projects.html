@@ -75,15 +75,11 @@
                                         <abbr title="{{ p.projectName }}" style="text-decoration: none; white-space: nowrap;cursor: pointer;color: white;">{{ p.projectName }}</abbr>
                                     </h4>
                                 </a>
-{#                                <a>{{ p.projectName }}</a>#}
                             </li>
                         {% endfor %}
                     </ul>
                 </li>
                 <li class="divider"></li>
-                <!--<li class="inactive" id="projectSelector">
-                    <a href="/workflow/"><i class="fa fa-folder-open-o"></i> <span class="nav-label">Workflow</span> </a>
-                </li>-->
                 <li>
                    <a href="#"><i class="fa fa-question-circle"></i> <span class="nav-label">Help</span> </a>
                </li>
@@ -95,17 +91,3 @@
             </ul>
         </div>
     </nav>
-    <script>
-        $("#profile-pic").click(function(e) {
-            $("#profile-pic-Upload").click();
-        });
-        function fasterPreview( uploader ) {
-            if ( uploader.files && uploader.files[0] ){
-                  $('#profile-pic').attr('src',
-                     window.URL.createObjectURL(uploader.files[0]) );
-            }
-        }
-        $("#profile-pic-Upload").change(function(){
-            fasterPreview( this );
-        });
-    </script>

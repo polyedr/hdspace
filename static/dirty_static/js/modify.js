@@ -1,5 +1,25 @@
 
 
+function modifyScreenName(event,name){
+    if (event.keyCode ===  13){
+        event.preventDefault();
+    }
+
+}
+
+function modifyProjectName(event,name){
+    if (event.keyCode ===  13){
+        event.preventDefault();
+    }
+}
+
+function modifyScreenShotName(event,name){
+    if (event.keyCode ===  13){
+        event.preventDefault();
+    }
+
+}
+
 function reloadScreens(){
     setTimeout(function(){
 
@@ -49,14 +69,30 @@ function addNewElementAjax(valueVar, srcPath){
 
 function deleteElement(newElement){
 
-    if (newElement == 'None selected'){
+    if (newElement === 'None selected'){
         console.log('Please select an element first!');
     }
+    else if (newElement.substring(6, 0) === 'widget') {
+        var id = newElement.substring(6);
+        console.log('a la rueda'+id);
+        console.log(document.getElementById('test').innerHTML);
+        document.getElementById('test').innerHTML = 'None selected';
+        document.getElementById(newElement).remove();
+        $('#slideelem').popup('hide');
+        document.getElementById('drag-resizeId').blur(true);
+        r = $.ajax({
+            type: 'GET',
+            url: 'index',
+            name: 'deleteElement',
+            data: {'name': 'deleteElement', 'id': 'id'+id, 'element': 'widget'}
+        });
+
+        }
+
     else {
         var element = document.getElementById(newElement).tagName;
         document.getElementById('test').innerHTML = 'None selected';
         disableTable();
-        console.log(document.getElementById('test').innerHTML);
         document.getElementById(newElement).remove();
         document.getElementById('drag-resizeId').blur(true);
         r = $.ajax({
@@ -66,7 +102,6 @@ function deleteElement(newElement){
             data: {'name': 'deleteElement', 'id': newElement, 'element': element}
         });
         $('#slideelem').popup('hide');
-
         reloadScreens();    //Delete Elements reload
     }
 }
@@ -765,7 +800,7 @@ function getCurColor(el) {
 function getStyleElement(el, styleElement) {
     var style = window.getComputedStyle(el, null);
     var value = style.getPropertyValue(styleElement);
-    return value
+    return value;
 }
 
 function getCurFamily(el) {
@@ -865,16 +900,9 @@ function getPredictions(id){
     }
 }
 
-
 function getAllElements(idName){
-    // elementList = document.getElementsByClassName(className);
-    // console.log('length of elementlist: ' + elementList.length)
-    // for (i =0; i < elementList.length; i++) {
-    //     console.log('This is element: '+ elementList[i])
-    // }
     var elementList = document.getElementById(idName).querySelectorAll("img,input,p,button");
     console.log('length of elementlist: ' + elementList.length);
-
 
     for (index = 0; index < elementList.length; index++) {
         // console.log('This is element: ' + elementList[index].id)
@@ -1234,7 +1262,7 @@ function setTools(elm) {
         document.getElementById('borderColorMenu').style.display = 'none';
         document.getElementById('editborderradius').style.display = 'none';
         document.getElementById('textEditTools').style.display = '';
-        document.getElementById('fontStyleMenu').style.display = '';
+        document.getElementById('fontContainer').style.display = '';
         document.getElementById('textAlignId').style.display = 'inline';
     }
     else if (elm.tagName == 'IMG') {
@@ -1252,7 +1280,7 @@ function setTools(elm) {
         document.getElementById('borderColorMenu').style.display = '';
         document.getElementById('editborderradius').style.display = '';
         document.getElementById('textEditTools').style.display = 'none';
-        document.getElementById('fontStyleMenu').style.display = 'none';
+        document.getElementById('fontContainer').style.display = 'none';
         document.getElementById('textAlignId').style.display = 'none';
     }
     else if (elm.tagName == 'DIV') {
@@ -1270,7 +1298,7 @@ function setTools(elm) {
             document.getElementById('borderColorMenu').style.display = 'none';
             document.getElementById('editborderradius').style.display = 'none';
             document.getElementById('textEditTools').style.display = 'none';
-            document.getElementById('fontStyleMenu').style.display = 'none';
+            document.getElementById('fontContainer').style.display = 'none';
             document.getElementById('textAlignId').style.display = 'none';
         }else{
 
@@ -1286,7 +1314,7 @@ function setTools(elm) {
             document.getElementById('borderColorMenu').style.display = 'none';
             document.getElementById('editborderradius').style.display = 'none';
             document.getElementById('textEditTools').style.display = 'none';
-            document.getElementById('fontStyleMenu').style.display = 'none';
+            document.getElementById('fontContainer').style.display = 'none';
             document.getElementById('textAlignId').style.display = 'none';
         }
     }
@@ -1305,7 +1333,7 @@ function setTools(elm) {
         document.getElementById('borderColorMenu').style.display = '';
         document.getElementById('editborderradius').style.display = '';
         document.getElementById('textEditTools').style.display = '';
-        document.getElementById('fontStyleMenu').style.display = '';
+        document.getElementById('fontContainer').style.display = '';
         document.getElementById('textAlignId').style.display = 'inline';
     }
 
@@ -1328,7 +1356,7 @@ function showAllTools(){
     document.getElementById('borderColorMenu').style.display = '';
     document.getElementById('editborderradius').style.display = '';
     document.getElementById('textEditTools').style.display = '';
-    document.getElementById('fontStyleMenu').style.display = '';
+    document.getElementById('fontContainer').style.display = '';
     document.getElementById('changeLink').style.display = '';
     enableTable('showAllTools');
 }
@@ -1446,6 +1474,7 @@ function saveCurrentStyles (){
     var element = document.getElementById(document.getElementById('test').innerHTML);
     var elm = window.getComputedStyle(element);
     var fonSize = document.getElementById("fontsize").value;
+    var projectName = document.getElementById('projectName').innerHTML;
     switch (elm.getPropertyValue('text-align')){
         case 'left':
             values = 'left';
@@ -1471,6 +1500,7 @@ function saveCurrentStyles (){
                 'borderradius': document.getElementById('editborderradius').value,
                 'text-align':values,
                 'fontSize': fonSize,
+                'projectName': projectName,
 
 //____________________________________________________________________________________________________________________//
 
@@ -1488,6 +1518,7 @@ function saveCurrentStyles (){
             $('.getMeOnAddNewEle').attr('href', getHREF);
             // reloadScreens();
             result = data;
+            updateRecentColors(elm.backgroundColor);
         }
     });
 }
@@ -1564,7 +1595,7 @@ function disableTable(){
     document.getElementById('databaseProjects').style.display = 'none';
     $("#predictionMenuBarGray span strong").text("Select an element to activate");
 
-    document.getElementById('fontStyleMenu').style.display = 'none';
+    document.getElementById('fontContainer').style.display = 'none';
     document.getElementById('borderColorMenu').style.display = 'none';
     document.getElementById('replaceMenu').style.display = 'none';
     document.getElementById('backgroundTableMenu').style.display = 'none';
@@ -1586,7 +1617,7 @@ function enableTable(elementId) {
 
 //____________________________________________________________________________________________________________________//
 
-    document.getElementById('fontStyleMenu').style.display = '';
+    document.getElementById('fontContainer').style.display = '';
     document.getElementById('borderColorMenu').style.display = '';
     document.getElementById('replaceMenu').style.display = '';
     document.getElementById('backgroundTableMenu').style.display = '';
@@ -1819,7 +1850,7 @@ function widgetsCall(elm) {
                 document.getElementById('borderColorMenu').style.visibility = 'visible';
                 document.getElementById('editborderradius').style.visibility = 'visible';
                 document.getElementById('textEditTools').style.visibility = 'visible';
-                document.getElementById('fontStyleMenu').style.visibility = 'visible';
+                document.getElementById('fontContainer').style.visibility = 'visible';
                 document.getElementById('textAlignId').style.visibility = 'visible';
             },100);
         }
