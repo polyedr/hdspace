@@ -1093,7 +1093,7 @@
         max-height:694.56px;
     }
     .testing-phone{
-        max-height: 585.56px;
+        max-height: 620px;
     }
 
     .nav-stacked-laptop>li{
@@ -1207,7 +1207,7 @@
         max-height:632.44px;
     }
     .testing-phone{
-        max-height: 524.44px;
+        max-height: 592px;
     }
 
 
@@ -1322,7 +1322,7 @@
         max-height:574.33px;
     }
     .testing-phone{
-        max-height: 465.33px;
+        max-height: 530px;
     }
     .nav-stacked-laptop>li{
         max-width: 100%;
@@ -1403,6 +1403,7 @@
 @media only screen and (min-width: 800px) and (max-width: 899.99px){
    .tab-content{
         height:383px;
+
     }
     .tab-pane{
         max-height:383px;
@@ -1435,7 +1436,7 @@
         max-height:509px;
     }
     .testing-phone{
-        max-height: 400px;
+        max-height: 455px;
     }
     .nav-stacked-laptop>li{
         max-width: 100%;
@@ -1548,7 +1549,7 @@
         max-height:464.44px;
     }
     .testing-phone{
-        max-height: 355.44px;
+        max-height: 395px;
     }
     .nav-stacked-laptop>li{
         max-width: 100%;
@@ -3645,4 +3646,80 @@ a:hover .label-orange{
 
 }
 
+/*Dropdown menu items styling*/
+
+h4.dropdown-menu-item-container {
+    margin-left: 70px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: -12px;
+    padding: 4px;
+}
+
+abbr.dd-text-item {
+    text-decoration: none;
+    white-space: nowrap;
+    color: #a7b1c2;
+}
+
+abbr.dd-text-item:hover {
+    color: white;
+    cursor: pointer;
+}
+
+/*Upload Button*/
+span.uploadBtn {
+    border: 1px solid #e7eaec;
+    background-color: white;
+    border-radius: 4px;
+    padding: 6px 10px;
+    margin-right: 2px;
+}
+span.uploadBtn:hover {
+    background-color: #1cc09e;
+    color: white;
+    cursor: pointer;
+}
+
+/*ELEMENTS MENU STYLING*/
+
+/*Elements colour palette */
+span.recentColor {
+    border: 1px solid #c7c6c6;
+    background-color: #f5f5f5d6;
+    padding: 1% 7%;
+    margin-right: 3%;
+    border-radius: 5px;
+}
+.recentColorPanel {
+    padding-top: 3px;
+    padding-bottom: 10px;
+}
+
+.elemMenuText {
+    color: #18a689;
+    margin-left: 10px;
+}
+
+.bgSectionBorder{
+    background-color: #18a689;
+    height: 1px;
+    width: 100%;
+    opacity: 0.2;
+}
+
+.radiusBtn{
+    border: 1px solid #e7eaec;
+    background-color: white;
+    padding: 1px 5px;
+}
+
+.radiusBtn:hover{
+    background-color: #18a689;
+    color: white;
+}
+
+.fontInputElements{
+    margin-top: 10px;
+}
  /* style : supun  end*/

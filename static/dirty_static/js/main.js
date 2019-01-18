@@ -24,6 +24,7 @@ $(document).ready(function () {
     });
 
 });
+
 $(document).ready(function () {
     function readURL(input) {
         $('#preview2').remove();
@@ -51,7 +52,118 @@ $(document).ready(function () {
         //window.location.href='#'
     });
 
+    // This listener is for editing PROJECT names
+    $('.editProjectName').blur(function() {
+        //innerHTML of that element (for updating the name)
+        var newName = $(this).text().trim();
+        //the previous name of this element (for finding the correct document in database)
+        var lastName = $(this).attr("data-lastName").trim();
+        if(newName){
+            $.ajax({
+                type: 'POST',
+                url: '/index/',
+                context: this,
+                data: {
+                    'newName': newName,
+                    'lastName': lastName,
+                    'name': 'modifyProject'
+                },
+                //update all other html matching this project name
+                success: function () {
+                    setNavbarProjectName(newName, lastName);
+                    $(this).text(newName);
+                },
+                //revert name if request fails
+                error: function (jqxhr, textStatus, error) {
+                    $(this).text(lastName);
+                    console.log("Update Error (Project Name) - Reverting element to last name")
+                    console.log("Request Failed: " + textStatus + ", " + error);
+                }
+            });
+        }
+        else {//Deny new name its null
+            //possibly add alert here to notify user of denial
+            $(this).text(lastName);
+        }
 });
+
+    //The listener for editing SCREEN names on selector
+    $(".editScreenName").blur(function () {
+        //innerHTML of this element (for updating the name)
+        var newName = $(this).text().trim();
+        //the previous name of this element (for finding the correct document in database)
+        var lastName = $(this).attr("data-lastName").trim();
+
+        console.log("New Name = "+ newName);
+        console.log("Last name = "+ lastName);
+
+        if(newName){
+            $.ajax({
+                type: 'POST',
+                url: '/index/',
+                context: this,
+                data: {
+                    'newName': newName,
+                    'lastName': lastName,
+                    'name': 'modifyScreen'
+                },
+                //update all html matching this screen name
+                success: function () {
+                    $("#retrieveCurrentPage").html(newName);
+                    $(this).text(newName);
+                },
+                //revert this screen name if request fails
+                error: function (jqxhr,textStatus,error) {
+                    $(this).text(lastName);
+                    console.log("Update Error (Screen Name): Reverting name to last name");
+                    console.log("Request Failed: " + textStatus + " - " + error);
+                }
+            });
+        }
+        else{ //Deny new name its null
+            $(this).text(lastName);
+        }
+    });
+
+    //listener for Device Screen Name editor
+    $("#retrieveCurrentPage").blur(function () {
+        //innerHTML of this element (for updating the name)
+        var newName = $(this).text().trim();
+        //the previous name of this element (for finding the correct document in database)
+        var lastName = $(this).attr("data-lastName").trim();
+        console.log("New Name = "+ newName);
+        console.log("Last name = "+ lastName);
+
+
+        if(newName){
+            $.ajax({
+                type: 'POST',
+                url: '/index/',
+                context: this,
+                data: {
+                    'newName': newName,
+                    'lastName': lastName,
+                    'name': 'modifyScreen'
+                },
+                //update all html matching this screen name
+                success: function () {
+                    setScreenSelectorName(newName,lastName);
+                    $(this).text(newName);
+                },
+                //revert this screen name if request fails
+                error: function (jqxhr,textStatus,error) {
+                    $(this).text(lastName);
+                    console.log("Update Error (Screen Name): Reverting name to last name");
+                    console.log("Request Failed: " + textStatus + " - " + error);
+                }
+            });
+        }
+        else{ //Deny new name its null
+            $(this).text(lastName);
+        }
+    });
+});
+
 $(window).on('load', function() {
     //device size
     if (document.getElementById('classContainer-selector') == null){
