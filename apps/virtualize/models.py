@@ -1083,7 +1083,7 @@ def html_render(url, currentUser, page, projectName, request, screenshotName, us
                       'pageArray': fillPageArray(userId, projectName),
                       'screen': screenshotName,
                       'screenName': getScreen_Name(screenshotName),
-                      'projectName': projectName.capitalize(),
+                      'projectName': projectName,
                       'page': page,
                       'userName': currentUser,
                       'currentProfilePic': getUserPicture(currentUser),
