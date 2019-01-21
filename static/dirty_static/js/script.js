@@ -42,25 +42,11 @@
                  },
                  success: function (data) {
                      //override all occurrences of the projectName
-                     $("#projectName").html(data);
+                     $("#projectName").text(data);
                      setNavbarProjectName(data);
                  }
 
              });
-
-        console.log("setting screen name..");
-            $.ajax({
-               type: 'GET',
-               url: '/index/',
-               data: {
-                   'name': 'getScreenName',
-                   'initialScreenName': $("#retrieveCurrentPage").text()
-               },
-               success: function (data) {
-                   //override all occurances of the screenname
-                   $("#retrieveCurrentPage").text(data);//on device panel
-               }
-            });
     });
 
     /**
