@@ -92,7 +92,7 @@
                                                         {% if ap.screenshots != 'There are no pages for this project.'  %}
                                                             {% for screen in ap.screenshots %}
                                                                 <a class="btn-default" onclick="selectScreenshot('{{ ap.id }}','{{ screen.0 }}')" style="float: left; width: auto; height: auto; margin-bottom: 5px;">
-                                                                <img alt="image" class="img" src="/media/users/{{ screen.2 }}"></a>
+                                                                <img alt="image" class="img" src="/static/users/{{ screen.2 }}"></a>
                                                             {% endfor %}
                                                         {% else %}
                                                             {{ ap.screenshots }}
@@ -132,7 +132,7 @@
                                                     {% if p.screenshots != 'There are no pages for this project.'  %}
                                                         {% for screen in p.screenshots %}
                                                             <a class="btn-default" onclick="selectScreenshot('{{ p.id }}','{{ screen.0 }}')" style="float: left; width: auto; height: auto; margin-bottom: 5px;">
-                                                            <img alt="image" class="img" src="/media/users/{{ screen.2 }}"></a>
+                                                            <img alt="image" class="img" src="/static/users/{{ screen.2 }}"></a>
                                                         {% endfor %}
                                                     {% else %}
                                                         {{ p.screenshots }}

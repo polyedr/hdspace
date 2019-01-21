@@ -14,8 +14,6 @@
                                 <span class="fa fa-plus"><b class="caret" style="margin-left: 5px;"></b></span>
                             </button>
                             <ul class="dropdown-menu animated fadeInRight" id="newE" type="button" style="min-width:100px;max-width:100px;margin-top: -1px;-webkit-appearance: unset;">
-{#                                <form enctype="multipart/form-data" method="POST" name="addElement" style="margin:0px">#}
-{#                                    <input type="hidden" name="csrfmiddlewaretoken" value="eJq184OoQ5ahaBPHGfhfebSXgZ4VoeSqXkKuI9ZxtzTbity6dyGgsosLr9E86hLl">#}
                                     <li>
                                         <button onclick="addNewElementAjax(this.value, '')" class="btn btn-default btn-xs" name="addElement" style="width:100%;
                                         font-family:Monaco, monospace;border-radius: 3px;border: 1px solid #ffffff;" value="1">
@@ -75,7 +73,6 @@
                                                     <i id="remove-fa-download-on-click" name="addElement" value="7" class="fa fa-upload absolute" style="font-size:100%; color: b5b4b4;position: absolute;top: 50%;
                                                         left: 50%;transform: translate(-50%,-28%);" aria-hidden="true"></i>
                                                 </div>
-{#                                                <input type="file" accept="image/*" name="myfile" id="fontUpload" class="input-file">#}
                                                 <input id="fontUpload" type="file" name="newImage" onchange="this.form.submit();" accept="image/*" class="input-file">
                                                 <input type="hidden" name="filename" id="filename">
                                                 <label for="submit" style="width: 100%;height: auto;cursor:pointer;margin-top: -9%;">
@@ -90,62 +87,9 @@
                                             </div>
                                         </label>
                                     </li>
-{#                                    <input id="submit" name="newImage" onchange="this.form.submit()" class="hidden" type="submit">#}
                                 </form>
                             </ul>
                         </div>
-                        
-{#                        <input id="backgroundColorChange" onchange="changeBackground()" type="text" style="display: none;">#}
-                        <script>
-                            //This function is for displaying current background color from device container current Screen in Color Selector
-                            window.onload = function(){
-                                $.ajax({
-                                    type: 'GET',
-                                    url: '/index/',
-                                    name: 'getBackgroundImageGradient',
-                                    data: {
-                                        'name': 'getBackgroundImageGradient'
-                                    },
-                                    success: function(data){
-                                        console.log('data gradient');
-                                        console.log(data);
-                                        console.log(data.length);
-                                        if (data.length > 16){
-                                            $(".grp-preview").attr("style", "background:" + data);
-                                        } else {
-                                            $(".grp-preview").attr("style", "background: linear-gradient(to right, " + data + " 20%, " + data + " 75%);");
-                                        }
-
-                                        $("#gradientColorpicker").spectrum("set", data);
-                                    },
-                                    error: function(jqXHR, status, err){
-                                        console.log(jqXHR.responseText);
-                                    }
-                                });
-                            }
-                        </script>
-                        <script>
-                            {#$("#backgroundColorChange").spectrum({#}
-                            {#    preferredFormat: "rgb",#}
-                            {#    showInitial: true,#}
-                            {#    showInput: true,#}
-                            {#    move: function (color) {#}
-                            {#        updateColorP(color,'background');#}
-                            {#        console.log('to Check Uodate color 00');#}
-                            {#        console.log(color);#}
-                            {#        $(".sp-preview-inner").attr("style", "background-image: linear-gradient(to right, " + color + " 20%, " + color + " 75%);");#}
-                            {#    },#}
-                            {#    hide: function (color) {#}
-                            {#        console.log('to Check Uodate color hide');#}
-                            {#        console.log(color);#}
-                            {#        updateColorP(color,'background');#}
-                            {#        $(".sp-preview-inner").attr("style", "background-image: linear-gradient(to right, " + color + " 20%, " + color + " 75%);");#}
-                            {#    },#}
-                            {#    onscroll: function(color){#}
-                            {#        console.log('SCROLLING')#}
-                            {#    }#}
-                            //);
-                        </script>
                     </div>
                     <div class="col-xs-9">
                         <section class="palette-  col-xs-8" style="width:100%;">
@@ -271,13 +215,9 @@
             </div>
             <br/><br/>
             <div id="optionToAddWidget" class="ibox-content col-xs-12 hidden center">
-{#                <form id="addWidgetForm" enctype="multipart/form-data" method="POST" style="margin:0px">#}
-{#                    <input type="hidden" name="csrfmiddlewaretoken" value="eJq184OoQ5ahaBPHGfhfebSXgZ4VoeSqXkKuI9ZxtzTbity6dyGgsosLr9E86hLl">#}
                     <button id="WidgetAdd"  name="addElement" value="8" class="btn btn-primary btn-xs" style="width: 40px;margin: 5px 0 0;" onclick="addWidgets(this.value)">
                         Add
                     </button>
-{#                    <input accept="image/*" name="myfile" id="fontUpload1" class="input-file">#}
-{#                </form>#}
             </div>
         </div>
     </div>
@@ -381,168 +321,9 @@
             </div>
             <br/><br/>
             <div id="optionToAddGraphics" class="ibox-content col-xs-12 hidden center">
-{#                <form id="addGraphicsForm" enctype="multipart/form-data" method="POST" name="addElement" style="margin:0px">#}
-{#                    <input type="hidden" name="csrfmiddlewaretoken" value="eJq184OoQ5ahaBPHGfhfebSXgZ4VoeSqXkKuI9ZxtzTbity6dyGgsosLr9E86hLl">#}
                     <button id="GraphicsAdd"  name="addElement" value="8" class="btn btn-primary btn-xs" style="width: 40px;margin: 5px 0 0;" onclick="addGraphics(this.value)">
                         Add
                     </button>
-{#                    <input accept="image/*" name="myfile" id="fontUpload2" class="input-file">#}
-{#                </form>#}
             </div>
         </div>
     </div>
- <script>
-     var selectedWidget, selectedGraphics;
-     function popupWidgetSelector(){
-         $(document).ready(function (){
-             $('#Widgetselectorbox').attr('style', 'display: " "');
-             $('#WidgetSelectorBox').popup({ escape: false, blur: false, autoopen: true });
-             $('#GraphicsSelectorBox').popup('hide');
-         });
-     }
-     function cancelWidgetPopUp(){
-         $('#WidgetSelectorBox').popup('hide');
-         $('.checkIconDeselectWidget').attr('style', 'top:0;position:absolute;visibility:hidden');
-         $('.checkIconSelectedWidget').attr('style', 'position: absolute;width: 20px;height: 20px;z-index: 10000;left: 50%;top: 50%;transform: translate(240%,-50%);background-color: #b5b4b4;border-radius: 50%;cursor:pointer;visibility:visible');
-         $('.imageWidget').attr('style', 'max-height: 136px; max-width: 100px; margin: 0;opacity:1;border: 1px solid #c1c1c159;width: 100%;height: auto;');
-         $('#optionToAddWidget').addClass('hidden');
-         $('.currentlyChecked').removeClass('hidden currentlyChecked');
-     }
-     function addWidgets(value) {
-        var replaceWidPath, getWidName;
-        replaceWidPath = selectedWidget.replace('/static/dirty_static/widgets/', '');
-        getWidName = replaceWidPath.replace('.jpg', '');
-        console.log("selectedWidget");
-        console.log(selectedWidget);
-        console.log(getWidName);
-        addNewElementAjax(value, getWidName);
-        $('#WidgetSelectorBox').popup('hide');
-        {#document.getElementById("fontUpload1").value = selectedWidget;#}
-        {#$('#addWidgetForm').submit();#}
-     }
-     // Graphics popup
-     function popupGraphicsSelector(){
-         $(document).ready(function (){
-             $('#GraphicsSelectorBox').attr('style', 'display: " "');
-             $('#GraphicsSelectorBox').popup({ opacity: 0.95, transition: 'all 0.3s', escape: false, blur: false, autoopen: true });
-             $('#WidgetSelectorBox').popup('hide');
-         });
-     }
-     function cancelGraphicsPopUp(){
-         $('#GraphicsSelectorBox').popup('hide');
-         $('.checkIconDeselectGraphics').attr('style', 'top:0;position:absolute;visibility:hidden');
-         $('.checkIconSelectedGraphics').attr('style', 'position: absolute;width: 20px;height: 20px;z-index: 10000;left: 50%;top: 50%;transform: translate(240%,-50%);background-color: #b5b4b4;border-radius: 50%;cursor:pointer;visibility:visible');
-         $('.imageGraphics').attr('style', 'max-height: 136px; max-width: 100px; margin: 0;opacity:1;border: 1px solid #c1c1c159;width: 100%;height: auto;');
-         $('#optionToAddGraphics').addClass('hidden');
-         $('.currentlyChecked').removeClass('hidden currentlyChecked');
-     }
-     function addGraphics(value){
-         console.log("addGraphics");
-         console.log(selectedGraphics);
-         console.log(value);
-{#          document.getElementById("fontUpload2").value = selectedGraphics;#}
-         addNewElementAjax(value, selectedGraphics);
-         $('#GraphicsSelectorBox').popup('hide');
-{#        $('#addGraphicsForm').submit();#}
-     }
-
-        $('.checkIconSelectedWidget').on('click', function (e) {
-            var target,findAllStatOfCheck,findAllStatOfUncheck,findAllImage,identifyCurrentScreen,identifyImageOutlined,checkedInnerHTML;
-            var imgOutlineCheck,i;
-            target = $(e.target);
-            console.log("target start");
-            console.log(target);
-             $('td').removeClass('currentlyChecked');
-             $('.imageWidget').removeClass('currentlySelected');
-            setTimeout(function() {
-                 target.parents('td').eq(1).addClass('currentlyChecked');
-                 target.closest('td').find('.checkIconSelectedWidget').attr('style', 'top:0;position:absolute;visibility:hidden');
-                 target.closest('td').find('img').attr('style', 'max-height: 136px; max-width: 100px; margin: 0;opacity:0.5;border: 2px solid blue;width: 100%;height: auto;');
-                 target.closest('td').find('.checkIconDeselectWidget').attr('style', 'position: absolute;width: 20px;height: 20px;z-index: 10000;left: 50%;top: 50%;transform: translate(240%,-50%);background-color: #b5b4b400;border-radius: 50%;cursor:pointer;visibility:visible');
-                $('#optionToAddWidget').removeClass('hidden');
-            },10);
-
-            // Toggle between the screen
-            findAllStatOfCheck = $('#datatables-example-widget').find('.checkIconDeselectWidget');
-            findAllStatOfUncheck = $('#datatables-example-widget').find('.checkIconSelectedWidget');
-            findAllImage = $('#datatables-example-widget').find('.imageWidget');
-            console.log('I am checking if already screen is checked @ master');
-            for(i = 0;i < findAllStatOfCheck.length;i++) {
-                console.log('Displaying all found checked screen');
-                identifyCurrentScreen = findAllStatOfCheck[i].getAttribute('style');
-                identifyImageOutlined = findAllImage[i].getAttribute('style');
-                checkedInnerHTML = 'position: absolute;width: 20px;height: 20px;z-index: 10000;left: 50%;top: 50%;transform: translate(240%,-50%);background-color: #b5b4b400;border-radius: 50%;cursor:pointer;visibility:visible';
-                if (identifyCurrentScreen === checkedInnerHTML){
-                    console.log('There is a checked master screen already, Change CSS');
-                    findAllStatOfCheck[i].setAttribute('style', 'top:0;position:absolute;visibility:hidden');
-                    findAllStatOfUncheck[i].setAttribute('style', 'position: absolute;width: 20px;height: 20px;z-index: 10000;left: 50%;top: 50%;transform: translate(240%,-50%);background-color: #b5b4b4;border-radius: 50%;cursor:pointer;visibility:visible');
-                    imgOutlineCheck = 'max-height: 136px; max-width: 100px; margin: 0;opacity:0.5;border: 2px solid blue;width: 100%;height: auto;';
-                    if (identifyImageOutlined === imgOutlineCheck){
-                        findAllImage[i].setAttribute('style', 'max-height: 136px; max-width: 100px; margin: 0;opacity:1;border: 1px solid #c1c1c159;width: 100%;height: auto;');
-                    }
-                }
-            }
-
-            console.log("target widget end");
-            selectedWidget = target.closest('td').find('img').attr('src');
-            console.log(selectedWidget);
-        });
-        $('.checkIconDeselectWidget').on('click', function (e) {
-            var target;
-            target = $(e.target);
-            target.parents('td').eq(1).removeClass('currentlyChecked');
-            target.closest('td').find('.checkIconDeselectWidget').attr('style', 'top:0;position:absolute;visibility:hidden');
-            target.closest('td').find('img').attr('style', 'max-height: 136px; max-width: 100px; margin: 0;opacity:1;border: 1px solid #c1c1c159;width: 100%;height: auto;');
-            target.closest('td').find('.checkIconSelectedWidget').attr('style', 'position: absolute;width: 20px;height: 20px;z-index: 10000;left: 50%;top: 50%;transform: translate(240%,-50%);background-color: #b5b4b4;border-radius: 50%;cursor:pointer;visibility:visible');
-            $('#optionToAddWidget').addClass('hidden');
-        });
-
-        $('.checkIconSelectedGraphics').on('click', function (e) {
-            var target,i,findAllStatOfCheck,findAllStatOfUncheck,findAllGraphics,identifyCurrentGraphics,identifyGraphicsOutlined,gidOutlineCheck;
-            var checkedInnerHTML;
-            target = $(e.target);
-            console.log("target");
-            console.log(target);
-             $('td').removeClass('currentlyChecked');
-            setTimeout(function() {
-                 target.parents('td').eq(1).addClass('currentlyChecked');
-                 target.closest('td').find('.checkIconSelectedGraphics').attr('style', 'top:0;position:absolute;visibility:hidden');
-                 target.closest('td').find('img').attr('style', 'max-height: 136px; max-width: 100px; margin: 0;opacity:0.5;border: 2px solid blue;width: 100%;height: auto;');
-                 target.closest('td').find('.checkIconDeselectGraphics').attr('style', 'position: absolute;width: 20px;height: 20px;z-index: 10000;left: 50%;top: 50%;transform: translate(240%,-50%);background-color: #b5b4b400;border-radius: 50%;cursor:pointer;visibility:visible');
-                $('#optionToAddGraphics').removeClass('hidden');
-            },50);
-             // Toggle between the screen
-            findAllStatOfCheck = $('#datatables-example-graphics').find('.checkIconDeselectGraphics');
-            findAllStatOfUncheck = $('#datatables-example-graphics').find('.checkIconSelectedGraphics');
-            findAllGraphics = $('#datatables-example-graphics').find('.imageGraphics');
-            console.log("length");
-            console.log(findAllStatOfCheck.length);
-            for(i = 0;i < findAllStatOfCheck.length;i++) {
-                identifyCurrentGraphics = findAllStatOfCheck[i].getAttribute('style');
-                identifyGraphicsOutlined = findAllGraphics[i].getAttribute('style');
-                checkedInnerHTML = 'position: absolute;width: 20px;height: 20px;z-index: 10000;left: 50%;top: 50%;transform: translate(240%,-50%);background-color: #b5b4b400;border-radius: 50%;cursor:pointer;visibility:visible';
-                if(identifyCurrentGraphics === checkedInnerHTML){
-                    findAllStatOfCheck[i].setAttribute('style', 'top:0;position:absolute;visibility:hidden');
-                    findAllStatOfUncheck[i].setAttribute('style', 'position: absolute;width: 20px;height: 20px;z-index: 10000;left: 50%;top: 50%;transform: translate(240%,-50%);background-color: #b5b4b4;border-radius: 50%;cursor:pointer;visibility:visible');
-                    gidOutlineCheck = 'max-height: 136px; max-width: 100px; margin: 0;opacity:0.5;border: 2px solid blue;width: 100%;height: auto;';
-                    if (identifyGraphicsOutlined === gidOutlineCheck){
-                        findAllGraphics[i].setAttribute('style', 'max-height: 136px; max-width: 100px; margin: 0;opacity:1;border: 1px solid #c1c1c159;width: 100%;height: auto;');
-                    }
-                }
-            }
-
-            console.log("target graphics end");
-            selectedGraphics = target.closest('td').find('img').attr('src');
-            console.log(selectedGraphics);
-        });
-        $('.checkIconDeselectGraphics').on('click', function (e) {
-            var target;
-            target = $(e.target);
-            target.parents('td').eq(1).removeClass('currentlyChecked');
-            target.closest('td').find('.checkIconDeselectGraphics').attr('style', 'top:0;position:absolute;visibility:hidden');
-            target.closest('td').find('img').attr('style', 'max-height: 136px; max-width: 100px; margin: 0;opacity:1;border: 1px solid #c1c1c159;width: 100%;height: auto;');
-            target.closest('td').find('.checkIconSelectedGraphics').attr('style', 'position: absolute;width: 20px;height: 20px;z-index: 10000;left: 50%;top: 50%;transform: translate(240%,-50%);background-color: #b5b4b4;border-radius: 50%;cursor:pointer;visibility:visible');
-            $('#optionToAddGraphics').addClass('hidden');
-        });
-
- </script>

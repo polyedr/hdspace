@@ -383,6 +383,9 @@
 .fa-pencil-square-o:before {
   content: "\f044";
 }
+.fa-user-edit:before {
+  content: "\f4ff";
+}
 .fa-share-square-o:before {
   content: "\f045";
 }

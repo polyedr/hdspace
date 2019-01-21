@@ -42,38 +42,17 @@
                                             </form>
                                         </a>
                                     </li>
-                                    <script>"use strict";
-                                        function delTrigger(id) {
-                                            {#$('#slide').popup('show');#}
-                                            {#document.getElementById('idToDelte').value = id;#}
-                                            swal({
-                                                title: 'Do you want to delete this Screenshot?',
-                                                type: 'warning',
-                                                showCancelButton: true,
-                                                confirmButtonColor: '#dd6b55',
-                                                cancelButtonColor: '#999',
-                                                confirmButtonText: 'Yes!',
-                                                cancelButtonText: 'No',
-                                                closeOnConfirm: false
-                                            },function (isConfirm) {
-                                                if (isConfirm) {
-                                                    document.getElementById('idToDelte').value = id;
-                                                    deletePage();
-                                                    swal.close();
-                                                }
-                                            });
-                                        }
-                                    </script>
                                     <div style="height: 38px; padding-bottom: 10px">
                                         <li class="active" style="width:100%">
-                                            <a data-toggle="tab" href="#tab-10" style="border:none;padding: 3px 5px;width:100%; padding-bottom: 0%;">
+                                            <a data-toggle="tab" href="#tab-10" style="border:none;padding: 3px 5px;width:100%;padding-bottom: 0%;">
                                                 <h4 id= "{{ project.2 }}" name="changeName" ondblclick="updatePageName(this.id)"
                                                 class="text-responsive1" value ="{{ project.2 }}"
                                                 style="margin:0px;width: 100%;
+                                                background:none;
                                                 height: 100%;
                                                 overflow: hidden;
                                                 text-overflow: ellipsis;">
-                                                    <abbr id="edi" class="checkImageNameScreenshotSelector"  title="{{ project.0 }}" style=" text-decoration: none !important; border-bottom: none !important; white-space: nowrap; cursor: url(http://www.cursor.cc/cursor/263/42/cursor.png), auto;" contenteditable='true' onclick="$(this).focus();">{{ project.0 }}</abbr>
+                                                   <abbr id="{{ project.0  }}" class="editScreenName"  title="{{ project.0 }}" style=" text-decoration: none !important; border-bottom: none !important; white-space: nowrap; cursor: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAA2UlEQVQ4T92UoU4DURBFz1xXh0c069ukAmjSb8Agi2iC6Rcg+AEcEotr+zEtHhRV/YHiZ8hLNmSzbDbLbsWmY17ykjk5d8Q1Tjx2Yh69Al7m6Q7FlGXDTNIT8F11Cnf/AN6AK0kL4MLd0/s7ZeAEGAGrmtteS3qIiFlELIFtF+CNpPsEcPdNGZb+/2NYhK2BXVWKpsCppDkQuVklrKnhQNIrcHT3ZPYOZMC+reGtpGkO+0wQSS/u/tgW+GfvvIBjM3s2s6+60oiIYUTcNblh5/LpVdtUpum/4Q/4VVAV9fOi6QAAAABJRU5ErkJggg==), default;" contenteditable='true' data-lastName="" onfocus=$(this).attr("data-lastName",this.innerText); onclick="$(this).focus()" onkeydown="modifyScreenName(event, this.innerText)">{{ project.0 }}</abbr>
                                                 </h4>
                                             </a>
                                         </li>
@@ -111,7 +90,7 @@
                                     padding: 6px;
                                     width: 100%;
                                     position: absolute;
-                                    top: 60%;
+                                    top: 65%;
                                     left: 50%;
                                     transform: translate(-50%,-50%);">
                                     {% csrf_token %}
@@ -152,33 +131,4 @@
             </div>
         </div>
     </div>
-        <script>"use strict";
-            $(document).ready(function () {
-                var  screenCount = $('#datatables-example').find('h4').length;
-                var tblwidth= 137.50*screenCount;
-                document.getElementById('datatables-example').style= "width:" + tblwidth + "px; margin-bottom:0;";
-            });
-    </script>
 
-    <script>"use strict";
-        function deletePage() {
-            var id = document.getElementById('idToDelte').value;
-            $.ajax({
-                type: 'POST',
-                url: 'index',
-                name: 'deletePage',
-                data: {
-                    'deletePage': id
-                },
-                success: function (data) {
-                    var result = data;
-                    console.log(result);
-                },
-                error: function (jqXHR, status, err) {
-                    console.log(jqXHR.responseText);
-                }
-            });
-            document.getElementById('loadingSubmitPage').style.display = '';
-            location.reload();
-        }
-    </script>
