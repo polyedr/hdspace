@@ -68,7 +68,7 @@ $(document).ready(function () {
                     'lastName': lastName,
                     'name': 'modifyProject'
                 },
-                //update all other html matching this project name
+                //update all other html containing this project name
                 success: function () {
                     setNavbarProjectName(newName, lastName);
                     $(this).text(newName);
