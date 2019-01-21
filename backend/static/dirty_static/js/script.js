@@ -23,7 +23,97 @@
         $("#btn-add-widget").click(function () {
             alert("button custom asset clicked");
         });
+        /**
+         * The front-end is inconsistent with the back-end; it displays the correct screenName and projectNames but
+         * the names are capitalized.
+         *
+         * The following two ajax requests are a workaround for this issue. They get the exact matching names from the
+         * back end and override the initial names set with html render variables.
+         *
+         * html render variables cause this capitalization issues when used within html elements.
+         */
+        console.log("setting project name....")
+             $.ajax({
+                 type: 'GET',
+                 url: '/index/',
+                 name: 'getProjectName',
+                 data: {
+                     'name': 'getProjectName'
+                 },
+                 success: function (data) {
+                     //override all occurrences of the projectName
+                     $("#projectName").html(data);
+                     setNavbarProjectName(data);
+                 }
+
+             });
+
+        console.log("setting screen name..");
+            $.ajax({
+               type: 'GET',
+               url: '/index/',
+               data: {
+                   'name': 'getScreenName',
+                   'initialScreenName': $("#retrieveCurrentPage").text()
+               },
+               success: function (data) {
+                   //override all occurances of the screenname
+                   $("#retrieveCurrentPage").text(data);//on device panel
+               }
+            });
     });
+
+    /**
+     * This function updates the project name in MyProjects (under navbar)
+     * @param newName - The new project name to set
+     * @param lastName - The previous project name.
+     */
+    function setNavbarProjectName(newName,lastName){
+        //Get the projects from MyProjects list
+        var projectList = $("#myProjectsList li");
+
+        //For each project in "MyProjects" list
+        projectList.each(function(){
+            //get its project name
+            thisProjectNameElement = $(this).children('h4').children('abbr');
+            thisProjectName = thisProjectNameElement.text();
+
+            // Runs when lastName param is omitted. Used for setting on inital page load
+            if(typeof lastName === 'undefined'){
+               if(thisProjectName.localeCompare(newName) === 0){
+                   $(`#${thisProjectNameElement.attr('id')}`).text(newName);
+                   return false;//breaks out of .each()
+               }
+            }
+            //This runs whenever the project name is edited after load (dynamically)
+            else{
+               if(thisProjectName.localeCompare(lastName) === 0){
+                   $(`#${thisProjectNameElement.attr('id')}`).text(newName);
+                    return false;//breaks out of .each()
+               }
+            }
+        });
+    }
+
+    function setScreenSelectorName(newName,lastName){
+        //get the screens (table-data) from the screen selector (table row)
+        var screenList = $("#screenSelectorContent td");
+
+        //For each screen in the screenlist
+        screenList.each(function (){
+            //get its screen name
+            thisScreenNameElement = $(this).find('abbr');
+            thisScreenName = thisScreenNameElement.text();
+
+            //Update; if its the correct screen name
+            if(thisScreenName.localeCompare(lastName) === 0){
+                thisScreenNameElement.text(newName);
+                return false; //breaks out of .each()
+            }
+
+        });
+
+    }
 
 
   //  <!-- Navbar on click functioning-->
@@ -483,6 +573,63 @@
      document.getElementById('layoutMenu li').style.width = '700px';
      }
 
+     function updateRecentColors(selectedColor) {
+
+        const blackBorder = "1px solid black";
+        //number of positions on colour panel
+        const numPositions = Number($("#bgRecentColors").attr("data-colors"));
+        //positions filled so far
+         let numFilled = Number($("#bgRecentColors").attr("data-filled"));
+         const panelHas = collectColours(numPositions);
+
+         //Don't add colours already in panel
+         if (!panelHas(selectedColor)) {
+
+             //Still have spaces to fill
+            if (numFilled < numPositions) {
+                updateClientRecentColor(selectedColor);
+            }
+            //Panel is full
+             else if (numFilled === numPositions) {
+                 numFilled=0;//reset
+                 updateClientRecentColor(selectedColor);
+            }
+         }
+         //Collects the colours currently in the panel
+         function collectColours(numPositions) {
+             let existingColours = new Set();
+
+             for (let i = 1; i <= numPositions; i++) {
+                 existingColours.add($(`#bgClr${i}`).css("background-color"));
+             }
+
+             return function (myColour) {
+                 return existingColours.has(myColour);
+             };
+         }
+         function updateClientRecentColor(selectedColor){
+
+             //Still have spaces to fill
+             if (numFilled < numPositions) {
+                 fillNext();
+                 numFilled++;
+                 $("#bgRecentColors").attr("data-filled", numFilled);
+
+             }
+             //Panel is full
+             else if (numFilled === numPositions) {
+                 fillNext();
+                 $("#bgRecentColors").attr("data-filled", numFilled + 1);
+             }
+
+         //fills next position in panel
+         function fillNext() {
+             $(`#bgClr${numFilled + 1}`).css("background-color", selectedColor);
+             $(`#bgClr${numFilled + 1}`).css("border", blackBorder);
+         }
+     }
+     }
+
     //<!--Other functionality-->
     /*$("#btn-full-screen").click(function(){
       var theDisplay = $("body");
@@ -606,17 +753,6 @@
         });
 
 
-
-
-           /* var elem = document.getElementById("container-inside-frame-top")
-
-            if (elem.style.visibility == hidden)  {
-            elem.style.visibility = visible;
-            }else
-                 {
-                     elem.style.visibility = hidden;
-                 }
-                 */
     // Color transfer preview
     $(".cTransfer").click ( function() {
               const elem1 = this.id;
@@ -665,14 +801,7 @@
             $("#container-inside-frame-top").addClass("hide-content");
             $("#btn-full-screen2").addClass("hide-content");
             $("#btn-full-screen").removeClass("hide-content");
-            /*( function() {
-            var elem1 = document.getElementById("#container-inside-frame-top");
-            var elem2 = document.getElementById("#container-inside-frame");
-            if (elem1. != elem2.htmlText){
-               elem1.htmlText = elem2.htmlText ;
-            } });*/
             });
-
 
           $( function() {
     $( "#sortable" ).sortable({
@@ -1013,23 +1142,6 @@
             "background-tablet-surfacePro4").addClass("background-tablet-ipad");
     });
 
-    /*
-    $(".general-size-mobile").hover(function(){
-        $("#wrapper").addClass("overflowWrapperFixed")
-    });
-    $(".general-size-laptop").hover(function(){
-        $("#wrapper").addClass("overflowWrapperFixed")
-    });
-    $(".general-size-tablet").hover(function(){
-        $("#wrapper").addClass("overflowWrapperFixed")
-    });
-    */
-
-    // function handleinput(){
-    //     $('#hideOnUpload').attr('style', 'visibility:hidden');
-    //     console.log('hi');
-    // }
-
 
     //Upload Form Submission
     function submitUploadedScreen(){
@@ -1136,30 +1248,6 @@
         console.log('Cancelled..hh...');
     }
 
-    // $(document).ready(
-    // function(){
-    //     $('#remove-on-click-check').addClass('hidden');
-    //     $('#imgUpload').change(
-    //         function(){
-    //             if ($(this).val()){
-    //                 swal({
-    //                     title: "Enter Screen Name",
-    //                     type: "input",
-    //                     inputPlaceholder: "Enter the screen name",
-    //                     showCancelButton: true,
-    //                     confirmButtonColor: "#18a689",
-    //                     confirmButtonText: "Create",
-    //                     closeOnConfirm: false,
-    //                 },loadingOnclick());
-    //                 // $('.sweet-overlay').style.opacity="0.8;";
-    //                 $('#upload-visibility').addClass('active move-visibility');
-    //             }
-    //             else {
-    //             }
-    //         }
-    //     );
-    // });
-
     $(document).ready(
     function(){
         $('#color-remove-on-check').addClass('hidden');
@@ -1227,7 +1315,7 @@
     function approved_click(item_list){
         $.ajax({
             type: 'POST',
-            url: 'index',
+            url: '/index/',
             name: 'approve',
             traditional: true,
             data:{
@@ -1241,7 +1329,7 @@
         var resultCounter = 0;
         $.ajax({
             type: 'POST',
-            url: 'index',
+            url: '/index/',
             name: 'search',
             data: {
                 'name': 'search',
@@ -1521,7 +1609,7 @@
         var resultCounter = 0;
         $.ajax({
             type: 'POST',
-            url: 'index',
+            url: '/index/',
             name: 'search',
             data: {
                 'name': 'search',
@@ -1659,7 +1747,7 @@
             setTimeout(function(){
                 executeOnDelay();
             },100);
-        })
+        });
     }
 
     function searching_widgetsT(key) {
@@ -1990,7 +2078,7 @@
         }
         document.getElementById('panel-id').style = 'height:1995px;';
         document.getElementById('device-frame').style = 'width:75%;height:100%;position: absolute;top: 50%;left: 50%;transform: translate(-50%,-50%);margin-top:15px';
-        document.getElementById('general-contain').style = 'margin-left:4%;height:100%;margin-top:-2%;';
+        document.getElementById('general-contain').style = 'margin-left:4%;height:100%;margin-top:-4.2%;margin-bottom:-12.5%;';
         document.getElementById('container-inside-frame').style = 'height:inherit;background:black;';
     }
 
@@ -2345,82 +2433,6 @@
         }
     });
 
-    // //Search options
-    // function visibleSuggestions() {
-    //     document.getElementById('reduceOnUpload').style = 'width: 780px;height: 695px;background-color: #f3f3f4;border-top-style: none;';
-    //     document.getElementById('hideOnUpload').style = 'padding-top: 0;visibility: visible;';
-    //     document.getElementById('parentHideOnUpload').style = 'padding: 0;border-top: none;';
-    //     $('#widgetsHidder').attr('style', 'visibility: hidden;height: auto;');
-    //     $('.widgetsHidderClass').attr('style', 'height: 150px;width: 0;float: left;border-top: 1px solid #e7eaec;margin: 5px 0 5px 5px;');
-    //     $('#screensHidder').attr('style', 'visibility: visible;height: auto;');
-    //     $('#searchSuggestionResult').removeClass('hidden');
-    //     if($('.checkIconDeselect').css('visibility') === 'hidden'){
-    //         $('#approveButton').attr('style', 'padding: 0;padding-top: 10px;visibility: hidden;');
-    //     }
-    //     else{
-    //         $('#approveButton').attr('style', 'padding: 0;padding-top: 10px;visibility: visible;');
-    //     }
-    //     screenContainer();
-    //     var emptyValue = document.getElementById('upload-search').value;
-    //     if (emptyValue.length === 0){
-    //         document.getElementById('reduceOnUpload').style = 'width: 780px;height: 426px;background-color: #f3f3f4;border-top-style: none;';
-    //         document.getElementById('hideOnUpload').style = 'padding-top: 0;visibility: visible;height:109px';
-    //         document.getElementById('parentHideOnUpload').style = 'padding: 0;border-top: none;height:107px';
-    //         $('#searchSuggestionResult').addClass('hidden');
-    //         $('#widgetsHidder').attr('style', 'visibility: visible;height: auto;');
-    //         $('#screensHidder').attr('style', 'visibility: hidden;height: auto;');
-    //         $('#approveButton').attr('style', 'padding: 0;padding-top: 10px;visibility: hidden;');
-    //     }
-    // }
-    //
-    // function widgetsContainer(){
-    //     document.getElementById('reduceOnUpload').style = 'width: 780px;height: 695px;background-color: #f3f3f4;border-top-style: none;';
-    //     document.getElementById('hideOnUpload').style = 'padding-top: 0;visibility: visible;';
-    //     document.getElementById('parentHideOnUpload').style = 'padding: 0;border-top: none;';
-    //     $('#widgetsHidder').attr('style', 'visibility: visible;height: auto;');
-    //     $('.screensHidderClass').attr('style', 'height: 150px;width: 0;float: left;border-top: 1px solid #e7eaec;margin: 5px 0 5px 5px;');
-    //     $('.widgetsHidderClass').attr('style', 'height: 150px;width: 19%;float: left;border-top: 1px solid #e7eaec;margin: 5px 0 5px 5px;');
-    //     $('#screensHidder').attr('style', 'visibility: hidden;height: auto;');
-    //     $('#searchSuggestionResult').removeClass('hidden');
-    // }
-    //
-    // var i = 0;
-    // function screenContainer(){
-    //     i++;
-    //     document.getElementById('reduceOnUpload').style = 'width: 780px;height: 695px;background-color: #f3f3f4;border-top-style: none;';
-    //     document.getElementById('hideOnUpload').style = 'padding-top: 0;visibility: visible;';
-    //     document.getElementById('parentHideOnUpload').style = 'padding: 0;border-top: none;';
-    //     $('#widgetsHidder').attr('style', 'visibility: hidden;height: auto;');
-    //     $('.screensHidderClass').attr('style', 'height: 150px;width: 19%;float: left;border-top: 1px solid #e7eaec;margin: 5px 0 5px 5px;');
-    //     $('.widgetsHidderClass').attr('style', 'height: 150px;width: 0;float: left;border-top: 1px solid #e7eaec;margin: 5px 0 5px 5px;');
-    //     $('#screensHidder').attr('style', 'visibility: visible;height: auto;');
-    //     $('#searchSuggestionResult').removeClass('hidden');
-    // }
-    //
-    // function checkOk() {
-    //
-    //     $('.checkIcon').attr('style', 'color: #18a689;margin: 12%;');
-    //     $('.checkIconDeselect').attr('style', 'position: absolute;width: 30%;height: 27%;z-index: 10000;left: 50%;top: 50%;transform: translate(-50%,-50%);background-color: #b5b4b400;border-radius: 50%;cursor:pointer');
-    //     $('.crossDisapear').attr('style', 'visibility:hidden;');
-    //     $('.crossDisapear').innerHTML = '';
-    //     $('.checkIconSelected').attr('style', 'visibility:hidden;');
-    //     $('.checkIconSelected').innerHTML = '';
-    //     $('.imgHideScreen').attr('style', 'width:100%;height:100%;opacity:0.5;');
-    //     $('.imgHideWidgets').attr('style', 'width:100%;height:100%;opacity:0.5;');
-    //     $('#approveButton').attr('style', 'padding: 0;padding-top: 10px;visibility: visible;');
-    // }
-    //
-    // function checkOkDeselect() {
-    //     $('.crossDisapear').attr('style', 'position: absolute;width: 30%;height: 27%;z-index: 10000;left: 65%;top: 50%;transform: translate(-50%,-50%);background-color: #b5b4b4;border-radius: 50%;cursor:pointer;');
-    //     $('.crossDisapear').innerHTML = '<i class="fa fa-close fa-2x" style="color: white;margin: 12%;"></i>';
-    //     $('.checkIconSelected').attr('style', 'position: absolute;width: 30%;height: 27%;z-index: 10000;left: 33%;top: 50%;transform: translate(-50%,-50%);background-color: #b5b4b4;border-radius: 50%;cursor:pointer;');
-    //     $('.checkIconSelected').innerHTML = '<i class="fa fa-check fa-2x" style="color: white;margin: 12%;"></i>';
-    //     $('.checkIconDeselect').attr('style', 'visibility:hidden;');
-    //     $('.imgHideScreen').attr('style', 'width:100%;height:100%;opacity:1;');
-    //     $('.imgHideWidgets').attr('style', 'width:100%;height:100%;opacity:1;');
-    //     $('#approveButton').attr('style', 'padding: 0;padding-top: 10px;visibility: hidden;');
-    // }
-
     function deleteSuggestedObject(event){
         var getId;
             getId = event.target;
@@ -2471,10 +2483,6 @@
         document.getElementById('job-tab').style.display = 'none';
         document.getElementById('source-tab').style.display = 'none';
         document.getElementById('messagepanel').style.display = '';
-        //$("#body-message").stop().animate({ scrollTop: $("#body-message")[0].scrollHeight}, 1000);
-        // $('#body-message').animate({scrollTop: $('#body-message').prop("scrollHeight")}, 500);
-        // alert("any how");
-        // $('#body-message div.media:last-child').css("background-color", "yellow");
 
         if(user_id){
            chat_interval = setInterval(function(){
@@ -2814,13 +2822,6 @@
                     if(htmlResponse){ // check whether response is received
                         window.location.href = "/index/";
                     }
-                    // $("#project-detail").hide();
-                    // $("#acceptDiv").removeClass("not-accept-project");
-                    // $("#acceptDiv a").removeClass("not-active");
-                    // $("#acceptDiv").hide();
-                    // document.getElementById("project-detail").innerHTML = "";
-                    // document.getElementById('project-detail').innerHTML += htmlResponse;
-
                 },
                 error: function (jqXHR, status, err) {
                     console.log('Failed due to '+err);
@@ -2870,16 +2871,6 @@
                  var pre = '<div id='+mode_t+'>Completion with: '+htmlResponse+'%</div>';
                 document.getElementById(mode_t).innerHTML = pre;
                 document.getElementById('percent-'+mode_t).style.width = Number(htmlResponse)+'%';
-                // $("#project-"+projectId+" .small").html("Completion with: "+htmlResponse+"%");
-
-                // $("#project-"+projectId+" .progress-bar").css("width", ""+htmlResponse+"%");
-
-                // $("#project-detail").hide();
-                //document.getElementById("project-detail").innerHTML = "";
-                //document.getElementById('project-detail').innerHTML += htmlResponse;
-
-                // console.log('Success! '+htmlResponse);
-
             },
             error: function (jqXHR, status, err) {
                 console.log('Failed due to '+err);
@@ -3411,7 +3402,7 @@
               return;
             }
 
-            if ($('#image').attr('src') == "../../static/cropper-master/dist/imageCrop.png") {
+            if ($('#image').attr('src') == "../../static/dirty_static/cropper-master/dist/imageCrop.png") {
                 swal("Please upload the image your need to crop");
             } else {
                 // Crop

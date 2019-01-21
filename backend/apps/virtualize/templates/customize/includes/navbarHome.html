@@ -73,18 +73,15 @@ overflow: unset;">
                         <li><a href="/projects/">All Projects</a></li>
                             <li id="projectOwner" class="inactive">
                                 <a id="project-link" style="display:inline-block;margin-left: -10px;width: 100%" ><i class="fa "></i> <span class="nav-label">MyProjects</span> <span class="fa arrow"></span></a>
-                                <ul class="nav nav-second-level">
+                                <ul id="myProjectsList" class="nav nav-second-level">
                                     {% for p in projects %}
                                         <li onclick="document.getElementById('selectProject{{ p.id }}').submit()" style="margin-top: -12px;margin-bottom:16px">
-                                            <span class="label label-green" style="position:  absolute; margin-left: 63px;">O</span>
                                             <form action="/projects/" id="selectProject{{ p.id }}" method="POST" enctype="multipart/form-data" style="margin: 10px" >
                                                 <input type="hidden" value="{{ p.id }}" name="selectProject"/>
                                                 <input type="hidden" value="empty" name="screenshot" id="screenshot{{ p.id }}"/>
                                             </form>
-                                            <h4 style="margin-left: 93px;
-                                                overflow: hidden;
-                                                text-overflow: ellipsis;">
-                                                <abbr  title="{{ p.projectName }}" style="text-decoration: none; white-space: nowrap;">{{ p.projectName }}</abbr>
+                                            <h4 class="dropdown-menu-item-container">
+                                                <abbr id="project{{ forloop.counter }}" class="dd-text-item">{{ p.projectName }}</abbr>
                                             </h4>
                                         </li>
                                     {% endfor %}
@@ -285,19 +282,7 @@ overflow: unset;">
                 }
             }, 1000);
         }
-        {#if(workflowState) {#}
-        {#    console.log("check if state is successfully checked and it's true");#}
-        //}
-        {#else {#}
-        {#    console.log("check if state is successfully checked and it's false");#}
-        {#    $('#loadingWorkflow').attr('style', 'position: absolute;\n' +#}
-        {#        '                            width: 97%;\n' +#}
-        {#        '                            height: 335px;\n' +#}
-        {#        '                            z-index: 1000000;\n' +#}
-        {#        '                            padding: 0;\n' +#}
-        {#        '                            background-color: transparent; visibility: hidden;');#}
-        {#    $('#workflowRunOff').attr('style', 'visibility: visible');#}
-        //}
+
 
         function createNewProjectNavbar(){
             swal({
@@ -320,7 +305,7 @@ overflow: unset;">
                         document.getElementById('newProjectName').value = inputValue;
                         document.getElementById('createNewProjectNAV').submit();
                         //swal("Nice!", "You wrote: " + inputValue, "success");
-                        {#loadScreen();#}
+                        loadScreen();
                     }
                 }
             );

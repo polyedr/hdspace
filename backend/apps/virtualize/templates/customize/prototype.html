@@ -511,7 +511,6 @@
                 if (elemid !== 'classContainer-selectorPro') {
                     for (var i = 0; i < elements.length; i++) {
                         if (elemid === elements[i].id) {
-{#                            var selElem = elements[i].id;#}
                             linkValue = $('#' + elemid).attr('linkvalue');
                             console.log("linkValue");
                             console.log(linkValue);
@@ -626,14 +625,9 @@
             {% endfor %}
             changeOver();
         }
-        // if the link is not made then create a linkable element to make a new link
         function addLinkableElement(elemid){
             document.getElementById('testPro').innerHTML = elemid;
             console.log(elemid);
-            // position of the link - future extension
-            // var element1 = document.getElementById(elemid);
-            // var style1 = window.getComputedStyle(element1, null);
-            // var rect = document.getElementById(elemid).getBoundingClientRect();
             $('#linkListPro').remove();
             var ht = '<div id="linkListPro" class="dropdown" style="z-index: 1; position: absolute"><button id="linkbuttonPro" class="btn btn-default btn-sm dropbtn" data-toggle="dropdown" style="border-radius: 3px;">\n' +
                 '                                        <span class="fa fa-link"><b class="caret" style="margin-left: 5px;"></b></span>\n' +
@@ -647,7 +641,7 @@
 
             $('#' + elemid).removeClass("main");
             var classTop = document.getElementById(elemid).className.trim();
-            // poistion of the linkable element
+            // position of the linkable element
             var top1 = $('.' + classTop).css('top');
             var left1 = $('.' + classTop).css('left');
 
