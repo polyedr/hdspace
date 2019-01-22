@@ -396,18 +396,6 @@ def main_request_core(request):
             import json
             return HttpResponse(json.dumps(backgroundColor), content_type="application/json")
 
-        elif str(request.GET['name']) == 'getProjectName':
-            print('We are running getProjectName GET')
-            project_details = findOne(db_main.projects_project, 'user_id', ObjectId(userId))
-            if project_details is None:
-                print('empty project')
-                project_name = ''
-            else:
-                project_name = project_details['projectName']
-
-            import json
-            return HttpResponse(json.dumps(project_name), content_type="application/json")
-
         elif str(request.GET['name']) == 'getPages':
             print('We are running getPages GET')
             pages = []
@@ -1188,6 +1176,13 @@ def main_request_core(request):
                     db.styles.update({"segmentation_id": srcid}, {'$set': {'animationType': ani}})
                 else:
                     db.newStyle.update({"element_id": srcid}, {'$set': {'animationType': ani}})
+            elif str(request.POST['name']) == "modifyProject":
+                lastName = request.POST['lastName']
+                newName = request.POST['newName']
+                #Update this project name
+                db_main.projects_project.update({"user_id": ObjectId(userId), "name": lastName}, {"$set": {"name": newName}})
+                db.tempPage.update({"userId": userId, "projectName": lastName}, {"$set": {"projectName": newName}})
+
 
         return html_render('customize/page2.html', currentUser, page, projectName, request, screenshotName, userId,
                            screenshotId, layoutIsBeingTransferd, colorIsBeingTransferd, workflowBeingMagic, html, css,
