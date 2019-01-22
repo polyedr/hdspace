@@ -23,36 +23,12 @@
         $("#btn-add-widget").click(function () {
             alert("button custom asset clicked");
         });
-        /**
-         * The front-end is inconsistent with the back-end; it displays the correct screenName and projectNames but
-         * the names are capitalized.
-         *
-         * The following two ajax requests are a workaround for this issue. They get the exact matching names from the
-         * back end and override the initial names set with html render variables.
-         *
-         * html render variables cause this capitalization issues when used within html elements.
-         */
-        console.log("setting project name....")
-             $.ajax({
-                 type: 'GET',
-                 url: '/index/',
-                 name: 'getProjectName',
-                 data: {
-                     'name': 'getProjectName'
-                 },
-                 success: function (data) {
-                     //override all occurrences of the projectName
-                     $("#projectName").text(data);
-                     setNavbarProjectName(data);
-                 }
-
-             });
     });
 
     /**
-     * This function updates the project name in MyProjects (under navbar)
+     * This updates the project name in MyProjects (in the navbar)
      * @param newName - The new project name to set
-     * @param lastName - The previous project name.
+     * @param lastName - The previous project name (used to find the name to replace)
      */
     function setNavbarProjectName(newName,lastName){
         //Get the projects from MyProjects list
@@ -81,6 +57,11 @@
         });
     }
 
+    /**
+     * This updates a screen on the screen selector with a new name.
+     * @param newName - The new screen name to set.
+     * @param lastName - The previous screen name (used to find the name to replace)
+     */
     function setScreenSelectorName(newName,lastName){
         //get the screens (table-data) from the screen selector (table row)
         var screenList = $("#screenSelectorContent td");
