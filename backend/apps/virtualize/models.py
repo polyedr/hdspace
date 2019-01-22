@@ -897,7 +897,7 @@ def getProjects(userId):
             jsonProjects.append({
                 'id': str(project['_id']),
                 'status' : str(project['status']),
-                'projectName': project['name'].capitalize(),
+                'projectName': project['name'],
                 'user_id': project['user_id'],
                 'screenshotsamount': length,
                 'screenshots': screen

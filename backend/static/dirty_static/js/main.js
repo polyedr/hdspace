@@ -81,9 +81,8 @@ $(document).ready(function () {
                 }
             });
         }
-        else {//Deny new name its null
-            //possibly add alert here to notify user of denial
-            $(this).text(lastName);
+        else {//Deny new name when its null
+            $(this).text(lastName);//revert
         }
 });
 
@@ -159,7 +158,7 @@ $(document).ready(function () {
             });
         }
         else{ //Deny new name its null
-            $(this).text(lastName);
+            $(this).text(lastName);//revert
         }
     });
 });
