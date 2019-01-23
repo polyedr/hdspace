@@ -19,7 +19,7 @@ overflow: unset;">
                                         <i class="fa fa-camera absolute w3-display-middle" aria-hidden="true"
                                        data-popup-ordinal="0" style="color: white;"></i>
                                     </div>
-                                    <img  alt="image" class="img-circle" src="/static/dirty_static/users/{{ currentProfilePic }}?{% now "U" %}"
+                                    <img  alt="image" class="img-circle" src="{{request.user.profile.get_image}}"
                                         onerror="this.src='/static/dirty_static/img/nopicyet.png'" style="object-fit: cover; width: 104px; height: 104px;">
                                 </div>
                                 <input type="hidden" name="profilePicture" value="{{ userName }}">
