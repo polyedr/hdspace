@@ -2400,6 +2400,30 @@
         }
     });
 
+//navbar resize
+
+$(document).ready(function(){
+        navbarSize();
+        $(window).resize(navbarSize);
+    });
+
+//resize the navbar when the screensize change//
+
+function navbarSize() {
+    if ($(window).width() > 1199) {
+        document.getElementById('changeZ-index').style = 'padding-left:16%; margin-bottom:0; z-index: 1;';
+    }
+    else if ($(window).width() < 1200 && $(window).width() > 1129) {
+        document.getElementById('changeZ-index').style = 'padding-left:19%; margin-bottom:0; z-index: 1;';
+    }
+    else if ($(window).width() < 1130 && $(window).width() > 767) {
+        document.getElementById('changeZ-index').style = 'padding-left:7%; margin-bottom:0; z-index: 1;';
+    }
+    else if ($(window).width() < 767) {
+        document.getElementById('changeZ-index').style = 'margin-left:0; margin-bottom:0; z-index: 1;';
+    }
+}
+
     function deleteSuggestedObject(event){
         var getId;
             getId = event.target;
