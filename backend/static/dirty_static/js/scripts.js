@@ -20,6 +20,10 @@ $(function() {
 
 /* screenshotSelector.html script */
 
+/**
+ * Sends a request to delete the screenshot matching a given id
+ * @param id - the id (_id) of the screenshot to delete
+ */
 function delTrigger(id) {
     swal({
         title: 'Do you want to delete this Screenshot?',
@@ -31,9 +35,9 @@ function delTrigger(id) {
         cancelButtonText: 'No',
         closeOnConfirm: false
     },function (isConfirm) {
+        //do this when confirm button is clicked
         if (isConfirm) {
-            document.getElementById('idToDelte').value = id;
-            deletePage();
+            deletePage(id);
             swal.close();
         }
     });
@@ -109,8 +113,7 @@ $("#favcolor").spectrum({
 });
 });
 
- function deletePage() {
-    var id = document.getElementById('idToDelte').value;
+ function deletePage(id) {
     $.ajax({
         type: 'POST',
         url: 'index',

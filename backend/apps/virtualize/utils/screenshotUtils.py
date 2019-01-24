@@ -62,15 +62,18 @@ def getLatestScreenshot(userId):
 
 def setScreenshot(userId, screenshot_id,projectName):
     collection = db.tempPage
-
+    #If this user has at least one tempPage document
     if collection.find_one({'userId': userId}) != None:
+        #update all documents belonging to this user with a new screenshot id
         collection.update({'userId': userId}, {
                     '$set':
                         {
                             'screenshot_id': screenshot_id
                         }
                 })
+    #Else, no tempPages documents belonging to this user
     else:
+        #insert one
         collection.insert({
             'userId': userId,
             'projectName': projectName,
