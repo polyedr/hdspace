@@ -30,21 +30,11 @@ class NoCachingMiddleware(object):
 @csrf_exempt
 def main_request_core(request):
     currentUser = str(request.user)
-    print('im user ' + currentUser)
     userId = getCollectionIDs('accounts_user', currentUser)
-    print('my current user Id is:')
-    print(str(userId))
-
     layoutIsBeingTransferd = layoutisTransferd(userId)
     colorIsBeingTransferd = colorisTransferd(userId)
     workflowBeingMagic = workflowRun(userId)
     suggestionImgC = ''
-
-    print('check here:')
-    print(request)
-    print(request.GET)
-    print(request.POST)
-
     last_screen_details = getLatestScreenshot(userId)
     if last_screen_details is not None:
         projectName = last_screen_details['projectName']
@@ -1199,10 +1189,7 @@ def main_request_core(request):
                            screenshotId, layoutIsBeingTransferd, colorIsBeingTransferd, workflowBeingMagic, html, css,
                            suggestionImgC)
 
-    try:
-        rewritePage(currentUser, myfile, screenshotId, screenshotName, 'load')
-    except:
-        print('cache is not deleted')
+    rewritePage(currentUser, myfile, screenshotId, screenshotName, 'load')
 
     return html_render('customize/page2.html', currentUser, page, projectName, request, screenshotName, userId,
                        screenshotId, layoutIsBeingTransferd, colorIsBeingTransferd, workflowBeingMagic, html, css,

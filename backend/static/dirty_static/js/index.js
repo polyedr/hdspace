@@ -3,13 +3,7 @@ $( function() {
 $( ".sortable" ).sortable();
 } );
 
-$(document).ready(function () {
 
-$('#datatables-example').DataTable({
-    lengthMenu: [10,20,30,40,50,60]
-});
-
-});
 
 function load(){
     var
