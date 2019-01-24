@@ -3731,11 +3731,16 @@ span.recentColor {
     height: 11px;
 }
 /*Unique Styling - Applies to individual selectors*/
-#se-rezise-background{
+#se-rezise-background {
     position: relative;
     right: 2.9%;
     bottom: 14.6%;
     float: right;
     cursor: se-resize;
+}
+
+.highlight{
+    border: 1.7px solid rgb(24, 166, 137);
+}
 
  /* style : supun  end*/

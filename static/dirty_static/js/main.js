@@ -108,6 +108,7 @@ $(document).ready(function () {
        },
         success: function(screenshotId){
            $("#retrieveCurrentPage").attr("data-screenshotid",screenshotId);
+           highlightScreenOnDevice(screenshotId);
         }
     });
 
@@ -182,34 +183,6 @@ $(document).ready(function () {
         }
     });
 
-    /**
-     * Updates the screen name on the device container only if the screen name edited by the user
-     * is being displayed on the device
-     * @param editedScreenNameId - The screenshot id of the screen name edited by the user
-     */
-    function updateDeviceScreenName(editedScreenNameId, newName){
-        var editedScreenNameIsEqualTo = compareScreenshotId(editedScreenNameId);
-        //The screenshot id of the screen displayed on the device
-        var screenDisplayedOnDevice = $("#retrieveCurrentPage").attr("data-screenshotid");
-
-        //If the edited screen name matches the screen displayed on the device
-        if(editedScreenNameIsEqualTo(screenDisplayedOnDevice)){
-            $("#retrieveCurrentPage").text(newName);
-        }
-    }
-
-    /**
-     * Compares two screenshot id's for equality.
-     * @param screenShotIdOne - screenshot id of a given screenshot
-     * @returns Boolean
-     */
-    function compareScreenshotId(screenShotIdOne){
-        return function(screenShotIdTwo){
-            //case insensitive comparison
-            return screenShotIdOne.localeCompare(screenShotIdTwo, undefined, { sensitivity: 'accent' }) === 0;
-        };
-    }
-
     //listener for editing screen names on the DEVICE CONTAINER
     $("#retrieveCurrentPage").blur(function () {
         //innerHTML of this element (for updating the name)
@@ -247,6 +220,74 @@ $(document).ready(function () {
         }
     });
 });
+
+    /**
+     * This highlights the screen on the screen selector that is currently being displayed on the device
+     */
+    function highlightScreenOnDevice(screenshotId){
+
+        //The screenshot id of the screen displayed on the device
+        var screenIdDisplayed = screenshotId;
+        var screenElement = getScreenElementOnScreenSelector(screenIdDisplayed);
+        var screenElementChildToHighlight = screenElement.find(".tab-pane.active.imageOutliner");
+        screenElementChildToHighlight.addClass("highlight");
+    }
+
+    /**
+     * This returns the screen on the screen selector that matches the given screenshot id
+     * @param screenshotId - The screenshot Id of the screen to get from the selector
+     * @returns jQuery Object
+     */
+    function getScreenElementOnScreenSelector(screenshotId){
+
+            var screenElement;
+            //get the screens (table-data) from the screen selector (table row)
+            var screenList = $("#screenSelectorContent td");
+
+            //For each screen in the screenlist
+            screenList.each(function (){
+                //get its screenshot id
+                var thisScreenNameElement = $(this).find('abbr');
+                var thisScreenshotId = thisScreenNameElement.attr("data-screenshotid");
+                if(thisScreenshotId){
+                    //Get this screen if it's screenshot id matches the one we're looking for
+                    if(thisScreenshotId.localeCompare(screenshotId, undefined, { sensitivity: 'accent' }) === 0){
+                        screenElement = $(this);
+                        return false; //breaks out of .each()
+                    }
+                }
+            });
+
+        return screenElement;
+    }
+
+    /**
+     * Updates the screen name on the device container only if the screen name edited by the user
+     * is being displayed on the device
+     * @param editedScreenNameId - The screenshot id of the screen name edited by the user
+     */
+    function updateDeviceScreenName(editedScreenNameId, newName){
+        var editedScreenNameIsEqualTo = compareScreenshotId(editedScreenNameId);
+        //The screenshot id of the screen displayed on the device
+        var screenDisplayedOnDevice = $("#retrieveCurrentPage").attr("data-screenshotid");
+
+        //If the edited screen name matches the screen displayed on the device
+        if(editedScreenNameIsEqualTo(screenDisplayedOnDevice)){
+            $("#retrieveCurrentPage").text(newName);
+        }
+    }
+
+    /**
+     * Compares two screenshot id's for equality.
+     * @param screenShotIdOne - screenshot id of a given screenshot
+     * @returns Boolean
+     */
+    function compareScreenshotId(screenShotIdOne){
+        return function(screenShotIdTwo){
+            //case insensitive comparison
+            return screenShotIdOne.localeCompare(screenShotIdTwo, undefined, { sensitivity: 'accent' }) === 0;
+        };
+    }
 
 $(window).on('load', function() {
     //device size
