@@ -51,6 +51,18 @@ $(document).ready(function () {
         console.log('alo');
         //window.location.href='#'
     });
+    // screenshotId (html_render variable) is not accessible through deviceContainer.html
+    // so this data attribute cannot be set. This is a workaround
+    $.ajax({
+       type: 'GET',
+       url: '/index/',
+       data: {
+           'name': 'getScreenshotId'
+       },
+        success: function(screenshotId){
+           $("#retrieveCurrentPage").attr("data-screenshotid",screenshotId);
+        }
+    });
 
     // This listener is for editing PROJECT names
     $('.editProjectName').blur(function() {
@@ -70,10 +82,10 @@ $(document).ready(function () {
                 },
                 //update all other html containing this project name
                 success: function () {
-                    setNavbarProjectName(newName, lastName);
+                    updateNavbarProjectName(newName, lastName);
                     $(this).text(newName);
                 },
-                //revert name if request fails
+                //revert when request fails
                 error: function (jqxhr, textStatus, error) {
                     $(this).text(lastName);
                     console.log("Update Error (Project Name) - Reverting element to last name")
@@ -81,20 +93,19 @@ $(document).ready(function () {
                 }
             });
         }
-        else {//Deny new name when its null
-            $(this).text(lastName);//revert
+        else {//Revert when null
+            $(this).text(lastName);
         }
 });
 
-    //The listener for editing SCREEN names on selector
+    //The listener for editing screen names on the SCREEN SELECTOR
     $(".editScreenName").blur(function () {
         //innerHTML of this element (for updating the name)
         var newName = $(this).text().trim();
         //the previous name of this element (for finding the correct document in database)
         var lastName = $(this).attr("data-lastName").trim();
-
-        console.log("New Name = "+ newName);
-        console.log("Last name = "+ lastName);
+        // The screenshot id of the screen name edited
+        var screenshotId = $(this).attr("data-screenshotid");
 
         if(newName){
             $.ajax({
@@ -103,15 +114,15 @@ $(document).ready(function () {
                 context: this,
                 data: {
                     'newName': newName,
-                    'lastName': lastName,
+                    'screenshotId': screenshotId,
                     'name': 'modifyScreen'
                 },
                 //update all html matching this screen name
                 success: function () {
-                    $("#retrieveCurrentPage").html(newName);
+                    updateDeviceScreenName(screenshotId, newName);
                     $(this).text(newName);
                 },
-                //revert this screen name if request fails
+                //revert when request fails
                 error: function (jqxhr,textStatus,error) {
                     $(this).text(lastName);
                     console.log("Update Error (Screen Name): Reverting name to last name");
@@ -119,20 +130,47 @@ $(document).ready(function () {
                 }
             });
         }
-        else{ //Deny new name its null
+        else{ //Revert when null
             $(this).text(lastName);
         }
     });
 
-    //listener for Device Screen Name editor
+    /**
+     * Updates the screen name on the device container only if the screen name edited by the user
+     * is being displayed on the device
+     * @param editedScreenNameId - The screenshot id of the screen name edited by the user
+     */
+    function updateDeviceScreenName(editedScreenNameId, newName){
+        var editedScreenNameIsEqualTo = compareScreenshotId(editedScreenNameId);
+        //The screenshot id of the screen displayed on the device
+        var screenDisplayedOnDevice = $("#retrieveCurrentPage").attr("data-screenshotid");
+
+        //If the edited screen name matches the screen displayed on the device
+        if(editedScreenNameIsEqualTo(screenDisplayedOnDevice)){
+            $("#retrieveCurrentPage").text(newName);
+        }
+    }
+
+    /**
+     * Compares two screenshot id's for equality.
+     * @param screenShotIdOne - screenshot id of a given screenshot
+     * @returns Boolean
+     */
+    function compareScreenshotId(screenShotIdOne){
+        return function(screenShotIdTwo){
+            //case insensitive comparison
+            return screenShotIdOne.localeCompare(screenShotIdTwo, undefined, { sensitivity: 'accent' }) === 0;
+        };
+    }
+
+    //listener for editing screen names on the DEVICE CONTAINER
     $("#retrieveCurrentPage").blur(function () {
         //innerHTML of this element (for updating the name)
         var newName = $(this).text().trim();
         //the previous name of this element (for finding the correct document in database)
         var lastName = $(this).attr("data-lastName").trim();
-        console.log("New Name = "+ newName);
-        console.log("Last name = "+ lastName);
-
+        // The screenshot id of the screen in the device
+        var screenshotId = $(this).attr("data-screenshotid");
 
         if(newName){
             $.ajax({
@@ -141,15 +179,15 @@ $(document).ready(function () {
                 context: this,
                 data: {
                     'newName': newName,
-                    'lastName': lastName,
+                    'screenshotId': screenshotId,
                     'name': 'modifyScreen'
                 },
                 //update all html matching this screen name
                 success: function () {
-                    setScreenSelectorName(newName,lastName);
+                    updateScreenSelectorName(newName,screenshotId);
                     $(this).text(newName);
                 },
-                //revert this screen name if request fails
+                //revert when request fails
                 error: function (jqxhr,textStatus,error) {
                     $(this).text(lastName);
                     console.log("Update Error (Screen Name): Reverting name to last name");
@@ -157,8 +195,8 @@ $(document).ready(function () {
                 }
             });
         }
-        else{ //Deny new name its null
-            $(this).text(lastName);//revert
+        else{ //Revert when null
+            $(this).text(lastName);
         }
     });
 });

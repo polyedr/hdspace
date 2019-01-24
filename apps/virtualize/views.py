@@ -659,6 +659,9 @@ def main_request_core(request):
             tzz = datetime.now(pytz.timezone('Australia/Melbourne'))
             saveCurrent(str(tzz), id, location, fontColor, fontSize, fontFamily, borderColor, borderRadius, bgcolor,
                         textAlign, element, screenshotId, textIndent, type, '')
+        elif str(request.GET['name']) == 'getScreenshotId':
+            import json
+            return HttpResponse(json.dumps(screenshotId), content_type="application/json")
         else:
             print('Else GET')
 
@@ -694,13 +697,17 @@ def main_request_core(request):
 
         elif 'deletePage' in request.POST:
             print('We are running deletePage POST')
-            page = str(request.POST['deletePage'])
-            delete_page(page, userId)
+            page_id = str(request.POST['deletePage'])
+            delete_page(page_id, userId)
+            #curs - list of screenshots belonging to this user
             curs = findMultiple(db.screenshots, 'user_id', userId)
+            #If there are no screenshots belonging to this user
             if curs is not []:
-                for doc in curs:
-                    if doc['status'] != 'inactive':
-                        newScreen = doc
+                for screen in curs:
+                    if screen['status'] != 'inactive':
+                        newScreen = screen
+                #This updates or inserts a tempPage document.
+                #TODO: Review this code. Why is this updating when the page is requested to be deleted?
                 setScreenshot(userId, str(newScreen['_id']), projectName)
                 screenshotId = str(newScreen['_id'])
                 screenshotName = str(newScreen['pageName'])
@@ -710,9 +717,10 @@ def main_request_core(request):
                 print('deleted the last one!')
                 screenshotId = ''
                 screenshotName = 'None at this point'
-                page = 'None at this point'
+                page_id = 'None at this point'
                 cache.clear()
                 NoCachingMiddleware()
+            #TODO: Review this code: This update is already done within the setScreenshot() call above.
             db.tempPage.update({'userId': userId}, {'$set': {'screenshot_id': screenshotId}})
 
         elif 'changeElement' in request.POST:
@@ -1182,7 +1190,10 @@ def main_request_core(request):
                 #Update this project name
                 db_main.projects_project.update({"user_id": ObjectId(userId), "name": lastName}, {"$set": {"name": newName}})
                 db.tempPage.update({"userId": userId, "projectName": lastName}, {"$set": {"projectName": newName}})
-
+            elif str(request.POST['name']) == "modifyScreen":
+                newName = request.POST['newName']
+                screenshotId = request.POST['screenshotId']
+                db.screenshots.update({"_id": ObjectId(screenshotId)}, {"$set": {"screenName": newName}})
 
         return html_render('customize/page2.html', currentUser, page, projectName, request, screenshotName, userId,
                            screenshotId, layoutIsBeingTransferd, colorIsBeingTransferd, workflowBeingMagic, html, css,
@@ -1269,7 +1280,7 @@ def projects(request):
 
 
 def rewritePage(currentUser, myfile, screenshotId, screenshotName, state):
-    print('Rewriting PAge')
+    print('Rewriting Page')
     print('user: ' + str(currentUser) + '\n myfile: ' + str(myfile) + '\n id: ' + str(screenshotId)
           + '\n name: ' + str(screenshotName))
     if myfile is not None:
