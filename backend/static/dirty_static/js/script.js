@@ -30,7 +30,7 @@
      * @param newName - The new project name to set
      * @param lastName - The previous project name (used to find the name to replace)
      */
-    function setNavbarProjectName(newName,lastName){
+    function updateNavbarProjectName(newName, lastName){
         //Get the projects from MyProjects list
         var projectList = $("#myProjectsList li");
 
@@ -42,14 +42,14 @@
 
             // Runs when lastName param is omitted. Used for setting on inital page load
             if(typeof lastName === 'undefined'){
-               if(thisProjectName.localeCompare(newName) === 0){
+               if(thisProjectName.localeCompare(newName, undefined, { sensitivity: 'accent' }) === 0){
                    $(`#${thisProjectNameElement.attr('id')}`).text(newName);
                    return false;//breaks out of .each()
                }
             }
             //This runs whenever the project name is edited after load (dynamically)
             else{
-               if(thisProjectName.localeCompare(lastName) === 0){
+               if(thisProjectName.localeCompare(lastName, undefined, { sensitivity: 'accent' }) === 0){
                    $(`#${thisProjectNameElement.attr('id')}`).text(newName);
                     return false;//breaks out of .each()
                }
@@ -60,26 +60,25 @@
     /**
      * This updates a screen on the screen selector with a new name.
      * @param newName - The new screen name to set.
-     * @param lastName - The previous screen name (used to find the name to replace)
+     * @param screenshotId - The screenshot id of the screen to update on the screen selector.
      */
-    function setScreenSelectorName(newName,lastName){
+    function updateScreenSelectorName(newName, screenshotId){
         //get the screens (table-data) from the screen selector (table row)
         var screenList = $("#screenSelectorContent td");
 
         //For each screen in the screenlist
         screenList.each(function (){
-            //get its screen name
-            thisScreenNameElement = $(this).find('abbr');
-            thisScreenName = thisScreenNameElement.text();
-
-            //Update; if its the correct screen name
-            if(thisScreenName.localeCompare(lastName) === 0){
-                thisScreenNameElement.text(newName);
-                return false; //breaks out of .each()
+            //get its screenshot id
+            var thisScreenNameElement = $(this).find('abbr');
+            var thisScreenshotId = thisScreenNameElement.attr("data-screenshotid");
+            if(thisScreenshotId){
+                //Update; if its the correct screen
+                if(thisScreenshotId.localeCompare(screenshotId, undefined, { sensitivity: 'accent' }) === 0){
+                    thisScreenNameElement.text(newName);
+                    return false; //breaks out of .each()
+                }
             }
-
         });
-
     }
 
 
