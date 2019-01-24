@@ -541,7 +541,7 @@ var selectedWidget, selectedGraphics;
      }
      function addWidgets(value) {
         var replaceWidPath, getWidName;
-        replaceWidPath = selectedWidget.replace('/static/widgets/', '');
+        replaceWidPath = selectedWidget.replace('/static/dirty_static/widgets/', '');
         getWidName = replaceWidPath.replace('.jpg', '');
         console.log("selectedWidget");
         console.log(selectedWidget);
