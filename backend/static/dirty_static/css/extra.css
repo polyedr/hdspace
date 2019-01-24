@@ -2666,10 +2666,10 @@
     padding-top: 93px;
     background-repeat: no-repeat;
 }
-
+/*Scrolling for the devicebackground is set here*/
 .content-inside-frame-laptop{
     position: relative;
-    overflow: hidden;
+    overflow: scroll;
     width: 92%;
     margin-top: 3%;
     display: block;
@@ -3722,4 +3722,20 @@ span.recentColor {
 .fontInputElements{
     margin-top: 10px;
 }
+
+/* DEVICE BACKGROUND SELECTORS */
+
+/*Parent Styling - Applies to all selectors*/
+.resize-selector{
+    width: 12px;
+    height: 11px;
+}
+/*Unique Styling - Applies to individual selectors*/
+#se-rezise-background{
+    position: relative;
+    right: 2.9%;
+    bottom: 14.6%;
+    float: right;
+    cursor: se-resize;
+
  /* style : supun  end*/

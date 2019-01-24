@@ -51,6 +51,53 @@ $(document).ready(function () {
         console.log('alo');
         //window.location.href='#'
     });
+
+        /**
+     * The code responsible for resizing and scrolling.
+     *  - Currently only implemented on the LAPTOP Device and on the South-East corner of screen.
+     *  - How to:
+     *      - On the laptop device, hover, over the south-east corner (You should see the cursor change to a resize one)
+     *      - click and drag to resize the background of the device. (You should notice it change in size)
+     *      - Increasing the size of the background beyond the borders of the screen will automatically enable scrolling.
+     *      - You can test this by clicking the screen and trying to scroll (you should be able to horizontally and
+     *        vertically scroll)
+     *      - Resizing is currently only triggered on south-east corner, so If you wish to resize again you
+     *        must do so from the same corner. Not the corner of the background.
+     */
+    // South-east selector listener; for resizing the device background
+    document.getElementById("se-rezise-background").addEventListener("mousedown", function(e){
+
+        deviceBackgroundElement = document.getElementById("classContainer-selector");
+        deviceBackgroundStyle = window.getComputedStyle(deviceBackgroundElement);
+
+        //get starting width and height
+        var startBackgroundHeight = parseFloat(deviceBackgroundStyle.getPropertyValue('height'));
+        var startBackgroundWidth = parseFloat(deviceBackgroundStyle.getPropertyValue('width'));
+        //get starting cursor co-ordinates
+        var startX = e.pageX;
+        var startY = e.pageY;
+
+        resizeDeviceBackground = function (e){
+            //Calculate the difference between starting and current cursor position (Offset).
+            var offsetX = e.pageX - startX;
+            var offsetY = e.pageY - startY;
+
+            //Increment this offset with the original width and height
+            var newWidth = (startBackgroundWidth + offsetX);
+            var newHeight = (startBackgroundHeight + offsetY);
+
+            //Resize the element
+            deviceBackgroundElement.style.width = newWidth;
+            deviceBackgroundElement.style.height = newHeight;
+        };
+        //Resize the device background in increments
+        document.addEventListener("mousemove", resizeDeviceBackground);
+
+        document.addEventListener("mouseup", function (){
+            document.removeEventListener("mousemove",resizeDeviceBackground);
+        });
+    });
+
     // screenshotId (html_render variable) is not accessible through deviceContainer.html
     // so this data attribute cannot be set. This is a workaround
     $.ajax({
