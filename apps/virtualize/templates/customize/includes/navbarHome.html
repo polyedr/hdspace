@@ -3,6 +3,7 @@
 overflow: unset;">
         <div class="sidebar-collapse">
             <ul class="nav metismenu" id="side-menu">
+
                 <li id="navbar-header-adevi" class="nav-header" style="height: 156px;text-align: center;">
                     <div class="dropdown profile-element">
                         <span>
@@ -56,120 +57,64 @@ overflow: unset;">
                         <img alt="image" class="img-responsive" src="/static/dirty_static/media/img/adevi.jpg" style="max-width:80%;margin-left:5px;"/>
                     </div>
                 </li>
-                <li class="active">
-                    <a href="/index/"><i class="fa fa-th-large"></i> <span class="nav-label">Pages</span> </a>
-                </li>
-                <li id="projectSelector" class="inactive">
-                    <a id="project-link" style="display:inline-block;width:81%;"><i class="fa fa-sitemap"></i> <span class="nav-label">Projects</span> <span class="fa arrow"></span></a>
-                    <button id="project-plus" class="plus-project" style="background:transparent;border:none;margin:14px 9px 5px;position:absolute;">
-                        <span class="fa fa-plus" style="font-size:10px;line-height:1.92857;margin-top:0;margin-right:0;color:inherit;" onclick="createNewProjectNavbar()">
-                            <form id="createNewProjectNAV" class="hidden" method="POST" enctype="multipart/form-data">
-                                <input type="hidden" id="newProjectName" name="newProjectName"/>
-                                <input type="file" name="createNewProject" id="createProjectName"/>
-                            </form>
-                        </span>
-                    </button>
-                    <ul class="nav nav-second-level">
-                        <li><a href="/projects/">All Projects</a></li>
-                            <li id="projectOwner" class="inactive">
-                                <a id="project-link" style="display:inline-block;margin-left: -10px;width: 100%" ><i class="fa "></i> <span class="nav-label">MyProjects</span> <span class="fa arrow"></span></a>
-                                <ul id="myProjectsList" class="nav nav-second-level">
-                                    {% for p in projects %}
-                                        <li onclick="document.getElementById('selectProject{{ p.id }}').submit()" style="margin-top: -12px;margin-bottom:16px">
-                                            <form action="/projects/" id="selectProject{{ p.id }}" method="POST" enctype="multipart/form-data" style="margin: 10px" >
-                                                <input type="hidden" value="{{ p.id }}" name="selectProject"/>
-                                                <input type="hidden" value="empty" name="screenshot" id="screenshot{{ p.id }}"/>
-                                            </form>
-                                            <h4 class="dropdown-menu-item-container">
-                                                <abbr id="project{{ forloop.counter }}" class="dd-text-item">{{ p.projectName }}</abbr>
-                                            </h4>
-                                        </li>
-                                    {% endfor %}
-                                </ul>
-                            </li>
-                            <li id="projectCollaborate" class="inactive">
-                                <a id="project-link" style="display:inline-block;margin-left: -10px;width: 100%">
-                                    <i class="fa "></i>
-                                    <span class="nav-label">Collaborating</span>
-                                    <span class="fa arrow"></span>
-                                </a>
-                                <ul class="nav nav-second-level">
-                                    {% for allProjects in projectsin %}
-                                        {% if allProjects.accept_status == 'accepted' %}
-                                            <li onclick="document.getElementById('selectProject{{ allProjects.projectid }}').submit()" style="margin-top: -12px;">
-                                            <span class="label label-orange">C</span>
-                                            <form action="/projects/" id="selectProject{{ allProjects.projectid }}" method="POST" enctype="multipart/form-data">
-                                            <input type="hidden" value="{{ allProjects.projectid }}" name="selectCollaboratingProject"/>
-                                            <input type="hidden" value="empty" name="screenshot" id="screenshot{{ allProjects.projectid }}"/>
-                                            </form>
-                                            <h4 style="margin:70px;
-                                                overflow: hidden;
-                                                text-overflow: ellipsis;">
-                                                <abbr  title="{{ allProjects.projectName }}" style="text-decoration: none; white-space: nowrap;">{{ allProjects.projectName }}</abbr>
-                                            </h4>
-                                            </li>
-                                        {% endif %}
-                                    {% endfor %}
-                                </ul>
-                            </li>
-                            <li id="Newproject" class="inactive">
-                                <a id="project-link" style="display:inline-block;margin-left: -10px; width: 100% ">
-                                    <i class="fa "></i>
-                                    <span class="nav-label">AssignedProjects</span>
-                                    <span class="fa arrow"></span>
-                                </a>
-                                <ul class="nav nav-second-level">
-                                    {% for allProjects in projectsin %}
-                                        {% if allProjects.accept_status == 'not_accepted' %}
-                                            <li id="project-{{allProjects.projectid}}">
-                                                <button type="button" id="acceptBtn" class="btn btn-primary btn-xs" onclick="acceptProject('{{allProjects.id}}')">Accept</button>
-                                                <button type="button" id="declineBtn" class="btn btn-danger btn-xs" onclick="declineProject('{{allProjects.id}}')">Decline</button>
-                                                <div id="acceptDiv" class="not-accept-project">
-
-                                                    <div class="small pull-right m-t-xs">9 hours ago</div>
-
-                                                    <a href="#" class="not-active">
-                                                        <h4>{{ allProjects.projectName }}</h4>
-
-                                                    </a>
-                                                    It is a long established fact that a reader will be distracted.
-                                                    <div class="clearfix"></div>
-
-                                                    <div class="small">Project Owner: <strong style="color: green;">{{allProjects.hiredBy}}</strong></div>
-                                                    <!-- <div class="progress progress-mini">
-                                                        <div style="width: 22%;" class="progress-bar progress-bar-warning"></div>
-                                                    </div> -->
-                                                    <div class="small text-muted m-t-xs">Project Created: {{ allProjects.hire_date|date:"D d M Y" }}</div>
-                                                </div>
-                                            </li>
-                                            {% else %}
-                                        <div class="clearfix" style="margin: 1px;"></div>
-                                        {% endif %}
-                                    {% endfor %}
-                                </ul>
-                            </li>
-
-                    </ul>
+                <li id="projectSelector" class="active">
+                    <a style="display:inline-block; width: 100%" ><i class="fa "></i>
+                        <span style="margin: 1px 10px 1px 1px;" class="fa arrow" ></span>
+                        <span style="margin-left:-10px " onclick="location.href='/projects/'"> My Projects</span>
+                        <button id="project-plus" class="plus-project" style="background:transparent;border:none;margin: 1px 1px 1px 90px;position:absolute;">
+                            <span class="fa fa-plus" style="font-size:10px;line-height:1.92857;margin-top:0;margin-right:0;color:inherit;" onclick="createNewProjectNavbar()">
+                                <form id="createNewProjectNAV" class="hidden" method="POST" enctype="multipart/form-data">
+                                    <input type="hidden" id="newProjectName" name="newProjectName"/>
+                                    <input type="file" name="createNewProject" id="createProjectName"/>
+                                </form>
+                            </span>
+                        </button>
+                    </a>
+                        <ul id="myProjectsList" class="nav nav-second-level">
+                            {% for p in projects %}
+                                <li onclick="document.getElementById('selectProject{{ p.id }}').submit()" style="margin-top: -12px;margin-bottom:16px">
+                                    <form action="/projects/" id="selectProject{{ p.id }}" method="POST" enctype="multipart/form-data" style="margin: 10px" >
+                                        <input type="hidden" value="{{ p.id }}" name="selectProject"/>
+                                        <input type="hidden" value="empty" name="screenshot" id="screenshot{{ p.id }}"/>
+                                    </form>
+                                    <h4 class="dropdown-menu-item-container">
+                                        <abbr id="project{{ forloop.counter }}" class="dd-text-item">{{ p.projectName }}</abbr>
+                                    </h4>
+                                </li>
+                            {% endfor %}
+                        </ul>
 
                     <!--<a href="/projects/"><i class="fa fa-sitemap"></i> <span class="nav-label">Projects</span> </a>-->
                 </li>
-                <li class="divider"></li>
 
+                <li class="divider"></li>
+                <!-- Until we decide if we are keeping workflow here
                 <li id="workflowTurnOn" class="inactive">
                     <a id="workflowVisible"><i class="fa fa-folder-open-o"></i> <span id="colorToggler" class="nav-label">Workflow <span id="spinnerToggle" class="fa fa-spinner fa-spin" style="float: right;color: white;"></span></span> </a>
                 </li>
-                <li id="workflowTurnOff" class="inactive hidden">
-                    <a id="workflowInvisible"><i class="fa fa-folder-open-o"></i> <span class="nav-label">Workflow <span style="float: right;">Off</span></span> </a>
-                </li>
+                <li id="workflowTurnOff" class="inactive hidden">-->
+                    <!--<a id="workflowInvisible"><i class="fa fa-folder-open-o"></i> <span class="nav-label">Workflow <span style="float: right;">Off</span></span> </a>-->
+                <!--</li>-->
                 <li class="inactive">
                     <a onclick="libraryMS()"><i class="fa fa-hdd"></i><span class="nav-label"> Storage Library</span> </a>
                 </li>
-                <li class="inactive" id="li-compress">
-                    <a id="compress-fullscreen-link" data-toggle="tab" href="#tab-6"><i class="fa fa-compress"></i><span class="nav-label">Full Screen</span></a>
+                <li class="inactive">
+                    <a onclick=""><i class="fa fa-hdd"></i><span class="nav-label"> Payment</span> </a>
                 </li>
+                <li class="inactive">
+                    <a onclick=""><i class="fa fa-hdd"></i><span class="nav-label"> Team</span> </a>
+                </li>
+                <li class="inactive">
+                    <a href="/index/"><i class="fa fa-th-large"></i> <span class="nav-label">Admin</span> </a>
+                </li>
+                <!-- until we decide if we keep full screen
+                <li class="inactive" id="li-compress">-->
+                    <!--<a id="compress-fullscreen-link" data-toggle="tab" href="#tab-6"><i class="fa fa-compress"></i><span class="nav-label">Full Screen</span></a>-->
+                <!--</li>-->
                 <li class="inactive">
                    <a href="#"><i class="fa fa-question-circle"></i> <span class="nav-label">Help</span> </a>
                </li>
+
             </ul>
         </div>
     </nav>
@@ -188,8 +133,8 @@ overflow: unset;">
         $("#profile-pic-Upload").change(function(){
             fasterPreview( this );
         });
-
-        function workflowVisible() {
+        // below is commented till workflow is agreed here
+        /*function workflowVisible() {
             $('#workflowDisappearer').addClass('hidden');
             $('#workflowTurnOn').addClass('hidden');
             $('#workflowTurnOff').removeClass('hidden');
@@ -256,6 +201,7 @@ overflow: unset;">
                 }
             });
         }
+
         function loopAjaxRequest(data){
             var timesRun = 0, interval, noOfTimes;
             interval = setInterval(function() {
@@ -367,34 +313,35 @@ overflow: unset;">
 
             $("#view2").prop("checked", true);
         }
+        */
     </script>
+    <!--below commented coz of workflow-->
+    <!--<script>-->
+        <!--$(document).ready(function () {-->
+           <!--$('#workflowVisible').on("click",workflowVisible);-->
+           <!--$('#workflowInvisible').on("click",workflowInVisible);-->
+           <!--//image library Thumb view  by default-->
+           <!--$("#rad-thumbView").prop("checked", true);-->
+        <!--});-->
 
-    <script>
-        $(document).ready(function () {
-           $('#workflowVisible').on("click",workflowVisible);
-           $('#workflowInvisible').on("click",workflowInVisible);
-           //image library Thumb view  by default
-           $("#rad-thumbView").prop("checked", true);
-        });
+         <!--//search for current project-->
+         <!--function searchLi(){-->
+            <!--var input, filter, ul, li, a, i;-->
+            <!--var ele=  document.getElementsByClassName("jstree-container-ul");-->
+            <!--input = document.getElementById("imageLibraryProject");-->
+            <!--filter = input.innerHTML.toUpperCase();-->
+            <!--ul = ele[0];-->
+            <!--li = ul.getElementsByTagName("li");-->
+            <!--for (i = 0; i < li.length; i++) {-->
+                <!--a = li[i].getElementsByTagName("a")[0];-->
+                <!--if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {-->
+                    <!--a.classList.add("jstree-clicked")-->
+                <!--}-->
+            <!--}-->
+            <!--console.log('sort');-->
+         <!--}-->
 
-         //search for current project
-         function searchLi(){
-            var input, filter, ul, li, a, i;
-            var ele=  document.getElementsByClassName("jstree-container-ul");
-            input = document.getElementById("imageLibraryProject");
-            filter = input.innerHTML.toUpperCase();
-            ul = ele[0];
-            li = ul.getElementsByTagName("li");
-            for (i = 0; i < li.length; i++) {
-                a = li[i].getElementsByTagName("a")[0];
-                if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
-                    a.classList.add("jstree-clicked")
-                }
-            }
-            console.log('sort');
-         }
-
-    </script>
+    <!--</script>-->
 
 
 
