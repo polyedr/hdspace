@@ -1,3 +1,8 @@
+#projectslink:hover{
+    background-color: red;
+
+}
+
 .colorHover{
     color: #999;
     position: absolute;
@@ -3649,7 +3654,7 @@ a:hover .label-orange{
 /*Dropdown menu items styling*/
 
 h4.dropdown-menu-item-container {
-    margin-left: 70px;
+    margin-left: 50px;
     overflow: hidden;
     text-overflow: ellipsis;
     margin-bottom: -12px;
