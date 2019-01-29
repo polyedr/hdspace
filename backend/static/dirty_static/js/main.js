@@ -262,8 +262,7 @@ $(document).ready(function () {
     }
 
     /**
-     * Updates the screen name on the device container only if the screen name edited by the user
-     * is being displayed on the device
+     * Updates the screen name on the device container, only if the edited screen is being displayed on the device.
      * @param editedScreenNameId - The screenshot id of the screen name edited by the user
      */
     function updateDeviceScreenName(editedScreenNameId, newName){
