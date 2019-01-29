@@ -99,13 +99,24 @@ overflow: unset;">
                     <a onclick="libraryMS()"><i class="fa fa-hdd"></i><span class="nav-label"> Storage Library</span> </a>
                 </li>
                 <li class="inactive">
-                    <a onclick=""><i class="fa fa-hdd"></i><span class="nav-label"> Payment</span> </a>
+                    <a href="{% url 'payments:plans' %}"><i class="fa fa-credit-card"></i> <span class="nav-label">Payment Package</span></a>
                 </li>
                 <li class="inactive">
-                    <a onclick=""><i class="fa fa-hdd"></i><span class="nav-label"> Team</span> </a>
+                    <a href="{% url 'accounts:teams' %}">
+                        <i class="fa fa-th-large"></i>
+                        <span class="nav-label">Team Profile</span>
+                    </a>
                 </li>
                 <li class="inactive">
-                    <a href="/index/"><i class="fa fa-th-large"></i> <span class="nav-label">Admin</span> </a>
+                    <a href="#">
+                        <i class="fa fa-users"></i>
+                        <span class="nav-label">Admin Management</span>
+                        <span class="fa arrow"></span>
+                    </a>
+                    <ul class="nav nav-second-level">
+                        <li><a href="{% url 'accounts:team_management' %}">Team Managment</a></li>
+                        <li><a href="{% url 'projects:management' %}">Task Mangement</a></li>
+                    </ul>
                 </li>
                 <!-- until we decide if we keep full screen
                 <li class="inactive" id="li-compress">-->
