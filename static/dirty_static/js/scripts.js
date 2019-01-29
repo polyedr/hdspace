@@ -135,12 +135,27 @@ $("#favcolor").spectrum({
 
 /* wrapperHeader.html script */
 
- function popupSuggestionBox() {
-    var getValue, noZero = 0;
+ function popupAddElement(){
+    //Top navbar; change tyle
     $("#changeZ-index").attr('style', 'z-index : 10000000');
+    //Popup this html when this function is triggered
     $('#suggestionBox').popup({escape: false, blur: false, autoopen: true});
     $('#searchSuggestionResultT').removeClass('hidden');
+    // Gets the string entered into the search box
     getValue = document.getElementById('top-search').value;
+ }
+
+ function popupSuggestionBox() {
+    var getValue, noZero = 0;
+    //Top navbar; change tyle
+    $("#changeZ-index").attr('style', 'z-index : 10000000');
+    //Popup this html when this function is triggered
+    $('#suggestionBox').popup({escape: false, blur: false, autoopen: true});
+    $('#searchSuggestionResultT').removeClass('hidden');
+    // Gets the string entered into the search box
+    getValue = document.getElementById('top-search').value;
+    console.log("value attr = " + getValue);
+    //When nothing is in the search box; Hide all popup content
     if (getValue.length === noZero){
         $('#suggestionBox').popup('hide');
         intervalLoopSBClear();
