@@ -51,6 +51,53 @@ $(document).ready(function () {
         console.log('alo');
         //window.location.href='#'
     });
+
+        /**
+     * The code responsible for resizing and scrolling.
+     *  - Currently only implemented on the LAPTOP Device and on the South-East corner of screen.
+     *  - How to:
+     *      - On the laptop device, hover, over the south-east corner (You should see the cursor change to a resize one)
+     *      - click and drag to resize the background of the device. (You should notice it change in size)
+     *      - Increasing the size of the background beyond the borders of the screen will automatically enable scrolling.
+     *      - You can test this by clicking the screen and trying to scroll (you should be able to horizontally and
+     *        vertically scroll)
+     *      - Resizing is currently only triggered on south-east corner, so If you wish to resize again you
+     *        must do so from the same corner. Not the corner of the background.
+     */
+    // South-east selector listener; for resizing the device background
+    document.getElementById("se-rezise-background").addEventListener("mousedown", function(e){
+
+        deviceBackgroundElement = document.getElementById("classContainer-selector");
+        deviceBackgroundStyle = window.getComputedStyle(deviceBackgroundElement);
+
+        //get starting width and height
+        var startBackgroundHeight = parseFloat(deviceBackgroundStyle.getPropertyValue('height'));
+        var startBackgroundWidth = parseFloat(deviceBackgroundStyle.getPropertyValue('width'));
+        //get starting cursor co-ordinates
+        var startX = e.pageX;
+        var startY = e.pageY;
+
+        resizeDeviceBackground = function (e){
+            //Calculate the difference between starting and current cursor position (Offset).
+            var offsetX = e.pageX - startX;
+            var offsetY = e.pageY - startY;
+
+            //Increment this offset with the original width and height
+            var newWidth = (startBackgroundWidth + offsetX);
+            var newHeight = (startBackgroundHeight + offsetY);
+
+            //Resize the element
+            deviceBackgroundElement.style.width = newWidth;
+            deviceBackgroundElement.style.height = newHeight;
+        };
+        //Resize the device background in increments
+        document.addEventListener("mousemove", resizeDeviceBackground);
+
+        document.addEventListener("mouseup", function (){
+            document.removeEventListener("mousemove",resizeDeviceBackground);
+        });
+    });
+
     // screenshotId (html_render variable) is not accessible through deviceContainer.html
     // so this data attribute cannot be set. This is a workaround
     $.ajax({
@@ -61,6 +108,7 @@ $(document).ready(function () {
        },
         success: function(screenshotId){
            $("#retrieveCurrentPage").attr("data-screenshotid",screenshotId);
+           highlightScreenOnDevice(screenshotId);
         }
     });
 
@@ -135,34 +183,6 @@ $(document).ready(function () {
         }
     });
 
-    /**
-     * Updates the screen name on the device container only if the screen name edited by the user
-     * is being displayed on the device
-     * @param editedScreenNameId - The screenshot id of the screen name edited by the user
-     */
-    function updateDeviceScreenName(editedScreenNameId, newName){
-        var editedScreenNameIsEqualTo = compareScreenshotId(editedScreenNameId);
-        //The screenshot id of the screen displayed on the device
-        var screenDisplayedOnDevice = $("#retrieveCurrentPage").attr("data-screenshotid");
-
-        //If the edited screen name matches the screen displayed on the device
-        if(editedScreenNameIsEqualTo(screenDisplayedOnDevice)){
-            $("#retrieveCurrentPage").text(newName);
-        }
-    }
-
-    /**
-     * Compares two screenshot id's for equality.
-     * @param screenShotIdOne - screenshot id of a given screenshot
-     * @returns Boolean
-     */
-    function compareScreenshotId(screenShotIdOne){
-        return function(screenShotIdTwo){
-            //case insensitive comparison
-            return screenShotIdOne.localeCompare(screenShotIdTwo, undefined, { sensitivity: 'accent' }) === 0;
-        };
-    }
-
     //listener for editing screen names on the DEVICE CONTAINER
     $("#retrieveCurrentPage").blur(function () {
         //innerHTML of this element (for updating the name)
@@ -200,6 +220,73 @@ $(document).ready(function () {
         }
     });
 });
+
+    /**
+     * This highlights the screen on the screen selector that is currently being displayed on the device
+     */
+    function highlightScreenOnDevice(screenshotId){
+
+        //The screenshot id of the screen displayed on the device
+        var screenIdDisplayed = screenshotId;
+        var screenElement = getScreenElementOnScreenSelector(screenIdDisplayed);
+        var screenElementChildToHighlight = screenElement.find(".tab-pane.active.imageOutliner");
+        screenElementChildToHighlight.addClass("highlight");
+    }
+
+    /**
+     * This returns the screen on the screen selector that matches the given screenshot id
+     * @param screenshotId - The screenshot Id of the screen to get from the selector
+     * @returns jQuery Object
+     */
+    function getScreenElementOnScreenSelector(screenshotId){
+
+            var screenElement;
+            //get the screens (table-data) from the screen selector (table row)
+            var screenList = $("#screenSelectorContent td");
+
+            //For each screen in the screenlist
+            screenList.each(function (){
+                //get its screenshot id
+                var thisScreenNameElement = $(this).find('abbr');
+                var thisScreenshotId = thisScreenNameElement.attr("data-screenshotid");
+                if(thisScreenshotId){
+                    //Get this screen if it's screenshot id matches the one we're looking for
+                    if(thisScreenshotId.localeCompare(screenshotId, undefined, { sensitivity: 'accent' }) === 0){
+                        screenElement = $(this);
+                        return false; //breaks out of .each()
+                    }
+                }
+            });
+
+        return screenElement;
+    }
+
+    /**
+     * Updates the screen name on the device container, only if the edited screen is being displayed on the device.
+     * @param editedScreenNameId - The screenshot id of the screen name edited by the user
+     */
+    function updateDeviceScreenName(editedScreenNameId, newName){
+        var editedScreenNameIsEqualTo = compareScreenshotId(editedScreenNameId);
+        //The screenshot id of the screen displayed on the device
+        var screenDisplayedOnDevice = $("#retrieveCurrentPage").attr("data-screenshotid");
+
+        //If the edited screen name matches the screen displayed on the device
+        if(editedScreenNameIsEqualTo(screenDisplayedOnDevice)){
+            $("#retrieveCurrentPage").text(newName);
+        }
+    }
+
+    /**
+     * Compares two screenshot id's for equality.
+     * @param screenShotIdOne - screenshot id of a given screenshot
+     * @returns Boolean
+     */
+    function compareScreenshotId(screenShotIdOne){
+        return function(screenShotIdTwo){
+            //case insensitive comparison
+            return screenShotIdOne.localeCompare(screenShotIdTwo, undefined, { sensitivity: 'accent' }) === 0;
+        };
+    }
 
 $(window).on('load', function() {
     //device size
