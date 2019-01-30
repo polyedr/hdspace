@@ -4112,7 +4112,7 @@ video {
   padding: 0 20px;
 }
 .wrapper-content {
-  padding: 70px 10px 50px;
+  padding: 0px 10px 50px;
 }
 #page-wrapper {
   padding: 0 15px;
@@ -4382,7 +4382,7 @@ code {
 .ibox {
   clear: both;
   margin-bottom: 25px;
-  margin-top: 0;
+  margin-top: 25px;
   padding: 0;
 }
 .ibox.collapsed .ibox-content {
@@ -10239,4 +10239,10 @@ background: #ccc;
 }
 .chooseCrop:hover .chooseCrop_description {
     visibility: visible;
+}
+
+div.sticky {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
 }

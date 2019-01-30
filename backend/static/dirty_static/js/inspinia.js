@@ -170,17 +170,17 @@ $(document).ready(function () {
         if ($('body').hasClass('mini-navbar')) {
             document.getElementById('project-plus').style.display = 'none';
             document.getElementById('navbar-header-adevi').style = 'height:95px;text-align:center;';
-            document.getElementById('allProjects1').style.visibility = 'visible';
+            // document.getElementById('allProjects1').style.visibility = 'visible';
         } else if (!$('body').hasClass('mini-navbar')) {
             document.getElementById('project-plus').style.display = '';
             document.getElementById('navbar-header-adevi').style = 'height: 156px; text-align: center;';
-            document.getElementById('allProjects1').style = 'visibility:visible; min-width:140px';
+            // document.getElementById('allProjects1').style = 'visibility:visible; min-width:140px';
         } else {
             document.getElementById('project-plus').style = 'background:transparent;border:none;margin-right: 9px;margin-left: 9px;margin-top: 14px;margin-bottom: 5px;position:absolute;';
             document.getElementById('navbar-header-adevi').style = 'height:156px;text-align:center;';
-            document.getElementById('allProjects1').style = 'visibility:visible; min-width:140px';
+            // document.getElementById('allProjects1').style = 'visibility:visible; min-width:140px';
         }
-        document.getElementById('project-link').style = 'display:inline-block;width:81%;';
+        // document.getElementById('project-link').style = 'display:inline-block;width:81%;';
         SmoothlyMenu();
     });
 
@@ -376,7 +376,7 @@ function SmoothlyMenu() {
         $('#general-contain').removeClass('general-size-laptop-minimise').addClass('general-size-laptop');
         document.getElementById('navbar-header-adevi').style = 'height:156px;text-align:center;';
         document.getElementById('project-plus').style = 'background:transparent;border:none;margin-right: 9px;margin-left: 9px;margin-top: 14px;margin-bottom: 5px;position:absolute;';
-        document.getElementById('project-link').style = 'display:inline-block;width:81%;';
+        // document.getElementById('project-link').style = 'display:inline-block;width:81%;';
         // For smoothly turn on menu
         setTimeout(
             function () {
