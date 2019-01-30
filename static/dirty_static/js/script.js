@@ -1897,7 +1897,9 @@
 
     function screenContainerT(){
         $('#widgetsHidderT').empty();
-        $('#screensHidderT').empty();
+        $('#screensHidderT').attr('style', 'visibility: visible;height: auto;');
+
+
         searching_screensT(document.getElementById('top-search').value);
         screensDefaultFunctionT();
         console.log("create post is working!");
