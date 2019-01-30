@@ -58,27 +58,16 @@
     }
 
     /**
-     * This updates a screen on the screen selector with a new name.
+     * This updates a screen on the screen selector with its new name.
      * @param newName - The new screen name to set.
      * @param screenshotId - The screenshot id of the screen to update on the screen selector.
      */
     function updateScreenSelectorName(newName, screenshotId){
-        //get the screens (table-data) from the screen selector (table row)
-        var screenList = $("#screenSelectorContent td");
 
-        //For each screen in the screenlist
-        screenList.each(function (){
-            //get its screenshot id
-            var thisScreenNameElement = $(this).find('abbr');
-            var thisScreenshotId = thisScreenNameElement.attr("data-screenshotid");
-            if(thisScreenshotId){
-                //Update; if its the correct screen
-                if(thisScreenshotId.localeCompare(screenshotId, undefined, { sensitivity: 'accent' }) === 0){
-                    thisScreenNameElement.text(newName);
-                    return false; //breaks out of .each()
-                }
-            }
-        });
+        var screenElement = getScreenElementOnScreenSelector(screenshotId);
+        var screenNameElement = screenElement.find('abbr');
+        screenNameElement.text(newName);
+
     }
 
 
@@ -1908,7 +1897,9 @@
 
     function screenContainerT(){
         $('#widgetsHidderT').empty();
-        $('#screensHidderT').empty();
+        $('#screensHidderT').attr('style', 'visibility: visible;height: auto;');
+
+
         searching_screensT(document.getElementById('top-search').value);
         screensDefaultFunctionT();
         console.log("create post is working!");
