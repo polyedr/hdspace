@@ -602,7 +602,7 @@ def metaCustom(currentUser, myFile, screenshot_id, state):
                     '<p drag-resize linkvalue= "' + link + '" class="class' + classid + ' main" id="id' + classid + 'suggestions">' + text_string + '</p>\n')
                 pagecss.write(
                     '.class' + classid + '{position:absolute; text-align: ' + textAlign + '; left:' + positionL + '%; top:' + positionT + '%;\
-                              width:' + width + '%; height: ' + height + '%; margin : 0px; font-size: ' + fontSize + 'px; \
+                              width:' + width + '%; height: ' + str(float(height)+float(1)) + '%; margin : 0px; font-size: ' + fontSize + 'px; \
                               color: ' + fontColor +'; text-indent:'+textIndent+ '; font-family: ' + fontFamily + '; z-index: ' + zIndex + '}' + ' ' + '#id' + classid + '{}\n'+
                     '#id' + str(classid) + ':hover{'
                     + 'border-width: 1px;border-style: dashed;'
@@ -619,7 +619,7 @@ def metaCustom(currentUser, myFile, screenshot_id, state):
                     '<p drag-resize class="class' + classid + ' main" id="id' + classid + 'suggestions">' + text_string + '</p>\n')
                 pagecss.write(
                     '.class' + classid + '{position:absolute; text-align: ' + textAlign + '; text-indent:'+textIndent+
-                    '; left:' + positionL + '%; top:' + positionT + '%; width:' + width + '%; height: ' + height +
+                    '; left:' + positionL + '%; top:' + positionT + '%; width:' + width + '%; height: ' + str(float(height)+float(1)) +
                     '%; margin : 0px; font-size: ' + fontSize + 'px; color: ' + fontColor + '; font-family: ' + fontFamily +
                     '; z-index: ' + zIndex + '}' + ' ' + '#id' + classid + '{}\n' +
                     '#id' + str(classid) + ':hover{'
