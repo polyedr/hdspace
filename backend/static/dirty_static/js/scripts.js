@@ -138,8 +138,8 @@ $("#favcolor").spectrum({
  function popupAddElement(){
     //Top navbar; change tyle
     $("#changeZ-index").attr('style', 'z-index : 10000000');
-    //Popup this html when this function is triggered
-    $('#suggestionBox').popup({escape: false, blur: false, autoopen: true});
+    //Popup id="suggestionBox" HTML. It will autoopen. On escape key or blur the popup will close.
+    $('#suggestionBox').popup({escape: true, blur: true, autoopen: true});
     $('#searchSuggestionResultT').removeClass('hidden');
     // Gets the string entered into the search box
     getValue = document.getElementById('top-search').value;
