@@ -136,8 +136,6 @@ $("#favcolor").spectrum({
 /* wrapperHeader.html script */
 
  function popupAddElement(){
-    //Top navbar; change tyle
-    $("#changeZ-index").attr('style', 'z-index : 10000000');
     //Popup this html when this function is triggered
     $('#suggestionBox').popup({escape: true, blur: true, autoopen: true});
     $('#searchSuggestionResultT').removeClass('hidden');
