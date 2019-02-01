@@ -291,7 +291,7 @@ $(window).bind("resize", function () {
     if ($('body').hasClass('mini-navbar')) {
         document.getElementById('project-plus').style.display = 'none';
     } else {
-        document.getElementById('project-plus').style = 'background:transparent;border:none;margin-right: 9px;margin-left: 9px;margin-top: 14px;margin-bottom: 5px;position:absolute;';
+        // document.getElementById('project-plus').style = 'background:transparent;border:none;margin-right: 9px;margin-left: 9px;margin-top: 14px;margin-bottom: 5px;position:absolute;';
     };
 });
 
@@ -321,14 +321,14 @@ $(document).ready(function () {
                 if (!body.hasClass('body-small')) {
                     body.addClass('mini-navbar');
                     document.getElementById('navbar-header-adevi').style = 'height:95px;text-align:center;';
-                    document.getElementById('project-plus').style = 'background:transparent;border:none;margin-right: 9px;margin-left: 9px;margin-top: 14px;margin-bottom: 5px;position:absolute;display:none;';
+                    // document.getElementById('project-plus').style = 'background:transparent;border:none;margin-right: 9px;margin-left: 9px;margin-top: 14px;margin-bottom: 5px;position:absolute;display:none;';
                     document.getElementById('project-link').style = 'display:inline-block;width:81%;';
                 }
             } else {
                 if (!body.hasClass('body-small')) {
                     body.addClass('mini-navbar');
                     document.getElementById('navbar-header-adevi').style = 'height:95px;text-align:center;';
-                    document.getElementById('project-plus').style = 'background:transparent;border:none;margin-right: 9px;margin-left: 9px;margin-top: 14px;margin-bottom: 5px;position:absolute;display:none;';
+                    // document.getElementById('project-plus').style = 'background:transparent;border:none;margin-right: 9px;margin-left: 9px;margin-top: 14px;margin-bottom: 5px;position:absolute;display:none;';
                     document.getElementById('project-link').style = 'display:inline-block;width:81%;';
                 }
 
@@ -375,7 +375,7 @@ function SmoothlyMenu() {
         // Hide menu in order to smoothly turn on when maximize menu
         $('#general-contain').removeClass('general-size-laptop-minimise').addClass('general-size-laptop');
         document.getElementById('navbar-header-adevi').style = 'height:156px;text-align:center;';
-        document.getElementById('project-plus').style = 'background:transparent;border:none;margin-right: 9px;margin-left: 9px;margin-top: 14px;margin-bottom: 5px;position:absolute;';
+        document.getElementById('project-plus').style = 'background:transparent;border:none;margin: 1px 1px 1px 65px;position:absolute;';
         // document.getElementById('project-link').style = 'display:inline-block;width:81%;';
         // For smoothly turn on menu
         setTimeout(
