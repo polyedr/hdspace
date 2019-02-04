@@ -81,6 +81,98 @@ def main_request_core(request):
                                userId, screenshotId, layoutIsBeingTransferd, colorIsBeingTransferd, workflowBeingMagic,
                                html, css, 'none')
 
+        if str(request.GET['name']) == 'displayElements':
+            action = str(request.GET['action'])
+            print('Action: ')
+            print(action)
+
+            addElement(currentUser, myfile, screenshotId, action)
+            date = datetime.now(pytz.timezone('Australia/Melbourne'))
+
+            if action == '1':
+                print('meta running with action: ' + action)
+
+                bu = db['buttons'].find_one({'screenshot_id': str(screenshot_id), 'state': 'active'})
+                print(bu)
+                if bu == None:
+                    label = 'button'
+                    classid = str(ObjectId())
+                    width = 25
+                    height = 10
+                    positionL = 25
+                    positionT = 25
+                    type = "button"
+
+                    # Style
+                    fontSize = 15
+                    textAlign = 'unset'
+                    fontColor = 'black'
+                    fontFamily = 'Helvetica'
+                    bgcolor = 'white'
+                    bordercolor = 'black'
+                    borderRadius = '10'
+                    zindex = 2
+
+                    location = {'x0': positionL, 'y0': positionT, 'x1': float(positionL) + float(width),
+                                'y1': float(positionT) + float(height)}
+
+                    save_new_elements(classid, screenshot_id, type, label, location, date, '')
+                    collection = db['newElements']
+                    col = collection.find().sort([('timeStamp', -1)]).limit(1)
+                    element_id = ''
+                    for item in col:
+                        print('look over here: ' + str(item))
+                        element_id = str(item['class_id'])
+                else:
+                    seg_id = bu['seg_id']
+                    bu_style = db.styles.find_one({'segmentation_id': seg_id})
+
+                    label = 'New Button'
+                    classid = str(ObjectId())
+                    width = float(bu['location']['x1']) - float(bu['location']['x0'])
+                    height = float(bu['location']['y1']) - float(bu['location']['y0'])
+                    positionL = 50 - width / 2
+                    positionT = 50 - height / 2
+                    type = "button"
+                    zindex = 2
+
+                    # Style
+                    fontSize = bu_style['fontSize']
+                    textAlign = bu_style['textAlign']
+                    fontColor = bu_style['fontColor']
+                    fontFamily = bu_style['fontFamily']
+                    bgcolor = bu_style['bgcolor']
+                    bordercolor = bu_style['borderColor']
+                    borderRadius = bu_style['borderRadius']
+                    occupied = 1
+                    # while occupied == 1:
+                    #     print('posL: ' + str(positionL) + ', posT: ' + str(positionT))
+                    #     if checkLocation(positionL, positionT, width, height, screenshot_id) == 1:
+                    #         positionL += 1
+                    #         positionT += 1
+                    #         print('i am wrong!!')
+                    #     else:
+                    #         occupied = 5
+
+                    location = {'x0': positionL, 'y0': positionT, 'x1': float(positionL) + float(width),
+                                'y1': float(positionT) + float(height)}
+
+                    save_new_elements(classid, screenshot_id, type, label, location, date, '')
+                    collection = db['newElements']
+                    col = collection.find().sort([('timeStamp', -1)]).limit(1)
+                    element_id = ''
+                    for item in col:
+                        print('look over here: ' + str(item))
+                        element_id = str(item['class_id'])
+
+                save_new_style(element_id, str(fontSize), fontFamily, fontColor, bordercolor, borderRadius, bgcolor,
+                               textAlign,
+                               'unset', '', zindex)
+
+            import json
+
+            return HttpResponse(json.dumps(action), content_type="application/json")
+
         elif str(request.GET['name']) == 'deleteElement':
             print('We are running deleteElement GET')
             deleteId = str(request.GET['id'])[2:]
