@@ -115,7 +115,6 @@ class ProjectView(LoginRequiredMixin, TemplateView):
             context["add_task_form"] = AddTaskForm(project)
             context["project"] = Project.objects.get(pk=project)
             context["user_roles"] = [role[0] for role in Profile.USER_ROLE]
-
             context["in_hold_screens"] = ProjectScreen.objects.filter(status=ProjectScreen.SCREEN_ON_HOLD)
             context["in_progress_screens"] = ProjectScreen.objects.filter(status=ProjectScreen.SCREEN_IN_PROGRESS)
             context["in_review_screens"] = ProjectScreen.objects.filter(status=ProjectScreen.SCREEN_REVIEW)
