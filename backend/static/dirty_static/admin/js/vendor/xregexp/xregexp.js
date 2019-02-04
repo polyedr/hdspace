@@ -1527,7 +1527,7 @@ XRegExp = XRegExp || (function (undef) {
 }(XRegExp));
 
 
-/***** unicode-scripts.js *****/
+/***** unicode-scripts_n.js *****/
 
 /*!
  * XRegExp Unicode Scripts v1.2.0

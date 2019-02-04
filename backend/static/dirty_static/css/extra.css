@@ -3668,7 +3668,12 @@ abbr.dd-text-item {
 }
 
 abbr.dd-text-item:hover {
-    color: white;
+    color: #1ab394;
+    cursor: pointer;
+}
+
+span.my_project:hover{
+    color: #1ab394;
     cursor: pointer;
 }
 
@@ -3743,9 +3748,20 @@ span.recentColor {
     float: right;
     cursor: se-resize;
 }
-
+/*Selected screen highlighting */
 .highlight{
     border: 1.7px solid rgb(24, 166, 137);
 }
+
+div#tabsT ul li.add-elements-tab{
+    width: 10%;
+    text-align: center;
+}
+div#tabsT ul li a{
+    margin: 0px;
+    padding-left: 5px;
+}
+
+
 
  /* style : supun  end*/

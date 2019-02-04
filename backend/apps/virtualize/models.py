@@ -12,6 +12,14 @@ from apps.virtualize.display import set_html_layout, set_html_color
 from apps.virtualize.utils.elementUtils import search_new_element, getStylesDb
 from apps.virtualize.utils.screenshotUtils import getScreenName, getScreen_Name, getCurrentScreenName
 from apps.virtualize.utils.widgetsUtils import fillWidget, fillGraphics
+from apps.projects.forms import ProjectInvitationForm, AddTaskForm
+from apps.projects.models import (
+    Project, ProjectScreen, ScreenEvent, ScreenComment,
+    ProjectMember, ProjectTask, ProjectActivity
+)
+from apps.accounts.models import Profile
+from apps.threads.models import Thread, UserThread, Message
+from apps.accounts.forms import SearchUserForm
 
 client = pymongo.MongoClient('localhost', 27017)  # maxPoolSize=50
 db = client.MeduzaDb
@@ -1078,6 +1086,11 @@ def searchEnquiry(key):
 
 def html_render(url, currentUser, page, projectName, request, screenshotName, userId,screenId, layoutIsBeingTransferd,
                 colorIsBeingTransferd, workflowBeingMagic, html, css, ScreenSIDFDJANGO):
+
+    project_id = get_project_id(projectName, userId)
+
+    print('Members')
+    print(ProjectActivity.objects.filter(project=project_id).order_by('-created'))
     return render(request, url,
                   {
                       'pageArray': fillPageArray(userId, projectName),
@@ -1111,7 +1124,23 @@ def html_render(url, currentUser, page, projectName, request, screenshotName, us
                       'projectsCSS': css,
                       'AllWidget': fillWidget(),
                       'AllGraphics': fillGraphics(),
-                      'aniStyles': getStylesDb()
+                      'aniStyles': getStylesDb(),
+                      # Testing right-sidebar
+                      # ---------------------
+                      "project": Project.objects.get(pk=project_id),
+                      'project_id': project_id,
+                      'invite_form': ProjectInvitationForm(),
+                      "add_task_form": AddTaskForm(project_id),
+                      "user_roles": [role[0] for role in Profile.USER_ROLE],
+                      "project_members": ProjectMember.objects.filter(project=Project.objects.get(pk=project_id)),
+                      "tasks": ProjectTask.objects.filter(project=Project.objects.get(pk=project_id)),
+                      "project_member_user": ProjectMember.objects.get(user=request.user, project=project_id),
+                      "thread": Thread.ordered(Thread.inbox(ProjectMember.objects.get(user=ObjectId(userId), project=project_id), project_id))[0],
+                      "projects": Project.objects.filter(user=request.user),
+                      "search_user_form": SearchUserForm(),
+                      "activities": ProjectActivity.objects.filter(project=project_id).order_by('-created'),
+                      "project_name": projectName
+
                   }
                   )
 
@@ -1143,3 +1172,15 @@ def save_new_style(element_id, fontSize, fontFamily, fontColor, borderColor,bord
         'link': link,
         'zIndex': zIndex
     })
+
+def get_project_id(project, user_id):
+    return db_main.projects_project.find_one({'user_id':ObjectId(user_id), 'name': project})['id']
+
+
+def get_project(project, user_id):
+    p = db_main.projects_project.find_one({'user_id': ObjectId(user_id), 'name': project})
+    return p
+
+
+def get_user_pk(userId):
+    return db_main.accounts_user.find_one({'_id': userId})['_id']
