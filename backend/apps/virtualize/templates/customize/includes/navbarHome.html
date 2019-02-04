@@ -31,7 +31,8 @@ overflow: unset;">
                             <span class="clear" style="background:#233646">
                                 <span class="block m-t-xs" style="background:transparent">
                                     {% if user.is_authenticated  %}
-                                        <strong class="font-bold">{{ userName }}</strong>
+                                        <span class="block m-t-xs">
+                                        <strong class="font-bold">{{request.user.get_full_name}}</strong>
                                     {% else %}
                                         <strong class="font-bold">Please login</strong>
                                     {% endif %}
@@ -58,11 +59,11 @@ overflow: unset;">
                     </div>
                 </li>
                 <li id="projectSelector" class="active">
-                    <a style="display:inline-block; width: 100%" ><i class="fa "></i>
+                        <a style="display:inline-block; width: 100%" > <i class="fa fa-th-large"></i>
                         <span style="margin: 1px 10px 1px 1px;" class="fa arrow" ></span>
-                        <span style="margin-left:-10px " onclick="location.href='/projects/'"> My Projects</span>
-                        <button id="project-plus" class="plus-project" style="background:transparent;border:none;margin: 1px 1px 1px 90px;position:absolute;">
-                            <span class="fa fa-plus" style="font-size:10px;line-height:1.92857;margin-top:0;margin-right:0;color:inherit;" onclick="createNewProjectNavbar()">
+                        <span class="my_project" style="margin-left:0px " onclick="location.href='/projects/'"> My Projects</span>
+                        <button id="project-plus" class="plus-project" style="background:transparent;border:none;margin: 1px 1px 1px 65px;position:absolute;">
+                            <span class="fa fa-plus" style="font-size:10px;line-height:1.92857;margin-top:0;margin-right:0;color:inherit;position:fixed;" onclick="createNewProjectNavbar()">
                                 <form id="createNewProjectNAV" class="hidden" method="POST" enctype="multipart/form-data">
                                     <input type="hidden" id="newProjectName" name="newProjectName"/>
                                     <input type="file" name="createNewProject" id="createProjectName"/>
@@ -99,13 +100,24 @@ overflow: unset;">
                     <a onclick="libraryMS()"><i class="fa fa-hdd"></i><span class="nav-label"> Storage Library</span> </a>
                 </li>
                 <li class="inactive">
-                    <a onclick=""><i class="fa fa-hdd"></i><span class="nav-label"> Payment</span> </a>
+                    <a href="{% url 'payments:plans' %}"><i class="fa fa-credit-card"></i> <span class="nav-label">Payment Package</span></a>
                 </li>
                 <li class="inactive">
-                    <a onclick=""><i class="fa fa-hdd"></i><span class="nav-label"> Team</span> </a>
+                    <a href="{% url 'accounts:teams' %}">
+                        <i class="fa fa-th-large"></i>
+                        <span class="nav-label">Team Profile</span>
+                    </a>
                 </li>
                 <li class="inactive">
-                    <a href="/index/"><i class="fa fa-th-large"></i> <span class="nav-label">Admin</span> </a>
+                    <a href="#">
+                        <i class="fa fa-users"></i>
+                        <span class="nav-label">Admin Mgnt</span>
+                        <span class="fa arrow"></span>
+                    </a>
+                    <ul class="nav nav-second-level">
+                        <li><a href="{% url 'accounts:team_management' %}">Team Managment</a></li>
+                        <li><a href="{% url 'projects:management' %}">Task Mangement</a></li>
+                    </ul>
                 </li>
                 <!-- until we decide if we keep full screen
                 <li class="inactive" id="li-compress">-->

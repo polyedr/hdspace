@@ -2179,7 +2179,7 @@
             $('#arrow').addClass('col-xs-1').removeClass('col-xs-2 col-xs-3 col-xs-4 col-xs-5 col-xs-6 col-xs-7 col-xs-8 col-xs-9 col-xs-10 col-xs-11 col-xs-12');
             $('#notification').addClass('col-xs-3').removeClass('col-xs-2 col-xs-1 col-xs-4 col-xs-5 col-xs-6 col-xs-7 col-xs-8 col-xs-9 col-xs-10 col-xs-12 col-xs-11');
             $('#searchBarT').addClass('col-xs-7').removeClass('col-xs-1 col-xs-2 col-xs-12 col-xs-3 col-xs-4 col-xs-5 col-xs-6 col-xs-9 col-xs-8 col-xs-10 col-xs-11');
-            document.getElementById('searchBarT').style.left = '-15px';
+            document.getElementById('searchBarT').style.left = '-11px';
             document.getElementById('rightMenuT').style.width = '5%';
             // document.getElementById('arrow').style.marginTop = '20px';
             // document.getElementById('arrow').style.width = '2%';
@@ -2214,6 +2214,22 @@
             document.getElementById('arrow').style.left = '-10px';
             document.getElementById('notification').style.left = '-5px';
         }
+        else if ($(window).width() < 851 && $(window).width() > 766){
+            $('#rightMenuT').addClass('col-xs-1').removeClass('col-xs-2 col-xs-3 col-xs-4 col-xs-5 col-xs-6 col-xs-7 col-xs-8 col-xs-9 col-xs-10 col-xs-12 col-xs-11');
+            $('#arrow').addClass('col-xs-1').removeClass('col-xs-2 col-xs-3 col-xs-4 col-xs-5 col-xs-6 col-xs-7 col-xs-8 col-xs-9 col-xs-10 col-xs-11 col-xs-12');
+            $('#notification').addClass('col-xs-4').removeClass('col-xs-2 col-xs-1 col-xs-3 col-xs-5 col-xs-6 col-xs-7 col-xs-8 col-xs-9 col-xs-10 col-xs-12 col-xs-11');
+            $('#searchBarT').addClass('col-xs-7').removeClass('col-xs-1 col-xs-2 col-xs-12 col-xs-3 col-xs-4 col-xs-5 col-xs-6 col-xs-9 col-xs-8 col-xs-10 col-xs-11');
+            document.getElementById('formSearchS').style.width = '60%';
+            document.getElementById('searchBarT').style.left = '-25px';
+            document.getElementById('rightMenuT').style.left = '-20px';
+            document.getElementById('arrow').style.left = '-10px';
+            document.getElementById('notification').style.left = '-5px';
+        }
+        else if ($(window).width() < 767){
+            document.getElementById('searchBarT').style.left = '-30px';
+            document.getElementById('notification').style.left = '-25px';
+            document.getElementById('rightMenuT').style.left = '33%';
+        }
       }
 
 
@@ -2224,28 +2240,34 @@
         if (window.location.href === "http://127.0.0.1:8000/index/#prototype") {
             console.log('i am prototype');
             $('#projectSection').addClass('col-xs-12').removeClass('col-xs-1 col-xs-2 col-xs-3 col-xs-4 col-xs-5 col-xs-6 col-xs-7 col-xs-8 col-xs-9 col-xs-10 col-xs-11');
+            $('#changeZ-index').addClass('col-xs-12').removeClass('col-xs-1 col-xs-2 col-xs-3 col-xs-4 col-xs-5 col-xs-6 col-xs-7 col-xs-8 col-xs-9 col-xs-10 col-xs-11');
             $('#uploadSection12').removeClass('col-xs-1 col-xs-2 col-xs-3 col-xs-4 col-xs-5 col-xs-6 col-xs-7 col-xs-8 col-xs-9 col-xs-10 col-xs-11 col-xs-12');
         }
         else if (window.location.href === "http://127.0.0.1:8000/index/" || window.location.href === "http://127.0.0.1:8000/index" || window.location.href === "http://127.0.0.1:8000/index/#") {
             console.log('i am index');
             if ($(window).width() > 1299) {
                 $('#projectSection').addClass('col-xs-10').removeClass('col-xs-1 col-xs-2 col-xs-3 col-xs-4 col-xs-5 col-xs-6 col-xs-7 col-xs-8 col-xs-9 col-xs-12 col-xs-11');
+                $('#changeZ-index').addClass('col-xs-10').removeClass('col-xs-1 col-xs-2 col-xs-3 col-xs-4 col-xs-5 col-xs-6 col-xs-7 col-xs-8 col-xs-9 col-xs-12 col-xs-11');
                 $('#uploadSection12').addClass('col-xs-2').removeClass('col-xs-1 col-xs-12 col-xs-3 col-xs-4 col-xs-5 col-xs-6 col-xs-7 col-xs-8 col-xs-9 col-xs-10 col-xs-11');
             }
             else if ($(window).width() < 1300 && $(window).width() > 795) {
                 $('#projectSection').addClass('col-xs-9').removeClass('col-xs-1 col-xs-2 col-xs-3 col-xs-4 col-xs-5 col-xs-6 col-xs-7 col-xs-8 col-xs-12 col-xs-10 col-xs-11');
+                $('#changeZ-index').addClass('col-xs-9').removeClass('col-xs-1 col-xs-2 col-xs-3 col-xs-4 col-xs-5 col-xs-6 col-xs-7 col-xs-8 col-xs-12 col-xs-10 col-xs-11');
                 $('#uploadSection12').addClass('col-xs-3').removeClass('col-xs-1 col-xs-2 col-xs-12 col-xs-4 col-xs-5 col-xs-6 col-xs-7 col-xs-8 col-xs-9 col-xs-10 col-xs-11');
             }
             else if ($(window).width() < 796 && $(window).width() > 550) {
                 $('#projectSection').addClass('col-xs-8').removeClass('col-xs-1 col-xs-2 col-xs-3 col-xs-4 col-xs-5 col-xs-6 col-xs-7 col-xs-12 col-xs-9 col-xs-10 col-xs-11');
+                $('#changeZ-index').addClass('col-xs-8').removeClass('col-xs-1 col-xs-2 col-xs-3 col-xs-4 col-xs-5 col-xs-6 col-xs-7 col-xs-12 col-xs-9 col-xs-10 col-xs-11');
                 $('#uploadSection12').addClass('col-xs-4').removeClass('col-xs-1 col-xs-2 col-xs-3 col-xs-12 col-xs-5 col-xs-6 col-xs-7 col-xs-8 col-xs-9 col-xs-10 col-xs-11');
             }
             else if ($(window).width() < 551 && $(window).width() > 450) {
                 $('#projectSection').addClass('col-xs-7').removeClass('col-xs-1 col-xs-2 col-xs-3 col-xs-4 col-xs-5 col-xs-6 col-xs-12 col-xs-8 col-xs-9 col-xs-10 col-xs-11');
+                $('#changeZ-index').addClass('col-xs-7').removeClass('col-xs-1 col-xs-2 col-xs-3 col-xs-4 col-xs-5 col-xs-6 col-xs-12 col-xs-8 col-xs-9 col-xs-10 col-xs-11');
                 $('#uploadSection12').addClass('col-xs-5').removeClass('col-xs-1 col-xs-2 col-xs-3 col-xs-4 col-xs-12 col-xs-6 col-xs-7 col-xs-8 col-xs-9 col-xs-10 col-xs-11');
             }
             else if ($(window).width() < 451) {
                 $('#projectSection').addClass('col-xs-6').removeClass('col-xs-1 col-xs-2 col-xs-3 col-xs-4 col-xs-5 col-xs-12 col-xs-7 col-xs-8 col-xs-9 col-xs-10 col-xs-11');
+                $('#changeZ-index').addClass('col-xs-6').removeClass('col-xs-1 col-xs-2 col-xs-3 col-xs-4 col-xs-5 col-xs-12 col-xs-7 col-xs-8 col-xs-9 col-xs-10 col-xs-11');
                 $('#uploadSection12').addClass('col-xs-6').removeClass('col-xs-1 col-xs-2 col-xs-3 col-xs-4 col-xs-5 col-xs-12 col-xs-7 col-xs-8 col-xs-9 col-xs-10 col-xs-11');
             }
             checkOtherCondition();

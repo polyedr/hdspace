@@ -750,7 +750,7 @@ body.canvas-menu .profile-element {
   display: block;
 }
 body:not(.fixed-sidebar):not(.canvas-menu).mini-navbar .nav-second-level {
-    visibility: visible;
+  display: none;;
 }
 body.mini-navbar .navbar-default .nav > li > a {
   font-size: 16px;
@@ -4112,7 +4112,7 @@ video {
   padding: 0 20px;
 }
 .wrapper-content {
-  padding: 20px 10px 50px;
+  padding: 0px 10px 50px;
 }
 #page-wrapper {
   padding: 0 15px;
@@ -10239,4 +10239,10 @@ background: #ccc;
 }
 .chooseCrop:hover .chooseCrop_description {
     visibility: visible;
+}
+
+div.sticky {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
 }
