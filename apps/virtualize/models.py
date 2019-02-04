@@ -1090,7 +1090,7 @@ def html_render(url, currentUser, page, projectName, request, screenshotName, us
     project_id = get_project_id(projectName, userId)
 
     print('Members')
-    print([role[0] for role in Profile.USER_ROLE])
+    print(ProjectActivity.objects.filter(project=project_id).order_by('-created'))
     return render(request, url,
                   {
                       'pageArray': fillPageArray(userId, projectName),

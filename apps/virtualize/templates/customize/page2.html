@@ -56,6 +56,9 @@
     <div id="container-inside-frame-top" class = " absolute ajax-loader hide-content" >
 
     </div>
+    <script type="text/javascript">
+    window.csrftoken = '{{ csrf_token }}';
+    </script>
 
     {% include "projects/includes/chat-members.html" with project_members=project_members %}
     {% include "projects/includes/add-task.html" with form=add_task_form  project_members=project_members project_id=project.id %}
