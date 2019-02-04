@@ -2674,7 +2674,7 @@
 /*Scrolling for the devicebackground is set here*/
 .content-inside-frame-laptop{
     position: relative;
-    overflow: scroll;
+    overflow: auto`;
     width: 92%;
     margin-top: 3%;
     display: block;
