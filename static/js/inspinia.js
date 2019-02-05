@@ -53,6 +53,7 @@ $(document).ready(function () {
     // Close menu in canvas mode
     $('.close-canvas-menu').on('click', function () {
         $("body").toggleClass("mini-navbar");
+        document.getElementById('navbar-header-adevi').style = 'height:95px;text-align:center;';
         SmoothlyMenu();
     });
 
@@ -99,8 +100,15 @@ $(document).ready(function () {
     $('.navbar-minimalize').on('click', function (event) {
         event.preventDefault();
         $("body").toggleClass("mini-navbar");
+        document.getElementById('navbar-header-adevi').style = 'height:95px;text-align:center;';
+        if ($('body').hasClass('mini-navbar')) {
+            document.getElementById('navbar-header-adevi').style = 'height:95px;text-align:center;';
+        } else if (!$('body').hasClass('mini-navbar')) {
+            document.getElementById('navbar-header-adevi').style = 'height: 156px; text-align: center;';
+        } else {
+            document.getElementById('navbar-header-adevi').style = 'height:156px;text-align:center;';
+        }
         SmoothlyMenu();
-
     });
 
     // Tooltips demo
