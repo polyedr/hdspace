@@ -219,6 +219,30 @@ $(document).ready(function () {
             $(this).text(lastName);
         }
     });
+    $("#widgets_liT").click(function(){
+
+        $.ajax({
+            type: 'GET',
+            url:'/index/',
+            context: this,
+            data: {
+                'name': 'getWidgetPaths'
+            },
+            success: function(widgetPaths){
+                var widgetsContentContainer = $("#widgetsHidderT");
+                var newContent = "";
+                for(var i = 0; i <= widgetPaths.length - 1 ; i++){
+                    var path =  "../" + widgetPaths[i];
+                    console.log(path)
+                    newContent += "<div class='content-item'><img class=\"content-image\" src="+ path +"></div>";
+                    widgetsContentContainer.html(newContent);
+                }
+                widgetsContentContainer.removeClass('content-container');
+                widgetsContentContainer.addClass('content-container-on');
+            }
+
+        });
+    });
 });
 
     /**

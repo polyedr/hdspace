@@ -631,6 +631,14 @@ def main_request_core(request):
             import json
             return HttpResponse(json.dumps(arraySuggestL4), content_type="application/json")
 
+        elif str(request.GET['name']) == 'getWidgetPaths':
+            widgetPaths = get_all_widget_paths()
+            import json
+            return HttpResponse(json.dumps(widgetPaths), content_type="application/json")
+
+
+
+
         elif str(request.GET['name']) == 'saveMove':
             print('We are running saveMove GET')
             state = request.GET
