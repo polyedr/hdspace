@@ -1707,6 +1707,7 @@
 
     function searching_widgetsT(key) {
             var resultCounter = 0;
+            //Post the search string (key) to the back end
             $.ajax({
                 type: 'POST',
                 url: 'index',
@@ -1882,7 +1883,8 @@
     function widgetsContainerT(){
         $('#widgetsHidderT').empty();
         $('#screensHidderT').empty();
-        searching_widgetsT(document.getElementById('top-search').value);
+        // search widgets based on the string in search bar. This is broken code; review for removal.
+        // searching_widgetsT(document.getElementById('top-search').value);
         widgetsDefaultFunctionT();
     }
 
