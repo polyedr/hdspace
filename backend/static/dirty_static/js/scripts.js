@@ -136,8 +136,8 @@ $("#favcolor").spectrum({
 /* wrapperHeader.html script */
 
  function popupAddElement(){
-    //Top navbar; change tyle
-    $("#changeZ-index").attr('style', 'z-index : 10000000');
+    //Top navbar; change style
+    // $("#changeZ-index").attr('style', 'z-index : 10000000');
     //Popup id="suggestionBox" HTML. It will autoopen. On escape key or blur the popup will close.
     $('#suggestionBox').popup({escape: true, blur: true, autoopen: true});
     $('#searchSuggestionResultT').removeClass('hidden');
@@ -148,7 +148,7 @@ $("#favcolor").spectrum({
  function popupSuggestionBox() {
     var getValue, noZero = 0;
     //Top navbar; change tyle
-    $("#changeZ-index").attr('style', 'z-index : 10000000');
+    // $("#changeZ-index").attr('style', 'z-index : 10000000');
     //Popup this html when this function is triggered
     $('#suggestionBox').popup({escape: false, blur: false, autoopen: true});
     $('#searchSuggestionResultT').removeClass('hidden');
