@@ -79,7 +79,7 @@ def run(myFile, coco_model, tensorflow_model, CurrentUser, projectName):
         screenShotIndex = []
         elementName = []
         # Run segmentation on all images
-        for screen in range(len(imagesRoot)):  # imagesRoot)):
+        for screen in range(len(imagesRoot)):
 
             # Change the original into a 2D array of gray mapping
             image = color.rgb2gray(io.imread('media/' + str(imagesRoot[screen])))
@@ -114,11 +114,11 @@ def run(myFile, coco_model, tensorflow_model, CurrentUser, projectName):
             multList, coco_text_idx = selectiveSegmentationv4e2.segmentationFirstLayer(str(savePath), inputImgPath, coco_model, tensorflow_model, myFile)
             # multList, mserList = segmentThreshTestVold.SegmentationMSERThresh('static/users/' + str(imagesRoot[screen]), [])
             regionList = list( multList)
-            print('Numbers of list')
-            print(len(multList))
-            print(len(coco_text_idx))
-            print("Victor Region Number")
-            print(len(regionList))
+            # print('Numbers of list')
+            # print(len(multList))
+            # print(len(coco_text_idx))
+            # print("Victor Region Number")
+            # print(len(regionList))
             for region in regionList:
 
                 # for region in regionprops(label_image):

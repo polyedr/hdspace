@@ -37,7 +37,7 @@ def initiateCocoDetection():
     coco_model.load_weights(model_path, by_name=True)
     return coco_model
 
-def cocoTextDetection_model(image_test,coco_model):
+def cocoTextDetection_model(image_test):
     import skimage
     import numpy as np
     image_test = skimage.color.gray2rgb(np.asarray(image_test))

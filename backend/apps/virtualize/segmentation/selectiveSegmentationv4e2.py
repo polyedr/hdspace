@@ -17,6 +17,7 @@ from scipy import ndimage
 from skimage.filters import scharr
 from skimage.measure import label, regionprops
 from skimage.morphology import skeletonize
+from virtualize.segmentation.OCR_Segmentation.Ocr_Segmentation import text_detection
 
 
 class regionR:
@@ -811,7 +812,10 @@ def segmentationFirstLayer(myFile_name,inputImgPath,coco_model_v,tensorflow_mode
     maxElem = np.max(np.asarray(listElemNo))
     maxElem+=1
     # cocoBbox = cocoTextDetection(img)
-    cocoBbox = cocoTextDetection_model(img,coco_model_v)
+    # cocoBbox = cocoTextDetection_model(img,coco_model_v)
+    # cocoBbox = cocoTextDetection_model(inputImgPath)
+    cocoBbox = text_detection(inputImgPath,'apps/virtualize/segmentation/OCR_Segmentation/frozen_east_text_detection.pb', 0.1, 960, 960)
+
     next_Elem = maxElem
     cocoList = []
     for bbox in cocoBbox:
