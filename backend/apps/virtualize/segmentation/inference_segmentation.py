@@ -1,6 +1,6 @@
 
 
-personal_root = "/Users/Victor/Documents/BitBucket Projects/MasterCode/Adevi/virtualize/"
+personal_root = "/Users/Victor/Documents/BitBucket Projects/ProjectManagement/apps/virtualize/"
 
 
 def initiateCocoDetection():

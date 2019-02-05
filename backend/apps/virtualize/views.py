@@ -1196,8 +1196,10 @@ def main_request_core(request):
         return html_render('customize/page2.html', currentUser, page, projectName, request, screenshotName, userId,
                            screenshotId, layoutIsBeingTransferd, colorIsBeingTransferd, workflowBeingMagic, html, css,
                            suggestionImgC)
-
-    rewritePage(currentUser, myfile, screenshotId, screenshotName, 'load')
+    try:
+        rewritePage(currentUser, myfile, screenshotId, screenshotName, 'load')
+    except:
+        print('Something wrong')
 
     return html_render('customize/page2.html', currentUser, page, projectName, request, screenshotName, userId,
                        screenshotId, layoutIsBeingTransferd, colorIsBeingTransferd, workflowBeingMagic, html, css,
@@ -1261,7 +1263,7 @@ def projects(request):
                 latestProject = ''
                 screenid = ''
 
-            db.tempPage.update({'userId': userId},{'$set':{'projectName':latestProject,'screenshot_id':screenid}})
+            db.tempPage.update({'userId': userId},{'$set':{'projectName': latestProject,'screenshot_id': screenid}})
             return redirect('/projects/', code=302)
 
 
