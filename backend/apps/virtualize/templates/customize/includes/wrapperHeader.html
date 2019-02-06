@@ -10,15 +10,16 @@
                             border-right: 1px solid #e8ebed;border-bottom: 1px solid #e8ebed;padding: 0; height: 100%">
                             <div id="tabsT" class="tabs-container">
                                 <ul class="nav nav-tabs">
-                                    <li id="screens_liT" class="add-elements-tab"><a id="screens_tabT" data-toggle="tab"
-                                       onclick="screenContainerT()">Screens</a>
+                                    <!-- None of these onclick functions are working -->
+                                    <li id="screens_liT" class="add-elements-tab">
+                                        <a id="screens_tabT" data-toggle="tab" onclick="screenContainerT()">Screens</a>
                                     </li>
-                                    <li id="widgets_liT" class="add-elements-tab"><a id="widgets_tabT" data-toggle="tab"
-                                       onclick="widgetsContainerT()">Widgets</a>
+                                    <li id="widgets_liT" class="add-elements-tab">
+                                        <a id="widgets_tabT" data-toggle="tab">Widgets</a>
                                     </li>
                                     </li>
-                                    <li id="buttons_liT" class="add-elements-tab"><a id="buttons_tabT" data-toggle="tab"
-                                       onclick="butttonsContainerT()">Buttons</a>
+                                    <li id="buttons_liT" class="add-elements-tab">
+                                        <a id="buttons_tabT" data-toggle="tab" onclick="butttonsContainerT()">Buttons</a>
                                     </li>
                                     <li id="frames_liT" class="add-elements-tab"><a id="frames_tabT" data-toggle="tab"
                                        onclick="framesContainerT()">Frames</a>
@@ -41,20 +42,16 @@
                                        onclick="imagesContainerT()">Images</a>
                                     </li>
                                 </ul>
-                                <div class="tab-content-2T" style="margin:5px; overflow-y:hidden;">
-                                    <div id="widgetsHidderT" class="tab-content" style="visibility: hidden;height: auto;"></div>
-                                    <div id="screensHidderT" class="tab-content" style="visibility: hidden;height: auto;">
-                                        <h1>hey</h1>
-                                    </div>
-                                    <div id="buttonHidderT" class="tab-content" style="visibility: hidden;height: auto;"></div>
-                                    <div id="frameHidderT" class="tab-content" style="visibility: hidden;height: auto;"></div>
-                                    <div id="hyperlinksHidderT" class="tab-content" style="visibility: hidden;height: auto;"></div>
-                                    <div id="paragraphsHidderT" class="tab-content" style="visibility: hidden;height: auto;">
-                                        <h1>Hello</h1>
-                                    </div>
-                                    <div id="texBoxesHidderT" class="tab-content" style="visibility: hidden;height: auto;"></div>
-                                    <div id="textAreasHidderT" class="tab-content" style="visibility: hidden;height: auto;"></div>
-                                    <div id="graphicsHidderT" class="tab-content" style="visibility: hidden;height: auto;"></div>
+                                <div class="tab-content-2T" style="margin:5px; overflow-y:hidden; height: 79%;">
+                                    <div id="widgetsHidderT" class="content-container"></div>
+                                    <div id="screensHidderT" class="content-container"></div>
+                                    <div id="buttonHidderT" class="content-container"></div>
+                                    <div id="frameHidderT" class="content-container"></div>
+                                    <div id="hyperlinksHidderT" class="content-container"></div>
+                                    <div id="paragraphsHidderT" class="content-container"></div>
+                                    <div id="texBoxesHidderT" class="content-container"></div>
+                                    <div id="textAreasHidderT" class="content-container"></div>
+                                    <div id="graphicsHidderT" class="content-container"></div>
                                 </div>
                             </div>
                         </div>

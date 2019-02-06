@@ -141,8 +141,6 @@ $("#favcolor").spectrum({
     //Popup id="suggestionBox" HTML. It will autoopen. On escape key or blur the popup will close.
     $('#suggestionBox').popup({escape: true, blur: true, autoopen: true});
     $('#searchSuggestionResultT').removeClass('hidden');
-    // Gets the string entered into the search box
-    getValue = document.getElementById('top-search').value;
  }
 
  function popupSuggestionBox() {
