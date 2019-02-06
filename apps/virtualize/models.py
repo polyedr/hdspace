@@ -978,6 +978,15 @@ def getProjectPageWorkCSS(userId,projectName, currentScreen):
         css.append('')
     return path
 
+def get_all_widget_paths():
+    widgetsWithPaths = db.saveWidgets.find({
+        "$and": [{"widgetLocation": {"$exists": True}}, {"widgetLocation": {"$ne": "null"}}]
+    })
+    allWidgetPaths = []
+    for widget in widgetsWithPaths:
+        allWidgetPaths.append(widget['widgetLocation'])
+    return allWidgetPaths
+
 
 def getSuggestion(userId, projectName):
     print('Iside Suggestions')
