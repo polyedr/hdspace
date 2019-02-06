@@ -1153,6 +1153,34 @@ def html_render(url, currentUser, page, projectName, request, screenshotName, us
                   }
                   )
 
+def save_new_elements(class_id, screenshot_id, type, name, location, date, path):
+    db.newElements.insert({
+        'class_id': class_id,
+        'screenshot_id': screenshot_id,
+        'type': type,
+        'name': name,
+        'location': location,
+        'state': 'active',
+        'locked': False,
+        'root': path,
+        'timeStamp': str(date),
+        'timeZone': 'Australia/Melbourne'
+    })
+
+def save_new_style(element_id, fontSize, fontFamily, fontColor, borderColor,borderRadius,bgColor,textAlign,textIndent,link,zIndex):
+    db.newStyle.insert({
+        'element_id': element_id,
+        'fontFamily': fontFamily,
+        'fontSize': fontSize,
+        'fontColor': fontColor,
+        'borderColor': borderColor,
+        'borderRadius': borderRadius,
+        'bgcolor': bgColor,
+        'textAlign': textAlign,
+        'textIndent': textIndent,
+        'link': link,
+        'zIndex': zIndex
+    })
 
 def get_project_id(project, user_id):
     return db_main.projects_project.find_one({'user_id':ObjectId(user_id), 'name': project})['id']
