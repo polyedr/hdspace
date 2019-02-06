@@ -237,7 +237,7 @@ input {
     background: #c1c1c1;
 }
 ::-webkit-scrollbar-thumb:window-inactive {
-	background: #c1c1c1;
+  background: #c1c1c1;
 }
 
 .ibox-title span{
@@ -10103,7 +10103,7 @@ html.svg body footer .canva .canva-templates .ct-bg #svg-ct3 {
 .cr-slider {
     -webkit-appearance: none;
 /*removes default webkit styles*/
-	/*border: 1px solid white; *//*fix for FF unable to apply focus style bug */
+  /*border: 1px solid white; *//*fix for FF unable to apply focus style bug */
     width: 300px;
 /*required for proper track sizing in FF*/
     max-width: 100%;
@@ -10167,31 +10167,31 @@ background: #ccc;
     height: 5px;
     background: transparent;
 /*remove bg colour from the track, we'll use ms-fill-lower and ms-fill-upper instead */
-	border-color: transparent;/*leave room for the larger thumb to overflow with a transparent border */
-	border-width: 6px 0;
-	color: transparent;/*remove default tick marks*/
+  border-color: transparent;/*leave room for the larger thumb to overflow with a transparent border */
+  border-width: 6px 0;
+  color: transparent;/*remove default tick marks*/
 }
 .cr-slider::-ms-fill-lower {
-	background: rgba(0, 0, 0, 0.5);
-	border-radius: 10px;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
 }
 .cr-slider::-ms-fill-upper {
-	background: rgba(0, 0, 0, 0.5);
-	border-radius: 10px;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
 }
 .cr-slider::-ms-thumb {
-	border: none;
-	height: 16px;
-	width: 16px;
-	border-radius: 50%;
-	background: #ddd;
-	margin-top:1px;
+  border: none;
+  height: 16px;
+  width: 16px;
+  border-radius: 50%;
+  background: #ddd;
+  margin-top:1px;
 }
 .cr-slider:focus::-ms-fill-lower {
-	background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.5);
 }
 .cr-slider:focus::-ms-fill-upper {
-	background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.5);
 }
 /*******************************************/
 
@@ -10199,26 +10199,26 @@ background: #ccc;
 /* Rotation Tools */
 /***********************************/
 .cr-rotate-controls {
-	position: absolute;
-	bottom: 5px;
-	left: 5px;
-	z-index: 1;
+  position: absolute;
+  bottom: 5px;
+  left: 5px;
+  z-index: 1;
 }
 .cr-rotate-controls button {
-	border: 0;
-	background: none;
+  border: 0;
+  background: none;
 }
 .cr-rotate-controls i:before {
-	display: inline-block;
-	font-style: normal;
-	font-weight: 900;
-	font-size: 22px;
+  display: inline-block;
+  font-style: normal;
+  font-weight: 900;
+  font-size: 22px;
 }
 .cr-rotate-l i:before {
-	content: '↺';
+  content: '↺';
 }
 .cr-rotate-r i:before {
-	content: '↻';
+  content: '↻';
 }
 
 .fa-check-circle:hover {
@@ -10533,17 +10533,6 @@ p.tip-login a {
     height: auto;
 }
 
-.msg-textarea-wrapper {
-    position: relative;
-}
-
-.msg-textarea-wrapper .btn-primary {
-    position: absolute;
-    right: 5px;
-    top: 5px;
-    z-index: 1;
-}
-
 .search-result .row {
     max-height: 155px;
     overflow-y: auto;
@@ -10604,10 +10593,7 @@ p.tip-login a {
     position: relative;
     margin-bottom: 0;
     padding-top: 50px;
-    padding-bottom: 95px;
-    /*display: flex;*/
-    /*flex-direction: column;*/
-    height: calc(100% - 135px);
+    height: 90%;
 }
 
 .sidebar-open.sidebar-top .chat-view {
