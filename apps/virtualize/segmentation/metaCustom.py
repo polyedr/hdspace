@@ -6373,7 +6373,7 @@ def metaCustom(currentUser, myFile, screenshot_id, state):
                     borderRadius = styles['borderRadius']
                     zIndex = str(styles['zIndex'])
 
-                    create_text_box_placeholder(placeholder, label, width, height, classid, borderRadius, positionL,
+                    create_text_box_placeholder_load(placeholder, label, width, height, classid, borderRadius, positionL,
                                                 positionT, bgcolor, childOffset, str(fontVw), fontFamily, fontColor,
                                                 textAlign, bordercolor, zIndex)
 

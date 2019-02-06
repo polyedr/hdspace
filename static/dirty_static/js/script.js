@@ -1887,6 +1887,34 @@
         // searching_widgetsT(document.getElementById('top-search').value);
         widgetsDefaultFunctionT();
     }
+    function butttonsContainerT(){
+        console.log('this function is still in work by santiago');
+        var action = '1';
+
+        $.ajax({
+                type: 'GET',
+                url: '/index/',
+                data: {
+                     csrfmiddlewaretoken: '{{ csrf_token }}',
+                    'name': 'displayElements',
+                    'action': action
+                },
+                success: function (htmlResponse) {
+                    data = $.parseJSON(htmlResponse);
+                    console.log('data');
+                    console.log(data)
+
+                },
+                error: function (jqXHR, status, err) {
+                    console.log('Failed due to '+err);
+                }
+        })
+
+        $('#widgetsHidderT').empty();
+        $('#screensHidderT').empty();
+        searching_widgetsT(document.getElementById('top-search').value);
+        widgetsDefaultFunctionT();
+    }
 
     function screenContainer(){
         $('#widgetsHidder').empty();
