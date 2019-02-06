@@ -136,8 +136,8 @@ $("#favcolor").spectrum({
 /* wrapperHeader.html script */
 
  function popupAddElement(){
-    //Top navbar; change tyle
-    $("#changeZ-index").attr('style', 'z-index : 10000000');
+    //Top navbar; change style
+    // $("#changeZ-index").attr('style', 'z-index : 10000000');
     //Popup id="suggestionBox" HTML. It will autoopen. On escape key or blur the popup will close.
     $('#suggestionBox').popup({escape: true, blur: true, autoopen: true});
     $('#searchSuggestionResultT').removeClass('hidden');
@@ -146,7 +146,7 @@ $("#favcolor").spectrum({
  function popupSuggestionBox() {
     var getValue, noZero = 0;
     //Top navbar; change tyle
-    $("#changeZ-index").attr('style', 'z-index : 10000000');
+    // $("#changeZ-index").attr('style', 'z-index : 10000000');
     //Popup this html when this function is triggered
     $('#suggestionBox').popup({escape: false, blur: false, autoopen: true});
     $('#searchSuggestionResultT').removeClass('hidden');
@@ -294,218 +294,7 @@ $(document).ready(function () {
 
 /* workflowindex. html script */
 
-$(document).ready(function() {
-    $('.sourceEndPointC').each(function () {
-        var hue = 'rgba(' + (Math.floor((100-1)*Math.random()) - 10) + ',' + (Math.floor((150-1)*Math.random()) + 50) + ',' + (Math.floor((175-1)*Math.random()) + 100) + ',1)';
-        $(this).css("background-color", hue);
-    });
 
-    $('.jtk-endpoint').each(function(eachCounter){
-        //Add an ID to each element (slide-#) (eachCounter starts at 0, so add 1)
-        $(this).attr("id", "slide-"+parseInt(eachCounter+1));
-    });
-});
-//Used dynamically to animate the connection's transition
-function animateTheConnectionT(src, target, srcScreen, getID){
-    var getClassCST, colourBack, identifyCurrentScreen, currentPage, imageName, i, findAllPageName, findAllImage, currentSectionTag, div, elements, style, styleCom, animation, typ, targetSectionTag, source_screen, target_screen, src1, getPrevSVG;
-    $('#animateConnections').popup({ escape: false, blur: false, autoopen: true });
-    console.log('Animate Output');
-    console.log(src);
-    console.log(target);
-    console.log(srcScreen);
-    console.log(getID);
-    // source and target for the connection to animate
-    source_screen = srcScreen.replace("flowchartWindow", "");
-    target_screen = target.replace("flowchartWindow", "");
-    // to find the element id of the source
-    src1 = src.replace("Window" + source_screen, "");
-    src1 = src1.replace("work", "");
-    src1 = src1.replace("id", "");
-    console.log("SRC");
-    console.log(src1);
-    console.log("source_screen");
-    console.log(source_screen);
-    console.log("target_screen");
-    console.log(target_screen);
-    //Check if selected page is a Working Page in device container
-    currentPage = $('#retrieveCurrentPage').html();
-    findAllPageName = $('#workflowContent').find('.checkImageNameAnimate');
-    findAllImage = $('#workflowContent').find('.identifierCurrentScreen');
-    for(i = 0;i < findAllPageName.length;i++) {
-        imageName = findAllPageName[i].innerHTML;
-        if (source_screen.toLowerCase() === imageName.toLowerCase()){
-            console.log('This is a source Screen. Script is from Workflow');
-            findAllImage[i].setAttribute('class', 'animateThisScreen identifierCurrentScreen source_screen' + source_screen.toLowerCase());
-            identifyCurrentScreen = findAllImage[i].className;
-            console.log(source_screen.toLowerCase() + ' and ' + imageName.toLowerCase());
-            currentSectionTag = $('#flowchartWindow' + source_screen).find('section');
-            getClassCST = currentSectionTag.attr('class');
-            console.log("getClassCST");
-            console.log(getClassCST);
-            colourBack = $('.' + getClassCST).css('background');
-            console.log("colourBack");
-            console.log(colourBack);
-            document.getElementById('backgroundCOlFixed_animation').style.background = colourBack;
-            console.log("Console animateConnections srcScreenIden");
-            console.log("currentSectionTag");
-            console.log(currentSectionTag);
-            $('#animation_box').html(currentSectionTag);
-        }
-        else if(target_screen.toLowerCase() === imageName.toLowerCase()){
-            console.log('This is a target Screen. Script is from Workflow');
-            findAllImage[i].setAttribute('class', 'animateThisScreen identifierCurrentScreen target_screen' + target_screen.toLowerCase());
-            console.log(target_screen.toLowerCase() + ' and ' + imageName.toLowerCase());
-            targetSectionTag = $('#flowchartWindow' + target_screen).find('section');
-            console.log("Console animateConnections trgScreenIden");
-            console.log("targetSectionTag");
-            console.log(targetSectionTag);
-        }
-        else{
-            console.log('Not found');
-        }
-    }
-    //Animating the connection and previewing
-    $('.animation_select').click(function(){
-        var animationPermanent, num = 0;
-        animationPermanent = $(this).attr("data-animation");
-        document.getElementById('loadingAnimationA').style.display = '';
-        looperStarterAn();
-        //Start the Loop
-        function looperStarterAn() {
-            console.log('Num before if');
-            console.log(num);
-            // src screen
-            console.log('src');
-            console.log('Num after else');
-            console.log(num);
-            $('#animation_box').html('');
-            $('#animation_box').html(currentSectionTag);
-            $('#animation_box').removeAttr('class').attr('class', '');
-            setTimeout(function () {
-                // destination screen
-                $('#animation_box').html('');
-                $('#animation_box').html(targetSectionTag);
-                document.getElementById('loadingAnimationA').style.display = 'none';
-                $('#animation_box').removeAttr('class').attr('class', '');
-                $('#animation_box').addClass('animated');
-                $('#animation_box').addClass(animationPermanent);
-                num++;
-                console.log('Num after else Timeout');
-                console.log(num);
-                setTimeout(function(){
-                    $('#animation_box').html('');
-                    $('#animation_box').html(currentSectionTag);
-                    $('#animation_box').removeAttr('class').attr('class', '');
-                },1500);
-            }, 1000);
-        }
-        // Action after Apply button from animation pop up is clicked
-        $('#applyAnimation').click(function(){
-            var tempWork = $('#workflowContent').find('.animateThisScreen');
-            console.log("tempWork");
-            console.log(tempWork.removeClass('animateThisScreen'));
-            $('#animation_box').removeClass();
-            $.ajax({
-                type: 'POST',
-                url: '/index/',
-                name: 'addAnimation',
-                data: {
-                    "name": 'addAnimation',
-                    "id" : src1,
-                    "href": target_screen,
-                    "animation": animationPermanent
-                },
-                success: function (data) {
-                    console.log('ajax success');
-                    $('.source_screen' + source_screen.toLowerCase()).append(currentSectionTag);
-                    $('.target_screen' + target_screen.toLowerCase()).append(targetSectionTag);
-                    $('#animateConnections').popup('hide');
-                }
-            });
-        });
-    });
-}
-
-//Delete connection between the pages
-function deleteConn(srcid,tarid,connUID,getIDD, endPointSId, endPointTId) {
-    var source_screen, target_screen, src1, getPrevSVG, i, getDATA;
-    // source and target for the connection just made
-    source_screen = srcid.replace("flowchartWindow", "");
-    target_screen = tarid.replace("flowchartWindow", "");
-    // to find the element id of the source
-    src1 = connUID.replace("Window" + source_screen, "");
-    src1 = src1.replace("work", "");
-    src1 = src1.replace("id", "");
-    console.log("SRC");
-    console.log(src1);
-    console.log("source_screen");
-    console.log(source_screen);
-    console.log("target_screen");
-    console.log(target_screen);
-    swal({
-        title: 'Do you want to delete Connection between Pages?',
-        type: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#dd6b55',
-        cancelButtonColor: '#999',
-        confirmButtonText: 'Yes!',
-        cancelButtonText: 'No',
-        closeOnConfirm: false
-    }, function (isConfirm) {
-        if (isConfirm) {
-            console.log("delete conn");
-            console.log(connUID);
-            swal.close();
-            $('#' + endPointSId).removeClass('jtk-endpoint-connected jtk-endpoint-full jtk-hover').addClass('endpointDrag');
-            $('#' + endPointTId).removeClass('jtk-endpoint-connected');
-            $('#loadingWorkflow').attr('style', 'position: absolute;width: 97%;height: 335px;z-index: 1000000;padding: 0;background-color: white; visibility: visible;');
-            console.log("src1");
-            console.log(src1);
-            console.log("target");
-            console.log(target_screen);
-            console.log("getIDD");
-            console.log(getIDD);
-            console.log("endPointId");
-            console.log(endPointSId);
-            console.log(endPointTId);
-            $.ajax({
-                type: 'POST',
-                url: 'index',
-                name: 'deleteURL',
-                data: {
-                    'name': 'deleteURL',
-                    'srcid': src1,
-                    'target': ''
-                },
-                success: function (data) {
-                    console.log('ajax succes');
-                    getPrevSVG = $('#canvas').find('svg');
-                    console.log(getPrevSVG);
-                    for(i=0; i<getPrevSVG.length;i++){
-                        getDATA = getPrevSVG[i].getAttribute('data');
-                        if(getDATA === getIDD){
-                            getPrevSVG[i].remove();
-                        }
-                    }
-                    setTimeout(function(){
-                        $('#' + getIDD).remove();
-                        $('#loadingWorkflow').attr('style', 'visibility: hidden;');
-                    },100);
-                },
-                error: function (jqXHR, status, err) {
-                    console.log('ajax failed');
-                }
-            });
-        }
-        else {
-            console.log('else swal');
-            setTimeout(function () {
-                $('.hideSweetAlert').remove();
-            }, 1000);
-            swal.close();
-        }
-    });
-}
 
 /* pagesMenu.html script */
 
