@@ -1443,7 +1443,7 @@ function getCurrentEditing(){
 
     }
 
-    $.when(ajaxGetPages()).done(function(a1) {
+    $.when(ajaxGetPages()).done(function() {
         var html = '<li>';
         console.log(pagesResult);
         for (i = 0; i < pagesResult.length; i++) {

@@ -36,6 +36,9 @@ class SearchUserView(LoginRequiredMixin, View):
         no_image = static("/img/profile_empty.png")
         if users is None:
             users = []
+        # Validation ObjectId --> String
+        for u in users:
+            u['pk'] = str(u['pk'])
         return JsonResponse({"users": list(users), "no_image": no_image})
 
 
