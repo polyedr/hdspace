@@ -560,6 +560,41 @@
                             </div>
                         </div>
                     </div>
+                    <div id="workflowDisappearer" class="col-xs-12" style="padding: 0;z-index:-10000;margin-top: -500%;">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title center">
+                    <span class="center">Workflow</span>
+                    <div class="ibox-tools" style="float: right;">
+                        <a class="collaps"  id="workflwHide"  onclick="collapseWorkFlow('up')" style="float: left;">
+                            <i class="fa fa-chevron-up" id="btnhideWorkflw"></i>
+                        </a>
+                        <a class="collaps"  id="workflwShow" onclick="collapseWorkFlow('down')" style="float: left;">
+                            <i class="fa fa-chevron-down  hidden" id="btnshowWorkflw"></i>
+                        </a>
+                        <a onclick="closeWorkflow()" style="float: right;">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content" id="workFlw">
+                    <div id="loadingWorkflow" style="position: absolute;
+                        width: 97%;
+                        height: 335px;
+                        z-index: 1000000;
+                        padding: 0;
+                        background-color: transparent; visibility: visible;">
+                        <i class="fa fa-spinner fa-pulse fa-3x fa-fw" style="position: absolute; color: #18a689; top: 25%;left: 47%; transform:translate(-50%,-50%);"></i>
+                        <span style="position: absolute;
+                            color: #18a689;
+                            top: 42%;
+                            left: 50%;
+                            transform: translate(-50%,-50%);">Processing Workflow...
+                        </span>
+                    </div>
+                    {%include "customize/includes/workflowIndex.html" %}
+                </div>
+            </div>
+        </div>
                     <!-- This and script required for upload button -->
                     <div id="popupNewSuggester" class="ibox-tools" style="display:none;">
 
@@ -754,21 +789,21 @@
                     </div>
                 </div>
                 <div class="ibox-content" id="workFlw">
-                    <div id="loadingWorkflow" style="position: absolute;
-                        width: 97%;
-                        height: 335px;
-                        z-index: 1000000;
-                        padding: 0;
-                        background-color: transparent; visibility: visible;">
-                        <i class="fa fa-spinner fa-pulse fa-3x fa-fw" style="position: absolute; color: #18a689; top: 25%;left: 47%; transform:translate(-50%,-50%);"></i>
-                        <span style="position: absolute;
-                            color: #18a689;
-                            top: 42%;
-                            left: 50%;
-                            transform: translate(-50%,-50%);">Processing Workflow...
-                        </span>
-                    </div>
-                    {%include "customize/includes/workflowIndex.html" %}
+{#                    <div id="loadingWorkflow" style="position: absolute;#}
+{#                        width: 97%;#}
+{#                        height: 335px;#}
+{#                        z-index: 1000000;#}
+{#                        padding: 0;#}
+{#                        background-color: transparent; visibility: visible;">#}
+{#                        <i class="fa fa-spinner fa-pulse fa-3x fa-fw" style="position: absolute; color: #18a689; top: 25%;left: 47%; transform:translate(-50%,-50%);"></i>#}
+{#                        <span style="position: absolute;#}
+{#                            color: #18a689;#}
+{#                            top: 42%;#}
+{#                            left: 50%;#}
+{#                            transform: translate(-50%,-50%);">Processing Workflow...#}
+{#                        </span>#}
+{#                    </div>#}
+                    {%include "customize/includes/workflowIndex.html"%}
                 </div>
             </div>
         </div>
@@ -782,6 +817,24 @@
                         <li id="tabletTab" class="" style="width: 80px;"><a id="tab2" data-toggle="tab" href="#tab-3" onclick="changeIDTablet()"><i class="fa fa-tablet fa-2x"></i></a></li>
                         <li id="mobileTab" class="" style="width: 80px;"><a id="tab3" data-toggle="tab" href="#tab-3" onclick="changeIDMobile()"><i class="fa fa-mobile fa-2x"></i></a></li>
                         <li class="center" style="width: 165px;height: 50px;float: right;"><b id="tab3PA" class="colorHover" onclick="loadPrototype()">Prototype Mode</b></li>
+{#                        <li style="width: 60px;float: right;">#}
+{#                        <button type="button" class="share-button"><i class="fa fa-share-alt fa-2x"></i></button>#}
+{#                        </li>#}
+{#                        <li>#}
+{#                        <a href="" class="facebook-share">#}
+{#                            <i class="fa fa-facebook-square fa-2x" style="color:#3B5998"></i>#}
+{#                        </a>#}
+{#                        </li>#}
+{#                        <li>#}
+{#                        <a href="" class="linkedin-share">#}
+{#                            <i class="fa fa-linkedin-square fa-2x" style="color:#007bb6"></i>#}
+{#                        </a>#}
+{#                            </li>#}
+{#                        <li>#}
+{#                        <a href=""  class="twitter-share">#}
+{#                            <i class="fa fa-twitter-square fa-2x" style="color:#4099FF"></i>#}
+{#                        </a>#}
+{#                        </li>#}
                         <li id="rotate-tablet1" class="active" style="width: 80px; visibility: hidden;"><a id="tab4" onclick="testRotateTablet()"><img alt="image" src="/static/dirty_static/img/rotateSmartphone.svg" style="width: 25px"></a></li>
                         <li id="rotate-tablet2" class="active" style="width: 80px; visibility: hidden;"><a id="tab5" onclick="testRotateTablet2()"><img alt="image" src="/static/dirty_static/img/rotateSmartphone.svg" style="width: 25px"></a></li>
                         <li id="rotate-phone1" class="active" style="width: 80px; visibility: hidden;"><a id="tab6" onclick="testRotatePhone()"><img alt="image" src="/static/dirty_static/img/rotateSmartphone.svg" style="width: 25px"></a></li>
