@@ -10,9 +10,9 @@
                             border-right: 1px solid #e8ebed;border-bottom: 1px solid #e8ebed;padding: 0; height: 100%">
                             <div id="tabsT" class="tabs-container">
                                 <ul class="nav nav-tabs">
-                                    <!-- None of these onclick functions are working -->
+                                    <!-- None of these onclick functions are working screens/widgetContainerT already removed -->
                                     <li id="screens_liT" class="add-elements-tab">
-                                        <a id="screens_tabT" data-toggle="tab" onclick="screenContainerT()">Screens</a>
+                                        <a id="screens_tabT" data-toggle="tab">Screens</a>
                                     </li>
                                     <li id="widgets_liT" class="add-elements-tab">
                                         <a id="widgets_tabT" data-toggle="tab">Widgets</a>
@@ -42,7 +42,7 @@
                                        onclick="imagesContainerT()">Images</a>
                                     </li>
                                 </ul>
-                                <div class="tab-content-2T" style="margin:5px; overflow-y:hidden; height: 79%;">
+                                <div id="menuContainer" class="tab-content-2T" style="margin:5px; overflow-y:hidden; height: 79%;" data-displayed-container="">
                                     <div id="widgetsHidderT" class="content-container"></div>
                                     <div id="screensHidderT" class="content-container"></div>
                                     <div id="buttonHidderT" class="content-container"></div>
@@ -52,6 +52,7 @@
                                     <div id="texBoxesHidderT" class="content-container"></div>
                                     <div id="textAreasHidderT" class="content-container"></div>
                                     <div id="graphicsHidderT" class="content-container"></div>
+                                    <div id="imagesHidderT" class="content-container"></div>
                                 </div>
                             </div>
                         </div>
