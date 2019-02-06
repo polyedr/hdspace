@@ -221,10 +221,10 @@ $(document).ready(function () {
     });
     $("#widgets_liT").click(function(){
 
+        hideDisplayedContentContainer();
         $.ajax({
             type: 'GET',
             url:'/index/',
-            context: this,
             data: {
                 'name': 'getWidgetPaths'
             },
@@ -233,17 +233,45 @@ $(document).ready(function () {
                 var newContent = "";
                 for(var i = 0; i <= widgetPaths.length - 1 ; i++){
                     var path =  "../" + widgetPaths[i];
-                    console.log(path)
                     newContent += "<div class='content-item'><img class=\"content-image\" src="+ path +"></div>";
                     widgetsContentContainer.html(newContent);
                 }
                 widgetsContentContainer.removeClass('content-container');
                 widgetsContentContainer.addClass('content-container-on');
+                document.getElementById("menuContainer").setAttribute("data-displayed-container",widgetsContentContainer[0].id);
             }
 
         });
     });
+
+    $("#screens_liT").click(function(){
+                hideDisplayedContentContainer();
+
+                //This is reusable codeblock - create a function where given a content container id - do the this
+                var screenContentContainer = $("#screensHidderT");
+                screenContentContainer.removeClass('content-container');
+                screenContentContainer.addClass('content-container-on');
+                document.getElementById("menuContainer").setAttribute("data-displayed-container",screenContentContainer[0].id);
+
+    });
 });
+
+    /**
+     * Hides the content container currently being displayed
+     */
+    function hideDisplayedContentContainer(){
+        var displayedContentContainerId = document.getElementById("menuContainer").getAttribute("data-displayed-container");
+
+        if (displayedContentContainerId){
+           var displayedContentContainer = $("#" + displayedContentContainerId);
+
+           displayedContentContainer.removeClass('content-container-on');
+           displayedContentContainer.addClass('content-container');
+        }
+
+
+    }
+
 
     /**
      * This highlights the screen on the screen selector that is currently being displayed on the device

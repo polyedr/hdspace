@@ -1890,7 +1890,7 @@
     function butttonsContainerT(){
         console.log('this function is still in work by santiago');
         var action = '1';
-
+        hideDisplayedContentContainer();
         $.ajax({
                 type: 'GET',
                 url: '/index/',
@@ -1902,18 +1902,24 @@
                 success: function (htmlResponse) {
                     data = $.parseJSON(htmlResponse);
                     console.log('data');
-                    console.log(data)
+                    console.log(data);
+                    $("#buttonHidderT").removeClass('content-container');
+                    $("#buttonHidderT").addClass('content-container-on');
+                    document.getElementById("menuContainer").setAttribute("data-displayed-container","buttonHidderT");
+
+
 
                 },
                 error: function (jqXHR, status, err) {
                     console.log('Failed due to '+err);
                 }
-        })
+        });
 
-        $('#widgetsHidderT').empty();
-        $('#screensHidderT').empty();
-        searching_widgetsT(document.getElementById('top-search').value);
-        widgetsDefaultFunctionT();
+
+        //$('#widgetsHidderT').empty();
+        //$('#screensHidderT').empty();
+        //searching_widgetsT(document.getElementById('top-search').value);
+        //widgetsDefaultFunctionT();
     }
 
     function screenContainer(){
