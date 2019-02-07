@@ -1702,7 +1702,7 @@
             setTimeout(function(){
                 executeOnDelay();
             },100);
-        });
+        })
     }
 
     function searching_widgetsT(key) {
