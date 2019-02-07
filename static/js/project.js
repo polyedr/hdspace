@@ -101,6 +101,7 @@
                 $('#addChatTask').hide();
                 $('#addTaskButton').hide();
                 $('.add-to-task').prop('checked', false);
+                $('.modal-backdrop').remove();
             },
             error: function (xhr, status, error) {
                 var response = jQuery.parseJSON(xhr.responseText);
