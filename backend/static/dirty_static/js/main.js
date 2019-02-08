@@ -219,57 +219,128 @@ $(document).ready(function () {
             $(this).text(lastName);
         }
     });
+
     $("#widgets_liT").click(function(){
+        var widgetsContentContainerId = "widgetsHidderT";
+        var widgetsContentContainer = document.getElementById(widgetsContentContainerId);
 
-        hideDisplayedContentContainer();
-        $.ajax({
-            type: 'GET',
-            url:'/index/',
-            data: {
-                'name': 'getWidgetPaths'
-            },
-            success: function(widgetPaths){
-                var widgetsContentContainer = $("#widgetsHidderT");
-                var newContent = "";
-                for(var i = 0; i <= widgetPaths.length - 1 ; i++){
-                    var path =  "../" + widgetPaths[i];
-                    newContent += "<div class='content-item'><img class=\"content-image\" src="+ path +"></div>";
-                    widgetsContentContainer.html(newContent);
+        //Deny if this tab's content container is already being displayed
+        if(widgetsContentContainer.className !== "content-container-on"){
+            hideContentContainer();
+            $.ajax({
+                type: 'GET',
+                url:'/index/',
+                data: {
+                    'name': 'getWidgetPaths'
+                },
+                success: function(widgetPaths){
+                    //Check if there are widgets to display
+                    if(widgetPaths){
+                        // generate widget content
+                        var numberOfWidgetPaths = widgetPaths.length - 1;
+                        var newContent = "";
+                        var path = "";
+                        for(var i = 0; i <= numberOfWidgetPaths ; i++){
+                            path =  "../" + widgetPaths[i];
+                            newContent += "<div class='content-item'><img class=\"content-image\" src="+ path +"></div>";
+                        }
+                        widgetsContentContainer.innerHTML = newContent;
+                        displayContentContainer(widgetsContentContainerId);
+                    }
+                    //Its empty - No widgets to display.
+                    else{
+                       //TODO: Can notify on the widgets content container that there are "No widgets to display"
+                    }
                 }
-                widgetsContentContainer.removeClass('content-container');
-                widgetsContentContainer.addClass('content-container-on');
-                document.getElementById("menuContainer").setAttribute("data-displayed-container",widgetsContentContainer[0].id);
-            }
-
-        });
+            });
+        }
     });
 
+    // TODO: Add functionality to GET -> Generate -> Insert new content into it's content container. Similar to $("#widgets_liT").click
     $("#screens_liT").click(function(){
-                hideDisplayedContentContainer();
-
-                //This is reusable codeblock - create a function where given a content container id - do the this
-                var screenContentContainer = $("#screensHidderT");
-                screenContentContainer.removeClass('content-container');
-                screenContentContainer.addClass('content-container-on');
-                document.getElementById("menuContainer").setAttribute("data-displayed-container",screenContentContainer[0].id);
-
+                hideContentContainer();
+                displayContentContainer("screensHidderT");
     });
+    
+    // TODO: Add functionality to GET -> Generate -> Insert new content into it's content container. Similar to $("#widgets_liT").click
+    $("#buttons_liT").click(function(){
+        hideContentContainer();
+        displayContentContainer("buttonHidderT");
+    });
+
+    // TODO: Add functionality to GET -> Generate -> Insert new content into it's content container. Similar to $("#widgets_liT").click
+    $("#frames_liT").click(function(){
+        hideContentContainer();
+        displayContentContainer("frameHidderT");
+    });
+
+    // TODO: Add functionality to GET -> Generate -> Insert new content into it's content container. Similar to $("#widgets_liT").click
+    $("#hyperlinks_liT").click(function(){
+        hideContentContainer();
+        displayContentContainer("hyperlinksHidderT");
+    });
+
+    // TODO: Add functionality to GET -> Generate -> Insert new content into it's content container. Similar to $("#widgets_liT").click
+    $("#paragraphs_liT").click(function(){
+        hideContentContainer();
+        displayContentContainer("paragraphsHidderT");
+    });
+
+    // TODO: Add functionality to GET -> Generate -> Insert new content into it's content container. Similar to $("#widgets_liT").click
+    $("#textBoxes_liT").click(function(){
+        hideContentContainer();
+        displayContentContainer("texBoxesHidderT");
+    });
+
+    // TODO: Add functionality to GET -> Generate -> Insert new content into it's content container. Similar to $("#widgets_liT").click
+    $("#textAreas_liT").click(function(){
+        hideContentContainer();
+        displayContentContainer("textAreasHidderT");
+    });
+
+    // TODO: Add functionality to GET -> Generate -> Insert new content into it's content container. Similar to $("#widgets_liT").click
+    $("#graphics_liT").click(function(){
+        hideContentContainer();
+        displayContentContainer("graphicsHidderT");
+    });
+
+    // TODO: Add functionality to GET -> Generate -> Insert new content into it's content container. Similar to $("#widgets_liT").click
+    $("#images_liT").click(function(){
+        hideContentContainer();
+        displayContentContainer("imagesHidderT");
+    });
+
 });
+    var validContentContainerIds = new Set([
+            "widgetsHidderT","screensHidderT","buttonHidderT","frameHidderT","hyperlinksHidderT",
+            "paragraphsHidderT","texBoxesHidderT","textAreasHidderT","graphicsHidderT","imagesHidderT"
+        ]);
+
+    /**
+     * Displays a content container on the add element menu
+     * @param contentContainerId - The id (String) of the content container to display
+     */
+    function displayContentContainer(contentContainerId){
+            var contentContainer = $("#" + contentContainerId);
+            if(validContentContainerIds.has(contentContainerId)){
+                contentContainer.removeClass('content-container').addClass('content-container-on');
+                document.getElementById("menuContainer").setAttribute("data-displayed-container",contentContainer[0].id);
+            }
+            else {
+                console.log("id= " + contentContainerId + ", does not match a valid content-container. Check you entered a valid id");
+            }
+        }
 
     /**
      * Hides the content container currently being displayed
      */
-    function hideDisplayedContentContainer(){
+    function hideContentContainer(){
         var displayedContentContainerId = document.getElementById("menuContainer").getAttribute("data-displayed-container");
 
+        //Only hide when a content container is currently being displayed
         if (displayedContentContainerId){
-           var displayedContentContainer = $("#" + displayedContentContainerId);
-
-           displayedContentContainer.removeClass('content-container-on');
-           displayedContentContainer.addClass('content-container');
+           $("#" + displayedContentContainerId).removeClass('content-container-on').addClass('content-container');
         }
-
-
     }
 
 
@@ -346,7 +417,7 @@ $(window).on('load', function() {
         var widthSection = 0;
         var heightSection = 0;
     }else {
-        console.log(document.getElementById('classContainer-selector'))
+        console.log(document.getElementById('classContainer-selector'));
         var widthSection = document.getElementById('classContainer-selector').clientWidth;
         var heightSection = document.getElementById('classContainer-selector').clientHeight;
     }
