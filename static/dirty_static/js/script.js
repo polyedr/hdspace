@@ -1890,7 +1890,7 @@
     function butttonsContainerT(){
         console.log('this function is still in work by santiago');
         var action = '1';
-        hideDisplayedContentContainer();
+        hideContentContainer();
         $.ajax({
                 type: 'GET',
                 url: '/index/',
