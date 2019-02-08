@@ -976,14 +976,15 @@ def getProjectPageWorkCSS(userId,projectName, currentScreen):
     except:
         css.append('')
     return path
-
+# Returns a list of all widget paths
 def get_all_widget_paths():
     widgetsWithPaths = db.saveWidgets.find({
         "$and": [{"widgetLocation": {"$exists": True}}, {"widgetLocation": {"$ne": "null"}}]
     })
     allWidgetPaths = []
-    for widget in widgetsWithPaths:
-        allWidgetPaths.append(widget['widgetLocation'])
+    if widgetsWithPaths is not None:
+        for widget in widgetsWithPaths:
+            allWidgetPaths.append(widget['widgetLocation'])
     return allWidgetPaths
 
 
