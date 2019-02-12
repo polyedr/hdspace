@@ -1194,3 +1194,81 @@ def get_project(project, user_id):
 
 def get_user_pk(userId):
     return db_main.accounts_user.find_one({'_id': userId})['_id']
+
+# Returns a list of segmentation id's of all the buttons belonging to the list of screenshots
+def get_buttons_shape_segmentation_id(screenshotIdList):
+    segmentation_id_list = []
+    if screenshotIdList is not None:
+        for screenshotId in screenshotIdList:
+            #find all the documents of the shapes (type) that belong to this screenshot
+            screenshots_shapes = db.buttons.find({"type": "shapes","screenshot_id": screenshotId})
+            if screenshots_shapes is not None:
+                for shape in screenshots_shapes:
+                    segmentation_id_list.append(shape['seg_id'])
+
+    return segmentation_id_list
+
+
+def get_newElements_button_class_id(screenshotIdList):
+    class_id_list = []
+    if screenshotIdList is not None:
+        for screenshotId in screenshotIdList:
+            #find all the documents of buttons that belong to this screenshot
+            screenshots_button = db.newElements.find({"type": "button", "screenshot_id": screenshotId})
+            if screenshots_button is not None:
+                for button in screenshots_button:
+                    class_id_list.append(button['class_id'])
+
+    return class_id_list
+
+def get_styles(segmentationIdList):
+    import json
+    styles_set = set()
+    if segmentationIdList is not None:
+        for segmentationId in segmentationIdList:
+            this_style = db.styles.find_one({"segmentation_id": segmentationId})
+
+            if this_style is not None:
+
+                new_style = {
+                    "font-family": this_style['fontFamily'],
+                    "font-size": this_style['fontSize'],
+                    "color": this_style['fontColor'],
+                    "border-color": this_style['borderColor'],
+                    "border-radius": this_style['borderRadius'],
+                    "background-color": this_style['bgcolor'],
+                    "text-align": this_style['textAlign'],
+                    "text-indent": this_style['textIndent'],
+                }
+                #Convert dictionary to str object and add to set
+                styles_set.add(json.dumps(new_style))
+
+    return styles_set
+
+def get_new_styles(classIdList):
+    import json
+    styles_set = set()
+    if classIdList is not None:
+        for classId in classIdList:
+            this_style = db.newStyle.find_one({"element_id": classId})
+
+            new_style = {
+                "font-family": this_style['fontFamily'],
+                "font-size": this_style['fontSize'],
+                "color": this_style['fontColor'],
+                "border-color": this_style['borderColor'],
+                "border-radius": this_style['borderRadius'],
+                "background-color": this_style['bgcolor'],
+                "text-align": this_style['textAlign'],
+                "text-indent": this_style['textIndent'],
+            }
+            # Add new style to set prevents duplicate stylings within collection (no duplicate styling)
+            # Convert dictionary to str object and add to set
+            styles_set.add(json.dumps(new_style))
+
+    return styles_set
+
+
+
+
+

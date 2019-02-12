@@ -3790,11 +3790,19 @@ div.tab-content-2T div.tab-content{
     width: 100%;
     border: solid 1px #18a689;
 }
-
+.content-item-button{
+    height: 100%;
+    width: 100%;
+    border: solid 1px #18a689;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 .content-image{
     height: 100%;
     width: 100%;
 }
+
 
 
 
