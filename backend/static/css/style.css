@@ -8762,3 +8762,36 @@ element.style {
   border-left: 4px solid #19aa8d;
   background: #293846;
 }
+
+input {
+    border: 1px solid #e7eaec;
+}
+
+#profilePicUploadId{
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    padding-left: 30px;
+}
+#profilePicIconId{
+    display: none;
+}
+#profilePicUploadId:hover #profilePicIconId{
+    display: block;
+}
+
+.fa-camera{
+  margin-top:40px;
+}
+
+.plus-project {
+    color: #c1c1c1;
+}
+
+.plus-project:hover {
+    color: #1ab394;
+}
+
+.plus-project:focus {
+    outline: none;
+}

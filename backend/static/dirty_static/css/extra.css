@@ -2915,7 +2915,7 @@
 
 .dropdown:hover .dropbtn,
 .dropdown:hover span {
-    background-color: #1cc09e;
+    /*background-color: #1cc09e;*/
     color: white;
 }
 
