@@ -490,6 +490,8 @@ def main_request_core(request):
                         if str(screenshotId[size]['status']) != 'inactive':
                             pages.append(str(screenshotId[size]['screenName']))
                 size -= 1
+            print('PagesV')
+            print(pages)
             import json
             return HttpResponse(json.dumps(pages), content_type="application/json")
 
@@ -509,7 +511,7 @@ def main_request_core(request):
             print('We are running checkWorkflowState GET')
             print(request.GET['name'])
             Wstate = str(request.GET['state'])
-            result = findOne(db.tempPage, 'userId', userId)[Wstate]
+            result = findOne(db.tempPage, 'userId', str(userId))[Wstate]
             if result is None:
                 result = False
             import json

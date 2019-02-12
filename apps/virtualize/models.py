@@ -659,7 +659,7 @@ def colorisTransferd(userid):
 
 def workflowRun(userid):
     try:
-        state = db.tempPage.find_one({'userId': userid})['workflowRunning']
+        state = db.tempPage.find_one({'userId': str(userid)})['workflowRunning']
     except:
         state = False
     return state
@@ -730,7 +730,10 @@ def getAllProjects(userId, currentUser):
     print('getting all the projects for workflow')
     var = []
     project = db.tempPage.find_one({'userId': userId})
-    project_name = project['projectName']
+    try:
+        project_name = project['projectName']
+    except:
+        print('error getting projects')
     if project is not None and project['projectName'] != '':
         screenids = db_main.projects_project.find_one({'user_id': ObjectId(userId), 'name': project['projectName']})
         for id in screenids['screenshots']:
@@ -795,9 +798,6 @@ def getLayoutHtml(currentUser, screenshotName):
 
 def getProjectPage(screenshotName, currentUser, project_name):
     print('retrieve the correct html for page2')
-    print(screenshotName)
-    print(currentUser)
-    print(project_name)
     try:
         import codecs
         pagehtml = codecs.open('./static/users/' + currentUser + '/' + screenshotName
@@ -805,7 +805,6 @@ def getProjectPage(screenshotName, currentUser, project_name):
         html = pagehtml.read()
         pagehtml.close()
     except:
-        print("Victor")
         html = ''
     return html
 
@@ -1099,8 +1098,6 @@ def html_render(url, currentUser, page, projectName, request, screenshotName, us
 
     project_id = get_project_id(projectName, userId)
 
-    print('Members')
-    print(ProjectActivity.objects.filter(project=project_id).order_by('-created'))
     return render(request, url,
                   {
                       'pageArray': fillPageArray(userId, projectName),
@@ -1135,6 +1132,7 @@ def html_render(url, currentUser, page, projectName, request, screenshotName, us
                       'AllWidget': fillWidget(),
                       'AllGraphics': fillGraphics(),
                       'aniStyles': getStylesDb(),
+                      'assignProjects': getProjects(userId),
                       # Testing right-sidebar
                       # ---------------------
                       "project": Project.objects.get(pk=project_id),
@@ -1184,13 +1182,25 @@ def save_new_style(element_id, fontSize, fontFamily, fontColor, borderColor,bord
     })
 
 def get_project_id(project, user_id):
-    return db_main.projects_project.find_one({'user_id':ObjectId(user_id), 'name': project})['id']
+    if user_id == '' or user_id is None or project == '':
+        return None
+    else:
+        return db_main.projects_project.find_one({'user_id':ObjectId(user_id), 'name': project})['id']
 
 
 def get_project(project, user_id):
-    p = db_main.projects_project.find_one({'user_id': ObjectId(user_id), 'name': project})
-    return p
+    if user_id == '' or user_id is None or project == '':
+        return None
+    else:
+        p = db_main.projects_project.find_one({'user_id': ObjectId(user_id), 'name': project})
+        return p
 
+
+def get_user_pk(user_id):
+    if user_id == '' or user_id is None :
+        return None
+    else:
+        return db_main.accounts_user.find_one({'_id': user_id})['_id']
 
 def get_user_pk(userId):
     return db_main.accounts_user.find_one({'_id': userId})['_id']
@@ -1267,8 +1277,4 @@ def get_new_styles(classIdList):
             styles_set.add(json.dumps(new_style))
 
     return styles_set
-
-
-
-
 

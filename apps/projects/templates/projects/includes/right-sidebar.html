@@ -19,9 +19,9 @@
       </a></li>
     </ul>
 
-    <div class="tab-content">
+    <div class="tab-content" style="height:94.5%">
 
-      <div id="tab-1" class="tab-pane active">
+      <div id="tab-1" class="tab-pane active" style="height:100%; max-height: none;">
 
         <div class="sidebar-title">
           <h3 data-toggle="modal" data-target="#chatMembers"><i class="fa fa-comments-o"></i> {{ project_members.count }} participants</h3>
@@ -46,7 +46,7 @@
                   <button class="btn btn-primary js-upload-message">
                     <span class="glyphicon glyphicon-cloud-upload"></span>
                   </button>
-                  <textarea class="form-control message-input write_msg" name="message" placeholder="Enter message text"></textarea>
+                  <textarea class="form-control message-input write_msg" name="message" placeholder="Enter message text" style="resize: none; "></textarea>
                 </div>
             </div>
           </div>

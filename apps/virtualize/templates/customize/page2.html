@@ -29,7 +29,7 @@
                     {{ msg }}
                 </div>
             {% endif %}
-            {%include "customize/includes/contentHome.html" %}
+            {%include "customize/includes/contentHome.html"%}
             {%include "customize/includes/wrapperFooter.html" %}
             <!-- Modal -->
             <div id="libraryModal" class="modal fade" role="dialog">
@@ -64,6 +64,7 @@
     {% include "projects/includes/add-task.html" with form=add_task_form  project_members=project_members project_id=project.id %}
     {% include "projects/includes/workflow-modal.html" with project_members=project_members %}
     {% include "projects/project.html"  with form=add_task_form  project_members=project_members project_id=project.id %}
+{#    {% include "projects/includes/share-screen.html" with preview_url= %}#}
 
 
 
