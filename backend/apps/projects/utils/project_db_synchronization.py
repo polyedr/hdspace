@@ -30,7 +30,8 @@ def create_project_data_db(project, secundary_id, current_user):
             'layoutRunning': False,
             'colorRunning': False,
             'maskRCNNstate': False,
-            'CNNstate': False
+            'CNNstate': False,
+            'workflowRunning': False
         })
     rewritePage(current_user, None, None, None, None)
 

@@ -72,6 +72,8 @@
 
         if (!formValid) {
             var url = $(this).data('url');
+            console.log('URL')
+            console.log(url)
             var name = $('#id_name').val();
             $.ajax({
                 url: url,
@@ -82,7 +84,7 @@
                 },
                 success: function (response) {
                     showNotifications("success", response.msg);
-                    location.href=response.project_url
+                    location.href='/projects/'
                 },
                 error: function (xhr, status, error) {
                     var response = jQuery.parseJSON(xhr.responseText);

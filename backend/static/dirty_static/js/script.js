@@ -1702,7 +1702,7 @@
             setTimeout(function(){
                 executeOnDelay();
             },100);
-        });
+        })
     }
 
     function searching_widgetsT(key) {
@@ -2639,9 +2639,9 @@
         }
     }
 
-    function addNewMessage(messageHtmlResponse = false) {
-        document.getElementById('body-message').innerHTML += messageHtmlResponse;
-    }
+    // function addNewMessage(messageHtmlResponse = false) {
+    //     document.getElementById('body-message').innerHTML += messageHtmlResponse;
+    // }
 
     function selectMessage(element) {
         var x = element.style.visibility;
