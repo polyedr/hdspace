@@ -220,12 +220,11 @@ $(document).ready(function () {
         }
     });
 
-    $("#widgets_liT").click(function(){
-        var widgetsContentContainerId = "widgetsHidderT";
-        var widgetsContentContainer = document.getElementById(widgetsContentContainerId);
+    var contentContainerId = "widgetsHidderT";
+    var contentContainer = document.getElementById(contentContainerId);
 
-        //Deny if this tab's content container is already being displayed
-        if(widgetsContentContainer.className !== "content-container-on"){
+    $("#widgets_liT").click(function(){
+
             hideContentContainer();
             $.ajax({
                 type: 'GET',
@@ -242,105 +241,120 @@ $(document).ready(function () {
                         var path = "";
                         for(var i = 0; i <= numberOfWidgetPaths ; i++){
                             path =  "../" + widgetPaths[i];
-                            newContent += "<div class='content-item'><img class=\"content-image\" src="+ path +"></div>";
+                            newContent += "<div class='content-item'><img class='content-image' src="+ path +"></div>";
                         }
-                        widgetsContentContainer.innerHTML = newContent;
-                        displayContentContainer(widgetsContentContainerId);
+                        contentContainer.innerHTML = newContent;
+                        displayContentContainer();
                     }
                     //Its empty - No widgets to display.
                     else{
-                       //TODO: Can notify on the widgets content container that there are "No widgets to display"
+                       //TODO: Notify that there are "No widgets to display"
                     }
                 }
             });
-        }
     });
 
     // TODO: Add functionality to GET -> Generate -> Insert new content into it's content container. Similar to $("#widgets_liT").click
     $("#screens_liT").click(function(){
                 hideContentContainer();
-                displayContentContainer("screensHidderT");
+                // displayContentContainer();
     });
     
-    // TODO: Add functionality to GET -> Generate -> Insert new content into it's content container. Similar to $("#widgets_liT").click
     $("#buttons_liT").click(function(){
-        hideContentContainer();
-        displayContentContainer("buttonHidderT");
+
+            hideContentContainer();
+            $.ajax({
+                type: 'GET',
+                url: '/index/',
+                data: {
+                    'name': 'getButtonsStyling'
+                },
+                success: function (buttonStyles) {
+                    if(buttonStyles){
+                        var numberOfStyles = buttonStyles.length - 1;
+                        var newContent = "";
+                        for(var i = 0; i <= numberOfStyles; i++){
+                            newContent += "<div class='content-item-button'>" +
+                                "<button type='button' style='" +
+                                "font-family:" + buttonStyles[i]['font-family'] +
+                                "; font-size:" + buttonStyles[i]['font-size'] +
+                                "; color:" + buttonStyles[i]['color'] +
+                                "; border-color:" + buttonStyles[i]['border-color'] +
+                                "; border-radius:" + buttonStyles[i]['border-radius'] + "px" +
+                                "; background-color:" + buttonStyles[i]['background-color'] +
+                                "; text-align:" + buttonStyles[i]['text-align'] +
+                                "; text-indent:" + buttonStyles[i]['text-indent'] + ";' >Button</button></div>";
+                        }
+                        contentContainer.innerHTML = newContent;
+                        displayContentContainer();
+                    }
+                    else{
+                         //TODO: Notify that there are "No buttons to display"
+                    }
+
+                }
+
+            });
+
     });
 
     // TODO: Add functionality to GET -> Generate -> Insert new content into it's content container. Similar to $("#widgets_liT").click
     $("#frames_liT").click(function(){
         hideContentContainer();
-        displayContentContainer("frameHidderT");
+        // displayContentContainer();
     });
 
     // TODO: Add functionality to GET -> Generate -> Insert new content into it's content container. Similar to $("#widgets_liT").click
     $("#hyperlinks_liT").click(function(){
         hideContentContainer();
-        displayContentContainer("hyperlinksHidderT");
+        // displayContentContainer();
     });
 
     // TODO: Add functionality to GET -> Generate -> Insert new content into it's content container. Similar to $("#widgets_liT").click
     $("#paragraphs_liT").click(function(){
         hideContentContainer();
-        displayContentContainer("paragraphsHidderT");
+        // displayContentContainer();
     });
 
     // TODO: Add functionality to GET -> Generate -> Insert new content into it's content container. Similar to $("#widgets_liT").click
     $("#textBoxes_liT").click(function(){
         hideContentContainer();
-        displayContentContainer("texBoxesHidderT");
+        // displayContentContainer();
     });
 
     // TODO: Add functionality to GET -> Generate -> Insert new content into it's content container. Similar to $("#widgets_liT").click
     $("#textAreas_liT").click(function(){
         hideContentContainer();
-        displayContentContainer("textAreasHidderT");
+        // displayContentContainer();
     });
 
     // TODO: Add functionality to GET -> Generate -> Insert new content into it's content container. Similar to $("#widgets_liT").click
     $("#graphics_liT").click(function(){
         hideContentContainer();
-        displayContentContainer("graphicsHidderT");
+        // displayContentContainer();
     });
 
     // TODO: Add functionality to GET -> Generate -> Insert new content into it's content container. Similar to $("#widgets_liT").click
     $("#images_liT").click(function(){
         hideContentContainer();
-        displayContentContainer("imagesHidderT");
+
+        // displayContentContainer();
     });
 
 });
-    var validContentContainerIds = new Set([
-            "widgetsHidderT","screensHidderT","buttonHidderT","frameHidderT","hyperlinksHidderT",
-            "paragraphsHidderT","texBoxesHidderT","textAreasHidderT","graphicsHidderT","imagesHidderT"
-        ]);
 
     /**
      * Displays a content container on the add element menu
-     * @param contentContainerId - The id (String) of the content container to display
      */
-    function displayContentContainer(contentContainerId){
-            var contentContainer = $("#" + contentContainerId);
-            if(validContentContainerIds.has(contentContainerId)){
-                contentContainer.removeClass('content-container').addClass('content-container-on');
-                document.getElementById("menuContainer").setAttribute("data-displayed-container",contentContainer[0].id);
-            }
-            else {
-                console.log("id= " + contentContainerId + ", does not match a valid content-container. Check you entered a valid id");
-            }
+    function displayContentContainer(){
+            $("#widgetsHidderT").removeClass('content-container').addClass('content-container-on');
         }
 
     /**
      * Hides the content container currently being displayed
      */
     function hideContentContainer(){
-        var displayedContentContainerId = document.getElementById("menuContainer").getAttribute("data-displayed-container");
-
-        //Only hide when a content container is currently being displayed
-        if (displayedContentContainerId){
-           $("#" + displayedContentContainerId).removeClass('content-container-on').addClass('content-container');
-        }
+           $("#widgetsHidderT").removeClass('content-container-on').addClass('content-container');
     }
 
 

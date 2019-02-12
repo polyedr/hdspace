@@ -728,13 +728,37 @@ def main_request_core(request):
             import json
             return HttpResponse(json.dumps(widgetPaths), content_type="application/json")
 
+        elif str(request.GET['name']) == 'getButtonsStyling':
+            currentProject = get_project(projectName,userId)
+            projectsScreenshotsList = currentProject['screenshots']
 
+            #seg_id's of all buttons in this project, generated from segmentation
+            shapeSegmentationIdList = get_buttons_shape_segmentation_id(projectsScreenshotsList)
+            #class_id's of all buttons in this project ,created by the user
+            buttonClassIdList = get_newElements_button_class_id(projectsScreenshotsList)
+
+            #The styling of buttons identified during segmenetation (set of str objects)
+            shape_styles_set = get_styles(shapeSegmentationIdList)
+            #The styling of buttons created by the user (set of str objects)
+            button_styles_set = get_new_styles(buttonClassIdList)
+
+            #All styling from segmentation and user (set of str objects)
+            all_styles_set = shape_styles_set.union(button_styles_set)
+
+            import json
+            all_styles = []
+            # for each element in set, convert str objects back to JSON and insert into list
+            # Since sets are not JSON serializable
+            for style in all_styles_set:
+                all_styles.append(json.loads(style))
+
+            return HttpResponse(json.dumps(all_styles), content_type="application/json")
 
 
         elif str(request.GET['name']) == 'saveMove':
             print('We are running saveMove GET')
             state = request.GET
-            fontColor = state['fontColor']
+            fontColor = state['fgetButtonsStylingontColor']
             fontSize = state['fontSize']
             fontFamily = state['fontFamily']
             borderColor = state['borderColor']
