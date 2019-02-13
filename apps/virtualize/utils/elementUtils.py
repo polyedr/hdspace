@@ -130,8 +130,8 @@ def insertEvent(screenid, segid, collection, type, old, new):
 def update_element_type(element, elementChild, curType):
     for elm in element:
         db[curType].update({'seg_id': elm['seg_id']}, {'$set': {'state': 'inactive'}})
-        if len(existInDb(type, elm['seg_id'])) > 0:
-            db[type].update({'seg_id': elm['seg_id']}, {'$set': {
+        if len(existInDb(curType, elm['seg_id'])) > 0:
+            db[curType].update({'seg_id': elm['seg_id']}, {'$set': {
                 'level': elm['level'],
                 'seg_id': elm['seg_id'],
                 'type': elm['type'],
@@ -145,7 +145,7 @@ def update_element_type(element, elementChild, curType):
                 'timeZone': elm['timeZone']}
             })
         else:
-            db[type].insert({
+            db[curType].insert({
                 'level': elm['level'],
                 'seg_id': elm['seg_id'],
                 'type': elm['type'],
@@ -160,10 +160,10 @@ def update_element_type(element, elementChild, curType):
             })
 
     for child in elementChild:
-        if type == 'textArea' or type == 'textBoxes' or type == 'buttons':
+        if curType == 'textArea' or curType == 'textBoxes' or curType == 'buttons':
             db[curType].update({'seg_id': child['seg_id']}, {'$set': {'state': 'inactive'}})
-            if len(existInDb(type, child['seg_id'])) > 0:
-                db[type].update({'seg_id': child['seg_id']}, {'$set': {
+            if len(existInDb(curType, child['seg_id'])) > 0:
+                db[curType].update({'seg_id': child['seg_id']}, {'$set': {
                     'level': child['level'],
                     'seg_id': child['seg_id'],
                     'type': child['type'],
@@ -177,7 +177,7 @@ def update_element_type(element, elementChild, curType):
                     'timeZone': child['timeZone']}
                 })
             else:
-                db[type].insert({
+                db[curType].insert({
                     'level': child['level'],
                     'seg_id': child['seg_id'],
                     'type': child['type'],
