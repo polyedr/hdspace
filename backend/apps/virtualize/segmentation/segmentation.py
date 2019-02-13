@@ -282,7 +282,7 @@ def run(myFile, coco_model, tensorflow_model, CurrentUser, projectName):
 
                     newImg = ndimage.percentile_filter(croppedWithSpace, percentile=82, size=3) * [-1, -1, -1]
                     im2 = Image.fromarray(np.uint8(newImg * 255))
-                    plt.imshow(newImg)
+                    # plt.imshow(newImg)
                     # plt.imsave(savePath + str(screenShot) + '.' + str(couple) + '.1' + '.jpg', newImg)
                     ocr3 = pytesseract.image_to_string(im2, lang='eng')  # .open(
                     # savePath + str(screenShot) + '.' + str(couple) + '.jpg'), lang='eng')

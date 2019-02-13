@@ -10,7 +10,7 @@ overflow: unset;">
                             <form method="POST" action="/index/" enctype="multipart/form-data" style="margin: 0px;height: 104px;cursor:pointer">
                                 {% csrf_token %}
                                 <div id="profilePicUploadId" onclick="$('#profilePicId').trigger('click'); return false;">
-                                    <div id="profilePicIconId"
+                                    <div hidden id="profilePicIconId"
                                         style="position: absolute;
                                         font-size: 150%;
                                         border-radius: 50%;
