@@ -350,17 +350,17 @@ def findOne(collection, collectionKey, searchword):
     return result
 
 
-def findTypeDb(type):
+def findTypeDb(type, ele_id):
     element = []
-    collection = db[type].find({'seg_id': id, 'state': 'active'})
+    collection = db[type].find({'seg_id': ele_id, 'state': 'active'})
     for col in collection:
         element.append(col)
     return element
 
 
-def findChildDb(type):
+def findChildDb(type, ele_id):
     elementChild = []
-    collection = db[type].find({'level': {'child': id}, 'state': 'active'})
+    collection = db[type].find({'level': {'child': ele_id}, 'state': 'active'})
     for col in collection:
         elementChild.append(col)
     return elementChild

@@ -153,24 +153,58 @@
                                             <input id="idForURL" name="id" type="hidden" value="">
                                             <input id="hrefURL" name="hrefURL" type="hidden" value="">
                                             <div id="displayOnLinkHover" class="dropdown" style="float:left;display: inline;margin-left: 21px;">
-                                                <button class="btn btn-default btn-sm dropbtn" data-toggle="dropdown" style="border-radius: 3px;
-                                                    padding-bottom: 5px;
-                                                    padding-top: 5px;
-                                                    margin-top: 8px;
-                                                    margin-bottom:4px;">
-                                                <span class="fa fa-link"><b class="caret" style="margin-left: 5px;"></b></span>
+                                    <button class="btn btn-default btn-sm dropbtn" data-toggle="dropdown" style="border-radius: 3px;
+                                        padding-bottom: 5px;
+                                        padding-top: 5px;
+                                        margin-top: 8px;
+                                        margin-bottom:4px;">
+                                        <span class="fa fa-link"><b class="caret" style="margin-left: 5px;"></b></span>
+                                    </button>
+                                    <ul class="dropdown-menu animated fadeInRight m-t-xs" id="optionList" style="width:100%;min-width:270px;max-height:130px;overflow-x:auto;">
+                                        <li style="display:inline;">
+                                            <input id="hrefURL" name="href" type="text" placeholder="Enter URL" style="width:70%;height: 22.5px;padding-top: 0px;padding-bottom: 2px;margin-top:3px;margin-left:3px;">
+                                            <button id="buttonChangeURL" class="btn btn-primary btn-xs" style="margin-bottom:0px;" type="submit">
+                                                Update
+                                            </button>
+                                        </li>
+                                        <li style="display:inline;">
+                                            <form id="goToPage" onsubmit="return goToPageUrl();" action="/index/" method="POST" enctype="multipart/form-data"
+                                                class="col-xs-1" style="padding: 0px;margin-bottom: 0px;padding-top: 2.8%;text-align: left;">
+                                                <input id="pageId" name="page" type="hidden" value=""/>
+                                                <input name="name" type="hidden" value="goToPage">
+                                                <button style="
+                                                    margin-top: 11px;
+                                                    margin-right: 0px;
+                                                    float:right;
+                                                    padding: 0px;
+                                                    border-top-width: 0px;
+                                                    border-right-width: 0px;
+                                                    border-bottom-width: 0px;
+                                                    border-left-width: 0px;
+                                                    height:15px;
+                                                    background-color: white;
+                                                    ">
+                                                    <i class="faAdevi fa fa-external-link" aria-hidden="true"></i>
                                                 </button>
-                                                <ul class="dropdown-menu animated fadeInRight m-t-xs" id="optionList" style="width:100%;min-width:270px;max-height:130px;overflow-x:auto;">
-                                                    <li>
-                                                        <a onclick="changeUrl('apps')" value="apps">apps</a>
-                                                        <a onclick="changeUrl('facebook')" value="facebook">facebook</a>
-                                                        <a onclick="changeUrl('form')" value="form">form</a>
-                                                        <a onclick="changeUrl('skype')" value="skype">skype</a>
-                                                        <a onclick="changeUrl('Facebook login')" value="Facebook login">Facebook login</a>
-                                                        <a onclick="changeUrl('Registration')" value="Registration">Registration</a>
-                                                    </li>
-                                                </ul>
-                                            </div></form>
+                                            </form>
+                                        </li>
+                                         <li>
+                                                <a href="#" onclick="changeFont(document.getElementById('test').innerHTML,'Impact, Charcoal, sans-serif')" style="font-family:Impact, Charcoal, sans-serif">Impact</a>
+                                            </li>
+                                            <li>
+                                                <a href="#" onclick="changeFont(document.getElementById('test').innerHTML,'Monaco, monospace')" style="font-family:Monaco, monospace">Monospace</a>
+                                            </li>
+                                            <li>
+                                                <a href="#" onclick="changeFont(document.getElementById('test').innerHTML,'Tahoma, Geneva, sans-serif')" style="font-family:Tahoma, Geneva, sans-serif">Tahoma</a>
+                                            </li>
+                                            <li>
+                                                <a href="#" onclick="changeFont(document.getElementById('test').innerHTML,'Times, serif')" style="font-family:Times, serif">Times New Roman</a>
+                                            </li>
+                                            <li>
+                                                <a href="#" onclick="changeFont(document.getElementById('test').innerHTML,'Verdana, Geneva, sans-serif')" style="font-family:Verdana, Geneva, sans-serif">Verdana</a>
+                                            </li>
+                                    </ul>
+                                </div></form>
 
                                     </div>
                             <div id="replaceMenu">
@@ -381,5 +415,87 @@
              </div>
          </div>
      </div>
+    <script>"use strict";
+         function popupImageCropBox() {
+             $('#imageCrop').popup({escape: false, blur: false, autoopen: true});
+         }
+     </script>
+     <script>
+         $(function() {
+             $("#changeURL").submit(function(event) {
+                 event.preventDefault();
+                 var thisform = $(this);
+                 var posting = $.post( thisform.attr('action'), thisform.serialize() );
+                 var element = document.getElementById('test').innerHTML;
+                 document.getElementById(element).setAttribute("linkvalue", document.getElementById('hrefURL').value);
+                 console.log('Link: '+document.getElementById('hrefURL').value);
+                 posting.done(function(data) {
+             });
+             posting.fail(function(data) {console.log('failed')});
+         });
+     });
 
+    $("#editBarchartBarColoursINPUT").spectrum({
+        preferredFormat: "rgb",
+        showInitial: true,
+        showInput: true,
+        allowEmpty: true,
+        move: function (color) {
+            updateColor(color,'barChartBars');
+        },
+        hide: function (color) {
+            updateColor(color,'barChartBars');
+        }
+    });
+    $("#editBarchartBackgroundINPUT").spectrum({
+        preferredFormat: "rgb",
+        showInitial: true,
+        showInput: true,
+        allowEmpty: true,
+        move: function (color) {
+            updateColor(color,'barChartBG');
+        },
+        hide: function (color) {
+            updateColor(color,'barChartBG');
+        }
+    });
+
+{#____________________________________________________________________________________________________________________#}
+
+        $("#editbackgroundcolorINPUT").spectrum({
+            preferredFormat: "rgb",
+            showInitial: true,
+            showInput: true,
+            allowEmpty: true,
+            move: function (color) {
+                updateColor(color,'backgroundElm');
+            },
+            hide: function (color) {
+                updateColor(color,'backgroundElm');
+            }
+        });
+        $("#editbordercolor").spectrum({
+            allowEmpty: true,
+            preferredFormat: "rgb",
+            showInitial: true,
+            showInput: true,
+            move: function (color) {
+                updateColor(color,'border');
+            },
+            hide: function (color) {
+                updateColor(color,'border');
+            }
+        });
+        $("#favcolor").spectrum({
+            preferredFormat: "rgb",
+            showInitial: true,
+            showInput: true,
+            move: function (color) {
+                updateColor(color,'font');
+            },
+            hide: function (color) {
+                updateColor(color,'font');
+            }
+        });
+    </script>
     </div>

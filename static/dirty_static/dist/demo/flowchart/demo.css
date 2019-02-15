@@ -1,0 +1,60 @@
+.demo {
+    /* for IE10+ touch devices */
+    touch-action:none;
+}
+
+.flowchart-demo .window {
+    width: 135px;
+    height: 165px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    text-align: center;
+    z-index: 20;
+    float: left;
+    position: relative;
+    margin: 50px 30px 100px 70px;
+    background-color: transparent;
+    color: black;
+    font-family: helvetica, sans-serif;
+    padding: 0.5em;
+    font-size: 0.9em;
+    -webkit-transition: -webkit-box-shadow 0.15s ease-in;
+    -moz-transition: -moz-box-shadow 0.15s ease-in;
+    -o-transition: -o-box-shadow 0.15s ease-in;
+    transition: box-shadow 0.15s ease-in;
+}
+
+.flowchart-demo .active {
+    border: 1px dotted green;
+}
+
+.flowchart-demo .jtk-connector {
+    z-index: 4;
+    cursor: pointer;
+}
+
+.flowchart-demo .jtk-endpoint, .endpointTargetLabel, .endpointSourceLabel {
+    z-index: 21;
+    cursor: pointer;
+    font-size:8px;
+}
+
+.flowchart-demo .aLabel {
+    background-color: #18a689;
+    padding: 0.4em;
+    font:8px sans-serif;
+    z-index: 21;
+    border: 1px solid #18a689;
+    cursor: pointer;
+}
+
+/*.jtk-drag {*/
+    /*outline: 4px solid pink !important;*/
+/*}*/
+
+
+.jtk-overlay {
+    background-color:transparent;
+}
