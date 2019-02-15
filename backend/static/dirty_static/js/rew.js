@@ -1870,7 +1870,7 @@
         // $('#linkListPro').addClass('hidden');
         $.ajax({
             type : 'POST',
-            url : 'index',
+            url : '/index/',
             name : 'updateURL',
             data : {'name':'updateURL',
             'id':id,

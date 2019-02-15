@@ -854,42 +854,42 @@ def main_request_core(request):
             id = str(request.POST['id'])[2:]
             type = str(request.POST['type'])
 
-            button = findTypeDb('buttons')
-            frame = findTypeDb('frames')
-            hyperlink = findTypeDb('hyperLinks')
-            paragraph = findTypeDb('paragraphs')
-            picture = findTypeDb('pictures')
-            text_area = findTypeDb('textArea')
-            text_box = findTypeDb('textBoxes')
+            button = findTypeDb('buttons', id)
+            frame = findTypeDb('frames', id)
+            hyperlink = findTypeDb('hyperLinks', id)
+            paragraph = findTypeDb('paragraphs', id)
+            picture = findTypeDb('pictures', id)
+            text_area = findTypeDb('textArea', id)
+            text_box = findTypeDb('textBoxes', id)
 
             curType = ''
             if len(button) > 0:
                 element = button
-                elementChild = findChildDb('buttons')
+                elementChild = findChildDb('buttons', id)
                 curType = 'buttons'
             if len(frame) > 0:
                 element = frame
-                elementChild = findChildDb('frames')
+                elementChild = findChildDb('frames', id)
                 curType = 'frames'
             if len(hyperlink) > 0:
                 element = hyperlink
-                elementChild = findChildDb('hyperLinks')
+                elementChild = findChildDb('hyperLinks', id)
                 curType = 'hyperLinks'
             if len(paragraph) > 0:
                 element = paragraph
-                elementChild = findChildDb('paragraphs')
+                elementChild = findChildDb('paragraphs', id)
                 curType = 'paragraphs'
             if len(picture) > 0:
                 element = picture
-                elementChild = findChildDb('pictures')
+                elementChild = findChildDb('pictures', id)
                 curType = 'pictures'
             if len(text_area) > 0:
                 element = text_area
-                elementChild = findChildDb('textArea')
+                elementChild = findChildDb('textArea', id)
                 curType = 'textArea'
             if len(text_box) > 0:
                 element = text_box
-                elementChild = findChildDb('textBoxes')
+                elementChild = findChildDb('textBoxes', id)
                 curType = 'textBoxes'
 
             element = update_element_type(element, elementChild, curType)
