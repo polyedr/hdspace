@@ -817,24 +817,20 @@
                         <li id="tabletTab" class="" style="width: 80px;"><a id="tab2" data-toggle="tab" href="#tab-3" onclick="changeIDTablet()"><i class="fa fa-tablet fa-2x"></i></a></li>
                         <li id="mobileTab" class="" style="width: 80px;"><a id="tab3" data-toggle="tab" href="#tab-3" onclick="changeIDMobile()"><i class="fa fa-mobile fa-2x"></i></a></li>
                         <li class="center" style="width: 165px;height: 50px;float: right;"><b id="tab3PA" class="colorHover" onclick="loadPrototype()">Prototype Mode</b></li>
-{#                        <li style="width: 60px;float: right;">#}
-{#                        <button type="button" class="share-button"><i class="fa fa-share-alt fa-2x"></i></button>#}
-{#                        </li>#}
-{#                        <li>#}
-{#                        <a href="" class="facebook-share">#}
-{#                            <i class="fa fa-facebook-square fa-2x" style="color:#3B5998"></i>#}
-{#                        </a>#}
-{#                        </li>#}
-{#                        <li>#}
-{#                        <a href="" class="linkedin-share">#}
-{#                            <i class="fa fa-linkedin-square fa-2x" style="color:#007bb6"></i>#}
-{#                        </a>#}
-{#                            </li>#}
-{#                        <li>#}
-{#                        <a href=""  class="twitter-share">#}
-{#                            <i class="fa fa-twitter-square fa-2x" style="color:#4099FF"></i>#}
-{#                        </a>#}
-{#                        </li>#}
+{#                        <div>#}
+{#                        <button type="button" class="share-button">Share Prototype</button>#}
+{#                  <a href="" class="facebook-share">#}
+{#                    <i class="fa fa-facebook-square fa-2x" style="color:#3B5998"></i>#}
+{#                  </a>#}
+{#                  <a href="" class="linkedin-share">#}
+{#                    <i class="fa fa-linkedin-square fa-2x" style="color:#007bb6"></i>#}
+{#                  </a>#}
+{#                  <a href=""  class="twitter-share">#}
+{#                     <i class="fa fa-twitter-square fa-2x" style="color:#4099FF"></i>#}
+{#                  </a>#}
+{#                            {% include "projects/includes/share-screen.html" with preview_url=screen_obj.get_preview_url %}#}
+{##}
+{#                        </div>#}
                         <li id="rotate-tablet1" class="active" style="width: 80px; visibility: hidden;"><a id="tab4" onclick="testRotateTablet()"><img alt="image" src="/static/dirty_static/img/rotateSmartphone.svg" style="width: 25px"></a></li>
                         <li id="rotate-tablet2" class="active" style="width: 80px; visibility: hidden;"><a id="tab5" onclick="testRotateTablet2()"><img alt="image" src="/static/dirty_static/img/rotateSmartphone.svg" style="width: 25px"></a></li>
                         <li id="rotate-phone1" class="active" style="width: 80px; visibility: hidden;"><a id="tab6" onclick="testRotatePhone()"><img alt="image" src="/static/dirty_static/img/rotateSmartphone.svg" style="width: 25px"></a></li>

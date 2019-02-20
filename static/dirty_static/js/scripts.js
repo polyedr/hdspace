@@ -472,5 +472,9 @@ $('.checkIconSelectedGraphics').on('click', function (e) {
         $('#optionToAddGraphics').addClass('hidden');
     });
 
+$('.share-button').on('click', function () {
+       $('#shareScreen').modal();
+    });
+
 /* navbarHome.html script */
 

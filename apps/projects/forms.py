@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import ScreenEvent, ProjectMember, ProjectScreen
+from apps.projects.models import ScreenEvent, ProjectMember, ProjectScreen
 from apps.accounts.models import Profile
 
 __all__ = (
@@ -21,13 +21,13 @@ class CreateProjectForm(forms.Form):
 
 
 class ScreenUploadForm(forms.ModelForm):
-    image = forms.ImageField(
-        label="Upload New Screen",
-    )
+    # image = forms.ImageField(
+    #     label="Upload New Screen",
+    # )
 
     class Meta:
         model = ProjectScreen
-        fields = ('image',)
+        fields = ()
 
 
 class ScreenEventForm(forms.Form):

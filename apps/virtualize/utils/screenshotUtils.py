@@ -1,5 +1,6 @@
 import pymongo
 from bson import ObjectId
+from apps.projects.models import ProjectScreen
 
 client = pymongo.MongoClient('localhost', 27017)  # maxPoolSize=50
 db = client.MeduzaDb
@@ -58,6 +59,17 @@ def getLatestScreenshot(userId):
     except (AttributeError, pymongo.errors.OperationFailure) as e:
         print('Mongo Data Base Error ' + e)
     return item
+
+
+def getScreenObject(screen_id):
+
+    screen_obj = None
+    try:
+        screen_obj = ProjectScreen.objects.get(details_id=str(screen_id))
+    except:
+        print('error')
+    return screen_obj
+
 
 
 def setScreenshot(userId, screenshot_id,projectName):
