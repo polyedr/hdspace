@@ -3767,15 +3767,13 @@ div#tabsT ul li a{
 div.tab-content-2T div.tab-content{
     height: 100%;
 }
-/*Initially applied to all content-containers.
-  Reapplied when the user selects another menu tab  */
+/*Hides the content container*/
 .content-container{
     visibility: hidden;
     height: 100%;
 }
 
-/*When a user clicks one of the menu tabs, this is applied to the related content container.
-  It structures the content container to display items in rows of 5 */
+/* Displays the content the user selects in a grid; where content is displayed in rows of 5 */
 .content-container-on{
     visibility: visible;
     overflow-y: scroll;
