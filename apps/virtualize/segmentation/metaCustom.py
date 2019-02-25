@@ -554,7 +554,7 @@ def metaCustom(currentUser, myFile, screenshot_id, state):
                                          color: ' + fontColor + '; font-family: ' + fontFamily + '; z-index: ' + zIndex + '}' + ' ' + '#id' + classid + '{}\n')
 
         def create_new_paragraph(classid, text_string, positionL, positionT, fontSize, fontColor, width, textAlign, height,
-                             fontFamily, link, zIndex, textIndent, virtual):
+                             fontFamily, link, zIndex, virtual):
 
             if link != '':
 
@@ -6374,7 +6374,7 @@ def metaCustom(currentUser, myFile, screenshot_id, state):
                     zIndex = str(styles['zIndex'])
 
                     create_text_box_placeholder_load(placeholder, label, width, height, classid, borderRadius, positionL,
-                                                positionT, bgcolor, childOffset, str(fontVw), fontFamily, fontColor,
+                                                positionT, bgcolor, childOffset, str(fontSize), fontFamily, fontColor,
                                                 textAlign, bordercolor, zIndex)
 
                 elif elementType == 'textArea':
@@ -7280,6 +7280,412 @@ def metaCustom(currentUser, myFile, screenshot_id, state):
         close_page_css()
 
     '############################################          END             ##########################################'
+
+
+def duplicateElement( screenshot_id, valuelist):
+
+    date = datetime.now(pytz.timezone('Australia/Melbourne'))
+    elementcontent = valuelist[0].strip()
+    elementtag = str(valuelist[2]).lower()
+    print("Element tag is "+ elementtag)
+
+
+    if elementtag == "p":
+        elementtag = str("paragraph")
+    elif elementtag == "input":
+        elementtag = str("textbox")
+    elif elementtag == "a":
+        elementtag = "hyperlink"
+    elif elementtag == "img":
+        elementtag = "image"
+
+
+
+
+    print("Element type is " + elementtag)
+    if elementtag == "button":
+
+        mydb = pymongo.MongoClient("mongodb://localhost:27017/")["MeduzaDb"]
+        db_newStyle = mydb["newStyle"]
+        db_newElement = mydb["newElements"]
+        db_element_position = db_newElement.find_one({"class_id": valuelist[1]})
+        print("db_element_position")
+        print(db_element_position)
+        document = db_newStyle.find_one({"element_id": valuelist[1]})
+        if document == None:
+            document = db.styles.find_one({"element_id": valuelist[1]})
+        backGroundColor_new = document['bgcolor']
+        fontSize_new = document['fontSize']
+        fontColor_new = document['fontColor']
+        textAlign_new = document['textAlign']
+        fontFamily_new = document['fontFamily']
+        bordercolor_new = document['borderColor']
+        borderradius_new = document['borderRadius']
+
+
+        locations_location = db['paragraphs'].find_one({'seg_id': valuelist[1]})
+        location_sets = locations_location['location']
+        print(location_sets)
+        location_values = []
+        location_values.append(location_sets['x0'])
+        location_values.append(location_sets['y0'])
+        location_values.append(location_sets['x1'])
+        location_values.append(location_sets['y1'])
+        print("location_values = ")
+        print(location_values)
+
+
+        label = db_element_position['name']
+        classid = str(ObjectId())
+        type = "button"
+        zindex = 2
+        location = {'x0': location_values[0], 'y0': location_values[1], 'x1': location_values[2],
+                        'y1': location_values[3]}
+        save_new_elements(classid, screenshot_id, type, label, location, date, '')
+        collection = db['newElements']
+        col = collection.find().sort([('timeStamp', -1)]).limit(1)
+        element_id = ''
+        for item in col:
+            print('look over here: ' + str(item))
+            element_id = str(item['class_id'])
+
+        save_new_style(element_id, str(fontSize_new), fontFamily_new, fontColor_new, bordercolor_new, borderradius_new, backGroundColor_new,
+                           textAlign_new, 'unset', '', zindex)
+
+    elif elementtag == "frame":
+        print('meta running with action: ' + elementcontent)
+
+        mydb = pymongo.MongoClient("mongodb://localhost:27017/")["MeduzaDb"]
+        db_newStyle = mydb["newStyle"]
+        db_newElement = mydb["newElements"]
+        db_element_position = db_newElement.find_one({"class_id": valuelist[1]})
+        print("db_element_position")
+        print(db_element_position)
+        document = db_newStyle.find_one({"element_id": valuelist[1]})
+        if document == None:
+            document = db.styles.find_one({"element_id": valuelist[1]})
+        backGroundColor_new = document['bgcolor']
+        fontSize_new = document['fontSize']
+        fontColor_new = document['fontColor']
+        textAlign_new = document['textAlign']
+        fontFamily_new = document['fontFamily']
+        bordercolor_new = document['borderColor']
+        borderradius_new = document['borderRadius']
+
+        locations_location = db['paragraphs'].find_one({'seg_id': valuelist[1]})
+        location_sets = locations_location['location']
+        print(location_sets)
+        location_values = []
+        location_values.append(location_sets['x0'])
+        location_values.append(location_sets['y0'])
+        location_values.append(location_sets['x1'])
+        location_values.append(location_sets['y1'])
+        print("location_values = ")
+        print(location_values)
+
+
+        classid = str(ObjectId())
+
+        print('framecheck')
+        type = "frame"
+        label = ''
+
+
+
+        location = {'x0': location_values[0], 'y0': location_values[1], 'x1': location_values[2],
+                    'y1': location_values[3]}
+
+        save_new_elements(classid, screenshot_id, type, label, location, date, '')
+        collection = db['newElements']
+        col = collection.find().sort([('timeStamp', -1)]).limit(1)
+        element_id = ''
+        for item in col:
+            print('look over here: ' + str(item))
+            element_id = str(item['class_id'])
+        save_new_style(element_id, fontSize_new, fontFamily_new, fontColor_new, bordercolor_new, borderradius_new, backGroundColor_new, textAlign_new,
+                       'unset', '', 'auto')
+
+    elif elementtag == "hyperlink":
+        print("under deployment")
+        h = db['hyperLinks'].find_one({'screenshot_id': str(screenshot_id), 'status': 'active'})
+
+        mydb = pymongo.MongoClient("mongodb://localhost:27017/")["MeduzaDb"]
+        db_style = mydb["styles"]
+        db_newStyle = mydb["newStyle"]
+        db_newElement = mydb["newElements"]
+        document = db_newStyle.find_one({"element_id": valuelist[1]})
+        if document == None:
+            document = db_style.find_one({"segmentation_id": valuelist[1]})
+        backGroundColor_new = document['bgcolor']
+        fontSize_new = document['fontSize']
+        fontColor_new = document['fontColor']
+        textAlign_new = document['textAlign']
+        fontFamily_new = document['fontFamily']
+        bordercolor_new = document['borderColor']
+        borderradius_new = document['borderRadius']
+        print("fontSize" + fontSize_new)
+
+        print('meta running with action: ' + elementcontent)
+
+        locations_location = db['hyperLinks'].find_one({'seg_id': valuelist[1]})
+        location_sets = locations_location['location']
+        print(location_sets)
+        location_values = []
+        location_values.append(location_sets['x0'])
+        location_values.append(location_sets['y0'])
+        location_values.append(location_sets['x1'])
+        location_values.append(location_sets['y1'])
+        print("location_values = ")
+        print(location_values)
+
+        classid = str(ObjectId())
+        text_string = elementcontent
+        type = "hyperlink"
+
+        zIndex = 2
+        location = {'x0': location_values[0], 'y0': location_values[1], 'x1': location_values[2],
+                        'y1': location_values[3]}
+
+        save_new_elements(classid, screenshot_id, type, text_string, location, date, '')
+        collection = db['newElements']
+        col = collection.find().sort([('timeStamp', -1)]).limit(1)
+        element_id = ''
+        for item in col:
+            print('look over here: ' + str(item))
+            element_id = str(item['class_id'])
+
+        save_new_style(element_id, fontSize_new, fontFamily_new, fontColor_new, bordercolor_new, borderradius_new, backGroundColor_new, textAlign_new,
+                       'unset', '', zIndex)
+
+    elif elementtag == "paragraph":
+        p = db['paragraphs'].find_one({'screebshot_id': str(screenshot_id), 'state': 'active'})
+        print("paragraph")
+        print(p)
+        print('meta running with action: ' + elementtag)
+
+        locations_location = db['paragraphs'].find_one({'seg_id': valuelist[1]})
+        location_sets = locations_location['location']
+        print(location_sets)
+        location_values = []
+        location_values.append(location_sets['x0'])
+        location_values.append(location_sets['y0'])
+        location_values.append(location_sets['x1'])
+        location_values.append(location_sets['y1'])
+        print("location_values = ")
+        print(location_values)
+
+        mydb = pymongo.MongoClient("mongodb://localhost:27017/")["MeduzaDb"]
+        db_style = mydb["styles"]
+        db_newStyle = mydb["newStyle"]
+        db_newElement = mydb["newElements"]
+        document = db_newStyle.find_one({"element_id": valuelist[1]})
+        if document == None:
+            document = db_style.find_one({"segmentation_id": valuelist[1]})
+        backGroundColor_new = document['bgcolor']
+        fontSize_new = document['fontSize']
+        fontColor_new = document['fontColor']
+        textAlign_new = document['textAlign']
+        fontFamily_new = document['fontFamily']
+        bordercolor_new = document['borderColor']
+        borderradius_new = document['borderRadius']
+
+        locations_location = db['paragraphs'].find_one({'seg_id': valuelist[1]})
+        location_sets = locations_location['location']
+        print(location_sets)
+        location_values = []
+        location_values.append(location_sets['x0'])
+        location_values.append(location_sets['y0'])
+        location_values.append(location_sets['x1'])
+        location_values.append(location_sets['y1'])
+        print("location_values = ")
+        print(location_values)
+        
+
+        classid = str(ObjectId())
+        width = 20
+        height = 10
+        type = "paragraph"
+        positionL = 40
+        positionT = 45
+        text_string = elementcontent
+
+        occupied = 1
+        zIndex = 2
+        location = {'x0': location_values[0], 'y0': location_values[1], 'x1': location_values[2],
+                        'y1': location_values[3]}
+
+        save_new_elements(classid, screenshot_id, type, text_string, location, date, '')
+        collection = db['newElements']
+        col = collection.find().sort([('timeStamp', -1)]).limit(1)
+        element_id = ''
+        for item in col:
+            print('look over here: ' + str(item))
+            element_id = str(item['class_id'])
+
+        save_new_style(element_id, fontSize_new, fontFamily_new, fontColor_new, bordercolor_new, borderradius_new, backGroundColor_new, textAlign_new,
+                       'unset', '', zIndex)
+
+    elif elementtag == "textbox":
+        print("under deployment")
+        print('meta running with action: ' + elementcontent)
+
+        t = db['textBoxes'].find_one({'seg_id': str(screenshot_id), 'status': 'active'})
+
+        locations_location = db['textBoxes'].find_one({'seg_id': valuelist[1]})
+        location_sets = locations_location['location']
+
+
+        parent_element = db['textBoxes'].find_one({'seg_id':valuelist[1]})['level']['parent']
+        print("parent element "+ parent_element)
+        placeholder_new = db['textBoxes'].find_one({'seg_id':parent_element})['name']
+
+
+        print(location_sets)
+        location_values = []
+        location_values.append(location_sets['x0'])
+        location_values.append(location_sets['y0'])
+        location_values.append(location_sets['x1'])
+        location_values.append(location_sets['y1'])
+        print("location_values = ")
+        print(location_values )
+
+
+        mydb = pymongo.MongoClient("mongodb://localhost:27017/")["MeduzaDb"]
+        db_style = mydb["styles"]
+        db_newStyle = mydb["newStyle"]
+        db_newElement = mydb["newElements"]
+        document = db_newStyle.find_one({"element_id": valuelist[1]})
+        if document == None:
+            document = db_style.find_one({"segmentation_id": valuelist[1]})
+
+        backGroundColor_new = document['bgcolor']
+        fontSize_new = document['fontSize']
+        fontColor_new = document['fontColor']
+        textAlign_new = document['textAlign']
+        fontFamily_new = document['fontFamily']
+        borderradius_new = document['borderRadius']
+        bordercolor_new = document['borderColor']
+        textIndent_new = document['textIndent']
+        textIndent_new = str(textIndent_new)
+
+
+        classid = str(ObjectId())
+        type = "textbox"
+        zIndex = 2
+        location = {'x0': location_values[0], 'y0': location_values[1], 'x1': location_values[2],
+                        'y1': location_values[3]}
+
+        save_new_elements(classid, screenshot_id, type, placeholder_new, location, date, '')
+        collection = db['newElements']
+        col = collection.find().sort([('timeStamp', -1)]).limit(1)
+        element_id = ''
+        for item in col:
+            print('look over here: ' + str(item))
+            element_id = str(item['class_id'])
+        print("fontSize_new = "+fontSize_new)
+        save_new_style(element_id, fontSize_new, fontFamily_new, fontColor_new, bordercolor_new, borderradius_new, backGroundColor_new, textAlign_new,
+                       textIndent_new, '', zIndex)
+
+    elif elementtag == "textarea":
+        print("under deployment")
+        print('meta running with action: ' + elementcontent)
+        t = db['textBoxes'].find_one({'sedmentation_id': str(screenshot_id), 'status': 'active'})
+        classid = str(ObjectId())
+        name = 'New Text Area'
+        width = float(t['location']['x1']) - float(t['location']['x0'])
+        height = float(t['location']['y1']) - float(t['location']['y0'])
+        positionL = 50 - width / 2
+        positionT = 50 - height / 2
+        type = "textArea"
+
+        mydb = pymongo.MongoClient("mongodb://localhost:27017/")["MeduzaDb"]
+        db_style = mydb["styles"]
+        db_newStyle = mydb["newStyle"]
+        db_newElement = mydb["newElements"]
+        document = db_newStyle.find_one({"element_id": valuelist[1]})
+        if document == None:
+            document = db_style.find_one({"segmentation_id": valuelist[1]})
+
+        backGroundColor_new = document['bgcolor']
+        fontSize_new = document['fontSize']
+        fontColor_new = document['fontColor']
+        textAlign_new = document['textAlign']
+        fontFamily_new = document['fontFamily']
+        borderradius_new = document['borderRadius']
+        bordercolor_new = document['borderColor']
+        textIndent_new = document['textIndent']
+        textIndent_new = str(textIndent_new)
+
+        occupied = 1
+        zIndex = 2
+
+        location = {'x0': positionL, 'y0': positionT, 'x1': float(positionL) + float(width),
+                        'y1': float(positionT) + float(height)}
+
+        save_new_elements(classid, screenshot_id, type, name, location, date, '')
+        collection = db['newElements']
+        col = collection.find().sort([('timeStamp', -1)]).limit(1)
+        element_id = ''
+        for item in col:
+            print('look over here: ' + str(item))
+            element_id = str(item['class_id'])
+
+        save_new_style(element_id, fontSize_new, fontFamily_new, fontColor_new, bordercolor_new, borderradius_new, backGroundColor_new, textAlign_new,
+                       textIndent_new, '', zIndex)
+
+    elif elementtag == "image":
+        print("image duplication under deployment")
+
+        locations_location = db['pictures'].find_one({'seg_id': valuelist[1]})
+        if locations_location == None:
+            locations_location = db['icon'].find_one({'seg_id': valuelist[1]})
+        location_sets = locations_location['location']
+        print(location_sets)
+        location_values = []
+        location_values.append(location_sets['x0'])
+        location_values.append(location_sets['y0'])
+        location_values.append(location_sets['x1'])
+        location_values.append(location_sets['y1'])
+        print("location_values = ")
+        print(location_values )
+
+        classid = str(ObjectId())
+        type = "image"
+        location = {'x0': location_values[0], 'y0': location_values[1], 'x1': location_values[2],
+                    'y1': location_values[3]}
+        path = locations_location["root"]
+        name = locations_location["name"]
+        path = path[6:]
+        print("icon path "+ path)
+        print("name = " + name)
+        save_new_elements(classid, screenshot_id, type, name, location, date, path)
+        collection = db['newElements']
+        col = collection.find().sort([('timeStamp', -1)]).limit(1)
+        element_id = ''
+        for item in col:
+            print('look over here: ' + str(item))
+            element_id = str(item['class_id'])
+
+        mydb = pymongo.MongoClient("mongodb://localhost:27017/")["MeduzaDb"]
+        db_style = mydb["styles"]
+        db_newStyle = mydb["newStyle"]
+        document = db_newStyle.find_one({"element_id": valuelist[1]})
+        if document == None:
+            document = db_style.find_one({"segmentation_id": valuelist[1]})
+
+        backGroundColor_new = document['bgcolor']
+        fontSize_new = document['fontSize']
+        fontColor_new = document['fontColor']
+        textAlign_new = document['textAlign']
+        fontFamily_new = document['fontFamily']
+        borderradius_new = document['borderRadius']
+        bordercolor_new = document['borderColor']
+        textIndent_new = document['textIndent']
+        textIndent_new = str(textIndent_new)
+        zIndex = document['zIndex']
+
+        save_new_style(element_id, fontSize_new, fontFamily_new, fontColor_new, bordercolor_new, borderradius_new, backGroundColor_new, textAlign_new,
+                       textIndent_new, '', zIndex)
 
 
 def addElement(currentUser, filename, screenshot_id, action):
@@ -8619,9 +9025,11 @@ def metaColorTransfer(currentUser, myFile, screenshot_id, folder, index, colors)
         print('new element: ' + str(newElementsArray))
 
         for e in newElementsArray:
+
             if len(newElementsArray) > 0:
 
                 elementType = e['type']
+                print("generate element type is " + elementType)
                 if elementType == 'button':
 
                     label = e['name']
@@ -8889,7 +9297,8 @@ def metaColorTransfer(currentUser, myFile, screenshot_id, folder, index, colors)
 
                 elif elementType == 'image':
 
-                    icon_path = 'media/' + str(e['root'])
+                    icon_path = str(e['root'])
+                    print("icon_path"+icon_path)
                     classid = e['class_id'][index:]
                     width = str(float(e['location']['x1']) - float(e['location']['x0']))
                     height = str(float(e['location']['y1']) - float(e['location']['y0']))
@@ -8897,6 +9306,22 @@ def metaColorTransfer(currentUser, myFile, screenshot_id, folder, index, colors)
                     positionT = str(float(e['location']['y0']))
                     link = ''
                     create_image(icon_path, classid, width, height, positionL, positionT, link)
+
+                elif elementType == 'icon':
+
+                    icon_path = str(e['root'])
+                    print("icon_path"+icon_path)
+                    classid = e['class_id'][index:]
+                    width = str(float(e['location']['x1']) - float(e['location']['x0']))
+                    height = str(float(e['location']['y1']) - float(e['location']['y0']))
+                    positionL = str(float(e['location']['x0']))
+                    positionT = str(float(e['location']['y0']))
+                    link = ''
+                    create_icon(icon_path, classid, width, height, positionL, positionT, link)
+
+
+
+
 
         '#CREATING FRAME OR BOXES'
         for f in frameArray:
