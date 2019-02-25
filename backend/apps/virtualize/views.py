@@ -9,7 +9,7 @@ from django.views.decorators.csrf import csrf_exempt
 from apps.virtualize.models import *
 from apps.virtualize.segmentation.segmentation import run
 from apps.virtualize.segmentation.inference_segmentation import initiateCocoDetection, initiateTensorflowDetection
-from apps.virtualize.segmentation.metaCustom import metaCustom, addElement
+from apps.virtualize.segmentation.metaCustom import metaCustom, addElement, duplicateElement
 from apps.virtualize.utils.elementUtils import *
 from apps.virtualize.utils.screenshotUtils import *
 from apps.virtualize.utils.styleTransfer import propertyTransfer
@@ -1103,7 +1103,22 @@ def main_request_core(request):
                 data['wid'] = searchEnquiry(key.lower())[1]
                 import json
                 return HttpResponse(json.dumps(data), content_type="application/json")
-
+            elif str(request.POST['name']) == 'duplicateElement':
+                print('We are running duplicateElment POST')
+                req = request.POST
+                elementContenttag = str(req['elementhtmltag'])
+                elementContent = str(req['elementContent'])
+                elementID = str(req['elementID'])
+                elementID_cut = elementID[2:]
+                print('elementtag = '+ elementContenttag)
+                print(elementID_cut)
+                valuelist = [elementContent]
+                valuelist.append(elementID_cut)
+                valuelist.append(elementContenttag)
+                print(valuelist)
+                duplicateElement( screenshotId, valuelist)
+                rewritePage(currentUser, myfile, screenshotId, screenshotName, 'load')
+                print("duplicated")
             elif str(request.POST['name']) == 'addElement':
                 print('We are running addElement POST')
                 req = request.POST
