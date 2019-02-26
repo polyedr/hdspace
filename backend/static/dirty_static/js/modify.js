@@ -605,12 +605,11 @@ function activateWidget(id) {
 
 function duplicateElement(newElement){
 
-    console.log('Button clicked, newElement = ' + newElement);
+        ///console.log('Button clicked, newElement = ' + newElement);
         var duplicateelementtag = document.getElementById(newElement).tagName;
 
         var elementContent = document.getElementById(newElement).innerHTML;
-        console.log('elementContent = ' +  elementContent);
-
+        ///console.log('elementContent = ' +  elementContent);
 
         $.ajax({
                 type : 'POST',
