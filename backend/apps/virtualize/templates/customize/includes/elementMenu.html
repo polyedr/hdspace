@@ -44,7 +44,7 @@
                             <div id="fontTitleContainer">
                                 <h5 id="fontTitle" class="elemMenuText">Font</h5>
                             </div>
-                            <div id="fontContents" style="margin-top: -9px; display: grid; grid-template-columns: auto auto auto; grid-column-gap: 2%">
+                            <div id="fontContentContainer" style="margin-top: -9px; display: grid; grid-template-columns: auto auto; grid-column-gap: 2%">
                                 <div id="fontStyleContainer" style="display: grid; grid-template-columns: auto auto auto">
                                     <div style="float:left;display: inline;margin-left:13px;margin-top:10px;" class="fontInputElements">
                                         <input id="favcolor" onchange="changeElementt(document.getElementById('test').innerHTML,'fontColor')" type="text" style="width:40px;background:transparent;padding:1px 2px 1px 2px;margin-top:2px;"/>
@@ -142,7 +142,7 @@
                                     Placement
                                 </h5>
                                 <br/>
-                                <input id="editzindex" class="input-elements" onchange="changeElementTools('zindex');" type="number" name="edit-z-index" placeholder="z-index" max="998" style="width: 50px;height:23px;margin-top: -20px; margin-left: 13px;">
+                                <input id="editzindex" class="input-elements" onchange="changeElementTools('zindex');" type="number" name="edit-z-index" placeholder="z-index" max="998" style="width: 50px;height:23px;margin-top: -19px; margin-left: 13px;">
                             </div>
                             <div id="changeLink">
                                         <h5 class="elemMenuText">
@@ -152,7 +152,7 @@
                                             <input name="name" type="hidden" value="updateURL">
                                             <input id="idForURL" name="id" type="hidden" value="">
                                             <input id="hrefURL" name="hrefURL" type="hidden" value="">
-                                            <div id="displayOnLinkHover" class="dropdown" style="float:left;display: inline;margin-left: 21px;">
+                                            <div id="displayOnLinkHover" class="dropdown" style="margin-top: -9px;">
                                     <button class="btn btn-default btn-sm dropbtn" data-toggle="dropdown" style="border-radius: 3px;
                                         padding-bottom: 5px;
                                         padding-top: 5px;
@@ -223,53 +223,25 @@
                             </div>
                         </div>
                         </div>
-                    <div id="replaceMenu" class="col-xs-2" style="padding-right: 0px;padding-bottom: 10px;border:none;display:none;min-width:60px;padding-left:0px;text-align:center;">
-                        <h5 class="elemMenuText">
-                            Replace
-                        </h5>
-                        <br/>
-                        <div class="dropdown">
-                            <button class="btn btn-default btn-sm dropbtn" data-toggle="dropdown" name="AddElement" style="padding-top: 4px;
-                                padding-bottom: 1px;
-                                margin: 6px 0 0 0px;
-                                min-height:25px;">
-                                <span class="fa fa-plus"><b class="caret" style="margin-left: 5px;"></b></span>
-                            </button>
-                            <ul class="dropdown-menu animated fadeInRight m-t-xs" id="newE" type="button"
-                                style="min-width:100px;max-width:100px;margin-top: -1px;-webkit-appearance: unset;left: -56px;">
-                                <form enctype="multipart/form-data" method="POST" name="addElement" style="margin:0px">
-                                    {% csrf_token %}
-                                    <li style="height:20px" onclick="popupImageCropBox()">
-                                        <div style="width: 100%;height: 16.67px;cursor: pointer;margin: 0%;
-                                            position: absolute;transform: translate(0%,0%);display:inline;text-align:center;">
-                                            <i class="fa fa-plus-circle absolute" style="font-size:100%; color: #b5b4b4;position: absolute;top: 50%;
-                                                        left: 30%;transform: translate(-50%,-40%);display: inline" aria-hidden="true"></i>
-                                            <p style="display: inline">Add</p>
-                                        </div>
-                                    </li>
-                                </form>
-                            </ul>
+                        <div id="editBarChartBarColours" class="col-xs-3" style="padding-right: 0px;padding-bottom: 5px;min-width:86px;padding-left:0px;text-align:center;display: none;">
+                            <h5 style="float:left;color: #18a689;margin-bottom: 0px;margin-left:25px;">
+                                Bar Chart Bar
+                            </h5>
+                            <br/>
+                            <div id="barChartBarColors"  style="float:left;display: inline;margin-left:29px;">
+                                <input id="editBarchartBarColoursINPUT" onchange="changeElementTools('barChartBar');" type="text" name="edit-barChartColor" style="width:40px;background:transparent;padding:1px 2px 1px 2px;margin-top:8px;">
+                            </div>
+                        </div>
+                        <div id="editBarChartBackground" class="col-xs-3" style="padding-right: 0px;padding-bottom: 5px;min-width:86px;padding-left:0px;text-align:center; display: none;">
+                            <h5 style="float:left;color: #18a689;margin-bottom: 0px;margin-left:25px;">
+                                Bar Chart BG
+                            </h5>
+                            <br/>
+                            <div id="barChartBGColor"  style="float:left;display: inline;margin-left:29px;">
+                                <input id="editBarchartBackgroundINPUT" onchange="changeElementTools('barChartBG');" type="text" name="edit-barChartBGColor" style="width:40px;background:transparent;padding:1px 2px 1px 2px;margin-top:8px;">
+                            </div>
                         </div>
                     </div>
-                    <div id="editBarChartBarColours" class="col-xs-3" style="padding-right: 0px;padding-bottom: 5px;min-width:86px;padding-left:0px;text-align:center;display: none;">
-                        <h5 style="float:left;color: #18a689;margin-bottom: 0px;margin-left:25px;">
-                            Bar Chart Bar
-                        </h5>
-                        <br/>
-                        <div id="barChartBarColors"  style="float:left;display: inline;margin-left:29px;">
-                            <input id="editBarchartBarColoursINPUT" onchange="changeElementTools('barChartBar');" type="text" name="edit-barChartColor" style="width:40px;background:transparent;padding:1px 2px 1px 2px;margin-top:8px;">
-                        </div>
-                    </div>
-                    <div id="editBarChartBackground" class="col-xs-3" style="padding-right: 0px;padding-bottom: 5px;min-width:86px;padding-left:0px;text-align:center; display: none;">
-                        <h5 style="float:left;color: #18a689;margin-bottom: 0px;margin-left:25px;">
-                            Bar Chart BG
-                        </h5>
-                        <br/>
-                        <div id="barChartBGColor"  style="float:left;display: inline;margin-left:29px;">
-                            <input id="editBarchartBackgroundINPUT" onchange="changeElementTools('barChartBG');" type="text" name="edit-barChartBGColor" style="width:40px;background:transparent;padding:1px 2px 1px 2px;margin-top:8px;">
-                        </div>
-                    </div>
-            </div>
         </div>
     </div>
      <div class="ibox-tools" style="display:none;">

@@ -1278,104 +1278,107 @@ function loadCurBackground(){
     $("#backgroundColorChange").spectrum("set", rgb2hex(style.getPropertyValue('background-color')));
     // document.getElementById('backgroundColorChange').value = rgb2hex(style.getPropertyValue('background-color'));
 }
+
+/**
+ * This controls what element options are displayed on the Element menu.
+ *  - It depends on the type of element selected by the user
+ * @param elm - The element on the device selected by the user
+ */
 function setTools(elm) {
-    console.log(9999999999);
+    console.log("setTools()");
     console.log(elm);
+
+    var backgroundColorSelector = document.getElementById('editbackgroundcolor');
+    var borderContentsContainer = document.getElementById('borderContentsContainer');
+    var fontContentContainer = document.getElementById('fontContentContainer');
+    var link = document.getElementById("changeLink");
+
+    // To prevent any previous disabling from persisting
+    enableAll();
+
+    //Paragraph or Hyperlink
     if (elm.tagName == 'P' || elm.tagName == 'A') {
 
-//____________________________________________________________________________________________________________________//
+        backgroundColorSelector.style.display = '';
+        borderContentsContainer.style.display = 'grid';
+        fontContentContainer.style.display = 'grid';
 
-        document.getElementById('editBarChartBarColours').style.display = 'none';
-        document.getElementById('editBarChartBackground').style.display = 'none';
+    }//Icons or Frames
+    else if (elm.tagName == 'IMG' || elm.tagName == 'DIV') {
 
-//____________________________________________________________________________________________________________________//
+        backgroundColorSelector.style.display = '';
+        borderContentsContainer.style.display = 'grid';
+        disableContainer(fontContentContainer);
+        link.style.display = '';
 
-        document.getElementById('editbackgroundcolor').style.display = 'none';
-        document.getElementById('editbordercolorHidder').style.display = 'none';
-//        document.getElementById('removeeditbackgroundcolor').style.display = 'none';
-        document.getElementById('borderColorMenu').style.display = 'none';
-        document.getElementById('editborderradius').style.display = 'none';
-        document.getElementById('textEditTools').style.display = '';
-        document.getElementById('fontContainer').style.display = '';
-        document.getElementById('textAlignId').style.display = 'inline';
+    }//Text Input (Text Boxes)
+    else if (elm.tagName == 'INPUT'){
+         backgroundColorSelector.style.display = '';
+         borderContentsContainer.style.display = 'grid';
+         fontContentContainer.style.display = 'grid';
+         disableLink(link);
     }
-    else if (elm.tagName == 'IMG') {
+    //_______________________________________________________________________________________________________________//
+    document.getElementById('editBarChartBarColours').style.display = 'none';
+    document.getElementById('editBarChartBackground').style.display = 'none';
+    //____________________________________________________________________________________________________________________//
 
-//____________________________________________________________________________________________________________________//
-
-        document.getElementById('editBarChartBarColours').style.display = 'none';
-        document.getElementById('editBarChartBackground').style.display = 'none';
-
-//____________________________________________________________________________________________________________________//
-
-        document.getElementById('editbackgroundcolor').style.display = 'none';
-        document.getElementById('editbordercolorHidder').style.display = '';
-//        document.getElementById('removeeditbackgroundcolor').style.display = 'none';
-        document.getElementById('borderColorMenu').style.display = '';
-        document.getElementById('editborderradius').style.display = '';
-        document.getElementById('textEditTools').style.display = 'none';
-        document.getElementById('fontContainer').style.display = 'none';
-        document.getElementById('textAlignId').style.display = 'none';
+//     OLD FRAME (DIV) CODE
+//     else if (elm.tagName == 'DIV') {
+//         if( document.getElementById(elm.id).className == "class" + document.getElementById(elm.id).id.substring(2) + " main widget" ){
+//
+//             document.getElementById('editbackgroundcolor').style.display = 'none';
+//             document.getElementById('editbordercolorHidder').style.display = 'none';
+//             document.getElementById('borderColorMenu').style.display = 'none';
+//             document.getElementById('editborderradius').style.display = 'none';
+//             document.getElementById('textEditTools').style.display = 'none';
+//             document.getElementById('fontContainer').style.display = 'none';
+//             document.getElementById('textAlignId').style.display = 'none';
+//         }else{
+//
+//         }
+//             backgroundColorSelector.style.display = '';
+//             borderContentsContainer.style.display = 'grid';
+//             disableElement(fontContentsContainer);
+//             link.style.display = '';
+//         }
+// //     }
+//
+//     else {
+//         document.getElementById('editbackgroundcolor').style.display = '';
+//         document.getElementById('editbordercolorHidder').style.display = '';
+// //        document.getElementById('removeeditbackgroundcolor').style.display = '';
+//         document.getElementById('borderContentsContainer').style.display = 'grid';
+//         document.getElementById('editborderradius').style.display = '';
+//         document.getElementById('textEditTools').style.display = '';
+//         document.getElementById('fontContentContainer').style.display = 'grid';
+//         document.getElementById('textAlignId').style.display = 'inline';
+//     }
+    function disableLink (element){
+        element.style.pointerEvents = 'none';
+        element.style.opacity = '0.5';
+        $(element).find("h5").css("color", "darkgray");
     }
-    else if (elm.tagName == 'DIV') {
-        if( document.getElementById(elm.id).className == "class" + document.getElementById(elm.id).id.substring(2) + " main widget" ){
-
-//____________________________________________________________________________________________________________________//
-
-            document.getElementById('editBarChartBarColours').style.display = '';
-            document.getElementById('editBarChartBackground').style.display = '';
-
-//____________________________________________________________________________________________________________________//
-
-            document.getElementById('editbackgroundcolor').style.display = 'none';
-            document.getElementById('editbordercolorHidder').style.display = 'none';
-            document.getElementById('borderColorMenu').style.display = 'none';
-            document.getElementById('editborderradius').style.display = 'none';
-            document.getElementById('textEditTools').style.display = 'none';
-            document.getElementById('fontContainer').style.display = 'none';
-            document.getElementById('textAlignId').style.display = 'none';
-        }else{
-
-//____________________________________________________________________________________________________________________//
-
-            document.getElementById('editBarChartBarColours').style.display = 'none';
-            document.getElementById('editBarChartBackground').style.display = 'none';
-
-//____________________________________________________________________________________________________________________//
-
-            document.getElementById('editbackgroundcolor').style.display = 'none';
-            document.getElementById('editbordercolorHidder').style.display = 'none';
-            document.getElementById('borderColorMenu').style.display = 'none';
-            document.getElementById('editborderradius').style.display = 'none';
-            document.getElementById('textEditTools').style.display = 'none';
-            document.getElementById('fontContainer').style.display = 'none';
-            document.getElementById('textAlignId').style.display = 'none';
-        }
+    function disableContainer (element){
+        element.style.pointerEvents = 'none';
+        element.style.opacity = '0.5';
+        $(element).parent().find("h5").css("color", "darkgray");
     }
-    else {
-
-//____________________________________________________________________________________________________________________//
-
-        document.getElementById('editBarChartBarColours').style.display = 'none';
-        document.getElementById('editBarChartBackground').style.display = 'none';
-
-//____________________________________________________________________________________________________________________//
-
-        document.getElementById('editbackgroundcolor').style.display = '';
-        document.getElementById('editbordercolorHidder').style.display = '';
-//        document.getElementById('removeeditbackgroundcolor').style.display = '';
-        document.getElementById('borderColorMenu').style.display = '';
-        document.getElementById('editborderradius').style.display = '';
-        document.getElementById('textEditTools').style.display = '';
-        document.getElementById('fontContainer').style.display = '';
-        document.getElementById('textAlignId').style.display = 'inline';
+    function enableAll(){
+        enableLink(link);
+        enableContainer(backgroundColorSelector);
+        enableContainer(fontContentContainer);
+        enableContainer(borderContentsContainer);
     }
-
-    if((elm.tagName == 'IMG')||(elm.tagName == 'A')||(elm.tagName == 'P')||(elm.tagName == 'BUTTON')) {
-       document.getElementById('changeLink').style.display = '';
+    function enableLink (element){
+        element.style.pointerEvents = '';
+        element.style.opacity = '';
+        $(element).find("h5").css("color", "#18a689");
     }
-    else{
-        document.getElementById('changeLink').style.display = 'none';
+    function enableContainer (element){
+        element.style.pointerEvents = '';
+        element.style.opacity = '';
+        $(element).parent().find("h5").css("color", "#18a689");
     }
 }
 function showAllTools(){
@@ -1387,10 +1390,10 @@ function showAllTools(){
     document.getElementById('editbackgroundcolor').style.display = '';
     document.getElementById('editbordercolorHidder').style.display = '';
 //    document.getElementById('removeeditbackgroundcolor').style.display = '';
-    document.getElementById('borderColorMenu').style.display = '';
+    document.getElementById('borderContentsContainer').style.display = 'grid';
     document.getElementById('editborderradius').style.display = '';
     document.getElementById('textEditTools').style.display = '';
-    document.getElementById('fontContainer').style.display = '';
+    document.getElementById('fontContentContainer').style.display = 'grid';
     document.getElementById('changeLink').style.display = '';
     enableTable('showAllTools');
 }
@@ -1629,8 +1632,9 @@ function disableTable(){
     document.getElementById('databaseProjects').style.display = 'none';
     $("#predictionMenuBarGray span strong").text("Select an element to activate");
 
-    document.getElementById('fontContainer').style.display = 'none';
-    document.getElementById('borderColorMenu').style.display = 'none';
+    document.getElementById('fontContentContainer').style.display = 'none';
+    document.getElementById('borderContentsContainer').style.display = 'none';
+    // document.getElementById('borderContainer').classList.add("disableContainer");
     document.getElementById('replaceMenu').style.display = 'none';
     document.getElementById('backgroundTableMenu').style.display = 'none';
     document.getElementById('changeLink').style.display = 'none';
@@ -1651,8 +1655,8 @@ function enableTable(elementId) {
 
 //____________________________________________________________________________________________________________________//
 
-    document.getElementById('fontContainer').style.display = '';
-    document.getElementById('borderColorMenu').style.display = '';
+    document.getElementById('fontContentContainer').style.display = 'grid';
+    document.getElementById('borderContentsContainer').style.display = 'grid';
     document.getElementById('replaceMenu').style.display = '';
     document.getElementById('backgroundTableMenu').style.display = '';
     document.getElementById('changeLink').style.display = '';
@@ -1881,10 +1885,10 @@ function widgetsCall(elm) {
                 document.getElementById('editbackgroundcolor').attr('style', 'padding-right: 0px; padding-bottom: 5px; border-right: 1px solid rgb(234, 236, 238); min-width: 86px; padding-left: 0px; text-align: center; visibility: visible;');
                 // document.getElementById('editbordercolor').attr('style', 'padding-right: 0px; padding-bottom: 5px; border-right: 1px solid rgb(234, 236, 238); min-width: 86px; padding-left: 0px; text-align: center; visibility: visible;');
                 document.getElementById('editbordercolor').style.visibility = 'visible';
-                document.getElementById('borderColorMenu').style.visibility = 'visible';
+                document.getElementById('borderContentsContainer').style.visibility = 'visible';
                 document.getElementById('editborderradius').style.visibility = 'visible';
                 document.getElementById('textEditTools').style.visibility = 'visible';
-                document.getElementById('fontContainer').style.visibility = 'visible';
+                document.getElementById('fontContentContainer').style.visibility = 'visible';
                 document.getElementById('textAlignId').style.visibility = 'visible';
             },100);
         }

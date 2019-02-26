@@ -3767,15 +3767,13 @@ div#tabsT ul li a{
 div.tab-content-2T div.tab-content{
     height: 100%;
 }
-/*Initially applied to all content-containers.
-  Reapplied when the user selects another menu tab  */
+/*Hides the content container*/
 .content-container{
     visibility: hidden;
     height: 100%;
 }
 
-/*When a user clicks one of the menu tabs, this is applied to the related content container.
-  It structures the content container to display items in rows of 5 */
+/* Displays the content the user selects in a grid; where content is displayed in rows of 5 */
 .content-container-on{
     visibility: visible;
     overflow-y: scroll;
@@ -3784,17 +3782,46 @@ div.tab-content-2T div.tab-content{
     grid-auto-rows: 100%;
     height: 100%;
 }
-/*All container items have an Adevi green border*/
-.content-item{
+.content-message{
+    height: 100%;
+    width: 100%;
+    background-color: #a7b1c24a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.content-item-center{
+    height: 100%;
+    width: 100%;
+    border: solid 1px #f3f3f4;
+    background-color: #a7b1c24a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.content-item-center:hover{
     height: 100%;
     width: 100%;
     border: solid 1px #18a689;
+    background-color: #a7b1c285;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+.content-image{
+    height: auto;
+    width: 95%;
+    max-height: 100%;
+}
+.content-frame{
+    height: 20%;
+    width: 55%;
+}
+.content-textbox{
+    width: 55%;
 }
 
-.content-image{
-    height: 100%;
-    width: 100%;
-}
 
 
 
