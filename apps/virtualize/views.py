@@ -726,17 +726,51 @@ def main_request_core(request):
             return HttpResponse(json.dumps(arraySuggestL4), content_type="application/json")
 
         elif str(request.GET['name']) == 'getWidgetPaths':
-            widgetPaths = get_all_widget_paths()
+            widgetPaths = get_widget_paths()
             import json
             return HttpResponse(json.dumps(widgetPaths), content_type="application/json")
 
+        elif str(request.GET['name']) == 'getChartPaths':
+            chartPaths = get_chart_paths()
+            import json
+            return HttpResponse(json.dumps(chartPaths), content_type="application/json")
+
+        elif str(request.GET['name']) == 'getButtonsStyling':
+            all_button_styling = get_all_button_frame_textbox_styles('buttons', 'button', projectName, userId)
+            import json
+            return HttpResponse(json.dumps(all_button_styling), content_type="application/json")
+
+        elif str(request.GET['name']) == 'getFrameStyling':
+            all_frame_styling = get_all_button_frame_textbox_styles('frames', 'frame', projectName, userId)
+            import json
+            return HttpResponse(json.dumps(all_frame_styling), content_type="application/json")
+
+        elif str(request.GET['name']) == 'getTextboxStyling':
+            all_textbox_styling = get_all_button_frame_textbox_styles('textBoxes', 'textbox', projectName, userId)
+            import json
+            return HttpResponse(json.dumps(all_textbox_styling), content_type="application/json")
+
+        elif str(request.GET['name']) == 'getParagraphStyling':
+            all_paragraph_styling = get_all_paragraph_hyperlink_styles('paragraphs', 'paragraph', projectName, userId)
+            import json
+            return HttpResponse(json.dumps(all_paragraph_styling), content_type="application/json")
+
+        elif str(request.GET['name']) == 'getTextAreaStyling':
+            all_textArea_styling = get_all_paragraph_hyperlink_styles('textArea', 'text-area', projectName, userId)
+            import json
+            return HttpResponse(json.dumps(all_textArea_styling), content_type="application/json")
+
+        elif str(request.GET['name']) == 'getHyperlinkStyling':
+            all_hyperlink_styling = get_all_paragraph_hyperlink_styles('hyperLinks', 'hyperlink', projectName, userId)
+            import json
+            return HttpResponse(json.dumps(all_hyperlink_styling), content_type="application/json")
 
 
 
         elif str(request.GET['name']) == 'saveMove':
             print('We are running saveMove GET')
             state = request.GET
-            fontColor = state['fontColor']
+            fontColor = state['fgetButtonsStylingontColor']
             fontSize = state['fontSize']
             fontFamily = state['fontFamily']
             borderColor = state['borderColor']
@@ -1393,4 +1427,71 @@ def rewritePage(currentUser, myfile, screenshotId, screenshotName, state):
         metaCustom(currentUser, myfile, screenshotId, state)
         print('Inside Meta Rewriting PAge')
     return "rewrited"
+
+# Returns a list of all existing styles for an element in the current project.
+# Background:
+#   Elements identified during segmentation are stored in their own collection.
+#   Elements created by the user are stored in the newElements collection.
+#
+#   Therefore, two pieces of information are needed to get all styling for a given element.
+#       a) collection name - To get the styling of the element created during segmentation
+#       b) type of element - To get the styling of the element created by the user
+#
+# Params:
+#   element_type (String) - The element type in the newElements colllection to get styling for
+#   collection_name (String) - The collection name of the element to get styling for
+# Return:
+#   A list of dictionaries, where each dict contains styling for one element.
+def get_all_button_frame_textbox_styles(collection_name, element_type, current_project_name, current_user_id):
+    currentProject = get_project(current_project_name, current_user_id)
+    projectsScreenshotsList = currentProject['screenshots']
+
+    shapeSegmentationIdList = get_project_shapes_segmentation_id(projectsScreenshotsList, collection_name)
+    elementClassIdList = get_element_class_id(projectsScreenshotsList, element_type)
+
+    # The styling of the element identified during segmenetation (set of str objects)
+    shape_styles_set = get_styles(shapeSegmentationIdList)
+    # The styling of the element created by the user (set of str objects)
+    element_styles_set = get_new_styles(elementClassIdList)
+
+    # All styling from segmentation and user (set of str objects); Union to remove potential duplicates
+    all_styles_set = shape_styles_set.union(element_styles_set)
+
+    import json
+    all_styles = []
+    # for each element in set, convert str objects back to JSON and insert into list
+    # Since sets are not JSON serializable
+    for style in all_styles_set:
+        all_styles.append(json.loads(style))
+
+    return all_styles
+
+
+def get_all_paragraph_hyperlink_styles(collection_name, element_type, current_project_name, current_user_id):
+    currentProject = get_project(current_project_name, current_user_id)
+    projectsScreenshotsList = currentProject['screenshots']
+
+    ocrSegmentationIdList = get_project_ocr_segmentation_id(projectsScreenshotsList, collection_name)
+    elementClassIdList = get_element_class_id(projectsScreenshotsList, element_type)
+
+    # The styling of the element identified during segmenetation (set of str objects)
+    ocr_styles_set = get_styles(ocrSegmentationIdList)
+    # The styling of the element created by the user (set of str objects)
+    element_styles_set = get_new_styles(elementClassIdList)
+
+    # All styling from segmentation and user (set of str objects); Union to remove potential duplicates
+    all_styles_set = ocr_styles_set.union(element_styles_set)
+
+    import json
+    all_styles = []
+    # for each element in set, convert str objects back to JSON and insert into list
+    # Since sets are not JSON serializable
+    for style in all_styles_set:
+        all_styles.append(json.loads(style))
+
+    return all_styles
+
+
+
+
 
