@@ -7283,13 +7283,12 @@ def metaCustom(currentUser, myFile, screenshot_id, state):
 
 
 def duplicateElement( screenshot_id, valuelist):
-
+    # get current date and data from array posted
     date = datetime.now(pytz.timezone('Australia/Melbourne'))
     elementcontent = valuelist[0].strip()
     elementtag = str(valuelist[2]).lower()
-    print("Element tag is "+ elementtag)
 
-
+    #convert html tag to element type
     if elementtag == "p":
         elementtag = str("paragraph")
     elif elementtag == "input":
@@ -7301,16 +7300,13 @@ def duplicateElement( screenshot_id, valuelist):
 
 
 
-
-    print("Element type is " + elementtag)
+    # check element type and run the function with each type
     if elementtag == "button":
 
         mydb = pymongo.MongoClient("mongodb://localhost:27017/")["MeduzaDb"]
         db_newStyle = mydb["newStyle"]
         db_newElement = mydb["newElements"]
         db_element_position = db_newElement.find_one({"class_id": valuelist[1]})
-        print("db_element_position")
-        print(db_element_position)
         document = db_newStyle.find_one({"element_id": valuelist[1]})
         if document == None:
             document = db.styles.find_one({"element_id": valuelist[1]})
@@ -7346,21 +7342,17 @@ def duplicateElement( screenshot_id, valuelist):
         col = collection.find().sort([('timeStamp', -1)]).limit(1)
         element_id = ''
         for item in col:
-            print('look over here: ' + str(item))
             element_id = str(item['class_id'])
 
         save_new_style(element_id, str(fontSize_new), fontFamily_new, fontColor_new, bordercolor_new, borderradius_new, backGroundColor_new,
                            textAlign_new, 'unset', '', zindex)
 
     elif elementtag == "frame":
-        print('meta running with action: ' + elementcontent)
 
         mydb = pymongo.MongoClient("mongodb://localhost:27017/")["MeduzaDb"]
         db_newStyle = mydb["newStyle"]
         db_newElement = mydb["newElements"]
         db_element_position = db_newElement.find_one({"class_id": valuelist[1]})
-        print("db_element_position")
-        print(db_element_position)
         document = db_newStyle.find_one({"element_id": valuelist[1]})
         if document == None:
             document = db.styles.find_one({"element_id": valuelist[1]})
@@ -7380,13 +7372,10 @@ def duplicateElement( screenshot_id, valuelist):
         location_values.append(location_sets['y0'])
         location_values.append(location_sets['x1'])
         location_values.append(location_sets['y1'])
-        print("location_values = ")
-        print(location_values)
 
 
         classid = str(ObjectId())
 
-        print('framecheck')
         type = "frame"
         label = ''
 
@@ -7400,13 +7389,11 @@ def duplicateElement( screenshot_id, valuelist):
         col = collection.find().sort([('timeStamp', -1)]).limit(1)
         element_id = ''
         for item in col:
-            print('look over here: ' + str(item))
             element_id = str(item['class_id'])
         save_new_style(element_id, fontSize_new, fontFamily_new, fontColor_new, bordercolor_new, borderradius_new, backGroundColor_new, textAlign_new,
                        'unset', '', 'auto')
 
     elif elementtag == "hyperlink":
-        print("under deployment")
         h = db['hyperLinks'].find_one({'screenshot_id': str(screenshot_id), 'status': 'active'})
 
         mydb = pymongo.MongoClient("mongodb://localhost:27017/")["MeduzaDb"]
@@ -7424,8 +7411,6 @@ def duplicateElement( screenshot_id, valuelist):
         bordercolor_new = document['borderColor']
         borderradius_new = document['borderRadius']
         print("fontSize" + fontSize_new)
-
-        print('meta running with action: ' + elementcontent)
 
         locations_location = db['hyperLinks'].find_one({'seg_id': valuelist[1]})
         location_sets = locations_location['location']
@@ -7451,7 +7436,6 @@ def duplicateElement( screenshot_id, valuelist):
         col = collection.find().sort([('timeStamp', -1)]).limit(1)
         element_id = ''
         for item in col:
-            print('look over here: ' + str(item))
             element_id = str(item['class_id'])
 
         save_new_style(element_id, fontSize_new, fontFamily_new, fontColor_new, bordercolor_new, borderradius_new, backGroundColor_new, textAlign_new,
@@ -7459,9 +7443,6 @@ def duplicateElement( screenshot_id, valuelist):
 
     elif elementtag == "paragraph":
         p = db['paragraphs'].find_one({'screebshot_id': str(screenshot_id), 'state': 'active'})
-        print("paragraph")
-        print(p)
-        print('meta running with action: ' + elementtag)
 
         locations_location = db['paragraphs'].find_one({'seg_id': valuelist[1]})
         location_sets = locations_location['location']
@@ -7471,8 +7452,6 @@ def duplicateElement( screenshot_id, valuelist):
         location_values.append(location_sets['y0'])
         location_values.append(location_sets['x1'])
         location_values.append(location_sets['y1'])
-        print("location_values = ")
-        print(location_values)
 
         mydb = pymongo.MongoClient("mongodb://localhost:27017/")["MeduzaDb"]
         db_style = mydb["styles"]
@@ -7497,9 +7476,7 @@ def duplicateElement( screenshot_id, valuelist):
         location_values.append(location_sets['y0'])
         location_values.append(location_sets['x1'])
         location_values.append(location_sets['y1'])
-        print("location_values = ")
-        print(location_values)
-        
+
 
         classid = str(ObjectId())
         width = 20
@@ -7519,15 +7496,12 @@ def duplicateElement( screenshot_id, valuelist):
         col = collection.find().sort([('timeStamp', -1)]).limit(1)
         element_id = ''
         for item in col:
-            print('look over here: ' + str(item))
             element_id = str(item['class_id'])
 
         save_new_style(element_id, fontSize_new, fontFamily_new, fontColor_new, bordercolor_new, borderradius_new, backGroundColor_new, textAlign_new,
                        'unset', '', zIndex)
 
     elif elementtag == "textbox":
-        print("under deployment")
-        print('meta running with action: ' + elementcontent)
 
         t = db['textBoxes'].find_one({'seg_id': str(screenshot_id), 'status': 'active'})
 
@@ -7580,15 +7554,11 @@ def duplicateElement( screenshot_id, valuelist):
         col = collection.find().sort([('timeStamp', -1)]).limit(1)
         element_id = ''
         for item in col:
-            print('look over here: ' + str(item))
             element_id = str(item['class_id'])
-        print("fontSize_new = "+fontSize_new)
         save_new_style(element_id, fontSize_new, fontFamily_new, fontColor_new, bordercolor_new, borderradius_new, backGroundColor_new, textAlign_new,
                        textIndent_new, '', zIndex)
 
     elif elementtag == "textarea":
-        print("under deployment")
-        print('meta running with action: ' + elementcontent)
         t = db['textBoxes'].find_one({'sedmentation_id': str(screenshot_id), 'status': 'active'})
         classid = str(ObjectId())
         name = 'New Text Area'
@@ -7627,14 +7597,12 @@ def duplicateElement( screenshot_id, valuelist):
         col = collection.find().sort([('timeStamp', -1)]).limit(1)
         element_id = ''
         for item in col:
-            print('look over here: ' + str(item))
             element_id = str(item['class_id'])
 
         save_new_style(element_id, fontSize_new, fontFamily_new, fontColor_new, bordercolor_new, borderradius_new, backGroundColor_new, textAlign_new,
                        textIndent_new, '', zIndex)
 
     elif elementtag == "image":
-        print("image duplication under deployment")
 
         locations_location = db['pictures'].find_one({'seg_id': valuelist[1]})
         if locations_location == None:
@@ -7646,8 +7614,6 @@ def duplicateElement( screenshot_id, valuelist):
         location_values.append(location_sets['y0'])
         location_values.append(location_sets['x1'])
         location_values.append(location_sets['y1'])
-        print("location_values = ")
-        print(location_values )
 
         classid = str(ObjectId())
         type = "image"

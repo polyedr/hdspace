@@ -1138,18 +1138,19 @@ def main_request_core(request):
                 import json
                 return HttpResponse(json.dumps(data), content_type="application/json")
             elif str(request.POST['name']) == 'duplicateElement':
-                print('We are running duplicateElment POST')
                 req = request.POST
+                #get data from ajax post and format them
                 elementContenttag = str(req['elementhtmltag'])
                 elementContent = str(req['elementContent'])
                 elementID = str(req['elementID'])
                 elementID_cut = elementID[2:]
-                print('elementtag = '+ elementContenttag)
                 print(elementID_cut)
+                #put the data into an array
                 valuelist = [elementContent]
                 valuelist.append(elementID_cut)
                 valuelist.append(elementContenttag)
                 print(valuelist)
+                # call the duplicate function in metaCustom
                 duplicateElement( screenshotId, valuelist)
                 rewritePage(currentUser, myfile, screenshotId, screenshotName, 'load')
                 print("duplicated")
