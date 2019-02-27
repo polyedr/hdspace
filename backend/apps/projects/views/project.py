@@ -21,7 +21,9 @@ from apps.projects.models import (
     ProjectMember, ProjectTask, ProjectActivity
 )
 from apps.accounts.models import Profile
-from apps.projects.utils.project_db_synchronization import create_project_data_db, delete_project_data_db, select_project
+from apps.projects.utils.project_db_synchronization import create_project_data_db, delete_project_data_db, \
+    select_project, project_screens, get_screen_name, get_screen_image
+from apps.virtualize.models import get_project_page_pro_by_project, get_project_page_css_pro_by_project
 
 __all__ = (
     "DashboardView",
@@ -138,12 +140,18 @@ class ProjectView(LoginRequiredMixin, TemplateView):
 class ProjectPreviewView(LoginRequiredMixin, TemplateView):
     template_name = "projects/preview.html"
 
+    print("I'm inside preview get")
+
     def get(self, request, *args, **kwargs):
         context = self.get_context_data()
         screen_id = kwargs.pop("pk")
 
         screen = ProjectScreen.objects.get(id=screen_id)
         project = screen.project
+        print('Preview Project')
+        print(project.id)
+        screenshots = project_screens(project.id)
+        print(screenshots)
         member, created = ProjectMember.objects.get_or_create(
             role=request.user.profile.role,
             project=project,
@@ -156,6 +164,8 @@ class ProjectPreviewView(LoginRequiredMixin, TemplateView):
                 thread=thread,
                 user=member,
             )
+
+
 
         context["screen_events"] = ScreenEvent.objects.filter(screen=screen_id)
         context["screen_comments"] = ScreenComment.objects.filter(screen=screen_id)
@@ -171,6 +181,12 @@ class ProjectPreviewView(LoginRequiredMixin, TemplateView):
         context["project_member_user"] = ProjectMember.objects.get(user=request.user, project=project)
         context["activities"] = ProjectActivity.objects.filter(project=project).order_by('-created')
         context["thread"] = Thread.ordered(Thread.inbox(context["project_member_user"], project))[0]
+        context["screenHTMLpro"] = get_project_page_pro_by_project(screenshots, project.user_id)
+        context["screen_name"] = get_screen_name(screen_id)
+        context["screenCSSpro"] = get_project_page_css_pro_by_project(get_screen_name(screen_id), project.user_id)
+        context["screen_url"] = get_screen_image(get_screen_name(screen_id), project.user_id, screen_id)
+
+
 
         return self.render_to_response(context)
 

@@ -84,7 +84,7 @@
                 },
                 success: function (response) {
                     showNotifications("success", response.msg);
-                    location.href='/projects/'
+                    location.href='/projects/';
                 },
                 error: function (xhr, status, error) {
                     var response = jQuery.parseJSON(xhr.responseText);

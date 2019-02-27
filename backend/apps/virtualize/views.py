@@ -14,6 +14,8 @@ from apps.virtualize.utils.elementUtils import *
 from apps.virtualize.utils.screenshotUtils import *
 from apps.virtualize.utils.styleTransfer import propertyTransfer
 from apps.virtualize.utils.widgetsUtils import move_widget
+from apps.projects.forms import ScreenUploadForm
+from apps.projects.models import ScreenAssignee
 
 coco_model_global = []
 tensorflow_model_global = []
@@ -35,10 +37,12 @@ def main_request_core(request):
     colorIsBeingTransferd = colorisTransferd(userId)
     workflowBeingMagic = workflowRun(userId)
     suggestionImgC = ''
+    screen_obj = None
     last_screen_details = getLatestScreenshot(userId)
     if last_screen_details is not None:
         projectName = last_screen_details['projectName']
         screenshotId = last_screen_details['screenshot_id']
+        screen_obj = getScreenObject(str(screenshotId))
     else:
         projectName = ''
         screenshotId = ''
@@ -52,10 +56,12 @@ def main_request_core(request):
         screenshotName = 'None at this point'
         page = 'None at this point'
         myfile = None
+        screen_object = None
         print('this user does not have any screenshot yet.')
     else:
         myfile = str(getScreenshotName('screenshots', userId, str(screenshotId)))
         page = str(getScreenshotName('screenshots', userId, str(screenshotId))[int(len(str(currentUser))) + 7:])
+        screen_object = getScreenObject(str(screenshotId))
 
     if request.GET:
         print('GET REQUEST!')
@@ -79,7 +85,7 @@ def main_request_core(request):
             saveMetrix(secHeight, secWidth, widthLayouts, heightLayouts, userId, screenshotId, projectName, device)
             return html_render('customize/page2.html', currentUser, page, projectName, request, screenshotName,
                                userId, screenshotId, layoutIsBeingTransferd, colorIsBeingTransferd, workflowBeingMagic,
-                               html, css, 'none')
+                               html, css, screen_obj)
 
         if str(request.GET['name']) == 'displayElements':
             action = str(request.GET['action'])
@@ -88,6 +94,7 @@ def main_request_core(request):
 
             addElement(currentUser, myfile, screenshotId, action)
             date = datetime.now(pytz.timezone('Australia/Melbourne'))
+            screenshot_id = screenshotId
 
             if action == '1':
                 print('meta running with action: ' + action)
@@ -819,7 +826,7 @@ def main_request_core(request):
             rewritePage(currentUser, myfile, screenshot_id, screenshotName, 'load')
             return html_render('customize/page2.html', currentUser, page, projectName, request, screenshotName, userId,
                                screenshotId, layoutIsBeingTransferd, colorIsBeingTransferd, workflowBeingMagic, html,
-                               css, suggestionImgC)
+                               css, suggestionImgC, screen_obj)
 
         elif 'deletePage' in request.POST:
             print('We are running deletePage POST')
@@ -853,6 +860,8 @@ def main_request_core(request):
             print('We are running changeElement POST')
             id = str(request.POST['id'])[2:]
             type = str(request.POST['type'])
+            print(id)
+            print(type)
 
             button = findTypeDb('buttons', id)
             frame = findTypeDb('frames', id)
@@ -892,7 +901,7 @@ def main_request_core(request):
                 elementChild = findChildDb('textBoxes', id)
                 curType = 'textBoxes'
 
-            element = update_element_type(element, elementChild, curType)
+            element = update_element_type(element, elementChild, type)
             insertEvent(element[0]['screenshot_id'], element[0]['seg_id'], curType, 'changedElement', curType, type)
             screenshotId = element[0]['screenshot_id']
             rewritePage(currentUser, myfile, screenshotId, screenshotName, 'load')
@@ -1075,6 +1084,7 @@ def main_request_core(request):
                 print(image_type)
 
             projectName = getLatestScreenshot(userId)['projectName']
+            project_id = get_project_id(projectName, userId)
             filename = fs.save('users/' + str(currentUser) + '/pages/' + projectName + '/' + myfile.name, myfile)
             name = filename[int(len(str(currentUser)) + 7):-4]
 
@@ -1112,6 +1122,23 @@ def main_request_core(request):
                 screenshotName = str(getScreenshotName('screenshots', userId, str(screenshotId))[
                                      int(len(str(currentUser))) + 7:-4])
                 myfile = str(getScreenshotName('screenshots', userId, str(screenshotId)))
+
+                # Including projectscreen Dbs for sharing purposes
+                project = Project.objects.get(pk=int(project_id))
+                screen_object = ProjectScreen.objects.create(
+                    details_id=ObjectId(screenshotId),
+                    project=project,
+                )
+                ScreenAssignee.objects.create(
+                    screen=screen_object,
+                    user=request.user,
+                )
+                ProjectActivity.objects.create(
+                    type=ProjectActivity.ADDED_SCREEN,
+                    member=request.user,
+                    project=project,
+                )
+                # <<-------------------------------------------->>
                 rewritePage(currentUser, myfile, screenshotId, screenshotName, 'save')
             else:
                 print('lol error')
@@ -1323,7 +1350,7 @@ def main_request_core(request):
 
         return html_render('customize/page2.html', currentUser, page, projectName, request, screenshotName, userId,
                            screenshotId, layoutIsBeingTransferd, colorIsBeingTransferd, workflowBeingMagic, html, css,
-                           suggestionImgC)
+                           suggestionImgC, screen_object)
     try:
         rewritePage(currentUser, myfile, screenshotId, screenshotName, 'load')
     except:
@@ -1331,7 +1358,7 @@ def main_request_core(request):
 
     return html_render('customize/page2.html', currentUser, page, projectName, request, screenshotName, userId,
                        screenshotId, layoutIsBeingTransferd, colorIsBeingTransferd, workflowBeingMagic, html, css,
-                       suggestionImgC)
+                       suggestionImgC, screen_object)
 
 @csrf_exempt
 def projects(request):

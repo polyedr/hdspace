@@ -18,6 +18,20 @@
                 <li style="width: 80px;float: right;"><a id="tab-8"><i class="fa fa-share-alt fa-2x"></i> </a></li>
                 <li class="center" style="width: 165px;height: 50px;float: right;"><b id="tab3DA" class="colorHoverPrototype" onclick="unloadPrototype()">Prototype Mode</b></li>
             </ul>
+        <div>
+                        <button type="button" class="share-button">Share Prototype</button>
+                  <a href="" class="facebook-share">
+                    <i class="fa fa-facebook-square fa-2x" style="color:#3B5998"></i>
+                  </a>
+                  <a href="" class="linkedin-share">
+                    <i class="fa fa-linkedin-square fa-2x" style="color:#007bb6"></i>
+                  </a>
+                  <a href=""  class="twitter-share">
+                     <i class="fa fa-twitter-square fa-2x" style="color:#4099FF"></i>
+                  </a>
+                            {% include "projects/includes/share-screen.html" with preview_url=screen_obj.get_preview_url %}
+
+                        </div>
             <div id="containerTitlePro" class="ibox-title center" style="border-width: 0; border-bottom: 1px solid #e7eaec;padding:15px;">
                 <p id="testPro" class="hidden" style="color: #dd6b55;">None selected</p>
                 <p id="statusOfLink" class="" style="text-align: center;margin: 0;color: #dd6b55;"><strong>NOT LINKED TO ANY SCREENS</strong></p>

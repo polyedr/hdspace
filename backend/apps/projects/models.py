@@ -39,6 +39,7 @@ class Project(TimeStampedModel):
     user = models.ForeignKey(get_user_model(), related_name="user", on_delete=models.CASCADE)
     members = models.ManyToManyField(get_user_model(), related_name="members", through="ProjectMember")
 
+
     @staticmethod
     def generate_preview_token():
         return secrets.token_urlsafe(16)
@@ -64,13 +65,14 @@ class ProjectScreen(TimeStampedModel):
         (SCREEN_APPROVED, "APPROVED"),
     )
 
-    image = models.ImageField(upload_to=utils.get_file_path, blank=True)
+    # image = models.ImageField(upload_to=utils.get_file_path, blank=True)
     status = models.CharField(choices=SCREEN_STATUS, default=SCREEN_IN_PROGRESS, max_length=32)
-
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    details_id = models.CharField(max_length=32)
 
     def get_image(self):
-        return self.image.url
+        # return self.image.url
+        return True
 
     def get_screen_url(self):
         return reverse("projects:screen", kwargs={"project_id": self.project.id, "screen_id": self.pk})
