@@ -7,6 +7,7 @@ from bson.objectid import ObjectId
 from datetime import datetime
 
 from django.shortcuts import render
+from django.urls import reverse
 
 from apps.virtualize.display import set_html_layout, set_html_color
 from apps.virtualize.utils.elementUtils import search_new_element, getStylesDb
@@ -863,7 +864,40 @@ def getProjectPagePro(screenshotName, currentUser):
     return html
 
 
-def getProjectPageAndCss(screenshotName, currentUser, project_name):
+def get_project_page_pro_by_project(screens, current_user_id):
+    print('retrieve the Pro correct html for page2')
+    var1 = []
+    html = []
+    user = db_main.accounts_user.find_one({'_id': current_user_id})
+    # userId1 = user['_id']
+    try:
+        # sc_id = db.screenshots.find_one({'pageName': screenshotName})
+        # project1 = db.tempPage.find_one({'screenshot_id': str(sc_id['_id'])})
+        # project_name = project1['projectName']
+        # scree_id = db_main.projects_project.find_one({'user_id': ObjectId(userId1), 'name': str(project1['projectName'])})
+        # arSc = scree_id['screenshots']
+        for id1 in screens:
+            screen = db.screenshots.find_one({'_id': ObjectId(str(id1))})
+            if str(screen['status']) != 'inactive':
+                var1.append([screen['image'][int(len(str(user['username']))) + 7:-4], screen['pageName'],
+                             screen['screenName']])
+
+        import codecs
+        for page in var1:
+            pagehtml1 = codecs.open('./static/users/' + user['username'] + '/' + page[0]
+                                    + '/testingPro.html',mode='r', encoding='UTF-8')
+            screenName = page[2]
+            html.append([screenName, pagehtml1.read()])
+            pagehtml1.close()
+
+    except:
+        html = ''
+    print('HTML')
+    print(html)
+    return html
+
+
+def getProjectPageAndCss(screenshotName, currentUser):
     print('retrieve the correct html and css for page2')
     try:
         import codecs
@@ -879,6 +913,12 @@ def getProjectPageAndCss(screenshotName, currentUser, project_name):
         html = ''
         css = ''
     return css
+
+def get_project_page_css_pro_by_project(screen_name, user):
+    user_name = db_main.accounts_user.find_one({'_id':ObjectId(user)})['username']
+    css = getProjectPageAndCss(screen_name, user_name)
+    return css
+
 
 
 def getProjects(userId):
@@ -1102,7 +1142,7 @@ def searchEnquiry(key):
 
 
 def html_render(url, currentUser, page, projectName, request, screenshotName, userId,screenId, layoutIsBeingTransferd,
-                colorIsBeingTransferd, workflowBeingMagic, html, css, ScreenSIDFDJANGO):
+                colorIsBeingTransferd, workflowBeingMagic, html, css, ScreenSIDFDJANGO, screen_obj):
 
     project_id = get_project_id(projectName, userId)
 
@@ -1121,7 +1161,7 @@ def html_render(url, currentUser, page, projectName, request, screenshotName, us
                       'screenHTMLpro': getProjectPagePro(screenshotName, currentUser),
                       'screenHTMLwork': getProjectPageWork(userId),
                       'screenHTMLsuggestions': getProjectPageSuggestions(ScreenSIDFDJANGO, currentUser),
-                      'screenCSSpro': getProjectPageAndCss(screenshotName, currentUser, projectName),
+                      'screenCSSpro': getProjectPageAndCss(screenshotName, currentUser),
                       'screenCSSwork': getProjectPageWorkCSS(userId, projectName, screenshotName),
                       'colorTransferUploadIMG': str(currentUser) + '/pages/' + str(screenshotName)
                                                 + '/colorTransfer/styles/colorTransfer.jpg',
@@ -1155,7 +1195,10 @@ def html_render(url, currentUser, page, projectName, request, screenshotName, us
                       "projects": Project.objects.filter(user=request.user),
                       "search_user_form": SearchUserForm(),
                       "activities": ProjectActivity.objects.filter(project=project_id).order_by('-created'),
-                      "project_name": projectName
+                      "project_name": projectName,
+                      # Testing share prototype
+                      # ---------------------
+                      'screen_obj': screen_obj
 
                   }
                   )
@@ -1214,6 +1257,7 @@ def get_user_pk(userId):
     return db_main.accounts_user.find_one({'_id': userId})['_id']
 
 # Returns a list of segmentation ids of all the shapes in this project; identified during segmentation
+
 def get_project_shapes_segmentation_id(project_screenshots_id_list, collection_name):
     segmentation_id_list = []
     collection = db[collection_name]
@@ -1230,6 +1274,7 @@ def get_project_shapes_segmentation_id(project_screenshots_id_list, collection_n
     return segmentation_id_list
 
 # Returns a list of segmentation ids of all the ocr in this project; identified during segmentation
+
 def get_project_ocr_segmentation_id(project_screenshots_id_list, collection_name):
     segmentation_id_list = []
     collection = db[collection_name]
@@ -1260,6 +1305,7 @@ def get_element_class_id(project_screenshots_id_list,element_type):
 
     return class_id_list
 
+
 def get_styles(segmentationIdList):
     import json
     styles_set = set()
@@ -1279,6 +1325,7 @@ def get_styles(segmentationIdList):
                     "text-align": this_style['textAlign'],
                     "text-indent": this_style['textIndent'],
                 }
+
                 #Convert dictionary to str object and add to set
                 styles_set.add(json.dumps(new_style))
 
