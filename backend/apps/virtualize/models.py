@@ -1017,15 +1017,23 @@ def getProjectPageWorkCSS(userId,projectName, currentScreen):
         css.append('')
     return path
 # Returns a list of all widget paths
-def get_all_widget_paths():
-    widgetsWithPaths = db.saveWidgets.find({
-        "$and": [{"widgetLocation": {"$exists": True}}, {"widgetLocation": {"$ne": "null"}}]
-    })
-    allWidgetPaths = []
-    if widgetsWithPaths is not None:
-        for widget in widgetsWithPaths:
-            allWidgetPaths.append(widget['widgetLocation'])
-    return allWidgetPaths
+def get_widget_paths():
+    widgets = db.saveWidgets.find({"widgetName": {"$in": ["calendar-1","calendar-2","calendar-3","calendar-4",
+                                                                   "map-2","map-3","map-4","map-5"]}})
+    paths = []
+    if widgets is not None:
+        for widget in widgets:
+            paths.append(widget['widgetLocation'])
+    return paths
+
+def get_chart_paths():
+    charts = db.saveWidgets.find({"widgetName": {"$in": ["bar-2","bar-3","pie-4","pie-5","piechart-1"]}})
+    paths = []
+    if charts is not None:
+        for chart in charts:
+            paths.append(chart['widgetLocation'])
+    return paths
+
 
 
 def getSuggestion(userId, projectName):
@@ -1245,54 +1253,53 @@ def get_user_pk(user_id):
     else:
         return db_main.accounts_user.find_one({'_id': user_id})['_id']
 
+def get_user_pk(userId):
+    return db_main.accounts_user.find_one({'_id': userId})['_id']
 
-
-        # Returns a list of segmentation ids of all the shapes in this project; identified during segmentation
-
+# Returns a list of segmentation ids of all the shapes in this project; identified during segmentation
 
 def get_project_shapes_segmentation_id(project_screenshots_id_list, collection_name):
     segmentation_id_list = []
     collection = db[collection_name]
     if project_screenshots_id_list is not None:
-        # For all screenshots in the project
+        #For all screenshots in the project
         for screenshot_id in project_screenshots_id_list:
-            # find all the shapes that belong to this screenshot
-            screenshots_shapes = collection.find({"type": "shapes", "screenshot_id": screenshot_id})
+            #find all the shapes that belong to this screenshot
+            screenshots_shapes = collection.find({"type": "shapes","screenshot_id": screenshot_id})
             if screenshots_shapes is not None:
-                # and add their seg_id to the list.
+                #and add their seg_id to the list.
                 for shape in screenshots_shapes:
                     segmentation_id_list.append(shape['seg_id'])
 
     return segmentation_id_list
 
-    # Returns a list of segmentation ids of all the ocr in this project; identified during segmentation
-
+# Returns a list of segmentation ids of all the ocr in this project; identified during segmentation
 
 def get_project_ocr_segmentation_id(project_screenshots_id_list, collection_name):
     segmentation_id_list = []
     collection = db[collection_name]
     if project_screenshots_id_list is not None:
-        # For all screenshots in the project
+        #For all screenshots in the project
         for screenshot_id in project_screenshots_id_list:
-            # find all the ocr that belong to this screenshot
-            screenshots_shapes = collection.find({"type": "ocr", "screenshot_id": screenshot_id})
+            #find all the ocr that belong to this screenshot
+            screenshots_shapes = collection.find({"type": "ocr","screenshot_id": screenshot_id})
             if screenshots_shapes is not None:
-                # and add their seg_id to the list.
+                #and add their seg_id to the list.
                 for shape in screenshots_shapes:
                     segmentation_id_list.append(shape['seg_id'])
 
     return segmentation_id_list
 
 
-def get_element_class_id(project_screenshots_id_list, element_type):
+def get_element_class_id(project_screenshots_id_list,element_type):
     class_id_list = []
     if project_screenshots_id_list is not None:
-        # For all screenshots in the project
+        #For all screenshots in the project
         for screenshot_id in project_screenshots_id_list:
-            # find all the elenments (of type : "element_type") that belong to this screenshot
+            #find all the elenments (of type : "element_type") that belong to this screenshot
             screenshots_elements = db.newElements.find({"type": element_type, "screenshot_id": screenshot_id})
             if screenshots_elements is not None:
-                # and add their class_id to the list
+                #and add their class_id to the list
                 for element in screenshots_elements:
                     class_id_list.append(element['class_id'])
 
@@ -1307,7 +1314,7 @@ def get_styles(segmentationIdList):
             this_style = db.styles.find_one({"segmentation_id": segmentationId})
 
             if this_style is not None:
-                # Must be same as get_new_styles() functions, new_style dictionary.
+                #Must be same as get_new_styles() functions, new_style dictionary.
                 new_style = {
                     "font-family": this_style['fontFamily'],
                     "font-size": this_style['fontSize'],
@@ -1318,11 +1325,11 @@ def get_styles(segmentationIdList):
                     "text-align": this_style['textAlign'],
                     "text-indent": this_style['textIndent'],
                 }
-                # Convert dictionary to str object and add to set
+
+                #Convert dictionary to str object and add to set
                 styles_set.add(json.dumps(new_style))
 
     return styles_set
-
 
 def get_new_styles(classIdList):
     import json
@@ -1349,3 +1356,4 @@ def get_new_styles(classIdList):
             styles_set.add(json.dumps(new_style))
 
     return styles_set
+
