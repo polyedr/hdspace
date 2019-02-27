@@ -337,7 +337,6 @@ function updateStyle(newElement,type){
     }
     $.ajax({
         type:'GET',
-        url: '/index/',
         data: {
             'elemId': newElement,
             'fontColor':fcolor,
@@ -603,6 +602,40 @@ function activateWidget(id) {
 
     }
 }
+
+function duplicateElement(newElement){
+
+        ///get element Information from Html
+        var duplicateelementtag = document.getElementById(newElement).tagName;
+
+        var elementContent = document.getElementById(newElement).innerHTML;
+        ///Post ajax about the elements
+        $.ajax({
+                type : 'POST',
+                url : '/index/',
+                name : 'duplicateElement',
+                data : {
+                    'name' : 'duplicateElement',
+                    'elementContent': elementContent,
+                    'elementID': newElement,
+                    'elementhtmltag': duplicateelementtag
+                   },
+                success: function () {
+                    console.log("POST duplicateElement");
+                },
+                error: function () {
+                    console.log("POST Failed");
+
+                }
+
+
+            });
+        reloadScreens();
+
+
+
+}
+
 function lockElement(newElement) {
     if (newElement == 'None selected') {
         console.log('select something first');
