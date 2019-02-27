@@ -220,12 +220,11 @@ $(document).ready(function () {
         }
     });
 
-    $("#widgets_liT").click(function(){
-        var widgetsContentContainerId = "widgetsHidderT";
-        var widgetsContentContainer = document.getElementById(widgetsContentContainerId);
+    var contentContainerId = "widgetsHidderT";
+    var contentContainer = document.getElementById(contentContainerId);
 
-        //Deny if this tab's content container is already being displayed
-        if(widgetsContentContainer.className !== "content-container-on"){
+    $("#widgets_liT").click(function(){
+
             hideContentContainer();
             $.ajax({
                 type: 'GET',
@@ -235,112 +234,311 @@ $(document).ready(function () {
                 },
                 success: function(widgetPaths){
                     //Check if there are widgets to display
-                    if(widgetPaths){
+                    if(widgetPaths && widgetPaths.length){
                         // generate widget content
                         var numberOfWidgetPaths = widgetPaths.length - 1;
                         var newContent = "";
                         var path = "";
                         for(var i = 0; i <= numberOfWidgetPaths ; i++){
                             path =  "../" + widgetPaths[i];
-                            newContent += "<div class='content-item'><img class=\"content-image\" src="+ path +"></div>";
+                            newContent += "<div class='content-item-center'><img class='content-image' src="+ path +"></div>";
                         }
-                        widgetsContentContainer.innerHTML = newContent;
-                        displayContentContainer(widgetsContentContainerId);
+                        contentContainer.innerHTML = newContent;
+                        displayContentContainer();
                     }
                     //Its empty - No widgets to display.
                     else{
-                       //TODO: Can notify on the widgets content container that there are "No widgets to display"
+                        displayContentContainerMessage("No Widgets to display");
                     }
                 }
             });
-        }
     });
 
-    // TODO: Add functionality to GET -> Generate -> Insert new content into it's content container. Similar to $("#widgets_liT").click
+    // TODO: Add functionality to GET -> Generate -> Insert new content into it's content container.
     $("#screens_liT").click(function(){
                 hideContentContainer();
-                displayContentContainer("screensHidderT");
+                // displayContentContainer();
     });
     
-    // TODO: Add functionality to GET -> Generate -> Insert new content into it's content container. Similar to $("#widgets_liT").click
     $("#buttons_liT").click(function(){
-        hideContentContainer();
-        displayContentContainer("buttonHidderT");
+
+            hideContentContainer();
+            $.ajax({
+                type: 'GET',
+                url: '/index/',
+                data: {
+                    'name': 'getButtonsStyling'
+                },
+                success: function (buttonStyles) {
+                    if(buttonStyles && buttonStyles.length){
+                        var numberOfStyles = buttonStyles.length - 1;
+                        var newContent = "";
+                        for(var i = 0; i <= numberOfStyles; i++){
+                            newContent += "<div class='content-item-center'>" +
+                                "<button type='button' style='" +
+                                "font-family:" + buttonStyles[i]['font-family'] +
+                                "; font-size:" + buttonStyles[i]['font-size'] +
+                                "; color:" + buttonStyles[i]['color'] +
+                                "; border-color:" + buttonStyles[i]['border-color'] +
+                                "; border-radius:" + buttonStyles[i]['border-radius'] + "px" +
+                                "; background-color:" + buttonStyles[i]['background-color'] +
+                                "; text-align:" + buttonStyles[i]['text-align'] +
+                                "; text-indent:" + buttonStyles[i]['text-indent'] + ";' >Button</button></div>";
+                        }
+                        contentContainer.innerHTML = newContent;
+                        displayContentContainer();
+                    }
+                    else{
+                         displayContentContainerMessage("No Buttons to display");
+                    }
+
+                }
+
+            });
+
     });
 
-    // TODO: Add functionality to GET -> Generate -> Insert new content into it's content container. Similar to $("#widgets_liT").click
     $("#frames_liT").click(function(){
         hideContentContainer();
-        displayContentContainer("frameHidderT");
+        $.ajax({
+            type: 'GET',
+            url: '/index/',
+            data: {
+                "name": "getFrameStyling"
+            },
+            success: function(frameStyle){
+                if(frameStyle && frameStyle.length){
+                    var numberOfStyles = frameStyle.length - 1;
+                    var newContent = "";
+                    for(var i = 0; i <= numberOfStyles; i++){
+                            newContent += "<div class='content-item-center'>" +
+                            "<div class='content-frame' style='" +
+                            "font-family:" + frameStyle[i]['font-family'] +
+                            "; font-size:" + frameStyle[i]['font-size'] +
+                            "; color:" + frameStyle[i]['color'] +
+                            "; border: 1px solid " + frameStyle[i]['border-color'] +
+                            "; border-radius:" + frameStyle[i]['border-radius'] + "px" +
+                            "; background-color:" + frameStyle[i]['background-color'] +
+                            "; text-align:" + frameStyle[i]['text-align'] +
+                            "; text-indent:" + frameStyle[i]['text-indent'] + ";' ></div></div>";
+                    }
+                    contentContainer.innerHTML = newContent;
+                    displayContentContainer();
+                }
+                else{
+                    displayContentContainerMessage("No Frames to display");
+                }
+            }
+
+        });
+
     });
 
-    // TODO: Add functionality to GET -> Generate -> Insert new content into it's content container. Similar to $("#widgets_liT").click
     $("#hyperlinks_liT").click(function(){
         hideContentContainer();
-        displayContentContainer("hyperlinksHidderT");
+        $.ajax({
+            type: 'GET',
+            url: '/index/',
+            data: {
+                "name": "getHyperlinkStyling"
+            },
+            success: function(hyperlinkStyle) {
+                if (hyperlinkStyle && hyperlinkStyle.length) {
+                    var numberOfStyles = hyperlinkStyle.length - 1;
+                    var newContent = "";
+                    for (var i = 0; i <= numberOfStyles; i++) {
+                            newContent += "<div class='content-item-center'>" +
+                                "<a class='' style='" +
+                                "font-family:" + hyperlinkStyle[i]['font-family'] +
+                                "; font-size:" + hyperlinkStyle[i]['font-size'] +
+                                "; color:" + hyperlinkStyle[i]['color'] +
+                                "; border: solid 1px " + hyperlinkStyle[i]['border-color'] +
+                                "; border-radius:" + hyperlinkStyle[i]['border-radius'] + "px" +
+                                "; background-color:" + hyperlinkStyle[i]['background-color'] +
+                                "; text-align:" + hyperlinkStyle[i]['text-align'] +
+                                "; text-indent:" + hyperlinkStyle[i]['text-indent'] +
+                                ";" + "'>Hyperlink</a></div>";
+                    }
+                    contentContainer.innerHTML = newContent;
+                    displayContentContainer();
+                }
+                else {
+                    displayContentContainerMessage("No Hyperlinks to display");
+                }
+
+            }
+        });
     });
 
-    // TODO: Add functionality to GET -> Generate -> Insert new content into it's content container. Similar to $("#widgets_liT").click
     $("#paragraphs_liT").click(function(){
         hideContentContainer();
-        displayContentContainer("paragraphsHidderT");
+        $.ajax({
+            type: 'GET',
+            url: '/index/',
+            data: {
+                "name": "getParagraphStyling"
+            },
+            success: function(paragraphStyle){
+                if(paragraphStyle && paragraphStyle.length){
+                    var numberOfStyles = paragraphStyle.length - 1;
+                    var newContent = "";
+                    for(var i = 0; i <= numberOfStyles; i++){
+                            newContent += "<div class='content-item-center'>" +
+                            "<div style='" +
+                            "font-family:" + paragraphStyle[i]['font-family'] +
+                            "; font-size:" + paragraphStyle[i]['font-size'] +
+                            "; color:" + paragraphStyle[i]['color'] +
+                            "; background-color:" + paragraphStyle[i]['background-color'] +
+                            "; text-align:" + paragraphStyle[i]['text-align'] +
+                            "; text-indent:" + paragraphStyle[i]['text-indent'] + ";' >Paragraph</div></div>";
+                    }
+                    contentContainer.innerHTML = newContent;
+                    displayContentContainer();
+                }
+                else{
+                    displayContentContainerMessage("No Paragraphs to display")
+                }
+            }
+
+        });
     });
 
-    // TODO: Add functionality to GET -> Generate -> Insert new content into it's content container. Similar to $("#widgets_liT").click
     $("#textBoxes_liT").click(function(){
         hideContentContainer();
-        displayContentContainer("texBoxesHidderT");
+        $.ajax({
+            type: 'GET',
+            url: '/index/',
+            data: {
+                "name": "getTextboxStyling"
+            },
+            success: function(textboxStyle){
+                if(textboxStyle && textboxStyle.length){
+                    var numberOfStyles = textboxStyle.length - 1;
+                    var newContent = "";
+                    for(var i = 0; i <= numberOfStyles; i++){
+                            newContent += "<div class='content-item-center'>" +
+                            "<div class='content-textbox' style='" +
+                            "font-family:" + textboxStyle[i]['font-family'] +
+                            "; font-size:" + textboxStyle[i]['font-size'] +
+                            "; color:" + textboxStyle[i]['color'] +
+                            "; border: solid 1px " + textboxStyle[i]['border-color'] +
+                            "; border-radius:" + textboxStyle[i]['border-radius'] + "px" +
+                            "; background-color:" + textboxStyle[i]['background-color'] +
+                            "; text-align:" + textboxStyle[i]['text-align'] +
+                            "; text-indent:" + textboxStyle[i]['text-indent'] + ";' >Textbox</div></div>";
+                    }
+                    contentContainer.innerHTML = newContent;
+                    displayContentContainer();
+                }
+                else{
+                    displayContentContainerMessage("No Text boxes to display");
+                }
+            }
+
+        });
     });
 
-    // TODO: Add functionality to GET -> Generate -> Insert new content into it's content container. Similar to $("#widgets_liT").click
     $("#textAreas_liT").click(function(){
         hideContentContainer();
-        displayContentContainer("textAreasHidderT");
+        $.ajax({
+            type: 'GET',
+            url: '/index/',
+            data: {
+                "name": "getTextAreaStyling"
+            },
+            success: function(textAreaStyle) {
+                if (textAreaStyle && textAreaStyle.length) {
+                    var numberOfStyles = textAreaStyle.length - 1;
+                    var newContent = "";
+                    for (var i = 0; i <= numberOfStyles; i++) {
+                            newContent += "<div class='content-item-center'>" +
+                                "<textarea class='' style='" +
+                                "font-family:" + textAreaStyle[i]['font-family'] +
+                                "; font-size:" + textAreaStyle[i]['font-size'] +
+                                "; color:" + textAreaStyle[i]['color'] +
+                                "; border: solid 1px " + textAreaStyle[i]['border-color'] +
+                                "; border-radius:" + textAreaStyle[i]['border-radius'] + "px" +
+                                "; background-color:" + textAreaStyle[i]['background-color'] +
+                                "; text-align:" + textAreaStyle[i]['text-align'] +
+                                "; text-indent:" + textAreaStyle[i]['text-indent'] +
+                                "; resize: none " + "' readonly>Text area</textarea></div>";
+                    }
+                    contentContainer.innerHTML = newContent;
+                    displayContentContainer();
+                }
+                else {
+                    displayContentContainerMessage("No Text areas to display");
+                }
+
+            }
+        });
     });
 
-    // TODO: Add functionality to GET -> Generate -> Insert new content into it's content container. Similar to $("#widgets_liT").click
     $("#graphics_liT").click(function(){
         hideContentContainer();
-        displayContentContainer("graphicsHidderT");
+        $.ajax({
+                type: 'GET',
+                url:'/index/',
+                data: {
+                    'name': 'getChartPaths'
+                },
+                success: function(chartPaths){
+                    //Check if there are widgets to display
+                    if(chartPaths && chartPaths.length){
+                        // generate widget content
+                        var numberOfWidgetPaths = chartPaths.length - 1;
+                        var newContent = "";
+                        var path = "";
+                        for(var i = 0; i <= numberOfWidgetPaths ; i++){
+                            path =  "../" + chartPaths[i];
+                            newContent += "<div class='content-item-center'><img class='content-image' src="+ path +"></div>";
+                        }
+                        contentContainer.innerHTML = newContent;
+                        displayContentContainer();
+                    }
+                    //Its empty - No widgets to display.
+                    else{
+                        displayContentContainerMessage("No Widgets to display");
+                    }
+                }
+            });
+
     });
 
-    // TODO: Add functionality to GET -> Generate -> Insert new content into it's content container. Similar to $("#widgets_liT").click
+    // TODO: Add functionality to GET -> Generate -> Insert new content into it's content container.
     $("#images_liT").click(function(){
         hideContentContainer();
-        displayContentContainer("imagesHidderT");
+
     });
 
 });
-    var validContentContainerIds = new Set([
-            "widgetsHidderT","screensHidderT","buttonHidderT","frameHidderT","hyperlinksHidderT",
-            "paragraphsHidderT","texBoxesHidderT","textAreasHidderT","graphicsHidderT","imagesHidderT"
-        ]);
+
+    /**
+     * Displays a message on the Add Element Menu's content container
+     * @param message - The string to display
+     */
+    function displayContentContainerMessage(message){
+            if(message && typeof message === "string"){
+            document.getElementById("widgetsHidderT").innerHTML = "<div class='content-message'>" + message + "</div>";
+            displayContentContainer();
+            }
+            else{
+                console.log("Message is not string type. Use a string to display a message on the content container");
+            }
+        }
 
     /**
      * Displays a content container on the add element menu
-     * @param contentContainerId - The id (String) of the content container to display
      */
-    function displayContentContainer(contentContainerId){
-            var contentContainer = $("#" + contentContainerId);
-            if(validContentContainerIds.has(contentContainerId)){
-                contentContainer.removeClass('content-container').addClass('content-container-on');
-                document.getElementById("menuContainer").setAttribute("data-displayed-container",contentContainer[0].id);
-            }
-            else {
-                console.log("id= " + contentContainerId + ", does not match a valid content-container. Check you entered a valid id");
-            }
+    function displayContentContainer(){
+            $("#widgetsHidderT").removeClass('content-container').addClass('content-container-on');
         }
 
     /**
      * Hides the content container currently being displayed
      */
     function hideContentContainer(){
-        var displayedContentContainerId = document.getElementById("menuContainer").getAttribute("data-displayed-container");
-
-        //Only hide when a content container is currently being displayed
-        if (displayedContentContainerId){
-           $("#" + displayedContentContainerId).removeClass('content-container-on').addClass('content-container');
-        }
+           $("#widgetsHidderT").removeClass('content-container-on').addClass('content-container');
     }
 
 
@@ -348,10 +546,7 @@ $(document).ready(function () {
      * This highlights the screen on the screen selector that is currently being displayed on the device
      */
     function highlightScreenOnDevice(screenshotId){
-
-        //The screenshot id of the screen displayed on the device
-        var screenIdDisplayed = screenshotId;
-        var screenElement = getScreenElementOnScreenSelector(screenIdDisplayed);
+        var screenElement = getScreenElementOnScreenSelector(screenshotId);
         var screenElementChildToHighlight = screenElement.find(".tab-pane.active.imageOutliner");
         screenElementChildToHighlight.addClass("highlight");
     }
