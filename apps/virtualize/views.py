@@ -37,12 +37,12 @@ def main_request_core(request):
     colorIsBeingTransferd = colorisTransferd(userId)
     workflowBeingMagic = workflowRun(userId)
     suggestionImgC = ''
-    screen_object = None
+    screen_obj = None
     last_screen_details = getLatestScreenshot(userId)
     if last_screen_details is not None:
         projectName = last_screen_details['projectName']
         screenshotId = last_screen_details['screenshot_id']
-        screen_object = getScreenObject(str(screenshotId))
+        screen_obj = getScreenObject(str(screenshotId))
     else:
         projectName = ''
         screenshotId = ''
@@ -85,7 +85,7 @@ def main_request_core(request):
             saveMetrix(secHeight, secWidth, widthLayouts, heightLayouts, userId, screenshotId, projectName, device)
             return html_render('customize/page2.html', currentUser, page, projectName, request, screenshotName,
                                userId, screenshotId, layoutIsBeingTransferd, colorIsBeingTransferd, workflowBeingMagic,
-                               html, css, 'none')
+                               html, css, screen_obj)
 
         if str(request.GET['name']) == 'displayElements':
             action = str(request.GET['action'])
@@ -792,7 +792,7 @@ def main_request_core(request):
             rewritePage(currentUser, myfile, screenshot_id, screenshotName, 'load')
             return html_render('customize/page2.html', currentUser, page, projectName, request, screenshotName, userId,
                                screenshotId, layoutIsBeingTransferd, colorIsBeingTransferd, workflowBeingMagic, html,
-                               css, suggestionImgC)
+                               css, suggestionImgC, screen_obj)
 
         elif 'deletePage' in request.POST:
             print('We are running deletePage POST')

@@ -95,7 +95,7 @@ def get_screen_image(screen_name, user_id, screen_id):
         var1.append([screen['image'][int(len(str(user['username']))) + 7:-4], screen['pageName'],
                      screen['screenName']])
     url_origin = "./static/users/" + user['username'] + "/" + var1[0][0] + "/testingPro.html"
-    url_target = "./media/users/" + user['username'] + "/" + var1[0][0] + "/" + "pro.jpg"
+    url_target = "./media/images/projects/projectscreen/" + var1[0][2] + "pro.jpg"
     print("url_origin")
     print(url_origin)
     print(var1[0][0])

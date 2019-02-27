@@ -124,13 +124,16 @@ def metaCustom(currentUser, myFile, screenshot_id, state):
                     classid + ' main" id="id' + classid + 'pro">' + label + '</button>\n')
                 pagehtml2.write(
                     '<button type="button" linkvalue= "' + link + '" class="class' +
-                    classid + ' main" id="id' + classid + 'work" style="font-size: '+str(float(fontSize)/float(5))+'vw;">' + label + '</button>\n')
+                    classid + ' main" id="id' + classid + 'work" style="font-size: '+str(float(fontSize)/float(5))
+                    +'vw;">' + label + '</button>\n')
                 pagehtml3.write(
                     '<button type="button" linkvalue= "' + link + '" class="class' +
                     classid + ' main" id="id' + classid + 'suggestions">' + label + '</button>\n')
                 pagecss.write(
-                    '.class' + classid + '{height:' + height + '%; width:' + width + '%; border-radius: ' + borderRadius + 'px;\
-                            border: 1px solid ' + borderColor + '; background-color: ' + bgcolor + '; font-size: ' + fontSize + 'vw; color: ' + fontColor + ';\
+                    '.class' + classid + '{height:' + height + '%; width:' + width + '%; border-radius: ' +
+                    borderRadius + 'px;\
+                            border: 1px solid ' + borderColor + '; background-color: ' + bgcolor + '; font-size: '
+                    + fontSize + 'vw; color: ' + fontColor + ';\
                             position:absolute; left:' + positionL + '%; top:' + positionT +
                     '%; font-family: ' + fontFamily + '; z-index:' + zIndex + ';}' + ' ' + '#id' + classid + '{}\n')
                 # pageJs.write('<script type="text/javascript">\n document.getElementById("' +
