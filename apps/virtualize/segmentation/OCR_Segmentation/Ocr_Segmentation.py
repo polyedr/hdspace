@@ -6,9 +6,9 @@ import cv2
 from nms import nms
 import numpy as np
 
-from virtualize.segmentation.OCR_Segmentation import utils
-from virtualize.segmentation.OCR_Segmentation.decode import decode
-from virtualize.segmentation.OCR_Segmentation.draw import drawPolygons, drawBoxes
+from apps.virtualize.segmentation.OCR_Segmentation import utils
+from apps.virtualize.segmentation.OCR_Segmentation.decode import decode
+from apps.virtualize.segmentation.OCR_Segmentation.draw import drawPolygons, drawBoxes
 
 
 def text_detection(image, model, min_confidence, width, height):

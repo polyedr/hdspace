@@ -17,7 +17,7 @@ from scipy import ndimage
 from skimage.filters import scharr
 from skimage.measure import label, regionprops
 from skimage.morphology import skeletonize
-from virtualize.segmentation.OCR_Segmentation.Ocr_Segmentation import text_detection
+from apps.virtualize.segmentation.OCR_Segmentation.Ocr_Segmentation import text_detection
 
 
 class regionR:
