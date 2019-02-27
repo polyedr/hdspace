@@ -16,5 +16,5 @@ def cnnModelFirst():
        })
     print('cnnModelTest inserted')
 
-#newcnnModel1Test4Bar()
-#cnnModelFirst()
+# newcnnModel1Test4Bar()
+# cnnModelFirst()
