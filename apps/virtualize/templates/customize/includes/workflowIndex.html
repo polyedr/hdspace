@@ -335,11 +335,7 @@
                 }
             });
 
-            {#else {#}
-            {#    connection=conn;#}
-            {#    customInputBox=   conn.getOverlay('customOverlay-input-box');#}
-            {#    customDisplayBox=conn.getOverlay('customOverlay-display-box');#}
-            {#//}#}
+
         }
     </script>
 
@@ -362,7 +358,6 @@
                         length: 11,
                         id: "ARROW",
                         events: {
-                            {#click:function() { alert("you clicked on the arrow overlay")}#}
                         }
                     }],
                     ["Custom", {
@@ -513,12 +508,7 @@
 
 
         instance.registerConnectionType("basic", basicType);
-{#        {% for li in aniStyles %}#}
-{#            // #2390c8#}
-{#            console.log("linkColor");#}
-{#            console.log({{ li.linkColor }});#}
-{#            liColor = str({{ li.linkColor }});#}
-{#        {% endfor %}#}
+
             connectorPaintStyle = {
                     strokeWidth: 2,
                     stroke: '#1ab394',
@@ -630,8 +620,7 @@
                     dynamicAnchors.push([elements[j].id]);
                     console.log('[elements[j].id]');
                     console.log([elements[j].id]);
-                    {#var color = dynamicAnchors.push([elements[j].fill]);#}
-                    {#color = '#'+Math.floor(Math.random()*16777215).toString(16);#}
+
                 }
 
                 dynamicTargetEndPoint = [];
@@ -659,7 +648,6 @@
                 }
             {% endfor %}
 
-            {#jsPlumb.draggable("container");#}
             instance.bind("connection", function(info) {
 
                     var conn=info.connection ;

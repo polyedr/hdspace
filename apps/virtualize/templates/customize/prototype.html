@@ -393,7 +393,6 @@
             $('#changeheightonTabclickPU').removeClass('hidden');
             $('#projectSection').removeClass('col-xs-10');
             $('#projectSection').addClass('col-xs-12');
-            {#$('#hideAtPrototypeOff').removeClass('hidden');#}
             $('#loadingSubmitPage').css("display","");
             ajaxGetUserLA();
             currSc = '{{ screenName }}';
@@ -435,7 +434,6 @@
                     $('#containerTitlePrototype').addClass('hidden');
                     $('#statusOfLink').addClass('hidden');
                     console.log("link connected");
-{#                    checkLockedPro();#}
                 }
             }
         }
@@ -452,7 +450,6 @@
             $('#changeheightonTabclickI').removeClass('hidden');
             $('#uploadSection12').removeClass('hidden');
             $('#projectSection').addClass('col-xs-10').removeClass('col-xs-12');
-            {#$('#hideAtPrototypeOff').addClass('hidden');#}
             console.log("protoDeact");
             console.log(linkValue1);
             // make the purple border for the current screen and remove rest of the screens
@@ -509,7 +506,7 @@
                 console.log(elemid);
                 var getLink = [];
                 var linkValue;
-{#                // get all the linkable elements from the screen#}
+                // get all the linkable elements from the screen
                 getLink.push($('#classContainer-selectorPro').find('button'));
                 getLink.push($('#classContainer-selectorPro').find('a'));
                 getLink.push($('#classContainer-selectorPro').find('.recon-icon'));
