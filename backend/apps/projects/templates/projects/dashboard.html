@@ -68,7 +68,6 @@
                     <a href="javascript:;" onclick="$('#submitBtn{{ project.id }}').click();">{{ project.name }}</a>
                   </form>
               </td>
-{#              <td><a href="{% url 'projects:project' pk=project.id %}">{{ project.name }}</a></td>#}
               <td><span class="line">{{ project.number_of_screens }}</span></td>
               <td>
                 {% for screen in project.projectscreen_set.all %}

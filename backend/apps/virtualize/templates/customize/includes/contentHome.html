@@ -278,11 +278,7 @@
                     <div id="titleOfProject" class="ibox-title" style="text-align:center;padding: 15px;">
                         <span class="editProjectName" id="projectName" style=" text-transform: none; text-decoration: none !important; border-bottom: none !important; white-space: nowrap;cursor: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAA2UlEQVQ4T92UoU4DURBFz1xXh0c069ukAmjSb8Agi2iC6Rcg+AEcEotr+zEtHhRV/YHiZ8hLNmSzbDbLbsWmY17ykjk5d8Q1Tjx2Yh69Al7m6Q7FlGXDTNIT8F11Cnf/AN6AK0kL4MLd0/s7ZeAEGAGrmtteS3qIiFlELIFtF+CNpPsEcPdNGZb+/2NYhK2BXVWKpsCppDkQuVklrKnhQNIrcHT3ZPYOZMC+reGtpGkO+0wQSS/u/tgW+GfvvIBjM3s2s6+60oiIYUTcNblh5/LpVdtUpum/4Q/4VVAV9fOi6QAAAABJRU5ErkJggg==), auto;" contenteditable='true' data-lastName="" onfocus=$(this).attr("data-lastName",this.innerText) onkeydown="modifyProjectName(event, this.innerText);">{{ projectName }}</span>
                         <!-- Collapse option -->
-{#                        <div id="hideAtPrototypeOff" class="ibox-tools hidden" style="float: right;">#}
-{#                            <a class="collapse-link">#}
-{#                                <i class="fa fa-chevron-up"></i>#}
-{#                            </a>#}
-{#                        </div>#}
+
 
                         <!-- Button Panel - Contains many buttons -->
                         <div name="btn-panel" align="left" style="float: left">
@@ -358,7 +354,6 @@
                                                                     <table style="height: 100%;">
                                                                         <tbody>
                                                                             <tr>
-{#                                                                                <input type="hidden" value="{{ i.id }}" name="selectScreenshot">#}
                                                                                 <td class="defaultDesign" align="center" style="padding: 0;">
                                                                                     <img class="imageDesign" src="/media/{{ i.image }}"
                                                                                         style="max-height: 136px; max-width: 100px; margin: 0;
@@ -789,20 +784,7 @@
                     </div>
                 </div>
                 <div class="ibox-content" id="workFlw">
-{#                    <div id="loadingWorkflow" style="position: absolute;#}
-{#                        width: 97%;#}
-{#                        height: 335px;#}
-{#                        z-index: 1000000;#}
-{#                        padding: 0;#}
-{#                        background-color: transparent; visibility: visible;">#}
-{#                        <i class="fa fa-spinner fa-pulse fa-3x fa-fw" style="position: absolute; color: #18a689; top: 25%;left: 47%; transform:translate(-50%,-50%);"></i>#}
-{#                        <span style="position: absolute;#}
-{#                            color: #18a689;#}
-{#                            top: 42%;#}
-{#                            left: 50%;#}
-{#                            transform: translate(-50%,-50%);">Processing Workflow...#}
-{#                        </span>#}
-{#                    </div>#}
+
                     {%include "customize/includes/workflowIndex.html"%}
                 </div>
             </div>
@@ -817,20 +799,6 @@
                         <li id="tabletTab" class="" style="width: 80px;"><a id="tab2" data-toggle="tab" href="#tab-3" onclick="changeIDTablet()"><i class="fa fa-tablet fa-2x"></i></a></li>
                         <li id="mobileTab" class="" style="width: 80px;"><a id="tab3" data-toggle="tab" href="#tab-3" onclick="changeIDMobile()"><i class="fa fa-mobile fa-2x"></i></a></li>
                         <li class="center" style="width: 165px;height: 50px;float: right;"><b id="tab3PA" class="colorHover" onclick="loadPrototype()">Prototype Mode</b></li>
-{#                        <div>#}
-{#                        <button type="button" class="share-button">Share Prototype</button>#}
-{#                  <a href="" class="facebook-share">#}
-{#                    <i class="fa fa-facebook-square fa-2x" style="color:#3B5998"></i>#}
-{#                  </a>#}
-{#                  <a href="" class="linkedin-share">#}
-{#                    <i class="fa fa-linkedin-square fa-2x" style="color:#007bb6"></i>#}
-{#                  </a>#}
-{#                  <a href=""  class="twitter-share">#}
-{#                     <i class="fa fa-twitter-square fa-2x" style="color:#4099FF"></i>#}
-{#                  </a>#}
-{#                            {% include "projects/includes/share-screen.html" with preview_url=screen_obj.get_preview_url %}#}
-{##}
-{#                        </div>#}
                         <li id="rotate-tablet1" class="active" style="width: 80px; visibility: hidden;"><a id="tab4" onclick="testRotateTablet()"><img alt="image" src="/static/dirty_static/img/rotateSmartphone.svg" style="width: 25px"></a></li>
                         <li id="rotate-tablet2" class="active" style="width: 80px; visibility: hidden;"><a id="tab5" onclick="testRotateTablet2()"><img alt="image" src="/static/dirty_static/img/rotateSmartphone.svg" style="width: 25px"></a></li>
                         <li id="rotate-phone1" class="active" style="width: 80px; visibility: hidden;"><a id="tab6" onclick="testRotatePhone()"><img alt="image" src="/static/dirty_static/img/rotateSmartphone.svg" style="width: 25px"></a></li>
@@ -1451,7 +1419,6 @@
                     },
                     success: function (data) {
                           location.reload();
-{#                        window.location.reload();#}
                     }
 
                 });
@@ -1471,7 +1438,6 @@
                             'screensTD': JSON.stringify(listOfScreens)
                     },
                     success: function (data) {
-{#                        window.location.reload();#}
                     }
                 });
             }
@@ -1490,7 +1456,6 @@
                             'screensTD': JSON.stringify(listOfScreens)
                     },
                     success: function (data) {
-{#                        window.location.reload();#}
                     }
                 });
             }

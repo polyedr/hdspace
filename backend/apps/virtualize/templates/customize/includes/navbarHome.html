@@ -239,18 +239,7 @@ overflow: unset;">
                 }
             }, 1000);
         }
-        {#if(workflowState) {#}
-        {#    console.log("check if state is successfully checked and it's true");#}
-        //}
-        {#else {#}
-        {#    console.log("check if state is successfully checked and it's false");#}
-        {#    $('#loadingWorkflow').attr('style', 'position: absolute;\n' +#}
-        {#        '                            width: 97%;\n' +#}
-        {#        '                            height: 335px;\n' +#}
-        {#        '                            z-index: 1000000;\n' +#}
-        {#        '                            padding: 0;\n' +#}
-        {#        '                            background-color: transparent; visibility: hidden;');#}
-        {#    $('#workflowRunOff').attr('style', 'visibility: visible');#}
+
         //}
 
         function createNewProjectNavbar(){
@@ -274,7 +263,6 @@ overflow: unset;">
                         document.getElementById('newProjectName').value = inputValue;
                         document.getElementById('createNewProjectNAV').submit();
                         //swal("Nice!", "You wrote: " + inputValue, "success");
-                        {#loadScreen();#}
                     }
                 }
             );
