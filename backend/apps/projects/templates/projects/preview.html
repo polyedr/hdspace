@@ -1,5 +1,4 @@
 {% extends "base_preview.html" %}
-{#{%extends "virtualize/header.html" %}#}
 
 {% load staticfiles %}
 {% load widget_tweaks %}
@@ -37,7 +36,6 @@
 
  <div id="screenImage" class="screenContainer preview">
       <img src="{{screen_url}}" id="image" data-screen-id="{{screen.pk}}" border="0"/>
-{#       {% include "projects/includes/prototype-preview.html" with screenHTMLpro=screenHTMLpro screenName=screen_name %}#}
         <div id="tab-3P" class="tab-pane-prototype active">
                     <div id="panel-idP" class="panel-body-prototype" style="padding:0">
                         <div id="midColP" class="col-lg-12 testing-prototype" style="width: 100%; background-color: white;">
@@ -316,14 +314,7 @@
         }
     </script>
     <script>
-{#        $(document).ready(function () {#}
-{#            $('#slideelemP').popup();#}
-{#        });#}
-{#        $("#slideelemP").keyup(function(event) {#}
-{#        if (event.keyCode === 13) {#}
-{#            $("#deleteElementYesP").click();#}
-{#        }#}
-{#    });#}
+
     </script>
     <script>
         var lastUserA;
@@ -422,11 +413,6 @@
     </script>
     <script>
         var linkValue1,screenFrom ='{{ screenName }}', currSc;
-{#        var findAllpages = $('#datatables-example').find('.checkImageNameScreenshotSelector');#}
-{#        function loadPrototype(){#}
-{#            window.location.href = 'http://127.0.0.1:8000/index/#prototype';#}
-{#            location.reload();#}
-{#        }#}
 
         function prototypeActivater() {
             $('#changeheightonTabclickI').addClass('hidden');
@@ -434,7 +420,6 @@
             $('#changeheightonTabclickPU').removeClass('hidden');
             $('#projectSection').removeClass('col-xs-10');
             $('#projectSection').addClass('col-xs-12');
-            {#$('#hideAtPrototypeOff').removeClass('hidden');#}
             $('#loadingSubmitPage').css("display","");
             ajaxGetUserLA();
             currSc = '{{ screenName }}';
@@ -476,7 +461,6 @@
                     $('#containerTitlePrototype').addClass('hidden');
                     $('#statusOfLink').addClass('hidden');
                     console.log("link connected");
-{#                    checkLockedPro();#}
                 }
             }
         }
@@ -493,7 +477,6 @@
             $('#changeheightonTabclickI').removeClass('hidden');
             $('#uploadSection12').removeClass('hidden');
             $('#projectSection').addClass('col-xs-10').removeClass('col-xs-12');
-            {#$('#hideAtPrototypeOff').addClass('hidden');#}
             console.log("protoDeact");
             console.log(linkValue1);
             // make the purple border for the current screen and remove rest of the screens
@@ -550,7 +533,7 @@
                 console.log(elemid);
                 var getLink = [];
                 var linkValue;
-{#                // get all the linkable elements from the screen#}
+                // get all the linkable elements from the screen
                 getLink.push($('#classContainer-selectorPro').find('button'));
                 getLink.push($('#classContainer-selectorPro').find('a'));
                 getLink.push($('#classContainer-selectorPro').find('.recon-icon'));
