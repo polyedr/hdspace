@@ -767,7 +767,7 @@ def nonOverlapElem(InputList,width,height):
     return tot_nonOverlapUnverified
 
 def segmentationFirstLayer(myFile_name,inputImgPath,coco_model_v,tensorflow_model_v, cropDirectory = ""):
-    from virtualize.segmentation.inference_segmentation import cocoTextDetection_model,tensorflowClassDetection_model
+    from apps.virtualize.segmentation.inference_segmentation import cocoTextDetection_model,tensorflowClassDetection_model
     from copy import deepcopy
     with Image.open(inputImgPath) as img:
         width, height = img.size

@@ -68,7 +68,8 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "social_django.middleware.SocialAuthExceptionMiddleware",
-    'apps.core.middleware.activeuser_middleware.active_user_middleware'
+    'apps.core.middleware.activeuser_middleware.active_user_middleware',
+    # 'core.middleware.activeuser_middleware.active_user_middleware',
 ]
 
 # Django Debug Toolbar settings
