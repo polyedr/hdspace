@@ -25,7 +25,6 @@ __all__ = (
     "TaskTime",
     "ScreenComment",
     "Comment",
-    "get_screen_id",
 )
 
 
@@ -244,7 +243,8 @@ class ProjectActivity(models.Model):
     def __str__(self):
         return self.type
 
-    def get_screen_id(screenid):
-        collection = db_main.projects_projectscreen
-        id = collection.find_one({'details_id': screenid})['id']
-        return id
+
+def get_screen_id(screenid):
+    collection = db_main.projects_projectscreen
+    id = collection.find_one({'details_id': screenid})['id']
+    return id
