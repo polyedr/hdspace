@@ -1018,20 +1018,23 @@ def getProjectPageWorkCSS(userId,projectName, currentScreen):
     return path
 # Returns a list of all widget paths
 def get_widget_paths():
-    widgets = db.saveWidgets.find({"widgetName": {"$in": ["calendar-1","calendar-2","calendar-3","calendar-4",
-                                                                   "map-2","map-3","map-4","map-5"]}})
+    cursor = db.saveWidgets.find({})
     paths = []
-    if widgets is not None:
-        for widget in widgets:
-            paths.append(widget['widgetLocation'])
-    return paths
+    names = []
+    for document in cursor:
+        if 'Widget' == str(document['type']):
+            paths.append(str(document['widgetLocation']))
+            names.append(str(document['widgetName']))
+    data = [{'paths': paths, 'names': names}]
+    return data
+
 
 def get_chart_paths():
-    charts = db.saveWidgets.find({"widgetName": {"$in": ["bar-2","bar-3","pie-4","pie-5","piechart-1"]}})
+    cursor = db.saveWidgets.find({})
     paths = []
-    if charts is not None:
-        for chart in charts:
-            paths.append(chart['widgetLocation'])
+    for document in cursor:
+        if 'Graphic' == str(document['type']):
+            paths.append(str(document['widgetLocation']))
     return paths
 
 
