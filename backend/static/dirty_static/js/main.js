@@ -232,16 +232,20 @@ $(document).ready(function () {
                 data: {
                     'name': 'getWidgetPaths'
                 },
-                success: function(widgetPaths){
+                success: function(data){
+                    var widgetNames = data[0]['names'];
+                    var widgetPaths = data[0]['paths'];
                     //Check if there are widgets to display
                     if(widgetPaths && widgetPaths.length){
                         // generate widget content
                         var numberOfWidgetPaths = widgetPaths.length - 1;
+                        var widgetName = "";
                         var newContent = "";
                         var path = "";
                         for(var i = 0; i <= numberOfWidgetPaths ; i++){
-                            path =  "../" + widgetPaths[i];
-                            newContent += "<div class='content-item-center'><img class='content-image' src="+ path +"></div>";
+                            path =  '/' + widgetPaths[i];
+                            widgetName =   widgetNames[i];
+                            newContent += "<div class='content-item-center' onclick=addWidgets(this.children)><img name="+widgetName+" class='content-image' src="+ path +"></div>";
                         }
                         contentContainer.innerHTML = newContent;
                         displayContentContainer();
@@ -490,7 +494,7 @@ $(document).ready(function () {
                         var newContent = "";
                         var path = "";
                         for(var i = 0; i <= numberOfWidgetPaths ; i++){
-                            path =  "../" + chartPaths[i];
+                            path =  "./" + chartPaths[i];
                             newContent += "<div class='content-item-center'><img class='content-image' src="+ path +"></div>";
                         }
                         contentContainer.innerHTML = newContent;
