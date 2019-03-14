@@ -15,8 +15,8 @@ def run(myFile, coco_model, tensorflow_model, CurrentUser, projectName):
     from skimage import io, color
     import os
     from scipy import ndimage
-    from virtualize.utils.metaCustomUtils import save_segmentation, save_ocr, save_inception, childinrange
-    from virtualize.segmentation.metaprogramming import metaProgramming
+    from apps.virtualize.utils.metaCustomUtils import save_segmentation, save_ocr, save_inception, childinrange
+    from apps.virtualize.segmentation.metaprogramming import metaProgramming
 
     ########################  START SEGMENTATION, INCEPTION AND OCR ####################
 
