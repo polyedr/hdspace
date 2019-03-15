@@ -733,9 +733,9 @@ def main_request_core(request):
             return HttpResponse(json.dumps(arraySuggestL4), content_type="application/json")
 
         elif str(request.GET['name']) == 'getWidgetPaths':
-            widgetPaths = get_widget_paths()
+            data = get_widget_paths()
             import json
-            return HttpResponse(json.dumps(widgetPaths), content_type="application/json")
+            return HttpResponse(json.dumps(data), content_type="application/json")
 
         elif str(request.GET['name']) == 'getChartPaths':
             chartPaths = get_chart_paths()
@@ -1187,9 +1187,9 @@ def main_request_core(request):
                 action = req['value']
                 # number 8 in the following if condition is used only for the widget
                 if str(action) == '8':
-                    myfile1 = str(req['path'])
-                    myfile2 = myfile1
-                    addElement(currentUser, myfile2, screenshotId, str(action))
+                    myfile = str(req['path'])
+                    name = myfile
+                    addElement(currentUser, name, screenshotId, str(action))
                     rewritePage(currentUser, myfile, screenshotId, screenshotName, 'load')
                 else:
                     addElement(currentUser, myfile, screenshotId, str(action))

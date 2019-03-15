@@ -5,7 +5,7 @@ from django.views.generic.base import View
 
 from apps.projects.models import (
     ProjectMember, ProjectTask, ProjectActivity,
-    ProjectScreen, Comment, ScreenComment,
+    ProjectScreen, Comment, ScreenComment, get_screen_id
 )
 
 __all__ = (
@@ -43,7 +43,8 @@ class ScreenCommentView(LoginRequiredMixin, View):
 
     # noinspection PyMethodMayBeStatic
     def post(self, request, *args, **kwargs):
-        screen_id = request.POST["screen_id"]
+        screenshotId = request.POST["screen_id"]
+        screen_id = get_screen_id(screenshotId)
         comment_id = request.POST["commen_id"]
         x = request.POST["x"]
         y = request.POST["y"]
