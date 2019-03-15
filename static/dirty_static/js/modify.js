@@ -42,7 +42,7 @@ function reloadPreviewScreens(){
     }, 500);
 }
 
-function addNewElementAjax(valueVar, srcPath){
+function addNewElementAjax(value, name){
         $.ajax({
             type: 'POST',
             url: '/index/',
@@ -50,8 +50,8 @@ function addNewElementAjax(valueVar, srcPath){
             data:
                 {
                     name: 'addElement',
-                    value: valueVar,
-                    path: srcPath
+                    value: value,
+                    path: name
                 },
             success: function(data){
 
