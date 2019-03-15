@@ -1,7 +1,8 @@
 
 
-personal_root = "/Users/Victor/Documents/BitBucket Projects/ProjectManagement/apps/virtualize/"
-
+# personal_root = "/Users/Victor/Documents/BitBucket Projects/ProjectManagement/apps/virtualize/"
+from project.settings import BASE_DIR
+personal_root = BASE_DIR + "/apps/virtualize/"
 
 def initiateCocoDetection():
     import os
