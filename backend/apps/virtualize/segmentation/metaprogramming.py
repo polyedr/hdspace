@@ -172,11 +172,12 @@ def metaProgramming(combination, myFile, state):
                 if E['type'] == 'ocr':
                     print('******pay attention where segmentIDs 2b *****',str(E))
                     buttonFound = False
-                    for label in buttonTxt[0]:
-                        if E['name'].lower() == label:
-                            hyperLinkArray.append(E)
-                            print('******pay attention where segmentIDs hyperlink array*****', str(E))
-                            buttonFound = True
+                    if buttonTxt:
+                        for label in buttonTxt[0]:
+                            if E['name'].lower() == label:
+                                hyperLinkArray.append(E)
+                                print('******pay attention where segmentIDs hyperlink array*****', str(E))
+                                buttonFound = True
                     if buttonFound == False:
                         paragraphArray.append(E)
                         print('******pay attention where segmentIDs paragraph array *****', str(E))
@@ -196,17 +197,19 @@ def metaProgramming(combination, myFile, state):
                                 print('Einside1: ' + str(eInside))
                                 if eInside['type'] == 'ocr':
                                     # Assign as a button
-                                    for label in buttonTxt[0]:
-                                        if eInside['name'].lower() == label:
-                                            if (int(E['location']['y1']) - int(eInside['location']['y1']) < 15) | \
-                                                    (int(eInside['location']['y0']) - int(E['location']['y0']) < 15):
-                                                    ButtonArray.append({'parent': E, 'child': eInside})
+                                    if buttonTxt:
+                                        for label in buttonTxt[0]:
+                                            if eInside['name'].lower() == label:
+                                                if (int(E['location']['y1']) - int(eInside['location']['y1']) < 15) | \
+                                                        (int(eInside['location']['y0']) - int(E['location']['y0']) < 15):
+                                                        ButtonArray.append({'parent': E, 'child': eInside})
                                     # Assign as a textbox
-                                    for label in textboxTxt[0]:
-                                        if eInside['name'].lower() == label:
-                                            if (int(E['location']['y1']) - int(eInside['location']['y1']) < 50) | \
-                                                    (int(eInside['location']['y0']) - int(E['location']['y0']) < 50):
-                                                textBoxArray.append({'parent': E, 'child': eInside})
+                                    if textboxTxt:
+                                        for label in textboxTxt[0]:
+                                            if eInside['name'].lower() == label:
+                                                if (int(E['location']['y1']) - int(eInside['location']['y1']) < 50) | \
+                                                        (int(eInside['location']['y0']) - int(E['location']['y0']) < 50):
+                                                    textBoxArray.append({'parent': E, 'child': eInside})
                                     # if @ make it userEnable
                                     '''
                                     if '@' in eInside['name']:
@@ -215,9 +218,10 @@ def metaProgramming(combination, myFile, state):
                                             textBoxArray.append({'parent': E, 'child': eInside})
                                     '''
                                     # Assign remaining as Paragraph
-                                    if eInside['name'].lower() not in textboxTxt[0]:
-                                        if eInside['name'].lower() not in buttonTxt[0]:
-                                            paragraphArray.append(eInside)
+                                    if textboxTxt:
+                                        if eInside['name'].lower() not in textboxTxt[0]:
+                                            if eInside['name'].lower() not in buttonTxt[0]:
+                                                paragraphArray.append(eInside)
 
                                 if eInside['type'] == 'shapes':
 
@@ -226,31 +230,33 @@ def metaProgramming(combination, myFile, state):
                                         for eInside2 in checkInside(eInside)[1]:
                                             print('Einside2: ' + str(eInside2))
                                             if eInside2['type'] == 'ocr':
-                                                for label in buttonTxt[0]:
-                                                    if eInside2['name'].lower() == label:
-                                                        if (int(eInside['location']['y1']) - int(
-                                                                eInside2['location']['y1']) < 50) | \
-                                                                (int(eInside2['location']['y0']) - int(
-                                                                    eInside['location']['y0']) < 50):
-                                                            ButtonArray.append({'parent': eInside, 'child': eInside2})
-                                                for label in textboxTxt[0]:
-                                                    if eInside2['name'].lower() == label:
-                                                        if (int(eInside['location']['y1']) - int(
-                                                                eInside2['location']['y1']) < 50) | \
-                                                                (int(eInside2['location']['y0']) - int(
-                                                                    eInside['location']['y0']) < 50):
-                                                            textBoxArray.append({'parent': eInside, 'child': eInside2})
-                                                '''
-                                                    if ('@') in eInside2['name']:
-                                                        if (int(eInside['location']['y1']) - int(
-                                                                eInside2['location']['y1']) < 50) | \
-                                                                (int(eInside2['location']['y0']) - int(
-                                                                    eInside['location']['y0']) < 50):
-                                                            textBoxArray.append({'parent': eInside, 'child': eInside2})
-                                                '''
-                                                if eInside2['name'].lower() not in textboxTxt[0]:
-                                                    if eInside2['name'].lower() not in buttonTxt[0]:
-                                                        paragraphArray.append(eInside2)
+                                                if buttonTxt:
+                                                    for label in buttonTxt[0]:
+                                                        if eInside2['name'].lower() == label:
+                                                            if (int(eInside['location']['y1']) - int(
+                                                                    eInside2['location']['y1']) < 50) | \
+                                                                    (int(eInside2['location']['y0']) - int(
+                                                                        eInside['location']['y0']) < 50):
+                                                                ButtonArray.append({'parent': eInside, 'child': eInside2})
+                                                if textboxTxt:
+                                                    for label in textboxTxt[0]:
+                                                        if eInside2['name'].lower() == label:
+                                                            if (int(eInside['location']['y1']) - int(
+                                                                    eInside2['location']['y1']) < 50) | \
+                                                                    (int(eInside2['location']['y0']) - int(
+                                                                        eInside['location']['y0']) < 50):
+                                                                textBoxArray.append({'parent': eInside, 'child': eInside2})
+                                                    '''
+                                                        if ('@') in eInside2['name']:
+                                                            if (int(eInside['location']['y1']) - int(
+                                                                    eInside2['location']['y1']) < 50) | \
+                                                                    (int(eInside2['location']['y0']) - int(
+                                                                        eInside['location']['y0']) < 50):
+                                                                textBoxArray.append({'parent': eInside, 'child': eInside2})
+                                                    '''
+                                                    if eInside2['name'].lower() not in textboxTxt[0]:
+                                                        if eInside2['name'].lower() not in buttonTxt[0]:
+                                                            paragraphArray.append(eInside2)
 
                                                     # if
                 if E['name'] == 'widgets':
