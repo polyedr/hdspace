@@ -341,15 +341,23 @@ var selectedWidget, selectedGraphics;
          $('#optionToAddWidget').addClass('hidden');
          $('.currentlyChecked').removeClass('hidden currentlyChecked');
      }
-     function addWidgets(value) {
-        var replaceWidPath, getWidName;
-        replaceWidPath = selectedWidget.replace('/static/dirty_static/widgets/', '');
-        getWidName = replaceWidPath.replace('.jpg', '');
-        console.log("selectedWidget");
-        console.log(selectedWidget);
-        console.log(getWidName);
-        addNewElementAjax(value, getWidName);
-        $('#WidgetSelectorBox').popup('hide');
+     function addWidgets(data) {
+         var name ='';
+         var value ='';
+
+         console.log('valueeee');
+         console.log(value);
+         name = data[0].name;
+         value = '8';
+        // var replaceWidPath, getWidName;
+        // replaceWidPath = selectedWidget.replace('/static/dirty_static/widgets/', '');
+        // getWidName = replaceWidPath.replace('.jpg', '');
+        // console.log("selectedWidget");
+        // console.log(selectedWidget);
+        // console.log(getWidName);
+        addNewElementAjax(value, name);
+        // $('#suggestionBox').popup({escape: true, blur: true, autoopen: true});
+        $('#suggestionBox').popup('hide');
      }
      // Graphics popup
      function popupGraphicsSelector(){

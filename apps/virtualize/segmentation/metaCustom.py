@@ -8134,21 +8134,11 @@ def addElement(currentUser, filename, screenshot_id, action):
     elif action == '8':
         print('meta running with action: ' + action)
 
-        request_na = str(filename)
-        request_name = request_na.split('/')
-        if len(request_name) > 1:
-            print('filename: ')
-            print(filename)
-            icon_name = str(filename)
-            typ = icon_name.split('/')[3]
-            typ = typ.split('.')[0]
-            ty_cond = typ.split('-')[0]
-            icon_path = icon_name
-        else:
-            icon_name = str(filename)
-            ty_cond = icon_name[:-2]
-            typ = icon_name
-            icon_path = '/media/widgets/' + icon_name
+        widgetName = filename
+        icon_name = str(widgetName)
+        ty_cond = icon_name[:-2]
+        typ = icon_name
+        icon_path = '/media/widgets/' + icon_name
         print(icon_name)
         print(icon_path)
         print(ty_cond)
