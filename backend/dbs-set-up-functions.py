@@ -1,6 +1,7 @@
 from pymongo import MongoClient
 client = MongoClient('localhost', 27017)  # maxPoolSize=50
 db = client.mainDB
+widgetDb = client.MeduzaDb
 
 def newcnnModel1Test4Bar():
     db.cnnModels.insert({
@@ -19,6 +20,16 @@ def cnnModelFirst():
 # newcnnModel1Test4Bar()
 # cnnModelFirst()
 
+def saveWidgets(name,location,desc,cate,dev,ty):
+    widgetDb.saveWidgets.insert({
+                'widgetName': str(name),
+                'widgetLocation': str(location),
+                'widgetDescription': str(desc),
+                'widgetCategory': str(cate),
+                'device': str(dev),
+                'type': str(ty)
+                })
+    print(str(ty) + ' was inserted successfully')
 
 name = ['pie-4',
         'pie-5',
@@ -142,6 +153,8 @@ for i in range(len(name)):
                       'desc': desc[i], 'cat': cat[i],
                       'dev': dev[i], 'type': type[i]
                       })
-for widget in widgets:
-    widgetDb(widget['name'], widget['location'], widget['desc'], widget['cat'], widget['dev'], widget['type'])
-print(str(len(widgets)) + ' objects have been created')
+#  Uncomment the lines below to save widgets to the database
+
+# for widget in widgets:
+#     saveWidgets(widget['name'], widget['location'], widget['desc'], widget['cat'], widget['dev'], widget['type'])
+# print(str(len(widgets)) + ' objects have been created')

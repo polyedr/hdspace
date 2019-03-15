@@ -1032,10 +1032,13 @@ def get_widget_paths():
 def get_chart_paths():
     cursor = db.saveWidgets.find({})
     paths = []
+    names = []
     for document in cursor:
         if 'Graphic' == str(document['type']):
             paths.append(str(document['widgetLocation']))
-    return paths
+            names.append(str(document['widgetName']))
+    data = [{'paths': paths, 'names': names}]
+    return data
 
 
 
