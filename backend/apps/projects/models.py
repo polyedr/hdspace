@@ -1,5 +1,6 @@
 import secrets
 import uuid
+import pymongo
 
 from django.db import models
 from django.contrib.auth import get_user_model
@@ -7,6 +8,9 @@ from django.urls import reverse
 
 from apps.core.models import TimeStampedModel
 from apps.accounts.utils import utils
+
+client = pymongo.MongoClient('localhost', 27017)  # maxPoolSize=50
+db_main = client.mainDB
 
 
 __all__ = (
@@ -238,3 +242,9 @@ class ProjectActivity(models.Model):
 
     def __str__(self):
         return self.type
+
+
+def get_screen_id(screenid):
+    collection = db_main.projects_projectscreen
+    id = collection.find_one({'details_id': screenid})['id']
+    return id
