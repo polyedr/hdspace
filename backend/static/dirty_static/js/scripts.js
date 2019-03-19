@@ -129,7 +129,8 @@ $("#favcolor").spectrum({
             console.log(jqXHR.responseText);
         }
     });
-    document.getElementById('loadingSubmitPage').style.display = '';
+    // document.getElementById('loadingSubmitPage').style.display = '';
+    $('#loadingSubmitPage').css("display","");
     location.reload();
 }
 

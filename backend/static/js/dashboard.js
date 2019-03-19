@@ -72,8 +72,7 @@
 
         if (!formValid) {
             var url = $(this).data('url');
-            console.log('URL')
-            console.log(url)
+            console.log('URL:', url);
             var name = $('#id_name').val();
             $.ajax({
                 url: url,
