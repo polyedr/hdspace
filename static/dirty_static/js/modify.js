@@ -123,6 +123,7 @@ function unselectCliked() {
 }
 
 function checkLocked() {
+    var result = [];
     $.when(ajaxGetLocked()).done(function(a1){
         for (var i =0; i<result.length; i++){
             var id ='id'+result[i][0];
