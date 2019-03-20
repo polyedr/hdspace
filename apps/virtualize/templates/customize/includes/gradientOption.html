@@ -59,27 +59,28 @@
                                                 'name':'getMode'
                                             },
                                             success: function(data){
-                                                console.log('getMode');
-                                                console.log(data);
-                                                pagesResultType = data[0];
-                                                pagesResultAngle = data[1];
-                                                getLinearRadial = pagesResultType.split('-');
-                                                getAngle = pagesResultAngle.split(' ');
-                                                noTwo = 2;
-                                                noFour = 4;
-                                                console.log('before if');
-                                                console.log(getLinearRadial);
-                                                console.log(getAngle);
-                                                console.log(getLinearRadial.length);
-                                                if (noTwo === getLinearRadial.length){
-                                                    console.log('after if');
-                                                    $('#gradModetxt').html('Linear');
-                                                    $('#gradAngletxt').html(getAngle[1]);
-                                                }
-                                                else if (getLinearRadial.length > noTwo){
-                                                    console.log('else');
-                                                    $('#gradModetxt').html('Radial');
-                                                    $('#gradAngletxt').html(getAngle[0]);
+                                                console.log('getMode', { data });
+                                                if(data.length) {
+                                                    pagesResultType = data[0];
+                                                    pagesResultAngle = data[1];
+                                                    getLinearRadial = pagesResultType.split('-');
+                                                    getAngle = pagesResultAngle.split(' ');
+                                                    noTwo = 2;
+                                                    noFour = 4;
+                                                    console.log('before if');
+                                                    console.log(getLinearRadial);
+                                                    console.log(getAngle);
+                                                    console.log(getLinearRadial.length);
+                                                    if (noTwo === getLinearRadial.length){
+                                                        console.log('after if');
+                                                        $('#gradModetxt').html('Linear');
+                                                        $('#gradAngletxt').html(getAngle[1]);
+                                                    }
+                                                    else if (getLinearRadial.length > noTwo){
+                                                        console.log('else');
+                                                        $('#gradModetxt').html('Radial');
+                                                        $('#gradAngletxt').html(getAngle[0]);
+                                                    }
                                                 }
                                             },
                                             error: function(jqXHR, status, err){
@@ -241,21 +242,22 @@
                 gp.on('change', function(complete) {
                     var getAllClassContainer, cl, getAllClassContainerW, i, w, changeColor, getStyle;
                     getAllClassContainer = $('#classContainer-selector');
-                    cl = getAllClassContainer[0].getAttribute('class');
-                    $('#classContainer-selector').attr('style', 'background:' + gp.getSafeValue());
-                    $('#classContainer-selectorPro').attr('style', 'background:' + gp.getSafeValue());
-                    $('#sq-1').attr('style', 'background:' + gp.getSafeValue());
-                    getAllClassContainerW = document.getElementsByClassName(cl);
-                    console.log('Display all Work container');
-                    console.log(gp.getSafeValue());
-                    for (i=0; i<getAllClassContainerW.length;i++){
-                        w = getAllClassContainerW[i].getAttribute('class');
-                        if(cl === w)  {
-                            changeColor = getAllClassContainerW[i].setAttribute('style', 'background:' + gp.getSafeValue());
-                            getStyle = getAllClassContainerW[i].getAttribute('style');
-                            console.log(getStyle);
+                    if(getAllClassContainer.length) {
+                        cl = getAllClassContainer[0].getAttribute('class');
+                        $('#classContainer-selector').attr('style', 'background:' + gp.getSafeValue());
+                        $('#classContainer-selectorPro').attr('style', 'background:' + gp.getSafeValue());
+                        $('#sq-1').attr('style', 'background:' + gp.getSafeValue());
+                        getAllClassContainerW = document.getElementsByClassName(cl);
+                        // console.log('Display all Work container');
+                        // console.log(gp.getSafeValue());
+                        for (i=0; i < getAllClassContainerW.length; i++) {
+                            w = getAllClassContainerW[i].getAttribute('class');
+                            if(cl === w)  {
+                                changeColor = getAllClassContainerW[i].setAttribute('style', 'background:' + gp.getSafeValue());
+                                getStyle = getAllClassContainerW[i].getAttribute('style');
+                                // TODO: Logic is not finished
+                            }
                         }
-
                     }
                 });
                 gp.emit('change');

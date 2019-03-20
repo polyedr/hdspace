@@ -346,10 +346,9 @@ var selectedWidget, selectedGraphics;
          var name ='';
          var value ='';
 
-         console.log('valueeee');
-         console.log(value);
          name = data[0].name;
          value = '8';
+         console.log({value, name});
         // var replaceWidPath, getWidName;
         // replaceWidPath = selectedWidget.replace('/static/dirty_static/widgets/', '');
         // getWidName = replaceWidPath.replace('.jpg', '');

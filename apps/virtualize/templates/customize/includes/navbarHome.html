@@ -136,7 +136,6 @@ overflow: unset;">
   </div>
 </nav>
 <script>
-  window.onload = function () {
     if (typeof window.jQuery !== 'undefined') {
 
       function fasterPreview(uploader) {
@@ -145,6 +144,7 @@ overflow: unset;">
             window.URL.createObjectURL(uploader.files[0]));
         }
       }
+
       function workflowVisible() {
         $('#workflowDisappearer').addClass('hidden');
         $('#workflowTurnOn').addClass('hidden');
@@ -153,6 +153,7 @@ overflow: unset;">
         $('#btnhideWorkflw').addClass('hidden');
         $('#btnshowWorkflw').addClass('hidden');
       }
+
       function workflowInVisible() {
         $('#workflowDisappearer').removeClass('hidden');
         $('#workflowDisappearer').attr('style', 'padding: 0;');
@@ -179,6 +180,7 @@ overflow: unset;">
           }
         });
       }
+
       function workflowMagic(stat) {
         $.ajax({
           type: 'GET',
@@ -210,6 +212,7 @@ overflow: unset;">
           }
         });
       }
+
       function loopAjaxRequest(data) {
         var timesRun = 0, interval, noOfTimes;
         interval = setInterval(function () {
@@ -236,6 +239,7 @@ overflow: unset;">
           }
         }, 1000);
       }
+
       function createNewProjectNavbar() {
         swal({
           title: "Enter Project Name",
@@ -252,20 +256,24 @@ overflow: unset;">
             return false
           }
           else {
-            swal.close();
             document.getElementById('newProjectName').innerHTML = inputValue;
             document.getElementById('newProjectName').value = inputValue;
-            document.getElementById('createNewProjectNAV').submit();
+            // TODO: crash add project
+            // swal.close();
+            // document.getElementById('createNewProjectNAV').submit();
+
             //swal("Nice!", "You wrote: " + inputValue, "success");
           }
         }
         );
       }
+
       function closeWorkflow() {
         $('#workflowDisappearer').addClass('hidden');
         $('#workflowTurnOn').addClass('hidden');
         $('#workflowTurnOff').removeClass('hidden');
       }
+
       function libraryMS() {
         var projects;
         closeWorkflow();
@@ -321,6 +329,7 @@ overflow: unset;">
 
         $("#view2").prop("checked", true);
       }
+
       function searchLi() {
         var input, filter, ul, li, a, i;
         var ele = document.getElementsByClassName("jstree-container-ul");
@@ -353,11 +362,11 @@ overflow: unset;">
         $("#workflowVisible").on("click", workflowVisible);
 
         $("#workflowInvisible").on("click", workflowInVisible);
+
         //image library Thumb view  by default
         $("#rad-thumbView").prop("checked", true);
-      });
+    });
 
       //search for current project
-    }
   }
 </script>
