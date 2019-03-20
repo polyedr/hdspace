@@ -2,7 +2,7 @@ from django.apps import AppConfig
 
 
 class AccountsConfig(AppConfig):
-    name = "accounts"
+    name = "apps.accounts"
 
     def ready(self):
-        import accounts.signals  # noqa
+        import apps.accounts.signals  # noqa
