@@ -23,6 +23,11 @@ __all__ = (
 
 class User(AbstractUser):
     _id = ObjectIdField()
+    #
+    # def save(self, *args, **kwargs):
+    #     super(User, self).save(*args, **kwargs)
+    #     profile = Profile(user=self)
+    #     profile.save()
 
 
 class Profile(TimeStampedModel):
