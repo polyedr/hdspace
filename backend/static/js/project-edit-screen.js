@@ -20,24 +20,27 @@
 
 
     function setShareUrl(url) {
-        var shareFacebook = "https://www.facebook.com/sharer/sharer.php?u={url}";
-        var shareTwitter = "https://twitter.com/home?status="+ projectName + "%20{url}";
-        var shareLinkedin = "https://www.linkedin.com/shareArticle?mini=true&url={url}&title="+ projectName + "&summary="+ projectName + "&source={url}";
-        shareFacebook = shareFacebook.replace(/{url}/g, url);
-        shareTwitter = shareTwitter.replace(/{url}/g, url);
-        shareLinkedin = shareLinkedin.replace(/{url}/g, url);
-        $(".facebook-share").attr("href", shareFacebook);
-        $(".linkedin-share").attr("href", shareLinkedin);
-        $(".twitter-share").attr("href", shareTwitter);
+        if (url) {
+            var shareFacebook = "https://www.facebook.com/sharer/sharer.php?u={url}";
+            var shareTwitter = "https://twitter.com/home?status=" + projectName + "%20{url}";
+            var shareLinkedin = "https://www.linkedin.com/shareArticle?mini=true&url={url}&title=" + projectName + "&summary=" + projectName + "&source={url}";
+            shareFacebook = shareFacebook.replace(/{url}/g, url);
+            shareTwitter = shareTwitter.replace(/{url}/g, url);
+            shareLinkedin = shareLinkedin.replace(/{url}/g, url);
+            $(".facebook-share").attr("href", shareFacebook);
+            $(".linkedin-share").attr("href", shareLinkedin);
+            $(".twitter-share").attr("href", shareTwitter);
+        }
     }
 
     setShareUrl($("#shareLink").val());
+
     function guid() {
         return Math.random().toString(36).substr(2, 9);
     }
 
     function findPosition(oElement) {
-        if (typeof(oElement.offsetParent) !== 'undefined') {
+        if (typeof (oElement.offsetParent) !== 'undefined') {
             for (var posX = 0, posY = 0; oElement; oElement = oElement.offsetParent) {
                 posX += oElement.offsetLeft;
                 posY += oElement.offsetTop;
@@ -98,11 +101,11 @@
         var select = document.getElementById('currentArea');
         width = Math.abs(move.clientX - posX);
         height = Math.abs(move.clientY - posY);
-        if(move.clientX < posX){
+        if (move.clientX < posX) {
             posX = move.clientX;
             width = Math.abs(oldPosX - posX);
         }
-        if(move.clientY < posY){
+        if (move.clientY < posY) {
             posY = move.clientY;
             height = Math.abs(oldPosY - posY);
         }
@@ -135,14 +138,14 @@
     var screenImg = document.getElementById('image');
     $('#modalDeleteButton').hide();
     $('#image').mousedown(function () {
-        if(mode == EDITMODE) {
+        if (mode == EDITMODE) {
             getCoordinates();
         }
     });
 
 
     $('#image').mousemove(function (event) {
-        if(mode == EDITMODE) {
+        if (mode == EDITMODE) {
             var move = {}
             var positions = getMovePositions();
             move.clientX = positions[0]
@@ -154,7 +157,7 @@
     });
 
     $('#image').mouseup(function () {
-        if(mode == EDITMODE) {
+        if (mode == EDITMODE) {
             $('#modalForm')[0].reset();
             $('#screenModal').modal();
             $('#currentArea').removeAttr('id');
@@ -165,30 +168,32 @@
     });
 
     function draggable() {
-        $('#screenImage div').draggable(
-            {
-                drag: function () {
-                    var imgPos = findPosition(screenImg);
-                    var offset = $(this).offset();
-                    posX = offset.left-imgPos[0];
-                    posY = offset.top-imgPos[1];
-                },
-                stop: function (event, ui) {
-                    var url = $(this).data('update_event_position');
-                    $.ajax({
-                        url: url,
-                        method: 'POST',
-                        data: {
-                            csrfmiddlewaretoken: window.csrftoken,
-                            x: posX,
-                            y: posY,
-                        },
-                        success: function (response) {
+        if ($('#screenImage div').length) {
+            $('#screenImage div').draggable(
+                {
+                    drag: function () {
+                        var imgPos = findPosition(screenImg);
+                        var offset = $(this).offset();
+                        posX = offset.left - imgPos[0];
+                        posY = offset.top - imgPos[1];
+                    },
+                    stop: function (event, ui) {
+                        var url = $(this).data('update_event_position');
+                        $.ajax({
+                            url: url,
+                            method: 'POST',
+                            data: {
+                                csrfmiddlewaretoken: window.csrftoken,
+                                x: posX,
+                                y: posY,
+                            },
+                            success: function (response) {
 
-                        }
-                    });
-                }
-            });
+                            }
+                        });
+                    }
+                });
+        }
     }
 
     draggable();
@@ -201,18 +206,18 @@
         }
     });
 
-    function showHideInputs(link_to, link_screen=''){
+    function showHideInputs(link_to, link_screen = '') {
         if (link_to === 'external' || link_to == '') {
             $('.project-screens').hide();
             $('#id_event').hide();
             $('#id_href').show();
-             $('#id_new_window').show();
+            $('#id_new_window').show();
         } else {
             $('.project-screens').show();
             $('#id_event').show();
             $('#id_href').hide();
             $('#id_new_window').hide();
-            if(link_screen) {
+            if (link_screen) {
                 $(".project-screens img[data-screen-id=" + link_screen + "]").addClass('selected-img');
             }
         }
@@ -282,9 +287,9 @@
         if (link_to) {
             var url = $(this).data('url');
 
-            if(link_to === 'external'){
+            if (link_to === 'external') {
                 var validate_list = ['#id_link_to', '#id_href']
-            }else {
+            } else {
                 var validate_list = ['#id_link_to']
             }
             var formValid = validateForm(validate_list);
@@ -329,10 +334,12 @@
     });
 
     var copyButton = document.getElementById('copyButton');
-    var clipboard = new ClipboardJS(copyButton);
+    if (copyButton) {
+        var clipboard = new ClipboardJS(copyButton);
+    }
 
     $('.share-button').on('click', function () {
-       $('#shareScreen').modal();
+        $('#shareScreen').modal();
     });
 
     $('#prototype').on('click', function () {
@@ -341,10 +348,10 @@
         $('#commentModal').hide();
         $('.non_existed_comment').remove()
         $('.comment').css("opacity", "0");
-        if(mode == EDITMODE){
+        if (mode == EDITMODE) {
             $('.existed').css("opacity", "0");
             mode = PREVIEWMODE;
-        }else {
+        } else {
             draggable();
             $('.existed').css("opacity", "1");
             mode = EDITMODE
@@ -360,37 +367,37 @@
         // $('#screenImage div').draggable( "disable" )
     })
 
-     $('#image').on('click', function (event) {
+    $('#image').on('click', function (event) {
         $('#commentModal').hide()
         $('#commentModal .comments-list').html('')
         $('.non_existed_comment').remove()
-        if(mode == COMMENTMODE) {
+        if (mode == COMMENTMODE) {
             getCoordinates();
-            var x = posX-18;
-            var y = posY-18;
+            var x = posX - 18;
+            var y = posY - 18;
             var number = $('.screenContainer .comment').length + 1;
-            $( "<div class='comment non_existed_comment' data-x=" + posX +  " data-y=" + posY + "  style='top:"+ y + "px; left:" + x + "px'>" + number + "</div>" )
-                .insertAfter( "#image" );
+            $("<div class='comment non_existed_comment' data-x=" + posX + " data-y=" + posY + "  style='top:" + y + "px; left:" + x + "px'>" + number + "</div>")
+                .insertAfter("#image");
 
             var popupX = posX + 18;
             var popupY = posY + 18;
-            $('#commentModal').css({display:"block", top:popupY + 'px', left: popupX + 'px'});
+            $('#commentModal').css({ display: "block", top: popupY + 'px', left: popupX + 'px' });
             commentId = '';
         }
     });
     $("#commentModal").hide();
-     $(document).on('click', '.comment', function () {
-         commentId = '';
-         $('#commentModal').hide()
-         $('.comments-list').html('')
-         $('.non_existed_comment').remove()
+    $(document).on('click', '.comment', function () {
+        commentId = '';
+        $('#commentModal').hide()
+        $('.comments-list').html('')
+        $('.non_existed_comment').remove()
 
-         var x = parseInt($(this).attr('data-x'));
-         var y = parseInt($(this).attr('data-y'));
-         var popupX = x + 39;
-         var popupY = y + 39;
-         var comment_id = $(this).attr('data-comment-id');
-         if(comment_id){
+        var x = parseInt($(this).attr('data-x'));
+        var y = parseInt($(this).attr('data-y'));
+        var popupX = x + 39;
+        var popupY = y + 39;
+        var comment_id = $(this).attr('data-comment-id');
+        if (comment_id) {
             commentId = comment_id;
             var requestPath = '/screen-comments/' + currentScreenId + '/' + comment_id;
             $.ajax({
@@ -406,32 +413,32 @@
                             $commentItem.find('strong').text(value.user);
                             $commentItem.find('small').text('(' + moment(value.created).format('ll') + ')');
 
-                            $commentItem.find('.edit-comment').attr('data-comment-edit',  value.id);
-                            $commentItem.find('.delete-comment').attr('data-comment-delete',  value.id);
-                            $commentItem.find('.comment-content').attr('data-comment-edit',  value.id);
+                            $commentItem.find('.edit-comment').attr('data-comment-edit', value.id);
+                            $commentItem.find('.delete-comment').attr('data-comment-delete', value.id);
+                            $commentItem.find('.comment-content').attr('data-comment-edit', value.id);
 
                             $('#commentModal .comments-list').append($commentItem);
                         })
                     }
                 }
             });
-         }
-         $('#commentModal').css({display:"block", top:popupY + 'px', left: popupX + 'px'});
-     });
+        }
+        $('#commentModal').css({ display: "block", top: popupY + 'px', left: popupX + 'px' });
+    });
 
-     $(document).on('click', '.edit-comment', function () {
+    $(document).on('click', '.edit-comment', function () {
         $('.comment-content').prop('disabled', true);
         var comment_id = $(this).attr('data-comment-edit');
         var $prevInput = $("input[data-comment-edit=" + comment_id + "]");
-        $prevInput.prop('disabled', function(i, v) { return !v; });
+        $prevInput.prop('disabled', function (i, v) { return !v; });
     });
 
-     $(document).on('click', '.delete-comment', function () {
-         var comment_id = $(this).attr('data-comment-delete');
-         var url = '/delete-comment/';
-          var $comment = $(this);
-         if(comment_id){
-             $.ajax({
+    $(document).on('click', '.delete-comment', function () {
+        var comment_id = $(this).attr('data-comment-delete');
+        var url = '/delete-comment/';
+        var $comment = $(this);
+        if (comment_id) {
+            $.ajax({
                 url: url,
                 method: 'POST',
                 data: {
@@ -444,10 +451,10 @@
                     }
                 }
             });
-         }
-     });
+        }
+    });
 
-     $(document).on('keypress', '.comment-content', function (e) {
+    $(document).on('keypress', '.comment-content', function (e) {
         var code = (e.keyCode ? e.keyCode : e.which);
         if (parseInt(code) === 13) {
             e.preventDefault();
@@ -455,7 +462,7 @@
             var $edit = $(this);
             var commentId = $(this).attr('data-comment-edit');
             var url = '/edit-comment/';
-            if(comment) {
+            if (comment) {
                 $.ajax({
                     url: url,
                     method: 'POST',
@@ -476,11 +483,11 @@
         }
     });
 
-     $(document).on('click', '#send_comment', function () {
-         var comment = $('#comment_text').val();
-         if(comment){
-             var requestPath = '/new-comment/'
-             $.ajax({
+    $(document).on('click', '#send_comment', function () {
+        var comment = $('#comment_text').val();
+        if (comment) {
+            var requestPath = '/new-comment/'
+            $.ajax({
                 url: requestPath,
                 method: 'POST',
                 data: {
@@ -500,8 +507,8 @@
                         $commentItem.find('strong').text(response.user);
                         $commentItem.find('small').text('(' + moment(response.created).format('ll') + ')');
 
-                        $commentItem.find('.edit-comment').attr('data-comment-edit',  response.id);
-                        $commentItem.find('.comment-content').attr('data-comment-edit',  response.id);
+                        $commentItem.find('.edit-comment').attr('data-comment-edit', response.id);
+                        $commentItem.find('.comment-content').attr('data-comment-edit', response.id);
                         $('#commentModal .comments-list').append($commentItem);
                         $('#commentModal').hide();
                         commentId = '';
@@ -511,13 +518,13 @@
                     }
                 }
             });
-         }
-     })
+        }
+    })
 
     //  preview model code
 
     $(document).on('click', '#image', function () {
-        if(mode == PREVIEWMODE) {
+        if (mode == PREVIEWMODE) {
             $('.existed').css("opacity", "1");
             setTimeout(function () {
                 $('.existed').css("opacity", "0");
@@ -526,7 +533,7 @@
     });
 
     $(document).on('click', '.existed', function () {
-        if(mode == EDITMODE) {
+        if (mode == EDITMODE) {
             toggleErrors(['.validate_error'], false);
             $('#screenModal').modal();
             var link_to = $(this).data('link_to');
@@ -545,7 +552,7 @@
             showHideInputs(link_to, link_screen);
         }
 
-        if(mode == PREVIEWMODE) {
+        if (mode == PREVIEWMODE) {
             var link_to = $(this).data('link_to');
             if (link_to == 'external') {
                 var new_window = $(this).data('new_window');
@@ -594,7 +601,7 @@
         currentScreenId = $(this).data('screen-id');
         var screenUrl = $(this).data('get-screen-url');
         $('#modalButton').attr('data-url', screenUrl);
-        var src = $( "img[screen-id=" + currentScreenId + "]" ).attr("src");
+        var src = $("img[screen-id=" + currentScreenId + "]").attr("src");
         $("#screenImage img").attr("src", src);
         mode = EDITMODE;
         var url = $(this).data("event_url");
@@ -605,7 +612,7 @@
             success: function (response) {
                 if (response) {
                     $('#screenImage .existed').remove();
-                     $("#screenImage .comment").remove();
+                    $("#screenImage .comment").remove();
                     $('#screenImage img').attr('src', response.image);
                     $.each(response.screen_events, function (index, value) {
                         var $eventBox = $('#adjacent-content').clone(true, true);
@@ -644,7 +651,7 @@
     $(document).on('click', '#sharePrototype', function () {
         var email = $('#email_share').val();
         var url = $(this).data('url');
-        if(email){
+        if (email) {
             $.ajax({
                 url: url,
                 method: 'POST',
@@ -656,7 +663,7 @@
                 success: function (response) {
                     showNotifications("success", response.msg);
                 },
-        });
+            });
         }
     });
 

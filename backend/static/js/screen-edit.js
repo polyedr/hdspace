@@ -311,7 +311,9 @@
     });
 
     var copyButton = document.getElementById('copyButton');
-    var clipboard = new ClipboardJS(copyButton);
+    if (copyButton) {
+        var clipboard = new ClipboardJS(copyButton);
+    }
 
     $('.share-button').on('click', function () {
        $('#shareScreen').modal();
