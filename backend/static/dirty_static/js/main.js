@@ -263,7 +263,7 @@ $(document).ready(function () {
                 hideContentContainer();
                 // displayContentContainer();
     });
-    
+
     $("#buttons_liT").click(function(){
 
             hideContentContainer();
@@ -554,9 +554,11 @@ $(document).ready(function () {
      * This highlights the screen on the screen selector that is currently being displayed on the device
      */
     function highlightScreenOnDevice(screenshotId){
-        var screenElement = getScreenElementOnScreenSelector(screenshotId);
-        var screenElementChildToHighlight = screenElement.find(".tab-pane.active.imageOutliner");
-        screenElementChildToHighlight.addClass("highlight");
+        if(screenshotId && screenshotId !== "") {
+            var screenElement = getScreenElementOnScreenSelector(screenshotId);
+            var screenElementChildToHighlight = screenElement.find(".tab-pane.active.imageOutliner");
+            screenElementChildToHighlight.addClass("highlight");
+        }
     }
 
     /**
