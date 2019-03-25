@@ -831,20 +831,20 @@
                                 webApp = 'WebApp';
                                 mobileApp = 'MobileApp';
                                 if (checkDeviceType === webApp) {
-                                    console.log("check device type is successful and it's Web App");
+//                                    console.log("check device type is successful and it's Web App");
                                     $('#laptopTab').addClass('active');
                                     $('#tabletTab').removeClass('active');
                                     $('#mobileTab').removeClass('active');
                                     changeIDLaptop();
                                     ajaxGetStateCheckDevice();
                                     if(timesRun === noOfTimes){
-                                        console.log('clear interval');
+//                                        console.log('clear interval');
                                         $('#loadingSubmitPage').css("display","none");
                                         clearInterval(interval);
                                     }
                                 }
                                 else if (checkDeviceType === mobileApp){
-                                    console.log("check device type is successful and it's Mobile App");
+//                                    console.log("check device type is successful and it's Mobile App");
                                     $('#laptopTab').removeClass('active');
                                     $('#tabletTab').removeClass('active');
                                     $('#mobileTab').addClass('active');
@@ -854,7 +854,7 @@
                                     $('#rotate-phone2').removeClass('active');
                                     changeIDMobile();
                                     if(timesRun === noOfTimes){
-                                        console.log('clear interval');
+//                                        console.log('clear interval');
                                         $('#loadingSubmitPage').css("display","none");
                                         clearInterval(interval);
                                     }
@@ -913,7 +913,7 @@
 
             function changeIDLaptop(){
                 changeAspectRatioLaptop();
-                console.log('weebApp');
+//                console.log('weebApp');
                 $.ajax({
                 type:'POST',
                 url: '/index/',
@@ -926,7 +926,7 @@
 
             function changeIDTablet(){
                 changeAspectRatioTablet();
-                console.log('TabApp');
+//                console.log('TabApp');
                 $.ajax({
                 type:'POST',
                 url: '/index/',
@@ -939,7 +939,7 @@
 
             function changeIDMobile(){
                 changeAspectRatioPhone();
-                console.log('MobileApp');
+//                console.log('MobileApp');
                 $.ajax({
                 type:'POST',
                 url: '/index/',
@@ -1125,8 +1125,8 @@
             // getting the values of the checked items
             var bool_colors = document.getElementById('colorsAD').checked;
             var bool_styles = document.getElementById('stylesAD').checked;
-            console.log("colors: "+ bool_colors);
-            console.log("styles: "+ bool_styles);
+//            console.log("colors: "+ bool_colors);
+//            console.log("styles: "+ bool_styles);
 
             if (bool_colors || bool_styles){
                 //Check if only one screen exists
@@ -1153,7 +1153,7 @@
                             setTimeout(customSwal, 1000);
                         }
                         else{
-                            console.log('closed');
+//                            console.log('closed');
                             swal.close();
                         }
                     })();
@@ -1187,12 +1187,12 @@
                     });
                     isTimerStarted = true;
                     if(timer > 0) {
-                        console.log('running');
+//                        console.log('running');
                         timer--;
                         setTimeout(customSwal, 1000);
                     }
                     else{
-                        console.log('closed');
+//                        console.log('closed');
                         swal.close();
                     }
                 })();
@@ -1279,15 +1279,15 @@
                 $('#CheckUploadScreen').popup({ escape: false, blur: false, autoopen: true });
                 intervalLoop();
                 function intervalLoop(){
-                    console.log('interval function');
+//                    console.log('interval function');
                     internal = setInterval(function(){
                         timesRun += 1;
                         noOfTimes = 50;
                         $('#CheckUploadScreen_background').attr('style', 'opacity: 0.95;visibility: visible;background-color: rgb(0, 0, 0);position: fixed;top: 0px;right: 0px;bottom: 0px;left: 0px;z-index: 100000;');
-                        console.log('interval timer');
+//                        console.log('interval timer');
                         if(timesRun === noOfTimes){
                             clearInterval(internal);
-                            console.log('interval function else');
+//                            console.log('interval function else');
                         }
                     },1);
                 }
@@ -1296,18 +1296,18 @@
             currentPage = $('#retrieveCurrentPage').html();
             findAllPageName = $('#datatables-example').find('.checkImageNameScreenshotSelector');
             findAllImage = $('#datatables-example').find('.imageOutliner');
-            console.log(currentPage);
+//            console.log(currentPage);
             for(i = 0;i < findAllPageName.length;i++) {
                 imageName = findAllPageName[i].innerHTML;
-                console.log(imageName);
-                console.log('I am checking if the current screen exists!');
+//                console.log(imageName);
+//                console.log('I am checking if the current screen exists!');
                 if (currentPage.toLowerCase() === imageName.toLowerCase()){
-                    console.log('This is a current Screen');
+//                    console.log('This is a current Screen');
                     findAllImage[i].setAttribute('class', 'changeBorderOfScreen');
                     identifyCurrentScreen = findAllImage[i].className;
-                    console.log(identifyCurrentScreen);
+//                    console.log(identifyCurrentScreen);
                     display = findAllImage[i].getAttribute('src');
-                    console.log(display);
+//                    console.log(display);
                     findAllImage[i].setAttribute('style', 'border: 2px solid #18a689;');
                 }else {
                     console.log('No Current Screen');
@@ -1317,9 +1317,9 @@
         var mid, gmid, glistOfScreens = [], screens = [];
         function selectorTransferNext(){
             var midTag = $('h4').closest('.currentlyChecked').find('h4');
-            console.log("mid bhim");
-            console.log(midTag);
-            console.log(midTag[0].innerText);
+//            console.log("mid bhim");
+//            console.log(midTag);
+//            console.log(midTag[0].innerText);
             mid = midTag[0].innerText;
             setMasterscreenshot(mid);
             $('.currentlyChecked').addClass('hidden');
@@ -1393,15 +1393,15 @@
             setListofScreens(screens);
             screens = [];
             var listOfScreens = getListofScreens();
-            console.log('listOfScreens');
-            console.log(listOfScreens);
-            console.log("mid in selectorTransferApply fn");
-            console.log(mid);
+//            console.log('listOfScreens');
+//            console.log(listOfScreens);
+//            console.log("mid in selectorTransferApply fn");
+//            console.log(mid);
             // getting the values of the checked items
             var bool_colors = document.getElementById('colorsAD').checked;
             var bool_styles = document.getElementById('stylesAD').checked;
-            console.log("colors: "+ bool_colors);
-            console.log("styles: "+ bool_styles);
+//            console.log("colors: "+ bool_colors);
+//            console.log("styles: "+ bool_styles);
 
             // both colors and styles are checked
             if(bool_colors && bool_styles){
@@ -1498,19 +1498,19 @@
                 count = 0;
                 for(i=0;i<checkIfAllChecked.length;i++){
                     getAllStyle = checkIfAllChecked[i].getAttribute('style');
-                    console.log(getAllStyle);
+//                    console.log(getAllStyle);
                     style = 'position: absolute;width: 20px;height: 20px;z-index: 10000;left: 50%;top: 50%;transform: translate(240%,-50%);background-color: #b5b4b400;border-radius: 50%;cursor:pointer;visibility:visible';
                     if (getAllStyle === style){
                         count += 1;
-                        console.log('Adding 1 to the count');
+//                        console.log('Adding 1 to the count');
                         decreaseCount = checkIfAllChecked.length - 1;
                         if (count === decreaseCount){
-                            console.log('Deselect all button should appear and select all disappear');
+//                            console.log('Deselect all button should appear and select all disappear');
                             $('#btnIdSelectAll').addClass('hidden');
                             $('#btnIdDeselectAll').removeClass('hidden');
                             $('#btnIdApply').removeClass('hidden');
                         } else{
-                            console.log('Hide Deselect All Button');
+//                            console.log('Hide Deselect All Button');
                             $('#btnIdDeselectAll').removeClass('hidden');
                         }
                     } else{
@@ -1522,27 +1522,27 @@
 
         function checkIfScreenIsChecked() {
             var getAllStyle, innerHTMLofVisible, innerHTMLofInvisible, checkIfChecked, i, dontCheckHiddenScreen, getAllClass;
-            console.log('i am now executed');
+//            console.log('i am now executed');
             checkIfChecked = $('#datatables-example-design').find('.CisDesignToScreen');
             dontCheckHiddenScreen = $('#datatables-example-design').find('td');
             //Display all found class specified above
-            console.log(checkIfChecked);
+//            console.log(checkIfChecked);
             for (i = 0; i < checkIfChecked.length; i++) {
                 getAllStyle = checkIfChecked[i].getAttribute('style');
                 getAllClass = dontCheckHiddenScreen[i].getAttribute('class');
                 //Display style of all classes
-                console.log(getAllStyle);
-                console.log(getAllClass);
+//                console.log(getAllStyle);
+//                console.log(getAllClass);
                 innerHTMLofVisible = "position: absolute;width: 20px;height: 20px;z-index: 10000;left: 50%;top: 50%;transform: translate(240%,-50%);background-color: #b5b4b4;border-radius: 50%;cursor:pointer;visibility:visible";
                 innerHTMLofInvisible = "top:0;position:absolute;visibility:hidden";
                 if (getAllClass === 'ui-sortable-handle currentlyChecked hidden') {
-                    console.log('I will exit the condition and jump to "for loop condition"');
+//                    console.log('I will exit the condition and jump to "for loop condition"');
                 }
                 else {
-                    console.log('Starting to check if screens are selected or not');
-                    console.log(getAllClass);
+//                    console.log('Starting to check if screens are selected or not');
+//                    console.log(getAllClass);
                     if (getAllStyle === innerHTMLofVisible) {
-                        console.log('All Screens are unchecked');
+//                        console.log('All Screens are unchecked');
                         $('#btnIdNext').addClass('hidden');
                         $('#btnIdBack').removeClass('hidden');
                         $('#btnIdSelectAll').removeClass('hidden');
@@ -1550,13 +1550,13 @@
                         $('#btnIdApply').addClass('hidden');
                         checkIfAllScChecked();
                     } else if (getAllStyle === innerHTMLofInvisible) {
-                        console.log('One or more Screens still checked');
+//                        console.log('One or more Screens still checked');
                         $('#btnIdNext').addClass('hidden');
                         $('#btnIdBack').removeClass('hidden');
                         $('#btnIdSelectAll').removeClass('hidden');
                         $('#btnIdApply').removeClass('hidden');
                         $('#btnIdDeselectAll').removeClass('hidden');
-                        console.log('I am Breaking(Uncheck all to avoid break)');
+//                        console.log('I am Breaking(Uncheck all to avoid break)');
                         break;
                     }
                 }
@@ -1583,16 +1583,16 @@
                 findAllStatOfCheck = $('#datatables-example-design').find('.checkIconDeselectDesign');
                 findAllStatOfUncheck = $('#datatables-example-design').find('.checkIconSelectedDesign');
                 findAllImage = $('#datatables-example-design').find('.imageDesign');
-                console.log('I am checking if already screen is checked @ master');
+//                console.log('I am checking if already screen is checked @ master');
                 for(i = 0;i < findAllStatOfCheck.length;i++) {
-                    console.log('Displaying all found checked screen');
+//                    console.log('Displaying all found checked screen');
                     identifyCurrentScreen = findAllStatOfCheck[i].getAttribute('style');
                     identifyImageOutlined = findAllImage[i].getAttribute('style');
-                    console.log(identifyCurrentScreen);
-                    console.log(identifyImageOutlined);
+//                    console.log(identifyCurrentScreen);
+//                    console.log(identifyImageOutlined);
                     checkedInnerHTML = 'position: absolute;width: 20px;height: 20px;z-index: 10000;left: 50%;top: 50%;transform: translate(240%,-50%);background-color: #b5b4b400;border-radius: 50%;cursor:pointer;visibility:visible';
                     if (identifyCurrentScreen === checkedInnerHTML){
-                        console.log('There is a checked master screen already, Change CSS');
+//                        console.log('There is a checked master screen already, Change CSS');
                         findAllStatOfCheck[i].setAttribute('style', 'top:0;position:absolute;visibility:hidden');
                         findAllStatOfUncheck[i].setAttribute('style', 'position: absolute;width: 20px;height: 20px;z-index: 10000;left: 50%;top: 50%;transform: translate(240%,-50%);background-color: #b5b4b4;border-radius: 50%;cursor:pointer;visibility:visible');
                         imgOutlineCheck = 'max-height: 136px; max-width: 100px; margin: 0;opacity:0.5;border: 2px solid blue;width: 100%;height: auto;';
@@ -1612,7 +1612,7 @@
                 target.closest('td').find('img').attr('style', 'max-height: 136px; max-width: 100px; margin: 0;opacity:1;border: 1px solid #c1c1c159;width: 100%;height: auto;');
                 target.closest('td').find('.checkIconSelectedDesign').attr('style', 'position: absolute;width: 20px;height: 20px;z-index: 10000;left: 50%;top: 50%;transform: translate(240%,-50%);background-color: #b5b4b4;border-radius: 50%;cursor:pointer;visibility:visible');
                 $('#optionAvailability').addClass('hidden');
-                console.log('i am here');
+//                console.log('i am here');
             });
     </script>
 
