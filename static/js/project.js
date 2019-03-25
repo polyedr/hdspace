@@ -15,58 +15,58 @@
 		approved: "backgroundOrange"
 	};
 
-	toggleErrors([".validate_error"], false);
+	// toggleErrors([".validate_error"], false);
 
-	$(".js-upload-photos").click(function () {
-		$("#fileupload").click();
-	});
-
-	if ($("#fileupload").fileupload) {
-		$("#fileupload").fileupload({
-			dataType: "json",
-			sequentialUploads: true,
-			start: function (e) {
-				$(".progress").removeClass("hide");
-			},
-			stop: function (e) {
-				$(".progress").addClass("hide");
-			},
-			progressall: function (e, data) {
-				var progress = parseInt((data.loaded / data.total) * 100, 10);
-				var strProgress = progress + "%";
-				$(".progress-bar").css({ width: strProgress });
-				$(".progress-bar").text(strProgress);
-			},
-			done: function (e, data) {
-				var response = data.result;
-				if (response.is_valid) {
-					var $eventBox = $("#screen-image-content").clone(true, true);
-					$eventBox.removeAttr("id");
-					$eventBox.removeClass("hide");
-					$eventBox.find("img").attr("src", response.url);
-					$eventBox.find("img").attr("data-preview_url", response.preview_url);
-					$eventBox.find("img").attr("data-screen-save-url", response.save_url);
-					$eventBox.find("img").attr("data-event_url", response.event_url);
-					$eventBox.find("img").attr("screen-id", response.pk);
-					$eventBox.find("a").attr("data-screen-id", response.pk);
-					// $eventBox.find('a:nth-child(2)').attr('href', response.edit_screen_url);
-					$eventBox
-						.find("a:nth-child(2)")
-						.attr("data-event_url", response.event_url);
-					$eventBox
-						.find("a:nth-child(2)")
-						.attr("data-get-screen-url", response.save_url);
-					$eventBox.find(".message-avatar-wrap").addClass("not-selected-msg");
-					$(".image-list-body").append($eventBox);
-					$(".progress").addClass("hide");
-					$(".screen_actions").show();
-					showNotifications("success", response.msg);
-				} else {
-					showNotifications("error", response.msg);
-				}
-			}
-		});
-	}
+	// $(".js-upload-photos").click(function () {
+	// 	$("#fileupload").click();
+	// });
+    //
+	// if ($("#fileupload").fileupload) {
+	// 	$("#fileupload").fileupload({
+	// 		dataType: "json",
+	// 		sequentialUploads: true,
+	// 		start: function (e) {
+	// 			$(".progress").removeClass("hide");
+	// 		},
+	// 		stop: function (e) {
+	// 			$(".progress").addClass("hide");
+	// 		},
+	// 		progressall: function (e, data) {
+	// 			var progress = parseInt((data.loaded / data.total) * 100, 10);
+	// 			var strProgress = progress + "%";
+	// 			$(".progress-bar").css({ width: strProgress });
+	// 			$(".progress-bar").text(strProgress);
+	// 		},
+	// 		done: function (e, data) {
+	// 			var response = data.result;
+	// 			if (response.is_valid) {
+	// 				var $eventBox = $("#screen-image-content").clone(true, true);
+	// 				$eventBox.removeAttr("id");
+	// 				$eventBox.removeClass("hide");
+	// 				$eventBox.find("img").attr("src", response.url);
+	// 				$eventBox.find("img").attr("data-preview_url", response.preview_url);
+	// 				$eventBox.find("img").attr("data-screen-save-url", response.save_url);
+	// 				$eventBox.find("img").attr("data-event_url", response.event_url);
+	// 				$eventBox.find("img").attr("screen-id", response.pk);
+	// 				$eventBox.find("a").attr("data-screen-id", response.pk);
+	// 				// $eventBox.find('a:nth-child(2)').attr('href', response.edit_screen_url);
+	// 				$eventBox
+	// 					.find("a:nth-child(2)")
+	// 					.attr("data-event_url", response.event_url);
+	// 				$eventBox
+	// 					.find("a:nth-child(2)")
+	// 					.attr("data-get-screen-url", response.save_url);
+	// 				$eventBox.find(".message-avatar-wrap").addClass("not-selected-msg");
+	// 				$(".image-list-body").append($eventBox);
+	// 				$(".progress").addClass("hide");
+	// 				$(".screen_actions").show();
+	// 				showNotifications("success", response.msg);
+	// 			} else {
+	// 				showNotifications("error", response.msg);
+	// 			}
+	// 		}
+	// 	});
+	// }
 
 	$("#addTask").on("click", function (e) {
 		$("#editTaskButton").hide();
@@ -258,7 +258,8 @@
 			method: "GET",
 			data: {
 				status: status,
-				last_pk: last_pk
+				last_pk: last_pk,
+				name: 'ChatMessages'
 			},
 			dataType: "json",
 			success: function (response) {
@@ -532,58 +533,58 @@
 		$("#messagefileupload").click();
 	});
 
-	if ($("#messagefileupload").fileupload) {
-		$("#messagefileupload").fileupload({
-			dataType: "json",
-			sequentialUploads: true,
-			done: function (e, data) {
-				var response = data.result;
-				if (response.is_valid) {
-					var username = $(".chat-discussion").data("username");
-					var user_id = $(".chat-discussion").attr("data-id");
-					var owner = $(".chat-discussion").data("project-owner");
-					var $msgForm = $("#msg_form").clone(true, true);
-					$msgForm.removeClass("hide");
-					$msgForm.removeClass("right");
-					$msgForm.addClass("left");
-					var message_date = moment(response.sent_at).format("MMM Do, h:mm a");
-					$msgForm.find(".message-date").text(message_date);
-					$msgForm.find(".message-content").text("");
-					$msgForm
-						.find(".message-file")
-						.append(
-							"<a href=" +
-							response.file +
-							" download>" +
-							response.file_name +
-							"</a>"
-						);
-					$msgForm.find(".message-author").text(username);
-					$msgForm.find(".add-to-task").remove();
-					$msgForm.find(".message-avatar").attr("src", response.avatar);
-					$msgForm.find(".author-role").text("(" + response.role + ")");
-					$msgForm
-						.find(".author-role")
-						.attr("data-author-id", response.sender_id);
-					if (parseInt(user_id) === parseInt(owner)) {
-						$msgForm
-							.find(".message-edit")
-							.attr("data-message-id", response.message_id);
-						$msgForm
-							.find(".message-delete")
-							.attr("data-message-id", response.message_id);
-					} else {
-						$msgForm.find(".message-edit").remove();
-						$msgForm.find(".message-delete").remove();
-					}
-					$(".chat-discussion").append($msgForm);
-					$(".ibox-content").scrollTop($(".chat-discussion")[0].scrollHeight);
-				} else {
-					showNotifications("error", response.msg);
-				}
-			}
-		});
-	}
+	// if ($("#messagefileupload").fileupload) {
+	// 	$("#messagefileupload").fileupload({
+	// 		dataType: "json",
+	// 		sequentialUploads: true,
+	// 		done: function (e, data) {
+	// 			var response = data.result;
+	// 			if (response.is_valid) {
+	// 				var username = $(".chat-discussion").data("username");
+	// 				var user_id = $(".chat-discussion").attr("data-id");
+	// 				var owner = $(".chat-discussion").data("project-owner");
+	// 				var $msgForm = $("#msg_form").clone(true, true);
+	// 				$msgForm.removeClass("hide");
+	// 				$msgForm.removeClass("right");
+	// 				$msgForm.addClass("left");
+	// 				var message_date = moment(response.sent_at).format("MMM Do, h:mm a");
+	// 				$msgForm.find(".message-date").text(message_date);
+	// 				$msgForm.find(".message-content").text("");
+	// 				$msgForm
+	// 					.find(".message-file")
+	// 					.append(
+	// 						"<a href=" +
+	// 						response.file +
+	// 						" download>" +
+	// 						response.file_name +
+	// 						"</a>"
+	// 					);
+	// 				$msgForm.find(".message-author").text(username);
+	// 				$msgForm.find(".add-to-task").remove();
+	// 				$msgForm.find(".message-avatar").attr("src", response.avatar);
+	// 				$msgForm.find(".author-role").text("(" + response.role + ")");
+	// 				$msgForm
+	// 					.find(".author-role")
+	// 					.attr("data-author-id", response.sender_id);
+	// 				if (parseInt(user_id) === parseInt(owner)) {
+	// 					$msgForm
+	// 						.find(".message-edit")
+	// 						.attr("data-message-id", response.message_id);
+	// 					$msgForm
+	// 						.find(".message-delete")
+	// 						.attr("data-message-id", response.message_id);
+	// 				} else {
+	// 					$msgForm.find(".message-edit").remove();
+	// 					$msgForm.find(".message-delete").remove();
+	// 				}
+	// 				$(".chat-discussion").append($msgForm);
+	// 				$(".ibox-content").scrollTop($(".chat-discussion")[0].scrollHeight);
+	// 			} else {
+	// 				showNotifications("error", response.msg);
+	// 			}
+	// 		}
+	// 	});
+	// }
 
 	if ($(".screen-image-exist").length == 1) {
 		$(".screen_actions").hide();
