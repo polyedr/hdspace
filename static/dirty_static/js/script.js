@@ -1105,7 +1105,7 @@ function submitUploadedScreen() {
         var timer = 1, // timer in seconds
             isTimerStarted = false;
         (function customSwal() {
-            console.log('this is me 1st');
+            // console.log('this is me 1st');
             swal({
                 title: "Upload Screenshot",
                 text: "Closing in " + timer + " seconds...",
@@ -1122,7 +1122,7 @@ function submitUploadedScreen() {
 
                 } else {
                     setTimeout(customSwal, 1000);
-                    console.log('I am looping through');
+                    // console.log('I am looping through');
                 }
 
             }
@@ -1132,7 +1132,7 @@ function submitUploadedScreen() {
         $('#popupNewSuggester').popup('hide');
         var currentscreen = '';
         $.when(getAllScreen()).done(function (a1) {
-            console.log(pagesResult);
+            // console.log(pagesResult);
             currentscreen = pagesResult;
         });
         swal({
@@ -1175,7 +1175,7 @@ function chargeCheck() {
     $('#hideSpanOnUpload').addClass('hidden');
     $('#approveButton').attr('style', 'padding: 0;padding-top: 10px;visibility: hidden;');
     document.body.onfocus = roar;
-    console.log('Uploading....')
+    // console.log('Uploading....')
 }
 function roar() {
     var emptyValue = document.getElementById('upload-search').value;
@@ -1195,7 +1195,7 @@ function roar() {
         $('#approveButton').attr('style', 'padding: 0;padding-top: 10px;visibility: visible;');
     }
     document.body.onfocus = null;
-    console.log('Cancelled..hh...');
+    // console.log('Cancelled..hh...');
 }
 
 $(document).ready(
@@ -1378,10 +1378,10 @@ function searching_screens(key) {
                 var getAllPTagScreen, getAllPTagScreenT, noZero = 0, insertSpan;
                 getAllPTagScreen = $('#widgetsHidder').find('p');
                 getAllPTagScreenT = $('#widgetsHidderT').find('p');
-                console.log('getAllPTag screen');
-                console.log(getAllPTagScreen);
-                console.log(getAllPTagScreen.length);
-                console.log(getAllPTagScreenT.length);
+                // console.log('getAllPTag screen');
+                // console.log(getAllPTagScreen);
+                // console.log(getAllPTagScreen.length);
+                // console.log(getAllPTagScreenT.length);
                 if (getAllPTagScreen.length > noZero) {
                     screensDefaultFunction();
                     insertSpan = document.createElement("span");
@@ -1523,8 +1523,8 @@ function searching_screensT(key) {
             function executeOnDelayS() {
                 var getAllPTagScreenT, noZero = 0, insertSpan;
                 getAllPTagScreenT = $('#widgetsHidderT').find('p');
-                console.log('getAllPTag screen');
-                console.log(getAllPTagScreenT.length);
+                // console.log('getAllPTag screen');
+                // console.log(getAllPTagScreenT.length);
                 if (getAllPTagScreenT.length > noZero) {
                     screensDefaultFunctionT();
                     insertSpan = document.createElement("span");
@@ -1657,9 +1657,9 @@ function searching_widgets(key) {
             function executeOnDelay() {
                 getAllPTagWidget = $('#widgetsHidder').find('p');
                 getAllPTagWidgetT = $('#widgetsHidderT').find('p');
-                console.log('getAllPTag');
-                console.log(getAllPTagWidget.length);
-                console.log(getAllPTagWidgetT.length);
+                // console.log('getAllPTag');
+                // console.log(getAllPTagWidget.length);
+                // console.log(getAllPTagWidgetT.length);
                 if (getAllPTagWidget.length > noZero) {
                     widgetsDefaultFunction();
                     insertSpan = document.createElement("span");
@@ -1799,8 +1799,8 @@ function searching_widgetsT(key) {
             }
             function executeOnDelay() {
                 getAllPTagWidgetT = $('#widgetsHidderT').find('p');
-                console.log('getAllPTag T');
-                console.log(getAllPTagWidgetT.length);
+                // console.log('getAllPTag T');
+                // console.log(getAllPTagWidgetT.length);
                 if (getAllPTagWidgetT.length > noZero) {
                     widgetsDefaultFunctionT();
                     insertSpan = document.createElement("span");
@@ -1883,7 +1883,7 @@ function widgetsContainerT() {
     widgetsDefaultFunctionT();
 }
 function butttonsContainerT() {
-    console.log('this function is still in work by santiago');
+    // console.log('this function is still in work by santiago');
     var action = '1';
     hideContentContainer();
     $.ajax({
@@ -1896,8 +1896,8 @@ function butttonsContainerT() {
         },
         success: function (htmlResponse) {
             data = $.parseJSON(htmlResponse);
-            console.log('data');
-            console.log(data);
+            // console.log('data');
+            // console.log(data);
             $("#buttonHidderT").removeClass('content-container');
             $("#buttonHidderT").addClass('content-container-on');
             document.getElementById("menuContainer").setAttribute("data-displayed-container", "buttonHidderT");
@@ -1922,7 +1922,7 @@ function screenContainer() {
     $('#screensHidder').empty();
     searching_screens(document.getElementById('upload-search').value);
     screensDefaultFunction();
-    console.log("create post is working!");
+    // console.log("create post is working!");
     i++;
 }
 
@@ -1933,7 +1933,7 @@ function screenContainerT() {
 
     searching_screensT(document.getElementById('top-search').value);
     screensDefaultFunctionT();
-    console.log("create post is working!");
+    // console.log("create post is working!");
     i++;
 }
 i = 0;
@@ -2215,7 +2215,7 @@ function searchbarSize() {
         // document.getElementById('arrow').style.marginTop = '20px';
         // document.getElementById('arrow').style.width = '2%';
         document.getElementById('notification').style.height = '40px';
-        console.log('Hellooooooooo');
+        // console.log('Hellooooooooo');
     }
     else if ($(window).width() < 1300 && $(window).width() > 1100) {
         $('#rightMenuT').addClass('col-xs-1').removeClass('col-xs-2 col-xs-3 col-xs-4 col-xs-5 col-xs-6 col-xs-7 col-xs-8 col-xs-9 col-xs-10 col-xs-12 col-xs-11');
@@ -2272,7 +2272,7 @@ function searchbarSize() {
 function checkSize() {
     recheckSizeAndReload();
     if (window.location.href === "http://127.0.0.1:8000/index/#prototype") {
-        console.log('i am prototype');
+        // console.log('i am prototype');
         $('#projectSection').addClass('col-xs-12').removeClass('col-xs-1 col-xs-2 col-xs-3 col-xs-4 col-xs-5 col-xs-6 col-xs-7 col-xs-8 col-xs-9 col-xs-10 col-xs-11');
         $('#changeZ-index').addClass('col-xs-12').removeClass('col-xs-1 col-xs-2 col-xs-3 col-xs-4 col-xs-5 col-xs-6 col-xs-7 col-xs-8 col-xs-9 col-xs-10 col-xs-11');
         $('#uploadSection12').removeClass('col-xs-1 col-xs-2 col-xs-3 col-xs-4 col-xs-5 col-xs-6 col-xs-7 col-xs-8 col-xs-9 col-xs-10 col-xs-11 col-xs-12');
@@ -2913,7 +2913,7 @@ function confirmEdit(element, commentid) {
 function newTask(task_m) {
     var t = task_m + 1
 
-    console.log('Inside 1' + t)
+    // console.log('Inside 1' + t)
     var task = '<li id=\"task-creation\" class=\"edit-task\" style=\"padding-left:0;\"><h5>Title</h5><input id="new-title-value" type="text" style="width:90%"><h5>Description</h5><input id=\"new-value\" type=\"text\" style=\"width:90%\"><button class=\"btn\" style=\"padding:0 6px\" onclick=\"confirmNewTask(' + String(t) + ')\">Ok</button></li>';
 
     document.getElementById('task-list').innerHTML += task;
@@ -2921,7 +2921,7 @@ function newTask(task_m) {
 function newSubTask(task_m) {
     var t = task_m
 
-    console.log('Inside 1' + t)
+    // console.log('Inside 1' + t)
     var task = '<li id=\"sub-task-creation\" class=\"edit-task\" style=\"padding-left:0;\"><h5>Description</h5><input id=\"new-value\" type=\"text\" style=\"width:90%\"><button class=\"btn\" style=\"padding:0 6px\" onclick=\"confirmNewSubTask(' + String(t) + ')\">Ok</button></li>';
 
     document.getElementById('sub-task-list').innerHTML += task;

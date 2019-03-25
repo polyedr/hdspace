@@ -64,8 +64,8 @@ function deleteElement(newElement) {
 		console.log("Please select an element first!");
 	} else if (newElement.substring(6, 0) === "widget") {
 		var id = newElement.substring(6);
-		console.log("a la rueda: " + id);
-		console.log(document.getElementById("test").innerHTML);
+		// console.log("a la rueda: " + id);
+		// console.log(document.getElementById("test").innerHTML);
 		document.getElementById("test").innerHTML = "None selected";
 		document.getElementById(newElement).remove();
 		$("#slideelem").popup("hide");
@@ -163,7 +163,7 @@ function checkLocked() {
 	function ajaxGetLocked() {
 		return $.ajax({
 			type: "GET",
-			url: "index",
+			url: "/index/",
 			data: {
 				name: "getLocked"
 			},
@@ -171,7 +171,7 @@ function checkLocked() {
 				result = data;
 			},
 			error: function (jqXHR, status, err) {
-				console.log(jqXHR.responseText);
+				console.log('Error ajaxGetLocked');
 				// console.warn("error ajax - ajaxGetLocked");
 			}
 		});
@@ -245,7 +245,7 @@ function checkLockedPro() {
 			},
 			error: function (jqXHR, status, err) {
 				// console.log(jqXHR.responseText);
-				console.warn("error ajax - ajaxGetLockedPro");
+				console.log("error ajax - ajaxGetLockedPro");
 			}
 		});
 	}
@@ -267,7 +267,7 @@ function changeElement(newElement) {
 		document.getElementById(clickedEl).style.color = color;
 	}
 
-	console.log(newElement.id);
+	// console.log(newElement.id);
 
 	$("#favcolor").spectrum("set", getCurColor(newElement));
 	// document.getElementById("favcolor").value = getCurColor(newElement);
@@ -417,12 +417,12 @@ function unLockWidget(newElement) {
 	var id = "widget" + newElement;
 
 	var elm = document.getElementById(id);
-	console.log("I am id1: " + document.getElementById("test").innerHTML);
+	// console.log("I am id1: " + document.getElementById("test").innerHTML);
 	// document.getElementById('drag-resizeId').blur(true);
 	// document.getElementById('test').innerHTML = id;
 
-	console.log("I am id: " + document.getElementById("test").innerHTML);
-	console.log(elm);
+	// console.log("I am id: " + document.getElementById("test").innerHTML);
+	// console.log(elm);
 
 	// document.getElementById('unlock_'+widgetId).remove();
 	// var tagName = document.getElementById(newElement).tagName;
@@ -540,10 +540,10 @@ function lockWidget(id) {
 function activateWidget(id) {
 	var elm = document.getElementById(id);
 	var oInput = document.getElementById(elm.id);
-	console.log(id);
-	console.log("id");
-	console.log(elm);
-	console.log(oInput);
+	// console.log(id);
+	// console.log("id");
+	// console.log(elm);
+	// console.log(oInput);
 
 	if (id === "None selected") {
 		console.log("select something first");
@@ -589,9 +589,9 @@ function activateWidget(id) {
 		document.getElementById(buttonId).style.top = top + "%";
 		// disableTable();
 		document.getElementById("drag-resizeId").blur(true);
-		console.log("test");
-		console.log(document.getElementById("test").innerHTML);
-		console.log(document.getElementById("test").innerHTML);
+		// console.log("test");
+		// console.log(document.getElementById("test").innerHTML);
+		// console.log(document.getElementById("test").innerHTML);
 
 		document.getElementById("overlay" + id.substring(6)).style.zIndex = "-1";
 		document.getElementById("test").innerHTML = "None selected";
@@ -789,9 +789,9 @@ function changeText(newElement, el) {
 		$(y).css("color", fontColor);
 		$(y).css("text-indent", textIndent);
 		$(y).css("background-color", bgcolor); //save background color correctly
-		console.log(y.style);
-		console.log(style);
-		console.log(obj.style);
+		// console.log(y.style);
+		// console.log(style);
+		// console.log(obj.style);
 		obj.style.display = "none"; //hide the current object
 		y.value = x;
 		y.focus();
@@ -811,7 +811,7 @@ function changeText(newElement, el) {
 		var z = textArea.parentNode;
 		var style = window.getComputedStyle(textArea),
 			textAlign = style.getPropertyValue("text-align");
-		console.log(textAlign);
+		// console.log(textAlign);
 		$(obj).css("textAlign", textAlign);
 		obj.style.display = "block";
 		if (obj.nodeName == "INPUT" || obj.nodeName == "TEXTAREA") {
@@ -912,9 +912,9 @@ function getPredictions(id) {
 				result[3][i] +
 				'" class="project-people" style="width:25%;text-align: left;" /> ';
 		}
-		console.log(childhtml);
-		console.log("im running heree");
-		console.log(result);
+		// console.log(childhtml);
+		// console.log("im running heree");
+		// console.log(result);
 		if (result[1] != "") {
 			document.getElementById("ocrID").innerHTML = result[2];
 			document.getElementById("imgID").innerHTML =
@@ -955,7 +955,7 @@ function getAllElements(idName) {
 	var elementList = document
 		.getElementById(idName)
 		.querySelectorAll("img,input,p,button");
-	console.log("length of elementlist: " + elementList.length);
+	// console.log("length of elementlist: " + elementList.length);
 
 	for (index = 0; index < elementList.length; index++) {
 		// console.log('This is element: ' + elementList[index].id)
@@ -1060,7 +1060,7 @@ function updatePageName(newElement) {
 		$(y).css("fontFamily", fontFamily);
 		$(y).css("fontWeight", fontWeight);
 
-		console.log(obj.style);
+		// console.log(obj.style);
 		// obj.style.display = "none";//hide the current object
 		y.value = x;
 		y.focus();
@@ -1179,8 +1179,8 @@ function changeElementTools(state) {
 	var element = document.getElementById(
 		document.getElementById("test").innerHTML
 	);
-	console.log("changeElementToolsRuns");
-	console.log(element);
+	// console.log("changeElementToolsRuns");
+	// console.log(element);
 	switch (state) {
 		//____________________________________________________________________________________________________________________//
 
@@ -1248,7 +1248,7 @@ function changeElementTools(state) {
 }
 
 function removeColor(state) {
-	console.log(state);
+	// console.log(state);
 	var id = document.getElementById("test").innerHTML;
 	var element = document.getElementById(id);
 
@@ -1263,7 +1263,7 @@ function removeColor(state) {
 function updateBack() {
 	var backgroundElm = document.getElementById("backgroundColorChange");
 	var color = backgroundElm.value;
-	console.log(color);
+	// console.log(color);
 	document.getElementById(
 		"classContainer-selector"
 	).style.backgroundColor = color;
@@ -1281,8 +1281,8 @@ function updateBack() {
 function changeBackground() {
 	var backgroundElm = document.getElementById("backgroundColorChange");
 	var color = backgroundElm.value;
-	console.log("color");
-	console.log(color);
+	// console.log("color");
+	// console.log(color);
 	document.getElementById(
 		"classContainer-selector"
 	).style.backgroundColor = color;
@@ -1298,8 +1298,8 @@ function changeBackground() {
 }
 
 function changeBackgroundGradient(colorGradient) {
-	console.log("colorGradient");
-	console.log(colorGradient);
+	// console.log("colorGradient");
+	// console.log(colorGradient);
 	$.ajax({
 		type: "POST",
 		url: "/index/",
@@ -1328,8 +1328,8 @@ function loadCurBackground() {
  * @param elm - The element on the device selected by the user
  */
 function setTools(elm) {
-	console.log("setTools()");
-	console.log(elm);
+	// console.log("setTools()");
+	// console.log(elm);
 
 	var backgroundColorSelector = document.getElementById("editbackgroundcolor");
 	var borderContentsContainer = document.getElementById(
@@ -1452,7 +1452,7 @@ function showAllTools() {
 function getCurrentEditing() {
 	var id = document.getElementById("test").innerHTML;
 	var element = document.getElementById(id);
-	console.log(element);
+	// console.log(element);
 	var elm = window.getComputedStyle(element, null);
 	setTools(element);
 
@@ -1533,7 +1533,7 @@ function getCurrentEditing() {
 			document.getElementById("editradio1").checked = true;
 	}
 	var selectHTML = document.getElementById("optionList");
-	console.log(selectHTML);
+	// console.log(selectHTML);
 
 	if (
 		element.getAttribute("linkvalue") == "" ||
@@ -1552,7 +1552,7 @@ function getCurrentEditing() {
 
 	$.when(ajaxGetPages()).done(function () {
 		var html = "<li>";
-		console.log(pagesResult);
+		// console.log(pagesResult);
 		for (i = 0; i < pagesResult.length; i++) {
 			html +=
 				"<a onclick='changeUrl(\"" +
@@ -1562,7 +1562,7 @@ function getCurrentEditing() {
 				'">' +
 				pagesResult[i] +
 				"</a>";
-			console.log(pagesResult[i]);
+			// console.log(pagesResult[i]);
 		}
 		html = html + "</li>";
 		selectHTML.innerHTML = html;
@@ -1629,7 +1629,7 @@ function saveCurrentStyles() {
 			//____________________________________________________________________________________________________________________//
 		},
 		success: function (data) {
-			console.log("haha he bought a laptop");
+			// console.log("haha he bought a laptop");
 			var getHeaderFDATA, found, getHREF;
 			getHeaderFDATA = data;
 			found = $(getHeaderFDATA).filter(".getMeOnAddNewEle");
@@ -1643,9 +1643,9 @@ function saveCurrentStyles() {
 }
 function goToPageUrl() {
 	var id = document.getElementById("test").innerHTML;
-	console.log(id);
+	// console.log(id);
 	var page = document.getElementById(id).getAttribute("linkvalue");
-	console.log(page);
+	// console.log(page);
 
 	if (!page) {
 		e.preventDefault();
@@ -1662,7 +1662,7 @@ function goToPageUrl() {
 		return false;
 	}
 
-	console.log("done");
+	// console.log("done");
 	document.getElementById("pageId").value = page;
 }
 function changeUrl(url) {
@@ -1700,7 +1700,7 @@ function predTable(newElement) {
 }
 
 function disableTable() {
-	console.log("disable table");
+	// console.log("disable table");
 	$("#editbackgroundcolor").spectrum("hide");
 	$("#editbordercolor").spectrum("hide");
 	$("#favcolor").spectrum("hide");
@@ -1731,7 +1731,7 @@ function disableTable() {
 
 function enableTable(elementId) {
 	console.log("enableTable()");
-	console.log(elementId);
+	// console.log(elementId);
 
 	//____________________________________________________________________________________________________________________//
 
@@ -1773,13 +1773,13 @@ function updateColor(color, state) {
 		w,
 		getAllClassContainerP;
 	console.log("to Check Uodate color eyeyeyey");
-	console.log(color);
+	// console.log(color);
 	if (color) {
 		hexColor = color;
 	}
 	id = document.getElementById("test").innerHTML;
 	console.log("display id");
-	console.log(id);
+	// console.log(id);
 	switch (state) {
 		//____________________________________________________________________________________________________________________//
 
@@ -1792,7 +1792,7 @@ function updateColor(color, state) {
 
 		case "barChartBG":
 			document.getElementById("temp_inner").style.background = hexColor;
-			console.log(document.getElementById("barChartBG").style.fill);
+			// console.log(document.getElementById("barChartBG").style.fill);
 			break;
 
 		//____________________________________________________________________________________________________________________//
@@ -1816,53 +1816,53 @@ function updateColor(color, state) {
 			getAllClassContainer = $("#classContainer-selector");
 			cl = getAllClassContainer[0].getAttribute("class");
 			for (i = 0; i < getAllClassContainer.length; i++) {
-				console.log("display all container");
-				console.log(getAllClassContainer);
-				console.log("change background color");
+				// console.log("display all container");
+				// console.log(getAllClassContainer);
+				// console.log("change background color");
 				changeColor = getAllClassContainer[i].setAttribute(
 					"style",
 					"background:" + hexColor
 				);
-				console.log(changeColor);
-				console.log("get style");
+				// console.log(changeColor);
+				// console.log("get style");
 				getStyle = getAllClassContainer[i].getAttribute("style");
-				console.log(getStyle);
+				// console.log(getStyle);
 			}
 			getAllClassContainerW = document.getElementsByClassName(cl);
-			console.log(" MAricona  display all Work container");
-			console.log(getAllClassContainerW);
+			// console.log(" MAricona  display all Work container");
+			// console.log(getAllClassContainerW);
 
 			for (i = 0; i < getAllClassContainerW.length; i++) {
 				w = getAllClassContainerW[i].getAttribute("class");
 				if (cl === w) {
-					console.log("display all container");
-					console.log(getAllClassContainerW);
-					console.log("change background color");
+					// console.log("display all container");
+					// console.log(getAllClassContainerW);
+					// console.log("change background color");
 					changeColor = getAllClassContainerW[i].setAttribute(
 						"style",
 						"background:" + hexColor
 					);
-					console.log(changeColor);
-					console.log("get style");
+					// console.log(changeColor);
+					// console.log("get style");
 					getStyle = getAllClassContainerW[i].getAttribute("style");
-					console.log(getStyle);
+					// console.log(getStyle);
 				}
 			}
 			getAllClassContainerP = $("#classContainer-selectorPro");
 			for (i = 0; i < getAllClassContainerP.length; i++) {
 				w = getAllClassContainerW[i].getAttribute("class");
 				if (cl === w) {
-					console.log("display all Pro-container");
-					console.log(getAllClassContainerP);
-					console.log("change background color");
+					// console.log("display all Pro-container");
+					// console.log(getAllClassContainerP);
+					// console.log("change background color");
 					changeColor = getAllClassContainerP[i].setAttribute(
 						"style",
 						"background:" + hexColor
 					);
-					console.log(changeColor);
-					console.log("get style");
+					// console.log(changeColor);
+					// console.log("get style");
 					getStyle = getAllClassContainerP[i].getAttribute("style");
-					console.log(getStyle);
+					// console.log(getStyle);
 				}
 			}
 			console.log("to Check Uodate color 22");
@@ -1883,13 +1883,13 @@ function updateColorGradient(color, state) {
 		w,
 		getAllClassContainerP;
 	console.log("Check Color Gradient");
-	console.log(color);
+	// console.log(color);
 	if (color) {
 		hexColor = color;
 	}
 	id = document.getElementById("test").innerHTML;
 	console.log("display id in Gradient");
-	console.log(id);
+	// console.log(id);
 	switch (state) {
 		case "backgroundElm":
 			document.getElementById(id).style.backgroundColor = hexColor;
@@ -1911,52 +1911,52 @@ function updateColorGradient(color, state) {
 			getAllClassContainer = $("#classContainer-selector");
 			cl = getAllClassContainer[0].getAttribute("class");
 			for (i = 0; i < getAllClassContainer.length; i++) {
-				console.log("Collect all Gradient Container");
-				console.log(getAllClassContainer);
-				console.log("Change color of Gradient Container");
+				// console.log("Collect all Gradient Container");
+				// console.log(getAllClassContainer);
+				// console.log("Change color of Gradient Container");
 				changeColor = getAllClassContainer[i].setAttribute(
 					"style",
 					"background:" + hexColor
 				);
-				console.log(changeColor);
-				console.log("Get Style of Gradient Container");
+				// console.log(changeColor);
+				// console.log("Get Style of Gradient Container");
 				getStyle = getAllClassContainer[i].getAttribute("style");
-				console.log(getStyle);
+				// console.log(getStyle);
 			}
 			getAllClassContainerW = document.getElementsByClassName(cl);
-			console.log("Display all Work container");
-			console.log(getAllClassContainerW);
+			// console.log("Display all Work container");
+			// console.log(getAllClassContainerW);
 			for (i = 0; i < getAllClassContainerW.length; i++) {
 				w = getAllClassContainerW[i].getAttribute("class");
 				if (cl === w) {
-					console.log("display all container");
-					console.log(getAllClassContainerW);
-					console.log("change background color");
+					// console.log("display all container");
+					// console.log(getAllClassContainerW);
+					// console.log("change background color");
 					changeColor = getAllClassContainerW[i].setAttribute(
 						"style",
 						"background:" + hexColor
 					);
-					console.log(changeColor);
-					console.log("get style");
+					// console.log(changeColor);
+					// console.log("get style");
 					getStyle = getAllClassContainerW[i].getAttribute("style");
-					console.log(getStyle);
+					// console.log(getStyle);
 				}
 			}
 			getAllClassContainerP = $("#classContainer-selectorPro");
 			for (i = 0; i < getAllClassContainerP.length; i++) {
 				w = getAllClassContainerW[i].getAttribute("class");
 				if (cl === w) {
-					console.log("display all Pro-container");
-					console.log(getAllClassContainerP);
-					console.log("change background color");
+					// console.log("display all Pro-container");
+					// console.log(getAllClassContainerP);
+					// console.log("change background color");
 					changeColor = getAllClassContainerP[i].setAttribute(
 						"style",
 						"background:" + hexColor
 					);
-					console.log(changeColor);
-					console.log("get style");
+					// console.log(changeColor);
+					// console.log("get style");
 					getStyle = getAllClassContainerP[i].getAttribute("style");
-					console.log(getStyle);
+					// console.log(getStyle);
 				}
 			}
 			console.log("to Check Uodate color 22");
@@ -1996,7 +1996,7 @@ function getAllScreen() {
 function widgetsCall(elm) {
 	if (elm.tagName == "BUTTON") {
 		console.log("this is a button");
-		console.log(elm.className);
+		// console.log(elm.className);
 		if (elm.className == "maps") {
 			console.log("this is a maps");
 			setTimeout(function () {
