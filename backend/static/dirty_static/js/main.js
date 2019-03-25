@@ -19,7 +19,7 @@ $(document).ready(function () {
     });
     $("#option-upload").hide();
     $(".red").click(function(){
-        console.log('alo');
+        // console.log('alo');
         //window.location.href='#'
     });
 
@@ -48,7 +48,7 @@ $(document).ready(function () {
     });
     $("#option-upload").hide();
     $(".red").click(function(){
-        console.log('alo');
+        // console.log('alo');
         //window.location.href='#'
     });
 
@@ -622,7 +622,7 @@ $(window).on('load', function() {
         var widthSection = 0;
         var heightSection = 0;
     }else {
-        console.log(document.getElementById('classContainer-selector'));
+        // console.log(document.getElementById('classContainer-selector'));
         var widthSection = document.getElementById('classContainer-selector').clientWidth;
         var heightSection = document.getElementById('classContainer-selector').clientHeight;
     }
@@ -633,8 +633,8 @@ $(window).on('load', function() {
     //var heightLayouts = document.getElementById('slide1').clientHeight;
 
 
-    console.log('sectionHeight: ' + heightSection);
-    console.log('sectionWidth ' + widthSection);
+    // console.log('sectionHeight: ' + heightSection);
+    // console.log('sectionWidth ' + widthSection);
     $.ajax({
         type: "GET",
         url: '/index/',
@@ -673,7 +673,7 @@ $(window).on('load', function() {
                     date_format_str = d.getFullYear().toString()+"-"+((d.getMonth()+1).toString().length==2?(d.getMonth()+1).toString():"0"+(d.getMonth()+1).toString())+"-"+(d.getDate().toString().length==2?d.getDate().toString():"0"+d.getDate().toString());
                     // alert(date_format_str);
                     //  alert(imgName+'/'+imgType+'/'+imgSize+'/'+imgModified);
-                    console.log(imgName+" / "+imgType);
+                    // console.log(imgName+" / "+imgType);
                     img.attr('src', imgUploadSrc);
                     img.appendTo('#imgPreviewResource');
                     currentProjSelected = $('#imageLibraryProject').html();
@@ -695,7 +695,7 @@ $(window).on('load', function() {
     });
 
     function addImageToImagaContainer(src, fileName, fileType, fileSize, fileModified, curProj) {
-        console.log(fileName);
+        // console.log(fileName);
         $('#projectuploadnameResource').attr('value', curProj);
         document.getElementById('fileTypeLIB').value = fileType;
         document.getElementById('fileSixeLIB').value = fileSize;
@@ -706,8 +706,8 @@ $(window).on('load', function() {
 
     function createImgContainerUpload(pathFromUpload, fileName, fileType, fileSize, fileModified){
         var htmlThumbView, htmlListview, eleThum, eleList;
-        console.log('src');
-        console.log(pathFromUpload);
+        // console.log('src');
+        // console.log(pathFromUpload);
         htmlThumbView = '\
             <div class="item-containter"   >\
             <div class="imageWrapper-lib">\
@@ -793,12 +793,12 @@ $(window).on('load', function() {
     function createImgContainer(pathFromAjax, name, type, size, lastModified){
         var htmlThumbView, htmlListview, i, arrayLength, eleThum, eleList;
         $('#imgSortContainter').empty();
-        console.log('src');
-        console.log(pathFromAjax);
+        // console.log('src');
+        // console.log(pathFromAjax);
         arrayLength = pathFromAjax.length;
         for(i=0;i<arrayLength;i++) {
-            console.log('src');
-            console.log(pathFromAjax[0] + ' and ' + pathFromAjax[1]);
+            // console.log('src');
+            // console.log(pathFromAjax[0] + ' and ' + pathFromAjax[1]);
             htmlThumbView = '\
                 <div class="item-containter"   >\
                 <div class="imageWrapper-lib">\
@@ -862,7 +862,7 @@ $(window).on('load', function() {
             //add item in thumview mode
             if ($('#rad-thumbView').is(':checked')) {
                 eleThum = $.parseHTML(htmlThumbView);
-                console.log(pathFromAjax[i]);
+                // console.log(pathFromAjax[i]);
                 $(eleThum).find('img').attr('src', pathFromAjax[i]);
                 $(eleThum).find('.imgName p').html(name[i]);
                 $(eleThum).find('.imgType p').html(type[i]);
@@ -885,8 +885,8 @@ $(window).on('load', function() {
 
     $(window).bind("load", function() {
         var location = window.location.href;
-        console.log(location);
-        console.log('directoryPath');
+        // console.log(location);
+        // console.log('directoryPath');
         if(location === 'http://127.0.0.1:8000/index/#uploaded'){
             libraryMS();
             checkLastAcitivityLib();
@@ -906,8 +906,8 @@ $(window).on('load', function() {
             },
             success: function(data){
                 appendSelection(data);
-                console.log('paths');
-                console.log(data);
+                // console.log('paths');
+                // console.log(data);
             },
             error: function(jqXHR, status, err){
                 console.log(jqXHR.responseText);
@@ -918,24 +918,24 @@ $(window).on('load', function() {
     function appendSelection(arrayCurProj){
         var ul, li, a, i, ele, filter;
         setTimeout(function(){
-            console.log('appendSelection');
+            // console.log('appendSelection');
             filter = arrayCurProj[0];
             ele = document.getElementsByClassName("jstree-container-ul");
             ul = ele[0];
             li = ul.getElementsByTagName("li");
-            console.log(filter);
+            // console.log(filter);
             for (i = 0; i < li.length; i++) {
                 a = li[i].getElementsByTagName("a")[0];
-                console.log('a.innerHTML.toUpperCase()');
-                console.log(a);
+                // console.log('a.innerHTML.toUpperCase()');
+                // console.log(a);
                 a.classList.remove("jstree-clicked");
                 if (a.innerHTML.toUpperCase().indexOf(filter.toUpperCase()) > -1) {
-                    console.log('inside If');
+                    // console.log('inside If');
                     a.classList.add("jstree-clicked");
                     passToAjax(filter);
                 }
             }
             $('#resource').addClass('collapse in');
         },5000);
-        console.log('outside for loop');
+        // console.log('outside for loop');
     }

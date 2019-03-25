@@ -67,17 +67,17 @@
                                                     getAngle = pagesResultAngle.split(' ');
                                                     noTwo = 2;
                                                     noFour = 4;
-                                                    console.log('before if');
-                                                    console.log(getLinearRadial);
-                                                    console.log(getAngle);
-                                                    console.log(getLinearRadial.length);
+//                                                    console.log('before if');
+//                                                    console.log(getLinearRadial);
+//                                                    console.log(getAngle);
+//                                                    console.log(getLinearRadial.length);
                                                     if (noTwo === getLinearRadial.length){
-                                                        console.log('after if');
+//                                                        console.log('after if');
                                                         $('#gradModetxt').html('Linear');
                                                         $('#gradAngletxt').html(getAngle[1]);
                                                     }
                                                     else if (getLinearRadial.length > noTwo){
-                                                        console.log('else');
+//                                                        console.log('else');
                                                         $('#gradModetxt').html('Radial');
                                                         $('#gradAngletxt').html(getAngle[0]);
                                                     }
@@ -186,35 +186,35 @@
                                             .replace('right center', 'to right');
                             //Create required number of handlers
                             rgbaString = data;
-                            console.log('getRGBA');
-                            console.log(getRgbFH.length);
+//                            console.log('getRGBA');
+//                            console.log(getRgbFH.length);
                             subLengthByOne = (getRgbFH.length);
                             for (i = 0; i < subLengthByOne; i++) {
-                                console.log(i);
-                                console.log('for getRgbFH');
-                                console.log(getRgbFH[i]);
+//                                console.log(i);
+//                                console.log('for getRgbFH');
+//                                console.log(getRgbFH[i]);
                                 getColValueFH = getRgbFH[i].split(')');
-                                console.log('getColValueFH');
-                                console.log(getColValueFH);
+//                                console.log('getColValueFH');
+//                                console.log(getColValueFH);
                                 num = 0;
                                 if (i === num) {
                                     console.log('Nothing to do!')
                                 } else {
                                     getPosValueFH = getColValueFH[1].split('%');
                                     //Pass variable to added handler
-                                    console.log('getPosValueFH');
-                                    console.log(getPosValueFH);
+//                                    console.log('getPosValueFH');
+//                                    console.log(getPosValueFH);
                                     getColValueFHF = 'rgb' + getColValueFH[0] + ')';
                                     foundRGBA = /rgb/i.test(rgbaString);
                                     trueState = true;
                                     if (foundRGBA === trueState) {
                                         $('#sq-1').attr('style', 'background-color:' + getColValueFHF);
-                                        console.log('getColValueFHF');
-                                        console.log(getColValueFHF);
+//                                        console.log('getColValueFHF');
+//                                        console.log(getColValueFHF);
                                         array.push(getColValueFHF);
-                                        console.log('array');
-                                        console.log(array[0]);
-                                        console.log(array[1]);
+//                                        console.log('array');
+//                                        console.log(array[0]);
+//                                        console.log(array[1]);
                                         if (array[0] === array[1]) {
                                             console.log('if');
                                             $('.grp-preview').attr('style', 'background:' + array[0]);
@@ -231,8 +231,8 @@
                                     }
                                 }
                             }
-                            console.log('óutside the for loop');
-                            console.log(getColValueFHF);
+//                            console.log('óutside the for loop');
+//                            console.log(getColValueFHF);
                         },
                         error: function (jqXHR, status, err) {
                             console.log(jqXHR.responseText);
@@ -274,8 +274,8 @@
                 function testfuntionsupun() {
                     var getAttrOfColor;
                     getAttrOfColor = $('#classContainer-selector').css('background-image');
-                    console.log('getAttrOfColor_Test');
-                    console.log(getAttrOfColor);
+//                    console.log('getAttrOfColor_Test');
+//                    console.log(getAttrOfColor);
                     changeBackgroundGradient(getAttrOfColor);
                 }
             </script>
@@ -292,13 +292,13 @@
                     console.log('Clikeedd On Close');
                     getAllHandlers = $('#grapick').find('.grp-handler');
                     getHandlersLength = getAllHandlers.length;
-                    console.log('getAllHandlers');
-                    console.log(getAllHandlers.length);
+//                    console.log('getAllHandlers');
+//                    console.log(getAllHandlers.length);
                     if(getHandlersLength === numS){
                         setTimeout(function(){
                             var color = $('.grp-preview').css('background-image');
-                            console.log('color Inside the settime');
-                            console.log(color);
+//                            console.log('color Inside the settime');
+//                            console.log(color);
                             $.ajax({
                                 type: 'POST',
                                 url: '/index/',
@@ -323,22 +323,22 @@
                                 var getRgbFH,getLinearForRgbFH, getColValueFH,  getPosValueFH, getColValueFHF;
                                 pagesResult = data;
                                 //First Handler's Color and Position
-                                console.log('data');
-                                console.log(data);
-                                getRgbFH = data.split('rgb');
+//                                console.log('data');
+//                                console.log(data);
+//                                getRgbFH = data.split('rgb');
                                 getColValueFH = getRgbFH[1].split(')');
-                                console.log(getColValueFH);
+//                                console.log(getColValueFH);
                                 getPosValueFH = getColValueFH[1].split('%');
-                                console.log(getPosValueFH);
+//                                console.log(getPosValueFH);
                                 //Pass variable to added handler
                                 getColValueFHF = 'rgb' + getColValueFH[0] + ')';
-                                console.log('getColValueFHF');
-                                console.log(getColValueFHF);
+//                                console.log('getColValueFHF');
+//                                console.log(getColValueFHF);
                                 gp.addHandler(getPosValueFH[0], getColValueFHF, 0);
                                 //Set Linear Gradient Options
                                 getLinearForRgbFH = data.split('(');
-                                console.log('getLinearForRgbFH');
-                                console.log(getLinearForRgbFH);
+//                                console.log('getLinearForRgbFH');
+//                                console.log(getLinearForRgbFH);
                                 $('.grp-preview').attr('style', 'background: linear-gradient(to right, rgb(' + getLinearForRgbFH[2] + '(' + getLinearForRgbFH[3]);
                                 updateColorGradient(getColValueFHF, 'background');
                                 setTimeout(function(){
@@ -361,7 +361,7 @@
             <script>
                 function addCloseFuButton(){
                     var closeButton, i;
-                    console.log('i am executed addCloseFuButton');
+//                    console.log('i am executed addCloseFuButton');
                     setTimeout(function(){
                         closeButton = $('#grapick').find('.grp-handler-close');
                         for(i=0; i<closeButton.length; i++){
