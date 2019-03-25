@@ -164,14 +164,15 @@ function checkLocked() {
 		return $.ajax({
 			type: "GET",
 			url: "index",
-			name: "getLocked",
-			data: { name: "getLocked" },
+			data: {
+				name: "getLocked"
+			},
 			success: function (data) {
 				result = data;
 			},
 			error: function (jqXHR, status, err) {
-				// console.log(jqXHR.responseText);
-				console.warn("error ajax - ajaxGetLocked");
+				console.log(jqXHR.responseText);
+				// console.warn("error ajax - ajaxGetLocked");
 			}
 		});
 	}
