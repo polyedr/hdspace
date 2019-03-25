@@ -85,7 +85,7 @@ def main_request_core(request):
             saveMetrix(secHeight, secWidth, widthLayouts, heightLayouts, userId, screenshotId, projectName, device)
             return html_render('customize/page2.html', currentUser, page, projectName, request, screenshotName,
                                userId, screenshotId, layoutIsBeingTransferd, colorIsBeingTransferd, workflowBeingMagic,
-                               html, css, screen_obj)
+                               html, css, suggestionImgC, screen_obj)
 
         if str(request.GET['name']) == 'displayElements':
             action = str(request.GET['action'])
@@ -777,7 +777,7 @@ def main_request_core(request):
         elif str(request.GET['name']) == 'saveMove':
             print('We are running saveMove GET')
             state = request.GET
-            fontColor = state['fgetButtonsStylingontColor']
+            fontColor = state['fontColor']
             fontSize = state['fontSize']
             fontFamily = state['fontFamily']
             borderColor = state['borderColor']

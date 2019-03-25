@@ -200,6 +200,6 @@ for i in range(len(name)):
 
 #  Uncomment the lines below to save widgets to the database
 
-# for widget in widgets:
-#     saveWidgets(widget['name'], widget['location'], widget['desc'], widget['cat'], widget['dev'], widget['type'])
-# print(str(len(widgets)) + ' objects have been created')
+for widget in widgets:
+    saveWidgets(widget['name'], widget['location'], widget['desc'], widget['cat'], widget['dev'], widget['type'])
+print(str(len(widgets)) + ' objects have been created')
