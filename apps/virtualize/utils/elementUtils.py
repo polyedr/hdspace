@@ -95,6 +95,15 @@ def search_new_element(id):
     return collection.find_one({'class_id': id})
 
 
+def search_icon(id):
+    collection = db.icon
+    return collection.find_one({'seg_id': id})
+
+
+def search_logo(id):
+    collection = db.logo
+    return collection.find_one({'seg_id': id})
+
 
 def undoEvent(screenshotId, index):
 

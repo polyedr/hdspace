@@ -10,7 +10,7 @@ from django.shortcuts import render
 from django.urls import reverse
 
 from apps.virtualize.display import set_html_layout, set_html_color
-from apps.virtualize.utils.elementUtils import search_new_element, getStylesDb
+from apps.virtualize.utils.elementUtils import search_new_element, getStylesDb, search_logo, search_icon
 from apps.virtualize.utils.screenshotUtils import getScreenName, getScreen_Name, getCurrentScreenName
 from apps.virtualize.utils.widgetsUtils import fillWidget, fillGraphics
 from apps.projects.forms import ProjectInvitationForm, AddTaskForm
@@ -258,7 +258,12 @@ def saveCurrent(date, id, location, fontcolor, fontSize, fontFamily, borderColor
         if search_new_element(id) != None:
             elementType = 'newElements'
         else:
-            elementType = 'pictures'
+            if search_icon(id) != None:
+                elementType = 'icon'
+            elif search_logo(id) != None:
+                elementType = 'logo'
+            else:
+                elementType = 'pictures'
     elif element == 'widget':
         if search_new_element(id) != None:
             elementType = 'newElements'
@@ -1151,6 +1156,8 @@ def html_render(url, currentUser, page, projectName, request, screenshotName, us
                 colorIsBeingTransferd, workflowBeingMagic, html, css, ScreenSIDFDJANGO, screen_obj):
 
     project_id = get_project_id(projectName, userId)
+    print('Name scree')
+    print(screenshotName)
 
     return render(request, url,
                   {
