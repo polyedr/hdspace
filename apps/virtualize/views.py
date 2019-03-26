@@ -49,7 +49,12 @@ def main_request_core(request):
     allProjects = getAllProjects(userId, currentUser)
     html = allProjects[0]
     css = allProjects[1]
-    screenshotName = str(getScreenshotName('screenshots', userId, str(screenshotId))[int(len(str(currentUser))) + 7:-4])
+    full_screen_name = str(getScreenshotName('screenshots', userId, str(screenshotId)))
+
+    if full_screen_name != 'None at this point':
+        screenshotName = str(full_screen_name[int(len(str(currentUser))) + 7:-4])
+    else:
+        screenshotName = full_screen_name
 
     if screenshotName == '' or screenshotName == 'None at this point':
         screenshotId = ''
@@ -349,12 +354,9 @@ def main_request_core(request):
 
             if len(children[0]) > 0:
                 for index in range(len(children[0])):
-                    cursor = findMultiple(db.segmentation, '_id', ObjectId(str(children[0][index])))
-                    if len(cursor) > 0:
-                        for doc in cursor:
-                            childs.append(doc['elementRoot'])
-                        else:
-                            print('New element doesnt have children')
+                    cursor_array = findMultiple(db.segmentation, '_id', ObjectId(str(children[0][index])))
+                    for doc in cursor_array:
+                        childs.append(doc['elementRoot'])
             import json
             return HttpResponse(json.dumps([image, elementName, ocr, childs, state]), content_type="application/json")
 
@@ -1119,8 +1121,12 @@ def main_request_core(request):
 
                 page = str(getScreenshotName('screenshots', userId, str(screenshotId))[
                            int(len(str(currentUser))) + 7:])
-                screenshotName = str(getScreenshotName('screenshots', userId, str(screenshotId))[
-                                     int(len(str(currentUser))) + 7:-4])
+                full_screen_name = str(getScreenshotName('screenshots', userId, str(screenshotId)))
+
+                if full_screen_name != 'None at this point':
+                    screenshotName = str(full_screen_name[int(len(str(currentUser))) + 7:-4])
+                else:
+                    screenshotName = full_screen_name
                 myfile = str(getScreenshotName('screenshots', userId, str(screenshotId)))
 
                 # Including projectscreen Dbs for sharing purposes
@@ -1368,6 +1374,9 @@ def main_request_core(request):
                            screenshotId, layoutIsBeingTransferd, colorIsBeingTransferd, workflowBeingMagic, html, css,
                            suggestionImgC, screen_object)
     try:
+        print("before rewrite")
+        print(screenshotName)
+        print(screenshotId)
         rewritePage(currentUser, myfile, screenshotId, screenshotName, 'load')
     except:
         print('Something wrong')

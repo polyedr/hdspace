@@ -177,57 +177,59 @@
                                 foundRGBA, subLengthByOne, getSPP, i, num, trueState, classN, array = [];
                             pagesResult = data;
                             //Split Color string by RGB
-                            getRgbFH = data.split('rgb');
-                            getRgbaFH = data.replace('-webkit-radial', 'linear')
-                                            .replace('center center', 'to right')
-                                            .replace('top center', 'to right')
-                                            .replace('bottom center', 'to right')
-                                            .replace('left center', 'to right')
-                                            .replace('right center', 'to right');
-                            //Create required number of handlers
-                            rgbaString = data;
-//                            console.log('getRGBA');
-//                            console.log(getRgbFH.length);
-                            subLengthByOne = (getRgbFH.length);
-                            for (i = 0; i < subLengthByOne; i++) {
-//                                console.log(i);
-//                                console.log('for getRgbFH');
-//                                console.log(getRgbFH[i]);
-                                getColValueFH = getRgbFH[i].split(')');
-//                                console.log('getColValueFH');
-//                                console.log(getColValueFH);
-                                num = 0;
-                                if (i === num) {
-                                    console.log('Nothing to do!')
-                                } else {
-                                    getPosValueFH = getColValueFH[1].split('%');
-                                    //Pass variable to added handler
-//                                    console.log('getPosValueFH');
-//                                    console.log(getPosValueFH);
-                                    getColValueFHF = 'rgb' + getColValueFH[0] + ')';
-                                    foundRGBA = /rgb/i.test(rgbaString);
-                                    trueState = true;
-                                    if (foundRGBA === trueState) {
-                                        $('#sq-1').attr('style', 'background-color:' + getColValueFHF);
-//                                        console.log('getColValueFHF');
-//                                        console.log(getColValueFHF);
-                                        array.push(getColValueFHF);
-//                                        console.log('array');
-//                                        console.log(array[0]);
-//                                        console.log(array[1]);
-                                        if (array[0] === array[1]) {
-                                            console.log('if');
-                                            $('.grp-preview').attr('style', 'background:' + array[0]);
-                                            break;
+                            if(data != null) {
+                                getRgbFH = data.split('rgb');
+                                getRgbaFH = data.replace('-webkit-radial', 'linear')
+                                    .replace('center center', 'to right')
+                                    .replace('top center', 'to right')
+                                    .replace('bottom center', 'to right')
+                                    .replace('left center', 'to right')
+                                    .replace('right center', 'to right');
+                                //Create required number of handlers
+                                rgbaString = data;
+//                                   console.log('getRGBA');
+//                                   console.log(getRgbFH.length);
+                                subLengthByOne = (getRgbFH.length);
+                                for (i = 0; i < subLengthByOne; i++) {
+//                                    console.log(i);
+//                                    console.log('for getRgbFH');
+//                                    console.log(getRgbFH[i]);
+                                    getColValueFH = getRgbFH[i].split(')');
+//                                    console.log('getColValueFH');
+//                                    console.log(getColValueFH);
+                                    num = 0;
+                                    if (i === num) {
+                                        console.log('Nothing to do!')
+                                    } else {
+                                        getPosValueFH = getColValueFH[1].split('%');
+                                        //Pass variable to added handler
+//                                        console.log('getPosValueFH');
+//                                        console.log(getPosValueFH);
+                                        getColValueFHF = 'rgb' + getColValueFH[0] + ')';
+                                        foundRGBA = /rgb/i.test(rgbaString);
+                                        trueState = true;
+                                        if (foundRGBA === trueState) {
+                                            $('#sq-1').attr('style', 'background-color:' + getColValueFHF);
+//                                            console.log('getColValueFHF');
+//                                            console.log(getColValueFHF);
+                                            array.push(getColValueFHF);
+//                                            console.log('array');
+//                                            console.log(array[0]);
+//                                            console.log(array[1]);
+                                            if (array[0] === array[1]) {
+                                                console.log('if');
+                                                $('.grp-preview').attr('style', 'background:' + array[0]);
+                                                break;
+                                            }
+                                            else {
+                                                console.log('else');
+                                                $('.grp-preview').attr('style', 'background:' + getRgbaFH);
+                                                gp.addHandler(getPosValueFH[0], getColValueFHF);
+                                            }
                                         }
                                         else {
-                                            console.log('else');
-                                            $('.grp-preview').attr('style', 'background:' + getRgbaFH);
-                                            gp.addHandler(getPosValueFH[0], getColValueFHF);
+                                            console.log('False, No handler created');
                                         }
-                                    }
-                                    else {
-                                        console.log('False, No handler created');
                                     }
                                 }
                             }
