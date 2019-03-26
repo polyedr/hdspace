@@ -1,9 +1,9 @@
 (function () {
     'use strict';
-    toggleErrors(['.validate_error'], false);
+    // toggleErrors(['.validate_error'], false);
 
     $('#modalCloseButton').on('click', function () {
-        toggleErrors(['.validate_error'], false);
+        // toggleErrors(['.validate_error'], false);
     });
 
     function addRemoveProject(checked, project){
@@ -33,7 +33,7 @@
     $(document).on("click",".payProject",function(e) {
         var checked = true;
         var project = $(this).data('project_id');
-        addRemoveProject(checked, project)
+        addRemoveProject(checked, project);
     });
 
     $(document).on("click",".delete_project",function(e) {

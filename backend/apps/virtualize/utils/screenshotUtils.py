@@ -33,7 +33,7 @@ def getScreenshotName(collection, userId, screenshotId):
     print(screenshotId)
     collection = db[str(collection)]
     screenShotName = 'None at this point'
-    if screenshotId != '':
+    if screenshotId != '' and screenshotId is not None:
         try:
             cursor = collection.find({'_id': ObjectId(str(screenshotId))})
         except AssertionError as error:
