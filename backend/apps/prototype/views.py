@@ -3,7 +3,8 @@ import pymongo
 from bson.objectid import ObjectId
 from django.http import HttpResponse, HttpResponseRedirect
 
-from apps.virtualize.models import setScreenshot, getScreenshotName, getCollectionIDs, getLatestScreenshot
+from apps.virtualize.models import getCollectionIDs
+from apps.virtualize.utils.screenshotUtils import getLatestScreenshot, setScreenshot, getScreenshotName
 from apps.virtualize.views import getProjectPageAndCss
 
 
@@ -39,4 +40,4 @@ def prototypePage(request):
         import json
         return HttpResponse(json.dumps(jsondata), content_type="application/json")
     except:
-        return HttpResponseRedirect('/index')
+        return HttpResponseRedirect('/index/')

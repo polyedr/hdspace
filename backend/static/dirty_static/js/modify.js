@@ -317,6 +317,10 @@ function changeElementt(newElement, type) {
 }
 
 function updateStyle(newElement, type) {
+
+	console.log('Aqui');
+	console.log(newElement);
+	console.log(type);
 	var fcolor = document.getElementById("favcolor").value;
 
 	var fontSize = getCurFontSize(document.getElementById(newElement));
@@ -945,7 +949,7 @@ function getPredictions(id) {
 			},
 			error: function (jqXHR, status, err) {
 				// console.log(jqXHR.responseText);
-				console.warn("error ajax - ajaxGetPredictions");
+				console.log("error ajax - ajaxGetPredictions");
 			}
 		});
 	}
