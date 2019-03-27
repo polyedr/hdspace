@@ -880,19 +880,19 @@ def main_request_core(request):
                 curType = 'buttons'
             if len(frame) > 0:
                 element = frame
-                elementChild = findChildDb('frames', id)
+                elementChild = []
                 curType = 'frames'
             if len(hyperlink) > 0:
                 element = hyperlink
-                elementChild = findChildDb('hyperLinks', id)
+                elementChild = []
                 curType = 'hyperLinks'
             if len(paragraph) > 0:
                 element = paragraph
-                elementChild = findChildDb('paragraphs', id)
+                elementChild = []
                 curType = 'paragraphs'
             if len(picture) > 0:
                 element = picture
-                elementChild = findChildDb('pictures', id)
+                elementChild = []
                 curType = 'pictures'
             if len(text_area) > 0:
                 element = text_area
@@ -903,7 +903,7 @@ def main_request_core(request):
                 elementChild = findChildDb('textBoxes', id)
                 curType = 'textBoxes'
 
-            element = update_element_type(element, elementChild, type)
+            element = update_element_type(element, elementChild, curType, type)
             insertEvent(element[0]['screenshot_id'], element[0]['seg_id'], curType, 'changedElement', curType, type)
             screenshotId = element[0]['screenshot_id']
             rewritePage(currentUser, myfile, screenshotId, screenshotName, 'load')
