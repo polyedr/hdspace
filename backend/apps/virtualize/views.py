@@ -185,53 +185,6 @@ def main_request_core(request):
 
             return HttpResponse(json.dumps(action), content_type="application/json")
 
-        elif str(request.GET['name']) == 'deleteElement':
-            print('We are running deleteElement GET')
-            deleteId = str(request.GET['id'])[2:]
-            element = str(request.GET['element'])
-
-            if search_new_element(deleteId) is not None:
-                elementType = 'newElements'
-                collection = delete_element_from_collection(elementType, deleteId)
-                for col in collection:
-                    eventelement = col
-                print(element)
-                insertEvent(eventelement['screenshot_id'], eventelement['seg_id'], elementType, 'deletedElement',
-                            'active', 'inactive')
-            else:
-                if element == 'P':
-                    elementType = 'paragraphs'
-
-                elif element == 'A':
-                    elementType = 'hyperLinks'
-
-                elif element == 'INPUT':
-                    elementType = 'textBoxes'
-
-                elif element == 'WID':
-                    elementType = 'widgets'
-
-                elif element == 'TEXTAREA':
-                    elementType = 'textArea'
-
-                elif element == 'BUTTON':
-                    elementType = 'buttons'
-
-                elif element == 'DIV':
-                    elementType = 'frames'
-
-                elif element == 'IMG':
-                    # have this be either 'icon' or 'pictures' depending on which database your IMGs are stored
-                    elementType = 'icon'
-
-                else:
-                    elementType = 'Error: ' + str(element)
-                collection = delete_element_from_collection(elementType, deleteId)
-                for col in collection:
-                    eventelement = col
-                insertEvent(eventelement['screenshot_id'], eventelement['seg_id'], elementType, 'deletedElement',
-                            'active', 'inactive')
-
         elif str(request.GET['name']) == 'elementList':
             print('We are running elementList GET')
             state = request.GET
@@ -1369,6 +1322,53 @@ def main_request_core(request):
                 newName = request.POST['newName']
                 screenshotId = request.POST['screenshotId']
                 db.screenshots.update({"_id": ObjectId(screenshotId)}, {"$set": {"screenName": newName}})
+            elif str(request.POST['name']) == 'deleteElement':
+                print('We are running deleteElement Post')
+                deleteId = str(request.POST['id'])[2:]
+                element = str(request.POST['element'])
+
+                if search_new_element(deleteId) is not None:
+                    elementType = 'newElements'
+                    collection = delete_element_from_collection(elementType, deleteId)
+                    for col in collection:
+                        eventelement = col
+                    print(element)
+                    insertEvent(eventelement['screenshot_id'], eventelement['seg_id'], elementType, 'deletedElement',
+                                'active', 'inactive')
+                else:
+                    if element == 'P':
+                        elementType = 'paragraphs'
+
+                    elif element == 'A':
+                        elementType = 'hyperLinks'
+
+                    elif element == 'INPUT':
+                        elementType = 'textBoxes'
+
+                    elif element == 'WID':
+                        elementType = 'widgets'
+
+                    elif element == 'TEXTAREA':
+                        elementType = 'textArea'
+
+                    elif element == 'BUTTON':
+                        elementType = 'buttons'
+
+                    elif element == 'DIV':
+                        elementType = 'frames'
+
+                    elif element == 'IMG':
+                        # have this be either 'icon' or 'pictures' depending on which database your IMGs are stored
+                        elementType = 'icon'
+
+                    else:
+                        elementType = 'Error: ' + str(element)
+                    collection = delete_element_from_collection(elementType, deleteId)
+                    for col in collection:
+                        eventelement = col
+                    insertEvent(eventelement['screenshot_id'], eventelement['seg_id'], elementType, 'deletedElement',
+                                'active', 'inactive')
+
 
         return html_render('customize/page2.html', currentUser, page, projectName, request, screenshotName, userId,
                            screenshotId, layoutIsBeingTransferd, colorIsBeingTransferd, workflowBeingMagic, html, css,

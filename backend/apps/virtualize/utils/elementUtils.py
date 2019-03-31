@@ -34,11 +34,18 @@ def update_element_lock(element_type, collectionKey, class_id, new_state):
 def delete_element_from_collection(elementType, deleteId):
 
     collection = None
-    try:
-        db[elementType].update({'class_id': deleteId}, {'$set': {'state': 'inactive'}})
-        collection = db[elementType].find({'class_id': deleteId})
-    except (AttributeError, pymongo.errors.OperationFailure) as e:
-        print('Mongo Data Base Error ' + e)
+    if elementType is 'newElements':
+        try:
+            db[elementType].update({'class_id': deleteId}, {'$set': {'state': 'inactive'}})
+            collection = db[elementType].find({'class_id': deleteId})
+        except (AttributeError, pymongo.errors.OperationFailure) as e:
+            print('Mongo Data Base Error ' + e)
+    else:
+        try:
+            db[elementType].update({'seg_id': deleteId}, {'$set': {'state': 'inactive'}})
+            collection = db[elementType].find({'seg_id': deleteId})
+        except (AttributeError, pymongo.errors.OperationFailure) as e:
+            print('Mongo Data Base Error ' + e)
     return collection
 
 
