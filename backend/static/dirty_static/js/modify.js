@@ -60,7 +60,7 @@ function addNewElementAjax(value, name) {
 }
 
 function deleteElement(newElement) {
-	if (newElement === "None selected") {
+	if(newElement === "None selected") {
 		console.log("Please select an element first!");
 	} else if (newElement.substring(6, 0) === "widget") {
 		var id = newElement.substring(6);
@@ -71,8 +71,8 @@ function deleteElement(newElement) {
 		$("#slideelem").popup("hide");
 		document.getElementById("drag-resizeId").blur(true);
 		r = $.ajax({
-			type: "GET",
-			url: "index",
+			type: "POST",
+			url: "/index/",
 			name: "deleteElement",
 			data: { name: "deleteElement", id: "id" + id, element: "widget" }
 		});
@@ -83,8 +83,8 @@ function deleteElement(newElement) {
 		document.getElementById(newElement).remove();
 		document.getElementById("drag-resizeId").blur(true);
 		r = $.ajax({
-			type: "GET",
-			url: "index",
+			type: "POST",
+			url: "/index/",
 			name: "deleteElement",
 			data: { name: "deleteElement", id: newElement, element: element }
 		});
