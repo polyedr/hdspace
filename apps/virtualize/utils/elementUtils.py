@@ -34,11 +34,18 @@ def update_element_lock(element_type, collectionKey, class_id, new_state):
 def delete_element_from_collection(elementType, deleteId):
 
     collection = None
-    try:
-        db[elementType].update({'class_id': deleteId}, {'$set': {'state': 'inactive'}})
-        collection = db[elementType].find({'class_id': deleteId})
-    except (AttributeError, pymongo.errors.OperationFailure) as e:
-        print('Mongo Data Base Error ' + e)
+    if elementType is 'newElements':
+        try:
+            db[elementType].update({'class_id': deleteId}, {'$set': {'state': 'inactive'}})
+            collection = db[elementType].find({'class_id': deleteId})
+        except (AttributeError, pymongo.errors.OperationFailure) as e:
+            print('Mongo Data Base Error ' + e)
+    else:
+        try:
+            db[elementType].update({'seg_id': deleteId}, {'$set': {'state': 'inactive'}})
+            collection = db[elementType].find({'seg_id': deleteId})
+        except (AttributeError, pymongo.errors.OperationFailure) as e:
+            print('Mongo Data Base Error ' + e)
     return collection
 
 
@@ -64,7 +71,7 @@ def getOneActiveNewE(type, id):
 
 def getOneChild(type, id):
 
-    result = None
+    result = ''
     try:
         result = db[type].find_one({'level': {'child': id}})
     except (AttributeError, pymongo.errors.OperationFailure) as e:
@@ -136,14 +143,26 @@ def insertEvent(screenid, segid, collection, type, old, new):
     })
 
 
-def update_element_type(element, elementChild, curType):
+def update_element_type(element, elementChild, curType, type):
+    print('changing elements')
+    print(element)
+    print(elementChild)
+    print(curType)
+    print(type)
+    element_type = ''
+
+    if type != 'paragraphs':
+        element_type = 'shapes'
+    else:
+        element_type = 'ocr'
+
     for elm in element:
         db[curType].update({'seg_id': elm['seg_id']}, {'$set': {'state': 'inactive'}})
-        if len(existInDb(curType, elm['seg_id'])) > 0:
-            db[curType].update({'seg_id': elm['seg_id']}, {'$set': {
-                'level': elm['level'],
+        if len(existInDb(type, elm['seg_id'])) > 0:
+            db[type].update({'seg_id': elm['seg_id']}, {'$set': {
+                'level': {"parent":[]},
                 'seg_id': elm['seg_id'],
-                'type': elm['type'],
+                'type': element_type,
                 'name': elm['name'],
                 'location': elm['location'],
                 'root': elm['root'],
@@ -154,10 +173,10 @@ def update_element_type(element, elementChild, curType):
                 'timeZone': elm['timeZone']}
             })
         else:
-            db[curType].insert({
-                'level': elm['level'],
+            db[type].insert({
+                'level': {"parent":[]},
                 'seg_id': elm['seg_id'],
-                'type': elm['type'],
+                'type': element_type,
                 'name': elm['name'],
                 'location': elm['location'],
                 'root': elm['root'],
@@ -169,13 +188,14 @@ def update_element_type(element, elementChild, curType):
             })
 
     for child in elementChild:
-        if curType == 'textArea' or curType == 'textBoxes' or curType == 'buttons':
+        if (curType == 'textArea' or curType == 'textBoxes' or curType == 'buttons') and \
+                (type == 'textArea' or type == 'textBoxes' or type == 'buttons'):
             db[curType].update({'seg_id': child['seg_id']}, {'$set': {'state': 'inactive'}})
-            if len(existInDb(curType, child['seg_id'])) > 0:
-                db[curType].update({'seg_id': child['seg_id']}, {'$set': {
+            if len(existInDb(type, child['seg_id'])) > 0:
+                db[type].update({'seg_id': child['seg_id']}, {'$set': {
                     'level': child['level'],
                     'seg_id': child['seg_id'],
-                    'type': child['type'],
+                    'type': 'ocr',
                     'name': child['name'],
                     'location': child['location'],
                     'root': child['root'],
@@ -186,10 +206,10 @@ def update_element_type(element, elementChild, curType):
                     'timeZone': child['timeZone']}
                 })
             else:
-                db[curType].insert({
+                db[type].insert({
                     'level': child['level'],
                     'seg_id': child['seg_id'],
-                    'type': child['type'],
+                    'type': 'ocr',
                     'name': child['name'],
                     'location': child['location'],
                     'root': child['root'],
@@ -200,6 +220,9 @@ def update_element_type(element, elementChild, curType):
                     'timeZone': child['timeZone']
                 })
         else:
+            db[type].update({'seg_id': child['level']['child']}, {'$set': {
+                'name': child['name']}
+            })
             db[curType].update({'seg_id': child['seg_id']}, {'$set': {'state': 'inactive'}})
 
     return element

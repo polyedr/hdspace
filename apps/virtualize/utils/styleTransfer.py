@@ -1,28 +1,42 @@
 from pymongo import MongoClient
 from apps.virtualize.utils.metaCustomUtils import get_collection
+import pymongo
+from bson.objectid import ObjectId
 
-
-
-client = MongoClient('mongodb://mongo:mongo@db')  # maxPoolSize=50
+client = pymongo.MongoClient('localhost', 27017)
 db = client.MeduzaDb
+db_main = client.mainDB
 
 
 def propertyTransfer(user,masterfile, screens_name,status):
+
+    print('user Transfer')
+    print(user)
+    print(masterfile)
+    print(screens_name)
+    print(status)
 
     grid_1 = {}
     grid_2 = {}
     grid_3 = {}
     master_id = None
-
-    master_id_collection = db.screenshots.find({'user_id':str(user)})
+    project_name = db.tempPage.find_one({'userId':str(user)})['projectName']
+    print(project_name)
+    project_id = db_main.projects_project.find_one({'name': project_name})['_id']
+    project_screens = db_main.projects_project.find_one({'_id': ObjectId(project_id)})['screenshots']
+    master_id_collection = db.screenshots.find({'user_id': str(user)})
     for id in master_id_collection:
         aux_id = id['screenName']
-        if aux_id.upper() == masterfile.upper():
+        if aux_id.upper() == masterfile.upper() and str(id['_id']) in project_screens:
             master_id = str(id['_id'])
     screens=[]
     for s in screens_name:
         s_id = str(db.screenshots.find_one({'user_id':str(user),'screenName': s})['_id'])
-        screens.append(s_id)
+        if str(id) in project_screens:
+            screens.append(s_id)
+    print("screenss array")
+    print(project_screens)
+    print(screens)
 
     buttonArray = get_collection(db.buttons, master_id)
     textBoxArray = get_collection(db.textBoxes, master_id)
