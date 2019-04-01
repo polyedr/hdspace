@@ -116,10 +116,10 @@ $("#favcolor").spectrum({
  function deletePage(id) {
     $.ajax({
         type: 'POST',
-        url: 'index',
-        name: 'deletePage',
+        url: '/index/',
+        name: 'deleteScreen',
         data: {
-            'deletePage': id
+            'deleteScreen': id
         },
         success: function (data) {
             var result = data;

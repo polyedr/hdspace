@@ -783,9 +783,9 @@ def main_request_core(request):
                                screenshotId, layoutIsBeingTransferd, colorIsBeingTransferd, workflowBeingMagic, html,
                                css, suggestionImgC, screen_obj)
 
-        elif 'deletePage' in request.POST:
+        elif 'deleteScreen' in request.POST:
             print('We are running deletePage POST')
-            page_id = str(request.POST['deletePage'])
+            page_id = str(request.POST['deleteScreen'])
             delete_page(page_id, userId)
             #curs - list of screenshots belonging to this user
             curs = findMultiple(db.screenshots, 'user_id', userId)
