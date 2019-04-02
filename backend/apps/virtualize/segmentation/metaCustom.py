@@ -891,7 +891,9 @@ def metaCustom(currentUser, myFile, screenshot_id, state):
 
             def create_calendarPro2(icon_path, classid, width, height, positionL, positionT, link, z_Index, bordercolor, leftWidth):
                 pagehtml.write(
-                    '<link href="/static/dirty_static/widgets/calendar/css/theme1.css" rel="stylesheet">\n\
+                    '<link href="https://fonts.googleapis.com/css?family=Roboto+Condensed" rel="stylesheet">\n\
+                    <link href="/static/dirty_static/widgets/calendar/css/theme2.css" rel="stylesheet">\n\
+                    <link href="/static/dirty_static/widgets/calendar/css/demo.css" rel="stylesheet">\n\
                     <div drag-resize id = "widget' + classid + '" name = "widget" style="background-color: transparent; position: absolute; height:' + height + '%; width:' + width + '%; left:' + positionL + '%; top:' + positionT + '%;">\n\
                     <div style="height: 100%;width: 100%;">\n\
                     <div id="caleandar" ></div>\n\
