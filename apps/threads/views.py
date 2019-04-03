@@ -20,33 +20,45 @@ class MessageListView(LoginRequiredMixin, View):
 
     # noinspection PyMethodMayBeStatic
     def get(self, request, *args, **kwargs):
-        thread = Thread.objects.get(pk=kwargs.get("pk"))
-        messages = Message.objects.filter(thread=thread)
-        member = ProjectMember.objects.get(user=request.user, project=thread.project)
-        if request.GET.get("status") == "true":
-            messages = messages.filter(pk__gt=request.GET.get("last_pk", 0)).exclude(sender=member)
-
-        messages = messages.order_by("sent_at")
 
         context = dict()
-        messages = [dict(
-            username=message.sender.user.username,
-            avatar=message.sender.user.profile.get_image(),
-            content=message.content,
-            pk=message.pk,
-            sent_at=message.sent_at,
-            sender_id=message.sender.pk,
-            status=message.sender.status,
-            role=message.sender.role,
-            online=message.sender.user.profile.online(),
-            message_id=message.id,
-            file=message.file.url if message.file else '',
-            file_name=message.file_name if message.file_name is not None else '',
-        ) for message in messages]
-        context["messages"] = messages
+        try:
+            thread = Thread.objects.get(pk=kwargs.get("pk"))
+        except Thread.DoesNotExist:
+            print('No messages this loop')
+        else:
+            messages = Message.objects.filter(thread=thread)
+            try:
+                member = ProjectMember.objects.get(user=request.user, project=thread.project)
+            except ProjectMember.DoesNotExist:
+                print('No messages this loop')
+            else:
+                try:
+                    if request.GET.get("status") == "true":
+                        messages = messages.filter(pk__gt=request.GET.get("last_pk", 0)).exclude(sender=member)
 
-        Message.objects.filter(thread=thread)\
-            .exclude(sender=member).update(unread=False)
+                    messages = messages.order_by("sent_at")
+
+                    messages = [dict(
+                        username=message.sender.user.username,
+                        avatar=message.sender.user.profile.get_image(),
+                        content=message.content,
+                        pk=message.pk,
+                        sent_at=message.sent_at,
+                        sender_id=message.sender.pk,
+                        status=message.sender.status,
+                        role=message.sender.role,
+                        online=message.sender.user.profile.online(),
+                        message_id=message.id,
+                        file=message.file.url if message.file else '',
+                        file_name=message.file_name if message.file_name is not None else '',
+                    ) for message in messages]
+                    context["messages"] = messages
+
+                    Message.objects.filter(thread=thread)\
+                        .exclude(sender=member).update(unread=False)
+                except:
+                    print('No messages this loop')
 
         return JsonResponse(context)
 
