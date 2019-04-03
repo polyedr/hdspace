@@ -140,6 +140,7 @@ def delete_page(page, userId):
         if str(s) != str(page):
             update_screen.append(s)
     db_main.projects_project.update({'_id': project['_id']}, {'$set': {'screenshots': update_screen}})
+    db_main.projects_projectscreen.update({"project_id": project['id']},{'$set': {'status': 'inactive'}})
 
 
 def getScreen_Name(screenshotName):
