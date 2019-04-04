@@ -216,7 +216,6 @@ def run(myFile, coco_model, tensorflow_model, CurrentUser, projectName):
         print('Start First Cnn')
         print(len(croppedFullLocation))
         print(croppedFullLocation)
-        recognize = run_recognition([], croppedFullLocation, [], [], [], 'cnnFirstModels')
         cnn_level_1 = []
         # for i in range(len(croppedFullLocation)):
             # aux0 = recognize[0]['results']
@@ -684,51 +683,52 @@ def run_recognition(elementId, elementRoot, segmentationLocation, screenshotInde
     import tensorflow as tf
 
     def inception(elementRoot, cnn):
-                image_data = []
-                for i in range(len(elementRoot)):
+        image_data = []
+        for i in range(len(elementRoot)):
 
-                    image = elementRoot[i]
-                    # Read in the image_data
-                    image_data.append(tf.gfile.FastGFile(image, 'rb').read())
+            image = elementRoot[i]
+            # Read in the image_data
+            image_data.append(tf.gfile.FastGFile(image, 'rb').read())
 
-                # Loads label file, strips off carriage return
-                label_lines = [line.rstrip() for line
-                               in tf.gfile.GFile(cnn['label'])]
+        # Loads label file, strips off carriage return
+        label_lines = [line.rstrip() for line
+                       in tf.gfile.GFile(cnn['label'])]
 
-                # Unpersists graph from file
-                with tf.gfile.FastGFile(cnn['graph'], 'rb') as f:
-                    graph_def = tf.GraphDef()
-                    graph_def.ParseFromString(f.read())
-                    _ = tf.import_graph_def(graph_def, name='')
+        # Unpersists graph from file
+        with tf.gfile.FastGFile(cnn['graph'], 'rb') as f:
+            graph_def = tf.GraphDef()
+            graph_def.ParseFromString(f.read())
+            _ = tf.import_graph_def(graph_def, name='')
 
-                with tf.Session() as sess:
-                    certainty = []
-                    name = []
-                    # Feed the image_data as input to the graph and get first prediction
-                    softmax_tensor = sess.graph.get_tensor_by_name('final_result:0')
-                    # loop all the image data agains the graph model
-                    for images in range(len(image_data)):
-                        predictions = sess.run(softmax_tensor, {'DecodeJpeg/contents:0': image_data[images]})
-                        # Sort to show labels of first prediction in order of confidence
-                        top_k = predictions[0].argsort()[-len(predictions[0]):][::-1]
-                        # print('prediction: '+str(predictions))
-                        # print('top_k: '+str(top_k))
+        with tf.Session() as sess:
+            certainty = []
+            name = []
+            # Feed the image_data as input to the graph and get first prediction
+            softmax_tensor = sess.graph.get_tensor_by_name('final_result:0')
+            # loop all the image data agains the graph model
+            for images in range(len(image_data)):
+                predictions = sess.run(softmax_tensor, {'DecodeJpeg/contents:0': image_data[images]})
+                # Sort to show labels of first prediction in order of confidence
+                top_k = predictions[0].argsort()[-len(predictions[0]):][::-1]
+                # print('prediction: '+str(predictions))
+                # print('top_k: '+str(top_k))
 
-                        clusters = []
-                        nameLoc = []
-                        for node_id in top_k:
-                            human_string = label_lines[node_id]
-                            score = predictions[0][node_id]
-                            clusters.append('%s (certainty = %.5f)' % (human_string, score))
-                            nameLoc.append({'cluster': '%s (certainty = %.5f)' % (human_string, score),
-                                            'score': score,
-                                            'name': human_string})
-                            print('Element ' + str(images), '%s (score = %.5f)' % (human_string, score))
-                        certainty.append(clusters)
-                        name.append(nameLoc)
-                # reset the graph for next use
-                tf.reset_default_graph()
-                return name
+                clusters = []
+                nameLoc = []
+                for node_id in top_k:
+                    human_string = label_lines[node_id]
+                    score = predictions[0][node_id]
+                    clusters.append('%s (certainty = %.5f)' % (human_string, score))
+                    nameLoc.append({'cluster': '%s (certainty = %.5f)' % (human_string, score),
+                                    'score': score,
+                                    'name': human_string})
+                    print('Element ' + str(images), '%s (score = %.5f)' % (human_string, score))
+                certainty.append(clusters)
+                name.append(nameLoc)
+        # reset the graph for next use
+        tf.reset_default_graph()
+        name1 = name
+        return name1
 
             #widgetsCnn = []
     shapesCnn = []
@@ -744,14 +744,12 @@ def run_recognition(elementId, elementRoot, segmentationLocation, screenshotInde
     cnnRoutes = shapesCnn #+ widgetsCnn
     elementNames = []
     for iterator in range(len(cnnRoutes)):  # number of CNNs to be used
-                # if status[iterator] != 'Identified by OCR':
-                cnn = cnnRoutes[iterator]['data']
-                name = inception(elementRoot, cnn)
-                print(len(name))
-                elementNames.append({'cnn': cnnRoutes[iterator]['name'], 'results': name})
+        # if status[iterator] != 'Identified by OCR':
+        cnn = cnnRoutes[iterator]['data']
+        name = inception(elementRoot, cnn)
+        print(len(name))
+        elementNames.append({'cnn': cnnRoutes[iterator]['name'], 'results': name})
 
-                # else:
-                #  print('Element ' + str(count) + ' ' + 'already recognised by OCR ' + str(elementRoot[iterator]))
     return elementNames
 
 def update_segmentation_db(screenshotId):
