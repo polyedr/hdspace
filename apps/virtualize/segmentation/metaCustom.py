@@ -4456,7 +4456,7 @@ def metaCustom(currentUser, myFile, screenshot_id, state):
                     bordercolor = styles['borderColor']
                     borderRadius = styles['borderRadius']
                     leftWidth= str(float(width)+float(positionL))
-                    create_googleMap(icon_path, classid, width, height, positionL, positionT, link, zIndex,bordercolor,leftWidth)
+                    create_googleMap(icon_path, str(classid), width, height, positionL, positionT, link, zIndex,bordercolor,leftWidth)
 
                 elif elementType == 'bar-2':
                     print("bar-2")
@@ -5175,7 +5175,7 @@ def metaCustom(currentUser, myFile, screenshot_id, state):
             leftWidth =float(positionL)+float(width)
 
             link = ''
-            create_googleMap(icon_path, classid, width, height, positionL, positionT, link, zIndex,bordercolor, leftWidth)
+            create_googleMap(icon_path, str(classid), width, height, positionL, positionT, link, zIndex,bordercolor, leftWidth)
 
         '#CREATING calendar'
         for l in calendarWidgetsArray:
