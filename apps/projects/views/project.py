@@ -41,12 +41,16 @@ class DashboardView(LoginRequiredMixin, SEOViewMixin, TemplateView):
     def get(self, request, *args, **kwargs):
         print('Running DAshboard')
         context = self.get_context_data()
+        # projects = Project.objects.filter(
+        #     Q(user=request.user) |
+        #     Q(members__projectmember__user__exact=request.user))
         projects = Project.objects.annotate(number_of_screens=Count('projectscreen')).filter(
             Q(user=request.user) |
             Q(members__projectmember__user__exact=request.user))
         cart = Cart(request)
         context["cart"] = cart.cart
         context["projects"] = projects
+        print(projects)
         if "form" not in kwargs:
             context["form"] = CreateProjectForm()
 
