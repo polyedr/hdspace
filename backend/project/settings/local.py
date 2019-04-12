@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
 ]
 
 EXTERNAL_APPS = [
@@ -71,6 +72,14 @@ MIDDLEWARE = [
     'apps.core.middleware.activeuser_middleware.active_user_middleware',
     # 'core.middleware.activeuser_middleware.active_user_middleware',
 ]
+
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ]
+}
 
 # Django Debug Toolbar settings
 # https://django-debug-toolbar.readthedocs.io/en/stable/configuration.html
