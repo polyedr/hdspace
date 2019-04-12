@@ -1,11 +1,11 @@
 from rest_framework import serializers
-from accounts.models import User, Profile, Team, TeamMember
+from .models import User, Profile, Team, TeamMember
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('_id')
-
+        # fields = ('_id')
+        fields = '__all__'
 
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:

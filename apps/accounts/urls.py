@@ -1,6 +1,6 @@
 from django.urls import path, include
 
-from accounts import apiviews
+from .apiviews import user_list, user_detail
 from .views import auth, profile, team, user
 
 
@@ -36,8 +36,8 @@ user_patterns = [
 ]
 
 api_user_patterns = [
-    path('users/', apiviews.user_list),
-    path('users/<int:pk>/', apiviews.user_detail),
+    path('users/', user_list),
+    path('users/<int:pk>/', user_detail),
 ]
 
 
