@@ -2,8 +2,8 @@ from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
-from accounts.models import User
-from accounts.serializers import UserSerializer
+from .models import User
+from .serializers import UserSerializer
 
 @csrf_exempt
 def user_list(request):
