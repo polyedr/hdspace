@@ -92,7 +92,7 @@ class RegistrationView(AnonymousRequiredMixin, SEOViewMixin, TemplateView):
                 email=user.email,
                 email_confirmation_path=user.profile.get_confirmation_url(),
             )
-            apps.virtualize.utils.registration(user)
+            # apps.virtualize.utils.registration(user)
             messages.success(request, "You have successfully registered.")
             return HttpResponseRedirect(reverse("accounts:login"))
         else:

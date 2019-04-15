@@ -1,6 +1,4 @@
 from django.urls import path, include
-
-from .apiviews import user_list, user_detail
 from .views import auth, profile, team, user
 
 
@@ -35,17 +33,10 @@ user_patterns = [
     path("user-status/", user.UserStatusView.as_view(), name="user_status"),
 ]
 
-api_user_patterns = [
-    path('users/', user_list),
-    path('users/<int:pk>/', user_detail),
-]
-
-
 app_name = "accounts"
 urlpatterns = [
     path("", include(auth_patterns)),
     path("", include(profile_patterns)),
     path("", include(team_patterns)),
     path("", include(user_patterns)),
-    path("", include(api_user_patterns)),
 ]
