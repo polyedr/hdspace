@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework_swagger',
 ]
 
 EXTERNAL_APPS = [
@@ -73,11 +74,21 @@ MIDDLEWARE = [
     # 'core.middleware.activeuser_middleware.active_user_middleware',
 ]
 
+"""
+# Set the regular access permissions 
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ]
+}
+"""
+
+# Set default permissions to anyone can access our API
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
     ]
 }
 
@@ -219,6 +230,16 @@ DEFAULT_FROM_EMAIL = "from@example.com"
 SITE_NAME = "PM"
 BASE_URL = ENV.str("BASE_URL", "http://localhost:8000")
 LOGIN_REDIRECT_URL = "/"
+
+#
+# if DEBUG:
+#     EMAIL_HOST = 'localhost'
+#     EMAIL_PORT = 1025
+#     EMAIL_HOST_USER = ''
+#     EMAIL_HOST_PASSWORD = ''
+#     EMAIL_USE_TLS = False
+#     DEFAULT_FROM_EMAIL = 'testing@example.com'
+#
 
 # Django PayPal settings
 PAYPAL_RECEIVER_EMAIL = ENV.str("PAYPAL_RECEIVER_EMAIL", None)

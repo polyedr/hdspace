@@ -369,33 +369,34 @@ def run(myFile, coco_model, tensorflow_model, CurrentUser, projectName):
         print(screenshotIndex)
 
         recognized = run_recognition(elementId, elementRoot, segmentationLocation, screenshotIndex, status,'cnnModels')
-        print(recognized[0])
+        if recognized:
+            print(recognized[0])
 
-        elementName = []
-        for result in range(len(recognized[0]['results'])):
-            elementLoc = []
-            for i in range(len(recognized[0]['results'][result])):
-                elementLoc.append(recognized[0]['results'][result][i]['score'])
-            elementName.append(elementLoc)
-        print(elementName)
+            elementName = []
+            for result in range(len(recognized[0]['results'])):
+                elementLoc = []
+                for i in range(len(recognized[0]['results'][result])):
+                    elementLoc.append(recognized[0]['results'][result][i]['score'])
+                elementName.append(elementLoc)
+            print(elementName)
 
-        # no need...for result in range(len(recognized)):
-        #    elementLoc = []
-        #    for i in range(len(recognized[result])):
-        #        elementLoc.append(recognized[result]['results'][i]['score'])
-        #    elementName.append(elementLoc)
-        #print(elementName)
-        finalName = []
-        for n in range(len(elementName)):
-            for i in range(len(recognized[0]['results'][n])):
-                res = max(elementName[n])
-                if res == recognized[0]['results'][n][i]['score']:
-                    finalName.append({'highestResult': recognized[0]['results'][n][i]['score'],
-                                      'name': recognized[0]['results'][n][i]['name']})
-        print('Inception: '+str(len(finalName)))
-        # print('final: ' + str(finalName))
-        # print(finalName[0])
-        save_inception(finalName, elementId)
+            # no need...for result in range(len(recognized)):
+            #    elementLoc = []
+            #    for i in range(len(recognized[result])):
+            #        elementLoc.append(recognized[result]['results'][i]['score'])
+            #    elementName.append(elementLoc)
+            #print(elementName)
+            finalName = []
+            for n in range(len(elementName)):
+                for i in range(len(recognized[0]['results'][n])):
+                    res = max(elementName[n])
+                    if res == recognized[0]['results'][n][i]['score']:
+                        finalName.append({'highestResult': recognized[0]['results'][n][i]['score'],
+                                          'name': recognized[0]['results'][n][i]['name']})
+            print('Inception: '+str(len(finalName)))
+            # print('final: ' + str(finalName))
+            # print(finalName[0])
+            save_inception(finalName, elementId)
 
     '#################################  STOP SEGMENTATION, INCEPTION AND OCR ########################################'
 

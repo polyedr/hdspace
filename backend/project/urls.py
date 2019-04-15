@@ -17,6 +17,9 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from rest_framework_swagger.views import get_swagger_view
+
+schema_view = get_swagger_view(title='Adevi API')
 
 urlpatterns = [
     path("", include("apps.projects.urls", namespace="projects")),
@@ -27,7 +30,9 @@ urlpatterns = [
     path("paypal/", include("paypal.standard.ipn.urls")),
     path("oauth/", include('social_django.urls', namespace='social')),
     path('admin/', admin.site.urls),
-    path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
+    path('api/v1/api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    path("api/v1/accounts/", include("apps.accounts.apiurls", namespace="apiaccounts")),
+    path("api/v1/schema/", schema_view)
 ]
 
 if settings.DEBUG:
