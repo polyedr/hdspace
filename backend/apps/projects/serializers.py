@@ -14,16 +14,20 @@ from .models import (
 )
 
 
-class ProjectSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Project
-        fields = ("name", "preview", "status")
-
-
 class ProjectScreenSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectScreen
-        fields = ("status", "details_id")
+        # fields = ("status", "details_id")
+        fields = "__all__"
+
+
+class ProjectSerializer(serializers.ModelSerializer):
+    # project_screens = ProjectScreenSerializer(read_only=True)
+    # project_screens = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+    class Meta:
+        model = Project
+        fields = ("name","preview", "status")
+        # fields = "__all__"
 
 
 class ScreenEventSerializer(serializers.ModelSerializer):
