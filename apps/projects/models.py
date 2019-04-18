@@ -43,7 +43,6 @@ class Project(TimeStampedModel):
     user = models.ForeignKey(get_user_model(), related_name="user", on_delete=models.CASCADE)
     members = models.ManyToManyField(get_user_model(), related_name="members", through="ProjectMember")
 
-
     @staticmethod
     def generate_preview_token():
         return secrets.token_urlsafe(16)
@@ -51,7 +50,6 @@ class Project(TimeStampedModel):
     def get_project_url(self):
         return reverse("projects:project",
                        kwargs={"pk": self.pk})
-
 
     def __str__(self):
         return self.name

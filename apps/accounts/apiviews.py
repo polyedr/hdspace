@@ -11,6 +11,7 @@ class UserList(generics.ListCreateAPIView):
     """
     List all users, or create a new user.
     """
+
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
@@ -19,6 +20,7 @@ class UserDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     Retrieve, update or delete a user
     """
+
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
@@ -27,18 +29,22 @@ class ProfileList(generics.ListCreateAPIView):
     """
     List all profiles, or create a new profile.
     """
+
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
 
+
 class ProfileDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     Retrieve, update or delete a profile
     """
+
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
+
 
 '''
 class TeamMemberList(generics.ListCreateAPIView):
