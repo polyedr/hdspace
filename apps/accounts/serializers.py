@@ -6,14 +6,18 @@ from .models import User, Profile, Team, TeamMember
 
 
 class UserSerializer(serializers.ModelSerializer):
-    # profiles = serializers.PrimaryKeyRelatedField(many=True, queryset=Profile.objects.all())
-    # teams = serializers.PrimaryKeyRelatedField(many=True, queryset=Team.objects.all())
-    # profile_approved = serializers.IntegerField(source='profile.approved')
+    # Password validation to be able to authorize
+    def create(self, validated_data):
+        user = super().create(validated_data)
+        user.set_password(validated_data['password'])
+        user.save()
+        return user
 
     class Meta:
         model = User
         # fields = ('_id')
-        fields = ("_id", "username", "email", "first_name", "last_name", "date_joined", "is_active")
+        fields = ("username", "email", "first_name", "last_name", "date_joined", "password", "is_active")
+
 
 
 class ProfileSerializer(serializers.ModelSerializer):
