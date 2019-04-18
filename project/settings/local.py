@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 
 from .base import *  # noqa
 from celery.schedules import crontab
-
+from datetime import timedelta
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework_swagger',
+    # 'rest_framework_simplejwt.token_blacklist', djongo.sql2mongo.SQLDecodeError: FAILED SQL: ALTER TABLE "token_blacklist_blacklistedtoken" ADD COLUMN "token_id" int32 NOT NULL UNIQUE
 ]
 
 EXTERNAL_APPS = [
@@ -89,6 +90,9 @@ REST_FRAMEWORK = {
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.AllowAny',
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
     ]
 }
 
@@ -278,3 +282,29 @@ CACHES = {
 
 USER_ONLINE_TIMEOUT = 180
 USER_LASTSEEN_TIMEOUT = 60 * 60 * 24 * 7
+
+
+# JWT tokens settings
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=555555),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=111),
+    'ROTATE_REFRESH_TOKENS': False,
+    'BLACKLIST_AFTER_ROTATION': True,
+
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY': SECRET_KEY,
+    'VERIFYING_KEY': None,
+
+    'AUTH_HEADER_TYPES': ('Bearer',),
+    'USER_ID_FIELD': '_id',
+    'USER_ID_CLAIM': 'user_id',
+
+    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
+    'TOKEN_TYPE_CLAIM': 'token_type',
+
+    'JTI_CLAIM': 'jti',
+
+    'SLIDING_TOKEN_REFRESH_EXP_CLAIM': 'refresh_exp',
+    'SLIDING_TOKEN_LIFETIME': timedelta(minutes=555555),
+    'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=111),
+}

@@ -71,7 +71,7 @@ class ProjectScreen(TimeStampedModel):
 
     # image = models.ImageField(upload_to=utils.get_file_path, blank=True)
     status = models.CharField(choices=SCREEN_STATUS, default=SCREEN_IN_PROGRESS, max_length=32)
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, related_name='projectscreens', on_delete=models.CASCADE)
     details_id = models.CharField(max_length=32)
 
     def get_image(self):

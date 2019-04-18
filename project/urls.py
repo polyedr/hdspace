@@ -18,6 +18,10 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework_swagger.views import get_swagger_view
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+    TokenVerifyView)
 
 schema_view = get_swagger_view(title='Adevi API')
 
@@ -33,7 +37,10 @@ urlpatterns = [
     path('api/v1/api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path("api/v1/accounts/", include("apps.accounts.apiurls", namespace="apiaccounts")),
     path("api/v1/projects/", include("apps.projects.apiurls", namespace="apiprojects")),
-    path("api/v1/schema/", schema_view)
+    path("api/v1/schema/", schema_view),
+    path("api/v1/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
+    path("api/v1/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
+    path("api/v1/token/verify/", TokenVerifyView.as_view(), name='token_verify'),
 ]
 
 if settings.DEBUG:
