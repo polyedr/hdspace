@@ -1,3 +1,5 @@
+"""Urls for the projects api"""
+
 from django.urls import path, include
 
 from .apiviews import (
