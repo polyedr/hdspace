@@ -1,3 +1,5 @@
+"""Serializers for the accounts"""
+
 from rest_framework import serializers
 from .models import User, Profile, Team, TeamMember
 

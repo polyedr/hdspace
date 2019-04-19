@@ -1,3 +1,5 @@
+"""Urls for the accounts api"""
+
 from django.urls import path, include
 from .apiviews import UserList, UserDetail, ProfileList, ProfileDetail
 from .views import auth, profile, team, user
