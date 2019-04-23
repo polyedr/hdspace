@@ -58,6 +58,7 @@ comment_patterns = [
     path("edit-comment/", comment.EditView.as_view(), name="edit_comment"),
     path("delete-comment/", comment.DeleteCommentView.as_view(), name="delete_comment"),
 ]
+
 urlpatterns = [
     path("", include(project_patterns)),
     path("", include(screen_patterns)),

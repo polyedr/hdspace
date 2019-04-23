@@ -24,10 +24,10 @@ class ProjectScreenSerializer(serializers.ModelSerializer):
 
 
 class ProjectSerializer(serializers.ModelSerializer):
-    projectscreens = ProjectScreenSerializer(many=True, read_only=True)
+    projectscreen = ProjectScreenSerializer(many=True, read_only=True)
     class Meta:
         model = Project
-        fields = ("name","preview", "status", "projectscreens")
+        fields = ("name","preview", "status", "projectscreen")
         # fields = "__all__"
 
 
