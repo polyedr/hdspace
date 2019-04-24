@@ -82,9 +82,9 @@ api_screen_comment_patterns = [
 
 urlpatterns = [
     path("", include(api_project_patterns)),
-    path("", include(api_project_invitation_patterns)),
+    # path("", include(api_project_invitation_patterns)),
     path("", include(api_screen_event_patterns)),
-    path("", include(api_project_task_patterns)),
+    # path("", include(api_project_task_patterns)),
     path("", include(api_project_screen_patterns)),
-    path("", include(api_screen_comment_patterns)),
+    # path("", include(api_screen_comment_patterns)),
 ]
