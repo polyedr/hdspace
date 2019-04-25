@@ -19,17 +19,29 @@ from .models import (
 class ProjectScreenSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectScreen
-        # fields = ("status", "details_id")
-        fields = "__all__"
+        fields = ("status", "project")
+        # fields = "__all__"
 
 
 class ProjectSerializer(serializers.ModelSerializer):
     projectscreen = ProjectScreenSerializer(many=True, read_only=True)
+    # users = UserSerializer(many=True, read_only=True)
+
     class Meta:
         model = Project
-        fields = ("name", "status", "projectscreen")
-        # fields = ("name","preview", "status", "projectscreen")
-        # fields = "__all__"
+        fields = ("preview", "name", "status", "projectscreen")
+        extra_kwargs = {
+            'preview': {'read_only': True}
+        }
+
+    def create(self, validated_data):
+        project = Project(
+            name=validated_data['name'],
+            status=validated_data['status']
+        )
+        project.preview = project.generate_preview_token()
+        project.save()
+        return project
 
 
 class ScreenEventSerializer(serializers.ModelSerializer):
