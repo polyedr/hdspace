@@ -6,7 +6,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.contrib.messages import get_messages
 
 from core.tests.utils import create_image
-from projects.factories import ProjectFactory, ProjectMemberFactory, ProjectScreenFactory, ScreenEventFactory
+from apps.projects.factories import ProjectFactory, ProjectMemberFactory, ProjectScreenFactory, ScreenEventFactory
 
 
 @pytest.mark.django_db

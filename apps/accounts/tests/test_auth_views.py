@@ -4,9 +4,9 @@ import parse
 from django.urls import reverse
 from django.contrib.messages import get_messages
 
-from core.utils import build_absolute_url
-from accounts.factories import UserFactory
-from accounts.models import Profile
+from apps.core.utils import build_absolute_url
+from apps.accounts.factories import UserFactory
+from apps.accounts.models import Profile
 
 
 @pytest.mark.django_db
