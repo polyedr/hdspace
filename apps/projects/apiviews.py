@@ -13,7 +13,7 @@ from .models import (
     TaskTime,
     ScreenComment,
     Comment,
-)
+    ScreenScenario, ScenarioElement)
 from .serializers import (
     ProjectSerializer,
     ProjectMemberSerializer,
@@ -26,7 +26,7 @@ from .serializers import (
     ScreenCommentSerializer,
     TaskTimeSerializer,
     ScreenAssigneeSerializer,
-)
+    ScreenScenarioSerializer, ScenarioElementSerializer)
 
 
 class ProjectList(generics.ListCreateAPIView):
@@ -234,3 +234,39 @@ class CommentDetail(generics.RetrieveUpdateDestroyAPIView):
 
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
+
+# Scenarios with elements api views
+class ScreenScenarioList(generics.ListCreateAPIView):
+    """
+    List all screen scenarios, or create a new screen scenario.
+    """
+
+    queryset = ScreenScenario.objects.all()
+    serializer_class = ScreenScenarioSerializer
+
+
+class ScreenScenarioDetail(generics.RetrieveUpdateDestroyAPIView):
+    """
+    Retrieve, update or delete a screen scenario
+    """
+
+    queryset = ScreenScenario.objects.all()
+    serializer_class = ScreenScenarioSerializer
+
+class ScenarioElementList(generics.ListCreateAPIView):
+    """
+    List all scenario elements, or create a new scenario element.
+    """
+
+    queryset = ScenarioElement.objects.all()
+    serializer_class = ScenarioElementSerializer
+
+
+class ScenarioElementDetail(generics.RetrieveUpdateDestroyAPIView):
+    """
+    Retrieve, update or delete a scenario element
+    """
+
+    queryset = ScenarioElement.objects.all()
+    serializer_class = ScenarioElementSerializer
+

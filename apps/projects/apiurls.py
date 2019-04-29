@@ -25,7 +25,7 @@ from .apiviews import (
     TaskTimeDetail,
     ScreenCommentDetail,
     CommentDetail,
-)
+    ScreenScenarioDetail, ScenarioElementDetail, ScreenScenarioList, ScenarioElementList)
 
 app_name = "projects"
 
@@ -70,6 +70,24 @@ api_project_screen_patterns = [
     ),
 ]
 
+api_screen_scenario_patterns = [
+    path("screen-scenarios/", ScreenScenarioList.as_view(), name="api_screen_scenarios"),
+    path(
+        "screen-scenarios/<int:pk>/",
+        ScreenScenarioDetail.as_view(),
+        name="api_screen_scenario",
+    ),
+]
+
+api_scenario_element_patterns = [
+    path("scenario-elements/", ScenarioElementList.as_view(), name="api_scenario_elements"),
+    path(
+        "scenario-elements/<int:pk>/",
+        ScenarioElementDetail.as_view(),
+        name="api_scenario_element",
+    ),
+]
+
 api_screen_comment_patterns = [
     path("screen-comments/", ScreenCommentList.as_view(), name="api_screen_comments"),
     path(
@@ -86,5 +104,7 @@ urlpatterns = [
     # path("", include(api_screen_event_patterns)),
     # path("", include(api_project_task_patterns)),
     path("", include(api_project_screen_patterns)),
+    path("", include(api_screen_scenario_patterns)),
+    path("", include(api_scenario_element_patterns)),
     # path("", include(api_screen_comment_patterns)),
 ]
