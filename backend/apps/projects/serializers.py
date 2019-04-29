@@ -13,14 +13,27 @@ from .models import (
     TaskTime,
     ScreenComment,
     Comment,
-)
+    ScreenScenario, ScenarioElement)
 
 
 class ProjectScreenSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectScreen
-        fields = ("status", "project", "id")
+        fields = ("status", "project", "id", "image")
         # fields = "__all__"
+
+
+class ScreenScenarioSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ScreenScenario
+        fields = ("id", "scenario_type", "name", "x0", "y0", "x1", "y1")
+        # fields = "__all__"
+
+
+class ScenarioElementSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ScenarioElement
+        fields = ("id", "html_element_type", "name", "x0", "y0", "x1", "y1")
 
 
 class ProjectSerializer(serializers.ModelSerializer):

@@ -67,11 +67,12 @@ class ProjectScreen(TimeStampedModel):
         (SCREEN_APPROVED, "APPROVED"),
     )
 
-    # image = models.ImageField(upload_to=utils.get_file_path, blank=True)
+    name = models.CharField(max_length=250, blank=True)
     status = models.CharField(choices=SCREEN_STATUS, default=SCREEN_IN_PROGRESS, max_length=32)
     project = models.ForeignKey(Project, related_name='projectscreen', on_delete=models.CASCADE)
     # project = models.ForeignKey(Project, on_delete=models.CASCADE)
     details_id = models.CharField(max_length=32)
+    image = models.ImageField(upload_to=utils.get_file_path, blank=True, max_length=256)
 
     def get_image(self):
         # return self.image.url
@@ -247,3 +248,66 @@ def get_screen_id(screenid):
     collection = db_main.projects_projectscreen
     id = collection.find_one({'details_id': screenid})['id']
     return id
+
+
+class ScreenScenario(TimeStampedModel):
+    SCENARIO_TYPE_CHOICES = (
+        (1, "login"),
+        (2, "contact_info"),
+        (3, "common_form"),
+        (4, "common_scenario"),
+    )
+
+    scenario_type = models.PositiveSmallIntegerField(
+        choices=SCENARIO_TYPE_CHOICES, default=4
+    )
+
+    screen = models.ForeignKey(ProjectScreen, related_name='screenscenario', on_delete=models.CASCADE)
+    name = models.CharField(max_length=250)
+    # Location
+    x0 = models.IntegerField()
+    y0 = models.IntegerField()
+    x1 = models.IntegerField()
+    y1 = models.IntegerField()
+
+    def __str__(self):
+        return '{}'.format(self.pk)
+
+
+class ScenarioElement(TimeStampedModel):
+    HTML_ELEMENT_TYPE_CHOICES = (
+        (1, "frame"),
+        (2, "widget"),
+        (3, "chart"),
+        (4, "image"),
+        (5, "button"),
+        (6, "hyperlink"),
+        (7, "paragraph"),
+        (8, "textbox"),
+        (9, "textarea"),
+        (10, "textinput"),
+        (11, "icon"),
+        (12, "logo"),
+        (13, "unordered_list"),
+        (14, "ordered_list"),
+        (15, "table"),
+        (16, "ocrtext"),
+        (17, "div"),
+
+    )
+
+    html_element_type = models.PositiveSmallIntegerField(
+        choices=HTML_ELEMENT_TYPE_CHOICES, default=17
+    )
+
+    scenario = models.ForeignKey(ScreenScenario, related_name='scenarioelement', on_delete=models.CASCADE)
+    details_id = models.CharField(max_length=32)
+    name = models.CharField(max_length=250)
+    # Location
+    x0 = models.IntegerField()
+    y0 = models.IntegerField()
+    x1 = models.IntegerField()
+    y1 = models.IntegerField()
+
+    def __str__(self):
+        return '{}'.format(self.pk)
