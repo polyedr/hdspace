@@ -1,10 +1,14 @@
 import secrets
 import uuid
+from collections import OrderedDict
+
 import pymongo
 
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.urls import reverse
+from djongo.models import ListField, DictField
+from rest_framework.fields import Field, JSONField
 
 from apps.core.models import TimeStampedModel
 from apps.accounts.utils import utils
@@ -81,6 +85,13 @@ class ProjectScreen(TimeStampedModel):
     # project = models.ForeignKey(Project, on_delete=models.CASCADE)
     details_id = models.CharField(max_length=32)
     image = models.ImageField(upload_to=utils.get_file_path, blank=True, max_length=256)
+
+    # Screen data should be replaced with JSON field further to save DOM
+
+    # screen_data = models.CharField(max_length=2048, blank=True)
+    # screen_data = JSONField(blank=True)
+    # screen_data = OrderedDict(blank=True)
+    # screen_data = DictField(default={}, blank=True, null=True)
 
     def get_image(self):
         # return self.image.url
@@ -286,6 +297,7 @@ class ScreenScenario(TimeStampedModel):
         ProjectScreen, related_name="screenscenario", on_delete=models.CASCADE
     )
     name = models.CharField(max_length=250)
+
     # Location
     x0 = models.IntegerField()
     y0 = models.IntegerField()
