@@ -21,6 +21,7 @@ from .models import (
 class ProjectScreenSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectScreen
+        # fields = ("status", "screen_data", "project", "id", "image")
         fields = ("status", "project", "id", "image")
         # fields = "__all__"
 
