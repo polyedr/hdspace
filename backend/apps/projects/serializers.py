@@ -13,7 +13,9 @@ from .models import (
     TaskTime,
     ScreenComment,
     Comment,
-    ScreenScenario, ScenarioElement)
+    ScreenScenario,
+    ScenarioElement,
+)
 
 
 class ProjectScreenSerializer(serializers.ModelSerializer):

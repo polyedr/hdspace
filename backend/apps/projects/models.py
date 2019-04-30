@@ -9,7 +9,7 @@ from django.urls import reverse
 from apps.core.models import TimeStampedModel
 from apps.accounts.utils import utils
 
-client = pymongo.MongoClient('localhost', 27017)  # maxPoolSize=50
+client = pymongo.MongoClient("localhost", 27017)  # maxPoolSize=50
 db_main = client.mainDB
 
 
@@ -31,25 +31,29 @@ __all__ = (
 class Project(TimeStampedModel):
     STATUS_PAID = "paid"
     STATUS_PENDING = "pending"
-    STATUS_CHOICES = (
-        (STATUS_PAID, "Paid"),
-        (STATUS_PENDING, "Pending"),
-    )
+    STATUS_CHOICES = ((STATUS_PAID, "Paid"), (STATUS_PENDING, "Pending"))
 
     name = models.CharField(max_length=250)
     preview = models.CharField(max_length=60)
-    status = models.CharField(choices=STATUS_CHOICES, default=STATUS_PENDING, max_length=20)
-    duplicated = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True)
-    user = models.ForeignKey(get_user_model(), related_name="user", on_delete=models.CASCADE)
-    members = models.ManyToManyField(get_user_model(), related_name="members", through="ProjectMember")
+    status = models.CharField(
+        choices=STATUS_CHOICES, default=STATUS_PENDING, max_length=20
+    )
+    duplicated = models.ForeignKey(
+        "self", on_delete=models.CASCADE, null=True, blank=True
+    )
+    user = models.ForeignKey(
+        get_user_model(), related_name="user", on_delete=models.CASCADE
+    )
+    members = models.ManyToManyField(
+        get_user_model(), related_name="members", through="ProjectMember"
+    )
 
     @staticmethod
     def generate_preview_token():
         return secrets.token_urlsafe(16)
 
     def get_project_url(self):
-        return reverse("projects:project",
-                       kwargs={"pk": self.pk})
+        return reverse("projects:project", kwargs={"pk": self.pk})
 
     def __str__(self):
         return self.name
@@ -68,8 +72,12 @@ class ProjectScreen(TimeStampedModel):
     )
 
     name = models.CharField(max_length=250, blank=True)
-    status = models.CharField(choices=SCREEN_STATUS, default=SCREEN_IN_PROGRESS, max_length=32)
-    project = models.ForeignKey(Project, related_name='projectscreen', on_delete=models.CASCADE)
+    status = models.CharField(
+        choices=SCREEN_STATUS, default=SCREEN_IN_PROGRESS, max_length=32
+    )
+    project = models.ForeignKey(
+        Project, related_name="projectscreen", on_delete=models.CASCADE
+    )
     # project = models.ForeignKey(Project, on_delete=models.CASCADE)
     details_id = models.CharField(max_length=32)
     image = models.ImageField(upload_to=utils.get_file_path, blank=True, max_length=256)
@@ -79,26 +87,31 @@ class ProjectScreen(TimeStampedModel):
         return True
 
     def get_screen_url(self):
-        return reverse("projects:screen", kwargs={"project_id": self.project.id, "screen_id": self.pk})
+        return reverse(
+            "projects:screen",
+            kwargs={"project_id": self.project.id, "screen_id": self.pk},
+        )
 
     def get_preview_url(self):
-        return reverse("projects:preview", kwargs={"token": self.project.preview, "pk": self.pk})
+        return reverse(
+            "projects:preview", kwargs={"token": self.project.preview, "pk": self.pk}
+        )
 
     def get_edit_screen_url(self):
-        return reverse("projects:edit_screen", kwargs={"project_id": self.project.pk, "screen_id": self.pk})
+        return reverse(
+            "projects:edit_screen",
+            kwargs={"project_id": self.project.pk, "screen_id": self.pk},
+        )
 
     def __str__(self):
-        return '{}'.format(self.pk)
+        return "{}".format(self.pk)
 
 
 class ScreenEvent(TimeStampedModel):
 
     EVENT_CLICK = "click"
     EVENT_HOVER = "hover"
-    EVENT_CHOICES = (
-        (EVENT_CLICK, "CLICK"),
-        (EVENT_HOVER, "HOVER"),
-    )
+    EVENT_CHOICES = ((EVENT_CLICK, "CLICK"), (EVENT_HOVER, "HOVER"))
 
     LINK_TO_URL = "external"
     LINK_TO_SCREEN = "screen"
@@ -109,7 +122,9 @@ class ScreenEvent(TimeStampedModel):
     )
 
     event = models.CharField(choices=EVENT_CHOICES, default=EVENT_CLICK, max_length=32)
-    link_to = models.CharField(choices=LINK_TO_CHOICES, default=LINK_TO_URL, max_length=32)
+    link_to = models.CharField(
+        choices=LINK_TO_CHOICES, default=LINK_TO_URL, max_length=32
+    )
     href = models.CharField(max_length=250)
     link_screen = models.IntegerField(default=0)
     new_window = models.BooleanField(default=False)
@@ -125,8 +140,7 @@ class ScreenEvent(TimeStampedModel):
         return reverse("projects:delete_screen_event")
 
     def get_update_event_position_url(self):
-        return reverse("projects:update_event_position",
-                       kwargs={"pk": self.pk})
+        return reverse("projects:update_event_position", kwargs={"pk": self.pk})
 
     def __str__(self):
         return self.screen.project.name
@@ -142,7 +156,9 @@ class ScreenComment(TimeStampedModel):
 
 class Comment(TimeStampedModel):
     text = models.TextField()
-    comment = models.ForeignKey(ScreenComment, related_name='comment', on_delete=models.CASCADE)
+    comment = models.ForeignKey(
+        ScreenComment, related_name="comment", on_delete=models.CASCADE
+    )
 
 
 class ProjectInvitation(TimeStampedModel):
@@ -162,12 +178,11 @@ class ProjectInvitation(TimeStampedModel):
 class ProjectMember(TimeStampedModel):
     STATUS_CREATOR = "creator"
     STATUS_MEMBER = "member"
-    MEMBER_STATUS = (
-        (STATUS_CREATOR, "CREATOR"),
-        (STATUS_MEMBER, "MEMBER"),
-    )
+    MEMBER_STATUS = ((STATUS_CREATOR, "CREATOR"), (STATUS_MEMBER, "MEMBER"))
     role = models.CharField(max_length=250, null=True, blank=True)
-    status = models.CharField(choices=MEMBER_STATUS, default=STATUS_MEMBER, max_length=32)
+    status = models.CharField(
+        choices=MEMBER_STATUS, default=STATUS_MEMBER, max_length=32
+    )
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
 
@@ -179,19 +194,22 @@ class ProjectTask(TimeStampedModel):
 
     TASK_CREATED = "created"
     TASK_COMPLETED = "completed"
-    TASK_STATUS = (
-        (TASK_CREATED, "CREATED"),
-        (TASK_COMPLETED, "COMPLETED"),
-    )
+    TASK_STATUS = ((TASK_CREATED, "CREATED"), (TASK_COMPLETED, "COMPLETED"))
 
     title = models.CharField(max_length=250)
     description = models.TextField()
     status = models.CharField(choices=TASK_STATUS, default=TASK_CREATED, max_length=32)
 
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
-    creator = models.ForeignKey(ProjectMember, related_name="creator", on_delete=models.CASCADE)
-    owner = models.ForeignKey(ProjectMember, related_name="owner", on_delete=models.CASCADE)
-    sub_task = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name="subtask")
+    creator = models.ForeignKey(
+        ProjectMember, related_name="creator", on_delete=models.CASCADE
+    )
+    owner = models.ForeignKey(
+        ProjectMember, related_name="owner", on_delete=models.CASCADE
+    )
+    sub_task = models.ForeignKey(
+        "self", on_delete=models.CASCADE, null=True, blank=True, related_name="subtask"
+    )
 
     def __str__(self):
         return self.title
@@ -234,7 +252,9 @@ class ProjectActivity(models.Model):
         (SHARED_PROTOTYPE, "shared prototype"),
         (SCREEN_COMMENT, "screen comment"),
     )
-    type = models.CharField(choices=ACTIVITY_TYPES, default=TASK_CREATED, max_length=250)
+    type = models.CharField(
+        choices=ACTIVITY_TYPES, default=TASK_CREATED, max_length=250
+    )
 
     member = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, null=True)
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
@@ -246,7 +266,7 @@ class ProjectActivity(models.Model):
 
 def get_screen_id(screenid):
     collection = db_main.projects_projectscreen
-    id = collection.find_one({'details_id': screenid})['id']
+    id = collection.find_one({"details_id": screenid})["id"]
     return id
 
 
@@ -262,7 +282,9 @@ class ScreenScenario(TimeStampedModel):
         choices=SCENARIO_TYPE_CHOICES, default=4
     )
 
-    screen = models.ForeignKey(ProjectScreen, related_name='screenscenario', on_delete=models.CASCADE)
+    screen = models.ForeignKey(
+        ProjectScreen, related_name="screenscenario", on_delete=models.CASCADE
+    )
     name = models.CharField(max_length=250)
     # Location
     x0 = models.IntegerField()
@@ -271,7 +293,7 @@ class ScreenScenario(TimeStampedModel):
     y1 = models.IntegerField()
 
     def __str__(self):
-        return '{}'.format(self.pk)
+        return "{}".format(self.pk)
 
 
 class ScenarioElement(TimeStampedModel):
@@ -293,14 +315,15 @@ class ScenarioElement(TimeStampedModel):
         (15, "table"),
         (16, "ocrtext"),
         (17, "div"),
-
     )
 
     html_element_type = models.PositiveSmallIntegerField(
         choices=HTML_ELEMENT_TYPE_CHOICES, default=17
     )
 
-    scenario = models.ForeignKey(ScreenScenario, related_name='scenarioelement', on_delete=models.CASCADE)
+    scenario = models.ForeignKey(
+        ScreenScenario, related_name="scenarioelement", on_delete=models.CASCADE
+    )
     details_id = models.CharField(max_length=32)
     name = models.CharField(max_length=250)
     # Location
@@ -310,4 +333,4 @@ class ScenarioElement(TimeStampedModel):
     y1 = models.IntegerField()
 
     def __str__(self):
-        return '{}'.format(self.pk)
+        return "{}".format(self.pk)
