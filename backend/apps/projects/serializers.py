@@ -22,7 +22,7 @@ class ProjectScreenSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectScreen
         # fields = ("status", "screen_data", "project", "id", "image")
-        fields = ("status", "project", "id", "image")
+        fields = ("status", "project", "id", "image", "screen_data_text", "screen_data_json")
         # fields = "__all__"
 
 
