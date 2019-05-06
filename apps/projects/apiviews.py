@@ -35,9 +35,12 @@ from .serializers import (
 
 class ProjectList(generics.ListCreateAPIView):
     """
-    List all projects, or create a new project.
-    """
+    get:
+    Return a list of all the existing projects.
 
+    post:
+    Create a new project instance.
+    """
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
 
