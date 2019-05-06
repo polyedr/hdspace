@@ -85,7 +85,7 @@ class ProjectScreen(TimeStampedModel):
     )
     # project = models.ForeignKey(Project, on_delete=models.CASCADE)
     details_id = models.CharField(max_length=32)
-    image = models.ImageField(upload_to=utils.get_file_path, blank=True, max_length=256)
+    image = models.ImageField(upload_to=utils.get_file_path, blank=True, null=True, max_length=256)
 
     # Screen data should be replaced with JSON field further to save DOM
 

@@ -25,7 +25,6 @@ django-cors-headers==2.5.2
 django-debug-toolbar==1.9.1
 django-environ==0.4.4
 django-filter==2.1.0
-django-jsonfield==1.2.0
 django-paypal==0.5.0
 django-rest-swagger==2.2.0
 django-widget-tweaks==1.4.2
@@ -45,6 +44,7 @@ ipython-genutils==0.2.0
 itypes==1.1.0
 jedi==0.13.3
 Jinja2==2.10.1
+jsonfield2==3.0.2
 Keras==2.1.2
 kombu==4.3.0
 Markdown==3.0.1
