@@ -7,11 +7,10 @@ import pymongo
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.urls import reverse
-from djongo.models import ListField, DictField
-from rest_framework.fields import Field, JSONField
 
 from apps.core.models import TimeStampedModel
 from apps.accounts.utils import utils
+from apps.projects.utils.fields import JSONField
 
 client = pymongo.MongoClient("localhost", 27017)  # maxPoolSize=50
 db_main = client.mainDB
@@ -88,7 +87,14 @@ class ProjectScreen(TimeStampedModel):
 
     # Screen data should be replaced with JSON field further to save DOM
 
-    # screen_data = models.CharField(max_length=2048, blank=True)
+    # screen_data_char = models.CharField(max_length=1000, blank=True)
+    screen_data_text = models.TextField(blank=True)
+    # screen_data_json = JSONField(blank=True, null=True)
+
+    # screen_data_list = ListField(default = [])
+    # screen_data_dict = DictField(default = {})
+    # screen_data_formless = FormlessField(null=True)
+    # screen_data_embeddeddict = EmbeddedDictField(default = {})
     # screen_data = JSONField(blank=True)
     # screen_data = OrderedDict(blank=True)
     # screen_data = DictField(default={}, blank=True, null=True)

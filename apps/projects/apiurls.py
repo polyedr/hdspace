@@ -114,7 +114,7 @@ urlpatterns = [
     # path("", include(api_screen_event_patterns)),
     # path("", include(api_project_task_patterns)),
     path("", include(api_project_screen_patterns)),
-    # path("", include(api_screen_scenario_patterns)),
-    # path("", include(api_scenario_element_patterns)),
+    path("", include(api_screen_scenario_patterns)),
+    path("", include(api_scenario_element_patterns)),
     # path("", include(api_screen_comment_patterns)),
 ]
