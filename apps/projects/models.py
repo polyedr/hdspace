@@ -1,3 +1,4 @@
+import collections
 import secrets
 import uuid
 from collections import OrderedDict
@@ -7,10 +8,11 @@ import pymongo
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.urls import reverse
+from jsonfield import JSONField
 
 from apps.core.models import TimeStampedModel
 from apps.accounts.utils import utils
-from apps.projects.utils.fields import JSONField
+
 
 client = pymongo.MongoClient("localhost", 27017)  # maxPoolSize=50
 db_main = client.mainDB
@@ -89,7 +91,7 @@ class ProjectScreen(TimeStampedModel):
 
     # screen_data_char = models.CharField(max_length=1000, blank=True)
     screen_data_text = models.TextField(blank=True)
-    # screen_data_json = JSONField(blank=True, null=True)
+    screen_data_json = JSONField(blank=True, load_kwargs={'object_pairs_hook': collections.OrderedDict})
 
     # screen_data_list = ListField(default = [])
     # screen_data_dict = DictField(default = {})
