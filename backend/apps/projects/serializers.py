@@ -22,21 +22,58 @@ class ProjectScreenSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectScreen
         # fields = ("status", "screen_data", "project", "id", "image")
-        fields = ("status", "project", "id", "image", "screen_data_text", "screen_data_json")
+        fields = (
+            "status",
+            "project",
+            "name",
+            "id",
+            "image",
+            "screen_data_text",
+            "screen_data_json",
+        )
+        # fields = ("status", "project", "id", "image")
         # fields = "__all__"
 
 
 class ScreenScenarioSerializer(serializers.ModelSerializer):
     class Meta:
         model = ScreenScenario
-        fields = ("id", "scenario_type", "name", "x0", "y0", "x1", "y1")
+        fields = (
+            "id",
+            "scenario_type",
+            "scenarioelement",
+            "name",
+            "scenario_weight",
+            "scenario_height",
+            "scenario_width",
+            "scenario_parameters",
+            "scenario_styles",
+            "x0",
+            "y0",
+            "x1",
+            "y1",
+        )
+        extra_kwargs = {"scenarioelement": {"read_only": True}}
         # fields = "__all__"
 
 
 class ScenarioElementSerializer(serializers.ModelSerializer):
     class Meta:
         model = ScenarioElement
-        fields = ("id", "html_element_type", "name", "x0", "y0", "x1", "y1")
+        fields = (
+            "id",
+            "html_element_type",
+            "name",
+            "element_weight",
+            "element_height",
+            "element_width",
+            "element_parameters",
+            "element_styles",
+            "x0",
+            "y0",
+            "x1",
+            "y1",
+        )
 
 
 class ProjectSerializer(serializers.ModelSerializer):

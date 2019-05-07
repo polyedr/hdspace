@@ -85,13 +85,15 @@ class ProjectScreen(TimeStampedModel):
     )
     # project = models.ForeignKey(Project, on_delete=models.CASCADE)
     details_id = models.CharField(max_length=32)
-    image = models.ImageField(upload_to=utils.get_file_path, blank=True, null=True, max_length=256)
+    image = models.ImageField(
+        upload_to=utils.get_file_path, blank=True, null=True, max_length=256
+    )
 
     # Screen data should be replaced with JSON field further to save DOM
 
     # screen_data_char = models.CharField(max_length=1000, blank=True)
     screen_data_text = models.TextField(blank=True)
-    screen_data_json = JSONField(blank=True, load_kwargs={'object_pairs_hook': collections.OrderedDict})
+    screen_data_json = JSONField(blank=True)
 
     # screen_data_list = ListField(default = [])
     # screen_data_dict = DictField(default = {})
@@ -290,15 +292,19 @@ def get_screen_id(screenid):
 
 
 class ScreenScenario(TimeStampedModel):
+    LOGIN = "login"
+    CONTACT_INFO = "contact_info"
+    COMMON_FORM = "common_form"
+    COMMON_SCENARIO = "common_scenario"
     SCENARIO_TYPE_CHOICES = (
-        (1, "login"),
-        (2, "contact_info"),
-        (3, "common_form"),
-        (4, "common_scenario"),
+        (LOGIN, "login"),
+        (CONTACT_INFO, "contact_info"),
+        (COMMON_FORM, "common_form"),
+        (COMMON_SCENARIO, "common_scenario"),
     )
 
-    scenario_type = models.PositiveSmallIntegerField(
-        choices=SCENARIO_TYPE_CHOICES, default=4
+    scenario_type = models.CharField(
+        choices=SCENARIO_TYPE_CHOICES, default=LOGIN, max_length=250
     )
 
     screen = models.ForeignKey(
@@ -306,6 +312,15 @@ class ScreenScenario(TimeStampedModel):
     )
     name = models.CharField(max_length=250)
 
+    # Styles and parameters
+    scenario_styles = models.TextField(blank=True)
+    scenario_parameters = models.TextField(blank=True)
+
+    # Order of scenarios, or the scenario weight
+    scenario_weight = models.IntegerField(null=True)
+    # Size
+    scenario_height = models.IntegerField(null=True)
+    scenario_width = models.IntegerField(null=True)
     # Location
     x0 = models.IntegerField()
     y0 = models.IntegerField()
@@ -317,28 +332,47 @@ class ScreenScenario(TimeStampedModel):
 
 
 class ScenarioElement(TimeStampedModel):
+    FRAME = "frame"
+    WIDGET = "widget"
+    CHART = "chart"
+    IMAGE = "image"
+    BUTTON = "button"
+    HYPERLINK = "hyperlink"
+    PARAGRAPH = "paragraph"
+    TEXTBOX = "textbox"
+    TEXTAREA = "textarea"
+    TEXTINPUT = "textinput"
+    ICON = "icon"
+    LOGO = "logo"
+    UNORDERED_LIST = "unordered_list"
+    ORDERED_LIST = "ordered_list"
+    TABLE = "table"
+    OCRTEXT = "ocrtext"
+    DIV = "div"
+    UNDEFINED = "undefined"
     HTML_ELEMENT_TYPE_CHOICES = (
-        (1, "frame"),
-        (2, "widget"),
-        (3, "chart"),
-        (4, "image"),
-        (5, "button"),
-        (6, "hyperlink"),
-        (7, "paragraph"),
-        (8, "textbox"),
-        (9, "textarea"),
-        (10, "textinput"),
-        (11, "icon"),
-        (12, "logo"),
-        (13, "unordered_list"),
-        (14, "ordered_list"),
-        (15, "table"),
-        (16, "ocrtext"),
-        (17, "div"),
+        (FRAME, "frame"),
+        (WIDGET, "widget"),
+        (CHART, "chart"),
+        (IMAGE, "image"),
+        (BUTTON, "button"),
+        (HYPERLINK, "hyperlink"),
+        (PARAGRAPH, "paragraph"),
+        (TEXTBOX, "textbox"),
+        (TEXTAREA, "textarea"),
+        (TEXTINPUT, "textinput"),
+        (ICON, "icon"),
+        (LOGO, "logo"),
+        (UNORDERED_LIST, "unordered_list"),
+        (ORDERED_LIST, "ordered_list"),
+        (TABLE, "table"),
+        (OCRTEXT, "ocrtext"),
+        (DIV, "div"),
+        (UNDEFINED, "undefined"),
     )
 
-    html_element_type = models.PositiveSmallIntegerField(
-        choices=HTML_ELEMENT_TYPE_CHOICES, default=17
+    html_element_type = models.CharField(
+        choices=HTML_ELEMENT_TYPE_CHOICES, default=DIV, max_length=250
     )
 
     scenario = models.ForeignKey(
@@ -346,6 +380,16 @@ class ScenarioElement(TimeStampedModel):
     )
     details_id = models.CharField(max_length=32)
     name = models.CharField(max_length=250)
+
+    # Styles and parameters
+    element_styles = models.TextField(blank=True)
+    element_parameters = models.TextField(blank=True)
+
+    # Order of elements, or the element weight
+    element_weight = models.IntegerField(null=True)
+    # Size
+    element_height = models.IntegerField(null=True)
+    element_width = models.IntegerField(null=True)
     # Location
     x0 = models.IntegerField()
     y0 = models.IntegerField()

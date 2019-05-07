@@ -67,7 +67,7 @@ Pillow==5.1.0
 pluggy==0.6.0
 prompt-toolkit==1.0.15
 protobuf==3.7.0
-psycopg2==2.8.2
+# psycopg2-binary
 ptyprocess==0.6.0
 py==1.8.0
 pycodestyle==2.3.1
