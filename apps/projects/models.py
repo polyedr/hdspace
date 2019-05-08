@@ -379,7 +379,7 @@ class ScenarioElement(TimeStampedModel):
     )
 
     scenario = models.ForeignKey(
-        ScreenScenario, related_name="scenarioelement", on_delete=models.CASCADE
+        ScreenScenario, related_name="elements", on_delete=models.CASCADE
     )
     details_id = models.CharField(max_length=32)
     name = models.CharField(max_length=250)
