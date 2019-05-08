@@ -46,11 +46,11 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
             "name",
             "type",
             "buoyancy",
-            "scenarioelement",
+            "elements",
             "parameters",
             "styles",
         )
-        extra_kwargs = {"scenarioelement": {"read_only": True}}
+        extra_kwargs = {"elements": {"read_only": True}}
         # fields = "__all__"
 
 
