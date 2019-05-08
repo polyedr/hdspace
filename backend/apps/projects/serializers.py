@@ -19,6 +19,7 @@ from .models import (
 
 
 class ProjectScreenSerializer(serializers.ModelSerializer):
+    screen_data_json = serializers.JSONField()
     class Meta:
         model = ProjectScreen
         # fields = ("status", "screen_data", "project", "id", "image")
@@ -36,43 +37,35 @@ class ProjectScreenSerializer(serializers.ModelSerializer):
 
 
 class ScreenScenarioSerializer(serializers.ModelSerializer):
+    parameters = serializers.JSONField()
+    styles = serializers.JSONField()
     class Meta:
         model = ScreenScenario
         fields = (
             "id",
-            "scenario_type",
-            "scenarioelement",
             "name",
-            "scenario_weight",
-            "scenario_height",
-            "scenario_width",
-            "scenario_parameters",
-            "scenario_styles",
-            "x0",
-            "y0",
-            "x1",
-            "y1",
+            "type",
+            "buoyancy",
+            "scenarioelement",
+            "parameters",
+            "styles",
         )
         extra_kwargs = {"scenarioelement": {"read_only": True}}
         # fields = "__all__"
 
 
 class ScenarioElementSerializer(serializers.ModelSerializer):
+    parameters = serializers.JSONField()
+    styles = serializers.JSONField()
     class Meta:
         model = ScenarioElement
         fields = (
             "id",
-            "html_element_type",
             "name",
-            "element_weight",
-            "element_height",
-            "element_width",
-            "element_parameters",
-            "element_styles",
-            "x0",
-            "y0",
-            "x1",
-            "y1",
+            "type",
+            "buoyancy",
+            "parameters",
+            "styles",
         )
 
 
