@@ -303,7 +303,7 @@ class ScreenScenario(TimeStampedModel):
         (COMMON_SCENARIO, "common_scenario"),
     )
 
-    scenario_type = models.CharField(
+    type = models.CharField(
         choices=SCENARIO_TYPE_CHOICES, default=LOGIN, max_length=250
     )
 
@@ -313,11 +313,13 @@ class ScreenScenario(TimeStampedModel):
     name = models.CharField(max_length=250)
 
     # Styles and parameters
-    scenario_styles = models.TextField(blank=True)
-    scenario_parameters = models.TextField(blank=True)
+    styles = models.TextField(blank=True)
+    parameters = models.TextField(blank=True)
 
-    # Order of scenarios, or the scenario weight
-    scenario_weight = models.IntegerField(null=True)
+    # Order of scenarios, or the scenario weight, buoyancy
+    buoyancy = models.IntegerField(null=True)
+
+    """
     # Size
     scenario_height = models.IntegerField(null=True)
     scenario_width = models.IntegerField(null=True)
@@ -326,6 +328,7 @@ class ScreenScenario(TimeStampedModel):
     y0 = models.IntegerField()
     x1 = models.IntegerField()
     y1 = models.IntegerField()
+    """
 
     def __str__(self):
         return "{}".format(self.pk)
@@ -371,7 +374,7 @@ class ScenarioElement(TimeStampedModel):
         (UNDEFINED, "undefined"),
     )
 
-    html_element_type = models.CharField(
+    type = models.CharField(
         choices=HTML_ELEMENT_TYPE_CHOICES, default=DIV, max_length=250
     )
 
@@ -382,11 +385,13 @@ class ScenarioElement(TimeStampedModel):
     name = models.CharField(max_length=250)
 
     # Styles and parameters
-    element_styles = models.TextField(blank=True)
-    element_parameters = models.TextField(blank=True)
+    styles = models.TextField(blank=True)
+    parameters = models.TextField(blank=True)
 
-    # Order of elements, or the element weight
-    element_weight = models.IntegerField(null=True)
+    # Order of elements, or the element weight, buoyancy
+    buoyancy = models.IntegerField(null=True)
+
+    """
     # Size
     element_height = models.IntegerField(null=True)
     element_width = models.IntegerField(null=True)
@@ -395,6 +400,7 @@ class ScenarioElement(TimeStampedModel):
     y0 = models.IntegerField()
     x1 = models.IntegerField()
     y1 = models.IntegerField()
+    """
 
     def __str__(self):
         return "{}".format(self.pk)
