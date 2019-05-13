@@ -378,6 +378,39 @@ class ScenarioElement(TimeStampedModel):
         choices=HTML_ELEMENT_TYPE_CHOICES, default=DIV, max_length=250
     )
 
+    PHONE = "phone"
+    PASSWORD = "password"
+    FIRSTNAME = "firstname"
+    LASTNAME = "lastname"
+    END_COMPOSITE_SCENARIO = "end_composite_scenario"
+    END_SIMPLE_SCENARIO = "end_simple_scenario"
+    TITLE = "title"
+    DESCRIPTION = "description"
+    DAY = "day"
+    MONTH = "month"
+    YEAR = "year"
+    WIDGET = "widget"
+    # UNDEFINED = "undefined"
+    ELEMENTS_TYPE_CHOICES = (
+        (PHONE, "phone"),
+        (PASSWORD, "password"),
+        (FIRSTNAME, "firstname"),
+        (LASTNAME, "lastname"),
+        (END_COMPOSITE_SCENARIO, "end_composite_scenario"),
+        (END_SIMPLE_SCENARIO, "end_simple_scenario"),
+        (TITLE, "title"),
+        (DESCRIPTION, "description"),
+        (DAY, "day"),
+        (MONTH, "month"),
+        (YEAR, "year"),
+        (WIDGET, "widget"),
+        (UNDEFINED, "undefined"),
+    )
+
+    elements_type = models.CharField(
+        choices=ELEMENTS_TYPE_CHOICES, default=UNDEFINED, max_length=250
+    )
+
     scenario = models.ForeignKey(
         ScreenScenario, related_name="elements", on_delete=models.CASCADE
     )
