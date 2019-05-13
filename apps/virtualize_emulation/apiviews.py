@@ -6,9 +6,9 @@ from apps.virtualize_emulation.serializers import ScreenScenarioSerializer
 
 
 # Scenarios with elements api views
-class ScreenScenarioList(generics.ListCreateAPIView):
+class ScreenScenarioList(generics.CreateAPIView):
     """
-    List all screen scenarios, or create a new screen scenario.
+    Сreate a new screen scenario.
     """
 
     queryset = ScreenScenario.objects.all()
