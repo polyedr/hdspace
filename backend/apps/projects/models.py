@@ -308,7 +308,7 @@ class ScreenScenario(TimeStampedModel):
     )
 
     screen = models.ForeignKey(
-        ProjectScreen, related_name="screenscenario", on_delete=models.CASCADE
+        ProjectScreen, related_name="screenscenario", on_delete=models.CASCADE, null=True
     )
     name = models.CharField(max_length=250)
 
