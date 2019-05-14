@@ -307,14 +307,13 @@ class ScreenScenario(TimeStampedModel):
         choices=SCENARIO_TYPE_CHOICES, default=LOGIN, max_length=250
     )
 
-    screen = models.ForeignKey(
-        ProjectScreen, related_name="screenscenario", on_delete=models.CASCADE, null=True
-    )
+    screen = models.ForeignKey(ProjectScreen, related_name="screenscenario", on_delete=models.CASCADE, null=True)
+    # screen = models.ForeignKey(ProjectScreen, related_name="scenarios", on_delete=models.CASCADE, null=True)
     name = models.CharField(max_length=250)
 
     # Styles and parameters
-    styles = models.TextField(blank=True)
-    parameters = models.TextField(blank=True)
+    styles = JSONField(blank=True)
+    parameters = JSONField(blank=True)
 
     # Order of scenarios, or the scenario weight, buoyancy
     buoyancy = models.IntegerField(null=True)
@@ -374,7 +373,7 @@ class ScenarioElement(TimeStampedModel):
         (UNDEFINED, "undefined"),
     )
 
-    type = models.CharField(
+    element_id = models.CharField(
         choices=HTML_ELEMENT_TYPE_CHOICES, default=DIV, max_length=250
     )
 
@@ -407,33 +406,22 @@ class ScenarioElement(TimeStampedModel):
         (UNDEFINED, "undefined"),
     )
 
-    elements_type = models.CharField(
+    type = models.CharField(
         choices=ELEMENTS_TYPE_CHOICES, default=UNDEFINED, max_length=250
     )
 
     scenario = models.ForeignKey(
-        ScreenScenario, related_name="elements", on_delete=models.CASCADE
+        ScreenScenario, related_name="elements", on_delete=models.CASCADE, null=True
     )
-    details_id = models.CharField(max_length=32)
-    name = models.CharField(max_length=250)
+    # details_id = models.CharField(max_length=32)
+    name = models.CharField(max_length=250, null=True)
 
     # Styles and parameters
-    styles = models.TextField(blank=True)
-    parameters = models.TextField(blank=True)
+    styles = JSONField(blank=True)
+    parameters = JSONField(blank=True)
 
     # Order of elements, or the element weight, buoyancy
     buoyancy = models.IntegerField(null=True)
-
-    """
-    # Size
-    element_height = models.IntegerField(null=True)
-    element_width = models.IntegerField(null=True)
-    # Location
-    x0 = models.IntegerField()
-    y0 = models.IntegerField()
-    x1 = models.IntegerField()
-    y1 = models.IntegerField()
-    """
 
     def __str__(self):
         return "{}".format(self.pk)

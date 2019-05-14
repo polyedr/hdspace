@@ -31,7 +31,9 @@ class ProjectScreenSerializer(serializers.ModelSerializer):
             "image",
             "screen_data_text",
             "screen_data_json",
+            "screenscenario"
         )
+        extra_kwargs = {"screenscenario": {"read_only": True}}
         # fields = ("status", "project", "id", "image")
         # fields = "__all__"
 
@@ -43,13 +45,14 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
         model = ScreenScenario
         fields = (
             "id",
+            "screen",
             "name",
             "type",
             "buoyancy",
             "elements",
             "parameters",
             "styles",
-            "screen"
+            # "screenscenario"
         )
         extra_kwargs = {"elements": {"read_only": True}}
         # fields = "__all__"
@@ -62,12 +65,15 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
         model = ScenarioElement
         fields = (
             "id",
+            "scenario",
             "name",
+            "element_id",
             "type",
             "buoyancy",
             "parameters",
             "styles",
         )
+
 
 
 class ProjectSerializer(serializers.ModelSerializer):

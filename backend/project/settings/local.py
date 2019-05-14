@@ -54,7 +54,7 @@ PROJECT_APPS = [
     'apps.threads',
     'apps.payments',
     'apps.virtualize',
-    'apps.virtualize_emulation',
+    # 'apps.virtualize_emulation',
     'apps.core',
     'apps.accounts',
     'apps.projects',
