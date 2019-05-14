@@ -1,15 +1,11 @@
 from rest_framework import serializers
-from apps.projects.models import (
-    Project,
-    ProjectScreen,
-    ScreenScenario,
-    ScenarioElement,
-)
+from apps.projects.models import Project, ProjectScreen, ScreenScenario, ScenarioElement
 
 
 class ScreenScenarioSerializer(serializers.ModelSerializer):
-    parameters = serializers.JSONField()
-    styles = serializers.JSONField()
+    # parameters = serializers.JSONField()
+    # styles = serializers.JSONField()
+    image = serializers.ImageField(max_length=None, allow_empty_file=True, use_url=True)
     class Meta:
         model = ScreenScenario
         fields = (
@@ -20,23 +16,24 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
             "elements",
             "parameters",
             "styles",
-            "screen"
+            "screen",
+            "image"
         )
-        # extra_kwargs = {"elements": {"read_only": True}}
+        extra_kwargs = {
+            "elements": {"read_only": True},
+            "parameters": {"read_only": True},
+            "styles": {"read_only": True},
+            "name": {"read_only": True},
+            "type": {"read_only": True},
+            "buoyancy": {"read_only": True}
+        }
         # fields = "__all__"
 
 
 class ScenarioElementSerializer(serializers.ModelSerializer):
     parameters = serializers.JSONField()
     styles = serializers.JSONField()
+
     class Meta:
         model = ScenarioElement
-        fields = (
-            "id",
-            "name",
-            "type",
-            "buoyancy",
-            "parameters",
-            "styles",
-        )
-
+        fields = ("id", "name", "type", "buoyancy", "parameters", "styles")
