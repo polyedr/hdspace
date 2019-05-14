@@ -17,8 +17,8 @@ def cnnModelFirst():
        })
     print('cnnModelTest inserted')
 
-# newcnnModel1Test4Bar()
-# cnnModelFirst()
+newcnnModel1Test4Bar()
+cnnModelFirst()
 
 buttonKeywords = ['login', 'log', 'log ', 'in', 'log in', 'forgot password?', 'forgot password', 'forgot your password',
                   'forgot your password?', 'src.register',
@@ -196,7 +196,7 @@ for i in range(len(name)):
                       'dev': dev[i], 'type': type[i]
                       })
 # Uncomment below to add User Enable keywords
-# userEnable()
+userEnable()
 
 #  Uncomment the lines below to save widgets to the database
 
