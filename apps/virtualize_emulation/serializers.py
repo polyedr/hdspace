@@ -1,7 +1,14 @@
 from rest_framework import serializers
-from apps.projects.models import Project, ProjectScreen, ScreenScenario, ScenarioElement
+from apps.virtualize_emulation.models import PreSegmentation
 
 
+class PreSegmentationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PreSegmentation
+        fields = ("id", "screen", "image")
+
+
+"""
 class ScreenScenarioSerializer(serializers.ModelSerializer):
     # parameters = serializers.JSONField()
     # styles = serializers.JSONField()
@@ -37,3 +44,4 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
     class Meta:
         model = ScenarioElement
         fields = ("id", "name", "type", "buoyancy", "parameters", "styles")
+"""
