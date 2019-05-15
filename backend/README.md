@@ -1,42 +1,53 @@
-# Design Project
+# Adevi REST API project
 
-## Setup
+Adevi REST API project. This REST API application waas built with Django REST Framework based on adevi Django website. The core REST functionality was added. You can find the REST API at /api/v1/schema/. This REST API provide the functionality of the HTML redactor. Projects consist of screens. Screens consist of scenarios containing HTML elements and other things.
 
-Make sure you have `docker` and `docker-compose` installed on your machine.
-Make your own `.env` file using `.env_template`.
 
-Commands
+## Getting Started
 
-To build the project
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+After you will install and run the frontend part inparallel, you can use this application to redact parts of the HTML code.
 
-    make
+### Prerequisites
 
-To run the project
+What things you need to install the software and how to install them
 
-    make run
+PostgreSQL
+Python 3.6+
 
-To jump into container
+### Installing
 
-    $ make shell
-    root@<containerid>:/project#
+You can create virtual environment first from the requirements/requirements-api.txt file. 
+Create the MongoDB database for the local installation purposes, put the database and other parameters required to the .env files.
+After that, you can run migrations commands and run the server locally.
 
-To setup git hooks
+1. python manage.py makemigrations
+2. python manage.py migrate
+3. python manage.py createsuperuser
+4. python manage.py runserver
 
-    python3 -m pip install -r requirements/requirements-test.txt
-    ln -s ../../pre-commit .git/hooks/pre-commit
+You can find the REST API local schema here: http://127.0.0.1:8000/api/v1/schema/
 
-To run tests
+## Deployment
 
-    make test
+1. Create the MongoDB database
+2. Restore PostgreSQL database from dump, https://www.postgresql.org/docs/current/backup-dump.html
+3. Copy project files to the server. Set up the parameters required at the application settings.
+4. Deploy with NGINX and Gunicorn or UWSGI
+5. Check that you have Debug = False at the application settings.
 
-To see coverage report
+## Built With
 
-    make report
-    
-To build coverage report html
+* [Python](https://www.python.org/) - Programming language
+* [Django](https://www.djangoproject.com/) - The Web framework for perfectionists with deadlines
+* [Django REST Framework](https://www.django-rest-framework.org/) - Django REST framework is a powerful and flexible toolkit for building Web APIs.
 
-    make report-html
+## Authors
 
-To stop running containers
+* **Ivan Ishchukov** - *REST API web development* - http://allmax.team/
 
-    make stop
+## Acknowledgments
+
+* Thanks for the Allmax team for the support and discussions and Santiago Rativa, Victor Zamora for the adevi application built
+ 
+ 
