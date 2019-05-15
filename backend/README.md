@@ -1,7 +1,12 @@
 # Adevi REST API project
 
 Adevi REST API project. This REST API application waas built with Django REST Framework based on adevi Django website. The core REST functionality was added. You can find the REST API at /api/v1/schema/. This REST API provide the functionality of the HTML redactor. Projects consist of screens. Screens consist of scenarios containing HTML elements and other things.
+File names were changed a little in comparison with typical Django structure:
 
+1. models.py, the models for the REST API were added
+2. serializers.py, the serializers for the models which were added for the REST API
+3. apiviews, views for the REST API
+4. apiurls, urls for the REST API
 
 ## Getting Started
 
