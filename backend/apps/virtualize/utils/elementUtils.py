@@ -40,9 +40,24 @@ def delete_element_from_collection(elementType, deleteId):
             collection = db[elementType].find({'class_id': deleteId})
         except (AttributeError, pymongo.errors.OperationFailure) as e:
             print('Mongo Data Base Error ' + e)
+    elif elementType is 'IMG':
+        if db.logo.find_one({'seg_id': deleteId}) is not None:
+            elementSubType = 'logo'
+        elif db.icon.find_one({'seg_id': deleteId}) is not None:
+            elementSubType = 'icon'
+        else:
+            elementSubType = 'pictures'
+        try:
+            db[elementSubType].update({'seg_id': deleteId}, {'$set': {'state': 'inactive'}})
+            collection = db[elementSubType].find({'seg_id': deleteId})
+        except (AttributeError, pymongo.errors.OperationFailure) as e:
+            print('Mongo Data Base Error ' + e)
     else:
         try:
             db[elementType].update({'seg_id': deleteId}, {'$set': {'state': 'inactive'}})
+            child = db[elementType].find_one({'seg_id': deleteId})['level']['parent']
+            if child is not None:
+                db[elementType].update({'seg_id': child}, {'$set': {'state': 'inactive'}})
             collection = db[elementType].find({'seg_id': deleteId})
         except (AttributeError, pymongo.errors.OperationFailure) as e:
             print('Mongo Data Base Error ' + e)

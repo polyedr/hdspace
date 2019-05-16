@@ -1353,7 +1353,7 @@ def main_request_core(request):
 
                     elif element == 'IMG':
                         # have this be either 'icon' or 'pictures' depending on which database your IMGs are stored
-                        elementType = 'icon'
+                        elementType = 'IMG'
 
                     else:
                         elementType = 'Error: ' + str(element)
