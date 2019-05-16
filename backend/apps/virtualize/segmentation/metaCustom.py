@@ -214,14 +214,14 @@ def metaCustom(currentUser, myFile, screenshot_id, state):
                         pagehtml2.write(
                             # '<button drag-resize type="button" onclick= "window.location.href=\''+link+'\'" class="class' +
                             '<button type="button" linkvalue= "' + link + '" class="class' +
-                            classid + ' main" id="id' + classid + 'work" style="font-size: '+str(float(fontSize)/float(5))+'px;">' + label + '</button>\n')
+                            classid + ' main" id="id' + classid + 'work" style="font-size: 8%;">' + label + '</button>\n')
                         pagehtml3.write(
                             # '<button drag-resize type="button" onclick= "window.location.href=\''+link+'\'" class="class' +
                             '<button type="button" linkvalue= "' + link + '" class="class' +
                             classid + ' main" id="id' + classid + 'suggestions">' + label + '</button>\n')
                         pagecss.write(
                             '.class' + classid + '{height:' + height + '%; width:' + width + '%; border-radius: ' + borderRadius + 'px;\
-                                    border: 1px solid ' + borderColor + '; background-color: ' + bgcolor + '; font-size: ' + fontSize + 'px; color: ' + fontColor + ';\
+                                    border: 1px solid ' + borderColor + '; background-color: ' + bgcolor + '; font-size: 80%; color: ' + fontColor + ';\
                                     position:absolute; left:' + positionL + '%; top:' + positionT +
                             '%; font-family: ' + fontFamily + '; z-index:' + zIndex + ';}' + ' ' + '#id' + classid + '{}\n')
                         # pageJs.write('<script type="text/javascript">\n document.getElementById("' +
@@ -235,12 +235,12 @@ def metaCustom(currentUser, myFile, screenshot_id, state):
                             '<button drag-resize type="button" class="class' + classid + ' main" id="id' + classid + 'pro">' + label + '</button>\n')
                         pagehtml2.write(
                             '<button drag-resize type="button" class="class' + classid + ' main" id="id' + classid +
-                            'work" style="font-size: '+str(float(fontSize)/float(5))+'px;">' + label + '</button>\n')
+                            'work" style="font-size: 8%;">' + label + '</button>\n')
                         pagehtml3.write(
                             '<button drag-resize type="button" class="class' + classid + ' main" id="id' + classid + 'suggestions">' + label + '</button>\n')
                     pagecss.write('.class' + classid + '{height:' + height + '%; width:' + width + '%; border-radius: ' +
                                   borderRadius + 'px; border: 1px solid ' + borderColor + '; background-color: ' +
-                                  bgcolor + '; font-size: ' + fontSize + 'px; color: ' + fontColor +
+                                  bgcolor + '; font-size: 80%; color: ' + fontColor +
                                   ';position:absolute; left:' + positionL + '%; top:' + positionT + '%; font-family: ' +
                                   fontFamily + '; z-index:' + zIndex + '}' + ' ' + '#id' + classid + '{}\n' +
                                   '#id' + str(classid) + ':hover{'
@@ -300,13 +300,13 @@ def metaCustom(currentUser, myFile, screenshot_id, state):
 
             pagehtml2.write(
                 '<input drag-resize type="text" name="' + name + '" class="class' + classid + ' main" id="id' + classid + 'work" \n\
-                                                placeholder="' + placeholder + '" style="font-size: '+str(float(fontSize)/float(5))+'px;"></input>\n')
+                                                placeholder="' + placeholder + '" style="font-size: 8%;"></input>\n')
             pagehtml3.write(
                 '<input drag-resize type="text" name="' + name + '" class="class' + classid + ' main" id="id' + classid + 'suggestions" \n\
                                                 placeholder="' + placeholder + '"></input>\n')
             pagecss.write(
                 '.class' + classid + '{height:' + height + '%;  text-indent: ' + childOffset + 'px; width:' + width + '%; border-radius: ' + borderRadius + 'px;\n\
-                        border: 0px; position:absolute; left:' + positionL + '%; top:' + positionT + '%; font-size: ' + fontSize + 'px; color: ' + fontColor + ';text-align:' + textAlign + ';background-color: ' + bgcolor +
+                        border: 0px; position:absolute; left:' + positionL + '%; top:' + positionT + '%; font-size: 80%; color: ' + fontColor + ';text-align:' + textAlign + ';background-color: ' + bgcolor +
                 '; font-family: ' + fontFamily + '; border: 1px solid; border-color:' + bordercolor + '; z-index: ' + zIndex + '}' + ' ' + '#id' + classid + '{}\n'+
                     '#id' + str(classid) + ':hover{'
                     + 'border-width: 1px;border-style: dashed;'
@@ -324,13 +324,13 @@ def metaCustom(currentUser, myFile, screenshot_id, state):
 
                    pagehtml2.write(
                        '<input drag-resize type="text" name="' + name + '" class="class' + classid + ' main" id="id' + classid + 'work" \n\
-                                                       placeholder="' + placeholder + '" style="font-size: '+str(float(fontSize)/float(5))+'vw;"></input>\n')
+                                                       placeholder="' + placeholder + '" style="font-size: 8%;"></input>\n')
                    pagehtml3.write(
                        '<input drag-resize type="text" name="' + name + '" class="class' + classid + ' main" id="id' + classid + 'suggestions" \n\
                                                        placeholder="' + placeholder + '"></input>\n')
                    pagecss.write(
                        '.class' + classid + '{height:' + height + '%;  text-indent: ' + childOffset + 'px; width:' + width + '%; border-radius: ' + borderRadius + 'px;\n\
-                               border: 0px; position:absolute; left:' + positionL + '%; top:' + positionT + '%; font-size: ' + fontSize + 'vw; color: ' + fontColor + ';text-align:' + textAlign + ';background-color: ' + bgcolor +
+                               border: 0px; position:absolute; left:' + positionL + '%; top:' + positionT + '%; font-size: 80%; color: ' + fontColor + ';text-align:' + textAlign + ';background-color: ' + bgcolor +
                        '; font-family: ' + fontFamily + '; border: 1px solid; border-color:' + bordercolor + '; z-index: ' + zIndex + '}' + ' ' + '#id' + classid + '{}\n')
 
         def create_text_box_placeholder_legend(legend, placeholder, name, classid, width, height, borderRadius,
@@ -380,7 +380,7 @@ def metaCustom(currentUser, myFile, screenshot_id, state):
                 '<textarea drag-resize  name="' + name + '" class="class' + classid + ' main" id="id' + classid + 'pro" placeholder="' + place_holder + '"></textarea>\n')
             pagehtml2.write(
                 '<textarea drag-resize  name="' + name + '" class="class' + classid + ' main" id="id' + classid +
-                'work" placeholder="' + place_holder + '" style="font-size: '+str(float(fontSize)/float(5))+'vw;";"></textarea>\n')
+                'work" placeholder="' + place_holder + '" style="font-size: 8%;";"></textarea>\n')
             pagehtml3.write(
                 '<textarea drag-resize  name="' + name + '" class="class' + classid + ' main" id="id' + classid + 'suggestions" placeholder="' + place_holder + '"></textarea>\n')
             pagecss.write(
@@ -4597,15 +4597,10 @@ def metaCustom(currentUser, myFile, screenshot_id, state):
             print('these are my buttons!:')
             print(button)
             print('button child')
-            print(button['level'])
             if len(ButtonArray) > 0:
-                if 'parent' in button['level']:
-                    if button['level']['parent'] == [] or 'child' in button['level'] or button['level'] == []:
-                        print('parent is empty!')
-                        label = str(button['name'])
-                    else:
-                        label = str(button['name'])
-
+                if len(ButtonArray) > 0:
+                    i = 0
+                    label = str(button['children'][i]['name'])
                     # Get parent info
                     classid = str(button['seg_id'])
                     width = str(float(button['location']['x1']) - float(
@@ -4615,67 +4610,67 @@ def metaCustom(currentUser, myFile, screenshot_id, state):
                     positionL = str(float(button['location']['x0']))
                     positionT = str(float(button['location']['y0']))
 
-                    for button2 in ButtonArray:
-                        if str(button['level']['parent']) == str(button2['seg_id']):
-                            if 'child' in button2['level']:
-                                if str(button2['level']['child']) == str(button['seg_id']):
-                                    label = str(button2['name'])
-
-                                # Get child info
-                                screenW = float(getMetrix(userId, 'screenWidth'))
-                                print('screenW')
-                                print(screenW)
-                                if (screenW == 0.0):
-                                    screenW = 646.0
-                                fSize = float(button2['location']['y1']) - float(button2['location']['y0'])
-                                # # fSize *= float(heightScreen)/100
-                                fSize *= screenW / 100
-                                charactesLen = len(str(button2['name']))
-                                childWidth = str(float(button2['location']['x1']) - float(
-                                    button2['location']['x0']))
-                                bboxWidth = float(childWidth) * screenW / 100
-
-                                lNumber = 1
-
-                                # Calculate size
-                                if lNumber >= 1:
-                                    newSize = ''
-                                    if label.islower():
-                                        textWidth = float((float(fSize) * 0.44128) * float(charactesLen))
-                                        checker = float(bboxWidth) / int(charactesLen) / 0.44128
-                                        newSize = float((float(checker) * 0.44128) * float(charactesLen))
-                                    elif label.isupper():
-                                        textWidth = float((float(fSize) * 0.6064) * float(charactesLen))
-                                        checker = float(bboxWidth) / int(charactesLen) / 0.6064
-                                        newSize = float((float(checker) * 0.6064) * float(charactesLen))
-
-                                    elif not label.islower() and not label.isupper():
-                                        textWidth = float((float(fSize) * 0.5289) * float(charactesLen))
-                                        checker = float(bboxWidth) / int(charactesLen) / 0.5289
-                                        newSize = float((float(checker) * 0.5289) * float(charactesLen))
-
-                                if textWidth >= newSize:
-                                    print('True')
-                                    print(newSize)
-                                    print(fSize)
-                                    fSize = checker
-
-                                print('BUTTON: \n font size: ' + str(fSize) + '\n segId:' + str(
-                                    classid) + '\n name:' + str(label) +
-                                      '\n checker:' + str(checker) + '\n' + str(textWidth) + '\n height: ' + str(
-                                    height))
-                                if state == 'save':
-                                    update_font_size(db.styles, classid, 'fontSize', str(fSize))
-
-                            else:
-                                label = str(button['name'])
+                    # for button2 in ButtonArray:
+                    #     if str(button['level']['parent']) == str(button2['seg_id']):
+                    #         if 'child' in button2['level']:
+                    #             if str(button2['level']['child']) == str(button['seg_id']):
+                    #                 label = str(button2['name'])
+                    #
+                    #             # Get child info
+                    #             screenW = float(getMetrix(userId, 'screenWidth'))
+                    #             print('screenW')
+                    #             print(screenW)
+                    #             if (screenW == 0.0):
+                    #                 screenW = 646.0
+                    #             fSize = float(button2['location']['y1']) - float(button2['location']['y0'])
+                    #             # # fSize *= float(heightScreen)/100
+                    #             fSize *= screenW / 100
+                    #             charactesLen = len(str(button2['name']))
+                    #             childWidth = str(float(button2['location']['x1']) - float(
+                    #                 button2['location']['x0']))
+                    #             bboxWidth = float(childWidth) * screenW / 100
+                    #
+                    #             lNumber = 1
+                    #
+                    #             # Calculate size
+                    #             if lNumber >= 1:
+                    #                 newSize = ''
+                    #                 if label.islower():
+                    #                     textWidth = float((float(fSize) * 0.44128) * float(charactesLen))
+                    #                     checker = float(bboxWidth) / int(charactesLen) / 0.44128
+                    #                     newSize = float((float(checker) * 0.44128) * float(charactesLen))
+                    #                 elif label.isupper():
+                    #                     textWidth = float((float(fSize) * 0.6064) * float(charactesLen))
+                    #                     checker = float(bboxWidth) / int(charactesLen) / 0.6064
+                    #                     newSize = float((float(checker) * 0.6064) * float(charactesLen))
+                    #
+                    #                 elif not label.islower() and not label.isupper():
+                    #                     textWidth = float((float(fSize) * 0.5289) * float(charactesLen))
+                    #                     checker = float(bboxWidth) / int(charactesLen) / 0.5289
+                    #                     newSize = float((float(checker) * 0.5289) * float(charactesLen))
+                    #
+                    #             if textWidth >= newSize:
+                    #                 print('True')
+                    #                 print(newSize)
+                    #                 print(fSize)
+                    #                 fSize = checker
+                    #
+                    #             print('BUTTON: \n font size: ' + str(fSize) + '\n segId:' + str(
+                    #                 classid) + '\n name:' + str(label) +
+                    #                   '\n checker:' + str(checker) + '\n' + str(textWidth) + '\n height: ' + str(
+                    #                 height))
+                    #             if state == 'save':
+                    #                 update_font_size(db.styles, classid, 'fontSize', str(fSize))
+                    #
+                    #         else:
+                    #             label = str(button['name'])
 
                     fStyles = get_fstyles(classid)
 
                     fontSize = fStyles['fontSize']
-                    try:
+                    if len(fontSize) > 0:
                         fontVw = float((float(fontSize) / screenwidthOnePercent) / 2)
-                    except:
+                    else:
                         fontVw = 1
                     fontColor = fStyles['fontColor']
                     textAlign = fStyles['textAlign']
@@ -4686,15 +4681,13 @@ def metaCustom(currentUser, myFile, screenshot_id, state):
                     bordercolor = styles['bordercolor']
                     borderRadius = styles['borderRadius']
                     link = str(fStyles['link'])
-                    print("link")
-                    print(fStyles)
                     zIndex = str(styles['zIndex'])
                     if state == 'save':
                         create_button(label, classid, width, height, borderRadius, positionL, positionT,
                                       bgcolor, bordercolor, fontColor, str(fontVw), fontFamily, link, zIndex)
                     if state == 'load':
                         create_button_load(label, classid, width, height, borderRadius, positionL, positionT,
-                                                      bgcolor, bordercolor, fontColor, str((fontSize)), fontFamily, link, zIndex)
+                                           bgcolor, bordercolor, fontColor, str((fontSize)), fontFamily, link, zIndex)
 
         '#CREATING HYPERLINK'
         print('hyperlink: ' + str(hyperLinkArray))
@@ -4860,104 +4853,97 @@ def metaCustom(currentUser, myFile, screenshot_id, state):
         for t in textBoxArray:
             print('TextboxArray: ' + str(textBoxArray))
             if len(textBoxArray) > 0:
+                i = 0
+                name = t['children'][i]['name']
+                placeholder = t['children'][i]['name']
+                # Get parent info
+                classid = str(t['seg_id'])
+                width = str(float(t['location']['x1']) - float(
+                    t['location']['x0']))
+                height = str(float(t['location']['y1']) - float(
+                    t['location']['y0']))
+                positionL = str(float(t['location']['x0']))
+                positionT = str(float(t['location']['y0']))
 
-                if 'parent' in t['level']:
-                    if t['level']['parent'] == [] or 'child' in t['level'] or t['level'] == []:
-                        print('parent is empty!')
-                        name = str(t['name'])
-                        placeholder = str(t['name'])
-                    else:
-                        name = str(t['name'])
-                        placeholder = str(t['name'])
+                # for t2 in textBoxArray:
+                #     if str(t['level']['parent']) == str(t2['seg_id']):
+                #         if 'child' in t2['level']:
+                #
+                #             name = str(t2['name'])
+                #             placeholder = str(t2['name'])
+                #             fSize = float(t2['location']['y1']) - float(t2['location']['y0'])
+                #             # fSize *= float(heightScreen)/100
+                #             fSize *= float(getMetrix(userId, 'screenHeight') / 100)
+                #             charactesLen = len(str(t2['name']))
+                #             childWidth = str(float(t2['location']['x1']) - float(
+                #                 t2['location']['x0']))
+                #             screenW = float(getMetrix(userId, 'screenWidth'))
+                #             if screenW == 0.0:
+                #                 screenW = 627
+                #             bboxWidth = float(childWidth) * screenW / 100
+                #
+                #             lNumber = 1
+                #
+                #             # Calculate size
+                #             if lNumber >= 1:
+                #                 newSize = ''
+                #                 if placeholder.islower():
+                #                     textWidth = float((float(fSize) * 0.44128) * float(charactesLen))
+                #                     checker = float(bboxWidth) / int(charactesLen) / 0.44128
+                #                     newSize = float((float(checker) * 0.44128) * float(charactesLen))
+                #                 elif placeholder.isupper():
+                #                     textWidth = float((float(fSize) * 0.6064) * float(charactesLen))
+                #                     checker = float(bboxWidth) / int(charactesLen) / 0.6064
+                #                     newSize = float((float(checker) * 0.6064) * float(charactesLen))
+                #
+                #                 elif not placeholder.islower() and not placeholder.isupper():
+                #                     textWidth = float((float(fSize) * 0.5289) * float(charactesLen))
+                #                     checker = float(bboxWidth) / int(charactesLen) / 0.5289
+                #                     newSize = float((float(checker) * 0.5289) * float(charactesLen))
+                #
+                #             ''''###### to be confirmed #####'''
+                #             if textWidth >= newSize:
+                #                 print('true')
+                #                 fSize = checker
+                #             if state == 'save':
+                #                 update_font_size(db.styles, classid, 'fontSize', str(fSize))
+                #
+                #             if str(t2['level']['child']) == str(t['seg_id']):
+                #                 name = str(t2['name'])
+                #                 placeholder = str(t2['name'])
+                #         else:
+                #             name = str(t['name'])
+                #             placeholder = str(t['name'])
 
-                    # Get parent info
-                    classid = str(t['seg_id'])
-                    width = str(float(t['location']['x1']) - float(
-                        t['location']['x0']))
-                    height = str(float(t['location']['y1']) - float(
-                        t['location']['y0']))
-                    positionL = str(float(t['location']['x0']))
-                    positionT = str(float(t['location']['y0']))
+                styles = get_bstyles(classid)
+                bgcolor = styles['bgcolor']
+                bordercolor = styles['bordercolor']
+                borderRadius = styles['borderRadius']
+                zIndex = str(styles['zIndex'])
 
-                    for t2 in textBoxArray:
-                        if str(t['level']['parent']) == str(t2['seg_id']):
-                            if 'child' in t2['level']:
+                fStyles = get_fstyles(classid)
 
-                                name = str(t2['name'])
-                                placeholder = str(t2['name'])
-                                fSize = float(t2['location']['y1']) - float(t2['location']['y0'])
-                                # fSize *= float(heightScreen)/100
-                                fSize *= float(getMetrix(userId, 'screenHeight') / 100)
-                                charactesLen = len(str(t2['name']))
-                                childWidth = str(float(t2['location']['x1']) - float(
-                                    t2['location']['x0']))
-                                screenW = float(getMetrix(userId, 'screenWidth'))
-                                if screenW == 0.0:
-                                    screenW = 627
-                                bboxWidth = float(childWidth) * screenW / 100
+                fontSize = fStyles['fontSize']
+                if len(fontSize) > 0:
+                    fontVw = float((float(fontSize) / screenwidthOnePercent) / 2)
+                else:
+                    fontVw = 1
+                fontColor = fStyles['fontColor']
+                textAlign = fStyles['textAlign']
+                childOffset = fStyles['textIndent']
+                fontFamily = fStyles['fontFamily']
 
-                                lNumber = 1
-
-                                # Calculate size
-                                if lNumber >= 1:
-                                    newSize = ''
-                                    if placeholder.islower():
-                                        textWidth = float((float(fSize) * 0.44128) * float(charactesLen))
-                                        checker = float(bboxWidth) / int(charactesLen) / 0.44128
-                                        newSize = float((float(checker) * 0.44128) * float(charactesLen))
-                                    elif placeholder.isupper():
-                                        textWidth = float((float(fSize) * 0.6064) * float(charactesLen))
-                                        checker = float(bboxWidth) / int(charactesLen) / 0.6064
-                                        newSize = float((float(checker) * 0.6064) * float(charactesLen))
-
-                                    elif not placeholder.islower() and not placeholder.isupper():
-                                        textWidth = float((float(fSize) * 0.5289) * float(charactesLen))
-                                        checker = float(bboxWidth) / int(charactesLen) / 0.5289
-                                        newSize = float((float(checker) * 0.5289) * float(charactesLen))
-
-                                ''''###### to be confirmed #####'''
-                                if textWidth >= newSize:
-                                    print('true')
-                                    fSize = checker
-                                if state == 'save':
-                                    update_font_size(db.styles, classid, 'fontSize', str(fSize))
-
-                                if str(t2['level']['child']) == str(t['seg_id']):
-                                    name = str(t2['name'])
-                                    placeholder = str(t2['name'])
-                            else:
-                                name = str(t['name'])
-                                placeholder = str(t['name'])
-
-                    styles = get_bstyles(classid)
-                    bgcolor = styles['bgcolor']
-                    bordercolor = styles['bordercolor']
-                    borderRadius = styles['borderRadius']
-                    zIndex = str(styles['zIndex'])
-
-                    fStyles = get_fstyles(classid)
-
-                    fontSize = fStyles['fontSize']
-                    try:
-                        fontVw = float((float(fontSize) / screenwidthOnePercent) / 2)
-                    except:
-                        fontVw = 1
-                    fontColor = fStyles['fontColor']
-                    textAlign = fStyles['textAlign']
-                    childOffset = fStyles['textIndent']
-                    fontFamily = fStyles['fontFamily']
-
-                    '# BUTTON STYLE BG, Border..'
-                    if state == 'load':
-                        print('we know: ' + str(height))
-                        # print('elment: ' + name + ', bgcolor is: ' + bgcolor + ', bordercolor is: ' + bordercolor)
-                        create_text_box_placeholder_load(placeholder, name, width, height, classid, borderRadius, positionL,
-                                                    str(positionT), bgcolor, str(childOffset), str(fontSize), fontFamily,
-                                                    str(fontColor), str(textAlign), str(bordercolor), zIndex)
-                    else:
-                        create_text_box_placeholder_save(placeholder, name, width, height, classid, borderRadius, positionL,
-                                                    str(positionT), bgcolor, str(childOffset), str(fontVw), fontFamily,
-                                                    str(fontColor), str(textAlign), str(bordercolor), zIndex)
+                '# BUTTON STYLE BG, Border..'
+                if state == 'load':
+                    print('we know: ' + str(height))
+                    # print('elment: ' + name + ', bgcolor is: ' + bgcolor + ', bordercolor is: ' + bordercolor)
+                    create_text_box_placeholder_load(placeholder, name, width, height, classid, borderRadius, positionL,
+                                                str(positionT), bgcolor, str(childOffset), str(fontSize), fontFamily,
+                                                str(fontColor), str(textAlign), str(bordercolor), zIndex)
+                else:
+                    create_text_box_placeholder_save(placeholder, name, width, height, classid, borderRadius, positionL,
+                                                str(positionT), bgcolor, str(childOffset), str(fontVw), fontFamily,
+                                                str(fontColor), str(textAlign), str(bordercolor), zIndex)
         '#CREATING TEXTAREA'
         print('textbox: ' + str(textAreaArray))
 
@@ -6203,7 +6189,7 @@ def metaColorTransfer(currentUser, myFile, screenshot_id, folder, index, colors)
                 pagehtml = open(
                     'static/users/' + str(currentUser) + '/' + croppedFileName + '/' + titleHtml + '.html',
                     mode='w', encoding='UTF-8')
-                pagehtml.write('<section class="colorTransfer" style="background-color:' + colors[0] + '">')
+                pagehtml.write('<section class="colorTransfer">')
 
                 try:
                     os.stat('static/users/' + str(currentUser) + '/' + croppedFileName + '/' + 'css/')
@@ -6292,7 +6278,7 @@ def metaColorTransfer(currentUser, myFile, screenshot_id, folder, index, colors)
             pagecss.write(
                 '.class' + classid + '{height:' + height + '%;  text-indent: ' + childOffset + 'px; width:' + width + '%; border-radius: ' + borderRadius + 'px;\n\
                         border: 0px; position:absolute; left:' + positionL + '%; top:' + positionT +
-                '%; font-size: ' + fontSize + 'px; color: ' + fontColor + ';text-align:' + textAlign + ';background-color: ' + bgcolor +
+                '%; font-size: ' + fontSize + '%; color: ' + fontColor + ';text-align:' + textAlign + ';background-color: ' + bgcolor +
                 '; font-family: ' + fontFamily + '; border-color:' + bordercolor + '; }' + ' ' + '#id' + classid + '{}\n')
 
         def create_text_box_placeholder_legend(legend, placeholder, name, classid, width, height, borderRadius,
