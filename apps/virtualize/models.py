@@ -1369,4 +1369,3 @@ def get_new_styles(classIdList):
             styles_set.add(json.dumps(new_style))
 
     return styles_set
-

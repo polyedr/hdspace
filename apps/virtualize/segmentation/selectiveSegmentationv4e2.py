@@ -139,7 +139,7 @@ def mag(val):
 #     element_obj.threshold_val = min_pix_val
 #     element_obj.MSER = False
 #     return element_obj
-def CreateElementObjectfromRegion(region,imgIn, element_no, thresh_img, inv_fill_img, min_pix_val,croppedElemRootFolder):
+def CreateElementObjectfromRegion(region,imgIn, element_no, thresh_img, inv_fill_img, min_pix_val,croppedElemRootFolder, type, count):
     element_obj = element(element_no, [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [],[],[],[])
     element_obj.update_element(region)
     bottom_left_y, bottom_left_x, top_right_y, top_right_x = region.bbox
@@ -168,10 +168,21 @@ def CreateElementObjectfromRegion(region,imgIn, element_no, thresh_img, inv_fill
     # minr, minc, maxr, maxc
     croppedImage = imgIn.crop(
         (int(bottom_left_x) - 1, int(bottom_left_y) - 1, int(top_right_x) + 2, int(top_right_y) + 2))
-    croppedName = "cropped_elementno" + str(element_no) + ".jpg"
-    croppedFilepathName = os.path.join(croppedElemRootFolder, str(croppedName))
-    croppedImage.save(croppedFilepathName)
-    element_obj.elementRoot = croppedFilepathName
+    if type == 'big':
+        croppedName = "cropped_BIG " + str(count) + '__' + str(element_no) + ".jpg"
+        croppedFilepathName = os.path.join(croppedElemRootFolder, str(croppedName))
+        croppedImage.save(croppedFilepathName)
+        element_obj.elementRoot = croppedFilepathName
+    elif type == 'tresh':
+        croppedName = "cropped_TRESH" + str(count) + '__' + str(element_no) + ".jpg"
+        croppedFilepathName = os.path.join(croppedElemRootFolder, str(croppedName))
+        croppedImage.save(croppedFilepathName)
+        element_obj.elementRoot = croppedFilepathName
+    else:
+        croppedName = "cropped_OTHER" + str(count) + '__' + str(element_no) + ".jpg"
+        croppedFilepathName = os.path.join(croppedElemRootFolder, str(croppedName))
+        croppedImage.save(croppedFilepathName)
+        element_obj.elementRoot = croppedFilepathName
     print('elementR.elementRoot', element_obj.elementRoot)
     return element_obj
 
@@ -396,10 +407,13 @@ def MultiThresholdGen(croppedElemRootFolder,img_scharr, img, img_gray, start_pt,
     thresh_val_list = []
     element_no = start_element_no
     next_pt = start_pt
-    iters = np.uint(start_pt / incr)
+    iters = 2  # np.uint(start_pt / incr)
     for x in range(iters):
-        thresh_val_list.append(next_pt)
-        next_pt -= incr
+        if x == 0:
+            thresh_val_list.append(5)
+        else:
+            thresh_val_list.append(30)
+        #next_pt -= incr
     for thresh_val in thresh_val_list:
         thresh_img, inv_fill_img = variable_threshold(img_scharr, thresh_val, True)
         # kernel = np.ones((3,3),np.uint8)
@@ -409,7 +423,7 @@ def MultiThresholdGen(croppedElemRootFolder,img_scharr, img, img_gray, start_pt,
         for region in regionprops(label(thresh_img_dilate)):
             if RegionValidation(region, img_gray):
                 element_list_n.append(
-                    CreateElementObjectfromRegion(region, img, element_no, thresh_img, inv_fill_img, thresh_val,croppedElemRootFolder))
+                    CreateElementObjectfromRegion(region, img, element_no, thresh_img, inv_fill_img, thresh_val,croppedElemRootFolder, 'tresh', thresh_val))
                 #         print('element_no', element_no)
                 element_no += 1
     # tolerance = 30
@@ -513,24 +527,6 @@ def compVal(refVal, compVal, minComp=True):
     return newVal
 
 
-def MSERimgBboxGen(mserImg, img_gray, img, start_element_no, lowRatio=0.0001, highRatio=0.60, min_region_area=10,
-                   min_region_width=10, min_region_height=10):
-    element_list_n_MSER = []
-    element_no = start_element_no
-    height, width = np.shape(img_gray)
-    mserimgRe = np.zeros((height, width), dtype=np.uint8)
-    for region in regionprops(label(mserImg)):
-        if RegionValidation(region, img_gray, lowRatio, highRatio, min_region_area, min_region_width,
-                            min_region_height):
-            elem = CreateElementObjectfromRegion(region, img, element_no, mserImg, mserImg, 1)
-            element_list_n_MSER.append(elem)
-            [min_y, min_x, max_y, max_x] = elem.bbox
-            mserimgRe[min_y:max_y, min_x:max_x] = 1
-            # print('element_no', element_no)
-            element_no += 1
-    #    unique_element_list_nx =    RemoveOverlapElements(element_list_n_MSER,tolerance)
-    sort_unique_element_list = SortListOnElementArea(element_list_n_MSER)
-    return sort_unique_element_list, mserimgRe
 
 
 def BigElements(elementList):
@@ -724,7 +720,7 @@ def createBigElem(bigelementObjs,list_len_multhresh_relate,img,croppedElemRootFo
         area  = (xMax - xMin)* (yMax - yMin)
         print('shape pix_coords', np.shape(pix_coords))
         regionTemp=regionR(bbox,pix_coords,area)
-        elemObj_new = CreateElementObjectfromRegion(regionTemp,img,new_element_no, [] ,[], 0,croppedElemRootFolder)
+        elemObj_new = CreateElementObjectfromRegion(regionTemp,img,new_element_no, [] ,[], 0,croppedElemRootFolder, 'big', '1')
         comb_big_elem_list.append(elemObj_new)
         count_ele+=1
     return comb_big_elem_list
@@ -766,7 +762,8 @@ def nonOverlapElem(InputList,width,height):
             tot_nonOverlapUnverified.append(elemH)
     return tot_nonOverlapUnverified
 
-def segmentationFirstLayer(myFile_name,inputImgPath,coco_model_v,tensorflow_model_v, cropDirectory = ""):
+
+def segmentationFirstLayer(myFile_name, inputImgPath, tensorflow_model_v):
     from apps.virtualize.segmentation.inference_segmentation import cocoTextDetection_model,tensorflowClassDetection_model
     from copy import deepcopy
     with Image.open(inputImgPath) as img:
@@ -921,7 +918,6 @@ def segmentationFirstLayer(myFile_name,inputImgPath,coco_model_v,tensorflow_mode
 
     finalForm_coco_final_combo = new_updated_cocoList + finalForm_updatedList_nonBigs
 
-    final_out = []
     elemCnt = 0
     coco_text_idx = []
     coco_final_combo_bbx = []
@@ -944,53 +940,4 @@ def segmentationFirstLayer(myFile_name,inputImgPath,coco_model_v,tensorflow_mode
             coco_text_idx.append(found_txt)
             coco_final_combo_bbx.append(elem.bbox)
         elemCnt += 1
-    return coco_final_combo_bbx,coco_text_idx
-
-# myFile1 = 'netflix.jpg'
-# myFile2 = 'Nj.jpg'
-# myFile3 = 'abc.jpg'
-# myFile4 = 'Adevi.jpg'
-# myFile5 = 'balsamiq.jpg'
-# myFile6 = 'boogle.png'
-# myFile7 = 'fb.jpg'
-# myFile8 = 'form.jpg'
-# myFile9 = 'login.jpg'
-# myFile10 = 'loginUI.png'  ####not working
-# myFile11 = 'skype.png'
-# myFile12 = 'spotify.png'  #### not working
-# myFile13 = 'survey monk.jpg'
-# myFile14 = 'surveyMonkey.jpg'
-# myFile15 = 'test.jpg'
-# myFile16 = 'trademark.jpg'
-# myFile17 = 'website.jpg'
-# myFile18 = 'professional.jpg'
-# myFile19 = 'fb1.png'
-# myFile20 = 'fb2.jpg'
-#
-# from inference_segmentation import initiateCocoDetection,initiateTensorflowDetection
-# from PIL import Image
-# from matplotlib import pyplot as plt
-# myFile = myFile7
-# coco_model = initiateCocoDetection()
-# tensorflow_model = initiateTensorflowDetection()
-# inputImgPath = "C:/Users/ramitha/Desktop/Adevi/Images/" + str(myFile)
-# coco_final_combo,coco_text_idx = segmentationFirstLayer(inputImgPath,coco_model,tensorflow_model)
-# img = Image.open(inputImgPath)
-#
-# fig3, ax3 = plt.subplots(figsize=(20, 20))
-# plt.imshow(img)
-# plt.title('img')
-#
-# fig4, ax4 = plt.subplots(figsize=(20, 20))
-# colors = 'yellow', 'red', 'blue', 'brown', 'green',
-# plt.imshow(img)
-# plt.title('coco_final_combo')
-# x = 0
-# for elementx in coco_final_combo:
-#     minr, minc, maxr, maxc = elementx
-#     rectx = mpatches.Rectangle((minc, minr), maxc - minc, maxr - minr,
-#                                    fill=False, edgecolor='blue', linewidth=2, label='LABEL SU')
-#     ax4.add_patch(rectx)
-#     x += 1
-# plt.show()
-# ############## step 1 code block end $$$$$$$$$$$$$$$$$
+    return coco_final_combo_bbx

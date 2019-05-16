@@ -22,8 +22,8 @@ def getPrediction(ids):
                 root = document['root']
                 children = document['children']
                 screenshotId = document['screenshot_id']
-                predictions.append({'id': seg_id, 'type': type, 'name': name, 'location': location,'score':score, 'root': root,
-                                    'children': children, 'screenshot_id':screenshotId})
+                predictions.append({'id': seg_id, 'type': type, 'name': name, 'location': location,
+                                    'score': score, 'root': root, 'children': children, 'screenshot_id': screenshotId})
 
     return predictions
 
@@ -150,35 +150,20 @@ def getPredictionByScreenShotName(screenId):
 
 def save_collection(collection, array, screenshot_id, date):
     for element in range(len(array)):
-        for e in range(len(array[element])):
-            if e == 0:
-                collection.insert({
-                    'level': {'parent': array[element]['child']['id']},
-                    'seg_id': array[element]['parent']['id'],
-                    'type': array[element]['parent']['type'],
-                    'name': array[element]['parent']['name'],
-                    'location': array[element]['parent']['location'],
-                    'root': array[element]['parent']['root'],
-                    'screenshot_id': screenshot_id,
-                    'state': 'active',
-                    'locked': False,
-                    'timeStamp': str(date),
-                    'timeZone': 'Australia/Melbourne'
-                })
-            if e == 1:
-                collection.insert({
-                    'level': {'child': array[element]['parent']['id']},
-                    'seg_id': array[element]['child']['id'],
-                    'type': array[element]['child']['type'],
-                    'name': array[element]['child']['name'],
-                    'location': array[element]['child']['location'],
-                    'root': array[element]['child']['root'],
-                    'screenshot_id': screenshot_id,
-                    'state': 'active',
-                    'locked': False,
-                    'timeStamp': str(date),
-                    'timeZone': 'Australia/Melbourne'
-                })
+        collection.insert({
+            'children': array[element]['children'],
+            'seg_id': array[element]['parent']['id'],
+            'type': array[element]['parent']['type'],
+            'name': array[element]['parent']['name'],
+            'location': array[element]['parent']['location'],
+            'root': array[element]['parent']['root'],
+            'screenshot_id': screenshot_id,
+            'state': 'active',
+            'locked': False,
+            'timeStamp': str(date),
+            'timeZone': 'Australia/Melbourne'
+        })
+
 
 
 def retrive_collection(screenshot_id):
@@ -270,13 +255,13 @@ def getLineNumbers(seg_id):
     return int(listOcr['linenumber'])
 
 
-def savePrediction(seg_id, type, name, location, root, children, screenshot_id,date):
+def savePrediction(seg_id, type, name, location, root, children, screenshot_id, date, score):
 
     db.predictions.insert({
         'segmentation_id': seg_id,
         'type':  type,
         'name':  name,
-        'score': 0,
+        'score': score,
         'location': location,
         'root': root,
         'state': 'active',
@@ -512,7 +497,7 @@ def checkPics(screenshotId):
     return array
 
 
-def updateChildLocation(item,savePath, screenshotId, combinationId, amountOfKids, width, height):
+def updateChildLocation(item, savePath, screenshotId, combinationId, amountOfKids, width, height):
 
     from PIL import Image
     img = Image.open(item['root'])
@@ -579,7 +564,8 @@ def updateChildLocation(item,savePath, screenshotId, combinationId, amountOfKids
             newId = db.segmentation.find_one({'totalElements': 'TEMP:' + str(item['id'])})['_id']
             print('NEW ID: '+str(newId))
             db.segmentation.update({'totalElements': str('TEMP:' + item['id'])}, {'$set': {'totalElements': amountOfKids}})
-            savePrediction(str(newId), str(item['type']), str(item['name']),location , savePath+'/'+root, [], screenshotId, date)
+            savePrediction(str(newId), str(item['type']), str(item['name']), location,
+                           savePath+'/'+root, [], screenshotId, date)
 
 
             # db.predictions.update({'segmentation_id': 'TEMP:'+str(item['id'])},{'$set':{'segmentation_id':str(newId)}})
@@ -603,16 +589,15 @@ def updateChildLocation(item,savePath, screenshotId, combinationId, amountOfKids
 
 
 def childinrange(childs):
-    #childs gives an array of id and check every child when going through
+    # childs gives an array of id and check every child when going through
     collection = []
     for kid in childs:
         collection.append(db.segmentation.find_one({'_id': ObjectId(str(kid))}))
-    print(collection)
     range = 5
     for i in collection:
         for j in collection:
-            if str(i['_id'])!=str(j['_id']) :
-                if np.absolute(i['elementLocationPercentage']['y0'] - j['elementLocationPercentage']['y0']) < range and np.absolute(i['elementLocationPercentage']['y0'] - j['elementLocationPercentage']['y0']) < range:
+            if str(i['_id'])!= str(j['_id']):
+                if np.absolute(i['elementLocationPercentage']['y0'] - j['elementLocationPercentage']['y0']) < range :
                     if np.absolute(i['elementLocationPercentage']['y1'] - j['elementLocationPercentage']['y1']) < range and np.absolute(i['elementLocationPercentage']['y1'] - j['elementLocationPercentage']['y1']) < range:
                         print('TRUEEEEEE')
                         print(i)
@@ -625,12 +610,9 @@ def childinrange(childs):
 def checkKids(children,seg_id):
     childs = []
     for child in range(len(children)):
-        print(child)
         if children[child][0] == seg_id:
-            print(children[child])
             childs.append(children[child][1])
             for kids in range(len(children)):
-                print(kids)
                 if children[kids][0] == children[child][1]:
                     childs.append(children[kids][1])
     return childs
@@ -646,17 +628,13 @@ def save_inception(finalName, elementId):
 
 
 def save_segmentation(screenShotId, numberOfElements, elementPositioning, elementPositioningPercentage,
-                      elementSize, croppedLocation, elementCount, screenShotIndex, croppedName,results_1):
+                      elementSize, croppedLocation, elementCount, screenShotIndex, croppedName):
 
     for screenShot in range(1):  # len(screenShotId)):
 
         for element in range(numberOfElements[screenShot]):
-            active = ''
-            print(elementPositioning[screenShot][element])
             c = elementPositioning[screenShot][element]
             s = elementSize[screenShot][element]
-            print('SSSSSSSSSSSSSSSS')
-            print(element)
             x0_ = str(c[0])
             y0_ = str(c[1])
             x1_ = str(c[2])
@@ -672,25 +650,19 @@ def save_segmentation(screenShotId, numberOfElements, elementPositioning, elemen
             h = int(s['horizontal'])
             v = int(s['vertical'])
 
-            print("Smalllllll")
             a = (x1 - x0)
             b = (y1 - y0)
-            print(a)
-            print(b)
+
             if a > 30 or b > 30:
                 if v > 90 and h > 90:
-                    print('Full screen')
                     active = 'no'
                 else:
                     active = 'yes'
             else:
                 active = 'no'
-                print('Deleting')
-            for r in range(len(results_1)):
-                current_root = croppedLocation[screenShot] + "/" + str(element) + ' ' + str(croppedName)
 
             db.segmentation.insert({
-                'screenshot_id': screenShotId[screenShot],
+                'screenshot_id': screenShotId,
                 'totalElements': numberOfElements[screenShot],
                 'elementLocationPixels': elementPositioning[screenShot][element],
                 'elementLocationPercentage': elementPositioningPercentage[screenShot][element],
@@ -715,3 +687,20 @@ def save_ocr(ocrText):
                 'segmentation_id': str(ocrText[loop]['id']),
                 'linenumber': str(ocrText[loop]['linenumber'])
             })
+
+
+def check_cnn(id):
+    listOcr = db.inception.find_one({'segmentation_id': id})
+    list = listOcr['elementName']
+    name = list['name']
+    score = list['highest']
+    # print('id: '+id+' name: '+name+' score: '+score)
+    return name, score
+
+
+def get_parent_txt(id):
+    list = db.ocr.find_one({'segmentation_id': id})
+    print(list)
+    name = list['name']
+    lines = list['linenumber']
+    return name, lines
