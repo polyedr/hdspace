@@ -144,8 +144,6 @@ class ProjectView(LoginRequiredMixin, TemplateView):
 class ProjectPreviewView(LoginRequiredMixin, TemplateView):
     template_name = "projects/preview.html"
 
-    print("I'm inside preview get")
-
     def get(self, request, *args, **kwargs):
         context = self.get_context_data()
         screen_id = kwargs.pop("pk")

@@ -1050,18 +1050,12 @@ def main_request_core(request):
                     global tensorflow_model_global
                     tensorflow_model_ = tensorflow_model_global
                     if len(tensorflow_model_) == 0:
-                #         coco_model = initiateCocoDetection()
                         tensorflow_model = initiateTensorflowDetection()
-                #         global coco_model_global
-                #         coco_model_global = coco_model
                         tensorflow_model_global = tensorflow_model
                         db.tempPage.update({'userId': userId}, {'$set': {'maskRCNNstate': True}})
                     else:
-                        # coco_model = coco_model_global
                         tensorflow_model = tensorflow_model_global
-                        # print('some coco model shit ', coco_model)
-                        print('some cnn model shit', tensorflow_model)
-                run(filename, 'a', tensorflow_model, currentUser, projectName)
+                run(filename, tensorflow_model, currentUser, projectName)
                 screenshotId = getLatestScreenshot(str(userId))['screenshot_id']
 
                 screenshotsId = db_main.projects_project.find_one({'user_id': ObjectId(userId),
