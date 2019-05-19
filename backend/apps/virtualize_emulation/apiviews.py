@@ -29,12 +29,17 @@ class ScreenScenarioDetail(generics.RetrieveUpdateDestroyAPIView):
 
 class PreSegmentationList(generics.ListCreateAPIView):
     """
-    Сreate a new pre-segmentation stub.
+    Get list of the pre-segmnetations or create a new pre-segmentation stub.
     """
 
     queryset = PreSegmentation.objects.all()
     serializer_class = PreSegmentationSerializer
 
+    # def get_queryset(self):
+    #     return PreSegmentation.objects.filter(screen=self.screen)
+
+    def perform_create(self, serializer):
+        serializer.save()
 
 class PreSegmentationDetail(generics.RetrieveUpdateDestroyAPIView):
     """
