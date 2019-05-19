@@ -309,9 +309,16 @@ class ScreenScenario(TimeStampedModel):
         choices=SCENARIO_TYPE_CHOICES, default=LOGIN, max_length=250
     )
 
-    screen = models.ForeignKey(ProjectScreen, related_name="screenscenario", on_delete=models.CASCADE, null=True)
-    presegmentation = models.ForeignKey(PreSegmentation, related_name="scenarios", on_delete=models.CASCADE, null=True)
-    # screen = models.ForeignKey(ProjectScreen, related_name="scenarios", on_delete=models.CASCADE, null=True)
+    screen = models.ForeignKey(
+        ProjectScreen,
+        related_name="screenscenario",
+        on_delete=models.CASCADE,
+        null=True,
+    )
+    presegmentation = models.ForeignKey(
+        PreSegmentation, related_name="scenarios", on_delete=models.CASCADE, null=True
+    )
+
     name = models.CharField(max_length=250)
 
     # Styles and parameters
