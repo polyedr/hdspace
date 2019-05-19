@@ -8,17 +8,12 @@ from apps.virtualize_emulation.apiviews import (
 app_name = "virtualize_emulation"
 
 api_virtualize_emulation_scenario_patterns = [
-    path(
-        "presegmentations/",
-        PreSegmentationList.as_view(),
-        name="presegmentations",
-    ),
+    path("presegmentations/", PreSegmentationList.as_view(), name="presegmentations"),
     path(
         "presegmentations/<int:pk>/",
         PreSegmentationDetail.as_view(),
         name="presegmentations",
     ),
-
 ]
 
 

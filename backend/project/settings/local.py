@@ -54,11 +54,10 @@ PROJECT_APPS = [
     'apps.threads',
     'apps.payments',
     'apps.virtualize',
-    'apps.virtualize_emulation',
     'apps.core',
     'apps.accounts',
     'apps.projects',
-
+    'apps.virtualize_emulation',
 ]
 
 INSTALLED_APPS.extend(EXTERNAL_APPS + PROJECT_APPS)
@@ -97,7 +96,7 @@ CORS_ORIGIN_REGEX_WHITELIST = (
 """
 
 """
-# Set the regular access permissions 
+# Set the regular access permissions
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.

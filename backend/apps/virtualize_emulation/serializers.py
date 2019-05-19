@@ -1,11 +1,13 @@
 from rest_framework import serializers
-from apps.virtualize_emulation.models import PreSegmentation
+from .models import PreSegmentation
 
 
 class PreSegmentationSerializer(serializers.ModelSerializer):
     class Meta:
         model = PreSegmentation
         fields = ("id", "screen", "image")
+        # fields = "__all__"
+
 
 
 """

@@ -2,7 +2,6 @@ from django.db import models
 from apps.core.models import TimeStampedModel
 from apps.accounts.utils import utils
 
-# Create your models here.
 from apps.projects.models import ProjectScreen
 
 
