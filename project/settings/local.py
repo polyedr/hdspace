@@ -53,11 +53,12 @@ EXTERNAL_APPS = [
 PROJECT_APPS = [
     'apps.threads',
     'apps.payments',
+    'apps.virtualize_emulation',
     'apps.virtualize',
     'apps.core',
     'apps.accounts',
     'apps.projects',
-    'apps.virtualize_emulation',
+
 ]
 
 INSTALLED_APPS.extend(EXTERNAL_APPS + PROJECT_APPS)

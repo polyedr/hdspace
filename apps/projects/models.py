@@ -292,6 +292,8 @@ def get_screen_id(screenid):
 
 
 class ScreenScenario(TimeStampedModel):
+    from apps.virtualize_emulation.models import PreSegmentation
+
     LOGIN = "login"
     CONTACT_INFO = "contact_info"
     COMMON_FORM = "common_form"
@@ -308,6 +310,7 @@ class ScreenScenario(TimeStampedModel):
     )
 
     screen = models.ForeignKey(ProjectScreen, related_name="screenscenario", on_delete=models.CASCADE, null=True)
+    presegmentation = models.ForeignKey(PreSegmentation, related_name="scenarios", on_delete=models.CASCADE, null=True)
     # screen = models.ForeignKey(ProjectScreen, related_name="scenarios", on_delete=models.CASCADE, null=True)
     name = models.CharField(max_length=250)
 
@@ -316,7 +319,7 @@ class ScreenScenario(TimeStampedModel):
     parameters = JSONField(blank=True)
 
     # Order of scenarios, or the scenario weight, buoyancy
-    buoyancy = models.IntegerField(null=True)
+    buoyancy = models.IntegerField(null=True, blank=True)
 
     """
     # Size
