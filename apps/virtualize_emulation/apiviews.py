@@ -1,7 +1,7 @@
 from rest_framework import generics
-from apps.projects.models import Project, ProjectMember, ScreenScenario
+# from apps.projects.models import Project, ProjectMember, ScreenScenario
 
-from apps.projects.serializers import ProjectSerializer, ProjectMemberSerializer
+# from apps.projects.serializers import ProjectSerializer, ProjectMemberSerializer
 from apps.virtualize_emulation.serializers import PreSegmentationSerializer
 from apps.virtualize_emulation.models import PreSegmentation
 
