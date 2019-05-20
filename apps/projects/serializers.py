@@ -15,6 +15,8 @@ from .models import (
     Comment,
     ScreenScenario,
     ScenarioElement,
+    Element,
+    Scenario,
 )
 
 
@@ -100,6 +102,33 @@ class ScreenEventSerializer(serializers.ModelSerializer):
     class Meta:
         model = ScreenEvent
         fields = ("href", "link_screen", "new_window", "height", "width", "x", "y")
+
+
+class ElementSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    element_id = serializers.CharField(max_length=64)
+    type = serializers.ListField()
+
+    def create(self, validated_data):
+        return Element(id=None, **validated_data)
+
+    def update(self, instance, validated_data):
+        for field, value in validated_data.items():
+            setattr(instance, field, value)
+        return instance
+
+
+class ScenarioSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    type = serializers.CharField(max_length=64)
+
+    def create(self, validated_data):
+        return Scenario(id=None, **validated_data)
+
+    def update(self, instance, validated_data):
+        for field, value in validated_data.items():
+            setattr(instance, field, value)
+        return instance
 
 
 class ScreenCommentSerializer(serializers.ModelSerializer):
