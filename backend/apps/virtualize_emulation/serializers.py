@@ -25,15 +25,42 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
 
 
 class PreSegmentationSerializer(serializers.ModelSerializer):
-    scenarios = ScreenScenarioSerializer(many=True)
+    scenarios = ScreenScenarioSerializer(many=True, required=False)
 
     class Meta:
         model = PreSegmentation
         fields = ("id", "screen", "image", "scenarios")
+        extra_kwargs = {"scenarios": {"read_only": True}}
 
     def create(self, validated_data):
-        scenarios = validated_data["scenarios"]
-        scenarioelements = scenarios
+        # This commented line was for the flexible scenarios
+        # scenarios = validated_data["scenarios"]
+        scenarios = [
+            {"name": "string1", "type": "login", "parameters": {}, "styles": {}},
+            {"name": "string1", "type": "login", "parameters": {}, "styles": {}},
+            {"name": "string2", "type": "login", "parameters": {}, "styles": {}},
+        ]
+        # This commented line was for the flexible elements
+        # scenarioelements = scenarios
+        scenarioelements = [
+            {
+                "name": "string",
+                "element_id": "widget",
+                "type": "widget",
+                "buoyancy": 0,
+                "parameters": {},
+                "styles": {},
+            },
+            {
+                "name": "string",
+                "element_id": "widget",
+                "type": "widget",
+                "buoyancy": 0,
+                "parameters": {},
+                "styles": {},
+            },
+        ]
+
         presegmentation = PreSegmentation.objects.create(
             screen=validated_data["screen"]
         )
@@ -49,42 +76,3 @@ class PreSegmentationSerializer(serializers.ModelSerializer):
                 )
 
         return presegmentation
-
-
-"""
-class ScreenScenarioSerializer(serializers.ModelSerializer):
-    # parameters = serializers.JSONField()
-    # styles = serializers.JSONField()
-    image = serializers.ImageField(max_length=None, allow_empty_file=True, use_url=True)
-    class Meta:
-        model = ScreenScenario
-        fields = (
-            "id",
-            "name",
-            "type",
-            "buoyancy",
-            "elements",
-            "parameters",
-            "styles",
-            "screen",
-            "image"
-        )
-        extra_kwargs = {
-            "elements": {"read_only": True},
-            "parameters": {"read_only": True},
-            "styles": {"read_only": True},
-            "name": {"read_only": True},
-            "type": {"read_only": True},
-            "buoyancy": {"read_only": True}
-        }
-        # fields = "__all__"
-
-
-class ScenarioElementSerializer(serializers.ModelSerializer):
-    parameters = serializers.JSONField()
-    styles = serializers.JSONField()
-
-    class Meta:
-        model = ScenarioElement
-        fields = ("id", "name", "type", "buoyancy", "parameters", "styles")
-"""
