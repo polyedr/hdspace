@@ -1,6 +1,7 @@
 """Urls for the projects api"""
 
 from django.urls import path, include
+from rest_framework import routers
 
 from .apiviews import (
     ProjectList,
@@ -29,6 +30,9 @@ from .apiviews import (
     ScenarioElementDetail,
     ScreenScenarioList,
     ScenarioElementList,
+    # ElementList,
+    ElementViewSet,
+    ScenarioViewSet,
 )
 
 app_name = "projects"
@@ -98,6 +102,20 @@ api_scenario_element_patterns = [
     ),
 ]
 
+#
+# api_library_element_patterns = [
+#     path("library-elements/", ElementList.as_view(), name="api_library_elements")
+# ]
+
+router = routers.DefaultRouter()
+router.register(r"library-elements", ElementViewSet, base_name="api_library_elements")
+# api_library_element_patterns = router.urls
+
+router.register(
+    r"library-scenarios", ScenarioViewSet, base_name="api_library_scenarios"
+)
+api_library_scenario_element_patterns = router.urls
+
 api_screen_comment_patterns = [
     path("screen-comments/", ScreenCommentList.as_view(), name="api_screen_comments"),
     path(
@@ -116,5 +134,7 @@ urlpatterns = [
     path("", include(api_project_screen_patterns)),
     path("", include(api_screen_scenario_patterns)),
     path("", include(api_scenario_element_patterns)),
+    # path("", include(api_library_element_patterns)),
+    path("", include(api_library_scenario_element_patterns)),
     # path("", include(api_screen_comment_patterns)),
 ]

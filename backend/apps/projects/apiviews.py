@@ -1,6 +1,9 @@
 """Views for the projects api"""
 
-from rest_framework import generics
+from rest_framework import generics, viewsets
+from rest_framework.generics import get_object_or_404
+from rest_framework.response import Response
+
 from .models import (
     Project,
     ProjectMember,
@@ -15,6 +18,9 @@ from .models import (
     Comment,
     ScreenScenario,
     ScenarioElement,
+    Element,
+    elements,
+    scenarios,
 )
 from .serializers import (
     ProjectSerializer,
@@ -30,6 +36,8 @@ from .serializers import (
     ScreenAssigneeSerializer,
     ScreenScenarioSerializer,
     ScenarioElementSerializer,
+    ElementSerializer,
+    ScenarioSerializer,
 )
 
 
@@ -41,6 +49,7 @@ class ProjectList(generics.ListCreateAPIView):
     post:
     Create a new project instance.
     """
+
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
 
@@ -52,6 +61,30 @@ class ProjectDetail(generics.RetrieveUpdateDestroyAPIView):
 
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
+
+
+class ElementViewSet(viewsets.ViewSet):
+    """
+    Retrieve the elements library
+    """
+
+    serializer_class = ElementSerializer
+
+    def list(self, request):
+        serializer = ElementSerializer(instance=elements.values(), many=True)
+        return Response(serializer.data)
+
+
+class ScenarioViewSet(viewsets.ViewSet):
+    """
+    Retrieve the scenarios library
+    """
+
+    serializer_class = ScenarioSerializer
+
+    def list(self, request):
+        serializer = ScenarioSerializer(instance=scenarios.values(), many=True)
+        return Response(serializer.data)
 
 
 class ProjectMemberList(generics.ListCreateAPIView):

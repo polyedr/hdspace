@@ -435,3 +435,55 @@ class ScenarioElement(TimeStampedModel):
 
     def __str__(self):
         return "{}".format(self.pk)
+
+
+# Non-model model to expose the scenario library
+class Scenario(object):
+    def __init__(self, **kwargs):
+        for field in ("id", "type"):
+            setattr(self, field, kwargs.get(field, None))
+
+
+scenarios = {
+    1: Scenario(id=1, type="login"),
+    2: Scenario(id=2, type="contact_info"),
+    3: Scenario(id=3, type="common_form"),
+    4: Scenario(id=4, type="common_scenario"),
+}
+
+
+# Non-model model to expose the elements library
+class Element(object):
+    def __init__(self, **kwargs):
+        for field in ("id", "element_id", "type"):
+            setattr(self, field, kwargs.get(field, None))
+
+
+elements = {
+    1: Element(id=1, element_id="frame", type=[]),
+    2: Element(id=2, element_id="widget", type=[]),
+    3: Element(id=3, element_id="chart", type=[]),
+    4: Element(id=4, element_id="image", type=[]),
+    5: Element(
+        id=5,
+        element_id="button",
+        type=["end_composite_scenario", "end_simple_scenario"],
+    ),
+    6: Element(id=6, element_id="hyperlink", type=["end_simple_scenario"]),
+    7: Element(id=7, element_id="paragraph", type=[]),
+    8: Element(id=8, element_id="textbox", type=[]),
+    9: Element(id=9, element_id="textarea", type=[]),
+    10: Element(
+        id=10,
+        element_id="textinput",
+        type=["email", "phone", "firstname", "lastname", "password"],
+    ),
+    11: Element(id=11, element_id="icon", type=[]),
+    12: Element(id=12, element_id="logo", type=[]),
+    13: Element(id=13, element_id="unordered_list", type=[]),
+    14: Element(id=14, element_id="ordered_list", type=[]),
+    15: Element(id=15, element_id="table", type=[]),
+    16: Element(id=16, element_id="ocrtext", type=["title", "description", "label"]),
+    17: Element(id=17, element_id="div", type=[]),
+    18: Element(id=18, element_id="undefined", type=[]),
+}
