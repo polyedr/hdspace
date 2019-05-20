@@ -33,6 +33,7 @@ from .apiviews import (
     # ElementList,
     ElementViewSet,
     ScenarioViewSet,
+    ScenarioElementCreateMultiple,
 )
 
 app_name = "projects"
@@ -94,6 +95,11 @@ api_scenario_element_patterns = [
         "scenario-elements/",
         ScenarioElementList.as_view(),
         name="api_scenario_elements",
+    ),
+    path(
+        "scenario-elements-multiple/",
+        ScenarioElementCreateMultiple.as_view(),
+        name="api_scenario_elements_multiple",
     ),
     path(
         "scenario-elements/<int:pk>/",

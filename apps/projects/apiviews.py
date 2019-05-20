@@ -304,6 +304,20 @@ class ScenarioElementList(generics.ListCreateAPIView):
     serializer_class = ScenarioElementSerializer
 
 
+class ScenarioElementCreateMultiple(generics.CreateAPIView):
+    """
+    Create multiple scenario elements.
+    """
+
+    queryset = ScenarioElement.objects.all()
+    serializer_class = ScenarioElementSerializer
+
+    def get_serializer(self, instance=None, data=None, many=False, partial=False):
+        return super(ScenarioElementCreateMultiple, self).get_serializer(
+            instance=instance, data=data, many=True, partial=partial
+        )
+
+
 class ScenarioElementDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     Retrieve, update or delete a scenario element
