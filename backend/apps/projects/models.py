@@ -389,6 +389,7 @@ class ScenarioElement(TimeStampedModel):
 
     PHONE = "phone"
     PASSWORD = "password"
+    EMAIL = "email"
     FIRSTNAME = "firstname"
     LASTNAME = "lastname"
     END_COMPOSITE_SCENARIO = "end_composite_scenario"
@@ -403,6 +404,7 @@ class ScenarioElement(TimeStampedModel):
     ELEMENTS_TYPE_CHOICES = (
         (PHONE, "phone"),
         (PASSWORD, "password"),
+        (EMAIL, "email"),
         (FIRSTNAME, "firstname"),
         (LASTNAME, "lastname"),
         (END_COMPOSITE_SCENARIO, "end_composite_scenario"),
