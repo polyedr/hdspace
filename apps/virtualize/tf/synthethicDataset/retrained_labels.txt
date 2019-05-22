@@ -1,0 +1,13 @@
+checkbox
+checkedtextview
+edittext
+imagebutton
+numberpicker
+progressbarhorizontal
+progressbarvertical
+radiobutton
+ratingbar
+seekbar
+spinner
+switch
+togglebutton

@@ -136,7 +136,6 @@ def tensorflowClassDetection_model(prevElemList,tensorflow_model_struct):
     print('Tensorflow')
     print(tensorflow_model_struct)
     tensorflow_model = tensorflow_model_struct[0]
-    label_lines = tensorflow_model_struct[1]
     image_data = []
     elemList = [elemT for elemT in prevElemList]
     cnnUpdatedElem = []
