@@ -108,6 +108,7 @@ class ElementSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
     element_id = serializers.CharField(max_length=64)
     type = serializers.ListField()
+    func_type_human = serializers.ListField()
     buoyancy = serializers.ListField()
     # parameters = serializers.JSONField()
     parameters = serializers.ListField()
