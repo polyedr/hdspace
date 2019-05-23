@@ -457,38 +457,38 @@ scenarios = {
 # Non-model model to expose the elements library
 class Element(object):
     def __init__(self, **kwargs):
-        for field in ("id", "element_id", "type", "buoyancy"):
+        for field in ("id", "element_id", "type", "buoyancy", "parameters"):
             setattr(self, field, kwargs.get(field, None))
 
 
 elements = {
-    1: Element(id=1, element_id="frame", type=[], buoyancy=[]),
-    2: Element(id=2, element_id="widget", type=[], buoyancy=[]),
-    3: Element(id=3, element_id="chart", type=[], buoyancy=[]),
-    4: Element(id=4, element_id="image", type=[], buoyancy=[]),
+    1: Element(id=1, element_id="frame", type=[], buoyancy=[], parameters=[]),
+    2: Element(id=2, element_id="widget", type=[], buoyancy=[], parameters=[]),
+    3: Element(id=3, element_id="chart", type=[], buoyancy=[], parameters=[]),
+    4: Element(id=4, element_id="image", type=[], buoyancy=[], parameters=[]),
     5: Element(
         id=5,
         element_id="button",
-        type=["end_composite_scenario", "end_simple_scenario"], buoyancy=[]
+        type=["end_composite_scenario", "end_simple_scenario"], buoyancy=[], parameters=[]
     ),
-    6: Element(id=6, element_id="hyperlink", type=["end_simple_scenario"], buoyancy=[]),
-    7: Element(id=7, element_id="paragraph", type=[], buoyancy=[]),
-    8: Element(id=8, element_id="textbox", type=[], buoyancy=[]),
-    9: Element(id=9, element_id="textarea", type=[], buoyancy=[]),
+    6: Element(id=6, element_id="hyperlink", type=["end_simple_scenario"], buoyancy=[], parameters=[]),
+    7: Element(id=7, element_id="paragraph", type=[], buoyancy=[], parameters=[]),
+    8: Element(id=8, element_id="textbox", type=[], buoyancy=[], parameters=[]),
+    9: Element(id=9, element_id="textarea", type=[], buoyancy=[], parameters=[]),
     10: Element(
         id=10,
         element_id="textinput",
         type=["email", "phone", "firstname", "lastname", "password"],
-        buoyancy=[1, 2, 3, 4, 5 ],
+        buoyancy=[1, 2, 3, 4, 5 ], parameters=[{"group": "a",  "placeholder": "Email"}, {"group": "b",  "placeholder": "Phone"}, {"group": "c",  "placeholder": "fname"}, {"group": "d",  "placeholder": "lname"}, {"group": "e",  "placeholder": "pass"}, ]
         # parameters=["placeholder": "Email" param2: "2222", "placeholder": "Email", "placeholder": "Email", "placeholder": "Email"],
         # type={"email" : 0, "phone" :{ bay: 0 } , "firstname", "lastname", "password"},
     ),
-    11: Element(id=11, element_id="icon", type=[], buoyancy=[]),
-    12: Element(id=12, element_id="logo", type=[], buoyancy=[]),
-    13: Element(id=13, element_id="unordered_list", type=[], buoyancy=[]),
-    14: Element(id=14, element_id="ordered_list", type=[], buoyancy=[]),
-    15: Element(id=15, element_id="table", type=[], buoyancy=[]),
-    16: Element(id=16, element_id="ocrtext", type=["title", "description", "label"], buoyancy=[]),
-    17: Element(id=17, element_id="div", type=[], buoyancy=[]),
-    18: Element(id=18, element_id="undefined", type=[], buoyancy=[]),
+    11: Element(id=11, element_id="icon", type=[], buoyancy=[], parameters=[]),
+    12: Element(id=12, element_id="logo", type=[], buoyancy=[], parameters=[]),
+    13: Element(id=13, element_id="unordered_list", type=[], buoyancy=[], parameters=[]),
+    14: Element(id=14, element_id="ordered_list", type=[], buoyancy=[], parameters=[]),
+    15: Element(id=15, element_id="table", type=[], buoyancy=[], parameters=[]),
+    16: Element(id=16, element_id="ocrtext", type=["title", "description", "label"], buoyancy=[], parameters=[]),
+    17: Element(id=17, element_id="div", type=[], buoyancy=[], parameters=[]),
+    18: Element(id=18, element_id="undefined", type=[], buoyancy=[], parameters=[]),
 }
