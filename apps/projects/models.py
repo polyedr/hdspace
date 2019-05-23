@@ -469,9 +469,17 @@ elements = {
     5: Element(
         id=5,
         element_id="button",
-        type=["end_composite_scenario", "end_simple_scenario"], buoyancy=[], parameters=[]
+        type=["end_composite_scenario", "end_simple_scenario"],
+        buoyancy=[1, 0],
+        parameters=[{"group": "other"}, {"group": "other"}],
     ),
-    6: Element(id=6, element_id="hyperlink", type=["end_simple_scenario"], buoyancy=[], parameters=[]),
+    6: Element(
+        id=6,
+        element_id="hyperlink",
+        type=["end_simple_scenario"],
+        buoyancy=[2],
+        parameters=[{"group": "other"}],
+    ),
     7: Element(id=7, element_id="paragraph", type=[], buoyancy=[], parameters=[]),
     8: Element(id=8, element_id="textbox", type=[], buoyancy=[], parameters=[]),
     9: Element(id=9, element_id="textarea", type=[], buoyancy=[], parameters=[]),
@@ -479,16 +487,29 @@ elements = {
         id=10,
         element_id="textinput",
         type=["email", "phone", "firstname", "lastname", "password"],
-        buoyancy=[1, 2, 3, 4, 5 ], parameters=[{"group": "a",  "placeholder": "Email"}, {"group": "b",  "placeholder": "Phone"}, {"group": "c",  "placeholder": "fname"}, {"group": "d",  "placeholder": "lname"}, {"group": "e",  "placeholder": "pass"}, ]
-        # parameters=["placeholder": "Email" param2: "2222", "placeholder": "Email", "placeholder": "Email", "placeholder": "Email"],
-        # type={"email" : 0, "phone" :{ bay: 0 } , "firstname", "lastname", "password"},
+        buoyancy=[95, 86, 64, 61, 10],
+        parameters=[
+            {"group": "input", "placeholder": "Email"},
+            {"group": "input", "placeholder": "Phone"},
+            {"group": "input", "placeholder": "First name"},
+            {"group": "input", "placeholder": "Last name"},
+            {"group": "input", "placeholder": "Password"},
+        ],
     ),
     11: Element(id=11, element_id="icon", type=[], buoyancy=[], parameters=[]),
     12: Element(id=12, element_id="logo", type=[], buoyancy=[], parameters=[]),
-    13: Element(id=13, element_id="unordered_list", type=[], buoyancy=[], parameters=[]),
+    13: Element(
+        id=13, element_id="unordered_list", type=[], buoyancy=[], parameters=[]
+    ),
     14: Element(id=14, element_id="ordered_list", type=[], buoyancy=[], parameters=[]),
     15: Element(id=15, element_id="table", type=[], buoyancy=[], parameters=[]),
-    16: Element(id=16, element_id="ocrtext", type=["title", "description", "label"], buoyancy=[], parameters=[]),
+    16: Element(
+        id=16,
+        element_id="ocrtext",
+        type=["title", "description", "label"],
+        buoyancy=[100, 98, 0],
+        parameters=[{"group": "other"}, {"group": "other"}, {"group": "other"}],
+    ),
     17: Element(id=17, element_id="div", type=[], buoyancy=[], parameters=[]),
     18: Element(id=18, element_id="undefined", type=[], buoyancy=[], parameters=[]),
 }
