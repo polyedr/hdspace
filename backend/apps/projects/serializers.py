@@ -74,6 +74,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
             "name",
             "element_id",
             "type",
+            "func_type_human",
             "buoyancy",
             "parameters",
             "styles",
