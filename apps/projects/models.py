@@ -383,7 +383,7 @@ class ScenarioElement(TimeStampedModel):
         (UNDEFINED, "undefined"),
     )
 
-    element_id = models.CharField(
+    struct_type = models.CharField(
         choices=HTML_ELEMENT_TYPE_CHOICES, default=DIV, max_length=250
     )
 
@@ -418,7 +418,7 @@ class ScenarioElement(TimeStampedModel):
         (UNDEFINED, "undefined"),
     )
 
-    type = models.CharField(
+    func_type = models.CharField(
         choices=ELEMENTS_TYPE_CHOICES, default=UNDEFINED, max_length=250
     )
 
@@ -473,8 +473,8 @@ class Element(object):
     def __init__(self, **kwargs):
         for field in (
             "id",
-            "element_id",
-            "type",
+            "struct_type",
+            "func_type",
             "func_type_human",
             "buoyancy",
             "parameters",
@@ -485,80 +485,80 @@ class Element(object):
 elements = {
     1: Element(
         id=1,
-        element_id="frame",
-        type=[],
+        struct_type="frame",
+        func_type=[],
         func_type_human=[],
         buoyancy=[],
         parameters=[],
     ),
     2: Element(
         id=2,
-        element_id="widget",
-        type=[],
+        struct_type="widget",
+        func_type=[],
         func_type_human=[],
         buoyancy=[],
         parameters=[],
     ),
     3: Element(
         id=3,
-        element_id="chart",
-        type=[],
+        struct_type="chart",
+        func_type=[],
         func_type_human=[],
         buoyancy=[],
         parameters=[],
     ),
     4: Element(
         id=4,
-        element_id="image",
-        type=[],
+        struct_type="image",
+        func_type=[],
         func_type_human=[],
         buoyancy=[],
         parameters=[],
     ),
     5: Element(
         id=5,
-        element_id="button",
-        type=["end_composite_scenario", "end_simple_scenario"],
+        struct_type="button",
+        func_type=["end_composite_scenario", "end_simple_scenario"],
         func_type_human=["undefined", "undefined"],
         buoyancy=[1, 0],
         parameters=[{"group": "other"}, {"group": "other"}],
     ),
     6: Element(
         id=6,
-        element_id="hyperlink",
-        type=["end_simple_scenario"],
+        struct_type="hyperlink",
+        func_type=["end_simple_scenario"],
         func_type_human=["undefined"],
         buoyancy=[2],
         parameters=[{"group": "other"}],
     ),
     7: Element(
         id=7,
-        element_id="paragraph",
-        type=[],
+        struct_type="paragraph",
+        func_type=[],
         func_type_human=[],
         buoyancy=[],
         parameters=[],
     ),
     8: Element(
         id=8,
-        element_id="textbox",
-        type=[],
+        struct_type="textbox",
+        func_type=[],
         func_type_human=[],
         buoyancy=[],
         parameters=[],
     ),
     9: Element(
         id=9,
-        element_id="textarea",
-        type=[],
+        struct_type="textarea",
+        func_type=[],
         func_type_human=[],
         buoyancy=[],
         parameters=[],
     ),
     10: Element(
         id=10,
-        element_id="textinput",
-        type=["email", "phone", "firstname", "lastname", "password"],
+        struct_type="textinput",
+        func_type=["email", "phone", "firstname", "lastname", "password"],
         func_type_human=[
             "undefined",
             "undefined",
@@ -577,59 +577,59 @@ elements = {
     ),
     11: Element(
         id=11,
-        element_id="icon",
-        type=[],
+        struct_type="icon",
+        func_type=[],
         func_type_human=[],
         buoyancy=[],
         parameters=[],
     ),
     12: Element(
         id=12,
-        element_id="logo",
-        type=[],
+        struct_type="logo",
+        func_type=[],
         func_type_human=[],
         buoyancy=[],
         parameters=[],
     ),
     13: Element(
         id=13,
-        element_id="unordered_list",
-        type=[],
+        struct_type="unordered_list",
+        func_type=[],
         func_type_human=[],
         buoyancy=[],
         parameters=[],
     ),
     14: Element(
         id=14,
-        element_id="ordered_list",
-        type=[],
+        struct_type="ordered_list",
+        func_type=[],
         func_type_human=[],
         buoyancy=[],
         parameters=[],
     ),
     15: Element(
         id=15,
-        element_id="table",
-        type=[],
+        struct_type="table",
+        func_type=[],
         func_type_human=[],
         buoyancy=[],
         parameters=[],
     ),
     16: Element(
         id=16,
-        element_id="ocrtext",
-        type=["title", "description", "label"],
+        struct_type="ocrtext",
+        func_type=["title", "description", "label"],
         func_type_human=["undefined", "undefined", "undefined"],
         buoyancy=[100, 98, 0],
         parameters=[{"group": "other"}, {"group": "other"}, {"group": "other"}],
     ),
     17: Element(
-        id=17, element_id="div", type=[], func_type_human=[], buoyancy=[], parameters=[]
+        id=17, struct_type="div", func_type=[], func_type_human=[], buoyancy=[], parameters=[]
     ),
     18: Element(
         id=18,
-        element_id="undefined",
-        type=[],
+        struct_type="undefined",
+        func_type=[],
         func_type_human=[],
         buoyancy=[],
         parameters=[],

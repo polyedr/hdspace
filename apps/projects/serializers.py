@@ -72,8 +72,9 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
             "id",
             "scenario",
             "name",
-            "element_id",
-            "type",
+            "struct_type",
+            "func_type",
+            "func_type_human",
             "buoyancy",
             "parameters",
             "styles",
@@ -106,8 +107,8 @@ class ScreenEventSerializer(serializers.ModelSerializer):
 
 class ElementSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
-    element_id = serializers.CharField(max_length=64)
-    type = serializers.ListField()
+    struct_type = serializers.CharField(max_length=64)
+    func_type = serializers.ListField()
     func_type_human = serializers.ListField()
     buoyancy = serializers.ListField()
     # parameters = serializers.JSONField()
