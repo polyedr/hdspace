@@ -527,7 +527,7 @@ elements = {
         func_type_human=["undefined", "undefined"],
         buoyancy=[1, 0],
         parameters=[{"group": "other"}, {"group": "other"}],
-        styles=[],
+        styles=[{"width": 64, "height": 36}],
     ),
     6: Element(
         id=6,
@@ -584,7 +584,13 @@ elements = {
             {"group": "input", "placeholder": "Last name", "tags": "#username"},
             {"group": "input", "placeholder": "Password"},
         ],
-        styles=[],
+        styles=[
+            {"width": 280, "height": 56},
+            {"width": 280, "height": 56},
+            {"width": 280, "height": 56},
+            {"width": 280, "height": 56},
+            {"width": 280, "height": 56},
+        ],
     ),
     11: Element(
         id=11,
@@ -638,7 +644,11 @@ elements = {
         func_type_human=["undefined", "undefined", "undefined"],
         buoyancy=[100, 98, 0],
         parameters=[{"group": "other"}, {"group": "other"}, {"group": "other"}],
-        styles=[{"width": 100, "height": 40}, {}, {}],
+        styles=[
+            {"width": 100, "height": 40},
+            {"width": 100, "height": 40},
+            {"width": 100, "height": 40},
+        ],
     ),
     17: Element(
         id=17,
@@ -663,8 +673,12 @@ elements = {
         struct_type="select",
         func_type=["day", "month", "year"],
         func_type_human=["undefined", "undefined", "undefined"],
-        buoyancy=[54, 54, 54,],
-        parameters=[{"group": "select", "tags": "#date"}, {"group": "select", "tags": "#date"}, {"group": "select", "tags": "#date"}],
+        buoyancy=[54, 54, 54],
+        parameters=[
+            {"group": "select", "tags": "#date"},
+            {"group": "select", "tags": "#date"},
+            {"group": "select", "tags": "#date"},
+        ],
         styles=[
             {"width": 50, "height": 25},
             {"width": 50, "height": 25},
