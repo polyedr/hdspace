@@ -478,6 +478,7 @@ class Element(object):
             "func_type_human",
             "buoyancy",
             "parameters",
+            "styles",
         ):
             setattr(self, field, kwargs.get(field, None))
 
@@ -490,6 +491,7 @@ elements = {
         func_type_human=[],
         buoyancy=[],
         parameters=[],
+        styles=[],
     ),
     2: Element(
         id=2,
@@ -498,6 +500,7 @@ elements = {
         func_type_human=[],
         buoyancy=[],
         parameters=[],
+        styles=[{"width": 80, "height": 80}],
     ),
     3: Element(
         id=3,
@@ -506,6 +509,7 @@ elements = {
         func_type_human=[],
         buoyancy=[],
         parameters=[],
+        styles=[],
     ),
     4: Element(
         id=4,
@@ -514,6 +518,7 @@ elements = {
         func_type_human=[],
         buoyancy=[],
         parameters=[],
+        styles=[{"width": 80, "height": 80}],
     ),
     5: Element(
         id=5,
@@ -522,6 +527,7 @@ elements = {
         func_type_human=["undefined", "undefined"],
         buoyancy=[1, 0],
         parameters=[{"group": "other"}, {"group": "other"}],
+        styles=[],
     ),
     6: Element(
         id=6,
@@ -530,6 +536,7 @@ elements = {
         func_type_human=["undefined"],
         buoyancy=[2],
         parameters=[{"group": "other"}],
+        styles=[{"width": 50, "height": 25}],
     ),
     7: Element(
         id=7,
@@ -538,6 +545,7 @@ elements = {
         func_type_human=[],
         buoyancy=[],
         parameters=[],
+        styles=[],
     ),
     8: Element(
         id=8,
@@ -546,6 +554,7 @@ elements = {
         func_type_human=[],
         buoyancy=[],
         parameters=[],
+        styles=[],
     ),
     9: Element(
         id=9,
@@ -554,6 +563,7 @@ elements = {
         func_type_human=[],
         buoyancy=[],
         parameters=[],
+        styles=[],
     ),
     10: Element(
         id=10,
@@ -574,6 +584,7 @@ elements = {
             {"group": "input", "placeholder": "Last name"},
             {"group": "input", "placeholder": "Password"},
         ],
+        styles=[],
     ),
     11: Element(
         id=11,
@@ -582,6 +593,7 @@ elements = {
         func_type_human=[],
         buoyancy=[],
         parameters=[],
+        styles=[],
     ),
     12: Element(
         id=12,
@@ -590,6 +602,7 @@ elements = {
         func_type_human=[],
         buoyancy=[],
         parameters=[],
+        styles=[],
     ),
     13: Element(
         id=13,
@@ -598,6 +611,7 @@ elements = {
         func_type_human=[],
         buoyancy=[],
         parameters=[],
+        styles=[],
     ),
     14: Element(
         id=14,
@@ -606,6 +620,7 @@ elements = {
         func_type_human=[],
         buoyancy=[],
         parameters=[],
+        styles=[],
     ),
     15: Element(
         id=15,
@@ -614,6 +629,7 @@ elements = {
         func_type_human=[],
         buoyancy=[],
         parameters=[],
+        styles=[],
     ),
     16: Element(
         id=16,
@@ -622,9 +638,16 @@ elements = {
         func_type_human=["undefined", "undefined", "undefined"],
         buoyancy=[100, 98, 0],
         parameters=[{"group": "other"}, {"group": "other"}, {"group": "other"}],
+        styles=[{"width": 100, "height": 40}, {}, {}],
     ),
     17: Element(
-        id=17, struct_type="div", func_type=[], func_type_human=[], buoyancy=[], parameters=[]
+        id=17,
+        struct_type="div",
+        func_type=[],
+        func_type_human=[],
+        buoyancy=[],
+        parameters=[],
+        styles=[],
     ),
     18: Element(
         id=18,
@@ -633,5 +656,19 @@ elements = {
         func_type_human=[],
         buoyancy=[],
         parameters=[],
+        styles=[],
+    ),
+    19: Element(
+        id=19,
+        struct_type="select",
+        func_type=["day", "month", "year"],
+        func_type_human=["undefined", "undefined", "undefined"],
+        buoyancy=[],
+        parameters=[{"group": "select"}, {"group": "select"}, {"group": "select"}],
+        styles=[
+            {"width": 50, "height": 25},
+            {"width": 50, "height": 25},
+            {"width": 50, "height": 25},
+        ],
     ),
 }
