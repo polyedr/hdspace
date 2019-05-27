@@ -113,6 +113,7 @@ class ElementSerializer(serializers.Serializer):
     buoyancy = serializers.ListField()
     # parameters = serializers.JSONField()
     parameters = serializers.ListField()
+    styles = serializers.ListField()
 
     def create(self, validated_data):
         return Element(id=None, **validated_data)
