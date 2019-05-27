@@ -580,8 +580,8 @@ elements = {
         parameters=[
             {"group": "input", "placeholder": "Email"},
             {"group": "input", "placeholder": "Phone"},
-            {"group": "input", "placeholder": "First name"},
-            {"group": "input", "placeholder": "Last name"},
+            {"group": "input", "placeholder": "First name", "tags": "#username"},
+            {"group": "input", "placeholder": "Last name", "tags": "#username"},
             {"group": "input", "placeholder": "Password"},
         ],
         styles=[],
@@ -663,8 +663,8 @@ elements = {
         struct_type="select",
         func_type=["day", "month", "year"],
         func_type_human=["undefined", "undefined", "undefined"],
-        buoyancy=[],
-        parameters=[{"group": "select"}, {"group": "select"}, {"group": "select"}],
+        buoyancy=[54, 54, 54,],
+        parameters=[{"group": "select", "tags": "#date"}, {"group": "select", "tags": "#date"}, {"group": "select", "tags": "#date"}],
         styles=[
             {"width": 50, "height": 25},
             {"width": 50, "height": 25},
