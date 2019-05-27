@@ -45,29 +45,33 @@ class PreSegmentationSerializer(serializers.ModelSerializer):
         scenarioelements = [
             {
                 "name": "string",
-                "element_id": "widget",
-                "type": "widget",
+                "struct_type": "widget",
+                "func_type": "widget",
+                "func_type_human": "undefined",
                 "buoyancy": 0,
                 "parameters": {},
                 "styles": {},
             },
             {
                 "name": "string",
-                "element_id": "widget",
-                "type": "widget",
+                "struct_type": "widget",
+                "func_type": "widget",
+                "func_type_human": "undefined",
                 "buoyancy": 0,
                 "parameters": {},
                 "styles": {},
             },
         ]
 
+        screen = validated_data["screen"]
+
         presegmentation = PreSegmentation.objects.create(
-            screen=validated_data["screen"]
+            screen=screen
         )
 
         for scenario_data in scenarios:
             scenario = ScreenScenario.objects.create(
-                presegmentation=presegmentation, **scenario_data
+                presegmentation=presegmentation, screen=screen, **scenario_data
             )
 
             for scenarioelement_data in scenarioelements:
