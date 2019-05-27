@@ -61,7 +61,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
 
 
 class ScreenScenarioSerializer(serializers.ModelSerializer):
-    elements = ScenarioElementSerializer(many=True, read_only=True)
+    # elements = ScenarioElementSerializer(many=True, read_only=True)
     parameters = serializers.JSONField()
     styles = serializers.JSONField()
 
