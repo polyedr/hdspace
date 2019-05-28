@@ -580,8 +580,8 @@ elements = {
         parameters=[
             {"group": "input", "placeholder": "Email"},
             {"group": "input", "placeholder": "Phone"},
-            {"group": "input", "placeholder": "First name", "tags": "#username"},
-            {"group": "input", "placeholder": "Last name", "tags": "#username"},
+            {"group": "input", "placeholder": "First name", "tags": "#username_horizontal"},
+            {"group": "input", "placeholder": "Last name", "tags": "#username_horizontal"},
             {"group": "input", "placeholder": "Password"},
         ],
         styles=[
@@ -675,9 +675,9 @@ elements = {
         func_type_human=["undefined", "undefined", "undefined"],
         buoyancy=[54, 54, 54],
         parameters=[
-            {"group": "select", "tags": "#date"},
-            {"group": "select", "tags": "#date"},
-            {"group": "select", "tags": "#date"},
+            {"group": "select", "tags": "#date_horizontal"},
+            {"group": "select", "tags": "#date_horizontal"},
+            {"group": "select", "tags": "#date_horizontal"},
         ],
         styles=[
             {"width": 50, "height": 25},
