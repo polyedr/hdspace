@@ -2,7 +2,10 @@
 
 from django.urls import path, include
 from rest_framework import routers
+from rest_framework_bulk import BulkModelViewSet
+from rest_framework_bulk.routes import BulkRouter
 
+from apps.projects.models import ScenarioElement
 from .apiviews import (
     ProjectList,
     ProjectMemberList,
@@ -34,6 +37,7 @@ from .apiviews import (
     ElementViewSet,
     ScenarioViewSet,
     ScenarioElementCreateMultiple,
+    ScenarioElementMultipleViewSet,
 )
 
 app_name = "projects"
@@ -122,6 +126,16 @@ router.register(
 )
 api_library_scenario_element_patterns = router.urls
 
+
+router = BulkRouter()
+router.register(
+    r"scenario-elements-multi",
+    ScenarioElementMultipleViewSet,
+    base_name="api_scenario_element_multi",
+)
+api_scenario_element_multi_patterns = router.urls
+
+
 api_screen_comment_patterns = [
     path("screen-comments/", ScreenCommentList.as_view(), name="api_screen_comments"),
     path(
@@ -143,4 +157,5 @@ urlpatterns = [
     # path("", include(api_library_element_patterns)),
     path("", include(api_library_scenario_element_patterns)),
     # path("", include(api_screen_comment_patterns)),
+    path("", include(api_scenario_element_multi_patterns)),
 ]

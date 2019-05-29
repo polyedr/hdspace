@@ -1,6 +1,8 @@
 """Serializers for the projects"""
 
 from rest_framework import serializers
+from rest_framework_bulk import BulkSerializerMixin, BulkListSerializer
+
 from .models import (
     Project,
     ProjectMember,
@@ -58,6 +60,28 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
             "parameters",
             "styles",
         )
+
+
+class ScenarioElementMultipleSerializer(
+    BulkSerializerMixin, serializers.ModelSerializer
+):
+    parameters = serializers.JSONField()
+    styles = serializers.JSONField()
+
+    class Meta:
+        model = ScenarioElement
+        fields = (
+            "id",
+            "scenario",
+            "name",
+            "struct_type",
+            "func_type",
+            "func_type_human",
+            "buoyancy",
+            "parameters",
+            "styles",
+        )
+        list_serializer_class = BulkListSerializer
 
 
 class ScreenScenarioSerializer(serializers.ModelSerializer):

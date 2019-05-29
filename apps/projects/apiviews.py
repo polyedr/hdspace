@@ -3,6 +3,7 @@
 from rest_framework import generics, viewsets
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
+from rest_framework_bulk import ListBulkCreateUpdateDestroyAPIView, BulkModelViewSet
 
 from .models import (
     Project,
@@ -38,6 +39,7 @@ from .serializers import (
     ScenarioElementSerializer,
     ElementSerializer,
     ScenarioSerializer,
+    ScenarioElementMultipleSerializer,
 )
 
 
@@ -85,6 +87,21 @@ class ScenarioViewSet(viewsets.ViewSet):
     def list(self, request):
         serializer = ScenarioSerializer(instance=scenarios.values(), many=True)
         return Response(serializer.data)
+
+
+class ScenarioElementMultipleViewSet(BulkModelViewSet):
+    # model = ScenarioElement
+    queryset = ScenarioElement.objects.all()
+    serializer_class = ScenarioElementMultipleSerializer
+
+    def allow_bulk_destroy(self, qs, filtered):
+        """Don't forget to fine-grain this method"""
+        # custom logic here
+
+        # default checks if the qs was filtered
+        # qs comes from self.get_queryset()
+        # filtered comes from self.filter_queryset(qs)
+        return qs is not filtered
 
 
 class ProjectMemberList(generics.ListCreateAPIView):
@@ -316,6 +333,15 @@ class ScenarioElementCreateMultiple(generics.CreateAPIView):
         return super(ScenarioElementCreateMultiple, self).get_serializer(
             instance=instance, data=data, many=True, partial=partial
         )
+
+
+class ScenarioElementMultipleView(ListBulkCreateUpdateDestroyAPIView):
+    """
+    List all scenario elements, or create multiple a new scenario element or update multiple or destroy multiple.
+    """
+
+    queryset = ScenarioElement.objects.all()
+    serializer_class = ScenarioElementMultipleSerializer
 
 
 class ScenarioElementDetail(generics.RetrieveUpdateDestroyAPIView):

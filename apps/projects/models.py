@@ -93,7 +93,7 @@ class ProjectScreen(TimeStampedModel):
 
     # screen_data_char = models.CharField(max_length=1000, blank=True)
     screen_data_text = models.TextField(blank=True)
-    screen_data_json = JSONField(blank=True, default = [])
+    screen_data_json = JSONField(blank=True, default=[])
 
     # screen_data_list = ListField(default = [])
     # screen_data_dict = DictField(default = {})
@@ -580,8 +580,16 @@ elements = {
         parameters=[
             {"group": "input", "placeholder": "Email"},
             {"group": "input", "placeholder": "Phone"},
-            {"group": "input", "placeholder": "First name", "tags": "#username_horizontal"},
-            {"group": "input", "placeholder": "Last name", "tags": "#username_horizontal"},
+            {
+                "group": "input",
+                "placeholder": "First name",
+                "tags": "#username_horizontal",
+            },
+            {
+                "group": "input",
+                "placeholder": "Last name",
+                "tags": "#username_horizontal",
+            },
             {"group": "input", "placeholder": "Password"},
         ],
         styles=[
