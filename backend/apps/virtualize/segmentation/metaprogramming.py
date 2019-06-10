@@ -750,10 +750,8 @@ def metaProgramming(combination, myFile, state):
         tHeight = (int(t['parent']['location']['y1']) - int(
             t['parent']['location']['y0']))
 
-        if float(int(tHeight)) <= 15:
-            tBox.append(t)
-        else:
-            tArea.append(t)
+        tBox.append(t)
+
 
     screenshot_id = combination[0]['screenshot_id']
     date = datetime.now(pytz.timezone('Australia/Melbourne'))
@@ -863,57 +861,6 @@ def metaProgramming(combination, myFile, state):
         return 'rgb' + fontColor
 
     if 7 == 7:
-        # round borders old check
-        # if state == 'save':
-        #     circleBorder = 0
-        #     sidesParent = 0
-        #     roundBorder = 0
-        #     rectBorder = 0
-        #     print('check over here: ')
-        #     #txtBox, button,
-        #
-        #     # circle parent
-        #     # rectangle with round sides parent
-        #     # rectangle with round border parent
-        #     # rectangle parent
-        #
-        #     circleBorder, rectBorder, roundBorder, sidesParent = checkNameArray(ButtonArray,circleBorder, rectBorder, roundBorder, sidesParent)
-        #     circleBorder, rectBorder, roundBorder, sidesParent = checkNameArray(textBoxArray,circleBorder, rectBorder, roundBorder, sidesParent)
-        #     circleBorder, rectBorder, roundBorder, sidesParent = checkNameArrayNoParent(frameArray,circleBorder, rectBorder, roundBorder, sidesParent)
-        #
-        #     print(circleBorder)
-        #     print(sidesParent)
-        #     print(roundBorder)
-        #     print(rectBorder)
-        #
-        #     d = {'circleBorder': circleBorder, 'sidesParent': sidesParent, 'roundBorder': roundBorder,'rectBorder':rectBorder}
-        #     result = max(d, key=d.get)
-        #     print(result)
-        #
-        #     if result == 'circleBorder':
-        #         print('CIRCLE')
-        #         for button in ButtonArray:
-        #             button['parent']['name'] = 'circle parent'
-        #         for txtbox in textBoxArray:
-        #             txtbox['parent']['name'] = 'circle parent'
-        #     elif result == 'sidesParent':
-        #         print('RECT SIDES')
-        #         for button in ButtonArray:
-        #             button['parent']['name'] = 'rectangle with round sides parent'
-        #         for txtbox in textBoxArray:
-        #             txtbox['parent']['name'] = 'rectangle with round sides parent'
-        #     elif result == 'roundBorder':
-        #         print('RECT ROUND')
-        #         for button in ButtonArray:
-        #             button['parent']['name'] = 'rectangle with round border parent'
-        #         for txtbox in textBoxArray:
-        #             txtbox['parent']['name'] = 'rectangle with round border parent'
-        #     elif result == 'rectBorder':
-        #         print('RECT')
-        #         for button in ButtonArray:
-        #             button['parent']['name'] = 'rectangle parent'
-        #         for txtbox in textBoxArray:
-        #             txtbox['parent']['name'] = 'rectangle parent'
 
         mainImage = io.imread('media/' + str(myFile))  # facebookLogin root
 
@@ -983,10 +930,7 @@ def metaProgramming(combination, myFile, state):
                     {'classid': classid, 'fontColor': '', 'bordercolor': bordercolor, 'bgcolor': bgcolor})
 
         '#CREATING BUTTON'
-        for button in buttons:  # {'parent': element, 'children': [{'type': heritage[i]['type'],
-                                                                 # 'location': heritage[i]['location'],
-                                                                 # 'root': heritage[i]['root'],
-                                                                 # 'name': heritage[i]['name']}
+        for button in buttons:
             i = 0
             # this happens if type of children is ocr:
 
@@ -1052,77 +996,13 @@ def metaProgramming(combination, myFile, state):
                 else:
                     borderRadius = '0'
 
-            # else:
-            #     label = button['name']
-            #     classid = 'test' + str(button['id'])  # button['id']
-            #     width = str(int(button['location']['x1']) - int(
-            #         button['location']['x0']))
-            #     height = str(int(button['location']['y1']) - int(
-            #         button['location']['y0']))
-            #     positionL = str(int(button['location']['x0']))
-            #     positionT = str(int(button['location']['y0']))
-            #     fSize = int(button['location']['y1']) - int(button['location']['y0'])
-            #
-            #     '# BUTTON STYLE BG, Border..'
-            #     if ('style' == 'style'):
-            #         bgcolorarray = getBgColorArray(button, mainImage, heightScreen, widthScreen, 2, 15)
-            #         colorarray = getColorBackgroundBody(ParentElementL1, heightScreen, mainImage, widthScreen)
-            #         print(bgcolorarray)
-            #
-            #         if (colorarray[0] - 10 <= bgcolorarray[0] <= colorarray[0] + 10) \
-            #                 | (colorarray[1] - 10 <= bgcolorarray[1] <= colorarray[1] + 10) \
-            #                 | (colorarray[2] - 10 <= bgcolorarray[2] <= colorarray[2] + 10):
-            #             print('RGB is to close to background')
-            #             bgcolorarray = getBgColorArray(button, mainImage, heightScreen, widthScreen, 4, 30)
-            #             print(bgcolorarray)
-            #
-            #         bgcolor = getRGBColor(bgcolorarray)
-            #
-            #         bordercolorarray = getBorderColorArray(button, heightScreen, mainImage, widthScreen, 0)
-            #
-            #         tries = 0
-            #         while tries < 10:
-            #             if checkColorWithBackground(colorarray, bordercolorarray, 10):
-            #                 print('RGB Border is to close to background')
-            #                 bordercolorarray = getBorderColorArray(button, heightScreen, mainImage, widthScreen,
-            #                                                        tries)
-            #                 tries += 1
-            #             else:
-            #                 tries += 10
-            #
-            #         bordercolor = getRGBColor(bordercolorarray)
-            #         if checkBorderColorInrange(bgcolorarray, bordercolorarray, 50):
-            #             bordercolor = bgcolor
-            #
-            #         fontColor = colorBoW(button['child']['root'])
-            #
-            #         if button['parent']['name'] == 'rectangle with round sides parent':
-            #             borderRadius = '40'
-            #         elif button['parent']['name'] == 'rectangle with round border parent':
-            #             borderRadius = '5'
-            #         elif button['parent']['name'] == 'rectangle parent':
-            #             borderRadius = '0'
-            #         elif button['parent']['name'] == 'circle parent':
-            #             borderRadius = '100'
-            #         else:
-            #             borderRadius = '0'
-
-            print('font-size: ' + str(fSize))
-            # fSize *= 100 / int(heightScreen)
-            print('font-size percentage: ' + str(fSize))
             fontSize = fSize * viewHeight / 100
-            print(str(fontSize))
             textAlign = 'unset'
             textIndent = 'unset'
-            name = button['children'][0]['name']
-            styling = button['parent']['location']
-            parameters = ''
-            bouyancy = 1
             if state == 'save':
+                # Allmax, these are the outputs from a button
                 updatePredictions(classid, str(fontSize), fontColor, bordercolor,
                                   borderRadius, bgcolor, textAlign, textIndent)
-                save_scenario(classid, name,  'button', bouyancy, parameters, styling, height, width)
-
             elif state == 'color':
                 updateColor(classid, fontColor, bordercolor, bgcolor)
             elif state == 'colorTransfer':
@@ -1175,7 +1055,6 @@ def metaProgramming(combination, myFile, state):
 
                 fontColor = colorBoW(str(h['root']))
                 if state == 'save':
-                    save_scenario(classid, name, 'button', bouyancy, parameters, styling, height, width)
                     updatePredictions(classid, str(fontSize), fontColor, '', '', '', textAlign, '')
                 elif state == 'color':
                     updateColor(classid, fontColor, '', '')
@@ -1228,13 +1107,9 @@ def metaProgramming(combination, myFile, state):
             text_string = str(p['name'])
 
             fontColor = colorBoW(str(p['root']))
-            name = str(p['name'])
-            bouyancy = 98
-            parameters = ''
-            styling = p['location']
-            if state == 'save':
-                save_scenario(classid, name, 'text', bouyancy, parameters, styling, height, width)
 
+            if state == 'save':
+                # Allmax, these are the outputs from a text element
                 updatePredictions(classid, str(fontSize), fontColor, '', '', '', textAlign, '')
             elif state == 'color':
                 updateColor(classid, fontColor, '', '')
@@ -1312,13 +1187,9 @@ def metaProgramming(combination, myFile, state):
                 textAlign = 'unset'
 
                 fontColor = colorBoW(str(t['children'][i]['root']))
-                bouyancy = 95
-                parameters = ''
-                styling = t['parent']['location']
+
                 if state == 'save':
-
-                    save_scenario(classid, name, 'input', bouyancy, parameters, styling, height, width)
-
+                    # Allmax, these are the outputs for textboxes
                     updatePredictions(classid, '80', fontColor, bordercolor, borderRadius, bgcolor, textAlign,
                                       childOffset)
                 elif state == 'color':
@@ -1456,12 +1327,7 @@ def metaProgramming(combination, myFile, state):
                     borderRadius = '100'
                 else:
                     borderRadius = '0'
-                name = 'picture'
-                bouyancy = 50
-                parameters = ''
-                styling = pic['location']
-                save_scenario(classid, name, 'img', bouyancy, parameters, styling, height, width)
-
+                #     Allmax, these are the outputs from a picture
                 updatePredictions(classid, '', '', bordercolor, borderRadius, '', '', '')
             else:
                 fStyles = get_fstyles(classid)
@@ -1471,107 +1337,7 @@ def metaProgramming(combination, myFile, state):
                 zIndex = str(styles['zIndex'])
                 bordercolor = styles['bordercolor']
                 borderRadius = styles['borderRadius']
-
-
-            #
-            # icon_path = 'media/' + str(e['root'])
-            # classid = e['class_id']
-            # width = str(float(e['location']['x1']) - float(e['location']['x0']))
-            # height = str(float(e['location']['y1']) - float(e['location']['y0']))
-            # positionL = str(float(e['location']['x0']))
-            # positionT = str(float(e['location']['y0']))
-            #
-            # link = ''
-            # styles = get_new_bstyles(classid)
-            # zIndex = str(styles['zIndex'])
-            # bordercolor = styles['borderColor']
-            # borderRadius = styles['borderRadius']
-            #
-            # create_new_image(icon_path, classid, width, height, positionL, positionT, bordercolor, borderRadius,
-            #                  link, zIndex, 'notVirtual')
-
-        '#CREATING TEXTBOX WITH LEGEND'
-        '''
-        for tl in textBoxLegendArray:
-
-            if len(textBoxLegendArray) > 0:
-
-                legend = str(tl['legend']['name'])
-                classidf = str(tl['legend']['id'])  # button['id']
-                positionLf = str(int(int(tl['legend']['location']['x0']) ))
-                print('afterrr')
-                print('position t:' + str(tl['legend']['location']['y0']))
-                positionTf = int(int(tl['legend']['location']['y0']))
-                fSize = int(tl['legend']['location']['y1']) - int(tl['legend']['location']['y0'])
-                # print('font-size percentage: '+str(fSize))
-
-                fontSize = 95 # str(fSize * viewHeight / 100)
-
-                widthtb = str(int(int(tl['txtbox']['location']['x1'])) - int(
-                    int(tl['txtbox']['location']['x0']) ))
-                heighttb = str(int(int(tl['txtbox']['location']['y1'])) - int(
-                    int(tl['txtbox']['location']['y0'])))
-                positionLtb = str(int(int(tl['txtbox']['location']['x0']) ))
-                positionTtb = str(int(int(tl['txtbox']['location']['y0'])))
-                classidtb = str(tl['txtbox']['id'])
-                childOffset = 0
-
-                '# TXTBOX STYLE BG, Border..'
-                if 'style' == 'style':
-                    bgcolorarray = getBgColorArray(tl['txtbox'], mainImage, heightScreen, widthScreen, 2, 15)
-                    colorarray = getColorBackgroundBody(ParentElementL1, heightScreen, mainImage, widthScreen)
-                    print(bgcolorarray)
-
-                    if (colorarray[0] - 10 <= bgcolorarray[0] <= colorarray[0] + 10) \
-                            | (colorarray[1] - 10 <= bgcolorarray[1] <= colorarray[1] + 10) \
-                            | (colorarray[2] - 10 <= bgcolorarray[2] <= colorarray[2] + 10):
-                        print('RGB is to close to background')
-                        bgcolorarray = getBgColorArray(tl['txtbox'], mainImage, heightScreen, widthScreen, 4, 30)
-                        print(bgcolorarray)
-
-                    bgcolor = getRGBColor(bgcolorarray)
-
-                    bordercolorarray = getBorderColorArray(tl['txtbox'], heightScreen, mainImage, widthScreen, 1)
-                    tries = 0
-                    while tries < 10:
-                        if checkColorWithBackground(colorarray, bordercolorarray, 10):
-                            print('RGB Border is to close to background')
-                            bordercolorarray = getBorderColorArray(tl['txtbox'], heightScreen, mainImage, widthScreen, tries)
-                            tries += 1
-                        else:
-                            tries += 10
-
-                    bordercolor = getRGBColor(bordercolorarray)
-
-                    if checkBorderColorInrange(bgcolorarray, bordercolorarray, 50):
-                        bordercolor = bgcolor
-
-                    if tl['txtbox']['name'] == 'rectangle with round sides parent':
-                        borderRadius = '40'
-                    elif tl['txtbox']['name'] == 'rectangle with round border parent':
-                        borderRadius = '10'
-                    elif tl['txtbox']['name'] == 'rectangle parent':
-                        borderRadius = '0'
-                    elif tl['txtbox']['name'] == 'circle parent':
-                        borderRadius = '100'
-
-                if str(heighttb) <= '15':
-                    print('we know: ' + str(heighttb))
-
-                    updatePredictions(classid, str(fontSize), fontColor, bordercolor, borderRadius, bgcolor, textAlign, childOffset)
-                    create_text_box_legend(legend, classidf, positionLf, str(positionTf), str(fontSize),
-                                           classidtb, widthtb, heighttb, borderRadius, str(positionLtb),
-                                           str(positionTtb), bgcolor, str(childOffset), bordercolor)
-                else:
-                    fontSize = fSize * viewHeight / 100
-                    print('this is textarea: ' + str(heighttb))
-
-                    updatePredictions(classid, str(fontSize), fontColor, bordercolor, borderRadius, bgcolor, textAlign, childOffset)
-                    create_text_area(legend, legend, classidf, widthtb, heighttb, positionLf, str(positionTf),
-                                     str(childOffset),str(fontSize), bgcolor, borderRadius, bordercolor)
-        '''
-
-        # check for text size if 
+        # check for text size if
         # Background color extraction
         if len(paragraphArray) <= 0:
             l = 1
