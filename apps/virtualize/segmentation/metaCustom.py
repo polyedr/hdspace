@@ -4219,7 +4219,12 @@ def metaCustom(currentUser, myFile, screenshot_id, state):
         pagehtml3 = pages_creation[4]
 
         userId = getCollectionIDs('accounts_user', currentUser)
-        screenwidthOnePercent = float(getLatestScreenshot(userId)['screenWidth']) / 100
+        # screenwidthOnePercent = float(getLatestScreenshot(userId)['screenWidth']) / 100
+        # Setup the not null value for the screenwidthOnePercent
+        if getLatestScreenshot(userId)['screenWidth'] !=0:
+            screenwidthOnePercent = float(getLatestScreenshot(userId)['screenWidth']) / 100
+        else:
+            screenwidthOnePercent = 10
 
         print('after \n')
         print("button", ButtonArray)
