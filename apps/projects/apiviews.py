@@ -1,9 +1,11 @@
 """Views for the projects api"""
-
-from rest_framework import generics, viewsets
+from rest_framework.filters import OrderingFilter, BaseFilterBackend
+from django_filters.rest_framework import DjangoFilterBackend, FilterSet
+from rest_framework import generics, viewsets, status
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework_bulk import ListBulkCreateUpdateDestroyAPIView, BulkModelViewSet
+# from rest_framework_extensions.bulk_operations.mixins import ListDestroyModelMixin
 
 from .models import (
     Project,
@@ -88,11 +90,50 @@ class ScenarioViewSet(viewsets.ViewSet):
         serializer = ScenarioSerializer(instance=scenarios.values(), many=True)
         return Response(serializer.data)
 
+#
+# class IsIdFilterBackend(BaseFilterBackend):
+#     """
+#     Filter that only allows users to see their own objects.
+#     """
+#     def filter_queryset(self, queryset, view):
+#         return queryset.filter(id=self.id)
+
+# Multiple delete from http://chibisov.github.io/drf-extensions/docs/#bulk-destroy
+# class ScenarioElementMultipleDeleteViewSet(ListDestroyModelMixin, viewsets.ModelViewSet):
+#     queryset = ScenarioElement.objects.all()
+#     serializer_class = ScenarioElementMultipleSerializer
+
 
 class ScenarioElementMultipleViewSet(BulkModelViewSet):
     # model = ScenarioElement
     queryset = ScenarioElement.objects.all()
     serializer_class = ScenarioElementMultipleSerializer
+
+    def destroy(self, request, id=None):
+        """
+        Overridden method allows either url parameter of single ID
+        (to delete a single instance), or multiple query parameters `ids`
+        to delete multiple instances.
+        """
+        if not id:
+            ids = request.query_params.get('ids', None)
+            if not ids:
+                return Response(status=status.HTTP_404_NOT_FOUND)
+            if len(ids) != ScenarioElement.objects.filter(id__in=ids).count():
+                return Response(status=status.HTTP_404_NOT_FOUND)
+            ScenarioElement.objects.filter(id__in=ids).delete()
+        else:
+            instance = self.get_object(id)
+            if not instance:
+                return Response(status=status.HTTP_404_NOT_FOUND)
+            instance.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    '''
+    filter_backends = (OrderingFilter,)
+    filter_backends = (DjangoFilterBackend,)
+    # filter_class = IsIdFilterBackend
+    # ordering_fields = '__all__'
+    ordering_fields = ordering = ('id','struct_type')
 
     def allow_bulk_destroy(self, qs, filtered):
         """Don't forget to fine-grain this method"""
@@ -101,7 +142,52 @@ class ScenarioElementMultipleViewSet(BulkModelViewSet):
         # default checks if the qs was filtered
         # qs comes from self.get_queryset()
         # filtered comes from self.filter_queryset(qs)
-        return qs is not filtered
+        # return qs is not filtered
+        # return filtered
+        # return 1
+        return any(key in self.ordering_fields for key in self.request.query_params.keys())
+
+
+    def bulk_destroy(self, request, *args, **kwargs):
+        qs = self.get_queryset()
+
+        filtered = self.filter_queryset(qs)
+        if not self.allow_bulk_destroy(qs, filtered):
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        self.perform_bulk_destroy(filtered)
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+    def destroy(self, request, id=None):
+        """
+        Overridden method allows either url parameter of single ID
+        (to delete a single instance), or multiple query parameters `ids`
+        to delete multiple instances.
+        """
+        if not id:
+            ids = request.query_params.get('ids', None)
+            if not ids:
+                return Response(status=status.HTTP_404_NOT_FOUND)
+            if len(ids) != ScenarioElement.objects.filter(id__in=ids).count():
+                return Response(status=status.HTTP_404_NOT_FOUND)
+            ScenarioElement.objects.filter(id__in=ids).delete()
+        else:
+            instance = self.get_object(id)
+            if not instance:
+                return Response(status=status.HTTP_404_NOT_FOUND)
+            instance.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    '''
+
+    #
+    # def perform_destroy(self, instance):
+    #     instance.delete()
+    #
+    # def perform_bulk_destroy(self, objects):
+    #     for obj in objects:
+    #         self.perform_destroy(obj)
 
 
 class ProjectMemberList(generics.ListCreateAPIView):

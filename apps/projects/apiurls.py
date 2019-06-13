@@ -2,6 +2,7 @@
 
 from django.urls import path, include
 from rest_framework import routers
+from rest_framework.routers import DefaultRouter, Route
 from rest_framework_bulk import BulkModelViewSet
 from rest_framework_bulk.routes import BulkRouter
 
@@ -37,8 +38,7 @@ from .apiviews import (
     ElementViewSet,
     ScenarioViewSet,
     ScenarioElementCreateMultiple,
-    ScenarioElementMultipleViewSet,
-)
+    ScenarioElementMultipleViewSet)
 
 app_name = "projects"
 
@@ -133,7 +133,34 @@ router.register(
     ScenarioElementMultipleViewSet,
     base_name="api_scenario_element_multi",
 )
+
 api_scenario_element_multi_patterns = router.urls
+'''
+# Multiple delete to the api_scenario_element_multi
+class BulkDeleteRouter(DefaultRouter):
+    """
+    a custom URL router for the ScenarioElement API that correctly routes
+    DELETE requests with multiple query parameters.
+    """
+    def __init__(self, *args, **kwargs):
+        super(BulkDeleteRouter, self).__init__(*args, **kwargs)
+        self.routes += [
+            Route(
+                url=r'^{prefix}{trailing_slash}$',
+                mapping={'delete': 'destroy'},
+                name='{basename}-delete',
+                detail=False,
+                initkwargs={'suffix': 'Delete'}
+            ),
+        ]
+
+bulk_delete_router = BulkDeleteRouter()
+'''
+# from https://github.com/chibisov/drf-extensions
+# drouter = routers.DefaultRouter()
+# drouter.register(r'scenario-elements-multi-delete', ScenarioElementMultipleDeleteViewSet, base_name='api_scenario_element_multi_delete')
+#
+# api_scenario_element_multi_delete_patterns = drouter.urls
 
 
 api_screen_comment_patterns = [
@@ -158,4 +185,5 @@ urlpatterns = [
     path("", include(api_library_scenario_element_patterns)),
     # path("", include(api_screen_comment_patterns)),
     path("", include(api_scenario_element_multi_patterns)),
+    path("", include(api_scenario_element_multi_delete_patterns)),
 ]
