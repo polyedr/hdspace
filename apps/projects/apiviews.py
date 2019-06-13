@@ -103,7 +103,23 @@ class ScenarioViewSet(viewsets.ViewSet):
 #     queryset = ScenarioElement.objects.all()
 #     serializer_class = ScenarioElementMultipleSerializer
 
+class ScenarioElementMultipleView(ListBulkCreateUpdateDestroyAPIView):
+    queryset = ScenarioElement.objects.all()
+    serializer_class = ScenarioElementMultipleSerializer
 
+    def allow_bulk_destroy(self, qs, filtered):
+        """Don't forget to fine-grain this method"""
+        # custom logic here
+
+        # default checks if the qs was filtered
+        # qs comes from self.get_queryset()
+        # filtered comes from self.filter_queryset(qs)
+        # return qs is not filtered
+        # return filtered
+        # return 1
+        return any(key in self.ordering_fields for key in self.request.query_params.keys())
+
+'''
 class ScenarioElementMultipleViewSet(BulkModelViewSet):
     # model = ScenarioElement
     queryset = ScenarioElement.objects.all()
@@ -128,7 +144,7 @@ class ScenarioElementMultipleViewSet(BulkModelViewSet):
                 return Response(status=status.HTTP_404_NOT_FOUND)
             instance.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-    '''
+
     filter_backends = (OrderingFilter,)
     filter_backends = (DjangoFilterBackend,)
     # filter_class = IsIdFilterBackend
@@ -179,7 +195,7 @@ class ScenarioElementMultipleViewSet(BulkModelViewSet):
                 return Response(status=status.HTTP_404_NOT_FOUND)
             instance.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-    '''
+'''
 
     #
     # def perform_destroy(self, instance):

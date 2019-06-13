@@ -38,7 +38,7 @@ from .apiviews import (
     ElementViewSet,
     ScenarioViewSet,
     ScenarioElementCreateMultiple,
-    ScenarioElementMultipleViewSet)
+    ScenarioElementMultipleView)
 
 app_name = "projects"
 
@@ -112,6 +112,15 @@ api_scenario_element_patterns = [
     ),
 ]
 
+api_scenario_element_m = [
+    path(
+        "scenario-elements-m/",
+        ScenarioElementMultipleView.as_view(),
+        name="api_scenario_elements_m",
+    ),
+]
+
+
 #
 # api_library_element_patterns = [
 #     path("library-elements/", ElementList.as_view(), name="api_library_elements")
@@ -126,7 +135,7 @@ router.register(
 )
 api_library_scenario_element_patterns = router.urls
 
-
+'''
 router = BulkRouter()
 router.register(
     r"scenario-elements-multi",
@@ -135,6 +144,7 @@ router.register(
 )
 
 api_scenario_element_multi_patterns = router.urls
+'''
 '''
 # Multiple delete to the api_scenario_element_multi
 class BulkDeleteRouter(DefaultRouter):
@@ -184,6 +194,7 @@ urlpatterns = [
     # path("", include(api_library_element_patterns)),
     path("", include(api_library_scenario_element_patterns)),
     # path("", include(api_screen_comment_patterns)),
-    path("", include(api_scenario_element_multi_patterns)),
+    # path("", include(api_scenario_element_multi_patterns)),
+    path("", include(api_scenario_element_m)),
     # path("", include(api_scenario_element_multi_delete_patterns)),
 ]
