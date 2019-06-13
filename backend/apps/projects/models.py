@@ -362,6 +362,8 @@ class ScenarioElement(TimeStampedModel):
     OCRTEXT = "ocrtext"
     DIV = "div"
     UNDEFINED = "undefined"
+    SELECT = "select"
+    LABEL = "label"
     HTML_ELEMENT_TYPE_CHOICES = (
         (FRAME, "frame"),
         (WIDGET, "widget"),
