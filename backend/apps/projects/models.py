@@ -383,6 +383,8 @@ class ScenarioElement(TimeStampedModel):
         (OCRTEXT, "ocrtext"),
         (DIV, "div"),
         (UNDEFINED, "undefined"),
+        (SELECT, "select"),
+        (LABEL, "label"),
     )
 
     struct_type = models.CharField(
@@ -418,6 +420,7 @@ class ScenarioElement(TimeStampedModel):
         (YEAR, "year"),
         (WIDGET, "widget"),
         (UNDEFINED, "undefined"),
+        (LABEL, "label"),
     )
 
     func_type = models.CharField(
