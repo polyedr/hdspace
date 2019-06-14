@@ -38,7 +38,8 @@ from .apiviews import (
     ElementViewSet,
     ScenarioViewSet,
     ScenarioElementCreateMultiple,
-    ScenarioElementMultipleView)
+    ScenarioElementMultipleViewSet,
+)
 
 app_name = "projects"
 
@@ -112,20 +113,6 @@ api_scenario_element_patterns = [
     ),
 ]
 
-api_scenario_element_m = [
-    path(
-        "scenario-elements-m/",
-        ScenarioElementMultipleView.as_view(),
-        name="api_scenario_elements_m",
-    ),
-]
-
-
-#
-# api_library_element_patterns = [
-#     path("library-elements/", ElementList.as_view(), name="api_library_elements")
-# ]
-
 router = routers.DefaultRouter()
 router.register(r"library-elements", ElementViewSet, base_name="api_library_elements")
 # api_library_element_patterns = router.urls
@@ -135,7 +122,7 @@ router.register(
 )
 api_library_scenario_element_patterns = router.urls
 
-'''
+
 router = BulkRouter()
 router.register(
     r"scenario-elements-multi",
@@ -144,33 +131,6 @@ router.register(
 )
 
 api_scenario_element_multi_patterns = router.urls
-'''
-'''
-# Multiple delete to the api_scenario_element_multi
-class BulkDeleteRouter(DefaultRouter):
-    """
-    a custom URL router for the ScenarioElement API that correctly routes
-    DELETE requests with multiple query parameters.
-    """
-    def __init__(self, *args, **kwargs):
-        super(BulkDeleteRouter, self).__init__(*args, **kwargs)
-        self.routes += [
-            Route(
-                url=r'^{prefix}{trailing_slash}$',
-                mapping={'delete': 'destroy'},
-                name='{basename}-delete',
-                detail=False,
-                initkwargs={'suffix': 'Delete'}
-            ),
-        ]
-
-bulk_delete_router = BulkDeleteRouter()
-'''
-# from https://github.com/chibisov/drf-extensions
-# drouter = routers.DefaultRouter()
-# drouter.register(r'scenario-elements-multi-delete', ScenarioElementMultipleDeleteViewSet, base_name='api_scenario_element_multi_delete')
-#
-# api_scenario_element_multi_delete_patterns = drouter.urls
 
 
 api_screen_comment_patterns = [
@@ -194,7 +154,5 @@ urlpatterns = [
     # path("", include(api_library_element_patterns)),
     path("", include(api_library_scenario_element_patterns)),
     # path("", include(api_screen_comment_patterns)),
-    # path("", include(api_scenario_element_multi_patterns)),
-    path("", include(api_scenario_element_m)),
-    # path("", include(api_scenario_element_multi_delete_patterns)),
+    path("", include(api_scenario_element_multi_patterns)),
 ]
