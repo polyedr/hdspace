@@ -1,12 +1,9 @@
 from rest_framework import serializers
-from rest_framework_bulk import BulkSerializerMixin, BulkListSerializer
 
 from apps.projects.models import ScenarioElement
 
 
-class ScenarioElementMultipleSerializer(
-    BulkSerializerMixin, serializers.ModelSerializer
-):
+class ScenarioElementSerializer(serializers.ModelSerializer):
     parameters = serializers.JSONField()
     styles = serializers.JSONField()
 
@@ -23,7 +20,8 @@ class ScenarioElementMultipleSerializer(
             "parameters",
             "styles",
         )
-        list_serializer_class = BulkListSerializer
+
+
 
     def create(self, validated_data):
         # This commented line was for the flexible scenarios

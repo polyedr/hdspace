@@ -6,7 +6,7 @@ from apps.virtualize_emulation.models import PreSegmentation
 
 class PreSegmentationList(generics.ListCreateAPIView):
     """
-    Get list of the pre-segmnetations or create a new pre-segmentation stub.
+    Get list of the segmentations or create a new pre-segmentation stub.
     """
 
     queryset = PreSegmentation.objects.all()
