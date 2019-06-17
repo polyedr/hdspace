@@ -1,20 +1,16 @@
-
 from celery import Celery
 
 # app = Celery('tasks', broker='pyamqp://guest@localhost//')
-app = Celery('tasks', backend='rpc://', broker='pyamqp://')
+# amqp only backend. ok
+# app = Celery('tasks', backend='rpc://', broker='pyamqp://')
+# Redis with amqp backend. ok
 # app = Celery('tasks', backend='redis://localhost', broker='pyamqp://')
-'''
-@app.task
-def add(x, y):
-    return x + y
-
-'''
-from celery import task
-
-__all__ = (
-    "add",
+# Redis only backend
+app = Celery(
+    "tasks", backend="redis://localhost:6379/0", broker="redis://localhost:6379/0"
 )
+
+__all__ = ("add",)
 
 
 @app.task()
