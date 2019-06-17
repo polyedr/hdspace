@@ -228,14 +228,14 @@ REDIS_URL = "redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_PATH}".format(
 # Celery settings
 # http://docs.celeryproject.org/en/latest/django/first-steps-with-django.html
 
-CELERY_BROKER_URL = REDIS_URL
-CELERY_BEAT_SCHEDULE = {
+BROKER_URL = REDIS_URL
+CELERYBEAT_SCHEDULE = {
     'check_user_subscription': {
         'task': 'core.tasks.check_user_subscription',
         'schedule': crontab(minute=59, hour=23)
     }
 }
-
+CELERY_RESULT_BACKEND=REDIS_URL
 
 # EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 # EMAIL_HOST = "smtp.gmail.com"
