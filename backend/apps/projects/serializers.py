@@ -3,6 +3,7 @@
 from rest_framework import serializers
 from rest_framework_bulk import BulkSerializerMixin, BulkListSerializer
 
+from apps.accounts.serializers import UserSerializer
 from .models import (
     Project,
     ProjectMember,
@@ -108,12 +109,13 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
 
 class ProjectSerializer(serializers.ModelSerializer):
     projectscreen = ProjectScreenSerializer(many=True, read_only=True)
-    # users = UserSerializer(many=True, read_only=True)
+    # This represents the user relationship
+    user = UserSerializer(read_only=True)
 
     class Meta:
         model = Project
         # fields = ("preview", "name", "status", "projectscreen")
-        fields = ("preview", "name", "status", "projectscreen", "id")
+        fields = ("preview", "name", "status", "projectscreen", "user")
         # fields = "__all__"
         extra_kwargs = {"preview": {"read_only": True}}
 
