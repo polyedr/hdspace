@@ -1,7 +1,6 @@
 from rest_framework_bulk import BulkModelViewSet
-
-from apps.virtualize.serializers import ScenarioElementSerializer
-from apps.projects.models import ScenarioElement
+from apps.virtualize.serializers import ScreenScenarioSerializer
+from apps.projects.models import ScreenScenario
 from rest_framework import generics
 
 
@@ -11,22 +10,22 @@ from rest_framework import generics
 #
 
 
-class ScenarioElementList(generics.ListCreateAPIView):
+class ScreenScenarioList(generics.ListCreateAPIView):
     """
     Get list of the segmentations or create a new segmentation
     """
 
-    queryset = ScenarioElement.objects.all()
-    serializer_class = ScenarioElementSerializer
+    queryset = ScreenScenario.objects.all()
+    serializer_class = ScreenScenarioSerializer
 
     def perform_create(self, serializer):
         serializer.save()
 
 
-class ScenarioElementDetail(generics.RetrieveUpdateDestroyAPIView):
+class ScreenScenarioDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     Retrieve, update or delete a segmentation
     """
 
-    queryset = ScenarioElement.objects.all()
-    serializer_class = ScenarioElementSerializer
+    queryset = ScreenScenario.objects.all()
+    serializer_class = ScreenScenarioSerializer

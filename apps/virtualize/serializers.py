@@ -1,6 +1,13 @@
+import pymongo
+from PIL import Image
 from rest_framework import serializers
 
-from apps.projects.models import ScenarioElement
+from apps.projects.models import ScenarioElement, ScreenScenario
+
+from apps.virtualize.utils.metaCustomUtils import *
+
+client = pymongo.MongoClient("localhost", 27017)  # maxPoolSize=50
+db = client.MeduzaDb
 
 
 class ScenarioElementSerializer(serializers.ModelSerializer):
@@ -22,12 +29,71 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
         )
 
 
+class ScreenScenarioSerializer(serializers.ModelSerializer):
+    # elements = ScenarioElementSerializer(many=True, read_only=True)
+    parameters = serializers.JSONField()
+    styles = serializers.JSONField()
+
+    class Meta:
+        model = ScreenScenario
+        fields = (
+            "id",
+            "screen",
+            "name",
+            "type",
+            "buoyancy",
+            "elements",
+            "parameters",
+            "styles",
+            # "screenscenario"
+        )
+        extra_kwargs = {"elements": {"read_only": True}}
+        # fields = "__all__"
 
     def create(self, validated_data):
-        # This commented line was for the flexible scenarios
-        # scenarios = validated_data["scenarios"]
-        # This commented line was for the flexible elements
-        # scenarioelements = scenarios
+        myFile = "users/admin/pages/pvir_2/1_v.jpg"
+        screenshot_id = "5d0f4c1da0d984231c8ac953"
+        # Obtained from metaCustom.py
+        with Image.open("media/" + str(myFile)) as img:
+            widthScreen, heightScreen = img.size
+
+        ButtonArray = get_collection(db.buttons, screenshot_id)
+        textBoxArray = get_collection(db.textBoxes, screenshot_id)
+        textAreaArray = get_collection(db.textArea, screenshot_id)
+        hyperLinkArray = get_collection(db.hyperLinks, screenshot_id)
+        paragraphArray = get_collection(db.paragraphs, screenshot_id)
+        frameArray = get_collection(db.frames, screenshot_id)
+        pictureArray = get_collection(db.pictures, screenshot_id)
+        newElementsArray = get_collection(db.newElements, screenshot_id)
+        widgetArray = get_collection(db.widgets, screenshot_id)
+        calendarWidgetsArray = get_collection(db.calendarWidgets, screenshot_id)
+        barChartArray = get_collection(db.barChart, screenshot_id)
+        iconArray = get_collection(db.icon, screenshot_id)
+        logoArray = get_collection(db.logo, screenshot_id)
+
+        # Obtaining the backgrounds array for the scenario styles
+        backgroundsArray = db.backgrounds.find({"screenshot_id": screenshot_id})
+
+        """
+        Describe the scenario data
+        """
+        # Background styles property
+        scenario_data_styles_background = ""
+        for document in backgroundsArray:
+            scenario_data_styles_background += document["background"]
+        scenario_data = {
+            "name": "string1",
+            "type": "login",
+            "parameters": {},
+            "styles": {"background": scenario_data_styles_background},
+        }
+        """
+        Scenarioelements for the current scenario.
+        These elements relate to the MeduzaDb collections
+        Pictures, textboxes and paragraphs are the first array to check.
+        """
+
+        """
         scenarioelements = [
             {
                 "name": "string",
@@ -48,17 +114,140 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                 "styles": {},
             },
         ]
-        #
-        # screen = validated_data["screen"]
-        #
-        # presegmentation = PreSegmentation.objects.create(
-        #     screen=screen
-        # )
+        """
+        scenarioelements = []
 
-        scenarioelementsinstancesarray = []
+        # Paragraph array to elements. 1_v.jpg
+        element_paragraph = {}
+        for document in paragraphArray:
+            element_paragraph["name"] = "paragraph"
+            element_paragraph["struct_type"] = "text"
+            element_paragraph["func_type"] = "description"
+            element_paragraph["func_type_human"] = "undefined"
+            element_paragraph["buoyancy"] = 98
+            element_paragraph["parameters"] = {
+                "content": document["name"],
+                "location": document["location"],
+            }
+            # Obtaining the paragraph styles from the segmentation
+            seg_id = document["seg_id"]
+            element_styles = db.styles.find({"segmentation_id": seg_id})
+            element_paragraph_style = {}
+            for element_style in element_styles:
+                element_paragraph_style = {
+                    "font-family": element_style["fontFamily"],
+                    "font-size": element_style["fontSize"],
+                    "color": element_style["fontColor"],
+                    "border-color": element_style["borderColor"],
+                    "background": element_style["background-gradient"],
+                    "border-radius": element_style["borderRadius"],
+                    "background-color": element_style["bgcolor"],
+                    "box-shadow": element_style["boxShadow"],
+                    "text-align": element_style["textAlign"],
+                    "text-indent": element_style["textIndent"],
+                    "text-shadow": element_style["textShadow"],
+                    "animation-type": element_style["animationType"],
+                    "z-index": element_style["zIndex"],
+                }
+
+            element_paragraph["styles"] = element_paragraph_style
+        scenarioelements.append(element_paragraph)
+
+        # Pictures array to elements. 1_v.jpg
+        element_picture = {}
+        for document in pictureArray:
+            element_picture["name"] = "picture"
+            element_picture["struct_type"] = "image"
+            element_picture["func_type"] = "undefined"
+            element_picture["func_type_human"] = "undefined"
+            # This value was placed by random choice
+            element_picture["buoyancy"] = 78
+            element_picture["parameters"] = {
+                "src": document["root"],
+                "alt": document["name"],
+                "location": document["location"],
+            }
+            # Obtaining the picture styles from the segmentation
+            seg_id = document["seg_id"]
+            element_styles = db.styles.find({"segmentation_id": seg_id})
+            element_picture_style = {}
+            for element_style in element_styles:
+                element_picture_style = {
+                    "font-family": element_style["fontFamily"],
+                    "font-size": element_style["fontSize"],
+                    "color": element_style["fontColor"],
+                    "border-color": element_style["borderColor"],
+                    "background": element_style["background-gradient"],
+                    "border-radius": element_style["borderRadius"],
+                    "background-color": element_style["bgcolor"],
+                    "box-shadow": element_style["boxShadow"],
+                    "text-align": element_style["textAlign"],
+                    "text-indent": element_style["textIndent"],
+                    "text-shadow": element_style["textShadow"],
+                    "animation-type": element_style["animationType"],
+                    "z-index": element_style["zIndex"],
+                }
+
+            element_picture["styles"] = element_picture_style
+
+        scenarioelements.append(element_picture)
+
+        # Textbox array to elements. 1_v.jpg
+        element_textbox = {}
+        for document in textBoxArray:
+            # Convert float height and width first to float and second to int. Finally the 'px' was added
+            element_textbox_width = (
+                str(int(document["location"]["x1"] - document["location"]["x0"])) + "px"
+            )
+            element_textbox_height = (
+                str(int(document["location"]["y1"] - document["location"]["y0"])) + "px"
+            )
+            element_textbox["name"] = "textbox"
+            element_textbox["struct_type"] = "input"
+            # Functional type should be detected in extra with OCR coordination
+            element_textbox["func_type"] = "undefined"
+            element_textbox["func_type_human"] = "undefined"
+            # The buoyancy should be corrected based on functional type
+            element_textbox["buoyancy"] = 50
+            # The source is an image
+            element_textbox["parameters"] = {
+                "source": document["root"],
+                "placeohlder": document["name"],
+                "location": document["location"],
+            }
+            # Obtaining the textbox styles from the segmentation
+            seg_id = document["seg_id"]
+            element_styles = db.styles.find({"segmentation_id": seg_id})
+            element_textbox_style = {}
+            for element_style in element_styles:
+                element_textbox_style = {
+                    "font-family": element_style["fontFamily"],
+                    "font-size": element_style["fontSize"],
+                    "color": element_style["fontColor"],
+                    "border-color": element_style["borderColor"],
+                    "background": element_style["background-gradient"],
+                    "border-radius": element_style["borderRadius"],
+                    "background-color": element_style["bgcolor"],
+                    "box-shadow": element_style["boxShadow"],
+                    "text-align": element_style["textAlign"],
+                    "text-indent": element_style["textIndent"],
+                    "text-shadow": element_style["textShadow"],
+                    "animation-type": element_style["animationType"],
+                    "z-index": element_style["zIndex"],
+                    # Width and height are custom for the textbox
+                    "width": element_textbox_width,
+                    "height": element_textbox_height,
+                }
+
+            element_textbox["styles"] = element_textbox_style
+
+        scenarioelements.append(element_textbox)
+
+        screen = validated_data["screen"]
+
+        scenario = ScreenScenario.objects.create(screen=screen, **scenario_data)
+
         for scenarioelement_data in scenarioelements:
-            SE = ScenarioElement.objects.create(**scenarioelement_data)
-            scenarioelementsinstancesarray.append(SE)
+            ScenarioElement.objects.create(scenario=scenario, **scenarioelement_data)
 
-        return scenarioelementsinstancesarray
-
+        return scenario
