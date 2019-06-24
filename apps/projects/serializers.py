@@ -39,7 +39,7 @@ class ProjectScreenSerializer(serializers.ModelSerializer):
             "screen_data_json",
             "screenscenario",
         )
-        extra_kwargs = {"screenscenario": {"read_only": True}}
+        extra_kwargs = {"screenscenario": {"read_only": True}, "id": {"read_only": True}}
         # fields = ("status", "project", "id", "image")
         # fields = "__all__"
 

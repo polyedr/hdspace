@@ -8,6 +8,7 @@ from apps.virtualize.utils.metaCustomUtils import *
 
 client = pymongo.MongoClient("localhost", 27017)  # maxPoolSize=50
 db = client.MeduzaDb
+db_main = client.mainDB
 
 
 class ScenarioElementSerializer(serializers.ModelSerializer):
@@ -51,8 +52,22 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
         # fields = "__all__"
 
     def create(self, validated_data):
-        myFile = "users/admin/pages/pvir_2/1_v.jpg"
-        screenshot_id = "5d0f4c1da0d984231c8ac953"
+        project_id = db_main.projects_projectscreen.find_one(
+            {"id": validated_data["screen"].id}
+        )["project_id"]
+        # They can be multiple, so, should process them as 1:1
+        screenshot_id = db_main.projects_project.find({"id": project_id})[0][
+            "screenshots"
+        ][0]
+        screenshot_id_querying = ObjectId(screenshot_id)
+
+        myFile = ""
+        master_id_collection = db.screenshots.find({"_id": ObjectId(screenshot_id)})
+
+        for id in master_id_collection:
+            print("id", id)
+            myFile = id["image"]
+
         # Obtained from metaCustom.py
         with Image.open("media/" + str(myFile)) as img:
             widthScreen, heightScreen = img.size
@@ -87,35 +102,87 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
             "parameters": {},
             "styles": {"background": scenario_data_styles_background},
         }
+
         """
         Scenarioelements for the current scenario.
         These elements relate to the MeduzaDb collections
         Pictures, textboxes and paragraphs are the first array to check.
         """
-
-        """
-        scenarioelements = [
-            {
-                "name": "string",
-                "struct_type": "widget",
-                "func_type": "widget",
-                "func_type_human": "undefined",
-                "buoyancy": 0,
-                "parameters": {},
-                "styles": {},
-            },
-            {
-                "name": "string",
-                "struct_type": "widget",
-                "func_type": "widget",
-                "func_type_human": "undefined",
-                "buoyancy": 0,
-                "parameters": {},
-                "styles": {},
-            },
-        ]
-        """
         scenarioelements = []
+
+        # Button array to elements.
+        element_button = {}
+        for document in ButtonArray:
+            element_button["name"] = "button"
+            element_button["struct_type"] = "button"
+            element_button["func_type"] = "end complex scenario"
+            element_button["func_type_human"] = "undefined"
+            element_button["buoyancy"] = 1
+            element_button["parameters"] = {
+                "content": document["name"],
+                "location": document["location"],
+            }
+            # Obtaining the button styles from the segmentation
+            seg_id = document["seg_id"]
+            element_styles = db.styles.find({"segmentation_id": seg_id})
+            element_button_style = {}
+            for element_style in element_styles:
+                element_button_style = {
+                    "font-family": element_style["fontFamily"],
+                    "font-size": element_style["fontSize"],
+                    "color": element_style["fontColor"],
+                    "border-color": element_style["borderColor"],
+                    "background": element_style["background-gradient"],
+                    "border-radius": element_style["borderRadius"],
+                    "background-color": element_style["bgcolor"],
+                    "box-shadow": element_style["boxShadow"],
+                    "text-align": element_style["textAlign"],
+                    "text-indent": element_style["textIndent"],
+                    "text-shadow": element_style["textShadow"],
+                    "animation-type": element_style["animationType"],
+                    "z-index": element_style["zIndex"],
+                }
+
+            element_button["styles"] = element_button_style
+
+        scenarioelements.append(element_button)
+
+        # Hyperlink array to elements.
+        element_hyperlink = {}
+        for document in hyperLinkArray:
+            element_hyperlink["name"] = "hyperlink"
+            element_hyperlink["struct_type"] = "hyperlink"
+            element_hyperlink["func_type"] = "end simple scenario"
+            element_hyperlink["func_type_human"] = "undefined"
+            element_hyperlink["buoyancy"] = 2
+            element_hyperlink["parameters"] = {
+                "content": document["name"],
+                "location": document["location"],
+            }
+            # Obtaining the hyperlink styles from the segmentation
+            seg_id = document["seg_id"]
+            element_styles = db.styles.find({"segmentation_id": seg_id})
+            element_hyperlink_style = {}
+            for element_style in element_styles:
+                element_hyperlink_style = {
+                    "font-family": element_style["fontFamily"],
+                    "font-size": element_style["fontSize"],
+                    "color": element_style["fontColor"],
+                    "border-color": element_style["borderColor"],
+                    "background": element_style["background-gradient"],
+                    "border-radius": element_style["borderRadius"],
+                    "background-color": element_style["bgcolor"],
+                    "box-shadow": element_style["boxShadow"],
+                    "text-align": element_style["textAlign"],
+                    "text-indent": element_style["textIndent"],
+                    "text-shadow": element_style["textShadow"],
+                    "animation-type": element_style["animationType"],
+                    "z-index": element_style["zIndex"],
+                }
+
+            element_hyperlink["styles"] = element_hyperlink_style
+
+        scenarioelements.append(element_hyperlink)
 
         # Paragraph array to elements. 1_v.jpg
         element_paragraph = {}
@@ -151,6 +218,7 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                 }
 
             element_paragraph["styles"] = element_paragraph_style
+
         scenarioelements.append(element_paragraph)
 
         # Pictures array to elements. 1_v.jpg
@@ -241,6 +309,29 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
 
             element_textbox["styles"] = element_textbox_style
 
+            """Get children for the documents and detect the functional class based on them"""
+            # Should adapt this code further
+            """
+            children = document.next().children
+            name = []
+            for child in children:
+                name.append(child["name"])
+            # Detect the functional class
+            # Lowercase to further comparison
+            name = [x.lower() for x in name]
+            if 'user' in str(name):
+                element_textbox["func_type"] = "username"
+            if 'phone' in str(name):
+                element_textbox["func_type"] = "phone"
+            if 'password' in str(name):
+                element_textbox["func_type"] = "password"
+            if 'first' in str(name):
+                element_textbox["func_type"] = "firstname"
+            if 'last' in str(name):
+                element_textbox["func_type"] = "lastname"
+            if 'email' in str(name):
+                element_textbox["func_type"] = "email"
+            """
         scenarioelements.append(element_textbox)
 
         screen = validated_data["screen"]
