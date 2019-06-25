@@ -97,11 +97,14 @@ class ScenarioElementMultipleViewSet(BulkModelViewSet):
 
     def get_queryset(self):
         ids = self.request.query_params.get("ids", None)
-        ids_list = ids.split(",")
-        # print("ids", ids,ids[0],ids[1],ids[2],ids[3],ids[4])
-        print("ids", ids_list)
         qs = ScenarioElement.objects.all()
-        return qs.filter(id__in=ids_list)
+        if ids:
+            ids_list = ids.split(",")
+            # print("ids", ids,ids[0],ids[1],ids[2],ids[3],ids[4])
+            print("ids", ids_list)
+            return qs.filter(id__in=ids_list)
+        else:
+            return qs
 
     def allow_bulk_destroy(self, qs, filtered):
         """Don't forget to fine-grain this method"""
@@ -109,7 +112,9 @@ class ScenarioElementMultipleViewSet(BulkModelViewSet):
         # default checks if the qs was filtered
         # qs comes from self.get_queryset()
         # filtered comes from self.filter_queryset(qs)
-        return qs
+        ids = self.request.query_params.get("ids", None)
+        if ids:
+            return qs
 
 
 class ProjectMemberList(generics.ListCreateAPIView):
