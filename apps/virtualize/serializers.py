@@ -115,7 +115,7 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
         for document in ButtonArray:
             element_button["name"] = "button"
             element_button["struct_type"] = "button"
-            element_button["func_type"] = "end complex scenario"
+            element_button["func_type"] = "end_composite_scenario"
             element_button["func_type_human"] = "undefined"
             element_button["buoyancy"] = 1
             element_button["parameters"] = {
