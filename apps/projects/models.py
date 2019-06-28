@@ -531,7 +531,7 @@ elements = {
         func_type=["end_composite_scenario", "end_simple_scenario"],
         func_type_human=["undefined", "undefined"],
         buoyancy=[1, 0],
-        parameters=[{"group": "other"}, {"group": "other"}],
+        parameters=[{"group": "button"}],
         styles=[{"width": 64, "height": 36}],
     ),
     6: Element(
