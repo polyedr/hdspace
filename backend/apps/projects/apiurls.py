@@ -39,6 +39,7 @@ from .apiviews import (
     ScenarioViewSet,
     ScenarioElementCreateMultiple,
     ScenarioElementMultipleViewSet,
+    ScreenScenarioMultipleView,
 )
 
 app_name = "projects"
@@ -87,6 +88,11 @@ api_project_screen_patterns = [
 api_screen_scenario_patterns = [
     path(
         "screen-scenarios/", ScreenScenarioList.as_view(), name="api_screen_scenarios"
+    ),
+    path(
+        "screen-scenarios-multiple/",
+        ScreenScenarioMultipleView.as_view(),
+        name="api_screen_scenarios_multiple",
     ),
     path(
         "screen-scenarios/<int:pk>/",

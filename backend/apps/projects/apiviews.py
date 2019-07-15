@@ -43,6 +43,7 @@ from .serializers import (
     ElementSerializer,
     ScenarioSerializer,
     ScenarioElementMultipleSerializer,
+    ScreenScenarioMultipleSerializer,
 )
 
 
@@ -314,6 +315,15 @@ class ScreenScenarioList(generics.ListCreateAPIView):
 
     queryset = ScreenScenario.objects.all()
     serializer_class = ScreenScenarioSerializer
+
+
+class ScreenScenarioMultipleView(ListBulkCreateUpdateDestroyAPIView):
+    """
+    List all screen scenarios, or create multiple a new screen scenario or update multiple or destroy multiple.
+    """
+
+    queryset = ScreenScenario.objects.all()
+    serializer_class = ScreenScenarioMultipleSerializer
 
 
 class ScreenScenarioDetail(generics.RetrieveUpdateDestroyAPIView):

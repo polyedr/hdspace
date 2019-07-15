@@ -41,7 +41,9 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
             "id",
             "screen",
             "name",
+            "parent_id",
             "type",
+            "direction",
             "buoyancy",
             "elements",
             "parameters",
@@ -99,6 +101,7 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
         scenario_data = {
             "name": "string1",
             "type": "login",
+            "struct_type": "scenario",
             "parameters": {},
             "styles": {"background": scenario_data_styles_background},
         }

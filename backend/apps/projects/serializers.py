@@ -25,6 +25,7 @@ from .models import (
 
 class ProjectScreenSerializer(serializers.ModelSerializer):
     screen_data_json = serializers.JSONField()
+    styles_root = serializers.JSONField()
 
     class Meta:
         model = ProjectScreen
@@ -33,6 +34,7 @@ class ProjectScreenSerializer(serializers.ModelSerializer):
             "status",
             "project",
             "name",
+            "styles_root",
             "id",
             "image",
             "screen_data_text",
@@ -58,6 +60,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
             "func_type",
             "func_type_human",
             "buoyancy",
+            "image",
             "parameters",
             "styles",
         )
@@ -97,6 +100,7 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
             "screen",
             "name",
             "type",
+            "struct_type",
             "buoyancy",
             "elements",
             "parameters",
@@ -105,6 +109,30 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
         )
         # extra_kwargs = {"elements": {"read_only": True}}
         # fields = "__all__"
+
+
+class ScreenScenarioMultipleSerializer(
+    BulkSerializerMixin, serializers.ModelSerializer
+):
+    parameters = serializers.JSONField()
+    styles = serializers.JSONField()
+
+    class Meta:
+        model = ScreenScenario
+        fields = (
+            "id",
+            "screen",
+            "name",
+            "parent_id",
+            "type",
+            "direction",
+            "buoyancy",
+            "elements",
+            "parameters",
+            "styles",
+            # "screenscenario"
+        )
+        list_serializer_class = BulkListSerializer
 
 
 class ProjectSerializer(serializers.ModelSerializer):
