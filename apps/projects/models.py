@@ -77,6 +77,7 @@ class ProjectScreen(TimeStampedModel):
     )
 
     name = models.CharField(max_length=250, blank=True)
+    styles_root = JSONField(blank=True)
     status = models.CharField(
         choices=SCREEN_STATUS, default=SCREEN_IN_PROGRESS, max_length=32
     )
@@ -309,6 +310,24 @@ class ScreenScenario(TimeStampedModel):
         choices=SCENARIO_TYPE_CHOICES, default=LOGIN, max_length=250
     )
 
+    SCENARIO = "scenario"
+    BLOCK = "block"
+    GROUP = "group"
+    CONTAINER = "container"
+    UNDEFINED = "undefined"
+
+    SCENARIO_STRUCT_TYPE_CHOICES = (
+        (SCENARIO, "scenario"),
+        (BLOCK, "block"),
+        (GROUP, "group"),
+        (CONTAINER, "container"),
+        (UNDEFINED, "undefined"),
+    )
+
+    struct_type = models.CharField(
+        choices=SCENARIO_STRUCT_TYPE_CHOICES, default=SCENARIO, max_length=50
+    )
+
     screen = models.ForeignKey(
         ProjectScreen,
         related_name="screenscenario",
@@ -324,6 +343,22 @@ class ScreenScenario(TimeStampedModel):
     # Styles and parameters
     styles = JSONField(blank=True)
     parameters = JSONField(blank=True)
+
+    # Parent id and type
+    parent_id = models.IntegerField(null=True, blank=True)
+
+    # Elements positioning
+    VERTICAL = "vertical"
+    HORIZONTAL = "horizontal"
+
+    SCENARIO_DIRECTION_TYPE_CHOICES = (
+        (VERTICAL, "vertical"),
+        (HORIZONTAL, "horizontal"),
+    )
+
+    direction = models.CharField(
+        choices=SCENARIO_DIRECTION_TYPE_CHOICES, default=VERTICAL, max_length=50
+    )
 
     # Order of scenarios, or the scenario weight, buoyancy
     buoyancy = models.IntegerField(null=True, blank=True)
@@ -364,6 +399,10 @@ class ScenarioElement(TimeStampedModel):
     UNDEFINED = "undefined"
     SELECT = "select"
     LABEL = "label"
+    MAP = "map"
+    CALENDAR = "calendar"
+    CLOCK = "clock"
+
     HTML_ELEMENT_TYPE_CHOICES = (
         (FRAME, "frame"),
         (WIDGET, "widget"),
@@ -385,6 +424,9 @@ class ScenarioElement(TimeStampedModel):
         (UNDEFINED, "undefined"),
         (SELECT, "select"),
         (LABEL, "label"),
+        (MAP, "map"),
+        (CALENDAR, "calendar"),
+        (CLOCK, "clock"),
     )
 
     struct_type = models.CharField(
@@ -404,7 +446,10 @@ class ScenarioElement(TimeStampedModel):
     MONTH = "month"
     YEAR = "year"
     WIDGET = "widget"
-    # UNDEFINED = "undefined"
+    MAP = "map"
+    CALENDAR = "calendar"
+    CLOCK = "clock"
+
     ELEMENTS_TYPE_CHOICES = (
         (PHONE, "phone"),
         (PASSWORD, "password"),
@@ -421,6 +466,9 @@ class ScenarioElement(TimeStampedModel):
         (WIDGET, "widget"),
         (UNDEFINED, "undefined"),
         (LABEL, "label"),
+        (MAP, "map"),
+        (CALENDAR, "calendar"),
+        (CLOCK, "clock"),
     )
 
     func_type = models.CharField(
@@ -454,6 +502,15 @@ class ScenarioElement(TimeStampedModel):
     # Order of elements, or the element weight, buoyancy
     buoyancy = models.IntegerField(null=True)
 
+    # Layout algorithm properties
+    # block_id = models.IntegerField(null=True)
+    # group_id = models.IntegerField(null=True)
+
+    # Image upload to the image elements
+    image = models.ImageField(
+        upload_to=utils.get_file_path, blank=True, null=True, max_length=256
+    )
+
     def __str__(self):
         return "{}".format(self.pk)
 
@@ -482,6 +539,7 @@ class Element(object):
             "func_type",
             "func_type_human",
             "buoyancy",
+            "image",
             "parameters",
             "styles",
         ):
@@ -495,6 +553,7 @@ elements = {
         func_type="undefined",
         func_type_human="undefined",
         buoyancy=0,
+        image="",
         parameters=[],
         styles=[],
     ),
@@ -504,6 +563,7 @@ elements = {
         func_type="undefined",
         func_type_human="undefined",
         buoyancy=0,
+        image="",
         parameters=[],
         styles=[{"width": 80, "height": 80}],
     ),
@@ -513,6 +573,7 @@ elements = {
         func_type="undefined",
         func_type_human="undefined",
         buoyancy=0,
+        image="",
         parameters=[],
         styles=[],
     ),
@@ -522,6 +583,7 @@ elements = {
         func_type="undefined",
         func_type_human="undefined",
         buoyancy=0,
+        image="",
         parameters=[],
         styles=[{"width": 80, "height": 80}],
     ),
@@ -531,6 +593,7 @@ elements = {
         func_type=["end_composite_scenario", "end_simple_scenario"],
         func_type_human=["undefined", "undefined"],
         buoyancy=[1, 0],
+        image="",
         parameters=[{"group": "button"}],
         styles=[{"width": 64, "height": 36}],
     ),
@@ -540,6 +603,7 @@ elements = {
         func_type=["end_simple_scenario"],
         func_type_human="undefined",
         buoyancy=[2],
+        image="",
         parameters=[{"group": "other"}],
         styles=[{"width": 50, "height": 25}],
     ),
@@ -549,6 +613,7 @@ elements = {
         func_type="undefined",
         func_type_human="undefined",
         buoyancy=0,
+        image="",
         parameters=[],
         styles=[],
     ),
@@ -558,6 +623,7 @@ elements = {
         func_type="undefined",
         func_type_human="undefined",
         buoyancy=0,
+        image="",
         parameters=[],
         styles=[],
     ),
@@ -567,6 +633,7 @@ elements = {
         func_type="undefined",
         func_type_human="undefined",
         buoyancy=0,
+        image="",
         parameters=[],
         styles=[],
     ),
@@ -582,6 +649,7 @@ elements = {
             "undefined",
         ],
         buoyancy=[95, 86, 64, 61, 10],
+        image="",
         parameters=[
             {"group": "input", "placeholder": "Email"},
             {"group": "input", "placeholder": "Phone"},
@@ -611,6 +679,7 @@ elements = {
         func_type="undefined",
         func_type_human="undefined",
         buoyancy=0,
+        image="",
         parameters=[],
         styles=[],
     ),
@@ -620,6 +689,7 @@ elements = {
         func_type="undefined",
         func_type_human="undefined",
         buoyancy=0,
+        image="",
         parameters=[],
         styles=[],
     ),
@@ -629,6 +699,7 @@ elements = {
         func_type="undefined",
         func_type_human="undefined",
         buoyancy=0,
+        image="",
         parameters=[],
         styles=[],
     ),
@@ -638,6 +709,7 @@ elements = {
         func_type="undefined",
         func_type_human="undefined",
         buoyancy=0,
+        image="",
         parameters=[],
         styles=[],
     ),
@@ -647,6 +719,7 @@ elements = {
         func_type="undefined",
         func_type_human="undefined",
         buoyancy=0,
+        image="",
         parameters=[],
         styles=[],
     ),
@@ -656,6 +729,7 @@ elements = {
         func_type=["title", "description", "label"],
         func_type_human=["undefined", "undefined", "undefined"],
         buoyancy=[100, 98, 0],
+        image="",
         parameters=[{"group": "other"}, {"group": "other"}, {"group": "other"}],
         styles=[
             {"width": 100, "height": 40},
@@ -669,6 +743,7 @@ elements = {
         func_type="undefined",
         func_type_human="undefined",
         buoyancy=0,
+        image="",
         parameters=[],
         styles=[],
     ),
@@ -678,6 +753,7 @@ elements = {
         func_type="undefined",
         func_type_human="undefined",
         buoyancy=0,
+        image="",
         parameters=[],
         styles=[],
     ),
@@ -687,6 +763,7 @@ elements = {
         func_type=["day", "month", "year"],
         func_type_human=["undefined", "undefined", "undefined"],
         buoyancy=[54, 54, 54],
+        image="",
         parameters=[
             {"group": "select", "tags": "#date_horizontal"},
             {"group": "select", "tags": "#date_horizontal"},
@@ -697,5 +774,35 @@ elements = {
             {"width": 50, "height": 25},
             {"width": 50, "height": 25},
         ],
+    ),
+    20: Element(
+        id=2,
+        struct_type="map",
+        func_type="map",
+        func_type_human="undefined",
+        buoyancy=0,
+        image="",
+        parameters=[],
+        styles=[{"width": 80, "height": 80}],
+    ),
+    21: Element(
+        id=2,
+        struct_type="calendar",
+        func_type="calendar",
+        func_type_human="undefined",
+        buoyancy=0,
+        image="",
+        parameters=[],
+        styles=[{"width": 80, "height": 80}],
+    ),
+    22: Element(
+        id=2,
+        struct_type="clock",
+        func_type="clock",
+        func_type_human="undefined",
+        buoyancy=0,
+        image="",
+        parameters=[],
+        styles=[{"width": 80, "height": 80}],
     ),
 }
