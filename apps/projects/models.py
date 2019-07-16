@@ -782,7 +782,7 @@ elements = {
         func_type_human="undefined",
         buoyancy=0,
         image="",
-        parameters=[{"group": "widget"},],
+        parameters=[{"group": "widget"}],
         styles=[{"width": 80, "height": 80}],
     ),
     21: Element(
@@ -792,7 +792,7 @@ elements = {
         func_type_human="undefined",
         buoyancy=0,
         image="",
-        parameters=[{"group": "widget"},],
+        parameters=[{"group": "widget"}],
         styles=[{"width": 80, "height": 80}],
     ),
     22: Element(
@@ -802,7 +802,7 @@ elements = {
         func_type_human="undefined",
         buoyancy=0,
         image="",
-        parameters=[{"group": "widget"},],
+        parameters=[{"group": "widget"}],
         styles=[{"width": 80, "height": 80}],
     ),
 }
