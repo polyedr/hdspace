@@ -166,7 +166,7 @@ class ElementSerializer(serializers.Serializer):
     func_type = serializers.ListField()
     func_type_human = serializers.ListField()
     buoyancy = serializers.ListField()
-    image = serializers.ImageField(max_length=256)
+    image = serializers.CharField(max_length=64)
     parameters = serializers.ListField()
     styles = serializers.ListField()
 
