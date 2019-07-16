@@ -778,7 +778,7 @@ elements = {
     20: Element(
         id=20,
         struct_type="map",
-        func_type="map",
+        func_type=["map"],
         func_type_human=["undefined"],
         buoyancy=[0],
         image="null",
@@ -788,7 +788,7 @@ elements = {
     21: Element(
         id=21,
         struct_type="calendar",
-        func_type="calendar",
+        func_type=["calendar"],
         func_type_human=["undefined"],
         buoyancy=[0],
         image="null",
@@ -798,7 +798,7 @@ elements = {
     22: Element(
         id=22,
         struct_type="clock",
-        func_type="clock",
+        func_type=["clock"],
         func_type_human=["undefined"],
         buoyancy=[0],
         image="null",
