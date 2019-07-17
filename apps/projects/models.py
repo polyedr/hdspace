@@ -560,7 +560,7 @@ elements = {
     2: Element(
         id=2,
         struct_type="widget",
-        func_type=["undefined"],
+        func_type=["image"],
         func_type_human=["undefined"],
         buoyancy=[0],
         image="null",
