@@ -8,7 +8,8 @@ from .models import User, Profile, Team, TeamMember
 
 class UserSerializer(serializers.ModelSerializer):
     # Converting ObjectIdField to the CharField to be able to serialize the user _id
-    id = serializers.CharField(source="_id")
+    # id = serializers.CharField(source="_id")
+
     # Password validation to be able to authorize
     def create(self, validated_data):
         user = super().create(validated_data)
@@ -20,7 +21,7 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         # fields = ('_id')
         fields = (
-            "id",
+            # "id",
             "username",
             "email",
             "first_name",
@@ -29,7 +30,7 @@ class UserSerializer(serializers.ModelSerializer):
             "password",
             "is_active",
         )
-        extra_kwargs = {"id": {"read_only": True}}
+        # extra_kwargs = {"id": {"read_only": True}}
 
 class ProfileSerializer(serializers.ModelSerializer):
     users = UserSerializer(read_only=True)
