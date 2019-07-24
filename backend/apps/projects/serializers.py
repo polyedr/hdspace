@@ -154,8 +154,10 @@ class ScreenScenarioCascadeSerializer(serializers.ModelSerializer):
         )
         # extra_kwargs = {"elements": {"read_only": True}}
         # fields = "__all__"
-    def create(self, validated_data):
-        pass
+
+    def update(self, instance, validated_data):
+        ScreenScenario.objects.filter(instance.parent_id == self.kwargs['id']).delete()
+
         """
         for scenario_data in scenarios:
             scenario = ScreenScenario.objects.create(
