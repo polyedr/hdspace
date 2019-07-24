@@ -97,7 +97,7 @@ api_screen_scenario_patterns = [
         "screen-scenarios/", ScreenScenarioList.as_view(), name="api_screen_scenarios"
     ),
     path(
-        "screen-scenarios-delete-cascade/",
+        "screen-scenarios-delete-cascade/<int:pk>/",
         ScreenScenarioDestroyCascade.as_view(),
         name="api_screen_scenarios_delete_cascade",
     ),
