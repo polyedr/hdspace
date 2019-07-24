@@ -40,6 +40,8 @@ from .apiviews import (
     ScenarioElementCreateMultiple,
     ScenarioElementMultipleViewSet,
     ScreenScenarioMultipleView,
+    ProjectScreenMultipleView,
+    ScreenScenarioDestroyCascade,
 )
 
 app_name = "projects"
@@ -79,6 +81,11 @@ api_project_task_patterns = [
 api_project_screen_patterns = [
     path("project-screens/", ProjectScreenList.as_view(), name="api_project_screens"),
     path(
+        "project-screens-multiple/",
+        ProjectScreenMultipleView.as_view(),
+        name="api_project_screens_multiple",
+    ),
+    path(
         "project-screens/<int:pk>/",
         ProjectScreenDetail.as_view(),
         name="api_project_screen",
@@ -88,6 +95,11 @@ api_project_screen_patterns = [
 api_screen_scenario_patterns = [
     path(
         "screen-scenarios/", ScreenScenarioList.as_view(), name="api_screen_scenarios"
+    ),
+    path(
+        "screen-scenarios-delete-cascade/",
+        ScreenScenarioDestroyCascade.as_view(),
+        name="api_screen_scenarios_delete_cascade",
     ),
     path(
         "screen-scenarios-multiple/",

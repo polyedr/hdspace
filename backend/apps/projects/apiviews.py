@@ -44,6 +44,8 @@ from .serializers import (
     ScenarioSerializer,
     ScenarioElementMultipleSerializer,
     ScreenScenarioMultipleSerializer,
+    ProjectScreenMultipleSerializer,
+    ScreenScenarioCascadeSerializer,
 )
 
 
@@ -156,6 +158,15 @@ class ProjectScreenDetail(generics.RetrieveUpdateDestroyAPIView):
 
     queryset = ProjectScreen.objects.all()
     serializer_class = ProjectScreenSerializer
+
+
+class ProjectScreenMultipleView(ListBulkCreateUpdateDestroyAPIView):
+    """
+    List all project screens, or create multiple a new project screen or update multiple or destroy multiple.
+    """
+
+    queryset = ProjectScreen.objects.all()
+    serializer_class = ProjectScreenMultipleSerializer
 
 
 class ScreenEventList(generics.ListCreateAPIView):
@@ -334,6 +345,16 @@ class ScreenScenarioDetail(generics.RetrieveUpdateDestroyAPIView):
 
     queryset = ScreenScenario.objects.all()
     serializer_class = ScreenScenarioSerializer
+
+
+class ScreenScenarioDestroyCascade(generics.RetrieveUpdateDestroyAPIView):
+    """
+    Retrieve, update or delete a screen scenario with cascade.
+    Walking through blocks, groups, containers, and other scenarios
+    """
+
+    queryset = ScreenScenario.objects.all()
+    serializer_class = ScreenScenarioCascadeSerializer
 
 
 class ScenarioElementList(generics.ListCreateAPIView):
