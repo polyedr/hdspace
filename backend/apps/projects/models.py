@@ -307,7 +307,7 @@ class ScreenScenario(TimeStampedModel):
     )
 
     type = models.CharField(
-        choices=SCENARIO_TYPE_CHOICES, default=LOGIN, max_length=250
+        choices=SCENARIO_TYPE_CHOICES, default=LOGIN, max_length=250, blank=True
     )
 
     SCENARIO = "scenario"
