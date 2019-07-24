@@ -35,6 +35,7 @@ class ProjectScreenSerializer(serializers.ModelSerializer):
             "project",
             "name",
             "styles_root",
+            "buoyancy",
             "id",
             "image",
             "screen_data_text",
@@ -42,8 +43,28 @@ class ProjectScreenSerializer(serializers.ModelSerializer):
             "screenscenario",
         )
         extra_kwargs = {"screenscenario": {"read_only": True}}
-        # fields = ("status", "project", "id", "image")
-        # fields = "__all__"
+
+
+class ProjectScreenMultipleSerializer(BulkSerializerMixin, serializers.ModelSerializer):
+    screen_data_json = serializers.JSONField()
+    styles_root = serializers.JSONField()
+
+    class Meta:
+        model = ProjectScreen
+        fields = (
+            "status",
+            "project",
+            "name",
+            "styles_root",
+            "buoyancy",
+            "id",
+            "image",
+            "screen_data_text",
+            "screen_data_json",
+            "screenscenario",
+        )
+        extra_kwargs = {"screenscenario": {"read_only": True}}
+        list_serializer_class = BulkListSerializer
 
 
 class ScenarioElementSerializer(serializers.ModelSerializer):
@@ -111,6 +132,41 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
         # extra_kwargs = {"elements": {"read_only": True}}
         # fields = "__all__"
 
+class ScreenScenarioCascadeSerializer(serializers.ModelSerializer):
+    # elements = ScenarioElementSerializer(many=True, read_only=True)
+    parameters = serializers.JSONField()
+    styles = serializers.JSONField()
+
+    class Meta:
+        model = ScreenScenario
+        fields = (
+            "id",
+            "screen",
+            "name",
+            "parent_id",
+            "type",
+            "struct_type",
+            "buoyancy",
+            "elements",
+            "parameters",
+            "styles",
+            # "screenscenario"
+        )
+        # extra_kwargs = {"elements": {"read_only": True}}
+        # fields = "__all__"
+    def create(self, validated_data):
+        pass
+        """
+        for scenario_data in scenarios:
+            scenario = ScreenScenario.objects.create(
+                presegmentation=presegmentation, screen=screen, **scenario_data
+            )
+
+            for scenarioelement_data in scenarioelements:
+                ScenarioElement.objects.create(
+                    scenario=scenario, **scenarioelement_data
+                )
+        """
 
 class ScreenScenarioMultipleSerializer(
     BulkSerializerMixin, serializers.ModelSerializer

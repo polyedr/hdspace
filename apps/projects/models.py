@@ -78,6 +78,7 @@ class ProjectScreen(TimeStampedModel):
 
     name = models.CharField(max_length=250, blank=True)
     styles_root = JSONField(blank=True)
+    buoyancy = models.IntegerField(null=True, blank=True)
     status = models.CharField(
         choices=SCREEN_STATUS, default=SCREEN_IN_PROGRESS, max_length=32
     )
@@ -96,13 +97,7 @@ class ProjectScreen(TimeStampedModel):
     screen_data_text = models.TextField(blank=True)
     screen_data_json = JSONField(blank=True, default=[])
 
-    # screen_data_list = ListField(default = [])
-    # screen_data_dict = DictField(default = {})
-    # screen_data_formless = FormlessField(null=True)
-    # screen_data_embeddeddict = EmbeddedDictField(default = {})
-    # screen_data = JSONField(blank=True)
-    # screen_data = OrderedDict(blank=True)
-    # screen_data = DictField(default={}, blank=True, null=True)
+
 
     def get_image(self):
         # return self.image.url
