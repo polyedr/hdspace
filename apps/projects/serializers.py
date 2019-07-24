@@ -99,6 +99,7 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
             "id",
             "screen",
             "name",
+            "parent_id",
             "type",
             "struct_type",
             "buoyancy",
@@ -125,6 +126,7 @@ class ScreenScenarioMultipleSerializer(
             "name",
             "parent_id",
             "type",
+            "struct_type",
             "direction",
             "buoyancy",
             "elements",
@@ -164,7 +166,7 @@ class ElementSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
     struct_type = serializers.CharField(max_length=64)
     func_type = serializers.ListField()
-    func_type_human = serializers.ListField()
+    func_type_human = serializers.CharField(max_length=64)
     buoyancy = serializers.ListField()
     image = serializers.ImageField(max_length=256)
     parameters = serializers.ListField()

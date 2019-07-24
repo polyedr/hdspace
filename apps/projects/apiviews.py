@@ -5,8 +5,8 @@ from rest_framework import generics, viewsets, status
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework_bulk import ListBulkCreateUpdateDestroyAPIView, BulkModelViewSet
-
-# from rest_framework_extensions.bulk_operations.mixins import ListDestroyModelMixin
+from rest_framework.decorators import permission_classes
+from rest_framework.permissions import IsAuthenticated
 
 from .models import (
     Project,
@@ -47,6 +47,7 @@ from .serializers import (
 )
 
 
+@permission_classes([IsAuthenticated])
 class ProjectList(generics.ListCreateAPIView):
     """
     get:
