@@ -565,7 +565,7 @@ elements = {
         buoyancy=[0],
         image="null",
         parameters=[],
-        styles=[{"width": 80, "height": 80}],
+        styles=[{"width": "80px", "height": "80px"}],
     ),
     3: Element(
         id=3,
@@ -585,7 +585,7 @@ elements = {
         buoyancy=[0],
         image="null",
         parameters=[],
-        styles=[{"width": 80, "height": 80}],
+        styles=[{"width": "80px", "height": "80px"}],
     ),
     5: Element(
         id=5,
@@ -595,7 +595,7 @@ elements = {
         buoyancy=[1, 0],
         image="null",
         parameters=[{"group": "button"}],
-        styles=[{"width": 64, "height": 36}],
+        styles=[{"width": "64px", "height": "36px"}],
     ),
     6: Element(
         id=6,
@@ -605,7 +605,7 @@ elements = {
         buoyancy=[2],
         image="null",
         parameters=[{"group": "other"}],
-        styles=[{"width": 50, "height": 25}],
+        styles=[{"width": "50px", "height": "25px"}],
     ),
     7: Element(
         id=7,
@@ -732,9 +732,9 @@ elements = {
         image="null",
         parameters=[{"group": "other"}, {"group": "other"}, {"group": "other"}],
         styles=[
-            {"width": 100, "height": 40},
-            {"width": 100, "height": 40},
-            {"width": 100, "height": 40},
+            {"width": "100px", "height": "40px"},
+            {"width": "100px", "height": "40px"},
+            {"width": "100px", "height": "40px"},
         ],
     ),
     17: Element(
@@ -770,9 +770,9 @@ elements = {
             {"group": "select", "tags": "#date_horizontal"},
         ],
         styles=[
-            {"width": 50, "height": 25},
-            {"width": 50, "height": 25},
-            {"width": 50, "height": 25},
+            {"width": "50px", "height": "25px"},
+            {"width": "50px", "height": "25px"},
+            {"width": "50px", "height": "25px"},
         ],
     ),
     20: Element(
@@ -783,7 +783,7 @@ elements = {
         buoyancy=[0],
         image="null",
         parameters=[{"group": "widget"}],
-        styles=[{"width": 80, "height": 80}],
+        styles=[{"width": "80px", "height": "80px"}],
     ),
     21: Element(
         id=21,
@@ -793,7 +793,7 @@ elements = {
         buoyancy=[0],
         image="null",
         parameters=[{"group": "widget"}],
-        styles=[{"width": 80, "height": 80}],
+        styles=[{"width": "80px", "height": "80px"}],
     ),
     22: Element(
         id=22,
@@ -803,6 +803,6 @@ elements = {
         buoyancy=[0],
         image="null",
         parameters=[{"group": "widget"}],
-        styles=[{"width": 80, "height": 80}],
+        styles=[{"width": "80px", "height": "80px"}],
     ),
 }
