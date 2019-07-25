@@ -663,11 +663,10 @@ elements = {
             {"group": "input", "placeholder": "Password"},
         ],
         styles=[
-            {"width": 280, "height": 56},
-            {"width": 280, "height": 56},
-            {"width": 280, "height": 56},
-            {"width": 280, "height": 56},
-            {"width": 280, "height": 56},
+            {"width": "280px", "height": "56px"},
+            {"width": "280px", "height": "56px"},
+            {"width": "280px", "height": "56px"},
+            {"width": "280px", "height": "56px"},
         ],
     ),
     11: Element(
