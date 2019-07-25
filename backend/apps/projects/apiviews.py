@@ -346,15 +346,34 @@ class ScreenScenarioDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = ScreenScenario.objects.all()
     serializer_class = ScreenScenarioSerializer
 
+# This should be updated
+class ScreenScenarioDestroyCascadeViewSet(BulkModelViewSet):
+    serializer_class = ScreenScenarioMultipleSerializer
 
-class ScreenScenarioDestroyCascade(generics.RetrieveUpdateDestroyAPIView):
-    """
-    Retrieve, update or delete a screen scenario with cascade.
-    Walking through blocks, groups, containers, and other scenarios
-    """
+    def get_queryset(self):
+        ids = self.request.query_params.get("ids", None)
+        qs = ScreenScenario.objects.all()
+        if ids:
+            ids_list = ids.split(",")
+            # print("ids", ids,ids[0],ids[1],ids[2],ids[3],ids[4])
+            print("ids", ids_list)
+            # return qs.filter((id__in=ids_list) )
+            # return qs.filter((id__in=ids_list) )
+            # return qs.filter(id__in = ids_list)
+            # Check for parent_id only
+            return qs.filter(self.kwargs['parent_id'] in ids_list)
+        else:
+            return qs
 
-    queryset = ScreenScenario.objects.all()
-    serializer_class = ScreenScenarioCascadeSerializer
+    def allow_bulk_destroy(self, qs, filtered):
+        """Don't forget to fine-grain this method"""
+        # custom logic here
+        # default checks if the qs was filtered
+        # qs comes from self.get_queryset()
+        # filtered comes from self.filter_queryset(qs)
+        ids = self.request.query_params.get("ids", None)
+        if ids:
+            return qs
 
 
 class ScenarioElementList(generics.ListCreateAPIView):
