@@ -41,8 +41,8 @@ from .apiviews import (
     ScenarioElementMultipleViewSet,
     ScreenScenarioMultipleView,
     ProjectScreenMultipleView,
-    ScreenScenarioDestroyCascade,
-)
+
+    ScreenScenarioDestroyCascadeViewSet)
 
 app_name = "projects"
 
@@ -92,15 +92,13 @@ api_project_screen_patterns = [
     ),
 ]
 
+
+
 api_screen_scenario_patterns = [
     path(
         "screen-scenarios/", ScreenScenarioList.as_view(), name="api_screen_scenarios"
     ),
-    path(
-        "screen-scenarios-delete-cascade/<int:pk>/",
-        ScreenScenarioDestroyCascade.as_view(),
-        name="api_screen_scenarios_delete_cascade",
-    ),
+
     path(
         "screen-scenarios-multiple/",
         ScreenScenarioMultipleView.as_view(),
@@ -151,6 +149,17 @@ router.register(
 api_scenario_element_multi_patterns = router.urls
 
 
+
+router = BulkRouter()
+router.register(
+    r"screen-scenarios-delete-cascade",
+    ScreenScenarioDestroyCascadeViewSet,
+    base_name="api_screen_scenarios_delete_cascade",
+)
+
+api_screen_scenario_cascade_multi_patterns = router.urls
+
+
 api_screen_comment_patterns = [
     path("screen-comments/", ScreenCommentList.as_view(), name="api_screen_comments"),
     path(
@@ -173,4 +182,5 @@ urlpatterns = [
     path("", include(api_library_scenario_element_patterns)),
     # path("", include(api_screen_comment_patterns)),
     path("", include(api_scenario_element_multi_patterns)),
+    path("", include(api_screen_scenario_cascade_multi_patterns)),
 ]
