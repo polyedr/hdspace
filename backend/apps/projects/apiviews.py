@@ -359,9 +359,9 @@ class ScreenScenarioDestroyCascadeViewSet(BulkModelViewSet):
             print("ids", ids_list)
             # return qs.filter((id__in=ids_list) )
             # return qs.filter((id__in=ids_list) )
-            # return qs.filter(id__in = ids_list)
+            return qs.filter(id__in = ids_list)
             # Check for parent_id only
-            return qs.filter(self.kwargs['parent_id'] in ids_list)
+            # return qs.filter(self.kwargs['parent_id'] in ids_list)
         else:
             return qs
 
