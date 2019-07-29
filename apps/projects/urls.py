@@ -59,6 +59,8 @@ comment_patterns = [
     path("delete-comment/", comment.DeleteCommentView.as_view(), name="delete_comment"),
 ]
 
+urlpatterns = []
+'''
 urlpatterns = [
     path("", include(project_patterns)),
     path("", include(screen_patterns)),
@@ -67,3 +69,4 @@ urlpatterns = [
     path("", include(task_patterns)),
     path("", include(comment_patterns)),
 ]
+'''

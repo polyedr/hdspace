@@ -40,9 +40,13 @@ urlpatterns = [
     path("api/v1/virtualize_emulation/", include("apps.virtualize_emulation.apiurls", namespace="apivirtualize_emulation")),
     path("api/v1/virtualize/", include("apps.virtualize.apiurls")),
     path("api/v1/schema/", schema_view),
-    path("api/v1/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
-    path("api/v1/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
-    path("api/v1/token/verify/", TokenVerifyView.as_view(), name='token_verify'),
+
+
+    # path("api/v1/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
+    # path("api/v1/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
+    # path("api/v1/token/verify/", TokenVerifyView.as_view(), name='token_verify'),
+
+
     path("api/v1/djauth/", include('djoser.urls'), name='djoserauth'),
     path("api/v1/djauth/", include('djoser.urls.jwt'), name='djoserauthjwt'),
     # path('login/', view=ObtainJWTView.as_view(), name='login'),

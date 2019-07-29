@@ -246,6 +246,7 @@ CELERY_RESULT_BACKEND=REDIS_URL
 # EMAIL_HOST_USER = "davittovmasyan26@gmail.com"
 # EMAIL_HOST_PASSWORD = "davit123"
 
+
 # Email settings
 EMAIL_BASE_TEMPLATE = "email/base.html"
 DOWNLOAD_BASE_TEMPLATE = "base_download.html"
@@ -257,6 +258,14 @@ DEFAULT_FROM_EMAIL = "from@example.com"
 SITE_NAME = "PM"
 BASE_URL = ENV.str("BASE_URL", "http://localhost:8000")
 LOGIN_REDIRECT_URL = "/"
+
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = "iishchukov@allmax.team"
+EMAIL_HOST_PASSWORD = "temporary"
+EMAIL_USE_TLS = True
+
 
 #
 # if DEBUG:
@@ -310,7 +319,7 @@ USER_LASTSEEN_TIMEOUT = 60 * 60 * 24 * 7
 # JWT tokens settings
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=111),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
     'ROTATE_REFRESH_TOKENS': False,
     'BLACKLIST_AFTER_ROTATION': True,
 
@@ -318,8 +327,8 @@ SIMPLE_JWT = {
     'SIGNING_KEY': SECRET_KEY,
     'VERIFYING_KEY': None,
 
-    # 'AUTH_HEADER_TYPES': ('Bearer',),
-    'AUTH_HEADER_TYPES': ('JWT',),
+    'AUTH_HEADER_TYPES': ('Bearer',),
+    # 'AUTH_HEADER_TYPES': ('JWT',),
     'USER_ID_FIELD': '_id',
     'USER_ID_CLAIM': 'user_id',
 
@@ -330,7 +339,7 @@ SIMPLE_JWT = {
 
     'SLIDING_TOKEN_REFRESH_EXP_CLAIM': 'refresh_exp',
     'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5),
-    'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=111),
+    'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }
 
 
