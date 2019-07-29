@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework.authtoken',
+    'djoser',
     'rest_framework_swagger',
     'corsheaders',
     # 'rest_framework_simplejwt.token_blacklist', djongo.sql2mongo.SQLDecodeError: FAILED SQL: ALTER TABLE "token_blacklist_blacklistedtoken" ADD COLUMN "token_id" int32 NOT NULL UNIQUE
@@ -316,7 +318,8 @@ SIMPLE_JWT = {
     'SIGNING_KEY': SECRET_KEY,
     'VERIFYING_KEY': None,
 
-    'AUTH_HEADER_TYPES': ('Bearer',),
+    # 'AUTH_HEADER_TYPES': ('Bearer',),
+    'AUTH_HEADER_TYPES': ('JWT',),
     'USER_ID_FIELD': '_id',
     'USER_ID_CLAIM': 'user_id',
 
@@ -326,6 +329,17 @@ SIMPLE_JWT = {
     'JTI_CLAIM': 'jti',
 
     'SLIDING_TOKEN_REFRESH_EXP_CLAIM': 'refresh_exp',
-    'SLIDING_TOKEN_LIFETIME': timedelta(minutes=555555),
+    'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5),
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=111),
+}
+
+
+# Djoser settings
+DJOSER = {
+    'PASSWORD_RESET_CONFIRM_URL': '#/password/reset/confirm/{uid}/{token}',
+    'USERNAME_RESET_CONFIRM_URL': '#/username/reset/confirm/{uid}/{token}',
+    'ACTIVATION_URL': '#/activate/{uid}/{token}',
+    'SEND_ACTIVATION_EMAIL': True,
+    # 'SERIALIZERS': {},
+    'SERIALIZERS': {'user':'apps.accounts.serializers.UserSerializer'},
 }
