@@ -6,7 +6,7 @@ from .views import screen, project, event, project_event, task, comment
 app_name = "projects"
 
 project_patterns = [
-    path("", RedirectView.as_view(url='/projects')),
+    # path("", RedirectView.as_view(url='/projects')),
     path("projects/", project.DashboardView.as_view(), name="dashboard"),
     path("create-project/", project.CreateProjectView.as_view(), name="create_project"),
     path("project/<int:pk>/", project.ProjectView.as_view(), name="project"),
@@ -60,7 +60,7 @@ comment_patterns = [
 ]
 
 urlpatterns = []
-'''
+
 urlpatterns = [
     path("", include(project_patterns)),
     path("", include(screen_patterns)),
@@ -69,4 +69,3 @@ urlpatterns = [
     path("", include(task_patterns)),
     path("", include(comment_patterns)),
 ]
-'''
