@@ -329,7 +329,7 @@ SIMPLE_JWT = {
 
     'AUTH_HEADER_TYPES': ('Bearer',),
     # 'AUTH_HEADER_TYPES': ('JWT',),
-    'USER_ID_FIELD': '_id',
+    'USER_ID_FIELD': 'id',
     'USER_ID_CLAIM': 'user_id',
 
     'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
@@ -349,6 +349,6 @@ DJOSER = {
     'USERNAME_RESET_CONFIRM_URL': '#/username/reset/confirm/{uid}/{token}',
     'ACTIVATION_URL': '#/activate/{uid}/{token}',
     'SEND_ACTIVATION_EMAIL': True,
-    # 'SERIALIZERS': {},
-    'SERIALIZERS': {'user':'apps.accounts.serializers.UserSerializer'},
+    'SERIALIZERS': {},
+    # 'SERIALIZERS': {'user':'apps.accounts.serializers.UserSerializer'},
 }
