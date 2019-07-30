@@ -21,7 +21,7 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         # fields = ('_id')
         fields = (
-            # "id",
+            "id",
             "username",
             "email",
             "first_name",
@@ -30,7 +30,7 @@ class UserSerializer(serializers.ModelSerializer):
             "password",
             "is_active",
         )
-        # extra_kwargs = {"id": {"read_only": True}}
+        extra_kwargs = {"id": {"read_only": True}}
 
 
 class ProfileSerializer(serializers.ModelSerializer):
