@@ -1,6 +1,7 @@
 import uuid
 import datetime
 
+import pymongo
 from djongo.models import ObjectIdField
 
 from django.urls import reverse
@@ -13,6 +14,9 @@ from django.conf import settings
 from apps.core.models import TimeStampedModel
 from .utils import utils
 
+client = pymongo.MongoClient("localhost", 27017)  # maxPoolSize=50
+db_main = client.mainDB
+
 __all__ = (
     "User",
     "Profile",
@@ -21,8 +25,28 @@ __all__ = (
 )
 
 
-class User(AbstractUser):
-    _id = ObjectIdField()
+class MongoModel(models.Model):
+    id = models.IntegerField(primary_key=True)
+    class Meta:
+        abstract = True
+    def save(self, *args, **kwargs):
+        if self.id is None:
+            self.id = self.__get_id()
+        super(MongoModel, self).save(*args, **kwargs)
+
+    def __get_id(self):
+        name = self.__class__.__name__
+        if not db_main.sequences.find_one(dict(name=name)):
+            db_main.sequences.insert_one(dict(name=name, next_id=1))
+            return 0
+        else:
+            sq = db_main.sequences.find_one_and_update({"name": name}, {"$inc": {"next_id": 1}})
+            return sq['next_id']
+
+
+class User(MongoModel, AbstractUser):
+    pass
+    # _id = ObjectIdField()
     #
     # def save(self, *args, **kwargs):
     #     super(User, self).save(*args, **kwargs)
