@@ -12,9 +12,7 @@ def test_change_password(client, user_with_password):
     client.login(username=user_with_password.username, password="password")
 
     payload = dict(
-        old_password="password",
-        password1="$2017$design%",
-        password2="$2017$design%",
+        old_password="password", password1="$2017$design%", password2="$2017$design%"
     )
 
     response = client.post(reverse("accounts:change_password"), payload)
@@ -28,9 +26,7 @@ def test_change_password_match_invalid(client, user_with_password):
     client.login(username=user_with_password.username, password="password")
 
     payload = dict(
-        old_password="password",
-        password1="$2017$design%",
-        password2="$2018$design%",
+        old_password="password", password1="$2017$design%", password2="$2018$design%"
     )
 
     response = client.post(reverse("accounts:change_password"), payload)
@@ -47,9 +43,7 @@ def test_change_password_invalid_current(client, user_with_password):
     client.login(username=user_with_password.username, password="password")
 
     payload = dict(
-        old_password="wpassword",
-        password1="$2017$design%",
-        password2="$2017$design%",
+        old_password="wpassword", password1="$2017$design%", password2="$2017$design%"
     )
 
     response = client.post(reverse("accounts:change_password"), payload)
@@ -66,10 +60,10 @@ def test_change_avatar(client, user_with_password):
     client.login(username=user_with_password.username, password="password")
 
     avatar = create_image()
-    avatar_file = SimpleUploadedFile("avatar.png", avatar.getvalue(), content_type="image/png")
-    payload = dict(
-        avatar=avatar_file
+    avatar_file = SimpleUploadedFile(
+        "avatar.png", avatar.getvalue(), content_type="image/png"
     )
+    payload = dict(avatar=avatar_file)
 
     response = client.post(reverse("accounts:change_avatar"), payload)
 
@@ -81,10 +75,10 @@ def test_change_avatar_invalid(client, user_with_password):
     client.login(username=user_with_password.username, password="password")
 
     avatar = create_image()
-    avatar_file = SimpleUploadedFile("avatar.docx", avatar.getvalue(), content_type="text/plain")
-    payload = dict(
-        avatar=avatar_file
+    avatar_file = SimpleUploadedFile(
+        "avatar.docx", avatar.getvalue(), content_type="text/plain"
     )
+    payload = dict(avatar=avatar_file)
 
     response = client.post(reverse("accounts:change_avatar"), payload)
 
