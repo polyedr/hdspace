@@ -11,10 +11,7 @@ from apps.accounts.models import Profile
 
 @pytest.mark.django_db
 def test_login(client, user_with_password):
-    payload = dict(
-        username=user_with_password.username,
-        password="password",
-    )
+    payload = dict(username=user_with_password.username, password="password")
 
     response = client.post(reverse("accounts:login"), payload)
     assert response.status_code == 200
@@ -22,10 +19,7 @@ def test_login(client, user_with_password):
 
 @pytest.mark.django_db
 def test_invalid_login(client, user_with_password):
-    payload = dict(
-        username=user_with_password.username,
-        password="invalid_password",
-    )
+    payload = dict(username=user_with_password.username, password="invalid_password")
 
     response = client.post(reverse("accounts:login"), payload)
     assert response.status_code == 400
@@ -117,8 +111,10 @@ def test_email_confirmation(client):
     user.profile.save()
 
     response = client.get(
-        reverse("accounts:confirmation",
-                kwargs=dict(confirmation_token=user.profile.email_confirmation_token))
+        reverse(
+            "accounts:confirmation",
+            kwargs=dict(confirmation_token=user.profile.email_confirmation_token),
+        )
     )
     assert response.status_code == 302
 
@@ -135,8 +131,10 @@ def test_email_confirmation_invalid(client):
     user.profile.save()
 
     response = client.get(
-        reverse("accounts:confirmation",
-                kwargs=dict(confirmation_token=Profile.generate_token()))
+        reverse(
+            "accounts:confirmation",
+            kwargs=dict(confirmation_token=Profile.generate_token()),
+        )
     )
 
     assert response.status_code == 302
