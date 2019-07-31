@@ -1,7 +1,7 @@
 from rest_framework.test import APITestCase
 
-from apps.accounts.models import Profile
-from apps.accounts.serializers import ProfileSerializer
+from apps.accounts.models import Profile, User
+from apps.accounts.serializers import ProfileSerializer, UserSerializer
 
 
 class ProfileAPITest(APITestCase):
@@ -54,3 +54,60 @@ class ProfileAPITest(APITestCase):
     def tearDown(self):
         for profile in Profile.objects.all():
             profile.delete()
+
+
+class UserAPITest(APITestCase):
+    def setUp(self):
+        self.user_attributes = {
+            "is_active": True,
+            "username": "testuser",
+            "first_name": "John",
+            "last_name": "Doe",
+            "email": "testuser@gmail.com",
+            "password": ".2V:zt.W",
+        }
+
+        self.serializer_data = {
+            "is_active": False,
+            "username": "testusernext",
+            "first_name": "Jane",
+            "last_name": "Doe",
+            "email": "testuser@gmail.com",
+            "password": ".2V:zt.W",
+        }
+
+        self.user = User.objects.create(**self.user_attributes)
+        self.serializer = UserSerializer(instance=self.user)
+
+    def test_contains_expected_fields(self):
+        data = self.serializer.data
+
+        self.assertEqual(
+            set(data.keys()),
+            set(
+                [
+                    "is_active",
+                    "username",
+                    "first_name",
+                    "last_name",
+                    "email",
+                    "password",
+                    "date_joined",
+                    "id",
+                ]
+            ),
+        )
+
+    def test_is_active_field_content(self):
+        data = self.serializer.data
+
+        self.assertEqual(data["is_active"], self.user_attributes["is_active"])
+
+    def test_username_field_content(self):
+        data = self.serializer.data
+
+        self.assertEqual(data["username"], self.user_attributes["username"])
+
+    def tearDown(self):
+        for user in User.objects.all():
+            user.delete()
