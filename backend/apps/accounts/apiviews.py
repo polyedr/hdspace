@@ -1,10 +1,6 @@
 """Views for the accounts api"""
 
-from django.http import HttpResponse, JsonResponse
-from django.views.decorators.csrf import csrf_exempt
 from rest_framework import generics
-from rest_framework.renderers import JSONRenderer
-from rest_framework.parsers import JSONParser
 from .models import User, Profile, Team, TeamMember
 from .serializers import UserSerializer, ProfileSerializer
 

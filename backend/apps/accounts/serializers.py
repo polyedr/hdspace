@@ -1,15 +1,9 @@
 """Serializers for the accounts"""
-from djongo.models import ObjectIdField
 from rest_framework import serializers
-from rest_framework.fields import CharField
-
 from .models import User, Profile, Team, TeamMember
 
 
 class UserSerializer(serializers.ModelSerializer):
-    # Converting ObjectIdField to the CharField to be able to serialize the user _id
-    # id = serializers.CharField(source="_id")
-
     # Password validation to be able to authorize
     def create(self, validated_data):
         user = super().create(validated_data)
@@ -19,7 +13,6 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        # fields = ('_id')
         fields = (
             "id",
             "username",
