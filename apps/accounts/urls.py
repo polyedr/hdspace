@@ -34,9 +34,12 @@ user_patterns = [
 ]
 
 app_name = "accounts"
-urlpatterns = [
-    path("", include(auth_patterns)),
-    path("", include(profile_patterns)),
-    path("", include(team_patterns)),
-    path("", include(user_patterns)),
-]
+
+# Hide the old accounts patterns
+urlpatterns = []
+# urlpatterns = [
+#     path("", include(auth_patterns)),
+#     path("", include(profile_patterns)),
+#     path("", include(team_patterns)),
+#     path("", include(user_patterns)),
+# ]

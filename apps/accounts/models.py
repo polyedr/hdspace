@@ -2,7 +2,6 @@ import uuid
 import datetime
 
 import pymongo
-from djongo.models import ObjectIdField
 
 from django.urls import reverse
 from django.db import models
@@ -17,18 +16,16 @@ from .utils import utils
 client = pymongo.MongoClient("localhost", 27017)  # maxPoolSize=50
 db_main = client.mainDB
 
-__all__ = (
-    "User",
-    "Profile",
-    "Team",
-    "TeamMember",
-)
+__all__ = ("User", "Profile", "Team", "TeamMember")
 
 
+# The abstract class converts MongoDB _id to the integer with auto-incremented value
 class MongoModel(models.Model):
     id = models.IntegerField(primary_key=True)
+
     class Meta:
         abstract = True
+
     def save(self, *args, **kwargs):
         if self.id is None:
             self.id = self.__get_id()
@@ -40,8 +37,10 @@ class MongoModel(models.Model):
             db_main.sequences.insert_one(dict(name=name, next_id=1))
             return 0
         else:
-            sq = db_main.sequences.find_one_and_update({"name": name}, {"$inc": {"next_id": 1}})
-            return sq['next_id']
+            sq = db_main.sequences.find_one_and_update(
+                {"name": name}, {"$inc": {"next_id": 1}}
+            )
+            return sq["next_id"]
 
 
 class User(MongoModel, AbstractUser):
@@ -69,7 +68,9 @@ class Profile(TimeStampedModel):
         (ROLE_EXPERT, "EXPERT"),
         (ROLE_COMMUNICATION, "COMMUNICATION"),
     )
-    email_confirmation_token = models.CharField(max_length=64, editable=False, null=True)
+    email_confirmation_token = models.CharField(
+        max_length=64, editable=False, null=True
+    )
     reset_password_token = models.CharField(max_length=64, editable=False, null=True)
     invitation_token = models.CharField(max_length=64, editable=False, null=True)
     avatar = models.ImageField(upload_to=utils.get_file_path, blank=True)
@@ -100,13 +101,14 @@ class Profile(TimeStampedModel):
         return uuid.uuid4()
 
     def last_seen(self):
-        return cache.get('seen_%s' % self.user.username)
+        return cache.get("seen_%s" % self.user.username)
 
     def online(self):
         if self.last_seen():
             now = datetime.datetime.now()
             if now > self.last_seen() + datetime.timedelta(
-                    seconds=settings.USER_ONLINE_TIMEOUT):
+                seconds=settings.USER_ONLINE_TIMEOUT
+            ):
                 return False
             else:
                 return True
@@ -114,17 +116,14 @@ class Profile(TimeStampedModel):
             return False
 
     def __str__(self):
-        return f'{self.user.first_name} {self.user.last_name}'
+        return f"{self.user.first_name} {self.user.last_name}"
 
 
 class TeamMember(TimeStampedModel):
 
     ROLE_ADMIN = "admin"
     ROLE_MEMBER = "member"
-    MEMBER_ROLE = (
-        (ROLE_ADMIN, "ADMIN"),
-        (ROLE_MEMBER, "MEMBER"),
-    )
+    MEMBER_ROLE = ((ROLE_ADMIN, "ADMIN"), (ROLE_MEMBER, "MEMBER"))
 
     charge = models.DecimalField(max_digits=10, decimal_places=2)
     time_log = models.DecimalField(max_digits=10, decimal_places=2)
