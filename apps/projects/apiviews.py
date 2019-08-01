@@ -51,6 +51,7 @@ from .serializers import (
 
 @permission_classes([IsAuthenticated])
 class ProjectList(generics.ListCreateAPIView):
+
     """
     get:
     Return a list of all the existing projects.
