@@ -1,13 +1,16 @@
 """Views for the projects api"""
+from rest_framework.authentication import BasicAuthentication, SessionAuthentication
 from rest_framework.filters import OrderingFilter, BaseFilterBackend
 from django_filters.rest_framework import DjangoFilterBackend, FilterSet
-from rest_framework import generics, viewsets, status
+from rest_framework import generics, viewsets, status, request, permissions
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework_bulk import ListBulkCreateUpdateDestroyAPIView, BulkModelViewSet
 from rest_framework.decorators import permission_classes
 from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt import authentication
 
+from apps.projects import models
 from .models import (
     Project,
     ProjectMember,
@@ -49,8 +52,15 @@ from .serializers import (
 )
 
 
+class IsOwner(permissions.BasePermission):
+    def has_object_permission(self, request, view, obj):
+            return obj.owner == request.user
+
+
 @permission_classes([IsAuthenticated])
 class ProjectList(generics.ListCreateAPIView):
+    queryset = Project.objects.all()
+    serializer_class = ProjectSerializer
 
     """
     get:
@@ -59,9 +69,11 @@ class ProjectList(generics.ListCreateAPIView):
     post:
     Create a new project instance.
     """
+    #
+    # def get_queryset(self):
+    #     project_list = Project.objects.filter(user=self.request.user)
+    #     return project_list
 
-    queryset = Project.objects.all()
-    serializer_class = ProjectSerializer
 
 
 class ProjectDetail(generics.RetrieveUpdateDestroyAPIView):

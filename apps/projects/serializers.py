@@ -1,6 +1,6 @@
 """Serializers for the projects"""
 
-from rest_framework import serializers
+from rest_framework import serializers, request
 from rest_framework_bulk import BulkSerializerMixin, BulkListSerializer
 
 from apps.accounts.serializers import UserSerializer
@@ -210,6 +210,7 @@ class ProjectSerializer(serializers.ModelSerializer):
         extra_kwargs = {"preview": {"read_only": True}}
 
     def create(self, validated_data):
+        validated_data["user"] = self.user
         project = Project(name=validated_data["name"], status=validated_data["status"])
         project.preview = project.generate_preview_token()
         project.save()
