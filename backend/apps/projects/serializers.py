@@ -200,6 +200,7 @@ class ScreenScenarioMultipleSerializer(
 class ProjectSerializer(serializers.ModelSerializer):
     projectscreen = ProjectScreenSerializer(many=True, read_only=True)
     # This represents the user relationship
+    # user = UserSerializer(read_only=True)
     user = UserSerializer(read_only=True)
 
     class Meta:
@@ -207,11 +208,20 @@ class ProjectSerializer(serializers.ModelSerializer):
         # fields = ("preview", "name", "status", "projectscreen")
         fields = ("preview", "name", "status", "projectscreen", "user", "id")
         # fields = "__all__"
-        extra_kwargs = {"preview": {"read_only": True}}
+        # extra_kwargs = {"preview": {"read_only": True}}
+        extra_kwargs = {"preview": {"read_only": True}, "user": {"read_only": True}}
+
+    """
+    def create(self, validated_data):
+        # validated_data["user"] = self.request.user
+        project = Project(name=validated_data["name"], status=validated_data["status"])
+        project.preview = project.generate_preview_token()
+        project.save()
+        return project
+    """
 
     def create(self, validated_data):
-        validated_data["user"] = self.user
-        project = Project(name=validated_data["name"], status=validated_data["status"])
+        project = Project(id=None, **validated_data)
         project.preview = project.generate_preview_token()
         project.save()
         return project

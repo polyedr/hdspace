@@ -69,10 +69,13 @@ class ProjectList(generics.ListCreateAPIView):
     post:
     Create a new project instance.
     """
-    #
-    # def get_queryset(self):
-    #     project_list = Project.objects.filter(user=self.request.user)
-    #     return project_list
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+    def get_queryset(self):
+        project_list = Project.objects.filter(user=self.request.user)
+        return project_list
 
 
 
