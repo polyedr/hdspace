@@ -37,15 +37,15 @@ urlpatterns = [
     path('api/v1/api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path("api/v1/accounts/", include("apps.accounts.apiurls", namespace="apiaccounts")),
     path("api/v1/projects/", include("apps.projects.apiurls", namespace="apiprojects")),
-    path("api/v1/virtualize_emulation/", include("apps.virtualize_emulation.apiurls", namespace="apivirtualize_emulation")),
+    path("api/v1/virtualize_emulation/", include("apps.virtualize_emulation.apiurls",
+                                                 namespace="apivirtualize_emulation")),
+    path("api/v1/virtualize_simple/", include("apps.virtualize_simple.apiurls", namespace="apivirtualize_simple")),
     path("api/v1/virtualize/", include("apps.virtualize.apiurls")),
     path("api/v1/schema/", schema_view),
-
 
     # path("api/v1/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     # path("api/v1/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     # path("api/v1/token/verify/", TokenVerifyView.as_view(), name='token_verify'),
-
 
     path("api/v1/djauth/", include('djoser.urls'), name='djoserauth'),
     path("api/v1/djauth/", include('djoser.urls.jwt'), name='djoserauthjwt'),
