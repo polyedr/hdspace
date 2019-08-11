@@ -339,6 +339,11 @@ class ScreenScenario(TimeStampedModel):
     styles = JSONField(blank=True)
     parameters = JSONField(blank=True)
 
+    # Image field
+    image = models.ImageField(
+        upload_to='uploads/', blank=True, null=True, max_length=256
+    )
+
     # Parent id and type
     parent_id = models.IntegerField(null=True, blank=True)
 
@@ -368,6 +373,11 @@ class ScreenScenario(TimeStampedModel):
     x1 = models.IntegerField()
     y1 = models.IntegerField()
     """
+
+
+    def get_image(self):
+        # return self.image.url
+        return True
 
     def __str__(self):
         return "{}".format(self.pk)
