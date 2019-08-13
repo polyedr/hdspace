@@ -63,7 +63,6 @@ MarkupSafe==1.1.1
 matplotlib==2.1.0
 mccabe==0.6.1
 more-itertools==6.0.0
-mysqlclient==1.4.2.post1
 networkx==2.2
 nms==0.1.6
 numpy==1.17.0
@@ -79,7 +78,6 @@ Pillow==5.1.0
 pluggy==0.6.0
 prompt-toolkit==1.0.15
 protobuf==3.7.0
-psycopg2==2.8.2
 ptyprocess==0.6.0
 py==1.8.0
 pycodestyle==2.3.1
@@ -112,7 +110,6 @@ sklearn==0.0
 social-auth-app-django==2.1.0
 social-auth-core==3.1.0
 soupsieve==1.8
-sqlparse==0.2.4
 substring==0.2
 tensorboard==1.14.0
 tensorflow==1.14.0
