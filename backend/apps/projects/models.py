@@ -469,6 +469,7 @@ class ScenarioElement(TimeStampedModel):
         (MONTH, "month"),
         (YEAR, "year"),
         (WIDGET, "widget"),
+        (IMAGE, "image"),
         (UNDEFINED, "undefined"),
         (LABEL, "label"),
         (MAP, "map"),
