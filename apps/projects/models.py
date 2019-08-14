@@ -792,7 +792,7 @@ elements = {
         buoyancy=[0],
         image="null",
         parameters=[{"group": "widget"}],
-        styles=[{"width": "80px", "height": "80px"}],
+        styles=[{"width": "500px", "height": "250px"}],
     ),
     21: Element(
         id=21,
@@ -802,7 +802,7 @@ elements = {
         buoyancy=[0],
         image="null",
         parameters=[{"group": "widget"}],
-        styles=[{"width": "80px", "height": "80px"}],
+        styles=[{"width": "350px", "height": "300px"}],
     ),
     22: Element(
         id=22,
@@ -812,6 +812,6 @@ elements = {
         buoyancy=[0],
         image="null",
         parameters=[{"group": "widget"}],
-        styles=[{"width": "80px", "height": "80px"}],
+        styles=[{"width": "150px", "height": "150px"}],
     ),
 }
