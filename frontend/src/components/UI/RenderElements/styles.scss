@@ -1,0 +1,38 @@
+:global(.addedItem) {
+  position: relative;
+  //outline: none;
+}
+
+.addedBlock,
+.addedGroup,
+.addedContainer {
+  display: flex;
+  justify-content: center;
+}
+
+.addedMockInput {
+  display: flex;
+  align-items: center;
+}
+
+.addedSelect {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.activated {
+  outline: red solid 1px;
+}
+
+.addedElem {}
+
+.addedButton {}
+
+.addedHyperLink {}
+
+.addedInput {}
+
+.addedWidget {}
+
+.addedCalendar {}

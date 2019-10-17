@@ -1,0 +1,128 @@
+.modalWrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 10;
+
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+
+  color: #808080;
+  @include modal_text;
+  font-weight: 400;
+
+  background: rgba($almostBlack, 0.8);
+
+  overflow: auto;
+}
+
+.modalContainer_addElements {
+  position: relative;
+  z-index: 20;
+
+  flex: 0 1;
+  min-height: 470px;
+  padding: 28px 20px;
+
+  background: $white;
+  border-radius: 5px;
+  box-shadow: $boxShadow;
+
+  transition: all 0.3s linear;
+}
+
+.modalCloseButton_addElements {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+
+  & svg {
+    fill: $modalTextColor;
+  }
+
+  &:hover svg,
+  &:focus svg {
+    fill: lighten($modalTextColor, 15%);
+  }
+}
+
+.error_message {
+  padding: 8px 0;
+  color: $brightRed;
+}
+
+.modalTitle_addElements {
+  flex: 1;
+  margin: 0 0 10px 0;
+
+  color: $mainColor;
+  font-size: 16px;
+  line-height: 20px;
+  font-weight: 500;
+  text-align: left;
+}
+
+.modalActions_addElements {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin-top: 35px;
+
+  & button {
+    width: 190px;
+    padding: 10px 18px;
+    margin-right: 10px;
+
+    &:last-child {
+      margin-right: 0;
+    }
+
+    &:first-child {
+      margin-right: 0;
+    }
+  }
+}
+
+.modalUploadBlock {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  margin-bottom: 15px;
+}
+
+.modalUploadList {
+  flex: 1 1;
+  padding-top: 10px;
+
+  list-style: none;
+}
+
+.modalUploadItem {
+  display: flex;
+  align-items: center;
+  margin-bottom: 24px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  & svg {
+    fill: $modalIconColor;
+  }
+}
+
+.modalTextDelimiter {
+  margin: 10px 30px;
+
+  font-size: 14px;
+  line-height: 18px;
+
+  text-align: center;
+  text-transform: uppercase;
+}
+

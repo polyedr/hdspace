@@ -1,0 +1,102 @@
+.button {
+  padding: 8px 12px;
+
+  font-size: 14px;
+  line-height: 18px;
+  color: $white;
+  text-align: center;
+
+  outline: none;
+  border: none;
+  border-radius: 3px;
+
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+
+  & svg {
+    fill: $white;
+  }
+
+  & > span {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-weight: 500;
+    font-size: 14px;
+    color: $white;
+  }
+
+  & > span > * {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &_none {
+    padding: 0;
+    border: none;
+    background: none;
+
+    & svg {
+      fill: $almostBlack;
+    }
+  }
+
+  &_primary {
+    background-color: $primaryBtnColor;
+
+    &:hover,
+    &:focus {
+      background-color: lighten($primaryBtnColor, 10%);
+    }
+
+    &:active {
+      background-color: darken($primaryBtnColor, 10%);
+    }
+  }
+
+  &_confirm,
+  &_submit {
+    background-color: $confirmBtnColor;
+
+    &:hover,
+    &:focus {
+      background-color: lighten($confirmBtnColor, 10%);
+    }
+
+    &:active {
+      background-color: darken($confirmBtnColor, 10%);
+    }
+
+    span {
+      color: $white;
+    }
+  }
+
+  &_secondary {
+    background-color: transparent;
+    border: 1px solid $mainColor;
+
+    & span {
+      color: $mainColor;
+    }
+
+    &:hover,
+    &:focus {
+      color: $white;
+
+      background-color: $mainColor;
+
+      & span {
+        color: $white;
+      }
+    }
+
+    &:active {
+      background-color: darken($mainColor, 10%);
+      border-color: darken($mainColor, 10%);
+    }
+  }
+}

@@ -1,0 +1,48 @@
+import React, { memo } from 'react';
+import classNames from 'classnames';
+
+const styles = require('./styles.scss');
+
+const validTypes = [
+  'none',
+  'primary',
+  'confirm',
+  'secondary',
+  'submit',
+];
+
+const getStyleType = (styleType = 'confirm') => {
+  if (validTypes.indexOf(styleType) !== -1) {
+    return styles[`button_${styleType}`];
+  }
+
+  return styles.button_confirm;
+};
+
+interface IButtonProps {
+  children?: any,
+  type?: string,
+  styleType?: string,
+  disabled?: boolean,
+  onClick?: (e: any) => void
+  className?: string,
+}
+export const Button: React.FunctionComponent<IButtonProps> = memo(({
+  children,
+  type,
+  styleType,
+  disabled,
+  onClick,
+  className = '',
+}) => (
+  <button
+    type={type !== 'submit' ? 'button' : 'submit'}
+    className={classNames(styles.button, getStyleType(styleType), className)}
+    disabled={disabled}
+    onClick={type !== 'submit' ? onClick : null}
+  >
+    <span>
+      {children}
+    </span>
+  </button>
+));

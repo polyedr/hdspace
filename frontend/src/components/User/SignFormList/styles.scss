@@ -1,0 +1,57 @@
+.signFormItem {
+  @include reset_indents;
+
+  position: relative;
+
+  margin-bottom: 10px;
+
+  list-style: none;
+
+  &:last-child {
+    margin-bottom: 20px;
+  }
+}
+
+.signFormLabel {
+  font-size: 15px;
+}
+
+.signFormInput {
+  width: 100%;
+  padding-left: 10px;
+
+  color: $mainTextColor;
+  font-size: 15px;
+  line-height: 25px;
+
+  background-color: transparent;
+  border: none;
+  border-bottom: 1px solid rgba($white, 0.5);
+  outline: none;
+
+  transition: color 0.2s ease;
+
+  &::placeholder {
+    color: $mainTextColor;
+
+    transition: all 0.2s ease;
+
+    opacity: 0.7;
+  }
+
+  &:focus {
+    color: $white;
+
+    &::placeholder {
+      color: $white;
+
+      opacity: 1;
+    }
+  }
+}
+
+.signFormErrorText {
+  margin-top: 5px;
+
+  color: $red;
+}

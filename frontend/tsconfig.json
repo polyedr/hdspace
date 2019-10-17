@@ -1,0 +1,31 @@
+{
+  "allowSyntheticDefaultImports": true,
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "outDir": "./dist/",
+    "sourceMap": true,
+    "noImplicitAny": false,
+    "allowSyntheticDefaultImports": true,
+    "module": "commonjs",
+    "target": "es6",
+    "jsx": "react",
+    "lib": [ "es2015", "DOM", "es6" ],
+    "baseUrl": ".",
+    "paths": {
+      "$components/*": [ "src/components/*" ],
+      "$containers/*": [ "src/containers/*" ],
+      "$constants/*": [ "src/constants/*" ],
+      "$assets/*": [ "src/assets/*" ],
+      "$config/*": [ "./config/*" ],
+      "$styles/*": [ "src/styles/*" ],
+      "$redux/*": [ "src/redux/*" ],
+      "$utils/*": [ "src/utils/*" ],
+      "$api/*": [ "src/api/*" ],
+      "$test/*": [ "./test/*" ]
+    }
+  },
+  "include": [
+    "./src/index.tsx",
+    // "./src/**/*",
+  ]
+}

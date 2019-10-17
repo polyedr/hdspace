@@ -1,0 +1,59 @@
+.inputsBlock {
+  flex-grow: 1;
+  margin-left: 10px;
+
+  border: 1px solid $mainBorderColor;
+  border-radius: 3px;
+
+  &:hover {
+    border-color: $secondBorderColor;
+  }
+
+  & select,
+  & input {
+    width: 100%;
+    min-height: 28px;
+    box-sizing: border-box;
+
+    background-color: transparent;
+    border: none;
+    outline: none;
+  }
+
+  & input {
+    padding: $propsPanelInputsPadding;
+
+    @include props_panel_text;
+    font-weight: 400;
+
+    &::placeholder {
+      color: lighten($mainTextColor, 35%);
+    }
+
+    &:hover,
+    &:focus,
+    &:active {
+      border-color: $secondBorderColor;
+    }
+  }
+}
+
+.textContentField {
+  flex: 1 1 100px;
+  width: 100%;
+  padding: $propsPanelInputsPadding;
+  padding-right: 2px;
+
+  @include props_panel_text;
+  font-weight: 400;
+
+  border: 1px solid $mainBorderColor;
+  border-radius: 3px;
+  outline: none;
+
+  &:hover,
+  &:focus,
+  &:active {
+    border-color: $secondBorderColor;
+  }
+}

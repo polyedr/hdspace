@@ -1,0 +1,265 @@
+:global(.visuallyHidden) {
+  position: absolute;
+
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  border: 0;
+  padding: 0;
+
+  white-space: nowrap;
+
+  clip-path: inset(100%);
+  clip: rect(0 0 0 0);
+  overflow: hidden;
+}
+
+/* Buttons */
+
+:global(.addBtn) {
+  margin: 0;
+  padding: 0;
+
+  cursor: pointer;
+
+  & svg {
+    fill: $mainColor;
+  }
+
+  &:hover svg,
+  &:focus svg {
+    fill: lighten($mainColor, 10%);
+  }
+
+  &:active svg {
+    fill: darken($mainColor, 10%);
+  }
+}
+
+:global(.delBtn) {
+  & svg {
+    fill: $dodgerBlue;
+  }
+
+  &:hover svg,
+  &:focus svg {
+    fill: lighten($dodgerBlue, 10%);
+  }
+
+  &:active svg {
+    fill: darken($dodgerBlue, 10%);
+  }
+}
+
+:global(.expandBtn) {
+  @include reset_indents;
+
+  & svg {
+    fill: $almostBlack;
+  }
+
+  &:hover svg,
+  &:focus svg {
+    fill: lighten($almostBlack, 30%);
+  }
+}
+
+:global(.mainImgBtn) {
+  & svg {
+    fill: $almostBlack;
+    opacity: 0.5;
+  }
+
+  &:hover svg,
+  &:focus svg {
+    opacity: 0.8;
+  }
+
+  &:active svg {
+    opacity: 1;
+  }
+
+  &_active svg {
+    opacity: 1;
+  }
+}
+
+input[type='radio'] {
+  & + span {
+    padding: 2px 2px 2px 28px;
+    position: relative;
+    cursor: pointer;
+
+    &:before, &:after {
+      content: '';
+      display: block;
+      position: absolute;
+      cursor: pointer;
+      margin: auto;
+      bottom: 0;
+      left: 0;
+      top: 0;
+      border-radius: 50%;
+      border: 2px solid $thirdBorderColor;
+    }
+
+    &:before {
+      width: 12px;
+      height: 12px;
+    }
+
+    &:after {
+      left: 4px;
+      width: 4px;
+      height: 4px;
+      border-width: 0;
+    }
+  }
+
+  &:checked + span:after {
+    border-width: 2px;
+    background-color: $thirdBorderColor;
+  }
+}
+
+/* Animations */
+
+:global {
+  .showAnimation :local {
+    animation: show 0.5s ease-out;
+  }
+  @keyframes show {
+    0%{
+      opacity: 0;
+      transform: translateX(50px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+}
+
+:global {
+  .brakeAnimation :local {
+    animation: brake 0.6s linear;
+  }
+  @keyframes brake {
+    0%{
+      transform: translateX(2000px);
+    }
+    80%{
+      transform: translateX(-40px);
+    }
+    100%{
+      transform: translateX(0px);
+    }
+  }
+}
+
+:global {
+  .bubbleAnimation :local {
+    animation: bubble 0.3s linear;
+  }
+  @keyframes bubble {
+    0%{
+      transform: scale(0.9);
+    }
+    30%{
+      transform: scale(1);
+    }
+    70%{
+      transform: scale(1.1);
+    }
+    100%{
+      transform: scale(1);
+    }
+  }
+}
+
+/* Modal */
+
+:global(.modalTextInput) {
+  width: 100%;
+  padding: 5px;
+  box-sizing: border-box;
+
+  @include modal_text;
+
+  border: 1px solid $mainBorderColor;
+  border-radius: 4px;
+
+  outline: none;
+
+  &::placeholder {
+    color: $modalIconColor;
+  }
+
+  &:hover,
+  &:focus {
+    border-color: $thirdBorderColor;
+
+    & + button {
+      border-color: $thirdBorderColor;
+    }
+  }
+}
+
+/* signin/signup screens */
+
+:global(.signContainer) {
+  display: flex;
+  align-items: center;
+  flex: 1 0 40%;
+  padding: 0 80px;
+  box-sizing: border-box;
+  overflow: auto;
+
+  background-color: $mainColor;
+}
+
+:global(.signButtonBlock) {
+  position: relative;
+}
+
+:global(.signAuthorisationErrorText) {
+  margin-bottom: 15px;
+
+  color: $red;
+}
+
+:global(.signSubmitBtn) {
+  margin-bottom: 5px;
+  padding: 8px 12px;
+
+  background-color: $white;
+
+  & > span {
+    color: $mainTextColor;
+  }
+
+  &:hover,
+  &:focus {
+    background-color: darken($white, 20%);
+  }
+
+  &:active {
+    background-color: darken($white, 10%);
+  }
+}
+
+:global(.root) {
+  width: 100%;
+}
+
+:global(.groupItem) {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  flex: 1 1 100%;
+
+  &.horizontal {
+    flex-direction: row;
+  }
+}

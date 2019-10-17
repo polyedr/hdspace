@@ -1,0 +1,163 @@
+.topPanel {
+  position: fixed;
+  top: 0;
+  z-index: 5;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: calc(100% - #{$leftPanel_fullWidth});
+  height: $header_height;
+  padding-left: 24px;
+  padding-right: 24px;
+  box-sizing: border-box;
+
+  border-bottom: 1px solid $gainsboro;
+  background-color: $white;
+
+  transition: all 0.3s ease;
+
+  &_minimize {
+    width: calc(100% - #{$leftPanel_minWidth});
+  }
+}
+
+.topPanelLeftBlock,
+.topPanelCenterBlock,
+.topPanelRightBlock {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+
+  user-select: none;
+}
+
+.topPanelProjectTitle {
+  font-size: 18px;
+  line-height: 24px;
+  color: $mainColor;
+}
+
+.topPanelBtn {
+  padding: 3px 10px;
+}
+
+.editProjectBtn {
+  position: absolute;
+  top: 0;
+  right: -30px;
+  z-index: 1;
+
+  visibility: hidden;
+
+  opacity: 0;
+
+  transition: all 0.1s linear;
+
+  .topPanelCenterBlock:hover > & {
+    visibility: visible;
+
+    opacity: 1;
+  }
+}
+
+.topPanelSearchField {
+  margin-left: 10px;
+  padding: 0;
+  padding-left: 5px;
+
+  font-size: 14px;
+  line-height: 24px;
+  font-weight: 500;
+  color: $inputMainColor;
+
+  border: 1px solid $mainColor;
+  border-radius: 3px;
+  outline: none;
+
+  &::placeholder {
+    color: lighten($inputMainColor, 30%);
+  }
+
+  &:hover {
+    box-shadow: $main-input-hover-shadow;
+  }
+
+  &:focus {
+    box-shadow: $main-input-focus-shadow;
+  }
+}
+
+.notificationBtn {
+  position: relative;
+
+  margin-right: 15px;
+
+  &:last-child {
+    margin-right: 0;
+  }
+
+  & svg {
+    fill: $almostBlack;
+  }
+
+  &::before {
+    content: "0";
+
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    z-index: 1;
+
+    display: block;
+    padding: 2px 4px;
+
+    font-size: 10px;
+    line-height: 10px;
+    font-weight: 700;
+
+    background-color: $red;
+    border-radius: 3px;
+  }
+
+  &_item1::before {
+    background-color: #366913;
+  }
+
+  &_item1:hover::before {
+    background-color: lighten(#366913, 20%);
+  }
+
+  &_item2::before {
+    background-color: #4d1e2e;
+  }
+
+  &_item2:hover::before {
+    background-color: lighten(#4d1e2e, 20%);
+  }
+
+  &_item3::before {
+    background-color: #0c5cf0;
+  }
+
+  &_item3:hover::before {
+    background-color: lighten(#0c5cf0, 20%);
+  }
+
+  &_item4::before {
+    background-color: #f0950c;
+  }
+
+  &_item4:hover::before {
+    background-color: lighten(#f0950c, 20%);
+  }
+
+  &_item5::before {
+    background-color: #1c4b6b;
+  }
+
+  &_item5:hover::before {
+    background-color: lighten(#1c4b6b, 20%);
+  }
+}

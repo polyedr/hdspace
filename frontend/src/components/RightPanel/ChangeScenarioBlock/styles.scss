@@ -1,0 +1,13 @@
+.scenarioContentBlock {
+  & select {
+    margin-bottom: 12px;
+    padding: $propsPanelInputsPadding;
+
+    @include props_panel_text;
+  }
+  & select:last-child {
+    margin-bottom: 0;
+  }
+}
+
+

@@ -1,0 +1,315 @@
+.modalSearchForm {
+  position: relative;
+
+  margin-bottom: 15px;
+
+  border-radius: 4px;
+
+  overflow: hidden;
+}
+
+.modalSearchField {
+  width: 100%;
+  padding: 5px;
+  padding-left: 35px;
+  box-sizing: border-box;
+
+  @include modal_text;
+
+  border: 1px solid $mainBorderColor;
+  border-radius: 4px;
+
+  outline: none;
+
+  &::placeholder {
+    color: $modalIconColor;
+  }
+
+  &:hover,
+  &:focus {
+    border-color: $thirdBorderColor;
+
+    & + button {
+      border-color: $thirdBorderColor;
+    }
+  }
+}
+
+.modalSearchButton {
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  padding: 5px;
+
+  background-color: transparent;
+  border-right: 1px solid $mainBorderColor;
+  border-radius: 0;
+
+  & svg {
+    fill: $modalIconColor;
+  }
+
+  &:hover,
+  &:focus {
+    background-color: $thirdBorderColor;
+    border-color: $thirdBorderColor;
+
+    & svg {
+      fill: $white;
+    }
+  }
+
+  &:active {
+    background-color: darken($mainBorderColor, 10%);
+    border-color: darken($mainBorderColor, 10%);;
+  }
+}
+
+.modalActionsTabsList {
+  display: flex;
+  justify-content: space-between;
+
+  list-style: none;
+}
+
+.modalActionsTabsItem {
+  flex-grow: 1;
+}
+
+.modalActionsTabBtn {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  padding-bottom: 8px;
+
+  color: $modalIconColor;
+  @include modal_text;
+
+  border: none;
+  border-bottom: 2px solid #d8d8d8;
+  background: none;
+  outline: none;
+
+  cursor: pointer;
+
+  &:hover,
+  &:focus,
+  &:active {
+    border-color: $mainTextColor;
+  }
+
+  &_active {
+    border-color: $mainTextColor
+  }
+}
+
+.contentSection {
+  padding-top: 30px;
+}
+
+.contentTitle {
+  margin-bottom: 10px;
+
+  color: $mainTextColor;
+  font-size: 14px;
+  line-height: 18px;
+}
+
+.contentList {
+  position: relative;
+
+  display: flex;
+  flex-wrap: wrap;
+  width: 812px;
+
+  list-style: none;
+}
+
+.contentListImg {
+  display: flex;
+  flex-direction: row;
+
+  & > ul {
+    display: flex;
+    flex-wrap: wrap;
+
+    & > li {
+      margin: 0px 8px 18px 0px;
+    }
+  }
+
+  .preview {
+    position: relative;
+    padding: 4px;
+    border: 1px solid;
+    border-radius: 4px;
+
+    img {
+      max-width: 100%;
+      width: 94px;
+      height: 84px;
+      object-fit: contain;
+    }
+
+    .btnDel {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      opacity: 0;
+      transition: opacity 0.3s, visibility 0.3s;
+
+      &:hover {
+        opacity: 1;
+      }
+    }
+  }
+}
+
+.contentTemplateBtn {
+  flex: 0 0 130px;
+  margin-right: 20px;
+  margin-bottom: 18px;
+  padding: 20px 35px;
+
+  background-color: transparentize($mainBorderColor, $amount: 0.6);
+  border: 1px solid $mainBorderColor;
+
+  &:last-child {
+    margin-right: 0;
+  }
+
+  & > span {
+    color: $modalIconColor;
+    @include modal_text;
+  }
+
+  &:hover,
+  &:focus {
+    border-color: $thirdBorderColor;
+  }
+
+  &:active {
+    background-color: $thirdBgColor;
+    border-color: $thirdBorderColor;
+  }
+
+  &_active {
+    background-color: $thirdBgColor;
+    border-color: $thirdBorderColor;
+  }
+}
+
+.contentTemplateCheckbox {
+  position: relative;
+
+  padding: 5px 17px 7px;
+  margin-right: 20px;
+  margin-bottom: 15px;
+
+  @include modal_text;
+
+  background-color: transparentize($mainBorderColor, $amount: 0.6);
+  border: 1px solid $mainBorderColor;
+  border-radius: 16px;
+
+  &:last-child {
+    margin-right: 0;
+  }
+
+  &:hover,
+  &:focus {
+    border-color: $thirdBorderColor;
+  }
+
+  &:active {
+    background-color: $thirdBgColor;
+    border-color: $thirdBorderColor;
+  }
+
+  &_active {
+    background-color: $thirdBgColor;
+    border-color: $thirdBorderColor;
+
+    & > span {
+      color: $thirdBorderColor;
+    }
+
+    &::before,
+    &::after {
+      content: "";
+
+      position: absolute;
+      top: 0;
+      left: 0;
+
+      display: block;
+      height: 2px;
+
+      background-color: $thirdBorderColor;
+    }
+
+    &::before {
+      top: 12px;
+      left: 8px;
+
+      width: 12px;
+
+      transform: rotate(-50deg);
+    }
+
+    &::after {
+      top: 14px;
+      left: 5px;
+
+      width: 7px;
+
+      transform: rotate(50deg);
+    }
+  }
+}
+
+.contentTemplateField {
+  width: 280px;
+  padding: 5px;
+  padding-left: 10px;
+
+  color: $modalIconColor;
+  @include modal_text;
+
+  border: 1px solid $mainBorderColor;
+  border-radius: 4px;
+  outline: none;
+
+  &:hover,
+  &:focus {
+    border-color: $thirdBorderColor;
+  }
+
+  &::placeholder {
+    color: lighten($modalIconColor, 5%);
+  }
+}
+
+.scenariosContainer {
+  display: flex;
+  flex-direction: column;
+
+  & select {
+    width: 280px;
+    padding: 5px;
+    padding-left: 10px;
+
+    @include modal_text;
+
+    &:hover {
+      border-color: $thirdBorderColor;
+    }
+  }
+}
+
+.scenariosLabel {
+  margin: 8px 0;
+}

@@ -1,0 +1,7 @@
+.scenarioList {
+  overflow: auto;
+
+  & > li {
+    padding-left: 5px;
+  }
+}

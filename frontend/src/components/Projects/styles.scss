@@ -1,0 +1,184 @@
+.projectsContainer {
+  & .projectsModalAnim {
+    animation: show 0.6s linear;
+  }
+}
+
+.modalBody {
+  text-align: center;
+  width: 300px;
+
+  & > i {
+    font-size: 56px;
+    color: #e2e3e3;
+  }
+
+  & > h6 {
+    font-size: 26px;
+    font-weight: bold;
+    color: $matteTurq;
+    margin-bottom: 16px;
+  }
+
+  input {
+    box-sizing: border-box;
+    width: 100%;
+    margin: 4px 0;
+    padding: 6px 12px;
+    border: 1px solid $gainsboro;
+    border-radius: 2px;
+  }
+
+  p {
+    margin-top: 4px;
+    font-size: 12px;
+    text-align: left;
+  }
+}
+
+.projectsWrapper {
+  background-color: $white;
+  border-radius: 4px;
+
+  .actions {
+    display: flex;
+    justify-content: flex-end;
+    padding: 16px;
+  }
+
+  .delete {
+    color: $red;
+  }
+
+  .payment {
+    color: $dodgerBlue;
+  }
+}
+
+.projectsHeader {
+  display: flex;
+  justify-content: flex-end;
+  padding: 16px;
+
+  border-bottom: 1px solid $gainsboro;
+}
+
+.projectsHeaderBtn {
+  margin-right: 5px;
+
+  &:last-child {
+    margin-right: 0;
+  }
+
+  & svg {
+    margin-right: 5px;
+  }
+}
+
+.projectsSearch {
+  display: flex;
+  margin-bottom: 16px;
+
+  .projectsSearchField {
+    flex: 0 1 500px;
+    padding: 0;
+    padding-left: 5px;
+
+    font-size: 14px;
+    line-height: 24px;
+    font-weight: 500;
+    color: $inputMainColor;
+
+    border: 1px solid $mainColor;
+    border-right: none;
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+    outline: none;
+
+    &::placeholder {
+      color: lighten($inputMainColor, 30%);
+    }
+
+    &:hover {
+      box-shadow: inset $main-input-hover-shadow;
+    }
+
+    &:focus {
+      box-shadow: inset $main-input-focus-shadow;
+    }
+  }
+
+  & > button {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+}
+
+.projectsMainBlock {
+  padding: 16px;
+  padding-bottom: 0;
+}
+
+.projectsContentTable {
+  min-width: 100%;
+
+  .tableRow {
+    border-bottom: 1px solid $gainsboro;
+  }
+
+  .tableTitle,
+  .tableItem {
+    padding: 8px;
+    vertical-align: middle;
+
+    text-align: left;
+
+    &:first-child {
+      text-align: center;
+      padding: 4px;
+    }
+
+    &_status {
+      font-weight: 600;
+      color: darken($mainColor, 10%);
+    }
+
+    a {
+      font-weight: 600;
+      color: darken($secondaryColor, 10%);
+      text-decoration: none;
+
+      &:hover,
+      &:focus {
+        color: lighten($secondaryColor, 10%);
+      }
+
+      &:active {
+        color: darken($secondaryColor, 20%);
+      }
+    }
+  }
+
+  .tableTitle {
+    font-weight: 700;
+
+    background-color: #f7f7f7;
+  }
+
+  .tableBtn {
+    margin-right: 5px;
+
+    & svg {
+      fill: $dodgerBlue;
+    }
+
+    &:hover svg,
+    &:focus svg {
+      fill: lighten($dodgerBlue, 10%);
+    }
+
+    &:active svg {
+      fill: darken($dodgerBlue, 10%);
+    }
+  }
+}

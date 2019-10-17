@@ -1,0 +1,85 @@
+:global(.hovered) {
+  outline: $secondBorderColor solid 1px;
+}
+
+.dragResizeItem {
+  position: relative;
+
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.resizeController {
+  position: absolute;
+
+  width: 0;
+  height: 0;
+
+  border: solid 4px #333333;
+
+  &:hover {
+    border-color: $brightRed;
+  }
+
+  &_active {
+    border-color: $brightRed;
+  }
+
+  &_top_right {
+    top: 0;
+    right: 0;
+
+    cursor: nesw-resize;
+  }
+
+  &_top_left {
+    top: 0;
+    left: 0;
+
+    cursor: nwse-resize;
+  }
+
+  &_bottom_right {
+    right: 0;
+    bottom: 0;
+
+    cursor: nwse-resize;
+  }
+
+  &_bottom_left {
+    bottom: 0;
+    left: 0;
+
+    cursor: nesw-resize;
+  }
+
+  &_top {
+    top: 0;
+    left: calc(50% - 6px);
+
+    cursor: ns-resize;
+  }
+
+  &_right {
+    top: calc(50% - 6px);
+    right: 0;
+
+    cursor: ew-resize;
+  }
+
+  &_bottom {
+    bottom: 0;
+    left: calc(50% - 6px);
+
+    cursor: ns-resize;
+  }
+
+  &_left {
+    top: calc(50% - 6px);
+    left: 0;
+
+    cursor: ew-resize;
+  }
+}

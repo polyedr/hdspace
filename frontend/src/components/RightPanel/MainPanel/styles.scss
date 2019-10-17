@@ -1,0 +1,273 @@
+:global(.propsPanelBlock) {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+
+  background-color: $panelBgColor;
+
+  &:last-of-type {
+    margin-bottom: 0;
+  }
+}
+
+:global(.propsPanelHeaderBlock) {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 15px;
+
+  color: $mainColor;
+  font-size: 14px;
+  line-height: 18px;
+  font-weight: 500;
+
+  border-top: 1px solid $mainBorderColor;
+  border-bottom: 1px solid $mainBorderColor;
+}
+
+:global(.propsPanelContentBlock) {
+  display: flex;
+  flex-direction: column;
+  padding: 8px 15px;
+}
+
+:global(.propsPanelInnerContentBlock) {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+:global(.propsElementsBlock) {
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+  margin-top: 15px;
+
+  &:first-child {
+    margin-top: 10px;
+  }
+}
+
+:global(.propsElementsBlockTitle) {
+  margin-bottom: 10px;
+
+  color: $mainColor;
+  @include props_panel_text;
+  font-weight: 400;
+}
+
+:global(.propsElementsContentBlock) {
+  display: flex;
+  flex-direction: column;
+}
+
+:global(.propsElementsInnerBlock) {
+  position: relative;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  &_root {
+    padding: 15px;
+  }
+}
+
+:global(.dropDown) {
+  position: relative;
+
+	display: block;
+	max-width: 100%;
+	padding: 0;
+	box-sizing: border-box;
+
+	color: transparent;
+	@include props_panel_text;
+  font-weight: 400;
+
+  background-color: $white;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z' fill='%23c1c1c1'/%3E%3Cpath d='M0 0h24v24H0z' fill='none'/%3E%3C/svg%3E");
+  background-position: right center;
+  background-repeat: no-repeat;
+	border: none;
+	border-radius: 5px;
+  box-shadow: none;
+  outline: none;
+
+	-moz-appearance: none;
+	-webkit-appearance: none;
+  appearance: none;
+
+  &::-ms-expand {
+    display: none;
+  }
+
+  &:hover,
+  &:focus {
+    border-color: $secondBorderColor;
+  }
+
+  &:active {
+    color: $darkerBlack;
+  }
+
+  & option {
+    font-weight:normal;
+    text-transform: capitalize;
+  }
+}
+
+:global(.checkboxBlock) {
+  display: flex;
+  align-items: center;
+
+    label {
+      margin-right: 5px;
+
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+}
+
+:global(.propsPanelBtnBlock) {
+  display: flex;
+  align-items: center;
+}
+
+:global(.propsPanelBtn) {
+  padding: $propsPanelInputsPadding;
+  box-sizing: border-box;
+
+  color: $mainTextColor;
+
+  background-color: transparent;
+  border: 1px solid $mainBorderColor;
+
+  cursor: pointer;
+
+  & > span {
+    color: $mainTextColor;
+    @include props_panel_text;
+    font-weight: 400;
+  }
+
+  &:hover,
+  &:focus {
+    background-color: darken($mainBorderColor, 5%);
+  }
+
+  &:active {
+    background-color: $mainBorderColor;
+  }
+
+  &_active {
+    background-color: $mainBorderColor;
+  }
+}
+
+:global(.propsPanelImgBtn) {
+  & svg {
+    fill: $panelBtnColor;
+  }
+
+  &:hover svg,
+  &:focus svg {
+    fill: darken($panelBtnColor, 10%);
+  }
+
+  &:active svg {
+    fill: darken($panelBtnColor, 20%);
+  }
+}
+
+:global(.propsPanelText) {
+  @include props_panel_text;
+  font-weight: 400;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+:global(.colorPickerContainer) {
+  position: relative;
+
+  flex: 0 0 80px;
+  align-self: stretch;
+  margin-right: 10px;
+
+  border-radius: 4px;
+  border: 1px solid $mainBorderColor;
+
+  &:hover,
+  &:focus {
+    border-color: $secondBorderColor;
+  }
+}
+
+:global(.colorPickerCover) {
+  position: fixed;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  left: 0px;
+}
+
+:global(.colorPickerOverlay) {
+  position: fixed;
+  top: 0;
+  left: 0;
+
+  width: 100vw;
+  height: 100vh;
+}
+
+:global(.colorPicker) {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 0;
+  z-index: 2;
+}
+
+:global(.colorField) {
+  flex: 1 1 50px;
+  min-width: 0;
+  width: 100%;
+  margin-right: 10px;
+  padding: $propsPanelInputsPadding;
+  box-sizing: border-box;
+
+  @include props_panel_text;
+  font-weight: 400;
+
+  border: 1px solid $mainBorderColor;
+  border-radius: 3px;
+  outline: none;
+
+  &:last-of-type {
+    margin-right: 0;
+  }
+
+  &:hover,
+  &:focus {
+    border-color: $secondBorderColor;
+  }
+}
+
+.editorRightPanel {
+  display: flex;
+  flex: 0 0 $rightPanel_width;
+  flex-direction: column;
+  margin-top: 10px;
+
+  @include props_panel_text;
+
+  overflow-x: hidden;
+}
+

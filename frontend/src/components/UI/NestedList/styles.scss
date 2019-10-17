@@ -1,0 +1,88 @@
+.nestedList {
+  .listItem {
+    display: flex;
+    justify-content: space-between;
+    box-sizing: border-box;
+
+    color: $mainTextColor;
+    font-size: 12px;
+    line-height: 14px;
+    font-weight: 400;
+
+    border-bottom: 1px solid transparent;
+
+    &:hover {
+      border-color: $mainBorderColor;
+    }
+
+    &_active {
+      background-color: $mainBorderColor;
+
+      &:hover {
+        box-shadow: none;
+      }
+    }
+  }
+
+  .labelBlock {
+    display: flex;
+    align-items: center;
+  }
+
+  .containerIcons {
+    display: flex;
+    align-items: center;
+
+    cursor: pointer;
+  }
+
+  .containerIcon {
+    & svg {
+      margin-right: 10px;
+
+      fill: $panelBtnColor;
+
+    }
+
+    &:last-child svg{
+      margin-right: 0;
+    }
+
+    &:hover svg,
+    &:focus svg {
+      fill: darken($panelBtnColor, 10%);
+    }
+
+    &:active svg {
+      fill: darken($panelBtnColor, 20%);
+    }
+  }
+
+  .listElements {
+    margin-left: 8px;
+
+    border-bottom: 1px solid transparent;
+
+    &:first-of-type {
+      margin-top: 10px;
+    }
+
+    &:hover {
+      border-bottom: 1px solid $mainBorderColor;
+    }
+  }
+
+  .listElementsItem {
+    margin-bottom: 5px;
+    padding: 5px 0;
+    padding-left: 25px;
+    box-sizing: border-box;
+
+    color: #6b6b6b;
+    font-size: 12px;
+    line-height: 14px;
+    font-weight: 400;
+
+    user-select: none;
+  }
+}

@@ -1,0 +1,30 @@
+import React, { memo, useCallback } from 'react';
+import { IActiveItem } from '$components/Editor/EditorWindow';
+import { Button } from '$components/UI/Button';
+import { Icon } from '$components/UI/Icon';
+import { IRightPanelProps } from '$components/RightPanel/MainPanel/';
+
+const styles = require('./styles.scss');
+
+interface INavigateItemProps {
+  activeItem: IActiveItem,
+  addContainer: IRightPanelProps['addContainer'],
+
+}
+export const NavigateItem: React.FunctionComponent<INavigateItemProps> = memo(({
+  activeItem,
+  addContainer,
+}) => {
+  const handleShowNav = useCallback(() => {
+    addContainer(activeItem.itemId);
+  }, [activeItem, addContainer]);
+  return (
+    <div className={styles.wrapper}>
+      <Button
+        onClick={handleShowNav}
+      >
+        <Icon icon="put-in" />
+      </Button>
+    </div>
+  );
+});
