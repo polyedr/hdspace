@@ -2,7 +2,9 @@ import { SagaIterator } from 'redux-saga';
 import {
   put, call, select,
 } from 'redux-saga/effects';
+import { push } from 'connected-react-router';
 
+import { AppReduxState } from '$shared/types/app';
 import { IListProject, IProject } from '$redux/project/reducer';
 import { activateScreenSaga } from '$redux/project/sagas/screen';
 import * as Actions from '$redux/project/actions';
@@ -69,9 +71,10 @@ export function* getProjectSaga({ id }: ReturnType<typeof Actions.getProject>) {
 export function* addProjectSaga({ name }: ReturnType<typeof Actions.addProject>): SagaIterator {
   const result: IListProject = yield call(reqWrapper, apiAddProject, { data: { name, status: 'pending' } });
 
-  const { project: { listProject } } = yield select(state => state);
+  const { project: { listProject } }: AppReduxState = yield select();
 
   yield put(Actions.setListProject([...listProject, result]));
+  yield put(push(`project/${result.id}`));
 }
 
 export function* delProjectSaga({ id }: ReturnType<typeof Actions.delProject>): SagaIterator {

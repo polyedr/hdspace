@@ -66,7 +66,7 @@ export const Projects: React.FunctionComponent<IProjectsProps> = memo(({
   }, []);
 
   const handleCreateProject = useCallback(() => {
-    if (newProjectName.length) {
+    if (newProjectName.trim().length) {
       createProject(newProjectName);
       closeModal();
     } else {
@@ -252,6 +252,7 @@ export const Projects: React.FunctionComponent<IProjectsProps> = memo(({
               placeholder="Project name"
               onChange={changeProjectName}
               required
+              autoFocus
             />
             { newProjectDanger
               && <p>This field is required.</p>
