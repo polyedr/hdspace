@@ -1,4 +1,4 @@
-import React, { useState, useCallback, memo } from 'react';
+import React, { useState, useCallback, memo, useEffect } from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 
@@ -11,6 +11,7 @@ import { MODAL_ADD_ELEMENTS_TABS } from '$constants/defaultParams';
 import { getGroupElements, IListCategoryEl, parseAddElementsTabs } from '$utils/parseScenario';
 import { strToNumber } from '$utils/NumberHelper';
 import * as Actions from '$redux/project/actions';
+import { AppReduxState } from '$shared/types/app';
 
 const styles = require('./styles.scss');
 
@@ -20,12 +21,19 @@ export interface IChooseElement {
   img?: IUploadFile,
 }
 
+function mapStateToProps(state: AppReduxState) {
+  return {
+    uploadedImageInfo: state.project.uploadedImageInfo,
+    currentScreen: state.project.currentScreen,
+  };
+}
+
 const mapDispatchToProps = {
-  uploadFile: Actions.uploadFile,
   getScreenNN: Actions.getScreenNN,
+  uploadImg: Actions.uploadFile,
 };
 
-type TModalAddElementsProps = typeof mapDispatchToProps & {
+type TModalAddElementsProps = typeof mapDispatchToProps & ReturnType<typeof mapStateToProps> & {
   active: boolean,
   scenarios: IPanelEditProps['scenarios'],
   libraryElements: IPanelEditProps['libraryElements'],
@@ -33,14 +41,18 @@ type TModalAddElementsProps = typeof mapDispatchToProps & {
   onConfirm: (id: number, name: string, elements: IChooseElement[], parent) => void,
 }
 
-const Component: React.FunctionComponent<TModalAddElementsProps> = memo(({
-  active,
-  scenarios,
-  libraryElements,
-  onClose,
-  onConfirm,
-  getScreenNN,
-}) => {
+const Component: React.FunctionComponent<TModalAddElementsProps> = memo((props) => {
+  const {
+    active,
+    scenarios,
+    libraryElements,
+    onClose,
+    onConfirm,
+    getScreenNN,
+    uploadImg,
+    uploadedImageInfo,
+    currentScreen,
+  } = props;
   const [activeTab, setActiveTab] = useState<string>('Screen');
   const [errorMsg, setErrorMsg] = React.useState<string>('');
   const [listElement, setListElement] = useState<IListCategoryEl>({});
@@ -48,7 +60,17 @@ const Component: React.FunctionComponent<TModalAddElementsProps> = memo(({
   const [scenarioState, setScenarioState] = useState<string>('scenario_new');
   const [scenarioName, setScenarioName] = React.useState<string>('');
   const [scenarioTypeId, setScenarioTypeId] = React.useState<number>(null);
-  const [uploadImg, setUploadImg] = useState<IUploadFile>(null);
+  const [imageToUpload, setUploadImg] = useState<IUploadFile>(null);
+
+  const imageURLToAccess = uploadedImageInfo && currentScreen.id === uploadedImageInfo.screenID
+    ? uploadedImageInfo.imageURL
+    : currentScreen.image;
+  
+  useEffect(() => {
+    if (imageToUpload) {
+      uploadImg({ file: imageToUpload });
+    }
+  }, [imageToUpload]);
 
   const handleScenarioStateChange = useCallback((scenarioType) => {
     setScenarioState(scenarioType);
@@ -169,6 +191,11 @@ const Component: React.FunctionComponent<TModalAddElementsProps> = memo(({
                   </li>
                 </ul>
               </div>
+              {imageURLToAccess && (
+                <div>Current screen has screenshot and you can access it by
+                  <a target="_blank" href={imageURLToAccess}>this link</a>.
+                </div>
+              )}
               { /* '-------- TEST RESULT NEURAL NETWORK --------' */ }
               <Button
                 type="primary"
@@ -229,4 +256,4 @@ const Component: React.FunctionComponent<TModalAddElementsProps> = memo(({
   ) : null;
 });
 
-export const ModalAddElements = connect(null, mapDispatchToProps)(Component);
+export const ModalAddElements = connect(mapStateToProps, mapDispatchToProps)(Component);

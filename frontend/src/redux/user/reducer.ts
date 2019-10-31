@@ -37,7 +37,7 @@ interface ActionHandler<T> {
     (state: IRootState, payload: UnsafeReturnType<T>): IRootState;
 }
 
-const changeMinLPanel: ActionHandler<typeof ACTIONS.changeMinLPanel> = state => ({
+const changeMinLPanel: ActionHandler<ReturnType<typeof ACTIONS.changeMinLPanel>> = state => ({
   ...state,
   isLPanelMinimized: !state.isLPanelMinimized,
 });
@@ -113,7 +113,7 @@ const HANDLERS = {
   [TYPES.SET_API_ERROR]: setApiResponseError,
   [TYPES.SET_RESTORE_PASSWORD_EMAIL]: setRestorePasswordEmail,
   [TYPES.SET_RESTORE_USER_ID]: setRestoreUserId,
-};
+} as const;
 
 const INITIAL_STATE: IRootState = {
   isLPanelMinimized: false,

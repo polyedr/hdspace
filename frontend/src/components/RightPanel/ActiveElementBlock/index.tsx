@@ -21,15 +21,16 @@ interface IComponentProps {
   addContainer: IRightPanelProps['addContainer'],
 }
 
-export const ActiveElementBlock: React.FunctionComponent<IComponentProps> = memo(({
-  activeItem,
-  disablePanel,
-  onDelScenarioItem,
-  scenarios,
-  libraryElements,
-  addScenario,
-  addContainer,
-}) => {
+export const ActiveElementBlock: React.FunctionComponent<IComponentProps> = memo((props) => {
+  const {
+    activeItem,
+    disablePanel,
+    onDelScenarioItem,
+    scenarios,
+    libraryElements,
+    addScenario,
+    addContainer,
+  } = props;
   const [activeModal, setActiveModal] = useState<boolean>(false);
   const [modalDeleteElementOpen, setModalDeleteElementOpen] = useState<boolean>(false);
 

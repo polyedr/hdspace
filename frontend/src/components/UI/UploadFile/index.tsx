@@ -26,25 +26,24 @@ export const UploadFile: React.FunctionComponent<IUploadImagesProps> = memo(({
     e.preventDefault();
 
     const reader = new FileReader();
-    const file: any = e.target.files[0];
-
+    const file = e.target.files[0];
     // show loader
 
-    reader.onloadend = () => {
-      if (file.size > 150000) {
-        // console.error(`'${file.name}' is too large, please pick a smaller file`);
-        // return;
-      }
+    // reader.onloadend = () => {
+    //   if (file.size > 150000) {
+    //     // console.error(`'${file.name}' is too large, please pick a smaller file`);
+    //     // return;
+    //   }
 
-      if (!format.length && !file.type.match('image.*')) {
-        // console.error(`'${file.type}' is not a supported format`);
-        // return;
-      }
-
-      uploadFile({ file, imgPreviewUrl: reader.result });
-    };
-
-    reader.readAsDataURL(file);
+    //   if (!format.length && !file.type.match('image.*')) {
+    //     // console.error(`'${file.type}' is not a supported format`);
+    //     // return;
+    //   }
+      
+    //   uploadFile({ file, imgPreviewUrl: reader.result });
+    // };
+    uploadFile({ file, imgPreviewUrl: reader.result });
+    // reader.readAsDataURL(file);
   }, [format, uploadFile]);
 
   return active ? (

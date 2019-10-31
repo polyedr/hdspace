@@ -10,6 +10,7 @@ import * as R from 'ramda';
 import { REHYDRATE } from 'redux-persist';
 import { LOCATION_CHANGE, LocationChangeAction } from 'connected-react-router';
 
+import { AppReduxState } from '$shared/types/app';
 import { TYPES } from '$constants/actions';
 import * as Actions from '$redux/project/actions';
 import * as screenSaga from '$redux/project/sagas/screen';
@@ -35,6 +36,7 @@ import {
   apiGetLibraryElements,
   apiGetElements,
   apiDelElement,
+  uploadImageForNN,
 } from '$api/element';
 import { setTokenPair, setLoadedToken } from '$redux/user/actions';
 import { MAX_TOKEN_TRIALS } from '$config/settings';
@@ -50,7 +52,6 @@ import * as PATH_NAMES from '$constants/pathNames';
 import { DEFAULT_AUTHORISATION_TOKEN } from '$constants/defaultParams';
 import { findParentType, getParams, getScenarioId } from '$utils/parseScenario';
 import { apiSaveScenarios } from '$api/scenario';
-
 
 function* LocationChange({ payload: { location } }: LocationChangeAction) {
   const { user: { tokenPair } } = yield select(state => state);
@@ -623,9 +624,25 @@ function* getElements() {
 }
 
 function* uploadFileSaga(
-  { file }: ReturnType<typeof Actions.uploadFile>
-): SagaIterator {
-  console.log(file);
+  { payload: { file: { file } } }: ReturnType<typeof Actions.uploadFile>
+) {
+  try {
+    const state: AppReduxState = yield select();
+    const currentScreenID = state.project.currentScreen.id;
+  
+    const formData = new FormData();
+    formData.append('image', new Blob([file]), file.name);
+  
+    const { image: imageURL } = yield call(reqWrapper, uploadImageForNN, {
+      screenID: currentScreenID,
+      data: formData,
+      contentType: 'multipart/form-data',
+    });
+
+    yield put(Actions.uploadImageForNNSuccess({ imageURL, screenID: currentScreenID }));
+  } catch (e) {
+    console.error('Could not upload image for NN. Error: ', e.message);
+  }
 }
 
 export default function* projectSaga() {
