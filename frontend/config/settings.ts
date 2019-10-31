@@ -11,13 +11,13 @@ const settings = {
   },
   development: {
     api: {
-      host: 'http://101.0.72.82:8000',
+      host: 'https://staging.app.adevi.io:8000',
       version: 1,
     },
   },
   production: {
     api: {
-      host: '//101.0.72.82:8000',
+      host: 'https://staging.app.adevi.io:8000',
       version: 1,
     },
   },
@@ -32,7 +32,6 @@ export const { api } = settings[env] || settings.test;
 //   && getAccessTokenFromStorage() !== ''
 //   && `Bearer ${getAccessTokenFromStorage()}`
 // ) || '';
-
 export const client = axios.create({
   baseURL: `${api.host}/api/v${api.version}`,
   headers: {

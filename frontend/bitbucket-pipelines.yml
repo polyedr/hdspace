@@ -1,0 +1,13 @@
+image: node:10.15.3
+
+pipelines:
+  branches:
+    master:
+      - step:
+         script:
+          - npm install
+          - npm install -g firebase-tools
+          - npm run build
+          - cp -r dist/ firebase/dist/
+          - cd firebase
+          - firebase deploy --token $FIREBASE_DEPLOY_KEY
