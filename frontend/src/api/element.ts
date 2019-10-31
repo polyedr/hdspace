@@ -57,3 +57,13 @@ export const apiAddElements = (props): Promise<IScenarioElement[]> => (
     .then(parseResult)
     .catch(onError)
 );
+
+export const uploadImageForNN = ({ screenID, ...props}) => (
+  myAxios({
+    ...props,
+    method: 'PATCH',
+    url: `/projects/project-screens/${screenID}/`,
+  })
+    .then(parseResult)
+    .catch(onError)
+);

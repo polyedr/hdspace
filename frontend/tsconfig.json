@@ -21,11 +21,13 @@
       "$redux/*": [ "src/redux/*" ],
       "$utils/*": [ "src/utils/*" ],
       "$api/*": [ "src/api/*" ],
-      "$test/*": [ "./test/*" ]
+      "$test/*": [ "./test/*" ],
+      "$shared/*": [ "src/shared/*" ],
     }
   },
   "include": [
-    "./src/index.tsx",
+    //"./src/index.tsx",
+    "src/**/*"
     // "./src/**/*",
   ]
 }

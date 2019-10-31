@@ -227,10 +227,15 @@ export const setModifyElements = (elements: number[]) => ({
   elements,
 });
 
-export const uploadFile = (file: any) => ({
+export const uploadFile = (payload: { file: any }) => ({
   type: TYPES.UPLOAD_FILE,
-  file,
+  payload,
 });
+
+export const uploadImageForNNSuccess = (payload: { imageURL: string, screenID: number }) => ({
+  type: TYPES.UPLOAD_IMAGE_FOR_NN_SUCCESS,
+  payload,
+})
 
 export const getScreenNN = () => ({ type: TYPES.GET_SCREEN_NN });
 

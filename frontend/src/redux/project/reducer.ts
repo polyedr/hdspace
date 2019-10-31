@@ -240,6 +240,11 @@ export interface IProject {
   projectLoader?: boolean,
 }
 
+export type UploadedImageInfo = {
+  imageURL: string;
+  screenID: number;
+}
+
 export type IRootState = Readonly<{
   listProject: IListProject[],
   currentProject: IProject,
@@ -251,6 +256,7 @@ export type IRootState = Readonly<{
   scenarioLoader?: boolean,
   libraryElements: ILibraryElements,
   modifyElements: number[],
+  uploadedImageInfo?: UploadedImageInfo;
 }>;
 
 interface ActionHandler<T> {
@@ -321,6 +327,13 @@ const setModifyElements: ActionHandler<typeof ACTIONS.setModifyElements> = (
   modifyElements: elements,
 });
 
+const uploadImageForNNSuccess: ActionHandler<typeof ACTIONS.uploadImageForNNSuccess> = (
+  state, { payload: uploadedImageInfo },
+) => ({
+  ...state,
+  uploadedImageInfo,
+});
+
 const HANDLERS = {
   [TYPES.SET_LIST_PROJECT]: setListProject,
   [TYPES.SET_LIST_PROJECT_LOADER]: setLoaderListProject,
@@ -334,6 +347,7 @@ const HANDLERS = {
   [TYPES.SET_ELEMENTS]: setElements,
   [TYPES.SET_LIBRARY_ELEMENTS]: setLibraryElements,
   [TYPES.SET_MODIFY_ELEMENTS]: setModifyElements,
+  [TYPES.UPLOAD_IMAGE_FOR_NN_SUCCESS]: uploadImageForNNSuccess,
 };
 
 const INITIAL_STATE: IRootState = {

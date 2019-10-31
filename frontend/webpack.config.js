@@ -2,7 +2,8 @@ const webpack = require('webpack');
 const HtmlWebPackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
-const { join } = require('path');
+const path = require('path');
+const { join } = path;
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 
 const htmlPlugin = new HtmlWebPackPlugin({
@@ -34,6 +35,7 @@ const resolve = {
     $utils: join(__dirname, 'src/utils'),
     $test: join(__dirname, 'test'),
     $api: join(__dirname, 'src/api'),
+    $shared: join(__dirname, 'src/shared'),
   },
   extensions: ['*', '.ts', '.tsx', '.js', '.jsx', '.json'],
 };
