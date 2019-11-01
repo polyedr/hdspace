@@ -1,9 +1,12 @@
-import { client, myAxios } from '$config/settings';
+import { myAxios } from '$config/settings';
 import { onError, parseResult } from '$api/project';
 import { IScenarioElement } from '$redux/project/reducer';
 
 export const apiGetLibraryElements = () => (
-  client.get('/projects/library-elements/')
+  myAxios({
+    method: 'GET',
+    url: '/projects/library-elements/',
+  })
     .then(parseResult)
     .catch(onError)
 );

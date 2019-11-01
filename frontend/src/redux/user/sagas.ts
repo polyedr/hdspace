@@ -69,9 +69,10 @@ function* setNewUserSaga(
 
 export function* refreshUserTokenPair() {
   const { user: { tokenPair: { refresh } } } = yield select(state => state);
-  const access_result = yield call(apiRefreshToken, refresh);
 
-  if (access_result.access) {
+  const access_result = refresh && (yield call(apiRefreshToken, refresh));
+
+  if (access_result && access_result.access) {
     return { refresh, access: access_result.access };
   }
 

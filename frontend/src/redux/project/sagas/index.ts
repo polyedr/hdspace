@@ -11,6 +11,7 @@ import { REHYDRATE } from 'redux-persist';
 import { LOCATION_CHANGE, LocationChangeAction } from 'connected-react-router';
 
 import { AppReduxState } from '$shared/types/app';
+import { ReturnPromisedType } from '$shared/types';
 import { TYPES } from '$constants/actions';
 import * as Actions from '$redux/project/actions';
 import * as screenSaga from '$redux/project/sagas/screen';
@@ -115,7 +116,7 @@ export function* reqWrapper(
 
 function* authCheckSaga() {
   // TODO: temporary realisation
-  const result = yield call(reqWrapper, apiGetLibraryElements);
+  const result: ReturnPromisedType<typeof apiGetLibraryElements> = yield call(reqWrapper, apiGetLibraryElements);
 
   if (!result) return;
 
