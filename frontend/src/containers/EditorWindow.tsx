@@ -17,13 +17,13 @@ const styles = require('$styles/global.scss');
 
 const mapStateToProps = ({
   user: { isLPanelMinimized, tokenPair, userData: { username } },
-  project: { listProject },
+  project: { listProject: projects },
   router: { location: { pathname } },
 }) => ({
   isLPanelMinimized,
   tokenPair,
   username,
-  listProject,
+  projects,
   pathname,
 });
 
@@ -43,7 +43,7 @@ const EditorWindow: React.FunctionComponent<IAppProps> = ({
   tokenPair,
   setListProject,
   username,
-  listProject,
+  projects,
   pathname,
   getListProject,
   changeMinLPanel,
@@ -52,7 +52,7 @@ const EditorWindow: React.FunctionComponent<IAppProps> = ({
   <React.Fragment>
     <LeftPanel
       pathname={pathname}
-      listProject={listProject}
+      projects={projects}
       username={username}
       userType="Web Developer"
       isLPanelMinimized={isLPanelMinimized}

@@ -82,7 +82,7 @@ const NavPanelScreen: React.FunctionComponent<INavPanelScreenProps> = ({
 
   const handleAddScreen = useCallback((event: React.FormEvent) => {
     event.preventDefault();
-    if (screenName === '') {
+    if (screenName.trim() === '') {
       setModalMsgDanger('Name not specified');
     } else {
       addScreen(projectId, screenName);
@@ -234,6 +234,7 @@ const NavPanelScreen: React.FunctionComponent<INavPanelScreenProps> = ({
               value={screenName}
               placeholder="Screen name"
               onChange={changeScreenName}
+              autoFocus
             />
             {modalMsgDanger && <p>{modalMsgDanger}</p>
             }

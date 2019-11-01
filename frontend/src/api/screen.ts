@@ -23,7 +23,7 @@ export const apiGetAllScreen = (props): Promise<IProjectScreen[]> => (
     .catch(onError)
 );
 
-export const apiAddScreen = (props): Promise<IProject> => (
+export const apiAddScreen = (props): Promise<IProjectScreen> => (
   myAxios({
     ...props,
     method: 'POST',
