@@ -40,8 +40,6 @@ const NavPanelScreen: React.FunctionComponent<INavPanelScreenProps> = ({
   delScreen,
   renameScreen,
 }) => {
-  const [screenName, setScreenName] = React.useState<string>('');
-  const [modalOpen, setModalOpen] = React.useState<boolean>(false);
   const [modalRenameScreenOpen, setModalRenameScreenOpen] = React.useState<boolean>(false);
   const [changeScreen, setChangeScreen] = React.useState({ id: -1, name: '' });
   const [newScreenName, setNewScreenName] = React.useState<string>('');
@@ -58,37 +56,20 @@ const NavPanelScreen: React.FunctionComponent<INavPanelScreenProps> = ({
     activateScreen(projectId, id);
   }, [screen, projectId, activateScreen]);
 
-  const changeScreenName = useCallback((e) => {
-    setScreenName(e.target.value);
-    setModalMsgDanger('');
-  }, []);
-
   const changeNewScreenName = useCallback((e) => {
     setNewScreenName(e.target.value);
     setModalMsgDanger('');
   }, []);
 
-  const openModal = useCallback(() => {
-    setModalOpen(true);
-  }, []);
-
   const cancelModal = useCallback(() => {
-    setScreenName('');
     setModalMsgDanger('');
-    setModalOpen(false);
     setModalRenameScreenOpen(false);
     setModalDellScreen(false);
   }, []);
 
-  const handleAddScreen = useCallback((event: React.FormEvent) => {
-    event.preventDefault();
-    if (screenName === '') {
-      setModalMsgDanger('Name not specified');
-    } else {
-      addScreen(projectId, screenName);
-      cancelModal();
-    }
-  }, [screenName, projectId, addScreen, cancelModal]);
+  const handleScreenAdd = useCallback(() => {
+    addScreen(projectId, 'Screen');
+  }, [projectId]);
 
   const handleRenameScreen = useCallback((e, id: number, name: string) => {
     e.preventDefault();
@@ -212,34 +193,12 @@ const NavPanelScreen: React.FunctionComponent<INavPanelScreenProps> = ({
           <Button
             className={classNames(styles.addScreenBtn)}
             styleType="confirm"
-            onClick={openModal}
+            onClick={handleScreenAdd}
           >
             <Icon icon="add" size={16} />
           </Button>
         </div>
       </div>
-      {modalOpen && (
-        <Modal
-          animClassName="bubbleAnimation"
-          title="Add Screen"
-          confirmText="Add"
-          onConfirm={handleAddScreen}
-          cancelText="Close"
-          onClose={cancelModal}
-        >
-          <div className={styles.modalBody}>
-            <input
-              type="text"
-              className={styles.screenName}
-              value={screenName}
-              placeholder="Screen name"
-              onChange={changeScreenName}
-            />
-            {modalMsgDanger && <p>{modalMsgDanger}</p>
-            }
-          </div>
-        </Modal>
-      )}
       {modalRenameScreenOpen && (
         <Modal
           animClassName="bubbleAnimation"

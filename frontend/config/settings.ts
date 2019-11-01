@@ -32,16 +32,9 @@ export const { api } = settings[env] || settings.test;
 //   && getAccessTokenFromStorage() !== ''
 //   && `Bearer ${getAccessTokenFromStorage()}`
 // ) || '';
-export const client = axios.create({
-  baseURL: `${api.host}/api/v${api.version}`,
-  headers: {
-    'Content-Type': 'application/json',
-    // version: "1.1.0",
-  },
-});
 
 export const myAxios = (props) => {
-  const authorization = (props.access !== '' && { Authorization: `Bearer ${props.access}` }) || {};
+  const authorization = props.access ? { Authorization: `Bearer ${props.access}` } : {};
 
   return axios({
     method: props.method,

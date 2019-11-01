@@ -12,7 +12,7 @@ const mapStateToProps = ({ project: { listProject, listProjectLoader } }) => ({
 });
 
 const mapDispatchToProps = {
-  createProject: Actions.addProject,
+  addProject: Actions.addProject,
   delProject: Actions.delProject,
   renameProject: Actions.renameProject,
 };
@@ -23,14 +23,14 @@ const ProjectsLogic: React.FunctionComponent<IDashboardProps> = ({
   listProject,
   listProjectLoader,
 
-  createProject,
+  addProject,
   delProject,
   renameProject,
 }) => (
   <React.Fragment>
     <Projects
       listProject={listProject}
-      createProject={createProject}
+      addProject={addProject}
       delProject={delProject}
       renameProject={renameProject}
     />

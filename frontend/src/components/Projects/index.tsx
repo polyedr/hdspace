@@ -16,23 +16,21 @@ const styles = require('./styles.scss');
 
 interface IProjectsProps {
   listProject: IListProject[],
-  createProject: typeof Actions.addProject,
+  addProject: typeof Actions.addProject,
   delProject: typeof Actions.delProject,
   renameProject: typeof Actions.renameProject,
 }
 
 export const Projects: React.FunctionComponent<IProjectsProps> = memo(({
   listProject,
-  createProject,
+  addProject,
   delProject,
   renameProject,
 }) => {
   const [search, setSearch] = useState('');
   const [newProjectName, setNewProjectName] = useState('');
-  const [newProjectDanger, setNewProjectDanger] = useState(false);
   const [selectAll, setSelectAll] = useState(false);
   const [changeProject, setChangeProject] = useState({ id: -1, name: '' });
-  const [modalCreateProjectOpen, setModalCreateProjectOpen] = useState(false);
   const [modalRenameProjectOpen, setModalRenameProjectOpen] = useState(false);
   const [modalDeleteProjectOpen, setModalDeleteProjectOpen] = useState(false);
 
@@ -49,30 +47,15 @@ export const Projects: React.FunctionComponent<IProjectsProps> = memo(({
     setSelectAll(e.target.checked);
   }, []);
 
-  const changeProjectName = useCallback((e) => {
-    setNewProjectName(e.target.value);
-  }, []);
-
-  const openModalCreateProject = useCallback(() => {
-    setModalCreateProjectOpen(true);
+  const handleProjectAdd = useCallback(() => {
+    addProject('Untitled');
   }, []);
 
   const closeModal = useCallback(() => {
     setNewProjectName('');
-    setNewProjectDanger(false);
-    setModalCreateProjectOpen(false);
     setModalRenameProjectOpen(false);
     setModalDeleteProjectOpen(false);
   }, []);
-
-  const handleCreateProject = useCallback(() => {
-    if (newProjectName.trim().length) {
-      createProject(newProjectName);
-      closeModal();
-    } else {
-      setNewProjectDanger(true);
-    }
-  }, [newProjectName, closeModal, createProject]);
 
   const handleRenameProject = useCallback((item) => {
     setChangeProject({ id: item.id, name: item.name });
@@ -85,7 +68,7 @@ export const Projects: React.FunctionComponent<IProjectsProps> = memo(({
     setModalDeleteProjectOpen(true);
   }, []);
 
-  const handleChnageNewProjectName = useCallback(({ target: { value } }) => {
+  const handleNewProjectNameChange = useCallback(({ target: { value } }) => {
     setNewProjectName(value);
   }, []);
 
@@ -109,7 +92,7 @@ export const Projects: React.FunctionComponent<IProjectsProps> = memo(({
     console.log('payment', id);
   }, []);
 
-  const dowloadProject = useCallback((id: number) => {
+  const downloadProject = useCallback((id: number) => {
     console.log('download', id);
   }, []);
 
@@ -125,7 +108,7 @@ export const Projects: React.FunctionComponent<IProjectsProps> = memo(({
             <span>Your Cart</span>
           </Button>
           <Button
-            onClick={openModalCreateProject}
+            onClick={handleProjectAdd}
             className={styles.projectsHeaderBtn}
           >
             Create a project
@@ -212,7 +195,7 @@ export const Projects: React.FunctionComponent<IProjectsProps> = memo(({
                       <Button
                         className={styles.tableBtn}
                         styleType="none"
-                        onClick={() => dowloadProject(item.id)}
+                        onClick={() => downloadProject(item.id)}
                       >
                         <Icon icon="cloud-upload" size={20} />
                       </Button>
@@ -230,37 +213,6 @@ export const Projects: React.FunctionComponent<IProjectsProps> = memo(({
           </Button>
         </div>
       </div>
-      { modalCreateProjectOpen
-        && (
-        <Modal
-          animClassName="bubbleAnimation"
-          title=""
-          confirmText="Create"
-          onConfirm={handleCreateProject}
-          cancelText="Close"
-          onClose={closeModal}
-        >
-          <div className={styles.modalBody}>
-            <i className="material-icons">
-              laptop_mac
-            </i>
-            <h6>Create Project</h6>
-            <input
-              className="modalTextInput"
-              type="text"
-              value={newProjectName}
-              placeholder="Project name"
-              onChange={changeProjectName}
-              required
-              autoFocus
-            />
-            { newProjectDanger
-              && <p>This field is required.</p>
-            }
-          </div>
-        </Modal>
-        )
-      }
       { modalRenameProjectOpen && (
       <Modal
         animClassName="bubbleAnimation"
@@ -276,7 +228,7 @@ export const Projects: React.FunctionComponent<IProjectsProps> = memo(({
             className={styles.screenName}
             value={newProjectName}
             placeholder="New screen name"
-            onChange={handleChnageNewProjectName}
+            onChange={handleNewProjectNameChange}
           />
         </div>
       </Modal>

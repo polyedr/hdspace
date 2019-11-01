@@ -11,12 +11,13 @@ import { REHYDRATE } from 'redux-persist';
 import { LOCATION_CHANGE, LocationChangeAction } from 'connected-react-router';
 
 import { AppReduxState } from '$shared/types/app';
+import { ReturnPromisedType } from '$shared/types';
 import { TYPES } from '$constants/actions';
 import * as Actions from '$redux/project/actions';
 import * as screenSaga from '$redux/project/sagas/screen';
 import {
   getListProjectSaga,
-  addProjectSaga,
+  addProject,
   delProjectSaga,
   getProjectSaga,
   setProjectScreensSaga,
@@ -115,7 +116,7 @@ export function* reqWrapper(
 
 function* authCheckSaga() {
   // TODO: temporary realisation
-  const result = yield call(reqWrapper, apiGetLibraryElements);
+  const result: ReturnPromisedType<typeof apiGetLibraryElements> = yield call(reqWrapper, apiGetLibraryElements);
 
   if (!result) return;
 
@@ -651,7 +652,7 @@ export default function* projectSaga() {
   yield takeLatest(LOCATION_CHANGE, LocationChange);
 
   yield takeLatest(TYPES.GET_LIST_PROJECT, getListProjectSaga);
-  yield takeLatest(TYPES.ADD_PROJECT, addProjectSaga);
+  yield takeLatest(TYPES.ADD_PROJECT, addProject);
   yield takeLatest(TYPES.DEL_PROJECT, delProjectSaga);
   yield takeLatest(TYPES.GET_PROJECT, getProjectSaga);
   yield takeLatest(TYPES.SET_PROJECT_SCREENS, setProjectScreensSaga);

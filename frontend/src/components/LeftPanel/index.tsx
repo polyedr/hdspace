@@ -20,7 +20,7 @@ const styles = require('./styles.scss');
 export interface ILeftPanel {
   pathname: IAppProps['pathname'],
   getListProject: IAppProps['getListProject']
-  listProject: IListProject[],
+  projects: IListProject[],
   username: string,
   userType: string,
   tokenPair: ITokenPair,
@@ -31,7 +31,7 @@ export interface ILeftPanel {
 
 export const LeftPanel: React.FunctionComponent<ILeftPanel> = ({
   pathname,
-  listProject,
+  projects,
   username,
   userType,
   tokenPair,
@@ -45,11 +45,11 @@ export const LeftPanel: React.FunctionComponent<ILeftPanel> = ({
   const [isLoadProjectData, setIsLoadProjectData] = useState(false);
 
   useLayoutEffect(() => {
-    if (getListProject && listProject.length === 0 && !isLoadProjectData) {
+    if (getListProject && projects.length === 0 && !isLoadProjectData) {
       getListProject();
       setIsLoadProjectData(true);
     }
-  }, [isLoadProjectData, getListProject, listProject]);
+  }, [isLoadProjectData, getListProject, projects]);
 
   const handleLogoutClick = useCallback(() => {
     if (tokenPair.access !== '') {
@@ -140,9 +140,9 @@ export const LeftPanel: React.FunctionComponent<ILeftPanel> = ({
                 trackStylesBg="transparent"
                 maxHeight={165}
               >
-                {listProject.map(element => (
+                {projects.map(project => (
                   <li
-                    key={element.id}
+                    key={project.id}
                     className={classNames(styles.navigationItem)}
                   >
                     <NavLink
@@ -151,7 +151,7 @@ export const LeftPanel: React.FunctionComponent<ILeftPanel> = ({
                       to={PATH_NAMES.projects}
                       activeClassName="active"
                     >
-                      <span>{element.name}</span>
+                      <span>{project.name}</span>
                     </NavLink>
                   </li>
                 ))}

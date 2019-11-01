@@ -1,4 +1,4 @@
-import { client } from '$config/settings';
+import { myAxios } from '$config/settings';
 import { onError, parseResult } from '$api/project';
 import { ISignInData } from '$redux/user/reducer';
 
@@ -45,16 +45,20 @@ export const onAuthorisationError = ({ response }) => {
 };
 
 export const apiGetToken = (data: ISignInData) => (
-  client.post('djauth/jwt/create/', {
-    ...data,
+  myAxios({
+    data,
+    method: 'POST',
+    url: '/djauth/jwt/create/',
   })
     .then(parseResult)
     .catch(onAuthorisationError)
 );
 
 export const apiRefreshToken = (refresh: string) => (
-  client.post('djauth/jwt/refresh/', {
-    refresh,
+  myAxios({
+    data: { refresh },
+    method: 'POST',
+    url: '/djauth/jwt/refresh/',
   })
     .then(parseResult)
     .catch(onError)
@@ -67,36 +71,49 @@ export const apiSetNewUser = ({
   first_name,
   last_name,
 } : ISignUpData) => (
-  client.post('/accounts/users/', {
-    username,
-    email,
-    first_name,
-    last_name,
-    password,
-    date_joined: new Date(),
-    is_active: true,
+  myAxios({
+    data: {
+      username,
+      email,
+      first_name,
+      last_name,
+      password,
+      date_joined: new Date(),
+      is_active: true,
+    },
+    method: 'POST',
+    url: '/accounts/users/',
   })
     .then(parseResult)
     .catch(onAuthorisationError)
 );
 
 export const apiRestorePassword = (email: string) => (
-  client.post('djauth/users/reset_password/', {
-    email,
+  myAxios({
+    data: { email },
+    method: 'POST',
+    url: '/djauth/users/reset_password/',
   })
     .then(parseResult)
     .catch(onError)
 );
 
 export const apiGetUsers = () => (
-  client.get('accounts/users/')
+  myAxios({
+    method: 'GET',
+    url: '/accounts/users/',
+  })
     .then(parseResult)
     .catch(onAuthorisationError)
 );
 
 export const apiSetNewPassword = (id: number, password: string) => (
-  client.patch(`accounts/users/${id}/`, {
-    password,
+  myAxios({
+    data: {
+      password,
+    },
+    method: 'PATCH',
+    url: `/accounts/users/${id}/`,
   })
     .then(parseResult)
     .catch(onAuthorisationError)

@@ -36,7 +36,8 @@ import {
   apiGetScreen,
   apiSaveScreen,
 } from '$api/screen';
-import { getListProjectSaga } from '$redux/project/sagas/project';
+import { ReturnPromisedType } from '$shared/types';
+
 import { reqWrapper } from '.';
 
 
@@ -75,14 +76,13 @@ export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
     screen_data_json: {},
     styles_root: {},
   };
-  const result = yield call(reqWrapper, apiAddScreen, { data });
+  const createdScreen: ReturnPromisedType<typeof apiAddScreen> = yield call(reqWrapper, apiAddScreen, { data });
+  if (!createdScreen) return;
 
-  if (!result) return;
-
-  const screen: IProjectScreen = R.omit(
+  const screen = R.omit(
     ['screen_data_json', 'screen_data_text'],
-    R.assoc('listSortable', DEFAULT_LS, result),
-  ) as IProjectScreen;
+    R.assoc('listSortable', DEFAULT_LS, createdScreen),
+  );
 
   yield put(setScreen(screen));
   yield put(setScenarios({}));
@@ -95,7 +95,6 @@ export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
   );
 
   yield put(setProject(updateProject));
-  yield call(getListProjectSaga);
 }
 
 async function canvasToBlob(canvas: HTMLCanvasElement): Promise<Blob> {
