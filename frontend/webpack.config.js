@@ -70,7 +70,7 @@ module.exports = () => {
               loader: 'css-loader',
               options: {
                 modules: true,
-                sourceMap: true,
+                sourceMap: isDevelopment,
                 importLoaders: 2,
                 localIdentName: '[name]__[local]__[hash:base64:5]',
               },
@@ -91,7 +91,7 @@ module.exports = () => {
               loader: 'css-loader',
               options: {
                 modules: true,
-                sourceMap: true,
+                sourceMap: isDevelopment,
                 importLoaders: 2,
                 localIdentName: '[name]__[local]__[hash:base64:5]',
               },
@@ -112,7 +112,8 @@ module.exports = () => {
             loader: 'babel-loader',
           },
         },
-        { test: /\.(ts|tsx)?$/, loader: 'awesome-typescript-loader' },
+        { test: /\.(ts|tsx)?$/, loader: 'awesome-typescript-loader', 
+          options: { transpileOnly: !isDevelopment }},
         {
           test: /\.(eot|ttf|woff|woff2|otf)$/,
           use: {
@@ -132,7 +133,7 @@ module.exports = () => {
         },
       ],
     },
-    devtool,
+    devtool: isDevelopment ? devtool : undefined,
     resolve,
     plugins,
     entry: {
@@ -164,8 +165,8 @@ module.exports = () => {
       minimizer: [
         new UglifyJsPlugin({
           cache: true,
-          parallel: true,
-          sourceMap: true, // set to true if you want JS source maps
+          parallel: isDevelopment,
+          sourceMap: isDevelopment, // set to true if you want JS source maps
         }),
         new OptimizeCSSAssetsPlugin({}),
       ],
