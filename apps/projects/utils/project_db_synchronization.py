@@ -1,14 +1,17 @@
 import pymongo
 import imgkit
 
+from django.db import connection
+
 from bson.objectid import ObjectId
 
 from apps.virtualize.views import rewritePage
 
 client = pymongo.MongoClient('localhost', 27017)  # maxPoolSize=50
 db = client.MeduzaDb
-db_main = client.mainDB
-
+# TODO: Check, do we really need to use pymongo here
+main_db_name = connection.settings_dict['NAME']
+db_main = client[main_db_name]
 
 def create_project_data_db(project, secundary_id, current_user):
     user_id = db_main.accounts_user.find_one({'username': str(current_user)})['_id']
