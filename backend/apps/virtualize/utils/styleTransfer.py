@@ -1,12 +1,15 @@
 from pymongo import MongoClient
+from django.db import connection
+
 from apps.virtualize.utils.metaCustomUtils import get_collection
 import pymongo
 from bson.objectid import ObjectId
 
 client = pymongo.MongoClient('localhost', 27017)
 db = client.MeduzaDb
-db_main = client.mainDB
-
+# TODO: Check, do we really need to use pymongo here
+main_db_name = connection.settings_dict['NAME']
+db_main = client[main_db_name]
 
 def propertyTransfer(user,masterfile, screens_name,status):
 

@@ -2,13 +2,17 @@ import pymongo
 from PIL import Image
 from rest_framework import serializers
 
+from django.db import connection
+
 from apps.projects.models import ScenarioElement, ScreenScenario
 
 from apps.virtualize.utils.metaCustomUtils import *
 
 client = pymongo.MongoClient("localhost", 27017)  # maxPoolSize=50
 db = client.MeduzaDb
-db_main = client.mainDB
+# TODO: Check, do we really need to use pymongo here
+main_db_name = connection.settings_dict['NAME']
+db_main = client[main_db_name]
 
 
 class ScenarioElementSerializer(serializers.ModelSerializer):

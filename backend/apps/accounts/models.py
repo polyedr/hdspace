@@ -4,7 +4,7 @@ import datetime
 import pymongo
 
 from django.urls import reverse
-from django.db import models
+from django.db import models, connection
 from django.contrib.auth.models import AbstractUser
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.core.cache import cache
@@ -14,7 +14,9 @@ from apps.core.models import TimeStampedModel
 from .utils import utils
 
 client = pymongo.MongoClient("localhost", 27017)  # maxPoolSize=50
-db_main = client.mainDB
+# TODO: Check, do we really need to use pymongo here
+main_db_name = connection.settings_dict['NAME']
+db_main = client[main_db_name]
 
 __all__ = ("User", "Profile", "Team", "TeamMember")
 
