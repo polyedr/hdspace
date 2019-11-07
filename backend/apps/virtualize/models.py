@@ -6,6 +6,7 @@ import substring
 from bson.objectid import ObjectId
 from datetime import datetime
 
+from django.db import connection
 from django.shortcuts import render
 from django.urls import reverse
 
@@ -24,7 +25,9 @@ from apps.accounts.forms import SearchUserForm
 
 client = pymongo.MongoClient('localhost', 27017)  # maxPoolSize=50
 db = client.MeduzaDb
-db_main = client.mainDB
+# TODO: Check, do we really need to use pymongo here
+main_db_name = connection.settings_dict['NAME']
+db_main = client[main_db_name]
 
 
 # class Document(Document):
