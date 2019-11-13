@@ -344,6 +344,15 @@ class ScreenScenarioList(generics.ListCreateAPIView):
     queryset = ScreenScenario.objects.all()
     serializer_class = ScreenScenarioSerializer
 
+    def filter_queryset(self, queryset):
+        screen_id = self.request.query_params.get('screenId')
+
+        if screen_id and screen_id.isdigit():
+            queryset = queryset.filter(screen=screen_id)
+
+        return queryset
+
+
 
 class ScreenScenarioMultipleView(ListBulkCreateUpdateDestroyAPIView):
     """
@@ -399,6 +408,14 @@ class ScenarioElementList(generics.ListCreateAPIView):
 
     queryset = ScenarioElement.objects.all()
     serializer_class = ScenarioElementSerializer
+
+    def filter_queryset(self, queryset):
+        ids = self.request.query_params.get('scenariosIds')
+
+        if ids and all(isinstance(x, int) for x in ids.split(',')):
+            queryset = queryset.filter(scenario__in=ids.split(','))
+
+        return queryset
 
 
 class ScenarioElementCreateMultiple(generics.CreateAPIView):
