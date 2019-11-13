@@ -194,7 +194,7 @@ export function* createScenarioSaga(
 }
 
 export function* addScenarioSaga({
-  payload: { scenarioId = 0, name = 'new scenario', listElementType },
+  payload: { scenarioId = 0, name = 'Scenario name', listElementType },
 }: ReturnType<typeof Actions.addScenario>): SagaIterator {
   const {
     project: {

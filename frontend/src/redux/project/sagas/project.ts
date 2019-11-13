@@ -56,7 +56,7 @@ export function* getProjectSaga({ id }: ReturnType<typeof Actions.getProject>) {
       const screenId: number = result.projectscreen.length && result.projectscreen[0].id;
 
       if (screenId) {
-        yield call(activateScreenSaga, { payload: { projectId: id, screenId } });
+        yield call(activateScreenSaga, Actions.activateScreen(id, screenId));
       } else {
         yield put(Actions.setScreen(DEFAULT_SCREEN));
       }

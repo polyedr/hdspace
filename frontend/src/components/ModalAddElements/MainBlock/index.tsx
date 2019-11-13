@@ -94,9 +94,7 @@ const Component: React.FunctionComponent<TModalAddElementsProps> = memo((props) 
   const handleConfirm = useCallback((event) => {
     event.preventDefault();
 
-    if (scenarioState === 'scenario_new' && scenarioName === '') {
-      setErrorMsg('Specify the name of the new scenario.');
-    } else if (scenarioState === 'scenario_existing' && !scenarioTypeId) {
+    if (scenarioState === 'scenario_existing' && !scenarioTypeId) {
       setErrorMsg('Specify the scenario to add items.');
     } else if (!chooseElements.length) {
       setErrorMsg('No items for the scenario.');
@@ -107,10 +105,12 @@ const Component: React.FunctionComponent<TModalAddElementsProps> = memo((props) 
         children: [],
       };
 
+      const finalScenarioName = scenarioName.trim() || 'Scenario name';
+
       setErrorMsg('');
       setScenarioName('');
       setScenarioTypeId(null);
-      onConfirm(scenarioTypeId, scenarioName, chooseElements, parent);
+      onConfirm(scenarioTypeId, finalScenarioName, chooseElements, parent);
       onClose();
     }
   }, [
