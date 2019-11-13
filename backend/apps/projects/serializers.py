@@ -133,6 +133,11 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
         # extra_kwargs = {"elements": {"read_only": True}}
         # fields = "__all__"
 
+    @staticmethod
+    def setup_eager_loading(qs):
+        queryset = qs.prefetch_related('elements')
+        return queryset
+
 class ScreenScenarioCascadeSerializer(serializers.ModelSerializer):
     # elements = ScenarioElementSerializer(many=True, read_only=True)
     parameters = serializers.JSONField()

@@ -336,13 +336,12 @@ class CommentDetail(generics.RetrieveUpdateDestroyAPIView):
 
 
 # Scenarios with elements api views
-class ScreenScenarioList(generics.ListCreateAPIView):
-    """
-    List all screen scenarios, or create a new screen scenario.
-    """
-
+class ScreeScenarioViewSet(viewsets.ModelViewSet):
     queryset = ScreenScenario.objects.all()
     serializer_class = ScreenScenarioSerializer
+
+    def get_queryset(self):
+        return self.get_serializer_class().setup_eager_loading(self.queryset)
 
     def filter_queryset(self, queryset):
         screen_id = self.request.query_params.get('screenId')
@@ -353,7 +352,6 @@ class ScreenScenarioList(generics.ListCreateAPIView):
         return queryset
 
 
-
 class ScreenScenarioMultipleView(ListBulkCreateUpdateDestroyAPIView):
     """
     List all screen scenarios, or create multiple a new screen scenario or update multiple or destroy multiple.
@@ -361,15 +359,6 @@ class ScreenScenarioMultipleView(ListBulkCreateUpdateDestroyAPIView):
 
     queryset = ScreenScenario.objects.all()
     serializer_class = ScreenScenarioMultipleSerializer
-
-
-class ScreenScenarioDetail(generics.RetrieveUpdateDestroyAPIView):
-    """
-    Retrieve, update or delete a screen scenario
-    """
-
-    queryset = ScreenScenario.objects.all()
-    serializer_class = ScreenScenarioSerializer
 
 # This should be updated
 class ScreenScenarioDestroyCascadeViewSet(BulkModelViewSet):
@@ -401,11 +390,7 @@ class ScreenScenarioDestroyCascadeViewSet(BulkModelViewSet):
             return qs
 
 
-class ScenarioElementList(generics.ListCreateAPIView):
-    """
-    List all scenario elements, or create a new scenario element.
-    """
-
+class ScenarioElementViewSet(viewsets.ModelViewSet):
     queryset = ScenarioElement.objects.all()
     serializer_class = ScenarioElementSerializer
 
@@ -439,12 +424,3 @@ class ScenarioElementMultipleView(ListBulkCreateUpdateDestroyAPIView):
 
     queryset = ScenarioElement.objects.all()
     serializer_class = ScenarioElementMultipleSerializer
-
-
-class ScenarioElementDetail(generics.RetrieveUpdateDestroyAPIView):
-    """
-    Retrieve, update or delete a scenario element
-    """
-
-    queryset = ScenarioElement.objects.all()
-    serializer_class = ScenarioElementSerializer
