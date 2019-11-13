@@ -277,7 +277,7 @@ export const ActionsBlock: React.FunctionComponent<IActionsBlockProps> = ({
                   }
                 </div>
               </Scrollbar>
-              <p className={styles.contentTitle}>Step 3. Name a scenario</p>
+              <p className={styles.contentTitle}>Step 3. Name a scenario (optional)</p>
               <input
                 className={styles.contentTemplateField}
                 type="text"
