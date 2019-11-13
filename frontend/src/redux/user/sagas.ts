@@ -60,7 +60,7 @@ function* setNewUserSaga(
   });
 
   if (newUserData && newUserData.username && newUserData.password) {
-    yield call(getTokenPairSaga, { payload: { username, password } });
+    yield call(getTokenPairSaga, Actions.getTokenPair(username, password));
   } else {
     yield put(Actions.setApiResponseError(newUserData));
   }
