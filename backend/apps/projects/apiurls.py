@@ -30,10 +30,6 @@ from .apiviews import (
     TaskTimeDetail,
     ScreenCommentDetail,
     CommentDetail,
-    ScreenScenarioDetail,
-    ScenarioElementDetail,
-    ScreenScenarioList,
-    ScenarioElementList,
     # ElementList,
     ElementViewSet,
     ScenarioViewSet,
@@ -41,8 +37,10 @@ from .apiviews import (
     ScenarioElementMultipleViewSet,
     ScreenScenarioMultipleView,
     ProjectScreenMultipleView,
-
-    ScreenScenarioDestroyCascadeViewSet)
+    ScreenScenarioDestroyCascadeViewSet,
+    ScreeScenarioViewSet,
+    ScenarioElementViewSet
+)
 
 app_name = "projects"
 
@@ -96,40 +94,24 @@ api_project_screen_patterns = [
 
 api_screen_scenario_patterns = [
     path(
-        "screen-scenarios/", ScreenScenarioList.as_view(), name="api_screen_scenarios"
-    ),
-
-    path(
         "screen-scenarios-multiple/",
         ScreenScenarioMultipleView.as_view(),
         name="api_screen_scenarios_multiple",
-    ),
-    path(
-        "screen-scenarios/<int:pk>/",
-        ScreenScenarioDetail.as_view(),
-        name="api_screen_scenario",
     ),
 ]
 
 api_scenario_element_patterns = [
     path(
-        "scenario-elements/",
-        ScenarioElementList.as_view(),
-        name="api_scenario_elements",
-    ),
-    path(
         "scenario-elements-multiple/",
         ScenarioElementCreateMultiple.as_view(),
         name="api_scenario_elements_multiple",
     ),
-    path(
-        "scenario-elements/<int:pk>/",
-        ScenarioElementDetail.as_view(),
-        name="api_scenario_element",
-    ),
 ]
 
 router = routers.DefaultRouter()
+router.register(r"screen-scenarios", ScreeScenarioViewSet)
+router.register(r"scenario-elements", ScenarioElementViewSet)
+
 router.register(r"library-elements", ElementViewSet, base_name="api_library_elements")
 # api_library_element_patterns = router.urls
 
