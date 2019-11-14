@@ -3,11 +3,11 @@ import { myAxios } from '$config/settings';
 import { onError, parseResult } from './project';
 
 
-export const apiGetScenarios = (props): Promise<IScenarioItem[]> => (
+export const apiGetScenarios = ({ screenID, ...props }): Promise<IScenarioItem[]> => (
   myAxios({
     ...props,
     method: 'GET',
-    url: '/projects/screen-scenarios/',
+    url: `/projects/screen-scenarios${screenID ? `/?screenId=${screenID}` : '/'}`,
   })
     .then(parseResult)
     .catch(onError)
