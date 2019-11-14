@@ -397,8 +397,10 @@ class ScenarioElementViewSet(viewsets.ModelViewSet):
     def filter_queryset(self, queryset):
         ids = self.request.query_params.get('scenariosIds')
 
-        if ids and all(isinstance(x, int) for x in ids.split(',')):
-            queryset = queryset.filter(scenario__in=ids.split(','))
+        if ids:
+            scenarios_ids = ids.split(',')
+            if all(sid.isdigit() for sid in scenarios_ids):
+                queryset = queryset.filter(scenario__in=scenarios_ids)
 
         return queryset
 

@@ -138,6 +138,7 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
         queryset = qs.prefetch_related('elements')
         return queryset
 
+
 class ScreenScenarioCascadeSerializer(serializers.ModelSerializer):
     # elements = ScenarioElementSerializer(many=True, read_only=True)
     parameters = serializers.JSONField()
