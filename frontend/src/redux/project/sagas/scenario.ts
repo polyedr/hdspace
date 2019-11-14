@@ -112,14 +112,17 @@ export function* changeScenariosSaga(
 ): SagaIterator {
   yield put(Actions.setScenarioLoader(true));
 
-  const resultScenario = yield call(reqWrapper, apiGetScenarios);
+  const resultScenario = yield call(reqWrapper, apiGetScenarios, { screenID: screenId });
 
   if (!resultScenario) return;
 
   const scenarios = filterScenarioByScreenId(screenId, resultScenario);
+  const scenariosIDs = Object.keys(scenarios);
   yield put(Actions.setScenarios(scenarios));
 
-  const resultElements: IScenarioElement[] = yield call(reqWrapper, apiGetElements);
+  const resultElements: IScenarioElement[] = scenariosIDs.length > 0
+    ? yield call(reqWrapper, apiGetElements, { scenariosIDs })
+    : [];
 
   if (!resultElements) return;
 

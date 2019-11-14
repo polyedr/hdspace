@@ -11,11 +11,11 @@ export const apiGetLibraryElements = () => (
     .catch(onError)
 );
 
-export const apiGetElements = (props): Promise<IScenarioElement[]> => (
+export const apiGetElements = ({ scenariosIDs, ...props }): Promise<IScenarioElement[]> => (
   myAxios({
     ...props,
     method: 'GET',
-    url: '/projects/scenario-elements/',
+    url: `/projects/scenario-elements${scenariosIDs.length ? `/?scenariosIds=${scenariosIDs.join(',')}` : '/'}`,
   })
     .then(parseResult)
     .catch(onError)
