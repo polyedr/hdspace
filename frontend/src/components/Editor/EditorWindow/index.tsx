@@ -311,7 +311,7 @@ export const Editor: React.FunctionComponent<IEditProps> = memo(({
                       maxHeight="100vh"
                     >
                       {
-                        !R.isEmpty(R.path(['listSortable', 'root', 'children'], screen)) && (
+                        !R.isEmpty(R.path(['listSortable', 'root', 'children'], screen)) ? (
                           <React.Fragment>
                             {/* {
                               isPrototypeMode && (
@@ -352,7 +352,7 @@ export const Editor: React.FunctionComponent<IEditProps> = memo(({
                               styles_root={screen.styles_root}
                             />
                           </React.Fragment>
-                        )
+                        ) : <div id="root" style={screen.styles_root} className="root" />
                       }
                     </Scrollbar>
                   </div>
