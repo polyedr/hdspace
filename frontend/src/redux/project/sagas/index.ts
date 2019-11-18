@@ -147,52 +147,50 @@ function* authCheckSaga() {
   yield put(Actions.setLibraryElements(libraryElements));
 }
 
-function* setListSortableSaga(
-  { payload }: ReturnType<typeof Actions.setListSortable>,
-): SagaIterator {
+function* setListSortableSaga(action: ReturnType<typeof Actions.setListSortable>) {
   const {
-    id,
-    itemIndex,
-    items,
-    parentId,
-  } = payload;
-  const { project: { scenarios, scenarioElements } } = yield select(state => state);
-  const parseId = parseInt(id, 10);
-  const parseParentId = parentId === 'root' ? 0 : parseInt(parentId, 10);
+    id: rawActiveItemID,
+    itemIndex: movedItemIndexInCurrentSortableGroup,
+    items: itemsInCurrentSortableGroup,
+    parentId: rawParentID,
+  } = action.payload;
+  const { project: { scenarios, scenarioElements } }: AppReduxState = yield select();
+  const activeItemID = parseInt(rawActiveItemID, 10);
+  const parentID = rawParentID === 'root' ? 0 : parseInt(rawParentID, 10);
   let updateScenarios: IScenarios = scenarios;
   let updateElements: IScenarioElements = scenarioElements;
 
   console.log('Update LS');
-  if (items.indexOf(id) === -1) {
-    if (id.slice(-1) === 's') {
+  if (itemsInCurrentSortableGroup.indexOf(rawActiveItemID) === -1) {
+    if (rawActiveItemID.slice(-1) === 's') {
       // Remove Scenario
-      if (!parseParentId) return;
-      const itemType: string = scenarios[parseId].struct_type;
-      const parentType = R.path([parseParentId, 'struct_type'], scenarios);
-      const mainType = findParentType(parseParentId, scenarios);
+      if (!parentID) return;
+      const itemType = scenarios[activeItemID].struct_type;
+      const parentType = R.path([parentID, 'struct_type'], scenarios);
+      const mainType = findParentType(parentID, scenarios);
       console.log({itemType, parentType, mainType});
 
 
-      if (parentId && parentId !== 'root') {
+      if (rawParentID && rawParentID !== 'root') {
         console.log('Remove Scenario');
         updateScenarios = {
           ...scenarios,
-          [parseParentId]: R.assocPath(['parameters', 'children'], items, scenarios[parseParentId]),
+          [parentID]: R.assocPath(['parameters', 'children'], itemsInCurrentSortableGroup, scenarios[parentID]),
         };
       }
     } else {
-      if (scenarios[parseParentId].struct_type === 'block') {
+      if (scenarios[parentID].struct_type === 'block') {
         return;
       }
-      if (scenarios[parseParentId].struct_type === 'container') {
-        const parentType = findParentType(parseParentId, scenarios);
+      if (scenarios[parentID].struct_type === 'container') {
+        const parentType = findParentType(parentID, scenarios);
 
         if (parentType !== 'group') return;
 
         console.log('Remove Element');
         updateScenarios = {
           ...scenarios,
-          [parseParentId]: R.assocPath(['parameters', 'children'], items, scenarios[parseParentId]),
+          [parentID]: R.assocPath(['parameters', 'children'], itemsInCurrentSortableGroup, scenarios[parentID]),
         };
       }
     }
@@ -205,14 +203,14 @@ function* setListSortableSaga(
     return;
   }
 
-  if (id.slice(-1) === 's') {
+  if (rawActiveItemID.slice(-1) === 's') {
     // Add scenario
-    const itemType: string = scenarios[parseId].struct_type;
-    const parentType = R.path([parseParentId, 'struct_type'], scenarios);
-    const mainType = findParentType(parseParentId, scenarios);
-    const oldScenarioId: number = R.path([parseId, 'parent_id'], scenarios);
-    const childParentId: string = R.remove(itemIndex, 1, items)[0];
-    console.log({ id, itemType, parentType, mainType });
+    const itemType: string = scenarios[activeItemID].struct_type;
+    const parentType = R.path([parentID, 'struct_type'], scenarios);
+    const mainType = findParentType(parentID, scenarios);
+    const oldScenarioId: number = R.path([activeItemID, 'parent_id'], scenarios);
+    const childParentId: string = R.remove(movedItemIndexInCurrentSortableGroup, 1, itemsInCurrentSortableGroup)[0];
+    console.log({ id: rawActiveItemID, itemType, parentType, mainType });
 
     if (parentType === 'container' && itemType === 'block') {
       if (mainType !== 'root') return;
@@ -224,14 +222,14 @@ function* setListSortableSaga(
       console.log('Group -> Container');
     }
 
-    if (scenarios[parseId].struct_type === 'group' && parentType === 'root') {
+    if (scenarios[activeItemID].struct_type === 'group' && parentType === 'root') {
       console.log('Cancel move Group -> Root/ContainerRoot');
       const oldParentChaild: string[] = R.path([oldScenarioId, 'parameters', 'children'], scenarios);
       updateScenarios = {
         ...scenarios,
         [oldScenarioId]: R.assocPath(
           ['parameters', 'children'],
-          [...oldParentChaild, id],
+          [...oldParentChaild, rawActiveItemID],
           scenarios[oldScenarioId],
         ),
       };
@@ -241,79 +239,79 @@ function* setListSortableSaga(
       console.log('Group -> Block', scenarios);
       updateScenarios = {
         ...scenarios,
-        [parseId]: R.assoc('parent_id', parseParentId, scenarios[parseId]),
-        [parseParentId]: R.assocPath(['parameters', 'children'], items, scenarios[parseParentId]),
+        [activeItemID]: R.assoc('parent_id', parentID, scenarios[activeItemID]),
+        [parentID]: R.assocPath(['parameters', 'children'], itemsInCurrentSortableGroup, scenarios[parentID]),
       };
     } else if (itemType === 'container') {
       console.log('Cancel move ContainerElement -> Root/Block');
       console.log('Cancel move ContainerGroup -> Root/Group');
-    } else if (parentId === 'root' && parseParentId !== oldScenarioId) {
+    } else if (rawParentID === 'root' && parentID !== oldScenarioId) {
       console.log('Scenario -> Root');
       updateScenarios = {
         ...scenarios,
-        [parseId]: R.assoc('parent_id', parseParentId, scenarios[parseId]),
+        [activeItemID]: R.assoc('parent_id', parentID, scenarios[activeItemID]),
       };
     } else if (!childParentId) {
       console.log('Scenario -> empty Parent');
       updateScenarios = {
         ...scenarios,
-        [parseId]: R.assoc('parent_id', parseParentId, scenarios[parseId]),
-        [parseParentId]: R.assocPath(['parameters', 'children'], items, scenarios[parseParentId]),
+        [activeItemID]: R.assoc('parent_id', parentID, scenarios[activeItemID]),
+        [parentID]: R.assocPath(['parameters', 'children'], itemsInCurrentSortableGroup, scenarios[parentID]),
       };
-    } else if (parseParentId !== oldScenarioId) {
+    } else if (parentID !== oldScenarioId) {
       console.log('Scenario_A -> Scenario_B');
       updateScenarios = {
         ...scenarios,
-        [parseId]: R.assoc('parent_id', parseParentId, scenarios[parseId]),
-        [parseParentId]: R.assocPath(['parameters', 'children'], items, scenarios[parseParentId]),
+        [activeItemID]: R.assoc('parent_id', parentID, scenarios[activeItemID]),
+        [parentID]: R.assocPath(['parameters', 'children'], itemsInCurrentSortableGroup, scenarios[parentID]),
       };
     } else {
       console.log('Change Buoyancy');
-      updateScenarios = items.reduce((result, key, idx) => {
+      updateScenarios = itemsInCurrentSortableGroup.reduce((result, key, idx) => {
         const currId = parseInt(key, 10);
 
         return {
           ...result,
-          [currId]: R.assoc('buoyancy', items.length - idx, result[currId]),
+          [currId]: R.assoc('buoyancy', itemsInCurrentSortableGroup.length - idx, result[currId]),
         };
       }, scenarios);
     }
   } else {
     // Elements
-    const parentType = findParentType(parseParentId, scenarios);
-    const oldParentId: number = +R.path([parseId, 'parameters', 'parent_id'], scenarioElements);
+    const parentType = findParentType(parentID, scenarios);
+    const oldParentId: number = +R.path([activeItemID, 'parameters', 'parent_id'], scenarioElements);
 
-    console.log({ parentType, parseParentId, oldParentId });
+    console.log({ parentType, parentID, oldParentId });
 
-    if (parentType === 'group' && parseParentId !== oldParentId) {
+    if (parentType === 'group' && parentID !== oldParentId) {
       // Replace element
       console.log('Replace element');
       const oldParent = scenarios[oldParentId];
 
       updateElements = R.assocPath(
-        [parseId, 'parameters', 'parent_id'],
-        parseParentId,
+        [activeItemID, 'parameters', 'parent_id'],
+        parentID,
         scenarioElements,
       );
       // remove from old parent's children
       updateScenarios = R.assocPath(
         [oldParentId, 'parameters', 'children'],
-        oldParent.parameters.children.filter(i => i !== id),
+        oldParent.parameters.children.filter(i => i !== rawActiveItemID),
         updateScenarios,
       );
       // add to new parent's children
       updateScenarios = R.assocPath(
-        [parseParentId, 'parameters', 'children'],
-        items,
+        [parentID, 'parameters', 'children'],
+        itemsInCurrentSortableGroup,
         updateScenarios,
       );
     }
 
     // Elements change buoyancy
     console.log('Change elements Buoyancy');
-    updateElements = items.reduce((result, key, idx) => {
+    updateElements = itemsInCurrentSortableGroup.reduce((result, key, idx) => {
       const keyParsed = parseInt(key, 10);
-      const buoyancy = items.length - idx;
+      const buoyancy = itemsInCurrentSortableGroup.length - idx;
       return {
         ...result,
         [keyParsed]: {

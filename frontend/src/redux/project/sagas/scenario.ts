@@ -17,10 +17,10 @@ import {
 import {
   addElByScenarios,
   delElByScenarios,
-  filterScenarioByScreenId,
+  convertScenarios,
   getNewScenario,
   getAllElements,
-  filterScenarioEl,
+  convertScenarioElements,
   getParams,
 } from '$utils/parseScenario';
 import {
@@ -45,38 +45,33 @@ import {
 } from '$api/scenario';
 import { DEFAULT_INDENTS } from '$constants/defaultParams';
 import { reqWrapper } from '$redux/project/sagas/index';
+import { ReturnPromisedType } from '$shared/types';
+import { AppReduxState } from '$shared/types/app';
 
+export function* runLayoutAlgorithm(screenScenarios: IScenarios, scenariosElements: IScenarioElements) {
+  const { project: { currentScreen } }: AppReduxState = yield select();
+  const { blocks, containers, groups } = R.keys(screenScenarios).reduce((acc, scenarioID) => {
+    const scenario = screenScenarios[scenarioID];
 
-export function* runLayoutAlgorithm(
-  scenarios: IScenarios, scenarioEl: IScenarioElements,
-): SagaIterator {
-  const { project: { currentScreen } } = yield select(state => state);
-  const { listBlock, listContainer, listGroup } = Object.keys(scenarios).reduce((result, key) => {
-    const item = scenarios[key];
-
-    if (item.struct_type === 'block') {
+    if (scenario.struct_type === 'block') {
       return {
-        ...result,
-        listBlock: [...result.listBlock, item],
+        ...acc,
+        blocks: acc.blocks.concat(scenario),
+      };
+    } else if (scenario.struct_type === 'container') {
+      return {
+        ...acc,
+        containers: acc.containers.concat(scenario),
+      };
+    } else if (scenario.struct_type === 'group') {
+      return {
+        ...acc,
+        groups: acc.groups.concat(scenario),
       };
     }
 
-    if (item.struct_type === 'container') {
-      return {
-        ...result,
-        listContainer: [...result.listContainer, item],
-      };
-    }
-
-    if (item.struct_type === 'group') {
-      return {
-        ...result,
-        listGroup: [...result.listGroup, item],
-      };
-    }
-
-    return result;
-  }, { listBlock: [], listContainer: [], listGroup: [] });
+    return acc;
+  }, { blocks: [], containers: [], groups: [] });
 
   // const listElement = Object.keys(scenarioEl).map(key => scenarioEl[key]);
   // const listSortable0 = yield call(
@@ -84,19 +79,19 @@ export function* runLayoutAlgorithm(
   //   listBlock, listContainer, listGroup, listElement, currentScreen.listSortable.root,
   // );
 
-  const scenarioList: IScenarios = listBlock.concat(listContainer, listGroup)
-    .reduce((result, item) => ({
-      ...result,
-      [item.id]: item,
+  const orderedScenarios: IScenarios = blocks.concat(containers, groups)
+    .reduce((acc, x) => ({
+      ...acc,
+      [x.id]: x,
     }), {});
 
-  const listSortable: IListSortable = completeLS(
-    scenarioList,
-    scenarioEl,
+  const listSortable = completeLS(
+    orderedScenarios,
+    scenariosElements,
     currentScreen.listSortable.root,
   );
 
-  const updateScreen = {
+  const updatedScreen = {
     ...currentScreen,
     listSortable: {
       ...currentScreen.listSortable,
@@ -104,36 +99,32 @@ export function* runLayoutAlgorithm(
     },
   };
 
-  yield put(Actions.setScreen(updateScreen));
+  yield put(Actions.setScreen(updatedScreen));
 }
 
-export function* changeScenariosSaga(
-  { screenId }: ReturnType<typeof Actions.changeScenarios>,
-): SagaIterator {
+export function* changeScenariosSaga({ screenId }: ReturnType<typeof Actions.changeScenarios>) {
   yield put(Actions.setScenarioLoader(true));
 
-  const resultScenario = yield call(reqWrapper, apiGetScenarios, { screenID: screenId });
+  const serverScreenScenarios: ReturnPromisedType<typeof apiGetScenarios> = yield call(
+    reqWrapper, apiGetScenarios, { screenID: screenId },
+  );
 
-  if (!resultScenario) return;
+  if (!serverScreenScenarios) return;
 
-  const scenarios = filterScenarioByScreenId(screenId, resultScenario);
-  const scenariosIDs = Object.keys(scenarios);
-  yield put(Actions.setScenarios(scenarios));
+  const screenScenarios = convertScenarios(serverScreenScenarios);
+  const scenariosIDs = Object.keys(screenScenarios);
+  yield put(Actions.setScenarios(screenScenarios));
 
-  const resultElements: IScenarioElement[] = scenariosIDs.length > 0
+  const serverScenariosElements: ReturnPromisedType<typeof apiGetElements> = scenariosIDs.length > 0
     ? yield call(reqWrapper, apiGetElements, { scenariosIDs })
     : [];
 
-  if (!resultElements) return;
+  if (!serverScenariosElements) return;
 
-  const {
-    project: { currentScreen: { screenscenario = [] } },
-  } = yield select(state => state);
+  const scenariosElements = convertScenarioElements(serverScenariosElements);
+  yield put(Actions.setScenarioElements(scenariosElements));
 
-  const scenarioElements = filterScenarioEl(resultElements, screenscenario);
-  yield put(Actions.setScenarioElements(scenarioElements));
-
-  yield call(runLayoutAlgorithm, scenarios, scenarioElements);
+  yield call(runLayoutAlgorithm, screenScenarios, scenariosElements);
   yield put(Actions.setScenarioLoader(false));
 }
 
@@ -173,26 +164,25 @@ export function* changeScenarioSaga(
   // yield call(runLayoutAlgorithm, updateScenarioElements);
 }
 
-export function* createScenarioSaga(
-  { payload: { name, type, elements } }: ReturnType<typeof Actions.createScenario>,
-): SagaIterator {
-  const { project: { currentScreen, scenarios } } = yield select(state => state);
+export function* createScenarioSaga(action: ReturnType<typeof Actions.createScenario>) {
+  const { payload: { name, type, elements } } = action;
+  const { project: { currentScreen, scenarios } }: AppReduxState = yield select();
+
   const newScenario = getNewScenario(name, type, currentScreen.id, elements);
-  const resultScenario: IScenarioItem = yield call(reqWrapper, apiAddScenario, newScenario);
+  const resultScenario: ReturnPromisedType<typeof apiAddScenario> = yield call(reqWrapper, apiAddScenario, newScenario);
 
   if (!resultScenario) return;
 
-  const screenscenario: number[] = [...currentScreen.screenscenario, resultScenario.id];
+  const scenariosIDs = [...currentScreen.screenscenario, resultScenario.id];
+  const scenariosElements: IScenarioElement[] = yield call(reqWrapper, apiGetElements, { scenariosIDs });
 
-  const resultElements: IScenarioElement[] = yield call(reqWrapper, apiGetElements);
+  if (!scenariosElements) return;
 
-  if (!resultElements) return;
+  const updatedScenarioElements = convertScenarioElements(scenariosElements);
 
-  const updateScenarioElements = filterScenarioEl(resultElements, screenscenario);
-
-  yield put(Actions.setScreen(R.assoc('screenscenario', screenscenario, currentScreen)));
+  yield put(Actions.setScreen(R.assoc('screenscenario', scenariosIDs, currentScreen)));
   yield put(Actions.setScenarios({ ...scenarios, [resultScenario.id]: resultScenario }));
-  yield put(Actions.setScenarioElements(updateScenarioElements));
+  yield put(Actions.setScenarioElements(updatedScenarioElements));
   // yield call(runLayoutAlgorithm, updateScenarioElements);
 }
 
@@ -206,7 +196,7 @@ export function* addScenarioSaga({
       libraryElements,
       currentScreen,
     },
-  } = yield select(state => state);
+  }: AppReduxState = yield select();
 
   // Complete List Element
   const { newEl, existEl } = formingListEl(
@@ -436,23 +426,23 @@ export function* addContainerSaga(
 ): SagaIterator {
   const {
     project: {
-      currentScreen: { id: screen, listSortable: LS },
+      currentScreen: { id: screenID, listSortable },
       scenarioElements,
       scenarios,
     },
-  } = yield select(state => state);
+  }: AppReduxState = yield select();
 
-  if (!LS[itemId]) return;
+  if (!listSortable[itemId]) return;
 
-  const parseId = parseFloat(itemId);
+  const itemID = parseFloat(itemId);
   const { parent_id } = itemId.slice(-1) === 's'
-    ? scenarios[parseId]
-    : scenarioElements[parseId].parameters;
+    ? scenarios[itemID]
+    : scenarioElements[itemID].parameters;
 
   const container = {
     name: 'container',
     struct_type: 'container',
-    screen,
+    screen: screenID,
     parent_id,
     buoyancy: 0,
     direction: 'vertical',
@@ -468,44 +458,46 @@ export function* addContainerSaga(
   //   max > Number(k) ? max : Number(k)
   // ), 0) + 1;
   // const result_contaer: IScenarioItem = { ...container, id: lastId };
-  const result_contaer: IScenarioItem = yield call(reqWrapper, apiAddScenario, { data: container });
 
-  if (!result_contaer) return;
+  const createdContainer: ReturnPromisedType<typeof apiAddScenario> = yield call(reqWrapper, apiAddScenario, { data: container });
+
+  if (!createdContainer) return;
 
   const parentChild = [
     ...R.without([itemId], (parent_id > 0 ? R.path([parent_id, 'parameters', 'children'], scenarios) : [])),
-    `${result_contaer.id}s`,
+    `${createdContainer.id}s`,
   ];
 
-  const updateScenarios: IScenarios = {
+  const updatedScenarios: IScenarios = {
     ...scenarios,
-    [result_contaer.id]: result_contaer,
+    [createdContainer.id]: createdContainer,
     ...(itemId.slice(-1) === 's'
-      ? R.assocPath([parseId, 'parent_id'], result_contaer.id, scenarios)
+      ? R.assocPath([itemID, 'parent_id'], createdContainer.id, scenarios)
       : {}),
     ...(parent_id > 0
       ? { [parent_id]: R.assocPath(['parameters', 'children'], parentChild, scenarios[parent_id]) }
       : {}),
   };
 
-  const updateElements: IScenarioElements = {
+  const updatedElements: IScenarioElements = {
     ...scenarioElements,
     ...(itemId.slice(-1) === 'e'
-      ? R.assocPath([parseId, 'parameters', 'parent_id'], result_contaer.id, scenarioElements)
+      ? R.assocPath([itemID, 'parameters', 'parent_id'], createdContainer.id, scenarioElements)
       : {}),
   };
 
-  yield put(Actions.setScenarios(updateScenarios));
-  yield put(Actions.setScenarioElements(updateElements));
-  yield call(runLayoutAlgorithm, updateScenarios, updateElements);
+  yield put(Actions.setScenarios(updatedScenarios));
+  yield put(Actions.setScenarioElements(updatedElements));
+  yield call(runLayoutAlgorithm, updatedScenarios, updatedElements);
 
   const result_scenarios = yield call(
     reqWrapper, apiSaveScenarios,
-    { data: R.values(updateScenarios) },
+    { data: R.values(updatedScenarios) },
   );
   const result_elements = yield call(
     reqWrapper, apiSaveElements,
-    { data: R.values(updateElements) },
+    { data: R.values(updatedElements) },
   );
-  console.log('Save:', { result_scenarios, result_elements });
+  console.log('AddContainerSaga!');
+  console.log('Saved scenarios and elements:', { result_scenarios, result_elements });
 }

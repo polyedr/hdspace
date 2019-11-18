@@ -15,15 +15,7 @@ import { scenarioToLS } from '$utils/parseScenario';
 import { DEFAULT_INDENTS } from '$constants/defaultParams';
 import { IChooseElement } from '$components/ModalAddElements/MainBlock';
 
-
-type TFormListEl = (
-  screen_id: number,
-  scenario_id: number,
-  name: string,
-  listElementType: IChooseElement[],
-  libraryElements: ILibraryElements,
-  scenarioEl: IScenarioElements,
-) => { newEl: IScenarioElement[], existEl: IScenarioElement[] };
+import { greaterBuoyancyFirst } from './model';
 
 type TFormListGroup = (
   screenId: number,
@@ -39,23 +31,10 @@ type TFormListBlock = (
   scenarios: IScenarios,
 ) => { newBlocks: IScenarioItem[], existBlocks: IScenarioItem[] };
 
-type TCompleteLS = (
-  scenarios: IScenarios,
-  scenarioEl: IScenarioElements,
-  parent: ILSItem,
-) => IListSortable;
-
 type IListElement = ILibraryElement & {
   id?: number,
   scenario?: number,
 }
-
-type TGetListElByType = (
-  scenario_id: number,
-  listElementType: IChooseElement[],
-  libraryElements: ILibraryElements,
-  scenarioEl: IScenarioElements,
-) => IListElement[];
 
 const getGroup = () => {
   const group = {
@@ -82,21 +61,22 @@ const getGroup = () => {
   };
 };
 
-const getListElByType: TGetListElByType = (
-  scenario_id, listElementType, libraryElements, scenarioEl,
-) => {
-  const existingListEl = Object.keys(scenarioEl).map(key => scenarioEl[key]);
-  const newListEl = listElementType.reduce((arr, el) => {
+const getListElByType = (
+  scenarioID: number,
+  elementsToAdd: IChooseElement[],
+  libraryElements: ILibraryElements,
+  scenarioEl: IScenarioElements,
+): IListElement[] => {
+  const existingListEl = Object.values(scenarioEl);
+  const newListEl = elementsToAdd.reduce((arr, elementToAdd) => {
     const defaultEl = {
-      ...libraryElements[el.type],
-      image: R.path(['img', 'file'], el) || null,
+      ...libraryElements[elementToAdd.type],
+      image: R.path(['img', 'file'], elementToAdd) || null,
     };
 
-    if (!defaultEl) return arr;
-
-    if (libraryElements[el.type].struct_type === 'map') {
+    if (libraryElements[elementToAdd.type].struct_type === 'map') {
       const newParameters = {
-        ...libraryElements[el.type].parameters,
+        ...libraryElements[elementToAdd.type].parameters,
         map_props: {
           center: {
             lat: 50.00008,
@@ -113,13 +93,13 @@ const getListElByType: TGetListElByType = (
     return [...arr, defaultEl];
   }, []);
 
-  if (!scenario_id) {
+  if (!scenarioID) {
     const currGroup = getGroup();
-    return newListEl.sort((a, b) => b.buoyancy - a.buoyancy)
+    return newListEl.sort(greaterBuoyancyFirst)
       .map((el) => {
         const html_type = el.struct_type || '';
         const tags = R.path(['parameters', 'tags'], el) || '';
-        const parent_id = currGroup(scenario_id, html_type, tags, scenario_id);
+        const parent_id = currGroup(scenarioID, html_type, tags, scenarioID);
 
         return {
           ...el,
@@ -138,7 +118,7 @@ const getListElByType: TGetListElByType = (
   }
 
   const allListEl = newListEl.concat(existingListEl).map((el) => {
-    const scenario = el.scenario || scenario_id;
+    const scenario = el.scenario || scenarioID;
 
     return { ...el, scenario };
   }).sort((a, b) => a.scenario - b.scenario);
@@ -148,7 +128,7 @@ const getListElByType: TGetListElByType = (
 
   return R.groupWith(onEqualsB, allListEl).reduce((listB, groupB) => {
     const currGroup = getGroup();
-    const listBlock = groupB.sort((a, b) => b.buoyancy - a.buoyancy).map((el) => {
+    const listBlock = groupB.sort(greaterBuoyancyFirst).map((el) => {
       const tags = R.path(['parameters', 'tags'], el) || '';
       const html_type = el.struct_type || '';
       const parent_id = currGroup(el.scenario, html_type, tags, el.scenario);
@@ -187,7 +167,7 @@ const getListElByType: TGetListElByType = (
     if (!el.id) {
       return [
         ...listNewEl,
-        R.assoc('scenario', scenario_id, el),
+        R.assoc('scenario', scenarioID, el),
       ];
     }
 
@@ -195,15 +175,21 @@ const getListElByType: TGetListElByType = (
   }, []);
 };
 
-export const formingListEl: TFormListEl = (
-  screen_id, scenario_id, name, listElementType, libraryElements, scenarioEl,
-) => {
-  const existingEl = Object.keys(scenarioEl).reduce((list, key) => [...list, scenarioEl[key]], []);
-  const existingElKey = existingEl.map(el => el.id);
-  const newListElement = getListElByType(scenario_id, listElementType, libraryElements, scenarioEl);
+export const formingListEl = (
+  screen_id: number,
+  scenarioID: number,
+  name: string,
+  listElementType: IChooseElement[],
+  libraryElements: ILibraryElements,
+  scenarioEls: IScenarioElements,
+): { newEl: IScenarioElement[], existEl: IScenarioElement[] } => {
 
-  return existingEl.concat(newListElement).reduce((result, el) => {
-    if (existingElKey.indexOf(el.id) !== -1) {
+  const existingElements = Object.values(scenarioEls);
+  const existingElementsIDs = existingElements.map(el => el.id);
+  const newListElement = getListElByType(scenarioID, listElementType, libraryElements, scenarioEls);
+
+  return existingElements.concat(newListElement as IScenarioElement[]).reduce((result, el) => {
+    if (existingElementsIDs.indexOf(el.id) !== -1) {
       return {
         ...result,
         existEl: [...result.existEl, el],
@@ -349,15 +335,20 @@ export const formingListBlock: TFormListBlock = (
   }, { newBlocks: [], existBlocks: [] });
 };
 
-export const completeLS: TCompleteLS = (scenarios, scenarioEl, parent) => {
-  const parentChildren = Object.keys(scenarios).reduce((result, key) => {
-    if (R.path([key, 'parent_id'], scenarios) === 0) {
-      return [...result, scenarios[key]];
-    }
+export const completeLS = (
+  scenarios: IScenarios,
+  scenariosElements: IScenarioElements,
+  parent: ILSItem,
+): IListSortable => {
+  const hasRootAsParent = (scenarioID: string) => R.path([scenarioID, 'parent_id'], scenarios) === 0;
 
-    return result;
-  }, []).sort((a, b) => b.buoyancy - a.buoyancy);
-  const itemsLS = scenarioToLS(parentChildren, scenarios, scenarioEl);
+  const parentChildren = Object
+    .keys(scenarios)
+    .reduce((acc: IScenarioItem[], scenarioID) => hasRootAsParent(scenarioID) ? [...acc, scenarios[scenarioID]] : acc, [])
+    .sort(greaterBuoyancyFirst);
+
+  const itemsLS = scenarioToLS(parentChildren, scenarios, scenariosElements);
+
   const newLS = {
     root: {
       ...parent,

@@ -218,7 +218,7 @@ export const renameScenario = (scenarioId: number, newName: string) => ({
 });
 
 export const setScenarios = (scenarios: IScenarios) => ({
-  type: TYPES.SET_SCENARIO,
+  type: TYPES.SET_SCENARIOS,
   scenarios,
 });
 

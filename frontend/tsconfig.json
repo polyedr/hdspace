@@ -10,6 +10,7 @@
     "target": "es6",
     "jsx": "react",
     "lib": [ "es2015", "DOM", "es6" ],
+    "experimentalDecorators": true,
     "baseUrl": ".",
     "paths": {
       "$components/*": [ "src/components/*" ],

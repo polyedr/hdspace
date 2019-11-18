@@ -85,7 +85,8 @@ export const Editor: React.FunctionComponent<IEditProps> = memo(({
       setScreenId(screen.id);
       setActiveItem(DEFAULT_ACTIVE_ITEM);
     } else {
-      const scenarioId: number = getScenarioId(activeItem.itemId, scenarioElements, scenarios);
+      // should it be named getParentID?
+      const scenarioId = getScenarioId(activeItem.itemId, scenarioElements, scenarios);
 
       if (activeItem.scenarioId !== scenarioId) {
         setActiveItem({ ...activeItem, scenarioId });
@@ -101,7 +102,7 @@ export const Editor: React.FunctionComponent<IEditProps> = memo(({
   //   return (isNumber(value) && value) || '100%';
   }, []);
 
-  const onActiveItem: TOnChoose = useCallback((parentId, itemId) => {
+  const handleActiveElementChange: TOnChoose = useCallback((parentId, itemId) => {
     const { name, type } = getParams(itemId, scenarioElements, scenarios);
     const scenarioId = getScenarioId(itemId, scenarioElements, scenarios);
     const parentType: string = parentId === 0 ? 'root' : R.path([parentId, 'struct_type'], scenarios) || '';
@@ -252,6 +253,7 @@ export const Editor: React.FunctionComponent<IEditProps> = memo(({
                       onChange={onChangePrototypeMode}
                     />
                     <span>Prototype Mode</span>
+                    {/* <span>Active element ID: {`${activeItem.itemId}-${activeItem.itemType}-where parent is-${activeItem.parentId}-and-scenario-id-${activeItem.scenarioId}`}</span> */}
                   </div>
                   <div className={styles.navBarStateControlBlock}>
                     <Button
@@ -320,7 +322,7 @@ export const Editor: React.FunctionComponent<IEditProps> = memo(({
                                   activeItemId={activeItem.itemId}
                                   isPrototypeMode={isPrototypeMode}
                                   styles_root={screen.styles_root}
-                                  onChoose={onActiveItem}
+                                  onChoose={handleActiveElementChange}
                                   onChange={setListSortable}
                                 />
                               )
@@ -333,7 +335,7 @@ export const Editor: React.FunctionComponent<IEditProps> = memo(({
                                   isMoving={isMoving}
                                   listNotDragging={listNotDragging}
                                   isPrototypeMode={isPrototypeMode}
-                                  onChoose={onActiveItem}
+                                  onChoose={handleActiveElementChange}
                                   onChange={setListSortable}
                                   setIsMoving={setIsMoving}
                                   styles_root={screen.styles_root}
@@ -345,8 +347,7 @@ export const Editor: React.FunctionComponent<IEditProps> = memo(({
                               activeItemId={activeItem.itemId}
                               isMoving={isMoving}
                               listNotDragging={listNotDragging}
-                              isPrototypeMode={isPrototypeMode}
-                              onChoose={onActiveItem}
+                              onActiveElementChange={handleActiveElementChange}
                               onChange={setListSortable}
                               setIsMoving={setIsMoving}
                               styles_root={screen.styles_root}

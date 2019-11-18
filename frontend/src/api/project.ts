@@ -46,7 +46,7 @@ export const apiGetListProject = props => (
     .catch(onError)
 );
 
-export const apiGetProject = props => (
+export const apiGetProject = (props): Promise<IProject> => (
   myAxios({
     ...props,
     method: 'GET',

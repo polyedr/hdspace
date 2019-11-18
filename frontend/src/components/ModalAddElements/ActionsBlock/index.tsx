@@ -115,9 +115,7 @@ export const ActionsBlock: React.FunctionComponent<IActionsBlockProps> = ({
     setChooseElements(elements);
   }, [chooseElements, setChooseElements]);
 
-  const onTabClick = useCallback((tabName) => {
-    changeTab(tabName);
-  }, [changeTab]);
+  const onTabClick = useCallback((tabName) => changeTab(tabName), [changeTab]);
 
   const getFilterTemplates = useCallback((value = searchValue) => {
     if (value === '') return DEFAULT_TEMPLATES;

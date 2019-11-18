@@ -18,7 +18,7 @@ import {
   setModifyElements,
   setLoader,
 } from '$redux/project/actions';
-import { filterScenarioEl } from '$utils/parseScenario';
+import { convertScenarioElements } from '$utils/parseScenario';
 import { DEFAULT_LS, DEFAULT_SCREEN } from '$constants/defaultParams';
 import {
   IProject,
@@ -51,17 +51,17 @@ export function* activateScreenSaga({ payload }: ReturnType<typeof activateScree
 
   yield put(setScreenLoader(true));
 
-  const resultScreen = yield call(reqWrapper, apiGetScreen, { id: screenId });
+  const screen = yield call(reqWrapper, apiGetScreen, { id: screenId });
 
-  if (!resultScreen) return;
+  if (!screen) return;
 
-  const screen: IProjectScreen = {
+  const screenToActivate: IProjectScreen = {
     ...DEFAULT_SCREEN,
-    ...R.omit(['screen_data_text', 'screen_data_json'], resultScreen),
+    ...R.omit(['screen_data_text', 'screen_data_json'], screen),
   };
 
-  yield put(changeScenarios(screen.id));
-  yield put(setScreen(screen));
+  yield put(changeScenarios(screenToActivate.id));
+  yield put(setScreen(screenToActivate));
   yield put(setScreenLoader(false));
 }
 
@@ -266,8 +266,8 @@ export function* getScreenNNSaga() {
   };
 
   const screenscenario = [resultScenario.id];
-  const resultElements: IScenarioElement[] = yield call(reqWrapper, apiGetElements);
-  const scenarioElements = filterScenarioEl(resultElements, screenscenario);
+  const resultElements: ReturnPromisedType<typeof apiGetElements> = yield call(reqWrapper, apiGetElements, { scenariosIDs: screenscenario });
+  const scenarioElements = convertScenarioElements(resultElements);
 
   yield all([
     put(setProject(updateProject)),

@@ -1,6 +1,7 @@
 import React, { CSSProperties } from 'react';
 import * as R from 'ramda';
 import classNames from 'classnames';
+import { autobind } from 'core-decorators';
 
 import * as Actions from '$redux/project/actions';
 import { strToNumber } from '$utils/NumberHelper';
@@ -10,13 +11,13 @@ const styles = require('./styles.scss');
 export type TChooseResize = (itemId) => void;
 
 interface IComponentProps {
-  sortableId: string,
-  style: CSSProperties,
-  children: any,
-  updateElementStyles: typeof Actions.updateElementStyles,
-  onChooseResize: TChooseResize,
-  setIsMoving: (value: boolean) => void,
-  isDraggable: boolean,
+  sortableId: string;
+  style: CSSProperties;
+  children: any;
+  updateElementStyles: typeof Actions.updateElementStyles;
+  isDraggable: boolean;
+  onChooseToResize(itemID: string): void;
+  setIsMoving(value: boolean): void;
 }
 
 interface IComponentState {
@@ -47,7 +48,7 @@ export class DragResize extends React.Component<IComponentProps, IComponentState
     };
   }
 
-  componentDidUpdate = (prevProps) => {
+  public componentDidUpdate = (prevProps) => {
     const { style: prevStyle = {} } = prevProps;
     const { style: { width = 0, height = 0 } = {} } = this.props;
     if ( // update width/height from props, if they changed from sidebar or other ways
@@ -61,7 +62,8 @@ export class DragResize extends React.Component<IComponentProps, IComponentState
     }
   }
 
-  onDragOver = (event) => {
+  @autobind
+  private onDragOver(event) {
     const { currentController } = this.state;
 
     this.setState(({ x, y }) => {
@@ -112,7 +114,8 @@ export class DragResize extends React.Component<IComponentProps, IComponentState
     });
   };
 
-  onDragStop = (event) => {
+  @autobind
+  private onDragStop(event) {
     const { sortableId, updateElementStyles, setIsMoving } = this.props;
     const { clientX, clientY } = event;
     const { currentController } = this.state;
@@ -171,7 +174,8 @@ export class DragResize extends React.Component<IComponentProps, IComponentState
     window.removeEventListener('mouseleave', this.onDragStop);
   };
 
-  onDragStart = (event) => {
+  @autobind
+  private onDragStart(event) {
     const currentEvent = { ...event };
     const { style, sortableId } = this.props;
 
@@ -182,18 +186,18 @@ export class DragResize extends React.Component<IComponentProps, IComponentState
       const indentTop: number = R.path(['indents', 'padding-top'], style) || 0;
       const indentBotom: number = R.path(['indents', 'padding-bottom'], style) || 0;
 
-      this.setState(() => ({
+      this.setState({
         width: clientWidth - indentLeft - indentRight - 10,
         height: clientHeight - indentTop - indentBotom - 10,
-      }));
+      });
     }
 
-    this.setState(() => ({
+    this.setState({
       currentController: currentEvent.target.id,
       isDragStart: true,
       x: parseFloat(currentEvent.clientX),
       y: parseFloat(currentEvent.clientY),
-    }));
+    });
 
 
     window.addEventListener('mousemove', this.onDragOver);
@@ -201,29 +205,34 @@ export class DragResize extends React.Component<IComponentProps, IComponentState
     window.addEventListener('mouseleave', this.onDragStop);
   };
 
-  handleChoose = (e) => {
+  @autobind
+  private handleChooseToResize(e) {
     e.stopPropagation();
 
-    const { sortableId, onChooseResize } = this.props;
-    onChooseResize(sortableId);
+    const { sortableId, onChooseToResize } = this.props;
+    onChooseToResize(sortableId);
   };
 
-  handleMouseOver = (event) => {
+  @autobind
+  private handleMouseOver(event) {
     const item = event.target.closest('.addedItem');
     item && item.classList.add('hovered');
   };
 
-  handleMouseOut = (event) => {
+  @autobind
+  private handleMouseOut(event) {
     const item = event.target.closest('.addedItem');
     item && item.classList.remove('hovered');
   };
 
-  handleResizeControllerMouseEnter = () => {
+  @autobind
+  private handleResizeControllerMouseEnter() {
     const { setIsMoving } = this.props;
     setIsMoving(false);
   };
 
-  handleResizeControllerMouseLeave = () => {
+  @autobind
+  private handleResizeControllerMouseLeave() {
     const { setIsMoving } = this.props;
     const { isDragStart } = this.state;
     if (!isDragStart) {
@@ -263,7 +272,7 @@ export class DragResize extends React.Component<IComponentProps, IComponentState
               // width: (width && width - deltaX) || 'auto',
               // height: (height && height - deltaY) || 'auto',
             },
-            onClick: this.handleChoose,
+            onClick: this.handleChooseToResize,
             onMouseOver: this.handleMouseOver,
             onMouseOut: this.handleMouseOut,
           },

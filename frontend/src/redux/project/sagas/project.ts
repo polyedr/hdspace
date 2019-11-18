@@ -4,6 +4,7 @@ import {
 } from 'redux-saga/effects';
 import { push } from 'connected-react-router';
 
+import { ReturnPromisedType } from '$shared/types';
 import { AppReduxState } from '$shared/types/app';
 import { IListProject, IProject } from '$redux/project/reducer';
 import { activateScreenSaga, addScreenSaga } from '$redux/project/sagas/screen';
@@ -37,9 +38,9 @@ export function* getListProjectSaga(): SagaIterator {
 }
 
 export function* getProjectSaga({ id }: ReturnType<typeof Actions.getProject>) {
-  const { project: { currentProject }, user: { isPrototypeMode } } = yield select(state => state);
+  const { project: { currentProject }, user: { isPrototypeMode } }: AppReduxState = yield select(state => state);
 
-  if (currentProject.id === Number(id)) {
+  if (currentProject.id === id) {
     yield put(changePrototypeMode(isPrototypeMode));
   } else {
     yield put(changePrototypeMode(false));
@@ -48,15 +49,15 @@ export function* getProjectSaga({ id }: ReturnType<typeof Actions.getProject>) {
   if (!currentProject || currentProject.id !== id) {
     yield put(Actions.setProjectLoader(true));
 
-    const result: IProject = yield call(reqWrapper, apiGetProject, { id });
+    const project: ReturnPromisedType<typeof apiGetProject> = yield call(reqWrapper, apiGetProject, { id });
 
-    if (result) {
-      yield put(Actions.setProject(result));
+    if (project) {
+      yield put(Actions.setProject(project));
 
-      const screenId: number = result.projectscreen.length && result.projectscreen[0].id;
+      const screenID = project.projectscreen.length && project.projectscreen[0].id;
 
-      if (screenId) {
-        yield call(activateScreenSaga, Actions.activateScreen(id, screenId));
+      if (screenID) {
+        yield call(activateScreenSaga, Actions.activateScreen(id, screenID));
       } else {
         yield put(Actions.setScreen(DEFAULT_SCREEN));
       }
