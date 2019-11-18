@@ -22,7 +22,6 @@ const mapDispatchToProps = {
 
 type TTopPanelProps = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & {
   pathname: string,
-  screen: IProjectScreen,
   isLPanelMinimized: ILeftPanel['isLPanelMinimized'],
   project: IEditorProps['currentProject'],
   onMinimiserLPanel(): void,

@@ -18,7 +18,7 @@ export interface IElement {
   orientation?: string,
   active?: boolean,
   isDisabled?: boolean,
-  children?: any,
+  children?: JSX.Element,
 }
 
 type TRenderElement = (args: IElement) => React.ReactNode;
@@ -247,4 +247,4 @@ export const RENDERERS = {
   map: renderMapWidget,
   calendar: renderCalendarWidget,
   clock: renderClockWidget,
-};
+} as const;

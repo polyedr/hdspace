@@ -34,14 +34,15 @@ export const SortableGroup: React.FunctionComponent<IComponentProps> = ({
     onChoose(evt.oldIndex);
   }, [onChoose]);
 
-  const handleChange = useCallback((items: string[], sortable, evt) => {
-    onChange(evt.newIndex, items, parent);
+  const handlePositionChange = useCallback(function(itemsInCurrentSortableGroup: string[], sortable, evt) {
+    const draggedItemPositionInCurrentSortableGroup = evt.newIndex;
+    onChange(draggedItemPositionInCurrentSortableGroup, itemsInCurrentSortableGroup, parent);
   }, [parent, onChange]);
   // const handleChoose = (ent) => {
   //   onChoose(ent.oldIndex);
   // };
   //
-  // const handleChange = (items: string[], sortable, evt) => {
+  // const handlePositionChange = (items: string[], sortable, evt) => {
   //   onChange(items, evt.newIndex);
   // };
 
@@ -94,7 +95,7 @@ export const SortableGroup: React.FunctionComponent<IComponentProps> = ({
           // let style = window.getComputedStyle(c.node, null);
         }
       }}
-      onChange={handleChange}
+      onChange={handlePositionChange}
       onChoose={handleChoose}
     >
       {children}

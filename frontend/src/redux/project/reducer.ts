@@ -201,13 +201,13 @@ export interface IScenarios {
 }
 
 export interface ILSItem {
-  id: number,
-  type: string,
-  children: string[],
+  id: number;
+  type: string;
+  children: string[];
 }
 
 export interface IListSortable {
-  [x: string]: ILSItem,
+  [itemID: string]: ILSItem;
 }
 
 export interface IProjectScreen {
@@ -343,7 +343,7 @@ const HANDLERS = {
   [TYPES.SET_SCREEN_LOADER]: setScreenLoader,
   [TYPES.SET_SCENARIO_LOADER]: setScenarioLoader,
   [TYPES.SET_LOADER]: setLoader,
-  [TYPES.SET_SCENARIO]: setScenarios,
+  [TYPES.SET_SCENARIOS]: setScenarios,
   [TYPES.SET_ELEMENTS]: setElements,
   [TYPES.SET_LIBRARY_ELEMENTS]: setLibraryElements,
   [TYPES.SET_MODIFY_ELEMENTS]: setModifyElements,

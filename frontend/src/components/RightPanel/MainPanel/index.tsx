@@ -54,7 +54,7 @@ export type IRightPanelProps = ReturnType<typeof mapStateToProps>& typeof mapDis
 
   // onDelElement: () => void,
   onDelScenarioItem: () => void,
-  onChangeMove: React.ChangeEventHandler<HTMLInputElement>,
+  // onChangeMove: React.ChangeEventHandler<HTMLInputElement>,
 }
 
 const Component: React.FunctionComponent<IRightPanelProps> = ({

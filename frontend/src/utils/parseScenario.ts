@@ -1,4 +1,3 @@
-import React, { useCallback } from 'react';
 import * as R from 'ramda';
 
 import { IListOptions } from '$components/UI/NestedList';
@@ -22,6 +21,8 @@ import {
 } from '$redux/project/reducer';
 import { IChooseElement } from '$components/ModalAddElements/MainBlock';
 import { IStylesElement } from '$utils/StyleHelper';
+
+import { greaterBuoyancyFirst, isElement } from './model';
 
 export interface IGroupElement {
   key: string,
@@ -55,28 +56,8 @@ type TConvertScenarioElArrToObj = (elements: any[], listScenarioId: number[]) =>
 type TParseAddElementsTabs = (group: string, libraryElements: ILibraryElements) => IListCategoryEl;
 type TGetGroupElements = (group: string, listElement) => IGroupElement[];
 type TGetCustomTemplateElements = (libraryElements: ILibraryElements) => ITemplateElement[];
-type TGetScenarioId = (
-  id: string, listElement: IScenarioElements, listScenario: IScenarios,
-) => number;
-type TGetItemsPair = (
-  LS: IListSortable, scenarios: IScenarios, scenarioElements: IScenarioElements
-) => ({ scenarioList: IScenarios, elementList: IScenarioElements });
-type TGetParams = (id: string, elementList: IScenarioElements, scenarioList: IScenarios) => ({
-  struct_type: string,
-  parameters: any,
-  styles: IStylesElement,
-  name: string,
-  parent_id: number,
-  type: string,
-  image?: string,
-});
 type TParseScenarioLS = (item: IScenarioItem) => ILSItem;
 type TParseElementLS = (item: IScenarioElement) => ILSItem;
-type TScenarioToLS = (
-  itemChildren,
-  scenarios: IScenarios,
-  scenarioEl: IScenarioElements
-) => IListSortable;
 type TGetParentId = (
   id: string, listElement: IScenarioElements, listScenario: IScenarios,
 ) => number;
@@ -111,12 +92,6 @@ export const addElByScenarios: TUpdateElByScenarios = (scenarioId, elements = []
     }, scenarios[`${scenarioId}s`].elements),
   },
 });
-
-export const filterScenarioByScreenId: IFilterScenarioByScreenId = (screenId, scenarios) => {
-  const updateScenarios = scenarios.filter(scenario => scenario.screen === screenId);
-
-  return convertScenarios(updateScenarios);
-};
 
 export const getOptionsOfNestedList: TGetOptionsOfNestedList = (scenarios, elements) => (
   Object.keys(scenarios || {}).reduce((list, key) => {
@@ -184,19 +159,13 @@ export const getAllElements: TGetAllElements = (
   },
 }), elements);
 
-export const filterScenarioEl: TConvertScenarioElArrToObj = (elements, listScenarioId) => (
-  elements
-    .filter(element => (
-      listScenarioId.indexOf(element.scenario) !== -1
-    ))
-    .reduce((obj, el) => ({
-      ...obj,
-      [el.id]: {
-        ...el,
-        dynamic_buoyancy: el.dynamic_buoyancy || el.buoyancy,
-      },
-    }), {})
-);
+export const convertScenarioElements = (scenarioElements: IScenarioElement[]): IScenarioElements => scenarioElements.reduce((obj, el) => ({
+  ...obj,
+  [el.id]: {
+    ...el,
+    dynamic_buoyancy: el.dynamic_buoyancy || el.buoyancy,
+  },
+}), {});
 
 const getCategoryTab = (element: ILibraryElement, obj: IListCategoryEl) => {
   switch (element.struct_type) {
@@ -316,24 +285,28 @@ export const getListTypeElement = (libraryElements: ILibraryElements):IDropDownO
   }, [{ label: 'block', value: null }, { label: 'group', value: null }, { label: 'container', value: null }])
 );
 
-export const getScenarioId: TGetScenarioId = (id, listElement, listScenario) => {
-  const parseId = parseInt(id, 10);
+export const getScenarioId = (
+  idAsString: string,
+  scenariosElements: IScenarioElements,
+  scenarios: IScenarios,
+): number => {
+  const scenarioID = parseInt(idAsString, 10);
 
-  const findParent = (itemId: number) => {
-    const { parent_id, struct_type } = listScenario[itemId];
+  if (isElement(idAsString)) {
+    return R.path([scenarioID, 'scenario'], scenariosElements) || -1;
+  }
+
+  const findParent = (itemId: number): number => {
+    const { parent_id, struct_type } = scenarios[itemId];
 
     if (struct_type === 'container' && parent_id === 0) {
       return -1;
     }
 
-    return listScenario[parent_id].struct_type === 'block' ? parent_id : findParent(parent_id);
+    return scenarios[parent_id].struct_type === 'block' ? parent_id : findParent(parent_id);
   };
 
-  if (id.slice(-1) === 'e') {
-    return R.path([parseId, 'scenario'], listElement) || -1;
-  }
-
-  const currItem = listScenario[parseId];
+  const currItem = scenarios[scenarioID];
 
   switch (R.prop('struct_type', currItem)) {
     case 'block':
@@ -347,7 +320,11 @@ export const getScenarioId: TGetScenarioId = (id, listElement, listScenario) => 
   }
 };
 
-export const getItemsPair: TGetItemsPair = (LS, scenarios, scenarioElements) => (
+export const getItemsPair = (
+  LS: IListSortable,
+  scenarios: IScenarios,
+  scenarioElements: IScenarioElements,
+): { scenarioList: IScenarios, elementList: IScenarioElements } => (
   Object.keys(LS).reduce((result, key) => {
     if (!key || !LS[key]) return result;
 
@@ -373,7 +350,19 @@ export const getItemsPair: TGetItemsPair = (LS, scenarios, scenarioElements) => 
   }, { scenarioList: null, elementList: null })
 );
 
-export const getParams: TGetParams = (id, elementList, scenarioList) => {
+export const getParams = (
+  id: string,
+  elementList: IScenarioElements,
+  scenarioList: IScenarios,
+): {
+  struct_type: string,
+  parameters: any,
+  styles: IStylesElement,
+  name: string,
+  parent_id: number,
+  type: string,
+  image?: string,
+} => {
   const parseId = parseInt(id, 10);
 
   if (id.slice(-1) === 's') {
@@ -422,13 +411,20 @@ const elementToLS: TParseElementLS = ({ id, struct_type }) => ({
   children: [],
 });
 
-export const scenarioToLS: TScenarioToLS = (itemChildren, scenarios, scenarioEl) => (
-  itemChildren.sort((a, b) => b.buoyancy - a.buoyancy).reduce((result, item) => {
-    if (!item) return result;
-    const itemLS = LIST_SCENARIO_TYPE.indexOf(item.struct_type) !== -1
-      ? { [`${item.id}s`]: scenarioItemToLS(item) }
-      : { [`${item.id}e`]: elementToLS(item) };
-    const children: string[] = (R.prop('children', R.values(itemLS)[0]) || []).sort((a: string, b: string) => {
+export const scenarioToLS = (
+  parents: IScenarioItem[],
+  scenarios: IScenarios,
+  scenarioEl: IScenarioElements,
+): IListSortable => (
+  parents.sort(greaterBuoyancyFirst).reduce((acc, parent) => {
+    if (!parent) return acc;
+
+    const parentAsLSItem = LIST_SCENARIO_TYPE.indexOf(parent.struct_type) !== -1
+      ? { [`${parent.id}s`]: scenarioItemToLS(parent) }
+      : { [`${parent.id}e`]: elementToLS(parent as any) };
+
+    const rawChildrenIDs = (R.prop('children', R.values(parentAsLSItem)[0]) || []);
+    const childrenIDs: string[] = rawChildrenIDs.sort((a: string, b: string) => {
       const parseIdA = parseInt(String(a), 10);
       const parseIdB = parseInt(String(b), 10);
       const buoyancyA: number = a.slice(-1) === 's'
@@ -441,24 +437,25 @@ export const scenarioToLS: TScenarioToLS = (itemChildren, scenarios, scenarioEl)
       return buoyancyB - buoyancyA;
     });
 
-    if (!R.isEmpty(children)) {
-      const childList = children.map((childId) => {
-        const id = parseInt(childId, 10);
+    if (!R.isEmpty(childrenIDs)) {
+      const parentChildren = childrenIDs.map((childIDasString) => {
+        const childID = parseInt(childIDasString, 10);
 
-        return childId.slice(-1) === 's'
-          ? scenarios[id]
-          : scenarioEl[id];
+        return childIDasString.slice(-1) === 's'
+          ? scenarios[childID]
+          : scenarioEl[childID];
       }) || [];
+
       return {
-        ...result,
-        ...itemLS,
-        ...scenarioToLS(childList, scenarios, scenarioEl),
+        ...acc,
+        ...parentAsLSItem,
+        ...scenarioToLS(parentChildren as IScenarioItem[], scenarios, scenarioEl),
       };
     }
 
     return {
-      ...result,
-      ...itemLS,
+      ...acc,
+      ...parentAsLSItem,
     };
   }, {})
 );
@@ -500,9 +497,7 @@ export const findParentType = (id: number, scenarios: IScenarios): string => {
   if (id === 0) return 'root';
   const { struct_type, parent_id } = scenarios[id];
 
-  return struct_type === 'container'
-    ? findParentType(parent_id, scenarios)
-    : (parent_id && struct_type) || 'root';
+  return struct_type === 'container' ? findParentType(parent_id, scenarios) : ((parent_id && struct_type) || 'root');
 };
 
 export const getListNotDragging: TGetListNotDragging = (type, parentId, parentType, scenarios) => {
