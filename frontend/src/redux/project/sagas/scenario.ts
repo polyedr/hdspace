@@ -174,7 +174,7 @@ export function* createScenarioSaga(action: ReturnType<typeof Actions.createScen
   if (!resultScenario) return;
 
   const scenariosIDs = [...currentScreen.screenscenario, resultScenario.id];
-  const scenariosElements: IScenarioElement[] = yield call(reqWrapper, apiGetElements, { scenariosIDs });
+  const scenariosElements: ReturnPromisedType<typeof apiGetElements> = yield call(reqWrapper, apiGetElements, { scenariosIDs });
 
   if (!scenariosElements) return;
 

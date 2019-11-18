@@ -48,7 +48,7 @@ export class DragResize extends React.Component<IComponentProps, IComponentState
     };
   }
 
-  public componentDidUpdate = (prevProps) => {
+  public componentDidUpdate(prevProps) {
     const { style: prevStyle = {} } = prevProps;
     const { style: { width = 0, height = 0 } = {} } = this.props;
     if ( // update width/height from props, if they changed from sidebar or other ways
@@ -63,7 +63,7 @@ export class DragResize extends React.Component<IComponentProps, IComponentState
   }
 
   @autobind
-  private onDragOver(event) {
+  private handleDragOver(event) {
     const { currentController } = this.state;
 
     this.setState(({ x, y }) => {
@@ -115,7 +115,7 @@ export class DragResize extends React.Component<IComponentProps, IComponentState
   };
 
   @autobind
-  private onDragStop(event) {
+  private handleDragStop(event) {
     const { sortableId, updateElementStyles, setIsMoving } = this.props;
     const { clientX, clientY } = event;
     const { currentController } = this.state;
@@ -169,13 +169,13 @@ export class DragResize extends React.Component<IComponentProps, IComponentState
 
     setIsMoving(true);
 
-    window.removeEventListener('mousemove', this.onDragOver);
-    window.removeEventListener('mouseup', this.onDragStop);
-    window.removeEventListener('mouseleave', this.onDragStop);
+    window.removeEventListener('mousemove', this.handleDragOver);
+    window.removeEventListener('mouseup', this.handleDragStop);
+    window.removeEventListener('mouseleave', this.handleDragStop);
   };
 
   @autobind
-  private onDragStart(event) {
+  private handleDragStart(event) {
     const currentEvent = { ...event };
     const { style, sortableId } = this.props;
 
@@ -200,9 +200,9 @@ export class DragResize extends React.Component<IComponentProps, IComponentState
     });
 
 
-    window.addEventListener('mousemove', this.onDragOver);
-    window.addEventListener('mouseup', this.onDragStop);
-    window.addEventListener('mouseleave', this.onDragStop);
+    window.addEventListener('mousemove', this.handleDragOver);
+    window.addEventListener('mouseup', this.handleDragStop);
+    window.addEventListener('mouseleave', this.handleDragStop);
   };
 
   @autobind
@@ -240,7 +240,7 @@ export class DragResize extends React.Component<IComponentProps, IComponentState
     }
   };
 
-  render() {
+  public render() {
     const {
       props: {
         sortableId,
@@ -286,7 +286,7 @@ export class DragResize extends React.Component<IComponentProps, IComponentState
                 styles.resizeController_top_right,
                 currentController === 'top_right' && styles.resizeController_active,
               )}
-              onMouseDown={this.onDragStart}
+              onMouseDown={this.handleDragStart}
               onMouseEnter={this.handleResizeControllerMouseEnter}
               onMouseLeave={this.handleResizeControllerMouseLeave}
             />
@@ -297,7 +297,7 @@ export class DragResize extends React.Component<IComponentProps, IComponentState
                 styles.resizeController_bottom_right,
                 currentController === 'bottom_right' && styles.resizeController_active,
               )}
-              onMouseDown={this.onDragStart}
+              onMouseDown={this.handleDragStart}
               onMouseEnter={this.handleResizeControllerMouseEnter}
               onMouseLeave={this.handleResizeControllerMouseLeave}
             />
@@ -308,7 +308,7 @@ export class DragResize extends React.Component<IComponentProps, IComponentState
                 styles.resizeController_top_left,
                 currentController === 'top_left' && styles.resizeController_active,
               )}
-              onMouseDown={this.onDragStart}
+              onMouseDown={this.handleDragStart}
               onMouseEnter={this.handleResizeControllerMouseEnter}
               onMouseLeave={this.handleResizeControllerMouseLeave}
             />
@@ -319,7 +319,7 @@ export class DragResize extends React.Component<IComponentProps, IComponentState
                 styles.resizeController_bottom_left,
                 currentController === 'bottom_left' && styles.resizeController_active,
               )}
-              onMouseDown={this.onDragStart}
+              onMouseDown={this.handleDragStart}
               onMouseEnter={this.handleResizeControllerMouseEnter}
               onMouseLeave={this.handleResizeControllerMouseLeave}
             />
@@ -330,7 +330,7 @@ export class DragResize extends React.Component<IComponentProps, IComponentState
                 styles.resizeController_top,
                 currentController === 'top' && styles.resizeController_active,
               )}
-              onMouseDown={this.onDragStart}
+              onMouseDown={this.handleDragStart}
               onMouseEnter={this.handleResizeControllerMouseEnter}
               onMouseLeave={this.handleResizeControllerMouseLeave}
             />
@@ -341,7 +341,7 @@ export class DragResize extends React.Component<IComponentProps, IComponentState
                 styles.resizeController_bottom,
                 currentController === 'bottom' && styles.resizeController_active,
               )}
-              onMouseDown={this.onDragStart}
+              onMouseDown={this.handleDragStart}
               onMouseEnter={this.handleResizeControllerMouseEnter}
               onMouseLeave={this.handleResizeControllerMouseLeave}
             />
@@ -352,7 +352,7 @@ export class DragResize extends React.Component<IComponentProps, IComponentState
                 styles.resizeController_left,
                 currentController === 'left' && styles.resizeController_active,
               )}
-              onMouseDown={this.onDragStart}
+              onMouseDown={this.handleDragStart}
               onMouseEnter={this.handleResizeControllerMouseEnter}
               onMouseLeave={this.handleResizeControllerMouseLeave}
             />
@@ -363,7 +363,7 @@ export class DragResize extends React.Component<IComponentProps, IComponentState
                 styles.resizeController_right,
                 currentController === 'right' && styles.resizeController_active,
               )}
-              onMouseDown={this.onDragStart}
+              onMouseDown={this.handleDragStart}
               onMouseEnter={this.handleResizeControllerMouseEnter}
               onMouseLeave={this.handleResizeControllerMouseLeave}
             />

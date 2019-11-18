@@ -72,7 +72,6 @@ const RecursiveComponent: React.FC<Props> = (props) => {
     scenarioList,
     updateElementStyles,
   } = props;
-  // console.log(`props ${item.id}`, props);
   const handleChooseToSort = useCallback((itemIndex) => {
     if (item.children[itemIndex] !== activeItemId) {
       onActiveElementChange(item.id, item.children[itemIndex]);
