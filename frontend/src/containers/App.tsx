@@ -54,7 +54,7 @@ const Component: React.FunctionComponent<IAppProps> = () => {
             component={PasswordRestore}
           />
           <Route
-            path="/project/:projectId/"
+            path="/project/:projectID/:screenID?"
             component={EditorWindow}
           />
           <Redirect from="/*" to={PATH_NAMES.projects} />

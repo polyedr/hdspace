@@ -1,37 +1,40 @@
 import React, { useCallback } from 'react';
 import classNames from 'classnames';
 import Sortable from 'react-sortablejs';
+import { NavLink } from 'react-router-dom';
 
 import { IProject, IProjectScreen } from '$redux/project/reducer';
 import { Modal } from '$components/UI/Modal';
 import { Icon } from '$components/UI/Icon';
 import { Button } from '$components/UI/Button';
 import * as Actions from '$redux/project/actions';
-import { IEditorProps } from '$containers/EditorLogic';
+import { EditorProps } from '$containers/EditorLogic';
 import { uniqueId } from '$utils/NumberHelper';
 
 const styles = require('./styles.scss');
 
 interface INavPanelScreenProps {
-  isNavPanelMinimized: IEditorProps['isNavPanelMinimized'],
-  onMinimizerNavPanel(): void,
-  projectId: number,
-  project: IProject,
-  screen: IProjectScreen,
-  getProject: typeof Actions.getProject,
-  setProjectScreens: typeof Actions.setProjectScreens,
-  activateScreen: typeof Actions.activateScreen,
-  addScreen: typeof Actions.addScreen,
-  delScreen: typeof Actions.delScreen,
-  renameScreen: typeof Actions.renameScreen,
+  screenID?: string;
+  isNavPanelMinimized: EditorProps['isNavPanelMinimized'];
+  onMinimizerNavPanel(): void;
+  projectID: number;
+  project: IProject;
+  screen: IProjectScreen;
+  getProject: typeof Actions.getProject;
+  setProjectScreens: typeof Actions.setProjectScreens;
+  activateScreen: typeof Actions.activateScreen;
+  addScreen: typeof Actions.addScreen;
+  delScreen: typeof Actions.delScreen;
+  renameScreen: typeof Actions.renameScreen;
 }
 
 const NavPanelScreen: React.FunctionComponent<INavPanelScreenProps> = ({
   isNavPanelMinimized,
   onMinimizerNavPanel,
-  projectId,
+  projectID,
   project,
   screen,
+  screenID,
 
   activateScreen,
   getProject,
@@ -47,14 +50,14 @@ const NavPanelScreen: React.FunctionComponent<INavPanelScreenProps> = ({
   const [modalDellScreen, setModalDellScreen] = React.useState<boolean>(false);
 
   React.useEffect(() => {
-    getProject(projectId);
-  }, [projectId, getProject]);
+    getProject(projectID, screenID);
+  }, [projectID, getProject]);
 
   const openScreen = useCallback((id: number) => {
     if (id === screen.id) return;
 
-    activateScreen(projectId, id);
-  }, [screen, projectId, activateScreen]);
+    activateScreen(projectID, id);
+  }, [screen, projectID, activateScreen]);
 
   const changeNewScreenName = useCallback((e) => {
     setNewScreenName(e.target.value);
@@ -68,8 +71,8 @@ const NavPanelScreen: React.FunctionComponent<INavPanelScreenProps> = ({
   }, []);
 
   const handleScreenAdd = useCallback(() => {
-    addScreen(projectId, 'Screen');
-  }, [projectId]);
+    addScreen(projectID, 'Screen');
+  }, [projectID]);
 
   const handleRenameScreen = useCallback((e, id: number, name: string) => {
     e.preventDefault();
@@ -91,15 +94,15 @@ const NavPanelScreen: React.FunctionComponent<INavPanelScreenProps> = ({
     event.preventDefault();
     event.stopPropagation();
     cancelModal();
-    renameScreen(projectId, changeScreen.id, newScreenName);
-  }, [cancelModal, newScreenName, changeScreen, projectId, renameScreen]);
+    renameScreen(projectID, changeScreen.id, newScreenName);
+  }, [cancelModal, newScreenName, changeScreen, projectID, renameScreen]);
 
   const onDelScreen = useCallback((e) => {
     e.preventDefault();
     e.stopPropagation();
     cancelModal();
-    delScreen(projectId, changeScreen.id);
-  }, [cancelModal, changeScreen, projectId, delScreen]);
+    delScreen(projectID, changeScreen.id);
+  }, [cancelModal, changeScreen, projectID, delScreen]);
 
   const handleChange = useCallback((order) => {
     const newProjectScreens = order.map((currnetScreenId, index) => {
@@ -141,52 +144,53 @@ const NavPanelScreen: React.FunctionComponent<INavPanelScreenProps> = ({
           >
             {
               project.projectscreen.map(s => (
-                <div
+                <NavLink
                   key={s.id}
+                  to={`/project/${projectID}/${s.id}`}
                   className={classNames(styles.screenContainer, screen && s.id === screen.id ? styles.screenContainer_active : '')}
                   data-id={s.id}
-                >
-                  <div
-                    className={styles.screenNavigate}
-                    onClick={() => openScreen(s.id)}
                   >
-                    <Button
-                      className="propsPanelImgBtn"
-                      styleType="none"
-                      onClick={e => handleRenameScreen(e, s.id, s.name)}
+                    <div
+                      className={styles.screenNavigate}
+                      onClick={() => openScreen(s.id)}
                     >
-                      <Icon icon="edit" size={20} />
-                    </Button>
-                    <Button
-                      className="delBtn"
-                      styleType="none"
-                      onClick={e => handleDelScreen(e, s.id, s.name)}
+                      <Button
+                        className="propsPanelImgBtn"
+                        styleType="none"
+                        onClick={e => handleRenameScreen(e, s.id, s.name)}
+                      >
+                        <Icon icon="edit" size={20} />
+                      </Button>
+                      <Button
+                        className="delBtn"
+                        styleType="none"
+                        onClick={e => handleDelScreen(e, s.id, s.name)}
+                      >
+                        <Icon icon="delete" size={20} />
+                      </Button>
+                    </div>
+                    <div
+                      className={classNames(
+                        styles.screenTab,
+                      )}
                     >
-                      <Icon icon="delete" size={20} />
-                    </Button>
-                  </div>
-                  <div
-                    className={classNames(
-                      styles.screenTab,
-                    )}
-                  >
-                    { s.image ? (
-                      <img
-                        src={s.image}
-                        alt="img"
-                        style={{
-                          position: 'absolute',
-                          width: '100%',
-                          maxHeight: '100%',
-                          objectFit: 'cover',
-                          objectPosition: '0 0',
-                        }}
-                      />
-                    ) : (
-                      <span>{s.name}</span>
-                    )}
-                  </div>
-                </div>
+                      { s.image ? (
+                        <img
+                          src={s.image}
+                          alt="img"
+                          style={{
+                            position: 'absolute',
+                            width: '100%',
+                            maxHeight: '100%',
+                            objectFit: 'cover',
+                            objectPosition: '0 0',
+                          }}
+                        />
+                      ) : (
+                        <span>{s.name}</span>
+                      )}
+                    </div>
+                </NavLink>
               ))
             }
           </Sortable>

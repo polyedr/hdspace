@@ -4,6 +4,7 @@ import { hot } from 'react-hot-loader';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 
+import { AppReduxState } from '$shared/types/app';
 import * as ActionsUser from '$redux/user/actions';
 import * as ActionsProject from '$redux/project/actions';
 import * as PATH_NAMES from '$constants/pathNames';
@@ -19,7 +20,7 @@ const mapStateToProps = ({
   user: { isLPanelMinimized, tokenPair, userData: { username } },
   project: { listProject: projects },
   router: { location: { pathname } },
-}) => ({
+}: AppReduxState) => ({
   isLPanelMinimized,
   tokenPair,
   username,
@@ -74,7 +75,7 @@ const EditorWindow: React.FunctionComponent<IAppProps> = ({
             component={ProjectsLogic}
           />
           <Route
-            path="/project/:projectId/"
+            path="/project/:projectID/:screenID?"
             component={EditorLogic}
           />
           <Redirect from="/*" to={PATH_NAMES.projects} />

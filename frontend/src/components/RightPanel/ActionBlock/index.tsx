@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import { DropDown } from '$components/UI/DropDown/';
 import { Icon } from '$components/UI/Icon/';
 import { Button } from '$components/UI/Button/';
-import { IEditorProps } from '$containers/EditorLogic';
+import { EditorProps } from '$containers/EditorLogic';
 import * as Actions from '$redux/project/actions';
 import { IPanelEditProps } from '$components/RightPanel/PanelEditProps';
 import { IActiveItem } from '$components/Editor/EditorWindow/';
@@ -13,7 +13,7 @@ import { elementTypes } from '$constants/menu';
 const styles = require('./styles.scss');
 
 interface IComponentProps {
-  project: IEditorProps['currentProject'],
+  project: EditorProps['currentProject'],
   params: IPanelEditProps['params'],
   activeItem: IActiveItem,
   itemType: string,

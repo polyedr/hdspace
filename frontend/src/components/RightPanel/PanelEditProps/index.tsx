@@ -10,7 +10,7 @@ import { ScenarioBlock } from '$components/RightPanel/ChangeScenarioBlock';
 import { GroupElementsDirectionBlock } from '$components/RightPanel/GroupElementsDirectionBlock';
 import { ActionBlock } from '$components/RightPanel/ActionBlock';
 import { DifferentSettingsBlock } from '$components/RightPanel/DifferentSettingsBlock';
-import { IEditorProps } from '$containers/EditorLogic';
+import { EditorProps } from '$containers/EditorLogic';
 import { IRightPanelProps } from '$components/RightPanel/MainPanel';
 import { ColorPicker } from '$components/UI/ColorPicker';
 import { DEFAULT_BACKGROUND, LIST_SCENARIO_TYPE } from '$constants/defaultParams';
@@ -22,7 +22,7 @@ import { TypographyBlock } from '$components/RightPanel/TypographyBlock';
 import { IStylesElement } from '$utils/StyleHelper';
 
 export interface IPanelEditProps {
-  project: IEditorProps['currentProject'],
+  project: EditorProps['currentProject'],
   screen: IRightPanelProps['screen'],
   params: IScreenProps,
   styleItem: IStylesElement,

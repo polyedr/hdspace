@@ -37,8 +37,9 @@ export function* getListProjectSaga(): SagaIterator {
   yield put(Actions.setListProjectLoader(false));
 }
 
-export function* getProjectSaga({ id }: ReturnType<typeof Actions.getProject>) {
-  const { project: { currentProject }, user: { isPrototypeMode } }: AppReduxState = yield select(state => state);
+export function* getProjectSaga(action: ReturnType<typeof Actions.getProject>) {
+  const { id, screenID } = action.payload;
+  const { project: { currentProject }, user: { isPrototypeMode } }: AppReduxState = yield select();
 
   if (currentProject.id === id) {
     yield put(changePrototypeMode(isPrototypeMode));
@@ -54,10 +55,11 @@ export function* getProjectSaga({ id }: ReturnType<typeof Actions.getProject>) {
     if (project) {
       yield put(Actions.setProject(project));
 
-      const screenID = project.projectscreen.length && project.projectscreen[0].id;
+      const finalScreenID = screenID || (project.projectscreen.length && project.projectscreen[0].id);
 
-      if (screenID) {
-        yield call(activateScreenSaga, Actions.activateScreen(id, screenID));
+      if (finalScreenID) {
+        yield call(activateScreenSaga, Actions.activateScreen(id, Number(finalScreenID)));
+        yield put(push(`/project/${id}/${finalScreenID}`));
       } else {
         yield put(Actions.setScreen(DEFAULT_SCREEN));
       }
@@ -72,7 +74,7 @@ export function* getProjectSaga({ id }: ReturnType<typeof Actions.getProject>) {
 export function* addProject(action: ReturnType<typeof Actions.addProject>) {
   const { id: projectID } = yield call(addProjectSaga, action);
   yield call(addScreenSaga, Actions.addScreen(projectID, 'Screen'));
-  yield put(push(`project/${projectID}`));
+  yield put(push(`/project/${projectID}`));
 }
 
 export function* addProjectSaga({ name }: ReturnType<typeof Actions.addProject>) {

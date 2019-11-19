@@ -6,9 +6,8 @@ import { Button } from '$components/UI/Button';
 import { Icon } from '$components/UI/Icon';
 import { Modal } from '$components/UI/Modal';
 import { ILeftPanel } from '$components/LeftPanel';
-import { IEditorProps } from '$containers/EditorLogic';
+import { EditorProps } from '$containers/EditorLogic';
 import * as Actions from '$redux/project/actions';
-import { IProjectScreen } from '$redux/project/reducer';
 
 const styles = require('./styles.scss');
 
@@ -23,7 +22,7 @@ const mapDispatchToProps = {
 type TTopPanelProps = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & {
   pathname: string,
   isLPanelMinimized: ILeftPanel['isLPanelMinimized'],
-  project: IEditorProps['currentProject'],
+  project: EditorProps['currentProject'],
   onMinimiserLPanel(): void,
   renameProject: typeof Actions.renameProject,
 }
