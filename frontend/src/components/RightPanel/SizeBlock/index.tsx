@@ -13,12 +13,14 @@ interface IComponentProps {
   updateScenarioStyles: IPanelEditProps['updateScenarioStyles'],
 }
 
-export const SizeBlock: React.FunctionComponent<IComponentProps> = memo(({
-  styleItem,
-  activeItem,
-  updateElementStyles,
-  updateScenarioStyles,
-}) => {
+export const SizeBlock: React.FunctionComponent<IComponentProps> = memo((props) => {
+  const {
+    styleItem,
+    activeItem,
+    updateElementStyles,
+    updateScenarioStyles,
+  } = props;
+
   const handleChangeUnits = useCallback(({ target }) => {
     switch (target.value) {
       case 'width': {

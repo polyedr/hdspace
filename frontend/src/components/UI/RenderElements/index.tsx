@@ -47,20 +47,22 @@ const renderContainer: TRenderElement = ({ active, children, style }) => (
   </div>
 );
 
-const renderGroup: TRenderElement = ({
-  id, active, children, style,
-}) => (
-  <div
-    id={id}
-    className={classNames('addedItem', styles.addedGroup, active && styles.activated)}
-    style={{
-      ...style,
-      overflowWrap: 'break-word',
-    }}
-  >
-    {children || null}
-  </div>
-);
+const renderGroup: TRenderElement = (props) => {
+  const { id, active, children, style } = props;
+
+  return (
+    <div
+      id={id}
+      className={classNames('addedItem', styles.addedGroup, active && styles.activated)}
+      style={{
+        ...style,
+        overflowWrap: 'break-word',
+      }}
+    >
+      {children || null}
+    </div>
+  )
+};
 
 const renderButton: TRenderElement = ({
   id, style, params, active,

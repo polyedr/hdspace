@@ -256,6 +256,9 @@ export class DragResize extends React.Component<IComponentProps, IComponentState
       },
     } = this;
 
+    const calculatedWidth = (width && width - deltaX) || (children.props.style && children.props.style.width) || 'auto';
+    const calculatedHeight = (height && height - deltaY) || (children.props.style && children.props.style.height) || 'auto';
+
     return (
       <div
         data-id={sortableId}
@@ -267,8 +270,10 @@ export class DragResize extends React.Component<IComponentProps, IComponentState
             ...children.props,
             style: {
               ...children.props.style,
-              width: (width && width - deltaX) || (children.props.style && children.props.style.width) || 'auto',
-              height: (height && height - deltaY) || (children.props.style && children.props.style.height) || 'auto',
+              ...(isDraggable ? ({
+                width: calculatedWidth,
+                height: calculatedHeight,
+              }) : {})
               // width: (width && width - deltaX) || 'auto',
               // height: (height && height - deltaY) || 'auto',
             },
