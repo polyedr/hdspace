@@ -16,6 +16,13 @@ from .base import *  # noqa
 from celery.schedules import crontab
 from datetime import timedelta
 
+# Mask R-CNN model initial load
+ROOT_DIR = os.path.abspath(BASE_DIR + "/apps/virtualize_simple/mask_rcnn")
+# Import Mask RCNN
+sys.path.append(ROOT_DIR)  # To find local version of the library
+from apps.virtualize_simple.mask_rcnn.mrcnn.config import Config
+import apps.virtualize_simple.mask_rcnn.mrcnn.model as modellib
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
@@ -45,7 +52,8 @@ INSTALLED_APPS = [
     'djoser',
     'rest_framework_swagger',
     'corsheaders',
-    # 'rest_framework_simplejwt.token_blacklist', djongo.sql2mongo.SQLDecodeError: FAILED SQL: ALTER TABLE "token_blacklist_blacklistedtoken" ADD COLUMN "token_id" int32 NOT NULL UNIQUE
+    # 'rest_framework_simplejwt.token_blacklist', djongo.sql2mongo.SQLDecodeError:
+    # FAILED SQL: ALTER TABLE "token_blacklist_blacklistedtoken" ADD COLUMN "token_id" int32 NOT NULL UNIQUE
 ]
 
 EXTERNAL_APPS = [
@@ -241,7 +249,7 @@ CELERYBEAT_SCHEDULE = {
         'schedule': crontab(minute=59, hour=23)
     }
 }
-CELERY_RESULT_BACKEND=REDIS_URL
+CELERY_RESULT_BACKEND = REDIS_URL
 
 # EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 # EMAIL_HOST = "smtp.gmail.com"
@@ -358,16 +366,17 @@ DJOSER = {
 }
 
 
-
-# Mask R-CNN model initial load
-ROOT_DIR = os.path.abspath(BASE_DIR + "/apps/virtualize_simple/mask_rcnn")
-# Import Mask RCNN
-sys.path.append(ROOT_DIR)  # To find local version of the library
-from apps.virtualize_simple.mask_rcnn.mrcnn.config import Config
-import apps.virtualize_simple.mask_rcnn.mrcnn.model as modellib
+# # Mask R-CNN model initial load
+# ROOT_DIR = os.path.abspath(BASE_DIR + "/apps/virtualize_simple/mask_rcnn")
+# # Import Mask RCNN
+# sys.path.append(ROOT_DIR)  # To find local version of the library
+# from apps.virtualize_simple.mask_rcnn.mrcnn.config import Config
+# import apps.virtualize_simple.mask_rcnn.mrcnn.model as modellib
 # Directory to save logs and trained model
-MODEL_DIR = os.path.join(ROOT_DIR, "logs")
-# Configurations
+MODEL_DIR = os.path.join(ROOT_DIR, "trained_models")
+
+
+# Configurations:q
 class LoginConfig(Config):
     """Configuration for training on the toy shapes dataset.
     Derives from the base Config class and overrides values specific
@@ -380,7 +389,7 @@ class LoginConfig(Config):
     # Use small images for faster training. Set the limits of the small side
     # the large side, and that determines the image shape.
     IMAGE_MIN_DIM = 128
-    IMAGE_MAX_DIM = 128
+    IMAGE_MAX_DIM = 1024
     # Use smaller anchors because our image and objects are small
     RPN_ANCHOR_SCALES = (8, 16, 32, 64, 128)  # anchor side in pixels
     # Reduce training ROIs per image because the images are small and have
@@ -396,12 +405,12 @@ class LoginConfig(Config):
     NUM_CLASSES = 1 + 7  # Background + form_login
     # Number of training steps per epoch
     STEPS_PER_EPOCH = 10
-    # Skip detections with < 90% confidence
-    DETECTION_MIN_CONFIDENCE = 0.9
+    # Skip detections with < 85% confidence (default is 0.9)
+    DETECTION_MIN_CONFIDENCE = 0.85
+
 
 config = LoginConfig()
 # config.display()
-
 
 
 class InferenceConfig(LoginConfig):
@@ -417,10 +426,7 @@ model = modellib.MaskRCNN(
 )
 
 # Get path to saved weights
-# Either set a specific path or find last trained weights
-# model_path = os.path.join(ROOT_DIR, ".h5 file name here")
-# model_path = model.find_last()
-model_path = MODEL_DIR + "/form_login20190806T1127/mask_rcnn_form_login_0662.h5"
+model_path = os.path.join(MODEL_DIR, "mask_rcnn_form_login_0026.h5")
 
 # Load trained weights
 # print("Loading weights from ", model_path)
