@@ -1,29 +1,79 @@
+import re
+
+from skimage.segmentation import clear_border
+
 from project.settings import model, MEDIA_ROOT
 from rest_framework import serializers
 
 from apps.projects.models import ScenarioElement, ScreenScenario
 import cv2
+import numpy as np
 import pytesseract
 
 config_tesseract = "-l eng --oem 1 --psm 3"
 
-# only letters will be in string
-def letters(input):
-    return "".join(filter(str.isalpha, input))
+f_dictionary = {
+    "username": ["username", "user", "username", "alias", "nickname", "first-last"],
+    "phone": ["phone", "telephone", "mobile"],
+    "email": ["email", "e-mail"],
+    "password": ["password"],
+    "firstname": ["firstname", "first", "name"],
+    "lastname": ["lastname", "last", "surname"],
+    "day": ["day"],
+    "month": ["month"],
+    "year": ["year"],
+}
 
 
-keyword_dict = {"mail": "email", "email": "email", "mai1": "email", "emai1": "email"}
+# How to use image preprocessing to improve the accuracy of Tesseract
+# https://www.freecodecamp.org/news/getting-started-with-tesseract-part-ii-f7f9a0899b3f/
+def apply_threshold(img, argument):
+    switcher = {
+        1: cv2.threshold(
+            cv2.GaussianBlur(img, (9, 9), 0),
+            0,
+            255,
+            cv2.THRESH_BINARY + cv2.THRESH_OTSU,
+        )[1],
+        2: cv2.threshold(
+            cv2.GaussianBlur(img, (7, 7), 0),
+            0,
+            255,
+            cv2.THRESH_BINARY + cv2.THRESH_OTSU,
+        )[1],
+        3: cv2.threshold(
+            cv2.GaussianBlur(img, (5, 5), 0),
+            0,
+            255,
+            cv2.THRESH_BINARY + cv2.THRESH_OTSU,
+        )[1],
+        18: cv2.adaptiveThreshold(
+            cv2.medianBlur(img, 7),
+            255,
+            cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+            cv2.THRESH_BINARY,
+            31,
+            2,
+        ),
+        19: cv2.adaptiveThreshold(
+            cv2.medianBlur(img, 5),
+            255,
+            cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+            cv2.THRESH_BINARY,
+            31,
+            2,
+        ),
+        20: cv2.adaptiveThreshold(
+            cv2.medianBlur(img, 3),
+            255,
+            cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+            cv2.THRESH_BINARY,
+            31,
+            2,
+        ),
+    }
+    return switcher.get(argument, "Invalid method")
 
-
-
-
-'''
-# Some initial image to count is required for the current solution
-imgpath = MEDIA_ROOT + "/uploads/" + "2.png"
-# imgpath = ""
-counted_elements = count_elements(imgpath)
-# print(counted_elements)
-'''
 
 class ScenarioElementSerializer(serializers.ModelSerializer):
     parameters = serializers.JSONField()
@@ -45,7 +95,6 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
 
 
 class ScreenScenarioSerializer(serializers.ModelSerializer):
-    # elements = ScenarioElementSerializer(many=True, read_only=True)
     parameters = serializers.JSONField()
     styles = serializers.JSONField()
 
@@ -64,10 +113,8 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
             "parameters",
             "styles",
             "image",
-            # "screenscenario"
         )
         extra_kwargs = {"elements": {"read_only": True}, "image": {"write_only": True}}
-        # extra_kwargs = {"elements": {"read_only": True}}
 
     def create(self, validated_data):
         scenario_data = {
@@ -75,7 +122,6 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
             "type": "login",
             "struct_type": "scenario",
             "parameters": {},
-            # "image": validated_data["image"],
         }
 
         """
@@ -100,57 +146,144 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
             results = model.detect([img], verbose=1)
             r = results[0]
             # r["rois"]
-            # r["class_ids"]
+            print(r["class_ids"])
             # print(img.shape)
-            [h, w, d] = img.shape
             for (roi, class_id) in zip(r["rois"], r["class_ids"]):
                 y1, x1, y2, x2 = roi
                 roi_our = img[y1:y2, x1:x2]
-                text = pytesseract.image_to_string(roi_our, config=config_tesseract)
+
+                img = roi_our
+                img = cv2.resize(
+                    img, None, fx=1.5, fy=1.5, interpolation=cv2.INTER_CUBIC
+                )
+                # Convert to the grey colour
+                img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+                # Remove artifacts connected to image border
+                img = clear_border(img)
+                # Apply dilation and erosion to remove some noise
+                kernel = np.ones((1, 1), np.uint8)
+                img = cv2.dilate(img, kernel, iterations=1)
+                img = cv2.erode(img, kernel, iterations=1)
+                # Apply threshold to get image with only black and white
+                img = apply_threshold(img, 20)
+                print(pytesseract.image_to_string(img))
+
+                text = pytesseract.image_to_string(img, config=config_tesseract)
                 # print(text)
                 width_elem = x2 - x1
                 height_elem = y2 - y1
+
+                func_type = ""
+                # Check if class id is: 1 input, 2 button, 3 text or 4 select
+                if class_id in [1, 2, 3, 4]:
+                    # Functional class assignment
+                    # Input: string from tesseract, output: functional class of the element
+                    tess_string = text.lower().split()
+
+                    # The whole string format to process further
+                    letters_str = "".join(filter(str.isalpha, text))
+
+                    fclasses_predictions = []
+                    for ts in tess_string:
+                        ts.strip()
+                        ts = re.sub("[^a-zA-Z]+", "", ts)
+                        print("ts=", ts)
+                        # print([key for key, value in f_dictionary.items() if ts in value])
+                        fclass = [
+                            key for key, value in f_dictionary.items() if ts in value
+                        ]
+                        fclasses_predictions = fclasses_predictions + fclass
+                    print("the functional class is: ", fclasses_predictions)
+                    func_type = "".join(fclasses_predictions)
+
+                # Input
                 if class_id == 1:
-                    letters_str = letters(text)
-                    is_found = 0
-                    for key, value in keyword_dict.items():
-                        if letters_str.lower().find(key) != -1:
-                            recognized_elements.append(
-                                {
-                                    "struct_type": class_id,
-                                    "func_type": value,
-                                    "parameters": {"placeholder": text},
-                                    "styles": {
-                                        "width": str(width_elem) + "px",
-                                        "height": str(height_elem) + "px",
-                                    },
-                                }
-                            )
-                            is_found = 1
-                            break
-                    if not is_found:
-                        recognized_elements.append(
-                            {
-                                "struct_type": 6,
-                                "func_type": "undefined",
-                                "parameters": {
-                                    "xmin": x1,
-                                    "xmax": x2,
-                                    "ymin": y1,
-                                    "ymax": y2,
-                                },
-                                "styles": {
-                                    "width": str(width_elem) + "px",
-                                    "height": str(height_elem) + "px",
-                                },
-                            }
-                        )
-                else:
                     recognized_elements.append(
                         {
-                            "struct_type": 6,
+                            "struct_type": "input",
+                            "func_type": func_type,
+                            "parameters": {"placeholder": letters_str},
+                            "styles": {
+                                "width": str(width_elem) + "px",
+                                "height": str(height_elem) + "px",
+                            },
+                        }
+                    )
+                # Button
+                if class_id == 2:
+                    recognized_elements.append(
+                        {
+                            "struct_type": "button",
+                            "func_type": "end_simple_scenario",
+                            "parameters": {"text": letters_str},
+                            "styles": {
+                                "width": str(width_elem) + "px",
+                                "height": str(height_elem) + "px",
+                            },
+                        }
+                    )
+                # Text. Change this later.
+                # Functional classes are title, description, label. How to assign them?
+                if class_id == 3:
+                    # Set the description class for the default value
+                    func_type = "description"
+                    recognized_elements.append(
+                        {
+                            "struct_type": "text",
+                            "func_type": func_type,
+                            "parameters": {"placeholder": text},
+                            "styles": {
+                                "width": str(width_elem) + "px",
+                                "height": str(height_elem) + "px",
+                            },
+                        }
+                    )
+                # Select
+                if class_id == 4:
+                    recognized_elements.append(
+                        {
+                            "struct_type": "select",
+                            "func_type": func_type,
+                            "parameters": {"text": letters_str},
+                            "styles": {
+                                "width": str(width_elem) + "px",
+                                "height": str(height_elem) + "px",
+                            },
+                        }
+                    )
+                # Checkbox
+                if class_id == 5:
+                    recognized_elements.append(
+                        {
+                            "struct_type": "checkbox",
                             "func_type": "undefined",
-                            "parameters": {"xmin": x1, "xmax": x2, "ymin": y1, "ymax": y2},
+                            "parameters": {"text": letters_str},
+                            "styles": {
+                                "width": str(width_elem) + "px",
+                                "height": str(height_elem) + "px",
+                            },
+                        }
+                    )
+                # Radiobutton
+                if class_id == 6:
+                    recognized_elements.append(
+                        {
+                            "struct_type": "radiobutton",
+                            "func_type": "undefined",
+                            "parameters": {"text": letters_str},
+                            "styles": {
+                                "width": str(width_elem) + "px",
+                                "height": str(height_elem) + "px",
+                            },
+                        }
+                    )
+                # Image
+                if class_id == 7:
+                    recognized_elements.append(
+                        {
+                            "struct_type": "image",
+                            "func_type": "undefined",
+                            "parameters": {"alt": letters_str},
                             "styles": {
                                 "width": str(width_elem) + "px",
                                 "height": str(height_elem) + "px",
@@ -158,19 +291,7 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                         }
                     )
 
-            # Define structural class as a string
-            for recognized_element in recognized_elements:
-                if recognized_element["struct_type"] == 1:
-                    recognized_element.update({"struct_type": "email"})
-                else:
-                    recognized_element.update({"struct_type": "image"})
-
-            print(recognized_elements)
-
-
-        scenarioelements = recognized_elements
-
-        for scenarioelement_data in scenarioelements:
-            ScenarioElement.objects.create(scenario=scenario, **scenarioelement_data)
+        for element_data in recognized_elements:
+            ScenarioElement.objects.create(scenario=scenario, **element_data)
 
         return scenario
