@@ -3,6 +3,7 @@ import {
   call, select, put, all,
 } from 'redux-saga/effects';
 import * as R from 'ramda';
+import { push } from 'connected-react-router';
 
 import {
   activateScreen,
@@ -87,7 +88,7 @@ export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
   yield put(setScreen(screen));
   yield put(setScenarios({}));
 
-  const { project: { currentProject } } = yield select(state => state);
+  const { project: { currentProject } } = yield select();
   const updateProject: IProject = R.assoc(
     'projectscreen',
     R.append(screen, currentProject.projectscreen),
@@ -95,6 +96,7 @@ export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
   );
 
   yield put(setProject(updateProject));
+  yield put(push(`/project/${projectId}/${screen.id}`))
 }
 
 async function canvasToBlob(canvas: HTMLCanvasElement): Promise<Blob> {
@@ -184,8 +186,10 @@ export function* delScreenSaga({ payload }: ReturnType<typeof delScreen>) {
 
   if (!lastScreenId) {
     yield put(setScreen(DEFAULT_SCREEN));
+    yield put(push(`/project/${projectId}`));
   } else if (lastScreenId !== currentScreen.id) {
     yield put(activateScreen(projectId, lastScreenId));
+    yield put(push(`/project/${projectId}/${lastScreenId}`));
   }
   // yield call(getListProjectSaga);
 }

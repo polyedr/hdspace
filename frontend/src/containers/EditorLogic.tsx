@@ -1,12 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
+import { AppReduxState } from '$shared/types/app';
 import { Editor } from '$components/Editor/EditorWindow';
 import NavPanelScreen from '$components/NavPanelScreen';
 import * as Actions from '$redux/project/actions';
 import * as UserActions from '$redux/user/actions';
 import { Spinner } from '$components/UI/Spinner';
-
 
 export interface IMatch<P> {
   params: P,
@@ -16,7 +16,8 @@ export interface IMatch<P> {
 }
 
 interface MatchParams {
-  projectId: number;
+  projectID: number;
+  screenID?: string;
 }
 
 const mapStateToProps = ({
@@ -32,7 +33,7 @@ const mapStateToProps = ({
     scenarios,
     scenarioElements,
   },
-}) => ({
+}: AppReduxState) => ({
   currentProject,
   isLPanelMinimized,
   isNavPanelMinimized,
@@ -60,12 +61,12 @@ const mapDispatchToProps = {
   changePrototypeMode: UserActions.changePrototypeMode,
 };
 
-export type IEditorProps = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & {
+export type EditorProps = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & {
   match: IMatch<MatchParams>,
 }
 
-const EditorLogic: React.FunctionComponent<IEditorProps> = ({
-  match: { params: { projectId } },
+const EditorLogic: React.FunctionComponent<EditorProps> = ({
+  match: { params: { projectID, screenID } },
 
   currentProject,
   currentScreen,
@@ -88,12 +89,13 @@ const EditorLogic: React.FunctionComponent<IEditorProps> = ({
   delScenarioItem,
   setListSortable,
   updateElementStyles,
-}: IEditorProps) => (
+}: EditorProps) => (
   <React.Fragment>
     <NavPanelScreen
       isNavPanelMinimized={isNavPanelMinimized}
       onMinimizerNavPanel={changeMinNavPanel}
-      projectId={projectId}
+      projectID={projectID}
+      screenID={screenID}
       project={currentProject}
       screen={currentScreen}
       getProject={getProject}

@@ -9,7 +9,7 @@ import { Scrollbar } from '$components/UI/Scrollbar/';
 import { PanelEditProps } from '$components/RightPanel/PanelEditProps';
 import { ScenarioList } from '$components/RightPanel/ScenarioList';
 import { IActiveItem } from '$components/Editor/EditorWindow/';
-import { IEditorProps } from '$containers/EditorLogic';
+import { EditorProps } from '$containers/EditorLogic';
 import { LIST_SCENARIO_TYPE } from '$constants/defaultParams';
 import { IStylesElement } from '$utils/StyleHelper';
 import { Spinner } from '$components/UI/Spinner/';
@@ -49,7 +49,7 @@ const mapDispatchToProps = {
 
 export type IRightPanelProps = ReturnType<typeof mapStateToProps>& typeof mapDispatchToProps & {
   activeItem: IActiveItem,
-  project: IEditorProps['currentProject'],
+  project: EditorProps['currentProject'],
   screen: IProjectScreen,
 
   // onDelElement: () => void,

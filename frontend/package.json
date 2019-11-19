@@ -20,6 +20,8 @@
   "devDependencies": {
     "@babel/cli": "^7.4.4",
     "@babel/preset-env": "^7.4.5",
+    "@types/history": "^4.7.3",
+    "@types/react-router": "^4.0.32",
     "awesome-typescript-loader": "^5.2.1",
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.4",

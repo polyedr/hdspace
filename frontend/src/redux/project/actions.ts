@@ -41,9 +41,9 @@ export const delProject = (id: number) => ({
   id,
 });
 
-export const getProject = (id: number) => ({
+export const getProject = (id: number, screenID?: string) => ({
   type: TYPES.GET_PROJECT,
-  id,
+  payload: { id, screenID },
 });
 
 export const setProject = (project: IProject) => ({

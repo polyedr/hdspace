@@ -13,9 +13,10 @@ import { RightPanel } from '$components/RightPanel/MainPanel/';
 import * as Actions from '$redux/project/actions';
 import * as userActions from '$redux/user/actions';
 import { DEFAULT_ACTIVE_ITEM, DEFAULT_SCREEN_MODE } from '$constants/defaultParams';
-import { IEditorProps } from '$containers/EditorLogic';
+import { EditorProps } from '$containers/EditorLogic';
 import { IAppProps } from '$containers/App';
 import { Scrollbar } from '$components/UI/Scrollbar';
+import { ISortableItemTemp } from '$utils/parseListItems';
 import { getClassDevice } from '$utils/dom';
 import { getListNotDragging, getParams, getScenarioId } from '$utils/parseScenario';
 
@@ -42,13 +43,13 @@ export type TOnChoose = (
 ) => void;
 
 export interface IEditProps {
-  project: IEditorProps['currentProject'],
-  screen: IEditorProps['currentScreen'],
-  scenarios: IEditorProps['scenarios'],
-  scenarioElements: IEditorProps['scenarioElements'],
+  project: EditorProps['currentProject'],
+  screen: EditorProps['currentScreen'],
+  scenarios: EditorProps['scenarios'],
+  scenarioElements: EditorProps['scenarioElements'],
   isLPanelMinimized: IAppProps['isLPanelMinimized'],
-  isNavPanelMinimized: IEditorProps['isNavPanelMinimized'],
-  isPrototypeMode: IEditorProps['isPrototypeMode'],
+  isNavPanelMinimized: EditorProps['isNavPanelMinimized'],
+  isPrototypeMode: EditorProps['isPrototypeMode'],
   saveScreen: typeof Actions.saveScreen,
   delScenarioItem: typeof Actions.delScenarioItem,
   changePrototypeMode: typeof userActions.changePrototypeMode,
@@ -343,7 +344,7 @@ export const Editor: React.FunctionComponent<IEditProps> = memo(({
                               )
                             } */}
                             <Recursive
-                              item={screen.listSortable.root}
+                              item={screen.listSortable.root as ISortableItemTemp}
                               activeItemId={activeItem.itemId}
                               isMoving={isMoving}
                               listNotDragging={listNotDragging}
