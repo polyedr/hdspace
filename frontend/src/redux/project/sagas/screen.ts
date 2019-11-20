@@ -13,11 +13,11 @@ import {
   renameScreen,
   saveScreen,
   setProject, setScenarioElements,
-  setScenarios,
   setScreen,
   setScreenLoader,
   setModifyElements,
   setLoader,
+  clearAfterPrevScreen,
 } from '$redux/project/actions';
 import { convertScenarioElements } from '$utils/parseScenario';
 import { DEFAULT_LS, DEFAULT_SCREEN } from '$constants/defaultParams';
@@ -51,8 +51,9 @@ export function* activateScreenSaga({ payload }: ReturnType<typeof activateScree
   }
 
   yield put(setScreenLoader(true));
+  yield put(clearAfterPrevScreen());
 
-  const screen = yield call(reqWrapper, apiGetScreen, { id: screenId });
+  const screen: ReturnPromisedType<typeof apiGetScreen> = yield call(reqWrapper, apiGetScreen, { id: screenId });
 
   if (!screen) return;
 
@@ -77,6 +78,7 @@ export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
     screen_data_json: {},
     styles_root: {},
   };
+
   const createdScreen: ReturnPromisedType<typeof apiAddScreen> = yield call(reqWrapper, apiAddScreen, { data });
   if (!createdScreen) return;
 
@@ -85,8 +87,8 @@ export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
     R.assoc('listSortable', DEFAULT_LS, createdScreen),
   );
 
+  yield put(clearAfterPrevScreen());
   yield put(setScreen(screen));
-  yield put(setScenarios({}));
 
   const { project: { currentProject } } = yield select();
   const updateProject: IProject = R.assoc(

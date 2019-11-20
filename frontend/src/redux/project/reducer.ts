@@ -283,6 +283,13 @@ const setLoader: ActionHandler<boolean> = (state, { active }) => ({
   loader: active,
 });
 
+const clearAfterPrevScreen: ActionHandler<typeof ACTIONS.clearAfterPrevScreen> = (state) => ({
+  ...state,
+  scenarios: {},
+  scenarioElements: {},
+  modifyElements: [],
+});
+
 const setScreen: ActionHandler<typeof ACTIONS.setScreen> = (state, { screen }) => ({
   ...state,
   currentScreen: screen,
@@ -338,6 +345,7 @@ const HANDLERS = {
   [TYPES.SET_LIST_PROJECT]: setListProject,
   [TYPES.SET_LIST_PROJECT_LOADER]: setLoaderListProject,
   [TYPES.SET_PROJECT]: setProject,
+  [TYPES.CLEAN_AFTER_PREV_SCREEN]: clearAfterPrevScreen,
   [TYPES.SET_SCREEN]: setScreen,
   [TYPES.SET_PROJECT_LOADER]: setProjectLoader,
   [TYPES.SET_SCREEN_LOADER]: setScreenLoader,
