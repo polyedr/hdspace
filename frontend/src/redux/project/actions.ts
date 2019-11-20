@@ -118,6 +118,10 @@ export const setListSortable = (
   },
 });
 
+export const clearAfterPrevScreen = () => ({
+  type: TYPES.CLEAN_AFTER_PREV_SCREEN,
+});
+
 export const saveScreen = (canvas: HTMLCanvasElement) => ({
   type: TYPES.SAVE_SCREEN,
   canvas,
