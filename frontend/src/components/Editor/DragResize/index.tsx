@@ -10,12 +10,15 @@ const styles = require('./styles.scss');
 
 export type TChooseResize = (itemId) => void;
 
+const extractWidth = R.path<number | string>(['props', 'style', 'width']);
+
 interface IComponentProps {
   sortableId: string;
   style: CSSProperties;
   children: any;
   updateElementStyles: typeof Actions.updateElementStyles;
   isDraggable: boolean;
+  isResizable: boolean;
   onChooseToResize(itemID: string): void;
   setIsMoving(value: boolean): void;
 }
@@ -49,8 +52,8 @@ export class DragResize extends React.Component<IComponentProps, IComponentState
   }
 
   public componentDidUpdate(prevProps) {
-    const { style: prevStyle = {} } = prevProps;
-    const { style: { width = 0, height = 0 } = {} } = this.props;
+    const { style: prevStyle = {}, children: prevChildren } = prevProps;
+    const { style: { width = 0, height = 0 } = {}, children, sortableId } = this.props;
     if ( // update width/height from props, if they changed from sidebar or other ways
       width !== (prevStyle.width || 0)
       || height !== (prevStyle.height || 0)
@@ -59,6 +62,14 @@ export class DragResize extends React.Component<IComponentProps, IComponentState
         width: parseInt(`${width}`, 10),
         height: parseInt(`${height}`, 10),
       });
+    }
+
+    const widthHasChangedToFull = extractWidth(prevChildren) !== '100%' && extractWidth(children) === '100%';
+    if (widthHasChangedToFull) {
+      setTimeout(() => {
+        const resizedElement = document.getElementById(sortableId);
+        this.setState({ width: resizedElement.offsetWidth }); // DragResize works with width in pixels, and we need to convert 100% in interface to pxs
+      }, 0);
     }
   }
 
@@ -116,6 +127,7 @@ export class DragResize extends React.Component<IComponentProps, IComponentState
 
   @autobind
   private handleDragStop(event) {
+    console.log('handle drag stop!');
     const { sortableId, updateElementStyles, setIsMoving } = this.props;
     const { clientX, clientY } = event;
     const { currentController } = this.state;
@@ -184,12 +196,11 @@ export class DragResize extends React.Component<IComponentProps, IComponentState
       const indentLeft: number = R.path(['indents', 'padding-left'], style) || 0;
       const indentRight: number = R.path(['indents', 'padding-right'], style) || 0;
       const indentTop: number = R.path(['indents', 'padding-top'], style) || 0;
-      const indentBotom: number = R.path(['indents', 'padding-bottom'], style) || 0;
+      const indentBottom: number = R.path(['indents', 'padding-bottom'], style) || 0;
+      const newWidth = clientWidth - indentLeft - indentRight - 10;
+      const newHeight = clientHeight - indentTop - indentBottom - 10;
 
-      this.setState({
-        width: clientWidth - indentLeft - indentRight - 10,
-        height: clientHeight - indentTop - indentBotom - 10,
-      });
+      this.setState({ width: newWidth, height: newHeight });
     }
 
     this.setState({
@@ -246,6 +257,7 @@ export class DragResize extends React.Component<IComponentProps, IComponentState
         sortableId,
         children,
         isDraggable,
+        isResizable,
       },
       state: {
         deltaX,
@@ -253,16 +265,23 @@ export class DragResize extends React.Component<IComponentProps, IComponentState
         width,
         height,
         currentController,
+        isDragStart,
       },
     } = this;
 
-    const calculatedWidth = (width && width - deltaX) || (children.props.style && children.props.style.width) || 'auto';
+    const calculatedWidth = (width && width - deltaX) || (children.props.style && extractWidth(children)) || 'auto';
     const calculatedHeight = (height && height - deltaY) || (children.props.style && children.props.style.height) || 'auto';
 
+    const useHackToSyncElementAndWrapperWidth = extractWidth(children) === '100%' && !isDragStart; // without !isDragStart will fix element's with to 100% when resizing, but when we resize we want to see how height being changed
+
     return (
-      <div
+      <span
         data-id={sortableId}
-        className={styles.dragResizeItem}
+        className={classNames(
+          styles.dragResizeItem,
+          isResizable ? styles['dragResizeItem_is-resizable'] : undefined) // removes 100% width from span if element is resizable (to place wrapper precisely around element)
+        }
+        style={{ ...(useHackToSyncElementAndWrapperWidth ? { width: extractWidth(children) } : {}) }}
       >
         {React.cloneElement(
           children,
@@ -270,9 +289,10 @@ export class DragResize extends React.Component<IComponentProps, IComponentState
             ...children.props,
             style: {
               ...children.props.style,
-              ...(isDraggable ? ({
+              ...(isResizable ? ({
                 width: calculatedWidth,
                 height: calculatedHeight,
+                ...(useHackToSyncElementAndWrapperWidth ? { width: extractWidth(children) } : {}),
               }) : {})
               // width: (width && width - deltaX) || 'auto',
               // height: (height && height - deltaY) || 'auto',
@@ -374,7 +394,7 @@ export class DragResize extends React.Component<IComponentProps, IComponentState
             />
           </React.Fragment>
         )}
-      </div>
+      </span>
     );
   }
 }

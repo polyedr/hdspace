@@ -5,10 +5,14 @@
 .dragResizeItem {
   position: relative;
 
+  width: 100%;
   display: flex;
   justify-content: center;
-  width: 100%;
   margin: 0 auto;
+
+  &_is-resizable {
+    width: auto;
+  }
 }
 
 .resizeController {
