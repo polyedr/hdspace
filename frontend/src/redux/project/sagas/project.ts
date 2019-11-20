@@ -54,8 +54,8 @@ export function* getProjectSaga(action: ReturnType<typeof Actions.getProject>) {
 
     if (project) {
       yield put(Actions.setProject(project));
-
-      const finalScreenID = screenID || (project.projectscreen.length && project.projectscreen[0].id);
+      const projectScreensIDs = project.projectscreen.map(x => x.id);
+      const finalScreenID = screenID && projectScreensIDs.includes(Number(screenID)) ? screenID : projectScreensIDs[0];
 
       if (finalScreenID) {
         yield call(activateScreenSaga, Actions.activateScreen(id, Number(finalScreenID)));
