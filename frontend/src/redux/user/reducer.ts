@@ -1,4 +1,4 @@
-import { createReducer } from 'reduxsauce';
+import { createReducer, Handlers } from 'reduxsauce';
 
 import * as ACTIONS from '$redux/user/actions';
 import { TYPES } from '$constants/actions';
@@ -102,7 +102,8 @@ const setRestoreUserId: ActionHandler<typeof ACTIONS.setRestoreUserId> = (
   restoreUserId,
 });
 
-const HANDLERS = {
+// TODO: type Action in Handlers
+const HANDLERS: Handlers<IRootState, any> = {
   [TYPES.CHANGE_L_PANEL]: changeMinLPanel,
   [TYPES.CHANGE_NAV_PANEL]: changeMinNavPanel,
   [TYPES.CHANGE_PROTOTYPE_MODE]: changePrototypeMode,

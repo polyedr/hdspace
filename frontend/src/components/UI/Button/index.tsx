@@ -39,7 +39,7 @@ export const Button: React.FunctionComponent<IButtonProps> = memo(({
     type={type !== 'submit' ? 'button' : 'submit'}
     className={classNames(styles.button, getStyleType(styleType), className)}
     disabled={disabled}
-    onClick={type !== 'submit' ? onClick : null}
+    onClick={type !== 'submit' ? onClick : undefined}
   >
     <span>
       {children}

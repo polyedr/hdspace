@@ -1,6 +1,13 @@
 import classNames from 'classnames';
+import { IScreenMode } from '$components/Editor/EditorWindow';
 
-export const getClassDevice = (styles, mode, isPrototype, isRotated, isContainer) => {
+export const getClassDevice = (
+  styles: { [className: string]: string },
+  mode: IScreenMode,
+  isPrototype: boolean,
+  isRotated: boolean,
+  isContainer: boolean,
+) => {
   if (isContainer) {
     return classNames(
       {

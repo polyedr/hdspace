@@ -2,6 +2,7 @@ import React, { useCallback, useState, useEffect } from 'react';
 import { hot } from 'react-hot-loader';
 import { connect } from 'react-redux';
 
+import { AppReduxState } from '$shared/types/app';
 import { Info } from '$components/User/Info';
 import { Button } from '$components/UI/Button';
 import { Modal } from '$components/UI/Modal';
@@ -19,7 +20,7 @@ const IS_NAME_AND_PASSWORD_CHECK = false;
 
 const mapStateToProps = ({
   user: { apiResponseError, isSignLoader },
-}) => ({
+}: AppReduxState) => ({
   apiResponseError,
   isSignLoader,
 });

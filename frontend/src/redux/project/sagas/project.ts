@@ -89,7 +89,7 @@ export function* addProjectSaga({ name }: ReturnType<typeof Actions.addProject>)
 export function* delProjectSaga({ id }: ReturnType<typeof Actions.delProject>): SagaIterator {
   yield call(reqWrapper, apiDelProject, { id });
 
-  const { project: { listProject } } = yield select(state => state);
+  const { project: { listProject } }: AppReduxState = yield select();
   const newListProject: IListProject[] = listProject.filter(project => project.id !== id);
 
   yield put(Actions.setListProject(newListProject));
@@ -98,7 +98,7 @@ export function* delProjectSaga({ id }: ReturnType<typeof Actions.delProject>): 
 export function* renameProjectSaga(
   { payload: { projectId, newName } }: ReturnType<typeof Actions.renameProject>,
 ): SagaIterator {
-  const { project: { listProject, currentProject } } = yield select(state => state);
+  const { project: { listProject, currentProject } }: AppReduxState = yield select();
 
   const currProject = listProject.find(project => project.id === projectId);
 
@@ -122,14 +122,14 @@ export function* renameProjectSaga(
   yield put(Actions.setListProject(newListProject));
 
   if (currentProject.id === projectId) {
-    yield put(Actions.setProject(data));
+    yield put(Actions.setProject(data as any)); // TODO: research what the difference between IListProject and IProject
   }
 }
 
 export function* setProjectScreensSaga(
   { payload: { projectScreens } }: ReturnType<typeof Actions.setProjectScreens>,
 ): SagaIterator {
-  const { project: { currentProject } } = yield select(state => state);
+  const { project: { currentProject } }: AppReduxState = yield select();
 
   const updateProject = {
     ...currentProject,

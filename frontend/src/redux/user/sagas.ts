@@ -16,11 +16,13 @@ import { TYPES } from '$constants/actions';
 import * as Actions from '$redux/user/actions';
 import { openProjects, openPasswordRestore, openSignScreen } from '$utils/history';
 import { DEFAULT_RESPONSE_ERROR } from '$constants/defaultParams';
+import { AppReduxState } from '$shared/types/app';
+import { ReturnPromisedType } from '$shared/types';
 
 export function* getTokenPairSaga(
   { payload: { username, password } }: ReturnType<typeof Actions.getTokenPair>,
 ): SagaIterator {
-  const { user: { apiResponseError } } = yield select(state => state);
+  const { user: { apiResponseError } }: AppReduxState = yield select();
 
   yield put(Actions.changeSignLoader(true));
   const authorisationData = yield call(apiGetToken, { username, password });
@@ -39,17 +41,14 @@ export function* getTokenPairSaga(
   }
 }
 
-function* setNewUserSaga(
-  {
-    payload: {
-      username,
-      email,
-      firstName,
-      lastName,
-      password,
-    },
-  }: ReturnType<typeof Actions.setNewUser>,
-): SagaIterator {
+function* setNewUserSaga(action: ReturnType<typeof Actions.setNewUser>) {
+  const { payload: {
+    username,
+    email,
+    firstName,
+    lastName,
+    password,
+  } } = action;
   yield put(Actions.changeSignLoader(true));
   const newUserData = yield call(apiSetNewUser, {
     username,
@@ -68,7 +67,7 @@ function* setNewUserSaga(
 }
 
 export function* refreshUserTokenPair() {
-  const { user: { tokenPair: { refresh } } } = yield select(state => state);
+  const { user: { tokenPair: { refresh } } }: AppReduxState = yield select();
 
   const access_result = refresh && (yield call(apiRefreshToken, refresh));
 
@@ -80,7 +79,7 @@ export function* refreshUserTokenPair() {
 }
 
 export function* restorePasswordSaga({ email }: ReturnType<typeof Actions.restorePassword>): SagaIterator {
-  const { user: { apiResponseError } } = yield select(state => state);
+  const { user: { apiResponseError } }: AppReduxState = yield select();
 
   if (apiResponseError.errorStatus !== -1) {
     yield put(Actions.setApiResponseError(DEFAULT_RESPONSE_ERROR));
@@ -90,10 +89,11 @@ export function* restorePasswordSaga({ email }: ReturnType<typeof Actions.restor
   yield put(Actions.setRestorePasswordEmail(email));
 
   yield put(Actions.changeSignLoader(true));
-  const usersList = yield call(apiGetUsers);
+  const usersList: ReturnPromisedType<typeof apiGetUsers> = yield call(apiGetUsers);
   yield put(Actions.changeSignLoader(false));
 
-  if (usersList && !usersList.errorStatus) {
+  // TODO: research what is errorStatus
+  if (Array.isArray(usersList)) {
     const user = usersList.find(currentEmail => currentEmail.email === email);
 
     if (user !== undefined) {
@@ -112,13 +112,18 @@ export function* restorePasswordSaga({ email }: ReturnType<typeof Actions.restor
 }
 
 export function* setNewPasswordSaga({ password }: ReturnType<typeof Actions.setNewPassword>): SagaIterator {
-  const { user: { restoreUserId } } = yield select(state => state);
+  const { user: { restoreUserId } }: AppReduxState = yield select();
+
+  if (restoreUserId === undefined) {
+    console.error('restoreUserId is undefined!');
+    return;
+  }
 
   yield put(Actions.changeSignLoader(true));
-  const newPassword = yield call(apiSetNewPassword, restoreUserId, password);
+  const newPassword: ReturnPromisedType<typeof apiSetNewPassword> = yield call(apiSetNewPassword, restoreUserId, password);
   yield put(Actions.changeSignLoader(false));
 
-  if (newPassword && !newPassword.errorStatus) {
+  if (typeof newPassword === 'string') {
     yield call(openSignScreen, 'signin');
   } else {
     yield put(Actions.setApiResponseError(newPassword));

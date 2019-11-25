@@ -4,7 +4,7 @@ import { ITokenPair, IApiResponseError, ISignInData } from '$redux/user/reducer'
 export const changeMinLPanel = () => ({ type: TYPES.CHANGE_L_PANEL });
 export const changeMinNavPanel = () => ({ type: TYPES.CHANGE_NAV_PANEL });
 
-export const changeSignLoader = isSignLoader => ({
+export const changeSignLoader = (isSignLoader: boolean) => ({
   type: TYPES.CHANGE_SIGN_LOADER,
   isSignLoader,
 });
@@ -33,11 +33,11 @@ export const setUserData = (data: ISignInData) => ({
 });
 
 export const setNewUser = (
-  username,
-  email,
-  firstName,
-  lastName,
-  password,
+  username: string,
+  email: string,
+  firstName: string,
+  lastName: string,
+  password: string,
 ) => ({
   type: TYPES.SET_NEW_USER,
   payload: {
@@ -54,7 +54,7 @@ export const setApiResponseError = (apiResponseError: IApiResponseError) => ({
   apiResponseError,
 });
 
-export const onConfirmModal = status => ({
+export const onConfirmModal = (status: any) => ({
   // type: TYPES.ON_CONFIRM_MODAL,
   // status,
 });

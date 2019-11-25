@@ -17,7 +17,7 @@ interface IRadioButton {
   className?: string,
   label?: string,
   disabled?: boolean,
-  onChange: (e) => void,
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
 }
 
 export const RadioButtons: React.FunctionComponent<IRadioButton> = memo(({

@@ -2,12 +2,12 @@ import React, { memo } from 'react';
 
 const styles = require('./styles.scss');
 
-interface ISpinnerProps {
-  active: boolean,
-}
+type Props = {
+  active?: boolean;
+};
 
-export const Spinner: React.FunctionComponent<ISpinnerProps> = memo(({
-  active,
+export const Spinner: React.FC<Props> = memo(({
+  active = false,
 }) => active ? (
   <div className={styles.spinnerWrapper}>
     <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 50 50">

@@ -37,7 +37,7 @@ export const GMap: React.FunctionComponent<IMapProps> = ({
     <Marker
       lat={center.lat}
       lng={center.lng}
-      text={markerText}
+      text={markerText || ''}
     />
   </GoogleMapReact>
 );

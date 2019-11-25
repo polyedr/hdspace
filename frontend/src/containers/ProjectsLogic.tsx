@@ -2,11 +2,12 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { hot } from 'react-hot-loader';
 
+import { AppReduxState } from '$shared/types/app';
 import * as Actions from '$redux/project/actions';
 import { Projects } from '$components/Projects';
 import { Spinner } from '$components/UI/Spinner';
 
-const mapStateToProps = ({ project: { listProject, listProjectLoader } }) => ({
+const mapStateToProps = ({ project: { listProject, listProjectLoader } }: AppReduxState) => ({
   listProject,
   listProjectLoader,
 });

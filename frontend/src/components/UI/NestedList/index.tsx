@@ -22,10 +22,10 @@ interface IComponentProps {
   options: IListOptions[],
   isCheckedItem?: boolean,
   iconListNames?: string[],
-  onChecked?: (listElements: string[]) => void,
-  onClickList?: (value: number | string, btnName: string) => void,
-  onClickItem?: (value: number | string) => void,
   className?: string,
+  onChecked?(listElements: string[]): void,
+  onClickList?(value: number | string, btnName: string): void,
+  onClickItem?(value: number | string): void,
 }
 
 export const NestedList: React.FunctionComponent<IComponentProps> = memo(({
@@ -37,7 +37,7 @@ export const NestedList: React.FunctionComponent<IComponentProps> = memo(({
   isCheckedItem,
   className,
 }) => {
-  const [activeList, setActiveList] = React.useState<{}>({});
+  const [activeList, setActiveList] = React.useState<{ [value: string]: any }>({});
   const [listElements, setListElements] = React.useState<string[]>([]);
 
   const handleActiveList = useCallback((value: string) => {
@@ -50,13 +50,13 @@ export const NestedList: React.FunctionComponent<IComponentProps> = memo(({
       : R.without([value], listElements);
 
     setListElements(updateListElements);
-    onChecked(updateListElements);
+    onChecked?.(updateListElements);
   }, [listElements, onChecked]);
 
   const handleClickList = useCallback((value, iconName, event) => {
     event.stopPropagation();
 
-    onClickList(value, iconName);
+    onClickList?.(value, iconName);
   }, [onClickList]);
 
   return (
@@ -110,7 +110,7 @@ export const NestedList: React.FunctionComponent<IComponentProps> = memo(({
                           ) : (
                             <div
                               className={styles.listElementsItem}
-                              onClick={() => onClickItem(elementItem.value)}
+                              onClick={() => onClickItem?.(elementItem.value)}
                             >
                               {elementItem.label}
                             </div>

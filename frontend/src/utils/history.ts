@@ -2,7 +2,7 @@ import { history } from '$redux/store';
 import * as PATH_NAMES from '$constants/pathNames';
 
 export const openProjects = () => history.push(PATH_NAMES.projects);
-export const openSignScreen = pathname => history.push(PATH_NAMES.user[pathname]);
+export const openSignScreen = (pathname: keyof typeof PATH_NAMES.user) => history.push(PATH_NAMES.user[pathname]);
 export const openPasswordRestore = () => history.push(PATH_NAMES.passwordRestore);
 
 export const openProject = (projectId: string) => {

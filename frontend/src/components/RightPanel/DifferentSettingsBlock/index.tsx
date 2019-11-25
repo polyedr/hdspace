@@ -1,5 +1,4 @@
-import React, { useCallback, useState, useLayoutEffect } from 'react';
-import * as R from 'ramda';
+import React, { useCallback } from 'react';
 
 import * as Actions from '$redux/project/actions';
 import { IActiveItem } from '$components/Editor/EditorWindow/';
@@ -43,7 +42,9 @@ const Component: React.FunctionComponent<IComponentProps> = ({
     updateElementParameters(activeItem.itemId, { content: value });
   }, [activeItem.itemId, updateElementParameters]);
 
-  const handleCenterMapCoordsChange = useCallback(({ target: { name, value } }) => {
+  const handleCenterMapCoordsChange = useCallback(({ target: { name, value } }: React.ChangeEvent<HTMLInputElement>) => {
+    if (!params.map_props) return;
+
     let newCenter;
 
     if (name === 'center_lat') {
@@ -53,7 +54,7 @@ const Component: React.FunctionComponent<IComponentProps> = ({
       };
     } else {
       newCenter = {
-        lat: params.map_props.center.lat,
+        lat: params.map_props?.center.lat,
         lng: Number(getPermissibleValue(Number(value), MIN_LONGITUDE, MAX_LONGITUDE).toFixed(5)),
       };
     }
@@ -76,7 +77,7 @@ const Component: React.FunctionComponent<IComponentProps> = ({
       markerText: value,
     };
 
-    updateElementParameters(activeItem.itemId, { map_props: newMapProps });
+    updateElementParameters(activeItem.itemId, { map_props: newMapProps as IMapProps }); // TODO: fix typings
   }, [params.map_props, activeItem.itemId, updateElementParameters]);
 
   const handleMapZoomChange = useCallback(({ target: { value } }) => {
@@ -85,7 +86,7 @@ const Component: React.FunctionComponent<IComponentProps> = ({
       zoom: getPermissibleValue(Number(value), MIN_MAP_ZOOM, MAX_MAP_ZOOM),
     };
 
-    updateElementParameters(activeItem.itemId, { map_props: newMapProps });
+    updateElementParameters(activeItem.itemId, { map_props: newMapProps as IMapProps });
   }, [params.map_props, activeItem.itemId, updateElementParameters]);
 
   return (

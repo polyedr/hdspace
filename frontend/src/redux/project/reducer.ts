@@ -1,4 +1,4 @@
-import { createReducer } from 'reduxsauce';
+import { createReducer, Handlers } from 'reduxsauce';
 
 import * as ACTIONS from '$redux/project/actions';
 import { TYPES } from '$constants/actions';
@@ -144,16 +144,16 @@ export interface IStylesElement {
   fontFamily?: string,
 }
 
-export interface IScenarioElement {
+export interface IScenarioElement { // compare with entity on backend
   id: number,
   scenario: number,
   name: string,
   struct_type: string,
   func_type: string,
-  func_type_human?: string,
+  func_type_human?: string, // possibly has fallback value as 'undefined'
   buoyancy: number,
-  dynamic_buoyancy?: number,
-  image: string,
+  dynamic_buoyancy: number,
+  image: string | null,
   parameters: {
     parent_id: number,
     tags?: string,
@@ -175,29 +175,27 @@ export interface IScenarioElement {
 }
 
 export interface IScenarioElements {
-  [x: string]: IScenarioElement,
+  [elementID: string]: IScenarioElement,
 }
 
-export interface IScenarioItem {
-  id: number,
-  name: string,
-  type?: string,
-  struct_type: string,
-  screen: number,
-  parent_id?: number,
-  buoyancy: number,
-  direction: string,
-  elements: number[],
+export interface IScenarioItem { // compare with entity on backend
+  id: number;
+  name: string;
+  type?: string;
+  struct_type: string; // 'scenario' | 'block' | 'group' | 'container' | 'undefined'. it seems that it also contains keyof of RENDERERS
+  screen: number;
+  parent_id: number; // id in database table
+  buoyancy: number;
+  direction: string; // 'vertical' | 'horizontal'
+  elements: number[]; // elements ids as foreign keys 
   parameters: {
-    // scenario: number,
-    parentElId?: number,
-    children?: string[],
-  },
-  styles: {},
+    children: string[]; // listSortable-specific ids
+  };
+  styles: {};
 }
 
 export interface IScenarios {
-  [x: string]: IScenarioItem,
+  [scenarioID: string]: IScenarioItem,
 }
 
 export interface ILSItem {
@@ -211,18 +209,16 @@ export interface IListSortable {
 }
 
 export interface IProjectScreen {
-  id: number,
-  name: string,
-  status: string,
-  project: number,
-  image?: string,
-  screenscenario: number[],
-  styles_root?: {},
-  screenLoader?: boolean,
-  // TODO: delete property
-  listSortable?: IListSortable,
-  screen_data_json?: ISortableItem[],
-  // screen_data_text
+  id: number;
+  name: string;
+  status: string; // compare with entity on backend!
+  project: number;
+  image: string | null;
+  screenscenario: number[];
+  styles_root: { [prop: string]: string }; // is it StylesElement?
+  screenLoader: boolean;
+  listSortable: IListSortable;
+  // removed screen_data_json, ask if it will be needed on backend
 }
 
 export interface IProjectListItem {
@@ -240,24 +236,39 @@ export interface IProject {
   projectLoader?: boolean,
 }
 
+export interface IListProject {
+  id: number,
+  status: string,
+  name: string,
+  preview?: string,
+  projectscreen: {
+    id: number,
+    project: number,
+    name: string,
+    status: string,
+    screenscenario: number[],
+    image?: any,
+  }[],
+}
+
 export type UploadedImageInfo = {
   imageURL: string;
   screenID: number;
 }
 
-export type IRootState = Readonly<{
-  listProject: IListProject[],
-  currentProject: IProject,
-  currentScreen: IProjectScreen,
-  listProjectLoader: boolean,
-  loader: boolean,
-  scenarios?: IScenarios,
-  scenarioElements?: IScenarioElements,
-  scenarioLoader?: boolean,
-  libraryElements: ILibraryElements,
-  modifyElements: number[],
+export type IRootState = {
+  libraryElements: ILibraryElements;
+  listProject: IListProject[];
+  currentProject: IProject;
+  currentScreen: IProjectScreen;
+  listProjectLoader: boolean;
+  loader: boolean;
+  scenarios: IScenarios;
+  scenarioElements: IScenarioElements;
+  scenarioLoader?: boolean;
+  modifyElements: number[];
   uploadedImageInfo?: UploadedImageInfo;
-}>;
+};
 
 interface ActionHandler<T> {
   (state: IRootState, payload: T extends (...args: any[]) => infer R ? R : any): IRootState;
@@ -341,7 +352,8 @@ const uploadImageForNNSuccess: ActionHandler<typeof ACTIONS.uploadImageForNNSucc
   uploadedImageInfo,
 });
 
-const HANDLERS = {
+// TODO: type Action in Handlers
+const HANDLERS: Handlers<IRootState, any> = {
   [TYPES.SET_LIST_PROJECT]: setListProject,
   [TYPES.SET_LIST_PROJECT_LOADER]: setLoaderListProject,
   [TYPES.SET_PROJECT]: setProject,

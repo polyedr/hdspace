@@ -70,7 +70,7 @@ export const BackgroundBlock : React.FunctionComponent<IComponentProps> = memo((
         <div className="propsElementsInnerBlock">
           <ColorPicker
             display={isBackgroundColorPickerOpen}
-            color={styleItem['background-color']}
+            color={styleItem['background-color'] as string}
             onChangeComplete={color => handleChangeColor(color.hex)}
             onClose={handleActiveColorPicker}
           />

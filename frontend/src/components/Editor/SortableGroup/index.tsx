@@ -1,6 +1,8 @@
 import React, { useCallback } from 'react';
 import classNames from 'classnames';
+import { SortableOptions } from 'sortablejs';
 
+// @ts-ignore
 import { Sortable } from '$components/Editor/Sortable';
 
 const styles = require('./styles.scss');
@@ -85,8 +87,8 @@ export const SortableGroup: React.FunctionComponent<IComponentProps> = ({
         // scroll — включить авто-прокрутку;
         // scrollSensitivity — на сколько нужно приблизится к краю для активации прокрутки;
         // scrollSpeed — скорость прокрутки в `px`;
-      }}
-      ref={(c) => {
+      } as SortableOptions}
+      ref={(c: any) => {
         if (c) {
           // this.sortable = c.sortable;
           c.sortable.option('disabled', disableSortable);

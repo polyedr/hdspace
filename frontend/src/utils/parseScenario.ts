@@ -22,7 +22,7 @@ import {
 import { IChooseElement } from '$components/ModalAddElements/MainBlock';
 import { IStylesElement } from '$utils/StyleHelper';
 
-import { greaterBuoyancyFirst, isElement } from './model';
+import { greaterBuoyancyFirst, isElement, isScenario } from './model';
 
 export interface IGroupElement {
   key: string,
@@ -33,46 +33,11 @@ export interface IListCategoryEl {
   [x: string]: ILibraryElement[]
 }
 
-type TParseScenarios = (data: IScenarioItem[]) => IScenarios;
-type IFilterScenarioByScreenId = (screenId: number, scenarios: IScenarioItem[]) => IScenarios;
-type TGetOptionsOfNestedList = (
-  scenarios: IScenarios, elements: IScenarioElements
-) => IListOptions[];
-type TGetOptionsOfListScenario = (scenarios: IScenarios) => IDropDownOptions[];
-type TUpdateElByScenarios = (
-  scenarioId: number, elements: number[], scenarios: IScenarios
-) => IScenarios;
-type TGetAllElements = (
-  oldScenarioId: number, newScenarioId: number,
-  updateElements: number[], elements: IScenarioElements,
-) => IScenarioElements;
-type TGetElementsByType = (
-  scenarioId: number, listElementType: IChooseElement[], libraryElements: ILibraryElements,
-) => IScenarioElements;
-type TGetNewScenario = (
-  name: string, type: string, screenId: number, elements: number[],
-) => IScenarioItem;
-type TConvertScenarioElArrToObj = (elements: any[], listScenarioId: number[]) => IScenarioElements;
-type TParseAddElementsTabs = (group: string, libraryElements: ILibraryElements) => IListCategoryEl;
-type TGetGroupElements = (group: string, listElement) => IGroupElement[];
-type TGetCustomTemplateElements = (libraryElements: ILibraryElements) => ITemplateElement[];
-type TParseScenarioLS = (item: IScenarioItem) => ILSItem;
-type TParseElementLS = (item: IScenarioElement) => ILSItem;
-type TGetParentId = (
-  id: string, listElement: IScenarioElements, listScenario: IScenarios,
-) => number;
-type TGetListNotDragging = (
-  type: string,
-  parentId: number,
-  parentType: string,
-  scenarios: IScenarios
-) => string[];
-
-export const convertScenarios: TParseScenarios = data => (
+export const convertScenarios = (data: IScenarioItem[]): IScenarios => (
   data.reduce((obj, item) => ({ ...obj, [item.id]: item }), {})
 );
 
-export const delElByScenarios: TUpdateElByScenarios = (scenarioId, elements, scenarios) => ({
+export const delElByScenarios = (scenarioId: number, elements: number[], scenarios: IScenarios): IScenarios => ({
   ...scenarios,
   [`${scenarioId}s`]: {
     ...scenarios[`${scenarioId}s`],
@@ -80,7 +45,7 @@ export const delElByScenarios: TUpdateElByScenarios = (scenarioId, elements, sce
   },
 });
 
-export const addElByScenarios: TUpdateElByScenarios = (scenarioId, elements = [], scenarios) => ({
+export const addElByScenarios = (scenarioId: number, elements: number[], scenarios: IScenarios): IScenarios => ({
   ...scenarios,
   [`${scenarioId}s`]: {
     ...scenarios[`${scenarioId}s`],
@@ -93,8 +58,8 @@ export const addElByScenarios: TUpdateElByScenarios = (scenarioId, elements = []
   },
 });
 
-export const getOptionsOfNestedList: TGetOptionsOfNestedList = (scenarios, elements) => (
-  Object.keys(scenarios || {}).reduce((list, key) => {
+export const getOptionsOfNestedList = (scenarios: IScenarios, elements: IScenarioElements) => (
+  Object.keys(scenarios).reduce((acc: IListOptions[], key) => {
     const {
       id,
       name,
@@ -103,7 +68,7 @@ export const getOptionsOfNestedList: TGetOptionsOfNestedList = (scenarios, eleme
     } = scenarios[key];
 
     if (struct_type === 'block') {
-      const item = {
+      const item: IListOptions = {
         name: `scenario-${id}`,
         label: name,
         value: key,
@@ -119,29 +84,27 @@ export const getOptionsOfNestedList: TGetOptionsOfNestedList = (scenarios, eleme
         }),
       };
 
-      return [...list, item];
+      return [...acc, item];
     }
 
-    return list;
+    return acc;
   }, [])
 );
 
-export const getOptionsOfListScenario: TGetOptionsOfListScenario = scenarios => (
-  Object.keys(scenarios || {}).reduce((list, key) => {
+export const getOptionsOfListScenario = (scenarios: IScenarios) => (
+  Object.keys(scenarios).reduce((acc, key) => {
     const { name, struct_type } = scenarios[key];
 
-    if (struct_type === 'block') {
-      return R.append({
-        value: key,
-        label: name,
-      }, list);
-    }
-
-    return list;
-  }, [{ value: null, label: 'select scenario' }])
+    return struct_type === 'block' ? acc.concat({ value: key, label: name }) : acc;
+  }, [] as IDropDownOptions<string>[])
 );
 
-export const getNewScenario: TGetNewScenario = (name, type, screenId, elements = []) => ({
+export const getNewScenario = (
+  name: string,
+  type: string,
+  screenId: number,
+  elements: number[] = [],
+): IScenarioItem => ({
   ...DEFAULT_SCENARIO,
   screen: screenId,
   name,
@@ -149,9 +112,12 @@ export const getNewScenario: TGetNewScenario = (name, type, screenId, elements =
   elements,
 });
 
-export const getAllElements: TGetAllElements = (
-  oldScenarioId, newScenarioId, updateElements, elements,
-) => updateElements.reduce((obj, id) => ({
+export const getAllElements = (
+  oldScenarioId: number,
+  newScenarioId: number,
+  updateElements: number[],
+  elements: IScenarioElements,
+): IScenarioElements => updateElements.reduce((obj, id) => ({
   ...obj,
   [`${id}e`]: {
     ...elements[`${id}e`],
@@ -159,13 +125,15 @@ export const getAllElements: TGetAllElements = (
   },
 }), elements);
 
-export const convertScenarioElements = (scenarioElements: IScenarioElement[]): IScenarioElements => scenarioElements.reduce((obj, el) => ({
-  ...obj,
-  [el.id]: {
-    ...el,
-    dynamic_buoyancy: el.dynamic_buoyancy || el.buoyancy,
-  },
-}), {});
+export const convertScenarioElements = (
+  scenarioElements: IScenarioElement[],
+): IScenarioElements => scenarioElements.reduce((acc, el) => ({
+    ...acc,
+    [el.id]: {
+      ...el,
+      dynamic_buoyancy: el.dynamic_buoyancy || el.buoyancy,
+    },
+  }), {});
 
 const getCategoryTab = (element: ILibraryElement, obj: IListCategoryEl) => {
   switch (element.struct_type) {
@@ -188,30 +156,29 @@ const getCategoryTab = (element: ILibraryElement, obj: IListCategoryEl) => {
   }
 };
 
-export const getCustomTemplateElements: TGetCustomTemplateElements = libraryElements => (
-  Object.keys(libraryElements).reduce((arr, key) => {
+export const getCustomTemplateElements = (libraryElements: ILibraryElements) => (
+  Object.keys(libraryElements).reduce((acc: ITemplateElement[], key) => {
     const { struct_type } = libraryElements[key];
     if (['textinput', 'select', 'button', 'hyperlink', 'ocrtext', 'other'].indexOf(struct_type) !== -1) {
-      const el = {
+      return acc.concat({
         label: key,
         value: key,
         checked: false,
-      };
-
-      return R.append(el, arr);
+      });
     }
-    return arr;
+    return acc;
   }, [])
 );
 
-export const parseAddElementsTabs: TParseAddElementsTabs = (group, libraryElements) => (
+export const parseAddElementsTabs = (group: string, libraryElements: ILibraryElements): IListCategoryEl => (
   Object.keys(libraryElements).reduce((obj, currEl) => ({
     ...obj,
     ...getCategoryTab(libraryElements[currEl], obj),
   }), {})
 );
 
-export const getGroupElements: TGetGroupElements = (group, listElement) => {
+export const getGroupElements = (group: string, listElement: IListCategoryEl): IGroupElement[] => {
+  console.log('getGroupElements!', group, listElement);
   switch (group) {
     case 'Button':
       return listElement.Button.map((el, idx) => ({
@@ -221,10 +188,10 @@ export const getGroupElements: TGetGroupElements = (group, listElement) => {
       }));
 
     case 'Input':
-      return listElement.Input.map(el => ({
-        key: `key-${el.parameters.placeholder}`,
-        value: el.func_type,
-        label: `${el.parameters.group}/${el.parameters.placeholder.toLowerCase()}`,
+      return listElement.Input.map(({ parameters: { placeholder = '', group }, func_type }) => ({
+        key: `key-${placeholder}`,
+        value: func_type,
+        label: `${group}/${placeholder.toLowerCase()}`,
       }));
 
     case 'Select':
@@ -244,13 +211,17 @@ export const getGroupElements: TGetGroupElements = (group, listElement) => {
         }));
 
     case 'Widget':
+      console.log('Widget!', listElement.Widget);
       return listElement.Widget
         .filter(el => (typeof el.func_type) === 'string' && el.func_type !== '')
-        .map((el, idx) => ({
-          key: `key-${el.func_type}-${idx}`,
-          value: el.func_type,
-          label: el.name,
-        }));
+        .map((libraryElement, idx) => {
+          const { func_type, name = '' } = libraryElement as ILibraryElement & { name: string };
+          return {
+            key: `key-${func_type}-${idx}`,
+            value: func_type,
+            label: name,
+          };
+        });
 
     default:
       return [];
@@ -262,27 +233,22 @@ export const getChooseElements = (
 ): IChooseElement[] => {
   const key = element.type !== 'Image' ? 'type' : 'id';
 
-  return chooseElements.some(currEl => currEl[key] === element[key])
-    ? chooseElements.filter(currEl => currEl[key] !== element[key])
+  return chooseElements.some(x => x[key] === element[key])
+    ? chooseElements.filter(x => x[key] !== element[key])
     : [...chooseElements, element];
 };
 
-export const getCheckedElements = (listElements: ITemplateElement[]): IChooseElement[] => (
-  listElements.reduce((arr, el) => {
-    if (el.checked) {
-      return R.append({ type: el.value }, arr);
-    }
-
-    return arr;
-  }, [])
+export const getCheckedElements = (listElements: ITemplateElement[]) => (
+  listElements.reduce((acc: IChooseElement[], x) => x.checked ? acc.concat({ type: x.value, id: -100 }) : acc, [])
 );
 
-export const getListTypeElement = (libraryElements: ILibraryElements):IDropDownOptions[] => (
+// resolve IDropDownOptions type here
+export const getListTypeElement = (libraryElements: ILibraryElements): IDropDownOptions<string | null>[] => (
   Object.keys(libraryElements).reduce((arr, key) => {
     const { func_type, struct_type } = libraryElements[key];
 
     return R.append({ label: func_type || struct_type, value: key }, arr);
-  }, [{ label: 'block', value: null }, { label: 'group', value: null }, { label: 'container', value: null }])
+  }, [{ label: 'block', value: null }, { label: 'group', value: null }, { label: 'container', value: null }] as IDropDownOptions<string | null>[] )
 );
 
 export const getScenarioId = (
@@ -347,7 +313,7 @@ export const getItemsPair = (
         [id]: scenarioElements[id],
       },
     };
-  }, { scenarioList: null, elementList: null })
+  }, { scenarioList: {}, elementList: {} })
 );
 
 export const getParams = (
@@ -369,25 +335,25 @@ export const getParams = (
     const currScenario = R.prop(parseId, scenarioList);
 
     return {
-      struct_type: R.path(['struct_type'], currScenario) || '',
-      parameters: R.path(['parameters'], currScenario) || {},
-      styles: R.path(['styles'], currScenario) || {},
-      name: R.path(['name'], currScenario) || 'name',
-      parent_id: R.path(['parent_id'], currScenario) || -1,
-      type: R.path(['struct_type'], currScenario) || 'undefined',
+      struct_type: currScenario.struct_type || '',
+      parameters: currScenario.parameters || {},
+      styles: currScenario.styles || {},
+      name: currScenario.name || 'name',
+      parent_id: currScenario.parent_id || -1,
+      type: currScenario.struct_type || 'undefined',
     };
   }
 
   const currElement = R.prop(parseId, elementList);
 
   return {
-    struct_type: R.prop('struct_type', currElement) || '',
-    parameters: R.prop('parameters', currElement) || {},
-    styles: R.prop('styles', currElement) || {},
-    name: R.prop('name', currElement) || 'name',
-    parent_id: R.path(['parameters', 'parent_id'], currElement) || -1,
-    type: R.prop('func_type', currElement) || 'undefined',
-    image: R.prop('image', currElement),
+    struct_type: currElement.struct_type || '',
+    parameters: currElement.parameters || {},
+    styles: currElement.styles || {},
+    name: currElement.name || 'name',
+    parent_id: currElement.parameters.parent_id || -1,
+    type: currElement.func_type || 'undefined',
+    image: currElement.image || undefined,
   };
 };
 
@@ -399,57 +365,48 @@ export const idToLSId = (id: number, type: string): string => {
   return `${id}${char}`;
 };
 
-const scenarioItemToLS: TParseScenarioLS = ({ id, struct_type, parameters: { children } }) => ({
+const scenarioItemToLS = ({ id, struct_type, parameters: { children } }: IScenarioItem): ILSItem => ({
   id,
   type: struct_type,
-  children,
+  children: children || [],
 });
 
-const elementToLS: TParseElementLS = ({ id, struct_type }) => ({
+const elementToLS = ({ id, struct_type }: IScenarioElement): ILSItem => ({
   id,
   type: struct_type,
   children: [],
 });
 
 export const scenarioToLS = (
-  parents: IScenarioItem[],
+  parents: (IScenarioItem | IScenarioElement)[],
   scenarios: IScenarios,
   scenarioEl: IScenarioElements,
 ): IListSortable => (
-  parents.sort(greaterBuoyancyFirst).reduce((acc, parent) => {
-    if (!parent) return acc;
+  parents.sort(greaterBuoyancyFirst).reduce((acc: IListSortable, parent) => {
 
-    const parentAsLSItem = LIST_SCENARIO_TYPE.indexOf(parent.struct_type) !== -1
+    const parentAsLSItem = isScenario(parent)
       ? { [`${parent.id}s`]: scenarioItemToLS(parent) }
-      : { [`${parent.id}e`]: elementToLS(parent as any) };
+      : { [`${parent.id}e`]: elementToLS(parent) };
 
-    const rawChildrenIDs = (R.prop('children', R.values(parentAsLSItem)[0]) || []);
-    const childrenIDs: string[] = rawChildrenIDs.sort((a: string, b: string) => {
-      const parseIdA = parseInt(String(a), 10);
-      const parseIdB = parseInt(String(b), 10);
-      const buoyancyA: number = a.slice(-1) === 's'
-        ? R.path([parseIdA, 'buoyancy'], scenarios) || 0
-        : R.path([parseIdA, 'buoyancy'], scenarioEl) || 0;
-      const buoyancyB: number = b.slice(-1) === 's'
-        ? R.path([parseIdB, 'buoyancy'], scenarios) || 0
-        : R.path([parseIdB, 'buoyancy'], scenarioEl) || 0;
-
+    const rawChildrenIDs = R.values(parentAsLSItem)[0].children;
+    const childrenIDs = rawChildrenIDs.sort((a, b) => {
+      const aID = parseInt(a, 10);
+      const bID = parseInt(b, 10);
+      const buoyancyA = a.slice(-1) === 's' ? scenarios[aID].buoyancy : scenarioEl[aID].buoyancy;
+      const buoyancyB = b.slice(-1) === 's' ? scenarios[bID].buoyancy : scenarioEl[bID].buoyancy;
       return buoyancyB - buoyancyA;
     });
 
     if (!R.isEmpty(childrenIDs)) {
       const parentChildren = childrenIDs.map((childIDasString) => {
         const childID = parseInt(childIDasString, 10);
-
-        return childIDasString.slice(-1) === 's'
-          ? scenarios[childID]
-          : scenarioEl[childID];
-      }) || [];
+        return childIDasString.slice(-1) === 's' ? scenarios[childID] : scenarioEl[childID];
+      });
 
       return {
         ...acc,
         ...parentAsLSItem,
-        ...scenarioToLS(parentChildren as IScenarioItem[], scenarios, scenarioEl),
+        ...scenarioToLS(parentChildren, scenarios, scenarioEl),
       };
     }
 
@@ -460,10 +417,12 @@ export const scenarioToLS = (
   }, {})
 );
 
-export const getElementsByType: TGetElementsByType = (
-  scenarioId, listElement, libraryElements,
-) => (
-  listElement.reduce((obj, element, idx) => {
+export const getElementsByType = (
+  scenarioId: number,
+  listElementType: IChooseElement[],
+  libraryElements: ILibraryElements,
+): IScenarioElements => (
+  listElementType.reduce((obj, element, idx) => {
     const defaultElement = libraryElements[element.type];
 
     if (defaultElement) {
@@ -500,7 +459,12 @@ export const findParentType = (id: number, scenarios: IScenarios): string => {
   return struct_type === 'container' ? findParentType(parent_id, scenarios) : ((parent_id && struct_type) || 'root');
 };
 
-export const getListNotDragging: TGetListNotDragging = (type, parentId, parentType, scenarios) => {
+export const getListNotDragging = (
+  type: string,
+  parentId: number,
+  parentType: string,
+  scenarios: IScenarios
+): string[] => {
   switch (type) {
     case 'block': {
       return ['block', 'group', 'element'];

@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { ConnectedRouter } from 'connected-react-router';
 import { Switch, Route, Redirect } from 'react-router-dom';
 
+import { AppReduxState } from '$shared/types/app';
 import * as ActionsUser from '$redux/user/actions';
 import * as ActionsProject from '$redux/project/actions';
 import * as PATH_NAMES from '$constants/pathNames';
@@ -19,7 +20,7 @@ const mapStateToProps = ({
   user: { isLPanelMinimized },
   project: { listProject },
   router: { location: { pathname } },
-}) => ({
+}: AppReduxState) => ({
   isLPanelMinimized,
   listProject,
   pathname,

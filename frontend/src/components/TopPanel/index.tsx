@@ -2,6 +2,7 @@ import React, { memo, useCallback, useState } from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 
+import { AppReduxState } from '$shared/types/app';
 import { Button } from '$components/UI/Button';
 import { Icon } from '$components/UI/Icon';
 import { Modal } from '$components/UI/Modal';
@@ -11,7 +12,7 @@ import * as Actions from '$redux/project/actions';
 
 const styles = require('./styles.scss');
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state: AppReduxState) => ({
   project: state.project.currentProject,
 });
 

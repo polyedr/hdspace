@@ -1,9 +1,11 @@
 import { IScenarioItem } from '$redux/project/reducer';
-import { myAxios } from '$config/settings';
+import { myAxios, MyAxiosProps } from '$config/settings';
 import { onError, parseResult } from './project';
 
 
-export const apiGetScenarios = ({ screenID, ...props }): Promise<IScenarioItem[]> => (
+export const apiGetScenarios = (
+  { screenID, ...props }: MyAxiosProps & { screenID: string },
+): Promise<IScenarioItem[]> => (
   myAxios({
     ...props,
     method: 'GET',
@@ -13,7 +15,7 @@ export const apiGetScenarios = ({ screenID, ...props }): Promise<IScenarioItem[]
     .catch(onError)
 );
 
-export const apiAddScenario = (props): Promise<IScenarioItem> => (
+export const apiAddScenario = (props: MyAxiosProps): Promise<IScenarioItem> => (
   myAxios({
     ...props,
     method: 'POST',
@@ -23,7 +25,7 @@ export const apiAddScenario = (props): Promise<IScenarioItem> => (
     .catch(onError)
 );
 
-export const apiAddScenarios = (props): Promise<IScenarioItem[]> => (
+export const apiAddScenarios = (props: MyAxiosProps): Promise<IScenarioItem[]> => (
   myAxios({
     ...props,
     method: 'POST',
@@ -39,7 +41,7 @@ export const apiAddScenarios = (props): Promise<IScenarioItem[]> => (
 //     .catch(onError)
 // );
 
-export const apiDelScenarioCascade = props => (
+export const apiDelScenarioCascade = (props: MyAxiosProps & { list: string[] }) => (
   myAxios({
     ...props,
     method: 'DELETE',
@@ -49,7 +51,7 @@ export const apiDelScenarioCascade = props => (
     .catch(onError)
 );
 
-export const apiSaveScenario = (props): Promise<IScenarioItem> => (
+export const apiSaveScenario = (props: MyAxiosProps): Promise<IScenarioItem> => (
   myAxios({
     ...props,
     method: 'PATCH',
@@ -59,7 +61,7 @@ export const apiSaveScenario = (props): Promise<IScenarioItem> => (
     .catch(onError)
 );
 
-export const apiSaveScenarios = (props): Promise<IScenarioItem[]> => (
+export const apiSaveScenarios = (props: MyAxiosProps): Promise<IScenarioItem[]> => (
   myAxios({
     ...props,
     method: 'PATCH',
@@ -69,7 +71,7 @@ export const apiSaveScenarios = (props): Promise<IScenarioItem[]> => (
     .catch(onError)
 );
 
-export const apiSetScenarioNeuralNetwork = (props): Promise<IScenarioItem[]> => (
+export const apiSetScenarioNeuralNetwork = (props: MyAxiosProps): Promise<IScenarioItem[]> => (
   myAxios({
     ...props,
     method: 'PATCH',

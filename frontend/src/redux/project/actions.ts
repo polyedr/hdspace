@@ -101,9 +101,10 @@ export const addScreen = (projectId: number, name: string) => ({
   payload: { projectId, name },
 });
 
+// projectID is unused
 export const activateScreen = (projectId: number, screenId: number) => ({
   type: TYPES.ACTIVATE_SCREEN,
-  payload: { projectId, screenId },
+  payload: { projectId, screenID: screenId },
 });
 
 export const setListSortable = (
@@ -147,7 +148,8 @@ export const updateElementStyles = (id: string, styles: CSSProperties) => ({
   payload: { id, styles },
 });
 
-export const updateScenarioStyles = (id: string, styles: CSSProperties) => ({
+// TODO: here is not CSSProperties, here css-like properties written in lower-case-hyphenated
+export const updateScenarioStyles = (id: string, styles: CSSProperties & { 'flex-direction'?: string }) => ({
   type: TYPES.UPDATE_SCENARIO_STYLES,
   payload: { id, styles },
 });
@@ -192,22 +194,19 @@ export const changeScenarios = (screenId: number) => ({
   screenId,
 });
 
+// unused
 export const createScenario = (name: string, type: string, elements?: number[]) => ({
   type: TYPES.CREATE_SCENARIO,
   payload: { name, type, elements },
 });
 
 export const addScenario = (
-  scenarioId: number,
+  parentScenarioID: number | null,
   name: string,
-  listElementType: IChooseElement[],
+  elements: IChooseElement[],
 ) => ({
   type: TYPES.ADD_SCENARIO,
-  payload: {
-    scenarioId,
-    name,
-    listElementType,
-  },
+  payload: { parentScenarioID, name, elements },
 });
 
 export const delScenario = (id: string) => ({

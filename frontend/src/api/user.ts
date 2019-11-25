@@ -1,8 +1,9 @@
+import { AxiosError } from 'axios';
 import { myAxios } from '$config/settings';
 import { onError, parseResult } from '$api/project';
-import { ISignInData } from '$redux/user/reducer';
+import { ISignInData, IApiResponseError } from '$redux/user/reducer';
 
-interface ISignUpData {
+export interface ISignUpData {
   username: string,
   password: string,
   email: string,
@@ -14,7 +15,8 @@ interface ISignUpData {
 //   return `5cda${getRandomInt(10, 99)}b${getRandomInt(10, 99)}a5d3${getRandomInt(10, 99)}e72${getRandomInt(10, 99)}3b11`;
 // };
 
-export const onAuthorisationError = ({ response }) => {
+export const onAuthorisationError = ({ response: r }: AxiosError): IApiResponseError => {
+  const response = r as any;
   switch (response.status) {
     case 400:
       return {
@@ -98,7 +100,7 @@ export const apiRestorePassword = (email: string) => (
     .catch(onError)
 );
 
-export const apiGetUsers = () => (
+export const apiGetUsers = (): Promise<{ email: string; id: number }[] | IApiResponseError> => (
   myAxios({
     method: 'GET',
     url: '/accounts/users/',
@@ -107,7 +109,7 @@ export const apiGetUsers = () => (
     .catch(onAuthorisationError)
 );
 
-export const apiSetNewPassword = (id: number, password: string) => (
+export const apiSetNewPassword = (id: number, password: string): Promise<string | IApiResponseError> => (
   myAxios({
     data: {
       password,

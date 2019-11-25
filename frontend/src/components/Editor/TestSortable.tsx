@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react';
 
 interface IList {
@@ -25,7 +26,7 @@ class Component extends React.Component<IProps, IState> {
     };
   }
 
-  onDragStart = index => (e) => {
+  onDragStart = (index: number) => (e) => {
     const { items } = this.state;
 
     this.draggedItem = items[index];

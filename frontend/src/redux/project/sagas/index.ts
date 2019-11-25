@@ -48,6 +48,7 @@ import {
   IScenarioElements,
   IScenarioItem,
   IScenarioElement,
+  ILibraryElements,
 } from '$redux/project/reducer';
 import * as PATH_NAMES from '$constants/pathNames';
 import { DEFAULT_AUTHORISATION_TOKEN } from '$constants/defaultParams';
@@ -70,13 +71,15 @@ function* LocationChange({ payload: { location } }: LocationChangeAction) {
 }
 
 export function* reqWrapper(
-  requestAction, props = {}, tries = 0,
-): ReturnType<typeof requestAction> {
-  const { user: { tokenPair: { access } } } = yield select(state => state);
-  const result = yield call(requestAction, { access, ...props });
+  requestAction: (props: any) => Promise<any>,
+  props: any = {},
+  tries = 0,
+): any {
+  const { user: { tokenPair: { access } } }: AppReduxState = yield select();
+  const result = yield call(requestAction as any, { access, ...props });
 
   if (R.path(['response', 'data', 'code'], result) === 'token_not_valid') {
-    const { user: { isLoadedToken } } = yield select(state => state);
+    const { user: { isLoadedToken } }: AppReduxState = yield select();
 
     if (isLoadedToken) {
       yield put(setLoadedToken(false));
@@ -120,7 +123,7 @@ function* authCheckSaga() {
 
   if (!result) return;
 
-  const libraryElements = result.reduce((obj, item) => ({
+  const libraryElements = result.reduce((obj: ILibraryElements, item) => ({
     ...obj,
     ...(item.func_type.length && item.func_type.reduce((objOfType, type, idx) => ({
       ...objOfType,
@@ -157,8 +160,9 @@ function* setListSortableSaga(action: ReturnType<typeof Actions.setListSortable>
   const { project: { scenarios, scenarioElements } }: AppReduxState = yield select();
   const activeItemID = parseInt(rawActiveItemID, 10);
   const parentID = rawParentID === 'root' ? 0 : parseInt(rawParentID, 10);
-  let updateScenarios: IScenarios = scenarios;
-  let updateElements: IScenarioElements = scenarioElements;
+
+  let updateScenarios = scenarios;
+  let updateElements = scenarioElements;
 
   console.log('Update LS');
   if (itemsInCurrentSortableGroup.indexOf(rawActiveItemID) === -1) {
@@ -208,7 +212,7 @@ function* setListSortableSaga(action: ReturnType<typeof Actions.setListSortable>
     const itemType: string = scenarios[activeItemID].struct_type;
     const parentType = R.path([parentID, 'struct_type'], scenarios);
     const mainType = findParentType(parentID, scenarios);
-    const oldScenarioId: number = R.path([activeItemID, 'parent_id'], scenarios);
+    const oldScenarioId = scenarios[activeItemID].parent_id;
     const childParentId: string = R.remove(movedItemIndexInCurrentSortableGroup, 1, itemsInCurrentSortableGroup)[0];
     console.log({ id: rawActiveItemID, itemType, parentType, mainType });
 
@@ -224,12 +228,12 @@ function* setListSortableSaga(action: ReturnType<typeof Actions.setListSortable>
 
     if (scenarios[activeItemID].struct_type === 'group' && parentType === 'root') {
       console.log('Cancel move Group -> Root/ContainerRoot');
-      const oldParentChaild: string[] = R.path([oldScenarioId, 'parameters', 'children'], scenarios);
+      const oldParentChildrenIDs = scenarios[oldScenarioId].parameters.children;
       updateScenarios = {
         ...scenarios,
         [oldScenarioId]: R.assocPath(
           ['parameters', 'children'],
-          [...oldParentChaild, rawActiveItemID],
+          [...oldParentChildrenIDs, rawActiveItemID],
           scenarios[oldScenarioId],
         ),
       };
@@ -279,7 +283,7 @@ function* setListSortableSaga(action: ReturnType<typeof Actions.setListSortable>
   } else {
     // Elements
     const parentType = findParentType(parentID, scenarios);
-    const oldParentId: number = +R.path([activeItemID, 'parameters', 'parent_id'], scenarioElements);
+    const oldParentId = scenarioElements[activeItemID].parameters.parent_id;
 
     console.log({ parentType, parentID, oldParentId });
 
@@ -379,8 +383,8 @@ export function* delScenarioItemSaga(
   yield put(Actions.setScenarios(updateScenarios));
   yield call(runLayoutAlgorithm, scenarios, updateElements);
 
-  const listScenario: IScenarioItem[] = Object.keys(updateScenarios).reduce((arr, key) => (
-    scenarios[key] ? R.append(scenarios[key], arr) : arr
+  const listScenario = Object.keys(updateScenarios).reduce((arr: IScenarioItem[], key) => (
+    scenarios[key] ? arr.concat(scenarios[key]) : arr
   ), []);
 
   if (listScenario.length === 0) return;

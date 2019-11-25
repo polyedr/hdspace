@@ -2,14 +2,14 @@ import React, { useCallback, useEffect, useState } from 'react';
 import classNames from 'classnames';
 import * as R from 'ramda';
 
-import { DEFAULT_TEMPLATES, ITemplateElement } from '$constants/defaultParams';
+import { DEFAULT_TEMPLATES } from '$constants/defaultParams';
 import { Icon } from '$components/UI/Icon';
 import { Button } from '$components/UI/Button';
 import { Checkbox } from '$components/UI/Checkbox';
 import { DropDown } from '$components/UI/DropDown';
 import { Scrollbar } from '$components/UI/Scrollbar';
 import { IPanelEditProps } from '$components/RightPanel/PanelEditProps';
-import { IChooseElement } from '$components/ModalAddElements/MainBlock';
+import { IChooseElement, ScenarioStateType } from '$components/ModalAddElements/MainBlock';
 import {
   getCustomTemplateElements,
   getOptionsOfListScenario,
@@ -23,25 +23,25 @@ import { IUploadFile, UploadFile } from '$components/UI/UploadFile';
 
 const styles = require('./styles.scss');
 
-interface IActionsBlockProps {
-  scenarios: IPanelEditProps['scenarios'],
-  tabs: string[],
-  groupElements: IGroupElement[],
-  activeTab: string,
-  chooseElements: IChooseElement[],
-  scenarioTypeId: number,
-  scenarioName: string,
-  scenarioState: string,
-  libraryElements: IPanelEditProps['libraryElements'],
-  startTemplate: string,
-  changeTab: any,
-  setChooseElements: (listElType: IChooseElement[]) => void,
-  changeScenarioType: (value: string) => void,
-  changeScenarioName: (e) => void,
-  changeScenarioState: (scenario: string) => void,
-}
+type Props = {
+  scenarios: IPanelEditProps['scenarios'];
+  tabs: string[];
+  groupElements: IGroupElement[];
+  activeTab: string;
+  chooseElements: IChooseElement[];
+  scenarioTypeId: string | null;
+  scenarioName: string;
+  scenarioState: string;
+  libraryElements: IPanelEditProps['libraryElements'];
+  startTemplate: string;
+  changeTab: any;
+  setChooseElements(listElType: IChooseElement[]): void;
+  changeScenarioType(value: string): void;
+  changeScenarioName(e: React.ChangeEvent<HTMLInputElement>): void;
+  changeScenarioState(scenario: ScenarioStateType): void;
+};
 
-export const ActionsBlock: React.FunctionComponent<IActionsBlockProps> = ({
+export const ActionsBlock: React.FunctionComponent<Props> = ({
   scenarios,
   tabs,
   groupElements,
@@ -67,7 +67,7 @@ export const ActionsBlock: React.FunctionComponent<IActionsBlockProps> = ({
   useEffect(() => {
     if (activeTab !== 'Screen') return;
 
-    const listElements: ITemplateElement[] = R.path([activeTemplate, 'elements'], DEFAULT_TEMPLATES);
+    const listElements = DEFAULT_TEMPLATES[activeTemplate].elements;
     const newChooseElements = getCheckedElements(listElements);
 
     setChooseElements(newChooseElements);
@@ -76,8 +76,8 @@ export const ActionsBlock: React.FunctionComponent<IActionsBlockProps> = ({
   const onTemplateBtnClick = useCallback((templateKey) => {
     if (templateKey === activeTemplate) return;
 
-    const listElements: ITemplateElement[] = templateKey !== 'custom'
-      ? R.path([templateKey, 'elements'], DEFAULT_TEMPLATES)
+    const listElements = templateKey !== 'custom'
+      ? DEFAULT_TEMPLATES[templateKey].elements
       : getCustomTemplateElements(libraryElements);
 
     const newChooseElements = getCheckedElements(listElements);
@@ -88,7 +88,7 @@ export const ActionsBlock: React.FunctionComponent<IActionsBlockProps> = ({
     setChooseElements(newChooseElements);
   }, [activeTemplate, libraryElements, setChooseElements]);
 
-  const onTemplateCheckboxChange = useCallback((checked, value) => {
+  const onTemplateCheckboxChange = useCallback((checked: boolean, value: string) => {
     const updateGroupElements = templateElements.map((el) => {
       if (el.value === value) {
         return {
@@ -154,7 +154,7 @@ export const ActionsBlock: React.FunctionComponent<IActionsBlockProps> = ({
 
       if (!R.isEmpty(list)) {
         const templateKey = Object.keys(list)[0];
-        const listElements: ITemplateElement[] = R.path([templateKey, 'elements'], list);
+        const listElements = list[templateKey].elements;
 
         setActiveTemplate(templateKey);
         setTemplateElements(listElements);
@@ -338,7 +338,7 @@ export const ActionsBlock: React.FunctionComponent<IActionsBlockProps> = ({
                                 />
                               </button>
                               <img
-                                src={String(el.img.imgPreviewUrl)}
+                                src={String(el.img?.imgPreviewUrl)}
                                 alt={`img-${idx}`}
                               />
                             </div>
@@ -396,7 +396,7 @@ export const ActionsBlock: React.FunctionComponent<IActionsBlockProps> = ({
                     scenarioState === 'scenario_existing' && (
                       <DropDown
                         options={getOptionsOfListScenario(scenarios)}
-                        defaultValue={scenarioTypeId}
+                        defaultValue={scenarioTypeId || undefined}
                         onChange={changeScenarioType}
                       />
                     )
