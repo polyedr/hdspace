@@ -1,7 +1,5 @@
-import collections
 import secrets
 import uuid
-from collections import OrderedDict
 
 import pymongo
 
@@ -97,8 +95,6 @@ class ProjectScreen(TimeStampedModel):
     # screen_data_char = models.CharField(max_length=1000, blank=True)
     screen_data_text = models.TextField(blank=True)
     screen_data_json = JSONField(blank=True, default=[])
-
-
 
     def get_image(self):
         # return self.image.url
@@ -375,7 +371,6 @@ class ScreenScenario(TimeStampedModel):
     y1 = models.IntegerField()
     """
 
-
     def get_image(self):
         # return self.image.url
         return True
@@ -648,7 +643,7 @@ elements = {
     10: Element(
         id=10,
         struct_type="textinput",
-        func_type=["email", "phone", "firstname", "lastname", "password"],
+        func_type=["email", "phone", "username", "firstname", "lastname", "password"],
         # func_type_human=[
         #     "undefined",
         #     "undefined",
@@ -657,11 +652,16 @@ elements = {
         #     "undefined",
         # ],
         func_type_human="",
-        buoyancy=[95, 86, 64, 61, 10],
+        buoyancy=[95, 86, 65, 64, 61, 10],
         image="null",
         parameters=[
             {"group": "input", "placeholder": "Email"},
             {"group": "input", "placeholder": "Phone"},
+            {
+                "group": "input",
+                "placeholder": "Username",
+                "tags": "#username_horizontal",
+            },
             {
                 "group": "input",
                 "placeholder": "First name",
@@ -675,6 +675,7 @@ elements = {
             {"group": "input", "placeholder": "Password"},
         ],
         styles=[
+            {"width": "280px", "height": "56px"},
             {"width": "280px", "height": "56px"},
             {"width": "280px", "height": "56px"},
             {"width": "280px", "height": "56px"},
