@@ -9,6 +9,7 @@ import * as Actions from '$redux/project/actions';
 import { IActiveItem } from '$components/Editor/EditorWindow/';
 import { LIST_SCENARIO_TYPE } from '$constants/defaultParams';
 import { IPanelEditProps } from '$components/RightPanel/PanelEditProps';
+import { safeParseInt } from '$utils/NumberHelper';
 
 const styles = require('./styles.scss');
 
@@ -55,7 +56,7 @@ export const IndentsBlock: React.FunctionComponent<IComponentProps> = memo(({
                 styles.indentsInput_margin_top,
               )}
               type="number"
-              value={parseInt(styleItem['margin-top'], 10) || 0}
+              value={safeParseInt(styleItem['margin-top'], 10) || 0}
               onChange={event => handleChangeIndent('margin-top', `${event.target.value}px`)}
             />
             <input
@@ -65,7 +66,7 @@ export const IndentsBlock: React.FunctionComponent<IComponentProps> = memo(({
                 styles.indentsInput_margin_right,
               )}
               type="number"
-              value={parseInt(styleItem['margin-right'], 10) || 0}
+              value={safeParseInt(styleItem['margin-right'], 10) || 0}
               onChange={event => handleChangeIndent('margin-right', `${event.target.value}px`)}
             />
             <input
@@ -75,7 +76,7 @@ export const IndentsBlock: React.FunctionComponent<IComponentProps> = memo(({
                 styles.indentsInput_margin_bottom,
               )}
               type="number"
-              value={parseInt(styleItem['margin-bottom'], 10) || 0}
+              value={safeParseInt(styleItem['margin-bottom'], 10) || 0}
               onChange={event => handleChangeIndent('margin-bottom', `${event.target.value}px`)}
             />
             <input
@@ -85,7 +86,7 @@ export const IndentsBlock: React.FunctionComponent<IComponentProps> = memo(({
                 styles.indentsInput_margin_left,
               )}
               type="number"
-              value={parseInt(styleItem['margin-left'], 10) || 0}
+              value={safeParseInt(styleItem['margin-left'], 10) || 0}
               onChange={event => handleChangeIndent('margin-left', `${event.target.value}px`)}
             />
             <input
@@ -95,7 +96,7 @@ export const IndentsBlock: React.FunctionComponent<IComponentProps> = memo(({
                 styles.indentsInput_padding_top,
               )}
               type="number"
-              value={parseInt(styleItem['padding-top'], 10) || 0}
+              value={safeParseInt(styleItem['padding-top'], 10) || 0}
               min={MIN_PADDING}
               onChange={event => handleChangeIndent('padding-top', `${event.target.value}px`, false)}
             />
@@ -106,7 +107,7 @@ export const IndentsBlock: React.FunctionComponent<IComponentProps> = memo(({
                 styles.indentsInput_padding_right,
               )}
               type="number"
-              value={parseInt(styleItem['padding-right'], 10) || 0}
+              value={safeParseInt(styleItem['padding-right'], 10) || 0}
               min={MIN_PADDING}
               onChange={event => handleChangeIndent('padding-right', `${event.target.value}px`, false)}
             />
@@ -117,7 +118,7 @@ export const IndentsBlock: React.FunctionComponent<IComponentProps> = memo(({
                 styles.indentsInput_padding_bottom,
               )}
               type="number"
-              value={parseInt(styleItem['padding-bottom'], 10) || 0}
+              value={safeParseInt(styleItem['padding-bottom'], 10) || 0}
               min={MIN_PADDING}
               onChange={event => handleChangeIndent('padding-bottom', `${event.target.value}px`, false)}
             />
@@ -128,7 +129,7 @@ export const IndentsBlock: React.FunctionComponent<IComponentProps> = memo(({
                 styles.indentsInput_padding_left,
               )}
               type="number"
-              value={parseInt(styleItem['padding-left'], 10) || 0}
+              value={safeParseInt(styleItem['padding-left'], 10) || 0}
               min={MIN_PADDING}
               onChange={event => handleChangeIndent('padding-left', `${event.target.value}px`, false)}
             />

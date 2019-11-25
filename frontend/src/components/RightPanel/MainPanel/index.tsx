@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import classNames from 'classnames';
 import * as R from 'ramda';
 
+import { AppReduxState } from '$shared/types/app';
 import * as Actions from '$redux/project/actions';
 import { IProjectScreen } from '$redux/project/reducer';
 import { Scrollbar } from '$components/UI/Scrollbar/';
@@ -24,7 +25,7 @@ const mapStateToProps = ({
     currentScreen,
     loader,
   },
-}) => ({
+}: AppReduxState) => ({
   scenarios,
   scenarioElements,
   libraryElements,
@@ -86,7 +87,7 @@ const Component: React.FunctionComponent<IRightPanelProps> = ({
 
   const handleOrientation = useCallback((type: string) => {
     const newStyles = {
-      ...R.path([activeItem.itemId, 'styles'], scenarios),
+      ...scenarios[activeItem.itemId].styles,
       'flex-direction': type === 'vertical' ? 'column' : 'row',
     };
 
@@ -106,11 +107,14 @@ const Component: React.FunctionComponent<IRightPanelProps> = ({
   const getStyleItem = useCallback((): IStylesElement => {
     const parseId = parseInt(activeItem.itemId, 10);
 
-    if (LIST_SCENARIO_TYPE.indexOf(activeItem.itemType) !== -1) {
-      return R.path([parseId, 'styles'], scenarios);
+    if (parseId) {
+      if (LIST_SCENARIO_TYPE.indexOf(activeItem.itemType) !== -1) {
+        return scenarios[parseId].styles;
+      }
+  
+      return scenarioElements[parseId].styles;
     }
-
-    return R.path([parseId, 'styles'], scenarioElements);
+    return {}; // TODO: research case with 'root'
   }, [activeItem, scenarios, scenarioElements]);
 
   const getOrientation = useCallback((id: string): string => {

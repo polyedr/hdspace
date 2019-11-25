@@ -21,7 +21,7 @@ export interface ILeftPanel {
   pathname: IAppProps['pathname'],
   getListProject: IAppProps['getListProject']
   projects: IListProject[],
-  username: string,
+  username?: string,
   userType: string,
   tokenPair: ITokenPair,
   isLPanelMinimized: boolean,
@@ -83,7 +83,9 @@ export const LeftPanel: React.FunctionComponent<ILeftPanel> = ({
               alt="profile"
             />
             <div className={styles.profileName}>
-              <span className={styles.profileText}>{username}</span>
+              <span className={styles.profileText}>
+                {typeof username !== 'undefined' ? username : 'Without name'}
+              </span>
               <span className={styles.profileText}>{userType}</span>
             </div>
             <Button

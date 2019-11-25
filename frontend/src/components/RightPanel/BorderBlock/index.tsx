@@ -13,11 +13,16 @@ import {
   DEFAULT_BORDER,
 } from '$constants/defaultParams';
 import { IPanelEditProps } from '$components/RightPanel/PanelEditProps';
-import { strToNumber, getPermissibleValue } from '$utils/NumberHelper';
-import { validBorderRadius } from '$utils/StyleHelper';
+import { strToNumber, getPermissibleValue, safeParseFloat, safeMatch } from '$utils/NumberHelper';
+import { validBorderRadius, IStylesElement } from '$utils/StyleHelper';
 import { ColorPicker } from '$components/UI/ColorPicker/';
 
 const styles = require('./styles.scss');
+
+const accessBorderRadius = (styleItem: IStylesElement) => {
+  const matchedValue = safeMatch(styleItem['border-radius']);
+  return matchedValue !== null ? matchedValue[0] : 'px';
+};
 
 interface IComponentProps {
   activeItem: IActiveItem,
@@ -56,7 +61,7 @@ export const BorderBlock: React.FunctionComponent<IComponentProps> = React.memo(
   const handleBorderRadius = useCallback(({ target: { value } }) => {
     const newBorder = {
       ...styleItem,
-      'border-radius': `${value}${(styleItem['border-radius'] && styleItem['border-radius'].match(/px|%/i)[0]) || 'px'}`,
+      'border-radius': `${value}${accessBorderRadius(styleItem)}`,
       'border-width': R.path(['border-width'], styleItem) || '1px',
       'border-style': R.path(['border-style'], styleItem) || DEFAULT_BORDER['border-style'],
       'border-color': R.path(['border-color'], styleItem) || DEFAULT_BORDER['border-color'],
@@ -118,7 +123,7 @@ export const BorderBlock: React.FunctionComponent<IComponentProps> = React.memo(
               className={styles.borderWidthField}
               name="width"
               type="number"
-              value={parseFloat(styleItem['border-width']) || parseFloat(DEFAULT_BORDER['border-width'])}
+              value={safeParseFloat(styleItem['border-width']) || parseFloat(DEFAULT_BORDER['border-width'])}
               onChange={handleBorder}
               min={MIN_BORDER_WIDTH}
               max={MAX_BORDER_WIDTH}
@@ -129,7 +134,10 @@ export const BorderBlock: React.FunctionComponent<IComponentProps> = React.memo(
               className={styles.borderRadiusField}
               name="radius"
               type="number"
-              value={parseFloat(validBorderRadius(styleItem['border-radius'])) || parseFloat(DEFAULT_BORDER['border-radius'])}
+              value={
+                safeParseFloat(validBorderRadius(styleItem['border-radius']))
+                || parseFloat(DEFAULT_BORDER['border-radius'])
+              }
               onChange={handleBorderRadius}
               min={MIN_BORDER_RADIUS}
               max={styleItem['border-radius'] && styleItem['border-radius'].indexOf('px') !== -1 ? MAX_BORDER_RADIUS : MAX_BORDER_RADIUS_PERCENT || 100}
@@ -138,7 +146,7 @@ export const BorderBlock: React.FunctionComponent<IComponentProps> = React.memo(
               className="dropDown"
               name="radius_units"
               onChange={handleChangeBorderRadiusUnits}
-              value={(styleItem['border-radius'] && styleItem['border-radius'].match(/px|%/i)[0]) || 'px'}
+              value={accessBorderRadius(styleItem)}
             >
               <option value="px">px</option>
               <option value="%">percent</option>

@@ -2,6 +2,7 @@ import React, { useCallback, useState, useEffect } from 'react';
 import { hot } from 'react-hot-loader';
 import { connect } from 'react-redux';
 
+import { AppReduxState } from '$shared/types/app';
 import { Info } from '$components/User/Info';
 import { Button } from '$components/UI/Button';
 import { Spinner } from '$components/UI/Spinner';
@@ -16,7 +17,7 @@ const styles = require('./styles.scss');
 
 const mapStateToProps = ({
   user: { apiResponseError, isSignLoader },
-}) => ({
+}: AppReduxState) => ({
   apiResponseError,
   isSignLoader,
 });

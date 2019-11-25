@@ -25,7 +25,7 @@ export const ScenarioBlock: React.FunctionComponent<IComponentProps> = memo(({
   changeElementType,
   libraryElements,
 }) => {
-  const handleChangeScenario = useCallback((value) => {
+  const handleChangeScenario = useCallback((value: string) => {
     const scenarioId: number = strToNumber(value);
     if (scenarioId) {
       changeScenario(activeItem.itemId, scenarioId);
@@ -44,7 +44,7 @@ export const ScenarioBlock: React.FunctionComponent<IComponentProps> = memo(({
       <div className={classNames(styles.scenarioContentBlock, 'propsPanelContentBlock')}>
         <DropDown
           options={getOptionsOfListScenario(scenarios)}
-          defaultValue={activeItem.scenarioId}
+          defaultValue={String(activeItem.scenarioId)}
           disabled={activeItem.itemType === 'block' || activeItem.scenarioId === -1}
           onChange={handleChangeScenario}
         />

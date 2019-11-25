@@ -1,9 +1,8 @@
-import { myAxios } from '$config/settings';
+import { myAxios, MyAxiosProps } from '$config/settings';
 import { onError, parseResult } from '$api/project';
-import { IProject, IProjectScreen } from '$redux/project/reducer';
+import { IProjectScreen } from '$redux/project/reducer';
 
-
-export const apiGetScreen = (props): Promise<IProjectScreen> => (
+export const apiGetScreen = (props: MyAxiosProps & { id: string }): Promise<IProjectScreen> => (
   myAxios({
     ...props,
     method: 'GET',
@@ -13,7 +12,7 @@ export const apiGetScreen = (props): Promise<IProjectScreen> => (
     .catch(onError)
 );
 
-export const apiGetAllScreen = (props): Promise<IProjectScreen[]> => (
+export const apiGetAllScreen = (props: MyAxiosProps): Promise<IProjectScreen[]> => (
   myAxios({
     ...props,
     method: 'GET',
@@ -23,7 +22,7 @@ export const apiGetAllScreen = (props): Promise<IProjectScreen[]> => (
     .catch(onError)
 );
 
-export const apiAddScreen = (props): Promise<IProjectScreen> => (
+export const apiAddScreen = (props: MyAxiosProps): Promise<IProjectScreen> => (
   myAxios({
     ...props,
     method: 'POST',
@@ -33,7 +32,7 @@ export const apiAddScreen = (props): Promise<IProjectScreen> => (
     .catch(onError)
 );
 
-export const apiSaveScreen = (props): Promise<IProjectScreen> => (
+export const apiSaveScreen = (props: MyAxiosProps & { id: string }): Promise<IProjectScreen> => (
   myAxios({
     ...props,
     method: 'PATCH',
@@ -43,7 +42,7 @@ export const apiSaveScreen = (props): Promise<IProjectScreen> => (
     .catch(onError)
 );
 
-export const apiDelScreen = (props): Promise<IProjectScreen> => (
+export const apiDelScreen = (props: MyAxiosProps & { id: string }): Promise<IProjectScreen> => (
   myAxios({
     ...props,
     method: 'DELETE',

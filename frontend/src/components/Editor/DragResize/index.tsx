@@ -8,11 +8,9 @@ import { strToNumber } from '$utils/NumberHelper';
 
 const styles = require('./styles.scss');
 
-export type TChooseResize = (itemId) => void;
-
 const extractWidth = R.path<number | string>(['props', 'style', 'width']);
 
-interface IComponentProps {
+type Props = {
   sortableId: string;
   style: CSSProperties;
   children: any;
@@ -21,22 +19,24 @@ interface IComponentProps {
   isResizable: boolean;
   onChooseToResize(itemID: string): void;
   setIsMoving(value: boolean): void;
-}
+};
 
-interface IComponentState {
-  x: number,
-  y: number,
-  deltaX: number,
-  deltaY: number,
-  width: number,
-  height: number,
-  currentController: string,
-  isDragStart: boolean,
-}
+type Controller = null | 'top_right' | 'top_left' | 'bottom_right' | 'bottom_left' | 'top' | 'bottom' | 'left' | 'right';
 
-export class DragResize extends React.Component<IComponentProps, IComponentState> {
+type State = {
+  x: number;
+  y: number;
+  deltaX: number;
+  deltaY: number;
+  width: number;
+  height: number;
+  currentController: Controller;
+  isDragStart: boolean;
+};
 
-  constructor(props) {
+export class DragResize extends React.Component<Props, State> {
+
+  constructor(props: Props) {
     super(props);
 
     this.state = {
@@ -46,12 +46,12 @@ export class DragResize extends React.Component<IComponentProps, IComponentState
       deltaY: 0,
       width: R.path(['style', 'width'], props) || 0,
       height: R.path(['style', 'height'], props) || 0,
-      currentController: '',
+      currentController: null,
       isDragStart: false,
     };
   }
 
-  public componentDidUpdate(prevProps) {
+  public componentDidUpdate(prevProps: Props) {
     const { style: prevStyle = {}, children: prevChildren } = prevProps;
     const { style: { width = 0, height = 0 } = {}, children, sortableId } = this.props;
     if ( // update width/height from props, if they changed from sidebar or other ways
@@ -68,65 +68,73 @@ export class DragResize extends React.Component<IComponentProps, IComponentState
     if (widthHasChangedToFull) {
       setTimeout(() => {
         const resizedElement = document.getElementById(sortableId);
-        this.setState({ width: resizedElement.offsetWidth }); // DragResize works with width in pixels, and we need to convert 100% in interface to pxs
+        resizedElement !== null && this.setState({ width: resizedElement.offsetWidth }); // DragResize works with width in pixels, and we need to convert 100% in interface to pxs
       }, 0);
     }
   }
 
   @autobind
-  private handleDragOver(event) {
+  private handleDragOver(event: MouseEvent) {
     const { currentController } = this.state;
 
-    this.setState(({ x, y }) => {
+    this.setState((prevState) => {
+      const { x, y } = prevState;
       switch (currentController) {
         case 'top_right':
           return {
-            deltaX: x - parseFloat(event.clientX),
-            deltaY: parseFloat(event.clientY) - y,
+            ...prevState,
+            deltaX: x - event.clientX,
+            deltaY: event.clientY - y,
           };
         case 'top_left':
           return {
-            deltaX: parseFloat(event.clientX) - x,
-            deltaY: parseFloat(event.clientY) - y,
+            ...prevState,
+            deltaX: event.clientX - x,
+            deltaY: event.clientY - y,
           };
         case 'bottom_right':
           return {
-            deltaX: x - parseFloat(event.clientX),
-            deltaY: y - parseFloat(event.clientY),
+            ...prevState,
+            deltaX: x - event.clientX,
+            deltaY: y - event.clientY,
           };
         case 'bottom_left':
           return {
-            deltaX: parseFloat(event.clientX) - x,
-            deltaY: y - parseFloat(event.clientY),
+            ...prevState,
+            deltaX: event.clientX - x,
+            deltaY: y - event.clientY,
           };
         case 'top':
           return {
+            ...prevState,
             deltaX: x,
-            deltaY: parseFloat(event.clientY) - y,
+            deltaY: event.clientY - y,
           };
         case 'bottom':
           return {
+            ...prevState,
             deltaX: x,
-            deltaY: y - parseFloat(event.clientY),
+            deltaY: y - event.clientY,
           };
         case 'left':
           return {
-            deltaX: parseFloat(event.clientX) - x,
+            ...prevState,
+            deltaX: event.clientX - x,
             deltaY: y,
           };
         case 'right':
           return {
-            deltaX: x - parseFloat(event.clientX),
+            ...prevState,
+            deltaX: x - event.clientX,
             deltaY: y,
           };
-        default:
-          break;
+        default: return prevState;
       }
     });
   };
 
   @autobind
-  private handleDragStop(event) {
+  private handleDragStop(event: MouseEvent) {
     console.log('handle drag stop!');
     const { sortableId, updateElementStyles, setIsMoving } = this.props;
     const { clientX, clientY } = event;
@@ -166,8 +174,8 @@ export class DragResize extends React.Component<IComponentProps, IComponentState
       updateElementStyles(sortableId, { width: `${newWidth}px`, height: `${newHeight}px` });
 
       return ({
-        x: parseFloat(clientX),
-        y: parseFloat(clientY),
+        x: clientX,
+        y: clientY,
 
         deltaX: 0,
         deltaY: 0,
@@ -187,27 +195,30 @@ export class DragResize extends React.Component<IComponentProps, IComponentState
   };
 
   @autobind
-  private handleDragStart(event) {
+  private handleDragStart(event: React.MouseEvent) {
     const currentEvent = { ...event };
     const { style, sortableId } = this.props;
 
     if (!style || !strToNumber(String(style.width)) || !strToNumber(String(style.height))) {
-      const { clientWidth, clientHeight } = document.getElementById(String(sortableId));
-      const indentLeft: number = R.path(['indents', 'padding-left'], style) || 0;
-      const indentRight: number = R.path(['indents', 'padding-right'], style) || 0;
-      const indentTop: number = R.path(['indents', 'padding-top'], style) || 0;
-      const indentBottom: number = R.path(['indents', 'padding-bottom'], style) || 0;
-      const newWidth = clientWidth - indentLeft - indentRight - 10;
-      const newHeight = clientHeight - indentTop - indentBottom - 10;
-
-      this.setState({ width: newWidth, height: newHeight });
+      const el = document.getElementById(String(sortableId));
+      if (el !== null) {
+        const { clientWidth, clientHeight } = el;
+        const indentLeft: number = R.path(['indents', 'padding-left'], style) || 0;
+        const indentRight: number = R.path(['indents', 'padding-right'], style) || 0;
+        const indentTop: number = R.path(['indents', 'padding-top'], style) || 0;
+        const indentBottom: number = R.path(['indents', 'padding-bottom'], style) || 0;
+        const newWidth = clientWidth - indentLeft - indentRight - 10;
+        const newHeight = clientHeight - indentTop - indentBottom - 10;
+  
+        this.setState({ width: newWidth, height: newHeight });
+      }
     }
 
     this.setState({
-      currentController: currentEvent.target.id,
+      currentController: (currentEvent.target as any).id, // TODO: research how to type things like this
       isDragStart: true,
-      x: parseFloat(currentEvent.clientX),
-      y: parseFloat(currentEvent.clientY),
+      x: currentEvent.clientX,
+      y: currentEvent.clientY,
     });
 
 
@@ -217,7 +228,7 @@ export class DragResize extends React.Component<IComponentProps, IComponentState
   };
 
   @autobind
-  private handleChooseToResize(e) {
+  private handleChooseToResize(e: React.ChangeEvent) {
     e.stopPropagation();
 
     const { sortableId, onChooseToResize } = this.props;
@@ -225,15 +236,13 @@ export class DragResize extends React.Component<IComponentProps, IComponentState
   };
 
   @autobind
-  private handleMouseOver(event) {
-    const item = event.target.closest('.addedItem');
-    item && item.classList.add('hovered');
+  private handleMouseOver(event: React.MouseEvent) {
+    (event.target as HTMLElement)?.closest?.('.addedItem')?.classList.add('hovered');
   };
 
   @autobind
-  private handleMouseOut(event) {
-    const item = event.target.closest('.addedItem');
-    item && item.classList.remove('hovered');
+  private handleMouseOut(event: React.MouseEvent) {
+    (event.target as HTMLElement)?.closest?.('.addedItem')?.classList.remove('hovered');
   };
 
   @autobind

@@ -1,8 +1,19 @@
-import { myAxios } from '$config/settings';
+import { myAxios, MyAxiosProps } from '$config/settings';
 import { onError, parseResult } from '$api/project';
 import { IScenarioElement } from '$redux/project/reducer';
 
-export const apiGetLibraryElements = () => (
+type ServerLibraryElement = { // TODO: compare with entity on backend!
+  buoyancy: number[];
+  func_type: string[];
+  func_type_human: string;
+  id: number;
+  image: string | null;
+  parameters: any[];
+  struct_type: string;
+  styles: {}[];
+};
+
+export const apiGetLibraryElements = (): Promise<ServerLibraryElement[]> => (
   myAxios({
     method: 'GET',
     url: '/projects/library-elements/',
@@ -11,7 +22,9 @@ export const apiGetLibraryElements = () => (
     .catch(onError)
 );
 
-export const apiGetElements = ({ scenariosIDs, ...props }): Promise<IScenarioElement[]> => (
+export const apiGetElements = (
+  { scenariosIDs, ...props }: MyAxiosProps & { scenariosIDs: string[] },
+): Promise<IScenarioElement[]> => (
   myAxios({
     ...props,
     method: 'GET',
@@ -21,7 +34,7 @@ export const apiGetElements = ({ scenariosIDs, ...props }): Promise<IScenarioEle
     .catch(onError)
 );
 
-export const apiDelElements = props => (
+export const apiDelElements = (props: MyAxiosProps & { list: string[] }) => (
   myAxios({
     ...props,
     method: 'DELETE',
@@ -31,7 +44,7 @@ export const apiDelElements = props => (
     .catch(onError)
 );
 
-export const apiSaveElements = (props): Promise<IScenarioElement[]> => (
+export const apiSaveElements = (props: MyAxiosProps): Promise<IScenarioElement[]> => (
   myAxios({
     ...props,
     method: 'PATCH',
@@ -41,7 +54,7 @@ export const apiSaveElements = (props): Promise<IScenarioElement[]> => (
     .catch(onError)
 );
 
-export const apiDelElement = props => (
+export const apiDelElement = (props: MyAxiosProps & { id: string }) => (
   myAxios({
     ...props,
     method: 'DELETE',
@@ -51,7 +64,7 @@ export const apiDelElement = props => (
     .catch(onError)
 );
 
-export const apiAddElements = (props): Promise<IScenarioElement[]> => (
+export const apiAddElements = (props: MyAxiosProps): Promise<IScenarioElement[]> => (
   myAxios({
     ...props,
     method: 'POST',
@@ -61,7 +74,7 @@ export const apiAddElements = (props): Promise<IScenarioElement[]> => (
     .catch(onError)
 );
 
-export const uploadImageForNN = ({ screenID, ...props}) => (
+export const uploadImageForNN = ({ screenID, ...props}: MyAxiosProps & { screenID: string }) => (
   myAxios({
     ...props,
     method: 'PATCH',

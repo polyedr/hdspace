@@ -158,7 +158,7 @@ const renderMapWidget: TRenderElement = ({ id, params, active, style }) => (
   </div>
 );
 
-const renderCalendarWidget = ({ id, params, style, active }) => (
+const renderCalendarWidget: TRenderElement = ({ id, params, style, active }) => (
   <div
     id={id}
     className={classNames('addedItem', styles.addedCalendar, active && styles.activated)}
@@ -168,14 +168,14 @@ const renderCalendarWidget = ({ id, params, style, active }) => (
   </div>
 );
 
-const renderClockWidget = ({ id, params, style, active }) => (
+const renderClockWidget: TRenderElement = ({ id, params, style, active }) => (
   <div
     id={id}
     className={classNames('addedItem', styles.addedCalendar, active && styles.activated)}
     style={{ ...style }}
   >
     <ClockWidget
-      size={params.width}
+      size={typeof params.width === 'number' ? params.width : undefined}
     />
   </div>
 );

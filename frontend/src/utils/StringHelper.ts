@@ -10,4 +10,4 @@ export const checkPasswordFieldValidity = (string: string) => /^[A-Za-z0-9]+$/.t
 
 export const checkEmailFieldValidity = (string: string) => /.+@.+\..+/.test(string);
 
-export const getPathFromPathname = pathname => pathname.split('/')[1];
+export const getPathFromPathname = (pathname: string) => pathname.split('/')[1];

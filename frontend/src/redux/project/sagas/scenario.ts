@@ -8,18 +8,13 @@ import {
   IScenarioItem,
   IScenarioElement,
   IScenarioElements,
-  IListSortable,
 } from '$redux/project/reducer';
 import {
-  ISortableItemTemp,
   getElAndChildren,
 } from '$utils/parseListItems';
 import {
-  addElByScenarios,
-  delElByScenarios,
   convertScenarios,
   getNewScenario,
-  getAllElements,
   convertScenarioElements,
   getParams,
 } from '$utils/parseScenario';
@@ -50,7 +45,12 @@ import { AppReduxState } from '$shared/types/app';
 
 export function* runLayoutAlgorithm(screenScenarios: IScenarios, scenariosElements: IScenarioElements) {
   const { project: { currentScreen } }: AppReduxState = yield select();
-  const { blocks, containers, groups } = R.keys(screenScenarios).reduce((acc, scenarioID) => {
+  type Acc = {
+    blocks: IScenarioItem[];
+    containers: IScenarioItem[];
+    groups: IScenarioItem[];
+  };
+  const { blocks, containers, groups } = R.keys(screenScenarios).reduce((acc: Acc, scenarioID) => {
     const scenario = screenScenarios[scenarioID];
 
     if (scenario.struct_type === 'block') {
@@ -102,7 +102,8 @@ export function* runLayoutAlgorithm(screenScenarios: IScenarios, scenariosElemen
   yield put(Actions.setScreen(updatedScreen));
 }
 
-export function* changeScenariosSaga({ screenId }: ReturnType<typeof Actions.changeScenarios>) {
+export function* changeScenariosSaga(action: ReturnType<typeof Actions.changeScenarios>) {
+  const { screenId } = action;
   yield put(Actions.setScenarioLoader(true));
 
   const serverScreenScenarios: ReturnPromisedType<typeof apiGetScenarios> = yield call(
@@ -128,42 +129,49 @@ export function* changeScenariosSaga({ screenId }: ReturnType<typeof Actions.cha
   yield put(Actions.setScenarioLoader(false));
 }
 
-export function* changeScenarioSaga(
-  { payload: { itemId, scenarioId } }: ReturnType<typeof Actions.changeScenario>,
-): SagaIterator {
-  const {
-    project: { currentScreen, scenarios, scenarioElements },
-  } = yield select(state => state);
-  const item: ISortableItemTemp = currentScreen.listSortable[itemId];
+// don't know this saga's purpose
+export function* changeScenarioSaga(action: ReturnType<typeof Actions.changeScenario>) {
+  console.log('changeScenarioSaga!');
+  // const { itemId, scenarioId } = action.payload;
+  // const {
+  //   project: { currentScreen: { listSortable }, scenarios, scenarioElements },
+  // }: AppReduxState = yield select();
 
-  if (!item) return;
+  // console.log('listSortable!', listSortable);
+  // // TODO: research what is ISortableItemTemp
+  // // const item = listSortable[itemId] as ISortableItemTemp;
+  // const item = listSortable[itemId];
+  // console.log('item', item);
 
-  const oldScenarioId: number = item.scenarioId;
-  const elements = (currentScreen.listSortable[itemId].children || [])
-    .reduce((arr, id) => (
-      R.append(
-        R.path([id, 'elementId'], currentScreen.listSortable),
-        arr,
-      )
-    ), [item.elementId])
-    .filter(id => !!scenarioElements[id]);
+  // if (!item) return;
 
-  const newListScenario: IScenarios = delElByScenarios(
-    oldScenarioId,
-    elements,
-    addElByScenarios(scenarioId, elements, scenarios),
-  );
+  // const oldScenarioId = item.scenarioId;
+  // invariant(
+  //   typeof oldScenarioId === 'undefined', 
+  //   `Potential invariant violation: oldScenarioId is undefined, but must have value`,
+  // );
 
-  yield put(Actions.setScenarios(newListScenario));
+  // const elements = listSortable[itemId].children
+  //   .reduce((arr, id) => arr.concat(listSortable[id].elementId), [item.elementId])
+  //   .filter(id => !!scenarioElements[id]);
 
-  const updateScenarioElements = getAllElements(
-    oldScenarioId, scenarioId, elements, scenarioElements,
-  );
+  // const newListScenario: IScenarios = delElByScenarios(
+  //   oldScenarioId,
+  //   elements,
+  //   addElByScenarios(scenarioId, elements, scenarios),
+  // );
 
-  yield put(Actions.setScenarioElements(updateScenarioElements));
+  // yield put(Actions.setScenarios(newListScenario));
+
+  // const updateScenarioElements = getAllElements(
+  //   oldScenarioId, scenarioId, elements, scenarioElements,
+  // );
+
+  // yield put(Actions.setScenarioElements(updateScenarioElements));
   // yield call(runLayoutAlgorithm, updateScenarioElements);
 }
 
+// unused
 export function* createScenarioSaga(action: ReturnType<typeof Actions.createScenario>) {
   const { payload: { name, type, elements } } = action;
   const { project: { currentScreen, scenarios } }: AppReduxState = yield select();
@@ -186,9 +194,40 @@ export function* createScenarioSaga(action: ReturnType<typeof Actions.createScen
   // yield call(runLayoutAlgorithm, updateScenarioElements);
 }
 
-export function* addScenarioSaga({
-  payload: { scenarioId = 0, name = 'Scenario name', listElementType },
-}: ReturnType<typeof Actions.addScenario>): SagaIterator {
+// export function* addScenarioV2(action: ReturnType<typeof Actions.addScenario>) {
+//   // TODO: rethink scenario addition
+//   const { payload: { parentScenarioID, name, elements: elementsToFormScenario } } = action;
+//   const {
+//     project: {
+//       scenarios,
+//       scenarioElements,
+//       libraryElements,
+//       currentScreen: { id: screenID },
+//     },
+//   }: AppReduxState = yield select();
+
+//   const needToCreateNewScenario = parentScenarioID === null;
+//   const needToModifyExistingScenario = typeof parentScenarioID === 'number';
+
+//   if (needToCreateNewScenario) {
+//     const blockToCreate: Omit<IScenarioItem, 'id'> = {
+//       name: 'Block name',
+//       screen: screenID,
+//       parent_id: 0,
+//       struct_type: 'block',
+//       direction: 'vertical',
+//       buoyancy: 0,
+//       elements: [],
+//       parameters: {
+//         children: [],
+//       },
+//       styles: { ...DEFAULT_INDENTS, 'flex-direction': 'column' },
+//     };
+//   }
+// }
+
+export function* addScenarioSaga(action: ReturnType<typeof Actions.addScenario>) {
+  const { payload: { parentScenarioID: setParentID = 0, name = 'Scenario name', elements: elementsToFormScenario } } = action;
   const {
     project: {
       scenarios,
@@ -197,114 +236,115 @@ export function* addScenarioSaga({
       currentScreen,
     },
   }: AppReduxState = yield select();
-
+  const parentScenarioID = setParentID === null ? Number(undefined) : setParentID; // when NaN - create new scenario, when number exists - add elements into specified scenario
   // Complete List Element
   const { newEl, existEl } = formingListEl(
-    currentScreen.id, scenarioId, name, listElementType, libraryElements, scenarioElements,
+    parentScenarioID, elementsToFormScenario, libraryElements, scenarioElements,
   );
-  const apiListEl = newEl.map(el => R.omit(['id'], el));
-  // console.log(if img -> FormData(newEl));
-  const resultElements: IScenarioElement[] = yield call(
+  const apiListEl = newEl.map(el => R.pipe(R.assoc('scenario', null), R.omit(['id']))(el));
+
+  const createdElements: ReturnPromisedType<typeof apiAddElements> = yield call(
     reqWrapper, apiAddElements,
     { data: apiListEl },
   );
   // const lastIdE = Object.keys(scenarioElements)
   //   .reduce((max, id) => (max > Number(id) ? max : Number(id)), 0);
-  // const resultElements = newEl.map((el, i) => ({ ...el, id: lastIdE + i + 1 }));
+  // const createdElements = newEl.map((el, i) => ({ ...el, id: lastIdE + i + 1 }));
 
-  if (!resultElements) return;
+  if (!createdElements) return;
 
   // Complete List Group
   const { newGroups, existGroups } = formingListGroup(
     currentScreen.id,
-    [...existEl, ...resultElements],
+    [...existEl, ...createdElements],
     scenarios,
   );
   const apiListGroup = newGroups.map(group => R.omit(['id'], group));
-  const resultGroups: IScenarioItem[] = yield call(
+  const createdGroups: ReturnPromisedType<typeof apiAddScenarios> = yield call(
     reqWrapper, apiAddScenarios, { data: apiListGroup },
   );
   // const lastIdG = Object.keys(scenarios).reduce((max, id) => (
   //   max > Number(id) ? max : Number(id)
   // ), 0);
-  // const resultGroups = newGroups.map((g, i) => ({ ...g, id: lastIdG + i + 2 }));
+  // const createdGroups = newGroups.map((g, i) => ({ ...g, id: lastIdG + i + 2 }));
 
-  if (!resultGroups) return;
+  if (!createdGroups) return;
 
-  const allListGroup = existGroups.concat(resultGroups).sort((a, b) => a.parent_id - b.parent_id);
-  const allListEl = resultElements.map((el) => {
-    const currGroup = resultGroups.find(group => (
-      group.parameters.children.indexOf(`${el.id}e`) !== -1
-    ));
-    const parent_id = R.prop('id', currGroup) || el.parameters.parent_id;
-    return ({
-      ...el,
-      parameters: {
-        ...el.parameters,
-        parent_id,
-      },
-    });
-  }).concat(existEl)
+  const actualScenariosElements = createdElements
+    .map((el) => {
+      const currGroup = createdGroups.find(group => group.parameters.children.indexOf(`${el.id}e`) !== -1);
+      const parent_id = currGroup?.id || el.parameters.parent_id;
+
+      return {
+        ...el,
+        parameters: {
+          ...el.parameters,
+          parent_id,
+        },
+      };
+    })
+    .concat(existEl)
     .sort((a, b) => a.parameters.parent_id - b.parameters.parent_id);
+
+  const actualGroups = existGroups.concat(createdGroups).sort((a, b) => a.parent_id - b.parent_id);
 
   // Complete List Block
   const { newBlocks, existBlocks } = formingListBlock(
     name,
     currentScreen.id,
-    allListEl,
-    allListGroup,
+    actualScenariosElements,
+    actualGroups,
     scenarios,
   );
   const apiListBlock = newBlocks.map(block => R.omit(['id'], block));
-  // const lastIdB = existBlocks.concat(allListGroup).reduce((max, b) => (
+  // const lastIdB = existBlocks.concat(actualGroups).reduce((max, b) => (
   //   max > b.id ? max : b.id
   // ), 0);
-  const resultBlocks: IScenarioItem[] = apiListBlock.length
+  const createdBlocks: ReturnPromisedType<typeof apiAddScenarios> = apiListBlock.length
     ? yield call(reqWrapper, apiAddScenarios, { data: apiListBlock })
     // ? apiListBlock.map((b, i) => ({ ...b, id: lastIdB + i + 1 }))
     : [];
 
-  if (!resultBlocks) return;
+  if (!createdBlocks) return;
 
-  const updateListBlock = existBlocks.concat(resultBlocks);
-  const updateListGroup: IScenarioItem[] = updateListBlock.reduce((result, block) => {
-    const listGroup = resultGroups.filter(g => block.parameters.children.indexOf(`${g.id}s`) !== -1)
-      .map(g => ({
-        ...g,
-        parent_id: block.id,
-      }));
+  const allBlocks = existBlocks.concat(createdBlocks);
+  const updatedGroups = allBlocks
+    .reduce((acc: IScenarioItem[], block) => {
+      const blockGroups = createdGroups.filter(g => block.parameters.children.indexOf(`${g.id}s`) !== -1)
+        .map((g): IScenarioItem => ({ ...g, parent_id: block.id }));
 
-    return [...result, ...listGroup];
-  }, []).concat(existGroups);
-  const updateListEl: IScenarioElement[] = allListEl.map((el) => {
-    const currGroup = updateListGroup.find(({ id }) => id === el.parameters.parent_id);
+      return acc.concat(...blockGroups);
+    }, [])
+    .concat(existGroups);
+  const updatedScenariosElements: IScenarioElement[] = actualScenariosElements.map((el) => {
+    const elementGroup = updatedGroups.find(({ id }) => id === el.parameters.parent_id);
 
-    return currGroup ? { ...el, scenario: currGroup.parent_id } : el;
+    return elementGroup ? { ...el, scenario: elementGroup.parent_id } : el;
   });
 
   // Complete List Container
-  const existContainer = Object.keys(scenarios).reduce((list, key) => (
-    scenarios[key].struct_type === 'container' ? [...list, scenarios[key]] : list
+  const existContainer = Object.keys(scenarios).reduce((acc: IScenarioItem[], key) => (
+    scenarios[key].struct_type === 'container' ? acc.concat(scenarios[key]) : acc
   ), []);
   // Render Items Scenario
-  const scenarioList: IScenarios = updateListBlock.concat(existContainer, updateListGroup)
-    .reduce((result, item) => ({
-      ...result,
+  const finalScenarios: IScenarios = allBlocks.concat(existContainer, updatedGroups)
+    .reduce((acc, item) => ({
+      ...acc,
       [item.id]: item,
     }), {});
 
-  const elementList: IScenarioElements = updateListEl.reduce((result, el) => ({
-    ...result,
+  const finalScenarioElements: IScenarioElements = updatedScenariosElements.reduce((acc, el) => ({
+    ...acc,
     [el.id]: el,
   }), {});
 
-  const listSortable: IListSortable = completeLS(
-    scenarioList,
-    elementList,
+  const listSortable = completeLS(
+    finalScenarios,
+    finalScenarioElements,
     currentScreen.listSortable.root,
   );
 
-  const updateScreen = {
+  const updatedScreen = {
     ...currentScreen,
     listSortable: {
       ...currentScreen.listSortable,
@@ -312,16 +352,16 @@ export function* addScenarioSaga({
     },
   };
 
-  yield put(Actions.setScreen(updateScreen));
+  yield put(Actions.setScreen(updatedScreen));
 
-  const listScenario = updateListBlock.concat(updateListGroup);
+  const listScenario = allBlocks.concat(updatedGroups);
   const updateScenarios = listScenario.reduce((obj, item) => ({
     ...obj,
     [item.id]: item,
   }), scenarios);
   yield put(Actions.setScenarios(updateScenarios));
 
-  const listScenarioElement = updateListEl.reduce((obj, el) => ({
+  const listScenarioElement = updatedScenariosElements.reduce((obj, el) => ({
     ...obj,
     [el.id]: el,
   }), scenarioElements);
@@ -330,7 +370,7 @@ export function* addScenarioSaga({
   // Save result Layout Algorithm
   const resultScenarioEl: IScenarioElement[] = yield call(
     reqWrapper, apiSaveElements,
-    { data: updateListEl },
+    { data: updatedScenariosElements },
   );
   const resultScenario: IScenarioItem[] = yield call(
     reqWrapper, apiSaveScenarios,
@@ -348,7 +388,7 @@ export function* delScenarioSaga({ id }: ReturnType<typeof Actions.delScenario>)
         listSortable,
       },
     },
-  } = yield select(state => state);
+  }: AppReduxState = yield select();
 
   const removeAllItems: string[] = getElAndChildren(id, listSortable);
   const removeElements = removeAllItems.filter((itemId) => {
@@ -371,7 +411,7 @@ export function* delScenarioSaga({ id }: ReturnType<typeof Actions.delScenario>)
   const { parent_id } = getParams(id, scenarioElements, scenarios);
 
   const parenCaild: string[] = parent_id >= 0
-    ? R.without([id], R.path([parent_id, 'parameters', 'children'], scenarios))
+    ? R.without([id], scenarios[parent_id].parameters.children)
     : [];
 
   const updateParent: IScenarios = parent_id >= 0
@@ -401,7 +441,7 @@ export function* delScenarioSaga({ id }: ReturnType<typeof Actions.delScenario>)
 export function* renameScenarioSaga(
   { scenarioId, newName }: ReturnType<typeof Actions.renameScenario>,
 ): SagaIterator {
-  const { project: { scenarios } } = yield select(state => state);
+  const { project: { scenarios } } = yield select();
 
   const updateScenario = {
     ...scenarios[scenarioId],
@@ -421,9 +461,8 @@ export function* renameScenarioSaga(
   yield put(Actions.setScenarios(updateScenarios));
 }
 
-export function* addContainerSaga(
-  { itemId }: ReturnType<typeof Actions.addContainer>,
-): SagaIterator {
+export function* addContainerSaga(action: ReturnType<typeof Actions.addContainer>) {
+  const { itemId } = action;
   const {
     project: {
       currentScreen: { id: screenID, listSortable },
@@ -459,12 +498,14 @@ export function* addContainerSaga(
   // ), 0) + 1;
   // const result_contaer: IScenarioItem = { ...container, id: lastId };
 
-  const createdContainer: ReturnPromisedType<typeof apiAddScenario> = yield call(reqWrapper, apiAddScenario, { data: container });
+  const createdContainer: ReturnPromisedType<typeof apiAddScenario> = yield call(
+    reqWrapper, apiAddScenario, { data: container },
+  );
 
   if (!createdContainer) return;
 
-  const parentChild = [
-    ...R.without([itemId], (parent_id > 0 ? R.path([parent_id, 'parameters', 'children'], scenarios) : [])),
+  const parentChildren = [
+    ...R.without([itemId], (parent_id > 0 ? scenarios[parent_id].parameters.children : [])),
     `${createdContainer.id}s`,
   ];
 
@@ -475,7 +516,7 @@ export function* addContainerSaga(
       ? R.assocPath([itemID, 'parent_id'], createdContainer.id, scenarios)
       : {}),
     ...(parent_id > 0
-      ? { [parent_id]: R.assocPath(['parameters', 'children'], parentChild, scenarios[parent_id]) }
+      ? { [parent_id]: R.assocPath(['parameters', 'children'], parentChildren, scenarios[parent_id]) }
       : {}),
   };
 

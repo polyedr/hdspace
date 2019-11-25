@@ -7,7 +7,6 @@ import classNames from 'classnames';
 
 import { IListProject } from '$redux/project/reducer';
 import * as Actions from '$redux/project/actions';
-import Modals from '$components/ModalsOfMsg';
 import { Button } from '$components/UI/Button';
 import { Modal } from '$components/UI/Modal';
 import { Icon } from '$components/UI/Icon';
@@ -249,7 +248,6 @@ export const Projects: React.FunctionComponent<IProjectsProps> = memo(({
           </div>
         </Modal>
       )}
-      <Modals />
     </main>
   );
 });

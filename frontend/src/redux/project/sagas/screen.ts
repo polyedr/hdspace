@@ -37,29 +37,25 @@ import {
   apiGetScreen,
   apiSaveScreen,
 } from '$api/screen';
+import { AppReduxState } from '$shared/types/app';
 import { ReturnPromisedType } from '$shared/types';
 
 import { reqWrapper } from '.';
 
 
 export function* activateScreenSaga({ payload }: ReturnType<typeof activateScreen>) {
-  const { projectId, screenId } = payload;
-
-  if (!projectId || !screenId) {
-    // show error
-    return;
-  }
+  const { screenID } = payload;
 
   yield put(setScreenLoader(true));
   yield put(clearAfterPrevScreen());
 
-  const screen: ReturnPromisedType<typeof apiGetScreen> = yield call(reqWrapper, apiGetScreen, { id: screenId });
+  const screen: ReturnPromisedType<typeof apiGetScreen> = yield call(reqWrapper, apiGetScreen, { id: screenID });
 
   if (!screen) return;
 
   const screenToActivate: IProjectScreen = {
     ...DEFAULT_SCREEN,
-    ...R.omit(['screen_data_text', 'screen_data_json'], screen),
+    ...R.omit(['screen_data_text'], screen),
   };
 
   yield put(changeScenarios(screenToActivate.id));
@@ -83,7 +79,7 @@ export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
   if (!createdScreen) return;
 
   const screen = R.omit(
-    ['screen_data_json', 'screen_data_text'],
+    ['screen_data_text'],
     R.assoc('listSortable', DEFAULT_LS, createdScreen),
   );
 
@@ -103,9 +99,7 @@ export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
 
 async function canvasToBlob(canvas: HTMLCanvasElement): Promise<Blob> {
   const dataBlob = await new Promise<Blob>(resolve => (
-    canvas.toBlob(blob => (
-      resolve(blob)
-    ), 'image/jpg', 1)
+    canvas.toBlob(blob => blob !== null ? resolve(blob) : undefined, 'image/jpg', 1)
   ));
   console.log(dataBlob)
   return dataBlob;
@@ -120,7 +114,7 @@ export function* saveScreenSaga({ canvas }: ReturnType<typeof saveScreen>): Saga
       modifyElements,
       scenarioElements,
     },
-  } = yield select(state => state);
+  }: AppReduxState = yield select();
 
   yield put(setLoader(true));
 
@@ -129,11 +123,11 @@ export function* saveScreenSaga({ canvas }: ReturnType<typeof saveScreen>): Saga
   const blobFile = yield call(canvasToBlob, canvas);
   const formData = new FormData();
 
-  Object.keys(screen).forEach((key) => {
+  R.keys(screen).forEach((key) => {
     if (key === 'styles_root') {
       formData.append(key, JSON.stringify(screen[key]));
     } else {
-      formData.append(key, screen[key]);
+      formData.append(key, screen[key] as string);
     }
   });
 
@@ -149,12 +143,12 @@ export function* saveScreenSaga({ canvas }: ReturnType<typeof saveScreen>): Saga
     )),
   }));
 
-  const resultScenarios = yield all(
+  const resultScenarios: ReturnPromisedType<typeof apiSaveScenario> = yield all(
     Object.keys(scenarios).map(key => call(reqWrapper, apiSaveScenario, { data: scenarios[key] })),
   );
 
-  const listElement: IScenarioElement[] = modifyElements.reduce((arr, elId) => (
-    scenarioElements[elId] ? R.append(scenarioElements[elId], arr) : arr
+  const listElement = modifyElements.reduce((acc: IScenarioElement[], elId) => (
+    scenarioElements[elId] ? acc.concat(scenarioElements[elId]) : acc
   ), []);
 
   if (listElement.length === 0) {
@@ -172,7 +166,7 @@ export function* saveScreenSaga({ canvas }: ReturnType<typeof saveScreen>): Saga
 
 export function* delScreenSaga({ payload }: ReturnType<typeof delScreen>) {
   const { projectId, screenId } = payload;
-  const { project: { currentProject, currentScreen } } = yield select(state => state);
+  const { project: { currentProject, currentScreen } }: AppReduxState = yield select();
 
   yield call(reqWrapper, apiDelScreen, { id: screenId });
 
@@ -184,21 +178,21 @@ export function* delScreenSaga({ payload }: ReturnType<typeof delScreen>) {
 
   yield put(setProject(result));
 
-  const lastScreenId: number = R.prop('id', R.last(result.projectscreen));
+  const lastScreenID = R.last(result.projectscreen)?.id;
 
-  if (!lastScreenId) {
+  if (!lastScreenID) {
     yield put(setScreen(DEFAULT_SCREEN));
     yield put(push(`/project/${projectId}`));
-  } else if (lastScreenId !== currentScreen.id) {
-    yield put(activateScreen(projectId, lastScreenId));
-    yield put(push(`/project/${projectId}/${lastScreenId}`));
+  } else if (lastScreenID !== currentScreen.id) {
+    yield put(activateScreen(projectId, lastScreenID));
+    yield put(push(`/project/${projectId}/${lastScreenID}`));
   }
   // yield call(getListProjectSaga);
 }
 
 export function* renameScreenSaga({ payload }: ReturnType<typeof renameScreen>) {
   const { screenId, newName } = payload;
-  const { project: { currentProject, currentScreen } } = yield select(state => state);
+  const { project: { currentProject, currentScreen } }: AppReduxState = yield select();
   const currScreen = currentProject.projectscreen.find(screen => screen.id === screenId);
 
   if (!currScreen) return;
@@ -239,7 +233,7 @@ export function* renameScreenSaga({ payload }: ReturnType<typeof renameScreen>) 
 }
 
 export function* getScreenNNSaga() {
-  const { project: { currentProject } } = yield select(state => state);
+  const { project: { currentProject } }: AppReduxState = yield select();
   const resultListScreen: IProjectScreen[] = yield call(reqWrapper, apiGetAllScreen);
   const lastScreenId = resultListScreen[resultListScreen.length - 1].id;
   const data = {
@@ -261,7 +255,7 @@ export function* getScreenNNSaga() {
     image: null,
     project: currentProject.id,
     screenscenario: [resultScenario.id],
-    screen_data_json: [],
+    screen_data_json: {},
   };
 
   const resultScreen = yield call(reqWrapper, apiSaveScreen, { id: newScreen.id, data: newScreen });
@@ -284,7 +278,7 @@ export function* getScreenNNSaga() {
 }
 
 export function* updateScreenSaga(screenData: ISortableItem[]) {
-  /*const { project: { currentScreen } } = yield select(state => state);
+  /*const { project: { currentScreen } }: AppReduxState = yield select();
   const newScreen: IProjectScreen = {
     ...currentScreen,
     screen_data_json: screenData,

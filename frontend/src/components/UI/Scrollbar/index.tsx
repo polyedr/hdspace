@@ -14,7 +14,7 @@ interface IScrollbarProps {
   isFlex?: boolean,
 }
 
-const renderTrack = ({ style, trackStylesBg, ...props }) => {
+const renderTrack = ({ style, trackStylesBg, ...props }: any) => { // TODO: add correct typings!
   const trackStyle = {
     backgroundColor: trackStylesBg || '#E7EAEC',
     borderRadius: '4px',
@@ -32,7 +32,7 @@ const renderTrack = ({ style, trackStylesBg, ...props }) => {
   );
 };
 
-const renderTrackHorizontal = ({ style, trackStylesBg, ...props }) => {
+const renderTrackHorizontal = ({ style, trackStylesBg, ...props }: any) => {
   const trackStyle = {
     backgroundColor: trackStylesBg || '#E7EAEC',
     borderRadius: '4px',
@@ -50,7 +50,7 @@ const renderTrackHorizontal = ({ style, trackStylesBg, ...props }) => {
   );
 };
 
-const renderThumb = ({ style, ...props }) => {
+const renderThumb = ({ style, ...props }: any) => {
   const thumbStyle = {
     backgroundColor: '#1cc09f',
     borderRadius: '4px',
@@ -65,7 +65,7 @@ const renderThumb = ({ style, ...props }) => {
   );
 };
 
-const renderView = ({ style, isFlex, ...props }) => {
+const renderView = ({ style, isFlex, ...props }: any) => {
   const viewStyle = {
     display: isFlex ? 'flex' : 'block',
     ...(isFlex ? { alignItems: 'flex-start' } : {}),
@@ -93,7 +93,7 @@ export const Scrollbar: React.FunctionComponent<IScrollbarProps> = ({
     style={style}
     autoHeight
     autoHeightMax={maxHeight}
-    renderTrackVertical={args => renderTrack({ ...args, trackStylesBg })}
+    renderTrackVertical={args => renderTrack({ ...args, trackStylesBg })} // TODO: find typings for all elements!
     renderTrackHorizontal={args => renderTrackHorizontal({ ...args, trackStylesBg })}
     renderView={args => renderView({ ...args, isFlex })}
     renderThumbVertical={renderThumb}

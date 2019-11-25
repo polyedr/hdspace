@@ -3,6 +3,7 @@ import { hot } from 'react-hot-loader';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 
+import { AppReduxState } from '$shared/types/app';
 import { Button } from '$components/UI/Button';
 import { Spinner } from '$components/UI/Spinner';
 import { openSignScreen } from '$utils/history';
@@ -17,7 +18,7 @@ const styles = require('./styles.scss');
 
 const mapStateToProps = ({
   user: { apiResponseError, isSignLoader },
-}) => ({
+}: AppReduxState) => ({
   apiResponseError,
   isSignLoader,
 });

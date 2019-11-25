@@ -43,6 +43,8 @@ export interface IStylesElement {
   'font-style'?: string,
   'font-weight'?: number,
   'text-align'?: string,
+
+  'flex-direction'?: string;
 }
 
 type TConvertIndents = (styles: IStylesElement) => {
@@ -123,11 +125,11 @@ const convertBackground: TConvertBackground = styles => (
 );
 
 const otherStyles = (styles: IStylesElement): React.CSSProperties => (
-  Object.keys(styles).reduce((result, key) => {
+  Object.keys(styles).reduce((acc, key) => {
     switch (key) {
       case 'flex-direction':
-        return { ...result, flexDirection: styles[key] };
-      default: return result;
+        return { ...acc, flexDirection: styles[key] };
+      default: return acc;
     }
   }, {})
 );
@@ -180,7 +182,9 @@ export const convertPropCSS = (styles : IStylesElement): React.CSSProperties => 
   ...otherStyles(styles),
 });
 
-export const validBorderRadius = (radius: string): string => {
+export const validBorderRadius = (radius?: string): string | undefined => {
+  if (typeof radius === 'undefined') return undefined;
+
   const value = parseInt(radius, 10) || MIN_BORDER_RADIUS;
 
   if (!radius || radius.indexOf('%') === -1) {

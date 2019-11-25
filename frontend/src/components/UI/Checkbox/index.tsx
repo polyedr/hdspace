@@ -8,7 +8,7 @@ interface IComponentProps {
   label?: string,
   disabled?: boolean,
   isHidden?: boolean,
-  onChange: (event) => void,
+  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void,
   checked?: boolean
   className?: string,
   children?: any,
@@ -31,7 +31,7 @@ export const Checkbox: React.FunctionComponent<IComponentProps> = memo(({
     <input
       name={name}
       id={name}
-      className={isHidden && 'visuallyHidden'}
+      className={isHidden ? 'visuallyHidden' : undefined}
       type="checkbox"
       onChange={onChange}
       checked={checked}

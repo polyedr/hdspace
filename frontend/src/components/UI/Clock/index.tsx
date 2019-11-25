@@ -1,11 +1,11 @@
 import React, { memo, useState, useEffect } from 'react';
 import Clock from 'react-clock';
 
-interface IPorps {
-  size: number,
-}
+type Props = {
+  size?: number,
+};
 
-export const ClockWidget: React.FunctionComponent<IPorps> = memo(({
+export const ClockWidget: React.FunctionComponent<Props> = memo(({
   size = 150,
 }) => {
   const [currentDate, setCurrentDate] = useState<Date>(new Date());

@@ -46,7 +46,7 @@ export type OwnProps = {
   activeItemId: string,
   isMoving: boolean,
   listNotDragging: string[],
-  styles_root?,
+  styles_root?: {},
 
   onActiveElementChange: TOnChoose,
   onChange: IEditProps['setListSortable'],
@@ -65,7 +65,7 @@ const RecursiveComponent: React.FC<Props> = (props) => {
     onActiveElementChange,
     onChange,
     setIsMoving,
-    styles_root,
+    styles_root = {},
   
     listSortable,
     elementList,
@@ -98,7 +98,7 @@ const RecursiveComponent: React.FC<Props> = (props) => {
   ), [listNotDragging]);
 
   const getStyles = useCallback((id: number): CSSProperties => {
-    const parseStyle: CSSProperties = (R.path([String(id), 'styles'], scenarioList));
+    const parseStyle: CSSProperties = scenarioList[id]?.styles;
 
     return parseStyle ? convertPropCSS(parseStyle) : {};
   }, [scenarioList]);
@@ -127,7 +127,7 @@ const RecursiveComponent: React.FC<Props> = (props) => {
         const currentItem = listSortable[itemId];
         const { struct_type, parameters, styles, name, image } = getParams(itemId, elementList, scenarioList);
 
-        const renderElement = RENDERERS[struct_type];
+        const renderElement = RENDERERS[struct_type as keyof typeof RENDERERS];
         const isDraggable = activeItemId === itemId && LIST_SCENARIO_TYPE.indexOf(struct_type) === -1;
 
         if (renderElement) {

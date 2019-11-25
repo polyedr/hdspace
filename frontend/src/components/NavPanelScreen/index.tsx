@@ -1,9 +1,9 @@
 import React, { useCallback } from 'react';
 import classNames from 'classnames';
-import Sortable from 'react-sortablejs';
+import Sortable from 'react-sortablejs'; // maybe replace it with react-sortablejs-typescript?
 import { NavLink } from 'react-router-dom';
 
-import { IProject, IProjectScreen } from '$redux/project/reducer';
+import { IProject, IProjectScreen, IProjectListItem } from '$redux/project/reducer';
 import { Modal } from '$components/UI/Modal';
 import { Icon } from '$components/UI/Icon';
 import { Button } from '$components/UI/Button';
@@ -104,19 +104,19 @@ const NavPanelScreen: React.FunctionComponent<INavPanelScreenProps> = ({
     delScreen(projectID, changeScreen.id);
   }, [cancelModal, changeScreen, projectID, delScreen]);
 
-  const handleChange = useCallback((order) => {
-    const newProjectScreens = order.map((currnetScreenId, index) => {
+  const handleChange = useCallback((order: string[]) => {
+    const newProjectScreens = order.reduce((acc: IProjectListItem[], currScreenID, currScreenIndex) => {
       const currentProjectScreen = project.projectscreen.find(currentScreen => (
-        Number(currnetScreenId) === currentScreen.id
+        Number(currScreenID) === currentScreen.id
       ));
 
-      return (
-        {
+      return currentProjectScreen ? 
+        acc.concat(
+          {
           ...currentProjectScreen,
-          buoyancy: project.projectscreen.length - index,
-        }
-      );
-    });
+          buoyancy: project.projectscreen.length - currScreenIndex,
+        }) : acc;
+    }, []);
 
     setProjectScreens(newProjectScreens);
   }, [project, setProjectScreens]);

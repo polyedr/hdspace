@@ -13,7 +13,7 @@ import { FONTS } from '$constants/fonts';
 import { IActiveItem } from '$components/Editor/EditorWindow/';
 import { DEFAULT_TYPOGRAPHY, LIST_SCENARIO_TYPE } from '$constants/defaultParams';
 import { IPanelEditProps } from '$components/RightPanel/PanelEditProps';
-import { getPermissibleValue } from '$utils/NumberHelper';
+import { getPermissibleValue, safeParseFloat } from '$utils/NumberHelper';
 
 const styles = require('./styles.scss');
 
@@ -35,7 +35,7 @@ export const TypographyBlock: React.FunctionComponent<IComponentProps> = memo(({
 }) => {
   const [isTypographyColorPickerOpen, setIsTypographyColorPickerOpen] = useState<boolean>(false);
 
-  const handleChangeColor = useCallback((newColor) => {
+  const handleColorChange = useCallback((newColor: string) => {
     if (newColor.length > 7) {
       return;
     }
@@ -147,7 +147,7 @@ export const TypographyBlock: React.FunctionComponent<IComponentProps> = memo(({
               type="number"
               min={MIN_FONT_SIZE}
               max={MAX_FONT_SIZE}
-              value={parseFloat(styleItem['font-size']) || parseFloat(DEFAULT_TYPOGRAPHY['font-size'])}
+              value={safeParseFloat(styleItem['font-size']) || parseFloat(DEFAULT_TYPOGRAPHY['font-size'])}
               onChange={handleChangeFontSize}
             />
           </div>
@@ -210,14 +210,14 @@ export const TypographyBlock: React.FunctionComponent<IComponentProps> = memo(({
           <ColorPicker
             display={isTypographyColorPickerOpen}
             color={styleItem.color || DEFAULT_TYPOGRAPHY.color}
-            onChangeComplete={color => handleChangeColor(color.hex)}
+            onChangeComplete={color => handleColorChange(color.hex)}
             onClose={handleActiveColorPicker}
           />
           <input
             className="colorField"
             type="text"
             value={styleItem.color || DEFAULT_TYPOGRAPHY.color}
-            onChange={({ target: { value } }) => handleChangeColor(value)}
+            onChange={({ target: { value } }) => handleColorChange(value)}
           />
           <input
             className="colorField"

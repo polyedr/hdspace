@@ -164,14 +164,16 @@ export const Editor: React.FunctionComponent<IEditProps> = memo(({
     const screenBody = document.getElementById('root');
     const widgets = Array.from(document.querySelectorAll('iframe'));
 
-    const ignore = element => widgets.some(widget => element === widget);
+    if (screenBody !== null) {
+      const ignore = (element: Element) => widgets.some(widget => element === widget);
 
-    html2canvas(screenBody, {
-      useCORS: true,
-      allowTaint: true,
-      logging: true,
-      ignoreElements: ignore,
-    }).then(canvas => saveScreen(canvas));
+      html2canvas(screenBody, {
+        useCORS: true,
+        allowTaint: true,
+        logging: true,
+        ignoreElements: ignore,
+      }).then(canvas => saveScreen(canvas));
+    }
   }, [saveScreen]);
 
   return (

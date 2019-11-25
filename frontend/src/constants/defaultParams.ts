@@ -6,6 +6,7 @@ import {
   IScreenBackground,
   IScreenTypography,
   IScreenIndents,
+  IProjectScreen,
 } from '$redux/project/reducer';
 import { IApiResponseError, ITokenPair } from '$redux/user/reducer';
 // import { ITokenPair, IApiResponseError } from '$redux/user/reducer';
@@ -121,12 +122,11 @@ export const DEFAULT_LS = {
   },
 };
 
-export const DEFAULT_SCREEN = {
+export const DEFAULT_SCREEN: IProjectScreen = {
   id: -1,
   project: -1,
   name: '',
   status: '',
-  screen_data_json: [],
   styles_root: {},
   screenscenario: [],
   image: null,
@@ -144,6 +144,7 @@ export const DEFAULT_SCENARIO: IScenarioItem = {
   direction: 'vertical',
   parent_id: 0,
   parameters: {
+    children: [],
     // scenario: 0,
   },
   styles: {},

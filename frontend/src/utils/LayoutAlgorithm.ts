@@ -17,23 +17,9 @@ import { IChooseElement } from '$components/ModalAddElements/MainBlock';
 
 import { greaterBuoyancyFirst } from './model';
 
-type TFormListGroup = (
-  screenId: number,
-  listElements: IScenarioElement[],
-  scenarios: IScenarios,
-) => { newGroups: IScenarioItem[], existGroups: IScenarioItem[] };
-
-type TFormListBlock = (
-  name: string,
-  screen_id: number,
-  listElement: IScenarioElement[],
-  listGroup: IScenarioItem[],
-  scenarios: IScenarios,
-) => { newBlocks: IScenarioItem[], existBlocks: IScenarioItem[] };
-
 type IListElement = ILibraryElement & {
-  id?: number,
-  scenario?: number,
+  id?: number;
+  scenario?: number | null;
 }
 
 const getGroup = () => {
@@ -45,7 +31,7 @@ const getGroup = () => {
     count: -1,
   };
 
-  return (scenario, html_type, tags, block) => {
+  return (scenario: number, html_type: string, tags: string, block: number) => {
     if (group.scenario !== scenario
       || group.html_type !== html_type
       || group.tags !== tags
@@ -62,21 +48,25 @@ const getGroup = () => {
 };
 
 const getListElByType = (
-  scenarioID: number,
-  elementsToAdd: IChooseElement[],
+  parentScenarioID: number,
+  elementsToFormScenario: IChooseElement[],
   libraryElements: ILibraryElements,
   scenarioEl: IScenarioElements,
-): IListElement[] => {
-  const existingListEl = Object.values(scenarioEl);
-  const newListEl = elementsToAdd.reduce((arr, elementToAdd) => {
-    const defaultEl = {
-      ...libraryElements[elementToAdd.type],
-      image: R.path(['img', 'file'], elementToAdd) || null,
+): IScenarioElement[] => {
+  const existingElements = Object.values(scenarioEl);
+  type NewListEl = ILibraryElement & { image: string | null };
+  const newListEl = elementsToFormScenario.reduce((acc: NewListEl[], element) => {
+    const libraryElement = libraryElements[element.type];
+
+    const defaultEl: NewListEl = {
+      ...libraryElement,
+      // buoyancy: 0, // to add elements in the end of container
+      image: element?.img?.file ?? null,
     };
 
-    if (libraryElements[elementToAdd.type].struct_type === 'map') {
+    if (libraryElement.struct_type === 'map') {
       const newParameters = {
-        ...libraryElements[elementToAdd.type].parameters,
+        ...libraryElement.parameters,
         map_props: {
           center: {
             lat: 50.00008,
@@ -90,21 +80,26 @@ const getListElByType = (
       defaultEl.parameters = newParameters;
     }
 
-    return [...arr, defaultEl];
+    return [...acc, defaultEl];
   }, []);
 
-  if (!scenarioID) {
+  if (!parentScenarioID) {
+    // when parentScenarioID is not defined, is undefined and has NaN as value here
     const currGroup = getGroup();
     return newListEl.sort(greaterBuoyancyFirst)
-      .map((el) => {
-        const html_type = el.struct_type || '';
-        const tags = R.path(['parameters', 'tags'], el) || '';
-        const parent_id = currGroup(scenarioID, html_type, tags, scenarioID);
+      .map((el): IScenarioElement => {
+        const htmlType = el.struct_type || '';
+        const tags = el.parameters.tags || '';
+        const parent_id = currGroup(parentScenarioID, htmlType, tags, parentScenarioID);
 
         return {
           ...el,
-          scenario: null,
-          image: R.path(['img', 'file'], el) || null,
+          scenario: -1000, // can't be null, according to invariant, but when we create items from elements up to blocks order, we don't know scenario while creating items; will be set to null before request to backend
+          buoyancy: 0, // research what are these four props?
+          dynamic_buoyancy: 0,
+          name: 'Scenario element',
+          id: -1000, // mock value, will be omitted before request to backend
+          image: R.path(['img', 'file'], el) || null, // always null
           parameters: {
             ...el.parameters,
             parent_id,
@@ -117,19 +112,22 @@ const getListElByType = (
       });
   }
 
-  const allListEl = newListEl.concat(existingListEl).map((el) => {
-    const scenario = el.scenario || scenarioID;
+  const setParentScenarioID = <T>(x: T) => ({ ...x, scenario: parentScenarioID });
+  // if parentScenarioID is specified
+  const newListElWithScenarioID: (NewListEl & { scenario: number })[] = newListEl.map(setParentScenarioID);
+  const allListEl = (newListElWithScenarioID as any).concat(existingElements).map((x: IScenarioElement) => {
+    const scenario = x.scenario || parentScenarioID;
 
-    return { ...el, scenario };
-  }).sort((a, b) => a.scenario - b.scenario);
+    return { ...x, scenario };
+  }).sort((a: IScenarioElement, b: IScenarioElement) => a.scenario - b.scenario) as IScenarioElement[];
 
-  const onEqualsB = (el1, el2) => el1.scenario === el2.scenario;
-  const onEqualsG = (el1, el2) => el1.group_id === el2.group_id;
+  const onEqualsB = <T extends { scenario: number }>(el1: T, el2: T) => el1.scenario === el2.scenario;
+  const onEqualsG = <T extends { group_id?: string }>(el1: T, el2: T) => el1.group_id === el2.group_id;
 
-  return R.groupWith(onEqualsB, allListEl).reduce((listB, groupB) => {
+  const firstGroupWith = R.groupWith(onEqualsB, allListEl).reduce((listB, groupB) => {
     const currGroup = getGroup();
-    const listBlock = groupB.sort(greaterBuoyancyFirst).map((el) => {
-      const tags = R.path(['parameters', 'tags'], el) || '';
+    const listBlock = groupB.sort(greaterBuoyancyFirst).map((el): IScenarioElement => {
+      const tags = el.parameters.tags ?? '';
       const html_type = el.struct_type || '';
       const parent_id = currGroup(el.scenario, html_type, tags, el.scenario);
 
@@ -142,7 +140,7 @@ const getListElByType = (
       };
     });
 
-    const listGroup = R.groupWith(onEqualsG, listBlock).reduce((listG, groupG) => {
+    const listGroup = R.groupWith(onEqualsG as any, listBlock).reduce((listG: any, groupG) => {
       const existingEl = groupG.find(el => !!R.prop('id', el));
 
       if (existingEl) {
@@ -163,11 +161,12 @@ const getListElByType = (
     }, []);
 
     return listB.concat(listGroup);
-  }, []).reduce((listNewEl, el) => {
+  }, []);
+  return firstGroupWith.reduce((listNewEl: IScenarioElement[], el) => {
     if (!el.id) {
       return [
         ...listNewEl,
-        R.assoc('scenario', scenarioID, el),
+        R.assoc('scenario', parentScenarioID, el),
       ];
     }
 
@@ -176,45 +175,49 @@ const getListElByType = (
 };
 
 export const formingListEl = (
-  screen_id: number,
-  scenarioID: number,
-  name: string,
-  listElementType: IChooseElement[],
+  parentScenarioID: number,
+  elementsToFormScenario: IChooseElement[],
   libraryElements: ILibraryElements,
   scenarioEls: IScenarioElements,
 ): { newEl: IScenarioElement[], existEl: IScenarioElement[] } => {
 
   const existingElements = Object.values(scenarioEls);
   const existingElementsIDs = existingElements.map(el => el.id);
-  const newListElement = getListElByType(scenarioID, listElementType, libraryElements, scenarioEls);
+  const newListElement = getListElByType(parentScenarioID, elementsToFormScenario, libraryElements, scenarioEls);
 
-  return existingElements.concat(newListElement as IScenarioElement[]).reduce((result, el) => {
-    if (existingElementsIDs.indexOf(el.id) !== -1) {
+  return existingElements
+    .concat(newListElement)
+    .reduce(
+      (acc: ReturnType<typeof formingListEl>, el) => {
+      if (existingElementsIDs.indexOf(el.id) !== -1) {
+        return {
+          ...acc,
+          existEl: [...acc.existEl, el],
+        };
+      }
+
       return {
-        ...result,
-        existEl: [...result.existEl, el],
+        ...acc,
+        newEl: [...acc.newEl, el],
       };
-    }
-
-    return {
-      ...result,
-      newEl: [...result.newEl, el],
-    };
-  }, { newEl: [], existEl: [] });
+    }, { newEl: [], existEl: [] });
 };
 
-export const formingListGroup: TFormListGroup = (screenId, listElement, scenarios) => {
-  const existingGroupKeys: number[] = Object.keys(scenarios).reduce((list, key) => (
-    (scenarios[key].struct_type === 'group' && [...list, Number(key)]) || list
+export const formingListGroup = (
+  screenID: number,
+  elements: IScenarioElement[],
+  scenarios: IScenarios,
+): { newGroups: IScenarioItem[], existGroups: IScenarioItem[] } => {
+  const existingGroupsIDs = Object.keys(scenarios).reduce((acc: number[], key) => (
+    scenarios[key].struct_type === 'group' ? [...acc, Number(key)] : acc
   ), []);
 
-  const listGroupId: number[] = listElement.map(el => Number(R.path(['parameters', 'parent_id'], el)))
-    .filter((group_id, index, arr) => arr.indexOf(group_id) === index);
-  const newListGroup = listGroupId.map((group_id) => {
-    const listEl = listElement.filter(el => R.path(['parameters', 'parent_id'], el) === group_id);
-    const buoyancy = getBuoyancy(listEl);
+  const elementsGroupsIDs = R.uniq(elements.map(el => el.parameters.parent_id));
+  const allGroups = elementsGroupsIDs.map((group_id): IScenarioItem => {
+    const elementsOfCurrentGroup = elements.filter(el => el.parameters.parent_id === group_id);
+    const buoyancy = getBuoyancy(elementsOfCurrentGroup);
 
-    if (existingGroupKeys.indexOf(group_id) !== -1) {
+    if (existingGroupsIDs.indexOf(group_id) !== -1) {
       return scenarios[group_id];
     }
 
@@ -223,12 +226,14 @@ export const formingListGroup: TFormListGroup = (screenId, listElement, scenario
       id: group_id,
       name: 'group',
       struct_type: 'group',
-      screen: screenId,
-      parent_id: listEl[0].scenario || 0,
+      screen: screenID,
+      parent_id: elementsOfCurrentGroup[0].scenario || 0,
       buoyancy,
       direction: 'vertical',
       elements: [],
-      parameters: {},
+      parameters: {
+        children: [],
+      },
       styles: {
         ...DEFAULT_INDENTS,
         'flex-direction': 'column',
@@ -237,20 +242,16 @@ export const formingListGroup: TFormListGroup = (screenId, listElement, scenario
     };
   });
 
-  return newListGroup.reduce((result, group) => {
-    const children = listElement.reduce((list, el) => {
-      if (el.parameters.parent_id === group.id) {
-        return [...list, `${el.id}e`];
-      }
+  return allGroups.reduce((acc: ReturnType<typeof formingListGroup>, group) => {
+    const children = elements.reduce((acc: string[], el) => (
+      el.parameters.parent_id === group.id ? acc.concat(`${el.id}e`) : acc
+    ), []);
 
-      return list;
-    }, []);
-
-    if (existingGroupKeys.indexOf(group.id) !== -1) {
+    if (existingGroupsIDs.indexOf(group.id) !== -1) {
       return {
-        ...result,
+        ...acc,
         existGroups: [
-          ...result.existGroups,
+          ...acc.existGroups,
           {
             ...group,
             parameters: {
@@ -263,9 +264,9 @@ export const formingListGroup: TFormListGroup = (screenId, listElement, scenario
     }
 
     return {
-      ...result,
+      ...acc,
       newGroups: [
-        ...result.newGroups,
+        ...acc.newGroups,
         {
           ...group,
           parameters: {
@@ -278,28 +279,32 @@ export const formingListGroup: TFormListGroup = (screenId, listElement, scenario
   }, { newGroups: [], existGroups: [] });
 };
 
-export const formingListBlock: TFormListBlock = (
-  name, screen_id, listElement, listGroup, scenarios,
-) => {
-  const onEquals = (group1, group2) => group1.parent_id === group2.parent_id;
+export const formingListBlock = (
+  screenName: string,
+  screenID: number,
+  actualScenariosElements: IScenarioElement[],
+  actualGroups: IScenarioItem[],
+  scenarios: IScenarios,
+): { newBlocks: IScenarioItem[], existBlocks: IScenarioItem[] } => {
+  const onEquals = <T extends { parent_id: number }>(group1: T, group2: T) => group1.parent_id === group2.parent_id;
 
-  return R.groupWith(onEquals, listGroup).reduce((result, itemsGroup) => {
-    const { parent_id = 0 } = itemsGroup[0];
-    const listGroupEl = listElement.filter(({ parameters: { parent_id: groupId } }) => (
-      parent_id === groupId
-    ));
-    const children = itemsGroup.map(({ id }) => `${id}s`);
-    const elements = itemsGroup.reduce((list, g) => (
-      list.concat(g.parameters.children.map(id => parseInt(id, 10)))
+  return R.groupWith(onEquals, actualGroups).reduce((acc: ReturnType<typeof formingListBlock>, group) => {
+    const { parent_id = 0 } = group[0];
+    const currGroupElements = actualScenariosElements.filter(
+      ({ parameters: { parent_id: groupID } }) => parent_id === groupID,
+    );
+    const children = group.map(({ id }) => `${id}s`);
+    const elements = group.reduce((acc: number[], g) => (
+      acc.concat(g.parameters.children.map(id => parseInt(id, 10)))
     ), []);
-    const buoyancy = getBuoyancy(listGroupEl);
+    const buoyancy = getBuoyancy(currGroupElements);
     const currBlock = scenarios[parent_id];
 
     if (currBlock) {
       return {
-        ...result,
+        ...acc,
         existBlocks: [
-          ...result.existBlocks,
+          ...acc.existBlocks,
           {
             ...currBlock,
             buoyancy,
@@ -309,17 +314,17 @@ export const formingListBlock: TFormListBlock = (
               children,
             },
           },
-        ],
+        ] as IScenarioItem[],
       };
     }
 
     return {
-      ...result,
+      ...acc,
       newBlocks: [
-        ...result.newBlocks,
+        ...acc.newBlocks,
         {
-          name,
-          screen: screen_id,
+          name: screenName,
+          screen: screenID,
           parent_id: 0,
           struct_type: 'block',
           direction: 'vertical',
@@ -330,7 +335,7 @@ export const formingListBlock: TFormListBlock = (
           },
           styles: { ...DEFAULT_INDENTS, 'flex-direction': 'column' },
         },
-      ],
+      ] as IScenarioItem[],
     };
   }, { newBlocks: [], existBlocks: [] });
 };
@@ -340,7 +345,7 @@ export const completeLS = (
   scenariosElements: IScenarioElements,
   parent: ILSItem,
 ): IListSortable => {
-  const hasRootAsParent = (scenarioID: string) => R.path([scenarioID, 'parent_id'], scenarios) === 0;
+  const hasRootAsParent = (scenarioID: string) => scenarios[scenarioID].parent_id === 0;
 
   const parentChildren = Object
     .keys(scenarios)

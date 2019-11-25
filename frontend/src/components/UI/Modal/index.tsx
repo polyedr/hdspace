@@ -10,7 +10,7 @@ interface IModalProps {
   title: string,
   confirmText?: string,
   cancelText?: string,
-  onConfirm?: (event: React.FormEvent) => void,
+  onConfirm?: (event:  React.FormEvent<HTMLFormElement>) => void,
   onClose: () => void,
   children?: any,
   confirmDisabled?: boolean,
@@ -45,10 +45,10 @@ export const Modal: React.FunctionComponent<IModalProps> = memo(({
     handleCloseModal(event);
   }, [handleCloseModal]);
 
-  const handleConfirm = useCallback((event) => {
+  const handleConfirm = useCallback((event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    onConfirm(event);
+    onConfirm?.(event);
   }, [onConfirm]);
 
   return (

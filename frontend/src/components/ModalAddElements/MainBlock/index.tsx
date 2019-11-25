@@ -9,16 +9,15 @@ import { ActionsBlock } from '$components/ModalAddElements/ActionsBlock';
 import { IUploadFile, UploadFile } from '$components/UI/UploadFile';
 import { MODAL_ADD_ELEMENTS_TABS } from '$constants/defaultParams';
 import { getGroupElements, IListCategoryEl, parseAddElementsTabs } from '$utils/parseScenario';
-import { strToNumber } from '$utils/NumberHelper';
 import * as Actions from '$redux/project/actions';
 import { AppReduxState } from '$shared/types/app';
 
 const styles = require('./styles.scss');
 
 export interface IChooseElement {
-  id: number,
-  type: string,
-  img?: IUploadFile,
+  id: number;
+  type: string;
+  img?: IUploadFile;
 }
 
 function mapStateToProps(state: AppReduxState) {
@@ -33,15 +32,19 @@ const mapDispatchToProps = {
   uploadImg: Actions.uploadFile,
 };
 
-type TModalAddElementsProps = typeof mapDispatchToProps & ReturnType<typeof mapStateToProps> & {
-  active: boolean,
-  scenarios: IPanelEditProps['scenarios'],
-  libraryElements: IPanelEditProps['libraryElements'],
-  onClose: () => void,
-  onConfirm: (id: number, name: string, elements: IChooseElement[], parent) => void,
-}
+type OwnProps = {
+  active: boolean;
+  scenarios: IPanelEditProps['scenarios'];
+  libraryElements: IPanelEditProps['libraryElements'];
+  onClose(): void;
+  onConfirm(scenarioTypeID: number | null, name: string, elementsToFormScenario: IChooseElement[]): void;
+};
 
-const Component: React.FunctionComponent<TModalAddElementsProps> = memo((props) => {
+type Props = typeof mapDispatchToProps & ReturnType<typeof mapStateToProps> & OwnProps;
+
+export type ScenarioStateType = 'scenario_new' | 'scenario_existing';
+
+const Component: React.FunctionComponent<Props> = memo((props) => {
   const {
     active,
     scenarios,
@@ -57,28 +60,28 @@ const Component: React.FunctionComponent<TModalAddElementsProps> = memo((props) 
   const [errorMsg, setErrorMsg] = React.useState<string>('');
   const [listElement, setListElement] = useState<IListCategoryEl>({});
   const [chooseElements, setChooseElements] = useState<IChooseElement[]>([]);
-  const [scenarioState, setScenarioState] = useState<string>('scenario_new');
+  const [scenarioState, setScenarioState] = useState<ScenarioStateType>('scenario_new');
   const [scenarioName, setScenarioName] = React.useState<string>('');
-  const [scenarioTypeId, setScenarioTypeId] = React.useState<number>(null);
-  const [imageToUpload, setUploadImg] = useState<IUploadFile>(null);
+  const [scenarioTypeId, setScenarioTypeId] = React.useState<string | null>(null);
+  const [imageToUpload, setUploadImg] = useState<IUploadFile | null>(null);
 
   const imageURLToAccess = uploadedImageInfo && currentScreen.id === uploadedImageInfo.screenID
     ? uploadedImageInfo.imageURL
     : currentScreen.image;
-  
+
   useEffect(() => {
     if (imageToUpload) {
       uploadImg({ file: imageToUpload });
     }
   }, [imageToUpload]);
 
-  const handleScenarioStateChange = useCallback((scenarioType) => {
+  const handleScenarioStateChange = useCallback((scenarioType: ScenarioStateType) => {
     setScenarioState(scenarioType);
     setErrorMsg('');
   }, [setScenarioState]);
 
-  const handleScenarioType = useCallback((value: string) => {
-    setScenarioTypeId(strToNumber(value));
+  const handleScenarioTypeChange = useCallback((value: string) => {
+    setScenarioTypeId(value);
     setScenarioName('');
     setScenarioState('scenario_existing');
     setErrorMsg('');
@@ -99,18 +102,13 @@ const Component: React.FunctionComponent<TModalAddElementsProps> = memo((props) 
     } else if (!chooseElements.length) {
       setErrorMsg('No items for the scenario.');
     } else {
-      const parent = {
-        id: 0,
-        type: 'root',
-        children: [],
-      };
-
       const finalScenarioName = scenarioName.trim() || 'Scenario name';
+      const finalScenarioTypeID = scenarioTypeId === null ? null : Number(scenarioTypeId);
 
       setErrorMsg('');
       setScenarioName('');
       setScenarioTypeId(null);
-      onConfirm(scenarioTypeId, finalScenarioName, chooseElements, parent);
+      onConfirm(finalScenarioTypeID, finalScenarioName, chooseElements);
       onClose();
     }
   }, [
@@ -223,7 +221,7 @@ const Component: React.FunctionComponent<TModalAddElementsProps> = memo((props) 
             startTemplate="signup"
             changeTab={handleChangeTab}
             setChooseElements={setChooseElements}
-            changeScenarioType={handleScenarioType}
+            changeScenarioType={handleScenarioTypeChange}
             changeScenarioName={handleScenarioName}
             changeScenarioState={handleScenarioStateChange}
           />

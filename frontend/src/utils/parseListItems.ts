@@ -10,31 +10,8 @@ export interface ISortableItemTemp {
   type: string,
   orientation?: string,
   props?: IScreenProps,
-  scenarioId?: number,
+  scenarioId?: number, // why?
 }
-
-type TParseList = (
-  items?: ISortableItem[],
-  parent?: string,
-  list?: IListSortable,
-  styles?: IScreenProps,
-) => IListSortable;
-
-type TGetElAndChildren = (id: string, listSortable: IListSortable) => string[];
-
-const itemId = ({ id, type }) => (`${type}${id}`);
-
-const listChildren = ({ children }) => ((children && children.map(itemId)) || []);
-
-export const itemRoot = (items, styles) => ({
-  key: uniqueId(),
-  id: 'root',
-  elementId: -1,
-  type: 'root',
-  orientation: 'vertical',
-  children: (items || []).map(itemId),
-  props: styles,
-});
 
 // export const parseList: TParseList = (items = []) => (
 //   items.reduce((obj, item) => ({
@@ -88,7 +65,7 @@ export const itemRoot = (items, styles) => ({
 //   })
 // );
 
-export const getElAndChildren: TGetElAndChildren = (id, listSortable) => (
+export const getElAndChildren = (id: string, listSortable: IListSortable): string[] => (
   (Array(R.path([id, 'children'], listSortable)) || []).reduce((listItem, childId) => {
     const childrenItem: string[] = R.path([id, 'children'], listSortable) || [];
 

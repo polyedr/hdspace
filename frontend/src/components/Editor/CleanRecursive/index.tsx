@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useCallback, useEffect, useMemo } from 'react';
 import * as R from 'ramda';
 import { connect } from 'react-redux';

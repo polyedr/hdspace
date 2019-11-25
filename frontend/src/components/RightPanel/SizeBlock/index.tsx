@@ -3,8 +3,15 @@ import * as R from 'ramda';
 
 import { IPanelEditProps } from '$components/RightPanel/PanelEditProps';
 import { LIST_SCENARIO_TYPE } from '$constants/defaultParams';
+import { safeParseFloat } from '$utils/NumberHelper';
 
 const styles = require('./styles.scss');
+
+const getLastChar = (value?: string | number): string => {
+  if (typeof value === 'undefined') return '';
+  const valueAsString = String(value);
+  return (valueAsString[valueAsString.length -1] || '');
+}
 
 interface IComponentProps {
   activeItem: IPanelEditProps['activeItem'],
@@ -24,14 +31,17 @@ export const SizeBlock: React.FunctionComponent<IComponentProps> = memo((props) 
   const handleChangeUnits = useCallback(({ target }) => {
     switch (target.value) {
       case 'width': {
-        let { clientWidth } = document.getElementById(String(activeItem.itemId));
+        const el = document.getElementById(String(activeItem.itemId));
+        if (el !== null) {
+          let { clientWidth } = el;
 
-        if (R.prop(('border-width'), styleItem)) {
-          clientWidth += (parseFloat(styleItem['border-width']) * 2);
-        }
-
-        if (styleItem.width === 'auto' || styleItem.width[String(styleItem.width).length - 1] === '%') {
-          updateElementStyles(activeItem.itemId, { width: `${clientWidth}px` });
+          if (R.prop(('border-width'), styleItem)) {
+            clientWidth += ((safeParseFloat(styleItem['border-width']) || 0) * 2);
+          }
+  
+          if (styleItem.width === 'auto' || getLastChar(styleItem.width) === '%') {
+            updateElementStyles(activeItem.itemId, { width: `${clientWidth}px` });
+          }
         }
         break;
       }
@@ -55,10 +65,13 @@ export const SizeBlock: React.FunctionComponent<IComponentProps> = memo((props) 
         break;
 
       case 'height': {
-        const { clientHeight } = document.getElementById(String(activeItem.itemId));
+        const el = document.getElementById(String(activeItem.itemId));
+        if (el !== null) {
+          const { clientHeight } = el;
 
-        if (styleItem.height === 'auto' || styleItem.height[String(styleItem.height).length - 1] === '%') {
-          updateElementStyles(activeItem.itemId, { height: `${clientHeight}px` });
+          if (styleItem.height === 'auto' || getLastChar(styleItem.height) === '%') {
+            updateElementStyles(activeItem.itemId, { height: `${clientHeight}px` });
+          }
         }
         break;
       }
@@ -115,7 +128,7 @@ export const SizeBlock: React.FunctionComponent<IComponentProps> = memo((props) 
       return (styleItem && styleItem[key] && String(styleItem[key]).match(/px/i) && 'height') || 'auto_height';
     }
 
-    return null;
+    return undefined;
   }, [styleItem]);
 
   const getUnitsDisableChange = useCallback(() => (
@@ -123,7 +136,7 @@ export const SizeBlock: React.FunctionComponent<IComponentProps> = memo((props) 
     false
   ), [activeItem]);
 
-  const getSizeDisableChange = useCallback(value => (
+  const getSizeDisableChange = useCallback((value: 'height' | 'width') => (
     // activeItem.itemType === 'block'
     // || activeItem.itemType === 'group'
     styleItem[value] === 'auto'
@@ -140,9 +153,7 @@ export const SizeBlock: React.FunctionComponent<IComponentProps> = memo((props) 
               className={styles.sizeField}
               type="text"
               name="width"
-              value={(styleItem
-                && styleItem.width
-                && (styleItem.width[String(styleItem.width).length - 1] === '%' ? styleItem.width : parseFloat(String(styleItem.width)))) || 'auto'}
+              value={(getLastChar(styleItem.width) === '%' ? styleItem.width : parseFloat(String(styleItem.width))) || 'auto'}
               onChange={handleChangeSize}
               disabled={getSizeDisableChange('width')}
             />
