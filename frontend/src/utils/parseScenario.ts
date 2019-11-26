@@ -37,29 +37,8 @@ export const convertScenarios = (data: IScenarioItem[]): IScenarios => (
   data.reduce((obj, item) => ({ ...obj, [item.id]: item }), {})
 );
 
-export const delElByScenarios = (scenarioId: number, elements: number[], scenarios: IScenarios): IScenarios => ({
-  ...scenarios,
-  [`${scenarioId}s`]: {
-    ...scenarios[`${scenarioId}s`],
-    elements: R.without(elements, scenarios[`${scenarioId}s`].elements),
-  },
-});
-
-export const addElByScenarios = (scenarioId: number, elements: number[], scenarios: IScenarios): IScenarios => ({
-  ...scenarios,
-  [`${scenarioId}s`]: {
-    ...scenarios[`${scenarioId}s`],
-    elements: elements.reduce((arr, elId) => {
-      if (arr.indexOf(elId) === -1) {
-        return R.append(elId, arr);
-      }
-      return arr;
-    }, scenarios[`${scenarioId}s`].elements),
-  },
-});
-
-export const getOptionsOfNestedList = (scenarios: IScenarios, elements: IScenarioElements) => (
-  Object.keys(scenarios).reduce((acc: IListOptions[], key) => {
+export const getOptionsOfNestedList = (scenarios: IScenarios, elements: IScenarioElements) => {
+  return Object.keys(scenarios).reduce((acc: IListOptions[], key) => {
     const {
       id,
       name,
@@ -88,8 +67,8 @@ export const getOptionsOfNestedList = (scenarios: IScenarios, elements: IScenari
     }
 
     return acc;
-  }, [])
-);
+  }, []);
+};
 
 export const getOptionsOfListScenario = (scenarios: IScenarios) => (
   Object.keys(scenarios).reduce((acc, key) => {

@@ -33,7 +33,7 @@ export interface IPanelEditProps {
   scenarios: IRightPanelProps['scenarios'],
   libraryElements: IRightPanelProps['libraryElements'],
   onAlign: (type: string) => void,
-  setOrientation: (type: string) => void,
+  setOrientation: (type: 'vertical' | 'horizontal') => void,
   onDelScenarioItem: IRightPanelProps['onDelScenarioItem'],
   changeScenario: IRightPanelProps['changeScenario'],
   addScenario: IRightPanelProps['addScenario'],
