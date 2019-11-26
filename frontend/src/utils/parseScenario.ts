@@ -243,12 +243,12 @@ export const getCheckedElements = (listElements: ITemplateElement[]) => (
 );
 
 // resolve IDropDownOptions type here
-export const getListTypeElement = (libraryElements: ILibraryElements): IDropDownOptions<string | null>[] => (
+export const getListTypeElement = (libraryElements: ILibraryElements): IDropDownOptions<string>[] => (
   Object.keys(libraryElements).reduce((arr, key) => {
     const { func_type, struct_type } = libraryElements[key];
 
-    return R.append({ label: func_type || struct_type, value: key }, arr);
-  }, [{ label: 'block', value: null }, { label: 'group', value: null }, { label: 'container', value: null }] as IDropDownOptions<string | null>[] )
+    return arr.concat({ label: func_type || struct_type, value: key });
+  }, [{ label: 'block', value: 'block' }, { label: 'group', value: 'group' }, { label: 'container', value: 'container' }] as IDropDownOptions<string>[] )
 );
 
 export const getScenarioId = (

@@ -17,14 +17,15 @@ interface IComponentProps {
   changeElementType: IPanelEditProps['changeElementType'],
   libraryElements: IPanelEditProps['libraryElements'],
 }
-export const ScenarioBlock: React.FunctionComponent<IComponentProps> = memo(({
-  activeItem,
-  scenarios,
-  getOptionsOfListScenario,
-  changeScenario,
-  changeElementType,
-  libraryElements,
-}) => {
+export const ScenarioBlock: React.FunctionComponent<IComponentProps> = memo((props) => {
+  const {
+    activeItem,
+    scenarios,
+    getOptionsOfListScenario,
+    changeScenario,
+    changeElementType,
+    libraryElements,
+  } = props;
   const handleChangeScenario = useCallback((value: string) => {
     const scenarioId: number = strToNumber(value);
     if (scenarioId) {
@@ -45,6 +46,7 @@ export const ScenarioBlock: React.FunctionComponent<IComponentProps> = memo(({
         <DropDown
           options={getOptionsOfListScenario(scenarios)}
           defaultValue={String(activeItem.scenarioId)}
+          value={String(activeItem.scenarioId)}
           disabled={activeItem.itemType === 'block' || activeItem.scenarioId === -1}
           onChange={handleChangeScenario}
         />
@@ -52,6 +54,7 @@ export const ScenarioBlock: React.FunctionComponent<IComponentProps> = memo(({
           options={UTILS.getListTypeElement(libraryElements)}
           defaultValue={activeItem.itemType}
           onChange={handleChangeElementType}
+          value={activeItem.itemType}
           disabled={LIST_SCENARIO_TYPE.indexOf(activeItem.itemType) !== -1}
         />
       </div>

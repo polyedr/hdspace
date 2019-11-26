@@ -138,6 +138,7 @@ export const TypographyBlock: React.FunctionComponent<IComponentProps> = memo(({
             <DropDown
               options={FONTS}
               defaultValue={styleItem['font-family']}
+              value={styleItem['font-family']}
               onChange={onFontFamilyChange}
             />
           </div>
