@@ -37,29 +37,8 @@ export const convertScenarios = (data: IScenarioItem[]): IScenarios => (
   data.reduce((obj, item) => ({ ...obj, [item.id]: item }), {})
 );
 
-export const delElByScenarios = (scenarioId: number, elements: number[], scenarios: IScenarios): IScenarios => ({
-  ...scenarios,
-  [`${scenarioId}s`]: {
-    ...scenarios[`${scenarioId}s`],
-    elements: R.without(elements, scenarios[`${scenarioId}s`].elements),
-  },
-});
-
-export const addElByScenarios = (scenarioId: number, elements: number[], scenarios: IScenarios): IScenarios => ({
-  ...scenarios,
-  [`${scenarioId}s`]: {
-    ...scenarios[`${scenarioId}s`],
-    elements: elements.reduce((arr, elId) => {
-      if (arr.indexOf(elId) === -1) {
-        return R.append(elId, arr);
-      }
-      return arr;
-    }, scenarios[`${scenarioId}s`].elements),
-  },
-});
-
-export const getOptionsOfNestedList = (scenarios: IScenarios, elements: IScenarioElements) => (
-  Object.keys(scenarios).reduce((acc: IListOptions[], key) => {
+export const getOptionsOfNestedList = (scenarios: IScenarios, elements: IScenarioElements) => {
+  return Object.keys(scenarios).reduce((acc: IListOptions[], key) => {
     const {
       id,
       name,
@@ -88,8 +67,8 @@ export const getOptionsOfNestedList = (scenarios: IScenarios, elements: IScenari
     }
 
     return acc;
-  }, [])
-);
+  }, []);
+};
 
 export const getOptionsOfListScenario = (scenarios: IScenarios) => (
   Object.keys(scenarios).reduce((acc, key) => {
@@ -243,12 +222,12 @@ export const getCheckedElements = (listElements: ITemplateElement[]) => (
 );
 
 // resolve IDropDownOptions type here
-export const getListTypeElement = (libraryElements: ILibraryElements): IDropDownOptions<string | null>[] => (
+export const getListTypeElement = (libraryElements: ILibraryElements): IDropDownOptions<string>[] => (
   Object.keys(libraryElements).reduce((arr, key) => {
     const { func_type, struct_type } = libraryElements[key];
 
-    return R.append({ label: func_type || struct_type, value: key }, arr);
-  }, [{ label: 'block', value: null }, { label: 'group', value: null }, { label: 'container', value: null }] as IDropDownOptions<string | null>[] )
+    return arr.concat({ label: func_type || struct_type, value: key });
+  }, [{ label: 'block', value: 'block' }, { label: 'group', value: 'group' }, { label: 'container', value: 'container' }] as IDropDownOptions<string>[] )
 );
 
 export const getScenarioId = (

@@ -76,6 +76,12 @@ p {
    overflow: hidden;
    pointer-events: all;
    -webkit-font-smoothing: antialiased;
+
+   &_overflowY {
+    &_auto {
+      overflow-y: auto;
+    }
+   }
  }
 
 .globalContainer {

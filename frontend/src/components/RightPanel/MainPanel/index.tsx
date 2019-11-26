@@ -85,9 +85,10 @@ const Component: React.FunctionComponent<IRightPanelProps> = ({
     setAlign(activeItem.itemId, type);
   }, [setAlign, activeItem]);
 
-  const handleOrientation = useCallback((type: string) => {
+  const handleOrientation = useCallback((type: 'vertical' | 'horizontal') => {
+    const itemID = parseInt(activeItem.itemId, 10);
     const newStyles = {
-      ...scenarios[activeItem.itemId].styles,
+      ...(scenarios[itemID]).styles,
       'flex-direction': type === 'vertical' ? 'column' : 'row',
     };
 
