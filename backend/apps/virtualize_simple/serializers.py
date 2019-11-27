@@ -1,13 +1,8 @@
 import re
-
-from skimage.segmentation import clear_border
-
 from project.settings import model, MEDIA_ROOT
 from rest_framework import serializers
-
 from apps.projects.models import ScenarioElement, ScreenScenario
 import cv2
-import numpy as np
 import pytesseract
 
 config_tesseract = "-l eng --oem 1 --psm 3"
@@ -145,35 +140,34 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
 
             results = model.detect([img], verbose=1)
             r = results[0]
-            # r["rois"]
-            print(r["class_ids"])
-            # print(img.shape)
+
             for (roi, class_id) in zip(r["rois"], r["class_ids"]):
                 y1, x1, y2, x2 = roi
                 roi_our = img[y1:y2, x1:x2]
 
-                img = roi_our
-                img = cv2.resize(
-                    img, None, fx=1.5, fy=1.5, interpolation=cv2.INTER_CUBIC
+                roi_our = cv2.resize(
+                    roi_our, None, fx=0.95, fy=0.95, interpolation=cv2.INTER_CUBIC
                 )
                 # Convert to the grey colour
-                img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-                # Remove artifacts connected to image border
-                img = clear_border(img)
-                # Apply dilation and erosion to remove some noise
-                kernel = np.ones((1, 1), np.uint8)
-                img = cv2.dilate(img, kernel, iterations=1)
-                img = cv2.erode(img, kernel, iterations=1)
-                # Apply threshold to get image with only black and white
-                img = apply_threshold(img, 20)
-                print(pytesseract.image_to_string(img))
+                roi_our = cv2.cvtColor(roi_our, cv2.COLOR_BGR2GRAY)
 
-                text = pytesseract.image_to_string(img, config=config_tesseract)
-                # print(text)
+                # Remove artifacts connected to image border
+                # This can decrease the prediction quality for images
+                # roi_our = clear_border(roi_our)
+                # Apply dilation and erosion to remove some noise
+                # kernel = np.ones((1, 1), np.uint8)
+                # roi_our = cv2.dilate(roi_our, kernel, iterations=1)
+                # roi_our = cv2.erode(roi_our, kernel, iterations=1)
+                # Apply threshold to get image with only black and white
+                # roi_our = apply_threshold(roi_our, 20)
+                # print(pytesseract.image_to_string(roi_our))
+
+                text = pytesseract.image_to_string(roi_our, config=config_tesseract)
+
                 width_elem = x2 - x1
                 height_elem = y2 - y1
 
-                func_type = ""
+                func_type = "undefined"
                 # Check if class id is: 1 input, 2 button, 3 text or 4 select
                 if class_id in [1, 2, 3, 4]:
                     # Functional class assignment
@@ -186,21 +180,24 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                     fclasses_predictions = []
                     for ts in tess_string:
                         ts.strip()
-                        ts = re.sub("[^a-zA-Z]+", "", ts)
+                        ts = re.sub("[^a-zA-Z ]+", "", ts)
                         print("ts=", ts)
                         # print([key for key, value in f_dictionary.items() if ts in value])
                         fclass = [
                             key for key, value in f_dictionary.items() if ts in value
                         ]
                         fclasses_predictions = fclasses_predictions + fclass
-                    print("the functional class is: ", fclasses_predictions)
-                    func_type = "".join(fclasses_predictions)
+
+                    # func_type = "".join(fclasses_predictions)
+                    # Should choose the func_type from multiple predictions later
+                    if fclasses_predictions:
+                        func_type = fclasses_predictions[0]
 
                 # Input
                 if class_id == 1:
                     recognized_elements.append(
                         {
-                            "struct_type": "input",
+                            "struct_type": "textinput",
                             "func_type": func_type,
                             "parameters": {"placeholder": letters_str},
                             "styles": {
@@ -229,7 +226,7 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                     func_type = "description"
                     recognized_elements.append(
                         {
-                            "struct_type": "text",
+                            "struct_type": "ocrtext",
                             "func_type": func_type,
                             "parameters": {"placeholder": text},
                             "styles": {
@@ -256,7 +253,7 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                     recognized_elements.append(
                         {
                             "struct_type": "checkbox",
-                            "func_type": "undefined",
+                            "func_type": "checkbox",
                             "parameters": {"text": letters_str},
                             "styles": {
                                 "width": str(width_elem) + "px",
@@ -269,7 +266,7 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                     recognized_elements.append(
                         {
                             "struct_type": "radiobutton",
-                            "func_type": "undefined",
+                            "func_type": "radiobutton",
                             "parameters": {"text": letters_str},
                             "styles": {
                                 "width": str(width_elem) + "px",
