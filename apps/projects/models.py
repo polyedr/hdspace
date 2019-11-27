@@ -403,6 +403,8 @@ class ScenarioElement(TimeStampedModel):
     MAP = "map"
     CALENDAR = "calendar"
     CLOCK = "clock"
+    CHECKBOX = "checkbox"
+    RADIOBUTTON = "radiobutton"
 
     HTML_ELEMENT_TYPE_CHOICES = (
         (FRAME, "frame"),
@@ -428,6 +430,8 @@ class ScenarioElement(TimeStampedModel):
         (MAP, "map"),
         (CALENDAR, "calendar"),
         (CLOCK, "clock"),
+        (CHECKBOX, "checkbox"),
+        (RADIOBUTTON, "radiobutton"),
     )
 
     struct_type = models.CharField(
@@ -816,5 +820,25 @@ elements = {
         image="null",
         parameters=[{"group": "widget"}],
         styles=[{"width": "150px", "height": "150px"}],
+    ),
+    23: Element(
+        id=23,
+        struct_type="checkbox",
+        func_type=["checkbox"],
+        func_type_human="",
+        buoyancy=[0],
+        image="null",
+        parameters=[],
+        styles=[{"width": "16px", "height": "16px"}],
+    ),
+    24: Element(
+        id=24,
+        struct_type="radiobutton",
+        func_type=["radiobutton"],
+        func_type_human="",
+        buoyancy=[0],
+        image="null",
+        parameters=[],
+        styles=[{"width": "16px", "height": "16px"}],
     ),
 }
