@@ -1,5 +1,6 @@
 import React from 'react';
-import classNames from 'classnames';
+import cn from 'classnames';
+import { Input, Button } from 'antd';
 
 import { IScreenProps } from '$redux/project/reducer';
 import { getDefaultDateSelectOptions, DEFAULT_MAP_PROPS } from '$constants/defaultParams';
@@ -25,7 +26,7 @@ type TRenderElement = (args: IElement) => React.ReactNode;
 
 const renderBlock: TRenderElement = ({ active, children, style }) => (
   <div
-    className={classNames('addedItem', styles.addedBlock, active && styles.activated)}
+    className={cn('addedItem', styles.addedBlock, active && styles.activated)}
     style={{
       ...style,
       overflowWrap: 'break-word',
@@ -37,7 +38,7 @@ const renderBlock: TRenderElement = ({ active, children, style }) => (
 
 const renderContainer: TRenderElement = ({ active, children, style }) => (
   <div
-    className={classNames('addedItem', styles.addedContainer, active && styles.activated)}
+    className={cn('addedItem', styles.addedContainer, active && styles.activated)}
     style={{
       ...style,
       overflowWrap: 'break-word',
@@ -53,7 +54,7 @@ const renderGroup: TRenderElement = (props) => {
   return (
     <div
       id={id}
-      className={classNames('addedItem', styles.addedGroup, active && styles.activated)}
+      className={cn('addedItem', styles.addedGroup, active && styles.activated)}
       style={{
         ...style,
         overflowWrap: 'break-word',
@@ -64,23 +65,27 @@ const renderGroup: TRenderElement = (props) => {
   )
 };
 
-const renderButton: TRenderElement = ({
-  id, style, params, active,
-}) => (
-  <button
-    id={id}
-    className={classNames('addedItem', styles.addedButton, active && styles.activated)}
-    type="button"
-    style={{ ...style }}
-  >
-    {params.content || 'button'}
-  </button>
-);
+const renderButton: TRenderElement = (props) => {
+  const { id, style, params, active } = props;
+  return (
+    <Button
+      id={id}
+      type="primary"
+      className={cn(active && styles.activated)}
+      style={{
+        ...style,
+        transition: 'none',
+      }}
+    >
+      {params.content || 'button'}
+    </Button>
+  )
+}
 
 const renderHyperLine: TRenderElement = ({ id, style, active, isDisabled, params }) => (
   <a
     id={id}
-    className={classNames('addedItem', styles.addedHyperLink, active && styles.activated)}
+    className={cn('addedItem', styles.addedHyperLink, active && styles.activated)}
     href={isDisabled ? '#' : params.url}
     // href="javascript:void(0);"
     style={{ ...style }}
@@ -89,25 +94,29 @@ const renderHyperLine: TRenderElement = ({ id, style, active, isDisabled, params
   </a>
 );
 
-const renderInput: TRenderElement = ({
-  id, style, params, isDisabled, active,
-}) => (
-  <input
-    id={id}
-    className={classNames('addedItem', styles.addedInput, active && styles.activated)}
-    type="text"
-    placeholder={params.dynamic_placeholder || params.placeholder || 'input'}
-    style={{ ...style }}
-    readOnly={isDisabled}
-  />
-);
+const renderInput: TRenderElement = (props) => {
+  const { id, style, params, isDisabled, active } = props;
+  return (
+    <Input
+      id={id}
+      type="text" // TODO: use other types such as email, etc.
+      className={cn(active && styles.activated)}
+      readOnly={isDisabled}
+      style={{
+        ...style,
+        transition: 'none',
+      }}
+      placeholder={params.dynamic_placeholder || params.placeholder || 'input'}
+    />
+  );
+};
 
 const renderSelect: TRenderElement = ({
   id, style, name, isDisabled, active,
 }) => (
   <select
     id={id}
-    className={classNames('addedItem', styles.addedSelect, active && styles.activated)}
+    className={cn('addedItem', styles.addedSelect, active && styles.activated)}
     style={{ ...style }}
   >
     {
@@ -129,7 +138,7 @@ const renderText: TRenderElement = ({
 }) => (
   <p
     id={id}
-    className={classNames('addedItem', styles.addedElem, active && styles.activated)}
+    className={cn('addedItem', styles.addedElem, active && styles.activated)}
     style={{ ...style }}
   >
     {params.content || name || 'text'}
@@ -139,7 +148,7 @@ const renderText: TRenderElement = ({
 const renderImg: TRenderElement = ({ id, params, active }) => (
   <img
     src={params.image}
-    className={classNames('addedItem', styles.addedElem, active && styles.activated)}
+    className={cn('addedItem', styles.addedElem, active && styles.activated)}
     alt={id}
   />
 );
@@ -147,7 +156,7 @@ const renderImg: TRenderElement = ({ id, params, active }) => (
 const renderMapWidget: TRenderElement = ({ id, params, active, style }) => (
   <div
     id={id}
-    className={classNames('addedItem', styles.addedWidget, active && styles.activated)}
+    className={cn('addedItem', styles.addedWidget, active && styles.activated)}
     style={{ ...style }}
   >
     <GMap
@@ -161,7 +170,7 @@ const renderMapWidget: TRenderElement = ({ id, params, active, style }) => (
 const renderCalendarWidget: TRenderElement = ({ id, params, style, active }) => (
   <div
     id={id}
-    className={classNames('addedItem', styles.addedCalendar, active && styles.activated)}
+    className={cn('addedItem', styles.addedCalendar, active && styles.activated)}
     style={{ ...style }}
   >
     <CalendarWidget />
@@ -171,7 +180,7 @@ const renderCalendarWidget: TRenderElement = ({ id, params, style, active }) => 
 const renderClockWidget: TRenderElement = ({ id, params, style, active }) => (
   <div
     id={id}
-    className={classNames('addedItem', styles.addedCalendar, active && styles.activated)}
+    className={cn('addedItem', styles.addedCalendar, active && styles.activated)}
     style={{ ...style }}
   >
     <ClockWidget
@@ -220,7 +229,7 @@ const renderElem: TRenderElement = ({
       // console.warn(`No render type of ${params.html_type}, element id:${id} !`);
       return (
         <div
-          className={classNames(styles.addedElem, active && styles.activated)}
+          className={cn(styles.addedElem, active && styles.activated)}
           style={{
             ...style,
             // ...parseStylesCss(style),

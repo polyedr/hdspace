@@ -69,6 +69,7 @@
     "@types/node": "^11.13.13",
     "@types/ramda": "^0.26.9",
     "@types/react-redux": "^7.1.5",
+    "antd": "^3.25.3",
     "axios": "^0.18.1",
     "babel-runtime": "^6.26.0",
     "bem-cn": "^3.0.1",

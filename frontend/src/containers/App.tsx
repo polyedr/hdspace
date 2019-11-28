@@ -2,6 +2,7 @@ import React from 'react';
 import { hot } from 'react-hot-loader';
 import { connect } from 'react-redux';
 import { ConnectedRouter } from 'connected-react-router';
+import 'antd/dist/antd.css';
 
 import { AppReduxState } from '$shared/types/app';
 import * as ActionsUser from '$redux/user/actions';
