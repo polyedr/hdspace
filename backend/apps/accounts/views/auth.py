@@ -12,7 +12,7 @@ from apps.accounts.models import Profile, User
 from apps.accounts.forms import *  # noqa
 from apps.accounts.utils import emails
 from apps.core.views.seo import SEOViewMixin
-import apps.virtualize.utils
+# import apps.virtualize.utils
 
 __all__ = (
     "logout_view",

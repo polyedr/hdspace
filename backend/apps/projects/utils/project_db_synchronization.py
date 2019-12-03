@@ -5,7 +5,7 @@ from django.db import connection
 
 from bson.objectid import ObjectId
 
-from apps.virtualize.views import rewritePage
+# from apps.virtualize.views import rewritePage
 
 client = pymongo.MongoClient('localhost', 27017)  # maxPoolSize=50
 db = client.MeduzaDb
@@ -39,7 +39,7 @@ def create_project_data_db(project, secundary_id, current_user):
             'CNNstate': False,
             'workflowRunning': False
         })
-    rewritePage(current_user, None, None, None, None)
+    # rewritePage(current_user, None, None, None, None)
 
 
 def delete_project_data_db(project_id, current_user):
