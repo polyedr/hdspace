@@ -135,8 +135,7 @@ export class DragResize extends React.Component<Props, State> {
 
   @autobind
   private handleDragStop(event: MouseEvent) {
-    console.log('handle drag stop!');
-    const { sortableId, updateElementStyles, setIsMoving } = this.props;
+    const { sortableId, updateElementStyles, setIsMoving, style } = this.props;
     const { clientX, clientY } = event;
     const { currentController } = this.state;
 
@@ -171,7 +170,13 @@ export class DragResize extends React.Component<Props, State> {
           break;
       }
 
-      updateElementStyles(sortableId, { width: `${newWidth}px`, height: `${newHeight}px` });
+      const finalWidth = `${newWidth}px`;
+      const finalHeight = `${newHeight}px`;
+
+      // don't update if neither width, nor height was changed
+      if (style.width !== finalWidth || style.height !== finalHeight) {
+        updateElementStyles(sortableId, { width: finalWidth, height: finalHeight });
+      }
 
       return ({
         x: clientX,
@@ -202,13 +207,13 @@ export class DragResize extends React.Component<Props, State> {
     if (!style || !strToNumber(String(style.width)) || !strToNumber(String(style.height))) {
       const el = document.getElementById(String(sortableId));
       if (el !== null) {
-        const { clientWidth, clientHeight } = el;
+        const { offsetWidth, offsetHeight } = el;
         const indentLeft: number = R.path(['indents', 'padding-left'], style) || 0;
         const indentRight: number = R.path(['indents', 'padding-right'], style) || 0;
         const indentTop: number = R.path(['indents', 'padding-top'], style) || 0;
         const indentBottom: number = R.path(['indents', 'padding-bottom'], style) || 0;
-        const newWidth = clientWidth - indentLeft - indentRight - 10;
-        const newHeight = clientHeight - indentTop - indentBottom - 10;
+        const newWidth = offsetWidth - indentLeft - indentRight;
+        const newHeight = offsetHeight - indentTop - indentBottom;
   
         this.setState({ width: newWidth, height: newHeight });
       }
@@ -221,7 +226,6 @@ export class DragResize extends React.Component<Props, State> {
       y: currentEvent.clientY,
     });
 
-
     window.addEventListener('mousemove', this.handleDragOver);
     window.addEventListener('mouseup', this.handleDragStop);
     window.addEventListener('mouseleave', this.handleDragStop);
@@ -231,8 +235,10 @@ export class DragResize extends React.Component<Props, State> {
   private handleChooseToResize(e: React.ChangeEvent) {
     e.stopPropagation();
 
-    const { sortableId, onChooseToResize } = this.props;
-    onChooseToResize(sortableId);
+    const { sortableId, onChooseToResize, isDraggable } = this.props;
+    if (isDraggable) { // TODO: look at how isDraggable defined and rename
+      onChooseToResize(sortableId);
+    }
   };
 
   @autobind
