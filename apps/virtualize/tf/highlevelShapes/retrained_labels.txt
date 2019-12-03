@@ -1,4 +1,0 @@
-artwork
-photo
-ui
-wireframe
