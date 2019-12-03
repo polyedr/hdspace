@@ -6,7 +6,7 @@ from django.db.models import Q
 from django.contrib import messages
 
 from apps.projects.models import ProjectInvitation, ProjectMember
-from apps.threads.models import Thread, UserThread
+# from apps.threads.models import Thread, UserThread
 from apps.accounts.mixins import AnonymousRequiredMixin
 from apps.accounts.models import Profile, User
 from apps.accounts.forms import *  # noqa
@@ -82,11 +82,11 @@ class RegistrationView(AnonymousRequiredMixin, SEOViewMixin, TemplateView):
                         role=invitation.role,
                     )
 
-                    thread = Thread.objects.get(project=invitation.project)
-                    UserThread.objects.create(
-                        thread=thread,
-                        user=member,
-                    )
+                    # thread = Thread.objects.get(project=invitation.project)
+                    # UserThread.objects.create(
+                    #     thread=thread,
+                    #     user=member,
+                    # )
                     invitation.delete()
             emails.send_email_address_confirmation(
                 email=user.email,

@@ -18,10 +18,7 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework_swagger.views import get_swagger_view
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
-    TokenRefreshView,
-    TokenVerifyView)
+
 
 schema_view = get_swagger_view(title='Adevi API')
 
@@ -29,9 +26,9 @@ urlpatterns = [
     path("", include("apps.projects.urls", namespace="projects")),
     path("", include("apps.virtualize.urls", namespace="virtualize")),
     path("accounts/", include("apps.accounts.urls", namespace="accounts")),
-    path("payments/", include("apps.payments.urls", namespace="payments")),
-    path("threads/", include("apps.threads.urls", namespace="threads")),
-    path("paypal/", include("paypal.standard.ipn.urls")),
+    # path("payments/", include("apps.payments.urls", namespace="payments")),
+    # path("threads/", include("apps.threads.urls", namespace="threads")),
+    # path("paypal/", include("paypal.standard.ipn.urls")),
     path("oauth/", include('social_django.urls', namespace='social')),
     path('admin/', admin.site.urls),
     path('api/v1/api-auth/', include('rest_framework.urls', namespace='rest_framework')),
