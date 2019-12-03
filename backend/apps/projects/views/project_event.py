@@ -10,7 +10,7 @@ from django.contrib import messages
 from django.conf import settings
 
 from apps.core.utils import render_body
-from apps.threads.models import Thread, UserThread
+# from apps.threads.models import Thread, UserThread
 from apps.projects.forms import ProjectInvitationForm
 from apps.projects.models import (
     Project, ProjectScreen, ProjectInvitation,
@@ -136,11 +136,11 @@ class AcceptDeclineInvitationView(View):
                         user=invitation.user,
                     )
 
-                    thread = Thread.objects.get(project=invitation.project)
-                    UserThread.objects.create(
-                        thread=thread,
-                        user=member,
-                    )
+                    # thread = Thread.objects.get(project=invitation.project)
+                    # UserThread.objects.create(
+                    #     thread=thread,
+                    #     user=member,
+                    # )
                     invitation.delete()
                 else:
                     invitation.is_active = True

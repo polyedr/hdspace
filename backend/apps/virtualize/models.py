@@ -20,7 +20,7 @@ from apps.projects.models import (
     ProjectMember, ProjectTask, ProjectActivity
 )
 from apps.accounts.models import Profile
-from apps.threads.models import Thread, UserThread, Message
+# from apps.threads.models import Thread, UserThread, Message
 from apps.accounts.forms import SearchUserForm
 
 client = pymongo.MongoClient('localhost', 27017)  # maxPoolSize=50
@@ -1207,7 +1207,7 @@ def html_render(url, currentUser, page, projectName, request, screenshotName, us
                       "project_members": ProjectMember.objects.filter(project=Project.objects.get(pk=project_id)),
                       "tasks": ProjectTask.objects.filter(project=Project.objects.get(pk=project_id)),
                       "project_member_user": ProjectMember.objects.get(user=request.user, project=project_id),
-                      "thread": Thread.ordered(Thread.inbox(ProjectMember.objects.get(user=ObjectId(userId), project=project_id), project_id))[0],
+                      # "thread": Thread.ordered(Thread.inbox(ProjectMember.objects.get(user=ObjectId(userId), project=project_id), project_id))[0],
                       "projects": Project.objects.filter(user=request.user),
                       "search_user_form": SearchUserForm(),
                       "activities": ProjectActivity.objects.filter(project=project_id).order_by('-created'),

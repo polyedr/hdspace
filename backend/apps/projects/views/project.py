@@ -6,10 +6,10 @@ from django.http import JsonResponse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect
 
-from apps.payments.cart import Cart
+# from apps.payments.cart import Cart
 from apps.core.views.seo import SEOViewMixin
 from apps.core.utils import build_absolute_url
-from apps.threads.models import Thread, UserThread, Message
+# from apps.threads.models import Thread, UserThread, Message
 from apps.projects.forms import (
     CreateProjectForm, ScreenUploadForm, ProjectInvitationForm,
     AddTaskForm, ScreenEventForm
@@ -47,8 +47,8 @@ class DashboardView(LoginRequiredMixin, SEOViewMixin, TemplateView):
         projects = Project.objects.annotate(number_of_screens=Count('projectscreen')).filter(
             Q(user=request.user) |
             Q(members__projectmember__user__exact=request.user))
-        cart = Cart(request)
-        context["cart"] = cart.cart
+        # cart = Cart(request)
+        # context["cart"] = cart.cart
         context["projects"] = projects
         print(projects)
         if "form" not in kwargs:
@@ -79,19 +79,19 @@ class CreateProjectView(LoginRequiredMixin, View):
                 user=request.user,
             )
 
-            thread = Thread.objects.create(
-                project=project
-            )
-            UserThread.objects.create(
-                thread=thread,
-                user=member,
-            )
-            new_message = f'Project Management chat for {project.name}'
-            Message.objects.create(
-                thread=thread,
-                sender=member,
-                content=new_message,
-            )
+            # thread = Thread.objects.create(
+            #     project=project
+            # )
+            # UserThread.objects.create(
+            #     thread=thread,
+            #     user=member,
+            # )
+            # new_message = f'Project Management chat for {project.name}'
+            # Message.objects.create(
+            #     thread=thread,
+            #     sender=member,
+            #     content=new_message,
+            # )
             print('Project')
             create_project_data_db(project.name, project.id, request.user)
             print('Project created')
@@ -128,7 +128,7 @@ class ProjectView(LoginRequiredMixin, TemplateView):
             context["project_members"] = ProjectMember.objects.filter(project=context["project"])
             context["tasks"] = ProjectTask.objects.filter(project=context["project"])
             context["project_member_user"] = ProjectMember.objects.get(user=request.user, project=project)
-            context["thread"] = Thread.ordered(Thread.inbox(context["project_member_user"], project))[0]
+            # context["thread"] = Thread.ordered(Thread.inbox(context["project_member_user"], project))[0]
             context["projects"] = Project.objects.filter(user=request.user)
             context["search_user_form"] = SearchUserForm()
             context["activities"] = ProjectActivity.objects.filter(project=project).order_by('-created')
@@ -160,12 +160,12 @@ class ProjectPreviewView(LoginRequiredMixin, TemplateView):
             user=request.user,
         )
 
-        thread = Thread.objects.get(project=project)
-        if member:
-            UserThread.objects.create(
-                thread=thread,
-                user=member,
-            )
+        # thread = Thread.objects.get(project=project)
+        # if member:
+        #     UserThread.objects.create(
+        #         thread=thread,
+        #         user=member,
+        #     )
 
 
 
@@ -182,7 +182,7 @@ class ProjectPreviewView(LoginRequiredMixin, TemplateView):
         context["add_task_form"] = AddTaskForm(project)
         context["project_member_user"] = ProjectMember.objects.get(user=request.user, project=project)
         context["activities"] = ProjectActivity.objects.filter(project=project).order_by('-created')
-        context["thread"] = Thread.ordered(Thread.inbox(context["project_member_user"], project))[0]
+        # context["thread"] = Thread.ordered(Thread.inbox(context["project_member_user"], project))[0]
         context["screenHTMLpro"] = get_project_page_pro_by_project(screenshots, project.user_id)
         context["screen_name"] = get_screen_name(screen_id)
         context["screenCSSpro"] = get_project_page_css_pro_by_project(get_screen_name(screen_id), project.user_id)
