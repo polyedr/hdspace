@@ -57,16 +57,16 @@ INSTALLED_APPS = [
 ]
 
 EXTERNAL_APPS = [
-    "widget_tweaks",
-    'paypal.standard.ipn',
+    # "widget_tweaks",
+    # 'paypal.standard.ipn',
     'social_django',
 ]
 
 PROJECT_APPS = [
-    'apps.threads',
-    'apps.payments',
+    # 'apps.threads',
+    # 'apps.payments',
     'apps.virtualize_emulation',
-    'apps.virtualize',
+    # 'apps.virtualize',
     'apps.core',
     'apps.accounts',
     'apps.projects',
@@ -290,9 +290,11 @@ EMAIL_USE_TLS = True
 #
 
 # Django PayPal settings
+'''
 PAYPAL_RECEIVER_EMAIL = ENV.str("PAYPAL_RECEIVER_EMAIL", None)
 PAYPAL_TEST = ENV.str("PAYPAL_TEST", True)
 CART_SESSION_ID = 'cart'
+'''
 
 # Social Auth
 SOCIAL_AUTH_FACEBOOK_KEY = ENV.int("SOCIAL_AUTH_FACEBOOK_KEY", 199947097440935)
