@@ -24,11 +24,8 @@ schema_view = get_swagger_view(title='Adevi API')
 
 urlpatterns = [
     path("", include("apps.projects.urls", namespace="projects")),
-    path("", include("apps.virtualize.urls", namespace="virtualize")),
+    # path("", include("apps.virtualize.urls", namespace="virtualize")),
     path("accounts/", include("apps.accounts.urls", namespace="accounts")),
-    # path("payments/", include("apps.payments.urls", namespace="payments")),
-    # path("threads/", include("apps.threads.urls", namespace="threads")),
-    # path("paypal/", include("paypal.standard.ipn.urls")),
     path("oauth/", include('social_django.urls', namespace='social')),
     path('admin/', admin.site.urls),
     path('api/v1/api-auth/', include('rest_framework.urls', namespace='rest_framework')),
@@ -37,7 +34,7 @@ urlpatterns = [
     path("api/v1/virtualize_emulation/", include("apps.virtualize_emulation.apiurls",
                                                  namespace="apivirtualize_emulation")),
     path("api/v1/virtualize_simple/", include("apps.virtualize_simple.apiurls", namespace="apivirtualize_simple")),
-    path("api/v1/virtualize/", include("apps.virtualize.apiurls")),
+    # path("api/v1/virtualize/", include("apps.virtualize.apiurls")),
     path("api/v1/schema/", schema_view),
 
     # path("api/v1/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),

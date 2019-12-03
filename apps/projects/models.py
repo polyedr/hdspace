@@ -285,8 +285,6 @@ def get_screen_id(screenid):
 
 
 class ScreenScenario(TimeStampedModel):
-    # from apps.virtualize_emulation.models import PreSegmentation
-
     LOGIN = "login"
     CONTACT_INFO = "contact_info"
     COMMON_FORM = "common_form"
@@ -326,9 +324,6 @@ class ScreenScenario(TimeStampedModel):
         on_delete=models.CASCADE,
         null=True,
     )
-    # presegmentation = models.ForeignKey(
-    #     PreSegmentation, related_name="scenarios", on_delete=models.CASCADE, null=True
-    # )
 
     name = models.CharField(max_length=250)
 

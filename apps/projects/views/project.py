@@ -23,7 +23,7 @@ from apps.projects.models import (
 from apps.accounts.models import Profile
 from apps.projects.utils.project_db_synchronization import create_project_data_db, delete_project_data_db, \
     select_project, project_screens, get_screen_name, get_screen_image
-from apps.virtualize.models import get_project_page_pro_by_project, get_project_page_css_pro_by_project
+# from apps.virtualize.models import get_project_page_pro_by_project, get_project_page_css_pro_by_project
 
 __all__ = (
     "DashboardView",
@@ -183,9 +183,9 @@ class ProjectPreviewView(LoginRequiredMixin, TemplateView):
         context["project_member_user"] = ProjectMember.objects.get(user=request.user, project=project)
         context["activities"] = ProjectActivity.objects.filter(project=project).order_by('-created')
         # context["thread"] = Thread.ordered(Thread.inbox(context["project_member_user"], project))[0]
-        context["screenHTMLpro"] = get_project_page_pro_by_project(screenshots, project.user_id)
+        # context["screenHTMLpro"] = get_project_page_pro_by_project(screenshots, project.user_id)
         context["screen_name"] = get_screen_name(screen_id)
-        context["screenCSSpro"] = get_project_page_css_pro_by_project(get_screen_name(screen_id), project.user_id)
+        # context["screenCSSpro"] = get_project_page_css_pro_by_project(get_screen_name(screen_id), project.user_id)
         context["screen_url"] = get_screen_image(get_screen_name(screen_id), project.user_id, screen_id)
 
 
