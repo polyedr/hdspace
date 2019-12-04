@@ -333,7 +333,7 @@ export const formingListBlock = (
           parameters: {
             children,
           },
-          styles: { ...DEFAULT_INDENTS, 'flex-direction': 'column' },
+          styles: { ...DEFAULT_INDENTS, 'flex-direction': 'column', width: '100%' },
         },
       ] as IScenarioItem[],
     };
