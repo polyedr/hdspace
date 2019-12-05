@@ -10,7 +10,7 @@ import {
 //   IScreenIndents,
 //   IScreenProps,
 //   IScreenTypography,
-// } from '$redux/project/reducer';
+// } from '$redux/project/types';
 // import { rgbToHex } from '$utils/parseColor';
 
 export interface IStylesElement {

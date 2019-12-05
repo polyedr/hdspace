@@ -5,7 +5,7 @@ import * as R from 'ramda';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 
-import { IListProject } from '$redux/project/reducer';
+import { IListProject } from '$redux/project/types';
 import * as Actions from '$redux/project/actions';
 import { Button } from '$components/UI/Button';
 import { Modal } from '$components/UI/Modal';

@@ -9,7 +9,7 @@ import { createBrowserHistory } from 'history';
 import { PersistConfig, Persistor } from 'redux-persist/es/types';
 
 import userReducer from '$redux/user/reducer';
-import projectReducer from '$redux/project/reducer';
+import projectReducer from '$redux/project/reducers';
 import projectSaga from '$redux/project/sagas';
 import userSaga from '$redux/user/sagas';
 
@@ -37,7 +37,7 @@ const composeEnhancers = typeof window === 'object'
 export const store = createStore(
   combineReducers({
     user: persistReducer(userPersistConfig, userReducer),
-    project: persistReducer(projectPersistConfig, projectReducer),
+    project: projectReducer, // persistReducer(projectPersistConfig, projectReducer),
     router: connectRouter(history),
   }),
   composeEnhancers(applyMiddleware(

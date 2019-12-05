@@ -7,7 +7,7 @@ import {
   IScreenTypography,
   IScreenIndents,
   IProjectScreen,
-} from '$redux/project/reducer';
+} from '$redux/project/types';
 import { IApiResponseError, ITokenPair } from '$redux/user/reducer';
 // import { ITokenPair, IApiResponseError } from '$redux/user/reducer';
 // import { itemRoot } from '$utils/parseListItems';

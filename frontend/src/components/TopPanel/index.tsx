@@ -9,11 +9,12 @@ import { Modal } from '$components/UI/Modal';
 import { ILeftPanel } from '$components/LeftPanel';
 import { EditorProps } from '$containers/EditorLogic';
 import * as Actions from '$redux/project/actions';
+import { selectors } from '$redux/project';
 
 const styles = require('./styles.scss');
 
 const mapStateToProps = (state: AppReduxState) => ({
-  project: state.project.currentProject,
+  project: selectors.selectCurrentProject(state),
 });
 
 const mapDispatchToProps = {

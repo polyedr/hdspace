@@ -1,6 +1,6 @@
 import { myAxios, MyAxiosProps } from '$config/settings';
 import { onError, parseResult } from '$api/project';
-import { IScenarioElement } from '$redux/project/reducer';
+import { IScenarioElement } from '$redux/project/types';
 
 type ServerLibraryElement = { // TODO: compare with entity on backend!
   buoyancy: number[];

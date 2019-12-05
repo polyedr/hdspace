@@ -6,10 +6,11 @@ import { AppReduxState } from '$shared/types/app';
 import * as Actions from '$redux/project/actions';
 import { Projects } from '$components/Projects';
 import { Spinner } from '$components/UI/Spinner';
+import { selectors } from '$redux/project';
 
-const mapStateToProps = ({ project: { listProject, listProjectLoader } }: AppReduxState) => ({
-  listProject,
-  listProjectLoader,
+const mapStateToProps = (state: AppReduxState) => ({
+  listProject: selectors.selectProjects(state),
+  listProjectLoader: selectors.selectProjectLoader(state),
 });
 
 const mapDispatchToProps = {

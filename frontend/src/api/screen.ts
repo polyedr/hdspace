@@ -1,6 +1,6 @@
 import { myAxios, MyAxiosProps } from '$config/settings';
 import { onError, parseResult } from '$api/project';
-import { IProjectScreen } from '$redux/project/reducer';
+import { IProjectScreen } from '$redux/project/types';
 
 export const apiGetScreen = (props: MyAxiosProps & { id: string }): Promise<IProjectScreen> => (
   myAxios({

@@ -14,7 +14,7 @@ import {
   MAX_MAP_ZOOM,
 } from '$constants/defaultParams';
 import { IPanelEditProps } from '$components/RightPanel/PanelEditProps';
-import { IMapProps } from '$redux/project/reducer';
+import { IMapProps } from '$redux/project/types';
 import { getPermissibleValue } from '$utils/NumberHelper';
 
 const styles = require('./styles.scss');

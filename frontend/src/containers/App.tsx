@@ -7,18 +7,15 @@ import 'antd/dist/antd.css';
 import { AppReduxState } from '$shared/types/app';
 import * as ActionsUser from '$redux/user/actions';
 import * as ActionsProject from '$redux/project/actions';
+import { selectors } from '$redux/project';
 import { history } from '$redux/store';
 
 import { Routes } from './Routes';
 
-const mapStateToProps = ({
-  user: { isLPanelMinimized },
-  project: { listProject },
-  router: { location: { pathname } },
-}: AppReduxState) => ({
-  isLPanelMinimized,
-  listProject,
-  pathname,
+const mapStateToProps = (state: AppReduxState) => ({
+  isLPanelMinimized: state.user.isLPanelMinimized,
+  listProject: selectors.selectProjects(state),
+  pathname: state.router.location.pathname,
 });
 
 const mapDispatchToProps = {

@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import Sortable from 'react-sortablejs'; // maybe replace it with react-sortablejs-typescript?
 import { NavLink } from 'react-router-dom';
 
-import { IProject, IProjectScreen, IProjectListItem } from '$redux/project/reducer';
+import { IProject, IProjectScreen, IProjectListItem } from '$redux/project/types';
 import { Modal } from '$components/UI/Modal';
 import { Icon } from '$components/UI/Icon';
 import { Button } from '$components/UI/Button';

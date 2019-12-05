@@ -12,7 +12,6 @@ import { LOCATION_CHANGE, LocationChangeAction } from 'connected-react-router';
 
 import { AppReduxState } from '$shared/types/app';
 import { ReturnPromisedType } from '$shared/types';
-import { TYPES } from '$constants/actions';
 import * as Actions from '$redux/project/actions';
 import * as screenSaga from '$redux/project/sagas/screen';
 import {
@@ -49,14 +48,17 @@ import {
   IScenarioItem,
   IScenarioElement,
   ILibraryElements,
-} from '$redux/project/reducer';
+} from '$redux/project/types';
+import * as ProjectT from '$redux/project/types';
 import * as PATH_NAMES from '$constants/pathNames';
 import { DEFAULT_AUTHORISATION_TOKEN } from '$constants/defaultParams';
-import { findParentType, getParams, getScenarioId } from '$utils/parseScenario';
+import { findParentType, getParams } from '$utils/parseScenario';
 import { apiSaveScenarios } from '$api/scenario';
 
+import { selectors } from '../';
+
 function* LocationChange({ payload: { location } }: LocationChangeAction) {
-  const { user: { tokenPair } } = yield select(state => state);
+  const { user: { tokenPair } }: AppReduxState = yield select();
 
   if (tokenPair.access === ''
     && location.pathname !== PATH_NAMES.user.signup
@@ -155,9 +157,13 @@ function* setListSortableSaga(action: ReturnType<typeof Actions.setListSortable>
     id: rawActiveItemID,
     itemIndex: movedItemIndexInCurrentSortableGroup,
     items: itemsInCurrentSortableGroup,
-    parentId: rawParentID,
+    parentID: rawParentID,
   } = action.payload;
-  const { project: { scenarios, scenarioElements } }: AppReduxState = yield select();
+  const scenarios: ReturnType<typeof selectors.selectScenarios> = yield select(selectors.selectScenarios);
+  const scenarioElements: ReturnType<typeof selectors.selectScenariosElements> = yield select(
+    selectors.selectScenariosElements
+  );
+
   const activeItemID = parseInt(rawActiveItemID, 10);
   const parentID = rawParentID === 'root' ? 0 : parseInt(rawParentID, 10);
 
@@ -333,7 +339,7 @@ function* setListSortableSaga(action: ReturnType<typeof Actions.setListSortable>
   yield put(Actions.setScenarioElements(updateElements));
   yield put(Actions.setScenarios(clearScenarios));
   // yield call(apiSaveScenarios, updateScenarios);
-  const { project: { modifyElements = [] } } = yield select(state => state);
+  const modifyElements: ReturnType<typeof selectors.selectModifyElements> = yield select(selectors.selectModifyElements);
   const modifiedElements = R
     .values(updateElements)
     .filter(element => (
@@ -349,10 +355,12 @@ function* setListSortableSaga(action: ReturnType<typeof Actions.setListSortable>
   yield put(Actions.setModifyElements(R.union(modifyElements, modifiedElements)));
 }
 
-export function* delScenarioItemSaga(
-  { id }: ReturnType<typeof Actions.delScenario>,
-): SagaIterator {
-  const { project: { scenarios, scenarioElements } } = yield select(state => state);
+export function* delScenarioItemSaga(action: ReturnType<typeof Actions.delScenario>): SagaIterator {
+  const { id } = action.payload;
+  const scenarios: ReturnType<typeof selectors.selectScenarios> = yield select(selectors.selectScenarios);
+  const scenarioElements: ReturnType<typeof selectors.selectScenariosElements> = yield select(
+    selectors.selectScenariosElements
+  );
 
   if (id.slice(-1) === 's') {
     yield put(Actions.delScenario(id));
@@ -396,10 +404,10 @@ export function* delScenarioItemSaga(
 
 function* updateRootStyles(
   { payload: { styles } }: ReturnType<typeof Actions.updateRootStyles>,
-): SagaIterator {
-  const { project: { currentScreen } } = yield select(state => state);
+) {
+  const currentScreen: ReturnType<typeof selectors.selectCurrentScreen> = yield select(selectors.selectCurrentScreen);
 
-  const updatedRootStyles: IScenarios = {
+  const updatedRootStyles = {
     ...currentScreen.styles_root,
     ...styles,
   };
@@ -411,10 +419,10 @@ function* updateRootStyles(
     },
   };
 
-  yield put(Actions.setScreen(newScreen));
+  yield put(Actions.setScreen(newScreen as ProjectT.IProjectScreen));
   /* const {
     project: { currentScreen },
-  } = yield select(state => state);
+  }: AppReduxState = yield select();
 
   const styles_root = {
     ...currentScreen.styles_root,
@@ -447,7 +455,7 @@ function* updateRootStyles(
 function* updateScenarioStyles(
   { payload: { id, styles } }: ReturnType<typeof Actions.updateScenarioStyles>,
 ): SagaIterator {
-  const { project: { scenarios } } = yield select(state => state);
+  const scenarios: ReturnType<typeof selectors.selectScenarios> = yield select(selectors.selectScenarios);
   const parseId = parseInt(id, 10);
   const updateScenarios: IScenarios = {
     ...scenarios,
@@ -466,9 +474,10 @@ function* updateScenarioStyles(
 function* updateElementStyles(
   { payload: { id, styles } }: ReturnType<typeof Actions.updateElementStyles>,
 ): SagaIterator {
-  const {
-    project: { scenarioElements, modifyElements },
-  } = yield select(state => state);
+  const scenarioElements: ReturnType<typeof selectors.selectScenariosElements> = yield select(
+    selectors.selectScenariosElements,
+  );
+  const modifyElements: ReturnType<typeof selectors.selectModifyElements> = yield select(selectors.selectModifyElements);
   const parseId = parseInt(id, 10);
 
   const updateScenarioElements: IScenarioElements = {
@@ -489,14 +498,15 @@ function* updateElementStyles(
   }
 }
 
-function* updateElementParameters(
-  { payload: { itemId, parameters } }: ReturnType<typeof Actions.updateElementParameters>,
-): SagaIterator {
-  const {
-    project: { scenarioElements, modifyElements },
-  } = yield select(state => state);
+function* updateElementParameters(action: ReturnType<typeof Actions.updateElementParameters>) {
+  const { itemID, parameters } = action.payload;
 
-  const parseId = parseInt(itemId, 10);
+  const scenarioElements: ReturnType<typeof selectors.selectScenariosElements> = yield select(
+    selectors.selectScenariosElements,
+  );
+  const modifyElements: ReturnType<typeof selectors.selectModifyElements> = yield select(selectors.selectModifyElements);
+
+  const parseId = parseInt(itemID, 10);
 
   const updateScenarioElements: IScenarioElements = {
     ...scenarioElements,
@@ -557,10 +567,9 @@ function* updateElementParameters(
   } */
 }
 
-function* setAlign(
-  { payload: { itemId, type } }: ReturnType<typeof Actions.setAlign>,
-): SagaIterator {
-  const { project: { currentScreen } } = yield select(state => state);
+function* setAlign(action: ReturnType<typeof Actions.setAlign>) {
+  const { itemID, type } = action.payload;
+  const currentScreen: ReturnType<typeof selectors.selectCurrentScreen> = yield select(selectors.selectCurrentScreen);
   /* const currElement: IListSortable = currentScreen.listSortable[itemId];
   const listSortable = {
     ...currentScreen.listSortable,
@@ -582,18 +591,21 @@ function* setAlign(
   yield put(Actions.setScreen(newScreen)); */
 }
 
-function* changeElementTypeSaga(
-  { payload: { type, itemId } }: ReturnType<typeof Actions.changeElementType>,
-): SagaIterator {
+function* changeElementTypeSaga(action: ReturnType<typeof Actions.changeElementType>) {
+  const { type, itemID } = action.payload;
   // update elements
-  const {
-    project: {
-      scenarioElements,
-      libraryElements,
-      currentScreen: { listSortable },
-    },
-  } = yield select(state => state);
-  const { elementId } = listSortable[itemId];
+
+  console.error('attempt to changeElementTypeSaga!');
+  return;
+
+  const libraryElements: ReturnType<typeof selectors.selectLibraryElements> = yield select(selectors.selectLibraryElements);
+  const scenarioElements: ReturnType<typeof selectors.selectScenariosElements> = yield select(
+    selectors.selectScenariosElements,
+  );
+  const { listSortable }: ReturnType<typeof selectors.selectCurrentScreen> = yield select(selectors.selectCurrentScreen);
+
+  // @ts-ignore
+  const { elementId } = listSortable[itemID];
   const currElement = scenarioElements[elementId];
   const baseElement = libraryElements[type];
 
@@ -630,8 +642,9 @@ function* uploadFileSaga(
   { payload: { file: { file } } }: ReturnType<typeof Actions.uploadFile>
 ) {
   try {
-    const state: AppReduxState = yield select();
-    const currentScreenID = state.project.currentScreen.id;
+    const { id: currentScreenID }: ReturnType<typeof selectors.selectCurrentScreen> = yield select(
+      selectors.selectCurrentScreen,
+    );
   
     const formData = new FormData();
     formData.append('image', new Blob([file]), file.name);
@@ -648,43 +661,72 @@ function* uploadFileSaga(
   }
 }
 
+const loadProjectsType: ProjectT.LoadProjects['type'] = 'PROJECTS:LOAD_PROJECTS';
+const addProjectType: ProjectT.AddProject['type'] = 'PROJECTS:ADD_PROJECT';
+const deleteProjectType: ProjectT.DeleteProject['type'] = 'PROJECTS:DELETE_PROJECT';
+const getProjectType: ProjectT.GetProject['type'] = 'PROJECTS:GET_PROJECT';
+const setProjectScreensType: ProjectT.SetProjectScreens['type'] = 'PROJECTS:SET_PROJECT_SCREENS';
+const renameProjectType: ProjectT.RenameProject['type'] = 'PROJECTS:RENAME_PROJECT';
+const activateScreenType: ProjectT.ActivateScreen['type'] = 'PROJECTS:ACTIVATE_SCREEN';
+const addScreenType: ProjectT.AddScreen['type'] = 'PROJECTS:ADD_SCREEN';
+const saveScreenType: ProjectT.SaveScreen['type'] = 'PROJECTS:SAVE_SCREEN';
+const deleteScreenType: ProjectT.DeleteScreen['type'] = 'PROJECTS:DELETE_SCREEN';
+const renameScreenType: ProjectT.RenameScreen['type'] = 'PROJECTS:RENAME_SCREEN';
+const setListSortableType: ProjectT.SetListSortable['type'] = 'PROJECTS:SET_LIST_SORTABLE';
+const updateElementStylesType: ProjectT.UpdateElementStyles['type'] = 'PROJECTS:UPDATE_ELEMENT_STYLES';
+const updateRootStylesType: ProjectT.UpdateRootStyles['type'] = 'PROJECTS:UPDATE_ROOT_STYLES';
+const updateScenarioStylesType: ProjectT.UpdateScenarioStyles['type'] = 'PROJECTS:UPDATE_SCENARIO_STYLES';
+const updateElementParametersType: ProjectT.UpdateElementParameters['type'] = 'PROJECTS:UPDATE_ELEMENT_PARAMETERS';
+const setAlignType: ProjectT.SetAlign['type'] = 'PROJECTS:SET_ALIGN';
+const changeScenarioType: ProjectT.ChangeScenario['type'] = 'PROJECTS:CHANGE_SCENARIO';
+const changeScenariosType: ProjectT.ChangeScenarios['type'] = 'PROJECTS:CHANGE_SCENARIOS';
+const addScenarioType: ProjectT.AddScenario['type'] = 'PROJECTS:ADD_SCENARIO';
+const deleteScenarioType: ProjectT.DeleteScenario['type'] = 'PROJECTS:DELETE_SCENARIO';
+const renameScenarioType: ProjectT.RenameScenario['type'] = 'PROJECTS:RENAME_SCENARIO';
+const addContainerType: ProjectT.AddContainer['type'] = 'PROJECTS:ADD_CONTAINER';
+const delScenarioItemType: ProjectT.DeleteScenarioItem['type'] = 'PROJECTS:DELETE_SCENARIO_ITEM';
+const changeElementTypeType: ProjectT.ChangeElementType['type'] = 'PROJECTS:CHANGE_ELEMENT_TYPE';
+const uploadFileType: ProjectT.UploadFile['type'] = 'PROJECTS:UPLOAD_FILE';
+const getScreenNNType: ProjectT.GetScreenNN['type'] = 'PROJECTS:GET_SCREEN_NN';
+
+
 export default function* projectSaga() {
   // yield fork(loadInitStart);
   yield takeLatest(REHYDRATE, authCheckSaga);
   yield takeLatest(LOCATION_CHANGE, LocationChange);
 
-  yield takeLatest(TYPES.GET_LIST_PROJECT, getListProjectSaga);
-  yield takeLatest(TYPES.ADD_PROJECT, addProject);
-  yield takeLatest(TYPES.DEL_PROJECT, delProjectSaga);
-  yield takeLatest(TYPES.GET_PROJECT, getProjectSaga);
-  yield takeLatest(TYPES.SET_PROJECT_SCREENS, setProjectScreensSaga);
-  yield takeLatest(TYPES.RENAME_PROJECT, renameProjectSaga);
+  yield takeLatest(loadProjectsType, getListProjectSaga);
+  yield takeLatest(addProjectType, addProject);
+  yield takeLatest(deleteProjectType, delProjectSaga);
+  yield takeLatest(getProjectType, getProjectSaga);
+  yield takeLatest(setProjectScreensType, setProjectScreensSaga);
+  yield takeLatest(renameProjectType, renameProjectSaga);
 
-  yield takeLatest(TYPES.ACTIVATE_SCREEN, screenSaga.activateScreenSaga);
-  yield takeLatest(TYPES.ADD_SCREEN, screenSaga.addScreenSaga);
-  yield takeLatest(TYPES.SAVE_SCREEN, screenSaga.saveScreenSaga);
-  yield takeLatest(TYPES.DEL_SCREEN, screenSaga.delScreenSaga);
-  yield takeLatest(TYPES.RENAME_SCREEN, screenSaga.renameScreenSaga);
-  yield takeLatest(TYPES.SET_LIST_SORTABLE, setListSortableSaga);
+  yield takeLatest(activateScreenType, screenSaga.activateScreenSaga);
+  yield takeLatest(addScreenType, screenSaga.addScreenSaga);
+  yield takeLatest(saveScreenType, screenSaga.saveScreenSaga);
+  yield takeLatest(deleteScreenType, screenSaga.delScreenSaga);
+  yield takeLatest(renameScreenType, screenSaga.renameScreenSaga);
+  yield takeLatest(setListSortableType, setListSortableSaga);
 
-  yield takeLatest(TYPES.UPDATE_ELEMENT_STYLES, updateElementStyles);
-  yield takeLatest(TYPES.UPDATE_ROOT_STYLES, updateRootStyles);
-  yield takeLatest(TYPES.UPDATE_SCENARIO_STYLES, updateScenarioStyles);
-  yield takeLatest(TYPES.UPDATE_ELEMENT_PARAMETERS, updateElementParameters);
-  yield takeLatest(TYPES.SET_ALIGN, setAlign);
+  yield takeLatest(updateElementStylesType, updateElementStyles);
+  yield takeLatest(updateRootStylesType, updateRootStyles);
+  yield takeLatest(updateScenarioStylesType, updateScenarioStyles);
+  yield takeLatest(updateElementParametersType, updateElementParameters);
+  yield takeLatest(setAlignType, setAlign);
 
-  yield takeLatest(TYPES.CHANGE_SCENARIO, changeScenarioSaga);
-  yield takeLatest(TYPES.CHANGE_SCENARIOS, changeScenariosSaga);
-  yield takeLatest(TYPES.CREATE_SCENARIO, createScenarioSaga);
-  yield takeLatest(TYPES.ADD_SCENARIO, addScenarioSaga);
-  yield takeLatest(TYPES.DEL_SCENARIO, delScenarioSaga);
-  yield takeLatest(TYPES.RENAME_SCENARIO, renameScenarioSaga);
-  yield takeLatest(TYPES.ADD_CONTAINER, addContainerSaga);
+  yield takeLatest(changeScenarioType, changeScenarioSaga);
+  yield takeLatest(changeScenariosType, changeScenariosSaga);
+  // yield takeLatest(TYPES.CREATE_SCENARIO, createScenarioSaga);
+  yield takeLatest(addScenarioType, addScenarioSaga);
+  yield takeLatest(deleteScenarioType, delScenarioSaga);
+  yield takeLatest(renameScenarioType, renameScenarioSaga);
+  yield takeLatest(addContainerType, addContainerSaga);
 
-  yield takeLatest(TYPES.GET_ELEMENTS, getElements);
-  yield takeLatest(TYPES.DEL_SCENARIO_ITEM, delScenarioItemSaga);
-  yield takeLatest(TYPES.CHANGE_ELEMENT_TYPE, changeElementTypeSaga);
+  // yield takeLatest(TYPES.GET_ELEMENTS, getElements);
+  yield takeLatest(delScenarioItemType, delScenarioItemSaga);
+  yield takeLatest(changeElementTypeType, changeElementTypeSaga);
 
-  yield takeLatest(TYPES.UPLOAD_FILE, uploadFileSaga);
-  yield takeLatest(TYPES.GET_SCREEN_NN, screenSaga.getScreenNNSaga);
+  yield takeLatest(uploadFileType, uploadFileSaga);
+  yield takeLatest(getScreenNNType, screenSaga.getScreenNNSaga);
 }

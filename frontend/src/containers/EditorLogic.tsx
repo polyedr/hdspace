@@ -5,6 +5,7 @@ import { AppReduxState } from '$shared/types/app';
 import { Editor } from '$components/Editor/EditorWindow';
 import NavPanelScreen from '$components/NavPanelScreen';
 import * as Actions from '$redux/project/actions';
+import { selectors } from '$redux/project';
 import * as UserActions from '$redux/user/actions';
 import { Spinner } from '$components/UI/Spinner';
 
@@ -20,28 +21,15 @@ interface MatchParams {
   screenID?: string;
 }
 
-const mapStateToProps = ({
-  user: {
-    isLPanelMinimized,
-    isNavPanelMinimized,
-    isPrototypeMode,
-  },
-  project: {
-    currentProject,
-    currentScreen,
-    scenarioLoader,
-    scenarios,
-    scenarioElements,
-  },
-}: AppReduxState) => ({
-  currentProject,
-  isLPanelMinimized,
-  isNavPanelMinimized,
-  isPrototypeMode,
-  currentScreen,
-  scenarioLoader,
-  scenarios,
-  scenarioElements,
+const mapStateToProps = (state: AppReduxState) => ({
+  currentProject: selectors.selectCurrentProject(state),
+  isLPanelMinimized: state.user.isLPanelMinimized,
+  isNavPanelMinimized: state.user.isNavPanelMinimized,
+  isPrototypeMode: state.user.isPrototypeMode,
+  currentScreen: selectors.selectCurrentScreen(state),
+  scenarioLoader: selectors.selectScenarioLoader(state),
+  scenarios: selectors.selectScenarios(state),
+  scenarioElements: selectors.selectScenariosElements(state),
 });
 
 const mapDispatchToProps = {

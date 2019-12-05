@@ -3,7 +3,7 @@ import React, { useCallback } from 'react';
 import { getOptionsOfNestedList } from '$utils/parseScenario';
 import { NestedList } from '$components/UI/NestedList/';
 import { Modal } from '$components/UI/Modal/';
-import { IScenarioElements } from '$redux/project/reducer';
+import { IScenarioElements } from '$redux/project/types';
 import { IRightPanelProps } from '$components/RightPanel/MainPanel/';
 
 const styles = require('./styles.scss');

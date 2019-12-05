@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react';
 import * as R from 'ramda';
 import classNames from 'classnames';
 
-import { IScreenProps, IScreenBackground, IListSortable } from '$redux/project/reducer';
+import { IScreenProps, IScreenBackground, IListSortable } from '$redux/project/types';
 import { getOptionsOfListScenario } from '$utils/parseScenario';
 import { elementTypes } from '$constants/menu';
 import { ActiveElementBlock } from '$components/RightPanel/ActiveElementBlock';

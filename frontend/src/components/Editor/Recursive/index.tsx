@@ -9,18 +9,18 @@ import { SortableGroup } from '$components/Editor/SortableGroup';
 import { DragResize } from '$components/Editor/DragResize';
 import { RENDERERS } from '$components/UI/RenderElements';
 import { IEditProps, TOnChoose } from '$components/Editor/EditorWindow';
-import { IListSortable } from '$redux/project/reducer';
+import { IListSortable } from '$redux/project/types';
+import { selectors } from '$redux/project';
 import { getItemsPair, getParams, idToLSId } from '$utils/parseScenario';
 import { LIST_SCENARIO_TYPE } from '$constants/defaultParams';
 import { convertPropCSS } from '$utils/StyleHelper';
 
 const mapStateToProps = (state: AppReduxState, props: OwnProps) => {
-  const {
-    currentScreen: { listSortable },
-    scenarios,
-    scenarioElements,
-  } = state.project;
+  const { listSortable } = selectors.selectCurrentScreen(state);
+  const scenarios = selectors.selectScenarios(state);
+  const scenarioElements = selectors.selectScenariosElements(state);
   const { isPrototypeMode } = state.user;
+
   const currId = props.item.id === 0 ? 'root' : idToLSId(props.item.id, props.item.type);
   const itemParent = listSortable[currId];
   const currListSortable = itemParent.children.reduce((items: IListSortable, childID) => ({

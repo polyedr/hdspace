@@ -7,7 +7,7 @@ import { Icon } from '$components/UI/Icon';
 import { Button } from '$components/UI/Button';
 import { IAppProps } from '$containers/App';
 import * as PATH_NAMES from '$constants/pathNames';
-import { IListProject } from '$redux/project/reducer';
+import { IListProject } from '$redux/project/types';
 import { Scrollbar } from '$components/UI/Scrollbar';
 import * as Actions from '$redux/user/actions';
 import * as ActionsProject from '$redux/project/actions';

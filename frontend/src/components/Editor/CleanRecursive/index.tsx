@@ -7,14 +7,14 @@ import * as Actions from '$redux/project/actions';
 import { ISortableItemTemp } from '$utils/parseListItems';
 import { RENDERERS } from '$components/UI/RenderElements';
 import { IEditProps, TOnChoose } from '$components/Editor/EditorWindow';
-import { IListSortable } from '$redux/project/reducer';
+import { IListSortable } from '$redux/project/types';
 import { getItemsPair, getParams, idToLSId } from '$utils/parseScenario';
 
 import { CleanRecursiveElement } from '$components/Editor/CleanRecursiveElement';
 import { convertPropCSS } from '$utils/StyleHelper';
 
 
-const mapStateToProps = (state, props) => {
+const mapStateToProps = (state: AppReduxState, props) => {
   const {
     currentScreen: { listSortable },
     scenarios,

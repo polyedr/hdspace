@@ -9,7 +9,7 @@ import {
   IScenarioElement,
   IScenarios,
   ILibraryElement,
-} from '$redux/project/reducer';
+} from '$redux/project/types';
 import { getBuoyancy } from '$utils/NumberHelper';
 import { scenarioToLS } from '$utils/parseScenario';
 import { DEFAULT_INDENTS } from '$constants/defaultParams';
