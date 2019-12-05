@@ -1,6 +1,6 @@
 import {
   IListProject, IScenarioItem,
-} from '$redux/project/reducer';
+} from '$redux/project/types';
 
 export const mockProject = (id: number, name: string, status: string, projectscreen) => ({
   id,

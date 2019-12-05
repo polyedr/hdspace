@@ -1,161 +1,156 @@
 import { CSSProperties } from 'react';
 
 import { TYPES } from '$constants/actions';
-import {
-  IListProject,
-  IProject,
-  IProjectScreen,
-  IScreenProps,
-  IScenarios,
-  IScenarioElements,
-  ILibraryElements,
-  IProjectListItem,
-} from '$redux/project/reducer';
 import { IChooseElement } from '$components/ModalAddElements/MainBlock';
 
-export const getLibraryElements = () => ({
-  type: TYPES.GET_LIBRARY_ELEMENTS,
+import * as T from './types';
+
+export const getLibraryElements = (): T.LoadLibraryElements => ({
+  type: 'PROJECTS:LOAD_LIBRARY_ELEMENTS',
 });
 
-export const setLibraryElements = (libraryElements: ILibraryElements) => ({
-  type: TYPES.SET_LIBRARY_ELEMENTS,
-  libraryElements,
+export const setLibraryElements = (libraryElements: T.ILibraryElements): T.LoadLibraryElementsSuccess => ({
+  type: 'PROJECTS:LOAD_LIBRARY_ELEMENTS_SUCCESS',
+  payload: { libraryElements },
 });
 
-export const getListProject = () => ({
-  type: TYPES.GET_LIST_PROJECT,
+export const getListProject = (): T.LoadProjects => ({
+  type: 'PROJECTS:LOAD_PROJECTS',
 });
 
-export const setListProject = (listProject: IListProject[]) => ({
-  type: TYPES.SET_LIST_PROJECT,
-  listProject,
+export const setListProject = (projects: T.IListProject[]): T.LoadProjectsSuccess => ({
+  type: 'PROJECTS:LOAD_PROJECTS_SUCCESS',
+  payload: { projects },
 });
 
-export const addProject = (name: string) => ({
-  type: TYPES.ADD_PROJECT,
-  name,
+export const addProject = (name: string): T.AddProject => ({
+  type: 'PROJECTS:ADD_PROJECT',
+  payload: { name },
 });
 
-export const delProject = (id: number) => ({
-  type: TYPES.DEL_PROJECT,
-  id,
+export const delProject = (id: number): T.DeleteProject => ({
+  type: 'PROJECTS:DELETE_PROJECT',
+  payload: { id },
 });
 
-export const getProject = (id: number, screenID?: string) => ({
-  type: TYPES.GET_PROJECT,
+export const getProject = (id: number, screenID?: string): T.GetProject => ({
+  type: 'PROJECTS:GET_PROJECT',
   payload: { id, screenID },
 });
 
-export const setProject = (project: IProject) => ({
-  type: TYPES.SET_PROJECT,
-  project,
+export const setProject = (project: T.IProject): T.SetProject => ({
+  type: 'PROJECTS:SET_PROJECT',
+  payload: { project },
 });
 
-export const setProjectScreens = (projectScreens: IProjectListItem[]) => ({
-  type: TYPES.SET_PROJECT_SCREENS,
-  payload: { projectScreens },
+export const setProjectScreens = (screens: T.IProjectListItem[]): T.SetProjectScreens => ({
+  type: 'PROJECTS:SET_PROJECT_SCREENS',
+  payload: { screens },
 });
 
-export const renameProject = (projectId: number, newName: string) => ({
-  type: TYPES.RENAME_PROJECT,
-  payload: { projectId, newName },
+export const renameProject = (projectID: number, name: string): T.RenameProject => ({
+  type: 'PROJECTS:RENAME_PROJECT',
+  payload: { projectID, name },
 });
 
-export const setListProjectLoader = (active: boolean) => ({
-  type: TYPES.SET_LIST_PROJECT_LOADER,
-  active,
+export const setListProjectLoader = (active: boolean): T.SetListProjectLoader => ({
+  type: 'PROJECTS:SET_LIST_PROJECT_LOADER',
+  payload: { active },
 });
 
-export const setProjectLoader = (active: boolean) => ({
-  type: TYPES.SET_PROJECT_LOADER,
-  active,
+export const setProjectLoader = (active: boolean): T.SetProjectLoader => ({
+  type: 'PROJECTS:SET_PROJECT_LOADER',
+  payload: { active },
 });
 
-export const setScreenLoader = (active: boolean) => ({
-  type: TYPES.SET_SCREEN_LOADER,
-  active,
+export const setScreenLoader = (active: boolean): T.SetScreenLoader => ({
+  type: 'PROJECTS:SET_SCREEN_LOADER',
+  payload: { active },
 });
 
-export const setLoader = (active: boolean) => ({
-  type: TYPES.SET_LOADER,
-  active,
+export const setLoader = (active: boolean): T.SetLoader => ({
+  type: 'PROJECTS:SET_LOADER',
+  payload: { active },
 });
 
-export const setScenarioLoader = (active: boolean) => ({
-  type: TYPES.SET_SCENARIO_LOADER,
-  active,
+export const setScenarioLoader = (active: boolean): T.SetScenarioLoader => ({
+  type: 'PROJECTS:SET_SCENARIO_LOADER',
+  payload: { active },
 });
 
-export const delScreen = (projectId: number, screenId: number) => ({
-  type: TYPES.DEL_SCREEN,
-  payload: { projectId, screenId },
+export const delScreen = (projectID: number, screenID: number): T.DeleteScreen => ({
+  type: 'PROJECTS:DELETE_SCREEN',
+  payload: { projectID, screenID },
 });
 
-export const renameScreen = (projectId: number, screenId: number, newName: string) => ({
-  type: TYPES.RENAME_SCREEN,
-  payload: { projectId, screenId, newName },
+export const renameScreen = (projectID: number, screenID: number, name: string): T.RenameScreen => ({
+  type: 'PROJECTS:RENAME_SCREEN',
+  payload: { projectID, screenID, name },
 });
 
-export const addScreen = (projectId: number, name: string) => ({
-  type: TYPES.ADD_SCREEN,
-  payload: { projectId, name },
+export const addScreen = (projectID: number, name: string): T.AddScreen => ({
+  type: 'PROJECTS:ADD_SCREEN',
+  payload: { projectID, name },
 });
 
 // projectID is unused
-export const activateScreen = (projectId: number, screenId: number) => ({
-  type: TYPES.ACTIVATE_SCREEN,
-  payload: { projectId, screenID: screenId },
+export const activateScreen = (projectID: number, screenID: number): T.ActivateScreen => ({
+  type: 'PROJECTS:ACTIVATE_SCREEN',
+  payload: { projectID, screenID: screenID },
 });
 
 export const setListSortable = (
-  itemIndex: number, items: string[], id: string, parentId: string
-) => ({
-  type: TYPES.SET_LIST_SORTABLE,
+  itemIndex: number, items: string[], id: string, parentID: string
+): T.SetListSortable => ({
+  type: 'PROJECTS:SET_LIST_SORTABLE',
   payload: {
     itemIndex,
     items,
     id,
-    parentId,
+    parentID,
   },
 });
 
-export const clearAfterPrevScreen = () => ({
-  type: TYPES.CLEAN_AFTER_PREV_SCREEN,
+export const clearAfterPrevScreen = (): T.ClearAfterPrevScreen => ({
+  type: 'PROJECTS:CLEAN_AFTER_PREV_SCREEN',
 });
 
-export const saveScreen = (canvas: HTMLCanvasElement) => ({
-  type: TYPES.SAVE_SCREEN,
-  canvas,
+export const saveScreen = (canvas: HTMLCanvasElement): T.SaveScreen => ({
+  type: 'PROJECTS:SAVE_SCREEN',
+  payload: { canvas },
 });
 
-export const setScreen = (screen: IProjectScreen) => ({
-  type: TYPES.SET_SCREEN,
-  screen,
+export const setScreen = (screen: T.IProjectScreen): T.SetScreen => ({
+  type: 'PROJECTS:SET_SCREEN',
+  payload: { screen },
 });
 
-export const addElement = (parentId: string, type: string) => ({
-  type: TYPES.ADD_ELEMENT,
-  payload: { parentId, type },
+export const addElement = (parentID: string, type: string): T.AddElement => ({
+  type: 'PROJECTS:ADD_ELEMENT',
+  payload: { parentID, type },
 });
 
-export const setScenarioElements = (elements: IScenarioElements) => ({
-  type: TYPES.SET_ELEMENTS,
-  elements,
+export const setScenarioElements = (elements: T.IScenarioElements): T.SetScenarioElements => ({
+  type: 'PROJECTS:SET_SCENARIO_ELEMENTS',
+  payload: { elements },
 });
 
-export const updateElementStyles = (id: string, styles: CSSProperties) => ({
-  type: TYPES.UPDATE_ELEMENT_STYLES,
+export const updateElementStyles = (id: string, styles: CSSProperties): T.UpdateElementStyles => ({
+  type: 'PROJECTS:UPDATE_ELEMENT_STYLES',
   payload: { id, styles },
 });
 
 // TODO: here is not CSSProperties, here css-like properties written in lower-case-hyphenated
-export const updateScenarioStyles = (id: string, styles: CSSProperties & { 'flex-direction'?: string }) => ({
-  type: TYPES.UPDATE_SCENARIO_STYLES,
+export const updateScenarioStyles = (
+  id: string,
+  styles: CSSProperties & { 'flex-direction'?: string },
+): T.UpdateScenarioStyles => ({
+  type: 'PROJECTS:UPDATE_SCENARIO_STYLES',
   payload: { id, styles },
 });
 
-export const updateRootStyles = (id: string, styles: CSSProperties) => ({
-  type: TYPES.UPDATE_ROOT_STYLES,
+export const updateRootStyles = (id: string, styles: CSSProperties): T.UpdateRootStyles => ({
+  type: 'PROJECTS:UPDATE_ROOT_STYLES',
   payload: { id, styles },
 });
 
@@ -164,34 +159,34 @@ export const updateRootStyles = (id: string, styles: CSSProperties) => ({
 //   payload: { itemId, styles },
 // });
 
-export const updateElementParameters = (itemId: string, parameters: IScreenProps) => ({
-  type: TYPES.UPDATE_ELEMENT_PARAMETERS,
-  payload: { itemId, parameters },
+export const updateElementParameters = (itemID: string, parameters: T.IScreenProps): T.UpdateElementParameters => ({
+  type: 'PROJECTS:UPDATE_ELEMENT_PARAMETERS',
+  payload: { itemID, parameters },
 });
 
-export const setAlign = (itemId: string, type: string) => ({
-  type: TYPES.SET_ALIGN,
-  payload: { itemId, type },
+export const setAlign = (itemID: string, type: string): T.SetAlign => ({
+  type: 'PROJECTS:SET_ALIGN',
+  payload: { itemID, type },
 });
 
-export const changeScenario = (itemId: string, scenarioId: number) => ({
-  type: TYPES.CHANGE_SCENARIO,
-  payload: { itemId, scenarioId },
+export const changeScenario = (itemID: string, scenarioID: number): T.ChangeScenario => ({
+  type: 'PROJECTS:CHANGE_SCENARIO',
+  payload: { itemID, scenarioID },
 });
 
-export const changeElementType = (itemId: string, type: string) => ({
-  type: TYPES.CHANGE_ELEMENT_TYPE,
-  payload: { type, itemId },
+export const changeElementType = (itemID: string, type: string): T.ChangeElementType => ({
+  type: 'PROJECTS:CHANGE_ELEMENT_TYPE',
+  payload: { type, itemID },
 });
 
-export const delScenarioItem = (id: string) => ({
-  type: TYPES.DEL_SCENARIO_ITEM,
-  id,
+export const delScenarioItem = (id: string): T.DeleteScenarioItem => ({
+  type: 'PROJECTS:DELETE_SCENARIO_ITEM',
+  payload: { id },
 });
 
-export const changeScenarios = (screenId: number) => ({
-  type: TYPES.CHANGE_SCENARIOS,
-  screenId,
+export const changeScenarios = (screenID: number): T.ChangeScenarios => ({
+  type: 'PROJECTS:CHANGE_SCENARIOS',
+  payload: { screenID },
 });
 
 // unused
@@ -204,47 +199,46 @@ export const addScenario = (
   parentScenarioID: number | null,
   name: string,
   elements: IChooseElement[],
-) => ({
-  type: TYPES.ADD_SCENARIO,
+): T.AddScenario => ({
+  type: 'PROJECTS:ADD_SCENARIO',
   payload: { parentScenarioID, name, elements },
 });
 
-export const delScenario = (id: string) => ({
-  type: TYPES.DEL_SCENARIO,
-  id,
+export const delScenario = (id: string): T.DeleteScenario => ({
+  type: 'PROJECTS:DELETE_SCENARIO',
+  payload: { id },
 });
 
-export const renameScenario = (scenarioId: number, newName: string) => ({
-  type: TYPES.RENAME_SCENARIO,
-  scenarioId,
-  newName,
+export const renameScenario = (scenarioID: number, name: string): T.RenameScenario => ({
+  type: 'PROJECTS:RENAME_SCENARIO',
+  payload: { scenarioID, name },
 });
 
-export const setScenarios = (scenarios: IScenarios) => ({
-  type: TYPES.SET_SCENARIOS,
-  scenarios,
+export const setScenarios = (scenarios: T.IScenarios): T.SetScenarios => ({
+  type: 'PROJECTS:SET_SCENARIOS',
+  payload: { scenarios },
 });
 
-export const setModifyElements = (elements: number[]) => ({
-  type: TYPES.SET_MODIFY_ELEMENTS,
-  elements,
+export const setModifyElements = (elements: number[]): T.SetModifyElements => ({
+  type: 'PROJECTS:SET_MODIFY_ELEMENTS',
+  payload: { elements },
 });
 
-export const uploadFile = (payload: { file: any }) => ({
-  type: TYPES.UPLOAD_FILE,
+export const uploadFile = (payload: { file: any }): T.UploadFile => ({
+  type: 'PROJECTS:UPLOAD_FILE',
   payload,
 });
 
-export const uploadImageForNNSuccess = (payload: { imageURL: string, screenID: number }) => ({
-  type: TYPES.UPLOAD_IMAGE_FOR_NN_SUCCESS,
+export const uploadImageForNNSuccess = (payload: { imageURL: string, screenID: number }): T.uploadImageForNNSuccess => ({
+  type: 'PROJECTS:UPLOAD_IMAGE_FOR_NN_SUCCESS',
   payload,
 })
 
-export const getScreenNN = () => ({ type: TYPES.GET_SCREEN_NN });
+export const getScreenNN = (): T.GetScreenNN => ({ type: 'PROJECTS:GET_SCREEN_NN' });
 
-export const addContainer = (itemId: string) => ({
-  type: TYPES.ADD_CONTAINER,
-  itemId,
+export const addContainer = (itemID: string): T.AddContainer => ({
+  type: 'PROJECTS:ADD_CONTAINER',
+  payload: { itemID },
 });
 
 // export const setScreenData: ISetScreenData = screen_data => ({

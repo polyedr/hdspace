@@ -18,7 +18,7 @@ import {
   IListSortable,
   ILSItem,
   IScenarioElement,
-} from '$redux/project/reducer';
+} from '$redux/project/types';
 import { IChooseElement } from '$components/ModalAddElements/MainBlock';
 import { IStylesElement } from '$utils/StyleHelper';
 

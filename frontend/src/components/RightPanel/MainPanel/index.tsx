@@ -5,32 +5,26 @@ import * as R from 'ramda';
 
 import { AppReduxState } from '$shared/types/app';
 import * as Actions from '$redux/project/actions';
-import { IProjectScreen } from '$redux/project/reducer';
+import { IProjectScreen } from '$redux/project/types';
+import { selectors } from '$redux/project';
 import { Scrollbar } from '$components/UI/Scrollbar/';
 import { PanelEditProps } from '$components/RightPanel/PanelEditProps';
 import { ScenarioList } from '$components/RightPanel/ScenarioList';
 import { IActiveItem } from '$components/Editor/EditorWindow/';
 import { EditorProps } from '$containers/EditorLogic';
 import { LIST_SCENARIO_TYPE } from '$constants/defaultParams';
+
 import { IStylesElement } from '$utils/StyleHelper';
 import { Spinner } from '$components/UI/Spinner/';
 
 const styles = require('./styles.scss');
 
-const mapStateToProps = ({
-  project: {
-    scenarios,
-    libraryElements,
-    scenarioElements,
-    currentScreen,
-    loader,
-  },
-}: AppReduxState) => ({
-  scenarios,
-  scenarioElements,
-  libraryElements,
-  currentScreen,
-  loader,
+const mapStateToProps = (state: AppReduxState) => ({
+  scenarios: selectors.selectScenarios(state),
+  scenarioElements: selectors.selectScenariosElements(state),
+  libraryElements: selectors.selectLibraryElements(state),
+  currentScreen: selectors.selectCurrentScreen(state),
+  loader: selectors.selectLoader(state),
 });
 
 const mapDispatchToProps = {

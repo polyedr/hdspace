@@ -2,7 +2,7 @@ import React from 'react';
 import cn from 'classnames';
 import { Input, Button } from 'antd';
 
-import { IScreenProps } from '$redux/project/reducer';
+import { IScreenProps } from '$redux/project/types';
 import { getDefaultDateSelectOptions, DEFAULT_MAP_PROPS } from '$constants/defaultParams';
 import { IStylesElement } from '$utils/StyleHelper';
 import { GMap } from '$components/UI/GMap';

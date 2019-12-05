@@ -8,7 +8,7 @@ import {
   IScenarioItem,
   IScenarioElement,
   IScenarioElements,
-} from '$redux/project/reducer';
+} from '$redux/project/types';
 import {
   getElAndChildren,
 } from '$utils/parseListItems';
@@ -41,10 +41,11 @@ import {
 import { DEFAULT_INDENTS } from '$constants/defaultParams';
 import { reqWrapper } from '$redux/project/sagas/index';
 import { ReturnPromisedType } from '$shared/types';
-import { AppReduxState } from '$shared/types/app';
+
+import { selectors } from '../';
 
 export function* runLayoutAlgorithm(screenScenarios: IScenarios, scenariosElements: IScenarioElements) {
-  const { project: { currentScreen } }: AppReduxState = yield select();
+  const currentScreen: ReturnType<typeof selectors.selectCurrentScreen> = yield select(selectors.selectCurrentScreen);
   type Acc = {
     blocks: IScenarioItem[];
     containers: IScenarioItem[];
@@ -103,11 +104,11 @@ export function* runLayoutAlgorithm(screenScenarios: IScenarios, scenariosElemen
 }
 
 export function* changeScenariosSaga(action: ReturnType<typeof Actions.changeScenarios>) {
-  const { screenId } = action;
+  const { screenID } = action.payload;
   yield put(Actions.setScenarioLoader(true));
 
   const serverScreenScenarios: ReturnPromisedType<typeof apiGetScenarios> = yield call(
-    reqWrapper, apiGetScenarios, { screenID: screenId },
+    reqWrapper, apiGetScenarios, { screenID },
   );
 
   if (!serverScreenScenarios) return;
@@ -174,7 +175,8 @@ export function* changeScenarioSaga(action: ReturnType<typeof Actions.changeScen
 // unused
 export function* createScenarioSaga(action: ReturnType<typeof Actions.createScenario>) {
   const { payload: { name, type, elements } } = action;
-  const { project: { currentScreen, scenarios } }: AppReduxState = yield select();
+  const currentScreen: ReturnType<typeof selectors.selectCurrentScreen> = yield select(selectors.selectCurrentScreen);
+  const scenarios: ReturnType<typeof selectors.selectScenarios> = yield select(selectors.selectScenarios);
 
   const newScenario = getNewScenario(name, type, currentScreen.id, elements);
   const resultScenario: ReturnPromisedType<typeof apiAddScenario> = yield call(reqWrapper, apiAddScenario, newScenario);
@@ -228,14 +230,13 @@ export function* createScenarioSaga(action: ReturnType<typeof Actions.createScen
 
 export function* addScenarioSaga(action: ReturnType<typeof Actions.addScenario>) {
   const { payload: { parentScenarioID: setParentID = 0, name = 'Scenario name', elements: elementsToFormScenario } } = action;
-  const {
-    project: {
-      scenarios,
-      scenarioElements,
-      libraryElements,
-      currentScreen,
-    },
-  }: AppReduxState = yield select();
+  const libraryElements: ReturnType<typeof selectors.selectLibraryElements> = yield select(selectors.selectLibraryElements);
+  const scenarios: ReturnType<typeof selectors.selectScenarios> = yield select(selectors.selectScenarios);
+  const scenarioElements: ReturnType<typeof selectors.selectScenariosElements> = yield select(
+    selectors.selectScenariosElements,
+  );
+  const currentScreen: ReturnType<typeof selectors.selectCurrentScreen> = yield select(selectors.selectCurrentScreen);
+
   const parentScenarioID = setParentID === null ? Number(undefined) : setParentID; // when NaN - create new scenario, when number exists - add elements into specified scenario
   // Complete List Element
   const { newEl, existEl } = formingListEl(
@@ -379,16 +380,12 @@ export function* addScenarioSaga(action: ReturnType<typeof Actions.addScenario>)
   console.log('SAVE NEW SCENARIO', { resultScenario, resultScenarioEl });
 }
 
-export function* delScenarioSaga({ id }: ReturnType<typeof Actions.delScenario>): SagaIterator {
-  const {
-    project: {
-      scenarios,
-      scenarioElements,
-      currentScreen: {
-        listSortable,
-      },
-    },
-  }: AppReduxState = yield select();
+export function* delScenarioSaga({ payload: { id } }: ReturnType<typeof Actions.delScenario>): SagaIterator {
+  const scenarios: ReturnType<typeof selectors.selectScenarios> = yield select(selectors.selectScenarios);
+  const scenarioElements: ReturnType<typeof selectors.selectScenariosElements> = yield select(
+    selectors.selectScenariosElements,
+  );
+  const { listSortable }: ReturnType<typeof selectors.selectCurrentScreen> = yield select(selectors.selectCurrentScreen);
 
   const removeAllItems: string[] = getElAndChildren(id, listSortable);
   const removeElements = removeAllItems.filter((itemId) => {
@@ -439,13 +436,13 @@ export function* delScenarioSaga({ id }: ReturnType<typeof Actions.delScenario>)
 }
 
 export function* renameScenarioSaga(
-  { scenarioId, newName }: ReturnType<typeof Actions.renameScenario>,
+  { payload: { scenarioID, name } }: ReturnType<typeof Actions.renameScenario>,
 ): SagaIterator {
-  const { project: { scenarios } } = yield select();
+  const scenarios: ReturnType<typeof selectors.selectScenarios> = yield select(selectors.selectScenarios);
 
   const updateScenario = {
-    ...scenarios[scenarioId],
-    name: newName,
+    ...scenarios[scenarioID],
+    name: name,
   };
 
   const result_scenario: IScenarioItem = yield call(
@@ -462,14 +459,14 @@ export function* renameScenarioSaga(
 }
 
 export function* addContainerSaga(action: ReturnType<typeof Actions.addContainer>) {
-  const { itemId } = action;
-  const {
-    project: {
-      currentScreen: { id: screenID, listSortable },
-      scenarioElements,
-      scenarios,
-    },
-  }: AppReduxState = yield select();
+  const { itemID: itemId } = action.payload;
+  const scenarios: ReturnType<typeof selectors.selectScenarios> = yield select(selectors.selectScenarios);
+  const scenarioElements: ReturnType<typeof selectors.selectScenariosElements> = yield select(
+    selectors.selectScenariosElements,
+  );
+  const { id: screenID, listSortable }: ReturnType<typeof selectors.selectCurrentScreen> = yield select(
+    selectors.selectCurrentScreen,
+  );
 
   if (!listSortable[itemId]) return;
 

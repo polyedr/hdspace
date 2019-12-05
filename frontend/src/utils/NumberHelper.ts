@@ -1,4 +1,4 @@
-import { IScenarioElement } from "$redux/project/reducer";
+import { IScenarioElement } from "$redux/project/types";
 
 type TIsNumber = (value: string | number) => boolean;
 type TStrToNumber = (value: string) => number;

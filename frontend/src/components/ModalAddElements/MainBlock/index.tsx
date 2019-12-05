@@ -10,6 +10,7 @@ import { IUploadFile, UploadFile } from '$components/UI/UploadFile';
 import { MODAL_ADD_ELEMENTS_TABS } from '$constants/defaultParams';
 import { getGroupElements, IListCategoryEl, parseAddElementsTabs } from '$utils/parseScenario';
 import * as Actions from '$redux/project/actions';
+import { selectors } from '$redux/project';
 import { AppReduxState } from '$shared/types/app';
 
 const styles = require('./styles.scss');
@@ -22,8 +23,8 @@ export interface IChooseElement {
 
 function mapStateToProps(state: AppReduxState) {
   return {
-    uploadedImageInfo: state.project.uploadedImageInfo,
-    currentScreen: state.project.currentScreen,
+    uploadedImageInfo: selectors.selectUploadedImageInfo(state),
+    currentScreen: selectors.selectCurrentScreen(state),
   };
 }
 

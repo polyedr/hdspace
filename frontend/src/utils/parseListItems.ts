@@ -1,5 +1,5 @@
 import * as R from 'ramda';
-import { ISortableItem, IScreenProps, IListSortable } from '$redux/project/reducer';
+import { ISortableItem, IScreenProps, IListSortable } from '$redux/project/types';
 import { uniqueId } from './NumberHelper';
 // import { parseWidth } from '$utils/StyleHelper';
 
