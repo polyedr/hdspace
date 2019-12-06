@@ -85,6 +85,8 @@ export type uploadImageForNNSuccess = IAction<
 >;
 export type GetScreenNN = IPlainAction<'PROJECTS:GET_SCREEN_NN'>;
 export type AddContainer = IAction<'PROJECTS:ADD_CONTAINER', { itemID: string }>;
+export type RunLayoutAlgorithm = IAction<'PROJECTS:RUN_LAYOUT_ALGORITHM', { scenarios: IScenarios, elements: IScenarioElements }>;
+export type RunLayoutAlgorithmFinished = IPlainAction<'PROJECTS:RUN_LAYOUT_ALGORITHM_FINISHED'>;
 
 // unused
 export const createScenario = (name: string, type: string, elements?: number[]) => ({
@@ -137,7 +139,9 @@ export type Action =
   | UploadFile
   | uploadImageForNNSuccess
   | GetScreenNN
-  | AddContainer;
+  | AddContainer
+  | RunLayoutAlgorithm
+  | RunLayoutAlgorithmFinished;
 
 // export const updateStylesGroup = (itemId: string, styles: IScreenProps) => ({
 //   type: TYPES.UPDATE_STYLES_GROUP,

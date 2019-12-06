@@ -57,6 +57,8 @@ import { apiSaveScenarios } from '$api/scenario';
 
 import { selectors } from '../';
 
+const runLayoutAlgorithmFinishedType: ProjectT.RunLayoutAlgorithmFinished['type'] = 'PROJECTS:RUN_LAYOUT_ALGORITHM_FINISHED';
+
 function* LocationChange({ payload: { location } }: LocationChangeAction) {
   const { user: { tokenPair } }: AppReduxState = yield select();
 
@@ -180,7 +182,6 @@ function* setListSortableSaga(action: ReturnType<typeof Actions.setListSortable>
       const mainType = findParentType(parentID, scenarios);
       console.log({itemType, parentType, mainType});
 
-
       if (rawParentID && rawParentID !== 'root') {
         console.log('Remove Scenario');
         updateScenarios = {
@@ -207,7 +208,9 @@ function* setListSortableSaga(action: ReturnType<typeof Actions.setListSortable>
 
     const clearScenarios: IScenarios = R.omit(['0'], updateScenarios);
 
-    yield call(runLayoutAlgorithm, clearScenarios, updateElements);
+    yield put(Actions.runLayoutAlgorithm(clearScenarios, updateElements));
+    yield take(runLayoutAlgorithmFinishedType);
+
     yield put(Actions.setScenarios(clearScenarios));
 
     return;
@@ -335,7 +338,9 @@ function* setListSortableSaga(action: ReturnType<typeof Actions.setListSortable>
 
   const clearScenarios: IScenarios = R.omit(['0'], updateScenarios);
 
-  yield call(runLayoutAlgorithm, clearScenarios, updateElements);
+  yield put(Actions.runLayoutAlgorithm(clearScenarios, updateElements));
+  yield take(runLayoutAlgorithmFinishedType);
+
   yield put(Actions.setScenarioElements(updateElements));
   yield put(Actions.setScenarios(clearScenarios));
   // yield call(apiSaveScenarios, updateScenarios);
@@ -355,7 +360,7 @@ function* setListSortableSaga(action: ReturnType<typeof Actions.setListSortable>
   yield put(Actions.setModifyElements(R.union(modifyElements, modifiedElements)));
 }
 
-export function* delScenarioItemSaga(action: ReturnType<typeof Actions.delScenario>): SagaIterator {
+export function* delScenarioItemSaga(action: ReturnType<typeof Actions.delScenario>) {
   const { id } = action.payload;
   const scenarios: ReturnType<typeof selectors.selectScenarios> = yield select(selectors.selectScenarios);
   const scenarioElements: ReturnType<typeof selectors.selectScenariosElements> = yield select(
@@ -368,37 +373,35 @@ export function* delScenarioItemSaga(action: ReturnType<typeof Actions.delScenar
     return;
   }
 
-  const parseId = parseInt(id, 10);
-  const updateElements = R.omit([String(parseId)], scenarioElements);
+  const elementID = parseInt(id, 10);
+  const elementsWithoutDeleted = R.omit([String(elementID)], scenarioElements);
   const { parent_id } = getParams(id, scenarioElements, scenarios);
-  const { scenario } = scenarioElements[parseId];
-  const updateScenarios: IScenarios = {
+  const { scenario } = scenarioElements[elementID];
+
+  const updatedScenarios: IScenarios = {
     ...scenarios,
     [parent_id]: {
       ...scenarios[parent_id],
       parameters: {
-        ...R.path([parent_id, 'parameters'], scenarios),
-        children: R.without([id], R.path([parent_id, 'parameters', 'children'], scenarios) || []),
+        ...scenarios[parent_id].parameters,
+        children: R.without([id], scenarios[parent_id].parameters.children),
       },
     },
     [scenario]: {
       ...scenarios[scenario],
-      elements: R.without([parseId], R.prop('elements', scenarios[scenario])),
+      elements: R.without([elementID], scenarios[scenario].elements),
     },
   };
 
-  yield put(Actions.setScenarioElements(updateElements));
-  yield put(Actions.setScenarios(updateScenarios));
-  yield call(runLayoutAlgorithm, scenarios, updateElements);
+  yield put(Actions.setScenarioElements(elementsWithoutDeleted));
+  yield put(Actions.setScenarios(updatedScenarios));
 
-  const listScenario = Object.keys(updateScenarios).reduce((arr: IScenarioItem[], key) => (
-    scenarios[key] ? arr.concat(scenarios[key]) : arr
-  ), []);
+  yield put(Actions.runLayoutAlgorithm(updatedScenarios, elementsWithoutDeleted));
+  yield take(runLayoutAlgorithmFinishedType);
 
-  if (listScenario.length === 0) return;
-
-  const resultScenarios = yield call(reqWrapper, apiSaveScenarios, { data: listScenario });
-  const resultElements = yield call(reqWrapper, apiDelElement, { id: parseId });
+  // TODO: clean listSortable accordingly
+  const resultScenarios = yield call(reqWrapper, apiSaveScenarios, { data: R.values(R.pick([parent_id, scenario].map(String), updatedScenarios)) });
+  const resultElements = yield call(reqWrapper, apiDelElement, { id: elementID });
   console.log('SAVE', resultElements, resultScenarios);
 }
 
@@ -688,10 +691,12 @@ const delScenarioItemType: ProjectT.DeleteScenarioItem['type'] = 'PROJECTS:DELET
 const changeElementTypeType: ProjectT.ChangeElementType['type'] = 'PROJECTS:CHANGE_ELEMENT_TYPE';
 const uploadFileType: ProjectT.UploadFile['type'] = 'PROJECTS:UPLOAD_FILE';
 const getScreenNNType: ProjectT.GetScreenNN['type'] = 'PROJECTS:GET_SCREEN_NN';
+const runLayoutAlgorithmType: ProjectT.RunLayoutAlgorithm['type'] = 'PROJECTS:RUN_LAYOUT_ALGORITHM';
 
 
 export default function* projectSaga() {
   // yield fork(loadInitStart);
+  yield takeLatest(runLayoutAlgorithmType, runLayoutAlgorithm);
   yield takeLatest(REHYDRATE, authCheckSaga);
   yield takeLatest(LOCATION_CHANGE, LocationChange);
 
