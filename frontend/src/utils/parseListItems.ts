@@ -66,17 +66,17 @@ export interface ISortableItemTemp {
 // );
 
 export const getElAndChildren = (id: string, listSortable: IListSortable): string[] => (
-  (Array(R.path([id, 'children'], listSortable)) || []).reduce((listItem, childId) => {
-    const childrenItem: string[] = R.path([id, 'children'], listSortable) || [];
+  listSortable[id].children.reduce((acc, childID) => {
+    const children = listSortable[id].children;
 
-    if (childrenItem.length) {
-      return [
-        ...listItem,
-        ...childrenItem.reduce((listChild, currId) => (
-          [...listChild, ...getElAndChildren(currId, listSortable)]
-        ), [childId])];
+    if (children.length) {
+      return acc.concat(
+        ...children.reduce((innerAcc: string[], currId) => (
+          innerAcc.concat(...getElAndChildren(currId, listSortable))
+        ), [])
+      );
     }
 
-    return [...listItem, childId];
+    return acc.concat(childID);
   }, [id])
 );

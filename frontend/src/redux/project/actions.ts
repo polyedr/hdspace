@@ -241,6 +241,15 @@ export const addContainer = (itemID: string): T.AddContainer => ({
   payload: { itemID },
 });
 
+export const runLayoutAlgorithm = (scenarios: T.IScenarios, elements: T.IScenarioElements): T.RunLayoutAlgorithm => ({
+  type: 'PROJECTS:RUN_LAYOUT_ALGORITHM',
+  payload: { scenarios, elements },
+});
+
+export const runLayoutAlgorithmFinished = (): T.RunLayoutAlgorithmFinished => ({
+  type: 'PROJECTS:RUN_LAYOUT_ALGORITHM_FINISHED',
+});
+
 // export const setScreenData: ISetScreenData = screen_data => ({
 //   type: TYPES.SET_SCREEN_DATA,
 //   screen_data,
