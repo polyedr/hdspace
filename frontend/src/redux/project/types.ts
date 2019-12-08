@@ -1,6 +1,6 @@
 import { CSSProperties } from 'react';
 
-import { ICommunication, IPlainAction, IPlainFailAction, IAction } from '$shared/redux';
+import { IPlainAction, IPlainFailAction, IAction } from '$shared/redux';
 import { IChooseElement } from '$components/ModalAddElements/MainBlock';
 import { TYPES } from '$constants/actions';
 
@@ -9,6 +9,9 @@ export type ReduxState = {
     libraryElements: ILibraryElements;
     listProject: IListProject[];
   };
+  ui: {
+    activeItem: ActiveItem;
+  },
   edit: {
     currentProject: IProject;
     currentScreen: IProjectScreen;
@@ -21,6 +24,14 @@ export type ReduxState = {
     uploadedImageInfo?: UploadedImageInfo;
   };
   // communication: {};
+};
+
+export type ActiveItem = {
+  parentId: number;
+  itemId: string;
+  itemType: string;
+  name: string;
+  scenarioId: number;
 };
 
 export type LoadLibraryElements = IPlainAction<'PROJECTS:LOAD_LIBRARY_ELEMENTS'>;
@@ -87,6 +98,7 @@ export type GetScreenNN = IPlainAction<'PROJECTS:GET_SCREEN_NN'>;
 export type AddContainer = IAction<'PROJECTS:ADD_CONTAINER', { itemID: string }>;
 export type RunLayoutAlgorithm = IAction<'PROJECTS:RUN_LAYOUT_ALGORITHM', { scenarios: IScenarios, elements: IScenarioElements }>;
 export type RunLayoutAlgorithmFinished = IPlainAction<'PROJECTS:RUN_LAYOUT_ALGORITHM_FINISHED'>;
+export type SetActiveItem = IAction<'PROJECTS:SET_ACTIVE_ITEM', { activeItem: ActiveItem }>;
 
 // unused
 export const createScenario = (name: string, type: string, elements?: number[]) => ({
@@ -141,7 +153,8 @@ export type Action =
   | GetScreenNN
   | AddContainer
   | RunLayoutAlgorithm
-  | RunLayoutAlgorithmFinished;
+  | RunLayoutAlgorithmFinished
+  | SetActiveItem;
 
 // export const updateStylesGroup = (itemId: string, styles: IScreenProps) => ({
 //   type: TYPES.UPDATE_STYLES_GROUP,

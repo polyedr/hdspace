@@ -250,6 +250,11 @@ export const runLayoutAlgorithmFinished = (): T.RunLayoutAlgorithmFinished => ({
   type: 'PROJECTS:RUN_LAYOUT_ALGORITHM_FINISHED',
 });
 
+export const setActiveItem = (activeItem: T.ActiveItem): T.SetActiveItem => ({
+  type: 'PROJECTS:SET_ACTIVE_ITEM',
+  payload: { activeItem },
+});
+
 // export const setScreenData: ISetScreenData = screen_data => ({
 //   type: TYPES.SET_SCREEN_DATA,
 //   screen_data,

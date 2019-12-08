@@ -30,6 +30,7 @@ const mapStateToProps = (state: AppReduxState) => ({
   scenarioLoader: selectors.selectScenarioLoader(state),
   scenarios: selectors.selectScenarios(state),
   scenarioElements: selectors.selectScenariosElements(state),
+  activeItem: selectors.selectActiveItem(state),
 });
 
 const mapDispatchToProps = {
@@ -47,6 +48,7 @@ const mapDispatchToProps = {
   updateElementStyles: Actions.updateElementStyles,
   changeMinNavPanel: UserActions.changeMinNavPanel,
   changePrototypeMode: UserActions.changePrototypeMode,
+  setActiveItem: Actions.setActiveItem,
 };
 
 export type EditorProps = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & {
@@ -64,7 +66,9 @@ const EditorLogic: React.FunctionComponent<EditorProps> = ({
   scenarioLoader,
   scenarios,
   scenarioElements,
+  activeItem,
 
+  setActiveItem,
   changePrototypeMode,
   changeMinNavPanel,
   getProject,
@@ -95,6 +99,8 @@ const EditorLogic: React.FunctionComponent<EditorProps> = ({
     />
     <Editor
       project={currentProject}
+      activeItem={activeItem}
+      setActiveItem={setActiveItem}
       screen={currentScreen}
       scenarios={scenarios}
       scenarioElements={scenarioElements}

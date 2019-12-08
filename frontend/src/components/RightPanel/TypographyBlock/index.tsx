@@ -10,7 +10,7 @@ import { DropDown } from '$components/UI/DropDown/';
 import { Icon } from '$components/UI/Icon/';
 import { Button } from '$components/UI/Button/';
 import { FONTS } from '$constants/fonts';
-import { IActiveItem } from '$components/Editor/EditorWindow/';
+import { T as ProjectT } from '$redux/project';
 import { DEFAULT_TYPOGRAPHY, LIST_SCENARIO_TYPE } from '$constants/defaultParams';
 import { IPanelEditProps } from '$components/RightPanel/PanelEditProps';
 import { getPermissibleValue, safeParseFloat } from '$utils/NumberHelper';
@@ -22,7 +22,7 @@ const MAX_FONT_SIZE = 72;
 
 interface IComponentProps {
   styleItem: IPanelEditProps['styleItem'],
-  activeItem: IActiveItem,
+  activeItem: ProjectT.ActiveItem,
   updateElementStyles: IPanelEditProps['updateElementStyles'],
   updateScenarioStyles: IPanelEditProps['updateScenarioStyles'],
 }

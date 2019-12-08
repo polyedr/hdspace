@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 
 import * as Actions from '$redux/project/actions';
-import { IActiveItem } from '$components/Editor/EditorWindow/';
+import { T as ProjectT } from '$redux/project';
 import { elementTypes } from '$constants/menu';
 import {
   DEFAULT_PLACEHOLDER,
@@ -23,7 +23,7 @@ const ZOOM_STEP = 0.5;
 
 interface IComponentProps {
   params: IPanelEditProps['params'],
-  activeItem: IActiveItem,
+  activeItem: ProjectT.ActiveItem,
   itemType: string,
   updateElementParameters: typeof Actions.updateElementParameters,
 }

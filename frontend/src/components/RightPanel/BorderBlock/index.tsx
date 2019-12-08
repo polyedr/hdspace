@@ -2,7 +2,7 @@ import React, { useState, useCallback, } from 'react';
 import * as R from 'ramda';
 import classNames from 'classnames';
 
-import { IActiveItem } from '$components/Editor/EditorWindow/';
+import { T as ProjectT } from '$redux/project';
 import {
   LIST_SCENARIO_TYPE,
   MAX_BORDER_RADIUS,
@@ -25,7 +25,7 @@ const accessBorderRadius = (styleItem: IStylesElement) => {
 };
 
 interface IComponentProps {
-  activeItem: IActiveItem,
+  activeItem: ProjectT.ActiveItem,
   styleItem: IPanelEditProps['styleItem'],
   updateElementStyles: IPanelEditProps['updateElementStyles'],
   updateScenarioStyles: IPanelEditProps['updateScenarioStyles'],

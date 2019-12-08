@@ -6,7 +6,7 @@ import React, {
 import classNames from 'classnames';
 
 import * as Actions from '$redux/project/actions';
-import { IActiveItem } from '$components/Editor/EditorWindow/';
+import { T as ProjectT } from '$redux/project';
 import { LIST_SCENARIO_TYPE } from '$constants/defaultParams';
 import { IPanelEditProps } from '$components/RightPanel/PanelEditProps';
 import { safeParseInt } from '$utils/NumberHelper';
@@ -17,7 +17,7 @@ const MIN_PADDING = 0;
 
 interface IComponentProps {
   styleItem: IPanelEditProps['styleItem'],
-  activeItem: IActiveItem,
+  activeItem: ProjectT.ActiveItem,
   updateElementStyles: typeof Actions.updateElementStyles,
   updateScenarioStyles: typeof Actions.updateScenarioStyles,
 }

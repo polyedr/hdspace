@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, memo } from 'react';
 import classNames from 'classnames';
 import Sortable from 'react-sortablejs'; // maybe replace it with react-sortablejs-typescript?
 import { NavLink } from 'react-router-dom';
@@ -28,7 +28,7 @@ interface INavPanelScreenProps {
   renameScreen: typeof Actions.renameScreen;
 }
 
-const NavPanelScreen: React.FunctionComponent<INavPanelScreenProps> = ({
+const NavPanelScreen: React.FunctionComponent<INavPanelScreenProps> = memo(({
   isNavPanelMinimized,
   onMinimizerNavPanel,
   projectID,
@@ -138,7 +138,6 @@ const NavPanelScreen: React.FunctionComponent<INavPanelScreenProps> = ({
         </Button>
         <div className={styles.screensBlock}>
           <Sortable
-            key={uniqueId()}
             className={styles.screensTabsContainer}
             onChange={handleChange}
           >
@@ -242,6 +241,6 @@ const NavPanelScreen: React.FunctionComponent<INavPanelScreenProps> = ({
       )}
     </div>
   );
-};
+});
 
 export default NavPanelScreen;

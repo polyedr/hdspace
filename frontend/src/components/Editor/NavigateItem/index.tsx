@@ -1,5 +1,5 @@
 import React, { memo, useCallback } from 'react';
-import { IActiveItem } from '$components/Editor/EditorWindow';
+import { T as ProjectT } from '$redux/project';
 import { Button } from '$components/UI/Button';
 import { Icon } from '$components/UI/Icon';
 import { IRightPanelProps } from '$components/RightPanel/MainPanel/';
@@ -7,7 +7,7 @@ import { IRightPanelProps } from '$components/RightPanel/MainPanel/';
 const styles = require('./styles.scss');
 
 interface INavigateItemProps {
-  activeItem: IActiveItem,
+  activeItem: ProjectT.ActiveItem,
   addContainer: IRightPanelProps['addContainer'],
 
 }

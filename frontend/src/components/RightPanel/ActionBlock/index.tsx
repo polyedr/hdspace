@@ -7,7 +7,7 @@ import { Button } from '$components/UI/Button/';
 import { EditorProps } from '$containers/EditorLogic';
 import * as Actions from '$redux/project/actions';
 import { IPanelEditProps } from '$components/RightPanel/PanelEditProps';
-import { IActiveItem } from '$components/Editor/EditorWindow/';
+import { T as ProjectT } from '$redux/project';
 import { elementTypes } from '$constants/menu';
 
 const styles = require('./styles.scss');
@@ -15,7 +15,7 @@ const styles = require('./styles.scss');
 interface IComponentProps {
   project: EditorProps['currentProject'],
   params: IPanelEditProps['params'],
-  activeItem: IActiveItem,
+  activeItem: ProjectT.ActiveItem,
   itemType: string,
   updateElementParameters: typeof Actions.updateElementParameters,
 }

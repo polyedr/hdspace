@@ -11,6 +11,7 @@ import { Checkbox } from '$components/UI/Checkbox';
 import { Button } from '$components/UI/Button';
 import { RightPanel } from '$components/RightPanel/MainPanel/';
 import * as Actions from '$redux/project/actions';
+import { T as ProjectT } from '$redux/project';
 import * as userActions from '$redux/user/actions';
 import { DEFAULT_ACTIVE_ITEM, DEFAULT_SCREEN_MODE } from '$constants/defaultParams';
 import { EditorProps } from '$containers/EditorLogic';
@@ -23,14 +24,6 @@ import { getListNotDragging, getParams, getScenarioId } from '$utils/parseScenar
 const styles = require('./styles.scss');
 
 const isWorkContainer = true;
-
-export interface IActiveItem {
-  parentId: number,
-  itemId: string,
-  itemType: string,
-  name: string,
-  scenarioId: number,
-}
 
 export interface IScreenMode {
   isDefaultMode: boolean,
@@ -50,6 +43,8 @@ export interface IEditProps {
   isLPanelMinimized: IAppProps['isLPanelMinimized'],
   isNavPanelMinimized: EditorProps['isNavPanelMinimized'],
   isPrototypeMode: EditorProps['isPrototypeMode'],
+  activeItem: ProjectT.ActiveItem;
+  setActiveItem: typeof Actions.setActiveItem;
   saveScreen: typeof Actions.saveScreen,
   delScenarioItem: typeof Actions.delScenarioItem,
   changePrototypeMode: typeof userActions.changePrototypeMode,
@@ -66,6 +61,9 @@ export const Editor: React.FunctionComponent<IEditProps> = memo(({
   isNavPanelMinimized,
   isPrototypeMode,
 
+  activeItem,
+  setActiveItem,
+
   saveScreen,
   delScenarioItem,
   setListSortable,
@@ -74,7 +72,6 @@ export const Editor: React.FunctionComponent<IEditProps> = memo(({
 }) => {
   const [screenId, setScreenId] = useState<number>(-1);
   const [isMoving, setIsMoving] = useState<boolean>(true);
-  const [activeItem, setActiveItem] = useState<IActiveItem>(DEFAULT_ACTIVE_ITEM);
   const [listNotDragging, setListNotDragging] = useState<string[]>([]);
   const [currentScreenMode, setCurrentScreenMode] = useState<IScreenMode>({
     ...DEFAULT_SCREEN_MODE, isDefaultMode: true,
