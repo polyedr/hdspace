@@ -57,35 +57,20 @@ class IsOwner(permissions.BasePermission):
             return obj.owner == request.user
 
 
-@permission_classes([IsAuthenticated])
-class ProjectList(generics.ListCreateAPIView):
+class ProjectViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
 
-    """
-    get:
-    Return a list of all the existing projects.
-
-    post:
-    Create a new project instance.
-    """
+    def get_queryset(self):
+        return self.get_serializer_class().setup_eager_loading(self.queryset)
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
-    def get_queryset(self):
-        project_list = Project.objects.filter(user=self.request.user)
-        return project_list
-
-
-
-class ProjectDetail(generics.RetrieveUpdateDestroyAPIView):
-    """
-    Retrieve, update or delete a project detail
-    """
-
-    queryset = Project.objects.all()
-    serializer_class = ProjectSerializer
+    def filter_queryset(self, queryset):
+        queryset = queryset.filter(user=self.request.user)
+        return queryset
 
 
 class ElementViewSet(viewsets.ViewSet):
