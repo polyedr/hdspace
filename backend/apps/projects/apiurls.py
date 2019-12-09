@@ -2,34 +2,19 @@
 
 from django.urls import path, include
 from rest_framework import routers
-from rest_framework.routers import DefaultRouter, Route
-from rest_framework_bulk import BulkModelViewSet
 from rest_framework_bulk.routes import BulkRouter
 
-from apps.projects.models import ScenarioElement
 from .apiviews import (
-    ProjectList,
-    ProjectMemberList,
     ProjectScreenList,
     ScreenEventList,
     ProjectTaskList,
-    ProjectActivityList,
     ProjectInvitationList,
-    ScreenAssigneeList,
-    TaskTimeList,
     ScreenCommentList,
-    CommentList,
-    ProjectDetail,
-    ProjectMemberDetail,
     ProjectScreenDetail,
     ScreenEventDetail,
     ProjectTaskDetail,
-    ProjectActivityDetail,
     ProjectInvitationDetail,
-    ScreenAssigneeDetail,
-    TaskTimeDetail,
     ScreenCommentDetail,
-    CommentDetail,
     # ElementList,
     ElementViewSet,
     ScenarioViewSet,
@@ -39,15 +24,10 @@ from .apiviews import (
     ProjectScreenMultipleView,
     ScreenScenarioDestroyCascadeViewSet,
     ScreeScenarioViewSet,
-    ScenarioElementViewSet
-)
+    ScenarioElementViewSet,
+    ProjectViewSet)
 
 app_name = "projects"
-
-api_project_patterns = [
-    path("projects/", ProjectList.as_view(), name="api_projects"),
-    path("projects/<int:pk>/", ProjectDetail.as_view(), name="api_project"),
-]
 
 api_project_invitation_patterns = [
     path(
@@ -63,21 +43,26 @@ api_project_invitation_patterns = [
 ]
 
 api_screen_event_patterns = [
-    path("screen-events/", ScreenEventList.as_view(), name="api_screen_events"),
+    path("screen-events/", ScreenEventList.as_view(),
+         name="api_screen_events"),
     path(
-        "screen-events/<int:pk>/", ScreenEventDetail.as_view(), name="api_screen_event"
+        "screen-events/<int:pk>/", ScreenEventDetail.as_view(),
+        name="api_screen_event"
     ),
 ]
 
 api_project_task_patterns = [
-    path("project-tasks/", ProjectTaskList.as_view(), name="api_project_tasks"),
+    path("project-tasks/", ProjectTaskList.as_view(),
+         name="api_project_tasks"),
     path(
-        "project-tasks/<int:pk>/", ProjectTaskDetail.as_view(), name="api_project_task"
+        "project-tasks/<int:pk>/", ProjectTaskDetail.as_view(),
+        name="api_project_task"
     ),
 ]
 
 api_project_screen_patterns = [
-    path("project-screens/", ProjectScreenList.as_view(), name="api_project_screens"),
+    path("project-screens/", ProjectScreenList.as_view(),
+         name="api_project_screens"),
     path(
         "project-screens-multiple/",
         ProjectScreenMultipleView.as_view(),
@@ -89,8 +74,6 @@ api_project_screen_patterns = [
         name="api_project_screen",
     ),
 ]
-
-
 
 api_screen_scenario_patterns = [
     path(
@@ -111,15 +94,16 @@ api_scenario_element_patterns = [
 router = routers.DefaultRouter()
 router.register(r"screen-scenarios", ScreeScenarioViewSet)
 router.register(r"scenario-elements", ScenarioElementViewSet)
+router.register(r"projects", ProjectViewSet)
 
-router.register(r"library-elements", ElementViewSet, base_name="api_library_elements")
+router.register(r"library-elements", ElementViewSet,
+                base_name="api_library_elements")
 # api_library_element_patterns = router.urls
 
 router.register(
     r"library-scenarios", ScenarioViewSet, base_name="api_library_scenarios"
 )
 api_library_scenario_element_patterns = router.urls
-
 
 router = BulkRouter()
 router.register(
@@ -130,8 +114,6 @@ router.register(
 
 api_scenario_element_multi_patterns = router.urls
 
-
-
 router = BulkRouter()
 router.register(
     r"screen-scenarios-delete-cascade",
@@ -141,9 +123,9 @@ router.register(
 
 api_screen_scenario_cascade_multi_patterns = router.urls
 
-
 api_screen_comment_patterns = [
-    path("screen-comments/", ScreenCommentList.as_view(), name="api_screen_comments"),
+    path("screen-comments/", ScreenCommentList.as_view(),
+         name="api_screen_comments"),
     path(
         "screen-comments/<int:pk>/",
         ScreenCommentDetail.as_view(),
@@ -151,9 +133,7 @@ api_screen_comment_patterns = [
     ),
 ]
 
-
 urlpatterns = [
-    path("", include(api_project_patterns)),
     # path("", include(api_project_invitation_patterns)),
     # path("", include(api_screen_event_patterns)),
     # path("", include(api_project_task_patterns)),
