@@ -24,8 +24,9 @@ export interface IElement {
 
 type TRenderElement = (args: IElement) => React.ReactNode;
 
-const renderBlock: TRenderElement = ({ active, children, style }) => (
+const renderBlock: TRenderElement = ({ id, active, children, style }) => (
   <div
+    data-ls-id={id}
     className={cn('addedItem', styles.addedBlock, active && styles.activated)}
     style={{
       ...style,
@@ -36,8 +37,9 @@ const renderBlock: TRenderElement = ({ active, children, style }) => (
   </div>
 );
 
-const renderContainer: TRenderElement = ({ active, children, style }) => (
+const renderContainer: TRenderElement = ({ id, active, children, style }) => (
   <div
+    data-ls-id={id}
     className={cn('addedItem', styles.addedContainer, active && styles.activated)}
     style={{
       ...style,
@@ -54,6 +56,7 @@ const renderGroup: TRenderElement = (props) => {
   return (
     <div
       id={id}
+      data-ls-id={id}
       className={cn('addedItem', styles.addedGroup, active && styles.activated)}
       style={{
         ...style,
@@ -70,6 +73,7 @@ const renderButton: TRenderElement = (props) => {
   return (
     <Button
       id={id}
+      data-ls-id={id}
       type="primary"
       className={cn(active && styles.activated)}
       style={{
@@ -85,6 +89,7 @@ const renderButton: TRenderElement = (props) => {
 const renderHyperLine: TRenderElement = ({ id, style, active, isDisabled, params }) => (
   <a
     id={id}
+    data-ls-id={id}
     className={cn('addedItem', styles.addedHyperLink, active && styles.activated)}
     href={isDisabled ? '#' : params.url}
     // href="javascript:void(0);"
@@ -99,6 +104,7 @@ const renderInput: TRenderElement = (props) => {
   return (
     <Input
       id={id}
+      data-ls-id={id}
       type="text" // TODO: use other types such as email, etc.
       className={cn(active && styles.activated)}
       readOnly={isDisabled}
@@ -116,6 +122,7 @@ const renderSelect: TRenderElement = ({
 }) => (
   <select
     id={id}
+    data-ls-id={id}
     className={cn('addedItem', styles.addedSelect, active && styles.activated)}
     style={{ ...style }}
   >
@@ -138,6 +145,7 @@ const renderText: TRenderElement = ({
 }) => (
   <p
     id={id}
+    data-ls-id={id}
     className={cn('addedItem', styles.addedElem, active && styles.activated)}
     style={{ ...style }}
   >
@@ -148,6 +156,7 @@ const renderText: TRenderElement = ({
 const renderImg: TRenderElement = ({ id, params, active }) => (
   <img
     src={params.image}
+    data-ls-id={id}
     className={cn('addedItem', styles.addedElem, active && styles.activated)}
     alt={id}
   />
@@ -156,6 +165,7 @@ const renderImg: TRenderElement = ({ id, params, active }) => (
 const renderMapWidget: TRenderElement = ({ id, params, active, style }) => (
   <div
     id={id}
+    data-ls-id={id}
     className={cn('addedItem', styles.addedWidget, active && styles.activated)}
     style={{ ...style }}
   >
@@ -170,6 +180,7 @@ const renderMapWidget: TRenderElement = ({ id, params, active, style }) => (
 const renderCalendarWidget: TRenderElement = ({ id, params, style, active }) => (
   <div
     id={id}
+    data-ls-id={id}
     className={cn('addedItem', styles.addedCalendar, active && styles.activated)}
     style={{ ...style }}
   >
@@ -180,6 +191,7 @@ const renderCalendarWidget: TRenderElement = ({ id, params, style, active }) => 
 const renderClockWidget: TRenderElement = ({ id, params, style, active }) => (
   <div
     id={id}
+    data-ls-id={id}
     className={cn('addedItem', styles.addedCalendar, active && styles.activated)}
     style={{ ...style }}
   >
@@ -229,6 +241,7 @@ const renderElem: TRenderElement = ({
       // console.warn(`No render type of ${params.html_type}, element id:${id} !`);
       return (
         <div
+          data-ls-id={id}
           className={cn(styles.addedElem, active && styles.activated)}
           style={{
             ...style,

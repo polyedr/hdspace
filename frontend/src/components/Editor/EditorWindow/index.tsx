@@ -17,7 +17,6 @@ import { DEFAULT_ACTIVE_ITEM, DEFAULT_SCREEN_MODE } from '$constants/defaultPara
 import { EditorProps } from '$containers/EditorLogic';
 import { IAppProps } from '$containers/App';
 import { Scrollbar } from '$components/UI/Scrollbar';
-import { ISortableItemTemp } from '$utils/parseListItems';
 import { getClassDevice } from '$utils/dom';
 import { getListNotDragging, getParams, getScenarioId } from '$utils/parseScenario';
 
@@ -30,10 +29,6 @@ export interface IScreenMode {
   isTabletMode: boolean,
   isMobileMode: boolean,
 }
-
-export type TOnChoose = (
-  parentId: number, itemId: string, target?: React.SyntheticEvent
-) => void;
 
 export interface IEditProps {
   project: EditorProps['currentProject'],
@@ -52,7 +47,7 @@ export interface IEditProps {
   updateElementStyles: typeof Actions.updateElementStyles,
 }
 
-export const Editor: React.FunctionComponent<IEditProps> = memo(({
+export const Editor: React.FC<IEditProps> = memo(({
   project,
   screen,
   scenarios,
@@ -92,30 +87,39 @@ export const Editor: React.FunctionComponent<IEditProps> = memo(({
     }
   }, [screen.id]);
 
-  const getValueSize = useCallback((value: string) => {
-  //   if (value === 'auto' || value === '100%') {
-  //     return value;
-  //   }
-  //
-  //   return (isNumber(value) && value) || '100%';
-  }, []);
-
-  const handleActiveElementChange: TOnChoose = useCallback((parentId, itemId) => {
+  const handleActiveElementChange = useCallback((parentId, itemId) => {
     const { name, type } = getParams(itemId, scenarioElements, scenarios);
     const scenarioId = getScenarioId(itemId, scenarioElements, scenarios);
-    const parentType: string = parentId === 0 ? 'root' : R.path([parentId, 'struct_type'], scenarios) || '';
-    const list = getListNotDragging(type, parentId, parentType, scenarios);
+    const list = getListNotDragging(type, parentId, scenarios);
 
-    setActiveItem({
-      parentId,
-      itemId,
-      itemType: type,
-      name,
-      scenarioId,
-    });
-
+    setActiveItem({ parentId, itemId, itemType: type, name, scenarioId });
     setListNotDragging(list);
   }, [scenarios, scenarioElements]);
+
+  const handleRootClick = useCallback((event: React.MouseEvent) => {
+    const target = (event.target as HTMLElement)?.closest('[data-ls-id]');
+
+    if (!target) {
+      return;
+    }
+    const itemID = (target as HTMLElement).dataset['lsId'];
+    
+    if (itemID === activeItem.itemId) return;
+
+    if (itemID) {
+      if (itemID === 'root') {
+        setActiveItem(DEFAULT_ACTIVE_ITEM);
+      } else {
+        const { name, type, parent_id } = getParams(itemID, scenarioElements, scenarios);
+        const scenarioId = getScenarioId(itemID, scenarioElements, scenarios);
+        const list = getListNotDragging(type, parent_id, scenarios);
+    
+        // TODO: research where it is used and make sure it's the needed parent id
+        setActiveItem({ parentId: parent_id, itemId: itemID, itemType: type, name, scenarioId });
+        setListNotDragging(list);
+      }
+    }
+  }, [scenarios, scenarioElements, listNotDragging, setListNotDragging]);
 
   const handleDelScenarioItem = useCallback(() => {
     if (activeItem.parentId === -1) return;
@@ -153,10 +157,6 @@ export const Editor: React.FunctionComponent<IEditProps> = memo(({
     changePrototypeMode(!isPrototypeMode);
   }, [isPrototypeMode, changePrototypeMode]);
 
-  const handleChooseRoot = useCallback(() => {
-    setActiveItem(DEFAULT_ACTIVE_ITEM);
-  }, []);
-
   const handleSaveScreen = useCallback(() => {
     const screenBody = document.getElementById('root');
     const widgets = Array.from(document.querySelectorAll('iframe'));
@@ -180,6 +180,7 @@ export const Editor: React.FunctionComponent<IEditProps> = memo(({
         isNavPanelMinimized && styles.editorContainer_minimized,
         screenId === -1 && styles.editorContainer_hide,
       )}
+      onClick={handleRootClick}
     >
       {
         screen && R.hasPath(['listSortable', 'root'], screen) && (
@@ -295,7 +296,7 @@ export const Editor: React.FunctionComponent<IEditProps> = memo(({
                     styles.editorWorkContainer,
                     getClassDevice(styles, currentScreenMode, isPrototypeMode, isScreenRotated, isWorkContainer),
                   )}
-                  onClick={handleChooseRoot}
+                  data-ls-id="root"
                 >
                   <div
                     className={classNames(
@@ -343,13 +344,13 @@ export const Editor: React.FunctionComponent<IEditProps> = memo(({
                               )
                             } */}
                             <Recursive
-                              item={screen.listSortable.root as ISortableItemTemp}
+                              item={screen.listSortable.root}
                               activeItemId={activeItem.itemId}
                               isMoving={isMoving}
                               listNotDragging={listNotDragging}
-                              onActiveElementChange={handleActiveElementChange}
                               onChange={setListSortable}
                               setIsMoving={setIsMoving}
+                              onActiveElementChange={handleActiveElementChange} // needed to activate item before dragging, in order to get new listNotDraggable
                               styles_root={screen.styles_root}
                             />
                           </React.Fragment>

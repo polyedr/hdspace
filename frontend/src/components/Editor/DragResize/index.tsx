@@ -17,7 +17,6 @@ type Props = {
   updateElementStyles: typeof Actions.updateElementStyles;
   isDraggable: boolean;
   isResizable: boolean;
-  onChooseToResize(itemID: string): void;
   setIsMoving(value: boolean): void;
 };
 
@@ -232,16 +231,6 @@ export class DragResize extends React.Component<Props, State> {
   };
 
   @autobind
-  private handleChooseToResize(e: React.ChangeEvent) {
-    e.stopPropagation();
-
-    const { sortableId, onChooseToResize, isDraggable } = this.props;
-    if (isDraggable) { // TODO: look at how isDraggable defined and rename
-      onChooseToResize(sortableId);
-    }
-  };
-
-  @autobind
   private handleMouseOver(event: React.MouseEvent) {
     (event.target as HTMLElement)?.closest?.('.addedItem')?.classList.add('hovered');
   };
@@ -291,7 +280,8 @@ export class DragResize extends React.Component<Props, State> {
 
     return (
       <span
-        data-id={sortableId}
+        data-id={sortableId} // used by sortable
+        data-ls-id={sortableId}
         className={classNames(
           styles.dragResizeItem,
           isResizable ? styles['dragResizeItem_is-resizable'] : undefined) // removes 100% width from span if element is resizable (to place wrapper precisely around element)
@@ -312,7 +302,6 @@ export class DragResize extends React.Component<Props, State> {
               // width: (width && width - deltaX) || 'auto',
               // height: (height && height - deltaY) || 'auto',
             },
-            onClick: this.handleChooseToResize,
             onMouseOver: this.handleMouseOver,
             onMouseOut: this.handleMouseOut,
           },

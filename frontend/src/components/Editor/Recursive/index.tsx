@@ -8,8 +8,8 @@ import { ISortableItemTemp } from '$utils/parseListItems';
 import { SortableGroup } from '$components/Editor/SortableGroup';
 import { DragResize } from '$components/Editor/DragResize';
 import { RENDERERS } from '$components/UI/RenderElements';
-import { IEditProps, TOnChoose } from '$components/Editor/EditorWindow';
-import { IListSortable } from '$redux/project/types';
+import { IEditProps } from '$components/Editor/EditorWindow';
+import { IListSortable, ILSItem } from '$redux/project/types';
 import { selectors } from '$redux/project';
 import { getItemsPair, getParams, idToLSId } from '$utils/parseScenario';
 import { LIST_SCENARIO_TYPE } from '$constants/defaultParams';
@@ -42,14 +42,14 @@ const mapDispatchToProps = {
 };
 
 export type OwnProps = {
-  item: ISortableItemTemp,
+  item: ILSItem,
   activeItemId: string,
   isMoving: boolean,
   listNotDragging: string[],
   styles_root?: {},
 
-  onActiveElementChange: TOnChoose,
   onChange: IEditProps['setListSortable'],
+  onActiveElementChange(parentId: number, childID: string): void,
   setIsMoving: (value: boolean) => void,
 }
 
@@ -72,19 +72,15 @@ const RecursiveComponent: React.FC<Props> = (props) => {
     scenarioList,
     updateElementStyles,
   } = props;
+
   const handleChooseToSort = useCallback((itemIndex) => {
+    // TOOD: needed to track elements change. rewrite without onActiveElementChange use
     if (item.children[itemIndex] !== activeItemId) {
       onActiveElementChange(item.id, item.children[itemIndex]);
     }
   }, [item, activeItemId, onActiveElementChange]);
 
-  const handleChooseToResize = useCallback((itemId) => {
-    if (activeItemId !== itemId) {
-      onActiveElementChange(item.id, itemId);
-    }
-  }, [activeItemId, item.id, onActiveElementChange]);
-
-  const handleItemPositionChange = useCallback((index, list, parentId) => {
+  const handleItemPositionChange = useCallback((index: number, list: string[], parentId: string) => {
     onChange(index, list, activeItemId, parentId);
   }, [activeItemId, onChange]);
 
@@ -113,7 +109,7 @@ const RecursiveComponent: React.FC<Props> = (props) => {
       styleItem={{ flexDirection: getStyles(item.id).flexDirection }}
       onChoose={handleChooseToSort}
       onChange={handleItemPositionChange}
-      align={item.props && item.props.align}
+      // align={item.props && item.props.align}
       styles_root={item.id === 0 ? convertPropCSS(styles_root) : {}}
       // styles_root={item.id === 0 ? convertPropCSS(styles_root) : {}}
     >
@@ -139,7 +135,6 @@ const RecursiveComponent: React.FC<Props> = (props) => {
               sortableId={itemId}
               style={parsedStyles}
               updateElementStyles={updateElementStyles}
-              onChooseToResize={handleChooseToResize}
               setIsMoving={setIsMoving}
               isDraggable={isDraggable}
               isResizable={!LIST_SCENARIO_TYPE.includes(struct_type)}

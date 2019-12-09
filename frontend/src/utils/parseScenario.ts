@@ -295,6 +295,7 @@ export const getItemsPair = (
   }, { scenarioList: {}, elementList: {} })
 );
 
+// getParams -> getParamsOfNonRootItem
 export const getParams = (
   id: string,
   elementList: IScenarioElements,
@@ -318,7 +319,7 @@ export const getParams = (
       parameters: currScenario.parameters || {},
       styles: currScenario.styles || {},
       name: currScenario.name || 'name',
-      parent_id: currScenario.parent_id || -1,
+      parent_id: currScenario.parent_id ?? -1,
       type: currScenario.struct_type || 'undefined',
     };
   }
@@ -330,7 +331,7 @@ export const getParams = (
     parameters: currElement.parameters || {},
     styles: currElement.styles || {},
     name: currElement.name || 'name',
-    parent_id: currElement.parameters.parent_id || -1,
+    parent_id: currElement.parameters.parent_id ?? -1,
     type: currElement.func_type || 'undefined',
     image: currElement.image || undefined,
   };
@@ -441,7 +442,6 @@ export const findParentType = (id: number, scenarios: IScenarios): string => {
 export const getListNotDragging = (
   type: string,
   parentId: number,
-  parentType: string,
   scenarios: IScenarios
 ): string[] => {
   switch (type) {
