@@ -204,18 +204,14 @@ class ScreenScenarioMultipleSerializer(
 
 
 class ProjectSerializer(serializers.ModelSerializer):
-    projectscreen = ProjectScreenSerializer(many=True, read_only=True)
-    # This represents the user relationship
-    # user = UserSerializer(read_only=True)
     user = UserSerializer(read_only=True)
 
     class Meta:
         model = Project
-        # fields = ("preview", "name", "status", "projectscreen")
         fields = ("preview", "name", "status", "projectscreen", "user", "id")
-        # fields = "__all__"
-        # extra_kwargs = {"preview": {"read_only": True}}
-        extra_kwargs = {"preview": {"read_only": True}, "user": {"read_only": True}}
+        extra_kwargs = {
+            "preview": {"read_only": True},
+        }
 
     """
     def create(self, validated_data):
@@ -232,6 +228,14 @@ class ProjectSerializer(serializers.ModelSerializer):
         project.save()
         return project
 
+    @staticmethod
+    def setup_eager_loading(qs):
+        queryset = qs.\
+            select_related('user').\
+            prefetch_related(
+                'projectscreen'
+            )
+        return queryset
 
 class ScreenEventSerializer(serializers.ModelSerializer):
     class Meta:
