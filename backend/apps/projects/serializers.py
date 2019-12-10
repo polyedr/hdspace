@@ -211,6 +211,7 @@ class ProjectSerializer(serializers.ModelSerializer):
         fields = ("preview", "name", "status", "projectscreen", "user", "id")
         extra_kwargs = {
             "preview": {"read_only": True},
+            "projectscreen": {"read_only": True}
         }
 
     """
