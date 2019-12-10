@@ -5,6 +5,8 @@ from apps.projects.models import ScenarioElement, ScreenScenario
 import cv2
 import pytesseract
 import numpy as np
+from keras.preprocessing.image import load_img
+from keras_preprocessing.image import img_to_array
 
 config_tesseract = "-l eng --oem 1 --psm 3"
 
@@ -140,7 +142,8 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
 
         recognized_elements = []
         if imgpath:
-            img = cv2.imread(imgpath)
+            img = load_img(imgpath)
+            img = img_to_array(img)
 
             results = model.detect([img], verbose=1)
             r = results[0]
