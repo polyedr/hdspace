@@ -199,7 +199,7 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
             for idx, (roi, class_id, score) in enumerate(zip(r["rois"], r["class_ids"], r['scores'])):
                 if idx not in excluded_indices:
                     # Simple comparison with Colab results
-                    print(class_id, score)
+                    # print(class_id, score)
 
                     y1, x1, y2, x2 = roi
                     roi_our = img[y1:y2, x1:x2]
@@ -236,13 +236,13 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                         tess_string = text.lower().split()
 
                         # The whole string format to process further
-                        letters_str = " ".join(filter(str.isalpha, text))
+                        letters_str = text
 
                         fclasses_predictions = []
                         for ts in tess_string:
                             ts.strip()
                             ts = re.sub("[^@a-z A-Z]+", "", ts)
-                            print("ts=", ts)
+                            # print("ts=", ts)
                             # print([key for key, value in f_dictionary.items() if ts in value])
                             fclass = [
                                 key for key, value in f_dictionary.items() if ts in value
@@ -350,6 +350,7 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                         )
 
         for element_data in recognized_elements:
+            # print(element_data)
             ScenarioElement.objects.create(scenario=scenario, **element_data)
 
         return scenario
