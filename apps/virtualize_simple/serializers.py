@@ -4,18 +4,18 @@ from rest_framework import serializers
 from apps.projects.models import ScenarioElement, ScreenScenario
 import cv2
 import pytesseract
-import numpy as np
+# import numpy as np
 from keras.preprocessing.image import load_img
 from keras_preprocessing.image import img_to_array
 
 config_tesseract = "-l eng --oem 1 --psm 3"
 
 f_dictionary = {
-    "username": ["username", "user", "username", "alias", "nickname", "first-last"],
+    "username": ["username", "user", "username", "alias", "nickname", "first-last", "full", "name"],
     "phone": ["phone", "telephone", "mobile"],
     "email": ["email", "e-mail"],
     "password": ["password"],
-    "firstname": ["firstname", "first", "name"],
+    "firstname": ["firstname", "first"],
     "lastname": ["lastname", "last", "surname"],
     "day": ["day"],
     "month": ["month"],
@@ -213,10 +213,12 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                     # Remove artifacts connected to image border
                     # This can decrease the prediction quality for images
                     # roi_our = clear_border(roi_our)
+                    '''
                     # Apply dilation and erosion to remove some noise
                     kernel = np.ones((1, 1), np.uint8)
                     roi_our = cv2.dilate(roi_our, kernel, iterations=1)
                     roi_our = cv2.erode(roi_our, kernel, iterations=1)
+                    '''
                     # Apply threshold to get image with only black and white
                     # roi_our = apply_threshold(roi_our, 20)
                     # print(pytesseract.image_to_string(roi_our))
@@ -234,7 +236,7 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                         tess_string = text.lower().split()
 
                         # The whole string format to process further
-                        letters_str = "".join(filter(str.isalpha, text))
+                        letters_str = " ".join(filter(str.isalpha, text))
 
                         fclasses_predictions = []
                         for ts in tess_string:
