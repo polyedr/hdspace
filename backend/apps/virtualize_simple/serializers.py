@@ -119,7 +119,7 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         scenario_data = {
-            "name": "string1",
+            "name": "Root",
             "type": "login",
             "struct_type": "scenario",
             "parameters": {},
@@ -372,22 +372,82 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                     pass
                     # Vertical and horizontal groups detection
 
-            vertical_groups = [(1,2)]
-            horizontal_groups = [(2,3), (4,5)]
+            # Elements, groups and scenarios assignment
+            # {(element1, element2): scenario1, (element3, element4): scenario2}
+            vertical_groups = {(1, 2): -1}
+            horizontal_groups = {(2, 3): -1, (4, 5): -1}
 
-            scenario_horizontal_data = {
-                "name": "horizontal",
+            scenario_vertical_data = {
+                "name": "scenario_vertical",
                 "type": "common_scenario",
-                "struct_type": "scenario",
+                "struct_type": "container",
+                "direction": "vertical",
                 "parameters": {},
                 "parent_id": scenario.id,
             }
 
-            # Create scenarios for horizontal groups
-            for h_group in horizontal_groups:
+            # Create scenarios for vertical groups
+            # Keys are tuples of elements, and the value is a new vertical scenario assigned
+            for v_group_key in vertical_groups:
+                children = []
+                scenario_vertical = ScreenScenario.objects.create(screen=screen, **scenario_vertical_data)
+                vertical_groups[v_group_key] = scenario_vertical.id
+                # Create elements for vertical groups scenarios
+                for element_data_vertical in v_group_key:
+                    scenario_vertical_element = ScenarioElement.objects.create(scenario=scenario_vertical, **recognized_elements[element_data_vertical])
+                    # Fill the children list for parameters
+                    children.append(str(scenario_vertical_element.id) + 'e')
+                print(vertical_groups)
+                print(children)
+                scenario_vertical.parameters["children"] = children
+                scenario_vertical.save()
+
+            scenario_horizontal_data = {
+                "name": "scenario_horizontal",
+                "type": "common_scenario",
+                "struct_type": "container",
+                "direction": "horizontal",
+                "parameters": {},
+                "parent_id": scenario.id,
+            }
+
+            '''
+            Create scenarios for horizontal groups
+            Include scenarios for vertical groups
+            Update scenarios for vertical groups with new parents            
+            '''
+
+            for h_group_key in horizontal_groups:
+                children = []
                 scenario_horizontal = ScreenScenario.objects.create(screen=screen, **scenario_horizontal_data)
-                # Create elements for horizontal groups scenarios
-                # ScenarioElement.objects.create(scenario=scenario, **element_data_horizontal)
+                horizontal_groups[h_group_key] = scenario_horizontal.id
+                # Create elements for horizontal groups scenarios if they're not in vertical grouping already
+                for element_data_horizontal in h_group_key:
+                    # Compare if in vertical group.
+                    # Each horizontal element is being placed not more than at one vertical group
+                    # Assign the vertical group if exists
+                    vertical_group = (-1, -1)
+                    for v_group in vertical_groups:
+                        if(element_data_horizontal in v_group):
+                            vertical_group = v_group
+
+                    if(vertical_group == (-1, -1)):
+                        # If the horizontal element does not exist in any vertical group
+                        scenario_horizontal_element = ScenarioElement.objects.create(scenario=scenario_horizontal, **recognized_elements[element_data_horizontal])
+                        # Fill the children list for parameters
+                        children.append(str(scenario_horizontal_element.id) + 'e')
+                    else:
+                        # If the horizontal element exists in vertical group
+                        # Find the related vertical group scenario from its id
+                        vertical_group_scenario = ScreenScenario.objects.get(id=vertical_groups[vertical_group])
+                        children.append(str(vertical_group_scenario.id) + 's')
+                        vertical_group_scenario.parent_id = scenario_horizontal.id
+                        vertical_group_scenario.save()
+
+                print(horizontal_groups)
+                print(children)
+                scenario_horizontal.parameters["children"] = children
+                scenario_horizontal.save()
 
         for element_data in recognized_elements:
             # print(element_data)
