@@ -1,3 +1,4 @@
+import copy
 import re
 from project.settings import model, MEDIA_ROOT
 from rest_framework import serializers
@@ -364,8 +365,8 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
             # The serializer input is list of scenarios, one of them is the whole image scenario. Elements are distributed among these scenarios.
             #
 
-            vertical_groups = []
-            horizontal_groups = []
+            vertical_groups = {}
+            horizontal_groups = {}
 
             for idx, (roi, class_id, score) in enumerate(zip(r["rois"], r["class_ids"], r['scores'])):
                 if idx not in excluded_indices:
@@ -449,9 +450,39 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                 scenario_horizontal.parameters["children"] = children
                 scenario_horizontal.save()
 
+        # Find all free vertical scenarios.
+        # Free vertical scenario does not share any element
+        # with horizontal scenario
+        # Should check if vertical and horizontal groups exists before these calculations
+
+        if vertical_groups:
+            vertical_groups_free = copy.deepcopy(vertical_groups)
+
+        if (vertical_groups and horizontal_groups):
+            for v_group_key in list(vertical_groups_free.keys()):
+                for h_group_key in horizontal_groups:
+                    # Sets are disjoints if and only if their intersection is the empty set
+                    if (set(v_group_key).isdisjoint(set(h_group_key))):
+                        print("v_group_key, h_group_key =", v_group_key, h_group_key)
+                        del vertical_groups_free[v_group_key]
+
+
+        children = []
         for element_data in recognized_elements:
             # print(element_data)
-            ScenarioElement.objects.create(scenario=scenario, **element_data)
+            # Get all the elements left. Mark them as children.
+            scenario_general_element = ScenarioElement.objects.create(scenario=scenario, **element_data)
             # Fill the children information to the main scenario for the parameters
+            children.append(str(scenario_general_element.id) + 'e')
+
+        # Get all the horizontal scenarios. Mark them as children.
+        for h_group_key in horizontal_groups:
+            children.append(str(horizontal_groups[h_group_key]) + 's')
+
+        # Get all the free vertical scenarios. Mark them as children.
+        for v_group_key in vertical_groups_free:
+            children.append(str(vertical_groups_free[v_group_key]) + 's')
+
+        scenario.parameters["children"] = children
 
         return scenario
