@@ -123,6 +123,7 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
             "type": "login",
             "struct_type": "scenario",
             "parameters": {},
+            "parent_id": -1,
         }
 
         """
@@ -349,8 +350,48 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                             }
                         )
 
+            # Pass through all the rois. Find all the vertical grouping signals. Find all the horizontal grouping signals.
+            # First assign scenarios for the vertical grouping, second assign scenarios for the horizontal grouping,
+            # For each vertical grouping the scenario should be assigned. Vertical grouping contains two elements:
+            # first, input or select, and second, the text.
+            # Scenarios of vertical grouping should be included to the scenarios of horizontal grouping if they exist and finally to the resulted whole image scenario.
+            # 1. Create scenarios for vertical groups. 2. Create scenarios for horizontal groups (when element is in vertical group, take the whole vertical group)
+            # Data structures here are lists of tuples for the vertically or horizonntally aligned elements
+            # Vertically aligned: [(text0, input0), (text1, input1), ...]
+            # Horizontally aligned: [(text2, input2), (input3, input4), ...]
+            # Maybe that's possible to create scenarios for vertically and horizontally aligned scenarios only after the elements creation.
+            # That's possible to save positioning of all the elements if requested
+            # The serializer input is list of scenarios, one of them is the whole image scenario. Elements are distributed among these scenarios.
+            #
+
+            vertical_groups = []
+            horizontal_groups = []
+
+            for idx, (roi, class_id, score) in enumerate(zip(r["rois"], r["class_ids"], r['scores'])):
+                if idx not in excluded_indices:
+                    pass
+                    # Vertical and horizontal groups detection
+
+            vertical_groups = [(1,2)]
+            horizontal_groups = [(2,3), (4,5)]
+
+            scenario_horizontal_data = {
+                "name": "horizontal",
+                "type": "common_scenario",
+                "struct_type": "scenario",
+                "parameters": {},
+                "parent_id": scenario.id,
+            }
+
+            # Create scenarios for horizontal groups
+            for h_group in horizontal_groups:
+                scenario_horizontal = ScreenScenario.objects.create(screen=screen, **scenario_horizontal_data)
+                # Create elements for horizontal groups scenarios
+                # ScenarioElement.objects.create(scenario=scenario, **element_data_horizontal)
+
         for element_data in recognized_elements:
             # print(element_data)
             ScenarioElement.objects.create(scenario=scenario, **element_data)
+            # Fill the children information to the main scenario for the parameters
 
         return scenario
