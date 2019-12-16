@@ -450,9 +450,9 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                         # Check if the roi1 is text
                         if class_id in {1, 4} and class_id1 in {3}:
                             # Check if the elements were not assigned to the vertical groups before
-                            if (idx not in set(*vertical_groups.keys())) and (
-                                idx1 not in set(*vertical_groups.keys())
-                            ):
+                            # Flatten vertical group keys
+                            fvgk = set(i for sub in vertical_groups.keys() for i in sub)
+                            if ((idx not in fvgk) and (idx1 not in fvgk)):
                                 # Check if the text and input elements are close to each other by vertical direction
                                 if (border_bottom < mid_text < mid_input) or (
                                     mid_input < mid_text < border_top
@@ -477,11 +477,12 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                         # Horizontal groups detection
                         # Check if the roi is text or input or select
                         # Check if the roi1 is text or input or select
-                        if class_id in {1, 3, 4} and class_id1 in {1, 3, 4}:
+                        if class_id in {1, 3, 4} and class_id1 in {1, 3, 4} and (idx != idx1):
                             # Check if the elements were not assigned to the vertical groups before
-                            if (idx not in set(*horizontal_groups.keys())) and (
-                                idx1 not in set(*horizontal_groups.keys())
-                            ):
+
+                            # Flatten horizontal group keys
+                            fhgk = set(i for sub in horizontal_groups.keys() for i in sub)
+                            if ((idx not in fhgk) and (idx1 not in fhgk)):
                                 # Check if these elements are laying at one level horizontally
                                 # They should overlap vertically and this level of the overlap
                                 # should be at least 0.25
@@ -499,6 +500,8 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                                             horizontal_group_tuple: horizontal_group_scenario
                                         }
                                     )
+            # These recognized elements should be assigned for the vertical groups,
+            # horizontal groups and to the general scenario
             # Elements, groups and scenarios assignment
             # {(element1, element2): scenario1, (element3, element4): scenario2}
             # vertical_groups = {(1, 2): -1}
@@ -523,13 +526,14 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                 vertical_groups[v_group_key] = scenario_vertical.id
                 # Create elements for vertical groups scenarios
                 for element_data_vertical in v_group_key:
+                    print(element_data_vertical)
                     scenario_vertical_element = ScenarioElement.objects.create(
                         scenario=scenario_vertical,
                         **recognized_elements[element_data_vertical]
                     )
                     # Fill the children list for parameters
                     children.append(str(scenario_vertical_element.id) + "e")
-                print(vertical_groups)
+                print("vertical_groups=", vertical_groups)
                 print(children)
                 scenario_vertical.parameters["children"] = children
                 scenario_vertical.save()
@@ -567,6 +571,11 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
 
                     if vertical_group == (-1, -1):
                         # If the horizontal element does not exist in any vertical group
+
+                        print("recognized_elements=", recognized_elements)
+                        print("element_data_horizontal=", element_data_horizontal)
+                        print("recognized_elements[element_data_horizontal]=", recognized_elements[element_data_horizontal])
+
                         scenario_horizontal_element = ScenarioElement.objects.create(
                             scenario=scenario_horizontal,
                             **recognized_elements[element_data_horizontal]
@@ -583,7 +592,7 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                         vertical_group_scenario.parent_id = scenario_horizontal.id
                         vertical_group_scenario.save()
 
-                print(horizontal_groups)
+                print("horizontal_groups=", horizontal_groups)
                 print(children)
                 scenario_horizontal.parameters["children"] = children
                 scenario_horizontal.save()
@@ -595,6 +604,8 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
 
         if vertical_groups:
             vertical_groups_free = copy.deepcopy(vertical_groups)
+        else:
+            vertical_groups_free = {}
 
         if vertical_groups and horizontal_groups:
             for v_group_key in list(vertical_groups_free.keys()):
@@ -606,7 +617,7 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
 
         children = []
         for element_data in recognized_elements:
-            # print(element_data)
+            print(element_data)
             # Get all the elements left. Mark them as children.
             scenario_general_element = ScenarioElement.objects.create(
                 scenario=scenario, **element_data
@@ -615,12 +626,14 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
             children.append(str(scenario_general_element.id) + "e")
 
         # Get all the horizontal scenarios. Mark them as children.
-        for h_group_key in horizontal_groups:
-            children.append(str(horizontal_groups[h_group_key]) + "s")
+        if horizontal_groups:
+            for h_group_key in horizontal_groups:
+                children.append(str(horizontal_groups[h_group_key]) + "s")
 
         # Get all the free vertical scenarios. Mark them as children.
-        for v_group_key in vertical_groups_free:
-            children.append(str(vertical_groups_free[v_group_key]) + "s")
+        if vertical_groups_free:
+            for v_group_key in vertical_groups_free:
+                children.append(str(vertical_groups_free[v_group_key]) + "s")
 
         scenario.parameters["children"] = children
 
