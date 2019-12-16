@@ -1,8 +1,26 @@
+import * as R from 'ramda';
 import { initial } from '../initial';
 import * as T from '../types';
 
 export function editReducer(state: T.ReduxState['edit'] = initial.edit, action: T.Action): T.ReduxState['edit'] {
   switch (action.type) {
+    case 'PROJECTS:UPDATE_VIEW_TREE': {
+      return {
+        ...state,
+        ...action.payload,
+      };
+    }
+
+    case 'PROJECTS:CLEAN_AFTER_PREV_SCREEN': {
+      return {
+        ...state,
+        ...R.pick(
+          ['currentScreen', 'scenarios', 'scenarioElements', 'modifyElements'],
+          initial.edit,
+        ),
+      };
+    }
+
     case 'PROJECTS:SET_PROJECT': {
       return { ...state, currentProject: action.payload.project };
     }

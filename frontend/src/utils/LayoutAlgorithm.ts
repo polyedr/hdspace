@@ -11,7 +11,7 @@ import {
   ILibraryElement,
 } from '$redux/project/types';
 import { getBuoyancy } from '$utils/NumberHelper';
-import { scenarioToLS } from '$utils/parseScenario';
+import { scenarioItemToLS, elementToLS } from '$utils/parseScenario';
 import { DEFAULT_INDENTS } from '$constants/defaultParams';
 import { IChooseElement } from '$components/ModalAddElements/MainBlock';
 
@@ -343,26 +343,21 @@ export const formingListBlock = (
 export const completeLS = (
   scenarios: IScenarios,
   scenariosElements: IScenarioElements,
-  parent: ILSItem,
+  root: ILSItem,
 ): IListSortable => {
-  const hasRootAsParent = (scenarioID: string) => scenarios[scenarioID].parent_id === 0;
+  const childrenToLS = (rawChildrenIDs: string[]): IListSortable => rawChildrenIDs.reduce((acc: IListSortable, rawChildID) => {
+    const isScenario = rawChildID.slice(-1) === 's';
+    const childID = parseInt(rawChildID);
+    if (isScenario) {
+      const scenario = scenarios[childID];
+      return { ...acc, [rawChildID]: scenarioItemToLS(scenario), ...childrenToLS(scenario.parameters.children) };
+    }
+    const element = scenariosElements[childID];
+    return { ...acc, [rawChildID]: elementToLS(element) };
+  }, { root });
 
-  const parentChildren = Object
-    .keys(scenarios)
-    .reduce((acc: IScenarioItem[], scenarioID) => hasRootAsParent(scenarioID) ? [...acc, scenarios[scenarioID]] : acc, [])
-    .sort(greaterBuoyancyFirst);
-
-  const itemsLS = scenarioToLS(parentChildren, scenarios, scenariosElements);
-
-  const newLS = {
-    root: {
-      ...parent,
-      children: parentChildren.map(({ id }) => `${id}s`),
-    },
-    ...itemsLS,
-  };
-
-  return newLS;
+  const listSortable = childrenToLS(root.children);
+  return listSortable;
 };
 
 /* export const init = (

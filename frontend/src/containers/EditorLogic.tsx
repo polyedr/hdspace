@@ -35,7 +35,7 @@ const mapStateToProps = (state: AppReduxState) => ({
 
 const mapDispatchToProps = {
   getProject: Actions.getProject,
-  setProjectScreens: Actions.setProjectScreens,
+  changeScreensOrder: Actions.changeScreensOrder,
   activateScreen: Actions.activateScreen,
   addScreen: Actions.addScreen,
   setScreen: Actions.setScreen,
@@ -49,6 +49,8 @@ const mapDispatchToProps = {
   changeMinNavPanel: UserActions.changeMinNavPanel,
   changePrototypeMode: UserActions.changePrototypeMode,
   setActiveItem: Actions.setActiveItem,
+  addContainer: Actions.addContainer,
+  resetScreenState: Actions.resetScreenState,
 };
 
 export type EditorProps = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & {
@@ -72,7 +74,7 @@ const EditorLogic: React.FunctionComponent<EditorProps> = ({
   changePrototypeMode,
   changeMinNavPanel,
   getProject,
-  setProjectScreens,
+  changeScreensOrder,
   activateScreen,
   addScreen,
   saveScreen,
@@ -81,6 +83,8 @@ const EditorLogic: React.FunctionComponent<EditorProps> = ({
   delScenarioItem,
   setListSortable,
   updateElementStyles,
+  addContainer,
+  resetScreenState,
 }: EditorProps) => (
   <React.Fragment>
     <NavPanelScreen
@@ -91,7 +95,7 @@ const EditorLogic: React.FunctionComponent<EditorProps> = ({
       project={currentProject}
       screen={currentScreen}
       getProject={getProject}
-      setProjectScreens={setProjectScreens}
+      changeScreensOrder={changeScreensOrder}
       activateScreen={activateScreen}
       addScreen={addScreen}
       delScreen={delScreen}
@@ -112,6 +116,8 @@ const EditorLogic: React.FunctionComponent<EditorProps> = ({
       delScenarioItem={delScenarioItem}
       setListSortable={setListSortable}
       updateElementStyles={updateElementStyles}
+      addContainer={addContainer}
+      resetScreenState={resetScreenState}
     />
     <Spinner
       active={currentProject.projectLoader || currentScreen.screenLoader || scenarioLoader}

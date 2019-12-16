@@ -87,9 +87,9 @@ export const PanelEditProps: React.FunctionComponent<IPanelEditProps> = ({
     updateRootStyles(activeItem.itemId, newBackground);
   }, [updateRootStyles, styleItem, activeItem.itemId]);
 
-  const currentItem = R.prop(activeItem.itemId, listSortable);
-
-  if (!currentItem) return null;
+  const activeItemID = activeItem.itemType === 'root' ? 'root' : activeItem.itemId;
+  
+  const currentItem = R.prop(activeItemID, listSortable);
 
   return (
     <React.Fragment>
@@ -102,7 +102,7 @@ export const PanelEditProps: React.FunctionComponent<IPanelEditProps> = ({
         addScenario={addScenario}
         addContainer={addContainer}
       />
-      { activeItem.itemId === 'root' && (
+      {activeItem.itemType === 'root' && (
         <div className="propsPanelBlock">
           <div className="propsPanelHeaderBlock">
             <p>Root background</p>
@@ -133,7 +133,7 @@ export const PanelEditProps: React.FunctionComponent<IPanelEditProps> = ({
           </div>
         </div>
       )}
-      { activeItem.parentId !== -1 && (
+      {activeItem.itemType !== 'root' && (
         <React.Fragment>
           <ScenarioBlock
             activeItem={activeItem}
@@ -148,15 +148,15 @@ export const PanelEditProps: React.FunctionComponent<IPanelEditProps> = ({
               <p>Elements</p>
             </div>
             <div className="propsPanelContentBlock">
-              { LIST_SCENARIO_TYPE.indexOf(currentItem.type) !== -1 && (
-                <GroupElementsDirectionBlock
-                  orientation={orientation}
-                  params={params}
-                  setOrientation={setOrientation}
-                  onAlign={onAlign}
-                />
-              )}
-              { currentItem.type !== elementTypes.hyperLine && (
+            {currentItem && LIST_SCENARIO_TYPE.indexOf(currentItem.type) !== -1 && (
+              <GroupElementsDirectionBlock
+                orientation={orientation}
+                params={params}
+                setOrientation={setOrientation}
+                onAlign={onAlign}
+              />
+            )}
+              {currentItem && currentItem.type !== elementTypes.hyperLine && (
                 <React.Fragment>
                   <IndentsBlock
                     styleItem={styleItem}
@@ -173,7 +173,7 @@ export const PanelEditProps: React.FunctionComponent<IPanelEditProps> = ({
                 </React.Fragment>
               )}
               {
-                currentItem.type !== elementTypes.image && (
+                currentItem && currentItem.type !== elementTypes.image && (
                   <TypographyBlock
                     styleItem={styleItem}
                     activeItem={activeItem}
@@ -195,7 +195,7 @@ export const PanelEditProps: React.FunctionComponent<IPanelEditProps> = ({
                 updateScenarioStyles={updateScenarioStyles}
               />
               {
-                (currentItem.type === elementTypes.hyperLine
+                (currentItem && currentItem.type === elementTypes.hyperLine
                   || currentItem.type === elementTypes.button) && (
                   <ActionBlock
                     project={project}
@@ -207,7 +207,7 @@ export const PanelEditProps: React.FunctionComponent<IPanelEditProps> = ({
                 )
               }
               {
-                (currentItem.type === elementTypes.button
+                (currentItem && currentItem.type === elementTypes.button
                 || currentItem.type === elementTypes.text
                 || currentItem.type === elementTypes.input
                 || currentItem.type === elementTypes.map) && (

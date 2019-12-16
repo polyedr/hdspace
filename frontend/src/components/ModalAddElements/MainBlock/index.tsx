@@ -103,7 +103,7 @@ const Component: React.FunctionComponent<Props> = memo((props) => {
     } else if (!chooseElements.length) {
       setErrorMsg('No items for the scenario.');
     } else {
-      const finalScenarioName = scenarioName.trim() || 'Scenario name';
+      const finalScenarioName = scenarioName.trim() || 'Container';
       const finalScenarioTypeID = scenarioTypeId === null ? null : Number(scenarioTypeId);
 
       setErrorMsg('');

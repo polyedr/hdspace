@@ -116,7 +116,7 @@ export const DEFAULT_PROJECT = {
 
 export const DEFAULT_LS = {
   root: {
-    id: 0,
+    id: -1,
     type: 'root',
     children: [],
   },

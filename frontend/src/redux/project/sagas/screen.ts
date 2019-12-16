@@ -1,6 +1,6 @@
 import { SagaIterator } from 'redux-saga';
 import {
-  call, select, put, all,
+  call, select, put, all, take,
 } from 'redux-saga/effects';
 import * as R from 'ramda';
 import { push } from 'connected-react-router';
@@ -17,9 +17,13 @@ import {
   setScreenLoader,
   setModifyElements,
   setLoader,
-  clearAfterPrevScreen,
+  updateViewTree,
 } from '$redux/project/actions';
-import { convertScenarioElements } from '$utils/parseScenario';
+import * as Actions from '$redux/project/actions';
+import {
+  convertScenarios,
+  convertScenarioElements,
+} from '$utils/parseScenario';
 import { DEFAULT_LS, DEFAULT_SCREEN } from '$constants/defaultParams';
 import {
   IProject,
@@ -28,7 +32,7 @@ import {
   ISortableItem,
   IScenarioElement,
 } from '$redux/project/types';
-import { apiSaveScenario, apiSetScenarioNeuralNetwork } from '$api/scenario';
+import { apiSaveScenario, apiSetScenarioNeuralNetwork, apiGetScenarios } from '$api/scenario';
 import { apiGetElements, apiSaveElements } from '$api/element';
 import {
   apiAddScreen,
@@ -40,14 +44,15 @@ import {
 import { ReturnPromisedType } from '$shared/types';
 
 import { reqWrapper } from '.';
-import { selectors } from '../';
+import { selectors, T } from '../';
+import { createContainer } from './scenario';
 
+const runLayoutAlgorithmFinishedType: T.RunLayoutAlgorithmFinished['type'] = 'PROJECTS:RUN_LAYOUT_ALGORITHM_FINISHED';
 
 export function* activateScreenSaga({ payload }: ReturnType<typeof activateScreen>) {
   const { screenID } = payload;
 
   yield put(setScreenLoader(true));
-  yield put(clearAfterPrevScreen());
 
   const screen: ReturnPromisedType<typeof apiGetScreen> = yield call(reqWrapper, apiGetScreen, { id: screenID });
 
@@ -57,13 +62,43 @@ export function* activateScreenSaga({ payload }: ReturnType<typeof activateScree
     ...DEFAULT_SCREEN,
     ...R.omit(['screen_data_text'], screen),
   };
-
-  yield put(changeScenarios(screenToActivate.id));
   yield put(setScreen(screenToActivate));
+
+  yield put(Actions.setScenarioLoader(true));
+
+  const serverScreenScenarios: ReturnPromisedType<typeof apiGetScenarios> = yield call(
+    reqWrapper, apiGetScenarios, { screenID },
+  );
+
+  if (!serverScreenScenarios) return;
+
+  const rootScenario = serverScreenScenarios.find(x => x.parent_id === -1) as T.IScenarioItem;
+  const rootLSItem: T.ILSItem = {
+    ...DEFAULT_LS.root,
+    id: rootScenario.id,
+    children: rootScenario.parameters.children,
+  };
+
+  const screenScenarios = convertScenarios(serverScreenScenarios);
+  const scenariosIDs = Object.keys(screenScenarios);
+
+  const serverScenariosElements: ReturnPromisedType<typeof apiGetElements> = scenariosIDs.length > 0
+  ? yield call(reqWrapper, apiGetElements, { scenariosIDs })
+  : [];
+
+  if (!serverScenariosElements) return;
+
+  const scenariosElements = convertScenarioElements(serverScenariosElements);
+
+  yield put(Actions.runLayoutAlgorithm(screenScenarios, scenariosElements, rootLSItem));
+  yield take(runLayoutAlgorithmFinishedType);
+
+  yield put(Actions.setScenarioLoader(false));
   yield put(setScreenLoader(false));
 }
 
 export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
+  yield put(Actions.clearAfterPrevScreen());
   const { projectID, name } = payload;
   const data = {
     project: projectID,
@@ -78,21 +113,42 @@ export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
   const createdScreen: ReturnPromisedType<typeof apiAddScreen> = yield call(reqWrapper, apiAddScreen, { data });
   if (!createdScreen) return;
 
+  const rootScenario: T.IScenarioItem = yield call(createContainer, {
+    screen: createdScreen.id,
+    styles: {
+      width: '100%',
+      display: 'flex',
+      'flex-direction': 'column',
+      'align-items': 'center',
+      'min-height': '100%',
+    }
+  });
+
+  const listSortable: T.IListSortable = { root: { ...DEFAULT_LS.root, id: rootScenario.id } };
+
   const screen = R.omit(
     ['screen_data_text'],
-    R.assoc('listSortable', DEFAULT_LS, createdScreen),
+    R.assoc('listSortable', listSortable, createdScreen),
   );
 
-  yield put(clearAfterPrevScreen());
-  yield put(setScreen(screen));
+  yield put(updateViewTree({
+    screen,
+    scenarios: { [rootScenario.id]: rootScenario }
+  }));
 
-  const currentProject: ReturnType<typeof selectors.selectCurrentProject> = yield select(selectors.selectCurrentProject);
+  const currentProject: ReturnType<typeof selectors.selectCurrentProject> = yield select(
+    selectors.selectCurrentProject
+  );
   const updateProject: IProject = R.assoc(
     'projectscreen',
-    // TODO: remove any
-    R.append(screen as any, currentProject.projectscreen),
+    R.append(screen.id, currentProject.projectscreen),
     currentProject,
   );
+
+  yield call(reqWrapper, apiSaveScreen, {
+    id: screen.id,
+    data: R.omit(['listSortable', 'screenLoader', 'image', 'screen_data_json', 'buoyancy'], screen),
+  });
 
   yield put(setProject(updateProject));
   yield put(push(`/project/${projectID}/${screen.id}`))
@@ -139,9 +195,7 @@ export function* saveScreenSaga({ payload: { canvas } }: ReturnType<typeof saveS
   yield put(setScreen(updateScreen));
   yield put(setProject({
     ...currentProject,
-    projectscreen: currentProject.projectscreen.map(s => (
-      s.id !== updateScreen.id ? s : updateScreen
-    )),
+    projectscreen: currentProject.projectscreen.map(screenID => screenID !== updateScreen.id ? screenID : updateScreen),
   }));
 
   const resultScenarios: ReturnPromisedType<typeof apiSaveScenario> = yield all(
@@ -176,13 +230,13 @@ export function* delScreenSaga({ payload }: ReturnType<typeof delScreen>) {
 
   const result: IProject = R.assoc(
     'projectscreen',
-    currentProject.projectscreen.filter(s => s.id !== screenID),
+    currentProject.projectscreen.filter(id => id !== screenID),
     currentProject,
   );
 
   yield put(setProject(result));
 
-  const lastScreenID = R.last(result.projectscreen)?.id;
+  const lastScreenID = R.last(result.projectscreen);
 
   if (!lastScreenID) {
     yield put(setScreen(DEFAULT_SCREEN));
@@ -194,50 +248,51 @@ export function* delScreenSaga({ payload }: ReturnType<typeof delScreen>) {
   // yield call(getListProjectSaga);
 }
 
+// TODO: preload screens for such edits
 export function* renameScreenSaga({ payload }: ReturnType<typeof renameScreen>) {
-  const { screenID, name } = payload;
-  const currentScreen: ReturnType<typeof selectors.selectCurrentScreen> = yield select(
-    selectors.selectCurrentScreen,
-  );
-  const currentProject: ReturnType<typeof selectors.selectCurrentProject> = yield select(selectors.selectCurrentProject);
+  // const { screenID, name } = payload;
+  // const currentScreen: ReturnType<typeof selectors.selectCurrentScreen> = yield select(
+  //   selectors.selectCurrentScreen,
+  // );
+  // const currentProject: ReturnType<typeof selectors.selectCurrentProject> = yield select(selectors.selectCurrentProject);
 
-  const currScreen = currentProject.projectscreen.find(screen => screen.id === screenID);
+  // const currScreen = currentProject.projectscreen.find(id => id === screenID);
 
-  if (!currScreen) return;
+  // if (!currScreen) return;
 
-  const updateScreen = {
-    ...R.omit(['image'], currScreen),
-    name,
-  };
+  // const updatedScreen = {
+  //   ...R.omit(['image'], currScreen),
+  //   name,
+  // };
 
-  yield call(reqWrapper, apiSaveScreen, { id: screenID, data: updateScreen });
+  // yield call(reqWrapper, apiSaveScreen, { id: screenID, data: updatedScreen });
 
-  const updateProjectScreens = currentProject.projectscreen.map((screen) => {
-    if (screen.id === screenID) {
-      return {
-        ...screen,
-        name,
-      };
-    }
+  // const updateProjectScreens = currentProject.projectscreen.map((id) => {
+  //   if (id === screenID) {
+  //     return {
+  //       ...screen,
+  //       name,
+  //     };
+  //   }
 
-    return screen;
-  });
+  //   return screen;
+  // });
 
-  const updateProject: IProject = {
-    ...currentProject,
-    projectscreen: updateProjectScreens,
-  };
+  // const updateProject: IProject = {
+  //   ...currentProject,
+  //   projectscreen: updateProjectScreens,
+  // };
 
-  yield put(setProject(updateProject));
+  // yield put(setProject(updateProject));
 
-  if (currentScreen.id === screenID) {
-    const updateCurrScreen = {
-      ...currentScreen,
-      name,
-    };
+  // if (currentScreen.id === screenID) {
+  //   const updateCurrScreen = {
+  //     ...currentScreen,
+  //     name,
+  //   };
 
-    yield put(setScreen(updateCurrScreen));
-  }
+  //   yield put(setScreen(updateCurrScreen));
+  // }
 }
 
 export function* getScreenNNSaga() {
@@ -253,7 +308,7 @@ export function* getScreenNNSaga() {
   };
   const resultScenario: IScenarioItem = yield call(reqWrapper, apiSetScenarioNeuralNetwork, { data });
 
-  if (currentProject.projectscreen.some(s => s.id === resultScenario.id)) {
+  if (currentProject.projectscreen.some(sID => sID === resultScenario.id)) {
     console.warn('Such screen already exists!');
     return;
   }
@@ -279,7 +334,6 @@ export function* getScreenNNSaga() {
   const scenarioElements = convertScenarioElements(resultElements);
 
   yield all([
-    put(setProject(updateProject)),
     put(setProject(updateProject)),
     put(setScenarioElements(scenarioElements)),
     put(activateScreen(currentProject.id, lastScreenId)),

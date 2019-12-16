@@ -174,4 +174,4 @@ export const UnmountedSignIn: React.FunctionComponent<IProps> = ({
   );
 };
 
-export const SignIn = connect(mapStateToProps, mapDispatchToProps)(hot(module)(UnmountedSignIn));
+export const SignIn = connect(mapStateToProps, mapDispatchToProps)(UnmountedSignIn);

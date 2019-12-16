@@ -27,11 +27,9 @@ export type ReduxState = {
 };
 
 export type ActiveItem = {
-  parentId: number;
   itemId: string;
   itemType: string;
   name: string;
-  scenarioId: number;
 };
 
 export type LoadLibraryElements = IPlainAction<'PROJECTS:LOAD_LIBRARY_ELEMENTS'>;
@@ -50,7 +48,7 @@ export type AddProject = IAction<'PROJECTS:ADD_PROJECT', { name: string }>;
 export type DeleteProject = IAction<'PROJECTS:DELETE_PROJECT', { id: number }>;
 export type GetProject = IAction<'PROJECTS:GET_PROJECT', { id: number, screenID?: string }>;
 export type SetProject = IAction<'PROJECTS:SET_PROJECT', { project: IProject }>;
-export type SetProjectScreens = IAction<'PROJECTS:SET_PROJECT_SCREENS', { screens: IProjectListItem[] }>;
+export type ChangeScreensOrder = IAction<'PROJECTS:CHANGE_SCREENS_ORDER', { screensIDs: number[] }>;
 export type RenameProject = IAction<'PROJECTS:RENAME_PROJECT', { projectID: number, name: string }>;
 export type SetListProjectLoader = IAction<'PROJECTS:SET_LIST_PROJECT_LOADER', { active: boolean }>;
 export type SetProjectLoader = IAction<'PROJECTS:SET_PROJECT_LOADER', { active: boolean }>;
@@ -64,6 +62,9 @@ export type ActivateScreen = IAction<'PROJECTS:ACTIVATE_SCREEN', { projectID: nu
 export type SetListSortable = IAction<
   'PROJECTS:SET_LIST_SORTABLE', { itemIndex: number, items: string[], id: string, parentID: string }
 >;
+export type UpdateViewTree = IAction<'PROJECTS:UPDATE_VIEW_TREE', Partial<{
+  currentScreen: IProjectScreen, scenarios: IScenarios, scenarioElements: IScenarioElements,
+}>>;
 export type ClearAfterPrevScreen = IPlainAction<'PROJECTS:CLEAN_AFTER_PREV_SCREEN'>;
 export type SaveScreen = IAction<'PROJECTS:SAVE_SCREEN', { canvas: HTMLCanvasElement }>;
 export type SetScreen = IAction<'PROJECTS:SET_SCREEN', { screen: IProjectScreen }>;
@@ -96,9 +97,12 @@ export type uploadImageForNNSuccess = IAction<
 >;
 export type GetScreenNN = IPlainAction<'PROJECTS:GET_SCREEN_NN'>;
 export type AddContainer = IAction<'PROJECTS:ADD_CONTAINER', { itemID: string }>;
-export type RunLayoutAlgorithm = IAction<'PROJECTS:RUN_LAYOUT_ALGORITHM', { scenarios: IScenarios, elements: IScenarioElements }>;
+export type RunLayoutAlgorithm = IAction<'PROJECTS:RUN_LAYOUT_ALGORITHM', {
+  scenarios: IScenarios, elements: IScenarioElements, root?: ILSItem
+}>;
 export type RunLayoutAlgorithmFinished = IPlainAction<'PROJECTS:RUN_LAYOUT_ALGORITHM_FINISHED'>;
 export type SetActiveItem = IAction<'PROJECTS:SET_ACTIVE_ITEM', { activeItem: ActiveItem }>;
+export type ResetScreenState = IPlainAction<'PROJECTS:RESET_SCREEN_STATE'>;
 
 // unused
 export const createScenario = (name: string, type: string, elements?: number[]) => ({
@@ -117,7 +121,7 @@ export type Action =
   | DeleteProject
   | GetProject
   | SetProject
-  | SetProjectScreens
+  | ChangeScreensOrder
   | RenameProject
   | SetListProjectLoader
   | SetProjectLoader
@@ -154,7 +158,9 @@ export type Action =
   | AddContainer
   | RunLayoutAlgorithm
   | RunLayoutAlgorithmFinished
-  | SetActiveItem;
+  | SetActiveItem
+  | UpdateViewTree
+  | ResetScreenState;
 
 // export const updateStylesGroup = (itemId: string, styles: IScreenProps) => ({
 //   type: TYPES.UPDATE_STYLES_GROUP,
@@ -323,7 +329,7 @@ export interface IScenarioElement { // compare with entity on backend
     },
     url?: string,
   },
-  styles: IStylesElement,
+  styles: any, // css properties, not react.css
 }
 
 export interface IScenarioElements {
@@ -384,7 +390,7 @@ export interface IProject {
   id: number,
   name: string,
   status: string,
-  projectscreen: IProjectListItem[],
+  projectscreen: number[],
   projectLoader?: boolean,
 }
 

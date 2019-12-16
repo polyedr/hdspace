@@ -85,9 +85,9 @@ const Component: React.FunctionComponent<IComponentProps> = ({
             { isPage && (
               <DropDown
                 options={
-                  projectscreen.map(element => ({
-                    label: element.name,
-                    value: element.name,
+                  projectscreen.map((_, elIndex) => ({ // TODO: restore when screens will be preloaded
+                    label: `Screen ${elIndex}`,
+                    value: `Screen ${elIndex}`,
                   }))
                 }
                 onChange={handleChangeLinkUrl}

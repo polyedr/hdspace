@@ -82,4 +82,4 @@ const EditorWindow: React.FunctionComponent<IAppProps> = ({
   </React.Fragment>
 );
 
-export default connect(mapStateToProps, mapDispatchToProps)(hot(module)(EditorWindow));
+export default connect(mapStateToProps, mapDispatchToProps)(EditorWindow);

@@ -24,6 +24,8 @@ import { IStylesElement } from '$utils/StyleHelper';
 
 import { greaterBuoyancyFirst, isElement, isScenario } from './model';
 
+// TODO: remove unused helpers
+
 export interface IGroupElement {
   key: string,
   label: string,
@@ -271,11 +273,9 @@ export const getItemsPair = (
   scenarioElements: IScenarioElements,
 ): { scenarioList: IScenarios, elementList: IScenarioElements } => (
   Object.keys(LS).reduce((result, key) => {
-    if (!key || !LS[key]) return result;
-
     const { type, id } = LS[key];
 
-    if (LIST_SCENARIO_TYPE.indexOf(type) !== -1) {
+    if (LIST_SCENARIO_TYPE.indexOf(type) !== -1 || type === 'root') {
       return {
         ...result,
         scenarioList: {
@@ -338,20 +338,20 @@ export const getParams = (
 };
 
 export const idToLSId = (id: number, type: string): string => {
-  if (id === 0) return 'root';
+  if (type === 'root') return type;
 
   const char = LIST_SCENARIO_TYPE.indexOf(type) !== -1 ? 's' : 'e';
 
   return `${id}${char}`;
 };
 
-const scenarioItemToLS = ({ id, struct_type, parameters: { children } }: IScenarioItem): ILSItem => ({
+export const scenarioItemToLS = ({ id, struct_type, parameters: { children } }: IScenarioItem): ILSItem => ({
   id,
   type: struct_type,
   children: children || [],
 });
 
-const elementToLS = ({ id, struct_type }: IScenarioElement): ILSItem => ({
+export const elementToLS = ({ id, struct_type }: IScenarioElement): ILSItem => ({
   id,
   type: struct_type,
   children: [],
@@ -361,8 +361,8 @@ export const scenarioToLS = (
   parents: (IScenarioItem | IScenarioElement)[],
   scenarios: IScenarios,
   scenarioEl: IScenarioElements,
-): IListSortable => (
-  parents.sort(greaterBuoyancyFirst).reduce((acc: IListSortable, parent) => {
+): IListSortable => {
+  return parents.sort(greaterBuoyancyFirst).reduce((acc: IListSortable, parent) => {
 
     const parentAsLSItem = isScenario(parent)
       ? { [`${parent.id}s`]: scenarioItemToLS(parent) }
@@ -395,7 +395,7 @@ export const scenarioToLS = (
       ...parentAsLSItem,
     };
   }, {})
-);
+};
 
 export const getElementsByType = (
   scenarioId: number,
@@ -439,39 +439,13 @@ export const findParentType = (id: number, scenarios: IScenarios): string => {
   return struct_type === 'container' ? findParentType(parent_id, scenarios) : ((parent_id && struct_type) || 'root');
 };
 
-export const getListNotDragging = (
-  type: string,
-  parentId: number,
-  scenarios: IScenarios
-): string[] => {
+export const getListNotDragging = (type: string): string[] => {
   switch (type) {
-    case 'block': {
-      return ['block', 'group', 'element'];
-    }
-
-    case 'group': {
-      return ['group', 'element'];
-    }
-
     case 'container': {
-      const mainType = findParentType(parentId, scenarios);
-
-      if (mainType === 'root') {
-        return ['block', 'group', 'element'];
-      }
-
-      if (mainType === 'block') {
-        return ['group', 'element'];
-      }
-
-      if (mainType === 'group') {
-        return ['element'];
-      }
-
-      return [];
+      return ['element'];
     }
-
+  
     default:
-      return [];
+      return ['element'];
   }
 };

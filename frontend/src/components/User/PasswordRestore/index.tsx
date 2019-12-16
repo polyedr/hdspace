@@ -115,4 +115,4 @@ const UnconnectedPasswordRestore: React.FunctionComponent<IProps> = ({
   );
 };
 
-export const PasswordRestore = connect(mapStateToProps, mapDispatchToProps)(hot(module)(UnconnectedPasswordRestore));
+export const PasswordRestore = connect(mapStateToProps, mapDispatchToProps)(UnconnectedPasswordRestore);

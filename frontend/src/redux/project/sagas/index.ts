@@ -1,10 +1,12 @@
 import { SagaIterator } from 'redux-saga';
 import {
   takeLatest,
+  takeEvery,
   put,
   call,
   take,
   select,
+  fork,
 } from 'redux-saga/effects';
 import * as R from 'ramda';
 import { REHYDRATE } from 'redux-persist';
@@ -19,24 +21,23 @@ import {
   addProject,
   delProjectSaga,
   getProjectSaga,
-  setProjectScreensSaga,
+  changeScreensOrderSaga,
   renameProjectSaga,
 } from '$redux/project/sagas/project';
 import {
   changeScenarioSaga,
   changeScenariosSaga,
-  createScenarioSaga,
-  addScenarioSaga,
   delScenarioSaga,
   renameScenarioSaga,
   runLayoutAlgorithm,
   addContainerSaga,
+  addScenarioSagaV2,
 } from '$redux/project/sagas/scenario';
 import {
   apiGetLibraryElements,
   apiGetElements,
-  apiDelElement,
   uploadImageForNN,
+  apiSaveElements,
 } from '$api/element';
 import { setTokenPair, setLoadedToken } from '$redux/user/actions';
 import { MAX_TOKEN_TRIALS } from '$config/settings';
@@ -45,17 +46,15 @@ import { openSignScreen, openProjects } from '$utils/history';
 import {
   IScenarios,
   IScenarioElements,
-  IScenarioItem,
   IScenarioElement,
   ILibraryElements,
 } from '$redux/project/types';
 import * as ProjectT from '$redux/project/types';
 import * as PATH_NAMES from '$constants/pathNames';
 import { DEFAULT_AUTHORISATION_TOKEN } from '$constants/defaultParams';
-import { findParentType, getParams } from '$utils/parseScenario';
 import { apiSaveScenarios } from '$api/scenario';
 
-import { selectors } from '../';
+import { selectors, T } from '../';
 
 const runLayoutAlgorithmFinishedType: ProjectT.RunLayoutAlgorithmFinished['type'] = 'PROJECTS:RUN_LAYOUT_ALGORITHM_FINISHED';
 
@@ -156,253 +155,127 @@ function* authCheckSaga() {
 
 function* setListSortableSaga(action: ReturnType<typeof Actions.setListSortable>) {
   const {
-    id: rawActiveItemID,
-    itemIndex: movedItemIndexInCurrentSortableGroup,
-    items: itemsInCurrentSortableGroup,
-    parentID: rawParentID,
+    id: affectedItemRawID,
+    itemIndex: affectedItemIndex,
+    items: sortableGroupItems,
+    parentID: _affectedParentRawID,
   } = action.payload;
   const scenarios: ReturnType<typeof selectors.selectScenarios> = yield select(selectors.selectScenarios);
   const scenarioElements: ReturnType<typeof selectors.selectScenariosElements> = yield select(
     selectors.selectScenariosElements
   );
+  const { listSortable }: ReturnType<typeof selectors.selectCurrentScreen> = yield select(selectors.selectCurrentScreen);
 
-  const activeItemID = parseInt(rawActiveItemID, 10);
-  const parentID = rawParentID === 'root' ? 0 : parseInt(rawParentID, 10);
+  let updatedScenarios = scenarios;
+  let updatedElements = scenarioElements;
 
-  let updateScenarios = scenarios;
-  let updateElements = scenarioElements;
+  const affectedItemID = parseInt(affectedItemRawID, 10);
+  const affectedParentRawID = _affectedParentRawID === 'root' ? `${listSortable.root.id}s` : _affectedParentRawID;
+  const affectedParentID = _affectedParentRawID === 'root' ? listSortable.root.id : parseInt(_affectedParentRawID, 10);
 
-  console.log('Update LS');
-  if (itemsInCurrentSortableGroup.indexOf(rawActiveItemID) === -1) {
-    if (rawActiveItemID.slice(-1) === 's') {
-      // Remove Scenario
-      if (!parentID) return;
-      const itemType = scenarios[activeItemID].struct_type;
-      const parentType = R.path([parentID, 'struct_type'], scenarios);
-      const mainType = findParentType(parentID, scenarios);
-      console.log({itemType, parentType, mainType});
+  const containerWasAffected = affectedItemRawID.slice(-1) === 's';
+  const elementWasAffected = affectedItemRawID.slice(-1) === 'e';
 
-      if (rawParentID && rawParentID !== 'root') {
-        console.log('Remove Scenario');
-        updateScenarios = {
-          ...scenarios,
-          [parentID]: R.assocPath(['parameters', 'children'], itemsInCurrentSortableGroup, scenarios[parentID]),
-        };
-      }
-    } else {
-      if (scenarios[parentID].struct_type === 'block') {
-        return;
-      }
-      if (scenarios[parentID].struct_type === 'container') {
-        const parentType = findParentType(parentID, scenarios);
+  const makeContainerChildrenLens = (scenarioID: number) => R.lensPath([scenarioID, 'parameters', 'children']);
+  const makeContainerParentLens = (scenarioID: number) => R.lensPath([scenarioID, 'parent_id']);
+  const makeContainerElementsLens = (scenarioID: number) => R.lensPath([scenarioID, 'elements']);
+  const makeElementParentLens = (elementID: R.Path[0]) => R.lensPath([elementID, 'parameters', 'parent_id']);
+  const makeElementScenarioLens = (elementID: R.Path[0]) => R.lensPath([elementID, 'scenario']);
 
-        if (parentType !== 'group') return;
+  const parentBefore = listSortable[_affectedParentRawID];
 
-        console.log('Remove Element');
-        updateScenarios = {
-          ...scenarios,
-          [parentID]: R.assocPath(['parameters', 'children'], itemsInCurrentSortableGroup, scenarios[parentID]),
-        };
-      }
+  const symmetricDifference = R.symmetricDifference(sortableGroupItems, parentBefore.children);
+  const needToUpdateItemPositionInParent = symmetricDifference.length === 0;
+  const itemMovedFromContainer = R.not(R.includes(affectedItemRawID, sortableGroupItems));
+  const itemMovedIntoContainer = R.not(R.includes(affectedItemRawID, parentBefore.children));
+
+  if (needToUpdateItemPositionInParent) {
+    const childrenLens = makeContainerChildrenLens(affectedParentID);
+    updatedScenarios = R.set(childrenLens, sortableGroupItems, updatedScenarios);
+    yield fork(updateScenariosOnServerSaga, R.pick([affectedParentID.toString()], updatedScenarios));
+  } else if (itemMovedFromContainer) {
+    if (containerWasAffected) {
+      const parentChildrenLens = makeContainerChildrenLens(affectedParentID);
+
+      updatedScenarios = R.set(parentChildrenLens, sortableGroupItems, updatedScenarios);
+      yield fork(updateScenariosOnServerSaga, R.pick([affectedParentID.toString()], updatedScenarios));
+    } else if (elementWasAffected) {
+      // const nowContainerHasNoChildren = sortableGroupItems.length === 0;
+      const containerParentID = scenarios[affectedParentID].parent_id;
+      const parentChildrenLens = makeContainerChildrenLens(affectedParentID);
+      const parentElementsLens = makeContainerElementsLens(affectedParentID);
+      // const containerParentChildrenLens = makeContainerChildrenLens(containerParentID);
+      // а если это елемент то и из elemenst его надо дропнуть
+      // нужно убрать у родителя из children этого чувака и из elements тоже походу
+      // if (nowContainerHasNoChildren) {
+      //   updatedScenarios = R.over(
+      //     containerParentChildrenLens,
+      //     (x: string[]) => R.without([affectedParentRawID], x),
+      //     updatedScenarios // R.omit([affectedParentID.toString()], updatedScenarios)
+      //   );
+      //   console.log('updatedScenarios after empty container removing', updatedScenarios);
+      //   yield fork(updateScenariosOnServerSaga, R.pick([containerParentID.toString()], updatedScenarios));
+      //   // yield fork(reqWrapper, apiDelScenarioCascade, { list: [affectedParentID] });
+      // }
+
+      updatedScenarios = R.pipe(
+        R.over(parentElementsLens, (x: number[]) => R.without([affectedItemID], x)),
+        R.over(parentChildrenLens, (x: string[]) => R.without([affectedItemRawID], x))
+      )(updatedScenarios);
+      yield fork(updateScenariosOnServerSaga, R.pick([affectedParentID.toString()], updatedScenarios));
     }
+  } else if (itemMovedIntoContainer) {
+    if (containerWasAffected) {
+      const parentChildrenLens = makeContainerChildrenLens(affectedParentID);
+      const itemParentIdLens = makeContainerParentLens(affectedItemID);
 
-    const clearScenarios: IScenarios = R.omit(['0'], updateScenarios);
+      updatedScenarios = R.pipe(
+        R.set(parentChildrenLens, sortableGroupItems),
+        R.set(itemParentIdLens, affectedParentID),
+      )(updatedScenarios);
 
-    yield put(Actions.runLayoutAlgorithm(clearScenarios, updateElements));
-    yield take(runLayoutAlgorithmFinishedType);
+      yield fork(updateScenariosOnServerSaga, R.pick(
+        [affectedParentID.toString(), affectedItemID.toString()], updatedScenarios
+      ));
+    } else if (elementWasAffected) {
+      const containerChildrenLens = makeContainerChildrenLens(affectedParentID);
+      const containerElementsLens = makeContainerElementsLens(affectedParentID);
+      const elementScenarioLens = makeElementScenarioLens(affectedItemID);
+      const elementParentLens = makeElementParentLens(affectedItemID);
 
-    yield put(Actions.setScenarios(clearScenarios));
+      updatedScenarios = R.pipe(
+        R.set(containerChildrenLens, sortableGroupItems),
+        R.over(containerElementsLens, (x: number[]) => x.concat(affectedItemID)),
+      )(updatedScenarios);
 
-    return;
+      updatedElements = R.pipe(
+        R.set(elementScenarioLens, affectedParentID),
+        R.set(elementParentLens, affectedParentID)
+      )(updatedElements);
+
+      // remove empty container only after success moving
+
+      yield fork(updateScenariosOnServerSaga, R.pick(
+        [affectedParentID.toString(), affectedItemID.toString()], updatedScenarios
+      ));
+      yield fork(updateElementsOnServerSaga, R.pick([affectedItemID.toString()], updatedElements));
+    }
   }
 
-  if (rawActiveItemID.slice(-1) === 's') {
-    // Add scenario
-    const itemType: string = scenarios[activeItemID].struct_type;
-    const parentType = R.path([parentID, 'struct_type'], scenarios);
-    const mainType = findParentType(parentID, scenarios);
-    const oldScenarioId = scenarios[activeItemID].parent_id;
-    const childParentId: string = R.remove(movedItemIndexInCurrentSortableGroup, 1, itemsInCurrentSortableGroup)[0];
-    console.log({ id: rawActiveItemID, itemType, parentType, mainType });
-
-    if (parentType === 'container' && itemType === 'block') {
-      if (mainType !== 'root') return;
-      console.log('Block -> Container');
-    } else if (parentType === 'container' && itemType === 'group') {
-      if (mainType !== 'block') {
-        console.log('Cancel Block -> Container');
-      }
-      console.log('Group -> Container');
-    }
-
-    if (scenarios[activeItemID].struct_type === 'group' && parentType === 'root') {
-      console.log('Cancel move Group -> Root/ContainerRoot');
-      const oldParentChildrenIDs = scenarios[oldScenarioId].parameters.children;
-      updateScenarios = {
-        ...scenarios,
-        [oldScenarioId]: R.assocPath(
-          ['parameters', 'children'],
-          [...oldParentChildrenIDs, rawActiveItemID],
-          scenarios[oldScenarioId],
-        ),
-      };
-    } else if (itemType === 'block' && mainType !== 'root') {
-      console.log('block -> ??');
-    } else if (itemType === 'group') {
-      console.log('Group -> Block', scenarios);
-      updateScenarios = {
-        ...scenarios,
-        [activeItemID]: R.assoc('parent_id', parentID, scenarios[activeItemID]),
-        [parentID]: R.assocPath(['parameters', 'children'], itemsInCurrentSortableGroup, scenarios[parentID]),
-      };
-    } else if (itemType === 'container') {
-      console.log('Cancel move ContainerElement -> Root/Block');
-      console.log('Cancel move ContainerGroup -> Root/Group');
-    } else if (rawParentID === 'root' && parentID !== oldScenarioId) {
-      console.log('Scenario -> Root');
-      updateScenarios = {
-        ...scenarios,
-        [activeItemID]: R.assoc('parent_id', parentID, scenarios[activeItemID]),
-      };
-    } else if (!childParentId) {
-      console.log('Scenario -> empty Parent');
-      updateScenarios = {
-        ...scenarios,
-        [activeItemID]: R.assoc('parent_id', parentID, scenarios[activeItemID]),
-        [parentID]: R.assocPath(['parameters', 'children'], itemsInCurrentSortableGroup, scenarios[parentID]),
-      };
-    } else if (parentID !== oldScenarioId) {
-      console.log('Scenario_A -> Scenario_B');
-      updateScenarios = {
-        ...scenarios,
-        [activeItemID]: R.assoc('parent_id', parentID, scenarios[activeItemID]),
-        [parentID]: R.assocPath(['parameters', 'children'], itemsInCurrentSortableGroup, scenarios[parentID]),
-      };
-    } else {
-      console.log('Change Buoyancy');
-      updateScenarios = itemsInCurrentSortableGroup.reduce((result, key, idx) => {
-        const currId = parseInt(key, 10);
-
-        return {
-          ...result,
-          [currId]: R.assoc('buoyancy', itemsInCurrentSortableGroup.length - idx, result[currId]),
-        };
-      }, scenarios);
-    }
-  } else {
-    // Elements
-    const parentType = findParentType(parentID, scenarios);
-    const oldParentId = scenarioElements[activeItemID].parameters.parent_id;
-
-    console.log({ parentType, parentID, oldParentId });
-
-    if (parentType === 'group' && parentID !== oldParentId) {
-      // Replace element
-      console.log('Replace element');
-      const oldParent = scenarios[oldParentId];
-
-      updateElements = R.assocPath(
-        [activeItemID, 'parameters', 'parent_id'],
-        parentID,
-        scenarioElements,
-      );
-      // remove from old parent's children
-      updateScenarios = R.assocPath(
-        [oldParentId, 'parameters', 'children'],
-        oldParent.parameters.children.filter(i => i !== rawActiveItemID),
-        updateScenarios,
-      );
-      // add to new parent's children
-      updateScenarios = R.assocPath(
-        [parentID, 'parameters', 'children'],
-        itemsInCurrentSortableGroup,
-        updateScenarios,
-      );
-    }
-
-    // Elements change buoyancy
-    console.log('Change elements Buoyancy');
-    updateElements = itemsInCurrentSortableGroup.reduce((result, key, idx) => {
-      const keyParsed = parseInt(key, 10);
-      const buoyancy = itemsInCurrentSortableGroup.length - idx;
-      return {
-        ...result,
-        [keyParsed]: {
-          ...result[keyParsed],
-          buoyancy,
-          dynamic_buoyancy: buoyancy,
-        },
-      };
-    }, updateElements);
-  }
-
-  const clearScenarios: IScenarios = R.omit(['0'], updateScenarios);
-
-  yield put(Actions.runLayoutAlgorithm(clearScenarios, updateElements));
+  yield put(Actions.runLayoutAlgorithm(updatedScenarios, updatedElements));
   yield take(runLayoutAlgorithmFinishedType);
+}
 
-  yield put(Actions.setScenarioElements(updateElements));
-  yield put(Actions.setScenarios(clearScenarios));
-  // yield call(apiSaveScenarios, updateScenarios);
-  const modifyElements: ReturnType<typeof selectors.selectModifyElements> = yield select(selectors.selectModifyElements);
-  const modifiedElements = R
-    .values(updateElements)
-    .filter(element => (
-      !R.values(scenarioElements).some((el) => {
-        try {
-          return JSON.stringify(el) === JSON.stringify(element);
-        } catch {
-          return true;
-        }
-      })
-    ))
-    .map(el => el.id);
-  yield put(Actions.setModifyElements(R.union(modifyElements, modifiedElements)));
+export function* updateScenariosOnServerSaga(scenarios: T.IScenarios) {
+  yield call(reqWrapper, apiSaveScenarios, { data: R.values(scenarios) });
+}
+
+export function* updateElementsOnServerSaga(elements: T.IScenarioElements) {
+  yield call(reqWrapper, apiSaveElements, { data: R.values(elements) });
 }
 
 export function* delScenarioItemSaga(action: ReturnType<typeof Actions.delScenario>) {
-  const { id } = action.payload;
-  const scenarios: ReturnType<typeof selectors.selectScenarios> = yield select(selectors.selectScenarios);
-  const scenarioElements: ReturnType<typeof selectors.selectScenariosElements> = yield select(
-    selectors.selectScenariosElements
-  );
-
-  if (id.slice(-1) === 's') {
-    yield put(Actions.delScenario(id));
-
-    return;
-  }
-
-  const elementID = parseInt(id, 10);
-  const elementsWithoutDeleted = R.omit([String(elementID)], scenarioElements);
-  const { parent_id } = getParams(id, scenarioElements, scenarios);
-  const { scenario } = scenarioElements[elementID];
-
-  const updatedScenarios: IScenarios = {
-    ...scenarios,
-    [parent_id]: {
-      ...scenarios[parent_id],
-      parameters: {
-        ...scenarios[parent_id].parameters,
-        children: R.without([id], scenarios[parent_id].parameters.children),
-      },
-    },
-    [scenario]: {
-      ...scenarios[scenario],
-      elements: R.without([elementID], scenarios[scenario].elements),
-    },
-  };
-
-  yield put(Actions.setScenarioElements(elementsWithoutDeleted));
-  yield put(Actions.setScenarios(updatedScenarios));
-
-  yield put(Actions.runLayoutAlgorithm(updatedScenarios, elementsWithoutDeleted));
-  yield take(runLayoutAlgorithmFinishedType);
-
-  // TODO: clean listSortable accordingly
-  const resultScenarios = yield call(reqWrapper, apiSaveScenarios, { data: R.values(R.pick([parent_id, scenario].map(String), updatedScenarios)) });
-  const resultElements = yield call(reqWrapper, apiDelElement, { id: elementID });
-  console.log('SAVE', resultElements, resultScenarios);
+  yield put(Actions.delScenario(action.payload.id));
 }
 
 function* updateRootStyles(
@@ -423,36 +296,6 @@ function* updateRootStyles(
   };
 
   yield put(Actions.setScreen(newScreen as ProjectT.IProjectScreen));
-  /* const {
-    project: { currentScreen },
-  }: AppReduxState = yield select();
-
-  const styles_root = {
-    ...currentScreen.styles_root,
-    ...styles,
-  };
-
-  const listSortableItem: ISortableItemTemp = currentScreen.listSortable[itemId];
-
-  const listSortable = {
-    ...currentScreen.listSortable,
-    [itemId]: {
-      ...listSortableItem,
-      props: {
-        ...listSortableItem.props,
-        ...styles,
-      },
-    },
-  };
-
-  const newScreen: IProjectScreen = {
-    ...currentScreen,
-    styles_root,
-    listSortable,
-    screenData: getListReverse(listSortable),
-  };
-
-  yield put(Actions.setScreen(newScreen)); */
 }
 
 function* updateScenarioStyles(
@@ -668,7 +511,7 @@ const loadProjectsType: ProjectT.LoadProjects['type'] = 'PROJECTS:LOAD_PROJECTS'
 const addProjectType: ProjectT.AddProject['type'] = 'PROJECTS:ADD_PROJECT';
 const deleteProjectType: ProjectT.DeleteProject['type'] = 'PROJECTS:DELETE_PROJECT';
 const getProjectType: ProjectT.GetProject['type'] = 'PROJECTS:GET_PROJECT';
-const setProjectScreensType: ProjectT.SetProjectScreens['type'] = 'PROJECTS:SET_PROJECT_SCREENS';
+const changeScreensOrderType: ProjectT.ChangeScreensOrder['type'] = 'PROJECTS:CHANGE_SCREENS_ORDER';
 const renameProjectType: ProjectT.RenameProject['type'] = 'PROJECTS:RENAME_PROJECT';
 const activateScreenType: ProjectT.ActivateScreen['type'] = 'PROJECTS:ACTIVATE_SCREEN';
 const addScreenType: ProjectT.AddScreen['type'] = 'PROJECTS:ADD_SCREEN';
@@ -704,7 +547,7 @@ export default function* projectSaga() {
   yield takeLatest(addProjectType, addProject);
   yield takeLatest(deleteProjectType, delProjectSaga);
   yield takeLatest(getProjectType, getProjectSaga);
-  yield takeLatest(setProjectScreensType, setProjectScreensSaga);
+  yield takeLatest(changeScreensOrderType, changeScreensOrderSaga);
   yield takeLatest(renameProjectType, renameProjectSaga);
 
   yield takeLatest(activateScreenType, screenSaga.activateScreenSaga);
@@ -723,10 +566,10 @@ export default function* projectSaga() {
   yield takeLatest(changeScenarioType, changeScenarioSaga);
   yield takeLatest(changeScenariosType, changeScenariosSaga);
   // yield takeLatest(TYPES.CREATE_SCENARIO, createScenarioSaga);
-  yield takeLatest(addScenarioType, addScenarioSaga);
+  yield takeEvery(addScenarioType, addScenarioSagaV2);
   yield takeLatest(deleteScenarioType, delScenarioSaga);
   yield takeLatest(renameScenarioType, renameScenarioSaga);
-  yield takeLatest(addContainerType, addContainerSaga);
+  yield takeEvery(addContainerType, addContainerSaga);
 
   // yield takeLatest(TYPES.GET_ELEMENTS, getElements);
   yield takeLatest(delScenarioItemType, delScenarioItemSaga);

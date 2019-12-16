@@ -103,8 +103,8 @@ const Component: React.FunctionComponent<IRightPanelProps> = ({
     const parseId = parseInt(activeItem.itemId, 10);
 
     if (parseId) {
-      if (LIST_SCENARIO_TYPE.indexOf(activeItem.itemType) !== -1) {
-        return scenarios[parseId].styles;
+      if (LIST_SCENARIO_TYPE.indexOf(activeItem.itemType) !== -1 || activeItem.itemType ==='root') {
+        return scenarios[parseId]?.styles;
       }
   
       return scenarioElements[parseId].styles;

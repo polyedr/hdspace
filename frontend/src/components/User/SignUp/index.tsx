@@ -119,4 +119,4 @@ const UnconnectedSignUp: React.FunctionComponent<IProps> = ({
   );
 };
 
-export const SignUp = connect(mapStateToProps, mapDispatchToProps)(hot(module)(UnconnectedSignUp));
+export const SignUp = connect(mapStateToProps, mapDispatchToProps)(UnconnectedSignUp);

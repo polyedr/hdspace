@@ -43,13 +43,13 @@ export const ScenarioBlock: React.FunctionComponent<IComponentProps> = memo((pro
         <p>Scenario and Predictions</p>
       </div>
       <div className={classNames(styles.scenarioContentBlock, 'propsPanelContentBlock')}>
-        <DropDown
+        {/* <DropDown
           options={getOptionsOfListScenario(scenarios)}
-          defaultValue={String(activeItem.scenarioId)}
+          defaultValue={String(activeItem.scenarioId)} // scenarioId is needed only here
           value={String(activeItem.scenarioId)}
           disabled={activeItem.itemType === 'block' || activeItem.scenarioId === -1}
           onChange={handleChangeScenario}
-        />
+        /> */}
         <DropDown
           options={UTILS.getListTypeElement(libraryElements)}
           defaultValue={activeItem.itemType}

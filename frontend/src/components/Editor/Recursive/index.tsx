@@ -21,14 +21,14 @@ const mapStateToProps = (state: AppReduxState, props: OwnProps) => {
   const scenarioElements = selectors.selectScenariosElements(state);
   const { isPrototypeMode } = state.user;
 
-  const currId = props.item.id === 0 ? 'root' : idToLSId(props.item.id, props.item.type);
+  const currId = idToLSId(props.item.id, props.item.type);
   const itemParent = listSortable[currId];
   const currListSortable = itemParent.children.reduce((items: IListSortable, childID) => ({
     ...items,
     [childID]: listSortable[childID],
   }), { [currId]: listSortable[currId] });
-  const { scenarioList, elementList } = getItemsPair(currListSortable, scenarios, scenarioElements);
 
+  const { scenarioList, elementList } = getItemsPair(currListSortable, scenarios, scenarioElements);
   return {
     listSortable: currListSortable,
     isPrototypeMode,
@@ -74,7 +74,7 @@ const RecursiveComponent: React.FC<Props> = (props) => {
   } = props;
 
   const handleChooseToSort = useCallback((itemIndex) => {
-    // TOOD: needed to track elements change. rewrite without onActiveElementChange use
+    // TODO: called when item chosen for sorting. rewrite without onActiveElementChange use
     if (item.children[itemIndex] !== activeItemId) {
       onActiveElementChange(item.id, item.children[itemIndex]);
     }
@@ -89,7 +89,6 @@ const RecursiveComponent: React.FC<Props> = (props) => {
   ), []);
 
   const getIsPutItem = useCallback((type: string): boolean => (
-    // я так понимаю эта штука отвечает за то что можно вкладывать итем или нет
     listNotDragging.indexOf(type) === -1
   ), [listNotDragging]);
 
@@ -110,7 +109,7 @@ const RecursiveComponent: React.FC<Props> = (props) => {
       onChoose={handleChooseToSort}
       onChange={handleItemPositionChange}
       // align={item.props && item.props.align}
-      styles_root={item.id === 0 ? convertPropCSS(styles_root) : {}}
+      styles_root={item.type === 'root' ? convertPropCSS(styles_root) : {}}
       // styles_root={item.id === 0 ? convertPropCSS(styles_root) : {}}
     >
       {item.children.map((itemId) => {
@@ -150,7 +149,7 @@ const RecursiveComponent: React.FC<Props> = (props) => {
                   key={`element-${itemId}`}
                   activeItemId={activeItemId}
                   isMoving={isMoving}
-                  item={currentItem as ISortableItemTemp}
+                  item={currentItem}
                   listNotDragging={listNotDragging}
                   onActiveElementChange={onActiveElementChange}
                   onChange={onChange}

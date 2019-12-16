@@ -75,7 +75,7 @@ export const ActiveElementBlock: React.FunctionComponent<IComponentProps> = memo
           <p className="propsPanelText">
             {`select: ${activeItem.name}-${activeItem.itemId}`}
           </p>
-          { activeItem.parentId !== -1 && (
+          { activeItem && (
             <div className="propsPanelBtnBlock">
               <NavigateItem
                 activeItem={activeItem}
