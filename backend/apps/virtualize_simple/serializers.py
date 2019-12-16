@@ -39,6 +39,9 @@ SQUARES_OVERLAP_THRESHOLD = 0.9
 # The constant to calculate horizontal overlap during the vertical groups detection
 VERICAL_GROUPS_HORIZONTAL_OVERLAP_THRESHOLD = 0.75
 
+# The constant to calculate vertical overlap during the horizontal groups detection
+HORIZONTAL_GROUPS_VERICAL_OVERLAP_THRESHOLD = 0.25
+
 
 # How to use image preprocessing to improve the accuracy of Tesseract
 # https://www.freecodecamp.org/news/getting-started-with-tesseract-part-ii-f7f9a0899b3f/
@@ -420,14 +423,17 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
 
                         # The second rectangle width
                         width_elem1 = x21 - x11
+                        height_elem1 = y21 - y11
 
                         # Borders of the overlapped area
                         left = max(x1, x11)
-
+                        bottom = max(y1, y11)
                         right = min(x2, x21)
+                        top = min(y2, y21)
 
                         # Size of the overlapped area
                         horizontal_overlap = right - left
+                        vertical_overlap = top - bottom
 
                         # Check if the vertical distance between roi and roi1 is sufficient
                         # Middle of the input or select element
@@ -468,10 +474,35 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                                             }
                                         )
 
+                        # Horizontal groups detection
+                        # Check if the roi is text or input or select
+                        # Check if the roi1 is text or input or select
+                        if class_id in {1, 3, 4} and class_id1 in {1, 3, 4}:
+                            # Check if the elements were not assigned to the vertical groups before
+                            if (idx not in set(*horizontal_groups.keys())) and (
+                                idx1 not in set(*horizontal_groups.keys())
+                            ):
+                                # Check if these elements are laying at one level horizontally
+                                # They should overlap vertically and this level of the overlap
+                                # should be at least 0.25
+                                if (
+                                        vertical_overlap > HORIZONTAL_GROUPS_VERICAL_OVERLAP_THRESHOLD * height_elem
+                                ) or (
+                                        vertical_overlap > HORIZONTAL_GROUPS_VERICAL_OVERLAP_THRESHOLD * height_elem1
+                                ):
+                                    # Fill the horizontal_group dictionary
+                                    horizontal_group_tuple = (idx, idx1)
+                                    # The stub for the future scenario assigned
+                                    horizontal_group_scenario = -1
+                                    horizontal_groups.update(
+                                        {
+                                            horizontal_group_tuple: horizontal_group_scenario
+                                        }
+                                    )
             # Elements, groups and scenarios assignment
             # {(element1, element2): scenario1, (element3, element4): scenario2}
             # vertical_groups = {(1, 2): -1}
-            horizontal_groups = {(2, 3): -1, (4, 5): -1}
+            # horizontal_groups = {(2, 3): -1, (4, 5): -1}
 
             scenario_vertical_data = {
                 "name": "scenario_vertical",
