@@ -528,7 +528,8 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                 for element_data_vertical in v_group_key:
                     print(element_data_vertical)
                     element_vertical = recognized_elements[element_data_vertical]
-                    inner_scenarios_elements.add(element_vertical)
+                    print("element_vertical = ", element_vertical)
+                    inner_scenarios_elements.add(element_data_vertical)
                     scenario_vertical_element = ScenarioElement.objects.create(
                         scenario=scenario_vertical,
                         **element_vertical
@@ -579,7 +580,7 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                         print("recognized_elements[element_data_horizontal]=",
                               recognized_elements[element_data_horizontal])
                         element_horizontal = recognized_elements[element_data_horizontal]
-                        inner_scenarios_elements.add(element_horizontal)
+                        inner_scenarios_elements.add(element_data_horizontal)
                         scenario_horizontal_element = ScenarioElement.objects.create(
                             scenario=scenario_horizontal,
                             **element_horizontal
@@ -617,19 +618,24 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                     # Sets are disjoints if and only if their intersection is the empty set
                     if set(v_group_key).isdisjoint(set(h_group_key)):
                         # print("v_group_key, h_group_key =", v_group_key, h_group_key)
-                        del vertical_groups_free[v_group_key]
+                        try:
+                            del vertical_groups_free[v_group_key]
+                        except KeyError:
+                            pass
+
 
         children = []
         # recognized_elements_general = recognized_elements - inner_scenarios_elements
-        recognized_elements_general = [item for item in recognized_elements if item not in inner_scenarios_elements]
-        for element_data in recognized_elements_general:
-            print(element_data)
-            # Get all the elements left. Mark them as children.
-            scenario_general_element = ScenarioElement.objects.create(
-                scenario=scenario, **element_data
-            )
-            # Fill the children information to the main scenario for the parameters
-            children.append(str(scenario_general_element.id) + "e")
+
+        for idx, element_data in enumerate(recognized_elements):
+            if idx not in inner_scenarios_elements:
+                print(element_data)
+                # Get all the elements left. Mark them as children.
+                scenario_general_element = ScenarioElement.objects.create(
+                    scenario=scenario, **element_data
+                )
+                # Fill the children information to the main scenario for the parameters
+                children.append(str(scenario_general_element.id) + "e")
 
         # Get all the horizontal scenarios. Mark them as children.
         if horizontal_groups:
