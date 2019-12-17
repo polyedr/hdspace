@@ -278,26 +278,6 @@ export function* delScenarioItemSaga(action: ReturnType<typeof Actions.delScenar
   yield put(Actions.delScenario(action.payload.id));
 }
 
-function* updateRootStyles(
-  { payload: { styles } }: ReturnType<typeof Actions.updateRootStyles>,
-) {
-  const currentScreen: ReturnType<typeof selectors.selectCurrentScreen> = yield select(selectors.selectCurrentScreen);
-
-  const updatedRootStyles = {
-    ...currentScreen.styles_root,
-    ...styles,
-  };
-
-  const newScreen = {
-    ...currentScreen,
-    styles_root: {
-      ...updatedRootStyles,
-    },
-  };
-
-  yield put(Actions.setScreen(newScreen as ProjectT.IProjectScreen));
-}
-
 function* updateScenarioStyles(
   { payload: { id, styles } }: ReturnType<typeof Actions.updateScenarioStyles>,
 ): SagaIterator {
@@ -520,7 +500,6 @@ const deleteScreenType: ProjectT.DeleteScreen['type'] = 'PROJECTS:DELETE_SCREEN'
 const renameScreenType: ProjectT.RenameScreen['type'] = 'PROJECTS:RENAME_SCREEN';
 const setListSortableType: ProjectT.SetListSortable['type'] = 'PROJECTS:SET_LIST_SORTABLE';
 const updateElementStylesType: ProjectT.UpdateElementStyles['type'] = 'PROJECTS:UPDATE_ELEMENT_STYLES';
-const updateRootStylesType: ProjectT.UpdateRootStyles['type'] = 'PROJECTS:UPDATE_ROOT_STYLES';
 const updateScenarioStylesType: ProjectT.UpdateScenarioStyles['type'] = 'PROJECTS:UPDATE_SCENARIO_STYLES';
 const updateElementParametersType: ProjectT.UpdateElementParameters['type'] = 'PROJECTS:UPDATE_ELEMENT_PARAMETERS';
 const setAlignType: ProjectT.SetAlign['type'] = 'PROJECTS:SET_ALIGN';
@@ -558,7 +537,6 @@ export default function* projectSaga() {
   yield takeLatest(setListSortableType, setListSortableSaga);
 
   yield takeLatest(updateElementStylesType, updateElementStyles);
-  yield takeLatest(updateRootStylesType, updateRootStyles);
   yield takeLatest(updateScenarioStylesType, updateScenarioStyles);
   yield takeLatest(updateElementParametersType, updateElementParameters);
   yield takeLatest(setAlignType, setAlign);

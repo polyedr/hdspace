@@ -93,6 +93,8 @@ export function* activateScreenSaga({ payload }: ReturnType<typeof activateScree
   yield put(Actions.runLayoutAlgorithm(screenScenarios, scenariosElements, rootLSItem));
   yield take(runLayoutAlgorithmFinishedType);
 
+  yield put(Actions.setActiveItem({ itemId: `${rootLSItem.id}s`, itemType: 'root', name: 'Root' }));
+
   yield put(Actions.setScenarioLoader(false));
   yield put(setScreenLoader(false));
 }
@@ -117,11 +119,15 @@ export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
     screen: createdScreen.id,
     styles: {
       width: '100%',
+      height: '100%',
       display: 'flex',
       'flex-direction': 'column',
       'align-items': 'center',
       'min-height': '100%',
-    }
+      'background-color': '#ffffff',
+      'border-width': '0px',
+      'border-style': 'solid',
+    },
   });
 
   const listSortable: T.IListSortable = { root: { ...DEFAULT_LS.root, id: rootScenario.id } };
@@ -181,11 +187,7 @@ export function* saveScreenSaga({ payload: { canvas } }: ReturnType<typeof saveS
   const formData = new FormData();
 
   R.keys(screen).forEach((key) => {
-    if (key === 'styles_root') {
-      formData.append(key, JSON.stringify(screen[key]));
-    } else {
-      formData.append(key, screen[key] as string);
-    }
+    formData.append(key, screen[key] as string);
   });
 
   formData.append('image', blobFile, `${currentScreen.name}-${currentScreen.id}.png`);

@@ -19,6 +19,10 @@ import { Spinner } from '$components/UI/Spinner/';
 
 const styles = require('./RightPanel.scss');
 
+const isScenario = (activeItem: ProjectT.ActiveItem) => (
+  LIST_SCENARIO_TYPE.indexOf(activeItem.itemType) !== -1 || activeItem.itemType === 'root'
+);
+
 const mapStateToProps = (state: AppReduxState) => ({
   scenarios: selectors.selectScenarios(state),
   scenarioElements: selectors.selectScenariosElements(state),
@@ -31,7 +35,6 @@ const mapDispatchToProps = {
   setAlign: Actions.setAlign,
   updateElementStyles: Actions.updateElementStyles,
   updateScenarioStyles: Actions.updateScenarioStyles,
-  updateRootStyles: Actions.updateRootStyles,
   updateElementParameters: Actions.updateElementParameters,
   addElement: Actions.addElement,
   changeScenario: Actions.changeScenario,
@@ -67,7 +70,6 @@ const Component: React.FunctionComponent<IRightPanelProps> = ({
   addContainer,
   setAlign,
   updateElementStyles,
-  updateRootStyles,
   updateScenarioStyles,
   updateElementParameters,
   changeScenario,
@@ -90,32 +92,30 @@ const Component: React.FunctionComponent<IRightPanelProps> = ({
   }, [activeItem, scenarios, updateScenarioStyles]);
 
   const getParams = useCallback(() => {
-    const parseId = parseInt(activeItem.itemId, 10);
-
-    if (LIST_SCENARIO_TYPE.indexOf(activeItem.itemType) !== -1) {
-      return R.path([parseId, 'parameters'], scenarios);
+    if (activeItem.itemType === 'none') {
+      return {};
     }
 
-    return R.path([parseId, 'parameters'], scenarioElements);
+    const itemID = parseInt(activeItem.itemId, 10);
+    return isScenario(activeItem) ? scenarios[itemID].parameters : scenarioElements[itemID].parameters;
   }, [activeItem, scenarios, scenarioElements]);
 
   const getStyleItem = useCallback((): IStylesElement => {
-    const parseId = parseInt(activeItem.itemId, 10);
-
-    if (parseId) {
-      if (LIST_SCENARIO_TYPE.indexOf(activeItem.itemType) !== -1 || activeItem.itemType ==='root') {
-        return scenarios[parseId]?.styles;
-      }
-  
-      return scenarioElements[parseId].styles;
+    if (activeItem.itemType === 'none') {
+      return {};
     }
-    return {}; // TODO: research case with 'root'
+
+    const itemID = parseInt(activeItem.itemId, 10);
+    return isScenario(activeItem) ? scenarios[itemID].styles : scenarioElements[itemID].styles;
   }, [activeItem, scenarios, scenarioElements]);
 
   const getOrientation = useCallback((id: string): string => {
-    const parseId = String(parseInt(id, 10));
+    if (id === 'none') {
+      return 'vertical';
+    }
 
-    return R.path([parseId, 'styles', 'flex-direction'], scenarios) === 'row' ? 'horizontal' : 'vertical';
+    const itemID = String(parseInt(id, 10));
+    return R.path([itemID, 'styles', 'flex-direction'], scenarios) === 'row' ? 'horizontal' : 'vertical';
   }, [scenarios]);
 
   return (
@@ -129,7 +129,6 @@ const Component: React.FunctionComponent<IRightPanelProps> = ({
         <PanelEditProps
           activeItem={activeItem}
           project={project}
-          screen={screen}
           listSortable={screen.listSortable}
           disablePanel={!screen}
           scenarios={scenarios}
@@ -144,7 +143,6 @@ const Component: React.FunctionComponent<IRightPanelProps> = ({
           addContainer={addContainer}
           changeScenario={changeScenario}
           updateElementStyles={updateElementStyles}
-          updateRootStyles={updateRootStyles}
           updateScenarioStyles={updateScenarioStyles}
           updateElementParameters={updateElementParameters}
           changeElementType={changeElementType}

@@ -14,8 +14,10 @@ import {
 // import { rgbToHex } from '$utils/parseColor';
 
 export interface IStylesElement {
+  display?: string,
   width?: number | string,
   height?: number | string,
+  'min-height'?: number | string,
 
   'margin-top'?: string,
   'margin-right'?: string,
@@ -45,6 +47,7 @@ export interface IStylesElement {
   'text-align'?: string,
 
   'flex-direction'?: string;
+  'align-items'?: string;
 }
 
 type TConvertIndents = (styles: IStylesElement) => {
@@ -85,7 +88,7 @@ type TConvertTypography = (styles: IStylesElement) => {
 };
 
 const convertIndents: TConvertIndents = styles => (
-  Object.keys(styles).reduce((result, key) => {
+  R.keys(styles).reduce((result, key) => {
     switch (key) {
       case 'margin-top':
         return { ...result, marginTop: styles[key] };
@@ -109,7 +112,7 @@ const convertIndents: TConvertIndents = styles => (
 );
 
 const convertBackground: TConvertBackground = styles => (
-  Object.keys(styles).reduce((result, key) => {
+  R.keys(styles).reduce((result, key) => {
     switch (key) {
       case 'background-color':
         return { ...result, backgroundColor: styles[key] };
@@ -125,17 +128,23 @@ const convertBackground: TConvertBackground = styles => (
 );
 
 const otherStyles = (styles: IStylesElement): React.CSSProperties => (
-  Object.keys(styles).reduce((acc, key) => {
+  R.keys(styles).reduce((acc, key) => {
     switch (key) {
       case 'flex-direction':
         return { ...acc, flexDirection: styles[key] };
+      case 'align-items':
+        return { ...acc, alignItems: styles[key] };
+      case 'min-height':
+        return { ...acc, minHeight: styles[key] };
+      case 'display':
+          return { ...acc, key: styles[key] };
       default: return acc;
     }
   }, {})
 );
 
 export const convertBorders: TConvertBorders = styles => (
-  Object.keys(styles).reduce((result, key) => {
+  R.keys(styles).reduce((result, key) => {
     switch (key) {
       case 'border-color':
         return { ...result, borderColor: styles[key] };
@@ -151,7 +160,7 @@ export const convertBorders: TConvertBorders = styles => (
 );
 
 export const convertTypography: TConvertTypography = styles => (
-  Object.keys(styles).reduce((result, key) => {
+  R.keys(styles).reduce((result, key) => {
     switch (key) {
       case 'font-family':
         return { ...result, fontFamily: styles[key] };

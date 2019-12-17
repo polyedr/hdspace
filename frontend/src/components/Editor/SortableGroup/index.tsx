@@ -15,7 +15,6 @@ type Props = {
   children?: any,
   styleItem: React.CSSProperties,
   align?: string,
-  styles_root?: React.CSSProperties,
   onChange: (index: number, items: string[], parentId: string) => void,
   onChoose: (itemIndex: string, target?: React.SyntheticEvent) => void,
 };
@@ -31,7 +30,6 @@ export const SortableGroup: React.FC<Props> = (props) => {
     onChoose,
     onChange,
     align,
-    styles_root,
   } = props;
 
   const handleChoose = useCallback((evt) => {
@@ -61,9 +59,9 @@ export const SortableGroup: React.FC<Props> = (props) => {
   return (
     <Sortable
       id={parent}
-      style={{ ...styles_root, ...styleItem }}
+      style={styleItem}
       className={classNames(
-        parent === 'root' ? 'root' : 'groupItem',
+        parent !== 'root' && 'groupItem',
         // styles[group],
         align && styles[`align_${align}`],
         disableSortable && styles.moving,

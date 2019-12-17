@@ -75,7 +75,6 @@ export type UpdateElementStyles = IAction<'PROJECTS:UPDATE_ELEMENT_STYLES', { id
 export type UpdateScenarioStyles = IAction<
   'PROJECTS:UPDATE_SCENARIO_STYLES', { id: string, styles: CSSProperties & { 'flex-direction'?: string } }
 >;
-export type UpdateRootStyles = IAction<'PROJECTS:UPDATE_ROOT_STYLES', { id: string, styles: CSSProperties }>;
 export type UpdateElementParameters = IAction<
   'PROJECTS:UPDATE_ELEMENT_PARAMETERS', { itemID: string, parameters: IScreenProps }
 >;
@@ -140,7 +139,6 @@ export type Action =
   | SetScenarioElements
   | UpdateElementStyles
   | UpdateScenarioStyles
-  | UpdateRootStyles
   | UpdateElementParameters
   | SetAlign
   | ChangeScenario
@@ -373,7 +371,6 @@ export interface IProjectScreen {
   project: number;
   image: string | null;
   screenscenario: number[];
-  styles_root: { [prop: string]: string }; // is it StylesElement?
   screenLoader: boolean;
   listSortable: IListSortable;
   // removed screen_data_json, ask if it will be needed on backend

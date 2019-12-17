@@ -77,10 +77,8 @@ export const Editor: React.FC<IEditProps> = memo(({
   const [isScreenRotated, setIsScreenRotated] = useState<boolean>(false);
 
   useEffect(() => {
-    const root = screen.listSortable.root;
     if (screen.id !== screenId) {
       setScreenId(screen.id);
-      setActiveItem({ itemId: `${root.id}s`, itemType: 'root', name: 'Root' });
     }
   }, [screen.id, screen.listSortable]);
 
@@ -101,7 +99,7 @@ export const Editor: React.FC<IEditProps> = memo(({
       return;
     }
     const itemID = (target as HTMLElement).dataset['lsId'];
-    
+
     if (itemID === activeItem.itemId) return;
 
     if (itemID) {
@@ -111,7 +109,7 @@ export const Editor: React.FC<IEditProps> = memo(({
       } else {
         const { type, name } = getParams(itemID, scenarioElements, scenarios);
         const list = getListNotDragging(type);
-    
+
         setActiveItem({ itemId: itemID, itemType: type, name });
         setListNotDragging(list);
       }
@@ -119,13 +117,14 @@ export const Editor: React.FC<IEditProps> = memo(({
   }, [screen.listSortable, scenarios, scenarioElements, listNotDragging, setListNotDragging]);
 
   const handleDelScenarioItem = useCallback(() => {
-    if (activeItem.itemType === 'root') return;
+    if (['root', 'none'].includes(activeItem.itemType)) return;
 
     delScenarioItem(activeItem.itemId);
   }, [screen.listSortable, activeItem, delScenarioItem]);
 
   useEffect(() => {
     const listener = (event: KeyboardEvent) => {
+      // TODO: find active item by data-ls-id and check if it equals document.activeElement (otherwise scenarios will be deleted by any backspace key press)
       if (event.keyCode === 8) {
         handleDelScenarioItem();
       }
@@ -133,7 +132,7 @@ export const Editor: React.FC<IEditProps> = memo(({
 
     document.addEventListener('keydown', listener);
     return () => document.removeEventListener('keydown', listener);
-  }, [handleDelScenarioItem]);
+  }, [activeItem, handleDelScenarioItem]);
 
   useEffect(() => {
     const listener = (event: KeyboardEvent) => {
@@ -329,22 +328,15 @@ export const Editor: React.FC<IEditProps> = memo(({
                       isFlex
                       maxHeight="100vh"
                     >
-                      {
-                        !R.isEmpty(R.path(['listSortable', 'root', 'children'], screen)) ? (
-                          <React.Fragment>
-                            <Recursive
-                              item={screen.listSortable.root}
-                              activeItemId={activeItem.itemId}
-                              isMoving={isMoving}
-                              listNotDragging={listNotDragging}
-                              onChange={setListSortable}
-                              setIsMoving={setIsMoving}
-                              onActiveElementChange={handleActiveElementChange} // needed to activate item before dragging, in order to get new listNotDraggable
-                              styles_root={screen.styles_root}
-                            />
-                          </React.Fragment>
-                        ) : <div id="root" style={screen.styles_root} className="root" />
-                      }
+                      <Recursive
+                        item={screen.listSortable.root}
+                        activeItemId={activeItem.itemId}
+                        isMoving={isMoving}
+                        listNotDragging={listNotDragging}
+                        onChange={setListSortable}
+                        setIsMoving={setIsMoving}
+                        onActiveElementChange={handleActiveElementChange} // needed to activate item before dragging, in order to get new listNotDraggable
+                      />
                     </Scrollbar>
                   </div>
                 </div>

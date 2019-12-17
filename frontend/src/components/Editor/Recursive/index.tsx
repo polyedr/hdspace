@@ -46,7 +46,6 @@ export type OwnProps = {
   activeItemId: string,
   isMoving: boolean,
   listNotDragging: string[],
-  styles_root?: {},
 
   onChange: IEditProps['setListSortable'],
   onActiveElementChange(parentId: number, childID: string): void,
@@ -65,7 +64,6 @@ const RecursiveComponent: React.FC<Props> = (props) => {
     onActiveElementChange,
     onChange,
     setIsMoving,
-    styles_root = {},
   
     listSortable,
     elementList,
@@ -93,7 +91,8 @@ const RecursiveComponent: React.FC<Props> = (props) => {
   ), [listNotDragging]);
 
   const getStyles = useCallback((id: number): CSSProperties => {
-    const parseStyle: CSSProperties = scenarioList[id]?.styles;
+    if (id === -1) return {};
+    const parseStyle: CSSProperties = scenarioList[id].styles;
 
     return parseStyle ? convertPropCSS(parseStyle) : {};
   }, [scenarioList]);
@@ -105,12 +104,10 @@ const RecursiveComponent: React.FC<Props> = (props) => {
       isPutItem={getIsPutItem(item.type)}
       parent={idToLSId(item.id, item.type)}
       group={getGroupName(item.type)}
-      styleItem={{ flexDirection: getStyles(item.id).flexDirection }}
+      styleItem={getStyles(item.id)}
       onChoose={handleChooseToSort}
       onChange={handleItemPositionChange}
       // align={item.props && item.props.align}
-      styles_root={item.type === 'root' ? convertPropCSS(styles_root) : {}}
-      // styles_root={item.id === 0 ? convertPropCSS(styles_root) : {}}
     >
       {item.children.map((itemId) => {
         const elId = parseInt(itemId, 10);

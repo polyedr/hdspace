@@ -162,11 +162,6 @@ export const updateScenarioStyles = (
   payload: { id, styles },
 });
 
-export const updateRootStyles = (id: string, styles: CSSProperties): T.UpdateRootStyles => ({
-  type: 'PROJECTS:UPDATE_ROOT_STYLES',
-  payload: { id, styles },
-});
-
 // export const updateStylesGroup = (itemId: string, styles: IScreenProps) => ({
 //   type: TYPES.UPDATE_STYLES_GROUP,
 //   payload: { itemId, styles },
