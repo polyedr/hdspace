@@ -392,10 +392,9 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
 
             vertical_groups = {}
             horizontal_groups = {}
-
-            # for idx, (roi, class_id, score) in enumerate(zip(r["rois"], r["class_ids"], r["scores"])):
-            #     for idx1, (roi1, class_id1, score1) in enumerate(zip(r["rois"], r["class_ids"], r["scores"])):
-
+            # Inner scenarios elements list to remove them from recognized_elements
+            # befpre the final assignment to the general scenario
+            inner_scenarios_elements = set()
             for idx, recognized_element in enumerate(recognized_elements):
                 for idx1, recognized_element1 in enumerate(recognized_elements):
                     # Vertical and horizontal groups detection
@@ -528,9 +527,11 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                 # Create elements for vertical groups scenarios
                 for element_data_vertical in v_group_key:
                     print(element_data_vertical)
+                    element_vertical = recognized_elements[element_data_vertical]
+                    inner_scenarios_elements.add(element_vertical)
                     scenario_vertical_element = ScenarioElement.objects.create(
                         scenario=scenario_vertical,
-                        **recognized_elements[element_data_vertical]
+                        **element_vertical
                     )
                     # Fill the children list for parameters
                     children.append(str(scenario_vertical_element.id) + "e")
@@ -577,10 +578,11 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                         print("element_data_horizontal=", element_data_horizontal)
                         print("recognized_elements[element_data_horizontal]=",
                               recognized_elements[element_data_horizontal])
-
+                        element_horizontal = recognized_elements[element_data_horizontal]
+                        inner_scenarios_elements.add(element_horizontal)
                         scenario_horizontal_element = ScenarioElement.objects.create(
                             scenario=scenario_horizontal,
-                            **recognized_elements[element_data_horizontal]
+                            **element_horizontal
                         )
                         # Fill the children list for parameters
                         children.append(str(scenario_horizontal_element.id) + "e")
@@ -618,7 +620,9 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                         del vertical_groups_free[v_group_key]
 
         children = []
-        for element_data in recognized_elements:
+        # recognized_elements_general = recognized_elements - inner_scenarios_elements
+        recognized_elements_general = [item for item in recognized_elements if item not in inner_scenarios_elements]
+        for element_data in recognized_elements_general:
             print(element_data)
             # Get all the elements left. Mark them as children.
             scenario_general_element = ScenarioElement.objects.create(
