@@ -282,7 +282,7 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                             {
                                 "struct_type": "textinput",
                                 "func_type": func_type,
-                                "parameters": {"placeholder": letters_str},
+                                "parameters": {"placeholder": letters_str, "roi": roi},
                                 "styles": {
                                     "width": str(width_elem) + "px",
                                     "height": str(height_elem) + "px",
@@ -295,7 +295,7 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                             {
                                 "struct_type": "button",
                                 "func_type": "end_simple_scenario",
-                                "parameters": {"text": letters_str},
+                                "parameters": {"placeholder": letters_str, "roi": roi},
                                 "styles": {
                                     "width": str(width_elem) + "px",
                                     "height": str(height_elem) + "px",
@@ -311,7 +311,7 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                             {
                                 "struct_type": "ocrtext",
                                 "func_type": func_type,
-                                "parameters": {"placeholder": text},
+                                "parameters": {"placeholder": text, "roi": roi},
                                 "styles": {
                                     "width": str(width_elem) + "px",
                                     "height": str(height_elem) + "px",
@@ -324,7 +324,7 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                             {
                                 "struct_type": "select",
                                 "func_type": func_type,
-                                "parameters": {"text": letters_str},
+                                "parameters": {"placeholder": letters_str, "roi": roi},
                                 "styles": {
                                     "width": str(width_elem) + "px",
                                     "height": str(height_elem) + "px",
@@ -337,7 +337,7 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                             {
                                 "struct_type": "checkbox",
                                 "func_type": "checkbox",
-                                "parameters": {"text": letters_str},
+                                "parameters": {"placeholder": letters_str, "roi": roi},
                                 "styles": {
                                     "width": str(width_elem) + "px",
                                     "height": str(height_elem) + "px",
@@ -350,7 +350,7 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                             {
                                 "struct_type": "radiobutton",
                                 "func_type": "radiobutton",
-                                "parameters": {"text": letters_str},
+                                "parameters": {"placeholder": letters_str, "roi": roi},
                                 "styles": {
                                     "width": str(width_elem) + "px",
                                     "height": str(height_elem) + "px",
@@ -363,7 +363,7 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                             {
                                 "struct_type": "image",
                                 "func_type": "undefined",
-                                "parameters": {"alt": letters_str},
+                                "parameters": {"alt": letters_str, "roi": roi},
                                 "styles": {
                                     "width": str(width_elem) + "px",
                                     "height": str(height_elem) + "px",
@@ -393,113 +393,114 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
             vertical_groups = {}
             horizontal_groups = {}
 
-            for idx, (roi, class_id, score) in enumerate(
-                zip(r["rois"], r["class_ids"], r["scores"])
-            ):
-                for idx1, (roi1, class_id1, score1) in enumerate(
-                    zip(r["rois"], r["class_ids"], r["scores"])
-                ):
-                    if (idx not in excluded_indices) and (idx1 not in excluded_indices):
-                        # Vertical and horizontal groups detection
-                        # Check the vertical grouping criteria
-                        # Check the horizontal grouping criteria
-                        # Assign the placeholder values after grouping with text
-                        # Vertical group when input or select element has another text element
-                        # at the distance 0.5 from its width
-                        # Horizontal group when input or select or text are placed horizontally
+            # for idx, (roi, class_id, score) in enumerate(zip(r["rois"], r["class_ids"], r["scores"])):
+            #     for idx1, (roi1, class_id1, score1) in enumerate(zip(r["rois"], r["class_ids"], r["scores"])):
 
-                        # Loop through all the rois
-                        # Find all the close-by elements if one of them input (1) or select (4),
-                        # and second one is the text (3)
-                        # Horizontal overlap 75% of the element with minimal width
-                        # Vertical max +- 50% for input/select width,
-                        # middle of the text element should be within this interval
-                        y1, x1, y2, x2 = roi
-                        # The first rectangle width
-                        width_elem = x2 - x1
-                        height_elem = y2 - y1
+            for idx, recognized_element in enumerate(recognized_elements):
+                for idx1, recognized_element1 in enumerate(recognized_elements):
+                    # Vertical and horizontal groups detection
+                    # Check the vertical grouping criteria
+                    # Check the horizontal grouping criteria
+                    # Assign the placeholder values after grouping with text
+                    # Vertical group when input or select element has another text element
+                    # at the distance 0.5 from its width
+                    # Horizontal group when input or select or text are placed horizontally
 
-                        y11, x11, y21, x21 = roi1
+                    # Loop through all the rois
+                    # Find all the close-by elements if one of them input (1) or select (4),
+                    # and second one is the text (3)
+                    # Horizontal overlap 75% of the element with minimal width
+                    # Vertical max +- 50% for input/select width,
+                    # middle of the text element should be within this interval
+                    y1, x1, y2, x2 = recognized_element["parameters"]["roi"]
+                    # The first rectangle width
+                    width_elem = x2 - x1
+                    height_elem = y2 - y1
 
-                        # The second rectangle width
-                        width_elem1 = x21 - x11
-                        height_elem1 = y21 - y11
+                    y11, x11, y21, x21 = recognized_element1["parameters"]["roi"]
 
-                        # Borders of the overlapped area
-                        left = max(x1, x11)
-                        bottom = max(y1, y11)
-                        right = min(x2, x21)
-                        top = min(y2, y21)
+                    # The second rectangle width
+                    width_elem1 = x21 - x11
+                    height_elem1 = y21 - y11
 
-                        # Size of the overlapped area
-                        horizontal_overlap = right - left
-                        vertical_overlap = top - bottom
+                    # Borders of the overlapped area
+                    left = max(x1, x11)
+                    bottom = max(y1, y11)
+                    right = min(x2, x21)
+                    top = min(y2, y21)
 
-                        # Check if the vertical distance between roi and roi1 is sufficient
-                        # Middle of the input or select element
-                        mid_input = (y1 + y2) / 2
+                    # Size of the overlapped area
+                    horizontal_overlap = right - left
+                    vertical_overlap = top - bottom
 
-                        # Middle of the text element
-                        mid_text = (y11 + y21) / 2
+                    # Check if the vertical distance between roi and roi1 is sufficient
+                    # Middle of the input or select element
+                    mid_input = (y1 + y2) / 2
 
-                        border_bottom = y1 - height_elem / 2
-                        border_top = y2 + height_elem / 2
+                    # Middle of the text element
+                    mid_text = (y11 + y21) / 2
 
-                        # Vertical groups detection
-                        # Check if the roi is input or select
-                        # Check if the roi1 is text
-                        if class_id in {1, 4} and class_id1 in {3}:
-                            # Check if the elements were not assigned to the vertical groups before
-                            # Flatten vertical group keys
-                            fvgk = set(i for sub in vertical_groups.keys() for i in sub)
-                            if ((idx not in fvgk) and (idx1 not in fvgk)):
-                                # Check if the text and input elements are close to each other by vertical direction
-                                if (border_bottom < mid_text < mid_input) or (
-                                    mid_input < mid_text < border_top
-                                ):
-                                    # Assign the results to the vertical_group
-                                    # Check if the horizontal overlap between roi and roi1 is sufficient
-                                    if (
-                                        horizontal_overlap > VERICAL_GROUPS_HORIZONTAL_OVERLAP_THRESHOLD * width_elem
-                                    ) or (
-                                        horizontal_overlap > VERICAL_GROUPS_HORIZONTAL_OVERLAP_THRESHOLD * width_elem1
-                                    ):
-                                        # Fill the vertical_group dictionary
-                                        vertical_group_tuple = (idx, idx1)
-                                        # The stub for the future scenario assigned
-                                        vertical_group_scenario = -1
-                                        vertical_groups.update(
-                                            {
-                                                vertical_group_tuple: vertical_group_scenario
-                                            }
-                                        )
+                    border_bottom = y1 - height_elem / 2
+                    border_top = y2 + height_elem / 2
 
-                        # Horizontal groups detection
-                        # Check if the roi is text or input or select
-                        # Check if the roi1 is text or input or select
-                        if class_id in {1, 3, 4} and class_id1 in {1, 3, 4} and (idx != idx1):
-                            # Check if the elements were not assigned to the vertical groups before
-
-                            # Flatten horizontal group keys
-                            fhgk = set(i for sub in horizontal_groups.keys() for i in sub)
-                            if ((idx not in fhgk) and (idx1 not in fhgk)):
-                                # Check if these elements are laying at one level horizontally
-                                # They should overlap vertically and this level of the overlap
-                                # should be at least 0.25
+                    # Vertical groups detection
+                    # Check if the roi is input or select
+                    # Check if the roi1 is text
+                    if recognized_element["struct_type"] in {"textinput", "select"} \
+                            and recognized_element1["struct_type"] in {"ocrtext"}:
+                        # Check if the elements were not assigned to the vertical groups before
+                        # Flatten vertical group keys
+                        fvgk = set(i for sub in vertical_groups.keys() for i in sub)
+                        if ((idx not in fvgk) and (idx1 not in fvgk)):
+                            # Check if the text and input elements are close to each other by vertical direction
+                            if (border_bottom < mid_text < mid_input) or (
+                                mid_input < mid_text < border_top
+                            ):
+                                # Assign the results to the vertical_group
+                                # Check if the horizontal overlap between roi and roi1 is sufficient
                                 if (
-                                        vertical_overlap > HORIZONTAL_GROUPS_VERICAL_OVERLAP_THRESHOLD * height_elem
+                                    horizontal_overlap > VERICAL_GROUPS_HORIZONTAL_OVERLAP_THRESHOLD * width_elem
                                 ) or (
-                                        vertical_overlap > HORIZONTAL_GROUPS_VERICAL_OVERLAP_THRESHOLD * height_elem1
+                                    horizontal_overlap > VERICAL_GROUPS_HORIZONTAL_OVERLAP_THRESHOLD * width_elem1
                                 ):
-                                    # Fill the horizontal_group dictionary
-                                    horizontal_group_tuple = (idx, idx1)
+                                    # Fill the vertical_group dictionary
+                                    vertical_group_tuple = (idx, idx1)
                                     # The stub for the future scenario assigned
-                                    horizontal_group_scenario = -1
-                                    horizontal_groups.update(
+                                    vertical_group_scenario = -1
+                                    vertical_groups.update(
                                         {
-                                            horizontal_group_tuple: horizontal_group_scenario
+                                            vertical_group_tuple: vertical_group_scenario
                                         }
                                     )
+
+                    # Horizontal groups detection
+                    # Check if the roi is text or input or select
+                    # Check if the roi1 is text or input or select
+                    # if class_id in {1, 3, 4} and class_id1 in {1, 3, 4} and (idx != idx1):
+                    if recognized_element["struct_type"] in {"textinput", "select", "ocrtext"} and recognized_element1[
+                            "struct_type"] in {"textinput", "select", "ocrtext"} and (idx != idx1):
+                        # Check if the elements were not assigned to the vertical groups before
+
+                        # Flatten horizontal group keys
+                        fhgk = set(i for sub in horizontal_groups.keys() for i in sub)
+                        if ((idx not in fhgk) and (idx1 not in fhgk)):
+                            # Check if these elements are laying at one level horizontally
+                            # They should overlap vertically and this level of the overlap
+                            # should be at least 0.25
+                            if (
+                                    vertical_overlap > HORIZONTAL_GROUPS_VERICAL_OVERLAP_THRESHOLD * height_elem
+                            ) or (
+                                    vertical_overlap > HORIZONTAL_GROUPS_VERICAL_OVERLAP_THRESHOLD * height_elem1
+                            ):
+                                # Fill the horizontal_group dictionary
+                                horizontal_group_tuple = (idx, idx1)
+                                # The stub for the future scenario assigned
+                                horizontal_group_scenario = -1
+                                horizontal_groups.update(
+                                    {
+                                        horizontal_group_tuple: horizontal_group_scenario
+                                    }
+                                )
             # These recognized elements should be assigned for the vertical groups,
             # horizontal groups and to the general scenario
             # Elements, groups and scenarios assignment
@@ -574,7 +575,8 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
 
                         print("recognized_elements=", recognized_elements)
                         print("element_data_horizontal=", element_data_horizontal)
-                        print("recognized_elements[element_data_horizontal]=", recognized_elements[element_data_horizontal])
+                        print("recognized_elements[element_data_horizontal]=",
+                              recognized_elements[element_data_horizontal])
 
                         scenario_horizontal_element = ScenarioElement.objects.create(
                             scenario=scenario_horizontal,
