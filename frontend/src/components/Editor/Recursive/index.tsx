@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 
 import { AppReduxState } from '$shared/types/app';
 import * as Actions from '$redux/project/actions';
-import { ISortableItemTemp } from '$utils/parseListItems';
 import { SortableGroup } from '$components/Editor/SortableGroup';
 import { DragResize } from '$components/Editor/DragResize';
 import { RENDERERS } from '$components/UI/RenderElements';
