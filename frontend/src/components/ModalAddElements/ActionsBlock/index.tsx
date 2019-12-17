@@ -21,7 +21,7 @@ import { isIncludes } from '$utils/StringHelper';
 import { uniqueId } from '$utils/NumberHelper';
 import { IUploadFile, UploadFile } from '$components/UI/UploadFile';
 
-const styles = require('./styles.scss');
+const styles = require('./ActionsBlock.scss');
 
 type Props = {
   scenarios: IPanelEditProps['scenarios'];

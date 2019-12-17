@@ -10,7 +10,7 @@ import { Button } from '$components/UI/Button';
 import * as Actions from '$redux/project/actions';
 import { EditorProps } from '$containers/EditorLogic';
 
-const styles = require('./styles.scss');
+const styles = require('./NavPanelScreen.scss');
 
 interface INavPanelScreenProps {
   screenID?: string;

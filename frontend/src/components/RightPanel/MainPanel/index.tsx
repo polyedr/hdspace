@@ -17,7 +17,7 @@ import { LIST_SCENARIO_TYPE } from '$constants/defaultParams';
 import { IStylesElement } from '$utils/StyleHelper';
 import { Spinner } from '$components/UI/Spinner/';
 
-const styles = require('./styles.scss');
+const styles = require('./RightPanel.scss');
 
 const mapStateToProps = (state: AppReduxState) => ({
   scenarios: selectors.selectScenarios(state),

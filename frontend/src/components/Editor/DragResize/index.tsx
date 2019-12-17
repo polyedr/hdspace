@@ -6,7 +6,7 @@ import { autobind } from 'core-decorators';
 import * as Actions from '$redux/project/actions';
 import { strToNumber } from '$utils/NumberHelper';
 
-const styles = require('./styles.scss');
+const styles = require('./DragResize.scss');
 
 const extractWidth = R.path<number | string>(['props', 'style', 'width']);
 

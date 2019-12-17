@@ -20,7 +20,7 @@ import { Scrollbar } from '$components/UI/Scrollbar';
 import { getClassDevice } from '$utils/dom';
 import { getListNotDragging, getParams } from '$utils/parseScenario';
 
-const styles = require('./styles.scss');
+const styles = require('./Editor.scss');
 
 const isWorkContainer = true;
 
@@ -325,43 +325,13 @@ export const Editor: React.FC<IEditProps> = memo(({
                     )}
                   >
                     <Scrollbar
-                      style={{
-                        minHeight: '100%',
-                        height: '100%',
-                      }}
+                      style={{ minHeight: '100%', height: '100%' }}
                       isFlex
                       maxHeight="100vh"
                     >
                       {
                         !R.isEmpty(R.path(['listSortable', 'root', 'children'], screen)) ? (
                           <React.Fragment>
-                            {/* {
-                              isPrototypeMode && (
-                                <CleanRecursive
-                                  item={screen.listSortable.root}
-                                  activeItemId={activeItem.itemId}
-                                  isPrototypeMode={isPrototypeMode}
-                                  styles_root={screen.styles_root}
-                                  onChoose={handleActiveElementChange}
-                                  onChange={setListSortable}
-                                />
-                              )
-                            } */}
-                            {/* {
-                              !isPrototypeMode && (
-                                <Recursive
-                                  item={screen.listSortable.root}
-                                  activeItemId={activeItem.itemId}
-                                  isMoving={isMoving}
-                                  listNotDragging={listNotDragging}
-                                  isPrototypeMode={isPrototypeMode}
-                                  onChoose={handleActiveElementChange}
-                                  onChange={setListSortable}
-                                  setIsMoving={setIsMoving}
-                                  styles_root={screen.styles_root}
-                                />
-                              )
-                            } */}
                             <Recursive
                               item={screen.listSortable.root}
                               activeItemId={activeItem.itemId}

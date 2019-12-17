@@ -13,7 +13,7 @@ import * as Actions from '$redux/project/actions';
 import { selectors } from '$redux/project';
 import { AppReduxState } from '$shared/types/app';
 
-const styles = require('./styles.scss');
+const styles = require('./ModalAddElements.scss');
 
 export interface IChooseElement {
   id: number;

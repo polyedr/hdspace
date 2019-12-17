@@ -5,7 +5,7 @@ import { SortableOptions } from 'sortablejs';
 // @ts-ignore
 import { Sortable } from '$components/Editor/Sortable';
 
-const styles = require('./styles.scss');
+const styles = require('./SortableGroup.scss');
 
 type Props = {
   disableSortable: boolean,

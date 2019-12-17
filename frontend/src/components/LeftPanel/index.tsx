@@ -15,7 +15,7 @@ import { openSignScreen } from '$utils/history';
 import { DEFAULT_AUTHORISATION_TOKEN } from '$constants/defaultParams';
 import { ITokenPair } from '$redux/user/reducer';
 
-const styles = require('./styles.scss');
+const styles = require('./LeftPanel.scss');
 
 export interface ILeftPanel {
   pathname: IAppProps['pathname'],

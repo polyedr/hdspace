@@ -13,7 +13,7 @@ import { getInitialFieldsState } from '$utils/getStates';
 import { IApiResponseError } from '$redux/user/reducer';
 import { SignFormList } from '$components/User/SignFormList';
 
-const styles = require('./styles.scss');
+const styles = require('./SignUp.scss');
 
 const mapStateToProps = ({
   user: { apiResponseError, isSignLoader },

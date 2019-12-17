@@ -4,7 +4,7 @@ import { Button } from '$components/UI/Button';
 import { Icon } from '$components/UI/Icon';
 import { IRightPanelProps } from '$components/RightPanel/MainPanel/';
 
-const styles = require('./styles.scss');
+const styles = require('./NavigateItem.scss');
 
 interface INavigateItemProps {
   activeItem: ProjectT.ActiveItem,
