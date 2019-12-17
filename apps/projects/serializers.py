@@ -25,7 +25,6 @@ from .models import (
 
 class ProjectScreenSerializer(serializers.ModelSerializer):
     screen_data_json = serializers.JSONField()
-    styles_root = serializers.JSONField()
 
     class Meta:
         model = ProjectScreen
@@ -34,7 +33,6 @@ class ProjectScreenSerializer(serializers.ModelSerializer):
             "status",
             "project",
             "name",
-            "styles_root",
             "buoyancy",
             "id",
             "image",
@@ -47,7 +45,6 @@ class ProjectScreenSerializer(serializers.ModelSerializer):
 
 class ProjectScreenMultipleSerializer(BulkSerializerMixin, serializers.ModelSerializer):
     screen_data_json = serializers.JSONField()
-    styles_root = serializers.JSONField()
 
     class Meta:
         model = ProjectScreen
@@ -55,7 +52,6 @@ class ProjectScreenMultipleSerializer(BulkSerializerMixin, serializers.ModelSeri
             "status",
             "project",
             "name",
-            "styles_root",
             "buoyancy",
             "id",
             "image",
