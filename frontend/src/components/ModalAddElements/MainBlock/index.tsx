@@ -236,19 +236,6 @@ const Component: React.FunctionComponent<Props> = memo((props) => {
           <Button type="submit">
             Approve
           </Button>
-          {
-            activeTab === 'Screen' && (
-              <React.Fragment>
-                <p className={styles.modalTextDelimiter}>or</p>
-                <Button
-                  styleType="secondary"
-                  onClick={handleCancel}
-                >
-                  Use Сhatbot Assistant
-                </Button>
-              </React.Fragment>
-            )
-          }
         </div>
       </form>
     </div>
