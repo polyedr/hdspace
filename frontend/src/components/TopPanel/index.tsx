@@ -97,41 +97,6 @@ const Component: React.FunctionComponent<TTopPanelProps> = memo(({
       }
       <div className={styles.topPanelRightBlock}>
         <Button
-          className={classNames(styles.notificationBtn, styles.notificationBtn_item1)}
-          styleType="none"
-          onClick={console.log}
-        >
-          <Icon icon="notification" size={20} />
-        </Button>
-        <Button
-          className={classNames(styles.notificationBtn, styles.notificationBtn_item2)}
-          styleType="none"
-          onClick={console.log}
-        >
-          <Icon icon="chat" size={20} />
-        </Button>
-        <Button
-          className={classNames(styles.notificationBtn, styles.notificationBtn_item3)}
-          styleType="none"
-          onClick={console.log}
-        >
-          <Icon icon="chat" size={20} />
-        </Button>
-        <Button
-          className={classNames(styles.notificationBtn, styles.notificationBtn_item4)}
-          styleType="none"
-          onClick={console.log}
-        >
-          <Icon icon="chat" size={20} />
-        </Button>
-        <Button
-          className={classNames(styles.notificationBtn, styles.notificationBtn_item5)}
-          styleType="none"
-          onClick={console.log}
-        >
-          <Icon icon="chat" size={20} />
-        </Button>
-        <Button
           className="mainImgBtn"
           styleType="none"
           onClick={console.log}
