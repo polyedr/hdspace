@@ -107,18 +107,6 @@ export const Projects: React.FunctionComponent<IProjectsProps> = memo(({
           </Button>
         </div>
         <div className={styles.projectsMainBlock}>
-          <div className={styles.projectsSearch}>
-            <input
-              className={styles.projectsSearchField}
-              type="text"
-              value={search}
-              onChange={changeSearch}
-              placeholder="Search project..."
-            />
-            <Button onClick={console.log}>
-              Go!
-            </Button>
-          </div>
           { listProject.length !== 0 && (
           <table
             className={classNames(styles.projectsContentTable, 'showAnimation')}
