@@ -75,17 +75,6 @@ const Component: React.FunctionComponent<TTopPanelProps> = memo(({
         >
           <Icon icon="menu" size={20} />
         </Button>
-        {
-          pathname !== '/projects' && (
-            <input
-              className={styles.topPanelSearchField}
-              type="text"
-              value={search}
-              onChange={handleChange}
-              placeholder="Search..."
-            />
-          )
-        }
       </div>
       {
         pathname !== '/projects' && (
