@@ -95,15 +95,7 @@ const Component: React.FunctionComponent<TTopPanelProps> = memo(({
           </div>
         )
       }
-      <div className={styles.topPanelRightBlock}>
-        <Button
-          className="mainImgBtn"
-          styleType="none"
-          onClick={console.log}
-        >
-          <Icon icon="menu" size={20} />
-        </Button>
-      </div>
+      <div className={styles.topPanelRightBlock} />
       { modalRenameProjectOpen && (
       <Modal
         animClassName="bubbleAnimation"
