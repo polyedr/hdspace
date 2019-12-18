@@ -100,13 +100,6 @@ export const Projects: React.FunctionComponent<IProjectsProps> = memo(({
       <div className={styles.projectsWrapper}>
         <div className={styles.projectsHeader}>
           <Button
-            onClick={handleCart}
-            className={styles.projectsHeaderBtn}
-          >
-            <Icon icon="cart" size={18} />
-            <span>Your Cart</span>
-          </Button>
-          <Button
             onClick={handleProjectAdd}
             className={styles.projectsHeaderBtn}
           >
