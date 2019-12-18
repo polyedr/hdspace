@@ -161,23 +161,9 @@ export const Projects: React.FunctionComponent<IProjectsProps> = memo(({
                       <Button
                         className={styles.tableBtn}
                         styleType="none"
-                        onClick={() => paymentProject(item.id)}
-                      >
-                        <Icon icon="card" size={20} />
-                      </Button>
-                      <Button
-                        className={styles.tableBtn}
-                        styleType="none"
                         onClick={() => handleDeleteProject(item)}
                       >
                         <Icon icon="delete" size={20} />
-                      </Button>
-                      <Button
-                        className={styles.tableBtn}
-                        styleType="none"
-                        onClick={() => downloadProject(item.id)}
-                      >
-                        <Icon icon="cloud-upload" size={20} />
                       </Button>
                     </td>
                   </tr>
