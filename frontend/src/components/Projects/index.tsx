@@ -173,11 +173,6 @@ export const Projects: React.FunctionComponent<IProjectsProps> = memo(({
           </table>
           )}
         </div>
-        <div className={styles.actions}>
-          <Button onClick={paymentProjectAll}>
-            Checkout all selected projects
-          </Button>
-        </div>
       </div>
       { modalRenameProjectOpen && (
       <Modal
