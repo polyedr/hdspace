@@ -2,7 +2,6 @@ import { CSSProperties } from 'react';
 
 import { IPlainAction, IPlainFailAction, IAction } from '$shared/redux';
 import { IChooseElement } from '$components/ModalAddElements/MainBlock';
-import { TYPES } from '$constants/actions';
 import { CssLikeStyles } from '$utils/StyleHelper';
 
 export type ReduxState = {
@@ -79,11 +78,9 @@ export type UpdateScenarioStyles = IAction<
 export type UpdateElementParameters = IAction<
   'PROJECTS:UPDATE_ELEMENT_PARAMETERS', { itemID: string, parameters: IScreenProps }
 >;
-export type SetAlign = IAction<'PROJECTS:SET_ALIGN', { itemID: string, type: string }>;
 export type ChangeScenario = IAction<'PROJECTS:CHANGE_SCENARIO', { itemID: string, scenarioID: number }>;
 export type ChangeElementType = IAction<'PROJECTS:CHANGE_ELEMENT_TYPE', { itemID: string, type: string }>;
 export type DeleteScenarioItem = IAction<'PROJECTS:DELETE_SCENARIO_ITEM', { id: string }>;
-export type ChangeScenarios = IAction<'PROJECTS:CHANGE_SCENARIOS', { screenID: number }>;
 export type AddScenario = IAction<
   'PROJECTS:ADD_SCENARIO', { parentScenarioID: number | null, name: string, elements: IChooseElement[] }
 >;
@@ -103,12 +100,6 @@ export type RunLayoutAlgorithm = IAction<'PROJECTS:RUN_LAYOUT_ALGORITHM', {
 export type RunLayoutAlgorithmFinished = IPlainAction<'PROJECTS:RUN_LAYOUT_ALGORITHM_FINISHED'>;
 export type SetActiveItem = IAction<'PROJECTS:SET_ACTIVE_ITEM', { activeItem: ActiveItem }>;
 export type ResetScreenState = IPlainAction<'PROJECTS:RESET_SCREEN_STATE'>;
-
-// unused
-export const createScenario = (name: string, type: string, elements?: number[]) => ({
-  type: TYPES.CREATE_SCENARIO,
-  payload: { name, type, elements },
-});
 
 export type Action =
   | LoadLibraryElements
@@ -141,11 +132,9 @@ export type Action =
   | UpdateElementStyles
   | UpdateScenarioStyles
   | UpdateElementParameters
-  | SetAlign
   | ChangeScenario
   | ChangeElementType
   | DeleteScenarioItem
-  | ChangeScenarios
   | AddScenario
   | DeleteScenario
   | RenameScenario
@@ -161,10 +150,6 @@ export type Action =
   | UpdateViewTree
   | ResetScreenState;
 
-// export const updateStylesGroup = (itemId: string, styles: IScreenProps) => ({
-//   type: TYPES.UPDATE_STYLES_GROUP,
-//   payload: { itemId, styles },
-// });
 
 export interface IListProject {
   id: number,
