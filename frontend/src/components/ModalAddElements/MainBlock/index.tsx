@@ -13,7 +13,7 @@ import * as Actions from '$redux/project/actions';
 import { selectors } from '$redux/project';
 import { AppReduxState } from '$shared/types/app';
 
-const styles = require('./styles.scss');
+const styles = require('./ModalAddElements.scss');
 
 export interface IChooseElement {
   id: number;
@@ -103,7 +103,7 @@ const Component: React.FunctionComponent<Props> = memo((props) => {
     } else if (!chooseElements.length) {
       setErrorMsg('No items for the scenario.');
     } else {
-      const finalScenarioName = scenarioName.trim() || 'Scenario name';
+      const finalScenarioName = scenarioName.trim() || 'Container';
       const finalScenarioTypeID = scenarioTypeId === null ? null : Number(scenarioTypeId);
 
       setErrorMsg('');

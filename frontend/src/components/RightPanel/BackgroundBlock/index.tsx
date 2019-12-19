@@ -4,13 +4,13 @@ import React, {
   useCallback,
 } from 'react';
 
-import { IActiveItem } from '$components/Editor/EditorWindow/';
+import { T as ProjectT } from '$redux/project';
 import { IPanelEditProps } from '$components/RightPanel/PanelEditProps';
 import { ColorPicker } from '$components/UI/ColorPicker/';
 import { LIST_SCENARIO_TYPE, DEFAULT_BACKGROUND } from '$constants/defaultParams';
 
 interface IComponentProps {
-  activeItem: IActiveItem,
+  activeItem: ProjectT.ActiveItem,
   styleItem: IPanelEditProps['styleItem'],
   updateElementStyles: IPanelEditProps['updateElementStyles'],
   updateScenarioStyles: IPanelEditProps['updateScenarioStyles'],

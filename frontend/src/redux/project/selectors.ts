@@ -46,3 +46,7 @@ export function selectScenarioLoader(state: AppReduxState) {
 export function selectProjectLoader(state: AppReduxState) {
   return selectFeatureState(state).edit.listProjectLoader;
 };
+
+export function selectActiveItem(state: AppReduxState) {
+  return selectFeatureState(state).ui.activeItem;
+};

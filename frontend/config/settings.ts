@@ -11,7 +11,7 @@ const settings = {
   },
   development: {
     api: {
-      host: 'https://staging.app.adevi.io:8000',
+      host: 'https://staging.app.adevi.io:8000', // https://www.timberworkinfo.ru 
       version: 1,
     },
   },

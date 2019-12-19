@@ -1,6 +1,5 @@
 import React from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
-import { hot } from 'react-hot-loader';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 
@@ -82,4 +81,4 @@ const EditorWindow: React.FunctionComponent<IAppProps> = ({
   </React.Fragment>
 );
 
-export default connect(mapStateToProps, mapDispatchToProps)(hot(module)(EditorWindow));
+export default connect(mapStateToProps, mapDispatchToProps)(EditorWindow);

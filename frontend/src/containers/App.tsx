@@ -33,4 +33,4 @@ const Component: React.FunctionComponent<IAppProps> = () => {
   );
 };
 
-export const App = connect(mapStateToProps, mapDispatchToProps)(hot(module)(Component));
+export const App = connect(mapStateToProps, mapDispatchToProps)(Component);

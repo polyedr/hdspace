@@ -5,38 +5,38 @@ import { SortableOptions } from 'sortablejs';
 // @ts-ignore
 import { Sortable } from '$components/Editor/Sortable';
 
-const styles = require('./styles.scss');
+const styles = require('./SortableGroup.scss');
 
-interface IComponentProps {
+type Props = {
   disableSortable: boolean,
   isPutItem: boolean,
   parent: string,
   group: string,
   children?: any,
-  styleItem: React.CSSProperties,
+  stylesToInherit: React.CSSProperties,
   align?: string,
-  styles_root?: React.CSSProperties,
   onChange: (index: number, items: string[], parentId: string) => void,
   onChoose: (itemIndex: string, target?: React.SyntheticEvent) => void,
-}
+};
 
-export const SortableGroup: React.FunctionComponent<IComponentProps> = ({
-  disableSortable,
-  isPutItem,
-  parent,
-  group,
-  styleItem,
-  children,
-  onChoose,
-  onChange,
-  align,
-  styles_root,
-}) => {
+export const SortableGroup: React.FC<Props> = (props) => {
+  const {
+    disableSortable,
+    isPutItem,
+    parent,
+    group,
+    stylesToInherit,
+    children,
+    onChoose,
+    onChange,
+    align,
+  } = props;
+
   const handleChoose = useCallback((evt) => {
     onChoose(evt.oldIndex);
   }, [onChoose]);
 
-  const handlePositionChange = useCallback(function(itemsInCurrentSortableGroup: string[], sortable, evt) {
+  const handlePositionChange = useCallback((itemsInCurrentSortableGroup: string[], _, evt) => {
     const draggedItemPositionInCurrentSortableGroup = evt.newIndex;
     onChange(draggedItemPositionInCurrentSortableGroup, itemsInCurrentSortableGroup, parent);
   }, [parent, onChange]);
@@ -59,9 +59,9 @@ export const SortableGroup: React.FunctionComponent<IComponentProps> = ({
   return (
     <Sortable
       id={parent}
-      style={{ ...styles_root, ...styleItem }}
+      style={stylesToInherit}
       className={classNames(
-        parent === 'root' ? 'root' : 'groupItem',
+        parent !== 'root' && 'groupItem',
         // styles[group],
         align && styles[`align_${align}`],
         disableSortable && styles.moving,

@@ -38,3 +38,12 @@
     }
   }
 }
+
+.axis {
+  margin-bottom: 12px;
+
+  &__label {
+    display: inline-block;
+    margin-bottom: 5px;
+  }
+}

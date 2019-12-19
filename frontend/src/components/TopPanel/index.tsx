@@ -11,7 +11,7 @@ import { EditorProps } from '$containers/EditorLogic';
 import * as Actions from '$redux/project/actions';
 import { selectors } from '$redux/project';
 
-const styles = require('./styles.scss');
+const styles = require('./TopPanel.scss');
 
 const mapStateToProps = (state: AppReduxState) => ({
   project: selectors.selectCurrentProject(state),

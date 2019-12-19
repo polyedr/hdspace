@@ -2,7 +2,7 @@ import React, { useState, useCallback, } from 'react';
 import * as R from 'ramda';
 import classNames from 'classnames';
 
-import { IActiveItem } from '$components/Editor/EditorWindow/';
+import { T as ProjectT } from '$redux/project';
 import {
   LIST_SCENARIO_TYPE,
   MAX_BORDER_RADIUS,
@@ -14,18 +14,18 @@ import {
 } from '$constants/defaultParams';
 import { IPanelEditProps } from '$components/RightPanel/PanelEditProps';
 import { strToNumber, getPermissibleValue, safeParseFloat, safeMatch } from '$utils/NumberHelper';
-import { validBorderRadius, IStylesElement } from '$utils/StyleHelper';
+import { validBorderRadius, CssLikeStyles } from '$utils/StyleHelper';
 import { ColorPicker } from '$components/UI/ColorPicker/';
 
 const styles = require('./styles.scss');
 
-const accessBorderRadius = (styleItem: IStylesElement) => {
+const accessBorderRadius = (styleItem: CssLikeStyles) => {
   const matchedValue = safeMatch(styleItem['border-radius']);
   return matchedValue !== null ? matchedValue[0] : 'px';
 };
 
 interface IComponentProps {
-  activeItem: IActiveItem,
+  activeItem: ProjectT.ActiveItem,
   styleItem: IPanelEditProps['styleItem'],
   updateElementStyles: IPanelEditProps['updateElementStyles'],
   updateScenarioStyles: IPanelEditProps['updateScenarioStyles'],

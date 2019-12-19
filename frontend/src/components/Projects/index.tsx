@@ -11,7 +11,7 @@ import { Button } from '$components/UI/Button';
 import { Modal } from '$components/UI/Modal';
 import { Icon } from '$components/UI/Icon';
 
-const styles = require('./styles.scss');
+const styles = require('./Projects.scss');
 
 interface IProjectsProps {
   listProject: IListProject[],

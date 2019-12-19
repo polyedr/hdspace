@@ -14,7 +14,7 @@ import { SignFormList } from '$components/User/SignFormList';
 import { generateValidatedFormData, INewFormData } from '$utils/generateValidatedFormData';
 import { Spinner } from '$components/UI/Spinner';
 
-const styles = require('./styles.scss');
+const styles = require('./SignIn.scss');
 
 const IS_NAME_AND_PASSWORD_CHECK = false;
 
@@ -174,4 +174,4 @@ export const UnmountedSignIn: React.FunctionComponent<IProps> = ({
   );
 };
 
-export const SignIn = connect(mapStateToProps, mapDispatchToProps)(hot(module)(UnmountedSignIn));
+export const SignIn = connect(mapStateToProps, mapDispatchToProps)(UnmountedSignIn);

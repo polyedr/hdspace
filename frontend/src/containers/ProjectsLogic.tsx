@@ -40,4 +40,4 @@ const ProjectsLogic: React.FunctionComponent<IDashboardProps> = ({
   </React.Fragment>
 );
 
-export default connect(mapStateToProps, mapDispatchToProps)(hot(module)(ProjectsLogic));
+export default connect(mapStateToProps, mapDispatchToProps)(ProjectsLogic);

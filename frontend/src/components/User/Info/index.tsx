@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom';
 
 import { user } from '$constants/pathNames';
 
-const styles = require('./styles.scss');
+const styles = require('./Info.scss');
 
 interface IProps {
   isSignUp: boolean,

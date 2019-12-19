@@ -30,11 +30,12 @@ const mapStateToProps = (state: AppReduxState) => ({
   scenarioLoader: selectors.selectScenarioLoader(state),
   scenarios: selectors.selectScenarios(state),
   scenarioElements: selectors.selectScenariosElements(state),
+  activeItem: selectors.selectActiveItem(state),
 });
 
 const mapDispatchToProps = {
   getProject: Actions.getProject,
-  setProjectScreens: Actions.setProjectScreens,
+  changeScreensOrder: Actions.changeScreensOrder,
   activateScreen: Actions.activateScreen,
   addScreen: Actions.addScreen,
   setScreen: Actions.setScreen,
@@ -47,6 +48,9 @@ const mapDispatchToProps = {
   updateElementStyles: Actions.updateElementStyles,
   changeMinNavPanel: UserActions.changeMinNavPanel,
   changePrototypeMode: UserActions.changePrototypeMode,
+  setActiveItem: Actions.setActiveItem,
+  addContainer: Actions.addContainer,
+  resetScreenState: Actions.resetScreenState,
 };
 
 export type EditorProps = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & {
@@ -64,11 +68,13 @@ const EditorLogic: React.FunctionComponent<EditorProps> = ({
   scenarioLoader,
   scenarios,
   scenarioElements,
+  activeItem,
 
+  setActiveItem,
   changePrototypeMode,
   changeMinNavPanel,
   getProject,
-  setProjectScreens,
+  changeScreensOrder,
   activateScreen,
   addScreen,
   saveScreen,
@@ -77,6 +83,8 @@ const EditorLogic: React.FunctionComponent<EditorProps> = ({
   delScenarioItem,
   setListSortable,
   updateElementStyles,
+  addContainer,
+  resetScreenState,
 }: EditorProps) => (
   <React.Fragment>
     <NavPanelScreen
@@ -87,7 +95,7 @@ const EditorLogic: React.FunctionComponent<EditorProps> = ({
       project={currentProject}
       screen={currentScreen}
       getProject={getProject}
-      setProjectScreens={setProjectScreens}
+      changeScreensOrder={changeScreensOrder}
       activateScreen={activateScreen}
       addScreen={addScreen}
       delScreen={delScreen}
@@ -95,6 +103,8 @@ const EditorLogic: React.FunctionComponent<EditorProps> = ({
     />
     <Editor
       project={currentProject}
+      activeItem={activeItem}
+      setActiveItem={setActiveItem}
       screen={currentScreen}
       scenarios={scenarios}
       scenarioElements={scenarioElements}
@@ -106,6 +116,8 @@ const EditorLogic: React.FunctionComponent<EditorProps> = ({
       delScenarioItem={delScenarioItem}
       setListSortable={setListSortable}
       updateElementStyles={updateElementStyles}
+      addContainer={addContainer}
+      resetScreenState={resetScreenState}
     />
     <Spinner
       active={currentProject.projectLoader || currentScreen.screenLoader || scenarioLoader}

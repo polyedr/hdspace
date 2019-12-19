@@ -4,12 +4,11 @@ import { connect } from 'react-redux';
 
 import { AppReduxState } from '$shared/types/app';
 import * as Actions from '$redux/project/actions';
-import { ISortableItemTemp } from '$utils/parseListItems';
 import { SortableGroup } from '$components/Editor/SortableGroup';
 import { DragResize } from '$components/Editor/DragResize';
 import { RENDERERS } from '$components/UI/RenderElements';
-import { IEditProps, TOnChoose } from '$components/Editor/EditorWindow';
-import { IListSortable } from '$redux/project/types';
+import { IEditProps } from '$components/Editor/EditorWindow';
+import { IListSortable, ILSItem } from '$redux/project/types';
 import { selectors } from '$redux/project';
 import { getItemsPair, getParams, idToLSId } from '$utils/parseScenario';
 import { LIST_SCENARIO_TYPE } from '$constants/defaultParams';
@@ -21,14 +20,14 @@ const mapStateToProps = (state: AppReduxState, props: OwnProps) => {
   const scenarioElements = selectors.selectScenariosElements(state);
   const { isPrototypeMode } = state.user;
 
-  const currId = props.item.id === 0 ? 'root' : idToLSId(props.item.id, props.item.type);
+  const currId = idToLSId(props.item.id, props.item.type);
   const itemParent = listSortable[currId];
   const currListSortable = itemParent.children.reduce((items: IListSortable, childID) => ({
     ...items,
     [childID]: listSortable[childID],
   }), { [currId]: listSortable[currId] });
-  const { scenarioList, elementList } = getItemsPair(currListSortable, scenarios, scenarioElements);
 
+  const { scenarioList, elementList } = getItemsPair(currListSortable, scenarios, scenarioElements);
   return {
     listSortable: currListSortable,
     isPrototypeMode,
@@ -42,14 +41,13 @@ const mapDispatchToProps = {
 };
 
 export type OwnProps = {
-  item: ISortableItemTemp,
+  item: ILSItem,
   activeItemId: string,
   isMoving: boolean,
   listNotDragging: string[],
-  styles_root?: {},
 
-  onActiveElementChange: TOnChoose,
   onChange: IEditProps['setListSortable'],
+  onActiveElementChange(parentId: number, childID: string): void,
   setIsMoving: (value: boolean) => void,
 }
 
@@ -65,26 +63,21 @@ const RecursiveComponent: React.FC<Props> = (props) => {
     onActiveElementChange,
     onChange,
     setIsMoving,
-    styles_root = {},
   
     listSortable,
     elementList,
     scenarioList,
     updateElementStyles,
   } = props;
+
   const handleChooseToSort = useCallback((itemIndex) => {
+    // TODO: called when item chosen for sorting. rewrite without onActiveElementChange use
     if (item.children[itemIndex] !== activeItemId) {
       onActiveElementChange(item.id, item.children[itemIndex]);
     }
   }, [item, activeItemId, onActiveElementChange]);
 
-  const handleChooseToResize = useCallback((itemId) => {
-    if (activeItemId !== itemId) {
-      onActiveElementChange(item.id, itemId);
-    }
-  }, [activeItemId, item.id, onActiveElementChange]);
-
-  const handleItemPositionChange = useCallback((index, list, parentId) => {
+  const handleItemPositionChange = useCallback((index: number, list: string[], parentId: string) => {
     onChange(index, list, activeItemId, parentId);
   }, [activeItemId, onChange]);
 
@@ -93,12 +86,12 @@ const RecursiveComponent: React.FC<Props> = (props) => {
   ), []);
 
   const getIsPutItem = useCallback((type: string): boolean => (
-    // я так понимаю эта штука отвечает за то что можно вкладывать итем или нет
     listNotDragging.indexOf(type) === -1
   ), [listNotDragging]);
 
   const getStyles = useCallback((id: number): CSSProperties => {
-    const parseStyle: CSSProperties = scenarioList[id]?.styles;
+    if (id === -1) return {};
+    const parseStyle: CSSProperties = scenarioList[id].styles;
 
     return parseStyle ? convertPropCSS(parseStyle) : {};
   }, [scenarioList]);
@@ -110,12 +103,10 @@ const RecursiveComponent: React.FC<Props> = (props) => {
       isPutItem={getIsPutItem(item.type)}
       parent={idToLSId(item.id, item.type)}
       group={getGroupName(item.type)}
-      styleItem={{ flexDirection: getStyles(item.id).flexDirection }}
+      stylesToInherit={getStyles(item.id)}
       onChoose={handleChooseToSort}
       onChange={handleItemPositionChange}
-      align={item.props && item.props.align}
-      styles_root={item.id === 0 ? convertPropCSS(styles_root) : {}}
-      // styles_root={item.id === 0 ? convertPropCSS(styles_root) : {}}
+      // align={item.props && item.props.align}
     >
       {item.children.map((itemId) => {
         const elId = parseInt(itemId, 10);
@@ -133,13 +124,12 @@ const RecursiveComponent: React.FC<Props> = (props) => {
         if (renderElement) {
           const parsedStyles = convertPropCSS(styles);
 
-          return (
+          return LIST_SCENARIO_TYPE.indexOf(struct_type) === -1 ? (
             <DragResize
               key={`resize-${itemId}`}
               sortableId={itemId}
               style={parsedStyles}
               updateElementStyles={updateElementStyles}
-              onChooseToResize={handleChooseToResize}
               setIsMoving={setIsMoving}
               isDraggable={isDraggable}
               isResizable={!LIST_SCENARIO_TYPE.includes(struct_type)}
@@ -155,7 +145,7 @@ const RecursiveComponent: React.FC<Props> = (props) => {
                   key={`element-${itemId}`}
                   activeItemId={activeItemId}
                   isMoving={isMoving}
-                  item={currentItem as ISortableItemTemp}
+                  item={currentItem}
                   listNotDragging={listNotDragging}
                   onActiveElementChange={onActiveElementChange}
                   onChange={onChange}
@@ -163,6 +153,26 @@ const RecursiveComponent: React.FC<Props> = (props) => {
                 />,
               })}
             </DragResize>
+          ) : (
+            renderElement({
+              id: itemId,
+              isDisabled: !isPrototypeMode,
+              params: { ...parameters, image },
+              sortableId: itemId,
+              name,
+              style: parsedStyles,
+              active: itemId === activeItemId,
+              children: <Recursive
+                key={`element-${itemId}`}
+                activeItemId={activeItemId}
+                isMoving={isMoving}
+                item={currentItem}
+                listNotDragging={listNotDragging}
+                onActiveElementChange={onActiveElementChange}
+                onChange={onChange}
+                setIsMoving={setIsMoving}
+              />,
+            })
           );
         }
 

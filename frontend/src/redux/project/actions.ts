@@ -43,9 +43,9 @@ export const setProject = (project: T.IProject): T.SetProject => ({
   payload: { project },
 });
 
-export const setProjectScreens = (screens: T.IProjectListItem[]): T.SetProjectScreens => ({
-  type: 'PROJECTS:SET_PROJECT_SCREENS',
-  payload: { screens },
+export const changeScreensOrder = (screensIDs: number[]): T.ChangeScreensOrder => ({
+  type: 'PROJECTS:CHANGE_SCREENS_ORDER',
+  payload: { screensIDs },
 });
 
 export const renameProject = (projectID: number, name: string): T.RenameProject => ({
@@ -115,6 +115,19 @@ export const clearAfterPrevScreen = (): T.ClearAfterPrevScreen => ({
   type: 'PROJECTS:CLEAN_AFTER_PREV_SCREEN',
 });
 
+export const updateViewTree = ({ screen, scenarios, scenarioElements }: Partial<{
+  screen: T.IProjectScreen,
+  scenarios: T.IScenarios,
+  scenarioElements: T.IScenarioElements,
+}>): T.UpdateViewTree => ({
+  type: 'PROJECTS:UPDATE_VIEW_TREE',
+  payload: { currentScreen: screen , scenarios, scenarioElements }
+});
+
+export const resetScreenState = (): T.ResetScreenState => ({
+  type: 'PROJECTS:RESET_SCREEN_STATE',
+});
+
 export const saveScreen = (canvas: HTMLCanvasElement): T.SaveScreen => ({
   type: 'PROJECTS:SAVE_SCREEN',
   payload: { canvas },
@@ -146,11 +159,6 @@ export const updateScenarioStyles = (
   styles: CSSProperties & { 'flex-direction'?: string },
 ): T.UpdateScenarioStyles => ({
   type: 'PROJECTS:UPDATE_SCENARIO_STYLES',
-  payload: { id, styles },
-});
-
-export const updateRootStyles = (id: string, styles: CSSProperties): T.UpdateRootStyles => ({
-  type: 'PROJECTS:UPDATE_ROOT_STYLES',
   payload: { id, styles },
 });
 
@@ -241,13 +249,22 @@ export const addContainer = (itemID: string): T.AddContainer => ({
   payload: { itemID },
 });
 
-export const runLayoutAlgorithm = (scenarios: T.IScenarios, elements: T.IScenarioElements): T.RunLayoutAlgorithm => ({
+export const runLayoutAlgorithm = (
+  scenarios: T.IScenarios,
+  elements: T.IScenarioElements,
+  root?: T.ILSItem,
+): T.RunLayoutAlgorithm => ({
   type: 'PROJECTS:RUN_LAYOUT_ALGORITHM',
-  payload: { scenarios, elements },
+  payload: { scenarios, elements, root },
 });
 
 export const runLayoutAlgorithmFinished = (): T.RunLayoutAlgorithmFinished => ({
   type: 'PROJECTS:RUN_LAYOUT_ALGORITHM_FINISHED',
+});
+
+export const setActiveItem = (activeItem: T.ActiveItem): T.SetActiveItem => ({
+  type: 'PROJECTS:SET_ACTIVE_ITEM',
+  payload: { activeItem },
 });
 
 // export const setScreenData: ISetScreenData = screen_data => ({

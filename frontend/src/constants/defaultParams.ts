@@ -7,6 +7,7 @@ import {
   IScreenTypography,
   IScreenIndents,
   IProjectScreen,
+  ActiveItem,
 } from '$redux/project/types';
 import { IApiResponseError, ITokenPair } from '$redux/user/reducer';
 // import { ITokenPair, IApiResponseError } from '$redux/user/reducer';
@@ -116,7 +117,7 @@ export const DEFAULT_PROJECT = {
 
 export const DEFAULT_LS = {
   root: {
-    id: 0,
+    id: -1,
     type: 'root',
     children: [],
   },
@@ -127,7 +128,6 @@ export const DEFAULT_SCREEN: IProjectScreen = {
   project: -1,
   name: '',
   status: '',
-  styles_root: {},
   screenscenario: [],
   image: null,
   listSortable: DEFAULT_LS,
@@ -150,17 +150,15 @@ export const DEFAULT_SCENARIO: IScenarioItem = {
   styles: {},
 };
 
-export const DEFAULT_ACTIVE_ITEM = {
-  parentId: -1,
-  itemId: 'root',
-  itemType: 'root',
-  name: 'root',
-  scenarioId: -1,
+export const DEFAULT_ACTIVE_ITEM: ActiveItem = {
+  itemId: 'none',
+  itemType: 'none',
+  name: 'Not selected',
 };
 
 export const STATUS = ['on_hold', 'in_progress', 'review', 'approved'];
 
-export const LIST_SCENARIO_TYPE = ['block', 'container', 'group'];
+export const LIST_SCENARIO_TYPE = ['block', 'container', 'group', 'root'];
 
 export const DEFAULT_LIB_ELEMENTS = {
   email: {
