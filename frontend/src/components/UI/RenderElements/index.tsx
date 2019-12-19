@@ -19,7 +19,7 @@ type RendererProps = {
   active?: boolean;
   isDisabled?: boolean;
   children?: JSX.Element;
-  sortableId?: string;
+  sortableId: string;
   onClick?(event: any, id: string): void;
 };
 
@@ -227,35 +227,35 @@ const renderElem: Renderer = ({
   switch (params.html_type) {
     case 'text_title':
     case 'text_description':
-      return renderText({ id, style, params });
+      return renderText({ id, style, params, sortableId });
 
     case 'input_firstname':
-      return renderInput({ id, style, params: { ...params, placeholder: 'firstname' } });
+      return renderInput({ id, style, params: { ...params, placeholder: 'firstname' }, sortableId });
 
     case 'input_lastname':
-      return renderInput({ id, style, params: { ...params, placeholder: 'lastname' } });
+      return renderInput({ id, style, params: { ...params, placeholder: 'lastname' }, sortableId });
 
     case 'input_password':
-      return renderInput({ id, style, params: { ...params, placeholder: 'password' } });
+      return renderInput({ id, style, params: { ...params, placeholder: 'password' }, sortableId });
 
     case 'input_phone':
-      return renderInput({ id, style, params: { ...params, placeholder: 'phone' } });
+      return renderInput({ id, style, params: { ...params, placeholder: 'phone' }, sortableId });
 
     case 'select_day':
-      return renderSelect({ id, style, params: { ...params, placeholder: 'day' } });
+      return renderSelect({ id, style, params: { ...params, placeholder: 'day' }, sortableId });
 
     case 'select_month':
-      return renderSelect({ id, style, params: { ...params, placeholder: 'month' } });
+      return renderSelect({ id, style, params: { ...params, placeholder: 'month' }, sortableId });
 
     case 'select_year':
-      return renderSelect({ id, style, params: { ...params, placeholder: 'year' } });
+      return renderSelect({ id, style, params: { ...params, placeholder: 'year' }, sortableId });
 
     case 'button_end_composite_scenario':
     case 'button_end_simple_scenario':
-      return renderButton({ id, style, params });
+      return renderButton({ id, style, params, sortableId });
 
     case 'hyperlink_end_simple_scenario':
-      return renderHyperLine({ id, style, params });
+      return renderHyperLine({ id, style, params, sortableId });
 
     default: {
       // console.warn(`No render type of ${params.html_type}, element id:${id} !`);
