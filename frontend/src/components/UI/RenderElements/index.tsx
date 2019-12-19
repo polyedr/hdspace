@@ -39,6 +39,7 @@ const renderContainer: Renderer = (props) => {
         display: 'inline-block',
       }}
       onClick={(event) => onClick?.(event, id)}
+      tabIndex={0}
     >
       {children || null}
     </div>
@@ -141,6 +142,7 @@ const renderText: Renderer = (props) => {
       key={id}
       className={cn(styles.addedElem, active && styles.activated)}
       style={{ ...style }}
+      tabIndex={0}
     >
       {params.content || name || 'text'}
     </p>
@@ -157,6 +159,7 @@ const renderImg: Renderer = (props) => {
       key={id}
       className={cn(styles.addedElem, active && styles.activated)}
       alt={id}
+      tabIndex={0}
     />
   );
 }
@@ -171,6 +174,7 @@ const renderMapWidget: Renderer = (props) => {
       key={id}
       className={cn(styles.addedWidget, active && styles.activated)}
       style={{ ...style }}
+      tabIndex={0}
     >
       <GMap
         center={(params.map_props && params.map_props.center) || DEFAULT_MAP_PROPS.center}
@@ -191,6 +195,7 @@ const renderCalendarWidget: Renderer = (props) => {
       key={id}
       className={cn(styles.addedCalendar, active && styles.activated)}
       style={{ ...style }}
+      tabIndex={0}
     >
       <CalendarWidget />
     </div>
@@ -207,6 +212,7 @@ const renderClockWidget: Renderer = (props) => {
       key={id}
       className={cn(styles.addedCalendar, active && styles.activated)}
       style={{ ...style }}
+      tabIndex={0}
     >
       <ClockWidget
         size={typeof params.width === 'number' ? params.width : undefined}

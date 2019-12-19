@@ -455,6 +455,9 @@ export function* delScenarioSaga(action: ReturnType<typeof Actions.delScenario>)
   const { type, name } = getParams(`${updateItemParent.id}s`, finalScenarioElements, finalScenarios);
   const parentIsRoot = listSortable.root.id === updateItemParent.id;
 
+  const newActiveElemAfterDeletion = document.querySelector<HTMLElement>(`[data-ls-id='${updateItemParent.id}s']`);
+  newActiveElemAfterDeletion?.focus();
+
   yield put(Actions.setActiveItem({
     itemId: `${updateItemParent.id}s`,
     itemType: parentIsRoot ? 'root' : type,

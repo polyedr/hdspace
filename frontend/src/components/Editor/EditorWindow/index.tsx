@@ -117,13 +117,13 @@ export const Editor: React.FC<IEditProps> = memo(({
 
   const handleDelScenarioItem = useCallback(() => {
     if (['root', 'none'].includes(activeItem.itemType)) return;
+    if (document.activeElement?.getAttribute('data-ls-id') !== activeItem.itemId) return;
 
     delScenarioItem(activeItem.itemId);
   }, [screen.listSortable, activeItem, delScenarioItem]);
 
   useEffect(() => {
     const listener = (event: KeyboardEvent) => {
-      // TODO: find active item by data-ls-id and check if it equals document.activeElement (otherwise scenarios will be deleted by any backspace key press)
       if (event.keyCode === 8) {
         handleDelScenarioItem();
       }
