@@ -19,7 +19,7 @@ type RendererProps = {
   active?: boolean;
   isDisabled?: boolean;
   children?: JSX.Element;
-  sortableId: string;
+  sortableId?: string;
   onClick?(event: any, id: string): void;
 };
 
