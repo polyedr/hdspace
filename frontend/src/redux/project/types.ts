@@ -3,6 +3,7 @@ import { CSSProperties } from 'react';
 import { IPlainAction, IPlainFailAction, IAction } from '$shared/redux';
 import { IChooseElement } from '$components/ModalAddElements/MainBlock';
 import { TYPES } from '$constants/actions';
+import { CssLikeStyles } from '$utils/StyleHelper';
 
 export type ReduxState = {
   data: {
@@ -266,7 +267,7 @@ export interface ILibraryElement {
     placeholder?: string,
     map_props?: IMapProps,
   },
-  styles: IStylesElement,
+  styles: CssLikeStyles,
 }
 
 export interface ILibraryElements {
@@ -327,7 +328,7 @@ export interface IScenarioElement { // compare with entity on backend
     },
     url?: string,
   },
-  styles: any, // css properties, not react.css
+  styles: CssLikeStyles,
 }
 
 export interface IScenarioElements {
@@ -347,7 +348,7 @@ export interface IScenarioItem { // compare with entity on backend
   parameters: {
     children: string[]; // listSortable-specific ids
   };
-  styles: {};
+  styles: CssLikeStyles;
 }
 
 export interface IScenarios {

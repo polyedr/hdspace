@@ -1,7 +1,7 @@
 import React from 'react';
 import * as R from 'ramda';
 
-import { IScreenProps, IScreenBackground, IListSortable } from '$redux/project/types';
+import { IScreenProps, IListSortable } from '$redux/project/types';
 import { getOptionsOfListScenario } from '$utils/parseScenario';
 import { elementTypes } from '$constants/menu';
 import { ActiveElementBlock } from '$components/RightPanel/ActiveElementBlock';
@@ -17,19 +17,19 @@ import { IndentsBlock } from '$components/RightPanel/IndentsBlock';
 import { BackgroundBlock } from '$components/RightPanel/BackgroundBlock';
 import { BorderBlock } from '$components/RightPanel/BorderBlock';
 import { TypographyBlock } from '$components/RightPanel/TypographyBlock';
-import { IStylesElement } from '$utils/StyleHelper';
+import { CssLikeStyles } from '$utils/StyleHelper';
 
 export interface IPanelEditProps {
   project: EditorProps['currentProject'],
   params: IScreenProps,
-  styleItem: IStylesElement,
+  styleItem: CssLikeStyles,
   orientation: string,
   disablePanel: boolean,
   listSortable: IListSortable,
   activeItem: IRightPanelProps['activeItem'],
   scenarios: IRightPanelProps['scenarios'],
   libraryElements: IRightPanelProps['libraryElements'],
-  onAlign: (type: string) => void,
+  onAlign: (type: 'align' | 'justify', value: string) => void,
   setOrientation: (type: 'vertical' | 'horizontal') => void,
   onDelScenarioItem: IRightPanelProps['onDelScenarioItem'],
   changeScenario: IRightPanelProps['changeScenario'],
@@ -95,10 +95,11 @@ export const PanelEditProps: React.FunctionComponent<IPanelEditProps> = ({
               <div className="propsPanelContentBlock">
               {currentItem && LIST_SCENARIO_TYPE.indexOf(currentItem.type) !== -1 && (
                 <GroupElementsDirectionBlock
+                  styleItem={styleItem}
                   orientation={orientation}
                   params={params}
                   setOrientation={setOrientation}
-                  onAlign={onAlign}
+                  onAlignChange={onAlign}
                 />
               )}
                 {currentItem && currentItem.type !== elementTypes.hyperLine && (

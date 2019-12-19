@@ -103,7 +103,7 @@ const RecursiveComponent: React.FC<Props> = (props) => {
       isPutItem={getIsPutItem(item.type)}
       parent={idToLSId(item.id, item.type)}
       group={getGroupName(item.type)}
-      styleItem={getStyles(item.id)}
+      stylesToInherit={getStyles(item.id)}
       onChoose={handleChooseToSort}
       onChange={handleItemPositionChange}
       // align={item.props && item.props.align}
@@ -124,7 +124,7 @@ const RecursiveComponent: React.FC<Props> = (props) => {
         if (renderElement) {
           const parsedStyles = convertPropCSS(styles);
 
-          return (
+          return LIST_SCENARIO_TYPE.indexOf(struct_type) === -1 ? (
             <DragResize
               key={`resize-${itemId}`}
               sortableId={itemId}
@@ -153,6 +153,26 @@ const RecursiveComponent: React.FC<Props> = (props) => {
                 />,
               })}
             </DragResize>
+          ) : (
+            renderElement({
+              id: itemId,
+              isDisabled: !isPrototypeMode,
+              params: { ...parameters, image },
+              sortableId: itemId,
+              name,
+              style: parsedStyles,
+              active: itemId === activeItemId,
+              children: <Recursive
+                key={`element-${itemId}`}
+                activeItemId={activeItemId}
+                isMoving={isMoving}
+                item={currentItem}
+                listNotDragging={listNotDragging}
+                onActiveElementChange={onActiveElementChange}
+                onChange={onChange}
+                setIsMoving={setIsMoving}
+              />,
+            })
           );
         }
 

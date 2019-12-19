@@ -13,7 +13,7 @@ type Props = {
   parent: string,
   group: string,
   children?: any,
-  styleItem: React.CSSProperties,
+  stylesToInherit: React.CSSProperties,
   align?: string,
   onChange: (index: number, items: string[], parentId: string) => void,
   onChoose: (itemIndex: string, target?: React.SyntheticEvent) => void,
@@ -25,7 +25,7 @@ export const SortableGroup: React.FC<Props> = (props) => {
     isPutItem,
     parent,
     group,
-    styleItem,
+    stylesToInherit,
     children,
     onChoose,
     onChange,
@@ -59,7 +59,7 @@ export const SortableGroup: React.FC<Props> = (props) => {
   return (
     <Sortable
       id={parent}
-      style={styleItem}
+      style={stylesToInherit}
       className={classNames(
         parent !== 'root' && 'groupItem',
         // styles[group],

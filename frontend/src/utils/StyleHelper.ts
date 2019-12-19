@@ -13,8 +13,9 @@ import {
 // } from '$redux/project/types';
 // import { rgbToHex } from '$utils/parseColor';
 
-export interface IStylesElement {
-  display?: string,
+export interface CssLikeStyles {
+  display?: string;
+
   width?: number | string,
   height?: number | string,
   'min-height'?: number | string,
@@ -48,9 +49,10 @@ export interface IStylesElement {
 
   'flex-direction'?: string;
   'align-items'?: string;
+  'justify-content'?: string;
 }
 
-type TConvertIndents = (styles: IStylesElement) => {
+type TConvertIndents = (styles: CssLikeStyles) => {
   marginTop?: string,
   marginRight?: string,
   marginBottom?: string,
@@ -61,21 +63,21 @@ type TConvertIndents = (styles: IStylesElement) => {
   paddingLeft?: string,
 };
 
-type TConvertBackground = (styles: IStylesElement) => {
+type TConvertBackground = (styles: CssLikeStyles) => {
   backgroundColor?: string,
   backgroundImage?: string,
   backgroundSize?: string,
   backgroundRepeat?: string,
 };
 
-type TConvertBorders = (styles: IStylesElement) => {
+type TConvertBorders = (styles: CssLikeStyles) => {
   borderWidth?: string,
   borderStyle?: string,
   borderColor?: string,
   borderRadius?: string,
 };
 
-type TConvertTypography = (styles: IStylesElement) => {
+type TConvertTypography = (styles: CssLikeStyles) => {
   fontFamily?: string,
   color?: string,
   fontSize?: string,
@@ -127,17 +129,19 @@ const convertBackground: TConvertBackground = styles => (
   }, {})
 );
 
-const otherStyles = (styles: IStylesElement): React.CSSProperties => (
+const otherStyles = (styles: CssLikeStyles): React.CSSProperties => (
   R.keys(styles).reduce((acc, key) => {
     switch (key) {
       case 'flex-direction':
         return { ...acc, flexDirection: styles[key] };
+      case 'justify-content':
+        return { ...acc, justifyContent: styles[key] };
       case 'align-items':
         return { ...acc, alignItems: styles[key] };
       case 'min-height':
         return { ...acc, minHeight: styles[key] };
       case 'display':
-          return { ...acc, key: styles[key] };
+          return { ...acc, display: styles[key] };
       default: return acc;
     }
   }, {})
@@ -181,7 +185,7 @@ export const convertTypography: TConvertTypography = styles => (
   }, {})
 );
 
-export const convertPropCSS = (styles : IStylesElement): React.CSSProperties => ({
+export const convertPropCSS = (styles : CssLikeStyles): React.CSSProperties => ({
   width: styles.width,
   height: styles.height,
   ...convertIndents(styles),

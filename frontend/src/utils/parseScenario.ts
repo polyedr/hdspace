@@ -20,7 +20,7 @@ import {
   IScenarioElement,
 } from '$redux/project/types';
 import { IChooseElement } from '$components/ModalAddElements/MainBlock';
-import { IStylesElement } from '$utils/StyleHelper';
+import { CssLikeStyles } from '$utils/StyleHelper';
 
 import { greaterBuoyancyFirst, isElement, isScenario } from './model';
 
@@ -229,7 +229,7 @@ export const getListTypeElement = (libraryElements: ILibraryElements): IDropDown
     const { func_type, struct_type } = libraryElements[key];
 
     return arr.concat({ label: func_type || struct_type, value: key });
-  }, [{ label: 'block', value: 'block' }, { label: 'group', value: 'group' }, { label: 'container', value: 'container' }] as IDropDownOptions<string>[] )
+  }, [{ label: 'container', value: 'container' }] as IDropDownOptions<string>[] )
 );
 
 export const getScenarioId = (
@@ -303,7 +303,7 @@ export const getParams = (
 ): {
   struct_type: string,
   parameters: any,
-  styles: IStylesElement,
+  styles: CssLikeStyles,
   name: string,
   parent_id: number,
   type: string,

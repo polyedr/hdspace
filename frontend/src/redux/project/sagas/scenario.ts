@@ -529,6 +529,13 @@ export function* addContainerSaga(action: ReturnType<typeof Actions.addContainer
     parameters: {
       children: [rawItemID],
     },
+    styles: {
+      ...DEFAULT_INDENTS,
+      display: 'flex',
+      'flex-direction': 'row',
+      'justify-content': 'flex-start',
+      'align-items': 'stretch',
+    },
   });
 
   const updatedItemParentContainer: T.IScenarioItem = {

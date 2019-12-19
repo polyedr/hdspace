@@ -14,12 +14,12 @@ import {
 } from '$constants/defaultParams';
 import { IPanelEditProps } from '$components/RightPanel/PanelEditProps';
 import { strToNumber, getPermissibleValue, safeParseFloat, safeMatch } from '$utils/NumberHelper';
-import { validBorderRadius, IStylesElement } from '$utils/StyleHelper';
+import { validBorderRadius, CssLikeStyles } from '$utils/StyleHelper';
 import { ColorPicker } from '$components/UI/ColorPicker/';
 
 const styles = require('./styles.scss');
 
-const accessBorderRadius = (styleItem: IStylesElement) => {
+const accessBorderRadius = (styleItem: CssLikeStyles) => {
   const matchedValue = safeMatch(styleItem['border-radius']);
   return matchedValue !== null ? matchedValue[0] : 'px';
 };

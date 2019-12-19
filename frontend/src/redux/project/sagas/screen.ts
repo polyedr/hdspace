@@ -8,7 +8,6 @@ import { push } from 'connected-react-router';
 import {
   activateScreen,
   addScreen,
-  changeScenarios,
   delScreen,
   renameScreen,
   saveScreen,
@@ -102,7 +101,7 @@ export function* activateScreenSaga({ payload }: ReturnType<typeof activateScree
 export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
   yield put(Actions.clearAfterPrevScreen());
   const { projectID, name } = payload;
-  const data = {
+  const data = { // TODO: research why DEFAULt_SCREEN isn't spreaded first
     project: projectID,
     name,
     status: 'in_progress',
@@ -123,6 +122,7 @@ export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
       display: 'flex',
       'flex-direction': 'column',
       'align-items': 'center',
+      'justify-content': 'center',
       'min-height': '100%',
       'background-color': '#ffffff',
       'border-width': '0px',

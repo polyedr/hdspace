@@ -236,7 +236,11 @@ export const formingListGroup = (
       },
       styles: {
         ...DEFAULT_INDENTS,
+        'display': 'flex',
         'flex-direction': 'column',
+        'align-items': 'center',
+        'justify-content': 'center',
+        // 'width': '100%',
         // 'width': 'auto',
       },
     };
@@ -333,7 +337,14 @@ export const formingListBlock = (
           parameters: {
             children,
           },
-          styles: { ...DEFAULT_INDENTS, 'flex-direction': 'column', width: '100%' },
+          styles: {
+            ...DEFAULT_INDENTS,
+            'display': 'flex',
+            'flex-direction': 'column',
+            'align-items': 'center',
+            'justify-content': 'center',
+            width: '100%'
+          },
         },
       ] as IScenarioItem[],
     };

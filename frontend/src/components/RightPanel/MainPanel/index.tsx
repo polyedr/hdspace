@@ -14,7 +14,6 @@ import { T as ProjectT } from '$redux/project';
 import { EditorProps } from '$containers/EditorLogic';
 import { LIST_SCENARIO_TYPE } from '$constants/defaultParams';
 
-import { IStylesElement } from '$utils/StyleHelper';
 import { Spinner } from '$components/UI/Spinner/';
 
 const styles = require('./RightPanel.scss');
@@ -77,9 +76,15 @@ const Component: React.FunctionComponent<IRightPanelProps> = ({
   renameScenario,
   changeElementType,
 }) => {
-  const handleAlign = useCallback((type: string) => {
-    setAlign(activeItem.itemId, type);
-  }, [setAlign, activeItem]);
+  const handleAlignChange = useCallback((type: 'align' | 'justify', value: string) => {
+    const itemID = parseInt(activeItem.itemId, 10);
+    const newStyles = {
+      ...(scenarios[itemID]).styles,
+      [type === 'align' ? 'align-items' : 'justify-content']: value,
+    };
+
+    updateScenarioStyles(activeItem.itemId, newStyles);
+  }, [activeItem, scenarios, updateScenarioStyles]);
 
   const handleOrientation = useCallback((type: 'vertical' | 'horizontal') => {
     const itemID = parseInt(activeItem.itemId, 10);
@@ -100,7 +105,7 @@ const Component: React.FunctionComponent<IRightPanelProps> = ({
     return isScenario(activeItem) ? scenarios[itemID].parameters : scenarioElements[itemID].parameters;
   }, [activeItem, scenarios, scenarioElements]);
 
-  const getStyleItem = useCallback((): IStylesElement => {
+  const getStyleItem = useCallback(() => {
     if (activeItem.itemType === 'none') {
       return {};
     }
@@ -137,7 +142,7 @@ const Component: React.FunctionComponent<IRightPanelProps> = ({
           params={getParams()}
           styleItem={getStyleItem()}
           orientation={getOrientation(activeItem.itemId)}
-          onAlign={handleAlign}
+          onAlign={handleAlignChange}
           setOrientation={handleOrientation}
           addScenario={addScenario}
           addContainer={addContainer}

@@ -3,12 +3,10 @@
 }
 
 .dragResizeItem {
-  position: relative;
+  position: relative; // fow what?
 
-  width: auto;
   display: flex;
   justify-content: center;
-  margin: 0 auto;
 
   &_is-resizable { // TODO: remove if don't need anymore
     width: auto;
