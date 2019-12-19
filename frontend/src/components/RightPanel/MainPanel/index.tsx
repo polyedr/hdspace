@@ -18,9 +18,7 @@ import { Spinner } from '$components/UI/Spinner/';
 
 const styles = require('./RightPanel.scss');
 
-const isScenario = (activeItem: ProjectT.ActiveItem) => (
-  LIST_SCENARIO_TYPE.indexOf(activeItem.itemType) !== -1 || activeItem.itemType === 'root'
-);
+const isScenario = (activeItem: ProjectT.ActiveItem) => LIST_SCENARIO_TYPE.indexOf(activeItem.itemType) !== -1;
 
 const mapStateToProps = (state: AppReduxState) => ({
   scenarios: selectors.selectScenarios(state),

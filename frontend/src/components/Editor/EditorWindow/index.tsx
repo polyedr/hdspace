@@ -79,7 +79,7 @@ export const Editor: React.FC<IEditProps> = memo(({
     if (screen.id !== screenId) {
       setScreenId(screen.id);
     }
-  }, [screen.id, screen.listSortable]);
+  }, [screen.id]);
 
   useEffect(() => () => { resetScreenState(); }, []);
 
@@ -113,13 +113,13 @@ export const Editor: React.FC<IEditProps> = memo(({
         setListNotDragging(list);
       }
     }
-  }, [screen.listSortable, scenarios, scenarioElements, listNotDragging, setListNotDragging]);
+  }, [activeItem, screen.listSortable, scenarios, scenarioElements]);
 
   const handleDelScenarioItem = useCallback(() => {
     if (['root', 'none'].includes(activeItem.itemType)) return;
 
     delScenarioItem(activeItem.itemId);
-  }, [screen.listSortable, activeItem, delScenarioItem]);
+  }, [activeItem, delScenarioItem]);
 
   useEffect(() => {
     const listener = (event: KeyboardEvent) => {
