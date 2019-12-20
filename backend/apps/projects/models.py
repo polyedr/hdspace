@@ -76,7 +76,6 @@ class ProjectScreen(TimeStampedModel):
     )
 
     name = models.CharField(max_length=250, blank=True)
-    styles_root = JSONField(blank=True)
     buoyancy = models.IntegerField(null=True, blank=True)
     status = models.CharField(
         choices=SCREEN_STATUS, default=SCREEN_IN_PROGRESS, max_length=32
