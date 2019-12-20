@@ -530,7 +530,7 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                 # Recognized input or select, first position in tuple
                 element_data_vertical_input = recognized_elements[v_group_key[0]]
                 # Recognized input or select, second position in tuple
-                element_data_vertical_text =  recognized_elements[v_group_key[1]]
+                element_data_vertical_text = recognized_elements[v_group_key[1]]
 
                 # Assignment of the functional class based on neighbourhood
                 if (element_data_vertical_input["func_type"] == "undefined"):
@@ -562,12 +562,9 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                 "parent_id": scenario.id,
             }
 
-            """
-            Create scenarios for horizontal groups
-            Include scenarios for vertical groups
-            Update scenarios for vertical groups with new parents
-            """
-
+            # Create scenarios for horizontal groups
+            # Include scenarios for vertical groups
+            # Update scenarios for vertical groups with new parents
 
             for h_group_key in horizontal_groups:
                 children = []
@@ -583,13 +580,14 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                 if(recognized_elements[h_group_key[0]]["struct_type"] in {"textinput", "select"}):
                     if (recognized_elements[h_group_key[0]]["func_type"] == "undefined"):
                         if (recognized_elements[h_group_key[1]]["struct_type"] in {"ocrtext"}):
-                            recognized_elements[h_group_key[0]]["func_type"] = recognized_elements[h_group_key[1]]["func_type"]
+                            recognized_elements[h_group_key[0]]["func_type"] = \
+                                recognized_elements[h_group_key[1]]["func_type"]
 
                 if (recognized_elements[h_group_key[1]]["struct_type"] in {"textinput", "select"}):
                     if (recognized_elements[h_group_key[1]]["func_type"] == "undefined"):
                         if (recognized_elements[h_group_key[0]]["struct_type"] in {"ocrtext"}):
                             recognized_elements[h_group_key[1]]["func_type"] = \
-                            recognized_elements[h_group_key[0]]["func_type"]
+                                recognized_elements[h_group_key[0]]["func_type"]
 
                 # Create elements for horizontal groups scenarios if they're not in vertical grouping already
                 for element_data_horizontal in h_group_key:
@@ -651,7 +649,6 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                             del vertical_groups_free[v_group_key]
                         except KeyError:
                             pass
-
 
         children = []
         # recognized_elements_general = recognized_elements - inner_scenarios_elements
