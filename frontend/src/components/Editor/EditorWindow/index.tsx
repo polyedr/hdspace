@@ -119,11 +119,9 @@ export const Editor: React.FC<IEditProps> = memo(({
     (event.target as HTMLElement)?.closest?.('.ls-container')?.classList.add('hovered');
   }, []);
 
-
   const handleMouseOutContainer = useCallback((event: React.MouseEvent) => {
     (event.target as HTMLElement)?.closest?.('.ls-container')?.classList.remove('hovered');
   }, []);
-
 
   const handleDelScenarioItem = useCallback(() => {
     if (['root', 'none'].includes(activeItem.itemType)) return;
