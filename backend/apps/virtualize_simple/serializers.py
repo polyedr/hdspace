@@ -445,6 +445,7 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                     # Vertical groups detection
                     # Check if the roi is input or select
                     # Check if the roi1 is text
+                    # The first position of the tuple is input or select, and the second position is text
                     if recognized_element["struct_type"] in {"textinput", "select"} \
                             and recognized_element1["struct_type"] in {"ocrtext"}:
                         # Check if the elements were not assigned to the vertical groups before
@@ -518,12 +519,23 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
 
             # Create scenarios for vertical groups
             # Keys are tuples of elements, and the value is a new vertical scenario assigned
+            # Assign the functional class based on vertical gropuing if not assigned yet
             for v_group_key in vertical_groups:
                 children = []
                 scenario_vertical = ScreenScenario.objects.create(
                     screen=screen, **scenario_vertical_data
                 )
                 vertical_groups[v_group_key] = scenario_vertical.id
+
+                # Recognized input or select, first position in tuple
+                element_data_vertical_input = recognized_elements[v_group_key[0]]
+                # Recognized input or select, second position in tuple
+                element_data_vertical_text =  recognized_elements[v_group_key[1]]
+
+                # Assignment of the functional class based on neighbourhood
+                if (element_data_vertical_input["func_type"] == "undefined"):
+                    element_data_vertical_input["func_type"] = element_data_vertical_text["func_type"]
+
                 # Create elements for vertical groups scenarios
                 for element_data_vertical in v_group_key:
                     print(element_data_vertical)
@@ -556,12 +568,29 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
             Update scenarios for vertical groups with new parents
             """
 
+
             for h_group_key in horizontal_groups:
                 children = []
                 scenario_horizontal = ScreenScenario.objects.create(
                     screen=screen, **scenario_horizontal_data
                 )
                 horizontal_groups[h_group_key] = scenario_horizontal.id
+
+                # If here was placed at least one select/input without the functional class assigned
+                # The second should be the text and should exists with the functional class assigned
+                # Recognized input or select, vs ocrtext
+                # Assignment of the functional class based on neighbourhood
+                if(recognized_elements[h_group_key[0]]["struct_type"] in {"textinput", "select"}):
+                    if (recognized_elements[h_group_key[0]]["func_type"] == "undefined"):
+                        if (recognized_elements[h_group_key[1]]["struct_type"] in {"ocrtext"}):
+                            recognized_elements[h_group_key[0]]["func_type"] = recognized_elements[h_group_key[1]]["func_type"]
+
+                if (recognized_elements[h_group_key[1]]["struct_type"] in {"textinput", "select"}):
+                    if (recognized_elements[h_group_key[1]]["func_type"] == "undefined"):
+                        if (recognized_elements[h_group_key[0]]["struct_type"] in {"ocrtext"}):
+                            recognized_elements[h_group_key[1]]["func_type"] = \
+                            recognized_elements[h_group_key[0]]["func_type"]
+
                 # Create elements for horizontal groups scenarios if they're not in vertical grouping already
                 for element_data_horizontal in h_group_key:
                     # Compare if in vertical group.
