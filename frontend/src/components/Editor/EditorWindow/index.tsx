@@ -115,6 +115,16 @@ export const Editor: React.FC<IEditProps> = memo(({
     }
   }, [activeItem, screen.listSortable, scenarios, scenarioElements]);
 
+  const handleMouseOverContainer = useCallback((event: React.MouseEvent) => {
+    (event.target as HTMLElement)?.closest?.('.ls-container')?.classList.add('hovered');
+  }, []);
+
+
+  const handleMouseOutContainer = useCallback((event: React.MouseEvent) => {
+    (event.target as HTMLElement)?.closest?.('.ls-container')?.classList.remove('hovered');
+  }, []);
+
+
   const handleDelScenarioItem = useCallback(() => {
     if (['root', 'none'].includes(activeItem.itemType)) return;
     if (document.activeElement?.getAttribute('data-ls-id') !== activeItem.itemId) return;
@@ -197,6 +207,8 @@ export const Editor: React.FC<IEditProps> = memo(({
         screenId === -1 && styles.editorContainer_hide,
       )}
       onClick={handleRootClick}
+      onMouseOver={handleMouseOverContainer}
+      onMouseOut={handleMouseOutContainer}
     >
       {
         screen && R.hasPath(['listSortable', 'root'], screen) && (
@@ -243,19 +255,19 @@ export const Editor: React.FC<IEditProps> = memo(({
                     </Button>
                     {
                       (currentScreenMode.isTabletMode || currentScreenMode.isMobileMode) && (
-                      <Button
-                        className={classNames(
-                          'mainImgBtn',
-                          styles.navBarBtn,
-                          styles.rotateScreenBtn,
-                          isScreenRotated && styles.rotateScreenBtn_active,
-                        )}
-                        styleType="none"
-                        disabled={screenId === -1}
-                        onClick={handleChangeScreenRotate}
-                      >
-                        <Icon icon="screen-rotate" />
-                      </Button>
+                        <Button
+                          className={classNames(
+                            'mainImgBtn',
+                            styles.navBarBtn,
+                            styles.rotateScreenBtn,
+                            isScreenRotated && styles.rotateScreenBtn_active,
+                          )}
+                          styleType="none"
+                          disabled={screenId === -1}
+                          onClick={handleChangeScreenRotate}
+                        >
+                          <Icon icon="screen-rotate" />
+                        </Button>
                       )
                     }
                   </div>
