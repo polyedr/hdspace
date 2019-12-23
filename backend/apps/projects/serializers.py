@@ -75,7 +75,6 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
             "name",
             "struct_type",
             "func_type",
-            "func_type_human",
             "buoyancy",
             "image",
             "parameters",
@@ -97,7 +96,6 @@ class ScenarioElementMultipleSerializer(
             "name",
             "struct_type",
             "func_type",
-            "func_type_human",
             "buoyancy",
             "parameters",
             "styles",
@@ -244,7 +242,6 @@ class ElementSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
     struct_type = serializers.CharField(max_length=64)
     func_type = serializers.ListField()
-    func_type_human = serializers.CharField(max_length=64)
     buoyancy = serializers.ListField()
     image = serializers.ImageField(max_length=256)
     parameters = serializers.ListField()

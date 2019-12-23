@@ -63,7 +63,7 @@ EXTERNAL_APPS = [
 ]
 
 PROJECT_APPS = [
-    # 'apps.virtualize_emulation',
+    'apps.virtualize_emulation',
     'apps.utils',
     'apps.accounts',
     'apps.projects',
@@ -83,7 +83,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "social_django.middleware.SocialAuthExceptionMiddleware",
-    'apps.core.middleware.activeuser_middleware.active_user_middleware',
+    # 'apps.core.middleware.activeuser_middleware.active_user_middleware',
 
 
 ]
