@@ -63,11 +63,8 @@ EXTERNAL_APPS = [
 ]
 
 PROJECT_APPS = [
-    # 'apps.threads',
-    # 'apps.payments',
     'apps.virtualize_emulation',
-    # 'apps.virtualize',
-    'apps.core',
+    'apps.utils',
     'apps.accounts',
     'apps.projects',
 

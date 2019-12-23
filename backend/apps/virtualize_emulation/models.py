@@ -1,5 +1,5 @@
 from django.db import models
-from apps.core.models import TimeStampedModel
+from apps.utils.models import TimeStampedModel
 from apps.accounts.utils import utils
 
 from apps.projects.models import ProjectScreen
