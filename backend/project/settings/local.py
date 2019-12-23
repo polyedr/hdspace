@@ -63,7 +63,7 @@ EXTERNAL_APPS = [
 ]
 
 PROJECT_APPS = [
-    'apps.virtualize_emulation',
+    # 'apps.virtualize_emulation',
     'apps.utils',
     'apps.accounts',
     'apps.projects',
