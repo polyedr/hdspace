@@ -105,7 +105,6 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
             "name",
             "struct_type",
             "func_type",
-            "func_type_human",
             "buoyancy",
             "parameters",
             "styles",

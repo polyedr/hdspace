@@ -10,7 +10,7 @@ from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.core.cache import cache
 from django.conf import settings
 
-from apps.core.models import TimeStampedModel
+from apps.utils.models import TimeStampedModel
 from .utils import utils
 
 client = pymongo.MongoClient("localhost", 27017)  # maxPoolSize=50
