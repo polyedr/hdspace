@@ -15,7 +15,7 @@ __all__ = ("User", "Profile", "Team", "TeamMember")
 
 '''
 # The abstract class converts MongoDB _id to the integer with auto-incremented value
-# Not for the Postgres 
+# Not for the Postgres
 class MongoModel(models.Model):
     id = models.IntegerField(primary_key=True)
 
@@ -38,6 +38,7 @@ class MongoModel(models.Model):
             )
             return sq["next_id"]
 '''
+
 
 class User(AbstractUser):
     pass
