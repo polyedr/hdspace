@@ -1,6 +1,5 @@
 import { CSSProperties } from 'react';
 
-import { TYPES } from '$constants/actions';
 import { IChooseElement } from '$components/ModalAddElements/MainBlock';
 
 import * as T from './types';
@@ -172,11 +171,6 @@ export const updateElementParameters = (itemID: string, parameters: T.IScreenPro
   payload: { itemID, parameters },
 });
 
-export const setAlign = (itemID: string, type: string): T.SetAlign => ({
-  type: 'PROJECTS:SET_ALIGN',
-  payload: { itemID, type },
-});
-
 export const changeScenario = (itemID: string, scenarioID: number): T.ChangeScenario => ({
   type: 'PROJECTS:CHANGE_SCENARIO',
   payload: { itemID, scenarioID },
@@ -190,17 +184,6 @@ export const changeElementType = (itemID: string, type: string): T.ChangeElement
 export const delScenarioItem = (id: string): T.DeleteScenarioItem => ({
   type: 'PROJECTS:DELETE_SCENARIO_ITEM',
   payload: { id },
-});
-
-export const changeScenarios = (screenID: number): T.ChangeScenarios => ({
-  type: 'PROJECTS:CHANGE_SCENARIOS',
-  payload: { screenID },
-});
-
-// unused
-export const createScenario = (name: string, type: string, elements?: number[]) => ({
-  type: TYPES.CREATE_SCENARIO,
-  payload: { name, type, elements },
 });
 
 export const addScenario = (

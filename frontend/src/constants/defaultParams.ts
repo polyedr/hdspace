@@ -1,7 +1,6 @@
 import * as R from 'ramda';
 
 import {
-  IScenarioItem,
   IScreenBorders,
   IScreenBackground,
   IScreenTypography,
@@ -132,22 +131,6 @@ export const DEFAULT_SCREEN: IProjectScreen = {
   image: null,
   listSortable: DEFAULT_LS,
   screenLoader: false,
-};
-
-export const DEFAULT_SCENARIO: IScenarioItem = {
-  id: -1,
-  name: '',
-  struct_type: '',
-  screen: 0,
-  buoyancy: 0,
-  elements: [],
-  direction: 'vertical',
-  parent_id: 0,
-  parameters: {
-    children: [],
-    // scenario: 0,
-  },
-  styles: {},
 };
 
 export const DEFAULT_ACTIVE_ITEM: ActiveItem = {

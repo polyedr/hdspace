@@ -3,12 +3,9 @@ import * as R from 'ramda';
 import { IListOptions } from '$components/UI/NestedList';
 import { IDropDownOptions } from '$components/UI/DropDown';
 import {
-  DEFAULT_SCENARIO,
-  DEFAULT_MAP_WIDGET,
   LIST_SCENARIO_TYPE,
   ITemplateElement,
 } from '$constants/defaultParams';
-import { uniqueId } from '$utils/NumberHelper';
 import {
   IScenarios,
   IScenarioItem,
@@ -21,10 +18,6 @@ import {
 } from '$redux/project/types';
 import { IChooseElement } from '$components/ModalAddElements/MainBlock';
 import { CssLikeStyles } from '$utils/StyleHelper';
-
-import { greaterBuoyancyFirst, isElement, isScenario } from './model';
-
-// TODO: remove unused helpers
 
 export interface IGroupElement {
   key: string,
@@ -79,32 +72,6 @@ export const getOptionsOfListScenario = (scenarios: IScenarios) => (
     return struct_type === 'block' ? acc.concat({ value: key, label: name }) : acc;
   }, [] as IDropDownOptions<string>[])
 );
-
-export const getNewScenario = (
-  name: string,
-  type: string,
-  screenId: number,
-  elements: number[] = [],
-): IScenarioItem => ({
-  ...DEFAULT_SCENARIO,
-  screen: screenId,
-  name,
-  type,
-  elements,
-});
-
-export const getAllElements = (
-  oldScenarioId: number,
-  newScenarioId: number,
-  updateElements: number[],
-  elements: IScenarioElements,
-): IScenarioElements => updateElements.reduce((obj, id) => ({
-  ...obj,
-  [`${id}e`]: {
-    ...elements[`${id}e`],
-    scenario: elements[`${id}e`].scenario === oldScenarioId ? newScenarioId : oldScenarioId,
-  },
-}), elements);
 
 export const convertScenarioElements = (
   scenarioElements: IScenarioElement[],
@@ -232,41 +199,6 @@ export const getListTypeElement = (libraryElements: ILibraryElements): IDropDown
   }, [{ label: 'container', value: 'container' }] as IDropDownOptions<string>[] )
 );
 
-export const getScenarioId = (
-  idAsString: string,
-  scenariosElements: IScenarioElements,
-  scenarios: IScenarios,
-): number => {
-  const scenarioID = parseInt(idAsString, 10);
-
-  if (isElement(idAsString)) {
-    return R.path([scenarioID, 'scenario'], scenariosElements) || -1;
-  }
-
-  const findParent = (itemId: number): number => {
-    const { parent_id, struct_type } = scenarios[itemId];
-
-    if (struct_type === 'container' && parent_id === 0) {
-      return -1;
-    }
-
-    return scenarios[parent_id].struct_type === 'block' ? parent_id : findParent(parent_id);
-  };
-
-  const currItem = scenarios[scenarioID];
-
-  switch (R.prop('struct_type', currItem)) {
-    case 'block':
-      return R.prop('id', currItem);
-    case 'group':
-    case 'container':
-      return findParent(currItem.id);
-
-    default:
-      return -1;
-  }
-};
-
 export const getItemsPair = (
   LS: IListSortable,
   scenarios: IScenarios,
@@ -356,88 +288,6 @@ export const elementToLS = ({ id, struct_type }: IScenarioElement): ILSItem => (
   type: struct_type,
   children: [],
 });
-
-export const scenarioToLS = (
-  parents: (IScenarioItem | IScenarioElement)[],
-  scenarios: IScenarios,
-  scenarioEl: IScenarioElements,
-): IListSortable => {
-  return parents.sort(greaterBuoyancyFirst).reduce((acc: IListSortable, parent) => {
-
-    const parentAsLSItem = isScenario(parent)
-      ? { [`${parent.id}s`]: scenarioItemToLS(parent) }
-      : { [`${parent.id}e`]: elementToLS(parent) };
-
-    const rawChildrenIDs = R.values(parentAsLSItem)[0].children;
-    const childrenIDs = rawChildrenIDs.sort((a, b) => {
-      const aID = parseInt(a, 10);
-      const bID = parseInt(b, 10);
-      const buoyancyA = a.slice(-1) === 's' ? scenarios[aID].buoyancy : scenarioEl[aID].buoyancy;
-      const buoyancyB = b.slice(-1) === 's' ? scenarios[bID].buoyancy : scenarioEl[bID].buoyancy;
-      return buoyancyB - buoyancyA;
-    });
-
-    if (!R.isEmpty(childrenIDs)) {
-      const parentChildren = childrenIDs.map((childIDasString) => {
-        const childID = parseInt(childIDasString, 10);
-        return childIDasString.slice(-1) === 's' ? scenarios[childID] : scenarioEl[childID];
-      });
-
-      return {
-        ...acc,
-        ...parentAsLSItem,
-        ...scenarioToLS(parentChildren, scenarios, scenarioEl),
-      };
-    }
-
-    return {
-      ...acc,
-      ...parentAsLSItem,
-    };
-  }, {})
-};
-
-export const getElementsByType = (
-  scenarioId: number,
-  listElementType: IChooseElement[],
-  libraryElements: ILibraryElements,
-): IScenarioElements => (
-  listElementType.reduce((obj, element, idx) => {
-    const defaultElement = libraryElements[element.type];
-
-    if (defaultElement) {
-      const serviceId = uniqueId(idx);
-      // TODO: imgFile -> R.path(['img', 'file'], element)!
-      return {
-        ...obj,
-        [serviceId]: {
-          serviceId,
-          struct_type: defaultElement.struct_type,
-          scenario: scenarioId,
-          func_type: element.type === 'widget' ? DEFAULT_MAP_WIDGET.func_type : defaultElement.func_type,
-          buoyancy: defaultElement.buoyancy,
-          parameters: {
-            ...defaultElement.parameters,
-            // source: R.path(['img', 'imgPreviewUrl'], element) || null,
-            source: R.path(['img', 'file'], element) || null,
-          },
-          styles: defaultElement.styles,
-        },
-      };
-    }
-
-    return obj;
-  }, {})
-);
-
-export const findParentType = (id: number, scenarios: IScenarios): string => {
-  if (!R.is(Number, id)) return '';
-
-  if (id === 0) return 'root';
-  const { struct_type, parent_id } = scenarios[id];
-
-  return struct_type === 'container' ? findParentType(parent_id, scenarios) : ((parent_id && struct_type) || 'root');
-};
 
 export const getListNotDragging = (type: string): string[] => {
   switch (type) {
