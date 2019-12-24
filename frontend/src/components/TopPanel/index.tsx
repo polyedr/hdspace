@@ -9,11 +9,12 @@ import { Modal } from '$components/UI/Modal';
 import { ILeftPanel } from '$components/LeftPanel';
 import { EditorProps } from '$containers/EditorLogic';
 import * as Actions from '$redux/project/actions';
+import { selectors } from '$redux/project';
 
-const styles = require('./styles.scss');
+const styles = require('./TopPanel.scss');
 
 const mapStateToProps = (state: AppReduxState) => ({
-  project: state.project.currentProject,
+  project: selectors.selectCurrentProject(state),
 });
 
 const mapDispatchToProps = {
@@ -74,17 +75,6 @@ const Component: React.FunctionComponent<TTopPanelProps> = memo(({
         >
           <Icon icon="menu" size={20} />
         </Button>
-        {
-          pathname !== '/projects' && (
-            <input
-              className={styles.topPanelSearchField}
-              type="text"
-              value={search}
-              onChange={handleChange}
-              placeholder="Search..."
-            />
-          )
-        }
       </div>
       {
         pathname !== '/projects' && (
@@ -105,50 +95,7 @@ const Component: React.FunctionComponent<TTopPanelProps> = memo(({
           </div>
         )
       }
-      <div className={styles.topPanelRightBlock}>
-        <Button
-          className={classNames(styles.notificationBtn, styles.notificationBtn_item1)}
-          styleType="none"
-          onClick={console.log}
-        >
-          <Icon icon="notification" size={20} />
-        </Button>
-        <Button
-          className={classNames(styles.notificationBtn, styles.notificationBtn_item2)}
-          styleType="none"
-          onClick={console.log}
-        >
-          <Icon icon="chat" size={20} />
-        </Button>
-        <Button
-          className={classNames(styles.notificationBtn, styles.notificationBtn_item3)}
-          styleType="none"
-          onClick={console.log}
-        >
-          <Icon icon="chat" size={20} />
-        </Button>
-        <Button
-          className={classNames(styles.notificationBtn, styles.notificationBtn_item4)}
-          styleType="none"
-          onClick={console.log}
-        >
-          <Icon icon="chat" size={20} />
-        </Button>
-        <Button
-          className={classNames(styles.notificationBtn, styles.notificationBtn_item5)}
-          styleType="none"
-          onClick={console.log}
-        >
-          <Icon icon="chat" size={20} />
-        </Button>
-        <Button
-          className="mainImgBtn"
-          styleType="none"
-          onClick={console.log}
-        >
-          <Icon icon="menu" size={20} />
-        </Button>
-      </div>
+      <div className={styles.topPanelRightBlock} />
       { modalRenameProjectOpen && (
       <Modal
         animClassName="bubbleAnimation"

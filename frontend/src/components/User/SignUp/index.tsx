@@ -13,7 +13,7 @@ import { getInitialFieldsState } from '$utils/getStates';
 import { IApiResponseError } from '$redux/user/reducer';
 import { SignFormList } from '$components/User/SignFormList';
 
-const styles = require('./styles.scss');
+const styles = require('./SignUp.scss');
 
 const mapStateToProps = ({
   user: { apiResponseError, isSignLoader },
@@ -119,4 +119,4 @@ const UnconnectedSignUp: React.FunctionComponent<IProps> = ({
   );
 };
 
-export const SignUp = connect(mapStateToProps, mapDispatchToProps)(hot(module)(UnconnectedSignUp));
+export const SignUp = connect(mapStateToProps, mapDispatchToProps)(UnconnectedSignUp);

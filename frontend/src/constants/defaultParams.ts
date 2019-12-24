@@ -1,13 +1,13 @@
 import * as R from 'ramda';
 
 import {
-  IScenarioItem,
   IScreenBorders,
   IScreenBackground,
   IScreenTypography,
   IScreenIndents,
   IProjectScreen,
-} from '$redux/project/reducer';
+  ActiveItem,
+} from '$redux/project/types';
 import { IApiResponseError, ITokenPair } from '$redux/user/reducer';
 // import { ITokenPair, IApiResponseError } from '$redux/user/reducer';
 // import { itemRoot } from '$utils/parseListItems';
@@ -116,7 +116,7 @@ export const DEFAULT_PROJECT = {
 
 export const DEFAULT_LS = {
   root: {
-    id: 0,
+    id: -1,
     type: 'root',
     children: [],
   },
@@ -127,40 +127,21 @@ export const DEFAULT_SCREEN: IProjectScreen = {
   project: -1,
   name: '',
   status: '',
-  styles_root: {},
   screenscenario: [],
   image: null,
   listSortable: DEFAULT_LS,
   screenLoader: false,
 };
 
-export const DEFAULT_SCENARIO: IScenarioItem = {
-  id: -1,
-  name: '',
-  struct_type: '',
-  screen: 0,
-  buoyancy: 0,
-  elements: [],
-  direction: 'vertical',
-  parent_id: 0,
-  parameters: {
-    children: [],
-    // scenario: 0,
-  },
-  styles: {},
-};
-
-export const DEFAULT_ACTIVE_ITEM = {
-  parentId: -1,
-  itemId: 'root',
-  itemType: 'root',
-  name: 'root',
-  scenarioId: -1,
+export const DEFAULT_ACTIVE_ITEM: ActiveItem = {
+  itemId: 'none',
+  itemType: 'none',
+  name: 'Not selected',
 };
 
 export const STATUS = ['on_hold', 'in_progress', 'review', 'approved'];
 
-export const LIST_SCENARIO_TYPE = ['block', 'container', 'group'];
+export const LIST_SCENARIO_TYPE = ['block', 'container', 'group', 'root'];
 
 export const DEFAULT_LIB_ELEMENTS = {
   email: {

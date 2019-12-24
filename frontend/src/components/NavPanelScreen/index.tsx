@@ -1,17 +1,16 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, memo, useEffect } from 'react';
 import classNames from 'classnames';
 import Sortable from 'react-sortablejs'; // maybe replace it with react-sortablejs-typescript?
 import { NavLink } from 'react-router-dom';
 
-import { IProject, IProjectScreen, IProjectListItem } from '$redux/project/reducer';
+import { IProject, IProjectScreen } from '$redux/project/types';
 import { Modal } from '$components/UI/Modal';
 import { Icon } from '$components/UI/Icon';
 import { Button } from '$components/UI/Button';
 import * as Actions from '$redux/project/actions';
 import { EditorProps } from '$containers/EditorLogic';
-import { uniqueId } from '$utils/NumberHelper';
 
-const styles = require('./styles.scss');
+const styles = require('./NavPanelScreen.scss');
 
 interface INavPanelScreenProps {
   screenID?: string;
@@ -21,14 +20,14 @@ interface INavPanelScreenProps {
   project: IProject;
   screen: IProjectScreen;
   getProject: typeof Actions.getProject;
-  setProjectScreens: typeof Actions.setProjectScreens;
+  changeScreensOrder: typeof Actions.changeScreensOrder;
   activateScreen: typeof Actions.activateScreen;
   addScreen: typeof Actions.addScreen;
   delScreen: typeof Actions.delScreen;
   renameScreen: typeof Actions.renameScreen;
 }
 
-const NavPanelScreen: React.FunctionComponent<INavPanelScreenProps> = ({
+const NavPanelScreen: React.FunctionComponent<INavPanelScreenProps> = memo(({
   isNavPanelMinimized,
   onMinimizerNavPanel,
   projectID,
@@ -38,7 +37,7 @@ const NavPanelScreen: React.FunctionComponent<INavPanelScreenProps> = ({
 
   activateScreen,
   getProject,
-  setProjectScreens,
+  changeScreensOrder,
   addScreen,
   delScreen,
   renameScreen,
@@ -49,7 +48,7 @@ const NavPanelScreen: React.FunctionComponent<INavPanelScreenProps> = ({
   const [modalMsgDanger, setModalMsgDanger] = React.useState<string>('');
   const [modalDellScreen, setModalDellScreen] = React.useState<boolean>(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     getProject(projectID, screenID);
   }, [projectID, getProject]);
 
@@ -105,21 +104,8 @@ const NavPanelScreen: React.FunctionComponent<INavPanelScreenProps> = ({
   }, [cancelModal, changeScreen, projectID, delScreen]);
 
   const handleChange = useCallback((order: string[]) => {
-    const newProjectScreens = order.reduce((acc: IProjectListItem[], currScreenID, currScreenIndex) => {
-      const currentProjectScreen = project.projectscreen.find(currentScreen => (
-        Number(currScreenID) === currentScreen.id
-      ));
-
-      return currentProjectScreen ? 
-        acc.concat(
-          {
-          ...currentProjectScreen,
-          buoyancy: project.projectscreen.length - currScreenIndex,
-        }) : acc;
-    }, []);
-
-    setProjectScreens(newProjectScreens);
-  }, [project, setProjectScreens]);
+    changeScreensOrder(order.map(Number));
+  }, [project, changeScreensOrder]);
 
   return (
     <div
@@ -138,33 +124,33 @@ const NavPanelScreen: React.FunctionComponent<INavPanelScreenProps> = ({
         </Button>
         <div className={styles.screensBlock}>
           <Sortable
-            key={uniqueId()}
             className={styles.screensTabsContainer}
             onChange={handleChange}
           >
             {
-              project.projectscreen.map(s => (
+              project.projectscreen.map(sID => (
                 <NavLink
-                  key={s.id}
-                  to={`/project/${projectID}/${s.id}`}
-                  className={classNames(styles.screenContainer, screen && s.id === screen.id ? styles.screenContainer_active : '')}
-                  data-id={s.id}
+                  key={sID}
+                  to={`/project/${projectID}/${sID}`}
+                  className={classNames(styles.screenContainer, screen && sID === screen.id ? styles.screenContainer_active : '')}
+                  data-id={sID}
                   >
                     <div
                       className={styles.screenNavigate}
-                      onClick={() => openScreen(s.id)}
+                      onClick={() => openScreen(sID)}
                     >
                       <Button
                         className="propsPanelImgBtn"
                         styleType="none"
-                        onClick={e => handleRenameScreen(e, s.id, s.name)}
+                        // TODO: load info about screens and show/rename name
+                        onClick={e => handleRenameScreen(e, sID, 'Screen name')}
                       >
                         <Icon icon="edit" size={20} />
                       </Button>
                       <Button
                         className="delBtn"
                         styleType="none"
-                        onClick={e => handleDelScreen(e, s.id, s.name)}
+                        onClick={e => handleDelScreen(e, sID, 'Screen name')}
                       >
                         <Icon icon="delete" size={20} />
                       </Button>
@@ -174,7 +160,7 @@ const NavPanelScreen: React.FunctionComponent<INavPanelScreenProps> = ({
                         styles.screenTab,
                       )}
                     >
-                      { s.image ? (
+                      {/* { s.image ? (
                         <img
                           src={s.image}
                           alt="img"
@@ -187,8 +173,9 @@ const NavPanelScreen: React.FunctionComponent<INavPanelScreenProps> = ({
                           }}
                         />
                       ) : (
-                        <span>{s.name}</span>
-                      )}
+                        <span>{'Screen name'}</span>
+                      )} */}
+                      <span>Screen name</span>
                     </div>
                 </NavLink>
               ))
@@ -242,6 +229,6 @@ const NavPanelScreen: React.FunctionComponent<INavPanelScreenProps> = ({
       )}
     </div>
   );
-};
+});
 
 export default NavPanelScreen;

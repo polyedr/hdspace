@@ -1,4 +1,4 @@
-import { IScenarioItem } from "$redux/project/reducer";
+import { IScenarioItem } from "$redux/project/types";
 import {
   LIST_SCENARIO_TYPE,
 } from '$constants/defaultParams';

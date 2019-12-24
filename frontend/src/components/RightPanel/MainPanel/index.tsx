@@ -5,39 +5,32 @@ import * as R from 'ramda';
 
 import { AppReduxState } from '$shared/types/app';
 import * as Actions from '$redux/project/actions';
-import { IProjectScreen } from '$redux/project/reducer';
+import { IProjectScreen } from '$redux/project/types';
+import { selectors } from '$redux/project';
 import { Scrollbar } from '$components/UI/Scrollbar/';
 import { PanelEditProps } from '$components/RightPanel/PanelEditProps';
 import { ScenarioList } from '$components/RightPanel/ScenarioList';
-import { IActiveItem } from '$components/Editor/EditorWindow/';
+import { T as ProjectT } from '$redux/project';
 import { EditorProps } from '$containers/EditorLogic';
 import { LIST_SCENARIO_TYPE } from '$constants/defaultParams';
-import { IStylesElement } from '$utils/StyleHelper';
+
 import { Spinner } from '$components/UI/Spinner/';
 
-const styles = require('./styles.scss');
+const styles = require('./RightPanel.scss');
 
-const mapStateToProps = ({
-  project: {
-    scenarios,
-    libraryElements,
-    scenarioElements,
-    currentScreen,
-    loader,
-  },
-}: AppReduxState) => ({
-  scenarios,
-  scenarioElements,
-  libraryElements,
-  currentScreen,
-  loader,
+const isScenario = (activeItem: ProjectT.ActiveItem) => LIST_SCENARIO_TYPE.indexOf(activeItem.itemType) !== -1;
+
+const mapStateToProps = (state: AppReduxState) => ({
+  scenarios: selectors.selectScenarios(state),
+  scenarioElements: selectors.selectScenariosElements(state),
+  libraryElements: selectors.selectLibraryElements(state),
+  currentScreen: selectors.selectCurrentScreen(state),
+  loader: selectors.selectLoader(state),
 });
 
 const mapDispatchToProps = {
-  setAlign: Actions.setAlign,
   updateElementStyles: Actions.updateElementStyles,
   updateScenarioStyles: Actions.updateScenarioStyles,
-  updateRootStyles: Actions.updateRootStyles,
   updateElementParameters: Actions.updateElementParameters,
   addElement: Actions.addElement,
   changeScenario: Actions.changeScenario,
@@ -49,7 +42,7 @@ const mapDispatchToProps = {
 };
 
 export type IRightPanelProps = ReturnType<typeof mapStateToProps>& typeof mapDispatchToProps & {
-  activeItem: IActiveItem,
+  activeItem: ProjectT.ActiveItem,
   project: EditorProps['currentProject'],
   screen: IProjectScreen,
 
@@ -71,9 +64,7 @@ const Component: React.FunctionComponent<IRightPanelProps> = ({
 
   addScenario,
   addContainer,
-  setAlign,
   updateElementStyles,
-  updateRootStyles,
   updateScenarioStyles,
   updateElementParameters,
   changeScenario,
@@ -81,9 +72,15 @@ const Component: React.FunctionComponent<IRightPanelProps> = ({
   renameScenario,
   changeElementType,
 }) => {
-  const handleAlign = useCallback((type: string) => {
-    setAlign(activeItem.itemId, type);
-  }, [setAlign, activeItem]);
+  const handleAlignChange = useCallback((type: 'align' | 'justify', value: string) => {
+    const itemID = parseInt(activeItem.itemId, 10);
+    const newStyles = {
+      ...(scenarios[itemID]).styles,
+      [type === 'align' ? 'align-items' : 'justify-content']: value,
+    };
+
+    updateScenarioStyles(activeItem.itemId, newStyles);
+  }, [activeItem, scenarios, updateScenarioStyles]);
 
   const handleOrientation = useCallback((type: 'vertical' | 'horizontal') => {
     const itemID = parseInt(activeItem.itemId, 10);
@@ -96,32 +93,30 @@ const Component: React.FunctionComponent<IRightPanelProps> = ({
   }, [activeItem, scenarios, updateScenarioStyles]);
 
   const getParams = useCallback(() => {
-    const parseId = parseInt(activeItem.itemId, 10);
-
-    if (LIST_SCENARIO_TYPE.indexOf(activeItem.itemType) !== -1) {
-      return R.path([parseId, 'parameters'], scenarios);
+    if (activeItem.itemType === 'none') {
+      return {};
     }
 
-    return R.path([parseId, 'parameters'], scenarioElements);
+    const itemID = parseInt(activeItem.itemId, 10);
+    return isScenario(activeItem) ? scenarios[itemID].parameters : scenarioElements[itemID].parameters;
   }, [activeItem, scenarios, scenarioElements]);
 
-  const getStyleItem = useCallback((): IStylesElement => {
-    const parseId = parseInt(activeItem.itemId, 10);
-
-    if (parseId) {
-      if (LIST_SCENARIO_TYPE.indexOf(activeItem.itemType) !== -1) {
-        return scenarios[parseId].styles;
-      }
-  
-      return scenarioElements[parseId].styles;
+  const getStyleItem = useCallback(() => {
+    if (activeItem.itemType === 'none') {
+      return {};
     }
-    return {}; // TODO: research case with 'root'
+
+    const itemID = parseInt(activeItem.itemId, 10);
+    return isScenario(activeItem) ? scenarios[itemID].styles : scenarioElements[itemID].styles;
   }, [activeItem, scenarios, scenarioElements]);
 
   const getOrientation = useCallback((id: string): string => {
-    const parseId = String(parseInt(id, 10));
+    if (id === 'none') {
+      return 'vertical';
+    }
 
-    return R.path([parseId, 'styles', 'flex-direction'], scenarios) === 'row' ? 'horizontal' : 'vertical';
+    const itemID = String(parseInt(id, 10));
+    return R.path([itemID, 'styles', 'flex-direction'], scenarios) === 'row' ? 'horizontal' : 'vertical';
   }, [scenarios]);
 
   return (
@@ -135,7 +130,6 @@ const Component: React.FunctionComponent<IRightPanelProps> = ({
         <PanelEditProps
           activeItem={activeItem}
           project={project}
-          screen={screen}
           listSortable={screen.listSortable}
           disablePanel={!screen}
           scenarios={scenarios}
@@ -144,13 +138,12 @@ const Component: React.FunctionComponent<IRightPanelProps> = ({
           params={getParams()}
           styleItem={getStyleItem()}
           orientation={getOrientation(activeItem.itemId)}
-          onAlign={handleAlign}
+          onAlign={handleAlignChange}
           setOrientation={handleOrientation}
           addScenario={addScenario}
           addContainer={addContainer}
           changeScenario={changeScenario}
           updateElementStyles={updateElementStyles}
-          updateRootStyles={updateRootStyles}
           updateScenarioStyles={updateScenarioStyles}
           updateElementParameters={updateElementParameters}
           changeElementType={changeElementType}

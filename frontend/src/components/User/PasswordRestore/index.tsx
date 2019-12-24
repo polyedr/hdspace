@@ -14,7 +14,7 @@ import * as Actions from '$redux/user/actions';
 import { SignFormList } from '$components/User/SignFormList';
 import { generateValidatedFormData, INewFormData } from '$utils/generateValidatedFormData';
 
-const styles = require('./styles.scss');
+const styles = require('./PasswordRestore.scss');
 
 const mapStateToProps = ({
   user: { apiResponseError, isSignLoader },
@@ -115,4 +115,4 @@ const UnconnectedPasswordRestore: React.FunctionComponent<IProps> = ({
   );
 };
 
-export const PasswordRestore = connect(mapStateToProps, mapDispatchToProps)(hot(module)(UnconnectedPasswordRestore));
+export const PasswordRestore = connect(mapStateToProps, mapDispatchToProps)(UnconnectedPasswordRestore);

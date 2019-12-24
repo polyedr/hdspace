@@ -7,7 +7,7 @@ import { Icon } from '$components/UI/Icon';
 import { Button } from '$components/UI/Button';
 import { IAppProps } from '$containers/App';
 import * as PATH_NAMES from '$constants/pathNames';
-import { IListProject } from '$redux/project/reducer';
+import { IListProject } from '$redux/project/types';
 import { Scrollbar } from '$components/UI/Scrollbar';
 import * as Actions from '$redux/user/actions';
 import * as ActionsProject from '$redux/project/actions';
@@ -15,7 +15,7 @@ import { openSignScreen } from '$utils/history';
 import { DEFAULT_AUTHORISATION_TOKEN } from '$constants/defaultParams';
 import { ITokenPair } from '$redux/user/reducer';
 
-const styles = require('./styles.scss');
+const styles = require('./LeftPanel.scss');
 
 export interface ILeftPanel {
   pathname: IAppProps['pathname'],
@@ -40,7 +40,6 @@ export const LeftPanel: React.FunctionComponent<ILeftPanel> = ({
   getListProject,
   setTokenPair,
 }) => {
-  const [isAdminMgntActive, setIsAdminActive] = useState<boolean>(false);
   const [isProjectsListActive, setIsProjectsListActive] = useState<boolean>(false);
   const [isLoadProjectData, setIsLoadProjectData] = useState(false);
 
@@ -58,10 +57,6 @@ export const LeftPanel: React.FunctionComponent<ILeftPanel> = ({
       openSignScreen('signin');
     }
   }, [tokenPair, setTokenPair, setListProject]);
-
-  const openAdminManagmentPanel = useCallback(() => {
-    setIsAdminActive(!isAdminMgntActive);
-  }, [isAdminMgntActive, setIsAdminActive]);
 
   const openProjectsList = useCallback(() => {
     setIsProjectsListActive(!isProjectsListActive);
@@ -169,110 +164,6 @@ export const LeftPanel: React.FunctionComponent<ILeftPanel> = ({
             >
               <Icon icon="folder-open" />
               <span>Workflow</span>
-            </NavLink>
-          </li>
-          <li className={styles.navigationItem}>
-            <NavLink
-              className={styles.navigationLink}
-              to="/library"
-              activeClassName="active"
-            >
-              <Icon icon="drag-indicator" />
-              <span>Storage Library</span>
-            </NavLink>
-          </li>
-          <li className={styles.navigationItem}>
-            <NavLink
-              className={styles.navigationLink}
-              to="/payments"
-              activeClassName="active"
-            >
-              <Icon icon="card" />
-              <span>Payment Package</span>
-            </NavLink>
-          </li>
-          <li className={styles.navigationItem}>
-            <NavLink
-              className={styles.navigationLink}
-              exact
-              to="/payments"
-              activeClassName="active"
-            >
-              <Icon icon="dashboard" />
-              <span>Team Profile</span>
-            </NavLink>
-          </li>
-          <li className={classNames(styles.navigationItem, styles.navigationItem_column)}>
-            <div>
-              <NavLink
-                className={classNames(
-                  styles.navigationLink,
-                  isAdminMgntActive && styles.navigationLink_active,
-                )}
-                exact
-                to={PATH_NAMES.projects}
-                activeClassName="active"
-              >
-                <Icon
-                  icon="person"
-                />
-                <span>Admin Mgnt</span>
-              </NavLink>
-              <Button
-                className={classNames(
-                  styles.navigationExpandBtn,
-                  isAdminMgntActive && styles.navigationExpandBtn_active,
-                )}
-                styleType="none"
-                onClick={() => openAdminManagmentPanel()}
-              >
-                <Icon
-                  icon="expand"
-                  size={30}
-                />
-              </Button>
-            </div>
-            <ul
-              className={classNames(
-                styles.navigationInnerList,
-                isAdminMgntActive && styles.navigationInnerList_active,
-              )}
-            >
-              <li
-                className={classNames(styles.navigationItem)}
-              >
-                <NavLink
-                  className={classNames(styles.navigationLink, styles.navigationLink_inner)}
-                  exact
-                  to={PATH_NAMES.projects}
-                  activeClassName="active"
-                >
-                  <span>Team Managment</span>
-                </NavLink>
-              </li>
-              <li
-                className={classNames(styles.navigationItem)}
-              >
-                <NavLink
-                  className={classNames(styles.navigationLink, styles.navigationLink_inner)}
-                  exact
-                  to={PATH_NAMES.projects}
-                  activeClassName="active"
-                >
-                  <span>Task Managment</span>
-                </NavLink>
-              </li>
-            </ul>
-          </li>
-          <li className={styles.navigationItem}>
-            <NavLink
-              className={styles.navigationLink}
-              exact
-              to="/payments"
-              activeClassName="active"
-            >
-              <Icon icon="help" />
-              <span>Help</span>
             </NavLink>
           </li>
         </ul>

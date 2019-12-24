@@ -21,7 +21,7 @@ import { isIncludes } from '$utils/StringHelper';
 import { uniqueId } from '$utils/NumberHelper';
 import { IUploadFile, UploadFile } from '$components/UI/UploadFile';
 
-const styles = require('./styles.scss');
+const styles = require('./ActionsBlock.scss');
 
 type Props = {
   scenarios: IPanelEditProps['scenarios'];
@@ -183,24 +183,6 @@ export const ActionsBlock: React.FunctionComponent<Props> = ({
 
   return (
     <div className={styles.modalActionsContainer}>
-      <p className={styles.modalTitle_addElements}>
-        Search for a basic layout using Keywords or Natural Language
-      </p>
-      <div className={styles.modalSearchForm}>
-        <input
-          type="text"
-          className={styles.modalSearchField}
-          placeholder="Search for something..."
-          onChange={handleSearchTemplate}
-          value={searchValue}
-        />
-        <Button
-          styleType="none"
-          className={styles.modalSearchButton}
-        >
-          <Icon icon="search" size={18} />
-        </Button>
-      </div>
       <ul
         className={styles.modalActionsTabsList}
       >

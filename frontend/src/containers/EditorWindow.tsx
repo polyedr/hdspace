@@ -1,6 +1,5 @@
 import React from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
-import { hot } from 'react-hot-loader';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 
@@ -12,20 +11,17 @@ import ProjectsLogic from '$containers/ProjectsLogic';
 import EditorLogic from '$containers/EditorLogic';
 import { TopPanel } from '$components/TopPanel';
 import { LeftPanel } from '$components/LeftPanel';
-import { IProject } from '$redux/project/reducer';
+import { IProject } from '$redux/project/types';
+import { selectors } from '$redux/project';
 
 const styles = require('$styles/global.scss');
 
-const mapStateToProps = ({
-  user: { isLPanelMinimized, tokenPair, userData: { username } },
-  project: { listProject: projects },
-  router: { location: { pathname } },
-}: AppReduxState) => ({
-  isLPanelMinimized,
-  tokenPair,
-  username,
-  projects,
-  pathname,
+const mapStateToProps = (state: AppReduxState) => ({
+  isLPanelMinimized: state.user.isLPanelMinimized,
+  tokenPair: state.user.tokenPair,
+  username: state.user.userData.username,
+  projects: selectors.selectProjects(state),
+  pathname: state.router.location.pathname,
 });
 
 const mapDispatchToProps = {
@@ -85,4 +81,4 @@ const EditorWindow: React.FunctionComponent<IAppProps> = ({
   </React.Fragment>
 );
 
-export default connect(mapStateToProps, mapDispatchToProps)(hot(module)(EditorWindow));
+export default connect(mapStateToProps, mapDispatchToProps)(EditorWindow);

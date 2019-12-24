@@ -248,11 +248,6 @@ input[type='radio'] {
   }
 }
 
-:global(.root) {
-  width: 100%;
-  min-height: 100%;
-}
-
 :global(.groupItem) {
   display: flex;
   flex-direction: column;

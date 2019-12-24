@@ -6,7 +6,7 @@ import { push } from 'connected-react-router';
 
 import { ReturnPromisedType } from '$shared/types';
 import { AppReduxState } from '$shared/types/app';
-import { IListProject, IProject } from '$redux/project/reducer';
+import { IListProject } from '$redux/project/types';
 import { activateScreenSaga, addScreenSaga } from '$redux/project/sagas/screen';
 import * as Actions from '$redux/project/actions';
 import { changePrototypeMode } from '$redux/user/actions';
@@ -16,10 +16,11 @@ import {
   apiDelProject,
   apiGetProject,
   apiSaveProject,
-  apiSaveScreens,
 } from '$api/project';
 import { DEFAULT_SCREEN } from '$constants/defaultParams';
 import { reqWrapper } from '$redux/project/sagas/index';
+
+import { selectors, T } from '../';
 
 export function* getListProjectSaga(): SagaIterator {
   yield put(Actions.setListProjectLoader(true));
@@ -39,7 +40,8 @@ export function* getListProjectSaga(): SagaIterator {
 
 export function* getProjectSaga(action: ReturnType<typeof Actions.getProject>) {
   const { id, screenID } = action.payload;
-  const { project: { currentProject }, user: { isPrototypeMode } }: AppReduxState = yield select();
+  const currentProject: ReturnType<typeof selectors.selectCurrentProject> = yield select(selectors.selectCurrentProject);
+  const { user: { isPrototypeMode } }: AppReduxState = yield select();
 
   if (currentProject.id === id) {
     yield put(changePrototypeMode(isPrototypeMode));
@@ -54,7 +56,7 @@ export function* getProjectSaga(action: ReturnType<typeof Actions.getProject>) {
 
     if (project) {
       yield put(Actions.setProject(project));
-      const projectScreensIDs = project.projectscreen.map(x => x.id);
+      const projectScreensIDs = project.projectscreen;
       const finalScreenID = screenID && projectScreensIDs.includes(Number(screenID)) ? screenID : projectScreensIDs[0];
 
       if (finalScreenID) {
@@ -77,42 +79,48 @@ export function* addProject(action: ReturnType<typeof Actions.addProject>) {
   yield put(push(`/project/${projectID}`));
 }
 
-export function* addProjectSaga({ name }: ReturnType<typeof Actions.addProject>) {
-  const result: IListProject = yield call(reqWrapper, apiAddProject, { data: { name, status: 'pending' } });
+export function* addProjectSaga({ payload: { name } }: ReturnType<typeof Actions.addProject>) {
+  const project: IListProject = yield call(reqWrapper, apiAddProject, { data: { name, status: 'pending' } });
+  
+  if (!project) { // TODO: write communication for such case
+    console.error('cannot create project', project);
+    return;
+  }
 
-  const { project: { listProject } }: AppReduxState = yield select();
-  yield put(Actions.setListProject([...listProject, result]));
+  const projects: ReturnType<typeof selectors.selectProjects> = yield select(selectors.selectProjects);
+  yield put(Actions.setListProject([...projects, project]));
 
-  return result;
+  return project;
 }
 
-export function* delProjectSaga({ id }: ReturnType<typeof Actions.delProject>): SagaIterator {
+export function* delProjectSaga({ payload: { id } }: ReturnType<typeof Actions.delProject>): SagaIterator {
   yield call(reqWrapper, apiDelProject, { id });
 
-  const { project: { listProject } }: AppReduxState = yield select();
+  const listProject: ReturnType<typeof selectors.selectProjects> = yield select(selectors.selectProjects);
   const newListProject: IListProject[] = listProject.filter(project => project.id !== id);
 
   yield put(Actions.setListProject(newListProject));
 }
 
 export function* renameProjectSaga(
-  { payload: { projectId, newName } }: ReturnType<typeof Actions.renameProject>,
+  { payload: { projectID, name } }: ReturnType<typeof Actions.renameProject>,
 ): SagaIterator {
-  const { project: { listProject, currentProject } }: AppReduxState = yield select();
+  const listProject: ReturnType<typeof selectors.selectProjects> = yield select(selectors.selectProjects);
+  const currentProject: ReturnType<typeof selectors.selectCurrentProject> = yield select(selectors.selectCurrentProject);
 
-  const currProject = listProject.find(project => project.id === projectId);
+  const currProject = listProject.find(project => project.id === projectID);
 
   if (!currProject) return;
 
-  const data = { ...currProject, name: newName };
+  const data = { ...currProject, name: name };
 
   yield call(reqWrapper, apiSaveProject, { data });
 
   const newListProject = listProject.map((project) => {
-    if (project.id === projectId) {
+    if (project.id === projectID) {
       return {
         ...project,
-        name: newName,
+        name: name,
       };
     }
 
@@ -121,22 +129,22 @@ export function* renameProjectSaga(
 
   yield put(Actions.setListProject(newListProject));
 
-  if (currentProject.id === projectId) {
+  if (currentProject.id === projectID) {
     yield put(Actions.setProject(data as any)); // TODO: research what the difference between IListProject and IProject
   }
 }
 
-export function* setProjectScreensSaga(
-  { payload: { projectScreens } }: ReturnType<typeof Actions.setProjectScreens>,
-): SagaIterator {
-  const { project: { currentProject } }: AppReduxState = yield select();
+export function* changeScreensOrderSaga(action: ReturnType<typeof Actions.changeScreensOrder>) {
+  const { screensIDs } = action.payload;
+  const currentProject: ReturnType<typeof selectors.selectCurrentProject> = yield select(
+    selectors.selectCurrentProject
+  );
 
-  const updateProject = {
+  const updatedProject: T.IProject = {
     ...currentProject,
-    projectscreen: projectScreens,
+    projectscreen: screensIDs,
   };
-  // TODO: Должны ли скрины сортироваться на бэке согласно buoyncy?
-  // yield call(reqWrapper, apiSaveProject, { data: updateProject });
-  yield call(reqWrapper, apiSaveScreens, { data: projectScreens });
-  yield put(Actions.setProject(updateProject));
+
+  yield call(reqWrapper, apiSaveProject, { data: updatedProject });
+  yield put(Actions.setProject(updatedProject));
 }

@@ -1,4 +1,4 @@
-import { IScenarioItem } from '$redux/project/reducer';
+import { IScenarioItem } from '$redux/project/types';
 import { myAxios, MyAxiosProps } from '$config/settings';
 import { onError, parseResult } from './project';
 

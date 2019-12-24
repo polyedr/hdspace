@@ -5,42 +5,29 @@ import classNames from 'classnames';
 import html2canvas from 'html2canvas';
 
 import { Recursive } from '$components/Editor/Recursive';
-import { CleanRecursive } from '$components/Editor/CleanRecursive';
 import { Icon } from '$components/UI/Icon';
 import { Checkbox } from '$components/UI/Checkbox';
 import { Button } from '$components/UI/Button';
 import { RightPanel } from '$components/RightPanel/MainPanel/';
 import * as Actions from '$redux/project/actions';
+import { T as ProjectT } from '$redux/project';
 import * as userActions from '$redux/user/actions';
-import { DEFAULT_ACTIVE_ITEM, DEFAULT_SCREEN_MODE } from '$constants/defaultParams';
+import { DEFAULT_SCREEN_MODE } from '$constants/defaultParams';
 import { EditorProps } from '$containers/EditorLogic';
 import { IAppProps } from '$containers/App';
 import { Scrollbar } from '$components/UI/Scrollbar';
-import { ISortableItemTemp } from '$utils/parseListItems';
 import { getClassDevice } from '$utils/dom';
-import { getListNotDragging, getParams, getScenarioId } from '$utils/parseScenario';
+import { getListNotDragging, getParams } from '$utils/parseScenario';
 
-const styles = require('./styles.scss');
+const styles = require('./Editor.scss');
 
 const isWorkContainer = true;
-
-export interface IActiveItem {
-  parentId: number,
-  itemId: string,
-  itemType: string,
-  name: string,
-  scenarioId: number,
-}
 
 export interface IScreenMode {
   isDefaultMode: boolean,
   isTabletMode: boolean,
   isMobileMode: boolean,
 }
-
-export type TOnChoose = (
-  parentId: number, itemId: string, target?: React.SyntheticEvent
-) => void;
 
 export interface IEditProps {
   project: EditorProps['currentProject'],
@@ -50,14 +37,18 @@ export interface IEditProps {
   isLPanelMinimized: IAppProps['isLPanelMinimized'],
   isNavPanelMinimized: EditorProps['isNavPanelMinimized'],
   isPrototypeMode: EditorProps['isPrototypeMode'],
+  activeItem: ProjectT.ActiveItem;
+  setActiveItem: typeof Actions.setActiveItem;
   saveScreen: typeof Actions.saveScreen,
   delScenarioItem: typeof Actions.delScenarioItem,
   changePrototypeMode: typeof userActions.changePrototypeMode,
   setListSortable: typeof Actions.setListSortable,
   updateElementStyles: typeof Actions.updateElementStyles,
+  addContainer: typeof Actions.addContainer,
+  resetScreenState: typeof Actions.resetScreenState;
 }
 
-export const Editor: React.FunctionComponent<IEditProps> = memo(({
+export const Editor: React.FC<IEditProps> = memo(({
   project,
   screen,
   scenarios,
@@ -66,15 +57,18 @@ export const Editor: React.FunctionComponent<IEditProps> = memo(({
   isNavPanelMinimized,
   isPrototypeMode,
 
+  activeItem,
+  setActiveItem,
+
   saveScreen,
   delScenarioItem,
   setListSortable,
-  updateElementStyles,
   changePrototypeMode,
+  addContainer,
+  resetScreenState,
 }) => {
   const [screenId, setScreenId] = useState<number>(-1);
   const [isMoving, setIsMoving] = useState<boolean>(true);
-  const [activeItem, setActiveItem] = useState<IActiveItem>(DEFAULT_ACTIVE_ITEM);
   const [listNotDragging, setListNotDragging] = useState<string[]>([]);
   const [currentScreenMode, setCurrentScreenMode] = useState<IScreenMode>({
     ...DEFAULT_SCREEN_MODE, isDefaultMode: true,
@@ -84,48 +78,71 @@ export const Editor: React.FunctionComponent<IEditProps> = memo(({
   useEffect(() => {
     if (screen.id !== screenId) {
       setScreenId(screen.id);
-      setActiveItem(DEFAULT_ACTIVE_ITEM);
-    } else {
-      // should it be named getParentID?
-      const scenarioId = getScenarioId(activeItem.itemId, scenarioElements, scenarios);
-
-      if (activeItem.scenarioId !== scenarioId) {
-        setActiveItem({ ...activeItem, scenarioId });
-      }
     }
   }, [screen.id]);
 
-  const getValueSize = useCallback((value: string) => {
-  //   if (value === 'auto' || value === '100%') {
-  //     return value;
-  //   }
-  //
-  //   return (isNumber(value) && value) || '100%';
-  }, []);
+  useEffect(() => () => { resetScreenState(); }, []);
 
-  const handleActiveElementChange: TOnChoose = useCallback((parentId, itemId) => {
-    const { name, type } = getParams(itemId, scenarioElements, scenarios);
-    const scenarioId = getScenarioId(itemId, scenarioElements, scenarios);
-    const parentType: string = parentId === 0 ? 'root' : R.path([parentId, 'struct_type'], scenarios) || '';
-    const list = getListNotDragging(type, parentId, parentType, scenarios);
+  const handleActiveElementChange = useCallback((parentId: number, itemId: string) => {
+    const { type, name } = getParams(itemId, scenarioElements, scenarios);
+    const list = getListNotDragging(type);
 
-    setActiveItem({
-      parentId,
-      itemId,
-      itemType: type,
-      name,
-      scenarioId,
-    });
-
+    setActiveItem({ itemId, itemType: type, name });
     setListNotDragging(list);
-  }, [scenarios, scenarioElements]);
+  }, [screen.listSortable, scenarios, scenarioElements]);
+
+  const handleRootClick = useCallback((event: React.MouseEvent) => {
+    const target = (event.target as HTMLElement)?.closest('[data-ls-id]');
+
+    if (!target) {
+      return;
+    }
+    const itemID = (target as HTMLElement).dataset['lsId'];
+
+    if (itemID === activeItem.itemId) return;
+
+    if (itemID) {
+      if (itemID === 'root') {
+        const rootItem = screen.listSortable.root;
+        setActiveItem({ itemId: `${rootItem.id}s`, itemType: 'root', name: 'Root' });
+      } else {
+        const { type, name } = getParams(itemID, scenarioElements, scenarios);
+        const list = getListNotDragging(type);
+
+        setActiveItem({ itemId: itemID, itemType: type, name });
+        setListNotDragging(list);
+      }
+    }
+  }, [activeItem, screen.listSortable, scenarios, scenarioElements]);
 
   const handleDelScenarioItem = useCallback(() => {
-    if (activeItem.parentId === -1) return;
+    if (['root', 'none'].includes(activeItem.itemType)) return;
+    if (document.activeElement?.getAttribute('data-ls-id') !== activeItem.itemId) return;
 
     delScenarioItem(activeItem.itemId);
-    setActiveItem(DEFAULT_ACTIVE_ITEM);
   }, [activeItem, delScenarioItem]);
+
+  useEffect(() => {
+    const listener = (event: KeyboardEvent) => {
+      if (event.keyCode === 8) {
+        handleDelScenarioItem();
+      }
+    };
+
+    document.addEventListener('keydown', listener);
+    return () => document.removeEventListener('keydown', listener);
+  }, [activeItem, handleDelScenarioItem]);
+
+  useEffect(() => {
+    const listener = (event: KeyboardEvent) => {
+      if (event.code == 'KeyC' && (event.shiftKey || event.metaKey)) {
+        addContainer(activeItem.itemId);
+      }
+    };
+
+    document.addEventListener('keydown', listener);
+    return () => document.removeEventListener('keydown', listener);
+  }, [activeItem, addContainer]);
 
   const onHistoryBack = useCallback(() => {
     console.log();
@@ -156,10 +173,6 @@ export const Editor: React.FunctionComponent<IEditProps> = memo(({
     changePrototypeMode(!isPrototypeMode);
   }, [isPrototypeMode, changePrototypeMode]);
 
-  const handleChooseRoot = useCallback(() => {
-    setActiveItem(DEFAULT_ACTIVE_ITEM);
-  }, []);
-
   const handleSaveScreen = useCallback(() => {
     const screenBody = document.getElementById('root');
     const widgets = Array.from(document.querySelectorAll('iframe'));
@@ -183,12 +196,13 @@ export const Editor: React.FunctionComponent<IEditProps> = memo(({
         isNavPanelMinimized && styles.editorContainer_minimized,
         screenId === -1 && styles.editorContainer_hide,
       )}
+      onClick={handleRootClick}
     >
       {
         screen && R.hasPath(['listSortable', 'root'], screen) && (
           <div className={classNames(styles.editorWorkBlock)}>
             {
-              screenId !== -1 && (
+              (
                 <div className={classNames(styles.editorNavBar)}>
                   <div className={styles.navBarTypeScreenBlock}>
                     <Button
@@ -298,7 +312,8 @@ export const Editor: React.FunctionComponent<IEditProps> = memo(({
                     styles.editorWorkContainer,
                     getClassDevice(styles, currentScreenMode, isPrototypeMode, isScreenRotated, isWorkContainer),
                   )}
-                  onClick={handleChooseRoot}
+                  // data-ls-id={`${screen.listSortable.root.id}s`}
+                  data-ls-id="root"
                 >
                   <div
                     className={classNames(
@@ -308,56 +323,19 @@ export const Editor: React.FunctionComponent<IEditProps> = memo(({
                     )}
                   >
                     <Scrollbar
-                      style={{
-                        minHeight: '100%',
-                        height: '100%',
-                      }}
+                      style={{ minHeight: '100%', height: '100%' }}
                       isFlex
                       maxHeight="100vh"
                     >
-                      {
-                        !R.isEmpty(R.path(['listSortable', 'root', 'children'], screen)) ? (
-                          <React.Fragment>
-                            {/* {
-                              isPrototypeMode && (
-                                <CleanRecursive
-                                  item={screen.listSortable.root}
-                                  activeItemId={activeItem.itemId}
-                                  isPrototypeMode={isPrototypeMode}
-                                  styles_root={screen.styles_root}
-                                  onChoose={handleActiveElementChange}
-                                  onChange={setListSortable}
-                                />
-                              )
-                            } */}
-                            {/* {
-                              !isPrototypeMode && (
-                                <Recursive
-                                  item={screen.listSortable.root}
-                                  activeItemId={activeItem.itemId}
-                                  isMoving={isMoving}
-                                  listNotDragging={listNotDragging}
-                                  isPrototypeMode={isPrototypeMode}
-                                  onChoose={handleActiveElementChange}
-                                  onChange={setListSortable}
-                                  setIsMoving={setIsMoving}
-                                  styles_root={screen.styles_root}
-                                />
-                              )
-                            } */}
-                            <Recursive
-                              item={screen.listSortable.root as ISortableItemTemp}
-                              activeItemId={activeItem.itemId}
-                              isMoving={isMoving}
-                              listNotDragging={listNotDragging}
-                              onActiveElementChange={handleActiveElementChange}
-                              onChange={setListSortable}
-                              setIsMoving={setIsMoving}
-                              styles_root={screen.styles_root}
-                            />
-                          </React.Fragment>
-                        ) : <div id="root" style={screen.styles_root} className="root" />
-                      }
+                      <Recursive
+                        item={screen.listSortable.root}
+                        activeItemId={activeItem.itemId}
+                        isMoving={isMoving}
+                        listNotDragging={listNotDragging}
+                        onChange={setListSortable}
+                        setIsMoving={setIsMoving}
+                        onActiveElementChange={handleActiveElementChange} // needed to activate item before dragging, in order to get new listNotDraggable
+                      />
                     </Scrollbar>
                   </div>
                 </div>
@@ -367,7 +345,7 @@ export const Editor: React.FunctionComponent<IEditProps> = memo(({
         )
       }
       {
-        (screenId !== -1 && !isPrototypeMode) && (
+        (!isPrototypeMode) && (
           <RightPanel
             activeItem={activeItem}
             project={project}

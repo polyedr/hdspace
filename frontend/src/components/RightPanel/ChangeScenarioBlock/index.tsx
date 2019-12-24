@@ -3,7 +3,6 @@ import classNames from 'classnames';
 
 import { DropDown } from '$components/UI/DropDown/';
 import * as UTILS from '$utils/parseScenario';
-import { strToNumber } from '$utils/NumberHelper';
 import { IPanelEditProps } from '$components/RightPanel/PanelEditProps';
 import { LIST_SCENARIO_TYPE } from '$constants/defaultParams';
 
@@ -20,18 +19,9 @@ interface IComponentProps {
 export const ScenarioBlock: React.FunctionComponent<IComponentProps> = memo((props) => {
   const {
     activeItem,
-    scenarios,
-    getOptionsOfListScenario,
-    changeScenario,
     changeElementType,
     libraryElements,
   } = props;
-  const handleChangeScenario = useCallback((value: string) => {
-    const scenarioId: number = strToNumber(value);
-    if (scenarioId) {
-      changeScenario(activeItem.itemId, scenarioId);
-    }
-  }, [activeItem, changeScenario]);
 
   const handleChangeElementType = useCallback((value) => {
     changeElementType(activeItem.itemId, value);
@@ -43,16 +33,16 @@ export const ScenarioBlock: React.FunctionComponent<IComponentProps> = memo((pro
         <p>Scenario and Predictions</p>
       </div>
       <div className={classNames(styles.scenarioContentBlock, 'propsPanelContentBlock')}>
-        <DropDown
+        {/* <DropDown
           options={getOptionsOfListScenario(scenarios)}
-          defaultValue={String(activeItem.scenarioId)}
+          defaultValue={String(activeItem.scenarioId)} // scenarioId is needed only here
           value={String(activeItem.scenarioId)}
           disabled={activeItem.itemType === 'block' || activeItem.scenarioId === -1}
           onChange={handleChangeScenario}
-        />
+        /> */}
         <DropDown
           options={UTILS.getListTypeElement(libraryElements)}
-          defaultValue={activeItem.itemType}
+          defaultValue={activeItem.itemType === 'root' ? 'container' : activeItem.itemType}
           onChange={handleChangeElementType}
           value={activeItem.itemType}
           disabled={LIST_SCENARIO_TYPE.indexOf(activeItem.itemType) !== -1}

@@ -6,7 +6,7 @@ import { autobind } from 'core-decorators';
 import * as Actions from '$redux/project/actions';
 import { strToNumber } from '$utils/NumberHelper';
 
-const styles = require('./styles.scss');
+const styles = require('./DragResize.scss');
 
 const extractWidth = R.path<number | string>(['props', 'style', 'width']);
 
@@ -17,7 +17,6 @@ type Props = {
   updateElementStyles: typeof Actions.updateElementStyles;
   isDraggable: boolean;
   isResizable: boolean;
-  onChooseToResize(itemID: string): void;
   setIsMoving(value: boolean): void;
 };
 
@@ -135,8 +134,7 @@ export class DragResize extends React.Component<Props, State> {
 
   @autobind
   private handleDragStop(event: MouseEvent) {
-    console.log('handle drag stop!');
-    const { sortableId, updateElementStyles, setIsMoving } = this.props;
+    const { sortableId, updateElementStyles, setIsMoving, style } = this.props;
     const { clientX, clientY } = event;
     const { currentController } = this.state;
 
@@ -171,7 +169,13 @@ export class DragResize extends React.Component<Props, State> {
           break;
       }
 
-      updateElementStyles(sortableId, { width: `${newWidth}px`, height: `${newHeight}px` });
+      const finalWidth = `${newWidth}px`;
+      const finalHeight = `${newHeight}px`;
+
+      // don't update if neither width, nor height was changed
+      if (style.width !== finalWidth || style.height !== finalHeight) {
+        updateElementStyles(sortableId, { width: finalWidth, height: finalHeight });
+      }
 
       return ({
         x: clientX,
@@ -202,13 +206,13 @@ export class DragResize extends React.Component<Props, State> {
     if (!style || !strToNumber(String(style.width)) || !strToNumber(String(style.height))) {
       const el = document.getElementById(String(sortableId));
       if (el !== null) {
-        const { clientWidth, clientHeight } = el;
+        const { offsetWidth, offsetHeight } = el;
         const indentLeft: number = R.path(['indents', 'padding-left'], style) || 0;
         const indentRight: number = R.path(['indents', 'padding-right'], style) || 0;
         const indentTop: number = R.path(['indents', 'padding-top'], style) || 0;
         const indentBottom: number = R.path(['indents', 'padding-bottom'], style) || 0;
-        const newWidth = clientWidth - indentLeft - indentRight - 10;
-        const newHeight = clientHeight - indentTop - indentBottom - 10;
+        const newWidth = offsetWidth - indentLeft - indentRight;
+        const newHeight = offsetHeight - indentTop - indentBottom;
   
         this.setState({ width: newWidth, height: newHeight });
       }
@@ -221,18 +225,9 @@ export class DragResize extends React.Component<Props, State> {
       y: currentEvent.clientY,
     });
 
-
     window.addEventListener('mousemove', this.handleDragOver);
     window.addEventListener('mouseup', this.handleDragStop);
     window.addEventListener('mouseleave', this.handleDragStop);
-  };
-
-  @autobind
-  private handleChooseToResize(e: React.ChangeEvent) {
-    e.stopPropagation();
-
-    const { sortableId, onChooseToResize } = this.props;
-    onChooseToResize(sortableId);
   };
 
   @autobind
@@ -285,7 +280,8 @@ export class DragResize extends React.Component<Props, State> {
 
     return (
       <span
-        data-id={sortableId}
+        data-id={sortableId} // used by sortable
+        data-ls-id={sortableId}
         className={classNames(
           styles.dragResizeItem,
           isResizable ? styles['dragResizeItem_is-resizable'] : undefined) // removes 100% width from span if element is resizable (to place wrapper precisely around element)
@@ -306,7 +302,6 @@ export class DragResize extends React.Component<Props, State> {
               // width: (width && width - deltaX) || 'auto',
               // height: (height && height - deltaY) || 'auto',
             },
-            onClick: this.handleChooseToResize,
             onMouseOver: this.handleMouseOver,
             onMouseOut: this.handleMouseOut,
           },

@@ -3,12 +3,9 @@ import * as R from 'ramda';
 import { IListOptions } from '$components/UI/NestedList';
 import { IDropDownOptions } from '$components/UI/DropDown';
 import {
-  DEFAULT_SCENARIO,
-  DEFAULT_MAP_WIDGET,
   LIST_SCENARIO_TYPE,
   ITemplateElement,
 } from '$constants/defaultParams';
-import { uniqueId } from '$utils/NumberHelper';
 import {
   IScenarios,
   IScenarioItem,
@@ -18,11 +15,9 @@ import {
   IListSortable,
   ILSItem,
   IScenarioElement,
-} from '$redux/project/reducer';
+} from '$redux/project/types';
 import { IChooseElement } from '$components/ModalAddElements/MainBlock';
-import { IStylesElement } from '$utils/StyleHelper';
-
-import { greaterBuoyancyFirst, isElement, isScenario } from './model';
+import { CssLikeStyles } from '$utils/StyleHelper';
 
 export interface IGroupElement {
   key: string,
@@ -77,32 +72,6 @@ export const getOptionsOfListScenario = (scenarios: IScenarios) => (
     return struct_type === 'block' ? acc.concat({ value: key, label: name }) : acc;
   }, [] as IDropDownOptions<string>[])
 );
-
-export const getNewScenario = (
-  name: string,
-  type: string,
-  screenId: number,
-  elements: number[] = [],
-): IScenarioItem => ({
-  ...DEFAULT_SCENARIO,
-  screen: screenId,
-  name,
-  type,
-  elements,
-});
-
-export const getAllElements = (
-  oldScenarioId: number,
-  newScenarioId: number,
-  updateElements: number[],
-  elements: IScenarioElements,
-): IScenarioElements => updateElements.reduce((obj, id) => ({
-  ...obj,
-  [`${id}e`]: {
-    ...elements[`${id}e`],
-    scenario: elements[`${id}e`].scenario === oldScenarioId ? newScenarioId : oldScenarioId,
-  },
-}), elements);
 
 export const convertScenarioElements = (
   scenarioElements: IScenarioElement[],
@@ -227,43 +196,8 @@ export const getListTypeElement = (libraryElements: ILibraryElements): IDropDown
     const { func_type, struct_type } = libraryElements[key];
 
     return arr.concat({ label: func_type || struct_type, value: key });
-  }, [{ label: 'block', value: 'block' }, { label: 'group', value: 'group' }, { label: 'container', value: 'container' }] as IDropDownOptions<string>[] )
+  }, [{ label: 'container', value: 'container' }] as IDropDownOptions<string>[] )
 );
-
-export const getScenarioId = (
-  idAsString: string,
-  scenariosElements: IScenarioElements,
-  scenarios: IScenarios,
-): number => {
-  const scenarioID = parseInt(idAsString, 10);
-
-  if (isElement(idAsString)) {
-    return R.path([scenarioID, 'scenario'], scenariosElements) || -1;
-  }
-
-  const findParent = (itemId: number): number => {
-    const { parent_id, struct_type } = scenarios[itemId];
-
-    if (struct_type === 'container' && parent_id === 0) {
-      return -1;
-    }
-
-    return scenarios[parent_id].struct_type === 'block' ? parent_id : findParent(parent_id);
-  };
-
-  const currItem = scenarios[scenarioID];
-
-  switch (R.prop('struct_type', currItem)) {
-    case 'block':
-      return R.prop('id', currItem);
-    case 'group':
-    case 'container':
-      return findParent(currItem.id);
-
-    default:
-      return -1;
-  }
-};
 
 export const getItemsPair = (
   LS: IListSortable,
@@ -271,11 +205,9 @@ export const getItemsPair = (
   scenarioElements: IScenarioElements,
 ): { scenarioList: IScenarios, elementList: IScenarioElements } => (
   Object.keys(LS).reduce((result, key) => {
-    if (!key || !LS[key]) return result;
-
     const { type, id } = LS[key];
 
-    if (LIST_SCENARIO_TYPE.indexOf(type) !== -1) {
+    if (LIST_SCENARIO_TYPE.indexOf(type) !== -1 || type === 'root') {
       return {
         ...result,
         scenarioList: {
@@ -295,6 +227,7 @@ export const getItemsPair = (
   }, { scenarioList: {}, elementList: {} })
 );
 
+// getParams -> getParamsOfNonRootItem
 export const getParams = (
   id: string,
   elementList: IScenarioElements,
@@ -302,7 +235,7 @@ export const getParams = (
 ): {
   struct_type: string,
   parameters: any,
-  styles: IStylesElement,
+  styles: CssLikeStyles,
   name: string,
   parent_id: number,
   type: string,
@@ -318,7 +251,7 @@ export const getParams = (
       parameters: currScenario.parameters || {},
       styles: currScenario.styles || {},
       name: currScenario.name || 'name',
-      parent_id: currScenario.parent_id || -1,
+      parent_id: currScenario.parent_id ?? -1,
       type: currScenario.struct_type || 'undefined',
     };
   }
@@ -330,148 +263,39 @@ export const getParams = (
     parameters: currElement.parameters || {},
     styles: currElement.styles || {},
     name: currElement.name || 'name',
-    parent_id: currElement.parameters.parent_id || -1,
+    parent_id: currElement.parameters.parent_id ?? -1,
     type: currElement.func_type || 'undefined',
     image: currElement.image || undefined,
   };
 };
 
 export const idToLSId = (id: number, type: string): string => {
-  if (id === 0) return 'root';
+  if (type === 'root') return type;
 
   const char = LIST_SCENARIO_TYPE.indexOf(type) !== -1 ? 's' : 'e';
 
   return `${id}${char}`;
 };
 
-const scenarioItemToLS = ({ id, struct_type, parameters: { children } }: IScenarioItem): ILSItem => ({
+export const scenarioItemToLS = ({ id, struct_type, parameters: { children } }: IScenarioItem): ILSItem => ({
   id,
   type: struct_type,
   children: children || [],
 });
 
-const elementToLS = ({ id, struct_type }: IScenarioElement): ILSItem => ({
+export const elementToLS = ({ id, struct_type }: IScenarioElement): ILSItem => ({
   id,
   type: struct_type,
   children: [],
 });
 
-export const scenarioToLS = (
-  parents: (IScenarioItem | IScenarioElement)[],
-  scenarios: IScenarios,
-  scenarioEl: IScenarioElements,
-): IListSortable => (
-  parents.sort(greaterBuoyancyFirst).reduce((acc: IListSortable, parent) => {
-
-    const parentAsLSItem = isScenario(parent)
-      ? { [`${parent.id}s`]: scenarioItemToLS(parent) }
-      : { [`${parent.id}e`]: elementToLS(parent) };
-
-    const rawChildrenIDs = R.values(parentAsLSItem)[0].children;
-    const childrenIDs = rawChildrenIDs.sort((a, b) => {
-      const aID = parseInt(a, 10);
-      const bID = parseInt(b, 10);
-      const buoyancyA = a.slice(-1) === 's' ? scenarios[aID].buoyancy : scenarioEl[aID].buoyancy;
-      const buoyancyB = b.slice(-1) === 's' ? scenarios[bID].buoyancy : scenarioEl[bID].buoyancy;
-      return buoyancyB - buoyancyA;
-    });
-
-    if (!R.isEmpty(childrenIDs)) {
-      const parentChildren = childrenIDs.map((childIDasString) => {
-        const childID = parseInt(childIDasString, 10);
-        return childIDasString.slice(-1) === 's' ? scenarios[childID] : scenarioEl[childID];
-      });
-
-      return {
-        ...acc,
-        ...parentAsLSItem,
-        ...scenarioToLS(parentChildren, scenarios, scenarioEl),
-      };
-    }
-
-    return {
-      ...acc,
-      ...parentAsLSItem,
-    };
-  }, {})
-);
-
-export const getElementsByType = (
-  scenarioId: number,
-  listElementType: IChooseElement[],
-  libraryElements: ILibraryElements,
-): IScenarioElements => (
-  listElementType.reduce((obj, element, idx) => {
-    const defaultElement = libraryElements[element.type];
-
-    if (defaultElement) {
-      const serviceId = uniqueId(idx);
-      // TODO: imgFile -> R.path(['img', 'file'], element)!
-      return {
-        ...obj,
-        [serviceId]: {
-          serviceId,
-          struct_type: defaultElement.struct_type,
-          scenario: scenarioId,
-          func_type: element.type === 'widget' ? DEFAULT_MAP_WIDGET.func_type : defaultElement.func_type,
-          buoyancy: defaultElement.buoyancy,
-          parameters: {
-            ...defaultElement.parameters,
-            // source: R.path(['img', 'imgPreviewUrl'], element) || null,
-            source: R.path(['img', 'file'], element) || null,
-          },
-          styles: defaultElement.styles,
-        },
-      };
-    }
-
-    return obj;
-  }, {})
-);
-
-export const findParentType = (id: number, scenarios: IScenarios): string => {
-  if (!R.is(Number, id)) return '';
-
-  if (id === 0) return 'root';
-  const { struct_type, parent_id } = scenarios[id];
-
-  return struct_type === 'container' ? findParentType(parent_id, scenarios) : ((parent_id && struct_type) || 'root');
-};
-
-export const getListNotDragging = (
-  type: string,
-  parentId: number,
-  parentType: string,
-  scenarios: IScenarios
-): string[] => {
+export const getListNotDragging = (type: string): string[] => {
   switch (type) {
-    case 'block': {
-      return ['block', 'group', 'element'];
-    }
-
-    case 'group': {
-      return ['group', 'element'];
-    }
-
     case 'container': {
-      const mainType = findParentType(parentId, scenarios);
-
-      if (mainType === 'root') {
-        return ['block', 'group', 'element'];
-      }
-
-      if (mainType === 'block') {
-        return ['group', 'element'];
-      }
-
-      if (mainType === 'group') {
-        return ['element'];
-      }
-
-      return [];
+      return ['element'];
     }
-
+  
     default:
-      return [];
+      return ['element'];
   }
 };

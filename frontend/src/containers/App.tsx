@@ -2,22 +2,20 @@ import React from 'react';
 import { hot } from 'react-hot-loader';
 import { connect } from 'react-redux';
 import { ConnectedRouter } from 'connected-react-router';
+import 'antd/dist/antd.css';
 
 import { AppReduxState } from '$shared/types/app';
 import * as ActionsUser from '$redux/user/actions';
 import * as ActionsProject from '$redux/project/actions';
+import { selectors } from '$redux/project';
 import { history } from '$redux/store';
 
 import { Routes } from './Routes';
 
-const mapStateToProps = ({
-  user: { isLPanelMinimized },
-  project: { listProject },
-  router: { location: { pathname } },
-}: AppReduxState) => ({
-  isLPanelMinimized,
-  listProject,
-  pathname,
+const mapStateToProps = (state: AppReduxState) => ({
+  isLPanelMinimized: state.user.isLPanelMinimized,
+  listProject: selectors.selectProjects(state),
+  pathname: state.router.location.pathname,
 });
 
 const mapDispatchToProps = {
@@ -35,4 +33,4 @@ const Component: React.FunctionComponent<IAppProps> = () => {
   );
 };
 
-export const App = connect(mapStateToProps, mapDispatchToProps)(hot(module)(Component));
+export const App = connect(mapStateToProps, mapDispatchToProps)(Component);

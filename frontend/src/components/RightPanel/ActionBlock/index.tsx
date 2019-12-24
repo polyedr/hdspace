@@ -7,7 +7,7 @@ import { Button } from '$components/UI/Button/';
 import { EditorProps } from '$containers/EditorLogic';
 import * as Actions from '$redux/project/actions';
 import { IPanelEditProps } from '$components/RightPanel/PanelEditProps';
-import { IActiveItem } from '$components/Editor/EditorWindow/';
+import { T as ProjectT } from '$redux/project';
 import { elementTypes } from '$constants/menu';
 
 const styles = require('./styles.scss');
@@ -15,7 +15,7 @@ const styles = require('./styles.scss');
 interface IComponentProps {
   project: EditorProps['currentProject'],
   params: IPanelEditProps['params'],
-  activeItem: IActiveItem,
+  activeItem: ProjectT.ActiveItem,
   itemType: string,
   updateElementParameters: typeof Actions.updateElementParameters,
 }
@@ -85,9 +85,9 @@ const Component: React.FunctionComponent<IComponentProps> = ({
             { isPage && (
               <DropDown
                 options={
-                  projectscreen.map(element => ({
-                    label: element.name,
-                    value: element.name,
+                  projectscreen.map((_, elIndex) => ({ // TODO: restore when screens will be preloaded
+                    label: `Screen ${elIndex}`,
+                    value: `Screen ${elIndex}`,
                   }))
                 }
                 onChange={handleChangeLinkUrl}

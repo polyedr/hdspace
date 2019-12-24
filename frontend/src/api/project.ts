@@ -1,5 +1,5 @@
 import { myAxios, MyAxiosProps } from '$config/settings';
-import { IProject } from '$redux/project/reducer';
+import { IProject } from '$redux/project/types';
 import { AxiosResponse, AxiosError } from 'axios';
 
 export const onError = ({ response: r }: AxiosError) => {

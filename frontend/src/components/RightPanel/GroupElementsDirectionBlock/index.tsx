@@ -1,24 +1,60 @@
 import React, { memo } from 'react';
 import classNames from 'classnames';
 
-import { Icon } from '$components/UI/Icon/';
 import { Button } from '$components/UI/Button/';
+import { DropDown } from '$components/UI/DropDown/';
 import { IPanelEditProps } from '$components/RightPanel/PanelEditProps';
 
 const styles = require('./styles.scss');
 
-interface IComponentProps {
-  orientation: IPanelEditProps['orientation'],
-  params: IPanelEditProps['params'],
-  onAlign: IPanelEditProps['onAlign'],
-  setOrientation: IPanelEditProps['setOrientation'],
-}
+type Props = {
+  styleItem: IPanelEditProps['styleItem'];
+  orientation: IPanelEditProps['orientation'];
+  params: IPanelEditProps['params'];
+  setOrientation: IPanelEditProps['setOrientation'];
+  onAlignChange(alignType: 'align' | 'justify', value: string): void;
+};
 
-export const GroupElementsDirectionBlock: React.FunctionComponent<IComponentProps> = memo(({
+const ALIGN_VALUES = [{
+  label: 'Start',
+  value: 'flex-start',
+}, {
+  label: 'Center',
+  value: 'center',
+}, {
+  label: 'End',
+  value: 'flex-end',
+}, {
+  label: 'Stretch',
+  value: 'stretch',
+}, {
+  label: 'Baseline',
+  value: 'baseline',
+}];
+
+const JUSTIFY_VALUES = [{
+  label: 'Start',
+  value: 'flex-start',
+}, {
+  label: 'Center',
+  value: 'center',
+}, {
+  label: 'End',
+  value: 'flex-end',
+}, {
+  label: 'Space between',
+  value: 'space-between',
+}, {
+  label: 'Space around',
+  value: 'space-around',
+}];
+
+export const GroupElementsDirectionBlock: React.FC<Props> = memo(({
   orientation,
   params,
   setOrientation,
-  onAlign,
+  onAlignChange,
+  styleItem
 }) => (
   <React.Fragment>
     <div className="propsElementsBlock">
@@ -27,57 +63,43 @@ export const GroupElementsDirectionBlock: React.FunctionComponent<IComponentProp
         <div className="propsElementsInnerBlock">
           <Button
             styleType="primary"
-            className={classNames('propsPanelBtn', styles.orientationBtn, styles.orientationBtn_vertical, orientation === 'vertical' && 'propsPanelBtn_active')}
-            onClick={() => setOrientation('vertical')}
-          >
-            Vertical
-          </Button>
-          <Button
-            styleType="primary"
             className={classNames('propsPanelBtn', styles.orientationBtn, orientation === 'horizontal' && 'propsPanelBtn_active')}
             onClick={() => setOrientation('horizontal')}
           >
             Horizontal
           </Button>
+          <Button
+            styleType="primary"
+            className={classNames('propsPanelBtn', styles.orientationBtn, styles.orientationBtn_vertical, orientation === 'vertical' && 'propsPanelBtn_active')}
+            onClick={() => setOrientation('vertical')}
+          >
+            Vertical
+          </Button>
         </div>
       </div>
     </div>
-    {orientation === 'horizontal' && (
-      <div className="propsElementsBlock">
-        <p className="propsElementsBlockTitle">Align</p>
-        <div className="propsElementsContentBlock">
-          <div className="propsElementsInnerBlock">
-            <Button
-              styleType="none"
-              className={classNames('propsPanelImgBtn', params && params.align === 'left' ? styles.active : '')}
-              onClick={() => onAlign('left')}
-            >
-              <Icon icon="align_left" />
-            </Button>
-            <Button
-              styleType="none"
-              className={classNames('propsPanelImgBtn', params && params.align === 'center' ? styles.active : '')}
-              onClick={() => onAlign('center')}
-            >
-              <Icon icon="align_center" />
-            </Button>
-            <Button
-              styleType="none"
-              className={classNames('propsPanelImgBtn', params && params.align === 'right' ? styles.active : '')}
-              onClick={() => onAlign('right')}
-            >
-              <Icon icon="align_right" />
-            </Button>
-            <Button
-              styleType="none"
-              className={classNames('propsPanelImgBtn', params && params.align === 'justify' ? styles.active : '')}
-              onClick={() => onAlign('justify')}
-            >
-              <Icon icon="align_justify" />
-            </Button>
-          </div>
+    <div className="propsElementsBlock">
+      <p className="propsElementsBlockTitle">Align</p>
+      <div className="propsElementsContentBlock">
+        <div className={styles.axis}>
+          <span className={styles.axis__label}>{orientation === 'horizontal' ? 'Main' : 'Cross'} axis</span>
+          <DropDown
+            options={JUSTIFY_VALUES}
+            defaultValue={orientation === 'horizontal' ? styleItem['justify-content'] : styleItem['align-items']}
+            value={orientation === 'horizontal' ? styleItem['justify-content'] : styleItem['align-items']}
+            onChange={(value) => onAlignChange(orientation === 'horizontal' ? 'justify' : 'align', value)}
+          />
+        </div>
+        <div className={styles.axis}>
+          <span className={styles.axis__label}>{orientation === 'horizontal' ? 'Cross' : 'Main'} axis</span>
+          <DropDown
+            options={ALIGN_VALUES}
+            defaultValue={orientation === 'horizontal' ? styleItem['align-items'] : styleItem['justify-content']}
+            value={orientation === 'horizontal' ? styleItem['align-items'] : styleItem['justify-content']}
+            onChange={(value) => onAlignChange(orientation === 'horizontal' ? 'align' : 'justify', value)}
+          />
         </div>
       </div>
-    )}
+  </div>
   </React.Fragment>
 ));

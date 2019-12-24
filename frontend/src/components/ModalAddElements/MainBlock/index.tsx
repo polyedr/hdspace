@@ -10,9 +10,10 @@ import { IUploadFile, UploadFile } from '$components/UI/UploadFile';
 import { MODAL_ADD_ELEMENTS_TABS } from '$constants/defaultParams';
 import { getGroupElements, IListCategoryEl, parseAddElementsTabs } from '$utils/parseScenario';
 import * as Actions from '$redux/project/actions';
+import { selectors } from '$redux/project';
 import { AppReduxState } from '$shared/types/app';
 
-const styles = require('./styles.scss');
+const styles = require('./ModalAddElements.scss');
 
 export interface IChooseElement {
   id: number;
@@ -22,8 +23,8 @@ export interface IChooseElement {
 
 function mapStateToProps(state: AppReduxState) {
   return {
-    uploadedImageInfo: state.project.uploadedImageInfo,
-    currentScreen: state.project.currentScreen,
+    uploadedImageInfo: selectors.selectUploadedImageInfo(state),
+    currentScreen: selectors.selectCurrentScreen(state),
   };
 }
 
@@ -102,7 +103,7 @@ const Component: React.FunctionComponent<Props> = memo((props) => {
     } else if (!chooseElements.length) {
       setErrorMsg('No items for the scenario.');
     } else {
-      const finalScenarioName = scenarioName.trim() || 'Scenario name';
+      const finalScenarioName = scenarioName.trim() || 'Container';
       const finalScenarioTypeID = scenarioTypeId === null ? null : Number(scenarioTypeId);
 
       setErrorMsg('');
@@ -235,19 +236,6 @@ const Component: React.FunctionComponent<Props> = memo((props) => {
           <Button type="submit">
             Approve
           </Button>
-          {
-            activeTab === 'Screen' && (
-              <React.Fragment>
-                <p className={styles.modalTextDelimiter}>or</p>
-                <Button
-                  styleType="secondary"
-                  onClick={handleCancel}
-                >
-                  Use Сhatbot Assistant
-                </Button>
-              </React.Fragment>
-            )
-          }
         </div>
       </form>
     </div>

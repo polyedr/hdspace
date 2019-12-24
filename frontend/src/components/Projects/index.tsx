@@ -5,13 +5,13 @@ import * as R from 'ramda';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 
-import { IListProject } from '$redux/project/reducer';
+import { IListProject } from '$redux/project/types';
 import * as Actions from '$redux/project/actions';
 import { Button } from '$components/UI/Button';
 import { Modal } from '$components/UI/Modal';
 import { Icon } from '$components/UI/Icon';
 
-const styles = require('./styles.scss');
+const styles = require('./Projects.scss');
 
 interface IProjectsProps {
   listProject: IListProject[],
@@ -100,13 +100,6 @@ export const Projects: React.FunctionComponent<IProjectsProps> = memo(({
       <div className={styles.projectsWrapper}>
         <div className={styles.projectsHeader}>
           <Button
-            onClick={handleCart}
-            className={styles.projectsHeaderBtn}
-          >
-            <Icon icon="cart" size={18} />
-            <span>Your Cart</span>
-          </Button>
-          <Button
             onClick={handleProjectAdd}
             className={styles.projectsHeaderBtn}
           >
@@ -114,18 +107,6 @@ export const Projects: React.FunctionComponent<IProjectsProps> = memo(({
           </Button>
         </div>
         <div className={styles.projectsMainBlock}>
-          <div className={styles.projectsSearch}>
-            <input
-              className={styles.projectsSearchField}
-              type="text"
-              value={search}
-              onChange={changeSearch}
-              placeholder="Search project..."
-            />
-            <Button onClick={console.log}>
-              Go!
-            </Button>
-          </div>
           { listProject.length !== 0 && (
           <table
             className={classNames(styles.projectsContentTable, 'showAnimation')}
@@ -180,23 +161,9 @@ export const Projects: React.FunctionComponent<IProjectsProps> = memo(({
                       <Button
                         className={styles.tableBtn}
                         styleType="none"
-                        onClick={() => paymentProject(item.id)}
-                      >
-                        <Icon icon="card" size={20} />
-                      </Button>
-                      <Button
-                        className={styles.tableBtn}
-                        styleType="none"
                         onClick={() => handleDeleteProject(item)}
                       >
                         <Icon icon="delete" size={20} />
-                      </Button>
-                      <Button
-                        className={styles.tableBtn}
-                        styleType="none"
-                        onClick={() => downloadProject(item.id)}
-                      >
-                        <Icon icon="cloud-upload" size={20} />
                       </Button>
                     </td>
                   </tr>
@@ -205,11 +172,6 @@ export const Projects: React.FunctionComponent<IProjectsProps> = memo(({
             </tbody>
           </table>
           )}
-        </div>
-        <div className={styles.actions}>
-          <Button onClick={paymentProjectAll}>
-            Checkout all selected projects
-          </Button>
         </div>
       </div>
       { modalRenameProjectOpen && (
