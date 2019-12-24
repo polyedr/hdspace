@@ -170,7 +170,7 @@ WSGI_APPLICATION = "project.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
-
+'''
 DATABASES = {
     'default': {
         'ENGINE': 'djongo',
@@ -181,6 +181,21 @@ DATABASES = {
         # 'PASSWORD': ENV.str("DB_PASSWORD"),
     }
 }
+'''
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'adevi_db',
+        'USER': 'adevi_user',
+        'PASSWORD': 'B7.d=$[',
+        'HOST': '127.0.0.1',
+        'PORT': '5432',
+
+    }
+}
+
+
 
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
