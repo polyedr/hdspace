@@ -183,6 +183,17 @@ export const DEFAULT_LIB_ELEMENTS = {
     },
     styles: {},
   },
+  username: {
+    struct_type: 'textinput',
+    func_type: 'username',
+    func_type_human: 'User name',
+    buoyancy: 65,
+    parameters: {
+      group: 'input',
+      placeholder: 'username',
+    },
+    styles: {},
+  },
   password: {
     struct_type: 'textinput',
     func_type: 'password',

@@ -229,6 +229,9 @@ const renderElem: Renderer = ({
     case 'text_description':
       return renderText({ id, style, params, sortableId });
 
+    case 'input_username':
+      return renderInput({ id, style, params: { ...params, placeholder: 'username' }, sortableId });
+
     case 'input_firstname':
       return renderInput({ id, style, params: { ...params, placeholder: 'firstname' }, sortableId });
 
