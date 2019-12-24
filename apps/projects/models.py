@@ -415,6 +415,7 @@ class ScenarioElement(TimeStampedModel):
     EMAIL = "email"
     FIRSTNAME = "firstname"
     LASTNAME = "lastname"
+    USERNAME = "username"
     END_COMPOSITE_SCENARIO = "end_composite_scenario"
     END_SIMPLE_SCENARIO = "end_simple_scenario"
     TITLE = "title"
@@ -433,6 +434,7 @@ class ScenarioElement(TimeStampedModel):
         (EMAIL, "email"),
         (FIRSTNAME, "firstname"),
         (LASTNAME, "lastname"),
+        (USERNAME, "username"),
         (END_COMPOSITE_SCENARIO, "end_composite_scenario"),
         (END_SIMPLE_SCENARIO, "end_simple_scenario"),
         (TITLE, "title"),
