@@ -1,6 +1,5 @@
 from rest_framework import serializers
-from apps.projects.models import ScreenScenario, ScenarioElement
-
+from apps.projects.models import ScreenScenario
 
 
 class ScreenScenarioSerializer(serializers.ModelSerializer):

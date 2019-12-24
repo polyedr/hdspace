@@ -1,16 +1,9 @@
 """Views for the projects api"""
-from rest_framework.authentication import BasicAuthentication, SessionAuthentication
-from rest_framework.filters import OrderingFilter, BaseFilterBackend
-from django_filters.rest_framework import DjangoFilterBackend, FilterSet
-from rest_framework import generics, viewsets, status, request, permissions
-from rest_framework.generics import get_object_or_404
+from rest_framework import generics, viewsets, permissions
 from rest_framework.response import Response
 from rest_framework_bulk import ListBulkCreateUpdateDestroyAPIView, BulkModelViewSet
-from rest_framework.decorators import permission_classes
 from rest_framework.permissions import IsAuthenticated
-from rest_framework_simplejwt import authentication
 
-from apps.projects import models
 from .models import (
     Project,
     ProjectMember,
@@ -25,7 +18,6 @@ from .models import (
     Comment,
     ScreenScenario,
     ScenarioElement,
-    Element,
     elements,
     scenarios,
 )
@@ -48,7 +40,6 @@ from .serializers import (
     ScenarioElementMultipleSerializer,
     ScreenScenarioMultipleSerializer,
     ProjectScreenMultipleSerializer,
-    ScreenScenarioCascadeSerializer,
 )
 
 
@@ -345,6 +336,7 @@ class ScreenScenarioMultipleView(ListBulkCreateUpdateDestroyAPIView):
     queryset = ScreenScenario.objects.all()
     serializer_class = ScreenScenarioMultipleSerializer
 
+
 # This should be updated
 class ScreenScenarioDestroyCascadeViewSet(BulkModelViewSet):
     serializer_class = ScreenScenarioMultipleSerializer
@@ -358,7 +350,7 @@ class ScreenScenarioDestroyCascadeViewSet(BulkModelViewSet):
             print("ids", ids_list)
             # return qs.filter((id__in=ids_list) )
             # return qs.filter((id__in=ids_list) )
-            return qs.filter(id__in = ids_list)
+            return qs.filter(id__in=ids_list)
             # Check for parent_id only
             # return qs.filter(self.kwargs['parent_id'] in ids_list)
         else:
