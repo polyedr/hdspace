@@ -1,5 +1,6 @@
 import copy
 import re
+
 from project.settings import model, MEDIA_ROOT
 from rest_framework import serializers
 from apps.projects.models import ScenarioElement, ScreenScenario
@@ -135,9 +136,9 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         scenario_data = {
-            "name": "Root",
+            "name": "scenario_general",
             "type": "login",
-            "struct_type": "scenario",
+            "struct_type": "container",
             "parameters": {},
             "parent_id": -1,
         }
@@ -147,6 +148,17 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
         These elements are obtained from CNN OCR.
         """
         screen = validated_data["screen"]
+
+        # Root scenario assignment
+        r_scenario = ScreenScenario.objects.filter(
+            screen=screen, parent_id=-1
+        ).first()
+
+        if r_scenario:
+            scenario_data["parent_id"] = r_scenario.pk
+        else:
+            scenario_data["name"] = "Root"
+            scenario_data["struct_type"] = "scenario"
 
         imgpath = ""
         if validated_data.get("image"):
