@@ -92,12 +92,14 @@ export const Editor: React.FC<IEditProps> = memo(({
   }, [screen.listSortable, scenarios, scenarioElements]);
 
   const handleRootClick = useCallback((event: React.MouseEvent) => {
-    const target = (event.target as HTMLElement)?.closest('[data-ls-id]');
+    const currentActiveElement = document.activeElement as HTMLElement;
+    const pressedItem = (event.target as HTMLElement)?.closest('[data-ls-id]') as HTMLElement;
 
-    if (!target) {
+    if (!pressedItem) {
       return;
     }
-    const itemID = (target as HTMLElement).dataset['lsId'];
+
+    const itemID = currentActiveElement.dataset['lsId'] || pressedItem.dataset['lsId'];
 
     if (itemID === activeItem.itemId) return;
 
@@ -243,19 +245,19 @@ export const Editor: React.FC<IEditProps> = memo(({
                     </Button>
                     {
                       (currentScreenMode.isTabletMode || currentScreenMode.isMobileMode) && (
-                      <Button
-                        className={classNames(
-                          'mainImgBtn',
-                          styles.navBarBtn,
-                          styles.rotateScreenBtn,
-                          isScreenRotated && styles.rotateScreenBtn_active,
-                        )}
-                        styleType="none"
-                        disabled={screenId === -1}
-                        onClick={handleChangeScreenRotate}
-                      >
-                        <Icon icon="screen-rotate" />
-                      </Button>
+                        <Button
+                          className={classNames(
+                            'mainImgBtn',
+                            styles.navBarBtn,
+                            styles.rotateScreenBtn,
+                            isScreenRotated && styles.rotateScreenBtn_active,
+                          )}
+                          styleType="none"
+                          disabled={screenId === -1}
+                          onClick={handleChangeScreenRotate}
+                        >
+                          <Icon icon="screen-rotate" />
+                        </Button>
                       )
                     }
                   </div>

@@ -200,6 +200,8 @@ export class DragResize extends React.Component<Props, State> {
 
   @autobind
   private handleDragStart(event: React.MouseEvent) {
+    event.preventDefault();
+
     const currentEvent = { ...event };
     const { style, sortableId } = this.props;
 
