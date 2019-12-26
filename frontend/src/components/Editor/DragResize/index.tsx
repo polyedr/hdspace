@@ -200,7 +200,7 @@ export class DragResize extends React.Component<Props, State> {
 
   @autobind
   private handleDragStart(event: React.MouseEvent) {
-    event.preventDefault();
+    event.preventDefault(); // when clicking on wrappers added by DragResize, focus moved from focused element (child) to nearest interactive one. event.preventDefault prevents focus from losing https://javascript.info/focus-blur#methods-focus-blur
 
     const currentEvent = { ...event };
     const { style, sortableId } = this.props;
@@ -215,7 +215,7 @@ export class DragResize extends React.Component<Props, State> {
         const indentBottom: number = R.path(['indents', 'padding-bottom'], style) || 0;
         const newWidth = offsetWidth - indentLeft - indentRight;
         const newHeight = offsetHeight - indentTop - indentBottom;
-  
+
         this.setState({ width: newWidth, height: newHeight });
       }
     }

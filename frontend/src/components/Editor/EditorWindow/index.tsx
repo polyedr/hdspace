@@ -92,14 +92,16 @@ export const Editor: React.FC<IEditProps> = memo(({
   }, [screen.listSortable, scenarios, scenarioElements]);
 
   const handleRootClick = useCallback((event: React.MouseEvent) => {
-    const currentActiveElement = document.activeElement as HTMLElement;
-    const pressedItem = (event.target as HTMLElement)?.closest('[data-ls-id]') as HTMLElement;
+    const target = (event.target as HTMLElement)?.closest('[data-ls-id]') as HTMLElement;
 
-    if (!pressedItem) {
-      return;
-    }
+    if (!target) return;
 
-    const itemID = currentActiveElement.dataset['lsId'] || pressedItem.dataset['lsId'];
+    const currentActiveElement = (document.activeElement as HTMLElement)?.closest('[data-ls-id]');
+    const mouseUpTriggeredClick = currentActiveElement !== target;
+
+    if (mouseUpTriggeredClick) return;
+
+    const itemID = target.dataset['lsId'];
 
     if (itemID === activeItem.itemId) return;
 
@@ -316,6 +318,7 @@ export const Editor: React.FC<IEditProps> = memo(({
                   )}
                   // data-ls-id={`${screen.listSortable.root.id}s`}
                   data-ls-id="root"
+                  tabIndex={0}
                 >
                   <div
                     className={classNames(
