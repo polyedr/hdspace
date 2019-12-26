@@ -63,7 +63,7 @@ const RecursiveComponent: React.FC<Props> = (props) => {
     onActiveElementChange,
     onChange,
     setIsMoving,
-  
+
     listSortable,
     elementList,
     scenarioList,
