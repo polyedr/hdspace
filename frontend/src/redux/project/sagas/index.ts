@@ -6,7 +6,9 @@ import {
   take,
   select,
   fork,
+  actionChannel,
 } from 'redux-saga/effects';
+import { buffers } from 'redux-saga';
 import * as R from 'ramda';
 import { REHYDRATE } from 'redux-persist';
 import { LOCATION_CHANGE, LocationChangeAction } from 'connected-react-router';
@@ -48,7 +50,7 @@ import {
 import * as ProjectT from '$redux/project/types';
 import * as PATH_NAMES from '$constants/pathNames';
 import { DEFAULT_AUTHORISATION_TOKEN } from '$constants/defaultParams';
-import { apiSaveScenarios } from '$api/scenario';
+import { apiSaveScenarios, apiSaveScenario } from '$api/scenario';
 
 import { selectors, T } from '../';
 
@@ -292,6 +294,44 @@ function* updateScenarioStyles(action: ReturnType<typeof Actions.updateScenarioS
   yield put(Actions.setScenarios(updateScenarios));
 }
 
+// TODO: make one saga to update scenario/element
+function* updateScenarioStylesOnServer(action: ReturnType<typeof Actions.updateScenarioStyles>) {
+  const { id, styles } = action.payload;
+  const scenarioID = parseInt(id, 10);
+  const scenarioToUpdate: ReturnType<typeof selectors.selectScenario> = yield select(selectors.selectScenario, scenarioID);
+
+  yield call(
+    reqWrapper, apiSaveScenario,
+    { data: { ...scenarioToUpdate, styles: { ...scenarioToUpdate.styles, ...styles } } },
+  );
+}
+
+function* updateElementStylesOnServer(action: ReturnType<typeof Actions.updateElementStyles>) {
+  const { id, styles } = action.payload;
+  const elementID = parseInt(id, 10);
+  const elementToUpdate: ReturnType<typeof selectors.selectScenarioElement> = yield select(
+    selectors.selectScenarioElement, elementID,
+  );
+
+  yield call(
+    updateElementsOnServerSaga,
+    { [elementID]: { ...elementToUpdate, styles: { ...elementToUpdate.styles, ...styles }} },
+  );
+}
+
+function* updateElementParametersOnServer(action: ReturnType<typeof Actions.updateElementParameters>) {
+  const { itemID, parameters } = action.payload;
+  const elementID = parseInt(itemID, 10);
+  const elementToUpdate: ReturnType<typeof selectors.selectScenarioElement> = yield select(
+    selectors.selectScenarioElement, elementID,
+  );
+
+  yield call(
+    updateElementsOnServerSaga,
+    { [elementID]: { ...elementToUpdate, parameters: { ...elementToUpdate.parameters, ...parameters }} },
+  );
+}
+
 function* updateElementStyles(action: ReturnType<typeof Actions.updateElementStyles>) {
   const { id, styles } = action.payload;
   const scenarioElements: ReturnType<typeof selectors.selectScenariosElements> = yield select(
@@ -436,6 +476,7 @@ const changeElementTypeType: ProjectT.ChangeElementType['type'] = 'PROJECTS:CHAN
 const uploadFileType: ProjectT.UploadFile['type'] = 'PROJECTS:UPLOAD_FILE';
 const getScreenNNType: ProjectT.GetScreenNN['type'] = 'PROJECTS:GET_SCREEN_NN';
 const runLayoutAlgorithmType: ProjectT.RunLayoutAlgorithm['type'] = 'PROJECTS:RUN_LAYOUT_ALGORITHM';
+type ActionsToAutoSave = ProjectT.UpdateScenarioStyles | ProjectT.UpdateElementStyles | ProjectT.UpdateElementParameters;
 
 
 export default function* projectSaga() {
@@ -472,4 +513,20 @@ export default function* projectSaga() {
 
   yield takeLatest(uploadFileType, uploadFileSaga);
   yield takeLatest(getScreenNNType, screenSaga.getScreenNNSaga);
+
+  const channel = yield actionChannel([
+    updateScenarioStylesType,
+    updateElementStylesType,
+    updateElementParametersType,
+  ], buffers.expanding());
+  while (true) {
+    const action: ActionsToAutoSave = yield take(channel);
+    if (action.type === updateScenarioStylesType) {
+      yield call(updateScenarioStylesOnServer, action);
+    } else if (action.type === updateElementStylesType) {
+      yield call(updateElementStylesOnServer, action);
+    } else if (action.type === updateElementParametersType) {
+      yield call(updateElementParametersOnServer, action);
+    }
+  }
 }
