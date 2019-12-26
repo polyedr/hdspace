@@ -233,16 +233,6 @@ export class DragResize extends React.Component<Props, State> {
   };
 
   @autobind
-  private handleMouseOver(event: React.MouseEvent) {
-    (event.target as HTMLElement)?.closest?.('.addedItem')?.classList.add('hovered');
-  };
-
-  @autobind
-  private handleMouseOut(event: React.MouseEvent) {
-    (event.target as HTMLElement)?.closest?.('.addedItem')?.classList.remove('hovered');
-  };
-
-  @autobind
   private handleResizeControllerMouseEnter() {
     const { setIsMoving } = this.props;
     setIsMoving(false);
@@ -304,8 +294,6 @@ export class DragResize extends React.Component<Props, State> {
               // width: (width && width - deltaX) || 'auto',
               // height: (height && height - deltaY) || 'auto',
             },
-            onMouseOver: this.handleMouseOver,
-            onMouseOut: this.handleMouseOut,
           },
         )}
         {isDraggable && (

@@ -54,6 +54,8 @@ export function* activateScreenSaga({ payload }: ReturnType<typeof activateScree
 
   yield put(setScreenLoader(true));
 
+  yield put(setActiveItem(DEFAULT_ACTIVE_ITEM));
+
   const screen: ReturnPromisedType<typeof apiGetScreen> = yield call(reqWrapper, apiGetScreen, { id: screenID });
 
   if (!screen) return;
@@ -62,8 +64,6 @@ export function* activateScreenSaga({ payload }: ReturnType<typeof activateScree
     ...DEFAULT_SCREEN,
     ...R.omit(['screen_data_text'], screen),
   };
-  yield put(setActiveItem(DEFAULT_ACTIVE_ITEM))
-
   yield put(setScreen(screenToActivate));
 
   yield put(Actions.setScenarioLoader(true));
