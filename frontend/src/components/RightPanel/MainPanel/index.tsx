@@ -29,7 +29,6 @@ const mapStateToProps = (state: AppReduxState) => ({
 });
 
 const mapDispatchToProps = {
-  setAlign: Actions.setAlign,
   updateElementStyles: Actions.updateElementStyles,
   updateScenarioStyles: Actions.updateScenarioStyles,
   updateElementParameters: Actions.updateElementParameters,
@@ -65,7 +64,6 @@ const Component: React.FunctionComponent<IRightPanelProps> = ({
 
   addScenario,
   addContainer,
-  setAlign,
   updateElementStyles,
   updateScenarioStyles,
   updateElementParameters,

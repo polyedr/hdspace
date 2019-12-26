@@ -16,7 +16,6 @@ import {
   apiDelProject,
   apiGetProject,
   apiSaveProject,
-  apiSaveScreens,
 } from '$api/project';
 import { DEFAULT_SCREEN } from '$constants/defaultParams';
 import { reqWrapper } from '$redux/project/sagas/index';

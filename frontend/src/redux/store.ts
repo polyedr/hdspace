@@ -48,7 +48,7 @@ export const store = createStore(
 
 export function configureStore(): { store: Store<any>, persistor: Persistor } {
   sagaMiddleware.run(userSaga);
-  sagaMiddleware.run(projectSaga);
+  sagaMiddleware.run(projectSaga as any); // TODO: type action types!
 
   const persistor = persistStore(store);
 
