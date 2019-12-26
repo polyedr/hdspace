@@ -119,6 +119,14 @@ export const Editor: React.FC<IEditProps> = memo(({
     }
   }, [activeItem, screen.listSortable, scenarios, scenarioElements]);
 
+  const handleContainerMouseOver = useCallback((event: React.MouseEvent) => {
+    (event.target as HTMLElement)?.closest?.('.ls-container')?.classList.add('hovered');
+  }, []);
+
+  const handleContainerMouseOut = useCallback((event: React.MouseEvent) => {
+    (event.target as HTMLElement)?.closest?.('.ls-container')?.classList.remove('hovered');
+  }, []);
+
   const handleDelScenarioItem = useCallback(() => {
     if (['root', 'none'].includes(activeItem.itemType)) return;
     if (document.activeElement?.getAttribute('data-ls-id') !== activeItem.itemId) return;
@@ -200,7 +208,6 @@ export const Editor: React.FC<IEditProps> = memo(({
         isNavPanelMinimized && styles.editorContainer_minimized,
         screenId === -1 && styles.editorContainer_hide,
       )}
-      onClick={handleRootClick}
     >
       {
         screen && R.hasPath(['listSortable', 'root'], screen) && (
@@ -319,6 +326,9 @@ export const Editor: React.FC<IEditProps> = memo(({
                   // data-ls-id={`${screen.listSortable.root.id}s`}
                   data-ls-id="root"
                   tabIndex={0}
+                  onClick={handleRootClick}
+                  onMouseOver={handleContainerMouseOver}
+                  onMouseOut={handleContainerMouseOut}
                 >
                   <div
                     className={classNames(
