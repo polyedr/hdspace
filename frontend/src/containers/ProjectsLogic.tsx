@@ -1,6 +1,5 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { hot } from 'react-hot-loader';
 
 import { AppReduxState } from '$shared/types/app';
 import * as Actions from '$redux/project/actions';
