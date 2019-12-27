@@ -17,13 +17,14 @@ import {
   setModifyElements,
   setLoader,
   updateViewTree,
+  setActiveItem,
 } from '$redux/project/actions';
 import * as Actions from '$redux/project/actions';
 import {
   convertScenarios,
   convertScenarioElements,
 } from '$utils/parseScenario';
-import { DEFAULT_LS, DEFAULT_SCREEN } from '$constants/defaultParams';
+import { DEFAULT_LS, DEFAULT_SCREEN, DEFAULT_ACTIVE_ITEM } from '$constants/defaultParams';
 import {
   IProject,
   IProjectScreen,
@@ -52,6 +53,8 @@ export function* activateScreenSaga({ payload }: ReturnType<typeof activateScree
   const { screenID } = payload;
 
   yield put(setScreenLoader(true));
+
+  yield put(setActiveItem(DEFAULT_ACTIVE_ITEM));
 
   const screen: ReturnPromisedType<typeof apiGetScreen> = yield call(reqWrapper, apiGetScreen, { id: screenID });
 
@@ -82,8 +85,8 @@ export function* activateScreenSaga({ payload }: ReturnType<typeof activateScree
   const scenariosIDs = Object.keys(screenScenarios);
 
   const serverScenariosElements: ReturnPromisedType<typeof apiGetElements> = scenariosIDs.length > 0
-  ? yield call(reqWrapper, apiGetElements, { scenariosIDs })
-  : [];
+    ? yield call(reqWrapper, apiGetElements, { scenariosIDs })
+    : [];
 
   if (!serverScenariosElements) return;
 
