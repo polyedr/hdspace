@@ -42,9 +42,7 @@ export const UploadFile: React.FunctionComponent<IUploadImagesProps> = memo(({
       
     //   uploadFile({ file, imgPreviewUrl: reader.result });
     // };
-    if (reader.result !== null) {
-      uploadFile({ file, imgPreviewUrl: reader.result });
-    }
+    uploadFile({ file, imgPreviewUrl: reader.result || undefined });
     // reader.readAsDataURL(file);
   }, [format, uploadFile]);
 

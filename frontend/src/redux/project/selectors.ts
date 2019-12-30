@@ -13,6 +13,11 @@ export function selectScenarios(state: AppReduxState) {
 
 export function selectScenario(state: AppReduxState, id: number) {
   return selectFeatureState(state).edit.scenarios[id];
+}
+
+export function selectRootScenario(state: AppReduxState) {
+  const scenarios = selectFeatureState(state).edit.scenarios;
+  return Object.values(scenarios).find(x => x.parent_id === -1);
 };
 
 export function selectScenariosElements(state: AppReduxState) {

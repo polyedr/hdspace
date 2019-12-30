@@ -83,3 +83,13 @@ export const uploadImageForNN = ({ screenID, ...props}: MyAxiosProps & { screenI
     .then(parseResult)
     .catch(onError)
 );
+
+export const parseImgUsingNN = ({ screenID, ...props}: MyAxiosProps & { screenID: string }) => (
+  myAxios({
+    ...props,
+    method: 'POST',
+    url: `/virtualize_simple/virtualize-simple/`,
+  })
+    .then(parseResult)
+    .catch(onError)
+);
