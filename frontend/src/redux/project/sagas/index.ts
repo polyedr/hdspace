@@ -437,6 +437,7 @@ function* uploadFileSaga(
   { payload: { file: { file } } }: ReturnType<typeof Actions.uploadFile>
 ) {
   try {
+    // TODO: show loader in addModalElements
     const currentScreen: ReturnType<typeof selectors.selectCurrentScreen> = yield select(
       selectors.selectCurrentScreen,
     );
@@ -564,6 +565,7 @@ function* uploadFileSaga(
       children: finalRootScenario.parameters.children,
     }));
     yield take(runLayoutAlgorithmFinishedType);
+    yield put(Actions.setIsAddElementsModalOpened(false));
 
     yield call(
       reqWrapper, apiSaveElements,

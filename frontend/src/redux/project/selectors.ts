@@ -36,6 +36,10 @@ export function selectCurrentScreen(state: AppReduxState) {
   return selectFeatureState(state).edit.currentScreen;
 };
 
+export function selectIsAddElementsModalOpened(state: AppReduxState) {
+  return selectFeatureState(state).ui.isAddElementsModalOpened;
+};
+
 export function selectLibraryElements(state: AppReduxState) {
   return selectFeatureState(state).data.libraryElements;
 };

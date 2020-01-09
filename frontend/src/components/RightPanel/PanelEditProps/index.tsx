@@ -39,6 +39,8 @@ export interface IPanelEditProps {
   updateScenarioStyles: IRightPanelProps['updateScenarioStyles'],
   updateElementParameters: IRightPanelProps['updateElementParameters'],
   changeElementType: IRightPanelProps['changeElementType'],
+  isAddElementsModalOpened: boolean;
+  setIsAddElementsModalOpened(isOpened: boolean): void;
 }
 
 export const PanelEditProps: React.FunctionComponent<IPanelEditProps> = ({
@@ -62,6 +64,9 @@ export const PanelEditProps: React.FunctionComponent<IPanelEditProps> = ({
   addContainer,
   changeScenario,
   changeElementType,
+
+  isAddElementsModalOpened,
+  setIsAddElementsModalOpened,
 }) => {
   const activeItemID = activeItem.itemType === 'root' ? 'root' : activeItem.itemId;
   const currentItem = R.prop(activeItemID, listSortable);
@@ -76,6 +81,8 @@ export const PanelEditProps: React.FunctionComponent<IPanelEditProps> = ({
         libraryElements={libraryElements}
         addScenario={addScenario}
         addContainer={addContainer}
+        isAddElementsModalOpened={isAddElementsModalOpened}
+        setIsAddElementsModalOpened={setIsAddElementsModalOpened}
       />
       {
         activeItem.itemType !== 'none' && (
