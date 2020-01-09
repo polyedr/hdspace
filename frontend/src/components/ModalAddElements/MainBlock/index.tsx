@@ -190,6 +190,9 @@ const Component: React.FunctionComponent<Props> = memo((props) => {
                   </li>
                 </ul>
               </div>
+              <div>
+                Image is processed,  The result of processing will be added automatically on the screen.
+              </div>
               {imageURLToAccess && (
                 <div>Current screen has screenshot and you can access it by
                   <a target="_blank" href={imageURLToAccess}>this link</a>.

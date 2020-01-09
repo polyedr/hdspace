@@ -18,6 +18,10 @@ export function uiReducer(state: T.ReduxState['ui'] = initial.ui, action: T.Acti
       };
     }
 
+    case 'PROJECTS:SET_IS_ADD_ELEMENTS_MODAL_OPENED': {
+      return { ...state, isAddElementsModalOpened: action.payload.isOpened };
+    }
+
     default: return state;
   }
 }

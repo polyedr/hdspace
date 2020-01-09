@@ -19,6 +19,8 @@ interface IComponentProps {
   libraryElements: IRightPanelProps['libraryElements'],
   addScenario: IRightPanelProps['addScenario'],
   addContainer: IRightPanelProps['addContainer'],
+  isAddElementsModalOpened: boolean;
+  setIsAddElementsModalOpened(isOpened: boolean): void;
 }
 
 export const ActiveElementBlock: React.FunctionComponent<IComponentProps> = memo((props) => {
@@ -30,18 +32,19 @@ export const ActiveElementBlock: React.FunctionComponent<IComponentProps> = memo
     libraryElements,
     addScenario,
     addContainer,
+    isAddElementsModalOpened,
+    setIsAddElementsModalOpened,
   } = props;
-  const [activeModal, setActiveModal] = useState<boolean>(false);
   const [modalDeleteElementOpen, setModalDeleteElementOpen] = useState<boolean>(false);
 
   const closeModal = useCallback(() => {
-    setActiveModal(false);
+    setIsAddElementsModalOpened(false);
     setModalDeleteElementOpen(false);
   }, []);
 
   const showModalAddElements = useCallback(() => {
-    setActiveModal(true);
-  }, [setActiveModal]);
+    setIsAddElementsModalOpened(true);
+  }, []);
 
   const handleDeleteElement = useCallback(() => {
     setModalDeleteElementOpen(true);
@@ -101,7 +104,7 @@ export const ActiveElementBlock: React.FunctionComponent<IComponentProps> = memo
         </div>
       </div>
       <ModalAddElements
-        active={activeModal}
+        active={isAddElementsModalOpened}
         scenarios={scenarios}
         libraryElements={libraryElements}
         onClose={closeModal}
