@@ -5,10 +5,10 @@ import { Icon } from '$components/UI/Icon/';
 import { Button } from '$components/UI/Button/';
 import { Modal } from '$components/UI/Modal/';
 import { ModalAddElements } from '$components/ModalAddElements/MainBlock/';
-import { IPanelEditProps } from '$components/RightPanel/PanelEditProps';
-import { IRightPanelProps } from '$components/RightPanel/MainPanel/';
 import { NavigateItem } from '$components/Editor/NavigateItem/';
 
+import { IPanelEditProps } from '../PanelEditProps';
+import { IRightPanelProps } from '../MainPanel/';
 const styles = require('./styles.scss');
 
 interface IComponentProps {

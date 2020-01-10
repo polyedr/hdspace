@@ -4,7 +4,7 @@ import classNames from 'classnames';
 
 import { Button } from '$components/UI/Button';
 import { Icon } from '$components/UI/Icon';
-import { IPanelEditProps } from '$components/RightPanel/PanelEditProps';
+import { IPanelEditProps } from '$features/applyProperties';
 import { ActionsBlock } from '$components/ModalAddElements/ActionsBlock';
 import { IUploadFile, UploadFile } from '$components/UI/UploadFile';
 import { MODAL_ADD_ELEMENTS_TABS } from '$constants/defaultParams';

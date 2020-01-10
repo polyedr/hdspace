@@ -4,20 +4,21 @@ import * as R from 'ramda';
 import { IScreenProps, IListSortable } from '$redux/project/types';
 import { getOptionsOfListScenario } from '$utils/parseScenario';
 import { elementTypes } from '$constants/menu';
-import { ActiveElementBlock } from '$components/RightPanel/ActiveElementBlock';
-import { ScenarioBlock } from '$components/RightPanel/ChangeScenarioBlock';
-import { GroupElementsDirectionBlock } from '$components/RightPanel/GroupElementsDirectionBlock';
-import { ActionBlock } from '$components/RightPanel/ActionBlock';
-import { DifferentSettingsBlock } from '$components/RightPanel/DifferentSettingsBlock';
 import { EditorProps } from '$containers/EditorLogic';
-import { IRightPanelProps } from '$components/RightPanel/MainPanel';
 import { LIST_SCENARIO_TYPE } from '$constants/defaultParams';
-import { SizeBlock } from '$components/RightPanel/SizeBlock';
-import { IndentsBlock } from '$components/RightPanel/IndentsBlock';
-import { BackgroundBlock } from '$components/RightPanel/BackgroundBlock';
-import { BorderBlock } from '$components/RightPanel/BorderBlock';
-import { TypographyBlock } from '$components/RightPanel/TypographyBlock';
 import { CssLikeStyles } from '$utils/StyleHelper';
+
+import { ActiveElementBlock } from '../ActiveElementBlock';
+import { ScenarioBlock } from '../ChangeScenarioBlock';
+import { GroupElementsDirectionBlock } from '../GroupElementsDirectionBlock';
+import { ActionBlock } from '../ActionBlock';
+import { DifferentSettingsBlock } from '../DifferentSettingsBlock';
+import { IRightPanelProps } from '../MainPanel';
+import { SizeBlock } from '../SizeBlock';
+import { IndentsBlock } from '../IndentsBlock';
+import { BackgroundBlock } from '../BackgroundBlock';
+import { BorderBlock } from '../BorderBlock';
+import { TypographyBlock } from '../TypographyBlock';
 
 export interface IPanelEditProps {
   project: EditorProps['currentProject'],

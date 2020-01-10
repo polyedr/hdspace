@@ -5,9 +5,10 @@ import React, {
 } from 'react';
 
 import { T as ProjectT } from '$redux/project';
-import { IPanelEditProps } from '$components/RightPanel/PanelEditProps';
 import { ColorPicker } from '$components/UI/ColorPicker/';
 import { LIST_SCENARIO_TYPE, DEFAULT_BACKGROUND } from '$constants/defaultParams';
+
+import { IPanelEditProps } from '../PanelEditProps';
 
 interface IComponentProps {
   activeItem: ProjectT.ActiveItem,

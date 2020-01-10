@@ -8,14 +8,14 @@ import * as Actions from '$redux/project/actions';
 import { IProjectScreen } from '$redux/project/types';
 import { selectors } from '$redux/project';
 import { Scrollbar } from '$components/UI/Scrollbar/';
-import { PanelEditProps } from '$components/RightPanel/PanelEditProps';
-import { ScenarioList } from '$components/RightPanel/ScenarioList';
 import { T as ProjectT } from '$redux/project';
 import { EditorProps } from '$containers/EditorLogic';
 import { LIST_SCENARIO_TYPE } from '$constants/defaultParams';
 
 import { Spinner } from '$components/UI/Spinner/';
 
+import { PanelEditProps } from '../PanelEditProps';
+import { ScenarioList } from '../ScenarioList';
 const styles = require('./RightPanel.scss');
 
 const isScenario = (activeItem: ProjectT.ActiveItem) => LIST_SCENARIO_TYPE.indexOf(activeItem.itemType) !== -1;

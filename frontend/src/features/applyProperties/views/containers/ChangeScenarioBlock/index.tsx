@@ -3,9 +3,9 @@ import classNames from 'classnames';
 
 import { DropDown } from '$components/UI/DropDown/';
 import * as UTILS from '$utils/parseScenario';
-import { IPanelEditProps } from '$components/RightPanel/PanelEditProps';
 import { LIST_SCENARIO_TYPE } from '$constants/defaultParams';
 
+import { IPanelEditProps } from '../PanelEditProps';
 const styles = require('./styles.scss');
 
 interface IComponentProps {

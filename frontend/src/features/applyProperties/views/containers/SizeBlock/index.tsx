@@ -1,10 +1,10 @@
 import React, { useCallback, memo } from 'react';
 import * as R from 'ramda';
 
-import { IPanelEditProps } from '$components/RightPanel/PanelEditProps';
 import { LIST_SCENARIO_TYPE } from '$constants/defaultParams';
 import { safeParseFloat } from '$utils/NumberHelper';
 
+import { IPanelEditProps } from '../PanelEditProps';
 const styles = require('./styles.scss');
 
 const getLastChar = (value?: string | number): string => {

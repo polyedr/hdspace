@@ -12,11 +12,11 @@ import {
   MIN_BORDER_WIDTH,
   DEFAULT_BORDER,
 } from '$constants/defaultParams';
-import { IPanelEditProps } from '$components/RightPanel/PanelEditProps';
 import { strToNumber, getPermissibleValue, safeParseFloat, safeMatch } from '$utils/NumberHelper';
 import { validBorderRadius, CssLikeStyles } from '$utils/StyleHelper';
 import { ColorPicker } from '$components/UI/ColorPicker/';
 
+import { IPanelEditProps } from '../PanelEditProps';
 const styles = require('./styles.scss');
 
 const accessBorderRadius = (styleItem: CssLikeStyles) => {

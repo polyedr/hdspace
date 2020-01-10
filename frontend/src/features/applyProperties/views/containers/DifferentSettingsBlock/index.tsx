@@ -13,10 +13,10 @@ import {
   MIN_MAP_ZOOM,
   MAX_MAP_ZOOM,
 } from '$constants/defaultParams';
-import { IPanelEditProps } from '$components/RightPanel/PanelEditProps';
 import { IMapProps } from '$redux/project/types';
 import { getPermissibleValue } from '$utils/NumberHelper';
 
+import { IPanelEditProps } from '../PanelEditProps';
 const styles = require('./styles.scss');
 
 const ZOOM_STEP = 0.5;

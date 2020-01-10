@@ -8,9 +8,9 @@ import classNames from 'classnames';
 import * as Actions from '$redux/project/actions';
 import { T as ProjectT } from '$redux/project';
 import { LIST_SCENARIO_TYPE } from '$constants/defaultParams';
-import { IPanelEditProps } from '$components/RightPanel/PanelEditProps';
 import { safeParseInt } from '$utils/NumberHelper';
 
+import { IPanelEditProps } from '../PanelEditProps';
 const styles = require('./styles.scss');
 
 const MIN_PADDING = 0;

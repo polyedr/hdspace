@@ -4,8 +4,8 @@ import { getOptionsOfNestedList } from '$utils/parseScenario';
 import { NestedList } from '$components/UI/NestedList/';
 import { Modal } from '$components/UI/Modal/';
 import { IScenarioElements } from '$redux/project/types';
-import { IRightPanelProps } from '$components/RightPanel/MainPanel/';
 
+import { IRightPanelProps } from '../MainPanel/';
 const styles = require('./styles.scss');
 
 interface IComponentProps {

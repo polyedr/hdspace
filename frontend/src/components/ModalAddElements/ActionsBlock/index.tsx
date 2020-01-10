@@ -8,7 +8,7 @@ import { Button } from '$components/UI/Button';
 import { Checkbox } from '$components/UI/Checkbox';
 import { DropDown } from '$components/UI/DropDown';
 import { Scrollbar } from '$components/UI/Scrollbar';
-import { IPanelEditProps } from '$components/RightPanel/PanelEditProps';
+import { IPanelEditProps } from '$features/applyProperties';
 import { IChooseElement, ScenarioStateType } from '$components/ModalAddElements/MainBlock';
 import {
   getCustomTemplateElements,

@@ -12,9 +12,9 @@ import { Button } from '$components/UI/Button/';
 import { FONTS } from '$constants/fonts';
 import { T as ProjectT } from '$redux/project';
 import { DEFAULT_TYPOGRAPHY, LIST_SCENARIO_TYPE } from '$constants/defaultParams';
-import { IPanelEditProps } from '$components/RightPanel/PanelEditProps';
 import { getPermissibleValue, safeParseFloat } from '$utils/NumberHelper';
 
+import { IPanelEditProps } from '../PanelEditProps';
 const styles = require('./styles.scss');
 
 const MIN_FONT_SIZE = 1;

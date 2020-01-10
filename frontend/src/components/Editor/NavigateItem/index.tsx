@@ -2,7 +2,7 @@ import React, { memo, useCallback } from 'react';
 import { T as ProjectT } from '$redux/project';
 import { Button } from '$components/UI/Button';
 import { Icon } from '$components/UI/Icon';
-import { IRightPanelProps } from '$components/RightPanel/MainPanel/';
+import { IRightPanelProps } from '$features/applyProperties';
 
 const styles = require('./NavigateItem.scss');
 

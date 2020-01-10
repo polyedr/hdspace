@@ -6,10 +6,10 @@ import { Icon } from '$components/UI/Icon/';
 import { Button } from '$components/UI/Button/';
 import { EditorProps } from '$containers/EditorLogic';
 import * as Actions from '$redux/project/actions';
-import { IPanelEditProps } from '$components/RightPanel/PanelEditProps';
 import { T as ProjectT } from '$redux/project';
 import { elementTypes } from '$constants/menu';
 
+import { IPanelEditProps } from '..//PanelEditProps';
 const styles = require('./styles.scss');
 
 interface IComponentProps {
