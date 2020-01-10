@@ -12,6 +12,7 @@ import { IApiResponseError, ITokenPair } from '$redux/user/reducer';
 // import { ITokenPair, IApiResponseError } from '$redux/user/reducer';
 // import { itemRoot } from '$utils/parseListItems';
 import { getDaysInMonth } from '$utils/NumberHelper';
+import { CssLikeStyles } from '$utils/StyleHelper';
 
 export interface ISignFormElement {
   label: string,
@@ -80,6 +81,13 @@ export const DEFAULT_INDENTS: IScreenIndents = {
   'padding-right': '5px',
   'padding-bottom': '5px',
   'padding-left': '5px',
+};
+
+export const DEFAULT_FLEX: CssLikeStyles = {
+  display: 'flex',
+  'flex-direction': 'column',
+  'justify-content': 'flex-start',
+  'align-items': 'center',
 };
 
 export const DEFAULT_BORDER: IScreenBorders = {
