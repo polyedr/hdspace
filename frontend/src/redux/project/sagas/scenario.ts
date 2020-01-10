@@ -18,7 +18,7 @@ import {
   apiSaveScenario,
   apiSaveScenarios,
 } from '$api/scenario';
-import { DEFAULT_INDENTS } from '$constants/defaultParams';
+import { DEFAULT_INDENTS, DEFAULT_FLEX } from '$constants/defaultParams';
 import { reqWrapper } from '$redux/project/sagas/index';
 import { ReturnPromisedType } from '$shared/types';
 import { isScenario } from '$utils/model';
@@ -108,6 +108,10 @@ export function* addScenarioSaga(action: ReturnType<typeof Actions.addScenario>)
   const container: T.IScenarioItem = yield call(createContainer, {
     parent_id: rootLSItem.id,
     name,
+    styles: {
+      ...DEFAULT_INDENTS,
+      ...DEFAULT_FLEX,
+    },
   });
 
   const elementsToCreate = elementsToFormScenario.reduce((acc: T.IScenarioElement[], element) => {

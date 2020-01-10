@@ -103,7 +103,7 @@ export const PanelEditProps: React.FunctionComponent<IPanelEditProps> = ({
               {currentItem && LIST_SCENARIO_TYPE.indexOf(currentItem.type) !== -1 && (
                 <GroupElementsDirectionBlock
                   styleItem={styleItem}
-                  orientation={orientation}
+                  orientation={orientation as ('vertical' | 'horizontal')}
                   params={params}
                   setOrientation={setOrientation}
                   onAlignChange={onAlign}

@@ -39,8 +39,14 @@
   }
 }
 
-.axis {
+.axises {
+  display: flex;
+  flex-direction: column;
   margin-bottom: 12px;
+
+  &_reversed {
+    flex-direction: column-reverse;
+  }
 
   &__label {
     display: inline-block;
