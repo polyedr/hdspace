@@ -170,7 +170,7 @@ export function* addScenarioSaga(action: ReturnType<typeof Actions.addScenario>)
     [updatedContainer.id]: finalContainer,
     ...R.omit(
       [finalRootScenario.id.toString(), updatedContainer.id.toString()],
-      screenScenarios.reduce((acc: T.IScenarios, x) => ({ ...acc, [x.id]: x} ), {})
+      screenScenarios.reduce((acc: T.IScenarios, x) => ({ ...acc, [x.id]: x }), {})
     ),
   };
 
