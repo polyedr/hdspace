@@ -16,7 +16,7 @@ import {
 import { IMapProps } from '$redux/project/types';
 import { getPermissibleValue } from '$utils/NumberHelper';
 
-import { IPanelEditProps } from '../PanelEditProps';
+import { IPanelEditProps } from '../../PanelEditProps';
 const styles = require('./styles.scss');
 
 const ZOOM_STEP = 0.5;

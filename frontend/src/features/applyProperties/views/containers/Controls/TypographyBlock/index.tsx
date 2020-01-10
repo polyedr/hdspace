@@ -14,7 +14,7 @@ import { T as ProjectT } from '$redux/project';
 import { DEFAULT_TYPOGRAPHY, LIST_SCENARIO_TYPE } from '$constants/defaultParams';
 import { getPermissibleValue, safeParseFloat } from '$utils/NumberHelper';
 
-import { IPanelEditProps } from '../PanelEditProps';
+import { IPanelEditProps } from '../../PanelEditProps';
 const styles = require('./styles.scss');
 
 const MIN_FONT_SIZE = 1;

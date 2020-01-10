@@ -8,17 +8,17 @@ import { EditorProps } from '$containers/EditorLogic';
 import { LIST_SCENARIO_TYPE } from '$constants/defaultParams';
 import { CssLikeStyles } from '$utils/StyleHelper';
 
-import { ActiveElementBlock } from '../ActiveElementBlock';
-import { ScenarioBlock } from '../ChangeScenarioBlock';
-import { GroupElementsDirectionBlock } from '../GroupElementsDirectionBlock';
-import { ActionBlock } from '../ActionBlock';
-import { DifferentSettingsBlock } from '../DifferentSettingsBlock';
+import { ActiveElementBlock } from '../Controls/ActiveElementBlock';
+import { ScenarioBlock } from '../Controls/ChangeScenarioBlock';
+import { GroupElementsDirectionBlock } from '../Controls/GroupElementsDirectionBlock';
+import { ActionBlock } from '../Controls/ActionBlock';
+import { DifferentSettingsBlock } from '../Controls/DifferentSettingsBlock';
 import { IRightPanelProps } from '../MainPanel';
-import { SizeBlock } from '../SizeBlock';
-import { IndentsBlock } from '../IndentsBlock';
-import { BackgroundBlock } from '../BackgroundBlock';
-import { BorderBlock } from '../BorderBlock';
-import { TypographyBlock } from '../TypographyBlock';
+import { SizeBlock } from '../Controls/SizeBlock';
+import { IndentsBlock } from '../Controls/IndentsBlock';
+import { BackgroundBlock } from '../Controls/BackgroundBlock';
+import { BorderBlock } from '../Controls/BorderBlock';
+import { TypographyBlock } from '../Controls/TypographyBlock';
 
 export interface IPanelEditProps {
   project: EditorProps['currentProject'],

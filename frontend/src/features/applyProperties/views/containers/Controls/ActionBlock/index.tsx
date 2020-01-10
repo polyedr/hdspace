@@ -9,7 +9,7 @@ import * as Actions from '$redux/project/actions';
 import { T as ProjectT } from '$redux/project';
 import { elementTypes } from '$constants/menu';
 
-import { IPanelEditProps } from '..//PanelEditProps';
+import { IPanelEditProps } from '../../PanelEditProps';
 const styles = require('./styles.scss');
 
 interface IComponentProps {

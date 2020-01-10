@@ -15,7 +15,7 @@ import { LIST_SCENARIO_TYPE } from '$constants/defaultParams';
 import { Spinner } from '$components/UI/Spinner/';
 
 import { PanelEditProps } from '../PanelEditProps';
-import { ScenarioList } from '../ScenarioList';
+import { ScenarioList } from '../Controls/ScenarioList';
 const styles = require('./RightPanel.scss');
 
 const isScenario = (activeItem: ProjectT.ActiveItem) => LIST_SCENARIO_TYPE.indexOf(activeItem.itemType) !== -1;

@@ -7,8 +7,8 @@ import { Modal } from '$components/UI/Modal/';
 import { ModalAddElements } from '$components/ModalAddElements/MainBlock/';
 import { NavigateItem } from '$components/Editor/NavigateItem/';
 
-import { IPanelEditProps } from '../PanelEditProps';
-import { IRightPanelProps } from '../MainPanel/';
+import { IPanelEditProps } from '../../PanelEditProps';
+import { IRightPanelProps } from '../../MainPanel/';
 const styles = require('./styles.scss');
 
 interface IComponentProps {

@@ -10,7 +10,7 @@ import { T as ProjectT } from '$redux/project';
 import { LIST_SCENARIO_TYPE } from '$constants/defaultParams';
 import { safeParseInt } from '$utils/NumberHelper';
 
-import { IPanelEditProps } from '../PanelEditProps';
+import { IPanelEditProps } from '../../PanelEditProps';
 const styles = require('./styles.scss');
 
 const MIN_PADDING = 0;

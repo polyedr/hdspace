@@ -4,7 +4,7 @@ import cn from 'classnames';
 import { Button } from '$components/UI/Button/';
 import { DropDown } from '$components/UI/DropDown/';
 
-import { IPanelEditProps } from '../PanelEditProps';
+import { IPanelEditProps } from '../../PanelEditProps';
 const styles = require('./styles.scss');
 
 type Props = {

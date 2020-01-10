@@ -5,7 +5,7 @@ import { DropDown } from '$components/UI/DropDown/';
 import * as UTILS from '$utils/parseScenario';
 import { LIST_SCENARIO_TYPE } from '$constants/defaultParams';
 
-import { IPanelEditProps } from '../PanelEditProps';
+import { IPanelEditProps } from '../../PanelEditProps';
 const styles = require('./styles.scss');
 
 interface IComponentProps {

@@ -5,7 +5,7 @@ import { NestedList } from '$components/UI/NestedList/';
 import { Modal } from '$components/UI/Modal/';
 import { IScenarioElements } from '$redux/project/types';
 
-import { IRightPanelProps } from '../MainPanel/';
+import { IRightPanelProps } from '../../MainPanel';
 const styles = require('./styles.scss');
 
 interface IComponentProps {

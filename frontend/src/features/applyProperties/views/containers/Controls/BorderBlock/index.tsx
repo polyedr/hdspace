@@ -16,7 +16,7 @@ import { strToNumber, getPermissibleValue, safeParseFloat, safeMatch } from '$ut
 import { validBorderRadius, CssLikeStyles } from '$utils/StyleHelper';
 import { ColorPicker } from '$components/UI/ColorPicker/';
 
-import { IPanelEditProps } from '../PanelEditProps';
+import { IPanelEditProps } from '../../PanelEditProps';
 const styles = require('./styles.scss');
 
 const accessBorderRadius = (styleItem: CssLikeStyles) => {
