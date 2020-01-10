@@ -92,12 +92,16 @@ export const Editor: React.FC<IEditProps> = memo(({
   }, [screen.listSortable, scenarios, scenarioElements]);
 
   const handleRootClick = useCallback((event: React.MouseEvent) => {
-    const target = (event.target as HTMLElement)?.closest('[data-ls-id]');
+    const target = (event.target as HTMLElement)?.closest('[data-ls-id]') as HTMLElement;
 
-    if (!target) {
-      return;
-    }
-    const itemID = (target as HTMLElement).dataset['lsId'];
+    if (!target) return;
+
+    const currentActiveElement = (document.activeElement as HTMLElement)?.closest('[data-ls-id]');
+    const mouseUpTriggeredClick = currentActiveElement !== target;
+
+    if (mouseUpTriggeredClick) return;
+
+    const itemID = target.dataset['lsId'];
 
     if (itemID === activeItem.itemId) return;
 
@@ -114,6 +118,14 @@ export const Editor: React.FC<IEditProps> = memo(({
       }
     }
   }, [activeItem, screen.listSortable, scenarios, scenarioElements]);
+
+  const handleContainerMouseOver = useCallback((event: React.MouseEvent) => {
+    (event.target as HTMLElement)?.closest?.('.ls-container')?.classList.add('hovered');
+  }, []);
+
+  const handleContainerMouseOut = useCallback((event: React.MouseEvent) => {
+    (event.target as HTMLElement)?.closest?.('.ls-container')?.classList.remove('hovered');
+  }, []);
 
   const handleDelScenarioItem = useCallback(() => {
     if (['root', 'none'].includes(activeItem.itemType)) return;
@@ -196,7 +208,6 @@ export const Editor: React.FC<IEditProps> = memo(({
         isNavPanelMinimized && styles.editorContainer_minimized,
         screenId === -1 && styles.editorContainer_hide,
       )}
-      onClick={handleRootClick}
     >
       {
         screen && R.hasPath(['listSortable', 'root'], screen) && (
@@ -243,19 +254,19 @@ export const Editor: React.FC<IEditProps> = memo(({
                     </Button>
                     {
                       (currentScreenMode.isTabletMode || currentScreenMode.isMobileMode) && (
-                      <Button
-                        className={classNames(
-                          'mainImgBtn',
-                          styles.navBarBtn,
-                          styles.rotateScreenBtn,
-                          isScreenRotated && styles.rotateScreenBtn_active,
-                        )}
-                        styleType="none"
-                        disabled={screenId === -1}
-                        onClick={handleChangeScreenRotate}
-                      >
-                        <Icon icon="screen-rotate" />
-                      </Button>
+                        <Button
+                          className={classNames(
+                            'mainImgBtn',
+                            styles.navBarBtn,
+                            styles.rotateScreenBtn,
+                            isScreenRotated && styles.rotateScreenBtn_active,
+                          )}
+                          styleType="none"
+                          disabled={screenId === -1}
+                          onClick={handleChangeScreenRotate}
+                        >
+                          <Icon icon="screen-rotate" />
+                        </Button>
                       )
                     }
                   </div>
@@ -314,6 +325,10 @@ export const Editor: React.FC<IEditProps> = memo(({
                   )}
                   // data-ls-id={`${screen.listSortable.root.id}s`}
                   data-ls-id="root"
+                  tabIndex={0}
+                  onClick={handleRootClick}
+                  onMouseOver={handleContainerMouseOver}
+                  onMouseOut={handleContainerMouseOut}
                 >
                   <div
                     className={classNames(

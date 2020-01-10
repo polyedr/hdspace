@@ -1,6 +1,5 @@
 import { CSSProperties } from 'react';
 
-import { TYPES } from '$constants/actions';
 import { IChooseElement } from '$components/ModalAddElements/MainBlock';
 
 import * as T from './types';
@@ -172,11 +171,6 @@ export const updateElementParameters = (itemID: string, parameters: T.IScreenPro
   payload: { itemID, parameters },
 });
 
-export const setAlign = (itemID: string, type: string): T.SetAlign => ({
-  type: 'PROJECTS:SET_ALIGN',
-  payload: { itemID, type },
-});
-
 export const changeScenario = (itemID: string, scenarioID: number): T.ChangeScenario => ({
   type: 'PROJECTS:CHANGE_SCENARIO',
   payload: { itemID, scenarioID },
@@ -190,17 +184,6 @@ export const changeElementType = (itemID: string, type: string): T.ChangeElement
 export const delScenarioItem = (id: string): T.DeleteScenarioItem => ({
   type: 'PROJECTS:DELETE_SCENARIO_ITEM',
   payload: { id },
-});
-
-export const changeScenarios = (screenID: number): T.ChangeScenarios => ({
-  type: 'PROJECTS:CHANGE_SCENARIOS',
-  payload: { screenID },
-});
-
-// unused
-export const createScenario = (name: string, type: string, elements?: number[]) => ({
-  type: TYPES.CREATE_SCENARIO,
-  payload: { name, type, elements },
 });
 
 export const addScenario = (
@@ -265,6 +248,11 @@ export const runLayoutAlgorithmFinished = (): T.RunLayoutAlgorithmFinished => ({
 export const setActiveItem = (activeItem: T.ActiveItem): T.SetActiveItem => ({
   type: 'PROJECTS:SET_ACTIVE_ITEM',
   payload: { activeItem },
+});
+
+export const setIsAddElementsModalOpened = (isOpened: boolean): T.SetIsAddElementsModalOpened => ({
+  type: 'PROJECTS:SET_IS_ADD_ELEMENTS_MODAL_OPENED',
+  payload: { isOpened },
 });
 
 // export const setScreenData: ISetScreenData = screen_data => ({

@@ -11,8 +11,21 @@ export function selectScenarios(state: AppReduxState) {
   return selectFeatureState(state).edit.scenarios;
 };
 
+export function selectScenario(state: AppReduxState, id: number) {
+  return selectFeatureState(state).edit.scenarios[id];
+}
+
+export function selectRootScenario(state: AppReduxState) {
+  const scenarios = selectFeatureState(state).edit.scenarios;
+  return Object.values(scenarios).find(x => x.parent_id === -1);
+};
+
 export function selectScenariosElements(state: AppReduxState) {
   return selectFeatureState(state).edit.scenarioElements;
+};
+
+export function selectScenarioElement(state: AppReduxState, id: number) {
+  return selectFeatureState(state).edit.scenarioElements[id];
 };
 
 export function selectModifyElements(state: AppReduxState) {
@@ -21,6 +34,10 @@ export function selectModifyElements(state: AppReduxState) {
 
 export function selectCurrentScreen(state: AppReduxState) {
   return selectFeatureState(state).edit.currentScreen;
+};
+
+export function selectIsAddElementsModalOpened(state: AppReduxState) {
+  return selectFeatureState(state).ui.isAddElementsModalOpened;
 };
 
 export function selectLibraryElements(state: AppReduxState) {

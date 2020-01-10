@@ -25,11 +25,11 @@ const mapStateToProps = (state: AppReduxState) => ({
   scenarioElements: selectors.selectScenariosElements(state),
   libraryElements: selectors.selectLibraryElements(state),
   currentScreen: selectors.selectCurrentScreen(state),
+  isAddElementsModalOpened: selectors.selectIsAddElementsModalOpened(state),
   loader: selectors.selectLoader(state),
 });
 
 const mapDispatchToProps = {
-  setAlign: Actions.setAlign,
   updateElementStyles: Actions.updateElementStyles,
   updateScenarioStyles: Actions.updateScenarioStyles,
   updateElementParameters: Actions.updateElementParameters,
@@ -40,6 +40,7 @@ const mapDispatchToProps = {
   delScenario: Actions.delScenario,
   addContainer: Actions.addContainer,
   renameScenario: Actions.renameScenario,
+  setIsAddElementsModalOpened: Actions.setIsAddElementsModalOpened,
 };
 
 export type IRightPanelProps = ReturnType<typeof mapStateToProps>& typeof mapDispatchToProps & {
@@ -65,7 +66,6 @@ const Component: React.FunctionComponent<IRightPanelProps> = ({
 
   addScenario,
   addContainer,
-  setAlign,
   updateElementStyles,
   updateScenarioStyles,
   updateElementParameters,
@@ -73,6 +73,8 @@ const Component: React.FunctionComponent<IRightPanelProps> = ({
   delScenario,
   renameScenario,
   changeElementType,
+  isAddElementsModalOpened,
+  setIsAddElementsModalOpened,
 }) => {
   const handleAlignChange = useCallback((type: 'align' | 'justify', value: string) => {
     const itemID = parseInt(activeItem.itemId, 10);
@@ -149,6 +151,8 @@ const Component: React.FunctionComponent<IRightPanelProps> = ({
           updateScenarioStyles={updateScenarioStyles}
           updateElementParameters={updateElementParameters}
           changeElementType={changeElementType}
+          isAddElementsModalOpened={isAddElementsModalOpened}
+          setIsAddElementsModalOpened={setIsAddElementsModalOpened}
         />
         <ScenarioList
           scenarios={scenarios}

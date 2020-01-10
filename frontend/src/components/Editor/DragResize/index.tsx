@@ -200,6 +200,8 @@ export class DragResize extends React.Component<Props, State> {
 
   @autobind
   private handleDragStart(event: React.MouseEvent) {
+    event.preventDefault(); // when clicking on wrappers added by DragResize, focus moved from focused element (child) to nearest interactive one. event.preventDefault prevents focus from losing https://javascript.info/focus-blur#methods-focus-blur
+
     const currentEvent = { ...event };
     const { style, sortableId } = this.props;
 
@@ -213,7 +215,7 @@ export class DragResize extends React.Component<Props, State> {
         const indentBottom: number = R.path(['indents', 'padding-bottom'], style) || 0;
         const newWidth = offsetWidth - indentLeft - indentRight;
         const newHeight = offsetHeight - indentTop - indentBottom;
-  
+
         this.setState({ width: newWidth, height: newHeight });
       }
     }
@@ -228,16 +230,6 @@ export class DragResize extends React.Component<Props, State> {
     window.addEventListener('mousemove', this.handleDragOver);
     window.addEventListener('mouseup', this.handleDragStop);
     window.addEventListener('mouseleave', this.handleDragStop);
-  };
-
-  @autobind
-  private handleMouseOver(event: React.MouseEvent) {
-    (event.target as HTMLElement)?.closest?.('.addedItem')?.classList.add('hovered');
-  };
-
-  @autobind
-  private handleMouseOut(event: React.MouseEvent) {
-    (event.target as HTMLElement)?.closest?.('.addedItem')?.classList.remove('hovered');
   };
 
   @autobind
@@ -302,8 +294,6 @@ export class DragResize extends React.Component<Props, State> {
               // width: (width && width - deltaX) || 'auto',
               // height: (height && height - deltaY) || 'auto',
             },
-            onMouseOver: this.handleMouseOver,
-            onMouseOut: this.handleMouseOut,
           },
         )}
         {isDraggable && (
