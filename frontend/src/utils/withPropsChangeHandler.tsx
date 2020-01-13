@@ -17,7 +17,8 @@ export function withPropsChangeHandler<T extends RequiredByWithPropsChangeHandle
   Component: React.ComponentType<T>
 ): React.FC<Omit<T, keyof PropertiesChangeHandler>> {
   return function WrapperComponent(props: any) {
-    const { activeItemID, updateScenarioStyles, updateElementStyles } = props;
+    const { activeItemID, updateScenarioStyles, updateElementStyles, ...restProps } = props;
+
     const updateStyles = useCallback((styles: CssLikeStyles) => {
       if (activeItemID.slice(-1) === 's') {
         updateScenarioStyles(activeItemID, styles);
@@ -28,7 +29,7 @@ export function withPropsChangeHandler<T extends RequiredByWithPropsChangeHandle
 
     return (
       <Component
-        {...props}
+        {...restProps}
         updateStyles={updateStyles}
       />
     );

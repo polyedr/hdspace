@@ -1,47 +1,68 @@
-import React, {
-  memo,
-  useCallback,
-  CSSProperties,
-} from 'react';
+import React, { memo, useCallback } from 'react';
 import classNames from 'classnames';
+import { connect } from 'react-redux';
 
-import * as Actions from '$redux/project/actions';
-import { T as ProjectT } from '$redux/project';
-import { LIST_SCENARIO_TYPE } from '$constants/defaultParams';
+import { selectors, actionsCreators } from '$redux/project';
+import { AppReduxState } from '$shared/types/app';
 import { safeParseInt } from '$utils/NumberHelper';
+import { withPropsChangeHandler, PropertiesChangeHandler } from '$utils/withPropsChangeHandler';
+import { CssLikeStyles } from '$utils/StyleHelper';
 
-import { IPanelEditProps } from '../../PanelEditProps';
 const styles = require('./styles.scss');
 
 const MIN_PADDING = 0;
 
-interface IComponentProps {
-  styleItem: IPanelEditProps['styleItem'],
-  activeItem: ProjectT.ActiveItem,
-  updateElementStyles: typeof Actions.updateElementStyles,
-  updateScenarioStyles: typeof Actions.updateScenarioStyles,
+type StateProps = {
+  activeItemID: string;
+  marginTop: string;
+  marginRight: string;
+  marginBottom: string;
+  marginLeft: string;
+  paddingTop: string;
+  paddingRight: string;
+  paddingBottom: string;
+  paddingLeft: string;
+};
+
+type Props = StateProps & typeof mapDispatch & PropertiesChangeHandler;
+
+function mapState(state: AppReduxState): StateProps {
+  const activeItemStyles = selectors.selectActiveItemStyles(state) as Required<CssLikeStyles>;
+
+  return {
+    activeItemID: selectors.selectActiveItem(state).itemId,
+    marginTop: activeItemStyles['margin-top'],
+    marginRight: activeItemStyles['margin-right'],
+    marginBottom: activeItemStyles['margin-bottom'],
+    marginLeft: activeItemStyles['margin-left'],
+    paddingTop: activeItemStyles['padding-top'],
+    paddingRight: activeItemStyles['padding-right'],
+    paddingBottom: activeItemStyles['padding-bottom'],
+    paddingLeft: activeItemStyles['padding-left'],
+  };
 }
 
-export type TChangeIndent = (type: string, value: string, isMargin?: boolean) => void;
+const mapDispatch = {
+  updateElementStyles: actionsCreators.updateElementStyles,
+  updateScenarioStyles: actionsCreators.updateScenarioStyles,
+};
 
-export const IndentsBlock: React.FunctionComponent<IComponentProps> = memo(({
-  styleItem,
-  activeItem,
-  updateElementStyles,
-  updateScenarioStyles,
-}) => {
-  const handleChangeIndent = useCallback<TChangeIndent>((type, value) => {
-    const newIndent: CSSProperties = {
-      ...styleItem,
-      [type]: value,
-    };
+export const Component: React.FC<Props> = memo((props) => {
+  const {
+    updateStyles,
+    marginTop,
+    marginRight,
+    marginBottom,
+    marginLeft,
+    paddingTop,
+    paddingRight,
+    paddingBottom,
+    paddingLeft,
+  } = props;
 
-    if (LIST_SCENARIO_TYPE.indexOf(activeItem.itemType) !== -1) {
-      updateScenarioStyles(activeItem.itemId, newIndent);
-    } else {
-      updateElementStyles(activeItem.itemId, newIndent);
-    }
-  }, [activeItem, styleItem, updateElementStyles, updateScenarioStyles]);
+  const handleIndentChange = useCallback((type: string, value: string) => {
+    updateStyles({ [type]: value });
+  }, [updateStyles]);
 
   return (
     <div className="propsElementsBlock">
@@ -56,8 +77,8 @@ export const IndentsBlock: React.FunctionComponent<IComponentProps> = memo(({
                 styles.indentsInput_margin_top,
               )}
               type="number"
-              value={safeParseInt(styleItem['margin-top'], 10) || 0}
-              onChange={event => handleChangeIndent('margin-top', `${event.target.value}px`)}
+              value={safeParseInt(marginTop, 10) || 0}
+              onChange={event => handleIndentChange('margin-top', `${event.target.value}px`)}
             />
             <input
               className={classNames(
@@ -66,8 +87,8 @@ export const IndentsBlock: React.FunctionComponent<IComponentProps> = memo(({
                 styles.indentsInput_margin_right,
               )}
               type="number"
-              value={safeParseInt(styleItem['margin-right'], 10) || 0}
-              onChange={event => handleChangeIndent('margin-right', `${event.target.value}px`)}
+              value={safeParseInt(marginRight, 10) || 0}
+              onChange={event => handleIndentChange('margin-right', `${event.target.value}px`)}
             />
             <input
               className={classNames(
@@ -76,8 +97,8 @@ export const IndentsBlock: React.FunctionComponent<IComponentProps> = memo(({
                 styles.indentsInput_margin_bottom,
               )}
               type="number"
-              value={safeParseInt(styleItem['margin-bottom'], 10) || 0}
-              onChange={event => handleChangeIndent('margin-bottom', `${event.target.value}px`)}
+              value={safeParseInt(marginBottom, 10) || 0}
+              onChange={event => handleIndentChange('margin-bottom', `${event.target.value}px`)}
             />
             <input
               className={classNames(
@@ -86,8 +107,8 @@ export const IndentsBlock: React.FunctionComponent<IComponentProps> = memo(({
                 styles.indentsInput_margin_left,
               )}
               type="number"
-              value={safeParseInt(styleItem['margin-left'], 10) || 0}
-              onChange={event => handleChangeIndent('margin-left', `${event.target.value}px`)}
+              value={safeParseInt(marginLeft, 10) || 0}
+              onChange={event => handleIndentChange('margin-left', `${event.target.value}px`)}
             />
             <input
               className={classNames(
@@ -96,9 +117,9 @@ export const IndentsBlock: React.FunctionComponent<IComponentProps> = memo(({
                 styles.indentsInput_padding_top,
               )}
               type="number"
-              value={safeParseInt(styleItem['padding-top'], 10) || 0}
+              value={safeParseInt(paddingTop, 10) || 0}
               min={MIN_PADDING}
-              onChange={event => handleChangeIndent('padding-top', `${event.target.value}px`, false)}
+              onChange={event => handleIndentChange('padding-top', `${event.target.value}px`)}
             />
             <input
               className={classNames(
@@ -107,9 +128,9 @@ export const IndentsBlock: React.FunctionComponent<IComponentProps> = memo(({
                 styles.indentsInput_padding_right,
               )}
               type="number"
-              value={safeParseInt(styleItem['padding-right'], 10) || 0}
+              value={safeParseInt(paddingRight, 10) || 0}
               min={MIN_PADDING}
-              onChange={event => handleChangeIndent('padding-right', `${event.target.value}px`, false)}
+              onChange={event => handleIndentChange('padding-right', `${event.target.value}px`)}
             />
             <input
               className={classNames(
@@ -118,9 +139,9 @@ export const IndentsBlock: React.FunctionComponent<IComponentProps> = memo(({
                 styles.indentsInput_padding_bottom,
               )}
               type="number"
-              value={safeParseInt(styleItem['padding-bottom'], 10) || 0}
+              value={safeParseInt(paddingBottom, 10) || 0}
               min={MIN_PADDING}
-              onChange={event => handleChangeIndent('padding-bottom', `${event.target.value}px`, false)}
+              onChange={event => handleIndentChange('padding-bottom', `${event.target.value}px`)}
             />
             <input
               className={classNames(
@@ -129,9 +150,9 @@ export const IndentsBlock: React.FunctionComponent<IComponentProps> = memo(({
                 styles.indentsInput_padding_left,
               )}
               type="number"
-              value={safeParseInt(styleItem['padding-left'], 10) || 0}
+              value={safeParseInt(paddingLeft, 10) || 0}
               min={MIN_PADDING}
-              onChange={event => handleChangeIndent('padding-left', `${event.target.value}px`, false)}
+              onChange={event => handleIndentChange('padding-left', `${event.target.value}px`)}
             />
           </div>
         </div>
@@ -139,3 +160,6 @@ export const IndentsBlock: React.FunctionComponent<IComponentProps> = memo(({
     </div>
   );
 });
+
+const IndentsBlock = connect(mapState, mapDispatch)(withPropsChangeHandler(Component));
+export { IndentsBlock };

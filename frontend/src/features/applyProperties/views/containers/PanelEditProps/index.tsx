@@ -100,12 +100,7 @@ export const PanelEditProps: React.FunctionComponent<IPanelEditProps> = ({
               )}
                 {currentItem && currentItem.type !== elementTypes.hyperLine && (
                   <React.Fragment>
-                    <IndentsBlock
-                      styleItem={styleItem}
-                      activeItem={activeItem}
-                      updateElementStyles={updateElementStyles}
-                      updateScenarioStyles={updateScenarioStyles}
-                    />
+                    <IndentsBlock />
                     <SizeBlock
                       activeItem={activeItem}
                       styleItem={styleItem}
