@@ -1,7 +1,6 @@
 import React, { useCallback } from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
-import * as R from 'ramda';
 
 import { AppReduxState } from '$shared/types/app';
 import * as Actions from '$redux/project/actions';
@@ -76,26 +75,6 @@ const Component: React.FunctionComponent<IRightPanelProps> = ({
   isAddElementsModalOpened,
   setIsAddElementsModalOpened,
 }) => {
-  const handleAlignChange = useCallback((type: 'align' | 'justify', value: string) => {
-    const itemID = parseInt(activeItem.itemId, 10);
-    const newStyles = {
-      ...(scenarios[itemID]).styles,
-      [type === 'align' ? 'align-items' : 'justify-content']: value,
-    };
-
-    updateScenarioStyles(activeItem.itemId, newStyles);
-  }, [activeItem, scenarios, updateScenarioStyles]);
-
-  const handleOrientation = useCallback((type: 'vertical' | 'horizontal') => {
-    const itemID = parseInt(activeItem.itemId, 10);
-    const newStyles = {
-      ...(scenarios[itemID]).styles,
-      'flex-direction': type === 'vertical' ? 'column' : 'row',
-    };
-
-    updateScenarioStyles(activeItem.itemId, newStyles);
-  }, [activeItem, scenarios, updateScenarioStyles]);
-
   const getParams = useCallback(() => {
     if (activeItem.itemType === 'none') {
       return {};
@@ -113,15 +92,6 @@ const Component: React.FunctionComponent<IRightPanelProps> = ({
     const itemID = parseInt(activeItem.itemId, 10);
     return isScenario(activeItem) ? scenarios[itemID].styles : scenarioElements[itemID].styles;
   }, [activeItem, scenarios, scenarioElements]);
-
-  const getOrientation = useCallback((id: string): string => {
-    if (id === 'none') {
-      return 'vertical';
-    }
-
-    const itemID = String(parseInt(id, 10));
-    return R.path([itemID, 'styles', 'flex-direction'], scenarios) === 'row' ? 'horizontal' : 'vertical';
-  }, [scenarios]);
 
   return (
     <div className={classNames(styles.editorRightPanel)}>
@@ -141,9 +111,6 @@ const Component: React.FunctionComponent<IRightPanelProps> = ({
           onDelScenarioItem={onDelScenarioItem}
           params={getParams()}
           styleItem={getStyleItem()}
-          orientation={getOrientation(activeItem.itemId)}
-          onAlign={handleAlignChange}
-          setOrientation={handleOrientation}
           addScenario={addScenario}
           addContainer={addContainer}
           changeScenario={changeScenario}

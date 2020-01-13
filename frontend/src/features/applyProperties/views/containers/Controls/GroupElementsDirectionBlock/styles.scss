@@ -52,4 +52,25 @@
     display: inline-block;
     margin-bottom: 5px;
   }
+
+  &__axis {
+    &:not(:last-child) { // TODO: fix last-child
+      margin-bottom: 10px;
+    }
+  }
+}
+
+.align {
+  &__header {
+    margin-bottom: 10px;
+  }
+
+  &__content {
+    display: flex;
+    justify-content: space-between;
+  
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
 }

@@ -24,14 +24,11 @@ export interface IPanelEditProps {
   project: EditorProps['currentProject'],
   params: IScreenProps,
   styleItem: CssLikeStyles,
-  orientation: string,
   disablePanel: boolean,
   listSortable: IListSortable,
   activeItem: IRightPanelProps['activeItem'],
   scenarios: IRightPanelProps['scenarios'],
   libraryElements: IRightPanelProps['libraryElements'],
-  onAlign: (type: 'align' | 'justify', value: string) => void,
-  setOrientation: (type: 'vertical' | 'horizontal') => void,
   onDelScenarioItem: IRightPanelProps['onDelScenarioItem'],
   changeScenario: IRightPanelProps['changeScenario'],
   addScenario: IRightPanelProps['addScenario'],
@@ -52,12 +49,9 @@ export const PanelEditProps: React.FunctionComponent<IPanelEditProps> = ({
   listSortable,
   scenarios,
   libraryElements,
-  orientation,
   disablePanel,
 
   onDelScenarioItem,
-  setOrientation,
-  onAlign,
   updateElementStyles,
   updateScenarioStyles,
   updateElementParameters,
@@ -102,13 +96,7 @@ export const PanelEditProps: React.FunctionComponent<IPanelEditProps> = ({
               </div>
               <div className="propsPanelContentBlock">
               {currentItem && LIST_SCENARIO_TYPE.indexOf(currentItem.type) !== -1 && (
-                <GroupElementsDirectionBlock
-                  styleItem={styleItem}
-                  orientation={orientation as ('vertical' | 'horizontal')}
-                  params={params}
-                  setOrientation={setOrientation}
-                  onAlignChange={onAlign}
-                />
+                <GroupElementsDirectionBlock />
               )}
                 {currentItem && currentItem.type !== elementTypes.hyperLine && (
                   <React.Fragment>

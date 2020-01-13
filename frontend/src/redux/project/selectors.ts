@@ -67,3 +67,23 @@ export function selectProjectLoader(state: AppReduxState) {
 export function selectActiveItem(state: AppReduxState) {
   return selectFeatureState(state).ui.activeItem;
 };
+
+export function selectActiveItemStyles(state: AppReduxState) {
+  const activeItem = selectActiveItem(state);
+  const scenarios = selectScenarios(state);
+  const scenarioElements = selectScenariosElements(state);
+
+  const activeItemIsRoot = activeItem.itemType === 'root';
+
+  if (activeItemIsRoot) {
+    const rootID = selectRootScenario(state)?.id;
+    return rootID ? scenarios[rootID].styles : {};
+  }
+
+  if (activeItem.itemId === 'none') {
+    return {};
+  }
+
+  const itemID = parseInt(activeItem.itemId, 10);
+  return activeItem.itemId.slice(-1) === 's' ? scenarios[itemID].styles : scenarioElements[itemID].styles;
+};
