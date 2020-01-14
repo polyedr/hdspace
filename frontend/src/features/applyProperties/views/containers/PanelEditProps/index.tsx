@@ -110,12 +110,7 @@ export const PanelEditProps: React.FunctionComponent<IPanelEditProps> = ({
                   )
                 }
                 <BorderBlock />
-                <BackgroundBlock
-                  styleItem={styleItem}
-                  activeItem={activeItem}
-                  updateElementStyles={updateElementStyles}
-                  updateScenarioStyles={updateScenarioStyles}
-                />
+                <BackgroundBlock />
                 {
                   (currentItem && currentItem.type === elementTypes.hyperLine
                     || currentItem.type === elementTypes.button) && (

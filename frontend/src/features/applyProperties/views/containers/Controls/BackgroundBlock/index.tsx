@@ -1,27 +1,37 @@
-import React, {
-  memo,
-  useState,
-  useCallback,
-} from 'react';
+import React, { memo, useState, useCallback } from 'react';
+import { connect } from 'react-redux';
 
-import { T as ProjectT } from '$redux/project';
+import { AppReduxState } from '$shared/types/app';
+import { actionsCreators, selectors } from '$redux/project/';
 import { ColorPicker } from '$components/UI/ColorPicker/';
-import { LIST_SCENARIO_TYPE, DEFAULT_BACKGROUND } from '$constants/defaultParams';
+import { DEFAULT_BACKGROUND } from '$constants/defaultParams';
+import { withPropsChangeHandler, PropertiesChangeHandler } from '$utils/withPropsChangeHandler';
+import { CssLikeStyles } from '$utils/StyleHelper';
 
-import { IPanelEditProps } from '../../PanelEditProps';
-
-interface IComponentProps {
-  activeItem: ProjectT.ActiveItem,
-  styleItem: IPanelEditProps['styleItem'],
-  updateElementStyles: IPanelEditProps['updateElementStyles'],
-  updateScenarioStyles: IPanelEditProps['updateScenarioStyles'],
+type StateProps = {
+  activeItemID: string;
+  backgroundColor: string;
 }
 
-export const BackgroundBlock : React.FunctionComponent<IComponentProps> = memo(({
-  styleItem,
-  activeItem,
-  updateElementStyles,
-  updateScenarioStyles,
+function mapState(state: AppReduxState): StateProps {
+  const activeItemStyles = selectors.selectActiveItemStyles(state) as Required<CssLikeStyles>;
+
+  return {
+    activeItemID: selectors.selectActiveItem(state).itemId,
+    backgroundColor: activeItemStyles['background-color'],
+  };
+}
+
+const mapDispatch = {
+  updateElementStyles: actionsCreators.updateElementStyles,
+  updateScenarioStyles: actionsCreators.updateScenarioStyles,
+};
+
+type Props = StateProps & typeof mapDispatch & PropertiesChangeHandler;
+
+export const Component : React.FC<Props> = memo(({
+  backgroundColor,
+  updateStyles,
 }) => {
   const [isBackgroundColorPickerOpen, setIsBackgroundColorPickerOpen] = useState<boolean>(false);
 
@@ -30,35 +40,12 @@ export const BackgroundBlock : React.FunctionComponent<IComponentProps> = memo((
       return;
     }
 
-    const newBackground = {
-      ...styleItem,
-      'background-color': newColor,
-    };
-
-    if (LIST_SCENARIO_TYPE.indexOf(activeItem.itemType) !== -1) {
-      updateScenarioStyles(activeItem.itemId, newBackground);
-    } else {
-      updateElementStyles(activeItem.itemId, newBackground);
-    }
-  }, [styleItem, activeItem, updateElementStyles, updateScenarioStyles]);
+    updateStyles({ 'background-color': newColor })
+  }, [updateStyles]);
 
   const handleActiveColorPicker = useCallback(() => {
     setIsBackgroundColorPickerOpen(!isBackgroundColorPickerOpen);
   }, [isBackgroundColorPickerOpen]);
-
-  // const handlerChangeImage = useCallback(({ target: { value } }) => {
-  //   const newBackground: IScreenBackground = {
-  //     ...(params.background || localBackground),
-  //     'background-image': `url(${value})`,
-  //   };
-  //
-  //   setLocalBackground(newBackground);
-  //   if (activeItem.itemType === 'block') {
-  //     updateStylesBlock(activeItem.itemId, { background: newBackground });
-  //   } else {
-  //     updateElementStyles(activeItem.itemId, { background: newBackground });
-  //   }
-  // }, [params, localBackground, activeItem, updateElementStyles, updateStylesBlock]);
 
   const handleChangeOpacity = useCallback(() => {
     console.log();
@@ -71,14 +58,14 @@ export const BackgroundBlock : React.FunctionComponent<IComponentProps> = memo((
         <div className="propsElementsInnerBlock">
           <ColorPicker
             display={isBackgroundColorPickerOpen}
-            color={styleItem['background-color'] as string}
+            color={backgroundColor}
             onChangeComplete={color => handleChangeColor(color.hex)}
             onClose={handleActiveColorPicker}
           />
           <input
             className="colorField"
             type="text"
-            value={styleItem['background-color'] || DEFAULT_BACKGROUND['background-color']}
+            value={backgroundColor || DEFAULT_BACKGROUND['background-color']}
             onChange={({ target: { value } }) => handleChangeColor(value)}
           />
           <input
@@ -88,17 +75,10 @@ export const BackgroundBlock : React.FunctionComponent<IComponentProps> = memo((
             onChange={handleChangeOpacity}
           />
         </div>
-        {/* <div className="propsElementsInnerBlock">
-          <input
-            className={styles.imageField}
-            type="url"
-            name="image"
-            placeholder="Enter image URL http(s)://example.com"
-            value={localBackground['background-image'] !== 'none' ? localBackground['background-image'] : ''}
-            onChange={handlerChangeImage}
-          />
-        </div> */}
       </div>
     </div>
   );
 });
+
+const BackgroundBlock = connect(mapState, mapDispatch)(withPropsChangeHandler(Component));
+export { BackgroundBlock };
