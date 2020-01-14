@@ -7,10 +7,10 @@ import { actionsCreators, selectors } from '$redux/project/';
 import { Button } from '$components/UI/Button/';
 import { DropDown } from '$components/UI/DropDown/';
 import { withPropsChangeHandler, PropertiesChangeHandler } from '$utils/withPropsChangeHandler';
+import { CssLikeStyles } from '$utils/StyleHelper';
 
 import { ControlTitle } from '../../../components/ControlTitle/ControlTitle';
 import { JUSTIFY_VALUES, ALIGN_VALUES } from './constants';
-import { CssLikeStyles } from '$utils/StyleHelper';
 const styles = require('./styles.scss');
 
 type Orientation = 'vertical' | 'horizontal';

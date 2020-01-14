@@ -106,12 +106,7 @@ export const PanelEditProps: React.FunctionComponent<IPanelEditProps> = ({
                 )}
                 {
                   currentItem && currentItem.type !== elementTypes.image && (
-                    <TypographyBlock
-                      styleItem={styleItem}
-                      activeItem={activeItem}
-                      updateElementStyles={updateElementStyles}
-                      updateScenarioStyles={updateScenarioStyles}
-                    />
+                    <TypographyBlock />
                   )
                 }
                 <BorderBlock

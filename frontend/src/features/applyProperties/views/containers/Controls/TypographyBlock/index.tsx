@@ -1,37 +1,63 @@
-import React, {
-  memo,
-  useState,
-  useCallback,
-} from 'react';
+import React, { memo, useState, useCallback } from 'react';
 import classNames from 'classnames';
+import { connect } from 'react-redux';
 
+import { AppReduxState } from '$shared/types/app';
+import { actionsCreators, selectors } from '$redux/project/';
 import { ColorPicker } from '$components/UI/ColorPicker/';
 import { DropDown } from '$components/UI/DropDown/';
 import { Icon } from '$components/UI/Icon/';
 import { Button } from '$components/UI/Button/';
 import { FONTS } from '$constants/fonts';
-import { T as ProjectT } from '$redux/project';
-import { DEFAULT_TYPOGRAPHY, LIST_SCENARIO_TYPE } from '$constants/defaultParams';
+import { DEFAULT_TYPOGRAPHY } from '$constants/defaultParams';
 import { getPermissibleValue, safeParseFloat } from '$utils/NumberHelper';
+import { withPropsChangeHandler, PropertiesChangeHandler } from '$utils/withPropsChangeHandler';
+import { CssLikeStyles } from '$utils/StyleHelper';
 
-import { IPanelEditProps } from '../../PanelEditProps';
 const styles = require('./styles.scss');
 
 const MIN_FONT_SIZE = 1;
 const MAX_FONT_SIZE = 72;
 
-interface IComponentProps {
-  styleItem: IPanelEditProps['styleItem'],
-  activeItem: ProjectT.ActiveItem,
-  updateElementStyles: IPanelEditProps['updateElementStyles'],
-  updateScenarioStyles: IPanelEditProps['updateScenarioStyles'],
+type StateProps = {
+  activeItemID: string;
+  fontFamily: string;
+  fontStyle: string;
+  fontWeight: number;
+  fontSize: string;
+  textAlign: string;
+  color: string;
 }
 
-export const TypographyBlock: React.FunctionComponent<IComponentProps> = memo(({
-  styleItem,
-  activeItem,
-  updateElementStyles,
-  updateScenarioStyles,
+function mapState(state: AppReduxState): StateProps {
+  const activeItemStyles = selectors.selectActiveItemStyles(state) as Required<CssLikeStyles>;
+
+  return {
+    activeItemID: selectors.selectActiveItem(state).itemId,
+    fontFamily: activeItemStyles['font-family'],
+    fontStyle: activeItemStyles['font-style'],
+    fontWeight: activeItemStyles['font-weight'],
+    fontSize: activeItemStyles['font-size'],
+    textAlign: activeItemStyles['text-align'],
+    color: activeItemStyles.color,
+  };
+}
+
+const mapDispatch = {
+  updateElementStyles: actionsCreators.updateElementStyles,
+  updateScenarioStyles: actionsCreators.updateScenarioStyles,
+};
+
+type Props = StateProps & typeof mapDispatch & PropertiesChangeHandler;
+
+export const Component: React.FC<Props> = memo(({
+  fontFamily,
+  fontStyle,
+  fontWeight,
+  fontSize,
+  textAlign,
+  color,
+  updateStyles,
 }) => {
   const [isTypographyColorPickerOpen, setIsTypographyColorPickerOpen] = useState<boolean>(false);
 
@@ -40,90 +66,41 @@ export const TypographyBlock: React.FunctionComponent<IComponentProps> = memo(({
       return;
     }
 
-    const newTypography = {
-      ...styleItem,
-      color: newColor,
-    };
-
-    if (LIST_SCENARIO_TYPE.indexOf(activeItem.itemType) !== -1) {
-      updateScenarioStyles(activeItem.itemId, newTypography);
-    } else {
-      updateElementStyles(activeItem.itemId, newTypography);
-    }
-  }, [activeItem, styleItem, updateElementStyles, updateScenarioStyles]);
+    updateStyles({ color: newColor });
+  }, [updateStyles]);
 
   const handleActiveColorPicker = useCallback(() => {
     setIsTypographyColorPickerOpen(!isTypographyColorPickerOpen);
   }, [isTypographyColorPickerOpen]);
 
   const onFontFamilyChange = React.useCallback((value) => {
-    const newTypography = {
-      ...styleItem,
-      'font-family': value,
-    };
-
-    if (LIST_SCENARIO_TYPE.indexOf(activeItem.itemType) !== -1) {
-      updateScenarioStyles(activeItem.itemId, newTypography);
-    } else {
-      updateElementStyles(activeItem.itemId, newTypography);
-    }
-  }, [activeItem, styleItem, updateElementStyles, updateScenarioStyles]);
+    updateStyles({ 'font-family': value });
+  }, [updateStyles]);
 
   const handleChangeItalicFontStyle = React.useCallback(() => {
-    const newTypography = {
-      ...styleItem,
-      'font-style': (!styleItem['font-style'] || styleItem['font-style'] === 'normal') ? 'italic' : 'normal',
-    };
-
-    if (LIST_SCENARIO_TYPE.indexOf(activeItem.itemType) !== -1) {
-      updateScenarioStyles(activeItem.itemId, newTypography);
-    } else {
-      updateElementStyles(activeItem.itemId, newTypography);
-    }
-  }, [activeItem, styleItem, updateElementStyles, updateScenarioStyles]);
+    updateStyles({
+      'font-style': (!fontStyle || fontStyle === 'normal') ? 'italic' : 'normal',
+    });
+  }, [updateStyles]);
 
   const handleChangeBoldFontStyle = React.useCallback(() => {
-    const newTypography = {
-      ...styleItem,
-      'font-weight': (!styleItem['font-weight'] || styleItem['font-weight'] === 400) ? 700 : 400,
-    };
-
-    if (LIST_SCENARIO_TYPE.indexOf(activeItem.itemType) !== -1) {
-      updateScenarioStyles(activeItem.itemId, newTypography);
-    } else {
-      updateElementStyles(activeItem.itemId, newTypography);
-    }
-  }, [activeItem, styleItem, updateElementStyles, updateScenarioStyles]);
+    updateStyles({ 'font-weight': (!fontWeight || fontWeight === 400) ? 700 : 400 })
+  }, [updateStyles]);
 
   const handleChangeFontSize = React.useCallback(({ target: { value } }) => {
     const newSize = getPermissibleValue(value, MIN_FONT_SIZE, MAX_FONT_SIZE);
 
-    const newTypography = {
-      ...styleItem,
+    updateStyles({
       'font-size': `${newSize}px`,
       'line-height': `${Math.round(newSize * 1.4)}px`,
-    };
-
-    if (LIST_SCENARIO_TYPE.indexOf(activeItem.itemType) !== -1) {
-      updateScenarioStyles(activeItem.itemId, newTypography);
-    } else {
-      updateElementStyles(activeItem.itemId, newTypography);
-    }
-  }, [activeItem, styleItem, updateElementStyles, updateScenarioStyles]);
-
+    })
+  }, [updateStyles]);
 
   const onTypographyAlign = React.useCallback((value) => {
-    const newTypography = {
-      ...styleItem,
+    updateStyles({
       'text-align': value,
-    };
-
-    if (LIST_SCENARIO_TYPE.indexOf(activeItem.itemType) !== -1) {
-      updateScenarioStyles(activeItem.itemId, newTypography);
-    } else {
-      updateElementStyles(activeItem.itemId, newTypography);
-    }
-  }, [activeItem, styleItem, updateElementStyles, updateScenarioStyles]);
+    });
+  }, [updateStyles]);
 
   const handleChangeOpacity = React.useCallback((value) => {
     console.log(value); // change text align
@@ -137,8 +114,8 @@ export const TypographyBlock: React.FunctionComponent<IComponentProps> = memo(({
           <div className={styles.fontLeftBlock}>
             <DropDown
               options={FONTS}
-              defaultValue={styleItem['font-family']}
-              value={styleItem['font-family']}
+              defaultValue={fontFamily}
+              value={fontFamily}
               onChange={onFontFamilyChange}
             />
           </div>
@@ -148,7 +125,7 @@ export const TypographyBlock: React.FunctionComponent<IComponentProps> = memo(({
               type="number"
               min={MIN_FONT_SIZE}
               max={MAX_FONT_SIZE}
-              value={safeParseFloat(styleItem['font-size']) || parseFloat(DEFAULT_TYPOGRAPHY['font-size'])}
+              value={safeParseFloat(fontSize) || parseFloat(DEFAULT_TYPOGRAPHY['font-size'])}
               onChange={handleChangeFontSize}
             />
           </div>
@@ -159,7 +136,7 @@ export const TypographyBlock: React.FunctionComponent<IComponentProps> = memo(({
               styleType="confirm"
               className={classNames(
                 styles.fontBtn,
-                styleItem['font-weight'] === 700 && styles.fontBtn_active,
+                fontWeight === 700 && styles.fontBtn_active,
               )}
               onClick={handleChangeBoldFontStyle}
             >
@@ -169,7 +146,7 @@ export const TypographyBlock: React.FunctionComponent<IComponentProps> = memo(({
               styleType="confirm"
               className={classNames(
                 styles.fontBtn,
-                styleItem['font-style'] === 'italic' && styles.fontBtn_active,
+                fontStyle === 'italic' && styles.fontBtn_active,
               )}
               onClick={handleChangeItalicFontStyle}
             >
@@ -179,21 +156,21 @@ export const TypographyBlock: React.FunctionComponent<IComponentProps> = memo(({
           <div className={styles.fontRightBlock}>
             <Button
               styleType="none"
-              className={classNames('mainImgBtn', styleItem['text-align'] === 'left' && 'mainImgBtn_active')}
+              className={classNames('mainImgBtn', textAlign === 'left' && 'mainImgBtn_active')}
               onClick={() => onTypographyAlign('left')}
             >
               <Icon icon="text-left" />
             </Button>
             <Button
               styleType="none"
-              className={classNames('mainImgBtn', styleItem['text-align'] === 'center' && 'mainImgBtn_active')}
+              className={classNames('mainImgBtn', textAlign === 'center' && 'mainImgBtn_active')}
               onClick={() => onTypographyAlign('center')}
             >
               <Icon icon="text-center" />
             </Button>
             <Button
               styleType="none"
-              className={classNames('mainImgBtn', styleItem['text-align'] === 'right' && 'mainImgBtn_active')}
+              className={classNames('mainImgBtn', textAlign === 'right' && 'mainImgBtn_active')}
               onClick={() => onTypographyAlign('right')}
             >
               <Icon icon="text-right" />
@@ -210,14 +187,14 @@ export const TypographyBlock: React.FunctionComponent<IComponentProps> = memo(({
         <div className="propsElementsInnerBlock">
           <ColorPicker
             display={isTypographyColorPickerOpen}
-            color={styleItem.color || DEFAULT_TYPOGRAPHY.color}
+            color={color || DEFAULT_TYPOGRAPHY.color}
             onChangeComplete={color => handleColorChange(color.hex)}
             onClose={handleActiveColorPicker}
           />
           <input
             className="colorField"
             type="text"
-            value={styleItem.color || DEFAULT_TYPOGRAPHY.color}
+            value={color || DEFAULT_TYPOGRAPHY.color}
             onChange={({ target: { value } }) => handleColorChange(value)}
           />
           <input
@@ -231,3 +208,6 @@ export const TypographyBlock: React.FunctionComponent<IComponentProps> = memo(({
     </div>
   );
 });
+
+const TypographyBlock = connect(mapState, mapDispatch)(withPropsChangeHandler(Component));
+export { TypographyBlock };
