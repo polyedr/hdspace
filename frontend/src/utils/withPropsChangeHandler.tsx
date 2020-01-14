@@ -30,6 +30,7 @@ export function withPropsChangeHandler<T extends RequiredByWithPropsChangeHandle
     return (
       <Component
         {...restProps}
+        activeItemID={activeItemID}
         updateStyles={updateStyles}
       />
     );

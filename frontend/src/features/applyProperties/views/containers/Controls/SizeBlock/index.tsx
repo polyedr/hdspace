@@ -1,10 +1,12 @@
-import React, { useCallback, memo } from 'react';
-import * as R from 'ramda';
+import React, { useCallback, memo, useEffect } from 'react';
+import { connect } from 'react-redux';
 
-import { LIST_SCENARIO_TYPE } from '$constants/defaultParams';
+import { AppReduxState } from '$shared/types/app';
 import { safeParseFloat } from '$utils/NumberHelper';
+import { CssLikeStyles } from '$utils/StyleHelper';
+import { withPropsChangeHandler, PropertiesChangeHandler } from '$utils/withPropsChangeHandler';
+import { selectors, actionsCreators } from '$redux/project';
 
-import { IPanelEditProps } from '../../PanelEditProps';
 const styles = require('./styles.scss');
 
 const getLastChar = (value?: string | number): string => {
@@ -13,81 +15,97 @@ const getLastChar = (value?: string | number): string => {
   return (valueAsString[valueAsString.length -1] || '');
 }
 
-interface IComponentProps {
-  activeItem: IPanelEditProps['activeItem'],
-  styleItem: IPanelEditProps['styleItem'],
-  updateElementStyles: IPanelEditProps['updateElementStyles'],
-  updateScenarioStyles: IPanelEditProps['updateScenarioStyles'],
+type StateProps = {
+  activeItemID: string;
+  borderWidth: string;
+  width: string | number;
+  height: string | number;
+};
+
+type Props = StateProps & typeof mapDispatch & PropertiesChangeHandler;
+
+function mapState(state: AppReduxState): StateProps {
+  const activeItemStyles = selectors.selectActiveItemStyles(state) as Required<CssLikeStyles>;
+
+  return {
+    activeItemID: selectors.selectActiveItem(state).itemId,
+    borderWidth: activeItemStyles['border-width'],
+    width: activeItemStyles.width,
+    height: activeItemStyles.height,
+  };
 }
 
-export const SizeBlock: React.FunctionComponent<IComponentProps> = memo((props) => {
+const mapDispatch = {
+  updateElementStyles: actionsCreators.updateElementStyles,
+  updateScenarioStyles: actionsCreators.updateScenarioStyles,
+};
+
+export const Component: React.FC<Props> = memo((props) => {
   const {
-    styleItem,
-    activeItem,
-    updateElementStyles,
-    updateScenarioStyles,
+    borderWidth,
+    width,
+    height,
+    updateStyles,
+    activeItemID,
   } = props;
+
+  useEffect(() => { // TODO: set these props when creating elements/containers, not here
+    if (typeof width === 'undefined') {
+      updateStyles({ width: 'auto' });
+    }
+    if (typeof height === 'undefined') {
+      updateStyles({ height: 'auto' });
+    }
+    if (typeof borderWidth === 'undefined') {
+      updateStyles({ 'border-width': '0' });
+    }
+  }, [activeItemID, updateStyles]);
 
   const handleChangeUnits = useCallback(({ target }) => {
     switch (target.value) {
       case 'width': {
-        const el = document.getElementById(String(activeItem.itemId));
+        const el = document.getElementById(activeItemID);
         if (el !== null) {
           let { clientWidth } = el;
 
-          if (R.prop(('border-width'), styleItem)) {
-            clientWidth += ((safeParseFloat(styleItem['border-width']) || 0) * 2);
+          if (borderWidth) {
+            clientWidth += ((safeParseFloat(borderWidth) || 0) * 2);
           }
   
-          if (styleItem.width === 'auto' || getLastChar(styleItem.width) === '%') {
-            updateElementStyles(activeItem.itemId, { width: `${clientWidth}px` });
+          if (width === 'auto' || getLastChar(width) === '%') {
+            updateStyles({ width: `${clientWidth}px` });
           }
         }
         break;
       }
 
       case 'auto_width':
-        // updateElementStyles(activeItem.itemId, { width: 'auto' });
-        if (LIST_SCENARIO_TYPE.indexOf(activeItem.itemType) !== -1) {
-          updateScenarioStyles(activeItem.itemId, { width: 'auto' });
-        } else {
-          updateElementStyles(activeItem.itemId, { width: 'auto' });
-        }
+        updateStyles({ width: 'auto' });
         break;
 
       case 'full_width':
-        // updateElementStyles(activeItem.itemId, { width: '100%' });
-        if (LIST_SCENARIO_TYPE.indexOf(activeItem.itemType) !== -1) {
-          updateScenarioStyles(activeItem.itemId, { width: '100%' });
-        } else {
-          updateElementStyles(activeItem.itemId, { width: '100%' });
-        }
+        updateStyles({ width: '100%' });
         break;
 
       case 'height': {
-        const el = document.getElementById(String(activeItem.itemId));
+        const el = document.getElementById(activeItemID);
         if (el !== null) {
           const { clientHeight } = el;
 
-          if (styleItem.height === 'auto' || getLastChar(styleItem.height) === '%') {
-            updateElementStyles(activeItem.itemId, { height: `${clientHeight}px` });
+          if (height === 'auto' || getLastChar(height) === '%') {
+            updateStyles({ height: `${clientHeight}px` });
           }
         }
-        break;
+        break;;
       }
 
       case 'auto_height':
-        // updateElementStyles(activeItem.itemId, { height: 'auto' });
-        if (LIST_SCENARIO_TYPE.indexOf(activeItem.itemType) !== -1) {
-          updateScenarioStyles(activeItem.itemId, { height: 'auto' });
-        } else {
-          updateElementStyles(activeItem.itemId, { height: 'auto' });
-        }
+        updateStyles({ height: 'auto' });
         break;
 
       default: break;
     }
-  }, [styleItem, activeItem, updateElementStyles, updateScenarioStyles]);
+  }, [updateStyles, borderWidth, width, height]);
 
   const handleChangeSize = useCallback(({ target }) => {
     let newSize;
@@ -102,22 +120,16 @@ export const SizeBlock: React.FunctionComponent<IComponentProps> = memo((props) 
       };
     }
 
-    if (LIST_SCENARIO_TYPE.indexOf(activeItem.itemType) !== -1) {
-      updateScenarioStyles(activeItem.itemId, newSize);
-    } else {
-      updateElementStyles(activeItem.itemId, newSize);
-    }
-
-    // updateElementStyles(activeItem.itemId, newSize);
-  }, [activeItem, updateElementStyles, updateScenarioStyles]);
+    updateStyles(newSize);
+  }, [updateStyles]);
 
   const getSelected = useCallback((key: string) => {
     if (key === 'width') {
-      if (styleItem && styleItem[key] && String(styleItem[key]).match(/px/i)) {
+      if (width && String(width).match(/px/i)) {
         return 'width';
       }
 
-      if (styleItem && styleItem[key] && styleItem[key] === '100%') {
+      if (height === '100%') {
         return 'full_width';
       }
 
@@ -125,23 +137,18 @@ export const SizeBlock: React.FunctionComponent<IComponentProps> = memo((props) 
     }
 
     if (key === 'height') {
-      return (styleItem && styleItem[key] && String(styleItem[key]).match(/px/i) && 'height') || 'auto_height';
+      return (height && String(height).match(/px/i) && 'height') || 'auto_height';
     }
 
     return undefined;
-  }, [styleItem]);
-
-  const getUnitsDisableChange = useCallback(() => (
-    // activeItem.itemType === 'block' || activeItem.itemType === 'group'
-    false
-  ), [activeItem]);
+  }, [height, width]);
 
   const getSizeDisableChange = useCallback((value: 'height' | 'width') => (
     // activeItem.itemType === 'block'
     // || activeItem.itemType === 'group'
-    styleItem[value] === 'auto'
-    || styleItem[value] === '100%'
-  ), [activeItem, styleItem]);
+    ((value === 'height' ? height : width)) === 'auto'
+    || (value === 'height' ? height : width) === '100%'
+  ), [height, width]);
 
   return (
     <div className="propsElementsBlock">
@@ -153,7 +160,7 @@ export const SizeBlock: React.FunctionComponent<IComponentProps> = memo((props) 
               className={styles.sizeField}
               type="text"
               name="width"
-              value={(getLastChar(styleItem.width) === '%' ? styleItem.width : parseFloat(String(styleItem.width))) || 'auto'}
+              value={(getLastChar(width) === '%' ? width : parseFloat(String(width))) || 'auto'}
               onChange={handleChangeSize}
               disabled={getSizeDisableChange('width')}
             />
@@ -162,13 +169,8 @@ export const SizeBlock: React.FunctionComponent<IComponentProps> = memo((props) 
               onChange={event => handleChangeUnits(event)}
               value={getSelected('width')}
               name="width_unit"
-              disabled={getUnitsDisableChange()}
             >
-              {
-                activeItem.itemType !== 'block' && activeItem.itemType !== 'group' && activeItem.itemType !== 'container' && (
-                  <option value="width">px</option>
-                )
-              }
+              <option value="width">px</option>
               <option value="auto_width">Auto</option>
               <option value="full_width">Full</option>
             </select>
@@ -178,7 +180,7 @@ export const SizeBlock: React.FunctionComponent<IComponentProps> = memo((props) 
               className={styles.sizeField}
               type="text"
               name="height"
-              value={(styleItem && parseFloat(String(styleItem.height))) || 'auto'}
+              value={parseFloat(String(height)) || 'auto'}
               onChange={handleChangeSize}
               disabled={getSizeDisableChange('height')}
             />
@@ -187,14 +189,8 @@ export const SizeBlock: React.FunctionComponent<IComponentProps> = memo((props) 
               onChange={handleChangeUnits}
               value={getSelected('height')}
               name="height_unit"
-              disabled={getUnitsDisableChange()}
             >
-              {
-                activeItem.itemType !== 'block' && activeItem.itemType !== 'group' && activeItem.itemType !== 'container' && (
-                  <option value="height">px</option>
-                )
-              }
-              {/* <option value="height">px</option> */}
+              <option value="height">px</option>
               <option value="auto_height">Auto</option>
             </select>
           </div>
@@ -203,3 +199,6 @@ export const SizeBlock: React.FunctionComponent<IComponentProps> = memo((props) 
     </div>
   );
 });
+
+const SizeBlock = connect(mapState, mapDispatch)(withPropsChangeHandler(Component));
+export { SizeBlock };
