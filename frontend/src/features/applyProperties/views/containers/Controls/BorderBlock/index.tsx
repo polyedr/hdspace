@@ -1,10 +1,10 @@
 import React, { useState, useCallback, } from 'react';
-import * as R from 'ramda';
+import { connect } from 'react-redux';
 import classNames from 'classnames';
 
-import { T as ProjectT } from '$redux/project';
+import { AppReduxState } from '$shared/types/app';
+import { actionsCreators, selectors } from '$redux/project/';
 import {
-  LIST_SCENARIO_TYPE,
   MAX_BORDER_RADIUS,
   MAX_BORDER_RADIUS_PERCENT,
   MAX_BORDER_WIDTH,
@@ -14,28 +14,49 @@ import {
 } from '$constants/defaultParams';
 import { strToNumber, getPermissibleValue, safeParseFloat, safeMatch } from '$utils/NumberHelper';
 import { validBorderRadius, CssLikeStyles } from '$utils/StyleHelper';
+import { withPropsChangeHandler, PropertiesChangeHandler } from '$utils/withPropsChangeHandler';
 import { ColorPicker } from '$components/UI/ColorPicker/';
 
-import { IPanelEditProps } from '../../PanelEditProps';
 const styles = require('./styles.scss');
 
-const accessBorderRadius = (styleItem: CssLikeStyles) => {
-  const matchedValue = safeMatch(styleItem['border-radius']);
+const accessBorderRadius = (border: CssLikeStyles['border-radius']) => {
+  const matchedValue = safeMatch(border);
   return matchedValue !== null ? matchedValue[0] : 'px';
 };
 
-interface IComponentProps {
-  activeItem: ProjectT.ActiveItem,
-  styleItem: IPanelEditProps['styleItem'],
-  updateElementStyles: IPanelEditProps['updateElementStyles'],
-  updateScenarioStyles: IPanelEditProps['updateScenarioStyles'],
+type StateProps = {
+  activeItemID: string;
+  borderStyle: string;
+  borderColor: string;
+  borderWidth: string;
+  borderRadius: string;
 }
 
-export const BorderBlock: React.FunctionComponent<IComponentProps> = React.memo(({
-  styleItem,
-  activeItem,
-  updateElementStyles,
-  updateScenarioStyles,
+function mapState(state: AppReduxState): StateProps {
+  const activeItemStyles = selectors.selectActiveItemStyles(state) as Required<CssLikeStyles>;
+
+  return {
+    activeItemID: selectors.selectActiveItem(state).itemId,
+    borderStyle: activeItemStyles['border-style'],
+    borderColor: activeItemStyles['border-color'],
+    borderWidth: activeItemStyles['border-width'],
+    borderRadius: activeItemStyles['border-radius'],
+  };
+}
+
+const mapDispatch = {
+  updateElementStyles: actionsCreators.updateElementStyles,
+  updateScenarioStyles: actionsCreators.updateScenarioStyles,
+};
+
+type Props = StateProps & typeof mapDispatch & PropertiesChangeHandler;
+
+export const Component: React.FunctionComponent<Props> = React.memo(({
+  borderStyle,
+  borderColor,
+  borderWidth,
+  updateStyles,
+  borderRadius,
 }) => {
   const [isBorderColorPickerOpen, setIsBorderColorPickerOpen] = useState<boolean>(false);
   const handleActiveColorPicker = useCallback(() => {
@@ -44,70 +65,43 @@ export const BorderBlock: React.FunctionComponent<IComponentProps> = React.memo(
 
   const handleBorder = useCallback(({ target: { value } }) => {
     const newWidth = getPermissibleValue(strToNumber(value), MIN_BORDER_WIDTH, MAX_BORDER_WIDTH);
-    const newBorder = {
-      ...styleItem,
-      'border-width': `${newWidth}px`,
-      'border-style': R.path(['border-style'], styleItem) || DEFAULT_BORDER['border-style'],
-      'border-color': R.path(['border-color'], styleItem) || DEFAULT_BORDER['border-color'],
-    };
 
-    if (LIST_SCENARIO_TYPE.indexOf(activeItem.itemType) !== -1) {
-      updateScenarioStyles(activeItem.itemId, newBorder);
-    } else {
-      updateElementStyles(activeItem.itemId, newBorder);
-    }
-  }, [activeItem, updateElementStyles, updateScenarioStyles, styleItem]);
+    updateStyles({
+      'border-width': `${newWidth}px`,
+      'border-style': borderStyle || DEFAULT_BORDER['border-style'],
+      'border-color': borderColor || DEFAULT_BORDER['border-color'],
+    });
+  }, [updateStyles]);
 
   const handleBorderRadius = useCallback(({ target: { value } }) => {
-    const newBorder = {
-      ...styleItem,
-      'border-radius': `${value}${accessBorderRadius(styleItem)}`,
-      'border-width': R.path(['border-width'], styleItem) || '1px',
-      'border-style': R.path(['border-style'], styleItem) || DEFAULT_BORDER['border-style'],
-      'border-color': R.path(['border-color'], styleItem) || DEFAULT_BORDER['border-color'],
-    };
-
-    if (LIST_SCENARIO_TYPE.indexOf(activeItem.itemType) !== -1) {
-      updateScenarioStyles(activeItem.itemId, newBorder);
-    } else {
-      updateElementStyles(activeItem.itemId, newBorder);
-    }
-  }, [activeItem, styleItem, updateElementStyles, updateScenarioStyles]);
+    updateStyles({
+      'border-radius': `${value}${accessBorderRadius(borderRadius)}`,
+      'border-width': borderWidth || '1px',
+      'border-style': borderStyle || DEFAULT_BORDER['border-style'],
+      'border-color': borderColor || DEFAULT_BORDER['border-color'],
+    });
+  }, [updateStyles]);
 
   const handleChangeBorderRadiusUnits = useCallback(({ target: { value } }) => {
-    const newBorder = {
-      ...styleItem,
-      'border-radius': validBorderRadius(`${(styleItem['border-radius'] && parseFloat(styleItem['border-radius'])) || 1}${value}`),
-      'border-width': R.path(['border-width'], styleItem) || '1px',
-      'border-style': R.path(['border-style'], styleItem) || DEFAULT_BORDER['border-style'],
-      'border-color': R.path(['border-color'], styleItem) || DEFAULT_BORDER['border-color'],
-    };
-
-    if (LIST_SCENARIO_TYPE.indexOf(activeItem.itemType) !== -1) {
-      updateScenarioStyles(activeItem.itemId, newBorder);
-    } else {
-      updateElementStyles(activeItem.itemId, newBorder);
-    }
-  }, [activeItem, styleItem, updateElementStyles, updateScenarioStyles]);
+    updateStyles({
+      'border-radius': validBorderRadius(`${(borderRadius && parseFloat(borderRadius)) || 1}${value}`),
+      'border-width': borderWidth || '1px',
+      'border-style': borderStyle || DEFAULT_BORDER['border-style'],
+      'border-color': borderColor || DEFAULT_BORDER['border-color'],
+    });
+  }, [updateStyles]);
 
   const handleChangeColor = useCallback((newColor) => {
     if (newColor.length > 7) {
       return;
     }
 
-    const newBorder = {
-      ...styleItem,
+    updateStyles({
       'border-color': newColor,
-      'border-width': R.path(['border-width'], styleItem) || '1px',
-      'border-style': R.path(['border-style'], styleItem) || DEFAULT_BORDER['border-style'],
-    };
-
-    if (LIST_SCENARIO_TYPE.indexOf(activeItem.itemType) !== -1) {
-      updateScenarioStyles(activeItem.itemId, newBorder);
-    } else {
-      updateElementStyles(activeItem.itemId, newBorder);
-    }
-  }, [activeItem, styleItem, updateElementStyles, updateScenarioStyles]);
+      'border-width': borderWidth || '1px',
+      'border-style': borderStyle || DEFAULT_BORDER['border-style'],
+    });
+  }, [updateStyles]);
 
   const handleChangeOpacity = useCallback(() => {
     console.log();
@@ -123,7 +117,7 @@ export const BorderBlock: React.FunctionComponent<IComponentProps> = React.memo(
               className={styles.borderWidthField}
               name="width"
               type="number"
-              value={safeParseFloat(styleItem['border-width']) || parseFloat(DEFAULT_BORDER['border-width'])}
+              value={safeParseFloat(borderWidth) || parseFloat(DEFAULT_BORDER['border-width'])}
               onChange={handleBorder}
               min={MIN_BORDER_WIDTH}
               max={MAX_BORDER_WIDTH}
@@ -135,18 +129,18 @@ export const BorderBlock: React.FunctionComponent<IComponentProps> = React.memo(
               name="radius"
               type="number"
               value={
-                safeParseFloat(validBorderRadius(styleItem['border-radius']))
+                safeParseFloat(validBorderRadius(borderRadius))
                 || parseFloat(DEFAULT_BORDER['border-radius'])
               }
               onChange={handleBorderRadius}
               min={MIN_BORDER_RADIUS}
-              max={styleItem['border-radius'] && styleItem['border-radius'].indexOf('px') !== -1 ? MAX_BORDER_RADIUS : MAX_BORDER_RADIUS_PERCENT || 100}
+              max={borderRadius && borderRadius.indexOf('px') !== -1 ? MAX_BORDER_RADIUS : MAX_BORDER_RADIUS_PERCENT || 100}
             />
             <select
               className="dropDown"
               name="radius_units"
               onChange={handleChangeBorderRadiusUnits}
-              value={accessBorderRadius(styleItem)}
+              value={accessBorderRadius(borderRadius)}
             >
               <option value="px">px</option>
               <option value="%">percent</option>
@@ -156,14 +150,14 @@ export const BorderBlock: React.FunctionComponent<IComponentProps> = React.memo(
         <div className="propsElementsInnerBlock">
           <ColorPicker
             display={isBorderColorPickerOpen}
-            color={styleItem['border-color'] || DEFAULT_BORDER['border-color']}
+            color={borderColor || DEFAULT_BORDER['border-color']}
             onChangeComplete={color => handleChangeColor(color.hex)}
             onClose={handleActiveColorPicker}
           />
           <input
             className="colorField"
             type="text"
-            value={styleItem['border-color'] || DEFAULT_BORDER['border-color']}
+            value={borderColor || DEFAULT_BORDER['border-color']}
             onChange={({ target: { value } }) => handleChangeColor(value)}
           />
           <input
@@ -177,3 +171,6 @@ export const BorderBlock: React.FunctionComponent<IComponentProps> = React.memo(
     </div>
   );
 });
+
+const BorderBlock = connect(mapState, mapDispatch)(withPropsChangeHandler(Component));
+export { BorderBlock };
