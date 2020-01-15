@@ -6,8 +6,6 @@ import * as R from 'ramda';
 import { AppReduxState } from '$shared/types/app';
 import { actionsCreators, selectors, T as ProjectT } from '$redux/project';
 import { Scrollbar } from '$components/UI/Scrollbar/';
-import { elementTypes } from '$constants/menu';
-import { LIST_SCENARIO_TYPE } from '$constants/defaultParams';
 import { Spinner } from '$components/UI/Spinner/';
 
 import { ActiveElementBlock } from '../Controls/ActiveElementBlock';
@@ -20,6 +18,12 @@ import { BackgroundBlock } from '../Controls/BackgroundBlock';
 import { BorderBlock } from '../Controls/BorderBlock';
 import { TypographyBlock } from '../Controls/TypographyBlock';
 const styles = require('./PropertiesPanel.scss');
+
+type OwnProps = {
+  activeItem: ProjectT.ActiveItem;
+  screen: ProjectT.IProjectScreen;
+  onDelScenarioItem(): void;
+};
 
 type StateProps = {
   scenarios: ProjectT.IScenarios;
@@ -44,10 +48,34 @@ const mapDispatch = {
   setIsAddElementsModalOpened: actionsCreators.setIsAddElementsModalOpened,
 };
 
-type OwnProps = {
-  activeItem: ProjectT.ActiveItem;
-  screen: ProjectT.IProjectScreen;
-  onDelScenarioItem: () => void;
+const ENTITIES = [
+  'container', 'button', 'textinput', 'hyperlink', 'ocrtext', 'image', 'select', 'map', 'calendar', 'clock',
+] as const;
+type Entity = typeof ENTITIES[number];
+type Control = keyof typeof CONTROLS;
+
+const CONTROLS = {
+  direction: GroupElementsDirectionBlock,
+  indents: IndentsBlock,
+  size: SizeBlock,
+  typography: TypographyBlock,
+  border: BorderBlock,
+  background: BackgroundBlock,
+  action: ActionBlock,
+  differentSettings: DifferentSettingsBlock,
+};
+
+const AVAILABLE_CONTROLS: Record<Entity, Control[]> = {
+  container: ['direction', 'typography', 'border', 'background'],
+  button: ['indents', 'size', 'typography', 'border', 'background', 'action', 'differentSettings'],
+  textinput: ['indents', 'size', 'typography', 'border', 'background', 'differentSettings'],
+  hyperlink: ['typography', 'border', 'background', 'action'],
+  ocrtext: ['indents', 'size', 'typography', 'border', 'background', 'differentSettings'],
+  image: ['indents', 'size', 'border', 'background'],
+  select: ['indents', 'size', 'typography', 'border', 'background'],
+  map: ['indents', 'size', 'typography', 'border', 'background', 'differentSettings'],
+  calendar: ['indents', 'size', 'typography', 'border', 'background'],
+  clock: ['indents', 'size', 'typography', 'border', 'background'],
 };
 
 export type PropertiesPanelProps = StateProps & typeof mapDispatch & OwnProps;
@@ -71,7 +99,7 @@ const Component: React.FC<PropertiesPanelProps> = ({
   setIsAddElementsModalOpened,
 }) => {
   const activeItemID = activeItem.itemType === 'root' ? 'root' : activeItem.itemId;
-  const currentItem = R.prop(activeItemID, screen.listSortable);
+  const currentItemType = activeItem.itemType === 'root' ? 'container' : R.prop(activeItemID, screen.listSortable)?.type;
   const disablePanel = !screen;
 
   return (
@@ -97,36 +125,10 @@ const Component: React.FC<PropertiesPanelProps> = ({
               <p>Properties</p>
             </div>
             <div className="propsPanelContentBlock">
-              {currentItem && LIST_SCENARIO_TYPE.indexOf(currentItem.type) !== -1 && (
-                <GroupElementsDirectionBlock />
-              )}
-                {currentItem && currentItem.type !== elementTypes.hyperLine && (
-                  <>
-                    <IndentsBlock />
-                    <SizeBlock />
-                  </>
-                )}
-                {
-                  currentItem && currentItem.type !== elementTypes.image && (
-                    <TypographyBlock />
-                  )
-                }
-                <BorderBlock />
-                <BackgroundBlock />
-                {
-                  (currentItem && currentItem.type === elementTypes.hyperLine
-                    || currentItem.type === elementTypes.button) && (
-                    <ActionBlock />
-                  )
-                }
-                {
-                  (currentItem && currentItem.type === elementTypes.button
-                  || currentItem.type === elementTypes.text
-                  || currentItem.type === elementTypes.input
-                  || currentItem.type === elementTypes.map) && (
-                    <DifferentSettingsBlock />
-                  )
-                }
+              {currentItemType && AVAILABLE_CONTROLS[currentItemType as Entity].map(controlName => {
+                const Component = CONTROLS[controlName];
+                return <Component key={controlName}/>
+              })}
             </div>
           </div>
         )}
@@ -135,6 +137,5 @@ const Component: React.FC<PropertiesPanelProps> = ({
     </div>
   );
 };
-
 
 export const PropertiesPanel = connect(mapState, mapDispatch)(Component);
