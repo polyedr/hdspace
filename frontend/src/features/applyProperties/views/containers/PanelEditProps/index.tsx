@@ -2,7 +2,6 @@ import React from 'react';
 import * as R from 'ramda';
 
 import { IScreenProps, IListSortable } from '$redux/project/types';
-import { getOptionsOfListScenario } from '$utils/parseScenario';
 import { elementTypes } from '$constants/menu';
 import { LIST_SCENARIO_TYPE } from '$constants/defaultParams';
 

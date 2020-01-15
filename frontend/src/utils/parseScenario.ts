@@ -1,6 +1,5 @@
 import * as R from 'ramda';
 
-import { IListOptions } from '$components/UI/NestedList';
 import { IDropDownOptions } from '$components/UI/DropDown';
 import {
   LIST_SCENARIO_TYPE,
@@ -31,39 +30,6 @@ export interface IListCategoryEl {
 export const convertScenarios = (data: IScenarioItem[]): IScenarios => (
   data.reduce((obj, item) => ({ ...obj, [item.id]: item }), {})
 );
-
-export const getOptionsOfNestedList = (scenarios: IScenarios, elements: IScenarioElements) => {
-  return Object.keys(scenarios).reduce((acc: IListOptions[], key) => {
-    const {
-      id,
-      name,
-      struct_type,
-      elements: listEl,
-    } = scenarios[key];
-
-    if (struct_type === 'block') {
-      const item: IListOptions = {
-        name: `scenario-${id}`,
-        label: name,
-        value: key,
-        elements: listEl.map((elId) => {
-          const label: string = R.path([elId, 'func_type'], elements)
-            || `${R.path([elId, 'struct_type'], scenarios)}${elId}`;
-
-          return {
-            name: String(elId),
-            label,
-            value: String(elId),
-          };
-        }),
-      };
-
-      return [...acc, item];
-    }
-
-    return acc;
-  }, []);
-};
 
 export const getOptionsOfListScenario = (scenarios: IScenarios) => (
   Object.keys(scenarios).reduce((acc, key) => {

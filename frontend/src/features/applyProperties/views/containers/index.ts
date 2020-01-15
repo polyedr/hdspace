@@ -7,6 +7,5 @@ export { GroupElementsDirectionBlock } from './Controls/GroupElementsDirectionBl
 export { IndentsBlock } from './Controls/IndentsBlock';
 export { RightPanel, IRightPanelProps } from './MainPanel/';
 export { PanelEditProps, IPanelEditProps } from './PanelEditProps/';
-export { ScenarioList } from './Controls/ScenarioList';
 export { SizeBlock } from './Controls/SizeBlock';
 export { TypographyBlock } from './Controls/TypographyBlock';

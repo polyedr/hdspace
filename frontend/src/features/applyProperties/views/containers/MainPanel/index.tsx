@@ -13,7 +13,6 @@ import { LIST_SCENARIO_TYPE } from '$constants/defaultParams';
 import { Spinner } from '$components/UI/Spinner/';
 
 import { PanelEditProps } from '../PanelEditProps';
-import { ScenarioList } from '../Controls/ScenarioList';
 const styles = require('./RightPanel.scss');
 
 const isScenario = (activeItem: ProjectT.ActiveItem) => LIST_SCENARIO_TYPE.indexOf(activeItem.itemType) !== -1;
@@ -31,9 +30,7 @@ const mapDispatchToProps = {
   updateElementParameters: Actions.updateElementParameters,
   addElement: Actions.addElement,
   addScenario: Actions.addScenario,
-  delScenario: Actions.delScenario,
   addContainer: Actions.addContainer,
-  renameScenario: Actions.renameScenario,
   setIsAddElementsModalOpened: Actions.setIsAddElementsModalOpened,
 };
 
@@ -59,8 +56,6 @@ const Component: React.FunctionComponent<IRightPanelProps> = ({
   addScenario,
   addContainer,
   updateElementParameters,
-  delScenario,
-  renameScenario,
   isAddElementsModalOpened,
   setIsAddElementsModalOpened,
 }) => {
@@ -94,12 +89,6 @@ const Component: React.FunctionComponent<IRightPanelProps> = ({
           updateElementParameters={updateElementParameters}
           isAddElementsModalOpened={isAddElementsModalOpened}
           setIsAddElementsModalOpened={setIsAddElementsModalOpened}
-        />
-        <ScenarioList
-          scenarios={scenarios}
-          scenarioElements={scenarioElements}
-          delScenario={delScenario}
-          renameScenario={renameScenario}
         />
       </Scrollbar>
       <Spinner active={loader} />
