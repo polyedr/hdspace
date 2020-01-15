@@ -9,7 +9,6 @@ import { IProjectScreen } from '$redux/project/types';
 import { selectors } from '$redux/project';
 import { Scrollbar } from '$components/UI/Scrollbar/';
 import { PanelEditProps } from '$components/RightPanel/PanelEditProps';
-import { ScenarioList } from '$components/RightPanel/ScenarioList';
 import { T as ProjectT } from '$redux/project';
 import { EditorProps } from '$containers/EditorLogic';
 import { LIST_SCENARIO_TYPE } from '$constants/defaultParams';
@@ -70,8 +69,6 @@ const Component: React.FunctionComponent<IRightPanelProps> = ({
   updateScenarioStyles,
   updateElementParameters,
   changeScenario,
-  delScenario,
-  renameScenario,
   changeElementType,
   isAddElementsModalOpened,
   setIsAddElementsModalOpened,
@@ -153,12 +150,6 @@ const Component: React.FunctionComponent<IRightPanelProps> = ({
           changeElementType={changeElementType}
           isAddElementsModalOpened={isAddElementsModalOpened}
           setIsAddElementsModalOpened={setIsAddElementsModalOpened}
-        />
-        <ScenarioList
-          scenarios={scenarios}
-          scenarioElements={scenarioElements}
-          delScenario={delScenario}
-          renameScenario={renameScenario}
         />
       </Scrollbar>
       <Spinner active={loader} />

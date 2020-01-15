@@ -2,10 +2,8 @@ import React from 'react';
 import * as R from 'ramda';
 
 import { IScreenProps, IListSortable } from '$redux/project/types';
-import { getOptionsOfListScenario } from '$utils/parseScenario';
 import { elementTypes } from '$constants/menu';
 import { ActiveElementBlock } from '$components/RightPanel/ActiveElementBlock';
-import { ScenarioBlock } from '$components/RightPanel/ChangeScenarioBlock';
 import { GroupElementsDirectionBlock } from '$components/RightPanel/GroupElementsDirectionBlock';
 import { ActionBlock } from '$components/RightPanel/ActionBlock';
 import { DifferentSettingsBlock } from '$components/RightPanel/DifferentSettingsBlock';
@@ -62,8 +60,6 @@ export const PanelEditProps: React.FunctionComponent<IPanelEditProps> = ({
   updateElementParameters,
   addScenario,
   addContainer,
-  changeScenario,
-  changeElementType,
 
   isAddElementsModalOpened,
   setIsAddElementsModalOpened,
@@ -87,14 +83,6 @@ export const PanelEditProps: React.FunctionComponent<IPanelEditProps> = ({
       {
         activeItem.itemType !== 'none' && (
           <>
-            <ScenarioBlock
-              activeItem={activeItem}
-              scenarios={scenarios}
-              getOptionsOfListScenario={getOptionsOfListScenario}
-              changeScenario={changeScenario}
-              changeElementType={changeElementType}
-              libraryElements={libraryElements}
-            />
             <div className="propsPanelBlock">
               <div className="propsPanelHeaderBlock">
                 <p>Elements</p>
