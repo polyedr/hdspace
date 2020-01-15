@@ -1,7 +1,7 @@
 import React from 'react';
 import * as R from 'ramda';
 
-import { IScreenProps, IListSortable } from '$redux/project/types';
+import { IListSortable } from '$redux/project/types';
 import { elementTypes } from '$constants/menu';
 import { LIST_SCENARIO_TYPE } from '$constants/defaultParams';
 
@@ -17,7 +17,6 @@ import { BorderBlock } from '../Controls/BorderBlock';
 import { TypographyBlock } from '../Controls/TypographyBlock';
 
 export interface IPanelEditProps {
-  params: IScreenProps,
   disablePanel: boolean,
   listSortable: IListSortable,
   activeItem: IRightPanelProps['activeItem'],
@@ -26,21 +25,18 @@ export interface IPanelEditProps {
   onDelScenarioItem: IRightPanelProps['onDelScenarioItem'],
   addScenario: IRightPanelProps['addScenario'],
   addContainer: IRightPanelProps['addContainer'],
-  updateElementParameters: IRightPanelProps['updateElementParameters'],
   isAddElementsModalOpened: boolean;
   setIsAddElementsModalOpened(isOpened: boolean): void;
 }
 
 export const PanelEditProps: React.FunctionComponent<IPanelEditProps> = ({
   activeItem,
-  params,
   listSortable,
   scenarios,
   libraryElements,
   disablePanel,
 
   onDelScenarioItem,
-  updateElementParameters,
   addScenario,
   addContainer,
 
@@ -98,12 +94,7 @@ export const PanelEditProps: React.FunctionComponent<IPanelEditProps> = ({
                   || currentItem.type === elementTypes.text
                   || currentItem.type === elementTypes.input
                   || currentItem.type === elementTypes.map) && (
-                    <DifferentSettingsBlock
-                      params={params}
-                      activeItem={activeItem}
-                      itemType={currentItem.type}
-                      updateElementParameters={updateElementParameters}
-                    />
+                    <DifferentSettingsBlock />
                   )
                 }
               </div>

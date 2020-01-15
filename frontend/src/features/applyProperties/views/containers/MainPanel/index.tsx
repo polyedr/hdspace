@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 
@@ -8,18 +8,14 @@ import { IProjectScreen } from '$redux/project/types';
 import { selectors } from '$redux/project';
 import { Scrollbar } from '$components/UI/Scrollbar/';
 import { T as ProjectT } from '$redux/project';
-import { LIST_SCENARIO_TYPE } from '$constants/defaultParams';
 
 import { Spinner } from '$components/UI/Spinner/';
 
 import { PanelEditProps } from '../PanelEditProps';
 const styles = require('./RightPanel.scss');
 
-const isScenario = (activeItem: ProjectT.ActiveItem) => LIST_SCENARIO_TYPE.indexOf(activeItem.itemType) !== -1;
-
 const mapStateToProps = (state: AppReduxState) => ({
   scenarios: selectors.selectScenarios(state),
-  scenarioElements: selectors.selectScenariosElements(state),
   libraryElements: selectors.selectLibraryElements(state),
   currentScreen: selectors.selectCurrentScreen(state),
   isAddElementsModalOpened: selectors.selectIsAddElementsModalOpened(state),
@@ -27,53 +23,43 @@ const mapStateToProps = (state: AppReduxState) => ({
 });
 
 const mapDispatchToProps = {
-  updateElementParameters: Actions.updateElementParameters,
   addElement: Actions.addElement,
   addScenario: Actions.addScenario,
   addContainer: Actions.addContainer,
   setIsAddElementsModalOpened: Actions.setIsAddElementsModalOpened,
 };
 
-export type IRightPanelProps = ReturnType<typeof mapStateToProps>& typeof mapDispatchToProps & {
-  activeItem: ProjectT.ActiveItem,
-  screen: IProjectScreen,
+type OwnProps = {
+  activeItem: ProjectT.ActiveItem;
+  screen: IProjectScreen;
+  onDelScenarioItem: () => void;
+};
 
-  // onDelElement: () => void,
-  onDelScenarioItem: () => void,
-  // onChangeMove: React.ChangeEventHandler<HTMLInputElement>,
-}
+export type IRightPanelProps = ReturnType<typeof mapStateToProps>& typeof mapDispatchToProps & OwnProps;
 
-const Component: React.FunctionComponent<IRightPanelProps> = ({
+const SCROLLBAR_STYLES = {
+  height: '100%',
+};
+
+const Component: React.FC<IRightPanelProps> = ({
   activeItem,
   screen,
   onDelScenarioItem,
   loader,
 
   scenarios,
-  scenarioElements,
   libraryElements,
 
   addScenario,
   addContainer,
-  updateElementParameters,
   isAddElementsModalOpened,
   setIsAddElementsModalOpened,
 }) => {
-  const getParams = useCallback(() => {
-    if (activeItem.itemType === 'none') {
-      return {};
-    }
-
-    const itemID = parseInt(activeItem.itemId, 10);
-    return isScenario(activeItem) ? scenarios[itemID].parameters : scenarioElements[itemID].parameters;
-  }, [activeItem, scenarios, scenarioElements]);
 
   return (
     <div className={classNames(styles.editorRightPanel)}>
       <Scrollbar
-        style={{
-          height: '100%',
-        }}
+        style={SCROLLBAR_STYLES}
         maxHeight="100%"
       >
         <PanelEditProps
@@ -83,10 +69,8 @@ const Component: React.FunctionComponent<IRightPanelProps> = ({
           scenarios={scenarios}
           libraryElements={libraryElements}
           onDelScenarioItem={onDelScenarioItem}
-          params={getParams()}
           addScenario={addScenario}
           addContainer={addContainer}
-          updateElementParameters={updateElementParameters}
           isAddElementsModalOpened={isAddElementsModalOpened}
           setIsAddElementsModalOpened={setIsAddElementsModalOpened}
         />
@@ -95,5 +79,6 @@ const Component: React.FunctionComponent<IRightPanelProps> = ({
     </div>
   );
 };
+
 
 export const RightPanel = connect(mapStateToProps, mapDispatchToProps)(Component);

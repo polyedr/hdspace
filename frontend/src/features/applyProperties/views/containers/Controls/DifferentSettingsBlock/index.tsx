@@ -1,7 +1,8 @@
 import React, { useCallback } from 'react';
+import { connect } from 'react-redux';
 
-import * as Actions from '$redux/project/actions';
-import { T as ProjectT } from '$redux/project';
+import { AppReduxState } from '$shared/types/app';
+import { actionsCreators, selectors, T as ProjectT } from '$redux/project/';
 import { elementTypes } from '$constants/menu';
 import {
   DEFAULT_PLACEHOLDER,
@@ -15,57 +16,81 @@ import {
 } from '$constants/defaultParams';
 import { IMapProps } from '$redux/project/types';
 import { getPermissibleValue } from '$utils/NumberHelper';
+import { withParamsChangeHandler, ParamsChangeHandler } from '$utils/withParamsChangeHandler';
 
-import { IPanelEditProps } from '../../PanelEditProps';
 const styles = require('./styles.scss');
 
 const ZOOM_STEP = 0.5;
 
-interface IComponentProps {
-  params: IPanelEditProps['params'],
-  activeItem: ProjectT.ActiveItem,
-  itemType: string,
-  updateElementParameters: typeof Actions.updateElementParameters,
+type StateProps = {
+  activeItemID: string;
+  activeItemType: string;
+  map_props: ProjectT.IScreenProps['map_props'];
+  dynamic_placeholder: ProjectT.IScreenProps['dynamic_placeholder'];
+  placeholder: ProjectT.IScreenProps['placeholder'];
+  content: ProjectT.IScreenProps['content'];
 }
 
-const Component: React.FunctionComponent<IComponentProps> = ({
-  params,
-  activeItem,
-  itemType,
-  updateElementParameters,
+function mapState(state: AppReduxState): StateProps {
+  const activeItemParams = selectors.selectActiveItemParams(state) as any;
+  const activeItem = selectors.selectActiveItem(state);
+
+  return {
+    activeItemID: activeItem.itemId,
+    activeItemType: activeItem.itemType,
+    map_props: activeItemParams.map_props,
+    dynamic_placeholder: activeItemParams.dynamic_placeholder,
+    placeholder: activeItemParams.placeholder,
+    content: activeItemParams.content,
+  };
+}
+
+const mapDispatch = {
+  updateElementParameters: actionsCreators.updateElementParameters,
+};
+
+type Props = StateProps & typeof mapDispatch & ParamsChangeHandler;
+
+const Component: React.FC<Props> = ({
+  map_props,
+  dynamic_placeholder,
+  placeholder,
+  activeItemType,
+  content,
+  updateParams,
 }) => {
   const handlePlaceholderChange = useCallback(({ target: { value } }) => {
-    updateElementParameters(activeItem.itemId, { dynamic_placeholder: value });
-  }, [activeItem.itemId, updateElementParameters]);
+    updateParams({ dynamic_placeholder: value });
+  }, [updateParams]);
 
   const handleTextContentChange = useCallback(({ target: { value } }) => {
-    updateElementParameters(activeItem.itemId, { content: value });
-  }, [activeItem.itemId, updateElementParameters]);
+    updateParams({ content: value });
+  }, [updateParams]);
 
   const handleCenterMapCoordsChange = useCallback(({ target: { name, value } }: React.ChangeEvent<HTMLInputElement>) => {
-    if (!params.map_props) return;
+    if (!map_props) return;
 
     let newCenter;
 
     if (name === 'center_lat') {
       newCenter = {
         lat: Number(getPermissibleValue(Number(value), MIN_LATITUDE, MAX_LATITUDE).toFixed(5)),
-        lng: params.map_props.center.lng,
+        lng: map_props.center.lng,
       };
     } else {
       newCenter = {
-        lat: params.map_props?.center.lat,
+        lat: map_props?.center.lat,
         lng: Number(getPermissibleValue(Number(value), MIN_LONGITUDE, MAX_LONGITUDE).toFixed(5)),
       };
     }
 
     const newMapProps = {
-      ...params.map_props,
+      ...map_props,
       center: newCenter,
     };
 
-    updateElementParameters(activeItem.itemId, { map_props: newMapProps });
-  }, [params.map_props, activeItem.itemId, updateElementParameters]);
+    updateParams({ map_props: newMapProps });
+  }, [map_props, updateParams]);
 
   const handleMarkerTextChange = useCallback(({ target: { value } }) => {
     if (value.length > 5) {
@@ -73,25 +98,25 @@ const Component: React.FunctionComponent<IComponentProps> = ({
     }
 
     const newMapProps = {
-      ...params.map_props,
+      ...map_props,
       markerText: value,
     };
 
-    updateElementParameters(activeItem.itemId, { map_props: newMapProps as IMapProps }); // TODO: fix typings
-  }, [params.map_props, activeItem.itemId, updateElementParameters]);
+    updateParams({ map_props: newMapProps as IMapProps }); // TODO: fix typings
+  }, [map_props, updateParams]);
 
   const handleMapZoomChange = useCallback(({ target: { value } }) => {
     const newMapProps = {
-      ...params.map_props,
+      ...map_props,
       zoom: getPermissibleValue(Number(value), MIN_MAP_ZOOM, MAX_MAP_ZOOM),
     };
 
-    updateElementParameters(activeItem.itemId, { map_props: newMapProps as IMapProps });
-  }, [params.map_props, activeItem.itemId, updateElementParameters]);
+    updateParams({ map_props: newMapProps as IMapProps });
+  }, [map_props, updateParams]);
 
   return (
     <div className="propsElementsBlock">
-      {itemType === elementTypes.input && (
+      {activeItemType === elementTypes.input && (
         <React.Fragment>
           <p className="propsElementsBlockTitle">Placeholder</p>
           <div className="propsElementsContentBlock">
@@ -101,14 +126,14 @@ const Component: React.FunctionComponent<IComponentProps> = ({
                 id="placeholder_setting_input"
                 type="text"
                 placeholder={DEFAULT_PLACEHOLDER}
-                value={params.dynamic_placeholder || params.placeholder}
+                value={dynamic_placeholder || placeholder}
                 onChange={handlePlaceholderChange}
               />
             </div>
           </div>
         </React.Fragment>
       )}
-      {(itemType === elementTypes.text || itemType === elementTypes.button) && (
+      {(activeItemType === elementTypes.text || activeItemType === elementTypes.button) && (
         <React.Fragment>
           <p className="propsElementsBlockTitle">Text content</p>
           <div className="propsElementsContentBlock">
@@ -116,14 +141,14 @@ const Component: React.FunctionComponent<IComponentProps> = ({
               <textarea
                 className={styles.textContentField}
                 name="text_content"
-                value={params.content || activeItem.itemType || ''}
+                value={content || activeItemType || ''}
                 onChange={handleTextContentChange}
               />
             </div>
           </div>
         </React.Fragment>
       )}
-      {(itemType === elementTypes.map) && (
+      {(activeItemType === elementTypes.map) && (
         <React.Fragment>
           <p className="propsElementsBlockTitle">Map props</p>
           <div className="propsElementsContentBlock">
@@ -133,7 +158,7 @@ const Component: React.FunctionComponent<IComponentProps> = ({
                 type="number"
                 id="map_center_lat"
                 name="center_lat"
-                value={(params.map_props && params.map_props.center.lat) || DEFAULT_MAP_PROPS.center.lat}
+                value={(map_props?.center.lat) || DEFAULT_MAP_PROPS.center.lat}
                 min={MIN_LATITUDE}
                 max={MAX_LATITUDE}
                 step={ZOOM_STEP}
@@ -144,7 +169,7 @@ const Component: React.FunctionComponent<IComponentProps> = ({
                 type="number"
                 id="map_center_lng"
                 name="center_lng"
-                value={(params.map_props && params.map_props.center.lng) || DEFAULT_MAP_PROPS.center.lng}
+                value={(map_props?.center.lng) || DEFAULT_MAP_PROPS.center.lng}
                 min={MIN_LONGITUDE}
                 max={MAX_LONGITUDE}
                 step={ZOOM_STEP}
@@ -155,7 +180,7 @@ const Component: React.FunctionComponent<IComponentProps> = ({
                 type="number"
                 id="map_zoom"
                 name="zoom"
-                value={(params.map_props && params.map_props.zoom) || DEFAULT_MAP_PROPS.zoom}
+                value={(map_props?.zoom) || DEFAULT_MAP_PROPS.zoom}
                 min={MIN_MAP_ZOOM}
                 max={MAX_MAP_ZOOM}
                 onChange={handleMapZoomChange}
@@ -167,7 +192,7 @@ const Component: React.FunctionComponent<IComponentProps> = ({
                 type="text"
                 name="markerText"
                 id="map_markerText"
-                value={(params.map_props && params.map_props.markerText) || DEFAULT_MAP_PROPS.markerText}
+                value={(map_props?.markerText) || DEFAULT_MAP_PROPS.markerText}
                 onChange={handleMarkerTextChange}
               />
             </div>
@@ -178,4 +203,5 @@ const Component: React.FunctionComponent<IComponentProps> = ({
   );
 };
 
-export const DifferentSettingsBlock = React.memo(Component);
+const DifferentSettingsBlock = connect(mapState, mapDispatch)(withParamsChangeHandler(Component));
+export { DifferentSettingsBlock };

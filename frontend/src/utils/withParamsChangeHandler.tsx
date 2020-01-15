@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react';
 
 import { actionsCreators } from '$redux/project/';
+import { T as ProjectT } from '$redux/project';
 
 type RequiredByWithParamsChangeHandlers = {
   updateElementParameters: typeof actionsCreators.updateElementParameters;
@@ -10,7 +11,7 @@ type RequiredByWithParamsChangeHandlers = {
 type Params = { [key: string]: string | number };
 
 export type ParamsChangeHandler = {
-  updateParams(payload: Params): void;
+  updateParams(payload: { [P in keyof ProjectT.IScreenProps]: ProjectT.IScreenProps[P] }): void;
 };
 
 export function withParamsChangeHandler<T extends RequiredByWithParamsChangeHandlers & ParamsChangeHandler>(
