@@ -19,12 +19,12 @@ import {
 import { isIncludes } from '$utils/StringHelper';
 import { uniqueId } from '$utils/NumberHelper';
 import { IUploadFile, UploadFile } from '$components/UI/UploadFile';
-import { IRightPanelProps } from '$features/applyProperties';
+import { PropertiesPanelProps } from '$features/applyProperties';
 
 const styles = require('./ActionsBlock.scss');
 
 type Props = {
-  scenarios: IRightPanelProps['scenarios'];
+  scenarios: PropertiesPanelProps['scenarios'];
   tabs: string[];
   groupElements: IGroupElement[];
   activeTab: string;
@@ -32,7 +32,7 @@ type Props = {
   scenarioTypeId: string | null;
   scenarioName: string;
   scenarioState: string;
-  libraryElements: IRightPanelProps['libraryElements'];
+  libraryElements: PropertiesPanelProps['libraryElements'];
   startTemplate: string;
   changeTab: any;
   setChooseElements(listElType: IChooseElement[]): void;

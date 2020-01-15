@@ -10,7 +10,7 @@ import { MODAL_ADD_ELEMENTS_TABS } from '$constants/defaultParams';
 import { getGroupElements, IListCategoryEl, parseAddElementsTabs } from '$utils/parseScenario';
 import { selectors, actionsCreators } from '$redux/project';
 import { AppReduxState } from '$shared/types/app';
-import { IRightPanelProps } from '$features/applyProperties';
+import { PropertiesPanelProps } from '$features/applyProperties';
 
 const styles = require('./ModalAddElements.scss');
 
@@ -34,8 +34,8 @@ const mapDispatchToProps = {
 
 type OwnProps = {
   active: boolean;
-  scenarios: IRightPanelProps['scenarios'];
-  libraryElements: IRightPanelProps['libraryElements'];
+  scenarios: PropertiesPanelProps['scenarios'];
+  libraryElements: PropertiesPanelProps['libraryElements'];
   onClose(): void;
   onConfirm(scenarioTypeID: number | null, name: string, elementsToFormScenario: IChooseElement[]): void;
 };

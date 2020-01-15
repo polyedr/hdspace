@@ -8,7 +8,7 @@ import { Recursive } from '$components/Editor/Recursive';
 import { Icon } from '$components/UI/Icon';
 import { Checkbox } from '$components/UI/Checkbox';
 import { Button } from '$components/UI/Button';
-import { RightPanel } from '$features/applyProperties';
+import { PropertiesPanel } from '$features/applyProperties';
 
 import * as Actions from '$redux/project/actions';
 import { T as ProjectT } from '$redux/project';
@@ -360,7 +360,7 @@ export const Editor: React.FC<IEditProps> = memo(({
       }
       {
         (!isPrototypeMode) && (
-          <RightPanel
+          <PropertiesPanel
             activeItem={activeItem}
             screen={screen}
             onDelScenarioItem={handleDelScenarioItem}

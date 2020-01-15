@@ -2,13 +2,13 @@ import React, { memo, useCallback } from 'react';
 import { T as ProjectT } from '$redux/project';
 import { Button } from '$components/UI/Button';
 import { Icon } from '$components/UI/Icon';
-import { IRightPanelProps } from '$features/applyProperties';
+import { PropertiesPanelProps } from '$features/applyProperties';
 
 const styles = require('./NavigateItem.scss');
 
 interface INavigateItemProps {
   activeItem: ProjectT.ActiveItem,
-  addContainer: IRightPanelProps['addContainer'],
+  addContainer: PropertiesPanelProps['addContainer'],
 
 }
 export const NavigateItem: React.FunctionComponent<INavigateItemProps> = memo(({

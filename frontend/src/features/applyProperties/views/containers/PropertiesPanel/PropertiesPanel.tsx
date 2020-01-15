@@ -19,7 +19,7 @@ import { IndentsBlock } from '../Controls/IndentsBlock';
 import { BackgroundBlock } from '../Controls/BackgroundBlock';
 import { BorderBlock } from '../Controls/BorderBlock';
 import { TypographyBlock } from '../Controls/TypographyBlock';
-const styles = require('./RightPanel.scss');
+const styles = require('./PropertiesPanel.scss');
 
 type StateProps = {
   scenarios: ProjectT.IScenarios;
@@ -50,13 +50,13 @@ type OwnProps = {
   onDelScenarioItem: () => void;
 };
 
-export type IRightPanelProps = StateProps & typeof mapDispatch & OwnProps;
+export type PropertiesPanelProps = StateProps & typeof mapDispatch & OwnProps;
 
 const SCROLLBAR_STYLES = {
   height: '100%',
 };
 
-const Component: React.FC<IRightPanelProps> = ({
+const Component: React.FC<PropertiesPanelProps> = ({
   activeItem,
   screen,
   onDelScenarioItem,
@@ -137,4 +137,4 @@ const Component: React.FC<IRightPanelProps> = ({
 };
 
 
-export const RightPanel = connect(mapState, mapDispatch)(Component);
+export const PropertiesPanel = connect(mapState, mapDispatch)(Component);

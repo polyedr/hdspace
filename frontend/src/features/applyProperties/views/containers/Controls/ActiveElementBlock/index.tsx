@@ -7,17 +7,17 @@ import { Modal } from '$components/UI/Modal/';
 import { ModalAddElements } from '$components/ModalAddElements/MainBlock/';
 import { NavigateItem } from '$components/Editor/NavigateItem/';
 
-import { IRightPanelProps } from '../../MainPanel/';
+import { PropertiesPanelProps } from '../../PropertiesPanel/PropertiesPanel';
 const styles = require('./styles.scss');
 
 interface IComponentProps {
-  activeItem: IRightPanelProps['activeItem'],
+  activeItem: PropertiesPanelProps['activeItem'],
   disablePanel: boolean,
-  onDelScenarioItem: IRightPanelProps['onDelScenarioItem'],
-  scenarios: IRightPanelProps['scenarios'],
-  libraryElements: IRightPanelProps['libraryElements'],
-  addScenario: IRightPanelProps['addScenario'],
-  addContainer: IRightPanelProps['addContainer'],
+  onDelScenarioItem: PropertiesPanelProps['onDelScenarioItem'],
+  scenarios: PropertiesPanelProps['scenarios'],
+  libraryElements: PropertiesPanelProps['libraryElements'],
+  addScenario: PropertiesPanelProps['addScenario'],
+  addContainer: PropertiesPanelProps['addContainer'],
   isAddElementsModalOpened: boolean;
   setIsAddElementsModalOpened(isOpened: boolean): void;
 }

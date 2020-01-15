@@ -5,6 +5,6 @@ export { BorderBlock } from './Controls/BorderBlock';
 export { DifferentSettingsBlock } from './Controls/DifferentSettingsBlock';
 export { GroupElementsDirectionBlock } from './Controls/GroupElementsDirectionBlock';
 export { IndentsBlock } from './Controls/IndentsBlock';
-export { RightPanel, IRightPanelProps } from './MainPanel/';
+export { PropertiesPanel, PropertiesPanelProps } from './PropertiesPanel/PropertiesPanel';
 export { SizeBlock } from './Controls/SizeBlock';
 export { TypographyBlock } from './Controls/TypographyBlock';
