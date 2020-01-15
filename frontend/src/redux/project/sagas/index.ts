@@ -26,7 +26,6 @@ import {
   renameProjectSaga,
 } from '$redux/project/sagas/project';
 import {
-  changeScenarioSaga,
   delScenarioSaga,
   renameScenarioSaga,
   runLayoutAlgorithm,
@@ -391,48 +390,6 @@ function* updateElementParameters(action: ReturnType<typeof Actions.updateElemen
   }
 }
 
-function* changeElementTypeSaga(action: ReturnType<typeof Actions.changeElementType>) {
-  const { type, itemID } = action.payload;
-  // update elements
-
-  console.error('attempt to changeElementTypeSaga!');
-  return;
-
-  const libraryElements: ReturnType<typeof selectors.selectLibraryElements> = yield select(selectors.selectLibraryElements);
-  const scenarioElements: ReturnType<typeof selectors.selectScenariosElements> = yield select(
-    selectors.selectScenariosElements,
-  );
-  const { listSortable }: ReturnType<typeof selectors.selectCurrentScreen> = yield select(selectors.selectCurrentScreen);
-
-  // @ts-ignore
-  const { elementId } = listSortable[itemID];
-  const currElement = scenarioElements[elementId];
-  const baseElement = libraryElements[type];
-
-  const convertElement = {
-    ...baseElement,
-    id: elementId,
-    scenario: currElement.scenario,
-    parameters: {
-      ...baseElement.parameters,
-      ...currElement.parameters,
-    },
-    styles: {
-      ...baseElement.styles,
-      ...currElement.styles,
-    },
-  };
-
-  const updateScenarioEl = {
-    ...scenarioElements,
-    [elementId]: convertElement,
-  };
-
-  yield put(Actions.setScenarioElements(updateScenarioEl));
-
-  // yield call(scenarioSaga.runLayoutAlgorithm, updateScenarioEl);
-}
-
 function* uploadFileSaga(
   { payload: { file: { file } } }: ReturnType<typeof Actions.uploadFile>
 ) {
@@ -602,13 +559,11 @@ const setListSortableType: ProjectT.SetListSortable['type'] = 'PROJECTS:SET_LIST
 const updateElementStylesType: ProjectT.UpdateElementStyles['type'] = 'PROJECTS:UPDATE_ELEMENT_STYLES';
 const updateScenarioStylesType: ProjectT.UpdateScenarioStyles['type'] = 'PROJECTS:UPDATE_SCENARIO_STYLES';
 const updateElementParametersType: ProjectT.UpdateElementParameters['type'] = 'PROJECTS:UPDATE_ELEMENT_PARAMETERS';
-const changeScenarioType: ProjectT.ChangeScenario['type'] = 'PROJECTS:CHANGE_SCENARIO';
 const addScenarioType: ProjectT.AddScenario['type'] = 'PROJECTS:ADD_SCENARIO';
 const deleteScenarioType: ProjectT.DeleteScenario['type'] = 'PROJECTS:DELETE_SCENARIO';
 const renameScenarioType: ProjectT.RenameScenario['type'] = 'PROJECTS:RENAME_SCENARIO';
 const addContainerType: ProjectT.AddContainer['type'] = 'PROJECTS:ADD_CONTAINER';
 const delScenarioItemType: ProjectT.DeleteScenarioItem['type'] = 'PROJECTS:DELETE_SCENARIO_ITEM';
-const changeElementTypeType: ProjectT.ChangeElementType['type'] = 'PROJECTS:CHANGE_ELEMENT_TYPE';
 const uploadFileType: ProjectT.UploadFile['type'] = 'PROJECTS:UPLOAD_FILE';
 const getScreenNNType: ProjectT.GetScreenNN['type'] = 'PROJECTS:GET_SCREEN_NN';
 const runLayoutAlgorithmType: ProjectT.RunLayoutAlgorithm['type'] = 'PROJECTS:RUN_LAYOUT_ALGORITHM';
@@ -638,14 +593,12 @@ export default function* projectSaga() {
   yield takeLatest(updateScenarioStylesType, updateScenarioStyles);
   yield takeLatest(updateElementParametersType, updateElementParameters);
 
-  yield takeLatest(changeScenarioType, changeScenarioSaga);
   yield takeEvery(addScenarioType, addScenarioSaga);
   yield takeLatest(deleteScenarioType, delScenarioSaga);
   yield takeLatest(renameScenarioType, renameScenarioSaga);
   yield takeEvery(addContainerType, wrapIntoContainerSaga);
 
   yield takeLatest(delScenarioItemType, delScenarioItemSaga);
-  yield takeLatest(changeElementTypeType, changeElementTypeSaga);
 
   yield takeLatest(uploadFileType, uploadFileSaga);
   yield takeLatest(getScreenNNType, screenSaga.getScreenNNSaga);

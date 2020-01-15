@@ -30,8 +30,6 @@ const mapStateToProps = (state: AppReduxState) => ({
 const mapDispatchToProps = {
   updateElementParameters: Actions.updateElementParameters,
   addElement: Actions.addElement,
-  changeScenario: Actions.changeScenario,
-  changeElementType: Actions.changeElementType,
   addScenario: Actions.addScenario,
   delScenario: Actions.delScenario,
   addContainer: Actions.addContainer,
@@ -61,10 +59,8 @@ const Component: React.FunctionComponent<IRightPanelProps> = ({
   addScenario,
   addContainer,
   updateElementParameters,
-  changeScenario,
   delScenario,
   renameScenario,
-  changeElementType,
   isAddElementsModalOpened,
   setIsAddElementsModalOpened,
 }) => {
@@ -95,9 +91,7 @@ const Component: React.FunctionComponent<IRightPanelProps> = ({
           params={getParams()}
           addScenario={addScenario}
           addContainer={addContainer}
-          changeScenario={changeScenario}
           updateElementParameters={updateElementParameters}
-          changeElementType={changeElementType}
           isAddElementsModalOpened={isAddElementsModalOpened}
           setIsAddElementsModalOpened={setIsAddElementsModalOpened}
         />

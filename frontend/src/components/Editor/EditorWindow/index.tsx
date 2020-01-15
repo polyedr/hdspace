@@ -31,7 +31,6 @@ export interface IScreenMode {
 }
 
 export interface IEditProps {
-  project: EditorProps['currentProject'],
   screen: EditorProps['currentScreen'],
   scenarios: EditorProps['scenarios'],
   scenarioElements: EditorProps['scenarioElements'],
@@ -50,7 +49,6 @@ export interface IEditProps {
 }
 
 export const Editor: React.FC<IEditProps> = memo(({
-  project,
   screen,
   scenarios,
   scenarioElements,
@@ -364,9 +362,7 @@ export const Editor: React.FC<IEditProps> = memo(({
         (!isPrototypeMode) && (
           <RightPanel
             activeItem={activeItem}
-            project={project}
             screen={screen}
-            // onDelElement={handleDelElement}
             onDelScenarioItem={handleDelScenarioItem}
           />
         )

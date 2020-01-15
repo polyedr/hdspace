@@ -59,11 +59,6 @@ export function* runLayoutAlgorithm(action: T.RunLayoutAlgorithm) {
   yield put(Actions.runLayoutAlgorithmFinished());
 }
 
-// don't know this saga's purpose
-export function* changeScenarioSaga(action: ReturnType<typeof Actions.changeScenario>) {
-  console.log('changeScenarioSaga!');
-}
-
 export function* createContainer(scenario?: Partial<T.IScenarioItem>) {
   const currentScreen: ReturnType<typeof selectors.selectCurrentScreen> = yield select(
     selectors.selectCurrentScreen

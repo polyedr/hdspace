@@ -4,12 +4,9 @@ import * as R from 'ramda';
 import { IScreenProps, IListSortable } from '$redux/project/types';
 import { getOptionsOfListScenario } from '$utils/parseScenario';
 import { elementTypes } from '$constants/menu';
-import { EditorProps } from '$containers/EditorLogic';
 import { LIST_SCENARIO_TYPE } from '$constants/defaultParams';
-import { CssLikeStyles } from '$utils/StyleHelper';
 
 import { ActiveElementBlock } from '../Controls/ActiveElementBlock';
-import { ScenarioBlock } from '../Controls/ChangeScenarioBlock';
 import { GroupElementsDirectionBlock } from '../Controls/GroupElementsDirectionBlock';
 import { ActionBlock } from '../Controls/ActionBlock';
 import { DifferentSettingsBlock } from '../Controls/DifferentSettingsBlock';
@@ -28,11 +25,9 @@ export interface IPanelEditProps {
   scenarios: IRightPanelProps['scenarios'],
   libraryElements: IRightPanelProps['libraryElements'],
   onDelScenarioItem: IRightPanelProps['onDelScenarioItem'],
-  changeScenario: IRightPanelProps['changeScenario'],
   addScenario: IRightPanelProps['addScenario'],
   addContainer: IRightPanelProps['addContainer'],
   updateElementParameters: IRightPanelProps['updateElementParameters'],
-  changeElementType: IRightPanelProps['changeElementType'],
   isAddElementsModalOpened: boolean;
   setIsAddElementsModalOpened(isOpened: boolean): void;
 }
@@ -49,8 +44,6 @@ export const PanelEditProps: React.FunctionComponent<IPanelEditProps> = ({
   updateElementParameters,
   addScenario,
   addContainer,
-  changeScenario,
-  changeElementType,
 
   isAddElementsModalOpened,
   setIsAddElementsModalOpened,
@@ -74,14 +67,6 @@ export const PanelEditProps: React.FunctionComponent<IPanelEditProps> = ({
       {
         activeItem.itemType !== 'none' && (
           <>
-            <ScenarioBlock
-              activeItem={activeItem}
-              scenarios={scenarios}
-              getOptionsOfListScenario={getOptionsOfListScenario}
-              changeScenario={changeScenario}
-              changeElementType={changeElementType}
-              libraryElements={libraryElements}
-            />
             <div className="propsPanelBlock">
               <div className="propsPanelHeaderBlock">
                 <p>Elements</p>

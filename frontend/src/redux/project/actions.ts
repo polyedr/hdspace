@@ -171,16 +171,6 @@ export const updateElementParameters = (itemID: string, parameters: T.IScreenPro
   payload: { itemID, parameters },
 });
 
-export const changeScenario = (itemID: string, scenarioID: number): T.ChangeScenario => ({
-  type: 'PROJECTS:CHANGE_SCENARIO',
-  payload: { itemID, scenarioID },
-});
-
-export const changeElementType = (itemID: string, type: string): T.ChangeElementType => ({
-  type: 'PROJECTS:CHANGE_ELEMENT_TYPE',
-  payload: { type, itemID },
-});
-
 export const delScenarioItem = (id: string): T.DeleteScenarioItem => ({
   type: 'PROJECTS:DELETE_SCENARIO_ITEM',
   payload: { id },

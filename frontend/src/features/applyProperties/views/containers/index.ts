@@ -2,7 +2,6 @@ export { ActionBlock } from './Controls/ActionBlock';
 export { ActiveElementBlock } from './Controls/ActiveElementBlock/';
 export { BackgroundBlock } from './Controls/BackgroundBlock';
 export { BorderBlock } from './Controls/BorderBlock';
-export { ScenarioBlock } from './Controls/ChangeScenarioBlock';
 export { DifferentSettingsBlock } from './Controls/DifferentSettingsBlock';
 export { GroupElementsDirectionBlock } from './Controls/GroupElementsDirectionBlock';
 export { IndentsBlock } from './Controls/IndentsBlock';

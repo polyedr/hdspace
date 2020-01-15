@@ -102,7 +102,6 @@ const EditorLogic: React.FunctionComponent<EditorProps> = ({
       renameScreen={renameScreen}
     />
     <Editor
-      project={currentProject}
       activeItem={activeItem}
       setActiveItem={setActiveItem}
       screen={currentScreen}
