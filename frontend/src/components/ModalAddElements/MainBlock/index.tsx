@@ -4,14 +4,13 @@ import classNames from 'classnames';
 
 import { Button } from '$components/UI/Button';
 import { Icon } from '$components/UI/Icon';
-import { IPanelEditProps } from '$features/applyProperties';
 import { ActionsBlock } from '$components/ModalAddElements/ActionsBlock';
 import { IUploadFile, UploadFile } from '$components/UI/UploadFile';
 import { MODAL_ADD_ELEMENTS_TABS } from '$constants/defaultParams';
 import { getGroupElements, IListCategoryEl, parseAddElementsTabs } from '$utils/parseScenario';
-import * as Actions from '$redux/project/actions';
-import { selectors } from '$redux/project';
+import { selectors, actionsCreators } from '$redux/project';
 import { AppReduxState } from '$shared/types/app';
+import { IRightPanelProps } from '$features/applyProperties';
 
 const styles = require('./ModalAddElements.scss');
 
@@ -29,14 +28,14 @@ function mapStateToProps(state: AppReduxState) {
 }
 
 const mapDispatchToProps = {
-  getScreenNN: Actions.getScreenNN,
-  uploadImg: Actions.uploadFile,
+  getScreenNN: actionsCreators.getScreenNN,
+  uploadImg: actionsCreators.uploadFile,
 };
 
 type OwnProps = {
   active: boolean;
-  scenarios: IPanelEditProps['scenarios'];
-  libraryElements: IPanelEditProps['libraryElements'];
+  scenarios: IRightPanelProps['scenarios'];
+  libraryElements: IRightPanelProps['libraryElements'];
   onClose(): void;
   onConfirm(scenarioTypeID: number | null, name: string, elementsToFormScenario: IChooseElement[]): void;
 };

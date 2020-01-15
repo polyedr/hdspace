@@ -7,14 +7,13 @@ import { Modal } from '$components/UI/Modal/';
 import { ModalAddElements } from '$components/ModalAddElements/MainBlock/';
 import { NavigateItem } from '$components/Editor/NavigateItem/';
 
-import { IPanelEditProps } from '../../PanelEditProps';
 import { IRightPanelProps } from '../../MainPanel/';
 const styles = require('./styles.scss');
 
 interface IComponentProps {
-  activeItem: IPanelEditProps['activeItem'],
-  disablePanel: IPanelEditProps['disablePanel'],
-  onDelScenarioItem: IPanelEditProps['onDelScenarioItem'],
+  activeItem: IRightPanelProps['activeItem'],
+  disablePanel: boolean,
+  onDelScenarioItem: IRightPanelProps['onDelScenarioItem'],
   scenarios: IRightPanelProps['scenarios'],
   libraryElements: IRightPanelProps['libraryElements'],
   addScenario: IRightPanelProps['addScenario'],
@@ -64,7 +63,7 @@ export const ActiveElementBlock: React.FunctionComponent<IComponentProps> = memo
   return (
     <div className={classNames('propsPanelBlock', styles.activeElementContainer)}>
       <div className="propsPanelHeaderBlock">
-        <p>Properties</p>
+        <p>Add elements</p>
         <Button
           className={classNames('addBtn', styles.addElementBtn)}
           styleType="none"

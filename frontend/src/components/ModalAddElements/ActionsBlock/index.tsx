@@ -8,7 +8,6 @@ import { Button } from '$components/UI/Button';
 import { Checkbox } from '$components/UI/Checkbox';
 import { DropDown } from '$components/UI/DropDown';
 import { Scrollbar } from '$components/UI/Scrollbar';
-import { IPanelEditProps } from '$features/applyProperties';
 import { IChooseElement, ScenarioStateType } from '$components/ModalAddElements/MainBlock';
 import {
   getCustomTemplateElements,
@@ -20,11 +19,12 @@ import {
 import { isIncludes } from '$utils/StringHelper';
 import { uniqueId } from '$utils/NumberHelper';
 import { IUploadFile, UploadFile } from '$components/UI/UploadFile';
+import { IRightPanelProps } from '$features/applyProperties';
 
 const styles = require('./ActionsBlock.scss');
 
 type Props = {
-  scenarios: IPanelEditProps['scenarios'];
+  scenarios: IRightPanelProps['scenarios'];
   tabs: string[];
   groupElements: IGroupElement[];
   activeTab: string;
@@ -32,7 +32,7 @@ type Props = {
   scenarioTypeId: string | null;
   scenarioName: string;
   scenarioState: string;
-  libraryElements: IPanelEditProps['libraryElements'];
+  libraryElements: IRightPanelProps['libraryElements'];
   startTemplate: string;
   changeTab: any;
   setChooseElements(listElType: IChooseElement[]): void;

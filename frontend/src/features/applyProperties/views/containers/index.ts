@@ -6,6 +6,5 @@ export { DifferentSettingsBlock } from './Controls/DifferentSettingsBlock';
 export { GroupElementsDirectionBlock } from './Controls/GroupElementsDirectionBlock';
 export { IndentsBlock } from './Controls/IndentsBlock';
 export { RightPanel, IRightPanelProps } from './MainPanel/';
-export { PanelEditProps, IPanelEditProps } from './PanelEditProps/';
 export { SizeBlock } from './Controls/SizeBlock';
 export { TypographyBlock } from './Controls/TypographyBlock';
