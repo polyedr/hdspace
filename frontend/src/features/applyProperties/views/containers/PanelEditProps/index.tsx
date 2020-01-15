@@ -21,9 +21,7 @@ import { BorderBlock } from '../Controls/BorderBlock';
 import { TypographyBlock } from '../Controls/TypographyBlock';
 
 export interface IPanelEditProps {
-  project: EditorProps['currentProject'],
   params: IScreenProps,
-  styleItem: CssLikeStyles,
   disablePanel: boolean,
   listSortable: IListSortable,
   activeItem: IRightPanelProps['activeItem'],
@@ -33,8 +31,6 @@ export interface IPanelEditProps {
   changeScenario: IRightPanelProps['changeScenario'],
   addScenario: IRightPanelProps['addScenario'],
   addContainer: IRightPanelProps['addContainer'],
-  updateElementStyles: IRightPanelProps['updateElementStyles'],
-  updateScenarioStyles: IRightPanelProps['updateScenarioStyles'],
   updateElementParameters: IRightPanelProps['updateElementParameters'],
   changeElementType: IRightPanelProps['changeElementType'],
   isAddElementsModalOpened: boolean;
@@ -43,17 +39,13 @@ export interface IPanelEditProps {
 
 export const PanelEditProps: React.FunctionComponent<IPanelEditProps> = ({
   activeItem,
-  project,
   params,
-  styleItem,
   listSortable,
   scenarios,
   libraryElements,
   disablePanel,
 
   onDelScenarioItem,
-  updateElementStyles,
-  updateScenarioStyles,
   updateElementParameters,
   addScenario,
   addContainer,
@@ -114,13 +106,7 @@ export const PanelEditProps: React.FunctionComponent<IPanelEditProps> = ({
                 {
                   (currentItem && currentItem.type === elementTypes.hyperLine
                     || currentItem.type === elementTypes.button) && (
-                    <ActionBlock
-                      project={project}
-                      params={params}
-                      activeItem={activeItem}
-                      itemType={currentItem.type}
-                      updateElementParameters={updateElementParameters}
-                    />
+                    <ActionBlock />
                   )
                 }
                 {

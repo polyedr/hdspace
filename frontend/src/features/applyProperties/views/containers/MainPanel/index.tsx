@@ -8,7 +8,6 @@ import { IProjectScreen } from '$redux/project/types';
 import { selectors } from '$redux/project';
 import { Scrollbar } from '$components/UI/Scrollbar/';
 import { T as ProjectT } from '$redux/project';
-import { EditorProps } from '$containers/EditorLogic';
 import { LIST_SCENARIO_TYPE } from '$constants/defaultParams';
 
 import { Spinner } from '$components/UI/Spinner/';
@@ -29,8 +28,6 @@ const mapStateToProps = (state: AppReduxState) => ({
 });
 
 const mapDispatchToProps = {
-  updateElementStyles: Actions.updateElementStyles,
-  updateScenarioStyles: Actions.updateScenarioStyles,
   updateElementParameters: Actions.updateElementParameters,
   addElement: Actions.addElement,
   changeScenario: Actions.changeScenario,
@@ -44,7 +41,6 @@ const mapDispatchToProps = {
 
 export type IRightPanelProps = ReturnType<typeof mapStateToProps>& typeof mapDispatchToProps & {
   activeItem: ProjectT.ActiveItem,
-  project: EditorProps['currentProject'],
   screen: IProjectScreen,
 
   // onDelElement: () => void,
@@ -54,7 +50,6 @@ export type IRightPanelProps = ReturnType<typeof mapStateToProps>& typeof mapDis
 
 const Component: React.FunctionComponent<IRightPanelProps> = ({
   activeItem,
-  project,
   screen,
   onDelScenarioItem,
   loader,
@@ -65,8 +60,6 @@ const Component: React.FunctionComponent<IRightPanelProps> = ({
 
   addScenario,
   addContainer,
-  updateElementStyles,
-  updateScenarioStyles,
   updateElementParameters,
   changeScenario,
   delScenario,
@@ -84,15 +77,6 @@ const Component: React.FunctionComponent<IRightPanelProps> = ({
     return isScenario(activeItem) ? scenarios[itemID].parameters : scenarioElements[itemID].parameters;
   }, [activeItem, scenarios, scenarioElements]);
 
-  const getStyleItem = useCallback(() => {
-    if (activeItem.itemType === 'none') {
-      return {};
-    }
-
-    const itemID = parseInt(activeItem.itemId, 10);
-    return isScenario(activeItem) ? scenarios[itemID].styles : scenarioElements[itemID].styles;
-  }, [activeItem, scenarios, scenarioElements]);
-
   return (
     <div className={classNames(styles.editorRightPanel)}>
       <Scrollbar
@@ -103,19 +87,15 @@ const Component: React.FunctionComponent<IRightPanelProps> = ({
       >
         <PanelEditProps
           activeItem={activeItem}
-          project={project}
           listSortable={screen.listSortable}
           disablePanel={!screen}
           scenarios={scenarios}
           libraryElements={libraryElements}
           onDelScenarioItem={onDelScenarioItem}
           params={getParams()}
-          styleItem={getStyleItem()}
           addScenario={addScenario}
           addContainer={addContainer}
           changeScenario={changeScenario}
-          updateElementStyles={updateElementStyles}
-          updateScenarioStyles={updateScenarioStyles}
           updateElementParameters={updateElementParameters}
           changeElementType={changeElementType}
           isAddElementsModalOpened={isAddElementsModalOpened}

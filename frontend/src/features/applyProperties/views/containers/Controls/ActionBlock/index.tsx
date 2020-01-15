@@ -1,32 +1,48 @@
 import React from 'react';
 import classNames from 'classnames';
+import { connect } from 'react-redux';
 
+import { AppReduxState } from '$shared/types/app';
+import { actionsCreators, selectors } from '$redux/project/';
 import { DropDown } from '$components/UI/DropDown/';
 import { Icon } from '$components/UI/Icon/';
 import { Button } from '$components/UI/Button/';
-import { EditorProps } from '$containers/EditorLogic';
-import * as Actions from '$redux/project/actions';
-import { T as ProjectT } from '$redux/project';
-import { elementTypes } from '$constants/menu';
+import { withParamsChangeHandler, ParamsChangeHandler } from '$utils/withParamsChangeHandler';
 
-import { IPanelEditProps } from '../../PanelEditProps';
 const styles = require('./styles.scss');
 
-interface IComponentProps {
-  project: EditorProps['currentProject'],
-  params: IPanelEditProps['params'],
-  activeItem: ProjectT.ActiveItem,
-  itemType: string,
-  updateElementParameters: typeof Actions.updateElementParameters,
+type StateProps = {
+  activeItemID: string;
+  screensIDs: number[];
+  content: string;
+  url: string;
 }
 
-const Component: React.FunctionComponent<IComponentProps> = ({
-  project: { projectscreen },
-  params,
-  activeItem,
-  itemType,
-  updateElementParameters,
-}) => {
+function mapState(state: AppReduxState): StateProps {
+  const activeItemParams = selectors.selectActiveItemParams(state) as any;
+
+  return {
+    activeItemID: selectors.selectActiveItem(state).itemId,
+    screensIDs: selectors.selectCurrentProject(state).projectscreen,
+    content: activeItemParams.content,
+    url: activeItemParams.url,
+  };
+}
+
+const mapDispatch = {
+  updateElementParameters: actionsCreators.updateElementParameters,
+};
+
+type Props = StateProps & typeof mapDispatch & ParamsChangeHandler;
+
+const Component: React.FC<Props> = (props) => {
+  const {
+    url,
+    content,
+    screensIDs,
+    updateParams,
+  } = props;
+
   const [isPage, setPageType] = React.useState<boolean>(true);
 
   const handleChangeLinkUrl = React.useCallback(() => {
@@ -42,30 +58,26 @@ const Component: React.FunctionComponent<IComponentProps> = ({
   }, []);
 
   const handleLinkContentChange = React.useCallback(({ target: { value } }) => {
-    updateElementParameters(activeItem.itemId, { content: value });
-  }, [updateElementParameters, activeItem]);
+    updateParams({ content: value });
+  }, [updateParams]);
 
   const handleLinkUrlChange = React.useCallback(({ target: { value } }) => {
-    updateElementParameters(activeItem.itemId, { url: value });
-  }, [updateElementParameters, activeItem]);
+    updateParams({ url: value });
+  }, [updateParams]);
 
   return (
     <div className="propsElementsBlock">
       <p className="propsElementsBlockTitle">Action</p>
       <div className="propsElementsContentBlock">
-        {
-          itemType === elementTypes.hyperLine && (
-            <div className="propsElementsInnerBlock">
-              <input
-                className={styles.textContentField}
-                type="text"
-                placeholder="Enter link text content"
-                value={params.content || params.url || ''}
-                onChange={handleLinkContentChange}
-              />
-            </div>
-          )
-        }
+        <div className="propsElementsInnerBlock">
+          <input
+            className={styles.textContentField}
+            type="text"
+            placeholder="Enter link text content"
+            value={content || url || ''}
+            onChange={handleLinkContentChange}
+          />
+        </div>
         <div className="propsElementsInnerBlock">
           <Button
             className={classNames('mainImgBtn', isPage && 'mainImgBtn_active')}
@@ -85,7 +97,7 @@ const Component: React.FunctionComponent<IComponentProps> = ({
             { isPage && (
               <DropDown
                 options={
-                  projectscreen.map((_, elIndex) => ({ // TODO: restore when screens will be preloaded
+                  screensIDs.map((_, elIndex) => ({ // TODO: restore when screens will be preloaded
                     label: `Screen ${elIndex}`,
                     value: `Screen ${elIndex}`,
                   }))
@@ -97,7 +109,7 @@ const Component: React.FunctionComponent<IComponentProps> = ({
               <input
                 type="text"
                 placeholder="Enter a page URL"
-                value={params.url || ''}
+                value={url || ''}
                 onChange={handleLinkUrlChange}
               />
             )}
@@ -108,4 +120,5 @@ const Component: React.FunctionComponent<IComponentProps> = ({
   );
 };
 
-export const ActionBlock = React.memo(Component);
+const ActionBlock = connect(mapState, mapDispatch)(withParamsChangeHandler(Component));
+export { ActionBlock };
