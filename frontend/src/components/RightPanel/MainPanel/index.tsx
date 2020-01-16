@@ -43,7 +43,7 @@ const mapDispatchToProps = {
   setIsAddElementsModalOpened: Actions.setIsAddElementsModalOpened,
 };
 
-export type IRightPanelProps = ReturnType<typeof mapStateToProps>& typeof mapDispatchToProps & {
+export type IRightPanelProps = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & {
   activeItem: ProjectT.ActiveItem,
   project: EditorProps['currentProject'],
   screen: IProjectScreen,
