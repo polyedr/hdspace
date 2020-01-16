@@ -57,7 +57,7 @@ export const GroupElementsDirectionBlock: React.FC<Props> = memo(({
   styleItem
 }) => {
   const renderLabel = useCallback((reversed: boolean) => (
-    <span className={styles.axis__label}>{reversed ? 'Cross' : 'Main'} axis</span>
+    <span className={styles.axis__label}>{reversed ? 'Y-' : 'X-'}axis</span>
   ), [])
   return (
     <React.Fragment>
