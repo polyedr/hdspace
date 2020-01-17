@@ -24,7 +24,6 @@ const ZOOM_STEP = 0.5;
 type StateProps = {
   activeItemType: string;
   map_props: ProjectT.IScreenProps['map_props'];
-  content: ProjectT.IScreenProps['content'];
 }
 
 function mapState(state: AppReduxState): StateProps {
@@ -34,7 +33,6 @@ function mapState(state: AppReduxState): StateProps {
   return {
     activeItemType: activeItem.itemType,
     map_props: activeItemParams.map_props,
-    content: activeItemParams.content,
   };
 }
 
@@ -42,14 +40,9 @@ type Props = StateProps & PropertiesChangeProps;
 
 const Component: React.FC<Props> = ({
   map_props,
-  content,
   activeItemType,
   updateParams,
 }) => {
-
-  const handleTextContentChange = useCallback(({ target: { value } }) => {
-    updateParams({ content: value });
-  }, [updateParams]);
 
   const handleCenterMapCoordsChange = useCallback(({ target: { name, value } }: React.ChangeEvent<HTMLInputElement>) => {
     if (!map_props) return;
@@ -100,21 +93,6 @@ const Component: React.FC<Props> = ({
 
   return (
     <div className="propsElementsBlock">
-      {(activeItemType === elementTypes.text || activeItemType === elementTypes.button) && (
-        <React.Fragment>
-          <p className="propsElementsBlockTitle">Text content</p>
-          <div className="propsElementsContentBlock">
-            <div className="propsElementsInnerBlock">
-              <textarea
-                className={styles.textContentField}
-                name="text_content"
-                value={content || activeItemType || ''}
-                onChange={handleTextContentChange}
-              />
-            </div>
-          </div>
-        </React.Fragment>
-      )}
       {(activeItemType === elementTypes.map) && (
         <React.Fragment>
           <p className="propsElementsBlockTitle">Map props</p>

@@ -1,0 +1,48 @@
+import React, { useCallback } from 'react';
+import { connect } from 'react-redux';
+
+import { AppReduxState } from '$shared/types/app';
+import { selectors } from '$redux/project/';
+import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
+const styles = require('./TextContent.scss');
+
+type StateProps = {
+  content: string;
+};
+
+function mapState(state: AppReduxState): StateProps {
+  const activeItemParams = selectors.selectActiveItemParams(state) as any;
+
+  return {
+    content: activeItemParams.content,
+  };
+}
+
+type Props = StateProps & PropertiesChangeProps;
+
+const Component: React.FC<Props> = ({
+  content,
+  updateParams,
+}) => {
+  const handleTextContentChange = useCallback(({ target: { value } }) => {
+    updateParams({ content: value });
+  }, [updateParams]);
+
+  return (
+    <div className="propsElementsBlock">
+      <p className="propsElementsBlockTitle">Text content</p>
+      <div className="propsElementsContentBlock">
+        <div className="propsElementsInnerBlock">
+          <textarea
+            className={styles.textContentField}
+            name="text_content"
+            value={content}
+            onChange={handleTextContentChange}
+          />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export const TextContent = connect(mapState)(withConfigurableProperties(Component));

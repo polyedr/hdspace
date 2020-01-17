@@ -19,6 +19,7 @@ import { BackgroundBlock } from '../Controls/BackgroundBlock';
 import { BorderBlock } from '../Controls/BorderBlock';
 import { TypographyBlock } from '../Controls/TypographyBlock';
 import { Placeholder } from '../Controls/Placeholder/Placeholder';
+import { TextContent } from '../Controls/TextContent/TextContent';
 const styles = require('./PropertiesPanel.scss');
 
 type OwnProps = {
@@ -60,6 +61,7 @@ const CONTROLS: Record<Control, React.ComponentType> = {
   action: ActionBlock,
   differentSettings: DifferentSettingsBlock,
   placeholder: Placeholder,
+  textContent: TextContent,
 };
 
 export type PropertiesPanelProps = StateProps & typeof mapDispatch & OwnProps;

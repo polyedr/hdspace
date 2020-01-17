@@ -2,13 +2,13 @@ import * as R from 'ramda';
 import { createSelector } from 'reselect';
 import { IScenarioItem, IScenarios, IScenarioElement, IScenarioElements } from "$redux/project/types";
 import {
-  LIST_SCENARIO_TYPE, DEFAULT_INDENTS, DEFAULT_FLEX, DEFAULT_BORDER, DEFAULT_BACKGROUND, DEFAULT_TYPOGRAPHY, DEFAULT_SIZE, DEFAULT_ACTION, DEFAULT_DIFFERENT_SETTINGS, DEFAULT_PLACEHOLDER,
+  LIST_SCENARIO_TYPE, DEFAULT_INDENTS, DEFAULT_FLEX, DEFAULT_BORDER, DEFAULT_BACKGROUND, DEFAULT_TYPOGRAPHY, DEFAULT_SIZE, DEFAULT_ACTION, DEFAULT_DIFFERENT_SETTINGS, DEFAULT_PLACEHOLDER, DEFAULT_TEXT_CONTENT,
 } from '$constants/defaultParams';
 
 const ENTITIES = [
   'root', 'container', 'button', 'textinput', 'hyperlink', 'ocrtext', 'image', 'select', 'map', 'calendar', 'clock',
 ] as const;
-const CONTROLS_AFFECT_ON_PARAMS = ['action', 'differentSettings', 'placeholder'] as const;
+const CONTROLS_AFFECT_ON_PARAMS = ['action', 'differentSettings', 'placeholder', 'textContent'] as const;
 const CONTROLS_AFFECT_ON_STYLES = ['direction', 'indents', 'size', 'typography', 'border', 'background'] as const;
 
 const controlAffectsOnStyles = (controlName: Control) => (
@@ -22,10 +22,10 @@ export type Control = typeof CONTROLS_AFFECT_ON_PARAMS[number] | typeof CONTROLS
 export const AVAILABLE_CONTROLS: Record<Entity, Control[]> = {
   root: ['direction', 'background'],
   container: ['indents', 'size', 'direction', 'typography', 'border', 'background'],
-  button: ['indents', 'size', 'typography', 'border', 'background', 'action', 'differentSettings'],
+  button: ['indents', 'size', 'typography', 'border', 'background', 'textContent', 'action'],
   textinput: ['indents', 'size', 'typography', 'border', 'background', 'placeholder'],
   hyperlink: ['typography', 'border', 'background', 'action'],
-  ocrtext: ['indents', 'size', 'typography', 'border', 'background', 'differentSettings'],
+  ocrtext: ['indents', 'size', 'typography', 'border', 'background', 'textContent'],
   image: ['indents', 'size', 'border', 'background'],
   select: ['indents', 'size', 'typography', 'border', 'background'],
   map: ['indents', 'size', 'typography', 'border', 'background', 'differentSettings'],
@@ -43,6 +43,7 @@ const CONTROLS_DEFAULTS: Record<Control, any> = {
   action: DEFAULT_ACTION,
   differentSettings: DEFAULT_DIFFERENT_SETTINGS,
   placeholder: DEFAULT_PLACEHOLDER,
+  textContent: DEFAULT_TEXT_CONTENT,
 };
 
 type EntityToDefaults = {
@@ -73,6 +74,10 @@ const ENTITY_TO_DEFAULTS: EntityToDefaults = {
       ...extractDefaults('button', 'typography'),
       color: '#ffffff',
     },
+    textContent: {
+      ...extractDefaults('button', 'textContent'),
+      content: 'button',
+    }
   },
   textinput: {
     ...extractDefaults('textinput'),

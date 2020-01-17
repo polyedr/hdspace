@@ -299,6 +299,10 @@ export const DEFAULT_PLACEHOLDER = {
   placeholder: 'Enter a label for the field',
 };
 
+export const DEFAULT_TEXT_CONTENT = {
+  content: 'Enter a label for the field',
+};
+
 export const DEFAULT_MAP_WIDGET = {
   struct_type: 'widget',
   func_type: 'map',
