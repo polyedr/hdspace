@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 import { connect } from 'react-redux';
 
 import { AppReduxState } from '$shared/types/app';
-import { actionsCreators, selectors, T as ProjectT } from '$redux/project/';
+import { selectors, T as ProjectT } from '$redux/project/';
 import { elementTypes } from '$constants/menu';
 import {
   DEFAULT_PLACEHOLDER,
@@ -16,14 +16,13 @@ import {
 } from '$constants/defaultParams';
 import { IMapProps } from '$redux/project/types';
 import { getPermissibleValue } from '$utils/NumberHelper';
-import { withParamsChangeHandler, ParamsChangeHandler } from '$utils/withParamsChangeHandler';
+import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
 
 const styles = require('./styles.scss');
 
 const ZOOM_STEP = 0.5;
 
 type StateProps = {
-  activeItemID: string;
   activeItemType: string;
   map_props: ProjectT.IScreenProps['map_props'];
   dynamic_placeholder: ProjectT.IScreenProps['dynamic_placeholder'];
@@ -36,7 +35,6 @@ function mapState(state: AppReduxState): StateProps {
   const activeItem = selectors.selectActiveItem(state);
 
   return {
-    activeItemID: activeItem.itemId,
     activeItemType: activeItem.itemType,
     map_props: activeItemParams.map_props,
     dynamic_placeholder: activeItemParams.dynamic_placeholder,
@@ -45,11 +43,7 @@ function mapState(state: AppReduxState): StateProps {
   };
 }
 
-const mapDispatch = {
-  updateElementParameters: actionsCreators.updateElementParameters,
-};
-
-type Props = StateProps & typeof mapDispatch & ParamsChangeHandler;
+type Props = StateProps & PropertiesChangeProps;
 
 const Component: React.FC<Props> = ({
   map_props,
@@ -203,5 +197,4 @@ const Component: React.FC<Props> = ({
   );
 };
 
-const DifferentSettingsBlock = connect(mapState, mapDispatch)(withParamsChangeHandler(Component));
-export { DifferentSettingsBlock };
+export const DifferentSettingsBlock = connect(mapState)(withConfigurableProperties(Component));

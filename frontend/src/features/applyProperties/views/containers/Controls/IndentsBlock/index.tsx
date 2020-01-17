@@ -2,10 +2,10 @@ import React, { useCallback } from 'react';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
 
-import { selectors, actionsCreators } from '$redux/project';
+import { selectors } from '$redux/project';
 import { AppReduxState } from '$shared/types/app';
 import { safeParseInt } from '$utils/NumberHelper';
-import { withPropsChangeHandler, PropertiesChangeHandler } from '$utils/withPropsChangeHandler';
+import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
 import { CssLikeStyles } from '$utils/StyleHelper';
 
 const styles = require('./styles.scss');
@@ -13,7 +13,6 @@ const styles = require('./styles.scss');
 const MIN_PADDING = 0;
 
 type StateProps = {
-  activeItemID: string;
   marginTop: string;
   marginRight: string;
   marginBottom: string;
@@ -24,13 +23,12 @@ type StateProps = {
   paddingLeft: string;
 };
 
-type Props = StateProps & typeof mapDispatch & PropertiesChangeHandler;
+type Props = StateProps & PropertiesChangeProps;
 
 function mapState(state: AppReduxState): StateProps {
   const activeItemStyles = selectors.selectActiveItemStyles(state) as Required<CssLikeStyles>;
 
   return {
-    activeItemID: selectors.selectActiveItem(state).itemId,
     marginTop: activeItemStyles['margin-top'],
     marginRight: activeItemStyles['margin-right'],
     marginBottom: activeItemStyles['margin-bottom'],
@@ -41,11 +39,6 @@ function mapState(state: AppReduxState): StateProps {
     paddingLeft: activeItemStyles['padding-left'],
   };
 }
-
-const mapDispatch = {
-  updateElementStyles: actionsCreators.updateElementStyles,
-  updateScenarioStyles: actionsCreators.updateScenarioStyles,
-};
 
 export const Component: React.FC<Props> = (props) => {
   const {
@@ -160,5 +153,4 @@ export const Component: React.FC<Props> = (props) => {
   );
 };
 
-const IndentsBlock = connect(mapState, mapDispatch)(withPropsChangeHandler(Component));
-export { IndentsBlock };
+export const IndentsBlock = connect(mapState)(withConfigurableProperties(Component));

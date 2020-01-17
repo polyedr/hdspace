@@ -3,16 +3,15 @@ import classNames from 'classnames';
 import { connect } from 'react-redux';
 
 import { AppReduxState } from '$shared/types/app';
-import { actionsCreators, selectors } from '$redux/project/';
+import { selectors } from '$redux/project/';
 import { DropDown } from '$components/UI/DropDown/';
 import { Icon } from '$components/UI/Icon/';
 import { Button } from '$components/UI/Button/';
-import { withParamsChangeHandler, ParamsChangeHandler } from '$utils/withParamsChangeHandler';
+import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
 
 const styles = require('./styles.scss');
 
 type StateProps = {
-  activeItemID: string;
   screensIDs: number[];
   content: string;
   url: string;
@@ -22,18 +21,13 @@ function mapState(state: AppReduxState): StateProps {
   const activeItemParams = selectors.selectActiveItemParams(state) as any;
 
   return {
-    activeItemID: selectors.selectActiveItem(state).itemId,
     screensIDs: selectors.selectCurrentProject(state).projectscreen,
     content: activeItemParams.content,
     url: activeItemParams.url,
   };
 }
 
-const mapDispatch = {
-  updateElementParameters: actionsCreators.updateElementParameters,
-};
-
-type Props = StateProps & typeof mapDispatch & ParamsChangeHandler;
+type Props = StateProps & PropertiesChangeProps;
 
 const Component: React.FC<Props> = (props) => {
   const {
@@ -120,5 +114,4 @@ const Component: React.FC<Props> = (props) => {
   );
 };
 
-const ActionBlock = connect(mapState, mapDispatch)(withParamsChangeHandler(Component));
-export { ActionBlock };
+export const ActionBlock = connect(mapState)(withConfigurableProperties(Component));

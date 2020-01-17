@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import classNames from 'classnames';
 
 import { AppReduxState } from '$shared/types/app';
-import { actionsCreators, selectors } from '$redux/project/';
+import { selectors } from '$redux/project/';
 import {
   MAX_BORDER_RADIUS,
   MAX_BORDER_RADIUS_PERCENT,
@@ -14,7 +14,7 @@ import {
 } from '$constants/defaultParams';
 import { strToNumber, getPermissibleValue, safeParseFloat, safeMatch } from '$utils/NumberHelper';
 import { validBorderRadius, CssLikeStyles } from '$utils/StyleHelper';
-import { withPropsChangeHandler, PropertiesChangeHandler } from '$utils/withPropsChangeHandler';
+import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
 import { ColorPicker } from '$components/UI/ColorPicker/';
 
 const styles = require('./styles.scss');
@@ -25,7 +25,6 @@ const accessBorderRadius = (border: CssLikeStyles['border-radius']) => {
 };
 
 type StateProps = {
-  activeItemID: string;
   borderStyle: string;
   borderColor: string;
   borderWidth: string;
@@ -36,7 +35,6 @@ function mapState(state: AppReduxState): StateProps {
   const activeItemStyles = selectors.selectActiveItemStyles(state) as Required<CssLikeStyles>;
 
   return {
-    activeItemID: selectors.selectActiveItem(state).itemId,
     borderStyle: activeItemStyles['border-style'],
     borderColor: activeItemStyles['border-color'],
     borderWidth: activeItemStyles['border-width'],
@@ -44,12 +42,7 @@ function mapState(state: AppReduxState): StateProps {
   };
 }
 
-const mapDispatch = {
-  updateElementStyles: actionsCreators.updateElementStyles,
-  updateScenarioStyles: actionsCreators.updateScenarioStyles,
-};
-
-type Props = StateProps & typeof mapDispatch & PropertiesChangeHandler;
+type Props = StateProps & PropertiesChangeProps;
 
 export const Component: React.FunctionComponent<Props> = React.memo(({
   borderStyle,
@@ -172,5 +165,4 @@ export const Component: React.FunctionComponent<Props> = React.memo(({
   );
 });
 
-const BorderBlock = connect(mapState, mapDispatch)(withPropsChangeHandler(Component));
-export { BorderBlock };
+export const BorderBlock = connect(mapState)(withConfigurableProperties(Component));

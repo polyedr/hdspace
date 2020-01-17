@@ -3,10 +3,10 @@ import cn from 'classnames';
 import { connect } from 'react-redux';
 
 import { AppReduxState } from '$shared/types/app';
-import { actionsCreators, selectors } from '$redux/project/';
+import { selectors } from '$redux/project/';
 import { Button } from '$components/UI/Button/';
 import { DropDown } from '$components/UI/DropDown/';
-import { withPropsChangeHandler, PropertiesChangeHandler } from '$utils/withPropsChangeHandler';
+import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
 import { CssLikeStyles } from '$utils/StyleHelper';
 
 import { ControlTitle } from '../../../components/ControlTitle/ControlTitle';
@@ -17,29 +17,22 @@ type Orientation = 'vertical' | 'horizontal';
 type Align = 'align' | 'justify';
 
 type StateProps = {
-  activeItemID: string;
   justifyContent: string;
   alignItems: string;
   orientation: Orientation;
 };
 
-type Props = StateProps & typeof mapDispatch & PropertiesChangeHandler;
+type Props = StateProps & PropertiesChangeProps;
 
 function mapState(state: AppReduxState): StateProps {
   const activeItemStyles = selectors.selectActiveItemStyles(state) as Required<CssLikeStyles>;
 
   return {
-    activeItemID: selectors.selectActiveItem(state).itemId,
     justifyContent: activeItemStyles['justify-content'],
     alignItems: activeItemStyles['align-items'],
     orientation: activeItemStyles['flex-direction'] === 'row' ? 'horizontal' : 'vertical',
   };
 }
-
-const mapDispatch = {
-  updateElementStyles: actionsCreators.updateElementStyles,
-  updateScenarioStyles: actionsCreators.updateScenarioStyles,
-};
 
 const Component: React.FC<Props> = memo((props) => {
   const {
@@ -116,5 +109,5 @@ const Component: React.FC<Props> = memo((props) => {
   )
 });
 
-const GroupElementsDirectionBlock = connect(mapState, mapDispatch)(withPropsChangeHandler(Component));
+const GroupElementsDirectionBlock = connect(mapState)(withConfigurableProperties(Component));
 export { GroupElementsDirectionBlock };

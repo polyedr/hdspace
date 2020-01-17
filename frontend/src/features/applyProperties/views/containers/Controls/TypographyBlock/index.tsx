@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import { connect } from 'react-redux';
 
 import { AppReduxState } from '$shared/types/app';
-import { actionsCreators, selectors } from '$redux/project/';
+import { selectors } from '$redux/project/';
 import { ColorPicker } from '$components/UI/ColorPicker/';
 import { DropDown } from '$components/UI/DropDown/';
 import { Icon } from '$components/UI/Icon/';
@@ -11,7 +11,7 @@ import { Button } from '$components/UI/Button/';
 import { FONTS } from '$constants/fonts';
 import { DEFAULT_TYPOGRAPHY } from '$constants/defaultParams';
 import { getPermissibleValue, safeParseFloat } from '$utils/NumberHelper';
-import { withPropsChangeHandler, PropertiesChangeHandler } from '$utils/withPropsChangeHandler';
+import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
 import { CssLikeStyles } from '$utils/StyleHelper';
 
 const styles = require('./styles.scss');
@@ -20,7 +20,6 @@ const MIN_FONT_SIZE = 1;
 const MAX_FONT_SIZE = 72;
 
 type StateProps = {
-  activeItemID: string;
   fontFamily: string;
   fontStyle: string;
   fontWeight: number;
@@ -33,7 +32,6 @@ function mapState(state: AppReduxState): StateProps {
   const activeItemStyles = selectors.selectActiveItemStyles(state) as Required<CssLikeStyles>;
 
   return {
-    activeItemID: selectors.selectActiveItem(state).itemId,
     fontFamily: activeItemStyles['font-family'],
     fontStyle: activeItemStyles['font-style'],
     fontWeight: activeItemStyles['font-weight'],
@@ -43,12 +41,7 @@ function mapState(state: AppReduxState): StateProps {
   };
 }
 
-const mapDispatch = {
-  updateElementStyles: actionsCreators.updateElementStyles,
-  updateScenarioStyles: actionsCreators.updateScenarioStyles,
-};
-
-type Props = StateProps & typeof mapDispatch & PropertiesChangeHandler;
+type Props = StateProps & PropertiesChangeProps;
 
 export const Component: React.FC<Props> = memo(({
   fontFamily,
@@ -209,5 +202,4 @@ export const Component: React.FC<Props> = memo(({
   );
 });
 
-const TypographyBlock = connect(mapState, mapDispatch)(withPropsChangeHandler(Component));
-export { TypographyBlock };
+export const TypographyBlock = connect(mapState)(withConfigurableProperties(Component));

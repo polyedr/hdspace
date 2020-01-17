@@ -2,14 +2,13 @@ import React, { memo, useState, useCallback } from 'react';
 import { connect } from 'react-redux';
 
 import { AppReduxState } from '$shared/types/app';
-import { actionsCreators, selectors } from '$redux/project/';
+import { selectors } from '$redux/project/';
 import { ColorPicker } from '$components/UI/ColorPicker/';
 import { DEFAULT_BACKGROUND } from '$constants/defaultParams';
-import { withPropsChangeHandler, PropertiesChangeHandler } from '$utils/withPropsChangeHandler';
+import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
 import { CssLikeStyles } from '$utils/StyleHelper';
 
 type StateProps = {
-  activeItemID: string;
   backgroundColor: string;
 }
 
@@ -17,17 +16,11 @@ function mapState(state: AppReduxState): StateProps {
   const activeItemStyles = selectors.selectActiveItemStyles(state) as Required<CssLikeStyles>;
 
   return {
-    activeItemID: selectors.selectActiveItem(state).itemId,
     backgroundColor: activeItemStyles['background-color'],
   };
 }
 
-const mapDispatch = {
-  updateElementStyles: actionsCreators.updateElementStyles,
-  updateScenarioStyles: actionsCreators.updateScenarioStyles,
-};
-
-type Props = StateProps & typeof mapDispatch & PropertiesChangeHandler;
+type Props = StateProps & PropertiesChangeProps;
 
 export const Component : React.FC<Props> = memo(({
   backgroundColor,
@@ -80,5 +73,4 @@ export const Component : React.FC<Props> = memo(({
   );
 });
 
-const BackgroundBlock = connect(mapState, mapDispatch)(withPropsChangeHandler(Component));
-export { BackgroundBlock };
+export const BackgroundBlock = connect(mapState)(withConfigurableProperties(Component));

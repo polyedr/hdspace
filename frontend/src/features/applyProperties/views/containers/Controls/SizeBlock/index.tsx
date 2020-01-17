@@ -4,8 +4,8 @@ import { connect } from 'react-redux';
 import { AppReduxState } from '$shared/types/app';
 import { safeParseFloat } from '$utils/NumberHelper';
 import { CssLikeStyles } from '$utils/StyleHelper';
-import { withPropsChangeHandler, PropertiesChangeHandler } from '$utils/withPropsChangeHandler';
-import { selectors, actionsCreators } from '$redux/project';
+import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
+import { selectors } from '$redux/project';
 
 const styles = require('./styles.scss');
 
@@ -16,29 +16,22 @@ const getLastChar = (value?: string | number): string => {
 }
 
 type StateProps = {
-  activeItemID: string;
   borderWidth: string;
   width: string | number;
   height: string | number;
 };
 
-type Props = StateProps & typeof mapDispatch & PropertiesChangeHandler;
+type Props = StateProps & PropertiesChangeProps;
 
 function mapState(state: AppReduxState): StateProps {
   const activeItemStyles = selectors.selectActiveItemStyles(state) as Required<CssLikeStyles>;
 
   return {
-    activeItemID: selectors.selectActiveItem(state).itemId,
     borderWidth: activeItemStyles['border-width'],
     width: activeItemStyles.width,
     height: activeItemStyles.height,
   };
 }
-
-const mapDispatch = {
-  updateElementStyles: actionsCreators.updateElementStyles,
-  updateScenarioStyles: actionsCreators.updateScenarioStyles,
-};
 
 export const Component: React.FC<Props> = memo((props) => {
   const {
@@ -200,5 +193,4 @@ export const Component: React.FC<Props> = memo((props) => {
   );
 });
 
-const SizeBlock = connect(mapState, mapDispatch)(withPropsChangeHandler(Component));
-export { SizeBlock };
+export const SizeBlock = connect(mapState)(withConfigurableProperties(Component));
