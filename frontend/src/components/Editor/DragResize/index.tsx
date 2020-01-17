@@ -270,22 +270,9 @@ export class DragResize extends React.Component<Props, State> {
 
     const useHackToSyncElementAndWrapperWidth = extractWidth(children) === '100%' && !isDragStart; // without !isDragStart will fix element's with to 100% when resizing, but when we resize we want to see how height being changed
 
-    const wrapperStyles = () => {
-      return {
-        marginTop: children.props.style['marginTop'],
-        marginRight: children.props.style['marginRight'],
-        marginBottom: children.props.style['marginBottom'],
-        marginLeft: children.props.style['marginLeft'],
-      }
-    }
+    const childMargins = R.pick(['marginTop', 'marginRight', 'marginBottom', 'marginLeft'], children.props.style);
 
-    const elementStyles = () => {
-      const styles = { ...children.props.style };
-      for (let key in wrapperStyles()) {
-        delete styles[key];
-      }
-      return styles;
-    };
+    const elementStyles = R.omit(Object.keys(childMargins), children.props.style);
 
     return (
       <span
@@ -295,19 +282,19 @@ export class DragResize extends React.Component<Props, State> {
           styles.dragResizeItem,
           isResizable ? styles['dragResizeItem_is-resizable'] : undefined) // removes 100% width from span if element is resizable (to place wrapper precisely around element)
         }
-        style={{ ...(useHackToSyncElementAndWrapperWidth ? { width: extractWidth(children) } : {}), ...wrapperStyles() }}
+        style={{ ...(useHackToSyncElementAndWrapperWidth ? { width: extractWidth(children) } : {}), ...childMargins }}
       >
         {React.cloneElement(
           children,
           {
             ...children.props,
             style: {
+              ...elementStyles,
               ...(isResizable ? ({
                 width: calculatedWidth,
                 height: calculatedHeight,
                 ...(useHackToSyncElementAndWrapperWidth ? { width: extractWidth(children) } : {}),
               }) : {}),
-              ...elementStyles(),
               // width: (width && width - deltaX) || 'auto',
               // height: (height && height - deltaY) || 'auto',
             },
