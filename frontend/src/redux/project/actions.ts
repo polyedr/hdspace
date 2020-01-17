@@ -250,6 +250,11 @@ export const setActiveItem = (activeItem: T.ActiveItem): T.SetActiveItem => ({
   payload: { activeItem },
 });
 
+export const setIsAddElementsModalOpened = (isOpened: boolean): T.SetIsAddElementsModalOpened => ({
+  type: 'PROJECTS:SET_IS_ADD_ELEMENTS_MODAL_OPENED',
+  payload: { isOpened },
+});
+
 // export const setScreenData: ISetScreenData = screen_data => ({
 //   type: TYPES.SET_SCREEN_DATA,
 //   screen_data,

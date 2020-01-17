@@ -1,5 +1,5 @@
-import React, { memo } from 'react';
-import classNames from 'classnames';
+import React, { memo, useCallback } from 'react';
+import cn from 'classnames';
 
 import { Button } from '$components/UI/Button/';
 import { DropDown } from '$components/UI/DropDown/';
@@ -9,7 +9,7 @@ const styles = require('./styles.scss');
 
 type Props = {
   styleItem: IPanelEditProps['styleItem'];
-  orientation: IPanelEditProps['orientation'];
+  orientation: 'vertical' | 'horizontal';
   params: IPanelEditProps['params'];
   setOrientation: IPanelEditProps['setOrientation'];
   onAlignChange(alignType: 'align' | 'justify', value: string): void;
@@ -55,51 +55,58 @@ export const GroupElementsDirectionBlock: React.FC<Props> = memo(({
   setOrientation,
   onAlignChange,
   styleItem
-}) => (
-  <React.Fragment>
-    <div className="propsElementsBlock">
-      <p className="propsElementsBlockTitle">Direction</p>
-      <div className="propsElementsContentBlock">
-        <div className="propsElementsInnerBlock">
-          <Button
-            styleType="primary"
-            className={classNames('propsPanelBtn', styles.orientationBtn, orientation === 'horizontal' && 'propsPanelBtn_active')}
-            onClick={() => setOrientation('horizontal')}
-          >
-            Horizontal
-          </Button>
-          <Button
-            styleType="primary"
-            className={classNames('propsPanelBtn', styles.orientationBtn, styles.orientationBtn_vertical, orientation === 'vertical' && 'propsPanelBtn_active')}
-            onClick={() => setOrientation('vertical')}
-          >
-            Vertical
-          </Button>
+}) => {
+  const renderLabel = useCallback((reversed: boolean) => (
+    <span className={styles.axis__label}>{reversed ? 'Y-' : 'X-'}axis</span>
+  ), [])
+  return (
+    <React.Fragment>
+      <div className="propsElementsBlock">
+        <p className="propsElementsBlockTitle">Direction</p>
+        <div className="propsElementsContentBlock">
+          <div className="propsElementsInnerBlock">
+            <Button
+              styleType="primary"
+              className={cn('propsPanelBtn', styles.orientationBtn, orientation === 'horizontal' && 'propsPanelBtn_active')}
+              onClick={() => setOrientation('horizontal')}
+            >
+              Horizontal
+            </Button>
+            <Button
+              styleType="primary"
+              className={cn('propsPanelBtn', styles.orientationBtn, styles.orientationBtn_vertical, orientation === 'vertical' && 'propsPanelBtn_active')}
+              onClick={() => setOrientation('vertical')}
+            >
+              Vertical
+            </Button>
+          </div>
         </div>
       </div>
-    </div>
-    <div className="propsElementsBlock">
-      <p className="propsElementsBlockTitle">Align</p>
-      <div className="propsElementsContentBlock">
-        <div className={styles.axis}>
-          <span className={styles.axis__label}>{orientation === 'horizontal' ? 'Main' : 'Cross'} axis</span>
-          <DropDown
-            options={JUSTIFY_VALUES}
-            defaultValue={orientation === 'horizontal' ? styleItem['justify-content'] : styleItem['align-items']}
-            value={orientation === 'horizontal' ? styleItem['justify-content'] : styleItem['align-items']}
-            onChange={(value) => onAlignChange(orientation === 'horizontal' ? 'justify' : 'align', value)}
-          />
-        </div>
-        <div className={styles.axis}>
-          <span className={styles.axis__label}>{orientation === 'horizontal' ? 'Cross' : 'Main'} axis</span>
-          <DropDown
-            options={ALIGN_VALUES}
-            defaultValue={orientation === 'horizontal' ? styleItem['align-items'] : styleItem['justify-content']}
-            value={orientation === 'horizontal' ? styleItem['align-items'] : styleItem['justify-content']}
-            onChange={(value) => onAlignChange(orientation === 'horizontal' ? 'align' : 'justify', value)}
-          />
+      <div className="propsElementsBlock">
+        <p className="propsElementsBlockTitle">Align</p>
+        <div className="propsElementsContentBlock">
+          <div className={cn(styles.axises, orientation === 'vertical' && styles.axises_reversed)}>
+            <div className={styles.axis}>
+              {renderLabel(orientation === 'vertical')}
+              <DropDown
+                options={JUSTIFY_VALUES}
+                defaultValue={styleItem['justify-content']}
+                value={styleItem['justify-content']}
+                onChange={(value) => onAlignChange('justify', value)}
+              />
+            </div>
+            <div className={styles.axis}>
+              {renderLabel(orientation === 'horizontal')}
+              <DropDown
+                options={ALIGN_VALUES}
+                defaultValue={styleItem['align-items']}
+                value={styleItem['align-items']}
+                onChange={(value) => onAlignChange('align', value)}
+              />
+            </div>
+          </div>
         </div>
       </div>
-  </div>
-  </React.Fragment>
-));
+    </React.Fragment>
+  )
+});

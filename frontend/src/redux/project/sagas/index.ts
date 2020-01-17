@@ -34,14 +34,19 @@ import {
   addScenarioSaga,
 } from '$redux/project/sagas/scenario';
 import {
+  apiGetScenarios,
+} from '$api/scenario';
+import {
   apiGetLibraryElements,
-  uploadImageForNN,
   apiSaveElements,
+  parseImgUsingNN,
+  apiGetElements,
 } from '$api/element';
 import { setTokenPair, setLoadedToken } from '$redux/user/actions';
 import { MAX_TOKEN_TRIALS } from '$config/settings';
 import { refreshUserTokenPair } from '$redux/user/sagas';
 import { openSignScreen, openProjects } from '$utils/history';
+import { CssLikeStyles } from '$utils/StyleHelper';
 import {
   IScenarios,
   IScenarioElements,
@@ -49,8 +54,8 @@ import {
 } from '$redux/project/types';
 import * as ProjectT from '$redux/project/types';
 import * as PATH_NAMES from '$constants/pathNames';
-import { DEFAULT_AUTHORISATION_TOKEN } from '$constants/defaultParams';
 import { apiSaveScenarios, apiSaveScenario } from '$api/scenario';
+import { DEFAULT_AUTHORISATION_TOKEN, DEFAULT_INDENTS } from '$constants/defaultParams';
 
 import { selectors, T } from '../';
 
@@ -432,20 +437,151 @@ function* uploadFileSaga(
   { payload: { file: { file } } }: ReturnType<typeof Actions.uploadFile>
 ) {
   try {
-    const { id: currentScreenID }: ReturnType<typeof selectors.selectCurrentScreen> = yield select(
+    // TODO: show loader in addModalElements
+    const currentScreen: ReturnType<typeof selectors.selectCurrentScreen> = yield select(
       selectors.selectCurrentScreen,
     );
-  
+    const { id: currentScreenID } = currentScreen;
+    const currentScenarios: ReturnType<typeof selectors.selectScenarios> = yield select(
+      selectors.selectScenarios,
+    );
+    const currentScenariosElements: ReturnType<typeof selectors.selectScenariosElements> = yield select(
+      selectors.selectScenariosElements,
+    );
+    const rootScenario: ReturnType<typeof selectors.selectRootScenario> = yield select(
+      selectors.selectRootScenario,
+    );
+
+    if (rootScenario === undefined) return;
+
     const formData = new FormData();
     formData.append('image', new Blob([file]), file.name);
-  
-    const { image: imageURL } = yield call(reqWrapper, uploadImageForNN, {
-      screenID: currentScreenID,
+    formData.append('name', 'TESTING NEURAL NETWORK');
+    formData.append('screen', currentScreenID.toString());
+    formData.append('parameters', JSON.stringify({}));
+    formData.append('styles', JSON.stringify({}));
+
+    type NNScenario = {
+      id: number;
+      buoyancy: null;
+      direction: 'vertical' | 'horizontal';
+      elements: number[];
+      name: string;
+      parameters: { children?: string[] };
+      parent_id: number;
+      screen: number;
+      struct_type: 'container';
+      styles: '' | CssLikeStyles;
+      type: string; // login
+    };
+
+    const nnScenarioToContainer = (x: NNScenario): T.IScenarioItem => ({
+      ...x,
+      buoyancy: 0,
+      parameters: {
+        ...x.parameters,
+        children: x.parameters.children ? x.parameters.children : [],
+      },
+      styles: x.styles === '' ? {
+        ...DEFAULT_INDENTS,
+        display: 'flex',
+        'flex-direction': x.direction === 'horizontal' ? 'row' : 'column',
+        'justify-content': 'flex-start',
+        'align-items': 'stretch',
+      } : x.styles,
+    });
+
+    const nnChildScenarioToContainer = (x: any): T.IScenarioItem => ({
+      ...x,
+      buoyancy: 0,
+      styles: {
+        ...DEFAULT_INDENTS,
+        display: 'flex',
+        'flex-direction': x.direction === 'horizontal' ? 'row' : 'column',
+        'justify-content': 'flex-start',
+        'align-items': 'stretch',
+      },
+    });
+
+    const nnServerRootScenario: NNScenario = yield call(reqWrapper, parseImgUsingNN, {
       data: formData,
       contentType: 'multipart/form-data',
     });
+    const screenScenarios: ReturnPromisedType<typeof apiGetScenarios> = yield call(
+      reqWrapper, apiGetScenarios, { screenID: currentScreenID }
+    );
+    const scenariosElements: ReturnPromisedType<typeof apiGetElements> = yield call(reqWrapper, apiGetElements, {
+      scenariosIDs: [screenScenarios.map(x => x.id)],
+    });
 
-    yield put(Actions.uploadImageForNNSuccess({ imageURL, screenID: currentScreenID }));
+    const nnRootScenario = nnScenarioToContainer(nnServerRootScenario);
+
+    const finalRootScenario = {
+      ...rootScenario,
+      parameters: {
+        ...rootScenario.parameters,
+        children: rootScenario.parameters.children.concat(`${nnRootScenario.id}s`),
+      }
+    };
+
+    type CollectChildrenAcc = { scenariosIDs: string[], elementsIDs: string[] };
+    const collectChildren = (children: string[]) => children.reduce((acc: CollectChildrenAcc, x): CollectChildrenAcc => {
+      const isScenario = x.slice(-1) === 's';
+      const scenario = isScenario ? screenScenarios.find(s => s.id === parseInt(x)) : null;
+      const { elementsIDs, scenariosIDs } = scenario
+        ? collectChildren(scenario.parameters.children)
+        : { elementsIDs: [], scenariosIDs: [] };
+      return { elementsIDs: acc.elementsIDs.concat(elementsIDs), scenariosIDs: acc.scenariosIDs.concat(scenariosIDs)};
+    }, { scenariosIDs: children.filter(x => x.slice(-1) === 's'), elementsIDs: children.filter(x => x.slice(-1) !== 's')});
+
+    const { scenariosIDs, elementsIDs: rawElementsIDs } = collectChildren(nnRootScenario.parameters.children);
+
+    const rootChildrenScenarios = scenariosIDs
+      .map(x => parseInt(x, 10))
+      .map(x => screenScenarios.find(s => s.id === x) as ProjectT.IScenarioItem)
+      .map(nnChildScenarioToContainer);
+
+    const addParentId = (x: any) => ({ ...x, parameters: { ...x.parameters, parent_id: x.scenario }});
+
+    const actualScenarios = {
+      ...currentScenarios,
+      [finalRootScenario.id]: finalRootScenario,
+      [nnRootScenario.id]: nnRootScenario,
+      ...rootChildrenScenarios.reduce((acc, x) => ({ ...acc, [x.id]: x }), {}),
+    };
+
+    const elementsIDs = rawElementsIDs.map(x => parseInt(x, 10));
+    const actualScenariosElements = {
+      ...currentScenariosElements,
+      ...elementsIDs
+        .map(x => scenariosElements.find(se => se.id === x) as ProjectT.IScenarioElement)
+        .map(addParentId)
+        .reduce((acc, x) => ({ ...acc, [x.id]: x }), {}),
+    };
+
+
+    yield put(Actions.runLayoutAlgorithm(actualScenarios, actualScenariosElements, {
+      ...currentScreen.listSortable.root,
+      children: finalRootScenario.parameters.children,
+    }));
+    yield take(runLayoutAlgorithmFinishedType);
+    yield put(Actions.setIsAddElementsModalOpened(false));
+
+    yield call(
+      reqWrapper, apiSaveElements,
+      { data: R.values(R.pick(elementsIDs.map(String), actualScenariosElements)) },
+    );
+    yield call(
+      reqWrapper, apiSaveScenarios,
+      {
+        data: R.values(
+          R.pick([finalRootScenario.id, nnRootScenario.id, ...rootChildrenScenarios.map(x => x.id)].map(String),
+          actualScenarios
+          )
+        )
+      },
+    );
+    
   } catch (e) {
     console.error('Could not upload image for NN. Error: ', e.message);
   }

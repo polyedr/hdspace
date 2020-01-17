@@ -141,7 +141,7 @@ const renderText: Renderer = (props) => {
       data-id={sortableId}
       key={id}
       className={cn(styles.addedElem, active && styles.activated)}
-      style={{ ...style }}
+      style={{ ...style, wordBreak: 'break-word', overflowY: 'auto' }}
       tabIndex={0}
     >
       {params.content || name || 'text'}

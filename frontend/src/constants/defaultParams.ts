@@ -12,6 +12,7 @@ import { IApiResponseError, ITokenPair } from '$redux/user/reducer';
 // import { ITokenPair, IApiResponseError } from '$redux/user/reducer';
 // import { itemRoot } from '$utils/parseListItems';
 import { getDaysInMonth } from '$utils/NumberHelper';
+import { CssLikeStyles } from '$utils/StyleHelper';
 
 export interface ISignFormElement {
   label: string,
@@ -82,6 +83,13 @@ export const DEFAULT_INDENTS: IScreenIndents = {
   'padding-left': '5px',
 };
 
+export const DEFAULT_FLEX: CssLikeStyles = {
+  display: 'flex',
+  'flex-direction': 'column',
+  'justify-content': 'flex-start',
+  'align-items': 'center',
+};
+
 export const DEFAULT_BORDER: IScreenBorders = {
   'border-width': '0px',
   'border-color': '#323232',
@@ -142,117 +150,6 @@ export const DEFAULT_ACTIVE_ITEM: ActiveItem = {
 export const STATUS = ['on_hold', 'in_progress', 'review', 'approved'];
 
 export const LIST_SCENARIO_TYPE = ['block', 'container', 'group', 'root'];
-
-export const DEFAULT_LIB_ELEMENTS = {
-  email: {
-    struct_type: 'textinput',
-    func_type: 'email',
-    func_type_human: 'Email',
-    buoyancy: 95,
-    parameters: {
-      group: 'input',
-      placeholder: 'email',
-    },
-    styles: {},
-  },
-  phone: {
-    struct_type: 'textinput',
-    func_type: 'phone',
-    func_type_human: 'Phone',
-    buoyancy: 86,
-    parameters: {
-      group: 'input',
-      placeholder: 'phone',
-    },
-    styles: {},
-  },
-  password: {
-    struct_type: 'textinput',
-    func_type: 'password',
-    func_type_human: 'Password',
-    buoyancy: 10,
-    parameters: {
-      group: 'input',
-      placeholder: 'password',
-    },
-    styles: {},
-  },
-  firstname: {
-    struct_type: 'textinput',
-    func_type: 'firstname',
-    func_type_human: 'First name',
-    buoyancy: 64,
-    parameters: {
-      group: 'input',
-      placeholder: 'firstname',
-    },
-    styles: {},
-  },
-  lastname: {
-    struct_type: 'textinput',
-    func_type: 'lastname',
-    func_type_human: 'Lastname',
-    buoyancy: 61,
-    parameters: {
-      group: 'input',
-      placeholder: 'lastname',
-    },
-    styles: {},
-  },
-  title: {
-    struct_type: 'ocrtext',
-    func_type: 'title',
-    func_type_human: 'Title',
-    buoyancy: 100,
-    parameters: {
-      group: 'other',
-    },
-    styles: {},
-  },
-  description: {
-    struct_type: 'ocrtext',
-    func_type: 'description',
-    func_type_human: 'Description',
-    buoyancy: 98,
-    parameters: {
-      group: 'other',
-    },
-    styles: {},
-  },
-  day: {
-    struct_type: 'undefined',
-    func_type: 'day',
-    func_type_human: 'Day',
-    buoyancy: 54,
-    parameters: {
-      group: 'select',
-      option: 'day',
-    },
-    styles: {},
-  },
-  month: {
-    struct_type: 'undefined',
-    func_type: 'month',
-    func_type_human: 'Month',
-    buoyancy: 54,
-    parameters: {
-      group: 'select',
-      option: 'month',
-    },
-    styles: {},
-  },
-  year: {
-    struct_type: 'undefined',
-    func_type: 'year',
-    func_type_human: 'Year',
-    buoyancy: 54,
-    parameters: {
-      group: 'select',
-      option: 'year',
-    },
-    styles: {},
-  },
-};
 
 export const DEFAULT_SCREEN_MODE = {
   isDefaultMode: false,

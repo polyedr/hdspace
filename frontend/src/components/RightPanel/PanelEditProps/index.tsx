@@ -2,10 +2,8 @@ import React from 'react';
 import * as R from 'ramda';
 
 import { IScreenProps, IListSortable } from '$redux/project/types';
-import { getOptionsOfListScenario } from '$utils/parseScenario';
 import { elementTypes } from '$constants/menu';
 import { ActiveElementBlock } from '$components/RightPanel/ActiveElementBlock';
-import { ScenarioBlock } from '$components/RightPanel/ChangeScenarioBlock';
 import { GroupElementsDirectionBlock } from '$components/RightPanel/GroupElementsDirectionBlock';
 import { ActionBlock } from '$components/RightPanel/ActionBlock';
 import { DifferentSettingsBlock } from '$components/RightPanel/DifferentSettingsBlock';
@@ -39,6 +37,8 @@ export interface IPanelEditProps {
   updateScenarioStyles: IRightPanelProps['updateScenarioStyles'],
   updateElementParameters: IRightPanelProps['updateElementParameters'],
   changeElementType: IRightPanelProps['changeElementType'],
+  isAddElementsModalOpened: boolean;
+  setIsAddElementsModalOpened(isOpened: boolean): void;
 }
 
 export const PanelEditProps: React.FunctionComponent<IPanelEditProps> = ({
@@ -60,8 +60,9 @@ export const PanelEditProps: React.FunctionComponent<IPanelEditProps> = ({
   updateElementParameters,
   addScenario,
   addContainer,
-  changeScenario,
-  changeElementType,
+
+  isAddElementsModalOpened,
+  setIsAddElementsModalOpened,
 }) => {
   const activeItemID = activeItem.itemType === 'root' ? 'root' : activeItem.itemId;
   const currentItem = R.prop(activeItemID, listSortable);
@@ -76,18 +77,12 @@ export const PanelEditProps: React.FunctionComponent<IPanelEditProps> = ({
         libraryElements={libraryElements}
         addScenario={addScenario}
         addContainer={addContainer}
+        isAddElementsModalOpened={isAddElementsModalOpened}
+        setIsAddElementsModalOpened={setIsAddElementsModalOpened}
       />
       {
         activeItem.itemType !== 'none' && (
           <>
-            <ScenarioBlock
-              activeItem={activeItem}
-              scenarios={scenarios}
-              getOptionsOfListScenario={getOptionsOfListScenario}
-              changeScenario={changeScenario}
-              changeElementType={changeElementType}
-              libraryElements={libraryElements}
-            />
             <div className="propsPanelBlock">
               <div className="propsPanelHeaderBlock">
                 <p>Elements</p>
@@ -96,7 +91,7 @@ export const PanelEditProps: React.FunctionComponent<IPanelEditProps> = ({
               {currentItem && LIST_SCENARIO_TYPE.indexOf(currentItem.type) !== -1 && (
                 <GroupElementsDirectionBlock
                   styleItem={styleItem}
-                  orientation={orientation}
+                  orientation={orientation as ('vertical' | 'horizontal')}
                   params={params}
                   setOrientation={setOrientation}
                   onAlignChange={onAlign}

@@ -10,7 +10,7 @@ const styles = require('./styles.scss');
 const getLastChar = (value?: string | number): string => {
   if (typeof value === 'undefined') return '';
   const valueAsString = String(value);
-  return (valueAsString[valueAsString.length -1] || '');
+  return (valueAsString[valueAsString.length - 1] || '');
 }
 
 interface IComponentProps {
@@ -38,7 +38,7 @@ export const SizeBlock: React.FunctionComponent<IComponentProps> = memo((props) 
           if (R.prop(('border-width'), styleItem)) {
             clientWidth += ((safeParseFloat(styleItem['border-width']) || 0) * 2);
           }
-  
+
           if (styleItem.width === 'auto' || getLastChar(styleItem.width) === '%') {
             updateElementStyles(activeItem.itemId, { width: `${clientWidth}px` });
           }
@@ -64,7 +64,7 @@ export const SizeBlock: React.FunctionComponent<IComponentProps> = memo((props) 
         }
         break;
 
-      case 'height': {
+      case 'height':
         const el = document.getElementById(String(activeItem.itemId));
         if (el !== null) {
           const { clientHeight } = el;
@@ -74,14 +74,20 @@ export const SizeBlock: React.FunctionComponent<IComponentProps> = memo((props) 
           }
         }
         break;
-      }
 
       case 'auto_height':
-        // updateElementStyles(activeItem.itemId, { height: 'auto' });
         if (LIST_SCENARIO_TYPE.indexOf(activeItem.itemType) !== -1) {
           updateScenarioStyles(activeItem.itemId, { height: 'auto' });
         } else {
           updateElementStyles(activeItem.itemId, { height: 'auto' });
+        }
+        break;
+
+      case 'full_height':
+        if (LIST_SCENARIO_TYPE.indexOf(activeItem.itemType) !== -1) {
+          updateScenarioStyles(activeItem.itemId, { height: '100%' });
+        } else {
+          updateElementStyles(activeItem.itemId, { height: '100%' });
         }
         break;
 
@@ -125,9 +131,16 @@ export const SizeBlock: React.FunctionComponent<IComponentProps> = memo((props) 
     }
 
     if (key === 'height') {
-      return (styleItem && styleItem[key] && String(styleItem[key]).match(/px/i) && 'height') || 'auto_height';
-    }
+      if (String(styleItem[key]).match(/px/i)) {
+        return 'height';
+      }
 
+      if (styleItem[key] === '100%') {
+        return 'full_height';
+      }
+
+      return 'auto_height';
+    }
     return undefined;
   }, [styleItem]);
 
@@ -178,13 +191,13 @@ export const SizeBlock: React.FunctionComponent<IComponentProps> = memo((props) 
               className={styles.sizeField}
               type="text"
               name="height"
-              value={(styleItem && parseFloat(String(styleItem.height))) || 'auto'}
+              value={(getLastChar(styleItem.height) === '%' ? styleItem.height : parseFloat(String(styleItem.height))) || 'auto'}
               onChange={handleChangeSize}
               disabled={getSizeDisableChange('height')}
             />
             <select
               className="dropDown"
-              onChange={handleChangeUnits}
+              onChange={event => handleChangeUnits(event)}
               value={getSelected('height')}
               name="height_unit"
               disabled={getUnitsDisableChange()}
@@ -194,8 +207,8 @@ export const SizeBlock: React.FunctionComponent<IComponentProps> = memo((props) 
                   <option value="height">px</option>
                 )
               }
-              {/* <option value="height">px</option> */}
               <option value="auto_height">Auto</option>
+              <option value="full_height">Full</option>
             </select>
           </div>
         </div>

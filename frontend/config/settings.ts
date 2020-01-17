@@ -11,13 +11,15 @@ const settings = {
   },
   development: {
     api: {
-      host: 'https://staging.app.adevi.io:8000', // https://www.timberworkinfo.ru 
+      // host: 'https://staging.app.adevi.io:8000',
+      host: 'https://www.timberworkinfo.ru',
+      // host: 'http://178.21.8.79',
       version: 1,
     },
   },
   production: {
     api: {
-      host: 'https://staging.app.adevi.io:8000',
+      host: 'https://www.timberworkinfo.ru',
       version: 1,
     },
   },

@@ -9,7 +9,6 @@ import { IProjectScreen } from '$redux/project/types';
 import { selectors } from '$redux/project';
 import { Scrollbar } from '$components/UI/Scrollbar/';
 import { PanelEditProps } from '$components/RightPanel/PanelEditProps';
-import { ScenarioList } from '$components/RightPanel/ScenarioList';
 import { T as ProjectT } from '$redux/project';
 import { EditorProps } from '$containers/EditorLogic';
 import { LIST_SCENARIO_TYPE } from '$constants/defaultParams';
@@ -25,6 +24,7 @@ const mapStateToProps = (state: AppReduxState) => ({
   scenarioElements: selectors.selectScenariosElements(state),
   libraryElements: selectors.selectLibraryElements(state),
   currentScreen: selectors.selectCurrentScreen(state),
+  isAddElementsModalOpened: selectors.selectIsAddElementsModalOpened(state),
   loader: selectors.selectLoader(state),
 });
 
@@ -39,9 +39,10 @@ const mapDispatchToProps = {
   delScenario: Actions.delScenario,
   addContainer: Actions.addContainer,
   renameScenario: Actions.renameScenario,
+  setIsAddElementsModalOpened: Actions.setIsAddElementsModalOpened,
 };
 
-export type IRightPanelProps = ReturnType<typeof mapStateToProps>& typeof mapDispatchToProps & {
+export type IRightPanelProps = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & {
   activeItem: ProjectT.ActiveItem,
   project: EditorProps['currentProject'],
   screen: IProjectScreen,
@@ -68,9 +69,9 @@ const Component: React.FunctionComponent<IRightPanelProps> = ({
   updateScenarioStyles,
   updateElementParameters,
   changeScenario,
-  delScenario,
-  renameScenario,
   changeElementType,
+  isAddElementsModalOpened,
+  setIsAddElementsModalOpened,
 }) => {
   const handleAlignChange = useCallback((type: 'align' | 'justify', value: string) => {
     const itemID = parseInt(activeItem.itemId, 10);
@@ -147,12 +148,8 @@ const Component: React.FunctionComponent<IRightPanelProps> = ({
           updateScenarioStyles={updateScenarioStyles}
           updateElementParameters={updateElementParameters}
           changeElementType={changeElementType}
-        />
-        <ScenarioList
-          scenarios={scenarios}
-          scenarioElements={scenarioElements}
-          delScenario={delScenario}
-          renameScenario={renameScenario}
+          isAddElementsModalOpened={isAddElementsModalOpened}
+          setIsAddElementsModalOpened={setIsAddElementsModalOpened}
         />
       </Scrollbar>
       <Spinner active={loader} />

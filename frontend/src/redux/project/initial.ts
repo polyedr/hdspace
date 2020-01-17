@@ -1,5 +1,4 @@
 import {
-  DEFAULT_LIB_ELEMENTS,
   DEFAULT_PROJECT,
   DEFAULT_SCREEN,
   DEFAULT_ACTIVE_ITEM,
@@ -9,11 +8,12 @@ import * as T from './types';
 
 export const initial: T.ReduxState = {
   data: {
-    libraryElements: DEFAULT_LIB_ELEMENTS,
+    libraryElements: {},
     listProject: [],
   },
   ui: {
     activeItem: DEFAULT_ACTIVE_ITEM,
+    isAddElementsModalOpened: false,
   },
   edit: {
     currentProject: DEFAULT_PROJECT,
