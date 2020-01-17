@@ -18,6 +18,7 @@ import { IndentsBlock } from '../Controls/IndentsBlock';
 import { BackgroundBlock } from '../Controls/BackgroundBlock';
 import { BorderBlock } from '../Controls/BorderBlock';
 import { TypographyBlock } from '../Controls/TypographyBlock';
+import { Placeholder } from '../Controls/Placeholder/Placeholder';
 const styles = require('./PropertiesPanel.scss');
 
 type OwnProps = {
@@ -58,6 +59,7 @@ const CONTROLS: Record<Control, React.ComponentType> = {
   background: BackgroundBlock,
   action: ActionBlock,
   differentSettings: DifferentSettingsBlock,
+  placeholder: Placeholder,
 };
 
 export type PropertiesPanelProps = StateProps & typeof mapDispatch & OwnProps;

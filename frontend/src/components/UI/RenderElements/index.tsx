@@ -101,7 +101,7 @@ const renderInput: Renderer = (props) => {
         transition: 'none',
       }}
       onClick={(event) => onClick?.(event, id)}
-      placeholder={params.dynamic_placeholder || params.placeholder || 'input'}
+      placeholder={params.placeholder}
     />
   );
 };

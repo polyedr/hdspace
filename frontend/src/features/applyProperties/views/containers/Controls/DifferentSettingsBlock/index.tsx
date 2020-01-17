@@ -5,7 +5,6 @@ import { AppReduxState } from '$shared/types/app';
 import { selectors, T as ProjectT } from '$redux/project/';
 import { elementTypes } from '$constants/menu';
 import {
-  DEFAULT_PLACEHOLDER,
   DEFAULT_MAP_PROPS,
   MIN_LATITUDE,
   MAX_LATITUDE,
@@ -25,8 +24,6 @@ const ZOOM_STEP = 0.5;
 type StateProps = {
   activeItemType: string;
   map_props: ProjectT.IScreenProps['map_props'];
-  dynamic_placeholder: ProjectT.IScreenProps['dynamic_placeholder'];
-  placeholder: ProjectT.IScreenProps['placeholder'];
   content: ProjectT.IScreenProps['content'];
 }
 
@@ -37,8 +34,6 @@ function mapState(state: AppReduxState): StateProps {
   return {
     activeItemType: activeItem.itemType,
     map_props: activeItemParams.map_props,
-    dynamic_placeholder: activeItemParams.dynamic_placeholder,
-    placeholder: activeItemParams.placeholder,
     content: activeItemParams.content,
   };
 }
@@ -47,15 +42,10 @@ type Props = StateProps & PropertiesChangeProps;
 
 const Component: React.FC<Props> = ({
   map_props,
-  dynamic_placeholder,
-  placeholder,
   content,
   activeItemType,
   updateParams,
 }) => {
-  const handlePlaceholderChange = useCallback(({ target: { value } }) => {
-    updateParams({ dynamic_placeholder: value });
-  }, [updateParams]);
 
   const handleTextContentChange = useCallback(({ target: { value } }) => {
     updateParams({ content: value });
@@ -110,23 +100,6 @@ const Component: React.FC<Props> = ({
 
   return (
     <div className="propsElementsBlock">
-      {activeItemType === elementTypes.input && (
-        <React.Fragment>
-          <p className="propsElementsBlockTitle">Placeholder</p>
-          <div className="propsElementsContentBlock">
-            <div className="propsElementsInnerBlock">
-              <input
-                className={styles.labelField}
-                id="placeholder_setting_input"
-                type="text"
-                placeholder={DEFAULT_PLACEHOLDER}
-                value={dynamic_placeholder || placeholder}
-                onChange={handlePlaceholderChange}
-              />
-            </div>
-          </div>
-        </React.Fragment>
-      )}
       {(activeItemType === elementTypes.text || activeItemType === elementTypes.button) && (
         <React.Fragment>
           <p className="propsElementsBlockTitle">Text content</p>

@@ -2,13 +2,13 @@ import * as R from 'ramda';
 import { createSelector } from 'reselect';
 import { IScenarioItem, IScenarios, IScenarioElement, IScenarioElements } from "$redux/project/types";
 import {
-  LIST_SCENARIO_TYPE, DEFAULT_INDENTS, DEFAULT_FLEX, DEFAULT_BORDER, DEFAULT_BACKGROUND, DEFAULT_TYPOGRAPHY, DEFAULT_SIZE, DEFAULT_ACTION, DEFAULT_DIFFERENT_SETTINGS,
+  LIST_SCENARIO_TYPE, DEFAULT_INDENTS, DEFAULT_FLEX, DEFAULT_BORDER, DEFAULT_BACKGROUND, DEFAULT_TYPOGRAPHY, DEFAULT_SIZE, DEFAULT_ACTION, DEFAULT_DIFFERENT_SETTINGS, DEFAULT_PLACEHOLDER,
 } from '$constants/defaultParams';
 
 const ENTITIES = [
   'root', 'container', 'button', 'textinput', 'hyperlink', 'ocrtext', 'image', 'select', 'map', 'calendar', 'clock',
 ] as const;
-const CONTROLS_AFFECT_ON_PARAMS = ['action', 'differentSettings'] as const;
+const CONTROLS_AFFECT_ON_PARAMS = ['action', 'differentSettings', 'placeholder'] as const;
 const CONTROLS_AFFECT_ON_STYLES = ['direction', 'indents', 'size', 'typography', 'border', 'background'] as const;
 
 const controlAffectsOnStyles = (controlName: Control) => (
@@ -23,7 +23,7 @@ export const AVAILABLE_CONTROLS: Record<Entity, Control[]> = {
   root: ['direction', 'background'],
   container: ['indents', 'size', 'direction', 'typography', 'border', 'background'],
   button: ['indents', 'size', 'typography', 'border', 'background', 'action', 'differentSettings'],
-  textinput: ['indents', 'size', 'typography', 'border', 'background', 'differentSettings'],
+  textinput: ['indents', 'size', 'typography', 'border', 'background', 'placeholder'],
   hyperlink: ['typography', 'border', 'background', 'action'],
   ocrtext: ['indents', 'size', 'typography', 'border', 'background', 'differentSettings'],
   image: ['indents', 'size', 'border', 'background'],
@@ -33,7 +33,7 @@ export const AVAILABLE_CONTROLS: Record<Entity, Control[]> = {
   clock: ['indents', 'size', 'typography', 'border', 'background'],
 };
 
-export const CONTROLS_DEFAULTS: Record<Control, any> = {
+const CONTROLS_DEFAULTS: Record<Control, any> = {
   direction: DEFAULT_FLEX,
   indents: DEFAULT_INDENTS,
   size: DEFAULT_SIZE,
@@ -42,6 +42,7 @@ export const CONTROLS_DEFAULTS: Record<Control, any> = {
   background: DEFAULT_BACKGROUND,
   action: DEFAULT_ACTION,
   differentSettings: DEFAULT_DIFFERENT_SETTINGS,
+  placeholder: DEFAULT_PLACEHOLDER,
 };
 
 type EntityToDefaults = {
@@ -52,7 +53,7 @@ const extractDefaults = (entity: Entity, control?: Control) => control
   ? R.pick(AVAILABLE_CONTROLS[entity], CONTROLS_DEFAULTS)[control]
   : R.pick(AVAILABLE_CONTROLS[entity], CONTROLS_DEFAULTS);
 
-export const ENTITY_TO_DEFAULTS: EntityToDefaults = {
+const ENTITY_TO_DEFAULTS: EntityToDefaults = {
   root: extractDefaults('root'),
   container: extractDefaults('container'),
   button: {
@@ -87,7 +88,14 @@ export const ENTITY_TO_DEFAULTS: EntityToDefaults = {
   ocrtext: extractDefaults('ocrtext'),
   image: extractDefaults('image'),
   select: extractDefaults('select'),
-  map: extractDefaults('map'),
+  map: {
+    ...extractDefaults('map'),
+    size: {
+      ...extractDefaults('map', 'size'),
+      width: 500,
+      height: 300,
+    },
+  },
   calendar: extractDefaults('calendar'),
   clock: extractDefaults('clock'),
 };

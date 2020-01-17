@@ -121,8 +121,6 @@ export const DEFAULT_MAP_PROPS = {
 
 export const DEFAULT_DIFFERENT_SETTINGS = {
   map_props: DEFAULT_MAP_PROPS,
-  dynamic_placeholder: '',
-  placeholder: '',
   content: '',
 };
 
@@ -297,7 +295,9 @@ export const getDefaultDateSelectOptions = (dateType = 'year'): ISelectOptions[]
   }
 };
 
-export const DEFAULT_PLACEHOLDER = 'Enter a label for the field';
+export const DEFAULT_PLACEHOLDER = {
+  placeholder: 'Enter a label for the field',
+};
 
 export const DEFAULT_MAP_WIDGET = {
   struct_type: 'widget',
