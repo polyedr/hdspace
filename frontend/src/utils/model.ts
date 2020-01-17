@@ -2,13 +2,13 @@ import * as R from 'ramda';
 import { createSelector } from 'reselect';
 import { IScenarioItem, IScenarios, IScenarioElement, IScenarioElements } from "$redux/project/types";
 import {
-  LIST_SCENARIO_TYPE, DEFAULT_INDENTS, DEFAULT_FLEX, DEFAULT_BORDER, DEFAULT_BACKGROUND, DEFAULT_TYPOGRAPHY, DEFAULT_SIZE, DEFAULT_ACTION, DEFAULT_DIFFERENT_SETTINGS, DEFAULT_PLACEHOLDER, DEFAULT_TEXT_CONTENT,
+  LIST_SCENARIO_TYPE, DEFAULT_INDENTS, DEFAULT_FLEX, DEFAULT_BORDER, DEFAULT_BACKGROUND, DEFAULT_TYPOGRAPHY, DEFAULT_SIZE, DEFAULT_ACTION, DEFAULT_PLACEHOLDER, DEFAULT_TEXT_CONTENT, DEFAULT_MAP_PROPS,
 } from '$constants/defaultParams';
 
 const ENTITIES = [
   'root', 'container', 'button', 'textinput', 'hyperlink', 'ocrtext', 'image', 'select', 'map', 'calendar', 'clock',
 ] as const;
-const CONTROLS_AFFECT_ON_PARAMS = ['action', 'differentSettings', 'placeholder', 'textContent'] as const;
+const CONTROLS_AFFECT_ON_PARAMS = ['action', 'mapProps', 'placeholder', 'textContent'] as const;
 const CONTROLS_AFFECT_ON_STYLES = ['direction', 'indents', 'size', 'typography', 'border', 'background'] as const;
 
 const controlAffectsOnStyles = (controlName: Control) => (
@@ -28,7 +28,7 @@ export const AVAILABLE_CONTROLS: Record<Entity, Control[]> = {
   ocrtext: ['indents', 'size', 'typography', 'border', 'background', 'textContent'],
   image: ['indents', 'size', 'border', 'background'],
   select: ['indents', 'size', 'typography', 'border', 'background'],
-  map: ['indents', 'size', 'typography', 'border', 'background', 'differentSettings'],
+  map: ['indents', 'size', 'typography', 'border', 'background', 'mapProps'],
   calendar: ['indents', 'size', 'typography', 'border', 'background'],
   clock: ['indents', 'size', 'typography', 'border', 'background'],
 };
@@ -41,9 +41,9 @@ const CONTROLS_DEFAULTS: Record<Control, any> = {
   border: DEFAULT_BORDER,
   background: DEFAULT_BACKGROUND,
   action: DEFAULT_ACTION,
-  differentSettings: DEFAULT_DIFFERENT_SETTINGS,
   placeholder: DEFAULT_PLACEHOLDER,
   textContent: DEFAULT_TEXT_CONTENT,
+  mapProps: DEFAULT_MAP_PROPS,
 };
 
 type EntityToDefaults = {

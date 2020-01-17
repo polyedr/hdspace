@@ -111,17 +111,14 @@ export const DEFAULT_ACTION = {
 };
 
 export const DEFAULT_MAP_PROPS = {
-  center: {
-    lat: 50.00008,
-    lng: 40.00008,
+  map_props: {
+    center: {
+      lat: 50.00008,
+      lng: 40.00008,
+    },
+    zoom: 10,
+    markerText: 'A',
   },
-  zoom: 10,
-  markerText: 'A',
-};
-
-export const DEFAULT_DIFFERENT_SETTINGS = {
-  map_props: DEFAULT_MAP_PROPS,
-  content: '',
 };
 
 export const DEFAULT_TYPOGRAPHY: IScreenTypography = {

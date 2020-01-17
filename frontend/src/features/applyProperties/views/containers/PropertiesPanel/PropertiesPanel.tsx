@@ -12,7 +12,7 @@ import { AVAILABLE_CONTROLS, Control, Entity } from '$utils/model';
 import { ActiveElementBlock } from '../Controls/ActiveElementBlock';
 import { GroupElementsDirectionBlock } from '../Controls/GroupElementsDirectionBlock';
 import { ActionBlock } from '../Controls/ActionBlock';
-import { DifferentSettingsBlock } from '../Controls/DifferentSettingsBlock';
+import { MapProps } from '../Controls/MapProps/MapProps';
 import { SizeBlock } from '../Controls/SizeBlock';
 import { IndentsBlock } from '../Controls/IndentsBlock';
 import { BackgroundBlock } from '../Controls/BackgroundBlock';
@@ -59,7 +59,7 @@ const CONTROLS: Record<Control, React.ComponentType> = {
   border: BorderBlock,
   background: BackgroundBlock,
   action: ActionBlock,
-  differentSettings: DifferentSettingsBlock,
+  mapProps: MapProps,
   placeholder: Placeholder,
   textContent: TextContent,
 };

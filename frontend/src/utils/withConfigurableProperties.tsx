@@ -25,10 +25,10 @@ const mapDispatch = {
 export type PropertiesChangeProps = {
   activeItemID: string;
   updateStyles(payload: CssLikeStyles): void;
-  updateParams(payload: { [P in keyof ProjectT.IScreenProps]: ProjectT.IScreenProps[P] }): void;
+  updateParams(payload: Params): void;
 };
 
-type Params = { [key: string]: string | number };
+type Params = Partial<{ [P in keyof ProjectT.IScreenProps]: ProjectT.IScreenProps[P] }>;
 
 // potentially pass config with needed styles/params first
 export function withConfigurableProperties<T extends PropertiesChangeProps>(

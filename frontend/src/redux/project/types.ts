@@ -224,7 +224,7 @@ export interface IScreenProps {
   typography?: IScreenTypography,
   placeholder?: string,
   dynamic_placeholder?: string,
-  map_props?: IMapProps,
+  map_props: IMapProps,
   source_img?: string,
   scenarioId?: number,
   url?: string,

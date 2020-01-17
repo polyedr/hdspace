@@ -177,9 +177,9 @@ const renderMapWidget: Renderer = (props) => {
       tabIndex={0}
     >
       <GMap
-        center={(params.map_props && params.map_props.center) || DEFAULT_MAP_PROPS.center}
-        zoom={(params.map_props && params.map_props.zoom) || DEFAULT_MAP_PROPS.zoom}
-        markerText={(params.map_props && params.map_props.markerText) || DEFAULT_MAP_PROPS.markerText}
+        center={params.map_props.center}
+        zoom={params.map_props.zoom}
+        markerText={params.map_props.markerText}
       />
     </div>
   );

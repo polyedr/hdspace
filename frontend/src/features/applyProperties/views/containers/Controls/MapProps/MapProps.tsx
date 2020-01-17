@@ -3,9 +3,7 @@ import { connect } from 'react-redux';
 
 import { AppReduxState } from '$shared/types/app';
 import { selectors, T as ProjectT } from '$redux/project/';
-import { elementTypes } from '$constants/menu';
 import {
-  DEFAULT_MAP_PROPS,
   MIN_LATITUDE,
   MAX_LATITUDE,
   MIN_LONGITUDE,
@@ -17,21 +15,18 @@ import { IMapProps } from '$redux/project/types';
 import { getPermissibleValue } from '$utils/NumberHelper';
 import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
 
-const styles = require('./styles.scss');
+const styles = require('./MapProps.scss');
 
 const ZOOM_STEP = 0.5;
 
 type StateProps = {
-  activeItemType: string;
   map_props: ProjectT.IScreenProps['map_props'];
 }
 
 function mapState(state: AppReduxState): StateProps {
   const activeItemParams = selectors.selectActiveItemParams(state) as any;
-  const activeItem = selectors.selectActiveItem(state);
 
   return {
-    activeItemType: activeItem.itemType,
     map_props: activeItemParams.map_props,
   };
 }
@@ -40,7 +35,6 @@ type Props = StateProps & PropertiesChangeProps;
 
 const Component: React.FC<Props> = ({
   map_props,
-  activeItemType,
   updateParams,
 }) => {
 
@@ -56,7 +50,7 @@ const Component: React.FC<Props> = ({
       };
     } else {
       newCenter = {
-        lat: map_props?.center.lat,
+        lat: map_props.center.lat,
         lng: Number(getPermissibleValue(Number(value), MIN_LONGITUDE, MAX_LONGITUDE).toFixed(5)),
       };
     }
@@ -93,59 +87,55 @@ const Component: React.FC<Props> = ({
 
   return (
     <div className="propsElementsBlock">
-      {(activeItemType === elementTypes.map) && (
-        <React.Fragment>
-          <p className="propsElementsBlockTitle">Map props</p>
-          <div className="propsElementsContentBlock">
-            <div className="propsElementsInnerBlock">
-              <input
-                className={styles.mapPropsField}
-                type="number"
-                id="map_center_lat"
-                name="center_lat"
-                value={(map_props?.center.lat) || DEFAULT_MAP_PROPS.center.lat}
-                min={MIN_LATITUDE}
-                max={MAX_LATITUDE}
-                step={ZOOM_STEP}
-                onChange={handleCenterMapCoordsChange}
-              />
-              <input
-                className={styles.mapPropsField}
-                type="number"
-                id="map_center_lng"
-                name="center_lng"
-                value={(map_props?.center.lng) || DEFAULT_MAP_PROPS.center.lng}
-                min={MIN_LONGITUDE}
-                max={MAX_LONGITUDE}
-                step={ZOOM_STEP}
-                onChange={handleCenterMapCoordsChange}
-              />
-              <input
-                className={styles.mapPropsField}
-                type="number"
-                id="map_zoom"
-                name="zoom"
-                value={(map_props?.zoom) || DEFAULT_MAP_PROPS.zoom}
-                min={MIN_MAP_ZOOM}
-                max={MAX_MAP_ZOOM}
-                onChange={handleMapZoomChange}
-              />
-            </div>
-            <div className="propsElementsInnerBlock">
-              <input
-                className={styles.mapPropsTextField}
-                type="text"
-                name="markerText"
-                id="map_markerText"
-                value={(map_props?.markerText) || DEFAULT_MAP_PROPS.markerText}
-                onChange={handleMarkerTextChange}
-              />
-            </div>
-          </div>
-        </React.Fragment>
-      )}
+      <p className="propsElementsBlockTitle">Map props</p>
+      <div className="propsElementsContentBlock">
+        <div className="propsElementsInnerBlock">
+          <input
+            className={styles.mapPropsField}
+            type="number"
+            id="map_center_lat"
+            name="center_lat"
+            value={(map_props.center.lat)}
+            min={MIN_LATITUDE}
+            max={MAX_LATITUDE}
+            step={ZOOM_STEP}
+            onChange={handleCenterMapCoordsChange}
+          />
+          <input
+            className={styles.mapPropsField}
+            type="number"
+            id="map_center_lng"
+            name="center_lng"
+            value={(map_props.center.lng)}
+            min={MIN_LONGITUDE}
+            max={MAX_LONGITUDE}
+            step={ZOOM_STEP}
+            onChange={handleCenterMapCoordsChange}
+          />
+          <input
+            className={styles.mapPropsField}
+            type="number"
+            id="map_zoom"
+            name="zoom"
+            value={(map_props.zoom)}
+            min={MIN_MAP_ZOOM}
+            max={MAX_MAP_ZOOM}
+            onChange={handleMapZoomChange}
+          />
+        </div>
+        <div className="propsElementsInnerBlock">
+          <input
+            className={styles.mapPropsTextField}
+            type="text"
+            name="markerText"
+            id="map_markerText"
+            value={(map_props.markerText)}
+            onChange={handleMarkerTextChange}
+          />
+        </div>
+      </div>
     </div>
   );
 };
 
-export const DifferentSettingsBlock = connect(mapState)(withConfigurableProperties(Component));
+export const MapProps = connect(mapState)(withConfigurableProperties(Component));
