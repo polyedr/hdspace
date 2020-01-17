@@ -55,8 +55,8 @@ const Component: React.FC<Props> = ({
   map_props,
   dynamic_placeholder,
   placeholder,
-  activeItemType,
   content,
+  activeItemType,
   updateParams,
 }) => {
   const handlePlaceholderChange = useCallback(({ target: { value } }) => {

@@ -1,4 +1,4 @@
-import React, { memo, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
 
@@ -47,7 +47,7 @@ const mapDispatch = {
   updateScenarioStyles: actionsCreators.updateScenarioStyles,
 };
 
-export const Component: React.FC<Props> = memo((props) => {
+export const Component: React.FC<Props> = (props) => {
   const {
     updateStyles,
     marginTop,
@@ -63,7 +63,6 @@ export const Component: React.FC<Props> = memo((props) => {
   const handleIndentChange = useCallback((type: string, value: string) => {
     updateStyles({ [type]: value });
   }, [updateStyles]);
-
   return (
     <div className="propsElementsBlock">
       <p className="propsElementsBlockTitle">Margins & Paddings</p>
@@ -159,7 +158,7 @@ export const Component: React.FC<Props> = memo((props) => {
       </div>
     </div>
   );
-});
+};
 
 const IndentsBlock = connect(mapState, mapDispatch)(withPropsChangeHandler(Component));
 export { IndentsBlock };

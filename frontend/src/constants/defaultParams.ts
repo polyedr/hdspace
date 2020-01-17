@@ -59,6 +59,11 @@ export const MIN_HEIGHT = 'auto';
 export const DEFAULT_WIDTH = 'auto';
 export const DEFAULT_HEIGHT = 'auto';
 
+export const DEFAULT_SIZE = {
+  width: 'auto',
+  height: 'auto',
+};
+
 export const MIN_BORDER_WIDTH = 0;
 export const MAX_BORDER_WIDTH = 10;
 export const MIN_BORDER_RADIUS = 0;
@@ -73,10 +78,6 @@ export const MIN_MAP_ZOOM = 1;
 export const MAX_MAP_ZOOM = 18;
 
 export const DEFAULT_INDENTS: IScreenIndents = {
-  // 'margin-top': '5px',
-  // 'margin-right': '5px',
-  // 'margin-bottom': '5px',
-  // 'margin-left': '5px',
   'padding-top': '5px',
   'padding-right': '5px',
   'padding-bottom': '5px',
@@ -85,9 +86,9 @@ export const DEFAULT_INDENTS: IScreenIndents = {
 
 export const DEFAULT_FLEX: CssLikeStyles = {
   display: 'flex',
-  'flex-direction': 'column',
+  'flex-direction': 'row',
   'justify-content': 'flex-start',
-  'align-items': 'center',
+  'align-items': 'stretch',
 };
 
 export const DEFAULT_BORDER: IScreenBorders = {
@@ -102,6 +103,27 @@ export const DEFAULT_BACKGROUND: IScreenBackground = {
   'background-image': 'none',
   'background-repeat': 'no-repeat',
   'background-size': 'cover',
+};
+
+export const DEFAULT_ACTION = {
+  url: '',
+  content: '',
+};
+
+export const DEFAULT_MAP_PROPS = {
+  center: {
+    lat: 50.00008,
+    lng: 40.00008,
+  },
+  zoom: 10,
+  markerText: 'A',
+};
+
+export const DEFAULT_DIFFERENT_SETTINGS = {
+  map_props: DEFAULT_MAP_PROPS,
+  dynamic_placeholder: '',
+  placeholder: '',
+  content: '',
 };
 
 export const DEFAULT_TYPOGRAPHY: IScreenTypography = {
@@ -286,15 +308,6 @@ export const DEFAULT_MAP_WIDGET = {
     group: 'widget',
   },
   styles: {},
-};
-
-export const DEFAULT_MAP_PROPS = {
-  center: {
-    lat: 50.00008,
-    lng: 40.00008,
-  },
-  zoom: 10,
-  markerText: 'A',
 };
 
 export const DEFAULT_SIGNIN_FIELDS: ISignFormElement[] = [

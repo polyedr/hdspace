@@ -46,6 +46,7 @@ import { ReturnPromisedType } from '$shared/types';
 import { reqWrapper } from '.';
 import { selectors, T } from '../';
 import { createContainer } from './scenario';
+import { getConfigurablePropsOf } from '$utils/model';
 
 const runLayoutAlgorithmFinishedType: T.RunLayoutAlgorithmFinished['type'] = 'PROJECTS:RUN_LAYOUT_ALGORITHM_FINISHED';
 
@@ -117,9 +118,11 @@ export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
   const createdScreen: ReturnPromisedType<typeof apiAddScreen> = yield call(reqWrapper, apiAddScreen, { data });
   if (!createdScreen) return;
 
+  const { styles } = getConfigurablePropsOf('root');
   const rootScenario: T.IScenarioItem = yield call(createContainer, {
     screen: createdScreen.id,
     styles: {
+      ...styles,
       width: '100%',
       height: '100%',
       display: 'flex',
@@ -128,8 +131,6 @@ export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
       'justify-content': 'center',
       'min-height': '100%',
       'background-color': '#ffffff',
-      'border-width': '0px',
-      'border-style': 'solid',
     },
   });
 

@@ -7,6 +7,7 @@ import { AppReduxState } from '$shared/types/app';
 import { actionsCreators, selectors, T as ProjectT } from '$redux/project';
 import { Scrollbar } from '$components/UI/Scrollbar/';
 import { Spinner } from '$components/UI/Spinner/';
+import { AVAILABLE_CONTROLS, Control, Entity } from '$utils/model';
 
 import { ActiveElementBlock } from '../Controls/ActiveElementBlock';
 import { GroupElementsDirectionBlock } from '../Controls/GroupElementsDirectionBlock';
@@ -48,13 +49,7 @@ const mapDispatch = {
   setIsAddElementsModalOpened: actionsCreators.setIsAddElementsModalOpened,
 };
 
-const ENTITIES = [
-  'container', 'button', 'textinput', 'hyperlink', 'ocrtext', 'image', 'select', 'map', 'calendar', 'clock',
-] as const;
-type Entity = typeof ENTITIES[number];
-type Control = keyof typeof CONTROLS;
-
-const CONTROLS = {
+const CONTROLS: Record<Control, React.ComponentType> = {
   direction: GroupElementsDirectionBlock,
   indents: IndentsBlock,
   size: SizeBlock,
@@ -63,19 +58,6 @@ const CONTROLS = {
   background: BackgroundBlock,
   action: ActionBlock,
   differentSettings: DifferentSettingsBlock,
-};
-
-const AVAILABLE_CONTROLS: Record<Entity, Control[]> = {
-  container: ['direction', 'typography', 'border', 'background'],
-  button: ['indents', 'size', 'typography', 'border', 'background', 'action', 'differentSettings'],
-  textinput: ['indents', 'size', 'typography', 'border', 'background', 'differentSettings'],
-  hyperlink: ['typography', 'border', 'background', 'action'],
-  ocrtext: ['indents', 'size', 'typography', 'border', 'background', 'differentSettings'],
-  image: ['indents', 'size', 'border', 'background'],
-  select: ['indents', 'size', 'typography', 'border', 'background'],
-  map: ['indents', 'size', 'typography', 'border', 'background', 'differentSettings'],
-  calendar: ['indents', 'size', 'typography', 'border', 'background'],
-  clock: ['indents', 'size', 'typography', 'border', 'background'],
 };
 
 export type PropertiesPanelProps = StateProps & typeof mapDispatch & OwnProps;
@@ -99,7 +81,7 @@ const Component: React.FC<PropertiesPanelProps> = ({
   setIsAddElementsModalOpened,
 }) => {
   const activeItemID = activeItem.itemType === 'root' ? 'root' : activeItem.itemId;
-  const currentItemType = activeItem.itemType === 'root' ? 'container' : R.prop(activeItemID, screen.listSortable)?.type;
+  const currentItemType = activeItem.itemType === 'root' ? 'root' : R.prop(activeItemID, screen.listSortable)?.type;
   const disablePanel = !screen;
 
   return (
