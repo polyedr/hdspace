@@ -3,6 +3,13 @@
   justify-content: space-between;
   flex: 2 1 100px;
   margin-right: 20px;
+
+  &__button {
+    flex-grow: 1;
+    &:not(:first-child) {
+      margin-left: 10px;
+    }
+  }
 }
 
 .fontRightBlock {
@@ -53,5 +60,21 @@
 
   &_active {
     background-color: $secondBorderColor;
+  }
+}
+
+.button {
+  display: inline-block;
+  width: 100%;
+  padding: 6px 12px;
+  background-color: #e7eaec;
+  color: #444444;
+  cursor: pointer;
+  border-radius: 3px;
+  border: 1px solid #e7eaec;
+
+  &_active {
+    background-color: #949494;
+    border-color: #949494;
   }
 }

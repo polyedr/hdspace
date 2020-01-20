@@ -1,5 +1,5 @@
 import React, { memo, useState, useCallback } from 'react';
-import classNames from 'classnames';
+import cn from 'classnames';
 import { connect } from 'react-redux';
 
 import { AppReduxState } from '$shared/types/app';
@@ -65,19 +65,19 @@ export const Component: React.FC<Props> = memo(({
     setIsTypographyColorPickerOpen(!isTypographyColorPickerOpen);
   }, [isTypographyColorPickerOpen]);
 
-  const onFontFamilyChange = React.useCallback((value) => {
+  const onFontFamilyChange = useCallback((value) => {
     updateStyles({ 'font-family': value });
   }, [updateStyles]);
 
-  const handleChangeItalicFontStyle = React.useCallback(() => {
+  const handleChangeItalicFontStyle = useCallback(() => {
     updateStyles({ 'font-style': fontStyle === 'normal' ? 'italic' : 'normal' });
-  }, [updateStyles]);
+  }, [updateStyles, fontStyle]);
 
-  const handleChangeBoldFontStyle = React.useCallback(() => {
+  const handleChangeBoldFontStyle = useCallback(() => {
     updateStyles({ 'font-weight': fontWeight === 400 ? 700 : 400 })
-  }, [updateStyles]);
+  }, [updateStyles, fontWeight]);
 
-  const handleChangeFontSize = React.useCallback(({ target: { value } }) => {
+  const handleChangeFontSize = useCallback(({ target: { value } }) => {
     const newSize = getPermissibleValue(value, MIN_FONT_SIZE, MAX_FONT_SIZE);
 
     updateStyles({
@@ -86,11 +86,11 @@ export const Component: React.FC<Props> = memo(({
     })
   }, [updateStyles]);
 
-  const onTypographyAlign = React.useCallback((value) => {
+  const onTypographyAlign = useCallback((value) => {
     updateStyles({ 'text-align': value });
   }, [updateStyles]);
 
-  const handleChangeOpacity = React.useCallback((value) => {
+  const handleChangeOpacity = useCallback((value) => {
     console.log(value); // change text align
   }, []);
 
@@ -120,45 +120,47 @@ export const Component: React.FC<Props> = memo(({
         </div>
         <div className="propsElementsInnerBlock">
           <div className={styles.fontLeftBlock}>
-            <Button
-              styleType="confirm"
-              className={classNames(
-                styles.fontBtn,
-                fontWeight === 700 && styles.fontBtn_active,
-              )}
-              onClick={handleChangeBoldFontStyle}
-            >
-              Bold
-            </Button>
-            <Button
-              styleType="confirm"
-              className={classNames(
-                styles.fontBtn,
-                fontStyle === 'italic' && styles.fontBtn_active,
-              )}
-              onClick={handleChangeItalicFontStyle}
-            >
-              Italic
-            </Button>
+            <div className={styles.fontLeftBlock__button}>
+              <button
+                  className={cn(
+                    styles.button,
+                    fontStyle === 'italic' && styles.button_active,
+                  )}
+                  onClick={handleChangeItalicFontStyle}
+                >
+                  Italic
+              </button>
+            </div>
+            <div className={styles.fontLeftBlock__button}>
+              <button
+                className={cn(
+                  styles.button,
+                  fontWeight === 700 && styles.button_active,
+                )}
+                onClick={handleChangeBoldFontStyle}
+              >
+                Bold
+              </button>
+            </div>
           </div>
           <div className={styles.fontRightBlock}>
             <Button
               styleType="none"
-              className={classNames('mainImgBtn', textAlign === 'left' && 'mainImgBtn_active')}
+              className={cn('mainImgBtn', textAlign === 'left' && 'mainImgBtn_active')}
               onClick={() => onTypographyAlign('left')}
             >
               <Icon icon="text-left" />
             </Button>
             <Button
               styleType="none"
-              className={classNames('mainImgBtn', textAlign === 'center' && 'mainImgBtn_active')}
+              className={cn('mainImgBtn', textAlign === 'center' && 'mainImgBtn_active')}
               onClick={() => onTypographyAlign('center')}
             >
               <Icon icon="text-center" />
             </Button>
             <Button
               styleType="none"
-              className={classNames('mainImgBtn', textAlign === 'right' && 'mainImgBtn_active')}
+              className={cn('mainImgBtn', textAlign === 'right' && 'mainImgBtn_active')}
               onClick={() => onTypographyAlign('right')}
             >
               <Icon icon="text-right" />
