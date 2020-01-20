@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 
 import { selectors } from '$redux/project';
 import { AppReduxState } from '$shared/types/app';
-import { safeParseInt } from '$utils/NumberHelper';
 import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
 import { CssLikeStyles } from '$utils/StyleHelper';
 
@@ -56,6 +55,7 @@ export const Component: React.FC<Props> = (props) => {
   const handleIndentChange = useCallback((type: string, value: string) => {
     updateStyles({ [type]: value });
   }, [updateStyles]);
+
   return (
     <div className="propsElementsBlock">
       <p className="propsElementsBlockTitle">Margins & Paddings</p>
@@ -69,7 +69,7 @@ export const Component: React.FC<Props> = (props) => {
                 styles.indentsInput_margin_top,
               )}
               type="number"
-              value={safeParseInt(marginTop, 10) || 0}
+              value={parseInt(marginTop, 10)}
               onChange={event => handleIndentChange('margin-top', `${event.target.value}px`)}
             />
             <input
@@ -79,7 +79,7 @@ export const Component: React.FC<Props> = (props) => {
                 styles.indentsInput_margin_right,
               )}
               type="number"
-              value={safeParseInt(marginRight, 10) || 0}
+              value={parseInt(marginRight, 10)}
               onChange={event => handleIndentChange('margin-right', `${event.target.value}px`)}
             />
             <input
@@ -89,7 +89,7 @@ export const Component: React.FC<Props> = (props) => {
                 styles.indentsInput_margin_bottom,
               )}
               type="number"
-              value={safeParseInt(marginBottom, 10) || 0}
+              value={parseInt(marginBottom, 10)}
               onChange={event => handleIndentChange('margin-bottom', `${event.target.value}px`)}
             />
             <input
@@ -99,7 +99,7 @@ export const Component: React.FC<Props> = (props) => {
                 styles.indentsInput_margin_left,
               )}
               type="number"
-              value={safeParseInt(marginLeft, 10) || 0}
+              value={parseInt(marginLeft, 10)}
               onChange={event => handleIndentChange('margin-left', `${event.target.value}px`)}
             />
             <input
@@ -109,7 +109,7 @@ export const Component: React.FC<Props> = (props) => {
                 styles.indentsInput_padding_top,
               )}
               type="number"
-              value={safeParseInt(paddingTop, 10) || 0}
+              value={parseInt(paddingTop, 10)}
               min={MIN_PADDING}
               onChange={event => handleIndentChange('padding-top', `${event.target.value}px`)}
             />
@@ -120,7 +120,7 @@ export const Component: React.FC<Props> = (props) => {
                 styles.indentsInput_padding_right,
               )}
               type="number"
-              value={safeParseInt(paddingRight, 10) || 0}
+              value={parseInt(paddingRight, 10)}
               min={MIN_PADDING}
               onChange={event => handleIndentChange('padding-right', `${event.target.value}px`)}
             />
@@ -131,7 +131,7 @@ export const Component: React.FC<Props> = (props) => {
                 styles.indentsInput_padding_bottom,
               )}
               type="number"
-              value={safeParseInt(paddingBottom, 10) || 0}
+              value={parseInt(paddingBottom, 10)}
               min={MIN_PADDING}
               onChange={event => handleIndentChange('padding-bottom', `${event.target.value}px`)}
             />
@@ -142,7 +142,7 @@ export const Component: React.FC<Props> = (props) => {
                 styles.indentsInput_padding_left,
               )}
               type="number"
-              value={safeParseInt(paddingLeft, 10) || 0}
+              value={parseInt(paddingLeft, 10)}
               min={MIN_PADDING}
               onChange={event => handleIndentChange('padding-left', `${event.target.value}px`)}
             />

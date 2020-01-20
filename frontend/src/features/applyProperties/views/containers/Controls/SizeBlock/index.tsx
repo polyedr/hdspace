@@ -1,4 +1,4 @@
-import React, { useCallback, memo, useEffect } from 'react';
+import React, { useCallback, memo } from 'react';
 import { connect } from 'react-redux';
 
 import { AppReduxState } from '$shared/types/app';
@@ -41,18 +41,6 @@ export const Component: React.FC<Props> = memo((props) => {
     updateStyles,
     activeItemID,
   } = props;
-
-  useEffect(() => { // TODO: set these props when creating elements/containers, not here
-    if (typeof width === 'undefined') {
-      updateStyles({ width: 'auto' });
-    }
-    if (typeof height === 'undefined') {
-      updateStyles({ height: 'auto' });
-    }
-    if (typeof borderWidth === 'undefined') {
-      updateStyles({ 'border-width': '0' });
-    }
-  }, [activeItemID, updateStyles]);
 
   const handleChangeUnits = useCallback(({ target }) => {
     switch (target.value) {
@@ -137,8 +125,6 @@ export const Component: React.FC<Props> = memo((props) => {
   }, [height, width]);
 
   const getSizeDisableChange = useCallback((value: 'height' | 'width') => (
-    // activeItem.itemType === 'block'
-    // || activeItem.itemType === 'group'
     ((value === 'height' ? height : width)) === 'auto'
     || (value === 'height' ? height : width) === '100%'
   ), [height, width]);

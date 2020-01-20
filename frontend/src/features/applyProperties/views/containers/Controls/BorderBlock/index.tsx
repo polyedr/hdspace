@@ -10,10 +10,9 @@ import {
   MAX_BORDER_WIDTH,
   MIN_BORDER_RADIUS,
   MIN_BORDER_WIDTH,
-  DEFAULT_BORDER,
 } from '$constants/defaultParams';
 import { strToNumber, getPermissibleValue, safeParseFloat, safeMatch } from '$utils/NumberHelper';
-import { validBorderRadius, CssLikeStyles } from '$utils/StyleHelper';
+import { validateBorderRadius, CssLikeStyles } from '$utils/StyleHelper';
 import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
 import { ColorPicker } from '$components/UI/ColorPicker/';
 
@@ -56,31 +55,31 @@ export const Component: React.FunctionComponent<Props> = React.memo(({
     setIsBorderColorPickerOpen(!isBorderColorPickerOpen);
   }, [isBorderColorPickerOpen]);
 
-  const handleBorder = useCallback(({ target: { value } }) => {
+  const handleBorderWidthChange = useCallback(({ target: { value } }) => {
     const newWidth = getPermissibleValue(strToNumber(value), MIN_BORDER_WIDTH, MAX_BORDER_WIDTH);
 
     updateStyles({
       'border-width': `${newWidth}px`,
-      'border-style': borderStyle || DEFAULT_BORDER['border-style'],
-      'border-color': borderColor || DEFAULT_BORDER['border-color'],
+      'border-style': borderStyle,
+      'border-color': borderColor,
     });
   }, [updateStyles]);
 
   const handleBorderRadius = useCallback(({ target: { value } }) => {
     updateStyles({
       'border-radius': `${value}${accessBorderRadius(borderRadius)}`,
-      'border-width': borderWidth || '1px',
-      'border-style': borderStyle || DEFAULT_BORDER['border-style'],
-      'border-color': borderColor || DEFAULT_BORDER['border-color'],
+      'border-width': borderWidth,
+      'border-style': borderStyle,
+      'border-color': borderColor,
     });
   }, [updateStyles]);
 
   const handleChangeBorderRadiusUnits = useCallback(({ target: { value } }) => {
     updateStyles({
-      'border-radius': validBorderRadius(`${(borderRadius && parseFloat(borderRadius)) || 1}${value}`),
-      'border-width': borderWidth || '1px',
-      'border-style': borderStyle || DEFAULT_BORDER['border-style'],
-      'border-color': borderColor || DEFAULT_BORDER['border-color'],
+      'border-radius': validateBorderRadius(`${parseFloat(borderRadius)}${value}`),
+      'border-width': borderWidth,
+      'border-style': borderStyle,
+      'border-color': borderColor,
     });
   }, [updateStyles]);
 
@@ -91,8 +90,8 @@ export const Component: React.FunctionComponent<Props> = React.memo(({
 
     updateStyles({
       'border-color': newColor,
-      'border-width': borderWidth || '1px',
-      'border-style': borderStyle || DEFAULT_BORDER['border-style'],
+      'border-width': borderWidth,
+      'border-style': borderStyle,
     });
   }, [updateStyles]);
 
@@ -110,8 +109,8 @@ export const Component: React.FunctionComponent<Props> = React.memo(({
               className={styles.borderWidthField}
               name="width"
               type="number"
-              value={safeParseFloat(borderWidth) || parseFloat(DEFAULT_BORDER['border-width'])}
-              onChange={handleBorder}
+              value={parseFloat(borderWidth)}
+              onChange={handleBorderWidthChange}
               min={MIN_BORDER_WIDTH}
               max={MAX_BORDER_WIDTH}
             />
@@ -121,13 +120,10 @@ export const Component: React.FunctionComponent<Props> = React.memo(({
               className={styles.borderRadiusField}
               name="radius"
               type="number"
-              value={
-                safeParseFloat(validBorderRadius(borderRadius))
-                || parseFloat(DEFAULT_BORDER['border-radius'])
-              }
+              value={safeParseFloat(validateBorderRadius(borderRadius))}
               onChange={handleBorderRadius}
               min={MIN_BORDER_RADIUS}
-              max={borderRadius && borderRadius.indexOf('px') !== -1 ? MAX_BORDER_RADIUS : MAX_BORDER_RADIUS_PERCENT || 100}
+              max={borderRadius.indexOf('px') !== -1 ? MAX_BORDER_RADIUS : MAX_BORDER_RADIUS_PERCENT}
             />
             <select
               className="dropDown"
@@ -143,14 +139,14 @@ export const Component: React.FunctionComponent<Props> = React.memo(({
         <div className="propsElementsInnerBlock">
           <ColorPicker
             display={isBorderColorPickerOpen}
-            color={borderColor || DEFAULT_BORDER['border-color']}
+            color={borderColor}
             onChangeComplete={color => handleChangeColor(color.hex)}
             onClose={handleActiveColorPicker}
           />
           <input
             className="colorField"
             type="text"
-            value={borderColor || DEFAULT_BORDER['border-color']}
+            value={borderColor}
             onChange={({ target: { value } }) => handleChangeColor(value)}
           />
           <input

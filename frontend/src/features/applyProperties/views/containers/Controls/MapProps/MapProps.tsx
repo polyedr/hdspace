@@ -11,7 +11,6 @@ import {
   MIN_MAP_ZOOM,
   MAX_MAP_ZOOM,
 } from '$constants/defaultParams';
-import { IMapProps } from '$redux/project/types';
 import { getPermissibleValue } from '$utils/NumberHelper';
 import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
 
@@ -39,8 +38,6 @@ const Component: React.FC<Props> = ({
 }) => {
 
   const handleCenterMapCoordsChange = useCallback(({ target: { name, value } }: React.ChangeEvent<HTMLInputElement>) => {
-    if (!map_props) return;
-
     let newCenter;
 
     if (name === 'center_lat') {
@@ -73,7 +70,7 @@ const Component: React.FC<Props> = ({
       markerText: value,
     };
 
-    updateParams({ map_props: newMapProps as IMapProps }); // TODO: fix typings
+    updateParams({ map_props: newMapProps });
   }, [map_props, updateParams]);
 
   const handleMapZoomChange = useCallback(({ target: { value } }) => {
@@ -82,7 +79,7 @@ const Component: React.FC<Props> = ({
       zoom: getPermissibleValue(Number(value), MIN_MAP_ZOOM, MAX_MAP_ZOOM),
     };
 
-    updateParams({ map_props: newMapProps as IMapProps });
+    updateParams({ map_props: newMapProps });
   }, [map_props, updateParams]);
 
   return (

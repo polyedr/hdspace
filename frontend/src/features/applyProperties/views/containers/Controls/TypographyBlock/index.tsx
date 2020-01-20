@@ -9,8 +9,7 @@ import { DropDown } from '$components/UI/DropDown/';
 import { Icon } from '$components/UI/Icon/';
 import { Button } from '$components/UI/Button/';
 import { FONTS } from '$constants/fonts';
-import { DEFAULT_TYPOGRAPHY } from '$constants/defaultParams';
-import { getPermissibleValue, safeParseFloat } from '$utils/NumberHelper';
+import { getPermissibleValue } from '$utils/NumberHelper';
 import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
 import { CssLikeStyles } from '$utils/StyleHelper';
 
@@ -71,13 +70,11 @@ export const Component: React.FC<Props> = memo(({
   }, [updateStyles]);
 
   const handleChangeItalicFontStyle = React.useCallback(() => {
-    updateStyles({
-      'font-style': (!fontStyle || fontStyle === 'normal') ? 'italic' : 'normal',
-    });
+    updateStyles({ 'font-style': fontStyle === 'normal' ? 'italic' : 'normal' });
   }, [updateStyles]);
 
   const handleChangeBoldFontStyle = React.useCallback(() => {
-    updateStyles({ 'font-weight': (!fontWeight || fontWeight === 400) ? 700 : 400 })
+    updateStyles({ 'font-weight': fontWeight === 400 ? 700 : 400 })
   }, [updateStyles]);
 
   const handleChangeFontSize = React.useCallback(({ target: { value } }) => {
@@ -90,9 +87,7 @@ export const Component: React.FC<Props> = memo(({
   }, [updateStyles]);
 
   const onTypographyAlign = React.useCallback((value) => {
-    updateStyles({
-      'text-align': value,
-    });
+    updateStyles({ 'text-align': value });
   }, [updateStyles]);
 
   const handleChangeOpacity = React.useCallback((value) => {
@@ -118,7 +113,7 @@ export const Component: React.FC<Props> = memo(({
               type="number"
               min={MIN_FONT_SIZE}
               max={MAX_FONT_SIZE}
-              value={safeParseFloat(fontSize) || parseFloat(DEFAULT_TYPOGRAPHY['font-size'])}
+              value={parseFloat(fontSize)}
               onChange={handleChangeFontSize}
             />
           </div>
@@ -180,14 +175,14 @@ export const Component: React.FC<Props> = memo(({
         <div className="propsElementsInnerBlock">
           <ColorPicker
             display={isTypographyColorPickerOpen}
-            color={color || DEFAULT_TYPOGRAPHY.color}
+            color={color}
             onChangeComplete={color => handleColorChange(color.hex)}
             onClose={handleActiveColorPicker}
           />
           <input
             className="colorField"
             type="text"
-            value={color || DEFAULT_TYPOGRAPHY.color}
+            value={color}
             onChange={({ target: { value } }) => handleColorChange(value)}
           />
           <input

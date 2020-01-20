@@ -68,7 +68,7 @@ const Component: React.FC<Props> = (props) => {
             className={styles.textContentField}
             type="text"
             placeholder="Enter link text content"
-            value={content || url || ''}
+            value={content}
             onChange={handleLinkContentChange}
           />
         </div>
@@ -103,7 +103,7 @@ const Component: React.FC<Props> = (props) => {
               <input
                 type="text"
                 placeholder="Enter a page URL"
-                value={url || ''}
+                value={url}
                 onChange={handleLinkUrlChange}
               />
             )}

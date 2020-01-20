@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { AppReduxState } from '$shared/types/app';
 import { selectors } from '$redux/project/';
 import { ColorPicker } from '$components/UI/ColorPicker/';
-import { DEFAULT_BACKGROUND } from '$constants/defaultParams';
 import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
 import { CssLikeStyles } from '$utils/StyleHelper';
 
@@ -58,7 +57,7 @@ export const Component : React.FC<Props> = memo(({
           <input
             className="colorField"
             type="text"
-            value={backgroundColor || DEFAULT_BACKGROUND['background-color']}
+            value={backgroundColor}
             onChange={({ target: { value } }) => handleChangeColor(value)}
           />
           <input
