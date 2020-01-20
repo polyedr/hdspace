@@ -76,8 +76,8 @@ const ENTITY_TO_DEFAULTS: EntityToDefaults = {
     },
     textContent: {
       ...extractDefaults('button', 'textContent'),
-      content: 'button',
-    }
+      textContent: 'button',
+    },
   },
   textinput: {
     ...extractDefaults('textinput'),

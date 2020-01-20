@@ -22,8 +22,8 @@ function mapState(state: AppReduxState): StateProps {
 
   return {
     screensIDs: selectors.selectCurrentProject(state).projectscreen,
-    content: activeItemParams.content,
-    url: activeItemParams.url,
+    content: activeItemParams.actionContent,
+    url: activeItemParams.actionUrl,
   };
 }
 
@@ -52,11 +52,11 @@ const Component: React.FC<Props> = (props) => {
   }, []);
 
   const handleLinkContentChange = React.useCallback(({ target: { value } }) => {
-    updateParams({ content: value });
+    updateParams({ actionContent: value });
   }, [updateParams]);
 
   const handleLinkUrlChange = React.useCallback(({ target: { value } }) => {
-    updateParams({ url: value });
+    updateParams({ actionUrl: value });
   }, [updateParams]);
 
   return (

@@ -215,6 +215,8 @@ export interface IScreenProps {
   buoyancy?: number,
   html_type?: string,
   content?: string,
+  url?: string;
+  textContent?: string,
   width?: string,
   height?: string,
   align?: string,
@@ -227,7 +229,8 @@ export interface IScreenProps {
   map_props: IMapProps,
   source_img?: string,
   scenarioId?: number,
-  url?: string,
+  actionContent?: string;
+  actionUrl?: string,
   image?: string,
 }
 

@@ -106,8 +106,8 @@ export const DEFAULT_BACKGROUND: IScreenBackground = {
 };
 
 export const DEFAULT_ACTION = {
-  url: '',
-  content: '',
+  actionUrl: '',
+  actionContent: '',
 };
 
 export const DEFAULT_MAP_PROPS = {
@@ -297,7 +297,7 @@ export const DEFAULT_PLACEHOLDER = {
 };
 
 export const DEFAULT_TEXT_CONTENT = {
-  content: 'Enter a label for the field',
+  textContent: 'Enter a label for the field',
 };
 
 export const DEFAULT_MAP_WIDGET = {

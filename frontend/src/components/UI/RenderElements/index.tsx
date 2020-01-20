@@ -62,7 +62,7 @@ const renderButton: Renderer = (props) => {
       }}
       onClick={(event) => onClick?.(event, id)}
     >
-      {params.content}
+      {params.textContent}
     </Button>
   )
 }

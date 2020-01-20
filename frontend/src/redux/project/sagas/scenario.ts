@@ -127,8 +127,8 @@ export function* addScenarioSaga(action: ReturnType<typeof Actions.addScenario>)
       parameters: {
         parent_id: container.id, // do we need this if we already have scenario?
         group: `don't know what is this`,
-        ...params,
         ...libraryElement.parameters,
+        ...params,
       },
       styles,
     };

@@ -14,7 +14,7 @@ function mapState(state: AppReduxState): StateProps {
   const activeItemParams = selectors.selectActiveItemParams(state) as any;
 
   return {
-    content: activeItemParams.content,
+    content: activeItemParams.textContent,
   };
 }
 
@@ -25,7 +25,7 @@ const Component: React.FC<Props> = ({
   updateParams,
 }) => {
   const handleTextContentChange = useCallback(({ target: { value } }) => {
-    updateParams({ content: value });
+    updateParams({ textContent: value });
   }, [updateParams]);
 
   return (
