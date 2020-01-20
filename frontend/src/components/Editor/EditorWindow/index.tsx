@@ -358,14 +358,7 @@ export const Editor: React.FC<IEditProps> = memo(({
           </div>
         )
       }
-      {
-        (!isPrototypeMode) && (
-          <PropertiesPanel
-            activeItem={activeItem}
-            screen={screen}
-          />
-        )
-      }
+      {!isPrototypeMode && <PropertiesPanel />}
       <Prompt
         when={false}
         message="You have unsaved changes, are you sure you want to leave?"

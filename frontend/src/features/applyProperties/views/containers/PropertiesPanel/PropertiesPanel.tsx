@@ -22,23 +22,20 @@ import { Placeholder } from '../Controls/Placeholder/Placeholder';
 import { TextContent } from '../Controls/TextContent/TextContent';
 const styles = require('./PropertiesPanel.scss');
 
-type OwnProps = {
-  activeItem: ProjectT.ActiveItem;
-  screen: ProjectT.IProjectScreen;
-};
-
 type StateProps = {
   scenarios: ProjectT.IScenarios;
   libraryElements: ProjectT.ILibraryElements;
-  currentScreen: ProjectT.IProjectScreen;
+  activeItem: ProjectT.ActiveItem;
+  screen: ProjectT.IProjectScreen;
   isAddElementsModalOpened: boolean;
   loader: boolean;
 };
 
 const mapState = (state: AppReduxState): StateProps => ({
+  activeItem: selectors.selectActiveItem(state),
   scenarios: selectors.selectScenarios(state),
   libraryElements: selectors.selectLibraryElements(state),
-  currentScreen: selectors.selectCurrentScreen(state),
+  screen: selectors.selectCurrentScreen(state),
   isAddElementsModalOpened: selectors.selectIsAddElementsModalOpened(state),
   loader: selectors.selectLoader(state),
 });
@@ -64,7 +61,7 @@ const CONTROLS: Record<Control, React.ComponentType> = {
   textContent: TextContent,
 };
 
-export type PropertiesPanelProps = StateProps & typeof mapDispatch & OwnProps;
+export type PropertiesPanelProps = StateProps & typeof mapDispatch;
 
 const SCROLLBAR_STYLES = {
   height: '100%',
