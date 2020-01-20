@@ -363,7 +363,6 @@ export const Editor: React.FC<IEditProps> = memo(({
           <PropertiesPanel
             activeItem={activeItem}
             screen={screen}
-            onDelScenarioItem={handleDelScenarioItem}
           />
         )
       }

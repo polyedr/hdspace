@@ -13,12 +13,12 @@ const styles = require('./styles.scss');
 interface IComponentProps {
   activeItem: PropertiesPanelProps['activeItem'],
   disablePanel: boolean,
-  onDelScenarioItem: PropertiesPanelProps['onDelScenarioItem'],
   scenarios: PropertiesPanelProps['scenarios'],
   libraryElements: PropertiesPanelProps['libraryElements'],
   addScenario: PropertiesPanelProps['addScenario'],
   addContainer: PropertiesPanelProps['addContainer'],
   isAddElementsModalOpened: boolean;
+  onDelScenarioItem(): void;
   setIsAddElementsModalOpened(isOpened: boolean): void;
 }
 
