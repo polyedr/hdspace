@@ -78,6 +78,10 @@ export const MIN_MAP_ZOOM = 1;
 export const MAX_MAP_ZOOM = 18;
 
 export const DEFAULT_INDENTS: IScreenIndents = {
+  'margin-top': '0px',
+  'margin-right': '0px',
+  'margin-bottom': '0px',
+  'margin-left': '0px',
   'padding-top': '5px',
   'padding-right': '5px',
   'padding-bottom': '5px',
