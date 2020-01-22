@@ -19,6 +19,7 @@ export interface CssLikeStyles {
   width?: number | string,
   height?: number | string,
   'min-height'?: number | string,
+  'min-width'?: number | string,
 
   'margin-top'?: string,
   'margin-right'?: string,
@@ -141,7 +142,7 @@ const otherStyles = (styles: CssLikeStyles): React.CSSProperties => (
       case 'min-height':
         return { ...acc, minHeight: styles[key] };
       case 'display':
-          return { ...acc, display: styles[key] };
+        return { ...acc, display: styles[key] };
       default: return acc;
     }
   }, {})
@@ -185,7 +186,7 @@ export const convertTypography: TConvertTypography = styles => (
   }, {})
 );
 
-export const convertPropCSS = (styles : CssLikeStyles): React.CSSProperties => ({
+export const convertPropCSS = (styles: CssLikeStyles): React.CSSProperties => ({
   width: styles.width,
   height: styles.height,
   ...convertIndents(styles),

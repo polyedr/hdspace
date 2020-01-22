@@ -123,14 +123,8 @@ export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
     screen: createdScreen.id,
     styles: {
       ...styles,
-      width: '100%',
-      height: '100%',
-      display: 'flex',
-      'flex-direction': 'column',
-      'align-items': 'center',
-      'justify-content': 'center',
       'min-height': '100%',
-      'background-color': '#ffffff',
+      'min-width': '100%',
     },
   });
 

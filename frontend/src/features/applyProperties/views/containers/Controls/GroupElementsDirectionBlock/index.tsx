@@ -46,7 +46,7 @@ const Component: React.FC<Props> = memo((props) => {
   if (activeItemID === 'none') return null;
  
   const renderLabel = useCallback((reversed: boolean) => (
-    <span className={styles.axises__label}>{reversed ? 'Cross' : 'Main'} axis</span>
+    <span className={styles.axis__label}>{reversed ? 'Y-' : 'X-'} axis</span>
   ), []);
 
   const handleAlignChange = useCallback((type: Align, value: string) => {

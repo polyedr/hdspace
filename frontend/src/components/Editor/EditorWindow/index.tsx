@@ -118,12 +118,12 @@ export const Editor: React.FC<IEditProps> = memo(({
     }
   }, [activeItem, screen.listSortable, scenarios, scenarioElements]);
 
-  const handleContainerMouseOver = useCallback((event: React.MouseEvent) => {
-    (event.target as HTMLElement)?.closest?.('.ls-container')?.classList.add('hovered');
+  const handleLSItemMouseOver = useCallback((event: React.MouseEvent) => {
+    (event.target as HTMLElement)?.closest?.('.ls-item')?.classList.add('hovered');
   }, []);
 
-  const handleContainerMouseOut = useCallback((event: React.MouseEvent) => {
-    (event.target as HTMLElement)?.closest?.('.ls-container')?.classList.remove('hovered');
+  const handleLSItemMouseOut = useCallback((event: React.MouseEvent) => {
+    (event.target as HTMLElement)?.closest?.('.ls-item')?.classList.remove('hovered');
   }, []);
 
   const handleDelScenarioItem = useCallback(() => {
@@ -326,8 +326,8 @@ export const Editor: React.FC<IEditProps> = memo(({
                   data-ls-id="root"
                   tabIndex={0}
                   onClick={handleRootClick}
-                  onMouseOver={handleContainerMouseOver}
-                  onMouseOut={handleContainerMouseOut}
+                  onMouseOver={handleLSItemMouseOver}
+                  onMouseOut={handleLSItemMouseOut}
                 >
                   <div
                     className={classNames(

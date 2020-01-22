@@ -84,6 +84,10 @@ export const Component: React.FC<Props> = memo((props) => {
         updateStyles({ height: 'auto' });
         break;
 
+      case 'full_height':
+        updateStyles({ height: '100%' });
+        break;
+
       default: break;
     }
   }, [updateStyles, borderWidth, width, height]);
@@ -118,7 +122,15 @@ export const Component: React.FC<Props> = memo((props) => {
     }
 
     if (key === 'height') {
-      return (height && String(height).match(/px/i) && 'height') || 'auto_height';
+      if (String(height).match(/px/i)) {
+        return 'height';
+      }
+        
+      if (height === '100%') {
+        return 'full_height';
+      }
+        
+      return 'auto_height';
     }
 
     return undefined;
@@ -159,18 +171,19 @@ export const Component: React.FC<Props> = memo((props) => {
               className={styles.sizeField}
               type="text"
               name="height"
-              value={parseFloat(String(height)) || 'auto'}
+              value={(getLastChar(height) === '%' ? height : parseFloat(String(height))) || 'auto'}
               onChange={handleChangeSize}
               disabled={getSizeDisableChange('height')}
             />
             <select
               className="dropDown"
-              onChange={handleChangeUnits}
+              onChange={event => handleChangeUnits(event)}
               value={getSelected('height')}
               name="height_unit"
             >
               <option value="height">px</option>
               <option value="auto_height">Auto</option>
+              <option value="full_height">Full</option>
             </select>
           </div>
         </div>
