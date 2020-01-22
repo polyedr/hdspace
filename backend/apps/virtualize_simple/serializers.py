@@ -229,8 +229,17 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                 zip(r["rois"], r["class_ids"], r["scores"])
             ):
                 if idx not in excluded_indices:
-                    # Simple comparison with Colab results
-                    # print(class_id, score)
+                    '''
+                    Image recognition on the endpoint of a neural network.
+                    Origin, point (0, 0) upper left corner.
+                    Choose some element annotated with rectangle.
+                    The upper left corner of the rectangle (x1, y1).
+                    The bottom right corner of the rectangle (x2, y2).
+                    Next, the assignment of values.
+                    y1, x1, y2, x2 = roi
+                    width_elem = x2 - x1
+                    height_elem = y2 - y1
+                    '''
 
                     y1, x1, y2, x2 = roi
                     roi_our = img[y1:y2, x1:x2]
@@ -260,6 +269,7 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                     height_elem = y2 - y1
 
                     func_type = "undefined"
+                    letters_str = ""
                     # Check if class id is: 1 input, 2 button, 3 text or 4 select
                     if class_id in [1, 2, 3, 4]:
                         # Functional class assignment
@@ -293,7 +303,7 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                             {
                                 "struct_type": "textinput",
                                 "func_type": func_type,
-                                "parameters": {"placeholder": letters_str, "roi": roi},
+                                "parameters": {"textContent": letters_str, "roi": roi},
                                 "styles": {
                                     "width": str(width_elem) + "px",
                                     "height": str(height_elem) + "px",
@@ -306,7 +316,7 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                             {
                                 "struct_type": "button",
                                 "func_type": "end_simple_scenario",
-                                "parameters": {"placeholder": letters_str, "roi": roi},
+                                "parameters": {"textContent": letters_str, "roi": roi},
                                 "styles": {
                                     "width": str(width_elem) + "px",
                                     "height": str(height_elem) + "px",
@@ -322,7 +332,7 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                             {
                                 "struct_type": "ocrtext",
                                 "func_type": func_type,
-                                "parameters": {"placeholder": text, "roi": roi},
+                                "parameters": {"textContent": text, "roi": roi},
                                 "styles": {
                                     "width": str(width_elem) + "px",
                                     "height": str(height_elem) + "px",
@@ -335,7 +345,7 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                             {
                                 "struct_type": "select",
                                 "func_type": func_type,
-                                "parameters": {"placeholder": letters_str, "roi": roi},
+                                "parameters": {"textContent": letters_str, "roi": roi},
                                 "styles": {
                                     "width": str(width_elem) + "px",
                                     "height": str(height_elem) + "px",
@@ -348,7 +358,7 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                             {
                                 "struct_type": "checkbox",
                                 "func_type": "checkbox",
-                                "parameters": {"placeholder": letters_str, "roi": roi},
+                                "parameters": {"textContent": letters_str, "roi": roi},
                                 "styles": {
                                     "width": str(width_elem) + "px",
                                     "height": str(height_elem) + "px",
@@ -361,7 +371,7 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                             {
                                 "struct_type": "radiobutton",
                                 "func_type": "radiobutton",
-                                "parameters": {"placeholder": letters_str, "roi": roi},
+                                "parameters": {"textContent": letters_str, "roi": roi},
                                 "styles": {
                                     "width": str(width_elem) + "px",
                                     "height": str(height_elem) + "px",
@@ -411,7 +421,7 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                     # Vertical and horizontal groups detection
                     # Check the vertical grouping criteria
                     # Check the horizontal grouping criteria
-                    # Assign the placeholder values after grouping with text
+                    # Assign the textContent values after grouping with text
                     # Vertical group when input or select element has another text element
                     # at the distance 0.5 from its width
                     # Horizontal group when input or select or text are placed horizontally
