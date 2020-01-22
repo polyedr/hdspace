@@ -40,10 +40,7 @@ const Component: React.FC<Props> = memo((props) => {
     justifyContent,
     alignItems,
     updateStyles,
-    activeItemID,
   } = props;
-
-  if (activeItemID === 'none') return null;
  
   const renderLabel = useCallback((reversed: boolean) => (
     <span className={styles.axis__label}>{reversed ? 'Y-' : 'X-'} axis</span>
