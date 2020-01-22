@@ -7,6 +7,7 @@ import { getDefaultDateSelectOptions } from '$constants/defaultParams';
 import { GMap } from '$components/UI/GMap';
 import { CalendarWidget } from '$components/UI/Calendar';
 import { ClockWidget } from '$components/UI/Clock';
+import { Entity } from '$utils/model';
 
 const styles = require('./styles.scss');
 
@@ -279,9 +280,8 @@ const renderElem: Renderer = ({
   }
 };
 
-export const RENDERERS = {
+export const RENDERERS: Record<Exclude<'root', Entity>, React.ComponentType> = {
   container: renderContainer,
-  elem: renderElem,
   button: renderButton,
   textinput: renderInput,
   hyperlink: renderHyperLine,
@@ -291,4 +291,4 @@ export const RENDERERS = {
   map: renderMapWidget,
   calendar: renderCalendarWidget,
   clock: renderClockWidget,
-} as const;
+};
