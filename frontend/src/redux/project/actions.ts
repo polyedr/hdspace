@@ -8,7 +8,7 @@ export const getLibraryElements = (): T.LoadLibraryElements => ({
   type: 'PROJECTS:LOAD_LIBRARY_ELEMENTS',
 });
 
-export const setLibraryElements = (libraryElements: T.ILibraryElements): T.LoadLibraryElementsSuccess => ({
+export const setLibraryElements = (libraryElements: T.LibraryElements): T.LoadLibraryElementsSuccess => ({
   type: 'PROJECTS:LOAD_LIBRARY_ELEMENTS_SUCCESS',
   payload: { libraryElements },
 });

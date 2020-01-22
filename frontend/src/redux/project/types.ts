@@ -6,7 +6,7 @@ import { CssLikeStyles } from '$utils/StyleHelper';
 
 export type ReduxState = {
   data: {
-    libraryElements: ILibraryElements;
+    libraryElements: LibraryElements;
     listProject: IListProject[];
   };
   ui: {
@@ -35,7 +35,7 @@ export type ActiveItem = {
 
 export type LoadLibraryElements = IPlainAction<'PROJECTS:LOAD_LIBRARY_ELEMENTS'>;
 export type LoadLibraryElementsSuccess = IAction<
-  'PROJECTS:LOAD_LIBRARY_ELEMENTS_SUCCESS', { libraryElements: ILibraryElements }
+  'PROJECTS:LOAD_LIBRARY_ELEMENTS_SUCCESS', { libraryElements: LibraryElements }
 >;
 export type LoadLibraryElementsFail = IPlainFailAction<'PROJECTS:LOAD_LIBRARY_ELEMENTS_FAIL'>;
 
@@ -243,23 +243,28 @@ export interface ISortableItem {
   scenarioId?: number,
 }
 
-export interface ILibraryElement {
-  struct_type: string,
-  func_type: string,
-  func_type_human?: string,
-  buoyancy: number,
+export type LibraryElement = {
+  struct_type: LibraryElementType;
+  func_type: string;
+  func_type_human?: string;
+  buoyancy: number;
   parameters: {
-    tags?: string,
-    group: string,
-    placeholder?: string,
-    map_props?: IMapProps,
-  },
-  styles: CssLikeStyles,
-}
+    tags?: string;
+    group: string;
+    placeholder?: string;
+    map_props?: IMapProps;
+  };
+  styles: CssLikeStyles;
+  name: string;
+};
 
-export interface ILibraryElements {
-  [x: string]: ILibraryElement,
-}
+export type LibraryElementType = 'frame' | 'widget' | 'chart' | 'image' | 'button' | 'hyperlink' | 'paragraph' | 'textbox'
+| 'textarea' | 'textinput' | 'icon' | 'logo' | 'unordered_list' | 'ordered_list' | 'table' | 'ocrtext' | 'div' | 'undefined' | 'select' | 'map' | 'calendar' | 'clock' | 'checkbox' | 'radiobutton';
+export type ServerFuncType = 'undefined' | 'image' | 'end_composite_scenario' | 'end_simple_scenario' | 'title' | 'day' | 'map' | 'calendar' | 'clock' | 'checkbox' | 'radiobutton' | 'description' | 'label' | 'month' | 'year' | 'email' | 'phone' | 'username' | 'firstname' | 'lastname' | 'password';
+
+type StructType = LibraryElementType;
+type FuncType = string;
+export type LibraryElements = Record<StructType, Record<FuncType, LibraryElement>>;
 
 export interface IStylesElement {
   marginTop?: string,

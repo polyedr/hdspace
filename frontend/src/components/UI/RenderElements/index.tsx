@@ -3,7 +3,7 @@ import cn from 'classnames';
 import { Input, Button } from 'antd';
 
 import { IScreenProps } from '$redux/project/types';
-import { getDefaultDateSelectOptions, DEFAULT_MAP_PROPS } from '$constants/defaultParams';
+import { getDefaultDateSelectOptions } from '$constants/defaultParams';
 import { GMap } from '$components/UI/GMap';
 import { CalendarWidget } from '$components/UI/Calendar';
 import { ClockWidget } from '$components/UI/Clock';
@@ -76,11 +76,11 @@ const renderHyperLine: Renderer = (props) => {
       data-id={sortableId}
       key={id}
       className={cn(styles.addedHyperLink, active && styles.activated)}
-      href={isDisabled ? '#' : params.url}
+      href={isDisabled ? '#' : params.actionUrl} // TODO: DragResize prevents click by link, but must not when !isDisabled
       // href="javascript:void(0);"
       style={{ ...style }}
     >
-      {params.content || 'HyperLink'}
+      {params.actionContent}
     </a>
   );
 };
@@ -144,7 +144,7 @@ const renderText: Renderer = (props) => {
       style={{ ...style, wordBreak: 'break-word', overflowY: 'auto' }}
       tabIndex={0}
     >
-      {params.content || name || 'text'}
+      {params.textContent}
     </p>
   );
 };

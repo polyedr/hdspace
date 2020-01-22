@@ -24,7 +24,7 @@ const styles = require('./PropertiesPanel.scss');
 
 type StateProps = {
   scenarios: ProjectT.IScenarios;
-  libraryElements: ProjectT.ILibraryElements;
+  libraryElements: ProjectT.LibraryElements;
   activeItem: ProjectT.ActiveItem;
   screen: ProjectT.IProjectScreen;
   isAddElementsModalOpened: boolean;

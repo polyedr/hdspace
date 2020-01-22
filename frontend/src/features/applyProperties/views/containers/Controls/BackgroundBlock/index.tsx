@@ -21,10 +21,11 @@ function mapState(state: AppReduxState): StateProps {
 
 type Props = StateProps & PropertiesChangeProps;
 
-export const Component : React.FC<Props> = memo(({
-  backgroundColor,
-  updateStyles,
-}) => {
+export const Component : React.FC<Props> = memo((props) => {
+  const {
+    backgroundColor,
+    updateStyles,
+  } = props;
   const [isBackgroundColorPickerOpen, setIsBackgroundColorPickerOpen] = useState<boolean>(false);
 
   const handleChangeColor = useCallback((newColor) => {

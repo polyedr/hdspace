@@ -112,7 +112,7 @@ export function* addScenarioSaga(action: ReturnType<typeof Actions.addScenario>)
   });
 
   const elementsToCreate = elementsToFormScenario.reduce((acc: T.IScenarioElement[], element) => {
-    const libraryElement = libraryElements[element.type]; // TODO: remove unused params/styles from backend
+    const libraryElement = libraryElements[element.structType as T.LibraryElementType][element.funcType]; // TODO: remove unused params/styles from backend
     const { styles, params } = getConfigurablePropsOf(libraryElement.struct_type as Entity);
 
     const x: T.IScenarioElement = {

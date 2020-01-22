@@ -46,17 +46,12 @@ import { MAX_TOKEN_TRIALS } from '$config/settings';
 import { refreshUserTokenPair } from '$redux/user/sagas';
 import { openSignScreen, openProjects } from '$utils/history';
 import { CssLikeStyles } from '$utils/StyleHelper';
-import {
-  IScenarios,
-  IScenarioElements,
-  ILibraryElements,
-} from '$redux/project/types';
-import * as ProjectT from '$redux/project/types';
 import * as PATH_NAMES from '$constants/pathNames';
 import { apiSaveScenarios, apiSaveScenario } from '$api/scenario';
-import { DEFAULT_AUTHORISATION_TOKEN, DEFAULT_INDENTS } from '$constants/defaultParams';
+import { DEFAULT_AUTHORISATION_TOKEN } from '$constants/defaultParams';
 
-import { selectors, T } from '../';
+import { selectors, T as ProjectT } from '../';
+import { getConfigurablePropsOf, Entity } from '$utils/model';
 
 const runLayoutAlgorithmFinishedType: ProjectT.RunLayoutAlgorithmFinished['type'] = 'PROJECTS:RUN_LAYOUT_ALGORITHM_FINISHED';
 
@@ -128,29 +123,21 @@ function* authCheckSaga() {
 
   if (!result) return;
 
-  const libraryElements = result.reduce((obj: ILibraryElements, item) => ({
-    ...obj,
-    ...(item.func_type.length && item.func_type.reduce((objOfType, type, idx) => ({
-      ...objOfType,
-      [type]: {
-        buoyancy: item.buoyancy[idx],
-        func_type: typeof type === 'string' ? type : undefined,
-        struct_type: item.struct_type,
-        parameters: item.parameters[idx],
-        styles: item.styles[idx] || {},
-        name: type,
-      },
-    }), {})) || {
-      [item.struct_type]: {
-        buoyancy: item.buoyancy[0] || 0,
-        func_type: typeof item.func_type === 'string' ? item.func_type : undefined,
-        struct_type: item.struct_type,
-        parameters: item.parameters[0] || 0,
-        styles: item.styles[0] || {},
-        name: item.struct_type,
-      },
-    },
-  }), {});
+  // TODO: potentially inject default properties right here
+  const libraryElements = result.reduce((acc, x) => ({
+    ...acc,
+    [x.struct_type]: x.func_type.reduce((innerAcc, funcType, idx) => ({
+      ...innerAcc,
+      [funcType]: {
+        buoyancy: x.buoyancy[idx],
+        func_type: funcType,
+        struct_type: x.struct_type,
+        parameters: x.parameters[idx] || {},
+        styles: x.styles[idx] || {},
+        name: x.struct_type,
+      }
+    }), {}),
+  }), {}) as ProjectT.LibraryElements;
 
   yield put(Actions.setLibraryElements(libraryElements));
 }
@@ -268,11 +255,11 @@ function* setListSortableSaga(action: ReturnType<typeof Actions.setListSortable>
   yield take(runLayoutAlgorithmFinishedType);
 }
 
-export function* updateScenariosOnServerSaga(scenarios: T.IScenarios) {
+export function* updateScenariosOnServerSaga(scenarios: ProjectT.IScenarios) {
   yield call(reqWrapper, apiSaveScenarios, { data: R.values(scenarios) });
 }
 
-export function* updateElementsOnServerSaga(elements: T.IScenarioElements) {
+export function* updateElementsOnServerSaga(elements: ProjectT.IScenarioElements) {
   yield call(reqWrapper, apiSaveElements, { data: R.values(elements) });
 }
 
@@ -284,7 +271,7 @@ function* updateScenarioStyles(action: ReturnType<typeof Actions.updateScenarioS
   const { id, styles } = action.payload;
   const scenarios: ReturnType<typeof selectors.selectScenarios> = yield select(selectors.selectScenarios);
   const parseId = parseInt(id, 10);
-  const updateScenarios: IScenarios = {
+  const updateScenarios: ProjectT.IScenarios = {
     ...scenarios,
     [parseId]: {
       ...scenarios[parseId],
@@ -344,7 +331,7 @@ function* updateElementStyles(action: ReturnType<typeof Actions.updateElementSty
   const modifyElements: ReturnType<typeof selectors.selectModifyElements> = yield select(selectors.selectModifyElements);
   const parseId = parseInt(id, 10);
 
-  const updateScenarioElements: IScenarioElements = {
+  const updateScenarioElements: ProjectT.IScenarioElements = {
     ...scenarioElements,
     [parseId]: {
       ...scenarioElements[parseId],
@@ -372,7 +359,7 @@ function* updateElementParameters(action: ReturnType<typeof Actions.updateElemen
 
   const parseId = parseInt(itemID, 10);
 
-  const updateScenarioElements: IScenarioElements = {
+  const updateScenarioElements: ProjectT.IScenarioElements = {
     ...scenarioElements,
     [parseId]: {
       ...scenarioElements[parseId],
@@ -432,31 +419,29 @@ function* uploadFileSaga(
       type: string; // login
     };
 
-    const nnScenarioToContainer = (x: NNScenario): T.IScenarioItem => ({
+    const { styles, params } = getConfigurablePropsOf('container');
+    const nnScenarioToContainer = (x: NNScenario): ProjectT.IScenarioItem => ({
       ...x,
       buoyancy: 0,
       parameters: {
+        ...params,
         ...x.parameters,
         children: x.parameters.children ? x.parameters.children : [],
       },
-      styles: x.styles === '' ? {
-        ...DEFAULT_INDENTS,
-        display: 'flex',
+      styles: {
+        ...styles,
         'flex-direction': x.direction === 'horizontal' ? 'row' : 'column',
-        'justify-content': 'flex-start',
-        'align-items': 'stretch',
-      } : x.styles,
+        ...(x.styles !== '' ? x.styles : {})
+      },
     });
 
-    const nnChildScenarioToContainer = (x: any): T.IScenarioItem => ({
+    const nnChildScenarioToContainer = (x: any): ProjectT.IScenarioItem => ({
       ...x,
       buoyancy: 0,
       styles: {
-        ...DEFAULT_INDENTS,
-        display: 'flex',
+        ...styles,
         'flex-direction': x.direction === 'horizontal' ? 'row' : 'column',
-        'justify-content': 'flex-start',
-        'align-items': 'stretch',
+        ...(x.styles !== '' ? x.styles : {})
       },
     });
 
@@ -499,6 +484,22 @@ function* uploadFileSaga(
       .map(nnChildScenarioToContainer);
 
     const addParentId = (x: any) => ({ ...x, parameters: { ...x.parameters, parent_id: x.scenario }});
+    const applyDefaultProps = (x: any): ProjectT.IScenarioElement => {
+      const { styles, params } = getConfigurablePropsOf(x.struct_type as Entity);
+      return ({
+        ...x,
+        styles: {
+          ...styles,
+          ...(x.styles || {}),
+        },
+        parameters: {
+          ...params,
+          ...x.parameters,
+          ...(x.parameters?.placeholder ? ({ textContent: x.parameters.placeholder }) : {}), // TODO: remove when placeholder will be renamed to textContent on backend
+        },
+      });
+    };
+    const applyMissingInfo = R.pipe(addParentId, applyDefaultProps);
 
     const actualScenarios = {
       ...currentScenarios,
@@ -512,10 +513,9 @@ function* uploadFileSaga(
       ...currentScenariosElements,
       ...elementsIDs
         .map(x => scenariosElements.find(se => se.id === x) as ProjectT.IScenarioElement)
-        .map(addParentId)
+        .map(applyMissingInfo)
         .reduce((acc, x) => ({ ...acc, [x.id]: x }), {}),
     };
-
 
     yield put(Actions.runLayoutAlgorithm(actualScenarios, actualScenariosElements, {
       ...currentScreen.listSortable.root,
