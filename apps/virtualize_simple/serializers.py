@@ -392,6 +392,10 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                             }
                         )
 
+            # Sort the recognized_elements, extract the y1 parameter
+            # The roi order is y1, x1, y2, x2
+            recognized_elements = sorted(recognized_elements, key=lambda i: i["parameters"]["roi"][0], reverse=True)
+
             # Pass through all the rois. Find all the vertical grouping signals.
             # Find all the horizontal grouping signals.
             # First assign scenarios for the vertical grouping, second assign scenarios for the horizontal grouping,
