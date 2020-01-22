@@ -420,6 +420,8 @@ class ScenarioElement(TimeStampedModel):
     MAP = "map"
     CALENDAR = "calendar"
     CLOCK = "clock"
+    CHECKBOX = "checkbox"
+    RADIOBUTTON = "radiobutton"
 
     ELEMENTS_TYPE_CHOICES = (
         (PHONE, "phone"),
@@ -442,6 +444,8 @@ class ScenarioElement(TimeStampedModel):
         (MAP, "map"),
         (CALENDAR, "calendar"),
         (CLOCK, "clock"),
+        (CHECKBOX, "checkbox"),
+        (RADIOBUTTON, "radiobutton"),
     )
 
     func_type = models.CharField(
