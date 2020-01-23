@@ -101,7 +101,7 @@ const renderInput: Renderer = (props) => {
         transition: 'none',
       }}
       onClick={(event) => onClick?.(event, id)}
-      placeholder={params.placeholder}
+      placeholder={params.textContent}
     />
   );
 };
