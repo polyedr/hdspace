@@ -3,10 +3,11 @@ import cn from 'classnames';
 import { Input, Button } from 'antd';
 
 import { IScreenProps } from '$redux/project/types';
-import { getDefaultDateSelectOptions, DEFAULT_MAP_PROPS } from '$constants/defaultParams';
+import { getDefaultDateSelectOptions } from '$constants/defaultParams';
 import { GMap } from '$components/UI/GMap';
 import { CalendarWidget } from '$components/UI/Calendar';
 import { ClockWidget } from '$components/UI/Clock';
+import { Entity } from '$utils/model';
 
 const styles = require('./styles.scss');
 
@@ -23,7 +24,7 @@ type RendererProps = {
   onClick?(event: any, id: string): void;
 };
 
-type Renderer = (args: RendererProps) => React.ReactNode;
+type Renderer = React.FC<RendererProps>;
 
 const renderContainer: Renderer = (props) => {
   const { id, active, children, style, onClick, sortableId } = props;
@@ -36,7 +37,6 @@ const renderContainer: Renderer = (props) => {
       style={{
         ...style,
         overflowWrap: 'break-word',
-        display: 'inline-block',
       }}
       onClick={(event) => onClick?.(event, id)}
       tabIndex={0}
@@ -62,7 +62,7 @@ const renderButton: Renderer = (props) => {
       }}
       onClick={(event) => onClick?.(event, id)}
     >
-      {params.content || 'button'}
+      {params.textContent}
     </Button>
   )
 }
@@ -76,11 +76,11 @@ const renderHyperLine: Renderer = (props) => {
       data-id={sortableId}
       key={id}
       className={cn('ls-item', styles.addedHyperLink, active && styles.activated)}
-      href={isDisabled ? '#' : params.url}
+      href={isDisabled ? '#' : params.actionUrl} // TODO: DragResize prevents click by link, but must not when !isDisabled
       // href="javascript:void(0);"
-      style={{ ...style }}
+      style={style}
     >
-      {params.content || 'HyperLink'}
+      {params.actionContent}
     </a>
   );
 };
@@ -101,7 +101,7 @@ const renderInput: Renderer = (props) => {
         transition: 'none',
       }}
       onClick={(event) => onClick?.(event, id)}
-      placeholder={params.dynamic_placeholder || params.placeholder || 'input'}
+      placeholder={params.textContent}
     />
   );
 };
@@ -115,7 +115,7 @@ const renderSelect: Renderer = (props) => {
       data-id={sortableId}
       key={id}
       className={cn('ls-item', styles.addedSelect, active && styles.activated)}
-      style={{ ...style }}
+      style={style}
     >
       {
         getDefaultDateSelectOptions(name).map(option => (
@@ -144,7 +144,7 @@ const renderText: Renderer = (props) => {
       style={{ ...style, wordBreak: 'break-word', overflowY: 'auto' }}
       tabIndex={0}
     >
-      {params.content || name || 'text'}
+      {params.textContent}
     </p>
   );
 };
@@ -173,13 +173,13 @@ const renderMapWidget: Renderer = (props) => {
       data-id={sortableId}
       key={id}
       className={cn('ls-item', styles.addedWidget, active && styles.activated)}
-      style={{ ...style }}
+      style={style}
       tabIndex={0}
     >
       <GMap
-        center={(params.map_props && params.map_props.center) || DEFAULT_MAP_PROPS.center}
-        zoom={(params.map_props && params.map_props.zoom) || DEFAULT_MAP_PROPS.zoom}
-        markerText={(params.map_props && params.map_props.markerText) || DEFAULT_MAP_PROPS.markerText}
+        center={params.map_props.center}
+        zoom={params.map_props.zoom}
+        markerText={params.map_props.markerText}
       />
     </div>
   );
@@ -194,7 +194,7 @@ const renderCalendarWidget: Renderer = (props) => {
       data-id={sortableId}
       key={id}
       className={cn('ls-item', styles.addedCalendar, active && styles.activated)}
-      style={{ ...style }}
+      style={style}
       tabIndex={0}
     >
       <CalendarWidget />
@@ -211,13 +211,27 @@ const renderClockWidget: Renderer = (props) => {
       data-id={sortableId}
       key={id}
       className={cn('ls-item', styles.addedCalendar, active && styles.activated)}
-      style={{ ...style }}
+      style={style}
       tabIndex={0}
     >
       <ClockWidget
         size={typeof params.width === 'number' ? params.width : undefined}
       />
     </div>
+  );
+}
+
+const renderUndefined: Renderer = (props) => {
+  const { id, active, style, sortableId } = props;
+  return (
+    <div
+      data-ls-id={id}
+      data-id={sortableId}
+      key={id}
+      className={cn('ls-item', styles.addedContainer, active && styles.activated)}
+      style={style}
+      tabIndex={0}
+    />
   );
 }
 
@@ -279,9 +293,8 @@ const renderElem: Renderer = ({
   }
 };
 
-export const RENDERERS = {
+export const RENDERERS: Record<Exclude<Entity, 'root'>, React.ComponentType<any>> = {
   container: renderContainer,
-  elem: renderElem,
   button: renderButton,
   textinput: renderInput,
   hyperlink: renderHyperLine,
@@ -291,4 +304,5 @@ export const RENDERERS = {
   map: renderMapWidget,
   calendar: renderCalendarWidget,
   clock: renderClockWidget,
-} as const;
+  undefined: renderUndefined,
+};

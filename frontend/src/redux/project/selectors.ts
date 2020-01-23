@@ -67,3 +67,28 @@ export function selectProjectLoader(state: AppReduxState) {
 export function selectActiveItem(state: AppReduxState) {
   return selectFeatureState(state).ui.activeItem;
 };
+
+export const selectActiveItemStyles = makeActiveItemInfoSelector('styles');
+export const selectActiveItemParams = makeActiveItemInfoSelector('parameters');
+
+function makeActiveItemInfoSelector(prop: 'styles' | 'parameters') {
+  return (state: AppReduxState) => {
+    const activeItem = selectActiveItem(state);
+    const scenarios = selectScenarios(state);
+    const scenarioElements = selectScenariosElements(state);
+  
+    const activeItemIsRoot = activeItem.itemType === 'root';
+  
+    if (activeItemIsRoot) {
+      const rootID = selectRootScenario(state)?.id;
+      return rootID ? scenarios[rootID][prop] : {};
+    }
+  
+    if (activeItem.itemId === 'none') {
+      return {};
+    }
+  
+    const itemID = parseInt(activeItem.itemId, 10);
+    return activeItem.itemId.slice(-1) === 's' ? scenarios[itemID][prop] : scenarioElements[itemID][prop];
+  };
+}

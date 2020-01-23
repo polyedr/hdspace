@@ -1,6 +1,5 @@
 import * as R from 'ramda';
 
-import { IListOptions } from '$components/UI/NestedList';
 import { IDropDownOptions } from '$components/UI/DropDown';
 import {
   LIST_SCENARIO_TYPE,
@@ -10,60 +9,30 @@ import {
   IScenarios,
   IScenarioItem,
   IScenarioElements,
-  ILibraryElements,
-  ILibraryElement,
+  LibraryElements,
+  LibraryElement,
   IListSortable,
   ILSItem,
   IScenarioElement,
+  LibraryElementType,
+  ServerFuncType,
 } from '$redux/project/types';
 import { IChooseElement } from '$components/ModalAddElements/MainBlock';
 import { CssLikeStyles } from '$utils/StyleHelper';
 
-export interface IGroupElement {
+export type GroupElement = {
   key: string,
   label: string,
-  value: any,
-}
+  value: { structType: string, funcType: string },
+};
+
 export interface IListCategoryEl {
-  [x: string]: ILibraryElement[]
+  [x: string]: LibraryElement[]
 }
 
 export const convertScenarios = (data: IScenarioItem[]): IScenarios => (
   data.reduce((obj, item) => ({ ...obj, [item.id]: item }), {})
 );
-
-export const getOptionsOfNestedList = (scenarios: IScenarios, elements: IScenarioElements) => {
-  return Object.keys(scenarios).reduce((acc: IListOptions[], key) => {
-    const {
-      id,
-      name,
-      struct_type,
-      elements: listEl,
-    } = scenarios[key];
-
-    if (struct_type === 'block') {
-      const item: IListOptions = {
-        name: `scenario-${id}`,
-        label: name,
-        value: key,
-        elements: listEl.map((elId) => {
-          const label: string = R.path([elId, 'func_type'], elements)
-            || `${R.path([elId, 'struct_type'], scenarios)}${elId}`;
-
-          return {
-            name: String(elId),
-            label,
-            value: String(elId),
-          };
-        }),
-      };
-
-      return [...acc, item];
-    }
-
-    return acc;
-  }, []);
-};
 
 export const getOptionsOfListScenario = (scenarios: IScenarios) => (
   Object.keys(scenarios).reduce((acc, key) => {
@@ -83,90 +52,83 @@ export const convertScenarioElements = (
     },
   }), {});
 
-const getCategoryTab = (element: ILibraryElement, obj: IListCategoryEl) => {
-  switch (element.struct_type) {
+const getCategoryTab = (structType: LibraryElementType, libraryElements: LibraryElements, obj: IListCategoryEl) => {
+  switch (structType) {
     case 'textinput':
-      return { Input: [...obj.Input || [], element] };
+      return { Input: [...obj.Input || [], ...R.values(libraryElements[structType])] };
     case 'map':
-      return { Widget: [...obj.Widget || [], element] };
     case 'calendar':
-      return { Widget: [...obj.Widget || [], element] };
     case 'clock':
-      return { Widget: [...obj.Widget || [], element] };
+      return { Widget: [...obj.Widget || [], ...R.values(libraryElements[structType])] };
     case 'select':
-      return { Select: [...obj.Select || [], element] };
+      return { Select: [...obj.Select || [], ...R.values(libraryElements[structType])] };
     case 'image':
-      return { Image: [...obj.Image || [], element] };
+      return { Image: [...obj.Image || [], ...R.values(libraryElements[structType])] };
     case 'button':
-      return { Button: [...obj.Button || [], element] };
+      return { Button: [...obj.Button || [], ...R.values(libraryElements[structType])] };
 
-    default: return { Other: [...obj.Other || [], element] };
+    default: return { Other: [...obj.Other || [], ...R.values(libraryElements[structType])] };
   }
 };
 
-export const getCustomTemplateElements = (libraryElements: ILibraryElements) => (
-  Object.keys(libraryElements).reduce((acc: ITemplateElement[], key) => {
-    const { struct_type } = libraryElements[key];
-    if (['textinput', 'select', 'button', 'hyperlink', 'ocrtext', 'other'].indexOf(struct_type) !== -1) {
-      return acc.concat({
-        label: key,
-        value: key,
-        checked: false,
-      });
-    }
-    return acc;
-  }, [])
-);
-
-export const parseAddElementsTabs = (group: string, libraryElements: ILibraryElements): IListCategoryEl => (
-  Object.keys(libraryElements).reduce((obj, currEl) => ({
-    ...obj,
-    ...getCategoryTab(libraryElements[currEl], obj),
+export const parseAddElementsTabs = (libraryElements: LibraryElements): IListCategoryEl => (
+  R.keys(libraryElements).reduce((acc, structType) => ({
+    ...acc,
+    ...getCategoryTab(structType, libraryElements, acc),
   }), {})
 );
 
-export const getGroupElements = (group: string, listElement: IListCategoryEl): IGroupElement[] => {
-  console.log('getGroupElements!', group, listElement);
+export const getCustomTemplateElements = (libraryElements: LibraryElements) => {
+  const elementsAllowedToCreate: LibraryElementType[] = ['textinput', 'select', 'button', 'hyperlink', 'ocrtext'];
+  return R.keys(libraryElements).reduce((acc: ITemplateElement[], structType) => {
+    if (elementsAllowedToCreate.some(x => x === structType)) {
+      return acc.concat(R.values(libraryElements[structType]).map(element => ({
+        label: `${structType}/${element.func_type}`,
+        value: { funcType: element.func_type as ServerFuncType, structType },
+        checked: false,
+      })));
+    }
+    return acc;
+  }, []);
+};
+
+export const getGroupElements = (group: string, listElement: IListCategoryEl): GroupElement[] => {
   switch (group) {
     case 'Button':
-      return listElement.Button.map((el, idx) => ({
-        key: `key-${el.func_type}`,
-        value: el.func_type,
-        label: `${el.parameters.group}/${idx + 1}`,
+      return listElement.Button.map((x) => ({
+        key: `key-${x.struct_type}-${x.func_type}`,
+        value: { structType: x.struct_type, funcType: x.func_type },
+        label: `button/${x.func_type}`,
       }));
 
     case 'Input':
-      return listElement.Input.map(({ parameters: { placeholder = '', group }, func_type }) => ({
-        key: `key-${placeholder}`,
-        value: func_type,
-        label: `${group}/${placeholder.toLowerCase()}`,
+      return listElement.Input.map((x) => ({
+        key: `key-${x.struct_type}-${x.func_type}`,
+        value: { structType: x.struct_type, funcType: x.func_type },
+        label: `input/${x.func_type}`,
       }));
 
     case 'Select':
-      return listElement.Select.map(el => ({
-        key: `key-${el.func_type}`,
-        value: el.func_type,
-        label: `${el.parameters.group}/${el.func_type}`,
+      return listElement.Select.map((x) => ({
+        key: `key-${x.struct_type}-${x.func_type}`,
+        value: { structType: x.struct_type, funcType: x.func_type },
+        label: `select/${x.func_type}`,
       }));
 
     case 'Other':
-      return listElement.Other
-        .filter(el => (typeof el.func_type) === 'string' && el.func_type !== '')
-        .map((el, idx) => ({
-          key: `key-${el.func_type}-${idx}`,
-          value: el.func_type,
-          label: el.func_type,
-        }));
+      return listElement.Other.map((x, idx) => ({
+        key: `key-${x.struct_type}-${x.func_type}-${idx}`,
+        value: { structType: x.struct_type, funcType: x.func_type },
+        label: `${x.struct_type}/${x.func_type}`,
+      }));
 
     case 'Widget':
-      console.log('Widget!', listElement.Widget);
       return listElement.Widget
-        .filter(el => (typeof el.func_type) === 'string' && el.func_type !== '')
         .map((libraryElement, idx) => {
-          const { func_type, name = '' } = libraryElement as ILibraryElement & { name: string };
+          const { struct_type, func_type, name = 'widget' } = libraryElement
           return {
-            key: `key-${func_type}-${idx}`,
-            value: func_type,
+            key: `key-${struct_type}-${func_type}-${idx}`,
+            value: { structType: struct_type, funcType: func_type },
             label: name,
           };
         });
@@ -186,17 +148,11 @@ export const getChooseElements = (
     : [...chooseElements, element];
 };
 
-export const getCheckedElements = (listElements: ITemplateElement[]) => (
-  listElements.reduce((acc: IChooseElement[], x) => x.checked ? acc.concat({ type: x.value, id: -100 }) : acc, [])
-);
-
-// resolve IDropDownOptions type here
-export const getListTypeElement = (libraryElements: ILibraryElements): IDropDownOptions<string>[] => (
-  Object.keys(libraryElements).reduce((arr, key) => {
-    const { func_type, struct_type } = libraryElements[key];
-
-    return arr.concat({ label: func_type || struct_type, value: key });
-  }, [{ label: 'container', value: 'container' }] as IDropDownOptions<string>[] )
+export const getCheckedElements = (listElements: ITemplateElement[]) => listElements.reduce(
+  (acc: IChooseElement[], x) => x.checked
+    ? acc.concat({ type: x.value.funcType, id: -100, structType: x.value.structType, funcType: x.value.funcType })
+    : acc,
+  []
 );
 
 export const getItemsPair = (

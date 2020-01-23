@@ -7,6 +7,8 @@ import {
   IScreenIndents,
   IProjectScreen,
   ActiveItem,
+  LibraryElementType,
+  ServerFuncType,
 } from '$redux/project/types';
 import { IApiResponseError, ITokenPair } from '$redux/user/reducer';
 // import { ITokenPair, IApiResponseError } from '$redux/user/reducer';
@@ -35,7 +37,7 @@ export interface ISignFormFields {
 
 export interface ITemplateElement {
   label: string,
-  value: string
+  value: { structType: LibraryElementType; funcType: ServerFuncType }
   checked: boolean,
 }
 
@@ -59,6 +61,11 @@ export const MIN_HEIGHT = 'auto';
 export const DEFAULT_WIDTH = 'auto';
 export const DEFAULT_HEIGHT = 'auto';
 
+export const DEFAULT_SIZE = {
+  width: 'auto',
+  height: 'auto',
+};
+
 export const MIN_BORDER_WIDTH = 0;
 export const MAX_BORDER_WIDTH = 10;
 export const MIN_BORDER_RADIUS = 0;
@@ -73,10 +80,10 @@ export const MIN_MAP_ZOOM = 1;
 export const MAX_MAP_ZOOM = 18;
 
 export const DEFAULT_INDENTS: IScreenIndents = {
-  // 'margin-top': '5px',
-  // 'margin-right': '5px',
-  // 'margin-bottom': '5px',
-  // 'margin-left': '5px',
+  'margin-top': '0px',
+  'margin-right': '0px',
+  'margin-bottom': '0px',
+  'margin-left': '0px',
   'padding-top': '5px',
   'padding-right': '5px',
   'padding-bottom': '5px',
@@ -85,9 +92,9 @@ export const DEFAULT_INDENTS: IScreenIndents = {
 
 export const DEFAULT_FLEX: CssLikeStyles = {
   display: 'flex',
-  'flex-direction': 'column',
+  'flex-direction': 'row',
   'justify-content': 'flex-start',
-  'align-items': 'center',
+  'align-items': 'stretch',
 };
 
 export const DEFAULT_BORDER: IScreenBorders = {
@@ -102,6 +109,22 @@ export const DEFAULT_BACKGROUND: IScreenBackground = {
   'background-image': 'none',
   'background-repeat': 'no-repeat',
   'background-size': 'cover',
+};
+
+export const DEFAULT_ACTION = {
+  actionUrl: '',
+  actionContent: 'Hyperlink',
+};
+
+export const DEFAULT_MAP_PROPS = {
+  map_props: {
+    center: {
+      lat: 50.00008,
+      lng: 40.00008,
+    },
+    zoom: 10,
+    markerText: 'A',
+  },
 };
 
 export const DEFAULT_TYPOGRAPHY: IScreenTypography = {
@@ -164,24 +187,24 @@ export const DEFAULT_TEMPLATES: IDefaultTemplate = {
     label: 'Sign Up',
     value: 'signup',
     elements: [
-      { label: 'input/email', value: 'email', checked: true },
-      { label: 'input/last name', value: 'lastname', checked: true },
-      { label: 'input/first name', value: 'firstname', checked: true },
-      { label: 'input/password', value: 'password', checked: true },
-      { label: 'select/day', value: 'day', checked: false },
-      { label: 'select/month', value: 'month', checked: false },
-      { label: 'select/year', value: 'year', checked: false },
-      { label: 'button/ok', value: 'end_composite_scenario', checked: true },
+      { label: 'input/email', value: { funcType: 'email', structType: 'textinput'}, checked: true },
+      { label: 'input/last name', value: { funcType: 'lastname', structType: 'textinput'}, checked: true },
+      { label: 'input/first name', value: { funcType: 'firstname', structType: 'textinput'}, checked: true },
+      { label: 'input/password', value: { funcType: 'password', structType: 'textinput'}, checked: true },
+      { label: 'select/day', value: { funcType: 'day', structType: 'select'}, checked: false },
+      { label: 'select/month', value: { funcType: 'month', structType: 'select'}, checked: false },
+      { label: 'select/year', value: { funcType: 'year', structType: 'select'}, checked: false },
+      { label: 'button/ok', value: { funcType: 'end_composite_scenario', structType: 'button'}, checked: true },
     ],
   },
   signin: {
     label: 'Sign In',
     value: 'signin',
     elements: [
-      { label: 'input/email', value: 'email', checked: true },
-      { label: 'input/password', value: 'password', checked: true },
-      { label: 'button/ok', value: 'end_composite_scenario', checked: true },
-      { label: 'hyperlink/forgotten account?', value: 'end_simple_scenario', checked: true },
+      { label: 'input/email', value: { funcType: 'email', structType: 'textinput'}, checked: true },
+      { label: 'input/password', value: { funcType: 'password', structType: 'textinput'}, checked: true },
+      { label: 'button/ok', value: { funcType: 'end_composite_scenario', structType: 'button'}, checked: true },
+      { label: 'hyperlink/forgotten account?', value: { funcType: 'end_simple_scenario', structType: 'hyperlink'}, checked: true },
     ],
   },
   custom: {
@@ -193,36 +216,28 @@ export const DEFAULT_TEMPLATES: IDefaultTemplate = {
     label: 'Template 1',
     value: 'template1',
     elements: [
-      { label: 'input/first name', value: 'firstname', checked: true },
-      { label: 'input/last name', value: 'lastname', checked: true },
-      { label: 'input/password', value: 'password', checked: true },
-      { label: 'button/ok', value: 'end_composite_scenario', checked: false },
-      { label: 'input/first name', value: 'firstname1', checked: true },
-      { label: 'input/last name', value: 'lastname1', checked: true },
-      { label: 'input/password', value: 'password1', checked: true },
-      { label: 'button/ok', value: 'end_composite_scenario1', checked: false },
-      { label: 'input/first name', value: 'firstname2', checked: true },
-      { label: 'input/last name', value: 'lastname2', checked: true },
-      { label: 'input/password', value: 'password2', checked: true },
-      { label: 'button/ok', value: 'end_composite_scenario2', checked: false },
+      { label: 'input/first name', value: { funcType: 'firstname', structType: 'textinput' }, checked: true },
+      { label: 'input/last name', value: { funcType: 'lastname', structType: 'textinput' }, checked: true },
+      { label: 'input/password', value: { funcType: 'password', structType: 'textinput' }, checked: true },
+      { label: 'button/ok', value: { funcType: 'end_composite_scenario', structType: 'button' }, checked: false },
     ],
   },
   template2: {
     label: 'Template 2',
     value: 'template1',
     elements: [
-      { label: 'input/password', value: 'password', checked: true },
-      { label: 'button/ok', value: 'end_composite_scenario', checked: true },
+      { label: 'input/password', value: { funcType: 'password', structType: 'textinput' }, checked: true },
+      { label: 'button/ok', value: { funcType: 'end_composite_scenario', structType: 'button' }, checked: true },
     ],
   },
   template3: {
     label: 'Template 3',
     value: 'template3',
     elements: [
-      { label: 'input/first name', value: 'firstname', checked: true },
-      { label: 'input/last name', value: 'lastname', checked: true },
-      { label: 'input/password', value: 'password', checked: true },
-      { label: 'button/ok', value: 'end_composite_scenario', checked: false },
+      { label: 'input/first name', value: { funcType: 'firstname', structType: 'textinput'}, checked: true },
+      { label: 'input/last name', value: { funcType: 'lastname', structType: 'textinput'}, checked: true },
+      { label: 'input/password', value: { funcType: 'password', structType: 'textinput'}, checked: true },
+      { label: 'button/ok', value: { funcType: 'end_composite_scenario', structType: 'button'}, checked: false },
     ],
   },
 };
@@ -275,7 +290,13 @@ export const getDefaultDateSelectOptions = (dateType = 'year'): ISelectOptions[]
   }
 };
 
-export const DEFAULT_PLACEHOLDER = 'Enter a label for the field';
+export const DEFAULT_PLACEHOLDER = {
+  placeholder: 'Enter a label for the field',
+};
+
+export const DEFAULT_TEXT_CONTENT = {
+  textContent: 'Enter a label for the field',
+};
 
 export const DEFAULT_MAP_WIDGET = {
   struct_type: 'widget',
@@ -286,15 +307,6 @@ export const DEFAULT_MAP_WIDGET = {
     group: 'widget',
   },
   styles: {},
-};
-
-export const DEFAULT_MAP_PROPS = {
-  center: {
-    lat: 50.00008,
-    lng: 40.00008,
-  },
-  zoom: 10,
-  markerText: 'A',
 };
 
 export const DEFAULT_SIGNIN_FIELDS: ISignFormElement[] = [

@@ -1,0 +1,80 @@
+.fontLeftBlock {
+  display: flex;
+  justify-content: space-between;
+  flex: 2 1 100px;
+  margin-right: 20px;
+
+  &__button {
+    flex-grow: 1;
+    &:not(:first-child) {
+      margin-left: 10px;
+    }
+  }
+}
+
+.fontRightBlock {
+  display: flex;
+  flex: 1 1 35px;
+  align-items: center;
+}
+
+.fontSizeField {
+  min-width: 0;
+  width: 100%;
+  padding: $propsPanelInputsPadding;
+
+  @include props_panel_text;
+  font-weight: 400;
+
+  outline: none;
+  border: 1px solid $mainBorderColor;
+  border-radius: 3px;
+
+  &:hover,
+  &:focus {
+    border-color: $secondBorderColor;
+  }
+}
+
+.fontBtn {
+  flex-grow: 1;
+  margin-right: 10px;
+  padding: $propsPanelInputsPadding;
+
+  background-color: $mainBorderColor;
+
+  &:last-child {
+    margin-right: 0;
+  }
+
+  & > span {
+    color: $mainTextColor;
+    @include props_panel_text;
+    font-weight: 400;
+  }
+
+  &:hover,
+  &:focus {
+    background-color: $secondBorderColor;
+  }
+
+  &_active {
+    background-color: $secondBorderColor;
+  }
+}
+
+.button {
+  display: inline-block;
+  width: 100%;
+  padding: 6px 12px;
+  background-color: #e7eaec;
+  color: #444444;
+  cursor: pointer;
+  border-radius: 3px;
+  border: 1px solid #e7eaec;
+
+  &_active {
+    background-color: #949494;
+    border-color: #949494;
+  }
+}

@@ -4,20 +4,22 @@ import classNames from 'classnames';
 
 import { Button } from '$components/UI/Button';
 import { Icon } from '$components/UI/Icon';
-import { IPanelEditProps } from '$components/RightPanel/PanelEditProps';
 import { ActionsBlock } from '$components/ModalAddElements/ActionsBlock';
 import { IUploadFile, UploadFile } from '$components/UI/UploadFile';
 import { MODAL_ADD_ELEMENTS_TABS } from '$constants/defaultParams';
 import { getGroupElements, IListCategoryEl, parseAddElementsTabs } from '$utils/parseScenario';
-import * as Actions from '$redux/project/actions';
-import { selectors } from '$redux/project';
+import { selectors, actionsCreators } from '$redux/project';
 import { AppReduxState } from '$shared/types/app';
+import { PropertiesPanelProps } from '$features/applyProperties';
+import { LibraryElements } from '$redux/project/types';
 
 const styles = require('./ModalAddElements.scss');
 
 export interface IChooseElement {
-  id: number;
-  type: string;
+  id: number; // id, img are Image-specific properties
+  funcType: string;
+  structType: string;
+  type: 'Image' | string;
   img?: IUploadFile;
 }
 
@@ -29,14 +31,14 @@ function mapStateToProps(state: AppReduxState) {
 }
 
 const mapDispatchToProps = {
-  getScreenNN: Actions.getScreenNN,
-  uploadImg: Actions.uploadFile,
+  getScreenNN: actionsCreators.getScreenNN,
+  uploadImg: actionsCreators.uploadFile,
 };
 
 type OwnProps = {
   active: boolean;
-  scenarios: IPanelEditProps['scenarios'];
-  libraryElements: IPanelEditProps['libraryElements'];
+  scenarios: PropertiesPanelProps['scenarios'];
+  libraryElements: LibraryElements;
   onClose(): void;
   onConfirm(scenarioTypeID: number | null, name: string, elementsToFormScenario: IChooseElement[]): void;
 };
@@ -60,7 +62,7 @@ const Component: React.FunctionComponent<Props> = memo((props) => {
   const [activeTab, setActiveTab] = useState<string>('Screen');
   const [errorMsg, setErrorMsg] = React.useState<string>('');
   const [listElement, setListElement] = useState<IListCategoryEl>({});
-  const [chooseElements, setChooseElements] = useState<IChooseElement[]>([]);
+  const [selectedElements, setSelectedElements] = useState<IChooseElement[]>([]);
   const [scenarioState, setScenarioState] = useState<ScenarioStateType>('scenario_new');
   const [scenarioName, setScenarioName] = React.useState<string>('');
   const [scenarioTypeId, setScenarioTypeId] = React.useState<string | null>(null);
@@ -100,7 +102,7 @@ const Component: React.FunctionComponent<Props> = memo((props) => {
 
     if (scenarioState === 'scenario_existing' && !scenarioTypeId) {
       setErrorMsg('Specify the scenario to add items.');
-    } else if (!chooseElements.length) {
+    } else if (!selectedElements.length) {
       setErrorMsg('No items for the scenario.');
     } else {
       const finalScenarioName = scenarioName.trim() || 'Container';
@@ -109,11 +111,11 @@ const Component: React.FunctionComponent<Props> = memo((props) => {
       setErrorMsg('');
       setScenarioName('');
       setScenarioTypeId(null);
-      onConfirm(finalScenarioTypeID, finalScenarioName, chooseElements);
+      onConfirm(finalScenarioTypeID, finalScenarioName, selectedElements);
       onClose();
     }
   }, [
-    scenarioState, scenarioTypeId, scenarioName, chooseElements,
+    scenarioState, scenarioTypeId, scenarioName, selectedElements,
     onConfirm, onClose,
   ]);
 
@@ -135,17 +137,18 @@ const Component: React.FunctionComponent<Props> = memo((props) => {
   const handleChangeTab = useCallback((tabName) => {
     if (tabName === activeTab) return;
 
-    const newListElement = parseAddElementsTabs(tabName, libraryElements);
+    const newListElement = parseAddElementsTabs(libraryElements);
 
     setListElement(newListElement);
     setActiveTab(tabName);
     setErrorMsg('');
-    setChooseElements([]);
+    setSelectedElements([]);
   }, [activeTab, libraryElements]);
 
-  const getContentStep = useCallback(() => (
-    getGroupElements(activeTab, listElement)
-  ), [activeTab, listElement]);
+  const getContentStep = useCallback(() => {
+    const contentStep = getGroupElements(activeTab, listElement);
+    return contentStep;
+  }, [activeTab, listElement]);
 
   return active ? (
     <div
@@ -217,14 +220,14 @@ const Component: React.FunctionComponent<Props> = memo((props) => {
             tabs={MODAL_ADD_ELEMENTS_TABS}
             groupElements={getContentStep()}
             activeTab={activeTab}
-            chooseElements={chooseElements}
+            selectedElements={selectedElements}
             scenarioTypeId={scenarioTypeId}
             scenarioName={scenarioName}
             libraryElements={libraryElements}
             scenarioState={scenarioState}
             startTemplate="signup"
             changeTab={handleChangeTab}
-            setChooseElements={setChooseElements}
+            setSelectedElements={setSelectedElements}
             changeScenarioType={handleScenarioTypeChange}
             changeScenarioName={handleScenarioName}
             changeScenarioState={handleScenarioStateChange}

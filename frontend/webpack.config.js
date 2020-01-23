@@ -27,6 +27,7 @@ const resolve = {
     'react-dom': '@hot-loader/react-dom',
     $components: join(__dirname, 'src/components'),
     $containers: join(__dirname, 'src/containers'),
+    $features: join(__dirname, 'src/features'),
     $constants: join(__dirname, 'src/constants'),
     $assets: join(__dirname, 'src/assets'),
     $config: join(__dirname, './config'),

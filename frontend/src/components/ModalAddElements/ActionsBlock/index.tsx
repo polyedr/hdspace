@@ -2,40 +2,40 @@ import React, { useCallback, useEffect, useState } from 'react';
 import classNames from 'classnames';
 import * as R from 'ramda';
 
-import { DEFAULT_TEMPLATES } from '$constants/defaultParams';
+import { DEFAULT_TEMPLATES, ITemplateElement } from '$constants/defaultParams';
 import { Icon } from '$components/UI/Icon';
 import { Button } from '$components/UI/Button';
 import { Checkbox } from '$components/UI/Checkbox';
 import { DropDown } from '$components/UI/DropDown';
 import { Scrollbar } from '$components/UI/Scrollbar';
-import { IPanelEditProps } from '$components/RightPanel/PanelEditProps';
 import { IChooseElement, ScenarioStateType } from '$components/ModalAddElements/MainBlock';
 import {
   getCustomTemplateElements,
   getOptionsOfListScenario,
   getChooseElements,
   getCheckedElements,
-  IGroupElement,
+  GroupElement,
 } from '$utils/parseScenario';
 import { isIncludes } from '$utils/StringHelper';
 import { uniqueId } from '$utils/NumberHelper';
 import { IUploadFile, UploadFile } from '$components/UI/UploadFile';
+import { PropertiesPanelProps } from '$features/applyProperties';
 
 const styles = require('./ActionsBlock.scss');
 
 type Props = {
-  scenarios: IPanelEditProps['scenarios'];
+  scenarios: PropertiesPanelProps['scenarios'];
   tabs: string[];
-  groupElements: IGroupElement[];
+  groupElements: GroupElement[];
   activeTab: string;
-  chooseElements: IChooseElement[];
+  selectedElements: IChooseElement[];
   scenarioTypeId: string | null;
   scenarioName: string;
   scenarioState: string;
-  libraryElements: IPanelEditProps['libraryElements'];
+  libraryElements: PropertiesPanelProps['libraryElements'];
   startTemplate: string;
   changeTab: any;
-  setChooseElements(listElType: IChooseElement[]): void;
+  setSelectedElements(elements: IChooseElement[]): void;
   changeScenarioType(value: string): void;
   changeScenarioName(e: React.ChangeEvent<HTMLInputElement>): void;
   changeScenarioState(scenario: ScenarioStateType): void;
@@ -47,20 +47,20 @@ export const ActionsBlock: React.FunctionComponent<Props> = ({
   groupElements,
   activeTab,
   changeTab,
-  chooseElements,
+  selectedElements,
   scenarioTypeId,
   scenarioName,
   scenarioState,
   libraryElements,
   startTemplate,
-  setChooseElements,
+  setSelectedElements,
   changeScenarioType,
   changeScenarioName,
   changeScenarioState,
 }) => {
   const [activeTemplate, setActiveTemplate] = useState<string>(startTemplate);
   const [searchValue, setSearchValue] = React.useState<string>('');
-  const [templateElements, setTemplateElements] = React.useState(
+  const [templateElements, setTemplateElements] = React.useState<ITemplateElement[]>(
     DEFAULT_TEMPLATES[activeTemplate].elements,
   );
 
@@ -68,9 +68,9 @@ export const ActionsBlock: React.FunctionComponent<Props> = ({
     if (activeTab !== 'Screen') return;
 
     const listElements = DEFAULT_TEMPLATES[activeTemplate].elements;
-    const newChooseElements = getCheckedElements(listElements);
+    const newSelectedElements = getCheckedElements(listElements);
 
-    setChooseElements(newChooseElements);
+    setSelectedElements(newSelectedElements);
   }, [activeTab]);
 
   const onTemplateBtnClick = useCallback((templateKey) => {
@@ -80,40 +80,42 @@ export const ActionsBlock: React.FunctionComponent<Props> = ({
       ? DEFAULT_TEMPLATES[templateKey].elements
       : getCustomTemplateElements(libraryElements);
 
-    const newChooseElements = getCheckedElements(listElements);
+    const newSelectedElements = getCheckedElements(listElements);
 
     setTemplateElements(listElements);
     setActiveTemplate(templateKey);
     setSearchValue('');
-    setChooseElements(newChooseElements);
-  }, [activeTemplate, libraryElements, setChooseElements]);
+    setSelectedElements(newSelectedElements);
+  }, [activeTemplate, libraryElements, setSelectedElements]);
 
-  const onTemplateCheckboxChange = useCallback((checked: boolean, value: string) => {
-    const updateGroupElements = templateElements.map((el) => {
-      if (el.value === value) {
+  const onTemplateCheckboxChange = useCallback((checked: boolean, element: ITemplateElement) => {
+    const updateGroupElements = templateElements.map((x) => {
+      if (x.value.funcType === element.value.funcType && x.value.structType === element.value.structType) {
         return {
-          ...el,
+          ...x,
           checked,
         };
       }
-      return el;
+      return x;
     });
-    const newChooseElements = getCheckedElements(updateGroupElements);
 
+    const newSelectedElements = getCheckedElements(updateGroupElements);
     setTemplateElements(updateGroupElements);
-    setChooseElements(newChooseElements);
-  }, [templateElements, setChooseElements]);
+    setSelectedElements(newSelectedElements);
+  }, [templateElements, setSelectedElements]);
 
-  const handleChooseElement = useCallback((elType) => {
+  const handleChooseElement = useCallback((x: GroupElement['value']) => {
     const element: IChooseElement = {
       id: uniqueId(),
-      type: elType,
+      structType: x.structType,
+      funcType: x.funcType,
+      type: x.funcType,
     };
 
-    const elements = getChooseElements(element, chooseElements);
+    const elements = getChooseElements(element, selectedElements);
 
-    setChooseElements(elements);
-  }, [chooseElements, setChooseElements]);
+    setSelectedElements(elements);
+  }, [selectedElements, setSelectedElements]);
 
   const onTabClick = useCallback((tabName) => changeTab(tabName), [changeTab]);
 
@@ -144,39 +146,23 @@ export const ActionsBlock: React.FunctionComponent<Props> = ({
     return groupElements.filter(el => isIncludes(searchValue, el.label));
   }, [searchValue, groupElements]);
 
-  const handleSearchTemplate = useCallback((event) => {
-    const { value } = event.target;
-
-    setSearchValue(value);
-
-    if (activeTab === 'Screen') {
-      const list = getFilterTemplates(value);
-
-      if (!R.isEmpty(list)) {
-        const templateKey = Object.keys(list)[0];
-        const listElements = list[templateKey].elements;
-
-        setActiveTemplate(templateKey);
-        setTemplateElements(listElements);
-      }
-    }
-  }, [activeTab, getFilterTemplates]);
-
   const handleChangeFile = useCallback((img: IUploadFile) => {
     const element: IChooseElement = {
       id: uniqueId(),
-      type: 'image',
+      structType: 'image',
+      funcType: 'image',
+      type: 'Image',
       img,
     };
 
-    setChooseElements([...chooseElements, element]);
-  }, [chooseElements, setChooseElements]);
+    setSelectedElements([...selectedElements, element]);
+  }, [selectedElements, setSelectedElements]);
 
   const handleDelImg = useCallback((id) => {
-    const newListImg = chooseElements.filter(el => el.id !== id);
+    const newListImg = selectedElements.filter(el => el.id !== id);
 
-    setChooseElements(newListImg);
-  }, [chooseElements, setChooseElements]);
+    setSelectedElements(newListImg);
+  }, [selectedElements, setSelectedElements]);
 
   const filterListContent = getFilterTemplates();
   const filterGroupElements = getFilterElements();
@@ -242,15 +228,15 @@ export const ActionsBlock: React.FunctionComponent<Props> = ({
                   {
                     !R.isEmpty(filterListContent) && templateElements.map(element => (
                       <Checkbox
-                        key={`key-${element.value}`}
+                        key={`key-${element.value.funcType}-${element.value.structType}`}
                         label={element.label}
-                        name={element.value}
+                        name={`key-${element.value.funcType}-${element.value.structType}`}
                         isHidden
                         className={classNames(
                           styles.contentTemplateCheckbox,
                           element.checked && styles.contentTemplateCheckbox_active,
                         )}
-                        onChange={e => onTemplateCheckboxChange(e.target.checked, element.value)}
+                        onChange={e => onTemplateCheckboxChange(e.target.checked, element)}
                         checked={element.checked}
                       />
                     ))
@@ -285,10 +271,10 @@ export const ActionsBlock: React.FunctionComponent<Props> = ({
                           key={key}
                           className={classNames(
                             styles.contentTemplateBtn,
-                            chooseElements.some(el => el.type === value)
+                            selectedElements.some(el => el.type === value.funcType && el.structType === value.structType)
                             && styles.contentTemplateBtn_active,
                           )}
-                          styleType="none"
+                          styleType="none" // TODO: disable elements that don't have controls or renderer
                           onClick={() => handleChooseElement(value)}
                         >
                           {label}
@@ -306,7 +292,7 @@ export const ActionsBlock: React.FunctionComponent<Props> = ({
                         />
                       </li>
                       {
-                        chooseElements.map((el, idx) => (
+                        selectedElements.map((el, idx) => (
                           <li key={el.id} style={{ margin: '0 8px 16px 0' }}>
                             <div className={styles.preview}>
                               <button

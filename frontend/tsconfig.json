@@ -15,6 +15,7 @@
     "paths": {
       "$components/*": [ "src/components/*" ],
       "$containers/*": [ "src/containers/*" ],
+      "$features/*": [ "src/features/*" ],
       "$constants/*": [ "src/constants/*" ],
       "$assets/*": [ "src/assets/*" ],
       "$config/*": [ "./config/*" ],

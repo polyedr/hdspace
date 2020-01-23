@@ -196,7 +196,7 @@ export const convertPropCSS = (styles: CssLikeStyles): React.CSSProperties => ({
   ...otherStyles(styles),
 });
 
-export const validBorderRadius = (radius?: string): string | undefined => {
+export const validateBorderRadius = (radius?: string): string | undefined => {
   if (typeof radius === 'undefined') return undefined;
 
   const value = parseInt(radius, 10) || MIN_BORDER_RADIUS;
