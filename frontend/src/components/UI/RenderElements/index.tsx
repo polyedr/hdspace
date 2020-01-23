@@ -24,7 +24,7 @@ type RendererProps = {
   onClick?(event: any, id: string): void;
 };
 
-type Renderer = (args: RendererProps) => React.ReactNode;
+type Renderer = React.FC<RendererProps>;
 
 const renderContainer: Renderer = (props) => {
   const { id, active, children, style, onClick, sortableId } = props;
@@ -37,7 +37,6 @@ const renderContainer: Renderer = (props) => {
       style={{
         ...style,
         overflowWrap: 'break-word',
-        display: 'inline-block',
       }}
       onClick={(event) => onClick?.(event, id)}
       tabIndex={0}
@@ -79,7 +78,7 @@ const renderHyperLine: Renderer = (props) => {
       className={cn('ls-item', styles.addedHyperLink, active && styles.activated)}
       href={isDisabled ? '#' : params.actionUrl} // TODO: DragResize prevents click by link, but must not when !isDisabled
       // href="javascript:void(0);"
-      style={{ ...style }}
+      style={style}
     >
       {params.actionContent}
     </a>
@@ -116,7 +115,7 @@ const renderSelect: Renderer = (props) => {
       data-id={sortableId}
       key={id}
       className={cn('ls-item', styles.addedSelect, active && styles.activated)}
-      style={{ ...style }}
+      style={style}
     >
       {
         getDefaultDateSelectOptions(name).map(option => (
@@ -174,7 +173,7 @@ const renderMapWidget: Renderer = (props) => {
       data-id={sortableId}
       key={id}
       className={cn('ls-item', styles.addedWidget, active && styles.activated)}
-      style={{ ...style }}
+      style={style}
       tabIndex={0}
     >
       <GMap
@@ -195,7 +194,7 @@ const renderCalendarWidget: Renderer = (props) => {
       data-id={sortableId}
       key={id}
       className={cn('ls-item', styles.addedCalendar, active && styles.activated)}
-      style={{ ...style }}
+      style={style}
       tabIndex={0}
     >
       <CalendarWidget />
@@ -212,13 +211,27 @@ const renderClockWidget: Renderer = (props) => {
       data-id={sortableId}
       key={id}
       className={cn('ls-item', styles.addedCalendar, active && styles.activated)}
-      style={{ ...style }}
+      style={style}
       tabIndex={0}
     >
       <ClockWidget
         size={typeof params.width === 'number' ? params.width : undefined}
       />
     </div>
+  );
+}
+
+const renderUndefined: Renderer = (props) => {
+  const { id, active, style, sortableId } = props;
+  return (
+    <div
+      data-ls-id={id}
+      data-id={sortableId}
+      key={id}
+      className={cn('ls-item', styles.addedContainer, active && styles.activated)}
+      style={style}
+      tabIndex={0}
+    />
   );
 }
 
@@ -280,7 +293,7 @@ const renderElem: Renderer = ({
   }
 };
 
-export const RENDERERS: Record<Exclude<'root', Entity>, React.ComponentType> = {
+export const RENDERERS: Record<Exclude<Entity, 'root'>, React.ComponentType<any>> = {
   container: renderContainer,
   button: renderButton,
   textinput: renderInput,
@@ -291,4 +304,5 @@ export const RENDERERS: Record<Exclude<'root', Entity>, React.ComponentType> = {
   map: renderMapWidget,
   calendar: renderCalendarWidget,
   clock: renderClockWidget,
+  undefined: renderUndefined,
 };

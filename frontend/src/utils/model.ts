@@ -6,7 +6,7 @@ import {
 } from '$constants/defaultParams';
 
 const ENTITIES = [
-  'root', 'container', 'button', 'textinput', 'hyperlink', 'ocrtext', 'image', 'select', 'map', 'calendar', 'clock',
+  'root', 'container', 'button', 'textinput', 'hyperlink', 'ocrtext', 'image', 'select', 'map', 'calendar', 'clock', 'undefined'
 ] as const;
 const CONTROLS_AFFECT_ON_PARAMS = ['action', 'mapProps', 'placeholder', 'textContent'] as const;
 const CONTROLS_AFFECT_ON_STYLES = ['direction', 'indents', 'size', 'typography', 'border', 'background'] as const;
@@ -31,6 +31,7 @@ export const AVAILABLE_CONTROLS: Record<Entity, Control[]> = {
   map: ['indents', 'size', 'typography', 'border', 'background', 'mapProps'],
   calendar: ['indents', 'size', 'typography', 'border', 'background'],
   clock: ['indents', 'size', 'typography', 'border', 'background'],
+  undefined: ['size', 'background'],
 };
 
 const CONTROLS_DEFAULTS: Record<Control, any> = {
@@ -103,6 +104,18 @@ const ENTITY_TO_DEFAULTS: EntityToDefaults = {
   },
   calendar: extractDefaults('calendar'),
   clock: extractDefaults('clock'),
+  undefined: {
+    ...extractDefaults('undefined'),
+    size: {
+      ...extractDefaults('undefined', 'size'),
+      width: '100px',
+      height: '100px',
+    },
+    background: {
+      ...extractDefaults('undefined', 'background'),
+      'background-color': '#fff333',
+    },
+  }
 };
 
 export const getConfigurablePropsOf = createSelector(
