@@ -1,9 +1,10 @@
 import React, { useState, useCallback, } from 'react';
 import { connect } from 'react-redux';
-import classNames from 'classnames';
+import cn from 'classnames';
 
 import { AppReduxState } from '$shared/types/app';
 import { selectors } from '$redux/project/';
+import { ActiveItem } from '$redux/project/types';
 import {
   MAX_BORDER_RADIUS,
   MAX_BORDER_RADIUS_PERCENT,
@@ -11,10 +12,12 @@ import {
   MIN_BORDER_RADIUS,
   MIN_BORDER_WIDTH,
 } from '$constants/defaultParams';
+import { ColorPicker } from '$components/UI/ColorPicker/';
 import { strToNumber, getPermissibleValue, safeParseFloat, safeMatch } from '$utils/NumberHelper';
 import { validateBorderRadius, CssLikeStyles } from '$utils/StyleHelper';
 import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
-import { ColorPicker } from '$components/UI/ColorPicker/';
+import { normalizeColor } from '$utils/ColorHelper';
+import useCurrentColor from '../../../components/useCurrentColor';
 
 const styles = require('./styles.scss');
 
@@ -28,16 +31,19 @@ type StateProps = {
   borderColor: string;
   borderWidth: string;
   borderRadius: string;
+  activeItem: ActiveItem;
 }
 
 function mapState(state: AppReduxState): StateProps {
   const activeItemStyles = selectors.selectActiveItemStyles(state) as Required<CssLikeStyles>;
+  const activeItem = selectors.selectActiveItem(state);
 
   return {
     borderStyle: activeItemStyles['border-style'],
     borderColor: activeItemStyles['border-color'],
     borderWidth: activeItemStyles['border-width'],
     borderRadius: activeItemStyles['border-radius'],
+    activeItem,
   };
 }
 
@@ -49,9 +55,15 @@ export const Component: React.FunctionComponent<Props> = React.memo(({
   borderWidth,
   updateStyles,
   borderRadius,
+  activeItem,
 }) => {
   const [isBorderColorPickerOpen, setIsBorderColorPickerOpen] = useState<boolean>(false);
-  const handleActiveColorPicker = useCallback(() => {
+  const [currentBorderColor, setCurrentBorderColor] = useCurrentColor(
+    borderColor,
+    activeItem,
+  );
+
+  const handleColorPickerClose = useCallback(() => {
     setIsBorderColorPickerOpen(!isBorderColorPickerOpen);
   }, [isBorderColorPickerOpen]);
 
@@ -83,28 +95,26 @@ export const Component: React.FunctionComponent<Props> = React.memo(({
     });
   }, [updateStyles]);
 
-  const handleChangeColor = useCallback((newColor) => {
-    if (newColor.length > 7) {
-      return;
+  const handleColorChange = useCallback((color) => {
+    const newColor = normalizeColor(color);
+
+    setCurrentBorderColor(newColor);
+
+    if (newColor.isValid) {
+      updateStyles({
+        'border-color': newColor.value,
+        'border-width': borderWidth,
+        'border-style': borderStyle,
+      });
     }
-
-    updateStyles({
-      'border-color': newColor,
-      'border-width': borderWidth,
-      'border-style': borderStyle,
-    });
   }, [updateStyles]);
-
-  const handleChangeOpacity = useCallback(() => {
-    console.log();
-  }, []);
 
   return (
     <div className="propsElementsBlock">
       <p className="propsElementsBlockTitle">Border</p>
       <div className="propsElementsContentBlock">
         <div className="propsElementsInnerBlock">
-          <div className={classNames(styles.borderBlock, styles.borderBlock_width)}>
+          <div className={cn(styles.borderBlock, styles.borderBlock_width)}>
             <input
               className={styles.borderWidthField}
               name="width"
@@ -115,7 +125,7 @@ export const Component: React.FunctionComponent<Props> = React.memo(({
               max={MAX_BORDER_WIDTH}
             />
           </div>
-          <div className={classNames(styles.borderBlock, styles.borderBlock_radius)}>
+          <div className={cn(styles.borderBlock, styles.borderBlock_radius)}>
             <input
               className={styles.borderRadiusField}
               name="radius"
@@ -140,20 +150,15 @@ export const Component: React.FunctionComponent<Props> = React.memo(({
           <ColorPicker
             display={isBorderColorPickerOpen}
             color={borderColor}
-            onChangeComplete={color => handleChangeColor(color.hex)}
-            onClose={handleActiveColorPicker}
+            onChangeComplete={color => handleColorChange(color)}
+            onClose={handleColorPickerClose}
           />
           <input
-            className="colorField"
+            className={cn("colorField", { inputWithError: !currentBorderColor.isValid })}
             type="text"
-            value={borderColor}
-            onChange={({ target: { value } }) => handleChangeColor(value)}
-          />
-          <input
-            className="colorField"
-            type="text"
-            value={1}
-            onChange={handleChangeOpacity}
+            value={currentBorderColor.value}
+            onBlur={() => handleColorChange(borderColor)}
+            onChange={({ target: { value } }) => handleColorChange(value)}
           />
         </div>
       </div>

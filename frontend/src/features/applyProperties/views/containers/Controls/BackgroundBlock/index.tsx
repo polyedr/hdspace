@@ -1,48 +1,58 @@
 import React, { memo, useState, useCallback } from 'react';
 import { connect } from 'react-redux';
+import cn from 'classnames';
 
 import { AppReduxState } from '$shared/types/app';
 import { selectors } from '$redux/project/';
+import { ActiveItem } from '$redux/project/types';
 import { ColorPicker } from '$components/UI/ColorPicker/';
 import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
 import { CssLikeStyles } from '$utils/StyleHelper';
+import { normalizeColor } from '$utils/ColorHelper';
+import useCurrentColor from '../../../components/useCurrentColor';
 
 type StateProps = {
   backgroundColor: string;
+  activeItem: ActiveItem;
 }
 
 function mapState(state: AppReduxState): StateProps {
   const activeItemStyles = selectors.selectActiveItemStyles(state) as Required<CssLikeStyles>;
+  const activeItem = selectors.selectActiveItem(state);
 
   return {
     backgroundColor: activeItemStyles['background-color'],
+    activeItem,
   };
 }
 
 type Props = StateProps & PropertiesChangeProps;
 
-export const Component : React.FC<Props> = memo((props) => {
+export const Component: React.FC<Props> = memo((props) => {
   const {
     backgroundColor,
     updateStyles,
+    activeItem,
   } = props;
   const [isBackgroundColorPickerOpen, setIsBackgroundColorPickerOpen] = useState<boolean>(false);
+  const [currentBackgroundColor, setCurrentBackgroundColor] = useCurrentColor(
+    backgroundColor,
+    activeItem,
+  );
 
-  const handleChangeColor = useCallback((newColor) => {
-    if (newColor.length > 7) {
-      return;
+  const handleColorChange = useCallback((color) => {
+    const newColor = normalizeColor(color);
+
+    setCurrentBackgroundColor(newColor);
+
+    if (newColor.isValid) {
+      updateStyles({ 'background-color': newColor.value })
     }
-
-    updateStyles({ 'background-color': newColor })
   }, [updateStyles]);
 
-  const handleActiveColorPicker = useCallback(() => {
+  const handleColorPickerClose = useCallback(() => {
     setIsBackgroundColorPickerOpen(!isBackgroundColorPickerOpen);
   }, [isBackgroundColorPickerOpen]);
-
-  const handleChangeOpacity = useCallback(() => {
-    console.log();
-  }, []);
 
   return (
     <div className="propsElementsBlock">
@@ -52,20 +62,15 @@ export const Component : React.FC<Props> = memo((props) => {
           <ColorPicker
             display={isBackgroundColorPickerOpen}
             color={backgroundColor}
-            onChangeComplete={color => handleChangeColor(color.hex)}
-            onClose={handleActiveColorPicker}
+            onChangeComplete={color => handleColorChange(color)}
+            onClose={handleColorPickerClose}
           />
           <input
-            className="colorField"
+            className={cn("colorField", { inputWithError: !currentBackgroundColor.isValid })}
             type="text"
-            value={backgroundColor}
-            onChange={({ target: { value } }) => handleChangeColor(value)}
-          />
-          <input
-            className="colorField"
-            type="text"
-            value={1}
-            onChange={handleChangeOpacity}
+            value={currentBackgroundColor.value}
+            onBlur={() => handleColorChange(backgroundColor)}
+            onChange={({ target: { value } }) => handleColorChange(value)}
           />
         </div>
       </div>

@@ -114,7 +114,7 @@ const Component: React.FC<PropertiesPanelProps> = ({
             <div className="propsPanelContentBlock">
               {currentItemType && AVAILABLE_CONTROLS[currentItemType as Entity].map(controlName => {
                 const Component = CONTROLS[controlName];
-                return <Component key={controlName}/>
+                return <Component key={controlName} />
               })}
             </div>
           </div>
