@@ -4,8 +4,7 @@ import { connect } from 'react-redux';
 
 import { AppReduxState } from '$shared/types/app';
 import { selectors } from '$redux/project/';
-import { ActiveItem } from '$redux/project/types';
-import { ColorPicker } from '$components/UI/ColorPicker/';
+import { ColorPicker, useCurrentColor } from '$components/UI/ColorPicker/';
 import { DropDown } from '$components/UI/DropDown/';
 import { Icon } from '$components/UI/Icon/';
 import { Button } from '$components/UI/Button/';
@@ -14,7 +13,6 @@ import { getPermissibleValue } from '$utils/NumberHelper';
 import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
 import { CssLikeStyles } from '$utils/StyleHelper';
 import { normalizeColor } from '$utils/ColorHelper';
-import useCurrentColor from '../../../components/useCurrentColor';
 
 const styles = require('./styles.scss');
 
@@ -28,12 +26,10 @@ type StateProps = {
   fontSize: string;
   textAlign: string;
   color: string;
-  activeItem: ActiveItem;
 }
 
 function mapState(state: AppReduxState): StateProps {
   const activeItemStyles = selectors.selectActiveItemStyles(state) as Required<CssLikeStyles>;
-  const activeItem = selectors.selectActiveItem(state);
 
   return {
     fontFamily: activeItemStyles['font-family'],
@@ -42,7 +38,6 @@ function mapState(state: AppReduxState): StateProps {
     fontSize: activeItemStyles['font-size'],
     textAlign: activeItemStyles['text-align'],
     color: activeItemStyles.color,
-    activeItem,
   };
 }
 
@@ -56,12 +51,12 @@ export const Component: React.FC<Props> = memo(({
   textAlign,
   color,
   updateStyles,
-  activeItem,
+  activeItemID,
 }) => {
   const [isTypographyColorPickerOpen, setIsTypographyColorPickerOpen] = useState<boolean>(false);
   const [currentFontColor, setCurrentFontColor] = useCurrentColor(
     color,
-    activeItem,
+    activeItemID,
   );
 
   const handleColorChange = useCallback((color) => {

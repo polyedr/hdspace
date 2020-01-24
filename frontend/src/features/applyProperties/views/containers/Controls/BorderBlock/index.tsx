@@ -4,7 +4,6 @@ import cn from 'classnames';
 
 import { AppReduxState } from '$shared/types/app';
 import { selectors } from '$redux/project/';
-import { ActiveItem } from '$redux/project/types';
 import {
   MAX_BORDER_RADIUS,
   MAX_BORDER_RADIUS_PERCENT,
@@ -12,12 +11,11 @@ import {
   MIN_BORDER_RADIUS,
   MIN_BORDER_WIDTH,
 } from '$constants/defaultParams';
-import { ColorPicker } from '$components/UI/ColorPicker/';
+import { ColorPicker, useCurrentColor } from '$components/UI/ColorPicker/';
 import { strToNumber, getPermissibleValue, safeParseFloat, safeMatch } from '$utils/NumberHelper';
 import { validateBorderRadius, CssLikeStyles } from '$utils/StyleHelper';
 import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
 import { normalizeColor } from '$utils/ColorHelper';
-import useCurrentColor from '../../../components/useCurrentColor';
 
 const styles = require('./styles.scss');
 
@@ -31,19 +29,16 @@ type StateProps = {
   borderColor: string;
   borderWidth: string;
   borderRadius: string;
-  activeItem: ActiveItem;
 }
 
 function mapState(state: AppReduxState): StateProps {
   const activeItemStyles = selectors.selectActiveItemStyles(state) as Required<CssLikeStyles>;
-  const activeItem = selectors.selectActiveItem(state);
 
   return {
     borderStyle: activeItemStyles['border-style'],
     borderColor: activeItemStyles['border-color'],
     borderWidth: activeItemStyles['border-width'],
     borderRadius: activeItemStyles['border-radius'],
-    activeItem,
   };
 }
 
@@ -55,12 +50,12 @@ export const Component: React.FunctionComponent<Props> = React.memo(({
   borderWidth,
   updateStyles,
   borderRadius,
-  activeItem,
+  activeItemID,
 }) => {
   const [isBorderColorPickerOpen, setIsBorderColorPickerOpen] = useState<boolean>(false);
   const [currentBorderColor, setCurrentBorderColor] = useCurrentColor(
     borderColor,
-    activeItem,
+    activeItemID,
   );
 
   const handleColorPickerClose = useCallback(() => {

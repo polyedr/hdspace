@@ -9,7 +9,12 @@ interface IColorPickerProps {
   onClose(): void,
 }
 
-export const ColorPicker: React.FunctionComponent<IColorPickerProps> = React.memo(({
+type newColor = {
+  value: string;
+  isValid: boolean;
+}
+
+const ColorPicker: React.FunctionComponent<IColorPickerProps> = React.memo(({
   display = false,
   color,
   onChangeComplete,
@@ -71,3 +76,23 @@ export const ColorPicker: React.FunctionComponent<IColorPickerProps> = React.mem
     </div>
   );
 });
+
+const useCurrentColor = (defaultColor: string, activeItemID: string): [newColor, (newColor: newColor) => void] => {
+  const [currentColor, setCurrentColor] = useState<string>(defaultColor);
+  const [isColorValid, setIsColorValid] = useState<boolean>(true);
+
+  useEffect(() => {
+    setCurrentColor(defaultColor);
+  }, [activeItemID]);
+
+  const changeColor = (newColor: newColor) => {
+    setIsColorValid(newColor.isValid);
+    setCurrentColor(newColor.value)
+  }
+
+  const state = { value: currentColor, isValid: isColorValid }
+
+  return [state, changeColor];
+}
+
+export { ColorPicker, useCurrentColor }
