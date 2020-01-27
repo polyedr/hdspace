@@ -51,6 +51,8 @@ const mapDispatchToProps = {
   setActiveItem: Actions.setActiveItem,
   addContainer: Actions.addContainer,
   resetScreenState: Actions.resetScreenState,
+  copyActiveItem: Actions.copyActiveItem,
+  pasteCopiedItem: Actions.pasteCopiedItem,
 };
 
 export type EditorProps = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & {
@@ -85,6 +87,8 @@ const EditorLogic: React.FunctionComponent<EditorProps> = ({
   updateElementStyles,
   addContainer,
   resetScreenState,
+  copyActiveItem,
+  pasteCopiedItem,
 }: EditorProps) => (
   <React.Fragment>
     <NavPanelScreen
@@ -117,6 +121,8 @@ const EditorLogic: React.FunctionComponent<EditorProps> = ({
       updateElementStyles={updateElementStyles}
       addContainer={addContainer}
       resetScreenState={resetScreenState}
+      copyActiveItem={copyActiveItem}
+      pasteCopiedItem={pasteCopiedItem}
     />
     <Spinner
       active={currentProject.projectLoader || currentScreen.screenLoader || scenarioLoader}
