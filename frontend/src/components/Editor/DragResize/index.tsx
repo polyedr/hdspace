@@ -283,10 +283,10 @@ export class DragResize extends React.Component<Props, State> {
           isResizable ? styles['dragResizeItem_is-resizable'] : undefined) // removes 100% width from span if element is resizable (to place wrapper precisely around element)
         }
         style={{
-          ...(useHackToSyncElementAndWrapperWidth ? { width: extractWidth(children) } : {}),
           ...childMargins,
           width: calculatedWidth,
           height: calculatedHeight,
+          ...(useHackToSyncElementAndWrapperWidth ? { width: extractWidth(children) } : {}),
         }}
       >
         {React.cloneElement(
