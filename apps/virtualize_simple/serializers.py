@@ -7,7 +7,6 @@ from apps.projects.models import ScenarioElement, ScreenScenario
 import cv2
 import pytesseract
 
-# import numpy as np
 from keras.preprocessing.image import load_img
 from keras_preprocessing.image import img_to_array
 
@@ -283,8 +282,6 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                         for ts in tess_string:
                             ts.strip()
                             ts = re.sub("[^@a-z A-Z]+", "", ts)
-                            # print("ts=", ts)
-                            # print([key for key, value in f_dictionary.items() if ts in value])
                             fclass = [
                                 key
                                 for key, value in f_dictionary.items()
@@ -292,7 +289,6 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                             ]
                             fclasses_predictions = fclasses_predictions + fclass
 
-                        # func_type = "".join(fclasses_predictions)
                         # Should choose the func_type from multiple predictions later
                         if fclasses_predictions:
                             func_type = fclasses_predictions[0]
@@ -501,11 +497,9 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                     # Horizontal groups detection
                     # Check if the roi is text or input or select
                     # Check if the roi1 is text or input or select
-                    # if class_id in {1, 3, 4} and class_id1 in {1, 3, 4} and (idx != idx1):
                     if recognized_element["struct_type"] in {"textinput", "select", "ocrtext"} and recognized_element1[
                             "struct_type"] in {"textinput", "select", "ocrtext"} and (idx != idx1):
                         # Check if the elements were not assigned to the vertical groups before
-
                         # Flatten horizontal group keys
                         fhgk = set(i for sub in horizontal_groups.keys() for i in sub)
                         if ((idx not in fhgk) and (idx1 not in fhgk)):
@@ -566,33 +560,30 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                 ymin = min(y1, y2, y11, y21)
                 ymax = max(y1, y2, y11, y21)
                 # Assign the rois to the vertical scenario, based on min & max values
-                scenario_vertical["parameters"]["roi"] = ymin, xmin, ymax, xmax
-                #
-                # print('scenario_vertical["parameters"]["roi"]=', scenario_vertical["parameters"]["roi"])
-                # input("Press Enter to continue...")
-
+                scenario_vertical.parameters.update({"roi": (ymin, xmin, ymax, xmax)})
                 # Assignment of the functional class based on neighbourhood
                 if (element_data_vertical_input["func_type"] == "undefined"):
                     element_data_vertical_input["func_type"] = element_data_vertical_text["func_type"]
-
                 # Create elements for vertical groups scenarios
                 for element_data_vertical in v_group_key:
-                    # print(element_data_vertical)
+                    children_dict_vgroups = {}
                     element_vertical = recognized_elements[element_data_vertical]
-                    # print("element_vertical = ", element_vertical)
                     inner_scenarios_elements.add(element_data_vertical)
                     scenario_vertical_element = ScenarioElement.objects.create(
                         scenario=scenario_vertical,
                         **element_vertical
                     )
                     # Fill the children list for parameters
-                    children.append(str(scenario_vertical_element.id) + "e")
-                # print("vertical_groups=", vertical_groups)
-                # print(children)
-                # Arrange the vertical scenario children based on their rois (coordinates)
-                # children = sorted(children, key=lambda i: i["parameters"]["roi"][0])
-                # print("children_sorted=", children)
+                    ids = str(scenario_vertical_element.id) + "e"
 
+                    rois = scenario_vertical_element.parameters["roi"]
+                    children_dict_vgroups.update({'ids': ids})
+                    children_dict_vgroups.update({'roi': rois})
+                    children.append(children_dict_vgroups)
+
+                # Arrange the vertical scenario children based on their rois (coordinates)
+                children = sorted(children, key=lambda i: i["roi"][0])
+                children = [sub['ids'] for sub in children]
                 scenario_vertical.parameters["children"] = children
                 scenario_vertical.save()
 
@@ -608,7 +599,6 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
             # Create scenarios for horizontal groups
             # Include scenarios for vertical groups
             # Update scenarios for vertical groups with new parents
-
             for h_group_key in horizontal_groups:
                 children = []
                 rois_list = []
@@ -644,12 +634,8 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                             vertical_group = v_group
 
                     if vertical_group == (-1, -1):
+                        children_dict_hgroups = {}
                         # If the horizontal element does not exist in any vertical group
-
-                        # print("recognized_elements=", recognized_elements)
-                        # print("element_data_horizontal=", element_data_horizontal)
-                        # print("recognized_elements[element_data_horizontal]=",
-                        #       recognized_elements[element_data_horizontal])
                         element_horizontal = recognized_elements[element_data_horizontal]
                         inner_scenarios_elements.add(element_data_horizontal)
                         scenario_horizontal_element = ScenarioElement.objects.create(
@@ -658,21 +644,31 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                         )
                         # Save rois data from the element for the array
                         rois_list.append(element_horizontal["parameters"]["roi"])
-
                         # Fill the children list for parameters
-                        children.append(str(scenario_horizontal_element.id) + "e")
+                        ids = str(scenario_horizontal_element.id) + "e"
+                        rois = scenario_horizontal_element.parameters["roi"]
+                        children_dict_hgroups.update({'ids': ids})
+                        children_dict_hgroups.update({'roi': rois})
+                        children.append(children_dict_hgroups)
+
                     else:
+                        children_dict_hgroups = {}
                         # If the horizontal element exists in vertical group
                         # Find the related vertical group scenario from its id
                         vertical_group_scenario = ScreenScenario.objects.get(
                             id=vertical_groups[vertical_group]
                         )
                         # Save rois data from the vertical scenario
-                        rois_list.append(vertical_group_scenario["parameters"]["roi"])
+                        rois_list.append(vertical_group_scenario.parameters["roi"])
+                        ids = str(vertical_group_scenario.id) + "s"
+                        rois = vertical_group_scenario.parameters["roi"]
+                        children_dict_hgroups.update({'ids': ids})
+                        children_dict_hgroups.update({'roi': rois})
+                        children.append(children_dict_hgroups)
 
-                        children.append(str(vertical_group_scenario.id) + "s")
                         vertical_group_scenario.parent_id = scenario_horizontal.id
                         vertical_group_scenario.save()
+
                 # Extract rois from the rois_list
                 # Find min & max values for the bounding rectangle
                 xmin = min(rois_list[0][1], rois_list[0][3], rois_list[1][1], rois_list[1][3])
@@ -681,23 +677,11 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                 ymax = max(rois_list[0][0], rois_list[0][2], rois_list[1][0], rois_list[1][2])
 
                 # Assign the rois to the horizontal scenario, based on min & max values
-                # scenario_horizontal["parameters"]["roi"] = (ymin, xmin, ymax, xmax)
-
                 scenario_horizontal.parameters.update({"roi": (ymin, xmin, ymax, xmax)})
-                # print("scenario_horizontal=", scenario_horizontal,
-                #       scenario_horizontal.id, scenario_horizontal.parameters)
-                # input("Press Enter to continue...")
-                #
-                # print("horizontal_groups=", horizontal_groups)
-                # print(children)
                 # Arrange the horizontal scenario children based on their rois (coordinates)
-                # children = sorted(children, key=lambda i: i["parameters"]["roi"][1])
-
+                children = sorted(children, key=lambda i: i["roi"][1])
+                children = [sub['ids'] for sub in children]
                 # Children array doesn't have parameters now
-                #
-                # print("children_sorted_horizontal=", children)
-                # input("Press Enter to continue...")
-
                 scenario_horizontal.parameters["children"] = children
                 scenario_horizontal.save()
 
@@ -716,7 +700,6 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                 for h_group_key in horizontal_groups:
                     # Sets are disjoints if and only if their intersection is the empty set
                     if set(v_group_key).isdisjoint(set(h_group_key)):
-                        # print("v_group_key, h_group_key =", v_group_key, h_group_key)
                         try:
                             del vertical_groups_free[v_group_key]
                         except KeyError:
@@ -724,17 +707,14 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
 
         children = []  # [{'ids': ids, 'rois': rois}, {}, {}, {}, {}]
         # recognized_elements_general = recognized_elements - inner_scenarios_elements
-
         for idx, element_data in enumerate(recognized_elements):
             if idx not in inner_scenarios_elements:
                 children_dict_elem = {}
-                # print(element_data)
                 # Get all the elements left. Mark them as children.
                 scenario_general_element = ScenarioElement.objects.create(
                     scenario=scenario, **element_data
                 )
                 # Fill the children information to the main scenario for the parameters
-                # children.append(str(scenario_general_element.id) + "e")
                 ids = str(scenario_general_element.id) + "e"
                 rois = scenario_general_element.parameters["roi"]
                 children_dict_elem.update({'ids': ids})
@@ -745,7 +725,6 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
         if horizontal_groups:
             for h_group_key in horizontal_groups:
                 children_dict_hgroups = {}
-                # children.append(str(horizontal_groups[h_group_key]) + "s")
                 ids = str(horizontal_groups[h_group_key]) + "s"
                 # How to extract rois if h_group_key is known?
                 # Should update the horizontal_group data structure later
@@ -762,7 +741,6 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
         if vertical_groups_free:
             for v_group_key in vertical_groups_free:
                 children_dict_vgroups = {}
-                # children.append(str(vertical_groups_free[v_group_key]) + "s")
                 ids = str(vertical_groups_free[v_group_key]) + "s"
                 # How to extract rois if v_group_key is known?
                 # Should update the vertical_group data structure later
