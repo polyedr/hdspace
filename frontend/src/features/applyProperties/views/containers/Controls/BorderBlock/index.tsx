@@ -44,7 +44,6 @@ function mapState(state: AppReduxState): StateProps {
 type Props = StateProps & PropertiesChangeProps;
 
 export const Component: React.FunctionComponent<Props> = React.memo(({
-  borderStyle,
   borderColor,
   borderWidth,
   updateStyles,
@@ -60,26 +59,18 @@ export const Component: React.FunctionComponent<Props> = React.memo(({
 
     updateStyles({
       'border-width': `${newWidth}px`,
-      'border-style': borderStyle,
-      'border-color': borderColor,
     });
   }, [updateStyles]);
 
   const handleBorderRadius = useCallback(({ target: { value } }) => {
     updateStyles({
       'border-radius': `${value}${accessBorderRadius(borderRadius)}`,
-      'border-width': borderWidth,
-      'border-style': borderStyle,
-      'border-color': borderColor,
     });
   }, [updateStyles]);
 
   const handleChangeBorderRadiusUnits = useCallback(({ target: { value } }) => {
     updateStyles({
       'border-radius': validateBorderRadius(`${parseFloat(borderRadius)}${value}`),
-      'border-width': borderWidth,
-      'border-style': borderStyle,
-      'border-color': borderColor,
     });
   }, [updateStyles]);
 
@@ -87,11 +78,8 @@ export const Component: React.FunctionComponent<Props> = React.memo(({
     if (newColor.length > 7) {
       return;
     }
-
     updateStyles({
       'border-color': newColor,
-      'border-width': borderWidth,
-      'border-style': borderStyle,
     });
   }, [updateStyles]);
 
