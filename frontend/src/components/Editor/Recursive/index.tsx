@@ -118,7 +118,8 @@ const RecursiveComponent: React.FC<Props> = (props) => {
         const currentItem = listSortable[itemId];
         const { struct_type, parameters, styles, name, image } = getParams(itemId, elementList, scenarioList);
 
-        const renderElement = RENDERERS[struct_type as keyof typeof RENDERERS];
+        // @ts-ignore
+        const renderElement = RENDERERS[struct_type];
         const isDraggable = activeItemId === itemId && LIST_SCENARIO_TYPE.indexOf(struct_type) === -1;
 
         if (renderElement) {

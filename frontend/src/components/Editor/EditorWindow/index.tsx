@@ -8,7 +8,8 @@ import { Recursive } from '$components/Editor/Recursive';
 import { Icon } from '$components/UI/Icon';
 import { Checkbox } from '$components/UI/Checkbox';
 import { Button } from '$components/UI/Button';
-import { RightPanel } from '$components/RightPanel/MainPanel/';
+import { PropertiesPanel } from '$features/applyProperties';
+
 import * as Actions from '$redux/project/actions';
 import { T as ProjectT } from '$redux/project';
 import * as userActions from '$redux/user/actions';
@@ -30,7 +31,6 @@ export interface IScreenMode {
 }
 
 export interface IEditProps {
-  project: EditorProps['currentProject'],
   screen: EditorProps['currentScreen'],
   scenarios: EditorProps['scenarios'],
   scenarioElements: EditorProps['scenarioElements'],
@@ -49,7 +49,6 @@ export interface IEditProps {
 }
 
 export const Editor: React.FC<IEditProps> = memo(({
-  project,
   screen,
   scenarios,
   scenarioElements,
@@ -119,12 +118,12 @@ export const Editor: React.FC<IEditProps> = memo(({
     }
   }, [activeItem, screen.listSortable, scenarios, scenarioElements]);
 
-  const handleContainerMouseOver = useCallback((event: React.MouseEvent) => {
-    (event.target as HTMLElement)?.closest?.('.ls-container')?.classList.add('hovered');
+  const handleLSItemMouseOver = useCallback((event: React.MouseEvent) => {
+    (event.target as HTMLElement)?.closest?.('.ls-item')?.classList.add('hovered');
   }, []);
 
-  const handleContainerMouseOut = useCallback((event: React.MouseEvent) => {
-    (event.target as HTMLElement)?.closest?.('.ls-container')?.classList.remove('hovered');
+  const handleLSItemMouseOut = useCallback((event: React.MouseEvent) => {
+    (event.target as HTMLElement)?.closest?.('.ls-item')?.classList.remove('hovered');
   }, []);
 
   const handleDelScenarioItem = useCallback(() => {
@@ -327,8 +326,8 @@ export const Editor: React.FC<IEditProps> = memo(({
                   data-ls-id="root"
                   tabIndex={0}
                   onClick={handleRootClick}
-                  onMouseOver={handleContainerMouseOver}
-                  onMouseOut={handleContainerMouseOut}
+                  onMouseOver={handleLSItemMouseOver}
+                  onMouseOut={handleLSItemMouseOut}
                 >
                   <div
                     className={classNames(
@@ -359,17 +358,7 @@ export const Editor: React.FC<IEditProps> = memo(({
           </div>
         )
       }
-      {
-        (!isPrototypeMode) && (
-          <RightPanel
-            activeItem={activeItem}
-            project={project}
-            screen={screen}
-            // onDelElement={handleDelElement}
-            onDelScenarioItem={handleDelScenarioItem}
-          />
-        )
-      }
+      {!isPrototypeMode && <PropertiesPanel />}
       <Prompt
         when={false}
         message="You have unsaved changes, are you sure you want to leave?"

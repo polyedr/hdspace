@@ -2,7 +2,6 @@ import React from 'react';
 import GoogleMapReact from 'google-map-react';
 
 import { IMapProps } from '$redux/project/types';
-import { DEFAULT_MAP_PROPS } from '$constants/defaultParams';
 
 const styles = require('./styles.scss');
 
@@ -28,8 +27,6 @@ export const GMap: React.FunctionComponent<IMapProps> = ({
   markerText,
 }) => (
   <GoogleMapReact
-    defaultCenter={DEFAULT_MAP_PROPS.center}
-    defaultZoom={DEFAULT_MAP_PROPS.zoom}
     center={center}
     zoom={zoom}
     yesIWantToUseGoogleMapApiInternals

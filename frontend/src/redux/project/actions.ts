@@ -8,7 +8,7 @@ export const getLibraryElements = (): T.LoadLibraryElements => ({
   type: 'PROJECTS:LOAD_LIBRARY_ELEMENTS',
 });
 
-export const setLibraryElements = (libraryElements: T.ILibraryElements): T.LoadLibraryElementsSuccess => ({
+export const setLibraryElements = (libraryElements: T.LibraryElements): T.LoadLibraryElementsSuccess => ({
   type: 'PROJECTS:LOAD_LIBRARY_ELEMENTS_SUCCESS',
   payload: { libraryElements },
 });
@@ -169,16 +169,6 @@ export const updateScenarioStyles = (
 export const updateElementParameters = (itemID: string, parameters: T.IScreenProps): T.UpdateElementParameters => ({
   type: 'PROJECTS:UPDATE_ELEMENT_PARAMETERS',
   payload: { itemID, parameters },
-});
-
-export const changeScenario = (itemID: string, scenarioID: number): T.ChangeScenario => ({
-  type: 'PROJECTS:CHANGE_SCENARIO',
-  payload: { itemID, scenarioID },
-});
-
-export const changeElementType = (itemID: string, type: string): T.ChangeElementType => ({
-  type: 'PROJECTS:CHANGE_ELEMENT_TYPE',
-  payload: { type, itemID },
 });
 
 export const delScenarioItem = (id: string): T.DeleteScenarioItem => ({

@@ -1,0 +1,5 @@
+.control-title {
+  color: $mainColor;
+  @include props_panel_text;
+  font-weight: 400;
+}

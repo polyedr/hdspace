@@ -8,7 +8,7 @@ import * as T from './types';
 
 export const initial: T.ReduxState = {
   data: {
-    libraryElements: {},
+    libraryElements: {} as any, // will be loaded on app start
     listProject: [],
   },
   ui: {

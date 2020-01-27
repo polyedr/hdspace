@@ -18,10 +18,10 @@ import {
   apiSaveScenario,
   apiSaveScenarios,
 } from '$api/scenario';
-import { DEFAULT_INDENTS, DEFAULT_FLEX } from '$constants/defaultParams';
+import { DEFAULT_INDENTS } from '$constants/defaultParams';
 import { reqWrapper } from '$redux/project/sagas/index';
 import { ReturnPromisedType } from '$shared/types';
-import { isScenario } from '$utils/model';
+import { isScenario, getConfigurablePropsOf, Entity } from '$utils/model';
 
 import { selectors, T } from '../';
 
@@ -57,11 +57,6 @@ export function* runLayoutAlgorithm(action: T.RunLayoutAlgorithm) {
   }));
 
   yield put(Actions.runLayoutAlgorithmFinished());
-}
-
-// don't know this saga's purpose
-export function* changeScenarioSaga(action: ReturnType<typeof Actions.changeScenario>) {
-  console.log('changeScenarioSaga!');
 }
 
 export function* createContainer(scenario?: Partial<T.IScenarioItem>) {
@@ -105,18 +100,21 @@ export function* addScenarioSaga(action: ReturnType<typeof Actions.addScenario>)
 
   const rootLSItem = currentScreen.listSortable.root;
 
+  const { styles, params } = getConfigurablePropsOf('container');
   const container: T.IScenarioItem = yield call(createContainer, {
     parent_id: rootLSItem.id,
     name,
-    styles: {
-      ...DEFAULT_INDENTS,
-      ...DEFAULT_FLEX,
+    parameters: {
+      ...params,
+      children: [],
     },
+    styles,
   });
 
   const elementsToCreate = elementsToFormScenario.reduce((acc: T.IScenarioElement[], element) => {
-    // add parameters specific to particular elements, but for now return as is
-    const libraryElement = libraryElements[element.type];
+    const libraryElement = libraryElements[element.structType as T.LibraryElementType][element.funcType]; // TODO: remove unused params/styles from backend
+    const { styles, params } = getConfigurablePropsOf(libraryElement.struct_type as Entity);
+
     const x: T.IScenarioElement = {
       scenario: container.id,
       buoyancy: 0,
@@ -129,10 +127,10 @@ export function* addScenarioSaga(action: ReturnType<typeof Actions.addScenario>)
       parameters: {
         parent_id: container.id, // do we need this if we already have scenario?
         group: `don't know what is this`,
+        ...libraryElement.parameters,
+        ...params,
       },
-      styles: {
-        ...DEFAULT_INDENTS,
-      },
+      styles,
     };
     return acc.concat(x);
   }, []);
@@ -310,20 +308,16 @@ export function* wrapIntoContainerSaga(action: ReturnType<typeof Actions.addCont
   const item = itemIsElement ? scenarioElements[itemID] : scenarios[itemID];
   const itemParentContainer = scenarios[itemParent.id];
 
+  const { styles, params } = getConfigurablePropsOf('container');
   const containerWrapper: T.IScenarioItem = yield call(createContainer, {
     name: 'Container',
     parent_id: itemParent.id,
     elements: itemIsElement ? [item.id] : [],
     parameters: {
+      ...params,
       children: [rawItemID],
     },
-    styles: {
-      ...DEFAULT_INDENTS,
-      display: 'flex',
-      'flex-direction': 'row',
-      'justify-content': 'flex-start',
-      'align-items': 'stretch',
-    },
+    styles,
   });
 
   const updatedItemParentContainer: T.IScenarioItem = {
