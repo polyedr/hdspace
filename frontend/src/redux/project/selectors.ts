@@ -92,3 +92,18 @@ function makeActiveItemInfoSelector(prop: 'styles' | 'parameters') {
     return activeItem.itemId.slice(-1) === 's' ? scenarios[itemID][prop] : scenarioElements[itemID][prop];
   };
 }
+
+export function selectItemToCopyID(state: AppReduxState) {
+  return selectFeatureState(state).ui.itemToCopyID;
+};
+
+export function selectClosestContainerID(state: AppReduxState, itemID: string): string | null {
+  if (itemID.slice(-1) === 's') {
+    return itemID;
+  } else if (itemID !== 'none' && itemID.slice(-1) === 'e') {
+    const element = selectScenarioElement(state, parseInt(itemID));
+    return `${element.parameters.parent_id}s`;
+  } else {
+    return null;
+  }
+}
