@@ -11,11 +11,10 @@ import {
   MIN_BORDER_RADIUS,
   MIN_BORDER_WIDTH,
 } from '$constants/defaultParams';
-import { ColorPicker, useColor } from '$components/UI/ColorPicker/';
+import { ColorPicker, useColor, normalizeColor } from '$components/UI/ColorPicker/';
 import { strToNumber, getPermissibleValue, safeParseFloat, safeMatch } from '$utils/NumberHelper';
 import { validateBorderRadius, CssLikeStyles } from '$utils/StyleHelper';
 import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
-import { normalizeColor } from '$utils/ColorHelper';
 
 const styles = require('./styles.scss');
 

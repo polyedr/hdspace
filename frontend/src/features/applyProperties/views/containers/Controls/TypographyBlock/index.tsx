@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 import { AppReduxState } from '$shared/types/app';
 import { selectors } from '$redux/project/';
-import { ColorPicker, useColor } from '$components/UI/ColorPicker/';
+import { ColorPicker, useColor, normalizeColor } from '$components/UI/ColorPicker/';
 import { DropDown } from '$components/UI/DropDown/';
 import { Icon } from '$components/UI/Icon/';
 import { Button } from '$components/UI/Button/';
@@ -12,7 +12,6 @@ import { FONTS } from '$constants/fonts';
 import { getPermissibleValue } from '$utils/NumberHelper';
 import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
 import { CssLikeStyles } from '$utils/StyleHelper';
-import { normalizeColor } from '$utils/ColorHelper';
 
 const styles = require('./styles.scss');
 

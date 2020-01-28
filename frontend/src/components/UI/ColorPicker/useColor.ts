@@ -5,7 +5,7 @@ type NewColor = {
   isValid: boolean;
 }
 
-export const useColor = (defaultColor: string, activeItemID: string): [NewColor, (NewColor: NewColor) => void] => {
+export const useColor = (defaultColor: string, activeItemID: string): [NewColor, (newColor: NewColor) => void] => {
   const [currentColor, setCurrentColor] = useState<string>(defaultColor);
   const [isColorValid, setIsColorValid] = useState<boolean>(true);
 
@@ -18,7 +18,7 @@ export const useColor = (defaultColor: string, activeItemID: string): [NewColor,
     setCurrentColor(NewColor.value)
   }
 
-  const state = { value: currentColor, isValid: isColorValid }
+  const colorInfo = { value: currentColor, isValid: isColorValid }
 
-  return [state, changeColor];
+  return [colorInfo, changeColor];
 }
