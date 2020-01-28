@@ -1,15 +1,15 @@
 import React, { useEffect, useCallback, useState } from 'react';
 import { SketchPicker, ColorResult } from 'react-color';
 
-interface IColorPickerProps {
-  display?: boolean,
-  color: string,
-  colors?: string[],
-  onChangeComplete(color: Pick<ColorResult, 'hex'>): void,
-  onClose(): void,
+type ColorPickerProps = {
+  display?: boolean;
+  color: string;
+  colors?: string[];
+  onChangeComplete(color: Pick<ColorResult, 'hex'>): void;
+  onClose(): void;
 }
 
-export const ColorPicker: React.FunctionComponent<IColorPickerProps> = React.memo(({
+export const ColorPicker: React.FunctionComponent<ColorPickerProps> = React.memo(({
   display = false,
   color,
   onChangeComplete,

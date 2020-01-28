@@ -13,9 +13,9 @@ export const useColor = (defaultColor: string, activeItemID: string): [NewColor,
     setCurrentColor(defaultColor);
   }, [activeItemID]);
 
-  const changeColor = (NewColor: NewColor) => {
-    setIsColorValid(NewColor.isValid);
-    setCurrentColor(NewColor.value)
+  const changeColor = (newColor: NewColor) => {
+    setIsColorValid(newColor.isValid);
+    setCurrentColor(newColor.value)
   }
 
   const colorInfo = { value: currentColor, isValid: isColorValid }
