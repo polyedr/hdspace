@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 import { AppReduxState } from '$shared/types/app';
 import { selectors } from '$redux/project/';
-import { ColorPicker, useCurrentColor } from '$components/UI/ColorPicker/';
+import { ColorPicker, useColor } from '$components/UI/ColorPicker/';
 import { DropDown } from '$components/UI/DropDown/';
 import { Icon } from '$components/UI/Icon/';
 import { Button } from '$components/UI/Button/';
@@ -54,7 +54,7 @@ export const Component: React.FC<Props> = memo(({
   activeItemID,
 }) => {
   const [isTypographyColorPickerOpen, setIsTypographyColorPickerOpen] = useState<boolean>(false);
-  const [currentFontColor, setCurrentFontColor] = useCurrentColor(
+  const [currentFontColor, setCurrentFontColor] = useColor(
     color,
     activeItemID,
   );

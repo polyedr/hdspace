@@ -11,7 +11,7 @@ import {
   MIN_BORDER_RADIUS,
   MIN_BORDER_WIDTH,
 } from '$constants/defaultParams';
-import { ColorPicker, useCurrentColor } from '$components/UI/ColorPicker/';
+import { ColorPicker, useColor } from '$components/UI/ColorPicker/';
 import { strToNumber, getPermissibleValue, safeParseFloat, safeMatch } from '$utils/NumberHelper';
 import { validateBorderRadius, CssLikeStyles } from '$utils/StyleHelper';
 import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
@@ -53,7 +53,7 @@ export const Component: React.FunctionComponent<Props> = React.memo(({
   activeItemID,
 }) => {
   const [isBorderColorPickerOpen, setIsBorderColorPickerOpen] = useState<boolean>(false);
-  const [currentBorderColor, setCurrentBorderColor] = useCurrentColor(
+  const [currentBorderColor, setCurrentBorderColor] = useColor(
     borderColor,
     activeItemID,
   );

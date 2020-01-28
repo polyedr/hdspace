@@ -4,7 +4,7 @@ import cn from 'classnames';
 
 import { AppReduxState } from '$shared/types/app';
 import { selectors } from '$redux/project/';
-import { ColorPicker, useCurrentColor } from '$components/UI/ColorPicker/';
+import { ColorPicker, useColor } from '$components/UI/ColorPicker/';
 import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
 import { CssLikeStyles } from '$utils/StyleHelper';
 import { normalizeColor } from '$utils/ColorHelper';
@@ -30,7 +30,7 @@ export const Component: React.FC<Props> = memo((props) => {
     activeItemID
   } = props;
   const [isBackgroundColorPickerOpen, setIsBackgroundColorPickerOpen] = useState<boolean>(false);
-  const [currentBackgroundColor, setCurrentBackgroundColor] = useCurrentColor(
+  const [currentBackgroundColor, setCurrentBackgroundColor] = useColor(
     backgroundColor,
     activeItemID,
   );
