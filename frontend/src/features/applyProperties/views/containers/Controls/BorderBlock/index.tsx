@@ -57,30 +57,22 @@ export const Component: React.FunctionComponent<Props> = React.memo(({
   const handleBorderWidthChange = useCallback(({ target: { value } }) => {
     const newWidth = getPermissibleValue(strToNumber(value), MIN_BORDER_WIDTH, MAX_BORDER_WIDTH);
 
-    updateStyles({
-      'border-width': `${newWidth}px`,
-    });
+    updateStyles({ 'border-width': `${newWidth}px` });
   }, [updateStyles]);
 
   const handleBorderRadius = useCallback(({ target: { value } }) => {
-    updateStyles({
-      'border-radius': `${value}${accessBorderRadius(borderRadius)}`,
-    });
+    updateStyles({ 'border-radius': `${value}${accessBorderRadius(borderRadius)}` });
   }, [updateStyles]);
 
   const handleChangeBorderRadiusUnits = useCallback(({ target: { value } }) => {
-    updateStyles({
-      'border-radius': validateBorderRadius(`${parseFloat(borderRadius)}${value}`),
-    });
+    updateStyles({ 'border-radius': validateBorderRadius(`${parseFloat(borderRadius)}${value}`) });
   }, [updateStyles]);
 
   const handleChangeColor = useCallback((newColor) => {
     if (newColor.length > 7) {
       return;
     }
-    updateStyles({
-      'border-color': newColor,
-    });
+    updateStyles({ 'border-color': newColor });
   }, [updateStyles]);
 
   const handleChangeOpacity = useCallback(() => {
