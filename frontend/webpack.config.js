@@ -176,7 +176,7 @@ module.exports = () => {
     },
     devServer: {
       port: 8080,
-      // host: '192.168.88.11',
+      // host: '192.168.0.108',
       hot: true,
       contentBase: 'dist',
       publicPath: '/',

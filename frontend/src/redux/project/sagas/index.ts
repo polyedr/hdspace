@@ -40,6 +40,7 @@ import {
   apiSaveElements,
   parseImgUsingNN,
   apiGetElements,
+  apiAddElements,
 } from '$api/element';
 import { setTokenPair, setLoadedToken } from '$redux/user/actions';
 import { MAX_TOKEN_TRIALS } from '$config/settings';
@@ -50,8 +51,8 @@ import * as PATH_NAMES from '$constants/pathNames';
 import { apiSaveScenarios, apiSaveScenario } from '$api/scenario';
 import { DEFAULT_AUTHORISATION_TOKEN } from '$constants/defaultParams';
 
-import { selectors, T as ProjectT } from '../';
-import { getConfigurablePropsOf, Entity } from '$utils/model';
+import { selectors, T as ProjectT, actionsCreators } from '../';
+import { getConfigurablePropsOf, Entity, isElement } from '$utils/model';
 
 const runLayoutAlgorithmFinishedType: ProjectT.RunLayoutAlgorithmFinished['type'] = 'PROJECTS:RUN_LAYOUT_ALGORITHM_FINISHED';
 
@@ -538,9 +539,74 @@ function* uploadFileSaga(
         )
       },
     );
-    
+
   } catch (e) {
     console.error('Could not upload image for NN. Error: ', e.message);
+  }
+}
+
+function* copyActiveItemSaga() {
+  const { itemId: activeItemID }: ReturnType<typeof selectors.selectActiveItem> = yield select(selectors.selectActiveItem);
+  if (activeItemID !== 'none' && isElement(activeItemID)) {
+    yield put(actionsCreators.setItemToCopy(activeItemID));
+  }
+}
+
+function* pasteCopiedItemSaga() {
+  const activeItem: ReturnType<typeof selectors.selectActiveItem> = yield select(selectors.selectActiveItem);
+  const targetContainerID: ReturnType<typeof selectors.selectClosestContainerID> = yield select(
+    selectors.selectClosestContainerID, activeItem.itemId,
+  );
+  const itemToCopyID: ReturnType<typeof selectors.selectItemToCopyID> = yield select(selectors.selectItemToCopyID);
+
+  if (targetContainerID !== null && itemToCopyID !== null) {
+    const targetContainer: ReturnType<typeof selectors.selectScenario> = yield select(
+      selectors.selectScenario, parseInt(targetContainerID),
+    );
+    const elementToDuplicate: ReturnType<typeof selectors.selectScenarioElement> = yield select(
+      selectors.selectScenarioElement, parseInt(itemToCopyID),
+    );
+
+    if (!elementToDuplicate) {
+      return;
+    }
+
+    const createdElement: ReturnPromisedType<typeof apiAddElements>[number] = (yield call(
+      reqWrapper, apiAddElements, { data: R.map(R.omit(['id']), [{
+        ...elementToDuplicate,
+        parameters: {
+          ...elementToDuplicate.parameters,
+          parent_id: targetContainer.id,
+        },
+      }]) },
+    ))[0];
+
+    const scenarios: ReturnType<typeof selectors.selectScenarios> = yield select(selectors.selectScenarios);
+    const scenarioElements: ReturnType<typeof selectors.selectScenariosElements> = yield select(
+      selectors.selectScenariosElements,
+    );
+
+    const finalScenarios = {
+      ...scenarios,
+      [targetContainer.id]: {
+        ...targetContainer,
+        elements: targetContainer.elements.concat(createdElement.id),
+        parameters: {
+          ...targetContainer.parameters,
+          children: targetContainer.parameters.children.concat(`${createdElement.id}e`),
+        },
+      },
+    };
+
+    const finalScenarioElements = {
+      ...scenarioElements,
+      [createdElement.id]: createdElement,
+    };
+
+    yield put(Actions.runLayoutAlgorithm(finalScenarios, finalScenarioElements));
+
+    const scenariosToUpdate = R.values(R.pick([targetContainer.id.toString()], finalScenarios));
+    yield fork(reqWrapper, apiSaveScenarios, { data: scenariosToUpdate });
   }
 }
 
@@ -567,8 +633,9 @@ const delScenarioItemType: ProjectT.DeleteScenarioItem['type'] = 'PROJECTS:DELET
 const uploadFileType: ProjectT.UploadFile['type'] = 'PROJECTS:UPLOAD_FILE';
 const getScreenNNType: ProjectT.GetScreenNN['type'] = 'PROJECTS:GET_SCREEN_NN';
 const runLayoutAlgorithmType: ProjectT.RunLayoutAlgorithm['type'] = 'PROJECTS:RUN_LAYOUT_ALGORITHM';
+const copyActiveItemType: ProjectT.CopyActiveItem['type'] = 'PROJECTS:COPY_ACTIVE_ITEM';
+const pasteCopiedItemType: ProjectT.PasteCopiedItem['type'] = 'PROJECTS:PASTE_COPIED_ITEM';
 type ActionsToAutoSave = ProjectT.UpdateScenarioStyles | ProjectT.UpdateElementStyles | ProjectT.UpdateElementParameters;
-
 
 export default function* projectSaga() {
   yield takeLatest(runLayoutAlgorithmType, runLayoutAlgorithm);
@@ -597,6 +664,9 @@ export default function* projectSaga() {
   yield takeLatest(deleteScenarioType, delScenarioSaga);
   yield takeLatest(renameScenarioType, renameScenarioSaga);
   yield takeEvery(addContainerType, wrapIntoContainerSaga);
+
+  yield takeLatest(copyActiveItemType, copyActiveItemSaga);
+  yield takeEvery(pasteCopiedItemType, pasteCopiedItemSaga);
 
   yield takeLatest(delScenarioItemType, delScenarioItemSaga);
 
