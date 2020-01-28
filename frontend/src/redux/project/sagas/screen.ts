@@ -123,6 +123,7 @@ export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
     screen: createdScreen.id,
     styles: {
       ...styles,
+      display: 'block',
       'min-height': '100%',
       'min-width': '100%',
     },
