@@ -24,7 +24,6 @@ const accessBorderRadius = (border: CssLikeStyles['border-radius']) => {
 };
 
 type StateProps = {
-  borderStyle: string;
   borderColor: string;
   borderWidth: string;
   borderRadius: string;
@@ -34,7 +33,6 @@ function mapState(state: AppReduxState): StateProps {
   const activeItemStyles = selectors.selectActiveItemStyles(state) as Required<CssLikeStyles>;
 
   return {
-    borderStyle: activeItemStyles['border-style'],
     borderColor: activeItemStyles['border-color'],
     borderWidth: activeItemStyles['border-width'],
     borderRadius: activeItemStyles['border-radius'],
@@ -46,8 +44,8 @@ type Props = StateProps & PropertiesChangeProps;
 export const Component: React.FunctionComponent<Props> = React.memo(({
   borderColor,
   borderWidth,
-  updateStyles,
   borderRadius,
+  updateStyles,
 }) => {
   const [isBorderColorPickerOpen, setIsBorderColorPickerOpen] = useState<boolean>(false);
   const handleActiveColorPicker = useCallback(() => {
