@@ -24,7 +24,6 @@ const accessBorderRadius = (border: CssLikeStyles['border-radius']) => {
 };
 
 type StateProps = {
-  borderStyle: string;
   borderColor: string;
   borderWidth: string;
   borderRadius: string;
@@ -34,7 +33,6 @@ function mapState(state: AppReduxState): StateProps {
   const activeItemStyles = selectors.selectActiveItemStyles(state) as Required<CssLikeStyles>;
 
   return {
-    borderStyle: activeItemStyles['border-style'],
     borderColor: activeItemStyles['border-color'],
     borderWidth: activeItemStyles['border-width'],
     borderRadius: activeItemStyles['border-radius'],
@@ -44,11 +42,10 @@ function mapState(state: AppReduxState): StateProps {
 type Props = StateProps & PropertiesChangeProps;
 
 export const Component: React.FunctionComponent<Props> = React.memo(({
-  borderStyle,
   borderColor,
   borderWidth,
-  updateStyles,
   borderRadius,
+  updateStyles,
 }) => {
   const [isBorderColorPickerOpen, setIsBorderColorPickerOpen] = useState<boolean>(false);
   const handleActiveColorPicker = useCallback(() => {
@@ -58,41 +55,22 @@ export const Component: React.FunctionComponent<Props> = React.memo(({
   const handleBorderWidthChange = useCallback(({ target: { value } }) => {
     const newWidth = getPermissibleValue(strToNumber(value), MIN_BORDER_WIDTH, MAX_BORDER_WIDTH);
 
-    updateStyles({
-      'border-width': `${newWidth}px`,
-      'border-style': borderStyle,
-      'border-color': borderColor,
-    });
+    updateStyles({ 'border-width': `${newWidth}px` });
   }, [updateStyles]);
 
   const handleBorderRadius = useCallback(({ target: { value } }) => {
-    updateStyles({
-      'border-radius': `${value}${accessBorderRadius(borderRadius)}`,
-      'border-width': borderWidth,
-      'border-style': borderStyle,
-      'border-color': borderColor,
-    });
+    updateStyles({ 'border-radius': `${value}${accessBorderRadius(borderRadius)}` });
   }, [updateStyles]);
 
   const handleChangeBorderRadiusUnits = useCallback(({ target: { value } }) => {
-    updateStyles({
-      'border-radius': validateBorderRadius(`${parseFloat(borderRadius)}${value}`),
-      'border-width': borderWidth,
-      'border-style': borderStyle,
-      'border-color': borderColor,
-    });
+    updateStyles({ 'border-radius': validateBorderRadius(`${parseFloat(borderRadius)}${value}`) });
   }, [updateStyles]);
 
   const handleChangeColor = useCallback((newColor) => {
     if (newColor.length > 7) {
       return;
     }
-
-    updateStyles({
-      'border-color': newColor,
-      'border-width': borderWidth,
-      'border-style': borderStyle,
-    });
+    updateStyles({ 'border-color': newColor });
   }, [updateStyles]);
 
   const handleChangeOpacity = useCallback(() => {

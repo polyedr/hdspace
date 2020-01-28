@@ -32,7 +32,6 @@ export interface CssLikeStyles {
 
   'border-width'?: string,
   'border-color'?: string,
-  'border-style'?: string,
   'border-radius'?: string,
 
   'background-color'?: string,
