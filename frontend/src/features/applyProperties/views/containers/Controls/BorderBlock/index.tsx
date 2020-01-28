@@ -52,10 +52,7 @@ export const Component: React.FunctionComponent<Props> = React.memo(({
   activeItemID,
 }) => {
   const [isBorderColorPickerOpen, setIsBorderColorPickerOpen] = useState<boolean>(false);
-  const [currentBorderColor, setCurrentBorderColor] = useColor(
-    borderColor,
-    activeItemID,
-  );
+  const [currentBorderColor, setCurrentBorderColor] = useColor(borderColor, activeItemID);
 
   const handleColorPickerClose = useCallback(() => {
     setIsBorderColorPickerOpen(!isBorderColorPickerOpen);

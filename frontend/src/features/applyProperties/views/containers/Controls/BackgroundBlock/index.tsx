@@ -29,10 +29,7 @@ export const Component: React.FC<Props> = memo((props) => {
     activeItemID
   } = props;
   const [isBackgroundColorPickerOpen, setIsBackgroundColorPickerOpen] = useState<boolean>(false);
-  const [currentBackgroundColor, setCurrentBackgroundColor] = useColor(
-    backgroundColor,
-    activeItemID,
-  );
+  const [currentBackgroundColor, setCurrentBackgroundColor] = useColor(backgroundColor, activeItemID);
 
   const handleColorChange = useCallback((color) => {
     const newColor = normalizeColor(color);

@@ -53,10 +53,7 @@ export const Component: React.FC<Props> = memo(({
   activeItemID,
 }) => {
   const [isTypographyColorPickerOpen, setIsTypographyColorPickerOpen] = useState<boolean>(false);
-  const [currentFontColor, setCurrentFontColor] = useColor(
-    color,
-    activeItemID,
-  );
+  const [currentFontColor, setCurrentFontColor] = useColor(color, activeItemID);
 
   const handleColorChange = useCallback((color) => {
     const newColor = normalizeColor(color);
