@@ -8,6 +8,10 @@ export function uiReducer(state: T.ReduxState['ui'] = initial.ui, action: T.Acti
       return { ...state, activeItem: action.payload.activeItem };
     }
 
+    case 'PROJECTS:SET_ITEM_TO_COPY': {
+      return { ...state, itemToCopyID: action.payload.itemToCopyID };
+    }
+
     case 'PROJECTS:CLEAN_AFTER_PREV_SCREEN': {
       return {
         ...state,
