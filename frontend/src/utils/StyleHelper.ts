@@ -140,6 +140,8 @@ const otherStyles = (styles: CssLikeStyles): React.CSSProperties => (
         return { ...acc, alignItems: styles[key] };
       case 'min-height':
         return { ...acc, minHeight: styles[key] };
+      case 'min-width':
+        return { ...acc, minWidth: styles[key] };
       case 'display':
         return { ...acc, display: styles[key] };
       default: return acc;
