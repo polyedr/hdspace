@@ -154,8 +154,6 @@ export const convertBorders: TConvertBorders = styles => (
         return { ...result, borderColor: styles[key] };
       case 'border-width':
         return { ...result, borderWidth: styles[key] };
-      case 'border-style':
-        return { ...result, borderStyle: styles[key] };
       case 'border-radius':
         return { ...result, borderRadius: styles[key] };
       default: return result;
