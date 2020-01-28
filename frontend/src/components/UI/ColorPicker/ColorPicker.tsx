@@ -9,7 +9,7 @@ type ColorPickerProps = {
   onClose(): void;
 }
 
-export const ColorPicker: React.FunctionComponent<ColorPickerProps> = React.memo(({
+export const ColorPicker: React.FC<ColorPickerProps> = React.memo(({
   display = false,
   color,
   onChangeComplete,

@@ -1,24 +1,24 @@
 import { useEffect, useState } from 'react';
 
-type NewColor = {
+type Color = {
   value: string;
   isValid: boolean;
 }
 
-export const useColor = (defaultColor: string, activeItemID: string): [NewColor, (newColor: NewColor) => void] => {
-  const [currentColor, setCurrentColor] = useState<string>(defaultColor);
-  const [isColorValid, setIsColorValid] = useState<boolean>(true);
+export const useColor = (defaultColor: string, activeItemID: string): [Color, (newColor: Color) => void] => {
+  const [color, setColor] = useState<string>(defaultColor);
+  const [isValid, setIsValid] = useState<boolean>(true);
 
   useEffect(() => {
-    setCurrentColor(defaultColor);
+    setColor(defaultColor);
   }, [activeItemID]);
 
-  const changeColor = (newColor: NewColor) => {
-    setIsColorValid(newColor.isValid);
-    setCurrentColor(newColor.value)
+  const changeColor = (newColor: Color) => {
+    setIsValid(newColor.isValid);
+    setColor(newColor.value)
   }
 
-  const colorInfo = { value: currentColor, isValid: isColorValid }
+  const colorInfo = { value: color, isValid }
 
   return [colorInfo, changeColor];
 }
