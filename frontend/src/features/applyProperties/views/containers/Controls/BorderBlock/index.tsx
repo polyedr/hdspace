@@ -1,6 +1,6 @@
 import React, { useState, useCallback, } from 'react';
 import { connect } from 'react-redux';
-import classNames from 'classnames';
+import cn from 'classnames';
 
 import { AppReduxState } from '$shared/types/app';
 import { selectors } from '$redux/project/';
@@ -11,10 +11,10 @@ import {
   MIN_BORDER_RADIUS,
   MIN_BORDER_WIDTH,
 } from '$constants/defaultParams';
+import { ColorPicker, useColor, normalizeColor } from '$components/UI/ColorPicker/';
 import { strToNumber, getPermissibleValue, safeParseFloat, safeMatch } from '$utils/NumberHelper';
 import { validateBorderRadius, CssLikeStyles } from '$utils/StyleHelper';
 import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
-import { ColorPicker } from '$components/UI/ColorPicker/';
 
 const styles = require('./styles.scss');
 
@@ -45,10 +45,13 @@ export const Component: React.FunctionComponent<Props> = React.memo(({
   borderColor,
   borderWidth,
   borderRadius,
+  activeItemID,
   updateStyles,
 }) => {
   const [isBorderColorPickerOpen, setIsBorderColorPickerOpen] = useState<boolean>(false);
-  const handleActiveColorPicker = useCallback(() => {
+  const [currentBorderColor, setCurrentBorderColor] = useColor(borderColor, activeItemID);
+
+  const handleColorPickerClose = useCallback(() => {
     setIsBorderColorPickerOpen(!isBorderColorPickerOpen);
   }, [isBorderColorPickerOpen]);
 
@@ -66,23 +69,22 @@ export const Component: React.FunctionComponent<Props> = React.memo(({
     updateStyles({ 'border-radius': validateBorderRadius(`${parseFloat(borderRadius)}${value}`) });
   }, [updateStyles]);
 
-  const handleChangeColor = useCallback((newColor) => {
-    if (newColor.length > 7) {
-      return;
-    }
-    updateStyles({ 'border-color': newColor });
-  }, [updateStyles]);
+  const handleColorChange = useCallback((color) => {
+    const newColor = normalizeColor(color);
 
-  const handleChangeOpacity = useCallback(() => {
-    console.log();
-  }, []);
+    setCurrentBorderColor(newColor);
+
+    if (newColor.isValid) {
+      updateStyles({ 'border-color': newColor.value, });
+    }
+  }, [updateStyles]);
 
   return (
     <div className="propsElementsBlock">
       <p className="propsElementsBlockTitle">Border</p>
       <div className="propsElementsContentBlock">
         <div className="propsElementsInnerBlock">
-          <div className={classNames(styles.borderBlock, styles.borderBlock_width)}>
+          <div className={cn(styles.borderBlock, styles.borderBlock_width)}>
             <input
               className={styles.borderWidthField}
               name="width"
@@ -93,7 +95,7 @@ export const Component: React.FunctionComponent<Props> = React.memo(({
               max={MAX_BORDER_WIDTH}
             />
           </div>
-          <div className={classNames(styles.borderBlock, styles.borderBlock_radius)}>
+          <div className={cn(styles.borderBlock, styles.borderBlock_radius)}>
             <input
               className={styles.borderRadiusField}
               name="radius"
@@ -118,20 +120,15 @@ export const Component: React.FunctionComponent<Props> = React.memo(({
           <ColorPicker
             display={isBorderColorPickerOpen}
             color={borderColor}
-            onChangeComplete={color => handleChangeColor(color.hex)}
-            onClose={handleActiveColorPicker}
+            onChangeComplete={color => handleColorChange(color)}
+            onClose={handleColorPickerClose}
           />
           <input
-            className="colorField"
+            className={cn("colorField", { inputWithError: !currentBorderColor.isValid })}
             type="text"
-            value={borderColor}
-            onChange={({ target: { value } }) => handleChangeColor(value)}
-          />
-          <input
-            className="colorField"
-            type="text"
-            value={1}
-            onChange={handleChangeOpacity}
+            value={currentBorderColor.value}
+            onBlur={() => handleColorChange(borderColor)}
+            onChange={({ target: { value } }) => handleColorChange(value)}
           />
         </div>
       </div>
