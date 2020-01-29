@@ -6,7 +6,7 @@ import { AppReduxState } from '$shared/types/app';
 import { Button } from '$components/UI/Button';
 import { Icon } from '$components/UI/Icon';
 import { Modal } from '$components/UI/Modal';
-import { ILeftPanel } from '$components/LeftPanel';
+import { ILeftPanel } from '$components/LeftPanel/LeftPanel';
 import { EditorProps } from '$containers/EditorLogic';
 import * as Actions from '$redux/project/actions';
 import { selectors } from '$redux/project';

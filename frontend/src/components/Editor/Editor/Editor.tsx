@@ -4,7 +4,7 @@ import * as R from 'ramda';
 import classNames from 'classnames';
 import html2canvas from 'html2canvas';
 
-import { Recursive } from '$components/Editor/Recursive';
+import { Recursive } from '$components/Editor/Recursive/Recursive';
 import { Icon } from '$components/UI/Icon';
 import { Checkbox } from '$components/UI/Checkbox';
 import { Button } from '$components/UI/Button';

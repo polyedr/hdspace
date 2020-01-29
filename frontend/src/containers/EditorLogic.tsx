@@ -2,8 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import { AppReduxState } from '$shared/types/app';
-import { Editor } from '$components/Editor/EditorWindow';
-import NavPanelScreen from '$components/NavPanelScreen';
+import { Editor } from '$components/Editor/Editor/Editor';
+import NavPanelScreen from '$components/NavPanelScreen/NavPanelScreen';
 import * as Actions from '$redux/project/actions';
 import { selectors } from '$redux/project';
 import * as UserActions from '$redux/user/actions';

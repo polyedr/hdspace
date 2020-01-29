@@ -8,7 +8,7 @@ import { Button } from '$components/UI/Button';
 import { Checkbox } from '$components/UI/Checkbox';
 import { DropDown } from '$components/UI/DropDown';
 import { Scrollbar } from '$components/UI/Scrollbar';
-import { IChooseElement, ScenarioStateType } from '$components/ModalAddElements/MainBlock';
+import { IChooseElement, ScenarioStateType } from '$components/ModalAddElements/ModalAddElements/ModalAddElements';
 import {
   getCustomTemplateElements,
   getOptionsOfListScenario,

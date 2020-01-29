@@ -1,7 +1,7 @@
 import { CSSProperties } from 'react';
 
 import { IPlainAction, IPlainFailAction, IAction } from '$shared/redux';
-import { IChooseElement } from '$components/ModalAddElements/MainBlock';
+import { IChooseElement } from '$components/ModalAddElements/ModalAddElements/ModalAddElements';
 import { CssLikeStyles } from '$utils/StyleHelper';
 
 export type ReduxState = {

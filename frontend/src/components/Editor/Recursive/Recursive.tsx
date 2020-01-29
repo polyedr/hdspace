@@ -4,10 +4,10 @@ import { connect } from 'react-redux';
 
 import { AppReduxState } from '$shared/types/app';
 import * as Actions from '$redux/project/actions';
-import { SortableGroup } from '$components/Editor/SortableGroup';
-import { DragResize } from '$components/Editor/DragResize';
+import { SortableGroup } from '$components/Editor/SortableGroup/SortableGroup';
+import { DragResize } from '$components/Editor/DragResize/DragResize';
 import { RENDERERS } from '$components/UI/RenderElements';
-import { IEditProps } from '$components/Editor/EditorWindow';
+import { IEditProps } from '$components/Editor/Editor/Editor';
 import { IListSortable, ILSItem } from '$redux/project/types';
 import { selectors } from '$redux/project';
 import { getItemsPair, getParams, idToLSId } from '$utils/parseScenario';

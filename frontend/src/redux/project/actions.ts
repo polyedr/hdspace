@@ -1,6 +1,6 @@
 import { CSSProperties } from 'react';
 
-import { IChooseElement } from '$components/ModalAddElements/MainBlock';
+import { IChooseElement } from '$components/ModalAddElements/ModalAddElements/ModalAddElements';
 
 import * as T from './types';
 

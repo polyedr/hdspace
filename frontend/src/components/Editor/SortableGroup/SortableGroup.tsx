@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import { SortableOptions } from 'sortablejs';
 
 // @ts-ignore
-import { Sortable } from '$components/Editor/Sortable';
+import { Sortable } from '$components/Editor/Sortable/Sortable';
 
 const styles = require('./SortableGroup.scss');
 

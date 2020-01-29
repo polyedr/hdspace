@@ -9,8 +9,8 @@ import * as ActionsProject from '$redux/project/actions';
 import * as PATH_NAMES from '$constants/pathNames';
 import ProjectsLogic from '$containers/ProjectsLogic';
 import EditorLogic from '$containers/EditorLogic';
-import { TopPanel } from '$components/TopPanel';
-import { LeftPanel } from '$components/LeftPanel';
+import { TopPanel } from '$components/TopPanel/TopPanel';
+import { LeftPanel } from '$components/LeftPanel/LeftPanel';
 import { IProject } from '$redux/project/types';
 import { selectors } from '$redux/project';
 
