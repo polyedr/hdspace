@@ -8,67 +8,6 @@
   box-sizing: border-box;
 }
 
-.editorNavBar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.navBarBtn {
-  margin: 0;
-  padding: 10px;
-
-  &_active {
-  background-color: $panelBgColor;
-  border: 1px solid $mainBorderColor;
-  border-bottom: none;
-  border-radius: 3px;
-
-    & > span > svg {
-      opacity: 1;
-    }
-  }
-}
-
-.rotateScreenBtn {
-  & svg {
-    transition: all 0.1s linear;
-  }
-
-  & svg {
-    transform: rotate(45deg);
-  }
-
-  &_active svg {
-    transform: rotate(135deg);
-  }
-}
-
-.navBarTypeScreenBlock {
-  display: flex;
-  align-items: stretch;
-}
-
-.navBarModeBlock {
-  display: flex;
-  align-items: center;
-}
-
-.prototypeModeIndicator {
-  margin-right: 10px;
-
-  color: rgb(110, 238, 78);
-  font-weight: 700;
-
-  &_off {
-    color: #fa1f1f;
-  }
-}
-
-.navBarStateControlBlock {
-  display: flex;
-}
-
 .editorWorkWrapper {
   height: 100%;
   max-height: 100vh;
