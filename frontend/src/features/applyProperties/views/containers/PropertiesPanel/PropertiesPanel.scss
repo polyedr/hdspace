@@ -82,26 +82,26 @@
 :global(.dropDown) {
   position: relative;
 
-	display: block;
-	max-width: 100%;
-	padding: 0;
-	box-sizing: border-box;
+  display: block;
+  max-width: 100%;
+  padding: 0;
+  box-sizing: border-box;
 
-	color: transparent;
-	@include props_panel_text;
+  color: transparent;
+  @include props_panel_text;
   font-weight: 400;
 
   background-color: $white;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z' fill='%23c1c1c1'/%3E%3Cpath d='M0 0h24v24H0z' fill='none'/%3E%3C/svg%3E");
   background-position: right center;
   background-repeat: no-repeat;
-	border: none;
-	border-radius: 5px;
+  border: none;
+  border-radius: 5px;
   box-shadow: none;
   outline: none;
 
-	-moz-appearance: none;
-	-webkit-appearance: none;
+  -moz-appearance: none;
+  -webkit-appearance: none;
   appearance: none;
 
   &::-ms-expand {
@@ -118,7 +118,7 @@
   }
 
   & option {
-    font-weight:normal;
+    font-weight: normal;
     text-transform: capitalize;
   }
 }
@@ -127,13 +127,13 @@
   display: flex;
   align-items: center;
 
-    label {
-      margin-right: 5px;
+  label {
+    margin-right: 5px;
 
-      &:last-child {
-        margin-right: 0;
-      }
+    &:last-child {
+      margin-right: 0;
     }
+  }
 }
 
 :global(.propsPanelBtnBlock) {
@@ -260,6 +260,11 @@
   }
 }
 
+:global(.inputWithError) {
+  border: 1px solid $errorColor !important;
+  color: $errorColor;
+}
+
 .editorRightPanel {
   display: flex;
   flex: 0 0 $rightPanel_width;
@@ -270,4 +275,3 @@
 
   overflow-x: hidden;
 }
-

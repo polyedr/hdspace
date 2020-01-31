@@ -4,8 +4,8 @@ import classNames from 'classnames';
 import { Icon } from '$components/UI/Icon/';
 import { Button } from '$components/UI/Button/';
 import { Modal } from '$components/UI/Modal/';
-import { ModalAddElements } from '$components/ModalAddElements/MainBlock/';
-import { NavigateItem } from '$components/Editor/NavigateItem/';
+import { ModalAddElements } from '$components/ModalAddElements/ModalAddElements/ModalAddElements';
+import { NavigateItem } from '$components/Editor/NavigateItem/NavigateItem';
 
 import { PropertiesPanelProps } from '../../PropertiesPanel/PropertiesPanel';
 const styles = require('./styles.scss');

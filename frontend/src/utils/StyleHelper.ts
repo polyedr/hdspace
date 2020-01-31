@@ -32,7 +32,6 @@ export interface CssLikeStyles {
 
   'border-width'?: string,
   'border-color'?: string,
-  'border-style'?: string,
   'border-radius'?: string,
 
   'background-color'?: string,
@@ -141,6 +140,8 @@ const otherStyles = (styles: CssLikeStyles): React.CSSProperties => (
         return { ...acc, alignItems: styles[key] };
       case 'min-height':
         return { ...acc, minHeight: styles[key] };
+      case 'min-width':
+        return { ...acc, minWidth: styles[key] };
       case 'display':
         return { ...acc, display: styles[key] };
       default: return acc;
@@ -155,8 +156,6 @@ export const convertBorders: TConvertBorders = styles => (
         return { ...result, borderColor: styles[key] };
       case 'border-width':
         return { ...result, borderWidth: styles[key] };
-      case 'border-style':
-        return { ...result, borderStyle: styles[key] };
       case 'border-radius':
         return { ...result, borderRadius: styles[key] };
       default: return result;

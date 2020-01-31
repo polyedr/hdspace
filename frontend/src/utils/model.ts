@@ -20,7 +20,7 @@ export type Control = typeof CONTROLS_AFFECT_ON_PARAMS[number] | typeof CONTROLS
 
 // WARN: every time you add or remove some properties in prod, you must write migration to add/remove properties for existing entities in db
 export const AVAILABLE_CONTROLS: Record<Entity, Control[]> = {
-  root: ['direction', 'background'],
+  root: ['background'],
   container: ['indents', 'size', 'direction', 'typography', 'border', 'background'],
   button: ['indents', 'size', 'typography', 'border', 'background', 'textContent', 'action'],
   textinput: ['indents', 'size', 'typography', 'border', 'background', 'placeholder'],

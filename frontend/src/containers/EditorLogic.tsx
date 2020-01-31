@@ -2,8 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import { AppReduxState } from '$shared/types/app';
-import { Editor } from '$components/Editor/EditorWindow';
-import NavPanelScreen from '$components/NavPanelScreen';
+import { Editor } from '$components/Editor/Editor/Editor';
+import NavPanelScreen from '$components/NavPanelScreen/NavPanelScreen';
 import * as Actions from '$redux/project/actions';
 import { selectors } from '$redux/project';
 import * as UserActions from '$redux/user/actions';
@@ -51,6 +51,8 @@ const mapDispatchToProps = {
   setActiveItem: Actions.setActiveItem,
   addContainer: Actions.addContainer,
   resetScreenState: Actions.resetScreenState,
+  copyActiveItem: Actions.copyActiveItem,
+  pasteCopiedItem: Actions.pasteCopiedItem,
 };
 
 export type EditorProps = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & {
@@ -85,6 +87,8 @@ const EditorLogic: React.FunctionComponent<EditorProps> = ({
   updateElementStyles,
   addContainer,
   resetScreenState,
+  copyActiveItem,
+  pasteCopiedItem,
 }: EditorProps) => (
   <React.Fragment>
     <NavPanelScreen
@@ -117,6 +121,8 @@ const EditorLogic: React.FunctionComponent<EditorProps> = ({
       updateElementStyles={updateElementStyles}
       addContainer={addContainer}
       resetScreenState={resetScreenState}
+      copyActiveItem={copyActiveItem}
+      pasteCopiedItem={pasteCopiedItem}
     />
     <Spinner
       active={currentProject.projectLoader || currentScreen.screenLoader || scenarioLoader}

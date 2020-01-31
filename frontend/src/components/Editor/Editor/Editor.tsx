@@ -4,7 +4,7 @@ import * as R from 'ramda';
 import classNames from 'classnames';
 import html2canvas from 'html2canvas';
 
-import { Recursive } from '$components/Editor/Recursive';
+import { Recursive } from '$components/Editor/Recursive/Recursive';
 import { Icon } from '$components/UI/Icon';
 import { Checkbox } from '$components/UI/Checkbox';
 import { Button } from '$components/UI/Button';
@@ -46,6 +46,8 @@ export interface IEditProps {
   updateElementStyles: typeof Actions.updateElementStyles,
   addContainer: typeof Actions.addContainer,
   resetScreenState: typeof Actions.resetScreenState;
+  copyActiveItem: typeof Actions.copyActiveItem;
+  pasteCopiedItem: typeof Actions.pasteCopiedItem;
 }
 
 export const Editor: React.FC<IEditProps> = memo(({
@@ -65,6 +67,8 @@ export const Editor: React.FC<IEditProps> = memo(({
   changePrototypeMode,
   addContainer,
   resetScreenState,
+  copyActiveItem,
+  pasteCopiedItem,
 }) => {
   const [screenId, setScreenId] = useState<number>(-1);
   const [isMoving, setIsMoving] = useState<boolean>(true);
@@ -146,7 +150,7 @@ export const Editor: React.FC<IEditProps> = memo(({
 
   useEffect(() => {
     const listener = (event: KeyboardEvent) => {
-      if (event.code == 'KeyC' && (event.shiftKey || event.metaKey)) {
+      if (event.code == 'KeyC' && event.shiftKey) {
         addContainer(activeItem.itemId);
       }
     };
@@ -154,6 +158,28 @@ export const Editor: React.FC<IEditProps> = memo(({
     document.addEventListener('keydown', listener);
     return () => document.removeEventListener('keydown', listener);
   }, [activeItem, addContainer]);
+
+  useEffect(() => {
+    const listener = (event: KeyboardEvent) => {
+      if (event.code == 'KeyC' && (event.metaKey || event.ctrlKey)) {
+        copyActiveItem();
+      }
+    };
+
+    document.addEventListener('keydown', listener);
+    return () => document.removeEventListener('keydown', listener);
+  }, [copyActiveItem]);
+
+  useEffect(() => {
+    const listener = (event: KeyboardEvent) => {
+      if (event.code == 'KeyV' && (event.metaKey || event.ctrlKey)) {
+        pasteCopiedItem();
+      }
+    };
+
+    document.addEventListener('keydown', listener);
+    return () => document.removeEventListener('keydown', listener);
+  }, [pasteCopiedItem]);
 
   const onHistoryBack = useCallback(() => {
     console.log();

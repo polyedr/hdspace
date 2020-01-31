@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 import { AppReduxState } from '$shared/types/app';
 import { selectors } from '$redux/project/';
-import { ColorPicker } from '$components/UI/ColorPicker/';
+import { ColorPicker, useColor, normalizeColor } from '$components/UI/ColorPicker/';
 import { DropDown } from '$components/UI/DropDown/';
 import { Icon } from '$components/UI/Icon/';
 import { Button } from '$components/UI/Button/';
@@ -50,18 +50,22 @@ export const Component: React.FC<Props> = memo(({
   textAlign,
   color,
   updateStyles,
+  activeItemID,
 }) => {
   const [isTypographyColorPickerOpen, setIsTypographyColorPickerOpen] = useState<boolean>(false);
+  const [currentFontColor, setCurrentFontColor] = useColor(color, activeItemID);
 
-  const handleColorChange = useCallback((newColor: string) => {
-    if (newColor.length > 7) {
-      return;
+  const handleColorChange = useCallback((color) => {
+    const newColor = normalizeColor(color);
+
+    setCurrentFontColor(newColor);
+
+    if (newColor.isValid) {
+      updateStyles({ color: newColor.value });
     }
-
-    updateStyles({ color: newColor });
   }, [updateStyles]);
 
-  const handleActiveColorPicker = useCallback(() => {
+  const handleColorPickerClose = useCallback(() => {
     setIsTypographyColorPickerOpen(!isTypographyColorPickerOpen);
   }, [isTypographyColorPickerOpen]);
 
@@ -89,10 +93,6 @@ export const Component: React.FC<Props> = memo(({
   const onTypographyAlign = useCallback((value) => {
     updateStyles({ 'text-align': value });
   }, [updateStyles]);
-
-  const handleChangeOpacity = useCallback((value) => {
-    console.log(value); // change text align
-  }, []);
 
   return (
     <div className="propsElementsBlock">
@@ -122,13 +122,13 @@ export const Component: React.FC<Props> = memo(({
           <div className={styles.fontLeftBlock}>
             <div className={styles.fontLeftBlock__button}>
               <button
-                  className={cn(
-                    styles.button,
-                    fontStyle === 'italic' && styles.button_active,
-                  )}
-                  onClick={handleChangeItalicFontStyle}
-                >
-                  Italic
+                className={cn(
+                  styles.button,
+                  fontStyle === 'italic' && styles.button_active,
+                )}
+                onClick={handleChangeItalicFontStyle}
+              >
+                Italic
               </button>
             </div>
             <div className={styles.fontLeftBlock__button}>
@@ -178,20 +178,15 @@ export const Component: React.FC<Props> = memo(({
           <ColorPicker
             display={isTypographyColorPickerOpen}
             color={color}
-            onChangeComplete={color => handleColorChange(color.hex)}
-            onClose={handleActiveColorPicker}
+            onChangeComplete={color => handleColorChange(color)}
+            onClose={handleColorPickerClose}
           />
           <input
-            className="colorField"
+            className={cn("colorField", { inputWithError: !currentFontColor.isValid })}
             type="text"
-            value={color}
+            value={currentFontColor.value}
+            onBlur={() => handleColorChange(color)}
             onChange={({ target: { value } }) => handleColorChange(value)}
-          />
-          <input
-            className="colorField"
-            type="text"
-            value={1}
-            onChange={handleChangeOpacity}
           />
         </div>
       </div>

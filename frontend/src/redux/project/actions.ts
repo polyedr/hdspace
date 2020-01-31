@@ -1,6 +1,6 @@
 import { CSSProperties } from 'react';
 
-import { IChooseElement } from '$components/ModalAddElements/MainBlock';
+import { IChooseElement } from '$components/ModalAddElements/ModalAddElements/ModalAddElements';
 
 import * as T from './types';
 
@@ -245,7 +245,15 @@ export const setIsAddElementsModalOpened = (isOpened: boolean): T.SetIsAddElemen
   payload: { isOpened },
 });
 
-// export const setScreenData: ISetScreenData = screen_data => ({
-//   type: TYPES.SET_SCREEN_DATA,
-//   screen_data,
-// });
+export const copyActiveItem = (): T.CopyActiveItem => ({
+  type: 'PROJECTS:COPY_ACTIVE_ITEM',
+});
+
+export const pasteCopiedItem = (): T.PasteCopiedItem => ({
+  type: 'PROJECTS:PASTE_COPIED_ITEM',
+});
+
+export const setItemToCopy = (itemToCopyID: string): T.SetItemToCopy => ({
+  type: 'PROJECTS:SET_ITEM_TO_COPY',
+  payload: { itemToCopyID }
+});

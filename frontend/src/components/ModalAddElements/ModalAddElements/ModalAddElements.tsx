@@ -4,7 +4,7 @@ import classNames from 'classnames';
 
 import { Button } from '$components/UI/Button';
 import { Icon } from '$components/UI/Icon';
-import { ActionsBlock } from '$components/ModalAddElements/ActionsBlock';
+import { ActionsBlock } from '$components/ModalAddElements/ActionsBlock/ActionsBlock';
 import { IUploadFile, UploadFile } from '$components/UI/UploadFile';
 import { MODAL_ADD_ELEMENTS_TABS } from '$constants/defaultParams';
 import { getGroupElements, IListCategoryEl, parseAddElementsTabs } from '$utils/parseScenario';

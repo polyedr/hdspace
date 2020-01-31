@@ -17,7 +17,7 @@ import {
   LibraryElementType,
   ServerFuncType,
 } from '$redux/project/types';
-import { IChooseElement } from '$components/ModalAddElements/MainBlock';
+import { IChooseElement } from '$components/ModalAddElements/ModalAddElements/ModalAddElements';
 import { CssLikeStyles } from '$utils/StyleHelper';
 
 export type GroupElement = {

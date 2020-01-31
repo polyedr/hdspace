@@ -1,7 +1,7 @@
 import { CSSProperties } from 'react';
 
 import { IPlainAction, IPlainFailAction, IAction } from '$shared/redux';
-import { IChooseElement } from '$components/ModalAddElements/MainBlock';
+import { IChooseElement } from '$components/ModalAddElements/ModalAddElements/ModalAddElements';
 import { CssLikeStyles } from '$utils/StyleHelper';
 
 export type ReduxState = {
@@ -12,6 +12,7 @@ export type ReduxState = {
   ui: {
     activeItem: ActiveItem;
     isAddElementsModalOpened: boolean;
+    itemToCopyID: string | null;
   },
   edit: {
     currentProject: IProject;
@@ -99,6 +100,9 @@ export type RunLayoutAlgorithm = IAction<'PROJECTS:RUN_LAYOUT_ALGORITHM', {
 export type RunLayoutAlgorithmFinished = IPlainAction<'PROJECTS:RUN_LAYOUT_ALGORITHM_FINISHED'>;
 export type SetActiveItem = IAction<'PROJECTS:SET_ACTIVE_ITEM', { activeItem: ActiveItem }>;
 export type SetIsAddElementsModalOpened = IAction<'PROJECTS:SET_IS_ADD_ELEMENTS_MODAL_OPENED', { isOpened: boolean }>;
+export type SetItemToCopy = IAction<'PROJECTS:SET_ITEM_TO_COPY', { itemToCopyID: string }>;
+export type CopyActiveItem = IPlainAction<'PROJECTS:COPY_ACTIVE_ITEM'>;
+export type PasteCopiedItem = IPlainAction<'PROJECTS:PASTE_COPIED_ITEM'>;
 export type ResetScreenState = IPlainAction<'PROJECTS:RESET_SCREEN_STATE'>;
 
 export type Action =
@@ -147,8 +151,10 @@ export type Action =
   | SetActiveItem
   | SetIsAddElementsModalOpened
   | UpdateViewTree
+  | SetItemToCopy
+  | CopyActiveItem
+  | PasteCopiedItem
   | ResetScreenState;
-
 
 export interface IListProject {
   id: number,

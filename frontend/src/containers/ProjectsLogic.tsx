@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import { AppReduxState } from '$shared/types/app';
 import * as Actions from '$redux/project/actions';
-import { Projects } from '$components/Projects';
+import { Projects } from '$components/Projects/Projects';
 import { Spinner } from '$components/UI/Spinner';
 import { selectors } from '$redux/project';
 
