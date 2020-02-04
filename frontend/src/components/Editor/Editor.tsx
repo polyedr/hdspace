@@ -7,7 +7,7 @@ import * as Actions from '$redux/project/actions';
 import { T as ProjectT } from '$redux/project';
 import { EditorProps } from '$containers/EditorLogic';
 
-import { Workspace } from '../Workspace/Workspace';
+import { Workspace } from './Workspace/Workspace';
 const styles = require('./Editor.scss');
 
 export interface IScreenMode {
