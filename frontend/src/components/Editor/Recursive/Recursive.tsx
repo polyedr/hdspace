@@ -45,6 +45,7 @@ export type OwnProps = {
   isMoving: boolean,
   listNotDragging: string[],
   isResizing: boolean;
+  isResizable?: boolean;
 
   onActiveElementChange(parentId: number, childID: string): void,
   setIsMoving: (value: boolean) => void,
@@ -65,7 +66,7 @@ const RecursiveComponent: React.FC<Props> = (props) => {
     setIsMoving,
     isResizing,
     setIsResizing,
-
+    isResizable,
     listSortable,
     elementList,
     scenarioList,
@@ -113,6 +114,7 @@ const RecursiveComponent: React.FC<Props> = (props) => {
       onChoose={handleChooseToSort}
       onChange={handleItemPositionChange}
       isSomeItemBeingDragged={isDragging}
+      isResizable={isResizable}
     // align={item.props && item.props.align}
     >
       {item.children.map((itemId) => {
@@ -127,7 +129,7 @@ const RecursiveComponent: React.FC<Props> = (props) => {
 
         // @ts-ignore
         const renderElement = RENDERERS[struct_type];
-        const isDraggable = activeItemId === itemId && LIST_SCENARIO_TYPE.indexOf(struct_type) === -1;
+        const isResizable = activeItemId === itemId && LIST_SCENARIO_TYPE.indexOf(struct_type) === -1;
 
         if (renderElement) {
           const parsedStyles = convertPropCSS(styles);
@@ -139,7 +141,7 @@ const RecursiveComponent: React.FC<Props> = (props) => {
               style={parsedStyles}
               updateElementStyles={updateElementStyles}
               setIsMoving={setIsMoving}
-              isDraggable={isDraggable}
+              isResizable={isResizable}
               isResizing={isResizing}
               onResize={setIsResizing}
             >
@@ -158,6 +160,7 @@ const RecursiveComponent: React.FC<Props> = (props) => {
                   listNotDragging={listNotDragging}
                   onActiveElementChange={onActiveElementChange}
                   setIsMoving={setIsMoving}
+                  isResizable={isResizable}
                   isResizing={isResizing}
                   setIsResizing={setIsResizing}
                 />,

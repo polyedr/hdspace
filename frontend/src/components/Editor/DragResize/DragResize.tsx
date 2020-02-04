@@ -15,7 +15,7 @@ type Props = {
   style: CSSProperties;
   children: any;
   updateElementStyles: typeof Actions.updateElementStyles;
-  isDraggable: boolean;
+  isResizable: boolean;
   isResizing: boolean;
   setIsMoving(value: boolean): void;
   onResize(isResizing: boolean): void;
@@ -255,7 +255,7 @@ export class DragResize extends React.Component<Props, State> {
       props: {
         sortableId,
         children,
-        isDraggable,
+        isResizable,
       },
       state: {
         deltaX,
@@ -296,7 +296,7 @@ export class DragResize extends React.Component<Props, State> {
             },
           },
         )}
-        {isDraggable && (
+        {isResizable && (
           <React.Fragment>
             <div
               id="top_right"

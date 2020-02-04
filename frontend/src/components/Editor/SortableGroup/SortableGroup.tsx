@@ -16,6 +16,7 @@ type Props = {
   stylesToInherit: React.CSSProperties,
   align?: string,
   isSomeItemBeingDragged: boolean,
+  isResizable?: boolean;
   onChange: (index: number, items: string[], parentId: string) => void,
   onChoose: (itemIndex: string, target?: React.SyntheticEvent) => void,
 
@@ -33,6 +34,7 @@ export const SortableGroup: React.FC<Props> = (props) => {
     onChange,
     align,
     isSomeItemBeingDragged,
+    isResizable,
   } = props;
 
   const handleChoose = useCallback((evt) => {
@@ -61,18 +63,16 @@ export const SortableGroup: React.FC<Props> = (props) => {
 
   const handleDragEnter = useCallback((evt) => {
     const container = evt.target.closest('.sortable-group');
-    const isResizeController = evt.target.classList.contains('resize-controller');
 
-    if (container && !isResizeController) {
+    if (container && !isResizable) {
       container.classList.add('hovered');
     }
   }, [])
 
   const handleDragLeave = useCallback((evt) => {
     const container = evt.target.closest('.sortable-group');
-    const isResizeController = evt.relatedTarget.classList.contains('resize-controller');
 
-    if (container && !container.contains(evt.relatedTarget) && !isResizeController) {
+    if (container && !container.contains(evt.relatedTarget) && !isResizable) {
       container.classList.remove('hovered');
     }
   }, [])
