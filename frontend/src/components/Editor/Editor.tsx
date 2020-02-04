@@ -91,7 +91,7 @@ export const Editor: React.FC<IEditProps> = memo(({
         navigator.clipboard.writeText('');
       }
     };
-   
+
     document.addEventListener('keydown', listener);
     return () => document.removeEventListener('keydown', listener);
   }, [copyActiveItem]);
