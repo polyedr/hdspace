@@ -9,6 +9,13 @@ const store = {
 };
 
 export class Sortable extends Component {
+  constructor(props) {
+    super(props);
+
+    this.handleDragEnter = this.handleDragEnter.bind(this);
+    this.handleDragLeave = this.handleDragLeave.bind(this);
+  }
+
   static propTypes = {
     options: PropTypes.object,
     onChange: PropTypes.func,
@@ -93,6 +100,8 @@ export class Sortable extends Component {
     const options = this.generateOptionsEnts({ ...this.props.options });
 
     this.sortable = SortableJS.create(this.node, options);
+    this.node.addEventListener('dragenter', this.handleDragEnter);
+    this.node.addEventListener('dragleave', this.handleDragLeave);
   }
 
   shouldComponentUpdate = (nextProps) => {
@@ -118,12 +127,32 @@ export class Sortable extends Component {
     }
   }
 
+  handleDragEnter(evt) {
+    const container = evt.target.closest('.sortable-group');
+    const isResizeController = evt.target.classList.contains('DragResize__resizeController__py5bU');
+
+    if (container && !isResizeController) {
+      this.props.onDragEnter(container);
+    }
+  }
+
+  handleDragLeave(evt) {
+    const container = evt.target.closest('.sortable-group');
+    const isResizeController = evt.relatedTarget.classList.contains('DragResize__resizeController__py5bU');
+
+    if (container && !container.contains(evt.relatedTarget) && !isResizeController) {
+      this.props.onDragLeave(container);
+    }
+  }
+
   render() {
     const {
       tag: Component,
       options, // eslint-disable-line
       onChange, // eslint-disable-line
       onChoose, // eslint-disable-line
+      onDragEnter, // eslint-disable-line
+      onDragLeave, // eslint-disable-line
       ...props
     } = this.props;
 

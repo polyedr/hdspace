@@ -15,8 +15,10 @@ type Props = {
   children?: any,
   stylesToInherit: React.CSSProperties,
   align?: string,
+  isSomeItemBeingDragged: boolean,
   onChange: (index: number, items: string[], parentId: string) => void,
   onChoose: (itemIndex: string, target?: React.SyntheticEvent) => void,
+
 };
 
 export const SortableGroup: React.FC<Props> = (props) => {
@@ -30,6 +32,7 @@ export const SortableGroup: React.FC<Props> = (props) => {
     onChoose,
     onChange,
     align,
+    isSomeItemBeingDragged,
   } = props;
 
   const handleChoose = useCallback((evt) => {
@@ -56,12 +59,29 @@ export const SortableGroup: React.FC<Props> = (props) => {
   //   ref.forceUpdate();
   // }, [handleChoose, ref]);
 
+  const handleDragEnter = useCallback((el) => {
+    el.parentElement.classList.add('hovered');
+  }, [])
+
+  const handleDragLeave = useCallback((el) => {
+    el.parentElement.classList.remove('hovered');
+  }, [])
+
+  const handleSortableMouseOver = useCallback((event: React.MouseEvent) => {
+    isSomeItemBeingDragged && event.stopPropagation();
+  }, []);
+
+  const handleSortableMouseOut = useCallback((event: React.MouseEvent) => {
+    isSomeItemBeingDragged && event.stopPropagation();
+  }, []);
+
+
   return (
     <Sortable
       id={parent}
       style={stylesToInherit}
       className={classNames(
-        parent !== 'root' && 'groupItem',
+        parent !== 'root' && 'sortable-group',
         // styles[group],
         align && styles[`align_${align}`],
         disableSortable && styles.moving,
@@ -99,8 +119,12 @@ export const SortableGroup: React.FC<Props> = (props) => {
       }}
       onChange={handlePositionChange}
       onChoose={handleChoose}
+      onDragEnter={handleDragEnter}
+      onDragLeave={handleDragLeave}
+      onMouseOver={handleSortableMouseOver}
+      onMouseOut={handleSortableMouseOut}
     >
       {children}
-    </Sortable>
+    </Sortable >
   );
 };

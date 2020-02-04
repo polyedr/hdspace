@@ -1,4 +1,4 @@
-import React, { CSSProperties, useCallback } from 'react';
+import React, { CSSProperties, useCallback, useState } from 'react';
 import * as R from 'ramda';
 import { connect } from 'react-redux';
 
@@ -44,9 +44,11 @@ export type OwnProps = {
   activeItemId: string,
   isMoving: boolean,
   listNotDragging: string[],
+  isResizing: boolean;
 
   onActiveElementChange(parentId: number, childID: string): void,
   setIsMoving: (value: boolean) => void,
+  setIsResizing: (value: boolean) => void;
 }
 
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
@@ -61,6 +63,8 @@ const RecursiveComponent: React.FC<Props> = (props) => {
     onActiveElementChange,
     setListSortable,
     setIsMoving,
+    isResizing,
+    setIsResizing,
 
     listSortable,
     elementList,
@@ -68,14 +72,18 @@ const RecursiveComponent: React.FC<Props> = (props) => {
     updateElementStyles,
   } = props;
 
+  const [isSomeItemBeingDragged, setIsSomeItemBeingDragged] = useState<boolean>(false);
+
   const handleChooseToSort = useCallback((itemIndex) => {
     // TODO: called when item chosen for sorting. rewrite without onActiveElementChange use
+    setIsSomeItemBeingDragged(true);
     if (item.children[itemIndex] !== activeItemId) {
       onActiveElementChange(item.id, item.children[itemIndex]);
     }
   }, [item, activeItemId, onActiveElementChange]);
 
   const handleItemPositionChange = useCallback((index: number, list: string[], parentId: string) => {
+    setIsSomeItemBeingDragged(false);
     setListSortable(index, list, activeItemId, parentId);
   }, [activeItemId, setListSortable]);
 
@@ -104,7 +112,8 @@ const RecursiveComponent: React.FC<Props> = (props) => {
       stylesToInherit={getStyles(item.id)}
       onChoose={handleChooseToSort}
       onChange={handleItemPositionChange}
-      // align={item.props && item.props.align}
+      isSomeItemBeingDragged={isSomeItemBeingDragged}
+    // align={item.props && item.props.align}
     >
       {item.children.map((itemId) => {
         const elId = parseInt(itemId, 10);
@@ -131,7 +140,8 @@ const RecursiveComponent: React.FC<Props> = (props) => {
               updateElementStyles={updateElementStyles}
               setIsMoving={setIsMoving}
               isDraggable={isDraggable}
-              isResizable={!LIST_SCENARIO_TYPE.includes(struct_type)}
+              isResizing={isResizing}
+              onResize={setIsResizing}
             >
               {renderElement({
                 id: itemId,
@@ -148,29 +158,33 @@ const RecursiveComponent: React.FC<Props> = (props) => {
                   listNotDragging={listNotDragging}
                   onActiveElementChange={onActiveElementChange}
                   setIsMoving={setIsMoving}
+                  isResizing={isResizing}
+                  setIsResizing={setIsResizing}
                 />,
               })}
             </DragResize>
           ) : (
-            renderElement({
-              id: itemId,
-              isDisabled: !isPrototypeMode,
-              params: { ...parameters, image },
-              sortableId: itemId,
-              name,
-              style: parsedStyles,
-              active: itemId === activeItemId,
-              children: <Recursive
-                key={`element-${itemId}`}
-                activeItemId={activeItemId}
-                isMoving={isMoving}
-                item={currentItem}
-                listNotDragging={listNotDragging}
-                onActiveElementChange={onActiveElementChange}
-                setIsMoving={setIsMoving}
-              />,
-            })
-          );
+              renderElement({
+                id: itemId,
+                isDisabled: !isPrototypeMode,
+                params: { ...parameters, image },
+                sortableId: itemId,
+                name,
+                style: parsedStyles,
+                active: itemId === activeItemId,
+                children: <Recursive
+                  key={`element-${itemId}`}
+                  activeItemId={activeItemId}
+                  isMoving={isMoving}
+                  item={currentItem}
+                  listNotDragging={listNotDragging}
+                  onActiveElementChange={onActiveElementChange}
+                  setIsMoving={setIsMoving}
+                  isResizing={isResizing}
+                  setIsResizing={setIsResizing}
+                />,
+              })
+            );
         }
 
         return null;

@@ -73,6 +73,7 @@ export const Component = (props: Props) => {
     ...DEFAULT_SCREEN_MODE, isDefaultMode: true,
   });
   const [isScreenRotated, setIsScreenRotated] = useState<boolean>(false);
+  const [hasItemBeingResized, setHasItemBeingResized] = useState<boolean>(false);
 
   useEffect(() => {
     if (screen.id !== screenId) {
@@ -119,12 +120,12 @@ export const Component = (props: Props) => {
   }, [activeItem, screen.listSortable, scenarios, scenarioElements]);
 
   const handleLSItemMouseOver = useCallback((event: React.MouseEvent) => {
-    (event.target as HTMLElement)?.closest?.('.ls-item')?.classList.add('hovered');
-  }, []);
+    !hasItemBeingResized && (event.target as HTMLElement)?.closest?.('.ls-item')?.classList.add('hovered');
+  }, [hasItemBeingResized]);
 
   const handleLSItemMouseOut = useCallback((event: React.MouseEvent) => {
-    (event.target as HTMLElement)?.closest?.('.ls-item')?.classList.remove('hovered');
-  }, []);
+    !hasItemBeingResized && (event.target as HTMLElement)?.closest?.('.ls-item')?.classList.remove('hovered');
+  }, [hasItemBeingResized]);
 
   const handleSaveScreen = useCallback(() => {
     const screenBody = document.getElementById('root');
@@ -189,6 +190,8 @@ export const Component = (props: Props) => {
                   listNotDragging={listNotDragging}
                   setIsMoving={setIsMoving}
                   onActiveElementChange={handleActiveElementChange} // needed to activate item before dragging, in order to get new listNotDraggable
+                  isResizing={hasItemBeingResized}
+                  setIsResizing={setHasItemBeingResized}
                 />
               </Scrollbar>
             </div>

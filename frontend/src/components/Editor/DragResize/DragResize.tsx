@@ -16,8 +16,9 @@ type Props = {
   children: any;
   updateElementStyles: typeof Actions.updateElementStyles;
   isDraggable: boolean;
-  isResizable: boolean;
+  isResizing: boolean;
   setIsMoving(value: boolean): void;
+  onResize(isResizing: boolean): void;
 };
 
 type Controller = null | 'top_right' | 'top_left' | 'bottom_right' | 'bottom_left' | 'top' | 'bottom' | 'left' | 'right';
@@ -134,7 +135,7 @@ export class DragResize extends React.Component<Props, State> {
 
   @autobind
   private handleDragStop(event: MouseEvent) {
-    const { sortableId, updateElementStyles, setIsMoving, style } = this.props;
+    const { sortableId, updateElementStyles, setIsMoving, style, onResize } = this.props;
     const { clientX, clientY } = event;
     const { currentController } = this.state;
 
@@ -193,6 +194,7 @@ export class DragResize extends React.Component<Props, State> {
 
     setIsMoving(true);
 
+    onResize(false);
     window.removeEventListener('mousemove', this.handleDragOver);
     window.removeEventListener('mouseup', this.handleDragStop);
     window.removeEventListener('mouseleave', this.handleDragStop);
@@ -203,7 +205,7 @@ export class DragResize extends React.Component<Props, State> {
     event.preventDefault(); // when clicking on wrappers added by DragResize, focus moved from focused element (child) to nearest interactive one. event.preventDefault prevents focus from losing https://javascript.info/focus-blur#methods-focus-blur
 
     const currentEvent = { ...event };
-    const { style, sortableId } = this.props;
+    const { style, sortableId, onResize  } = this.props;
 
     if (!style || !strToNumber(String(style.width)) || !strToNumber(String(style.height))) {
       const el = document.getElementById(String(sortableId));
@@ -227,6 +229,7 @@ export class DragResize extends React.Component<Props, State> {
       y: currentEvent.clientY,
     });
 
+    onResize(true);
     window.addEventListener('mousemove', this.handleDragOver);
     window.addEventListener('mouseup', this.handleDragStop);
     window.addEventListener('mouseleave', this.handleDragStop);
@@ -253,7 +256,6 @@ export class DragResize extends React.Component<Props, State> {
         sortableId,
         children,
         isDraggable,
-        isResizable,
       },
       state: {
         deltaX,
@@ -276,8 +278,8 @@ export class DragResize extends React.Component<Props, State> {
         data-ls-id={sortableId}
         className={classNames(
           styles.dragResizeItem,
-          isResizable ? styles['dragResizeItem_is-resizable'] : undefined) // removes 100% width from span if element is resizable (to place wrapper precisely around element)
-        }
+          styles['dragResizeItem_is-resizable'] // removes 100% width from span if element is resizable (to place wrapper precisely around element)
+        )}
         style={{ ...(useHackToSyncElementAndWrapperWidth ? { width: extractWidth(children) } : {}) }}
       >
         {React.cloneElement(
@@ -286,11 +288,11 @@ export class DragResize extends React.Component<Props, State> {
             ...children.props,
             style: {
               ...children.props.style,
-              ...(isResizable ? ({
+              ...({
                 width: calculatedWidth,
                 height: calculatedHeight,
                 ...(useHackToSyncElementAndWrapperWidth ? { width: extractWidth(children) } : {}),
-              }) : {})
+              })
               // width: (width && width - deltaX) || 'auto',
               // height: (height && height - deltaY) || 'auto',
             },
