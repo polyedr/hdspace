@@ -304,6 +304,7 @@ export class DragResize extends React.Component<Props, State> {
                 styles.resizeController,
                 styles.resizeController_top_right,
                 currentController === 'top_right' && styles.resizeController_active,
+                'resize-controller',
               )}
               onMouseDown={this.handleDragStart}
               onMouseEnter={this.handleResizeControllerMouseEnter}
@@ -315,6 +316,7 @@ export class DragResize extends React.Component<Props, State> {
                 styles.resizeController,
                 styles.resizeController_bottom_right,
                 currentController === 'bottom_right' && styles.resizeController_active,
+                'resize-controller',
               )}
               onMouseDown={this.handleDragStart}
               onMouseEnter={this.handleResizeControllerMouseEnter}
@@ -326,6 +328,7 @@ export class DragResize extends React.Component<Props, State> {
                 styles.resizeController,
                 styles.resizeController_top_left,
                 currentController === 'top_left' && styles.resizeController_active,
+                'resize-controller',
               )}
               onMouseDown={this.handleDragStart}
               onMouseEnter={this.handleResizeControllerMouseEnter}
@@ -337,6 +340,7 @@ export class DragResize extends React.Component<Props, State> {
                 styles.resizeController,
                 styles.resizeController_bottom_left,
                 currentController === 'bottom_left' && styles.resizeController_active,
+                'resize-controller',
               )}
               onMouseDown={this.handleDragStart}
               onMouseEnter={this.handleResizeControllerMouseEnter}
@@ -348,6 +352,7 @@ export class DragResize extends React.Component<Props, State> {
                 styles.resizeController,
                 styles.resizeController_top,
                 currentController === 'top' && styles.resizeController_active,
+                'resize-controller',
               )}
               onMouseDown={this.handleDragStart}
               onMouseEnter={this.handleResizeControllerMouseEnter}
@@ -359,6 +364,7 @@ export class DragResize extends React.Component<Props, State> {
                 styles.resizeController,
                 styles.resizeController_bottom,
                 currentController === 'bottom' && styles.resizeController_active,
+                'resize-controller',
               )}
               onMouseDown={this.handleDragStart}
               onMouseEnter={this.handleResizeControllerMouseEnter}
@@ -370,6 +376,7 @@ export class DragResize extends React.Component<Props, State> {
                 styles.resizeController,
                 styles.resizeController_left,
                 currentController === 'left' && styles.resizeController_active,
+                'resize-controller',
               )}
               onMouseDown={this.handleDragStart}
               onMouseEnter={this.handleResizeControllerMouseEnter}
@@ -381,6 +388,7 @@ export class DragResize extends React.Component<Props, State> {
                 styles.resizeController,
                 styles.resizeController_right,
                 currentController === 'right' && styles.resizeController_active,
+                'resize-controller',
               )}
               onMouseDown={this.handleDragStart}
               onMouseEnter={this.handleResizeControllerMouseEnter}

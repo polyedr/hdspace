@@ -61,7 +61,7 @@ export const SortableGroup: React.FC<Props> = (props) => {
 
   const handleDragEnter = useCallback((evt) => {
     const container = evt.target.closest('.sortable-group');
-    const isResizeController = evt.target.classList.contains('DragResize__resizeController__py5bU');
+    const isResizeController = evt.target.classList.contains('resize-controller');
 
     if (container && !isResizeController) {
       container.classList.add('hovered');
@@ -70,7 +70,7 @@ export const SortableGroup: React.FC<Props> = (props) => {
 
   const handleDragLeave = useCallback((evt) => {
     const container = evt.target.closest('.sortable-group');
-    const isResizeController = evt.relatedTarget.classList.contains('DragResize__resizeController__py5bU');
+    const isResizeController = evt.relatedTarget.classList.contains('resize-controller');
 
     if (container && !container.contains(evt.relatedTarget) && !isResizeController) {
       container.classList.remove('hovered');
