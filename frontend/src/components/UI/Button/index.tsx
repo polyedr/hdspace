@@ -27,6 +27,7 @@ interface IButtonProps {
   onClick?: (e: any) => void
   className?: string,
 }
+
 export const Button: React.FunctionComponent<IButtonProps> = memo(({
   children,
   type,
