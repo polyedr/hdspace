@@ -73,18 +73,18 @@ const RecursiveComponent: React.FC<Props> = (props) => {
     updateElementStyles,
   } = props;
 
-  const [isDragging, setDragging] = useState<boolean>(false);
+  const [isDragging, setIsDragging] = useState<boolean>(false);
 
   const handleChooseToSort = useCallback((itemIndex) => {
     // TODO: called when item chosen for sorting. rewrite without onActiveElementChange use
-    setDragging(true);
+    setIsDragging(true);
     if (item.children[itemIndex] !== activeItemId) {
       onActiveElementChange(item.id, item.children[itemIndex]);
     }
   }, [item, activeItemId, onActiveElementChange]);
 
   const handleItemPositionChange = useCallback((index: number, list: string[], parentId: string) => {
-    setDragging(false);
+    setIsDragging(false);
     setListSortable(index, list, activeItemId, parentId);
   }, [activeItemId, setListSortable]);
 
