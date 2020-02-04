@@ -3,13 +3,11 @@ import * as R from 'ramda';
 import { connect } from 'react-redux';
 
 import { AppReduxState } from '$shared/types/app';
-import * as Actions from '$redux/project/actions';
 import { SortableGroup } from '$components/Editor/SortableGroup/SortableGroup';
 import { DragResize } from '$components/Editor/DragResize/DragResize';
 import { RENDERERS } from '$components/UI/RenderElements';
-import { IEditProps } from '$components/Editor/Editor/Editor';
 import { IListSortable, ILSItem } from '$redux/project/types';
-import { selectors } from '$redux/project';
+import { selectors, actionsCreators } from '$redux/project';
 import { getItemsPair, getParams, idToLSId } from '$utils/parseScenario';
 import { LIST_SCENARIO_TYPE } from '$constants/defaultParams';
 import { convertPropCSS } from '$utils/StyleHelper';
@@ -37,7 +35,8 @@ const mapStateToProps = (state: AppReduxState, props: OwnProps) => {
 };
 
 const mapDispatchToProps = {
-  updateElementStyles: Actions.updateElementStyles,
+  updateElementStyles: actionsCreators.updateElementStyles,
+  setListSortable: actionsCreators.setListSortable,
 };
 
 export type OwnProps = {
@@ -46,7 +45,6 @@ export type OwnProps = {
   isMoving: boolean,
   listNotDragging: string[],
 
-  onChange: IEditProps['setListSortable'],
   onActiveElementChange(parentId: number, childID: string): void,
   setIsMoving: (value: boolean) => void,
 }
@@ -61,7 +59,7 @@ const RecursiveComponent: React.FC<Props> = (props) => {
     listNotDragging,
     isPrototypeMode,
     onActiveElementChange,
-    onChange,
+    setListSortable,
     setIsMoving,
 
     listSortable,
@@ -78,8 +76,8 @@ const RecursiveComponent: React.FC<Props> = (props) => {
   }, [item, activeItemId, onActiveElementChange]);
 
   const handleItemPositionChange = useCallback((index: number, list: string[], parentId: string) => {
-    onChange(index, list, activeItemId, parentId);
-  }, [activeItemId, onChange]);
+    setListSortable(index, list, activeItemId, parentId);
+  }, [activeItemId, setListSortable]);
 
   const getGroupName = useCallback((itemType): string => (
     LIST_SCENARIO_TYPE.indexOf(itemType) !== -1 ? itemType : 'element'
@@ -149,7 +147,6 @@ const RecursiveComponent: React.FC<Props> = (props) => {
                   item={currentItem}
                   listNotDragging={listNotDragging}
                   onActiveElementChange={onActiveElementChange}
-                  onChange={onChange}
                   setIsMoving={setIsMoving}
                 />,
               })}
@@ -170,7 +167,6 @@ const RecursiveComponent: React.FC<Props> = (props) => {
                 item={currentItem}
                 listNotDragging={listNotDragging}
                 onActiveElementChange={onActiveElementChange}
-                onChange={onChange}
                 setIsMoving={setIsMoving}
               />,
             })

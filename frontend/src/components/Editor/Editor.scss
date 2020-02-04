@@ -1,0 +1,12 @@
+.editorContainer {
+  position: relative;
+
+  display: flex;
+  height: calc(100vh - 215px);
+
+  user-select: none;
+
+  &_minimized {
+    height: calc(100vh - 145px);
+  }
+}
