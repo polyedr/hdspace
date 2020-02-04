@@ -76,7 +76,7 @@ export const SortableGroup: React.FC<Props> = (props) => {
       container.classList.remove('hovered');
     }
   }, [])
-
+  // below, two handlers stop the event popup. Since when popping up to Workspace, the highlighting of the elements starts from two places in the code. As a result, when dragging the control, the backlight is incorrect
   const handleSortableMouseOver = useCallback((event: React.MouseEvent) => {
     isSomeItemBeingDragged && event.stopPropagation();
   }, []);
