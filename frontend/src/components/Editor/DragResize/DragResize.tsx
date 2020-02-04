@@ -205,7 +205,7 @@ export class DragResize extends React.Component<Props, State> {
     event.preventDefault(); // when clicking on wrappers added by DragResize, focus moved from focused element (child) to nearest interactive one. event.preventDefault prevents focus from losing https://javascript.info/focus-blur#methods-focus-blur
 
     const currentEvent = { ...event };
-    const { style, sortableId, onResize  } = this.props;
+    const { style, sortableId, onResize } = this.props;
 
     if (!style || !strToNumber(String(style.width)) || !strToNumber(String(style.height))) {
       const el = document.getElementById(String(sortableId));
@@ -288,11 +288,9 @@ export class DragResize extends React.Component<Props, State> {
             ...children.props,
             style: {
               ...children.props.style,
-              ...({
-                width: calculatedWidth,
-                height: calculatedHeight,
-                ...(useHackToSyncElementAndWrapperWidth ? { width: extractWidth(children) } : {}),
-              })
+              width: calculatedWidth,
+              height: calculatedHeight,
+              ...(useHackToSyncElementAndWrapperWidth ? { width: extractWidth(children) } : {}),
               // width: (width && width - deltaX) || 'auto',
               // height: (height && height - deltaY) || 'auto',
             },
