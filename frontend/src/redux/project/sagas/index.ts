@@ -593,7 +593,13 @@ function* pasteCopiedItemSaga() {
         elements: targetContainer.elements.concat(createdElement.id),
         parameters: {
           ...targetContainer.parameters,
-          children: targetContainer.parameters.children.concat(`${createdElement.id}e`),
+          children: R.insert(
+            targetContainer.parameters.children.indexOf(
+              `${elementToDuplicate.id}e`
+            ) + 1,
+            `${createdElement.id}e`,
+            targetContainer.parameters.children
+          ),
         },
       },
     };

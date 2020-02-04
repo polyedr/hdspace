@@ -81,18 +81,29 @@ export const Editor: React.FC<IEditProps> = memo(({
 
   useEffect(() => {
     const listener = (event: KeyboardEvent) => {
-      if (event.code == 'KeyC' && (event.metaKey || event.ctrlKey)) {
+      const isItemCopyEvent =
+        document.activeElement?.getAttribute('data-ls-id') &&
+        event.code == 'KeyC' &&
+        (event.metaKey || event.ctrlKey);
+
+      if (isItemCopyEvent) {
         copyActiveItem();
+        navigator.clipboard.writeText('');
       }
     };
-
+   
     document.addEventListener('keydown', listener);
     return () => document.removeEventListener('keydown', listener);
   }, [copyActiveItem]);
 
   useEffect(() => {
     const listener = (event: KeyboardEvent) => {
-      if (event.code == 'KeyV' && (event.metaKey || event.ctrlKey)) {
+      const isItemPasteEvent =
+        document.activeElement?.getAttribute('data-ls-id') &&
+        event.code == 'KeyV' &&
+        (event.metaKey || event.ctrlKey);
+
+      if (isItemPasteEvent) {
         pasteCopiedItem();
       }
     };
