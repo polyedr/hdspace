@@ -9,28 +9,4 @@
   &_minimized {
     height: calc(100vh - 145px);
   }
-
-  &_overlay {
-    position: absolute;
-    top: -5px;
-    left: 0px;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    height: calc(100% + 75px);
-
-    background-color: #000000;
-    border-radius: 5px;
-    box-shadow: 0 0 10px 5px #000000;
-
-    opacity: 0.7;
-
-    & p {
-      font-size: 35px;
-      line-height: 45px;
-      font-weight: 600;
-    }
-  }
 }

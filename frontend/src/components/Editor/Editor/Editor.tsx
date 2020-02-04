@@ -106,7 +106,6 @@ export const Editor: React.FC<IEditProps> = memo(({
       className={cn(
         styles.editorContainer,
         isNavPanelMinimized && styles.editorContainer_minimized,
-        screenId === -1 && styles.editorContainer_hide,
       )}
     >
       <Workspace />
