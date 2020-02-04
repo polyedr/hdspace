@@ -59,12 +59,22 @@ export const SortableGroup: React.FC<Props> = (props) => {
   //   ref.forceUpdate();
   // }, [handleChoose, ref]);
 
-  const handleDragEnter = useCallback((el) => {
-    el.parentElement.classList.add('hovered');
+  const handleDragEnter = useCallback((evt) => {
+    const container = evt.target.closest('.sortable-group');
+    const isResizeController = evt.target.classList.contains('DragResize__resizeController__py5bU');
+
+    if (container && !isResizeController) {
+      container.classList.add('hovered');
+    }
   }, [])
 
-  const handleDragLeave = useCallback((el) => {
-    el.parentElement.classList.remove('hovered');
+  const handleDragLeave = useCallback((evt) => {
+    const container = evt.target.closest('.sortable-group');
+    const isResizeController = evt.relatedTarget.classList.contains('DragResize__resizeController__py5bU');
+
+    if (container && !container.contains(evt.relatedTarget) && !isResizeController) {
+      container.classList.remove('hovered');
+    }
   }, [])
 
   const handleSortableMouseOver = useCallback((event: React.MouseEvent) => {

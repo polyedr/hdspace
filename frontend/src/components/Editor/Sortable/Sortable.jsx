@@ -9,13 +9,6 @@ const store = {
 };
 
 export class Sortable extends Component {
-  constructor(props) {
-    super(props);
-
-    this.handleDragEnter = this.handleDragEnter.bind(this);
-    this.handleDragLeave = this.handleDragLeave.bind(this);
-  }
-
   static propTypes = {
     options: PropTypes.object,
     onChange: PropTypes.func,
@@ -100,8 +93,8 @@ export class Sortable extends Component {
     const options = this.generateOptionsEnts({ ...this.props.options });
 
     this.sortable = SortableJS.create(this.node, options);
-    this.node.addEventListener('dragenter', this.handleDragEnter);
-    this.node.addEventListener('dragleave', this.handleDragLeave);
+    this.node.addEventListener('dragenter', this.props.onDragEnter);
+    this.node.addEventListener('dragleave', this.props.onDragLeave);
   }
 
   shouldComponentUpdate = (nextProps) => {
@@ -124,24 +117,6 @@ export class Sortable extends Component {
     if (this.sortable) {
       this.sortable.destroy();
       this.sortable = null;
-    }
-  }
-
-  handleDragEnter(evt) {
-    const container = evt.target.closest('.sortable-group');
-    const isResizeController = evt.target.classList.contains('DragResize__resizeController__py5bU');
-
-    if (container && !isResizeController) {
-      this.props.onDragEnter(container);
-    }
-  }
-
-  handleDragLeave(evt) {
-    const container = evt.target.closest('.sortable-group');
-    const isResizeController = evt.relatedTarget.classList.contains('DragResize__resizeController__py5bU');
-
-    if (container && !container.contains(evt.relatedTarget) && !isResizeController) {
-      this.props.onDragLeave(container);
     }
   }
 
