@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import { AppReduxState } from '$shared/types/app';
-import { Editor } from '$components/Editor/Editor/Editor';
+import { Editor } from '$components/Editor/Editor';
 import NavPanelScreen from '$components/NavPanelScreen/NavPanelScreen';
 import * as Actions from '$redux/project/actions';
 import { selectors } from '$redux/project';
@@ -23,13 +23,10 @@ interface MatchParams {
 
 const mapStateToProps = (state: AppReduxState) => ({
   currentProject: selectors.selectCurrentProject(state),
-  isLPanelMinimized: state.user.isLPanelMinimized,
   isNavPanelMinimized: state.user.isNavPanelMinimized,
   isPrototypeMode: state.user.isPrototypeMode,
   currentScreen: selectors.selectCurrentScreen(state),
   scenarioLoader: selectors.selectScenarioLoader(state),
-  scenarios: selectors.selectScenarios(state),
-  scenarioElements: selectors.selectScenariosElements(state),
   activeItem: selectors.selectActiveItem(state),
 });
 
@@ -39,16 +36,12 @@ const mapDispatchToProps = {
   activateScreen: Actions.activateScreen,
   addScreen: Actions.addScreen,
   setScreen: Actions.setScreen,
-  saveScreen: Actions.saveScreen,
   delScreen: Actions.delScreen,
   renameScreen: Actions.renameScreen,
   delScenario: Actions.delScenario,
   delScenarioItem: Actions.delScenarioItem,
-  setListSortable: Actions.setListSortable,
   updateElementStyles: Actions.updateElementStyles,
   changeMinNavPanel: UserActions.changeMinNavPanel,
-  changePrototypeMode: UserActions.changePrototypeMode,
-  setActiveItem: Actions.setActiveItem,
   addContainer: Actions.addContainer,
   resetScreenState: Actions.resetScreenState,
   copyActiveItem: Actions.copyActiveItem,
@@ -64,33 +57,26 @@ const EditorLogic: React.FunctionComponent<EditorProps> = ({
 
   currentProject,
   currentScreen,
-  isLPanelMinimized,
   isNavPanelMinimized,
   isPrototypeMode,
   scenarioLoader,
-  scenarios,
-  scenarioElements,
   activeItem,
 
-  setActiveItem,
-  changePrototypeMode,
   changeMinNavPanel,
   getProject,
   changeScreensOrder,
   activateScreen,
   addScreen,
-  saveScreen,
   delScreen,
   renameScreen,
   delScenarioItem,
-  setListSortable,
   updateElementStyles,
   addContainer,
   resetScreenState,
   copyActiveItem,
   pasteCopiedItem,
 }: EditorProps) => (
-  <React.Fragment>
+  <>
     <NavPanelScreen
       isNavPanelMinimized={isNavPanelMinimized}
       onMinimizerNavPanel={changeMinNavPanel}
@@ -107,17 +93,10 @@ const EditorLogic: React.FunctionComponent<EditorProps> = ({
     />
     <Editor
       activeItem={activeItem}
-      setActiveItem={setActiveItem}
       screen={currentScreen}
-      scenarios={scenarios}
-      scenarioElements={scenarioElements}
-      isLPanelMinimized={isLPanelMinimized}
       isNavPanelMinimized={isNavPanelMinimized}
       isPrototypeMode={isPrototypeMode}
-      changePrototypeMode={changePrototypeMode}
-      saveScreen={saveScreen}
       delScenarioItem={delScenarioItem}
-      setListSortable={setListSortable}
       updateElementStyles={updateElementStyles}
       addContainer={addContainer}
       resetScreenState={resetScreenState}
@@ -127,7 +106,7 @@ const EditorLogic: React.FunctionComponent<EditorProps> = ({
     <Spinner
       active={currentProject.projectLoader || currentScreen.screenLoader || scenarioLoader}
     />
-  </React.Fragment>
+  </>
 );
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditorLogic);

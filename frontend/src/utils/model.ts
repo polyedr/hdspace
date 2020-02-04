@@ -5,7 +5,7 @@ import {
   LIST_SCENARIO_TYPE, DEFAULT_INDENTS, DEFAULT_FLEX, DEFAULT_BORDER, DEFAULT_BACKGROUND, DEFAULT_TYPOGRAPHY, DEFAULT_SIZE, DEFAULT_ACTION, DEFAULT_PLACEHOLDER, DEFAULT_TEXT_CONTENT, DEFAULT_MAP_PROPS,
 } from '$constants/defaultParams';
 
-const ENTITIES = [
+export const ENTITIES = [
   'root', 'container', 'button', 'textinput', 'hyperlink', 'ocrtext', 'image', 'select', 'map', 'calendar', 'clock', 'undefined'
 ] as const;
 const CONTROLS_AFFECT_ON_PARAMS = ['action', 'mapProps', 'placeholder', 'textContent'] as const;

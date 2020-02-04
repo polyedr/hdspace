@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import { IScreenMode } from '$components/Editor/Editor/Editor';
+import { IScreenMode } from '$components/Editor/Editor';
 
 export const getClassDevice = (
   styles: { [className: string]: string },
