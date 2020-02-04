@@ -280,8 +280,8 @@ export class DragResize extends React.Component<Props, State> {
         data-ls-id={sortableId}
         className={cn(
           styles.dragResizeItem,
-          isResizable ? styles['dragResizeItem_is-resizable'] : undefined) // removes 100% width from span if element is resizable (to place wrapper precisely around element)
-        }
+          isResizable ? styles['dragResizeItem_is-resizable'] : undefined // removes 100% width from span if element is resizable (to place wrapper precisely around element)
+        )}
         style={{
           ...childMargins,
           width: calculatedWidth,
@@ -296,8 +296,8 @@ export class DragResize extends React.Component<Props, State> {
             style: {
               ...elementStyles,
               ...(isResizable ? ({
-                width: calculatedWidth,
-                height: calculatedHeight,
+                width: '100%',
+                height: '100%',
                 ...(useHackToSyncElementAndWrapperWidth ? { width: extractWidth(children) } : {}),
               }) : {}),
             },
