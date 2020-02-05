@@ -87,7 +87,8 @@ p {
 .globalContainer {
   padding-left: $leftPanel_fullWidth;
   padding-top: $header_height;
-
+  display: flex;
+  flex-direction: column;
   flex: 1;
   transition: all 0.3s ease;
 }
@@ -97,5 +98,9 @@ p {
 }
 
 .workContainer {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+
   padding: $mainPadding;
 }
