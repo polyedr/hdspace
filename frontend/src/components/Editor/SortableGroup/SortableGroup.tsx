@@ -16,10 +16,9 @@ type Props = {
   stylesToInherit: React.CSSProperties,
   align?: string,
   isSomeItemBeingDragged: boolean,
-  isResizable?: boolean;
-  onChange: (index: number, items: string[], parentId: string) => void,
-  onChoose: (itemIndex: string, target?: React.SyntheticEvent) => void,
-
+  isSomeItemResizable?: boolean;
+  onChange(index: number, items: string[], parentId: string): void,
+  onChoose(itemIndex: string, target?: React.SyntheticEvent): void,
 };
 
 export const SortableGroup: React.FC<Props> = (props) => {
@@ -34,7 +33,7 @@ export const SortableGroup: React.FC<Props> = (props) => {
     onChange,
     align,
     isSomeItemBeingDragged,
-    isResizable,
+    isSomeItemResizable,
   } = props;
 
   const handleChoose = useCallback((evt) => {
@@ -64,7 +63,7 @@ export const SortableGroup: React.FC<Props> = (props) => {
   const handleDragEnter = useCallback((evt) => {
     const container = evt.target.closest('.sortable-group');
 
-    if (container && !isResizable) {
+    if (container && !isSomeItemResizable) {
       container.classList.add('hovered');
     }
   }, [])
@@ -72,11 +71,11 @@ export const SortableGroup: React.FC<Props> = (props) => {
   const handleDragLeave = useCallback((evt) => {
     const container = evt.target.closest('.sortable-group');
 
-    if (container && !container.contains(evt.relatedTarget) && !isResizable) {
+    if (container && !container.contains(evt.relatedTarget) && !isSomeItemResizable) { // when dragging over element with drag resizers, they stop dragging process by firing 'dragleave' event
       container.classList.remove('hovered');
     }
   }, [])
-  // below, two handlers stop the event popup. Since when popping up to Workspace, the highlighting of the elements starts from two places in the code. As a result, when dragging the control, the backlight is incorrect
+  // prevent items from hovering in Workspace’s mouse handlers when sorting items
   const handleSortableMouseOver = useCallback((event: React.MouseEvent) => {
     isSomeItemBeingDragged && event.stopPropagation();
   }, []);

@@ -16,7 +16,6 @@ type Props = {
   children: any;
   updateElementStyles: typeof Actions.updateElementStyles;
   isResizable: boolean;
-  isResizing: boolean;
   setIsMoving(value: boolean): void;
   onResize(isResizing: boolean): void;
 };

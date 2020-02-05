@@ -114,7 +114,7 @@ const RecursiveComponent: React.FC<Props> = (props) => {
       onChoose={handleChooseToSort}
       onChange={handleItemPositionChange}
       isSomeItemBeingDragged={isDragging}
-      isResizable={isResizable}
+      isSomeItemResizable={isResizable}
     // align={item.props && item.props.align}
     >
       {item.children.map((itemId) => {
@@ -142,7 +142,6 @@ const RecursiveComponent: React.FC<Props> = (props) => {
               updateElementStyles={updateElementStyles}
               setIsMoving={setIsMoving}
               isResizable={isResizable}
-              isResizing={isResizing}
               onResize={setIsResizing}
             >
               {renderElement({
