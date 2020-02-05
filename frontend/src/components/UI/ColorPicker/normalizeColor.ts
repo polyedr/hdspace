@@ -9,7 +9,7 @@ export const normalizeColor = (color: string | ColorResult) => {
   } else if (typeof color === 'string') {
     const isHex = /^#?(([0-9A-F]{3})([0-9A-F]{1})?|([0-9A-F]{6})([0-9A-F]{2})?)$/i.test(color);
 
-    const rgbOrRgbaRegExp = /^(rgba\(((\d{1,2}|1\d\d|2([0-4]\d|5[0-5]))\s*,\s*){2}((\d{1,2}|1\d\d|2([0-4]\d|5[0-5]))\s*)(,\s*(0\.\d+|1))\)|rgb\(((\d{1,2}|1\d\d|2([0-4]\d|5[0-5]))\s*,\s*){2}((\d{1,2}|1\d\d|2([0-4]\d|5[0-5]))\)\s*))$/i;
+    const rgbOrRgbaRegExp = /^(rgba\(((\d{1,2}|1\d\d|2([0-4]\d|5[0-5]))\s*,\s*){2}((\d{1,2}|1\d\d|2([0-4]\d|5[0-5]))\s*)(,\s*(0|0\.\d+|1))\)|rgb\(((\d{1,2}|1\d\d|2([0-4]\d|5[0-5]))\s*,\s*){2}((\d{1,2}|1\d\d|2([0-4]\d|5[0-5]))\)\s*))$/i;
 
     const isRgbOrRgbaRegExp = rgbOrRgbaRegExp.test(color);
 
