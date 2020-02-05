@@ -51,7 +51,7 @@ export const ColorPicker: React.FC<ColorPickerProps> = React.memo(({
       <div className="colorPickerContainer-backgroundEmpty"/>
       <div
         className="colorPickerContainer"
-        style={{ backgroundColor: color/* , backgroundImage:  */ }}
+        style={{ backgroundColor: color }}
         onClick={onClose}
       >
         {
