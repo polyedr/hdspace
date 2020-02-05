@@ -19,6 +19,7 @@ import {
 } from '$redux/project/types';
 import { IChooseElement } from '$components/ModalAddElements/ModalAddElements/ModalAddElements';
 import { CssLikeStyles } from '$utils/StyleHelper';
+import { ENTITIES } from '$utils/model';
 
 export type GroupElement = {
   key: string,
@@ -79,9 +80,8 @@ export const parseAddElementsTabs = (libraryElements: LibraryElements): IListCat
 );
 
 export const getCustomTemplateElements = (libraryElements: LibraryElements) => {
-  const elementsAllowedToCreate: LibraryElementType[] = ['textinput', 'select', 'button', 'hyperlink', 'ocrtext'];
   return R.keys(libraryElements).reduce((acc: ITemplateElement[], structType) => {
-    if (elementsAllowedToCreate.some(x => x === structType)) {
+    if (ENTITIES.some(x => x === structType)) {
       return acc.concat(R.values(libraryElements[structType]).map(element => ({
         label: `${structType}/${element.func_type}`,
         value: { funcType: element.func_type as ServerFuncType, structType },
