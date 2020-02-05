@@ -7,7 +7,7 @@ import { getDefaultDateSelectOptions } from '$constants/defaultParams';
 import { GMap } from '$components/UI/GMap';
 import { CalendarWidget } from '$components/UI/Calendar';
 import { ClockWidget } from '$components/UI/Clock';
-import { Entity } from '$utils/model';
+import { Entity } from '$domain/core';
 
 const styles = require('./styles.scss');
 

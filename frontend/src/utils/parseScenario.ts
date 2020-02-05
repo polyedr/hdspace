@@ -19,7 +19,7 @@ import {
 } from '$redux/project/types';
 import { IChooseElement } from '$components/ModalAddElements/ModalAddElements/ModalAddElements';
 import { CssLikeStyles } from '$utils/StyleHelper';
-import { ENTITIES } from '$utils/model';
+import { ENTITIES } from '$domain/core';
 
 export type GroupElement = {
   key: string,

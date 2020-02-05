@@ -52,7 +52,7 @@ import { apiSaveScenarios, apiSaveScenario } from '$api/scenario';
 import { DEFAULT_AUTHORISATION_TOKEN } from '$constants/defaultParams';
 
 import { selectors, T as ProjectT, actionsCreators } from '../';
-import { getConfigurablePropsOf, Entity, isElement } from '$utils/model';
+import { getConfigurablePropsOf, Entity, isElement } from '$domain/core';
 
 const runLayoutAlgorithmFinishedType: ProjectT.RunLayoutAlgorithmFinished['type'] = 'PROJECTS:RUN_LAYOUT_ALGORITHM_FINISHED';
 
