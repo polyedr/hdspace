@@ -81,8 +81,6 @@ class ProjectScreen(TimeStampedModel):
         upload_to=utils.get_file_path, blank=True, null=True, max_length=256
     )
 
-    # Screen data should be replaced with JSON field further to save DOM
-    # screen_data_char = models.CharField(max_length=1000, blank=True)
     screen_data_text = models.TextField(blank=True)
     screen_data_json = JSONField(blank=True, default=[])
 
@@ -329,17 +327,6 @@ class ScreenScenario(TimeStampedModel):
     # Order of scenarios, or the scenario weight, buoyancy
     buoyancy = models.IntegerField(null=True, blank=True)
 
-    """
-    # Size
-    scenario_height = models.IntegerField(null=True)
-    scenario_width = models.IntegerField(null=True)
-    # Location
-    x0 = models.IntegerField()
-    y0 = models.IntegerField()
-    x1 = models.IntegerField()
-    y1 = models.IntegerField()
-    """
-
     def __str__(self):
         return "{}".format(self.pk)
 
@@ -452,26 +439,10 @@ class ScenarioElement(TimeStampedModel):
         choices=ELEMENTS_TYPE_CHOICES, default=UNDEFINED, max_length=250
     )
 
-    '''
-    FTH1 = "fth1"
-    FTH2 = "fth2"
-    FTH3 = "fth2"
-    ELEMENTS_TYPE_CHOICES = (
-        (FTH1, "fth1"),
-        (FTH2, "fth2"),
-        (FTH3, "fth3"),
-        (UNDEFINED, "undefined"),
-    )
-
-    func_type_human = models.CharField(
-        choices=ELEMENTS_TYPE_CHOICES, default=UNDEFINED, max_length=250
-    )
-    '''
-
     scenario = models.ForeignKey(
         ScreenScenario, related_name="elements", on_delete=models.CASCADE, null=True
     )
-    # details_id = models.CharField(max_length=32)
+
     name = models.CharField(max_length=250, null=True)
 
     # Styles and parameters
@@ -480,10 +451,6 @@ class ScenarioElement(TimeStampedModel):
 
     # Order of elements, or the element weight, buoyancy
     buoyancy = models.IntegerField(null=True)
-
-    # Layout algorithm properties
-    # block_id = models.IntegerField(null=True)
-    # group_id = models.IntegerField(null=True)
 
     # Image upload to the image elements
     image = models.ImageField(
@@ -556,7 +523,6 @@ elements = {
         id=4,
         struct_type="image",
         func_type=["undefined"],
-        # func_type_human="",
         buoyancy=[0],
         image="null",
         parameters=[],
@@ -566,8 +532,6 @@ elements = {
         id=5,
         struct_type="button",
         func_type=["end_composite_scenario", "end_simple_scenario"],
-        # func_type_human=["undefined", "undefined"],
-        # func_type_human="",
         buoyancy=[1, 0],
         image="null",
         parameters=[{"group": "button"}],
@@ -577,7 +541,6 @@ elements = {
         id=6,
         struct_type="hyperlink",
         func_type=["end_simple_scenario"],
-        # func_type_human="",
         buoyancy=[2],
         image="null",
         parameters=[{"group": "other"}],
@@ -587,7 +550,6 @@ elements = {
         id=7,
         struct_type="paragraph",
         func_type=["undefined"],
-        # func_type_human="",
         buoyancy=[0],
         image="null",
         parameters=[],
@@ -597,7 +559,6 @@ elements = {
         id=8,
         struct_type="textbox",
         func_type=["undefined"],
-        # func_type_human="",
         buoyancy=[0],
         image="null",
         parameters=[],
@@ -607,7 +568,6 @@ elements = {
         id=9,
         struct_type="textarea",
         func_type=["undefined"],
-        # func_type_human="",
         buoyancy=[0],
         image="null",
         parameters=[],
@@ -617,14 +577,6 @@ elements = {
         id=10,
         struct_type="textinput",
         func_type=["email", "phone", "username", "firstname", "lastname", "password"],
-        # func_type_human=[
-        #     "undefined",
-        #     "undefined",
-        #     "undefined",
-        #     "undefined",
-        #     "undefined",
-        # ],
-        # func_type_human="",
         buoyancy=[95, 86, 65, 64, 61, 10],
         image="null",
         parameters=[
@@ -660,7 +612,6 @@ elements = {
         id=11,
         struct_type="icon",
         func_type=["undefined"],
-        # func_type_human="",
         buoyancy=[0],
         image="null",
         parameters=[],
@@ -670,7 +621,6 @@ elements = {
         id=12,
         struct_type="logo",
         func_type=["undefined"],
-        # func_type_human="",
         buoyancy=[0],
         image="null",
         parameters=[],
@@ -680,7 +630,6 @@ elements = {
         id=13,
         struct_type="unordered_list",
         func_type=["undefined"],
-        # func_type_human="",
         buoyancy=[0],
         image="null",
         parameters=[],
@@ -690,7 +639,6 @@ elements = {
         id=14,
         struct_type="ordered_list",
         func_type=["undefined"],
-        # func_type_human="",
         buoyancy=[0],
         image="null",
         parameters=[],
@@ -700,7 +648,6 @@ elements = {
         id=15,
         struct_type="table",
         func_type=["undefined"],
-        # func_type_human="",
         buoyancy=[0],
         image="null",
         parameters=[],
@@ -710,8 +657,6 @@ elements = {
         id=16,
         struct_type="ocrtext",
         func_type=["title", "description", "label"],
-        # func_type_human=["undefined", "undefined", "undefined"],
-        # func_type_human="",
         buoyancy=[100, 98, 0],
         image="null",
         parameters=[{"group": "other"}, {"group": "other"}, {"group": "other"}],
@@ -725,7 +670,6 @@ elements = {
         id=17,
         struct_type="div",
         func_type=["undefined"],
-        # func_type_human="",
         buoyancy=[0],
         image="null",
         parameters=[],
@@ -735,7 +679,6 @@ elements = {
         id=18,
         struct_type="undefined",
         func_type=["undefined"],
-        # func_type_human="",
         buoyancy=[0],
         image="null",
         parameters=[],
@@ -745,8 +688,6 @@ elements = {
         id=19,
         struct_type="select",
         func_type=["day", "month", "year"],
-        # func_type_human=["undefined", "undefined", "undefined"],
-        # func_type_human="",
         buoyancy=[54, 54, 54],
         image="null",
         parameters=[
@@ -764,7 +705,6 @@ elements = {
         id=20,
         struct_type="map",
         func_type=["map"],
-        # func_type_human="",
         buoyancy=[0],
         image="null",
         parameters=[{"group": "widget"}],
@@ -774,7 +714,6 @@ elements = {
         id=21,
         struct_type="calendar",
         func_type=["calendar"],
-        # func_type_human="",
         buoyancy=[0],
         image="null",
         parameters=[{"group": "widget"}],
@@ -784,7 +723,6 @@ elements = {
         id=22,
         struct_type="clock",
         func_type=["clock"],
-        # func_type_human="",
         buoyancy=[0],
         image="null",
         parameters=[{"group": "widget"}],
@@ -794,7 +732,6 @@ elements = {
         id=23,
         struct_type="checkbox",
         func_type=["checkbox"],
-        # func_type_human="",
         buoyancy=[0],
         image="null",
         parameters=[],
@@ -804,7 +741,6 @@ elements = {
         id=24,
         struct_type="radiobutton",
         func_type=["radiobutton"],
-        # func_type_human="",
         buoyancy=[0],
         image="null",
         parameters=[],
