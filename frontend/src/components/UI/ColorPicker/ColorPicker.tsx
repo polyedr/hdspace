@@ -47,27 +47,30 @@ export const ColorPicker: React.FC<ColorPickerProps> = React.memo(({
   }, [onClose]);
 
   return (
-    <div
-      className="colorPickerContainer"
-      style={{ backgroundColor: color }}
-      onClick={onClose}
-    >
-      {
-        display && (
-          <div className="colorPicker">
-            <div
-              className="colorPickerOverlay"
-              onClick={handleClickOverlay}
-            />
-            <div onClick={handleStopEvent}>
-              <SketchPicker
-                color={color}
-                onChangeComplete={onChangeComplete}
+    <>
+      <div className="colorPickerContainer-backgroundEmpty"/>
+      <div
+        className="colorPickerContainer"
+        style={{ backgroundColor: color/* , backgroundImage:  */ }}
+        onClick={onClose}
+      >
+        {
+          display && (
+            <div className="colorPicker">
+              <div
+                className="colorPickerOverlay"
+                onClick={handleClickOverlay}
               />
+              <div onClick={handleStopEvent}>
+                <SketchPicker
+                  color={color}
+                  onChangeComplete={onChangeComplete}
+                />
+              </div>
             </div>
-          </div>
-        )
-      }
-    </div>
+          )
+        }
+      </div>
+    </>
   );
 });

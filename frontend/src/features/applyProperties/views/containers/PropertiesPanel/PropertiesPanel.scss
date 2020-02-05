@@ -211,6 +211,13 @@
   }
 }
 
+:global(.colorPickerContainer-backgroundEmpty) {
+  background-image: url('./../../../../../assets/sprites/background_empty.png');
+  position: absolute;
+  width: 80px;
+  height: 100%;
+}
+
 :global(.colorPickerCover) {
   position: fixed;
   top: 0px;
