@@ -52,13 +52,9 @@ INSTALLED_APPS = [
     'djoser',
     'rest_framework_swagger',
     'corsheaders',
-    # 'rest_framework_simplejwt.token_blacklist', djongo.sql2mongo.SQLDecodeError:
-    # FAILED SQL: ALTER TABLE "token_blacklist_blacklistedtoken" ADD COLUMN "token_id" int32 NOT NULL UNIQUE
 ]
 
 EXTERNAL_APPS = [
-    # "widget_tweaks",
-    # 'paypal.standard.ipn',
     'social_django',
 ]
 
@@ -83,38 +79,10 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "social_django.middleware.SocialAuthExceptionMiddleware",
-    # 'apps.core.middleware.activeuser_middleware.active_user_middleware',
-
-
 ]
 
 # Allow CORS for all domains
 CORS_ORIGIN_ALLOW_ALL = True
-
-# Specify CORS for domains of interest
-"""
-CORS_ORIGIN_ALLOW_ALL = True
-CORS_ALLOW_CREDENTIALS = True
-CORS_ORIGIN_WHITELIST = (
-    'localhost:8080',
-    'localhost:8000',
-)
-CORS_ORIGIN_REGEX_WHITELIST = (
-    'localhost:8080',
-    'localhost:8000',
-)
-"""
-
-"""
-# Set the regular access permissions
-REST_FRAMEWORK = {
-    # Use Django's standard `django.contrib.auth` permissions,
-    # or allow read-only access for unauthenticated users.
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
-    ]
-}
-"""
 
 # Set default permissions to anyone can access our API
 REST_FRAMEWORK = {
@@ -170,32 +138,16 @@ WSGI_APPLICATION = "project.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
-'''
 DATABASES = {
     'default': {
-        'ENGINE': 'djongo',
-        'NAME': ENV.str("DB_NAME", "db"),
-        'HOST': ENV.str("DB_HOST", "db"),
-        'PORT': ENV.int("DB_PORT", 27017),
-        # 'USER': ENV.str("DB_USER"),
-        # 'PASSWORD': ENV.str("DB_PASSWORD"),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('DB_NAME', 'adevi_db'),
+        'USER': os.getenv('DB_USER', 'adevi_user'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'HOST': os.getenv('DB_HOST', '127.0.0.1'),
+        'PORT': os.getenv('DB_PORT', 5432),
     }
 }
-'''
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'adevi_db',
-        'USER': 'adevi_user',
-        'PASSWORD': 'B7.d=$[',
-        'HOST': '127.0.0.1',
-        'PORT': '5432',
-
-    }
-}
-
-
 
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
@@ -262,14 +214,6 @@ CELERYBEAT_SCHEDULE = {
 }
 CELERY_RESULT_BACKEND = REDIS_URL
 
-# EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-# EMAIL_HOST = "smtp.gmail.com"
-# EMAIL_USE_TLS = True
-# EMAIL_PORT = 587
-# EMAIL_HOST_USER = "davittovmasyan26@gmail.com"
-# EMAIL_HOST_PASSWORD = "davit123"
-
-
 # Email settings
 EMAIL_BASE_TEMPLATE = "email/base.html"
 DOWNLOAD_BASE_TEMPLATE = "base_download.html"
@@ -288,17 +232,6 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = "iishchukov@allmax.team"
 EMAIL_HOST_PASSWORD = "temporary"
 EMAIL_USE_TLS = True
-
-
-#
-# if DEBUG:
-#     EMAIL_HOST = 'localhost'
-#     EMAIL_PORT = 1025
-#     EMAIL_HOST_USER = ''
-#     EMAIL_HOST_PASSWORD = ''
-#     EMAIL_USE_TLS = False
-#     DEFAULT_FROM_EMAIL = 'testing@example.com'
-#
 
 # Django PayPal settings
 '''
@@ -353,7 +286,6 @@ SIMPLE_JWT = {
     'VERIFYING_KEY': None,
 
     'AUTH_HEADER_TYPES': ('Bearer',),
-    # 'AUTH_HEADER_TYPES': ('JWT',),
     'USER_ID_FIELD': 'id',
     'USER_ID_CLAIM': 'user_id',
 
@@ -375,7 +307,6 @@ DJOSER = {
     'ACTIVATION_URL': '#/activate/{uid}/{token}',
     'SEND_ACTIVATION_EMAIL': True,
     'SERIALIZERS': {},
-    # 'SERIALIZERS': {'user':'apps.accounts.serializers.UserSerializer'},
 }
 
 
@@ -432,6 +363,5 @@ model = modellib.MaskRCNN(
 model_path = os.path.join(MODEL_DIR, "mask_rcnn_form_login_0026.h5")
 
 # Load trained weights
-# print("Loading weights from ", model_path)
 model.load_weights(model_path, by_name=True)
 model.keras_model._make_predict_function()
