@@ -171,6 +171,10 @@ export interface IListProject {
   }[],
 }
 
+export type IScreenDisplay = {
+  display: 'block' | 'flex'
+};
+
 export interface IScreenIndents {
   'margin-top'?: string,
   'margin-right'?: string,

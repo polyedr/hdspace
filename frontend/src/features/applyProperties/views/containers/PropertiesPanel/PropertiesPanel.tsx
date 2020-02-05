@@ -20,6 +20,7 @@ import { BorderBlock } from '../Controls/BorderBlock';
 import { TypographyBlock } from '../Controls/TypographyBlock';
 import { Placeholder } from '../Controls/Placeholder/Placeholder';
 import { TextContent } from '../Controls/TextContent/TextContent';
+import { Display } from '../Controls/Display';
 const styles = require('./PropertiesPanel.scss');
 
 type StateProps = {
@@ -49,6 +50,7 @@ const mapDispatch = {
 };
 
 const CONTROLS: Record<Control, React.ComponentType> = {
+  display: Display,
   direction: GroupElementsDirectionBlock,
   indents: IndentsBlock,
   size: SizeBlock,
