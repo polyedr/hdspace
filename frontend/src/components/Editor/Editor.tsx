@@ -82,9 +82,9 @@ export const Editor: React.FC<IEditProps> = memo(({
   useEffect(() => {
     const listener = (event: KeyboardEvent) => {
       const isItemCopyEvent =
-        document.activeElement?.getAttribute('data-ls-id') &&
         event.code == 'KeyC' &&
-        (event.metaKey || event.ctrlKey);
+        (event.metaKey || event.ctrlKey) &&
+        document.activeElement?.hasAttribute('data-ls-id');
 
       if (isItemCopyEvent) {
         copyActiveItem();
@@ -99,9 +99,9 @@ export const Editor: React.FC<IEditProps> = memo(({
   useEffect(() => {
     const listener = (event: KeyboardEvent) => {
       const isItemPasteEvent =
-        document.activeElement?.getAttribute('data-ls-id') &&
         event.code == 'KeyV' &&
-        (event.metaKey || event.ctrlKey);
+        (event.metaKey || event.ctrlKey) &&
+        document.activeElement?.hasAttribute('data-ls-id');
 
       if (isItemPasteEvent) {
         pasteCopiedItem();
