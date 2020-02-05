@@ -20,6 +20,7 @@ import { isIncludes } from '$utils/StringHelper';
 import { uniqueId } from '$utils/NumberHelper';
 import { IUploadFile, UploadFile } from '$components/UI/UploadFile';
 import { PropertiesPanelProps } from '$features/applyProperties';
+import { ENTITIES } from '$domain/core';
 
 const styles = require('./ActionsBlock.scss');
 
@@ -265,22 +266,25 @@ export const ActionsBlock: React.FunctionComponent<Props> = ({
               >
                 {activeTab !== 'Image' && (
                   <div className={styles.contentList}>
-                    {
-                      filterGroupElements.map(({ key, value, label }) => (
+                    {filterGroupElements.map(({ key, value, label }) => {
+                      const isDisabled = !R.includes(value.structType, ENTITIES);
+                      return (
                         <Button
                           key={key}
                           className={classNames(
                             styles.contentTemplateBtn,
-                            selectedElements.some(el => el.type === value.funcType && el.structType === value.structType)
+                            !isDisabled
+                            && selectedElements.some(el => el.type === value.funcType && el.structType === value.structType)
                             && styles.contentTemplateBtn_active,
                           )}
+                          disabled={isDisabled}
                           styleType="none" // TODO: disable elements that don't have controls or renderer
                           onClick={() => handleChooseElement(value)}
                         >
                           {label}
                         </Button>
-                      ))
-                    }
+                      );
+                    })}
                   </div>
                 )}
                 {activeTab === 'Image' && (

@@ -52,7 +52,7 @@ import { apiSaveScenarios, apiSaveScenario } from '$api/scenario';
 import { DEFAULT_AUTHORISATION_TOKEN } from '$constants/defaultParams';
 
 import { selectors, T as ProjectT, actionsCreators } from '../';
-import { getConfigurablePropsOf, Entity, isElement } from '$utils/model';
+import { getConfigurablePropsOf, Entity, isElement } from '$domain/core';
 
 const runLayoutAlgorithmFinishedType: ProjectT.RunLayoutAlgorithmFinished['type'] = 'PROJECTS:RUN_LAYOUT_ALGORITHM_FINISHED';
 
@@ -593,7 +593,13 @@ function* pasteCopiedItemSaga() {
         elements: targetContainer.elements.concat(createdElement.id),
         parameters: {
           ...targetContainer.parameters,
-          children: targetContainer.parameters.children.concat(`${createdElement.id}e`),
+          children: R.insert(
+            targetContainer.parameters.children.indexOf(
+              `${elementToDuplicate.id}e`
+            ) + 1,
+            `${createdElement.id}e`,
+            targetContainer.parameters.children
+          ),
         },
       },
     };

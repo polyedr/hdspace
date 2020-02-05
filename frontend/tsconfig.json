@@ -25,6 +25,7 @@
       "$api/*": [ "src/api/*" ],
       "$test/*": [ "./test/*" ],
       "$shared/*": [ "src/shared/*" ],
+      "$domain/*": [ "src/domain/*" ],
     }
   },
   "include": [

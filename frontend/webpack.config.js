@@ -37,6 +37,7 @@ const resolve = {
     $test: join(__dirname, 'test'),
     $api: join(__dirname, 'src/api'),
     $shared: join(__dirname, 'src/shared'),
+    $domain: join(__dirname, 'src/domain'),
   },
   extensions: ['*', '.ts', '.tsx', '.js', '.jsx', '.json'],
 };

@@ -1,6 +1,6 @@
 import React, { CSSProperties } from 'react';
 import * as R from 'ramda';
-import classNames from 'classnames';
+import cn from 'classnames';
 import { autobind } from 'core-decorators';
 
 import * as Actions from '$redux/project/actions';
@@ -271,27 +271,34 @@ export class DragResize extends React.Component<Props, State> {
 
     const useHackToSyncElementAndWrapperWidth = extractWidth(children) === '100%' && !isDragStart; // without !isDragStart will fix element's with to 100% when resizing, but when we resize we want to see how height being changed
 
+    const childMargins = R.pick(['marginTop', 'marginRight', 'marginBottom', 'marginLeft'], children.props.style);
+
+    const elementStyles = R.omit(Object.keys(childMargins), children.props.style);
+
     return (
       <span
         data-id={sortableId} // used by sortable
         data-ls-id={sortableId}
-        className={classNames(
+        className={cn(
           styles.dragResizeItem,
           styles['dragResizeItem_is-resizable'] // removes 100% width from span if element is resizable (to place wrapper precisely around element)
         )}
-        style={{ ...(useHackToSyncElementAndWrapperWidth ? { width: extractWidth(children) } : {}) }}
+        style={{
+          ...childMargins,
+          width: calculatedWidth,
+          height: calculatedHeight,
+          ...(useHackToSyncElementAndWrapperWidth ? { width: extractWidth(children) } : {}),
+        }}
       >
         {React.cloneElement(
           children,
           {
             ...children.props,
             style: {
-              ...children.props.style,
-              width: calculatedWidth,
-              height: calculatedHeight,
+              ...elementStyles,
+              width: '100%',
+              height: '100%',
               ...(useHackToSyncElementAndWrapperWidth ? { width: extractWidth(children) } : {}),
-              // width: (width && width - deltaX) || 'auto',
-              // height: (height && height - deltaY) || 'auto',
             },
           },
         )}
@@ -299,7 +306,7 @@ export class DragResize extends React.Component<Props, State> {
           <React.Fragment>
             <div
               id="top_right"
-              className={classNames(
+              className={cn(
                 styles.resizeController,
                 styles.resizeController_top_right,
                 currentController === 'top_right' && styles.resizeController_active,
@@ -311,7 +318,7 @@ export class DragResize extends React.Component<Props, State> {
             />
             <div
               id="bottom_right"
-              className={classNames(
+              className={cn(
                 styles.resizeController,
                 styles.resizeController_bottom_right,
                 currentController === 'bottom_right' && styles.resizeController_active,
@@ -323,7 +330,7 @@ export class DragResize extends React.Component<Props, State> {
             />
             <div
               id="top_left"
-              className={classNames(
+              className={cn(
                 styles.resizeController,
                 styles.resizeController_top_left,
                 currentController === 'top_left' && styles.resizeController_active,
@@ -335,7 +342,7 @@ export class DragResize extends React.Component<Props, State> {
             />
             <div
               id="bottom_left"
-              className={classNames(
+              className={cn(
                 styles.resizeController,
                 styles.resizeController_bottom_left,
                 currentController === 'bottom_left' && styles.resizeController_active,
@@ -347,7 +354,7 @@ export class DragResize extends React.Component<Props, State> {
             />
             <div
               id="top"
-              className={classNames(
+              className={cn(
                 styles.resizeController,
                 styles.resizeController_top,
                 currentController === 'top' && styles.resizeController_active,
@@ -359,7 +366,7 @@ export class DragResize extends React.Component<Props, State> {
             />
             <div
               id="bottom"
-              className={classNames(
+              className={cn(
                 styles.resizeController,
                 styles.resizeController_bottom,
                 currentController === 'bottom' && styles.resizeController_active,
@@ -371,7 +378,7 @@ export class DragResize extends React.Component<Props, State> {
             />
             <div
               id="left"
-              className={classNames(
+              className={cn(
                 styles.resizeController,
                 styles.resizeController_left,
                 currentController === 'left' && styles.resizeController_active,
@@ -383,7 +390,7 @@ export class DragResize extends React.Component<Props, State> {
             />
             <div
               id="right"
-              className={classNames(
+              className={cn(
                 styles.resizeController,
                 styles.resizeController_right,
                 currentController === 'right' && styles.resizeController_active,

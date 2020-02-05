@@ -46,7 +46,7 @@ import { ReturnPromisedType } from '$shared/types';
 import { reqWrapper } from '.';
 import { selectors, T } from '../';
 import { createContainer } from './scenario';
-import { getConfigurablePropsOf } from '$utils/model';
+import { getConfigurablePropsOf } from '$domain/core';
 
 const runLayoutAlgorithmFinishedType: T.RunLayoutAlgorithmFinished['type'] = 'PROJECTS:RUN_LAYOUT_ALGORITHM_FINISHED';
 
