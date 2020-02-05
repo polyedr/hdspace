@@ -20,7 +20,7 @@ import { isIncludes } from '$utils/StringHelper';
 import { uniqueId } from '$utils/NumberHelper';
 import { IUploadFile, UploadFile } from '$components/UI/UploadFile';
 import { PropertiesPanelProps } from '$features/applyProperties';
-import { ENTITIES } from '$utils/model';
+import { ENTITIES } from '$domain/core';
 
 const styles = require('./ActionsBlock.scss');
 

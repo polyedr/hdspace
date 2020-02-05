@@ -21,7 +21,7 @@ import {
 import { DEFAULT_INDENTS } from '$constants/defaultParams';
 import { reqWrapper } from '$redux/project/sagas/index';
 import { ReturnPromisedType } from '$shared/types';
-import { isScenario, getConfigurablePropsOf, Entity } from '$utils/model';
+import { isScenario, getConfigurablePropsOf, Entity } from '$domain/core';
 
 import { selectors, T } from '../';
 

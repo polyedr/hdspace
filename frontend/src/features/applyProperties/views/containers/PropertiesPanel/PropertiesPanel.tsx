@@ -7,7 +7,7 @@ import { AppReduxState } from '$shared/types/app';
 import { actionsCreators, selectors, T as ProjectT } from '$redux/project';
 import { Scrollbar } from '$components/UI/Scrollbar/';
 import { Spinner } from '$components/UI/Spinner/';
-import { AVAILABLE_CONTROLS, Control, Entity } from '$utils/model';
+import { AVAILABLE_CONTROLS, Control, Entity } from '$domain/core';
 
 import { ActiveElementBlock } from '../Controls/ActiveElementBlock';
 import { GroupElementsDirectionBlock } from '../Controls/GroupElementsDirectionBlock';
