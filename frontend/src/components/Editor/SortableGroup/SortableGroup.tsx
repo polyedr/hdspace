@@ -15,8 +15,10 @@ type Props = {
   children?: any,
   stylesToInherit: React.CSSProperties,
   align?: string,
-  onChange: (index: number, items: string[], parentId: string) => void,
-  onChoose: (itemIndex: string, target?: React.SyntheticEvent) => void,
+  isSomeItemBeingDragged: boolean,
+  isSomeItemResizable?: boolean;
+  onChange(index: number, items: string[], parentId: string): void,
+  onChoose(itemIndex: string, target?: React.SyntheticEvent): void,
 };
 
 export const SortableGroup: React.FC<Props> = (props) => {
@@ -30,6 +32,8 @@ export const SortableGroup: React.FC<Props> = (props) => {
     onChoose,
     onChange,
     align,
+    isSomeItemBeingDragged,
+    isSomeItemResizable,
   } = props;
 
   const handleChoose = useCallback((evt) => {
@@ -56,12 +60,37 @@ export const SortableGroup: React.FC<Props> = (props) => {
   //   ref.forceUpdate();
   // }, [handleChoose, ref]);
 
+  const handleDragEnter = useCallback((evt) => {
+    const container = evt.target.closest('.sortable-group');
+
+    if (container && !isSomeItemResizable) {
+      container.classList.add('hovered');
+    }
+  }, [])
+
+  const handleDragLeave = useCallback((evt) => {
+    const container = evt.target.closest('.sortable-group');
+
+    if (container && !container.contains(evt.relatedTarget) && !isSomeItemResizable) { // when dragging over element with drag resizers, they stop dragging process by firing 'dragleave' event
+      container.classList.remove('hovered');
+    }
+  }, [])
+  // prevent items from hovering in Workspace’s mouse handlers when sorting items
+  const handleSortableMouseOver = useCallback((event: React.MouseEvent) => {
+    isSomeItemBeingDragged && event.stopPropagation();
+  }, []);
+
+  const handleSortableMouseOut = useCallback((event: React.MouseEvent) => {
+    isSomeItemBeingDragged && event.stopPropagation();
+  }, []);
+
+
   return (
     <Sortable
       id={parent}
       style={stylesToInherit}
       className={classNames(
-        parent !== 'root' && 'groupItem',
+        parent !== 'root' && 'sortable-group',
         // styles[group],
         align && styles[`align_${align}`],
         disableSortable && styles.moving,
@@ -99,8 +128,12 @@ export const SortableGroup: React.FC<Props> = (props) => {
       }}
       onChange={handlePositionChange}
       onChoose={handleChoose}
+      onDragEnter={handleDragEnter}
+      onDragLeave={handleDragLeave}
+      onMouseOver={handleSortableMouseOver}
+      onMouseOut={handleSortableMouseOut}
     >
       {children}
-    </Sortable>
+    </Sortable >
   );
 };

@@ -93,6 +93,8 @@ export class Sortable extends Component {
     const options = this.generateOptionsEnts({ ...this.props.options });
 
     this.sortable = SortableJS.create(this.node, options);
+    this.node.addEventListener('dragenter', this.props.onDragEnter);
+    this.node.addEventListener('dragleave', this.props.onDragLeave);
   }
 
   shouldComponentUpdate = (nextProps) => {
@@ -124,6 +126,8 @@ export class Sortable extends Component {
       options, // eslint-disable-line
       onChange, // eslint-disable-line
       onChoose, // eslint-disable-line
+      onDragEnter, // eslint-disable-line
+      onDragLeave, // eslint-disable-line
       ...props
     } = this.props;
 
