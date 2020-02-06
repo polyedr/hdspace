@@ -18,7 +18,7 @@
 }
 
 .editorWorkWindow {
-  max-width: calc(100vw - 552px);
+  max-width: calc(100vw - #{$workWindowMaxWidth});
   background-color: $panelBgColor;
   border: 1px solid $mainBorderColor;
   border-top: none;
