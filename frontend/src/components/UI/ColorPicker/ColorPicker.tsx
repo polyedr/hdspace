@@ -5,6 +5,14 @@ import cn from 'classnames';
 
 const styles = require('./styles.scss');
 
+const popoverStyle = {
+  opacity: '0',
+  overflow: 'visibility',
+  zIndex: '2',
+  border: '1px solid #e7eaec',
+  borderRadius: '4px',
+}
+
 type ColorPickerProps = {
   color: string;
   colors?: string[];
@@ -39,23 +47,19 @@ export const ColorPicker: React.FC<ColorPickerProps> = React.memo(({
     };
   }, [handleKeys]);
 
-  const handleClickOverlay = useCallback(() => {
+  const handleOverlayClick = useCallback(() => {
     setIsPopoverOpen(false)
   }, [setIsPopoverOpen]);
 
-  const popoverStyle = {
-    opacity: '0',
-    overflow: 'visibility',
-    zIndex: '2',
-    border: '1px solid #e7eaec',
-    borderRadius: '4px',
-  }
+  const handleColorPickerContainerClick = useCallback(() => {
+    setIsPopoverOpen(!isPopoverOpen)
+  }, [setIsPopoverOpen, isPopoverOpen]);
 
   return (
     <Popover
       isOpen={isPopoverOpen}
-      position={'bottom'}
-      onClickOutside={handleClickOverlay}
+      position="bottom"
+      onClickOutside={handleOverlayClick}
       align="start"
       transitionDuration={0}
       containerStyle={popoverStyle}
@@ -67,7 +71,7 @@ export const ColorPicker: React.FC<ColorPickerProps> = React.memo(({
         />
       )}
     >
-      <div onClick={() => setIsPopoverOpen(!isPopoverOpen)} className={cn(styles.colorPickerContainer)}>
+      <div onClick={handleColorPickerContainerClick} className={cn(styles.colorPickerContainer)}>
         <div className={cn(styles.backgroundEmpty)} />
         <div
           className={cn(styles.colorPickerColor)}
