@@ -131,7 +131,6 @@ export const LeftPanel: React.FunctionComponent<ILeftPanel> = ({
             >
               <Scrollbar
                 style={{
-                  height: '100%',
                   paddingBottom: 15,
                 }}
                 trackStylesBg="transparent"

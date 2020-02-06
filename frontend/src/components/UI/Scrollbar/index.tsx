@@ -7,11 +7,12 @@ interface IStyle {
 
 interface IScrollbarProps {
   children: any,
-  style: IStyle,
+  style?: IStyle,
+  className?: string;
   trackStylesBg?: string,
-  maxHeight: number | string,
+  maxHeight?: number | string,
+  autoHeightMin?: string,
   hideTracksWhenNotNeeded?: boolean,
-  isFlex?: boolean,
 }
 
 const renderTrack = ({ style, trackStylesBg, ...props }: any) => { // TODO: add correct typings!
@@ -65,11 +66,12 @@ const renderThumb = ({ style, ...props }: any) => {
   );
 };
 
-const renderView = ({ style, isFlex, ...props }: any) => {
+const renderView = ({ style, ...props }: any) => {
   const viewStyle = {
-    display: isFlex ? 'flex' : 'block',
-    ...(isFlex ? { alignItems: 'flex-start' } : {}),
+    position: 'relative',
+    display: 'block',
     height: '100%',
+    minHeight: '100%',
     overflowX: 'hidden',
   };
   return (
@@ -84,18 +86,21 @@ const renderView = ({ style, isFlex, ...props }: any) => {
 export const Scrollbar: React.FunctionComponent<IScrollbarProps> = ({
   children,
   style,
+  className,
   trackStylesBg,
+  autoHeightMin,
   maxHeight,
   hideTracksWhenNotNeeded = true,
-  isFlex,
 }) => (
   <Scrollbars
     style={style}
+    className={className}
     autoHeight
+    autoHeightMin={autoHeightMin}
     autoHeightMax={maxHeight}
     renderTrackVertical={args => renderTrack({ ...args, trackStylesBg })} // TODO: find typings for all elements!
     renderTrackHorizontal={args => renderTrackHorizontal({ ...args, trackStylesBg })}
-    renderView={args => renderView({ ...args, isFlex })}
+    renderView={args => renderView({ ...args })}
     renderThumbVertical={renderThumb}
     renderThumbHorizontal={renderThumb}
     hideTracksWhenNotNeeded={hideTracksWhenNotNeeded}
