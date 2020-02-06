@@ -1,5 +1,8 @@
 import React, { useEffect, useCallback, useState } from 'react';
 import { SketchPicker, ColorResult } from 'react-color';
+import cn from 'classnames';
+
+const styles = require('./styles.scss');
 
 type ColorPickerProps = {
   display?: boolean;
@@ -48,17 +51,17 @@ export const ColorPicker: React.FC<ColorPickerProps> = React.memo(({
 
   return (
     <>
-      <div className="backgroundEmpty"/>
+      <div className={cn(styles.backgroundEmpty)} />
       <div
-        className="colorPickerContainer"
+        className={cn(styles.colorPickerContainer)}
         style={{ backgroundColor: color }}
         onClick={onClose}
       >
         {
           display && (
-            <div className="colorPicker">
+            <div className={cn(styles.colorPicker)}>
               <div
-                className="colorPickerOverlay"
+                className={cn(styles.colorPickerOverlay)}
                 onClick={handleClickOverlay}
               />
               <div onClick={handleStopEvent}>
