@@ -1,6 +1,5 @@
 .editorWorkBlock {
   position: relative;
-
   display: flex;
   flex: 1 1 100%;
   flex-direction: column;
@@ -19,6 +18,7 @@
 }
 
 .editorWorkWindow {
+  max-width: calc(100vw - 552px);
   background-color: $panelBgColor;
   border: 1px solid $mainBorderColor;
   border-top: none;
