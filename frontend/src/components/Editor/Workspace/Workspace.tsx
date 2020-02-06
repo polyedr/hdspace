@@ -28,7 +28,6 @@ type StateProps = {
   screen: ProjectT.IProjectScreen;
   scenarios: ProjectT.IScenarios;
   scenarioElements: ProjectT.IScenarioElements;
-  isLPanelMinimized: boolean;
   isPrototypeMode: boolean;
   activeItem: ProjectT.ActiveItem;
 };
@@ -46,7 +45,6 @@ const mapState = (state: AppReduxState): StateProps => ({
   activeItem: selectors.selectActiveItem(state),
   scenarios: selectors.selectScenarios(state),
   scenarioElements: selectors.selectScenariosElements(state),
-  isLPanelMinimized: state.user.isLPanelMinimized,
   isPrototypeMode: state.user.isPrototypeMode,
 });
 
@@ -57,7 +55,6 @@ export const Component = (props: Props) => {
     screen,
     scenarios,
     scenarioElements,
-    isLPanelMinimized,
     isPrototypeMode,
     activeItem,
     setActiveItem,
@@ -167,9 +164,7 @@ export const Component = (props: Props) => {
             getClassDevice(
               styles,
               currentScreenMode,
-              isPrototypeMode,
               isScreenRotated,
-              !isWorkContainer
             )
           )}
           autoHeightMin="100%"

@@ -24,10 +24,6 @@
   border-top: none;
   overflow: auto;
 
-  &_minimized {
-    max-width: calc(100vw - #{$workWindowMaxWidthMinimized});
-  }
-
   &_default {
     flex-basis: 100%;
   }
@@ -46,26 +42,6 @@
     &_rotated {
       flex-basis: $mobileHeight;
     }
-  }
-
-  &_prototype_default {
-    width: 100%;
-  }
-
-  &_prototype_tablet {
-    width: calc(#{$prototypeTabletWindowHeight} / 1.33);
-  }
-
-  &_prototype_tablet_rotated {
-    width: $prototypeTabletWindowHeight;
-  }
-
-  &_prototype_mobile {
-    width: calc(#{$prototypeMobileWindowHeight} / 1.78);
-  }
-
-  &_prototype_mobile_rotated {
-    width: $prototypeMobileWindowHeight;
   }
 
   .align_left {
