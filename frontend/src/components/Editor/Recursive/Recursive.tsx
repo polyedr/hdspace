@@ -97,7 +97,7 @@ const RecursiveComponent: React.FC<Props> = (props) => {
   return (
     <SortableGroup
       key={item.id}
-      disableSortable={!isMoving}
+      disableSortable={!isMoving || isPrototypeMode}
       isPutItem={getIsPutItem(item.type)}
       parent={idToLSId(item.id, item.type)}
       group={getGroupName(item.type)}
