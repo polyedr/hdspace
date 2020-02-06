@@ -8,6 +8,7 @@ import { actionsCreators, selectors, T as ProjectT } from '$redux/project';
 import { Scrollbar } from '$components/UI/Scrollbar/';
 import { Spinner } from '$components/UI/Spinner/';
 import { AVAILABLE_CONTROLS, Control, Entity } from '$domain/core';
+import { CssLikeStyles } from '$utils/StyleHelper';
 
 import { ActiveElementBlock } from '../Controls/ActiveElementBlock';
 import { GroupElementsDirectionBlock } from '../Controls/GroupElementsDirectionBlock';
@@ -27,19 +28,25 @@ type StateProps = {
   scenarios: ProjectT.IScenarios;
   libraryElements: ProjectT.LibraryElements;
   activeItem: ProjectT.ActiveItem;
+  display: CssLikeStyles['display'];
   screen: ProjectT.IProjectScreen;
   isAddElementsModalOpened: boolean;
   loader: boolean;
 };
 
-const mapState = (state: AppReduxState): StateProps => ({
-  activeItem: selectors.selectActiveItem(state),
-  scenarios: selectors.selectScenarios(state),
-  libraryElements: selectors.selectLibraryElements(state),
-  screen: selectors.selectCurrentScreen(state),
-  isAddElementsModalOpened: selectors.selectIsAddElementsModalOpened(state),
-  loader: selectors.selectLoader(state),
-});
+const mapState = (state: AppReduxState): StateProps => {
+  const activeItemStyles = selectors.selectActiveItemStyles(state) as Required<CssLikeStyles>;
+
+  return {
+    activeItem: selectors.selectActiveItem(state),
+    display: activeItemStyles.display,
+    scenarios: selectors.selectScenarios(state),
+    libraryElements: selectors.selectLibraryElements(state),
+    screen: selectors.selectCurrentScreen(state),
+    isAddElementsModalOpened: selectors.selectIsAddElementsModalOpened(state),
+    loader: selectors.selectLoader(state),
+  }
+};
 
 const mapDispatch = {
   addElement: actionsCreators.addElement,
@@ -71,6 +78,7 @@ const SCROLLBAR_STYLES = {
 
 const Component: React.FC<PropertiesPanelProps> = ({
   activeItem,
+  display,
   screen,
   delScenarioItem,
   loader,
@@ -95,7 +103,7 @@ const Component: React.FC<PropertiesPanelProps> = ({
     <div className={classNames(styles.editorRightPanel)}>
       <Scrollbar
         style={SCROLLBAR_STYLES}
-        maxHeight="100%"
+        autoHeightMin="100%"
       >
         <ActiveElementBlock
           activeItem={activeItem}
@@ -115,6 +123,10 @@ const Component: React.FC<PropertiesPanelProps> = ({
             </div>
             <div className="propsPanelContentBlock">
               {currentItemType && AVAILABLE_CONTROLS[currentItemType as Entity].map(controlName => {
+                if (display === 'block' && controlName === 'direction' ) {
+                  return null;
+                }
+
                 const Component = CONTROLS[controlName];
                 return <Component key={controlName} />
               })}
