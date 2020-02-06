@@ -1,27 +1,21 @@
 import uuid
 import datetime
 
-import pymongo
-
 from django.urls import reverse
-from django.db import models, connection
+from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.core.cache import cache
 from django.conf import settings
 
-from apps.core.models import TimeStampedModel
+from apps.utils.models import TimeStampedModel
 from .utils import utils
-
-client = pymongo.MongoClient("localhost", 27017)  # maxPoolSize=50
-# TODO: Check, do we really need to use pymongo here
-main_db_name = connection.settings_dict['NAME']
-db_main = client[main_db_name]
 
 __all__ = ("User", "Profile", "Team", "TeamMember")
 
-
+'''
 # The abstract class converts MongoDB _id to the integer with auto-incremented value
+# Not for the Postgres
 class MongoModel(models.Model):
     id = models.IntegerField(primary_key=True)
 
@@ -43,16 +37,11 @@ class MongoModel(models.Model):
                 {"name": name}, {"$inc": {"next_id": 1}}
             )
             return sq["next_id"]
+'''
 
 
-class User(MongoModel, AbstractUser):
+class User(AbstractUser):
     pass
-    # _id = ObjectIdField()
-    #
-    # def save(self, *args, **kwargs):
-    #     super(User, self).save(*args, **kwargs)
-    #     profile = Profile(user=self)
-    #     profile.save()
 
 
 class Profile(TimeStampedModel):

@@ -116,8 +116,7 @@ class Migration(migrations.Migration):
                 ('image', models.ImageField(blank=True, max_length=256, null=True, upload_to='uploads/')),
                 ('parent_id', models.IntegerField(blank=True, null=True)),
                 ('direction', models.CharField(choices=[('vertical', 'vertical'), ('horizontal', 'horizontal')], default='vertical', max_length=50)),
-                ('buoyancy', models.IntegerField(blank=True, null=True)),
-                ('presegmentation', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='scenarios', to='virtualize_emulation.PreSegmentation')),
+                ('buoyancy', models.IntegerField(blank=True, null=True)),                
                 ('screen', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='screenscenario', to='projects.ProjectScreen')),
             ],
             options={

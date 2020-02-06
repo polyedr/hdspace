@@ -23,7 +23,6 @@ from rest_framework_swagger.views import get_swagger_view
 schema_view = get_swagger_view(title="Adevi API")
 
 urlpatterns = [
-    path("accounts/", include("apps.accounts.urls", namespace="accounts")),
     path("oauth/", include("social_django.urls", namespace="social")),
     path("admin/", admin.site.urls),
     path(
@@ -31,12 +30,6 @@ urlpatterns = [
     ),
     path("api/v1/accounts/", include("apps.accounts.apiurls", namespace="apiaccounts")),
     path("api/v1/projects/", include("apps.projects.apiurls", namespace="apiprojects")),
-    path(
-        "api/v1/virtualize_emulation/",
-        include(
-            "apps.virtualize_emulation.apiurls", namespace="apivirtualize_emulation"
-        ),
-    ),
     path(
         "api/v1/virtualize_simple/",
         include("apps.virtualize_simple.apiurls", namespace="apivirtualize_simple"),
