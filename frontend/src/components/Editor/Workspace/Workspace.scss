@@ -9,80 +9,19 @@
 }
 
 .editorWorkWrapper {
-  height: 100%;
-  max-height: 100vh;
-
-  background-color: #cccccc;
-}
-
-.editorWorkContainer {
   position: relative;
-
   display: flex;
+  flex-grow: 1;
+  justify-content: center;
   height: 100%;
-  min-height: 100%;
-  max-height: 100vh;
-
+  min-height: 0;
   background-color: #cccccc;
-
-  overflow: hidden;
-
-  &_prototype_default {
-    min-height: $prototypeLaptopHeight;
-
-    background-image: url('../../../assets/sprites/macbook-min.png');
-    background-repeat: no-repeat;
-    background-size: auto $prototypeLaptopHeight;
-    background-position: top center;
-  }
-
-  &_prototype_tablet {
-    min-height: calc(#{$prototypeTabletHeight});
-
-    background-image: url('../../../assets/sprites/ipad-min.png');
-    background-repeat: no-repeat;
-    background-size: auto $prototypeTabletHeight;
-    background-position: top center;
-  }
-
-  &_prototype_tablet_rotated {
-    min-height: calc(#{$prototypeTabletHeight} / 1.28);
-
-    background-image: url('../../../assets/sprites/ipad_rotated-min.png');
-    background-repeat: no-repeat;
-    background-size: auto calc(#{$prototypeTabletHeight} / 1.28);
-    background-position: top center;
-  }
-
-  &_prototype_mobile {
-    min-height: calc(#{$prototypeMobileHeight});
-
-    background-image: url('../../../assets/sprites/iphone-min.png');
-    background-repeat: no-repeat;
-    background-size: auto $prototypeMobileHeight;
-    background-position: top center;
-  }
-
-  &_prototype_mobile_rotated {
-    min-height: calc(#{$prototypeMobileHeight});
-
-    background-image: url('../../../assets/sprites/iphone_rotated-min.png');
-    background-repeat: no-repeat;
-    background-size: auto calc(#{$prototypeMobileHeight} / 2.1);
-    background-position: top center;
-  }
 }
 
 .editorWorkWindow {
-  display: flex;
-  flex: 0 1;
-  max-width: calc(100vw - #{$workWindowMaxWidth});
-  height: 100%;
-
   background-color: $panelBgColor;
   border: 1px solid $mainBorderColor;
   border-top: none;
-
   overflow: auto;
 
   &_minimized {
@@ -95,62 +34,38 @@
 
   &_tablet {
     flex-basis: $tabletWidth;
-    max-height: $tabletHeight;
 
     &_rotated {
       flex-basis: $tabletHeight;
-      max-height: $tabletWidth;
     }
   }
 
   &_mobile {
     flex-basis: $mobileWidth;
-    max-height: $mobileHeight;
 
     &_rotated {
       flex-basis: $mobileHeight;
-      max-height: $mobileWidth;
     }
   }
 
   &_prototype_default {
-    position: absolute;
-    top: 53px;
-    right: calc(50% - 438px);
-    width: 872px;
-    height: 520px;
+    width: 100%;
   }
 
   &_prototype_tablet {
-    position: absolute;
-    top: 60px;
-    right: calc(50% - 195px);
     width: calc(#{$prototypeTabletWindowHeight} / 1.33);
-    height: $prototypeTabletWindowHeight;
   }
 
   &_prototype_tablet_rotated {
-    position: absolute;
-    top: 54px;
-    right: calc(50% - 260px);
     width: $prototypeTabletWindowHeight;
-    height: calc(#{$prototypeTabletWindowHeight} / 1.33);
   }
 
   &_prototype_mobile {
-    position: absolute;
-    top: 77px;
-    right: calc(50% - 106px);
     width: calc(#{$prototypeMobileWindowHeight} / 1.78);
-    height: $prototypeMobileWindowHeight;
   }
 
   &_prototype_mobile_rotated {
-    position: absolute;
-    top: 18px;
-    right: calc(50% - 186px);
     width: $prototypeMobileWindowHeight;
-    height: calc(#{$prototypeMobileWindowHeight} / 1.78);
   }
 
   .align_left {

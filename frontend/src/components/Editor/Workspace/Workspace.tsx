@@ -154,47 +154,36 @@ export const Component = (props: Props) => {
         onScreenRotate={setIsScreenRotated}
         onScreenSave={handleSaveScreen}
       />
-      <Scrollbar
-        style={{ height: '100%' }}
-        maxHeight="100vh"
+      <div
+        className={styles.editorWorkWrapper}
+        tabIndex={0}
+        onClick={handleRootClick}
+        onMouseOver={handleLSItemMouseOver}
+        onMouseOut={handleLSItemMouseOut}
       >
-        <div className={styles.editorWorkWrapper}>
-          <div
-            className={classNames(
-              styles.editorWorkContainer,
-              getClassDevice(styles, currentScreenMode, isPrototypeMode, isScreenRotated, isWorkContainer),
-            )}
-            data-ls-id="root"
-            tabIndex={0}
-            onClick={handleRootClick}
-            onMouseOver={handleLSItemMouseOver}
-            onMouseOut={handleLSItemMouseOut}
-          >
-            <div
-              className={classNames(
-                styles.editorWorkWindow,
-                isLPanelMinimized && styles.editorWorkWindow_minimized,
-                getClassDevice(styles, currentScreenMode, isPrototypeMode, isScreenRotated, !isWorkContainer),
-              )}
-            >
-              <Scrollbar
-                style={{ minHeight: '100%', height: '100%' }}
-                isFlex
-                maxHeight="100vh"
-              >
-                <Recursive
-                  item={screen.listSortable.root}
-                  activeItemId={activeItem.itemId}
-                  isMoving={isMoving}
-                  listNotDragging={listNotDragging}
-                  setIsMoving={setIsMoving}
-                  onActiveElementChange={handleActiveElementChange} // needed to activate item before dragging, in order to get new listNotDraggable
-                />
-              </Scrollbar>
-            </div>
-          </div>
-        </div>
-      </Scrollbar>
+        <Scrollbar
+          className={classNames(
+            styles.editorWorkWindow,
+            getClassDevice(
+              styles,
+              currentScreenMode,
+              isPrototypeMode,
+              isScreenRotated,
+              !isWorkContainer
+            )
+          )}
+          autoHeightMin="100%"
+        >
+          <Recursive
+            item={screen.listSortable.root}
+            activeItemId={activeItem.itemId}
+            isMoving={isMoving}
+            listNotDragging={listNotDragging}
+            setIsMoving={setIsMoving}
+            onActiveElementChange={handleActiveElementChange} // needed to activate item before dragging, in order to get new listNotDraggable
+          />
+        </Scrollbar>
+      </div>
     </div>
   ) : null;
 };
