@@ -131,7 +131,7 @@ const RecursiveComponent: React.FC<Props> = (props) => {
               updateElementStyles={updateElementStyles}
               setIsMoving={setIsMoving}
               isDraggable={isDraggable}
-              isResizable={!LIST_SCENARIO_TYPE.includes(struct_type)}
+              isResizable={!LIST_SCENARIO_TYPE.includes(struct_type) || !isPrototypeMode}
             >
               {renderElement({
                 id: itemId,
