@@ -1,37 +1,35 @@
 import React, { useEffect, useCallback, useState } from 'react';
 import { SketchPicker, ColorResult } from 'react-color';
+import Popover from 'react-tiny-popover';
 import cn from 'classnames';
 
 const styles = require('./styles.scss');
 
 type ColorPickerProps = {
-  display?: boolean;
   color: string;
   colors?: string[];
   onChangeComplete(color: Pick<ColorResult, 'hex'>): void;
-  onClose(): void;
 }
 
 export const ColorPicker: React.FC<ColorPickerProps> = React.memo(({
-  display = false,
   color,
   onChangeComplete,
-  onClose,
 }) => {
   const [startColor, setStartColor] = useState({ hex: color });
+  const [isPopoverOpen, setIsPopoverOpen] = useState<boolean>(false);
 
   const handleKeys = useCallback((event) => {
-    if (event.keyCode === 27 && display) {
+    if (event.keyCode === 27 && isPopoverOpen) {
+      setIsPopoverOpen(false)
       onChangeComplete(startColor);
-      onClose();
     }
-  }, [display, startColor, onChangeComplete, onClose]);
+  }, [startColor, onChangeComplete, isPopoverOpen, setIsPopoverOpen]);
 
   useEffect(() => {
-    if (display) {
+    if (isPopoverOpen) {
       setStartColor({ hex: color });
     }
-  }, [display]);
+  }, [isPopoverOpen]);
 
   useEffect(() => {
     window.addEventListener('keyup', handleKeys);
@@ -41,39 +39,41 @@ export const ColorPicker: React.FC<ColorPickerProps> = React.memo(({
     };
   }, [handleKeys]);
 
-  const handleStopEvent = useCallback((event) => {
-    event.stopPropagation();
-  }, []);
-
   const handleClickOverlay = useCallback(() => {
-    onClose();
-  }, [onClose]);
+    setIsPopoverOpen(false)
+  }, [setIsPopoverOpen]);
+
+  const popoverStyle = {
+    opacity: '0',
+    overflow: 'visibility',
+    zIndex: '2',
+    border: '1px solid #e7eaec',
+    borderRadius: '4px',
+  }
 
   return (
-    <>
-      <div className={cn(styles.backgroundEmpty)} />
-      <div
-        className={cn(styles.colorPickerContainer)}
-        style={{ backgroundColor: color }}
-        onClick={onClose}
-      >
-        {
-          display && (
-            <div className={cn(styles.colorPicker)}>
-              <div
-                className={cn(styles.colorPickerOverlay)}
-                onClick={handleClickOverlay}
-              />
-              <div onClick={handleStopEvent}>
-                <SketchPicker
-                  color={color}
-                  onChangeComplete={onChangeComplete}
-                />
-              </div>
-            </div>
-          )
-        }
+    <Popover
+      isOpen={isPopoverOpen}
+      position={'bottom'}
+      onClickOutside={handleClickOverlay}
+      align="start"
+      transitionDuration={0}
+      containerStyle={popoverStyle}
+      content={(
+        <SketchPicker
+          color={color}
+          onChangeComplete={onChangeComplete}
+          width="210px"
+        />
+      )}
+    >
+      <div onClick={() => setIsPopoverOpen(!isPopoverOpen)} className={cn(styles.colorPickerContainer)}>
+        <div className={cn(styles.backgroundEmpty)} />
+        <div
+          className={cn(styles.colorPickerColor)}
+          style={{ backgroundColor: color }}
+        />
       </div>
-    </>
+    </Popover >
   );
 });
