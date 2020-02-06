@@ -1,6 +1,6 @@
 """Serializers for the projects"""
 
-from rest_framework import serializers, request
+from rest_framework import serializers
 from rest_framework_bulk import BulkSerializerMixin, BulkListSerializer
 
 from apps.accounts.serializers import UserSerializer
@@ -12,7 +12,6 @@ from .models import (
     ProjectTask,
     ProjectActivity,
     ProjectInvitation,
-    ScreenAssignee,
     TaskTime,
     ScreenComment,
     Comment,
@@ -75,7 +74,6 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
             "name",
             "struct_type",
             "func_type",
-            "func_type_human",
             "buoyancy",
             "image",
             "parameters",
@@ -97,7 +95,6 @@ class ScenarioElementMultipleSerializer(
             "name",
             "struct_type",
             "func_type",
-            "func_type_human",
             "buoyancy",
             "parameters",
             "styles",
@@ -134,45 +131,6 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
         queryset = qs.prefetch_related('elements')
         return queryset
 
-
-class ScreenScenarioCascadeSerializer(serializers.ModelSerializer):
-    # elements = ScenarioElementSerializer(many=True, read_only=True)
-    parameters = serializers.JSONField()
-    styles = serializers.JSONField()
-
-    class Meta:
-        model = ScreenScenario
-        fields = (
-            "id",
-            "screen",
-            "name",
-            "parent_id",
-            "type",
-            "struct_type",
-            "direction",
-            "buoyancy",
-            "elements",
-            "parameters",
-            "styles",
-            # "screenscenario"
-        )
-        # extra_kwargs = {"elements": {"read_only": True}}
-        # fields = "__all__"
-
-    def update(self, instance, validated_data):
-        ScreenScenario.objects.filter(instance.parent_id == self.kwargs['id']).delete()
-
-        """
-        for scenario_data in scenarios:
-            scenario = ScreenScenario.objects.create(
-                presegmentation=presegmentation, screen=screen, **scenario_data
-            )
-
-            for scenarioelement_data in scenarioelements:
-                ScenarioElement.objects.create(
-                    scenario=scenario, **scenarioelement_data
-                )
-        """
 
 class ScreenScenarioMultipleSerializer(
     BulkSerializerMixin, serializers.ModelSerializer
@@ -234,6 +192,7 @@ class ProjectSerializer(serializers.ModelSerializer):
             )
         return queryset
 
+
 class ScreenEventSerializer(serializers.ModelSerializer):
     class Meta:
         model = ScreenEvent
@@ -244,7 +203,6 @@ class ElementSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
     struct_type = serializers.CharField(max_length=64)
     func_type = serializers.ListField()
-    func_type_human = serializers.CharField(max_length=64)
     buoyancy = serializers.ListField()
     image = serializers.ImageField(max_length=256)
     parameters = serializers.ListField()

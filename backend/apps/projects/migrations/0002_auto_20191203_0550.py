@@ -10,10 +10,6 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name='screenscenario',
-            name='presegmentation',
-        ),
         migrations.AlterField(
             model_name='scenarioelement',
             name='struct_type',
