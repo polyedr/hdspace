@@ -10,7 +10,7 @@ import { IListSortable, ILSItem } from '$redux/project/types';
 import { selectors, actionsCreators } from '$redux/project';
 import { getItemsPair, getParams, idToLSId } from '$utils/parseScenario';
 import { LIST_SCENARIO_TYPE } from '$constants/defaultParams';
-import { convertPropCSS } from '$utils/StyleHelper';
+import { convertPropCSS, CssLikeStyles } from '$utils/StyleHelper';
 
 const mapStateToProps = (state: AppReduxState, props: OwnProps) => {
   const { listSortable } = selectors.selectCurrentScreen(state);
@@ -98,7 +98,7 @@ const RecursiveComponent: React.FC<Props> = (props) => {
 
   const getStyles = useCallback((id: number): CSSProperties => {
     if (id === -1) return {};
-    const parseStyle: CSSProperties = scenarioList[id].styles;
+    const parseStyle: CssLikeStyles = scenarioList[id].styles;
 
     return parseStyle ? convertPropCSS(parseStyle) : {};
   }, [scenarioList]);

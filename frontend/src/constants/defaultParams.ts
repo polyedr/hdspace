@@ -9,7 +9,6 @@ import {
   ActiveItem,
   LibraryElementType,
   ServerFuncType,
-  IScreenDisplay,
 } from '$redux/project/types';
 import { IApiResponseError, ITokenPair } from '$redux/user/reducer';
 // import { ITokenPair, IApiResponseError } from '$redux/user/reducer';
@@ -91,13 +90,12 @@ export const DEFAULT_INDENTS: IScreenIndents = {
   'padding-left': '5px',
 };
 
-export const DEFAULT_DISPLAY: IScreenDisplay = { display: 'block' };
-
-export const DEFAULT_FLEX: CssLikeStyles = {
+export const DEFAULT_DISPLAY: CssLikeStyles = { 
+  display: 'block',
   'flex-direction': 'row',
   'justify-content': 'flex-start',
   'align-items': 'stretch',
-};
+ };
 
 export const DEFAULT_BORDER: IScreenBorders = {
   'border-width': '0px',

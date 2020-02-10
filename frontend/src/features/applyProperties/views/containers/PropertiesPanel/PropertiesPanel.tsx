@@ -11,7 +11,6 @@ import { AVAILABLE_CONTROLS, Control, Entity } from '$domain/core';
 import { CssLikeStyles } from '$utils/StyleHelper';
 
 import { ActiveElementBlock } from '../Controls/ActiveElementBlock';
-import { GroupElementsDirectionBlock } from '../Controls/GroupElementsDirectionBlock';
 import { ActionBlock } from '../Controls/ActionBlock';
 import { MapProps } from '../Controls/MapProps/MapProps';
 import { SizeBlock } from '../Controls/SizeBlock';
@@ -28,7 +27,6 @@ type StateProps = {
   scenarios: ProjectT.IScenarios;
   libraryElements: ProjectT.LibraryElements;
   activeItem: ProjectT.ActiveItem;
-  display: CssLikeStyles['display'];
   screen: ProjectT.IProjectScreen;
   isAddElementsModalOpened: boolean;
   loader: boolean;
@@ -39,7 +37,6 @@ const mapState = (state: AppReduxState): StateProps => {
 
   return {
     activeItem: selectors.selectActiveItem(state),
-    display: activeItemStyles.display,
     scenarios: selectors.selectScenarios(state),
     libraryElements: selectors.selectLibraryElements(state),
     screen: selectors.selectCurrentScreen(state),
@@ -58,7 +55,6 @@ const mapDispatch = {
 
 const CONTROLS: Record<Control, React.ComponentType> = {
   display: Display,
-  direction: GroupElementsDirectionBlock,
   indents: IndentsBlock,
   size: SizeBlock,
   typography: TypographyBlock,
@@ -78,7 +74,6 @@ const SCROLLBAR_STYLES = {
 
 const Component: React.FC<PropertiesPanelProps> = ({
   activeItem,
-  display,
   screen,
   delScenarioItem,
   loader,
@@ -123,10 +118,6 @@ const Component: React.FC<PropertiesPanelProps> = ({
             </div>
             <div className="propsPanelContentBlock">
               {currentItemType && AVAILABLE_CONTROLS[currentItemType as Entity].map(controlName => {
-                if (display === 'block' && controlName === 'direction' ) {
-                  return null;
-                }
-
                 const Component = CONTROLS[controlName];
                 return <Component key={controlName} />
               })}
