@@ -141,7 +141,7 @@ export const Component = (props: Props) => {
   }, [saveScreen]);
 
   return (screen && R.hasPath(['listSortable', 'root'], screen)) ? (
-    <div className={cn(styles.editorWorkBlock)}>
+    <div className={cn(styles.editorWorkspace)}>
       <TopBar
         screenID={screen.id}
         isPrototypeMode={isPrototypeMode}
@@ -153,14 +153,14 @@ export const Component = (props: Props) => {
         onScreenSave={handleSaveScreen}
       />
       <div
-        className={styles.editorWorkWrapper}
+        className={styles.editorViewport}
         tabIndex={0}
         onClick={handleRootClick}
         onMouseOver={handleLSItemMouseOver}
         onMouseOut={handleLSItemMouseOut}
       >
         <Scrollbar 
-          className={cn(styles.editorWorkWindow, getClassDevice(styles, currentScreenMode, isScreenRotated))}
+          className={cn(styles.editorLayout, getClassDevice(styles, currentScreenMode, isScreenRotated))}
           autoHeightMin="100%"
         >
           <Recursive

@@ -1,4 +1,4 @@
-.editorWorkBlock {
+.editorWorkspace {
   display: flex;
   flex: 1 1 100%;
   flex-direction: column;
@@ -6,7 +6,7 @@
   box-sizing: border-box;
 }
 
-.editorWorkWrapper {
+.editorViewport {
   display: flex;
   flex-grow: 1;
   justify-content: center;
@@ -15,7 +15,7 @@
   background-color: #cccccc;
 }
 
-.editorWorkWindow {
+.editorLayout {
   max-width: calc(100vw - #{$workWindowMaxWidth});
   background-color: $panelBgColor;
   border: 1px solid $mainBorderColor;
