@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { connect } from 'react-redux';
 import * as R from 'ramda';
-import classNames from 'classnames';
+import cn from 'classnames';
 import html2canvas from 'html2canvas';
 
 import { Recursive } from '$components/Editor/Recursive/Recursive';
@@ -141,7 +141,7 @@ export const Component = (props: Props) => {
   }, [saveScreen]);
 
   return (screen && R.hasPath(['listSortable', 'root'], screen)) ? (
-    <div className={classNames(styles.editorWorkBlock)}>
+    <div className={cn(styles.editorWorkBlock)}>
       <TopBar
         screenID={screen.id}
         isPrototypeMode={isPrototypeMode}
@@ -159,15 +159,8 @@ export const Component = (props: Props) => {
         onMouseOver={handleLSItemMouseOver}
         onMouseOut={handleLSItemMouseOut}
       >
-        <Scrollbar
-          className={classNames(
-            styles.editorWorkWindow,
-            getClassDevice(
-              styles,
-              currentScreenMode,
-              isScreenRotated,
-            )
-          )}
+        <Scrollbar 
+          className={cn(styles.editorWorkWindow, getClassDevice(styles, currentScreenMode, isScreenRotated))}
           autoHeightMin="100%"
         >
           <Recursive
