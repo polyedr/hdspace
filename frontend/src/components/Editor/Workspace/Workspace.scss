@@ -1,5 +1,4 @@
 .editorWorkBlock {
-  position: relative;
   display: flex;
   flex: 1 1 100%;
   flex-direction: column;
@@ -8,7 +7,6 @@
 }
 
 .editorWorkWrapper {
-  position: relative;
   display: flex;
   flex-grow: 1;
   justify-content: center;
