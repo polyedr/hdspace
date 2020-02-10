@@ -21,7 +21,7 @@ import { BorderBlock } from '../Controls/BorderBlock';
 import { TypographyBlock } from '../Controls/TypographyBlock';
 import { Placeholder } from '../Controls/Placeholder/Placeholder';
 import { TextContent } from '../Controls/TextContent/TextContent';
-import { Display } from '../Controls/Display';
+import { Display } from '../Controls/Display/Display';
 const styles = require('./PropertiesPanel.scss');
 
 type StateProps = {

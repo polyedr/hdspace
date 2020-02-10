@@ -9,7 +9,8 @@ import {
   PropertiesChangeProps
 } from '$utils/withConfigurableProperties';
 import { CssLikeStyles } from '$utils/StyleHelper';
-import { DISPLAY } from '$constants/display';
+
+import { DISPLAY } from './constants';
 
 type StateProps = {
   display: string;
