@@ -184,10 +184,6 @@ export type Flex = {
 
 export type ScreenDisplay = Block | Flex;
 
-export type IScreenDisplay = {
-  display: 'block' | 'flex'
-};
-
 export interface IScreenIndents {
   'margin-top'?: string,
   'margin-right'?: string,
