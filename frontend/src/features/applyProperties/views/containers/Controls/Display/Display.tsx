@@ -25,7 +25,7 @@ type StateProps = {
 };
 
 function assertNever(value: never): never {
-  throw new Error("Unexpected object: " + value);
+  throw new Error('Unexpected object: ' + value);
 }
 
 function getDisplayStyles(activeItemStyles: Required<CssLikeStyles>): ScreenDisplay {
