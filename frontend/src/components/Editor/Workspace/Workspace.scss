@@ -41,18 +41,5 @@
       flex-basis: $mobileHeight;
     }
   }
-
-  .align_left {
-    justify-content: flex-start;
-  }
-  .align_center {
-    justify-content: center;
-  }
-  .align_right {
-    justify-content: flex-end;
-  }
-  .align_justify {
-    justify-content: space-between;
-  }
 }
 
