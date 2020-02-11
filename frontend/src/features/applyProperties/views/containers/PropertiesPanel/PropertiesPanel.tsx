@@ -8,7 +8,6 @@ import { actionsCreators, selectors, T as ProjectT } from '$redux/project';
 import { Scrollbar } from '$components/UI/Scrollbar/';
 import { Spinner } from '$components/UI/Spinner/';
 import { AVAILABLE_CONTROLS, Control, Entity } from '$domain/core';
-import { CssLikeStyles } from '$utils/StyleHelper';
 
 import { ActiveElementBlock } from '../Controls/ActiveElementBlock';
 import { ActionBlock } from '../Controls/ActionBlock';
@@ -32,18 +31,14 @@ type StateProps = {
   loader: boolean;
 };
 
-const mapState = (state: AppReduxState): StateProps => {
-  const activeItemStyles = selectors.selectActiveItemStyles(state) as Required<CssLikeStyles>;
-
-  return {
-    activeItem: selectors.selectActiveItem(state),
-    scenarios: selectors.selectScenarios(state),
-    libraryElements: selectors.selectLibraryElements(state),
-    screen: selectors.selectCurrentScreen(state),
-    isAddElementsModalOpened: selectors.selectIsAddElementsModalOpened(state),
-    loader: selectors.selectLoader(state),
-  }
-};
+const mapState = (state: AppReduxState): StateProps => ({
+  activeItem: selectors.selectActiveItem(state),
+  scenarios: selectors.selectScenarios(state),
+  libraryElements: selectors.selectLibraryElements(state),
+  screen: selectors.selectCurrentScreen(state),
+  isAddElementsModalOpened: selectors.selectIsAddElementsModalOpened(state),
+  loader: selectors.selectLoader(state),
+});
 
 const mapDispatch = {
   addElement: actionsCreators.addElement,
