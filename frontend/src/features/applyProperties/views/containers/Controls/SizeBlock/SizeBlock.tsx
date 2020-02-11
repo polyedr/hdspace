@@ -2,15 +2,12 @@ import React, { useCallback, memo, useState } from 'react';
 import { connect } from 'react-redux';
 
 import { AppReduxState } from '$shared/types/app';
+import { keys } from '$shared/helpers/ts';
 import { CssLikeStyles } from '$utils/StyleHelper';
 import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
 import { selectors } from '$redux/project';
 
 const styles = require('./SizeBlock.scss');
-
-function keys<Object>(obj: Object) {
-  return Object.keys(obj) as [keyof Object];
-}
 
 enum Unit {
   px = 'px',
@@ -129,7 +126,7 @@ export const Component: React.FC<Props> = memo((props) => {
           value={selectedUnit[sizeName]}
           name={`${sizeName}_unit`}
         >
-          {keys(Unit).map((key) => <option value={key}>{Unit[key]}</option>)}
+          {keys(Unit).map((key, index) => <option key={index} value={key}>{Unit[key]}</option>)}
         </select>
       </>
     );
