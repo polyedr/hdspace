@@ -9,13 +9,13 @@ import { IListSortable, ILSItem } from '$redux/project/types';
 import { selectors, actionsCreators } from '$redux/project';
 import { getItemsPair, getParams, idToLSId } from '$utils/parseScenario';
 import { LIST_SCENARIO_TYPE } from '$constants/defaultParams';
-import { convertPropCSS } from '$utils/StyleHelper';
+import { convertPropCSS, CssLikeStyles } from '$utils/StyleHelper';
 
 const mapStateToProps = (state: AppReduxState, props: OwnProps) => {
   const { listSortable } = selectors.selectCurrentScreen(state);
   const scenarios = selectors.selectScenarios(state);
   const scenarioElements = selectors.selectScenariosElements(state);
-  const { isPrototypeMode } = state.user;
+  const disableInteractions = state.user.isPrototypeMode;
 
   const currId = idToLSId(props.item.id, props.item.type);
   const itemParent = listSortable[currId];
@@ -27,7 +27,7 @@ const mapStateToProps = (state: AppReduxState, props: OwnProps) => {
   const { scenarioList, elementList } = getItemsPair(currListSortable, scenarios, scenarioElements);
   return {
     listSortable: currListSortable,
-    isPrototypeMode,
+    disableInteractions,
     scenarioList,
     elementList,
   };
@@ -59,7 +59,7 @@ const RecursiveComponent: React.FC<Props> = (props) => {
     activeItemId,
     isMoving,
     listNotDragging,
-    isPrototypeMode,
+    disableInteractions,
     onActiveElementChange,
     setListSortable,
     setIsMoving,
@@ -97,7 +97,7 @@ const RecursiveComponent: React.FC<Props> = (props) => {
 
   const getStyles = useCallback((id: number): CSSProperties => {
     if (id === -1) return {};
-    const parseStyle: CSSProperties = scenarioList[id].styles;
+    const parseStyle: CssLikeStyles = scenarioList[id].styles;
 
     return parseStyle ? convertPropCSS(parseStyle) : {};
   }, [scenarioList]);
@@ -105,7 +105,7 @@ const RecursiveComponent: React.FC<Props> = (props) => {
   return (
     <SortableGroup
       key={item.id}
-      disableSortable={!isMoving || isPrototypeMode}
+      disableSortable={!isMoving || disableInteractions}
       isPutItem={getIsPutItem(item.type)}
       parent={idToLSId(item.id, item.type)}
       group={getGroupName(item.type)}
@@ -128,7 +128,7 @@ const RecursiveComponent: React.FC<Props> = (props) => {
 
         // @ts-ignore
         const renderElement = RENDERERS[struct_type];
-        const isResizable = activeItemId === itemId && LIST_SCENARIO_TYPE.indexOf(struct_type) === -1 && !isPrototypeMode;
+        const isResizable = activeItemId === itemId && LIST_SCENARIO_TYPE.indexOf(struct_type) === -1 && !disableInteractions;
 
         if (renderElement) {
           const parsedStyles = convertPropCSS(styles);
@@ -136,7 +136,7 @@ const RecursiveComponent: React.FC<Props> = (props) => {
           return (
               renderElement({
                 id: itemId,
-                isDisabled: !isPrototypeMode,
+                isDisabled: !disableInteractions,
                 params: { ...parameters, image },
                 sortableId: itemId,
                 name,

@@ -72,7 +72,7 @@ export type SaveScreen = IAction<'PROJECTS:SAVE_SCREEN', { canvas: HTMLCanvasEle
 export type SetScreen = IAction<'PROJECTS:SET_SCREEN', { screen: IProjectScreen }>;
 export type AddElement = IAction<'PROJECTS:ADD_ELEMENT', { parentID: string, type: string }>;
 export type SetScenarioElements = IAction<'PROJECTS:SET_SCENARIO_ELEMENTS', { elements: IScenarioElements }>;
-export type UpdateElementStyles = IAction<'PROJECTS:UPDATE_ELEMENT_STYLES', { id: string, styles: CSSProperties }>;
+export type UpdateElementStyles = IAction<'PROJECTS:UPDATE_ELEMENT_STYLES', { id: string, styles: CssLikeStyles }>;
 // TODO: here is not CSSProperties, here css-like properties written in lower-case-hyphenated
 export type UpdateScenarioStyles = IAction<
   'PROJECTS:UPDATE_SCENARIO_STYLES', { id: string, styles: CSSProperties & { 'flex-direction'?: string } }
@@ -171,9 +171,18 @@ export interface IListProject {
   }[],
 }
 
-export type IScreenDisplay = {
-  display: 'block' | 'flex'
+type Block = {
+  display: 'block';
 };
+
+export type Flex = {
+  display: 'flex';
+  justifyContent: 'flex-start' | 'flex-end' | 'center' | 'space-between' | 'space-around';
+  alignItems: 'flex-start' | 'flex-end' | 'center' | 'baseline' | 'stretch';
+  flexDirection: 'row' | 'row-reverse' | 'column' | 'column-reverse';
+}
+
+export type ScreenDisplay = Block | Flex;
 
 export interface IScreenIndents {
   'margin-top'?: string,

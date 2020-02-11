@@ -1,6 +1,7 @@
 import { CSSProperties } from 'react';
 
 import { IChooseElement } from '$components/ModalAddElements/ModalAddElements/ModalAddElements';
+import { CssLikeStyles } from '$utils/StyleHelper';
 
 import * as T from './types';
 
@@ -147,7 +148,7 @@ export const setScenarioElements = (elements: T.IScenarioElements): T.SetScenari
   payload: { elements },
 });
 
-export const updateElementStyles = (id: string, styles: CSSProperties): T.UpdateElementStyles => ({
+export const updateElementStyles = (id: string, styles: CssLikeStyles): T.UpdateElementStyles => ({
   type: 'PROJECTS:UPDATE_ELEMENT_STYLES',
   payload: { id, styles },
 });

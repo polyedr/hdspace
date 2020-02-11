@@ -1,5 +1,4 @@
-.editorWorkBlock {
-  position: relative;
+.editorWorkspace {
   display: flex;
   flex: 1 1 100%;
   flex-direction: column;
@@ -7,8 +6,7 @@
   box-sizing: border-box;
 }
 
-.editorWorkWrapper {
-  position: relative;
+.editorViewport {
   display: flex;
   flex-grow: 1;
   justify-content: center;
@@ -17,7 +15,7 @@
   background-color: #cccccc;
 }
 
-.editorWorkWindow {
+.editorLayout {
   max-width: calc(100vw - #{$workWindowMaxWidth});
   background-color: $panelBgColor;
   border: 1px solid $mainBorderColor;
@@ -42,19 +40,6 @@
     &_rotated {
       flex-basis: $mobileHeight;
     }
-  }
-
-  .align_left {
-    justify-content: flex-start;
-  }
-  .align_center {
-    justify-content: center;
-  }
-  .align_right {
-    justify-content: flex-end;
-  }
-  .align_justify {
-    justify-content: space-between;
   }
 }
 

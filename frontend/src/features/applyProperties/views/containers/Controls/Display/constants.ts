@@ -1,3 +1,8 @@
+export const DISPLAY = [
+  { label: "Block", value: "block" },
+  { label: "Flex", value: "flex" }
+];
+
 export const ALIGN_VALUES = [{
   label: 'Start',
   value: 'flex-start',

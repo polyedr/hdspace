@@ -83,7 +83,7 @@ const renderView = ({ style, ...props }: any) => {
   );
 };
 
-export const Scrollbar: React.FunctionComponent<IScrollbarProps> = ({
+export const Scrollbar: React.FC<IScrollbarProps> = ({
   children,
   style,
   className,
