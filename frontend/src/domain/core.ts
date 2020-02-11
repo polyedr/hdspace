@@ -1,6 +1,6 @@
 import * as R from 'ramda';
 import { createSelector } from 'reselect';
-import { IScenarioItem, IScenarios, IScenarioElement, IScenarioElements } from "$redux/project/types";
+import { IScenarioItem, IScenarios, IScenarioElement, IScenarioElements } from '$redux/project/types';
 import {
   LIST_SCENARIO_TYPE, DEFAULT_INDENTS, DEFAULT_FLEX, DEFAULT_BORDER, DEFAULT_BACKGROUND, DEFAULT_TYPOGRAPHY, DEFAULT_SIZE, DEFAULT_ACTION, DEFAULT_PLACEHOLDER, DEFAULT_TEXT_CONTENT, DEFAULT_MAP_PROPS,
 } from '$constants/defaultParams';
