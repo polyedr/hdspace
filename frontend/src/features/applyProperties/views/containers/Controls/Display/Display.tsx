@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import cn from 'classnames';
 
 import { AppReduxState } from '$shared/types/app';
+import { assertNever } from '$shared/helpers/ts';
 import { ScreenDisplay } from '$redux/project/types';
 import { selectors } from '$redux/project/';
 import { DropDown } from '$components/UI/DropDown/';
@@ -23,10 +24,6 @@ type Align = 'align' | 'justify';
 type StateProps = {
   displayStyles: ScreenDisplay;
 };
-
-function assertNever(value: never): never {
-  throw new Error('Unexpected object: ' + value);
-}
 
 function getDisplayStyles(activeItemStyles: Required<CssLikeStyles>): ScreenDisplay {
   switch(activeItemStyles.display) {
