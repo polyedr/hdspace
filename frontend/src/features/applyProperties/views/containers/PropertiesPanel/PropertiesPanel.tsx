@@ -14,7 +14,7 @@ import { ActiveElementBlock } from '../Controls/ActiveElementBlock';
 import { GroupElementsDirectionBlock } from '../Controls/GroupElementsDirectionBlock';
 import { ActionBlock } from '../Controls/ActionBlock';
 import { MapProps } from '../Controls/MapProps/MapProps';
-import { SizeBlock } from '../Controls/SizeBlock';
+import { SizeBlock } from '../Controls/SizeBlock/SizeBlock';
 import { IndentsBlock } from '../Controls/IndentsBlock';
 import { BackgroundBlock } from '../Controls/BackgroundBlock';
 import { BorderBlock } from '../Controls/BorderBlock';
