@@ -1,4 +1,4 @@
-import React, { memo, useState, useCallback } from 'react';
+import React, { memo, useCallback } from 'react';
 import { connect } from 'react-redux';
 import cn from 'classnames';
 
@@ -28,7 +28,6 @@ export const Component: React.FC<Props> = memo((props) => {
     updateStyles,
     activeItemID
   } = props;
-  const [isBackgroundColorPickerOpen, setIsBackgroundColorPickerOpen] = useState<boolean>(false);
   const [currentBackgroundColor, setCurrentBackgroundColor] = useColor(backgroundColor, activeItemID);
 
   const handleColorChange = useCallback((color) => {
@@ -41,20 +40,14 @@ export const Component: React.FC<Props> = memo((props) => {
     }
   }, [updateStyles]);
 
-  const handleColorPickerClose = useCallback(() => {
-    setIsBackgroundColorPickerOpen(!isBackgroundColorPickerOpen);
-  }, [isBackgroundColorPickerOpen]);
-
   return (
     <div className="propsElementsBlock">
       <p className="propsElementsBlockTitle">Background</p>
       <div className="propsElementsContentBlock">
         <div className="propsElementsInnerBlock">
           <ColorPicker
-            display={isBackgroundColorPickerOpen}
             color={backgroundColor}
             onChangeComplete={color => handleColorChange(color)}
-            onClose={handleColorPickerClose}
           />
           <input
             className={cn("colorField", { inputWithError: !currentBackgroundColor.isValid })}

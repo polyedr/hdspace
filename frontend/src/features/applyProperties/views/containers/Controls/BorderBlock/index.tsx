@@ -1,4 +1,4 @@
-import React, { useState, useCallback, } from 'react';
+import React, { useCallback, } from 'react';
 import { connect } from 'react-redux';
 import cn from 'classnames';
 
@@ -48,12 +48,7 @@ export const Component: React.FunctionComponent<Props> = React.memo(({
   activeItemID,
   updateStyles,
 }) => {
-  const [isBorderColorPickerOpen, setIsBorderColorPickerOpen] = useState<boolean>(false);
   const [currentBorderColor, setCurrentBorderColor] = useColor(borderColor, activeItemID);
-
-  const handleColorPickerClose = useCallback(() => {
-    setIsBorderColorPickerOpen(!isBorderColorPickerOpen);
-  }, [isBorderColorPickerOpen]);
 
   const handleBorderWidthChange = useCallback(({ target: { value } }) => {
     const newWidth = getPermissibleValue(strToNumber(value), MIN_BORDER_WIDTH, MAX_BORDER_WIDTH);
@@ -118,10 +113,8 @@ export const Component: React.FunctionComponent<Props> = React.memo(({
         </div>
         <div className="propsElementsInnerBlock">
           <ColorPicker
-            display={isBorderColorPickerOpen}
             color={borderColor}
             onChangeComplete={color => handleColorChange(color)}
-            onClose={handleColorPickerClose}
           />
           <input
             className={cn("colorField", { inputWithError: !currentBorderColor.isValid })}
