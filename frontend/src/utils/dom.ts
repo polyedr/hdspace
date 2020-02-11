@@ -8,17 +8,17 @@ export const getClassDevice = (
 ) => {
   return classNames(
     {
-      [styles.editorWorkWindow_default]: mode.isDefaultMode,
+      [styles.editorLayout_default]: mode.isDefaultMode,
     },
     {
-      [styles.editorWorkWindow_tablet_rotated]: mode.isTabletMode
+      [styles.editorLayout_tablet_rotated]: mode.isTabletMode
       && isRotated,
-      [styles.editorWorkWindow_tablet]: mode.isTabletMode,
+      [styles.editorLayout_tablet]: mode.isTabletMode,
     },
     {
-      [styles.editorWorkWindow_mobile_rotated]: mode.isMobileMode
+      [styles.editorLayout_mobile_rotated]: mode.isMobileMode
       && isRotated,
-      [styles.editorWorkWindow_mobile]: mode.isMobileMode,
+      [styles.editorLayout_mobile]: mode.isMobileMode,
     },
   );
 };
