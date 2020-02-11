@@ -2,37 +2,3 @@ export const DISPLAY = [
   { label: "Block", value: "block" },
   { label: "Flex", value: "flex" }
 ];
-
-export const ALIGN_VALUES = [{
-  label: 'Start',
-  value: 'flex-start',
-}, {
-  label: 'Center',
-  value: 'center',
-}, {
-  label: 'End',
-  value: 'flex-end',
-}, {
-  label: 'Stretch',
-  value: 'stretch',
-}, {
-  label: 'Baseline',
-  value: 'baseline',
-}];
-
-export const JUSTIFY_VALUES = [{
-  label: 'Start',
-  value: 'flex-start',
-}, {
-  label: 'Center',
-  value: 'center',
-}, {
-  label: 'End',
-  value: 'flex-end',
-}, {
-  label: 'Space between',
-  value: 'space-between',
-}, {
-  label: 'Space around',
-  value: 'space-around',
-}];
