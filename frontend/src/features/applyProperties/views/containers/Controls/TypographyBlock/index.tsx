@@ -1,4 +1,4 @@
-import React, { memo, useState, useCallback } from 'react';
+import React, { memo, useCallback } from 'react';
 import cn from 'classnames';
 import { connect } from 'react-redux';
 
@@ -52,7 +52,6 @@ export const Component: React.FC<Props> = memo(({
   updateStyles,
   activeItemID,
 }) => {
-  const [isTypographyColorPickerOpen, setIsTypographyColorPickerOpen] = useState<boolean>(false);
   const [currentFontColor, setCurrentFontColor] = useColor(color, activeItemID);
 
   const handleColorChange = useCallback((color) => {
@@ -64,10 +63,6 @@ export const Component: React.FC<Props> = memo(({
       updateStyles({ color: newColor.value });
     }
   }, [updateStyles]);
-
-  const handleColorPickerClose = useCallback(() => {
-    setIsTypographyColorPickerOpen(!isTypographyColorPickerOpen);
-  }, [isTypographyColorPickerOpen]);
 
   const onFontFamilyChange = useCallback((value) => {
     updateStyles({ 'font-family': value });
@@ -176,10 +171,8 @@ export const Component: React.FC<Props> = memo(({
         </div>
         <div className="propsElementsInnerBlock">
           <ColorPicker
-            display={isTypographyColorPickerOpen}
             color={color}
             onChangeComplete={color => handleColorChange(color)}
-            onClose={handleColorPickerClose}
           />
           <input
             className={cn("colorField", { inputWithError: !currentFontColor.isValid })}
