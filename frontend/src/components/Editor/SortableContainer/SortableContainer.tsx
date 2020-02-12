@@ -127,7 +127,6 @@ const RecursiveComponent: React.FC<Props> = (props) => {
 
         // @ts-ignore
         const renderElement = RENDERERS[struct_type];
-        const isResizable = activeItemId === itemId && LIST_SCENARIO_TYPE.indexOf(struct_type) === -1 && !disableInteractions;
 
         if (renderElement) {
           const parsedStyles = convertPropCSS(styles);
