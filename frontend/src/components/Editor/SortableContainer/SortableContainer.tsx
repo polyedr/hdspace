@@ -151,7 +151,7 @@ const RecursiveComponent: React.FC<Props> = (props) => {
                 name,
                 style: parsedStyles,
                 active: itemId === activeItemId,
-                children: <Recursive
+                children: <SortableContainer
                   key={`element-${itemId}`}
                   activeItemId={activeItemId}
                   isMoving={isMoving}
@@ -174,7 +174,7 @@ const RecursiveComponent: React.FC<Props> = (props) => {
                 name,
                 style: parsedStyles,
                 active: itemId === activeItemId,
-                children: <Recursive
+                children: <SortableContainer
                   key={`element-${itemId}`}
                   activeItemId={activeItemId}
                   isMoving={isMoving}
@@ -195,4 +195,4 @@ const RecursiveComponent: React.FC<Props> = (props) => {
   );
 };
 
-export const Recursive = connect(mapStateToProps, mapDispatchToProps)(RecursiveComponent);
+export const SortableContainer = connect(mapStateToProps, mapDispatchToProps)(RecursiveComponent);
