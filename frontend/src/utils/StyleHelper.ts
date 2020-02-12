@@ -196,6 +196,22 @@ export const convertPropCSS = (styles: CssLikeStyles): React.CSSProperties => ({
   ...otherStyles(styles),
 });
 
+export const convertFlexToCssLikeStyles = (styles: Partial<Flex>): CssLikeStyles => (
+  R.keys(styles).reduce((result, key) => {
+    switch (key) {
+      case 'display':
+        return { ...result, display: styles[key] };
+      case 'flexDirection':
+        return { ...result, 'flex-direction': styles[key] };
+      case 'alignItems':
+        return { ...result, 'align-items': styles[key] };
+      case 'justifyContent':
+        return { ...result, 'justify-content': styles[key] };
+      default: return result;
+    }
+  }, {})
+);
+
 export const validateBorderRadius = (radius?: string): string | undefined => {
   if (typeof radius === 'undefined') return undefined;
 

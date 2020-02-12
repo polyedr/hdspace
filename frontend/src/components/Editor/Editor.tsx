@@ -23,7 +23,7 @@ export interface IEditProps {
   activeItem: ProjectT.ActiveItem;
   delScenarioItem: typeof Actions.delScenarioItem,
   updateElementStyles: typeof Actions.updateElementStyles,
-  addContainer: typeof Actions.addContainer,
+  wrapIntoContainer: typeof Actions.wrapIntoContainer,
   resetScreenState: typeof Actions.resetScreenState;
   copyActiveItem: typeof Actions.copyActiveItem;
   pasteCopiedItem: typeof Actions.pasteCopiedItem;
@@ -35,7 +35,7 @@ export const Editor: React.FC<IEditProps> = memo(({
   isPrototypeMode,
   activeItem,
   delScenarioItem,
-  addContainer,
+  wrapIntoContainer,
   resetScreenState,
   copyActiveItem,
   pasteCopiedItem,
@@ -70,14 +70,14 @@ export const Editor: React.FC<IEditProps> = memo(({
 
   useEffect(() => {
     const listener = (event: KeyboardEvent) => {
-      if (event.code == 'KeyC' && event.shiftKey) {
-        addContainer(activeItem.itemId);
+      if (event.code == 'KeyC' && event.altKey) {
+        wrapIntoContainer();
       }
     };
 
     document.addEventListener('keydown', listener);
     return () => document.removeEventListener('keydown', listener);
-  }, [activeItem, addContainer]);
+  }, [wrapIntoContainer]);
 
   useEffect(() => {
     const listener = (event: KeyboardEvent) => {

@@ -4,7 +4,7 @@ import * as R from 'ramda';
 import cn from 'classnames';
 import html2canvas from 'html2canvas';
 
-import { Recursive } from '$components/Editor/Recursive/Recursive';
+import { SortableContainer } from '$components/Editor/SortableContainer/SortableContainer';
 import { T as ProjectT, selectors, actionsCreators } from '$redux/project';
 import * as userActions from '$redux/user/actions';
 import { DEFAULT_SCREEN_MODE } from '$constants/defaultParams';
@@ -163,7 +163,7 @@ export const Component = (props: Props) => {
           className={cn(styles.editorLayout, getClassDevice(styles, currentScreenMode, isScreenRotated))}
           autoHeightMin="100%"
         >
-          <Recursive
+          <SortableContainer
             item={screen.listSortable.root}
             activeItemId={activeItem.itemId}
             isMoving={isMoving}

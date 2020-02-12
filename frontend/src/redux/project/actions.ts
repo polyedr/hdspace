@@ -218,10 +218,7 @@ export const uploadImageForNNSuccess = (payload: { imageURL: string, screenID: n
 
 export const getScreenNN = (): T.GetScreenNN => ({ type: 'PROJECTS:GET_SCREEN_NN' });
 
-export const addContainer = (itemID: string): T.AddContainer => ({
-  type: 'PROJECTS:ADD_CONTAINER',
-  payload: { itemID },
-});
+export const wrapIntoContainer = (): T.WrapIntoContainer => ({ type: 'PROJECTS:WRAP_INTO_CONTAINER' });
 
 export const runLayoutAlgorithm = (
   scenarios: T.IScenarios,

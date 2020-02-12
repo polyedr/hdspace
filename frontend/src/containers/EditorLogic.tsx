@@ -42,7 +42,7 @@ const mapDispatchToProps = {
   delScenarioItem: Actions.delScenarioItem,
   updateElementStyles: Actions.updateElementStyles,
   changeMinNavPanel: UserActions.changeMinNavPanel,
-  addContainer: Actions.addContainer,
+  wrapIntoContainer: Actions.wrapIntoContainer,
   resetScreenState: Actions.resetScreenState,
   copyActiveItem: Actions.copyActiveItem,
   pasteCopiedItem: Actions.pasteCopiedItem,
@@ -71,7 +71,7 @@ const EditorLogic: React.FunctionComponent<EditorProps> = ({
   renameScreen,
   delScenarioItem,
   updateElementStyles,
-  addContainer,
+  wrapIntoContainer,
   resetScreenState,
   copyActiveItem,
   pasteCopiedItem,
@@ -98,7 +98,7 @@ const EditorLogic: React.FunctionComponent<EditorProps> = ({
       isPrototypeMode={isPrototypeMode}
       delScenarioItem={delScenarioItem}
       updateElementStyles={updateElementStyles}
-      addContainer={addContainer}
+      wrapIntoContainer={wrapIntoContainer}
       resetScreenState={resetScreenState}
       copyActiveItem={copyActiveItem}
       pasteCopiedItem={pasteCopiedItem}

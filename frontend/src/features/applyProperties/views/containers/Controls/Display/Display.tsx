@@ -1,25 +1,21 @@
 import React, { memo, useCallback } from 'react';
 import { connect } from 'react-redux';
-import cn from 'classnames';
 
 import { AppReduxState } from '$shared/types/app';
 import { assertNever } from '$shared/helpers/ts';
-import { ScreenDisplay } from '$redux/project/types';
+import { ScreenDisplay, Flex } from '$redux/project/types';
 import { selectors } from '$redux/project/';
 import { DropDown } from '$components/UI/DropDown/';
-import { Button } from '$components/UI/Button/';
 import {
   withConfigurableProperties,
   PropertiesChangeProps
 } from '$utils/withConfigurableProperties';
-import { CssLikeStyles } from '$utils/StyleHelper';
+import { CssLikeStyles, convertFlexToCssLikeStyles } from '$utils/StyleHelper';
 
-import { ControlSection } from '../ControlSection/ControlSection';
-import { DISPLAY, JUSTIFY_VALUES, ALIGN_VALUES } from './constants';
+import { ControlTitle } from '../../../components/ControlTitle/ControlTitle';
+import { FlexProperties } from '../../../components/FlexProperties/FlexProperties';
+import { DISPLAY } from './constants';
 const styles = require('./Display.scss');
-
-type Orientation = 'vertical' | 'horizontal';
-type Align = 'align' | 'justify';
 
 type StateProps = {
   displayStyles: ScreenDisplay;
@@ -52,93 +48,33 @@ type Props = StateProps & PropertiesChangeProps;
 export const Component: React.FC<Props> = memo((props) => {
   const { displayStyles, updateStyles } = props;
 
-  const orientation: Orientation = displayStyles.display === 'flex'
-    && (displayStyles.flexDirection === 'row' 
-    || displayStyles.flexDirection === 'row-reverse')
-    ? 'horizontal' 
-    : 'vertical';
-
   const handleDisplayDropdownChange = useCallback(value => {
       updateStyles({ display: value });
     }, [updateStyles]);
 
-  const renderLabel = useCallback((reversed: boolean) => (
-    <span className={styles.axis__label}>{reversed ? 'Y-' : 'X-'} axis</span>
-  ), []);
-
-  const handleAlignDropDownChange = useCallback((type: Align, value: string) => {
-    updateStyles({ [type === 'align' ? 'align-items' : 'justify-content']: value });
-  }, [updateStyles]);
-
-  const handleOrientationDropDownChange = useCallback((value: Orientation) => {
-    updateStyles({ 'flex-direction': value === 'vertical' ? 'column' : 'row' });
-  }, [updateStyles]);
+  const handleFlexPropertiesChange = useCallback((prop: keyof Flex, value: Flex[keyof Flex]) => {
+    const styles = convertFlexToCssLikeStyles({ [prop]: value });
+    updateStyles(styles);
+  }, [])  
 
   return (
     <>
-      <ControlSection title="Display">
-        <DropDown
-          options={DISPLAY}
-          defaultValue={displayStyles.display}
-          value={displayStyles.display}
-          onChange={handleDisplayDropdownChange}
-        />
-      </ControlSection>
-      {displayStyles.display === "flex" && (
-        <>
-          <ControlSection title="Direction">
-            <div className={styles.orientation}>
-              <Button
-                styleType="primary"
-                className={cn(
-                  "propsPanelBtn",
-                  styles.orientationBtn,
-                  orientation === "horizontal" && "propsPanelBtn_active"
-                )}
-                onClick={() => handleOrientationDropDownChange("horizontal")}
-              >
-                Horizontal
-              </Button>
-              <Button
-                styleType="primary"
-                className={cn(
-                  "propsPanelBtn",
-                  styles.orientationBtn,
-                  styles.orientationBtn_vertical,
-                  orientation === "vertical" && "propsPanelBtn_active"
-                )}
-                onClick={() => handleOrientationDropDownChange("vertical")}
-              >
-                Vertical
-              </Button>
-            </div>
-          </ControlSection>
-          <ControlSection title="Align">
-            <div className={cn(styles.axises, orientation === "vertical" && styles.axises_reversed)}>
-              <div className={styles.axises__axis}>
-                {renderLabel(orientation === "vertical")}
-                <DropDown
-                  options={JUSTIFY_VALUES}
-                  defaultValue={displayStyles.justifyContent}
-                  value={displayStyles.justifyContent}
-                  onChange={value =>
-                    handleAlignDropDownChange("justify", value)
-                  }
-                />
-              </div>
-              <div className={styles.axises__axis}>
-                {renderLabel(orientation === "horizontal")}
-                <DropDown
-                  options={ALIGN_VALUES}
-                  defaultValue={displayStyles.alignItems}
-                  value={displayStyles.alignItems}
-                  onChange={value => handleAlignDropDownChange("align", value)}
-                />
-              </div>
-            </div>
-          </ControlSection>
-        </>
-      )}
+      <section className="propsElementsBlock">
+        <header className={styles.header}>
+          <ControlTitle content="Display" />
+        </header>
+        <div className="propsElementsContentBlock">
+          <div className="propsElementsInnerBlock">
+            <DropDown
+              options={DISPLAY}
+              defaultValue={displayStyles.display}
+              value={displayStyles.display}
+              onChange={handleDisplayDropdownChange}
+            />
+          </div>
+        </div>
+      </section>
+      {displayStyles.display === 'flex' && <FlexProperties properties={displayStyles} onChange={handleFlexPropertiesChange} />}
     </>
   );
 });

@@ -93,7 +93,7 @@ export type uploadImageForNNSuccess = IAction<
   'PROJECTS:UPLOAD_IMAGE_FOR_NN_SUCCESS', { imageURL: string, screenID: number }
 >;
 export type GetScreenNN = IPlainAction<'PROJECTS:GET_SCREEN_NN'>;
-export type AddContainer = IAction<'PROJECTS:ADD_CONTAINER', { itemID: string }>;
+export type WrapIntoContainer = IPlainAction<'PROJECTS:WRAP_INTO_CONTAINER'>;
 export type RunLayoutAlgorithm = IAction<'PROJECTS:RUN_LAYOUT_ALGORITHM', {
   scenarios: IScenarios, elements: IScenarioElements, root?: ILSItem
 }>;
@@ -145,7 +145,7 @@ export type Action =
   | UploadFile
   | uploadImageForNNSuccess
   | GetScreenNN
-  | AddContainer
+  | WrapIntoContainer
   | RunLayoutAlgorithm
   | RunLayoutAlgorithmFinished
   | SetActiveItem

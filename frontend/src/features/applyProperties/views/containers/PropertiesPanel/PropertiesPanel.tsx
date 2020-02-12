@@ -43,7 +43,7 @@ const mapState = (state: AppReduxState): StateProps => ({
 const mapDispatch = {
   addElement: actionsCreators.addElement,
   addScenario: actionsCreators.addScenario,
-  addContainer: actionsCreators.addContainer,
+  wrapIntoContainer: actionsCreators.wrapIntoContainer,
   setIsAddElementsModalOpened: actionsCreators.setIsAddElementsModalOpened,
   delScenarioItem: actionsCreators.delScenarioItem,
 };
@@ -77,7 +77,7 @@ const Component: React.FC<PropertiesPanelProps> = ({
   libraryElements,
 
   addScenario,
-  addContainer,
+  wrapIntoContainer,
   isAddElementsModalOpened,
   setIsAddElementsModalOpened,
 }) => {
@@ -102,7 +102,7 @@ const Component: React.FC<PropertiesPanelProps> = ({
           scenarios={scenarios}
           libraryElements={libraryElements}
           addScenario={addScenario}
-          addContainer={addContainer}
+          onWrapIntoContainer={wrapIntoContainer}
           isAddElementsModalOpened={isAddElementsModalOpened}
           setIsAddElementsModalOpened={setIsAddElementsModalOpened}
         />
