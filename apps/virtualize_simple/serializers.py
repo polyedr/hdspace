@@ -817,5 +817,6 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
         children = sorted(children, key=lambda i: i["roi"][0])
         scenario.parameters["children"] = [sub['ids'] for sub in children]
         scenario.styles["background-color"] = "rgba(" + bcolour_scenario_value + ")"
+        scenario.save()
 
         return scenario
