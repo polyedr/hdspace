@@ -2,14 +2,14 @@ import * as R from 'ramda';
 import { createSelector } from 'reselect';
 import { IScenarioItem, IScenarios, IScenarioElement, IScenarioElements } from '$redux/project/types';
 import {
-  LIST_SCENARIO_TYPE, DEFAULT_INDENTS, DEFAULT_FLEX, DEFAULT_BORDER, DEFAULT_BACKGROUND, DEFAULT_TYPOGRAPHY, DEFAULT_SIZE, DEFAULT_ACTION, DEFAULT_PLACEHOLDER, DEFAULT_TEXT_CONTENT, DEFAULT_MAP_PROPS,
+  LIST_SCENARIO_TYPE, DEFAULT_INDENTS, DEFAULT_BORDER, DEFAULT_BACKGROUND, DEFAULT_TYPOGRAPHY, DEFAULT_SIZE, DEFAULT_ACTION, DEFAULT_PLACEHOLDER, DEFAULT_TEXT_CONTENT, DEFAULT_MAP_PROPS, DEFAULT_DISPLAY,
 } from '$constants/defaultParams';
 
 export const ENTITIES = [
   'root', 'container', 'button', 'textinput', 'hyperlink', 'ocrtext', 'image', 'select', 'map', 'calendar', 'clock', 'undefined'
 ] as const;
 const CONTROLS_AFFECT_ON_PARAMS = ['action', 'mapProps', 'placeholder', 'textContent'] as const;
-const CONTROLS_AFFECT_ON_STYLES = ['direction', 'indents', 'size', 'typography', 'border', 'background'] as const;
+const CONTROLS_AFFECT_ON_STYLES = ['display', 'indents', 'size', 'typography', 'border', 'background'] as const;
 
 const controlAffectsOnStyles = (controlName: Control) => (
   CONTROLS_AFFECT_ON_STYLES.find(x => x === controlName) !== undefined
@@ -21,7 +21,7 @@ export type Control = typeof CONTROLS_AFFECT_ON_PARAMS[number] | typeof CONTROLS
 // WARN: every time you add or remove some properties in prod, you must write migration to add/remove properties for existing entities in db
 export const AVAILABLE_CONTROLS: Record<Entity, Control[]> = {
   root: ['background'],
-  container: ['indents', 'size', 'direction', 'typography', 'border', 'background'],
+  container: ['indents', 'size', 'display', 'typography', 'border', 'background'],
   button: ['indents', 'size', 'typography', 'border', 'background', 'textContent', 'action'],
   textinput: ['indents', 'size', 'typography', 'border', 'background', 'placeholder'],
   hyperlink: ['typography', 'border', 'background', 'action'],
@@ -35,7 +35,7 @@ export const AVAILABLE_CONTROLS: Record<Entity, Control[]> = {
 };
 
 const CONTROLS_DEFAULTS: Record<Control, any> = {
-  direction: DEFAULT_FLEX,
+  display: DEFAULT_DISPLAY,
   indents: DEFAULT_INDENTS,
   size: DEFAULT_SIZE,
   typography: DEFAULT_TYPOGRAPHY,

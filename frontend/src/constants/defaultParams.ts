@@ -62,7 +62,7 @@ export const DEFAULT_WIDTH = 'auto';
 export const DEFAULT_HEIGHT = 'auto';
 
 export const DEFAULT_SIZE = {
-  width: 'auto',
+  width: '100%',
   height: 'auto',
 };
 
@@ -90,12 +90,12 @@ export const DEFAULT_INDENTS: IScreenIndents = {
   'padding-left': '5px',
 };
 
-export const DEFAULT_FLEX: CssLikeStyles = {
-  display: 'flex',
+export const DEFAULT_DISPLAY: CssLikeStyles = { 
+  display: 'block',
   'flex-direction': 'row',
   'justify-content': 'flex-start',
   'align-items': 'stretch',
-};
+ };
 
 export const DEFAULT_BORDER: IScreenBorders = {
   'border-width': '0px',

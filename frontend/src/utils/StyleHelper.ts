@@ -5,6 +5,7 @@ import {
   MAX_BORDER_RADIUS_PERCENT,
   MIN_BORDER_RADIUS,
 } from '$constants/defaultParams';
+import { Flex, ScreenDisplay } from '$redux/project/types';
 // import {
 //   IScreenBackground, IScreenBorders,
 //   IScreenIndents,
@@ -14,7 +15,7 @@ import {
 // import { rgbToHex } from '$utils/parseColor';
 
 export interface CssLikeStyles {
-  display?: string;
+  display?: ScreenDisplay['display'];
 
   width?: number | string,
   height?: number | string,
@@ -47,9 +48,9 @@ export interface CssLikeStyles {
   'font-weight'?: number,
   'text-align'?: string,
 
-  'flex-direction'?: string;
-  'align-items'?: string;
-  'justify-content'?: string;
+  'flex-direction'?: Flex['flexDirection'];
+  'align-items'?: Flex['alignItems'];
+  'justify-content'?: Flex['justifyContent'];
 }
 
 type TConvertIndents = (styles: CssLikeStyles) => {
@@ -194,6 +195,22 @@ export const convertPropCSS = (styles: CssLikeStyles): React.CSSProperties => ({
   ...convertTypography(styles),
   ...otherStyles(styles),
 });
+
+export const convertFlexToCssLikeStyles = (styles: Partial<Flex>): CssLikeStyles => (
+  R.keys(styles).reduce((result, key) => {
+    switch (key) {
+      case 'display':
+        return { ...result, display: styles[key] };
+      case 'flexDirection':
+        return { ...result, 'flex-direction': styles[key] };
+      case 'alignItems':
+        return { ...result, 'align-items': styles[key] };
+      case 'justifyContent':
+        return { ...result, 'justify-content': styles[key] };
+      default: return result;
+    }
+  }, {})
+);
 
 export const validateBorderRadius = (radius?: string): string | undefined => {
   if (typeof radius === 'undefined') return undefined;

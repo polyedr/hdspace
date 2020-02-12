@@ -10,7 +10,6 @@ import { Spinner } from '$components/UI/Spinner/';
 import { AVAILABLE_CONTROLS, Control, Entity } from '$domain/core';
 
 import { ActiveElementBlock } from '../Controls/ActiveElementBlock';
-import { GroupElementsDirectionBlock } from '../Controls/GroupElementsDirectionBlock';
 import { ActionBlock } from '../Controls/ActionBlock';
 import { MapProps } from '../Controls/MapProps/MapProps';
 import { SizeBlock } from '../Controls/SizeBlock';
@@ -20,6 +19,7 @@ import { BorderBlock } from '../Controls/BorderBlock';
 import { TypographyBlock } from '../Controls/TypographyBlock';
 import { Placeholder } from '../Controls/Placeholder/Placeholder';
 import { TextContent } from '../Controls/TextContent/TextContent';
+import { Display } from '../Controls/Display/Display';
 const styles = require('./PropertiesPanel.scss');
 
 type StateProps = {
@@ -49,7 +49,7 @@ const mapDispatch = {
 };
 
 const CONTROLS: Record<Control, React.ComponentType> = {
-  direction: GroupElementsDirectionBlock,
+  display: Display,
   indents: IndentsBlock,
   size: SizeBlock,
   typography: TypographyBlock,
@@ -93,7 +93,7 @@ const Component: React.FC<PropertiesPanelProps> = ({
     <div className={classNames(styles.editorRightPanel)}>
       <Scrollbar
         style={SCROLLBAR_STYLES}
-        maxHeight="100%"
+        autoHeightMin="100%"
       >
         <ActiveElementBlock
           activeItem={activeItem}

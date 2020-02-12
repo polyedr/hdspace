@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { connect } from 'react-redux';
 import * as R from 'ramda';
-import classNames from 'classnames';
+import cn from 'classnames';
 import html2canvas from 'html2canvas';
 
-import { Recursive } from '$components/Editor/Recursive/Recursive';
+import { SortableContainer } from '$components/Editor/SortableContainer/SortableContainer';
 import { T as ProjectT, selectors, actionsCreators } from '$redux/project';
 import * as userActions from '$redux/user/actions';
 import { DEFAULT_SCREEN_MODE } from '$constants/defaultParams';
@@ -28,7 +28,6 @@ type StateProps = {
   screen: ProjectT.IProjectScreen;
   scenarios: ProjectT.IScenarios;
   scenarioElements: ProjectT.IScenarioElements;
-  isLPanelMinimized: boolean;
   isPrototypeMode: boolean;
   activeItem: ProjectT.ActiveItem;
 };
@@ -46,7 +45,6 @@ const mapState = (state: AppReduxState): StateProps => ({
   activeItem: selectors.selectActiveItem(state),
   scenarios: selectors.selectScenarios(state),
   scenarioElements: selectors.selectScenariosElements(state),
-  isLPanelMinimized: state.user.isLPanelMinimized,
   isPrototypeMode: state.user.isPrototypeMode,
 });
 
@@ -57,7 +55,6 @@ export const Component = (props: Props) => {
     screen,
     scenarios,
     scenarioElements,
-    isLPanelMinimized,
     isPrototypeMode,
     activeItem,
     setActiveItem,
@@ -144,7 +141,7 @@ export const Component = (props: Props) => {
   }, [saveScreen]);
 
   return (screen && R.hasPath(['listSortable', 'root'], screen)) ? (
-    <div className={classNames(styles.editorWorkBlock)}>
+    <div className={cn(styles.editorWorkspace)}>
       <TopBar
         screenID={screen.id}
         isPrototypeMode={isPrototypeMode}
@@ -155,49 +152,29 @@ export const Component = (props: Props) => {
         onScreenRotate={setIsScreenRotated}
         onScreenSave={handleSaveScreen}
       />
-      <Scrollbar
-        style={{ height: '100%' }}
-        maxHeight="100vh"
+      <div
+        className={styles.editorViewport}
+        tabIndex={0}
+        onClick={handleRootClick}
+        onMouseOver={handleLSItemMouseOver}
+        onMouseOut={handleLSItemMouseOut}
       >
-        <div className={styles.editorWorkWrapper}>
-          <div
-            className={classNames(
-              styles.editorWorkContainer,
-              getClassDevice(styles, currentScreenMode, isPrototypeMode, isScreenRotated, isWorkContainer),
-            )}
-            data-ls-id="root"
-            tabIndex={0}
-            onClick={handleRootClick}
-            onMouseOver={handleLSItemMouseOver}
-            onMouseOut={handleLSItemMouseOut}
-          >
-            <div
-              className={classNames(
-                styles.editorWorkWindow,
-                isLPanelMinimized && styles.editorWorkWindow_minimized,
-                getClassDevice(styles, currentScreenMode, isPrototypeMode, isScreenRotated, !isWorkContainer),
-              )}
-            >
-              <Scrollbar
-                style={{ minHeight: '100%', height: '100%' }}
-                isFlex
-                maxHeight="100vh"
-              >
-                <Recursive
-                  item={screen.listSortable.root}
-                  activeItemId={activeItem.itemId}
-                  isMoving={isMoving}
-                  listNotDragging={listNotDragging}
-                  setIsMoving={setIsMoving}
-                  onActiveElementChange={handleActiveElementChange} // needed to activate item before dragging, in order to get new listNotDraggable
-                  isResizing={hasItemBeingResized}
-                  setIsResizing={setHasItemBeingResized}
-                />
-              </Scrollbar>
-            </div>
-          </div>
-        </div>
-      </Scrollbar>
+        <Scrollbar 
+          className={cn(styles.editorLayout, getClassDevice(styles, currentScreenMode, isScreenRotated))}
+          autoHeightMin="100%"
+        >
+          <SortableContainer
+            item={screen.listSortable.root}
+            activeItemId={activeItem.itemId}
+            isMoving={isMoving}
+            listNotDragging={listNotDragging}
+            setIsMoving={setIsMoving}
+            onActiveElementChange={handleActiveElementChange} // needed to activate item before dragging, in order to get new listNotDraggable
+            isResizing={hasItemBeingResized}
+            setIsResizing={setHasItemBeingResized}
+          />
+        </Scrollbar>
+      </div>
     </div>
   ) : null;
 };
