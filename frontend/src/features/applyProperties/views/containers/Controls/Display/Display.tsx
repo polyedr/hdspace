@@ -3,18 +3,18 @@ import { connect } from 'react-redux';
 
 import { AppReduxState } from '$shared/types/app';
 import { assertNever } from '$shared/helpers/ts';
-import { ScreenDisplay } from '$redux/project/types';
+import { ScreenDisplay, Flex } from '$redux/project/types';
 import { selectors } from '$redux/project/';
 import { DropDown } from '$components/UI/DropDown/';
 import {
   withConfigurableProperties,
   PropertiesChangeProps
 } from '$utils/withConfigurableProperties';
-import { CssLikeStyles } from '$utils/StyleHelper';
+import { CssLikeStyles, convertFlexToCssLikeStyles } from '$utils/StyleHelper';
 
 import { ControlTitle } from '../../../components/ControlTitle/ControlTitle';
+import { FlexProperties } from '../../../components/FlexProperties/FlexProperties';
 import { DISPLAY } from './constants';
-import { FlexProperties } from '../FlexProperties/FlexProperties';
 const styles = require('./Display.scss');
 
 type StateProps = {
@@ -52,6 +52,11 @@ export const Component: React.FC<Props> = memo((props) => {
       updateStyles({ display: value });
     }, [updateStyles]);
 
+  const handleFlexPropertiesChange = useCallback((prop: keyof Flex, value: Flex[keyof Flex]) => {
+    const styles = convertFlexToCssLikeStyles({ [prop]: value });
+    updateStyles(styles);
+  }, [])  
+
   return (
     <>
       <section className="propsElementsBlock">
@@ -69,7 +74,7 @@ export const Component: React.FC<Props> = memo((props) => {
           </div>
         </div>
       </section>
-      {displayStyles.display === 'flex' && <FlexProperties displayStyles={displayStyles} />}
+      {displayStyles.display === 'flex' && <FlexProperties properties={displayStyles} onChange={handleFlexPropertiesChange} />}
     </>
   );
 });

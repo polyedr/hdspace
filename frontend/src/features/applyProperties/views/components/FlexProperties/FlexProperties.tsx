@@ -4,44 +4,29 @@ import cn from 'classnames';
 import { Flex } from '$redux/project/types';
 import { DropDown } from '$components/UI/DropDown/';
 import { Button } from '$components/UI/Button/';
-import {
-  withConfigurableProperties,
-  PropertiesChangeProps
-} from '$utils/withConfigurableProperties';
 
-import { ControlTitle } from '../../../components/ControlTitle/ControlTitle';
+import { ControlTitle } from '../ControlTitle/ControlTitle';
 import { JUSTIFY_VALUES, ALIGN_VALUES } from './constants';
 const styles = require('./FlexProperties.scss');
 
 type Orientation = 'vertical' | 'horizontal';
-type Align = 'align' | 'justify';
 
-type StateProps = {
-  displayStyles: Flex;
+type Props = {
+  properties: Flex;
+  onChange<T extends keyof Flex>(prop: T, value: Flex[T]): void;
 };
 
-type Props = StateProps & PropertiesChangeProps;
+const FlexProperties: React.FC<Props> = memo((props) => {
+  const { properties, onChange } = props;
 
-export const Component: React.FC<Props> = memo((props) => {
-  const { displayStyles, updateStyles } = props;
-
-  const orientation: Orientation = displayStyles.display === 'flex'
-    && (displayStyles.flexDirection === 'row' 
-    || displayStyles.flexDirection === 'row-reverse')
-    ? 'horizontal' 
+  const orientation: Orientation = (properties.flexDirection === 'row'
+    || properties.flexDirection === 'row-reverse')
+    ? 'horizontal'
     : 'vertical';
 
   const renderLabel = useCallback((reversed: boolean) => (
     <span className={styles.axis__label}>{reversed ? 'Y-' : 'X-'} axis</span>
   ), []);
-
-  const handleAlignDropDownChange = useCallback((type: Align, value: string) => {
-    updateStyles({ [type === 'align' ? 'align-items' : 'justify-content']: value });
-  }, [updateStyles]);
-
-  const handleOrientationDropDownChange = useCallback((value: Orientation) => {
-    updateStyles({ 'flex-direction': value === 'vertical' ? 'column' : 'row' });
-  }, [updateStyles]);
 
   return (
     <>
@@ -53,14 +38,14 @@ export const Component: React.FC<Props> = memo((props) => {
           <Button
             styleType="primary"
             className={cn('propsPanelBtn', styles.orientationBtn, orientation === 'horizontal' && 'propsPanelBtn_active')}
-            onClick={() => handleOrientationDropDownChange('horizontal')}
+            onClick={() => onChange('flexDirection', 'row')}
           >
             Horizontal
           </Button>
           <Button
             styleType="primary"
             className={cn('propsPanelBtn', styles.orientationBtn, styles.orientationBtn_vertical, orientation === 'vertical' && 'propsPanelBtn_active')}
-            onClick={() => handleOrientationDropDownChange('vertical')}
+            onClick={() => onChange('flexDirection', 'column')}
           >
             Vertical
           </Button>
@@ -75,18 +60,18 @@ export const Component: React.FC<Props> = memo((props) => {
             {renderLabel(orientation === 'vertical')}
             <DropDown
               options={JUSTIFY_VALUES}
-              defaultValue={displayStyles.justifyContent}
-              value={displayStyles.justifyContent}
-              onChange={(value) => handleAlignDropDownChange('justify', value)}
+              defaultValue={properties.justifyContent}
+              value={properties.justifyContent}
+              onChange={(value) => onChange('justifyContent', value as Flex['justifyContent'])}
             />
           </div>
           <div className={styles.axises__axis}>
             {renderLabel(orientation === 'horizontal')}
             <DropDown
               options={ALIGN_VALUES}
-              defaultValue={displayStyles.alignItems}
-              value={displayStyles.alignItems}
-              onChange={(value) => handleAlignDropDownChange('align', value)}
+              defaultValue={properties.alignItems}
+              value={properties.alignItems}
+              onChange={(value) => onChange('alignItems', value as Flex['alignItems'])}
             />
           </div>
         </div>
@@ -95,4 +80,4 @@ export const Component: React.FC<Props> = memo((props) => {
   );
 });
 
-export const FlexProperties = withConfigurableProperties(Component);
+export { FlexProperties };
