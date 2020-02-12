@@ -70,7 +70,7 @@ export const Editor: React.FC<IEditProps> = memo(({
 
   useEffect(() => {
     const listener = (event: KeyboardEvent) => {
-      if (event.code == 'KeyC' && event.shiftKey) {
+      if (event.code == 'KeyC' && event.altKey) {
         addContainer(activeItem.itemId);
       }
     };
