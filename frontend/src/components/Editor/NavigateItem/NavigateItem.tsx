@@ -1,27 +1,20 @@
-import React, { memo, useCallback } from 'react';
-import { T as ProjectT } from '$redux/project';
+import React, { memo } from 'react';
+
 import { Button } from '$components/UI/Button';
 import { Icon } from '$components/UI/Icon';
-import { PropertiesPanelProps } from '$features/applyProperties';
 
 const styles = require('./NavigateItem.scss');
 
 interface INavigateItemProps {
-  activeItem: ProjectT.ActiveItem,
-  addContainer: PropertiesPanelProps['addContainer'],
-
+  onWrapIntoContainer(): void;
 }
-export const NavigateItem: React.FunctionComponent<INavigateItemProps> = memo(({
-  activeItem,
-  addContainer,
-}) => {
-  const handleShowNav = useCallback(() => {
-    addContainer(activeItem.itemId);
-  }, [activeItem, addContainer]);
+export const NavigateItem: React.FunctionComponent<INavigateItemProps> = memo((props) => {
+  const { onWrapIntoContainer } = props;
+
   return (
     <div className={styles.wrapper}>
       <Button
-        onClick={handleShowNav}
+        onClick={onWrapIntoContainer}
       >
         <Icon icon="put-in" />
       </Button>

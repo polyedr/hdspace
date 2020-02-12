@@ -758,7 +758,7 @@ const updateElementParametersType: ProjectT.UpdateElementParameters['type'] = 'P
 const addScenarioType: ProjectT.AddScenario['type'] = 'PROJECTS:ADD_SCENARIO';
 const deleteScenarioType: ProjectT.DeleteScenario['type'] = 'PROJECTS:DELETE_SCENARIO';
 const renameScenarioType: ProjectT.RenameScenario['type'] = 'PROJECTS:RENAME_SCENARIO';
-const addContainerType: ProjectT.AddContainer['type'] = 'PROJECTS:ADD_CONTAINER';
+const wrapIntoContainerType: ProjectT.WrapIntoContainer['type'] = 'PROJECTS:WRAP_INTO_CONTAINER';
 const delScenarioItemType: ProjectT.DeleteScenarioItem['type'] = 'PROJECTS:DELETE_SCENARIO_ITEM';
 const uploadFileType: ProjectT.UploadFile['type'] = 'PROJECTS:UPLOAD_FILE';
 const getScreenNNType: ProjectT.GetScreenNN['type'] = 'PROJECTS:GET_SCREEN_NN';
@@ -793,7 +793,7 @@ export default function* projectSaga() {
   yield takeEvery(addScenarioType, addScenarioSaga);
   yield takeLatest(deleteScenarioType, delScenarioSaga);
   yield takeLatest(renameScenarioType, renameScenarioSaga);
-  yield takeEvery(addContainerType, wrapIntoContainerSaga);
+  yield takeEvery(wrapIntoContainerType, wrapIntoContainerSaga);
 
   yield takeLatest(copyActiveItemType, copyActiveItemSaga);
   yield takeEvery(pasteCopiedItemType, pasteCopiedItemSaga);

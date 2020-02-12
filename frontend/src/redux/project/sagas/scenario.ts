@@ -286,8 +286,8 @@ export function* renameScenarioSaga(action: ReturnType<typeof Actions.renameScen
   yield put(Actions.setScenarios(updateScenarios));
 }
 
-export function* wrapIntoContainerSaga(action: ReturnType<typeof Actions.addContainer>) {
-  const { itemID: rawItemID } = action.payload;
+export function* wrapIntoContainerSaga() {
+  const activeItem: ReturnType<typeof selectors.selectActiveItem> = yield select(selectors.selectActiveItem);
   const scenarios: ReturnType<typeof selectors.selectScenarios> = yield select(selectors.selectScenarios);
   const scenarioElements: ReturnType<typeof selectors.selectScenariosElements> = yield select(
     selectors.selectScenariosElements,
@@ -297,10 +297,11 @@ export function* wrapIntoContainerSaga(action: ReturnType<typeof Actions.addCont
   );
   const { listSortable } = currentScreen;
 
+  if (activeItem.itemType === 'root') return;
+
+  const rawItemID = activeItem.itemId;
   const lsItem = listSortable[rawItemID];
   const itemID = lsItem.id;
-
-  if (lsItem.type === 'root') return;
 
   const itemIsElement = rawItemID.slice(-1) === 'e';
 

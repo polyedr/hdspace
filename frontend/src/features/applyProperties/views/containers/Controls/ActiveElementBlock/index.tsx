@@ -16,8 +16,8 @@ interface IComponentProps {
   scenarios: PropertiesPanelProps['scenarios'],
   libraryElements: PropertiesPanelProps['libraryElements'],
   addScenario: PropertiesPanelProps['addScenario'],
-  addContainer: PropertiesPanelProps['addContainer'],
   isAddElementsModalOpened: boolean;
+  onWrapIntoContainer(): void;
   onDelScenarioItem(): void;
   setIsAddElementsModalOpened(isOpened: boolean): void;
 }
@@ -30,7 +30,7 @@ export const ActiveElementBlock: React.FunctionComponent<IComponentProps> = memo
     scenarios,
     libraryElements,
     addScenario,
-    addContainer,
+    onWrapIntoContainer,
     isAddElementsModalOpened,
     setIsAddElementsModalOpened,
   } = props;
@@ -80,8 +80,7 @@ export const ActiveElementBlock: React.FunctionComponent<IComponentProps> = memo
           { activeItem && (
             <div className="propsPanelBtnBlock">
               <NavigateItem
-                activeItem={activeItem}
-                addContainer={addContainer}
+                onWrapIntoContainer={onWrapIntoContainer}
               />
               <Button
                 className="propsPanelImgBtn"
