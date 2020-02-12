@@ -214,8 +214,9 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
             img = img_to_array(img)
 
             # Get the dominant colour for the parent scenario(take the whole image)
-            bcolour_scenario_value = '255,255,255'
+            bcolour_scenario_value = '255,255,255,0'
             domcolour_scenario = get_dominant_colour(img)
+            domcolour_scenario.append(1)
             bcolour_scenario_value = ','.join(str(int(x)) for x in domcolour_scenario)
 
             results = model.detect([img], verbose=1)
@@ -293,8 +294,9 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                     )
 
                     # Get the dominant colour for the HTML element
-                    bcolour_element_value = '255,255,255'
+                    bcolour_element_value = '255,255,255,0'
                     domcolour_element = get_dominant_colour(roi_our)
+                    domcolour_element.append(1)
                     bcolour_element_value = ','.join(str(int(x)) for x in domcolour_element)
 
                     # Convert to the grey colour
@@ -354,7 +356,7 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                                 "styles": {
                                     "width": str(width_elem) + "px",
                                     "height": str(height_elem) + "px",
-                                    "background-color": "rgb(" + bcolour_element_value + ")",
+                                    "background-color": "rgba(" + bcolour_element_value + ")",
                                 },
                             }
                         )
@@ -368,7 +370,7 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                                 "styles": {
                                     "width": str(width_elem) + "px",
                                     "height": str(height_elem) + "px",
-                                    "background-color": "rgb(" + bcolour_element_value + ")",
+                                    "background-color": "rgba(" + bcolour_element_value + ")",
                                 },
                             }
                         )
@@ -385,7 +387,7 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                                 "styles": {
                                     "width": str(width_elem) + "px",
                                     "height": str(height_elem) + "px",
-                                    "background-color": "rgb(" + bcolour_element_value + ")",
+                                    "background-color": "rgba(" + bcolour_element_value + ")",
                                 },
                             }
                         )
@@ -399,7 +401,7 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                                 "styles": {
                                     "width": str(width_elem) + "px",
                                     "height": str(height_elem) + "px",
-                                    "background-color": "rgb(" + bcolour_element_value + ")",
+                                    "background-color": "rgba(" + bcolour_element_value + ")",
                                 },
                             }
                         )
@@ -413,7 +415,7 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                                 "styles": {
                                     "width": str(width_elem) + "px",
                                     "height": str(height_elem) + "px",
-                                    "background-color": "rgb(" + bcolour_element_value + ")",
+                                    "background-color": "rgba(" + bcolour_element_value + ")",
                                 },
                             }
                         )
@@ -427,7 +429,7 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                                 "styles": {
                                     "width": str(width_elem) + "px",
                                     "height": str(height_elem) + "px",
-                                    "background-color": "rgb(" + bcolour_element_value + ")",
+                                    "background-color": "rgba(" + bcolour_element_value + ")",
                                 },
                             }
                         )
@@ -441,7 +443,7 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                                 "styles": {
                                     "width": str(width_elem) + "px",
                                     "height": str(height_elem) + "px",
-                                    "background-color": "rgb(" + bcolour_element_value + ")",
+                                    "background-color": "rgba(" + bcolour_element_value + ")",
                                 },
                             }
                         )
@@ -814,6 +816,6 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
         # Sort the data structure based on rois[0] (the vertical coordinate)
         children = sorted(children, key=lambda i: i["roi"][0])
         scenario.parameters["children"] = [sub['ids'] for sub in children]
-        scenario.styles["background-color"] = "rgb(" + bcolour_scenario_value + ")"
+        scenario.styles["background-color"] = "rgba(" + bcolour_scenario_value + ")"
 
         return scenario
