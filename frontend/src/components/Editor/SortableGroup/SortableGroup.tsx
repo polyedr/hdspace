@@ -88,8 +88,8 @@ export const SortableGroup: React.FC<Props> = (props) => {
 
   const getClassNames = useCallback(() => {
     return parent === 'root' 
-      ? cn(align && styles[`align_${align}`], disableSortable && styles.moving)
-      : cn('ls-item', 'sortable-group', isActive && styles.activated, align && styles[`align_${align}`], disableSortable && styles.moving);
+      ? cn(align && styles[`align_${align}`], !disableSortable && styles.moving)
+      : cn('ls-item', 'sortable-group', isActive && styles.activated, align && styles[`align_${align}`], !disableSortable && styles.moving);
   }, [parent, align, styles, disableSortable, isActive])
 
   return (

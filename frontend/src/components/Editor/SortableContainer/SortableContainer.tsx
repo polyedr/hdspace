@@ -101,7 +101,7 @@ const RecursiveComponent: React.FC<Props> = (props) => {
     return parseStyle ? convertPropCSS(parseStyle) : {};
   }, [scenarioList]);
 
-  const getIsActive = useCallback(() => item.id === parseInt(activeItemId, 10), [item, activeItemId]);
+  const getIsActive = useCallback(() => !disableInteractions && item.id === parseInt(activeItemId, 10), [disableInteractions, item, activeItemId]);
 
   return (
     <SortableGroup
@@ -156,7 +156,7 @@ const RecursiveComponent: React.FC<Props> = (props) => {
                 sortableId: itemId,
                 name,
                 style: parsedStyles,
-                active: itemId === activeItemId,
+                active: !disableInteractions && itemId === activeItemId,
                 children: <SortableContainer
                   key={`element-${itemId}`}
                   activeItemId={activeItemId}

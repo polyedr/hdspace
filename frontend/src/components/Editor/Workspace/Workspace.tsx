@@ -117,12 +117,12 @@ export const Component = (props: Props) => {
   }, [activeItem, screen.listSortable, scenarios, scenarioElements]);
 
   const handleLSItemMouseOver = useCallback((event: React.MouseEvent) => {
-    !hasItemBeingResized && (event.target as HTMLElement)?.closest?.('.ls-item')?.classList.add('hovered');
-  }, [hasItemBeingResized]);
+    !isPrototypeMode && !hasItemBeingResized && (event.target as HTMLElement)?.closest?.('.ls-item')?.classList.add('hovered');
+  }, [isPrototypeMode, hasItemBeingResized]);
 
   const handleLSItemMouseOut = useCallback((event: React.MouseEvent) => {
-    !hasItemBeingResized && (event.target as HTMLElement)?.closest?.('.ls-item')?.classList.remove('hovered');
-  }, [hasItemBeingResized]);
+    !isPrototypeMode && !hasItemBeingResized && (event.target as HTMLElement)?.closest?.('.ls-item')?.classList.remove('hovered');
+  }, [isPrototypeMode, hasItemBeingResized]);
 
   const handleSaveScreen = useCallback(() => {
     const screenBody = document.getElementById('root');
