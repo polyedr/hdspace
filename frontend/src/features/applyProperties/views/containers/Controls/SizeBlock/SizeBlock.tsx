@@ -15,11 +15,11 @@ enum Unit {
   auto = 'auto',
 }
 
-type SizeSymbol = keyof typeof Unit;
+type UnitType = keyof typeof Unit;
 
 type SelectedUnit = {
-  width: SizeSymbol;
-  height: SizeSymbol;
+  width: UnitType;
+  height: UnitType;
 }
 
 type SizeName = keyof SelectedUnit;
@@ -31,11 +31,11 @@ type StateProps = {
 
 type Props = StateProps & PropertiesChangeProps;
 
-const getUnitFromValue = (value: string): SizeSymbol => {
+const getUnitFromValue = (value: string): UnitType => {
   const unit = value.replace(/[0-9, \d+\.\d+]/g, '');
 
   if (unit in Unit) {
-    return unit as SizeSymbol;
+    return unit as UnitType;
   } else {
     console.error('Incorrect unit', unit); // TODO validate users input value
     return Unit.px;
@@ -57,7 +57,7 @@ export const Component: React.FC<Props> = memo((props) => {
   const handleSelectChange = useCallback(({ target: { value } }, sizeName: SizeName) => {
     const el = document.getElementById(activeItemID);
 
-    switch (value as SizeSymbol) {
+    switch (value as UnitType) {
       case 'px': {
         if (el !== null) {
           const size = sizeName === 'width' ? el.offsetWidth : el.offsetHeight;
