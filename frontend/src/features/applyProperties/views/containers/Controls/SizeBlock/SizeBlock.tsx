@@ -15,19 +15,29 @@ enum Unit {
   auto = 'auto',
 }
 
+type SizeSymbol = keyof typeof Unit;
+
+type SelectedUnit = {
+  width: SizeSymbol;
+  height: SizeSymbol;
+}
+
+type SizeName = keyof SelectedUnit;
+
 type StateProps = {
-  width: string | number;
-  height: string | number;
+  width: string;
+  height: string;
 };
 
 type Props = StateProps & PropertiesChangeProps;
 
-const getUnitFromString = (str: string): keyof typeof Unit => {
-  const symbol = str.replace(/[0-9, \d+\.\d+]/g, '');
+const getUnitFromValue = (value: string): SizeSymbol => {
+  const unit = value.replace(/[0-9, \d+\.\d+]/g, '');
 
-  if (symbol in Unit) {
-    return symbol as keyof typeof Unit;
+  if (unit in Unit) {
+    return unit as SizeSymbol;
   } else {
+    console.error('Incorrect unit', unit); // TODO validate users input value
     return Unit.px;
   }
 }
@@ -44,18 +54,10 @@ function mapState(state: AppReduxState): StateProps {
 export const Component: React.FC<Props> = memo((props) => {
   const { width, height, updateStyles, activeItemID } = props;
 
-  const widthSymbol = Unit[getUnitFromString(String(width))];
-  const heighthSymbol = Unit[getUnitFromString(String(height))];
-
-  const [selectedUnit, setSelectedUnit] = useState<{ width: keyof typeof Unit; height: keyof typeof Unit; }>({
-    width: widthSymbol,
-    height: heighthSymbol,
-  });
-
-  const handleSelectChange = useCallback(({ target: { value } }, sizeName: keyof typeof selectedUnit) => {
+  const handleSelectChange = useCallback(({ target: { value } }, sizeName: SizeName) => {
     const el = document.getElementById(activeItemID);
 
-    switch (value as keyof typeof Unit) {
+    switch (value as SizeSymbol) {
       case 'px': {
         if (el !== null) {
           const size = sizeName === 'width' ? el.offsetWidth : el.offsetHeight;
@@ -87,27 +89,22 @@ export const Component: React.FC<Props> = memo((props) => {
 
       default: break;
     }
-
-    setSelectedUnit({ ...selectedUnit, [sizeName]: value });
-  }, [selectedUnit, activeItemID, updateStyles, width, height]);
+  }, [activeItemID, updateStyles, width, height]);
 
   const handleInputChange = useCallback(({ target: { name, value } }) => {
-    const unitValue = selectedUnit[name as keyof typeof selectedUnit];
+    const size = name === 'width' ? width : height;
+    const unitValue = Unit[getUnitFromValue(size)];
 
     const newSize = {
       [name]: unitValue === 'auto' ? 'auto' : `${value}${Unit[unitValue]}`,
     };
 
     updateStyles(newSize);
-  }, [updateStyles, selectedUnit]);
+  }, [updateStyles, width, height]);
 
-  const getSizeDisableChange = useCallback((value: 'height' | 'width') => (
-    ((value === 'height' ? height : width)) === 'auto'
-  ), [height, width]);
-
-  const renderSizeControl = (sizeName: keyof typeof selectedUnit) => {
+  const renderSizeControl = (sizeName: SizeName) => {
     const size = sizeName === 'width' ? width : height;
-    const parsedSize = Number.isNaN(parseFloat(String(size))) ? '' : String(parseFloat(String(size)));
+    const parsedSize = Number.isNaN(parseFloat(size)) ? '' : String(parseFloat(size));
     const inputValue = size === 'auto' ? 'auto' : parsedSize;
     
     return (
@@ -118,12 +115,12 @@ export const Component: React.FC<Props> = memo((props) => {
           name={sizeName}
           value={inputValue}
           onChange={handleInputChange}
-          disabled={getSizeDisableChange(sizeName)}
+          disabled={inputValue === 'auto'}
         />
         <select
           className="dropDown"
           onChange={event => handleSelectChange(event, sizeName)}
-          value={selectedUnit[sizeName]}
+          value={Unit[getUnitFromValue(size)]}
           name={`${sizeName}_unit`}
         >
           {keys(Unit).map((key, index) => <option key={index} value={key}>{Unit[key]}</option>)}
