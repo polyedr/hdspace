@@ -17,10 +17,10 @@ import { Flex, ScreenDisplay } from '$redux/project/types';
 export interface CssLikeStyles {
   display?: ScreenDisplay['display'];
 
-  width?: number | string,
-  height?: number | string,
-  'min-height'?: number | string,
-  'min-width'?: number | string,
+  width?: string,
+  height?: string,
+  'min-height'?: string,
+  'min-width'?: string,
 
   'margin-top'?: string,
   'margin-right'?: string,
