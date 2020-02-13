@@ -101,8 +101,11 @@ const RecursiveComponent: React.FC<Props> = (props) => {
     return parseStyle ? convertPropCSS(parseStyle) : {};
   }, [scenarioList]);
 
+  const getIsActive = useCallback(() => item.id === parseInt(activeItemId, 10), [item, activeItemId]);
+
   return (
     <SortableGroup
+      isActive={getIsActive()}
       key={item.id}
       disableSortable={!isMoving || disableInteractions}
       isPutItem={getIsPutItem(item.type)}
@@ -128,7 +131,21 @@ const RecursiveComponent: React.FC<Props> = (props) => {
         // @ts-ignore
         const renderElement = RENDERERS[struct_type];
 
-        if (renderElement) {
+        if (struct_type === 'container') {
+          return (
+            <SortableContainer
+              key={`element-${itemId}`}
+              activeItemId={activeItemId}
+              isMoving={isMoving}
+              item={currentItem}
+              listNotDragging={listNotDragging}
+              onActiveElementChange={onActiveElementChange}
+              setIsMoving={setIsMoving}
+              isResizing={isResizing}
+              setIsResizing={setIsResizing}
+            />
+          )
+        } else if (renderElement) {
           const parsedStyles = convertPropCSS(styles);
 
           return (

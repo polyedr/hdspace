@@ -31,6 +31,7 @@ export interface CssLikeStyles {
   'padding-bottom'?: string,
   'padding-left'?: string,
 
+  'border-style'?: string,
   'border-width'?: string,
   'border-color'?: string,
   'border-radius'?: string,
@@ -153,6 +154,8 @@ const otherStyles = (styles: CssLikeStyles): React.CSSProperties => (
 export const convertBorders: TConvertBorders = styles => (
   R.keys(styles).reduce((result, key) => {
     switch (key) {
+      case 'border-style':
+        return { ...result, borderStyle: styles[key] };
       case 'border-color':
         return { ...result, borderColor: styles[key] };
       case 'border-width':

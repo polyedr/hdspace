@@ -26,26 +26,6 @@ type RendererProps = {
 
 type Renderer = React.FC<RendererProps>;
 
-const renderContainer: Renderer = (props) => {
-  const { id, active, children, style, onClick, sortableId } = props;
-  return (
-    <div
-      data-ls-id={id}
-      data-id={sortableId}
-      key={id}
-      className={cn('ls-item', styles.addedContainer, active && styles.activated)}
-      style={{
-        ...style,
-        overflowWrap: 'break-word',
-      }}
-      onClick={(event) => onClick?.(event, id)}
-      tabIndex={0}
-    >
-      {children || null}
-    </div>
-  );
-}
-
 const renderButton: Renderer = (props) => {
   const { id, style, params, active, onClick, sortableId } = props;
   return (
@@ -293,8 +273,7 @@ const renderElem: Renderer = ({
   }
 };
 
-export const RENDERERS: Record<Exclude<Entity, 'root'>, React.ComponentType<any>> = {
-  container: renderContainer,
+export const RENDERERS: Record<Exclude<Entity, 'root' | 'container'>, React.ComponentType<any>> = {
   button: renderButton,
   textinput: renderInput,
   hyperlink: renderHyperLine,

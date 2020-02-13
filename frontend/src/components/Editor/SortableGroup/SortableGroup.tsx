@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import classNames from 'classnames';
+import cn from 'classnames';
 import { SortableOptions } from 'sortablejs';
 
 // @ts-ignore
@@ -8,6 +8,7 @@ import { Sortable } from '$components/Editor/Sortable/Sortable';
 const styles = require('./SortableGroup.scss');
 
 type Props = {
+  isActive: boolean,
   disableSortable: boolean,
   isPutItem: boolean,
   parent: string,
@@ -23,6 +24,7 @@ type Props = {
 
 export const SortableGroup: React.FC<Props> = (props) => {
   const {
+    isActive,
     disableSortable,
     isPutItem,
     parent,
@@ -84,17 +86,19 @@ export const SortableGroup: React.FC<Props> = (props) => {
     isSomeItemBeingDragged && event.stopPropagation();
   }, []);
 
+  const getClassNames = useCallback(() => {
+    return parent === 'root' 
+      ? cn(align && styles[`align_${align}`], disableSortable && styles.moving)
+      : cn('ls-item', 'sortable-group', isActive && styles.activated, align && styles[`align_${align}`], disableSortable && styles.moving);
+  }, [parent, align, styles, disableSortable, isActive])
 
   return (
     <Sortable
       id={parent}
+      data-ls-id={parent !== 'root' && parent || null}
+      data-id={parent !== 'root' && parent || null}
       style={stylesToInherit}
-      className={classNames(
-        parent !== 'root' && 'sortable-group',
-        // styles[group],
-        align && styles[`align_${align}`],
-        disableSortable && styles.moving,
-      )}
+      className={getClassNames()}
       // tag="ul" Defaults to "div"
       options={{
         swapThreshold: 0.9, // Threshold of the swap zone
