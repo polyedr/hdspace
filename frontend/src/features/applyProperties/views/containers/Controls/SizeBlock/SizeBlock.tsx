@@ -1,8 +1,8 @@
-import React, { useCallback, memo, useState } from 'react';
+import React, { useCallback, memo } from 'react';
 import { connect } from 'react-redux';
+import * as R from 'ramda';
 
 import { AppReduxState } from '$shared/types/app';
-import { keys } from '$shared/helpers/ts';
 import { CssLikeStyles } from '$utils/StyleHelper';
 import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
 import { selectors } from '$redux/project';
@@ -123,7 +123,7 @@ export const Component: React.FC<Props> = memo((props) => {
           value={Unit[getUnitFromValue(size)]}
           name={`${sizeName}_unit`}
         >
-          {keys(Unit).map((key, index) => <option key={index} value={key}>{Unit[key]}</option>)}
+          {R.keys(Unit).map((key, index) => <option key={index} value={key}>{Unit[key]}</option>)}
         </select>
       </>
     );
