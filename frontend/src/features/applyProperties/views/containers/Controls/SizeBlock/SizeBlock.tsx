@@ -77,8 +77,8 @@ export const Component: React.FC<Props> = memo((props) => {
           const parentYPadding = parseFloat(parentStyles.paddingTop);
           
           const parentSize = sizeName === 'width' 
-            ? el.parentElement.offsetWidth - parentXPadding * 2
-            : el.parentElement.offsetHeight - parentYPadding * 2;
+            ? el.parentElement.clientWidth - parentXPadding * 2
+            : el.parentElement.clientHeight - parentYPadding * 2;
 
           const size = sizeName === 'width' ? el.offsetWidth : el.offsetHeight;
           const sizeInPercents = parentSize ? Math.round(Number(size * 10000 / parentSize)) / 100 : 0;
