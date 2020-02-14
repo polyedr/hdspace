@@ -5,5 +5,5 @@ export { BorderBlock } from './Controls/BorderBlock';
 export { MapProps } from './Controls/MapProps/MapProps';
 export { IndentsBlock } from './Controls/IndentsBlock';
 export { PropertiesPanel, PropertiesPanelProps } from './PropertiesPanel/PropertiesPanel';
-export { SizeBlock } from './Controls/SizeBlock';
+export { SizeBlock } from './Controls/SizeBlock/SizeBlock';
 export { TypographyBlock } from './Controls/TypographyBlock';

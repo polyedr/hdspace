@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 
 import { AppReduxState } from '$shared/types/app';
 import { SortableGroup } from '$components/Editor/SortableGroup/SortableGroup';
-import { DragResize } from '$components/Editor/DragResize/DragResize';
 import { RENDERERS } from '$components/UI/RenderElements';
 import { IListSortable, ILSItem } from '$redux/project/types';
 import { selectors, actionsCreators } from '$redux/project';
@@ -70,7 +69,6 @@ const RecursiveComponent: React.FC<Props> = (props) => {
     listSortable,
     elementList,
     scenarioList,
-    updateElementStyles,
   } = props;
 
   const [isDragging, setIsDragging] = useState<boolean>(false);
@@ -129,43 +127,11 @@ const RecursiveComponent: React.FC<Props> = (props) => {
 
         // @ts-ignore
         const renderElement = RENDERERS[struct_type];
-        const isResizable = activeItemId === itemId && LIST_SCENARIO_TYPE.indexOf(struct_type) === -1 && !disableInteractions;
 
         if (renderElement) {
           const parsedStyles = convertPropCSS(styles);
 
-          return LIST_SCENARIO_TYPE.indexOf(struct_type) === -1 ? (
-            <DragResize
-              key={`resize-${itemId}`}
-              sortableId={itemId}
-              style={parsedStyles}
-              updateElementStyles={updateElementStyles}
-              setIsMoving={setIsMoving}
-              isResizable={isResizable}
-              onResize={setIsResizing}
-            >
-              {renderElement({
-                id: itemId,
-                isDisabled: !disableInteractions,
-                params: { ...parameters, image },
-                name,
-                style: parsedStyles,
-                active: itemId === activeItemId,
-                children: <SortableContainer
-                  key={`element-${itemId}`}
-                  activeItemId={activeItemId}
-                  isMoving={isMoving}
-                  item={currentItem}
-                  listNotDragging={listNotDragging}
-                  onActiveElementChange={onActiveElementChange}
-                  setIsMoving={setIsMoving}
-                  isResizable={isResizable}
-                  isResizing={isResizing}
-                  setIsResizing={setIsResizing}
-                />,
-              })}
-            </DragResize>
-          ) : (
+          return (
               renderElement({
                 id: itemId,
                 isDisabled: !disableInteractions,
