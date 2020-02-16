@@ -88,15 +88,17 @@ export const SortableGroup: React.FC<Props> = (props) => {
 
   const getClassNames = useCallback(() => {
     return parent === 'root' 
-      ? cn(align && styles[`align_${align}`], !disableSortable && styles.moving)
-      : cn('ls-item', 'sortable-group', isActive && styles.activated, align && styles[`align_${align}`], !disableSortable && styles.moving);
+      ? !disableSortable && styles.moving
+      : cn('ls-item', 'sortable-group', isActive && styles.activated, !disableSortable && styles.moving);
   }, [parent, align, styles, disableSortable, isActive])
+
+  const getSortableId = useCallback(() => parent === 'root' ? null : parent, [parent]);
 
   return (
     <Sortable
       id={parent}
-      data-ls-id={parent !== 'root' && parent || null}
-      data-id={parent !== 'root' && parent || null}
+      data-ls-id={getSortableId()}
+      data-id={getSortableId()}
       style={stylesToInherit}
       className={getClassNames()}
       // tag="ul" Defaults to "div"

@@ -53,7 +53,7 @@ export type OwnProps = {
 
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 
-const RecursiveComponent: React.FC<Props> = (props) => {
+const SortableComponent: React.FC<Props> = (props) => {
   const {
     item,
     activeItemId,
@@ -128,9 +128,6 @@ const RecursiveComponent: React.FC<Props> = (props) => {
         const currentItem = listSortable[itemId];
         const { struct_type, parameters, styles, name, image } = getParams(itemId, elementList, scenarioList);
 
-        // @ts-ignore
-        const renderElement = RENDERERS[struct_type];
-
         if (struct_type === 'container') {
           return (
             <SortableContainer
@@ -145,37 +142,26 @@ const RecursiveComponent: React.FC<Props> = (props) => {
               setIsResizing={setIsResizing}
             />
           )
-        } else if (renderElement) {
-          const parsedStyles = convertPropCSS(styles);
+        } 
 
-          return (
-              renderElement({
-                id: itemId,
-                isDisabled: !disableInteractions,
-                params: { ...parameters, image },
-                sortableId: itemId,
-                name,
-                style: parsedStyles,
-                active: !disableInteractions && itemId === activeItemId,
-                children: <SortableContainer
-                  key={`element-${itemId}`}
-                  activeItemId={activeItemId}
-                  isMoving={isMoving}
-                  item={currentItem}
-                  listNotDragging={listNotDragging}
-                  onActiveElementChange={onActiveElementChange}
-                  setIsMoving={setIsMoving}
-                  isResizing={isResizing}
-                  setIsResizing={setIsResizing}
-                />,
-              })
-            );
-        }
-
-        return null;
+        // @ts-ignore
+        const renderElement = RENDERERS[struct_type];
+        const parsedStyles = convertPropCSS(styles);
+        
+        return renderElement ? (
+          renderElement({
+            id: itemId,
+            isDisabled: !disableInteractions,
+            params: { ...parameters, image },
+            sortableId: itemId,
+            name,
+            style: parsedStyles,
+            active: !disableInteractions && itemId === activeItemId,
+          })
+        ) : null;
       })}
     </SortableGroup>
   );
 };
 
-export const SortableContainer = connect(mapStateToProps, mapDispatchToProps)(RecursiveComponent);
+export const SortableContainer = connect(mapStateToProps, mapDispatchToProps)(SortableComponent);
