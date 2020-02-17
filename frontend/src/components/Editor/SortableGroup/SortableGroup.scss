@@ -3,3 +3,11 @@
     cursor: move;
   }
 }
+
+.activated {
+  outline: red solid 1px;
+}
+
+:global(.hovered) {
+  outline: $secondBorderColor solid 1px;
+}

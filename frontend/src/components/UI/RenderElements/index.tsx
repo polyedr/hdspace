@@ -26,26 +26,6 @@ type RendererProps = {
 
 type Renderer = React.FC<RendererProps>;
 
-const renderContainer: Renderer = (props) => {
-  const { id, active, children, style, onClick, sortableId } = props;
-  return (
-    <div
-      data-ls-id={id}
-      data-id={sortableId}
-      key={id}
-      className={cn('ls-item', styles.addedContainer, active && styles.activated)}
-      style={{
-        ...style,
-        overflowWrap: 'break-word',
-      }}
-      onClick={(event) => onClick?.(event, id)}
-      tabIndex={0}
-    >
-      {children || null}
-    </div>
-  );
-}
-
 const renderButton: Renderer = (props) => {
   const { id, style, params, active, onClick, sortableId } = props;
   return (
@@ -235,66 +215,7 @@ const renderUndefined: Renderer = (props) => {
   );
 }
 
-const renderElem: Renderer = ({
-  id, children, style, params, active, sortableId,
-}) => {
-  switch (params.html_type) {
-    case 'text_title':
-    case 'text_description':
-      return renderText({ id, style, params, sortableId });
-
-    case 'input_firstname':
-      return renderInput({ id, style, params: { ...params, placeholder: 'firstname' }, sortableId });
-
-    case 'input_lastname':
-      return renderInput({ id, style, params: { ...params, placeholder: 'lastname' }, sortableId });
-
-    case 'input_password':
-      return renderInput({ id, style, params: { ...params, placeholder: 'password' }, sortableId });
-
-    case 'input_phone':
-      return renderInput({ id, style, params: { ...params, placeholder: 'phone' }, sortableId });
-
-    case 'select_day':
-      return renderSelect({ id, style, params: { ...params, placeholder: 'day' }, sortableId });
-
-    case 'select_month':
-      return renderSelect({ id, style, params: { ...params, placeholder: 'month' }, sortableId });
-
-    case 'select_year':
-      return renderSelect({ id, style, params: { ...params, placeholder: 'year' }, sortableId });
-
-    case 'button_end_composite_scenario':
-    case 'button_end_simple_scenario':
-      return renderButton({ id, style, params, sortableId });
-
-    case 'hyperlink_end_simple_scenario':
-      return renderHyperLine({ id, style, params, sortableId });
-
-    default: {
-      // console.warn(`No render type of ${params.html_type}, element id:${id} !`);
-      return (
-        <div
-          data-ls-id={id}
-          data-id={sortableId}
-          key={id}
-          className={cn('ls-item', styles.addedElem, active && styles.activated)}
-          style={{
-            ...style,
-            // ...parseStylesCss(style),
-            overflowWrap: 'break-word',
-          }}
-        >
-          <span>{id}</span>
-          {children || null}
-        </div>
-      );
-    }
-  }
-};
-
-export const RENDERERS: Record<Exclude<Entity, 'root'>, React.ComponentType<any>> = {
-  container: renderContainer,
+export const RENDERERS: Record<Exclude<Entity, 'root' | 'container'>, React.FunctionComponent<any>> = {
   button: renderButton,
   textinput: renderInput,
   hyperlink: renderHyperLine,
