@@ -172,7 +172,7 @@ export const DEFAULT_ACTIVE_ITEM: ActiveItem = {
 
 export const STATUS = ['on_hold', 'in_progress', 'review', 'approved'];
 
-export const LIST_SCENARIO_TYPE = ['block', 'container', 'group', 'root'];
+export const LIST_SCENARIO_TYPE = ['container', 'root'];
 
 export const DEFAULT_SCREEN_MODE = {
   isDefaultMode: false,

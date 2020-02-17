@@ -227,9 +227,12 @@ export const getParams = (
 
 export const idToLSId = (id: number, type: string): string => {
   if (type === 'root') return type;
-
   const char = LIST_SCENARIO_TYPE.indexOf(type) !== -1 ? 's' : 'e';
+  return `${id}${char}`;
+};
 
+export const idToDataLSID = (id: number, type: string): string => {
+  const char = LIST_SCENARIO_TYPE.indexOf(type) !== -1 ? 's' : 'e';
   return `${id}${char}`;
 };
 
