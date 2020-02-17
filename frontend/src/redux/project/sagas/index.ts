@@ -612,7 +612,8 @@ function* duplicateContainer(containerID: string, targetContainerID: string) {
       return R.pipe(
         R.set(cLens.id, oldIDtoNewIDMap[x.id]),
         R.over(cLens.elements, (elements: number[]) => elements.map(e => oldIDtoNewIDMap[e])),
-        R.over(cLens.children, (children: string[]) => children.map(c => oldIDtoNewIDMapPostfixed[c]))
+        R.over(cLens.children, (children: string[]) => children.map(c => oldIDtoNewIDMapPostfixed[c])),
+        R.over(cLens.parent, (p: number) => oldIDtoNewIDMap[p]),
       )(x);
     } else {
       return R.pipe(
@@ -624,6 +625,7 @@ function* duplicateContainer(containerID: string, targetContainerID: string) {
   };
 
   const restoreMainContainerRelationships = R.pipe(
+    // parent changed in the beginning
     R.over(cLens.elements, (elements: number[]) => elements.map(e => oldIDtoNewIDMap[e])),
     R.over(cLens.children, (children: string[]) => children.map(c => oldIDtoNewIDMapPostfixed[c])),
   );

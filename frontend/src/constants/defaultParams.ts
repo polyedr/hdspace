@@ -105,7 +105,7 @@ export const DEFAULT_BORDER: IScreenBorders = {
 };
 
 export const DEFAULT_BACKGROUND: IScreenBackground = {
-  'background-color': '#ffffff',
+  'background-color': 'rgba(255, 255, 255, 0)',
   'background-image': 'none',
   'background-repeat': 'no-repeat',
   'background-size': 'cover',
