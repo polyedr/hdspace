@@ -42,6 +42,7 @@ import {
   parseImgUsingNN,
   apiGetElements,
   apiAddElements,
+  apiGetElement,
 } from '$api/element';
 import { setTokenPair, setLoadedToken } from '$redux/user/actions';
 import { MAX_TOKEN_TRIALS } from '$config/settings';
@@ -538,27 +539,26 @@ function* uploadFileSaga(
 
 function* copyActiveItemSaga() {
   const { itemId: activeItemID }: ReturnType<typeof selectors.selectActiveItem> = yield select(selectors.selectActiveItem);
+  const currentScreen: ReturnType<typeof selectors.selectCurrentScreen> = yield select(selectors.selectCurrentScreen);
   if (activeItemID !== 'none') {
-    yield put(actionsCreators.setItemToCopy(activeItemID));
+    yield put(actionsCreators.setItemToCopy(activeItemID, currentScreen.id));
   }
 }
 
 const isContainer = (x: T.IScenarioElement | T.IScenarioItem): x is T.IScenarioItem => x.struct_type === 'container';
 
-function* duplicateContainer(containerID: string, targetContainerID: string) {
-  const scenarios: ReturnType<typeof selectors.selectScenarios> = yield select(selectors.selectScenarios);
-  const scenariosElements: ReturnType<typeof selectors.selectScenariosElements> = yield select(selectors.selectScenariosElements);
-  const sourceContainer: ReturnType<typeof selectors.selectScenario> = yield select(
-    selectors.selectScenario, parseInt(containerID),
-  );
+type DuplicateContainerInfo = {
+  sourceContainer: ProjectT.IScenarioItem;
+  containersToDuplicate: ProjectT.IScenarioItem[];
+  elementsToDuplicate: ProjectT.IScenarioElement[];
+};
+
+function* duplicateContainer(containerInfo: DuplicateContainerInfo, targetContainerID: string) {
   const targetContainer: ReturnType<typeof selectors.selectScenario> = yield select(
     selectors.selectScenario, parseInt(targetContainerID),
   );
+  const { sourceContainer, containersToDuplicate, elementsToDuplicate } = containerInfo;
 
-  const { scenariosIDs, elementsIDs } = collectChildren(R.values(scenarios), sourceContainer.parameters.children);
-
-  const containersToDuplicate = R.values(R.pick(scenariosIDs.map(x => parseInt(x).toString()), scenarios));
-  const elementsToDuplicate = R.values(R.pick(elementsIDs.map(x => parseInt(x).toString()), scenariosElements));
   const itemsToDuplicate = R.concat<T.IScenarioItem | T.IScenarioElement>(containersToDuplicate, elementsToDuplicate);
 
   const cLens = makeContainerLens();
@@ -645,6 +645,9 @@ function* duplicateContainer(containerID: string, targetContainerID: string) {
     }
   }, {});
 
+  const scenarios: ReturnType<typeof selectors.selectScenarios> = yield select(selectors.selectScenarios);
+  const scenariosElements: ReturnType<typeof selectors.selectScenariosElements> = yield select(selectors.selectScenariosElements);
+
   const finalScenarios = {
     ...scenarios,
     ...newScenarios,
@@ -676,69 +679,129 @@ function* pasteCopiedItemSaga() {
   const targetContainerID: ReturnType<typeof selectors.selectClosestContainerID> = yield select(
     selectors.selectClosestContainerID, activeItem.itemId,
   );
-  const itemToCopyID: ReturnType<typeof selectors.selectItemToCopyID> = yield select(selectors.selectItemToCopyID);
+  const itemToCopyInfo: ReturnType<typeof selectors.selectItemToCopyInfo> = yield select(selectors.selectItemToCopyInfo);
 
-  if (activeItem.itemType !== 'none' && targetContainerID !== null && itemToCopyID !== null) {
+  if (activeItem.itemType !== 'none' && targetContainerID !== null && itemToCopyInfo !== null) {
+    const { id: itemToCopyID } = itemToCopyInfo;
     const itemToCopyIsContainer = itemToCopyID.slice(-1) === 's';
 
     if (itemToCopyIsContainer) {
-      yield call(duplicateContainer, itemToCopyID, targetContainerID);
-      return;
+      const duplicateContainerInfo = yield call(getContainerToDuplicateInfo, itemToCopyInfo);
+      yield call(duplicateContainer, duplicateContainerInfo, targetContainerID);
+    } else {
+      const elementToDuplicate = yield call(getElementToDuplicate, itemToCopyInfo);
+
+      if (!elementToDuplicate) {
+        console.error(`Didn't find element to duplicate.`);
+        return;
+      }
+
+      const targetContainer: ReturnType<typeof selectors.selectScenario> = yield select(
+        selectors.selectScenario, parseInt(targetContainerID),
+      );
+
+      const eLens = makeElementLens();
+      const cLens = makeContainerLens();
+
+      const createdElement: ReturnPromisedType<typeof apiAddElements>[number] = (yield call(
+        reqWrapper, apiAddElements, {
+          data: [R.pipe(
+            R.omit(['id']),
+            R.set(eLens.parent, targetContainer.id),
+            R.set(eLens.scenario, targetContainer.id),
+          )(elementToDuplicate)]
+        }))[0];
+
+      const updatedTargetContainer = R.pipe(
+        R.over(cLens.elements, (es: number[]) => es.concat(createdElement.id)),
+        R.over(cLens.children, (children: string[]) => R.insert(
+          children.indexOf(`${elementToDuplicate.id}e`) + 1,
+          `${createdElement.id}e`,
+          children
+        )),
+      )(targetContainer);
+  
+      const scenarios: ReturnType<typeof selectors.selectScenarios> = yield select(selectors.selectScenarios);
+      const scenarioElements: ReturnType<typeof selectors.selectScenariosElements> = yield select(
+        selectors.selectScenariosElements,
+      );
+
+      const finalScenarios = {
+        ...scenarios,
+        [targetContainer.id]: updatedTargetContainer,
+      };
+
+      const finalScenarioElements = {
+        ...scenarioElements,
+        [createdElement.id]: createdElement,
+      };
+  
+      yield put(Actions.runLayoutAlgorithm(finalScenarios, finalScenarioElements));
+  
+      const scenariosToUpdate = R.values(R.pick([targetContainer.id.toString()], finalScenarios));
+      yield fork(reqWrapper, apiSaveScenarios, { data: scenariosToUpdate });
+    }
+  }
+}
+
+function* getElementToDuplicate(itemToCopyInfo: ProjectT.ItemToCopyInfo) {
+  const currentScreen: ReturnType<typeof selectors.selectCurrentScreen> = yield select(selectors.selectCurrentScreen);
+  const itemFromAnotherScreen = currentScreen.id !== itemToCopyInfo.screenID;
+
+  const elementToDuplicate: ProjectT.IScenarioElement = itemFromAnotherScreen
+    ? yield call(reqWrapper, apiGetElement, { elementID: parseInt(itemToCopyInfo.id) })
+    : yield select(selectors.selectScenarioElement, parseInt(itemToCopyInfo.id));
+
+  return elementToDuplicate;
+}
+
+function* getContainerToDuplicateInfo(itemToCopyInfo: ProjectT.ItemToCopyInfo) {
+  const currentScreen: ReturnType<typeof selectors.selectCurrentScreen> = yield select(selectors.selectCurrentScreen);
+  const itemFromAnotherScreen = currentScreen.id !== itemToCopyInfo.screenID;
+
+  if (itemFromAnotherScreen) {
+    const scenarios: ReturnPromisedType<typeof apiGetScenarios> = yield call(
+      reqWrapper, apiGetScenarios, { screenID: itemToCopyInfo.screenID }
+    );
+    const scenariosElements: ReturnPromisedType<typeof apiGetElements> = yield call(reqWrapper, apiGetElements, {
+      scenariosIDs: [scenarios.map(x => x.id)],
+    });
+    const itemToCopyID = parseInt(itemToCopyInfo.id);
+    const sourceContainer = scenarios.find(s => s.id === itemToCopyID);
+
+    if (sourceContainer === undefined) {
+      throw new Error(`Didn't find source container info.`);
     }
 
-    const targetContainer: ReturnType<typeof selectors.selectScenario> = yield select(
-      selectors.selectScenario, parseInt(targetContainerID),
-    );
-    const elementToDuplicate: ReturnType<typeof selectors.selectScenarioElement> = yield select(
-      selectors.selectScenarioElement, parseInt(itemToCopyID),
-    );
-
-    if (!elementToDuplicate) {
-      return;
-    }
-
-    const createdElement: ReturnPromisedType<typeof apiAddElements>[number] = (yield call(
-      reqWrapper, apiAddElements, { data: R.map(R.omit(['id']), [{
-        ...elementToDuplicate,
-        parameters: {
-          ...elementToDuplicate.parameters,
-          parent_id: targetContainer.id,
-        },
-      }]) },
-    ))[0];
-
+    const { scenariosIDs, elementsIDs } = collectChildren(scenarios, sourceContainer.parameters.children);
+  
+    const containersToPickIDs = scenariosIDs.map(x => parseInt(x));
+    const elementsToPickIDs = elementsIDs.map(x => parseInt(x));
+    const containersToDuplicate = scenarios.filter(x => containersToPickIDs.includes(x.id));
+    const elementsToDuplicate = scenariosElements.filter(x => elementsToPickIDs.includes(x.id));
+  
+    return {
+      sourceContainer,
+      containersToDuplicate,
+      elementsToDuplicate,
+    } as DuplicateContainerInfo;
+  } else {
     const scenarios: ReturnType<typeof selectors.selectScenarios> = yield select(selectors.selectScenarios);
-    const scenarioElements: ReturnType<typeof selectors.selectScenariosElements> = yield select(
-      selectors.selectScenariosElements,
+    const scenariosElements: ReturnType<typeof selectors.selectScenariosElements> = yield select(selectors.selectScenariosElements);
+    const sourceContainer: ReturnType<typeof selectors.selectScenario> = yield select(
+      selectors.selectScenario, parseInt(itemToCopyInfo.id),
     );
-
-    const finalScenarios = {
-      ...scenarios,
-      [targetContainer.id]: {
-        ...targetContainer,
-        elements: targetContainer.elements.concat(createdElement.id),
-        parameters: {
-          ...targetContainer.parameters,
-          children: R.insert(
-            targetContainer.parameters.children.indexOf(
-              `${elementToDuplicate.id}e`
-            ) + 1,
-            `${createdElement.id}e`,
-            targetContainer.parameters.children
-          ),
-        },
-      },
-    };
-
-    const finalScenarioElements = {
-      ...scenarioElements,
-      [createdElement.id]: createdElement,
-    };
-
-    yield put(Actions.runLayoutAlgorithm(finalScenarios, finalScenarioElements));
-
-    const scenariosToUpdate = R.values(R.pick([targetContainer.id.toString()], finalScenarios));
-    yield fork(reqWrapper, apiSaveScenarios, { data: scenariosToUpdate });
+  
+    const { scenariosIDs, elementsIDs } = collectChildren(R.values(scenarios), sourceContainer.parameters.children);
+  
+    const containersToDuplicate = R.values(R.pick(scenariosIDs.map(x => parseInt(x).toString()), scenarios));
+    const elementsToDuplicate = R.values(R.pick(elementsIDs.map(x => parseInt(x).toString()), scenariosElements));
+  
+    return {
+      sourceContainer,
+      containersToDuplicate,
+      elementsToDuplicate,
+    } as DuplicateContainerInfo;
   }
 }
 

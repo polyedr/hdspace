@@ -34,6 +34,18 @@ export const apiGetElements = (
     .catch(onError)
 );
 
+export const apiGetElement = (
+  { elementID, ...props }: MyAxiosProps & { elementID: string },
+): Promise<IScenarioElement> => (
+  myAxios({
+    ...props,
+    method: 'GET',
+    url: `/projects/scenario-elements/${elementID}/`,
+  })
+    .then(parseResult)
+    .catch(onError)
+);
+
 export const apiDelElements = (props: MyAxiosProps & { list: string[] }) => (
   myAxios({
     ...props,

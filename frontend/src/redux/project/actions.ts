@@ -251,7 +251,7 @@ export const pasteCopiedItem = (): T.PasteCopiedItem => ({
   type: 'PROJECTS:PASTE_COPIED_ITEM',
 });
 
-export const setItemToCopy = (itemToCopyID: string): T.SetItemToCopy => ({
+export const setItemToCopy = (id: string, screenID: number): T.SetItemToCopy => ({
   type: 'PROJECTS:SET_ITEM_TO_COPY',
-  payload: { itemToCopyID }
+  payload: { id, screenID }
 });
