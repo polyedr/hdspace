@@ -386,9 +386,11 @@ class ScenarioElement(TimeStampedModel):
         (RADIOBUTTON, "radiobutton"),
     )
 
-    struct_type = models.CharField(
-        choices=HTML_ELEMENT_TYPE_CHOICES, default=DIV, max_length=250
-    )
+    # struct_type = models.CharField(
+    #     choices=HTML_ELEMENT_TYPE_CHOICES, default=DIV, max_length=250
+    # )
+
+    struct_type = models.CharField(max_length=250)
 
     PHONE = "phone"
     PASSWORD = "password"
@@ -435,9 +437,10 @@ class ScenarioElement(TimeStampedModel):
         (RADIOBUTTON, "radiobutton"),
     )
 
-    func_type = models.CharField(
-        choices=ELEMENTS_TYPE_CHOICES, default=UNDEFINED, max_length=250
-    )
+    # func_type = models.CharField(
+    #     choices=ELEMENTS_TYPE_CHOICES, default=UNDEFINED, max_length=250
+    # )
+    func_type = models.CharField(max_length=250)
 
     scenario = models.ForeignKey(
         ScreenScenario, related_name="elements", on_delete=models.CASCADE, null=True
