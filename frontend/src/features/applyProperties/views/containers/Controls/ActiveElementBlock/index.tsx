@@ -6,6 +6,7 @@ import { Button } from '$components/UI/Button/';
 import { Modal } from '$components/UI/Modal/';
 import { ModalAddElements } from '$components/ModalAddElements/ModalAddElements/ModalAddElements';
 import { NavigateItem } from '$components/Editor/NavigateItem/NavigateItem';
+import { LibraryElements } from '$redux/project/types';
 
 import { PropertiesPanelProps } from '../../PropertiesPanel/PropertiesPanel';
 const styles = require('./styles.scss');
@@ -14,7 +15,7 @@ interface IComponentProps {
   activeItem: PropertiesPanelProps['activeItem'],
   disablePanel: boolean,
   scenarios: PropertiesPanelProps['scenarios'],
-  libraryElements: PropertiesPanelProps['libraryElements'],
+  libraryElements: LibraryElements,
   addScenario: PropertiesPanelProps['addScenario'],
   isAddElementsModalOpened: boolean;
   onWrapIntoContainer(): void;

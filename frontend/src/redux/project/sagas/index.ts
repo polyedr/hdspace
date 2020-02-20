@@ -42,6 +42,7 @@ import {
   parseImgUsingNN,
   apiGetElements,
   apiAddElements,
+  apiSaveImage,
 } from '$api/element';
 import { setTokenPair, setLoadedToken } from '$redux/user/actions';
 import { MAX_TOKEN_TRIALS } from '$config/settings';
@@ -51,10 +52,11 @@ import { CssLikeStyles } from '$utils/StyleHelper';
 import * as PATH_NAMES from '$constants/pathNames';
 import { apiSaveScenarios, apiSaveScenario } from '$api/scenario';
 import { DEFAULT_AUTHORISATION_TOKEN } from '$constants/defaultParams';
-
-import { selectors, T as ProjectT, actionsCreators, T } from '../';
 import { getConfigurablePropsOf, Entity } from '$domain/core';
 import { collectChildren, makeContainerLens, makeElementLens } from '$domain/abstractInterface';
+
+import { IScreenProps } from '../types';
+import { selectors, T as ProjectT, actionsCreators, T } from '../';
 
 const runLayoutAlgorithmFinishedType: ProjectT.RunLayoutAlgorithmFinished['type'] = 'PROJECTS:RUN_LAYOUT_ALGORITHM_FINISHED';
 
@@ -347,6 +349,31 @@ function* updateElementStyles(action: ReturnType<typeof Actions.updateElementSty
   if (modifyElements.indexOf(parseId) === -1) {
     yield put(Actions.setModifyElements(R.append(parseId, modifyElements)));
   }
+}
+
+function* updateElementImage(action: ReturnType<typeof Actions.updateElementImage>) {
+  const { itemID, image } = action.payload;
+
+  const scenarioElements: ReturnType<typeof selectors.selectScenariosElements> = yield select(
+    selectors.selectScenariosElements,
+  );
+
+  const parseId = parseInt(itemID, 10);
+  
+  const formData = new FormData();
+  formData.append('image', new Blob([image]), image.name);
+  formData.append('name', image.name);
+  formData.append('screen', parseId.toString());
+  formData.append('parameters', JSON.stringify({}));
+  formData.append('styles', JSON.stringify({}));
+
+  const props = { data: formData };
+  const { image: imageUrl } = yield call(reqWrapper, apiSaveImage, props);
+
+  yield put(Actions.updateElementParameters(itemID, {
+    ...R.path([parseId, 'parameters'], scenarioElements),
+    image: imageUrl,
+  } as IScreenProps));
 }
 
 function* updateElementParameters(action: ReturnType<typeof Actions.updateElementParameters>) {
@@ -757,6 +784,7 @@ const setListSortableType: ProjectT.SetListSortable['type'] = 'PROJECTS:SET_LIST
 const updateElementStylesType: ProjectT.UpdateElementStyles['type'] = 'PROJECTS:UPDATE_ELEMENT_STYLES';
 const updateScenarioStylesType: ProjectT.UpdateScenarioStyles['type'] = 'PROJECTS:UPDATE_SCENARIO_STYLES';
 const updateElementParametersType: ProjectT.UpdateElementParameters['type'] = 'PROJECTS:UPDATE_ELEMENT_PARAMETERS';
+const updateElementImageType: ProjectT.UpdateElementImage['type'] = 'PROJECTS:UPDATE_ELEMENT_IMAGE';
 const addScenarioType: ProjectT.AddScenario['type'] = 'PROJECTS:ADD_SCENARIO';
 const deleteScenarioType: ProjectT.DeleteScenario['type'] = 'PROJECTS:DELETE_SCENARIO';
 const renameScenarioType: ProjectT.RenameScenario['type'] = 'PROJECTS:RENAME_SCENARIO';
@@ -790,6 +818,7 @@ export default function* projectSaga() {
 
   yield takeLatest(updateElementStylesType, updateElementStyles);
   yield takeLatest(updateScenarioStylesType, updateScenarioStyles);
+  yield takeLatest(updateElementImageType, updateElementImage);
   yield takeLatest(updateElementParametersType, updateElementParameters);
 
   yield takeEvery(addScenarioType, addScenarioSaga);

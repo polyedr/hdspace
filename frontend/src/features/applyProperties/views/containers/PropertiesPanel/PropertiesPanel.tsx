@@ -5,9 +5,11 @@ import * as R from 'ramda';
 
 import { AppReduxState } from '$shared/types/app';
 import { actionsCreators, selectors, T as ProjectT } from '$redux/project';
+import { LibraryElements } from '$redux/project/types';
 import { Scrollbar } from '$components/UI/Scrollbar/';
 import { Spinner } from '$components/UI/Spinner/';
 import { AVAILABLE_CONTROLS, Control, Entity } from '$domain/core';
+import { LIBRARY_ELEMENTS } from '$domain/libraryElements';
 
 import { ActiveElementBlock } from '../Controls/ActiveElementBlock';
 import { ActionBlock } from '../Controls/ActionBlock';
@@ -20,11 +22,11 @@ import { TypographyBlock } from '../Controls/TypographyBlock';
 import { Placeholder } from '../Controls/Placeholder/Placeholder';
 import { TextContent } from '../Controls/TextContent/TextContent';
 import { Display } from '../Controls/Display/Display';
+import { Image } from '../Controls/Image/Image';
 const styles = require('./PropertiesPanel.scss');
 
 type StateProps = {
   scenarios: ProjectT.IScenarios;
-  libraryElements: ProjectT.LibraryElements;
   activeItem: ProjectT.ActiveItem;
   screen: ProjectT.IProjectScreen;
   isAddElementsModalOpened: boolean;
@@ -34,7 +36,6 @@ type StateProps = {
 const mapState = (state: AppReduxState): StateProps => ({
   activeItem: selectors.selectActiveItem(state),
   scenarios: selectors.selectScenarios(state),
-  libraryElements: selectors.selectLibraryElements(state),
   screen: selectors.selectCurrentScreen(state),
   isAddElementsModalOpened: selectors.selectIsAddElementsModalOpened(state),
   loader: selectors.selectLoader(state),
@@ -59,6 +60,7 @@ const CONTROLS: Record<Control, React.ComponentType> = {
   mapProps: MapProps,
   placeholder: Placeholder,
   textContent: TextContent,
+  image: Image,
 };
 
 export type PropertiesPanelProps = StateProps & typeof mapDispatch;
@@ -72,10 +74,7 @@ const Component: React.FC<PropertiesPanelProps> = ({
   screen,
   delScenarioItem,
   loader,
-
   scenarios,
-  libraryElements,
-
   addScenario,
   wrapIntoContainer,
   isAddElementsModalOpened,
@@ -100,7 +99,7 @@ const Component: React.FC<PropertiesPanelProps> = ({
           disablePanel={disablePanel}
           onDelScenarioItem={deleteScenarioItem}
           scenarios={scenarios}
-          libraryElements={libraryElements}
+          libraryElements={LIBRARY_ELEMENTS as LibraryElements}
           addScenario={addScenario}
           onWrapIntoContainer={wrapIntoContainer}
           isAddElementsModalOpened={isAddElementsModalOpened}

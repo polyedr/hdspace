@@ -133,6 +133,13 @@ export const getGroupElements = (group: string, listElement: IListCategoryEl): G
           };
         });
 
+    case 'Image':
+      return listElement.Image.map((x) => ({
+        key: `key-${x.struct_type}-${x.func_type}`,
+        value: { structType: x.struct_type, funcType: x.func_type },
+        label: `image/${x.func_type}`,
+      }));    
+
     default:
       return [];
   }

@@ -22,8 +22,10 @@ import { DEFAULT_INDENTS } from '$constants/defaultParams';
 import { reqWrapper } from '$redux/project/sagas/index';
 import { ReturnPromisedType } from '$shared/types';
 import { isScenario, getConfigurablePropsOf, Entity } from '$domain/core';
+import { LIBRARY_ELEMENTS, LibraryElementType } from '$domain/libraryElements';
 
 import { selectors, T } from '../';
+import { ServerFuncType } from '../types';
 
 const runLayoutAlgorithmFinishedType: T.RunLayoutAlgorithmFinished['type'] = 'PROJECTS:RUN_LAYOUT_ALGORITHM_FINISHED';
 
@@ -91,8 +93,7 @@ export function* createContainer(scenario?: Partial<T.IScenarioItem>) {
 }
 
 export function* addScenarioSaga(action: ReturnType<typeof Actions.addScenario>) {
-  const { parentScenarioID = 0, name = 'Container', elements: elementsToFormScenario } = action.payload;
-  const libraryElements: ReturnType<typeof selectors.selectLibraryElements> = yield select(selectors.selectLibraryElements);
+  const { name = 'Container', elements: elementsToFormScenario } = action.payload;
   const currentScreen: ReturnType<typeof selectors.selectCurrentScreen> = yield select(selectors.selectCurrentScreen);
   const scenarioElements: ReturnType<typeof selectors.selectScenariosElements> = yield select(
     selectors.selectScenariosElements,
@@ -112,7 +113,7 @@ export function* addScenarioSaga(action: ReturnType<typeof Actions.addScenario>)
   });
 
   const elementsToCreate = elementsToFormScenario.reduce((acc: T.IScenarioElement[], element) => {
-    const libraryElement = libraryElements[element.structType as T.LibraryElementType][element.funcType]; // TODO: remove unused params/styles from backend
+    const libraryElement = LIBRARY_ELEMENTS[element.structType as keyof typeof LIBRARY_ELEMENTS][element.funcType as ServerFuncType]!;
     const { styles, params } = getConfigurablePropsOf(libraryElement.struct_type as Entity);
 
     const x: T.IScenarioElement = {

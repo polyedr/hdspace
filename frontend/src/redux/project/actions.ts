@@ -167,6 +167,11 @@ export const updateScenarioStyles = (
 //   payload: { itemId, styles },
 // });
 
+export const updateElementImage = (itemID: string, image: File ): T.UpdateElementImage => ({
+  type: 'PROJECTS:UPDATE_ELEMENT_IMAGE',
+  payload: { itemID, image },
+});
+
 export const updateElementParameters = (itemID: string, parameters: T.IScreenProps): T.UpdateElementParameters => ({
   type: 'PROJECTS:UPDATE_ELEMENT_PARAMETERS',
   payload: { itemID, parameters },

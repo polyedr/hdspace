@@ -3,7 +3,6 @@ import classNames from 'classnames';
 import * as R from 'ramda';
 
 import { DEFAULT_TEMPLATES, ITemplateElement } from '$constants/defaultParams';
-import { Icon } from '$components/UI/Icon';
 import { Button } from '$components/UI/Button';
 import { Checkbox } from '$components/UI/Checkbox';
 import { DropDown } from '$components/UI/DropDown';
@@ -18,9 +17,9 @@ import {
 } from '$utils/parseScenario';
 import { isIncludes } from '$utils/StringHelper';
 import { uniqueId } from '$utils/NumberHelper';
-import { IUploadFile, UploadFile } from '$components/UI/UploadFile';
 import { PropertiesPanelProps } from '$features/applyProperties';
 import { ENTITIES } from '$domain/core';
+import { LibraryElements } from '$redux/project/types';
 
 const styles = require('./ActionsBlock.scss');
 
@@ -33,7 +32,7 @@ type Props = {
   scenarioTypeId: string | null;
   scenarioName: string;
   scenarioState: string;
-  libraryElements: PropertiesPanelProps['libraryElements'];
+  libraryElements: LibraryElements;
   startTemplate: string;
   changeTab: any;
   setSelectedElements(elements: IChooseElement[]): void;
@@ -147,24 +146,6 @@ export const ActionsBlock: React.FunctionComponent<Props> = ({
     return groupElements.filter(el => isIncludes(searchValue, el.label));
   }, [searchValue, groupElements]);
 
-  const handleChangeFile = useCallback((img: IUploadFile) => {
-    const element: IChooseElement = {
-      id: uniqueId(),
-      structType: 'image',
-      funcType: 'image',
-      type: 'Image',
-      img,
-    };
-
-    setSelectedElements([...selectedElements, element]);
-  }, [selectedElements, setSelectedElements]);
-
-  const handleDelImg = useCallback((id) => {
-    const newListImg = selectedElements.filter(el => el.id !== id);
-
-    setSelectedElements(newListImg);
-  }, [selectedElements, setSelectedElements]);
-
   const filterListContent = getFilterTemplates();
   const filterGroupElements = getFilterElements();
 
@@ -264,62 +245,27 @@ export const ActionsBlock: React.FunctionComponent<Props> = ({
                 style={{ marginBottom: 20 }}
                 maxHeight={100}
               >
-                {activeTab !== 'Image' && (
-                  <div className={styles.contentList}>
-                    {filterGroupElements.map(({ key, value, label }) => {
-                      const isDisabled = !R.includes(value.structType, ENTITIES);
-                      return (
-                        <Button
-                          key={key}
-                          className={classNames(
-                            styles.contentTemplateBtn,
-                            !isDisabled
-                            && selectedElements.some(el => el.type === value.funcType && el.structType === value.structType)
-                            && styles.contentTemplateBtn_active,
-                          )}
-                          disabled={isDisabled}
-                          styleType="none" // TODO: disable elements that don't have controls or renderer
-                          onClick={() => handleChooseElement(value)}
-                        >
-                          {label}
-                        </Button>
-                      );
-                    })}
-                  </div>
-                )}
-                {activeTab === 'Image' && (
-                  <div className={classNames(styles.contentList, styles.contentListImg)}>
-                    <ul>
-                      <li>
-                        <UploadFile
-                          uploadFile={handleChangeFile}
-                        />
-                      </li>
-                      {
-                        selectedElements.map((el, idx) => (
-                          <li key={el.id} style={{ margin: '0 8px 16px 0' }}>
-                            <div className={styles.preview}>
-                              <button
-                                type="button"
-                                className={styles.btnDel}
-                                onClick={() => handleDelImg(el.id)}
-                              >
-                                <Icon
-                                  icon="delete"
-                                  size={16}
-                                />
-                              </button>
-                              <img
-                                src={String(el.img?.imgPreviewUrl)}
-                                alt={`img-${idx}`}
-                              />
-                            </div>
-                          </li>
-                        ))
-                      }
-                    </ul>
-                  </div>
-                )}
+                <div className={styles.contentList}>
+                  {filterGroupElements.map(({ key, value, label }) => {
+                    const isDisabled = !R.includes(value.structType, ENTITIES);
+                    return (
+                      <Button
+                        key={key}
+                        className={classNames(
+                          styles.contentTemplateBtn,
+                          !isDisabled
+                          && selectedElements.some(el => el.type === value.funcType && el.structType === value.structType)
+                          && styles.contentTemplateBtn_active,
+                        )}
+                        disabled={isDisabled}
+                        styleType="none" // TODO: disable elements that don't have controls or renderer
+                        onClick={() => handleChooseElement(value)}
+                      >
+                        {label}
+                      </Button>
+                    );
+                  })}
+                </div>
               </Scrollbar>
               <React.Fragment>
                 <p className={styles.contentTitle}>Step 2. Choose a scenario</p>

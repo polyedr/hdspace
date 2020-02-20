@@ -17,6 +17,7 @@ function mapState(state: AppReduxState): StateProps {
 }
 
 const mapDispatch = {
+  updateElementImage: actionsCreators.updateElementImage,
   updateElementParameters: actionsCreators.updateElementParameters,
   updateElementStyles: actionsCreators.updateElementStyles,
   updateScenarioStyles: actionsCreators.updateScenarioStyles,
@@ -26,6 +27,7 @@ export type PropertiesChangeProps = {
   activeItemID: string;
   updateStyles(payload: CssLikeStyles): void;
   updateParams(payload: Params): void;
+  updateImage(image: File): void;
 };
 
 type Params = Partial<{ [P in keyof ProjectT.IScreenProps]: ProjectT.IScreenProps[P] }>;
@@ -35,7 +37,7 @@ export function withConfigurableProperties<T extends PropertiesChangeProps>(
   Component: React.ComponentType<T>
 ): React.FC<Omit<T, keyof PropertiesChangeProps>> {
   function WrapperComponent(props: any) {
-    const { activeItemID, updateScenarioStyles, updateElementStyles, updateElementParameters, ...restProps } = props;
+    const { activeItemID, updateScenarioStyles, updateElementStyles, updateElementParameters, updateElementImage, ...restProps } = props;
 
     const updateStyles = useCallback((styles: CssLikeStyles) => {
       if (activeItemID.slice(-1) === 's') {
@@ -49,12 +51,17 @@ export function withConfigurableProperties<T extends PropertiesChangeProps>(
       updateElementParameters(activeItemID, params);
     }, [activeItemID]);
 
+    const updateImage = useCallback((image) => {
+      updateElementImage(activeItemID, image);
+    }, [activeItemID])
+
     return (
       <Component
         {...restProps}
         activeItemID={activeItemID}
         updateStyles={updateStyles}
         updateParams={updateParams}
+        updateImage={updateImage}
       />
     );
   }

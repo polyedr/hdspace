@@ -130,17 +130,20 @@ const renderText: Renderer = (props) => {
 };
 
 const renderImg: Renderer = (props) => {
-  const { id, params, active, sortableId } = props;
+  const { id, params, active, sortableId, style } = props;
+
   return (
-    <img
-      src={params.image}
-      data-ls-id={id}
-      data-id={sortableId}
-      key={id}
-      className={cn('ls-item', styles.addedElem, active && styles.activated)}
-      alt={id}
-      tabIndex={0}
-    />
+      <img
+        src={params.image}
+        id={id}
+        data-ls-id={id}
+        data-id={sortableId}
+        key={id}
+        className={cn('ls-item', styles.addedElem, active && styles.activated)}
+        style={style}
+        alt={id}
+        tabIndex={0}
+      />
   );
 }
 

@@ -22,6 +22,16 @@ export const apiGetLibraryElements = (): Promise<ServerLibraryElement[]> => (
     .catch(onError)
 );
 
+export const apiSaveImage = (props: MyAxiosProps & { scenariosIDs: string[] }): Promise<IScenarioElement[]> => (
+  myAxios({
+    ...props,
+    method: 'POST',
+    url: '/projects/scenario-elements/',
+  })
+    .then(parseResult)
+    .catch(onError)
+);
+
 export const apiGetElements = (
   { scenariosIDs, ...props }: MyAxiosProps & { scenariosIDs: string[] },
 ): Promise<IScenarioElement[]> => (
