@@ -5,11 +5,11 @@ const styles = require('./Image.scss');
 
 type Props = PropertiesChangeProps;
 
-const Component: React.FC<Props> = ({ updateImage }) => {
+const Component: React.FC<Props> = ({ updateParams }) => {
   const handleChangeFileInput = useCallback(({ target }) => {
     const file = target.files[0];
-    updateImage(file);
-  }, [updateImage]);
+    updateParams({}, file);
+  }, [updateParams]);
 
   return (
     <div className="propsElementsBlock">

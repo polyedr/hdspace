@@ -172,9 +172,9 @@ export const updateElementImage = (itemID: string, image: File ): T.UpdateElemen
   payload: { itemID, image },
 });
 
-export const updateElementParameters = (itemID: string, parameters: T.IScreenProps): T.UpdateElementParameters => ({
+export const updateElementParameters = (itemID: string, parameters: T.IScreenProps, image: File): T.UpdateElementParameters => ({
   type: 'PROJECTS:UPDATE_ELEMENT_PARAMETERS',
-  payload: { itemID, parameters },
+  payload: { itemID, parameters, image },
 });
 
 export const delScenarioItem = (id: string): T.DeleteScenarioItem => ({

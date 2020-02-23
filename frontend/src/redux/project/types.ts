@@ -79,7 +79,7 @@ export type UpdateScenarioStyles = IAction<
 >;
 export type UpdateElementImage = IAction<'PROJECTS:UPDATE_ELEMENT_IMAGE', { itemID: string, image: File }>;
 export type UpdateElementParameters = IAction<
-  'PROJECTS:UPDATE_ELEMENT_PARAMETERS', { itemID: string, parameters: IScreenProps }
+  'PROJECTS:UPDATE_ELEMENT_PARAMETERS', { itemID: string, parameters: IScreenProps, image: File }
 >;
 export type DeleteScenarioItem = IAction<'PROJECTS:DELETE_SCENARIO_ITEM', { id: string }>;
 export type AddScenario = IAction<

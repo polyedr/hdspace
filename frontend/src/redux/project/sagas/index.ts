@@ -377,7 +377,9 @@ function* updateElementImage(action: ReturnType<typeof Actions.updateElementImag
 }
 
 function* updateElementParameters(action: ReturnType<typeof Actions.updateElementParameters>) {
-  const { itemID, parameters } = action.payload;
+  const { itemID, image, parameters } = action.payload;
+
+  console.log(image)
 
   const scenarioElements: ReturnType<typeof selectors.selectScenariosElements> = yield select(
     selectors.selectScenariosElements,
@@ -390,6 +392,7 @@ function* updateElementParameters(action: ReturnType<typeof Actions.updateElemen
     ...scenarioElements,
     [parseId]: {
       ...scenarioElements[parseId],
+      image: new Blob([image]),
       parameters: {
         ...R.path([parseId, 'parameters'], scenarioElements),
         ...parameters,
