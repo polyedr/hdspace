@@ -96,6 +96,7 @@ class ScenarioElementMultipleSerializer(
             "struct_type",
             "func_type",
             "buoyancy",
+            "image",
             "parameters",
             "styles",
         )
