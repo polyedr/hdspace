@@ -16,18 +16,14 @@ const Component: React.FC<Props> = ({ updateImage }) => {
       <p className="propsElementsBlockTitle">Image</p>
       <div className="propsElementsContentBlock">
         <div className="propsElementsInnerBlock">
-          <label
-            htmlFor="upload"
-            className={styles.uploadButton}
-          >
-          Choose image
-          <input
-            className={styles.uploadField}
-            type="file"
-            name="upload"
-            id="upload"
-            onChange={handleChangeFileInput}
-          />
+          <label className={styles.uploadButton}>
+            Choose image
+            <input
+              className={styles.uploadField}
+              type="file"
+              name="upload"
+              onChange={handleChangeFileInput}
+            />
           </label>
         </div>
       </div>
