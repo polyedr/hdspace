@@ -82,7 +82,7 @@ export type UpdateElementParameters = IAction<
 >;
 export type DeleteScenarioItem = IAction<'PROJECTS:DELETE_SCENARIO_ITEM', { id: string }>;
 export type AddScenario = IAction<
-  'PROJECTS:ADD_SCENARIO', { parentScenarioID: number | null, name: string, elements: IChooseElement[] }
+  'PROJECTS:ADD_SCENARIO', { activeContainerID: number | null, parentScenarioID: number | null, name: string, elements: IChooseElement[] }
 >;
 export type DeleteScenario = IAction<'PROJECTS:DELETE_SCENARIO', { id: string }>;
 export type RenameScenario = IAction<'PROJECTS:RENAME_SCENARIO', { scenarioID: number, name: string }>;

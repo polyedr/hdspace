@@ -91,7 +91,7 @@ export function* createContainer(scenario?: Partial<T.IScenarioItem>) {
 }
 
 export function* addScenarioSaga(action: ReturnType<typeof Actions.addScenario>) {
-  const { parentScenarioID = 0, name = 'Container', elements: elementsToFormScenario } = action.payload;
+  const { activeContainerID, parentScenarioID = 0, name = 'Container', elements: elementsToFormScenario } = action.payload;
   const libraryElements: ReturnType<typeof selectors.selectLibraryElements> = yield select(selectors.selectLibraryElements);
   const currentScreen: ReturnType<typeof selectors.selectCurrentScreen> = yield select(selectors.selectCurrentScreen);
   const scenarioElements: ReturnType<typeof selectors.selectScenariosElements> = yield select(
@@ -146,7 +146,8 @@ export function* addScenarioSaga(action: ReturnType<typeof Actions.addScenario>)
 
   // updatedContainer now has id set by backend
   const updatedContainer = screenScenarios.find(x => x.id === container.id) as T.IScenarioItem;
-  const updatedRootScenario = screenScenarios.find(x => x.id === rootLSItem.id) as T.IScenarioItem;
+  const containerId = activeContainerID ? activeContainerID : rootLSItem.id;
+  const updatedRootScenario = screenScenarios.find(x => x.id === containerId) as T.IScenarioItem;
 
   const finalContainer: T.IScenarioItem = {
     ...updatedContainer,
@@ -156,10 +157,14 @@ export function* addScenarioSaga(action: ReturnType<typeof Actions.addScenario>)
     }
   };
 
+  const newChildrenIds = activeContainerID && activeContainerID !== rootLSItem.id 
+    ? createdElements.map(x => `${x.id}e`) 
+    : `${finalContainer.id}s`;
+
   const finalRootScenario = {
     ...updatedRootScenario,
     parameters: {
-      children: updatedRootScenario.parameters.children.concat(`${finalContainer.id}s`),
+      children: updatedRootScenario.parameters.children.concat(newChildrenIds),
     }
   };
 
