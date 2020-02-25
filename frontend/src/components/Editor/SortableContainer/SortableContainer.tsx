@@ -7,7 +7,7 @@ import { SortableGroup } from '$components/Editor/SortableGroup/SortableGroup';
 import { RENDERERS } from '$components/UI/RenderElements';
 import { IListSortable, ILSItem } from '$redux/project/types';
 import { selectors, actionsCreators } from '$redux/project';
-import { getItemsPair, getParams, idToLSId } from '$utils/parseScenario';
+import { getItemsPair, getParams, idToLSId, idToDataLSID } from '$utils/parseScenario';
 import { LIST_SCENARIO_TYPE } from '$constants/defaultParams';
 import { convertPropCSS, CssLikeStyles } from '$utils/StyleHelper';
 
@@ -109,7 +109,8 @@ const SortableComponent: React.FC<Props> = (props) => {
       key={item.id}
       disableSortable={!isMoving || disableInteractions}
       isPutItem={getIsPutItem(item.type)}
-      parent={idToLSId(item.id, item.type)}
+      lsID={idToLSId(item.id, item.type)}
+      id={idToDataLSID(item.id, item.type)}
       group={getGroupName(item.type)}
       stylesToInherit={getStyles(item.id)}
       onChoose={handleChooseToSort}

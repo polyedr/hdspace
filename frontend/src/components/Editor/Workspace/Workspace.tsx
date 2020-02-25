@@ -154,7 +154,6 @@ export const Component = (props: Props) => {
       />
       <div
         className={styles.editorViewport}
-        tabIndex={0}
         onClick={handleRootClick}
         onMouseOver={handleLSItemMouseOver}
         onMouseOut={handleLSItemMouseOut}

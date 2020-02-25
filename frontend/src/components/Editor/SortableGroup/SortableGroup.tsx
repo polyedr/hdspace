@@ -11,13 +11,14 @@ type Props = {
   isActive: boolean,
   disableSortable: boolean,
   isPutItem: boolean,
-  parent: string,
   group: string,
   children?: any,
   stylesToInherit: React.CSSProperties,
   align?: string,
   isSomeItemBeingDragged: boolean,
   isSomeItemResizable?: boolean;
+  id: string;
+  lsID: string;
   onChange(index: number, items: string[], parentId: string): void,
   onChoose(itemIndex: string, target?: React.SyntheticEvent): void,
 };
@@ -27,7 +28,6 @@ export const SortableGroup: React.FC<Props> = (props) => {
     isActive,
     disableSortable,
     isPutItem,
-    parent,
     group,
     stylesToInherit,
     children,
@@ -36,6 +36,8 @@ export const SortableGroup: React.FC<Props> = (props) => {
     align,
     isSomeItemBeingDragged,
     isSomeItemResizable,
+    lsID,
+    id,
   } = props;
 
   const handleChoose = useCallback((evt) => {
@@ -44,8 +46,8 @@ export const SortableGroup: React.FC<Props> = (props) => {
 
   const handlePositionChange = useCallback((itemsInCurrentSortableGroup: string[], _, evt) => {
     const draggedItemPositionInCurrentSortableGroup = evt.newIndex;
-    onChange(draggedItemPositionInCurrentSortableGroup, itemsInCurrentSortableGroup, parent);
-  }, [parent, onChange]);
+    onChange(draggedItemPositionInCurrentSortableGroup, itemsInCurrentSortableGroup, lsID);
+  }, [lsID, onChange]);
   // const handleChoose = (ent) => {
   //   onChoose(ent.oldIndex);
   // };
@@ -87,18 +89,17 @@ export const SortableGroup: React.FC<Props> = (props) => {
   }, []);
 
   const getClassNames = useCallback(() => {
-    return parent === 'root' 
+    return lsID === 'root'
       ? !disableSortable && styles.moving
       : cn('ls-item', 'sortable-group', isActive && styles.activated, !disableSortable && styles.moving);
   }, [parent, align, styles, disableSortable, isActive])
 
-  const getSortableId = useCallback(() => parent === 'root' ? null : parent, [parent]);
-
   return (
     <Sortable
-      id={parent}
-      data-ls-id={getSortableId()}
-      data-id={getSortableId()}
+      id={lsID}
+      data-id={lsID}
+      data-ls-id={id}
+      tabIndex={lsID === 'root' ? 0 : undefined}
       style={stylesToInherit}
       className={getClassNames()}
       // tag="ul" Defaults to "div"
