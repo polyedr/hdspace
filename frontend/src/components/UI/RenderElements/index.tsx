@@ -1,7 +1,9 @@
 import React from 'react';
 import cn from 'classnames';
 import { Input, Button } from 'antd';
+import { Link } from 'react-router-dom';
 
+import * as Actions from '$redux/project/actions';
 import { IScreenProps } from '$redux/project/types';
 import { getDefaultDateSelectOptions } from '$constants/defaultParams';
 import { GMap } from '$components/UI/GMap';
@@ -21,13 +23,16 @@ type RendererProps = {
   isDisabled?: boolean;
   children?: JSX.Element;
   sortableId?: string;
+  projectId: number;
+  screensIds: number[];
+  activateScreen: typeof Actions.activateScreen;
   onClick?(event: any, id: string): void;
 };
 
 type Renderer = React.FC<RendererProps>;
 
 const renderButton: Renderer = (props) => {
-  const { id, style, params, active, onClick, sortableId } = props;
+  const { id, style, params, active, isDisabled, onClick, sortableId } = props;
   return (
     <Button
       id={id}
@@ -35,7 +40,7 @@ const renderButton: Renderer = (props) => {
       data-id={sortableId}
       key={id}
       type="primary"
-      className={cn('ls-item', active && styles.activated)}
+      className={cn('ls-item', isDisabled && styles.disabled, active && styles.activated)}
       style={{
         ...style,
         transition: 'none',
@@ -48,20 +53,37 @@ const renderButton: Renderer = (props) => {
 }
 
 const renderHyperLine: Renderer = (props) => {
-  const { id, style, active, isDisabled, params, sortableId } = props;
-  return (
+  const { id, style, active, isDisabled, params, sortableId, projectId, screensIds, activateScreen } = props;
+
+  const isExternalLink = React.useCallback(() => {
+    return !screensIds.includes(Number(params.actionUrl));
+  }, [params.actionUrl, screensIds]);
+
+  const linkProps = {
+    id,
+    'data-ls-id': id,
+    'data-id': sortableId,
+    key: id,
+    className: cn('ls-item', isDisabled && styles.disabled, active && styles.activated),
+    style: style,
+  }
+
+  const handleExternalLinkClick = React.useCallback((event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    isDisabled ? event.preventDefault() : params.actionUrl && activateScreen(projectId, Number(params.actionUrl));
+  }, [isDisabled, params.actionUrl, activateScreen, projectId])
+  
+  return isExternalLink() ? (
     <a
-      id={id}
-      data-ls-id={id}
-      data-id={sortableId}
-      key={id}
-      className={cn('ls-item', styles.addedHyperLink, active && styles.activated)}
-      href={isDisabled ? '#' : params.actionUrl} // TODO: DragResize prevents click by link, but must not when !isDisabled
-      // href="javascript:void(0);"
-      style={style}
+      {...linkProps}
+      href={params.actionUrl} // TODO: DragResize prevents click by link, but must not when !isDisabled
+      onClick={event => isDisabled && event.preventDefault()}
     >
       {params.actionContent}
     </a>
+  ) : (
+    <Link {...linkProps} to={params.actionUrl || ''} onClick={handleExternalLinkClick}>
+      {params.actionContent}
+    </Link>
   );
 };
 
@@ -74,7 +96,7 @@ const renderInput: Renderer = (props) => {
       data-id={sortableId}
       key={id}
       type="text" // TODO: use other types such as email, etc.
-      className={cn('ls-item', active && styles.activated)}
+      className={cn('ls-item', isDisabled && styles.disabled, active && styles.activated)}
       readOnly={isDisabled}
       style={{
         ...style,
@@ -145,15 +167,16 @@ const renderImg: Renderer = (props) => {
 }
 
 const renderMapWidget: Renderer = (props) => {
-  const { id, params, active, style, sortableId } = props;
+  const { id, params, active, isDisabled, style, sortableId } = props;
   return (
     <div
       id={id}
       data-ls-id={id}
       data-id={sortableId}
       key={id}
-      className={cn('ls-item', styles.addedWidget, active && styles.activated)}
+      className={cn('ls-item', styles.addedWidget, isDisabled && styles.disabled, active && styles.activated)}
       style={style}
+      onClick={event => isDisabled && event.preventDefault()}
       tabIndex={0}
     >
       <GMap
@@ -166,14 +189,14 @@ const renderMapWidget: Renderer = (props) => {
 };
 
 const renderCalendarWidget: Renderer = (props) => {
-  const { id, style, active, sortableId } = props;
+  const { id, style, active, isDisabled, sortableId } = props;
   return (
     <div
       id={id}
       data-ls-id={id}
       data-id={sortableId}
       key={id}
-      className={cn('ls-item', styles.addedCalendar, active && styles.activated)}
+      className={cn('ls-item', styles.addedCalendar, isDisabled && styles.disabled, active && styles.activated)}
       style={style}
       tabIndex={0}
     >

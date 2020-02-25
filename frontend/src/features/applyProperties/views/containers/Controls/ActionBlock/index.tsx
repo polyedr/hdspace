@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
 
@@ -37,27 +37,35 @@ const Component: React.FC<Props> = (props) => {
     updateParams,
   } = props;
 
-  const [isPage, setPageType] = React.useState<boolean>(true);
+  const isExternalUrl = React.useCallback(() => {
+    return !screensIDs.includes(Number(url));
+  }, [url, screensIDs]);
 
-  const handleChangeLinkUrl = React.useCallback(() => {
-    console.log('меняет адрес внешней страницы ссылки');
-  }, []);
+  const [isExternalLink, setIsExternalLink] = React.useState<boolean>(isExternalUrl());
+ 
+  const handlePageLinkButtonClick = React.useCallback(() => {
+    setIsExternalLink(false);
+  }, [setIsExternalLink, url]);
 
-  const handlePageLinkType = React.useCallback(() => {
-    setPageType(true);
-  }, []);
+  const handleExternalLinkButtonClick = React.useCallback(() => {
+    setIsExternalLink(true);
+  }, [setIsExternalLink, url]);
 
-  const handleUrlLinkType = React.useCallback(() => {
-    setPageType(false);
-  }, []);
-
-  const handleLinkContentChange = React.useCallback(({ target: { value } }) => {
+  const handleLinkTitleInputChange = React.useCallback(({ target: { value } }) => {
     updateParams({ actionContent: value });
   }, [updateParams]);
 
-  const handleLinkUrlChange = React.useCallback(({ target: { value } }) => {
+  const handleExternalUrlInputChange = React.useCallback(({ target: { value } }) => {
     updateParams({ actionUrl: value });
-  }, [updateParams]);
+  }, [updateParams, url]);
+
+  const handlePageUrlDropdownChange = React.useCallback(value => {
+    updateParams({ actionUrl: value });
+  }, [updateParams, url]);
+
+  useEffect(() => {
+    setIsExternalLink(isExternalUrl())
+  }, [url]);
 
   return (
     <div className="propsElementsBlock">
@@ -69,42 +77,43 @@ const Component: React.FC<Props> = (props) => {
             type="text"
             placeholder="Enter link text content"
             value={content}
-            onChange={handleLinkContentChange}
+            onChange={handleLinkTitleInputChange}
           />
         </div>
         <div className="propsElementsInnerBlock">
           <Button
-            className={classNames('mainImgBtn', isPage && 'mainImgBtn_active')}
+            className={classNames('mainImgBtn', !isExternalLink && 'mainImgBtn_active')}
             styleType="none"
-            onClick={handlePageLinkType}
+            onClick={handlePageLinkButtonClick}
           >
             <Icon icon="link" />
           </Button>
           <Button
-            className={classNames('mainImgBtn', !isPage && 'mainImgBtn_active')}
+            className={classNames('mainImgBtn', isExternalLink && 'mainImgBtn_active')}
             styleType="none"
-            onClick={handleUrlLinkType}
+            onClick={handleExternalLinkButtonClick}
           >
             <Icon icon="page" />
           </Button>
           <div className={styles.inputsBlock}>
-            { isPage && (
-              <DropDown
-                options={
-                  screensIDs.map((_, elIndex) => ({ // TODO: restore when screens will be preloaded
-                    label: `Screen ${elIndex}`,
-                    value: `Screen ${elIndex}`,
-                  }))
-                }
-                onChange={handleChangeLinkUrl}
-              />
-            )}
-            { !isPage && (
+            {isExternalLink ? (
               <input
                 type="text"
                 placeholder="Enter a page URL"
-                value={url}
-                onChange={handleLinkUrlChange}
+                value={isExternalUrl() ? url : ''}
+                onChange={handleExternalUrlInputChange}
+              />
+            ) : (
+              <DropDown
+                defaultValue={!isExternalUrl() ? url : ''}
+                value={!isExternalUrl() ? url : ''}
+                options={
+                  screensIDs.map((screenId, elIndex) => ({ // TODO: restore when screens will be preloaded
+                    label: `Screen ${elIndex}`,
+                    value: `${screenId}`,
+                  }))
+                }
+                onChange={handlePageUrlDropdownChange}
               />
             )}
           </div>

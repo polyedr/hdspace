@@ -7,10 +7,20 @@
   outline: red solid 1px;
 }
 
-.addedElem {}
+.disabled {
+  cursor: default;
 
-.addedHyperLink {}
+  & > * {
+    pointer-events: none;
+  }
 
-.addedWidget {}
+  &.activated,
+  &.activated:active {
+    outline: red solid 1px;
+    box-shadow: none;
+  }
 
-.addedCalendar {}
+  &:global(.hovered) {
+    outline: $secondBorderColor solid 1px;
+  }
+}
