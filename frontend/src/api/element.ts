@@ -22,16 +22,6 @@ export const apiGetLibraryElements = (): Promise<ServerLibraryElement[]> => (
     .catch(onError)
 );
 
-export const apiSaveImage = (props: MyAxiosProps & { scenariosIDs: string[] }): Promise<IScenarioElement[]> => (
-  myAxios({
-    ...props,
-    method: 'POST',
-    url: '/projects/scenario-elements/',
-  })
-    .then(parseResult)
-    .catch(onError)
-);
-
 export const apiGetElements = (
   { scenariosIDs, ...props }: MyAxiosProps & { scenariosIDs: string[] },
 ): Promise<IScenarioElement[]> => (
@@ -69,6 +59,16 @@ export const apiDelElement = (props: MyAxiosProps & { id: string }) => (
     ...props,
     method: 'DELETE',
     url: `/projects/scenario-elements/${props.id}`,
+  })
+    .then(parseResult)
+    .catch(onError)
+);
+
+export const apiChangeElement = (props: MyAxiosProps & { id: string }) => (
+  myAxios({
+    ...props,
+    method: 'PATCH',
+    url: `/projects/scenario-elements/${props.id}/`,
   })
     .then(parseResult)
     .catch(onError)

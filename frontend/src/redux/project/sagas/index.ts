@@ -42,7 +42,7 @@ import {
   parseImgUsingNN,
   apiGetElements,
   apiAddElements,
-  apiSaveImage,
+  apiChangeElement,
 } from '$api/element';
 import { setTokenPair, setLoadedToken } from '$redux/user/actions';
 import { MAX_TOKEN_TRIALS } from '$config/settings';
@@ -354,32 +354,24 @@ function* updateElementStyles(action: ReturnType<typeof Actions.updateElementSty
 function* updateElementImage(action: ReturnType<typeof Actions.updateElementImage>) {
   const { itemID, image } = action.payload;
 
+  const parseId = parseInt(itemID, 10);
+  const formData = new FormData();
+  formData.append('image', new Blob([image]), image.name);
+
+  const changedElement = yield call(reqWrapper, apiChangeElement, { data: formData, id: parseId });
+
   const scenarioElements: ReturnType<typeof selectors.selectScenariosElements> = yield select(
     selectors.selectScenariosElements,
   );
 
-  const parseId = parseInt(itemID, 10);
-  
-  const formData = new FormData();
-  formData.append('image', new Blob([image]), image.name);
-  formData.append('name', image.name);
-  formData.append('screen', parseId.toString());
-  formData.append('parameters', JSON.stringify({}));
-  formData.append('styles', JSON.stringify({}));
-
-  const props = { data: formData };
-  const { image: imageUrl } = yield call(reqWrapper, apiSaveImage, props);
-
   yield put(Actions.updateElementParameters(itemID, {
     ...R.path([parseId, 'parameters'], scenarioElements),
-    image: imageUrl,
+    image: changedElement.image,
   } as IScreenProps));
 }
 
 function* updateElementParameters(action: ReturnType<typeof Actions.updateElementParameters>) {
-  const { itemID, image, parameters } = action.payload;
-
-  console.log(image)
+  const { itemID, parameters } = action.payload;
 
   const scenarioElements: ReturnType<typeof selectors.selectScenariosElements> = yield select(
     selectors.selectScenariosElements,
@@ -392,7 +384,6 @@ function* updateElementParameters(action: ReturnType<typeof Actions.updateElemen
     ...scenarioElements,
     [parseId]: {
       ...scenarioElements[parseId],
-      image: new Blob([image]),
       parameters: {
         ...R.path([parseId, 'parameters'], scenarioElements),
         ...parameters,

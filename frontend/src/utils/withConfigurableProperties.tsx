@@ -47,8 +47,8 @@ export function withConfigurableProperties<T extends PropertiesChangeProps>(
       }
     }, [activeItemID]);
 
-    const updateParams = useCallback((params: Params, image?: File) => {
-      updateElementParameters(activeItemID, params, image);
+    const updateParams = useCallback((params: Params) => {
+      updateElementParameters(activeItemID, params);
     }, [activeItemID]);
 
     const updateImage = useCallback((image) => {

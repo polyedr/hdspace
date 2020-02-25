@@ -128,7 +128,7 @@ export const DEFAULT_MAP_PROPS = {
 };
 
 export const DEFAULT_IMAGE_PROPS = { 
-  // image: `${require('$assets/images/image-icon.svg')}`,
+  image: `${require('$assets/images/image-icon.svg')}`,
 };
 
 export const DEFAULT_TYPOGRAPHY: IScreenTypography = {
