@@ -5,7 +5,9 @@ const styles = require('./Image.scss');
 
 type Props = PropertiesChangeProps;
 
-const Component: React.FC<Props> = ({ updateImage }) => {
+const Component: React.FC<Props> = (props) => {
+  const { updateImage } = props;
+
   const handleChangeFileInput = useCallback(({ target }) => {
     const file = target.files[0];
     updateImage(file);
