@@ -1,6 +1,8 @@
-import { ServerFuncType } from "$redux/project/types";
-import { Entity } from "./core";
-import { CSSProperties } from "react";
+import { CSSProperties } from 'react';
+
+import { ServerFuncType } from '$redux/project/types';
+
+import { Entity } from './core';
 
 export type LibraryElementType = {
   buoyancy: number,
