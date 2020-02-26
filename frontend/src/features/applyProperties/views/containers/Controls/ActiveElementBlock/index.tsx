@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import { Icon } from '$components/UI/Icon/';
 import { Button } from '$components/UI/Button/';
 import { Modal } from '$components/UI/Modal/';
-import { ModalAddElements, IChooseElement } from '$components/ModalAddElements/ModalAddElements/ModalAddElements';
+import { ModalAddElements } from '$components/ModalAddElements/ModalAddElements/ModalAddElements';
 import { NavigateItem } from '$components/Editor/NavigateItem/NavigateItem';
 
 import { PropertiesPanelProps } from '../../PropertiesPanel/PropertiesPanel';
