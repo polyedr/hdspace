@@ -106,7 +106,6 @@ export const ActionsBlock: React.FunctionComponent<Props> = ({
 
   const handleChooseElement = useCallback((x: GroupElement['value']) => {
     const element: IChooseElement = {
-      id: uniqueId(),
       structType: x.structType,
       funcType: x.funcType,
       type: x.funcType,

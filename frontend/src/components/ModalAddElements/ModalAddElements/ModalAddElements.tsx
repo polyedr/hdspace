@@ -16,11 +16,9 @@ import { LibraryElements } from '$redux/project/types';
 const styles = require('./ModalAddElements.scss');
 
 export interface IChooseElement {
-  id: number; // id, img are Image-specific properties
   funcType: string;
   structType: string;
-  type: 'Image' | string;
-  img?: IUploadFile;
+  type: string;
 }
 
 function mapStateToProps(state: AppReduxState) {
