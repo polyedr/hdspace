@@ -360,12 +360,10 @@ function* updateElementImage(action: ReturnType<typeof Actions.updateElementImag
 
   const changedElement = yield call(reqWrapper, apiChangeElement, { data: formData, id: parseId });
 
-  const scenarioElements: ReturnType<typeof selectors.selectScenariosElements> = yield select(
-    selectors.selectScenariosElements,
-  );
+  const scenarioElement: ReturnType<typeof selectors.selectScenarioElement> = yield select(selectors.selectScenarioElement, parseId);
 
   yield put(Actions.updateElementParameters(itemID, {
-    ...R.path([parseId, 'parameters'], scenarioElements),
+    ...scenarioElement.parameters,
     imageUrl: changedElement.image,
   } as IScreenProps));
 }
