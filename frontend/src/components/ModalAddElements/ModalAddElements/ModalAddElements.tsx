@@ -40,7 +40,7 @@ type OwnProps = {
   scenarios: PropertiesPanelProps['scenarios'];
   libraryElements: LibraryElements;
   onClose(): void;
-  onConfirm(scenarioTypeID: number | null, name: string, elementsToFormScenario: IChooseElement[]): void;
+  onConfirm(name: string, elementsToFormScenario: IChooseElement[]): void;
 };
 
 type Props = typeof mapDispatchToProps & ReturnType<typeof mapStateToProps> & OwnProps;
@@ -111,7 +111,7 @@ const Component: React.FunctionComponent<Props> = memo((props) => {
       setErrorMsg('');
       setScenarioName('');
       setScenarioTypeId(null);
-      onConfirm(finalScenarioTypeID, finalScenarioName, selectedElements);
+      onConfirm(finalScenarioName, selectedElements);
       onClose();
     }
   }, [

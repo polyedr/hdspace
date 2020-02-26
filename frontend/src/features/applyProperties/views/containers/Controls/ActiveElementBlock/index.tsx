@@ -15,7 +15,7 @@ interface IComponentProps {
   disablePanel: boolean,
   scenarios: PropertiesPanelProps['scenarios'],
   libraryElements: PropertiesPanelProps['libraryElements'],
-  addScenario(scenarioTypeID: number | null, name: string, elementsToFormScenario: IChooseElement[]): void,
+  addScenario: PropertiesPanelProps['addScenario'],
   isAddElementsModalOpened: boolean;
   onWrapIntoContainer(): void;
   onDelScenarioItem(): void;

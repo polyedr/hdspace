@@ -5,7 +5,6 @@ import * as R from 'ramda';
 
 import { AppReduxState } from '$shared/types/app';
 import { actionsCreators, selectors, T as ProjectT } from '$redux/project';
-import { IChooseElement } from '$components/ModalAddElements/ModalAddElements/ModalAddElements';
 import { Scrollbar } from '$components/UI/Scrollbar/';
 import { Spinner } from '$components/UI/Spinner/';
 import { AVAILABLE_CONTROLS, Control, Entity } from '$domain/core';
@@ -90,11 +89,6 @@ const Component: React.FC<PropertiesPanelProps> = ({
     delScenarioItem(activeItem.itemId);
   }, [activeItem.itemId]);
 
-  const handleAddScenario = useCallback((scenarioTypeID: number | null, name: string, elementsToFormScenario: IChooseElement[]) => {
-    const activeContainerID = activeItemID.slice(-1) === 's' ? parseInt(activeItemID, 10) : null;
-    addScenario(activeContainerID, scenarioTypeID, name, elementsToFormScenario);
-  }, [activeItemID])
-
   return (
     <div className={classNames(styles.editorRightPanel)}>
       <Scrollbar
@@ -107,7 +101,7 @@ const Component: React.FC<PropertiesPanelProps> = ({
           onDelScenarioItem={deleteScenarioItem}
           scenarios={scenarios}
           libraryElements={libraryElements}
-          addScenario={handleAddScenario}
+          addScenario={addScenario}
           onWrapIntoContainer={wrapIntoContainer}
           isAddElementsModalOpened={isAddElementsModalOpened}
           setIsAddElementsModalOpened={setIsAddElementsModalOpened}
