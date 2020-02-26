@@ -252,7 +252,7 @@ export interface IScreenProps {
   scenarioId?: number,
   actionContent?: string;
   actionUrl?: string,
-  image?: string,
+  imageUrl?: string,
 }
 
 export interface ISortableItem {

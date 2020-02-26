@@ -134,7 +134,7 @@ const renderImg: Renderer = (props) => {
 
   return (
       <img
-        src={params.image}
+        src={params.imageUrl}
         id={id}
         data-ls-id={id}
         data-id={sortableId}

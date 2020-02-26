@@ -366,7 +366,7 @@ function* updateElementImage(action: ReturnType<typeof Actions.updateElementImag
 
   yield put(Actions.updateElementParameters(itemID, {
     ...R.path([parseId, 'parameters'], scenarioElements),
-    image: changedElement.image,
+    imageUrl: changedElement.image,
   } as IScreenProps));
 }
 
