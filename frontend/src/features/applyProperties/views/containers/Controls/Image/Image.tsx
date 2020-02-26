@@ -1,17 +1,24 @@
 import React, { useCallback } from 'react';
+import { connect } from 'react-redux';
 
 import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
+import { actionsCreators } from '$redux/project';
+
 const styles = require('./Image.scss');
 
-type Props = PropertiesChangeProps;
+const mapDispatch = {
+  updateElementImage: actionsCreators.updateElementImage,
+};
+
+type Props = PropertiesChangeProps & typeof mapDispatch;
 
 const Component: React.FC<Props> = (props) => {
-  const { updateImage } = props;
+  const { activeItemID, updateElementImage } = props;
 
   const handleChangeFileInput = useCallback(({ target }) => {
     const file = target.files[0];
-    updateImage(file);
-  }, [updateImage]);
+    updateElementImage(activeItemID, file);
+  }, [activeItemID, updateElementImage]);
 
   return (
     <div className="propsElementsBlock">
@@ -33,4 +40,4 @@ const Component: React.FC<Props> = (props) => {
   );
 };
 
-export const Image = withConfigurableProperties(Component);
+export const Image = connect(null, mapDispatch)(withConfigurableProperties(Component));
