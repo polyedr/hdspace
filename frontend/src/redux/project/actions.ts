@@ -177,9 +177,9 @@ export const delScenarioItem = (id: string): T.DeleteScenarioItem => ({
   payload: { id },
 });
 
-export const addScenario = (name: string, elements: IChooseElement[]): T.AddScenario => ({
-  type: 'PROJECTS:ADD_SCENARIO',
-  payload: { name, elements },
+export const addElementsIntoContainer = (elements: IChooseElement[]): T.AddElementsIntoContainer => ({
+  type: 'PROJECTS:ADD_ELEMENTS_INTO_CONTAINER',
+  payload: { elements },
 });
 
 export const delScenario = (id: string): T.DeleteScenario => ({

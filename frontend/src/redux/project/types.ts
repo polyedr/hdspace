@@ -81,8 +81,8 @@ export type UpdateElementParameters = IAction<
   'PROJECTS:UPDATE_ELEMENT_PARAMETERS', { itemID: string, parameters: IScreenProps }
 >;
 export type DeleteScenarioItem = IAction<'PROJECTS:DELETE_SCENARIO_ITEM', { id: string }>;
-export type AddScenario = IAction<
-  'PROJECTS:ADD_SCENARIO', { name: string, elements: IChooseElement[] }
+export type AddElementsIntoContainer = IAction<
+  'PROJECTS:ADD_ELEMENTS_INTO_CONTAINER', { elements: IChooseElement[] }
 >;
 export type DeleteScenario = IAction<'PROJECTS:DELETE_SCENARIO', { id: string }>;
 export type RenameScenario = IAction<'PROJECTS:RENAME_SCENARIO', { scenarioID: number, name: string }>;
@@ -137,7 +137,7 @@ export type Action =
   | UpdateScenarioStyles
   | UpdateElementParameters
   | DeleteScenarioItem
-  | AddScenario
+  | AddElementsIntoContainer
   | DeleteScenario
   | RenameScenario
   | SetScenarios

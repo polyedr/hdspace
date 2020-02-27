@@ -40,7 +40,7 @@ type OwnProps = {
   scenarios: PropertiesPanelProps['scenarios'];
   libraryElements: LibraryElements;
   onClose(): void;
-  onConfirm(name: string, elementsToFormScenario: IChooseElement[]): void;
+  onConfirm(elementsToFormScenario: IChooseElement[]): void;
 };
 
 type Props = typeof mapDispatchToProps & ReturnType<typeof mapStateToProps> & OwnProps;
@@ -105,13 +105,10 @@ const Component: React.FunctionComponent<Props> = memo((props) => {
     } else if (!selectedElements.length) {
       setErrorMsg('No items for the scenario.');
     } else {
-      const finalScenarioName = scenarioName.trim() || 'Container';
-      const finalScenarioTypeID = scenarioTypeId === null ? null : Number(scenarioTypeId);
-
       setErrorMsg('');
       setScenarioName('');
       setScenarioTypeId(null);
-      onConfirm(finalScenarioName, selectedElements);
+      onConfirm(selectedElements);
       onClose();
     }
   }, [
