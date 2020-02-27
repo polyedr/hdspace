@@ -91,7 +91,7 @@ export const SortableGroup: React.FC<Props> = (props) => {
   const getClassNames = useCallback(() => {
     return lsID === 'root'
       ? !disableSortable && styles.moving
-      : cn('ls-item', 'sortable-group', isActive && styles.activated, !disableSortable && styles.moving);
+      : cn('ls-item', 'sortable-group', isActive && 'activated', !disableSortable && styles.moving);
   }, [parent, align, styles, disableSortable, isActive])
 
   return (
