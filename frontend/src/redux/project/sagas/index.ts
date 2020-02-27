@@ -26,7 +26,7 @@ import {
   renameProjectSaga,
 } from '$redux/project/sagas/project';
 import {
-  delScenarioSaga,
+  deleteActiveItemSaga,
   renameScenarioSaga,
   runLayoutAlgorithm,
   wrapIntoContainerSaga,
@@ -42,6 +42,7 @@ import {
   parseImgUsingNN,
   apiGetElements,
   apiAddElements,
+  apiGetElement,
 } from '$api/element';
 import { setTokenPair, setLoadedToken } from '$redux/user/actions';
 import { MAX_TOKEN_TRIALS } from '$config/settings';
@@ -55,6 +56,7 @@ import { DEFAULT_AUTHORISATION_TOKEN } from '$constants/defaultParams';
 import { selectors, T as ProjectT, actionsCreators, T } from '../';
 import { getConfigurablePropsOf, Entity } from '$domain/core';
 import { collectChildren, makeContainerLens, makeElementLens } from '$domain/abstractInterface';
+import * as ai from '$domain/abstractInterface';
 
 const runLayoutAlgorithmFinishedType: ProjectT.RunLayoutAlgorithmFinished['type'] = 'PROJECTS:RUN_LAYOUT_ALGORITHM_FINISHED';
 
@@ -150,7 +152,7 @@ function* setListSortableSaga(action: ReturnType<typeof Actions.setListSortable>
     id: affectedItemRawID,
     itemIndex: affectedItemIndex,
     items: sortableGroupItems,
-    parentID: _affectedParentRawID,
+    parentID: affectedParentRawID,
   } = action.payload;
   const scenarios: ReturnType<typeof selectors.selectScenarios> = yield select(selectors.selectScenarios);
   const scenarioElements: ReturnType<typeof selectors.selectScenariosElements> = yield select(
@@ -162,91 +164,36 @@ function* setListSortableSaga(action: ReturnType<typeof Actions.setListSortable>
   let updatedElements = scenarioElements;
 
   const affectedItemID = parseInt(affectedItemRawID, 10);
-  const affectedParentRawID = _affectedParentRawID === 'root' ? `${listSortable.root.id}s` : _affectedParentRawID;
-  const affectedParentID = _affectedParentRawID === 'root' ? listSortable.root.id : parseInt(_affectedParentRawID, 10);
+  const affectedParentID = affectedParentRawID === 'root' ? listSortable.root.id : parseInt(affectedParentRawID, 10);
 
-  const containerWasAffected = affectedItemRawID.slice(-1) === 's';
-  const elementWasAffected = affectedItemRawID.slice(-1) === 'e';
-
-  const parentBefore = listSortable[_affectedParentRawID];
+  const parentBefore = listSortable[affectedParentRawID];
 
   const symmetricDifference = R.symmetricDifference(sortableGroupItems, parentBefore.children);
   const needToUpdateItemPositionInParent = symmetricDifference.length === 0;
   const itemMovedFromContainer = R.not(R.includes(affectedItemRawID, sortableGroupItems));
   const itemMovedIntoContainer = R.not(R.includes(affectedItemRawID, parentBefore.children));
 
-  const affectedParentLens = makeContainerLens(affectedParentID);
-  const affectedChildLens = makeElementLens(affectedItemID);
-
   if (needToUpdateItemPositionInParent) {
-    const childrenLens = affectedParentLens.children;
-    updatedScenarios = R.set(childrenLens, sortableGroupItems, updatedScenarios);
+    updatedScenarios = ai.rearrangeSameChildren(updatedScenarios, affectedParentID, sortableGroupItems);
     yield fork(updateScenariosOnServerSaga, R.pick([affectedParentID.toString()], updatedScenarios));
   } else if (itemMovedFromContainer) {
-    if (containerWasAffected) {
-      const parentChildrenLens = affectedParentLens.children;
-
-      updatedScenarios = R.set(parentChildrenLens, sortableGroupItems, updatedScenarios);
-      yield fork(updateScenariosOnServerSaga, R.pick([affectedParentID.toString()], updatedScenarios));
-    } else if (elementWasAffected) {
-      // const nowContainerHasNoChildren = sortableGroupItems.length === 0;
-      const containerParentID = scenarios[affectedParentID].parent_id;
-      const parentChildrenLens = affectedParentLens.children;
-      const parentElementsLens = affectedParentLens.elements;
-      // const containerParentChildrenLens = makeContainerChildrenLens(containerParentID);
-      // а если это елемент то и из elemenst его надо дропнуть
-      // нужно убрать у родителя из children этого чувака и из elements тоже походу
-      // if (nowContainerHasNoChildren) {
-      //   updatedScenarios = R.over(
-      //     containerParentChildrenLens,
-      //     (x: string[]) => R.without([affectedParentRawID], x),
-      //     updatedScenarios // R.omit([affectedParentID.toString()], updatedScenarios)
-      //   );
-      //   console.log('updatedScenarios after empty container removing', updatedScenarios);
-      //   yield fork(updateScenariosOnServerSaga, R.pick([containerParentID.toString()], updatedScenarios));
-      //   // yield fork(reqWrapper, apiDelScenarioCascade, { list: [affectedParentID] });
-      // }
-
-      updatedScenarios = R.pipe(
-        R.over(parentElementsLens, (x: number[]) => R.without([affectedItemID], x)),
-        R.over(parentChildrenLens, (x: string[]) => R.without([affectedItemRawID], x))
-      )(updatedScenarios);
-      yield fork(updateScenariosOnServerSaga, R.pick([affectedParentID.toString()], updatedScenarios));
-    }
+    updatedScenarios = ai.removeChildFromParent(updatedScenarios, affectedParentID, affectedItemRawID);
+    yield fork(updateScenariosOnServerSaga, R.pick([affectedParentID.toString()], updatedScenarios));
   } else if (itemMovedIntoContainer) {
-    if (containerWasAffected) {
-      const parentChildrenLens = affectedParentLens.children;
-      const itemParentIdLens = affectedParentLens.parent;
+    const {
+      scenarios,
+      elements,
+    } = ai.addChildToParent(updatedScenarios, updatedElements, affectedParentID, affectedItemRawID, affectedItemIndex);
 
-      updatedScenarios = R.pipe(
-        R.set(parentChildrenLens, sortableGroupItems),
-        R.set(itemParentIdLens, affectedParentID),
-      )(updatedScenarios);
+    updatedScenarios = scenarios;
+    updatedElements = elements;
 
+    if (ai.isContainer(affectedItemRawID)) {
       yield fork(updateScenariosOnServerSaga, R.pick(
-        [affectedParentID.toString(), affectedItemID.toString()], updatedScenarios
+        R.map(R.toString, [affectedParentID, affectedItemID]), updatedScenarios
       ));
-    } else if (elementWasAffected) {
-      const containerChildrenLens = affectedParentLens.children;
-      const containerElementsLens = affectedParentLens.elements;
-      const elementScenarioLens = affectedChildLens.scenario;
-      const elementParentLens = affectedChildLens.parent;
-
-      updatedScenarios = R.pipe(
-        R.set(containerChildrenLens, sortableGroupItems),
-        R.over(containerElementsLens, (x: number[]) => x.concat(affectedItemID)),
-      )(updatedScenarios);
-
-      updatedElements = R.pipe(
-        R.set(elementScenarioLens, affectedParentID),
-        R.set(elementParentLens, affectedParentID)
-      )(updatedElements);
-
-      // remove empty container only after success moving
-
-      yield fork(updateScenariosOnServerSaga, R.pick(
-        [affectedParentID.toString(), affectedItemID.toString()], updatedScenarios
-      ));
+    } else {
+      yield fork(updateScenariosOnServerSaga, R.pick([affectedParentID.toString()], updatedScenarios));
       yield fork(updateElementsOnServerSaga, R.pick([affectedItemID.toString()], updatedElements));
     }
   }
@@ -261,10 +208,6 @@ export function* updateScenariosOnServerSaga(scenarios: ProjectT.IScenarios) {
 
 export function* updateElementsOnServerSaga(elements: ProjectT.IScenarioElements) {
   yield call(reqWrapper, apiSaveElements, { data: R.values(elements) });
-}
-
-export function* delScenarioItemSaga(action: ReturnType<typeof Actions.delScenario>) {
-  yield put(Actions.delScenario(action.payload.id));
 }
 
 function* updateScenarioStyles(action: ReturnType<typeof Actions.updateScenarioStyles>) {
@@ -509,10 +452,7 @@ function* uploadFileSaga(
         .reduce((acc, x) => ({ ...acc, [x.id]: x }), {}),
     };
 
-    yield put(Actions.runLayoutAlgorithm(actualScenarios, actualScenariosElements, {
-      ...currentScreen.listSortable.root,
-      children: finalRootScenario.parameters.children,
-    }));
+    yield put(Actions.runLayoutAlgorithm(actualScenarios, actualScenariosElements));
     yield take(runLayoutAlgorithmFinishedType);
     yield put(Actions.setIsAddElementsModalOpened(false));
 
@@ -538,39 +478,41 @@ function* uploadFileSaga(
 
 function* copyActiveItemSaga() {
   const { itemId: activeItemID }: ReturnType<typeof selectors.selectActiveItem> = yield select(selectors.selectActiveItem);
+  const currentScreen: ReturnType<typeof selectors.selectCurrentScreen> = yield select(selectors.selectCurrentScreen);
   if (activeItemID !== 'none') {
-    yield put(actionsCreators.setItemToCopy(activeItemID));
+    yield put(actionsCreators.setItemToCopy(activeItemID, currentScreen.id));
   }
 }
 
-const isContainer = (x: T.IScenarioElement | T.IScenarioItem): x is T.IScenarioItem => x.struct_type === 'container';
+type DuplicateContainerInfo = {
+  sourceContainer: ProjectT.IScenarioItem;
+  containersToDuplicate: ProjectT.IScenarioItem[];
+  elementsToDuplicate: ProjectT.IScenarioElement[];
+};
 
-function* duplicateContainer(containerID: string, targetContainerID: string) {
-  const scenarios: ReturnType<typeof selectors.selectScenarios> = yield select(selectors.selectScenarios);
-  const scenariosElements: ReturnType<typeof selectors.selectScenariosElements> = yield select(selectors.selectScenariosElements);
-  const sourceContainer: ReturnType<typeof selectors.selectScenario> = yield select(
-    selectors.selectScenario, parseInt(containerID),
-  );
+function* duplicateContainer(containerInfo: DuplicateContainerInfo, targetContainerID: string) {
+  const currentScreen: ReturnType<typeof selectors.selectCurrentScreen> = yield select(selectors.selectCurrentScreen);
   const targetContainer: ReturnType<typeof selectors.selectScenario> = yield select(
     selectors.selectScenario, parseInt(targetContainerID),
   );
+  const { sourceContainer, containersToDuplicate, elementsToDuplicate } = containerInfo;
 
-  const { scenariosIDs, elementsIDs } = collectChildren(R.values(scenarios), sourceContainer.parameters.children);
-
-  const containersToDuplicate = R.values(R.pick(scenariosIDs.map(x => parseInt(x).toString()), scenarios));
-  const elementsToDuplicate = R.values(R.pick(elementsIDs.map(x => parseInt(x).toString()), scenariosElements));
   const itemsToDuplicate = R.concat<T.IScenarioItem | T.IScenarioElement>(containersToDuplicate, elementsToDuplicate);
 
   const cLens = makeContainerLens();
 
   const newContainer: T.IScenarioItem = yield call(
-    createContainer, R.set(cLens.parent, parseInt(targetContainerID), sourceContainer)
+    createContainer, R.pipe(
+      R.set(cLens.parent, parseInt(targetContainerID)),
+      R.set(cLens.screen, currentScreen.id),
+    )(sourceContainer)
   );
 
   const independentContainersToDuplicate = containersToDuplicate.map(R.pipe(
     R.set(cLens.parent, newContainer.id),
     R.set(cLens.elements, []),
     R.set(cLens.children, []),
+    R.set(cLens.screen, currentScreen.id),
   ));
 
   const eLens = makeElementLens();
@@ -590,52 +532,63 @@ function* duplicateContainer(containerID: string, targetContainerID: string) {
 
   const duplicatedItems = R.concat<T.IScenarioItem | T.IScenarioElement>(duplicatedContainers, duplicatedElements);
 
-  type IDs = Record<'oldIDtoNewIDMap' | 'oldIDtoNewIDMapPostfixed', Record<string, string | number>>;
+  type IDsMap = Record<'s' | 'e', Record<'normal' | 'prefixed', Record<number | string, number | string>>>;
 
-  const { oldIDtoNewIDMap, oldIDtoNewIDMapPostfixed } = itemsToDuplicate.reduce((acc, originalItem, idx) => {
-    const postfix = isContainer(originalItem) ? 's' : 'e';
+  const idsMap = itemsToDuplicate.reduce((acc: IDsMap, originalItem, idx) => {
+    const postfix = ai.isContainer(originalItem) ? 's' : 'e';
+    const duplicatedItem = duplicatedItems[idx];
+
     return {
       ...acc,
-      oldIDtoNewIDMap: { ...acc.oldIDtoNewIDMap, [originalItem.id]: duplicatedItems[idx].id },
-      oldIDtoNewIDMapPostfixed: {
-        ...acc.oldIDtoNewIDMapPostfixed,
-        [`${originalItem.id}${postfix}`]: `${duplicatedItems[idx].id}${postfix}`
+      [postfix]: {
+        normal: {
+          ...acc[postfix].normal,
+          [originalItem.id]: duplicatedItem.id,
+        },
+        prefixed: {
+          ...acc[postfix].prefixed,
+          [`${originalItem.id}${postfix}`]: `${duplicatedItem.id}${postfix}`,
+        },
       },
-    }
+    };
   }, {
-    oldIDtoNewIDMap: { [sourceContainer.id]: newContainer.id },
-    oldIDtoNewIDMapPostfixed: { [`${sourceContainer.id}s`]: `${newContainer.id}s` }
-  } as IDs);
+    s: {
+      normal: { [sourceContainer.id]: newContainer.id },
+      prefixed: { [`${sourceContainer.id}s`]: `${newContainer.id}s` }
+    },
+    e: { normal: {}, prefixed: {} },
+  });
 
-  const restoreItemRelationships = (x: T.IScenarioItem | T.IScenarioElement) => {
-    if (isContainer(x)) {
+  const restoreChildRelationships = (x: T.IScenarioItem | T.IScenarioElement) => {
+    if (ai.isContainer(x)) {
       return R.pipe(
-        R.set(cLens.id, oldIDtoNewIDMap[x.id]),
-        R.over(cLens.elements, (elements: number[]) => elements.map(e => oldIDtoNewIDMap[e])),
-        R.over(cLens.children, (children: string[]) => children.map(c => oldIDtoNewIDMapPostfixed[c])),
-        R.over(cLens.parent, (p: number) => oldIDtoNewIDMap[p]),
+        R.set(cLens.id, idsMap.s.normal[x.id]),
+        R.over(cLens.elements, (elements: number[]) => elements.map(e => idsMap.e.normal[e])),
+        R.over(cLens.children, (children: string[]) => children.map(c => idsMap[c.slice(-1) === 's' ? 's' : 'e'].prefixed[c])),
+        R.over(cLens.parent, (p: number) => idsMap.s.normal[p]),
+        R.set(cLens.screen, currentScreen.id),
       )(x);
     } else {
       return R.pipe(
-        R.set(eLens.id, oldIDtoNewIDMap[x.id]),
-        R.over(eLens.scenario, (s: string) => oldIDtoNewIDMap[s]),
-        R.over(eLens.parent, (p: string) => oldIDtoNewIDMap[p]),
+        R.set(eLens.id, idsMap.e.normal[x.id]),
+        R.over(eLens.scenario, (s: string) => idsMap.s.normal[s]),
+        R.over(eLens.parent, (p: string) => idsMap.s.normal[p]),
       )(x);
     }
   };
 
   const restoreMainContainerRelationships = R.pipe(
     // parent changed in the beginning
-    R.over(cLens.elements, (elements: number[]) => elements.map(e => oldIDtoNewIDMap[e])),
-    R.over(cLens.children, (children: string[]) => children.map(c => oldIDtoNewIDMapPostfixed[c])),
+    R.over(cLens.elements, (elements: number[]) => elements.map(e => idsMap.e.normal[e])),
+    R.over(cLens.children, (children: string[]) => children.map(c => idsMap[c.slice(-1) === 's' ? 's' : 'e'].prefixed[c])),
   );
 
   const finalDuplicates = R.concat<T.IScenarioItem | T.IScenarioElement>(
-    [restoreMainContainerRelationships(newContainer)], itemsToDuplicate.map(restoreItemRelationships)
+    [restoreMainContainerRelationships(newContainer)], itemsToDuplicate.map(restoreChildRelationships)
   );
 
   const { newScenarios, newElements } = finalDuplicates.reduce((acc: any, x) => {
-    const target = isContainer(x) ? 'newScenarios' : 'newElements';
+    const target = ai.isContainer(x) ? 'newScenarios' : 'newElements';
     return {
       ...acc,
       [target]: {
@@ -644,6 +597,9 @@ function* duplicateContainer(containerID: string, targetContainerID: string) {
       },
     }
   }, {});
+
+  const scenarios: ReturnType<typeof selectors.selectScenarios> = yield select(selectors.selectScenarios);
+  const scenariosElements: ReturnType<typeof selectors.selectScenariosElements> = yield select(selectors.selectScenariosElements);
 
   const finalScenarios = {
     ...scenarios,
@@ -661,8 +617,7 @@ function* duplicateContainer(containerID: string, targetContainerID: string) {
 
   const scenariosToUpdate = R.values(R.pick([
     targetContainer.id,
-    newContainer.id,
-    sourceContainer.id,
+    sourceContainer.id, // research: seems like backend resets elements of sourceContainer to []
     ...R.values(newScenarios).map(x => x.id),
   ], finalScenarios));
   const elementsToUpdate = R.values(R.pick(R.values(newElements).map(x => x.id), finalElements));
@@ -676,69 +631,132 @@ function* pasteCopiedItemSaga() {
   const targetContainerID: ReturnType<typeof selectors.selectClosestContainerID> = yield select(
     selectors.selectClosestContainerID, activeItem.itemId,
   );
-  const itemToCopyID: ReturnType<typeof selectors.selectItemToCopyID> = yield select(selectors.selectItemToCopyID);
+  const itemToCopyInfo: ReturnType<typeof selectors.selectItemToCopyInfo> = yield select(selectors.selectItemToCopyInfo);
 
-  if (activeItem.itemType !== 'none' && targetContainerID !== null && itemToCopyID !== null) {
+  if (activeItem.itemType !== 'none' && targetContainerID !== null && itemToCopyInfo !== null) {
+    const { id: itemToCopyID } = itemToCopyInfo;
     const itemToCopyIsContainer = itemToCopyID.slice(-1) === 's';
 
     if (itemToCopyIsContainer) {
-      yield call(duplicateContainer, itemToCopyID, targetContainerID);
-      return;
+      const duplicateContainerInfo = yield call(getContainerToDuplicateInfo, itemToCopyInfo);
+      yield call(duplicateContainer, duplicateContainerInfo, targetContainerID);
+    } else {
+      const elementToDuplicate = yield call(getElementToDuplicate, itemToCopyInfo);
+
+      if (!elementToDuplicate) {
+        console.error(`Didn't find element to duplicate.`);
+        return;
+      }
+
+      const targetContainer: ReturnType<typeof selectors.selectScenario> = yield select(
+        selectors.selectScenario, parseInt(targetContainerID),
+      );
+
+      const eLens = makeElementLens();
+      const cLens = makeContainerLens();
+
+      const createdElement: ReturnPromisedType<typeof apiAddElements>[number] = (yield call(
+        reqWrapper, apiAddElements, {
+          data: [R.pipe(
+            R.omit(['id']),
+            R.set(eLens.parent, targetContainer.id),
+            R.set(eLens.scenario, targetContainer.id),
+          )(elementToDuplicate)]
+        }))[0];
+
+      const isContainerSelected = ai.isContainer(activeItem.itemId);
+      const updatedTargetContainer = R.pipe(
+        R.over(cLens.elements, (es: number[]) => es.concat(createdElement.id)),
+        R.over(cLens.children, (children: string[]) => isContainerSelected
+            ? children.concat(`${createdElement.id}e`) :
+            R.insert(
+              children.indexOf(activeItem.itemId) + 1,
+              `${createdElement.id}e`,
+              children
+            )),
+      )(targetContainer);
+  
+      const scenarios: ReturnType<typeof selectors.selectScenarios> = yield select(selectors.selectScenarios);
+      const scenarioElements: ReturnType<typeof selectors.selectScenariosElements> = yield select(
+        selectors.selectScenariosElements,
+      );
+
+      const finalScenarios = {
+        ...scenarios,
+        [targetContainer.id]: updatedTargetContainer,
+      };
+
+      const finalScenarioElements = {
+        ...scenarioElements,
+        [createdElement.id]: createdElement,
+      };
+  
+      yield put(Actions.runLayoutAlgorithm(finalScenarios, finalScenarioElements));
+  
+      const scenariosToUpdate = R.values(R.pick([targetContainer.id.toString()], finalScenarios));
+      yield fork(reqWrapper, apiSaveScenarios, { data: scenariosToUpdate });
+    }
+  }
+}
+
+function* getElementToDuplicate(itemToCopyInfo: ProjectT.ItemToCopyInfo) {
+  const currentScreen: ReturnType<typeof selectors.selectCurrentScreen> = yield select(selectors.selectCurrentScreen);
+  const itemFromAnotherScreen = currentScreen.id !== itemToCopyInfo.screenID;
+
+  const elementToDuplicate: ProjectT.IScenarioElement = itemFromAnotherScreen
+    ? yield call(reqWrapper, apiGetElement, { id: parseInt(itemToCopyInfo.id) })
+    : yield select(selectors.selectScenarioElement, parseInt(itemToCopyInfo.id));
+
+  return elementToDuplicate;
+}
+
+function* getContainerToDuplicateInfo(itemToCopyInfo: ProjectT.ItemToCopyInfo) {
+  const currentScreen: ReturnType<typeof selectors.selectCurrentScreen> = yield select(selectors.selectCurrentScreen);
+  const itemFromAnotherScreen = currentScreen.id !== itemToCopyInfo.screenID;
+
+  if (itemFromAnotherScreen) {
+    const scenarios: ReturnPromisedType<typeof apiGetScenarios> = yield call(
+      reqWrapper, apiGetScenarios, { screenID: itemToCopyInfo.screenID }
+    );
+    const scenariosElements: ReturnPromisedType<typeof apiGetElements> = yield call(reqWrapper, apiGetElements, {
+      scenariosIDs: [scenarios.map(x => x.id)],
+    });
+    const itemToCopyID = parseInt(itemToCopyInfo.id);
+    const sourceContainer = scenarios.find(s => s.id === itemToCopyID);
+
+    if (sourceContainer === undefined) {
+      throw new Error(`Didn't find source container info.`);
     }
 
-    const targetContainer: ReturnType<typeof selectors.selectScenario> = yield select(
-      selectors.selectScenario, parseInt(targetContainerID),
-    );
-    const elementToDuplicate: ReturnType<typeof selectors.selectScenarioElement> = yield select(
-      selectors.selectScenarioElement, parseInt(itemToCopyID),
-    );
+    const { scenariosIDs, elementsIDs } = collectChildren(scenarios, sourceContainer.parameters.children);
+  
+    const containersToPickIDs = scenariosIDs.map(x => parseInt(x));
+    const elementsToPickIDs = elementsIDs.map(x => parseInt(x));
+    const containersToDuplicate = scenarios.filter(x => containersToPickIDs.includes(x.id));
+    const elementsToDuplicate = scenariosElements.filter(x => elementsToPickIDs.includes(x.id));
 
-    if (!elementToDuplicate) {
-      return;
-    }
-
-    const createdElement: ReturnPromisedType<typeof apiAddElements>[number] = (yield call(
-      reqWrapper, apiAddElements, { data: R.map(R.omit(['id']), [{
-        ...elementToDuplicate,
-        parameters: {
-          ...elementToDuplicate.parameters,
-          parent_id: targetContainer.id,
-        },
-      }]) },
-    ))[0];
-
+    return {
+      sourceContainer,
+      containersToDuplicate,
+      elementsToDuplicate,
+    } as DuplicateContainerInfo;
+  } else {
     const scenarios: ReturnType<typeof selectors.selectScenarios> = yield select(selectors.selectScenarios);
-    const scenarioElements: ReturnType<typeof selectors.selectScenariosElements> = yield select(
-      selectors.selectScenariosElements,
+    const scenariosElements: ReturnType<typeof selectors.selectScenariosElements> = yield select(selectors.selectScenariosElements);
+    const sourceContainer: ReturnType<typeof selectors.selectScenario> = yield select(
+      selectors.selectScenario, parseInt(itemToCopyInfo.id),
     );
-
-    const finalScenarios = {
-      ...scenarios,
-      [targetContainer.id]: {
-        ...targetContainer,
-        elements: targetContainer.elements.concat(createdElement.id),
-        parameters: {
-          ...targetContainer.parameters,
-          children: R.insert(
-            targetContainer.parameters.children.indexOf(
-              `${elementToDuplicate.id}e`
-            ) + 1,
-            `${createdElement.id}e`,
-            targetContainer.parameters.children
-          ),
-        },
-      },
-    };
-
-    const finalScenarioElements = {
-      ...scenarioElements,
-      [createdElement.id]: createdElement,
-    };
-
-    yield put(Actions.runLayoutAlgorithm(finalScenarios, finalScenarioElements));
-
-    const scenariosToUpdate = R.values(R.pick([targetContainer.id.toString()], finalScenarios));
-    yield fork(reqWrapper, apiSaveScenarios, { data: scenariosToUpdate });
+  
+    const { scenariosIDs, elementsIDs } = collectChildren(R.values(scenarios), sourceContainer.parameters.children);
+  
+    const containersToDuplicate = R.values(R.pick(scenariosIDs.map(x => parseInt(x).toString()), scenarios));
+    const elementsToDuplicate = R.values(R.pick(elementsIDs.map(x => parseInt(x).toString()), scenariosElements));
+  
+    return {
+      sourceContainer,
+      containersToDuplicate,
+      elementsToDuplicate,
+    } as DuplicateContainerInfo;
   }
 }
 
@@ -758,10 +776,9 @@ const updateElementStylesType: ProjectT.UpdateElementStyles['type'] = 'PROJECTS:
 const updateScenarioStylesType: ProjectT.UpdateScenarioStyles['type'] = 'PROJECTS:UPDATE_SCENARIO_STYLES';
 const updateElementParametersType: ProjectT.UpdateElementParameters['type'] = 'PROJECTS:UPDATE_ELEMENT_PARAMETERS';
 const addScenarioType: ProjectT.AddScenario['type'] = 'PROJECTS:ADD_SCENARIO';
-const deleteScenarioType: ProjectT.DeleteScenario['type'] = 'PROJECTS:DELETE_SCENARIO';
 const renameScenarioType: ProjectT.RenameScenario['type'] = 'PROJECTS:RENAME_SCENARIO';
 const wrapIntoContainerType: ProjectT.WrapIntoContainer['type'] = 'PROJECTS:WRAP_INTO_CONTAINER';
-const delScenarioItemType: ProjectT.DeleteScenarioItem['type'] = 'PROJECTS:DELETE_SCENARIO_ITEM';
+const deleteActiveItemType: ProjectT.DeleteActiveItem['type'] = 'PROJECTS:DELETE_ACTIVE_ITEM';
 const uploadFileType: ProjectT.UploadFile['type'] = 'PROJECTS:UPLOAD_FILE';
 const getScreenNNType: ProjectT.GetScreenNN['type'] = 'PROJECTS:GET_SCREEN_NN';
 const runLayoutAlgorithmType: ProjectT.RunLayoutAlgorithm['type'] = 'PROJECTS:RUN_LAYOUT_ALGORITHM';
@@ -793,14 +810,13 @@ export default function* projectSaga() {
   yield takeLatest(updateElementParametersType, updateElementParameters);
 
   yield takeEvery(addScenarioType, addScenarioSaga);
-  yield takeLatest(deleteScenarioType, delScenarioSaga);
   yield takeLatest(renameScenarioType, renameScenarioSaga);
   yield takeEvery(wrapIntoContainerType, wrapIntoContainerSaga);
 
+  yield takeLatest(deleteActiveItemType, deleteActiveItemSaga);
+
   yield takeLatest(copyActiveItemType, copyActiveItemSaga);
   yield takeEvery(pasteCopiedItemType, pasteCopiedItemSaga);
-
-  yield takeLatest(delScenarioItemType, delScenarioItemSaga);
 
   yield takeLatest(uploadFileType, uploadFileSaga);
   yield takeLatest(getScreenNNType, screenSaga.getScreenNNSaga);

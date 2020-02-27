@@ -99,7 +99,7 @@ export const SortableGroup: React.FC<Props> = (props) => {
       id={lsID}
       data-id={lsID}
       data-ls-id={id}
-      tabIndex={lsID === 'root' ? 0 : undefined}
+      tabIndex={0}
       style={stylesToInherit}
       className={getClassNames()}
       // tag="ul" Defaults to "div"
