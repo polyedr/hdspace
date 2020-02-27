@@ -48,6 +48,10 @@ export function selectCurrentProject(state: AppReduxState) {
   return selectFeatureState(state).edit.currentProject;
 };
 
+export function selectListSortable(state: AppReduxState) {
+  return selectFeatureState(state).edit.currentScreen.listSortable;
+};
+
 export function selectUploadedImageInfo(state: AppReduxState) {
   return selectFeatureState(state).edit.uploadedImageInfo;
 };
@@ -93,8 +97,8 @@ function makeActiveItemInfoSelector(prop: 'styles' | 'parameters') {
   };
 }
 
-export function selectItemToCopyID(state: AppReduxState) {
-  return selectFeatureState(state).ui.itemToCopyID;
+export function selectItemToCopyInfo(state: AppReduxState) {
+  return selectFeatureState(state).ui.itemToCopyInfo;
 };
 
 export function selectClosestContainerID(state: AppReduxState, itemID: string): string | null {

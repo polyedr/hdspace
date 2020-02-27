@@ -1,8 +1,7 @@
 import * as R from 'ramda';
 import { createSelector } from 'reselect';
-import { IScenarioItem, IScenarios, IScenarioElement, IScenarioElements } from '$redux/project/types';
 import {
-  LIST_SCENARIO_TYPE, DEFAULT_INDENTS, DEFAULT_BORDER, DEFAULT_BACKGROUND, DEFAULT_TYPOGRAPHY, DEFAULT_SIZE, DEFAULT_ACTION, DEFAULT_PLACEHOLDER, DEFAULT_TEXT_CONTENT, DEFAULT_MAP_PROPS, DEFAULT_DISPLAY,
+  DEFAULT_INDENTS, DEFAULT_BORDER, DEFAULT_BACKGROUND, DEFAULT_TYPOGRAPHY, DEFAULT_SIZE, DEFAULT_ACTION, DEFAULT_PLACEHOLDER, DEFAULT_TEXT_CONTENT, DEFAULT_MAP_PROPS, DEFAULT_DISPLAY,
 } from '$constants/defaultParams';
 
 export const ENTITIES = [
@@ -130,16 +129,4 @@ export const getConfigurablePropsOf = createSelector(
       })
     }, { styles: {}, params: {} });
   },
-);
-
-export const greaterBuoyancyFirst = <T extends { buoyancy: number }>(a: T, b: T) => b.buoyancy - a.buoyancy;
-export const isElement = (id: string) => id.slice(-1) === 'e';
-export const isScenario = (x: any): x is IScenarioItem => LIST_SCENARIO_TYPE.indexOf(x.struct_type) !== -1;
-
-export const scenariosItemsToScenarios = (items: IScenarioItem[]): IScenarios => items.reduce(
-  (acc, x) => ({ ...acc, [x.id]: x }), {},
-);
-
-export const elementsToScenariosElements = (elements: IScenarioElement[]): IScenarioElements => elements.reduce(
-  (acc, x) => ({ ...acc, [x.id]: x }), {},
 );

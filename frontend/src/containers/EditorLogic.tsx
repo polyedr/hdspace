@@ -27,7 +27,6 @@ const mapStateToProps = (state: AppReduxState) => ({
   isPrototypeMode: state.user.isPrototypeMode,
   currentScreen: selectors.selectCurrentScreen(state),
   scenarioLoader: selectors.selectScenarioLoader(state),
-  activeItem: selectors.selectActiveItem(state),
 });
 
 const mapDispatchToProps = {
@@ -38,14 +37,9 @@ const mapDispatchToProps = {
   setScreen: Actions.setScreen,
   delScreen: Actions.delScreen,
   renameScreen: Actions.renameScreen,
-  delScenario: Actions.delScenario,
-  delScenarioItem: Actions.delScenarioItem,
   updateElementStyles: Actions.updateElementStyles,
   changeMinNavPanel: UserActions.changeMinNavPanel,
-  wrapIntoContainer: Actions.wrapIntoContainer,
   resetScreenState: Actions.resetScreenState,
-  copyActiveItem: Actions.copyActiveItem,
-  pasteCopiedItem: Actions.pasteCopiedItem,
 };
 
 export type EditorProps = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & {
@@ -60,7 +54,6 @@ const EditorLogic: React.FunctionComponent<EditorProps> = ({
   isNavPanelMinimized,
   isPrototypeMode,
   scenarioLoader,
-  activeItem,
 
   changeMinNavPanel,
   getProject,
@@ -69,12 +62,8 @@ const EditorLogic: React.FunctionComponent<EditorProps> = ({
   addScreen,
   delScreen,
   renameScreen,
-  delScenarioItem,
   updateElementStyles,
-  wrapIntoContainer,
   resetScreenState,
-  copyActiveItem,
-  pasteCopiedItem,
 }: EditorProps) => (
   <>
     <NavPanelScreen
@@ -92,16 +81,11 @@ const EditorLogic: React.FunctionComponent<EditorProps> = ({
       renameScreen={renameScreen}
     />
     <Editor
-      activeItem={activeItem}
       screen={currentScreen}
       isNavPanelMinimized={isNavPanelMinimized}
       isPrototypeMode={isPrototypeMode}
-      delScenarioItem={delScenarioItem}
       updateElementStyles={updateElementStyles}
-      wrapIntoContainer={wrapIntoContainer}
       resetScreenState={resetScreenState}
-      copyActiveItem={copyActiveItem}
-      pasteCopiedItem={pasteCopiedItem}
     />
     <Spinner
       active={currentProject.projectLoader || currentScreen.screenLoader || scenarioLoader}

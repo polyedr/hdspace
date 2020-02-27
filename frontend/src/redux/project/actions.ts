@@ -172,19 +172,13 @@ export const updateElementParameters = (itemID: string, parameters: T.IScreenPro
   payload: { itemID, parameters },
 });
 
-export const delScenarioItem = (id: string): T.DeleteScenarioItem => ({
-  type: 'PROJECTS:DELETE_SCENARIO_ITEM',
-  payload: { id },
+export const deleteActiveItem = (): T.DeleteActiveItem => ({
+  type: 'PROJECTS:DELETE_ACTIVE_ITEM',
 });
 
 export const addElementsIntoContainer = (elements: IChooseElement[]): T.AddElementsIntoContainer => ({
   type: 'PROJECTS:ADD_ELEMENTS_INTO_CONTAINER',
   payload: { elements },
-});
-
-export const delScenario = (id: string): T.DeleteScenario => ({
-  type: 'PROJECTS:DELETE_SCENARIO',
-  payload: { id },
 });
 
 export const renameScenario = (scenarioID: number, name: string): T.RenameScenario => ({
@@ -219,10 +213,9 @@ export const wrapIntoContainer = (): T.WrapIntoContainer => ({ type: 'PROJECTS:W
 export const runLayoutAlgorithm = (
   scenarios: T.IScenarios,
   elements: T.IScenarioElements,
-  root?: T.ILSItem,
 ): T.RunLayoutAlgorithm => ({
   type: 'PROJECTS:RUN_LAYOUT_ALGORITHM',
-  payload: { scenarios, elements, root },
+  payload: { scenarios, elements },
 });
 
 export const runLayoutAlgorithmFinished = (): T.RunLayoutAlgorithmFinished => ({
@@ -247,7 +240,7 @@ export const pasteCopiedItem = (): T.PasteCopiedItem => ({
   type: 'PROJECTS:PASTE_COPIED_ITEM',
 });
 
-export const setItemToCopy = (itemToCopyID: string): T.SetItemToCopy => ({
+export const setItemToCopy = (id: string, screenID: number): T.SetItemToCopy => ({
   type: 'PROJECTS:SET_ITEM_TO_COPY',
-  payload: { itemToCopyID }
+  payload: { id, screenID }
 });

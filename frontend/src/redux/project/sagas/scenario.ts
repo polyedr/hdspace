@@ -4,9 +4,6 @@ import * as R from 'ramda';
 import * as Actions from '$redux/project/actions';
 import { getParams } from '$utils/parseScenario';
 import {
-  completeLS,
-} from '$utils/LayoutAlgorithm';
-import {
   apiAddElements,
   apiDelElements,
   apiSaveElements,
@@ -21,32 +18,25 @@ import {
 import { DEFAULT_INDENTS } from '$constants/defaultParams';
 import { reqWrapper } from '$redux/project/sagas/index';
 import { ReturnPromisedType } from '$shared/types';
-import { isScenario, getConfigurablePropsOf, Entity } from '$domain/core';
+import { getConfigurablePropsOf, Entity } from '$domain/core';
+import * as ai from '$domain/abstractInterface';
 
 import { selectors, T } from '../';
 
 const runLayoutAlgorithmFinishedType: T.RunLayoutAlgorithmFinished['type'] = 'PROJECTS:RUN_LAYOUT_ALGORITHM_FINISHED';
 
+// rename runLayoutAlgorithm -> updateAbstractInterface/updateAI
 export function* runLayoutAlgorithm(action: T.RunLayoutAlgorithm) {
-  const { scenarios: screenScenarios, elements: scenariosElements, root } = action.payload;
+  const { scenarios: screenScenarios, elements: scenariosElements } = action.payload;
   const currentScreen: ReturnType<typeof selectors.selectCurrentScreen> = yield select(selectors.selectCurrentScreen);
 
-  const rootScenario = screenScenarios[currentScreen.listSortable.root.id];
-
-  const listSortable = completeLS(
-    screenScenarios,
-    scenariosElements,
-    root || (rootScenario && {
-      ...currentScreen.listSortable.root,
-      children: rootScenario.parameters.children,
-    }) || currentScreen.listSortable.root,
-  );
+  const newAIMap = ai.constructAIMap(screenScenarios, scenariosElements);
 
   const updatedScreen = {
     ...currentScreen,
     listSortable: {
       ...currentScreen.listSortable,
-      ...listSortable,
+      ...newAIMap,
     },
   };
 
@@ -165,8 +155,11 @@ export function* addElementsIntoContainerSaga(action: ReturnType<typeof Actions.
   yield fork(reqWrapper, apiSaveScenarios, { data: scenariosToUpdate });
 }
 
-export function* delScenarioSaga(action: ReturnType<typeof Actions.delScenario>) {
-  const { payload: { id: rawID } } = action;
+export function* deleteActiveItemSaga() {
+  const activeItem: ReturnType<typeof selectors.selectActiveItem> = yield select(selectors.selectActiveItem);
+
+  if (['root', 'none'].includes(activeItem.itemType)) return;
+
   const scenarios: ReturnType<typeof selectors.selectScenarios> = yield select(selectors.selectScenarios);
   const scenarioElements: ReturnType<typeof selectors.selectScenariosElements> = yield select(
     selectors.selectScenariosElements,
@@ -174,72 +167,37 @@ export function* delScenarioSaga(action: ReturnType<typeof Actions.delScenario>)
   const currentScreen: ReturnType<typeof selectors.selectCurrentScreen> = yield select(selectors.selectCurrentScreen);
   const { listSortable } = currentScreen;
 
-  const collectAllItemsIDsToRemove = (acc: string[], listSortable: T.IListSortable, itemID: string): string[] => {
-    if (listSortable[itemID].children.length === 0) {
-      return [itemID];
-    }
+  const itemToRemoveParentID = ai.getItemParentID(scenarios, scenarioElements, activeItem.itemId);
 
-    return listSortable[itemID].children.reduce(
-      (innerAcc, x) => innerAcc.concat(collectAllItemsIDsToRemove(acc, listSortable, x)), [itemID]
-    )
-  };
+  const {
+    scenarios: finalScenarios, elements: finalElements, removedItems,
+  } = ai.removeItem(scenarios, scenarioElements, listSortable, activeItem.itemId);
 
-  const itemID = parseInt(rawID);
-  const isElement = rawID.slice(-1) === 'e';
-  const item = isElement ? scenarioElements[itemID] : scenarios[itemID];
-
-  const allItemsToDelete = collectAllItemsIDsToRemove([rawID], listSortable, rawID);
-
-  const [rawScenariosToDelete, rawElementsToDelete] = allItemsToDelete.reduce((acc: [string[], string[]], x) => {
-    return x.slice(-1) === 's' ? [[...acc[0], x], acc[1]] : [acc[0], [...acc[1], x]]
-  }, [[], []]);
-  const scenariosToDelete = rawScenariosToDelete.map(x => parseInt(x));
-  const elementsToDelete = rawElementsToDelete.map(x => parseInt(x));
-
-  const itemParentID = isScenario(item) ? item.parent_id : item.parameters.parent_id;
-  const finalParentID = itemParentID === -1 ? listSortable.root.id : itemParentID;
-  const itemParent = scenarios[finalParentID];
-
-  const updateItemParent: T.IScenarioItem = {
-    ...itemParent,
-    elements: isElement ? R.without([itemID], itemParent.elements) : itemParent.elements,
-    parameters: {
-      ...itemParent.parameters,
-      children: R.without([rawID], itemParent.parameters.children),
-    },
-  };
-
-  const finalScenarios = {
-    ...R.omit(scenariosToDelete.map(String), scenarios),
-    [updateItemParent.id]: updateItemParent,
-  };
-  const finalScenarioElements = R.omit(elementsToDelete.map(String), scenarioElements);
-
-  const { type, name } = getParams(`${updateItemParent.id}s`, finalScenarioElements, finalScenarios);
-  const parentIsRoot = listSortable.root.id === updateItemParent.id;
-
-  const newActiveElemAfterDeletion = document.querySelector<HTMLElement>(`[data-ls-id='${updateItemParent.id}s']`);
-  newActiveElemAfterDeletion?.focus();
+  const { type, name } = getParams(`${itemToRemoveParentID}s`, finalElements, finalScenarios);
+  const parentIsRoot = itemToRemoveParentID === listSortable.root.id;
 
   yield put(Actions.setActiveItem({
-    itemId: `${updateItemParent.id}s`,
+    itemId: `${itemToRemoveParentID}s`,
     itemType: parentIsRoot ? 'root' : type,
     name,
   }));
 
-  yield put(Actions.runLayoutAlgorithm(finalScenarios, finalScenarioElements));
+  yield put(Actions.runLayoutAlgorithm(finalScenarios, finalElements));
   yield take(runLayoutAlgorithmFinishedType);
 
-  if (!R.isEmpty(elementsToDelete)) {
-    yield call(reqWrapper, apiDelElements, { list: elementsToDelete });
+  const newActiveElemAfterDeletion = document.querySelector<HTMLElement>(`[data-ls-id='${itemToRemoveParentID}s']`);
+  newActiveElemAfterDeletion?.focus();
+
+  if (!R.isEmpty(removedItems.e)) {
+    yield call(reqWrapper, apiDelElements, { list: removedItems.e });
   }
 
-  if (!R.isEmpty(scenariosToDelete)) {
-    yield call(reqWrapper, apiDelScenarioCascade, { list: scenariosToDelete });
+  if (!R.isEmpty(removedItems.s)) {
+    yield call(reqWrapper, apiDelScenarioCascade, { list: removedItems.s });
   }
 
   yield call(reqWrapper, apiSaveScenarios, {
-    data: R.values(R.pick([updateItemParent.id.toString()], finalScenarios))
+    data: R.values(R.pick([itemToRemoveParentID.toString()], finalScenarios))
   });
 }
 
@@ -271,28 +229,14 @@ export function* wrapIntoContainerSaga() {
   const scenarioElements: ReturnType<typeof selectors.selectScenariosElements> = yield select(
     selectors.selectScenariosElements,
   );
-  const currentScreen: ReturnType<typeof selectors.selectCurrentScreen> = yield select(
-    selectors.selectCurrentScreen,
-  );
-  const { listSortable } = currentScreen;
 
-  if (activeItem.itemType === 'root') return;
+  if (['root', 'none'].includes(activeItem.itemType)) return;
 
   const rawItemID = activeItem.itemId;
-  const lsItem = listSortable[rawItemID];
-  const itemID = lsItem.id;
-
-  const itemIsElement = rawItemID.slice(-1) === 'e';
-
-  const itemParent = R.values(listSortable).find(x => x.children.some(c => c === rawItemID)) as T.ILSItem;
-  const item = itemIsElement ? scenarioElements[itemID] : scenarios[itemID];
-  const itemParentContainer = scenarios[itemParent.id];
 
   const { styles, params } = getConfigurablePropsOf('container');
   const containerWrapper: T.IScenarioItem = yield call(createContainer, {
     name: 'Container',
-    parent_id: itemParent.id,
-    elements: itemIsElement ? [item.id] : [],
     parameters: {
       ...params,
       children: [rawItemID],
@@ -300,74 +244,33 @@ export function* wrapIntoContainerSaga() {
     styles,
   });
 
-  const updatedItemParentContainer: T.IScenarioItem = {
-    ...itemParentContainer,
-    elements: R.without(itemIsElement ? [item.id] : [], itemParentContainer.elements),
-    parameters: {
-      ...itemParentContainer.parameters,
-      children: itemParentContainer.parameters.children.map(x => x === rawItemID ? `${containerWrapper.id}s` : x),
-    },
-  };
-
-  const elementsToUpdate: T.IScenarioElement[] = [];
-  const scenariosToUpdate: T.IScenarioItem[] = [updatedItemParentContainer, containerWrapper];
-
-  if (isScenario(item)) {
-    const updatedScenario: T.IScenarioItem = {
-      ...item,
-      parent_id: containerWrapper.id,
-    };
-
-    scenariosToUpdate.push(updatedScenario);
-  } else {
-    const updatedElement: T.IScenarioElement = {
-      ...item,
-      scenario: containerWrapper.id,
-      parameters: {
-        ...item.parameters,
-        parent_id: containerWrapper.id,
-      }
-    };
-
-    elementsToUpdate.push(updatedElement);
-  }
+  const {
+    scenarios: newScenarios, elements: newElements, affectedItemsIDs
+  } = ai.wrapIntoContainer(scenarios, scenarioElements, containerWrapper, rawItemID);
 
   const finalScenarios = {
     ...scenarios,
-    ...scenariosToUpdate.reduce((acc, x) => ({ ...acc, [x.id]: x }), {}),
+    ...newScenarios
   };
 
   const finalScenarioElements = {
     ...scenarioElements,
-    ...elementsToUpdate.reduce((acc, x) => ({ ...acc, [x.id]: x }), {}),
-  }
-
-  const rootWasChanged = updatedItemParentContainer.id === listSortable.root.id;
-
-  const updatedListSortable = completeLS(
-    finalScenarios,
-    finalScenarioElements,
-    rootWasChanged ? {
-      ...listSortable.root,
-      children: updatedItemParentContainer.parameters.children
-    } : listSortable.root,
-  );
-
-  const updatedScreen = {
-    ...currentScreen,
-    listSortable: {
-      ...currentScreen.listSortable,
-      ...updatedListSortable,
-    },
+    ...newElements,
   };
 
-  yield put(Actions.updateViewTree({
-    screen: updatedScreen,
-    scenarios: finalScenarios,
-    scenarioElements: finalScenarioElements,
-  }));
+  yield put(Actions.runLayoutAlgorithm(finalScenarios, finalScenarioElements));
+  yield take(runLayoutAlgorithmFinishedType);
 
-  elementsToUpdate.length > 0 && (yield call(reqWrapper, apiSaveElements, { data: elementsToUpdate }));
+  const activeItemElement = document.querySelector<HTMLElement>(`[data-ls-id='${activeItem.itemId}']`);
+  activeItemElement?.focus();
 
-  yield call(reqWrapper, apiSaveScenarios, { data: scenariosToUpdate });
+  affectedItemsIDs.e.length > 0 && (
+    yield call(reqWrapper, apiSaveElements, {
+      data: R.values(R.pick(R.map(R.toString, affectedItemsIDs.e), finalScenarioElements))
+    })
+  );
+
+  yield call(reqWrapper, apiSaveScenarios, {
+    data: R.values(R.pick(R.map(R.toString, affectedItemsIDs.s), finalScenarios))
+  });
 }
