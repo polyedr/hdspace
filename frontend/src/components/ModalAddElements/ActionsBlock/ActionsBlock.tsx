@@ -16,7 +16,6 @@ import {
   GroupElement,
 } from '$utils/parseScenario';
 import { isIncludes } from '$utils/StringHelper';
-import { uniqueId } from '$utils/NumberHelper';
 import { PropertiesPanelProps } from '$features/applyProperties';
 import { ENTITIES } from '$domain/core';
 import { LibraryElements } from '$redux/project/types';
