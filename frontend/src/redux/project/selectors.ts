@@ -48,6 +48,10 @@ export function selectCurrentProject(state: AppReduxState) {
   return selectFeatureState(state).edit.currentProject;
 };
 
+export function selectListSortable(state: AppReduxState) {
+  return selectFeatureState(state).edit.currentScreen.listSortable;
+};
+
 export function selectUploadedImageInfo(state: AppReduxState) {
   return selectFeatureState(state).edit.uploadedImageInfo;
 };

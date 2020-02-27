@@ -80,11 +80,10 @@ export type UpdateScenarioStyles = IAction<
 export type UpdateElementParameters = IAction<
   'PROJECTS:UPDATE_ELEMENT_PARAMETERS', { itemID: string, parameters: IScreenProps }
 >;
-export type DeleteScenarioItem = IAction<'PROJECTS:DELETE_SCENARIO_ITEM', { id: string }>;
+export type DeleteActiveItem = IPlainAction<'PROJECTS:DELETE_ACTIVE_ITEM'>;
 export type AddScenario = IAction<
   'PROJECTS:ADD_SCENARIO', { parentScenarioID: number | null, name: string, elements: IChooseElement[] }
 >;
-export type DeleteScenario = IAction<'PROJECTS:DELETE_SCENARIO', { id: string }>;
 export type RenameScenario = IAction<'PROJECTS:RENAME_SCENARIO', { scenarioID: number, name: string }>;
 export type SetScenarios = IAction<'PROJECTS:SET_SCENARIOS', { scenarios: IScenarios }>;
 export type SetModifyElements = IAction<'PROJECTS:SET_MODIFY_ELEMENTS', { elements: number[] }>;
@@ -136,9 +135,8 @@ export type Action =
   | UpdateElementStyles
   | UpdateScenarioStyles
   | UpdateElementParameters
-  | DeleteScenarioItem
+  | DeleteActiveItem
   | AddScenario
-  | DeleteScenario
   | RenameScenario
   | SetScenarios
   | SetModifyElements
@@ -330,7 +328,7 @@ export interface IScenarioElement { // compare with entity on backend
   parameters: {
     parent_id: number,
     tags?: string,
-    group: string,
+    group?: string,
     placeholder?: string,
     dynamic_placeholder?: string,
     map_props?: IMapProps,

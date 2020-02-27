@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 import * as R from 'ramda';
@@ -45,7 +45,7 @@ const mapDispatch = {
   addScenario: actionsCreators.addScenario,
   wrapIntoContainer: actionsCreators.wrapIntoContainer,
   setIsAddElementsModalOpened: actionsCreators.setIsAddElementsModalOpened,
-  delScenarioItem: actionsCreators.delScenarioItem,
+  deleteActiveItem: actionsCreators.deleteActiveItem,
 };
 
 const CONTROLS: Record<Control, React.ComponentType> = {
@@ -70,7 +70,7 @@ const SCROLLBAR_STYLES = {
 const Component: React.FC<PropertiesPanelProps> = ({
   activeItem,
   screen,
-  delScenarioItem,
+  deleteActiveItem,
   loader,
 
   scenarios,
@@ -85,10 +85,6 @@ const Component: React.FC<PropertiesPanelProps> = ({
   const currentItemType = activeItem.itemType === 'root' ? 'root' : R.prop(activeItemID, screen.listSortable)?.type;
   const disablePanel = !screen;
 
-  const deleteScenarioItem = useCallback(() => {
-    delScenarioItem(activeItem.itemId);
-  }, [activeItem.itemId]);
-
   return (
     <div className={classNames(styles.editorRightPanel)}>
       <Scrollbar
@@ -98,7 +94,7 @@ const Component: React.FC<PropertiesPanelProps> = ({
         <ActiveElementBlock
           activeItem={activeItem}
           disablePanel={disablePanel}
-          onDelScenarioItem={deleteScenarioItem}
+          onDelScenarioItem={deleteActiveItem}
           scenarios={scenarios}
           libraryElements={libraryElements}
           addScenario={addScenario}
