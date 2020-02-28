@@ -175,6 +175,10 @@ type Block = {
   display: 'block';
 };
 
+type InlineBlock = {
+  display: 'inline-block';
+};
+
 export type Flex = {
   display: 'flex';
   justifyContent: 'flex-start' | 'flex-end' | 'center' | 'space-between' | 'space-around';
@@ -182,7 +186,7 @@ export type Flex = {
   flexDirection: 'row' | 'row-reverse' | 'column' | 'column-reverse';
 }
 
-export type ScreenDisplay = Block | Flex;
+export type ScreenDisplay = Block | InlineBlock | Flex;
 
 export interface IScreenIndents {
   'margin-top'?: string,
@@ -248,7 +252,7 @@ export interface IScreenProps {
   map_props: IMapProps,
   source_img?: string,
   scenarioId?: number,
-  actionContent?: string;
+  // actionContent?: string;
   actionUrl?: string,
   image?: string,
 }

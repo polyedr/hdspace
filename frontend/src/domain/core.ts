@@ -2,7 +2,7 @@ import * as R from 'ramda';
 import { createSelector } from 'reselect';
 import { IScenarioItem, IScenarios, IScenarioElement, IScenarioElements } from '$redux/project/types';
 import {
-  LIST_SCENARIO_TYPE, DEFAULT_INDENTS, DEFAULT_BORDER, DEFAULT_BACKGROUND, DEFAULT_TYPOGRAPHY, DEFAULT_SIZE, DEFAULT_ACTION, DEFAULT_PLACEHOLDER, DEFAULT_TEXT_CONTENT, DEFAULT_MAP_PROPS, DEFAULT_DISPLAY,
+  LIST_SCENARIO_TYPE, DEFAULT_INDENTS, DEFAULT_BORDER, DEFAULT_BACKGROUND, DEFAULT_TYPOGRAPHY, DEFAULT_SIZE, DEFAULT_ACTION, DEFAULT_PLACEHOLDER, DEFAULT_TEXT_CONTENT, DEFAULT_MAP_PROPS, DEFAULT_DISPLAY, DEFAULT_BUTTON_DISPLAY,
 } from '$constants/defaultParams';
 
 export const ENTITIES = [
@@ -22,9 +22,9 @@ export type Control = typeof CONTROLS_AFFECT_ON_PARAMS[number] | typeof CONTROLS
 export const AVAILABLE_CONTROLS: Record<Entity, Control[]> = {
   root: ['background'],
   container: ['indents', 'size', 'display', 'typography', 'border', 'background'],
-  button: ['indents', 'size', 'typography', 'border', 'background', 'textContent', 'action'],
+  button: ['indents', 'size', 'display', 'typography', 'border', 'background', 'textContent', 'action'],
   textinput: ['indents', 'size', 'typography', 'border', 'background', 'placeholder'],
-  hyperlink: ['typography', 'border', 'background', 'action'],
+  hyperlink: ['typography', 'border', 'background', 'textContent', 'action'],
   ocrtext: ['indents', 'size', 'typography', 'border', 'background', 'textContent'],
   image: ['indents', 'size', 'border', 'background'],
   select: ['indents', 'size', 'typography', 'border', 'background'],
@@ -60,6 +60,7 @@ const ENTITY_TO_DEFAULTS: EntityToDefaults = {
   container: extractDefaults('container'),
   button: {
     ...extractDefaults('button'),
+    display: DEFAULT_BUTTON_DISPLAY,
     border: {
       ...extractDefaults('button', 'border'),
       'border-color': '#1890ff',
@@ -90,7 +91,13 @@ const ENTITY_TO_DEFAULTS: EntityToDefaults = {
       'border-radius': '4px',
     },
   },
-  hyperlink: extractDefaults('hyperlink'),
+  hyperlink: {
+    ...extractDefaults('hyperlink'),
+    textContent: {
+      ...extractDefaults('hyperlink', 'textContent'),
+      textContent: 'hyperlink',
+    },
+  },
   ocrtext: extractDefaults('ocrtext'),
   image: extractDefaults('image'),
   select: extractDefaults('select'),

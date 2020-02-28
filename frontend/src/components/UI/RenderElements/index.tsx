@@ -31,29 +31,8 @@ type RendererProps = {
 
 type Renderer = React.FC<RendererProps>;
 
-const renderButton: Renderer = (props) => {
-  const { id, style, params, active, isDisabled, onClick, sortableId } = props;
-  return (
-    <Button
-      id={id}
-      data-ls-id={id}
-      data-id={sortableId}
-      key={id}
-      type="primary"
-      className={cn('ls-item', isDisabled && styles.disabled, active && styles.activated)}
-      style={{
-        ...style,
-        transition: 'none',
-      }}
-      onClick={(event) => onClick?.(event, id)}
-    >
-      {params.textContent}
-    </Button>
-  )
-}
-
-const renderHyperLine: Renderer = (props) => {
-  const { id, style, active, isDisabled, params, sortableId, projectId, screensIds, activateScreen } = props;
+const renderLinkOrButton: (type: 'link' | 'button') => Renderer = (type) => (props) => {
+  const { id, style, active, isDisabled, params, onClick, sortableId, projectId, screensIds, activateScreen } = props;
 
   const isExternalLink = React.useCallback(() => {
     return !screensIds.includes(Number(params.actionUrl));
@@ -70,22 +49,42 @@ const renderHyperLine: Renderer = (props) => {
 
   const handleExternalLinkClick = React.useCallback((event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     isDisabled ? event.preventDefault() : params.actionUrl && activateScreen(projectId, Number(params.actionUrl));
-  }, [isDisabled, params.actionUrl, activateScreen, projectId])
-  
-  return isExternalLink() ? (
-    <a
-      {...linkProps}
-      href={params.actionUrl} // TODO: DragResize prevents click by link, but must not when !isDisabled
-      onClick={event => isDisabled && event.preventDefault()}
-    >
-      {params.actionContent}
-    </a>
-  ) : (
-    <Link {...linkProps} to={params.actionUrl || ''} onClick={handleExternalLinkClick}>
-      {params.actionContent}
-    </Link>
-  );
-};
+  }, [isDisabled, params.actionUrl, activateScreen, projectId]);
+
+  if (params.actionUrl || type === 'link') {
+    return isExternalLink() ? (
+      <a
+        {...linkProps}
+        href={params.actionUrl} // TODO: DragResize prevents click by link, but must not when !isDisabled
+        onClick={event => isDisabled && event.preventDefault()}
+      >
+        {params.textContent}
+      </a>
+    ) : (
+      <Link {...linkProps} to={params.actionUrl || ''} onClick={handleExternalLinkClick}>
+        {params.textContent}
+      </Link>
+    );
+  } else {
+    return (
+      <Button
+        id={id}
+        data-ls-id={id}
+        data-id={sortableId}
+        key={id}
+        type="primary"
+        className={cn('ls-item', isDisabled && styles.disabled, active && styles.activated)}
+        style={{
+          ...style,
+          transition: 'none',
+        }}
+        onClick={(event) => onClick?.(event, id)}
+      >
+        {params.textContent}
+      </Button>
+    )
+  }
+}
 
 const renderInput: Renderer = (props) => {
   const { id, style, params, isDisabled, active, onClick, sortableId } = props;
@@ -239,9 +238,9 @@ const renderUndefined: Renderer = (props) => {
 }
 
 export const RENDERERS: Record<Exclude<Entity, 'root' | 'container'>, React.FunctionComponent<any>> = {
-  button: renderButton,
+  button: renderLinkOrButton('button'),
   textinput: renderInput,
-  hyperlink: renderHyperLine,
+  hyperlink: renderLinkOrButton('link'),
   ocrtext: renderText,
   image: renderImg,
   select: renderSelect,

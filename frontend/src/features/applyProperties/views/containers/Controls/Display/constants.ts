@@ -1,4 +1,5 @@
 export const DISPLAY = [
   { label: "Block", value: "block" },
-  { label: "Flex", value: "flex" }
+  { label: "Inline-block", value: "inline-block" },
+  { label: "Flex", value: "flex" },
 ];

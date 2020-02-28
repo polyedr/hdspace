@@ -22,7 +22,7 @@ function mapState(state: AppReduxState): StateProps {
 
   return {
     screensIDs: selectors.selectCurrentProject(state).projectscreen,
-    content: activeItemParams.actionContent,
+    content: activeItemParams.textContent,
     url: activeItemParams.actionUrl,
   };
 }
@@ -52,7 +52,7 @@ const Component: React.FC<Props> = (props) => {
   }, [setIsExternalLink, url]);
 
   const handleLinkTitleInputChange = React.useCallback(({ target: { value } }) => {
-    updateParams({ actionContent: value });
+    updateParams({ textContent: value });
   }, [updateParams]);
 
   const handleExternalUrlInputChange = React.useCallback(({ target: { value } }) => {
@@ -71,7 +71,7 @@ const Component: React.FC<Props> = (props) => {
     <div className="propsElementsBlock">
       <p className="propsElementsBlockTitle">Action</p>
       <div className="propsElementsContentBlock">
-        <div className="propsElementsInnerBlock">
+ {/*        <div className="propsElementsInnerBlock">
           <input
             className={styles.textContentField}
             type="text"
@@ -79,7 +79,7 @@ const Component: React.FC<Props> = (props) => {
             value={content}
             onChange={handleLinkTitleInputChange}
           />
-        </div>
+        </div> */}
         <div className="propsElementsInnerBlock">
           <Button
             className={classNames('mainImgBtn', !isExternalLink && 'mainImgBtn_active')}
