@@ -81,23 +81,24 @@ export function* createContainer(scenario?: Partial<T.IScenarioItem>) {
 }
 
 export function* addElementsIntoContainerSaga(action: ReturnType<typeof Actions.addElementsIntoContainer>) {
-  const { elements: elementsToFormScenario } = action.payload;
+  const { elements } = action.payload;
   const libraryElements: ReturnType<typeof selectors.selectLibraryElements> = yield select(selectors.selectLibraryElements);
   const currentScreen: ReturnType<typeof selectors.selectCurrentScreen> = yield select(selectors.selectCurrentScreen);
   const scenarioElements: ReturnType<typeof selectors.selectScenariosElements> = yield select(
     selectors.selectScenariosElements,
   );
 
-  const activeItem = yield select(selectors.selectActiveItem);
-  const activeContainer = yield select(selectors.selectClosestContainerID, activeItem.itemId);
-  const activeContainerID = parseInt(activeContainer, 10);
+  const activeItem: ReturnType<typeof selectors.selectActiveItem> = yield select(selectors.selectActiveItem);
+  const targetContainer: ReturnType<typeof selectors.selectClosestContainerID> = yield select(selectors.selectClosestContainerID, activeItem.itemId);
+  const rootID = currentScreen.listSortable.root.id;
+  const targetContainerID = targetContainer ? parseInt(targetContainer, 10) : rootID;
 
-  const elementsToCreate = elementsToFormScenario.reduce((acc: T.IScenarioElement[], element) => {
+  const elementsToCreate = elements.reduce((acc: T.IScenarioElement[], element) => {
     const libraryElement = libraryElements[element.structType as T.LibraryElementType][element.funcType]; // TODO: remove unused params/styles from backend
     const { styles, params } = getConfigurablePropsOf(libraryElement.struct_type as Entity);
 
     const x: T.IScenarioElement = {
-      scenario: activeContainerID,
+      scenario: targetContainerID,
       buoyancy: 0,
       dynamic_buoyancy: 0,
       name: 'Element',
@@ -106,7 +107,7 @@ export function* addElementsIntoContainerSaga(action: ReturnType<typeof Actions.
       id: -1000, // will be omitted and set by server
       image: null, // always null
       parameters: {
-        parent_id: activeContainerID,
+        parent_id: targetContainerID,
         group: `don't know what is this`,
         ...libraryElement.parameters,
         ...params,
@@ -126,17 +127,17 @@ export function* addElementsIntoContainerSaga(action: ReturnType<typeof Actions.
   );
 
   // updatedContainer now has id set by backend
-  const updatedActiveContainer = screenScenarios.find(x => x.id === activeContainerID) as T.IScenarioItem;
+  const updatedTargetContainer = screenScenarios.find(x => x.id === targetContainerID) as T.IScenarioItem;
 
   const finalActiveContainer = {
-    ...updatedActiveContainer,
+    ...updatedTargetContainer,
     parameters: {
-      children: updatedActiveContainer.parameters.children.concat(createdElements.map(x => `${x.id}e`)),
+      children: updatedTargetContainer.parameters.children.concat(createdElements.map(x => `${x.id}e`)),
     }
   };
 
   const finalScenarios: T.IScenarios = {
-    [updatedActiveContainer.id]: finalActiveContainer,
+    [updatedTargetContainer.id]: finalActiveContainer,
     ...R.omit(
       [finalActiveContainer.id.toString()],
       screenScenarios.reduce((acc: T.IScenarios, x) => ({ ...acc, [x.id]: x }), {})

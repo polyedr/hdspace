@@ -40,7 +40,7 @@ type OwnProps = {
   scenarios: PropertiesPanelProps['scenarios'];
   libraryElements: LibraryElements;
   onClose(): void;
-  onConfirm(elementsToFormScenario: IChooseElement[]): void;
+  onConfirm(elementsToAdd: IChooseElement[]): void;
 };
 
 type Props = typeof mapDispatchToProps & ReturnType<typeof mapStateToProps> & OwnProps;
