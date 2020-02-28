@@ -129,7 +129,7 @@ export function* addElementsIntoContainerSaga(action: ReturnType<typeof Actions.
   // updatedContainer now has id set by backend
   const updatedTargetContainer = screenScenarios.find(x => x.id === targetContainerID) as T.IScenarioItem;
 
-  const finalActiveContainer = {
+  const finalTargetContainer = {
     ...updatedTargetContainer,
     parameters: {
       children: updatedTargetContainer.parameters.children.concat(createdElements.map(x => `${x.id}e`)),
@@ -137,9 +137,9 @@ export function* addElementsIntoContainerSaga(action: ReturnType<typeof Actions.
   };
 
   const finalScenarios: T.IScenarios = {
-    [updatedTargetContainer.id]: finalActiveContainer,
+    [updatedTargetContainer.id]: finalTargetContainer,
     ...R.omit(
-      [finalActiveContainer.id.toString()],
+      [finalTargetContainer.id.toString()],
       screenScenarios.reduce((acc: T.IScenarios, x) => ({ ...acc, [x.id]: x }), {})
     ),
   };
@@ -152,7 +152,7 @@ export function* addElementsIntoContainerSaga(action: ReturnType<typeof Actions.
   yield put(Actions.runLayoutAlgorithm(finalScenarios, finalScenarioElements));
   yield take(runLayoutAlgorithmFinishedType);
 
-  const scenariosToUpdate = R.values(R.pick([finalActiveContainer.id.toString()], finalScenarios));
+  const scenariosToUpdate = R.values(R.pick([finalTargetContainer.id.toString()], finalScenarios));
   yield fork(reqWrapper, apiSaveScenarios, { data: scenariosToUpdate });
 }
 
