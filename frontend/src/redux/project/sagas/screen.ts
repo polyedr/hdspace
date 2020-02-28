@@ -76,11 +76,6 @@ export function* activateScreenSaga({ payload }: ReturnType<typeof activateScree
   if (!serverScreenScenarios) return;
 
   const rootScenario = serverScreenScenarios.find(x => x.parent_id === -1) as T.IScenarioItem;
-  const rootLSItem: T.ILSItem = {
-    ...DEFAULT_LS.root,
-    id: rootScenario.id,
-    children: rootScenario.parameters.children,
-  };
 
   const screenScenarios = convertScenarios(serverScreenScenarios);
   const scenariosIDs = Object.keys(screenScenarios);
@@ -93,10 +88,10 @@ export function* activateScreenSaga({ payload }: ReturnType<typeof activateScree
 
   const scenariosElements = convertScenarioElements(serverScenariosElements);
 
-  yield put(Actions.runLayoutAlgorithm(screenScenarios, scenariosElements, rootLSItem));
+  yield put(Actions.runLayoutAlgorithm(screenScenarios, scenariosElements));
   yield take(runLayoutAlgorithmFinishedType);
 
-  yield put(Actions.setActiveItem({ itemId: `${rootLSItem.id}s`, itemType: 'root', name: 'Root' }));
+  yield put(Actions.setActiveItem({ itemId: `${rootScenario.id}s`, itemType: 'root', name: 'Root' }));
 
   yield put(Actions.setScenarioLoader(false));
   yield put(setScreenLoader(false));

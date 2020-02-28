@@ -91,7 +91,7 @@ export const SortableGroup: React.FC<Props> = (props) => {
   const getClassNames = useCallback(() => {
     return lsID === 'root'
       ? !disableSortable && styles.moving
-      : cn('ls-item', 'sortable-group', isActive && styles.activated, !disableSortable && styles.moving);
+      : cn('ls-item', 'sortable-group', isActive && 'activated', !disableSortable && styles.moving);
   }, [parent, align, styles, disableSortable, isActive])
 
   return (
@@ -99,7 +99,7 @@ export const SortableGroup: React.FC<Props> = (props) => {
       id={lsID}
       data-id={lsID}
       data-ls-id={id}
-      tabIndex={lsID === 'root' ? 0 : undefined}
+      tabIndex={0}
       style={stylesToInherit}
       className={getClassNames()}
       // tag="ul" Defaults to "div"

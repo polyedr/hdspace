@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 import * as R from 'ramda';
@@ -43,10 +43,10 @@ const mapState = (state: AppReduxState): StateProps => ({
 
 const mapDispatch = {
   addElement: actionsCreators.addElement,
-  addScenario: actionsCreators.addScenario,
+  addElementsIntoContainer: actionsCreators.addElementsIntoContainer,
   wrapIntoContainer: actionsCreators.wrapIntoContainer,
   setIsAddElementsModalOpened: actionsCreators.setIsAddElementsModalOpened,
-  delScenarioItem: actionsCreators.delScenarioItem,
+  deleteActiveItem: actionsCreators.deleteActiveItem,
 };
 
 const CONTROLS: Record<Control, React.ComponentType> = {
@@ -72,10 +72,10 @@ const SCROLLBAR_STYLES = {
 const Component: React.FC<PropertiesPanelProps> = ({
   activeItem,
   screen,
-  delScenarioItem,
+  deleteActiveItem,
   loader,
   scenarios,
-  addScenario,
+  addElementsIntoContainer,
   wrapIntoContainer,
   isAddElementsModalOpened,
   setIsAddElementsModalOpened,
@@ -83,10 +83,6 @@ const Component: React.FC<PropertiesPanelProps> = ({
   const activeItemID = activeItem.itemType === 'root' ? 'root' : activeItem.itemId;
   const currentItemType = activeItem.itemType === 'root' ? 'root' : R.prop(activeItemID, screen.listSortable)?.type;
   const disablePanel = !screen;
-
-  const deleteScenarioItem = useCallback(() => {
-    delScenarioItem(activeItem.itemId);
-  }, [activeItem.itemId]);
 
   return (
     <div className={classNames(styles.editorRightPanel)}>
@@ -97,10 +93,10 @@ const Component: React.FC<PropertiesPanelProps> = ({
         <ActiveElementBlock
           activeItem={activeItem}
           disablePanel={disablePanel}
-          onDelScenarioItem={deleteScenarioItem}
+          onDelScenarioItem={deleteActiveItem}
           scenarios={scenarios}
           libraryElements={LIBRARY_ELEMENTS as LibraryElements}
-          addScenario={addScenario}
+          addElementsIntoContainer={addElementsIntoContainer}
           onWrapIntoContainer={wrapIntoContainer}
           isAddElementsModalOpened={isAddElementsModalOpened}
           setIsAddElementsModalOpened={setIsAddElementsModalOpened}

@@ -35,7 +35,7 @@ const renderButton: Renderer = (props) => {
       data-id={sortableId}
       key={id}
       type="primary"
-      className={cn('ls-item', active && styles.activated)}
+      className={cn('ls-item', active && 'activated')}
       style={{
         ...style,
         transition: 'none',
@@ -55,7 +55,7 @@ const renderHyperLine: Renderer = (props) => {
       data-ls-id={id}
       data-id={sortableId}
       key={id}
-      className={cn('ls-item', styles.addedHyperLink, active && styles.activated)}
+      className={cn('ls-item', styles.addedHyperLink, active && 'activated')}
       href={isDisabled ? '#' : params.actionUrl} // TODO: DragResize prevents click by link, but must not when !isDisabled
       // href="javascript:void(0);"
       style={style}
@@ -74,7 +74,7 @@ const renderInput: Renderer = (props) => {
       data-id={sortableId}
       key={id}
       type="text" // TODO: use other types such as email, etc.
-      className={cn('ls-item', active && styles.activated)}
+      className={cn('ls-item', active && 'activated')}
       readOnly={isDisabled}
       style={{
         ...style,
@@ -94,7 +94,7 @@ const renderSelect: Renderer = (props) => {
       data-ls-id={id}
       data-id={sortableId}
       key={id}
-      className={cn('ls-item', styles.addedSelect, active && styles.activated)}
+      className={cn('ls-item', styles.addedSelect, active && 'activated')}
       style={style}
     >
       {
@@ -120,7 +120,7 @@ const renderText: Renderer = (props) => {
       data-ls-id={id}
       data-id={sortableId}
       key={id}
-      className={cn('ls-item', styles.addedElem, active && styles.activated)}
+      className={cn('ls-item', styles.addedElem, active && 'activated')}
       style={{ ...style, wordBreak: 'break-word', overflowY: 'auto' }}
       tabIndex={0}
     >
@@ -139,7 +139,7 @@ const renderImg: Renderer = (props) => {
         data-ls-id={id}
         data-id={sortableId}
         key={id}
-        className={cn('ls-item', styles.addedElem, active && styles.activated)}
+        className={cn('ls-item', styles.addedElem, active && 'activated')}
         style={style}
         alt={id}
         tabIndex={0}
@@ -155,7 +155,7 @@ const renderMapWidget: Renderer = (props) => {
       data-ls-id={id}
       data-id={sortableId}
       key={id}
-      className={cn('ls-item', styles.addedWidget, active && styles.activated)}
+      className={cn('ls-item', styles.addedWidget, active && 'activated')}
       style={style}
       tabIndex={0}
     >
@@ -176,7 +176,7 @@ const renderCalendarWidget: Renderer = (props) => {
       data-ls-id={id}
       data-id={sortableId}
       key={id}
-      className={cn('ls-item', styles.addedCalendar, active && styles.activated)}
+      className={cn('ls-item', styles.addedCalendar, active && 'activated')}
       style={style}
       tabIndex={0}
     >
@@ -193,7 +193,7 @@ const renderClockWidget: Renderer = (props) => {
       data-ls-id={id}
       data-id={sortableId}
       key={id}
-      className={cn('ls-item', styles.addedCalendar, active && styles.activated)}
+      className={cn('ls-item', styles.addedCalendar, active && 'activated')}
       style={style}
       tabIndex={0}
     >
@@ -211,7 +211,7 @@ const renderUndefined: Renderer = (props) => {
       data-ls-id={id}
       data-id={sortableId}
       key={id}
-      className={cn('ls-item', styles.addedContainer, active && styles.activated)}
+      className={cn('ls-item', styles.addedContainer, active && 'activated')}
       style={style}
       tabIndex={0}
     />

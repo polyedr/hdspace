@@ -14,9 +14,8 @@ import { getListNotDragging, getParams } from '$utils/parseScenario';
 import { AppReduxState } from '$shared/types/app';
 
 import { TopBar } from '../TopBar/TopBar';
+import { HotKeys } from '../HotKeys/HotKeys';
 const styles = require('./Workspace.scss');
-
-const isWorkContainer = true;
 
 export type ScreenMode = {
   isDefaultMode: boolean,
@@ -142,6 +141,7 @@ export const Component = (props: Props) => {
 
   return (screen && R.hasPath(['listSortable', 'root'], screen)) ? (
     <div className={cn(styles.editorWorkspace)}>
+      <HotKeys />
       <TopBar
         screenID={screen.id}
         isPrototypeMode={isPrototypeMode}

@@ -12,7 +12,7 @@ export type ReduxState = {
   ui: {
     activeItem: ActiveItem;
     isAddElementsModalOpened: boolean;
-    itemToCopyID: string | null;
+    itemToCopyInfo: ItemToCopyInfo | null;
   },
   edit: {
     currentProject: IProject;
@@ -81,11 +81,9 @@ export type UpdateElementImage = IAction<'PROJECTS:UPDATE_ELEMENT_IMAGE', { item
 export type UpdateElementParameters = IAction<
   'PROJECTS:UPDATE_ELEMENT_PARAMETERS', { itemID: string, parameters: IScreenProps }
 >;
-export type DeleteScenarioItem = IAction<'PROJECTS:DELETE_SCENARIO_ITEM', { id: string }>;
-export type AddScenario = IAction<
-  'PROJECTS:ADD_SCENARIO', { parentScenarioID: number | null, name: string, elements: IChooseElement[] }
->;
-export type DeleteScenario = IAction<'PROJECTS:DELETE_SCENARIO', { id: string }>;
+export type DeleteActiveItem = IPlainAction<'PROJECTS:DELETE_ACTIVE_ITEM'>;
+export type AddElementsIntoContainer = IAction<
+  'PROJECTS:ADD_ELEMENTS_INTO_CONTAINER', { elements: IChooseElement[] }>;
 export type RenameScenario = IAction<'PROJECTS:RENAME_SCENARIO', { scenarioID: number, name: string }>;
 export type SetScenarios = IAction<'PROJECTS:SET_SCENARIOS', { scenarios: IScenarios }>;
 export type SetModifyElements = IAction<'PROJECTS:SET_MODIFY_ELEMENTS', { elements: number[] }>;
@@ -101,7 +99,7 @@ export type RunLayoutAlgorithm = IAction<'PROJECTS:RUN_LAYOUT_ALGORITHM', {
 export type RunLayoutAlgorithmFinished = IPlainAction<'PROJECTS:RUN_LAYOUT_ALGORITHM_FINISHED'>;
 export type SetActiveItem = IAction<'PROJECTS:SET_ACTIVE_ITEM', { activeItem: ActiveItem }>;
 export type SetIsAddElementsModalOpened = IAction<'PROJECTS:SET_IS_ADD_ELEMENTS_MODAL_OPENED', { isOpened: boolean }>;
-export type SetItemToCopy = IAction<'PROJECTS:SET_ITEM_TO_COPY', { itemToCopyID: string }>;
+export type SetItemToCopy = IAction<'PROJECTS:SET_ITEM_TO_COPY', ItemToCopyInfo>;
 export type CopyActiveItem = IPlainAction<'PROJECTS:COPY_ACTIVE_ITEM'>;
 export type PasteCopiedItem = IPlainAction<'PROJECTS:PASTE_COPIED_ITEM'>;
 export type ResetScreenState = IPlainAction<'PROJECTS:RESET_SCREEN_STATE'>;
@@ -138,9 +136,8 @@ export type Action =
   | UpdateScenarioStyles
   | UpdateElementImage
   | UpdateElementParameters
-  | DeleteScenarioItem
-  | AddScenario
-  | DeleteScenario
+  | AddElementsIntoContainer
+  | DeleteActiveItem
   | RenameScenario
   | SetScenarios
   | SetModifyElements
@@ -157,6 +154,11 @@ export type Action =
   | CopyActiveItem
   | PasteCopiedItem
   | ResetScreenState;
+
+export type ItemToCopyInfo = {
+  id: string;
+  screenID: number;
+};
 
 export interface IListProject {
   id: number,
@@ -327,7 +329,7 @@ export interface IScenarioElement { // compare with entity on backend
   parameters: {
     parent_id: number,
     tags?: string,
-    group: string,
+    group?: string,
     placeholder?: string,
     dynamic_placeholder?: string,
     map_props?: IMapProps,
