@@ -80,33 +80,25 @@ export function* createContainer(scenario?: Partial<T.IScenarioItem>) {
   return createdContainers[0];
 }
 
-export function* addScenarioSaga(action: ReturnType<typeof Actions.addScenario>) {
-  const { parentScenarioID = 0, name = 'Container', elements: elementsToFormScenario } = action.payload;
+export function* addElementsIntoContainerSaga(action: ReturnType<typeof Actions.addElementsIntoContainer>) {
+  const { elements } = action.payload;
   const libraryElements: ReturnType<typeof selectors.selectLibraryElements> = yield select(selectors.selectLibraryElements);
   const currentScreen: ReturnType<typeof selectors.selectCurrentScreen> = yield select(selectors.selectCurrentScreen);
   const scenarioElements: ReturnType<typeof selectors.selectScenariosElements> = yield select(
     selectors.selectScenariosElements,
   );
 
-  const rootLSItem = currentScreen.listSortable.root;
+  const activeItem: ReturnType<typeof selectors.selectActiveItem> = yield select(selectors.selectActiveItem);
+  const targetContainer: ReturnType<typeof selectors.selectClosestContainerID> = yield select(selectors.selectClosestContainerID, activeItem.itemId);
+  const rootID = currentScreen.listSortable.root.id;
+  const targetContainerID = targetContainer ? parseInt(targetContainer, 10) : rootID;
 
-  const { styles, params } = getConfigurablePropsOf('container');
-  const container: T.IScenarioItem = yield call(createContainer, {
-    parent_id: rootLSItem.id,
-    name,
-    parameters: {
-      ...params,
-      children: [],
-    },
-    styles,
-  });
-
-  const elementsToCreate = elementsToFormScenario.reduce((acc: T.IScenarioElement[], element) => {
+  const elementsToCreate = elements.reduce((acc: T.IScenarioElement[], element) => {
     const libraryElement = libraryElements[element.structType as T.LibraryElementType][element.funcType]; // TODO: remove unused params/styles from backend
     const { styles, params } = getConfigurablePropsOf(libraryElement.struct_type as Entity);
 
     const x: T.IScenarioElement = {
-      scenario: container.id,
+      scenario: targetContainerID,
       buoyancy: 0,
       dynamic_buoyancy: 0,
       name: 'Element',
@@ -115,7 +107,7 @@ export function* addScenarioSaga(action: ReturnType<typeof Actions.addScenario>)
       id: -1000, // will be omitted and set by server
       image: null, // always null
       parameters: {
-        parent_id: container.id, // do we need this if we already have scenario?
+        parent_id: targetContainerID,
         group: `don't know what is this`,
         ...libraryElement.parameters,
         ...params,
@@ -135,29 +127,19 @@ export function* addScenarioSaga(action: ReturnType<typeof Actions.addScenario>)
   );
 
   // updatedContainer now has id set by backend
-  const updatedContainer = screenScenarios.find(x => x.id === container.id) as T.IScenarioItem;
-  const updatedRootScenario = screenScenarios.find(x => x.id === rootLSItem.id) as T.IScenarioItem;
+  const updatedTargetContainer = screenScenarios.find(x => x.id === targetContainerID) as T.IScenarioItem;
 
-  const finalContainer: T.IScenarioItem = {
-    ...updatedContainer,
-    elements: createdElements.map(x => x.id),
+  const finalTargetContainer = {
+    ...updatedTargetContainer,
     parameters: {
-      children: createdElements.map(x => `${x.id}e`),
-    }
-  };
-
-  const finalRootScenario = {
-    ...updatedRootScenario,
-    parameters: {
-      children: updatedRootScenario.parameters.children.concat(`${finalContainer.id}s`),
+      children: updatedTargetContainer.parameters.children.concat(createdElements.map(x => `${x.id}e`)),
     }
   };
 
   const finalScenarios: T.IScenarios = {
-    [finalRootScenario.id]: finalRootScenario,
-    [updatedContainer.id]: finalContainer,
+    [updatedTargetContainer.id]: finalTargetContainer,
     ...R.omit(
-      [finalRootScenario.id.toString(), updatedContainer.id.toString()],
+      [finalTargetContainer.id.toString()],
       screenScenarios.reduce((acc: T.IScenarios, x) => ({ ...acc, [x.id]: x }), {})
     ),
   };
@@ -170,9 +152,7 @@ export function* addScenarioSaga(action: ReturnType<typeof Actions.addScenario>)
   yield put(Actions.runLayoutAlgorithm(finalScenarios, finalScenarioElements));
   yield take(runLayoutAlgorithmFinishedType);
 
-  const scenariosToUpdate = R.values(R.pick(
-    [finalRootScenario.id.toString(), updatedContainer.id.toString()], finalScenarios
-  ));
+  const scenariosToUpdate = R.values(R.pick([finalTargetContainer.id.toString()], finalScenarios));
   yield fork(reqWrapper, apiSaveScenarios, { data: scenariosToUpdate });
 }
 

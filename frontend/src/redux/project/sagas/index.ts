@@ -30,7 +30,7 @@ import {
   renameScenarioSaga,
   runLayoutAlgorithm,
   wrapIntoContainerSaga,
-  addScenarioSaga,
+  addElementsIntoContainerSaga,
   createContainer,
 } from '$redux/project/sagas/scenario';
 import {
@@ -775,7 +775,7 @@ const setListSortableType: ProjectT.SetListSortable['type'] = 'PROJECTS:SET_LIST
 const updateElementStylesType: ProjectT.UpdateElementStyles['type'] = 'PROJECTS:UPDATE_ELEMENT_STYLES';
 const updateScenarioStylesType: ProjectT.UpdateScenarioStyles['type'] = 'PROJECTS:UPDATE_SCENARIO_STYLES';
 const updateElementParametersType: ProjectT.UpdateElementParameters['type'] = 'PROJECTS:UPDATE_ELEMENT_PARAMETERS';
-const addScenarioType: ProjectT.AddScenario['type'] = 'PROJECTS:ADD_SCENARIO';
+const addElementsIntoContainerType: ProjectT.AddElementsIntoContainer['type'] = 'PROJECTS:ADD_ELEMENTS_INTO_CONTAINER';
 const renameScenarioType: ProjectT.RenameScenario['type'] = 'PROJECTS:RENAME_SCENARIO';
 const wrapIntoContainerType: ProjectT.WrapIntoContainer['type'] = 'PROJECTS:WRAP_INTO_CONTAINER';
 const deleteActiveItemType: ProjectT.DeleteActiveItem['type'] = 'PROJECTS:DELETE_ACTIVE_ITEM';
@@ -809,7 +809,7 @@ export default function* projectSaga() {
   yield takeLatest(updateScenarioStylesType, updateScenarioStyles);
   yield takeLatest(updateElementParametersType, updateElementParameters);
 
-  yield takeEvery(addScenarioType, addScenarioSaga);
+  yield takeEvery(addElementsIntoContainerType, addElementsIntoContainerSaga);
   yield takeLatest(renameScenarioType, renameScenarioSaga);
   yield takeEvery(wrapIntoContainerType, wrapIntoContainerSaga);
 

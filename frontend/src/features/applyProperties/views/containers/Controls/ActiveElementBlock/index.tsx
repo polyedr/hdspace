@@ -15,7 +15,7 @@ interface IComponentProps {
   disablePanel: boolean,
   scenarios: PropertiesPanelProps['scenarios'],
   libraryElements: PropertiesPanelProps['libraryElements'],
-  addScenario: PropertiesPanelProps['addScenario'],
+  addElementsIntoContainer: PropertiesPanelProps['addElementsIntoContainer'],
   isAddElementsModalOpened: boolean;
   onWrapIntoContainer(): void;
   onDelScenarioItem(): void;
@@ -29,7 +29,7 @@ export const ActiveElementBlock: React.FunctionComponent<IComponentProps> = memo
     onDelScenarioItem,
     scenarios,
     libraryElements,
-    addScenario,
+    addElementsIntoContainer,
     onWrapIntoContainer,
     isAddElementsModalOpened,
     setIsAddElementsModalOpened,
@@ -106,7 +106,7 @@ export const ActiveElementBlock: React.FunctionComponent<IComponentProps> = memo
         scenarios={scenarios}
         libraryElements={libraryElements}
         onClose={closeModal}
-        onConfirm={addScenario}
+        onConfirm={addElementsIntoContainer}
       />
       { modalDeleteElementOpen && (
         <Modal

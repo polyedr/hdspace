@@ -176,13 +176,9 @@ export const deleteActiveItem = (): T.DeleteActiveItem => ({
   type: 'PROJECTS:DELETE_ACTIVE_ITEM',
 });
 
-export const addScenario = (
-  parentScenarioID: number | null,
-  name: string,
-  elements: IChooseElement[],
-): T.AddScenario => ({
-  type: 'PROJECTS:ADD_SCENARIO',
-  payload: { parentScenarioID, name, elements },
+export const addElementsIntoContainer = (elements: IChooseElement[]): T.AddElementsIntoContainer => ({
+  type: 'PROJECTS:ADD_ELEMENTS_INTO_CONTAINER',
+  payload: { elements },
 });
 
 export const renameScenario = (scenarioID: number, name: string): T.RenameScenario => ({
