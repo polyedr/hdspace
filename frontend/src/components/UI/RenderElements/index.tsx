@@ -133,17 +133,17 @@ const renderImg: Renderer = (props) => {
   const { id, params, active, sortableId, style } = props;
 
   return (
-      <img
-        src={params.imageUrl}
-        id={id}
-        data-ls-id={id}
-        data-id={sortableId}
-        key={id}
-        className={cn('ls-item', styles.addedElem, active && 'activated')}
-        style={style}
-        alt={id}
-        tabIndex={0}
-      />
+    <img
+      src={params.imageUrl}
+      id={id}
+      data-ls-id={id}
+      data-id={sortableId}
+      key={id}
+      className={cn('ls-item', styles.addedElem, active && 'activated')}
+      style={style}
+      alt={id}
+      tabIndex={0}
+    />
   );
 }
 
