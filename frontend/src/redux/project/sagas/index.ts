@@ -297,13 +297,13 @@ function* updateElementStyles(action: ReturnType<typeof Actions.updateElementSty
 function* updateElementImage(action: ReturnType<typeof Actions.updateElementImage>) {
   const { itemID, image } = action.payload;
 
-  const parseId = parseInt(itemID, 10);
+  const parsedID = parseInt(itemID, 10);
   const formData = new FormData();
   formData.append('image', new Blob([image]), image.name);
 
-  const changedElement = yield call(reqWrapper, apiChangeElement, { data: formData, id: parseId });
+  const changedElement: ReturnPromisedType<typeof apiChangeElement> = yield call(reqWrapper, apiChangeElement, { data: formData, id: parsedID });
 
-  const scenarioElement: ReturnType<typeof selectors.selectScenarioElement> = yield select(selectors.selectScenarioElement, parseId);
+  const scenarioElement: ReturnType<typeof selectors.selectScenarioElement> = yield select(selectors.selectScenarioElement, parsedID);
 
   yield put(Actions.updateElementParameters(itemID, {
     ...scenarioElement.parameters,

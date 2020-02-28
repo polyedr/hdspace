@@ -4,8 +4,8 @@ import classNames from 'classnames';
 import * as R from 'ramda';
 
 import { AppReduxState } from '$shared/types/app';
-import { actionsCreators, selectors, T as ProjectT } from '$redux/project';
 import { LibraryElements } from '$redux/project/types';
+import { actionsCreators, selectors, T as ProjectT } from '$redux/project';
 import { Scrollbar } from '$components/UI/Scrollbar/';
 import { Spinner } from '$components/UI/Spinner/';
 import { AVAILABLE_CONTROLS, Control, Entity } from '$domain/core';

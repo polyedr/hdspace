@@ -76,7 +76,7 @@ export const apiDelElement = (props: MyAxiosProps & { id: string }) => (
     .catch(onError)
 );
 
-export const apiChangeElement = (props: MyAxiosProps & { id: string }) => (
+export const apiChangeElement = (props: MyAxiosProps & { id: string }): Promise<IScenarioElement> => (
   myAxios({
     ...props,
     method: 'PATCH',
