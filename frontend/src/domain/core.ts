@@ -96,9 +96,8 @@ const ENTITY_TO_DEFAULTS: EntityToDefaults = {
   image: {
     ...extractDefaults('image'),
     size: {
-      width: '300px',
+      width: 'auto',
       height: 'auto',
-      'max-width': '100%',
     },
     indents: {
       ...extractDefaults('image', 'indents'),
