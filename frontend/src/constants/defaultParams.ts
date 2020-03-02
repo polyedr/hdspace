@@ -130,7 +130,7 @@ export const DEFAULT_MAP_PROPS = {
 };
 
 export const DEFAULT_IMAGE_PROPS = { 
-  imageUrl: IMAGES.imageIcon,
+  imageURL: IMAGES.imageIcon,
 };
 
 export const DEFAULT_TYPOGRAPHY: IScreenTypography = {

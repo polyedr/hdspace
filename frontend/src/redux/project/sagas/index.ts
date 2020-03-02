@@ -307,7 +307,7 @@ function* updateElementImage(action: ReturnType<typeof Actions.updateElementImag
 
   yield put(Actions.updateElementParameters(itemID, {
     ...scenarioElement.parameters,
-    imageUrl: changedElement.image,
+    imageURL: changedElement.image,
   } as IScreenProps));
 }
 

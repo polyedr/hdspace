@@ -17,7 +17,12 @@ const Component: React.FC<Props> = (props) => {
 
   const handleChangeFileInput = useCallback(({ target }) => {
     const file = target.files[0];
-    updateElementImage(activeItemID, file);
+
+    if (file.size > 5242880) {
+      alert('Choose image up to 5Mb!');
+    } else {
+      updateElementImage(activeItemID, file);
+    }
   }, [activeItemID, updateElementImage]);
 
   return (
@@ -30,6 +35,7 @@ const Component: React.FC<Props> = (props) => {
             <input
               className={styles.uploadField}
               type="file"
+              accept=".jpg, .jpeg, .png"
               name="upload"
               onChange={handleChangeFileInput}
             />
