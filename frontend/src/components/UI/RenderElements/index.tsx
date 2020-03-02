@@ -56,6 +56,7 @@ const renderLinkOrButton: (type: 'link' | 'button') => Renderer = (type) => (pro
       <a
         {...linkProps}
         href={params.actionUrl} // TODO: DragResize prevents click by link, but must not when !isDisabled
+        target="_blank"
         onClick={event => isDisabled && event.preventDefault()}
       >
         {params.textContent}

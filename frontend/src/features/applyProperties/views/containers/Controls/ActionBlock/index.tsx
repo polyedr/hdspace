@@ -13,7 +13,6 @@ const styles = require('./styles.scss');
 
 type StateProps = {
   screensIDs: number[];
-  content: string;
   url: string;
 }
 
@@ -22,7 +21,6 @@ function mapState(state: AppReduxState): StateProps {
 
   return {
     screensIDs: selectors.selectCurrentProject(state).projectscreen,
-    content: activeItemParams.textContent,
     url: activeItemParams.actionUrl,
   };
 }
@@ -32,7 +30,6 @@ type Props = StateProps & PropertiesChangeProps;
 const Component: React.FC<Props> = (props) => {
   const {
     url,
-    content,
     screensIDs,
     updateParams,
   } = props;
@@ -51,10 +48,6 @@ const Component: React.FC<Props> = (props) => {
     setIsExternalLink(true);
   }, [setIsExternalLink, url]);
 
-  const handleLinkTitleInputChange = React.useCallback(({ target: { value } }) => {
-    updateParams({ textContent: value });
-  }, [updateParams]);
-
   const handleExternalUrlInputChange = React.useCallback(({ target: { value } }) => {
     updateParams({ actionUrl: value });
   }, [updateParams, url]);
@@ -64,22 +57,13 @@ const Component: React.FC<Props> = (props) => {
   }, [updateParams, url]);
 
   useEffect(() => {
-    setIsExternalLink(isExternalUrl())
+    url !== '' && setIsExternalLink(isExternalUrl());
   }, [url]);
 
   return (
     <div className="propsElementsBlock">
       <p className="propsElementsBlockTitle">Action</p>
       <div className="propsElementsContentBlock">
- {/*        <div className="propsElementsInnerBlock">
-          <input
-            className={styles.textContentField}
-            type="text"
-            placeholder="Enter link text content"
-            value={content}
-            onChange={handleLinkTitleInputChange}
-          />
-        </div> */}
         <div className="propsElementsInnerBlock">
           <Button
             className={classNames('mainImgBtn', !isExternalLink && 'mainImgBtn_active')}
@@ -108,10 +92,11 @@ const Component: React.FC<Props> = (props) => {
                 defaultValue={!isExternalUrl() ? url : ''}
                 value={!isExternalUrl() ? url : ''}
                 options={
-                  screensIDs.map((screenId, elIndex) => ({ // TODO: restore when screens will be preloaded
-                    label: `Screen ${elIndex}`,
-                    value: `${screenId}`,
-                  }))
+                  [{ label: 'No screen', value: '' }].concat(
+                    screensIDs.map((screenId, elIndex) => ({ // TODO: restore when screens will be preloaded
+                      label: `Screen ${elIndex}`,
+                      value: `${screenId}`,
+                  })))
                 }
                 onChange={handlePageUrlDropdownChange}
               />
