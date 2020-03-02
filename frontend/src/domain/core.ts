@@ -57,7 +57,13 @@ const extractDefaults = (entity: Entity, control?: Control) => control
 
 const ENTITY_TO_DEFAULTS: EntityToDefaults = {
   root: extractDefaults('root'),
-  container: extractDefaults('container'),
+  container: {
+    ...extractDefaults('container'),
+    size: {
+      ...extractDefaults('container', 'size'),
+      width: '100%',
+    },
+  },
   button: {
     ...extractDefaults('button'),
     border: {
