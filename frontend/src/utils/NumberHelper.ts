@@ -38,8 +38,6 @@ export const getBuoyancy = (listEl: IScenarioElement[] = []): number => (
 
 export const getDaysInMonth = (month: number, year: number) => new Date(year, month, 0).getDate();
 
-export const uniqueId = (idx?: number) => <number>(strToNumber(`${new Date().getTime()}${idx || 0}`));
-
 export const getRandomInt = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min;
 
 export const safeParseInt = (value: string | undefined, radix?: number | undefined) => value !== undefined

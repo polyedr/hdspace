@@ -133,6 +133,13 @@ export const getGroupElements = (group: string, listElement: IListCategoryEl): G
           };
         });
 
+    case 'Image':
+      return listElement.Image.map((x) => ({
+        key: `key-${x.struct_type}-${x.func_type}`,
+        value: { structType: x.struct_type, funcType: x.func_type },
+        label: `image/${x.func_type}`,
+      }));    
+
     default:
       return [];
   }
@@ -141,16 +148,14 @@ export const getGroupElements = (group: string, listElement: IListCategoryEl): G
 export const getChooseElements = (
   element: IChooseElement, chooseElements: IChooseElement[],
 ): IChooseElement[] => {
-  const key = element.type !== 'Image' ? 'type' : 'id';
-
-  return chooseElements.some(x => x[key] === element[key])
-    ? chooseElements.filter(x => x[key] !== element[key])
+  return chooseElements.some(x => x.type === element.type)
+    ? chooseElements.filter(x => x.type !== element.type)
     : [...chooseElements, element];
 };
 
 export const getCheckedElements = (listElements: ITemplateElement[]) => listElements.reduce(
   (acc: IChooseElement[], x) => x.checked
-    ? acc.concat({ type: x.value.funcType, id: -100, structType: x.value.structType, funcType: x.value.funcType })
+    ? acc.concat({ type: x.value.funcType, structType: x.value.structType, funcType: x.value.funcType })
     : acc,
   []
 );

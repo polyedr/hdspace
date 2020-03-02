@@ -19,9 +19,11 @@ import { DEFAULT_INDENTS } from '$constants/defaultParams';
 import { reqWrapper } from '$redux/project/sagas/index';
 import { ReturnPromisedType } from '$shared/types';
 import { getConfigurablePropsOf, Entity } from '$domain/core';
+import { LIBRARY_ELEMENTS } from '$domain/libraryElements';
 import * as ai from '$domain/abstractInterface';
 
 import { selectors, T } from '../';
+import { ServerFuncType } from '../types';
 
 const runLayoutAlgorithmFinishedType: T.RunLayoutAlgorithmFinished['type'] = 'PROJECTS:RUN_LAYOUT_ALGORITHM_FINISHED';
 
@@ -94,7 +96,7 @@ export function* addElementsIntoContainerSaga(action: ReturnType<typeof Actions.
   const targetContainerID = targetContainer ? parseInt(targetContainer, 10) : rootID;
 
   const elementsToCreate = elements.reduce((acc: T.IScenarioElement[], element) => {
-    const libraryElement = libraryElements[element.structType as T.LibraryElementType][element.funcType]; // TODO: remove unused params/styles from backend
+    const libraryElement = LIBRARY_ELEMENTS[element.structType as keyof typeof LIBRARY_ELEMENTS][element.funcType as ServerFuncType]!; // TODO: remove unused params/styles from backend
     const { styles, params } = getConfigurablePropsOf(libraryElement.struct_type as Entity);
 
     const x: T.IScenarioElement = {

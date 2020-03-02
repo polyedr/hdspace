@@ -42,6 +42,7 @@ import {
   parseImgUsingNN,
   apiGetElements,
   apiAddElements,
+  apiChangeElement,
   apiGetElement,
 } from '$api/element';
 import { setTokenPair, setLoadedToken } from '$redux/user/actions';
@@ -52,11 +53,12 @@ import { CssLikeStyles } from '$utils/StyleHelper';
 import * as PATH_NAMES from '$constants/pathNames';
 import { apiSaveScenarios, apiSaveScenario } from '$api/scenario';
 import { DEFAULT_AUTHORISATION_TOKEN } from '$constants/defaultParams';
-
-import { selectors, T as ProjectT, actionsCreators, T } from '../';
 import { getConfigurablePropsOf, Entity } from '$domain/core';
 import { collectChildren, makeContainerLens, makeElementLens } from '$domain/abstractInterface';
 import * as ai from '$domain/abstractInterface';
+
+import { IScreenProps } from '../types';
+import { selectors, T as ProjectT, actionsCreators, T } from '../';
 
 const runLayoutAlgorithmFinishedType: ProjectT.RunLayoutAlgorithmFinished['type'] = 'PROJECTS:RUN_LAYOUT_ALGORITHM_FINISHED';
 
@@ -290,6 +292,23 @@ function* updateElementStyles(action: ReturnType<typeof Actions.updateElementSty
   if (modifyElements.indexOf(parseId) === -1) {
     yield put(Actions.setModifyElements(R.append(parseId, modifyElements)));
   }
+}
+
+function* updateElementImage(action: ReturnType<typeof Actions.updateElementImage>) {
+  const { itemID, image } = action.payload;
+
+  const parsedID = parseInt(itemID, 10);
+  const formData = new FormData();
+  formData.append('image', new Blob([image]), image.name);
+
+  const changedElement: ReturnPromisedType<typeof apiChangeElement> = yield call(reqWrapper, apiChangeElement, { data: formData, id: parsedID });
+
+  const scenarioElement: ReturnType<typeof selectors.selectScenarioElement> = yield select(selectors.selectScenarioElement, parsedID);
+
+  yield put(Actions.updateElementParameters(itemID, {
+    ...scenarioElement.parameters,
+    imageUrl: changedElement.image,
+  } as IScreenProps));
 }
 
 function* updateElementParameters(action: ReturnType<typeof Actions.updateElementParameters>) {
@@ -775,6 +794,7 @@ const setListSortableType: ProjectT.SetListSortable['type'] = 'PROJECTS:SET_LIST
 const updateElementStylesType: ProjectT.UpdateElementStyles['type'] = 'PROJECTS:UPDATE_ELEMENT_STYLES';
 const updateScenarioStylesType: ProjectT.UpdateScenarioStyles['type'] = 'PROJECTS:UPDATE_SCENARIO_STYLES';
 const updateElementParametersType: ProjectT.UpdateElementParameters['type'] = 'PROJECTS:UPDATE_ELEMENT_PARAMETERS';
+const updateElementImageType: ProjectT.UpdateElementImage['type'] = 'PROJECTS:UPDATE_ELEMENT_IMAGE';
 const addElementsIntoContainerType: ProjectT.AddElementsIntoContainer['type'] = 'PROJECTS:ADD_ELEMENTS_INTO_CONTAINER';
 const renameScenarioType: ProjectT.RenameScenario['type'] = 'PROJECTS:RENAME_SCENARIO';
 const wrapIntoContainerType: ProjectT.WrapIntoContainer['type'] = 'PROJECTS:WRAP_INTO_CONTAINER';
@@ -807,6 +827,7 @@ export default function* projectSaga() {
 
   yield takeLatest(updateElementStylesType, updateElementStyles);
   yield takeLatest(updateScenarioStylesType, updateScenarioStyles);
+  yield takeLatest(updateElementImageType, updateElementImage);
   yield takeLatest(updateElementParametersType, updateElementParameters);
 
   yield takeEvery(addElementsIntoContainerType, addElementsIntoContainerSaga);

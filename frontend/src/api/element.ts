@@ -76,6 +76,16 @@ export const apiDelElement = (props: MyAxiosProps & { id: string }) => (
     .catch(onError)
 );
 
+export const apiChangeElement = (props: MyAxiosProps & { id: string }): Promise<IScenarioElement> => (
+  myAxios({
+    ...props,
+    method: 'PATCH',
+    url: `/projects/scenario-elements/${props.id}/`,
+  })
+    .then(parseResult)
+    .catch(onError)
+);
+
 export const apiAddElements = (props: MyAxiosProps): Promise<IScenarioElement[]> => (
   myAxios({
     ...props,

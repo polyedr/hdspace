@@ -127,7 +127,7 @@ const SortableComponent: React.FC<Props> = (props) => {
         }
 
         const currentItem = listSortable[itemId];
-        const { struct_type, parameters, styles, name, image } = getParams(itemId, elementList, scenarioList);
+        const { struct_type, parameters, styles, name } = getParams(itemId, elementList, scenarioList);
 
         if (struct_type === 'container') {
           return (
@@ -153,7 +153,7 @@ const SortableComponent: React.FC<Props> = (props) => {
           renderElement({
             id: itemId,
             isDisabled: !disableInteractions,
-            params: { ...parameters, image },
+            params: { ...parameters },
             sortableId: itemId,
             name,
             style: parsedStyles,

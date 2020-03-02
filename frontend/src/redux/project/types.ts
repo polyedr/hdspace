@@ -77,6 +77,7 @@ export type UpdateElementStyles = IAction<'PROJECTS:UPDATE_ELEMENT_STYLES', { id
 export type UpdateScenarioStyles = IAction<
   'PROJECTS:UPDATE_SCENARIO_STYLES', { id: string, styles: CSSProperties & { 'flex-direction'?: string } }
 >;
+export type UpdateElementImage = IAction<'PROJECTS:UPDATE_ELEMENT_IMAGE', { itemID: string, image: File }>;
 export type UpdateElementParameters = IAction<
   'PROJECTS:UPDATE_ELEMENT_PARAMETERS', { itemID: string, parameters: IScreenProps }
 >;
@@ -133,6 +134,7 @@ export type Action =
   | SetScenarioElements
   | UpdateElementStyles
   | UpdateScenarioStyles
+  | UpdateElementImage
   | UpdateElementParameters
   | AddElementsIntoContainer
   | DeleteActiveItem
@@ -252,7 +254,7 @@ export interface IScreenProps {
   scenarioId?: number,
   actionContent?: string;
   actionUrl?: string,
-  image?: string,
+  imageUrl?: string,
 }
 
 export interface ISortableItem {

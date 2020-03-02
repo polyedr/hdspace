@@ -130,7 +130,9 @@ module.exports = () => {
           test: /\.(png|svg)$/,
           use: {
             loader: 'file-loader',
-            options: {},
+            options: {
+              name: '[name].[ext]',
+            },
           },
         },
       ],

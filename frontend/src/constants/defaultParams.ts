@@ -16,6 +16,8 @@ import { IApiResponseError, ITokenPair } from '$redux/user/reducer';
 import { getDaysInMonth } from '$utils/NumberHelper';
 import { CssLikeStyles } from '$utils/StyleHelper';
 
+import { IMAGES } from './images';
+
 export interface ISignFormElement {
   label: string,
   value: string,
@@ -125,6 +127,10 @@ export const DEFAULT_MAP_PROPS = {
     zoom: 10,
     markerText: 'A',
   },
+};
+
+export const DEFAULT_IMAGE_PROPS = { 
+  imageUrl: IMAGES.imageIcon,
 };
 
 export const DEFAULT_TYPOGRAPHY: IScreenTypography = {
