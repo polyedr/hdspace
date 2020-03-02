@@ -64,7 +64,7 @@ export const DEFAULT_WIDTH = 'auto';
 export const DEFAULT_HEIGHT = 'auto';
 
 export const DEFAULT_SIZE = {
-  width: '100%',
+  width: 'auto',
   height: 'auto',
 };
 
