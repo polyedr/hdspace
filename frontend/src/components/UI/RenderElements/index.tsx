@@ -34,9 +34,7 @@ type Renderer = React.FC<RendererProps>;
 const renderLinkOrButton: (type: 'link' | 'button') => Renderer = (type) => (props) => {
   const { id, style, active, isDisabled, params, onClick, sortableId, projectID, screensIDs, activateScreen } = props;
 
-  const isExternalLink = React.useCallback(() => {
-    return !screensIDs.includes(Number(params.actionUrl));
-  }, [params.actionUrl, screensIDs]);
+  const isExternalLink = !screensIDs.includes(Number(params.actionUrl));
 
   const commonProps = {
     id,
@@ -52,7 +50,7 @@ const renderLinkOrButton: (type: 'link' | 'button') => Renderer = (type) => (pro
   }, [isDisabled, params.actionUrl, activateScreen, projectID]);
 
   if (params.actionUrl || type === 'link') {
-    return isExternalLink() ? (
+    return isExternalLink ? (
       <a
         {...commonProps}
         href={params.actionUrl} // TODO: DragResize prevents click by link, but must not when !isDisabled
