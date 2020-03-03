@@ -154,22 +154,23 @@ const SortableComponent: React.FC<Props> = (props) => {
         } 
 
         // @ts-ignore
-        const renderElement = RENDERERS[struct_type];
+        const RenderedElement = RENDERERS[struct_type];
         const parsedStyles = convertPropCSS(styles);
         
-        return renderElement ? (
-          renderElement({
-            id: itemId,
-            isDisabled: !disableInteractions,
-            params: { ...parameters },
-            sortableId: itemId,
-            name,
-            style: parsedStyles,
-            active: !disableInteractions && itemId === activeItemId,
-            projectID: projectID,
-            screensIDs: screensIDs,
-            activateScreen: activateScreen,
-          })
+        return RenderedElement ? (
+          <RenderedElement
+            key={itemId}
+            id={itemId}
+            isDisabled={!disableInteractions}
+            params={parameters}
+            sortableId={itemId}
+            name={name}
+            style={parsedStyles}
+            active={!disableInteractions && itemId === activeItemId}
+            projectID={projectID}
+            screensIDs={screensIDs}
+            activateScreen={activateScreen}
+           />
         ) : null;
       })}
     </SortableGroup>

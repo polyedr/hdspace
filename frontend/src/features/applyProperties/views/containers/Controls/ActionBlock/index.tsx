@@ -27,6 +27,11 @@ function mapState(state: AppReduxState): StateProps {
 
 type Props = StateProps & PropertiesChangeProps;
 
+type InternalLink = { type: 'internal-link', screenID: number };
+type ExternalLink = { type: 'external-link', url: string };
+
+type Action = InternalLink | ExternalLink;
+
 const Component: React.FC<Props> = (props) => {
   const {
     url,

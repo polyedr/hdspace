@@ -3,7 +3,6 @@ import cn from 'classnames';
 import { Input, Button } from 'antd';
 import { Link } from 'react-router-dom';
 
-import * as Actions from '$redux/project/actions';
 import { IScreenProps } from '$redux/project/types';
 import { getDefaultDateSelectOptions } from '$constants/defaultParams';
 import { GMap } from '$components/UI/GMap';
@@ -11,9 +10,10 @@ import { CalendarWidget } from '$components/UI/Calendar';
 import { ClockWidget } from '$components/UI/Clock';
 import { Entity } from '$domain/core';
 
+import { withLink } from '../../../utils/withLink';
 const styles = require('./styles.scss');
 
-type RendererProps = {
+export type RendererProps = {
   id: string;
   style: React.CSSProperties;
   params: IScreenProps;
@@ -23,18 +23,27 @@ type RendererProps = {
   isDisabled?: boolean;
   children?: JSX.Element;
   sortableId?: string;
-  projectID: number;
-  screensIDs: number[];
-  activateScreen: typeof Actions.activateScreen;
+  isExternalLink(): boolean;
+  onPageLinkClick(event: React.MouseEvent<HTMLAnchorElement, MouseEvent>): void;
+  onExternalLinkClick(event: React.MouseEvent<HTMLAnchorElement, MouseEvent>): void;
   onClick?(event: any, id: string): void;
 };
 
 type Renderer = React.FC<RendererProps>;
 
-const renderLinkOrButton: (type: 'link' | 'button') => Renderer = (type) => (props) => {
-  const { id, style, active, isDisabled, params, onClick, sortableId, projectID, screensIDs, activateScreen } = props;
-
-  const isExternalLink = !screensIDs.includes(Number(params.actionUrl));
+const Action: (type: 'link' | 'button') => Renderer = (type) => (props) => {
+  const {
+    id,
+    style,
+    active,
+    isDisabled,
+    params,
+    onClick,
+    sortableId,
+    isExternalLink,
+    onPageLinkClick,
+    onExternalLinkClick,
+  } = props;
 
   const commonProps = {
     id,
@@ -45,39 +54,26 @@ const renderLinkOrButton: (type: 'link' | 'button') => Renderer = (type) => (pro
     style: style,
   }
 
-  const handleExternalLinkClick = React.useCallback((event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-    isDisabled ? event.preventDefault() : params.actionUrl && activateScreen(projectID, Number(params.actionUrl));
-  }, [isDisabled, params.actionUrl, activateScreen, projectID]);
-
   if (params.actionUrl || type === 'link') {
-    return isExternalLink ? (
-      <a
-        {...commonProps}
-        href={params.actionUrl} // TODO: DragResize prevents click by link, but must not when !isDisabled
-        target="_blank"
-        onClick={event => isDisabled && event.preventDefault()}
-      >
+    return isExternalLink() ? (
+      <a {...commonProps} href={params.actionUrl} target="_blank" onClick={onExternalLinkClick}>
         {params.textContent}
       </a>
     ) : (
-      <Link {...commonProps} to={params.actionUrl || ''} onClick={handleExternalLinkClick}>
+      <Link {...commonProps} to={params.actionUrl || ''} onClick={onPageLinkClick}>
         {params.textContent}
       </Link>
     );
   } else {
     return (
-      <Button
-        {...commonProps}
-        type="primary"
-        onClick={(event) => onClick?.(event, id)}
-      >
+      <Button {...commonProps} type="primary" onClick={(event) => onClick?.(event, id)}>
         {params.textContent}
       </Button>
     )
   }
 }
 
-const renderInput: Renderer = (props) => {
+const InputComponent: Renderer = (props) => {
   const { id, style, params, isDisabled, active, onClick, sortableId } = props;
   return (
     <Input
@@ -98,7 +94,7 @@ const renderInput: Renderer = (props) => {
   );
 };
 
-const renderSelect: Renderer = (props) => {
+const SelectComponent: Renderer = (props) => {
   const { id, style, name, isDisabled, active, sortableId } = props;
   return (
     <select
@@ -124,7 +120,7 @@ const renderSelect: Renderer = (props) => {
   );
 };
 
-const renderText: Renderer = (props) => {
+const TextComponent: Renderer = (props) => {
   const { id, style, params, name, active, sortableId } = props;
   return (
     <p
@@ -141,7 +137,7 @@ const renderText: Renderer = (props) => {
   );
 };
 
-const renderImg: Renderer = (props) => {
+const ImgComponent: Renderer = (props) => {
   const { id, params, active, sortableId, style } = props;
 
   return (
@@ -159,7 +155,7 @@ const renderImg: Renderer = (props) => {
   );
 }
 
-const renderMapWidget: Renderer = (props) => {
+const MapWidgetComponent: Renderer = (props) => {
   const { id, params, active, isDisabled, style, sortableId } = props;
   return (
     <div
@@ -181,7 +177,7 @@ const renderMapWidget: Renderer = (props) => {
   );
 };
 
-const renderCalendarWidget: Renderer = (props) => {
+const CalendarWidgetComponent: Renderer = (props) => {
   const { id, style, active, isDisabled, sortableId } = props;
   return (
     <div
@@ -198,7 +194,7 @@ const renderCalendarWidget: Renderer = (props) => {
   );
 }
 
-const renderClockWidget: Renderer = (props) => {
+const ClockWidgetComponent: Renderer = (props) => {
   const { id, params, style, active, sortableId } = props;
   return (
     <div
@@ -217,7 +213,7 @@ const renderClockWidget: Renderer = (props) => {
   );
 }
 
-const renderUndefined: Renderer = (props) => {
+const UndefinedComponent: Renderer = (props) => {
   const { id, active, style, sortableId } = props;
   return (
     <div
@@ -232,14 +228,14 @@ const renderUndefined: Renderer = (props) => {
 }
 
 export const RENDERERS: Record<Exclude<Entity, 'root' | 'container'>, React.FunctionComponent<any>> = {
-  button: renderLinkOrButton('button'),
-  textinput: renderInput,
-  hyperlink: renderLinkOrButton('link'),
-  ocrtext: renderText,
-  image: renderImg,
-  select: renderSelect,
-  map: renderMapWidget,
-  calendar: renderCalendarWidget,
-  clock: renderClockWidget,
-  undefined: renderUndefined,
+  button: withLink(Action('button')),
+  textinput: InputComponent,
+  hyperlink: withLink(Action('link')),
+  ocrtext: TextComponent,
+  image: ImgComponent,
+  select: SelectComponent,
+  map: MapWidgetComponent,
+  calendar: CalendarWidgetComponent,
+  clock: ClockWidgetComponent,
+  undefined: UndefinedComponent,
 };

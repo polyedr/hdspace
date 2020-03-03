@@ -1,7 +1,7 @@
 import * as R from 'ramda';
 import { createSelector } from 'reselect';
 import {
-  DEFAULT_INDENTS, DEFAULT_BORDER, DEFAULT_BACKGROUND, DEFAULT_TYPOGRAPHY, DEFAULT_SIZE, DEFAULT_ACTION, DEFAULT_PLACEHOLDER, DEFAULT_TEXT_CONTENT, DEFAULT_MAP_PROPS, DEFAULT_DISPLAY, DEFAULT_IMAGE_PROPS, DEFAULT_BUTTON_DISPLAY,
+  DEFAULT_INDENTS, DEFAULT_BORDER, DEFAULT_BACKGROUND, DEFAULT_TYPOGRAPHY, DEFAULT_SIZE, DEFAULT_ACTION, DEFAULT_PLACEHOLDER, DEFAULT_TEXT_CONTENT, DEFAULT_MAP_PROPS, DEFAULT_DISPLAY, DEFAULT_IMAGE_PROPS,
 } from '$constants/defaultParams';
 
 export const ENTITIES = [
@@ -66,7 +66,10 @@ const ENTITY_TO_DEFAULTS: EntityToDefaults = {
   },
   button: {
     ...extractDefaults('button'),
-    display: DEFAULT_BUTTON_DISPLAY,
+    display: {
+      ...extractDefaults('button', 'display'),
+      display: 'inline-block',
+    },
     border: {
       ...extractDefaults('button', 'border'),
       'border-color': '#1890ff',

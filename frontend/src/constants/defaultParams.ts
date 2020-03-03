@@ -99,13 +99,6 @@ export const DEFAULT_DISPLAY: CssLikeStyles = {
   'align-items': 'stretch',
  };
 
- export const DEFAULT_BUTTON_DISPLAY: CssLikeStyles = { 
-  display: 'inline-block',
-  'flex-direction': 'row',
-  'justify-content': 'flex-start',
-  'align-items': 'stretch',
- };
-
 export const DEFAULT_BORDER: IScreenBorders = {
   'border-width': '0px',
   'border-color': '#323232',
