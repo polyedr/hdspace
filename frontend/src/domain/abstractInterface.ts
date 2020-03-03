@@ -230,6 +230,16 @@ export function removeItem(
   };
 }
 
+export function isRoot(aiMap: ProjectT.IListSortable, itemToTest?: string): boolean;
+export function isRoot(parentID: number): boolean;
+export function isRoot(x: ProjectT.IListSortable | number, itemToTest?: string) {
+  if (typeof x === 'number') {
+    return x === -1;
+  } else {
+    return itemToTest ? x.root.id === parseInt(itemToTest) : false;
+  }
+}
+
 /* list sortable end */
 
 type CollectChildrenAcc = { scenariosIDs: string[], elementsIDs: string[] };

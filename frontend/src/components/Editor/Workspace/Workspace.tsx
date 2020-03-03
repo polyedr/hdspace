@@ -12,6 +12,7 @@ import { Scrollbar } from '$components/UI/Scrollbar';
 import { getClassDevice } from '$utils/dom';
 import { getListNotDragging, getParams } from '$utils/parseScenario';
 import { AppReduxState } from '$shared/types/app';
+import { isRoot } from '$domain/abstractInterface';
 
 import { TopBar } from '../TopBar/TopBar';
 import { HotKeys } from '../HotKeys/HotKeys';
@@ -80,10 +81,10 @@ export const Component = (props: Props) => {
   useEffect(() => () => { resetScreenState(); }, []);
 
   const handleActiveElementChange = useCallback((parentId: number, itemId: string) => {
-    const { type, name } = getParams(itemId, scenarioElements, scenarios);
+    const { type, name, parent_id } = getParams(itemId, scenarioElements, scenarios);
     const list = getListNotDragging(type);
 
-    setActiveItem({ itemId, itemType: type, name });
+    setActiveItem({ itemId, itemType: isRoot(parent_id) ? 'root' : type, name });
     setListNotDragging(list);
   }, [screen.listSortable, scenarios, scenarioElements]);
 
@@ -102,7 +103,7 @@ export const Component = (props: Props) => {
     if (itemID === activeItem.itemId) return;
 
     if (itemID) {
-      if (itemID === 'root') {
+      if (isRoot(screen.listSortable, itemID)) {
         const rootItem = screen.listSortable.root;
         setActiveItem({ itemId: `${rootItem.id}s`, itemType: 'root', name: 'Root' });
       } else {
