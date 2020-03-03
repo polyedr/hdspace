@@ -23,8 +23,8 @@ type RendererProps = {
   isDisabled?: boolean;
   children?: JSX.Element;
   sortableId?: string;
-  projectId: number;
-  screensIds: number[];
+  projectID: number;
+  screensIDs: number[];
   activateScreen: typeof Actions.activateScreen;
   onClick?(event: any, id: string): void;
 };
@@ -32,13 +32,13 @@ type RendererProps = {
 type Renderer = React.FC<RendererProps>;
 
 const renderLinkOrButton: (type: 'link' | 'button') => Renderer = (type) => (props) => {
-  const { id, style, active, isDisabled, params, onClick, sortableId, projectId, screensIds, activateScreen } = props;
+  const { id, style, active, isDisabled, params, onClick, sortableId, projectID, screensIDs, activateScreen } = props;
 
   const isExternalLink = React.useCallback(() => {
-    return !screensIds.includes(Number(params.actionUrl));
-  }, [params.actionUrl, screensIds]);
+    return !screensIDs.includes(Number(params.actionUrl));
+  }, [params.actionUrl, screensIDs]);
 
-  const linkProps = {
+  const commonProps = {
     id,
     'data-ls-id': id,
     'data-id': sortableId,
@@ -48,13 +48,13 @@ const renderLinkOrButton: (type: 'link' | 'button') => Renderer = (type) => (pro
   }
 
   const handleExternalLinkClick = React.useCallback((event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-    isDisabled ? event.preventDefault() : params.actionUrl && activateScreen(projectId, Number(params.actionUrl));
-  }, [isDisabled, params.actionUrl, activateScreen, projectId]);
+    isDisabled ? event.preventDefault() : params.actionUrl && activateScreen(projectID, Number(params.actionUrl));
+  }, [isDisabled, params.actionUrl, activateScreen, projectID]);
 
   if (params.actionUrl || type === 'link') {
     return isExternalLink() ? (
       <a
-        {...linkProps}
+        {...commonProps}
         href={params.actionUrl} // TODO: DragResize prevents click by link, but must not when !isDisabled
         target="_blank"
         onClick={event => isDisabled && event.preventDefault()}
@@ -62,23 +62,15 @@ const renderLinkOrButton: (type: 'link' | 'button') => Renderer = (type) => (pro
         {params.textContent}
       </a>
     ) : (
-      <Link {...linkProps} to={params.actionUrl || ''} onClick={handleExternalLinkClick}>
+      <Link {...commonProps} to={params.actionUrl || ''} onClick={handleExternalLinkClick}>
         {params.textContent}
       </Link>
     );
   } else {
     return (
       <Button
-        id={id}
-        data-ls-id={id}
-        data-id={sortableId}
-        key={id}
+        {...commonProps}
         type="primary"
-        className={cn('ls-item', isDisabled && styles.disabled, active && styles.activated)}
-        style={{
-          ...style,
-          transition: 'none',
-        }}
         onClick={(event) => onClick?.(event, id)}
       >
         {params.textContent}

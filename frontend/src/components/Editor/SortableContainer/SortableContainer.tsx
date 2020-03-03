@@ -16,8 +16,8 @@ const mapStateToProps = (state: AppReduxState, props: OwnProps) => {
   const scenarios = selectors.selectScenarios(state);
   const scenarioElements = selectors.selectScenariosElements(state);
   const disableInteractions = state.user.isPrototypeMode;
-  const projectId = selectors.selectCurrentProject(state).id;
-  const screensIds = selectors.selectCurrentProject(state).projectscreen;
+  const projectID = selectors.selectCurrentProject(state).id;
+  const screensIDs = selectors.selectCurrentProject(state).projectscreen;
 
   const currId = idToLSId(props.item.id, props.item.type);
   const itemParent = listSortable[currId];
@@ -32,8 +32,8 @@ const mapStateToProps = (state: AppReduxState, props: OwnProps) => {
     disableInteractions,
     scenarioList,
     elementList,
-    projectId,
-    screensIds,
+    projectID,
+    screensIDs,
   };
 };
 
@@ -74,8 +74,8 @@ const SortableComponent: React.FC<Props> = (props) => {
     listSortable,
     elementList,
     scenarioList,
-    projectId,
-    screensIds,
+    projectID,
+    screensIDs,
     activateScreen,
   } = props;
 
@@ -166,8 +166,8 @@ const SortableComponent: React.FC<Props> = (props) => {
             name,
             style: parsedStyles,
             active: !disableInteractions && itemId === activeItemId,
-            projectId: projectId,
-            screensIds: screensIds,
+            projectID: projectID,
+            screensIDs: screensIDs,
             activateScreen: activateScreen,
           })
         ) : null;

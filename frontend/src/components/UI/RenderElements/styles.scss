@@ -14,13 +14,12 @@
     pointer-events: none;
   }
 
-  &.activated,
-  &.activated:active {
-    outline: red solid 1px;
-    box-shadow: none;
-  }
-
   &:global(.hovered) {
     outline: $secondBorderColor solid 1px;
+  }
+
+  &:global(.activated),
+  &:global(.activated):active {
+    outline: red solid 1px;
   }
 }
