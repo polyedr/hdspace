@@ -1,14 +1,13 @@
 import * as R from 'ramda';
 import { createSelector } from 'reselect';
-import { IScenarioItem, IScenarios, IScenarioElement, IScenarioElements } from '$redux/project/types';
 import {
-  LIST_SCENARIO_TYPE, DEFAULT_INDENTS, DEFAULT_BORDER, DEFAULT_BACKGROUND, DEFAULT_TYPOGRAPHY, DEFAULT_SIZE, DEFAULT_ACTION, DEFAULT_PLACEHOLDER, DEFAULT_TEXT_CONTENT, DEFAULT_MAP_PROPS, DEFAULT_DISPLAY, DEFAULT_BUTTON_DISPLAY,
+  DEFAULT_INDENTS, DEFAULT_BORDER, DEFAULT_BACKGROUND, DEFAULT_TYPOGRAPHY, DEFAULT_SIZE, DEFAULT_ACTION, DEFAULT_PLACEHOLDER, DEFAULT_TEXT_CONTENT, DEFAULT_MAP_PROPS, DEFAULT_DISPLAY, DEFAULT_IMAGE_PROPS, DEFAULT_BUTTON_DISPLAY,
 } from '$constants/defaultParams';
 
 export const ENTITIES = [
   'root', 'container', 'button', 'textinput', 'hyperlink', 'ocrtext', 'image', 'select', 'map', 'calendar', 'clock', 'undefined'
 ] as const;
-const CONTROLS_AFFECT_ON_PARAMS = ['action', 'mapProps', 'placeholder', 'textContent'] as const;
+const CONTROLS_AFFECT_ON_PARAMS = ['action', 'mapProps', 'placeholder', 'textContent', 'image'] as const;
 const CONTROLS_AFFECT_ON_STYLES = ['display', 'indents', 'size', 'typography', 'border', 'background'] as const;
 
 const controlAffectsOnStyles = (controlName: Control) => (
@@ -26,7 +25,7 @@ export const AVAILABLE_CONTROLS: Record<Entity, Control[]> = {
   textinput: ['indents', 'size', 'typography', 'border', 'background', 'placeholder'],
   hyperlink: ['typography', 'border', 'background', 'textContent', 'action'],
   ocrtext: ['indents', 'size', 'typography', 'border', 'background', 'textContent'],
-  image: ['indents', 'size', 'border', 'background'],
+  image: ['indents', 'size', 'border', 'background', 'image'],
   select: ['indents', 'size', 'typography', 'border', 'background'],
   map: ['indents', 'size', 'typography', 'border', 'background', 'mapProps'],
   calendar: ['indents', 'size', 'typography', 'border', 'background'],
@@ -45,6 +44,7 @@ const CONTROLS_DEFAULTS: Record<Control, any> = {
   placeholder: DEFAULT_PLACEHOLDER,
   textContent: DEFAULT_TEXT_CONTENT,
   mapProps: DEFAULT_MAP_PROPS,
+  image: DEFAULT_IMAGE_PROPS,
 };
 
 type EntityToDefaults = {
@@ -57,7 +57,13 @@ const extractDefaults = (entity: Entity, control?: Control) => control
 
 const ENTITY_TO_DEFAULTS: EntityToDefaults = {
   root: extractDefaults('root'),
-  container: extractDefaults('container'),
+  container: {
+    ...extractDefaults('container'),
+    size: {
+      ...extractDefaults('container', 'size'),
+      width: '100%',
+    },
+  },
   button: {
     ...extractDefaults('button'),
     display: DEFAULT_BUTTON_DISPLAY,
@@ -99,7 +105,20 @@ const ENTITY_TO_DEFAULTS: EntityToDefaults = {
     },
   },
   ocrtext: extractDefaults('ocrtext'),
-  image: extractDefaults('image'),
+  image: {
+    ...extractDefaults('image'),
+    size: {
+      width: 'auto',
+      height: 'auto',
+    },
+    indents: {
+      ...extractDefaults('image', 'indents'),
+      'padding-top': '0',
+      'padding-right': '0',
+      'padding-bottom': '0',
+      'padding-left': '0',
+    }
+  },
   select: extractDefaults('select'),
   map: {
     ...extractDefaults('map'),
@@ -137,16 +156,4 @@ export const getConfigurablePropsOf = createSelector(
       })
     }, { styles: {}, params: {} });
   },
-);
-
-export const greaterBuoyancyFirst = <T extends { buoyancy: number }>(a: T, b: T) => b.buoyancy - a.buoyancy;
-export const isElement = (id: string) => id.slice(-1) === 'e';
-export const isScenario = (x: any): x is IScenarioItem => LIST_SCENARIO_TYPE.indexOf(x.struct_type) !== -1;
-
-export const scenariosItemsToScenarios = (items: IScenarioItem[]): IScenarios => items.reduce(
-  (acc, x) => ({ ...acc, [x.id]: x }), {},
-);
-
-export const elementsToScenariosElements = (elements: IScenarioElement[]): IScenarioElements => elements.reduce(
-  (acc, x) => ({ ...acc, [x.id]: x }), {},
 );

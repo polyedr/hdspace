@@ -52,14 +52,14 @@ type Props = StateProps & PropertiesChangeProps;
 export const Component: React.FC<Props> = memo((props) => {
   const { displayStyles, updateStyles } = props;
 
-  const handleDisplayDropdownChange = useCallback(value => {
-      updateStyles({ display: value });
-    }, [updateStyles]);
+  const handleDisplayDropdownChange = useCallback((value) => {
+    updateStyles({ display: value });
+  }, [updateStyles]);
 
   const handleFlexPropertiesChange = useCallback((prop: keyof Flex, value: Flex[keyof Flex]) => {
     const styles = convertFlexToCssLikeStyles({ [prop]: value });
     updateStyles(styles);
-  }, [])  
+  }, [updateStyles]);
 
   return (
     <>

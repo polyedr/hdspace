@@ -6,6 +6,7 @@ import { Button } from '$components/UI/Button/';
 import { Modal } from '$components/UI/Modal/';
 import { ModalAddElements } from '$components/ModalAddElements/ModalAddElements/ModalAddElements';
 import { NavigateItem } from '$components/Editor/NavigateItem/NavigateItem';
+import { LibraryElements } from '$redux/project/types';
 
 import { PropertiesPanelProps } from '../../PropertiesPanel/PropertiesPanel';
 const styles = require('./styles.scss');
@@ -14,8 +15,8 @@ interface IComponentProps {
   activeItem: PropertiesPanelProps['activeItem'],
   disablePanel: boolean,
   scenarios: PropertiesPanelProps['scenarios'],
-  libraryElements: PropertiesPanelProps['libraryElements'],
-  addScenario: PropertiesPanelProps['addScenario'],
+  libraryElements: LibraryElements,
+  addElementsIntoContainer: PropertiesPanelProps['addElementsIntoContainer'],
   isAddElementsModalOpened: boolean;
   onWrapIntoContainer(): void;
   onDelScenarioItem(): void;
@@ -29,7 +30,7 @@ export const ActiveElementBlock: React.FunctionComponent<IComponentProps> = memo
     onDelScenarioItem,
     scenarios,
     libraryElements,
-    addScenario,
+    addElementsIntoContainer,
     onWrapIntoContainer,
     isAddElementsModalOpened,
     setIsAddElementsModalOpened,
@@ -106,7 +107,7 @@ export const ActiveElementBlock: React.FunctionComponent<IComponentProps> = memo
         scenarios={scenarios}
         libraryElements={libraryElements}
         onClose={closeModal}
-        onConfirm={addScenario}
+        onConfirm={addElementsIntoContainer}
       />
       { modalDeleteElementOpen && (
         <Modal

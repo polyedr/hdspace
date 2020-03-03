@@ -9,7 +9,7 @@ export function uiReducer(state: T.ReduxState['ui'] = initial.ui, action: T.Acti
     }
 
     case 'PROJECTS:SET_ITEM_TO_COPY': {
-      return { ...state, itemToCopyID: action.payload.itemToCopyID };
+      return { ...state, itemToCopyInfo: action.payload };
     }
 
     case 'PROJECTS:CLEAN_AFTER_PREV_SCREEN': {
@@ -19,6 +19,7 @@ export function uiReducer(state: T.ReduxState['ui'] = initial.ui, action: T.Acti
           ['activeItem'],
           initial.ui,
         ),
+        itemToCopyInfo: state.itemToCopyInfo,
       };
     }
 

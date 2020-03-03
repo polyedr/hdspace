@@ -34,6 +34,18 @@ export const apiGetElements = (
     .catch(onError)
 );
 
+export const apiGetElement = (
+  { id, ...props }: MyAxiosProps & { id: string },
+): Promise<IScenarioElement> => (
+  myAxios({
+    ...props,
+    method: 'GET',
+    url: `/projects/scenario-elements/${id}/`,
+  })
+    .then(parseResult)
+    .catch(onError)
+);
+
 export const apiDelElements = (props: MyAxiosProps & { list: string[] }) => (
   myAxios({
     ...props,
@@ -59,6 +71,16 @@ export const apiDelElement = (props: MyAxiosProps & { id: string }) => (
     ...props,
     method: 'DELETE',
     url: `/projects/scenario-elements/${props.id}`,
+  })
+    .then(parseResult)
+    .catch(onError)
+);
+
+export const apiChangeElement = (props: MyAxiosProps & { id: string }): Promise<IScenarioElement> => (
+  myAxios({
+    ...props,
+    method: 'PATCH',
+    url: `/projects/scenario-elements/${props.id}/`,
   })
     .then(parseResult)
     .catch(onError)

@@ -16,11 +16,9 @@ import { LibraryElements } from '$redux/project/types';
 const styles = require('./ModalAddElements.scss');
 
 export interface IChooseElement {
-  id: number; // id, img are Image-specific properties
   funcType: string;
   structType: string;
-  type: 'Image' | string;
-  img?: IUploadFile;
+  type: string;
 }
 
 function mapStateToProps(state: AppReduxState) {
@@ -40,7 +38,7 @@ type OwnProps = {
   scenarios: PropertiesPanelProps['scenarios'];
   libraryElements: LibraryElements;
   onClose(): void;
-  onConfirm(scenarioTypeID: number | null, name: string, elementsToFormScenario: IChooseElement[]): void;
+  onConfirm(elementsToAdd: IChooseElement[]): void;
 };
 
 type Props = typeof mapDispatchToProps & ReturnType<typeof mapStateToProps> & OwnProps;
@@ -105,13 +103,10 @@ const Component: React.FunctionComponent<Props> = memo((props) => {
     } else if (!selectedElements.length) {
       setErrorMsg('No items for the scenario.');
     } else {
-      const finalScenarioName = scenarioName.trim() || 'Container';
-      const finalScenarioTypeID = scenarioTypeId === null ? null : Number(scenarioTypeId);
-
       setErrorMsg('');
       setScenarioName('');
       setScenarioTypeId(null);
-      onConfirm(finalScenarioTypeID, finalScenarioName, selectedElements);
+      onConfirm(selectedElements);
       onClose();
     }
   }, [

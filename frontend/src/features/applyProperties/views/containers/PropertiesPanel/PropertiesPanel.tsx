@@ -1,13 +1,15 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 import * as R from 'ramda';
 
 import { AppReduxState } from '$shared/types/app';
+import { LibraryElements } from '$redux/project/types';
 import { actionsCreators, selectors, T as ProjectT } from '$redux/project';
 import { Scrollbar } from '$components/UI/Scrollbar/';
 import { Spinner } from '$components/UI/Spinner/';
 import { AVAILABLE_CONTROLS, Control, Entity } from '$domain/core';
+import { LIBRARY_ELEMENTS } from '$domain/libraryElements';
 
 import { ActiveElementBlock } from '../Controls/ActiveElementBlock';
 import { ActionBlock } from '../Controls/ActionBlock';
@@ -20,11 +22,11 @@ import { TypographyBlock } from '../Controls/TypographyBlock';
 import { Placeholder } from '../Controls/Placeholder/Placeholder';
 import { TextContent } from '../Controls/TextContent/TextContent';
 import { Display } from '../Controls/Display/Display';
+import { Image } from '../Controls/Image/Image';
 const styles = require('./PropertiesPanel.scss');
 
 type StateProps = {
   scenarios: ProjectT.IScenarios;
-  libraryElements: ProjectT.LibraryElements;
   activeItem: ProjectT.ActiveItem;
   screen: ProjectT.IProjectScreen;
   isAddElementsModalOpened: boolean;
@@ -34,7 +36,6 @@ type StateProps = {
 const mapState = (state: AppReduxState): StateProps => ({
   activeItem: selectors.selectActiveItem(state),
   scenarios: selectors.selectScenarios(state),
-  libraryElements: selectors.selectLibraryElements(state),
   screen: selectors.selectCurrentScreen(state),
   isAddElementsModalOpened: selectors.selectIsAddElementsModalOpened(state),
   loader: selectors.selectLoader(state),
@@ -42,10 +43,10 @@ const mapState = (state: AppReduxState): StateProps => ({
 
 const mapDispatch = {
   addElement: actionsCreators.addElement,
-  addScenario: actionsCreators.addScenario,
+  addElementsIntoContainer: actionsCreators.addElementsIntoContainer,
   wrapIntoContainer: actionsCreators.wrapIntoContainer,
   setIsAddElementsModalOpened: actionsCreators.setIsAddElementsModalOpened,
-  delScenarioItem: actionsCreators.delScenarioItem,
+  deleteActiveItem: actionsCreators.deleteActiveItem,
 };
 
 const CONTROLS: Record<Control, React.ComponentType> = {
@@ -59,6 +60,7 @@ const CONTROLS: Record<Control, React.ComponentType> = {
   mapProps: MapProps,
   placeholder: Placeholder,
   textContent: TextContent,
+  image: Image,
 };
 
 export type PropertiesPanelProps = StateProps & typeof mapDispatch;
@@ -70,13 +72,10 @@ const SCROLLBAR_STYLES = {
 const Component: React.FC<PropertiesPanelProps> = ({
   activeItem,
   screen,
-  delScenarioItem,
+  deleteActiveItem,
   loader,
-
   scenarios,
-  libraryElements,
-
-  addScenario,
+  addElementsIntoContainer,
   wrapIntoContainer,
   isAddElementsModalOpened,
   setIsAddElementsModalOpened,
@@ -84,10 +83,6 @@ const Component: React.FC<PropertiesPanelProps> = ({
   const activeItemID = activeItem.itemType === 'root' ? 'root' : activeItem.itemId;
   const currentItemType = activeItem.itemType === 'root' ? 'root' : R.prop(activeItemID, screen.listSortable)?.type;
   const disablePanel = !screen;
-
-  const deleteScenarioItem = useCallback(() => {
-    delScenarioItem(activeItem.itemId);
-  }, [activeItem.itemId]);
 
   return (
     <div className={classNames(styles.editorRightPanel)}>
@@ -98,10 +93,10 @@ const Component: React.FC<PropertiesPanelProps> = ({
         <ActiveElementBlock
           activeItem={activeItem}
           disablePanel={disablePanel}
-          onDelScenarioItem={deleteScenarioItem}
+          onDelScenarioItem={deleteActiveItem}
           scenarios={scenarios}
-          libraryElements={libraryElements}
-          addScenario={addScenario}
+          libraryElements={LIBRARY_ELEMENTS as LibraryElements}
+          addElementsIntoContainer={addElementsIntoContainer}
           onWrapIntoContainer={wrapIntoContainer}
           isAddElementsModalOpened={isAddElementsModalOpened}
           setIsAddElementsModalOpened={setIsAddElementsModalOpened}

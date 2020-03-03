@@ -1,10 +1,9 @@
-import React, { memo, useState, useEffect, useCallback } from 'react';
+import React, { memo, useState, useEffect } from 'react';
 import { Prompt } from 'react-router';
 import cn from 'classnames';
 
 import { PropertiesPanel } from '$features/applyProperties';
 import * as Actions from '$redux/project/actions';
-import { T as ProjectT } from '$redux/project';
 import { EditorProps } from '$containers/EditorLogic';
 
 import { Workspace } from './Workspace/Workspace';
@@ -20,25 +19,15 @@ export interface IEditProps {
   screen: EditorProps['currentScreen'],
   isNavPanelMinimized: EditorProps['isNavPanelMinimized'],
   isPrototypeMode: EditorProps['isPrototypeMode'],
-  activeItem: ProjectT.ActiveItem;
-  delScenarioItem: typeof Actions.delScenarioItem,
   updateElementStyles: typeof Actions.updateElementStyles,
-  wrapIntoContainer: typeof Actions.wrapIntoContainer,
   resetScreenState: typeof Actions.resetScreenState;
-  copyActiveItem: typeof Actions.copyActiveItem;
-  pasteCopiedItem: typeof Actions.pasteCopiedItem;
 }
 
 export const Editor: React.FC<IEditProps> = memo(({
   screen,
   isNavPanelMinimized,
   isPrototypeMode,
-  activeItem,
-  delScenarioItem,
-  wrapIntoContainer,
   resetScreenState,
-  copyActiveItem,
-  pasteCopiedItem,
 }) => {
   const [screenId, setScreenId] = useState<number>(-1);
 
@@ -49,68 +38,6 @@ export const Editor: React.FC<IEditProps> = memo(({
   }, [screen.id]);
 
   useEffect(() => () => { resetScreenState(); }, []);
-
-  const handleDelScenarioItem = useCallback(() => {
-    if (['root', 'none'].includes(activeItem.itemType)) return;
-    if (document.activeElement?.getAttribute('data-ls-id') !== activeItem.itemId) return;
-
-    delScenarioItem(activeItem.itemId);
-  }, [activeItem, delScenarioItem]);
-
-  useEffect(() => {
-    const listener = (event: KeyboardEvent) => {
-      if (event.keyCode === 8) {
-        handleDelScenarioItem();
-      }
-    };
-
-    document.addEventListener('keydown', listener);
-    return () => document.removeEventListener('keydown', listener);
-  }, [activeItem, handleDelScenarioItem]);
-
-  useEffect(() => {
-    const listener = (event: KeyboardEvent) => {
-      if (event.code == 'KeyC' && event.altKey) {
-        wrapIntoContainer();
-      }
-    };
-
-    document.addEventListener('keydown', listener);
-    return () => document.removeEventListener('keydown', listener);
-  }, [wrapIntoContainer]);
-
-  useEffect(() => {
-    const listener = (event: KeyboardEvent) => {
-      const isItemCopyEvent =
-        event.code == 'KeyC' &&
-        (event.metaKey || event.ctrlKey) &&
-        document.activeElement?.hasAttribute('data-ls-id');
-
-      if (isItemCopyEvent) {
-        copyActiveItem();
-        navigator.clipboard.writeText('');
-      }
-    };
-
-    document.addEventListener('keydown', listener);
-    return () => document.removeEventListener('keydown', listener);
-  }, [copyActiveItem]);
-
-  useEffect(() => {
-    const listener = (event: KeyboardEvent) => {
-      const isItemPasteEvent =
-        event.code == 'KeyV' &&
-        (event.metaKey || event.ctrlKey) &&
-        document.activeElement?.hasAttribute('data-ls-id');
-
-      if (isItemPasteEvent) {
-        pasteCopiedItem();
-      }
-    };
-
-    document.addEventListener('keydown', listener);
-    return () => document.removeEventListener('keydown', listener);
-  }, [pasteCopiedItem]);
 
   return (
     <div

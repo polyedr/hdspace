@@ -21,6 +21,7 @@ export interface CssLikeStyles {
   height?: string,
   'min-height'?: string,
   'min-width'?: string,
+  'max-width'?: string,
 
   'margin-top'?: string,
   'margin-right'?: string,
@@ -142,6 +143,8 @@ const otherStyles = (styles: CssLikeStyles): React.CSSProperties => (
         return { ...acc, alignItems: styles[key] };
       case 'min-height':
         return { ...acc, minHeight: styles[key] };
+      case 'max-width': 
+        return { ...acc, maxWidth: styles[key] };  
       case 'min-width':
         return { ...acc, minWidth: styles[key] };
       case 'display':
