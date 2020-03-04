@@ -10,7 +10,7 @@ import { CalendarWidget } from '$components/UI/Calendar';
 import { ClockWidget } from '$components/UI/Clock';
 import { Entity } from '$domain/core';
 
-import { withLink } from '../../../utils/withLink';
+import { withLink, WithLinkProps } from '../../../utils/withLink';
 const styles = require('./styles.scss');
 
 export type RendererProps = {
@@ -23,14 +23,14 @@ export type RendererProps = {
   isDisabled?: boolean;
   children?: JSX.Element;
   sortableId?: string;
-  onPageLinkClick(event: React.MouseEvent<HTMLAnchorElement, MouseEvent>): void;
-  onExternalLinkClick(event: React.MouseEvent<HTMLAnchorElement, MouseEvent>): void;
+  
   onClick?(event: any, id: string): void;
 };
 
 type Renderer = React.FC<RendererProps>;
+type ActionRenderer = React.FC<WithLinkProps & RendererProps>
 
-const Action: (type: 'link' | 'button') => Renderer = (type) => (props) => {
+const makeActionComponent: (type: 'link' | 'button') => ActionRenderer = (type) => (props) => {
   const {
     id,
     style,
@@ -58,7 +58,7 @@ const Action: (type: 'link' | 'button') => Renderer = (type) => (props) => {
         {params.textContent}
       </a>
     ) : (
-      <Link {...commonProps} to={params.action.screenID && String(params.action.screenID) || ''} onClick={onPageLinkClick}>
+      <Link {...commonProps} to={String(params.action.screenID)} onClick={onPageLinkClick}>
         {params.textContent}
       </Link>
     );
@@ -71,7 +71,7 @@ const Action: (type: 'link' | 'button') => Renderer = (type) => (props) => {
   }
 }
 
-const InputComponent: Renderer = (props) => {
+const InputRenderer: Renderer = (props) => {
   const { id, style, params, isDisabled, active, onClick, sortableId } = props;
   return (
     <Input
@@ -92,7 +92,7 @@ const InputComponent: Renderer = (props) => {
   );
 };
 
-const SelectComponent: Renderer = (props) => {
+const SelectRenderer: Renderer = (props) => {
   const { id, style, name, isDisabled, active, sortableId } = props;
   return (
     <select
@@ -118,7 +118,7 @@ const SelectComponent: Renderer = (props) => {
   );
 };
 
-const TextComponent: Renderer = (props) => {
+const TextRenderer: Renderer = (props) => {
   const { id, style, params, name, active, sortableId } = props;
   return (
     <p
@@ -135,7 +135,7 @@ const TextComponent: Renderer = (props) => {
   );
 };
 
-const ImgComponent: Renderer = (props) => {
+const ImgRenderer: Renderer = (props) => {
   const { id, params, active, sortableId, style } = props;
 
   return (
@@ -153,7 +153,7 @@ const ImgComponent: Renderer = (props) => {
   );
 }
 
-const MapWidgetComponent: Renderer = (props) => {
+const MapWidgetRenderer: Renderer = (props) => {
   const { id, params, active, isDisabled, style, sortableId } = props;
   return (
     <div
@@ -175,7 +175,7 @@ const MapWidgetComponent: Renderer = (props) => {
   );
 };
 
-const CalendarWidgetComponent: Renderer = (props) => {
+const CalendarWidgetRenderer: Renderer = (props) => {
   const { id, style, active, isDisabled, sortableId } = props;
   return (
     <div
@@ -192,7 +192,7 @@ const CalendarWidgetComponent: Renderer = (props) => {
   );
 }
 
-const ClockWidgetComponent: Renderer = (props) => {
+const ClockWidgetRenderer: Renderer = (props) => {
   const { id, params, style, active, sortableId } = props;
   return (
     <div
@@ -211,7 +211,7 @@ const ClockWidgetComponent: Renderer = (props) => {
   );
 }
 
-const UndefinedComponent: Renderer = (props) => {
+const UndefinedRenderer: Renderer = (props) => {
   const { id, active, style, sortableId } = props;
   return (
     <div
@@ -226,14 +226,14 @@ const UndefinedComponent: Renderer = (props) => {
 }
 
 export const RENDERERS: Record<Exclude<Entity, 'root' | 'container'>, React.FunctionComponent<any>> = {
-  button: withLink(Action('button')),
-  textinput: InputComponent,
-  hyperlink: withLink(Action('link')),
-  ocrtext: TextComponent,
-  image: ImgComponent,
-  select: SelectComponent,
-  map: MapWidgetComponent,
-  calendar: CalendarWidgetComponent,
-  clock: ClockWidgetComponent,
-  undefined: UndefinedComponent,
+  button: withLink(makeActionComponent('button')),
+  textinput: InputRenderer,
+  hyperlink: withLink(makeActionComponent('link')),
+  ocrtext: TextRenderer,
+  image: ImgRenderer,
+  select: SelectRenderer,
+  map: MapWidgetRenderer,
+  calendar: CalendarWidgetRenderer,
+  clock: ClockWidgetRenderer,
+  undefined: UndefinedRenderer,
 };

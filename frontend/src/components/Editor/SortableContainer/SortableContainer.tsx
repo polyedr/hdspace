@@ -146,11 +146,11 @@ const SortableComponent: React.FC<Props> = (props) => {
         } 
 
         // @ts-ignore
-        const RenderedElement = RENDERERS[struct_type];
+        const ElementRenderer = RENDERERS[struct_type];
         const parsedStyles = convertPropCSS(styles);
         
-        return RenderedElement ? (
-          <RenderedElement
+        return ElementRenderer ? (
+          <ElementRenderer
             key={itemId}
             id={itemId}
             isDisabled={!disableInteractions}

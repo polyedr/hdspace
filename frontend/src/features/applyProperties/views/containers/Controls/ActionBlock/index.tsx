@@ -43,11 +43,11 @@ const Component: React.FC<Props> = (props) => {
  
   const handlePageLinkButtonClick = React.useCallback(() => {
     setIsExternalLink(false);
-  }, [setIsExternalLink]);
+  }, []);
 
   const handleExternalLinkButtonClick = React.useCallback(() => {
     setIsExternalLink(true);
-  }, [setIsExternalLink]);
+  }, []);
 
   const handleExternalUrlInputChange = React.useCallback(({ target: { value } }) => {
     const newActionParams: LinkParams = value ? { type: 'external-link', url: value } : null;
@@ -60,8 +60,8 @@ const Component: React.FC<Props> = (props) => {
   }, [updateParams]);
 
   useEffect(() => {
-    action && action.type === 'external-link' && action.url && setIsExternalLink(true);
-    action && action.type === 'internal-link' && action.screenID && setIsExternalLink(false);
+    action && action.type === 'external-link' && setIsExternalLink(true);
+    action && action.type === 'internal-link' && setIsExternalLink(false);
   }, [action]);
 
   return (

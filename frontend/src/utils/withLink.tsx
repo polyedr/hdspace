@@ -16,9 +16,14 @@ const mapDispatchToProps = {
   activateScreen: actionsCreators.activateScreen,
 };
 
-type Props = RendererProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
+export type WithLinkProps = {
+  onPageLinkClick(event: React.MouseEvent<HTMLAnchorElement, MouseEvent>): void;
+  onExternalLinkClick(event: React.MouseEvent<HTMLAnchorElement, MouseEvent>): void;
+}
 
-function withLink(Component: React.ComponentType<RendererProps>) {
+type Props = WithLinkProps & RendererProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
+
+function withLink(Component: React.ComponentType<WithLinkProps & RendererProps>) {
   function WrapperComponent(props: Props) {
     const { projectID, activateScreen, ...restProps } = props;
     const { params, isDisabled } = restProps;
