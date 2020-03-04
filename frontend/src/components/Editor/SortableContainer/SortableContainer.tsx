@@ -36,7 +36,6 @@ const mapStateToProps = (state: AppReduxState, props: OwnProps) => {
 const mapDispatchToProps = {
   updateElementStyles: actionsCreators.updateElementStyles,
   setListSortable: actionsCreators.setListSortable,
-  activateScreen: actionsCreators.activateScreen,
 };
 
 export type OwnProps = {
@@ -70,7 +69,6 @@ const SortableComponent: React.FC<Props> = (props) => {
     listSortable,
     elementList,
     scenarioList,
-    activateScreen,
   } = props;
 
   const [isDragging, setIsDragging] = useState<boolean>(false);
@@ -161,7 +159,6 @@ const SortableComponent: React.FC<Props> = (props) => {
             name={name}
             style={parsedStyles}
             active={!disableInteractions && itemId === activeItemId}
-            activateScreen={activateScreen}
            />
         ) : null;
       })}
