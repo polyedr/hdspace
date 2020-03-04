@@ -9,6 +9,7 @@ import {
   ActiveItem,
   LibraryElementType,
   ServerFuncType,
+  LinkParams,
 } from '$redux/project/types';
 import { IApiResponseError, ITokenPair } from '$redux/user/reducer';
 // import { ITokenPair, IApiResponseError } from '$redux/user/reducer';
@@ -113,8 +114,8 @@ export const DEFAULT_BACKGROUND: IScreenBackground = {
   'background-size': 'cover',
 };
 
-export const DEFAULT_ACTION = {
-  actionUrl: '',
+export const DEFAULT_ACTION: { action: LinkParams } = {
+  action: null,
 };
 
 export const DEFAULT_MAP_PROPS = {

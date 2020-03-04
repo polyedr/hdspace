@@ -192,6 +192,11 @@ export type Flex = {
 
 export type ScreenDisplay = Block | InlineBlock | Flex;
 
+export type InternalLink = { type: 'internal-link', screenID: number | null };
+export type ExternalLink = { type: 'external-link', url: string | null };
+
+export type LinkParams = InternalLink | ExternalLink | null;
+
 export interface IScreenIndents {
   'margin-top'?: string,
   'margin-right'?: string,
@@ -256,8 +261,7 @@ export interface IScreenProps {
   map_props: IMapProps,
   source_img?: string,
   scenarioId?: number,
-  // actionContent?: string;
-  actionUrl?: string,
+  action?: LinkParams,
   imageURL?: string,
 }
 

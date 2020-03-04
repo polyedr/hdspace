@@ -8,12 +8,8 @@ import { RendererProps } from '../components/UI/RenderElements';
 
 const mapStateToProps = (state: AppReduxState) => {
   const projectID = selectors.selectCurrentProject(state).id;
-  const screensIDs = selectors.selectCurrentProject(state).projectscreen;
 
-  return {
-    projectID,
-    screensIDs,
-  };
+  return { projectID };
 };
 
 const mapDispatchToProps = {
@@ -24,13 +20,15 @@ type Props = RendererProps & ReturnType<typeof mapStateToProps> & typeof mapDisp
 
 function withLink(Component: React.ComponentType<RendererProps>) {
   function WrapperComponent(props: Props) {
-    const { projectID, screensIDs, activateScreen, ...restProps } = props;
+    const { projectID, activateScreen, ...restProps } = props;
     const { params, isDisabled } = restProps;
 
-    const isExternalLink = useCallback(() => !screensIDs.includes(Number(params.actionUrl)), [screensIDs, params]);
-
     const handlePageLinkClick = useCallback((event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-      isDisabled ? event.preventDefault() : params.actionUrl && activateScreen(projectID, Number(params.actionUrl));
+      if (isDisabled) {
+        event.preventDefault();
+      } else {
+        params.action?.type === 'internal-link' && activateScreen(projectID, Number(params.action.screenID));
+      }
     }, [isDisabled, params, projectID]);
 
     const handleExternalLinkClick = useCallback((event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
@@ -40,7 +38,6 @@ function withLink(Component: React.ComponentType<RendererProps>) {
     return (
       <Component
         {...restProps}
-        isExternalLink={isExternalLink}
         onPageLinkClick={handlePageLinkClick}
         onExternalLinkClick={handleExternalLinkClick}
       />

@@ -23,7 +23,6 @@ export type RendererProps = {
   isDisabled?: boolean;
   children?: JSX.Element;
   sortableId?: string;
-  isExternalLink(): boolean;
   onPageLinkClick(event: React.MouseEvent<HTMLAnchorElement, MouseEvent>): void;
   onExternalLinkClick(event: React.MouseEvent<HTMLAnchorElement, MouseEvent>): void;
   onClick?(event: any, id: string): void;
@@ -40,7 +39,6 @@ const Action: (type: 'link' | 'button') => Renderer = (type) => (props) => {
     params,
     onClick,
     sortableId,
-    isExternalLink,
     onPageLinkClick,
     onExternalLinkClick,
   } = props;
@@ -54,13 +52,13 @@ const Action: (type: 'link' | 'button') => Renderer = (type) => (props) => {
     style: style,
   }
 
-  if (params.actionUrl || type === 'link') {
-    return isExternalLink() ? (
-      <a {...commonProps} href={params.actionUrl} target="_blank" onClick={onExternalLinkClick}>
+  if (params.action || type === 'link') {
+    return params.action && params.action.type === 'external-link' || !params.action ? (
+      <a {...commonProps} href={params.action && params.action.url || ''} target="_blank" onClick={onExternalLinkClick}>
         {params.textContent}
       </a>
     ) : (
-      <Link {...commonProps} to={params.actionUrl || ''} onClick={onPageLinkClick}>
+      <Link {...commonProps} to={params.action.screenID && String(params.action.screenID) || ''} onClick={onPageLinkClick}>
         {params.textContent}
       </Link>
     );
