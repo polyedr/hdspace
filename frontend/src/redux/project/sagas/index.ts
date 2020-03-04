@@ -524,6 +524,7 @@ function* duplicateContainer(containerInfo: DuplicateContainerInfo, targetContai
     createContainer, R.pipe(
       R.set(cLens.parent, parseInt(targetContainerID)),
       R.set(cLens.screen, currentScreen.id),
+      R.set(cLens.elements, []), // we must clean them because of one-to-many relationship between scenario and element. element may belong only to one scenario and here, if we don't clean them up, element is gonna belong to newContainer what breaks invariants with elements & parameters.children: params.children would have elements, but elements wouldn't in source container
     )(sourceContainer)
   );
 
@@ -597,13 +598,15 @@ function* duplicateContainer(containerInfo: DuplicateContainerInfo, targetContai
   };
 
   const restoreMainContainerRelationships = R.pipe(
-    // parent changed in the beginning
+    R.set(cLens.id, newContainer.id),
+    R.set(cLens.parent, parseInt(targetContainerID)),
+    R.set(cLens.screen, currentScreen.id),
     R.over(cLens.elements, (elements: number[]) => elements.map(e => idsMap.e.normal[e])),
     R.over(cLens.children, (children: string[]) => children.map(c => idsMap[c.slice(-1) === 's' ? 's' : 'e'].prefixed[c])),
   );
 
   const finalDuplicates = R.concat<T.IScenarioItem | T.IScenarioElement>(
-    [restoreMainContainerRelationships(newContainer)], itemsToDuplicate.map(restoreChildRelationships)
+    [restoreMainContainerRelationships(sourceContainer)], itemsToDuplicate.map(restoreChildRelationships)
   );
 
   const { newScenarios, newElements } = finalDuplicates.reduce((acc: any, x) => {
