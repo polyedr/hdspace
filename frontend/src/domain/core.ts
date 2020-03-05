@@ -21,9 +21,9 @@ export type Control = typeof CONTROLS_AFFECT_ON_PARAMS[number] | typeof CONTROLS
 export const AVAILABLE_CONTROLS: Record<Entity, Control[]> = {
   root: ['background'],
   container: ['indents', 'size', 'display', 'typography', 'border', 'background'],
-  button: ['indents', 'size', 'typography', 'border', 'background', 'textContent', 'action'],
+  button: ['indents', 'size', 'display', 'typography', 'border', 'background', 'textContent', 'action'],
   textinput: ['indents', 'size', 'typography', 'border', 'background', 'placeholder'],
-  hyperlink: ['typography', 'border', 'background', 'action'],
+  hyperlink: ['typography', 'border', 'background', 'textContent', 'action'],
   ocrtext: ['indents', 'size', 'typography', 'border', 'background', 'textContent'],
   image: ['indents', 'size', 'border', 'background', 'image'],
   select: ['indents', 'size', 'typography', 'border', 'background'],
@@ -66,6 +66,10 @@ const ENTITY_TO_DEFAULTS: EntityToDefaults = {
   },
   button: {
     ...extractDefaults('button'),
+    display: {
+      ...extractDefaults('button', 'display'),
+      display: 'inline-block',
+    },
     border: {
       ...extractDefaults('button', 'border'),
       'border-color': '#1890ff',
@@ -96,7 +100,13 @@ const ENTITY_TO_DEFAULTS: EntityToDefaults = {
       'border-radius': '4px',
     },
   },
-  hyperlink: extractDefaults('hyperlink'),
+  hyperlink: {
+    ...extractDefaults('hyperlink'),
+    textContent: {
+      ...extractDefaults('hyperlink', 'textContent'),
+      textContent: 'hyperlink',
+    },
+  },
   ocrtext: extractDefaults('ocrtext'),
   image: {
     ...extractDefaults('image'),

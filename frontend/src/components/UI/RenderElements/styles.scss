@@ -3,10 +3,19 @@
   //outline: none;
 }
 
-.addedElem {}
+.disabled {
+  cursor: default;
 
-.addedHyperLink {}
+  & > * {
+    pointer-events: none;
+  }
 
-.addedWidget {}
+  &:global(.hovered) {
+    outline: $secondBorderColor solid 1px;
+  }
 
-.addedCalendar {}
+  &:global(.activated),
+  &:global(.activated):active {
+    outline: red solid 1px;
+  }
+}

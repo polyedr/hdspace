@@ -179,6 +179,10 @@ type Block = {
   display: 'block';
 };
 
+type InlineBlock = {
+  display: 'inline-block';
+};
+
 export type Flex = {
   display: 'flex';
   justifyContent: 'flex-start' | 'flex-end' | 'center' | 'space-between' | 'space-around';
@@ -186,7 +190,12 @@ export type Flex = {
   flexDirection: 'row' | 'row-reverse' | 'column' | 'column-reverse';
 }
 
-export type ScreenDisplay = Block | Flex;
+export type ScreenDisplay = Block | InlineBlock | Flex;
+
+export type InternalLink = { type: 'internal-link', screenID: number | 'noScreen' };
+export type ExternalLink = { type: 'external-link', url: string };
+
+export type LinkParams = InternalLink | ExternalLink;
 
 export interface IScreenIndents {
   'margin-top'?: string,
@@ -252,8 +261,7 @@ export interface IScreenProps {
   map_props: IMapProps,
   source_img?: string,
   scenarioId?: number,
-  actionContent?: string;
-  actionUrl?: string,
+  action?: LinkParams,
   imageURL?: string,
 }
 

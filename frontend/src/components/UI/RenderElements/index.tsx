@@ -1,6 +1,7 @@
 import React from 'react';
 import cn from 'classnames';
 import { Input, Button } from 'antd';
+import { Link } from 'react-router-dom';
 
 import { IScreenProps } from '$redux/project/types';
 import { getDefaultDateSelectOptions } from '$constants/defaultParams';
@@ -9,9 +10,10 @@ import { CalendarWidget } from '$components/UI/Calendar';
 import { ClockWidget } from '$components/UI/Clock';
 import { Entity } from '$domain/core';
 
+import { withAction, WithActionProps } from '../../../utils/withAction';
 const styles = require('./styles.scss');
 
-type RendererProps = {
+export type RendererProps = {
   id: string;
   style: React.CSSProperties;
   params: IScreenProps;
@@ -25,47 +27,58 @@ type RendererProps = {
 };
 
 type Renderer = React.FC<RendererProps>;
+type ActionRenderer = React.FC<WithActionProps & RendererProps>;
 
-const renderButton: Renderer = (props) => {
-  const { id, style, params, active, onClick, sortableId } = props;
-  return (
-    <Button
-      id={id}
-      data-ls-id={id}
-      data-id={sortableId}
-      key={id}
-      type="primary"
-      className={cn('ls-item', active && 'activated')}
-      style={{
-        ...style,
-        transition: 'none',
-      }}
-      onClick={(event) => onClick?.(event, id)}
-    >
-      {params.textContent}
-    </Button>
-  )
+const ActionRenderer: ActionRenderer = (props) => {
+  const {
+    id,
+    style,
+    active,
+    isDisabled,
+    params,
+    onClick,
+    sortableId,
+    actionType,
+    actionLink,
+  } = props;
+
+  const commonProps = {
+    id,
+    'data-ls-id': id,
+    'data-id': sortableId,
+    key: id,
+    className: cn('ls-item', isDisabled && styles.disabled, active && 'activated'),
+    style: style,
+  }
+
+  switch (actionType) {
+    case 'external-link': {
+      return (
+        <a {...commonProps} href={actionLink} target="_blank" onClick={onClick}>
+          {params.textContent}
+        </a>
+      )
+    }
+
+    case 'internal-link': {
+      return (
+        <Link {...commonProps} to={actionLink} onClick={onClick}>
+          {params.textContent}
+        </Link>
+      )
+    }
+
+    case 'button': {
+      return (
+        <Button {...commonProps} type="primary" onClick={onClick}>
+          {params.textContent}
+        </Button>
+      )
+    }
+  }
 }
 
-const renderHyperLine: Renderer = (props) => {
-  const { id, style, active, isDisabled, params, sortableId } = props;
-  return (
-    <a
-      id={id}
-      data-ls-id={id}
-      data-id={sortableId}
-      key={id}
-      className={cn('ls-item', styles.addedHyperLink, active && 'activated')}
-      href={isDisabled ? '#' : params.actionUrl} // TODO: DragResize prevents click by link, but must not when !isDisabled
-      // href="javascript:void(0);"
-      style={style}
-    >
-      {params.actionContent}
-    </a>
-  );
-};
-
-const renderInput: Renderer = (props) => {
+const InputRenderer: Renderer = (props) => {
   const { id, style, params, isDisabled, active, onClick, sortableId } = props;
   return (
     <Input
@@ -74,7 +87,7 @@ const renderInput: Renderer = (props) => {
       data-id={sortableId}
       key={id}
       type="text" // TODO: use other types such as email, etc.
-      className={cn('ls-item', active && 'activated')}
+      className={cn('ls-item', isDisabled && styles.disabled, active && 'activated')}
       readOnly={isDisabled}
       style={{
         ...style,
@@ -86,7 +99,7 @@ const renderInput: Renderer = (props) => {
   );
 };
 
-const renderSelect: Renderer = (props) => {
+const SelectRenderer: Renderer = (props) => {
   const { id, style, name, isDisabled, active, sortableId } = props;
   return (
     <select
@@ -112,7 +125,7 @@ const renderSelect: Renderer = (props) => {
   );
 };
 
-const renderText: Renderer = (props) => {
+const TextRenderer: Renderer = (props) => {
   const { id, style, params, name, active, sortableId } = props;
   return (
     <p
@@ -129,7 +142,7 @@ const renderText: Renderer = (props) => {
   );
 };
 
-const renderImg: Renderer = (props) => {
+const ImgRenderer: Renderer = (props) => {
   const { id, params, active, sortableId, style } = props;
 
   return (
@@ -147,16 +160,17 @@ const renderImg: Renderer = (props) => {
   );
 }
 
-const renderMapWidget: Renderer = (props) => {
-  const { id, params, active, style, sortableId } = props;
+const MapWidgetRenderer: Renderer = (props) => {
+  const { id, params, active, isDisabled, style, sortableId } = props;
   return (
     <div
       id={id}
       data-ls-id={id}
       data-id={sortableId}
       key={id}
-      className={cn('ls-item', styles.addedWidget, active && 'activated')}
+      className={cn('ls-item', styles.addedWidget, isDisabled && styles.disabled, active && 'activated')}
       style={style}
+      onClick={event => isDisabled && event.preventDefault()}
       tabIndex={0}
     >
       <GMap
@@ -168,15 +182,15 @@ const renderMapWidget: Renderer = (props) => {
   );
 };
 
-const renderCalendarWidget: Renderer = (props) => {
-  const { id, style, active, sortableId } = props;
+const CalendarWidgetRenderer: Renderer = (props) => {
+  const { id, style, active, isDisabled, sortableId } = props;
   return (
     <div
       id={id}
       data-ls-id={id}
       data-id={sortableId}
       key={id}
-      className={cn('ls-item', styles.addedCalendar, active && 'activated')}
+      className={cn('ls-item', styles.addedCalendar, isDisabled && styles.disabled, active && 'activated')}
       style={style}
       tabIndex={0}
     >
@@ -185,7 +199,7 @@ const renderCalendarWidget: Renderer = (props) => {
   );
 }
 
-const renderClockWidget: Renderer = (props) => {
+const ClockWidgetRenderer: Renderer = (props) => {
   const { id, params, style, active, sortableId } = props;
   return (
     <div
@@ -204,7 +218,7 @@ const renderClockWidget: Renderer = (props) => {
   );
 }
 
-const renderUndefined: Renderer = (props) => {
+const UndefinedRenderer: Renderer = (props) => {
   const { id, active, style, sortableId } = props;
   return (
     <div
@@ -219,14 +233,14 @@ const renderUndefined: Renderer = (props) => {
 }
 
 export const RENDERERS: Record<Exclude<Entity, 'root' | 'container'>, React.FunctionComponent<any>> = {
-  button: renderButton,
-  textinput: renderInput,
-  hyperlink: renderHyperLine,
-  ocrtext: renderText,
-  image: renderImg,
-  select: renderSelect,
-  map: renderMapWidget,
-  calendar: renderCalendarWidget,
-  clock: renderClockWidget,
-  undefined: renderUndefined,
+  button: withAction(ActionRenderer, 'button'),
+  textinput: InputRenderer,
+  hyperlink: withAction(ActionRenderer, 'link'),
+  ocrtext: TextRenderer,
+  image: ImgRenderer,
+  select: SelectRenderer,
+  map: MapWidgetRenderer,
+  calendar: CalendarWidgetRenderer,
+  clock: ClockWidgetRenderer,
+  undefined: UndefinedRenderer,
 };

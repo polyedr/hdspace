@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
 
@@ -8,13 +8,13 @@ import { DropDown } from '$components/UI/DropDown/';
 import { Icon } from '$components/UI/Icon/';
 import { Button } from '$components/UI/Button/';
 import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
+import { LinkParams, InternalLink, ExternalLink } from '$redux/project/types';
 
 const styles = require('./styles.scss');
 
 type StateProps = {
   screensIDs: number[];
-  content: string;
-  url: string;
+  action: LinkParams;
 }
 
 function mapState(state: AppReduxState): StateProps {
@@ -22,8 +22,7 @@ function mapState(state: AppReduxState): StateProps {
 
   return {
     screensIDs: selectors.selectCurrentProject(state).projectscreen,
-    content: activeItemParams.actionContent,
-    url: activeItemParams.actionUrl,
+    action: activeItemParams.action,
   };
 }
 
@@ -31,80 +30,77 @@ type Props = StateProps & PropertiesChangeProps;
 
 const Component: React.FC<Props> = (props) => {
   const {
-    url,
-    content,
+    action,
     screensIDs,
     updateParams,
   } = props;
 
-  const [isPage, setPageType] = React.useState<boolean>(true);
+  const [isExternalLink, setIsExternalLink] = React.useState<boolean>(!!(action && action.type === 'external-link'));
 
-  const handleChangeLinkUrl = React.useCallback(() => {
-    console.log('меняет адрес внешней страницы ссылки');
+  const getCurrentUrl =  React.useCallback((currentType: InternalLink['type'] | ExternalLink['type']): string => {
+    return action && currentType === action.type && (action.type === 'external-link' ? action.url : String(action.screenID)) || '';
+  }, [action]);
+ 
+  const handlePageLinkButtonClick = React.useCallback(() => {
+    setIsExternalLink(false);
   }, []);
 
-  const handlePageLinkType = React.useCallback(() => {
-    setPageType(true);
+  const handleExternalLinkButtonClick = React.useCallback(() => {
+    setIsExternalLink(true);
   }, []);
 
-  const handleUrlLinkType = React.useCallback(() => {
-    setPageType(false);
-  }, []);
-
-  const handleLinkContentChange = React.useCallback(({ target: { value } }) => {
-    updateParams({ actionContent: value });
+  const handleExternalUrlInputChange = React.useCallback(({ target: { value } }) => {
+    updateParams({ action: { type: 'external-link', url: value } });
   }, [updateParams]);
 
-  const handleLinkUrlChange = React.useCallback(({ target: { value } }) => {
-    updateParams({ actionUrl: value });
+  const handlePageUrlDropdownChange = React.useCallback(value => {
+    updateParams({ action: { type: 'internal-link', screenID: value === 'noScreen' ? value : Number(value) } });
   }, [updateParams]);
+
+  useEffect(() => {
+    action && action.type === 'external-link' && setIsExternalLink(true);
+    action && action.type === 'internal-link' && setIsExternalLink(false);
+  }, [action]);
 
   return (
     <div className="propsElementsBlock">
       <p className="propsElementsBlockTitle">Action</p>
       <div className="propsElementsContentBlock">
         <div className="propsElementsInnerBlock">
-          <input
-            className={styles.textContentField}
-            type="text"
-            placeholder="Enter link text content"
-            value={content}
-            onChange={handleLinkContentChange}
-          />
-        </div>
-        <div className="propsElementsInnerBlock">
           <Button
-            className={classNames('mainImgBtn', isPage && 'mainImgBtn_active')}
+            className={classNames('mainImgBtn', !isExternalLink && 'mainImgBtn_active')}
             styleType="none"
-            onClick={handlePageLinkType}
+            onClick={handlePageLinkButtonClick}
           >
             <Icon icon="link" />
           </Button>
           <Button
-            className={classNames('mainImgBtn', !isPage && 'mainImgBtn_active')}
+            className={classNames('mainImgBtn', isExternalLink && 'mainImgBtn_active')}
             styleType="none"
-            onClick={handleUrlLinkType}
+            onClick={handleExternalLinkButtonClick}
           >
             <Icon icon="page" />
           </Button>
           <div className={styles.inputsBlock}>
-            { isPage && (
-              <DropDown
-                options={
-                  screensIDs.map((_, elIndex) => ({ // TODO: restore when screens will be preloaded
-                    label: `Screen ${elIndex}`,
-                    value: `Screen ${elIndex}`,
-                  }))
-                }
-                onChange={handleChangeLinkUrl}
-              />
-            )}
-            { !isPage && (
+            {isExternalLink ? (
               <input
                 type="text"
                 placeholder="Enter a page URL"
-                value={url}
-                onChange={handleLinkUrlChange}
+                value={getCurrentUrl('external-link')}
+                onChange={handleExternalUrlInputChange}
+              />
+            ) : (
+              <DropDown
+                defaultValue={getCurrentUrl('internal-link')}
+                value={getCurrentUrl('internal-link')}
+                options={
+                  [{ label: 'No screen', value: 'noScreen' }].concat(
+                    screensIDs.map((screenId, elIndex) => ({
+                      label: `Screen ${elIndex}`,
+                      value: `${screenId}`,
+                  })))
+                }
+                onChange={handlePageUrlDropdownChange}
               />
             )}
           </div>
