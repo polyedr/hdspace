@@ -29,25 +29,24 @@ type Props = WithActionProps & RendererProps & ReturnType<typeof mapStateToProps
 function withAction(Component: React.ComponentType<WithActionProps & RendererProps>, type: 'link' | 'button') {
   function WrapperComponent(props: Props) {
     const { projectID, activateScreen, ...restProps } = props;
-    const { params: { action }, isDisabled } = restProps;
+    const { params, isDisabled } = restProps;
+    const action = params.action!;
 
     const handleInternalLinkClick = useCallback((event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-      if (isDisabled || action?.type === 'internal-link' && action.screenID === 'noScreen') {
+      if (isDisabled || action.type === 'internal-link' && action.screenID === 'noScreen') {
         event.preventDefault();
       } else {
-        action?.type === 'internal-link' && activateScreen(projectID, Number(action.screenID));
+        action.type === 'internal-link' && activateScreen(projectID, Number(action.screenID));
       }
     }, [isDisabled, action, projectID]);
 
     const handleExternalLinkClick = useCallback((event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-      isDisabled && event.preventDefault();
+      if (isDisabled || action.type === 'external-link' && action.url === '') { 
+        event.preventDefault();
+      }
     }, [isDisabled]);
 
     const getUrl = useCallback(() => {
-      if (!action) {
-        return '';
-      }
-
       if (action.type === 'internal-link') {
         return action.screenID === 'noScreen' ? '' : String(action.screenID);
       }
@@ -55,13 +54,11 @@ function withAction(Component: React.ComponentType<WithActionProps & RendererPro
       return action.url;
     }, [action]);
 
-    const isInternalLink = useCallback(() => action?.type === 'internal-link', [action]);
+    const isInternalLink = useCallback(() => action.type === 'internal-link', [action]);
 
-    const isButtonElement = useCallback(() => (!action && type === 'button')
-      || (action && type === 'button' 
-      && (action.type === 'internal-link' && action.screenID === 'noScreen' 
+    const isButtonElement = useCallback(() => (type === 'button'
+      && (action.type === 'internal-link' && action.screenID === 'noScreen'
       || action.type === 'external-link' && action.url === '')), [action, type]);
-
     
     return isButtonElement() ? (
       <Component {...restProps} actionType="button"/>
