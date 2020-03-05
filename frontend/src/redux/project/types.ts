@@ -69,6 +69,7 @@ export type UpdateViewTree = IAction<'PROJECTS:UPDATE_VIEW_TREE', Partial<{
 }>>;
 export type ClearAfterPrevScreen = IPlainAction<'PROJECTS:CLEAN_AFTER_PREV_SCREEN'>;
 export type SaveScreen = IAction<'PROJECTS:SAVE_SCREEN', { canvas: HTMLCanvasElement }>;
+export type ExportProject = IAction<'PROJECTS:EXPORT_PROJECT', { projectID: number }>;
 export type SetScreen = IAction<'PROJECTS:SET_SCREEN', { screen: IProjectScreen }>;
 export type AddElement = IAction<'PROJECTS:ADD_ELEMENT', { parentID: string, type: string }>;
 export type SetScenarioElements = IAction<'PROJECTS:SET_SCENARIO_ELEMENTS', { elements: IScenarioElements }>;

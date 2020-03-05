@@ -24,6 +24,7 @@ import {
   getProjectSaga,
   changeScreensOrderSaga,
   renameProjectSaga,
+  exportProjectSaga,
 } from '$redux/project/sagas/project';
 import {
   deleteActiveItemSaga,
@@ -791,6 +792,7 @@ const renameProjectType: ProjectT.RenameProject['type'] = 'PROJECTS:RENAME_PROJE
 const activateScreenType: ProjectT.ActivateScreen['type'] = 'PROJECTS:ACTIVATE_SCREEN';
 const addScreenType: ProjectT.AddScreen['type'] = 'PROJECTS:ADD_SCREEN';
 const saveScreenType: ProjectT.SaveScreen['type'] = 'PROJECTS:SAVE_SCREEN';
+const exportProjectType: ProjectT.ExportProject['type'] = 'PROJECTS:EXPORT_PROJECT';
 const deleteScreenType: ProjectT.DeleteScreen['type'] = 'PROJECTS:DELETE_SCREEN';
 const renameScreenType: ProjectT.RenameScreen['type'] = 'PROJECTS:RENAME_SCREEN';
 const setListSortableType: ProjectT.SetListSortable['type'] = 'PROJECTS:SET_LIST_SORTABLE';
@@ -824,6 +826,7 @@ export default function* projectSaga() {
   yield takeLatest(activateScreenType, screenSaga.activateScreenSaga);
   yield takeLatest(addScreenType, screenSaga.addScreenSaga);
   yield takeLatest(saveScreenType, screenSaga.saveScreenSaga);
+  yield takeLatest(exportProjectType, exportProjectSaga);
   yield takeLatest(deleteScreenType, screenSaga.delScreenSaga);
   yield takeLatest(renameScreenType, screenSaga.renameScreenSaga);
   yield takeLatest(setListSortableType, setListSortableSaga);

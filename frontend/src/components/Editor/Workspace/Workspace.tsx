@@ -16,6 +16,7 @@ import { isRoot } from '$domain/abstractInterface';
 
 import { TopBar } from '../TopBar/TopBar';
 import { HotKeys } from '../HotKeys/HotKeys';
+import { ExportTree } from '../Export/Export';
 const styles = require('./Workspace.scss');
 
 export type ScreenMode = {
@@ -38,6 +39,7 @@ const mapDispatch = {
   updateElementStyles: actionsCreators.updateElementStyles,
   resetScreenState: actionsCreators.resetScreenState,
   setActiveItem: actionsCreators.setActiveItem,
+  exportProject: actionsCreators.exportProject,
 };
 
 const mapState = (state: AppReduxState): StateProps => ({
@@ -61,6 +63,7 @@ export const Component = (props: Props) => {
     saveScreen,
     changePrototypeMode,
     resetScreenState,
+    exportProject,
   } = props;
 
   const [screenId, setScreenId] = useState<number>(-1);
@@ -152,6 +155,7 @@ export const Component = (props: Props) => {
         onScreenModeChange={setCurrentScreenMode}
         onScreenRotate={setIsScreenRotated}
         onScreenSave={handleSaveScreen}
+        onExport={exportProject}
       />
       <div
         className={styles.editorViewport}
@@ -173,6 +177,9 @@ export const Component = (props: Props) => {
             isResizing={hasItemBeingResized}
             setIsResizing={setHasItemBeingResized}
           />
+          {/* <div className="test">
+            <ExportTree />
+          </div> */}
         </Scrollbar>
       </div>
     </div>

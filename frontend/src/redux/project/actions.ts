@@ -133,6 +133,11 @@ export const saveScreen = (canvas: HTMLCanvasElement): T.SaveScreen => ({
   payload: { canvas },
 });
 
+export const exportProject = (projectID: number): T.ExportProject => ({
+  type: 'PROJECTS:EXPORT_PROJECT',
+  payload: { projectID },
+})
+
 export const setScreen = (screen: T.IProjectScreen): T.SetScreen => ({
   type: 'PROJECTS:SET_SCREEN',
   payload: { screen },

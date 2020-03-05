@@ -30,7 +30,7 @@ function withLink(Component: React.ComponentType<RendererProps>) {
     const isExternalLink = useCallback(() => !screensIDs.includes(Number(params.actionUrl)), [screensIDs, params]);
 
     const handlePageLinkClick = useCallback((event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-      isDisabled ? event.preventDefault() : params.actionUrl && activateScreen(projectID, Number(params.actionUrl));
+      /* isDisabled ? event.preventDefault() : params.actionUrl && activateScreen(projectID, Number(params.actionUrl)) */;
     }, [isDisabled, params, projectID]);
 
     const handleExternalLinkClick = useCallback((event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
@@ -47,7 +47,9 @@ function withLink(Component: React.ComponentType<RendererProps>) {
     );
   }
 
-  return connect(mapStateToProps, mapDispatchToProps)(WrapperComponent);
+  return WrapperComponent;
+
+  /* return connect(mapStateToProps, mapDispatchToProps)(WrapperComponent); */
 }
 
 export { withLink };
