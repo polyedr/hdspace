@@ -84,6 +84,7 @@ export class DropDown<T> extends React.PureComponent<Props<T>, State<T>> {
           <option
             key={`option-${x.value}${idx}`}
             value={x.value}
+            hidden={!x.value}
           >
             {x.label}
           </option>
