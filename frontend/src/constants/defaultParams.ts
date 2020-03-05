@@ -115,7 +115,10 @@ export const DEFAULT_BACKGROUND: IScreenBackground = {
 };
 
 export const DEFAULT_ACTION: { action: LinkParams } = {
-  action: null,
+  action: {
+    type: 'internal-link',
+    screenID: 'noScreen',
+  },
 };
 
 export const DEFAULT_MAP_PROPS = {

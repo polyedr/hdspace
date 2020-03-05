@@ -192,10 +192,10 @@ export type Flex = {
 
 export type ScreenDisplay = Block | InlineBlock | Flex;
 
-export type InternalLink = { type: 'internal-link', screenID: number };
+export type InternalLink = { type: 'internal-link', screenID: number | 'noScreen' };
 export type ExternalLink = { type: 'external-link', url: string };
 
-export type LinkParams = InternalLink | ExternalLink | null;
+export type LinkParams = InternalLink | ExternalLink;
 
 export interface IScreenIndents {
   'margin-top'?: string,

@@ -50,13 +50,11 @@ const Component: React.FC<Props> = (props) => {
   }, []);
 
   const handleExternalUrlInputChange = React.useCallback(({ target: { value } }) => {
-    const newActionParams: LinkParams = value ? { type: 'external-link', url: value } : null;
-    updateParams({ action: newActionParams });
+    updateParams({ action: { type: 'external-link', url: value } });
   }, [updateParams]);
 
   const handlePageUrlDropdownChange = React.useCallback(value => {
-    const newActionParams: LinkParams = value ? { type: 'internal-link', screenID: Number(value) } : null;
-    updateParams({ action: newActionParams });
+    updateParams({ action: { type: 'internal-link', screenID: value === 'noScreen' ? value : Number(value) } });
   }, [updateParams]);
 
   useEffect(() => {
@@ -96,7 +94,7 @@ const Component: React.FC<Props> = (props) => {
                 defaultValue={getCurrentUrl('internal-link')}
                 value={getCurrentUrl('internal-link')}
                 options={
-                  [{ label: 'No screen', value: '' }].concat(
+                  [{ label: 'No screen', value: 'noScreen' }].concat(
                     screensIDs.map((screenId, elIndex) => ({
                       label: `Screen ${elIndex}`,
                       value: `${screenId}`,

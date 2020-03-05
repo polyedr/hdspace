@@ -10,7 +10,7 @@ import { CalendarWidget } from '$components/UI/Calendar';
 import { ClockWidget } from '$components/UI/Clock';
 import { Entity } from '$domain/core';
 
-import { withLink, WithLinkProps } from '../../../utils/withLink';
+import { withAction, WithActionProps } from '../../../utils/withAction';
 const styles = require('./styles.scss');
 
 export type RendererProps = {
@@ -23,14 +23,13 @@ export type RendererProps = {
   isDisabled?: boolean;
   children?: JSX.Element;
   sortableId?: string;
-  
   onClick?(event: any, id: string): void;
 };
 
 type Renderer = React.FC<RendererProps>;
-type ActionRenderer = React.FC<WithLinkProps & RendererProps>
+type ActionRenderer = React.FC<WithActionProps & RendererProps>;
 
-const makeActionComponent: (type: 'link' | 'button') => ActionRenderer = (type) => (props) => {
+const ActionRenderer: ActionRenderer = (props) => {
   const {
     id,
     style,
@@ -39,8 +38,8 @@ const makeActionComponent: (type: 'link' | 'button') => ActionRenderer = (type) 
     params,
     onClick,
     sortableId,
-    onPageLinkClick,
-    onExternalLinkClick,
+    actionType,
+    actionLink,
   } = props;
 
   const commonProps = {
@@ -52,22 +51,30 @@ const makeActionComponent: (type: 'link' | 'button') => ActionRenderer = (type) 
     style: style,
   }
 
-  if (params.action || type === 'link') {
-    return params.action && params.action.type === 'external-link' || !params.action ? (
-      <a {...commonProps} href={params.action && params.action.url || ''} target="_blank" onClick={onExternalLinkClick}>
-        {params.textContent}
-      </a>
-    ) : (
-      <Link {...commonProps} to={String(params.action.screenID)} onClick={onPageLinkClick}>
-        {params.textContent}
-      </Link>
-    );
-  } else {
-    return (
-      <Button {...commonProps} type="primary" onClick={(event) => onClick?.(event, id)}>
-        {params.textContent}
-      </Button>
-    )
+  switch (actionType) {
+    case 'external-link': {
+      return (
+        <a {...commonProps} href={actionLink} target="_blank" onClick={onClick}>
+          {params.textContent}
+        </a>
+      )
+    }
+
+    case 'internal-link': {
+      return (
+        <Link {...commonProps} to={actionLink} onClick={onClick}>
+          {params.textContent}
+        </Link>
+      )
+    }
+
+    case 'button': {
+      return (
+        <Button {...commonProps} type="primary" onClick={onClick}>
+          {params.textContent}
+        </Button>
+      )
+    }
   }
 }
 
@@ -226,9 +233,9 @@ const UndefinedRenderer: Renderer = (props) => {
 }
 
 export const RENDERERS: Record<Exclude<Entity, 'root' | 'container'>, React.FunctionComponent<any>> = {
-  button: withLink(makeActionComponent('button')),
+  button: withAction(ActionRenderer, 'button'),
   textinput: InputRenderer,
-  hyperlink: withLink(makeActionComponent('link')),
+  hyperlink: withAction(ActionRenderer, 'link'),
   ocrtext: TextRenderer,
   image: ImgRenderer,
   select: SelectRenderer,
