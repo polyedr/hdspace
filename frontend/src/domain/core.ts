@@ -23,7 +23,7 @@ export const AVAILABLE_CONTROLS: Record<Entity, Control[]> = {
   container: ['indents', 'size', 'display', 'typography', 'border', 'background'],
   button: ['indents', 'size', 'display', 'typography', 'border', 'background', 'textContent', 'action'],
   textinput: ['indents', 'size', 'typography', 'border', 'background', 'placeholder'],
-  hyperlink: ['typography', 'border', 'background', 'textContent', 'action'],
+  hyperlink: ['indents', 'size', 'display', 'typography', 'border', 'background', 'textContent', 'action'],
   ocrtext: ['indents', 'size', 'typography', 'border', 'background', 'textContent'],
   image: ['indents', 'size', 'border', 'background', 'image'],
   select: ['indents', 'size', 'typography', 'border', 'background'],
@@ -102,6 +102,17 @@ const ENTITY_TO_DEFAULTS: EntityToDefaults = {
   },
   hyperlink: {
     ...extractDefaults('hyperlink'),
+    display: {
+      ...extractDefaults('hyperlink', 'display'),
+      display: 'inline',
+    },
+    indents: {
+      ...extractDefaults('hyperlink', 'indents'),
+      'padding-top': '0',
+      'padding-right': '0',
+      'padding-bottom': '0',
+      'padding-left': '0',
+    },
     textContent: {
       ...extractDefaults('hyperlink', 'textContent'),
       textContent: 'hyperlink',
@@ -120,7 +131,7 @@ const ENTITY_TO_DEFAULTS: EntityToDefaults = {
       'padding-right': '0',
       'padding-bottom': '0',
       'padding-left': '0',
-    }
+    },
   },
   select: extractDefaults('select'),
   map: {

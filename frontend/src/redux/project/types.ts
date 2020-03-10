@@ -183,6 +183,10 @@ type InlineBlock = {
   display: 'inline-block';
 };
 
+type Inline = {
+  display: 'inline';
+};
+
 export type Flex = {
   display: 'flex';
   justifyContent: 'flex-start' | 'flex-end' | 'center' | 'space-between' | 'space-around';
@@ -190,7 +194,7 @@ export type Flex = {
   flexDirection: 'row' | 'row-reverse' | 'column' | 'column-reverse';
 }
 
-export type ScreenDisplay = Block | InlineBlock | Flex;
+export type ScreenDisplay = Block | Inline | InlineBlock | Flex;
 
 export type InternalLink = { type: 'internal-link', screenID: number | 'noScreen' };
 export type ExternalLink = { type: 'external-link', url: string };
