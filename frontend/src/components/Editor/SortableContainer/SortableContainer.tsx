@@ -108,6 +108,7 @@ const SortableComponent: React.FC<Props> = (props) => {
       isActive={getIsActive()}
       key={item.id}
       disableSortable={!isMoving || disableInteractions}
+      disableInteractions={disableInteractions}
       isPutItem={getIsPutItem(item.type)}
       lsID={idToLSId(item.id, item.type)}
       id={idToDataLSID(item.id, item.type)}

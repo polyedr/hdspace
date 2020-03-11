@@ -93,8 +93,9 @@ const InputRenderer: Renderer = (props) => {
         ...style,
         transition: 'none',
       }}
+      {...(isDisabled ? { value: params.textContent } : undefined)}
       onClick={(event) => onClick?.(event, id)}
-      placeholder={params.textContent}
+      placeholder={params.placeholder}
     />
   );
 };
@@ -126,7 +127,7 @@ const SelectRenderer: Renderer = (props) => {
 };
 
 const TextRenderer: Renderer = (props) => {
-  const { id, style, params, name, active, sortableId } = props;
+  const { id, style, params, name, active, sortableId, isDisabled } = props;
   return (
     <p
       id={id}
@@ -135,7 +136,7 @@ const TextRenderer: Renderer = (props) => {
       key={id}
       className={cn('ls-item', styles.addedElem, active && 'activated')}
       style={{ ...style, wordBreak: 'break-word', overflowY: 'auto' }}
-      tabIndex={0}
+      tabIndex={isDisabled ? 0 : -1}
     >
       {params.textContent}
     </p>
@@ -143,7 +144,7 @@ const TextRenderer: Renderer = (props) => {
 };
 
 const ImgRenderer: Renderer = (props) => {
-  const { id, params, active, sortableId, style } = props;
+  const { id, params, active, sortableId, style, isDisabled } = props;
 
   return (
     <img
@@ -155,7 +156,7 @@ const ImgRenderer: Renderer = (props) => {
       className={cn('ls-item', styles.addedElem, active && 'activated')}
       style={style}
       alt={id}
-      tabIndex={0}
+      tabIndex={isDisabled ? 0 : -1}
     />
   );
 }
@@ -171,7 +172,7 @@ const MapWidgetRenderer: Renderer = (props) => {
       className={cn('ls-item', styles.addedWidget, isDisabled && styles.disabled, active && 'activated')}
       style={style}
       onClick={event => isDisabled && event.preventDefault()}
-      tabIndex={0}
+      tabIndex={isDisabled ? 0 : -1}
     >
       <GMap
         center={params.map_props.center}
@@ -192,7 +193,7 @@ const CalendarWidgetRenderer: Renderer = (props) => {
       key={id}
       className={cn('ls-item', styles.addedCalendar, isDisabled && styles.disabled, active && 'activated')}
       style={style}
-      tabIndex={0}
+      tabIndex={isDisabled ? 0 : -1}
     >
       <CalendarWidget />
     </div>
@@ -200,7 +201,7 @@ const CalendarWidgetRenderer: Renderer = (props) => {
 }
 
 const ClockWidgetRenderer: Renderer = (props) => {
-  const { id, params, style, active, sortableId } = props;
+  const { id, params, style, active, sortableId, isDisabled } = props;
   return (
     <div
       id={id}
@@ -209,7 +210,7 @@ const ClockWidgetRenderer: Renderer = (props) => {
       key={id}
       className={cn('ls-item', styles.addedCalendar, active && 'activated')}
       style={style}
-      tabIndex={0}
+      tabIndex={isDisabled ? 0 : -1}
     >
       <ClockWidget
         size={typeof params.width === 'number' ? params.width : undefined}
@@ -219,7 +220,7 @@ const ClockWidgetRenderer: Renderer = (props) => {
 }
 
 const UndefinedRenderer: Renderer = (props) => {
-  const { id, active, style, sortableId } = props;
+  const { id, active, style, sortableId, isDisabled } = props;
   return (
     <div
       data-ls-id={id}
@@ -227,7 +228,7 @@ const UndefinedRenderer: Renderer = (props) => {
       key={id}
       className={cn('ls-item', styles.addedContainer, active && 'activated')}
       style={style}
-      tabIndex={0}
+      tabIndex={isDisabled ? 0 : -1}
     />
   );
 }
