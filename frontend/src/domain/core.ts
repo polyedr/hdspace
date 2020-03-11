@@ -142,8 +142,8 @@ const ENTITY_TO_DEFAULTS: EntityToDefaults = {
     ...extractDefaults('map'),
     size: {
       ...extractDefaults('map', 'size'),
-      width: 500,
-      height: 300,
+      width: '500px',
+      height: '300px',
     },
   },
   calendar: extractDefaults('calendar'),
