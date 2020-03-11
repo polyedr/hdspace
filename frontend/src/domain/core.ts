@@ -22,7 +22,7 @@ export const AVAILABLE_CONTROLS: Record<Entity, Control[]> = {
   root: ['background'],
   container: ['indents', 'size', 'display', 'typography', 'border', 'background'],
   button: ['indents', 'size', 'display', 'typography', 'border', 'background', 'textContent', 'action'],
-  textinput: ['indents', 'size', 'typography', 'border', 'background', 'placeholder'],
+  textinput: ['indents', 'size', 'typography', 'border', 'background', 'textContent', 'placeholder'],
   hyperlink: ['indents', 'size', 'display', 'typography', 'border', 'background', 'textContent', 'action'],
   ocrtext: ['indents', 'size', 'typography', 'border', 'background', 'textContent'],
   image: ['indents', 'size', 'border', 'background', 'image'],
@@ -98,6 +98,10 @@ const ENTITY_TO_DEFAULTS: EntityToDefaults = {
       'border-width': '1px',
       'border-style': 'solid',
       'border-radius': '4px',
+    },
+    textContent: {
+      ...extractDefaults('textinput', 'textContent'),
+      textContent: '',
     },
   },
   hyperlink: {
