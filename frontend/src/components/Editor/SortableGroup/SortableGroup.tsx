@@ -10,6 +10,7 @@ const styles = require('./SortableGroup.scss');
 type Props = {
   isActive: boolean,
   disableSortable: boolean,
+  disableInteractions: boolean,
   isPutItem: boolean,
   group: string,
   children?: any,
@@ -27,6 +28,7 @@ export const SortableGroup: React.FC<Props> = (props) => {
   const {
     isActive,
     disableSortable,
+    disableInteractions,
     isPutItem,
     group,
     stylesToInherit,
@@ -99,7 +101,7 @@ export const SortableGroup: React.FC<Props> = (props) => {
       id={lsID}
       data-id={lsID}
       data-ls-id={id}
-      tabIndex={0}
+      tabIndex={!disableInteractions ? 0 : -1}
       style={stylesToInherit}
       className={getClassNames()}
       // tag="ul" Defaults to "div"

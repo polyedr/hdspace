@@ -145,7 +145,7 @@ export const Component = (props: Props) => {
 
   return (screen && R.hasPath(['listSortable', 'root'], screen)) ? (
     <div className={cn(styles.editorWorkspace)}>
-      <HotKeys />
+      {!isPrototypeMode && <HotKeys />}
       <TopBar
         screenID={screen.id}
         isPrototypeMode={isPrototypeMode}

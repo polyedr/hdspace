@@ -10,7 +10,7 @@ import { CalendarWidget } from '$components/UI/Calendar';
 import { ClockWidget } from '$components/UI/Clock';
 import { Entity } from '$domain/core';
 
-import { withLink } from '../../../utils/withLink';
+import { withAction, WithActionProps } from '../../../utils/withAction';
 const styles = require('./styles.scss');
 
 export type RendererProps = {
@@ -23,15 +23,13 @@ export type RendererProps = {
   isDisabled?: boolean;
   children?: JSX.Element;
   sortableId?: string;
-  isExternalLink(): boolean;
-  onPageLinkClick(event: React.MouseEvent<HTMLAnchorElement, MouseEvent>): void;
-  onExternalLinkClick(event: React.MouseEvent<HTMLAnchorElement, MouseEvent>): void;
   onClick?(event: any, id: string): void;
 };
 
 type Renderer = React.FC<RendererProps>;
+type ActionRenderer = React.FC<WithActionProps & RendererProps>;
 
-const Action: (type: 'link' | 'button') => Renderer = (type) => (props) => {
+const ActionRenderer: ActionRenderer = (props) => {
   const {
     id,
     style,
@@ -40,9 +38,8 @@ const Action: (type: 'link' | 'button') => Renderer = (type) => (props) => {
     params,
     onClick,
     sortableId,
-    isExternalLink,
-    onPageLinkClick,
-    onExternalLinkClick,
+    actionType,
+    actionLink,
   } = props;
 
   const commonProps = {
@@ -54,26 +51,34 @@ const Action: (type: 'link' | 'button') => Renderer = (type) => (props) => {
     style: style,
   }
 
-  if (params.actionUrl || type === 'link') {
-    return isExternalLink() ? (
-      <a {...commonProps} href={params.actionUrl} target="_blank" onClick={onExternalLinkClick}>
-        {params.textContent}
-      </a>
-    ) : (
-      <Link {...commonProps} to={params.actionUrl || ''} onClick={onPageLinkClick}>
-        {params.textContent}
-      </Link>
-    );
-  } else {
-    return (
-      <Button {...commonProps} type="primary" onClick={(event) => onClick?.(event, id)}>
-        {params.textContent}
-      </Button>
-    )
+  switch (actionType) {
+    case 'external-link': {
+      return (
+        <a {...commonProps} href={actionLink} target="_blank" onClick={onClick}>
+          {params.textContent}
+        </a>
+      )
+    }
+
+    case 'internal-link': {
+      return (
+        <Link {...commonProps} to={actionLink} onClick={onClick}>
+          {params.textContent}
+        </Link>
+      )
+    }
+
+    case 'button': {
+      return (
+        <Button {...commonProps} type="primary" onClick={onClick}>
+          {params.textContent}
+        </Button>
+      )
+    }
   }
 }
 
-const InputComponent: Renderer = (props) => {
+const InputRenderer: Renderer = (props) => {
   const { id, style, params, isDisabled, active, onClick, sortableId } = props;
   return (
     <Input
@@ -88,13 +93,14 @@ const InputComponent: Renderer = (props) => {
         ...style,
         transition: 'none',
       }}
+      {...(isDisabled ? { value: params.textContent } : undefined)}
       onClick={(event) => onClick?.(event, id)}
-      placeholder={params.textContent}
+      placeholder={params.placeholder}
     />
   );
 };
 
-const SelectComponent: Renderer = (props) => {
+const SelectRenderer: Renderer = (props) => {
   const { id, style, name, isDisabled, active, sortableId } = props;
   return (
     <select
@@ -120,8 +126,8 @@ const SelectComponent: Renderer = (props) => {
   );
 };
 
-const TextComponent: Renderer = (props) => {
-  const { id, style, params, name, active, sortableId } = props;
+const TextRenderer: Renderer = (props) => {
+  const { id, style, params, name, active, sortableId, isDisabled } = props;
   return (
     <p
       id={id}
@@ -130,15 +136,15 @@ const TextComponent: Renderer = (props) => {
       key={id}
       className={cn('ls-item', styles.addedElem, active && 'activated')}
       style={{ ...style, wordBreak: 'break-word', overflowY: 'auto' }}
-      tabIndex={0}
+      tabIndex={isDisabled ? 0 : -1}
     >
       {params.textContent}
     </p>
   );
 };
 
-const ImgComponent: Renderer = (props) => {
-  const { id, params, active, sortableId, style } = props;
+const ImgRenderer: Renderer = (props) => {
+  const { id, params, active, sortableId, style, isDisabled } = props;
 
   return (
     <img
@@ -150,12 +156,12 @@ const ImgComponent: Renderer = (props) => {
       className={cn('ls-item', styles.addedElem, active && 'activated')}
       style={style}
       alt={id}
-      tabIndex={0}
+      tabIndex={isDisabled ? 0 : -1}
     />
   );
 }
 
-const MapWidgetComponent: Renderer = (props) => {
+const MapWidgetRenderer: Renderer = (props) => {
   const { id, params, active, isDisabled, style, sortableId } = props;
   return (
     <div
@@ -166,7 +172,7 @@ const MapWidgetComponent: Renderer = (props) => {
       className={cn('ls-item', styles.addedWidget, isDisabled && styles.disabled, active && 'activated')}
       style={style}
       onClick={event => isDisabled && event.preventDefault()}
-      tabIndex={0}
+      tabIndex={isDisabled ? 0 : -1}
     >
       <GMap
         center={params.map_props.center}
@@ -177,7 +183,7 @@ const MapWidgetComponent: Renderer = (props) => {
   );
 };
 
-const CalendarWidgetComponent: Renderer = (props) => {
+const CalendarWidgetRenderer: Renderer = (props) => {
   const { id, style, active, isDisabled, sortableId } = props;
   return (
     <div
@@ -187,15 +193,15 @@ const CalendarWidgetComponent: Renderer = (props) => {
       key={id}
       className={cn('ls-item', styles.addedCalendar, isDisabled && styles.disabled, active && 'activated')}
       style={style}
-      tabIndex={0}
+      tabIndex={isDisabled ? 0 : -1}
     >
       <CalendarWidget />
     </div>
   );
 }
 
-const ClockWidgetComponent: Renderer = (props) => {
-  const { id, params, style, active, sortableId } = props;
+const ClockWidgetRenderer: Renderer = (props) => {
+  const { id, params, style, active, sortableId, isDisabled } = props;
   return (
     <div
       id={id}
@@ -204,7 +210,7 @@ const ClockWidgetComponent: Renderer = (props) => {
       key={id}
       className={cn('ls-item', styles.addedCalendar, active && 'activated')}
       style={style}
-      tabIndex={0}
+      tabIndex={isDisabled ? 0 : -1}
     >
       <ClockWidget
         size={typeof params.width === 'number' ? params.width : undefined}
@@ -213,8 +219,8 @@ const ClockWidgetComponent: Renderer = (props) => {
   );
 }
 
-const UndefinedComponent: Renderer = (props) => {
-  const { id, active, style, sortableId } = props;
+const UndefinedRenderer: Renderer = (props) => {
+  const { id, active, style, sortableId, isDisabled } = props;
   return (
     <div
       data-ls-id={id}
@@ -222,20 +228,20 @@ const UndefinedComponent: Renderer = (props) => {
       key={id}
       className={cn('ls-item', styles.addedContainer, active && 'activated')}
       style={style}
-      tabIndex={0}
+      tabIndex={isDisabled ? 0 : -1}
     />
   );
 }
 
 export const RENDERERS: Record<Exclude<Entity, 'root' | 'container'>, React.FunctionComponent<any>> = {
-  button: withLink(Action('button')),
-  textinput: InputComponent,
-  hyperlink: withLink(Action('link')),
-  ocrtext: TextComponent,
-  image: ImgComponent,
-  select: SelectComponent,
-  map: MapWidgetComponent,
-  calendar: CalendarWidgetComponent,
-  clock: ClockWidgetComponent,
-  undefined: UndefinedComponent,
+  button: withAction(ActionRenderer, 'button'),
+  textinput: InputRenderer,
+  hyperlink: withAction(ActionRenderer, 'link'),
+  ocrtext: TextRenderer,
+  image: ImgRenderer,
+  select: SelectRenderer,
+  map: MapWidgetRenderer,
+  calendar: CalendarWidgetRenderer,
+  clock: ClockWidgetRenderer,
+  undefined: UndefinedRenderer,
 };

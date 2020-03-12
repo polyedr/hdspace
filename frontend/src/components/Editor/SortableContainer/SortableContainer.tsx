@@ -16,8 +16,6 @@ const mapStateToProps = (state: AppReduxState, props: OwnProps) => {
   const scenarios = selectors.selectScenarios(state);
   const scenarioElements = selectors.selectScenariosElements(state);
   const disableInteractions = state.user.isPrototypeMode;
-  const projectID = selectors.selectCurrentProject(state).id;
-  const screensIDs = selectors.selectCurrentProject(state).projectscreen;
 
   const currId = idToLSId(props.item.id, props.item.type);
   const itemParent = listSortable[currId];
@@ -32,15 +30,12 @@ const mapStateToProps = (state: AppReduxState, props: OwnProps) => {
     disableInteractions,
     scenarioList,
     elementList,
-    projectID,
-    screensIDs,
   };
 };
 
 const mapDispatchToProps = {
   updateElementStyles: actionsCreators.updateElementStyles,
   setListSortable: actionsCreators.setListSortable,
-  activateScreen: actionsCreators.activateScreen,
 };
 
 export type OwnProps = {
@@ -74,9 +69,6 @@ const SortableComponent: React.FC<Props> = (props) => {
     listSortable,
     elementList,
     scenarioList,
-    projectID,
-    screensIDs,
-    activateScreen,
   } = props;
 
   const [isDragging, setIsDragging] = useState<boolean>(false);
@@ -116,6 +108,7 @@ const SortableComponent: React.FC<Props> = (props) => {
       isActive={getIsActive()}
       key={item.id}
       disableSortable={!isMoving || disableInteractions}
+      disableInteractions={disableInteractions}
       isPutItem={getIsPutItem(item.type)}
       lsID={idToLSId(item.id, item.type)}
       id={idToDataLSID(item.id, item.type)}
@@ -154,11 +147,11 @@ const SortableComponent: React.FC<Props> = (props) => {
         } 
 
         // @ts-ignore
-        const RenderedElement = RENDERERS[struct_type];
+        const ElementRenderer = RENDERERS[struct_type];
         const parsedStyles = convertPropCSS(styles);
         
-        return RenderedElement ? (
-          <RenderedElement
+        return ElementRenderer ? (
+          <ElementRenderer
             key={itemId}
             id={itemId}
             isDisabled={!disableInteractions}
@@ -167,9 +160,6 @@ const SortableComponent: React.FC<Props> = (props) => {
             name={name}
             style={parsedStyles}
             active={!disableInteractions && itemId === activeItemId}
-            projectID={projectID}
-            screensIDs={screensIDs}
-            activateScreen={activateScreen}
            />
         ) : null;
       })}

@@ -27,6 +27,10 @@ function getDisplayStyles(activeItemStyles: Required<CssLikeStyles>): ScreenDisp
       display: activeItemStyles.display,
     };
 
+    case 'inline': return { 
+      display: activeItemStyles.display,
+    };
+
     case 'inline-block': return { 
       display: activeItemStyles.display,
     };
