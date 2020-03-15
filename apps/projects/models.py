@@ -32,6 +32,9 @@ class Project(TimeStampedModel):
 
     name = models.CharField(max_length=250)
     preview = models.CharField(max_length=60)
+    favicon = models.ImageField(
+        upload_to=utils.get_file_path, blank=True, null=True, max_length=256
+    )
     status = models.CharField(
         choices=STATUS_CHOICES, default=STATUS_PENDING, max_length=20
     )

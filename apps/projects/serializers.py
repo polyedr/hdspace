@@ -163,20 +163,11 @@ class ProjectSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Project
-        fields = ("preview", "name", "status", "projectscreen", "user", "id")
+        fields = ("preview", "name", "image", "status", "projectscreen", "user", "id")
         extra_kwargs = {
             "preview": {"read_only": True},
             "projectscreen": {"read_only": True}
         }
-
-    """
-    def create(self, validated_data):
-        # validated_data["user"] = self.request.user
-        project = Project(name=validated_data["name"], status=validated_data["status"])
-        project.preview = project.generate_preview_token()
-        project.save()
-        return project
-    """
 
     def create(self, validated_data):
         project = Project(id=None, **validated_data)
