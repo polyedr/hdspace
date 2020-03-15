@@ -163,7 +163,7 @@ class ProjectSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Project
-        fields = ("preview", "name", "image", "status", "projectscreen", "user", "id")
+        fields = ("preview", "name", "favicon", "status", "projectscreen", "user", "id")
         extra_kwargs = {
             "preview": {"read_only": True},
             "projectscreen": {"read_only": True}
