@@ -16,7 +16,6 @@ import { isRoot } from '$domain/abstractInterface';
 
 import { TopBar } from '../TopBar/TopBar';
 import { HotKeys } from '../HotKeys/HotKeys';
-import { ExportTree } from '../Export/Export';
 const styles = require('./Workspace.scss');
 
 export type ScreenMode = {
@@ -177,9 +176,6 @@ export const Component = (props: Props) => {
             isResizing={hasItemBeingResized}
             setIsResizing={setHasItemBeingResized}
           />
-          {/* <div className="test">
-            <ExportTree />
-          </div> */}
         </Scrollbar>
       </div>
     </div>

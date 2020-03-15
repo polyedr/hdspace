@@ -1,16 +1,32 @@
 import React from 'react';
 import { render } from 'react-dom';
-
-import { ExportTree } from './components/Editor/Export/Export';
+import {
+  HashRouter as Router,
+  Switch,
+  Route,
+  Redirect,
+} from 'react-router-dom';
 import 'antd/dist/antd.css';
-import { Provider } from 'react-redux';
-// import { configureStore } from '$redux/store';
 
-// const { store, persistor } = configureStore();
+import { RenderTree } from '$components/RenderTree/RenderTree';
+import { Page } from '$redux/project/types';
+
+const renderTreeInfo = window.renderTreeInfo as Page[];
 
 render(
-  //<Provider store={store}>
-    <ExportTree renderTreeInfo={window.renderTreeInfo} />,
-  //</Provider>,
+  <Router>
+    <Switch>
+      {renderTreeInfo.map(({ name, renderTree: { containers, elements } }) => (
+        <Route path={`/${name}`}>
+          <RenderTree
+            item={containers.find(container => container.parent_id === -1)}
+            scenarioList={containers}
+            elementList={elements}
+          />
+        </Route>
+      ))}
+      <Redirect from="/*" to={`/${renderTreeInfo[0].name}`} />
+    </Switch>
+  </Router>,
   document.getElementById('root'),
 );

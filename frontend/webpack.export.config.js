@@ -5,7 +5,7 @@ const { join } = path;
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 
 const miniCssExractPlugin = new MiniCssExtractPlugin({
-  filename: '[name].css',
+  filename: 'styles.css',
   chunkFilename: '[id].css',
 });
 
@@ -39,7 +39,14 @@ module.exports = () => {
       rules: [
         {
           test: /\.css$/,
-          use: [{ loader: 'style-loader' }, { loader: 'css-loader' }],
+          use: [
+            {
+              loader: MiniCssExtractPlugin.loader,
+            },
+            {
+              loader: 'css-loader',
+            },
+          ],
         },
         {
           test: /\.scss$/,
@@ -47,7 +54,6 @@ module.exports = () => {
             {
               loader: MiniCssExtractPlugin.loader,
             },
-            // { loader: 'css-loader' },
             {
               loader: 'css-loader',
               options: {
@@ -104,27 +110,9 @@ module.exports = () => {
     output: {
       publicPath: '/',
       path: path.resolve(__dirname, 'dist/export'),
-      filename: '[name].js',
+      filename: 'bundle.js',
     },
     optimization: {
-      splitChunks: {
-        cacheGroups: {
-          vendor: {
-            name: 'vendor',
-            chunks: 'all',
-            test: /node_modules/,
-            priority: 20,
-            reuseExistingChunk: true,
-          },
-          commons: {
-            name: 'commons',
-            chunks: 'initial',
-            minChunks: 2,
-            minSize: 0,
-            reuseExistingChunk: true,
-          },
-        },
-      },
       minimizer: [
         new UglifyJsPlugin({
           cache: true,
@@ -133,7 +121,6 @@ module.exports = () => {
         }),
         new OptimizeCSSAssetsPlugin({}),
       ],
-      // To keep filename consistent between different modes (for example building only)
       occurrenceOrder: true,
     },
   };

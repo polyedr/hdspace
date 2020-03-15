@@ -69,7 +69,7 @@ export type UpdateViewTree = IAction<'PROJECTS:UPDATE_VIEW_TREE', Partial<{
 }>>;
 export type ClearAfterPrevScreen = IPlainAction<'PROJECTS:CLEAN_AFTER_PREV_SCREEN'>;
 export type SaveScreen = IAction<'PROJECTS:SAVE_SCREEN', { canvas: HTMLCanvasElement }>;
-export type ExportProject = IAction<'PROJECTS:EXPORT_PROJECT', { projectID: number }>;
+export type ExportProject = IPlainAction<'PROJECTS:EXPORT_PROJECT'>;
 export type SetScreen = IAction<'PROJECTS:SET_SCREEN', { screen: IProjectScreen }>;
 export type AddElement = IAction<'PROJECTS:ADD_ELEMENT', { parentID: string, type: string }>;
 export type SetScenarioElements = IAction<'PROJECTS:SET_SCENARIO_ELEMENTS', { elements: IScenarioElements }>;
@@ -355,6 +355,7 @@ export interface IScenarioElement { // compare with entity on backend
       y1: number,
     },
     url?: string,
+    imageURL?: string;
   },
   styles: CssLikeStyles,
 }
@@ -439,3 +440,11 @@ export type UploadedImageInfo = {
   imageURL: string;
   screenID: number;
 }
+
+export type Page = {
+  name: string,
+  renderTree: {
+    containers: IScenarioItem[],
+    elements: IScenarioElement[],
+  },
+};

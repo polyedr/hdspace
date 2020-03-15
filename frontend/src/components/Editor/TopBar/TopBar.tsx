@@ -170,7 +170,7 @@ export const TopBar = (props: Props) => {
           onClick={onExport}
           disabled={screenID < 1}
         >
-          <Icon icon="save" size={28} />
+          <Icon icon="download" size={28} />
         </Button>
       </div>
     </div>

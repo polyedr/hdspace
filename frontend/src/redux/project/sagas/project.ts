@@ -4,12 +4,14 @@ import {
 } from 'redux-saga/effects';
 import { push } from 'connected-react-router';
 import JSZip from 'jszip';
-import JSZipUtils from 'jszip-utils';
 import { saveAs } from 'file-saver';
+import * as R from 'ramda';
 
+import { apiGetScenarios } from '$api/scenario';
+import { apiGetElements } from '$api/element';
 import { ReturnPromisedType } from '$shared/types';
 import { AppReduxState } from '$shared/types/app';
-import { IListProject } from '$redux/project/types';
+import { IListProject, Page } from '$redux/project/types';
 import { activateScreenSaga, addScreenSaga } from '$redux/project/sagas/screen';
 import * as Actions from '$redux/project/actions';
 import { changePrototypeMode } from '$redux/user/actions';
@@ -24,10 +26,6 @@ import { DEFAULT_SCREEN } from '$constants/defaultParams';
 import { reqWrapper } from '$redux/project/sagas/index';
 
 import { selectors, T } from '../';
-import { request } from 'http';
-import { apiGetScenarios } from '$api/scenario';
-import { apiGetElements } from '$api/element';
-import { Page } from '$components/Editor/Export/Export';
 
 export function* getListProjectSaga(): SagaIterator {
   yield put(Actions.setListProjectLoader(true));
@@ -86,104 +84,82 @@ export function* addProject(action: ReturnType<typeof Actions.addProject>) {
   yield put(push(`/project/${projectID}`));
 }
 
-export function* exportProjectSaga(action: ReturnType<typeof Actions.exportProject>) {
-  const { payload: { projectID } } = action;
-
+export function* exportProjectSaga() {
   const currentProject: ReturnType<typeof selectors.selectCurrentProject> = yield select(selectors.selectCurrentProject);
   const screensIDs = currentProject.projectscreen;
 
-  const screensScenarios: ReturnPromisedType<typeof apiGetScenarios>[] = yield all(screensIDs.map(screenID =>
+  const screensContainers: ReturnPromisedType<typeof apiGetScenarios>[] = yield all(screensIDs.map(screenID =>
     call(reqWrapper, apiGetScenarios, { screenID }),
   ));
 
-  // console.log(screensScenarios);
-
-  /* const screensWithScenarios = screensScenarios.map(screenScenarios => ({
-    screenID: screensIDs.filter(screenID => screenScenarios[0] && screenID === screenScenarios[0].screen),
-    scenarios: screenScenarios,
-  })); */
-
-  /* console.log(screensWithScenarios.map(screenWithScenarios =>
-    screenWithScenarios.scenarios.map(screenScenario => screenScenario.id)  ,
-  )); */
-
-  const elements: ReturnPromisedType<typeof apiGetElements>[] = yield all(screensScenarios.map(screenScenarios => {
-    const IDs = screenScenarios.map(screenScenario => screenScenario.id);
-    return call(reqWrapper, apiGetElements, { scenariosIDs: IDs });
+  const elements: ReturnPromisedType<typeof apiGetElements>[] = yield all(screensContainers.map(screenContainers => {
+    const containersIDs = screenContainers.map(screenContainer => screenContainer.id);
+    return call(reqWrapper, apiGetElements, { scenariosIDs: containersIDs });
   }));
 
-  const tree: Page[] = screensScenarios.map((screenScenarios, index) => ({
-    name: String(screenScenarios && screenScenarios[0] && screenScenarios[0].screen),
+  const elementsWithImages = (R.flatten(elements) as unknown as T.IScenarioElement[]).filter(element => element.parameters.imageURL);
+
+  const imagesResponses: Response[] = yield all(elementsWithImages.map(element => call(fetch, element.parameters.imageURL || '')));
+
+  const imagesBlobs: Blob[] = yield all(imagesResponses.map(imageResponse => call([imageResponse, 'blob'])));
+
+  const renderElements = elements;
+  const zip = new JSZip();
+
+  imagesBlobs.forEach((imageBlob, imageIndex) => {
+    const filename = imagesResponses[imageIndex].url.match(/([^\\/?]+(?=\\.(?!.*\\.))[^'\\)\\/]*|[^\\/$\\?)']*$)/);
+    const elementID = elementsWithImages[imageIndex].id;
+
+    if (filename) {
+      renderElements.forEach(screenElements => {
+        const elementToAddImage = screenElements.find(element => element.id === elementID);
+        if (elementToAddImage) elementToAddImage.parameters.imageURL = `images/${filename[0]}`;
+      })
+
+      zip.file(`images/${filename[0]}`, imageBlob);
+    }
+  });
+
+  const renderTreeInfo: Page[] = screensContainers.map((screenContainers, index) => ({
+    name: String(screenContainers && screenContainers[0] && screenContainers[0].screen),
     renderTree: {
-      scenarios: screenScenarios,
-      scenarioElements: elements[index],
+      containers: screenContainers,
+      elements: renderElements[index],
     },
   }))
 
-  console.log(tree);
+  const jsBundleResponse = yield call(fetch, '/export/bundle.js');
+  const jsBundleFile = yield call([jsBundleResponse, "text"]);
 
-  const screen: ReturnType<typeof selectors.selectCurrentScreen> = yield select(selectors.selectCurrentScreen);
+  const stylesResponse = yield call(fetch, '/export/styles.css');
+  const stylesFile = yield call([stylesResponse, "text"]);
 
+  const renderTreeInfoInString = JSON.stringify(renderTreeInfo);
 
-  const scenarios: ReturnType<typeof selectors.selectScenarios> = yield select(selectors.selectScenarios);
-
-  // console.log(screensScenarios);
-
-  const scenarioElements: ReturnType<typeof selectors.selectScenariosElements> = yield select(
-    selectors.selectScenariosElements,
-  );
-
-  const zip = new JSZip();
-
-  const resp = yield call(fetch, 'http://localhost:8080/export/app.js');
-  const jsFile = yield call([resp, "text"]);
-
-  const vendorResp = yield call(fetch, 'http://localhost:8080/export/vendor.js');
-  const vendorFile = yield call([vendorResp, "text"]);
-
-  /* console.log(jsFile) */
-
-  /* const renderTreeInfo = [
-    {
-      name: 'first',
-      renderTree: {
-        scenarios,
-        scenarioElements,
-      }
-    }
-  ] */
-
-  const renderTreeInfoInString = JSON.stringify(tree);
-
-  zip.file('test.html', 
+  zip.file('index.html', 
   `
   <!doctype html>
   <html lang="en">
     <head>
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
-      <title>Project</title>
+      <title>${currentProject.name}</title>
+      <link rel="stylesheet" href="styles.css">
     </head>
     <body>
       <div id="root"></div>
       <script>
         window.renderTreeInfo = ${renderTreeInfoInString};
       </script>
-      <script src="vendor.js"></script>
-      <script src="app.js"></script>
+      <script src="bundle.js"></script>
     </body>
   </html>
   `);
 
-  zip.file('app.js', jsFile);
-  zip.file('vendor.js', vendorFile);
+  zip.file('bundle.js', jsBundleFile);
+  zip.file('styles.css', stylesFile);
 
-  zip.generateAsync({ type: 'blob' })
-    .then(function (blob) {
-        saveAs(blob, "hello.zip");
-    });
-
-  /* console.log(currentProject, scenarios, scenarioElements, screen) */
+  zip.generateAsync({ type: 'blob' }).then(blob => saveAs(blob, `${currentProject.name}.zip`));
 }
 
 

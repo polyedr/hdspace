@@ -43,6 +43,10 @@ export const setProject = (project: T.IProject): T.SetProject => ({
   payload: { project },
 });
 
+export const exportProject = (): T.ExportProject => ({
+  type: 'PROJECTS:EXPORT_PROJECT',
+})
+
 export const changeScreensOrder = (screensIDs: number[]): T.ChangeScreensOrder => ({
   type: 'PROJECTS:CHANGE_SCREENS_ORDER',
   payload: { screensIDs },
@@ -132,11 +136,6 @@ export const saveScreen = (canvas: HTMLCanvasElement): T.SaveScreen => ({
   type: 'PROJECTS:SAVE_SCREEN',
   payload: { canvas },
 });
-
-export const exportProject = (projectID: number): T.ExportProject => ({
-  type: 'PROJECTS:EXPORT_PROJECT',
-  payload: { projectID },
-})
 
 export const setScreen = (screen: T.IProjectScreen): T.SetScreen => ({
   type: 'PROJECTS:SET_SCREEN',

@@ -787,12 +787,12 @@ const loadProjectsType: ProjectT.LoadProjects['type'] = 'PROJECTS:LOAD_PROJECTS'
 const addProjectType: ProjectT.AddProject['type'] = 'PROJECTS:ADD_PROJECT';
 const deleteProjectType: ProjectT.DeleteProject['type'] = 'PROJECTS:DELETE_PROJECT';
 const getProjectType: ProjectT.GetProject['type'] = 'PROJECTS:GET_PROJECT';
+const exportProjectType: ProjectT.ExportProject['type'] = 'PROJECTS:EXPORT_PROJECT';
 const changeScreensOrderType: ProjectT.ChangeScreensOrder['type'] = 'PROJECTS:CHANGE_SCREENS_ORDER';
 const renameProjectType: ProjectT.RenameProject['type'] = 'PROJECTS:RENAME_PROJECT';
 const activateScreenType: ProjectT.ActivateScreen['type'] = 'PROJECTS:ACTIVATE_SCREEN';
 const addScreenType: ProjectT.AddScreen['type'] = 'PROJECTS:ADD_SCREEN';
 const saveScreenType: ProjectT.SaveScreen['type'] = 'PROJECTS:SAVE_SCREEN';
-const exportProjectType: ProjectT.ExportProject['type'] = 'PROJECTS:EXPORT_PROJECT';
 const deleteScreenType: ProjectT.DeleteScreen['type'] = 'PROJECTS:DELETE_SCREEN';
 const renameScreenType: ProjectT.RenameScreen['type'] = 'PROJECTS:RENAME_SCREEN';
 const setListSortableType: ProjectT.SetListSortable['type'] = 'PROJECTS:SET_LIST_SORTABLE';
@@ -820,13 +820,13 @@ export default function* projectSaga() {
   yield takeLatest(addProjectType, addProject);
   yield takeLatest(deleteProjectType, delProjectSaga);
   yield takeLatest(getProjectType, getProjectSaga);
+  yield takeLatest(exportProjectType, exportProjectSaga);
   yield takeLatest(changeScreensOrderType, changeScreensOrderSaga);
   yield takeLatest(renameProjectType, renameProjectSaga);
 
   yield takeLatest(activateScreenType, screenSaga.activateScreenSaga);
   yield takeLatest(addScreenType, screenSaga.addScreenSaga);
   yield takeLatest(saveScreenType, screenSaga.saveScreenSaga);
-  yield takeLatest(exportProjectType, exportProjectSaga);
   yield takeLatest(deleteScreenType, screenSaga.delScreenSaga);
   yield takeLatest(renameScreenType, screenSaga.renameScreenSaga);
   yield takeLatest(setListSortableType, setListSortableSaga);
