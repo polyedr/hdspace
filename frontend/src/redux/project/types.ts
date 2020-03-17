@@ -445,7 +445,10 @@ export type UploadedImageInfo = {
 }
 
 export type Page = {
-  name: string,
+  screenInfo: {
+    name: string,
+    id: number,
+  },
   renderTree: {
     containers: IScenarioItem[],
     elements: IScenarioElement[],

@@ -1,8 +1,9 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useContext } from 'react';
 import { connect } from 'react-redux';
 
 import { selectors, actionsCreators } from '$redux/project';
 import { AppReduxState } from '$shared/types/app';
+import { LinkContext } from '$containers/ExportedApp';
 
 import { RendererProps } from '../components/UI/RenderElements';
 
@@ -30,6 +31,7 @@ function withAction(Component: React.ComponentType<WithActionProps & RendererPro
   function WrapperComponent(props: Props) {
     const { projectID, activateScreen, ...restProps } = props;
     const { params: { action }, isDisabled } = restProps;
+    const screensInfo = useContext(LinkContext);
 
     const handleInternalLinkClick = useCallback((event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
       if (isDisabled || action?.type === 'internal-link' && action.screenID === 'noScreen') {
@@ -48,6 +50,10 @@ function withAction(Component: React.ComponentType<WithActionProps & RendererPro
     const getUrl = useCallback(() => {
       if (!action) {
         return '';
+      }
+
+      if (action.type === 'internal-link' && isExportedAction) {
+        return screensInfo && screensInfo.find(screen => screen.id === action.screenID)?.name || '';
       }
 
       if (action.type === 'internal-link') {

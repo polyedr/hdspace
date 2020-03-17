@@ -92,6 +92,7 @@ export function* addProject(action: ReturnType<typeof Actions.addProject>) {
 export function* exportProjectSaga() {
   const currentProject: ReturnType<typeof selectors.selectCurrentProject> = yield select(selectors.selectCurrentProject);
   const screensIDs = currentProject.projectscreen;
+  const screens: ReturnType<typeof selectors.selectScreens> = yield select(selectors.selectScreens);
 
   const screensContainers: ReturnPromisedType<typeof apiGetScenarios>[] = yield all(screensIDs.map(screenID =>
     call(reqWrapper, apiGetScenarios, { screenID }),
@@ -125,13 +126,20 @@ export function* exportProjectSaga() {
     }
   });
 
-  const renderTreeInfo: Page[] = screensContainers.map((screenContainers, index) => ({
-    name: String(screenContainers && screenContainers[0] && screenContainers[0].screen),
-    renderTree: {
-      containers: screenContainers,
-      elements: renderElements[index],
-    },
-  }))
+  const renderTreeInfo: Page[] = screensContainers.map((screenContainers, index) => {
+    const pageScreenID = screenContainers.length && screenContainers[0].screen || -1;
+
+    return {
+      screenInfo: {
+        name: screens.find(screen => screen.id === pageScreenID)?.name || '',
+        id: pageScreenID,
+      },
+      renderTree: {
+        containers: screenContainers,
+        elements: renderElements[index],
+      },
+    };
+  });
 
   const jsBundleResponse = yield call(fetch, '/export/bundle.js');
   const jsBundleFile = yield call([jsBundleResponse, "text"]);
