@@ -9,11 +9,13 @@ import * as R from 'ramda';
 
 import { apiGetScenarios } from '$api/scenario';
 import { apiGetElements } from '$api/element';
+import { apiGetScreen } from '$api/screen';
 import { ReturnPromisedType } from '$shared/types';
 import { AppReduxState } from '$shared/types/app';
-import { IListProject, Page } from '$redux/project/types';
+import { IListProject, Page, IProjectScreen } from '$redux/project/types';
 import { activateScreenSaga, addScreenSaga } from '$redux/project/sagas/screen';
 import * as Actions from '$redux/project/actions';
+import { setScreens } from '$redux/project/actions';
 import { changePrototypeMode } from '$redux/user/actions';
 import {
   apiGetListProject,
@@ -67,6 +69,9 @@ export function* getProjectSaga(action: ReturnType<typeof Actions.getProject>) {
       if (finalScreenID) {
         yield call(activateScreenSaga, Actions.activateScreen(id, Number(finalScreenID)));
         yield put(push(`/project/${id}/${finalScreenID}`));
+
+        const screens: IProjectScreen[] = yield all(projectScreensIDs.map(screenID => call(reqWrapper, apiGetScreen, { id: screenID })));
+        yield put(setScreens(screens));
       } else {
         yield put(Actions.setScreen(DEFAULT_SCREEN));
       }
@@ -80,7 +85,7 @@ export function* getProjectSaga(action: ReturnType<typeof Actions.getProject>) {
 
 export function* addProject(action: ReturnType<typeof Actions.addProject>) {
   const { id: projectID } = yield call(addProjectSaga, action);
-  yield call(addScreenSaga, Actions.addScreen(projectID, 'Screen'));
+  yield call(addScreenSaga, Actions.addScreen(projectID, 'Screen 1'));
   yield put(push(`/project/${projectID}`));
 }
 

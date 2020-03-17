@@ -18,8 +18,10 @@ import {
   setLoader,
   updateViewTree,
   setActiveItem,
+  setScreens,
 } from '$redux/project/actions';
 import * as Actions from '$redux/project/actions';
+import { generateUniqueName } from '$utils/generateUniqueName';
 import {
   convertScenarios,
   convertScenarioElements,
@@ -100,9 +102,13 @@ export function* activateScreenSaga({ payload }: ReturnType<typeof activateScree
 export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
   yield put(Actions.clearAfterPrevScreen());
   const { projectID, name } = payload;
+
+  const screens: ReturnType<typeof selectors.selectScreens> = yield select(selectors.selectScreens);
+  const numberedName = generateUniqueName(name, screens.map(screen => screen.name));
+  
   const data = { // TODO: research why DEFAULt_SCREEN isn't spreaded first
     project: projectID,
-    name,
+    name: numberedName,
     status: 'in_progress',
     buoyancy: 0,
     image: null,
@@ -141,7 +147,7 @@ export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
   );
   const updateProject: IProject = R.assoc(
     'projectscreen',
-    R.append(screen.id, currentProject.projectscreen),
+    R.prepend(screen.id, currentProject.projectscreen),
     currentProject,
   );
 
@@ -149,6 +155,8 @@ export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
     id: screen.id,
     data: R.omit(['listSortable', 'screenLoader', 'image', 'screen_data_json', 'buoyancy'], screen),
   });
+
+  yield put(setScreens([...screens, screen]));
 
   yield put(setProject(updateProject));
   yield put(push(`/project/${projectID}/${screen.id}`))
@@ -222,6 +230,10 @@ export function* delScreenSaga({ payload }: ReturnType<typeof delScreen>) {
   );
   const currentProject: ReturnType<typeof selectors.selectCurrentProject> = yield select(selectors.selectCurrentProject);
 
+  if (currentProject.projectscreen.length < 2) {
+    return;
+  }
+
   yield call(reqWrapper, apiDelScreen, { id: screenID });
 
   const result: IProject = R.assoc(
@@ -232,7 +244,14 @@ export function* delScreenSaga({ payload }: ReturnType<typeof delScreen>) {
 
   yield put(setProject(result));
 
-  const lastScreenID = R.last(result.projectscreen);
+  const lastScreenID = R.head(result.projectscreen);
+
+  const screens: ReturnType<typeof selectors.selectScreens> = yield select(
+    selectors.selectScreens,
+  );
+
+  const newScreens = screens.filter(screen => screen.id !== screenID);
+  yield put(setScreens(newScreens));
 
   if (!lastScreenID) {
     yield put(setScreen(DEFAULT_SCREEN));
@@ -244,51 +263,28 @@ export function* delScreenSaga({ payload }: ReturnType<typeof delScreen>) {
   // yield call(getListProjectSaga);
 }
 
-// TODO: preload screens for such edits
 export function* renameScreenSaga({ payload }: ReturnType<typeof renameScreen>) {
-  // const { screenID, name } = payload;
-  // const currentScreen: ReturnType<typeof selectors.selectCurrentScreen> = yield select(
-  //   selectors.selectCurrentScreen,
-  // );
-  // const currentProject: ReturnType<typeof selectors.selectCurrentProject> = yield select(selectors.selectCurrentProject);
+  const { screenID, name } = payload;
+  const screen: ReturnPromisedType<typeof apiGetScreen> = yield call(reqWrapper, apiGetScreen, { id: screenID });
 
-  // const currScreen = currentProject.projectscreen.find(id => id === screenID);
+  const screens: ReturnType<typeof selectors.selectScreens> = yield select(
+    selectors.selectScreens,
+  );
 
-  // if (!currScreen) return;
+  const numberedName = generateUniqueName(name, screens.map(screen => screen.name));
 
-  // const updatedScreen = {
-  //   ...R.omit(['image'], currScreen),
-  //   name,
-  // };
+  const renamedScreen: IProjectScreen = {
+    ...screen,
+    name: numberedName,
+  };
 
-  // yield call(reqWrapper, apiSaveScreen, { id: screenID, data: updatedScreen });
+  yield call(reqWrapper, apiSaveScreen, { id: screenID, data: renamedScreen });
 
-  // const updateProjectScreens = currentProject.projectscreen.map((id) => {
-  //   if (id === screenID) {
-  //     return {
-  //       ...screen,
-  //       name,
-  //     };
-  //   }
+  const newScreens = screens.map(screen => {
+    return screen.id === screenID ? { ...screen, name: numberedName } : screen;
+  });
 
-  //   return screen;
-  // });
-
-  // const updateProject: IProject = {
-  //   ...currentProject,
-  //   projectscreen: updateProjectScreens,
-  // };
-
-  // yield put(setProject(updateProject));
-
-  // if (currentScreen.id === screenID) {
-  //   const updateCurrScreen = {
-  //     ...currentScreen,
-  //     name,
-  //   };
-
-  //   yield put(setScreen(updateCurrScreen));
-  // }
+  yield put(setScreens(newScreens));
 }
 
 export function* getScreenNNSaga() {

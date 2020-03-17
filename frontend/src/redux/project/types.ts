@@ -17,6 +17,7 @@ export type ReduxState = {
   edit: {
     currentProject: IProject;
     currentScreen: IProjectScreen;
+    screens: IProjectScreen[];
     listProjectLoader: boolean;
     loader: boolean;
     scenarios: IScenarios;
@@ -71,6 +72,7 @@ export type ClearAfterPrevScreen = IPlainAction<'PROJECTS:CLEAN_AFTER_PREV_SCREE
 export type SaveScreen = IAction<'PROJECTS:SAVE_SCREEN', { canvas: HTMLCanvasElement }>;
 export type ExportProject = IPlainAction<'PROJECTS:EXPORT_PROJECT'>;
 export type SetScreen = IAction<'PROJECTS:SET_SCREEN', { screen: IProjectScreen }>;
+export type SetScreens = IAction<'PROJECTS:SET_SCREENS', { screens: IProjectScreen[] }>;
 export type AddElement = IAction<'PROJECTS:ADD_ELEMENT', { parentID: string, type: string }>;
 export type SetScenarioElements = IAction<'PROJECTS:SET_SCENARIO_ELEMENTS', { elements: IScenarioElements }>;
 export type UpdateElementStyles = IAction<'PROJECTS:UPDATE_ELEMENT_STYLES', { id: string, styles: CssLikeStyles }>;
@@ -131,6 +133,7 @@ export type Action =
   | ClearAfterPrevScreen
   | SaveScreen
   | SetScreen
+  | SetScreens
   | AddElement
   | SetScenarioElements
   | UpdateElementStyles

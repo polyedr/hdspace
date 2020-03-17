@@ -142,6 +142,11 @@ export const setScreen = (screen: T.IProjectScreen): T.SetScreen => ({
   payload: { screen },
 });
 
+export const setScreens = (screens: T.IProjectScreen[]): T.SetScreens => ({
+  type: 'PROJECTS:SET_SCREENS',
+  payload: { screens },
+});
+
 export const addElement = (parentID: string, type: string): T.AddElement => ({
   type: 'PROJECTS:ADD_ELEMENT',
   payload: { parentID, type },
