@@ -43,6 +43,10 @@ export const setProject = (project: T.IProject): T.SetProject => ({
   payload: { project },
 });
 
+export const exportProject = (): T.ExportProject => ({
+  type: 'PROJECTS:EXPORT_PROJECT',
+})
+
 export const changeScreensOrder = (screensIDs: number[]): T.ChangeScreensOrder => ({
   type: 'PROJECTS:CHANGE_SCREENS_ORDER',
   payload: { screensIDs },
@@ -136,6 +140,11 @@ export const saveScreen = (canvas: HTMLCanvasElement): T.SaveScreen => ({
 export const setScreen = (screen: T.IProjectScreen): T.SetScreen => ({
   type: 'PROJECTS:SET_SCREEN',
   payload: { screen },
+});
+
+export const setScreens = (screens: T.IProjectScreen[]): T.SetScreens => ({
+  type: 'PROJECTS:SET_SCREENS',
+  payload: { screens },
 });
 
 export const addElement = (parentID: string, type: string): T.AddElement => ({

@@ -1,14 +1,21 @@
 import { SagaIterator } from 'redux-saga';
 import {
-  put, call, select,
+  put, call, select, all,
 } from 'redux-saga/effects';
 import { push } from 'connected-react-router';
+import JSZip from 'jszip';
+import { saveAs } from 'file-saver';
+import * as R from 'ramda';
 
+import { apiGetScenarios } from '$api/scenario';
+import { apiGetElements } from '$api/element';
+import { apiGetScreen } from '$api/screen';
 import { ReturnPromisedType } from '$shared/types';
 import { AppReduxState } from '$shared/types/app';
-import { IListProject } from '$redux/project/types';
+import { IListProject, Page, IProjectScreen } from '$redux/project/types';
 import { activateScreenSaga, addScreenSaga } from '$redux/project/sagas/screen';
 import * as Actions from '$redux/project/actions';
+import { setScreens } from '$redux/project/actions';
 import { changePrototypeMode } from '$redux/user/actions';
 import {
   apiGetListProject,
@@ -62,6 +69,9 @@ export function* getProjectSaga(action: ReturnType<typeof Actions.getProject>) {
       if (finalScreenID) {
         yield call(activateScreenSaga, Actions.activateScreen(id, Number(finalScreenID)));
         yield put(push(`/project/${id}/${finalScreenID}`));
+
+        const screens: IProjectScreen[] = yield all(projectScreensIDs.map(screenID => call(reqWrapper, apiGetScreen, { id: screenID })));
+        yield put(setScreens(screens));
       } else {
         yield put(Actions.setScreen(DEFAULT_SCREEN));
       }
@@ -75,9 +85,96 @@ export function* getProjectSaga(action: ReturnType<typeof Actions.getProject>) {
 
 export function* addProject(action: ReturnType<typeof Actions.addProject>) {
   const { id: projectID } = yield call(addProjectSaga, action);
-  yield call(addScreenSaga, Actions.addScreen(projectID, 'Screen'));
+  yield call(addScreenSaga, Actions.addScreen(projectID, 'Screen 1'));
   yield put(push(`/project/${projectID}`));
 }
+
+export function* exportProjectSaga() {
+  const currentProject: ReturnType<typeof selectors.selectCurrentProject> = yield select(selectors.selectCurrentProject);
+  const screensIDs = currentProject.projectscreen;
+  const screens: ReturnType<typeof selectors.selectScreens> = yield select(selectors.selectScreens);
+
+  const screensContainers: ReturnPromisedType<typeof apiGetScenarios>[] = yield all(screensIDs.map(screenID =>
+    call(reqWrapper, apiGetScenarios, { screenID }),
+  ));
+
+  const elements: ReturnPromisedType<typeof apiGetElements>[] = yield all(screensContainers.map(screenContainers => {
+    const containersIDs = screenContainers.map(screenContainer => screenContainer.id);
+    return call(reqWrapper, apiGetElements, { scenariosIDs: containersIDs });
+  }));
+
+  const elementsWithImages = (R.flatten(elements) as unknown as T.IScenarioElement[]).filter(element => element.parameters.imageURL);
+
+  const imagesResponses: Response[] = yield all(elementsWithImages.map(element => call(fetch, element.parameters.imageURL || '')));
+
+  const imagesBlobs: Blob[] = yield all(imagesResponses.map(imageResponse => call([imageResponse, 'blob'])));
+
+  const renderElements = elements;
+  const zip = new JSZip();
+
+  imagesBlobs.forEach((imageBlob, imageIndex) => {
+    const filename = imagesResponses[imageIndex].url.match(/([^\\/?]+(?=\\.(?!.*\\.))[^'\\)\\/]*|[^\\/$\\?)']*$)/);
+    const elementID = elementsWithImages[imageIndex].id;
+
+    if (filename) {
+      renderElements.forEach(screenElements => {
+        const elementToAddImage = screenElements.find(element => element.id === elementID);
+        if (elementToAddImage) elementToAddImage.parameters.imageURL = `images/${filename[0]}`;
+      })
+
+      zip.file(`images/${filename[0]}`, imageBlob);
+    }
+  });
+
+  const renderTreeInfo: Page[] = screensContainers.map((screenContainers, index) => {
+    const pageScreenID = screenContainers.length && screenContainers[0].screen || -1;
+
+    return {
+      screenInfo: {
+        name: screens.find(screen => screen.id === pageScreenID)?.name || '',
+        id: pageScreenID,
+      },
+      renderTree: {
+        containers: screenContainers,
+        elements: renderElements[index],
+      },
+    };
+  });
+
+  const jsBundleResponse = yield call(fetch, '/export/bundle.js');
+  const jsBundleFile = yield call([jsBundleResponse, "text"]);
+
+  const stylesResponse = yield call(fetch, '/export/styles.css');
+  const stylesFile = yield call([stylesResponse, "text"]);
+
+  const renderTreeInfoInString = JSON.stringify(renderTreeInfo);
+
+  zip.file('index.html', 
+  `
+  <!doctype html>
+  <html lang="en">
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+      <title>${currentProject.name}</title>
+      <link rel="stylesheet" href="styles.css">
+    </head>
+    <body>
+      <div id="root"></div>
+      <script>
+        window.renderTreeInfo = ${renderTreeInfoInString};
+      </script>
+      <script src="bundle.js"></script>
+    </body>
+  </html>
+  `);
+
+  zip.file('bundle.js', jsBundleFile);
+  zip.file('styles.css', stylesFile);
+
+  zip.generateAsync({ type: 'blob' }).then(blob => saveAs(blob, `${currentProject.name}.zip`));
+}
+
 
 export function* addProjectSaga({ payload: { name } }: ReturnType<typeof Actions.addProject>) {
   const project: IListProject = yield call(reqWrapper, apiAddProject, { data: { name, status: 'pending' } });

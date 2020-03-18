@@ -1,8 +1,9 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useContext } from 'react';
 import { connect } from 'react-redux';
 
 import { selectors, actionsCreators } from '$redux/project';
 import { AppReduxState } from '$shared/types/app';
+import { LinkContext } from '$containers/ExportedApp';
 
 import { RendererProps } from '../components/UI/RenderElements';
 
@@ -26,16 +27,17 @@ export type WithActionProps = {
 
 type Props = WithActionProps & RendererProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 
-function withAction(Component: React.ComponentType<WithActionProps & RendererProps>, type: 'link' | 'button') {
+function withAction(Component: React.ComponentType<WithActionProps & RendererProps>, type: 'link' | 'button', isExportedAction?: boolean) {
   function WrapperComponent(props: Props) {
     const { projectID, activateScreen, ...restProps } = props;
     const { params: { action }, isDisabled } = restProps;
+    const screensInfo = useContext(LinkContext);
 
     const handleInternalLinkClick = useCallback((event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
       if (isDisabled || action?.type === 'internal-link' && action.screenID === 'noScreen') {
         event.preventDefault();
       } else {
-        action?.type === 'internal-link' && activateScreen(projectID, Number(action.screenID));
+        !isExportedAction && action?.type === 'internal-link' && activateScreen(projectID, Number(action.screenID));
       }
     }, [isDisabled, action, projectID]);
 
@@ -48,6 +50,10 @@ function withAction(Component: React.ComponentType<WithActionProps & RendererPro
     const getUrl = useCallback(() => {
       if (!action) {
         return '';
+      }
+
+      if (action.type === 'internal-link' && isExportedAction) {
+        return screensInfo && screensInfo.find(screen => screen.id === action.screenID)?.name || '';
       }
 
       if (action.type === 'internal-link') {
@@ -76,7 +82,7 @@ function withAction(Component: React.ComponentType<WithActionProps & RendererPro
     );
   }
 
-  return connect(mapStateToProps, mapDispatchToProps)(WrapperComponent);
+  return isExportedAction ? WrapperComponent : connect(mapStateToProps, mapDispatchToProps)(WrapperComponent);
 }
 
 export { withAction };

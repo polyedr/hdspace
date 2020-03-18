@@ -19,6 +19,7 @@ export const initial: T.ReduxState = {
   edit: {
     currentProject: DEFAULT_PROJECT,
     currentScreen: DEFAULT_SCREEN,
+    screens: [],
     listProjectLoader: false,
     loader: false,
     scenarios: {},

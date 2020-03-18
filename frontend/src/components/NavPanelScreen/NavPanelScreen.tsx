@@ -25,6 +25,12 @@ interface INavPanelScreenProps {
   addScreen: typeof Actions.addScreen;
   delScreen: typeof Actions.delScreen;
   renameScreen: typeof Actions.renameScreen;
+  projectScreens: IProjectScreen[];
+}
+
+type Screen = {
+  id: number, 
+  name: string,
 }
 
 const NavPanelScreen: React.FunctionComponent<INavPanelScreenProps> = memo(({
@@ -41,16 +47,24 @@ const NavPanelScreen: React.FunctionComponent<INavPanelScreenProps> = memo(({
   addScreen,
   delScreen,
   renameScreen,
+  projectScreens,
 }) => {
   const [modalRenameScreenOpen, setModalRenameScreenOpen] = React.useState<boolean>(false);
-  const [changeScreen, setChangeScreen] = React.useState({ id: -1, name: '' });
-  const [newScreenName, setNewScreenName] = React.useState<string>('');
+  const [editableScreen, setEditableScreen] = React.useState<Screen>({ id: -1, name: '' });
+  const [screens, setScreens] = React.useState<Screen[]>([{ id: -1, name: '' }]);
   const [modalMsgDanger, setModalMsgDanger] = React.useState<string>('');
   const [modalDellScreen, setModalDellScreen] = React.useState<boolean>(false);
+
+  const reverseScreens = [...project.projectscreen].reverse();
 
   useEffect(() => {
     getProject(projectID, screenID);
   }, [projectID, getProject]);
+
+  useEffect(() => {
+    const screens = projectScreens.map(screen => ({ id: screen.id, name: screen.name }));
+    setScreens(screens);
+  }, [projectScreens]);
 
   const openScreen = useCallback((id: number) => {
     if (id === screen.id) return;
@@ -58,10 +72,11 @@ const NavPanelScreen: React.FunctionComponent<INavPanelScreenProps> = memo(({
     activateScreen(projectID, id);
   }, [screen, projectID, activateScreen]);
 
-  const changeNewScreenName = useCallback((e) => {
-    setNewScreenName(e.target.value);
+  const handleScreenNameInputChange = useCallback((e) => {
+    const changedScreen = { ...editableScreen, name: e.target.value };
+    setEditableScreen(changedScreen);
     setModalMsgDanger('');
-  }, []);
+  }, [editableScreen]);
 
   const cancelModal = useCallback(() => {
     setModalMsgDanger('');
@@ -70,38 +85,43 @@ const NavPanelScreen: React.FunctionComponent<INavPanelScreenProps> = memo(({
   }, []);
 
   const handleScreenAdd = useCallback(() => {
-    addScreen(projectID, 'Screen');
-  }, [projectID]);
+    addScreen(projectID, `Screen 1`);
+  }, [projectID, screens]);
 
-  const handleRenameScreen = useCallback((e, id: number, name: string) => {
+  const handleEditButtonClick = useCallback((e, id: number) => {
     e.preventDefault();
     e.stopPropagation();
 
-    setChangeScreen({ id, name });
-    setNewScreenName(name);
+    const changedScreen = screens.find(screen => screen.id === id);
+
+    changedScreen && setEditableScreen(changedScreen);
     setModalRenameScreenOpen(true);
-  }, []);
+  }, [screens]);
 
   const handleDelScreen = useCallback((e, id: number, name: string) => {
     e.preventDefault();
     e.stopPropagation();
-    setChangeScreen({ id, name });
+    setEditableScreen({ id, name });
     setModalDellScreen(true);
   }, []);
 
-  const onRenameScreen = useCallback((event) => {
+  const handleRenameModalConfirm = useCallback((event) => {
     event.preventDefault();
     event.stopPropagation();
     cancelModal();
-    renameScreen(projectID, changeScreen.id, newScreenName);
-  }, [cancelModal, newScreenName, changeScreen, projectID, renameScreen]);
+
+    renameScreen(projectID, editableScreen.id, editableScreen.name);
+    
+    const newScreens = screens.map(screen => screen.id === editableScreen.id ? { ...screen, name: editableScreen.name } : screen);
+    setScreens(newScreens);
+  }, [cancelModal, editableScreen, screens, projectID, renameScreen]);
 
   const onDelScreen = useCallback((e) => {
     e.preventDefault();
     e.stopPropagation();
     cancelModal();
-    delScreen(projectID, changeScreen.id);
-  }, [cancelModal, changeScreen, projectID, delScreen]);
+    delScreen(projectID, editableScreen.id);
+  }, [cancelModal, editableScreen, projectID, delScreen]);
 
   const handleChange = useCallback((order: string[]) => {
     changeScreensOrder(order.map(Number));
@@ -128,7 +148,7 @@ const NavPanelScreen: React.FunctionComponent<INavPanelScreenProps> = memo(({
             onChange={handleChange}
           >
             {
-              project.projectscreen.map(sID => (
+              reverseScreens.map(sID => (
                 <NavLink
                   key={sID}
                   to={`/project/${projectID}/${sID}`}
@@ -142,40 +162,26 @@ const NavPanelScreen: React.FunctionComponent<INavPanelScreenProps> = memo(({
                       <Button
                         className="propsPanelImgBtn"
                         styleType="none"
-                        // TODO: load info about screens and show/rename name
-                        onClick={e => handleRenameScreen(e, sID, 'Screen name')}
+                        onClick={e => handleEditButtonClick(e, sID)}
                       >
                         <Icon icon="edit" size={20} />
                       </Button>
-                      <Button
-                        className="delBtn"
-                        styleType="none"
-                        onClick={e => handleDelScreen(e, sID, 'Screen name')}
-                      >
-                        <Icon icon="delete" size={20} />
-                      </Button>
+                      {screens.length > 1 && (
+                        <Button
+                          className="delBtn"
+                          styleType="none"
+                          onClick={e => handleDelScreen(e, sID, screens.find(screen => screen.id === sID)?.name!)}
+                        >
+                          <Icon icon="delete" size={20} />
+                        </Button>
+                      )}
                     </div>
                     <div
                       className={classNames(
                         styles.screenTab,
                       )}
                     >
-                      {/* { s.image ? (
-                        <img
-                          src={s.image}
-                          alt="img"
-                          style={{
-                            position: 'absolute',
-                            width: '100%',
-                            maxHeight: '100%',
-                            objectFit: 'cover',
-                            objectPosition: '0 0',
-                          }}
-                        />
-                      ) : (
-                        <span>{'Screen name'}</span>
-                      )} */}
-                      <span>Screen name</span>
+                      <span>{screens.find(screen => screen.id === sID)?.name}</span>
                     </div>
                 </NavLink>
               ))
@@ -195,7 +201,7 @@ const NavPanelScreen: React.FunctionComponent<INavPanelScreenProps> = memo(({
           animClassName="bubbleAnimation"
           title="Rename screen"
           confirmText="Rename"
-          onConfirm={e => onRenameScreen(e)}
+          onConfirm={e => handleRenameModalConfirm(e)}
           cancelText="Close"
           onClose={cancelModal}
         >
@@ -203,9 +209,9 @@ const NavPanelScreen: React.FunctionComponent<INavPanelScreenProps> = memo(({
             <input
               type="text"
               className="modalTextInput"
-              value={newScreenName}
+              value={editableScreen.name}
               placeholder="New screen name"
-              onChange={changeNewScreenName}
+              onChange={handleScreenNameInputChange}
               required
             />
             {modalMsgDanger && <p>{modalMsgDanger}</p>
@@ -223,7 +229,7 @@ const NavPanelScreen: React.FunctionComponent<INavPanelScreenProps> = memo(({
           onClose={cancelModal}
         >
           <div className={styles.modalBody}>
-            {`Delete Screen: ${changeScreen.name}`}
+            {`Delete Screen: ${editableScreen.name}`}
           </div>
         </Modal>
       )}

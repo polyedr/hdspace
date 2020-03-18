@@ -24,6 +24,7 @@ import {
   getProjectSaga,
   changeScreensOrderSaga,
   renameProjectSaga,
+  exportProjectSaga,
 } from '$redux/project/sagas/project';
 import {
   deleteActiveItemSaga,
@@ -786,6 +787,7 @@ const loadProjectsType: ProjectT.LoadProjects['type'] = 'PROJECTS:LOAD_PROJECTS'
 const addProjectType: ProjectT.AddProject['type'] = 'PROJECTS:ADD_PROJECT';
 const deleteProjectType: ProjectT.DeleteProject['type'] = 'PROJECTS:DELETE_PROJECT';
 const getProjectType: ProjectT.GetProject['type'] = 'PROJECTS:GET_PROJECT';
+const exportProjectType: ProjectT.ExportProject['type'] = 'PROJECTS:EXPORT_PROJECT';
 const changeScreensOrderType: ProjectT.ChangeScreensOrder['type'] = 'PROJECTS:CHANGE_SCREENS_ORDER';
 const renameProjectType: ProjectT.RenameProject['type'] = 'PROJECTS:RENAME_PROJECT';
 const activateScreenType: ProjectT.ActivateScreen['type'] = 'PROJECTS:ACTIVATE_SCREEN';
@@ -818,6 +820,7 @@ export default function* projectSaga() {
   yield takeLatest(addProjectType, addProject);
   yield takeLatest(deleteProjectType, delProjectSaga);
   yield takeLatest(getProjectType, getProjectSaga);
+  yield takeLatest(exportProjectType, exportProjectSaga);
   yield takeLatest(changeScreensOrderType, changeScreensOrderSaga);
   yield takeLatest(renameProjectType, renameProjectSaga);
 

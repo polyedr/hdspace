@@ -245,3 +245,9 @@ export const RENDERERS: Record<Exclude<Entity, 'root' | 'container'>, React.Func
   clock: ClockWidgetRenderer,
   undefined: UndefinedRenderer,
 };
+
+export const EXPORT_RENDERERS: Record<Exclude<Entity, 'root' | 'container'>, React.FunctionComponent<any>> = {
+  ...RENDERERS,
+  button: withAction(ActionRenderer, 'button', true),
+  hyperlink: withAction(ActionRenderer, 'link', true),
+};
