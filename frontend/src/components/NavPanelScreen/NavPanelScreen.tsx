@@ -108,7 +108,7 @@ const NavPanelScreen: React.FunctionComponent<INavPanelScreenProps> = memo(({
     changedScreen && setEditableScreen(changedScreen);
 
     duplicateScreen(changedScreen?.name || 'copy', changedScreen?.id || -1);
-  }, []);
+  }, [screens]);
 
   const handleDelScreen = useCallback((e, id: number, name: string) => {
     e.preventDefault();
