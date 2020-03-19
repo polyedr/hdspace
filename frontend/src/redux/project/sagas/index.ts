@@ -540,7 +540,7 @@ function* duplicateScreenSaga(action: ReturnType<typeof Actions.duplicateScreen>
 
   const targetActiveItem: ReturnType<typeof selectors.selectActiveItem> = yield select(selectors.selectActiveItem);
 
-  for (let elementToCopy of elementsToCopy) {
+  for (let elementToCopy of elementsToCopy) { // loop need for sequential call
     yield call(duplicateItem, { id: elementToCopy, screenID: sourceCurrentScreen.id }, targetRootID, targetActiveItem );
   }
    
