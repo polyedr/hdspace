@@ -93,6 +93,11 @@ export const addScreen = (projectID: number, name: string): T.AddScreen => ({
   payload: { projectID, name },
 });
 
+export const duplicateScreen = (name: string, screenID: number): T.DuplicateScreen => ({
+  type: 'PROJECTS:DUPLICATE_SCREEN',
+  payload: { name, screenID },
+});
+
 // projectID is unused
 export const activateScreen = (projectID: number, screenID: number): T.ActivateScreen => ({
   type: 'PROJECTS:ACTIVATE_SCREEN',

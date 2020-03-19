@@ -7,6 +7,7 @@ import {
   select,
   fork,
   actionChannel,
+  all,
 } from 'redux-saga/effects';
 import { buffers } from 'redux-saga';
 import * as R from 'ramda';
@@ -47,6 +48,8 @@ import {
 } from '$api/element';
 import { setTokenPair, setLoadedToken } from '$redux/user/actions';
 import { MAX_TOKEN_TRIALS } from '$config/settings';
+import { setScreenLoader } from '$redux/project/actions';
+import { addScreenSaga } from '$redux/project/sagas/screen';
 import { refreshUserTokenPair } from '$redux/user/sagas';
 import { openSignScreen, openProjects } from '$utils/history';
 import { CssLikeStyles } from '$utils/StyleHelper';
@@ -57,7 +60,7 @@ import { getConfigurablePropsOf, Entity } from '$domain/core';
 import { collectChildren, makeContainerLens, makeElementLens } from '$domain/abstractInterface';
 import * as ai from '$domain/abstractInterface';
 
-import { IScreenProps } from '../types';
+import { IScreenProps, ItemToCopyInfo, ActiveItem } from '../types';
 import { selectors, T as ProjectT, actionsCreators, T } from '../';
 
 const runLayoutAlgorithmFinishedType: ProjectT.RunLayoutAlgorithmFinished['type'] = 'PROJECTS:RUN_LAYOUT_ALGORITHM_FINISHED';
@@ -509,6 +512,48 @@ type DuplicateContainerInfo = {
   elementsToDuplicate: ProjectT.IScenarioElement[];
 };
 
+function* duplicateScreenSaga(action: ReturnType<typeof Actions.duplicateScreen>) {
+  const { name } = action.payload;
+
+  const sourceRoot: ReturnType<typeof selectors.selectRootScenario> = yield select(selectors.selectRootScenario);
+
+  const itemsToCopy = sourceRoot?.parameters.children || [];
+  const elementsToCopy = itemsToCopy.filter(item => item.slice(-1) !== 's');
+  const containersToCopy = itemsToCopy.filter(item => item.slice(-1) === 's');
+
+
+  const sourceCurrentScreen: ReturnType<typeof selectors.selectCurrentScreen> = yield select(
+    selectors.selectCurrentScreen,
+  );
+
+  const currentProject: ReturnType<typeof selectors.selectCurrentProject> = yield select(selectors.selectCurrentProject);
+  const projectID = currentProject.id;
+
+  yield call(addScreenSaga, Actions.addScreen(projectID, name));
+  yield put(setScreenLoader(true));
+  
+  const targetRoot: ReturnType<typeof selectors.selectRootScenario> = yield select(selectors.selectRootScenario);
+  const targetRootID = targetRoot?.id || -1; 
+
+  yield put(Actions.setActiveItem({ itemId: `${targetRootID}s`, itemType: 'root', name: 'Root' }));
+
+  const targetActiveItem: ReturnType<typeof selectors.selectActiveItem> = yield select(selectors.selectActiveItem);
+
+  for (let elementToCopy of elementsToCopy) {
+    yield call(duplicateItem, { id: elementToCopy, screenID: sourceCurrentScreen.id }, targetRootID, targetActiveItem );
+  }
+   
+  const containersInfo: DuplicateContainerInfo[] = yield all(containersToCopy.map(
+        item => call(getContainerToDuplicateInfo, { id: item, screenID: sourceCurrentScreen.id }
+  )));
+
+  for (let containerInfo of containersInfo) {
+    yield call(duplicateContainer, containerInfo, `${targetRootID}s`)
+  }
+
+  yield put(setScreenLoader(false));
+}
+
 function* duplicateContainer(containerInfo: DuplicateContainerInfo, targetContainerID: string) {
   const currentScreen: ReturnType<typeof selectors.selectCurrentScreen> = yield select(selectors.selectCurrentScreen);
   const targetContainer: ReturnType<typeof selectors.selectScenario> = yield select(
@@ -648,7 +693,65 @@ function* duplicateContainer(containerInfo: DuplicateContainerInfo, targetContai
   yield fork(reqWrapper, apiSaveElements, { data: elementsToUpdate });
 }
 
+function* duplicateItem(itemToCopyInfo: ItemToCopyInfo, targetContainerID: number, activeItem: ActiveItem) {
+  const elementToDuplicate = yield call(getElementToDuplicate, itemToCopyInfo);
+
+  if (!elementToDuplicate) {
+    console.error(`Didn't find element to duplicate.`);
+    return;
+  }
+
+  const targetContainer: ReturnType<typeof selectors.selectScenario> = yield select(
+    selectors.selectScenario, targetContainerID,
+  );
+
+  const eLens = makeElementLens();
+  const cLens = makeContainerLens();
+
+  const createdElement: ReturnPromisedType<typeof apiAddElements>[number] = (yield call(
+    reqWrapper, apiAddElements, {
+      data: [R.pipe(
+        R.omit(['id']),
+        R.set(eLens.parent, targetContainer.id),
+        R.set(eLens.scenario, targetContainer.id),
+      )(elementToDuplicate)]
+    }))[0];
+
+  const isContainerSelected = ai.isContainer(activeItem.itemId);
+  const updatedTargetContainer = R.pipe(
+    R.over(cLens.elements, (es: number[]) => es.concat(createdElement.id)),
+    R.over(cLens.children, (children: string[]) => isContainerSelected
+        ? children.concat(`${createdElement.id}e`) :
+        R.insert(
+          children.indexOf(activeItem.itemId) + 1,
+          `${createdElement.id}e`,
+          children
+        )),
+  )(targetContainer);
+
+  const scenarios: ReturnType<typeof selectors.selectScenarios> = yield select(selectors.selectScenarios);
+  const scenarioElements: ReturnType<typeof selectors.selectScenariosElements> = yield select(
+    selectors.selectScenariosElements,
+  );
+
+  const finalScenarios = {
+    ...scenarios,
+    [targetContainer.id]: updatedTargetContainer,
+  };
+
+  const finalScenarioElements = {
+    ...scenarioElements,
+    [createdElement.id]: createdElement,
+  };
+
+  yield put(Actions.runLayoutAlgorithm(finalScenarios, finalScenarioElements));
+
+  const scenariosToUpdate = R.values(R.pick([targetContainer.id.toString()], finalScenarios));
+  yield fork(reqWrapper, apiSaveScenarios, { data: scenariosToUpdate });
+}
+
 function* pasteCopiedItemSaga() {
+
   const activeItem: ReturnType<typeof selectors.selectActiveItem> = yield select(selectors.selectActiveItem);
   const targetContainerID: ReturnType<typeof selectors.selectClosestContainerID> = yield select(
     selectors.selectClosestContainerID, activeItem.itemId,
@@ -660,63 +763,10 @@ function* pasteCopiedItemSaga() {
     const itemToCopyIsContainer = itemToCopyID.slice(-1) === 's';
 
     if (itemToCopyIsContainer) {
-      const duplicateContainerInfo = yield call(getContainerToDuplicateInfo, itemToCopyInfo);
+      const duplicateContainerInfo: DuplicateContainerInfo = yield call(getContainerToDuplicateInfo, itemToCopyInfo);
       yield call(duplicateContainer, duplicateContainerInfo, targetContainerID);
     } else {
-      const elementToDuplicate = yield call(getElementToDuplicate, itemToCopyInfo);
-
-      if (!elementToDuplicate) {
-        console.error(`Didn't find element to duplicate.`);
-        return;
-      }
-
-      const targetContainer: ReturnType<typeof selectors.selectScenario> = yield select(
-        selectors.selectScenario, parseInt(targetContainerID),
-      );
-
-      const eLens = makeElementLens();
-      const cLens = makeContainerLens();
-
-      const createdElement: ReturnPromisedType<typeof apiAddElements>[number] = (yield call(
-        reqWrapper, apiAddElements, {
-          data: [R.pipe(
-            R.omit(['id']),
-            R.set(eLens.parent, targetContainer.id),
-            R.set(eLens.scenario, targetContainer.id),
-          )(elementToDuplicate)]
-        }))[0];
-
-      const isContainerSelected = ai.isContainer(activeItem.itemId);
-      const updatedTargetContainer = R.pipe(
-        R.over(cLens.elements, (es: number[]) => es.concat(createdElement.id)),
-        R.over(cLens.children, (children: string[]) => isContainerSelected
-            ? children.concat(`${createdElement.id}e`) :
-            R.insert(
-              children.indexOf(activeItem.itemId) + 1,
-              `${createdElement.id}e`,
-              children
-            )),
-      )(targetContainer);
-  
-      const scenarios: ReturnType<typeof selectors.selectScenarios> = yield select(selectors.selectScenarios);
-      const scenarioElements: ReturnType<typeof selectors.selectScenariosElements> = yield select(
-        selectors.selectScenariosElements,
-      );
-
-      const finalScenarios = {
-        ...scenarios,
-        [targetContainer.id]: updatedTargetContainer,
-      };
-
-      const finalScenarioElements = {
-        ...scenarioElements,
-        [createdElement.id]: createdElement,
-      };
-  
-      yield put(Actions.runLayoutAlgorithm(finalScenarios, finalScenarioElements));
-  
-      const scenariosToUpdate = R.values(R.pick([targetContainer.id.toString()], finalScenarios));
-      yield fork(reqWrapper, apiSaveScenarios, { data: scenariosToUpdate });
+      yield call(duplicateItem, itemToCopyInfo, parseInt(targetContainerID), activeItem);
     }
   }
 }
@@ -790,6 +840,7 @@ const changeScreensOrderType: ProjectT.ChangeScreensOrder['type'] = 'PROJECTS:CH
 const renameProjectType: ProjectT.RenameProject['type'] = 'PROJECTS:RENAME_PROJECT';
 const activateScreenType: ProjectT.ActivateScreen['type'] = 'PROJECTS:ACTIVATE_SCREEN';
 const addScreenType: ProjectT.AddScreen['type'] = 'PROJECTS:ADD_SCREEN';
+const duplicateScreenType: ProjectT.DuplicateScreen['type'] = 'PROJECTS:DUPLICATE_SCREEN';
 const saveScreenType: ProjectT.SaveScreen['type'] = 'PROJECTS:SAVE_SCREEN';
 const deleteScreenType: ProjectT.DeleteScreen['type'] = 'PROJECTS:DELETE_SCREEN';
 const renameScreenType: ProjectT.RenameScreen['type'] = 'PROJECTS:RENAME_SCREEN';
@@ -823,6 +874,7 @@ export default function* projectSaga() {
 
   yield takeLatest(activateScreenType, screenSaga.activateScreenSaga);
   yield takeLatest(addScreenType, screenSaga.addScreenSaga);
+  yield takeEvery(duplicateScreenType, duplicateScreenSaga);
   yield takeLatest(saveScreenType, screenSaga.saveScreenSaga);
   yield takeLatest(deleteScreenType, screenSaga.delScreenSaga);
   yield takeLatest(renameScreenType, screenSaga.renameScreenSaga);

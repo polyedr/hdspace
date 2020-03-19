@@ -34,6 +34,7 @@ const mapDispatchToProps = {
   changeScreensOrder: Actions.changeScreensOrder,
   activateScreen: Actions.activateScreen,
   addScreen: Actions.addScreen,
+  duplicateScreen: Actions.duplicateScreen,
   setScreen: Actions.setScreen,
   delScreen: Actions.delScreen,
   renameScreen: Actions.renameScreen,
@@ -60,6 +61,7 @@ const EditorLogic: React.FunctionComponent<EditorProps> = ({
   changeScreensOrder,
   activateScreen,
   addScreen,
+  duplicateScreen,
   delScreen,
   renameScreen,
   updateElementStyles,
@@ -77,6 +79,7 @@ const EditorLogic: React.FunctionComponent<EditorProps> = ({
       changeScreensOrder={changeScreensOrder}
       activateScreen={activateScreen}
       addScreen={addScreen}
+      duplicateScreen={duplicateScreen}
       delScreen={delScreen}
       renameScreen={renameScreen}
     />

@@ -23,6 +23,7 @@ interface INavPanelScreenProps {
   changeScreensOrder: typeof Actions.changeScreensOrder;
   activateScreen: typeof Actions.activateScreen;
   addScreen: typeof Actions.addScreen;
+  duplicateScreen: typeof Actions.duplicateScreen;
   delScreen: typeof Actions.delScreen;
   renameScreen: typeof Actions.renameScreen;
 }
@@ -39,6 +40,7 @@ const NavPanelScreen: React.FunctionComponent<INavPanelScreenProps> = memo(({
   getProject,
   changeScreensOrder,
   addScreen,
+  duplicateScreen,
   delScreen,
   renameScreen,
 }) => {
@@ -80,6 +82,13 @@ const NavPanelScreen: React.FunctionComponent<INavPanelScreenProps> = memo(({
     setChangeScreen({ id, name });
     setNewScreenName(name);
     setModalRenameScreenOpen(true);
+  }, []);
+
+  const handleDuplicateScreen = useCallback((event, id: number) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    duplicateScreen('copy', changeScreen.id);
   }, []);
 
   const handleDelScreen = useCallback((e, id: number, name: string) => {
@@ -144,6 +153,13 @@ const NavPanelScreen: React.FunctionComponent<INavPanelScreenProps> = memo(({
                         styleType="none"
                         // TODO: load info about screens and show/rename name
                         onClick={e => handleRenameScreen(e, sID, 'Screen name')}
+                      >
+                        <Icon icon="edit" size={20} />
+                      </Button>
+                      <Button
+                        className="propsPanelImgBtn"
+                        styleType="none"
+                        onClick={e => handleDuplicateScreen(e, sID)}
                       >
                         <Icon icon="edit" size={20} />
                       </Button>

@@ -12,6 +12,7 @@ import { LIST_SCENARIO_TYPE } from '$constants/defaultParams';
 import { convertPropCSS, CssLikeStyles } from '$utils/StyleHelper';
 
 const mapStateToProps = (state: AppReduxState, props: OwnProps) => {
+  const currentScreen = selectors.selectCurrentScreen(state);
   const { listSortable } = selectors.selectCurrentScreen(state);
   const scenarios = selectors.selectScenarios(state);
   const scenarioElements = selectors.selectScenariosElements(state);
@@ -30,6 +31,7 @@ const mapStateToProps = (state: AppReduxState, props: OwnProps) => {
     disableInteractions,
     scenarioList,
     elementList,
+    currentScreen,
   };
 };
 
@@ -55,6 +57,7 @@ type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchT
 
 const SortableComponent: React.FC<Props> = (props) => {
   const {
+    currentScreen,
     item,
     activeItemId,
     isMoving,
@@ -103,7 +106,7 @@ const SortableComponent: React.FC<Props> = (props) => {
 
   const getIsActive = useCallback(() => !disableInteractions && item.id === parseInt(activeItemId, 10), [disableInteractions, item, activeItemId]);
 
-  return (
+  return (currentScreen && currentScreen.screenLoader ?  null :
     <SortableGroup
       isActive={getIsActive()}
       key={item.id}
