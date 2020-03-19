@@ -46,6 +46,10 @@ export function editReducer(state: T.ReduxState['edit'] = initial.edit, action: 
       return { ...state, currentScreen: action.payload.screen };
     }
 
+    case 'PROJECTS:SET_SCREENS': {
+      return { ...state, screens: action.payload.screens };
+    }
+
     case 'PROJECTS:SET_PROJECT_LOADER': {
       return { ...state, currentProject: { ...state.currentProject, projectLoader: action.payload.active } };
     }

@@ -27,6 +27,7 @@ const mapStateToProps = (state: AppReduxState) => ({
   isPrototypeMode: state.user.isPrototypeMode,
   currentScreen: selectors.selectCurrentScreen(state),
   scenarioLoader: selectors.selectScenarioLoader(state),
+  projectScreens: selectors.selectScreens(state),
 });
 
 const mapDispatchToProps = {
@@ -55,6 +56,7 @@ const EditorLogic: React.FunctionComponent<EditorProps> = ({
   isNavPanelMinimized,
   isPrototypeMode,
   scenarioLoader,
+  projectScreens,
 
   changeMinNavPanel,
   getProject,
@@ -82,6 +84,7 @@ const EditorLogic: React.FunctionComponent<EditorProps> = ({
       duplicateScreen={duplicateScreen}
       delScreen={delScreen}
       renameScreen={renameScreen}
+      projectScreens={projectScreens}
     />
     <Editor
       screen={currentScreen}

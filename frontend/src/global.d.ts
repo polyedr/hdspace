@@ -1,3 +1,8 @@
+interface Window {
+  renderTreeInfo: any;
+}
+
+
 declare module "react-clock" {
   type HandLength = number; // 0 - 100
   type OppositeHandLength = number; // -100 - 100

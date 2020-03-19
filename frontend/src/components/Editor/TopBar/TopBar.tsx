@@ -24,6 +24,7 @@ type Props = {
   onScreenModeChange(value: ScreenMode): void;
   onScreenRotate(isRotated: boolean): void;
   onScreenSave(): void;
+  onExport(): void;
 };
 
 export const TopBar = (props: Props) => {
@@ -36,6 +37,7 @@ export const TopBar = (props: Props) => {
     onScreenSave,
     onScreenModeChange,
     onScreenRotate,
+    onExport,
   } = props;
 
   const onHistoryBack = useCallback(() => {
@@ -161,6 +163,14 @@ export const TopBar = (props: Props) => {
           disabled={screenID < 1}
         >
           <Icon icon="save" size={28} />
+        </Button>
+        <Button
+          className={classNames('mainImgBtn', styles.navBarBtn)}
+          styleType="none"
+          onClick={onExport}
+          disabled={screenID < 1}
+        >
+          <Icon icon="download" size={28} />
         </Button>
       </div>
     </div>
