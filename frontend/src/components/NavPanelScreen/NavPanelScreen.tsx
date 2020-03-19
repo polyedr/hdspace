@@ -183,7 +183,7 @@ const NavPanelScreen: React.FunctionComponent<INavPanelScreenProps> = memo(({
                         styleType="none"
                         onClick={e => handleDuplicateScreen(e, sID)}
                       >
-                        <Icon icon="edit" size={20} />
+                        <Icon icon="copy" size={20} />
                       </Button>
                       {screens.length > 1 && (
                         <Button
