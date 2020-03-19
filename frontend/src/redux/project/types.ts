@@ -61,6 +61,7 @@ export type SetScenarioLoader = IAction<'PROJECTS:SET_SCENARIO_LOADER', { active
 export type DeleteScreen = IAction<'PROJECTS:DELETE_SCREEN', { projectID: number, screenID: number }>;
 export type RenameScreen = IAction<'PROJECTS:RENAME_SCREEN', { projectID: number, screenID: number, name: string }>;
 export type AddScreen = IAction<'PROJECTS:ADD_SCREEN', { projectID: number, name: string }>;
+export type DuplicateScreen = IAction<'PROJECTS:DUPLICATE_SCREEN', { name: string, screenID: number }>;
 export type ActivateScreen = IAction<'PROJECTS:ACTIVATE_SCREEN', { projectID: number, screenID: number }>;
 export type SetListSortable = IAction<
   'PROJECTS:SET_LIST_SORTABLE', { itemIndex: number, items: string[], id: string, parentID: string }

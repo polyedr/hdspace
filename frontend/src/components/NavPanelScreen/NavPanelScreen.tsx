@@ -23,6 +23,7 @@ interface INavPanelScreenProps {
   changeScreensOrder: typeof Actions.changeScreensOrder;
   activateScreen: typeof Actions.activateScreen;
   addScreen: typeof Actions.addScreen;
+  duplicateScreen: typeof Actions.duplicateScreen;
   delScreen: typeof Actions.delScreen;
   renameScreen: typeof Actions.renameScreen;
   projectScreens: IProjectScreen[];
@@ -45,6 +46,7 @@ const NavPanelScreen: React.FunctionComponent<INavPanelScreenProps> = memo(({
   getProject,
   changeScreensOrder,
   addScreen,
+  duplicateScreen,
   delScreen,
   renameScreen,
   projectScreens,
@@ -97,6 +99,16 @@ const NavPanelScreen: React.FunctionComponent<INavPanelScreenProps> = memo(({
     changedScreen && setEditableScreen(changedScreen);
     setModalRenameScreenOpen(true);
   }, [screens]);
+
+  const handleDuplicateScreen = useCallback((event, id: number) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const changedScreen = screens.find(screen => screen.id === id);
+    changedScreen && setEditableScreen(changedScreen);
+
+    duplicateScreen(changedScreen?.name || 'copy', changedScreen?.id || -1);
+  }, []);
 
   const handleDelScreen = useCallback((e, id: number, name: string) => {
     e.preventDefault();
@@ -165,6 +177,13 @@ const NavPanelScreen: React.FunctionComponent<INavPanelScreenProps> = memo(({
                         onClick={e => handleEditButtonClick(e, sID)}
                       >
                         <Icon icon="edit" size={20} />
+                      </Button>
+                      <Button
+                        className="propsPanelImgBtn"
+                        styleType="none"
+                        onClick={e => handleDuplicateScreen(e, sID)}
+                      >
+                        <Icon icon="copy" size={20} />
                       </Button>
                       {screens.length > 1 && (
                         <Button
