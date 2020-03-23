@@ -77,7 +77,7 @@ class ProjectScreen(TimeStampedModel):
         choices=SCREEN_STATUS, default=SCREEN_IN_PROGRESS, max_length=32
     )
     project = models.ForeignKey(
-        Project, related_name="projectscreen", on_delete=models.CASCADE
+        Project, related_name="projectscreen", on_delete=models.CASCADE, null=True
     )
 
     image = models.ImageField(
