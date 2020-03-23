@@ -170,9 +170,11 @@ class ProjectSerializer(serializers.ModelSerializer):
         }
 
     def create(self, validated_data):
+        projectscreens_data = validated_data.pop('projectscreen')
         project = Project(id=None, **validated_data)
         project.preview = project.generate_preview_token()
         project.save()
+        project.projectscreen.set(projectscreens_data, clear=True)
         return project
 
     def update(self, instance, validated_data):
