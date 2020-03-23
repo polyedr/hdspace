@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 
 import { AppReduxState } from '$shared/types/app';
 import { selectors } from '$redux/project/';
-import { ColorPicker, useColor, normalizeColor } from '$components/UI/ColorPicker/';
 import { DropDown } from '$components/UI/DropDown/';
 import { Icon } from '$components/UI/Icon/';
 import { Button } from '$components/UI/Button/';
@@ -12,6 +11,7 @@ import { FONTS } from '$constants/fonts';
 import { getPermissibleValue } from '$utils/NumberHelper';
 import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
 import { CssLikeStyles } from '$utils/StyleHelper';
+import { ColorSettings } from '$features/applyProperties/views/components/ColorSettings/ColorSettings';
 
 const styles = require('./styles.scss');
 
@@ -52,16 +52,8 @@ export const Component: React.FC<Props> = memo(({
   updateStyles,
   activeItemID,
 }) => {
-  const [currentFontColor, setCurrentFontColor] = useColor(color, activeItemID);
-
-  const handleColorChange = useCallback((color) => {
-    const newColor = normalizeColor(color);
-
-    setCurrentFontColor(newColor);
-
-    if (newColor.isValid) {
-      updateStyles({ color: newColor.value });
-    }
+  const handleColorSettingsChange = useCallback((color: string) => {
+    updateStyles({ color: color });
   }, [updateStyles]);
 
   const onFontFamilyChange = useCallback((value) => {
@@ -170,17 +162,7 @@ export const Component: React.FC<Props> = memo(({
           </div>
         </div>
         <div className="propsElementsInnerBlock">
-          <ColorPicker
-            color={color}
-            onChangeComplete={color => handleColorChange(color)}
-          />
-          <input
-            className={cn("colorField", { inputWithError: !currentFontColor.isValid })}
-            type="text"
-            value={currentFontColor.value}
-            onBlur={() => handleColorChange(color)}
-            onChange={({ target: { value } }) => handleColorChange(value)}
-          />
+          <ColorSettings currentColor={color} activeItemID={activeItemID} onChange={handleColorSettingsChange} />
         </div>
       </div>
     </div>

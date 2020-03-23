@@ -177,7 +177,7 @@ export function* exportProjectSaga() {
 
 
 export function* addProjectSaga({ payload: { name } }: ReturnType<typeof Actions.addProject>) {
-  const project: IListProject = yield call(reqWrapper, apiAddProject, { data: { name, status: 'pending' } });
+  const project: IListProject = yield call(reqWrapper, apiAddProject, { data: { name, status: 'pending', projectscreen: [] } });
   
   if (!project) { // TODO: write communication for such case
     console.error('cannot create project', project);

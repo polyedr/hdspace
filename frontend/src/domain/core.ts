@@ -56,7 +56,13 @@ const extractDefaults = (entity: Entity, control?: Control) => control
   : R.pick(AVAILABLE_CONTROLS[entity], CONTROLS_DEFAULTS);
 
 const ENTITY_TO_DEFAULTS: EntityToDefaults = {
-  root: extractDefaults('root'),
+  root: {
+    ...extractDefaults('root'),
+    background: {
+      ...extractDefaults('root', 'background'),
+      'background-color': '#ffffff',
+    },
+  },
   container: {
     ...extractDefaults('container'),
     size: {
