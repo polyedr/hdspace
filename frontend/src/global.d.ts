@@ -53,3 +53,14 @@ declare namespace NodeJS {
     NODE_ENV: 'development' | 'production';
   }
 }
+
+declare module 'react-color/lib/helpers' {
+  export const toState: (data: any, oldHue?: any) => {
+    hsl: any;
+    hex: string;
+    rgb: any;
+    hsv: any;
+    oldHue: any;
+    source: any;
+  };
+}

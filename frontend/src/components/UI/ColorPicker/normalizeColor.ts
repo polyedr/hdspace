@@ -1,8 +1,10 @@
-import { ColorResult } from "react-color";
+import { ColorResult } from 'react-color';
+import { toState } from 'react-color/lib/helpers';
+import * as R from 'ramda';
 
-export const normalizeColor = (color: string | ColorResult) => {
+export const normalizeColor = (color: string | ColorResult, prevColor: ColorResult, normalizeOpacity?: boolean) => {
   if (typeof color === 'object') {
-    return color.rgb.a === 1
+    return color.rgb.a === 1 || needOpacityNormalize(color, prevColor)
       ? { value: color.hex, isValid: true }
       : { value: `rgba(${color.rgb.r}, ${color.rgb.g}, ${color.rgb.b}, ${color.rgb.a})`, isValid: true };
 
@@ -13,15 +15,26 @@ export const normalizeColor = (color: string | ColorResult) => {
 
     const isRgbOrRgbaRegExp = rgbOrRgbaRegExp.test(color);
 
+    const reactColorObject: ColorResult = toState(color);
+
     if (isHex) {
       return /^#/.test(color)
         ? { value: color, isValid: true }
         : { value: `#${color}`, isValid: true };
     } else if (isRgbOrRgbaRegExp) {
-      return { value: color, isValid: true };
+      const needConvertToHex = normalizeOpacity && needOpacityNormalize(reactColorObject, prevColor) || normalizeOpacity && reactColorObject.rgb.a === 1;
+
+      return { value: needConvertToHex ? reactColorObject.hex : color, isValid: true };
     } else {
       return { value: color, isValid: false };
     }
   }
   return { value: '', isValid: false };
+}
+
+const needOpacityNormalize = (color: ColorResult, prevColor: ColorResult) => {
+  const isRGBChanged = !R.equals(prevColor.rgb, color.rgb);
+  const isOpacityZero = prevColor.rgb.a === 0 && color.rgb.a === 0;
+
+  return isRGBChanged && isOpacityZero;
 }

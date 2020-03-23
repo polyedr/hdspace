@@ -11,10 +11,10 @@ import {
   MIN_BORDER_RADIUS,
   MIN_BORDER_WIDTH,
 } from '$constants/defaultParams';
-import { ColorPicker, useColor, normalizeColor } from '$components/UI/ColorPicker/';
 import { strToNumber, getPermissibleValue, safeParseFloat, safeMatch } from '$utils/NumberHelper';
 import { validateBorderRadius, CssLikeStyles } from '$utils/StyleHelper';
 import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
+import { ColorSettings } from '$features/applyProperties/views/components/ColorSettings/ColorSettings';
 
 const styles = require('./styles.scss');
 
@@ -48,8 +48,6 @@ export const Component: React.FunctionComponent<Props> = React.memo(({
   activeItemID,
   updateStyles,
 }) => {
-  const [currentBorderColor, setCurrentBorderColor] = useColor(borderColor, activeItemID);
-
   const handleBorderWidthChange = useCallback(({ target: { value } }) => {
     const newWidth = getPermissibleValue(strToNumber(value), MIN_BORDER_WIDTH, MAX_BORDER_WIDTH);
 
@@ -64,14 +62,8 @@ export const Component: React.FunctionComponent<Props> = React.memo(({
     updateStyles({ 'border-radius': validateBorderRadius(`${parseFloat(borderRadius)}${value}`) });
   }, [updateStyles]);
 
-  const handleColorChange = useCallback((color) => {
-    const newColor = normalizeColor(color);
-
-    setCurrentBorderColor(newColor);
-
-    if (newColor.isValid) {
-      updateStyles({ 'border-color': newColor.value, });
-    }
+  const handleColorSettingsChange = useCallback((color: string) => {
+    updateStyles({ 'border-color': color, });
   }, [updateStyles]);
 
   return (
@@ -112,17 +104,7 @@ export const Component: React.FunctionComponent<Props> = React.memo(({
           </div>
         </div>
         <div className="propsElementsInnerBlock">
-          <ColorPicker
-            color={borderColor}
-            onChangeComplete={color => handleColorChange(color)}
-          />
-          <input
-            className={cn("colorField", { inputWithError: !currentBorderColor.isValid })}
-            type="text"
-            value={currentBorderColor.value}
-            onBlur={() => handleColorChange(borderColor)}
-            onChange={({ target: { value } }) => handleColorChange(value)}
-          />
+          <ColorSettings currentColor={borderColor} activeItemID={activeItemID} onChange={handleColorSettingsChange} />
         </div>
       </div>
     </div>
