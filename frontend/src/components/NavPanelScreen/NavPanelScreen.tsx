@@ -142,7 +142,7 @@ const NavPanelScreen: React.FunctionComponent<INavPanelScreenProps> = memo(({
     })
 
     changeScreensOrder(newScreens);
-  }, [project, changeScreensOrder]);
+  }, [changeScreensOrder, screens]);
 
   return (
     <div

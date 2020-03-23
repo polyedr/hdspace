@@ -234,10 +234,10 @@ export function* renameProjectSaga(
 export function* changeScreensOrderSaga(action: ReturnType<typeof Actions.changeScreensOrder>) {
   const { screens } = action.payload;
 
+  yield put(setScreens(screens));
+
   yield all(screens.map(screen => call(reqWrapper, apiSaveScreen, {
     id: screen.id,
     data: screen,
   })));
-
-  yield put(setScreens(screens));
 }
