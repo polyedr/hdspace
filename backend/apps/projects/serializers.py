@@ -160,13 +160,13 @@ class ScreenScenarioMultipleSerializer(
 
 class ProjectSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
+    projectscreen = serializers.PrimaryKeyRelatedField(many=True, queryset=ProjectScreen.objects.all())
 
     class Meta:
         model = Project
         fields = ("preview", "name", "favicon", "status", "projectscreen", "user", "id")
         extra_kwargs = {
-            "preview": {"read_only": True},
-            "projectscreen": {"read_only": True}
+            "preview": {"read_only": True}
         }
 
     def create(self, validated_data):
@@ -174,6 +174,15 @@ class ProjectSerializer(serializers.ModelSerializer):
         project.preview = project.generate_preview_token()
         project.save()
         return project
+
+    def update(self, instance, validated_data):
+        """
+        Update and return an existing `Project` instance, given the validated data.
+        """
+        projectscreens_data = validated_data.get('projectscreen')
+        instance.projectscreen.set(projectscreens_data, clear=True)
+        instance.save()
+        return instance
 
     @staticmethod
     def setup_eager_loading(qs):
