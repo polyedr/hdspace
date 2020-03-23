@@ -21,7 +21,7 @@ const ExportedApp: React.FC = () => {
     <LinkContext.Provider value={screensInfo}>
       <Router>
         <Switch>
-          {renderTreeInfo.reverse().map(({ screenInfo: { name }, renderTree: { containers, elements } }, index) => {
+          {renderTreeInfo.map(({ screenInfo: { name }, renderTree: { containers, elements } }, index) => {
               const slug = name.replace(/\s+/g, '-').toLowerCase();
 
               return (

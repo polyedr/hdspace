@@ -101,7 +101,7 @@ export function* activateScreenSaga({ payload }: ReturnType<typeof activateScree
 
 export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
   yield put(Actions.clearAfterPrevScreen());
-  const { projectID, name } = payload;
+  const { projectID, name, buoyancy } = payload;
 
   const screens: ReturnType<typeof selectors.selectScreens> = yield select(selectors.selectScreens);
   const numberedName = generateUniqueName(name, screens.map(screen => screen.name));
@@ -110,7 +110,7 @@ export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
     project: projectID,
     name: numberedName,
     status: 'in_progress',
-    buoyancy: 0,
+    buoyancy,
     image: null,
     screen_data_json: {},
     styles_root: {},

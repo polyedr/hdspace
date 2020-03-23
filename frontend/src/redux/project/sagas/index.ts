@@ -529,8 +529,9 @@ function* duplicateScreenSaga(action: ReturnType<typeof Actions.duplicateScreen>
 
   const currentProject: ReturnType<typeof selectors.selectCurrentProject> = yield select(selectors.selectCurrentProject);
   const projectID = currentProject.id;
+  const screensNumber = currentProject.projectscreen.length;
 
-  yield call(addScreenSaga, Actions.addScreen(projectID, name));
+  yield call(addScreenSaga, Actions.addScreen(projectID, name, screensNumber));
   yield put(setScreenLoader(true));
   
   const targetRoot: ReturnType<typeof selectors.selectRootScenario> = yield select(selectors.selectRootScenario);

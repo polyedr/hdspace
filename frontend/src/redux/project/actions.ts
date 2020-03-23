@@ -47,9 +47,9 @@ export const exportProject = (): T.ExportProject => ({
   type: 'PROJECTS:EXPORT_PROJECT',
 })
 
-export const changeScreensOrder = (screensIDs: number[]): T.ChangeScreensOrder => ({
+export const changeScreensOrder = (screens: T.IProjectScreen[]): T.ChangeScreensOrder => ({
   type: 'PROJECTS:CHANGE_SCREENS_ORDER',
-  payload: { screensIDs },
+  payload: { screens },
 });
 
 export const renameProject = (projectID: number, name: string): T.RenameProject => ({
@@ -92,9 +92,9 @@ export const renameScreen = (projectID: number, screenID: number, name: string):
   payload: { projectID, screenID, name },
 });
 
-export const addScreen = (projectID: number, name: string): T.AddScreen => ({
+export const addScreen = (projectID: number, name: string, buoyancy: number): T.AddScreen => ({
   type: 'PROJECTS:ADD_SCREEN',
-  payload: { projectID, name },
+  payload: { projectID, name, buoyancy },
 });
 
 export const duplicateScreen = (name: string, screenID: number): T.DuplicateScreen => ({

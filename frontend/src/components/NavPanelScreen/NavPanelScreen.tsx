@@ -53,19 +53,19 @@ const NavPanelScreen: React.FunctionComponent<INavPanelScreenProps> = memo(({
 }) => {
   const [modalRenameScreenOpen, setModalRenameScreenOpen] = React.useState<boolean>(false);
   const [editableScreen, setEditableScreen] = React.useState<Screen>({ id: -1, name: '' });
-  const [screens, setScreens] = React.useState<Screen[]>([{ id: -1, name: '' }]);
+  const [screens, setScreens] = React.useState<IProjectScreen[]>(projectScreens);
   const [modalMsgDanger, setModalMsgDanger] = React.useState<string>('');
   const [modalDellScreen, setModalDellScreen] = React.useState<boolean>(false);
-
-  const reverseScreens = [...project.projectscreen].reverse();
 
   useEffect(() => {
     getProject(projectID, screenID);
   }, [projectID, getProject]);
 
   useEffect(() => {
-    const screens = projectScreens.map(screen => ({ id: screen.id, name: screen.name }));
-    setScreens(screens);
+    const orderedScreens = [...projectScreens]
+      .sort((a, b) => (a.buoyancy - b.buoyancy));
+
+    setScreens(orderedScreens);
   }, [projectScreens]);
 
   const openScreen = useCallback((id: number) => {
@@ -87,7 +87,7 @@ const NavPanelScreen: React.FunctionComponent<INavPanelScreenProps> = memo(({
   }, []);
 
   const handleScreenAdd = useCallback(() => {
-    addScreen(projectID, `Screen 1`);
+    addScreen(projectID, `Screen 1`, screens.length);
   }, [projectID, screens]);
 
   const handleEditButtonClick = useCallback((e, id: number) => {
@@ -136,7 +136,12 @@ const NavPanelScreen: React.FunctionComponent<INavPanelScreenProps> = memo(({
   }, [cancelModal, editableScreen, projectID, delScreen]);
 
   const handleChange = useCallback((order: string[]) => {
-    changeScreensOrder(order.map(Number));
+    const newScreens = [...screens].map(screen => {
+      const newBuoyancy = order.indexOf(String(screen.id));
+      return { ...screen, buoyancy: newBuoyancy };
+    })
+
+    changeScreensOrder(newScreens);
   }, [project, changeScreensOrder]);
 
   return (
@@ -160,28 +165,28 @@ const NavPanelScreen: React.FunctionComponent<INavPanelScreenProps> = memo(({
             onChange={handleChange}
           >
             {
-              reverseScreens.map(sID => (
+              screens.map(screenItem => (
                 <NavLink
-                  key={sID}
-                  to={`/project/${projectID}/${sID}`}
-                  className={classNames(styles.screenContainer, screen && sID === screen.id ? styles.screenContainer_active : '')}
-                  data-id={sID}
+                  key={screenItem.id}
+                  to={`/project/${projectID}/${screenItem.id}`}
+                  className={classNames(styles.screenContainer, screen && screenItem.id === screen.id ? styles.screenContainer_active : '')}
+                  data-id={screenItem.id}
                   >
                     <div
                       className={styles.screenNavigate}
-                      onClick={() => openScreen(sID)}
+                      onClick={() => openScreen(screenItem.id)}
                     >
                       <Button
                         className="propsPanelImgBtn"
                         styleType="none"
-                        onClick={e => handleEditButtonClick(e, sID)}
+                        onClick={e => handleEditButtonClick(e, screenItem.id)}
                       >
                         <Icon icon="edit" size={20} />
                       </Button>
                       <Button
                         className="propsPanelImgBtn"
                         styleType="none"
-                        onClick={e => handleDuplicateScreen(e, sID)}
+                        onClick={e => handleDuplicateScreen(e, screenItem.id)}
                       >
                         <Icon icon="copy" size={20} />
                       </Button>
@@ -189,7 +194,7 @@ const NavPanelScreen: React.FunctionComponent<INavPanelScreenProps> = memo(({
                         <Button
                           className="delBtn"
                           styleType="none"
-                          onClick={e => handleDelScreen(e, sID, screens.find(screen => screen.id === sID)?.name!)}
+                          onClick={e => handleDelScreen(e, screenItem.id, screenItem.name)}
                         >
                           <Icon icon="delete" size={20} />
                         </Button>
@@ -200,7 +205,7 @@ const NavPanelScreen: React.FunctionComponent<INavPanelScreenProps> = memo(({
                         styles.screenTab,
                       )}
                     >
-                      <span>{screens.find(screen => screen.id === sID)?.name}</span>
+                      <span>{screenItem.name}</span>
                     </div>
                 </NavLink>
               ))

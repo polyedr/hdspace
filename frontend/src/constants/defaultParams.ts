@@ -168,6 +168,7 @@ export const DEFAULT_SCREEN: IProjectScreen = {
   name: '',
   status: '',
   screenscenario: [],
+  buoyancy: 0,
   image: null,
   listSortable: DEFAULT_LS,
   screenLoader: false,
