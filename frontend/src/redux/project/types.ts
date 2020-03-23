@@ -51,7 +51,7 @@ export type AddProject = IAction<'PROJECTS:ADD_PROJECT', { name: string }>;
 export type DeleteProject = IAction<'PROJECTS:DELETE_PROJECT', { id: number }>;
 export type GetProject = IAction<'PROJECTS:GET_PROJECT', { id: number, screenID?: string }>;
 export type SetProject = IAction<'PROJECTS:SET_PROJECT', { project: IProject }>;
-export type ChangeScreensOrder = IAction<'PROJECTS:CHANGE_SCREENS_ORDER', { screensIDs: number[] }>;
+export type ChangeScreensOrder = IAction<'PROJECTS:CHANGE_SCREENS_ORDER', { screens: IProjectScreen[] }>;
 export type RenameProject = IAction<'PROJECTS:RENAME_PROJECT', { projectID: number, name: string }>;
 export type SetListProjectLoader = IAction<'PROJECTS:SET_LIST_PROJECT_LOADER', { active: boolean }>;
 export type SetProjectLoader = IAction<'PROJECTS:SET_PROJECT_LOADER', { active: boolean }>;
@@ -60,7 +60,7 @@ export type SetLoader = IAction<'PROJECTS:SET_LOADER', { active: boolean }>;
 export type SetScenarioLoader = IAction<'PROJECTS:SET_SCENARIO_LOADER', { active: boolean }>;
 export type DeleteScreen = IAction<'PROJECTS:DELETE_SCREEN', { projectID: number, screenID: number }>;
 export type RenameScreen = IAction<'PROJECTS:RENAME_SCREEN', { projectID: number, screenID: number, name: string }>;
-export type AddScreen = IAction<'PROJECTS:ADD_SCREEN', { projectID: number, name: string }>;
+export type AddScreen = IAction<'PROJECTS:ADD_SCREEN', { projectID: number, name: string, buoyancy: number }>;
 export type DuplicateScreen = IAction<'PROJECTS:DUPLICATE_SCREEN', { name: string, screenID: number }>;
 export type ActivateScreen = IAction<'PROJECTS:ACTIVATE_SCREEN', { projectID: number, screenID: number }>;
 export type SetListSortable = IAction<
@@ -407,6 +407,7 @@ export interface IProjectScreen {
   screenscenario: number[];
   screenLoader: boolean;
   listSortable: IListSortable;
+  buoyancy: number;
   // removed screen_data_json, ask if it will be needed on backend
 }
 

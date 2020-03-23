@@ -9,7 +9,7 @@ import * as R from 'ramda';
 
 import { apiGetScenarios } from '$api/scenario';
 import { apiGetElements } from '$api/element';
-import { apiGetScreen } from '$api/screen';
+import { apiGetScreen, apiSaveScreen } from '$api/screen';
 import { ReturnPromisedType } from '$shared/types';
 import { AppReduxState } from '$shared/types/app';
 import { IListProject, Page, IProjectScreen } from '$redux/project/types';
@@ -85,14 +85,14 @@ export function* getProjectSaga(action: ReturnType<typeof Actions.getProject>) {
 
 export function* addProject(action: ReturnType<typeof Actions.addProject>) {
   const { id: projectID } = yield call(addProjectSaga, action);
-  yield call(addScreenSaga, Actions.addScreen(projectID, 'Screen 1'));
+  yield call(addScreenSaga, Actions.addScreen(projectID, 'Screen 1', 0));
   yield put(push(`/project/${projectID}`));
 }
 
 export function* exportProjectSaga() {
   const currentProject: ReturnType<typeof selectors.selectCurrentProject> = yield select(selectors.selectCurrentProject);
-  const screensIDs = currentProject.projectscreen;
   const screens: ReturnType<typeof selectors.selectScreens> = yield select(selectors.selectScreens);
+  const screensIDs = screens.sort((a, b) => (a.buoyancy - b.buoyancy)).map(screen => screen.id);
 
   const screensContainers: ReturnPromisedType<typeof apiGetScenarios>[] = yield all(screensIDs.map(screenID =>
     call(reqWrapper, apiGetScenarios, { screenID }),
@@ -232,16 +232,12 @@ export function* renameProjectSaga(
 }
 
 export function* changeScreensOrderSaga(action: ReturnType<typeof Actions.changeScreensOrder>) {
-  const { screensIDs } = action.payload;
-  const currentProject: ReturnType<typeof selectors.selectCurrentProject> = yield select(
-    selectors.selectCurrentProject
-  );
+  const { screens } = action.payload;
 
-  const updatedProject: T.IProject = {
-    ...currentProject,
-    projectscreen: screensIDs,
-  };
+  yield all(screens.map(screen => call(reqWrapper, apiSaveScreen, {
+    id: screen.id,
+    data: screen,
+  })));
 
-  yield call(reqWrapper, apiSaveProject, { data: updatedProject });
-  yield put(Actions.setProject(updatedProject));
+  yield put(setScreens(screens));
 }

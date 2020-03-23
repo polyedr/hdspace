@@ -8,12 +8,12 @@ import { DropDown } from '$components/UI/DropDown/';
 import { Icon } from '$components/UI/Icon/';
 import { Button } from '$components/UI/Button/';
 import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
-import { LinkParams, InternalLink, ExternalLink } from '$redux/project/types';
+import { LinkParams, InternalLink, ExternalLink, IProjectScreen } from '$redux/project/types';
 
 const styles = require('./styles.scss');
 
 type StateProps = {
-  screensIDs: number[];
+  screens: IProjectScreen[];
   action: LinkParams;
 }
 
@@ -21,7 +21,7 @@ function mapState(state: AppReduxState): StateProps {
   const activeItemParams = selectors.selectActiveItemParams(state) as any;
 
   return {
-    screensIDs: selectors.selectCurrentProject(state).projectscreen,
+    screens: selectors.selectScreens(state),
     action: activeItemParams.action,
   };
 }
@@ -31,7 +31,7 @@ type Props = StateProps & PropertiesChangeProps;
 const Component: React.FC<Props> = (props) => {
   const {
     action,
-    screensIDs,
+    screens,
     updateParams,
   } = props;
 
@@ -95,9 +95,9 @@ const Component: React.FC<Props> = (props) => {
                 value={getCurrentUrl('internal-link')}
                 options={
                   [{ label: 'No screen', value: 'noScreen' }].concat(
-                    screensIDs.map((screenId, elIndex) => ({
-                      label: `Screen ${elIndex}`,
-                      value: `${screenId}`,
+                    screens.map((screen) => ({
+                      label: `${screen.name}`,
+                      value: `${screen.id}`,
                   })))
                 }
                 onChange={handlePageUrlDropdownChange}
