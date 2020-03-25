@@ -340,7 +340,7 @@ class LoginConfig(Config):
     STEPS_PER_EPOCH = 200
 
     # Skip detections with < 90% confidence
-    DETECTION_MIN_CONFIDENCE = 0.85
+    DETECTION_MIN_CONFIDENCE = 0.75
 
 
 config = LoginConfig()
@@ -360,7 +360,7 @@ model = modellib.MaskRCNN(
 )
 
 # Get path to saved weights
-model_path = os.path.join(MODEL_DIR, "mask_rcnn_form_login_0026.h5")
+model_path = os.path.join(MODEL_DIR, "mask_rcnn_form_login_0029.h5")
 
 # Load trained weights
 model.load_weights(model_path, by_name=True)

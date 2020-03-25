@@ -85,4 +85,5 @@ venv.bak/
 static/users
 media/users
 apps/virtualize_simple/mask_rcnn/trained_models/mask_rcnn_form_login_0026.h5
+apps/virtualize_simple/mask_rcnn/trained_models/*
 apps/virtualize_simple/mask_rcnn/train_shapes.ipynb
