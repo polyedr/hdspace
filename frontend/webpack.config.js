@@ -117,7 +117,8 @@ module.exports = () => {
         { test: /\.(ts|tsx)?$/, loader: 'awesome-typescript-loader', 
           options: { transpileOnly: !isDevelopment }},
         {
-          test: /\.(eot|ttf|woff|woff2|otf)$/,
+          test: /\.(eot|ttf|woff|woff2|otf|svg)$/,
+          include: [/fonts/],
           use: {
             loader: 'file-loader',
             options: {
@@ -128,6 +129,7 @@ module.exports = () => {
         },
         {
           test: /\.(png|svg)$/,
+          exclude: [/fonts/],
           use: {
             loader: 'file-loader',
             options: {
