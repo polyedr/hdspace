@@ -26,6 +26,7 @@ import {
 } from '$api/project';
 import { DEFAULT_SCREEN } from '$constants/defaultParams';
 import { reqWrapper } from '$redux/project/sagas/index';
+import { generateFontFace } from '$utils/generateFontFace';
 
 import { selectors, T } from '../';
 
@@ -141,6 +142,47 @@ export function* exportProjectSaga() {
     };
   });
 
+  const fontsInfo = R.uniq((R.flatten(elements) as unknown as T.IScenarioElement[])
+    .filter(element => element.styles['font-family'])
+    .map(element => {
+      const fontFamilyName = element.styles['font-family']?.split(', ')[0].replace(/"/g,"");
+      const capitalizedFontFamilyName = fontFamilyName?.split(' ').map(word => `${word[0].toUpperCase()}${word.substring(1)}`).join('');
+      
+      const isBold = element.styles['font-weight'] === 700;
+      const isItalic = element.styles['font-style'] === 'italic';
+
+      const fileName = `${capitalizedFontFamilyName}-${isBold ? "Bold" : ""}${isItalic ? "Italic" : ""}${!isBold && !isItalic ? "Regular" : ""}`;
+
+      const fontFace = generateFontFace(
+        fontFamilyName || 'Open Sans',
+        fileName || 'OpenSans-Regular',
+        element.styles['font-weight'] || 400,
+        element.styles['font-style'] || 'normal'
+      );
+
+      return { fileName, fontFace };
+  }));
+
+  const fontsSVGResponses: Response[] = yield all(fontsInfo.map(font => call(fetch, `/fonts/${font.fileName}.svg`)));
+  const fontsTTFResponses: Response[] = yield all(fontsInfo.map(font => call(fetch, `/fonts/${font.fileName}.ttf`)));
+  const fontsWOFFResponses: Response[] = yield all(fontsInfo.map(font => call(fetch, `/fonts/${font.fileName}.woff`)));
+
+  const fontsSVGFiles: Blob[] = yield all(fontsSVGResponses.map(fontResponse => call([fontResponse, 'blob'])));
+  const fontsTTFFiles: Blob[] = yield all(fontsTTFResponses.map(fontResponse => call([fontResponse, 'blob'])));
+  const fontsWOFFFiles: Blob[] = yield all(fontsWOFFResponses.map(fontResponse => call([fontResponse, 'blob'])));
+
+  fontsSVGFiles.forEach((fontFile, index) => {
+    zip.file(`fonts/${fontsInfo[index]?.fileName || "OpenSans-Regular"}.svg`, fontFile);
+  });
+
+  fontsTTFFiles.forEach((fontFile, index) => {
+    zip.file(`fonts/${fontsInfo[index]?.fileName || "OpenSans-Regular"}.ttf`, fontFile);
+  });
+
+  fontsWOFFFiles.forEach((fontFile, index) => {
+    zip.file(`fonts/${fontsInfo[index]?.fileName || "OpenSans-Regular"}.woff`, fontFile);
+  });
+
   const jsBundleResponse = yield call(fetch, '/export/bundle.js');
   const jsBundleFile = yield call([jsBundleResponse, "text"]);
 
@@ -148,6 +190,8 @@ export function* exportProjectSaga() {
   const stylesFile = yield call([stylesResponse, "text"]);
 
   const renderTreeInfoInString = JSON.stringify(renderTreeInfo);
+
+  const fontFaces = fontsInfo.map(font => font.fontFace).reduce((acc, font) => acc + font);
 
   zip.file('index.html', 
   `
@@ -158,6 +202,7 @@ export function* exportProjectSaga() {
       <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
       <title>${currentProject.name}</title>
       <link rel="stylesheet" href="styles.css">
+      <style>${fontFaces}</style>
     </head>
     <body>
       <div id="root"></div>

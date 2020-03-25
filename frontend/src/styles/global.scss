@@ -1,43 +1,20 @@
-// @import './common.scss';
+@include font('Lato');
+@include font('Merriweather');
+@include font('Montserrat');
+@include font('Open Sans', 'OpenSans');
 
-@font-face {
-  font-family: "Open Sans";
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
+@include font-face('Oswald', '../assets/fonts/Oswald-Bold', bold, null, ttf woff svg);
+@include font-face('Oswald', '../assets/fonts/Oswald-Regular', null, null, ttf woff svg);
 
-  src: url("../assets/fonts/opensans.woff2") format("woff2"),
-    url("../assets/fonts/opensans.woff") format("woff");
-}
+@include font('Raleway');
+@include font('Roboto');
+@include font('Roboto Condensed', 'RobotoCondensed');
+@include font('Roboto Mono', 'RobotoMono');
+@include font('Source Sans Pro', 'SourceSansPro');
+@include font('Ubuntu');
 
-@font-face {
-  font-family: "Open Sans";
-  font-weight: 300;
-  font-style: normal;
-  font-display: swap;
-
-  src: url("../assets/fonts/opensanslight.woff2") format("woff2"),
-    url("../assets/fonts/opensanslight.woff") format("woff");
-}
-
-@font-face {
-  font-family: "Open Sans";
-  font-weight: 600;
-  font-style: normal;
-  font-display: swap;
-
-  src: url("../assets/fonts/opensanssemibold.woff") format("woff");
-}
-
-@font-face {
-  font-family: "Open Sans";
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-
-  src: url("../assets/fonts/opensansbold.woff2") format("woff2"),
-    url("../assets/fonts/opensansbold.woff") format("woff");
-}
+@include font-face('Open Sans', '../assets/fonts/OpenSans-Light', 300, null, ttf woff svg);
+@include font-face('Open Sans', '../assets/fonts/OpenSans-SemiBold', 600, null, ttf woff svg);
 
 body {
   @include main_text;
