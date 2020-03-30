@@ -16,6 +16,7 @@ const mapStateToProps = (state: AppReduxState, props: OwnProps) => {
   const { listSortable } = selectors.selectCurrentScreen(state);
   const scenarios = selectors.selectScenarios(state);
   const scenarioElements = selectors.selectScenariosElements(state);
+  const savedElements = selectors.selectSavedElementsValues(state);
   const disableInteractions = state.user.isPrototypeMode;
 
   const currId = idToLSId(props.item.id, props.item.type);
@@ -32,12 +33,14 @@ const mapStateToProps = (state: AppReduxState, props: OwnProps) => {
     scenarioList,
     elementList,
     currentScreen,
+    savedElements,
   };
 };
 
 const mapDispatchToProps = {
   updateElementStyles: actionsCreators.updateElementStyles,
   setListSortable: actionsCreators.setListSortable,
+  updateSavedElementValues: actionsCreators.updateSavedElementValues,
 };
 
 export type OwnProps = {
@@ -72,6 +75,8 @@ const SortableComponent: React.FC<Props> = (props) => {
     listSortable,
     elementList,
     scenarioList,
+    savedElements,
+    updateSavedElementValues,
   } = props;
 
   const [isDragging, setIsDragging] = useState<boolean>(false);
@@ -103,6 +108,10 @@ const SortableComponent: React.FC<Props> = (props) => {
 
     return parseStyle ? convertPropCSS(parseStyle) : {};
   }, [scenarioList]);
+
+  const handleRenderElementChange = useCallback((id, props) => {
+    updateSavedElementValues(id, props);
+  }, [updateSavedElementValues]);
 
   const getIsActive = useCallback(() => !disableInteractions && item.id === parseInt(activeItemId, 10), [disableInteractions, item, activeItemId]);
 
@@ -163,6 +172,8 @@ const SortableComponent: React.FC<Props> = (props) => {
             name={name}
             style={parsedStyles}
             active={!disableInteractions && itemId === activeItemId}
+            savedElement={savedElements[itemId]}
+            onChange={handleRenderElementChange}
            />
         ) : null;
       })}

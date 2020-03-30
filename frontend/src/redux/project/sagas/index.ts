@@ -336,6 +336,8 @@ function* updateElementParameters(action: ReturnType<typeof Actions.updateElemen
     },
   };
 
+  yield put(Actions.updateSavedElementValues(itemID, parameters.textContent || '' ));
+ 
   yield put(Actions.setScenarioElements(updateScenarioElements));
 
   if (modifyElements.indexOf(parseId) === -1) {

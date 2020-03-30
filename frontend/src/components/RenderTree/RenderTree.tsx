@@ -1,17 +1,38 @@
-import React from 'react';
+import React, { useCallback } from 'react';
+import { connect } from 'react-redux';
 
 import { EXPORT_RENDERERS } from '$components/UI/RenderElements';
 import { convertPropCSS } from '$utils/StyleHelper';
+import { SavedElementsValues } from '$redux/project/types';
 import { T } from '$redux/project';
+import { selectors, actionsCreators, ReduxState } from '$redux/export';
 
-type Props = {
+type OwnProps = {
   elementList: T.IScenarioElement[],
   scenarioList: T.IScenarioItem[],
   item?: T.IScenarioItem,
+  savedElements: SavedElementsValues;
 }
 
-const RenderTree: React.FC<Props> = (props) => {
-  const { elementList, scenarioList, item } = props;
+const mapStateToProps = (state: ReduxState) => {
+  return {
+    savedElements: selectors.selectSavedElementsValues(state),
+  };
+};
+
+const mapDispatchToProps = {
+  updateSavedElementsValues: actionsCreators.updateSavedElementsValues,
+  updateSavedElementValues: actionsCreators.updateSavedElementValues,
+};
+
+type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
+
+const RenderTreeComponent: React.FC<Props> = (props) => {
+  const { elementList, scenarioList, item, savedElements, updateSavedElementValues } = props;
+
+  const handleRenderElementChange = useCallback((id, props) => {
+    updateSavedElementValues(id, props);
+  }, [updateSavedElementValues]);
 
   return (
     <>
@@ -42,10 +63,13 @@ const RenderTree: React.FC<Props> = (props) => {
         
         return ElementRenderer ? (
           <ElementRenderer
+            id={itemID}
             key={itemID}
             params={parameters}
             name={name}
             style={parsedStyles}
+            savedElement={savedElements[itemID]}
+            onChange={handleRenderElementChange}
           />
         ) : null;
       })}
@@ -53,4 +77,4 @@ const RenderTree: React.FC<Props> = (props) => {
   )
 }
 
-export { RenderTree };
+export const RenderTree = connect(mapStateToProps, mapDispatchToProps)(RenderTreeComponent);

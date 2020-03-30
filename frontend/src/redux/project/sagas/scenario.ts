@@ -151,6 +151,15 @@ export function* addElementsIntoContainerSaga(action: ReturnType<typeof Actions.
     ...createdElements.reduce((acc: T.IScenarioElements, x) => ({ ...acc, [x.id]: x }), {}),
   }
 
+  const oldSavedElementsValues: ReturnType<typeof selectors.selectSavedElementsValues> = yield select(selectors.selectSavedElementsValues);
+  
+  const newSavedElementsValues = createdElements.reduce((acc, element) => ({
+    ...acc,
+    [`${element.id}e`]: { id: element.id, savedValue: element.parameters.textContent || '' },
+  }), oldSavedElementsValues);
+
+  yield put(Actions.updateSavedElementsValues(newSavedElementsValues));
+
   yield put(Actions.runLayoutAlgorithm(finalScenarios, finalScenarioElements));
   yield take(runLayoutAlgorithmFinishedType);
 

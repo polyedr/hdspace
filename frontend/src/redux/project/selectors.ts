@@ -44,6 +44,10 @@ export function selectIsAddElementsModalOpened(state: AppReduxState) {
   return selectFeatureState(state).ui.isAddElementsModalOpened;
 };
 
+export function selectSavedElementsValues(state: AppReduxState) {
+  return selectFeatureState(state).ui.savedElementsValues;
+};
+
 export function selectLibraryElements(state: AppReduxState) {
   return selectFeatureState(state).data.libraryElements;
 };

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, ChangeEvent } from 'react';
 import cn from 'classnames';
 import { Input, Button } from 'antd';
 import { Link } from 'react-router-dom';
@@ -23,7 +23,9 @@ export type RendererProps = {
   isDisabled?: boolean;
   children?: JSX.Element;
   sortableId?: string;
+  savedElement: { id: number, savedValue: string };
   onClick?(event: any, id: string): void;
+  onChange(itemID: string, savedValue: string): void;
 };
 
 type Renderer = React.FC<RendererProps>;
@@ -79,7 +81,14 @@ const ActionRenderer: ActionRenderer = (props) => {
 }
 
 const InputRenderer: Renderer = (props) => {
-  const { id, style, params, isDisabled, active, onClick, sortableId } = props;
+  const { id, style, params, isDisabled, active, onClick, sortableId, savedElement, onChange } = props;
+
+  const textContent = isDisabled ? params.textContent : savedElement && savedElement.savedValue || '';
+
+  const handleInputChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    onChange(id, event.target.value);
+  }, [onChange, id]);
+
   return (
     <Input
       id={id}
@@ -93,15 +102,22 @@ const InputRenderer: Renderer = (props) => {
         ...style,
         transition: 'none',
       }}
-      {...(isDisabled ? { value: params.textContent } : undefined)}
+      value={textContent}
       onClick={(event) => onClick?.(event, id)}
       placeholder={params.placeholder}
+      onChange={handleInputChange}
     />
   );
 };
 
 const SelectRenderer: Renderer = (props) => {
-  const { id, style, name, isDisabled, active, sortableId } = props;
+  const { id, style, name, isDisabled, active, sortableId, savedElement, onChange } = props;
+  const value = isDisabled ? '' : savedElement && savedElement.savedValue || '';
+
+  const handleSelectChange = useCallback((event: ChangeEvent<HTMLSelectElement>) => {
+    onChange(id, event.target.value);
+  }, [onChange, id]);
+
   return (
     <select
       id={id}
@@ -110,6 +126,9 @@ const SelectRenderer: Renderer = (props) => {
       key={id}
       className={cn('ls-item', styles.addedSelect, active && 'activated')}
       style={style}
+      value={value}
+      onChange={handleSelectChange}
+      disabled={isDisabled}
     >
       {
         getDefaultDateSelectOptions(name).map(option => (

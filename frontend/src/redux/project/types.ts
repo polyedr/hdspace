@@ -13,6 +13,7 @@ export type ReduxState = {
     activeItem: ActiveItem;
     isAddElementsModalOpened: boolean;
     itemToCopyInfo: ItemToCopyInfo | null;
+    savedElementsValues: SavedElementsValues;
   },
   edit: {
     currentProject: IProject;
@@ -34,6 +35,8 @@ export type ActiveItem = {
   itemType: string;
   name: string;
 };
+
+export type SavedElementsValues = { [elementID: string]: { id: number, savedValue: string } };
 
 export type LoadLibraryElements = IPlainAction<'PROJECTS:LOAD_LIBRARY_ELEMENTS'>;
 export type LoadLibraryElementsSuccess = IAction<
@@ -84,6 +87,12 @@ export type UpdateScenarioStyles = IAction<
 export type UpdateElementImage = IAction<'PROJECTS:UPDATE_ELEMENT_IMAGE', { itemID: string, image: File }>;
 export type UpdateElementParameters = IAction<
   'PROJECTS:UPDATE_ELEMENT_PARAMETERS', { itemID: string, parameters: IScreenProps }
+>;
+export type UpdateSavedElementsValues = IAction<
+  'PROJECTS:UPDATE_SAVED_ELEMENTS_VALUES', { elementsValues: SavedElementsValues }
+>;
+export type UpdateSavedElementValues = IAction<
+  'PROJECTS:UPDATE_SAVED_ELEMENT_VALUES', { itemID: string, savedValue: string }
 >;
 export type DeleteActiveItem = IPlainAction<'PROJECTS:DELETE_ACTIVE_ITEM'>;
 export type AddElementsIntoContainer = IAction<
@@ -158,7 +167,9 @@ export type Action =
   | SetItemToCopy
   | CopyActiveItem
   | PasteCopiedItem
-  | ResetScreenState;
+  | ResetScreenState
+  | UpdateSavedElementsValues
+  | UpdateSavedElementValues;
 
 export type ItemToCopyInfo = {
   id: string;
@@ -360,6 +371,7 @@ export interface IScenarioElement { // compare with entity on backend
     },
     url?: string,
     imageURL?: string;
+    textContent?: string;
   },
   styles: CssLikeStyles,
 }

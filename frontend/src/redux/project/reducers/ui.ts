@@ -27,6 +27,24 @@ export function uiReducer(state: T.ReduxState['ui'] = initial.ui, action: T.Acti
       return { ...state, isAddElementsModalOpened: action.payload.isOpened };
     }
 
+    case 'PROJECTS:UPDATE_SAVED_ELEMENTS_VALUES': {
+      const { elementsValues } = action.payload;
+
+      return { ...state, savedElementsValues: { ...state.savedElementsValues, ...elementsValues } };
+    }
+
+    case 'PROJECTS:UPDATE_SAVED_ELEMENT_VALUES': {
+      const { itemID, savedValue } = action.payload;
+
+      return { ...state, savedElementsValues: {
+        ...state.savedElementsValues,
+        [itemID]: {
+          ...state.savedElementsValues[itemID],
+          savedValue,
+        }
+      }};
+    }
+
     default: return state;
   }
 }

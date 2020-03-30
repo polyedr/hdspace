@@ -90,6 +90,15 @@ export function* activateScreenSaga({ payload }: ReturnType<typeof activateScree
 
   const scenariosElements = convertScenarioElements(serverScenariosElements);
 
+  const oldSavedElementsValues: ReturnType<typeof selectors.selectSavedElementsValues> = yield select(selectors.selectSavedElementsValues);
+
+  const newSavedElementsValues = !R.isEmpty(oldSavedElementsValues) ? oldSavedElementsValues : serverScenariosElements.reduce((acc, element) => ({
+    ...acc,
+    [`${element.id}e`]: { id: element.id, savedValue: element.parameters.textContent || '' },
+  }), {});
+
+  yield put(Actions.updateSavedElementsValues(newSavedElementsValues));
+
   yield put(Actions.runLayoutAlgorithm(screenScenarios, scenariosElements));
   yield take(runLayoutAlgorithmFinishedType);
 

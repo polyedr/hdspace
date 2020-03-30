@@ -191,6 +191,16 @@ export const updateElementParameters = (itemID: string, parameters: T.IScreenPro
   payload: { itemID, parameters },
 });
 
+export const updateSavedElementsValues = (elementsValues: T.SavedElementsValues): T.UpdateSavedElementsValues => ({
+  type: 'PROJECTS:UPDATE_SAVED_ELEMENTS_VALUES',
+  payload: { elementsValues },
+});
+
+export const updateSavedElementValues = (itemID: string, savedValue: string): T.UpdateSavedElementValues => ({
+  type: 'PROJECTS:UPDATE_SAVED_ELEMENT_VALUES',
+  payload: { itemID, savedValue },
+});
+
 export const deleteActiveItem = (): T.DeleteActiveItem => ({
   type: 'PROJECTS:DELETE_ACTIVE_ITEM',
 });
