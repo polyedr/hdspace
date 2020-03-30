@@ -15,6 +15,7 @@ export const initial: T.ReduxState = {
     activeItem: DEFAULT_ACTIVE_ITEM,
     isAddElementsModalOpened: false,
     itemToCopyInfo: null,
+    savedElementsValues: {},
   },
   edit: {
     currentProject: DEFAULT_PROJECT,
