@@ -107,7 +107,7 @@ def get_dominant_colour(image, k=4, image_processing_size=None):
     this resizing can be done with the image_processing_size param
     which takes a tuple of image dims as input
 
-    >>> get_dominant_colour(my_image, k=4, image_processing_size = (25, 25))
+    get_dominant_colour(my_image, k=4, image_processing_size = (25, 25))
     [56.2423442, 34.0834233, 70.1234123]
     """
     # resize image if new dims provided
@@ -285,6 +285,11 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                     width_elem = x2 - x1
                     height_elem = y2 - y1
                     '''
+                    '''
+                    test
+                    # Show the recognized elements with classes and probabilities
+                    print(idx, roi, class_id, score)
+                    '''
 
                     y1, x1, y2, x2 = roi
                     roi_our = img[y1:y2, x1:x2]
@@ -447,7 +452,12 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                                 },
                             }
                         )
-
+            ''' 
+            test
+            # Display the recognized_elements to the command line
+            for recognized_element in recognized_elements:
+                print(recognized_element)
+            '''
             # Sort the recognized_elements, extract the y1 parameter
             # The roi order is y1, x1, y2, x2
             # recognized_elements = sorted(recognized_elements, key=lambda i: i["parameters"]["roi"][0])
@@ -472,6 +482,7 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
             #
 
             vertical_groups = {}
+            vertical_groups_subset = {}
             horizontal_groups = {}
             # Inner scenarios elements list to remove them from recognized_elements
             # befpre the final assignment to the general scenario
@@ -559,9 +570,10 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                     # Check if the roi1 is text or input or select
                     if recognized_element["struct_type"] in {"textinput", "select", "ocrtext"} and recognized_element1[
                             "struct_type"] in {"textinput", "select", "ocrtext"} and (idx != idx1):
-                        # Check if the elements were not assigned to the vertical groups before
+                        # Check if the elements were not assigned to the horizontal groups before
                         # Flatten horizontal group keys
                         fhgk = set(i for sub in horizontal_groups.keys() for i in sub)
+                        # test print("Flatten horizontal group keys", fhgk)
                         if ((idx not in fhgk) and (idx1 not in fhgk)):
                             # Check if these elements are laying at one level horizontally
                             # They should overlap vertically and this level of the overlap
@@ -586,6 +598,17 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
             # {(element1, element2): scenario1, (element3, element4): scenario2}
             # vertical_groups = {(1, 2): -1}
             # horizontal_groups = {(2, 3): -1, (4, 5): -1}
+
+            '''
+            # test
+            print("Horizontal groups are:")
+            for key in horizontal_groups:
+                print(key, horizontal_groups[key])
+
+            print("Vertical groups are:")
+            for key in vertical_groups:
+                print(key, vertical_groups[key])
+            '''
 
             scenario_vertical_data = {
                 "name": "scenario_vertical",
@@ -689,9 +712,11 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                     # Each horizontal element is being placed not more than at one vertical group
                     # Assign the vertical group if exists
                     vertical_group = (-1, -1)
-                    for v_group in vertical_groups:
+                    for v_group, value in vertical_groups.items():
                         if element_data_horizontal in v_group:
                             vertical_group = v_group
+                            # Assign the vertical group subset if exists
+                            vertical_groups_subset[v_group] = value
 
                     if vertical_group == (-1, -1):
                         children_dict_hgroups = {}
@@ -724,10 +749,17 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                         rois = vertical_group_scenario.parameters["roi"]
                         children_dict_hgroups.update({'ids': ids})
                         children_dict_hgroups.update({'roi': rois})
-                        children.append(children_dict_hgroups)
+                        # Prevent the appearance of duplications
+                        if children_dict_hgroups not in children:
+                            children.append(children_dict_hgroups)
 
                         vertical_group_scenario.parent_id = scenario_horizontal.id
                         vertical_group_scenario.save()
+                '''
+                test
+                # Show the children array
+                print("children", children)
+                '''
 
                 # Extract rois from the rois_list
                 # Find min & max values for the bounding rectangle
@@ -748,18 +780,33 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
         # Find all free vertical scenarios.
         # Free vertical scenario does not share any element
         # with horizontal scenario
-        # Should check if vertical and horizontal groups exists before these calculations
+        # and doesn't belong to any horizontal scenario as a child
+        # Should check if vertical and horizontal groups exist before these calculations
 
         if vertical_groups:
             vertical_groups_free = copy.deepcopy(vertical_groups)
         else:
             vertical_groups_free = {}
 
+        # print("vertical_groups_free", vertical_groups_free)
+        # print("vertical_groups_subset", vertical_groups_subset)
+        # print("horizontal_groups", horizontal_groups)
         if vertical_groups and horizontal_groups:
             for v_group_key in list(vertical_groups_free.keys()):
+                # Check the horizontal groups
                 for h_group_key in horizontal_groups:
+                    # print(set(v_group_key), set(h_group_key))
                     # Sets are disjoints if and only if their intersection is the empty set
-                    if set(v_group_key).isdisjoint(set(h_group_key)):
+                    if not set(v_group_key).isdisjoint(set(h_group_key)):
+                        try:
+                            del vertical_groups_free[v_group_key]
+                        except KeyError:
+                            pass
+                # Check the vertical groups,
+                # which are children of the horizontal groups
+                for vs_group_key in vertical_groups_subset:
+                    # Sets are disjoints if and only if their intersection is the empty set
+                    if not set(v_group_key).isdisjoint(set(vs_group_key)):
                         try:
                             del vertical_groups_free[v_group_key]
                         except KeyError:
