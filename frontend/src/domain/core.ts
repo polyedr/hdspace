@@ -1,13 +1,25 @@
 import * as R from 'ramda';
 import { createSelector } from 'reselect';
 import {
-  DEFAULT_INDENTS, DEFAULT_BORDER, DEFAULT_BACKGROUND, DEFAULT_TYPOGRAPHY, DEFAULT_SIZE, DEFAULT_ACTION, DEFAULT_PLACEHOLDER, DEFAULT_TEXT_CONTENT, DEFAULT_MAP_PROPS, DEFAULT_DISPLAY, DEFAULT_IMAGE_PROPS,
+  DEFAULT_INDENTS,
+  DEFAULT_BORDER,
+  DEFAULT_BACKGROUND,
+  DEFAULT_TYPOGRAPHY,
+  DEFAULT_SIZE,
+  DEFAULT_ACTION,
+  DEFAULT_PLACEHOLDER,
+  DEFAULT_TEXT_CONTENT,
+  DEFAULT_MAP_PROPS,
+  DEFAULT_DISPLAY,
+  DEFAULT_IMAGE_PROPS,
+  DEFAULT_VALUE,
+  DEFAULT_NAME,
 } from '$constants/defaultParams';
 
 export const ENTITIES = [
-  'root', 'container', 'button', 'textinput', 'hyperlink', 'ocrtext', 'image', 'select', 'map', 'calendar', 'clock', 'undefined'
+  'root', 'container', 'button', 'textinput', 'checkbox', 'hyperlink', 'ocrtext', 'image', 'select', 'map', 'calendar', 'clock', 'undefined'
 ] as const;
-const CONTROLS_AFFECT_ON_PARAMS = ['action', 'mapProps', 'placeholder', 'textContent', 'image'] as const;
+const CONTROLS_AFFECT_ON_PARAMS = ['action', 'mapProps', 'placeholder', 'textContent', 'image', 'value', 'name'] as const;
 const CONTROLS_AFFECT_ON_STYLES = ['display', 'indents', 'size', 'typography', 'border', 'background'] as const;
 
 const controlAffectsOnStyles = (controlName: Control) => (
@@ -23,6 +35,7 @@ export const AVAILABLE_CONTROLS: Record<Entity, Control[]> = {
   container: ['indents', 'size', 'display', 'typography', 'border', 'background'],
   button: ['indents', 'size', 'display', 'typography', 'border', 'background', 'textContent', 'action'],
   textinput: ['indents', 'size', 'typography', 'border', 'background', 'textContent', 'placeholder'],
+  checkbox: ['value', 'name', 'indents', 'size', 'background'],
   hyperlink: ['indents', 'size', 'display', 'typography', 'border', 'background', 'textContent', 'action'],
   ocrtext: ['indents', 'size', 'typography', 'border', 'background', 'textContent'],
   image: ['indents', 'size', 'border', 'background', 'image'],
@@ -45,6 +58,8 @@ const CONTROLS_DEFAULTS: Record<Control, any> = {
   textContent: DEFAULT_TEXT_CONTENT,
   mapProps: DEFAULT_MAP_PROPS,
   image: DEFAULT_IMAGE_PROPS,
+  value: DEFAULT_VALUE,
+  name: DEFAULT_NAME,
 };
 
 type EntityToDefaults = {
@@ -108,6 +123,18 @@ const ENTITY_TO_DEFAULTS: EntityToDefaults = {
     textContent: {
       ...extractDefaults('textinput', 'textContent'),
       textContent: '',
+    },
+  },
+  checkbox: {
+    ...extractDefaults('checkbox'),
+    background: {
+      ...extractDefaults('checkbox', 'background'),
+      'background-color': '#1890ff',
+    },
+    size: {
+      ...extractDefaults('checkbox', 'size'),
+      width: '20px',
+      height: '20px',
     },
   },
   hyperlink: {

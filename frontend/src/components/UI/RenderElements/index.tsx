@@ -1,7 +1,10 @@
-import React, { useCallback, ChangeEvent } from 'react';
+import React, { useCallback, ChangeEvent, useState } from 'react';
 import cn from 'classnames';
 import { Input, Button } from 'antd';
 import { Link } from 'react-router-dom';
+import Radio from '@material-ui/core/Radio';
+import RadioButtonCheckedIcon from '@material-ui/icons/RadioButtonChecked';
+import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked';
 
 import { IScreenProps } from '$redux/project/types';
 import { getDefaultDateSelectOptions } from '$constants/defaultParams';
@@ -11,6 +14,9 @@ import { ClockWidget } from '$components/UI/Clock';
 import { Entity } from '$domain/core';
 
 import { withAction, WithActionProps } from '../../../utils/withAction';
+import { withStyles, makeStyles } from '@material-ui/core';
+import classNames from 'classnames';
+import * as R from 'ramda';
 const styles = require('./styles.scss');
 
 export type RendererProps = {
@@ -78,6 +84,55 @@ const ActionRenderer: ActionRenderer = (props) => {
       )
     }
   }
+}
+
+const CheckboxRenderer: Renderer = (props) => {
+  const { id, style, params, isDisabled, active, onClick, sortableId, savedElement, onChange } = props;
+  const { backgroundColor, width, height } = style;
+
+  const [checked, setChecked] = useState(false);
+
+  const handleRadioChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    setChecked(!checked);
+  }, [checked]);
+
+  const useStyles = makeStyles({
+    root: {
+      color: backgroundColor || 'red',
+      '&$checked': {
+        color: backgroundColor || 'red',
+      },
+    },
+    icon: {
+      width,
+      height,
+    },
+    checked: {},
+  });
+
+  const classes = useStyles();
+
+  return (
+    <div
+      id={id}
+      data-ls-id={id}
+      data-id={sortableId}
+      key={id}
+      style={{ ...R.omit(['backgroundColor', 'width', 'height'], style), display: 'inline-block' }}
+      className={classNames('ls-item', isDisabled && styles.disabled, active && 'activated')}
+    >
+      <Radio
+        checkedIcon={<RadioButtonCheckedIcon className={classes.icon} />}
+        icon={<RadioButtonUncheckedIcon className={classes.icon} />}
+        color="default"
+        className={classes.root}
+        value={params.value}
+        name={params.name}
+        checked={true}
+        onChange={handleRadioChange}
+      />
+    </div>
+  );
 }
 
 const InputRenderer: Renderer = (props) => {
@@ -255,6 +310,7 @@ const UndefinedRenderer: Renderer = (props) => {
 export const RENDERERS: Record<Exclude<Entity, 'root' | 'container'>, React.FunctionComponent<any>> = {
   button: withAction(ActionRenderer, 'button'),
   textinput: InputRenderer,
+  checkbox: CheckboxRenderer,
   hyperlink: withAction(ActionRenderer, 'link'),
   ocrtext: TextRenderer,
   image: ImgRenderer,

@@ -57,6 +57,8 @@ const getCategoryTab = (structType: LibraryElementType, libraryElements: Library
   switch (structType) {
     case 'textinput':
       return { Input: [...obj.Input || [], ...R.values(libraryElements[structType])] };
+    case 'checkbox':
+      return { Input: [...obj.Input || [], ...R.values(libraryElements[structType])] };  
     case 'map':
     case 'calendar':
     case 'clock':
@@ -106,6 +108,13 @@ export const getGroupElements = (group: string, listElement: IListCategoryEl): G
         key: `key-${x.struct_type}-${x.func_type}`,
         value: { structType: x.struct_type, funcType: x.func_type },
         label: `input/${x.func_type}`,
+      }));
+
+    case 'Checkbox':
+      return listElement.Checkbox.map((x) => ({
+        key: `key-${x.struct_type}-${x.func_type}`,
+        value: { structType: x.struct_type, funcType: x.func_type },
+        label: `checkbox/${x.func_type}`,
       }));
 
     case 'Select':

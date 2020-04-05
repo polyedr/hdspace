@@ -283,6 +283,8 @@ export interface IScreenProps {
   scenarioId?: number,
   action?: LinkParams,
   imageURL?: string,
+  value?: string,
+  name?: string,
 }
 
 export interface ISortableItem {

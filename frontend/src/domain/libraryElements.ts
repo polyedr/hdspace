@@ -162,6 +162,23 @@ export const LIBRARY_ELEMENTS: LibraryElements = {
       name: 'textinput',
     },
   },
+  checkbox: {
+    checkbox: {
+      buoyancy: 0,
+      func_type: 'checkbox',
+      struct_type: 'checkbox',
+      parameters: {
+        group: 'input',
+        value: '',
+        name: '',
+      },
+      styles: {
+        width: '50px',
+        height: '50px',
+      },
+      name: 'checkbox',
+    },
+  },
   ocrtext: {
     title: {
       buoyancy: 100,

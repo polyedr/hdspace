@@ -23,6 +23,8 @@ import { Placeholder } from '../Controls/Placeholder/Placeholder';
 import { TextContent } from '../Controls/TextContent/TextContent';
 import { Display } from '../Controls/Display/Display';
 import { Image } from '../Controls/Image/Image';
+import { Value } from '../Controls/Value/Value';
+import { Name } from '../Controls/Name/Name';
 const styles = require('./PropertiesPanel.scss');
 
 type StateProps = {
@@ -61,6 +63,8 @@ const CONTROLS: Record<Control, React.ComponentType> = {
   placeholder: Placeholder,
   textContent: TextContent,
   image: Image,
+  value: Value,
+  name: Name,
 };
 
 export type PropertiesPanelProps = StateProps & typeof mapDispatch;

@@ -121,6 +121,14 @@ export const DEFAULT_ACTION: { action: LinkParams } = {
   },
 };
 
+export const DEFAULT_VALUE: { value: string } = {
+  value: '',
+};
+
+export const DEFAULT_NAME: { name: string } = {
+  name: '',
+}
+
 export const DEFAULT_MAP_PROPS = {
   map_props: {
     center: {
