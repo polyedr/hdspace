@@ -179,6 +179,23 @@ export const LIBRARY_ELEMENTS: LibraryElements = {
       name: 'checkbox',
     },
   },
+  radiobutton: {
+    radiobutton: {
+      buoyancy: 0,
+      func_type: 'radiobutton',
+      struct_type: 'radiobutton',
+      parameters: {
+        group: 'input',
+        value: '',
+        name: '',
+      },
+      styles: {
+        width: '50px',
+        height: '50px',
+      },
+      name: 'radiobutton',
+    },
+  },
   ocrtext: {
     title: {
       buoyancy: 100,

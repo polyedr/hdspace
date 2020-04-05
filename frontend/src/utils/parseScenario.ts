@@ -58,7 +58,9 @@ const getCategoryTab = (structType: LibraryElementType, libraryElements: Library
     case 'textinput':
       return { Input: [...obj.Input || [], ...R.values(libraryElements[structType])] };
     case 'checkbox':
-      return { Input: [...obj.Input || [], ...R.values(libraryElements[structType])] };  
+      return { Input: [...obj.Input || [], ...R.values(libraryElements[structType])] };
+    case 'radiobutton':
+      return { Input: [...obj.Input || [], ...R.values(libraryElements[structType])] };
     case 'map':
     case 'calendar':
     case 'clock':

@@ -146,7 +146,7 @@ export const DEFAULT_IMAGE_PROPS = {
 
 export const DEFAULT_TYPOGRAPHY: IScreenTypography = {
   color: '#323232',
-  'font-family': '"Open Sans", sans-serif',
+  'font-family': '"Roboto", sans-serif',
   'font-size': '14px',
   'font-style': 'none',
   'font-weight': 400,

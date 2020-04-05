@@ -1,10 +1,12 @@
 import React, { useCallback, ChangeEvent, useState } from 'react';
 import cn from 'classnames';
-import { Input, Button } from 'antd';
+import { Input } from 'antd';
 import { Link } from 'react-router-dom';
 import Radio from '@material-ui/core/Radio';
 import RadioButtonCheckedIcon from '@material-ui/icons/RadioButtonChecked';
 import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked';
+import CheckBoxIcon from '@material-ui/icons/CheckBox';
+import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 
 import { IScreenProps } from '$redux/project/types';
 import { getDefaultDateSelectOptions } from '$constants/defaultParams';
@@ -13,8 +15,8 @@ import { CalendarWidget } from '$components/UI/Calendar';
 import { ClockWidget } from '$components/UI/Clock';
 import { Entity } from '$domain/core';
 
-import { withAction, WithActionProps } from '../../../utils/withAction';
-import { withStyles, makeStyles } from '@material-ui/core';
+import { withAction, WithActionProps, ActionType } from '../../../utils/withAction';
+import { makeStyles, Checkbox, Button } from '@material-ui/core';
 import classNames from 'classnames';
 import * as R from 'ramda';
 const styles = require('./styles.scss');
@@ -30,7 +32,7 @@ export type RendererProps = {
   children?: JSX.Element;
   sortableId?: string;
   savedElement: { id: number, savedValue: string };
-  onClick?(event: any, id: string): void;
+  onClick?(event: any): void;
   onChange(itemID: string, savedValue: string): void;
 };
 
@@ -50,50 +52,108 @@ const ActionRenderer: ActionRenderer = (props) => {
     actionLink,
   } = props;
 
-  const commonProps = {
-    id,
-    'data-ls-id': id,
-    'data-id': sortableId,
-    key: id,
-    className: cn('ls-item', isDisabled && styles.disabled, active && 'activated'),
-    style: style,
+  const { backgroundColor } = style;
+
+  const useStyles = makeStyles({
+    root: {
+      backgroundColor,
+      ...(isDisabled && { transition: 'none' }),
+      '&:hover': {
+        backgroundColor,
+        ...(isDisabled && { boxShadow: '0px 3px 1px -2px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 1px 5px 0px rgba(0,0,0,0.12)' }),
+      },
+      '&:active': {
+        ...(isDisabled && { boxShadow: '0px 3px 1px -2px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 1px 5px 0px rgba(0,0,0,0.12)' }),
+      },
+    },
+  });
+
+  const classes = useStyles();
+
+  const components: Record<ActionType, any> = {
+    'external-link': 'a',
+    'internal-link': Link,
+    button: 'button',
   }
 
-  switch (actionType) {
-    case 'external-link': {
-      return (
-        <a {...commonProps} href={actionLink} target="_blank" onClick={onClick}>
-          {params.textContent}
-        </a>
-      )
-    }
-
-    case 'internal-link': {
-      return (
-        <Link {...commonProps} to={actionLink} onClick={onClick}>
-          {params.textContent}
-        </Link>
-      )
-    }
-
-    case 'button': {
-      return (
-        <Button {...commonProps} type="primary" onClick={onClick}>
-          {params.textContent}
-        </Button>
-      )
-    }
-  }
+  return (
+    <Button
+      id={id}
+      data-ls-id={id}
+      data-id={sortableId}
+      key={id}
+      variant="contained"
+      color="primary"
+      style={R.omit(['backgroundColor'], style)}
+      className={cn(classes.root, 'ls-item', isDisabled && styles.disabled, active && 'activated')}
+      disableRipple={isDisabled}
+      component={components[actionType]}
+      {...actionType === 'external-link' && { href: actionLink, target: '_blank' }}
+      {...actionType === 'internal-link' && { to: actionLink }}
+      onClick={onClick}
+    >
+      {params.textContent}
+    </Button>
+  );
 }
 
 const CheckboxRenderer: Renderer = (props) => {
   const { id, style, params, isDisabled, active, onClick, sortableId, savedElement, onChange } = props;
   const { backgroundColor, width, height } = style;
 
-  const [checked, setChecked] = useState(false);
+  const [checked, setChecked] = useState(true);
+
+  const handleCheckboxChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    setChecked(false);
+  }, [checked]);
+
+  const useStyles = makeStyles({
+    root: {
+      color: backgroundColor || 'red',
+      '&$checked': {
+        color: backgroundColor || 'red',
+      },
+    },
+    icon: {
+      width,
+      height,
+    },
+    checked: {},
+  });
+
+  const classes = useStyles();
+
+  return (
+    <div
+      id={id}
+      data-ls-id={id}
+      data-id={sortableId}
+      key={id}
+      style={{ ...R.omit(['backgroundColor', 'width', 'height'], style), display: 'inline-block' }}
+      className={classNames('ls-item', isDisabled && styles.disabled, active && 'activated')}
+    >
+      <Checkbox
+        checkedIcon={<CheckBoxIcon className={classes.icon} />}
+        icon={<CheckBoxOutlineBlankIcon className={classes.icon} />}
+        color="default"
+        className={classes.root}
+        value={params.value}
+        name={params.name}
+        checked={true}
+        onChange={handleCheckboxChange}
+      />
+    </div>
+  );
+}
+
+const RadiobuttonRenderer: Renderer = (props) => {
+  const { id, style, params, isDisabled, active, onClick, sortableId, savedElement, onChange } = props;
+  const { backgroundColor, width, height } = style;
+
+  const [checked, setChecked] = useState(true);
 
   const handleRadioChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-    setChecked(!checked);
+    setChecked(false);
   }, [checked]);
 
   const useStyles = makeStyles({
@@ -158,7 +218,7 @@ const InputRenderer: Renderer = (props) => {
         transition: 'none',
       }}
       value={textContent}
-      onClick={(event) => onClick?.(event, id)}
+      onClick={(event) => onClick?.(event)}
       placeholder={params.placeholder}
       onChange={handleInputChange}
     />
@@ -310,6 +370,7 @@ const UndefinedRenderer: Renderer = (props) => {
 export const RENDERERS: Record<Exclude<Entity, 'root' | 'container'>, React.FunctionComponent<any>> = {
   button: withAction(ActionRenderer, 'button'),
   textinput: InputRenderer,
+  radiobutton: RadiobuttonRenderer,
   checkbox: CheckboxRenderer,
   hyperlink: withAction(ActionRenderer, 'link'),
   ocrtext: TextRenderer,

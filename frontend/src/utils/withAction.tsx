@@ -17,7 +17,7 @@ const mapDispatchToProps = {
   activateScreen: actionsCreators.activateScreen,
 };
 
-type ActionType = 'external-link' | 'internal-link' | 'button';
+export type ActionType = 'external-link' | 'internal-link' | 'button';
 
 export type WithActionProps = {
   actionLink: string,

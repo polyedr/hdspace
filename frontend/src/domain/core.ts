@@ -17,7 +17,20 @@ import {
 } from '$constants/defaultParams';
 
 export const ENTITIES = [
-  'root', 'container', 'button', 'textinput', 'checkbox', 'hyperlink', 'ocrtext', 'image', 'select', 'map', 'calendar', 'clock', 'undefined'
+  'root',
+  'container',
+  'button',
+  'textinput',
+  'checkbox',
+  'radiobutton',
+  'hyperlink',
+  'ocrtext',
+  'image',
+  'select',
+  'map',
+  'calendar',
+  'clock',
+  'undefined',
 ] as const;
 const CONTROLS_AFFECT_ON_PARAMS = ['action', 'mapProps', 'placeholder', 'textContent', 'image', 'value', 'name'] as const;
 const CONTROLS_AFFECT_ON_STYLES = ['display', 'indents', 'size', 'typography', 'border', 'background'] as const;
@@ -36,6 +49,7 @@ export const AVAILABLE_CONTROLS: Record<Entity, Control[]> = {
   button: ['indents', 'size', 'display', 'typography', 'border', 'background', 'textContent', 'action'],
   textinput: ['indents', 'size', 'typography', 'border', 'background', 'textContent', 'placeholder'],
   checkbox: ['value', 'name', 'indents', 'size', 'background'],
+  radiobutton: ['value', 'name', 'indents', 'size', 'background'],
   hyperlink: ['indents', 'size', 'display', 'typography', 'border', 'background', 'textContent', 'action'],
   ocrtext: ['indents', 'size', 'typography', 'border', 'background', 'textContent'],
   image: ['indents', 'size', 'border', 'background', 'image'],
@@ -87,6 +101,13 @@ const ENTITY_TO_DEFAULTS: EntityToDefaults = {
   },
   button: {
     ...extractDefaults('button'),
+    indents: {
+      ...extractDefaults('button', 'indents'),
+      'padding-top': '6px',
+      'padding-right': '16px',
+      'padding-bottom': '6px',
+      'padding-left': '16px',
+    },
     display: {
       ...extractDefaults('button', 'display'),
       display: 'inline-block',
@@ -94,8 +115,6 @@ const ENTITY_TO_DEFAULTS: EntityToDefaults = {
     border: {
       ...extractDefaults('button', 'border'),
       'border-color': '#1890ff',
-      'border-width': '1px',
-      'border-style': 'solid',
       'border-radius': '4px',
     },
     background: {
@@ -105,6 +124,7 @@ const ENTITY_TO_DEFAULTS: EntityToDefaults = {
     typography: {
       ...extractDefaults('button', 'typography'),
       color: '#ffffff',
+      'line-height': '1.75',
     },
     textContent: {
       ...extractDefaults('button', 'textContent'),
@@ -133,8 +153,34 @@ const ENTITY_TO_DEFAULTS: EntityToDefaults = {
     },
     size: {
       ...extractDefaults('checkbox', 'size'),
-      width: '20px',
-      height: '20px',
+      width: '24px',
+      height: 'auto',
+    },
+    indents: {
+      ...extractDefaults('checkbox', 'indents'),
+      'padding-top': '0',
+      'padding-right': '0',
+      'padding-bottom': '0',
+      'padding-left': '0',
+    },
+  },
+  radiobutton: {
+    ...extractDefaults('radiobutton'),
+    background: {
+      ...extractDefaults('radiobutton', 'background'),
+      'background-color': '#1890ff',
+    },
+    size: {
+      ...extractDefaults('radiobutton', 'size'),
+      width: '24px',
+      height: 'auto',
+    },
+    indents: {
+      ...extractDefaults('radiobutton', 'indents'),
+      'padding-top': '0',
+      'padding-right': '0',
+      'padding-bottom': '0',
+      'padding-left': '0',
     },
   },
   hyperlink: {
