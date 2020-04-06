@@ -1,4 +1,4 @@
-import React, { useCallback, ChangeEvent, useState } from 'react';
+import React, { useCallback, ChangeEvent, useState, useEffect } from 'react';
 import cn from 'classnames';
 import { Input } from 'antd';
 import { Link } from 'react-router-dom';
@@ -16,7 +16,7 @@ import { ClockWidget } from '$components/UI/Clock';
 import { Entity } from '$domain/core';
 
 import { withAction, WithActionProps, ActionType } from '../../../utils/withAction';
-import { makeStyles, Checkbox, Button } from '@material-ui/core';
+import { makeStyles, Checkbox, Button, TextField } from '@material-ui/core';
 import classNames from 'classnames';
 import * as R from 'ramda';
 const styles = require('./styles.scss');
@@ -32,6 +32,8 @@ export type RendererProps = {
   children?: JSX.Element;
   sortableId?: string;
   savedElement: { id: number, savedValue: string };
+  checkedRadio?: { savedValue: string };
+  radioIndex: number;
   onClick?(event: any): void;
   onChange(itemID: string, savedValue: string): void;
 };
@@ -147,14 +149,14 @@ const CheckboxRenderer: Renderer = (props) => {
 }
 
 const RadiobuttonRenderer: Renderer = (props) => {
-  const { id, style, params, isDisabled, active, onClick, sortableId, savedElement, onChange } = props;
+  const { id, style, params, isDisabled, active, sortableId, checkedRadio, onChange, radioIndex } = props;
   const { backgroundColor, width, height } = style;
 
-  const [checked, setChecked] = useState(true);
-
-  const handleRadioChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-    setChecked(false);
-  }, [checked]);
+  useEffect(() => {
+    if (radioIndex === 0) {
+      onChange(params.name || '', params.value || '');
+    }
+  }, [radioIndex, onChange])
 
   const useStyles = makeStyles({
     root: {
@@ -169,6 +171,10 @@ const RadiobuttonRenderer: Renderer = (props) => {
     },
     checked: {},
   });
+
+  const handleRadioChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    onChange(params.name || '', event.target.value);
+  }, [onChange, params]); 
 
   const classes = useStyles();
 
@@ -188,7 +194,7 @@ const RadiobuttonRenderer: Renderer = (props) => {
         className={classes.root}
         value={params.value}
         name={params.name}
-        checked={true}
+        checked={params.value === checkedRadio?.savedValue}
         onChange={handleRadioChange}
       />
     </div>
@@ -205,22 +211,22 @@ const InputRenderer: Renderer = (props) => {
   }, [onChange, id]);
 
   return (
-    <Input
+    <TextField
       id={id}
       data-ls-id={id}
       data-id={sortableId}
-      key={id}
-      type="text" // TODO: use other types such as email, etc.
+      key={id} variant="outlined"
       className={cn('ls-item', isDisabled && styles.disabled, active && 'activated')}
-      readOnly={isDisabled}
-      style={{
+      /* style={{
         ...style,
         transition: 'none',
-      }}
-      value={textContent}
-      onClick={(event) => onClick?.(event)}
-      placeholder={params.placeholder}
+      }} */
+      defaultValue={textContent}
       onChange={handleInputChange}
+      InputProps={{
+        readOnly: isDisabled,
+      }}
+      placeholder="Placeholder"
     />
   );
 };

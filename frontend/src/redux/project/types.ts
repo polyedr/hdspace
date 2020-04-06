@@ -374,6 +374,8 @@ export interface IScenarioElement { // compare with entity on backend
     url?: string,
     imageURL?: string;
     textContent?: string;
+    value?: string;
+    name?: string;
   },
   styles: CssLikeStyles,
 }

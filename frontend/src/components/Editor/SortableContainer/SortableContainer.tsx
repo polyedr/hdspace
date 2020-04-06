@@ -113,6 +113,14 @@ const SortableComponent: React.FC<Props> = (props) => {
     updateSavedElementValues(id, props);
   }, [updateSavedElementValues]);
 
+  const getRadioIndex =  useCallback((id: string) => {
+    const radioIDs = item.children.filter(itemID => {
+      const { struct_type } = getParams(itemID, elementList, scenarioList);
+      return struct_type === 'radiobutton';
+    })
+    return radioIDs.indexOf(id);
+  }, [item, elementList, scenarioList]);
+
   const getIsActive = useCallback(() => !disableInteractions && item.id === parseInt(activeItemId, 10), [disableInteractions, item, activeItemId]);
 
   return (currentScreen && currentScreen.screenLoader ?  null :
@@ -174,6 +182,8 @@ const SortableComponent: React.FC<Props> = (props) => {
             active={!disableInteractions && itemId === activeItemId}
             savedElement={savedElements[itemId]}
             onChange={handleRenderElementChange}
+            checkedRadio={savedElements[parameters.name]}
+            radioIndex={getRadioIndex(itemId)}
            />
         ) : null;
       })}

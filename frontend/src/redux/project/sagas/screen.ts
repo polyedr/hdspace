@@ -92,10 +92,21 @@ export function* activateScreenSaga({ payload }: ReturnType<typeof activateScree
 
   const oldSavedElementsValues: ReturnType<typeof selectors.selectSavedElementsValues> = yield select(selectors.selectSavedElementsValues);
 
-  const newSavedElementsValues = !R.isEmpty(oldSavedElementsValues) ? oldSavedElementsValues : serverScenariosElements.reduce((acc, element) => ({
-    ...acc,
-    [`${element.id}e`]: { id: element.id, savedValue: element.parameters.textContent || '' },
-  }), {});
+  const newSavedElementsValues = !R.isEmpty(oldSavedElementsValues) ? oldSavedElementsValues : serverScenariosElements.reduce((acc, element) => {
+    const savedValue = element.parameters.textContent || '';
+
+    if (element.struct_type === 'radiobutton') {
+      return {
+        ...acc,
+        [element.parameters.name || '']: { savedValue: element.parameters.value },
+      }
+    }
+
+    return {
+      ...acc,
+      [`${element.id}e`]: { id: element.id, savedValue },
+    }
+  }, {});
 
   yield put(Actions.updateSavedElementsValues(newSavedElementsValues));
 

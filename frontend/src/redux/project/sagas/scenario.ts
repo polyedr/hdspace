@@ -153,10 +153,21 @@ export function* addElementsIntoContainerSaga(action: ReturnType<typeof Actions.
 
   const oldSavedElementsValues: ReturnType<typeof selectors.selectSavedElementsValues> = yield select(selectors.selectSavedElementsValues);
   
-  const newSavedElementsValues = createdElements.reduce((acc, element) => ({
-    ...acc,
-    [`${element.id}e`]: { id: element.id, savedValue: element.parameters.textContent || '' },
-  }), oldSavedElementsValues);
+  const newSavedElementsValues = createdElements.reduce((acc, element) => {
+    const savedValue = element.parameters.textContent || '';
+
+    if (element.struct_type === 'radiobutton') {
+      return {
+        ...acc,
+        [element.parameters.name || '']: { id: element.id, savedValue: element.parameters.value || '' },
+      }
+    }
+
+    return {
+      ...acc,
+      [`${element.id}e`]: { id: element.id, savedValue },
+    }
+  }, oldSavedElementsValues);
 
   yield put(Actions.updateSavedElementsValues(newSavedElementsValues));
 
