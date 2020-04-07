@@ -21,14 +21,16 @@ const mapStateToProps = (state: AppReduxState, props: OwnProps) => {
 
   const currId = idToLSId(props.item.id, props.item.type);
   const itemParent = listSortable[currId];
-  const currListSortable = itemParent.children.reduce((items: IListSortable, childID) => ({
+  const currentListSortable = itemParent.children.reduce((items: IListSortable, childID) => ({
     ...items,
     [childID]: listSortable[childID],
   }), { [currId]: listSortable[currId] });
 
-  const { scenarioList, elementList } = getItemsPair(currListSortable, scenarios, scenarioElements);
+  const { scenarioList, elementList } = getItemsPair(currentListSortable, scenarios, scenarioElements);
   return {
-    listSortable: currListSortable,
+    listSortable,
+    scenarioElements,
+    currentListSortable,
     disableInteractions,
     scenarioList,
     elementList,
@@ -73,6 +75,8 @@ const SortableComponent: React.FC<Props> = (props) => {
     setIsResizing,
     isResizable,
     listSortable,
+    scenarioElements,
+    currentListSortable,
     elementList,
     scenarioList,
     savedElements,
@@ -113,13 +117,18 @@ const SortableComponent: React.FC<Props> = (props) => {
     updateSavedElementValues(id, props);
   }, [updateSavedElementValues]);
 
-  const getRadioIndex =  useCallback((id: string) => {
-    const radioIDs = item.children.filter(itemID => {
-      const { struct_type } = getParams(itemID, elementList, scenarioList);
-      return struct_type === 'radiobutton';
-    })
-    return radioIDs.indexOf(id);
-  }, [item, elementList, scenarioList]);
+  const getRadioIndex = useCallback((group: string, id: string) => {
+    const groupRadios = Object.entries(listSortable)
+      .map(([key, value]) => value)
+      .filter(item => item.type === 'radiobutton')
+      .map(item => scenarioElements[item.id])
+      .filter(item => item.parameters.name === group);
+
+    const radioElement = groupRadios.find(element => element.id === parseInt(id));  
+    const radioIndex = radioElement && groupRadios.indexOf(radioElement) || 0;
+    
+    return radioIndex;
+  }, [scenarioElements, listSortable]);
 
   const getIsActive = useCallback(() => !disableInteractions && item.id === parseInt(activeItemId, 10), [disableInteractions, item, activeItemId]);
 
@@ -147,7 +156,7 @@ const SortableComponent: React.FC<Props> = (props) => {
           return null;
         }
 
-        const currentItem = listSortable[itemId];
+        const currentItem = currentListSortable[itemId];
         const { struct_type, parameters, styles, name } = getParams(itemId, elementList, scenarioList);
 
         if (struct_type === 'container') {
@@ -183,7 +192,7 @@ const SortableComponent: React.FC<Props> = (props) => {
             savedElement={savedElements[itemId]}
             onChange={handleRenderElementChange}
             checkedRadio={savedElements[parameters.name]}
-            radioIndex={getRadioIndex(itemId)}
+            radioIndex={getRadioIndex(parameters.name, itemId)}
            />
         ) : null;
       })}
