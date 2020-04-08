@@ -2,6 +2,7 @@ import secrets
 import uuid
 
 from django.db import models
+from mptt.models import MPTTModel, TreeForeignKey
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from jsonfield import JSONField
@@ -334,7 +335,7 @@ class ScreenScenario(TimeStampedModel):
         return "{}".format(self.pk)
 
 
-class ScenarioElement(TimeStampedModel):
+class ScenarioElement(MPTTModel, TimeStampedModel):
     FRAME = "frame"
     WIDGET = "widget"
     CHART = "chart"
@@ -349,6 +350,7 @@ class ScenarioElement(TimeStampedModel):
     LOGO = "logo"
     UNORDERED_LIST = "unordered_list"
     ORDERED_LIST = "ordered_list"
+    LIST_ITEM = "list_item"
     TABLE = "table"
     OCRTEXT = "ocrtext"
     DIV = "div"
@@ -449,6 +451,8 @@ class ScenarioElement(TimeStampedModel):
         ScreenScenario, related_name="elements", on_delete=models.CASCADE, null=True
     )
 
+    parent = TreeForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='children')
+
     name = models.CharField(max_length=250, null=True)
 
     # Styles and parameters
@@ -465,6 +469,9 @@ class ScenarioElement(TimeStampedModel):
 
     def __str__(self):
         return "{}".format(self.pk)
+
+    class MPTTMeta:
+        level_attr = 'mptt_level'
 
 
 # Non-model model to expose the scenario library
@@ -751,5 +758,14 @@ elements = {
         image="null",
         parameters=[],
         styles=[{"width": "16px", "height": "16px"}],
+    ),
+    25: Element(
+        id=25,
+        struct_type="list_item",
+        func_type=["undefined"],
+        buoyancy=[0],
+        image="null",
+        parameters=[],
+        styles=[],
     ),
 }
