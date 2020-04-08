@@ -368,7 +368,8 @@ class ScreenScenarioDestroyCascadeViewSet(BulkModelViewSet):
 
 
 class ScenarioElementViewSet(viewsets.ModelViewSet):
-    queryset = ScenarioElement.objects.all()
+    # queryset = ScenarioElement.objects.all()
+    queryset = ScenarioElement.objects.root_nodes()
     serializer_class = ScenarioElementSerializer
 
     def filter_queryset(self, queryset):
@@ -387,7 +388,8 @@ class ScenarioElementCreateMultiple(generics.CreateAPIView):
     Create multiple scenario elements.
     """
 
-    queryset = ScenarioElement.objects.all()
+    # queryset = ScenarioElement.objects.all()
+    queryset = ScenarioElement.objects.root_nodes()
     serializer_class = ScenarioElementSerializer
 
     def get_serializer(self, instance=None, data=None, many=False, partial=False):
@@ -401,5 +403,6 @@ class ScenarioElementMultipleView(ListBulkCreateUpdateDestroyAPIView):
     List all scenario elements, or create multiple a new scenario element or update multiple or destroy multiple.
     """
 
-    queryset = ScenarioElement.objects.all()
+    # queryset = ScenarioElement.objects.all()
+    queryset = ScenarioElement.objects.root_nodes()
     serializer_class = ScenarioElementMultipleSerializer

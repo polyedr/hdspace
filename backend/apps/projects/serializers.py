@@ -2,6 +2,8 @@
 
 from rest_framework import serializers
 from rest_framework_bulk import BulkSerializerMixin, BulkListSerializer
+from rest_framework_recursive.fields import RecursiveField
+# from drf_writable_nested.serializers import WritableNestedModelSerializer
 
 from apps.accounts.serializers import UserSerializer
 from .models import (
@@ -65,6 +67,9 @@ class ProjectScreenMultipleSerializer(BulkSerializerMixin, serializers.ModelSeri
 class ScenarioElementSerializer(serializers.ModelSerializer):
     parameters = serializers.JSONField()
     styles = serializers.JSONField()
+    children = RecursiveField(required=False, allow_null=True, many=True)
+    # children = serializers.ListField(child=RecursiveField())
+    # id = serializers.IntegerField(write_only=False)
 
     class Meta:
         model = ScenarioElement
@@ -72,6 +77,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
             "id",
             "scenario",
             "name",
+            "children",
             "struct_type",
             "func_type",
             "buoyancy",
@@ -80,12 +86,43 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
             "styles",
         )
 
+    def create(self, validated_data):
+        # Remove nested objects to handle separately
+        children = validated_data.pop('children', [])
+        node = ScenarioElement.objects.create(
+            # parent is null only on the root node
+            parent=self.context.get('parent'),
+            **validated_data)
+        for child_data in children:
+            child_data['scenario'] = child_data['scenario'].pk
+            s = ScenarioElementSerializer(data=child_data, context={'parent': node})
+            s.is_valid(raise_exception=True)
+            s.save()
+        return node
+
+    '''
+    This finction partly works and should be updated to use PATCH requests.
+
+    def update(self, instance, validated_data):
+        children_data = validated_data.get('children')
+        print(children_data)
+        print(validated_data['children'])
+
+        children_ids = [cdata['id'] for cdata in children_data]
+        children = ScenarioElement.objects.filter(id__in=children_ids)
+        instance.children.set(children)
+        instance.save()
+        return instance
+    '''
+
 
 class ScenarioElementMultipleSerializer(
     BulkSerializerMixin, serializers.ModelSerializer
 ):
     parameters = serializers.JSONField()
     styles = serializers.JSONField()
+    children = RecursiveField(required=False, allow_null=True, many=True)
+    # children = serializers.ListField(source = 'get_children', child=RecursiveField())
 
     class Meta:
         model = ScenarioElement
@@ -93,6 +130,7 @@ class ScenarioElementMultipleSerializer(
             "id",
             "scenario",
             "name",
+            "children",
             "struct_type",
             "func_type",
             "buoyancy",
@@ -101,6 +139,20 @@ class ScenarioElementMultipleSerializer(
             "styles",
         )
         list_serializer_class = BulkListSerializer
+
+    def create(self, validated_data):
+        # Remove nested objects to handle separately
+        children = validated_data.pop('children', [])
+        node = ScenarioElement.objects.create(
+            # parent is null only on the root node
+            parent=self.context.get('parent'),
+            **validated_data)
+        for child_data in children:
+            child_data['scenario'] = child_data['scenario'].pk
+            s = ScenarioElementSerializer(data=child_data, context={'parent': node})
+            s.is_valid(raise_exception=True)
+            s.save()
+        return node
 
 
 class ScreenScenarioSerializer(serializers.ModelSerializer):
