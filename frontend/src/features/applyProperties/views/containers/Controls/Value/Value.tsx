@@ -24,7 +24,7 @@ const Component: React.FC<Props> = ({
   value,
   updateParams,
 }) => {
-  const handleTextContentChange = useCallback(({ target: { value } }) => {
+  const handleTextFieldChange = useCallback(({ target: { value } }) => {
     updateParams({ value });
   }, [updateParams]);
 
@@ -37,7 +37,7 @@ const Component: React.FC<Props> = ({
             className={styles.valueField}
             name="text_content"
             value={value}
-            onChange={handleTextContentChange}
+            onChange={handleTextFieldChange}
           />
         </div>
       </div>

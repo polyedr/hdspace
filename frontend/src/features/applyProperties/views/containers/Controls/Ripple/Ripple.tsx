@@ -39,7 +39,7 @@ const Component: React.FC<Props> = ({
 }) => {
   const classes = useStyles();
 
-  const toggleChecked = useCallback(() => {
+  const handleSwitchChange = useCallback(() => {
     updateParams({ showRipple: !showRipple });
   }, [updateParams, showRipple]);
 
@@ -51,7 +51,7 @@ const Component: React.FC<Props> = ({
           <Switch
             size="small"
             checked={showRipple}
-            onChange={toggleChecked}
+            onChange={handleSwitchChange}
             classes={{
               switchBase: classes.switchBase,
               track: classes.track,
