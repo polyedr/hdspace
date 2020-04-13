@@ -14,8 +14,7 @@ import {
   IListSortable,
   ILSItem,
   IScenarioElement,
-  LibraryElementType,
-  ServerFuncType,
+  ServerStructType,
 } from '$redux/project/types';
 import { IChooseElement } from '$components/ModalAddElements/ModalAddElements/ModalAddElements';
 import { CssLikeStyles } from '$utils/StyleHelper';
@@ -24,7 +23,7 @@ import { ENTITIES } from '$domain/core';
 export type GroupElement = {
   key: string,
   label: string,
-  value: { structType: string, funcType: string },
+  value: { structType: ServerStructType, funcType: ServerStructType },
 };
 
 export interface IListCategoryEl {
@@ -36,10 +35,8 @@ export const convertScenarios = (data: IScenarioItem[]): IScenarios => (
 );
 
 export const getOptionsOfListScenario = (scenarios: IScenarios) => (
-  Object.keys(scenarios).reduce((acc, key) => {
-    const { name, struct_type } = scenarios[key];
-
-    return struct_type === 'block' ? acc.concat({ value: key, label: name }) : acc;
+  Object.keys(scenarios).reduce((acc) => {
+    return acc;
   }, [] as IDropDownOptions<string>[])
 );
 
@@ -53,24 +50,24 @@ export const convertScenarioElements = (
     },
   }), {});
 
-const getCategoryTab = (structType: LibraryElementType, libraryElements: LibraryElements, obj: IListCategoryEl) => {
+const getCategoryTab = (structType: ServerStructType, libraryElements: LibraryElements, obj: IListCategoryEl) => {
   switch (structType) {
     case 'textinput':
-      return { Input: [...obj.Input || [], ...R.values(libraryElements[structType])] };
+      return { Form: [...obj.Form || [], ...R.values(libraryElements[structType])] };
     case 'checkbox':
-      return { Input: [...obj.Input || [], ...R.values(libraryElements[structType])] };
+      return { Form: [...obj.Form || [], ...R.values(libraryElements[structType])] };
     case 'radiobutton':
-      return { Input: [...obj.Input || [], ...R.values(libraryElements[structType])] };
+      return { Form: [...obj.Form || [], ...R.values(libraryElements[structType])] };
     case 'map':
     case 'calendar':
     case 'clock':
       return { Widget: [...obj.Widget || [], ...R.values(libraryElements[structType])] };
     case 'select':
-      return { Select: [...obj.Select || [], ...R.values(libraryElements[structType])] };
+      return { Form: [...obj.Form || [], ...R.values(libraryElements[structType])] };
     case 'image':
       return { Image: [...obj.Image || [], ...R.values(libraryElements[structType])] };
     case 'button':
-      return { Button: [...obj.Button || [], ...R.values(libraryElements[structType])] };
+      return { Form: [...obj.Form || [], ...R.values(libraryElements[structType])] };
 
     default: return { Other: [...obj.Other || [], ...R.values(libraryElements[structType])] };
   }
@@ -88,7 +85,7 @@ export const getCustomTemplateElements = (libraryElements: LibraryElements) => {
     if (ENTITIES.some(x => x === structType)) {
       return acc.concat(R.values(libraryElements[structType]).map(element => ({
         label: `${structType}/${element.func_type}`,
-        value: { funcType: element.func_type as ServerFuncType, structType },
+        value: { funcType: element.func_type, structType },
         checked: false,
       })));
     }
@@ -98,32 +95,11 @@ export const getCustomTemplateElements = (libraryElements: LibraryElements) => {
 
 export const getGroupElements = (group: string, listElement: IListCategoryEl): GroupElement[] => {
   switch (group) {
-    case 'Button':
-      return listElement.Button.map((x) => ({
+    case 'Form':
+      return listElement.Form.map((x) => ({
         key: `key-${x.struct_type}-${x.func_type}`,
         value: { structType: x.struct_type, funcType: x.func_type },
-        label: `button/${x.func_type}`,
-      }));
-
-    case 'Input':
-      return listElement.Input.map((x) => ({
-        key: `key-${x.struct_type}-${x.func_type}`,
-        value: { structType: x.struct_type, funcType: x.func_type },
-        label: `input/${x.func_type}`,
-      }));
-
-    case 'Checkbox':
-      return listElement.Checkbox.map((x) => ({
-        key: `key-${x.struct_type}-${x.func_type}`,
-        value: { structType: x.struct_type, funcType: x.func_type },
-        label: `checkbox/${x.func_type}`,
-      }));
-
-    case 'Select':
-      return listElement.Select.map((x) => ({
-        key: `key-${x.struct_type}-${x.func_type}`,
-        value: { structType: x.struct_type, funcType: x.func_type },
-        label: `select/${x.func_type}`,
+        label: `${x.struct_type}`,
       }));
 
     case 'Other':
@@ -208,6 +184,7 @@ export const getParams = (
   struct_type: string,
   parameters: any,
   styles: CssLikeStyles,
+  children?: IScenarioElement[],
   name: string,
   parent_id: number,
   type: string,
@@ -234,6 +211,7 @@ export const getParams = (
     struct_type: currElement.struct_type || '',
     parameters: currElement.parameters || {},
     styles: currElement.styles || {},
+    children: currElement.children,
     name: currElement.name || 'name',
     parent_id: currElement.parameters.parent_id ?? -1,
     type: currElement.func_type || 'undefined',

@@ -7,9 +7,11 @@ import {
   IScreenIndents,
   IProjectScreen,
   ActiveItem,
-  LibraryElementType,
-  ServerFuncType,
+  ServerStructType,
   LinkParams,
+  InputType,
+  Option,
+  ILSItem,
 } from '$redux/project/types';
 import { IApiResponseError, ITokenPair } from '$redux/user/reducer';
 // import { ITokenPair, IApiResponseError } from '$redux/user/reducer';
@@ -40,7 +42,7 @@ export interface ISignFormFields {
 
 export interface ITemplateElement {
   label: string,
-  value: { structType: LibraryElementType; funcType: ServerFuncType }
+  value: { structType: ServerStructType; funcType: ServerStructType }
   checked: boolean,
 }
 
@@ -121,13 +123,25 @@ export const DEFAULT_ACTION: { action: LinkParams } = {
   },
 };
 
+export const DEFAULT_INPUT_TYPE: { type: InputType} = {
+  type: 'text',
+};
+
 export const DEFAULT_VALUE: { value: string } = {
-  value: '',
+  value: '1',
 };
 
 export const DEFAULT_NAME: { name: string } = {
   name: '',
-}
+};
+
+export const DEFAULT_SELECT_OPTIONS: { options: Option[] } = {
+  options: [{ name: 'First option', value: '1' }, { name: 'Second option', value: '2' }, { name: 'Third option', value: '3' }],
+};
+
+export const DEFAULT_RIPPLE: { showRipple: boolean } = {
+  showRipple: true,
+};
 
 export const DEFAULT_MAP_PROPS = {
   map_props: {
@@ -162,7 +176,7 @@ export const DEFAULT_PROJECT = {
   projectLoader: false,
 };
 
-export const DEFAULT_LS = {
+export const DEFAULT_LS: { root: ILSItem } = {
   root: {
     id: -1,
     type: 'root',
@@ -198,31 +212,31 @@ export const DEFAULT_SCREEN_MODE = {
   isMobileMode: false,
 };
 
-export const MODAL_ADD_ELEMENTS_TABS = ['Screen', 'Widget', 'Button', 'Input', 'Select', 'Image', 'Other'];
+export const MODAL_ADD_ELEMENTS_TABS = ['Screen', 'Widget', 'Form', 'Image', 'Other'];
 
 export const DEFAULT_TEMPLATES: IDefaultTemplate = {
   signup: {
     label: 'Sign Up',
     value: 'signup',
     elements: [
-      { label: 'input/email', value: { funcType: 'email', structType: 'textinput'}, checked: true },
-      { label: 'input/last name', value: { funcType: 'lastname', structType: 'textinput'}, checked: true },
-      { label: 'input/first name', value: { funcType: 'firstname', structType: 'textinput'}, checked: true },
-      { label: 'input/password', value: { funcType: 'password', structType: 'textinput'}, checked: true },
-      { label: 'select/day', value: { funcType: 'day', structType: 'select'}, checked: false },
-      { label: 'select/month', value: { funcType: 'month', structType: 'select'}, checked: false },
-      { label: 'select/year', value: { funcType: 'year', structType: 'select'}, checked: false },
-      { label: 'button/ok', value: { funcType: 'end_composite_scenario', structType: 'button'}, checked: true },
+      { label: 'input/email', value: { funcType: 'textinput', structType: 'textinput'}, checked: true },
+      { label: 'input/last name', value: { funcType: 'textinput', structType: 'textinput'}, checked: true },
+      { label: 'input/first name', value: { funcType: 'textinput', structType: 'textinput'}, checked: true },
+      { label: 'input/password', value: { funcType: 'textinput', structType: 'textinput'}, checked: true },
+      { label: 'select/day', value: { funcType: 'select', structType: 'select'}, checked: false },
+      { label: 'select/month', value: { funcType: 'select', structType: 'select'}, checked: false },
+      { label: 'select/year', value: { funcType: 'select', structType: 'select'}, checked: false },
+      { label: 'button/ok', value: { funcType: 'button', structType: 'button'}, checked: true },
     ],
   },
   signin: {
     label: 'Sign In',
     value: 'signin',
     elements: [
-      { label: 'input/email', value: { funcType: 'email', structType: 'textinput'}, checked: true },
-      { label: 'input/password', value: { funcType: 'password', structType: 'textinput'}, checked: true },
-      { label: 'button/ok', value: { funcType: 'end_composite_scenario', structType: 'button'}, checked: true },
-      { label: 'hyperlink/forgotten account?', value: { funcType: 'end_simple_scenario', structType: 'hyperlink'}, checked: true },
+      { label: 'input/email', value: { funcType: 'textinput', structType: 'textinput'}, checked: true },
+      { label: 'input/password', value: { funcType: 'textinput', structType: 'textinput'}, checked: true },
+      { label: 'button/ok', value: { funcType: 'button', structType: 'button'}, checked: true },
+      { label: 'hyperlink/forgotten account?', value: { funcType: 'hyperlink', structType: 'hyperlink'}, checked: true },
     ],
   },
   custom: {
@@ -234,28 +248,28 @@ export const DEFAULT_TEMPLATES: IDefaultTemplate = {
     label: 'Template 1',
     value: 'template1',
     elements: [
-      { label: 'input/first name', value: { funcType: 'firstname', structType: 'textinput' }, checked: true },
-      { label: 'input/last name', value: { funcType: 'lastname', structType: 'textinput' }, checked: true },
-      { label: 'input/password', value: { funcType: 'password', structType: 'textinput' }, checked: true },
-      { label: 'button/ok', value: { funcType: 'end_composite_scenario', structType: 'button' }, checked: false },
+      { label: 'input/first name', value: { funcType: 'textinput', structType: 'textinput' }, checked: true },
+      { label: 'input/last name', value: { funcType: 'textinput', structType: 'textinput' }, checked: true },
+      { label: 'input/password', value: { funcType: 'textinput', structType: 'textinput' }, checked: true },
+      { label: 'button/ok', value: { funcType: 'button', structType: 'button' }, checked: false },
     ],
   },
   template2: {
     label: 'Template 2',
     value: 'template1',
     elements: [
-      { label: 'input/password', value: { funcType: 'password', structType: 'textinput' }, checked: true },
-      { label: 'button/ok', value: { funcType: 'end_composite_scenario', structType: 'button' }, checked: true },
+      { label: 'input/password', value: { funcType: 'textinput', structType: 'textinput' }, checked: true },
+      { label: 'button/ok', value: { funcType: 'button', structType: 'button' }, checked: true },
     ],
   },
   template3: {
     label: 'Template 3',
     value: 'template3',
     elements: [
-      { label: 'input/first name', value: { funcType: 'firstname', structType: 'textinput'}, checked: true },
-      { label: 'input/last name', value: { funcType: 'lastname', structType: 'textinput'}, checked: true },
-      { label: 'input/password', value: { funcType: 'password', structType: 'textinput'}, checked: true },
-      { label: 'button/ok', value: { funcType: 'end_composite_scenario', structType: 'button'}, checked: false },
+      { label: 'input/first name', value: { funcType: 'textinput', structType: 'textinput'}, checked: true },
+      { label: 'input/last name', value: { funcType: 'textinput', structType: 'textinput'}, checked: true },
+      { label: 'input/password', value: { funcType: 'textinput', structType: 'textinput'}, checked: true },
+      { label: 'button/ok', value: { funcType: 'button', structType: 'button'}, checked: false },
     ],
   },
 };

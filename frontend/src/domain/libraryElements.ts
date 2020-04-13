@@ -1,19 +1,20 @@
 import { CSSProperties } from 'react';
 
-import { ServerFuncType } from '$redux/project/types';
+import { ServerStructType } from '$redux/project/types';
 
 import { Entity } from './core';
 
 export type LibraryElementType = {
   buoyancy: number,
-  func_type: ServerFuncType,
-  struct_type: Entity,
+  func_type: ServerStructType,
+  struct_type: ServerStructType,
   parameters: any,
   styles: CSSProperties,
-  name: Entity,
+  name: ServerStructType,
+  children: LibraryElementType[],
 }
 
-export type LibraryElement = Partial<Record<ServerFuncType, LibraryElementType>>;
+export type LibraryElement = Partial<Record<ServerStructType, LibraryElementType>>;
 
 export type LibraryElements = Record<Exclude<Entity, 'root' | 'container'>, LibraryElement>;
 
@@ -27,139 +28,48 @@ export const LIBRARY_ELEMENTS: LibraryElements = {
       parameters: {
         group: 'image',
       },
-      styles: {
-        width: '80px',
-        height: '80px',
-      },
+      styles: {},
       name: 'image',
+      children: [],
     },
   },
   button: {
-    end_composite_scenario: {
+    button: {
       buoyancy: 1,
-      func_type: 'end_composite_scenario',
+      func_type: 'button',
       struct_type: 'button',
       parameters: {
-        group: 'button',
-      },
-      styles: {
-        width: '64px',
-        height: '36px',
-      },
-      name: 'button',
-    },
-    end_simple_scenario: {
-      buoyancy: 0,
-      func_type: 'end_simple_scenario',
-      struct_type: 'button',
-      parameters: {
-        group: 'button',
+        group: 'form',
       },
       styles: {},
       name: 'button',
-    }
+      children: [],
+    },
   },
   hyperlink: {
-    end_simple_scenario: {
+    hyperlink: {
       buoyancy: 2,
-      func_type: 'end_simple_scenario',
+      func_type: 'hyperlink',
       struct_type: 'hyperlink',
       parameters: {
         group: 'other',
       },
-      styles: {
-        width: '50px',
-        height: '25px',
-      },
+      styles: {},
       name: 'hyperlink',
+      children: [],
     }
   },
   textinput: {
-    email: {
-      buoyancy: 95,
-      func_type: 'email',
+    textinput: {
+      buoyancy: 0,
+      func_type: 'textinput',
       struct_type: 'textinput',
       parameters: {
-        group: 'input',
-        placeholder: 'Email',
+        group: 'form',
       },
-      styles: {
-        width: '280px',
-        height: '56px',
-      },
+      styles: {},
       name: 'textinput',
-    },
-    phone: {
-      buoyancy: 86,
-      func_type: 'phone',
-      struct_type: 'textinput',
-      parameters: {
-        group: 'input',
-        placeholder: 'Phone',
-      },
-      styles: {
-        width: '280px',
-        height: '56px',
-      },
-      name: 'textinput',
-    },
-    username: {
-      buoyancy: 65,
-      func_type: 'username',
-      struct_type: 'textinput',
-      parameters: {
-        group: 'input',
-        placeholder: 'Username',
-      },
-      styles: {
-        width: '280px',
-        height: '56px',
-      },
-      name: 'textinput',
-    },
-    firstname: {
-      buoyancy: 64,
-      func_type: 'firstname',
-      struct_type: 'textinput',
-      parameters: {
-        group: 'input',
-        placeholder: 'First name',
-        tags: '#username_horizontal',
-      },
-      styles: {
-        width: '280px',
-        height: '56px',
-      },
-      name: 'textinput',
-    },
-    lastname: {
-      buoyancy: 61,
-      func_type: 'lastname',
-      struct_type: 'textinput',
-      parameters: {
-        group: 'input',
-        placeholder: 'Last name',
-        tags: '#username_horizontal',
-      },
-      styles: {
-        width: '280px',
-        height: '56px',
-      },
-      name: 'textinput',
-    },
-    password: {
-      buoyancy: 10,
-      func_type: 'password',
-      struct_type: 'textinput',
-      parameters: {
-        group: 'input',
-        placeholder: 'Password',
-      },
-      styles: {
-        width: '280px',
-        height: '56px',
-      },
-      name: 'textinput',
+      children: [],
     },
   },
   checkbox: {
@@ -168,15 +78,12 @@ export const LIBRARY_ELEMENTS: LibraryElements = {
       func_type: 'checkbox',
       struct_type: 'checkbox',
       parameters: {
-        group: 'input',
-        value: '',
-        name: '',
+        group: 'form',
+        defaultChecked: true,
       },
-      styles: {
-        width: '50px',
-        height: '50px',
-      },
+      styles: {},
       name: 'checkbox',
+      children: [],
     },
   },
   radiobutton: {
@@ -185,100 +92,56 @@ export const LIBRARY_ELEMENTS: LibraryElements = {
       func_type: 'radiobutton',
       struct_type: 'radiobutton',
       parameters: {
-        group: 'input',
-        value: '',
-        name: '',
+        group: 'form',
       },
-      styles: {
-        width: '50px',
-        height: '50px',
-      },
+      styles: {},
       name: 'radiobutton',
-    },
-  },
-  ocrtext: {
-    title: {
-      buoyancy: 100,
-      func_type: 'title',
-      struct_type: 'ocrtext',
-      parameters: {
-        group: 'other',
-      },
-      styles: {
-        width: '100px',
-        height: '40px',
-      },
-      name: 'ocrtext',
-    },
-    description: {
-      buoyancy: 98,
-      func_type: 'description',
-      struct_type: 'ocrtext',
-      parameters: {
-        group: 'other',
-      },
-      styles: {
-        width: '100px',
-        height: '40px',
-      },
-      name: 'ocrtext',
-    },
-    label: {
-      buoyancy: 0,
-      func_type: 'label',
-      struct_type: 'ocrtext',
-      parameters: {
-        group: 'other',
-      },
-      styles: {
-        width: '100px',
-        height: '40px',
-      },
-      name: 'ocrtext',
+      children: [],
     },
   },
   select: {
-    day: {
-      buoyancy: 54,
-      func_type: 'day',
+    select: {
+      buoyancy: 0,
+      func_type: 'select',
       struct_type: 'select',
       parameters: {
-        group: 'select',
-        tags: '#date_horizontal',
+        group: 'form',
       },
-      styles: {
-        width: '50px',
-        height: '25px',
-      },
+      styles: {},
       name: 'select',
+      children: [
+        {
+          buoyancy: 0,
+          func_type: 'menu',
+          struct_type: 'menu',
+          parameters: {},
+          styles: {},
+          name: 'menu',
+          children: [],
+        },
+        {
+          buoyancy: 0,
+          func_type: 'menuItem',
+          struct_type: 'menuItem',
+          parameters: {},
+          styles: {},
+          name: 'menuItem',
+          children: [],
+        },
+      ],
     },
-    month: {
-      buoyancy: 54,
-      func_type: 'month',
-      struct_type: 'select',
+  },
+  ocrtext: {
+    ocrtext: {
+      buoyancy: 100,
+      func_type: 'ocrtext',
+      struct_type: 'ocrtext',
       parameters: {
-        group: 'select',
-        tags: '#date_horizontal',
+        group: 'other',
       },
-      styles: {
-        width: '50px',
-        height: '25px',
-      },
-      name: 'select',
-    },
-    year: {
-      buoyancy: 54,
-      func_type: 'year',
-      struct_type: 'select',
-      parameters: {
-        group: 'select',
-        tags: '#date_horizontal',
-      },
-      styles: {
-        width: '50px',
-        height: '25px',
-      },
-      name: 'select',
+      styles: {},
+      name: 'ocrtext',
+      children: [],
     },
   },
   map: {
@@ -289,11 +152,9 @@ export const LIBRARY_ELEMENTS: LibraryElements = {
       parameters: {
         group: 'widget',
       },
-      styles: {
-        width: '500px',
-        height: '250px',
-      },
+      styles: {},
       name: 'map',
+      children: [],
     },
   },
   calendar: {
@@ -304,11 +165,9 @@ export const LIBRARY_ELEMENTS: LibraryElements = {
       parameters: {
         group: 'widget',
       },
-      styles: {
-        width: '350px',
-        height: '300px',
-      },
+      styles: {},
       name: 'calendar',
+      children: [],
     },
   },
   clock: {
@@ -319,11 +178,9 @@ export const LIBRARY_ELEMENTS: LibraryElements = {
       parameters: {
         group: 'widget',
       },
-      styles: {
-        width: '150px',
-        height: '150px',
-      },
+      styles: {},
       name: 'clock',
+      children: [],
     },
   },
   undefined: {
@@ -336,6 +193,7 @@ export const LIBRARY_ELEMENTS: LibraryElements = {
       },
       styles: {},
       name: 'undefined',
+      children: [],
     },
   },
 };

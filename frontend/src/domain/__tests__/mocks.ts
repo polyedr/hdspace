@@ -1,6 +1,6 @@
 import { T as ProjectT } from '$redux/project';
 
-export function makeContainerMock(scenario?: Partial<ProjectT.IScenarioItem>) {
+export function makeContainerMock(scenario?: Partial<ProjectT.IScenarioItem>): ProjectT.IScenarioItem {
   return {
     parent_id: -1,
     id: -100,
@@ -18,14 +18,14 @@ export function makeContainerMock(scenario?: Partial<ProjectT.IScenarioItem>) {
   }
 }
 
-export function makeElementMock(element?: Partial<ProjectT.IScenarioElement>) {
+export function makeElementMock(element?: Partial<ProjectT.IScenarioElement>): ProjectT.IScenarioElement {
   return {
     scenario: 0,
     buoyancy: 0,
     dynamic_buoyancy: 0,
     name: 'Element',
     struct_type: 'textinput',
-    func_type: 'phone',
+    func_type: 'textinput',
     id: -1000,
     image: null,
     parameters: {
@@ -33,6 +33,7 @@ export function makeElementMock(element?: Partial<ProjectT.IScenarioElement>) {
       group: `don't know what is this`,
     },
     styles: {},
+    children: [],
     ...element,
   }
 }

@@ -1,9 +1,6 @@
 import React, { useCallback } from 'react';
 import classNames from 'classnames';
-import { connect } from 'react-redux';
 
-import { selectors } from '$redux/project';
-import { AppReduxState } from '$shared/types/app';
 import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
 import { CssLikeStyles } from '$utils/StyleHelper';
 
@@ -11,46 +8,23 @@ const styles = require('./styles.scss');
 
 const MIN_PADDING = 0;
 
-type StateProps = {
-  marginTop: string;
-  marginRight: string;
-  marginBottom: string;
-  marginLeft: string;
-  paddingTop: string;
-  paddingRight: string;
-  paddingBottom: string;
-  paddingLeft: string;
+type OwnProps = {
+  activeItemStyles: Required<CssLikeStyles>;
 };
 
-type Props = StateProps & PropertiesChangeProps;
-
-function mapState(state: AppReduxState): StateProps {
-  const activeItemStyles = selectors.selectActiveItemStyles(state) as Required<CssLikeStyles>;
-
-  return {
-    marginTop: activeItemStyles['margin-top'],
-    marginRight: activeItemStyles['margin-right'],
-    marginBottom: activeItemStyles['margin-bottom'],
-    marginLeft: activeItemStyles['margin-left'],
-    paddingTop: activeItemStyles['padding-top'],
-    paddingRight: activeItemStyles['padding-right'],
-    paddingBottom: activeItemStyles['padding-bottom'],
-    paddingLeft: activeItemStyles['padding-left'],
-  };
-}
+type Props = OwnProps & PropertiesChangeProps;
 
 export const Component: React.FC<Props> = (props) => {
-  const {
-    updateStyles,
-    marginTop,
-    marginRight,
-    marginBottom,
-    marginLeft,
-    paddingTop,
-    paddingRight,
-    paddingBottom,
-    paddingLeft,
-  } = props;
+  const { updateStyles, activeItemStyles } = props;
+
+  const marginTop = activeItemStyles['margin-top'];
+  const marginRight = activeItemStyles['margin-right'];
+  const marginBottom = activeItemStyles['margin-bottom'];
+  const marginLeft = activeItemStyles['margin-left'];
+  const paddingTop = activeItemStyles['padding-top'];
+  const paddingRight = activeItemStyles['padding-right'];
+  const paddingBottom = activeItemStyles['padding-bottom'];
+  const paddingLeft = activeItemStyles['padding-left'];
 
   const handleIndentChange = useCallback((type: string, value: string) => {
     updateStyles({ [type]: value });
@@ -153,4 +127,4 @@ export const Component: React.FC<Props> = (props) => {
   );
 };
 
-export const IndentsBlock = connect(mapState)(withConfigurableProperties(Component));
+export const IndentsBlock = withConfigurableProperties(Component);

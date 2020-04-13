@@ -157,7 +157,7 @@ const SortableComponent: React.FC<Props> = (props) => {
         }
 
         const currentItem = currentListSortable[itemId];
-        const { struct_type, parameters, styles, name } = getParams(itemId, elementList, scenarioList);
+        const { struct_type, parameters, styles, name, children } = getParams(itemId, elementList, scenarioList);
 
         if (struct_type === 'container') {
           return (
@@ -193,6 +193,7 @@ const SortableComponent: React.FC<Props> = (props) => {
             onChange={handleRenderElementChange}
             checkedRadio={savedElements[parameters.name]}
             radioIndex={getRadioIndex(parameters.name, itemId)}
+            childrenElements={children}
            />
         ) : null;
       })}

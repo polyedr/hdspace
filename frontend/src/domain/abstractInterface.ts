@@ -1,4 +1,6 @@
 import * as R from 'ramda';
+
+import { ILSItem } from '$redux/project/types';
 import { T as ProjectT } from '$redux/project';
 import { DEFAULT_LS } from '$constants/defaultParams';
 import { scenarioItemToLS, elementToLS } from '$utils/parseScenario';
@@ -164,7 +166,7 @@ export const constructAIMap = (
 ): ProjectT.IListSortable => {
   const root = R.values(containers).find(x => x.parent_id === -1);
   if (root) {
-    const rootScenario = {
+    const rootScenario: ILSItem = {
       id: root.id,
       type: 'root',
       children: root.parameters.children,

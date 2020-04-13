@@ -14,7 +14,11 @@ import {
   DEFAULT_IMAGE_PROPS,
   DEFAULT_VALUE,
   DEFAULT_NAME,
+  DEFAULT_RIPPLE,
+  DEFAULT_INPUT_TYPE,
+  DEFAULT_SELECT_OPTIONS,
 } from '$constants/defaultParams';
+import { ServerStructType } from '$redux/project/types';
 
 export const ENTITIES = [
   'root',
@@ -32,32 +36,54 @@ export const ENTITIES = [
   'clock',
   'undefined',
 ] as const;
-const CONTROLS_AFFECT_ON_PARAMS = ['action', 'mapProps', 'placeholder', 'textContent', 'image', 'value', 'name'] as const;
+
+const CONTROLS_AFFECT_ON_PARAMS = [
+  'action',
+  'mapProps',
+  'placeholder',
+  'textContent',
+  'image',
+  'value',
+  'name',
+  'showRipple',
+  'type',
+  'selectOptions',
+] as const;
+
 const CONTROLS_AFFECT_ON_STYLES = ['display', 'indents', 'size', 'typography', 'border', 'background'] as const;
 
 const controlAffectsOnStyles = (controlName: Control) => (
   CONTROLS_AFFECT_ON_STYLES.find(x => x === controlName) !== undefined
 );
 
-export type Entity = typeof ENTITIES[number];
+export type Entity = Exclude<ServerStructType, 'menu' | 'menuItem'>;
+export type EntityWithChildren = 'select';
+export type ChildEntity = 'menu' | 'menuItem';
 export type Control = typeof CONTROLS_AFFECT_ON_PARAMS[number] | typeof CONTROLS_AFFECT_ON_STYLES[number];
 
 // WARN: every time you add or remove some properties in prod, you must write migration to add/remove properties for existing entities in db
 export const AVAILABLE_CONTROLS: Record<Entity, Control[]> = {
   root: ['background'],
   container: ['indents', 'size', 'display', 'typography', 'border', 'background'],
-  button: ['indents', 'size', 'display', 'typography', 'border', 'background', 'textContent', 'action'],
-  textinput: ['indents', 'size', 'typography', 'border', 'background', 'textContent', 'placeholder'],
-  checkbox: ['value', 'name', 'indents', 'size', 'background'],
-  radiobutton: ['value', 'name', 'indents', 'size', 'background'],
+  button: ['indents', 'size', 'display', 'typography', 'border', 'background', 'textContent', 'action', 'showRipple'],
+  textinput: ['indents', 'size', 'typography', 'border', 'background', 'type', 'textContent', 'placeholder'],
+  checkbox: ['indents', 'size', 'background', 'value', 'name', 'showRipple'],
+  radiobutton: ['indents', 'size', 'background', 'value', 'name', 'showRipple'],
   hyperlink: ['indents', 'size', 'display', 'typography', 'border', 'background', 'textContent', 'action'],
   ocrtext: ['indents', 'size', 'typography', 'border', 'background', 'textContent'],
   image: ['indents', 'size', 'border', 'background', 'image'],
-  select: ['indents', 'size', 'typography', 'border', 'background'],
+  select: ['indents', 'size', 'typography', 'border', 'background', 'showRipple', 'value', 'selectOptions'],
   map: ['indents', 'size', 'typography', 'border', 'background', 'mapProps'],
   calendar: ['indents', 'size', 'typography', 'border', 'background'],
   clock: ['indents', 'size', 'typography', 'border', 'background'],
   undefined: ['size', 'background'],
+};
+
+export const AVAILABLE_CHILDREN_CONTROLS: Record<EntityWithChildren, Record<ChildEntity, Control[]>> = {
+  select: {
+    menu: ['indents', 'size', 'typography', 'border', 'background'],
+    menuItem: ['indents', 'size', 'typography', 'border', 'background'],
+  },
 };
 
 const CONTROLS_DEFAULTS: Record<Control, any> = {
@@ -74,10 +100,19 @@ const CONTROLS_DEFAULTS: Record<Control, any> = {
   image: DEFAULT_IMAGE_PROPS,
   value: DEFAULT_VALUE,
   name: DEFAULT_NAME,
+  showRipple: DEFAULT_RIPPLE,
+  type: DEFAULT_INPUT_TYPE,
+  selectOptions: DEFAULT_SELECT_OPTIONS,
 };
 
 type EntityToDefaults = {
   [P in Entity]: Record<Control, any>;
+};
+
+type ChildEntityToDefaults = {
+  [P in Entity]: {
+    [P in ChildEntity]: Record<Control, any>;
+  };
 };
 
 const extractDefaults = (entity: Entity, control?: Control) => control
@@ -133,6 +168,13 @@ const ENTITY_TO_DEFAULTS: EntityToDefaults = {
   },
   textinput: {
     ...extractDefaults('textinput'),
+    indents: {
+      ...extractDefaults('textinput', 'indents'),
+      'padding-top': '18.5px',
+      'padding-right': '14px',
+      'padding-bottom': '18.5px',
+      'padding-left': '14px',
+    },
     border: {
       ...extractDefaults('textinput', 'border'),
       'border-color': '#d9d9d9',
@@ -163,6 +205,9 @@ const ENTITY_TO_DEFAULTS: EntityToDefaults = {
       'padding-bottom': '0',
       'padding-left': '0',
     },
+    value: {
+      value: '',
+    },
   },
   radiobutton: {
     ...extractDefaults('radiobutton'),
@@ -181,6 +226,9 @@ const ENTITY_TO_DEFAULTS: EntityToDefaults = {
       'padding-right': '0',
       'padding-bottom': '0',
       'padding-left': '0',
+    },
+    value: {
+      value: '',
     },
   },
   hyperlink: {
@@ -216,7 +264,23 @@ const ENTITY_TO_DEFAULTS: EntityToDefaults = {
       'padding-left': '0',
     },
   },
-  select: extractDefaults('select'),
+  select: {
+    ...extractDefaults('select'),
+    indents: {
+      ...extractDefaults('select', 'indents'),
+      'padding-top': '18.5px',
+      'padding-right': '14px',
+      'padding-bottom': '18.5px',
+      'padding-left': '14px',
+    },
+    border: {
+      ...extractDefaults('select', 'border'),
+      'border-color': '#d9d9d9',
+      'border-width': '1px',
+      'border-style': 'solid',
+      'border-radius': '4px',
+    },
+  },
   map: {
     ...extractDefaults('map'),
     size: {
@@ -241,10 +305,72 @@ const ENTITY_TO_DEFAULTS: EntityToDefaults = {
   }
 };
 
-export const getConfigurablePropsOf = createSelector(
+const extractChildDefaults = (entity: EntityWithChildren, child: ChildEntity, control?: Control) => {
+  const controls = AVAILABLE_CHILDREN_CONTROLS[entity];
+
+  if (!controls) {
+    return {};
+  }
+
+  return control ? R.pick(controls[child], CONTROLS_DEFAULTS)[control] : R.pick(controls[child], CONTROLS_DEFAULTS);
+};
+
+const ENTITY_CHILDREN_TO_DEFAULTS: Partial<ChildEntityToDefaults> = {
+  select: {
+    menu: {
+      ...extractChildDefaults('select', 'menu'),
+      background: {
+        ...extractChildDefaults('select', 'menu', 'background'),
+        'background-color': '#ffffff',
+      },
+      indents: {
+        ...extractChildDefaults('select', 'menu', 'indents'),
+        'padding-top': '0px',
+        'padding-right': '0px',
+        'padding-bottom': '0px',
+        'padding-left': '0px',
+        'margin-top': '0px',
+        'margin-right': '0px',
+        'margin-bottom': '0px',
+        'margin-left': '0px',
+      },
+      border: {
+        ...extractChildDefaults('select', 'menu', 'border'),
+        'border-color': '#d9d9d9',
+        'border-width': '1px',
+        'border-style': 'solid',
+        'border-radius': '4px',
+      },
+    },
+    menuItem: {
+      ...extractChildDefaults('select', 'menuItem'),
+      background: {
+        ...extractChildDefaults('select', 'menuItem', 'background'),
+        'background-color': '#ffffff',
+      },
+      indents: {
+        ...extractChildDefaults('select', 'menuItem', 'indents'),
+        'padding-top': '6px',
+        'padding-right': '16px',
+        'padding-bottom': '6px',
+        'padding-left': '16px',
+      },
+      border: {
+        ...extractChildDefaults('select', 'menuItem', 'border'),
+        'border-width': '0px',
+      },
+      typography: {
+        ...extractChildDefaults('select', 'menuItem', 'typography'),
+        'line-height': '1.5',
+      },
+    },
+  }
+}
+
+export const getConfigurablePropsOf = (child?: ChildEntity) => createSelector(
   (entity: Entity) => entity,
   (entity: Entity) => {
-    const entityControlsDefaults = ENTITY_TO_DEFAULTS[entity];
+    const entityControlsDefaults = child && ENTITY_CHILDREN_TO_DEFAULTS[entity]?.[child] || ENTITY_TO_DEFAULTS[entity];
     return R.keys(entityControlsDefaults).reduce((acc, c) => {
       const controlAffectsOn = controlAffectsOnStyles(c) ? 'styles' : 'params';
       return ({

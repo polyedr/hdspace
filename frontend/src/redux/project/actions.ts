@@ -167,6 +167,11 @@ export const updateElementStyles = (id: string, styles: CssLikeStyles): T.Update
   payload: { id, styles },
 });
 
+export const updateChildStyles = (parentID: string, id: string, styles: CssLikeStyles): T.UpdateChildStyles => ({
+  type: 'PROJECTS:UPDATE_CHILD_STYLES',
+  payload: { parentID, id, styles },
+});
+
 // TODO: here is not CSSProperties, here css-like properties written in lower-case-hyphenated
 export const updateScenarioStyles = (
   id: string,

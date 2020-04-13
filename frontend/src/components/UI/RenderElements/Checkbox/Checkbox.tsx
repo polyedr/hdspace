@@ -1,0 +1,57 @@
+import React, { useCallback, ChangeEvent } from 'react';
+import cn from 'classnames';
+import { makeStyles, Checkbox } from '@material-ui/core';
+import CheckBoxIcon from '@material-ui/icons/CheckBox';
+import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
+
+import { Renderer } from '../types';
+const styles = require('../styles.scss');
+
+const CheckboxComponent: Renderer = (props) => {
+  const { id, style, params, isDisabled, active, sortableId, savedElement, onChange } = props;
+  const { backgroundColor, width, height, ...restStyles } = style;
+  const { value, name, showRipple } = params;
+
+  const classes = makeStyles({
+    root: {
+      color: backgroundColor,
+      '&$checked': {
+        color: backgroundColor,
+      },
+    },
+    icon: {
+      width,
+      height,
+    },
+    checked: {},
+  })();
+
+  const handleCheckboxChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    onChange(id, event.target.checked);
+  }, [onChange]);
+
+  return (
+    <div
+      id={id}
+      data-ls-id={id}
+      data-id={sortableId}
+      key={id}
+      style={{ ...restStyles, display: 'inline-block' }}
+      className={cn('ls-item', isDisabled && styles.disabled, active && 'activated')}
+    >
+      <Checkbox
+        checkedIcon={<CheckBoxIcon className={classes.icon} />}
+        icon={<CheckBoxOutlineBlankIcon className={classes.icon} />}
+        color="default"
+        className={classes.root}
+        value={value}
+        name={name}
+        checked={Boolean(savedElement.savedValue)}
+        disableRipple={!showRipple}
+        onChange={handleCheckboxChange}
+      />
+    </div>
+  );
+}
+
+export { CheckboxComponent as Checkbox};

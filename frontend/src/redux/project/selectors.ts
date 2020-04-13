@@ -81,9 +81,10 @@ export function selectActiveItem(state: AppReduxState) {
 };
 
 export const selectActiveItemStyles = makeActiveItemInfoSelector('styles');
+export const selectActiveItemChildrenStyles = makeActiveItemInfoSelector('styles', true);
 export const selectActiveItemParams = makeActiveItemInfoSelector('parameters');
 
-function makeActiveItemInfoSelector(prop: 'styles' | 'parameters') {
+function makeActiveItemInfoSelector(prop: 'styles' | 'parameters', isChildren?: boolean) {
   return (state: AppReduxState) => {
     const activeItem = selectActiveItem(state);
     const scenarios = selectScenarios(state);
@@ -101,7 +102,17 @@ function makeActiveItemInfoSelector(prop: 'styles' | 'parameters') {
     }
   
     const itemID = parseInt(activeItem.itemId, 10);
-    return activeItem.itemId.slice(-1) === 's' ? scenarios[itemID][prop] : scenarioElements[itemID][prop];
+
+    if (activeItem.itemId.slice(-1) === 's') {
+      return scenarios[itemID][prop];
+    }
+
+    return isChildren
+      ? scenarioElements[itemID].children.reduce((acc, child) => ({
+          ...acc,
+          [child.struct_type]: { styles: child.styles },
+        }), {})
+      : scenarioElements[itemID][prop];
   };
 }
 

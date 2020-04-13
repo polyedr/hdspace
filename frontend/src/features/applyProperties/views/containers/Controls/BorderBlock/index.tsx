@@ -1,9 +1,6 @@
 import React, { useCallback, } from 'react';
-import { connect } from 'react-redux';
 import cn from 'classnames';
 
-import { AppReduxState } from '$shared/types/app';
-import { selectors } from '$redux/project/';
 import {
   MAX_BORDER_RADIUS,
   MAX_BORDER_RADIUS_PERCENT,
@@ -23,31 +20,21 @@ const accessBorderRadius = (border: CssLikeStyles['border-radius']) => {
   return matchedValue !== null ? matchedValue[0] : 'px';
 };
 
-type StateProps = {
-  borderColor: string;
-  borderWidth: string;
-  borderRadius: string;
+type OwnProps = {
+  activeItemStyles: Required<CssLikeStyles>;
 }
 
-function mapState(state: AppReduxState): StateProps {
-  const activeItemStyles = selectors.selectActiveItemStyles(state) as Required<CssLikeStyles>;
-
-  return {
-    borderColor: activeItemStyles['border-color'],
-    borderWidth: activeItemStyles['border-width'],
-    borderRadius: activeItemStyles['border-radius'],
-  };
-}
-
-type Props = StateProps & PropertiesChangeProps;
+type Props = OwnProps & PropertiesChangeProps;
 
 export const Component: React.FunctionComponent<Props> = React.memo(({
-  borderColor,
-  borderWidth,
-  borderRadius,
+  activeItemStyles,
   activeItemID,
   updateStyles,
 }) => {
+  const borderColor = activeItemStyles['border-color'];
+  const borderWidth = activeItemStyles['border-width'];
+  const borderRadius = activeItemStyles['border-radius'];
+
   const handleBorderWidthChange = useCallback(({ target: { value } }) => {
     const newWidth = getPermissibleValue(strToNumber(value), MIN_BORDER_WIDTH, MAX_BORDER_WIDTH);
 
@@ -111,4 +98,4 @@ export const Component: React.FunctionComponent<Props> = React.memo(({
   );
 });
 
-export const BorderBlock = connect(mapState)(withConfigurableProperties(Component));
+export const BorderBlock = withConfigurableProperties(Component);

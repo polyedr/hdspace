@@ -1,6 +1,6 @@
 import { myAxios, MyAxiosProps } from '$config/settings';
 import { onError, parseResult } from '$api/project';
-import { IScenarioElement, LibraryElementType } from '$redux/project/types';
+import { IScenarioElement, ServerStructType } from '$redux/project/types';
 
 type ServerLibraryElement = { // TODO: compare with entity on backend!
   buoyancy: number[];
@@ -9,7 +9,7 @@ type ServerLibraryElement = { // TODO: compare with entity on backend!
   id: number;
   image: string | null;
   parameters: any[];
-  struct_type: LibraryElementType;
+  struct_type: ServerStructType;
   styles: {}[];
 };
 

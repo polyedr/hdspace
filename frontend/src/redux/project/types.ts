@@ -80,6 +80,7 @@ export type SetScreens = IAction<'PROJECTS:SET_SCREENS', { screens: IProjectScre
 export type AddElement = IAction<'PROJECTS:ADD_ELEMENT', { parentID: string, type: string }>;
 export type SetScenarioElements = IAction<'PROJECTS:SET_SCENARIO_ELEMENTS', { elements: IScenarioElements }>;
 export type UpdateElementStyles = IAction<'PROJECTS:UPDATE_ELEMENT_STYLES', { id: string, styles: CssLikeStyles }>;
+export type UpdateChildStyles = IAction<'PROJECTS:UPDATE_CHILD_STYLES', { parentID: string, id: string, styles: CssLikeStyles }>;
 // TODO: here is not CSSProperties, here css-like properties written in lower-case-hyphenated
 export type UpdateScenarioStyles = IAction<
   'PROJECTS:UPDATE_SCENARIO_STYLES', { id: string, styles: CSSProperties & { 'flex-direction'?: string } }
@@ -147,6 +148,7 @@ export type Action =
   | AddElement
   | SetScenarioElements
   | UpdateElementStyles
+  | UpdateChildStyles
   | UpdateScenarioStyles
   | UpdateElementImage
   | UpdateElementParameters
@@ -263,6 +265,10 @@ export interface IMapProps {
   markerText?: string,
 }
 
+export type InputType = 'text' | 'email' | 'number' | 'phone' | 'password';
+
+export type Option = { name: string; value: any };
+
 export interface IScreenProps {
   buoyancy?: number,
   html_type?: string,
@@ -283,8 +289,11 @@ export interface IScreenProps {
   scenarioId?: number,
   action?: LinkParams,
   imageURL?: string,
+  type?: InputType,
   value?: string,
   name?: string,
+  showRipple?: boolean,
+  options?: Option[],
 }
 
 export interface ISortableItem {
@@ -297,8 +306,8 @@ export interface ISortableItem {
 }
 
 export type LibraryElement = {
-  struct_type: LibraryElementType;
-  func_type: string;
+  struct_type: ServerStructType;
+  func_type: ServerStructType;
   func_type_human?: string;
   buoyancy: number;
   parameters: {
@@ -308,15 +317,29 @@ export type LibraryElement = {
     map_props?: IMapProps;
   };
   styles: CssLikeStyles;
-  name: string;
+  name: ServerStructType;
 };
 
-export type LibraryElementType = 'frame' | 'widget' | 'chart' | 'image' | 'button' | 'hyperlink' | 'paragraph' | 'textbox'
-| 'textarea' | 'textinput' | 'icon' | 'logo' | 'unordered_list' | 'ordered_list' | 'table' | 'ocrtext' | 'div' | 'undefined' | 'select' | 'map' | 'calendar' | 'clock' | 'checkbox' | 'radiobutton';
-export type ServerFuncType = 'undefined' | 'image' | 'end_composite_scenario' | 'end_simple_scenario' | 'title' | 'day' | 'map' | 'calendar' | 'clock' | 'checkbox' | 'radiobutton' | 'description' | 'label' | 'month' | 'year' | 'email' | 'phone' | 'username' | 'firstname' | 'lastname' | 'password';
+export type ServerStructType =
+  | 'root'
+  | 'container'
+  | 'undefined'
+  | 'image'
+  | 'menu'
+  | 'menuItem'
+  | 'button'
+  | 'textinput'
+  | 'hyperlink'
+  | 'select'
+  | 'map'
+  | 'calendar'
+  | 'clock'
+  | 'checkbox'
+  | 'radiobutton'
+  | 'ocrtext';
 
-type StructType = LibraryElementType;
-type FuncType = string;
+type StructType = ServerStructType;
+type FuncType = ServerStructType;
 export type LibraryElements = Record<StructType, Record<FuncType, LibraryElement>>;
 
 export interface IStylesElement {
@@ -350,8 +373,8 @@ export interface IScenarioElement { // compare with entity on backend
   id: number,
   scenario: number,
   name: string,
-  struct_type: string,
-  func_type: string,
+  struct_type: ServerStructType,
+  func_type: ServerStructType,
   func_type_human?: string, // possibly has fallback value as 'undefined'
   buoyancy: number,
   dynamic_buoyancy: number,
@@ -376,8 +399,10 @@ export interface IScenarioElement { // compare with entity on backend
     textContent?: string;
     value?: string;
     name?: string;
+    defaultChecked?: string;
   },
   styles: CssLikeStyles,
+  children: IScenarioElement[],
 }
 
 export interface IScenarioElements {
@@ -388,7 +413,7 @@ export interface IScenarioItem { // compare with entity on backend
   id: number;
   name: string;
   type?: string;
-  struct_type: string; // 'scenario' | 'block' | 'group' | 'container' | 'undefined'. it seems that it also contains keyof of RENDERERS
+  struct_type: ServerStructType; // 'scenario' | 'block' | 'group' | 'container' | 'undefined'. it seems that it also contains keyof of RENDERERS
   screen: number;
   parent_id: number; // id in database table
   buoyancy: number;
@@ -406,7 +431,7 @@ export interface IScenarios {
 
 export interface ILSItem {
   id: number;
-  type: string;
+  type: ServerStructType;
   children: string[];
 }
 

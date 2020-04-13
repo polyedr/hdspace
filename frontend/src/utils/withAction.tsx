@@ -4,8 +4,7 @@ import { connect } from 'react-redux';
 import { selectors, actionsCreators } from '$redux/project';
 import { AppReduxState } from '$shared/types/app';
 import { LinkContext } from '$containers/ExportedApp';
-
-import { RendererProps } from '../components/UI/RenderElements';
+import { RendererProps } from '$components/UI/RenderElements/types';
 
 const mapStateToProps = (state: AppReduxState) => {
   const projectID = selectors.selectCurrentProject(state).id;
