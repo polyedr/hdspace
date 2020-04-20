@@ -9,7 +9,6 @@ import {
   IScenarios,
   IScenarioItem,
   IScenarioElements,
-  LibraryElements,
   LibraryElement,
   IListSortable,
   ILSItem,
@@ -18,7 +17,8 @@ import {
 } from '$redux/project/types';
 import { IChooseElement } from '$components/ModalAddElements/ModalAddElements/ModalAddElements';
 import { CssLikeStyles } from '$utils/StyleHelper';
-import { ENTITIES } from '$domain/core';
+import { ENTITIES, Entity } from '$domain/core';
+import { ElementsToAdd } from '$domain/libraryElements';
 
 export type GroupElement = {
   key: string,
@@ -50,44 +50,44 @@ export const convertScenarioElements = (
     },
   }), {});
 
-const getCategoryTab = (structType: ServerStructType, libraryElements: LibraryElements, obj: IListCategoryEl) => {
+const getCategoryTab = (structType: Exclude<Entity, 'root' | 'container'>, libraryElements: ElementsToAdd, obj: IListCategoryEl) => {
   switch (structType) {
     case 'textinput':
-      return { Form: [...obj.Form || [], ...R.values(libraryElements[structType])] };
+      return { Form: [...obj.Form || [], libraryElements[structType]] };
     case 'checkbox':
-      return { Form: [...obj.Form || [], ...R.values(libraryElements[structType])] };
+      return { Form: [...obj.Form || [], libraryElements[structType]] };
     case 'radiobutton':
-      return { Form: [...obj.Form || [], ...R.values(libraryElements[structType])] };
+      return { Form: [...obj.Form || [], libraryElements[structType]] };
     case 'map':
     case 'calendar':
     case 'clock':
-      return { Widget: [...obj.Widget || [], ...R.values(libraryElements[structType])] };
+      return { Widget: [...obj.Widget || [], libraryElements[structType]] };
     case 'select':
-      return { Form: [...obj.Form || [], ...R.values(libraryElements[structType])] };
+      return { Form: [...obj.Form || [], libraryElements[structType]] };
     case 'image':
-      return { Image: [...obj.Image || [], ...R.values(libraryElements[structType])] };
+      return { Image: [...obj.Image || [], libraryElements[structType]] };
     case 'button':
-      return { Form: [...obj.Form || [], ...R.values(libraryElements[structType])] };
+      return { Form: [...obj.Form || [], libraryElements[structType]] };
 
-    default: return { Other: [...obj.Other || [], ...R.values(libraryElements[structType])] };
+    default: return { Other: [...obj.Other || [], libraryElements[structType]] };
   }
 };
 
-export const parseAddElementsTabs = (libraryElements: LibraryElements): IListCategoryEl => (
+export const parseAddElementsTabs = (libraryElements: ElementsToAdd): IListCategoryEl => (
   R.keys(libraryElements).reduce((acc, structType) => ({
     ...acc,
     ...getCategoryTab(structType, libraryElements, acc),
   }), {})
 );
 
-export const getCustomTemplateElements = (libraryElements: LibraryElements) => {
+export const getCustomTemplateElements = (libraryElements: ElementsToAdd) => {
   return R.keys(libraryElements).reduce((acc: ITemplateElement[], structType) => {
     if (ENTITIES.some(x => x === structType)) {
-      return acc.concat(R.values(libraryElements[structType]).map(element => ({
-        label: `${structType}/${element.func_type}`,
-        value: { funcType: element.func_type, structType },
+      return acc.concat({
+        label: `${structType}`,
+        value: { funcType: structType, structType },
         checked: false,
-      })));
+      });
     }
     return acc;
   }, []);

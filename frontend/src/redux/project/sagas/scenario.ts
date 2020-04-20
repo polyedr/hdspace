@@ -20,7 +20,7 @@ import { DEFAULT_INDENTS } from '$constants/defaultParams';
 import { reqWrapper } from '$redux/project/sagas/index';
 import { ReturnPromisedType } from '$shared/types';
 import { getConfigurablePropsOf, Entity, ChildEntity } from '$domain/core';
-import { LIBRARY_ELEMENTS } from '$domain/libraryElements';
+import { LIBRARY_ELEMENTS, AllChildren } from '$domain/libraryElements';
 import * as ai from '$domain/abstractInterface';
 
 import { selectors, T } from '../';
@@ -84,7 +84,6 @@ export function* createContainer(scenario?: Partial<T.IScenarioItem>) {
 
 export function* addElementsIntoContainerSaga(action: ReturnType<typeof Actions.addElementsIntoContainer>) {
   const { elements } = action.payload;
-  const libraryElements: ReturnType<typeof selectors.selectLibraryElements> = yield select(selectors.selectLibraryElements);
   const currentScreen: ReturnType<typeof selectors.selectCurrentScreen> = yield select(selectors.selectCurrentScreen);
   const scenarioElements: ReturnType<typeof selectors.selectScenariosElements> = yield select(
     selectors.selectScenariosElements,
@@ -96,11 +95,13 @@ export function* addElementsIntoContainerSaga(action: ReturnType<typeof Actions.
   const targetContainerID = targetContainer ? parseInt(targetContainer, 10) : rootID;
 
   const elementsToCreate = elements.reduce((acc: T.IScenarioElement[], element) => {
-    const libraryElement = LIBRARY_ELEMENTS[element.structType as keyof typeof LIBRARY_ELEMENTS][element.funcType]!; // TODO: remove unused params/styles from backend
-    const { styles, params } = getConfigurablePropsOf()(libraryElement.struct_type as Entity);
+    const libraryElement = LIBRARY_ELEMENTS[element.structType as keyof typeof LIBRARY_ELEMENTS]; // TODO: remove unused params/styles from backend
+    const { styles, params } = getConfigurablePropsOf('root')(libraryElement.struct_type as Entity);
 
-    const children = libraryElement.children.map(child => {
-      const { styles, params } = getConfigurablePropsOf(child.struct_type as ChildEntity)(libraryElement.struct_type as keyof typeof LIBRARY_ELEMENTS);
+    const children: AllChildren = libraryElement.children;
+
+    const childrenToAdd = children.map(child => {
+      const { styles, params } = getConfigurablePropsOf(child.struct_type as ChildEntity<Entity>)(libraryElement.struct_type as keyof typeof LIBRARY_ELEMENTS);
 
       return {
         scenario: targetContainerID,
@@ -137,7 +138,7 @@ export function* addElementsIntoContainerSaga(action: ReturnType<typeof Actions.
         ...params,
       },
       styles,
-      children,
+      children: childrenToAdd,
     };
     return acc.concat(x);
   }, []);
@@ -280,7 +281,7 @@ export function* wrapIntoContainerSaga() {
 
   const rawItemID = activeItem.itemId;
 
-  const { styles, params } = getConfigurablePropsOf()('container');
+  const { styles, params } = getConfigurablePropsOf('root')('container');
   const containerWrapper: T.IScenarioItem = yield call(createContainer, {
     name: 'Container',
     parameters: {

@@ -59,6 +59,7 @@ import * as PATH_NAMES from '$constants/pathNames';
 import { apiSaveScenarios, apiSaveScenario } from '$api/scenario';
 import { DEFAULT_AUTHORISATION_TOKEN } from '$constants/defaultParams';
 import { getConfigurablePropsOf, Entity } from '$domain/core';
+import { LibraryElements } from '$domain/libraryElements';
 import { collectChildren, makeContainerLens, makeElementLens } from '$domain/abstractInterface';
 import * as ai from '$domain/abstractInterface';
 
@@ -149,7 +150,7 @@ function* authCheckSaga() {
         name: x.struct_type,
       }
     }), {}),
-  }), {}) as ProjectT.LibraryElements;
+  }), {}) as LibraryElements;
 
   yield put(Actions.setLibraryElements(libraryElements));
 }
@@ -420,7 +421,7 @@ function* uploadFileSaga(
       type: string; // login
     };
 
-    const { styles, params } = getConfigurablePropsOf()('container');
+    const { styles, params } = getConfigurablePropsOf('root')('container');
     const nnScenarioToContainer = (x: NNScenario): ProjectT.IScenarioItem => ({
       ...x,
       buoyancy: 0,
@@ -478,7 +479,7 @@ function* uploadFileSaga(
 
     const addParentId = (x: any) => ({ ...x, parameters: { ...x.parameters, parent_id: x.scenario }});
     const applyDefaultProps = (x: any): ProjectT.IScenarioElement => {
-      const { styles, params } = getConfigurablePropsOf()(x.struct_type as Entity);
+      const { styles, params } = getConfigurablePropsOf('root')(x.struct_type as Entity);
       return ({
         ...x,
         styles: {

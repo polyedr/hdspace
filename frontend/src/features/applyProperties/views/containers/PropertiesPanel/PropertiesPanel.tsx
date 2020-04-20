@@ -4,12 +4,11 @@ import classNames from 'classnames';
 import * as R from 'ramda';
 
 import { AppReduxState } from '$shared/types/app';
-import { LibraryElements } from '$redux/project/types';
 import { actionsCreators, selectors, T as ProjectT } from '$redux/project';
 import { Scrollbar } from '$components/UI/Scrollbar/';
 import { Spinner } from '$components/UI/Spinner/';
-import { AVAILABLE_CONTROLS, Control, Entity, AVAILABLE_CHILDREN_CONTROLS, EntityWithChildren } from '$domain/core';
-import { LIBRARY_ELEMENTS } from '$domain/libraryElements';
+import { AVAILABLE_CONTROLS, Control, Entity } from '$domain/core';
+import { LIBRARY_ELEMENTS, LibraryElements } from '$domain/libraryElements';
 
 import { ActiveElementBlock } from '../Controls/ActiveElementBlock';
 import { ActionBlock } from '../Controls/ActionBlock';
@@ -105,7 +104,7 @@ const Component: React.FC<PropertiesPanelProps> = ({
           disablePanel={disablePanel}
           onDelScenarioItem={deleteActiveItem}
           scenarios={scenarios}
-          libraryElements={LIBRARY_ELEMENTS as LibraryElements}
+          libraryElements={LIBRARY_ELEMENTS}
           addElementsIntoContainer={addElementsIntoContainer}
           onWrapIntoContainer={wrapIntoContainer}
           isAddElementsModalOpened={isAddElementsModalOpened}
@@ -116,28 +115,27 @@ const Component: React.FC<PropertiesPanelProps> = ({
             <div className="propsPanelHeaderBlock">
               <p>Element properties</p>
             </div>
-            <div className="propsPanelContentBlock">
-              {currentItemType && AVAILABLE_CONTROLS[currentItemType as Entity].map(controlName => {
-                const Component = CONTROLS[controlName];
-                return <Component key={controlName} />
-              })}
-            </div>
-            {currentItemType
-              && AVAILABLE_CHILDREN_CONTROLS[currentItemType as EntityWithChildren]
-              && Object.entries(AVAILABLE_CHILDREN_CONTROLS[currentItemType as EntityWithChildren]).map(([elementName, elementValue]) => {
-              return (
-                <>
-                  <div className="propsPanelHeaderBlock">
-                    <p>{elementName}</p>
-                  </div>
-                  <div className="propsPanelContentBlock">{
-                    elementValue.map(controlName => {
+            {currentItemType && R.toPairs(AVAILABLE_CONTROLS[currentItemType as Entity]).map(([elementName, elementValue]) => {
+                return elementName === 'root' ? (
+                  <div className="propsPanelContentBlock">
+                    {currentItemType && AVAILABLE_CONTROLS[currentItemType as Entity]['root'].map(controlName => {
                       const Component = CONTROLS[controlName];
-                      return <Component key={`${controlName}${elementName}`} childName={elementName} />
-                    })
-                  }</div>
-                </>
-              )
+                      return <Component key={controlName} />
+                    })}
+                  </div>
+                ) : (
+                  <>
+                    <div className="propsPanelHeaderBlock">
+                      <p>{elementName}</p>
+                    </div>
+                    <div className="propsPanelContentBlock">{
+                      elementValue.map(controlName => {
+                        const Component = CONTROLS[controlName];
+                        return <Component key={`${controlName}${elementName}`} childName={elementName} />
+                      })
+                    }</div>
+                  </>
+                )
             })}
           </div>
         )}

@@ -3,6 +3,7 @@ import { CSSProperties } from 'react';
 import { IPlainAction, IPlainFailAction, IAction } from '$shared/redux';
 import { IChooseElement } from '$components/ModalAddElements/ModalAddElements/ModalAddElements';
 import { CssLikeStyles } from '$utils/StyleHelper';
+import { LibraryElements } from '$domain/libraryElements';
 
 export type ReduxState = {
   data: {
@@ -337,10 +338,6 @@ export type ServerStructType =
   | 'checkbox'
   | 'radiobutton'
   | 'ocrtext';
-
-type StructType = ServerStructType;
-type FuncType = ServerStructType;
-export type LibraryElements = Record<StructType, Record<FuncType, LibraryElement>>;
 
 export interface IStylesElement {
   marginTop?: string,

@@ -2,6 +2,7 @@ import { CSSProperties } from 'react';
 
 import { IChooseElement } from '$components/ModalAddElements/ModalAddElements/ModalAddElements';
 import { CssLikeStyles } from '$utils/StyleHelper';
+import { LibraryElements } from '$domain/libraryElements';
 
 import * as T from './types';
 
@@ -9,7 +10,7 @@ export const getLibraryElements = (): T.LoadLibraryElements => ({
   type: 'PROJECTS:LOAD_LIBRARY_ELEMENTS',
 });
 
-export const setLibraryElements = (libraryElements: T.LibraryElements): T.LoadLibraryElementsSuccess => ({
+export const setLibraryElements = (libraryElements: LibraryElements): T.LoadLibraryElementsSuccess => ({
   type: 'PROJECTS:LOAD_LIBRARY_ELEMENTS_SUCCESS',
   payload: { libraryElements },
 });

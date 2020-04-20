@@ -141,7 +141,7 @@ export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
   const createdScreen: ReturnPromisedType<typeof apiAddScreen> = yield call(reqWrapper, apiAddScreen, { data });
   if (!createdScreen) return;
 
-  const { styles } = getConfigurablePropsOf()('root');
+  const { styles } = getConfigurablePropsOf('root')('root');
   const rootScenario: T.IScenarioItem = yield call(createContainer, {
     screen: createdScreen.id,
     styles: {
