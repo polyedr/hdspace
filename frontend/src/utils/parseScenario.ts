@@ -181,7 +181,7 @@ export const getParams = (
   elementList: IScenarioElements,
   scenarioList: IScenarios,
 ): {
-  struct_type: string,
+  struct_type: ServerStructType,
   parameters: any,
   styles: CssLikeStyles,
   children?: IScenarioElement[],

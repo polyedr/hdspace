@@ -1,15 +1,21 @@
-import React, { CSSProperties, useCallback, useState } from 'react';
+import React, { CSSProperties, useCallback, useState, useEffect } from 'react';
 import * as R from 'ramda';
 import { connect } from 'react-redux';
 
 import { AppReduxState } from '$shared/types/app';
 import { SortableGroup } from '$components/Editor/SortableGroup/SortableGroup';
 import { RENDERERS } from '$components/UI/RenderElements';
-import { IListSortable, ILSItem } from '$redux/project/types';
+import { IListSortable, ILSItem, SavedElementsValues } from '$redux/project/types';
 import { selectors, actionsCreators } from '$redux/project';
 import { getItemsPair, getParams, idToLSId, idToDataLSID } from '$utils/parseScenario';
 import { LIST_SCENARIO_TYPE } from '$constants/defaultParams';
 import { convertPropCSS, CssLikeStyles } from '$utils/StyleHelper';
+import { LIBRARY_ELEMENTS } from '$domain/libraryElements';
+import { ElementEntity } from '$domain/core';
+
+const isElementStructType = (type: string): type is ElementEntity => {
+  return type in LIBRARY_ELEMENTS;
+};
 
 const mapStateToProps = (state: AppReduxState, props: OwnProps) => {
   const currentScreen = selectors.selectCurrentScreen(state);
@@ -85,6 +91,29 @@ const SortableComponent: React.FC<Props> = (props) => {
 
   const [isDragging, setIsDragging] = useState<boolean>(false);
 
+  useEffect(() => {
+    const radioNames = Object.values(listSortable)
+      .filter(item => item.type === 'radiobutton')
+      .map(item => scenarioElements[item.id] && scenarioElements[item.id].parameters.name);
+
+    R.uniq(radioNames).map(groupName => {
+      if (!groupName) {
+        return;
+      };
+
+      const groupRadios = Object.values(listSortable)
+        .filter(item => item.type === 'radiobutton')
+        .map(item => scenarioElements[item.id])
+        .filter(item => item && item.parameters.name === groupName);
+
+      const firstRadio = R.head(groupRadios);
+
+      if(!savedElements[groupName].savedValue) {
+        updateSavedElementValues(groupName, firstRadio?.parameters.value || '');
+      };
+    })
+  }, [savedElements, listSortable, scenarioElements, updateSavedElementValues]);
+
   const handleChooseToSort = useCallback((itemIndex) => {
     // TODO: called when item chosen for sorting. rewrite without onActiveElementChange use
     setIsDragging(true);
@@ -117,18 +146,14 @@ const SortableComponent: React.FC<Props> = (props) => {
     updateSavedElementValues(id, props);
   }, [updateSavedElementValues]);
 
-  const getRadioIndex = useCallback((group: string, id: string) => {
-    const groupRadios = Object.entries(listSortable)
-      .map(([key, value]) => value)
-      .filter(item => item.type === 'radiobutton')
-      .map(item => scenarioElements[item.id])
-      .filter(item => item.parameters.name === group);
+  const isRadioChecked = useCallback((value: string, checkedRadio: SavedElementsValues[string]) =>
+      checkedRadio && value === checkedRadio.savedValue, []);
 
-    const radioElement = groupRadios.find(element => element.id === parseInt(id));  
-    const radioIndex = radioElement && groupRadios.indexOf(radioElement) || 0;
-    
-    return radioIndex;
-  }, [scenarioElements, listSortable]);
+  const isCheckboxChecked = useCallback((itemId: string) =>
+    savedElements[itemId] && Boolean(savedElements[itemId].savedValue) || true, [savedElements]);
+
+  const getSelectDefaultValue = useCallback((itemId: string) =>
+    savedElements[itemId] && Boolean(savedElements[itemId].savedValue) || '', [savedElements]);
 
   const getIsActive = useCallback(() => !disableInteractions && item.id === parseInt(activeItemId, 10), [disableInteractions, item, activeItemId]);
 
@@ -175,7 +200,10 @@ const SortableComponent: React.FC<Props> = (props) => {
           )
         } 
 
-        // @ts-ignore
+        if (!isElementStructType(struct_type)) {
+          return null;
+        }
+
         const ElementRenderer = RENDERERS[struct_type];
         const parsedStyles = convertPropCSS(styles);
         
@@ -190,9 +218,10 @@ const SortableComponent: React.FC<Props> = (props) => {
             style={parsedStyles}
             active={!disableInteractions && itemId === activeItemId}
             savedElement={savedElements[itemId]}
+            selectDefaultValue={getSelectDefaultValue(itemId)}
             onChange={handleRenderElementChange}
-            checkedRadio={savedElements[parameters.name]}
-            radioIndex={getRadioIndex(parameters.name, itemId)}
+            isCheckboxChecked={isCheckboxChecked(itemId)}
+            isRadioChecked={isRadioChecked(parameters.value, savedElements[parameters.name])}
             childrenElements={children}
            />
         ) : null;

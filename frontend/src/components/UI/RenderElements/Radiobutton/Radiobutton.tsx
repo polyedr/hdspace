@@ -8,17 +8,11 @@ import { Renderer } from '../types';
 const styles = require('../styles.scss');
 
 const Radiobutton: Renderer = (props) => {
-  const { id, style, params, isDisabled, active, sortableId, checkedRadio, onChange, radioIndex } = props;
+  const { id, style, params, isDisabled, active, sortableId, isRadioChecked, onChange } = props;
   const { backgroundColor, width, height, ...restStyles } = style;
   const { name, value, showRipple } = params;
 
-  useEffect(() => {
-    if (radioIndex === 0) {
-      onChange(name || '', value || '');
-    }
-  }, [radioIndex, onChange, name, value]);
-
-  const useStyles = makeStyles({
+  const classes = makeStyles({
     root: {
       color: backgroundColor,
       '&$checked': {
@@ -30,13 +24,13 @@ const Radiobutton: Renderer = (props) => {
       height,
     },
     checked: {},
-  });
+  })();
 
   const handleRadioChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
     onChange(name || '', event.target.value);
   }, [onChange, name]);
 
-  const classes = useStyles();
+  const inlineStyles = { ...restStyles, display: 'inline-block' };
 
   return (
     <div
@@ -44,7 +38,7 @@ const Radiobutton: Renderer = (props) => {
       data-ls-id={id}
       data-id={sortableId}
       key={id}
-      style={{ ...restStyles, display: 'inline-block' }}
+      style={inlineStyles}
       className={cn('ls-item', isDisabled && styles.disabled, active && 'activated')}
     >
       <Radio
@@ -54,7 +48,7 @@ const Radiobutton: Renderer = (props) => {
         className={classes.root}
         value={value}
         name={name}
-        checked={value === checkedRadio?.savedValue}
+        checked={isRadioChecked}
         onChange={handleRadioChange}
         disableRipple={!showRipple}
       />

@@ -59,6 +59,7 @@ const controlAffectsOnStyles = (controlName: Control) => (
 );
 
 export type Entity = Exclude<ServerStructType, 'menu' | 'menuItem'>;
+export type ElementEntity = Exclude<Entity, 'root' | 'container'>;
 export type ChildEntity<EntityName extends Entity> = 'root' | LibraryElements[EntityName]['children'][number]['struct_type'];
 export type EntityControls<EntityName extends Entity> = { [P in ChildEntity<EntityName>]: Control[] };
 

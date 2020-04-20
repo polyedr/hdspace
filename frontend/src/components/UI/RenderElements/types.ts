@@ -11,8 +11,9 @@ export type RendererProps = {
   children?: JSX.Element;
   sortableId?: string;
   savedElement: { id: number, savedValue: string | boolean };
-  checkedRadio?: { savedValue: string };
-  radioIndex: number;
+  selectDefaultValue?: string;
+  isRadioChecked?: boolean;
+  isCheckboxChecked?: boolean;
   childrenElements: IScenarioElement[];
   onClick?(event: any): void;
   onChange(itemID: string, savedValue: string | boolean): void;

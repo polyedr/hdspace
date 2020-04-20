@@ -202,7 +202,7 @@ export const updateSavedElementsValues = (elementsValues: T.SavedElementsValues)
   payload: { elementsValues },
 });
 
-export const updateSavedElementValues = (itemID: string, savedValue: string): T.UpdateSavedElementValues => ({
+export const updateSavedElementValues = (itemID: string, savedValue: string | boolean): T.UpdateSavedElementValues => ({
   type: 'PROJECTS:UPDATE_SAVED_ELEMENT_VALUES',
   payload: { itemID, savedValue },
 });

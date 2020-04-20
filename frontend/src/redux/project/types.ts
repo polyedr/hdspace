@@ -37,7 +37,7 @@ export type ActiveItem = {
   name: string;
 };
 
-export type SavedElementsValues = { [elementID: string]: { id: number, savedValue: string } };
+export type SavedElementsValues = { [elementID: string]: { id: number, savedValue: string | boolean } };
 
 export type LoadLibraryElements = IPlainAction<'PROJECTS:LOAD_LIBRARY_ELEMENTS'>;
 export type LoadLibraryElementsSuccess = IAction<
@@ -94,7 +94,7 @@ export type UpdateSavedElementsValues = IAction<
   'PROJECTS:UPDATE_SAVED_ELEMENTS_VALUES', { elementsValues: SavedElementsValues }
 >;
 export type UpdateSavedElementValues = IAction<
-  'PROJECTS:UPDATE_SAVED_ELEMENT_VALUES', { itemID: string, savedValue: string }
+  'PROJECTS:UPDATE_SAVED_ELEMENT_VALUES', { itemID: string, savedValue: string | boolean }
 >;
 export type DeleteActiveItem = IPlainAction<'PROJECTS:DELETE_ACTIVE_ITEM'>;
 export type AddElementsIntoContainer = IAction<
@@ -396,7 +396,7 @@ export interface IScenarioElement { // compare with entity on backend
     textContent?: string;
     value?: string;
     name?: string;
-    defaultChecked?: string;
+    defaultChecked?: boolean;
   },
   styles: CssLikeStyles,
   children: IScenarioElement[],

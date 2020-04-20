@@ -95,12 +95,12 @@ export function* activateScreenSaga({ payload }: ReturnType<typeof activateScree
 
   const newSavedElementsValues = !R.isEmpty(oldSavedElementsValues) ? oldSavedElementsValues : serverScenariosElements.reduce((acc, element) => {
     
-    const savedValue = getSavedValue(element) || '';
+    const savedValue = getSavedValue(element);
 
     if (element.struct_type === 'radiobutton') {
       return {
         ...acc,
-        [element.parameters.name || '']: { savedValue: element.parameters.value },
+        [element.parameters.name || '']: { savedValue: '' },
       }
     }
 

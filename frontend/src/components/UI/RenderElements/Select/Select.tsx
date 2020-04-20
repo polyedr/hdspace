@@ -1,4 +1,4 @@
-import React, { useCallback, ChangeEvent, useEffect } from 'react';
+import React, { useCallback, ChangeEvent, useEffect, useMemo } from 'react';
 import cn from 'classnames';
 import { makeStyles, MenuItem, TextField } from '@material-ui/core';
 
@@ -8,20 +8,20 @@ import { Renderer } from '../types';
 const styles = require('../styles.scss');
 
 const SelectComponent: Renderer = (props) => {
-  const { id, style, isDisabled, active, sortableId, savedElement, onChange, params, childrenElements } = props;
+  const { id, style, isDisabled, active, sortableId, selectDefaultValue, onChange, params, childrenElements } = props;
   const { width, height, marginTop, marginRight, marginBottom, marginLeft, borderRadius, ...restStyles } = style;
   const { options, showRipple } = params;
+
+  const [selectValue, setSelectValue] = React.useState(selectDefaultValue || '');
 
   const menuStyles = childrenElements.find(child => child.struct_type === 'menu')?.styles;
   const menuItemStyles = childrenElements.find(child => child.struct_type === 'menuItem')?.styles;
 
-  const [selectValue, setSelectValue] = React.useState(savedElement.savedValue);
-
   useEffect(() => {
-    setSelectValue(savedElement.savedValue);
-  }, [savedElement]);
+    setSelectValue(selectDefaultValue || '');
+  }, [selectDefaultValue]);
   
-  const getDefaultValue = useCallback((defaultValue: string | boolean) => {
+  const getDefaultValue = useCallback((defaultValue: string) => {
     const isDefaultValueInOptions = options && options.some(({ value }) => defaultValue === value);
     return isDefaultValueInOptions ? defaultValue : options && options[0].value || '';
   }, [options])
@@ -73,11 +73,20 @@ const SelectComponent: Renderer = (props) => {
   })(); 
 
   const MenuProps = {
-    PaperProps: {
-      style: {
-        ...(menuStyles && convertPropCSS(menuStyles)),
+    MenuProps: {
+      PaperProps: {
+        style: {
+          ...(menuStyles && convertPropCSS(menuStyles)),
+        },
       },
     },
+  };
+
+  const inlineStyles = { width, height, marginTop, marginRight, marginBottom, marginLeft };
+
+  const InputProps = {
+    classes: classes,
+    className: cn(isDisabled && styles.disabled),
   };
 
   return (
@@ -87,23 +96,13 @@ const SelectComponent: Renderer = (props) => {
       data-id={sortableId}
       key={id}
       variant="outlined"
-      style={{
-        width,
-        height,
-        marginTop,
-        marginRight,
-        marginBottom,
-        marginLeft,
-      }}
+      style={inlineStyles}
       className={cn("ls-item", isDisabled && styles.disabled, classes.root)}
       defaultValue={getDefaultValue(selectValue)}
       value={getDefaultValue(selectValue)}
       onChange={handleSelectChange}
-      InputProps={{
-        classes: classes,
-        className: cn(isDisabled && styles.disabled),
-      }}
-      SelectProps={{ MenuProps }}
+      InputProps={InputProps}
+      SelectProps={MenuProps}
       select
     >
       {options?.map(({ name, value }) => <MenuItem key={value} className={menuItemClasses.root} value={value} disableRipple={!showRipple}>{name}</MenuItem>)}

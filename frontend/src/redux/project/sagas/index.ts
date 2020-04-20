@@ -369,7 +369,7 @@ function* updateElementParameters(action: ReturnType<typeof Actions.updateElemen
     [parseId]: scenarioElement,
   };
 
-  const savedValue = getSavedValue(scenarioElement) || '';
+  const savedValue = getSavedValue(scenarioElement);
   yield put(Actions.updateSavedElementValues(itemID, savedValue));
  
   yield put(Actions.setScenarioElements(updateScenarioElements));

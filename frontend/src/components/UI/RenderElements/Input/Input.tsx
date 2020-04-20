@@ -1,4 +1,4 @@
-import React, { useCallback, ChangeEvent } from 'react';
+import React, { useCallback, ChangeEvent, useEffect, useMemo } from 'react';
 import cn from 'classnames';
 import { makeStyles, TextField } from '@material-ui/core';
 
@@ -49,6 +49,9 @@ const Input: Renderer = (props) => {
     focused: {},
   })();
 
+  const inlineStyles = { width, height, marginTop, marginRight, marginBottom, marginLeft, transition: "none"};
+  const InputProps = { readOnly: isDisabled, classes, className: cn(isDisabled && styles.disabled)};
+
   return (
     <TextField
       id={id}
@@ -57,23 +60,11 @@ const Input: Renderer = (props) => {
       key={id}
       variant="outlined"
       className={cn("ls-item", isDisabled && styles.disabled, classes.root)}
-      style={{
-        width,
-        height,
-        marginTop,
-        marginRight,
-        marginBottom,
-        marginLeft,
-        transition: "none",
-      }}
+      style={inlineStyles}
       type={type}
       value={defaultValue}
       onChange={handleInputChange}
-      InputProps={{
-        readOnly: isDisabled,
-        classes,
-        className: cn(isDisabled && styles.disabled),
-      }}
+      InputProps={InputProps}
       placeholder={placeholder}
     />
   );

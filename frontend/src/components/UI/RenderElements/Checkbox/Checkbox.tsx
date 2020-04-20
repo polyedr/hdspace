@@ -8,7 +8,7 @@ import { Renderer } from '../types';
 const styles = require('../styles.scss');
 
 const CheckboxComponent: Renderer = (props) => {
-  const { id, style, params, isDisabled, active, sortableId, savedElement, onChange } = props;
+  const { id, style, params, isDisabled, active, sortableId, onChange, isCheckboxChecked } = props;
   const { backgroundColor, width, height, ...restStyles } = style;
   const { value, name, showRipple } = params;
 
@@ -26,6 +26,8 @@ const CheckboxComponent: Renderer = (props) => {
     checked: {},
   })();
 
+  const inlineStyles = { ...restStyles, display: 'inline-block' };
+
   const handleCheckboxChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
     onChange(id, event.target.checked);
   }, [onChange]);
@@ -36,7 +38,7 @@ const CheckboxComponent: Renderer = (props) => {
       data-ls-id={id}
       data-id={sortableId}
       key={id}
-      style={{ ...restStyles, display: 'inline-block' }}
+      style={inlineStyles}
       className={cn('ls-item', isDisabled && styles.disabled, active && 'activated')}
     >
       <Checkbox
@@ -46,7 +48,7 @@ const CheckboxComponent: Renderer = (props) => {
         className={classes.root}
         value={value}
         name={name}
-        checked={Boolean(savedElement.savedValue)}
+        checked={isCheckboxChecked}
         disableRipple={!showRipple}
         onChange={handleCheckboxChange}
       />

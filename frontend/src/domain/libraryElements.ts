@@ -49,7 +49,7 @@ export type LibraryImageElement = CommonLibraryElement<'image', DefaultChild[]> 
 export type LibraryButtonElement = CommonLibraryElement<'button', DefaultChild[]>;
 export type LibraryHyperlinkElement = CommonLibraryElement<'hyperlink', DefaultChild[]>;
 export type LibraryTextinputElement = CommonLibraryElement<'textinput', DefaultChild[]>;
-export type LibraryCheckboxElement = CommonLibraryElement<'checkbox', DefaultChild[]>;
+export type LibraryCheckboxElement = CommonLibraryElement<'checkbox', DefaultChild[]> & { parameters: { defaultChecked: boolean } };
 export type LibraryRadiobuttonElement = CommonLibraryElement<'radiobutton', DefaultChild[]>;
 export type LibrarySelectElement = CommonLibraryElement<'select', SelectChild[]>;
 export type LibraryOcrtextElement = CommonLibraryElement<'ocrtext', DefaultChild[]>;
@@ -129,6 +129,7 @@ export const LIBRARY_ELEMENTS: ElementsToAdd = {
     struct_type: 'checkbox',
     parameters: {
       group: 'form',
+      defaultChecked: true,
     },
     styles: {},
     name: 'checkbox',
