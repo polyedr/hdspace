@@ -146,14 +146,14 @@ const SortableComponent: React.FC<Props> = (props) => {
     updateSavedElementValues(id, props);
   }, [updateSavedElementValues]);
 
-  const isRadioChecked = useCallback((value: string, checkedRadio: SavedElementsValues[string]) =>
-      checkedRadio && value === checkedRadio.savedValue, []);
+  const isRadioChecked = (value: string, checkedRadio: SavedElementsValues[string]) =>
+      checkedRadio && value === checkedRadio.savedValue;
 
-  const isCheckboxChecked = useCallback((itemId: string) =>
-    savedElements[itemId] && Boolean(savedElements[itemId].savedValue) || true, [savedElements]);
+  const isCheckboxChecked = (itemId: string) =>
+    savedElements[itemId] && Boolean(savedElements[itemId].savedValue) || true;
 
-  const getSelectDefaultValue = useCallback((itemId: string) =>
-    savedElements[itemId] && Boolean(savedElements[itemId].savedValue) || '', [savedElements]);
+  const getSelectDefaultValue = (itemId: string) =>
+    savedElements[itemId] && Boolean(savedElements[itemId].savedValue) || '';
 
   const getIsActive = useCallback(() => !disableInteractions && item.id === parseInt(activeItemId, 10), [disableInteractions, item, activeItemId]);
 
