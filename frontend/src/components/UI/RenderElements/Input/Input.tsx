@@ -1,6 +1,8 @@
-import React, { useCallback, ChangeEvent, useEffect, useMemo } from 'react';
+import React, { useCallback, ChangeEvent } from 'react';
 import cn from 'classnames';
 import { makeStyles, TextField } from '@material-ui/core';
+
+import { sharedClassnames } from '$styles/sharedClassnames';
 
 import { Renderer } from '../types';
 const styles = require('../styles.scss');
@@ -59,7 +61,7 @@ const Input: Renderer = (props) => {
       data-id={sortableId}
       key={id}
       variant="outlined"
-      className={cn("ls-item", isDisabled && styles.disabled, classes.root)}
+      className={cn(sharedClassnames.lsItem, isDisabled && styles.disabled, classes.root)}
       style={inlineStyles}
       type={type}
       value={defaultValue}

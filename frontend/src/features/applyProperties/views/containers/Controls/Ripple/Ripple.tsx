@@ -5,6 +5,7 @@ import { Switch, makeStyles } from '@material-ui/core';
 import { AppReduxState } from '$shared/types/app';
 import { selectors } from '$redux/project/';
 import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
+import { sharedClassnames } from '$styles/sharedClassnames';
 
 type StateProps = {
   showRipple: boolean;
@@ -44,10 +45,10 @@ const Ripple: React.FC<Props> = ({
   }, [updateParams, showRipple]);
 
   return (
-    <div className="propsElementsBlock">
-      <p className="propsElementsBlockTitle">Ripple effect</p>
-      <div className="propsElementsContentBlock">
-        <div className="propsElementsInnerBlock">
+    <div className={sharedClassnames.propsElementsBlock}>
+      <p className={sharedClassnames.propsElementsBlockTitle}>Ripple effect</p>
+      <div className={sharedClassnames.propsElementsContentBlock}>
+        <div className={sharedClassnames.propsElementsInnerBlock}>
           <Switch
             size="small"
             checked={showRipple}

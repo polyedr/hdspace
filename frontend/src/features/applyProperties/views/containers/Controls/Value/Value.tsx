@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 import { AppReduxState } from '$shared/types/app';
 import { selectors } from '$redux/project/';
 import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
+import { sharedClassnames } from '$styles/sharedClassnames';
+
 const styles = require('./Value.scss');
 
 type StateProps = {
@@ -29,10 +31,10 @@ const Value: React.FC<Props> = ({
   }, [updateParams]);
 
   return (
-    <div className="propsElementsBlock">
-      <p className="propsElementsBlockTitle">Value</p>
-      <div className="propsElementsContentBlock">
-        <div className="propsElementsInnerBlock">
+    <div className={sharedClassnames.propsElementsBlock}>
+      <p className={sharedClassnames.propsElementsBlockTitle}>Value</p>
+      <div className={sharedClassnames.propsElementsContentBlock}>
+        <div className={sharedClassnames.propsElementsInnerBlock}>
           <textarea
             className={styles.valueField}
             name="text_content"
