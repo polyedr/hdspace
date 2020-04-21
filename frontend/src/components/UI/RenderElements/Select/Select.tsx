@@ -1,4 +1,4 @@
-import React, { useCallback, ChangeEvent } from 'react';
+import React, { ChangeEvent } from 'react';
 import cn from 'classnames';
 import { makeStyles, MenuItem, TextField } from '@material-ui/core';
 
@@ -16,9 +16,9 @@ const SelectComponent: Renderer = (props) => {
   const menuStyles = childrenElements.find(child => child.struct_type === 'menu')?.styles;
   const menuItemStyles = childrenElements.find(child => child.struct_type === 'menuItem')?.styles;
 
-  const handleSelectChange = useCallback((event: ChangeEvent<{ name?: string | undefined; value: any; }>) => {
+  const handleSelectChange = (event: ChangeEvent<{ name?: string | undefined; value: any; }>) => {
     onChange(id, event.target.value);
-  }, [onChange, id]);
+  };
 
   const classes = makeStyles({
     root: {

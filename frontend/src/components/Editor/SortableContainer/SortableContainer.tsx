@@ -142,9 +142,9 @@ const SortableComponent: React.FC<Props> = (props) => {
     return parseStyle ? convertPropCSS(parseStyle) : {};
   }, [scenarioList]);
 
-  const handleRenderElementChange = useCallback((id, props) => {
-    updateSavedElementValues(id, props);
-  }, [updateSavedElementValues]);
+  const handleRenderElementChange = (id: string, value: string) => {
+    updateSavedElementValues(id, value);
+  };
 
   const isRadioChecked = (value: string, checkedRadio: SavedElementsValues[string]) =>
       checkedRadio && value === checkedRadio.savedValue;

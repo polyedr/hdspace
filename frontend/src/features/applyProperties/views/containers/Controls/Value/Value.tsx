@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 
 import { AppReduxState } from '$shared/types/app';
@@ -27,9 +27,9 @@ const Value: React.FC<Props> = ({
   value,
   updateParams,
 }) => {
-  const handleTextFieldChange = useCallback(({ target: { value } }) => {
+  const handleTextFieldChange = ({ target: { value } }: React.ChangeEvent<HTMLTextAreaElement>) => {
     updateParams({ value });
-  }, [updateParams]);
+  };
 
   return (
     <div className={sharedClassnames.propsElementsBlock}>

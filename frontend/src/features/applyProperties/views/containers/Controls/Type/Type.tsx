@@ -1,4 +1,4 @@
-import React, { memo, useCallback } from 'react';
+import React, { memo } from 'react';
 import { connect } from 'react-redux';
 
 import { AppReduxState } from '$shared/types/app';
@@ -31,9 +31,9 @@ type Props = StateProps & PropertiesChangeProps;
 const Type: React.FC<Props> = memo((props) => {
   const { type, updateParams } = props;
 
-  const handleDropdownChange = useCallback((value) => {
-    updateParams({ type: value });
-  }, [updateParams]);
+  const handleDropdownChange = (value: string) => {
+    updateParams({ type: value as InputType });
+  };
 
   return (
     <>

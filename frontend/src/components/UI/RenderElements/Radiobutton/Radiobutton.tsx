@@ -1,4 +1,4 @@
-import React, { useCallback, ChangeEvent, useEffect } from 'react';
+import React, { ChangeEvent } from 'react';
 import cn from 'classnames';
 import { makeStyles, Radio } from '@material-ui/core';
 import RadioButtonCheckedIcon from '@material-ui/icons/RadioButtonChecked';
@@ -28,9 +28,9 @@ const Radiobutton: Renderer = (props) => {
     checked: {},
   })();
 
-  const handleRadioChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+  const handleRadioChange = (event: ChangeEvent<HTMLInputElement>) => {
     onChange(name || '', event.target.value);
-  }, [onChange, name]);
+  };
 
   const inlineStyles = { ...restStyles, display: 'inline-block' };
 

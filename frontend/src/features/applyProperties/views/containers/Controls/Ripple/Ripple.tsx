@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { Switch, makeStyles } from '@material-ui/core';
 
@@ -41,9 +41,9 @@ const Ripple: React.FC<Props> = ({
 }) => {
   const classes = useStyles();
 
-  const handleSwitchChange = useCallback(() => {
+  const handleSwitchChange = () => {
     updateParams({ showRipple: !showRipple });
-  }, [updateParams, showRipple]);
+  };
 
   return (
     <div className={sharedClassnames.propsElementsBlock}>

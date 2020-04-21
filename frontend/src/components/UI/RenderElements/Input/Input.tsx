@@ -1,4 +1,4 @@
-import React, { useCallback, ChangeEvent } from 'react';
+import React, { ChangeEvent } from 'react';
 import cn from 'classnames';
 import { makeStyles, TextField } from '@material-ui/core';
 
@@ -12,9 +12,9 @@ const Input: Renderer = (props) => {
   const { width, height, marginTop, marginRight, marginBottom, marginLeft, ...restStyles } = style;
   const { type, placeholder } = params;
 
-  const handleInputChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     onChange(id, event.target.value);
-  }, [onChange, id]);
+  };
 
   const classes = makeStyles({
     root: {

@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -34,30 +34,30 @@ const SelectOptions: React.FC<Props> = ({
 }) => {
   const [options, setOptions] = useState(selectOptions || []);
 
-  const handleNameFieldChange = useCallback((name: string, { target: { value } }) => {
+  const handleNameFieldChange = (name: string, { target: { value } }: React.ChangeEvent<HTMLTextAreaElement>) => {
     const updatedOptions = options.map(option => option.name === name ? { ...option, name: value } : option);
     updateParams({ options: updatedOptions });
-  }, [updateParams, options]);
+  };
 
-  const handleValueFieldBlur = useCallback((name: string, { target: { value } }) => {
+  const handleValueFieldBlur = (name: string, { target: { value } }: React.ChangeEvent<HTMLTextAreaElement>) => {
     const updatedOptions = options.map(option => option.name === name ? { ...option, value } : option);
     updateParams({ options: updatedOptions });
-  }, [updateParams, options]);
+  };
 
-  const handleValueFieldChange = useCallback((name: string, { target: { value } }) => {
+  const handleValueFieldChange = (name: string, { target: { value } }: React.ChangeEvent<HTMLTextAreaElement>) => {
     const updatedOptions = options.map(option => option.name === name ? { ...option, value } : option);
     setOptions(updatedOptions);
-  }, [options]);
+  };
 
-  const handleAddButtonClick = useCallback(() => {
+  const handleAddButtonClick = () => {
     const newOptionName = generateUniqueName('New option', options.map(option => option.name) || []);
     updateParams({ options: [ ...options, { name: newOptionName, value: newOptionName } ] });
-  }, [options, updateParams]);
+  };
 
-  const handleDeleteButtonClick = useCallback((optionName: string) => {
+  const handleDeleteButtonClick = (optionName: string) => {
     const newOptions = options.filter(({ name }) => name !== optionName);
     updateParams({ options: newOptions });
-  }, [options, updateParams]);
+  };
 
   return (
     <div className={sharedClassnames.propsElementsBlock}>

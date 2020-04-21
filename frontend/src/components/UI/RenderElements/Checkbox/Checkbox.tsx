@@ -1,4 +1,4 @@
-import React, { useCallback, ChangeEvent } from 'react';
+import React, { ChangeEvent } from 'react';
 import cn from 'classnames';
 import { makeStyles, Checkbox } from '@material-ui/core';
 import CheckBoxIcon from '@material-ui/icons/CheckBox';
@@ -30,9 +30,9 @@ const CheckboxComponent: Renderer = (props) => {
 
   const inlineStyles = { ...restStyles, display: 'inline-block' };
 
-  const handleCheckboxChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+  const handleCheckboxChange = (event: ChangeEvent<HTMLInputElement>) => {
     onChange(id, event.target.checked);
-  }, [onChange]);
+  };
 
   return (
     <div
