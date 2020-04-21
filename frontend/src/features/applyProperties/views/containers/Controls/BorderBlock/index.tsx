@@ -26,7 +26,7 @@ type OwnProps = {
 
 type Props = OwnProps & PropertiesChangeProps;
 
-export const Component: React.FunctionComponent<Props> = React.memo(({
+const BorderBlock: React.FunctionComponent<Props> = React.memo(({
   activeItemStyles,
   activeItemID,
   updateStyles,
@@ -98,4 +98,5 @@ export const Component: React.FunctionComponent<Props> = React.memo(({
   );
 });
 
-export const BorderBlock = withConfigurableProperties(Component);
+const Component = withConfigurableProperties(BorderBlock);
+export { Component as BorderBlock };

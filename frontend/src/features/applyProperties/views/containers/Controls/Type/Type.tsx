@@ -27,7 +27,7 @@ function mapState(state: AppReduxState): StateProps {
 }
 type Props = StateProps & PropertiesChangeProps;
 
-export const Component: React.FC<Props> = memo((props) => {
+const Type: React.FC<Props> = memo((props) => {
   const { type, updateParams } = props;
 
   const handleDropdownChange = useCallback((value) => {
@@ -55,4 +55,5 @@ export const Component: React.FC<Props> = memo((props) => {
   );
 });
 
-export const Type = connect(mapState)(withConfigurableProperties(Component));
+const Component = connect(mapState)(withConfigurableProperties(Type));
+export { Component as Type };

@@ -38,7 +38,7 @@ const getUnitFromValue = (value: string): UnitName => {
   }
 }
 
-export const Component: React.FC<Props> = memo((props) => {
+const SizeBlock: React.FC<Props> = memo((props) => {
   const { updateStyles, activeItemID, activeItemStyles } = props;
   const { width, height } = activeItemStyles;
 
@@ -134,4 +134,5 @@ export const Component: React.FC<Props> = memo((props) => {
   );
 });
 
-export const SizeBlock = withConfigurableProperties(Component);
+const Component = withConfigurableProperties(SizeBlock);
+export { Component as SizeBlock };

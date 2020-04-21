@@ -14,7 +14,7 @@ type OwnProps = {
 
 type Props = OwnProps & PropertiesChangeProps;
 
-export const Component: React.FC<Props> = (props) => {
+const IndentsBlock: React.FC<Props> = (props) => {
   const { updateStyles, activeItemStyles } = props;
 
   const marginTop = activeItemStyles['margin-top'];
@@ -127,4 +127,5 @@ export const Component: React.FC<Props> = (props) => {
   );
 };
 
-export const IndentsBlock = withConfigurableProperties(Component);
+const Component = withConfigurableProperties(IndentsBlock);
+export { Component as IndentsBlock };

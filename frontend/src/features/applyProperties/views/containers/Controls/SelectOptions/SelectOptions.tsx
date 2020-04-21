@@ -27,7 +27,7 @@ function mapState(state: AppReduxState): StateProps {
 
 type Props = StateProps & PropertiesChangeProps;
 
-const Component: React.FC<Props> = ({
+const SelectOptions: React.FC<Props> = ({
   selectOptions,
   updateParams,
 }) => {
@@ -117,4 +117,5 @@ const Component: React.FC<Props> = ({
   );
 };
 
-export const SelectOptions = connect(mapState)(withConfigurableProperties(Component));
+const Component = connect(mapState)(withConfigurableProperties(SelectOptions));
+export { Component as SelectOptions };

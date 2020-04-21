@@ -20,7 +20,7 @@ function mapState(state: AppReduxState): StateProps {
 
 type Props = StateProps & PropertiesChangeProps;
 
-const Component: React.FC<Props> = ({
+const Value: React.FC<Props> = ({
   value,
   updateParams,
 }) => {
@@ -45,4 +45,5 @@ const Component: React.FC<Props> = ({
   );
 };
 
-export const Value = connect(mapState)(withConfigurableProperties(Component));
+const Component = connect(mapState)(withConfigurableProperties(Value));
+export { Component as Value };

@@ -21,7 +21,7 @@ type OwnProps = {
 
 type Props = OwnProps & PropertiesChangeProps;
 
-export const Component: React.FC<Props> = memo(({
+const TypographyBlock: React.FC<Props> = memo(({
   activeItemStyles,
   updateStyles,
   activeItemID,
@@ -150,4 +150,5 @@ export const Component: React.FC<Props> = memo(({
   );
 });
 
-export const TypographyBlock = withConfigurableProperties(Component);
+const Component = withConfigurableProperties(TypographyBlock);
+export { Component as TypographyBlock };

@@ -33,7 +33,7 @@ const useStyles = makeStyles({
   track: {},
 });
 
-const Component: React.FC<Props> = ({
+const Ripple: React.FC<Props> = ({
   showRipple,
   updateParams,
 }) => {
@@ -64,4 +64,5 @@ const Component: React.FC<Props> = ({
   );
 };
 
-export const Ripple = connect(mapState)(withConfigurableProperties(Component));
+const Component = connect(mapState)(withConfigurableProperties(Ripple));
+export { Component as Ripple };

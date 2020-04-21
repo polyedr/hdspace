@@ -10,7 +10,7 @@ type OwnProps = {
 
 type Props = OwnProps & PropertiesChangeProps;
 
-export const Component: React.FC<Props> = memo((props) => {
+const BackgroundBlock: React.FC<Props> = memo((props) => {
   const {
     updateStyles,
     activeItemID,
@@ -35,4 +35,5 @@ export const Component: React.FC<Props> = memo((props) => {
   );
 });
 
-export const BackgroundBlock = withConfigurableProperties(Component);
+const Component = withConfigurableProperties(BackgroundBlock);
+export { Component as BackgroundBlock };
