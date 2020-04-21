@@ -94,9 +94,9 @@ const SortableComponent: React.FC<Props> = (props) => {
   useEffect(() => {
     const radioNames = Object.values(listSortable)
       .filter(item => item.type === 'radiobutton')
-      .map(item => scenarioElements[item.id] && scenarioElements[item.id].parameters.name);
+      .map(item => scenarioElements[item.id]?.parameters.name);
 
-    R.uniq(radioNames).map(groupName => {
+    R.uniq(radioNames).forEach(groupName => {
       if (!groupName) {
         return;
       };
@@ -104,11 +104,11 @@ const SortableComponent: React.FC<Props> = (props) => {
       const groupRadios = Object.values(listSortable)
         .filter(item => item.type === 'radiobutton')
         .map(item => scenarioElements[item.id])
-        .filter(item => item && item.parameters.name === groupName);
+        .filter(item => item?.parameters.name === groupName);
 
       const firstRadio = R.head(groupRadios);
 
-      if(!savedElements[groupName].savedValue) {
+      if(!savedElements[groupName]?.savedValue) {
         updateSavedElementValues(groupName, firstRadio?.parameters.value || '');
       };
     })
@@ -146,11 +146,9 @@ const SortableComponent: React.FC<Props> = (props) => {
     updateSavedElementValues(id, value);
   };
 
-  const isRadioChecked = (value: string, checkedRadio: SavedElementsValues[string]) =>
-      checkedRadio && value === checkedRadio.savedValue;
+  const isRadioChecked = (value: string, checkedRadio: SavedElementsValues[string]) => value === checkedRadio?.savedValue;
 
-  const isCheckboxChecked = (itemId: string) =>
-    savedElements[itemId] && Boolean(savedElements[itemId].savedValue) || true;
+  const isCheckboxChecked = (itemId: string) => Boolean(savedElements[itemId]?.savedValue);
 
   const getSelectValue = (itemId: string, options: Option[]) => {
     const selectValue = savedElements[itemId]?.savedValue;
@@ -221,7 +219,7 @@ const SortableComponent: React.FC<Props> = (props) => {
             name={name}
             style={parsedStyles}
             active={!disableInteractions && itemId === activeItemId}
-            inputValue={savedElements[itemId].savedValue}
+            inputValue={savedElements[itemId]?.savedValue}
             selectValue={getSelectValue(itemId, parameters.options)}
             onChange={handleRenderElementChange}
             isCheckboxChecked={isCheckboxChecked(itemId)}
