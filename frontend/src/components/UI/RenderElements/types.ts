@@ -10,6 +10,7 @@ export type RendererProps = {
   isDisabled?: boolean;
   children?: JSX.Element;
   sortableId?: string;
+  selectValue: string;
   savedElement: { id: number, savedValue: string | boolean };
   selectDefaultValue?: string;
   isRadioChecked?: boolean;

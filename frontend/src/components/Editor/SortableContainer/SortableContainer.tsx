@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { AppReduxState } from '$shared/types/app';
 import { SortableGroup } from '$components/Editor/SortableGroup/SortableGroup';
 import { RENDERERS } from '$components/UI/RenderElements';
-import { IListSortable, ILSItem, SavedElementsValues } from '$redux/project/types';
+import { IListSortable, ILSItem, SavedElementsValues, Option } from '$redux/project/types';
 import { selectors, actionsCreators } from '$redux/project';
 import { getItemsPair, getParams, idToLSId, idToDataLSID } from '$utils/parseScenario';
 import { LIST_SCENARIO_TYPE } from '$constants/defaultParams';
@@ -152,8 +152,12 @@ const SortableComponent: React.FC<Props> = (props) => {
   const isCheckboxChecked = (itemId: string) =>
     savedElements[itemId] && Boolean(savedElements[itemId].savedValue) || true;
 
-  const getSelectDefaultValue = (itemId: string) =>
-    savedElements[itemId] && Boolean(savedElements[itemId].savedValue) || '';
+  const getSelectValue = (itemId: string, options: Option[]) => {
+    const selectValue = savedElements[itemId]?.savedValue;
+    const isValueInOptions = options?.some(({ value }) => selectValue === value);
+
+    return isValueInOptions ? selectValue : options?.[0].value || '';
+  }
 
   const getIsActive = useCallback(() => !disableInteractions && item.id === parseInt(activeItemId, 10), [disableInteractions, item, activeItemId]);
 
@@ -218,7 +222,7 @@ const SortableComponent: React.FC<Props> = (props) => {
             style={parsedStyles}
             active={!disableInteractions && itemId === activeItemId}
             savedElement={savedElements[itemId]}
-            selectDefaultValue={getSelectDefaultValue(itemId)}
+            selectValue={getSelectValue(itemId, parameters.options)}
             onChange={handleRenderElementChange}
             isCheckboxChecked={isCheckboxChecked(itemId)}
             isRadioChecked={isRadioChecked(parameters.value, savedElements[parameters.name])}

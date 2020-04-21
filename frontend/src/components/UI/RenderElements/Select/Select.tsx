@@ -1,4 +1,4 @@
-import React, { useCallback, ChangeEvent, useEffect, useMemo } from 'react';
+import React, { useCallback, ChangeEvent } from 'react';
 import cn from 'classnames';
 import { makeStyles, MenuItem, TextField } from '@material-ui/core';
 
@@ -9,28 +9,16 @@ import { Renderer } from '../types';
 const styles = require('../styles.scss');
 
 const SelectComponent: Renderer = (props) => {
-  const { id, style, isDisabled, active, sortableId, selectDefaultValue, onChange, params, childrenElements } = props;
+  const { id, style, isDisabled, active, sortableId, selectValue, onChange, params, childrenElements } = props;
   const { width, height, marginTop, marginRight, marginBottom, marginLeft, borderRadius, ...restStyles } = style;
   const { options, showRipple } = params;
-
-  const [selectValue, setSelectValue] = React.useState(selectDefaultValue || '');
 
   const menuStyles = childrenElements.find(child => child.struct_type === 'menu')?.styles;
   const menuItemStyles = childrenElements.find(child => child.struct_type === 'menuItem')?.styles;
 
-  useEffect(() => {
-    setSelectValue(selectDefaultValue || '');
-  }, [selectDefaultValue]);
-  
-  const getDefaultValue = useCallback((defaultValue: string) => {
-    const isDefaultValueInOptions = options && options.some(({ value }) => defaultValue === value);
-    return isDefaultValueInOptions ? defaultValue : options && options[0].value || '';
-  }, [options])
-
   const handleSelectChange = useCallback((event: ChangeEvent<{ name?: string | undefined; value: any; }>) => {
     onChange(id, event.target.value);
-    setSelectValue(event.target.value);
-  }, [selectValue, onChange, id]);
+  }, [onChange, id]);
 
   const classes = makeStyles({
     root: {
@@ -99,8 +87,7 @@ const SelectComponent: Renderer = (props) => {
       variant="outlined"
       style={inlineStyles}
       className={cn(sharedClassnames.lsItem, isDisabled && styles.disabled, classes.root)}
-      defaultValue={getDefaultValue(selectValue)}
-      value={getDefaultValue(selectValue)}
+      value={selectValue}
       onChange={handleSelectChange}
       InputProps={InputProps}
       SelectProps={MenuProps}

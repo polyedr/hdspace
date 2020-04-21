@@ -1,7 +1,6 @@
 import React from 'react';
 import cn from 'classnames';
 
-import { IScreenProps } from '$redux/project/types';
 import { GMap } from '$components/UI/GMap';
 import { CalendarWidget } from '$components/UI/Calendar';
 import { ClockWidget } from '$components/UI/Clock';
