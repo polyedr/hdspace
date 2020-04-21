@@ -128,7 +128,11 @@ export const DEFAULT_INPUT_TYPE: { type: InputType} = {
 };
 
 export const DEFAULT_VALUE: { value: string } = {
-  value: '1',
+  value: '',
+};
+
+export const DEFAULT_SELECT_VALUE: { value: string } = {
+  value: 'first option',
 };
 
 export const DEFAULT_NAME: { name: string } = {
@@ -136,7 +140,11 @@ export const DEFAULT_NAME: { name: string } = {
 };
 
 export const DEFAULT_SELECT_OPTIONS: { options: Option[] } = {
-  options: [{ name: 'First option', value: '1' }, { name: 'Second option', value: '2' }, { name: 'Third option', value: '3' }],
+  options: [
+    { name: 'First option', value: 'first option' },
+    { name: 'Second option', value: 'second option' },
+    { name: 'Third option', value: 'third option' },
+  ],
 };
 
 export const DEFAULT_RIPPLE: { showRipple: boolean } = {

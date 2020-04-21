@@ -17,6 +17,7 @@ import {
   DEFAULT_RIPPLE,
   DEFAULT_INPUT_TYPE,
   DEFAULT_SELECT_OPTIONS,
+  DEFAULT_SELECT_VALUE,
 } from '$constants/defaultParams';
 import { ServerStructType } from '$redux/project/types';
 
@@ -50,6 +51,7 @@ const CONTROLS_AFFECT_ON_PARAMS = [
   'showRipple',
   'type',
   'selectOptions',
+  'selectValue',
 ] as const;
 
 const CONTROLS_AFFECT_ON_STYLES = ['display', 'indents', 'size', 'typography', 'border', 'background'] as const;
@@ -101,7 +103,7 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
     root: ['indents', 'size', 'border', 'background', 'image'],
   },
   select: {
-    root: ['indents', 'size', 'typography', 'border', 'background', 'showRipple', 'value', 'selectOptions'],
+    root: ['indents', 'size', 'typography', 'border', 'background', 'showRipple', 'selectValue', 'selectOptions'],
     menu: ['indents', 'size', 'typography', 'border', 'background'],
     menuItem: ['indents', 'size', 'typography', 'border', 'background'],
   },
@@ -136,6 +138,7 @@ const CONTROLS_DEFAULTS: Record<Control, any> = {
   showRipple: DEFAULT_RIPPLE,
   type: DEFAULT_INPUT_TYPE,
   selectOptions: DEFAULT_SELECT_OPTIONS,
+  selectValue: DEFAULT_SELECT_VALUE,
 };
 
 type EntityToDefaults = {

@@ -27,6 +27,7 @@ import { Name } from '../Controls/Name/Name';
 import { Ripple } from '../Controls/Ripple/Ripple';
 import { Type } from '../Controls/Type/Type';
 import { SelectOptions } from '../Controls/SelectOptions/SelectOptions';
+import { SelectValue } from '../Controls/SelectValue/SelectValue';
 const styles = require('./PropertiesPanel.scss');
 
 type StateProps = {
@@ -70,6 +71,7 @@ const CONTROLS: Record<Control, React.ComponentType<any>> = {
   name: Name,
   showRipple: Ripple,
   selectOptions: SelectOptions,
+  selectValue: SelectValue,
 };
 
 export type PropertiesPanelProps = StateProps & typeof mapDispatch;
