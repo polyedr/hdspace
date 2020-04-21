@@ -4,7 +4,7 @@ import { ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails } from '@m
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import { AppReduxState } from '$shared/types/app';
-import { Option } from '$redux/project/types';
+import { Option, ElementParameters } from '$redux/project/types';
 import { selectors } from '$redux/project/';
 import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
 import { generateUniqueName } from '$utils/generateUniqueName';
@@ -15,11 +15,11 @@ import { sharedClassnames } from '$styles/sharedClassnames';
 const styles = require('./SelectOptions.scss');
 
 type StateProps = {
-  selectOptions: Option[];
+  selectOptions?: Option[];
 };
 
 function mapState(state: AppReduxState): StateProps {
-  const activeItemParams = selectors.selectActiveItemParams(state) as any;
+  const activeItemParams = selectors.selectActiveItemParams(state) as ElementParameters;
 
   return {
     selectOptions: activeItemParams.options,
@@ -32,17 +32,17 @@ const SelectOptions: React.FC<Props> = ({
   selectOptions,
   updateParams,
 }) => {
-  const [options, setOptions] = useState(selectOptions);
+  const [options, setOptions] = useState(selectOptions || []);
 
   const handleNameFieldChange = useCallback((name: string, { target: { value } }) => {
-    const updatedOptions = selectOptions.map(option => option.name === name ? { ...option, name: value } : option);
+    const updatedOptions = options.map(option => option.name === name ? { ...option, name: value } : option);
     updateParams({ options: updatedOptions });
-  }, [updateParams, selectOptions]);
+  }, [updateParams, options]);
 
   const handleValueFieldBlur = useCallback((name: string, { target: { value } }) => {
     const updatedOptions = options.map(option => option.name === name ? { ...option, value } : option);
     updateParams({ options: updatedOptions });
-  }, [updateParams, selectOptions]);
+  }, [updateParams, options]);
 
   const handleValueFieldChange = useCallback((name: string, { target: { value } }) => {
     const updatedOptions = options.map(option => option.name === name ? { ...option, value } : option);
@@ -50,14 +50,14 @@ const SelectOptions: React.FC<Props> = ({
   }, [options]);
 
   const handleAddButtonClick = useCallback(() => {
-    const newOptionName = generateUniqueName('New option', selectOptions.map(option => option.name));
-    updateParams({ options: [ ...selectOptions, { name: newOptionName, value: newOptionName } ] });
-  }, [selectOptions, updateParams]);
+    const newOptionName = generateUniqueName('New option', options.map(option => option.name) || []);
+    updateParams({ options: [ ...options, { name: newOptionName, value: newOptionName } ] });
+  }, [options, updateParams]);
 
   const handleDeleteButtonClick = useCallback((optionName: string) => {
-    const newOptions = selectOptions.filter(({ name }) => name !== optionName);
+    const newOptions = options.filter(({ name }) => name !== optionName);
     updateParams({ options: newOptions });
-  }, [selectOptions, updateParams]);
+  }, [options, updateParams]);
 
   return (
     <div className={sharedClassnames.propsElementsBlock}>
@@ -71,7 +71,7 @@ const SelectOptions: React.FC<Props> = ({
           <Icon icon="add" />
         </Button>
       </div>
-      {selectOptions.map(({ name, value }) => (
+      {options.map(({ name, value }) => (
         <ExpansionPanel key={value}>
           <ExpansionPanelSummary
             expandIcon={<ExpandMoreIcon />}

@@ -366,6 +366,21 @@ export interface IStylesElement {
   fontFamily?: string,
 }
 
+export type ElementParameters = {
+  group?: string,
+  placeholder?: string,
+  url?: string,
+  imageURL?: string,
+  textContent?: string,
+  value?: string,
+  name?: string,
+  defaultChecked?: boolean,
+  map_props?: IMapProps,
+  showRipple?: boolean,
+  options?: Option[],
+  type?: InputType,
+}
+
 export interface IScenarioElement { // compare with entity on backend
   id: number,
   scenario: number,
@@ -376,28 +391,7 @@ export interface IScenarioElement { // compare with entity on backend
   buoyancy: number,
   dynamic_buoyancy: number,
   image: string | null,
-  parameters: {
-    parent_id: number,
-    tags?: string,
-    group?: string,
-    placeholder?: string,
-    dynamic_placeholder?: string,
-    map_props?: IMapProps,
-    content?: string,
-    source?: string,
-    location?: {
-      x0: number,
-      y0: number,
-      x1: number,
-      y1: number,
-    },
-    url?: string,
-    imageURL?: string;
-    textContent?: string;
-    value?: string;
-    name?: string;
-    defaultChecked?: boolean;
-  },
+  parameters: { parent_id: number } & ElementParameters,
   styles: CssLikeStyles,
   children: IScenarioElement[],
 }
@@ -418,7 +412,7 @@ export interface IScenarioItem { // compare with entity on backend
   elements: number[]; // elements ids as foreign keys 
   parameters: {
     children: string[]; // listSortable-specific ids
-  };
+  } & ElementParameters;
   styles: CssLikeStyles;
 }
 

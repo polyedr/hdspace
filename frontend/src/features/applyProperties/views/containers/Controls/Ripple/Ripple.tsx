@@ -3,16 +3,17 @@ import { connect } from 'react-redux';
 import { Switch, makeStyles } from '@material-ui/core';
 
 import { AppReduxState } from '$shared/types/app';
+import { ElementParameters } from '$redux/project/types';
 import { selectors } from '$redux/project/';
 import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
 import { sharedClassnames } from '$styles/sharedClassnames';
 
 type StateProps = {
-  showRipple: boolean;
+  showRipple?: boolean;
 };
 
 function mapState(state: AppReduxState): StateProps {
-  const activeItemParams = selectors.selectActiveItemParams(state) as any;
+  const activeItemParams = selectors.selectActiveItemParams(state) as ElementParameters;
 
   return {
     showRipple: activeItemParams.showRipple,

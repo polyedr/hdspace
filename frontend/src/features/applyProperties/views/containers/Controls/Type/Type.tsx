@@ -2,7 +2,7 @@ import React, { memo, useCallback } from 'react';
 import { connect } from 'react-redux';
 
 import { AppReduxState } from '$shared/types/app';
-import { InputType } from '$redux/project/types';
+import { InputType, ElementParameters } from '$redux/project/types';
 import { selectors } from '$redux/project/';
 import { DropDown } from '$components/UI/DropDown/';
 import {
@@ -16,11 +16,11 @@ import { TYPE } from './constants';
 const styles = require('./Type.scss');
 
 type StateProps = {
-  type: InputType;
+  type?: InputType;
 };
 
 function mapState(state: AppReduxState): StateProps {
-  const activeItemParams = selectors.selectActiveItemParams(state) as any;
+  const activeItemParams = selectors.selectActiveItemParams(state) as ElementParameters;
 
   return {
     type: activeItemParams.type,

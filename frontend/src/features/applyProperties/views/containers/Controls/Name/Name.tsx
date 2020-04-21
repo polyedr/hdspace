@@ -2,6 +2,7 @@ import React, { useCallback } from 'react';
 import { connect } from 'react-redux';
 
 import { AppReduxState } from '$shared/types/app';
+import { ElementParameters } from '$redux/project/types';
 import { selectors } from '$redux/project/';
 import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
 import { sharedClassnames } from '$styles/sharedClassnames';
@@ -9,11 +10,11 @@ import { sharedClassnames } from '$styles/sharedClassnames';
 const styles = require('./Name.scss');
 
 type StateProps = {
-  name: string;
+  name?: string;
 };
 
 function mapState(state: AppReduxState): StateProps {
-  const activeItemParams = selectors.selectActiveItemParams(state) as any;
+  const activeItemParams = selectors.selectActiveItemParams(state) as ElementParameters;
 
   return {
     name: activeItemParams.name,
