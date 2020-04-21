@@ -221,7 +221,7 @@ const SortableComponent: React.FC<Props> = (props) => {
             name={name}
             style={parsedStyles}
             active={!disableInteractions && itemId === activeItemId}
-            savedElement={savedElements[itemId]}
+            inputValue={savedElements[itemId].savedValue}
             selectValue={getSelectValue(itemId, parameters.options)}
             onChange={handleRenderElementChange}
             isCheckboxChecked={isCheckboxChecked(itemId)}

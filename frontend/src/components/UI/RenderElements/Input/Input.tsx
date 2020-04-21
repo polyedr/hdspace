@@ -8,11 +8,9 @@ import { Renderer } from '../types';
 const styles = require('../styles.scss');
 
 const Input: Renderer = (props) => {
-  const { id, style, params, isDisabled, active, sortableId, savedElement, onChange } = props;
+  const { id, style, params, isDisabled, active, sortableId, inputValue, onChange } = props;
   const { width, height, marginTop, marginRight, marginBottom, marginLeft, ...restStyles } = style;
   const { type, placeholder } = params;
-
-  const defaultValue = savedElement && savedElement.savedValue || '';
 
   const handleInputChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
     onChange(id, event.target.value);
@@ -64,7 +62,7 @@ const Input: Renderer = (props) => {
       className={cn(sharedClassnames.lsItem, isDisabled && styles.disabled, classes.root)}
       style={inlineStyles}
       type={type}
-      value={defaultValue}
+      value={inputValue}
       onChange={handleInputChange}
       InputProps={InputProps}
       placeholder={placeholder}

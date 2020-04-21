@@ -16,7 +16,7 @@ import { Renderer } from './types';
 const styles = require('./styles.scss');
 
 const TextRenderer: Renderer = (props) => {
-  const { id, style, params, name, active, sortableId, isDisabled } = props;
+  const { id, style, params, active, sortableId, isDisabled } = props;
   return (
     <p
       id={id}
