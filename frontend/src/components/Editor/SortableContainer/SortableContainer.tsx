@@ -142,10 +142,6 @@ const SortableComponent: React.FC<Props> = (props) => {
     return parseStyle ? convertPropCSS(parseStyle) : {};
   }, [scenarioList]);
 
-  const handleRenderElementChange = (id: string, value: string) => {
-    updateSavedElementValues(id, value);
-  };
-
   const isRadioChecked = (value: string, checkedRadio: SavedElementsValues[string]) => value === checkedRadio?.savedValue;
 
   const isCheckboxChecked = (itemId: string) => Boolean(savedElements[itemId]?.savedValue);
@@ -221,7 +217,7 @@ const SortableComponent: React.FC<Props> = (props) => {
             active={!disableInteractions && itemId === activeItemId}
             inputValue={savedElements[itemId]?.savedValue}
             selectValue={getSelectValue(itemId, parameters.options)}
-            onChange={handleRenderElementChange}
+            onChange={updateSavedElementValues}
             isCheckboxChecked={isCheckboxChecked(itemId)}
             isRadioChecked={isRadioChecked(parameters.value, savedElements[parameters.name])}
             childrenElements={children}
