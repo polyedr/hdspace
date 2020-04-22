@@ -104,7 +104,7 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
   },
   select: {
     root: ['indents', 'size', 'typography', 'border', 'background', 'showRipple', 'selectValue', 'selectOptions'],
-    menu: ['indents', 'size', 'typography', 'border', 'background'],
+    menu: ['indents', 'size', 'border', 'background'],
     menuItem: ['indents', 'size', 'typography', 'border', 'background'],
   },
   map: {

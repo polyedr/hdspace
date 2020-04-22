@@ -18,6 +18,8 @@ const Input: Renderer = (props) => {
 
   const classes = makeStyles({
     root: {
+      height: '100%',
+
       '& fieldset': {
         border: 0,
       },
@@ -33,6 +35,8 @@ const Input: Renderer = (props) => {
     },
 
     input: {
+      height: '100%',
+      boxSizing: 'border-box',
       ...restStyles,
       outline: active ? 'red solid 1px' : 'none',
       outlineOffset: '-1px',

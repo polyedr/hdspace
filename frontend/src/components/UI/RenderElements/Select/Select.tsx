@@ -22,6 +22,8 @@ const SelectComponent: Renderer = (props) => {
 
   const classes = makeStyles({
     root: {
+      height: '100%',
+
       '& fieldset': {
         border: 0,
       },
@@ -38,10 +40,16 @@ const SelectComponent: Renderer = (props) => {
     },
 
     input: {
+      height: '100%',
+      boxSizing: 'border-box',
       ...restStyles,
       borderRadius,
       outline: active ? '1px red solid' : 'none',
       outlineOffset: '-1px',
+
+      '&.MuiSelect-outlined.MuiSelect-outlined': {
+        paddingRight: `calc(${restStyles.paddingRight} + 18px)`,
+      },
 
       '&:hover': {
         ...(!isDisabled && { borderColor: style.color }),
@@ -66,6 +74,7 @@ const SelectComponent: Renderer = (props) => {
       PaperProps: {
         style: {
           ...(menuStyles && convertPropCSS(menuStyles)),
+          ...(menuStyles && { minWidth: menuStyles.width }),
         },
       },
     },

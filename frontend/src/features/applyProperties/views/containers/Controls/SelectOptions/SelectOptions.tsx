@@ -29,18 +29,18 @@ function mapState(state: AppReduxState): StateProps {
 type Props = StateProps & PropertiesChangeProps;
 
 const SelectOptions: React.FC<Props> = ({
-  selectOptions,
+  selectOptions = [],
   updateParams,
 }) => {
   const [options, setOptions] = useState(selectOptions || []);
 
   const handleNameFieldChange = (name: string, { target: { value } }: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const updatedOptions = options.map(option => option.name === name ? { ...option, name: value } : option);
+    const updatedOptions = selectOptions.map(option => option.name === name ? { ...option, name: value } : option);
     updateParams({ options: updatedOptions });
   };
 
   const handleValueFieldBlur = (name: string, { target: { value } }: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const updatedOptions = options.map(option => option.name === name ? { ...option, value } : option);
+    const updatedOptions = selectOptions.map(option => option.name === name ? { ...option, value } : option);
     updateParams({ options: updatedOptions });
   };
 
@@ -50,12 +50,12 @@ const SelectOptions: React.FC<Props> = ({
   };
 
   const handleAddButtonClick = () => {
-    const newOptionName = generateUniqueName('New option', options.map(option => option.name) || []);
-    updateParams({ options: [ ...options, { name: newOptionName, value: newOptionName } ] });
+    const newOptionName = generateUniqueName('New option', selectOptions.map(option => option.name) || []);
+    updateParams({ options: [ ...selectOptions, { name: newOptionName, value: newOptionName } ] });
   };
 
   const handleDeleteButtonClick = (optionName: string) => {
-    const newOptions = options.filter(({ name }) => name !== optionName);
+    const newOptions = selectOptions.filter(({ name }) => name !== optionName);
     updateParams({ options: newOptions });
   };
 
@@ -71,7 +71,7 @@ const SelectOptions: React.FC<Props> = ({
           <Icon icon="add" />
         </Button>
       </div>
-      {options.map(({ name, value }) => (
+      {selectOptions.map(({ name, value }) => (
         <ExpansionPanel key={value}>
           <ExpansionPanelSummary
             expandIcon={<ExpandMoreIcon />}
