@@ -1,9 +1,6 @@
 import React, { memo, useCallback } from 'react';
 import cn from 'classnames';
-import { connect } from 'react-redux';
 
-import { AppReduxState } from '$shared/types/app';
-import { selectors } from '$redux/project/';
 import { DropDown } from '$components/UI/DropDown/';
 import { Icon } from '$components/UI/Icon/';
 import { Button } from '$components/UI/Button/';
@@ -18,40 +15,24 @@ const styles = require('./styles.scss');
 const MIN_FONT_SIZE = 1;
 const MAX_FONT_SIZE = 72;
 
-type StateProps = {
-  fontFamily: string;
-  fontStyle: string;
-  fontWeight: number;
-  fontSize: string;
-  textAlign: string;
-  color: string;
-}
+type OwnProps = {
+  activeItemStyles: Required<CssLikeStyles>;
+};
 
-function mapState(state: AppReduxState): StateProps {
-  const activeItemStyles = selectors.selectActiveItemStyles(state) as Required<CssLikeStyles>;
+type Props = OwnProps & PropertiesChangeProps;
 
-  return {
-    fontFamily: activeItemStyles['font-family'],
-    fontStyle: activeItemStyles['font-style'],
-    fontWeight: activeItemStyles['font-weight'],
-    fontSize: activeItemStyles['font-size'],
-    textAlign: activeItemStyles['text-align'],
-    color: activeItemStyles.color,
-  };
-}
-
-type Props = StateProps & PropertiesChangeProps;
-
-export const Component: React.FC<Props> = memo(({
-  fontFamily,
-  fontStyle,
-  fontWeight,
-  fontSize,
-  textAlign,
-  color,
+const TypographyBlock: React.FC<Props> = memo(({
+  activeItemStyles,
   updateStyles,
   activeItemID,
 }) => {
+  const fontFamily = activeItemStyles['font-family'];
+  const fontStyle = activeItemStyles['font-style'];
+  const fontWeight = activeItemStyles['font-weight'];
+  const fontSize = activeItemStyles['font-size'];
+  const textAlign = activeItemStyles['text-align'];
+  const color = activeItemStyles.color;
+
   const handleColorSettingsChange = useCallback((color: string) => {
     updateStyles({ color: color });
   }, [updateStyles]);
@@ -169,4 +150,5 @@ export const Component: React.FC<Props> = memo(({
   );
 });
 
-export const TypographyBlock = connect(mapState)(withConfigurableProperties(Component));
+const Component = withConfigurableProperties(TypographyBlock);
+export { Component as TypographyBlock };

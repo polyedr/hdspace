@@ -1,152 +1,22 @@
-import React, { useCallback, ChangeEvent } from 'react';
+import React from 'react';
 import cn from 'classnames';
-import { Input, Button } from 'antd';
-import { Link } from 'react-router-dom';
 
-import { IScreenProps } from '$redux/project/types';
-import { getDefaultDateSelectOptions } from '$constants/defaultParams';
 import { GMap } from '$components/UI/GMap';
 import { CalendarWidget } from '$components/UI/Calendar';
 import { ClockWidget } from '$components/UI/Clock';
 import { Entity } from '$domain/core';
 
-import { withAction, WithActionProps } from '../../../utils/withAction';
+import { withAction } from '../../../utils/withAction';
+import { Action } from './Action/Action';
+import { Checkbox } from './Checkbox/Checkbox';
+import { Radiobutton } from './Radiobutton/Radiobutton';
+import { Input } from './Input/Input';
+import { Select } from './Select/Select';
+import { Renderer } from './types';
 const styles = require('./styles.scss');
 
-export type RendererProps = {
-  id: string;
-  style: React.CSSProperties;
-  params: IScreenProps;
-  name?: string;
-  orientation?: string;
-  active?: boolean;
-  isDisabled?: boolean;
-  children?: JSX.Element;
-  sortableId?: string;
-  savedElement: { id: number, savedValue: string };
-  onClick?(event: any, id: string): void;
-  onChange(itemID: string, savedValue: string): void;
-};
-
-type Renderer = React.FC<RendererProps>;
-type ActionRenderer = React.FC<WithActionProps & RendererProps>;
-
-const ActionRenderer: ActionRenderer = (props) => {
-  const {
-    id,
-    style,
-    active,
-    isDisabled,
-    params,
-    onClick,
-    sortableId,
-    actionType,
-    actionLink,
-  } = props;
-
-  const commonProps = {
-    id,
-    'data-ls-id': id,
-    'data-id': sortableId,
-    key: id,
-    className: cn('ls-item', isDisabled && styles.disabled, active && 'activated'),
-    style: style,
-  }
-
-  switch (actionType) {
-    case 'external-link': {
-      return (
-        <a {...commonProps} href={actionLink} target="_blank" onClick={onClick}>
-          {params.textContent}
-        </a>
-      )
-    }
-
-    case 'internal-link': {
-      return (
-        <Link {...commonProps} to={actionLink} onClick={onClick}>
-          {params.textContent}
-        </Link>
-      )
-    }
-
-    case 'button': {
-      return (
-        <Button {...commonProps} type="primary" onClick={onClick}>
-          {params.textContent}
-        </Button>
-      )
-    }
-  }
-}
-
-const InputRenderer: Renderer = (props) => {
-  const { id, style, params, isDisabled, active, onClick, sortableId, savedElement, onChange } = props;
-
-  const textContent = isDisabled ? params.textContent : savedElement && savedElement.savedValue || '';
-
-  const handleInputChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-    onChange(id, event.target.value);
-  }, [onChange, id]);
-
-  return (
-    <Input
-      id={id}
-      data-ls-id={id}
-      data-id={sortableId}
-      key={id}
-      type="text" // TODO: use other types such as email, etc.
-      className={cn('ls-item', isDisabled && styles.disabled, active && 'activated')}
-      readOnly={isDisabled}
-      style={{
-        ...style,
-        transition: 'none',
-      }}
-      value={textContent}
-      onClick={(event) => onClick?.(event, id)}
-      placeholder={params.placeholder}
-      onChange={handleInputChange}
-    />
-  );
-};
-
-const SelectRenderer: Renderer = (props) => {
-  const { id, style, name, isDisabled, active, sortableId, savedElement, onChange } = props;
-  const value = isDisabled ? '' : savedElement && savedElement.savedValue || '';
-
-  const handleSelectChange = useCallback((event: ChangeEvent<HTMLSelectElement>) => {
-    onChange(id, event.target.value);
-  }, [onChange, id]);
-
-  return (
-    <select
-      id={id}
-      data-ls-id={id}
-      data-id={sortableId}
-      key={id}
-      className={cn('ls-item', styles.addedSelect, active && 'activated')}
-      style={style}
-      value={value}
-      onChange={handleSelectChange}
-      disabled={isDisabled}
-    >
-      {
-        getDefaultDateSelectOptions(name).map(option => (
-          <option
-            key={`key-${option.value}`}
-            value={option.value}
-            hidden={isDisabled}
-          >
-            {option.label}
-          </option>
-        ))
-      }
-    </select>
-  );
-};
-
 const TextRenderer: Renderer = (props) => {
-  const { id, style, params, name, active, sortableId, isDisabled } = props;
+  const { id, style, params, active, sortableId, isDisabled } = props;
   return (
     <p
       id={id}
@@ -253,12 +123,14 @@ const UndefinedRenderer: Renderer = (props) => {
 }
 
 export const RENDERERS: Record<Exclude<Entity, 'root' | 'container'>, React.FunctionComponent<any>> = {
-  button: withAction(ActionRenderer, 'button'),
-  textinput: InputRenderer,
-  hyperlink: withAction(ActionRenderer, 'link'),
+  button: withAction(Action, 'button'),
+  textinput: Input,
+  radiobutton: Radiobutton,
+  checkbox: Checkbox,
+  hyperlink: withAction(Action, 'link'),
   ocrtext: TextRenderer,
   image: ImgRenderer,
-  select: SelectRenderer,
+  select: Select,
   map: MapWidgetRenderer,
   calendar: CalendarWidgetRenderer,
   clock: ClockWidgetRenderer,
@@ -267,6 +139,6 @@ export const RENDERERS: Record<Exclude<Entity, 'root' | 'container'>, React.Func
 
 export const EXPORT_RENDERERS: Record<Exclude<Entity, 'root' | 'container'>, React.FunctionComponent<any>> = {
   ...RENDERERS,
-  button: withAction(ActionRenderer, 'button', true),
-  hyperlink: withAction(ActionRenderer, 'link', true),
+  button: withAction(Action, 'button', true),
+  hyperlink: withAction(Action, 'link', true),
 };

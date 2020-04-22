@@ -1,15 +1,21 @@
-import React, { CSSProperties, useCallback, useState } from 'react';
+import React, { CSSProperties, useCallback, useState, useEffect } from 'react';
 import * as R from 'ramda';
 import { connect } from 'react-redux';
 
 import { AppReduxState } from '$shared/types/app';
 import { SortableGroup } from '$components/Editor/SortableGroup/SortableGroup';
 import { RENDERERS } from '$components/UI/RenderElements';
-import { IListSortable, ILSItem } from '$redux/project/types';
+import { IListSortable, ILSItem, SavedElementsValues, Option } from '$redux/project/types';
 import { selectors, actionsCreators } from '$redux/project';
 import { getItemsPair, getParams, idToLSId, idToDataLSID } from '$utils/parseScenario';
 import { LIST_SCENARIO_TYPE } from '$constants/defaultParams';
 import { convertPropCSS, CssLikeStyles } from '$utils/StyleHelper';
+import { LIBRARY_ELEMENTS } from '$domain/libraryElements';
+import { ElementEntity } from '$domain/core';
+
+const isElementStructType = (type: string): type is ElementEntity => {
+  return type in LIBRARY_ELEMENTS;
+};
 
 const mapStateToProps = (state: AppReduxState, props: OwnProps) => {
   const currentScreen = selectors.selectCurrentScreen(state);
@@ -21,14 +27,16 @@ const mapStateToProps = (state: AppReduxState, props: OwnProps) => {
 
   const currId = idToLSId(props.item.id, props.item.type);
   const itemParent = listSortable[currId];
-  const currListSortable = itemParent.children.reduce((items: IListSortable, childID) => ({
+  const currentListSortable = itemParent.children.reduce((items: IListSortable, childID) => ({
     ...items,
     [childID]: listSortable[childID],
   }), { [currId]: listSortable[currId] });
 
-  const { scenarioList, elementList } = getItemsPair(currListSortable, scenarios, scenarioElements);
+  const { scenarioList, elementList } = getItemsPair(currentListSortable, scenarios, scenarioElements);
   return {
-    listSortable: currListSortable,
+    listSortable,
+    scenarioElements,
+    currentListSortable,
     disableInteractions,
     scenarioList,
     elementList,
@@ -73,6 +81,8 @@ const SortableComponent: React.FC<Props> = (props) => {
     setIsResizing,
     isResizable,
     listSortable,
+    scenarioElements,
+    currentListSortable,
     elementList,
     scenarioList,
     savedElements,
@@ -80,6 +90,29 @@ const SortableComponent: React.FC<Props> = (props) => {
   } = props;
 
   const [isDragging, setIsDragging] = useState<boolean>(false);
+
+  useEffect(() => {
+    const radioNames = Object.values(listSortable)
+      .filter(item => item.type === 'radiobutton')
+      .map(item => scenarioElements[item.id]?.parameters.name);
+
+    R.uniq(radioNames).forEach(groupName => {
+      if (!groupName) {
+        return;
+      };
+
+      const groupRadios = Object.values(listSortable)
+        .filter(item => item.type === 'radiobutton')
+        .map(item => scenarioElements[item.id])
+        .filter(item => item?.parameters.name === groupName);
+
+      const firstRadio = R.head(groupRadios);
+
+      if(!savedElements[groupName]?.savedValue) {
+        updateSavedElementValues(groupName, firstRadio?.parameters.value || '');
+      };
+    })
+  }, [savedElements, listSortable, scenarioElements, updateSavedElementValues]);
 
   const handleChooseToSort = useCallback((itemIndex) => {
     // TODO: called when item chosen for sorting. rewrite without onActiveElementChange use
@@ -109,9 +142,16 @@ const SortableComponent: React.FC<Props> = (props) => {
     return parseStyle ? convertPropCSS(parseStyle) : {};
   }, [scenarioList]);
 
-  const handleRenderElementChange = useCallback((id, props) => {
-    updateSavedElementValues(id, props);
-  }, [updateSavedElementValues]);
+  const isRadioChecked = (value: string, checkedRadio: SavedElementsValues[string]) => value === checkedRadio?.savedValue;
+
+  const isCheckboxChecked = (itemId: string) => Boolean(savedElements[itemId]?.savedValue);
+
+  const getSelectValue = (itemId: string, options: Option[]) => {
+    const selectValue = savedElements[itemId]?.savedValue;
+    const isValueInOptions = options?.some(({ value }) => selectValue === value);
+
+    return isValueInOptions ? selectValue : options?.[0].value || '';
+  }
 
   const getIsActive = useCallback(() => !disableInteractions && item.id === parseInt(activeItemId, 10), [disableInteractions, item, activeItemId]);
 
@@ -139,8 +179,8 @@ const SortableComponent: React.FC<Props> = (props) => {
           return null;
         }
 
-        const currentItem = listSortable[itemId];
-        const { struct_type, parameters, styles, name } = getParams(itemId, elementList, scenarioList);
+        const currentItem = currentListSortable[itemId];
+        const { struct_type, parameters, styles, name, children } = getParams(itemId, elementList, scenarioList);
 
         if (struct_type === 'container') {
           return (
@@ -158,7 +198,10 @@ const SortableComponent: React.FC<Props> = (props) => {
           )
         } 
 
-        // @ts-ignore
+        if (!isElementStructType(struct_type)) {
+          return null;
+        }
+
         const ElementRenderer = RENDERERS[struct_type];
         const parsedStyles = convertPropCSS(styles);
         
@@ -172,8 +215,12 @@ const SortableComponent: React.FC<Props> = (props) => {
             name={name}
             style={parsedStyles}
             active={!disableInteractions && itemId === activeItemId}
-            savedElement={savedElements[itemId]}
-            onChange={handleRenderElementChange}
+            inputValue={savedElements[itemId]?.savedValue}
+            selectValue={getSelectValue(itemId, parameters.options)}
+            onChange={updateSavedElementValues}
+            isCheckboxChecked={isCheckboxChecked(itemId)}
+            isRadioChecked={isRadioChecked(parameters.value, savedElements[parameters.name])}
+            childrenElements={children}
            />
         ) : null;
       })}

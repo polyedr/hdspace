@@ -26,6 +26,7 @@ import {
   convertScenarios,
   convertScenarioElements,
 } from '$utils/parseScenario';
+import { getSavedValue } from '$utils/getSavedValue';
 import { DEFAULT_LS, DEFAULT_SCREEN, DEFAULT_ACTIVE_ITEM } from '$constants/defaultParams';
 import {
   IProject,
@@ -92,10 +93,22 @@ export function* activateScreenSaga({ payload }: ReturnType<typeof activateScree
 
   const oldSavedElementsValues: ReturnType<typeof selectors.selectSavedElementsValues> = yield select(selectors.selectSavedElementsValues);
 
-  const newSavedElementsValues = !R.isEmpty(oldSavedElementsValues) ? oldSavedElementsValues : serverScenariosElements.reduce((acc, element) => ({
-    ...acc,
-    [`${element.id}e`]: { id: element.id, savedValue: element.parameters.textContent || '' },
-  }), {});
+  const newSavedElementsValues = !R.isEmpty(oldSavedElementsValues) ? oldSavedElementsValues : serverScenariosElements.reduce((acc, element) => {
+    
+    const savedValue = getSavedValue(element);
+
+    if (element.struct_type === 'radiobutton') {
+      return {
+        ...acc,
+        [element.parameters.name || '']: { savedValue: '' },
+      }
+    }
+
+    return {
+      ...acc,
+      [`${element.id}e`]: { id: element.id, savedValue },
+    }
+  }, {});
 
   yield put(Actions.updateSavedElementsValues(newSavedElementsValues));
 
@@ -128,7 +141,7 @@ export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
   const createdScreen: ReturnPromisedType<typeof apiAddScreen> = yield call(reqWrapper, apiAddScreen, { data });
   if (!createdScreen) return;
 
-  const { styles } = getConfigurablePropsOf('root');
+  const { styles } = getConfigurablePropsOf('root')('root');
   const rootScenario: T.IScenarioItem = yield call(createContainer, {
     screen: createdScreen.id,
     styles: {

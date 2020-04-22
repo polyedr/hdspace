@@ -2,6 +2,7 @@ import { CSSProperties } from 'react';
 
 import { IChooseElement } from '$components/ModalAddElements/ModalAddElements/ModalAddElements';
 import { CssLikeStyles } from '$utils/StyleHelper';
+import { LibraryElements } from '$domain/libraryElements';
 
 import * as T from './types';
 
@@ -9,7 +10,7 @@ export const getLibraryElements = (): T.LoadLibraryElements => ({
   type: 'PROJECTS:LOAD_LIBRARY_ELEMENTS',
 });
 
-export const setLibraryElements = (libraryElements: T.LibraryElements): T.LoadLibraryElementsSuccess => ({
+export const setLibraryElements = (libraryElements: LibraryElements): T.LoadLibraryElementsSuccess => ({
   type: 'PROJECTS:LOAD_LIBRARY_ELEMENTS_SUCCESS',
   payload: { libraryElements },
 });
@@ -167,6 +168,11 @@ export const updateElementStyles = (id: string, styles: CssLikeStyles): T.Update
   payload: { id, styles },
 });
 
+export const updateChildStyles = (parentID: string, id: string, styles: CssLikeStyles): T.UpdateChildStyles => ({
+  type: 'PROJECTS:UPDATE_CHILD_STYLES',
+  payload: { parentID, id, styles },
+});
+
 // TODO: here is not CSSProperties, here css-like properties written in lower-case-hyphenated
 export const updateScenarioStyles = (
   id: string,
@@ -196,7 +202,7 @@ export const updateSavedElementsValues = (elementsValues: T.SavedElementsValues)
   payload: { elementsValues },
 });
 
-export const updateSavedElementValues = (itemID: string, savedValue: string): T.UpdateSavedElementValues => ({
+export const updateSavedElementValues = (itemID: string, savedValue: string | boolean): T.UpdateSavedElementValues => ({
   type: 'PROJECTS:UPDATE_SAVED_ELEMENT_VALUES',
   payload: { itemID, savedValue },
 });

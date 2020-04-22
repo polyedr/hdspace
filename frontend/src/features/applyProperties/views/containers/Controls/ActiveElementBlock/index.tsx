@@ -1,12 +1,12 @@
 import React, { memo, useState, useCallback } from 'react';
 import classNames from 'classnames';
 
+import { ElementsToAdd } from '$domain/libraryElements';
 import { Icon } from '$components/UI/Icon/';
 import { Button } from '$components/UI/Button/';
 import { Modal } from '$components/UI/Modal/';
 import { ModalAddElements } from '$components/ModalAddElements/ModalAddElements/ModalAddElements';
 import { NavigateItem } from '$components/Editor/NavigateItem/NavigateItem';
-import { LibraryElements } from '$redux/project/types';
 
 import { PropertiesPanelProps } from '../../PropertiesPanel/PropertiesPanel';
 const styles = require('./styles.scss');
@@ -15,7 +15,7 @@ interface IComponentProps {
   activeItem: PropertiesPanelProps['activeItem'],
   disablePanel: boolean,
   scenarios: PropertiesPanelProps['scenarios'],
-  libraryElements: LibraryElements,
+  libraryElements: ElementsToAdd,
   addElementsIntoContainer: PropertiesPanelProps['addElementsIntoContainer'],
   isAddElementsModalOpened: boolean;
   onWrapIntoContainer(): void;

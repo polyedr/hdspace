@@ -4,8 +4,7 @@ import { connect } from 'react-redux';
 import { selectors, actionsCreators } from '$redux/project';
 import { AppReduxState } from '$shared/types/app';
 import { LinkContext } from '$containers/ExportedApp';
-
-import { RendererProps } from '../components/UI/RenderElements';
+import { RendererProps } from '$components/UI/RenderElements/types';
 
 const mapStateToProps = (state: AppReduxState) => {
   const projectID = selectors.selectCurrentProject(state).id;
@@ -17,7 +16,7 @@ const mapDispatchToProps = {
   activateScreen: actionsCreators.activateScreen,
 };
 
-type ActionType = 'external-link' | 'internal-link' | 'button';
+export type ActionType = 'external-link' | 'internal-link' | 'button';
 
 export type WithActionProps = {
   actionLink: string,

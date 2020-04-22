@@ -11,13 +11,14 @@ import { getGroupElements, IListCategoryEl, parseAddElementsTabs } from '$utils/
 import { selectors, actionsCreators } from '$redux/project';
 import { AppReduxState } from '$shared/types/app';
 import { PropertiesPanelProps } from '$features/applyProperties';
-import { LibraryElements } from '$redux/project/types';
+import { ServerStructType } from '$redux/project/types';
+import { ElementsToAdd } from '$domain/libraryElements';
 
 const styles = require('./ModalAddElements.scss');
 
 export interface IChooseElement {
-  funcType: string;
-  structType: string;
+  funcType: ServerStructType;
+  structType: ServerStructType;
   type: string;
 }
 
@@ -36,7 +37,7 @@ const mapDispatchToProps = {
 type OwnProps = {
   active: boolean;
   scenarios: PropertiesPanelProps['scenarios'];
-  libraryElements: LibraryElements;
+  libraryElements: ElementsToAdd;
   onClose(): void;
   onConfirm(elementsToAdd: IChooseElement[]): void;
 };

@@ -53,15 +53,17 @@ import { setScreenLoader } from '$redux/project/actions';
 import { addScreenSaga } from '$redux/project/sagas/screen';
 import { refreshUserTokenPair } from '$redux/user/sagas';
 import { openSignScreen, openProjects } from '$utils/history';
+import { getSavedValue } from '$utils/getSavedValue';
 import { CssLikeStyles } from '$utils/StyleHelper';
 import * as PATH_NAMES from '$constants/pathNames';
 import { apiSaveScenarios, apiSaveScenario } from '$api/scenario';
 import { DEFAULT_AUTHORISATION_TOKEN } from '$constants/defaultParams';
 import { getConfigurablePropsOf, Entity } from '$domain/core';
+import { LibraryElements } from '$domain/libraryElements';
 import { collectChildren, makeContainerLens, makeElementLens } from '$domain/abstractInterface';
 import * as ai from '$domain/abstractInterface';
 
-import { IScreenProps, ItemToCopyInfo, ActiveItem } from '../types';
+import { IScreenProps, ItemToCopyInfo, ActiveItem, IScenarioElement } from '../types';
 import { selectors, T as ProjectT, actionsCreators, T } from '../';
 
 const runLayoutAlgorithmFinishedType: ProjectT.RunLayoutAlgorithmFinished['type'] = 'PROJECTS:RUN_LAYOUT_ALGORITHM_FINISHED';
@@ -148,7 +150,7 @@ function* authCheckSaga() {
         name: x.struct_type,
       }
     }), {}),
-  }), {}) as ProjectT.LibraryElements;
+  }), {}) as LibraryElements;
 
   yield put(Actions.setLibraryElements(libraryElements));
 }
@@ -213,7 +215,7 @@ export function* updateScenariosOnServerSaga(scenarios: ProjectT.IScenarios) {
 }
 
 export function* updateElementsOnServerSaga(elements: ProjectT.IScenarioElements) {
-  yield call(reqWrapper, apiSaveElements, { data: R.values(elements) });
+  yield call(reqWrapper, apiSaveElements, { data: R.values(elements).map(element => R.omit(['children'], element)) });
 }
 
 function* updateScenarioStyles(action: ReturnType<typeof Actions.updateScenarioStyles>) {
@@ -298,6 +300,35 @@ function* updateElementStyles(action: ReturnType<typeof Actions.updateElementSty
   }
 }
 
+function* updateChildStyles(action: ReturnType<typeof Actions.updateChildStyles>) {
+  const { parentID, id, styles } = action.payload;
+  const scenarioElements: ReturnType<typeof selectors.selectScenariosElements> = yield select(
+    selectors.selectScenariosElements,
+  );
+  const modifyElements: ReturnType<typeof selectors.selectModifyElements> = yield select(selectors.selectModifyElements);
+  const parsedParentID = parseInt(parentID);
+  const parsedID = parseInt(id, 10);
+
+  const childElement = scenarioElements[parsedParentID].children.find(child => child.id === parsedID);
+  const newChildElement = childElement && { ...childElement, styles: { ...childElement.styles, ...styles } };
+
+  const updateScenarioElements: ProjectT.IScenarioElements = {
+    ...scenarioElements,
+    [parsedParentID]: {
+      ...scenarioElements[parsedParentID],
+      children: scenarioElements[parsedParentID].children.map(child => child.id === parsedID ? newChildElement : child),
+    },
+  };
+
+  yield put(Actions.setScenarioElements(updateScenarioElements));
+
+  if (modifyElements.indexOf(parsedParentID) === -1) {
+    yield put(Actions.setModifyElements(R.append(parsedParentID, modifyElements)));
+  }
+
+  yield call(reqWrapper, apiChangeElement, { data: newChildElement, id: parsedID })
+}
+
 function* updateElementImage(action: ReturnType<typeof Actions.updateElementImage>) {
   const { itemID, image } = action.payload;
 
@@ -325,18 +356,21 @@ function* updateElementParameters(action: ReturnType<typeof Actions.updateElemen
 
   const parseId = parseInt(itemID, 10);
 
-  const updateScenarioElements: ProjectT.IScenarioElements = {
-    ...scenarioElements,
-    [parseId]: {
-      ...scenarioElements[parseId],
-      parameters: {
-        ...R.path([parseId, 'parameters'], scenarioElements),
-        ...parameters,
-      },
+  const scenarioElement = {
+    ...scenarioElements[parseId],
+    parameters: {
+      ...(R.path([parseId, 'parameters'], scenarioElements) as IScenarioElement['parameters']),
+      ...parameters,
     },
   };
 
-  yield put(Actions.updateSavedElementValues(itemID, parameters.textContent || '' ));
+  const updateScenarioElements: ProjectT.IScenarioElements = {
+    ...scenarioElements,
+    [parseId]: scenarioElement,
+  };
+
+  const savedValue = getSavedValue(scenarioElement);
+  yield put(Actions.updateSavedElementValues(itemID, savedValue));
  
   yield put(Actions.setScenarioElements(updateScenarioElements));
 
@@ -387,7 +421,7 @@ function* uploadFileSaga(
       type: string; // login
     };
 
-    const { styles, params } = getConfigurablePropsOf('container');
+    const { styles, params } = getConfigurablePropsOf('root')('container');
     const nnScenarioToContainer = (x: NNScenario): ProjectT.IScenarioItem => ({
       ...x,
       buoyancy: 0,
@@ -445,7 +479,7 @@ function* uploadFileSaga(
 
     const addParentId = (x: any) => ({ ...x, parameters: { ...x.parameters, parent_id: x.scenario }});
     const applyDefaultProps = (x: any): ProjectT.IScenarioElement => {
-      const { styles, params } = getConfigurablePropsOf(x.struct_type as Entity);
+      const { styles, params } = getConfigurablePropsOf('root')(x.struct_type as Entity);
       return ({
         ...x,
         styles: {
@@ -851,6 +885,7 @@ const deleteScreenType: ProjectT.DeleteScreen['type'] = 'PROJECTS:DELETE_SCREEN'
 const renameScreenType: ProjectT.RenameScreen['type'] = 'PROJECTS:RENAME_SCREEN';
 const setListSortableType: ProjectT.SetListSortable['type'] = 'PROJECTS:SET_LIST_SORTABLE';
 const updateElementStylesType: ProjectT.UpdateElementStyles['type'] = 'PROJECTS:UPDATE_ELEMENT_STYLES';
+const updateChildStylesType: ProjectT.UpdateChildStyles['type'] = 'PROJECTS:UPDATE_CHILD_STYLES';
 const updateScenarioStylesType: ProjectT.UpdateScenarioStyles['type'] = 'PROJECTS:UPDATE_SCENARIO_STYLES';
 const updateElementParametersType: ProjectT.UpdateElementParameters['type'] = 'PROJECTS:UPDATE_ELEMENT_PARAMETERS';
 const updateElementImageType: ProjectT.UpdateElementImage['type'] = 'PROJECTS:UPDATE_ELEMENT_IMAGE';
@@ -887,6 +922,7 @@ export default function* projectSaga() {
   yield takeLatest(setListSortableType, setListSortableSaga);
 
   yield takeLatest(updateElementStylesType, updateElementStyles);
+  yield takeLatest(updateChildStylesType, updateChildStyles);
   yield takeLatest(updateScenarioStylesType, updateScenarioStyles);
   yield takeLatest(updateElementImageType, updateElementImage);
   yield takeLatest(updateElementParametersType, updateElementParameters);

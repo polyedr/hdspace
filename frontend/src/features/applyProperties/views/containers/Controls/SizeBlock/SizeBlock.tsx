@@ -1,11 +1,8 @@
 import React, { useCallback, memo } from 'react';
-import { connect } from 'react-redux';
 import * as R from 'ramda';
 
-import { AppReduxState } from '$shared/types/app';
 import { CssLikeStyles } from '$utils/StyleHelper';
 import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
-import { selectors } from '$redux/project';
 
 const styles = require('./SizeBlock.scss');
 
@@ -24,12 +21,11 @@ type SelectedUnit = {
 
 type SizeName = keyof SelectedUnit;
 
-type StateProps = {
-  width: string;
-  height: string;
-};
+type OwnProps = {
+  activeItemStyles: Required<CssLikeStyles>;
+}
 
-type Props = StateProps & PropertiesChangeProps;
+type Props = OwnProps & PropertiesChangeProps;
 
 const getUnitFromValue = (value: string): UnitName => {
   const unit = value.replace(/[0-9, \d+\.\d+]/g, '');
@@ -42,17 +38,9 @@ const getUnitFromValue = (value: string): UnitName => {
   }
 }
 
-function mapState(state: AppReduxState): StateProps {
-  const activeItemStyles = selectors.selectActiveItemStyles(state) as Required<CssLikeStyles>;
-
-  return {
-    width: activeItemStyles.width,
-    height: activeItemStyles.height,
-  };
-}
-
-export const Component: React.FC<Props> = memo((props) => {
-  const { width, height, updateStyles, activeItemID } = props;
+const SizeBlock: React.FC<Props> = memo((props) => {
+  const { updateStyles, activeItemID, activeItemStyles } = props;
+  const { width, height } = activeItemStyles;
 
   const handleSelectChange = useCallback(({ target: { value } }, sizeName: SizeName) => {
     const el = document.getElementById(activeItemID);
@@ -146,4 +134,5 @@ export const Component: React.FC<Props> = memo((props) => {
   );
 });
 
-export const SizeBlock = connect(mapState)(withConfigurableProperties(Component));
+const Component = withConfigurableProperties(SizeBlock);
+export { Component as SizeBlock };

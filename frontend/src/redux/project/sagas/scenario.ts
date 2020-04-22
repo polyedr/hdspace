@@ -3,6 +3,7 @@ import * as R from 'ramda';
 
 import * as Actions from '$redux/project/actions';
 import { getParams } from '$utils/parseScenario';
+import { getSavedValue } from '$utils/getSavedValue';
 import {
   apiAddElements,
   apiDelElements,
@@ -18,12 +19,11 @@ import {
 import { DEFAULT_INDENTS } from '$constants/defaultParams';
 import { reqWrapper } from '$redux/project/sagas/index';
 import { ReturnPromisedType } from '$shared/types';
-import { getConfigurablePropsOf, Entity } from '$domain/core';
-import { LIBRARY_ELEMENTS } from '$domain/libraryElements';
+import { getConfigurablePropsOf, Entity, ChildEntity } from '$domain/core';
+import { LIBRARY_ELEMENTS, AllChildren } from '$domain/libraryElements';
 import * as ai from '$domain/abstractInterface';
 
 import { selectors, T } from '../';
-import { ServerFuncType } from '../types';
 
 const runLayoutAlgorithmFinishedType: T.RunLayoutAlgorithmFinished['type'] = 'PROJECTS:RUN_LAYOUT_ALGORITHM_FINISHED';
 
@@ -84,7 +84,6 @@ export function* createContainer(scenario?: Partial<T.IScenarioItem>) {
 
 export function* addElementsIntoContainerSaga(action: ReturnType<typeof Actions.addElementsIntoContainer>) {
   const { elements } = action.payload;
-  const libraryElements: ReturnType<typeof selectors.selectLibraryElements> = yield select(selectors.selectLibraryElements);
   const currentScreen: ReturnType<typeof selectors.selectCurrentScreen> = yield select(selectors.selectCurrentScreen);
   const scenarioElements: ReturnType<typeof selectors.selectScenariosElements> = yield select(
     selectors.selectScenariosElements,
@@ -96,8 +95,32 @@ export function* addElementsIntoContainerSaga(action: ReturnType<typeof Actions.
   const targetContainerID = targetContainer ? parseInt(targetContainer, 10) : rootID;
 
   const elementsToCreate = elements.reduce((acc: T.IScenarioElement[], element) => {
-    const libraryElement = LIBRARY_ELEMENTS[element.structType as keyof typeof LIBRARY_ELEMENTS][element.funcType as ServerFuncType]!; // TODO: remove unused params/styles from backend
-    const { styles, params } = getConfigurablePropsOf(libraryElement.struct_type as Entity);
+    const libraryElement = LIBRARY_ELEMENTS[element.structType as keyof typeof LIBRARY_ELEMENTS]; // TODO: remove unused params/styles from backend
+    const { styles, params } = getConfigurablePropsOf('root')(libraryElement.struct_type as Entity);
+
+    const children: AllChildren = libraryElement.children;
+
+    const childrenToAdd = children.map(child => {
+      const { styles, params } = getConfigurablePropsOf(child.struct_type as ChildEntity<Entity>)(libraryElement.struct_type as keyof typeof LIBRARY_ELEMENTS);
+
+      return {
+        scenario: targetContainerID,
+        buoyancy: 0,
+        dynamic_buoyancy: 0,
+        name: 'Element',
+        struct_type: child.struct_type,
+        func_type: child.func_type,
+        id: -1000,
+        image: null,
+        parameters: {
+          parent_id: targetContainerID,
+          group: `don't know what is this`,
+          ...params,
+        },
+        styles,
+        children: [],
+      }
+    });
 
     const x: T.IScenarioElement = {
       scenario: targetContainerID,
@@ -115,6 +138,7 @@ export function* addElementsIntoContainerSaga(action: ReturnType<typeof Actions.
         ...params,
       },
       styles,
+      children: childrenToAdd,
     };
     return acc.concat(x);
   }, []);
@@ -153,10 +177,21 @@ export function* addElementsIntoContainerSaga(action: ReturnType<typeof Actions.
 
   const oldSavedElementsValues: ReturnType<typeof selectors.selectSavedElementsValues> = yield select(selectors.selectSavedElementsValues);
   
-  const newSavedElementsValues = createdElements.reduce((acc, element) => ({
-    ...acc,
-    [`${element.id}e`]: { id: element.id, savedValue: element.parameters.textContent || '' },
-  }), oldSavedElementsValues);
+  const newSavedElementsValues = createdElements.reduce((acc, element) => {
+    const savedValue = getSavedValue(element);
+    
+    if (element.struct_type === 'radiobutton') {
+      return {
+        ...acc,
+        [element.parameters.name || '']: { id: element.id, savedValue: element.parameters.value || '' },
+      }
+    }
+
+    return {
+      ...acc,
+      [`${element.id}e`]: { id: element.id, savedValue },
+    }
+  }, oldSavedElementsValues);
 
   yield put(Actions.updateSavedElementsValues(newSavedElementsValues));
 
@@ -246,7 +281,7 @@ export function* wrapIntoContainerSaga() {
 
   const rawItemID = activeItem.itemId;
 
-  const { styles, params } = getConfigurablePropsOf('container');
+  const { styles, params } = getConfigurablePropsOf('root')('container');
   const containerWrapper: T.IScenarioItem = yield call(createContainer, {
     name: 'Container',
     parameters: {

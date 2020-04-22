@@ -1,32 +1,23 @@
 import React, { memo, useCallback } from 'react';
-import { connect } from 'react-redux';
 
-import { AppReduxState } from '$shared/types/app';
-import { selectors } from '$redux/project/';
 import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
 import { CssLikeStyles } from '$utils/StyleHelper';
 import { ColorSettings } from '$features/applyProperties/views/components/ColorSettings/ColorSettings';
 
-type StateProps = {
-  backgroundColor: string;
+type OwnProps = {
+  activeItemStyles: Required<CssLikeStyles>;
 }
 
-function mapState(state: AppReduxState): StateProps {
-  const activeItemStyles = selectors.selectActiveItemStyles(state) as Required<CssLikeStyles>;
+type Props = OwnProps & PropertiesChangeProps;
 
-  return {
-    backgroundColor: activeItemStyles['background-color'],
-  };
-}
-
-type Props = StateProps & PropertiesChangeProps;
-
-export const Component: React.FC<Props> = memo((props) => {
+const BackgroundBlock: React.FC<Props> = memo((props) => {
   const {
-    backgroundColor,
     updateStyles,
-    activeItemID
+    activeItemID,
+    activeItemStyles,
   } = props;
+
+  const backgroundColor = activeItemStyles['background-color'];
 
   const handleColorSettingsChange = useCallback((color: string) => {
     updateStyles({ 'background-color': color });
@@ -44,4 +35,5 @@ export const Component: React.FC<Props> = memo((props) => {
   );
 });
 
-export const BackgroundBlock = connect(mapState)(withConfigurableProperties(Component));
+const Component = withConfigurableProperties(BackgroundBlock);
+export { Component as BackgroundBlock };
