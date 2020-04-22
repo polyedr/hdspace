@@ -2,7 +2,7 @@ import React, { ChangeEvent } from 'react';
 import cn from 'classnames';
 import { makeStyles, TextField } from '@material-ui/core';
 
-import { sharedClassnames } from '$styles/sharedClassnames';
+import { sharedClasses } from '$styles/sharedClasses';
 
 import { Renderer } from '../types';
 const styles = require('../styles.scss');
@@ -59,7 +59,7 @@ const Input: Renderer = (props) => {
       data-id={sortableId}
       key={id}
       variant="outlined"
-      className={cn(sharedClassnames.lsItem, isDisabled && styles.disabled, classes.root)}
+      className={cn(sharedClasses.lsItem, isDisabled && styles.disabled, classes.root)}
       style={inlineStyles}
       type={type}
       value={inputValue}

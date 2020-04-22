@@ -6,7 +6,7 @@ import { AppReduxState } from '$shared/types/app';
 import { ElementParameters } from '$redux/project/types';
 import { selectors } from '$redux/project/';
 import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
-import { sharedClassnames } from '$styles/sharedClassnames';
+import { sharedClasses } from '$styles/sharedClasses';
 
 type StateProps = {
   showRipple?: boolean;
@@ -46,10 +46,10 @@ const Ripple: React.FC<Props> = ({
   };
 
   return (
-    <div className={sharedClassnames.propsElementsBlock}>
-      <p className={sharedClassnames.propsElementsBlockTitle}>Ripple effect</p>
-      <div className={sharedClassnames.propsElementsContentBlock}>
-        <div className={sharedClassnames.propsElementsInnerBlock}>
+    <div className={sharedClasses.propsSection}>
+      <p className={sharedClasses.propsTitle}>Ripple effect</p>
+      <div className={sharedClasses.propsContent}>
+        <div className={sharedClasses.propsContainer}>
           <Switch
             size="small"
             checked={showRipple}

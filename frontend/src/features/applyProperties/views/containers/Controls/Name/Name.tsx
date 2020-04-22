@@ -5,7 +5,7 @@ import { AppReduxState } from '$shared/types/app';
 import { ElementParameters } from '$redux/project/types';
 import { selectors } from '$redux/project/';
 import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
-import { sharedClassnames } from '$styles/sharedClassnames';
+import { sharedClasses } from '$styles/sharedClasses';
 
 const styles = require('./Name.scss');
 
@@ -32,10 +32,10 @@ const Name: React.FC<Props> = ({
   };
 
   return (
-    <div className={sharedClassnames.propsElementsBlock}>
-      <p className={sharedClassnames.propsElementsBlockTitle}>Name</p>
-      <div className={sharedClassnames.propsElementsContentBlock}>
-        <div className={sharedClassnames.propsElementsInnerBlock}>
+    <div className={sharedClasses.propsSection}>
+      <p className={sharedClasses.propsTitle}>Name</p>
+      <div className={sharedClasses.propsContent}>
+        <div className={sharedClasses.propsContainer}>
           <textarea
             className={styles.nameField}
             name="text_content"

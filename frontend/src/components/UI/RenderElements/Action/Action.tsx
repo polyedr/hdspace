@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { makeStyles, Button } from '@material-ui/core';
 
 import { WithActionProps, ActionType } from '$utils/withAction';
-import { sharedClassnames } from '$styles/sharedClassnames';
+import { sharedClasses } from '$styles/sharedClasses';
 
 import { RendererProps } from '../types';
 const styles = require('../styles.scss');
@@ -59,7 +59,7 @@ export const Action: Action = (props) => {
       key={id}
       variant="contained"
       color="primary"
-      className={cn(classes.root, sharedClassnames.lsItem, isDisabled && styles.disabled, active && sharedClassnames.activated)}
+      className={cn(classes.root, sharedClasses.lsItem, isDisabled && styles.disabled, active && sharedClasses.activated)}
       disableRipple={isDisabled || !showRipple}
       component={components[actionType]}
       {...actionType === 'external-link' && { href: actionLink, target: '_blank' }}

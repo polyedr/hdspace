@@ -9,7 +9,7 @@ import {
   withConfigurableProperties,
   PropertiesChangeProps
 } from '$utils/withConfigurableProperties';
-import { sharedClassnames } from '$styles/sharedClassnames';
+import { sharedClasses } from '$styles/sharedClasses';
 
 import { ControlTitle } from '../../../components/ControlTitle/ControlTitle';
 const styles = require('./SelectValue.scss');
@@ -40,12 +40,12 @@ const SelectValue: React.FC<Props> = memo((props) => {
 
   return (
     <>
-      <section className={sharedClassnames.propsElementsBlock}>
+      <section className={sharedClasses.propsSection}>
         <header className={styles.header}>
           <ControlTitle content="Select default value" />
         </header>
-        <div className={sharedClassnames.propsElementsContentBlock}>
-          <div className={sharedClassnames.propsElementsInnerBlock}>
+        <div className={sharedClasses.propsContent}>
+          <div className={sharedClasses.propsContainer}>
             <DropDown
               options={optionsValues.map(option => ({ label: option, value: option }))}
               defaultValue={value}

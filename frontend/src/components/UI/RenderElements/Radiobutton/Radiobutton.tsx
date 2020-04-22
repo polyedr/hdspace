@@ -4,7 +4,7 @@ import { makeStyles, Radio } from '@material-ui/core';
 import RadioButtonCheckedIcon from '@material-ui/icons/RadioButtonChecked';
 import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked';
 
-import { sharedClassnames } from '$styles/sharedClassnames';
+import { sharedClasses } from '$styles/sharedClasses';
 
 import { Renderer } from '../types';
 const styles = require('../styles.scss');
@@ -41,7 +41,7 @@ const Radiobutton: Renderer = (props) => {
       data-id={sortableId}
       key={id}
       style={inlineStyles}
-      className={cn(sharedClassnames.lsItem, isDisabled && styles.disabled, active && sharedClassnames.activated)}
+      className={cn(sharedClasses.lsItem, isDisabled && styles.disabled, active && sharedClasses.activated)}
     >
       <Radio
         checkedIcon={<RadioButtonCheckedIcon className={classes.icon} />}

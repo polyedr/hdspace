@@ -9,7 +9,7 @@ import {
   withConfigurableProperties,
   PropertiesChangeProps
 } from '$utils/withConfigurableProperties';
-import { sharedClassnames } from '$styles/sharedClassnames';
+import { sharedClasses } from '$styles/sharedClasses';
 
 import { ControlTitle } from '../../../components/ControlTitle/ControlTitle';
 import { TYPE } from './constants';
@@ -37,12 +37,12 @@ const Type: React.FC<Props> = memo((props) => {
 
   return (
     <>
-      <section className={sharedClassnames.propsElementsBlock}>
+      <section className={sharedClasses.propsSection}>
         <header className={styles.header}>
           <ControlTitle content="Type" />
         </header>
-        <div className={sharedClassnames.propsElementsContentBlock}>
-          <div className={sharedClassnames.propsElementsInnerBlock}>
+        <div className={sharedClasses.propsContent}>
+          <div className={sharedClasses.propsContainer}>
             <DropDown
               options={TYPE}
               defaultValue={type}

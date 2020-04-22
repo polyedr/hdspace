@@ -3,7 +3,7 @@ import cn from 'classnames';
 import { makeStyles, MenuItem, TextField } from '@material-ui/core';
 
 import { convertPropCSS } from '$utils/StyleHelper';
-import { sharedClassnames } from '$styles/sharedClassnames';
+import { sharedClasses } from '$styles/sharedClasses';
 
 import { Renderer } from '../types';
 const styles = require('../styles.scss');
@@ -86,7 +86,7 @@ const SelectComponent: Renderer = (props) => {
       key={id}
       variant="outlined"
       style={inlineStyles}
-      className={cn(sharedClassnames.lsItem, isDisabled && styles.disabled, classes.root)}
+      className={cn(sharedClasses.lsItem, isDisabled && styles.disabled, classes.root)}
       value={selectValue}
       onChange={handleSelectChange}
       InputProps={InputProps}

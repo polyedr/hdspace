@@ -4,7 +4,7 @@ import { makeStyles, Checkbox } from '@material-ui/core';
 import CheckBoxIcon from '@material-ui/icons/CheckBox';
 import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 
-import { sharedClassnames } from '$styles/sharedClassnames';
+import { sharedClasses } from '$styles/sharedClasses';
 
 import { Renderer } from '../types';
 const styles = require('../styles.scss');
@@ -41,7 +41,7 @@ const CheckboxComponent: Renderer = (props) => {
       data-id={sortableId}
       key={id}
       style={inlineStyles}
-      className={cn(sharedClassnames.lsItem, isDisabled && styles.disabled, active && sharedClassnames.activated)}
+      className={cn(sharedClasses.lsItem, isDisabled && styles.disabled, active && sharedClasses.activated)}
     >
       <Checkbox
         checkedIcon={<CheckBoxIcon className={classes.icon} />}

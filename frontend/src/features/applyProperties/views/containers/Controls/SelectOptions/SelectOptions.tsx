@@ -10,7 +10,7 @@ import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withCo
 import { generateUniqueName } from '$utils/generateUniqueName';
 import { Button } from '$components/UI/Button';
 import { Icon } from '$components/UI/Icon';
-import { sharedClassnames } from '$styles/sharedClassnames';
+import { sharedClasses } from '$styles/sharedClasses';
 
 const styles = require('./SelectOptions.scss');
 
@@ -60,11 +60,11 @@ const SelectOptions: React.FC<Props> = ({
   };
 
   return (
-    <div className={sharedClassnames.propsElementsBlock}>
+    <div className={sharedClasses.propsSection}>
       <div className={styles.optionsHeader}>
         <p className={styles.optionsTitle}>Select Options</p>
         <Button
-          className={sharedClassnames.addBtn}
+          className={sharedClasses.addButton}
           styleType="none"
           onClick={handleAddButtonClick}
         >
@@ -81,7 +81,7 @@ const SelectOptions: React.FC<Props> = ({
             <div className={styles.optionSummary}>
               {name}
               <Button
-                className={sharedClassnames.propsPanelImgBtn}
+                className={sharedClasses.propsButton}
                 styleType="none"
                 onClick={() => handleDeleteButtonClick(name)}
               >
@@ -91,8 +91,8 @@ const SelectOptions: React.FC<Props> = ({
           </ExpansionPanelSummary>
           <ExpansionPanelDetails>
             <div className={styles.optionBlock}>
-              <p className={sharedClassnames.propsElementsBlockTitle}>Option name</p>
-              <div className={sharedClassnames.propsElementsInnerBlock}>
+              <p className={sharedClasses.propsTitle}>Option name</p>
+              <div className={sharedClasses.propsContainer}>
                 <textarea
                   className={styles.optionField}
                   name="name"
@@ -100,8 +100,8 @@ const SelectOptions: React.FC<Props> = ({
                   onChange={event => handleNameFieldChange(name, event)}
                 />
               </div>
-              <p className={sharedClassnames.propsElementsBlockTitle}>Option value</p>
-              <div className={sharedClassnames.propsElementsInnerBlock}>
+              <p className={sharedClasses.propsTitle}>Option value</p>
+              <div className={sharedClasses.propsContainer}>
                 <textarea
                   className={styles.optionField}
                   name="value"
