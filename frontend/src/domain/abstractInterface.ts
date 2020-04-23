@@ -217,18 +217,19 @@ export function removeItem(
 
   const containersToRemove = rawContainersToRemove.map(x => parseInt(x));
   const elementsToRemove = rawElementsToRemove.map(x => parseInt(x));
+  const childrenToRemove = R.flatten(Object.values(elements).map(element => element.children.map(child => child.id))) as unknown as number[];
 
   const newContainers = R.pipe(
     R.over(containerParentLens.children, (children: string[]) => R.without([itemID], children)),
     isContainer(itemID)
       ? R.identity
-      : R.over(containerParentLens.elements, (elements: number[]) => R.without([parseInt(itemID)], elements))
+      : R.over(containerParentLens.elements, (elements: number[]) => R.without([parseInt(itemID), ...childrenToRemove], elements))
   )(containers);
 
   return {
     scenarios: R.omit(R.map(R.toString, containersToRemove), newContainers),
-    elements: R.omit(R.map(R.toString, elementsToRemove), elements),
-    removedItems: { s: containersToRemove, e: elementsToRemove }
+    elements: R.omit(R.map(R.toString, [...elementsToRemove, ...childrenToRemove]), elements),
+    removedItems: { s: containersToRemove, e: [...elementsToRemove, ...childrenToRemove] },
   };
 }
 
