@@ -1,23 +1,24 @@
-import React, { useCallback, useState } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
-import { ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, makeStyles, Checkbox } from '@material-ui/core';
+import { ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, Checkbox } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import { AppReduxState } from '$shared/types/app';
-import { ListItem } from '$redux/project/types';
+import { ListItem, ElementParameters } from '$redux/project/types';
 import { selectors } from '$redux/project/';
 import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
 import { Button } from '$components/UI/Button';
 import { Icon } from '$components/UI/Icon';
+import { sharedClasses } from '$styles/sharedClasses';
 
 const styles = require('./ListItems.scss');
 
 type StateProps = {
-  listItems: ListItem[];
+  listItems?: ListItem[];
 };
 
 function mapState(state: AppReduxState): StateProps {
-  const activeItemParams = selectors.selectActiveItemParams(state) as any;
+  const activeItemParams = selectors.selectActiveItemParams(state) as ElementParameters;
 
   return {
     listItems: activeItemParams.listItems,
@@ -26,50 +27,40 @@ function mapState(state: AppReduxState): StateProps {
 
 type Props = StateProps & PropertiesChangeProps;
 
-const useStyles = makeStyles({
-  root: {
-  },
-
-  content: {
-  }
-});
-
-const Component: React.FC<Props> = ({
-  listItems,
+const ListItems: React.FC<Props> = ({
+  listItems = [],
   updateParams,
 }) => {
-  const classes = useStyles();
-
-  const handleTextContentFieldChange = useCallback((itemIndex: number, { target: { value } }) => {
+  const handleTextContentFieldChange = (itemIndex: number, { target: { value } }: React.ChangeEvent<HTMLTextAreaElement>) => {
     const updatedItems = listItems.map((item, index) => index === itemIndex ? { ...item, textContent: value as string } : item);
     updateParams({ listItems: updatedItems });
-  }, [updateParams, listItems]);
+  };
 
-  const handleUrlFieldChange = useCallback((itemIndex: number, { target: { value } }) => {
+  const handleUrlFieldChange = (itemIndex: number, { target: { value } }: React.ChangeEvent<HTMLTextAreaElement>) => {
     const updatedItems = listItems.map((item, index) => index === itemIndex ? { ...item, link: value } : item);
     updateParams({ listItems: updatedItems });
-  }, [updateParams, listItems]);
+  };
 
-  const handleAddButtonClick = useCallback(() => {
+  const handleAddButtonClick = () => {
     updateParams({ listItems: [ ...listItems, { textContent: 'New item', isLink: false, link: '' }] });
-  }, [listItems, updateParams]);
+  };
 
-  const handleDeleteButtonClick = useCallback((itemIndex: number) => {
+  const handleDeleteButtonClick = (itemIndex: number) => {
     const newItems = listItems.filter((item, index) => index !== itemIndex);
     updateParams({ listItems: newItems });
-  }, [listItems, updateParams]);
+  };
 
-  const handleCheckboxChange = useCallback((itemIndex: number, { target: { checked } }: React.ChangeEvent<HTMLInputElement>) => {
+  const handleCheckboxChange = (itemIndex: number, { target: { checked } }: React.ChangeEvent<HTMLInputElement>) => {
     const updatedItems = listItems.map((item, index) => index === itemIndex ? { ...item, isLink: checked } : item);
     updateParams({ listItems: updatedItems });
-  }, [updateParams, listItems]);
+  };
 
   return (
-    <div className="propsElementsBlock">
+    <div className={sharedClasses.propsSection}>
       <div className={styles.listItemsHeader}>
         <p className={styles.listItemsTitle}>List items</p>
         <Button
-          className="addBtn"
+          className={sharedClasses.addButton}
           styleType="none"
           onClick={handleAddButtonClick}
         >
@@ -82,13 +73,11 @@ const Component: React.FC<Props> = ({
             expandIcon={<ExpandMoreIcon />}
             aria-controls="panel1a-content"
             id="panel1a-header"
-            // className={classes.root}
-            classes={classes}
           >
             <div className={styles.listItemsSummary}>
               <div className={styles.listItemHeading}>{textContent}</div>
               <Button
-                className="propsPanelImgBtn"
+                className={sharedClasses.propsButton}
                 styleType="none"
                 onClick={() => handleDeleteButtonClick(index)}
               >
@@ -98,8 +87,8 @@ const Component: React.FC<Props> = ({
           </ExpansionPanelSummary>
           <ExpansionPanelDetails>
             <div className={styles.listItemsBlock}>
-              <p className="propsElementsBlockTitle">Item text</p>
-              <div className="propsElementsInnerBlock">
+              <p className={sharedClasses.propsTitle}>Item text</p>
+              <div className={sharedClasses.propsContainer}>
                 <textarea
                   className={styles.listItemsField}
                   name="text-content"
@@ -107,11 +96,10 @@ const Component: React.FC<Props> = ({
                   onChange={event => handleTextContentFieldChange(index, event)}
                 />
               </div>
-              <div className="propsElementsInnerBlock">
-                <p className="propsElementsBlockTitle">Make link</p>
+              <div className={sharedClasses.propsContainer}>
+                <p className={sharedClasses.propsTitle}>Make link</p>
                 <Checkbox
                   color="default"
-                  className={classes.root}
                   value="make link"
                   name="make link"
                   checked={isLink}
@@ -120,8 +108,8 @@ const Component: React.FC<Props> = ({
               </div>
               {isLink && (
                 <>
-                  <p className="propsElementsBlockTitle">Item url</p>
-                  <div className="propsElementsInnerBlock">
+                  <p className={sharedClasses.propsTitle}>Item url</p>
+                  <div className={sharedClasses.propsContainer}>
                     <textarea
                       className={styles.listItemsField}
                       name="link"
@@ -139,4 +127,5 @@ const Component: React.FC<Props> = ({
   );
 };
 
-export const ListItems = connect(mapState)(withConfigurableProperties(Component));
+const Component = connect(mapState)(withConfigurableProperties(ListItems));
+export { Component as ListItems };

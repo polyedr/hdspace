@@ -400,6 +400,11 @@ export type ElementParameters = {
   showRipple?: boolean,
   options?: Option[],
   type?: InputType,
+  dropdownItems?: string[],
+  headingType?: HeadingType,
+  labelFor?: string,
+  listItems?: ListItem[],
+  isOrdered?: boolean,
 }
 
 export interface IScenarioElement { // compare with entity on backend

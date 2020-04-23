@@ -2,19 +2,21 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import { AppReduxState } from '$shared/types/app';
+import { ElementParameters } from '$redux/project/types';
 import { selectors } from '$redux/project/';
 import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
 import { Button } from '$components/UI/Button';
 import { Icon } from '$components/UI/Icon';
+import { sharedClasses } from '$styles/sharedClasses';
 
 const styles = require('./DropdownItems.scss');
 
 type StateProps = {
-  dropdownItems: string[];
+  dropdownItems?: string[];
 };
 
 function mapState(state: AppReduxState): StateProps {
-  const activeItemParams = selectors.selectActiveItemParams(state) as any;
+  const activeItemParams = selectors.selectActiveItemParams(state) as ElementParameters;
 
   return {
     dropdownItems: activeItemParams.dropdownItems,
@@ -23,8 +25,8 @@ function mapState(state: AppReduxState): StateProps {
 
 type Props = StateProps & PropertiesChangeProps;
 
-const Component: React.FC<Props> = ({
-  dropdownItems,
+const DropdownItems: React.FC<Props> = ({
+  dropdownItems = [],
   updateParams,
 }) => {
 
@@ -43,11 +45,11 @@ const Component: React.FC<Props> = ({
   };
 
   return (
-    <div className="propsElementsBlock">
+    <div className={sharedClasses.propsSection}>
       <div className={styles.itemsHeader}>
         <p className={styles.itemsTitle}>Dropdown items</p>
         <Button
-          className="addBtn"
+          className={sharedClasses.addButton}
           styleType="none"
           onClick={handleAddButtonClick}
         >
@@ -57,7 +59,7 @@ const Component: React.FC<Props> = ({
       {dropdownItems.map((item, index) => (
         <div key={index}>
           <div className={styles.itemsBlock}>
-            <div className="propsElementsInnerBlock">
+            <div className={sharedClasses.propsContainer}>
               <textarea
                 className={styles.itemsField}
                 name="item text"
@@ -65,7 +67,7 @@ const Component: React.FC<Props> = ({
                 onChange={event => handleTextFieldChange(index, event)}
               />
               <Button
-                className="propsPanelImgBtn"
+                className={sharedClasses.propsButton}
                 styleType="none"
                 onClick={() => handleDeleteButtonClick(index)}
               >
@@ -79,4 +81,5 @@ const Component: React.FC<Props> = ({
   );
 };
 
-export const DropdownItems = connect(mapState)(withConfigurableProperties(Component));
+const Component = connect(mapState)(withConfigurableProperties(DropdownItems));
+export { Component as DropdownItems };

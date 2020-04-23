@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { Switch, makeStyles } from '@material-ui/core';
 
@@ -6,6 +6,7 @@ import { AppReduxState } from '$shared/types/app';
 import { selectors } from '$redux/project/';
 import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
 import { CssLikeStyles } from '$utils/StyleHelper';
+import { sharedClasses } from '$styles/sharedClasses';
 
 type StateProps = {
   bulletsStyles: 'disc' | 'none';
@@ -34,24 +35,21 @@ const useStyles = makeStyles({
   track: {},
 });
 
-const Component: React.FC<Props> = ({
+const Bullets: React.FC<Props> = ({
   bulletsStyles,
   updateStyles,
 }) => {
   const classes = useStyles();
 
-  console.log(bulletsStyles)
-
-  const handleSwitchChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSwitchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     updateStyles({ 'list-style-type': event.target.checked ? 'disc' : 'none' });
-    console.log('bulletsStyles', bulletsStyles)
-  }, [updateStyles]);
+  };
 
   return (
-    <div className="propsElementsBlock">
-      <p className="propsElementsBlockTitle">Bullets</p>
-      <div className="propsElementsContentBlock">
-        <div className="propsElementsInnerBlock">
+    <div className={sharedClasses.propsSection}>
+      <p className={sharedClasses.propsTitle}>Bullets</p>
+      <div className={sharedClasses.propsContent}>
+        <div className={sharedClasses.propsContainer}>
           <Switch
             size="small"
             checked={bulletsStyles === 'disc'}
@@ -68,4 +66,5 @@ const Component: React.FC<Props> = ({
   );
 };
 
-export const Bullets = connect(mapState)(withConfigurableProperties(Component));
+const Component = connect(mapState)(withConfigurableProperties(Bullets));
+export { Component as Bullets };

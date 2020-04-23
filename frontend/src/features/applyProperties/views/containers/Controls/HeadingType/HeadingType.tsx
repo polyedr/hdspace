@@ -1,8 +1,8 @@
-import React, { memo, useCallback } from 'react';
+import React, { memo } from 'react';
 import { connect } from 'react-redux';
 
 import { AppReduxState } from '$shared/types/app';
-import { HeadingType as HeadingTagType } from '$redux/project/types';
+import { HeadingType as HeadingTagType, ElementParameters } from '$redux/project/types';
 import { selectors } from '$redux/project/';
 import { DropDown } from '$components/UI/DropDown/';
 import {
@@ -12,14 +12,15 @@ import {
 
 import { ControlTitle } from '../../../components/ControlTitle/ControlTitle';
 import { HEADING_TYPE, HEADING_SETTINGS } from './constants';
+import { sharedClasses } from '$styles/sharedClasses';
 const styles = require('./HeadingType.scss');
 
 type StateProps = {
-  headingType: HeadingTagType;
+  headingType?: HeadingTagType;
 };
 
 function mapState(state: AppReduxState): StateProps {
-  const activeItemParams = selectors.selectActiveItemParams(state) as any;
+  const activeItemParams = selectors.selectActiveItemParams(state) as ElementParameters;
 
   return {
     headingType: activeItemParams.headingType,
@@ -28,24 +29,24 @@ function mapState(state: AppReduxState): StateProps {
 
 type Props = StateProps & PropertiesChangeProps;
 
-export const Component: React.FC<Props> = memo((props) => {
+const HeadingType: React.FC<Props> = memo((props) => {
   const { headingType, updateParams, updateStyles } = props;
 
-  const handleDropdownChange = useCallback((value) => {
+  const handleDropdownChange = (value: string) => {
     const headingType = value as HeadingTagType;
 
     updateParams({ headingType });
-    updateStyles({ "font-size": HEADING_SETTINGS[headingType].fontSize });
-  }, [updateParams, updateStyles, HEADING_SETTINGS]);
+    updateStyles({ 'font-size': HEADING_SETTINGS[headingType].fontSize });
+  };
 
   return (
     <>
-      <section className="propsElementsBlock">
+      <section className={sharedClasses.propsSection}>
         <header className={styles.header}>
           <ControlTitle content="Heading type" />
         </header>
-        <div className="propsElementsContentBlock">
-          <div className="propsElementsInnerBlock">
+        <div className={sharedClasses.propsContent}>
+          <div className={sharedClasses.propsContainer}>
             <DropDown
               options={HEADING_TYPE}
               defaultValue={headingType}
@@ -59,4 +60,5 @@ export const Component: React.FC<Props> = memo((props) => {
   );
 });
 
-export const HeadingType = connect(mapState)(withConfigurableProperties(Component));
+const Component = connect(mapState)(withConfigurableProperties(HeadingType));
+export { Component as HeadingType };

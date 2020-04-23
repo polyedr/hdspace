@@ -2,23 +2,25 @@ import React, { memo } from 'react';
 import { connect } from 'react-redux';
 
 import { AppReduxState } from '$shared/types/app';
+import { ElementParameters } from '$redux/project/types';
 import { selectors } from '$redux/project/';
 import { DropDown } from '$components/UI/DropDown/';
 import {
   withConfigurableProperties,
   PropertiesChangeProps
 } from '$utils/withConfigurableProperties';
+import { sharedClasses } from '$styles/sharedClasses';
 
 import { ControlTitle } from '../../../components/ControlTitle/ControlTitle';
 const styles = require('./LabelFor.scss');
 
 type StateProps = {
-  labelFor: string;
+  labelFor?: string;
   inputsIDs: number[];
 };
 
 function mapState(state: AppReduxState): StateProps {
-  const activeItemParams = selectors.selectActiveItemParams(state) as any;
+  const activeItemParams = selectors.selectActiveItemParams(state) as ElementParameters;
   const elements = selectors.selectScenariosElements(state);
 
   const inputsIDs = Object.values(elements)
@@ -38,7 +40,7 @@ function mapState(state: AppReduxState): StateProps {
 
 type Props = StateProps & PropertiesChangeProps;
 
-export const Component: React.FC<Props> = memo((props) => {
+const LabelFor: React.FC<Props> = memo((props) => {
   const { labelFor, inputsIDs, updateParams } = props;
 
   const options = [
@@ -51,12 +53,12 @@ export const Component: React.FC<Props> = memo((props) => {
   };
 
   return (
-    <section className="propsElementsBlock">
+    <section className={sharedClasses.propsSection}>
       <header className={styles.header}>
         <ControlTitle content="For attribute" />
       </header>
-      <div className="propsElementsContentBlock">
-        <div className="propsElementsInnerBlock">
+      <div className={sharedClasses.propsContent}>
+        <div className={sharedClasses.propsContainer}>
           <DropDown
             options={options}
             defaultValue={labelFor}
@@ -69,4 +71,5 @@ export const Component: React.FC<Props> = memo((props) => {
   );
 });
 
-export const LabelFor = connect(mapState)(withConfigurableProperties(Component));
+const Component = connect(mapState)(withConfigurableProperties(LabelFor));
+export { Component as LabelFor };

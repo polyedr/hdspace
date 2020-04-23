@@ -1,17 +1,19 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { Switch, makeStyles } from '@material-ui/core';
 
 import { AppReduxState } from '$shared/types/app';
+import { ElementParameters } from '$redux/project/types';
 import { selectors } from '$redux/project/';
 import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
+import { sharedClasses } from '$styles/sharedClasses';
 
 type StateProps = {
-  isOrdered: boolean;
+  isOrdered?: boolean;
 };
 
 function mapState(state: AppReduxState): StateProps {
-  const activeItemParams = selectors.selectActiveItemParams(state) as any;
+  const activeItemParams = selectors.selectActiveItemParams(state) as ElementParameters;
 
   return {
     isOrdered: activeItemParams.isOrdered,
@@ -33,21 +35,21 @@ const useStyles = makeStyles({
   track: {},
 });
 
-const Component: React.FC<Props> = ({
+const Ordered: React.FC<Props> = ({
   isOrdered,
   updateParams,
 }) => {
   const classes = useStyles();
 
-  const handleSwitchChange = useCallback(() => {
+  const handleSwitchChange = () => {
     updateParams({ isOrdered: !isOrdered });
-  }, [updateParams, isOrdered]);
+  };
 
   return (
-    <div className="propsElementsBlock">
-      <p className="propsElementsBlockTitle">Ordered</p>
-      <div className="propsElementsContentBlock">
-        <div className="propsElementsInnerBlock">
+    <div className={sharedClasses.propsSection}>
+      <p className={sharedClasses.propsTitle}>Ordered</p>
+      <div className={sharedClasses.propsContent}>
+        <div className={sharedClasses.propsContainer}>
           <Switch
             size="small"
             checked={isOrdered}
@@ -64,4 +66,5 @@ const Component: React.FC<Props> = ({
   );
 };
 
-export const Ordered = connect(mapState)(withConfigurableProperties(Component));
+const Component = connect(mapState)(withConfigurableProperties(Ordered));
+export { Component as Ordered };

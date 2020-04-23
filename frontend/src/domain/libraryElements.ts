@@ -3,18 +3,6 @@ import { CSSProperties } from 'react';
 import { ServerStructType } from '$redux/project/types';
 import { CssLikeStyles } from '$utils/StyleHelper';
 
-export type LibraryElementType = {
-  buoyancy: number,
-  func_type: ServerStructType,
-  struct_type: ServerStructType,
-  parameters: any,
-  styles: CSSProperties,
-  name: ServerStructType,
-  children: LibraryElementType[],
-}
-
-export type LibraryElement = Partial<Record<ServerStructType, LibraryElementType>>;
-
 type CommonLibraryElement<Type extends ServerStructType, ChildrenType> = {
   buoyancy: number,
   func_type: Type,
