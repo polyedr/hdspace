@@ -49,8 +49,13 @@ const Textarea: Renderer = (props) => {
       outlineOffset: '-1px',
       alignItems: 'flex-start',
 
+      '&:hover': {
+        borderColor: 'rgba(0, 0, 0, 0.87)',
+      },
+
       '&.Mui-focused, &.Mui-focused:hover': {
         borderColor: '#1890ff',
+        boxShadow: 'inset 0px 0px 0 1px #1890ff',
       },
 
       '& textarea': {

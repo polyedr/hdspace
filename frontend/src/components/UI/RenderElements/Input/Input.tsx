@@ -42,7 +42,7 @@ const Input: Renderer = (props) => {
       outlineOffset: '-1px',
 
       '&:hover': {
-        borderColor: style.color,
+        borderColor: 'rgba(0, 0, 0, 0.87)',
       },
 
       '&::placeholder': {
