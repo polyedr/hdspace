@@ -1,13 +1,12 @@
 import React, { useCallback, useState } from 'react';
 import { connect } from 'react-redux';
-import { ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, makeStyles } from '@material-ui/core';
+import { ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, makeStyles, Checkbox } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import { AppReduxState } from '$shared/types/app';
 import { ListItem } from '$redux/project/types';
 import { selectors } from '$redux/project/';
 import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
-import { generateUniqueName } from '$utils/generateUniqueName';
 import { Button } from '$components/UI/Button';
 import { Icon } from '$components/UI/Icon';
 
@@ -52,13 +51,18 @@ const Component: React.FC<Props> = ({
   }, [updateParams, listItems]);
 
   const handleAddButtonClick = useCallback(() => {
-    updateParams({ listItems: [ ...listItems, { textContent: 'New item', link: '' } ] });
+    updateParams({ listItems: [ ...listItems, { textContent: 'New item', isLink: false, link: '' }] });
   }, [listItems, updateParams]);
 
   const handleDeleteButtonClick = useCallback((itemIndex: number) => {
     const newItems = listItems.filter((item, index) => index !== itemIndex);
     updateParams({ listItems: newItems });
   }, [listItems, updateParams]);
+
+  const handleCheckboxChange = useCallback((itemIndex: number, { target: { checked } }: React.ChangeEvent<HTMLInputElement>) => {
+    const updatedItems = listItems.map((item, index) => index === itemIndex ? { ...item, isLink: checked } : item);
+    updateParams({ listItems: updatedItems });
+  }, [updateParams, listItems]);
 
   return (
     <div className="propsElementsBlock">
@@ -72,7 +76,7 @@ const Component: React.FC<Props> = ({
           <Icon icon="add" />
         </Button>
       </div>
-      {listItems.map(({ textContent, link }, index) => (
+      {listItems.map(({ textContent, isLink, link }, index) => (
         <ExpansionPanel key={index}>
           <ExpansionPanelSummary
             expandIcon={<ExpandMoreIcon />}
@@ -103,15 +107,30 @@ const Component: React.FC<Props> = ({
                   onChange={event => handleTextContentFieldChange(index, event)}
                 />
               </div>
-              <p className="propsElementsBlockTitle">Item url</p>
               <div className="propsElementsInnerBlock">
-                <textarea
-                  className={styles.listItemsField}
-                  name="link"
-                  value={link}
-                  onChange={event => handleUrlFieldChange(index, event)}
+                <p className="propsElementsBlockTitle">Make link</p>
+                <Checkbox
+                  color="default"
+                  className={classes.root}
+                  value="make link"
+                  name="make link"
+                  checked={isLink}
+                  onChange={event => handleCheckboxChange(index, event)}
                 />
-                </div>
+              </div>
+              {isLink && (
+                <>
+                  <p className="propsElementsBlockTitle">Item url</p>
+                  <div className="propsElementsInnerBlock">
+                    <textarea
+                      className={styles.listItemsField}
+                      name="link"
+                      value={link}
+                      onChange={event => handleUrlFieldChange(index, event)}
+                    />
+                  </div>
+                </>
+              )}
             </div>
           </ExpansionPanelDetails>
         </ExpansionPanel>

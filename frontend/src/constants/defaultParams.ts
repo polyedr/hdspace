@@ -147,18 +147,14 @@ export const DEFAULT_LABEL_FOR: { for: string } = {
 
 export const DEFAULT_LIST_ITEMS: { listItems: ListItem[] } = {
   listItems: [
-    { textContent: 'First item', link: '' },
-    { textContent: 'Second item', link: '' },
-    { textContent: 'Third item', link: '' },
+    { textContent: 'First item', isLink: false, link: '' },
+    { textContent: 'Second item', isLink: false, link: '' },
+    { textContent: 'Third item', isLink: false, link: '' },
   ],
 };
 
 export const DEFAULT_BULLETS: CssLikeStyles = {
   'list-style-type': 'disc',
-};
-
-export const DEFAULT_LIST_LINKS: { makeLink: boolean } = {
-  makeLink: false,
 };
 
 export const DEFAULT_LIST_TYPE: { isOrdered: boolean } = {

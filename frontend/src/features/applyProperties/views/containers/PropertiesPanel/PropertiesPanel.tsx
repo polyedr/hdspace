@@ -8,7 +8,7 @@ import { actionsCreators, selectors, T as ProjectT } from '$redux/project';
 import { Scrollbar } from '$components/UI/Scrollbar/';
 import { Spinner } from '$components/UI/Spinner/';
 import { AVAILABLE_CONTROLS, Control, Entity } from '$domain/core';
-import { LIBRARY_ELEMENTS, LibraryElements } from '$domain/libraryElements';
+import { LIBRARY_ELEMENTS } from '$domain/libraryElements';
 
 import { ActiveElementBlock } from '../Controls/ActiveElementBlock';
 import { ActionBlock } from '../Controls/ActionBlock';
@@ -31,7 +31,6 @@ import { SelectValue } from '../Controls/SelectValue/SelectValue';
 import { HeadingType } from '../Controls/HeadingType/HeadingType';
 import { ListItems } from '../Controls/ListItems/ListItems';
 import { Bullets } from '../Controls/Bullets/Bullets';
-import { ListLinks } from '../Controls/ListLinks/ListLinks';
 import { Ordered } from '../Controls/Ordered/Ordered';
 import { LabelFor } from '../Controls/LabelFor/LabelFor';
 import { DropdownItems } from '../Controls/DropdownItems/DropdownItems';
@@ -82,7 +81,6 @@ const CONTROLS: Record<Control, React.ComponentType<any>> = {
   headingType: HeadingType,
   listItems: ListItems,
   bullets: Bullets,
-  makeLink: ListLinks,
   isOrdered: Ordered,
   labelFor: LabelFor,
   dropdownItems: DropdownItems,

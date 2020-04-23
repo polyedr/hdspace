@@ -274,6 +274,7 @@ export type Option = { name: string; value: any };
 
 export type ListItem = {
   textContent: string,
+  isLink: boolean,
   link: string,
 };
 
@@ -305,7 +306,6 @@ export interface IScreenProps {
   headingType?: HeadingType,
   listItems?: ListItem[],
   showBullets?: boolean,
-  makeLink?: boolean,
   isOrdered?: boolean,
   labelFor?: string,
   dropdownItems?: string[],

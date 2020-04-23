@@ -21,7 +21,6 @@ import {
   DEFAULT_HEADING_TYPE,
   DEFAULT_LIST_ITEMS,
   DEFAULT_BULLETS,
-  DEFAULT_LIST_LINKS,
   DEFAULT_LIST_TYPE,
   DEFAULT_LABEL_FOR,
   DEFAULT_DROPDOWN_ITEMS,
@@ -67,7 +66,6 @@ const CONTROLS_AFFECT_ON_PARAMS = [
   'selectValue',
   'headingType',
   'listItems',
-  'makeLink',
   'isOrdered',
   'labelFor',
   'dropdownItems',
@@ -131,7 +129,7 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
     root: ['indents', 'size', 'typography', 'border', 'background', 'textContent'],
   },
   list: {
-    root: ['indents', 'size', 'display', 'border', 'background', 'listItems', 'bullets', 'makeLink', 'isOrdered'],
+    root: ['indents', 'size', 'display', 'border', 'background', 'listItems', 'bullets', 'isOrdered'],
     listItem: ['indents', 'size', 'typography', 'border', 'background'],
   },
   image: {
@@ -182,7 +180,6 @@ const CONTROLS_DEFAULTS: Record<Control, any> = {
   headingType: DEFAULT_HEADING_TYPE,
   listItems: DEFAULT_LIST_ITEMS,
   bullets: DEFAULT_BULLETS,
-  makeLink: DEFAULT_LIST_LINKS,
   isOrdered: DEFAULT_LIST_TYPE,
   labelFor: DEFAULT_LABEL_FOR,
   dropdownItems: DEFAULT_DROPDOWN_ITEMS,
