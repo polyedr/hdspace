@@ -216,6 +216,7 @@ const SortableComponent: React.FC<Props> = (props) => {
             style={parsedStyles}
             active={!disableInteractions && itemId === activeItemId}
             inputValue={savedElements[itemId]?.savedValue}
+            textareaValue={savedElements[itemId]?.savedValue}
             selectValue={getSelectValue(itemId, parameters.options)}
             onChange={updateSavedElementValues}
             isCheckboxChecked={isCheckboxChecked(itemId)}

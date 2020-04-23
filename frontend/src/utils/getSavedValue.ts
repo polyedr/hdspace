@@ -2,6 +2,7 @@ import { IScenarioElement } from '$redux/project/types';
 
 export const getSavedValue = (element: IScenarioElement) => {
   switch (element.struct_type) {
+    case 'textarea':
     case 'textinput': {
       return element.parameters.textContent || '';
     }

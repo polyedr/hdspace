@@ -1,12 +1,14 @@
-import React, { useCallback, ChangeEvent } from 'react';
+import React, { ChangeEvent } from 'react';
 import cn from 'classnames';
 import { makeStyles, TextField } from '@material-ui/core';
+
+import { sharedClasses } from '$styles/sharedClasses';
 
 import { Renderer } from '../types';
 const styles = require('../styles.scss');
 
 const Textarea: Renderer = (props) => {
-  const { id, style, params, isDisabled, active, sortableId, savedElement, onChange } = props;
+  const { id, style, params, isDisabled, active, sortableId, textareaValue, onChange } = props;
 
   const {
     width,
@@ -21,14 +23,15 @@ const Textarea: Renderer = (props) => {
 
   const { placeholder } = params;
 
-  const defaultValue = savedElement && savedElement.savedValue || '';
-
-  const handleTextareaChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+  const handleTextareaChange = (event: ChangeEvent<HTMLInputElement>) => {
     onChange(id, event.target.value);
-  }, [onChange, id]);
+  };
 
   const classes = makeStyles({
     root: {
+      width,
+      height,
+
       '& fieldset': {
         border: 0,
       },
@@ -39,8 +42,8 @@ const Textarea: Renderer = (props) => {
     },
 
     input: {
-      width,
-      height,
+      width: '100%',
+      height: '100%',
         ...restStyles,
       outline: active ? 'red solid 1px' : 'none',
       outlineOffset: '-1px',
@@ -51,8 +54,8 @@ const Textarea: Renderer = (props) => {
       },
 
       '& textarea': {
-        width,
-        height,
+        width: '100%',
+        height: '100%',
         textAlign,
       },
 
@@ -69,7 +72,7 @@ const Textarea: Renderer = (props) => {
     marginRight,
     marginBottom,
     marginLeft,
-    transition: "none",
+    transition: 'none',
   };
 
   const InputProps = {
@@ -85,13 +88,12 @@ const Textarea: Renderer = (props) => {
       key={id}
       multiline
       rows={4}
-      defaultValue={defaultValue}
       placeholder={placeholder}
       variant="outlined"
-      className={cn("ls-item", isDisabled && styles.disabled, classes.root)}
+      className={cn(sharedClasses.lsItem, isDisabled && styles.disabled, classes.root)}
       style={inlineStyles}
       InputProps={InputProps}
-      value={defaultValue}
+      value={textareaValue}
       onChange={handleTextareaChange}
     />
   );
