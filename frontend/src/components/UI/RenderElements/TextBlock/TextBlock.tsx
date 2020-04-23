@@ -1,6 +1,8 @@
 import React from 'react';
 import cn from 'classnames';
 
+import { sharedClasses } from '$styles/sharedClasses';
+
 import { Renderer } from '../types';
 const styles = require('../styles.scss');
 
@@ -13,7 +15,7 @@ const TextBlock: Renderer = (props) => {
       data-ls-id={id}
       data-id={sortableId}
       key={id}
-      className={cn('ls-item', styles.addedElem, active && 'activated')}
+      className={cn(sharedClasses.lsItem, styles.addedElem, active && sharedClasses.activated)}
       style={{ ...style, wordBreak: 'break-word' }}
       tabIndex={isDisabled ? 0 : -1}
     >

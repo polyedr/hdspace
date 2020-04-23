@@ -128,7 +128,7 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
     root: ['indents', 'size', 'typography', 'border', 'background', 'textContent'],
   },
   text_block: {
-    root: ['indents', 'size', 'border', 'background', 'textContent'],
+    root: ['indents', 'size', 'typography', 'border', 'background', 'textContent'],
   },
   list: {
     root: ['indents', 'size', 'display', 'border', 'background', 'listItems', 'bullets', 'makeLink', 'isOrdered'],
