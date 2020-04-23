@@ -342,6 +342,10 @@ const hyperlinkDefaults = {
       'padding-bottom': '0',
       'padding-left': '0',
     },
+    typography: {
+      ...extractDefaults('hyperlink', 'root', 'typography'),
+      color: '#1890ff',
+    },
     textContent: {
       ...extractDefaults('hyperlink', 'root', 'textContent'),
       textContent: 'hyperlink',
