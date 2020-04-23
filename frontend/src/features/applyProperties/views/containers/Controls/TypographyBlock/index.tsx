@@ -52,10 +52,7 @@ const TypographyBlock: React.FC<Props> = memo(({
   const handleChangeFontSize = useCallback(({ target: { value } }) => {
     const newSize = getPermissibleValue(value, MIN_FONT_SIZE, MAX_FONT_SIZE);
 
-    updateStyles({
-      'font-size': `${newSize}px`,
-      'line-height': `${Math.round(newSize * 1.4)}px`,
-    })
+    updateStyles({ 'font-size': `${newSize}px` })
   }, [updateStyles]);
 
   const onTypographyAlign = useCallback((value) => {
