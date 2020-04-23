@@ -29,6 +29,7 @@ export const Action: Action = (props) => {
 
   const classes = makeStyles({
     root: {
+      cursor: isDisabled ? 'default' : 'pointer',
       ...restStyles,
       backgroundColor,
       color,

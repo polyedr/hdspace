@@ -23,11 +23,11 @@ function mapState(state: AppReduxState): StateProps {
 
   const inputsIDs = Object.values(elements)
     .filter((element) =>
-      element.struct_type === ("textinput" ||
+      element.struct_type === "textinput" ||
       element.struct_type === "textarea" ||
       element.struct_type === "select" ||
       element.struct_type === 'radiobutton' ||
-      element.struct_type === 'checkbox'))
+      element.struct_type === 'checkbox')
     .map(element => element.id);
 
   return {
