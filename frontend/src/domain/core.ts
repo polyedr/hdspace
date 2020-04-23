@@ -151,7 +151,7 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
   },
   dropdown: {
     root: ['indents', 'size', 'typography', 'border', 'background', 'showRipple', 'dropdownItems'],
-    menu: ['indents', 'size', 'typography', 'border', 'background'],
+    menu: ['indents', 'size', 'border', 'background'],
     menuItem: ['indents', 'size', 'typography', 'border', 'background'],
   },
   undefined: {

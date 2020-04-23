@@ -55,26 +55,22 @@ const Component: React.FC<Props> = ({
         </Button>
       </div>
       {dropdownItems.map((item, index) => (
-        <div key={`${item}${index}`}>
-          <div className={styles.itemsSummary}>
-            {item}
-            <Button
-              className="propsPanelImgBtn"
-              styleType="none"
-              onClick={() => handleDeleteButtonClick(index)}
-            >
-              <Icon icon="delete" />
-            </Button>
-          </div>
+        <div key={index}>
           <div className={styles.itemsBlock}>
-            <p className="propsElementsBlockTitle">{item}</p>
             <div className="propsElementsInnerBlock">
               <textarea
                 className={styles.itemsField}
                 name="item text"
-                value={name}
+                value={item}
                 onChange={event => handleTextFieldChange(index, event)}
               />
+              <Button
+                className="propsPanelImgBtn"
+                styleType="none"
+                onClick={() => handleDeleteButtonClick(index)}
+              >
+                <Icon icon="delete" />
+              </Button>
             </div>
           </div>
         </div>

@@ -27,6 +27,7 @@ const DropdownComponent: Renderer = (props) => {
 
   const classes = makeStyles({
     root: {
+      cursor: isDisabled ? 'default' : 'pointer',
       ...restStyles,
       backgroundColor,
       color,

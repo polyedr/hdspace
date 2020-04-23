@@ -15,18 +15,12 @@
   flex-grow: 1;
 }
 
-.itemsSummary {
-  flex-grow: 1;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
 .itemsField {
   flex: 1 1 100px;
   width: 100%;
   padding: $propsPanelInputsPadding;
   padding-right: 2px;
+  margin-bottom: 10px;
 
   @include props_panel_text;
   font-weight: 400;
