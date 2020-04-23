@@ -12,6 +12,8 @@ import {
   InputType,
   Option,
   ILSItem,
+  HeadingType,
+  ListItem,
 } from '$redux/project/types';
 import { IApiResponseError, ITokenPair } from '$redux/user/reducer';
 // import { ITokenPair, IApiResponseError } from '$redux/user/reducer';
@@ -139,12 +141,44 @@ export const DEFAULT_NAME: { name: string } = {
   name: '',
 };
 
+export const DEFAULT_LABEL_FOR: { for: string } = {
+  for: 'no for attribute',
+};
+
+export const DEFAULT_LIST_ITEMS: { listItems: ListItem[] } = {
+  listItems: [
+    { textContent: 'First item', link: '' },
+    { textContent: 'Second item', link: '' },
+    { textContent: 'Third item', link: '' },
+  ],
+};
+
+export const DEFAULT_BULLETS: CssLikeStyles = {
+  'list-style-type': 'disc',
+};
+
+export const DEFAULT_LIST_LINKS: { makeLink: boolean } = {
+  makeLink: false,
+};
+
+export const DEFAULT_LIST_TYPE: { isOrdered: boolean } = {
+  isOrdered: false,
+};
+
 export const DEFAULT_SELECT_OPTIONS: { options: Option[] } = {
   options: [
     { name: 'First option', value: 'first option' },
     { name: 'Second option', value: 'second option' },
     { name: 'Third option', value: 'third option' },
   ],
+};
+
+export const DEFAULT_DROPDOWN_ITEMS: { dropdownItems: string[] } = {
+  dropdownItems: ['First item', 'Second item', 'Third item'],
+};
+
+export const DEFAULT_HEADING_TYPE: { headingType: HeadingType } = {
+  headingType: 'h3',
 };
 
 export const DEFAULT_RIPPLE: { showRipple: boolean } = {
@@ -172,7 +206,7 @@ export const DEFAULT_TYPOGRAPHY: IScreenTypography = {
   'font-size': '14px',
   'font-style': 'none',
   'font-weight': 400,
-  'line-height': '16px',
+  'line-height': '1.5',
   'text-align': 'left',
 };
 
@@ -220,7 +254,7 @@ export const DEFAULT_SCREEN_MODE = {
   isMobileMode: false,
 };
 
-export const MODAL_ADD_ELEMENTS_TABS = ['Screen', 'Widget', 'Form', 'Image', 'Other'];
+export const MODAL_ADD_ELEMENTS_TABS = ['Screen', 'Widget', 'Typography', 'Form', 'Image', 'Other'];
 
 export const DEFAULT_TEMPLATES: IDefaultTemplate = {
   signup: {

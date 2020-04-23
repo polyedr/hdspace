@@ -1,0 +1,50 @@
+.listItemsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 15px;
+}
+
+.listItemsTitle {
+  color: #1cc09f;
+  font-size: 12px;
+  line-height: 14px;
+}
+
+.listItemsBlock {
+  flex-grow: 1;
+}
+
+.listItemsSummary {
+  flex-grow: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.listItemHeading {
+  max-width: 150px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.listItemsField {
+  flex: 1 1 100px;
+  width: 100%;
+  padding: $propsPanelInputsPadding;
+  padding-right: 2px;
+
+  @include props_panel_text;
+  font-weight: 400;
+
+  border: 1px solid $mainBorderColor;
+  border-radius: 3px;
+  outline: none;
+
+  &:hover,
+  &:focus,
+  &:active {
+    border-color: $secondBorderColor;
+  }
+}

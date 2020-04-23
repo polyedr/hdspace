@@ -12,25 +12,16 @@ import { Checkbox } from './Checkbox/Checkbox';
 import { Radiobutton } from './Radiobutton/Radiobutton';
 import { Input } from './Input/Input';
 import { Select } from './Select/Select';
+import { Heading } from './Heading/Heading';
+import { Paragraph } from './Paragraph/Paragraph';
+import { Link } from './Link/Link';
+import { TextBlock } from './TextBlock/TextBlock';
+import { List } from './List/List';
+import { Textarea } from './Textarea/Textarea';
+import { Label } from './Label/Label';
+import { Dropdown } from './Dropdown/Dropdown';
 import { Renderer } from './types';
 const styles = require('./styles.scss');
-
-const TextRenderer: Renderer = (props) => {
-  const { id, style, params, active, sortableId, isDisabled } = props;
-  return (
-    <p
-      id={id}
-      data-ls-id={id}
-      data-id={sortableId}
-      key={id}
-      className={cn('ls-item', styles.addedElem, active && 'activated')}
-      style={{ ...style, wordBreak: 'break-word', overflowY: 'auto' }}
-      tabIndex={isDisabled ? 0 : -1}
-    >
-      {params.textContent}
-    </p>
-  );
-};
 
 const ImgRenderer: Renderer = (props) => {
   const { id, params, active, sortableId, style, isDisabled } = props;
@@ -127,18 +118,24 @@ export const RENDERERS: Record<Exclude<Entity, 'root' | 'container'>, React.Func
   textinput: Input,
   radiobutton: Radiobutton,
   checkbox: Checkbox,
-  hyperlink: withAction(Action, 'link'),
-  ocrtext: TextRenderer,
+  textarea: Textarea,
+  heading: Heading,
+  paragraph: Paragraph,
+  text_block: TextBlock,
+  list: List,
+  label: Label,
+  hyperlink: withAction(Link, 'link'),
   image: ImgRenderer,
   select: Select,
   map: MapWidgetRenderer,
   calendar: CalendarWidgetRenderer,
   clock: ClockWidgetRenderer,
+  dropdown: Dropdown,
   undefined: UndefinedRenderer,
 };
 
 export const EXPORT_RENDERERS: Record<Exclude<Entity, 'root' | 'container'>, React.FunctionComponent<any>> = {
   ...RENDERERS,
   button: withAction(Action, 'button', true),
-  hyperlink: withAction(Action, 'link', true),
+  hyperlink: withAction(Link, 'link', true),
 };

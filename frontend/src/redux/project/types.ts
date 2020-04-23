@@ -268,7 +268,14 @@ export interface IMapProps {
 
 export type InputType = 'text' | 'email' | 'number' | 'phone' | 'password';
 
+export type HeadingType = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
+
 export type Option = { name: string; value: any };
+
+export type ListItem = {
+  textContent: string,
+  link: string,
+};
 
 export interface IScreenProps {
   buoyancy?: number,
@@ -295,6 +302,13 @@ export interface IScreenProps {
   name?: string,
   showRipple?: boolean,
   options?: Option[],
+  headingType?: HeadingType,
+  listItems?: ListItem[],
+  showBullets?: boolean,
+  makeLink?: boolean,
+  isOrdered?: boolean,
+  labelFor?: string,
+  dropdownItems?: string[],
 }
 
 export interface ISortableItem {
@@ -330,6 +344,7 @@ export type ServerStructType =
   | 'menuItem'
   | 'button'
   | 'textinput'
+  | 'textarea'
   | 'hyperlink'
   | 'select'
   | 'map'
@@ -337,7 +352,13 @@ export type ServerStructType =
   | 'clock'
   | 'checkbox'
   | 'radiobutton'
-  | 'ocrtext';
+  | 'heading'
+  | 'paragraph'
+  | 'text_block'
+  | 'list'
+  | 'listItem'
+  | 'label'
+  | 'dropdown';
 
 export interface IStylesElement {
   marginTop?: string,

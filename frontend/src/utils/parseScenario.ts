@@ -53,21 +53,25 @@ export const convertScenarioElements = (
 const getCategoryTab = (structType: Exclude<Entity, 'root' | 'container'>, libraryElements: ElementsToAdd, obj: IListCategoryEl) => {
   switch (structType) {
     case 'textinput':
-      return { Form: [...obj.Form || [], libraryElements[structType]] };
+    case 'textarea':        
     case 'checkbox':
-      return { Form: [...obj.Form || [], libraryElements[structType]] };
     case 'radiobutton':
+    case 'select':
+    case 'button':
+    case 'label':
       return { Form: [...obj.Form || [], libraryElements[structType]] };
+    case 'heading':
+    case 'paragraph':
+    case 'hyperlink':
+    case 'text_block':
+    case 'list':    
+      return { Typography: [...obj.Typography || [], libraryElements[structType]] };
     case 'map':
     case 'calendar':
     case 'clock':
       return { Widget: [...obj.Widget || [], libraryElements[structType]] };
-    case 'select':
-      return { Form: [...obj.Form || [], libraryElements[structType]] };
     case 'image':
       return { Image: [...obj.Image || [], libraryElements[structType]] };
-    case 'button':
-      return { Form: [...obj.Form || [], libraryElements[structType]] };
 
     default: return { Other: [...obj.Other || [], libraryElements[structType]] };
   }
@@ -95,6 +99,13 @@ export const getCustomTemplateElements = (libraryElements: ElementsToAdd) => {
 
 export const getGroupElements = (group: string, listElement: IListCategoryEl): GroupElement[] => {
   switch (group) {
+    case 'Typography':
+      return listElement.Typography.map((x, idx) => ({
+        key: `key-${x.struct_type}-${x.func_type}-${idx}`,
+        value: { structType: x.struct_type, funcType: x.func_type },
+        label: `${x.struct_type}`,
+      }));
+
     case 'Form':
       return listElement.Form.map((x) => ({
         key: `key-${x.struct_type}-${x.func_type}`,
@@ -106,7 +117,7 @@ export const getGroupElements = (group: string, listElement: IListCategoryEl): G
       return listElement.Other.map((x, idx) => ({
         key: `key-${x.struct_type}-${x.func_type}-${idx}`,
         value: { structType: x.struct_type, funcType: x.func_type },
-        label: `${x.struct_type}/${x.func_type}`,
+        label: `${x.struct_type}`,
       }));
 
     case 'Widget':
@@ -124,7 +135,7 @@ export const getGroupElements = (group: string, listElement: IListCategoryEl): G
       return listElement.Image.map((x) => ({
         key: `key-${x.struct_type}-${x.func_type}`,
         value: { structType: x.struct_type, funcType: x.func_type },
-        label: `image/${x.func_type}`,
+        label: `${x.struct_type}`,
       }));    
 
     default:

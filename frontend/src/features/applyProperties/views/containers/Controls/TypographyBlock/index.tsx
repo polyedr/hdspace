@@ -13,7 +13,7 @@ import { ColorSettings } from '$features/applyProperties/views/components/ColorS
 const styles = require('./styles.scss');
 
 const MIN_FONT_SIZE = 1;
-const MAX_FONT_SIZE = 72;
+const MAX_FONT_SIZE = 84;
 
 type OwnProps = {
   activeItemStyles: Required<CssLikeStyles>;

@@ -28,6 +28,13 @@ import { Ripple } from '../Controls/Ripple/Ripple';
 import { Type } from '../Controls/Type/Type';
 import { SelectOptions } from '../Controls/SelectOptions/SelectOptions';
 import { SelectValue } from '../Controls/SelectValue/SelectValue';
+import { HeadingType } from '../Controls/HeadingType/HeadingType';
+import { ListItems } from '../Controls/ListItems/ListItems';
+import { Bullets } from '../Controls/Bullets/Bullets';
+import { ListLinks } from '../Controls/ListLinks/ListLinks';
+import { Ordered } from '../Controls/Ordered/Ordered';
+import { LabelFor } from '../Controls/LabelFor/LabelFor';
+import { DropdownItems } from '../Controls/DropdownItems/DropdownItems';
 const styles = require('./PropertiesPanel.scss');
 
 type StateProps = {
@@ -72,6 +79,13 @@ const CONTROLS: Record<Control, React.ComponentType<any>> = {
   showRipple: Ripple,
   selectOptions: SelectOptions,
   selectValue: SelectValue,
+  headingType: HeadingType,
+  listItems: ListItems,
+  bullets: Bullets,
+  makeLink: ListLinks,
+  isOrdered: Ordered,
+  labelFor: LabelFor,
+  dropdownItems: DropdownItems,
 };
 
 export type PropertiesPanelProps = StateProps & typeof mapDispatch;
