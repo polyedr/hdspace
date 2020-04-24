@@ -16,6 +16,10 @@ const List: Renderer = (props) => {
   const itemStyles = childrenElements.find(child => child.struct_type === 'listItem')?.styles || {};
 
   const {
+    marginTop,
+    marginRight,
+    marginBottom,
+    marginLeft,
     paddingTop,
     paddingRight,
     paddingBottom,
@@ -45,7 +49,19 @@ const List: Renderer = (props) => {
       {listItems?.map(({ textContent, isLink, link }) => (
         <>
           {isLink ? (
-            <li style={{ borderWidth, borderColor, borderStyle, backgroundColor, ...restStyles }}>
+            <li
+              style={{
+                marginTop,
+                marginRight,
+                marginBottom,
+                marginLeft,
+                borderWidth,
+                borderColor,
+                borderStyle,
+                backgroundColor,
+                ...restStyles,
+              }}
+            >
               <a
                 href={link}
                 style={{
