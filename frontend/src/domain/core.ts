@@ -18,6 +18,12 @@ import {
   DEFAULT_INPUT_TYPE,
   DEFAULT_SELECT_OPTIONS,
   DEFAULT_SELECT_VALUE,
+  DEFAULT_HEADING_TYPE,
+  DEFAULT_LIST_ITEMS,
+  DEFAULT_BULLETS,
+  DEFAULT_LIST_TYPE,
+  DEFAULT_LABEL_FOR,
+  DEFAULT_DROPDOWN_ITEMS,
 } from '$constants/defaultParams';
 import { ServerStructType } from '$redux/project/types';
 
@@ -28,15 +34,21 @@ export const ENTITIES = [
   'container',
   'button',
   'textinput',
+  'textarea',
   'checkbox',
   'radiobutton',
+  'label',
   'hyperlink',
-  'ocrtext',
+  'heading',
+  'paragraph',
+  'text_block',
+  'list',
   'image',
   'select',
   'map',
   'calendar',
   'clock',
+  'dropdown',
   'undefined',
 ] as const;
 
@@ -52,15 +64,20 @@ const CONTROLS_AFFECT_ON_PARAMS = [
   'type',
   'selectOptions',
   'selectValue',
+  'headingType',
+  'listItems',
+  'isOrdered',
+  'labelFor',
+  'dropdownItems',
 ] as const;
 
-const CONTROLS_AFFECT_ON_STYLES = ['display', 'indents', 'size', 'typography', 'border', 'background'] as const;
+const CONTROLS_AFFECT_ON_STYLES = ['display', 'indents', 'size', 'typography', 'border', 'background', 'bullets'] as const;
 
 const controlAffectsOnStyles = (controlName: Control) => (
   CONTROLS_AFFECT_ON_STYLES.find(x => x === controlName) !== undefined
 );
 
-export type Entity = Exclude<ServerStructType, 'menu' | 'menuItem'>;
+export type Entity = Exclude<ServerStructType, 'menu' | 'menuItem' | 'listItem'>;
 export type ElementEntity = Exclude<Entity, 'root' | 'container'>;
 export type ChildEntity<EntityName extends Entity> = 'root' | LibraryElements[EntityName]['children'][number]['struct_type'];
 export type EntityControls<EntityName extends Entity> = { [P in ChildEntity<EntityName>]: Control[] };
@@ -87,17 +104,33 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
   textinput: {
     root: ['indents', 'size', 'typography', 'border', 'background', 'type', 'textContent', 'placeholder'],
   },
+  textarea: {
+    root: ['indents', 'size', 'typography', 'border', 'background', 'textContent', 'placeholder'],
+  },
   checkbox: {
     root: ['indents', 'size', 'background', 'value', 'name', 'showRipple'],
   },
   radiobutton: {
     root: ['indents', 'size', 'background', 'value', 'name', 'showRipple'],
   },
+  label: {
+    root: ['indents', 'display', 'size', 'typography', 'border', 'background', 'textContent', 'labelFor'],
+  },
   hyperlink: {
     root: ['indents', 'size', 'display', 'typography', 'border', 'background', 'textContent', 'action'],
   },
-  ocrtext: {
+  heading: {
+    root: ['indents', 'size', 'typography', 'border', 'background', 'textContent', 'headingType'],
+  },
+  paragraph: {
     root: ['indents', 'size', 'typography', 'border', 'background', 'textContent'],
+  },
+  text_block: {
+    root: ['indents', 'size', 'typography', 'border', 'background', 'textContent'],
+  },
+  list: {
+    root: ['indents', 'size', 'display', 'border', 'background', 'listItems', 'bullets', 'isOrdered'],
+    listItem: ['indents', 'size', 'typography', 'border', 'background'],
   },
   image: {
     root: ['indents', 'size', 'border', 'background', 'image'],
@@ -115,6 +148,11 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
   },
   clock: {
     root: ['indents', 'size', 'typography', 'border', 'background'],
+  },
+  dropdown: {
+    root: ['indents', 'size', 'typography', 'border', 'background', 'showRipple', 'dropdownItems'],
+    menu: ['indents', 'size', 'border', 'background'],
+    menuItem: ['indents', 'size', 'typography', 'border', 'background'],
   },
   undefined: {
     root: ['size', 'background'],
@@ -139,6 +177,12 @@ const CONTROLS_DEFAULTS: Record<Control, any> = {
   type: DEFAULT_INPUT_TYPE,
   selectOptions: DEFAULT_SELECT_OPTIONS,
   selectValue: DEFAULT_SELECT_VALUE,
+  headingType: DEFAULT_HEADING_TYPE,
+  listItems: DEFAULT_LIST_ITEMS,
+  bullets: DEFAULT_BULLETS,
+  isOrdered: DEFAULT_LIST_TYPE,
+  labelFor: DEFAULT_LABEL_FOR,
+  dropdownItems: DEFAULT_DROPDOWN_ITEMS,
 };
 
 type EntityToDefaults = {
@@ -295,6 +339,10 @@ const hyperlinkDefaults = {
       'padding-bottom': '0',
       'padding-left': '0',
     },
+    typography: {
+      ...extractDefaults('hyperlink', 'root', 'typography'),
+      color: '#1890ff',
+    },
     textContent: {
       ...extractDefaults('hyperlink', 'root', 'textContent'),
       textContent: 'hyperlink',
@@ -302,8 +350,210 @@ const hyperlinkDefaults = {
   },
 };
 
-const ocrtextDefaults = {
-  root: extractDefaults('ocrtext', 'root'),
+const textareaDefaults = {
+  root: {
+    ...extractDefaults('textarea', 'root'),
+    indents: {
+      ...extractDefaults('textarea', 'root', 'indents'),
+      'padding-top': '18.5px',
+      'padding-right': '14px',
+      'padding-bottom': '18.5px',
+      'padding-left': '14px',
+    },
+    border: {
+      ...extractDefaults('textarea', 'root', 'border'),
+      'border-color': '#d9d9d9',
+      'border-width': '1px',
+      'border-style': 'solid',
+      'border-radius': '4px',
+    },
+    textContent: {
+      ...extractDefaults('textarea', 'root', 'textContent'),
+      textContent: '',
+    },
+  },
+};
+
+const labelDefaults = {
+  root: {
+    ...extractDefaults('label', 'root'),
+    display: {
+      ...extractDefaults('label', 'root', 'display'),
+      display: 'inline',
+    },
+    indents: {
+      ...extractDefaults('label', 'root', 'indents'),
+      'padding-top': '0',
+      'padding-right': '0',
+      'padding-bottom': '0',
+      'padding-left': '0',
+    },
+    textContent: {
+      ...extractDefaults('label', 'root', 'textContent'),
+      textContent: 'This is label',
+    },
+  },
+};
+
+const headingDefaults = {
+  root: {
+    ...extractDefaults('heading', 'root'),
+    indents: {
+      ...extractDefaults('heading', 'root', 'indents'),
+      'padding-top': '0',
+      'padding-right': '0',
+      'padding-bottom': '0',
+      'padding-left': '0',
+    },
+    typography: {
+      ...extractDefaults('heading', 'root', 'typography'),
+      'font-size': '43px',
+      'line-height': '1.167',
+    },
+    textContent: {
+      ...extractDefaults('heading', 'root', 'textContent'),
+      textContent: 'Heading',
+    },
+  },
+};
+
+const paragraphDefaults = {
+  root: {
+    ...extractDefaults('paragraph', 'root'),
+    indents: {
+      ...extractDefaults('paragraph', 'root', 'indents'),
+      'padding-top': '0',
+      'padding-right': '0',
+      'padding-bottom': '0',
+      'padding-left': '0',
+    },
+    textContent: {
+      ...extractDefaults('paragraph', 'root', 'textContent'),
+      textContent: 'This is paragraph',
+    },
+  },
+};
+
+const textBlockDefaults = {
+  root: {
+    ...extractDefaults('text_block', 'root'),
+    indents: {
+      ...extractDefaults('text_block', 'root', 'indents'),
+      'padding-top': '0',
+      'padding-right': '0',
+      'padding-bottom': '0',
+      'padding-left': '0',
+    },
+    textContent: {
+      ...extractDefaults('text_block', 'root', 'textContent'),
+      textContent: 'This is text block',
+    },
+  },
+};
+
+const listDefaults = {
+  root: {
+    ...extractDefaults('list', 'root'),
+    indents: {
+      ...extractDefaults('list', 'root', 'indents'),
+      'padding-top': '0',
+      'padding-right': '0',
+      'padding-bottom': '0',
+      'padding-left': '40px',
+    },
+  },
+  listItem: {
+    ...extractDefaults('list', 'listItem'),
+    indents: {
+      ...extractDefaults('list', 'listItem', 'indents'),
+      'padding-top': '0',
+      'padding-right': '0',
+      'padding-bottom': '0',
+      'padding-left': '0',
+    },
+  },
+};
+
+const dropdownDefaults = {
+  root: {
+    ...extractDefaults('dropdown', 'root'),
+    indents: {
+      ...extractDefaults('dropdown', 'root', 'indents'),
+      'padding-top': '6px',
+      'padding-right': '16px',
+      'padding-bottom': '6px',
+      'padding-left': '16px',
+    },
+    display: {
+      ...extractDefaults('dropdown', 'root', 'display'),
+      display: 'inline-block',
+    },
+    border: {
+      ...extractDefaults('dropdown', 'root', 'border'),
+      'border-color': '#1890ff',
+      'border-radius': '4px',
+    },
+    background: {
+      ...extractDefaults('dropdown', 'root', 'background'),
+      'background-color': '#1890ff',
+    },
+    typography: {
+      ...extractDefaults('dropdown', 'root', 'typography'),
+      color: '#ffffff',
+      'line-height': '1.75',
+    },
+    textContent: {
+      ...extractDefaults('dropdown', 'root', 'textContent'),
+      textContent: 'dropdown',
+    },
+  },
+  menu: {
+    ...extractDefaults('dropdown', 'menu'),
+    background: {
+      ...extractDefaults('dropdown', 'menu', 'background'),
+      'background-color': '#ffffff',
+    },
+    indents: {
+      ...extractDefaults('dropdown', 'menu', 'indents'),
+      'padding-top': '0px',
+      'padding-right': '0px',
+      'padding-bottom': '0px',
+      'padding-left': '0px',
+      'margin-top': '0px',
+      'margin-right': '0px',
+      'margin-bottom': '0px',
+      'margin-left': '0px',
+    },
+    border: {
+      ...extractDefaults('dropdown', 'menu', 'border'),
+      'border-color': '#d9d9d9',
+      'border-width': '1px',
+      'border-style': 'solid',
+      'border-radius': '4px',
+    },
+  },
+  menuItem: {
+    ...extractDefaults('dropdown', 'menuItem'),
+    background: {
+      ...extractDefaults('dropdown', 'menuItem', 'background'),
+      'background-color': '#ffffff',
+    },
+    indents: {
+      ...extractDefaults('dropdown', 'menuItem', 'indents'),
+      'padding-top': '6px',
+      'padding-right': '16px',
+      'padding-bottom': '6px',
+      'padding-left': '16px',
+    },
+    border: {
+      ...extractDefaults('dropdown', 'menuItem', 'border'),
+      'border-width': '0px',
+    },
+    typography: {
+      ...extractDefaults('dropdown', 'menuItem', 'typography'),
+      'line-height': '1.5',
+    },
+  },
 };
 
 const imageDefaults = {
@@ -432,12 +682,18 @@ const ENTITY_TO_DEFAULTS: EntityToDefaults = {
   checkbox: checkboxDefaults,
   radiobutton: radiobuttonDefaults,
   hyperlink: hyperlinkDefaults,
-  ocrtext: ocrtextDefaults,
+  textarea: textareaDefaults,
+  label: labelDefaults,
+  heading: headingDefaults,
+  paragraph: paragraphDefaults,
+  text_block: textBlockDefaults,
+  list: listDefaults,
   image: imageDefaults,
   select: selectDefaults,
   map: mapDefaults,
   calendar: calendarDefaults,
   clock: clockDefaults,
+  dropdown: dropdownDefaults,
   undefined: undefinedDefaults,
 };
 

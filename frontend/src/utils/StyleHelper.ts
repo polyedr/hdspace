@@ -53,6 +53,8 @@ export interface CssLikeStyles {
   'flex-direction'?: Flex['flexDirection'];
   'align-items'?: Flex['alignItems'];
   'justify-content'?: Flex['justifyContent'];
+
+  'list-style-type'?: 'none' | 'disc';
 }
 
 type TConvertIndents = (styles: CssLikeStyles) => {
@@ -149,6 +151,8 @@ const otherStyles = (styles: CssLikeStyles): React.CSSProperties => (
         return { ...acc, minWidth: styles[key] };
       case 'display':
         return { ...acc, display: styles[key] };
+      case 'list-style-type':
+        return { ...acc, listStyleType: styles[key] };
       default: return acc;
     }
   }, {})

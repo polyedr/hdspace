@@ -1,0 +1,37 @@
+.itemsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 15px;
+}
+
+.itemsTitle {
+  color: #1cc09f;
+  font-size: 12px;
+  line-height: 14px;
+}
+
+.itemsBlock {
+  flex-grow: 1;
+}
+
+.itemsField {
+  flex: 1 1 100px;
+  width: 100%;
+  padding: $propsPanelInputsPadding;
+  padding-right: 2px;
+  margin-bottom: 10px;
+
+  @include props_panel_text;
+  font-weight: 400;
+
+  border: 1px solid $mainBorderColor;
+  border-radius: 3px;
+  outline: none;
+
+  &:hover,
+  &:focus,
+  &:active {
+    border-color: $secondBorderColor;
+  }
+}

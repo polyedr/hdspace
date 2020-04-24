@@ -5,6 +5,7 @@
 
 .disabled {
   cursor: default;
+  transition: none;
 
   & > * {
     pointer-events: none;

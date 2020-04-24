@@ -52,7 +52,7 @@ const SelectComponent: Renderer = (props) => {
       },
 
       '&:hover': {
-        ...(!isDisabled && { borderColor: style.color }),
+        ...(!isDisabled && { borderColor: 'rgba(0, 0, 0, 0.87)' }),
       },
 
       '&::placeholder': {

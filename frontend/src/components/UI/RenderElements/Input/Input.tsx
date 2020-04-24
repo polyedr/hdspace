@@ -8,7 +8,7 @@ import { Renderer } from '../types';
 const styles = require('../styles.scss');
 
 const Input: Renderer = (props) => {
-  const { id, style, params, isDisabled, active, sortableId, inputValue, onChange } = props;
+  const { id, style, params, isDisabled, active, sortableId, value, onChange } = props;
   const { width, height, marginTop, marginRight, marginBottom, marginLeft, ...restStyles } = style;
   const { type, placeholder } = params;
 
@@ -42,7 +42,7 @@ const Input: Renderer = (props) => {
       outlineOffset: '-1px',
 
       '&:hover': {
-        borderColor: style.color,
+        borderColor: 'rgba(0, 0, 0, 0.87)',
       },
 
       '&::placeholder': {
@@ -66,7 +66,7 @@ const Input: Renderer = (props) => {
       className={cn(sharedClasses.lsItem, isDisabled && styles.disabled, classes.root)}
       style={inlineStyles}
       type={type}
-      value={inputValue}
+      value={value}
       onChange={handleInputChange}
       InputProps={InputProps}
       placeholder={placeholder}
