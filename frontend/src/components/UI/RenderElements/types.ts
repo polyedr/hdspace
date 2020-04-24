@@ -19,12 +19,12 @@ type CheckboxRendererProps = {
 };
 
 type InputRendererProps = {
-  inputValue: string,
+  value: string,
   onChange(itemID: string, savedValue: string): void,
 };
 
 type TextareaRendererProps = {
-  textareaValue: string,
+  value: string,
   onChange(itemID: string, savedValue: string): void,
 };
 

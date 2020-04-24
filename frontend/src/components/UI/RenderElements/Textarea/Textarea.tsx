@@ -8,7 +8,7 @@ import { Renderer } from '../types';
 const styles = require('../styles.scss');
 
 const Textarea: Renderer = (props) => {
-  const { id, style, params, isDisabled, active, sortableId, textareaValue, onChange } = props;
+  const { id, style, params, isDisabled, active, sortableId, value, onChange } = props;
 
   const {
     width,
@@ -98,7 +98,7 @@ const Textarea: Renderer = (props) => {
       className={cn(sharedClasses.lsItem, isDisabled && styles.disabled, classes.root)}
       style={inlineStyles}
       InputProps={InputProps}
-      value={textareaValue}
+      value={value}
       onChange={handleTextareaChange}
     />
   );
