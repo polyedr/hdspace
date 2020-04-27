@@ -100,20 +100,16 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
             s.save()
         return node
 
-    '''
-    This finction partly works and should be updated to use PATCH requests.
-
     def update(self, instance, validated_data):
-        children_data = validated_data.get('children')
-        print(children_data)
-        print(validated_data['children'])
-
-        children_ids = [cdata['id'] for cdata in children_data]
-        children = ScenarioElement.objects.filter(id__in=children_ids)
-        instance.children.set(children)
-        instance.save()
-        return instance
-    '''
+        # Remove nested objects to handle separately
+        children = validated_data.pop('children', [])
+        node = super().update(instance, validated_data)
+        for child_data in children:
+            child_data['scenario'] = child_data['scenario'].pk
+            s = ScenarioElementSerializer(data=child_data, context={'parent': node})
+            s.is_valid(raise_exception=True)
+            s.save()
+        return node
 
 
 class ScenarioElementMultipleSerializer(
@@ -147,6 +143,17 @@ class ScenarioElementMultipleSerializer(
             # parent is null only on the root node
             parent=self.context.get('parent'),
             **validated_data)
+        for child_data in children:
+            child_data['scenario'] = child_data['scenario'].pk
+            s = ScenarioElementSerializer(data=child_data, context={'parent': node})
+            s.is_valid(raise_exception=True)
+            s.save()
+        return node
+
+    def update(self, instance, validated_data):
+        # Remove nested objects to handle separately
+        children = validated_data.pop('children', [])
+        node = super().update(instance, validated_data)
         for child_data in children:
             child_data['scenario'] = child_data['scenario'].pk
             s = ScenarioElementSerializer(data=child_data, context={'parent': node})
