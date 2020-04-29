@@ -37,6 +37,7 @@ export type LibrarySelectElement = CommonLibraryElement<'select', SelectChild[]>
 export type LibraryTextareaElement = CommonLibraryElement<'textarea', DefaultChild[]>;
 export type LibraryHeadingElement = CommonLibraryElement<'heading', DefaultChild[]>;
 export type LibraryParagraphElement = CommonLibraryElement<'paragraph', DefaultChild[]>;
+export type LibraryOcrtextElement = CommonLibraryElement<'ocrtext', DefaultChild[]>;
 export type LibraryLabelElement = CommonLibraryElement<'label', DefaultChild[]>;
 export type LibraryTextBlockElement = CommonLibraryElement<'text_block', DefaultChild[]>;
 export type LibraryListElement = CommonLibraryElement<'list', LibraryListItemChild[]>;
@@ -60,6 +61,7 @@ export type LibraryElements = {
   textarea: LibraryTextareaElement,
   heading: LibraryHeadingElement,
   paragraph: LibraryParagraphElement,
+  ocrtext: LibraryOcrtextElement,
   text_block: LibraryTextBlockElement,
   list: LibraryListElement,
   map: LibraryMapElement,
@@ -212,6 +214,17 @@ export const LIBRARY_ELEMENTS: ElementsToAdd = {
     },
     styles: {},
     name: 'paragraph',
+    children: [],
+  },
+  ocrtext: {
+    buoyancy: 0,
+    func_type: 'ocrtext',
+    struct_type: 'ocrtext',
+    parameters: {
+      group: 'typography',
+    },
+    styles: {},
+    name: 'ocrtext',
     children: [],
   },
   text_block: {

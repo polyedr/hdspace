@@ -354,6 +354,7 @@ export type ServerStructType =
   | 'radiobutton'
   | 'heading'
   | 'paragraph'
+  | 'ocrtext'
   | 'text_block'
   | 'list'
   | 'listItem'

@@ -125,6 +125,9 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
   paragraph: {
     root: ['indents', 'size', 'typography', 'border', 'background', 'textContent'],
   },
+  ocrtext: {
+    root: ['indents', 'size', 'typography', 'border', 'background', 'textContent'],
+  },
   text_block: {
     root: ['indents', 'size', 'typography', 'border', 'background', 'textContent'],
   },
@@ -434,6 +437,23 @@ const paragraphDefaults = {
   },
 };
 
+const ocrtextDefaults = {
+  root: {
+    ...extractDefaults('ocrtext', 'root'),
+    indents: {
+      ...extractDefaults('ocrtext', 'root', 'indents'),
+      'padding-top': '0',
+      'padding-right': '0',
+      'padding-bottom': '0',
+      'padding-left': '0',
+    },
+    textContent: {
+      ...extractDefaults('ocrtext', 'root', 'textContent'),
+      textContent: 'This is paragraph',
+    },
+  },
+};
+
 const textBlockDefaults = {
   root: {
     ...extractDefaults('text_block', 'root'),
@@ -686,6 +706,7 @@ const ENTITY_TO_DEFAULTS: EntityToDefaults = {
   label: labelDefaults,
   heading: headingDefaults,
   paragraph: paragraphDefaults,
+  ocrtext: ocrtextDefaults,
   text_block: textBlockDefaults,
   list: listDefaults,
   image: imageDefaults,
