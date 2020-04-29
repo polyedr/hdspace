@@ -321,6 +321,10 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                     # print(pytesseract.image_to_string(roi_our))
 
                     text = pytesseract.image_to_string(roi_our, config=config_tesseract)
+                    word_attributes = pytesseract.image_to_data(roi_our, config=config_tesseract)
+
+                    # word_attributes = text.WordFontAttributes()
+                    print("word_attributes: ", word_attributes)
 
                     width_elem = x2 - x1
                     height_elem = y2 - y1
@@ -373,6 +377,7 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                                 "func_type": "end_simple_scenario",
                                 "parameters": {"textContent": letters_str, "roi": roi},
                                 "styles": {
+                                    "text-align": "center",
                                     "width": str(width_elem) + "px",
                                     "height": str(height_elem) + "px",
                                     "background-color": "rgba(" + bcolour_element_value + ")",
@@ -389,11 +394,13 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                                 "struct_type": "ocrtext",
                                 "func_type": func_type,
                                 "parameters": {"textContent": text, "roi": roi},
-                                "styles": {
-                                    "width": str(width_elem) + "px",
-                                    "height": str(height_elem) + "px",
-                                    "background-color": "rgba(" + bcolour_element_value + ")",
-                                },
+                                "styles": {},
+                                #
+                                # "styles": {
+                                #     "width": str(width_elem) + "px",
+                                #     "height": str(height_elem) + "px",
+                                #     "background-color": "rgba(" + bcolour_element_value + ")",
+                                # },
                             }
                         )
                     # Select
@@ -418,8 +425,9 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                                 "func_type": "checkbox",
                                 "parameters": {"textContent": letters_str, "roi": roi},
                                 "styles": {
-                                    "width": str(width_elem) + "px",
-                                    "height": str(height_elem) + "px",
+                                    "width": str((width_elem + height_elem) / 2) + "px",
+                                    "height": str((width_elem + height_elem) / 2) + "px",
+                                    "margin-right": str((width_elem + height_elem) / 4) + "px",
                                     "background-color": "rgba(" + bcolour_element_value + ")",
                                 },
                             }
@@ -432,8 +440,9 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                                 "func_type": "radiobutton",
                                 "parameters": {"textContent": letters_str, "roi": roi},
                                 "styles": {
-                                    "width": str(width_elem) + "px",
-                                    "height": str(height_elem) + "px",
+                                    "width": str((width_elem + height_elem) / 2) + "px",
+                                    "height": str((width_elem + height_elem) / 2) + "px",
+                                    "margin-right": str((width_elem + height_elem) / 4) + "px",
                                     "background-color": "rgba(" + bcolour_element_value + ")",
                                 },
                             }
@@ -452,7 +461,7 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                                 },
                             }
                         )
-            ''' 
+            '''
             test
             # Display the recognized_elements to the command line
             for recognized_element in recognized_elements:
@@ -616,6 +625,7 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                 "struct_type": "container",
                 "direction": "vertical",
                 "parameters": {},
+                "styles": {},
                 "parent_id": scenario.id,
             }
 
@@ -676,6 +686,7 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                 "struct_type": "container",
                 "direction": "horizontal",
                 "parameters": {},
+                "styles": {},
                 "parent_id": scenario.id,
             }
 
@@ -813,6 +824,8 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                             pass
 
         children = []  # [{'ids': ids, 'rois': rois}, {}, {}, {}, {}]
+        # Get all the elements fir the general scenario.
+        # Mark them as children.
         # recognized_elements_general = recognized_elements - inner_scenarios_elements
         for idx, element_data in enumerate(recognized_elements):
             if idx not in inner_scenarios_elements:
@@ -862,8 +875,193 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
 
         # Sort the data structure based on rois[0] (the vertical coordinate)
         children = sorted(children, key=lambda i: i["roi"][0])
+        print("children=", children, "len(children)=", len(children))
+
+        # Detect the margin-bottom start
+        #
+        # Extract all the first level groups and elements
+        # Calculate margin-bottom for these groups
+        # Assign the margin-bottom value
+        margin_bottom = 0  # initial value for the margin-bottom
+        for idx, child in enumerate(children):
+            try:
+                # Calculate the distance between vertical blocks
+                # print(children[(idx+1)]["roi"][0] - children[(idx)]["roi"][2])
+                # Sum all the distances between the vertical blocks
+                margin_bottom += (children[(idx + 1)]["roi"][0] - children[(idx)]["roi"][2])
+            except Exception:
+                pass
+
+        # Calculate the margin-bottom
+        if(margin_bottom > 0):
+            margin_bottom = int(margin_bottom / (len(children) - 1))
+        else:
+            margin_bottom = 15  # 15px is the default value for the margin-bottom
+
+        # print("margin_bottom =", margin_bottom)
+        for child in children:
+            # Assign margin-bottom for each child
+            child_id = int(child['ids'][:-1])
+
+            # Do the calculations over scenarios
+            if 's' in child['ids']:
+                scenario_child = ScreenScenario.objects.get(id=child_id)
+                scenario_child.styles["margin-bottom"] = str(margin_bottom) + "px"
+                # print("scenario_child.styles=", type(scenario_child.styles), scenario_child.styles)
+                scenario_child.save()
+
+            # Do the calculations over elements
+            if 'e' in child['ids']:
+                element_child = ScenarioElement.objects.get(id=child_id)
+                element_child.styles["margin-bottom"] = str(margin_bottom) + "px"
+                # print("element_child.styles=", type(element_child.styles), element_child.styles)
+                element_child.save()
+        # Detect the margin-bottom end
+
+        # Calculate the mean value for inputs, selects, buttons start
+        height = 0
+        width = 0
+        num_children_counter = 0
+        struct_type_accepted = ["textinput", "select"]  # The type of the elements to calculate
+        for child in children:
+            # Assign margin-bottom for each child
+            child_id = int(child['ids'][:-1])
+
+            # Calculate for the main scenario elements
+            if 'e' in child['ids']:
+                element_child = ScenarioElement.objects.get(id=child_id)
+                print(element_child.struct_type)
+
+                if(element_child.struct_type in struct_type_accepted):
+                    # print("height", element_child.styles["height"])
+                    # print("width", element_child.styles["width"])
+                    height += float(element_child.styles["height"][:-2])
+                    width += float(element_child.styles["width"][:-2])
+                    # Increase the number of children counter
+                    num_children_counter += 1
+
+                # print("element_child.styles=", type(element_child.styles), element_child.styles)
+                # element_child.save()
+
+            # Calculate for the vertical scenarios of the main scenario
+            if 's' in child['ids']:
+                scenario_child = ScreenScenario.objects.get(id=child_id)
+                print("sci", scenario_child.id)
+                # Extract all the 1lvl elements for the given scenario child
+                print("esci", scenario_child.elements, scenario_child.parameters["children"])
+                flvl_elements = ScenarioElement.objects.filter(
+                    scenario=scenario_child.id
+                )
+                print(flvl_elements)
+                # Detect that elements which are in the vertical scenarios of the main scenario
+                # for the inputs, selects, buttons
+                for flvl_element in flvl_elements:
+                    if (flvl_element.struct_type in struct_type_accepted):
+                        print("fest", flvl_element.struct_type)
+                        height += float(flvl_element.styles["height"][:-2])
+                        width += float(flvl_element.styles["width"][:-2])
+                        # Increase the number of children counter
+                        num_children_counter += 1
+
+        # Calculate the average height and width for the elements
+        if(num_children_counter > 0):
+            height = int(height / num_children_counter)
+            width = int(width / num_children_counter)
+
+            print("h:", height, width)
+
+        # Assign average height and width for the elements from the main scenario
+        # Assign average height and width for the elements from the vertical scenarios of the main scenario
+        for child in children:
+            # Assign height, width for each element with acceptable structural type from the main scenario
+            child_id = int(child['ids'][:-1])
+            # Calculate for the main scenario elements
+            if 'e' in child['ids']:
+                element_child = ScenarioElement.objects.get(id=child_id)
+                print(element_child.struct_type)
+
+                if(element_child.struct_type in struct_type_accepted):
+                    element_child.styles["height"] = str(height) + "px"
+                    element_child.styles["width"] = str(width) + "px"
+
+            # Assign height, width for each element for the vertical scenarios of the main scenario
+            if 's' in child['ids']:
+                scenario_child = ScreenScenario.objects.get(id=child_id)
+                print("sci", scenario_child.id)
+                # Extract all the 1lvl elements for the given scenario child
+                print("esci", scenario_child.elements, scenario_child.parameters["children"])
+                flvl_elements = ScenarioElement.objects.filter(
+                    scenario=scenario_child.id
+                )
+                print(flvl_elements)
+                # Detect that elements which are in the vertical scenarios of the main scenario
+                # for the inputs, selects, buttons
+                for flvl_element in flvl_elements:
+                    if (flvl_element.struct_type in struct_type_accepted):
+                        print("fest", flvl_element.struct_type)
+                        flvl_element.styles["height"] = str(height) + "px"
+                        flvl_element.styles["width"] = str(width) + "px"
+
+        # Calculate height, width for each element for the horizontal scenarios of the main scenario
+        # extract from elements
+        # Todo: extract from vertical groups in
+        height_h = 0
+        width_h = 0
+        num_children_counter_h = 0
+        for child in children:
+            # Assign margin-bottom for each child
+            child_id = int(child['ids'][:-1])
+            # Calculate for the horizontal scenarios of the main scenario
+            if 's' in child['ids']:
+                scenario_child = ScreenScenario.objects.get(id=child_id)
+                if(scenario_child.direction == "horizontal"):
+                    # Extract elements directly
+                    # Todo: Extract elements from the vertical groups included
+                    flvl_elements = ScenarioElement.objects.filter(
+                        scenario=scenario_child.id
+                    )
+                    for flvl_element in flvl_elements:
+                        if (flvl_element.struct_type in struct_type_accepted):
+                            print("fest", flvl_element.struct_type)
+                            height_h += float(flvl_element.styles["height"][:-2])
+                            width_h += float(flvl_element.styles["width"][:-2])
+                            # Increase the number of children counter
+                            num_children_counter_h += 1
+
+        # Calculate the average height and width for the elements
+        if(num_children_counter_h > 0):
+            height_h = int(height / num_children_counter)
+            width_h = int(width / num_children_counter)
+            print("h:", height_h, width_h)
+
+        for child in children:
+            # Assign margin-bottom for each child
+            child_id = int(child['ids'][:-1])
+            # Calculate for the horizontal scenarios of the main scenario
+            if 's' in child['ids']:
+                scenario_child = ScreenScenario.objects.get(id=child_id)
+                if(scenario_child.direction == "horizontal"):
+                    # Extract elements directly
+                    # Todo: Extract elements from the vertical groups included
+                    flvl_elements = ScenarioElement.objects.filter(
+                        scenario=scenario_child.id
+                    )
+                    for flvl_element in flvl_elements:
+                        if (flvl_element.struct_type in struct_type_accepted):
+                            flvl_element.styles["height"] = str(height_h) + "px"
+                            flvl_element.styles["width"] = str(width_h) + "px"
+
+        # Calculate the mean value for inputs, selects, buttons end
         scenario.parameters["children"] = [sub['ids'] for sub in children]
         scenario.styles["background-color"] = "rgba(" + bcolour_scenario_value + ")"
         scenario.save()
 
+        # Extract all the inputs, selects from the main scenario
+        # Assign the mean values for these inputs and selects
+        # Do the calculation for the main scenario button
+        #
+        # Extract all the horizontal groups (2 level)
+        # Extract all the inputs, selects from these groups
+        # Assign the mean values for these inputs and selects
+        #
         return scenario
