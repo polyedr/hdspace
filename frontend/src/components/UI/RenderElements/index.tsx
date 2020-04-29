@@ -121,6 +121,7 @@ export const RENDERERS: Record<Exclude<Entity, 'root' | 'container'>, React.Func
   textarea: Textarea,
   heading: Heading,
   paragraph: Paragraph,
+  ocrtext: Paragraph,
   text_block: TextBlock,
   list: List,
   label: Label,
