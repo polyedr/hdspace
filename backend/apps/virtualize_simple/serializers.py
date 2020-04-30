@@ -329,6 +329,19 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                     width_elem = x2 - x1
                     height_elem = y2 - y1
 
+                    # Detect the height and the width of the image
+                    img_width, img_height, channels = img.shape
+
+                    # Detect the alignment of the element
+                    # Text-align: left, if the left interval is smaller than the right interval
+                    aligned_element = "left"
+                    if (x1 < (img_width - x2)):
+                        aligned_element = "right"
+
+                    # Middle if the middle point placed at the 20% middle width for the whole image
+                    if ((x2 - x1) / 2 - (img_width / 2)) < img_width * 0.2:
+                        aligned_element = "center"
+
                     func_type = "undefined"
                     letters_str = ""
                     # Check if class id is: 1 input, 2 button, 3 text or 4 select
@@ -361,7 +374,7 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                             {
                                 "struct_type": "textinput",
                                 "func_type": func_type,
-                                "parameters": {"textContent": letters_str, "roi": roi},
+                                "parameters": {"placeholder": letters_str, "roi": roi},
                                 "styles": {
                                     "width": str(width_elem) + "px",
                                     "height": str(height_elem) + "px",
@@ -394,7 +407,7 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                                 "struct_type": "ocrtext",
                                 "func_type": func_type,
                                 "parameters": {"textContent": text, "roi": roi},
-                                "styles": {},
+                                "styles": {"text-align": aligned_element, "max-width": str(img_width) + "px",},
                                 #
                                 # "styles": {
                                 #     "width": str(width_elem) + "px",
@@ -990,6 +1003,17 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                     element_child.styles["height"] = str(height) + "px"
                     element_child.styles["width"] = str(width) + "px"
 
+                # Check if the button is close to other elements.
+                # Assign the mean value if close enough
+                if (element_child.struct_type == "button"):
+                    button_height = float(element_child.styles["height"][:-2])
+                    button_width = float(element_child.styles["width"][:-2])
+                    if (abs(button_height - height) < (height * 0.15)): # The height diff is less than 15%
+                        element_child.styles["height"] = str(height) + "px"
+                    if (abs(button_width - width) < (width * 0.15)): # The width diff is less than 15%
+                        element_child.styles["width"] = str(width) + "px"
+
+
                 element_child.save()
 
             # Assign height, width for each element for the vertical scenarios of the main scenario
@@ -1009,7 +1033,18 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                         print("fest", flvl_element.struct_type)
                         flvl_element.styles["height"] = str(height) + "px"
                         flvl_element.styles["width"] = str(width) + "px"
-                        flvl_element.save()
+
+                    # Check if the button is close to other elements.
+                    # Assign the mean value if close enough
+                    if (flvl_element.struct_type == "button"):
+                        button_height = float(flvl_element.styles["height"][:-2])
+                        button_width = float(flvl_element.styles["width"][:-2])
+                        if abs(button_height - height) < (height * 0.15):  # The height diff is less than 15%
+                            flvl_element.styles["height"] = str(height) + "px"
+                        if abs(button_width - width) < (width * 0.15):  # The width diff is less than 15%
+                            flvl_element.styles["width"] = str(width) + "px"
+
+                    flvl_element.save()
 
         # Calculate height, width for each element for the horizontal scenarios of the main scenario
         # extract from elements
@@ -1059,9 +1094,21 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                         if (flvl_element.struct_type in struct_type_accepted):
                             flvl_element.styles["height"] = str(height_h) + "px"
                             flvl_element.styles["width"] = str(width_h) + "px"
-                            flvl_element.save()
+
+                        # Check if the button is close to other elements.
+                        # Assign the mean value if close enough
+                        if (flvl_element.struct_type == "button"):
+                            button_height = float(flvl_element.styles["height"][:-2])
+                            button_width = float(flvl_element.styles["width"][:-2])
+                            if abs(button_height - height) < (height * 0.15):  # The height diff is less than 15%
+                                flvl_element.styles["height"] = str(height) + "px"
+                            if abs(button_width - width) < (width * 0.15):  # The width diff is less than 15%
+                                flvl_element.styles["width"] = str(width) + "px"
+
+                        flvl_element.save()
 
         # Calculate the mean value for inputs, selects, buttons end
+
         scenario.parameters["children"] = [sub['ids'] for sub in children]
         scenario.styles["background-color"] = "rgba(" + bcolour_scenario_value + ")"
         scenario.save()
