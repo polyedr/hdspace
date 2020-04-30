@@ -3,10 +3,12 @@ import cn from 'classnames';
 
 import { sharedClasses } from '$styles/sharedClasses';
 
-import { Renderer } from '../types';
+import { SharedRendererProps, TextBlockRendererProps } from '../types';
 const styles = require('../styles.scss');
 
-const TextBlock: Renderer = (props) => {
+type Props = SharedRendererProps & TextBlockRendererProps;
+
+const TextBlock = (props: Props) => {
   const { id, style, params, active, sortableId, isDisabled } = props;
 
   return (

@@ -6,10 +6,12 @@ import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 
 import { sharedClasses } from '$styles/sharedClasses';
 
-import { Renderer } from '../types';
+import { SharedRendererProps, CheckboxRendererProps } from '../types';
 const styles = require('../styles.scss');
 
-const CheckboxComponent: Renderer = (props) => {
+type Props = SharedRendererProps & CheckboxRendererProps;
+
+const CheckboxComponent = (props: Props) => {
   const { id, style, params, isDisabled, active, sortableId, onChange, isCheckboxChecked } = props;
   const { backgroundColor, width, height, ...restStyles } = style;
   const { value, name, showRipple } = params;

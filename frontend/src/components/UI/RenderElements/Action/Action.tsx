@@ -6,10 +6,10 @@ import { makeStyles, Button } from '@material-ui/core';
 import { WithActionProps, ActionType } from '$utils/withAction';
 import { sharedClasses } from '$styles/sharedClasses';
 
-import { RendererProps } from '../types';
+import { SharedRendererProps, ActionRendererProps } from '../types';
 const styles = require('../styles.scss');
 
-type Action = React.FC<WithActionProps & RendererProps>;
+type Action = React.FC<WithActionProps & SharedRendererProps & ActionRendererProps>;
 
 export const Action: Action = (props) => {
   const {

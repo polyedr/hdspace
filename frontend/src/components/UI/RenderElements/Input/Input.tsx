@@ -4,10 +4,12 @@ import { makeStyles, TextField } from '@material-ui/core';
 
 import { sharedClasses } from '$styles/sharedClasses';
 
-import { Renderer } from '../types';
+import { SharedRendererProps, InputRendererProps } from '../types';
 const styles = require('../styles.scss');
 
-const Input: Renderer = (props) => {
+type Props = SharedRendererProps & InputRendererProps;
+
+const Input = (props: Props) => {
   const { id, style, params, isDisabled, active, sortableId, value, onChange } = props;
   const { width, height, marginTop, marginRight, marginBottom, marginLeft, ...restStyles } = style;
   const { type, placeholder } = params;

@@ -3,10 +3,12 @@ import cn from 'classnames';
 
 import { sharedClasses } from '$styles/sharedClasses';
 
-import { Renderer } from '../types';
+import { SharedRendererProps, ParagraphRendererProps } from '../types';
 const styles = require('../styles.scss');
 
-const Paragraph: Renderer = (props) => {
+type Props = SharedRendererProps & ParagraphRendererProps;
+
+const Paragraph = (props: Props) => {
   const { id, style, params, active, sortableId, isDisabled } = props;
 
   return (
