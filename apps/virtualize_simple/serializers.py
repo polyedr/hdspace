@@ -577,8 +577,8 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                     # Horizontal groups detection
                     # Check if the roi is text or input or select
                     # Check if the roi1 is text or input or select
-                    if recognized_element["struct_type"] in {"textinput", "select", "ocrtext"} and recognized_element1[
-                            "struct_type"] in {"textinput", "select", "ocrtext"} and (idx != idx1):
+                    if recognized_element["struct_type"] in {"textinput", "select", "checkbox", "ocrtext"} and recognized_element1[
+                            "struct_type"] in {"textinput", "select", "checkbox", "ocrtext"} and (idx != idx1):
                         # Check if the elements were not assigned to the horizontal groups before
                         # Flatten horizontal group keys
                         fhgk = set(i for sub in horizontal_groups.keys() for i in sub)
@@ -716,6 +716,11 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                         if (recognized_elements[h_group_key[0]]["struct_type"] in {"ocrtext"}):
                             recognized_elements[h_group_key[1]]["func_type"] = \
                                 recognized_elements[h_group_key[0]]["func_type"]
+
+                # Assign the styles for the case of the horizontal scenario with checkbox
+                if(recognized_elements[h_group_key[0]]["struct_type"] in {"checkbox"}) or (recognized_elements[h_group_key[1]]["struct_type"] in {"checkbox"}):
+                    scenario_horizontal.styles["display"] = "flex"
+                    scenario_horizontal.styles["justify-content"] = "flex-start"
 
                 # Create elements for horizontal groups scenarios if they're not in vertical grouping already
                 for element_data_horizontal in h_group_key:
@@ -939,6 +944,7 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                     width += float(element_child.styles["width"][:-2])
                     # Increase the number of children counter
                     num_children_counter += 1
+                element_child.save()
 
                 # print("element_child.styles=", type(element_child.styles), element_child.styles)
                 # element_child.save()
@@ -984,6 +990,8 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                     element_child.styles["height"] = str(height) + "px"
                     element_child.styles["width"] = str(width) + "px"
 
+                element_child.save()
+
             # Assign height, width for each element for the vertical scenarios of the main scenario
             if 's' in child['ids']:
                 scenario_child = ScreenScenario.objects.get(id=child_id)
@@ -1001,6 +1009,7 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                         print("fest", flvl_element.struct_type)
                         flvl_element.styles["height"] = str(height) + "px"
                         flvl_element.styles["width"] = str(width) + "px"
+                        flvl_element.save()
 
         # Calculate height, width for each element for the horizontal scenarios of the main scenario
         # extract from elements
@@ -1050,6 +1059,7 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                         if (flvl_element.struct_type in struct_type_accepted):
                             flvl_element.styles["height"] = str(height_h) + "px"
                             flvl_element.styles["width"] = str(width_h) + "px"
+                            flvl_element.save()
 
         # Calculate the mean value for inputs, selects, buttons end
         scenario.parameters["children"] = [sub['ids'] for sub in children]
