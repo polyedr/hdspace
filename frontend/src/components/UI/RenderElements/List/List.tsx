@@ -4,10 +4,10 @@ import cn from 'classnames';
 import { convertPropCSS } from '$utils/StyleHelper';
 import { sharedClasses } from '$styles/sharedClasses';
 
-import { Renderer } from '../types';
+import { ListRendererProps } from '../types';
 const styles = require('../styles.scss');
 
-const List: Renderer = (props) => {
+const List = (props: ListRendererProps) => {
   const { id, style, params, active, sortableId, isDisabled, childrenElements } = props;
   const { listItems, isOrdered } = params;
 

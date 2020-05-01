@@ -1,5 +1,3 @@
-import { CSSProperties } from 'react';
-
 import { ServerStructType } from '$redux/project/types';
 import { CssLikeStyles } from '$utils/StyleHelper';
 
@@ -15,13 +13,30 @@ type CommonLibraryElement<Type extends ServerStructType, ChildrenType> = {
   children: ChildrenType,
 }
 
+export type MenuItemChild = Omit<CommonLibraryElement<'menuItem', []>, 'parameters'> & {
+  id: number,
+  parameters: {
+    name: string,
+    value: string,
+  }
+};
+
+export type ListItemChild = Omit<CommonLibraryElement<'listItem', []>, 'parameters'> & {
+  id: number,
+  parameters: {
+    textContent: string,
+    isLink: boolean,
+    link: string,
+  }
+};
+
 type DefaultChild = Omit<CommonLibraryElement<'root', []>, 'parameters'> & { parameters: {} };
 type LibraryMenuChild = Omit<CommonLibraryElement<'menu', []>, 'parameters'> & { parameters: {} };
 type LibraryMenuItemChild = Omit<CommonLibraryElement<'menuItem', []>, 'parameters'> & { parameters: {} };
 type LibraryListItemChild = Omit<CommonLibraryElement<'listItem', []>, 'parameters'> & { parameters: {} };
 
-type SelectChild = LibraryMenuChild | LibraryMenuItemChild;
-type DropdownChild = LibraryMenuChild | LibraryMenuItemChild;
+export type SelectChild = LibraryMenuChild | LibraryMenuItemChild;
+export type DropdownChild = LibraryMenuChild | LibraryMenuItemChild;
 
 export type AllChildren = (DefaultChild | SelectChild | DropdownChild | LibraryListItemChild)[];
 

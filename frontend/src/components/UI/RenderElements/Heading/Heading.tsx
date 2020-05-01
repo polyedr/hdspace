@@ -3,10 +3,10 @@ import cn from 'classnames';
 
 import { sharedClasses } from '$styles/sharedClasses';
 
-import { Renderer } from '../types';
+import { HeadingRendererProps } from '../types';
 const styles = require('../styles.scss');
 
-const Heading: Renderer = (props) => {
+const Heading = (props: HeadingRendererProps) => {
   const { id, style, params, active, sortableId, isDisabled } = props;
   const { headingType, textContent } = params;
   const HeadingTag = headingType || 'h3';

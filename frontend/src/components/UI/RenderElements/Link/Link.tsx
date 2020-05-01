@@ -6,10 +6,10 @@ import { Link } from '@material-ui/core';
 import { WithActionProps } from '$utils/withAction';
 import { sharedClasses } from '$styles/sharedClasses';
 
-import { RendererProps } from '../types';
+import { ActionRendererProps } from '../types';
 const styles = require('../styles.scss');
 
-type Link = React.FC<WithActionProps & RendererProps>;
+type Link = React.FC<WithActionProps & ActionRendererProps>;
 
 const LinkComponent: Link = (props) => {
   const {

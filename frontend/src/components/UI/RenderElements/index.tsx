@@ -20,10 +20,10 @@ import { List } from './List/List';
 import { Textarea } from './Textarea/Textarea';
 import { Label } from './Label/Label';
 import { Dropdown } from './Dropdown/Dropdown';
-import { Renderer } from './types';
+import { ImageRendererProps, MapRendererProps, ClockRendererProps, SharedRendererProps } from './types';
 const styles = require('./styles.scss');
 
-const ImgRenderer: Renderer = (props) => {
+const ImgRenderer = (props: ImageRendererProps) => {
   const { id, params, active, sortableId, style, isDisabled } = props;
 
   return (
@@ -41,7 +41,7 @@ const ImgRenderer: Renderer = (props) => {
   );
 }
 
-const MapWidgetRenderer: Renderer = (props) => {
+const MapWidgetRenderer = (props: MapRendererProps) => {
   const { id, params, active, isDisabled, style, sortableId } = props;
   return (
     <div
@@ -63,7 +63,7 @@ const MapWidgetRenderer: Renderer = (props) => {
   );
 };
 
-const CalendarWidgetRenderer: Renderer = (props) => {
+const CalendarWidgetRenderer = (props: SharedRendererProps) => {
   const { id, style, active, isDisabled, sortableId } = props;
   return (
     <div
@@ -80,7 +80,7 @@ const CalendarWidgetRenderer: Renderer = (props) => {
   );
 }
 
-const ClockWidgetRenderer: Renderer = (props) => {
+const ClockWidgetRenderer = (props: ClockRendererProps) => {
   const { id, params, style, active, sortableId, isDisabled } = props;
   return (
     <div
@@ -99,7 +99,7 @@ const ClockWidgetRenderer: Renderer = (props) => {
   );
 }
 
-const UndefinedRenderer: Renderer = (props) => {
+const UndefinedRenderer = (props: SharedRendererProps) => {
   const { id, active, style, sortableId, isDisabled } = props;
   return (
     <div

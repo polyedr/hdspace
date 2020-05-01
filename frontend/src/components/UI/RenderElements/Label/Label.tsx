@@ -3,10 +3,10 @@ import cn from 'classnames';
 
 import { sharedClasses } from '$styles/sharedClasses';
 
-import { Renderer } from '../types';
+import { LabelRendererProps } from '../types';
 const styles = require('../styles.scss');
 
-const Label: Renderer = (props) => {
+const Label = (props: LabelRendererProps) => {
   const { id, style, params, active, sortableId, isDisabled } = props;
   const { labelFor, textContent } = params;
 
