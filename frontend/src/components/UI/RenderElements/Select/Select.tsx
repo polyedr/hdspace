@@ -5,12 +5,10 @@ import { makeStyles, MenuItem, TextField } from '@material-ui/core';
 import { convertPropCSS } from '$utils/StyleHelper';
 import { sharedClasses } from '$styles/sharedClasses';
 
-import { SharedRendererProps, SelectRendererProps } from '../types';
+import { SelectRendererProps } from '../types';
 const styles = require('../styles.scss');
 
-type Props = SharedRendererProps & SelectRendererProps;
-
-const SelectComponent = (props: Props) => {
+const SelectComponent = (props: SelectRendererProps) => {
   const { id, style, isDisabled, active, sortableId, selectValue, onChange, params, childrenElements } = props;
   const { width, height, marginTop, marginRight, marginBottom, marginLeft, borderRadius, ...restStyles } = style;
   const { options, showRipple } = params;

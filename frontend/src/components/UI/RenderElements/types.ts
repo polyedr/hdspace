@@ -9,52 +9,52 @@ export type SharedRendererProps = {
   isDisabled: boolean,
 };
 
-type ImageRendererProps = {
+export type ImageRendererProps = SharedRendererProps & {
   params: {
     imageURL: string,
   },
 };
 
-type MapRendererProps = {
+export type MapRendererProps = SharedRendererProps & {
   params: {
     map_props: IMapProps,
   },
 };
 
-type ClockRendererProps = {
+export type ClockRendererProps = SharedRendererProps & {
   params: {
     width: string,
     height: string,
   },
 };
 
-export type HeadingRendererProps = {
+export type HeadingRendererProps = SharedRendererProps & {
   params: {
     headingType: HeadingType,
     textContent: string,
   },
 };
 
-export type ParagraphRendererProps = {
+export type ParagraphRendererProps = SharedRendererProps & {
   params: {
     textContent: string,
   },
 };
 
-export type LabelRendererProps = {
+export type LabelRendererProps = SharedRendererProps & {
   params: {
     labelFor: string,
     textContent: string,
   },
 };
 
-export type TextBlockRendererProps = {
+export type TextBlockRendererProps = SharedRendererProps & {
   params: {
     textContent: string,
   },
 };
 
-export type DropdownRendererProps = {
+export type DropdownRendererProps = SharedRendererProps & {
   params: {
     textContent: string,
     dropdownItems: [],
@@ -63,7 +63,7 @@ export type DropdownRendererProps = {
   childrenElements: DropdownChild[],
 };
 
-export type ActionRendererProps = {
+export type ActionRendererProps = SharedRendererProps & {
   params: {
     action: LinkParams,
     textContent: string,
@@ -72,7 +72,7 @@ export type ActionRendererProps = {
   onClick?(event: any): void,
 };
 
-export type CheckboxRendererProps = {
+export type CheckboxRendererProps = SharedRendererProps & {
   params: {
     value: string,
     name: string,
@@ -82,7 +82,7 @@ export type CheckboxRendererProps = {
   onChange(itemID: string, savedValue: boolean): void,
 };
 
-export type InputRendererProps = {
+export type InputRendererProps = SharedRendererProps & {
   params: {
     type: InputType,
     placeholder: string,
@@ -91,7 +91,7 @@ export type InputRendererProps = {
   onChange(itemID: string, savedValue: string): void,
 };
 
-export type TextareaRendererProps = {
+export type TextareaRendererProps = SharedRendererProps & {
   params: {
     placeholder: string,
   },
@@ -99,7 +99,7 @@ export type TextareaRendererProps = {
   onChange(itemID: string, savedValue: string): void,
 };
 
-export type RadioRendererProps = {
+export type RadioRendererProps = SharedRendererProps & {
   params: {
     value: string,
     name: string,
@@ -109,7 +109,7 @@ export type RadioRendererProps = {
   onChange(itemID: string, savedValue: string): void,
 };
 
-export type SelectRendererProps = {
+export type SelectRendererProps = SharedRendererProps & {
   params: {
     showRipple: boolean,
     isOpen: boolean,
@@ -120,7 +120,7 @@ export type SelectRendererProps = {
   onChange(itemID: string, savedValue: string): void,
 };
 
-export type ListRendererProps = {
+export type ListRendererProps = SharedRendererProps & {
   params: {
     isOrdered: boolean,
     listItems: [],
@@ -128,6 +128,3 @@ export type ListRendererProps = {
   childrenElements: ListItemChild[],
 };
 
-export type ClockProps = SharedRendererProps & ClockRendererProps;
-export type MapProps = SharedRendererProps & MapRendererProps;
-export type ImageProps = SharedRendererProps & ImageRendererProps;

@@ -6,12 +6,10 @@ import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked';
 
 import { sharedClasses } from '$styles/sharedClasses';
 
-import { SharedRendererProps, RadioRendererProps } from '../types';
+import { RadioRendererProps } from '../types';
 const styles = require('../styles.scss');
 
-type Props = SharedRendererProps & RadioRendererProps;
-
-const Radiobutton = (props: Props) => {
+const Radiobutton = (props: RadioRendererProps) => {
   const { id, style, params, isDisabled, active, sortableId, isRadioChecked, onChange } = props;
   const { backgroundColor, width, height, ...restStyles } = style;
   const { name, value, showRipple } = params;
