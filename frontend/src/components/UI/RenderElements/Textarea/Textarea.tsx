@@ -4,12 +4,10 @@ import { makeStyles, TextField } from '@material-ui/core';
 
 import { sharedClasses } from '$styles/sharedClasses';
 
-import { SharedRendererProps, TextareaRendererProps } from '../types';
+import { TextareaRendererProps } from '../types';
 const styles = require('../styles.scss');
 
-type Props = SharedRendererProps & TextareaRendererProps;
-
-const Textarea = (props: Props) => {
+const Textarea = (props: TextareaRendererProps) => {
   const { id, style, params, isDisabled, active, sortableId, value, onChange } = props;
 
   const {

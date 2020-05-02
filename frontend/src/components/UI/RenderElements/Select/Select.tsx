@@ -6,12 +6,10 @@ import { convertPropCSS } from '$utils/StyleHelper';
 import { sharedClasses } from '$styles/sharedClasses';
 import { SelectItemChild } from '$domain/libraryElements';
 
-import { SharedRendererProps, SelectRendererProps } from '../types';
+import { SelectRendererProps } from '../types';
 const styles = require('../styles.scss');
 
-type Props = SharedRendererProps & SelectRendererProps;
-
-const SelectComponent = (props: Props) => {
+const SelectComponent = (props: SelectRendererProps) => {
   const { id, style, isDisabled, active, sortableId, value, onChange, params, childrenElements } = props;
   const { width, height, marginTop, marginRight, marginBottom, marginLeft, borderRadius, ...restStyles } = style;
   const { showRipple } = params;

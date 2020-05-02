@@ -20,10 +20,10 @@ import { List } from './List/List';
 import { Textarea } from './Textarea/Textarea';
 import { Label } from './Label/Label';
 import { Dropdown } from './Dropdown/Dropdown';
-import { ImageProps, MapProps, ClockProps, SharedRendererProps } from './types';
+import { ImageRendererProps, MapRendererProps, ClockRendererProps, SharedRendererProps } from './types';
 const styles = require('./styles.scss');
 
-const ImgRenderer = (props: ImageProps) => {
+const ImgRenderer = (props: ImageRendererProps) => {
   const { id, params, active, sortableId, style, isDisabled } = props;
 
   return (
@@ -41,7 +41,7 @@ const ImgRenderer = (props: ImageProps) => {
   );
 }
 
-const MapWidgetRenderer = (props: MapProps) => {
+const MapWidgetRenderer = (props: MapRendererProps) => {
   const { id, params, active, isDisabled, style, sortableId } = props;
   return (
     <div
@@ -80,7 +80,7 @@ const CalendarWidgetRenderer = (props: SharedRendererProps) => {
   );
 }
 
-const ClockWidgetRenderer = (props: ClockProps) => {
+const ClockWidgetRenderer = (props: ClockRendererProps) => {
   const { id, params, style, active, sortableId, isDisabled } = props;
   return (
     <div

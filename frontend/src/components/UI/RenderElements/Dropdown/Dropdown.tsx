@@ -5,12 +5,10 @@ import { makeStyles, MenuItem, Button, Menu } from '@material-ui/core';
 import { convertPropCSS } from '$utils/StyleHelper';
 import { DropdownItemChild } from '$domain/libraryElements';
 
-import { SharedRendererProps, DropdownRendererProps } from '../types';
+import { DropdownRendererProps } from '../types';
 const styles = require('../styles.scss');
 
-type Props = SharedRendererProps & DropdownRendererProps;
-
-const DropdownComponent = (props: Props) => {
+const DropdownComponent = (props: DropdownRendererProps) => {
   const { id, style, isDisabled, active, sortableId, params, childrenElements } = props;
   const { backgroundColor, color, ...restStyles } = style;
   const { textContent, showRipple } = params;
