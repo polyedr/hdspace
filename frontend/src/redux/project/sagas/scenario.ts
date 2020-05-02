@@ -19,8 +19,8 @@ import {
 import { DEFAULT_INDENTS } from '$constants/defaultParams';
 import { reqWrapper } from '$redux/project/sagas/index';
 import { ReturnPromisedType } from '$shared/types';
-import { getConfigurablePropsOf, Entity, ChildEntity } from '$domain/core';
-import { LIBRARY_ELEMENTS, AllChildren } from '$domain/libraryElements';
+import { getConfigurablePropsOf } from '$domain/core';
+import { LIBRARY_ELEMENTS, AllChildren, ElementChild } from '$domain/libraryElements';
 import * as ai from '$domain/abstractInterface';
 
 import { selectors, T } from '../';
@@ -96,12 +96,12 @@ export function* addElementsIntoContainerSaga(action: ReturnType<typeof Actions.
 
   const elementsToCreate = elements.reduce((acc: T.IScenarioElement[], element) => {
     const libraryElement = LIBRARY_ELEMENTS[element.structType as keyof typeof LIBRARY_ELEMENTS]; // TODO: remove unused params/styles from backend
-    const { styles, params } = getConfigurablePropsOf('root')(libraryElement.struct_type as Entity);
+    const { styles, params } = getConfigurablePropsOf('root')(libraryElement.struct_type);
 
     const children: AllChildren = libraryElement.children;
 
     const childrenToAdd = children.map(child => {
-      const { styles, params } = getConfigurablePropsOf(child.struct_type as ChildEntity<Entity>)(libraryElement.struct_type as keyof typeof LIBRARY_ELEMENTS);
+      const { styles, params } = getConfigurablePropsOf('root')(child.struct_type);
 
       return {
         scenario: targetContainerID,
@@ -114,7 +114,7 @@ export function* addElementsIntoContainerSaga(action: ReturnType<typeof Actions.
         image: null,
         parameters: {
           parent_id: targetContainerID,
-          group: `don't know what is this`,
+          ...child.parameters,
           ...params,
         },
         styles,
@@ -138,7 +138,7 @@ export function* addElementsIntoContainerSaga(action: ReturnType<typeof Actions.
         ...params,
       },
       styles,
-      children: childrenToAdd,
+      children: childrenToAdd as unknown as ElementChild[],
     };
     return acc.concat(x);
   }, []);

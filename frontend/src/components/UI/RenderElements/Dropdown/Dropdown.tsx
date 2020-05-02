@@ -3,6 +3,7 @@ import cn from 'classnames';
 import { makeStyles, MenuItem, Button, Menu } from '@material-ui/core';
 
 import { convertPropCSS } from '$utils/StyleHelper';
+import { DropdownItemChild } from '$domain/libraryElements';
 
 import { SharedRendererProps, DropdownRendererProps } from '../types';
 const styles = require('../styles.scss');
@@ -12,7 +13,7 @@ type Props = SharedRendererProps & DropdownRendererProps;
 const DropdownComponent = (props: Props) => {
   const { id, style, isDisabled, active, sortableId, params, childrenElements } = props;
   const { backgroundColor, color, ...restStyles } = style;
-  const { textContent, dropdownItems, showRipple } = params;
+  const { textContent, showRipple } = params;
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
@@ -24,8 +25,10 @@ const DropdownComponent = (props: Props) => {
     setAnchorEl(null);
   };
 
-  const menuStyles = childrenElements.find(child => child.struct_type === 'menu')?.styles;
-  const menuItemStyles = childrenElements.find(child => child.struct_type === 'menuItem')?.styles;
+  const menu = childrenElements.find(child => child.struct_type === 'dropdownMenu');
+  const menuStyles = menu?.styles;
+  const menuItems = childrenElements.filter(child => child.struct_type === 'dropdownItem') as DropdownItemChild[];
+  const menuItemStyles = childrenElements.find(child => child.struct_type === 'dropdownItem')?.styles;
 
   const classes = makeStyles({
     root: {
@@ -83,14 +86,14 @@ const DropdownComponent = (props: Props) => {
         onClose={handleMenuClose}
         classes={menuClasses}
       >
-        {dropdownItems?.map((item, index) => (
+        {menuItems?.map(({ id, parameters: { textContent: itemTextContent } }) => (
           <MenuItem
-            key={`${item}${index}`}
+            key={id}
             className={menuItemClasses.root}
             disableRipple={!showRipple}
             onClick={handleMenuClose}
           >
-            {item}
+            {itemTextContent}
           </MenuItem>
         ))}
       </Menu>

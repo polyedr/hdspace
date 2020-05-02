@@ -115,7 +115,7 @@ export type SelectRendererProps = {
     isOpen: boolean,
     options: [],
   },
-  selectValue: string,
+  value: string,
   childrenElements: SelectChild[],
   onChange(itemID: string, savedValue: string): void,
 };

@@ -146,13 +146,6 @@ const SortableComponent: React.FC<Props> = (props) => {
 
   const isCheckboxChecked = (itemId: string) => Boolean(savedElements[itemId]?.savedValue);
 
-  const getSelectValue = (itemId: string, options: Option[]) => {
-    const selectValue = savedElements[itemId]?.savedValue;
-    const isValueInOptions = options?.some(({ value }) => selectValue === value);
-
-    return isValueInOptions ? selectValue : options?.[0].value || '';
-  }
-
   const getIsActive = useCallback(() => !disableInteractions && item.id === parseInt(activeItemId, 10), [disableInteractions, item, activeItemId]);
 
   return (currentScreen && currentScreen.screenLoader ?  null :
@@ -216,7 +209,6 @@ const SortableComponent: React.FC<Props> = (props) => {
             style={parsedStyles}
             active={!disableInteractions && itemId === activeItemId}
             value={savedElements[itemId]?.savedValue}
-            selectValue={getSelectValue(itemId, parameters.options)}
             onChange={updateSavedElementValues}
             isCheckboxChecked={isCheckboxChecked(itemId)}
             isRadioChecked={isRadioChecked(parameters.value, savedElements[parameters.name])}

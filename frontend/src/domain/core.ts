@@ -27,8 +27,6 @@ import {
 } from '$constants/defaultParams';
 import { ServerStructType } from '$redux/project/types';
 
-import { LibraryElements } from './libraryElements';
-
 export const ENTITIES = [
   'root',
   'container',
@@ -77,14 +75,13 @@ const controlAffectsOnStyles = (controlName: Control) => (
   CONTROLS_AFFECT_ON_STYLES.find(x => x === controlName) !== undefined
 );
 
-export type Entity = Exclude<ServerStructType, 'menu' | 'menuItem' | 'listItem'>;
-export type ElementEntity = Exclude<Entity, 'root' | 'container'>;
-export type ChildEntity<EntityName extends Entity> = 'root' | LibraryElements[EntityName]['children'][number]['struct_type'];
-export type EntityControls<EntityName extends Entity> = { [P in ChildEntity<EntityName>]: Control[] };
+export type Entity = ServerStructType;
+export type ElementEntity = Exclude<Entity, 'root' | 'container' | 'selectMenu' | 'selectItem' | 'dropdownMenu' | 'dropdownItem' | 'listItem'>;
+export type SubEntity = 'root';
 
 export type AvailableControls = {
   [P in Entity]: {
-    [T in ChildEntity<P>]: Control[]
+    [T in SubEntity]: Control[]
   }
 };
 
@@ -133,15 +130,21 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
   },
   list: {
     root: ['indents', 'size', 'display', 'border', 'background', 'listItems', 'bullets', 'isOrdered'],
-    listItem: ['indents', 'size', 'typography', 'border', 'background'],
+  },
+  listItem: {
+    root: ['indents', 'size', 'typography', 'border', 'background'],
   },
   image: {
     root: ['indents', 'size', 'border', 'background', 'image'],
   },
   select: {
     root: ['indents', 'size', 'typography', 'border', 'background', 'showRipple', 'selectValue', 'selectOptions'],
-    menu: ['indents', 'size', 'border', 'background'],
-    menuItem: ['indents', 'size', 'typography', 'border', 'background'],
+  },
+  selectMenu: {
+    root: ['indents', 'size', 'border', 'background'],
+  },
+  selectItem: {
+    root: ['indents', 'size', 'typography', 'border', 'background']
   },
   map: {
     root: ['indents', 'size', 'typography', 'border', 'background', 'mapProps'],
@@ -153,9 +156,13 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
     root: ['indents', 'size', 'typography', 'border', 'background'],
   },
   dropdown: {
-    root: ['indents', 'size', 'typography', 'border', 'background', 'showRipple', 'dropdownItems'],
-    menu: ['indents', 'size', 'border', 'background'],
-    menuItem: ['indents', 'size', 'typography', 'border', 'background'],
+    root: ['indents', 'size', 'typography', 'border', 'background', 'textContent', 'showRipple', 'dropdownItems'],
+  },
+  dropdownMenu: {
+    root: ['indents', 'size', 'border', 'background'],
+  },
+  dropdownItem: {
+    root: ['indents', 'size', 'typography', 'border', 'background']
   },
   undefined: {
     root: ['size', 'background'],
@@ -190,14 +197,14 @@ const CONTROLS_DEFAULTS: Record<Control, any> = {
 
 type EntityToDefaults = {
   [P in Entity]: {
-    [T in ChildEntity<P>]: Record<Control, any>;
+    [T in SubEntity]: Record<Control, any>;
   };
 };
 
-const extractDefaults = <EntityName extends Entity>(entity: EntityName, child: ChildEntity<EntityName>, control?: Control) =>
+const extractDefaults = <EntityName extends Entity>(entity: EntityName, subEntity: SubEntity, control?: Control) =>
   control
-  ? R.pick(AVAILABLE_CONTROLS[entity][child as 'root'], CONTROLS_DEFAULTS)[control]
-  : R.pick(AVAILABLE_CONTROLS[entity][child as 'root'], CONTROLS_DEFAULTS);
+  ? R.pick(AVAILABLE_CONTROLS[entity][subEntity], CONTROLS_DEFAULTS)[control]
+  : R.pick(AVAILABLE_CONTROLS[entity][subEntity], CONTROLS_DEFAULTS);
 
 const rootDefaults = {
   root: {
@@ -482,10 +489,13 @@ const listDefaults = {
       'padding-left': '40px',
     },
   },
-  listItem: {
-    ...extractDefaults('list', 'listItem'),
+};
+
+const listItemDefaults = {
+  root: {
+    ...extractDefaults('listItem', 'root'),
     indents: {
-      ...extractDefaults('list', 'listItem', 'indents'),
+      ...extractDefaults('listItem', 'root', 'indents'),
       'padding-top': '0',
       'padding-right': '0',
       'padding-bottom': '0',
@@ -527,14 +537,17 @@ const dropdownDefaults = {
       textContent: 'dropdown',
     },
   },
-  menu: {
-    ...extractDefaults('dropdown', 'menu'),
+};
+
+const dropdownMenuDefaults = {
+  root: {
+    ...extractDefaults('dropdownMenu', 'root'),
     background: {
-      ...extractDefaults('dropdown', 'menu', 'background'),
+      ...extractDefaults('dropdownMenu', 'root', 'background'),
       'background-color': '#ffffff',
     },
     indents: {
-      ...extractDefaults('dropdown', 'menu', 'indents'),
+      ...extractDefaults('dropdownMenu', 'root', 'indents'),
       'padding-top': '0px',
       'padding-right': '0px',
       'padding-bottom': '0px',
@@ -545,32 +558,35 @@ const dropdownDefaults = {
       'margin-left': '0px',
     },
     border: {
-      ...extractDefaults('dropdown', 'menu', 'border'),
+      ...extractDefaults('dropdownMenu', 'root', 'border'),
       'border-color': '#d9d9d9',
       'border-width': '1px',
       'border-style': 'solid',
       'border-radius': '4px',
     },
   },
-  menuItem: {
-    ...extractDefaults('dropdown', 'menuItem'),
+};
+
+const dropdownItemDefaults = {
+  root: {
+    ...extractDefaults('dropdownItem', 'root'),
     background: {
-      ...extractDefaults('dropdown', 'menuItem', 'background'),
+      ...extractDefaults('dropdownItem', 'root', 'background'),
       'background-color': '#ffffff',
     },
     indents: {
-      ...extractDefaults('dropdown', 'menuItem', 'indents'),
+      ...extractDefaults('dropdownItem', 'root', 'indents'),
       'padding-top': '6px',
       'padding-right': '16px',
       'padding-bottom': '6px',
       'padding-left': '16px',
     },
     border: {
-      ...extractDefaults('dropdown', 'menuItem', 'border'),
+      ...extractDefaults('dropdownItem', 'root', 'border'),
       'border-width': '0px',
     },
     typography: {
-      ...extractDefaults('dropdown', 'menuItem', 'typography'),
+      ...extractDefaults('dropdownItem', 'root', 'typography'),
       'line-height': '1.5',
     },
   },
@@ -611,14 +627,17 @@ const selectDefaults = {
       'border-radius': '4px',
     },
   },
-  menu: {
-    ...extractDefaults('select', 'menu'),
+};
+
+const selectMenuDefaults = {
+  root: {
+    ...extractDefaults('selectMenu', 'root'),
     background: {
-      ...extractDefaults('select', 'menu', 'background'),
+      ...extractDefaults('selectMenu', 'root', 'background'),
       'background-color': '#ffffff',
     },
     indents: {
-      ...extractDefaults('select', 'menu', 'indents'),
+      ...extractDefaults('selectMenu', 'root', 'indents'),
       'padding-top': '0px',
       'padding-right': '0px',
       'padding-bottom': '0px',
@@ -629,32 +648,35 @@ const selectDefaults = {
       'margin-left': '0px',
     },
     border: {
-      ...extractDefaults('select', 'menu', 'border'),
+      ...extractDefaults('selectMenu', 'root', 'border'),
       'border-color': '#d9d9d9',
       'border-width': '1px',
       'border-style': 'solid',
       'border-radius': '4px',
     },
   },
-  menuItem: {
-    ...extractDefaults('select', 'menuItem'),
+};
+
+const selectItemDefaults = {
+  root: {
+    ...extractDefaults('selectItem', 'root'),
     background: {
-      ...extractDefaults('select', 'menuItem', 'background'),
+      ...extractDefaults('selectItem', 'root', 'background'),
       'background-color': '#ffffff',
     },
     indents: {
-      ...extractDefaults('select', 'menuItem', 'indents'),
+      ...extractDefaults('selectItem', 'root', 'indents'),
       'padding-top': '6px',
       'padding-right': '16px',
       'padding-bottom': '6px',
       'padding-left': '16px',
     },
     border: {
-      ...extractDefaults('select', 'menuItem', 'border'),
+      ...extractDefaults('selectItem', 'root', 'border'),
       'border-width': '0px',
     },
     typography: {
-      ...extractDefaults('select', 'menuItem', 'typography'),
+      ...extractDefaults('selectItem', 'root', 'typography'),
       'line-height': '1.5',
     },
   },
@@ -709,19 +731,24 @@ const ENTITY_TO_DEFAULTS: EntityToDefaults = {
   ocrtext: ocrtextDefaults,
   text_block: textBlockDefaults,
   list: listDefaults,
+  listItem: listItemDefaults,
   image: imageDefaults,
   select: selectDefaults,
+  selectMenu: selectMenuDefaults,
+  selectItem: selectItemDefaults,
   map: mapDefaults,
   calendar: calendarDefaults,
   clock: clockDefaults,
   dropdown: dropdownDefaults,
+  dropdownMenu: dropdownMenuDefaults,
+  dropdownItem: dropdownItemDefaults,
   undefined: undefinedDefaults,
 };
 
-export const getConfigurablePropsOf = <EntityName extends Entity>(child: ChildEntity<EntityName>) => createSelector(
+export const getConfigurablePropsOf = <EntityName extends Entity>(subEntity: SubEntity) => createSelector(
   (entity: EntityName) => entity,
   (entity: EntityName) => {
-    const entityControlsDefaults = ENTITY_TO_DEFAULTS[entity][child as 'root'];
+    const entityControlsDefaults = ENTITY_TO_DEFAULTS[entity][subEntity];
     return R.keys(entityControlsDefaults).reduce((acc, c) => {
       const controlAffectsOn = controlAffectsOnStyles(c) ? 'styles' : 'params';
       return ({

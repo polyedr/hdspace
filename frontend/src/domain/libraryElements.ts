@@ -13,11 +13,18 @@ type CommonLibraryElement<Type extends ServerStructType, ChildrenType> = {
   children: ChildrenType,
 }
 
-export type MenuItemChild = Omit<CommonLibraryElement<'menuItem', []>, 'parameters'> & {
+export type SelectItemChild = Omit<CommonLibraryElement<'selectItem', []>, 'parameters'> & {
   id: number,
   parameters: {
     name: string,
     value: string,
+  }
+};
+
+export type DropdownItemChild = Omit<CommonLibraryElement<'dropdownItem', []>, 'parameters'> & {
+  id: number,
+  parameters: {
+    textContent: string,
   }
 };
 
@@ -30,37 +37,40 @@ export type ListItemChild = Omit<CommonLibraryElement<'listItem', []>, 'paramete
   }
 };
 
-type DefaultChild = Omit<CommonLibraryElement<'root', []>, 'parameters'> & { parameters: {} };
-type LibraryMenuChild = Omit<CommonLibraryElement<'menu', []>, 'parameters'> & { parameters: {} };
-type LibraryMenuItemChild = Omit<CommonLibraryElement<'menuItem', []>, 'parameters'> & { parameters: {} };
+type LibraryDropdownMenuChild = Omit<CommonLibraryElement<'dropdownMenu', []>, 'parameters'> & { parameters: {} };
+type LibraryDropdownItemChild = Omit<CommonLibraryElement<'dropdownItem', []>, 'parameters'> & { parameters: {} };
+type LibrarySelectMenuChild = Omit<CommonLibraryElement<'selectMenu', []>, 'parameters'> & { parameters: {} };
+type LibrarySelectItemChild = Omit<CommonLibraryElement<'selectItem', []>, 'parameters'> & { parameters: {} };
 type LibraryListItemChild = Omit<CommonLibraryElement<'listItem', []>, 'parameters'> & { parameters: {} };
 
-export type SelectChild = LibraryMenuChild | LibraryMenuItemChild;
-export type DropdownChild = LibraryMenuChild | LibraryMenuItemChild;
+export type SelectChild = LibrarySelectMenuChild | LibrarySelectItemChild;
+export type DropdownChild = LibraryDropdownMenuChild | LibraryDropdownItemChild;
 
-export type AllChildren = (DefaultChild | SelectChild | DropdownChild | LibraryListItemChild)[];
+export type ElementChild = never | SelectItemChild | DropdownItemChild | ListItemChild;
+export type AllChildren = (never | SelectChild | DropdownChild | LibraryListItemChild)[];
 
-export type LibraryRootElement = CommonLibraryElement<'root', DefaultChild[]> ;
-export type LibraryContainer = CommonLibraryElement<'container', DefaultChild[]> ;
-export type LibraryImageElement = CommonLibraryElement<'image', DefaultChild[]> ;
-export type LibraryButtonElement = CommonLibraryElement<'button', DefaultChild[]>;
-export type LibraryHyperlinkElement = CommonLibraryElement<'hyperlink', DefaultChild[]>;
-export type LibraryTextinputElement = CommonLibraryElement<'textinput', DefaultChild[]>;
-export type LibraryCheckboxElement = CommonLibraryElement<'checkbox', DefaultChild[]> & { parameters: { defaultChecked: boolean } };
-export type LibraryRadiobuttonElement = CommonLibraryElement<'radiobutton', DefaultChild[]>;
+export type LibraryRootElement = CommonLibraryElement<'root', never[]> ;
+export type LibraryContainer = CommonLibraryElement<'container', never[]> ;
+export type LibraryImageElement = CommonLibraryElement<'image', never[]> ;
+export type LibraryButtonElement = CommonLibraryElement<'button', never[]>;
+export type LibraryHyperlinkElement = CommonLibraryElement<'hyperlink', never[]>;
+export type LibraryTextinputElement = CommonLibraryElement<'textinput', never[]>;
+export type LibraryCheckboxElement = CommonLibraryElement<'checkbox', never[]> & { parameters: { defaultChecked: boolean } };
+export type LibraryRadiobuttonElement = CommonLibraryElement<'radiobutton', never[]>;
 export type LibrarySelectElement = CommonLibraryElement<'select', SelectChild[]>;
-export type LibraryTextareaElement = CommonLibraryElement<'textarea', DefaultChild[]>;
-export type LibraryHeadingElement = CommonLibraryElement<'heading', DefaultChild[]>;
-export type LibraryParagraphElement = CommonLibraryElement<'paragraph', DefaultChild[]>;
-export type LibraryOcrtextElement = CommonLibraryElement<'ocrtext', DefaultChild[]>;
-export type LibraryLabelElement = CommonLibraryElement<'label', DefaultChild[]>;
-export type LibraryTextBlockElement = CommonLibraryElement<'text_block', DefaultChild[]>;
+export type LibraryTextareaElement = CommonLibraryElement<'textarea', never[]>;
+export type LibraryHeadingElement = CommonLibraryElement<'heading', never[]>;
+export type LibraryParagraphElement = CommonLibraryElement<'paragraph', never[]>;
+export type LibraryOcrtextElement = CommonLibraryElement<'ocrtext', never[]>;
+export type LibraryLabelElement = CommonLibraryElement<'label', never[]>;
+export type LibraryTextBlockElement = CommonLibraryElement<'text_block', never[]>;
 export type LibraryListElement = CommonLibraryElement<'list', LibraryListItemChild[]>;
-export type LibraryMapElement = CommonLibraryElement<'map', DefaultChild[]>;
-export type LibraryCalendarElement = CommonLibraryElement<'calendar', DefaultChild[]>;
-export type LibraryClockElement = CommonLibraryElement<'clock', DefaultChild[]>;
+export type LibraryListItemElement = CommonLibraryElement<'listItem', never[]>;
+export type LibraryMapElement = CommonLibraryElement<'map', never[]>;
+export type LibraryCalendarElement = CommonLibraryElement<'calendar', never[]>;
+export type LibraryClockElement = CommonLibraryElement<'clock', never[]>;
 export type LibraryDropdownElement = CommonLibraryElement<'dropdown', DropdownChild[]>;
-export type LibraryUndefinedElement = CommonLibraryElement<'undefined', DefaultChild[]>;
+export type LibraryUndefinedElement = CommonLibraryElement<'undefined', never[]>;
 
 export type LibraryElements = {
   root: LibraryRootElement,
@@ -72,6 +82,8 @@ export type LibraryElements = {
   checkbox: LibraryCheckboxElement,
   radiobutton: LibraryRadiobuttonElement,
   select: LibrarySelectElement,
+  selectMenu: LibrarySelectMenuChild,
+  selectItem: LibrarySelectItemChild,
   label: LibraryLabelElement,
   textarea: LibraryTextareaElement,
   heading: LibraryHeadingElement,
@@ -79,10 +91,13 @@ export type LibraryElements = {
   ocrtext: LibraryOcrtextElement,
   text_block: LibraryTextBlockElement,
   list: LibraryListElement,
+  listItem: LibraryListItemElement,
   map: LibraryMapElement,
   calendar: LibraryCalendarElement,
   clock: LibraryClockElement,
   dropdown: LibraryDropdownElement,
+  dropdownMenu: LibraryDropdownMenuChild,
+  dropdownItem: LibraryDropdownItemChild,
   undefined: LibraryUndefinedElement,
 };
 
@@ -169,23 +184,59 @@ export const LIBRARY_ELEMENTS: ElementsToAdd = {
     children: [
       {
         buoyancy: 0,
-        func_type: 'menu',
-        struct_type: 'menu',
+        func_type: 'selectMenu',
+        struct_type: 'selectMenu',
         parameters: {},
         styles: {},
-        name: 'menu',
+        name: 'selectMenu',
         children: [],
       },
       {
         buoyancy: 0,
-        func_type: 'menuItem',
-        struct_type: 'menuItem',
-        parameters: {},
+        func_type: 'selectItem',
+        struct_type: 'selectItem',
+        parameters: { name: 'First option', value: 'first option' },
         styles: {},
-        name: 'menuItem',
+        name: 'selectItem',
+        children: [],
+      },
+      {
+        buoyancy: 0,
+        func_type: 'selectItem',
+        struct_type: 'selectItem',
+        parameters: { name: 'Second option', value: 'second option' },
+        styles: {},
+        name: 'selectItem',
+        children: [],
+      },
+      {
+        buoyancy: 0,
+        func_type: 'selectItem',
+        struct_type: 'selectItem',
+        parameters: { name: 'Third option', value: 'third option' },
+        styles: {},
+        name: 'selectItem',
         children: [],
       },
     ],
+  },
+  selectMenu: {
+    buoyancy: 0,
+    func_type: 'selectMenu',
+    struct_type: 'selectMenu',
+    parameters: {},
+    styles: {},
+    name: 'selectMenu',
+    children: [],
+  },
+  selectItem: {
+    buoyancy: 0,
+    func_type: 'selectItem',
+    struct_type: 'selectItem',
+    parameters: {},
+    styles: {},
+    name: 'selectItem',
+    children: [],
   },
   label: {
     buoyancy: 0,
@@ -267,12 +318,47 @@ export const LIBRARY_ELEMENTS: ElementsToAdd = {
         buoyancy: 0,
         func_type: 'listItem',
         struct_type: 'listItem',
-        parameters: {},
+        parameters: {
+          textContent: 'First item', isLink: false, link: '',
+        },
+        styles: {},
+        name: 'listItem',
+        children: [],
+      },
+      {
+        buoyancy: 0,
+        func_type: 'listItem',
+        struct_type: 'listItem',
+        parameters: {
+          textContent: 'Second item', isLink: false, link: '',
+        },
+        styles: {},
+        name: 'listItem',
+        children: [],
+      },
+      {
+        buoyancy: 0,
+        func_type: 'listItem',
+        struct_type: 'listItem',
+        parameters: {
+          textContent: 'Third item', isLink: false, link: '',
+        },
         styles: {},
         name: 'listItem',
         children: [],
       },
     ],
+  },
+  listItem: {
+    buoyancy: 0,
+    func_type: 'listItem',
+    struct_type: 'listItem',
+    parameters: {
+      group: 'none',
+    },
+    styles: {},
+    name: 'listItem',
+    children: [],
   },
   map: {
     buoyancy: 0,
@@ -319,23 +405,59 @@ export const LIBRARY_ELEMENTS: ElementsToAdd = {
     children: [
       {
         buoyancy: 0,
-        func_type: 'menu',
-        struct_type: 'menu',
+        func_type: 'dropdownMenu',
+        struct_type: 'dropdownMenu',
         parameters: {},
         styles: {},
-        name: 'menu',
+        name: 'dropdownMenu',
         children: [],
       },
       {
         buoyancy: 0,
-        func_type: 'menuItem',
-        struct_type: 'menuItem',
-        parameters: {},
+        func_type: 'dropdownItem',
+        struct_type: 'dropdownItem',
+        parameters: { textContent: 'First option' },
         styles: {},
-        name: 'menuItem',
+        name: 'dropdownItem',
+        children: [],
+      },
+      {
+        buoyancy: 0,
+        func_type: 'dropdownItem',
+        struct_type: 'dropdownItem',
+        parameters: { textContent: 'Second option' },
+        styles: {},
+        name: 'dropdownItem',
+        children: [],
+      },
+      {
+        buoyancy: 0,
+        func_type: 'dropdownItem',
+        struct_type: 'dropdownItem',
+        parameters: { textContent: 'Third option' },
+        styles: {},
+        name: 'dropdownItem',
         children: [],
       },
     ],
+  },
+  dropdownMenu: {
+    buoyancy: 0,
+    func_type: 'dropdownMenu',
+    struct_type: 'dropdownMenu',
+    parameters: {},
+    styles: {},
+    name: 'dropdownMenu',
+    children: [],
+  },
+  dropdownItem: {
+    buoyancy: 0,
+    func_type: 'dropdownItem',
+    struct_type: 'dropdownItem',
+    parameters: {},
+    styles: {},
+    name: 'dropdownItem',
+    children: [],
   },
   undefined: {
     buoyancy: 0,

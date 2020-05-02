@@ -11,7 +11,7 @@ type Props = SharedRendererProps & ListRendererProps;
 
 const List = (props: Props) => {
   const { id, style, params, active, sortableId, isDisabled, childrenElements } = props;
-  const { listItems, isOrdered } = params;
+  const { isOrdered } = params;
 
   const ListTag = isOrdered ? 'ol' : 'ul';
 
@@ -48,8 +48,8 @@ const List = (props: Props) => {
       style={{ ...style, ...(isOrdered && { "list-style-type": "decimal" }) }}
       tabIndex={isDisabled ? 0 : -1}
     >
-      {listItems?.map(({ textContent, isLink, link }) => (
-        <>
+      {childrenElements.map(({ id: itemID, parameters: { textContent, isLink, link } }) => (
+        <div key={itemID}>
           {isLink ? (
             <li
               style={{
@@ -86,7 +86,7 @@ const List = (props: Props) => {
               {textContent}
             </li>
           )}
-        </>
+        </div>
       ))}
     </ListTag>
   );

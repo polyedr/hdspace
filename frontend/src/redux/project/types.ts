@@ -3,7 +3,7 @@ import { CSSProperties } from 'react';
 import { IPlainAction, IPlainFailAction, IAction } from '$shared/redux';
 import { IChooseElement } from '$components/ModalAddElements/ModalAddElements/ModalAddElements';
 import { CssLikeStyles } from '$utils/StyleHelper';
-import { LibraryElements } from '$domain/libraryElements';
+import { LibraryElements, ElementChild } from '$domain/libraryElements';
 
 export type ReduxState = {
   data: {
@@ -340,8 +340,10 @@ export type ServerStructType =
   | 'container'
   | 'undefined'
   | 'image'
-  | 'menu'
-  | 'menuItem'
+  | 'selectMenu'
+  | 'selectItem'
+  | 'dropdownMenu'
+  | 'dropdownItem'
   | 'button'
   | 'textinput'
   | 'textarea'
@@ -420,7 +422,7 @@ export interface IScenarioElement { // compare with entity on backend
   image: string | null,
   parameters: { parent_id: number } & ElementParameters,
   styles: CssLikeStyles,
-  children: IScenarioElement[],
+  children: ElementChild[],
 }
 
 export interface IScenarioElements {
