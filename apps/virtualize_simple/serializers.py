@@ -248,7 +248,7 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                         # The first rectangle square
                         width1, height1 = x2 - x1, y2 - y1
 
-                        # The first rectangle square
+                        # The second rectangle square
                         width2, height2 = x4 - x3, y4 - y3
 
                         # Check if width, height of the overlapped area less or equal 0
@@ -258,7 +258,7 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                             square1 = width1 * height1
                             square2 = width2 * height2
 
-                            if (square > square1 * SQUARES_OVERLAP_THRESHOLD) and (
+                            if (square > square1 * SQUARES_OVERLAP_THRESHOLD) or (
                                 square > square2 * SQUARES_OVERLAP_THRESHOLD
                             ):
                                 if square1 < square2:
@@ -436,7 +436,7 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                             {
                                 "struct_type": "checkbox",
                                 "func_type": "checkbox",
-                                "parameters": {"textContent": letters_str, "roi": roi},
+                                "parameters": {"name": letters_str, "roi": roi, "defaultChecked": False},
                                 "styles": {
                                     "width": str((width_elem + height_elem) / 2) + "px",
                                     "height": str((width_elem + height_elem) / 2) + "px",
