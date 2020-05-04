@@ -496,7 +496,7 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                                     "width": str((width_elem + height_elem) / 2) + "px",
                                     "height": str((width_elem + height_elem) / 2) + "px",
                                     "margin-right": str((width_elem + height_elem) / 4) + "px",
-                                    "background-color": "rgba(" + bcolour_element_value + ")",
+                                    "background-color": "#555", # Define the default colour of the checkbox borders
                                 },
                             }
                         )
@@ -789,6 +789,7 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                 if(recognized_elements[h_group_key[0]]["struct_type"] in {"checkbox"}) or (recognized_elements[h_group_key[1]]["struct_type"] in {"checkbox"}):
                     scenario_horizontal.styles["display"] = "flex"
                     scenario_horizontal.styles["justify-content"] = "flex-start"
+                    scenario_horizontal.styles["align-items"] = "center"
 
                 # Create elements for horizontal groups scenarios if they're not in vertical grouping already
                 for element_data_horizontal in h_group_key:
