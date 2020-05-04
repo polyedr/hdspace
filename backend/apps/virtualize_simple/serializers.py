@@ -376,10 +376,6 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                     # print(pytesseract.image_to_string(roi_our))
 
                     text = pytesseract.image_to_string(roi_our, config=config_tesseract)
-                    word_attributes = pytesseract.image_to_data(roi_our, config=config_tesseract)
-
-                    # word_attributes = text.WordFontAttributes()
-                    print("word_attributes: ", word_attributes)
 
                     width_elem = x2 - x1
                     height_elem = y2 - y1
@@ -645,8 +641,8 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                     # Horizontal groups detection
                     # Check if the roi is text or input or select
                     # Check if the roi1 is text or input or select
-                    if recognized_element["struct_type"] in {"textinput", "select", "checkbox", "ocrtext"} and recognized_element1[
-                            "struct_type"] in {"textinput", "select", "checkbox", "ocrtext"} and (idx != idx1):
+                    if recognized_element["struct_type"] in {"textinput", "select", "checkbox", "ocrtext", "button"} and recognized_element1[
+                            "struct_type"] in {"textinput", "select", "checkbox", "ocrtext", "button"} and (idx != idx1):
                         # Check if the elements were not assigned to the horizontal groups before
                         # Flatten horizontal group keys
                         fhgk = set(i for sub in horizontal_groups.keys() for i in sub)
