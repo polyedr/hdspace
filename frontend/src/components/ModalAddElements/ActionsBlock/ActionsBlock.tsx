@@ -18,7 +18,7 @@ import {
 import { isIncludes } from '$utils/StringHelper';
 import { PropertiesPanelProps } from '$features/applyProperties';
 import { ENTITIES } from '$domain/core';
-import { ElementsToAdd } from '$domain/libraryElements';
+import { LibraryElements } from '$domain/libraryElements';
 
 const styles = require('./ActionsBlock.scss');
 
@@ -31,7 +31,7 @@ type Props = {
   scenarioTypeId: string | null;
   scenarioName: string;
   scenarioState: string;
-  libraryElements: ElementsToAdd;
+  libraryElements: LibraryElements;
   startTemplate: string;
   changeTab: any;
   setSelectedElements(elements: IChooseElement[]): void;

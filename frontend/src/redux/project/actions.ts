@@ -2,7 +2,7 @@ import { CSSProperties } from 'react';
 
 import { IChooseElement } from '$components/ModalAddElements/ModalAddElements/ModalAddElements';
 import { CssLikeStyles } from '$utils/StyleHelper';
-import { LibraryElements } from '$domain/libraryElements';
+import { LibraryEntities } from '$domain/libraryElements';
 
 import * as T from './types';
 
@@ -10,7 +10,7 @@ export const getLibraryElements = (): T.LoadLibraryElements => ({
   type: 'PROJECTS:LOAD_LIBRARY_ELEMENTS',
 });
 
-export const setLibraryElements = (libraryElements: LibraryElements): T.LoadLibraryElementsSuccess => ({
+export const setLibraryElements = (libraryElements: LibraryEntities): T.LoadLibraryElementsSuccess => ({
   type: 'PROJECTS:LOAD_LIBRARY_ELEMENTS_SUCCESS',
   payload: { libraryElements },
 });
@@ -214,6 +214,16 @@ export const deleteActiveItem = (): T.DeleteActiveItem => ({
 export const addElementsIntoContainer = (elements: IChooseElement[]): T.AddElementsIntoContainer => ({
   type: 'PROJECTS:ADD_ELEMENTS_INTO_CONTAINER',
   payload: { elements },
+});
+
+export const addChildToElement = (childType: T.ServerStructType, elementID: number, parameters: {}): T.AddChildToElement => ({
+  type: 'PROJECTS:ADD_CHILD_TO_ELEMENT',
+  payload: { childType, elementID, parameters },
+});
+
+export const deleteChildFromElement = (childID: number, elementID: number): T.DeleteChildFromElement => ({
+  type: 'PROJECTS:DELETE_CHILD_TO_ELEMENT',
+  payload: { childID, elementID },
 });
 
 export const renameScenario = (scenarioID: number, name: string): T.RenameScenario => ({

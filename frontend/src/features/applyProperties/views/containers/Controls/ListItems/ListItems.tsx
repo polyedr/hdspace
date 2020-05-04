@@ -4,55 +4,64 @@ import { ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, Checkbox 
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import { AppReduxState } from '$shared/types/app';
-import { ListItem, ElementParameters } from '$redux/project/types';
-import { selectors } from '$redux/project/';
+import { selectors, actionsCreators } from '$redux/project/';
 import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
 import { Button } from '$components/UI/Button';
 import { Icon } from '$components/UI/Icon';
 import { sharedClasses } from '$styles/sharedClasses';
+import { ListItemChild } from '$domain/libraryElements';
 
 const styles = require('./ListItems.scss');
 
 type StateProps = {
-  listItems?: ListItem[];
+  itemID: number;
+  listItems: ListItemChild[];
 };
 
 function mapState(state: AppReduxState): StateProps {
-  const activeItemParams = selectors.selectActiveItemParams(state) as ElementParameters;
+  const activeItem = selectors.selectActiveItem(state);
+  const itemID = parseInt(activeItem.itemId);
+  const scenarioElement = selectors.selectScenarioElement(state, parseInt(activeItem.itemId));
+  const listItems = scenarioElement.children.filter(child => child.struct_type === 'listItem') as ListItemChild[];
 
   return {
-    listItems: activeItemParams.listItems,
+    itemID,
+    listItems,
   };
 }
 
-type Props = StateProps & PropertiesChangeProps;
+const mapDispatch = {
+  addChildToElement: actionsCreators.addChildToElement,
+  deleteChildFromElement: actionsCreators.deleteChildFromElement,
+};
+
+type Props = StateProps & PropertiesChangeProps & typeof mapDispatch;
 
 const ListItems: React.FC<Props> = ({
-  listItems = [],
+  itemID,
+  listItems,
   updateParams,
+  addChildToElement,
+  deleteChildFromElement,
 }) => {
-  const handleTextContentFieldChange = (itemIndex: number, { target: { value } }: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const updatedItems = listItems.map((item, index) => index === itemIndex ? { ...item, textContent: value as string } : item);
-    updateParams({ listItems: updatedItems });
+  const handleTextContentFieldChange = (id: number, { target: { value } }: React.ChangeEvent<HTMLTextAreaElement>) => {
+    updateParams({ textContent: value }, id);
   };
 
-  const handleUrlFieldChange = (itemIndex: number, { target: { value } }: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const updatedItems = listItems.map((item, index) => index === itemIndex ? { ...item, link: value } : item);
-    updateParams({ listItems: updatedItems });
+  const handleUrlFieldChange = (id: number, { target: { value } }: React.ChangeEvent<HTMLTextAreaElement>) => {
+    updateParams({ link: value }, id);
   };
 
   const handleAddButtonClick = () => {
-    updateParams({ listItems: [ ...listItems, { textContent: 'New item', isLink: false, link: '' }] });
+    addChildToElement('listItem', itemID, { textContent: 'New item', isLink: false, link: '' });
   };
 
-  const handleDeleteButtonClick = (itemIndex: number) => {
-    const newItems = listItems.filter((item, index) => index !== itemIndex);
-    updateParams({ listItems: newItems });
+  const handleDeleteButtonClick = (childID: number) => {
+    deleteChildFromElement(childID, itemID);
   };
 
-  const handleCheckboxChange = (itemIndex: number, { target: { checked } }: React.ChangeEvent<HTMLInputElement>) => {
-    const updatedItems = listItems.map((item, index) => index === itemIndex ? { ...item, isLink: checked } : item);
-    updateParams({ listItems: updatedItems });
+  const handleCheckboxChange = (id: number, { target: { checked } }: React.ChangeEvent<HTMLInputElement>) => {
+    updateParams({ isLink: checked }, id);
   };
 
   return (
@@ -67,8 +76,8 @@ const ListItems: React.FC<Props> = ({
           <Icon icon="add" />
         </Button>
       </div>
-      {listItems.map(({ textContent, isLink, link }, index) => (
-        <ExpansionPanel key={index}>
+      {listItems.map(({ id, parameters: { textContent, isLink, link } }) => (
+        <ExpansionPanel key={id}>
           <ExpansionPanelSummary
             expandIcon={<ExpandMoreIcon />}
             aria-controls="panel1a-content"
@@ -76,13 +85,15 @@ const ListItems: React.FC<Props> = ({
           >
             <div className={styles.listItemsSummary}>
               <div className={styles.listItemHeading}>{textContent}</div>
-              <Button
-                className={sharedClasses.propsButton}
-                styleType="none"
-                onClick={() => handleDeleteButtonClick(index)}
-              >
-                <Icon icon="delete" />
-              </Button>
+              {listItems.length > 1 && (
+                <Button
+                  className={sharedClasses.propsButton}
+                  styleType="none"
+                  onClick={() => handleDeleteButtonClick(id)}
+                >
+                  <Icon icon="delete" />
+                </Button>
+              )}
             </div>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails>
@@ -93,7 +104,7 @@ const ListItems: React.FC<Props> = ({
                   className={styles.listItemsField}
                   name="text-content"
                   value={textContent}
-                  onChange={event => handleTextContentFieldChange(index, event)}
+                  onChange={event => handleTextContentFieldChange(id, event)}
                 />
               </div>
               <div className={sharedClasses.propsContainer}>
@@ -103,7 +114,7 @@ const ListItems: React.FC<Props> = ({
                   value="make link"
                   name="make link"
                   checked={isLink}
-                  onChange={event => handleCheckboxChange(index, event)}
+                  onChange={event => handleCheckboxChange(id, event)}
                 />
               </div>
               {isLink && (
@@ -114,7 +125,7 @@ const ListItems: React.FC<Props> = ({
                       className={styles.listItemsField}
                       name="link"
                       value={link}
-                      onChange={event => handleUrlFieldChange(index, event)}
+                      onChange={event => handleUrlFieldChange(id, event)}
                     />
                   </div>
                 </>
@@ -127,5 +138,5 @@ const ListItems: React.FC<Props> = ({
   );
 };
 
-const Component = connect(mapState)(withConfigurableProperties(ListItems));
+const Component = connect(mapState, mapDispatch)(withConfigurableProperties(ListItems));
 export { Component as ListItems };

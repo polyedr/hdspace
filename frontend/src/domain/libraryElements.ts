@@ -46,7 +46,7 @@ type LibraryListItemChild = Omit<CommonLibraryElement<'listItem', []>, 'paramete
 export type SelectChild = LibrarySelectMenuChild | LibrarySelectItemChild;
 export type DropdownChild = LibraryDropdownMenuChild | LibraryDropdownItemChild;
 
-export type ElementChild = never | SelectItemChild | DropdownItemChild | ListItemChild;
+export type ElementChild = SelectItemChild | DropdownItemChild | ListItemChild;
 export type AllChildren = (never | SelectChild | DropdownChild | LibraryListItemChild)[];
 
 export type LibraryRootElement = CommonLibraryElement<'root', never[]> ;
@@ -72,7 +72,7 @@ export type LibraryClockElement = CommonLibraryElement<'clock', never[]>;
 export type LibraryDropdownElement = CommonLibraryElement<'dropdown', DropdownChild[]>;
 export type LibraryUndefinedElement = CommonLibraryElement<'undefined', never[]>;
 
-export type LibraryElements = {
+export type LibraryEntities = {
   root: LibraryRootElement,
   container: LibraryRootElement,
   image: LibraryImageElement,
@@ -101,10 +101,11 @@ export type LibraryElements = {
   undefined: LibraryUndefinedElement,
 };
 
-export type ElementsToAdd = Omit<LibraryElements, 'root' | 'container'>;
+export type LibraryElements = Omit<LibraryEntities, 'root' | 'container'>;
+export type ElementsToAdd = Omit<LibraryElements, 'dropdownMenu' | 'dropdownItem' | 'listItem' | 'selectMenu' | 'selectItem'>;
 
 // WARN: every time you add or remove some LibraryElements in prod, you must write migration in db
-export const LIBRARY_ELEMENTS: ElementsToAdd = {
+export const LIBRARY_ELEMENTS: LibraryElements = {
   image: {
     buoyancy: 0,
     func_type: 'image',

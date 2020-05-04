@@ -1,62 +1,76 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import { AppReduxState } from '$shared/types/app';
-import { Option, ElementParameters } from '$redux/project/types';
-import { selectors } from '$redux/project/';
+import { selectors, actionsCreators } from '$redux/project/';
 import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
 import { generateUniqueName } from '$utils/generateUniqueName';
 import { Button } from '$components/UI/Button';
 import { Icon } from '$components/UI/Icon';
 import { sharedClasses } from '$styles/sharedClasses';
+import { SelectItemChild } from '$domain/libraryElements';
 
 const styles = require('./SelectOptions.scss');
 
 type StateProps = {
-  selectOptions?: Option[];
+  itemID: number;
+  selectOptions: SelectItemChild[];
 };
 
 function mapState(state: AppReduxState): StateProps {
-  const activeItemParams = selectors.selectActiveItemParams(state) as ElementParameters;
+  const activeItem = selectors.selectActiveItem(state);
+  const itemID = parseInt(activeItem.itemId);
+  const scenarioElement = selectors.selectScenarioElement(state, parseInt(activeItem.itemId));
+  const selectOptions = scenarioElement.children.filter(child => child.struct_type === 'selectItem') as SelectItemChild[];
 
   return {
-    selectOptions: activeItemParams.options,
+    itemID,
+    selectOptions,
   };
 }
 
-type Props = StateProps & PropertiesChangeProps;
+const mapDispatch = {
+  addChildToElement: actionsCreators.addChildToElement,
+  deleteChildFromElement: actionsCreators.deleteChildFromElement,
+};
+
+type Props = StateProps & PropertiesChangeProps & typeof mapDispatch;
 
 const SelectOptions: React.FC<Props> = ({
+  itemID,
   selectOptions = [],
   updateParams,
+  addChildToElement,
+  deleteChildFromElement,
 }) => {
-  const [options, setOptions] = useState(selectOptions || []);
+  const [options, setOptions] = useState(selectOptions);
 
-  const handleNameFieldChange = (name: string, { target: { value } }: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const updatedOptions = selectOptions.map(option => option.name === name ? { ...option, name: value } : option);
-    updateParams({ options: updatedOptions });
+  useEffect(() => {
+    setOptions(selectOptions);
+  }, [selectOptions])
+
+  const handleNameFieldChange = (id: number, { target: { value } }: React.ChangeEvent<HTMLTextAreaElement>) => {
+    updateParams({ name: value }, id);
   };
 
-  const handleValueFieldBlur = (name: string, { target: { value } }: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const updatedOptions = selectOptions.map(option => option.name === name ? { ...option, value } : option);
-    updateParams({ options: updatedOptions });
+  const handleValueFieldBlur = (id: number, { target: { value } }: React.ChangeEvent<HTMLTextAreaElement>) => {
+    updateParams({ value }, id);
   };
 
-  const handleValueFieldChange = (name: string, { target: { value } }: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const updatedOptions = options.map(option => option.name === name ? { ...option, value } : option);
+  const handleValueFieldChange = (id: number, { target: { value } }: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const updatedOptions = options.map(option => option.id === id ? { ...option, parameters: { ...option.parameters, value } } : option);
     setOptions(updatedOptions);
   };
 
   const handleAddButtonClick = () => {
-    const newOptionName = generateUniqueName('New option', selectOptions.map(option => option.name) || []);
-    updateParams({ options: [ ...selectOptions, { name: newOptionName, value: newOptionName } ] });
+    const newOptionName = generateUniqueName('New option', selectOptions.map(option => option.parameters.name) || []);
+    addChildToElement('selectItem', itemID, { name: newOptionName, value: newOptionName });
   };
 
-  const handleDeleteButtonClick = (optionName: string) => {
-    const newOptions = selectOptions.filter(({ name }) => name !== optionName);
-    updateParams({ options: newOptions });
+  const handleDeleteButtonClick = (childID: number) => {
+    deleteChildFromElement(childID, itemID);
   };
 
   return (
@@ -71,8 +85,8 @@ const SelectOptions: React.FC<Props> = ({
           <Icon icon="add" />
         </Button>
       </div>
-      {selectOptions.map(({ name, value }) => (
-        <ExpansionPanel key={value}>
+      {selectOptions.map(({ id, parameters: { name } }) => (
+        <ExpansionPanel key={id}>
           <ExpansionPanelSummary
             expandIcon={<ExpandMoreIcon />}
             aria-controls="panel1a-content"
@@ -80,13 +94,15 @@ const SelectOptions: React.FC<Props> = ({
           >
             <div className={styles.optionSummary}>
               {name}
-              <Button
-                className={sharedClasses.propsButton}
-                styleType="none"
-                onClick={() => handleDeleteButtonClick(name)}
-              >
-                <Icon icon="delete" />
-              </Button>
+              {selectOptions.length > 1 && (
+                <Button
+                  className={sharedClasses.propsButton}
+                  styleType="none"
+                  onClick={() => handleDeleteButtonClick(id)}
+                >
+                  <Icon icon="delete" />
+                </Button>
+              )}
             </div>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails>
@@ -97,7 +113,7 @@ const SelectOptions: React.FC<Props> = ({
                   className={styles.optionField}
                   name="name"
                   value={name}
-                  onChange={event => handleNameFieldChange(name, event)}
+                  onChange={event => handleNameFieldChange(id, event)}
                 />
               </div>
               <p className={sharedClasses.propsTitle}>Option value</p>
@@ -105,9 +121,9 @@ const SelectOptions: React.FC<Props> = ({
                 <textarea
                   className={styles.optionField}
                   name="value"
-                  value={options.find(option => option.name === name)?.value}
-                  onBlur={event => handleValueFieldBlur(name, event)}
-                  onChange={event => handleValueFieldChange(name, event)}
+                  value={options.find(option => option.id === id)?.parameters.value}
+                  onBlur={event => handleValueFieldBlur(id, event)}
+                  onChange={event => handleValueFieldChange(id, event)}
                 />
                 </div>
             </div>
@@ -118,5 +134,5 @@ const SelectOptions: React.FC<Props> = ({
   );
 };
 
-const Component = connect(mapState)(withConfigurableProperties(SelectOptions));
+const Component = connect(mapState, mapDispatch)(withConfigurableProperties(SelectOptions));
 export { Component as SelectOptions };

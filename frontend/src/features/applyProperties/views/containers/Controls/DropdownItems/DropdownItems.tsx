@@ -2,46 +2,57 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import { AppReduxState } from '$shared/types/app';
-import { ElementParameters } from '$redux/project/types';
-import { selectors } from '$redux/project/';
+import { selectors, actionsCreators } from '$redux/project/';
 import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
 import { Button } from '$components/UI/Button';
 import { Icon } from '$components/UI/Icon';
 import { sharedClasses } from '$styles/sharedClasses';
+import { DropdownItemChild } from '$domain/libraryElements';
 
 const styles = require('./DropdownItems.scss');
 
 type StateProps = {
-  dropdownItems?: string[];
+  itemID: number;
+  dropdownItems?: DropdownItemChild[];
 };
 
 function mapState(state: AppReduxState): StateProps {
-  const activeItemParams = selectors.selectActiveItemParams(state) as ElementParameters;
+  const activeItem = selectors.selectActiveItem(state);
+  const itemID = parseInt(activeItem.itemId);
+  const scenarioElement = selectors.selectScenarioElement(state, parseInt(activeItem.itemId));
+  const dropdownItems = scenarioElement.children.filter(child => child.struct_type === 'dropdownItem') as DropdownItemChild[];
 
   return {
-    dropdownItems: activeItemParams.dropdownItems,
+    itemID,
+    dropdownItems,
   };
 }
 
-type Props = StateProps & PropertiesChangeProps;
+const mapDispatch = {
+  addChildToElement: actionsCreators.addChildToElement,
+  deleteChildFromElement: actionsCreators.deleteChildFromElement,
+};
+
+type Props = StateProps & PropertiesChangeProps & typeof mapDispatch;
 
 const DropdownItems: React.FC<Props> = ({
+  itemID,
   dropdownItems = [],
   updateParams,
+  addChildToElement,
+  deleteChildFromElement,
 }) => {
 
-  const handleTextFieldChange = (itemIndex: number, { target: { value } }: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const updatedItems = dropdownItems.map((item, index) => index === itemIndex ? value : item);
-    updateParams({ dropdownItems: updatedItems });
+  const handleTextFieldChange = (id: number, { target: { value } }: React.ChangeEvent<HTMLTextAreaElement>) => {
+    updateParams({ textContent: value }, id);
   };
 
   const handleAddButtonClick = () => {
-    updateParams({ dropdownItems: [ ...dropdownItems, 'New item' ] });
+    addChildToElement('dropdownItem', itemID, { textContent: 'New item' });
   };
 
-  const handleDeleteButtonClick = (itemIndex: number) => {
-    const newItems = dropdownItems.filter((item, index) => index !== itemIndex);
-    updateParams({ dropdownItems: newItems });
+  const handleDeleteButtonClick = (childID: number) => {
+    deleteChildFromElement(childID, itemID);
   };
 
   return (
@@ -56,23 +67,25 @@ const DropdownItems: React.FC<Props> = ({
           <Icon icon="add" />
         </Button>
       </div>
-      {dropdownItems.map((item, index) => (
-        <div key={index}>
+      {dropdownItems.map(({ id, parameters: { textContent } }) => (
+        <div key={id}>
           <div className={styles.itemsBlock}>
             <div className={sharedClasses.propsContainer}>
               <textarea
                 className={styles.itemsField}
                 name="item text"
-                value={item}
-                onChange={event => handleTextFieldChange(index, event)}
+                value={textContent}
+                onChange={event => handleTextFieldChange(id, event)}
               />
-              <Button
-                className={sharedClasses.propsButton}
-                styleType="none"
-                onClick={() => handleDeleteButtonClick(index)}
-              >
-                <Icon icon="delete" />
-              </Button>
+              {dropdownItems.length > 1 && (
+                <Button
+                  className={sharedClasses.propsButton}
+                  styleType="none"
+                  onClick={() => handleDeleteButtonClick(id)}
+                >
+                  <Icon icon="delete" />
+                </Button>
+              )}
             </div>
           </div>
         </div>
@@ -81,5 +94,5 @@ const DropdownItems: React.FC<Props> = ({
   );
 };
 
-const Component = connect(mapState)(withConfigurableProperties(DropdownItems));
+const Component = connect(mapState, mapDispatch)(withConfigurableProperties(DropdownItems));
 export { Component as DropdownItems };

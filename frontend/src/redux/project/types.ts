@@ -3,11 +3,11 @@ import { CSSProperties } from 'react';
 import { IPlainAction, IPlainFailAction, IAction } from '$shared/redux';
 import { IChooseElement } from '$components/ModalAddElements/ModalAddElements/ModalAddElements';
 import { CssLikeStyles } from '$utils/StyleHelper';
-import { LibraryElements, ElementChild } from '$domain/libraryElements';
+import { LibraryEntities, ElementChild } from '$domain/libraryElements';
 
 export type ReduxState = {
   data: {
-    libraryElements: LibraryElements;
+    libraryElements: LibraryEntities;
     listProject: IListProject[];
   };
   ui: {
@@ -41,7 +41,7 @@ export type SavedElementsValues = { [elementID: string]: { id: number, savedValu
 
 export type LoadLibraryElements = IPlainAction<'PROJECTS:LOAD_LIBRARY_ELEMENTS'>;
 export type LoadLibraryElementsSuccess = IAction<
-  'PROJECTS:LOAD_LIBRARY_ELEMENTS_SUCCESS', { libraryElements: LibraryElements }
+  'PROJECTS:LOAD_LIBRARY_ELEMENTS_SUCCESS', { libraryElements: LibraryEntities }
 >;
 export type LoadLibraryElementsFail = IPlainFailAction<'PROJECTS:LOAD_LIBRARY_ELEMENTS_FAIL'>;
 
@@ -99,6 +99,10 @@ export type UpdateSavedElementValues = IAction<
 export type DeleteActiveItem = IPlainAction<'PROJECTS:DELETE_ACTIVE_ITEM'>;
 export type AddElementsIntoContainer = IAction<
   'PROJECTS:ADD_ELEMENTS_INTO_CONTAINER', { elements: IChooseElement[] }>;
+export type AddChildToElement = IAction<
+'PROJECTS:ADD_CHILD_TO_ELEMENT', { childType: ServerStructType, elementID: number, parameters: {} }>;
+export type DeleteChildFromElement = IAction<
+'PROJECTS:DELETE_CHILD_TO_ELEMENT', { childID: number, elementID: number }>;
 export type RenameScenario = IAction<'PROJECTS:RENAME_SCENARIO', { scenarioID: number, name: string }>;
 export type SetScenarios = IAction<'PROJECTS:SET_SCENARIOS', { scenarios: IScenarios }>;
 export type SetModifyElements = IAction<'PROJECTS:SET_MODIFY_ELEMENTS', { elements: number[] }>;
@@ -155,6 +159,8 @@ export type Action =
   | UpdateElementParameters
   | AddElementsIntoContainer
   | DeleteActiveItem
+  | AddChildToElement
+  | DeleteChildFromElement
   | RenameScenario
   | SetScenarios
   | SetModifyElements
@@ -309,6 +315,8 @@ export interface IScreenProps {
   isOrdered?: boolean,
   labelFor?: string,
   dropdownItems?: string[],
+  link?: string,
+  isLink?: boolean,
 }
 
 export interface ISortableItem {

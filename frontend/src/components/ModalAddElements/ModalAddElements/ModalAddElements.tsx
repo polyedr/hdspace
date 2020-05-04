@@ -12,7 +12,7 @@ import { selectors, actionsCreators } from '$redux/project';
 import { AppReduxState } from '$shared/types/app';
 import { PropertiesPanelProps } from '$features/applyProperties';
 import { ServerStructType } from '$redux/project/types';
-import { ElementsToAdd } from '$domain/libraryElements';
+import { LibraryElements } from '$domain/libraryElements';
 
 const styles = require('./ModalAddElements.scss');
 
@@ -37,7 +37,7 @@ const mapDispatchToProps = {
 type OwnProps = {
   active: boolean;
   scenarios: PropertiesPanelProps['scenarios'];
-  libraryElements: ElementsToAdd;
+  libraryElements: LibraryElements;
   onClose(): void;
   onConfirm(elementsToAdd: IChooseElement[]): void;
 };
