@@ -3,7 +3,8 @@ import { CSSProperties } from 'react';
 import { IPlainAction, IPlainFailAction, IAction } from '$shared/redux';
 import { IChooseElement } from '$components/ModalAddElements/ModalAddElements/ModalAddElements';
 import { CssLikeStyles } from '$utils/StyleHelper';
-import { LibraryElements, ElementChild } from '$domain/libraryElements';
+import { LibraryElements } from '$domain/libraryElements';
+import { Entity } from '$domain/core';
 
 export type ReduxState = {
   data: {
@@ -335,33 +336,7 @@ export type LibraryElement = {
   name: ServerStructType;
 };
 
-export type ServerStructType =
-  | 'root'
-  | 'container'
-  | 'undefined'
-  | 'image'
-  | 'selectMenu'
-  | 'selectItem'
-  | 'dropdownMenu'
-  | 'dropdownItem'
-  | 'button'
-  | 'textinput'
-  | 'textarea'
-  | 'hyperlink'
-  | 'select'
-  | 'map'
-  | 'calendar'
-  | 'clock'
-  | 'checkbox'
-  | 'radiobutton'
-  | 'heading'
-  | 'paragraph'
-  | 'ocrtext'
-  | 'text_block'
-  | 'list'
-  | 'listItem'
-  | 'label'
-  | 'dropdown';
+export type ServerStructType = Entity;
 
 export interface IStylesElement {
   marginTop?: string,
@@ -422,7 +397,7 @@ export interface IScenarioElement { // compare with entity on backend
   image: string | null,
   parameters: { parent_id: number } & ElementParameters,
   styles: CssLikeStyles,
-  children: ElementChild[],
+  children: IScenarioElement[],
 }
 
 export interface IScenarioElements {

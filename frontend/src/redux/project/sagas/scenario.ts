@@ -138,7 +138,7 @@ export function* addElementsIntoContainerSaga(action: ReturnType<typeof Actions.
         ...params,
       },
       styles,
-      children: childrenToAdd as unknown as ElementChild[],
+      children: childrenToAdd,
     };
     return acc.concat(x);
   }, []);

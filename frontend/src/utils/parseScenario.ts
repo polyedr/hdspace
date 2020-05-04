@@ -18,7 +18,7 @@ import {
 import { IChooseElement } from '$components/ModalAddElements/ModalAddElements/ModalAddElements';
 import { CssLikeStyles } from '$utils/StyleHelper';
 import { ENTITIES, Entity } from '$domain/core';
-import { ElementsToAdd, ElementChild } from '$domain/libraryElements';
+import { ElementsToAdd } from '$domain/libraryElements';
 
 export type GroupElement = {
   key: string,
@@ -195,7 +195,7 @@ export const getParams = (
   struct_type: ServerStructType,
   parameters: any,
   styles: CssLikeStyles,
-  children?: ElementChild[],
+  children?: IScenarioElement[],
   name: string,
   parent_id: number,
   type: string,

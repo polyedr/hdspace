@@ -75,8 +75,33 @@ const controlAffectsOnStyles = (controlName: Control) => (
   CONTROLS_AFFECT_ON_STYLES.find(x => x === controlName) !== undefined
 );
 
-export type Entity = ServerStructType;
-export type ElementEntity = Exclude<Entity, 'root' | 'container' | 'selectMenu' | 'selectItem' | 'dropdownMenu' | 'dropdownItem' | 'listItem'>;
+export type ContainerEntity = 'root' | 'container';
+
+export type ElementEntity =
+| 'undefined'
+| 'image'
+| 'button'
+| 'textinput'
+| 'textarea'
+| 'hyperlink'
+| 'select'
+| 'map'
+| 'calendar'
+| 'clock'
+| 'checkbox'
+| 'radiobutton'
+| 'heading'
+| 'paragraph'
+| 'ocrtext'
+| 'text_block'
+| 'list'
+| 'label'
+| 'dropdown';
+
+export type ChildEntity = 'selectMenu' | 'selectItem' | 'dropdownMenu' | 'dropdownItem' | 'listItem';
+
+export type Entity = ContainerEntity | ElementEntity | ChildEntity;
+
 export type SubEntity = 'root';
 
 export type AvailableControls = {
