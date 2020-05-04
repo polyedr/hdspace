@@ -37,6 +37,8 @@ f_dictionary = {
 
 # The constant to remove rectangle when overlaps more than 90% with larger rectangle
 SQUARES_OVERLAP_THRESHOLD = 0.9
+# The constant to remove text rectangle when overlaps more than 5% with larger rectangle
+SQUARES_OVERLAP_THRESHOLD_TEXT = 0.05
 
 # The constant to calculate horizontal overlap during the vertical groups detection
 VERICAL_GROUPS_HORIZONTAL_OVERLAP_THRESHOLD = 0.75
@@ -222,11 +224,64 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
             results = model.detect([img], verbose=1)
             r = results[0]
 
-            # Calculation of the excluded indices to remove overlapped elements
+            # For the overlapped text, should remove the largest regions related to the text first
+            # Or detect the text for these blocks with opencv and re-calculate the borders
+            # First fill the list excluded_indices for the text elements only
             excluded_indices = []
+            for idx1, (rect1, class_id1) in enumerate(zip(r["rois"], r["class_ids"])):
+                for idx2, (rect2, class_id2)  in enumerate(zip(r["rois"], r["class_ids"])):
+                    if (idx1 < idx2) and (class_id1 == 3) and (class_id2 == 3): # 3 means the text class
+                        x1 = rect1[1]
+                        y1 = rect1[0]
+                        x2 = rect1[3]
+                        y2 = rect1[2]
+                        x3 = rect2[1]
+                        y3 = rect2[0]
+                        x4 = rect2[3]
+                        y4 = rect2[2]
+
+                        # Borders of the rectangles overlapped area
+                        left = max(x1, x3)
+                        bottom = max(y1, y3)
+                        right = min(x2, x4)
+                        top = min(y2, y4)
+                        # Sizes of the rectangles overlapped area
+                        width = right - left
+                        height = top - bottom
+
+                        # The first rectangle square
+                        width1, height1 = x2 - x1, y2 - y1
+
+                        # The second rectangle square
+                        width2, height2 = x4 - x3, y4 - y3
+
+                        # Check if width, height of the overlapped area less or equal 0
+                        if not (width <= 0 or height <= 0):
+                            # If the square > 0, calculate the squares of the 3 rectangles
+                            square = width * height
+                            square1 = width1 * height1
+                            square2 = width2 * height2
+
+                            if (square > square1 * SQUARES_OVERLAP_THRESHOLD_TEXT) or (
+                                square > square2 * SQUARES_OVERLAP_THRESHOLD_TEXT
+                            ):
+                                # Remove the largest text block
+                                if square1 < square2:
+                                    excluded_indices.append(idx2)
+                                else:
+                                    excluded_indices.append(idx1)
+                            elif square > square1 * SQUARES_OVERLAP_THRESHOLD_TEXT:
+                                excluded_indices.append(idx2)
+                            elif square > square2 * SQUARES_OVERLAP_THRESHOLD_TEXT:
+                                excluded_indices.append(idx1)
+
+
+            # Second, calculate the non-text blocks overlap
+            # Calculation of the excluded indices to remove overlapped elements
+            # excluded_indices = []
             for idx1, rect1 in enumerate(r["rois"]):
                 for idx2, rect2 in enumerate(r["rois"]):
-                    if idx1 < idx2:
+                    if (idx1 < idx2) and (idx1 not in excluded_indices) and (idx2 not in excluded_indices):
                         x1 = rect1[1]
                         y1 = rect1[0]
                         x2 = rect1[3]
