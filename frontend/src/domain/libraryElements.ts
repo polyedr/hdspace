@@ -1,7 +1,7 @@
 import { ServerStructType } from '$redux/project/types';
 import { CssLikeStyles } from '$utils/StyleHelper';
 
-type CommonLibraryElement<Type extends ServerStructType, ChildrenType> = {
+type CommonLibraryElement<Type extends ServerStructType, ChildrenType=[]> = {
   buoyancy: number,
   func_type: Type,
   struct_type: Type,
@@ -13,7 +13,7 @@ type CommonLibraryElement<Type extends ServerStructType, ChildrenType> = {
   children: ChildrenType,
 }
 
-export type SelectItemChild = Omit<CommonLibraryElement<'selectItem', []>, 'parameters'> & {
+export type SelectItemChild = Omit<CommonLibraryElement<'selectItem'>, 'parameters'> & {
   id: number,
   parameters: {
     name: string,
@@ -21,14 +21,14 @@ export type SelectItemChild = Omit<CommonLibraryElement<'selectItem', []>, 'para
   }
 };
 
-export type DropdownItemChild = Omit<CommonLibraryElement<'dropdownItem', []>, 'parameters'> & {
+export type DropdownItemChild = Omit<CommonLibraryElement<'dropdownItem'>, 'parameters'> & {
   id: number,
   parameters: {
     textContent: string,
   }
 };
 
-export type ListItemChild = Omit<CommonLibraryElement<'listItem', []>, 'parameters'> & {
+export type ListItemChild = Omit<CommonLibraryElement<'listItem'>, 'parameters'> & {
   id: number,
   parameters: {
     textContent: string,
@@ -37,40 +37,40 @@ export type ListItemChild = Omit<CommonLibraryElement<'listItem', []>, 'paramete
   }
 };
 
-type LibraryDropdownMenuChild = Omit<CommonLibraryElement<'dropdownMenu', []>, 'parameters'> & { parameters: {} };
-type LibraryDropdownItemChild = Omit<CommonLibraryElement<'dropdownItem', []>, 'parameters'> & { parameters: {} };
-type LibrarySelectMenuChild = Omit<CommonLibraryElement<'selectMenu', []>, 'parameters'> & { parameters: {} };
-type LibrarySelectItemChild = Omit<CommonLibraryElement<'selectItem', []>, 'parameters'> & { parameters: {} };
-type LibraryListItemChild = Omit<CommonLibraryElement<'listItem', []>, 'parameters'> & { parameters: {} };
+type LibraryDropdownMenuChild = Omit<CommonLibraryElement<'dropdownMenu'>, 'parameters'> & { parameters: {} };
+type LibraryDropdownItemChild = Omit<CommonLibraryElement<'dropdownItem'>, 'parameters'> & { parameters: {} };
+type LibrarySelectMenuChild = Omit<CommonLibraryElement<'selectMenu'>, 'parameters'> & { parameters: {} };
+type LibrarySelectItemChild = Omit<CommonLibraryElement<'selectItem'>, 'parameters'> & { parameters: {} };
+type LibraryListItemChild = Omit<CommonLibraryElement<'listItem'>, 'parameters'> & { parameters: {} };
 
 export type SelectChild = LibrarySelectMenuChild | LibrarySelectItemChild;
 export type DropdownChild = LibraryDropdownMenuChild | LibraryDropdownItemChild;
 
 export type ElementChild = SelectItemChild | DropdownItemChild | ListItemChild;
-export type AllChildren = (never | SelectChild | DropdownChild | LibraryListItemChild)[];
+export type AllChildren = (SelectChild | DropdownChild | LibraryListItemChild)[];
 
-export type LibraryRootElement = CommonLibraryElement<'root', never[]> ;
-export type LibraryContainer = CommonLibraryElement<'container', never[]> ;
-export type LibraryImageElement = CommonLibraryElement<'image', never[]> ;
-export type LibraryButtonElement = CommonLibraryElement<'button', never[]>;
-export type LibraryHyperlinkElement = CommonLibraryElement<'hyperlink', never[]>;
-export type LibraryTextinputElement = CommonLibraryElement<'textinput', never[]>;
-export type LibraryCheckboxElement = CommonLibraryElement<'checkbox', never[]> & { parameters: { defaultChecked: boolean } };
-export type LibraryRadiobuttonElement = CommonLibraryElement<'radiobutton', never[]>;
+export type LibraryRootElement = CommonLibraryElement<'root'> ;
+export type LibraryContainer = CommonLibraryElement<'container'> ;
+export type LibraryImageElement = CommonLibraryElement<'image'> ;
+export type LibraryButtonElement = CommonLibraryElement<'button'>;
+export type LibraryHyperlinkElement = CommonLibraryElement<'hyperlink'>;
+export type LibraryTextinputElement = CommonLibraryElement<'textinput'>;
+export type LibraryCheckboxElement = CommonLibraryElement<'checkbox'> & { parameters: { defaultChecked: boolean } };
+export type LibraryRadiobuttonElement = CommonLibraryElement<'radiobutton'>;
 export type LibrarySelectElement = CommonLibraryElement<'select', SelectChild[]>;
-export type LibraryTextareaElement = CommonLibraryElement<'textarea', never[]>;
-export type LibraryHeadingElement = CommonLibraryElement<'heading', never[]>;
-export type LibraryParagraphElement = CommonLibraryElement<'paragraph', never[]>;
-export type LibraryOcrtextElement = CommonLibraryElement<'ocrtext', never[]>;
-export type LibraryLabelElement = CommonLibraryElement<'label', never[]>;
-export type LibraryTextBlockElement = CommonLibraryElement<'text_block', never[]>;
+export type LibraryTextareaElement = CommonLibraryElement<'textarea'>;
+export type LibraryHeadingElement = CommonLibraryElement<'heading'>;
+export type LibraryParagraphElement = CommonLibraryElement<'paragraph'>;
+export type LibraryOcrtextElement = CommonLibraryElement<'ocrtext'>;
+export type LibraryLabelElement = CommonLibraryElement<'label'>;
+export type LibraryTextBlockElement = CommonLibraryElement<'text_block'>;
 export type LibraryListElement = CommonLibraryElement<'list', LibraryListItemChild[]>;
-export type LibraryListItemElement = CommonLibraryElement<'listItem', never[]>;
-export type LibraryMapElement = CommonLibraryElement<'map', never[]>;
-export type LibraryCalendarElement = CommonLibraryElement<'calendar', never[]>;
-export type LibraryClockElement = CommonLibraryElement<'clock', never[]>;
+export type LibraryListItemElement = CommonLibraryElement<'listItem'>;
+export type LibraryMapElement = CommonLibraryElement<'map'>;
+export type LibraryCalendarElement = CommonLibraryElement<'calendar'>;
+export type LibraryClockElement = CommonLibraryElement<'clock'>;
 export type LibraryDropdownElement = CommonLibraryElement<'dropdown', DropdownChild[]>;
-export type LibraryUndefinedElement = CommonLibraryElement<'undefined', never[]>;
+export type LibraryUndefinedElement = CommonLibraryElement<'undefined'>;
 
 export type LibraryEntities = {
   root: LibraryRootElement,
