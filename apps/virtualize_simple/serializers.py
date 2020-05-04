@@ -1,5 +1,7 @@
 import copy
 import re
+import numpy as np
+from copy import deepcopy
 
 from project.settings import model, MEDIA_ROOT
 from rest_framework import serializers
@@ -8,6 +10,7 @@ from sklearn.cluster import KMeans
 from collections import Counter
 import cv2
 import pytesseract
+from pytesseract import Output
 
 from keras.preprocessing.image import load_img
 from keras_preprocessing.image import img_to_array
@@ -131,6 +134,127 @@ def get_dominant_colour(image, k=4, image_processing_size=None):
     dominant_colour = clt.cluster_centers_[label_counts.most_common(1)[0][0]]
 
     return list(dominant_colour)
+
+"""
+# Find regions that might have text in them
+def get_blocks(img):
+    img_blur = cv2.medianBlur(img, 5).astype('uint8')
+    try:
+        gray = cv2.cvtColor(img_blur, cv2.COLOR_BGR2GRAY)
+    except Exception as ex:
+        print(ex)
+        return
+    # Performing OTSU threshold
+    ret, thresh1 = cv2.threshold(gray, 0, 255, cv2.THRESH_OTSU | cv2.THRESH_BINARY_INV)
+    # Specify structure shape and kernel size.
+    # Kernel size increases or decreases the area
+    # of the rectangle to be detected.
+    # A smaller value like (10, 10) will detect
+    # each word instead of a sentence.
+    rect_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (10, 7))
+    # Appplying dilation on the threshold image
+    dilation = cv2.dilate(thresh1, rect_kernel, iterations = 2)
+    image, contours, hierarchy = cv2.findContours(dilation, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+    return contours
+
+# Cut image into regions and detect text separately
+def get_text_from_cropped(img, contours):
+    # Creating a copy of image
+    im2 = img.copy()
+    im2_blur = cv2.medianBlur(im2, 5).astype('uint8')
+    all_contours = []
+    for cnt in contours:
+        x, y, w, h = cv2.boundingRect(cnt)
+        # Cropping the text block for giving input to OCR
+        cropped = im2_blur[y:y + h, x:x + w]
+        # cv2_imshow(cropped)
+        text_contours = get_text_contours(cropped)
+        # If no text is recognised, crop the region a bit and try detection again
+        if len(text_contours) < 1:
+            h, w, _ = cropped.shape
+            h -= 10
+            w -= 10
+            new_cropped = cropped[5:5 + h, 5:5 + w]
+            try:
+                cropped_inv = cv2.bitwise_not(new_cropped)
+                gray = cv2.cvtColor(cropped_inv, cv2.COLOR_BGR2GRAY)
+                ret, thresh1 = cv2.threshold(gray, 0, 255, cv2.THRESH_OTSU | cv2.THRESH_BINARY_INV)
+                cropped_inv_thresh = cv2.cvtColor(thresh1,cv2.COLOR_GRAY2RGB)
+            except Exception as ex:
+                print('troubles modifying cropped image... {}'.format(ex))
+                continue
+            text_contours = get_text_contours(cropped_inv_thresh, size=(3,3), iterations=5)
+            # If cropping didn't help, come to terms and omit this region
+            if len(text_contours) < 1:
+                pass
+                # print('text not recognised')
+                # show(new_cropped)
+            else:
+                for c in text_contours:
+                    x1, y1, w1, h1 = cv2.boundingRect(c)
+                    x1 = x1 + x + 5
+                    y1 = y1 + y + 5
+                    rect = (x1, y1, w1, h1)
+                    all_contours.append(rect)
+
+        else:
+            for c in text_contours:
+                x1, y1, w1, h1 = cv2.boundingRect(c)
+                x1 = x1 + x
+                y1 = y1 + y
+                rect = (x1, y1, w1, h1)
+                all_contours.append(rect)
+    return all_contours
+
+
+# Find text in an image
+def get_text_contours(img, size=(3,3), iterations=5):
+    # img_blur = cv2.medianBlur(img, 5).astype('uint8')
+    hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+    lower = np.array([0, 0, 0])
+    upper = np.array([230, 230, 230])
+    mask = cv2.inRange(hsv, upper, upper)
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    kernel = np.array([[-1,-1,-1], [-1,9,-1], [-1,-1,-1]])
+    im = cv2.filter2D(gray, -1, kernel).astype(np.uint8)
+    ret,thresh = cv2.threshold(im,127,255,cv2.THRESH_OTSU|cv2.THRESH_BINARY_INV)
+    # show(thresh)
+
+    im_height, im_width, _ = img.shape
+    d = pytesseract.image_to_data(thresh, lang='eng', output_type=Output.DICT)
+    n_boxes = len(d['level'])
+    for i in range(n_boxes):
+        if len(d['text'][i].strip(' —|*vy')) < 1: continue
+        # else: print(d['text'][i])
+        (x, y, w, h) = (d['left'][i], d['top'][i], d['width'][i], d['height'][i])
+        if w==h: continue
+        cv2.rectangle(mask, (x, y), (x + w, y + h), (255, 255, 255), 1)
+    # print('test mask with text blocks')
+    # show(mask)
+    rect_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, size)
+    dilation = cv2.dilate(mask, rect_kernel, iterations = iterations)
+    # print('dilation')
+    # show(dilation)
+
+    image, contours, hierarchy = cv2.findContours(dilation, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+    text_contours = []
+    for cnt in contours:
+        x, y, w, h = cv2.boundingRect(cnt)
+        text_contours.append(cnt)
+    # show(im2)
+    return text_contours
+
+
+# Text recognition itself
+def run_detection(img):
+    # show(img)
+    contours = get_blocks(img)
+    if not contours:
+        print('troubles working with image')
+    else:
+        all_contours = get_text_from_cropped(img, contours)
+        return all_contours
+"""
 
 
 class ScenarioElementSerializer(serializers.ModelSerializer):
@@ -374,6 +498,11 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                     # Apply threshold to get image with only black and white
                     # roi_our = apply_threshold(roi_our, 20)
                     # print(pytesseract.image_to_string(roi_our))
+                    """
+                    # contours = get_blocks(roi_our)
+                    contours = run_detection(roi_our)
+                    print("contours:", contours, "class id:", class_id)
+                    """
 
                     text = pytesseract.image_to_string(roi_our, config=config_tesseract)
 
@@ -381,7 +510,7 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                     height_elem = y2 - y1
 
                     # Detect the height and the width of the image
-                    img_width, img_height, channels = img.shape
+                    img_height, img_width, channels = img.shape
 
                     # Detect the alignment of the element
                     # Text-align: left, if the left interval is smaller than the right interval
@@ -458,7 +587,7 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                                 "struct_type": "ocrtext",
                                 "func_type": func_type,
                                 "parameters": {"textContent": text, "roi": roi},
-                                "styles": {"text-align": aligned_element, "max-width": str(img_width) + "px",},
+                                "styles": {"text-align": aligned_element, "width": str(img_width) + "px",},
                                 #
                                 # "styles": {
                                 #     "width": str(width_elem) + "px",
@@ -520,7 +649,7 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                                 "parameters": {"alt": letters_str, "roi": roi},
                                 "styles": {
                                     "width": str(width_elem) + "px",
-                                    "height": str(height_elem) + "px",
+                                    "max-height": str(height_elem) + "px",
                                     "background-color": "rgba(" + bcolour_element_value + ")",
                                 },
                             }
@@ -672,12 +801,12 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
             # vertical_groups = {(1, 2): -1}
             # horizontal_groups = {(2, 3): -1, (4, 5): -1}
 
-            '''
+
             # test
             print("Horizontal groups are:")
             for key in horizontal_groups:
                 print(key, horizontal_groups[key])
-
+            '''
             print("Vertical groups are:")
             for key in vertical_groups:
                 print(key, vertical_groups[key])
@@ -764,6 +893,9 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                     screen=screen, **scenario_horizontal_data
                 )
                 horizontal_groups[h_group_key] = scenario_horizontal.id
+                # print("id", scenario_horizontal.id)
+                # print("styles", scenario_horizontal.styles, scenario_horizontal_data["styles"])
+                # print("scenario", scenario_horizontal)
 
                 # If here was placed at least one select/input without the functional class assigned
                 # The second should be the text and it should exists with the functional class assigned
@@ -781,11 +913,19 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                             recognized_elements[h_group_key[1]]["func_type"] = \
                                 recognized_elements[h_group_key[0]]["func_type"]
 
+                # Define the default flex alignment for the horizontal group
+                scenario_horizontal.styles["justify-content"] = "space-between"
+                scenario_horizontal.styles["display"] = "flex"
+                scenario_horizontal.styles["align-items"] = "center"
                 # Assign the styles for the case of the horizontal scenario with checkbox
                 if(recognized_elements[h_group_key[0]]["struct_type"] in {"checkbox"}) or (recognized_elements[h_group_key[1]]["struct_type"] in {"checkbox"}):
-                    scenario_horizontal.styles["display"] = "flex"
+                    print("h_group_key", h_group_key, recognized_elements[h_group_key[0]]["struct_type"], recognized_elements[h_group_key[1]]["struct_type"])
                     scenario_horizontal.styles["justify-content"] = "flex-start"
-                    scenario_horizontal.styles["align-items"] = "center"
+
+                #
+                # print("after id", scenario_horizontal.id)
+                # print("after styles", scenario_horizontal.styles)
+                # input()
 
                 # Create elements for horizontal groups scenarios if they're not in vertical grouping already
                 for element_data_horizontal in h_group_key:
@@ -1163,6 +1303,9 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
 
         scenario.parameters["children"] = [sub['ids'] for sub in children]
         scenario.styles["background-color"] = "rgba(" + bcolour_scenario_value + ")"
+        # Assign the max width for the general scenario
+        scenario.styles["max-width"] = str(img_width) + "px"
+
         scenario.save()
 
         # Extract all the inputs, selects from the main scenario
