@@ -4,26 +4,26 @@ import { ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails } from '@m
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import { AppReduxState } from '$shared/types/app';
+import { IScenarioElement } from '$redux/project/types';
 import { selectors, actionsCreators } from '$redux/project/';
 import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
 import { generateUniqueName } from '$utils/generateUniqueName';
 import { Button } from '$components/UI/Button';
 import { Icon } from '$components/UI/Icon';
 import { sharedClasses } from '$styles/sharedClasses';
-import { SelectItemChild } from '$domain/libraryElements';
 
 const styles = require('./SelectOptions.scss');
 
 type StateProps = {
   itemID: number;
-  selectOptions: SelectItemChild[];
+  selectOptions: IScenarioElement[];
 };
 
 function mapState(state: AppReduxState): StateProps {
   const activeItem = selectors.selectActiveItem(state);
   const itemID = parseInt(activeItem.itemId);
   const scenarioElement = selectors.selectScenarioElement(state, parseInt(activeItem.itemId));
-  const selectOptions = scenarioElement.children.filter(child => child.struct_type === 'selectItem') as SelectItemChild[];
+  const selectOptions = scenarioElement.children.filter(child => child.struct_type === 'selectItem');
 
   return {
     itemID,
@@ -65,7 +65,7 @@ const SelectOptions: React.FC<Props> = ({
   };
 
   const handleAddButtonClick = () => {
-    const newOptionName = generateUniqueName('New option', selectOptions.map(option => option.parameters.name) || []);
+    const newOptionName = generateUniqueName('New option', selectOptions.map(option => option.parameters.name || '') || []);
     addChildToElement('selectItem', itemID, { name: newOptionName, value: newOptionName });
   };
 

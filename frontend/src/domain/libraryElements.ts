@@ -50,8 +50,8 @@ export type ElementChild = SelectItemChild | DropdownItemChild | ListItemChild;
 export type AllChildren = (SelectChild | DropdownChild | LibraryListItemChild)[];
 
 export type LibraryRootElement = CommonLibraryElement<'root'> ;
-export type LibraryContainer = CommonLibraryElement<'container'> ;
-export type LibraryImageElement = CommonLibraryElement<'image'> ;
+export type LibraryContainer = CommonLibraryElement<'container'>;
+export type LibraryImageElement = CommonLibraryElement<'image'>;
 export type LibraryButtonElement = CommonLibraryElement<'button'>;
 export type LibraryHyperlinkElement = CommonLibraryElement<'hyperlink'>;
 export type LibraryTextinputElement = CommonLibraryElement<'textinput'>;

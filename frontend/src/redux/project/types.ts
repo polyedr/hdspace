@@ -391,6 +391,8 @@ export type ElementParameters = {
   labelFor?: string,
   listItems?: ListItem[],
   isOrdered?: boolean,
+  isLink?: boolean,
+  link?: string,
 }
 
 export interface IScenarioElement { // compare with entity on backend

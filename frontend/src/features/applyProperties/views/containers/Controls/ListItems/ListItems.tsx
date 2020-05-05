@@ -4,25 +4,25 @@ import { ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, Checkbox 
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import { AppReduxState } from '$shared/types/app';
+import { IScenarioElement } from '$redux/project/types';
 import { selectors, actionsCreators } from '$redux/project/';
 import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
 import { Button } from '$components/UI/Button';
 import { Icon } from '$components/UI/Icon';
 import { sharedClasses } from '$styles/sharedClasses';
-import { ListItemChild } from '$domain/libraryElements';
 
 const styles = require('./ListItems.scss');
 
 type StateProps = {
   itemID: number;
-  listItems: ListItemChild[];
+  listItems: IScenarioElement[];
 };
 
 function mapState(state: AppReduxState): StateProps {
   const activeItem = selectors.selectActiveItem(state);
   const itemID = parseInt(activeItem.itemId);
   const scenarioElement = selectors.selectScenarioElement(state, parseInt(activeItem.itemId));
-  const listItems = scenarioElement.children.filter(child => child.struct_type === 'listItem') as ListItemChild[];
+  const listItems = scenarioElement.children.filter(child => child.struct_type === 'listItem');
 
   return {
     itemID,

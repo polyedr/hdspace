@@ -10,7 +10,6 @@ import {
   PropertiesChangeProps
 } from '$utils/withConfigurableProperties';
 import { sharedClasses } from '$styles/sharedClasses';
-import { SelectItemChild } from '$domain/libraryElements';
 
 import { ControlTitle } from '../../../components/ControlTitle/ControlTitle';
 const styles = require('./SelectValue.scss');
@@ -25,8 +24,8 @@ function mapState(state: AppReduxState): StateProps {
   const value = activeItemParams.value;
   const activeItem = selectors.selectActiveItem(state);
   const scenarioElement = selectors.selectScenarioElement(state, parseInt(activeItem.itemId));
-  const selectOptions = scenarioElement.children.filter(child => child.struct_type === 'selectItem') as SelectItemChild[];
-  const optionsValues = selectOptions?.map(({ parameters: { value } }) => value);
+  const selectOptions = scenarioElement.children.filter(child => child.struct_type === 'selectItem');
+  const optionsValues = selectOptions?.map(({ parameters: { value } }) => value || '');
 
   return {
     value,

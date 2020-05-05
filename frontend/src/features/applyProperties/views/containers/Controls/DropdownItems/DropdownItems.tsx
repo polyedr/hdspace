@@ -2,25 +2,25 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import { AppReduxState } from '$shared/types/app';
+import { IScenarioElement } from '$redux/project/types';
 import { selectors, actionsCreators } from '$redux/project/';
 import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
 import { Button } from '$components/UI/Button';
 import { Icon } from '$components/UI/Icon';
 import { sharedClasses } from '$styles/sharedClasses';
-import { DropdownItemChild } from '$domain/libraryElements';
 
 const styles = require('./DropdownItems.scss');
 
 type StateProps = {
   itemID: number;
-  dropdownItems?: DropdownItemChild[];
+  dropdownItems?: IScenarioElement[];
 };
 
 function mapState(state: AppReduxState): StateProps {
   const activeItem = selectors.selectActiveItem(state);
   const itemID = parseInt(activeItem.itemId);
   const scenarioElement = selectors.selectScenarioElement(state, parseInt(activeItem.itemId));
-  const dropdownItems = scenarioElement.children.filter(child => child.struct_type === 'dropdownItem') as DropdownItemChild[];
+  const dropdownItems = scenarioElement.children.filter(child => child.struct_type === 'dropdownItem');
 
   return {
     itemID,
