@@ -9,7 +9,7 @@ const styles = require('../styles.scss');
 
 const List = (props: ListRendererProps) => {
   const { id, style, params, active, sortableId, isDisabled, childrenElements } = props;
-  const { listItems, isOrdered } = params;
+  const { isOrdered } = params;
 
   const ListTag = isOrdered ? 'ol' : 'ul';
 
@@ -46,8 +46,8 @@ const List = (props: ListRendererProps) => {
       style={{ ...style, ...(isOrdered && { "list-style-type": "decimal" }) }}
       tabIndex={isDisabled ? 0 : -1}
     >
-      {listItems?.map(({ textContent, isLink, link }) => (
-        <>
+      {childrenElements.map(({ id: itemID, parameters: { textContent, isLink, link } }) => (
+        <div key={itemID}>
           {isLink ? (
             <li
               style={{
@@ -84,7 +84,7 @@ const List = (props: ListRendererProps) => {
               {textContent}
             </li>
           )}
-        </>
+        </div>
       ))}
     </ListTag>
   );

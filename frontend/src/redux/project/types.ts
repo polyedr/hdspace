@@ -4,6 +4,7 @@ import { IPlainAction, IPlainFailAction, IAction } from '$shared/redux';
 import { IChooseElement } from '$components/ModalAddElements/ModalAddElements/ModalAddElements';
 import { CssLikeStyles } from '$utils/StyleHelper';
 import { LibraryElements } from '$domain/libraryElements';
+import { Entity } from '$domain/core';
 
 export type ReduxState = {
   data: {
@@ -335,31 +336,7 @@ export type LibraryElement = {
   name: ServerStructType;
 };
 
-export type ServerStructType =
-  | 'root'
-  | 'container'
-  | 'undefined'
-  | 'image'
-  | 'menu'
-  | 'menuItem'
-  | 'button'
-  | 'textinput'
-  | 'textarea'
-  | 'hyperlink'
-  | 'select'
-  | 'map'
-  | 'calendar'
-  | 'clock'
-  | 'checkbox'
-  | 'radiobutton'
-  | 'heading'
-  | 'paragraph'
-  | 'ocrtext'
-  | 'text_block'
-  | 'list'
-  | 'listItem'
-  | 'label'
-  | 'dropdown';
+export type ServerStructType = Entity;
 
 export interface IStylesElement {
   marginTop?: string,

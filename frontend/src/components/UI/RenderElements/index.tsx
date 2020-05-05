@@ -4,7 +4,7 @@ import cn from 'classnames';
 import { GMap } from '$components/UI/GMap';
 import { CalendarWidget } from '$components/UI/Calendar';
 import { ClockWidget } from '$components/UI/Clock';
-import { Entity } from '$domain/core';
+import { ElementEntity } from '$domain/core';
 
 import { withAction } from '../../../utils/withAction';
 import { Action } from './Action/Action';
@@ -113,7 +113,7 @@ const UndefinedRenderer = (props: SharedRendererProps) => {
   );
 }
 
-export const RENDERERS: Record<Exclude<Entity, 'root' | 'container'>, React.FunctionComponent<any>> = {
+export const RENDERERS: Record<ElementEntity, React.FunctionComponent<any>> = {
   button: withAction(Action, 'button'),
   textinput: Input,
   radiobutton: Radiobutton,
@@ -135,7 +135,7 @@ export const RENDERERS: Record<Exclude<Entity, 'root' | 'container'>, React.Func
   undefined: UndefinedRenderer,
 };
 
-export const EXPORT_RENDERERS: Record<Exclude<Entity, 'root' | 'container'>, React.FunctionComponent<any>> = {
+export const EXPORT_RENDERERS: Record<ElementEntity, React.FunctionComponent<any>> = {
   ...RENDERERS,
   button: withAction(Action, 'button', true),
   hyperlink: withAction(Link, 'link', true),

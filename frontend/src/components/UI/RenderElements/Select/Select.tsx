@@ -4,17 +4,20 @@ import { makeStyles, MenuItem, TextField } from '@material-ui/core';
 
 import { convertPropCSS } from '$utils/StyleHelper';
 import { sharedClasses } from '$styles/sharedClasses';
+import { SelectItemChild } from '$domain/libraryElements';
 
 import { SelectRendererProps } from '../types';
 const styles = require('../styles.scss');
 
 const SelectComponent = (props: SelectRendererProps) => {
-  const { id, style, isDisabled, active, sortableId, selectValue, onChange, params, childrenElements } = props;
+  const { id, style, isDisabled, active, sortableId, value, onChange, params, childrenElements } = props;
   const { width, height, marginTop, marginRight, marginBottom, marginLeft, borderRadius, ...restStyles } = style;
-  const { options, showRipple } = params;
+  const { showRipple } = params;
 
-  const menuStyles = childrenElements.find(child => child.struct_type === 'menu')?.styles;
-  const menuItemStyles = childrenElements.find(child => child.struct_type === 'menuItem')?.styles;
+  const menu = childrenElements.find(child => child.struct_type === 'selectMenu') ;
+  const menuStyles = menu?.styles;
+  const menuItems = childrenElements.filter(child => child.struct_type === 'selectItem') as SelectItemChild[];
+  const menuItemStyles = childrenElements.find(child => child.struct_type === 'selectItem')?.styles;
 
   const handleSelectChange = (event: ChangeEvent<{ name?: string | undefined; value: any; }>) => {
     onChange(id, event.target.value);
@@ -95,14 +98,27 @@ const SelectComponent = (props: SelectRendererProps) => {
       key={id}
       variant="outlined"
       style={inlineStyles}
-      className={cn(sharedClasses.lsItem, isDisabled && styles.disabled, classes.root)}
-      value={selectValue}
+      className={cn(
+        sharedClasses.lsItem,
+        isDisabled && styles.disabled,
+        classes.root
+      )}
+      value={value}
       onChange={handleSelectChange}
       InputProps={InputProps}
       SelectProps={MenuProps}
       select
     >
-      {options?.map(({ name, value }) => <MenuItem key={value} className={menuItemClasses.root} value={value} disableRipple={!showRipple}>{name}</MenuItem>)}
+      {menuItems?.map(({ id: itemID, parameters: { name, value } }) => (
+        <MenuItem
+          key={itemID}
+          className={menuItemClasses.root}
+          value={value}
+          disableRipple={!showRipple}
+        >
+          {name}
+        </MenuItem>
+      ))}
     </TextField>
   );
 };
