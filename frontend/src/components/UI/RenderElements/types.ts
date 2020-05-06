@@ -1,60 +1,65 @@
 import { SelectChild, ListItemChild, DropdownChild } from "$domain/libraryElements";
 import { IMapProps, HeadingType, InputType, LinkParams } from "$redux/project/types";
 
-export type SharedRendererProps = {
+type SharedRendererProps = {
   id: string;
   style: React.CSSProperties,
-  sortableId: string,
   active: boolean,
   isDisabled: boolean,
 };
 
-export type ImageRendererProps = SharedRendererProps & {
+
+export type SharedElementRendererProps = SharedRendererProps & {
+  sortableId: string,
+  activeItemId: string,
+};
+
+export type ImageRendererProps = SharedElementRendererProps & {
   params: {
     imageURL: string,
   },
 };
 
-export type MapRendererProps = SharedRendererProps & {
+export type MapRendererProps = SharedElementRendererProps & {
   params: {
     map_props: IMapProps,
   },
 };
 
-export type ClockRendererProps = SharedRendererProps & {
+export type ClockRendererProps = SharedElementRendererProps & {
   params: {
     width: string,
     height: string,
   },
 };
 
-export type HeadingRendererProps = SharedRendererProps & {
+export type HeadingRendererProps = SharedElementRendererProps & {
   params: {
     headingType: HeadingType,
     textContent: string,
   },
 };
 
-export type ParagraphRendererProps = SharedRendererProps & {
+export type ParagraphRendererProps = SharedElementRendererProps & {
   params: {
     textContent: string,
   },
 };
 
-export type LabelRendererProps = SharedRendererProps & {
+export type LabelRendererProps = SharedElementRendererProps & {
   params: {
     labelFor: string,
     textContent: string,
   },
 };
 
-export type TextBlockRendererProps = SharedRendererProps & {
+export type TextBlockRendererProps = SharedElementRendererProps & {
   params: {
     textContent: string,
   },
 };
 
-export type DropdownRendererProps = SharedRendererProps & {
+export type DropdownRendererProps = SharedElementRendererProps & {
   params: {
     textContent: string,
     dropdownItems: [],
@@ -63,7 +68,7 @@ export type DropdownRendererProps = SharedRendererProps & {
   childrenElements: DropdownChild[],
 };
 
-export type ActionRendererProps = SharedRendererProps & {
+export type ActionRendererProps = SharedElementRendererProps & {
   params: {
     action: LinkParams,
     textContent: string,
@@ -72,7 +77,7 @@ export type ActionRendererProps = SharedRendererProps & {
   onClick?(event: any): void,
 };
 
-export type CheckboxRendererProps = SharedRendererProps & {
+export type CheckboxRendererProps = SharedElementRendererProps & {
   params: {
     value: string,
     name: string,
@@ -82,7 +87,7 @@ export type CheckboxRendererProps = SharedRendererProps & {
   onChange(itemID: string, savedValue: boolean): void,
 };
 
-export type InputRendererProps = SharedRendererProps & {
+export type InputRendererProps = SharedElementRendererProps & {
   params: {
     type: InputType,
     placeholder: string,
@@ -91,7 +96,7 @@ export type InputRendererProps = SharedRendererProps & {
   onChange(itemID: string, savedValue: string): void,
 };
 
-export type TextareaRendererProps = SharedRendererProps & {
+export type TextareaRendererProps = SharedElementRendererProps & {
   params: {
     placeholder: string,
   },
@@ -99,7 +104,7 @@ export type TextareaRendererProps = SharedRendererProps & {
   onChange(itemID: string, savedValue: string): void,
 };
 
-export type RadioRendererProps = SharedRendererProps & {
+export type RadioRendererProps = SharedElementRendererProps & {
   params: {
     value: string,
     name: string,
@@ -109,7 +114,7 @@ export type RadioRendererProps = SharedRendererProps & {
   onChange(itemID: string, savedValue: string): void,
 };
 
-export type SelectRendererProps = SharedRendererProps & {
+export type SelectRendererProps = SharedElementRendererProps & {
   params: {
     showRipple: boolean,
     isOpen: boolean,
@@ -120,11 +125,19 @@ export type SelectRendererProps = SharedRendererProps & {
   onChange(itemID: string, savedValue: string): void,
 };
 
-export type ListRendererProps = SharedRendererProps & {
+export type ListRendererProps = SharedElementRendererProps & {
   params: {
     isOrdered: boolean,
     listItems: [],
   },
   childrenElements: ListItemChild[],
+};
+
+export type ListItemRendererProps = SharedRendererProps & {
+  params: {
+    textContent: string,
+    isLink: boolean,
+    link: string,
+  },
 };
 
