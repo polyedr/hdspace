@@ -247,10 +247,10 @@ export const scenarioItemToLS = ({ id, struct_type, parameters: { children } }: 
   children: children || [],
 });
 
-export const elementToLS = ({ id, struct_type }: IScenarioElement): ILSItem => ({
+export const elementToLS = ({ id, struct_type, children }: IScenarioElement): ILSItem => ({
   id,
   type: struct_type,
-  children: [],
+  children: children.map(child => elementToLS(child)) as unknown as string[],
 });
 
 export const getListNotDragging = (type: string): string[] => {

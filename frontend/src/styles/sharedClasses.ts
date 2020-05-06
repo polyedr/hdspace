@@ -8,5 +8,6 @@ export const sharedClasses = {
   addButton: 'addBtn',
 
   lsItem: 'ls-item',
+  unsortable: 'unsortable',
   activated: 'activated',
 };

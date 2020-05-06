@@ -257,9 +257,22 @@ function* updateElementStylesOnServer(action: ReturnType<typeof Actions.updateEl
     selectors.selectScenarioElement, elementID,
   );
 
+  const elementType = elementToUpdate.struct_type;
+
+  const scenarioElements: ReturnType<typeof selectors.selectScenariosElements> = yield select(
+    selectors.selectScenariosElements,
+  );
+
+  const parentElement = Object.values(scenarioElements).find(element => element.children.some(child => child.id === elementID));
+
+  const updatedChildren = parentElement?.children.filter((child) => child.struct_type === elementType).reduce((acc, child) => ({
+    ...acc,
+    [child.id]: { ...child, styles: { ...child.styles, ...styles } },
+  }), {} as ProjectT.IScenarioElements);
+
   yield call(
     updateElementsOnServerSaga,
-    { [elementID]: { ...elementToUpdate, styles: { ...elementToUpdate.styles, ...styles }} },
+    { [elementID]: { ...elementToUpdate, styles: { ...elementToUpdate.styles, ...styles }}, ...updatedChildren },
   );
 }
 
@@ -284,6 +297,25 @@ function* updateElementStyles(action: ReturnType<typeof Actions.updateElementSty
   const modifyElements: ReturnType<typeof selectors.selectModifyElements> = yield select(selectors.selectModifyElements);
   const parseId = parseInt(id, 10);
 
+  const parentElement = Object.values(scenarioElements).find(element => element.children.some(child => child.id === parseId));
+
+  const scenarioElement = scenarioElements[parseId];
+  const elementType = scenarioElement.struct_type;
+
+  const updatedParentElement = parentElement && {
+    ...parentElement,
+    children: parentElement.children.map((child) =>
+      child.struct_type === elementType
+        ? { ...child, styles: { ...child.styles, ...styles } }
+        : child
+    ),
+  };
+
+  const updatedChildren = updatedParentElement?.children.reduce((acc, child) => ({
+    ...acc,
+    [child.id]: child,
+  }), {} as ProjectT.IScenarioElements);
+
   const updateScenarioElements: ProjectT.IScenarioElements = {
     ...scenarioElements,
     [parseId]: {
@@ -293,6 +325,8 @@ function* updateElementStyles(action: ReturnType<typeof Actions.updateElementSty
         ...styles,
       },
     },
+    ...(updatedParentElement && { [updatedParentElement.id]: updatedParentElement }),
+    ...updatedChildren,
   };
 
   yield put(Actions.setScenarioElements(updateScenarioElements));

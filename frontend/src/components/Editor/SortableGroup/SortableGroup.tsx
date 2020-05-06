@@ -106,6 +106,7 @@ export const SortableGroup: React.FC<Props> = (props) => {
       className={getClassNames()}
       // tag="ul" Defaults to "div"
       options={{
+        filter: '.unsortable',
         swapThreshold: 0.9, // Threshold of the swap zone
         animation: 750,
         // filter: [] // Selectors that do not lead to dragging (String or Function)
