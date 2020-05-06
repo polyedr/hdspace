@@ -1083,6 +1083,83 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                 children_dict_vgroups.update({'roi': rois})
                 children.append(children_dict_vgroups)
 
+        # Check if the single button exists.
+        # If exists, create the wrapper with height width related to the mean values of the largest cluster
+        # Mark this wrapper as a horizontal group of the main scenario
+        # Calculate the alignment of this button in group based on its coordinates
+        # Remove the button from the single elements of the main scenario
+        for idx, child in enumerate(children):
+            # Find the id of the potential button
+            child_id = int(child['ids'][:-1])
+            # Get the button and create scenario for this button
+            if 'e' in child['ids']:
+                element_child = ScenarioElement.objects.get(id=child_id)
+                if(element_child.struct_type == "button"):
+                    # Detect the button position
+                    y1, x1, y2, x2 = element_child.parameters["roi"]
+                    width_elem = x2 - x1
+                    height_elem = y2 - y1
+                    # Detect the alignment of the element
+                    # Text-align: left, if the left interval is smaller than the right interval
+                    aligned_element = "left"
+
+                    # Some rules for that buttons which are not too large
+                    if((x2 - x1) < img_width * 0.8):
+                        # Middle if the middle point placed at the 20% middle width for the whole image
+                        if ( abs((x2 - x1) / 2 - (img_width / 2)) < img_width * 0.2):
+                            aligned_element = "center"
+
+                        print(x1 + (width_elem / 2), (img_width / 2))
+                        if (x1 + (width_elem / 2) > (img_width / 2)):
+                            aligned_element = "right"
+
+                    # print(y1, x1, y2, x2, img_width, img_height)
+                    # print(aligned_element)
+                    # Create the horizontal scenario for the button
+                    # if the button has right or central positioning
+                    if(aligned_element in {"center", "right"}):
+                        scenario_horizontal = ScreenScenario.objects.create(
+                            screen=screen, **scenario_horizontal_data
+                        )
+                        # Add the button for the scenario parameters
+                        scenario_horizontal.parameters["children"] = []
+                        scenario_horizontal.parameters["children"].append(child["ids"])
+
+                        scenario_horizontal.styles["display"] = "flex"
+                        scenario_horizontal.styles["width"] = "100%"
+
+                        # Should switch the button's parent from general scenario
+                        # to novel created horizontal scenario
+                        element_child.scenario = scenario_horizontal
+
+                        # Should calculate ROI for the novel horizontal scenario
+
+                        # Attach the novel horizontal scenario to the general scenario
+                        children_dict_hgroups_buttons = {}
+                        ids = str(scenario_horizontal.id) + "s"
+                        rois = element_child.parameters["roi"]
+                        children_dict_hgroups_buttons.update({'ids': ids})
+                        children_dict_hgroups_buttons.update({'roi': rois})
+
+                        # Remove the button from the children array
+                        children.remove(child)
+
+                        # Calculate scenario horizontal roi
+                        children.append(children_dict_hgroups_buttons)
+                        # Define styles based on aligned_element value
+                        if(aligned_element == "right"):
+                            scenario_horizontal.styles["justify-content"] = "flex-end"
+
+                        if(aligned_element == "center"):
+                            scenario_horizontal.styles["justify-content"] = "center"
+
+                        # Save the horizontal scenario created for the button
+                        scenario_horizontal.save()
+                        # Save the element after changing its parent
+                        element_child.save()
+
+                # element_child.save()
+
         # Sort the data structure based on rois[0] (the vertical coordinate)
         children = sorted(children, key=lambda i: i["roi"][0])
         print("children=", children, "len(children)=", len(children))
@@ -1204,7 +1281,6 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                         element_child.styles["height"] = str(height) + "px"
                     if (abs(button_width - width) < (width * 0.15)): # The width diff is less than 15%
                         element_child.styles["width"] = str(width) + "px"
-
 
                 element_child.save()
 
