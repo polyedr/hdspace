@@ -47,7 +47,7 @@ const IsOpen: React.FC<Props> = ({
 
   return (
     <div className={sharedClasses.propsSection}>
-      <p className={sharedClasses.propsTitle}>Open Select</p>
+      <p className={sharedClasses.propsTitle}>Open component</p>
       <div className={sharedClasses.propsContent}>
         <div className={sharedClasses.propsContainer}>
           <Switch

@@ -64,6 +64,7 @@ export type DropdownRendererProps = SharedElementRendererProps & {
     textContent: string,
     dropdownItems: [],
     showRipple: boolean,
+    isOpen: boolean,
   },
   childrenElements: DropdownChild[],
 };

@@ -30,6 +30,8 @@ export type DropdownItemChild = Omit<CommonLibraryElement<'dropdownItem'>, 'para
   }
 };
 
+export type DropdownMenuChild = Omit<CommonLibraryElement<'selectMenu'>, 'parameters'> & { id: number };
+
 export type ListItemChild = Omit<CommonLibraryElement<'listItem'>, 'parameters'> & {
   id: number,
   parameters: {

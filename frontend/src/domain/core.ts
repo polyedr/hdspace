@@ -182,7 +182,7 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
     root: ['indents', 'size', 'typography', 'border', 'background'],
   },
   dropdown: {
-    root: ['indents', 'size', 'typography', 'border', 'background', 'textContent', 'showRipple', 'dropdownItems'],
+    root: ['indents', 'size', 'typography', 'border', 'background', 'textContent', 'showRipple', 'dropdownItems', 'isOpen'],
   },
   dropdownMenu: {
     root: ['indents', 'size', 'border', 'background'],

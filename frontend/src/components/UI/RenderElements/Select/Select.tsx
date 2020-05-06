@@ -161,7 +161,7 @@ const SelectComponent = (props: SelectRendererProps) => {
                     parseInt(activeItemId) === itemID && sharedClasses.activated
                   )}
                   value={value}
-                  disableRipple={isDisabled || !showRipple}
+                  disableRipple
                   onClick={handleMenuItemClick}
                 >
                   {name}
