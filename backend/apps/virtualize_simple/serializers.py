@@ -515,12 +515,16 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                     # Detect the alignment of the element
                     # Text-align: left, if the left interval is smaller than the right interval
                     aligned_element = "left"
-                    if (x1 < (img_width - x2)):
+                    if (x1 + (width_elem / 2) > (img_width / 2)):
                         aligned_element = "right"
 
                     # Middle if the middle point placed at the 20% middle width for the whole image
-                    if ((x2 - x1) / 2 - (img_width / 2)) < img_width * 0.2:
+                    if (abs(x1 + (width_elem / 2)  - (img_width / 2)) < img_width * 0.2):
                         aligned_element = "center"
+                    #
+                    # print(y1, x1, y2, x2, img_width, img_height)
+                    # print(aligned_element)
+                    # input()
 
                     func_type = "undefined"
                     letters_str = ""
@@ -1113,8 +1117,6 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                         if (x1 + (width_elem / 2) > (img_width / 2)):
                             aligned_element = "right"
 
-                    # print(y1, x1, y2, x2, img_width, img_height)
-                    # print(aligned_element)
                     # Create the horizontal scenario for the button
                     # if the button has right or central positioning
                     if(aligned_element in {"center", "right"}):
