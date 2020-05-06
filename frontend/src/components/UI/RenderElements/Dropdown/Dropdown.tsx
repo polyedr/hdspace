@@ -84,7 +84,14 @@ const DropdownComponent = (props: DropdownRendererProps) => {
 
   return isDisabled ? (
     <>
-      <div style={{ position: 'relative', display: 'inline-block' }}>
+      <div
+        id={id}
+        data-ls-id={id}
+        data-id={sortableId}
+        key={id}
+        style={{ position: 'relative', display: 'inline-block' }}
+        className={cn(sharedClasses.lsItem, styles.disabled, active && sharedClasses.activated)}
+      >
         <Button
           aria-controls="simple-menu"
           aria-haspopup="true"
@@ -94,7 +101,7 @@ const DropdownComponent = (props: DropdownRendererProps) => {
           key={id}
           variant="contained"
           color="primary"
-          className={cn(classes.root, 'ls-item', styles.disabled, active && 'activated')}
+          className={classes.root}
           disableRipple
         >
           {textContent}

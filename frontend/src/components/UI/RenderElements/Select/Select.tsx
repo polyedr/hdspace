@@ -115,14 +115,17 @@ const SelectComponent = (props: SelectRendererProps) => {
 
   return isDisabled ? (
     <>
-      <div style={{ position: 'relative', display: 'inline-block' }}>
+      <div
+        id={id}
+        data-ls-id={id}
+        data-id={sortableId}
+        key={id}
+        style={{ position: 'relative', display: 'inline-block' }}
+        className={cn(sharedClasses.lsItem, styles.disabled)}
+      >
         <TextField
-          id={id}
-          data-ls-id={id}
-          data-id={sortableId}
-          key={id}
           variant="outlined"
-          className={cn(sharedClasses.lsItem, styles.disabled, classes.root)}
+          className={classes.root}
           value={value}
           InputProps={InputProps}
           select
