@@ -15,18 +15,18 @@ import { sharedClasses } from '$styles/sharedClasses';
 const styles = require('./SelectOptions.scss');
 
 type StateProps = {
-  itemID: number;
+  activeItemID: number;
   selectOptions: IScenarioElement[];
 };
 
 function mapState(state: AppReduxState): StateProps {
   const activeItem = selectors.selectActiveItem(state);
-  const itemID = parseInt(activeItem.itemId);
-  const scenarioElement = selectors.selectScenarioElement(state, parseInt(activeItem.itemId));
+  const activeItemID = parseInt(activeItem.itemId);
+  const scenarioElement = selectors.selectScenarioElement(state, activeItemID);
   const selectOptions = scenarioElement.children.filter(child => child.struct_type === 'selectItem');
 
   return {
-    itemID,
+    activeItemID,
     selectOptions,
   };
 }
@@ -39,7 +39,7 @@ const mapDispatch = {
 type Props = StateProps & PropertiesChangeProps & typeof mapDispatch;
 
 const SelectOptions: React.FC<Props> = ({
-  itemID,
+  activeItemID,
   selectOptions = [],
   updateParams,
   addChildToElement,
@@ -51,26 +51,26 @@ const SelectOptions: React.FC<Props> = ({
     setOptions(selectOptions);
   }, [selectOptions])
 
-  const handleNameFieldChange = (id: number, { target: { value } }: React.ChangeEvent<HTMLTextAreaElement>) => {
-    updateParams({ name: value }, id);
+  const handleNameFieldChange = (selectOptionID: number, { target: { value } }: React.ChangeEvent<HTMLTextAreaElement>) => {
+    updateParams({ name: value }, selectOptionID);
   };
 
-  const handleValueFieldBlur = (id: number, { target: { value } }: React.ChangeEvent<HTMLTextAreaElement>) => {
-    updateParams({ value }, id);
+  const handleValueFieldBlur = (selectOptionID: number, { target: { value } }: React.ChangeEvent<HTMLTextAreaElement>) => {
+    updateParams({ value }, selectOptionID);
   };
 
-  const handleValueFieldChange = (id: number, { target: { value } }: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const updatedOptions = options.map(option => option.id === id ? { ...option, parameters: { ...option.parameters, value } } : option);
+  const handleValueFieldChange = (selectOptionID: number, { target: { value } }: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const updatedOptions = options.map(option => option.id === selectOptionID ? { ...option, parameters: { ...option.parameters, value } } : option);
     setOptions(updatedOptions);
   };
 
   const handleAddButtonClick = () => {
     const newOptionName = generateUniqueName('New option', selectOptions.map(option => option.parameters.name || '') || []);
-    addChildToElement('selectItem', itemID, { name: newOptionName, value: newOptionName });
+    addChildToElement('selectItem', activeItemID, { name: newOptionName, value: newOptionName });
   };
 
-  const handleDeleteButtonClick = (childID: number) => {
-    deleteChildFromElement(childID, itemID);
+  const handleDeleteButtonClick = (selectOptionID: number) => {
+    deleteChildFromElement(selectOptionID, activeItemID);
   };
 
   return (

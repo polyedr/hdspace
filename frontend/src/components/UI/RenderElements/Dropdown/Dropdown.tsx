@@ -84,9 +84,9 @@ const DropdownComponent = (props: DropdownRendererProps) => {
         onClose={handleMenuClose}
         classes={menuClasses}
       >
-        {menuItems?.map(({ id, parameters: { textContent: itemTextContent } }) => (
+        {menuItems?.map(({ id: menuItemID, parameters: { textContent: itemTextContent } }) => (
           <MenuItem
-            key={id}
+            key={menuItemID}
             className={menuItemClasses.root}
             disableRipple={!showRipple}
             onClick={handleMenuClose}

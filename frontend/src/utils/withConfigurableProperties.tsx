@@ -76,8 +76,8 @@ export function withConfigurableProperties<T extends PropertiesChangeProps>(
       }
     }, [activeItemID]);
 
-    const updateParams = useCallback((params: Params, id?: number) => {
-      updateElementParameters(id && `${id}e` || activeItemID, params);
+    const updateParams = useCallback((params: Params, updatedItemID?: number) => {
+      updateElementParameters(updatedItemID && `${updatedItemID}e` || activeItemID, params);
     }, [activeItemID]);
 
     return (

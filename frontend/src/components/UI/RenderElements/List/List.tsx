@@ -46,8 +46,8 @@ const List = (props: ListRendererProps) => {
       style={{ ...style, ...(isOrdered && { "list-style-type": "decimal" }) }}
       tabIndex={isDisabled ? 0 : -1}
     >
-      {childrenElements.map(({ id: itemID, parameters: { textContent, isLink, link } }) => (
-        <div key={itemID}>
+      {childrenElements.map(({ id: listItemID, parameters: { textContent, isLink, link } }) => (
+        <div key={listItemID}>
           {isLink ? (
             <li
               style={{
