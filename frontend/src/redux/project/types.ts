@@ -319,6 +319,7 @@ export interface IScreenProps {
   link?: string,
   isLink?: boolean,
   isOpen?: boolean,
+  videoLink?: string,
 }
 
 export interface ISortableItem {
@@ -395,6 +396,7 @@ export type ElementParameters = {
   isLink?: boolean,
   link?: string,
   isOpen?: boolean,
+  videoLink?: string,
 }
 
 export interface IScenarioElement { // compare with entity on backend

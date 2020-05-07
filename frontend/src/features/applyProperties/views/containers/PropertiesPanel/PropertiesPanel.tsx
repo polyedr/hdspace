@@ -36,6 +36,7 @@ import { Ordered } from '../Controls/Ordered/Ordered';
 import { LabelFor } from '../Controls/LabelFor/LabelFor';
 import { DropdownItems } from '../Controls/DropdownItems/DropdownItems';
 import { IsOpen } from '../Controls/IsOpen/IsOpen';
+import { VideoLink } from '../Controls/VideoLink/VideoLink';
 const styles = require('./PropertiesPanel.scss');
 
 type StateProps = {
@@ -87,6 +88,7 @@ const CONTROLS: Record<Control, React.ComponentType<any>> = {
   labelFor: LabelFor,
   dropdownItems: DropdownItems,
   isOpen: IsOpen,
+  videoLink: VideoLink,
 };
 
 export type PropertiesPanelProps = StateProps & typeof mapDispatch;

@@ -21,6 +21,7 @@ import { Textarea } from './Textarea/Textarea';
 import { Label } from './Label/Label';
 import { Dropdown } from './Dropdown/Dropdown';
 import { ImageRendererProps, MapRendererProps, ClockRendererProps, SharedElementRendererProps } from './types';
+import { YoutubeVideoRenderer } from './YoutubeVideo/YoutubeVideo';
 const styles = require('./styles.scss');
 
 const ImgRenderer = (props: ImageRendererProps) => {
@@ -132,6 +133,7 @@ export const RENDERERS: Record<ElementEntity, React.FunctionComponent<any>> = {
   calendar: CalendarWidgetRenderer,
   clock: ClockWidgetRenderer,
   dropdown: Dropdown,
+  youtubeVideo: YoutubeVideoRenderer,
   undefined: UndefinedRenderer,
 };
 

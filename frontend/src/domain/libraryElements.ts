@@ -73,6 +73,7 @@ export type LibraryListItemElement = CommonLibraryElement<'listItem'>;
 export type LibraryMapElement = CommonLibraryElement<'map'>;
 export type LibraryCalendarElement = CommonLibraryElement<'calendar'>;
 export type LibraryClockElement = CommonLibraryElement<'clock'>;
+export type LibraryYoutubeVideoElement = CommonLibraryElement<'youtubeVideo'>;
 export type LibraryDropdownElement = CommonLibraryElement<'dropdown', DropdownChild[]>;
 export type LibraryUndefinedElement = CommonLibraryElement<'undefined'>;
 
@@ -102,6 +103,7 @@ export type LibraryEntities = {
   dropdown: LibraryDropdownElement,
   dropdownMenu: LibraryDropdownMenuChild,
   dropdownItem: LibraryDropdownItemChild,
+  youtubeVideo: LibraryYoutubeVideoElement,
   undefined: LibraryUndefinedElement,
 };
 
@@ -462,6 +464,17 @@ export const LIBRARY_ELEMENTS: LibraryElements = {
     parameters: {},
     styles: {},
     name: 'dropdownItem',
+    children: [],
+  },
+  youtubeVideo: {
+    buoyancy: 0,
+    func_type: 'youtubeVideo',
+    struct_type: 'youtubeVideo',
+    parameters: {
+      group: 'other',
+    },
+    styles: {},
+    name: 'youtubeVideo',
     children: [],
   },
   undefined: {

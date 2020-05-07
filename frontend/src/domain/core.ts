@@ -25,6 +25,7 @@ import {
   DEFAULT_LABEL_FOR,
   DEFAULT_DROPDOWN_ITEMS,
   DEFAULT_SELECT_OPEN,
+  DEFAULT_VIDEO_LINK,
 } from '$constants/defaultParams';
 
 export const ENTITIES = [
@@ -47,6 +48,7 @@ export const ENTITIES = [
   'calendar',
   'clock',
   'dropdown',
+  'youtubeVideo',
   'undefined',
 ] as const;
 
@@ -68,6 +70,7 @@ const CONTROLS_AFFECT_ON_PARAMS = [
   'labelFor',
   'dropdownItems',
   'isOpen',
+  'videoLink',
 ] as const;
 
 const CONTROLS_AFFECT_ON_STYLES = ['display', 'indents', 'size', 'typography', 'border', 'background', 'bullets'] as const;
@@ -97,7 +100,8 @@ export type ElementEntity =
 | 'text_block'
 | 'list'
 | 'label'
-| 'dropdown';
+| 'dropdown'
+| 'youtubeVideo';
 
 export type ChildEntity = 'selectMenu' | 'selectItem' | 'dropdownMenu' | 'dropdownItem' | 'listItem';
 
@@ -190,6 +194,9 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
   dropdownItem: {
     root: ['indents', 'size', 'typography', 'border', 'background']
   },
+  youtubeVideo: {
+    root: ['indents', 'size', 'border', 'videoLink'],
+  },
   undefined: {
     root: ['size', 'background'],
   },
@@ -220,6 +227,7 @@ const CONTROLS_DEFAULTS: Record<Control, any> = {
   labelFor: DEFAULT_LABEL_FOR,
   dropdownItems: DEFAULT_DROPDOWN_ITEMS,
   isOpen: DEFAULT_SELECT_OPEN,
+  videoLink: DEFAULT_VIDEO_LINK,
 };
 
 type EntityToDefaults = {
@@ -743,6 +751,24 @@ const undefinedDefaults = {
   },
 };
 
+const youtubeVideoDefaults = {
+  root: {
+    ...extractDefaults('youtubeVideo', 'root'),
+    size: {
+      ...extractDefaults('youtubeVideo', 'root', 'size'),
+      width: '100%',
+      height: '500px',
+    },
+    indents: {
+      ...extractDefaults('youtubeVideo', 'root', 'indents'),
+      'padding-top': '0',
+      'padding-right': '0',
+      'padding-bottom': '0',
+      'padding-left': '0',
+    },
+  },
+};
+
 const ENTITY_TO_DEFAULTS: EntityToDefaults = {
   root: rootDefaults,
   container: containerDefaults,
@@ -769,6 +795,7 @@ const ENTITY_TO_DEFAULTS: EntityToDefaults = {
   dropdown: dropdownDefaults,
   dropdownMenu: dropdownMenuDefaults,
   dropdownItem: dropdownItemDefaults,
+  youtubeVideo: youtubeVideoDefaults,
   undefined: undefinedDefaults,
 };
 

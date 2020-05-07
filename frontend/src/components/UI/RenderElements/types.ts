@@ -134,6 +134,12 @@ export type ListRendererProps = SharedElementRendererProps & {
   childrenElements: ListItemChild[],
 };
 
+export type YoutubeVideoRendererProps = SharedElementRendererProps & {
+  params: {
+    videoLink: string,
+  },
+};
+
 export type ListItemRendererProps = SharedRendererProps & {
   params: {
     textContent: string,
