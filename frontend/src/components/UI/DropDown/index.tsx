@@ -40,9 +40,9 @@ export class DropDown<T> extends React.PureComponent<Props<T>, State<T>> {
     this.state = { currentValue, optionsToRender };
   }
 
-  public componentDidUpdate() {
+  public componentDidUpdate(prevProps: Props<T>) {
     const { value, options } = this.props;
-    if (value !== undefined) {
+    if ((prevProps.value !== value || prevProps.options !== options) && value !== undefined) {
       this.setState({
         currentValue: value,
         optionsToRender: options,
