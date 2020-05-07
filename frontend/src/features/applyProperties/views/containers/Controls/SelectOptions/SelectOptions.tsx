@@ -15,18 +15,13 @@ import { sharedClasses } from '$styles/sharedClasses';
 const styles = require('./SelectOptions.scss');
 
 type StateProps = {
-  activeItemID: number;
   selectOptions: IScenarioElement[];
 };
 
 function mapState(state: AppReduxState): StateProps {
-  const activeItem = selectors.selectActiveItem(state);
-  const activeItemID = parseInt(activeItem.itemId);
-  const scenarioElement = selectors.selectScenarioElement(state, activeItemID);
-  const selectOptions = scenarioElement.children.filter(child => child.struct_type === 'selectItem');
+  const selectOptions = selectors.selectActiveItemChildren(state, 'selectItem');
 
   return {
-    activeItemID,
     selectOptions,
   };
 }
@@ -49,7 +44,9 @@ const SelectOptions: React.FC<Props> = ({
 
   useEffect(() => {
     setOptions(selectOptions);
-  }, [selectOptions])
+  }, [selectOptions]);
+
+  const parsedActiveItemID = parseInt(activeItemID);
 
   const handleNameFieldChange = (selectOptionID: number, { target: { value } }: React.ChangeEvent<HTMLTextAreaElement>) => {
     updateParams({ name: value }, selectOptionID);
@@ -66,11 +63,11 @@ const SelectOptions: React.FC<Props> = ({
 
   const handleAddButtonClick = () => {
     const newOptionName = generateUniqueName('New option', selectOptions.map(option => option.parameters.name || '') || []);
-    addChildToElement('selectItem', activeItemID, { name: newOptionName, value: newOptionName });
+    addChildToElement('selectItem', parsedActiveItemID, { name: newOptionName, value: newOptionName });
   };
 
   const handleDeleteButtonClick = (selectOptionID: number) => {
-    deleteChildFromElement(selectOptionID, activeItemID);
+    deleteChildFromElement(selectOptionID, parsedActiveItemID);
   };
 
   return (

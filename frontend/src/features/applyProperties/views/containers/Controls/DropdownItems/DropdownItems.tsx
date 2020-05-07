@@ -12,18 +12,13 @@ import { sharedClasses } from '$styles/sharedClasses';
 const styles = require('./DropdownItems.scss');
 
 type StateProps = {
-  activeItemID: number;
   dropdownItems?: IScenarioElement[];
 };
 
 function mapState(state: AppReduxState): StateProps {
-  const activeItem = selectors.selectActiveItem(state);
-  const activeItemID = parseInt(activeItem.itemId);
-  const scenarioElement = selectors.selectScenarioElement(state, activeItemID);
-  const dropdownItems = scenarioElement.children.filter(child => child.struct_type === 'dropdownItem');
+  const dropdownItems = selectors.selectActiveItemChildren(state, 'dropdownItem');
 
   return {
-    activeItemID,
     dropdownItems,
   };
 }
@@ -42,17 +37,18 @@ const DropdownItems: React.FC<Props> = ({
   addChildToElement,
   deleteChildFromElement,
 }) => {
+  const parsedActiveItemID = parseInt(activeItemID);
 
   const handleTextFieldChange = (dropdownItemID: number, { target: { value } }: React.ChangeEvent<HTMLTextAreaElement>) => {
     updateParams({ textContent: value }, dropdownItemID);
   };
 
   const handleAddButtonClick = () => {
-    addChildToElement('dropdownItem', activeItemID, { textContent: 'New item' });
+    addChildToElement('dropdownItem', parsedActiveItemID, { textContent: 'New item' });
   };
 
   const handleDeleteButtonClick = (dropdownItemID: number) => {
-    deleteChildFromElement(dropdownItemID, activeItemID);
+    deleteChildFromElement(dropdownItemID, parsedActiveItemID);
   };
 
   return (

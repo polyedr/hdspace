@@ -14,18 +14,13 @@ import { sharedClasses } from '$styles/sharedClasses';
 const styles = require('./ListItems.scss');
 
 type StateProps = {
-  activeItemID: number;
   listItems: IScenarioElement[];
 };
 
 function mapState(state: AppReduxState): StateProps {
-  const activeItem = selectors.selectActiveItem(state);
-  const activeItemID = parseInt(activeItem.itemId);
-  const scenarioElement = selectors.selectScenarioElement(state, activeItemID);
-  const listItems = scenarioElement.children.filter(child => child.struct_type === 'listItem');
+  const listItems = selectors.selectActiveItemChildren(state, 'listItem');
 
   return {
-    activeItemID,
     listItems,
   };
 }
@@ -44,6 +39,8 @@ const ListItems: React.FC<Props> = ({
   addChildToElement,
   deleteChildFromElement,
 }) => {
+  const parsedActiveItemID = parseInt(activeItemID);
+
   const handleTextContentFieldChange = (listItemID: number, { target: { value } }: React.ChangeEvent<HTMLTextAreaElement>) => {
     updateParams({ textContent: value }, listItemID);
   };
@@ -53,11 +50,11 @@ const ListItems: React.FC<Props> = ({
   };
 
   const handleAddButtonClick = () => {
-    addChildToElement('listItem', activeItemID, { textContent: 'New item', isLink: false, link: '' });
+    addChildToElement('listItem', parsedActiveItemID, { textContent: 'New item', isLink: false, link: '' });
   };
 
   const handleDeleteButtonClick = (listItemID: number) => {
-    deleteChildFromElement(listItemID, activeItemID);
+    deleteChildFromElement(listItemID, parsedActiveItemID);
   };
 
   const handleCheckboxChange = (listItemID: number, { target: { checked } }: React.ChangeEvent<HTMLInputElement>) => {
