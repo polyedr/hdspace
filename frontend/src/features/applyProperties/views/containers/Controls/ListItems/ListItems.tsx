@@ -14,18 +14,13 @@ import { sharedClasses } from '$styles/sharedClasses';
 const styles = require('./ListItems.scss');
 
 type StateProps = {
-  itemID: number;
   listItems: IScenarioElement[];
 };
 
 function mapState(state: AppReduxState): StateProps {
-  const activeItem = selectors.selectActiveItem(state);
-  const itemID = parseInt(activeItem.itemId);
-  const scenarioElement = selectors.selectScenarioElement(state, parseInt(activeItem.itemId));
-  const listItems = scenarioElement.children.filter(child => child.struct_type === 'listItem');
+  const listItems = selectors.selectActiveItemChildren(state, 'listItem');
 
   return {
-    itemID,
     listItems,
   };
 }
@@ -38,30 +33,32 @@ const mapDispatch = {
 type Props = StateProps & PropertiesChangeProps & typeof mapDispatch;
 
 const ListItems: React.FC<Props> = ({
-  itemID,
+  activeItemID,
   listItems,
   updateParams,
   addChildToElement,
   deleteChildFromElement,
 }) => {
-  const handleTextContentFieldChange = (id: number, { target: { value } }: React.ChangeEvent<HTMLTextAreaElement>) => {
-    updateParams({ textContent: value }, id);
+  const parsedActiveItemID = parseInt(activeItemID);
+
+  const handleTextContentFieldChange = (listItemID: number, { target: { value } }: React.ChangeEvent<HTMLTextAreaElement>) => {
+    updateParams({ textContent: value }, listItemID);
   };
 
-  const handleUrlFieldChange = (id: number, { target: { value } }: React.ChangeEvent<HTMLTextAreaElement>) => {
-    updateParams({ link: value }, id);
+  const handleUrlFieldChange = (listItemID: number, { target: { value } }: React.ChangeEvent<HTMLTextAreaElement>) => {
+    updateParams({ link: value }, listItemID);
   };
 
   const handleAddButtonClick = () => {
-    addChildToElement('listItem', itemID, { textContent: 'New item', isLink: false, link: '' });
+    addChildToElement('listItem', parsedActiveItemID, { textContent: 'New item', isLink: false, link: '' });
   };
 
-  const handleDeleteButtonClick = (childID: number) => {
-    deleteChildFromElement(childID, itemID);
+  const handleDeleteButtonClick = (listItemID: number) => {
+    deleteChildFromElement(listItemID, parsedActiveItemID);
   };
 
-  const handleCheckboxChange = (id: number, { target: { checked } }: React.ChangeEvent<HTMLInputElement>) => {
-    updateParams({ isLink: checked }, id);
+  const handleCheckboxChange = (listItemID: number, { target: { checked } }: React.ChangeEvent<HTMLInputElement>) => {
+    updateParams({ isLink: checked }, listItemID);
   };
 
   return (

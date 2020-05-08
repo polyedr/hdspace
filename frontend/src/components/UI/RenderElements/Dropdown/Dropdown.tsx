@@ -172,9 +172,9 @@ const DropdownComponent = (props: DropdownRendererProps) => {
         classes={menuClasses}
         className={sharedClasses.lsItem}
       >
-        {menuItems?.map(({ id, parameters: { textContent: itemTextContent } }) => (
+        {menuItems?.map(({ id: menuItemID, parameters: { textContent: itemTextContent } }) => (
           <MenuItem
-            key={id}
+            key={menuItemID}
             className={menuItemClasses.root}
             disableRipple={!showRipple}
             onClick={handleMenuClose}

@@ -188,9 +188,9 @@ const SelectComponent = (props: SelectRendererProps) => {
       SelectProps={PrototypeMenuProps}
       select
     >
-      {menuItems?.map(({ parameters: { name, value } }) => (
+      {menuItems?.map(({ id: menuItemID, parameters: { name, value } }) => (
         <MenuItem
-          key={value}
+          key={menuItemID}
           className={menuItemClasses.root}
           value={value}
           disableRipple={!showRipple}

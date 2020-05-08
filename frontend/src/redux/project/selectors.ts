@@ -1,5 +1,6 @@
 import { makeFeatureStateSelector } from "$shared/redux";
 import { AppReduxState } from '$shared/types/app';
+import { ChildEntity } from "$domain/core";
 
 export const selectFeatureState = makeFeatureStateSelector('project');
 
@@ -78,6 +79,15 @@ export function selectProjectLoader(state: AppReduxState) {
 
 export function selectActiveItem(state: AppReduxState) {
   return selectFeatureState(state).ui.activeItem;
+};
+
+export function selectActiveItemChildren(state: AppReduxState, childType: ChildEntity) {
+  const activeItem = selectActiveItem(state);
+  const activeItemID = parseInt(activeItem.itemId);
+  const scenarioElement = selectScenarioElement(state, activeItemID);
+  const children = scenarioElement.children.filter(child => child.struct_type === childType);
+
+  return children;
 };
 
 export const selectActiveItemStyles = makeActiveItemInfoSelector('styles');

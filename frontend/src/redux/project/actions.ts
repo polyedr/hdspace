@@ -2,9 +2,10 @@ import { CSSProperties } from 'react';
 
 import { IChooseElement } from '$components/ModalAddElements/ModalAddElements/ModalAddElements';
 import { CssLikeStyles } from '$utils/StyleHelper';
-import { LibraryEntities } from '$domain/libraryElements';
+import { LibraryEntities, LibraryElements, LibraryChildrenElements } from '$domain/libraryElements';
 
 import * as T from './types';
+import { ChildEntity } from '$domain/core';
 
 export const getLibraryElements = (): T.LoadLibraryElements => ({
   type: 'PROJECTS:LOAD_LIBRARY_ELEMENTS',
@@ -216,7 +217,7 @@ export const addElementsIntoContainer = (elements: IChooseElement[]): T.AddEleme
   payload: { elements },
 });
 
-export const addChildToElement = (childType: T.ServerStructType, elementID: number, parameters: {}): T.AddChildToElement => ({
+export const addChildToElement = (childType: ChildEntity, elementID: number, parameters: LibraryChildrenElements[ChildEntity]['parameters']): T.AddChildToElement => ({
   type: 'PROJECTS:ADD_CHILD_TO_ELEMENT',
   payload: { childType, elementID, parameters },
 });

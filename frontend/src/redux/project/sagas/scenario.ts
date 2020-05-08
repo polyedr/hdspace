@@ -253,7 +253,7 @@ export function* addChildToElementSaga(action: ReturnType<typeof Actions.addChil
     [elementID]: updatedElement,
   }
 
-  const scenarios = screenScenarios.reduce((acc: T.IScenarios, x) => ({ ...acc, [x.id]: x }), {});
+  const scenarios = R.zipObj(screenScenarios.map(R.prop('id')), screenScenarios);
 
   yield put(Actions.runLayoutAlgorithm(scenarios, updatedScenarioElements));
   yield take(runLayoutAlgorithmFinishedType);
