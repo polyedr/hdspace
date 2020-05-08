@@ -38,7 +38,7 @@ const mapDispatch = {
 export type PropertiesChangeProps = {
   activeItemID: string;
   updateStyles(payload: CssLikeStyles): void;
-  updateParams(payload: Params, id?: number): void;
+  updateParams(payload: Params, updatedItemID?: number): void;
 };
 
 type Params = Partial<{ [P in keyof ProjectT.IScreenProps]: ProjectT.IScreenProps[P] }>;
