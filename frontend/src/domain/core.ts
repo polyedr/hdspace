@@ -27,7 +27,7 @@ import {
 } from '$constants/defaultParams';
 import { LibraryContainers, ElementsToAdd, LibraryChildrenElements } from './libraryElements';
 
-export const ENTITIES: Record<Exclude<ElementEntity, 'ocrtext'>, ElementEntity> = {
+export const ENTITIES: { [K in Exclude<ElementEntity, 'ocrtext'>]: K } = {
   button: 'button',
   textinput: 'textinput',
   textarea: 'textarea',
