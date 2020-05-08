@@ -38,10 +38,10 @@ export type ListItemChild = Omit<CommonLibraryElement<'listItem'>, 'parameters'>
 };
 
 type LibraryDropdownMenuChild = Omit<CommonLibraryElement<'dropdownMenu'>, 'parameters'> & { parameters: {} };
-type LibraryDropdownItemChild = Omit<CommonLibraryElement<'dropdownItem'>, 'parameters'> & { parameters: {} };
+type LibraryDropdownItemChild = Omit<CommonLibraryElement<'dropdownItem'>, 'parameters'> & { parameters: DropdownItemChild['parameters'] };
 type LibrarySelectMenuChild = Omit<CommonLibraryElement<'selectMenu'>, 'parameters'> & { parameters: {} };
-type LibrarySelectItemChild = Omit<CommonLibraryElement<'selectItem'>, 'parameters'> & { parameters: {} };
-type LibraryListItemChild = Omit<CommonLibraryElement<'listItem'>, 'parameters'> & { parameters: {} };
+type LibrarySelectItemChild = Omit<CommonLibraryElement<'selectItem'>, 'parameters'> & { parameters: SelectItemChild['parameters'] };
+type LibraryListItemChild = Omit<CommonLibraryElement<'listItem'>, 'parameters'> & { parameters: ListItemChild['parameters'] };
 
 export type SelectChild = LibrarySelectMenuChild | LibrarySelectItemChild;
 export type DropdownChild = LibraryDropdownMenuChild | LibraryDropdownItemChild;
@@ -107,7 +107,9 @@ export type ElementsToAdd = {
   undefined: LibraryUndefinedElement,
 };
 
-export type LibraryElements = LibraryChildrenElements & ElementsToAdd;
+export type LibraryElements = {
+  [key in keyof LibraryChildrenElements]: Omit<LibraryChildrenElements[key], 'parameters'> & { parameters: {}};
+} & ElementsToAdd;
 
 export type LibraryEntities = LibraryContainers & LibraryElements;
 
