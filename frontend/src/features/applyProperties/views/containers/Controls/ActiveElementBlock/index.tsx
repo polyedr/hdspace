@@ -1,7 +1,7 @@
 import React, { memo, useState, useCallback } from 'react';
 import classNames from 'classnames';
 
-import { ElementsToAdd } from '$domain/libraryElements';
+import { LibraryElements } from '$domain/libraryElements';
 import { Icon } from '$components/UI/Icon/';
 import { Button } from '$components/UI/Button/';
 import { Modal } from '$components/UI/Modal/';
@@ -15,7 +15,7 @@ interface IComponentProps {
   activeItem: PropertiesPanelProps['activeItem'],
   disablePanel: boolean,
   scenarios: PropertiesPanelProps['scenarios'],
-  libraryElements: ElementsToAdd,
+  libraryElements: LibraryElements,
   addElementsIntoContainer: PropertiesPanelProps['addElementsIntoContainer'],
   isAddElementsModalOpened: boolean;
   onWrapIntoContainer(): void;

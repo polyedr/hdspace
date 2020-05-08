@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { memo, useEffect } from 'react';
 import { connect } from 'react-redux';
 
 import { AppReduxState } from '$shared/types/app';
@@ -22,7 +22,10 @@ type StateProps = {
 function mapState(state: AppReduxState): StateProps {
   const activeItemParams = selectors.selectActiveItemParams(state) as ElementParameters;
   const value = activeItemParams.value;
-  const optionsValues = activeItemParams.options?.map(({ value }) => value);
+  const activeItem = selectors.selectActiveItem(state);
+  const scenarioElement = selectors.selectScenarioElement(state, parseInt(activeItem.itemId));
+  const selectOptions = scenarioElement.children.filter(child => child.struct_type === 'selectItem');
+  const optionsValues = selectOptions?.map(({ parameters: { value } }) => value || '');
 
   return {
     value,
@@ -33,6 +36,14 @@ type Props = StateProps & PropertiesChangeProps;
 
 const SelectValue: React.FC<Props> = memo((props) => {
   const { value, optionsValues = [], updateParams } = props;
+
+  useEffect(() => {
+    const isValueInOptions = optionsValues.some(optionValue => optionValue === value);
+
+    if (!isValueInOptions && optionsValues.length) {
+      updateParams({ value: optionsValues[0] });
+    }
+  }, [optionsValues]);
 
   const handleDropdownChange = (value: string) => {
     updateParams({ value });

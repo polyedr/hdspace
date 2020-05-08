@@ -34,6 +34,8 @@ import {
   wrapIntoContainerSaga,
   addElementsIntoContainerSaga,
   createContainer,
+  addChildToElementSaga,
+  deleteChildFromElementSaga,
 } from '$redux/project/sagas/scenario';
 import {
   apiGetScenarios, apiAddScenarios,
@@ -59,7 +61,7 @@ import * as PATH_NAMES from '$constants/pathNames';
 import { apiSaveScenarios, apiSaveScenario } from '$api/scenario';
 import { DEFAULT_AUTHORISATION_TOKEN } from '$constants/defaultParams';
 import { getConfigurablePropsOf, Entity } from '$domain/core';
-import { LibraryElements } from '$domain/libraryElements';
+import { LibraryEntities } from '$domain/libraryElements';
 import { collectChildren, makeContainerLens, makeElementLens } from '$domain/abstractInterface';
 import * as ai from '$domain/abstractInterface';
 
@@ -150,7 +152,7 @@ function* authCheckSaga() {
         name: x.struct_type,
       }
     }), {}),
-  }), {}) as LibraryElements;
+  }), {}) as LibraryEntities;
 
   yield put(Actions.setLibraryElements(libraryElements));
 }
@@ -364,15 +366,34 @@ function* updateElementParameters(action: ReturnType<typeof Actions.updateElemen
     },
   };
 
-  const updateScenarioElements: ProjectT.IScenarioElements = {
-    ...scenarioElements,
-    [parseId]: scenarioElement,
-  };
-
   const savedValue = getSavedValue(scenarioElement);
   yield put(Actions.updateSavedElementValues(itemID, savedValue));
- 
-  yield put(Actions.setScenarioElements(updateScenarioElements));
+
+  const parentElement = Object.values(scenarioElements).find(element => element.children.some(child => child.id === parseId));
+
+  if (!parentElement) {
+    const updateScenarioElements: ProjectT.IScenarioElements = { ...scenarioElements, [parseId]: scenarioElement };
+    yield put(Actions.setScenarioElements(updateScenarioElements));
+  } else {
+    const updatedChildIndex = parentElement.children.findIndex(child => child.id === parseId);
+    const updatedChild = parentElement.children[updatedChildIndex];
+
+    const updatedChildren = R.adjust(
+      updatedChildIndex,
+      R.assoc('parameters', { ...updatedChild.parameters, ...parameters }),
+      parentElement.children,
+    );
+
+    const updatedParentElement = { ...parentElement, children: updatedChildren };
+
+    const updateScenarioElements: ProjectT.IScenarioElements = {
+      ...scenarioElements,
+      [parseId]: scenarioElement,
+      [updatedParentElement.id]: updatedParentElement,
+    };
+  
+    yield put(Actions.setScenarioElements(updateScenarioElements));
+  }
 
   if (modifyElements.indexOf(parseId) === -1) {
     yield put(Actions.setModifyElements(R.append(parseId, modifyElements)));
@@ -890,6 +911,8 @@ const updateScenarioStylesType: ProjectT.UpdateScenarioStyles['type'] = 'PROJECT
 const updateElementParametersType: ProjectT.UpdateElementParameters['type'] = 'PROJECTS:UPDATE_ELEMENT_PARAMETERS';
 const updateElementImageType: ProjectT.UpdateElementImage['type'] = 'PROJECTS:UPDATE_ELEMENT_IMAGE';
 const addElementsIntoContainerType: ProjectT.AddElementsIntoContainer['type'] = 'PROJECTS:ADD_ELEMENTS_INTO_CONTAINER';
+const addChildToElementType: ProjectT.AddChildToElement['type'] = 'PROJECTS:ADD_CHILD_TO_ELEMENT';
+const deleteChildFromElementType: ProjectT.DeleteChildFromElement['type'] = 'PROJECTS:DELETE_CHILD_TO_ELEMENT';
 const renameScenarioType: ProjectT.RenameScenario['type'] = 'PROJECTS:RENAME_SCENARIO';
 const wrapIntoContainerType: ProjectT.WrapIntoContainer['type'] = 'PROJECTS:WRAP_INTO_CONTAINER';
 const deleteActiveItemType: ProjectT.DeleteActiveItem['type'] = 'PROJECTS:DELETE_ACTIVE_ITEM';
@@ -928,6 +951,8 @@ export default function* projectSaga() {
   yield takeLatest(updateElementParametersType, updateElementParameters);
 
   yield takeEvery(addElementsIntoContainerType, addElementsIntoContainerSaga);
+  yield takeEvery(addChildToElementType, addChildToElementSaga);
+  yield takeEvery(deleteChildFromElementType, deleteChildFromElementSaga);
   yield takeLatest(renameScenarioType, renameScenarioSaga);
   yield takeEvery(wrapIntoContainerType, wrapIntoContainerSaga);
 

@@ -25,30 +25,28 @@ import {
   DEFAULT_LABEL_FOR,
   DEFAULT_DROPDOWN_ITEMS,
 } from '$constants/defaultParams';
-import { ServerStructType } from '$redux/project/types';
+import { LibraryContainers, ElementsToAdd, LibraryChildrenElements } from './libraryElements';
 
-export const ENTITIES = [
-  'root',
-  'container',
-  'button',
-  'textinput',
-  'textarea',
-  'checkbox',
-  'radiobutton',
-  'label',
-  'hyperlink',
-  'heading',
-  'paragraph',
-  'text_block',
-  'list',
-  'image',
-  'select',
-  'map',
-  'calendar',
-  'clock',
-  'dropdown',
-  'undefined',
-] as const;
+export const ENTITIES: { [K in Exclude<ElementEntity, 'ocrtext'>]: K } = {
+  button: 'button',
+  textinput: 'textinput',
+  textarea: 'textarea',
+  checkbox: 'checkbox',
+  radiobutton: 'radiobutton',
+  label: 'label',
+  hyperlink: 'hyperlink',
+  heading: 'heading',
+  paragraph: 'paragraph',
+  text_block: 'text_block',
+  list: 'list',
+  image: 'image',
+  select: 'select',
+  map: 'map',
+  calendar: 'calendar',
+  clock: 'clock',
+  dropdown: 'dropdown',
+  undefined: 'undefined',
+};
 
 const CONTROLS_AFFECT_ON_PARAMS = [
   'action',
@@ -75,30 +73,9 @@ const controlAffectsOnStyles = (controlName: Control) => (
   CONTROLS_AFFECT_ON_STYLES.find(x => x === controlName) !== undefined
 );
 
-export type ContainerEntity = 'root' | 'container';
-
-export type ElementEntity =
-| 'undefined'
-| 'image'
-| 'button'
-| 'textinput'
-| 'textarea'
-| 'hyperlink'
-| 'select'
-| 'map'
-| 'calendar'
-| 'clock'
-| 'checkbox'
-| 'radiobutton'
-| 'heading'
-| 'paragraph'
-| 'ocrtext'
-| 'text_block'
-| 'list'
-| 'label'
-| 'dropdown';
-
-export type ChildEntity = 'selectMenu' | 'selectItem' | 'dropdownMenu' | 'dropdownItem' | 'listItem';
+export type ContainerEntity = keyof LibraryContainers;
+export type ElementEntity = keyof ElementsToAdd;
+export type ChildEntity = keyof LibraryChildrenElements;
 
 export type Entity = ContainerEntity | ElementEntity | ChildEntity;
 

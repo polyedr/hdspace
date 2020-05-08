@@ -17,8 +17,8 @@ import {
 } from '$redux/project/types';
 import { IChooseElement } from '$components/ModalAddElements/ModalAddElements/ModalAddElements';
 import { CssLikeStyles } from '$utils/StyleHelper';
-import { ENTITIES, Entity } from '$domain/core';
-import { ElementsToAdd } from '$domain/libraryElements';
+import { ENTITIES, ElementEntity } from '$domain/core';
+import { LibraryElements, ElementsToAdd } from '$domain/libraryElements';
 
 export type GroupElement = {
   key: string,
@@ -50,7 +50,7 @@ export const convertScenarioElements = (
     },
   }), {});
 
-const getCategoryTab = (structType: Exclude<Entity, 'root' | 'container'>, libraryElements: ElementsToAdd, obj: IListCategoryEl) => {
+const getCategoryTab = (structType: ElementEntity, libraryElements: ElementsToAdd, obj: IListCategoryEl) => {
   switch (structType) {
     case 'textinput':
     case 'textarea':        
@@ -84,9 +84,9 @@ export const parseAddElementsTabs = (libraryElements: ElementsToAdd): IListCateg
   }), {})
 );
 
-export const getCustomTemplateElements = (libraryElements: ElementsToAdd) => {
+export const getCustomTemplateElements = (libraryElements: LibraryElements) => {
   return R.keys(libraryElements).reduce((acc: ITemplateElement[], structType) => {
-    if (ENTITIES.some(x => x === structType)) {
+    if (R.keys(ENTITIES).some(x => x === structType)) {
       return acc.concat({
         label: `${structType}`,
         value: { funcType: structType, structType },

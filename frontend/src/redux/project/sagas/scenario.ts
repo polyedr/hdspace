@@ -8,6 +8,8 @@ import {
   apiAddElements,
   apiDelElements,
   apiSaveElements,
+  apiChangeElement,
+  apiDelElement,
 } from '$api/element';
 import {
   apiGetScenarios,
@@ -200,6 +202,90 @@ export function* addElementsIntoContainerSaga(action: ReturnType<typeof Actions.
 
   const scenariosToUpdate = R.values(R.pick([finalTargetContainer.id.toString()], finalScenarios));
   yield fork(reqWrapper, apiSaveScenarios, { data: scenariosToUpdate });
+}
+
+export function* addChildToElementSaga(action: ReturnType<typeof Actions.addChildToElement>) {
+  const { childType, elementID, parameters } = action.payload;
+
+  const scenarioElement: ReturnType<typeof selectors.selectScenarioElement> = yield select(selectors.selectScenarioElement, elementID);
+  const childLibraryElement = LIBRARY_ELEMENTS[childType as keyof typeof LIBRARY_ELEMENTS];
+  
+  const currentScreen: ReturnType<typeof selectors.selectCurrentScreen> = yield select(selectors.selectCurrentScreen);
+  const activeItem: ReturnType<typeof selectors.selectActiveItem> = yield select(selectors.selectActiveItem);
+  const targetContainer: ReturnType<typeof selectors.selectClosestContainerID> = yield select(selectors.selectClosestContainerID, activeItem.itemId);
+  const rootID = currentScreen.listSortable.root.id;
+  const targetContainerID = targetContainer ? parseInt(targetContainer, 10) : rootID;
+  
+  const { styles, params: defaultParams } = getConfigurablePropsOf('root')(childType as keyof typeof LIBRARY_ELEMENTS);
+
+  const newChild = {
+    scenario: targetContainerID,
+    buoyancy: 0,
+    dynamic_buoyancy: 0,
+    name: 'Element',
+    struct_type: childLibraryElement.struct_type,
+    func_type: childLibraryElement.func_type,
+    id: -1000,
+    image: null,
+    parameters: {
+      parent_id: targetContainerID,
+      ...childLibraryElement.parameters,
+      ...defaultParams,
+      ...parameters,
+    },
+    styles,
+    children: [],
+  };
+  
+  const newElement = { ...scenarioElement, children: [newChild] };
+  const updatedElement: ReturnPromisedType<typeof apiChangeElement> = yield call(reqWrapper, apiChangeElement, { data: newElement, id: elementID });
+
+  const screenScenarios: ReturnPromisedType<typeof apiGetScenarios> = yield call(
+    reqWrapper, apiGetScenarios, { screenID: currentScreen.id }
+  );
+
+  const scenarioElements: ReturnType<typeof selectors.selectScenariosElements> = yield select(
+    selectors.selectScenariosElements,
+  );
+
+  const updatedScenarioElements = {
+    ...scenarioElements,
+    [elementID]: updatedElement,
+  }
+
+  const scenarios = R.zipObj(screenScenarios.map(R.prop('id')), screenScenarios);
+
+  yield put(Actions.runLayoutAlgorithm(scenarios, updatedScenarioElements));
+  yield take(runLayoutAlgorithmFinishedType);
+}
+
+export function* deleteChildFromElementSaga(action: ReturnType<typeof Actions.deleteChildFromElement>) {
+  const { childID, elementID } = action.payload;
+
+  yield call(reqWrapper, apiDelElement, { id: childID });
+
+  const scenarioElement: ReturnType<typeof selectors.selectScenarioElement> = yield select(selectors.selectScenarioElement, elementID);
+  const currentScreen: ReturnType<typeof selectors.selectCurrentScreen> = yield select(selectors.selectCurrentScreen);
+ 
+  const updatedElement = { ...scenarioElement, children: scenarioElement.children.filter(child => child.id !== childID) };
+
+  const screenScenarios: ReturnPromisedType<typeof apiGetScenarios> = yield call(
+    reqWrapper, apiGetScenarios, { screenID: currentScreen.id }
+  );
+
+  const scenarioElements: ReturnType<typeof selectors.selectScenariosElements> = yield select(
+    selectors.selectScenariosElements,
+  );
+
+  const updatedScenarioElements = {
+    ...scenarioElements,
+    [elementID]: updatedElement,
+  }
+
+  const scenarios = screenScenarios.reduce((acc: T.IScenarios, x) => ({ ...acc, [x.id]: x }), {});
+
+  yield put(Actions.runLayoutAlgorithm(scenarios, updatedScenarioElements));
+  yield take(runLayoutAlgorithmFinishedType);
 }
 
 export function* deleteActiveItemSaga() {
