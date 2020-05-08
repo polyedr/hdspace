@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
+import * as R from 'ramda';
 import { ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
@@ -57,7 +58,12 @@ const SelectOptions: React.FC<Props> = ({
   };
 
   const handleValueFieldChange = (selectOptionID: number, { target: { value } }: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const updatedOptions = options.map(option => option.id === selectOptionID ? { ...option, parameters: { ...option.parameters, value } } : option);
+    const updatedOptions = options.map((option) =>
+      option.id === selectOptionID
+        ? R.assocPath(['parameters', 'value'], value, option)
+        : option
+    );
+
     setOptions(updatedOptions);
   };
 

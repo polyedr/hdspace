@@ -366,27 +366,34 @@ function* updateElementParameters(action: ReturnType<typeof Actions.updateElemen
     },
   };
 
-  const parentElement = Object.values(scenarioElements).find(element => element.children.some(child => child.id === parseId));
-
-  const updatedParentElement = parentElement && {
-    ...parentElement,
-    children: parentElement.children.map((child) =>
-      child.id === parseId
-        ? { ...child, parameters: { ...child.parameters, ...parameters } }
-        : child
-    ),
-  };
-
-  const updateScenarioElements: ProjectT.IScenarioElements = {
-    ...scenarioElements,
-    [parseId]: scenarioElement,
-    ...(updatedParentElement && { [updatedParentElement.id]: updatedParentElement }),
-  };
-
   const savedValue = getSavedValue(scenarioElement);
   yield put(Actions.updateSavedElementValues(itemID, savedValue));
- 
-  yield put(Actions.setScenarioElements(updateScenarioElements));
+
+  const parentElement = Object.values(scenarioElements).find(element => element.children.some(child => child.id === parseId));
+
+  if (!parentElement) {
+    const updateScenarioElements: ProjectT.IScenarioElements = { ...scenarioElements, [parseId]: scenarioElement };
+    yield put(Actions.setScenarioElements(updateScenarioElements));
+  } else {
+    const updatedChildIndex = parentElement.children.findIndex(child => child.id === parseId);
+    const updatedChild = parentElement.children[updatedChildIndex];
+
+    const updatedChildren = R.adjust(
+      updatedChildIndex,
+      R.assoc('parameters', { ...updatedChild.parameters, ...parameters }),
+      parentElement.children,
+    );
+
+    const updatedParentElement = { ...parentElement, children: updatedChildren };
+
+    const updateScenarioElements: ProjectT.IScenarioElements = {
+      ...scenarioElements,
+      [parseId]: scenarioElement,
+      [updatedParentElement.id]: updatedParentElement,
+    };
+  
+    yield put(Actions.setScenarioElements(updateScenarioElements));
+  }
 
   if (modifyElements.indexOf(parseId) === -1) {
     yield put(Actions.setModifyElements(R.append(parseId, modifyElements)));
