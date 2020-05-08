@@ -245,7 +245,7 @@ export const ActionsBlock: React.FunctionComponent<Props> = ({
               >
                 <div className={styles.contentList}>
                   {filterGroupElements.map(({ key, value, label }) => {
-                    const isDisabled = !R.includes(value.structType, ENTITIES);
+                    const isDisabled = !R.includes(value.structType, R.keys(ENTITIES));
                     return (
                       <Button
                         key={key}

@@ -72,9 +72,20 @@ export type LibraryClockElement = CommonLibraryElement<'clock'>;
 export type LibraryDropdownElement = CommonLibraryElement<'dropdown', DropdownChild[]>;
 export type LibraryUndefinedElement = CommonLibraryElement<'undefined'>;
 
-export type LibraryEntities = {
+export type LibraryContainers = {
   root: LibraryRootElement,
   container: LibraryRootElement,
+};
+
+export type LibraryChildrenElements = {
+  selectMenu: LibrarySelectMenuChild,
+  selectItem: LibrarySelectItemChild,
+  listItem: LibraryListItemElement,
+  dropdownMenu: LibraryDropdownMenuChild,
+  dropdownItem: LibraryDropdownItemChild,
+};
+
+export type ElementsToAdd = {
   image: LibraryImageElement,
   button: LibraryButtonElement,
   hyperlink: LibraryHyperlinkElement,
@@ -82,8 +93,6 @@ export type LibraryEntities = {
   checkbox: LibraryCheckboxElement,
   radiobutton: LibraryRadiobuttonElement,
   select: LibrarySelectElement,
-  selectMenu: LibrarySelectMenuChild,
-  selectItem: LibrarySelectItemChild,
   label: LibraryLabelElement,
   textarea: LibraryTextareaElement,
   heading: LibraryHeadingElement,
@@ -91,18 +100,16 @@ export type LibraryEntities = {
   ocrtext: LibraryOcrtextElement,
   text_block: LibraryTextBlockElement,
   list: LibraryListElement,
-  listItem: LibraryListItemElement,
   map: LibraryMapElement,
   calendar: LibraryCalendarElement,
   clock: LibraryClockElement,
   dropdown: LibraryDropdownElement,
-  dropdownMenu: LibraryDropdownMenuChild,
-  dropdownItem: LibraryDropdownItemChild,
   undefined: LibraryUndefinedElement,
 };
 
-export type LibraryElements = Omit<LibraryEntities, 'root' | 'container'>;
-export type ElementsToAdd = Omit<LibraryElements, 'dropdownMenu' | 'dropdownItem' | 'listItem' | 'selectMenu' | 'selectItem'>;
+export type LibraryElements = LibraryChildrenElements & ElementsToAdd;
+
+export type LibraryEntities = LibraryContainers & LibraryElements;
 
 // WARN: every time you add or remove some LibraryElements in prod, you must write migration in db
 export const LIBRARY_ELEMENTS: LibraryElements = {
