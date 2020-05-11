@@ -1,7 +1,7 @@
 import copy
 import re
-import numpy as np
-from copy import deepcopy
+# import numpy as np
+from statistics import median
 
 from project.settings import model, MEDIA_ROOT
 from rest_framework import serializers
@@ -10,7 +10,6 @@ from sklearn.cluster import KMeans
 from collections import Counter
 import cv2
 import pytesseract
-from pytesseract import Output
 
 from keras.preprocessing.image import load_img
 from keras_preprocessing.image import img_to_array
@@ -134,6 +133,7 @@ def get_dominant_colour(image, k=4, image_processing_size=None):
     dominant_colour = clt.cluster_centers_[label_counts.most_common(1)[0][0]]
 
     return list(dominant_colour)
+
 
 """
 # Find regions that might have text in them
@@ -353,8 +353,8 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
             # First fill the list excluded_indices for the text elements only
             excluded_indices = []
             for idx1, (rect1, class_id1) in enumerate(zip(r["rois"], r["class_ids"])):
-                for idx2, (rect2, class_id2)  in enumerate(zip(r["rois"], r["class_ids"])):
-                    if (idx1 < idx2) and (class_id1 == 3) and (class_id2 == 3): # 3 means the text class
+                for idx2, (rect2, class_id2) in enumerate(zip(r["rois"], r["class_ids"])):
+                    if (idx1 < idx2) and (class_id1 == 3) and (class_id2 == 3):  # 3 means the text class
                         x1 = rect1[1]
                         y1 = rect1[0]
                         x2 = rect1[3]
@@ -398,7 +398,6 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                                 excluded_indices.append(idx2)
                             elif square > square2 * SQUARES_OVERLAP_THRESHOLD_TEXT:
                                 excluded_indices.append(idx1)
-
 
             # Second, calculate the non-text blocks overlap
             # Calculation of the excluded indices to remove overlapped elements
@@ -504,6 +503,22 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                     print("contours:", contours, "class id:", class_id)
                     """
 
+                    # Detect the font-size with tesseract
+                    result = pytesseract.image_to_boxes(roi_our)
+                    # print(result)
+
+                    lines = result.strip().split('\n')
+                    font_size = []
+
+                    for line in lines:
+                        chars = line.split(' ')
+                        try:
+                            font_size.append(float(chars[4]) - float(chars[2]))
+                        except Exception:
+                            font_size.append(12.0)  # Default font-size value is 12px
+                    font_size_value = int(median(font_size) * 1.1 * 1.7)
+
+                    # Read the string with tesseract
                     text = pytesseract.image_to_string(roi_our, config=config_tesseract)
 
                     width_elem = x2 - x1
@@ -519,12 +534,8 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                         aligned_element = "right"
 
                     # Middle if the middle point placed at the 20% middle width for the whole image
-                    if (abs(x1 + (width_elem / 2)  - (img_width / 2)) < img_width * 0.2):
+                    if (abs(x1 + (width_elem / 2) - (img_width / 2)) < img_width * 0.2):
                         aligned_element = "center"
-                    #
-                    # print(y1, x1, y2, x2, img_width, img_height)
-                    # print(aligned_element)
-                    # input()
 
                     func_type = "undefined"
                     letters_str = ""
@@ -552,6 +563,9 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                         if fclasses_predictions:
                             func_type = fclasses_predictions[0]
 
+                    # print(y1, x1, y2, x2, img_width, img_height)
+                    # print(aligned_element, letters_str)
+
                     # Input
                     if class_id == 1:
                         recognized_elements.append(
@@ -563,6 +577,7 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                                     "width": str(width_elem) + "px",
                                     "height": str(height_elem) + "px",
                                     "background-color": "rgba(" + bcolour_element_value + ")",
+                                    "font-size": str(font_size_value) + "px",
                                 },
                             }
                         )
@@ -578,6 +593,7 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                                     "width": str(width_elem) + "px",
                                     "height": str(height_elem) + "px",
                                     "background-color": "rgba(" + bcolour_element_value + ")",
+                                    "font-size": str(font_size_value) + "px",
                                 },
                             }
                         )
@@ -591,7 +607,7 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                                 "struct_type": "ocrtext",
                                 "func_type": func_type,
                                 "parameters": {"textContent": text, "roi": roi},
-                                "styles": {"text-align": aligned_element, "width": str(img_width) + "px",},
+                                "styles": {"text-align": aligned_element, "width": str(img_width) + "px", "font-size": str(font_size_value) + "px", },
                                 #
                                 # "styles": {
                                 #     "width": str(width_elem) + "px",
@@ -611,6 +627,7 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                                     "width": str(width_elem) + "px",
                                     "height": str(height_elem) + "px",
                                     "background-color": "rgba(" + bcolour_element_value + ")",
+                                    "font-size": str(font_size_value) + "px",
                                 },
                             }
                         )
@@ -625,7 +642,7 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                                     "width": str((width_elem + height_elem) / 2) + "px",
                                     "height": str((width_elem + height_elem) / 2) + "px",
                                     "margin-right": str((width_elem + height_elem) / 4) + "px",
-                                    "background-color": "#555", # Define the default colour of the checkbox borders
+                                    "background-color": "#555",  # Define the default colour of the checkbox borders
                                 },
                             }
                         )
@@ -804,13 +821,12 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
             # {(element1, element2): scenario1, (element3, element4): scenario2}
             # vertical_groups = {(1, 2): -1}
             # horizontal_groups = {(2, 3): -1, (4, 5): -1}
-
-
+            '''
             # test
             print("Horizontal groups are:")
             for key in horizontal_groups:
                 print(key, horizontal_groups[key])
-            '''
+
             print("Vertical groups are:")
             for key in vertical_groups:
                 print(key, vertical_groups[key])
@@ -1110,7 +1126,7 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                     # Some rules for that buttons which are not too large
                     if((x2 - x1) < img_width * 0.8):
                         # Middle if the middle point placed at the 20% middle width for the whole image
-                        if ( abs((x2 - x1) / 2 - (img_width / 2)) < img_width * 0.2):
+                        if (abs((x2 - x1) / 2 - (img_width / 2)) < img_width * 0.2):
                             aligned_element = "center"
 
                         print(x1 + (width_elem / 2), (img_width / 2))
@@ -1279,9 +1295,9 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                 if (element_child.struct_type == "button"):
                     button_height = float(element_child.styles["height"][:-2])
                     button_width = float(element_child.styles["width"][:-2])
-                    if (abs(button_height - height) < (height * 0.15)): # The height diff is less than 15%
+                    if (abs(button_height - height) < (height * 0.15)):  # The height diff is less than 15%
                         element_child.styles["height"] = str(height) + "px"
-                    if (abs(button_width - width) < (width * 0.15)): # The width diff is less than 15%
+                    if (abs(button_width - width) < (width * 0.15)):  # The width diff is less than 15%
                         element_child.styles["width"] = str(width) + "px"
 
                 element_child.save()
