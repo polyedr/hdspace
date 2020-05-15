@@ -46,7 +46,7 @@ SQUARES_OVERLAP_THRESHOLD_TEXT = 0.05
 VERICAL_GROUPS_HORIZONTAL_OVERLAP_THRESHOLD = 0.75
 
 # The constant to calculate vertical overlap during the horizontal groups detection
-HORIZONTAL_GROUPS_VERICAL_OVERLAP_THRESHOLD = 0.25
+HORIZONTAL_GROUPS_VERTICAL_OVERLAP_THRESHOLD = 0.25
 
 
 # How to use image preprocessing to improve the accuracy of Tesseract
@@ -503,7 +503,23 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                     print("contours:", contours, "class id:", class_id)
                     """
 
-                    # Detect the font-size with tesseract
+                    # Detect the font-size with tesseract for the whole image
+                    whole_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+                    result = pytesseract.image_to_boxes(whole_img)
+                    # print(result)
+
+                    lines = result.strip().split('\n')
+                    font_size = []
+
+                    for line in lines:
+                        chars = line.split(' ')
+                        try:
+                            font_size.append(float(chars[4]) - float(chars[2]))
+                        except Exception:
+                            font_size.append(12.0)  # Default font-size value is 12px
+                    font_size_img = int(median(font_size) * 1.1 * 1.7)  # Font-size value of the image
+
+                    # Detect the font-size with tesseract for some element
                     result = pytesseract.image_to_boxes(roi_our)
                     # print(result)
 
@@ -577,7 +593,7 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                                     "width": str(width_elem) + "px",
                                     "height": str(height_elem) + "px",
                                     "background-color": "rgba(" + bcolour_element_value + ")",
-                                    "font-size": str(font_size_value) + "px",
+                                    "font-size": str(font_size_img) + "px",
                                 },
                             }
                         )
@@ -607,7 +623,7 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                                 "struct_type": "ocrtext",
                                 "func_type": func_type,
                                 "parameters": {"textContent": text, "roi": roi},
-                                "styles": {"text-align": aligned_element, "width": str(img_width) + "px", "font-size": str(font_size_value) + "px", },
+                                "styles": {"text-align": aligned_element, "width": str(img_width) + "px", "font-size": str(font_size_img) + "px", },
                                 #
                                 # "styles": {
                                 #     "width": str(width_elem) + "px",
@@ -627,7 +643,7 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                                     "width": str(width_elem) + "px",
                                     "height": str(height_elem) + "px",
                                     "background-color": "rgba(" + bcolour_element_value + ")",
-                                    "font-size": str(font_size_value) + "px",
+                                    "font-size": str(font_size_img) + "px",
                                 },
                             }
                         )
@@ -802,9 +818,9 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                             # They should overlap vertically and this level of the overlap
                             # should be at least 0.25
                             if (
-                                    vertical_overlap > HORIZONTAL_GROUPS_VERICAL_OVERLAP_THRESHOLD * height_elem
+                                    vertical_overlap > HORIZONTAL_GROUPS_VERTICAL_OVERLAP_THRESHOLD * height_elem
                             ) or (
-                                    vertical_overlap > HORIZONTAL_GROUPS_VERICAL_OVERLAP_THRESHOLD * height_elem1
+                                    vertical_overlap > HORIZONTAL_GROUPS_VERTICAL_OVERLAP_THRESHOLD * height_elem1
                             ):
                                 # Fill the horizontal_group dictionary
                                 horizontal_group_tuple = (idx, idx1)
