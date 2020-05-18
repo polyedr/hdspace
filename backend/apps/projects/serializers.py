@@ -112,6 +112,18 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
             s.save()
         return node
 
+# The serializer to change the children array only
+class ScenarioElementSerializerRecursive(serializers.ModelSerializer):
+    children = serializers.PrimaryKeyRelatedField(
+        queryset=ScenarioElement.objects.all(),
+        many=True,
+        required=False
+    )
+
+    class Meta:
+        model = ScenarioElement
+        fields = ("id", "name", "children",)
+
 
 class ScenarioElementMultipleSerializer(
     BulkSerializerMixin, serializers.ModelSerializer
