@@ -91,9 +91,23 @@ export function* activateScreenSaga({ payload }: ReturnType<typeof activateScree
 
   const scenariosElements = convertScenarioElements(serverScenariosElements);
 
+  yield call(updateSavedElementsValues, serverScenariosElements);
+
+  yield put(Actions.runLayoutAlgorithm(screenScenarios, scenariosElements));
+  yield take(runLayoutAlgorithmFinishedType);
+
+  yield put(Actions.setActiveItem({ itemId: `${rootScenario.id}s`, itemType: 'root', name: 'Root' }));
+
+  yield put(Actions.setScenarioLoader(false));
+  yield put(setScreenLoader(false));
+}
+
+export function* updateSavedElementsValues(scenariosElements: IScenarioElement[]) {
   const oldSavedElementsValues: ReturnType<typeof selectors.selectSavedElementsValues> = yield select(selectors.selectSavedElementsValues);
 
-  const newSavedElementsValues = !R.isEmpty(oldSavedElementsValues) ? oldSavedElementsValues : serverScenariosElements.reduce((acc, element) => {
+  const newSavedElementsValues = scenariosElements
+    .filter(element => Object.keys(oldSavedElementsValues).every(elementID => parseInt(elementID) !== element.id))
+    .reduce((acc, element) => {
     
     const savedValue = getSavedValue(element);
 
@@ -110,16 +124,8 @@ export function* activateScreenSaga({ payload }: ReturnType<typeof activateScree
     }
   }, {});
 
-  yield put(Actions.updateSavedElementsValues(newSavedElementsValues));
-
-  yield put(Actions.runLayoutAlgorithm(screenScenarios, scenariosElements));
-  yield take(runLayoutAlgorithmFinishedType);
-
-  yield put(Actions.setActiveItem({ itemId: `${rootScenario.id}s`, itemType: 'root', name: 'Root' }));
-
-  yield put(Actions.setScenarioLoader(false));
-  yield put(setScreenLoader(false));
-}
+  yield put(Actions.updateSavedElementsValues({...oldSavedElementsValues, ...newSavedElementsValues}));
+};
 
 export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
   yield put(Actions.clearAfterPrevScreen());
@@ -161,7 +167,8 @@ export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
 
   yield put(updateViewTree({
     screen,
-    scenarios: { [rootScenario.id]: rootScenario }
+    scenarios: { [rootScenario.id]: rootScenario },
+    scenarioElements: {},
   }));
 
   const currentProject: ReturnType<typeof selectors.selectCurrentProject> = yield select(
