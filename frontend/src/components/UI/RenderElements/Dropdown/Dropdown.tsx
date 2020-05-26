@@ -43,6 +43,7 @@ const DropdownComponent = (props: DropdownRendererProps) => {
       ...restStyles,
       backgroundColor,
       color,
+      outline: active ? '1px red solid' : 'none',
       ...(isDisabled && { transition: 'none' }),
       '&:hover': {
         backgroundColor,
@@ -90,7 +91,7 @@ const DropdownComponent = (props: DropdownRendererProps) => {
         data-id={sortableId}
         key={id}
         style={{ position: 'relative', display: 'inline-block' }}
-        className={cn(sharedClasses.lsItem, styles.disabled, active && sharedClasses.activated)}
+        className={cn(sharedClasses.lsItem, active && sharedClasses.activated)}
       >
         <Button
           aria-controls="simple-menu"
@@ -101,7 +102,7 @@ const DropdownComponent = (props: DropdownRendererProps) => {
           key={id}
           variant="contained"
           color="primary"
-          className={classes.root}
+          className={cn(classes.root, styles.disabled)}
           disableRipple
         >
           {textContent}

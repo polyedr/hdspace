@@ -121,11 +121,11 @@ const SelectComponent = (props: SelectRendererProps) => {
         data-id={sortableId}
         key={id}
         style={{ position: 'relative', display: 'inline-block' }}
-        className={cn(sharedClasses.lsItem, styles.disabled)}
+        className={sharedClasses.lsItem}
       >
         <TextField
           variant="outlined"
-          className={classes.root}
+          className={cn(classes.root, styles.disabled)}
           value={value}
           InputProps={InputProps}
           select
