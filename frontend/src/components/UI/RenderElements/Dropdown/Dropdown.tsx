@@ -32,7 +32,7 @@ const DropdownComponent = (props: DropdownRendererProps) => {
     setAnchorEl(null);
   };
 
-  const menu = childrenElements.find(child => child.struct_type === 'dropdownMenu') as unknown as DropdownMenuChild;;
+  const menu = childrenElements.find(child => child.struct_type === 'dropdownMenu') as unknown as DropdownMenuChild;
   const menuStyles = menu?.styles;
   const menuItems = childrenElements.filter(child => child.struct_type === 'dropdownItem') as DropdownItemChild[];
   const menuItemStyles = childrenElements.find(child => child.struct_type === 'dropdownItem')?.styles;
