@@ -232,11 +232,11 @@ export function removeItem(
   const containersToRemove = rawContainersToRemove.map(x => parseInt(x));
   const elementsToRemove = rawElementsToRemove.map(x => parseInt(x));
 
-  const childrenToRemove = R.flatten(
+  const childrenToRemove = R.unnest(
     Object.values(elements)
       .filter((element) => elementsToRemove.some((elementToRemove) => elementToRemove === element.id))
       .map((element) => element.children.map((child) => child.id))
-  ) as unknown as number[];
+  );
 
   const newContainers = R.pipe(
     R.over(containerParentLens.children, (children: string[]) => R.without([itemID], children)),
