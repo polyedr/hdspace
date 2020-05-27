@@ -675,17 +675,8 @@ function* duplicateContainer(containerInfo: DuplicateContainerInfo, targetContai
   const eLens = makeElementLens();
 
   const independentElementsToDuplicate = elementsToDuplicate.map(element => {
-    const childrenToCreate = element.children.map(child => R.pipe(
-      R.omit(['id']),
-      R.set(eLens.parent, newContainer.id),
-      R.set(eLens.scenario, newContainer.id),
-    )(child));
-  
-    const elementToCreate = R.pipe(
-      R.omit(['id']),
-      R.set(eLens.parent, newContainer.id),
-      R.set(eLens.scenario, newContainer.id),
-    )(element);
+    const childrenToCreate = element.children.map(child => ai.convertElementToCreate(child, newContainer));
+    const elementToCreate = ai.convertElementToCreate(element, newContainer);
 
     return { ...elementToCreate, children: childrenToCreate };
   });
@@ -827,20 +818,10 @@ function* duplicateItem(itemToCopyInfo: ItemToCopyInfo, targetContainerID: numbe
     selectors.selectScenario, targetContainerID,
   );
 
-  const eLens = makeElementLens();
   const cLens = makeContainerLens();
 
-  const childrenToCreate = elementToDuplicate.children.map(child => R.pipe(
-    R.omit(['id']),
-    R.set(eLens.parent, targetContainer.id),
-    R.set(eLens.scenario, targetContainer.id),
-  )(child));
-
-  const elementToCreate = R.pipe(
-    R.omit(['id']),
-    R.set(eLens.parent, targetContainer.id),
-    R.set(eLens.scenario, targetContainer.id),
-  )(elementToDuplicate);
+  const childrenToCreate = elementToDuplicate.children.map(child => ai.convertElementToCreate(child, targetContainer));
+  const elementToCreate = ai.convertElementToCreate(elementToDuplicate, targetContainer);
 
   const createdElement: ReturnPromisedType<typeof apiAddElements>[number] = (yield call(
     reqWrapper, apiAddElements, {

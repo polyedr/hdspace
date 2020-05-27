@@ -297,3 +297,13 @@ export function makeElementLens(elementID?: number) {
     children: R.lensPath(specifiedEntity.concat(['children'])),
   };
 };
+
+export function convertElementToCreate(element: ProjectT.IScenarioElement, newContainer: ProjectT.IScenarioItem) {
+  const eLens = makeElementLens();
+
+  return R.pipe(
+    R.omit(['id']),
+    R.set(eLens.parent, newContainer.id),
+    R.set(eLens.scenario, newContainer.id),
+  )(element);
+};
