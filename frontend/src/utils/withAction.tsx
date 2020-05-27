@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { selectors, actionsCreators } from '$redux/project';
 import { AppReduxState } from '$shared/types/app';
 import { LinkContext } from '$containers/ExportedApp';
-import { SharedElementRendererProps, ActionRendererProps } from '$components/UI/RenderElements/types';
+import { SharedRendererProps, ActionRendererProps } from '$components/UI/RenderElements/types';
 
 const mapStateToProps = (state: AppReduxState) => {
   const projectID = selectors.selectCurrentProject(state).id;
@@ -24,9 +24,9 @@ export type WithActionProps = {
   onClick(event: React.MouseEvent<HTMLAnchorElement, MouseEvent>): void;
 }
 
-type Props = WithActionProps & SharedElementRendererProps & ActionRendererProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
+type Props = WithActionProps & SharedRendererProps & ActionRendererProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 
-function withAction(Component: React.ComponentType<WithActionProps & SharedElementRendererProps & ActionRendererProps>, type: 'link' | 'button', isExportedAction?: boolean) {
+function withAction(Component: React.ComponentType<WithActionProps & SharedRendererProps & ActionRendererProps>, type: 'link' | 'button', isExportedAction?: boolean) {
   function WrapperComponent(props: Props) {
     const { projectID, activateScreen, ...restProps } = props;
     const { params: { action }, isDisabled } = restProps;

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
+import * as R from 'ramda';
 import { ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
@@ -15,18 +16,13 @@ import { sharedClasses } from '$styles/sharedClasses';
 const styles = require('./SelectOptions.scss');
 
 type StateProps = {
-  itemID: number;
   selectOptions: IScenarioElement[];
 };
 
 function mapState(state: AppReduxState): StateProps {
-  const activeItem = selectors.selectActiveItem(state);
-  const itemID = parseInt(activeItem.itemId);
-  const scenarioElement = selectors.selectScenarioElement(state, parseInt(activeItem.itemId));
-  const selectOptions = scenarioElement.children.filter(child => child.struct_type === 'selectItem');
+  const selectOptions = selectors.selectActiveItemChildren(state, 'selectItem');
 
   return {
-    itemID,
     selectOptions,
   };
 }
@@ -39,7 +35,7 @@ const mapDispatch = {
 type Props = StateProps & PropertiesChangeProps & typeof mapDispatch;
 
 const SelectOptions: React.FC<Props> = ({
-  itemID,
+  activeItemID,
   selectOptions = [],
   updateParams,
   addChildToElement,
@@ -49,28 +45,35 @@ const SelectOptions: React.FC<Props> = ({
 
   useEffect(() => {
     setOptions(selectOptions);
-  }, [selectOptions])
+  }, [selectOptions]);
 
-  const handleNameFieldChange = (id: number, { target: { value } }: React.ChangeEvent<HTMLTextAreaElement>) => {
-    updateParams({ name: value }, id);
+  const parsedActiveItemID = parseInt(activeItemID);
+
+  const handleNameFieldChange = (selectOptionID: number, { target: { value } }: React.ChangeEvent<HTMLTextAreaElement>) => {
+    updateParams({ name: value }, selectOptionID);
   };
 
-  const handleValueFieldBlur = (id: number, { target: { value } }: React.ChangeEvent<HTMLTextAreaElement>) => {
-    updateParams({ value }, id);
+  const handleValueFieldBlur = (selectOptionID: number, { target: { value } }: React.ChangeEvent<HTMLTextAreaElement>) => {
+    updateParams({ value }, selectOptionID);
   };
 
-  const handleValueFieldChange = (id: number, { target: { value } }: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const updatedOptions = options.map(option => option.id === id ? { ...option, parameters: { ...option.parameters, value } } : option);
+  const handleValueFieldChange = (selectOptionID: number, { target: { value } }: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const updatedOptions = options.map((option) =>
+      option.id === selectOptionID
+        ? R.assocPath(['parameters', 'value'], value, option)
+        : option
+    );
+
     setOptions(updatedOptions);
   };
 
   const handleAddButtonClick = () => {
     const newOptionName = generateUniqueName('New option', selectOptions.map(option => option.parameters.name || '') || []);
-    addChildToElement('selectItem', itemID, { name: newOptionName, value: newOptionName });
+    addChildToElement('selectItem', parsedActiveItemID, { name: newOptionName, value: newOptionName });
   };
 
-  const handleDeleteButtonClick = (childID: number) => {
-    deleteChildFromElement(childID, itemID);
+  const handleDeleteButtonClick = (selectOptionID: number) => {
+    deleteChildFromElement(selectOptionID, parsedActiveItemID);
   };
 
   return (

@@ -72,8 +72,10 @@ const getCategoryTab = (structType: ElementEntity, libraryElements: ElementsToAd
       return { Widget: [...obj.Widget || [], libraryElements[structType]] };
     case 'image':
       return { Image: [...obj.Image || [], libraryElements[structType]] };
-
-    default: return { Other: [...obj.Other || [], libraryElements[structType]] };
+    case 'dropdown':  
+    case 'undefined':
+      return { Other: [...obj.Other || [], libraryElements[structType]] };
+    default: return null;
   }
 };
 
@@ -86,7 +88,7 @@ export const parseAddElementsTabs = (libraryElements: ElementsToAdd): IListCateg
 
 export const getCustomTemplateElements = (libraryElements: LibraryElements) => {
   return R.keys(libraryElements).reduce((acc: ITemplateElement[], structType) => {
-    if (ENTITIES.some(x => x === structType)) {
+    if (R.keys(ENTITIES).some(x => x === structType)) {
       return acc.concat({
         label: `${structType}`,
         value: { funcType: structType, structType },
@@ -247,10 +249,10 @@ export const scenarioItemToLS = ({ id, struct_type, parameters: { children } }: 
   children: children || [],
 });
 
-export const elementToLS = ({ id, struct_type, children }: IScenarioElement): ILSItem => ({
+export const elementToLS = ({ id, struct_type }: IScenarioElement): ILSItem => ({
   id,
   type: struct_type,
-  children: children.map(child => elementToLS(child)) as unknown as string[],
+  children: [],
 });
 
 export const getListNotDragging = (type: string): string[] => {

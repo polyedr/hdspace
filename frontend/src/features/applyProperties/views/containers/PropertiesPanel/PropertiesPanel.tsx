@@ -110,19 +110,7 @@ const Component: React.FC<PropertiesPanelProps> = ({
 }) => {
   const activeItemID = activeItem.itemType === 'root' ? 'root' : activeItem.itemId;
 
-  const findItem = (items: ILSItem[], id: number): ILSItem | undefined => {
-    const item =
-      items?.find((item) => item.id === id) ||
-      items
-        ?.map((item) => findItem(item.children as unknown as ILSItem[], id)) // TODO why it is maybe string?
-        .flat()
-        .filter((item) => typeof item !== "undefined")[0];
-
-    return item;
-  }
-
-  const currentItemType = activeItem.itemType === 'root' ? 'root' : findItem(Object.values(screen.listSortable),  parseInt(activeItemID))?.type;
-
+  const currentItemType = activeItem.itemType === 'root' ? 'root' : R.prop(activeItemID, screen.listSortable)?.type;
   const disablePanel = !screen;
 
   return (

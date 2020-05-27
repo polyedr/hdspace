@@ -3,7 +3,6 @@ import * as R from 'ramda';
 
 import * as Actions from '$redux/project/actions';
 import { getParams } from '$utils/parseScenario';
-import { getSavedValue } from '$utils/getSavedValue';
 import {
   apiAddElements,
   apiDelElements,
@@ -26,6 +25,7 @@ import { LIBRARY_ELEMENTS, AllChildren, ElementChild } from '$domain/libraryElem
 import * as ai from '$domain/abstractInterface';
 
 import { selectors, T } from '../';
+import { updateSavedElementsValues } from './screen';
 
 const runLayoutAlgorithmFinishedType: T.RunLayoutAlgorithmFinished['type'] = 'PROJECTS:RUN_LAYOUT_ALGORITHM_FINISHED';
 
@@ -156,9 +156,13 @@ export function* addElementsIntoContainerSaga(action: ReturnType<typeof Actions.
 
   // updatedContainer now has id set by backend
   const updatedTargetContainer = screenScenarios.find(x => x.id === targetContainerID) as T.IScenarioItem;
+  const createdChildren = R.unnest(createdElements.map(element => element.children));
+
+  const elementsAndChildrenIDs = updatedTargetContainer.elements.concat(createdElements.map(x => x.id), createdChildren.map(x => x.id));
 
   const finalTargetContainer = {
     ...updatedTargetContainer,
+    elements: elementsAndChildrenIDs,
     parameters: {
       children: updatedTargetContainer.parameters.children.concat(createdElements.map(x => `${x.id}e`)),
     }
@@ -174,28 +178,10 @@ export function* addElementsIntoContainerSaga(action: ReturnType<typeof Actions.
 
   const finalScenarioElements = {
     ...scenarioElements,
-    ...createdElements.reduce((acc: T.IScenarioElements, x) => ({ ...acc, [x.id]: x }), {}),
+    ...[...createdElements, ...createdChildren].reduce((acc: T.IScenarioElements, x) => ({ ...acc, [x.id]: x }), {}),
   }
 
-  const oldSavedElementsValues: ReturnType<typeof selectors.selectSavedElementsValues> = yield select(selectors.selectSavedElementsValues);
-  
-  const newSavedElementsValues = createdElements.reduce((acc, element) => {
-    const savedValue = getSavedValue(element);
-    
-    if (element.struct_type === 'radiobutton') {
-      return {
-        ...acc,
-        [element.parameters.name || '']: { id: element.id, savedValue: element.parameters.value || '' },
-      }
-    }
-
-    return {
-      ...acc,
-      [`${element.id}e`]: { id: element.id, savedValue },
-    }
-  }, oldSavedElementsValues);
-
-  yield put(Actions.updateSavedElementsValues(newSavedElementsValues));
+  yield call(updateSavedElementsValues, [...createdElements, ...createdChildren]);
 
   yield put(Actions.runLayoutAlgorithm(finalScenarios, finalScenarioElements));
   yield take(runLayoutAlgorithmFinishedType);
@@ -253,7 +239,7 @@ export function* addChildToElementSaga(action: ReturnType<typeof Actions.addChil
     [elementID]: updatedElement,
   }
 
-  const scenarios = screenScenarios.reduce((acc: T.IScenarios, x) => ({ ...acc, [x.id]: x }), {});
+  const scenarios = R.zipObj(screenScenarios.map(R.prop('id')), screenScenarios);
 
   yield put(Actions.runLayoutAlgorithm(scenarios, updatedScenarioElements));
   yield take(runLayoutAlgorithmFinishedType);
@@ -397,9 +383,13 @@ export function* wrapIntoContainerSaga() {
   const activeItemElement = document.querySelector<HTMLElement>(`[data-ls-id='${activeItem.itemId}']`);
   activeItemElement?.focus();
 
+  const finalScenarioElementsWithoutChildren = Object.values(finalScenarioElements)
+    .map((element) => R.omit(['children'], element))
+    .reduce((acc, element) => ({ ...acc, [element.id]: element }), {});
+
   affectedItemsIDs.e.length > 0 && (
     yield call(reqWrapper, apiSaveElements, {
-      data: R.values(R.pick(R.map(R.toString, affectedItemsIDs.e), finalScenarioElements))
+      data: R.values(R.pick(R.map(R.toString, affectedItemsIDs.e), finalScenarioElementsWithoutChildren))
     })
   );
 

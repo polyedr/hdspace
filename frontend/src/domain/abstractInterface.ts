@@ -135,12 +135,14 @@ export function wrapIntoContainer(
  } else {
   const itemLens = makeElementLens(normalizeID(itemToWrapID));
 
+  const itemChildrenIDs = elements[parseInt(itemToWrapID)]?.children.map(child => child.id);
+
   const newContainers = R.pipe(
     R.set(containerWrapperLens.parent, itemParentID),
-    R.set(containerWrapperLens.elements, [normalizeID(itemToWrapID)]),
+    R.set(containerWrapperLens.elements, [normalizeID(itemToWrapID), ...itemChildrenIDs]),
     R.set(containerWrapperLens.children, [itemToWrapID]),
     R.over(parentLens.children, R.map((x: string) => x === itemToWrapID ? `${containerWrapper.id}s` : x)),
-    R.over(parentLens.elements, R.without([normalizeID(itemToWrapID)])),
+    R.over(parentLens.elements, R.without([normalizeID(itemToWrapID), ...itemChildrenIDs])),
   )({
     ...containers,
     [containerWrapper.id]: containerWrapper,
@@ -151,8 +153,16 @@ export function wrapIntoContainer(
     R.set(itemLens.scenario, containerWrapper.id),
   )(elements);
 
+ const newElementsWithChildren = itemChildrenIDs.reduce((acc, id) => {
+  const itemLens = makeElementLens(normalizeID(id));
+  return R.pipe(
+    R.set(itemLens.parent, containerWrapper.id),
+    R.set(itemLens.scenario, containerWrapper.id),
+  )(acc);
+ }, newElements)
+
   return {
-    scenarios: newContainers, elements: newElements,
+    scenarios: newContainers, elements: newElementsWithChildren,
     affectedItemsIDs: { s: [itemParentID, containerWrapper.id], e: [normalizeID(itemToWrapID)] }
   };
  }
@@ -180,7 +190,8 @@ export const constructAIMap = (
         return { ...acc, [rawChildID]: scenarioItemToLS(scenario), ...childrenToLS(scenario.parameters.children) };
       }
       const element = elements[childID];
-      return { ...acc, [rawChildID]: elementToLS(element) };
+      const childrenIDs = element?.children?.map(child => `${child.id}e`);
+      return { ...acc, [rawChildID]: elementToLS(element), ...childrenToLS(childrenIDs) };
     }, { root: rootScenario });
   
     const listSortable = childrenToLS(rootScenario.children);
@@ -205,7 +216,10 @@ export function removeItem(
     }
 
     return aiMap[id].children.reduce(
-      (innerAcc, x) => innerAcc.concat(collectAllItemsIDsToRemove(acc, currentAiMap, x)), [id]
+      (innerAcc, child: any) => {
+        const childID = typeof child === 'string' ? child : `${child.id}e`;
+        return innerAcc.concat(collectAllItemsIDsToRemove(acc, currentAiMap, childID))
+      }, [id]
     );
   };
 
@@ -217,7 +231,12 @@ export function removeItem(
 
   const containersToRemove = rawContainersToRemove.map(x => parseInt(x));
   const elementsToRemove = rawElementsToRemove.map(x => parseInt(x));
-  const childrenToRemove = R.flatten(Object.values(elements).map(element => element.children.map(child => child.id))) as unknown as number[];
+
+  const childrenToRemove = R.unnest(
+    Object.values(elements)
+      .filter((element) => elementsToRemove.some((elementToRemove) => elementToRemove === element.id))
+      .map((element) => element.children.map((child) => child.id))
+  );
 
   const newContainers = R.pipe(
     R.over(containerParentLens.children, (children: string[]) => R.without([itemID], children)),
@@ -275,5 +294,16 @@ export function makeElementLens(elementID?: number) {
     parent: R.lensPath(specifiedEntity.concat(['parameters', 'parent_id'])),
     scenario: R.lensPath(specifiedEntity.concat(['scenario'])),
     id: R.lensPath(specifiedEntity.concat(['id'])),
+    children: R.lensPath(specifiedEntity.concat(['children'])),
   };
+};
+
+export function convertElementToCreate(element: ProjectT.IScenarioElement, newContainer: ProjectT.IScenarioItem) {
+  const eLens = makeElementLens();
+
+  return R.pipe(
+    R.omit(['id']),
+    R.set(eLens.parent, newContainer.id),
+    R.set(eLens.scenario, newContainer.id),
+  )(element);
 };

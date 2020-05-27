@@ -31,13 +31,13 @@ const List = (props: ListRendererProps) => {
       tabIndex={isDisabled ? 0 : -1}
     >
       {childrenElements.map(
-        ({ id: itemID, parameters }) => (
+        ({ id: listItemID, parameters }) => (
           <ListItem
-            key={itemID}
-            id={`${itemID}e`}
+            key={listItemID}
+            id={`${listItemID}e`}
             style={convertPropCSS(itemStyles)}
             params={parameters}
-            active={isDisabled && parseInt(activeItemId) === itemID}
+            active={isDisabled && parseInt(activeItemId) === listItemID}
             isDisabled={isDisabled}
           />
         )

@@ -32,7 +32,7 @@ const DropdownComponent = (props: DropdownRendererProps) => {
     setAnchorEl(null);
   };
 
-  const menu = childrenElements.find(child => child.struct_type === 'dropdownMenu') as unknown as DropdownMenuChild;;
+  const menu = childrenElements.find(child => child.struct_type === 'dropdownMenu') as unknown as DropdownMenuChild;
   const menuStyles = menu?.styles;
   const menuItems = childrenElements.filter(child => child.struct_type === 'dropdownItem') as DropdownItemChild[];
   const menuItemStyles = childrenElements.find(child => child.struct_type === 'dropdownItem')?.styles;
@@ -43,6 +43,7 @@ const DropdownComponent = (props: DropdownRendererProps) => {
       ...restStyles,
       backgroundColor,
       color,
+      outline: active ? '1px red solid' : 'none',
       ...(isDisabled && { transition: 'none' }),
       '&:hover': {
         backgroundColor,
@@ -90,7 +91,7 @@ const DropdownComponent = (props: DropdownRendererProps) => {
         data-id={sortableId}
         key={id}
         style={{ position: 'relative', display: 'inline-block' }}
-        className={cn(sharedClasses.lsItem, styles.disabled, active && sharedClasses.activated)}
+        className={cn(sharedClasses.lsItem, active && sharedClasses.activated)}
       >
         <Button
           aria-controls="simple-menu"
@@ -101,7 +102,7 @@ const DropdownComponent = (props: DropdownRendererProps) => {
           key={id}
           variant="contained"
           color="primary"
-          className={classes.root}
+          className={cn(classes.root, styles.disabled)}
           disableRipple
         >
           {textContent}
@@ -172,9 +173,9 @@ const DropdownComponent = (props: DropdownRendererProps) => {
         classes={menuClasses}
         className={sharedClasses.lsItem}
       >
-        {menuItems?.map(({ id, parameters: { textContent: itemTextContent } }) => (
+        {menuItems?.map(({ id: menuItemID, parameters: { textContent: itemTextContent } }) => (
           <MenuItem
-            key={id}
+            key={menuItemID}
             className={menuItemClasses.root}
             disableRipple={!showRipple}
             onClick={handleMenuClose}
