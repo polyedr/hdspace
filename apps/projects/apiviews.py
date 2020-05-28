@@ -410,7 +410,7 @@ class ScenarioElementMultipleView(ListBulkCreateUpdateDestroyAPIView):
 
 class ScenarioElementRecursiveViewSet(viewsets.ModelViewSet):
     """
-    List all scenario elements, or PATCH the element via the children array
+    List all scenario elements, or single element, or PATCH the element via the children array
     """
     queryset = ScenarioElement.objects.all()
     # queryset = ScenarioElement.objects.root_nodes()
