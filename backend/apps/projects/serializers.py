@@ -106,7 +106,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
         children = validated_data.pop('children', [])
         node = super().update(instance, validated_data)
         for child_data in children:
-            child_data['scenario'] = child_data['scenario'].pk
+            # child_data['scenario'] = child_data['scenario'].pk
             s = ScenarioElementSerializer(data=child_data, context={'parent': node})
             s.is_valid(raise_exception=True)
             s.save()
@@ -157,7 +157,7 @@ class ScenarioElementMultipleSerializer(
             parent=self.context.get('parent'),
             **validated_data)
         for child_data in children:
-            child_data['scenario'] = child_data['scenario'].pk
+            # child_data['scenario'] = child_data['scenario'].pk
             s = ScenarioElementSerializer(data=child_data, context={'parent': node})
             s.is_valid(raise_exception=True)
             s.save()
@@ -168,7 +168,7 @@ class ScenarioElementMultipleSerializer(
         children = validated_data.pop('children', [])
         node = super().update(instance, validated_data)
         for child_data in children:
-            child_data['scenario'] = child_data['scenario'].pk
+            # child_data['scenario'] = child_data['scenario'].pk
             s = ScenarioElementSerializer(data=child_data, context={'parent': node})
             s.is_valid(raise_exception=True)
             s.save()
