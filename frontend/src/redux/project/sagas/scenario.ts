@@ -225,6 +225,7 @@ export function* addChildToElementSaga(action: ReturnType<typeof Actions.addChil
   
   const newElement = { ...scenarioElement, children: [newChild] };
   const updatedElement: ReturnPromisedType<typeof apiChangeElement> = yield call(reqWrapper, apiChangeElement, { data: newElement, id: elementID });
+  const updatedChildren = updatedElement.children.reduce((acc: T.IScenarioElements, child) => ({ ...acc, [child.id]: child }), {});
 
   const screenScenarios: ReturnPromisedType<typeof apiGetScenarios> = yield call(
     reqWrapper, apiGetScenarios, { screenID: currentScreen.id }
@@ -237,12 +238,28 @@ export function* addChildToElementSaga(action: ReturnType<typeof Actions.addChil
   const updatedScenarioElements = {
     ...scenarioElements,
     [elementID]: updatedElement,
+    ...updatedChildren,
   }
 
   const scenarios = R.zipObj(screenScenarios.map(R.prop('id')), screenScenarios);
 
   yield put(Actions.runLayoutAlgorithm(scenarios, updatedScenarioElements));
   yield take(runLayoutAlgorithmFinishedType);
+
+  const updatedTargetContainer = {
+    ...scenarios[targetContainerID],
+    elements: [updatedElement.id, ...(updatedElement.children.map(child => child.id))],
+  };
+
+  const scenarioToUpdate: T.IScenarioItem = {
+    ...updatedTargetContainer,
+    ...R.omit(
+      [targetContainerID.toString()],
+      screenScenarios.reduce((acc: T.IScenarios, x) => ({ ...acc, [x.id]: x }), {})
+    ),
+  };
+
+  yield fork(reqWrapper, apiSaveScenarios, { data: [scenarioToUpdate] });
 }
 
 export function* deleteChildFromElementSaga(action: ReturnType<typeof Actions.deleteChildFromElement>) {
