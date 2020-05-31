@@ -57,7 +57,6 @@ const YoutubeVideoRenderer = (props: YoutubeVideoRendererProps) => {
       )}
       style={{
         ...style,
-        background: link ? 'none' : `no-repeat center #E0E0E0 url(${IMAGES.youtubeIcon})`,
         overflow: 'hidden',
       }}
       tabIndex={isDisabled ? 0 : -1}

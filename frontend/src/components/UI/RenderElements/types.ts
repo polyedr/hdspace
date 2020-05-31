@@ -134,6 +134,12 @@ export type YoutubeVideoRendererProps = SharedRendererProps & {
   params: VideoSettings,
 };
 
+export type VideoRendererProps = SharedRendererProps & {
+  params: {
+    videoLink: string,
+  },
+};
+
 export type ListItemRendererProps = Omit<SharedRendererProps, 'sortableId' | 'activeItemId'> & {
   params: {
     textContent: string,
