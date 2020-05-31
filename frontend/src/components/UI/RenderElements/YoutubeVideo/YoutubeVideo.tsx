@@ -9,12 +9,41 @@ const styles = require('../styles.scss');
 
 const YoutubeVideoRenderer = (props: YoutubeVideoRendererProps) => {
   const { id, params, active, sortableId, style, isDisabled } = props;
-  const { videoLink } = params;
+  const { videoSettings: { link, autoplay, start, end, loop, rel } } = params;
 
-  const videoID = videoLink.replace('https://youtu.be/', '');
-  const fullLink = `https://www.youtube.com/embed/${videoID}`;
+  const videoID = link.replace('https://youtu.be/', '');
 
-  return videoLink ? (
+  const attributes = {
+    start: {
+      attribute: start,
+      value: start,
+    },
+    end: {
+      attribute: end,
+      value: end,
+    },
+    loop: {
+      attribute: 1,
+      value: loop,
+    },
+    rel: {
+      attribute: 0,
+      value: rel,
+    },
+    autoplay: {
+      attribute: 1,
+      value: autoplay && !isDisabled,
+    },
+  };
+
+  const linkAttributes = Object.entries(attributes)
+    .filter(([key, { value }]) => !!value)
+    .map(([key, { attribute }]) => `${key}=${attribute}`)
+    .join("&");
+
+  const fullLink = `https://www.youtube.com/embed/${videoID}?${linkAttributes}`;
+
+  return link ? (
     <div
       id={id}
       data-ls-id={id}
@@ -28,7 +57,7 @@ const YoutubeVideoRenderer = (props: YoutubeVideoRendererProps) => {
       )}
       style={{
         ...style,
-        background: videoLink ? 'none' : `no-repeat center #E0E0E0 url(${IMAGES.youtubeIcon})`,
+        background: link ? 'none' : `no-repeat center #E0E0E0 url(${IMAGES.youtubeIcon})`,
         overflow: 'hidden',
       }}
       tabIndex={isDisabled ? 0 : -1}
@@ -45,6 +74,7 @@ const YoutubeVideoRenderer = (props: YoutubeVideoRendererProps) => {
           width="100%"
           height="100%"
           src={fullLink}
+          allow={`accelerometer; ${autoplay && !isDisabled ? 'autoplay; ' : ''}encrypted-media; gyroscope; picture-in-picture`}
           style={{
             position: 'absolute',
             top: '0',

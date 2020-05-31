@@ -72,7 +72,8 @@ const getCategoryTab = (structType: ElementEntity, libraryElements: ElementsToAd
       return { Widget: [...obj.Widget || [], libraryElements[structType]] };
     case 'image':
       return { Image: [...obj.Image || [], libraryElements[structType]] };
-    case 'dropdown':  
+    case 'dropdown':
+    case 'youtubeVideo':
     case 'undefined':
       return { Other: [...obj.Other || [], libraryElements[structType]] };
     default: return null;

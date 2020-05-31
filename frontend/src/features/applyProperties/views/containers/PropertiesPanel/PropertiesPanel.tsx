@@ -4,7 +4,6 @@ import classNames from 'classnames';
 import * as R from 'ramda';
 
 import { AppReduxState } from '$shared/types/app';
-import { ILSItem } from '$redux/project/types';
 import { actionsCreators, selectors, T as ProjectT } from '$redux/project';
 import { Scrollbar } from '$components/UI/Scrollbar/';
 import { Spinner } from '$components/UI/Spinner/';
@@ -36,7 +35,7 @@ import { Ordered } from '../Controls/Ordered/Ordered';
 import { LabelFor } from '../Controls/LabelFor/LabelFor';
 import { DropdownItems } from '../Controls/DropdownItems/DropdownItems';
 import { IsOpen } from '../Controls/IsOpen/IsOpen';
-import { VideoLink } from '../Controls/VideoLink/VideoLink';
+import { VideoSettings } from '../Controls/VideoSettings/VideoSettings';
 const styles = require('./PropertiesPanel.scss');
 
 type StateProps = {
@@ -88,7 +87,7 @@ const CONTROLS: Record<Control, React.ComponentType<any>> = {
   labelFor: LabelFor,
   dropdownItems: DropdownItems,
   isOpen: IsOpen,
-  videoLink: VideoLink,
+  videoSettings: VideoSettings,
 };
 
 export type PropertiesPanelProps = StateProps & typeof mapDispatch;

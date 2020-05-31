@@ -26,6 +26,7 @@ import {
   DEFAULT_DROPDOWN_ITEMS,
   DEFAULT_SELECT_OPEN,
   DEFAULT_VIDEO_LINK,
+  DEFAULT_VIDEO_SETTINGS,
 } from '$constants/defaultParams';
 import { LibraryContainers, ElementsToAdd, LibraryChildrenElements } from './libraryElements';
 
@@ -69,7 +70,7 @@ const CONTROLS_AFFECT_ON_PARAMS = [
   'labelFor',
   'dropdownItems',
   'isOpen',
-  'videoLink',
+  'videoSettings',
 ] as const;
 
 const CONTROLS_AFFECT_ON_STYLES = ['display', 'indents', 'size', 'typography', 'border', 'background', 'bullets'] as const;
@@ -172,7 +173,7 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
     root: ['indents', 'size', 'typography', 'border', 'background']
   },
   youtubeVideo: {
-    root: ['indents', 'size', 'border', 'videoLink'],
+    root: ['indents', 'size', 'border', 'videoSettings'],
   },
   undefined: {
     root: ['size', 'background'],
@@ -204,7 +205,7 @@ const CONTROLS_DEFAULTS: Record<Control, any> = {
   labelFor: DEFAULT_LABEL_FOR,
   dropdownItems: DEFAULT_DROPDOWN_ITEMS,
   isOpen: DEFAULT_SELECT_OPEN,
-  videoLink: DEFAULT_VIDEO_LINK,
+  videoSettings: DEFAULT_VIDEO_SETTINGS,
 };
 
 type EntityToDefaults = {

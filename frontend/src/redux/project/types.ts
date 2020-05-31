@@ -285,6 +285,17 @@ export type ListItem = {
   link: string,
 };
 
+export type VideoSettings = {
+  videoSettings: {
+    link: string,
+    autoplay: boolean,
+    start: number,
+    end: number,
+    loop: boolean,
+    rel: boolean,
+  },
+};
+
 export interface IScreenProps {
   buoyancy?: number,
   html_type?: string,
@@ -320,6 +331,7 @@ export interface IScreenProps {
   isLink?: boolean,
   isOpen?: boolean,
   videoLink?: string,
+  videoSettings?: VideoSettings['videoSettings'],
 }
 
 export interface ISortableItem {
@@ -396,7 +408,7 @@ export type ElementParameters = {
   isLink?: boolean,
   link?: string,
   isOpen?: boolean,
-  videoLink?: string,
+  videoSettings?: VideoSettings['videoSettings'],
 }
 
 export interface IScenarioElement { // compare with entity on backend
