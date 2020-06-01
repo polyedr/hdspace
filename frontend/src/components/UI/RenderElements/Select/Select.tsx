@@ -34,8 +34,13 @@ const SelectComponent = (props: SelectRendererProps) => {
   const inlineStyles = { width, height, marginTop, marginRight, marginBottom, marginLeft };
 
   const classes = makeStyles({
+    container: {
+      '&.hovered $input': {
+        outline: '1px solid #949494',
+      },
+    },
+
     root: {
-      ...inlineStyles,
       height: '100%',
 
       '& fieldset': {
@@ -46,10 +51,6 @@ const SelectComponent = (props: SelectRendererProps) => {
         borderColor: '#1890ff',
         borderRadius,
         boxShadow: 'inset 0px 0px 0 1px #1890ff'
-      },
-
-      '&.hovered $input': {
-        outline: isDisabled ? '1px solid #949494' : 'none',
       },
     },
 
@@ -120,8 +121,8 @@ const SelectComponent = (props: SelectRendererProps) => {
         data-ls-id={id}
         data-id={sortableId}
         key={id}
-        style={{ position: 'relative', display: 'inline-block' }}
-        className={sharedClasses.lsItem}
+        style={{ ...inlineStyles, position: 'relative', display: 'inline-block' }}
+        className={cn(sharedClasses.lsItem, classes.container)}
       >
         <TextField
           variant="outlined"
@@ -176,29 +177,30 @@ const SelectComponent = (props: SelectRendererProps) => {
       </div>
     </>
   ) : (
-    <TextField
-      id={id}
-      key={id}
-      variant="outlined"
-      style={inlineStyles}
-      className={classes.root}
-      value={value}
-      onChange={handleSelectChange}
-      InputProps={InputProps}
-      SelectProps={PrototypeMenuProps}
-      select
-    >
-      {menuItems?.map(({ id: menuItemID, parameters: { name, value } }) => (
-        <MenuItem
-          key={menuItemID}
-          className={menuItemClasses.root}
-          value={value}
-          disableRipple={!showRipple}
-        >
-          {name}
-        </MenuItem>
-      ))}
-    </TextField>
+    <div style={{ ...inlineStyles, position: 'relative', display: 'inline-block' }} >
+      <TextField
+        id={id}
+        key={id}
+        variant="outlined"
+        className={classes.root}
+        value={value}
+        onChange={handleSelectChange}
+        InputProps={InputProps}
+        SelectProps={PrototypeMenuProps}
+        select
+      >
+        {menuItems?.map(({ id: menuItemID, parameters: { name, value } }) => (
+          <MenuItem
+            key={menuItemID}
+            className={menuItemClasses.root}
+            value={value}
+            disableRipple={!showRipple}
+          >
+            {name}
+          </MenuItem>
+        ))}
+      </TextField>
+    </div>
   );
 };
 
