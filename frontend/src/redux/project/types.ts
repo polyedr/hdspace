@@ -318,6 +318,7 @@ export interface IScreenProps {
   dropdownItems?: string[],
   link?: string,
   isLink?: boolean,
+  isOpen?: boolean,
 }
 
 export interface ISortableItem {
@@ -393,6 +394,7 @@ export type ElementParameters = {
   isOrdered?: boolean,
   isLink?: boolean,
   link?: string,
+  isOpen?: boolean,
 }
 
 export interface IScenarioElement { // compare with entity on backend

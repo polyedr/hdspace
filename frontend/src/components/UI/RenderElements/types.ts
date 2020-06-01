@@ -4,9 +4,10 @@ import { IMapProps, HeadingType, InputType, LinkParams } from "$redux/project/ty
 export type SharedRendererProps = {
   id: string;
   style: React.CSSProperties,
-  sortableId: string,
   active: boolean,
+  sortableId: string,
   isDisabled: boolean,
+  activeItemId: string,
 };
 
 export type ImageRendererProps = SharedRendererProps & {
@@ -59,6 +60,7 @@ export type DropdownRendererProps = SharedRendererProps & {
     textContent: string,
     dropdownItems: [],
     showRipple: boolean,
+    isOpen: boolean,
   },
   childrenElements: DropdownChild[],
 };
@@ -126,5 +128,13 @@ export type ListRendererProps = SharedRendererProps & {
     listItems: [],
   },
   childrenElements: ListItemChild[],
+};
+
+export type ListItemRendererProps = Omit<SharedRendererProps, 'sortableId' | 'activeItemId'> & {
+  params: {
+    textContent: string,
+    isLink: boolean,
+    link: string,
+  },
 };
 

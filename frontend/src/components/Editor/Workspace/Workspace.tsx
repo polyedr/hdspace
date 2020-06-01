@@ -91,8 +91,7 @@ export const Component = (props: Props) => {
   }, [screen.listSortable, scenarios, scenarioElements]);
 
   const handleRootClick = useCallback((event: React.MouseEvent) => {
-    const target = (event.target as HTMLElement)?.closest('[data-ls-id]') as HTMLElement;
-
+    const target = (event.nativeEvent.target as HTMLElement)?.closest('[data-ls-id]') as HTMLElement;
     if (!target) return;
 
     const currentActiveElement = (document.activeElement as HTMLElement)?.closest('[data-ls-id]');

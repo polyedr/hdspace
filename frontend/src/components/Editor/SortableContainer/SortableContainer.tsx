@@ -207,6 +207,7 @@ const SortableComponent: React.FC<Props> = (props) => {
             sortableId={itemId}
             name={name}
             style={parsedStyles}
+            activeItemId={activeItemId}
             active={!disableInteractions && itemId === activeItemId}
             value={savedElements[itemId]?.savedValue}
             onChange={updateSavedElementValues}

@@ -4,6 +4,7 @@ import classNames from 'classnames';
 import * as R from 'ramda';
 
 import { AppReduxState } from '$shared/types/app';
+import { ILSItem } from '$redux/project/types';
 import { actionsCreators, selectors, T as ProjectT } from '$redux/project';
 import { Scrollbar } from '$components/UI/Scrollbar/';
 import { Spinner } from '$components/UI/Spinner/';
@@ -34,6 +35,7 @@ import { Bullets } from '../Controls/Bullets/Bullets';
 import { Ordered } from '../Controls/Ordered/Ordered';
 import { LabelFor } from '../Controls/LabelFor/LabelFor';
 import { DropdownItems } from '../Controls/DropdownItems/DropdownItems';
+import { IsOpen } from '../Controls/IsOpen/IsOpen';
 const styles = require('./PropertiesPanel.scss');
 
 type StateProps = {
@@ -84,6 +86,7 @@ const CONTROLS: Record<Control, React.ComponentType<any>> = {
   isOrdered: Ordered,
   labelFor: LabelFor,
   dropdownItems: DropdownItems,
+  isOpen: IsOpen,
 };
 
 export type PropertiesPanelProps = StateProps & typeof mapDispatch;
@@ -104,6 +107,7 @@ const Component: React.FC<PropertiesPanelProps> = ({
   setIsAddElementsModalOpened,
 }) => {
   const activeItemID = activeItem.itemType === 'root' ? 'root' : activeItem.itemId;
+
   const currentItemType = activeItem.itemType === 'root' ? 'root' : R.prop(activeItemID, screen.listSortable)?.type;
   const disablePanel = !screen;
 

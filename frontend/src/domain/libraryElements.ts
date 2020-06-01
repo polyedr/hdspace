@@ -21,12 +21,16 @@ export type SelectItemChild = Omit<CommonLibraryElement<'selectItem'>, 'paramete
   }
 };
 
+export type SelectMenuChild = Omit<CommonLibraryElement<'selectMenu'>, 'parameters'> & { id: number };
+
 export type DropdownItemChild = Omit<CommonLibraryElement<'dropdownItem'>, 'parameters'> & {
   id: number,
   parameters: {
     textContent: string,
   }
 };
+
+export type DropdownMenuChild = Omit<CommonLibraryElement<'selectMenu'>, 'parameters'> & { id: number };
 
 export type ListItemChild = Omit<CommonLibraryElement<'listItem'>, 'parameters'> & {
   id: number,

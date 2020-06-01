@@ -52,7 +52,7 @@ import {
 import { setTokenPair, setLoadedToken } from '$redux/user/actions';
 import { MAX_TOKEN_TRIALS } from '$config/settings';
 import { setScreenLoader } from '$redux/project/actions';
-import { addScreenSaga } from '$redux/project/sagas/screen';
+import { addScreenSaga, updateSavedElementsValues } from '$redux/project/sagas/screen';
 import { refreshUserTokenPair } from '$redux/user/sagas';
 import { openSignScreen, openProjects } from '$utils/history';
 import { getSavedValue } from '$utils/getSavedValue';
@@ -257,9 +257,22 @@ function* updateElementStylesOnServer(action: ReturnType<typeof Actions.updateEl
     selectors.selectScenarioElement, elementID,
   );
 
+  const elementType = elementToUpdate.struct_type;
+
+  const scenarioElements: ReturnType<typeof selectors.selectScenariosElements> = yield select(
+    selectors.selectScenariosElements,
+  );
+
+  const parentElement = Object.values(scenarioElements).find(element => element.children.some(child => child.id === elementID));
+
+  const updatedChildren = parentElement?.children.filter((child) => child.struct_type === elementType).reduce((acc, child) => ({
+    ...acc,
+    [child.id]: { ...child, styles: { ...child.styles, ...styles } },
+  }), {} as ProjectT.IScenarioElements);
+
   yield call(
     updateElementsOnServerSaga,
-    { [elementID]: { ...elementToUpdate, styles: { ...elementToUpdate.styles, ...styles }} },
+    { [elementID]: { ...elementToUpdate, styles: { ...elementToUpdate.styles, ...styles }}, ...updatedChildren },
   );
 }
 
@@ -284,6 +297,25 @@ function* updateElementStyles(action: ReturnType<typeof Actions.updateElementSty
   const modifyElements: ReturnType<typeof selectors.selectModifyElements> = yield select(selectors.selectModifyElements);
   const parseId = parseInt(id, 10);
 
+  const parentElement = Object.values(scenarioElements).find(element => element.children.some(child => child.id === parseId));
+
+  const scenarioElement = scenarioElements[parseId];
+  const elementType = scenarioElement.struct_type;
+
+  const updatedParentElement = parentElement && {
+    ...parentElement,
+    children: parentElement.children.map((child) =>
+      child.struct_type === elementType
+        ? { ...child, styles: { ...child.styles, ...styles } }
+        : child
+    ),
+  };
+
+  const updatedChildren = updatedParentElement?.children.reduce((acc, child) => ({
+    ...acc,
+    [child.id]: child,
+  }), {} as ProjectT.IScenarioElements);
+
   const updateScenarioElements: ProjectT.IScenarioElements = {
     ...scenarioElements,
     [parseId]: {
@@ -293,6 +325,8 @@ function* updateElementStyles(action: ReturnType<typeof Actions.updateElementSty
         ...styles,
       },
     },
+    ...(updatedParentElement && { [updatedParentElement.id]: updatedParentElement }),
+    ...updatedChildren,
   };
 
   yield put(Actions.setScenarioElements(updateScenarioElements));
@@ -579,7 +613,6 @@ function* duplicateScreenSaga(action: ReturnType<typeof Actions.duplicateScreen>
   const elementsToCopy = itemsToCopy.filter(item => item.slice(-1) !== 's');
   const containersToCopy = itemsToCopy.filter(item => item.slice(-1) === 's');
 
-
   const sourceCurrentScreen: ReturnType<typeof selectors.selectCurrentScreen> = yield select(
     selectors.selectCurrentScreen,
   );
@@ -592,7 +625,7 @@ function* duplicateScreenSaga(action: ReturnType<typeof Actions.duplicateScreen>
   yield put(setScreenLoader(true));
   
   const targetRoot: ReturnType<typeof selectors.selectRootScenario> = yield select(selectors.selectRootScenario);
-  const targetRootID = targetRoot?.id || -1; 
+  const targetRootID = targetRoot?.id || -1;
 
   yield put(Actions.setActiveItem({ itemId: `${targetRootID}s`, itemType: 'root', name: 'Root' }));
 
@@ -641,10 +674,12 @@ function* duplicateContainer(containerInfo: DuplicateContainerInfo, targetContai
 
   const eLens = makeElementLens();
 
-  const independentElementsToDuplicate = elementsToDuplicate.map(R.pipe(
-    R.set(eLens.scenario, newContainer.id),
-    R.set(eLens.parent, newContainer.id),
-  ));
+  const independentElementsToDuplicate = elementsToDuplicate.map(element => {
+    const childrenToCreate = element.children.map(child => ai.convertElementToCreate(child, newContainer));
+    const elementToCreate = ai.convertElementToCreate(element, newContainer);
+
+    return { ...elementToCreate, children: childrenToCreate };
+  });
 
   const duplicatedContainers: ReturnPromisedType<typeof apiAddScenarios> = yield call(
     reqWrapper, apiAddScenarios, { data: R.map(R.omit(['id']), independentContainersToDuplicate) }
@@ -654,11 +689,18 @@ function* duplicateContainer(containerInfo: DuplicateContainerInfo, targetContai
     reqWrapper, apiAddElements, { data: R.map(R.omit(['id']), independentElementsToDuplicate) },
   );
 
-  const duplicatedItems = R.concat<T.IScenarioItem | T.IScenarioElement>(duplicatedContainers, duplicatedElements);
+  const duplicatedElementsWithChildren = [...duplicatedElements, ...(R.unnest(duplicatedElements.map(element => element.children)))];
+
+  const duplicatedItems = R.concat<T.IScenarioItem | T.IScenarioElement>(duplicatedContainers, duplicatedElementsWithChildren);
 
   type IDsMap = Record<'s' | 'e', Record<'normal' | 'prefixed', Record<number | string, number | string>>>;
 
-  const idsMap = itemsToDuplicate.reduce((acc: IDsMap, originalItem, idx) => {
+  const itemsToDuplicateWithChildren = [
+    ...itemsToDuplicate,
+    ...(R.unnest(itemsToDuplicate.filter(item => item.struct_type !== 'container').map(element => (element as IScenarioElement).children)))
+  ];
+
+  const idsMap = itemsToDuplicateWithChildren.reduce((acc: IDsMap, originalItem, idx) => {
     const postfix = ai.isContainer(originalItem) ? 's' : 'e';
     const duplicatedItem = duplicatedItems[idx];
 
@@ -694,6 +736,7 @@ function* duplicateContainer(containerInfo: DuplicateContainerInfo, targetContai
       )(x);
     } else {
       return R.pipe(
+        R.over(eLens.children, (children: T.IScenarioElement[]) => children.map(child => duplicatedItems.find(item => item.id === idsMap.e.normal[child.id]))),
         R.set(eLens.id, idsMap.e.normal[x.id]),
         R.over(eLens.scenario, (s: string) => idsMap.s.normal[s]),
         R.over(eLens.parent, (p: string) => idsMap.s.normal[p]),
@@ -736,7 +779,15 @@ function* duplicateContainer(containerInfo: DuplicateContainerInfo, targetContai
     }
   };
 
-  const finalElements = { ...scenariosElements, ...newElements };
+  const newElementsWithChildren = R.unnest(
+    Object.values(newElements as T.IScenarioElements).map(
+      (element) => element.children
+    )
+  ).reduce((acc, element) => ({ ...acc, [element.id]: element }), newElements);
+
+  const finalElements = { ...scenariosElements, ...newElementsWithChildren };
+
+  yield call(updateSavedElementsValues, Object.values(newElements));
 
   yield put(Actions.runLayoutAlgorithm(finalScenarios, finalElements));
   yield take(runLayoutAlgorithmFinishedType);
@@ -748,12 +799,15 @@ function* duplicateContainer(containerInfo: DuplicateContainerInfo, targetContai
   ], finalScenarios));
   const elementsToUpdate = R.values(R.pick(R.values(newElements).map(x => x.id), finalElements));
 
+  const elementsToUpdateWithoutChildren = elementsToUpdate
+    .map((element) => ({...(R.omit(['children'], element)) }));
+
   yield fork(reqWrapper, apiSaveScenarios, { data: scenariosToUpdate });
-  yield fork(reqWrapper, apiSaveElements, { data: elementsToUpdate });
+  yield fork(reqWrapper, apiSaveElements, { data: [...elementsToUpdateWithoutChildren] });
 }
 
 function* duplicateItem(itemToCopyInfo: ItemToCopyInfo, targetContainerID: number, activeItem: ActiveItem) {
-  const elementToDuplicate = yield call(getElementToDuplicate, itemToCopyInfo);
+  const elementToDuplicate: IScenarioElement = yield call(getElementToDuplicate, itemToCopyInfo);
 
   if (!elementToDuplicate) {
     console.error(`Didn't find element to duplicate.`);
@@ -764,21 +818,19 @@ function* duplicateItem(itemToCopyInfo: ItemToCopyInfo, targetContainerID: numbe
     selectors.selectScenario, targetContainerID,
   );
 
-  const eLens = makeElementLens();
   const cLens = makeContainerLens();
+
+  const childrenToCreate = elementToDuplicate.children.map(child => ai.convertElementToCreate(child, targetContainer));
+  const elementToCreate = ai.convertElementToCreate(elementToDuplicate, targetContainer);
 
   const createdElement: ReturnPromisedType<typeof apiAddElements>[number] = (yield call(
     reqWrapper, apiAddElements, {
-      data: [R.pipe(
-        R.omit(['id']),
-        R.set(eLens.parent, targetContainer.id),
-        R.set(eLens.scenario, targetContainer.id),
-      )(elementToDuplicate)]
+      data: [{ ...elementToCreate, children: childrenToCreate }]
     }))[0];
 
   const isContainerSelected = ai.isContainer(activeItem.itemId);
   const updatedTargetContainer = R.pipe(
-    R.over(cLens.elements, (es: number[]) => es.concat(createdElement.id)),
+    R.over(cLens.elements, (es: number[]) => es.concat(createdElement.id, createdElement.children.map(child => child.id))),
     R.over(cLens.children, (children: string[]) => isContainerSelected
         ? children.concat(`${createdElement.id}e`) :
         R.insert(
@@ -798,10 +850,18 @@ function* duplicateItem(itemToCopyInfo: ItemToCopyInfo, targetContainerID: numbe
     [targetContainer.id]: updatedTargetContainer,
   };
 
+  const createdChildren = createdElement.children.reduce((acc, child) => ({
+    ...acc,
+    [child.id]: child,
+  }), {} as ProjectT.IScenarioElements);
+
   const finalScenarioElements = {
     ...scenarioElements,
     [createdElement.id]: createdElement,
+    ...createdChildren,
   };
+
+  yield call(updateSavedElementsValues, [createdElement, ...Object.values(createdChildren)]);
 
   yield put(Actions.runLayoutAlgorithm(finalScenarios, finalScenarioElements));
 

@@ -173,6 +173,10 @@ export const DEFAULT_DROPDOWN_ITEMS: { dropdownItems: string[] } = {
   dropdownItems: ['First item', 'Second item', 'Third item'],
 };
 
+export const DEFAULT_SELECT_OPEN: { isOpen: boolean } = {
+  isOpen: false,
+};
+
 export const DEFAULT_HEADING_TYPE: { headingType: HeadingType } = {
   headingType: 'h3',
 };

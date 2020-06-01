@@ -72,8 +72,10 @@ const getCategoryTab = (structType: ElementEntity, libraryElements: ElementsToAd
       return { Widget: [...obj.Widget || [], libraryElements[structType]] };
     case 'image':
       return { Image: [...obj.Image || [], libraryElements[structType]] };
-
-    default: return { Other: [...obj.Other || [], libraryElements[structType]] };
+    case 'dropdown':  
+    case 'undefined':
+      return { Other: [...obj.Other || [], libraryElements[structType]] };
+    default: return null;
   }
 };
 

@@ -5,31 +5,16 @@ import { convertPropCSS } from '$utils/StyleHelper';
 import { sharedClasses } from '$styles/sharedClasses';
 
 import { ListRendererProps } from '../types';
+import { ListItem } from '../ListItem/ListItem';
 const styles = require('../styles.scss');
 
 const List = (props: ListRendererProps) => {
-  const { id, style, params, active, sortableId, isDisabled, childrenElements } = props;
+  const { id, style, params, activeItemId, active, sortableId, isDisabled, childrenElements } = props;
   const { isOrdered } = params;
 
   const ListTag = isOrdered ? 'ol' : 'ul';
 
   const itemStyles = childrenElements.find(child => child.struct_type === 'listItem')?.styles || {};
-
-  const {
-    marginTop,
-    marginRight,
-    marginBottom,
-    marginLeft,
-    paddingTop,
-    paddingRight,
-    paddingBottom,
-    paddingLeft,
-    borderWidth,
-    borderColor,
-    borderStyle,
-    backgroundColor,
-    ...restStyles
-  } = convertPropCSS(itemStyles);
 
   return (
     <ListTag
@@ -40,52 +25,23 @@ const List = (props: ListRendererProps) => {
       className={cn(
         sharedClasses.lsItem,
         styles.addedElem,
-        isDisabled && styles.disabled,
         active && sharedClasses.activated
       )}
       style={{ ...style, ...(isOrdered && { "list-style-type": "decimal" }) }}
       tabIndex={isDisabled ? 0 : -1}
     >
-      {childrenElements.map(({ id: listItemID, parameters: { textContent, isLink, link } }) => (
-        <div key={listItemID}>
-          {isLink ? (
-            <li
-              style={{
-                marginTop,
-                marginRight,
-                marginBottom,
-                marginLeft,
-                borderWidth,
-                borderColor,
-                borderStyle,
-                backgroundColor,
-                ...restStyles,
-              }}
-            >
-              <a
-                href={link}
-                style={{
-                  paddingTop,
-                  paddingRight,
-                  paddingBottom,
-                  paddingLeft,
-                  ...restStyles,
-                  width: "100%",
-                  height: "100%",
-                  display: "inline-block",
-                }}
-                target="_blank"
-              >
-                {textContent}
-              </a>
-            </li>
-          ) : (
-            <li style={itemStyles && convertPropCSS(itemStyles)}>
-              {textContent}
-            </li>
-          )}
-        </div>
-      ))}
+      {childrenElements.map(
+        ({ id: listItemID, parameters }) => (
+          <ListItem
+            key={listItemID}
+            id={`${listItemID}e`}
+            style={convertPropCSS(itemStyles)}
+            params={parameters}
+            active={isDisabled && parseInt(activeItemId) === listItemID}
+            isDisabled={isDisabled}
+          />
+        )
+      )}
     </ListTag>
   );
 };

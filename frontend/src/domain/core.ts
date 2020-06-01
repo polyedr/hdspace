@@ -24,6 +24,7 @@ import {
   DEFAULT_LIST_TYPE,
   DEFAULT_LABEL_FOR,
   DEFAULT_DROPDOWN_ITEMS,
+  DEFAULT_SELECT_OPEN,
 } from '$constants/defaultParams';
 import { LibraryContainers, ElementsToAdd, LibraryChildrenElements } from './libraryElements';
 
@@ -65,6 +66,7 @@ const CONTROLS_AFFECT_ON_PARAMS = [
   'isOrdered',
   'labelFor',
   'dropdownItems',
+  'isOpen',
 ] as const;
 
 const CONTROLS_AFFECT_ON_STYLES = ['display', 'indents', 'size', 'typography', 'border', 'background', 'bullets'] as const;
@@ -140,7 +142,7 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
     root: ['indents', 'size', 'border', 'background', 'image'],
   },
   select: {
-    root: ['indents', 'size', 'typography', 'border', 'background', 'showRipple', 'selectValue', 'selectOptions'],
+    root: ['indents', 'size', 'typography', 'border', 'background', 'showRipple', 'selectValue', 'selectOptions', 'isOpen'],
   },
   selectMenu: {
     root: ['indents', 'size', 'border', 'background'],
@@ -158,7 +160,7 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
     root: ['indents', 'size', 'typography', 'border', 'background'],
   },
   dropdown: {
-    root: ['indents', 'size', 'typography', 'border', 'background', 'textContent', 'showRipple', 'dropdownItems'],
+    root: ['indents', 'size', 'typography', 'border', 'background', 'textContent', 'showRipple', 'dropdownItems', 'isOpen'],
   },
   dropdownMenu: {
     root: ['indents', 'size', 'border', 'background'],
@@ -195,6 +197,7 @@ const CONTROLS_DEFAULTS: Record<Control, any> = {
   isOrdered: DEFAULT_LIST_TYPE,
   labelFor: DEFAULT_LABEL_FOR,
   dropdownItems: DEFAULT_DROPDOWN_ITEMS,
+  isOpen: DEFAULT_SELECT_OPEN,
 };
 
 type EntityToDefaults = {
