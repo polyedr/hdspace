@@ -12,6 +12,7 @@ const styles = require('../styles.scss');
 const DropdownComponent = (props: DropdownRendererProps) => {
   const { id, style, isDisabled, activeItemId, active, sortableId, params, childrenElements } = props;
   const { backgroundColor, color, ...restStyles } = style;
+  const { marginTop, marginRight, marginBottom, marginLeft, ...editableRestStyles } = restStyles;
   const { textContent, showRipple, isOpen } = params;
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -38,9 +39,15 @@ const DropdownComponent = (props: DropdownRendererProps) => {
   const menuItemStyles = childrenElements.find(child => child.struct_type === 'dropdownItem')?.styles;
 
   const classes = makeStyles({
+    container: {
+      '&.hovered $root': {
+        outline: '1px solid #949494',
+      },
+    },
+ 
     root: {
       cursor: isDisabled ? 'default' : 'pointer',
-      ...restStyles,
+      ...editableRestStyles,
       backgroundColor,
       color,
       outline: active ? '1px red solid' : 'none',
@@ -90,8 +97,8 @@ const DropdownComponent = (props: DropdownRendererProps) => {
         data-ls-id={id}
         data-id={sortableId}
         key={id}
-        style={{ position: 'relative', display: 'inline-block' }}
-        className={cn(sharedClasses.lsItem, active && sharedClasses.activated)}
+        style={{ marginTop, marginRight, marginBottom, marginLeft, position: 'relative', display: 'inline-block' }}
+        className={cn(sharedClasses.lsItem, classes.container)}
       >
         <Button
           aria-controls="simple-menu"
@@ -102,7 +109,7 @@ const DropdownComponent = (props: DropdownRendererProps) => {
           key={id}
           variant="contained"
           color="primary"
-          className={cn(classes.root, styles.disabled)}
+          className={classes.root}
           disableRipple
         >
           {textContent}
@@ -150,7 +157,7 @@ const DropdownComponent = (props: DropdownRendererProps) => {
       </div>
     </>
   ) : (
-    <>
+    <div style={{ marginTop, marginRight, marginBottom, marginLeft, position: 'relative', display: 'inline-block' }}>
       <Button
         aria-controls="simple-menu"
         aria-haspopup="true"
@@ -184,7 +191,7 @@ const DropdownComponent = (props: DropdownRendererProps) => {
           </MenuItem>
         ))}
       </Menu>
-    </>
+    </div>
   );
 };
 
