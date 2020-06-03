@@ -47,7 +47,7 @@ export const ENTITIES: { [K in Exclude<ElementEntity, 'ocrtext'>]: K } = {
   calendar: 'calendar',
   clock: 'clock',
   dropdown: 'dropdown',
-  youtubeVideo: 'youtubeVideo',
+  video: 'video',
   undefined: 'undefined',
 };
 
@@ -171,7 +171,7 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
   dropdownItem: {
     root: ['indents', 'size', 'typography', 'border', 'background']
   },
-  youtubeVideo: {
+  video: {
     root: ['indents', 'size', 'border', 'videoSettings'],
   },
   undefined: {
@@ -728,16 +728,16 @@ const undefinedDefaults = {
   },
 };
 
-const youtubeVideoDefaults = {
+const videoDefaults = {
   root: {
-    ...extractDefaults('youtubeVideo', 'root'),
+    ...extractDefaults('video', 'root'),
     size: {
-      ...extractDefaults('youtubeVideo', 'root', 'size'),
+      ...extractDefaults('video', 'root', 'size'),
       width: '100%',
       height: 'auto',
     },
     indents: {
-      ...extractDefaults('youtubeVideo', 'root', 'indents'),
+      ...extractDefaults('video', 'root', 'indents'),
       'padding-top': '0',
       'padding-right': '0',
       'padding-bottom': '0',
@@ -772,7 +772,7 @@ const ENTITY_TO_DEFAULTS: EntityToDefaults = {
   dropdown: dropdownDefaults,
   dropdownMenu: dropdownMenuDefaults,
   dropdownItem: dropdownItemDefaults,
-  youtubeVideo: youtubeVideoDefaults,
+  video: videoDefaults,
   undefined: undefinedDefaults,
 };
 

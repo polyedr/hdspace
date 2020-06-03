@@ -130,14 +130,8 @@ export type ListRendererProps = SharedRendererProps & {
   childrenElements: ListItemChild[],
 };
 
-export type YoutubeVideoRendererProps = SharedRendererProps & {
-  params: VideoSettings,
-};
-
 export type VideoRendererProps = SharedRendererProps & {
-  params: {
-    videoLink: string,
-  },
+  params: VideoSettings,
 };
 
 export type ListItemRendererProps = Omit<SharedRendererProps, 'sortableId' | 'activeItemId'> & {

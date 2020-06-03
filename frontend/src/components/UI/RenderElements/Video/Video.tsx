@@ -5,10 +5,10 @@ import { sharedClasses } from '$styles/sharedClasses';
 import { IMAGES } from '$constants/images';
 import { getPlayerLink } from '$utils/extractVideoLink';
 
-import { YoutubeVideoRendererProps } from '../types';
+import { VideoRendererProps } from '../types';
 const styles = require('../styles.scss');
 
-const YoutubeVideoRenderer = (props: YoutubeVideoRendererProps) => {
+const Video = (props: VideoRendererProps) => {
   const { id, params, active, sortableId, style, isDisabled } = props;
   const { videoSettings } = params;
 
@@ -71,5 +71,5 @@ const YoutubeVideoRenderer = (props: YoutubeVideoRendererProps) => {
   );
 }
 
-export { YoutubeVideoRenderer };
+export { Video };
 
