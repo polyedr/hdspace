@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { sharedClasses } from '$styles/sharedClasses';
+const styles = require('./ControlSection.scss');
 
 type Props = {
   title: string;
@@ -11,11 +11,9 @@ const ControlSection = (props: Props) => {
   const { title } = props;
 
   return (
-    <div className={sharedClasses.propsSection}>
-      <p className={sharedClasses.propsTitle}>{title}</p>
-      <div className={sharedClasses.propsContent}>
-        <div className={sharedClasses.propsContainer}>{props.children}</div>
-      </div>
+    <div className={styles.section}>
+      <p className={styles.title}>{title}</p>
+      <div className={styles.content}>{props.children}</div>
     </div>
   );
 };
