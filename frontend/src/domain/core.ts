@@ -25,7 +25,6 @@ import {
   DEFAULT_LABEL_FOR,
   DEFAULT_DROPDOWN_ITEMS,
   DEFAULT_SELECT_OPEN,
-  DEFAULT_VIDEO_LINK,
   DEFAULT_VIDEO_SETTINGS,
 } from '$constants/defaultParams';
 import { LibraryContainers, ElementsToAdd, LibraryChildrenElements } from './libraryElements';
@@ -48,7 +47,6 @@ export const ENTITIES: { [K in Exclude<ElementEntity, 'ocrtext'>]: K } = {
   calendar: 'calendar',
   clock: 'clock',
   dropdown: 'dropdown',
-  video: 'video',
   youtubeVideo: 'youtubeVideo',
   undefined: 'undefined',
 };
@@ -71,7 +69,6 @@ const CONTROLS_AFFECT_ON_PARAMS = [
   'labelFor',
   'dropdownItems',
   'isOpen',
-  'videoLink',
   'videoSettings',
 ] as const;
 
@@ -174,9 +171,6 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
   dropdownItem: {
     root: ['indents', 'size', 'typography', 'border', 'background']
   },
-  video: {
-    root: ['indents', 'size', 'border', 'videoLink'],
-  },
   youtubeVideo: {
     root: ['indents', 'size', 'border', 'videoSettings'],
   },
@@ -210,7 +204,6 @@ const CONTROLS_DEFAULTS: Record<Control, any> = {
   labelFor: DEFAULT_LABEL_FOR,
   dropdownItems: DEFAULT_DROPDOWN_ITEMS,
   isOpen: DEFAULT_SELECT_OPEN,
-  videoLink: DEFAULT_VIDEO_LINK,
   videoSettings: DEFAULT_VIDEO_SETTINGS,
 };
 
@@ -735,31 +728,13 @@ const undefinedDefaults = {
   },
 };
 
-const videoDefaults = {
-  root: {
-    ...extractDefaults('video', 'root'),
-    size: {
-      ...extractDefaults('video', 'root', 'size'),
-      width: '100%',
-      height: '500px',
-    },
-    indents: {
-      ...extractDefaults('video', 'root', 'indents'),
-      'padding-top': '0',
-      'padding-right': '0',
-      'padding-bottom': '0',
-      'padding-left': '0',
-    },
-  },
-};
-
 const youtubeVideoDefaults = {
   root: {
     ...extractDefaults('youtubeVideo', 'root'),
     size: {
       ...extractDefaults('youtubeVideo', 'root', 'size'),
       width: '100%',
-      height: '500px',
+      height: 'auto',
     },
     indents: {
       ...extractDefaults('youtubeVideo', 'root', 'indents'),
@@ -797,7 +772,6 @@ const ENTITY_TO_DEFAULTS: EntityToDefaults = {
   dropdown: dropdownDefaults,
   dropdownMenu: dropdownMenuDefaults,
   dropdownItem: dropdownItemDefaults,
-  video: videoDefaults,
   youtubeVideo: youtubeVideoDefaults,
   undefined: undefinedDefaults,
 };

@@ -186,10 +186,6 @@ export const DEFAULT_RIPPLE: { showRipple: boolean } = {
   showRipple: true,
 };
 
-export const DEFAULT_VIDEO_LINK: { videoLink: string } = {
-  videoLink: '',
-};
-
 export const DEFAULT_VIDEO_SETTINGS: VideoSettings = {
   videoSettings: {
     link: '',
