@@ -330,7 +330,6 @@ export interface IScreenProps {
   link?: string,
   isLink?: boolean,
   isOpen?: boolean,
-  videoLink?: string,
   videoSettings?: VideoSettings['videoSettings'],
 }
 
