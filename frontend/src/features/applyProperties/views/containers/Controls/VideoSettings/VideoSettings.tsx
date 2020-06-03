@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { Checkbox } from '@material-ui/core';
+import cn from 'classnames';
 
 import { AppReduxState } from '$shared/types/app';
 import { ElementParameters, VideoSettings } from '$redux/project/types';
 import { selectors } from '$redux/project/';
 import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
+import { extractPlayerLinkInfo } from '$utils/extractVideoLink';
 import { Switch } from '$components/UI/Switch/Switch';
 
 import { ControlSection } from '../../../components/ControlSection/ControlSection';
@@ -31,8 +33,18 @@ const VideoSettings: React.FC<Props> = ({
 }) => {
   const { link, autoplay, start, end, loop, rel } = videoSettings;
 
+  const [linkInputValue, setLinkInputValue] = useState(link);
+  const [isValidLink, setIsValidLink] = useState(true);
+
   const handleLinkInputChange = ({ target: { value } }: React.ChangeEvent<HTMLTextAreaElement>) => {
-    updateParams({ videoSettings: { ...videoSettings, link: value } });
+    if (value && !extractPlayerLinkInfo(value).link) {
+      setIsValidLink(false);
+      setLinkInputValue(value);
+    } else {
+      setIsValidLink(true);
+      setLinkInputValue(value);
+      updateParams({ videoSettings: { ...videoSettings, link: value } });
+    }
   };
 
   const handleSwitchChange = () => {
@@ -55,59 +67,68 @@ const VideoSettings: React.FC<Props> = ({
     updateParams({ videoSettings: { ...videoSettings, rel: checked } });
   };
 
+  const isYoutubeVideo = extractPlayerLinkInfo(link).player === 'youtube';
+
   return (
     <>
       <ControlSection title="Video link">
-        <textarea
-          className={styles.videoSettingsField}
-          name="link"
-          value={link}
-          onChange={handleLinkInputChange}
-        />
+        <>
+          <textarea
+            className={cn(styles.videoSettingsField, !isValidLink && styles.videoSettingsField_withError)}
+            name="link"
+            value={linkInputValue}
+            onChange={handleLinkInputChange}
+          />
+          {!isValidLink && <p className={styles.videoSettingsErrorText}>Enter the URL of another player</p>}
+        </>
       </ControlSection>
-      <ControlSection title="Autoplay">
-        <Switch checked={!!autoplay} onChange={handleSwitchChange} />
-      </ControlSection>
-      <ControlSection title="Start at">
-        <input
-          className={styles.videoSettingsField}
-          name="start"
-          type="number"
-          value={start}
-          onChange={handleStartInputChange}
-          min={0}
-        />
-      </ControlSection>
-      <ControlSection title="End at">
-        <input
-          className={styles.videoSettingsField}
-          name="end"
-          type="number"
-          value={end}
-          onChange={handleEndInputChange}
-          min={0}
-        />
-      </ControlSection>
-      <ControlSection title="Loop">
-        <Checkbox
-          color="default"
-          value="loop"
-          name="loop"
-          checked={loop}
-          onChange={handleLoopCheckboxChange}
-        />
-      </ControlSection>
-      <ControlSection title="Show only channel related videos">
-        <Checkbox
-          color="default"
-          value="show related videos"
-          name="show related videos"
-          checked={rel}
-          onChange={handleRelCheckboxChange}
-        />
-      </ControlSection>
+      {isYoutubeVideo && (
+        <>
+          <ControlSection title="Autoplay">
+            <Switch checked={!!autoplay} onChange={handleSwitchChange} />
+          </ControlSection>
+          <ControlSection title="Start at">
+            <input
+              className={styles.videoSettingsField}
+              name="start"
+              type="number"
+              value={start}
+              onChange={handleStartInputChange}
+              min={0}
+            />
+          </ControlSection>
+          <ControlSection title="End at">
+            <input
+              className={styles.videoSettingsField}
+              name="end"
+              type="number"
+              value={end}
+              onChange={handleEndInputChange}
+              min={0}
+            />
+          </ControlSection>
+          <ControlSection title="Loop">
+            <Checkbox
+              color="default"
+              value="loop"
+              name="loop"
+              checked={loop}
+              onChange={handleLoopCheckboxChange}
+            />
+          </ControlSection>
+          <ControlSection title="Show only channel related videos">
+            <Checkbox
+              color="default"
+              value="show related videos"
+              name="show related videos"
+              checked={rel}
+              onChange={handleRelCheckboxChange}
+            />
+          </ControlSection>
+        </>
+      )}
     </>
-  );
+  )
 };
 
 const Component = connect(mapState)(withConfigurableProperties(VideoSettings));
