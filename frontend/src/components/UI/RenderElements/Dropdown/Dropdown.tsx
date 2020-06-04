@@ -73,8 +73,8 @@ const DropdownComponent = (props: DropdownRendererProps) => {
   const EditableMenuClasses = makeStyles({
     root: {
       position: 'absolute',
-      top: '16px',
-      left: '16px',
+      top: '0',
+      left: '0',
       overflow: 'hidden',
       zIndex: 1,
       ...(menuStyles && convertPropCSS(menuStyles)),
@@ -97,7 +97,7 @@ const DropdownComponent = (props: DropdownRendererProps) => {
         data-ls-id={id}
         data-id={sortableId}
         key={id}
-        style={{ marginTop, marginRight, marginBottom, marginLeft, position: 'relative', display: 'inline-block' }}
+        style={{ marginTop, marginRight, marginBottom, marginLeft, display: 'inline-block' }}
         className={cn(sharedClasses.lsItem, classes.container)}
       >
         <Button
@@ -115,44 +115,46 @@ const DropdownComponent = (props: DropdownRendererProps) => {
           {textContent}
         </Button>
         {isOpen && (
-          <Paper
-            id={`${menu?.id}e`}
-            data-ls-id={`${menu?.id}e`}
-            tabIndex={0}
-            key={menu?.id}
-            className={cn(
-              sharedClasses.lsItem,
-              sharedClasses.unsortable,
-              styles.addedElem,
-              EditableMenuClasses.root,
-              parseInt(activeItemId) === menu?.id && sharedClasses.activated
-            )}
-            elevation={8}
-            onClick={handlePaperClick}
-          >
-            <MenuList>
-              {menuItems?.map(({ id: itemID, parameters: { textContent: itemTextContent } }) => (
-                <MenuItem
-                  id={`${itemID}e`}
-                  data-ls-id={`${itemID}e`}
-                  tabIndex={0}
-                  key={itemID}
-                  className={cn(
-                    menuItemClasses.root,
-                    sharedClasses.lsItem,
-                    sharedClasses.unsortable,
-                    styles.addedElem,
-                    styles.disabled,
-                    parseInt(activeItemId) === itemID && sharedClasses.activated
-                  )}
-                  disableRipple
-                  onClick={handleMenuItemClick}
-                >
-                  {itemTextContent}
-                </MenuItem>
-              ))}
-            </MenuList>
-          </Paper>
+          <div style={{ position: 'relative' }}>
+            <Paper
+              id={`${menu?.id}e`}
+              data-ls-id={`${menu?.id}e`}
+              tabIndex={0}
+              key={menu?.id}
+              className={cn(
+                sharedClasses.lsItem,
+                sharedClasses.unsortable,
+                styles.addedElem,
+                EditableMenuClasses.root,
+                parseInt(activeItemId) === menu?.id && sharedClasses.activated
+              )}
+              elevation={8}
+              onClick={handlePaperClick}
+            >
+              <MenuList>
+                {menuItems?.map(({ id: itemID, parameters: { textContent: itemTextContent } }) => (
+                  <MenuItem
+                    id={`${itemID}e`}
+                    data-ls-id={`${itemID}e`}
+                    tabIndex={0}
+                    key={itemID}
+                    className={cn(
+                      menuItemClasses.root,
+                      sharedClasses.lsItem,
+                      sharedClasses.unsortable,
+                      styles.addedElem,
+                      styles.disabled,
+                      parseInt(activeItemId) === itemID && sharedClasses.activated
+                    )}
+                    disableRipple
+                    onClick={handleMenuItemClick}
+                  >
+                    {itemTextContent}
+                  </MenuItem>
+                ))}
+              </MenuList>
+            </Paper>
+          </div>
         )}
       </div>
     </>
