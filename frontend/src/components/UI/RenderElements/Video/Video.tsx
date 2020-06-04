@@ -33,6 +33,7 @@ const Video = (props: VideoRendererProps) => {
         style={{
           overflow: 'hidden',
           position: 'relative',
+          height: style.height,
           paddingTop: style.height === 'auto' ? '58.32%' : '0',
         }}
       >
