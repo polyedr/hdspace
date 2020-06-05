@@ -1,3 +1,5 @@
+export const VIMEO_HEIGHT_RATIO = 58.32; // Needs from auto height, because Vimeo support only this ratio
+
 export const PLAYERS = {
   youtube: {
     playerLink: 'https://www.youtube.com/embed/',
