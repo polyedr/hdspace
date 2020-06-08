@@ -1,5 +1,5 @@
 import { SelectChild, ListItemChild, DropdownChild } from "$domain/libraryElements";
-import { IMapProps, HeadingType, InputType, LinkParams } from "$redux/project/types";
+import { IMapProps, HeadingType, InputType, LinkParams, VideoSettings } from "$redux/project/types";
 
 export type SharedRendererProps = {
   id: string;
@@ -128,6 +128,10 @@ export type ListRendererProps = SharedRendererProps & {
     listItems: [],
   },
   childrenElements: ListItemChild[],
+};
+
+export type VideoRendererProps = SharedRendererProps & {
+  params: VideoSettings,
 };
 
 export type ListItemRendererProps = Omit<SharedRendererProps, 'sortableId' | 'activeItemId'> & {

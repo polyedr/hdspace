@@ -14,6 +14,7 @@ import {
   ILSItem,
   HeadingType,
   ListItem,
+  VideoSettings,
 } from '$redux/project/types';
 import { IApiResponseError, ITokenPair } from '$redux/user/reducer';
 // import { ITokenPair, IApiResponseError } from '$redux/user/reducer';
@@ -183,6 +184,17 @@ export const DEFAULT_HEADING_TYPE: { headingType: HeadingType } = {
 
 export const DEFAULT_RIPPLE: { showRipple: boolean } = {
   showRipple: true,
+};
+
+export const DEFAULT_VIDEO_SETTINGS: VideoSettings = {
+  videoSettings: {
+    link: '',
+    autoplay: false,
+    start: 0,
+    end: 0,
+    loop: false,
+    rel: true,
+  },
 };
 
 export const DEFAULT_MAP_PROPS = {

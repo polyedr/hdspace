@@ -25,6 +25,7 @@ import {
   DEFAULT_LABEL_FOR,
   DEFAULT_DROPDOWN_ITEMS,
   DEFAULT_SELECT_OPEN,
+  DEFAULT_VIDEO_SETTINGS,
 } from '$constants/defaultParams';
 import { LibraryContainers, ElementsToAdd, LibraryChildrenElements } from './libraryElements';
 
@@ -46,6 +47,7 @@ export const ENTITIES: { [K in Exclude<ElementEntity, 'ocrtext'>]: K } = {
   calendar: 'calendar',
   clock: 'clock',
   dropdown: 'dropdown',
+  video: 'video',
   undefined: 'undefined',
 };
 
@@ -67,6 +69,7 @@ const CONTROLS_AFFECT_ON_PARAMS = [
   'labelFor',
   'dropdownItems',
   'isOpen',
+  'videoSettings',
 ] as const;
 
 const CONTROLS_AFFECT_ON_STYLES = ['display', 'indents', 'size', 'typography', 'border', 'background', 'bullets'] as const;
@@ -168,6 +171,9 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
   dropdownItem: {
     root: ['indents', 'size', 'typography', 'border', 'background']
   },
+  video: {
+    root: ['indents', 'size', 'border', 'videoSettings'],
+  },
   undefined: {
     root: ['size', 'background'],
   },
@@ -198,6 +204,7 @@ const CONTROLS_DEFAULTS: Record<Control, any> = {
   labelFor: DEFAULT_LABEL_FOR,
   dropdownItems: DEFAULT_DROPDOWN_ITEMS,
   isOpen: DEFAULT_SELECT_OPEN,
+  videoSettings: DEFAULT_VIDEO_SETTINGS,
 };
 
 type EntityToDefaults = {
@@ -721,6 +728,24 @@ const undefinedDefaults = {
   },
 };
 
+const videoDefaults = {
+  root: {
+    ...extractDefaults('video', 'root'),
+    size: {
+      ...extractDefaults('video', 'root', 'size'),
+      width: '100%',
+      height: 'auto',
+    },
+    indents: {
+      ...extractDefaults('video', 'root', 'indents'),
+      'padding-top': '0',
+      'padding-right': '0',
+      'padding-bottom': '0',
+      'padding-left': '0',
+    },
+  },
+};
+
 const ENTITY_TO_DEFAULTS: EntityToDefaults = {
   root: rootDefaults,
   container: containerDefaults,
@@ -747,6 +772,7 @@ const ENTITY_TO_DEFAULTS: EntityToDefaults = {
   dropdown: dropdownDefaults,
   dropdownMenu: dropdownMenuDefaults,
   dropdownItem: dropdownItemDefaults,
+  video: videoDefaults,
   undefined: undefinedDefaults,
 };
 

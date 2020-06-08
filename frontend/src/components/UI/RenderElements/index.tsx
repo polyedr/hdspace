@@ -20,6 +20,7 @@ import { List } from './List/List';
 import { Textarea } from './Textarea/Textarea';
 import { Label } from './Label/Label';
 import { Dropdown } from './Dropdown/Dropdown';
+import { Video } from './Video/Video';
 import { ImageRendererProps, MapRendererProps, ClockRendererProps, SharedRendererProps } from './types';
 const styles = require('./styles.scss');
 
@@ -132,6 +133,7 @@ export const RENDERERS: Record<ElementEntity, React.FunctionComponent<any>> = {
   calendar: CalendarWidgetRenderer,
   clock: ClockWidgetRenderer,
   dropdown: Dropdown,
+  video: Video,
   undefined: UndefinedRenderer,
 };
 
