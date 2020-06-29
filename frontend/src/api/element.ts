@@ -2,6 +2,9 @@ import { myAxios, MyAxiosProps } from '$config/settings';
 import { onError, parseResult } from '$api/project';
 import { IScenarioElement, ServerStructType } from '$redux/project/types';
 
+import { ServerElement, LibraryElement, RecursiveElement } from './types';
+import { convertElementFromResponse, convertRecursiveElementFromResponse } from './converters/fromResponse';
+
 type ServerLibraryElement = { // TODO: compare with entity on backend!
   buoyancy: number[];
   func_type: string[];
@@ -34,9 +37,33 @@ export const apiGetElements = (
     .catch(onError)
 );
 
+export const apiAddElement = (
+  props: MyAxiosProps & ServerElement,
+): Promise<LibraryElement> => (
+  myAxios({
+    ...props,
+    method: 'GET',
+    url: `/projects/scenario-elements/`,
+  })
+    .then(result => convertElementFromResponse(result.data))
+    .catch(onError)
+);
+
+export const apiChangeRecursiveElement = (
+  props: MyAxiosProps & { id: number },
+): Promise<RecursiveElement> => (
+  myAxios({
+    ...props,
+    method: 'PATCH',
+    url: `/projects/scenario-elements-recursive/${props.id}/`,
+  })
+    .then(result => convertRecursiveElementFromResponse(result.data))
+    .catch(onError)
+);
+
 export const apiGetElement = (
   { id, ...props }: MyAxiosProps & { id: string },
-): Promise<IScenarioElement> => (
+): Promise<ServerElement> => (
   myAxios({
     ...props,
     method: 'GET',
@@ -76,23 +103,23 @@ export const apiDelElement = (props: MyAxiosProps & { id: string }) => (
     .catch(onError)
 );
 
-export const apiChangeElement = (props: MyAxiosProps & { id: string }): Promise<IScenarioElement> => (
+export const apiChangeElement = (props: MyAxiosProps & { id: string }): Promise<LibraryElement> => (
   myAxios({
     ...props,
     method: 'PATCH',
     url: `/projects/scenario-elements/${props.id}/`,
   })
-    .then(parseResult)
+    .then(result => convertElementFromResponse(result.data))
     .catch(onError)
 );
 
-export const apiAddElements = (props: MyAxiosProps): Promise<IScenarioElement[]> => (
+export const apiAddElements = (props: MyAxiosProps): Promise<LibraryElement[]> => (
   myAxios({
     ...props,
     method: 'POST',
     url: '/projects/scenario-elements-multiple/',
   })
-    .then(parseResult)
+    .then(result => result.data.map((item: ServerElement) => convertElementFromResponse(item)))
     .catch(onError)
 );
 
