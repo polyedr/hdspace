@@ -40,7 +40,7 @@ from .serializers import (
     ScenarioElementMultipleSerializer,
     ScreenScenarioMultipleSerializer,
     ProjectScreenMultipleSerializer,
-)
+    ScenarioElementSerializerRecursive)
 
 
 class IsOwner(permissions.BasePermission):
@@ -406,3 +406,13 @@ class ScenarioElementMultipleView(ListBulkCreateUpdateDestroyAPIView):
     queryset = ScenarioElement.objects.all()
     # queryset = ScenarioElement.objects.root_nodes()
     serializer_class = ScenarioElementMultipleSerializer
+
+
+class ScenarioElementRecursiveViewSet(viewsets.ModelViewSet):
+    """
+    List all scenario elements, or single element, or PATCH the element via the children array
+    """
+    queryset = ScenarioElement.objects.all()
+    # queryset = ScenarioElement.objects.root_nodes()
+    serializer_class = ScenarioElementSerializerRecursive
+    http_method_names = ['get', 'patch', 'head']
