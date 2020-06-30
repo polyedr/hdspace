@@ -70,6 +70,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
     children = RecursiveField(required=False, allow_null=True, many=True)
     # children = serializers.ListField(child=RecursiveField())
     # id = serializers.IntegerField(write_only=False)
+    scenario = serializers.PrimaryKeyRelatedField(source='scenario.id', read_only=True)
 
     class Meta:
         model = ScenarioElement
@@ -93,8 +94,8 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
             # parent is null only on the root node
             parent=self.context.get('parent'),
             **validated_data)
+        # Multiple level of the recursion
         for child_data in children:
-            child_data['scenario'] = child_data['scenario'].pk
             s = ScenarioElementSerializer(data=child_data, context={'parent': node})
             s.is_valid(raise_exception=True)
             s.save()
@@ -105,11 +106,23 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
         children = validated_data.pop('children', [])
         node = super().update(instance, validated_data)
         for child_data in children:
-            child_data['scenario'] = child_data['scenario'].pk
+            # child_data['scenario'] = child_data['scenario'].pk
             s = ScenarioElementSerializer(data=child_data, context={'parent': node})
             s.is_valid(raise_exception=True)
             s.save()
         return node
+
+# The serializer to change the children array only
+class ScenarioElementSerializerRecursive(serializers.ModelSerializer):
+    children = serializers.PrimaryKeyRelatedField(
+        queryset=ScenarioElement.objects.all(),
+        many=True,
+        required=False
+    )
+
+    class Meta:
+        model = ScenarioElement
+        fields = ("id", "name", "children",)
 
 
 class ScenarioElementMultipleSerializer(
@@ -118,7 +131,7 @@ class ScenarioElementMultipleSerializer(
     parameters = serializers.JSONField()
     styles = serializers.JSONField()
     children = RecursiveField(required=False, allow_null=True, many=True)
-    # children = serializers.ListField(source = 'get_children', child=RecursiveField())
+    scenario = serializers.PrimaryKeyRelatedField(source='scenario.id', read_only=True)
 
     class Meta:
         model = ScenarioElement
@@ -144,7 +157,7 @@ class ScenarioElementMultipleSerializer(
             parent=self.context.get('parent'),
             **validated_data)
         for child_data in children:
-            child_data['scenario'] = child_data['scenario'].pk
+            # child_data['scenario'] = child_data['scenario'].pk
             s = ScenarioElementSerializer(data=child_data, context={'parent': node})
             s.is_valid(raise_exception=True)
             s.save()
@@ -155,7 +168,7 @@ class ScenarioElementMultipleSerializer(
         children = validated_data.pop('children', [])
         node = super().update(instance, validated_data)
         for child_data in children:
-            child_data['scenario'] = child_data['scenario'].pk
+            # child_data['scenario'] = child_data['scenario'].pk
             s = ScenarioElementSerializer(data=child_data, context={'parent': node})
             s.is_valid(raise_exception=True)
             s.save()
