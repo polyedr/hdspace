@@ -1,8 +1,14 @@
 import * as R from 'ramda';
 
+import { Entity } from '$domain/core';
 import { LibraryElement } from '$api/types';
 
-export const moveElement = (parentID: string, element: LibraryElement, root: LibraryElement, elementBuoyancy: number) => {
+export const moveElement = <T extends Entity, K extends Entity, P extends Entity, R extends Entity>(
+  parentID: string,
+  element: LibraryElement<T, LibraryElement<K>[]>,
+  root: LibraryElement<P, LibraryElement<R>[]>,
+  elementBuoyancy: number
+) => {
   const oldParentID = findParentByChildID(root, element.id)?.id;
 
   if (!oldParentID) {
@@ -14,54 +20,82 @@ export const moveElement = (parentID: string, element: LibraryElement, root: Lib
   
     return rootWithNewChild;
   }
-}
+};
 
-export const addChildToElement = (elementID: string, newChild: LibraryElement, root: LibraryElement, childBuoyancy: number): LibraryElement => {
-  const sortedChildren = root.id === elementID
-  ? R.insert(childBuoyancy, newChild, root.children as LibraryElement[]).map((child, index) => ({ ...child, buoyancy: index }))
-  : (root.children as LibraryElement[]).map((child) => addChildToElement(elementID, newChild, child, childBuoyancy));
+export const addChildToElement = <T extends Entity, K extends Entity, P extends Entity, R extends Entity>(
+  elementID: string,
+  newChild: LibraryElement<T, LibraryElement<K>[]>,
+  root: LibraryElement<P, LibraryElement<T | R>[]>,
+  childBuoyancy: number
+): LibraryElement<P, LibraryElement<T | R>[]> => {
+  const sortedChildren: LibraryElement<P, LibraryElement<T | R>[]>['children'] =
+    root.id === elementID
+      ? R.insert(
+          childBuoyancy,
+          newChild,
+          root.children
+        ).map((child, index) => ({ ...child, buoyancy: index }))
+      : root.children.map((child) =>
+          addChildToElement(elementID, newChild, child, childBuoyancy)
+        );
 
   return {
     ...root,
     children: sortedChildren,
-  } as LibraryElement
+  };
 };
 
-export const addChildrenToElement = (elementID: string, newChildren: LibraryElement[], root: LibraryElement): LibraryElement => {
-  const addedChildren = root.id === elementID
-  ? [...root.children, ...newChildren].map((child, index) => ({ ...child, buoyancy: index }))
-  : (root.children as LibraryElement[]).map((child) => addChildrenToElement(elementID, newChildren, child));
- 
+export const addChildrenToElement = <T extends Entity, K extends Entity, P extends Entity, R extends Entity>(
+  elementID: string,
+  newChildren: LibraryElement<T, LibraryElement<K>[]>[],
+  root: LibraryElement<P, LibraryElement<T | R>[]>
+): LibraryElement<P, LibraryElement<T | R>[]> => {
+  const addedChildren =
+    root.id === elementID
+      ? [...root.children, ...newChildren].map((child, index) => ({
+          ...child,
+          buoyancy: index,
+        }))
+      : root.children.map((child) =>
+          addChildrenToElement(elementID, newChildren, child)
+        );
+
   return {
     ...root,
     children: addedChildren,
-  } as LibraryElement
+  };
 };
 
-export const removeChildrenFromElement = (elementID: string, childrenToRemove: LibraryElement[], root: LibraryElement): LibraryElement => {
+export const removeChildrenFromElement = <T extends Entity, K extends Entity, P extends Entity, R extends Entity>(
+  elementID: string,
+  childrenToRemove: LibraryElement<T, LibraryElement<K>[]>[],
+  root: LibraryElement<P, LibraryElement<T | R>[]>
+): LibraryElement<P, LibraryElement<T | R>[]> => {
   const newChildren =
     root.id === elementID
       ? [
-          ...(root.children as LibraryElement[]) 
+          ...root.children
             .filter((child) => childrenToRemove.every((childToRemove) => childToRemove.id !== child.id))
             .map((child, index) => ({ ...child, buoyancy: index })),
         ]
-      : (root.children as LibraryElement[]).map((child) =>
+      : root.children.map((child) =>
           removeChildrenFromElement(elementID, childrenToRemove, child)
         );
-  
+
   return {
     ...root,
     children: newChildren,
-  } as LibraryElement;
+  };
 };
 
-export const findChildByID = (element: LibraryElement, targetID: string): LibraryElement | undefined => {
+export const findChildByID = (
+  element: LibraryElement<Entity, LibraryElement<Entity>[]>, targetID: string
+): LibraryElement<Entity, LibraryElement<Entity>[]> | undefined => {
   if (element.id === targetID) {
     return element;
   }
   
-  for (const child of element.children as LibraryElement[]) {
+  for (const child of element.children) {
     const targetChild = findChildByID(child, targetID);
     
     if (targetChild) {
@@ -70,37 +104,50 @@ export const findChildByID = (element: LibraryElement, targetID: string): Librar
   }
 };
 
-export const getElementsArray = (root: LibraryElement): LibraryElement[] => {
-  const array = (root.children as LibraryElement[]).map((child) => getElementsArray(child));
-  return R.flatten([root, array]) as LibraryElement[];
+export const getElementsArray = (
+  root: LibraryElement<Entity, LibraryElement<Entity>[]>
+): LibraryElement<Entity, LibraryElement<Entity>[]>[] => {
+  const array = root.children.map((child) => getElementsArray(child));
+  return R.flatten([root, array]) as LibraryElement<Entity, LibraryElement<Entity>[]>[];
 };
 
-export const findParentByChildID = (element: LibraryElement, targetID: string): LibraryElement | undefined => {
-  if ((element.children as LibraryElement[]).some(child => child.id === targetID)) {
+export const findParentByChildID = (
+  element: LibraryElement<Entity, LibraryElement<Entity>[]>,
+  targetID: string
+): LibraryElement<Entity, LibraryElement<Entity>[]> | undefined => {
+  if (element.children.some((child) => child.id === targetID)) {
     return element;
   }
 
-  for (const child of element.children as LibraryElement[]) {
+  for (const child of element.children) {
     const targetParent = findParentByChildID(child, targetID);
-    
+
     if (targetParent) {
       return targetParent;
     }
   }
 };
 
-export const updateElementStyles = (elementID: string, styles: Partial<LibraryElement['styles']>, root: LibraryElement): LibraryElement => {
+export const updateElementStyles = <T extends Entity, K extends Entity, P extends Entity, R extends Entity>(
+  elementID: string,
+  styles: Partial<LibraryElement<T, LibraryElement<K>[]>['styles']>,
+  root: LibraryElement<P, LibraryElement<R>[]>
+): LibraryElement<P, LibraryElement<R>[]> => {
   return {
     ...root,
     styles: root.id === elementID ? { ...root.styles, ...styles } : root.styles,
-    children: (root.children as LibraryElement[]).map((child) => updateElementStyles(elementID, styles, child)),
-  } as LibraryElement;
+    children: root.children.map((child) => updateElementStyles(elementID, styles, child)),
+  };
 };
 
-export const updateElementParameters = (elementID: string, parameters: Partial<LibraryElement['parameters']>, root: LibraryElement): LibraryElement => {
+export const updateElementParameters = <T extends Entity, K extends Entity, P extends Entity, R extends Entity>(
+  elementID: string,
+  parameters: Partial<LibraryElement<T, LibraryElement<K>[]>['parameters']>,
+  root: LibraryElement<P, LibraryElement<R>[]>
+): LibraryElement<P, LibraryElement<R>[]> => {
   return {
     ...root,
     parameters: root.id === elementID ? { ...root.parameters, ...parameters } : root.parameters,
-    children: (root.children as LibraryElement[]).map((child) => updateElementParameters(elementID, parameters, child)),
-  } as LibraryElement;
+    children: root.children.map((child) => updateElementParameters(elementID, parameters, child)),
+  };
 };

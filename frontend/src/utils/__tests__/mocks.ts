@@ -62,4 +62,4 @@ export const mockRoot = {
       ],
     },
   ],
-} as unknown as LibraryElement;
+} as LibraryElement<'heading'>;

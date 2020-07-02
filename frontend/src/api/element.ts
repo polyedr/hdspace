@@ -2,8 +2,9 @@ import { myAxios, MyAxiosProps } from '$config/settings';
 import { onError, parseResult } from '$api/project';
 import { IScenarioElement, ServerStructType } from '$redux/project/types';
 
-import { ServerElement, LibraryElement, RecursiveElement } from './types';
+import { RecursiveElement, ServerElement, LibraryElement } from './types';
 import { convertElementFromResponse, convertRecursiveElementFromResponse } from './converters/fromResponse';
+import { Entity } from '$domain/core';
 
 type ServerLibraryElement = { // TODO: compare with entity on backend!
   buoyancy: number[];
@@ -37,9 +38,9 @@ export const apiGetElements = (
     .catch(onError)
 );
 
-export const apiAddElement = (
-  props: MyAxiosProps & ServerElement,
-): Promise<LibraryElement> => (
+export const apiAddElement = <T extends Entity>(
+  props: MyAxiosProps & ServerElement<T>,
+): Promise<LibraryElement<T>> => (
   myAxios({
     ...props,
     method: 'GET',
@@ -61,9 +62,9 @@ export const apiChangeRecursiveElement = (
     .catch(onError)
 );
 
-export const apiGetElement = (
+export const apiGetElement = <T extends Entity>(
   { id, ...props }: MyAxiosProps & { id: string },
-): Promise<ServerElement> => (
+): Promise<LibraryElement<T>> => (
   myAxios({
     ...props,
     method: 'GET',
@@ -103,7 +104,7 @@ export const apiDelElement = (props: MyAxiosProps & { id: string }) => (
     .catch(onError)
 );
 
-export const apiChangeElement = (props: MyAxiosProps & { id: string }): Promise<LibraryElement> => (
+export const apiChangeElement = <T extends Entity>(props: MyAxiosProps & { id: string }): Promise<LibraryElement<T>> => (
   myAxios({
     ...props,
     method: 'PATCH',
@@ -113,13 +114,13 @@ export const apiChangeElement = (props: MyAxiosProps & { id: string }): Promise<
     .catch(onError)
 );
 
-export const apiAddElements = (props: MyAxiosProps): Promise<LibraryElement[]> => (
+export const apiAddElements = <T extends Entity>(props: MyAxiosProps): Promise<LibraryElement<T>[]> => (
   myAxios({
     ...props,
     method: 'POST',
     url: '/projects/scenario-elements-multiple/',
   })
-    .then(result => result.data.map((item: ServerElement) => convertElementFromResponse(item)))
+    .then(result => result.data.map((item: ServerElement<T>) => convertElementFromResponse(item)))
     .catch(onError)
 );
 
