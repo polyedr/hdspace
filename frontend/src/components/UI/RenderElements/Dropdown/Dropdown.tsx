@@ -3,7 +3,7 @@ import cn from 'classnames';
 import { makeStyles, MenuItem, Button, Menu, Paper, MenuList } from '@material-ui/core';
 
 import { convertPropCSS } from '$utils/StyleHelper';
-import { DropdownItemChild, DropdownMenuChild } from '$domain/libraryElements';
+import { DropdownItemChild, DropdownMenuChild } from '$domain/libraryElements/libraryElements';
 import { sharedClasses } from '$styles/sharedClasses';
 
 import { DropdownRendererProps } from '../types';

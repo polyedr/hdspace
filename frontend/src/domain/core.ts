@@ -27,9 +27,9 @@ import {
   DEFAULT_SELECT_OPEN,
   DEFAULT_VIDEO_SETTINGS,
 } from '$constants/defaultParams';
-import { LibraryContainers, ElementsToAdd, LibraryChildrenElements } from './libraryElements';
+import { ElementsToAdd, ChildrenElements } from './libraryElements/libraryElements';
 
-export const ENTITIES: { [K in Exclude<ElementEntity, 'ocrtext'>]: K } = {
+export const ENTITIES: { [K in Exclude<ElementEntity, 'ocrtext' | 'root' | 'container'>]: K } = {
   button: 'button',
   textinput: 'textinput',
   textarea: 'textarea',
@@ -78,11 +78,10 @@ const controlAffectsOnStyles = (controlName: Control) => (
   CONTROLS_AFFECT_ON_STYLES.find(x => x === controlName) !== undefined
 );
 
-export type ContainerEntity = keyof LibraryContainers;
 export type ElementEntity = keyof ElementsToAdd;
-export type ChildEntity = keyof LibraryChildrenElements;
+export type ChildEntity = keyof ChildrenElements;
 
-export type Entity = ContainerEntity | ElementEntity | ChildEntity;
+export type Entity = ElementEntity | ChildEntity;
 
 export type SubEntity = 'root';
 

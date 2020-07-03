@@ -21,7 +21,7 @@ import { DEFAULT_INDENTS } from '$constants/defaultParams';
 import { reqWrapper } from '$redux/project/sagas/index';
 import { ReturnPromisedType } from '$shared/types';
 import { getConfigurablePropsOf } from '$domain/core';
-import { LIBRARY_ELEMENTS, AllChildren, ElementChild } from '$domain/libraryElements';
+import { LIBRARY_ELEMENTS, AllChildren, ElementChild } from '$domain/libraryElements/libraryElements';
 import * as ai from '$domain/abstractInterface';
 
 import { selectors, T } from '../';

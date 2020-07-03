@@ -1,4 +1,4 @@
-import { SelectChild, ListItemChild, DropdownChild } from "$domain/libraryElements";
+import { SelectChild, ListItemChild, DropdownChild } from "$domain/libraryElements/libraryElements";
 import { IMapProps, HeadingType, InputType, LinkParams, VideoSettings } from "$redux/project/types";
 
 export type SharedRendererProps = {

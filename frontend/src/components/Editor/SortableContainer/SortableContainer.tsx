@@ -10,7 +10,7 @@ import { selectors, actionsCreators } from '$redux/project';
 import { getItemsPair, getParams, idToLSId, idToDataLSID } from '$utils/parseScenario';
 import { LIST_SCENARIO_TYPE } from '$constants/defaultParams';
 import { convertPropCSS, CssLikeStyles } from '$utils/StyleHelper';
-import { LIBRARY_ELEMENTS } from '$domain/libraryElements';
+import { LIBRARY_ELEMENTS } from '$domain/libraryElements/libraryElements';
 import { ElementEntity } from '$domain/core';
 
 const isElementStructType = (type: string): type is ElementEntity => {

@@ -2,7 +2,7 @@ import { CSSProperties } from 'react';
 
 import { IChooseElement } from '$components/ModalAddElements/ModalAddElements/ModalAddElements';
 import { CssLikeStyles } from '$utils/StyleHelper';
-import { LibraryEntities, LibraryElements, LibraryChildrenElements } from '$domain/libraryElements';
+import { LibraryEntities, LibraryElements, LibraryChildrenElements } from '$domain/libraryElements/libraryElements';
 
 import * as T from './types';
 import { ChildEntity } from '$domain/core';

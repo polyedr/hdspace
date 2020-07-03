@@ -8,7 +8,7 @@ import { actionsCreators, selectors, T as ProjectT } from '$redux/project';
 import { Scrollbar } from '$components/UI/Scrollbar/';
 import { Spinner } from '$components/UI/Spinner/';
 import { AVAILABLE_CONTROLS, Control, Entity } from '$domain/core';
-import { LIBRARY_ELEMENTS } from '$domain/libraryElements';
+import { LIBRARY_ELEMENTS } from '$domain/libraryElements/libraryElements';
 
 import { ActiveElementBlock } from '../Controls/ActiveElementBlock';
 import { ActionBlock } from '../Controls/ActionBlock';

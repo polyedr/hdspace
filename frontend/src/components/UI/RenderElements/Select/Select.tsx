@@ -4,7 +4,7 @@ import { makeStyles, MenuItem, TextField, Paper, MenuList } from '@material-ui/c
 
 import { convertPropCSS } from '$utils/StyleHelper';
 import { sharedClasses } from '$styles/sharedClasses';
-import { SelectItemChild, SelectMenuChild } from '$domain/libraryElements';
+import { SelectItemChild, SelectMenuChild } from '$domain/libraryElements/libraryElements';
 
 import { SelectRendererProps } from '../types';
 const styles = require('../styles.scss');

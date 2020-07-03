@@ -18,7 +18,7 @@ import {
 import { IChooseElement } from '$components/ModalAddElements/ModalAddElements/ModalAddElements';
 import { CssLikeStyles } from '$utils/StyleHelper';
 import { ENTITIES, ElementEntity } from '$domain/core';
-import { LibraryElements, ElementsToAdd } from '$domain/libraryElements';
+import { LibraryElements, ElementsToAdd } from '$domain/libraryElements/libraryElements';
 
 export type GroupElement = {
   key: string,

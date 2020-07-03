@@ -1,7 +1,7 @@
 import React, { memo, useState, useCallback } from 'react';
 import classNames from 'classnames';
 
-import { LibraryElements } from '$domain/libraryElements';
+import { LibraryElements } from '$domain/libraryElements/libraryElements';
 import { Icon } from '$components/UI/Icon/';
 import { Button } from '$components/UI/Button/';
 import { Modal } from '$components/UI/Modal/';

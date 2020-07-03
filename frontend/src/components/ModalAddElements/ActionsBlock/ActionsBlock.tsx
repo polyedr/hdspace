@@ -18,7 +18,7 @@ import {
 import { isIncludes } from '$utils/StringHelper';
 import { PropertiesPanelProps } from '$features/applyProperties';
 import { ENTITIES } from '$domain/core';
-import { LibraryElements } from '$domain/libraryElements';
+import { LibraryElements } from '$domain/libraryElements/libraryElements';
 
 const styles = require('./ActionsBlock.scss');
 

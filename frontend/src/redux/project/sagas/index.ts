@@ -61,7 +61,7 @@ import * as PATH_NAMES from '$constants/pathNames';
 import { apiSaveScenarios, apiSaveScenario } from '$api/scenario';
 import { DEFAULT_AUTHORISATION_TOKEN } from '$constants/defaultParams';
 import { getConfigurablePropsOf, Entity } from '$domain/core';
-import { LibraryEntities } from '$domain/libraryElements';
+import { LibraryEntities } from '$domain/libraryElements/libraryElements';
 import { collectChildren, makeContainerLens, makeElementLens } from '$domain/abstractInterface';
 import * as ai from '$domain/abstractInterface';
 
