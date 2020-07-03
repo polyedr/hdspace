@@ -236,9 +236,11 @@ class ProjectSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Project
-        fields = ("preview", "name", "favicon", "status", "projectscreen", "user", "id")
+        fields = ("preview", "name", "favicon", "status", "projectscreen", "user", "id", "created", "updated")
         extra_kwargs = {
-            "preview": {"read_only": True}
+            "preview": {"read_only": True},
+            "created": {"read_only": True},
+            "updated": {"read_only": True}
         }
 
     def create(self, validated_data):
