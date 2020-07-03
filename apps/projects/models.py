@@ -49,6 +49,9 @@ class Project(TimeStampedModel):
         get_user_model(), related_name="members", through="ProjectMember"
     )
 
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+
     @staticmethod
     def generate_preview_token():
         return secrets.token_urlsafe(16)
