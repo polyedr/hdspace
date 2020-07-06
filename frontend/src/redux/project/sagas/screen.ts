@@ -33,7 +33,7 @@ import {
 import { apiSaveScenario, apiSetScenarioNeuralNetwork, apiGetScenarios, apiSaveScenarios } from '$api/scenario';
 import { apiGetElements, apiSaveElements, apiAddElements, apiGetElement } from '$api/element';
 import { convertCreatedElementToRequest } from '$api/converters/toRequest';
-import { LibraryElementUnion } from '$api/types';
+import { LibraryElementUnion, LibraryElement } from '$api/types';
 import {
   apiAddScreen,
   apiDelScreen,
@@ -76,7 +76,7 @@ export function* activateScreenSaga({ payload }: ReturnType<typeof activateScree
   const rootScenario = serverScreenScenarios.find(x => x.parent_id === -1) as T.IScenarioItem;
   const scenarioElements: ReturnPromisedType<typeof apiGetElements> = yield call(reqWrapper, apiGetElements, { scenariosIDs: [rootScenario.id] });
   const [rootElement] = scenarioElements;
-  const rootElementWithChildren: ReturnPromisedType<typeof apiGetElement> = yield call(reqWrapper, apiGetElement, { id: rootElement.id });
+  const rootElementWithChildren: LibraryElement<'root'> = yield call(reqWrapper, apiGetElement, { id: rootElement.id });
 
   yield call(updateElementsTree, rootElementWithChildren);
 
@@ -151,7 +151,7 @@ export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
 
   const rootElement = convertCreatedElementToRequest('root', String(rootScenario.id), 'Root');
 
-  const newElements: ReturnPromisedType<typeof apiAddElements> = yield call(
+  const newElements: [LibraryElement<'root'>] = yield call(
     reqWrapper, apiAddElements, { data: [rootElement] },
   );
 

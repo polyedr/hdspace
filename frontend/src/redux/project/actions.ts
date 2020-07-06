@@ -125,9 +125,9 @@ export const clearAfterPrevScreen = (): T.ClearAfterPrevScreen => ({
   type: 'PROJECTS:CLEAN_AFTER_PREV_SCREEN',
 });
 
-export const updateElementsTree = <T extends Entity>(elements: LibraryElement<T>, parentID?: string): T.UpdateElementsTree => ({
+export const updateElementsTree = (root: LibraryElement<'root'>): T.UpdateElementsTree => ({
   type: 'PROJECTS:UPDATE_ELEMENTS_TREE',
-  payload: { elements, parentID },
+  payload: { root },
 });
 
 export const resetScreenState = (): T.ResetScreenState => ({

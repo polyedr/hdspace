@@ -74,7 +74,7 @@ export type ActivateScreen = IAction<'PROJECTS:ACTIVATE_SCREEN', { projectID: nu
 export type MoveElement = IAction<
   'PROJECTS:MOVE_ELEMENT', { elementIndex: number, elementID: string, parentID: string }
 >;
-export type UpdateElementsTree = IAction<'PROJECTS:UPDATE_ELEMENTS_TREE', { root: RootElement<Entity>, parentID?: string }>;
+export type UpdateElementsTree = IAction<'PROJECTS:UPDATE_ELEMENTS_TREE', { root: RootElement<'root'>, parentID?: string }>;
 export type ClearAfterPrevScreen = IPlainAction<'PROJECTS:CLEAN_AFTER_PREV_SCREEN'>;
 export type SaveScreen = IAction<'PROJECTS:SAVE_SCREEN', { canvas: HTMLCanvasElement }>;
 export type ExportProject = IPlainAction<'PROJECTS:EXPORT_PROJECT'>;

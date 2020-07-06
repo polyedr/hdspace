@@ -23,11 +23,11 @@ import { selectors, T } from '../';
 import { updateSavedElementsValues } from './screen';
 import { findParentByChildID, findChildByID, moveElement, addChildrenToElement, removeChildrenFromElement, updateElementParameters, getElementsArray } from '$utils/ElementsTreeHelper';
 
-export function* updateElementsTree(root: LibraryElement<Entity>, parentID?: string | undefined) {
+export function* updateElementsTree(root: LibraryElement<'root'>) {
   const elementsArray = getElementsArray(root);
 
   yield call(updateSavedElementsValues, elementsArray as LibraryElementUnion[]);
-  yield put(Actions.updateElementsTree(root, parentID));
+  yield put(Actions.updateElementsTree(root));
 }
 
 export function* createContainer(scenario?: Partial<T.IScenarioItem>) {
