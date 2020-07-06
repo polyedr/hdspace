@@ -1,9 +1,9 @@
 import { ServerRecursiveElement, RecursiveElement, ServerElement, LibraryElement } from '$api/types';
 import { Entity } from '$domain/core';
 
-export const convertElementFromResponse = <T extends Entity, K extends Entity>(
-  element: ServerElement<T, ServerElement<K>[]>
-): LibraryElement<T, LibraryElement<K>[]> => {
+export const convertElementFromResponse = <T extends Entity, K extends Entity, P extends ServerElement<T>['parameters']>(
+  element: ServerElement<T, ServerElement<K>[], P>
+): LibraryElement<T, LibraryElement<K>[], P> => {
   const { id, name, children, struct_type, buoyancy, image, parameters, styles } = element;
 
   return {

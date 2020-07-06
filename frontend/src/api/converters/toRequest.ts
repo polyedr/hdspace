@@ -2,20 +2,20 @@ import { ServerElement, LibraryElement } from '$api/types';
 import { LIBRARY_ELEMENTS } from '$domain/libraryElements/libraryElements';
 import { getConfigurablePropsOf, Entity } from '$domain/core';
 
-export const convertCreatedElementToRequest = <T extends Entity>(
+export const convertCreatedElementToRequest = <T extends Entity, K extends ServerElement<T>['parameters']>(
   elementType: T,
   parentID: string | null,
   elementName?: string
-): ServerElement<T, ServerElement<Entity>[]> => {
+): ServerElement<T, ServerElement<Entity>[], K> => {
   const libraryElement = LIBRARY_ELEMENTS[elementType];
-  const { styles, params } = getConfigurablePropsOf('root')(libraryElement.struct_type);
+  const { styles, params } = getConfigurablePropsOf<Entity, K>('root')(libraryElement.struct_type);
   const { name, children } = libraryElement;
 
-  const getChildrenWithConfigurableProps = <K extends Entity, P extends Entity>(
-    children: ServerElement<K, ServerElement<P, [], {}>[], {}>[]
-  ): ServerElement<K, ServerElement<P>[], {}>[] =>
+  const getChildrenWithConfigurableProps = <P extends Entity, R extends Entity, S extends ServerElement<T>['parameters']>(
+    children: ServerElement<P, ServerElement<R, [], {}>[], {}>[]
+  ): ServerElement<P, ServerElement<R>[], S>[] =>
     children.map((child) => {
-      const { styles, params } = getConfigurablePropsOf('root')(
+      const { styles, params } = getConfigurablePropsOf<Entity, S>('root')(
         child.struct_type
       );
       return {
@@ -40,9 +40,9 @@ export const convertCreatedElementToRequest = <T extends Entity>(
   };
 };
 
-export const convertElementToRequest = <T extends Entity, K extends Entity>(
-  element: LibraryElement<T, LibraryElement<K>[]>
-): ServerElement<T, ServerElement<K>[]> => {
+export const convertElementToRequest = <T extends Entity, K extends Entity, P extends ServerElement<T>['parameters']>(
+  element: LibraryElement<T, LibraryElement<K>[], P>
+): ServerElement<T, ServerElement<K>[], P> => {
   const { id, name, children, type, buoyancy, image, parameters, styles } = element;
 
   return {
@@ -58,9 +58,9 @@ export const convertElementToRequest = <T extends Entity, K extends Entity>(
   };
 };
 
-export const convertElementToPatchRequest = <T extends Entity, K extends Entity>(
-  element: LibraryElement<T, LibraryElement<K>[]>
-): ServerElement<T, ServerElement<K>[]> => {
+export const convertElementToPatchRequest = <T extends Entity, K extends Entity, P extends ServerElement<T>['parameters']>(
+  element: LibraryElement<T, LibraryElement<K>[], P>
+): ServerElement<T, ServerElement<K>[], P> => {
   const { id, name, type, buoyancy, image, parameters, styles } = element;
 
   return {

@@ -28,6 +28,7 @@ import {
   DEFAULT_VIDEO_SETTINGS,
 } from '$constants/defaultParams';
 import { ElementsToAdd, ChildrenElements } from './libraryElements/libraryElements';
+import { ServerElement } from '$api/types';
 
 export const ENTITIES: { [K in Exclude<ElementEntity, 'ocrtext' | 'root' | 'container'>]: K } = {
   button: 'button',
@@ -775,16 +776,30 @@ const ENTITY_TO_DEFAULTS: EntityToDefaults = {
   undefined: undefinedDefaults,
 };
 
-export const getConfigurablePropsOf = <EntityName extends Entity>(subEntity: SubEntity) => createSelector(
-  (entity: EntityName) => entity,
-  (entity: EntityName) => {
-    const entityControlsDefaults = ENTITY_TO_DEFAULTS[entity][subEntity];
-    return R.keys(entityControlsDefaults).reduce((acc, c) => {
-      const controlAffectsOn = controlAffectsOnStyles(c) ? 'styles' : 'params';
-      return ({
-        ...acc,
-        [controlAffectsOn]: { ...acc[controlAffectsOn], ...entityControlsDefaults[c] },
-      })
-    }, { styles: {}, params: {} });
-  },
-);
+export const getConfigurablePropsOf = <
+  EntityName extends Entity,
+  Params extends ServerElement<EntityName>['parameters']
+>(
+  subEntity: SubEntity
+) =>
+  createSelector(
+    (entity: EntityName) => entity,
+    (entity: EntityName) => {
+      const entityControlsDefaults = ENTITY_TO_DEFAULTS[entity][subEntity];
+      return R.keys(entityControlsDefaults).reduce(
+        (acc, c) => {
+          const controlAffectsOn = controlAffectsOnStyles(c)
+            ? 'styles'
+            : 'params';
+          return {
+            ...acc,
+            [controlAffectsOn]: {
+              ...acc[controlAffectsOn],
+              ...entityControlsDefaults[c],
+            },
+          };
+        },
+        { styles: {}, params: {} as Params }
+      );
+    }
+  );
