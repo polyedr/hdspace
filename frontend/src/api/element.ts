@@ -38,9 +38,9 @@ export const apiGetElements = (
     .catch(onError)
 );
 
-export const apiAddElement = <T extends Entity>(
-  props: MyAxiosProps & ServerElement<T>,
-): Promise<LibraryElement<T>> => (
+export const apiAddElement = <T extends Entity, K extends Entity, P extends ServerElement<T>['parameters']>(
+  props: MyAxiosProps & ServerElement<T, ServerElement<K>[], P>,
+): Promise<LibraryElement<T, LibraryElement<K>[], P>> => (
   myAxios({
     ...props,
     method: 'GET',
@@ -62,9 +62,9 @@ export const apiChangeRecursiveElement = (
     .catch(onError)
 );
 
-export const apiGetElement = <T extends Entity>(
+export const apiGetElement = <T extends Entity, K extends Entity, P extends ServerElement<T>['parameters']>(
   { id, ...props }: MyAxiosProps & { id: string },
-): Promise<LibraryElement<T>> => (
+): Promise<LibraryElement<T, LibraryElement<K>[], P>> => (
   myAxios({
     ...props,
     method: 'GET',
@@ -104,7 +104,9 @@ export const apiDelElement = (props: MyAxiosProps & { id: string }) => (
     .catch(onError)
 );
 
-export const apiChangeElement = <T extends Entity>(props: MyAxiosProps & { id: string }): Promise<LibraryElement<T>> => (
+export const apiChangeElement = <T extends Entity, K extends Entity, P extends ServerElement<T>['parameters']>(
+  props: MyAxiosProps & { id: string }
+): Promise<LibraryElement<T, LibraryElement<K>[], P>> => (
   myAxios({
     ...props,
     method: 'PATCH',
@@ -114,7 +116,9 @@ export const apiChangeElement = <T extends Entity>(props: MyAxiosProps & { id: s
     .catch(onError)
 );
 
-export const apiAddElements = <T extends Entity>(props: MyAxiosProps): Promise<LibraryElement<T>[]> => (
+export const apiAddElements = <T extends Entity, K extends Entity, P extends ServerElement<T>['parameters']>(
+  props: MyAxiosProps
+): Promise<LibraryElement<T, LibraryElement<K>[], P>> => (
   myAxios({
     ...props,
     method: 'POST',
