@@ -8,19 +8,14 @@ import {
   IProjectScreen,
   ActiveItem,
   ServerStructType,
-  LinkParams,
-  InputType,
   Option,
   ILSItem,
-  HeadingType,
   ListItem,
-  VideoSettings,
 } from '$redux/project/types';
 import { IApiResponseError, ITokenPair } from '$redux/user/reducer';
-// import { ITokenPair, IApiResponseError } from '$redux/user/reducer';
-// import { itemRoot } from '$utils/parseListItems';
 import { getDaysInMonth } from '$utils/NumberHelper';
 import { CssLikeStyles } from '$utils/StyleHelper';
+import { LinkParams, InputType, HeadingType, VideoSettings, LibraryElement } from '$api/types';
 
 import { IMAGES } from './images';
 
@@ -186,7 +181,7 @@ export const DEFAULT_RIPPLE: { showRipple: boolean } = {
   showRipple: true,
 };
 
-export const DEFAULT_VIDEO_SETTINGS: VideoSettings = {
+export const DEFAULT_VIDEO_SETTINGS: { videoSettings: VideoSettings } = {
   videoSettings: {
     link: '',
     autoplay: false,
@@ -248,6 +243,17 @@ export const DEFAULT_SCREEN: IProjectScreen = {
   image: null,
   listSortable: DEFAULT_LS,
   screenLoader: false,
+};
+
+export const DEFAULT_ROOT: LibraryElement<'root'> = {
+  id: '-1',
+  name: 'Root',
+  children: [],
+  type: 'root',
+  buoyancy: 0,
+  image: null,
+  parameters: {},
+  styles: {},
 };
 
 export const DEFAULT_ACTIVE_ITEM: ActiveItem = {

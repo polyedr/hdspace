@@ -2,6 +2,7 @@ import {
   DEFAULT_PROJECT,
   DEFAULT_SCREEN,
   DEFAULT_ACTIVE_ITEM,
+  DEFAULT_ROOT,
 } from '$constants/defaultParams';
 
 import * as T from './types';
@@ -25,6 +26,7 @@ export const initial: T.ReduxState = {
     loader: false,
     scenarios: {},
     scenarioElements: {},
+    rootElement: DEFAULT_ROOT,
     modifyElements: [],
   },
   // communication: {},
