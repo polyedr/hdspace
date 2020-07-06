@@ -83,11 +83,6 @@ export type SetScreens = IAction<'PROJECTS:SET_SCREENS', { screens: IProjectScre
 export type AddElement = IAction<'PROJECTS:ADD_ELEMENT', { parentID: string, type: string }>;
 export type SetScenarioElements = IAction<'PROJECTS:SET_SCENARIO_ELEMENTS', { elements: IScenarioElements }>;
 export type UpdateElementStyles = IAction<'PROJECTS:UPDATE_ELEMENT_STYLES', { id: string, styles: CssLikeStyles }>;
-export type UpdateChildStyles = IAction<'PROJECTS:UPDATE_CHILD_STYLES', { parentID: string, id: string, styles: CssLikeStyles }>;
-// TODO: here is not CSSProperties, here css-like properties written in lower-case-hyphenated
-export type UpdateScenarioStyles = IAction<
-  'PROJECTS:UPDATE_SCENARIO_STYLES', { id: string, styles: CSSProperties & { 'flex-direction'?: string } }
->;
 export type UpdateElementImage = IAction<'PROJECTS:UPDATE_ELEMENT_IMAGE', { itemID: string, image: File }>;
 export type UpdateElementParameters = IAction<
   'PROJECTS:UPDATE_ELEMENT_PARAMETERS', { itemID: string, parameters: RootElement<Entity>['parameters'] }
@@ -149,8 +144,6 @@ export type Action =
   | AddElement
   | SetScenarioElements
   | UpdateElementStyles
-  | UpdateChildStyles
-  | UpdateScenarioStyles
   | UpdateElementImage
   | UpdateElementParameters
   | CreateElements

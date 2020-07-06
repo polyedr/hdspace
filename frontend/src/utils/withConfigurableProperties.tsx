@@ -31,8 +31,6 @@ function mapState(state: AppReduxState): StateProps {
 const mapDispatch = {
   updateElementParameters: actionsCreators.updateElementParameters,
   updateElementStyles: actionsCreators.updateElementStyles,
-  updateChildStyles: actionsCreators.updateChildStyles,
-  updateScenarioStyles: actionsCreators.updateScenarioStyles,
 };
 
 export type PropertiesChangeProps = {
@@ -53,38 +51,24 @@ export function withConfigurableProperties<T extends PropertiesChangeProps>(
       activeItemStyles,
       activeItemChildrenStyles,
       scenarioElement,
-      updateScenarioStyles,
       updateElementStyles,
-      updateChildStyles,
       updateElementParameters,
-      childName,
       ...restProps
     } = props;
 
     const updateStyles = useCallback((styles: CssLikeStyles) => {
-      if (activeItemID.slice(-1) === 's') {
-        updateScenarioStyles(activeItemID, styles);
-      } else {
-        const currentChild = childName && (scenarioElement as IScenarioElement).children.find(child => child.struct_type === childName)?.id;
-        const updatedID = childName && currentChild ? `${currentChild}e` : activeItemID;
-
-        if (childName) {
-          updateChildStyles(activeItemID, updatedID, styles);
-        } else {
-          updateElementStyles(updatedID, styles);
-        }
-      }
+      updateElementStyles(activeItemID, styles);
     }, [activeItemID]);
 
-    const updateParams = useCallback((params: Params, updatedItemID?: number) => {
-      updateElementParameters(updatedItemID && `${updatedItemID}e` || activeItemID, params);
+    const updateParams = useCallback((params: Params) => {
+      updateElementParameters(activeItemID, params);
     }, [activeItemID]);
 
     return (
       <Component
         {...restProps}
         activeItemID={activeItemID}
-        activeItemStyles={childName ? activeItemChildrenStyles[childName].styles : activeItemStyles}
+        activeItemStyles={activeItemStyles}
         updateStyles={updateStyles}
         updateParams={updateParams}
       />

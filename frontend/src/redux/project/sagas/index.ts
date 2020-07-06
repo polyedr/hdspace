@@ -198,36 +198,7 @@ function* updateElementStyles(action: ReturnType<typeof Actions.updateElementSty
   }
 }
 
-function* updateChildStyles(action: ReturnType<typeof Actions.updateChildStyles>) { // TODO remove
-  const { parentID, id, styles } = action.payload;
-  const scenarioElements: ReturnType<typeof selectors.selectScenariosElements> = yield select(
-    selectors.selectScenariosElements,
-  );
-  const modifyElements: ReturnType<typeof selectors.selectModifyElements> = yield select(selectors.selectModifyElements);
-  const parsedParentID = parseInt(parentID);
-  const parsedID = parseInt(id, 10);
-
-  const childElement = scenarioElements[parsedParentID].children.find(child => child.id === parsedID);
-  const newChildElement = childElement && { ...childElement, styles: { ...childElement.styles, ...styles } };
-
-  const updateScenarioElements: ProjectT.IScenarioElements = {
-    ...scenarioElements,
-    [parsedParentID]: {
-      ...scenarioElements[parsedParentID],
-      children: scenarioElements[parsedParentID].children.map(child => child.id === parsedID ? newChildElement : child),
-    },
-  };
-
-  yield put(Actions.setScenarioElements(updateScenarioElements));
-
-  if (modifyElements.indexOf(parsedParentID) === -1) {
-    yield put(Actions.setModifyElements(R.append(parsedParentID, modifyElements)));
-  }
-
-  yield call(reqWrapper, apiChangeElement, { data: newChildElement, id: parsedID })
-}
-
-function* updateElementImage(action: ReturnType<typeof Actions.updateElementImage>) { // TODO check working
+function* updateElementImage(action: ReturnType<typeof Actions.updateElementImage>) {
   const { itemID, image } = action.payload;
 
   const parsedID = parseInt(itemID, 10);
@@ -373,7 +344,6 @@ const deleteScreenType: ProjectT.DeleteScreen['type'] = 'PROJECTS:DELETE_SCREEN'
 const renameScreenType: ProjectT.RenameScreen['type'] = 'PROJECTS:RENAME_SCREEN';
 const moveElementType: ProjectT.MoveElement['type'] = 'PROJECTS:MOVE_ELEMENT';
 const updateElementStylesType: ProjectT.UpdateElementStyles['type'] = 'PROJECTS:UPDATE_ELEMENT_STYLES';
-const updateChildStylesType: ProjectT.UpdateChildStyles['type'] = 'PROJECTS:UPDATE_CHILD_STYLES';
 const updateElementParametersType: ProjectT.UpdateElementParameters['type'] = 'PROJECTS:UPDATE_ELEMENT_PARAMETERS';
 const updateElementImageType: ProjectT.UpdateElementImage['type'] = 'PROJECTS:UPDATE_ELEMENT_IMAGE';
 const createElementsType: ProjectT.CreateElements['type'] = 'PROJECTS:CREATE_ELEMENTS';
@@ -407,7 +377,6 @@ export default function* projectSaga() {
   yield takeLatest(moveElementType, moveElementSaga);
 
   yield takeLatest(updateElementStylesType, updateElementStyles);
-  yield takeLatest(updateChildStylesType, updateChildStyles);
   yield takeLatest(updateElementImageType, updateElementImage);
   yield takeLatest(updateElementParametersType, updateElementParameters);
 
