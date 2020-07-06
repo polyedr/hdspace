@@ -21,7 +21,7 @@ import {
   VideoParameters,
   DropdownParameters,
   DropdownItemParameters,
-} from './parametersTypes';
+} from './elementsParameters';
 
 export type ServerElement<Type extends Entity, Children = any[], Params  = { group?: string }> = {
   id?: number,
