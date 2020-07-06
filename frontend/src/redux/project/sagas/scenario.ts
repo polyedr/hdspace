@@ -181,8 +181,13 @@ export function* wrapIntoContainerSaga() {
 
   const root: ReturnType<typeof selectors.selectRootElement> = yield select(selectors.selectRootElement);
 
-  const wrappedItemParent = findParentByChildID(root, activeItem.itemId)!;
+  const wrappedItemParent = findParentByChildID(root, activeItem.itemId);
   const wrappedItem = findChildByID(root, activeItem.itemId);
+
+  if (!wrappedItemParent) {
+    console.error(`Can not find parent of wrappedItem ${activeItem.itemId} in tree!`);
+    return;
+  };
 
   if (!wrappedItem) {
     console.error(`Can not find wrappedItem ${activeItem.itemId} in tree!`);
