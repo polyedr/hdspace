@@ -98,7 +98,7 @@ export type ListItemParameters = {
   link: string,
 };
 
-type MapProps = {
+export type MapProps = {
   map_props: {
     center: {
       lat: number,

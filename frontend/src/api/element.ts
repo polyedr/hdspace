@@ -70,7 +70,7 @@ export const apiGetElement = <T extends Entity, K extends Entity, P extends Serv
     method: 'GET',
     url: `/projects/scenario-elements/${id}/`,
   })
-    .then(parseResult)
+    .then(result => convertElementFromResponse(result.data))
     .catch(onError)
 );
 
@@ -118,7 +118,7 @@ export const apiChangeElement = <T extends Entity, K extends Entity, P extends S
 
 export const apiAddElements = <T extends Entity, K extends Entity, P extends ServerElement<T>['parameters']>(
   props: MyAxiosProps
-): Promise<LibraryElement<T, LibraryElement<K>[], P>> => (
+): Promise<LibraryElement<T, LibraryElement<K>[], P>[]> => (
   myAxios({
     ...props,
     method: 'POST',

@@ -1,10 +1,10 @@
 import { CSSProperties } from 'react';
 
 import { IPlainAction, IPlainFailAction, IAction } from '$shared/redux';
-import { IChooseElement } from '$components/ModalAddElements/ModalAddElements/ModalAddElements';
 import { CssLikeStyles } from '$utils/StyleHelper';
 import { LibraryEntities } from '$domain/libraryElements/libraryElements';
 import { Entity } from '$domain/core';
+import { LibraryElement as RootElement, LinkParams, HeadingType, VideoSettings, InputType } from '$api/types';
 
 export type ReduxState = {
   data: {
@@ -25,6 +25,7 @@ export type ReduxState = {
     loader: boolean;
     scenarios: IScenarios;
     scenarioElements: IScenarioElements;
+    rootElement: RootElement<'root'>;
     scenarioLoader?: boolean;
     modifyElements: number[];
     uploadedImageInfo?: UploadedImageInfo;
@@ -39,6 +40,8 @@ export type ActiveItem = {
 };
 
 export type SavedElementsValues = { [elementID: string]: { id: number, savedValue: string | boolean } };
+
+export type CreatedElement = { type: Entity, parentID?: number };
 
 export type LoadLibraryElements = IPlainAction<'PROJECTS:LOAD_LIBRARY_ELEMENTS'>;
 export type LoadLibraryElementsSuccess = IAction<
@@ -68,12 +71,10 @@ export type RenameScreen = IAction<'PROJECTS:RENAME_SCREEN', { projectID: number
 export type AddScreen = IAction<'PROJECTS:ADD_SCREEN', { projectID: number, name: string, buoyancy: number }>;
 export type DuplicateScreen = IAction<'PROJECTS:DUPLICATE_SCREEN', { name: string, screenID: number }>;
 export type ActivateScreen = IAction<'PROJECTS:ACTIVATE_SCREEN', { projectID: number, screenID: number }>;
-export type SetListSortable = IAction<
-  'PROJECTS:SET_LIST_SORTABLE', { itemIndex: number, items: string[], id: string, parentID: string }
+export type MoveElement = IAction<
+  'PROJECTS:MOVE_ELEMENT', { elementIndex: number, elementID: string, parentID: string }
 >;
-export type UpdateViewTree = IAction<'PROJECTS:UPDATE_VIEW_TREE', Partial<{
-  currentScreen: IProjectScreen, scenarios: IScenarios, scenarioElements: IScenarioElements,
-}>>;
+export type UpdateElementsTree = IAction<'PROJECTS:UPDATE_ELEMENTS_TREE', { root: RootElement<'root'>, parentID?: string }>;
 export type ClearAfterPrevScreen = IPlainAction<'PROJECTS:CLEAN_AFTER_PREV_SCREEN'>;
 export type SaveScreen = IAction<'PROJECTS:SAVE_SCREEN', { canvas: HTMLCanvasElement }>;
 export type ExportProject = IPlainAction<'PROJECTS:EXPORT_PROJECT'>;
@@ -82,14 +83,9 @@ export type SetScreens = IAction<'PROJECTS:SET_SCREENS', { screens: IProjectScre
 export type AddElement = IAction<'PROJECTS:ADD_ELEMENT', { parentID: string, type: string }>;
 export type SetScenarioElements = IAction<'PROJECTS:SET_SCENARIO_ELEMENTS', { elements: IScenarioElements }>;
 export type UpdateElementStyles = IAction<'PROJECTS:UPDATE_ELEMENT_STYLES', { id: string, styles: CssLikeStyles }>;
-export type UpdateChildStyles = IAction<'PROJECTS:UPDATE_CHILD_STYLES', { parentID: string, id: string, styles: CssLikeStyles }>;
-// TODO: here is not CSSProperties, here css-like properties written in lower-case-hyphenated
-export type UpdateScenarioStyles = IAction<
-  'PROJECTS:UPDATE_SCENARIO_STYLES', { id: string, styles: CSSProperties & { 'flex-direction'?: string } }
->;
 export type UpdateElementImage = IAction<'PROJECTS:UPDATE_ELEMENT_IMAGE', { itemID: string, image: File }>;
 export type UpdateElementParameters = IAction<
-  'PROJECTS:UPDATE_ELEMENT_PARAMETERS', { itemID: string, parameters: IScreenProps }
+  'PROJECTS:UPDATE_ELEMENT_PARAMETERS', { itemID: string, parameters: RootElement<Entity>['parameters'] }
 >;
 export type UpdateSavedElementsValues = IAction<
   'PROJECTS:UPDATE_SAVED_ELEMENTS_VALUES', { elementsValues: SavedElementsValues }
@@ -98,13 +94,12 @@ export type UpdateSavedElementValues = IAction<
   'PROJECTS:UPDATE_SAVED_ELEMENT_VALUES', { itemID: string, savedValue: string | boolean }
 >;
 export type DeleteActiveItem = IPlainAction<'PROJECTS:DELETE_ACTIVE_ITEM'>;
-export type AddElementsIntoContainer = IAction<
-  'PROJECTS:ADD_ELEMENTS_INTO_CONTAINER', { elements: IChooseElement[] }>;
+export type CreateElements = IAction<
+  'PROJECTS:CREATE_ELEMENTS', { createdElements: CreatedElement[] }>;
 export type AddChildToElement = IAction<
-'PROJECTS:ADD_CHILD_TO_ELEMENT', { childType: ServerStructType, elementID: number, parameters: {} }>;
+'PROJECTS:ADD_CHILD_TO_ELEMENT', { childType: ServerStructType, elementID: string, parameters: {} }>;
 export type DeleteChildFromElement = IAction<
-'PROJECTS:DELETE_CHILD_TO_ELEMENT', { childID: number, elementID: number }>;
-export type RenameScenario = IAction<'PROJECTS:RENAME_SCENARIO', { scenarioID: number, name: string }>;
+'PROJECTS:DELETE_CHILD_FROM_ELEMENT', { childID: string, elementID: string }>;
 export type SetScenarios = IAction<'PROJECTS:SET_SCENARIOS', { scenarios: IScenarios }>;
 export type SetModifyElements = IAction<'PROJECTS:SET_MODIFY_ELEMENTS', { elements: number[] }>;
 export type UploadFile = IAction<'PROJECTS:UPLOAD_FILE', { file: any }>;
@@ -113,10 +108,6 @@ export type uploadImageForNNSuccess = IAction<
 >;
 export type GetScreenNN = IPlainAction<'PROJECTS:GET_SCREEN_NN'>;
 export type WrapIntoContainer = IPlainAction<'PROJECTS:WRAP_INTO_CONTAINER'>;
-export type RunLayoutAlgorithm = IAction<'PROJECTS:RUN_LAYOUT_ALGORITHM', {
-  scenarios: IScenarios, elements: IScenarioElements, root?: ILSItem
-}>;
-export type RunLayoutAlgorithmFinished = IPlainAction<'PROJECTS:RUN_LAYOUT_ALGORITHM_FINISHED'>;
 export type SetActiveItem = IAction<'PROJECTS:SET_ACTIVE_ITEM', { activeItem: ActiveItem }>;
 export type SetIsAddElementsModalOpened = IAction<'PROJECTS:SET_IS_ADD_ELEMENTS_MODAL_OPENED', { isOpened: boolean }>;
 export type SetItemToCopy = IAction<'PROJECTS:SET_ITEM_TO_COPY', ItemToCopyInfo>;
@@ -146,7 +137,6 @@ export type Action =
   | RenameScreen
   | AddScreen
   | ActivateScreen
-  | SetListSortable
   | ClearAfterPrevScreen
   | SaveScreen
   | SetScreen
@@ -154,32 +144,27 @@ export type Action =
   | AddElement
   | SetScenarioElements
   | UpdateElementStyles
-  | UpdateChildStyles
-  | UpdateScenarioStyles
   | UpdateElementImage
   | UpdateElementParameters
-  | AddElementsIntoContainer
+  | CreateElements
   | DeleteActiveItem
   | AddChildToElement
   | DeleteChildFromElement
-  | RenameScenario
   | SetScenarios
   | SetModifyElements
   | UploadFile
   | uploadImageForNNSuccess
   | GetScreenNN
   | WrapIntoContainer
-  | RunLayoutAlgorithm
-  | RunLayoutAlgorithmFinished
   | SetActiveItem
   | SetIsAddElementsModalOpened
-  | UpdateViewTree
   | SetItemToCopy
   | CopyActiveItem
   | PasteCopiedItem
   | ResetScreenState
   | UpdateSavedElementsValues
-  | UpdateSavedElementValues;
+  | UpdateSavedElementValues
+  | UpdateElementsTree;
 
 export type ItemToCopyInfo = {
   id: string;
@@ -221,11 +206,6 @@ export type Flex = {
 }
 
 export type ScreenDisplay = Block | Inline | InlineBlock | Flex;
-
-export type InternalLink = { type: 'internal-link', screenID: number | 'noScreen' };
-export type ExternalLink = { type: 'external-link', url: string };
-
-export type LinkParams = InternalLink | ExternalLink;
 
 export interface IScreenIndents {
   'margin-top'?: string,
@@ -273,27 +253,12 @@ export interface IMapProps {
   markerText?: string,
 }
 
-export type InputType = 'text' | 'email' | 'number' | 'phone' | 'password';
-
-export type HeadingType = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
-
 export type Option = { name: string; value: any };
 
 export type ListItem = {
   textContent: string,
   isLink: boolean,
   link: string,
-};
-
-export type VideoSettings = {
-  videoSettings: {
-    link: string,
-    autoplay: boolean,
-    start: number,
-    end: number,
-    loop: boolean,
-    rel: boolean,
-  },
 };
 
 export interface IScreenProps {
@@ -330,7 +295,7 @@ export interface IScreenProps {
   link?: string,
   isLink?: boolean,
   isOpen?: boolean,
-  videoSettings?: VideoSettings['videoSettings'],
+  videoSettings?: VideoSettings,
 }
 
 export interface ISortableItem {
@@ -407,7 +372,7 @@ export type ElementParameters = {
   isLink?: boolean,
   link?: string,
   isOpen?: boolean,
-  videoSettings?: VideoSettings['videoSettings'],
+  videoSettings?: VideoSettings,
 }
 
 export interface IScenarioElement { // compare with entity on backend

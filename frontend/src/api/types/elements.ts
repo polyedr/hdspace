@@ -114,3 +114,32 @@ export type DropdownElement = LibraryElement<'dropdown', DropdownMenuElement[], 
 export type DropdownMenuElement = LibraryElement<'dropdownMenu', DropdownItemElement[]>;
 export type DropdownItemElement = LibraryElement<'dropdownItem', [], DropdownItemParameters>;
 export type UndefinedElement = LibraryElement<'undefined', []>;
+
+export type LibraryElementUnion =
+  | RootElement
+  | ContainerElement
+  | ImageElement
+  | ButtonElement
+  | HyperlinkElement
+  | TextinputElement
+  | CheckboxElement
+  | RadiobuttonElement
+  | SelectElement
+  | SelectMenuElement
+  | SelectItemElement
+  | TextareaElement
+  | HeadingElement
+  | ParagraphElement
+  | OcrtextElement
+  | LabelElement
+  | TextBlockElement
+  | ListElement
+  | ListItemElement
+  | MapElement
+  | CalendarElement
+  | ClockElement
+  | VideoElement
+  | DropdownElement
+  | DropdownMenuElement
+  | DropdownItemElement
+  | UndefinedElement;

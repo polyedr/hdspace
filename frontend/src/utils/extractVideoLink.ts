@@ -1,14 +1,14 @@
 import * as R from 'ramda';
 
-import { VideoSettings } from '$redux/project/types';
 import { PLAYERS } from '$constants/players';
+import { VideoSettings } from '$api/types';
 
 type LinkInfo = {
   player: keyof typeof PLAYERS | 'none',
   link: string,
 };
 
-export function getPlayerLink(params: VideoSettings['videoSettings'], isPreviewMode: boolean) {
+export function getPlayerLink(params: VideoSettings, isPreviewMode: boolean) {
   const { link, autoplay, start, end, loop, rel } = params;
 
   const linkInfo = extractPlayerLinkInfo(link);

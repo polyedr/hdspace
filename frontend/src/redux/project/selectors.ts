@@ -1,6 +1,7 @@
 import { makeFeatureStateSelector } from "$shared/redux";
 import { AppReduxState } from '$shared/types/app';
 import { ChildEntity } from "$domain/core";
+import { findChildByID } from "$utils/ElementsTreeHelper";
 
 export const selectFeatureState = makeFeatureStateSelector('project');
 
@@ -61,6 +62,14 @@ export function selectListSortable(state: AppReduxState) {
   return selectFeatureState(state).edit.currentScreen.listSortable;
 };
 
+export function selectRootElement(state: AppReduxState) {
+  return selectFeatureState(state).edit.rootElement;
+};
+
+export function selectRootID(state: AppReduxState) {
+  return selectFeatureState(state).edit.rootElement.id;
+};
+
 export function selectUploadedImageInfo(state: AppReduxState) {
   return selectFeatureState(state).edit.uploadedImageInfo;
 };
@@ -83,60 +92,30 @@ export function selectActiveItem(state: AppReduxState) {
 
 export function selectActiveItemChildren(state: AppReduxState, childType: ChildEntity) {
   const activeItem = selectActiveItem(state);
-  const activeItemID = parseInt(activeItem.itemId);
-  const scenarioElement = selectScenarioElement(state, activeItemID);
-  const children = scenarioElement.children.filter(child => child.struct_type === childType);
+  const elementsTree = selectRootElement(state);
+  const element = findChildByID(elementsTree, activeItem.itemId);
 
+  if (!element) {
+    return [];
+  }
+ 
+  const children = element.children.filter(child => child.type === childType);
   return children;
 };
 
 export const selectActiveItemStyles = makeActiveItemInfoSelector('styles');
-export const selectActiveItemChildrenStyles = makeActiveItemInfoSelector('styles', true);
+export const selectActiveItemChildrenStyles = makeActiveItemInfoSelector('styles');
 export const selectActiveItemParams = makeActiveItemInfoSelector('parameters');
 
-function makeActiveItemInfoSelector(prop: 'styles' | 'parameters', isChildren?: boolean) {
+function makeActiveItemInfoSelector(prop: 'styles' | 'parameters') {
   return (state: AppReduxState) => {
     const activeItem = selectActiveItem(state);
-    const scenarios = selectScenarios(state);
-    const scenarioElements = selectScenariosElements(state);
-  
-    const activeItemIsRoot = activeItem.itemType === 'root';
-  
-    if (activeItemIsRoot) {
-      const rootID = selectRootScenario(state)?.id;
-      return rootID ? scenarios[rootID][prop] : {};
-    }
-  
-    if (activeItem.itemId === 'none') {
-      return {};
-    }
-  
-    const itemID = parseInt(activeItem.itemId, 10);
-
-    if (activeItem.itemId.slice(-1) === 's') {
-      return scenarios[itemID][prop];
-    }
-
-    return isChildren
-      ? scenarioElements[itemID].children.reduce((acc, child) => ({
-          ...acc,
-          [child.struct_type]: { styles: child.styles },
-        }), {})
-      : scenarioElements[itemID][prop];
+    const elementsTree = selectRootElement(state);
+    const element = findChildByID(elementsTree, activeItem.itemId);
+    return element && element[prop];
   };
 }
 
 export function selectItemToCopyInfo(state: AppReduxState) {
   return selectFeatureState(state).ui.itemToCopyInfo;
 };
-
-export function selectClosestContainerID(state: AppReduxState, itemID: string): string | null {
-  if (itemID.slice(-1) === 's') {
-    return itemID;
-  } else if (itemID !== 'none' && itemID.slice(-1) === 'e') {
-    const element = selectScenarioElement(state, parseInt(itemID));
-    return `${element.parameters.parent_id}s`;
-  } else {
-    return null;
-  }
-}
