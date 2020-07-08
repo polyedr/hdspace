@@ -13,7 +13,6 @@ import { getClassDevice } from '$utils/dom';
 import { getListNotDragging } from '$utils/parseScenario';
 import { findChildByID } from '$utils/ElementsTreeHelper';
 import { AppReduxState } from '$shared/types/app';
-import { isRoot } from '$domain/abstractInterface';
 import { LibraryElement, LibraryElementUnion } from '$api/types';
 
 import { TopBar } from '../TopBar/TopBar';
@@ -86,7 +85,7 @@ export const Component = (props: Props) => {
     const { id: itemId, type, name } = item;
     const list = getListNotDragging(type);
 
-    setActiveItem({ itemId, itemType: isRoot(parentId) ? 'root' : type, name });
+    setActiveItem({ itemId, itemType: parentId === -1 ? 'root' : type, name });
     setListNotDragging(list);
   };
 

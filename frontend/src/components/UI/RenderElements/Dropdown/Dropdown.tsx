@@ -11,8 +11,6 @@ const DropdownComponent = (props: DropdownRendererProps) => {
   const { marginTop, marginRight, marginBottom, marginLeft, ...editableRestStyles } = restStyles;
   const { textContent, showRipple, isOpen } = params;
 
-  // TODO dropdown items not showing on panel
-
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
   const handleMenuButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
