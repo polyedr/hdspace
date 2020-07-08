@@ -1,4 +1,4 @@
-import { InputType } from '$redux/project/types';
+import { InputType } from '$api/types';
 
 export const TYPE: Array<{ label: string, value: InputType }> = [
   { label: 'Text', value: 'text' },

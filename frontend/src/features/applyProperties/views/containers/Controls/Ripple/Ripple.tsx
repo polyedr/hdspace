@@ -3,24 +3,24 @@ import { connect } from 'react-redux';
 import { Switch, makeStyles } from '@material-ui/core';
 
 import { AppReduxState } from '$shared/types/app';
-import { ElementParameters } from '$redux/project/types';
 import { selectors } from '$redux/project/';
 import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
 import { sharedClasses } from '$styles/sharedClasses';
+import { ButtonElement } from '$api/types';
 
 type StateProps = {
-  showRipple?: boolean;
+  showRipple: boolean;
 };
 
 function mapState(state: AppReduxState): StateProps {
-  const activeItemParams = selectors.selectActiveItemParams(state) as ElementParameters;
+  const activeItemParams = selectors.selectActiveItemParams<ButtonElement>(state);
 
   return {
     showRipple: activeItemParams.showRipple,
   };
 }
 
-type Props = StateProps & PropertiesChangeProps;
+type Props = StateProps & PropertiesChangeProps<ButtonElement>;
 
 const useStyles = makeStyles({
   switchBase: {

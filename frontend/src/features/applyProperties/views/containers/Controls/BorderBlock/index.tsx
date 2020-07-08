@@ -12,6 +12,8 @@ import { strToNumber, getPermissibleValue, safeParseFloat, safeMatch } from '$ut
 import { validateBorderRadius, CssLikeStyles } from '$utils/StyleHelper';
 import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
 import { ColorSettings } from '$features/applyProperties/views/components/ColorSettings/ColorSettings';
+import { LibraryElement } from '$api/types';
+import { Entity } from '$domain/core';
 
 const styles = require('./styles.scss');
 
@@ -24,7 +26,7 @@ type OwnProps = {
   activeItemStyles: Required<CssLikeStyles>;
 }
 
-type Props = OwnProps & PropertiesChangeProps;
+type Props = OwnProps & PropertiesChangeProps<LibraryElement<Entity>>;
 
 const BorderBlock: React.FunctionComponent<Props> = React.memo(({
   activeItemStyles,

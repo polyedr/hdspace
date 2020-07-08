@@ -13,7 +13,7 @@ import {
 } from '$constants/defaultParams';
 import { getPermissibleValue } from '$utils/NumberHelper';
 import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
-import { MapProps as MapParams } from '$api/types';
+import { MapProps as MapParams, MapElement } from '$api/types';
 
 const styles = require('./MapProps.scss');
 
@@ -24,14 +24,14 @@ type StateProps = {
 }
 
 function mapState(state: AppReduxState): StateProps {
-  const activeItemParams = selectors.selectActiveItemParams(state) as any;
+  const activeItemParams = selectors.selectActiveItemParams<MapElement>(state);
 
   return {
     map_props: activeItemParams.map_props,
   };
 }
 
-type Props = StateProps & PropertiesChangeProps;
+type Props = StateProps & PropertiesChangeProps<MapElement>;
 
 const Component: React.FC<Props> = ({
   map_props,

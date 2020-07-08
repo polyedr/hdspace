@@ -3,6 +3,8 @@ import * as R from 'ramda';
 
 import { CssLikeStyles } from '$utils/StyleHelper';
 import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
+import { LibraryElement } from '$api/types';
+import { Entity } from '$domain/core';
 
 const styles = require('./SizeBlock.scss');
 
@@ -25,7 +27,7 @@ type OwnProps = {
   activeItemStyles: Required<CssLikeStyles>;
 }
 
-type Props = OwnProps & PropertiesChangeProps;
+type Props = OwnProps & PropertiesChangeProps<LibraryElement<Entity>>;
 
 const getUnitFromValue = (value: string): UnitName => {
   const unit = value.replace(/[0-9, \d+\.\d+]/g, '');

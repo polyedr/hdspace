@@ -11,6 +11,8 @@ import {
   PropertiesChangeProps
 } from '$utils/withConfigurableProperties';
 import { CssLikeStyles, convertFlexToCssLikeStyles } from '$utils/StyleHelper';
+import { LibraryElement } from '$api/types';
+import { Entity } from '$domain/core';
 
 import { ControlTitle } from '../../../components/ControlTitle/ControlTitle';
 import { FlexProperties } from '../../../components/FlexProperties/FlexProperties';
@@ -47,11 +49,11 @@ function getDisplayStyles(activeItemStyles: Required<CssLikeStyles>): ScreenDisp
 }
 
 function mapState(state: AppReduxState): StateProps {
-  const activeItemStyles = selectors.selectActiveItemStyles(state) as Required<CssLikeStyles>;
+  const activeItemStyles = selectors.selectActiveItemStyles(state);
   return { displayStyles: getDisplayStyles(activeItemStyles) };
 }
 
-type Props = StateProps & PropertiesChangeProps;
+type Props = StateProps & PropertiesChangeProps<LibraryElement<Entity>>;
 
 export const Component: React.FC<Props> = memo((props) => {
   const { displayStyles, updateStyles } = props;

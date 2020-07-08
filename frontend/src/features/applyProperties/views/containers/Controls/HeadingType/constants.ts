@@ -1,4 +1,4 @@
-import { HeadingType } from '$redux/project/types';
+import { HeadingType } from '$api/types';
 
 export const HEADING_TYPE: Array<{ label: string, value: HeadingType }> = [
   {

@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 
 import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
 import { actionsCreators } from '$redux/project';
+import { ImageElement } from '$api/types';
 
 const styles = require('./Image.scss');
 
@@ -10,7 +11,7 @@ const mapDispatch = {
   updateElementImage: actionsCreators.updateElementImage,
 };
 
-type Props = PropertiesChangeProps & typeof mapDispatch;
+type Props = PropertiesChangeProps<ImageElement> & typeof mapDispatch;
 
 const Component: React.FC<Props> = (props) => {
   const { activeItemID, updateElementImage } = props;
