@@ -22,7 +22,7 @@ type StateProps = {
 
 function mapState(state: AppReduxState): StateProps {
   const activeItemParams = selectors.selectActiveItemParams<LabelElement>(state);
-  const elements = getElementsArray(selectors.selectRootElement(state)); // TODO select elements
+  const elements = getElementsArray(selectors.selectRootElement(state));
 
   const inputsIDs = Object.values(elements)
     .filter((element) =>

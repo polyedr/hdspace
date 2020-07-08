@@ -257,7 +257,10 @@ function* uploadFileSaga({ payload: { file: { file } } }: ReturnType<typeof Acti
       contentType: 'multipart/form-data',
     });
 
-    yield call(addElementToElement, nnRootElement, root, 0);
+    yield call(addElementToElement, nnRootElement, root);
+
+    const updatedElements = moveElement(root.id, nnRootElement, root, 0);
+    yield put(Actions.updateElementsTree(updatedElements));
   } catch (e) {
     console.error('Could not upload image for NN. Error: ', e.message);
   }

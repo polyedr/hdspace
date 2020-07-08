@@ -162,18 +162,13 @@ export function* deleteActiveItemSaga() {
   yield call(removeElement, activeItem.itemId);
 }
 
-export function* addElementToElement(element: LibraryElement<Entity>, parent: LibraryElement<Entity>, elementIndex: number) {
+export function* addElementToElement(element: LibraryElement<Entity>, parent: LibraryElement<Entity>) {
   const elementData = {
     name: parent.name,
     children: [...parent.children.map(child => child.id), element.id],
   };
 
   yield call(reqWrapper, apiChangeRecursiveElement, { data: elementData, id: parent.id });
-
-  const root: ReturnType<typeof selectors.selectRootElement> = yield select(selectors.selectRootElement);
-  const updatedElements = moveElement(parent.id, element, root, elementIndex);
-
-  yield put(Actions.updateElementsTree(updatedElements));
 }
 
 export function* wrapIntoContainerSaga() {
@@ -202,7 +197,11 @@ export function* wrapIntoContainerSaga() {
 
   const [createdContainer] = createdElements;
 
-  yield call(addElementToElement, createdContainer, wrappedItemParent, wrappedItem.buoyancy);
+  yield call(addElementToElement, createdContainer, wrappedItemParent);
 
-  yield call(addElementToElement, wrappedItem, createdContainer, 0);
+  yield call(addElementToElement, wrappedItem, createdContainer);
+
+  const rootWithUpdatedParent = moveElement(wrappedItemParent.id, createdContainer, root, wrappedItem.buoyancy);
+  const rootWithUpdatedContainer = moveElement(createdContainer.id, wrappedItem, rootWithUpdatedParent, 0);
+  yield put(Actions.updateElementsTree(rootWithUpdatedContainer));
 }
