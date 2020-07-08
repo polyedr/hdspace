@@ -11,8 +11,10 @@ import { DEFAULT_SCREEN_MODE } from '$constants/defaultParams';
 import { Scrollbar } from '$components/UI/Scrollbar';
 import { getClassDevice } from '$utils/dom';
 import { getListNotDragging, getParams } from '$utils/parseScenario';
+import { findChildByID } from '$utils/ElementsTreeHelper';
 import { AppReduxState } from '$shared/types/app';
 import { isRoot } from '$domain/abstractInterface';
+import { LibraryElement, LibraryElementUnion } from '$api/types';
 
 import { TopBar } from '../TopBar/TopBar';
 import { HotKeys } from '../HotKeys/HotKeys';
@@ -26,6 +28,7 @@ export type ScreenMode = {
 
 type StateProps = {
   screen: ProjectT.IProjectScreen;
+  elementsTree: LibraryElement<'root'>,
   scenarios: ProjectT.IScenarios;
   scenarioElements: ProjectT.IScenarioElements;
   isPrototypeMode: boolean;
@@ -43,6 +46,7 @@ const mapDispatch = {
 
 const mapState = (state: AppReduxState): StateProps => ({
   screen: selectors.selectCurrentScreen(state),
+  elementsTree: selectors.selectRootElement(state),
   activeItem: selectors.selectActiveItem(state),
   scenarios: selectors.selectScenarios(state),
   scenarioElements: selectors.selectScenariosElements(state),
@@ -54,6 +58,7 @@ type Props = StateProps & typeof mapDispatch;
 export const Component = (props: Props) => {
   const {
     screen,
+    elementsTree,
     scenarios,
     scenarioElements,
     isPrototypeMode,
@@ -104,18 +109,21 @@ export const Component = (props: Props) => {
     if (itemID === activeItem.itemId) return;
 
     if (itemID) {
-      if (isRoot(screen.listSortable, itemID)) {
-        const rootItem = screen.listSortable.root;
-        setActiveItem({ itemId: `${rootItem.id}s`, itemType: 'root', name: 'Root' });
+      if (itemID === 'root') {
+        setActiveItem({ itemId: elementsTree.id, itemType: 'root', name: 'Root' });
       } else {
-        const { type, name } = getParams(itemID, scenarioElements, scenarios);
-        const list = getListNotDragging(type);
+        const activeItem = findChildByID(elementsTree, itemID);
 
-        setActiveItem({ itemId: itemID, itemType: type, name });
-        setListNotDragging(list);
+        if (activeItem) {
+          const { type, name } = activeItem;
+          const list = getListNotDragging(type);
+  
+          setActiveItem({ itemId: itemID, itemType: type, name });
+          setListNotDragging(list);
+        }
       }
     }
-  }, [activeItem, screen.listSortable, scenarios, scenarioElements]);
+  }, [activeItem, elementsTree, findChildByID]);
 
   const handleLSItemMouseOver = useCallback((event: React.MouseEvent) => {
     !isPrototypeMode && !hasItemBeingResized && (event.target as HTMLElement)?.closest?.('.ls-item')?.classList.add('hovered');
@@ -166,7 +174,7 @@ export const Component = (props: Props) => {
           autoHeightMin="100%"
         >
           <SortableContainer
-            item={screen.listSortable.root}
+            item={elementsTree as LibraryElementUnion}
             activeItemId={activeItem.itemId}
             isMoving={isMoving}
             listNotDragging={listNotDragging}
