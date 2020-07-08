@@ -3,7 +3,6 @@ import { AppReduxState } from '$shared/types/app';
 import { ChildEntity, Entity } from "$domain/core";
 import { findChildByID } from "$utils/ElementsTreeHelper";
 import { LibraryElement } from "$api/types";
-import { CSSProperties } from "react";
 import { CssLikeStyles } from "$utils/StyleHelper";
 
 export const selectFeatureState = makeFeatureStateSelector('project');
