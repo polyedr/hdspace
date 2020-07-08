@@ -8,7 +8,7 @@ import { RadioRendererProps } from '../types';
 const styles = require('../styles.scss');
 
 const Radiobutton = (props: RadioRendererProps) => {
-  const { id, style, params, isDisabled, sortableId, isRadioChecked, onChange, className, elementRef } = props;
+  const { id, style, params, isDisabled, sortableId, isRadioChecked, onElementChange, className, elementRef } = props;
   const { backgroundColor, width, height, ...restStyles } = style;
   const { name, value, showRipple } = params;
 
@@ -27,7 +27,7 @@ const Radiobutton = (props: RadioRendererProps) => {
   })();
 
   const handleRadioChange = (event: ChangeEvent<HTMLInputElement>) => {
-    onChange(name || '', event.target.value);
+    onElementChange(name || '', event.target.value);
   };
 
   const inlineStyles = { ...restStyles, display: 'inline-block' };

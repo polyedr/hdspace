@@ -6,12 +6,12 @@ import { InputRendererProps } from '../types';
 const styles = require('../styles.scss');
 
 const Input = (props: InputRendererProps) => {
-  const { id, style, params, isDisabled, active, sortableId, currentValue, onChange, elementRef, className } = props;
+  const { id, style, params, isDisabled, active, sortableId, currentValue, onElementChange, elementRef, className } = props;
   const { width, height, marginTop, marginRight, marginBottom, marginLeft, ...restStyles } = style;
   const { type, placeholder } = params;
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-    onChange(id, event.target.value);
+    onElementChange(id, event.target.value);
   };
 
   const classes = makeStyles({

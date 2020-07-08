@@ -12,13 +12,17 @@ import { DropdownItemElement } from '$api/types';
 const styles = require('./DropdownItems.scss');
 
 type StateProps = {
+  dropdownMenuID: string,
   dropdownItems: DropdownItemElement[];
 };
 
 function mapState(state: AppReduxState): StateProps {
-  const dropdownItems = selectors.selectActiveItemChildren(state, 'dropdownItem') as DropdownItemElement[];
+  const dropdownChildren = selectors.selectActiveItemChildren(state, 'dropdownMenu');
+  const [dropdownMenu] = dropdownChildren;
+  const dropdownItems = dropdownMenu.children;
 
   return {
+    dropdownMenuID: dropdownMenu.id,
     dropdownItems,
   };
 }
@@ -31,7 +35,7 @@ const mapDispatch = {
 type Props = StateProps & PropertiesChangeProps<DropdownItemElement> & typeof mapDispatch;
 
 const DropdownItems: React.FC<Props> = ({
-  activeItemID,
+  dropdownMenuID,
   dropdownItems,
   updateParams,
   addChildToElement,
@@ -42,11 +46,11 @@ const DropdownItems: React.FC<Props> = ({
   };
 
   const handleAddButtonClick = () => {
-    addChildToElement('dropdownItem', activeItemID, { textContent: 'New item' });
+    addChildToElement('dropdownItem', dropdownMenuID, { textContent: 'New item' });
   };
 
   const handleDeleteButtonClick = (dropdownItemID: string) => {
-    deleteChildFromElement(dropdownItemID, activeItemID);
+    deleteChildFromElement(dropdownItemID, dropdownMenuID);
   };
 
   return (

@@ -1,6 +1,6 @@
 import React, { ChangeEvent } from 'react';
 import cn from 'classnames';
-import { makeStyles, TextField } from '@material-ui/core';
+import { makeStyles, TextField, MenuItem } from '@material-ui/core';
 
 import { convertPropCSS } from '$utils/StyleHelper';
 
@@ -15,7 +15,7 @@ const SelectComponent = (props: SelectRendererProps) => {
     active,
     sortableId,
     currentValue,
-    onChange,
+    onElementChange,
     params,
     children,
     className,
@@ -37,19 +37,25 @@ const SelectComponent = (props: SelectRendererProps) => {
   const { isOpen } = params;
 
   const handleSelectChange = (event: ChangeEvent<{ name?: string | undefined; value: any; }>) => {
-    onChange(id, event.target.value);
+    onElementChange(id, event.target.value);
   };
 
   const inlineStyles = { marginTop, marginRight, marginBottom, marginLeft };
 
-  const menuStyles = childrenElements.find(child => child.type === 'selectMenu')?.styles;
+  const [menu] = childrenElements;
+  const menuItems = menu.children;
+  const menuStyles = menu.styles;
 
-  const classes = makeStyles({
-    container: {
-      '&.hovered $input': {
-        outline: '1px solid #949494',
+  const getMenuItemClasses = (itemStyle: React.CSSProperties) => makeStyles({
+    root: {
+      ...itemStyle,
+      '&:hover': {
+        backgroundColor: 'rgba(0, 0, 0, 0.04)',
       },
     },
+  })();
+
+  const classes = makeStyles({
     root: {
       height: '100%',
 
@@ -88,6 +94,14 @@ const SelectComponent = (props: SelectRendererProps) => {
     focused: {},
   })();
 
+  const wrapperClasses = makeStyles({
+    root: {
+      '&.hovered $input': {
+        outline: '1px solid #949494',
+      },
+    },
+  })();
+
   const PrototypeMenuProps = {
     MenuProps: {
       PaperProps: {
@@ -107,35 +121,50 @@ const SelectComponent = (props: SelectRendererProps) => {
   return isDisabled ? (
     <>
       <div
-        ref={elementRef}
-        id={id}
-        data-ls-id={id}
-        data-id={sortableId}
         key={id}
-        style={{ ...inlineStyles, display: 'inline-block', verticalAlign: 'top' }}
-        className={cn(className, classes.container)}
+        style={{
+          ...inlineStyles,
+          display: 'inline-block',
+          verticalAlign: 'top',
+        }}
+        className={cn(className, wrapperClasses.root)}
         tabIndex={isDisabled ? 0 : -1}
       >
         <TextField
-          style={{width, height}}
+          ref={elementRef}
+          id={id}
+          data-ls-id={id}
+          data-id={sortableId}
+          style={{ width, height }}
           variant="outlined"
           className={cn(classes.root, styles.disabled)}
-          value={currentValue} // TODO saved values refactoring
+          value={currentValue}
           InputProps={InputProps}
           select
         >
-          {[]}
+          {menuItems.map(({ id: itemID, parameters: { name, value } }) => (
+            <MenuItem key={itemID} value={value}>
+              {name}
+            </MenuItem>
+          ))}
         </TextField>
         {isOpen && children}
       </div>
     </>
   ) : (
-    <div style={{ ...inlineStyles, position: 'relative', display: 'inline-block', verticalAlign: 'top' }} >
+    <div
+      style={{
+        ...inlineStyles,
+        position: 'relative',
+        display: 'inline-block',
+        verticalAlign: 'top',
+      }}
+    >
       <TextField
         id={id}
         key={id}
         variant="outlined"
-        style={inlineStyles}
+        style={{ ...inlineStyles, width, height }}
         className={classes.root}
         value={currentValue}
         onChange={handleSelectChange}
@@ -143,7 +172,11 @@ const SelectComponent = (props: SelectRendererProps) => {
         SelectProps={PrototypeMenuProps}
         select
       >
-        {children}
+        {menuItems.map(({ id: itemID, parameters: { name, value, showRipple }, styles }) => (
+          <MenuItem key={itemID} value={value} className={getMenuItemClasses(styles).root} disableRipple={!showRipple}>
+            {name}
+          </MenuItem>
+        ))}
       </TextField>
     </div>
   );

@@ -6,7 +6,7 @@ import { TextareaRendererProps } from '../types';
 const styles = require('../styles.scss');
 
 const Textarea = (props: TextareaRendererProps) => {
-  const { id, style, params, isDisabled, active, currentValue, sortableId, onChange, className, elementRef } = props;
+  const { id, style, params, isDisabled, active, currentValue, sortableId, onElementChange, className, elementRef } = props;
 
   const {
     width,
@@ -22,7 +22,7 @@ const Textarea = (props: TextareaRendererProps) => {
   const { placeholder } = params;
 
   const handleTextareaChange = (event: ChangeEvent<HTMLInputElement>) => {
-    onChange(id, event.target.value);
+    onElementChange(id, event.target.value);
   };
 
   const classes = makeStyles({

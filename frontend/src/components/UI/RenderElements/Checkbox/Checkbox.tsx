@@ -8,7 +8,7 @@ import { CheckboxRendererProps } from '../types';
 const styles = require('../styles.scss');
 
 const CheckboxComponent = (props: CheckboxRendererProps) => {
-  const { id, style, params, isDisabled, sortableId, currentValue, onChange, isCheckboxChecked, elementRef, className } = props;
+  const { id, style, params, isDisabled, sortableId, currentValue, onElementChange, isCheckboxChecked, elementRef, className } = props;
   const { backgroundColor, width, height, ...restStyles } = style;
   const { name, showRipple } = params;
 
@@ -29,7 +29,7 @@ const CheckboxComponent = (props: CheckboxRendererProps) => {
   const inlineStyles = { ...restStyles, display: 'inline-block' };
 
   const handleCheckboxChange = (event: ChangeEvent<HTMLInputElement>) => {
-    onChange(id, event.target.checked);
+    onElementChange(id, event.target.checked);
   };
 
   return (

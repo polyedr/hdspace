@@ -3,6 +3,7 @@ import cn from 'classnames';
 import { makeStyles, Button } from '@material-ui/core';
 
 import { DropdownRendererProps } from '../types';
+const styles = require('../styles.scss');
 
 const DropdownComponent = (props: DropdownRendererProps) => {
   const { id, style, isDisabled, active, sortableId, params, children, elementRef, className } = props;
@@ -48,10 +49,6 @@ const DropdownComponent = (props: DropdownRendererProps) => {
   return isDisabled ? (
     <>
       <div
-        ref={elementRef}
-        id={id}
-        data-ls-id={id}
-        data-id={sortableId}
         key={id}
         style={{
           marginTop,
@@ -64,15 +61,15 @@ const DropdownComponent = (props: DropdownRendererProps) => {
         className={cn(className, classes.container)}
       >
         <Button
-          aria-controls="simple-menu"
-          aria-haspopup="true"
+          ref={elementRef}
           id={id}
           data-ls-id={id}
           data-id={sortableId}
-          key={id}
+          aria-controls="simple-menu"
+          aria-haspopup="true"
           variant="contained"
           color="primary"
-          className={classes.root}
+          className={cn(classes.root, styles.disabled)}
           disableRipple
         >
           {textContent}
@@ -95,7 +92,7 @@ const DropdownComponent = (props: DropdownRendererProps) => {
       <Button
         aria-controls="simple-menu"
         aria-haspopup="true"
-        onClick={handleMenuButtonClick} // TODO not working
+        onClick={handleMenuButtonClick}
         id={id}
         key={id}
         variant="contained"
