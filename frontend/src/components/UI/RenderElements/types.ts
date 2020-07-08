@@ -1,5 +1,5 @@
-import { SelectChild, ListItemChild, DropdownChild } from "$domain/libraryElements/libraryElements";
-import { IMapProps, HeadingType, InputType, LinkParams, VideoSettings } from "$redux/project/types";
+import { IMapProps } from "$redux/project/types";
+import { LibraryElement, HeadingType, LinkParams, VideoSettings, InputType } from "$api/types";
 
 export type SharedRendererProps = {
   id: string;
@@ -7,8 +7,12 @@ export type SharedRendererProps = {
   active: boolean,
   sortableId: string,
   isDisabled: boolean,
-  activeItemId: string,
+  className?: string,
+  elementRef: ((element: any) => void) | null,
+  children: React.ReactElement[],
 };
+
+export type ContainerRendererProps = SharedRendererProps;
 
 export type ImageRendererProps = SharedRendererProps & {
   params: {
@@ -57,12 +61,23 @@ export type TextBlockRendererProps = SharedRendererProps & {
 
 export type DropdownRendererProps = SharedRendererProps & {
   params: {
+    textContent: string;
+    showRipple: boolean;
+    isOpen: boolean;
+  };
+};
+
+export type DropdownMenuRendererProps = SharedRendererProps & {
+  params: {},
+  anchorEl: HTMLElement | null,
+  setAnchorEl: React.Dispatch<React.SetStateAction<HTMLElement | null>>,
+};
+
+export type DropdownItemRendererProps = SharedRendererProps & {
+  params: {
     textContent: string,
-    dropdownItems: [],
     showRipple: boolean,
-    isOpen: boolean,
   },
-  childrenElements: DropdownChild[],
 };
 
 export type ActionRendererProps = SharedRendererProps & {
@@ -75,8 +90,8 @@ export type ActionRendererProps = SharedRendererProps & {
 };
 
 export type CheckboxRendererProps = SharedRendererProps & {
+  currentValue: string,
   params: {
-    value: string,
     name: string,
     showRipple: boolean,
   },
@@ -89,7 +104,7 @@ export type InputRendererProps = SharedRendererProps & {
     type: InputType,
     placeholder: string,
   },
-  value: string,
+  currentValue: string,
   onChange(itemID: string, savedValue: string): void,
 };
 
@@ -97,7 +112,7 @@ export type TextareaRendererProps = SharedRendererProps & {
   params: {
     placeholder: string,
   },
-  value: string,
+  currentValue: string,
   onChange(itemID: string, savedValue: string): void,
 };
 
@@ -107,27 +122,34 @@ export type RadioRendererProps = SharedRendererProps & {
     name: string,
     showRipple: boolean,
   },
+  currentValue: string,
   isRadioChecked: boolean,
   onChange(itemID: string, savedValue: string): void,
 };
 
 export type SelectRendererProps = SharedRendererProps & {
   params: {
-    showRipple: boolean,
     isOpen: boolean,
-    options: [],
   },
-  value: string,
-  childrenElements: SelectChild[],
+  currentValue: string,
+  childrenElements: LibraryElement<'selectMenu'>[],
   onChange(itemID: string, savedValue: string): void,
+};
+
+export type SelectMenuRendererProps = SharedRendererProps;
+
+export type MenuItemRendererProps = SharedRendererProps & {
+  params: {
+    name: string,
+    value: string,
+    showRipple: boolean,
+  },
 };
 
 export type ListRendererProps = SharedRendererProps & {
   params: {
     isOrdered: boolean,
-    listItems: [],
   },
-  childrenElements: ListItemChild[],
 };
 
 export type VideoRendererProps = SharedRendererProps & {
@@ -141,4 +163,3 @@ export type ListItemRendererProps = Omit<SharedRendererProps, 'sortableId' | 'ac
     link: string,
   },
 };
-
