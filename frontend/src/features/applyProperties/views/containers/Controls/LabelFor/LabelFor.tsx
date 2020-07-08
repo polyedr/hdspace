@@ -2,7 +2,6 @@ import React, { memo } from 'react';
 import { connect } from 'react-redux';
 
 import { AppReduxState } from '$shared/types/app';
-import { ElementParameters } from '$redux/project/types';
 import { selectors } from '$redux/project/';
 import { DropDown } from '$components/UI/DropDown/';
 import {
@@ -10,26 +9,28 @@ import {
   PropertiesChangeProps
 } from '$utils/withConfigurableProperties';
 import { sharedClasses } from '$styles/sharedClasses';
+import { LabelElement } from '$api/types';
+import { getElementsArray } from '$utils/ElementsTreeHelper';
 
 import { ControlTitle } from '../../../components/ControlTitle/ControlTitle';
 const styles = require('./LabelFor.scss');
 
 type StateProps = {
-  labelFor?: string;
-  inputsIDs: number[];
+  labelFor: string;
+  inputsIDs: string[];
 };
 
 function mapState(state: AppReduxState): StateProps {
-  const activeItemParams = selectors.selectActiveItemParams(state) as ElementParameters;
-  const elements = selectors.selectScenariosElements(state);
+  const activeItemParams = selectors.selectActiveItemParams<LabelElement>(state);
+  const elements = getElementsArray(selectors.selectRootElement(state)); // TODO select elements
 
   const inputsIDs = Object.values(elements)
     .filter((element) =>
-      element.struct_type === "textinput" ||
-      element.struct_type === "textarea" ||
-      element.struct_type === "select" ||
-      element.struct_type === 'radiobutton' ||
-      element.struct_type === 'checkbox')
+      element.type === "textinput" ||
+      element.type === "textarea" ||
+      element.type === "select" ||
+      element.type === 'radiobutton' ||
+      element.type === 'checkbox')
     .map(element => element.id);
 
   return {
@@ -38,14 +39,14 @@ function mapState(state: AppReduxState): StateProps {
   };
 }
 
-type Props = StateProps & PropertiesChangeProps;
+type Props = StateProps & PropertiesChangeProps<LabelElement>;
 
 const LabelFor: React.FC<Props> = memo((props) => {
   const { labelFor, inputsIDs, updateParams } = props;
 
   const options = [
     { label: 'No for attribute', value: 'no for attribute' },
-    ...inputsIDs.map((id => ({ label: `${id}e`, value: `${id}e` })))
+    ...inputsIDs.map((id => ({ label: id, value: id })))
   ];
 
   const handleDropdownChange = (value: string) => {
