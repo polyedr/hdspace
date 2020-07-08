@@ -4,15 +4,13 @@ import { makeStyles, Checkbox } from '@material-ui/core';
 import CheckBoxIcon from '@material-ui/icons/CheckBox';
 import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 
-import { sharedClasses } from '$styles/sharedClasses';
-
 import { CheckboxRendererProps } from '../types';
 const styles = require('../styles.scss');
 
 const CheckboxComponent = (props: CheckboxRendererProps) => {
-  const { id, style, params, isDisabled, active, sortableId, onChange, isCheckboxChecked } = props;
+  const { id, style, params, isDisabled, sortableId, currentValue, onChange, isCheckboxChecked, elementRef, className } = props;
   const { backgroundColor, width, height, ...restStyles } = style;
-  const { value, name, showRipple } = params;
+  const { name, showRipple } = params;
 
   const classes = makeStyles({
     root: {
@@ -36,19 +34,21 @@ const CheckboxComponent = (props: CheckboxRendererProps) => {
 
   return (
     <div
+      ref={elementRef}
       id={id}
       data-ls-id={id}
       data-id={sortableId}
       key={id}
       style={inlineStyles}
-      className={cn(sharedClasses.lsItem, isDisabled && styles.disabled, active && sharedClasses.activated)}
+      className={cn(className, isDisabled && styles.disabled)}
+      tabIndex={isDisabled ? 0 : -1}
     >
       <Checkbox
         checkedIcon={<CheckBoxIcon className={classes.icon} />}
         icon={<CheckBoxOutlineBlankIcon className={classes.icon} />}
         color="default"
         className={classes.root}
-        value={value}
+        value={currentValue}
         name={name}
         checked={isCheckboxChecked}
         disableRipple={!showRipple}

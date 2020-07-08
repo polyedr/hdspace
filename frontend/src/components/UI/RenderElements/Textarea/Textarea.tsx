@@ -2,13 +2,11 @@ import React, { ChangeEvent } from 'react';
 import cn from 'classnames';
 import { makeStyles, TextField } from '@material-ui/core';
 
-import { sharedClasses } from '$styles/sharedClasses';
-
 import { TextareaRendererProps } from '../types';
 const styles = require('../styles.scss');
 
 const Textarea = (props: TextareaRendererProps) => {
-  const { id, style, params, isDisabled, active, sortableId, value, onChange } = props;
+  const { id, style, params, isDisabled, active, currentValue, sortableId, onChange, className, elementRef } = props;
 
   const {
     width,
@@ -87,6 +85,7 @@ const Textarea = (props: TextareaRendererProps) => {
 
   return (
     <TextField
+      ref={elementRef}
       id={id}
       data-ls-id={id}
       data-id={sortableId}
@@ -95,11 +94,12 @@ const Textarea = (props: TextareaRendererProps) => {
       rows={4}
       placeholder={placeholder}
       variant="outlined"
-      className={cn(sharedClasses.lsItem, isDisabled && styles.disabled, classes.root)}
+      className={cn(className, isDisabled && styles.disabled, classes.root)}
       style={inlineStyles}
       InputProps={InputProps}
-      value={value}
+      value={currentValue}
       onChange={handleTextareaChange}
+      tabIndex={isDisabled ? 0 : -1}
     />
   );
 };

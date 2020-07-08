@@ -1,7 +1,5 @@
 import React from 'react';
 import cn from 'classnames';
-
-import { sharedClasses } from '$styles/sharedClasses';
 import { IMAGES } from '$constants/images';
 import { VIMEO_HEIGHT_RATIO } from '$constants/players';
 import { getPlayerLink } from '$utils/extractVideoLink';
@@ -10,10 +8,9 @@ import { VideoRendererProps } from '../types';
 const styles = require('../styles.scss');
 
 const Video = (props: VideoRendererProps) => {
-  const { id, params, active, sortableId, style, isDisabled } = props;
-  const { videoSettings } = params;
+  const { id, params, sortableId, style, isDisabled, className, elementRef } = props;
 
-  const playerLink = getPlayerLink(videoSettings, !isDisabled);
+  const playerLink = getPlayerLink(params, !isDisabled);
 
   return playerLink ? (
     <div
@@ -23,10 +20,9 @@ const Video = (props: VideoRendererProps) => {
       key={id}
       style={style}
       className={cn(
-        sharedClasses.lsItem,
+        className,
         styles.addedElem,
         isDisabled && styles.disabled,
-        active && sharedClasses.activated,
       )}
       tabIndex={isDisabled ? 0 : -1}
     >
@@ -52,14 +48,14 @@ const Video = (props: VideoRendererProps) => {
     </div>
   ) : (
     <div
+      ref={elementRef}
       id={id}
       data-ls-id={id}
       data-id={sortableId}
       key={id}
       className={cn(
-        sharedClasses.lsItem,
+        className,
         styles.addedElem,
-        active && sharedClasses.activated
       )}
       style={{
         ...style,
@@ -72,4 +68,3 @@ const Video = (props: VideoRendererProps) => {
 }
 
 export { Video };
-
