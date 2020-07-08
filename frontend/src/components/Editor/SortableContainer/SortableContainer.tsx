@@ -1,45 +1,36 @@
-import React, { CSSProperties, useCallback, useState, useEffect } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import * as R from 'ramda';
 import { connect } from 'react-redux';
 
 import { AppReduxState } from '$shared/types/app';
 import { SortableGroup } from '$components/Editor/SortableGroup/SortableGroup';
 import { RENDERERS } from '$components/UI/RenderElements';
-import { IListSortable, ILSItem, SavedElementsValues, Option } from '$redux/project/types';
+import { SavedElementsValues } from '$redux/project/types';
 import { selectors, actionsCreators } from '$redux/project';
-import { getItemsPair, getParams, idToLSId, idToDataLSID } from '$utils/parseScenario';
 import { LIST_SCENARIO_TYPE } from '$constants/defaultParams';
-import { convertPropCSS, CssLikeStyles } from '$utils/StyleHelper';
+import { convertPropCSS } from '$utils/StyleHelper';
 import { LIBRARY_ELEMENTS } from '$domain/libraryElements/libraryElements';
-import { ElementEntity } from '$domain/core';
+import { ElementEntity, Entity } from '$domain/core';
+import { LibraryElementUnion, LibraryElement } from '$api/types';
+import { SharedRendererProps } from '$components/UI/RenderElements/types';
 
 const isElementStructType = (type: string): type is ElementEntity => {
   return type in LIBRARY_ELEMENTS;
 };
 
-const mapStateToProps = (state: AppReduxState, props: OwnProps) => {
+const mapStateToProps = (state: AppReduxState) => {
   const currentScreen = selectors.selectCurrentScreen(state);
+  const rootID = selectors.selectRootID(state);
   const { listSortable } = selectors.selectCurrentScreen(state);
-  const scenarios = selectors.selectScenarios(state);
   const scenarioElements = selectors.selectScenariosElements(state);
   const savedElements = selectors.selectSavedElementsValues(state);
   const disableInteractions = state.user.isPrototypeMode;
 
-  const currId = idToLSId(props.item.id, props.item.type);
-  const itemParent = listSortable[currId];
-  const currentListSortable = itemParent.children.reduce((items: IListSortable, childID) => ({
-    ...items,
-    [childID]: listSortable[childID],
-  }), { [currId]: listSortable[currId] });
-
-  const { scenarioList, elementList } = getItemsPair(currentListSortable, scenarios, scenarioElements);
   return {
+    rootID,
     listSortable,
     scenarioElements,
-    currentListSortable,
     disableInteractions,
-    scenarioList,
-    elementList,
     currentScreen,
     savedElements,
   };
@@ -47,27 +38,28 @@ const mapStateToProps = (state: AppReduxState, props: OwnProps) => {
 
 const mapDispatchToProps = {
   updateElementStyles: actionsCreators.updateElementStyles,
-  setListSortable: actionsCreators.setListSortable,
+  moveElement: actionsCreators.moveElement,
   updateSavedElementValues: actionsCreators.updateSavedElementValues,
 };
 
 export type OwnProps = {
-  item: ILSItem,
+  item: LibraryElementUnion,
   activeItemId: string,
   isMoving: boolean,
   listNotDragging: string[],
   isResizing: boolean;
   isResizable?: boolean;
 
-  onActiveElementChange(parentId: number, childID: string): void,
+  onActiveElementChange(parentId: number, child: LibraryElement<Entity>): void,
   setIsMoving: (value: boolean) => void,
   setIsResizing: (value: boolean) => void;
 }
 
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 
-const SortableComponent: React.FC<Props> = (props) => {
+const SortableComponent = (props: Props) => {
   const {
+    rootID,
     currentScreen,
     item,
     activeItemId,
@@ -75,18 +67,16 @@ const SortableComponent: React.FC<Props> = (props) => {
     listNotDragging,
     disableInteractions,
     onActiveElementChange,
-    setListSortable,
+    moveElement,
     setIsMoving,
     isResizing,
     setIsResizing,
     isResizable,
     listSortable,
     scenarioElements,
-    currentListSortable,
-    elementList,
-    scenarioList,
     savedElements,
     updateSavedElementValues,
+    ...restProps
   } = props;
 
   const [isDragging, setIsDragging] = useState<boolean>(false);
@@ -114,18 +104,21 @@ const SortableComponent: React.FC<Props> = (props) => {
     })
   }, [savedElements, listSortable, scenarioElements, updateSavedElementValues]);
 
-  const handleChooseToSort = useCallback((itemIndex) => {
+  const handleChooseToSort = (itemIndex: number) => {
     // TODO: called when item chosen for sorting. rewrite without onActiveElementChange use
     setIsDragging(true);
-    if (item.children[itemIndex] !== activeItemId) {
-      onActiveElementChange(item.id, item.children[itemIndex]);
-    }
-  }, [item, activeItemId, onActiveElementChange]);
+    const draggedItem = (item.children as LibraryElementUnion[]).find(child => child.buoyancy === itemIndex);
+    const itemID = draggedItem?.id;
 
-  const handleItemPositionChange = useCallback((index: number, list: string[], parentId: string) => {
+    if (itemID !== activeItemId && draggedItem && itemID) {
+      onActiveElementChange(Number(itemID), draggedItem);
+    }
+  };
+
+  const handleItemPositionChange = (index: number, list: string[], parentId: string) => {
     setIsDragging(false);
-    setListSortable(index, list, activeItemId, parentId);
-  }, [activeItemId, setListSortable]);
+    moveElement(index, activeItemId, parentId === 'root' ? rootID : parentId);
+  };
 
   const getGroupName = useCallback((itemType): string => (
     LIST_SCENARIO_TYPE.indexOf(itemType) !== -1 ? itemType : 'element'
@@ -135,88 +128,138 @@ const SortableComponent: React.FC<Props> = (props) => {
     listNotDragging.indexOf(type) === -1
   ), [listNotDragging]);
 
-  const getStyles = useCallback((id: number): CSSProperties => {
-    if (id === -1) return {};
-    const parseStyle: CssLikeStyles = scenarioList[id].styles;
-
-    return parseStyle ? convertPropCSS(parseStyle) : {};
-  }, [scenarioList]);
-
   const isRadioChecked = (value: string, checkedRadio: SavedElementsValues[string]) => value === checkedRadio?.savedValue;
 
   const isCheckboxChecked = (itemId: string) => Boolean(savedElements[itemId]?.savedValue);
 
-  const getIsActive = useCallback(() => !disableInteractions && item.id === parseInt(activeItemId, 10), [disableInteractions, item, activeItemId]);
+  const getIsActive = !disableInteractions && item.id === activeItemId;
 
-  return (currentScreen && currentScreen.screenLoader ?  null :
+  const { id, type, styles, children } = item;
+
+  if (!isElementStructType(type)) {
+    return null;
+  }
+
+  const ElementRenderer = RENDERERS[type];
+  const parsedStyles = convertPropCSS(styles);
+
+  const commonRendererProps: Omit<SharedRendererProps, 'children'> = {
+    ...(disableInteractions && { className: '' }),
+    id: id === rootID ? 'root' : id,
+    isDisabled: !disableInteractions,
+    style: parsedStyles,
+    active: !disableInteractions && id === activeItemId,
+    sortableId: id,
+    elementRef: null,
+  };
+
+  const getAdditionalProps = () => {
+    switch (item.type) {
+      case 'textinput': {
+        return {
+          ...commonRendererProps,
+          currentValue: String(savedElements[id]?.savedValue),
+          onChange: updateSavedElementValues,
+          params: item.parameters,
+        }
+      };
+
+      case 'textarea': {
+        return {
+          currentValue: savedElements[id]?.savedValue,
+          onChange: updateSavedElementValues,
+          params: item.parameters,
+        }
+      };
+
+      case 'checkbox': {
+        return {
+          currentValue: savedElements[id]?.savedValue,
+          isCheckboxChecked: isCheckboxChecked(id),
+          onChange: updateSavedElementValues,
+          params: item.parameters,
+        }
+      };
+
+      case 'radiobutton': {
+        return {
+          currentValue: savedElements[id]?.savedValue,
+          isRadioChecked: isRadioChecked(
+            item.parameters.value,
+            savedElements[item.parameters.name],
+          ),
+          onChange: updateSavedElementValues,
+          params: item.parameters,
+        }
+      };
+
+      case 'select': {
+        return {
+          currentValue: savedElements[id]?.savedValue,
+          onChange: updateSavedElementValues,
+          childrenElements: children,
+          params: item.parameters,
+        }
+      }
+
+      default: return {
+        params: item.parameters,
+      };
+    }
+  };
+
+  return currentScreen &&
+    currentScreen.screenLoader ? null : disableInteractions ? (
+    <ElementRenderer
+      key={id}
+      {...commonRendererProps}
+      {...getAdditionalProps()}
+      {...restProps}
+    >
+      {(item.children as LibraryElementUnion[])?.map((child) => (
+        <SortableContainer
+          key={child.id}
+          activeItemId={activeItemId}
+          isMoving={isMoving}
+          item={child}
+          listNotDragging={listNotDragging}
+          onActiveElementChange={onActiveElementChange}
+          setIsMoving={setIsMoving}
+          isResizing={isResizing}
+          setIsResizing={setIsResizing}
+        />
+      ))}
+    </ElementRenderer>
+  ) : (
     <SortableGroup
-      isActive={getIsActive()}
-      key={item.id}
+      elementRenderer={ElementRenderer}
+      isActive={getIsActive}
       disableSortable={!isMoving || disableInteractions}
       disableInteractions={disableInteractions}
-      isPutItem={getIsPutItem(item.type)}
-      lsID={idToLSId(item.id, item.type)}
-      id={idToDataLSID(item.id, item.type)}
-      group={getGroupName(item.type)}
-      stylesToInherit={getStyles(item.id)}
+      isPutItem={getIsPutItem(type)}
+      group={getGroupName(type)}
       onChoose={handleChooseToSort}
-      onChange={handleItemPositionChange}
+      onItemPositionChange={handleItemPositionChange}
       isSomeItemBeingDragged={isDragging}
       isSomeItemResizable={isResizable}
-    // align={item.props && item.props.align}
+      onChange={updateSavedElementValues}
+      {...commonRendererProps}
+      {...getAdditionalProps()}
+      {...restProps}
     >
-      {item.children.map((itemId) => {
-        const elId = parseInt(itemId, 10);
-
-        if (itemId.slice(-1) === 'e' ? !R.prop(elId, elementList) : !R.prop(elId, scenarioList)) {
-          return null;
-        }
-
-        const currentItem = currentListSortable[itemId];
-        const { struct_type, parameters, styles, name, children } = getParams(itemId, elementList, scenarioList);
-
-        if (struct_type === 'container') {
-          return (
-            <SortableContainer
-              key={`element-${itemId}`}
-              activeItemId={activeItemId}
-              isMoving={isMoving}
-              item={currentItem}
-              listNotDragging={listNotDragging}
-              onActiveElementChange={onActiveElementChange}
-              setIsMoving={setIsMoving}
-              isResizing={isResizing}
-              setIsResizing={setIsResizing}
-            />
-          )
-        } 
-
-        if (!isElementStructType(struct_type)) {
-          return null;
-        }
-
-        const ElementRenderer = RENDERERS[struct_type];
-        const parsedStyles = convertPropCSS(styles);
-        
-        return ElementRenderer ? (
-          <ElementRenderer
-            key={itemId}
-            id={itemId}
-            isDisabled={!disableInteractions}
-            params={parameters}
-            sortableId={itemId}
-            name={name}
-            style={parsedStyles}
-            activeItemId={activeItemId}
-            active={!disableInteractions && itemId === activeItemId}
-            value={savedElements[itemId]?.savedValue}
-            onChange={updateSavedElementValues}
-            isCheckboxChecked={isCheckboxChecked(itemId)}
-            isRadioChecked={isRadioChecked(parameters.value, savedElements[parameters.name])}
-            childrenElements={children}
-           />
-        ) : null;
-      })}
+      {(item.children as LibraryElementUnion[])?.map((child) => (
+        <SortableContainer
+          key={child.id}
+          activeItemId={activeItemId}
+          isMoving={isMoving}
+          item={child}
+          listNotDragging={listNotDragging}
+          onActiveElementChange={onActiveElementChange}
+          setIsMoving={setIsMoving}
+          isResizing={isResizing}
+          setIsResizing={setIsResizing}
+        />
+      ))}
     </SortableGroup>
   );
 };

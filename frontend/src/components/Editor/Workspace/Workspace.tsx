@@ -10,7 +10,7 @@ import * as userActions from '$redux/user/actions';
 import { DEFAULT_SCREEN_MODE } from '$constants/defaultParams';
 import { Scrollbar } from '$components/UI/Scrollbar';
 import { getClassDevice } from '$utils/dom';
-import { getListNotDragging, getParams } from '$utils/parseScenario';
+import { getListNotDragging } from '$utils/parseScenario';
 import { findChildByID } from '$utils/ElementsTreeHelper';
 import { AppReduxState } from '$shared/types/app';
 import { isRoot } from '$domain/abstractInterface';
@@ -18,6 +18,7 @@ import { LibraryElement, LibraryElementUnion } from '$api/types';
 
 import { TopBar } from '../TopBar/TopBar';
 import { HotKeys } from '../HotKeys/HotKeys';
+import { Entity } from '$domain/core';
 const styles = require('./Workspace.scss');
 
 export type ScreenMode = {
@@ -29,8 +30,6 @@ export type ScreenMode = {
 type StateProps = {
   screen: ProjectT.IProjectScreen;
   elementsTree: LibraryElement<'root'>,
-  scenarios: ProjectT.IScenarios;
-  scenarioElements: ProjectT.IScenarioElements;
   isPrototypeMode: boolean;
   activeItem: ProjectT.ActiveItem;
 };
@@ -48,8 +47,6 @@ const mapState = (state: AppReduxState): StateProps => ({
   screen: selectors.selectCurrentScreen(state),
   elementsTree: selectors.selectRootElement(state),
   activeItem: selectors.selectActiveItem(state),
-  scenarios: selectors.selectScenarios(state),
-  scenarioElements: selectors.selectScenariosElements(state),
   isPrototypeMode: state.user.isPrototypeMode,
 });
 
@@ -59,8 +56,6 @@ export const Component = (props: Props) => {
   const {
     screen,
     elementsTree,
-    scenarios,
-    scenarioElements,
     isPrototypeMode,
     activeItem,
     setActiveItem,
@@ -87,13 +82,13 @@ export const Component = (props: Props) => {
 
   useEffect(() => () => { resetScreenState(); }, []);
 
-  const handleActiveElementChange = useCallback((parentId: number, itemId: string) => {
-    const { type, name, parent_id } = getParams(itemId, scenarioElements, scenarios);
+  const handleActiveElementChange = (parentId: number, item: LibraryElement<Entity>) => {
+    const { id: itemId, type, name } = item;
     const list = getListNotDragging(type);
 
-    setActiveItem({ itemId, itemType: isRoot(parent_id) ? 'root' : type, name });
+    setActiveItem({ itemId, itemType: isRoot(parentId) ? 'root' : type, name });
     setListNotDragging(list);
-  }, [screen.listSortable, scenarios, scenarioElements]);
+  };
 
   const handleRootClick = useCallback((event: React.MouseEvent) => {
     const target = (event.nativeEvent.target as HTMLElement)?.closest('[data-ls-id]') as HTMLElement;

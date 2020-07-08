@@ -3,10 +3,6 @@ import { connect } from 'react-redux';
 
 import { actionsCreators } from '$redux/project';
 
-type StateProps = {
-  rootID: string;
-};
-
 const mapDispatch = {
   deleteActiveItem: actionsCreators.deleteActiveItem,
   wrapIntoContainer: actionsCreators.wrapIntoContainer,
@@ -14,7 +10,7 @@ const mapDispatch = {
   pasteCopiedItem: actionsCreators.pasteCopiedItem,
 };
 
-type Props = StateProps & typeof mapDispatch;
+type Props = typeof mapDispatch;
 
 export const Component = (props: Props) => {
   const {

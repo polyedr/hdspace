@@ -4,43 +4,44 @@ import { SortableOptions } from 'sortablejs';
 
 // @ts-ignore
 import { Sortable } from '$components/Editor/Sortable/Sortable';
+import { sharedClasses } from '$styles/sharedClasses';
 
 const styles = require('./SortableGroup.scss');
 
 type Props = {
+  elementRenderer: React.FunctionComponent,
   isActive: boolean,
   disableSortable: boolean,
   disableInteractions: boolean,
   isPutItem: boolean,
   group: string,
   children?: any,
-  stylesToInherit: React.CSSProperties,
   align?: string,
   isSomeItemBeingDragged: boolean,
   isSomeItemResizable?: boolean;
   id: string;
-  lsID: string;
   onChange(index: number, items: string[], parentId: string): void,
   onChoose(itemIndex: string, target?: React.SyntheticEvent): void,
 };
 
 export const SortableGroup: React.FC<Props> = (props) => {
   const {
+    elementRenderer,
     isActive,
     disableSortable,
     disableInteractions,
     isPutItem,
     group,
-    stylesToInherit,
     children,
     onChoose,
     onChange,
     align,
     isSomeItemBeingDragged,
     isSomeItemResizable,
-    lsID,
-    id,
+    ...elementProps
   } = props;
+
+  const { id } = elementProps;
 
   const handleChoose = useCallback((evt) => {
     onChoose(evt.oldIndex);
@@ -48,23 +49,8 @@ export const SortableGroup: React.FC<Props> = (props) => {
 
   const handlePositionChange = useCallback((itemsInCurrentSortableGroup: string[], _, evt) => {
     const draggedItemPositionInCurrentSortableGroup = evt.newIndex;
-    onChange(draggedItemPositionInCurrentSortableGroup, itemsInCurrentSortableGroup, lsID);
-  }, [lsID, onChange]);
-  // const handleChoose = (ent) => {
-  //   onChoose(ent.oldIndex);
-  // };
-  //
-  // const handlePositionChange = (items: string[], sortable, evt) => {
-  //   onChange(items, evt.newIndex);
-  // };
-
-  // useEffect(() => {
-  //   if (!ref || !ref.forceUpdate) return;
-  //
-  //   console.log('update');
-  //
-  //   ref.forceUpdate();
-  // }, [handleChoose, ref]);
+    onChange(draggedItemPositionInCurrentSortableGroup, itemsInCurrentSortableGroup, id);
+  }, [id, onChange]);
 
   const handleDragEnter = useCallback((evt) => {
     const container = evt.target.closest('.sortable-group');
@@ -90,60 +76,47 @@ export const SortableGroup: React.FC<Props> = (props) => {
     isSomeItemBeingDragged && event.stopPropagation();
   }, []);
 
-  const getClassNames = useCallback(() => {
-    return lsID === 'root'
+  const className = id === 'root'
       ? !disableSortable && styles.moving
-      : cn('ls-item', 'sortable-group', isActive && 'activated', !disableSortable && styles.moving);
-  }, [parent, align, styles, disableSortable, isActive])
+      : cn(
+          sharedClasses.lsItem,
+          sharedClasses.sortableGroup,
+          isActive && sharedClasses.activated,
+          !disableSortable && styles.moving,
+        );
 
   return (
     <Sortable
-      id={lsID}
-      data-id={lsID}
-      data-ls-id={id}
-      tabIndex={!disableInteractions ? 0 : -1}
-      style={stylesToInherit}
-      className={getClassNames()}
-      // tag="ul" Defaults to "div"
-      options={{
-        filter: '.unsortable',
-        swapThreshold: 0.9, // Threshold of the swap zone
-        animation: 750,
-        // filter: [] // Selectors that do not lead to dragging (String or Function)
-        // draggable: '.block, .group, ...', // which items inside the element should be draggable
-        // dragoverBubble: true,
-        group: {
-          name: group, // название группы;
-          // pull: 'clone', // «вытаскивать» элементы при перемещении
-          put: true, // принять элемент из другой группы, массив разрешенных групп.
-        },
-        onChoose: handleChoose,
-        // onAdd: this.onUpdate,
-        // onRemove: this.onUpdate,
-        // onUpdate: this.onUpdate,
-        // fallbackOnBody: true,
-        // removeCloneOnHide: true,
-        // scroll — включить авто-прокрутку;
-        // scrollSensitivity — на сколько нужно приблизится к краю для активации прокрутки;
-        // scrollSpeed — скорость прокрутки в `px`;
-      } as SortableOptions}
+      className={className}
+      options={
+        {
+          filter: '.unsortable',
+          swapThreshold: 0.9, // Threshold of the swap zone
+          animation: 750,
+          group: {
+            name: group,
+            // pull: 'clone', // «вытаскивать» элементы при перемещении
+            put: true, // принять элемент из другой группы, массив разрешенных групп.
+          },
+          onChoose: handleChoose,
+        } as SortableOptions
+      }
       ref={(c: any) => {
         if (c) {
-          // this.sortable = c.sortable;
           c.sortable.option('disabled', disableSortable);
           c.sortable.option('group', { put: isPutItem, name: group });
-          // c.sortable.option('draggable', listNotDragging); // Specifies which items inside the element should be draggable
-          // let style = window.getComputedStyle(c.node, null);
         }
       }}
+      elementRenderer={elementRenderer}
       onChange={handlePositionChange}
       onChoose={handleChoose}
       onDragEnter={handleDragEnter}
       onDragLeave={handleDragLeave}
       onMouseOver={handleSortableMouseOver}
       onMouseOut={handleSortableMouseOut}
+      {...elementProps}
     >
       {children}
-    </Sortable >
+    </Sortable>
   );
 };
