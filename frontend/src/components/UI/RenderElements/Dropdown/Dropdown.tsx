@@ -53,7 +53,14 @@ const DropdownComponent = (props: DropdownRendererProps) => {
         data-ls-id={id}
         data-id={sortableId}
         key={id}
-        style={{ marginTop, marginRight, marginBottom, marginLeft, display: 'inline-block' }}
+        style={{
+          marginTop,
+          marginRight,
+          marginBottom,
+          marginLeft,
+          display: 'inline-block',
+          verticalAlign: 'top',
+        }}
         className={cn(className, classes.container)}
       >
         <Button
@@ -74,7 +81,17 @@ const DropdownComponent = (props: DropdownRendererProps) => {
       </div>
     </>
   ) : (
-    <div style={{ marginTop, marginRight, marginBottom, marginLeft, position: 'relative', display: 'inline-block' }}>
+    <div
+      style={{
+        marginTop,
+        marginRight,
+        marginBottom,
+        marginLeft,
+        position: 'relative',
+        display: 'inline-block',
+        verticalAlign: 'top',
+      }}
+    >
       <Button
         aria-controls="simple-menu"
         aria-haspopup="true"
