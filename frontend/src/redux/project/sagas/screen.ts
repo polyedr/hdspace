@@ -173,10 +173,17 @@ export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
     currentProject,
   );
 
-  yield call(reqWrapper, apiSaveScreen, {
+  const savedScreen = yield call(reqWrapper, apiSaveScreen, {
     id: screen.id,
     data: R.omit(['listSortable', 'screenLoader', 'image', 'screen_data_json', 'buoyancy'], screen),
   });
+
+  const currentScreen: ReturnType<typeof selectors.selectCurrentScreen> = yield select(
+    selectors.selectCurrentScreen,
+  );
+
+  const updatedScreen = { ...currentScreen, ...savedScreen };
+  yield put(setScreen(updatedScreen));
 
   yield put(setScreens([...screens, screen]));
 
