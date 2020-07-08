@@ -159,7 +159,7 @@ const SortableComponent = (props: Props) => {
         return {
           ...commonRendererProps,
           currentValue: String(savedElements[id]?.savedValue),
-          onChange: updateSavedElementValues,
+          onElementChange: updateSavedElementValues,
           params: item.parameters,
         }
       };
@@ -167,7 +167,7 @@ const SortableComponent = (props: Props) => {
       case 'textarea': {
         return {
           currentValue: savedElements[id]?.savedValue,
-          onChange: updateSavedElementValues,
+          onElementChange: updateSavedElementValues,
           params: item.parameters,
         }
       };
@@ -176,7 +176,7 @@ const SortableComponent = (props: Props) => {
         return {
           currentValue: savedElements[id]?.savedValue,
           isCheckboxChecked: isCheckboxChecked(id),
-          onChange: updateSavedElementValues,
+          onElementChange: updateSavedElementValues,
           params: item.parameters,
         }
       };
@@ -188,7 +188,7 @@ const SortableComponent = (props: Props) => {
             item.parameters.value,
             savedElements[item.parameters.name],
           ),
-          onChange: updateSavedElementValues,
+          onElementChange: updateSavedElementValues,
           params: item.parameters,
         }
       };
@@ -196,11 +196,11 @@ const SortableComponent = (props: Props) => {
       case 'select': {
         return {
           currentValue: savedElements[id]?.savedValue,
-          onChange: updateSavedElementValues,
+          onElementChange: updateSavedElementValues,
           childrenElements: children,
           params: item.parameters,
         }
-      }
+      };
 
       default: return {
         params: item.parameters,
@@ -239,10 +239,9 @@ const SortableComponent = (props: Props) => {
       isPutItem={getIsPutItem(type)}
       group={getGroupName(type)}
       onChoose={handleChooseToSort}
-      onItemPositionChange={handleItemPositionChange}
       isSomeItemBeingDragged={isDragging}
       isSomeItemResizable={isResizable}
-      onChange={updateSavedElementValues}
+      onChange={handleItemPositionChange}
       {...commonRendererProps}
       {...getAdditionalProps()}
       {...restProps}

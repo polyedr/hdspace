@@ -57,12 +57,12 @@ export function withConfigurableProperties<K extends LibraryElement<Entity>, T e
       ...restProps
     } = props;
 
-    const updateStyles = useCallback((styles: CssLikeStyles) => {
-      updateElementStyles(activeItemID, styles);
+    const updateStyles = useCallback((styles: CssLikeStyles, itemID?: string) => {
+      updateElementStyles(itemID || activeItemID, styles);
     }, [activeItemID]);
 
-    const updateParams = useCallback((params: Params<K>) => {
-      updateElementParameters(activeItemID, params);
+    const updateParams = useCallback((params: Params<K>, itemID?: string) => {
+      updateElementParameters(itemID || activeItemID, params);
     }, [activeItemID]);
 
     return (

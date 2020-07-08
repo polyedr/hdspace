@@ -21,7 +21,7 @@ type Props = {
   isSomeItemResizable?: boolean;
   id: string;
   onChange(index: number, items: string[], parentId: string): void,
-  onChoose(itemIndex: string, target?: React.SyntheticEvent): void,
+  onChoose(itemIndex: number, target?: React.SyntheticEvent): void,
 };
 
 export const SortableGroup: React.FC<Props> = (props) => {
