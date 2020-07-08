@@ -1,7 +1,10 @@
 import { makeFeatureStateSelector } from "$shared/redux";
 import { AppReduxState } from '$shared/types/app';
-import { ChildEntity } from "$domain/core";
+import { ChildEntity, Entity } from "$domain/core";
 import { findChildByID } from "$utils/ElementsTreeHelper";
+import { LibraryElement } from "$api/types";
+import { CSSProperties } from "react";
+import { CssLikeStyles } from "$utils/StyleHelper";
 
 export const selectFeatureState = makeFeatureStateSelector('project');
 
@@ -107,12 +110,19 @@ export const selectActiveItemStyles = makeActiveItemInfoSelector('styles');
 export const selectActiveItemChildrenStyles = makeActiveItemInfoSelector('styles');
 export const selectActiveItemParams = makeActiveItemInfoSelector('parameters');
 
-function makeActiveItemInfoSelector(prop: 'styles' | 'parameters') {
+function makeActiveItemInfoSelector<T extends LibraryElement<Entity>, K extends 'styles' | 'parameters'>(
+  prop: K
+): <R extends T>(state: AppReduxState) => K extends 'styles' ? Required<CssLikeStyles> : R['parameters'] {
   return (state: AppReduxState) => {
     const activeItem = selectActiveItem(state);
     const elementsTree = selectRootElement(state);
     const element = findChildByID(elementsTree, activeItem.itemId);
-    return element && element[prop];
+
+    if(!element) {
+      throw new Error(`Can not find ${activeItem.itemId} in tree!`);
+    }
+
+    return element[prop] as K extends 'styles' ? Required<CssLikeStyles> : T['parameters'];
   };
 }
 
