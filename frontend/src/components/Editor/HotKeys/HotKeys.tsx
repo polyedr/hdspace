@@ -5,7 +5,7 @@ import { selectors, actionsCreators } from '$redux/project';
 import { AppReduxState } from '$shared/types/app';
 
 type StateProps = {
-  rootID: number;
+  rootID: string;
 };
 
 const mapDispatch = {
@@ -16,7 +16,7 @@ const mapDispatch = {
 };
 
 const mapState = (state: AppReduxState): StateProps => ({
-  rootID: selectors.selectListSortable(state).root.id,
+  rootID: selectors.selectRootElement(state).id,
 });
 
 type Props = StateProps & typeof mapDispatch;

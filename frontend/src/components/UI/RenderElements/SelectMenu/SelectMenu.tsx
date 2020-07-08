@@ -45,7 +45,7 @@ const SelectMenuComponent = (props: SelectMenuRendererProps) => {
         <MenuList>{children}</MenuList>
       </Paper>
     </div>
-  ) : children;
+  ) : <>{children}</>;
 };
 
 export { SelectMenuComponent as SelectMenu };
