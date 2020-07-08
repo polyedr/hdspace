@@ -15,7 +15,7 @@ export type ButtonParameters = {
 
 export type HyperLinkParameters = {
   textContent: string,
-  action: { action: LinkParams },
+  action: LinkParams,
 };
 
 export type InputType = 'text' | 'email' | 'number' | 'phone' | 'password';
@@ -74,7 +74,7 @@ export type OcrtextParameters = {
 
 export type LabelParameters = {
   textContent: string,
-  for: string,
+  labelFor: string,
 };
 
 export type TextBlockParameters = {
@@ -110,7 +110,14 @@ export type MapProps = {
 };
 
 export type MapParameters = {
-  mapProps: MapProps,
+  map_props: {
+    center: {
+      lat: number,
+      lng: number,
+    },
+    zoom: number,
+    markerText: string,
+  },
 };
 
 export type VideoSettings = {

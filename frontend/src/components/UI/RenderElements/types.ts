@@ -96,7 +96,7 @@ export type CheckboxRendererProps = SharedRendererProps & {
     showRipple: boolean,
   },
   isCheckboxChecked: boolean,
-  onChange(itemID: string, savedValue: boolean): void,
+  onElementChange(itemID: string, savedValue: boolean): void,
 };
 
 export type InputRendererProps = SharedRendererProps & {
@@ -105,7 +105,7 @@ export type InputRendererProps = SharedRendererProps & {
     placeholder: string,
   },
   currentValue: string,
-  onChange(itemID: string, savedValue: string): void,
+  onElementChange(itemID: string, savedValue: string): void,
 };
 
 export type TextareaRendererProps = SharedRendererProps & {
@@ -113,7 +113,7 @@ export type TextareaRendererProps = SharedRendererProps & {
     placeholder: string,
   },
   currentValue: string,
-  onChange(itemID: string, savedValue: string): void,
+  onElementChange(itemID: string, savedValue: string): void,
 };
 
 export type RadioRendererProps = SharedRendererProps & {
@@ -124,7 +124,7 @@ export type RadioRendererProps = SharedRendererProps & {
   },
   currentValue: string,
   isRadioChecked: boolean,
-  onChange(itemID: string, savedValue: string): void,
+  onElementChange(itemID: string, savedValue: string): void,
 };
 
 export type SelectRendererProps = SharedRendererProps & {
@@ -133,7 +133,7 @@ export type SelectRendererProps = SharedRendererProps & {
   },
   currentValue: string,
   childrenElements: LibraryElement<'selectMenu'>[],
-  onChange(itemID: string, savedValue: string): void,
+  onElementChange(itemID: string, savedValue: string): void,
 };
 
 export type SelectMenuRendererProps = SharedRendererProps;
