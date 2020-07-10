@@ -68,8 +68,6 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
     parameters = serializers.JSONField()
     styles = serializers.JSONField()
     children = RecursiveField(required=False, allow_null=True, many=True)
-    # children = serializers.ListField(child=RecursiveField())
-    # id = serializers.IntegerField(write_only=False)
     scenario = serializers.PrimaryKeyRelatedField(source='scenario.id', read_only=True)
 
     class Meta:
