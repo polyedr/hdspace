@@ -81,6 +81,7 @@ export type ExportProject = IPlainAction<'PROJECTS:EXPORT_PROJECT'>;
 export type SetScreen = IAction<'PROJECTS:SET_SCREEN', { screen: IProjectScreen }>;
 export type SetScreens = IAction<'PROJECTS:SET_SCREENS', { screens: IProjectScreen[] }>;
 export type AddElement = IAction<'PROJECTS:ADD_ELEMENT', { parentID: string, type: string }>;
+export type RenameElement = IAction<'PROJECTS:RENAME_ELEMENT', { elementID: string, name: string }>;
 export type SetScenarioElements = IAction<'PROJECTS:SET_SCENARIO_ELEMENTS', { elements: IScenarioElements }>;
 export type UpdateElementStyles = IAction<'PROJECTS:UPDATE_ELEMENT_STYLES', { id: string, styles: CssLikeStyles }>;
 export type UpdateElementImage = IAction<'PROJECTS:UPDATE_ELEMENT_IMAGE', { itemID: string, image: File }>;

@@ -32,6 +32,7 @@ import {
   createElements,
   addElementToElement,
   updateElementsTree,
+  renameElementSaga,
 } from '$redux/project/sagas/scenario';
 import {
   apiGetLibraryElements,
@@ -198,7 +199,7 @@ function* updateElementStyles(action: ReturnType<typeof Actions.updateElementSty
   }
 }
 
-function* updateElementImage(action: ReturnType<typeof Actions.updateElementImage>) {
+function* updateElementImage(action: ReturnType<typeof Actions.updateElementImage>) { // TODO fix working
   const { itemID, image } = action.payload;
 
   const parsedID = parseInt(itemID, 10);
@@ -350,6 +351,7 @@ const updateElementStylesType: ProjectT.UpdateElementStyles['type'] = 'PROJECTS:
 const updateElementParametersType: ProjectT.UpdateElementParameters['type'] = 'PROJECTS:UPDATE_ELEMENT_PARAMETERS';
 const updateElementImageType: ProjectT.UpdateElementImage['type'] = 'PROJECTS:UPDATE_ELEMENT_IMAGE';
 const createElementsType: ProjectT.CreateElements['type'] = 'PROJECTS:CREATE_ELEMENTS';
+const renameElementType: ProjectT.RenameElement['type'] = 'PROJECTS:RENAME_ELEMENT';
 const addChildToElementType: ProjectT.AddChildToElement['type'] = 'PROJECTS:ADD_CHILD_TO_ELEMENT';
 const deleteChildFromElementType: ProjectT.DeleteChildFromElement['type'] = 'PROJECTS:DELETE_CHILD_FROM_ELEMENT';
 const wrapIntoContainerType: ProjectT.WrapIntoContainer['type'] = 'PROJECTS:WRAP_INTO_CONTAINER';
@@ -384,6 +386,7 @@ export default function* projectSaga() {
   yield takeLatest(updateElementParametersType, updateElementParameters);
 
   yield takeEvery(createElementsType, createElementsSaga);
+  yield takeEvery(renameElementType, renameElementSaga);
 
   yield takeEvery(addChildToElementType, addChildToElementSaga);
   yield takeEvery(deleteChildFromElementType, deleteChildFromElementSaga);

@@ -25,7 +25,7 @@ export const Component = (props: Props) => {
       if (event.keyCode === 8) {
         deleteActiveItem();
       }
-    };
+    }; // TODO add listener for 'root'
 
     document.addEventListener('keydown', listener);
     return () => document.removeEventListener('keydown', listener);

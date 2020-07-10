@@ -151,3 +151,15 @@ export const updateElementParameters = <T extends Entity, K extends Entity, P ex
     children: root.children.map((child) => updateElementParameters(elementID, parameters, child)),
   };
 };
+
+export const updateElementName = <P extends Entity, R extends Entity>(
+  elementID: string,
+  name: string,
+  root: LibraryElement<P, LibraryElement<R>[]>
+): LibraryElement<P, LibraryElement<R>[]> => {
+  return {
+    ...root,
+    name: root.id === elementID ? name : root.name,
+    children: root.children.map((child) => updateElementName(elementID, name, child)),
+  };
+};

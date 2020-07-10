@@ -1,14 +1,14 @@
-import React, { memo, useState, useCallback } from 'react';
+import React, { memo, useCallback } from 'react';
 import classNames from 'classnames';
 
 import { LibraryElements } from '$domain/libraryElements/libraryElements';
 import { Icon } from '$components/UI/Icon/';
 import { Button } from '$components/UI/Button/';
-import { Modal } from '$components/UI/Modal/';
 import { ModalAddElements } from '$components/ModalAddElements/ModalAddElements/ModalAddElements';
-import { NavigateItem } from '$components/Editor/NavigateItem/NavigateItem';
+import { ControlSection } from '$features/applyProperties/views/components/ControlSection/ControlSection';
 
 import { PropertiesPanelProps } from '../../PropertiesPanel/PropertiesPanel';
+import { RenameElement } from '../RenameElement/RenameElement';
 const styles = require('./styles.scss');
 
 interface IComponentProps {
@@ -26,43 +26,24 @@ interface IComponentProps {
 export const ActiveElementBlock: React.FunctionComponent<IComponentProps> = memo((props) => {
   const {
     activeItem,
-    disablePanel,
-    onDelScenarioItem,
     scenarios,
     libraryElements,
     createElements,
-    onWrapIntoContainer,
     isAddElementsModalOpened,
     setIsAddElementsModalOpened,
   } = props;
-  const [modalDeleteElementOpen, setModalDeleteElementOpen] = useState<boolean>(false);
-
   const closeModal = useCallback(() => {
     setIsAddElementsModalOpened(false);
-    setModalDeleteElementOpen(false);
   }, []);
 
   const showModalAddElements = useCallback(() => {
     setIsAddElementsModalOpened(true);
   }, []);
 
-  const handleDeleteElement = useCallback(() => {
-    setModalDeleteElementOpen(true);
-  }, []);
-
-  const onDeleteScenarioItem = useCallback((event) => {
-    event.preventDefault();
-
-    onDelScenarioItem();
-    closeModal();
-  }, [onDelScenarioItem, closeModal]);
-
-  const renameElement = useCallback(() => {
-    console.log('rename element');
-  }, []);
-
   return (
-    <div className={classNames('propsPanelBlock', styles.activeElementContainer)}>
+    <div
+      className={classNames('propsPanelBlock', styles.activeElementContainer)}
+    >
       <div className="propsPanelHeaderBlock">
         <p>Add elements</p>
         <Button
@@ -74,33 +55,11 @@ export const ActiveElementBlock: React.FunctionComponent<IComponentProps> = memo
         </Button>
       </div>
       <div className="propsPanelContentBlock">
-        <div className="propsPanelInnerContentBlock">
-          <p className="propsPanelText">
-            {`select: ${activeItem.name}-${activeItem.itemId}`}
-          </p>
-          { activeItem && (
-            <div className="propsPanelBtnBlock">
-              <NavigateItem
-                onWrapIntoContainer={onWrapIntoContainer}
-              />
-              <Button
-                className="propsPanelImgBtn"
-                styleType="none"
-                onClick={renameElement}
-              >
-                <Icon icon="edit" />
-              </Button>
-              <Button
-                className="propsPanelImgBtn"
-                styleType="none"
-                onClick={handleDeleteElement}
-                disabled={disablePanel}
-              >
-                <Icon icon="delete" />
-              </Button>
-            </div>
-          )}
-        </div>
+        {activeItem && (
+          <ControlSection title="Element's name">
+            <RenameElement />
+          </ControlSection>
+        )}
       </div>
       <ModalAddElements
         active={isAddElementsModalOpened}
@@ -109,22 +68,6 @@ export const ActiveElementBlock: React.FunctionComponent<IComponentProps> = memo
         onClose={closeModal}
         onConfirm={createElements}
       />
-      { modalDeleteElementOpen && (
-        <Modal
-          animClassName="bubbleAnimation"
-          title="Delete element"
-          confirmText="Delete"
-          onConfirm={onDeleteScenarioItem}
-          cancelText="Close"
-          onClose={closeModal}
-        >
-          <div className={styles.modalBody}>
-            <p>
-              { `You really want to delete item: ${activeItem.name}` }
-            </p>
-          </div>
-        </Modal>
-      )}
     </div>
   );
 });

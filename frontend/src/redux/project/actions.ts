@@ -154,6 +154,11 @@ export const addElement = (parentID: string, type: string): T.AddElement => ({
   payload: { parentID, type },
 });
 
+export const renameElement = (elementID: string, name: string): T.RenameElement => ({
+  type: 'PROJECTS:RENAME_ELEMENT',
+  payload: { elementID, name },
+});
+
 export const setScenarioElements = (elements: T.IScenarioElements): T.SetScenarioElements => ({
   type: 'PROJECTS:SET_SCENARIO_ELEMENTS',
   payload: { elements },
