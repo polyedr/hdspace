@@ -141,7 +141,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
     parameters = serializers.JSONField()
     styles = serializers.JSONField()
     children = RecursiveField(required=False, allow_null=True, many=True)
-    scenario = serializers.PrimaryKeyRelatedField(source='scenario.id', read_only=True)
+    scenario = serializers.PrimaryKeyRelatedField(source='node.id', read_only=True)
 
     class Meta:
         model = ScenarioElement
@@ -197,10 +197,10 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
             img = img_to_array(img)
 
             # Get the dominant colour for the parent scenario(take the whole image)
-            bcolour_scenario_value = '255,255,255,0'
-            domcolour_scenario = get_dominant_colour(img)
-            domcolour_scenario.append(1)
-            bcolour_scenario_value = ','.join(str(int(x)) for x in domcolour_scenario)
+            bcolour_container_value = '255,255,255,0'
+            domcolour_container = get_dominant_colour(img)
+            domcolour_container.append(1)
+            bcolour_container_value = ','.join(str(int(x)) for x in domcolour_container)
 
             results = model.detect([img], verbose=1)
             r = results[0]
@@ -459,7 +459,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         recognized_elements.append(
                             {
                                 "struct_type": "button",
-                                "func_type": "end_simple_scenario",
+                                "func_type": "end_simple_container",
                                 "parameters": {"textContent": letters_str, "roi": roi},
                                 "styles": {
                                     "text-align": "center",
@@ -566,7 +566,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
             # For each vertical grouping the scenario should be assigned. Vertical grouping contains two elements:
             # first, input or select, and second, the text.
             # Scenarios of vertical grouping should be included to the scenarios of horizontal grouping if they exist
-            # and finally to the resulted whole image scenario.
+            # and finally to the resulted whole image node.
             # 1. Create scenarios for vertical groups. 2. Create scenarios for horizontal groups
             # (when element is in vertical group, take the whole vertical group)
             # Data structures here are lists of tuples for the vertically or horizonntally aligned elements
@@ -575,7 +575,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
             # Maybe that's possible to create scenarios for vertically and horizontally aligned
             # scenarios only after the elements creation.
             # That's possible to save positioning of all the elements if requested
-            # The serializer input is list of scenarios, one of them is the whole image scenario.
+            # The serializer input is list of scenarios, one of them is the whole image node.
             # Elements are distributed among these scenarios.
             #
 
@@ -933,7 +933,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                             pass
 
         children = []  # [{'ids': ids, 'rois': rois}, {}, {}, {}, {}]
-        # Get all the elements fir the general scenario.
+        # Get all the elements fir the general node.
         # Mark them as children.
         # recognized_elements_general = recognized_elements - inner_containers_elements
         for idx, element_data in enumerate(recognized_elements):
@@ -1056,5 +1056,240 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         # Save the element after changing its parent
                         element_child.save()
 
+
+        # Sort the data structure based on rois[0] (the vertical coordinate)
+        children = sorted(children, key=lambda i: i["roi"][0])
+        print("children=", children, "len(children)=", len(children))
+
+        # Detect the margin-bottom start
+        #
+        # Extract all the first level groups and elements
+        # Calculate margin-bottom for these groups
+        # Assign the margin-bottom value
+        margin_bottom = 0  # initial value for the margin-bottom
+        for idx, child in enumerate(children):
+            try:
+                # Calculate the distance between vertical blocks
+                # print(children[(idx+1)]["roi"][0] - children[(idx)]["roi"][2])
+                # Sum all the distances between the vertical blocks
+                margin_bottom += (children[(idx + 1)]["roi"][0] - children[(idx)]["roi"][2])
+            except Exception:
+                pass
+
+        # Calculate the margin-bottom
+        if(margin_bottom > 0):
+            margin_bottom = int(margin_bottom / (len(children) - 1))
+        else:
+            margin_bottom = 15  # 15px is the default value for the margin-bottom
+
+        # print("margin_bottom =", margin_bottom)
+        for child in children:
+            # Assign margin-bottom for each child
+            child_id = int(child['ids'][:-1])
+
+            # Do the calculations over scenarios
+            if 's' in child['ids']:
+                container_child = ScenarioElement.objects.get(id=child_id)
+                container_child.styles["margin-bottom"] = str(margin_bottom) + "px"
+                # print("container_child.styles=", type(container_child.styles), container_child.styles)
+                container_child.save()
+
+            # Do the calculations over elements
+            if 'e' in child['ids']:
+                element_child = ScenarioElement.objects.get(id=child_id)
+                element_child.styles["margin-bottom"] = str(margin_bottom) + "px"
+                # print("element_child.styles=", type(element_child.styles), element_child.styles)
+                element_child.save()
+        # Detect the margin-bottom end
+
+        # Calculate the mean value for inputs, selects, buttons start
+        height = 0
+        width = 0
+        num_children_counter = 0
+        struct_type_accepted = ["textinput", "select"]  # The type of the elements to calculate
+        for child in children:
+            # Assign margin-bottom for each child
+            child_id = int(child['ids'][:-1])
+
+            # Calculate for the main scenario elements
+            if 'e' in child['ids']:
+                element_child = ScenarioElement.objects.get(id=child_id)
+                print(element_child.struct_type)
+
+                if(element_child.struct_type in struct_type_accepted):
+                    # print("height", element_child.styles["height"])
+                    # print("width", element_child.styles["width"])
+                    height += float(element_child.styles["height"][:-2])
+                    width += float(element_child.styles["width"][:-2])
+                    # Increase the number of children counter
+                    num_children_counter += 1
+                element_child.save()
+
+                # print("element_child.styles=", type(element_child.styles), element_child.styles)
+                # element_child.save()
+
+            # Calculate for the vertical scenarios of the main scenario
+            if 's' in child['ids']:
+                container_child = ScenarioElement.objects.get(id=child_id)
+                print("sci", container_child.id)
+                # Extract all the 1lvl elements for the given scenario child
+                print("esci", container_child.children, container_child.parameters["children"])
+                flvl_elements = ScenarioElement.objects.filter(
+                    parent=container_child.id
+                )
+                print(flvl_elements)
+                # Detect that elements which are in the vertical scenarios of the main scenario
+                # for the inputs, selects, buttons
+                for flvl_element in flvl_elements:
+                    if (flvl_element.struct_type in struct_type_accepted):
+                        print("fest", flvl_element.struct_type)
+                        height += float(flvl_element.styles["height"][:-2])
+                        width += float(flvl_element.styles["width"][:-2])
+                        # Increase the number of children counter
+                        num_children_counter += 1
+
+        # Calculate the average height and width for the elements
+        if(num_children_counter > 0):
+            height = int(height / num_children_counter)
+            width = int(width / num_children_counter)
+
+            print("h:", height, width)
+
+        # Assign average height and width for the elements from the main scenario
+        # Assign average height and width for the elements from the vertical scenarios of the main scenario
+        for child in children:
+            # Assign height, width for each element with acceptable structural type from the main scenario
+            child_id = int(child['ids'][:-1])
+            # Calculate for the main scenario elements
+            if 'e' in child['ids']:
+                element_child = ScenarioElement.objects.get(id=child_id)
+                print(element_child.struct_type)
+
+                if(element_child.struct_type in struct_type_accepted):
+                    element_child.styles["height"] = str(height) + "px"
+                    element_child.styles["width"] = str(width) + "px"
+
+                # Check if the button is close to other elements.
+                # Assign the mean value if close enough
+                if (element_child.struct_type == "button"):
+                    button_height = float(element_child.styles["height"][:-2])
+                    button_width = float(element_child.styles["width"][:-2])
+                    if (abs(button_height - height) < (height * 0.15)):  # The height diff is less than 15%
+                        element_child.styles["height"] = str(height) + "px"
+                    if (abs(button_width - width) < (width * 0.15)):  # The width diff is less than 15%
+                        element_child.styles["width"] = str(width) + "px"
+
+                element_child.save()
+
+            # Assign height, width for each element for the vertical scenarios of the main scenario
+            if 's' in child['ids']:
+                container_child = ScenarioElement.objects.get(id=child_id)
+                print("sci", container_child.id)
+                # Extract all the 1lvl elements for the given scenario child
+                print("esci", container_child.children, container_child.parameters["children"])
+                flvl_elements = ScenarioElement.objects.filter(
+                    parent=container_child.id
+                )
+                print(flvl_elements)
+                # Detect that elements which are in the vertical scenarios of the main scenario
+                # for the inputs, selects, buttons
+                for flvl_element in flvl_elements:
+                    if (flvl_element.struct_type in struct_type_accepted):
+                        print("fest", flvl_element.struct_type)
+                        flvl_element.styles["height"] = str(height) + "px"
+                        flvl_element.styles["width"] = str(width) + "px"
+
+                    # Check if the button is close to other elements.
+                    # Assign the mean value if close enough
+                    if (flvl_element.struct_type == "button"):
+                        button_height = float(flvl_element.styles["height"][:-2])
+                        button_width = float(flvl_element.styles["width"][:-2])
+                        if abs(button_height - height) < (height * 0.15):  # The height diff is less than 15%
+                            flvl_element.styles["height"] = str(height) + "px"
+                        if abs(button_width - width) < (width * 0.15):  # The width diff is less than 15%
+                            flvl_element.styles["width"] = str(width) + "px"
+
+                    flvl_element.save()
+
+        # Calculate height, width for each element for the horizontal scenarios of the main scenario
+        # extract from elements
+        # Todo: extract from vertical groups in
+        height_h = 0
+        width_h = 0
+        num_children_counter_h = 0
+        for child in children:
+            # Assign margin-bottom for each child
+            child_id = int(child['ids'][:-1])
+            # Calculate for the horizontal scenarios of the main scenario
+            if 's' in child['ids']:
+                container_child = ScenarioElement.objects.get(id=child_id)
+                # if(container_child.direction == "horizontal"):
+                if True: # Must add the direction
+                    # Extract elements directly
+                    # Todo: Extract elements from the vertical groups included
+                    flvl_elements = ScenarioElement.objects.filter(
+                        parent=container_child.id
+                    )
+                    for flvl_element in flvl_elements:
+                        if (flvl_element.struct_type in struct_type_accepted):
+                            print("fest", flvl_element.struct_type)
+                            height_h += float(flvl_element.styles["height"][:-2])
+                            width_h += float(flvl_element.styles["width"][:-2])
+                            # Increase the number of children counter
+                            num_children_counter_h += 1
+
+        # Calculate the average height and width for the elements
+        if(num_children_counter_h > 0):
+            height_h = int(height / num_children_counter)
+            width_h = int(width / num_children_counter)
+            print("h:", height_h, width_h)
+
+        for child in children:
+            # Assign margin-bottom for each child
+            child_id = int(child['ids'][:-1])
+            # Calculate for the horizontal scenarios of the main scenario
+            if 's' in child['ids']:
+                container_child = ScenarioElement.objects.get(id=child_id)
+                # if(container_child.direction == "horizontal"):
+                if True: # Must add the direction
+                    # Extract elements directly
+                    # Todo: Extract elements from the vertical groups included
+                    flvl_elements = ScenarioElement.objects.filter(
+                        parent=container_child.id
+                    )
+                    for flvl_element in flvl_elements:
+                        if (flvl_element.struct_type in struct_type_accepted):
+                            flvl_element.styles["height"] = str(height_h) + "px"
+                            flvl_element.styles["width"] = str(width_h) + "px"
+
+                        # Check if the button is close to other elements.
+                        # Assign the mean value if close enough
+                        if (flvl_element.struct_type == "button"):
+                            button_height = float(flvl_element.styles["height"][:-2])
+                            button_width = float(flvl_element.styles["width"][:-2])
+                            if abs(button_height - height) < (height * 0.15):  # The height diff is less than 15%
+                                flvl_element.styles["height"] = str(height) + "px"
+                            if abs(button_width - width) < (width * 0.15):  # The width diff is less than 15%
+                                flvl_element.styles["width"] = str(width) + "px"
+
+                        flvl_element.save()
+
+        # Calculate the mean value for inputs, selects, buttons end
+
+        # node.parameters["children"] = [sub['ids'] for sub in children] # Must correct this later TypeError: 'str' object does not support item assignment
+        # node.styles["background-color"] = "rgba(" + bcolour_container_value + ")" # Must correct this later TypeError: 'str' object does not support item assignment
+        # Assign the max width for the general scenario
+        # node.styles["max-width"] = str(img_width) + "px" # Must correct this later TypeError: 'str' object does not support item assignment
+
+        node.save()
+
+        # Extract all the inputs, selects from the main scenario
+        # Assign the mean values for these inputs and selects
+        # Do the calculation for the main scenario button
+        #
+        # Extract all the horizontal groups (2 level)
+        # Extract all the inputs, selects from these groups
+        # Assign the mean values for these inputs and selects
+        #
 
         return node
