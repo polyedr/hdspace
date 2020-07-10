@@ -1,24 +1,24 @@
-from apps.virtualize_simple.serializers import ScreenScenarioSerializer
-from apps.projects.models import ScreenScenario
+from apps.virtualize_simple.serializers import ScenarioElementSerializer
+from apps.projects.models import ScenarioElement
 from rest_framework import generics
 
 
-class ScreenScenarioList(generics.ListCreateAPIView):
+class ScenarioElementList(generics.ListCreateAPIView):
     """
     Get list of the segmentations or create a new scenario of the neural network
     """
 
-    queryset = ScreenScenario.objects.all()
-    serializer_class = ScreenScenarioSerializer
+    queryset = ScenarioElement.objects.all()
+    serializer_class = ScenarioElementSerializer
 
     def perform_create(self, serializer):
         serializer.save()
 
 
-class ScreenScenarioDetail(generics.RetrieveUpdateDestroyAPIView):
+class ScenarioElementDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     Retrieve, update or delete a segmentation of the neural network
     """
 
-    queryset = ScreenScenario.objects.all()
-    serializer_class = ScreenScenarioSerializer
+    queryset = ScenarioElement.objects.all()
+    serializer_class = ScenarioElementSerializer

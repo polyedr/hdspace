@@ -3,6 +3,8 @@ import re
 # import numpy as np
 from statistics import median
 
+from rest_framework_recursive.fields import RecursiveField
+
 from project.settings import model, MEDIA_ROOT
 from rest_framework import serializers
 from apps.projects.models import ScenarioElement, ScreenScenario
@@ -135,131 +137,11 @@ def get_dominant_colour(image, k=4, image_processing_size=None):
     return list(dominant_colour)
 
 
-"""
-# Find regions that might have text in them
-def get_blocks(img):
-    img_blur = cv2.medianBlur(img, 5).astype('uint8')
-    try:
-        gray = cv2.cvtColor(img_blur, cv2.COLOR_BGR2GRAY)
-    except Exception as ex:
-        print(ex)
-        return
-    # Performing OTSU threshold
-    ret, thresh1 = cv2.threshold(gray, 0, 255, cv2.THRESH_OTSU | cv2.THRESH_BINARY_INV)
-    # Specify structure shape and kernel size.
-    # Kernel size increases or decreases the area
-    # of the rectangle to be detected.
-    # A smaller value like (10, 10) will detect
-    # each word instead of a sentence.
-    rect_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (10, 7))
-    # Appplying dilation on the threshold image
-    dilation = cv2.dilate(thresh1, rect_kernel, iterations = 2)
-    image, contours, hierarchy = cv2.findContours(dilation, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
-    return contours
-
-# Cut image into regions and detect text separately
-def get_text_from_cropped(img, contours):
-    # Creating a copy of image
-    im2 = img.copy()
-    im2_blur = cv2.medianBlur(im2, 5).astype('uint8')
-    all_contours = []
-    for cnt in contours:
-        x, y, w, h = cv2.boundingRect(cnt)
-        # Cropping the text block for giving input to OCR
-        cropped = im2_blur[y:y + h, x:x + w]
-        # cv2_imshow(cropped)
-        text_contours = get_text_contours(cropped)
-        # If no text is recognised, crop the region a bit and try detection again
-        if len(text_contours) < 1:
-            h, w, _ = cropped.shape
-            h -= 10
-            w -= 10
-            new_cropped = cropped[5:5 + h, 5:5 + w]
-            try:
-                cropped_inv = cv2.bitwise_not(new_cropped)
-                gray = cv2.cvtColor(cropped_inv, cv2.COLOR_BGR2GRAY)
-                ret, thresh1 = cv2.threshold(gray, 0, 255, cv2.THRESH_OTSU | cv2.THRESH_BINARY_INV)
-                cropped_inv_thresh = cv2.cvtColor(thresh1,cv2.COLOR_GRAY2RGB)
-            except Exception as ex:
-                print('troubles modifying cropped image... {}'.format(ex))
-                continue
-            text_contours = get_text_contours(cropped_inv_thresh, size=(3,3), iterations=5)
-            # If cropping didn't help, come to terms and omit this region
-            if len(text_contours) < 1:
-                pass
-                # print('text not recognised')
-                # show(new_cropped)
-            else:
-                for c in text_contours:
-                    x1, y1, w1, h1 = cv2.boundingRect(c)
-                    x1 = x1 + x + 5
-                    y1 = y1 + y + 5
-                    rect = (x1, y1, w1, h1)
-                    all_contours.append(rect)
-
-        else:
-            for c in text_contours:
-                x1, y1, w1, h1 = cv2.boundingRect(c)
-                x1 = x1 + x
-                y1 = y1 + y
-                rect = (x1, y1, w1, h1)
-                all_contours.append(rect)
-    return all_contours
-
-
-# Find text in an image
-def get_text_contours(img, size=(3,3), iterations=5):
-    # img_blur = cv2.medianBlur(img, 5).astype('uint8')
-    hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
-    lower = np.array([0, 0, 0])
-    upper = np.array([230, 230, 230])
-    mask = cv2.inRange(hsv, upper, upper)
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    kernel = np.array([[-1,-1,-1], [-1,9,-1], [-1,-1,-1]])
-    im = cv2.filter2D(gray, -1, kernel).astype(np.uint8)
-    ret,thresh = cv2.threshold(im,127,255,cv2.THRESH_OTSU|cv2.THRESH_BINARY_INV)
-    # show(thresh)
-
-    im_height, im_width, _ = img.shape
-    d = pytesseract.image_to_data(thresh, lang='eng', output_type=Output.DICT)
-    n_boxes = len(d['level'])
-    for i in range(n_boxes):
-        if len(d['text'][i].strip(' —|*vy')) < 1: continue
-        # else: print(d['text'][i])
-        (x, y, w, h) = (d['left'][i], d['top'][i], d['width'][i], d['height'][i])
-        if w==h: continue
-        cv2.rectangle(mask, (x, y), (x + w, y + h), (255, 255, 255), 1)
-    # print('test mask with text blocks')
-    # show(mask)
-    rect_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, size)
-    dilation = cv2.dilate(mask, rect_kernel, iterations = iterations)
-    # print('dilation')
-    # show(dilation)
-
-    image, contours, hierarchy = cv2.findContours(dilation, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
-    text_contours = []
-    for cnt in contours:
-        x, y, w, h = cv2.boundingRect(cnt)
-        text_contours.append(cnt)
-    # show(im2)
-    return text_contours
-
-
-# Text recognition itself
-def run_detection(img):
-    # show(img)
-    contours = get_blocks(img)
-    if not contours:
-        print('troubles working with image')
-    else:
-        all_contours = get_text_from_cropped(img, contours)
-        return all_contours
-"""
-
-
 class ScenarioElementSerializer(serializers.ModelSerializer):
     parameters = serializers.JSONField()
     styles = serializers.JSONField()
+    children = RecursiveField(required=False, allow_null=True, many=True)
+    scenario = serializers.PrimaryKeyRelatedField(source='scenario.id', read_only=True)
 
     class Meta:
         model = ScenarioElement
@@ -267,73 +149,48 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
             "id",
             "scenario",
             "name",
+            "children",
             "struct_type",
             "func_type",
             "buoyancy",
-            "parameters",
-            "styles",
-        )
-
-
-class ScreenScenarioSerializer(serializers.ModelSerializer):
-    parameters = serializers.JSONField()
-    styles = serializers.JSONField()
-
-    class Meta:
-        model = ScreenScenario
-        fields = (
-            "id",
-            "screen",
-            "name",
-            "parent_id",
-            "type",
-            "struct_type",
-            "direction",
-            "buoyancy",
-            "elements",
-            "parameters",
-            "styles",
             "image",
+            "parameters",
+            "styles",
         )
-        extra_kwargs = {"elements": {"read_only": True}, "image": {"write_only": True}}
 
     def create(self, validated_data):
-        global bcolour_scenario_value, bcolour_element_value
-        scenario_data = {
-            "name": "scenario_general",
-            "type": "login",
-            "struct_type": "container",
-            "parameters": {},
-            "styles": {},
-            "parent_id": -1,
-        }
+        # # Remove nested objects to handle separately
+        # children = validated_data.pop('children', [])
+        # node = ScenarioElement.objects.create(
+        #     # parent is null only on the root node
+        #     parent=self.context.get('parent'),
+        #     **validated_data)
+        # # Multiple level of the recursion
+        # for child_data in children:
+        #     s = ScenarioElementSerializer(data=child_data, context={'parent': node})
+        #     s.is_valid(raise_exception=True)
+        #     s.save()
 
-        """
-        Scenarioelements for the current scenario.
-        These elements are obtained from CNN OCR.
-        """
-        screen = validated_data["screen"]
-
-        # Root scenario assignment
-        r_scenario = ScreenScenario.objects.filter(
-            screen=screen, parent_id=-1
-        ).first()
-
-        if r_scenario:
-            scenario_data["parent_id"] = r_scenario.pk
-        else:
-            scenario_data["name"] = "Root"
-            scenario_data["struct_type"] = "scenario"
-
+        root_element_data = {}
+        # {    "struct_type": "undefined",
+        #     "func_type": "undefined",
+        #     "parameters": {},
+        #     "styles": {},
+        # }
+        # Create the root element mptt start
+        print(validated_data)
+        print(root_element_data)
         imgpath = ""
         if validated_data.get("image"):
-            scenario = ScreenScenario.objects.create(
-                screen=screen, image=validated_data["image"], **scenario_data
+            node = ScenarioElement.objects.create(
+                image=validated_data["image"], **root_element_data
             )
             imgpath = MEDIA_ROOT + "/uploads/" + str(validated_data["image"])
         else:
-            scenario = ScreenScenario.objects.create(screen=screen, **scenario_data)
+            node = ScenarioElement.objects.create(**root_element_data)
+        # Create the root element mptt end
 
+        # Create the recognized_elements array start
         recognized_elements = []
         if imgpath:
             img = load_img(imgpath)
@@ -697,6 +554,8 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
             for recognized_element in recognized_elements:
                 print(recognized_element)
             '''
+            # Create the recognized_elements array start
+
             # Sort the recognized_elements, extract the y1 parameter
             # The roi order is y1, x1, y2, x2
             # recognized_elements = sorted(recognized_elements, key=lambda i: i["parameters"]["roi"][0])
@@ -725,7 +584,7 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
             horizontal_groups = {}
             # Inner scenarios elements list to remove them from recognized_elements
             # befpre the final assignment to the general scenario
-            inner_scenarios_elements = set()
+            inner_containers_elements = set()
             for idx, recognized_element in enumerate(recognized_elements):
                 for idx1, recognized_element1 in enumerate(recognized_elements):
                     # Vertical and horizontal groups detection
@@ -797,10 +656,10 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                                     # Fill the vertical_group dictionary
                                     vertical_group_tuple = (idx, idx1)
                                     # The stub for the future scenario assigned
-                                    vertical_group_scenario = -1
+                                    vertical_group_container = -1
                                     vertical_groups.update(
                                         {
-                                            vertical_group_tuple: vertical_group_scenario
+                                            vertical_group_tuple: vertical_group_container
                                         }
                                     )
 
@@ -825,10 +684,10 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                                 # Fill the horizontal_group dictionary
                                 horizontal_group_tuple = (idx, idx1)
                                 # The stub for the future scenario assigned
-                                horizontal_group_scenario = -1
+                                horizontal_group_container = -1
                                 horizontal_groups.update(
                                     {
-                                        horizontal_group_tuple: horizontal_group_scenario
+                                        horizontal_group_tuple: horizontal_group_container
                                     }
                                 )
             # These recognized elements should be assigned for the vertical groups,
@@ -848,14 +707,16 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                 print(key, vertical_groups[key])
             '''
 
-            scenario_vertical_data = {
-                "name": "scenario_vertical",
-                "type": "common_scenario",
+            # Scenario vertical data start
+
+            container_vertical_data = {
+                "name": "container_vertical",
                 "struct_type": "container",
-                "direction": "vertical",
+                "func_type": "undefined",
+                # "direction": "vertical",
                 "parameters": {},
                 "styles": {},
-                "parent_id": scenario.id,
+                "parent": node,
             }
 
             # Create scenarios for vertical groups
@@ -863,10 +724,10 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
             # Assign the functional class based on vertical gropuing if not assigned yet
             for v_group_key in vertical_groups:
                 children = []
-                scenario_vertical = ScreenScenario.objects.create(
-                    screen=screen, **scenario_vertical_data
+                container_vertical = ScenarioElement.objects.create(
+                    **container_vertical_data
                 )
-                vertical_groups[v_group_key] = scenario_vertical.id
+                vertical_groups[v_group_key] = container_vertical.id
 
                 # Recognized input or select, first position in tuple
                 element_data_vertical_input = recognized_elements[v_group_key[0]]
@@ -882,7 +743,7 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                 ymin = min(y1, y2, y11, y21)
                 ymax = max(y1, y2, y11, y21)
                 # Assign the rois to the vertical scenario, based on min & max values
-                scenario_vertical.parameters.update({"roi": (ymin, xmin, ymax, xmax)})
+                container_vertical.parameters.update({"roi": (ymin, xmin, ymax, xmax)})
                 # Assignment of the functional class based on neighbourhood
                 if (element_data_vertical_input["func_type"] == "undefined"):
                     element_data_vertical_input["func_type"] = element_data_vertical_text["func_type"]
@@ -890,15 +751,15 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                 for element_data_vertical in v_group_key:
                     children_dict_vgroups = {}
                     element_vertical = recognized_elements[element_data_vertical]
-                    inner_scenarios_elements.add(element_data_vertical)
-                    scenario_vertical_element = ScenarioElement.objects.create(
-                        scenario=scenario_vertical,
+                    inner_containers_elements.add(element_data_vertical)
+                    container_vertical_element = ScenarioElement.objects.create(
+                        parent=container_vertical,
                         **element_vertical
                     )
                     # Fill the children list for parameters
-                    ids = str(scenario_vertical_element.id) + "e"
+                    ids = str(container_vertical_element.id) + "e"
 
-                    rois = scenario_vertical_element.parameters["roi"]
+                    rois = container_vertical_element.parameters["roi"]
                     children_dict_vgroups.update({'ids': ids})
                     children_dict_vgroups.update({'roi': rois})
                     children.append(children_dict_vgroups)
@@ -906,17 +767,19 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                 # Arrange the vertical scenario children based on their rois (coordinates)
                 children = sorted(children, key=lambda i: i["roi"][0])
                 children = [sub['ids'] for sub in children]
-                scenario_vertical.parameters["children"] = children
-                scenario_vertical.save()
+                container_vertical.parameters["children"] = children
+                container_vertical.save()
+            # Scenario vertical data end
 
-            scenario_horizontal_data = {
-                "name": "scenario_horizontal",
-                "type": "common_scenario",
+            # Scenario horizontal start
+            container_horizontal_data = {
+                "name": "container_horizontal",
                 "struct_type": "container",
-                "direction": "horizontal",
+                "func_type": "undefined",
+                # "direction": "horizontal",
                 "parameters": {},
                 "styles": {},
-                "parent_id": scenario.id,
+                "parent": node,
             }
 
             # Create scenarios for horizontal groups
@@ -925,13 +788,13 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
             for h_group_key in horizontal_groups:
                 children = []
                 rois_list = []
-                scenario_horizontal = ScreenScenario.objects.create(
-                    screen=screen, **scenario_horizontal_data
+                container_horizontal = ScenarioElement.objects.create(
+                    **container_horizontal_data
                 )
-                horizontal_groups[h_group_key] = scenario_horizontal.id
-                # print("id", scenario_horizontal.id)
-                # print("styles", scenario_horizontal.styles, scenario_horizontal_data["styles"])
-                # print("scenario", scenario_horizontal)
+                horizontal_groups[h_group_key] = container_horizontal.id
+                # print("id", container_horizontal.id)
+                # print("styles", container_horizontal.styles, container_horizontal_data["styles"])
+                # print("scenario", container_horizontal)
 
                 # If here was placed at least one select/input without the functional class assigned
                 # The second should be the text and it should exists with the functional class assigned
@@ -950,17 +813,17 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                                 recognized_elements[h_group_key[0]]["func_type"]
 
                 # Define the default flex alignment for the horizontal group
-                scenario_horizontal.styles["justify-content"] = "space-between"
-                scenario_horizontal.styles["display"] = "flex"
-                scenario_horizontal.styles["align-items"] = "center"
+                container_horizontal.styles["justify-content"] = "space-between"
+                container_horizontal.styles["display"] = "flex"
+                container_horizontal.styles["align-items"] = "center"
                 # Assign the styles for the case of the horizontal scenario with checkbox
                 if(recognized_elements[h_group_key[0]]["struct_type"] in {"checkbox"}) or (recognized_elements[h_group_key[1]]["struct_type"] in {"checkbox"}):
                     print("h_group_key", h_group_key, recognized_elements[h_group_key[0]]["struct_type"], recognized_elements[h_group_key[1]]["struct_type"])
-                    scenario_horizontal.styles["justify-content"] = "flex-start"
+                    container_horizontal.styles["justify-content"] = "flex-start"
 
                 #
-                # print("after id", scenario_horizontal.id)
-                # print("after styles", scenario_horizontal.styles)
+                # print("after id", container_horizontal.id)
+                # print("after styles", container_horizontal.styles)
                 # input()
 
                 # Create elements for horizontal groups scenarios if they're not in vertical grouping already
@@ -979,16 +842,16 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                         children_dict_hgroups = {}
                         # If the horizontal element does not exist in any vertical group
                         element_horizontal = recognized_elements[element_data_horizontal]
-                        inner_scenarios_elements.add(element_data_horizontal)
-                        scenario_horizontal_element = ScenarioElement.objects.create(
-                            scenario=scenario_horizontal,
+                        inner_containers_elements.add(element_data_horizontal)
+                        container_horizontal_element = ScenarioElement.objects.create(
+                            parent=container_horizontal,
                             **element_horizontal
                         )
                         # Save rois data from the element for the array
                         rois_list.append(element_horizontal["parameters"]["roi"])
                         # Fill the children list for parameters
-                        ids = str(scenario_horizontal_element.id) + "e"
-                        rois = scenario_horizontal_element.parameters["roi"]
+                        ids = str(container_horizontal_element.id) + "e"
+                        rois = container_horizontal_element.parameters["roi"]
                         children_dict_hgroups.update({'ids': ids})
                         children_dict_hgroups.update({'roi': rois})
                         children.append(children_dict_hgroups)
@@ -997,21 +860,21 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                         children_dict_hgroups = {}
                         # If the horizontal element exists in vertical group
                         # Find the related vertical group scenario from its id
-                        vertical_group_scenario = ScreenScenario.objects.get(
+                        vertical_group_container = ScenarioElement.objects.get(
                             id=vertical_groups[vertical_group]
                         )
                         # Save rois data from the vertical scenario
-                        rois_list.append(vertical_group_scenario.parameters["roi"])
-                        ids = str(vertical_group_scenario.id) + "s"
-                        rois = vertical_group_scenario.parameters["roi"]
+                        rois_list.append(vertical_group_container.parameters["roi"])
+                        ids = str(vertical_group_container.id) + "s"
+                        rois = vertical_group_container.parameters["roi"]
                         children_dict_hgroups.update({'ids': ids})
                         children_dict_hgroups.update({'roi': rois})
                         # Prevent the appearance of duplications
                         if children_dict_hgroups not in children:
                             children.append(children_dict_hgroups)
 
-                        vertical_group_scenario.parent_id = scenario_horizontal.id
-                        vertical_group_scenario.save()
+                        vertical_group_container.parent_id = container_horizontal.id
+                        vertical_group_container.save()
                 '''
                 test
                 # Show the children array
@@ -1026,13 +889,806 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                 ymax = max(rois_list[0][0], rois_list[0][2], rois_list[1][0], rois_list[1][2])
 
                 # Assign the rois to the horizontal scenario, based on min & max values
-                scenario_horizontal.parameters.update({"roi": (ymin, xmin, ymax, xmax)})
+                container_horizontal.parameters.update({"roi": (ymin, xmin, ymax, xmax)})
                 # Arrange the horizontal scenario children based on their rois (coordinates)
                 children = sorted(children, key=lambda i: i["roi"][1])
                 children = [sub['ids'] for sub in children]
                 # Children array doesn't have parameters now
-                scenario_horizontal.parameters["children"] = children
-                scenario_horizontal.save()
+                container_horizontal.parameters["children"] = children
+                container_horizontal.save()
+            # Scenario horizontal end
+
+        return node
+
+
+"""
+class ScenarioElementSerializer(serializers.ModelSerializer):
+    parameters = serializers.JSONField()
+    styles = serializers.JSONField()
+
+    class Meta:
+        model = ScenarioElement
+        fields = (
+            "id",
+            "scenario",
+            "name",
+            "struct_type",
+            "func_type",
+            "buoyancy",
+            "parameters",
+            "styles",
+        )
+
+# process this serializer as for the infinite element
+class ScreenScenarioSerializer(serializers.ModelSerializer):
+    parameters = serializers.JSONField()
+    styles = serializers.JSONField()
+    children = RecursiveField(required=False, allow_null=True, many=True)
+    scenario = serializers.PrimaryKeyRelatedField(source='scenario.id', read_only=True)
+
+    class Meta:
+        model = ScreenScenario
+        fields = (
+            "id",
+            "scenario",
+            "name",
+            "parent_id",
+            "type",
+            "struct_type",
+            "direction",
+            "buoyancy",
+            "children",
+            "parameters",
+            "styles",
+            "image",
+        )
+        extra_kwargs = {"elements": {"read_only": True}, "image": {"write_only": True}}
+
+    def create(self, validated_data):
+        global bcolour_element_value
+        element_root_data = {
+            "name": "scenario_general",
+            "type": "login",
+            "struct_type": "container",
+            "parameters": {},
+            "styles": {},
+            "parent_id": -1,
+        }
+
+
+        # Scenarioelements for the current scenario.
+        # These elements are obtained from CNN OCR.
+
+        screen = validated_data["screen"]
+
+        ### Root scenario assignment start.
+        # Should change or remove
+        r_scenario = ScreenScenario.objects.filter(
+            screen=screen, parent_id=-1
+        ).first()
+
+        if r_scenario:
+            element_root_data["parent_id"] = r_scenario.pk
+        else:
+            element_root_data["name"] = "Root"
+            element_root_data["struct_type"] = "scenario"
+
+        imgpath = ""
+        if validated_data.get("image"):
+            scenario = ScreenScenario.objects.create(
+                screen=screen, image=validated_data["image"], **element_root_data
+            )
+            imgpath = MEDIA_ROOT + "/uploads/" + str(validated_data["image"])
+        else:
+            scenario = ScreenScenario.objects.create(screen=screen, **element_root_data)
+
+        ###  Root scenario assignment end.
+
+        recognized_elements = []
+        if imgpath:
+            img = load_img(imgpath)
+            img = img_to_array(img)
+
+            # Get the dominant colour for the parent scenario(take the whole image)
+            bcolour_element_value = '255,255,255,0'
+            domcolour_scenario = get_dominant_colour(img)
+            domcolour_scenario.append(1)
+            bcolour_element_value = ','.join(str(int(x)) for x in domcolour_scenario)
+
+            results = model.detect([img], verbose=1)
+            r = results[0]
+
+            # For the overlapped text, should remove the largest regions related to the text first
+            # Or detect the text for these blocks with opencv and re-calculate the borders
+            # First fill the list excluded_indices for the text elements only
+            excluded_indices = []
+            for idx1, (rect1, class_id1) in enumerate(zip(r["rois"], r["class_ids"])):
+                for idx2, (rect2, class_id2) in enumerate(zip(r["rois"], r["class_ids"])):
+                    if (idx1 < idx2) and (class_id1 == 3) and (class_id2 == 3):  # 3 means the text class
+                        x1 = rect1[1]
+                        y1 = rect1[0]
+                        x2 = rect1[3]
+                        y2 = rect1[2]
+                        x3 = rect2[1]
+                        y3 = rect2[0]
+                        x4 = rect2[3]
+                        y4 = rect2[2]
+
+                        # Borders of the rectangles overlapped area
+                        left = max(x1, x3)
+                        bottom = max(y1, y3)
+                        right = min(x2, x4)
+                        top = min(y2, y4)
+                        # Sizes of the rectangles overlapped area
+                        width = right - left
+                        height = top - bottom
+
+                        # The first rectangle square
+                        width1, height1 = x2 - x1, y2 - y1
+
+                        # The second rectangle square
+                        width2, height2 = x4 - x3, y4 - y3
+
+                        # Check if width, height of the overlapped area less or equal 0
+                        if not (width <= 0 or height <= 0):
+                            # If the square > 0, calculate the squares of the 3 rectangles
+                            square = width * height
+                            square1 = width1 * height1
+                            square2 = width2 * height2
+
+                            if (square > square1 * SQUARES_OVERLAP_THRESHOLD_TEXT) or (
+                                square > square2 * SQUARES_OVERLAP_THRESHOLD_TEXT
+                            ):
+                                # Remove the largest text block
+                                if square1 < square2:
+                                    excluded_indices.append(idx2)
+                                else:
+                                    excluded_indices.append(idx1)
+                            elif square > square1 * SQUARES_OVERLAP_THRESHOLD_TEXT:
+                                excluded_indices.append(idx2)
+                            elif square > square2 * SQUARES_OVERLAP_THRESHOLD_TEXT:
+                                excluded_indices.append(idx1)
+
+            # Second, calculate the non-text blocks overlap
+            # Calculation of the excluded indices to remove overlapped elements
+            # excluded_indices = []
+            for idx1, rect1 in enumerate(r["rois"]):
+                for idx2, rect2 in enumerate(r["rois"]):
+                    if (idx1 < idx2) and (idx1 not in excluded_indices) and (idx2 not in excluded_indices):
+                        x1 = rect1[1]
+                        y1 = rect1[0]
+                        x2 = rect1[3]
+                        y2 = rect1[2]
+                        x3 = rect2[1]
+                        y3 = rect2[0]
+                        x4 = rect2[3]
+                        y4 = rect2[2]
+
+                        # Borders of the rectangles overlapped area
+                        left = max(x1, x3)
+                        bottom = max(y1, y3)
+                        right = min(x2, x4)
+                        top = min(y2, y4)
+                        # Sizes of the rectangles overlapped area
+                        width = right - left
+                        height = top - bottom
+
+                        # The first rectangle square
+                        width1, height1 = x2 - x1, y2 - y1
+
+                        # The second rectangle square
+                        width2, height2 = x4 - x3, y4 - y3
+
+                        # Check if width, height of the overlapped area less or equal 0
+                        if not (width <= 0 or height <= 0):
+                            # If the square > 0, calculate the squares of the 3 rectangles
+                            square = width * height
+                            square1 = width1 * height1
+                            square2 = width2 * height2
+
+                            if (square > square1 * SQUARES_OVERLAP_THRESHOLD) or (
+                                square > square2 * SQUARES_OVERLAP_THRESHOLD
+                            ):
+                                if square1 < square2:
+                                    excluded_indices.append(idx1)
+                                else:
+                                    excluded_indices.append(idx2)
+                            elif square > square1 * SQUARES_OVERLAP_THRESHOLD:
+                                excluded_indices.append(idx1)
+                            elif square > square2 * SQUARES_OVERLAP_THRESHOLD:
+                                excluded_indices.append(idx2)
+
+            for idx, (roi, class_id, score) in enumerate(
+                zip(r["rois"], r["class_ids"], r["scores"])
+            ):
+                if idx not in excluded_indices:
+                    '''
+                    Image recognition on the endpoint of a neural network.
+                    Origin, point (0, 0) upper left corner.
+                    Choose some element annotated with rectangle.
+                    The upper left corner of the rectangle (x1, y1).
+                    The bottom right corner of the rectangle (x2, y2).
+                    Next, the assignment of values.
+                    y1, x1, y2, x2 = roi
+                    width_elem = x2 - x1
+                    height_elem = y2 - y1
+                    '''
+                    '''
+                    test
+                    # Show the recognized elements with classes and probabilities
+                    print(idx, roi, class_id, score)
+                    '''
+
+                    y1, x1, y2, x2 = roi
+                    roi_our = img[y1:y2, x1:x2]
+
+                    roi_our = cv2.resize(
+                        roi_our, None, fx=0.95, fy=0.95, interpolation=cv2.INTER_CUBIC
+                    )
+
+                    # Get the dominant colour for the HTML element
+                    bcolour_element_value = '255,255,255,0'
+                    domcolour_element = get_dominant_colour(roi_our)
+                    domcolour_element.append(1)
+                    bcolour_element_value = ','.join(str(int(x)) for x in domcolour_element)
+
+                    # Convert to the grey colour
+                    roi_our = cv2.cvtColor(roi_our, cv2.COLOR_BGR2GRAY)
+
+                    # Remove artifacts connected to image border
+                    # This can decrease the prediction quality for images
+                    # roi_our = clear_border(roi_our)
+                    '''
+                    # Apply dilation and erosion to remove some noise
+                    kernel = np.ones((1, 1), np.uint8)
+                    roi_our = cv2.dilate(roi_our, kernel, iterations=1)
+                    roi_our = cv2.erode(roi_our, kernel, iterations=1)
+                    '''
+                    # Apply threshold to get image with only black and white
+                    # roi_our = apply_threshold(roi_our, 20)
+                    # print(pytesseract.image_to_string(roi_our))
+                    '''
+                    # contours = get_blocks(roi_our)
+                    contours = run_detection(roi_our)
+                    print("contours:", contours, "class id:", class_id)
+                    '''
+
+                    # Detect the font-size with tesseract for the whole image
+                    whole_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+                    result = pytesseract.image_to_boxes(whole_img)
+                    # print(result)
+
+                    lines = result.strip().split('\n')
+                    font_size = []
+
+                    for line in lines:
+                        chars = line.split(' ')
+                        try:
+                            font_size.append(float(chars[4]) - float(chars[2]))
+                        except Exception:
+                            font_size.append(12.0)  # Default font-size value is 12px
+                    font_size_img = int(median(font_size) * 1.1 * 1.7)  # Font-size value of the image
+
+                    # Detect the font-size with tesseract for some element
+                    result = pytesseract.image_to_boxes(roi_our)
+                    # print(result)
+
+                    lines = result.strip().split('\n')
+                    font_size = []
+
+                    for line in lines:
+                        chars = line.split(' ')
+                        try:
+                            font_size.append(float(chars[4]) - float(chars[2]))
+                        except Exception:
+                            font_size.append(12.0)  # Default font-size value is 12px
+                    font_size_value = int(median(font_size) * 1.1 * 1.7)
+
+                    # Read the string with tesseract
+                    text = pytesseract.image_to_string(roi_our, config=config_tesseract)
+
+                    width_elem = x2 - x1
+                    height_elem = y2 - y1
+
+                    # Detect the height and the width of the image
+                    img_height, img_width, channels = img.shape
+
+                    # Detect the alignment of the element
+                    # Text-align: left, if the left interval is smaller than the right interval
+                    aligned_element = "left"
+                    if (x1 + (width_elem / 2) > (img_width / 2)):
+                        aligned_element = "right"
+
+                    # Middle if the middle point placed at the 20% middle width for the whole image
+                    if (abs(x1 + (width_elem / 2) - (img_width / 2)) < img_width * 0.2):
+                        aligned_element = "center"
+
+                    func_type = "undefined"
+                    letters_str = ""
+                    # Check if class id is: 1 input, 2 button, 3 text or 4 select
+                    if class_id in [1, 2, 3, 4]:
+                        # Functional class assignment
+                        # Input: string from tesseract, output: functional class of the element
+                        tess_string = text.lower().split()
+
+                        # The whole string format to process further
+                        letters_str = text
+
+                        fclasses_predictions = []
+                        for ts in tess_string:
+                            ts.strip()
+                            ts = re.sub("[^@a-z A-Z]+", "", ts)
+                            fclass = [
+                                key
+                                for key, value in f_dictionary.items()
+                                if ts in value
+                            ]
+                            fclasses_predictions = fclasses_predictions + fclass
+
+                        # Should choose the func_type from multiple predictions later
+                        if fclasses_predictions:
+                            func_type = fclasses_predictions[0]
+
+                    # print(y1, x1, y2, x2, img_width, img_height)
+                    # print(aligned_element, letters_str)
+
+                    # Input
+                    if class_id == 1:
+                        recognized_elements.append(
+                            {
+                                "struct_type": "textinput",
+                                "func_type": func_type,
+                                "parameters": {"placeholder": letters_str, "roi": roi},
+                                "styles": {
+                                    "width": str(width_elem) + "px",
+                                    "height": str(height_elem) + "px",
+                                    "background-color": "rgba(" + bcolour_element_value + ")",
+                                    "font-size": str(font_size_img) + "px",
+                                },
+                            }
+                        )
+                    # Button
+                    if class_id == 2:
+                        recognized_elements.append(
+                            {
+                                "struct_type": "button",
+                                "func_type": "end_simple_scenario",
+                                "parameters": {"textContent": letters_str, "roi": roi},
+                                "styles": {
+                                    "text-align": "center",
+                                    "width": str(width_elem) + "px",
+                                    "height": str(height_elem) + "px",
+                                    "background-color": "rgba(" + bcolour_element_value + ")",
+                                    "font-size": str(font_size_value) + "px",
+                                },
+                            }
+                        )
+                    # Text. Change this later.
+                    # Functional classes are title, description, label. How to assign them?
+                    if class_id == 3:
+                        # Set the description class for the default value
+                        func_type = "description"
+                        recognized_elements.append(
+                            {
+                                "struct_type": "ocrtext",
+                                "func_type": func_type,
+                                "parameters": {"textContent": text, "roi": roi},
+                                "styles": {"text-align": aligned_element, "width": str(img_width) + "px", "font-size": str(font_size_img) + "px", },
+                                #
+                                # "styles": {
+                                #     "width": str(width_elem) + "px",
+                                #     "height": str(height_elem) + "px",
+                                #     "background-color": "rgba(" + bcolour_element_value + ")",
+                                # },
+                            }
+                        )
+                    # Select
+                    if class_id == 4:
+                        recognized_elements.append(
+                            {
+                                "struct_type": "select",
+                                "func_type": func_type,
+                                "parameters": {"textContent": letters_str, "roi": roi},
+                                "styles": {
+                                    "width": str(width_elem) + "px",
+                                    "height": str(height_elem) + "px",
+                                    "background-color": "rgba(" + bcolour_element_value + ")",
+                                    "font-size": str(font_size_img) + "px",
+                                },
+                            }
+                        )
+                    # Checkbox
+                    if class_id == 5:
+                        recognized_elements.append(
+                            {
+                                "struct_type": "checkbox",
+                                "func_type": "checkbox",
+                                "parameters": {"name": letters_str, "roi": roi, "defaultChecked": False},
+                                "styles": {
+                                    "width": str((width_elem + height_elem) / 2) + "px",
+                                    "height": str((width_elem + height_elem) / 2) + "px",
+                                    "margin-right": str((width_elem + height_elem) / 4) + "px",
+                                    "background-color": "#555",  # Define the default colour of the checkbox borders
+                                },
+                            }
+                        )
+                    # Radiobutton
+                    if class_id == 6:
+                        recognized_elements.append(
+                            {
+                                "struct_type": "radiobutton",
+                                "func_type": "radiobutton",
+                                "parameters": {"textContent": letters_str, "roi": roi},
+                                "styles": {
+                                    "width": str((width_elem + height_elem) / 2) + "px",
+                                    "height": str((width_elem + height_elem) / 2) + "px",
+                                    "margin-right": str((width_elem + height_elem) / 4) + "px",
+                                    "background-color": "rgba(" + bcolour_element_value + ")",
+                                },
+                            }
+                        )
+                    # Image
+                    if class_id == 7:
+                        recognized_elements.append(
+                            {
+                                "struct_type": "image",
+                                "func_type": "undefined",
+                                "parameters": {"alt": letters_str, "roi": roi},
+                                "styles": {
+                                    "width": str(width_elem) + "px",
+                                    "max-height": str(height_elem) + "px",
+                                    "background-color": "rgba(" + bcolour_element_value + ")",
+                                },
+                            }
+                        )
+            '''
+            test
+            # Display the recognized_elements to the command line
+            for recognized_element in recognized_elements:
+                print(recognized_element)
+            '''
+            # Sort the recognized_elements, extract the y1 parameter
+            # The roi order is y1, x1, y2, x2
+            # recognized_elements = sorted(recognized_elements, key=lambda i: i["parameters"]["roi"][0])
+
+            # Pass through all the rois. Find all the vertical grouping signals.
+            # Find all the horizontal grouping signals.
+            # First assign scenarios for the vertical grouping, second assign scenarios for the horizontal grouping,
+            # For each vertical grouping the scenario should be assigned. Vertical grouping contains two elements:
+            # first, input or select, and second, the text.
+            # Scenarios of vertical grouping should be included to the scenarios of horizontal grouping if they exist
+            # and finally to the resulted whole image scenario.
+            # 1. Create scenarios for vertical groups. 2. Create scenarios for horizontal groups
+            # (when element is in vertical group, take the whole vertical group)
+            # Data structures here are lists of tuples for the vertically or horizonntally aligned elements
+            # Vertically aligned: [(text0, input0), (text1, input1), ...]
+            # Horizontally aligned: [(text2, input2), (input3, input4), ...]
+            # Maybe that's possible to create scenarios for vertically and horizontally aligned
+            # scenarios only after the elements creation.
+            # That's possible to save positioning of all the elements if requested
+            # The serializer input is list of scenarios, one of them is the whole image scenario.
+            # Elements are distributed among these scenarios.
+            #
+
+            vertical_groups = {}
+            vertical_groups_subset = {}
+            horizontal_groups = {}
+            # Inner scenarios elements list to remove them from recognized_elements
+            # befpre the final assignment to the general scenario
+            inner_containers_elements = set()
+            for idx, recognized_element in enumerate(recognized_elements):
+                for idx1, recognized_element1 in enumerate(recognized_elements):
+                    # Vertical and horizontal groups detection
+                    # Check the vertical grouping criteria
+                    # Check the horizontal grouping criteria
+                    # Assign the textContent values after grouping with text
+                    # Vertical group when input or select element has another text element
+                    # at the distance 0.5 from its width
+                    # Horizontal group when input or select or text are placed horizontally
+
+                    # Loop through all the rois
+                    # Find all the close-by elements if one of them input (1) or select (4),
+                    # and second one is the text (3)
+                    # Horizontal overlap 75% of the element with minimal width
+                    # Vertical max +- 50% for input/select width,
+                    # middle of the text element should be within this interval
+                    y1, x1, y2, x2 = recognized_element["parameters"]["roi"]
+                    # The first rectangle width
+                    width_elem = x2 - x1
+                    height_elem = y2 - y1
+
+                    y11, x11, y21, x21 = recognized_element1["parameters"]["roi"]
+
+                    # The second rectangle width
+                    width_elem1 = x21 - x11
+                    height_elem1 = y21 - y11
+
+                    # Borders of the overlapped area
+                    left = max(x1, x11)
+                    bottom = max(y1, y11)
+                    right = min(x2, x21)
+                    top = min(y2, y21)
+
+                    # Size of the overlapped area
+                    horizontal_overlap = right - left
+                    vertical_overlap = top - bottom
+
+                    # Check if the vertical distance between roi and roi1 is sufficient
+                    # Middle of the input or select element
+                    mid_input = (y1 + y2) / 2
+
+                    # Middle of the text element
+                    mid_text = (y11 + y21) / 2
+
+                    border_bottom = y1 - height_elem / 2
+                    border_top = y2 + height_elem / 2
+
+                    # Vertical groups detection
+                    # Check if the roi is input or select
+                    # Check if the roi1 is text
+                    # The first position of the tuple is input or select, and the second position is text
+                    if recognized_element["struct_type"] in {"textinput", "select"} \
+                            and recognized_element1["struct_type"] in {"ocrtext"}:
+                        # Check if the elements were not assigned to the vertical groups before
+                        # Flatten vertical group keys
+                        fvgk = set(i for sub in vertical_groups.keys() for i in sub)
+                        if ((idx not in fvgk) and (idx1 not in fvgk)):
+                            # Check if the text and input elements are close to each other by vertical direction
+                            if (border_bottom < mid_text < mid_input) or (
+                                mid_input < mid_text < border_top
+                            ):
+                                # Assign the results to the vertical_group
+                                # Check if the horizontal overlap between roi and roi1 is sufficient
+                                if (
+                                    horizontal_overlap > VERICAL_GROUPS_HORIZONTAL_OVERLAP_THRESHOLD * width_elem
+                                ) or (
+                                    horizontal_overlap > VERICAL_GROUPS_HORIZONTAL_OVERLAP_THRESHOLD * width_elem1
+                                ):
+                                    # Fill the vertical_group dictionary
+                                    vertical_group_tuple = (idx, idx1)
+                                    # The stub for the future scenario assigned
+                                    vertical_group_container = -1
+                                    vertical_groups.update(
+                                        {
+                                            vertical_group_tuple: vertical_group_container
+                                        }
+                                    )
+
+                    # Horizontal groups detection
+                    # Check if the roi is text or input or select
+                    # Check if the roi1 is text or input or select
+                    if recognized_element["struct_type"] in {"textinput", "select", "checkbox", "ocrtext", "button"} and recognized_element1[
+                            "struct_type"] in {"textinput", "select", "checkbox", "ocrtext", "button"} and (idx != idx1):
+                        # Check if the elements were not assigned to the horizontal groups before
+                        # Flatten horizontal group keys
+                        fhgk = set(i for sub in horizontal_groups.keys() for i in sub)
+                        # test print("Flatten horizontal group keys", fhgk)
+                        if ((idx not in fhgk) and (idx1 not in fhgk)):
+                            # Check if these elements are laying at one level horizontally
+                            # They should overlap vertically and this level of the overlap
+                            # should be at least 0.25
+                            if (
+                                    vertical_overlap > HORIZONTAL_GROUPS_VERTICAL_OVERLAP_THRESHOLD * height_elem
+                            ) or (
+                                    vertical_overlap > HORIZONTAL_GROUPS_VERTICAL_OVERLAP_THRESHOLD * height_elem1
+                            ):
+                                # Fill the horizontal_group dictionary
+                                horizontal_group_tuple = (idx, idx1)
+                                # The stub for the future scenario assigned
+                                horizontal_group_container = -1
+                                horizontal_groups.update(
+                                    {
+                                        horizontal_group_tuple: horizontal_group_container
+                                    }
+                                )
+            # These recognized elements should be assigned for the vertical groups,
+            # horizontal groups and to the general scenario
+            # Elements, groups and scenarios assignment
+            # {(element1, element2): scenario1, (element3, element4): scenario2}
+            # vertical_groups = {(1, 2): -1}
+            # horizontal_groups = {(2, 3): -1, (4, 5): -1}
+            '''
+            # test
+            print("Horizontal groups are:")
+            for key in horizontal_groups:
+                print(key, horizontal_groups[key])
+
+            print("Vertical groups are:")
+            for key in vertical_groups:
+                print(key, vertical_groups[key])
+            '''
+
+            container_vertical_data = {
+                "name": "container_vertical",
+                "type": "common_scenario",
+                "struct_type": "container",
+                "direction": "vertical",
+                "parameters": {},
+                "styles": {},
+                # "parent_id": scenario.id,
+            }
+
+            # Create scenarios for vertical groups
+            # Keys are tuples of elements, and the value is a new vertical scenario assigned
+            # Assign the functional class based on vertical gropuing if not assigned yet
+            for v_group_key in vertical_groups:
+                children = []
+                container_vertical = ScenarioElement.objects.create(
+                    scenario=scenario, **container_vertical_data
+                )
+                vertical_groups[v_group_key] = container_vertical.id
+
+                # Recognized input or select, first position in tuple
+                element_data_vertical_input = recognized_elements[v_group_key[0]]
+                # Recognized input or select, second position in tuple
+                element_data_vertical_text = recognized_elements[v_group_key[1]]
+
+                # Extract rois data from the elements
+                y1, x1, y2, x2 = element_data_vertical_input["parameters"]["roi"]
+                y11, x11, y21, x21 = element_data_vertical_text["parameters"]["roi"]
+                # Find min & max values for the bounding rectangle
+                xmin = min(x1, x2, x11, x21)
+                xmax = max(x1, x2, x11, x21)
+                ymin = min(y1, y2, y11, y21)
+                ymax = max(y1, y2, y11, y21)
+                # Assign the rois to the vertical scenario, based on min & max values
+                container_vertical.parameters.update({"roi": (ymin, xmin, ymax, xmax)})
+                # Assignment of the functional class based on neighbourhood
+                if (element_data_vertical_input["func_type"] == "undefined"):
+                    element_data_vertical_input["func_type"] = element_data_vertical_text["func_type"]
+                # Create elements for vertical groups scenarios
+                for element_data_vertical in v_group_key:
+                    children_dict_vgroups = {}
+                    element_vertical = recognized_elements[element_data_vertical]
+                    inner_containers_elements.add(element_data_vertical)
+                    container_vertical_element = ScenarioElement.objects.create(
+                        parent=container_vertical,
+                        **element_vertical
+                    )
+                    # Remove this.
+                    # Fill the children list for parameters start
+                    ids = str(container_vertical_element.id) + "e"
+
+                    rois = container_vertical_element.parameters["roi"]
+                    children_dict_vgroups.update({'ids': ids})
+                    children_dict_vgroups.update({'roi': rois})
+                    children.append(children_dict_vgroups)
+                    # Fill the children list for parameters end
+
+                # Remove this
+                # Arrange the vertical scenario children based on their rois (coordinates) start
+                # Should replace that for the buoyancy distribution
+                # parameters["children"] should be replaced to children
+                children = sorted(children, key=lambda i: i["roi"][0])
+                children = [sub['ids'] for sub in children]
+                container_vertical.parameters["children"] = children
+                # Arrange the vertical scenario children based on their rois (coordinates) end
+                container_vertical.save()
+
+            container_horizontal_data = {
+                "name": "container_horizontal",
+                "type": "common_scenario",
+                "struct_type": "container",
+                "direction": "horizontal",
+                "parameters": {},
+                "styles": {},
+                # "parent_id": scenario.id,
+            }
+
+            # Create scenarios for horizontal groups
+            # Include scenarios for vertical groups
+            # Update scenarios for vertical groups with new parents
+            for h_group_key in horizontal_groups:
+                children = []
+                rois_list = []
+                container_horizontal = ScenarioElement.objects.create(
+                    parent=element_root.id, **container_horizontal_data
+                )
+                horizontal_groups[h_group_key] = container_horizontal.id
+                # print("id", container_horizontal.id)
+                # print("styles", container_horizontal.styles, container_horizontal_data["styles"])
+                # print("scenario", container_horizontal)
+
+                # If here was placed at least one select/input without the functional class assigned
+                # The second should be the text and it should exists with the functional class assigned
+                # Recognized input or select, vs ocrtext
+                # Assignment of the functional class based on neighbourhood
+                if(recognized_elements[h_group_key[0]]["struct_type"] in {"textinput", "select"}):
+                    if (recognized_elements[h_group_key[0]]["func_type"] == "undefined"):
+                        if (recognized_elements[h_group_key[1]]["struct_type"] in {"ocrtext"}):
+                            recognized_elements[h_group_key[0]]["func_type"] = \
+                                recognized_elements[h_group_key[1]]["func_type"]
+
+                if (recognized_elements[h_group_key[1]]["struct_type"] in {"textinput", "select"}):
+                    if (recognized_elements[h_group_key[1]]["func_type"] == "undefined"):
+                        if (recognized_elements[h_group_key[0]]["struct_type"] in {"ocrtext"}):
+                            recognized_elements[h_group_key[1]]["func_type"] = \
+                                recognized_elements[h_group_key[0]]["func_type"]
+
+                # Define the default flex alignment for the horizontal group
+                container_horizontal.styles["justify-content"] = "space-between"
+                container_horizontal.styles["display"] = "flex"
+                container_horizontal.styles["align-items"] = "center"
+                # Assign the styles for the case of the horizontal scenario with checkbox
+                if(recognized_elements[h_group_key[0]]["struct_type"] in {"checkbox"}) or (recognized_elements[h_group_key[1]]["struct_type"] in {"checkbox"}):
+                    print("h_group_key", h_group_key, recognized_elements[h_group_key[0]]["struct_type"], recognized_elements[h_group_key[1]]["struct_type"])
+                    container_horizontal.styles["justify-content"] = "flex-start"
+
+                #
+                # print("after id", container_horizontal.id)
+                # print("after styles", container_horizontal.styles)
+                # input()
+
+                # Create elements for horizontal groups scenarios if they're not in vertical grouping already
+                for element_data_horizontal in h_group_key:
+                    # Compare if in vertical group.
+                    # Each horizontal element is being placed not more than at one vertical group
+                    # Assign the vertical group if exists
+                    vertical_group = (-1, -1)
+                    for v_group, value in vertical_groups.items():
+                        if element_data_horizontal in v_group:
+                            vertical_group = v_group
+                            # Assign the vertical group subset if exists
+                            vertical_groups_subset[v_group] = value
+
+                    if vertical_group == (-1, -1):
+                        children_dict_hgroups = {}
+                        # If the horizontal element does not exist in any vertical group
+                        element_horizontal = recognized_elements[element_data_horizontal]
+                        inner_containers_elements.add(element_data_horizontal)
+                        container_horizontal_element = ScenarioElement.objects.create(
+                            scenario=container_horizontal,
+                            **element_horizontal
+                        )
+                        # Save rois data from the element for the array
+                        rois_list.append(element_horizontal["parameters"]["roi"])
+                        # Fill the children list for parameters
+                        ids = str(container_horizontal_element.id) + "e"
+                        rois = container_horizontal_element.parameters["roi"]
+                        children_dict_hgroups.update({'ids': ids})
+                        children_dict_hgroups.update({'roi': rois})
+                        children.append(children_dict_hgroups)
+
+                    else:
+                        children_dict_hgroups = {}
+                        # If the horizontal element exists in vertical group
+                        # Find the related vertical group scenario from its id
+                        vertical_group_container = ScreenScenario.objects.get(
+                            id=vertical_groups[vertical_group]
+                        )
+                        # Save rois data from the vertical scenario
+                        rois_list.append(vertical_group_container.parameters["roi"])
+                        ids = str(vertical_group_container.id) + "s"
+                        rois = vertical_group_container.parameters["roi"]
+                        children_dict_hgroups.update({'ids': ids})
+                        children_dict_hgroups.update({'roi': rois})
+                        # Prevent the appearance of duplications
+                        if children_dict_hgroups not in children:
+                            children.append(children_dict_hgroups)
+
+                        vertical_group_container.parent_id = container_horizontal.id
+                        vertical_group_container.save()
+                '''
+                test
+                # Show the children array
+                print("children", children)
+                '''
+
+                # Extract rois from the rois_list
+                # Find min & max values for the bounding rectangle
+                xmin = min(rois_list[0][1], rois_list[0][3], rois_list[1][1], rois_list[1][3])
+                xmax = max(rois_list[0][1], rois_list[0][3], rois_list[1][1], rois_list[1][3])
+                ymin = min(rois_list[0][0], rois_list[0][2], rois_list[1][0], rois_list[1][2])
+                ymax = max(rois_list[0][0], rois_list[0][2], rois_list[1][0], rois_list[1][2])
+
+                # Assign the rois to the horizontal scenario, based on min & max values
+                container_horizontal.parameters.update({"roi": (ymin, xmin, ymax, xmax)})
+                # Arrange the horizontal scenario children based on their rois (coordinates)
+                children = sorted(children, key=lambda i: i["roi"][1])
+                children = [sub['ids'] for sub in children]
+                # Children array doesn't have parameters now
+                container_horizontal.parameters["children"] = children
+                container_horizontal.save()
 
         # Find all free vertical scenarios.
         # Free vertical scenario does not share any element
@@ -1072,9 +1728,9 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
         children = []  # [{'ids': ids, 'rois': rois}, {}, {}, {}, {}]
         # Get all the elements fir the general scenario.
         # Mark them as children.
-        # recognized_elements_general = recognized_elements - inner_scenarios_elements
+        # recognized_elements_general = recognized_elements - inner_containers_elements
         for idx, element_data in enumerate(recognized_elements):
-            if idx not in inner_scenarios_elements:
+            if idx not in inner_containers_elements:
                 children_dict_elem = {}
                 # Get all the elements left. Mark them as children.
                 scenario_general_element = ScenarioElement.objects.create(
@@ -1095,10 +1751,10 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                 # How to extract rois if h_group_key is known?
                 # Should update the horizontal_group data structure later
                 # and not query the database for this case
-                horizontal_group_scenario = ScreenScenario.objects.get(
+                horizontal_group_container = ScreenScenario.objects.get(
                     id=horizontal_groups[h_group_key]
                 )
-                rois = horizontal_group_scenario.parameters["roi"]
+                rois = horizontal_group_container.parameters["roi"]
                 children_dict_hgroups.update({'ids': ids})
                 children_dict_hgroups.update({'roi': rois})
                 children.append(children_dict_hgroups)
@@ -1111,10 +1767,10 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                 # How to extract rois if v_group_key is known?
                 # Should update the vertical_group data structure later
                 # and not query the database for this case
-                vertical_group_scenario = ScreenScenario.objects.get(
+                vertical_group_container = ScreenScenario.objects.get(
                     id=vertical_groups_free[v_group_key]
                 )
-                rois = vertical_group_scenario.parameters["roi"]
+                rois = vertical_group_container.parameters["roi"]
                 children_dict_vgroups.update({'ids': ids})
                 children_dict_vgroups.update({'roi': rois})
                 children.append(children_dict_vgroups)
@@ -1152,25 +1808,25 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                     # Create the horizontal scenario for the button
                     # if the button has right or central positioning
                     if(aligned_element in {"center", "right"}):
-                        scenario_horizontal = ScreenScenario.objects.create(
-                            screen=screen, **scenario_horizontal_data
+                        container_horizontal = ScreenScenario.objects.create(
+                            screen=screen, **container_horizontal_data
                         )
                         # Add the button for the scenario parameters
-                        scenario_horizontal.parameters["children"] = []
-                        scenario_horizontal.parameters["children"].append(child["ids"])
+                        container_horizontal.parameters["children"] = []
+                        container_horizontal.parameters["children"].append(child["ids"])
 
-                        scenario_horizontal.styles["display"] = "flex"
-                        scenario_horizontal.styles["width"] = "100%"
+                        container_horizontal.styles["display"] = "flex"
+                        container_horizontal.styles["width"] = "100%"
 
                         # Should switch the button's parent from general scenario
                         # to novel created horizontal scenario
-                        element_child.scenario = scenario_horizontal
+                        element_child.scenario = container_horizontal
 
                         # Should calculate ROI for the novel horizontal scenario
 
                         # Attach the novel horizontal scenario to the general scenario
                         children_dict_hgroups_buttons = {}
-                        ids = str(scenario_horizontal.id) + "s"
+                        ids = str(container_horizontal.id) + "s"
                         rois = element_child.parameters["roi"]
                         children_dict_hgroups_buttons.update({'ids': ids})
                         children_dict_hgroups_buttons.update({'roi': rois})
@@ -1182,13 +1838,13 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
                         children.append(children_dict_hgroups_buttons)
                         # Define styles based on aligned_element value
                         if(aligned_element == "right"):
-                            scenario_horizontal.styles["justify-content"] = "flex-end"
+                            container_horizontal.styles["justify-content"] = "flex-end"
 
                         if(aligned_element == "center"):
-                            scenario_horizontal.styles["justify-content"] = "center"
+                            container_horizontal.styles["justify-content"] = "center"
 
                         # Save the horizontal scenario created for the button
-                        scenario_horizontal.save()
+                        container_horizontal.save()
                         # Save the element after changing its parent
                         element_child.save()
 
@@ -1412,7 +2068,7 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
         # Calculate the mean value for inputs, selects, buttons end
 
         scenario.parameters["children"] = [sub['ids'] for sub in children]
-        scenario.styles["background-color"] = "rgba(" + bcolour_scenario_value + ")"
+        scenario.styles["background-color"] = "rgba(" + bcolour_element_value + ")"
         # Assign the max width for the general scenario
         scenario.styles["max-width"] = str(img_width) + "px"
 
@@ -1427,3 +2083,4 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
         # Assign the mean values for these inputs and selects
         #
         return scenario
+"""
