@@ -897,7 +897,40 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                 container_horizontal.parameters["children"] = children
                 container_horizontal.save()
             # Scenario horizontal end
+        # Find all free vertical scenarios.
+        # Free vertical scenario does not share any element
+        # with horizontal scenario
+        # and doesn't belong to any horizontal scenario as a child
+        # Should check if vertical and horizontal groups exist before these calculations
 
+        if vertical_groups:
+            vertical_groups_free = copy.deepcopy(vertical_groups)
+        else:
+            vertical_groups_free = {}
+
+        # print("vertical_groups_free", vertical_groups_free)
+        # print("vertical_groups_subset", vertical_groups_subset)
+        # print("horizontal_groups", horizontal_groups)
+        if vertical_groups and horizontal_groups:
+            for v_group_key in list(vertical_groups_free.keys()):
+                # Check the horizontal groups
+                for h_group_key in horizontal_groups:
+                    # print(set(v_group_key), set(h_group_key))
+                    # Sets are disjoints if and only if their intersection is the empty set
+                    if not set(v_group_key).isdisjoint(set(h_group_key)):
+                        try:
+                            del vertical_groups_free[v_group_key]
+                        except KeyError:
+                            pass
+                # Check the vertical groups,
+                # which are children of the horizontal groups
+                for vs_group_key in vertical_groups_subset:
+                    # Sets are disjoints if and only if their intersection is the empty set
+                    if not set(v_group_key).isdisjoint(set(vs_group_key)):
+                        try:
+                            del vertical_groups_free[v_group_key]
+                        except KeyError:
+                            pass
         return node
 
 
