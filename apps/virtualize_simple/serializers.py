@@ -171,12 +171,12 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
         #     s.is_valid(raise_exception=True)
         #     s.save()
 
-        root_element_data = {}
-        # {    "struct_type": "undefined",
-        #     "func_type": "undefined",
-        #     "parameters": {},
-        #     "styles": {},
-        # }
+        root_element_data = {
+            "struct_type": "undefined",
+            "func_type": "undefined",
+            "parameters": {},
+            "styles": {},
+        }
         # Create the root element mptt start
         print(validated_data)
         print(root_element_data)
@@ -1276,10 +1276,11 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
 
         # Calculate the mean value for inputs, selects, buttons end
 
-        # node.parameters["children"] = [sub['ids'] for sub in children] # Must correct this later TypeError: 'str' object does not support item assignment
-        # node.styles["background-color"] = "rgba(" + bcolour_container_value + ")" # Must correct this later TypeError: 'str' object does not support item assignment
+        node.parameters["children"] = [sub['ids'] for sub in children]
+        node.styles["background-color"] = "rgba(" + bcolour_container_value + ")"
         # Assign the max width for the general scenario
-        # node.styles["max-width"] = str(img_width) + "px" # Must correct this later TypeError: 'str' object does not support item assignment
+        print("node.styles", node.styles)
+        node.styles["max-width"] = str(img_width) + "px"
 
         node.save()
 
