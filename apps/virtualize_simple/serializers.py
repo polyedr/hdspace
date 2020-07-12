@@ -142,6 +142,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
     styles = serializers.JSONField()
     children = RecursiveField(required=False, allow_null=True, many=True)
     container = serializers.PrimaryKeyRelatedField(source='node.id', read_only=True)
+    parent_id = serializers.IntegerField()
 
     class Meta:
         model = ScenarioElement
@@ -150,6 +151,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
             "container",
             "name",
             "children",
+            "parent_id",
             "struct_type",
             "func_type",
             "direction",
@@ -159,36 +161,30 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
             "styles",
         )
 
-    def create(self, validated_data):
-        # # Remove nested objects to handle separately
-        # children = validated_data.pop('children', [])
-        # node = ScenarioElement.objects.create(
-        #     # parent is null only on the root node
-        #     parent=self.context.get('parent'),
-        #     **validated_data)
-        # # Multiple level of the recursion
-        # for child_data in children:
-        #     s = ScenarioElementSerializer(data=child_data, context={'parent': node})
-        #     s.is_valid(raise_exception=True)
-        #     s.save()
+        # extra_kwargs = {"parent_id": {"write_only": True}}
 
+    def create(self, validated_data):
         root_element_data = {
             "struct_type": "undefined",
             "func_type": "undefined",
             "parameters": {},
             "styles": {},
         }
+
+        # Pre-Root element assignment
+        element_root_pre = ScenarioElement.objects.get(id=validated_data["parent_id"])
+
         # Create the root element mptt start
         print(validated_data)
         print(root_element_data)
         imgpath = ""
         if validated_data.get("image"):
             node = ScenarioElement.objects.create(
-                image=validated_data["image"], **root_element_data
+                parent=element_root_pre, image=validated_data["image"], **root_element_data
             )
             imgpath = MEDIA_ROOT + "/uploads/" + str(validated_data["image"])
         else:
-            node = ScenarioElement.objects.create(**root_element_data)
+            node = ScenarioElement.objects.create(parent=element_root_pre, **root_element_data)
         # Create the root element mptt end
 
         # Create the recognized_elements array start
