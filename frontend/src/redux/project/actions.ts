@@ -1,11 +1,11 @@
 import { CSSProperties } from 'react';
 
-import { IChooseElement } from '$components/ModalAddElements/ModalAddElements/ModalAddElements';
 import { CssLikeStyles } from '$utils/StyleHelper';
-import { LibraryEntities, LibraryElements, LibraryChildrenElements } from '$domain/libraryElements';
+import { LibraryEntities, ChildrenElements } from '$domain/libraryElements/libraryElements';
+import { ChildEntity, Entity } from '$domain/core';
+import { LibraryElement } from '$api/types';
 
 import * as T from './types';
-import { ChildEntity } from '$domain/core';
 
 export const getLibraryElements = (): T.LoadLibraryElements => ({
   type: 'PROJECTS:LOAD_LIBRARY_ELEMENTS',
@@ -110,14 +110,13 @@ export const activateScreen = (projectID: number, screenID: number): T.ActivateS
   payload: { projectID, screenID: screenID },
 });
 
-export const setListSortable = (
-  itemIndex: number, items: string[], id: string, parentID: string
-): T.SetListSortable => ({
-  type: 'PROJECTS:SET_LIST_SORTABLE',
+export const moveElement = (
+  elementIndex: number, elementID: string, parentID: string
+): T.MoveElement => ({
+  type: 'PROJECTS:MOVE_ELEMENT',
   payload: {
-    itemIndex,
-    items,
-    id,
+    elementIndex,
+    elementID,
     parentID,
   },
 });
@@ -126,13 +125,9 @@ export const clearAfterPrevScreen = (): T.ClearAfterPrevScreen => ({
   type: 'PROJECTS:CLEAN_AFTER_PREV_SCREEN',
 });
 
-export const updateViewTree = ({ screen, scenarios, scenarioElements }: Partial<{
-  screen: T.IProjectScreen,
-  scenarios: T.IScenarios,
-  scenarioElements: T.IScenarioElements,
-}>): T.UpdateViewTree => ({
-  type: 'PROJECTS:UPDATE_VIEW_TREE',
-  payload: { currentScreen: screen , scenarios, scenarioElements }
+export const updateElementsTree = (root: LibraryElement<'root'>): T.UpdateElementsTree => ({
+  type: 'PROJECTS:UPDATE_ELEMENTS_TREE',
+  payload: { root },
 });
 
 export const resetScreenState = (): T.ResetScreenState => ({
@@ -169,31 +164,15 @@ export const updateElementStyles = (id: string, styles: CssLikeStyles): T.Update
   payload: { id, styles },
 });
 
-export const updateChildStyles = (parentID: string, id: string, styles: CssLikeStyles): T.UpdateChildStyles => ({
-  type: 'PROJECTS:UPDATE_CHILD_STYLES',
-  payload: { parentID, id, styles },
-});
-
-// TODO: here is not CSSProperties, here css-like properties written in lower-case-hyphenated
-export const updateScenarioStyles = (
-  id: string,
-  styles: CSSProperties & { 'flex-direction'?: string },
-): T.UpdateScenarioStyles => ({
-  type: 'PROJECTS:UPDATE_SCENARIO_STYLES',
-  payload: { id, styles },
-});
-
-// export const updateStylesGroup = (itemId: string, styles: IScreenProps) => ({
-//   type: TYPES.UPDATE_STYLES_GROUP,
-//   payload: { itemId, styles },
-// });
-
 export const updateElementImage = (itemID: string, image: File ): T.UpdateElementImage => ({
   type: 'PROJECTS:UPDATE_ELEMENT_IMAGE',
   payload: { itemID, image },
 });
 
-export const updateElementParameters = (itemID: string, parameters: T.IScreenProps): T.UpdateElementParameters => ({
+export const updateElementParameters = <T extends Entity, K extends LibraryElement<T>['parameters']>(
+  itemID: string,
+  parameters: K
+): T.UpdateElementParameters => ({
   type: 'PROJECTS:UPDATE_ELEMENT_PARAMETERS',
   payload: { itemID, parameters },
 });
@@ -212,24 +191,19 @@ export const deleteActiveItem = (): T.DeleteActiveItem => ({
   type: 'PROJECTS:DELETE_ACTIVE_ITEM',
 });
 
-export const addElementsIntoContainer = (elements: IChooseElement[]): T.AddElementsIntoContainer => ({
-  type: 'PROJECTS:ADD_ELEMENTS_INTO_CONTAINER',
-  payload: { elements },
+export const createElements = (createdElements: T.CreatedElement[]): T.CreateElements => ({
+  type: 'PROJECTS:CREATE_ELEMENTS',
+  payload: { createdElements },
 });
 
-export const addChildToElement = (childType: ChildEntity, elementID: number, parameters: LibraryChildrenElements[ChildEntity]['parameters']): T.AddChildToElement => ({
+export const addChildToElement = (childType: ChildEntity, elementID: string, parameters: ChildrenElements[ChildEntity]['parameters']): T.AddChildToElement => ({
   type: 'PROJECTS:ADD_CHILD_TO_ELEMENT',
   payload: { childType, elementID, parameters },
 });
 
-export const deleteChildFromElement = (childID: number, elementID: number): T.DeleteChildFromElement => ({
-  type: 'PROJECTS:DELETE_CHILD_TO_ELEMENT',
+export const deleteChildFromElement = (childID: string, elementID: string): T.DeleteChildFromElement => ({
+  type: 'PROJECTS:DELETE_CHILD_FROM_ELEMENT',
   payload: { childID, elementID },
-});
-
-export const renameScenario = (scenarioID: number, name: string): T.RenameScenario => ({
-  type: 'PROJECTS:RENAME_SCENARIO',
-  payload: { scenarioID, name },
 });
 
 export const setScenarios = (scenarios: T.IScenarios): T.SetScenarios => ({
@@ -255,18 +229,6 @@ export const uploadImageForNNSuccess = (payload: { imageURL: string, screenID: n
 export const getScreenNN = (): T.GetScreenNN => ({ type: 'PROJECTS:GET_SCREEN_NN' });
 
 export const wrapIntoContainer = (): T.WrapIntoContainer => ({ type: 'PROJECTS:WRAP_INTO_CONTAINER' });
-
-export const runLayoutAlgorithm = (
-  scenarios: T.IScenarios,
-  elements: T.IScenarioElements,
-): T.RunLayoutAlgorithm => ({
-  type: 'PROJECTS:RUN_LAYOUT_ALGORITHM',
-  payload: { scenarios, elements },
-});
-
-export const runLayoutAlgorithmFinished = (): T.RunLayoutAlgorithmFinished => ({
-  type: 'PROJECTS:RUN_LAYOUT_ALGORITHM_FINISHED',
-});
 
 export const setActiveItem = (activeItem: T.ActiveItem): T.SetActiveItem => ({
   type: 'PROJECTS:SET_ACTIVE_ITEM',

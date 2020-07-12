@@ -2,32 +2,32 @@ import React, { memo } from 'react';
 import { connect } from 'react-redux';
 
 import { AppReduxState } from '$shared/types/app';
-import { HeadingType as HeadingTagType, ElementParameters } from '$redux/project/types';
 import { selectors } from '$redux/project/';
 import { DropDown } from '$components/UI/DropDown/';
 import {
   withConfigurableProperties,
   PropertiesChangeProps
 } from '$utils/withConfigurableProperties';
+import { sharedClasses } from '$styles/sharedClasses';
+import { HeadingType as HeadingTagType, HeadingElement } from '$api/types';
 
 import { ControlTitle } from '../../../components/ControlTitle/ControlTitle';
 import { HEADING_TYPE, HEADING_SETTINGS } from './constants';
-import { sharedClasses } from '$styles/sharedClasses';
 const styles = require('./HeadingType.scss');
 
 type StateProps = {
-  headingType?: HeadingTagType;
+  headingType: HeadingTagType;
 };
 
 function mapState(state: AppReduxState): StateProps {
-  const activeItemParams = selectors.selectActiveItemParams(state) as ElementParameters;
+  const activeItemParams = selectors.selectActiveItemParams<HeadingElement>(state);
 
   return {
     headingType: activeItemParams.headingType,
   };
 }
 
-type Props = StateProps & PropertiesChangeProps;
+type Props = StateProps & PropertiesChangeProps<HeadingElement>;
 
 const HeadingType: React.FC<Props> = memo((props) => {
   const { headingType, updateParams, updateStyles } = props;

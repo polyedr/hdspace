@@ -7,7 +7,7 @@ import { ListItemRendererProps } from '../types';
 const styles = require('../styles.scss');
 
 const ListItem = (props: ListItemRendererProps) => {
-  const { id, style, params, active, isDisabled } = props;
+  const { id, style, params, isDisabled, className, elementRef } = props;
   const { textContent, isLink, link } = params;
 
   const handleListItemClick = (event: React.MouseEvent<HTMLLIElement>) => {
@@ -34,15 +34,16 @@ const ListItem = (props: ListItemRendererProps) => {
     <>
       {isLink ? (
         <li
+          ref={elementRef}
           id={id}
           data-ls-id={id}
           tabIndex={isDisabled ? 0 : -1}
           className={cn(
+            className,
             sharedClasses.lsItem,
             sharedClasses.unsortable,
             styles.addedElem,
             isDisabled && styles.disabled,
-            active && sharedClasses.activated,
           )}
           style={{
             marginTop,
@@ -75,15 +76,16 @@ const ListItem = (props: ListItemRendererProps) => {
         </li>
       ) : (
         <li
+          ref={elementRef}
           id={id}
           data-ls-id={id}
           tabIndex={isDisabled ? 0 : -1}
           className={cn(
+            className,
             sharedClasses.lsItem,
             sharedClasses.unsortable,
             styles.addedElem,
             isDisabled && styles.disabled,
-            active && sharedClasses.activated,
           )}
           {...isDisabled && { onClick: handleListItemClick }}
           style={style}

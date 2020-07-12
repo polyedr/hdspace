@@ -4,28 +4,28 @@ import { Checkbox } from '@material-ui/core';
 import cn from 'classnames';
 
 import { AppReduxState } from '$shared/types/app';
-import { ElementParameters, VideoSettings } from '$redux/project/types';
 import { selectors } from '$redux/project/';
 import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
 import { extractPlayerLinkInfo } from '$utils/extractVideoLink';
 import { Switch } from '$components/UI/Switch/Switch';
+import { VideoSettings, VideoElement } from '$api/types';
 
 import { ControlSection } from '../../../components/ControlSection/ControlSection';
 const styles = require('./VideoSettings.scss');
 
 type StateProps = {
-  videoSettings: VideoSettings['videoSettings'];
+  videoSettings: VideoSettings;
 };
 
 function mapState(state: AppReduxState): StateProps {
-  const activeItemParams = selectors.selectActiveItemParams(state) as ElementParameters;
+  const activeItemParams = selectors.selectActiveItemParams<VideoElement>(state);
 
   return {
-    videoSettings: activeItemParams.videoSettings as VideoSettings['videoSettings'],
+    videoSettings: activeItemParams.videoSettings as VideoSettings,
   };
 }
 
-type Props = StateProps & PropertiesChangeProps;
+type Props = StateProps & PropertiesChangeProps<VideoElement>;
 
 const VideoSettings: React.FC<Props> = ({
   videoSettings,

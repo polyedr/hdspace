@@ -7,7 +7,7 @@ import { Button } from '$components/UI/Button';
 import { Checkbox } from '$components/UI/Checkbox';
 import { DropDown } from '$components/UI/DropDown';
 import { Scrollbar } from '$components/UI/Scrollbar';
-import { IChooseElement, ScenarioStateType } from '$components/ModalAddElements/ModalAddElements/ModalAddElements';
+import { ScenarioStateType } from '$components/ModalAddElements/ModalAddElements/ModalAddElements';
 import {
   getCustomTemplateElements,
   getOptionsOfListScenario,
@@ -18,7 +18,8 @@ import {
 import { isIncludes } from '$utils/StringHelper';
 import { PropertiesPanelProps } from '$features/applyProperties';
 import { ENTITIES } from '$domain/core';
-import { LibraryElements } from '$domain/libraryElements';
+import { LibraryElements } from '$domain/libraryElements/libraryElements';
+import { CreatedElement } from '$redux/project/types';
 
 const styles = require('./ActionsBlock.scss');
 
@@ -27,14 +28,14 @@ type Props = {
   tabs: string[];
   groupElements: GroupElement[];
   activeTab: string;
-  selectedElements: IChooseElement[];
+  selectedElements: CreatedElement[];
   scenarioTypeId: string | null;
   scenarioName: string;
   scenarioState: string;
   libraryElements: LibraryElements;
   startTemplate: string;
   changeTab: any;
-  setSelectedElements(elements: IChooseElement[]): void;
+  setSelectedElements(elements: CreatedElement[]): void;
   changeScenarioType(value: string): void;
   changeScenarioName(e: React.ChangeEvent<HTMLInputElement>): void;
   changeScenarioState(scenario: ScenarioStateType): void;
@@ -104,12 +105,7 @@ export const ActionsBlock: React.FunctionComponent<Props> = ({
   }, [templateElements, setSelectedElements]);
 
   const handleChooseElement = useCallback((x: GroupElement['value']) => {
-    const element: IChooseElement = {
-      structType: x.structType,
-      funcType: x.funcType,
-      type: x.funcType,
-    };
-
+    const element: CreatedElement = { type: x.structType };
     const elements = getChooseElements(element, selectedElements);
 
     setSelectedElements(elements);
@@ -252,7 +248,7 @@ export const ActionsBlock: React.FunctionComponent<Props> = ({
                         className={classNames(
                           styles.contentTemplateBtn,
                           !isDisabled
-                          && selectedElements.some(el => el.type === value.funcType && el.structType === value.structType)
+                          && selectedElements.some(el => el.type === value.structType)
                           && styles.contentTemplateBtn_active,
                         )}
                         disabled={isDisabled}

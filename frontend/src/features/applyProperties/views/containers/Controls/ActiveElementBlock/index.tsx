@@ -1,7 +1,7 @@
 import React, { memo, useState, useCallback } from 'react';
 import classNames from 'classnames';
 
-import { LibraryElements } from '$domain/libraryElements';
+import { LibraryElements } from '$domain/libraryElements/libraryElements';
 import { Icon } from '$components/UI/Icon/';
 import { Button } from '$components/UI/Button/';
 import { Modal } from '$components/UI/Modal/';
@@ -16,7 +16,7 @@ interface IComponentProps {
   disablePanel: boolean,
   scenarios: PropertiesPanelProps['scenarios'],
   libraryElements: LibraryElements,
-  addElementsIntoContainer: PropertiesPanelProps['addElementsIntoContainer'],
+  createElements: PropertiesPanelProps['createElements'],
   isAddElementsModalOpened: boolean;
   onWrapIntoContainer(): void;
   onDelScenarioItem(): void;
@@ -30,7 +30,7 @@ export const ActiveElementBlock: React.FunctionComponent<IComponentProps> = memo
     onDelScenarioItem,
     scenarios,
     libraryElements,
-    addElementsIntoContainer,
+    createElements,
     onWrapIntoContainer,
     isAddElementsModalOpened,
     setIsAddElementsModalOpened,
@@ -107,7 +107,7 @@ export const ActiveElementBlock: React.FunctionComponent<IComponentProps> = memo
         scenarios={scenarios}
         libraryElements={libraryElements}
         onClose={closeModal}
-        onConfirm={addElementsIntoContainer}
+        onConfirm={createElements}
       />
       { modalDeleteElementOpen && (
         <Modal

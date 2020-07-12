@@ -2,26 +2,26 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import { AppReduxState } from '$shared/types/app';
-import { ElementParameters } from '$redux/project/types';
 import { selectors } from '$redux/project/';
 import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
 import { sharedClasses } from '$styles/sharedClasses';
+import { SelectElement } from '$api/types';
 
 const styles = require('./Value.scss');
 
 type StateProps = {
-  value?: string;
+  value: string;
 };
 
 function mapState(state: AppReduxState): StateProps {
-  const activeItemParams = selectors.selectActiveItemParams(state) as ElementParameters;
+  const activeItemParams = selectors.selectActiveItemParams<SelectElement>(state);
 
   return {
     value: activeItemParams.value,
   };
 }
 
-type Props = StateProps & PropertiesChangeProps;
+type Props = StateProps & PropertiesChangeProps<SelectElement>;
 
 const Value: React.FC<Props> = ({
   value,

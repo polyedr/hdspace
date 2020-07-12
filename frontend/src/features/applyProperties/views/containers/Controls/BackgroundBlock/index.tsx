@@ -3,12 +3,14 @@ import React, { memo, useCallback } from 'react';
 import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
 import { CssLikeStyles } from '$utils/StyleHelper';
 import { ColorSettings } from '$features/applyProperties/views/components/ColorSettings/ColorSettings';
+import { LibraryElement } from '$api/types';
+import { Entity } from '$domain/core';
 
 type OwnProps = {
   activeItemStyles: Required<CssLikeStyles>;
 }
 
-type Props = OwnProps & PropertiesChangeProps;
+type Props = OwnProps & PropertiesChangeProps<LibraryElement<Entity>>;
 
 const BackgroundBlock: React.FC<Props> = memo((props) => {
   const {

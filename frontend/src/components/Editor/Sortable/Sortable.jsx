@@ -128,13 +128,14 @@ export class Sortable extends Component {
       onChoose, // eslint-disable-line
       onDragEnter, // eslint-disable-line
       onDragLeave, // eslint-disable-line
+      elementRenderer: ElementRenderer,
       ...props
     } = this.props;
 
     return (
-      <Component
+      <ElementRenderer
         {...props}
-        ref={node => {
+        elementRef={node => {
           this.node = node;
         }}
       />

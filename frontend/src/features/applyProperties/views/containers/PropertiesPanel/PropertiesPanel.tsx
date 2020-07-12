@@ -8,7 +8,8 @@ import { actionsCreators, selectors, T as ProjectT } from '$redux/project';
 import { Scrollbar } from '$components/UI/Scrollbar/';
 import { Spinner } from '$components/UI/Spinner/';
 import { AVAILABLE_CONTROLS, Control, Entity } from '$domain/core';
-import { LIBRARY_ELEMENTS } from '$domain/libraryElements';
+import { LIBRARY_ELEMENTS } from '$domain/libraryElements/libraryElements';
+import { LibraryElement } from '$api/types';
 
 import { ActiveElementBlock } from '../Controls/ActiveElementBlock';
 import { ActionBlock } from '../Controls/ActionBlock';
@@ -36,9 +37,11 @@ import { LabelFor } from '../Controls/LabelFor/LabelFor';
 import { DropdownItems } from '../Controls/DropdownItems/DropdownItems';
 import { IsOpen } from '../Controls/IsOpen/IsOpen';
 import { VideoSettings } from '../Controls/VideoSettings/VideoSettings';
+import { findChildByID } from '$utils/ElementsTreeHelper';
 const styles = require('./PropertiesPanel.scss');
 
 type StateProps = {
+  elementsTree: LibraryElement<'root'>,
   scenarios: ProjectT.IScenarios;
   activeItem: ProjectT.ActiveItem;
   screen: ProjectT.IProjectScreen;
@@ -48,6 +51,7 @@ type StateProps = {
 
 const mapState = (state: AppReduxState): StateProps => ({
   activeItem: selectors.selectActiveItem(state),
+  elementsTree: selectors.selectRootElement(state),
   scenarios: selectors.selectScenarios(state),
   screen: selectors.selectCurrentScreen(state),
   isAddElementsModalOpened: selectors.selectIsAddElementsModalOpened(state),
@@ -56,7 +60,7 @@ const mapState = (state: AppReduxState): StateProps => ({
 
 const mapDispatch = {
   addElement: actionsCreators.addElement,
-  addElementsIntoContainer: actionsCreators.addElementsIntoContainer,
+  createElements: actionsCreators.createElements,
   wrapIntoContainer: actionsCreators.wrapIntoContainer,
   setIsAddElementsModalOpened: actionsCreators.setIsAddElementsModalOpened,
   deleteActiveItem: actionsCreators.deleteActiveItem,
@@ -98,18 +102,19 @@ const SCROLLBAR_STYLES = {
 
 const Component: React.FC<PropertiesPanelProps> = ({
   activeItem,
+  elementsTree,
   screen,
   deleteActiveItem,
   loader,
   scenarios,
-  addElementsIntoContainer,
+  createElements,
   wrapIntoContainer,
   isAddElementsModalOpened,
   setIsAddElementsModalOpened,
 }) => {
   const activeItemID = activeItem.itemType === 'root' ? 'root' : activeItem.itemId;
 
-  const currentItemType = activeItem.itemType === 'root' ? 'root' : R.prop(activeItemID, screen.listSortable)?.type;
+  const currentItemType = activeItem.itemType === 'root' ? 'root' : findChildByID(elementsTree, activeItemID)?.type;
   const disablePanel = !screen;
 
   return (
@@ -124,7 +129,7 @@ const Component: React.FC<PropertiesPanelProps> = ({
           onDelScenarioItem={deleteActiveItem}
           scenarios={scenarios}
           libraryElements={LIBRARY_ELEMENTS}
-          addElementsIntoContainer={addElementsIntoContainer}
+          createElements={createElements}
           onWrapIntoContainer={wrapIntoContainer}
           isAddElementsModalOpened={isAddElementsModalOpened}
           setIsAddElementsModalOpened={setIsAddElementsModalOpened}

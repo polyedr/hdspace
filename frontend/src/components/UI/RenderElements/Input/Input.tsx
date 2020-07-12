@@ -2,18 +2,16 @@ import React, { ChangeEvent } from 'react';
 import cn from 'classnames';
 import { makeStyles, TextField } from '@material-ui/core';
 
-import { sharedClasses } from '$styles/sharedClasses';
-
 import { InputRendererProps } from '../types';
 const styles = require('../styles.scss');
 
 const Input = (props: InputRendererProps) => {
-  const { id, style, params, isDisabled, active, sortableId, value, onChange } = props;
+  const { id, style, params, isDisabled, active, sortableId, currentValue, onElementChange, elementRef, className } = props;
   const { width, height, marginTop, marginRight, marginBottom, marginLeft, ...restStyles } = style;
   const { type, placeholder } = params;
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-    onChange(id, event.target.value);
+    onElementChange(id, event.target.value);
   };
 
   const classes = makeStyles({
@@ -58,18 +56,20 @@ const Input = (props: InputRendererProps) => {
 
   return (
     <TextField
+      ref={elementRef}
       id={id}
       data-ls-id={id}
       data-id={sortableId}
       key={id}
       variant="outlined"
-      className={cn(sharedClasses.lsItem, isDisabled && styles.disabled, classes.root)}
+      className={cn(className, isDisabled && styles.disabled, classes.root)}
       style={inlineStyles}
       type={type}
-      value={value}
+      value={currentValue}
       onChange={handleInputChange}
       InputProps={InputProps}
       placeholder={placeholder}
+      tabIndex={isDisabled ? 0 : -1}
     />
   );
 };

@@ -4,24 +4,24 @@ import { Link } from 'react-router-dom';
 import { makeStyles, Button } from '@material-ui/core';
 
 import { WithActionProps, ActionType } from '$utils/withAction';
-import { sharedClasses } from '$styles/sharedClasses';
 
 import { ActionRendererProps } from '../types';
 const styles = require('../styles.scss');
 
-type Action = React.FC<WithActionProps & ActionRendererProps>;
+export type ActionRenderer = React.FC<WithActionProps & ActionRendererProps>;
 
-export const Action: Action = (props) => {
+export const Action: ActionRenderer = (props) => {
   const {
     id,
     style,
-    active,
     isDisabled,
     params,
     onClick,
     sortableId,
     actionType,
     actionLink,
+    elementRef,
+    className,
   } = props;
 
   const { backgroundColor, color, ...restStyles } = style;
@@ -54,13 +54,14 @@ export const Action: Action = (props) => {
 
   return (
     <Button
+      ref={elementRef}
       id={id}
       data-ls-id={id}
       data-id={sortableId}
       key={id}
       variant="contained"
       color="primary"
-      className={cn(classes.root, sharedClasses.lsItem, isDisabled && styles.disabled, active && sharedClasses.activated)}
+      className={cn(className, classes.root, isDisabled && styles.disabled)}
       disableRipple={isDisabled || !showRipple}
       component={components[actionType]}
       {...actionType === 'external-link' && { href: actionLink, target: '_blank' }}

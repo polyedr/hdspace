@@ -1,12 +1,7 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 
-import { selectors, actionsCreators } from '$redux/project';
-import { AppReduxState } from '$shared/types/app';
-
-type StateProps = {
-  rootID: number;
-};
+import { actionsCreators } from '$redux/project';
 
 const mapDispatch = {
   deleteActiveItem: actionsCreators.deleteActiveItem,
@@ -15,11 +10,7 @@ const mapDispatch = {
   pasteCopiedItem: actionsCreators.pasteCopiedItem,
 };
 
-const mapState = (state: AppReduxState): StateProps => ({
-  rootID: selectors.selectListSortable(state).root.id,
-});
-
-type Props = StateProps & typeof mapDispatch;
+type Props = typeof mapDispatch;
 
 export const Component = (props: Props) => {
   const {
@@ -27,7 +18,6 @@ export const Component = (props: Props) => {
     wrapIntoContainer,
     copyActiveItem,
     pasteCopiedItem,
-    rootID,
   } = props;
 
   useEffect(() => {
@@ -37,10 +27,9 @@ export const Component = (props: Props) => {
       }
     };
 
-    const rootElement = document.getElementById('root');
-    rootElement?.addEventListener('keydown', listener);
-    return () => rootElement?.removeEventListener('keydown', listener);
-  }, [deleteActiveItem, rootID]);
+    document.addEventListener('keydown', listener);
+    return () => document.removeEventListener('keydown', listener);
+  }, [deleteActiveItem]);
 
   useEffect(() => {
     const listener = (event: KeyboardEvent) => {
@@ -49,10 +38,9 @@ export const Component = (props: Props) => {
       }
     };
 
-    const rootElement = document.getElementById('root');
-    rootElement?.addEventListener('keydown', listener);
-    return () => { rootElement?.removeEventListener('keydown', listener); }
-  }, [wrapIntoContainer, rootID]);
+    document.addEventListener('keydown', listener);
+    return () => document.removeEventListener('keydown', listener);
+  }, [wrapIntoContainer]);
 
   useEffect(() => {
     const listener = (event: KeyboardEvent) => {
@@ -64,10 +52,9 @@ export const Component = (props: Props) => {
       }
     };
 
-    const rootElement = document.getElementById('root');
-    rootElement?.addEventListener('keydown', listener);
-    return () => rootElement?.removeEventListener('keydown', listener);
-  }, [copyActiveItem, rootID]);
+    document.addEventListener('keydown', listener);
+    return () => document.removeEventListener('keydown', listener);
+  }, [copyActiveItem]);
 
   useEffect(() => {
     const listener = (event: KeyboardEvent) => {
@@ -78,12 +65,11 @@ export const Component = (props: Props) => {
       }
     };
 
-    const rootElement = document.getElementById('root');
-    rootElement?.addEventListener('keydown', listener);
-    return () => rootElement?.removeEventListener('keydown', listener);
-  }, [pasteCopiedItem, rootID]);
+    document.addEventListener('keydown', listener);
+    return () => document.removeEventListener('keydown', listener);
+  }, [pasteCopiedItem]);
 
   return null;
 };
 
-export const HotKeys = connect(mapState, mapDispatch)(Component);
+export const HotKeys = connect(null, mapDispatch)(Component);

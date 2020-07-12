@@ -1,0 +1,156 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`findParentByChildID Should find parent of element on 2 level 1`] = `
+Object {
+  "buoyancy": 0,
+  "children": Array [
+    Object {
+      "buoyancy": 0,
+      "children": Array [
+        Object {
+          "buoyancy": 0,
+          "children": Array [],
+          "id": "3",
+          "image": null,
+          "name": "heading",
+          "parameters": Object {},
+          "styles": Object {},
+          "type": "heading",
+        },
+        Object {
+          "buoyancy": 1,
+          "children": Array [
+            Object {
+              "buoyancy": 0,
+              "children": Array [],
+              "id": "5",
+              "image": null,
+              "name": "heading",
+              "parameters": Object {},
+              "styles": Object {},
+              "type": "heading",
+            },
+            Object {
+              "buoyancy": 1,
+              "children": Array [],
+              "id": "6",
+              "image": null,
+              "name": "heading",
+              "parameters": Object {},
+              "styles": Object {},
+              "type": "heading",
+            },
+          ],
+          "id": "4",
+          "image": null,
+          "name": "heading",
+          "parameters": Object {},
+          "styles": Object {},
+          "type": "heading",
+        },
+      ],
+      "id": "2",
+      "image": null,
+      "name": "heading",
+      "parameters": Object {},
+      "styles": Object {},
+      "type": "heading",
+    },
+  ],
+  "id": "1",
+  "image": null,
+  "name": "heading",
+  "parameters": Object {},
+  "styles": Object {},
+  "type": "heading",
+}
+`;
+
+exports[`findParentByChildID Should find parent of element on 3 level 1`] = `
+Object {
+  "buoyancy": 0,
+  "children": Array [
+    Object {
+      "buoyancy": 0,
+      "children": Array [],
+      "id": "3",
+      "image": null,
+      "name": "heading",
+      "parameters": Object {},
+      "styles": Object {},
+      "type": "heading",
+    },
+    Object {
+      "buoyancy": 1,
+      "children": Array [
+        Object {
+          "buoyancy": 0,
+          "children": Array [],
+          "id": "5",
+          "image": null,
+          "name": "heading",
+          "parameters": Object {},
+          "styles": Object {},
+          "type": "heading",
+        },
+        Object {
+          "buoyancy": 1,
+          "children": Array [],
+          "id": "6",
+          "image": null,
+          "name": "heading",
+          "parameters": Object {},
+          "styles": Object {},
+          "type": "heading",
+        },
+      ],
+      "id": "4",
+      "image": null,
+      "name": "heading",
+      "parameters": Object {},
+      "styles": Object {},
+      "type": "heading",
+    },
+  ],
+  "id": "2",
+  "image": null,
+  "name": "heading",
+  "parameters": Object {},
+  "styles": Object {},
+  "type": "heading",
+}
+`;
+
+exports[`findParentByChildID Should find parent of element on 4 level 1`] = `
+Object {
+  "buoyancy": 1,
+  "children": Array [
+    Object {
+      "buoyancy": 0,
+      "children": Array [],
+      "id": "5",
+      "image": null,
+      "name": "heading",
+      "parameters": Object {},
+      "styles": Object {},
+      "type": "heading",
+    },
+    Object {
+      "buoyancy": 1,
+      "children": Array [],
+      "id": "6",
+      "image": null,
+      "name": "heading",
+      "parameters": Object {},
+      "styles": Object {},
+      "type": "heading",
+    },
+  ],
+  "id": "4",
+  "image": null,
+  "name": "heading",
+  "parameters": Object {},
+  "styles": Object {},
+  "type": "heading",
+}
+`;

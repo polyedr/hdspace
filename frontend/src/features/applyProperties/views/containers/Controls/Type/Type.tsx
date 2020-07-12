@@ -2,7 +2,6 @@ import React, { memo } from 'react';
 import { connect } from 'react-redux';
 
 import { AppReduxState } from '$shared/types/app';
-import { InputType, ElementParameters } from '$redux/project/types';
 import { selectors } from '$redux/project/';
 import { DropDown } from '$components/UI/DropDown/';
 import {
@@ -10,23 +9,24 @@ import {
   PropertiesChangeProps
 } from '$utils/withConfigurableProperties';
 import { sharedClasses } from '$styles/sharedClasses';
+import { InputType, TextinputElement } from '$api/types';
 
 import { ControlTitle } from '../../../components/ControlTitle/ControlTitle';
 import { TYPE } from './constants';
 const styles = require('./Type.scss');
 
 type StateProps = {
-  type?: InputType;
+  type: InputType;
 };
 
 function mapState(state: AppReduxState): StateProps {
-  const activeItemParams = selectors.selectActiveItemParams(state) as ElementParameters;
+  const activeItemParams = selectors.selectActiveItemParams<TextinputElement>(state);
 
   return {
     type: activeItemParams.type,
   };
 }
-type Props = StateProps & PropertiesChangeProps;
+type Props = StateProps & PropertiesChangeProps<TextinputElement>;
 
 const Type: React.FC<Props> = memo((props) => {
   const { type, updateParams } = props;

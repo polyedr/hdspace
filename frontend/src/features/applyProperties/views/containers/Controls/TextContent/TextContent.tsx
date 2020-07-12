@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 import { AppReduxState } from '$shared/types/app';
 import { selectors } from '$redux/project/';
 import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
+import { ParagraphElement } from '$api/types';
+
 const styles = require('./TextContent.scss');
 
 type StateProps = {
@@ -11,14 +13,14 @@ type StateProps = {
 };
 
 function mapState(state: AppReduxState): StateProps {
-  const activeItemParams = selectors.selectActiveItemParams(state) as any;
+  const activeItemParams = selectors.selectActiveItemParams<ParagraphElement>(state);
 
   return {
     content: activeItemParams.textContent,
   };
 }
 
-type Props = StateProps & PropertiesChangeProps;
+type Props = StateProps & PropertiesChangeProps<ParagraphElement>;
 
 const Component: React.FC<Props> = ({
   content,

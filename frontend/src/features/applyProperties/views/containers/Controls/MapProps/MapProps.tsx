@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 import { connect } from 'react-redux';
 
 import { AppReduxState } from '$shared/types/app';
-import { selectors, T as ProjectT } from '$redux/project/';
+import { selectors } from '$redux/project/';
 import {
   MIN_LATITUDE,
   MAX_LATITUDE,
@@ -13,24 +13,25 @@ import {
 } from '$constants/defaultParams';
 import { getPermissibleValue } from '$utils/NumberHelper';
 import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
+import { MapProps as MapParams, MapElement } from '$api/types';
 
 const styles = require('./MapProps.scss');
 
 const ZOOM_STEP = 0.5;
 
 type StateProps = {
-  map_props: ProjectT.IScreenProps['map_props'];
+  map_props: MapParams['map_props'];
 }
 
 function mapState(state: AppReduxState): StateProps {
-  const activeItemParams = selectors.selectActiveItemParams(state) as any;
+  const activeItemParams = selectors.selectActiveItemParams<MapElement>(state);
 
   return {
     map_props: activeItemParams.map_props,
   };
 }
 
-type Props = StateProps & PropertiesChangeProps;
+type Props = StateProps & PropertiesChangeProps<MapElement>;
 
 const Component: React.FC<Props> = ({
   map_props,

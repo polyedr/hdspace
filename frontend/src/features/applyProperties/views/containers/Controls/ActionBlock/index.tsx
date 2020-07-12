@@ -8,7 +8,8 @@ import { DropDown } from '$components/UI/DropDown/';
 import { Icon } from '$components/UI/Icon/';
 import { Button } from '$components/UI/Button/';
 import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
-import { LinkParams, InternalLink, ExternalLink, IProjectScreen } from '$redux/project/types';
+import { IProjectScreen } from '$redux/project/types';
+import { LinkParams, InternalLink, ExternalLink, HyperlinkElement } from '$api/types';
 
 const styles = require('./styles.scss');
 
@@ -18,7 +19,7 @@ type StateProps = {
 }
 
 function mapState(state: AppReduxState): StateProps {
-  const activeItemParams = selectors.selectActiveItemParams(state) as any;
+  const activeItemParams = selectors.selectActiveItemParams<HyperlinkElement>(state);
 
   return {
     screens: selectors.selectScreens(state),
@@ -26,7 +27,7 @@ function mapState(state: AppReduxState): StateProps {
   };
 }
 
-type Props = StateProps & PropertiesChangeProps;
+type Props = StateProps & PropertiesChangeProps<HyperlinkElement>;
 
 const Component: React.FC<Props> = (props) => {
   const {

@@ -27,9 +27,10 @@ import {
   DEFAULT_SELECT_OPEN,
   DEFAULT_VIDEO_SETTINGS,
 } from '$constants/defaultParams';
-import { LibraryContainers, ElementsToAdd, LibraryChildrenElements } from './libraryElements';
+import { ElementsToAdd, ChildrenElements } from './libraryElements/libraryElements';
+import { ServerElement } from '$api/types';
 
-export const ENTITIES: { [K in Exclude<ElementEntity, 'ocrtext'>]: K } = {
+export const ENTITIES: { [K in Exclude<ElementEntity, 'ocrtext' | 'root' | 'container'>]: K } = {
   button: 'button',
   textinput: 'textinput',
   textarea: 'textarea',
@@ -78,11 +79,10 @@ const controlAffectsOnStyles = (controlName: Control) => (
   CONTROLS_AFFECT_ON_STYLES.find(x => x === controlName) !== undefined
 );
 
-export type ContainerEntity = keyof LibraryContainers;
 export type ElementEntity = keyof ElementsToAdd;
-export type ChildEntity = keyof LibraryChildrenElements;
+export type ChildEntity = keyof ChildrenElements;
 
-export type Entity = ContainerEntity | ElementEntity | ChildEntity;
+export type Entity = ElementEntity | ChildEntity;
 
 export type SubEntity = 'root';
 
@@ -224,6 +224,12 @@ const rootDefaults = {
     background: {
       ...extractDefaults('root', 'root', 'background'),
       'background-color': '#ffffff',
+    },
+    size: {
+      ...extractDefaults('root', 'root', 'size'),
+      width: '100%',
+      'min-height': '100%',
+      'min-width': '100%',
     },
   },
 };
@@ -776,16 +782,30 @@ const ENTITY_TO_DEFAULTS: EntityToDefaults = {
   undefined: undefinedDefaults,
 };
 
-export const getConfigurablePropsOf = <EntityName extends Entity>(subEntity: SubEntity) => createSelector(
-  (entity: EntityName) => entity,
-  (entity: EntityName) => {
-    const entityControlsDefaults = ENTITY_TO_DEFAULTS[entity][subEntity];
-    return R.keys(entityControlsDefaults).reduce((acc, c) => {
-      const controlAffectsOn = controlAffectsOnStyles(c) ? 'styles' : 'params';
-      return ({
-        ...acc,
-        [controlAffectsOn]: { ...acc[controlAffectsOn], ...entityControlsDefaults[c] },
-      })
-    }, { styles: {}, params: {} });
-  },
-);
+export const getConfigurablePropsOf = <
+  EntityName extends Entity,
+  Params extends ServerElement<EntityName>['parameters']
+>(
+  subEntity: SubEntity
+) =>
+  createSelector(
+    (entity: EntityName) => entity,
+    (entity: EntityName) => {
+      const entityControlsDefaults = ENTITY_TO_DEFAULTS[entity][subEntity];
+      return R.keys(entityControlsDefaults).reduce(
+        (acc, c) => {
+          const controlAffectsOn = controlAffectsOnStyles(c)
+            ? 'styles'
+            : 'params';
+          return {
+            ...acc,
+            [controlAffectsOn]: {
+              ...acc[controlAffectsOn],
+              ...entityControlsDefaults[c],
+            },
+          };
+        },
+        { styles: {}, params: {} as Params }
+      );
+    }
+  );

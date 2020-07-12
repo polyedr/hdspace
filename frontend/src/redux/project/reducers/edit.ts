@@ -4,12 +4,12 @@ import * as T from '../types';
 
 export function editReducer(state: T.ReduxState['edit'] = initial.edit, action: T.Action): T.ReduxState['edit'] {
   switch (action.type) {
-    case 'PROJECTS:UPDATE_VIEW_TREE': {
+    case 'PROJECTS:UPDATE_ELEMENTS_TREE': {
       return {
         ...state,
-        ...action.payload,
+        rootElement: action.payload.root,
       };
-    }
+    };
 
     case 'PROJECTS:CLEAN_AFTER_PREV_SCREEN': {
       return {

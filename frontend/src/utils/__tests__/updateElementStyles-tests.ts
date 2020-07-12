@@ -1,0 +1,29 @@
+import { updateElementStyles } from '$utils/ElementsTreeHelper';
+
+import { mockRoot } from './mocks';
+
+describe('updateElementStyles', () => {
+  test('Should update element styles on 1 level', () => {
+    const updatedTree = updateElementStyles('1', { color: 'red' }, mockRoot);
+
+    expect(updatedTree).toMatchSnapshot();
+  });
+
+  test('Should update element styles on 2 level', () => {
+    const updatedTree = updateElementStyles('2', { color: 'red' }, mockRoot);
+
+    expect(updatedTree).toMatchSnapshot();
+  });
+
+  test('Should update element styles on 3 level', () => {
+    const updatedTree = updateElementStyles('3', { color: 'red' }, mockRoot);
+
+    expect(updatedTree).toMatchSnapshot();
+  });
+
+  test('Should update element styles on 5 level', () => {
+    const updatedTree = updateElementStyles('5', { color: 'red' }, mockRoot);
+
+    expect(updatedTree).toMatchSnapshot();
+  });
+});

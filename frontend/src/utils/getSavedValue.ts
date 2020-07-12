@@ -1,7 +1,7 @@
-import { IScenarioElement } from '$redux/project/types';
+import { LibraryElementUnion } from '$api/types';
 
-export const getSavedValue = (element: IScenarioElement) => {
-  switch (element.struct_type) {
+export const getSavedValue = (element: LibraryElementUnion) => {
+  switch (element.type) {
     case 'textarea':
     case 'textinput': {
       return element.parameters.textContent || '';
@@ -11,8 +11,13 @@ export const getSavedValue = (element: IScenarioElement) => {
       return element.parameters.defaultChecked || '';
     }
 
+    case 'radiobutton':
+    case 'select': {
+      return element.parameters.value;
+    }
+
     default: {
-      return element.parameters.value || '';
+      return '';
     }
   }
 };

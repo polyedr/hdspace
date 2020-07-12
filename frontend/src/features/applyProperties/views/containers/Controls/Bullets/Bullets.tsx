@@ -5,22 +5,22 @@ import { Switch, makeStyles } from '@material-ui/core';
 import { AppReduxState } from '$shared/types/app';
 import { selectors } from '$redux/project/';
 import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
-import { CssLikeStyles } from '$utils/StyleHelper';
 import { sharedClasses } from '$styles/sharedClasses';
+import { ListElement } from '$api/types';
 
 type StateProps = {
   bulletsStyles: 'disc' | 'none';
 };
 
 function mapState(state: AppReduxState): StateProps {
-  const activeItemStyles = selectors.selectActiveItemStyles(state) as Required<CssLikeStyles>;
+  const activeItemStyles = selectors.selectActiveItemStyles(state);
 
   return {
     bulletsStyles: activeItemStyles['list-style-type'],
   };
 }
 
-type Props = StateProps & PropertiesChangeProps;
+type Props = StateProps & PropertiesChangeProps<ListElement>;
 
 const useStyles = makeStyles({
   switchBase: {

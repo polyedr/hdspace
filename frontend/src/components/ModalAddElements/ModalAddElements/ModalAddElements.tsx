@@ -11,8 +11,8 @@ import { getGroupElements, IListCategoryEl, parseAddElementsTabs } from '$utils/
 import { selectors, actionsCreators } from '$redux/project';
 import { AppReduxState } from '$shared/types/app';
 import { PropertiesPanelProps } from '$features/applyProperties';
-import { ServerStructType } from '$redux/project/types';
-import { LibraryElements } from '$domain/libraryElements';
+import { ServerStructType, CreatedElement } from '$redux/project/types';
+import { LibraryElements } from '$domain/libraryElements/libraryElements';
 
 const styles = require('./ModalAddElements.scss');
 
@@ -39,7 +39,7 @@ type OwnProps = {
   scenarios: PropertiesPanelProps['scenarios'];
   libraryElements: LibraryElements;
   onClose(): void;
-  onConfirm(elementsToAdd: IChooseElement[]): void;
+  onConfirm(elementsToAdd: CreatedElement[]): void;
 };
 
 type Props = typeof mapDispatchToProps & ReturnType<typeof mapStateToProps> & OwnProps;
@@ -61,7 +61,7 @@ const Component: React.FunctionComponent<Props> = memo((props) => {
   const [activeTab, setActiveTab] = useState<string>('Screen');
   const [errorMsg, setErrorMsg] = React.useState<string>('');
   const [listElement, setListElement] = useState<IListCategoryEl>({});
-  const [selectedElements, setSelectedElements] = useState<IChooseElement[]>([]);
+  const [selectedElements, setSelectedElements] = useState<CreatedElement[]>([]);
   const [scenarioState, setScenarioState] = useState<ScenarioStateType>('scenario_new');
   const [scenarioName, setScenarioName] = React.useState<string>('');
   const [scenarioTypeId, setScenarioTypeId] = React.useState<string | null>(null);

@@ -4,8 +4,9 @@ import { connect } from 'react-redux';
 import { AppReduxState } from '$shared/types/app';
 import { IScenarioElement } from '$redux/project/types';
 import { actionsCreators, selectors } from '$redux/project/';
-import { T as ProjectT } from '$redux/project';
 import { CssLikeStyles } from '$utils/StyleHelper';
+import { LibraryElement } from '$api/types';
+import { Entity } from '$domain/core';
 
 type StateProps = {
   activeItemID: string;
@@ -31,60 +32,44 @@ function mapState(state: AppReduxState): StateProps {
 const mapDispatch = {
   updateElementParameters: actionsCreators.updateElementParameters,
   updateElementStyles: actionsCreators.updateElementStyles,
-  updateChildStyles: actionsCreators.updateChildStyles,
-  updateScenarioStyles: actionsCreators.updateScenarioStyles,
 };
 
-export type PropertiesChangeProps = {
+export type PropertiesChangeProps<T extends LibraryElement<Entity>> = {
   activeItemID: string;
   updateStyles(payload: CssLikeStyles): void;
-  updateParams(payload: Params, updatedItemID?: number): void;
+  updateParams(payload: Params<T>, updatedItemID?: string): void;
 };
 
-type Params = Partial<{ [P in keyof ProjectT.IScreenProps]: ProjectT.IScreenProps[P] }>;
+type Params<T extends LibraryElement<Entity>> = Partial<T['parameters']>;
 
 // potentially pass config with needed styles/params first
-export function withConfigurableProperties<T extends PropertiesChangeProps>(
+export function withConfigurableProperties<K extends LibraryElement<Entity>, T extends PropertiesChangeProps<K>>(
   Component: React.ComponentType<T>
-): React.FC<Omit<T, keyof PropertiesChangeProps>> {
+): React.FC<Omit<T, keyof PropertiesChangeProps<K>>> {
   function WrapperComponent(props: any) {
     const {
       activeItemID,
       activeItemStyles,
       activeItemChildrenStyles,
       scenarioElement,
-      updateScenarioStyles,
       updateElementStyles,
-      updateChildStyles,
       updateElementParameters,
-      childName,
       ...restProps
     } = props;
 
-    const updateStyles = useCallback((styles: CssLikeStyles) => {
-      if (activeItemID.slice(-1) === 's') {
-        updateScenarioStyles(activeItemID, styles);
-      } else {
-        const currentChild = childName && (scenarioElement as IScenarioElement).children.find(child => child.struct_type === childName)?.id;
-        const updatedID = childName && currentChild ? `${currentChild}e` : activeItemID;
-
-        if (childName) {
-          updateChildStyles(activeItemID, updatedID, styles);
-        } else {
-          updateElementStyles(updatedID, styles);
-        }
-      }
+    const updateStyles = useCallback((styles: CssLikeStyles, itemID?: string) => {
+      updateElementStyles(itemID || activeItemID, styles);
     }, [activeItemID]);
 
-    const updateParams = useCallback((params: Params, updatedItemID?: number) => {
-      updateElementParameters(updatedItemID && `${updatedItemID}e` || activeItemID, params);
+    const updateParams = useCallback((params: Params<K>, itemID?: string) => {
+      updateElementParameters(itemID || activeItemID, params);
     }, [activeItemID]);
 
     return (
       <Component
         {...restProps}
         activeItemID={activeItemID}
-        activeItemStyles={childName ? activeItemChildrenStyles[childName].styles : activeItemStyles}
+        activeItemStyles={activeItemStyles}
         updateStyles={updateStyles}
         updateParams={updateParams}
       />

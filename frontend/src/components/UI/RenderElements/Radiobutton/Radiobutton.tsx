@@ -4,13 +4,11 @@ import { makeStyles, Radio } from '@material-ui/core';
 import RadioButtonCheckedIcon from '@material-ui/icons/RadioButtonChecked';
 import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked';
 
-import { sharedClasses } from '$styles/sharedClasses';
-
 import { RadioRendererProps } from '../types';
 const styles = require('../styles.scss');
 
 const Radiobutton = (props: RadioRendererProps) => {
-  const { id, style, params, isDisabled, active, sortableId, isRadioChecked, onChange } = props;
+  const { id, style, params, isDisabled, sortableId, isRadioChecked, onElementChange, className, elementRef } = props;
   const { backgroundColor, width, height, ...restStyles } = style;
   const { name, value, showRipple } = params;
 
@@ -29,19 +27,21 @@ const Radiobutton = (props: RadioRendererProps) => {
   })();
 
   const handleRadioChange = (event: ChangeEvent<HTMLInputElement>) => {
-    onChange(name || '', event.target.value);
+    onElementChange(name || '', event.target.value);
   };
 
   const inlineStyles = { ...restStyles, display: 'inline-block' };
 
   return (
     <div
+      ref={elementRef}
       id={id}
       data-ls-id={id}
       data-id={sortableId}
       key={id}
       style={inlineStyles}
-      className={cn(sharedClasses.lsItem, isDisabled && styles.disabled, active && sharedClasses.activated)}
+      className={cn(className, isDisabled && styles.disabled)}
+      tabIndex={isDisabled ? 0 : -1}
     >
       <Radio
         checkedIcon={<RadioButtonCheckedIcon className={classes.icon} />}

@@ -2,23 +2,27 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import { AppReduxState } from '$shared/types/app';
-import { IScenarioElement } from '$redux/project/types';
 import { selectors, actionsCreators } from '$redux/project/';
 import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
 import { Button } from '$components/UI/Button';
 import { Icon } from '$components/UI/Icon';
 import { sharedClasses } from '$styles/sharedClasses';
+import { DropdownItemElement } from '$api/types';
 
 const styles = require('./DropdownItems.scss');
 
 type StateProps = {
-  dropdownItems?: IScenarioElement[];
+  dropdownMenuID: string,
+  dropdownItems: DropdownItemElement[];
 };
 
 function mapState(state: AppReduxState): StateProps {
-  const dropdownItems = selectors.selectActiveItemChildren(state, 'dropdownItem');
+  const dropdownChildren = selectors.selectActiveItemChildren(state, 'dropdownMenu');
+  const [dropdownMenu] = dropdownChildren;
+  const dropdownItems = dropdownMenu.children;
 
   return {
+    dropdownMenuID: dropdownMenu.id,
     dropdownItems,
   };
 }
@@ -28,27 +32,25 @@ const mapDispatch = {
   deleteChildFromElement: actionsCreators.deleteChildFromElement,
 };
 
-type Props = StateProps & PropertiesChangeProps & typeof mapDispatch;
+type Props = StateProps & PropertiesChangeProps<DropdownItemElement> & typeof mapDispatch;
 
 const DropdownItems: React.FC<Props> = ({
-  activeItemID,
-  dropdownItems = [],
+  dropdownMenuID,
+  dropdownItems,
   updateParams,
   addChildToElement,
   deleteChildFromElement,
 }) => {
-  const parsedActiveItemID = parseInt(activeItemID);
-
-  const handleTextFieldChange = (dropdownItemID: number, { target: { value } }: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleTextFieldChange = (dropdownItemID: string, { target: { value } }: React.ChangeEvent<HTMLTextAreaElement>) => {
     updateParams({ textContent: value }, dropdownItemID);
   };
 
   const handleAddButtonClick = () => {
-    addChildToElement('dropdownItem', parsedActiveItemID, { textContent: 'New item' });
+    addChildToElement('dropdownItem', dropdownMenuID, { textContent: 'New item' });
   };
 
-  const handleDeleteButtonClick = (dropdownItemID: number) => {
-    deleteChildFromElement(dropdownItemID, parsedActiveItemID);
+  const handleDeleteButtonClick = (dropdownItemID: string) => {
+    deleteChildFromElement(dropdownItemID, dropdownMenuID);
   };
 
   return (
