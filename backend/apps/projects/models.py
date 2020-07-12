@@ -450,6 +450,19 @@ class ScenarioElement(MPTTModel, TimeStampedModel):
     # )
     func_type = models.CharField(max_length=250)
 
+    # Elements positioning
+    VERTICAL = "vertical"
+    HORIZONTAL = "horizontal"
+
+    SCENARIO_DIRECTION_TYPE_CHOICES = (
+        (VERTICAL, "vertical"),
+        (HORIZONTAL, "horizontal"),
+    )
+
+    direction = models.CharField(
+        choices=SCENARIO_DIRECTION_TYPE_CHOICES, default=VERTICAL, max_length=50, null=True
+    )
+
     scenario = models.ForeignKey(
         ScreenScenario, related_name="elements", on_delete=models.CASCADE, null=True
     )

@@ -7,7 +7,7 @@ from rest_framework_recursive.fields import RecursiveField
 
 from project.settings import model, MEDIA_ROOT
 from rest_framework import serializers
-from apps.projects.models import ScenarioElement, ScreenScenario
+from apps.projects.models import ScenarioElement
 from sklearn.cluster import KMeans
 from collections import Counter
 import cv2
@@ -141,17 +141,18 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
     parameters = serializers.JSONField()
     styles = serializers.JSONField()
     children = RecursiveField(required=False, allow_null=True, many=True)
-    scenario = serializers.PrimaryKeyRelatedField(source='node.id', read_only=True)
+    container = serializers.PrimaryKeyRelatedField(source='node.id', read_only=True)
 
     class Meta:
         model = ScenarioElement
         fields = (
             "id",
-            "scenario",
+            "container",
             "name",
             "children",
             "struct_type",
             "func_type",
+            "direction",
             "buoyancy",
             "image",
             "parameters",
@@ -196,7 +197,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
             img = load_img(imgpath)
             img = img_to_array(img)
 
-            # Get the dominant colour for the parent scenario(take the whole image)
+            # Get the dominant colour for the parent container(take the whole image)
             bcolour_container_value = '255,255,255,0'
             domcolour_container = get_dominant_colour(img)
             domcolour_container.append(1)
@@ -445,6 +446,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                             {
                                 "struct_type": "textinput",
                                 "func_type": func_type,
+                                "buoyancy": roi[0],
                                 "parameters": {"placeholder": letters_str, "roi": roi},
                                 "styles": {
                                     "width": str(width_elem) + "px",
@@ -460,6 +462,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                             {
                                 "struct_type": "button",
                                 "func_type": "end_simple_container",
+                                "buoyancy": roi[0],
                                 "parameters": {"textContent": letters_str, "roi": roi},
                                 "styles": {
                                     "text-align": "center",
@@ -479,6 +482,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                             {
                                 "struct_type": "ocrtext",
                                 "func_type": func_type,
+                                "buoyancy": roi[0],
                                 "parameters": {"textContent": text, "roi": roi},
                                 "styles": {"text-align": aligned_element, "width": str(img_width) + "px", "font-size": str(font_size_img) + "px", },
                                 #
@@ -495,6 +499,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                             {
                                 "struct_type": "select",
                                 "func_type": func_type,
+                                "buoyancy": roi[0],
                                 "parameters": {"textContent": letters_str, "roi": roi},
                                 "styles": {
                                     "width": str(width_elem) + "px",
@@ -510,6 +515,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                             {
                                 "struct_type": "checkbox",
                                 "func_type": "checkbox",
+                                "buoyancy": roi[0],
                                 "parameters": {"name": letters_str, "roi": roi, "defaultChecked": False},
                                 "styles": {
                                     "width": str((width_elem + height_elem) / 2) + "px",
@@ -525,6 +531,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                             {
                                 "struct_type": "radiobutton",
                                 "func_type": "radiobutton",
+                                "buoyancy": roi[0],
                                 "parameters": {"textContent": letters_str, "roi": roi},
                                 "styles": {
                                     "width": str((width_elem + height_elem) / 2) + "px",
@@ -540,6 +547,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                             {
                                 "struct_type": "image",
                                 "func_type": "undefined",
+                                "buoyancy": roi[0],
                                 "parameters": {"alt": letters_str, "roi": roi},
                                 "styles": {
                                     "width": str(width_elem) + "px",
@@ -562,28 +570,28 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
 
             # Pass through all the rois. Find all the vertical grouping signals.
             # Find all the horizontal grouping signals.
-            # First assign scenarios for the vertical grouping, second assign scenarios for the horizontal grouping,
-            # For each vertical grouping the scenario should be assigned. Vertical grouping contains two elements:
+            # First assign containers for the vertical grouping, second assign containers for the horizontal grouping,
+            # For each vertical grouping the container should be assigned. Vertical grouping contains two elements:
             # first, input or select, and second, the text.
-            # Scenarios of vertical grouping should be included to the scenarios of horizontal grouping if they exist
+            # containers of vertical grouping should be included to the containers of horizontal grouping if they exist
             # and finally to the resulted whole image node.
-            # 1. Create scenarios for vertical groups. 2. Create scenarios for horizontal groups
+            # 1. Create containers for vertical groups. 2. Create containers for horizontal groups
             # (when element is in vertical group, take the whole vertical group)
             # Data structures here are lists of tuples for the vertically or horizonntally aligned elements
             # Vertically aligned: [(text0, input0), (text1, input1), ...]
             # Horizontally aligned: [(text2, input2), (input3, input4), ...]
-            # Maybe that's possible to create scenarios for vertically and horizontally aligned
-            # scenarios only after the elements creation.
+            # Maybe that's possible to create containers for vertically and horizontally aligned
+            # containers only after the elements creation.
             # That's possible to save positioning of all the elements if requested
-            # The serializer input is list of scenarios, one of them is the whole image node.
-            # Elements are distributed among these scenarios.
+            # The serializer input is list of containers, one of them is the whole image node.
+            # Elements are distributed among these containers.
             #
 
             vertical_groups = {}
             vertical_groups_subset = {}
             horizontal_groups = {}
-            # Inner scenarios elements list to remove them from recognized_elements
-            # befpre the final assignment to the general scenario
+            # Inner containers elements list to remove them from recognized_elements
+            # befpre the final assignment to the general container
             inner_containers_elements = set()
             for idx, recognized_element in enumerate(recognized_elements):
                 for idx1, recognized_element1 in enumerate(recognized_elements):
@@ -655,7 +663,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                                 ):
                                     # Fill the vertical_group dictionary
                                     vertical_group_tuple = (idx, idx1)
-                                    # The stub for the future scenario assigned
+                                    # The stub for the future container assigned
                                     vertical_group_container = -1
                                     vertical_groups.update(
                                         {
@@ -683,7 +691,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                             ):
                                 # Fill the horizontal_group dictionary
                                 horizontal_group_tuple = (idx, idx1)
-                                # The stub for the future scenario assigned
+                                # The stub for the future container assigned
                                 horizontal_group_container = -1
                                 horizontal_groups.update(
                                     {
@@ -691,9 +699,9 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                                     }
                                 )
             # These recognized elements should be assigned for the vertical groups,
-            # horizontal groups and to the general scenario
-            # Elements, groups and scenarios assignment
-            # {(element1, element2): scenario1, (element3, element4): scenario2}
+            # horizontal groups and to the general container
+            # Elements, groups and containers assignment
+            # {(element1, element2): container1, (element3, element4): container2}
             # vertical_groups = {(1, 2): -1}
             # horizontal_groups = {(2, 3): -1, (4, 5): -1}
             '''
@@ -707,20 +715,20 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                 print(key, vertical_groups[key])
             '''
 
-            # Scenario vertical data start
+            # container vertical data start
 
             container_vertical_data = {
                 "name": "container_vertical",
                 "struct_type": "container",
                 "func_type": "undefined",
-                # "direction": "vertical",
+                "direction": "vertical",
                 "parameters": {},
                 "styles": {},
                 "parent": node,
             }
 
-            # Create scenarios for vertical groups
-            # Keys are tuples of elements, and the value is a new vertical scenario assigned
+            # Create containers for vertical groups
+            # Keys are tuples of elements, and the value is a new vertical container assigned
             # Assign the functional class based on vertical gropuing if not assigned yet
             for v_group_key in vertical_groups:
                 children = []
@@ -742,12 +750,14 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                 xmax = max(x1, x2, x11, x21)
                 ymin = min(y1, y2, y11, y21)
                 ymax = max(y1, y2, y11, y21)
-                # Assign the rois to the vertical scenario, based on min & max values
+                # Assign the rois to the vertical container, based on min & max values
                 container_vertical.parameters.update({"roi": (ymin, xmin, ymax, xmax)})
+                # Assign the buoyancy to the vertical container, based on ymin or roi[0]
+                container_vertical.buoyancy = ymin
                 # Assignment of the functional class based on neighbourhood
                 if (element_data_vertical_input["func_type"] == "undefined"):
                     element_data_vertical_input["func_type"] = element_data_vertical_text["func_type"]
-                # Create elements for vertical groups scenarios
+                # Create elements for vertical groups containers
                 for element_data_vertical in v_group_key:
                     children_dict_vgroups = {}
                     element_vertical = recognized_elements[element_data_vertical]
@@ -764,27 +774,37 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                     children_dict_vgroups.update({'roi': rois})
                     children.append(children_dict_vgroups)
 
-                # Arrange the vertical scenario children based on their rois (coordinates)
+                # Arrange the vertical container children based on their rois (coordinates)
                 children = sorted(children, key=lambda i: i["roi"][0])
                 children = [sub['ids'] for sub in children]
                 container_vertical.parameters["children"] = children
-                container_vertical.save()
-            # Scenario vertical data end
 
-            # Scenario horizontal start
+                # Should add buoyancy for the children
+
+                # Select all the children for the container_vertical
+                # Detect rois from them
+                # Assign buoyancy for them based on i["roi"][0] value with step 100 (0 is the lowest, +100 is the next level)
+                # Or maybe buoyancy is their i["roi"][0] value
+                # I did that at the coordinates and classes detection step
+                # Intergal buyoancy for the vertical container was assigned above, too
+
+                container_vertical.save()
+            # container vertical data end
+
+            # container horizontal start
             container_horizontal_data = {
                 "name": "container_horizontal",
                 "struct_type": "container",
                 "func_type": "undefined",
-                # "direction": "horizontal",
+                "direction": "horizontal",
                 "parameters": {},
                 "styles": {},
                 "parent": node,
             }
 
-            # Create scenarios for horizontal groups
-            # Include scenarios for vertical groups
-            # Update scenarios for vertical groups with new parents
+            # Create containers for horizontal groups
+            # Include containers for vertical groups
+            # Update containers for vertical groups with new parents
             for h_group_key in horizontal_groups:
                 children = []
                 rois_list = []
@@ -794,7 +814,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                 horizontal_groups[h_group_key] = container_horizontal.id
                 # print("id", container_horizontal.id)
                 # print("styles", container_horizontal.styles, container_horizontal_data["styles"])
-                # print("scenario", container_horizontal)
+                # print("container", container_horizontal)
 
                 # If here was placed at least one select/input without the functional class assigned
                 # The second should be the text and it should exists with the functional class assigned
@@ -816,7 +836,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                 container_horizontal.styles["justify-content"] = "space-between"
                 container_horizontal.styles["display"] = "flex"
                 container_horizontal.styles["align-items"] = "center"
-                # Assign the styles for the case of the horizontal scenario with checkbox
+                # Assign the styles for the case of the horizontal container with checkbox
                 if(recognized_elements[h_group_key[0]]["struct_type"] in {"checkbox"}) or (recognized_elements[h_group_key[1]]["struct_type"] in {"checkbox"}):
                     print("h_group_key", h_group_key, recognized_elements[h_group_key[0]]["struct_type"], recognized_elements[h_group_key[1]]["struct_type"])
                     container_horizontal.styles["justify-content"] = "flex-start"
@@ -826,7 +846,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                 # print("after styles", container_horizontal.styles)
                 # input()
 
-                # Create elements for horizontal groups scenarios if they're not in vertical grouping already
+                # Create elements for horizontal groups containers if they're not in vertical grouping already
                 for element_data_horizontal in h_group_key:
                     # Compare if in vertical group.
                     # Each horizontal element is being placed not more than at one vertical group
@@ -859,11 +879,11 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                     else:
                         children_dict_hgroups = {}
                         # If the horizontal element exists in vertical group
-                        # Find the related vertical group scenario from its id
+                        # Find the related vertical group container from its id
                         vertical_group_container = ScenarioElement.objects.get(
                             id=vertical_groups[vertical_group]
                         )
-                        # Save rois data from the vertical scenario
+                        # Save rois data from the vertical container
                         rois_list.append(vertical_group_container.parameters["roi"])
                         ids = str(vertical_group_container.id) + "s"
                         rois = vertical_group_container.parameters["roi"]
@@ -888,19 +908,21 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                 ymin = min(rois_list[0][0], rois_list[0][2], rois_list[1][0], rois_list[1][2])
                 ymax = max(rois_list[0][0], rois_list[0][2], rois_list[1][0], rois_list[1][2])
 
-                # Assign the rois to the horizontal scenario, based on min & max values
+                # Assign the rois to the horizontal container, based on min & max values
                 container_horizontal.parameters.update({"roi": (ymin, xmin, ymax, xmax)})
-                # Arrange the horizontal scenario children based on their rois (coordinates)
+                # Assign buoyancy for the horizontal container, based on roi[0]
+                container_horizontal.buoyancy = ymin
+                # Arrange the horizontal container children based on their rois (coordinates)
                 children = sorted(children, key=lambda i: i["roi"][1])
                 children = [sub['ids'] for sub in children]
                 # Children array doesn't have parameters now
                 container_horizontal.parameters["children"] = children
                 container_horizontal.save()
-            # Scenario horizontal end
-        # Find all free vertical scenarios.
-        # Free vertical scenario does not share any element
-        # with horizontal scenario
-        # and doesn't belong to any horizontal scenario as a child
+            # container horizontal end
+        # Find all free vertical containers.
+        # Free vertical container does not share any element
+        # with horizontal container
+        # and doesn't belong to any horizontal container as a child
         # Should check if vertical and horizontal groups exist before these calculations
 
         if vertical_groups:
@@ -933,24 +955,24 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                             pass
 
         children = []  # [{'ids': ids, 'rois': rois}, {}, {}, {}, {}]
-        # Get all the elements fir the general node.
+        # Get all the elements for the general node.
         # Mark them as children.
         # recognized_elements_general = recognized_elements - inner_containers_elements
         for idx, element_data in enumerate(recognized_elements):
             if idx not in inner_containers_elements:
                 children_dict_elem = {}
                 # Get all the elements left. Mark them as children.
-                scenario_general_element = ScenarioElement.objects.create(
+                container_general_element = ScenarioElement.objects.create(
                     parent=node, **element_data
                 )
-                # Fill the children information to the main scenario for the parameters
-                ids = str(scenario_general_element.id) + "e"
-                rois = scenario_general_element.parameters["roi"]
+                # Fill the children information to the main container for the parameters
+                ids = str(container_general_element.id) + "e"
+                rois = container_general_element.parameters["roi"]
                 children_dict_elem.update({'ids': ids})
                 children_dict_elem.update({'roi': rois})
                 children.append(children_dict_elem)
 
-        # Get all the horizontal scenarios. Mark them as children.
+        # Get all the horizontal containers. Mark them as children.
         if horizontal_groups:
             for h_group_key in horizontal_groups:
                 children_dict_hgroups = {}
@@ -966,7 +988,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                 children_dict_hgroups.update({'roi': rois})
                 children.append(children_dict_hgroups)
 
-        # Get all the free vertical scenarios. Mark them as children.
+        # Get all the free vertical containers. Mark them as children.
         if vertical_groups_free:
             for v_group_key in vertical_groups_free:
                 children_dict_vgroups = {}
@@ -982,16 +1004,15 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                 children_dict_vgroups.update({'roi': rois})
                 children.append(children_dict_vgroups)
 
-
         # Check if the single button exists.
         # If exists, create the wrapper with height width related to the mean values of the largest cluster
-        # Mark this wrapper as a horizontal group of the main scenario
+        # Mark this wrapper as a horizontal group of the main container
         # Calculate the alignment of this button in group based on its coordinates
-        # Remove the button from the single elements of the main scenario
+        # Remove the button from the single elements of the main container
         for idx, child in enumerate(children):
             # Find the id of the potential button
             child_id = int(child['ids'][:-1])
-            # Get the button and create scenario for this button
+            # Get the button and create container for this button
             if 'e' in child['ids']:
                 element_child = ScenarioElement.objects.get(id=child_id)
                 if(element_child.struct_type == "button"):
@@ -1013,26 +1034,26 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         if (x1 + (width_elem / 2) > (img_width / 2)):
                             aligned_element = "right"
 
-                    # Create the horizontal scenario for the button
+                    # Create the horizontal container for the button
                     # if the button has right or central positioning
                     if(aligned_element in {"center", "right"}):
                         container_horizontal = ScenarioElement.objects.create(
                             parent=node, **container_horizontal_data
                         )
-                        # Add the button for the scenario parameters
+                        # Add the button for the container parameters
                         container_horizontal.parameters["children"] = []
                         container_horizontal.parameters["children"].append(child["ids"])
 
                         container_horizontal.styles["display"] = "flex"
                         container_horizontal.styles["width"] = "100%"
 
-                        # Should switch the button's parent from general scenario
-                        # to novel created horizontal scenario
-                        element_child.scenario = container_horizontal
+                        # Should switch the button's parent from general container
+                        # to novel created horizontal container
+                        element_child.container = container_horizontal
 
-                        # Should calculate ROI for the novel horizontal scenario
+                        # Should calculate ROI for the novel horizontal container
 
-                        # Attach the novel horizontal scenario to the general scenario
+                        # Attach the novel horizontal container to the general container
                         children_dict_hgroups_buttons = {}
                         ids = str(container_horizontal.id) + "s"
                         rois = element_child.parameters["roi"]
@@ -1042,7 +1063,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         # Remove the button from the children array
                         children.remove(child)
 
-                        # Calculate scenario horizontal roi
+                        # Calculate container horizontal roi
                         children.append(children_dict_hgroups_buttons)
                         # Define styles based on aligned_element value
                         if(aligned_element == "right"):
@@ -1051,11 +1072,10 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         if(aligned_element == "center"):
                             container_horizontal.styles["justify-content"] = "center"
 
-                        # Save the horizontal scenario created for the button
+                        # Save the horizontal container created for the button
                         container_horizontal.save()
                         # Save the element after changing its parent
                         element_child.save()
-
 
         # Sort the data structure based on rois[0] (the vertical coordinate)
         children = sorted(children, key=lambda i: i["roi"][0])
@@ -1087,7 +1107,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
             # Assign margin-bottom for each child
             child_id = int(child['ids'][:-1])
 
-            # Do the calculations over scenarios
+            # Do the calculations over containers
             if 's' in child['ids']:
                 container_child = ScenarioElement.objects.get(id=child_id)
                 container_child.styles["margin-bottom"] = str(margin_bottom) + "px"
@@ -1111,7 +1131,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
             # Assign margin-bottom for each child
             child_id = int(child['ids'][:-1])
 
-            # Calculate for the main scenario elements
+            # Calculate for the main container elements
             if 'e' in child['ids']:
                 element_child = ScenarioElement.objects.get(id=child_id)
                 print(element_child.struct_type)
@@ -1128,17 +1148,17 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                 # print("element_child.styles=", type(element_child.styles), element_child.styles)
                 # element_child.save()
 
-            # Calculate for the vertical scenarios of the main scenario
+            # Calculate for the vertical containers of the main container
             if 's' in child['ids']:
                 container_child = ScenarioElement.objects.get(id=child_id)
                 print("sci", container_child.id)
-                # Extract all the 1lvl elements for the given scenario child
+                # Extract all the 1lvl elements for the given container child
                 print("esci", container_child.children, container_child.parameters["children"])
                 flvl_elements = ScenarioElement.objects.filter(
                     parent=container_child.id
                 )
                 print(flvl_elements)
-                # Detect that elements which are in the vertical scenarios of the main scenario
+                # Detect that elements which are in the vertical containers of the main container
                 # for the inputs, selects, buttons
                 for flvl_element in flvl_elements:
                     if (flvl_element.struct_type in struct_type_accepted):
@@ -1155,12 +1175,12 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
 
             print("h:", height, width)
 
-        # Assign average height and width for the elements from the main scenario
-        # Assign average height and width for the elements from the vertical scenarios of the main scenario
+        # Assign average height and width for the elements from the main container
+        # Assign average height and width for the elements from the vertical containers of the main container
         for child in children:
-            # Assign height, width for each element with acceptable structural type from the main scenario
+            # Assign height, width for each element with acceptable structural type from the main container
             child_id = int(child['ids'][:-1])
-            # Calculate for the main scenario elements
+            # Calculate for the main container elements
             if 'e' in child['ids']:
                 element_child = ScenarioElement.objects.get(id=child_id)
                 print(element_child.struct_type)
@@ -1181,17 +1201,17 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
 
                 element_child.save()
 
-            # Assign height, width for each element for the vertical scenarios of the main scenario
+            # Assign height, width for each element for the vertical containers of the main container
             if 's' in child['ids']:
                 container_child = ScenarioElement.objects.get(id=child_id)
                 print("sci", container_child.id)
-                # Extract all the 1lvl elements for the given scenario child
+                # Extract all the 1lvl elements for the given container child
                 print("esci", container_child.children, container_child.parameters["children"])
                 flvl_elements = ScenarioElement.objects.filter(
                     parent=container_child.id
                 )
                 print(flvl_elements)
-                # Detect that elements which are in the vertical scenarios of the main scenario
+                # Detect that elements which are in the vertical containers of the main container
                 # for the inputs, selects, buttons
                 for flvl_element in flvl_elements:
                     if (flvl_element.struct_type in struct_type_accepted):
@@ -1211,7 +1231,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
 
                     flvl_element.save()
 
-        # Calculate height, width for each element for the horizontal scenarios of the main scenario
+        # Calculate height, width for each element for the horizontal containers of the main container
         # extract from elements
         # Todo: extract from vertical groups in
         height_h = 0
@@ -1220,11 +1240,10 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
         for child in children:
             # Assign margin-bottom for each child
             child_id = int(child['ids'][:-1])
-            # Calculate for the horizontal scenarios of the main scenario
+            # Calculate for the horizontal containers of the main container
             if 's' in child['ids']:
                 container_child = ScenarioElement.objects.get(id=child_id)
-                # if(container_child.direction == "horizontal"):
-                if True: # Must add the direction
+                if(container_child.direction == "horizontal"):
                     # Extract elements directly
                     # Todo: Extract elements from the vertical groups included
                     flvl_elements = ScenarioElement.objects.filter(
@@ -1247,11 +1266,10 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
         for child in children:
             # Assign margin-bottom for each child
             child_id = int(child['ids'][:-1])
-            # Calculate for the horizontal scenarios of the main scenario
+            # Calculate for the horizontal containers of the main container
             if 's' in child['ids']:
                 container_child = ScenarioElement.objects.get(id=child_id)
-                # if(container_child.direction == "horizontal"):
-                if True: # Must add the direction
+                if(container_child.direction == "horizontal"):
                     # Extract elements directly
                     # Todo: Extract elements from the vertical groups included
                     flvl_elements = ScenarioElement.objects.filter(
@@ -1278,15 +1296,15 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
 
         node.parameters["children"] = [sub['ids'] for sub in children]
         node.styles["background-color"] = "rgba(" + bcolour_container_value + ")"
-        # Assign the max width for the general scenario
+        # Assign the max width for the general container
         print("node.styles", node.styles)
         node.styles["max-width"] = str(img_width) + "px"
 
         node.save()
 
-        # Extract all the inputs, selects from the main scenario
+        # Extract all the inputs, selects from the main container
         # Assign the mean values for these inputs and selects
-        # Do the calculation for the main scenario button
+        # Do the calculation for the main container button
         #
         # Extract all the horizontal groups (2 level)
         # Extract all the inputs, selects from these groups
