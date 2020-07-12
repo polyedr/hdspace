@@ -13,6 +13,7 @@ export type ReduxState = {
   };
   ui: {
     activeItem: ActiveItem;
+    showContainersBorders: boolean;
     isAddElementsModalOpened: boolean;
     itemToCopyInfo: ItemToCopyInfo | null;
     savedElementsValues: SavedElementsValues;
@@ -82,6 +83,7 @@ export type SetScreen = IAction<'PROJECTS:SET_SCREEN', { screen: IProjectScreen 
 export type SetScreens = IAction<'PROJECTS:SET_SCREENS', { screens: IProjectScreen[] }>;
 export type AddElement = IAction<'PROJECTS:ADD_ELEMENT', { parentID: string, type: string }>;
 export type RenameElement = IAction<'PROJECTS:RENAME_ELEMENT', { elementID: string, name: string }>;
+export type ToggleContainersBorders = IPlainAction<'PROJECTS:TOGGLE_CONTAINERS_BORDERS'>;
 export type SetScenarioElements = IAction<'PROJECTS:SET_SCENARIO_ELEMENTS', { elements: IScenarioElements }>;
 export type UpdateElementStyles = IAction<'PROJECTS:UPDATE_ELEMENT_STYLES', { id: string, styles: CssLikeStyles }>;
 export type UpdateElementImage = IAction<'PROJECTS:UPDATE_ELEMENT_IMAGE', { itemID: string, image: File }>;
@@ -158,6 +160,7 @@ export type Action =
   | GetScreenNN
   | WrapIntoContainer
   | SetActiveItem
+  | ToggleContainersBorders
   | SetIsAddElementsModalOpened
   | SetItemToCopy
   | CopyActiveItem

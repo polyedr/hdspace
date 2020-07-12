@@ -8,6 +8,10 @@ export function uiReducer(state: T.ReduxState['ui'] = initial.ui, action: T.Acti
       return { ...state, activeItem: action.payload.activeItem };
     }
 
+    case 'PROJECTS:TOGGLE_CONTAINERS_BORDERS': {
+      return { ...state, showContainersBorders: !state.showContainersBorders };
+    }
+
     case 'PROJECTS:SET_ITEM_TO_COPY': {
       return { ...state, itemToCopyInfo: action.payload };
     }

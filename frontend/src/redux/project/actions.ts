@@ -159,6 +159,10 @@ export const renameElement = (elementID: string, name: string): T.RenameElement 
   payload: { elementID, name },
 });
 
+export const toggleContainersBorders = (): T.ToggleContainersBorders => ({
+  type: 'PROJECTS:TOGGLE_CONTAINERS_BORDERS',
+});
+
 export const setScenarioElements = (elements: T.IScenarioElements): T.SetScenarioElements => ({
   type: 'PROJECTS:SET_SCENARIO_ELEMENTS',
   payload: { elements },
