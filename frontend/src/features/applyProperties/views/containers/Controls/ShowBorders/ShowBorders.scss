@@ -1,0 +1,6 @@
+.label {
+  margin-left: 5px;
+  color: $mainTextColor;
+  @include props_panel_text;
+  font-weight: 400;
+}

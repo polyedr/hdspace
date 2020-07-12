@@ -9,6 +9,7 @@ import { ControlSection } from '$features/applyProperties/views/components/Contr
 
 import { PropertiesPanelProps } from '../../PropertiesPanel/PropertiesPanel';
 import { RenameElement } from '../RenameElement/RenameElement';
+import { ShowBorders } from '../ShowBorders/ShowBorders';
 const styles = require('./styles.scss');
 
 interface IComponentProps {
@@ -54,13 +55,14 @@ export const ActiveElementBlock: React.FunctionComponent<IComponentProps> = memo
           <Icon icon="add" />
         </Button>
       </div>
-      <div className="propsPanelContentBlock">
-        {activeItem && (
+      {activeItem && (
+        <div className="propsPanelContentBlock">
+          <ShowBorders />
           <ControlSection title="Element's name">
             <RenameElement />
           </ControlSection>
-        )}
-      </div>
+        </div>
+      )}
       <ModalAddElements
         active={isAddElementsModalOpened}
         scenarios={scenarios}
