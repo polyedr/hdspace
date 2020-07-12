@@ -4,7 +4,7 @@ import cn from 'classnames';
 import { GMap } from '$components/UI/GMap';
 import { CalendarWidget } from '$components/UI/Calendar';
 import { ClockWidget } from '$components/UI/Clock';
-import { ElementEntity } from '$domain/core';
+import { Entity } from '$domain/core';
 
 import { withAction } from '../../../utils/withAction';
 import { Action } from './Action/Action';
@@ -21,20 +21,45 @@ import { Textarea } from './Textarea/Textarea';
 import { Label } from './Label/Label';
 import { Dropdown } from './Dropdown/Dropdown';
 import { Video } from './Video/Video';
-import { ImageRendererProps, MapRendererProps, ClockRendererProps, SharedRendererProps } from './types';
+import { ListItem } from './ListItem/ListItem';
+import { SelectMenu } from './SelectMenu/SelectMenu';
+import { MenuItem } from './MenuItem/MenuItem';
+import { DropdownMenu } from './DropdownMenu/DropdownMenu';
+import { DropdownItem } from './DropdownItem/DropdownItem';
+import { ImageRendererProps, MapRendererProps, ClockRendererProps, SharedRendererProps, ContainerRendererProps } from './types';
 const styles = require('./styles.scss');
 
+const ContainerRenderer = (props: ContainerRendererProps) => {
+  const { id, sortableId, style, isDisabled, children, className, elementRef } = props;
+
+  return (
+    <div
+      ref={elementRef}
+      id={id}
+      data-ls-id={id}
+      data-id={sortableId}
+      key={id}
+      className={cn(className, styles.addedElem)}
+      style={style}
+      tabIndex={isDisabled ? 0 : -1}
+    >
+      {children}
+    </div>
+  );
+}
+
 const ImgRenderer = (props: ImageRendererProps) => {
-  const { id, params, active, sortableId, style, isDisabled } = props;
+  const { id, params, sortableId, style, isDisabled, className, elementRef } = props;
 
   return (
     <img
+      ref={elementRef}
       src={params.imageURL}
       id={id}
       data-ls-id={id}
       data-id={sortableId}
       key={id}
-      className={cn('ls-item', styles.addedElem, active && 'activated')}
+      className={cn(className, styles.addedElem)}
       style={style}
       alt={id}
       tabIndex={isDisabled ? 0 : -1}
@@ -43,14 +68,15 @@ const ImgRenderer = (props: ImageRendererProps) => {
 }
 
 const MapWidgetRenderer = (props: MapRendererProps) => {
-  const { id, params, active, isDisabled, style, sortableId } = props;
+  const { id, params, isDisabled, style, sortableId, className, elementRef } = props;
   return (
     <div
+      ref={elementRef}
       id={id}
       data-ls-id={id}
       data-id={sortableId}
       key={id}
-      className={cn('ls-item', styles.addedWidget, isDisabled && styles.disabled, active && 'activated')}
+      className={cn(className, styles.addedWidget, isDisabled && styles.disabled)}
       style={style}
       onClick={event => isDisabled && event.preventDefault()}
       tabIndex={isDisabled ? 0 : -1}
@@ -65,14 +91,15 @@ const MapWidgetRenderer = (props: MapRendererProps) => {
 };
 
 const CalendarWidgetRenderer = (props: SharedRendererProps) => {
-  const { id, style, active, isDisabled, sortableId } = props;
+  const { id, style, isDisabled, sortableId, className, elementRef } = props;
   return (
     <div
+      ref={elementRef}
       id={id}
       data-ls-id={id}
       data-id={sortableId}
       key={id}
-      className={cn('ls-item', styles.addedCalendar, isDisabled && styles.disabled, active && 'activated')}
+      className={cn(className, styles.addedCalendar, isDisabled && styles.disabled)}
       style={style}
       tabIndex={isDisabled ? 0 : -1}
     >
@@ -82,14 +109,15 @@ const CalendarWidgetRenderer = (props: SharedRendererProps) => {
 }
 
 const ClockWidgetRenderer = (props: ClockRendererProps) => {
-  const { id, params, style, active, sortableId, isDisabled } = props;
+  const { id, params, style, sortableId, isDisabled, className, elementRef } = props;
   return (
     <div
+      ref={elementRef}
       id={id}
       data-ls-id={id}
       data-id={sortableId}
       key={id}
-      className={cn('ls-item', styles.addedCalendar, active && 'activated')}
+      className={cn(className, styles.addedCalendar)}
       style={style}
       tabIndex={isDisabled ? 0 : -1}
     >
@@ -101,20 +129,23 @@ const ClockWidgetRenderer = (props: ClockRendererProps) => {
 }
 
 const UndefinedRenderer = (props: SharedRendererProps) => {
-  const { id, active, style, sortableId, isDisabled } = props;
+  const { id, style, sortableId, isDisabled, className, elementRef } = props;
   return (
     <div
+      ref={elementRef}
       data-ls-id={id}
       data-id={sortableId}
       key={id}
-      className={cn('ls-item', styles.addedContainer, active && 'activated')}
+      className={cn(className, styles.addedContainer)}
       style={style}
       tabIndex={isDisabled ? 0 : -1}
     />
   );
 }
 
-export const RENDERERS: Record<ElementEntity, React.FunctionComponent<any>> = {
+export const RENDERERS: Record<Entity, React.FunctionComponent<any>> = {
+  root: ContainerRenderer,
+  container: ContainerRenderer,
   button: withAction(Action, 'button'),
   textinput: Input,
   radiobutton: Radiobutton,
@@ -125,19 +156,24 @@ export const RENDERERS: Record<ElementEntity, React.FunctionComponent<any>> = {
   ocrtext: Paragraph,
   text_block: TextBlock,
   list: List,
+  listItem: ListItem,
   label: Label,
   hyperlink: withAction(Link, 'link'),
   image: ImgRenderer,
   select: Select,
+  selectMenu: SelectMenu,
+  selectItem: MenuItem,
   map: MapWidgetRenderer,
   calendar: CalendarWidgetRenderer,
   clock: ClockWidgetRenderer,
   dropdown: Dropdown,
+  dropdownMenu: DropdownMenu,
+  dropdownItem: DropdownItem,
   video: Video,
   undefined: UndefinedRenderer,
 };
 
-export const EXPORT_RENDERERS: Record<ElementEntity, React.FunctionComponent<any>> = {
+export const EXPORT_RENDERERS: Record<Entity, React.FunctionComponent<any>> = {
   ...RENDERERS,
   button: withAction(Action, 'button', true),
   hyperlink: withAction(Link, 'link', true),

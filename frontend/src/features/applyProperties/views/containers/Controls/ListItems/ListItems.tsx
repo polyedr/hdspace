@@ -4,21 +4,21 @@ import { ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, Checkbox 
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import { AppReduxState } from '$shared/types/app';
-import { IScenarioElement } from '$redux/project/types';
 import { selectors, actionsCreators } from '$redux/project/';
 import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
 import { Button } from '$components/UI/Button';
 import { Icon } from '$components/UI/Icon';
 import { sharedClasses } from '$styles/sharedClasses';
+import { ListItemElement } from '$api/types';
 
 const styles = require('./ListItems.scss');
 
 type StateProps = {
-  listItems: IScenarioElement[];
+  listItems: ListItemElement[];
 };
 
 function mapState(state: AppReduxState): StateProps {
-  const listItems = selectors.selectActiveItemChildren(state, 'listItem');
+  const listItems = selectors.selectActiveItemChildren(state, 'listItem') as ListItemElement[];
 
   return {
     listItems,
@@ -30,7 +30,7 @@ const mapDispatch = {
   deleteChildFromElement: actionsCreators.deleteChildFromElement,
 };
 
-type Props = StateProps & PropertiesChangeProps & typeof mapDispatch;
+type Props = StateProps & PropertiesChangeProps<ListItemElement> & typeof mapDispatch;
 
 const ListItems: React.FC<Props> = ({
   activeItemID,
@@ -39,25 +39,23 @@ const ListItems: React.FC<Props> = ({
   addChildToElement,
   deleteChildFromElement,
 }) => {
-  const parsedActiveItemID = parseInt(activeItemID);
-
-  const handleTextContentFieldChange = (listItemID: number, { target: { value } }: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleTextContentFieldChange = (listItemID: string, { target: { value } }: React.ChangeEvent<HTMLTextAreaElement>) => {
     updateParams({ textContent: value }, listItemID);
   };
 
-  const handleUrlFieldChange = (listItemID: number, { target: { value } }: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleUrlFieldChange = (listItemID: string, { target: { value } }: React.ChangeEvent<HTMLTextAreaElement>) => {
     updateParams({ link: value }, listItemID);
   };
 
   const handleAddButtonClick = () => {
-    addChildToElement('listItem', parsedActiveItemID, { textContent: 'New item', isLink: false, link: '' });
+    addChildToElement('listItem', activeItemID, { textContent: 'New item', isLink: false, link: '' });
   };
 
-  const handleDeleteButtonClick = (listItemID: number) => {
-    deleteChildFromElement(listItemID, parsedActiveItemID);
+  const handleDeleteButtonClick = (listItemID: string) => {
+    deleteChildFromElement(listItemID, activeItemID);
   };
 
-  const handleCheckboxChange = (listItemID: number, { target: { checked } }: React.ChangeEvent<HTMLInputElement>) => {
+  const handleCheckboxChange = (listItemID: string, { target: { checked } }: React.ChangeEvent<HTMLInputElement>) => {
     updateParams({ isLink: checked }, listItemID);
   };
 

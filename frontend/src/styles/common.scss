@@ -247,15 +247,3 @@ input[type='radio'] {
     background-color: darken($white, 10%);
   }
 }
-
-:global(.sortable-group) {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  flex: 1 1 100%;
-
-  &.horizontal {
-    flex-direction: row;
-  }
-}

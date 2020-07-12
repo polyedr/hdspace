@@ -4,8 +4,9 @@ import { connect } from 'react-redux';
 import { AppReduxState } from '$shared/types/app';
 import { IScenarioElement } from '$redux/project/types';
 import { actionsCreators, selectors } from '$redux/project/';
-import { T as ProjectT } from '$redux/project';
 import { CssLikeStyles } from '$utils/StyleHelper';
+import { LibraryElement } from '$api/types';
+import { Entity } from '$domain/core';
 
 type StateProps = {
   activeItemID: string;
@@ -33,18 +34,18 @@ const mapDispatch = {
   updateElementStyles: actionsCreators.updateElementStyles,
 };
 
-export type PropertiesChangeProps = {
+export type PropertiesChangeProps<T extends LibraryElement<Entity>> = {
   activeItemID: string;
   updateStyles(payload: CssLikeStyles): void;
-  updateParams(payload: Params, updatedItemID?: number): void;
+  updateParams(payload: Params<T>, updatedItemID?: string): void;
 };
 
-type Params = Partial<{ [P in keyof ProjectT.IScreenProps]: ProjectT.IScreenProps[P] }>;
+type Params<T extends LibraryElement<Entity>> = Partial<T['parameters']>;
 
 // potentially pass config with needed styles/params first
-export function withConfigurableProperties<T extends PropertiesChangeProps>(
+export function withConfigurableProperties<K extends LibraryElement<Entity>, T extends PropertiesChangeProps<K>>(
   Component: React.ComponentType<T>
-): React.FC<Omit<T, keyof PropertiesChangeProps>> {
+): React.FC<Omit<T, keyof PropertiesChangeProps<K>>> {
   function WrapperComponent(props: any) {
     const {
       activeItemID,
@@ -56,12 +57,12 @@ export function withConfigurableProperties<T extends PropertiesChangeProps>(
       ...restProps
     } = props;
 
-    const updateStyles = useCallback((styles: CssLikeStyles) => {
-      updateElementStyles(activeItemID, styles);
+    const updateStyles = useCallback((styles: CssLikeStyles, itemID?: string) => {
+      updateElementStyles(itemID || activeItemID, styles);
     }, [activeItemID]);
 
-    const updateParams = useCallback((params: Params) => {
-      updateElementParameters(activeItemID, params);
+    const updateParams = useCallback((params: Params<K>, itemID?: string) => {
+      updateElementParameters(itemID || activeItemID, params);
     }, [activeItemID]);
 
     return (

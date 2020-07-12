@@ -1,45 +1,61 @@
 import React, { ChangeEvent } from 'react';
 import cn from 'classnames';
-import { makeStyles, MenuItem, TextField, Paper, MenuList } from '@material-ui/core';
+import { makeStyles, TextField, MenuItem } from '@material-ui/core';
 
 import { convertPropCSS } from '$utils/StyleHelper';
-import { sharedClasses } from '$styles/sharedClasses';
-import { SelectItemChild, SelectMenuChild } from '$domain/libraryElements/libraryElements';
 
 import { SelectRendererProps } from '../types';
 const styles = require('../styles.scss');
 
 const SelectComponent = (props: SelectRendererProps) => {
-  const { id, style, isDisabled, activeItemId, active, sortableId, value, onChange, params, childrenElements } = props;
-  const { width, height, marginTop, marginRight, marginBottom, marginLeft, borderRadius, ...restStyles } = style;
-  const { showRipple, isOpen } = params;
+  const {
+    id,
+    style,
+    isDisabled,
+    active,
+    sortableId,
+    currentValue,
+    onElementChange,
+    params,
+    children,
+    className,
+    elementRef,
+    childrenElements,
+  } = props;
+
+  const {
+    width,
+    height,
+    marginTop,
+    marginRight,
+    marginBottom,
+    marginLeft,
+    borderRadius,
+    ...restStyles
+  } = style;
+  
+  const { isOpen } = params;
 
   const handleSelectChange = (event: ChangeEvent<{ name?: string | undefined; value: any; }>) => {
-    onChange(id, event.target.value);
+    onElementChange(id, event.target.value);
   };
 
-  const handlePaperClick = (event: React.MouseEvent<HTMLDivElement>) => {
-    (event.target as HTMLElement).focus();
-  };
+  const inlineStyles = { marginTop, marginRight, marginBottom, marginLeft };
 
-  const handleMenuItemClick = (event: React.MouseEvent<HTMLLIElement>) => {
-    (event.target as HTMLElement).focus();
-  };
+  const [menu] = childrenElements;
+  const menuItems = menu.children;
+  const menuStyles = menu.styles;
 
-  const menu = childrenElements.find(child => child.struct_type === 'selectMenu') as unknown as SelectMenuChild;
-  const menuStyles = menu?.styles;
-  const menuItems = childrenElements.filter(child => child.struct_type === 'selectItem') as SelectItemChild[];
-  const menuItemStyles = childrenElements.find(child => child.struct_type === 'selectItem')?.styles;
-
-  const inlineStyles = { width, height, marginTop, marginRight, marginBottom, marginLeft };
-
-  const classes = makeStyles({
-    container: {
-      '&.hovered $input': {
-        outline: '1px solid #949494',
+  const getMenuItemClasses = (itemStyle: React.CSSProperties) => makeStyles({
+    root: {
+      ...itemStyle,
+      '&:hover': {
+        backgroundColor: 'rgba(0, 0, 0, 0.04)',
       },
     },
+  })();
 
+  const classes = makeStyles({
     root: {
       height: '100%',
 
@@ -78,23 +94,11 @@ const SelectComponent = (props: SelectRendererProps) => {
     focused: {},
   })();
 
-  const menuItemClasses = makeStyles({
+  const wrapperClasses = makeStyles({
     root: {
-      ...(menuItemStyles && convertPropCSS(menuItemStyles)),
-      '&:hover': {
-        backgroundColor: isDisabled ? menuItemStyles?.['background-color'] : 'rgba(0, 0, 0, 0.04)',
+      '&.hovered $input': {
+        outline: '1px solid #949494',
       },
-    },
-  })();
-
-  const EditableMenuClasses = makeStyles({
-    root: {
-      position: 'absolute',
-      top: '0',
-      left: '0',
-      overflow: 'hidden',
-      zIndex: 1,
-      ...(menuStyles && convertPropCSS(menuStyles)),
     },
   })();
 
@@ -117,87 +121,59 @@ const SelectComponent = (props: SelectRendererProps) => {
   return isDisabled ? (
     <>
       <div
-        id={id}
-        data-ls-id={id}
-        data-id={sortableId}
         key={id}
-        style={{ ...inlineStyles, display: 'inline-block' }}
-        className={cn(sharedClasses.lsItem, classes.container)}
+        style={{
+          ...inlineStyles,
+          display: 'inline-block',
+          verticalAlign: 'top',
+        }}
+        className={cn(className, wrapperClasses.root)}
+        tabIndex={isDisabled ? 0 : -1}
       >
         <TextField
+          ref={elementRef}
+          id={id}
+          data-ls-id={id}
+          data-id={sortableId}
+          style={{ width, height }}
           variant="outlined"
           className={cn(classes.root, styles.disabled)}
-          value={value}
+          value={currentValue}
           InputProps={InputProps}
           select
         >
-          {menuItems?.map(({ id: itemID, parameters: { name, value } }) => <MenuItem key={itemID} value={value}>{name}</MenuItem>)}
+          {menuItems.map(({ id: itemID, parameters: { name, value } }) => (
+            <MenuItem key={itemID} value={value}>
+              {name}
+            </MenuItem>
+          ))}
         </TextField>
-        {isOpen && (
-          <div style={{ position: 'relative' }}>
-            <Paper
-              id={`${menu?.id}e`}
-              data-ls-id={`${menu?.id}e`}
-              tabIndex={0}
-              key={menu?.id}
-              className={cn(
-                sharedClasses.lsItem,
-                sharedClasses.unsortable,
-                styles.addedElem,
-                EditableMenuClasses.root,
-                parseInt(activeItemId) === menu?.id && sharedClasses.activated
-              )}
-              elevation={8}
-              onClick={handlePaperClick}
-            >
-              <MenuList>
-                {menuItems?.map(({ id: itemID, parameters: { name, value } }) => (
-                  <MenuItem
-                    id={`${itemID}e`}
-                    data-ls-id={`${itemID}e`}
-                    tabIndex={0}
-                    key={itemID}
-                    className={cn(
-                      menuItemClasses.root,
-                      sharedClasses.lsItem,
-                      sharedClasses.unsortable,
-                      styles.addedElem,
-                      styles.disabled,
-                      parseInt(activeItemId) === itemID && sharedClasses.activated
-                    )}
-                    value={value}
-                    disableRipple
-                    onClick={handleMenuItemClick}
-                  >
-                    {name}
-                  </MenuItem>
-                ))}
-              </MenuList>
-            </Paper>
-          </div>
-        )}
+        {isOpen && children}
       </div>
     </>
   ) : (
-    <div style={{ ...inlineStyles, position: 'relative', display: 'inline-block' }} >
+    <div
+      style={{
+        ...inlineStyles,
+        position: 'relative',
+        display: 'inline-block',
+        verticalAlign: 'top',
+      }}
+    >
       <TextField
         id={id}
         key={id}
         variant="outlined"
+        style={{ ...inlineStyles, width, height }}
         className={classes.root}
-        value={value}
+        value={currentValue}
         onChange={handleSelectChange}
         InputProps={InputProps}
         SelectProps={PrototypeMenuProps}
         select
       >
-        {menuItems?.map(({ id: menuItemID, parameters: { name, value } }) => (
-          <MenuItem
-            key={menuItemID}
-            className={menuItemClasses.root}
-            value={value}
-            disableRipple={!showRipple}
-          >
+        {menuItems.map(({ id: itemID, parameters: { name, value, showRipple }, styles }) => (
+          <MenuItem key={itemID} value={value} className={getMenuItemClasses(styles).root} disableRipple={!showRipple}>
             {name}
           </MenuItem>
         ))}

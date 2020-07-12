@@ -225,6 +225,12 @@ const rootDefaults = {
       ...extractDefaults('root', 'root', 'background'),
       'background-color': '#ffffff',
     },
+    size: {
+      ...extractDefaults('root', 'root', 'size'),
+      width: '100%',
+      'min-height': '100%',
+      'min-width': '100%',
+    },
   },
 };
 

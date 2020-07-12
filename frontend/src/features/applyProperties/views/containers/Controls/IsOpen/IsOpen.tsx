@@ -3,24 +3,24 @@ import { connect } from 'react-redux';
 import { Switch, makeStyles } from '@material-ui/core';
 
 import { AppReduxState } from '$shared/types/app';
-import { ElementParameters } from '$redux/project/types';
 import { selectors } from '$redux/project/';
 import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
 import { sharedClasses } from '$styles/sharedClasses';
+import { DropdownElement } from '$api/types';
 
 type StateProps = {
-  isOpen?: boolean;
+  isOpen: boolean;
 };
 
 function mapState(state: AppReduxState): StateProps {
-  const activeItemParams = selectors.selectActiveItemParams(state) as ElementParameters;
+  const activeItemParams = selectors.selectActiveItemParams<DropdownElement>(state);
 
   return {
     isOpen: activeItemParams.isOpen,
   };
 }
 
-type Props = StateProps & PropertiesChangeProps;
+type Props = StateProps & PropertiesChangeProps<DropdownElement>;
 
 const useStyles = makeStyles({
   switchBase: {

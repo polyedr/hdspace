@@ -23,7 +23,7 @@ import {
   DropdownItemParameters,
 } from './elementsParameters';
 
-export type ServerElement<Type extends Entity, Children = any[], Params  = { group?: string }> = {
+export type ServerElement<Type extends Entity, Children = any[], Params = {}> = {
   id?: number,
   name: string,
   scenario?: number,
@@ -31,7 +31,7 @@ export type ServerElement<Type extends Entity, Children = any[], Params  = { gro
   func_type: string,
   buoyancy: number,
   image?: string | null,
-  parameters: Params,
+  parameters: { group?: string } & Params,
   styles: {},
   children: Children,
 };
@@ -76,7 +76,7 @@ export type RecursiveElement = {
   children: [],
 }
 
-export type LibraryElement<Type extends Entity, Children = any[], Params  = { group?: string }> = {
+export type LibraryElement<Type extends Entity, Children = any[], Params = {}> = {
   id: string,
   name: string,
   type: Type,
@@ -84,7 +84,7 @@ export type LibraryElement<Type extends Entity, Children = any[], Params  = { gr
   image: string | null | undefined,
   styles: CssLikeStyles,
   children: Children,
-  parameters: Params,
+  parameters: { group?: string } & Params,
 };
 
 export type RootElement = LibraryElement<'root', []>;

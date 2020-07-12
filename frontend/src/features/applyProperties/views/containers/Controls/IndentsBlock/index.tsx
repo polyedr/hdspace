@@ -3,6 +3,8 @@ import classNames from 'classnames';
 
 import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
 import { CssLikeStyles } from '$utils/StyleHelper';
+import { LibraryElement } from '$api/types';
+import { Entity } from '$domain/core';
 
 const styles = require('./styles.scss');
 
@@ -12,7 +14,7 @@ type OwnProps = {
   activeItemStyles: Required<CssLikeStyles>;
 };
 
-type Props = OwnProps & PropertiesChangeProps;
+type Props = OwnProps & PropertiesChangeProps<LibraryElement<Entity>>;
 
 const IndentsBlock: React.FC<Props> = (props) => {
   const { updateStyles, activeItemStyles } = props;

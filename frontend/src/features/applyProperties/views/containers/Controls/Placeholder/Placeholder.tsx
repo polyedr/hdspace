@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 import { AppReduxState } from '$shared/types/app';
 import { selectors } from '$redux/project/';
 import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
+import { TextinputElement } from '$api/types';
+
 const styles = require('./Placeholder.scss');
 
 type StateProps = {
@@ -11,14 +13,14 @@ type StateProps = {
 };
 
 function mapState(state: AppReduxState): StateProps {
-  const activeItemParams = selectors.selectActiveItemParams(state) as any;
+  const activeItemParams = selectors.selectActiveItemParams<TextinputElement>(state);
 
   return {
     placeholder: activeItemParams.placeholder,
   };
 }
 
-type Props = StateProps & PropertiesChangeProps;
+type Props = StateProps & PropertiesChangeProps<TextinputElement>;
 
 const Component: React.FC<Props> = ({
   placeholder,
