@@ -84,6 +84,15 @@ export const setScenarioLoader = (active: boolean): T.SetScenarioLoader => ({
   payload: { active },
 });
 
+export const setNotification = (text: string): T.SetNotification => ({
+  type: 'PROJECTS:SET_NOTIFICATION',
+  payload: { text },
+});
+
+export const removeNotification = (): T.RemoveNotification => ({
+  type: 'PROJECTS:REMOVE_NOTIFICATION',
+});
+
 export const delScreen = (projectID: number, screenID: number): T.DeleteScreen => ({
   type: 'PROJECTS:DELETE_SCREEN',
   payload: { projectID, screenID },

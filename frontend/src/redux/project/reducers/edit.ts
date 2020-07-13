@@ -33,6 +33,14 @@ export function editReducer(state: T.ReduxState['edit'] = initial.edit, action: 
       return { ...state, loader: action.payload.active };
     }
 
+    case 'PROJECTS:SET_NOTIFICATION': {
+      return { ...state, notification: action.payload };
+    }
+
+    case 'PROJECTS:REMOVE_NOTIFICATION': {
+      return { ...state, notification: null };
+    }
+
     case 'PROJECTS:CLEAN_AFTER_PREV_SCREEN': {
       return {
         ...state,
