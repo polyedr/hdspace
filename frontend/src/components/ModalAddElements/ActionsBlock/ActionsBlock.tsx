@@ -146,7 +146,9 @@ export const ActionsBlock: React.FunctionComponent<Props> = ({
   const filterGroupElements = getFilterElements();
 
   const isAvailableChild = (type: Entity) => {
-    return AVAILABLE_CHILDREN[activeItem.itemType as Entity]['all'] || AVAILABLE_CHILDREN[activeItem.itemType as Entity][type];
+    return activeItem.itemType !== 'none' && (
+      AVAILABLE_CHILDREN[activeItem.itemType]['all'] || AVAILABLE_CHILDREN[activeItem.itemType][type]
+    );
   }
 
   return (

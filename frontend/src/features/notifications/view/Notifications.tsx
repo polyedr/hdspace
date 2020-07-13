@@ -50,16 +50,14 @@ const NotificationsComponent = (props: Props) => {
       onClose={handleSnackbarClose}
       message={notifications.text}
       action={
-        <React.Fragment>
-          <IconButton
-            size="small"
-            aria-label="close"
-            color="inherit"
-            onClick={handleIconButtonClick}
-          >
-            <CloseIcon fontSize="small" />
-          </IconButton>
-        </React.Fragment>
+        <IconButton
+          size="small"
+          aria-label="close"
+          color="inherit"
+          onClick={handleIconButtonClick}
+        >
+          <CloseIcon fontSize="small" />
+        </IconButton>
       }
     />
   ) : (

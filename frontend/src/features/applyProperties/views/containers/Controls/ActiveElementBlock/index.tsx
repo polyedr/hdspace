@@ -66,7 +66,11 @@ export const ActiveElementBlock: React.FunctionComponent<IComponentProps> = memo
   }, []);
 
   const isElementHaveChildren = () => {
-    const itemChildren = AVAILABLE_CHILDREN[activeItem.itemType as Entity];
+    if (activeItem.itemType === 'none') {
+      return false;
+    }
+
+    const itemChildren = AVAILABLE_CHILDREN[activeItem.itemType];
     const childrenTypes = itemChildren && Object.keys(itemChildren);
     return (
       itemChildren &&

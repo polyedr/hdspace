@@ -40,7 +40,7 @@ export type NotificationType = {
 
 export type ActiveItem = {
   itemId: string;
-  itemType: string;
+  itemType: Entity | 'none';
   name: string;
 };
 
