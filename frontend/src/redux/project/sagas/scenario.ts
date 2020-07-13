@@ -14,8 +14,9 @@ import {
 } from '$api/scenario';
 import { LibraryElement, ServerElement, LibraryElementUnion } from '$api/types';
 import { convertElementFromResponse } from '$api/converters/fromResponse';
-import { Entity } from '$domain/core';
+import { Entity, AVAILABLE_CHILDREN } from '$domain/core';
 import { DEFAULT_INDENTS } from '$constants/defaultParams';
+import { DISALLOW_REMOVE_ELEMENT_NOTIFICATION_TEXT } from '$constants/notifications';
 import { reqWrapper } from '$redux/project/sagas/index';
 import { ReturnPromisedType } from '$shared/types';
 
@@ -132,6 +133,15 @@ export function* removeElement(elementToRemoveID: string) {
 
   if (!itemToRemoveParent) {
     console.error(`Can not find removed element parent ${itemToRemoveParent} in tree!`);
+    return;
+  };
+
+  const sameChildrenAmount = itemToRemoveParent.children.filter(child => child.type === removedElement.type)?.length || 0;
+  const availableChildrenType = AVAILABLE_CHILDREN[itemToRemoveParent.type]['all'] ? 'all' : removedElement.type;
+  const isElementCanBeRemove = sameChildrenAmount > AVAILABLE_CHILDREN[itemToRemoveParent.type][availableChildrenType].min;
+
+  if(!isElementCanBeRemove) {
+    yield put(Actions.setNotification(DISALLOW_REMOVE_ELEMENT_NOTIFICATION_TEXT));
     return;
   };
 
