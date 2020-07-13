@@ -219,10 +219,8 @@ function* updateElementImage(action: ReturnType<typeof Actions.updateElementImag
 
   const changedElement: ReturnPromisedType<typeof apiChangeElement> = yield call(reqWrapper, apiChangeElement, { data: formData, id: parsedID });
 
-  const scenarioElement: ReturnType<typeof selectors.selectScenarioElement> = yield select(selectors.selectScenarioElement, parsedID);
-
   yield put(Actions.updateElementParameters(itemID, {
-    ...scenarioElement.parameters,
+    ...changedElement.parameters,
     imageURL: changedElement.image,
   }));
 }
