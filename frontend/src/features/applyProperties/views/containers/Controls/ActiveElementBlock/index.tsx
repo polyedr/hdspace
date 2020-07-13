@@ -1,7 +1,9 @@
 import React, { memo, useState, useCallback } from 'react';
 import classNames from 'classnames';
+import * as R from 'ramda';
 
 import { LibraryElements } from '$domain/libraryElements/libraryElements';
+import { AVAILABLE_CHILDREN, Entity, ENTITIES } from '$domain/core';
 import { Icon } from '$components/UI/Icon/';
 import { Button } from '$components/UI/Button/';
 import { Modal } from '$components/UI/Modal/';
@@ -63,18 +65,32 @@ export const ActiveElementBlock: React.FunctionComponent<IComponentProps> = memo
     console.log('rename element');
   }, []);
 
+  const isElementHaveChildren = () => {
+    const itemChildren = AVAILABLE_CHILDREN[activeItem.itemType as Entity];
+    const childrenTypes = itemChildren && Object.keys(itemChildren);
+    return (
+      itemChildren &&
+      !!childrenTypes.length &&
+      (R.head(childrenTypes) === 'all' ||
+      childrenTypes.some((childType) => R.includes(childType, R.keys(ENTITIES))))
+    );
+  }
+
   return (
     <div className={classNames('propsPanelBlock', styles.activeElementContainer)}>
-      <div className="propsPanelHeaderBlock">
-        <p>Add elements</p>
-        <Button
-          className={classNames('addBtn', styles.addElementBtn)}
-          styleType="none"
-          onClick={showModalAddElements}
-        >
-          <Icon icon="add" />
-        </Button>
-      </div>
+      {isElementHaveChildren() && (
+        <div className="propsPanelHeaderBlock">
+          <p>Add elements</p>
+          
+          <Button
+            className={classNames('addBtn', styles.addElementBtn)}
+            styleType="none"
+            onClick={showModalAddElements}
+          >
+            <Icon icon="add" />
+          </Button>
+        </div>
+      )}
       <div className="propsPanelContentBlock">
         <div className="propsPanelInnerContentBlock">
           <p className="propsPanelText">
@@ -107,6 +123,7 @@ export const ActiveElementBlock: React.FunctionComponent<IComponentProps> = memo
         </div>
       </div>
       <ModalAddElements
+        activeItem={activeItem}
         active={isAddElementsModalOpened}
         scenarios={scenarios}
         libraryElements={libraryElements}

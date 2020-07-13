@@ -22,7 +22,7 @@ export const Component = (props: Props) => {
 
   useEffect(() => {
     const listener = (event: KeyboardEvent) => {
-      if (event.keyCode === 8) {
+      if (event.keyCode === 8) { // TODO not working when create new project
         deleteActiveItem();
       }
     };
