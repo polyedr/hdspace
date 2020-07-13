@@ -144,6 +144,6 @@ export const parseImgUsingNN = ({ screenID, ...props}: MyAxiosProps & { screenID
     method: 'POST',
     url: `/virtualize_simple/virtualize-simple/`,
   })
-    .then(parseResult)
+    .then(result => convertElementFromResponse(result.data))
     .catch(onError)
 );

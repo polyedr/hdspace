@@ -51,7 +51,14 @@ import { addScreenSaga } from '$redux/project/sagas/screen';
 import { refreshUserTokenPair } from '$redux/user/sagas';
 import { openSignScreen, openProjects } from '$utils/history';
 import { getSavedValue } from '$utils/getSavedValue';
-import { findChildByID, updateElementParameters as updateParameters, moveElement, updateElementStyles as updateStyles } from '$utils/ElementsTreeHelper';
+import {
+  findChildByID,
+  updateElementParameters as updateParameters,
+  moveElement,
+  updateElementStyles as updateStyles,
+  getElementsArray,
+  getTreeWithDefaultStylesAndParams,
+} from '$utils/ElementsTreeHelper';
 import * as PATH_NAMES from '$constants/pathNames';
 import { DEFAULT_AUTHORISATION_TOKEN } from '$constants/defaultParams';
 import { LibraryEntities } from '$domain/libraryElements/libraryElements';
@@ -235,7 +242,6 @@ function* updateElementParameters(action: ReturnType<typeof Actions.updateElemen
 }
 
 function* uploadFileSaga({ payload: { file: { file } } }: ReturnType<typeof Actions.uploadFile>) {
-  // TODO test when backend change endpoint
   try {
     // TODO: show loader in addModalElements
     const currentScreen: ReturnType<typeof selectors.selectCurrentScreen> = yield select(
@@ -247,6 +253,9 @@ function* uploadFileSaga({ payload: { file: { file } } }: ReturnType<typeof Acti
 
     const formData = new FormData();
     formData.append('image', new Blob([file]), file.name);
+    formData.append('parent_id', root.id);
+    formData.append('struct_type', 'container');
+    formData.append('func_type', 'container');
     formData.append('name', 'TESTING NEURAL NETWORK');
     formData.append('screen', currentScreenID.toString());
     formData.append('parameters', JSON.stringify({}));
@@ -257,10 +266,16 @@ function* uploadFileSaga({ payload: { file: { file } } }: ReturnType<typeof Acti
       contentType: 'multipart/form-data',
     });
 
-    yield call(addElementToElement, nnRootElement, root);
+    const nnRootWithDefaultParams = getTreeWithDefaultStylesAndParams(nnRootElement);
 
-    const updatedElements = moveElement(root.id, nnRootElement, root, 0);
-    yield put(Actions.updateElementsTree(updatedElements));
+    const convertedElements = getElementsArray(nnRootWithDefaultParams)
+      .map((element) => convertElementToPatchRequest(element));
+
+    yield call(reqWrapper, apiSaveElements, { data: convertedElements });
+
+    const updatedElements = moveElement(root.id, nnRootWithDefaultParams, root, 0);
+
+    yield call(updateElementsTree, updatedElements);
   } catch (e) {
     console.error('Could not upload image for NN. Error: ', e.message);
   }

@@ -129,7 +129,7 @@ const ClockWidgetRenderer = (props: ClockRendererProps) => {
 }
 
 const UndefinedRenderer = (props: SharedRendererProps) => {
-  const { id, style, sortableId, isDisabled, className, elementRef } = props;
+  const { id, style, sortableId, isDisabled, className, elementRef, children } = props;
   return (
     <div
       ref={elementRef}
@@ -139,7 +139,9 @@ const UndefinedRenderer = (props: SharedRendererProps) => {
       className={cn(className, styles.addedContainer)}
       style={style}
       tabIndex={isDisabled ? 0 : -1}
-    />
+    >
+      {children}
+    </div>
   );
 }
 
