@@ -45,8 +45,8 @@ type StateProps = {
   elementsTree: LibraryElement<'root'>,
   scenarios: ProjectT.IScenarios;
   activeItem: ProjectT.ActiveItem;
-  activeElement?: LibraryElement;
-  activeElementParent?: LibraryElement;
+  activeElement?: LibraryElement<Entity>;
+  activeElementParent?: LibraryElement<Entity>;
   screen: ProjectT.IProjectScreen;
   isAddElementsModalOpened: boolean;
   loader: boolean;
