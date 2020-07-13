@@ -10,6 +10,8 @@ import { Spinner } from '$components/UI/Spinner/';
 import { AVAILABLE_CONTROLS, Control, Entity } from '$domain/core';
 import { LIBRARY_ELEMENTS } from '$domain/libraryElements/libraryElements';
 import { LibraryElement } from '$api/types';
+import { findChildByID, findParentByChildID } from '$utils/ElementsTreeHelper';
+import { isElementCanBeRemove } from '$utils/AvailableChildrenHelper';
 
 import { ActiveElementBlock } from '../Controls/ActiveElementBlock';
 import { ActionBlock } from '../Controls/ActionBlock';
@@ -37,26 +39,36 @@ import { LabelFor } from '../Controls/LabelFor/LabelFor';
 import { DropdownItems } from '../Controls/DropdownItems/DropdownItems';
 import { IsOpen } from '../Controls/IsOpen/IsOpen';
 import { VideoSettings } from '../Controls/VideoSettings/VideoSettings';
-import { findChildByID } from '$utils/ElementsTreeHelper';
 const styles = require('./PropertiesPanel.scss');
 
 type StateProps = {
   elementsTree: LibraryElement<'root'>,
   scenarios: ProjectT.IScenarios;
   activeItem: ProjectT.ActiveItem;
+  activeElement?: LibraryElement;
+  activeElementParent?: LibraryElement;
   screen: ProjectT.IProjectScreen;
   isAddElementsModalOpened: boolean;
   loader: boolean;
 };
 
-const mapState = (state: AppReduxState): StateProps => ({
-  activeItem: selectors.selectActiveItem(state),
-  elementsTree: selectors.selectRootElement(state),
-  scenarios: selectors.selectScenarios(state),
-  screen: selectors.selectCurrentScreen(state),
-  isAddElementsModalOpened: selectors.selectIsAddElementsModalOpened(state),
-  loader: selectors.selectLoader(state),
-});
+const mapState = (state: AppReduxState): StateProps => {
+  const root = selectors.selectRootElement(state);
+  const activeItem = selectors.selectActiveItem(state);
+  const activeElement = findChildByID(root, activeItem.itemId);
+  const activeElementParent = findParentByChildID(root, activeItem.itemId);
+
+  return {
+    elementsTree: root,
+    activeItem,
+    activeElement,
+    activeElementParent,
+    scenarios: selectors.selectScenarios(state),
+    screen: selectors.selectCurrentScreen(state),
+    isAddElementsModalOpened: selectors.selectIsAddElementsModalOpened(state),
+    loader: selectors.selectLoader(state),
+  }
+};
 
 const mapDispatch = {
   addElement: actionsCreators.addElement,
@@ -102,6 +114,8 @@ const SCROLLBAR_STYLES = {
 
 const Component: React.FC<PropertiesPanelProps> = ({
   activeItem,
+  activeElement,
+  activeElementParent,
   elementsTree,
   screen,
   deleteActiveItem,
@@ -116,6 +130,8 @@ const Component: React.FC<PropertiesPanelProps> = ({
 
   const currentItemType = activeItem.itemType === 'root' ? 'root' : findChildByID(elementsTree, activeItemID)?.type;
   const disablePanel = !screen;
+
+  const showDeleteButton = !!activeElementParent && !!activeElement && isElementCanBeRemove(activeElementParent, activeElement);
 
   return (
     <div className={classNames(styles.editorRightPanel)}>
@@ -132,6 +148,7 @@ const Component: React.FC<PropertiesPanelProps> = ({
           createElements={createElements}
           onWrapIntoContainer={wrapIntoContainer}
           isAddElementsModalOpened={isAddElementsModalOpened}
+          showDeleteButton={showDeleteButton}
           setIsAddElementsModalOpened={setIsAddElementsModalOpened}
         />
         {activeItem.itemType !== 'none' && (

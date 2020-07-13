@@ -18,6 +18,7 @@ interface IComponentProps {
   libraryElements: LibraryElements,
   createElements: PropertiesPanelProps['createElements'],
   isAddElementsModalOpened: boolean;
+  showDeleteButton: boolean;
   onWrapIntoContainer(): void;
   onDelScenarioItem(): void;
   setIsAddElementsModalOpened(isOpened: boolean): void;
@@ -33,6 +34,7 @@ export const ActiveElementBlock: React.FunctionComponent<IComponentProps> = memo
     createElements,
     onWrapIntoContainer,
     isAddElementsModalOpened,
+    showDeleteButton,
     setIsAddElementsModalOpened,
   } = props;
   const [modalDeleteElementOpen, setModalDeleteElementOpen] = useState<boolean>(false);
@@ -90,14 +92,16 @@ export const ActiveElementBlock: React.FunctionComponent<IComponentProps> = memo
               >
                 <Icon icon="edit" />
               </Button>
-              <Button
-                className="propsPanelImgBtn"
-                styleType="none"
-                onClick={handleDeleteElement}
-                disabled={disablePanel}
-              >
-                <Icon icon="delete" />
-              </Button>
+              {showDeleteButton && (
+                <Button
+                  className="propsPanelImgBtn"
+                  styleType="none"
+                  onClick={handleDeleteElement}
+                  disabled={disablePanel}
+                >
+                  <Icon icon="delete" />
+                </Button>
+              )}
             </div>
           )}
         </div>
