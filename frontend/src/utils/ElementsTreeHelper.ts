@@ -1,6 +1,6 @@
 import * as R from 'ramda';
 
-import { Entity } from '$domain/core';
+import { Entity, getConfigurablePropsOf } from '$domain/core';
 import { LibraryElement } from '$api/types';
 
 export const moveElement = <T extends Entity, K extends Entity, P extends Entity, R extends Entity>(
@@ -150,4 +150,15 @@ export const updateElementParameters = <T extends Entity, K extends Entity, P ex
     parameters: root.id === elementID ? { ...root.parameters, ...parameters } : root.parameters,
     children: root.children.map((child) => updateElementParameters(elementID, parameters, child)),
   };
+};
+
+export const getTreeWithDefaultStylesAndParams = <T extends Entity>(root: LibraryElement<T>): LibraryElement<T> => {
+  const rootWithDefaultStylesAndParams = getElementsArray(root).reduce((acc, element) => {
+    const { styles, params } = getConfigurablePropsOf('root')(element.type);
+    const rootWithUpdatedParameters = updateElementParameters(element.id, { ...params, ...element.parameters }, acc);
+    const rootWithUpdatedStyles = updateElementStyles(element.id, { ...styles, ...element.styles }, rootWithUpdatedParameters);
+    return rootWithUpdatedStyles;
+  }, root);
+
+  return rootWithDefaultStylesAndParams;
 };

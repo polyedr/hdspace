@@ -70,7 +70,7 @@ export const convertElementToPatchRequest = <T extends Entity, K extends Entity,
     struct_type: type,
     func_type: type,
     buoyancy,
-    image,
+    image: null,
     parameters,
     styles,
   };
