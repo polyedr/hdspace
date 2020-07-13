@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import cn from 'classnames';
 
 import { GMap } from '$components/UI/GMap';
@@ -30,21 +30,112 @@ import { ImageRendererProps, MapRendererProps, ClockRendererProps, SharedRendere
 const styles = require('./styles.scss');
 
 const ContainerRenderer = (props: ContainerRendererProps) => {
-  const { id, sortableId, style, isDisabled, children, className, elementRef } = props;
+  const {
+    name,
+    id,
+    sortableId,
+    style,
+    isDisabled,
+    children,
+    className,
+    elementRef,
+    isSecondLevelContainer,
+    showBorders,
+    active,
+    isOuterContainer,
+  } = props;
+
+  const isRoot = id === 'root';
+
+  const isBorderedElement = isRoot || isOuterContainer || isSecondLevelContainer;
+  const isBorderVisible = isBorderedElement && showBorders || isBorderedElement && active;
+
+  const borderColor = active ? 'red' : '#1cc09f';
 
   return (
-    <div
-      ref={elementRef}
-      id={id}
-      data-ls-id={id}
-      data-id={sortableId}
-      key={id}
-      className={cn(className, styles.addedElem)}
-      style={style}
-      tabIndex={isDisabled ? 0 : -1}
-    >
-      {children}
-    </div>
+    <>
+      <div
+        ref={elementRef}
+        id={id}
+        data-ls-id={id}
+        data-id={sortableId}
+        key={id}
+        className={cn(
+          className,
+          styles.addedElem
+          /* showBorders && isSecondLevelContainer && styles.withBorders,
+          showBorders && isRoot && styles.withBorders,
+          showBorders && isRoot && styles.withBorders_inner,
+          showBorders && isOuterContainer && styles.withBorders_inner,
+          active && isSecondLevelContainer && styles.withBorders,
+          active && isRoot && styles.withBorders,
+          active && isSecondLevelContainer && styles.withBorders_active,
+          active && isRoot && styles.withBorders_active,
+          active && isRoot && styles.withBorders_inner,
+          active && isOuterContainer && styles.withBorders_inner, */
+        )}
+        style={{ ...style, position: 'relative' }}
+        tabIndex={isDisabled ? 0 : -1}
+        data-name={isRoot ? 'root' : name}
+      >
+        {isBorderVisible && (
+          <>
+            <span
+              className={cn(
+                styles.borderLabel,
+                active && styles.borderLabel_active,
+                (isOuterContainer || isRoot) && styles.borderLabel_outer
+              )}
+            >
+              {isRoot ? 'root' : name}
+            </span>
+            <span
+              style={{
+                ...(isOuterContainer && !active && { zIndex: -1 }),
+                ...(isRoot && { zIndex: 1 }),
+                position: 'absolute',
+                top: isRoot ? 0 : '-1px',
+                right: 0,
+                left: 0,
+                border: `1px solid ${borderColor}`,
+              }}
+            ></span>
+            <span
+              style={{
+                ...(isRoot && { zIndex: 1 }),
+                position: 'absolute',
+                top: isRoot ? 0 : '-1px',
+                right: 0,
+                bottom: isRoot ? 0 : '-1px',
+                border: `1px solid ${borderColor}`,
+              }}
+            ></span>
+            <span
+              style={{
+                ...((isRoot || active) && { zIndex: 4 }),
+                position: 'absolute',
+                right: 0,
+                bottom: isRoot ? 0 : '-1px',
+                left: 0,
+                border: `1px solid ${borderColor}`,
+              }}
+            ></span>
+            <span
+              style={{
+                ...((isRoot || active) && { zIndex: 4 }),
+                position: 'absolute',
+                top: isRoot ? 0 : '-1px',
+                bottom: isRoot ? 0 : '-1px',
+                left: 0,
+                border: `1px solid ${borderColor}`,
+              }}
+            ></span>
+          </>
+        )}
+
+        {children}
+      </div>
+    </>
   );
 }
 

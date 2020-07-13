@@ -13,6 +13,7 @@ import { LIBRARY_ELEMENTS } from '$domain/libraryElements/libraryElements';
 import { ElementEntity, Entity } from '$domain/core';
 import { LibraryElementUnion, LibraryElement } from '$api/types';
 import { SharedRendererProps } from '$components/UI/RenderElements/types';
+import { findParentByChildID } from '$utils/ElementsTreeHelper';
 
 const isElementStructType = (type: string): type is ElementEntity => {
   return type in LIBRARY_ELEMENTS;
@@ -20,19 +21,23 @@ const isElementStructType = (type: string): type is ElementEntity => {
 
 const mapStateToProps = (state: AppReduxState) => {
   const currentScreen = selectors.selectCurrentScreen(state);
+  const root = selectors.selectRootElement(state);
   const rootID = selectors.selectRootID(state);
   const { listSortable } = selectors.selectCurrentScreen(state);
   const scenarioElements = selectors.selectScenariosElements(state);
   const savedElements = selectors.selectSavedElementsValues(state);
   const disableInteractions = state.user.isPrototypeMode;
+  const showBorders = selectors.selectShowingBorders(state);
 
   return {
+    root,
     rootID,
     listSortable,
     scenarioElements,
     disableInteractions,
     currentScreen,
     savedElements,
+    showBorders,
   };
 };
 
@@ -59,6 +64,7 @@ type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchT
 
 const SortableComponent = (props: Props) => {
   const {
+    root,
     rootID,
     currentScreen,
     item,
@@ -75,6 +81,7 @@ const SortableComponent = (props: Props) => {
     listSortable,
     scenarioElements,
     savedElements,
+    showBorders,
     updateSavedElementValues,
     ...restProps
   } = props;
@@ -134,7 +141,7 @@ const SortableComponent = (props: Props) => {
 
   const getIsActive = !disableInteractions && item.id === activeItemId;
 
-  const { id, type, styles, children } = item;
+  const { id, type, styles, children, name } = item;
 
   if (!isElementStructType(type)) {
     return null;
@@ -142,6 +149,10 @@ const SortableComponent = (props: Props) => {
 
   const ElementRenderer = RENDERERS[type];
   const parsedStyles = convertPropCSS(styles);
+
+  const isSecondLevelContainer = findParentByChildID(root, id)?.id === rootID;
+
+  const isOuterContainer = isSecondLevelContainer && root.children[0].id === id;
 
   const commonRendererProps: Omit<SharedRendererProps, 'children'> = {
     ...(disableInteractions && { className: '' }),
@@ -155,6 +166,14 @@ const SortableComponent = (props: Props) => {
 
   const getAdditionalProps = () => {
     switch (item.type) {
+      case 'container': {
+        return {
+          name,
+          isOuterContainer,
+          isSecondLevelContainer,
+          showBorders,
+        }
+      };
       case 'textinput': {
         return {
           ...commonRendererProps,

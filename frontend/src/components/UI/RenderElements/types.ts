@@ -12,7 +12,12 @@ export type SharedRendererProps = {
   children: React.ReactElement[],
 };
 
-export type ContainerRendererProps = SharedRendererProps;
+export type ContainerRendererProps = SharedRendererProps & {
+  name: string,
+  isSecondLevelContainer: boolean,
+  isOuterContainer: boolean,
+  showBorders: boolean,
+};
 
 export type ImageRendererProps = SharedRendererProps & {
   params: {
