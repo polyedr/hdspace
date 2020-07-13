@@ -9,8 +9,9 @@ const styles = require('../styles.scss');
 
 const Video = (props: VideoRendererProps) => {
   const { id, params, sortableId, style, isDisabled, className, elementRef } = props;
+  const { videoSettings } = params;
 
-  const playerLink = getPlayerLink(params, !isDisabled);
+  const playerLink = getPlayerLink(videoSettings, !isDisabled);
 
   return playerLink ? (
     <div
