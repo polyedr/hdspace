@@ -131,7 +131,7 @@ const Component: React.FC<PropertiesPanelProps> = ({
   const currentItemType = activeItem.itemType === 'root' ? 'root' : findChildByID(elementsTree, activeItemID)?.type;
   const disablePanel = !screen;
 
-  const showDeleteButton = !!activeElementParent && !!activeElement && isElementCanBeRemove(activeElementParent, activeElement);
+  const showDeleteButton = !!activeElementParent && !!activeElement && isElementCanBeRemove(activeElementParent, activeElement.type);
 
   return (
     <div className={classNames(styles.editorRightPanel)}>
