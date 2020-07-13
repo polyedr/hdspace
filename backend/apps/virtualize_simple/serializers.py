@@ -161,7 +161,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
             "styles",
         )
 
-        # extra_kwargs = {"parent_id": {"write_only": True}}
+        extra_kwargs = {"struct_type": {"read_only": True}, "func_type": {"read_only": True}}
 
     def create(self, validated_data):
         root_element_data = {
@@ -1034,7 +1034,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                     # if the button has right or central positioning
                     if(aligned_element in {"center", "right"}):
                         container_horizontal = ScenarioElement.objects.create(
-                            parent=node, **container_horizontal_data
+                            **container_horizontal_data
                         )
                         # Add the button for the container parameters
                         container_horizontal.parameters["children"] = []
