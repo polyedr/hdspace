@@ -179,6 +179,80 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
   },
 };
 
+export type AvailableChildren = {
+  [P in Entity]: {
+    [key: string]: {
+      min: number,
+      max: number,
+    }
+  }
+};
+
+export const AVAILABLE_CHILDREN: AvailableChildren = {
+  root: {
+    all: {
+      min: 0,
+      max: Infinity,
+    },
+  },
+  container: {
+    all: {
+      min: 0,
+      max: Infinity,
+    },
+  },
+  button: {},
+  textinput: {},
+  textarea: {},
+  checkbox: {},
+  radiobutton: {},
+  label: {},
+  hyperlink: {},
+  heading: {},
+  paragraph: {},
+  ocrtext: {},
+  text_block: {},
+  list: {
+    listItem: {
+      min: 1,
+      max: Infinity,
+    },
+  },
+  listItem: {},
+  image: {},
+  select: {
+    selectMenu: {
+      min: 1,
+      max: 1,
+    },
+  },
+  selectMenu: {
+    selectItem: {
+      min: 1,
+      max: Infinity,
+    },
+  },
+  selectItem: {},
+  map: {},
+  calendar: {},
+  clock: {},
+  dropdown: {
+    dropdownMenu: {
+      min: 1,
+      max: 1,
+    },
+  },
+  dropdownMenu: {
+    dropdownItem: {
+      min: 1,
+      max: Infinity,
+    },
+  },
+  dropdownItem: {},
+  video: {},
+  undefined: {},
+};
+
 const CONTROLS_DEFAULTS: Record<Control, any> = {
   display: DEFAULT_DISPLAY,
   indents: DEFAULT_INDENTS,

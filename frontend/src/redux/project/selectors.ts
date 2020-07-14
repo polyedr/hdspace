@@ -44,6 +44,10 @@ export function selectScreens(state: AppReduxState) {
   return selectFeatureState(state).edit.screens;
 };
 
+export function selectNotification(state: AppReduxState) {
+  return selectFeatureState(state).edit.notification;
+};
+
 export function selectIsAddElementsModalOpened(state: AppReduxState) {
   return selectFeatureState(state).ui.isAddElementsModalOpened;
 };

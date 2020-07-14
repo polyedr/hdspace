@@ -17,13 +17,14 @@ import {
 } from '$utils/parseScenario';
 import { isIncludes } from '$utils/StringHelper';
 import { PropertiesPanelProps } from '$features/applyProperties';
-import { ENTITIES } from '$domain/core';
+import { ENTITIES, Entity, AVAILABLE_CHILDREN } from '$domain/core';
 import { LibraryElements } from '$domain/libraryElements/libraryElements';
-import { CreatedElement } from '$redux/project/types';
+import { CreatedElement, ActiveItem } from '$redux/project/types';
 
 const styles = require('./ActionsBlock.scss');
 
 type Props = {
+  activeItem: ActiveItem;
   scenarios: PropertiesPanelProps['scenarios'];
   tabs: string[];
   groupElements: GroupElement[];
@@ -42,6 +43,7 @@ type Props = {
 };
 
 export const ActionsBlock: React.FunctionComponent<Props> = ({
+  activeItem,
   scenarios,
   tabs,
   groupElements,
@@ -143,6 +145,12 @@ export const ActionsBlock: React.FunctionComponent<Props> = ({
   const filterListContent = getFilterTemplates();
   const filterGroupElements = getFilterElements();
 
+  const isAvailableChild = (type: Entity) => {
+    return activeItem.itemType !== 'none' && (
+      AVAILABLE_CHILDREN[activeItem.itemType]['all'] || AVAILABLE_CHILDREN[activeItem.itemType][type]
+    );
+  }
+
   return (
     <div className={styles.modalActionsContainer}>
       <ul
@@ -241,7 +249,7 @@ export const ActionsBlock: React.FunctionComponent<Props> = ({
               >
                 <div className={styles.contentList}>
                   {filterGroupElements.map(({ key, value, label }) => {
-                    const isDisabled = !R.includes(value.structType, R.keys(ENTITIES));
+                    const isDisabled = !R.includes(value.structType, R.keys(ENTITIES)) || !isAvailableChild(value.structType);
                     return (
                       <Button
                         key={key}

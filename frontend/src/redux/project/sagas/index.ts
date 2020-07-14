@@ -163,11 +163,23 @@ function* moveElementSaga(action: ReturnType<typeof Actions.moveElement>) {
     console.error(`Can not find targetParent ${parentID} in tree`);
   } else {
     const root: ReturnType<typeof selectors.selectRootElement> = yield select(selectors.selectRootElement);
-    const elementToMove = findChildByID(root, elementID)!;
+    const elementToMove = findChildByID(root, elementID);
+
+    if (!elementToMove) {
+      console.error(`Can not find changedElement ${elementID} in tree`);
+      return;
+    }
+
     const updatedTree = moveElement(targetParent.id, elementToMove, root, elementIndex);
     yield put(Actions.updateElementsTree(updatedTree));
 
-    const updatedParent = findChildByID(updatedTree, parentID)!;
+    const updatedParent = findChildByID(updatedTree, parentID);
+
+    if (!updatedParent) {
+      console.error(`Can not find updatedParent ${parentID} in tree`);
+      return;
+    }
+
     const convertedElements = updatedParent.children.map(child => convertElementToPatchRequest(child));
     yield call(reqWrapper, apiSaveElements, { data: convertedElements });
 
@@ -214,10 +226,8 @@ function* updateElementImage(action: ReturnType<typeof Actions.updateElementImag
 
   const changedElement: ReturnPromisedType<typeof apiChangeElement> = yield call(reqWrapper, apiChangeElement, { data: formData, id: parsedID });
 
-  const scenarioElement: ReturnType<typeof selectors.selectScenarioElement> = yield select(selectors.selectScenarioElement, parsedID);
-
   yield put(Actions.updateElementParameters(itemID, {
-    ...scenarioElement.parameters,
+    ...changedElement.parameters,
     imageURL: changedElement.image,
   }));
 }

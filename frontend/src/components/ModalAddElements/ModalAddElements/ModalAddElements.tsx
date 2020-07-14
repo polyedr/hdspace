@@ -11,7 +11,7 @@ import { getGroupElements, IListCategoryEl, parseAddElementsTabs } from '$utils/
 import { selectors, actionsCreators } from '$redux/project';
 import { AppReduxState } from '$shared/types/app';
 import { PropertiesPanelProps } from '$features/applyProperties';
-import { ServerStructType, CreatedElement } from '$redux/project/types';
+import { ServerStructType, CreatedElement, ActiveItem } from '$redux/project/types';
 import { LibraryElements } from '$domain/libraryElements/libraryElements';
 
 const styles = require('./ModalAddElements.scss');
@@ -35,6 +35,7 @@ const mapDispatchToProps = {
 };
 
 type OwnProps = {
+  activeItem: ActiveItem;
   active: boolean;
   scenarios: PropertiesPanelProps['scenarios'];
   libraryElements: LibraryElements;
@@ -48,6 +49,7 @@ export type ScenarioStateType = 'scenario_new' | 'scenario_existing';
 
 const Component: React.FunctionComponent<Props> = memo((props) => {
   const {
+    activeItem,
     active,
     scenarios,
     libraryElements,
@@ -212,6 +214,7 @@ const Component: React.FunctionComponent<Props> = memo((props) => {
             </React.Fragment>
           )}
           <ActionsBlock
+            activeItem={activeItem}
             scenarios={scenarios}
             tabs={MODAL_ADD_ELEMENTS_TABS}
             groupElements={getContentStep()}

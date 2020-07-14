@@ -13,7 +13,7 @@ type Props = {
   isActive: boolean,
   disableSortable: boolean,
   disableInteractions: boolean,
-  isPutItem: boolean,
+  isPutItem: boolean | string[],
   group: string,
   children?: any,
   align?: string,

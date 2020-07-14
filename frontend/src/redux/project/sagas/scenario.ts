@@ -16,8 +16,10 @@ import { LibraryElement, ServerElement, LibraryElementUnion } from '$api/types';
 import { convertElementFromResponse } from '$api/converters/fromResponse';
 import { Entity } from '$domain/core';
 import { DEFAULT_INDENTS } from '$constants/defaultParams';
+import { DISALLOW_REMOVE_ELEMENT_NOTIFICATION_TEXT, DISALLOW_ADD_ELEMENT_NOTIFICATION_TEXT } from '$features/notification/types';
 import { reqWrapper } from '$redux/project/sagas/index';
 import { ReturnPromisedType } from '$shared/types';
+import { isElementCanBeRemove, isElementCanBeAdded } from '$utils/AvailableChildrenHelper';
 
 import { selectors, T } from '../';
 import { updateSavedElementsValues } from './screen';
@@ -62,9 +64,17 @@ export function* createContainer(scenario?: Partial<T.IScenarioItem>) {
 }
 
 export function* createElements(elements: ServerElement<Entity>[], parent: LibraryElement<Entity>) {
+  const disallowedElements = elements.filter(element => !isElementCanBeAdded(parent, element.struct_type));
+    
+  if (disallowedElements.length) {
+    yield put(Actions.setNotification(DISALLOW_ADD_ELEMENT_NOTIFICATION_TEXT));
+  };
+    
+  const allowedElements = elements.filter(element => isElementCanBeAdded(parent, element.struct_type));
+
   const root: ReturnType<typeof selectors.selectRootElement> = yield select(selectors.selectRootElement);
   
-  const newElements: ReturnPromisedType<typeof apiAddElements> = yield call(reqWrapper, apiAddElements, { data: elements });
+  const newElements: ReturnPromisedType<typeof apiAddElements> = yield call(reqWrapper, apiAddElements, { data: allowedElements });
 
   const elementData = {
     name: parent.name,
@@ -132,6 +142,11 @@ export function* removeElement(elementToRemoveID: string) {
 
   if (!itemToRemoveParent) {
     console.error(`Can not find removed element parent ${itemToRemoveParent} in tree!`);
+    return;
+  };
+
+  if (!isElementCanBeRemove(itemToRemoveParent, removedElement.type)) {
+    yield put(Actions.setNotification(DISALLOW_REMOVE_ELEMENT_NOTIFICATION_TEXT));
     return;
   };
 

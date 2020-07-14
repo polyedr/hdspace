@@ -153,7 +153,7 @@ export type ListRendererProps = SharedRendererProps & {
 };
 
 export type VideoRendererProps = SharedRendererProps & {
-  params: VideoSettings,
+  params: { videoSettings: VideoSettings },
 };
 
 export type ListItemRendererProps = Omit<SharedRendererProps, 'sortableId' | 'activeItemId'> & {

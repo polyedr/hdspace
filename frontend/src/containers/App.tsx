@@ -9,6 +9,7 @@ import * as ActionsUser from '$redux/user/actions';
 import * as ActionsProject from '$redux/project/actions';
 import { selectors } from '$redux/project';
 import { history } from '$redux/store';
+import { Notification } from '$features/notification';
 
 import { Routes } from './Routes';
 
@@ -29,6 +30,7 @@ const Component: React.FunctionComponent<IAppProps> = () => {
   return (
     <ConnectedRouter history={history}>
       <Routes />
+      <Notification />
     </ConnectedRouter>
   );
 };
