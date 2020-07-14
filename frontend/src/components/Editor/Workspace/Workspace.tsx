@@ -31,6 +31,7 @@ type StateProps = {
   elementsTree: LibraryElement<'root'>,
   isPrototypeMode: boolean;
   activeItem: ProjectT.ActiveItem;
+  showBorders: boolean;
 };
 
 const mapDispatch = {
@@ -47,6 +48,7 @@ const mapState = (state: AppReduxState): StateProps => ({
   elementsTree: selectors.selectRootElement(state),
   activeItem: selectors.selectActiveItem(state),
   isPrototypeMode: state.user.isPrototypeMode,
+  showBorders: selectors.selectShowingBorders(state),
 });
 
 type Props = StateProps & typeof mapDispatch;
@@ -62,6 +64,7 @@ export const Component = (props: Props) => {
     changePrototypeMode,
     resetScreenState,
     exportProject,
+    showBorders,
   } = props;
 
   const [screenId, setScreenId] = useState<number>(-1);
@@ -176,6 +179,8 @@ export const Component = (props: Props) => {
             onActiveElementChange={handleActiveElementChange} // needed to activate item before dragging, in order to get new listNotDraggable
             isResizing={hasItemBeingResized}
             setIsResizing={setHasItemBeingResized}
+            name={'123'}
+            showBorders={showBorders}
           />
         </Scrollbar>
       </div>

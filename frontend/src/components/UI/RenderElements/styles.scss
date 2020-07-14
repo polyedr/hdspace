@@ -3,25 +3,72 @@
   //outline: none;
 }
 
+:global(.hovered) {
+  & .borderLabel {
+    display: block;
+    z-index: 5;
+  }
+
+  .border {
+    z-index: 5;
+  }
+}
+
+.border {
+  &_inactive {
+    border-color: #1cc09f;
+  }
+
+  &_hidden {
+    display: none;
+  }
+}
+
+.root {
+  &:focus .border_hidden,
+  &:focus .borderLabel_hidden {
+    display: block;
+    background: red;
+  }
+}
+
+.root {
+  &:focus > .border {
+    border: 1px solid red !important;
+  }
+}
+
 .borderLabel {
   position: absolute;
   top: 0;
-  left: 0;
+  left: -2px;
   line-height: 1;
   padding: 2px 4px;
   font-size: 12px;
   background: $mainColor;
   color: #fff;
   transform: translateY(-100%);
+  display: none;
 
   &_outer {
     transform: translateY(0);
     z-index: 2;
   }
 
+  &_right {
+    display: block;
+    left: auto;
+    right: 0;
+  }
+
   &_active {
-    z-index: 3;
+    display: block;
+    z-index: 5;
     background: red;
+  }
+
+  &_hidden {
+    display: none;
   }
 }
 

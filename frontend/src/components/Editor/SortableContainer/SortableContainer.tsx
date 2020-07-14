@@ -27,7 +27,6 @@ const mapStateToProps = (state: AppReduxState) => {
   const scenarioElements = selectors.selectScenariosElements(state);
   const savedElements = selectors.selectSavedElementsValues(state);
   const disableInteractions = state.user.isPrototypeMode;
-  const showBorders = selectors.selectShowingBorders(state);
 
   return {
     root,
@@ -37,7 +36,6 @@ const mapStateToProps = (state: AppReduxState) => {
     disableInteractions,
     currentScreen,
     savedElements,
-    showBorders,
   };
 };
 
@@ -81,7 +79,6 @@ const SortableComponent = (props: Props) => {
     listSortable,
     scenarioElements,
     savedElements,
-    showBorders,
     updateSavedElementValues,
     ...restProps
   } = props;
@@ -171,7 +168,6 @@ const SortableComponent = (props: Props) => {
           name,
           isOuterContainer,
           isSecondLevelContainer,
-          showBorders,
         }
       };
       case 'textinput': {
@@ -246,6 +242,7 @@ const SortableComponent = (props: Props) => {
           setIsMoving={setIsMoving}
           isResizing={isResizing}
           setIsResizing={setIsResizing}
+          showBorders={restProps.showBorders}
         />
       ))}
     </ElementRenderer>
@@ -276,6 +273,7 @@ const SortableComponent = (props: Props) => {
           setIsMoving={setIsMoving}
           isResizing={isResizing}
           setIsResizing={setIsResizing}
+          showBorders={restProps.showBorders}
         />
       ))}
     </SortableGroup>

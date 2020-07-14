@@ -27,7 +27,14 @@ import { MenuItem } from './MenuItem/MenuItem';
 import { DropdownMenu } from './DropdownMenu/DropdownMenu';
 import { DropdownItem } from './DropdownItem/DropdownItem';
 import { ImageRendererProps, MapRendererProps, ClockRendererProps, SharedRendererProps, ContainerRendererProps } from './types';
+import { sharedClasses } from '$styles/sharedClasses';
+import { actionsCreators } from '$redux/project';
+import { connect } from 'react-redux';
 const styles = require('./styles.scss');
+
+const mapDispatch = {
+  setActiveItem: actionsCreators.setActiveItem,
+};
 
 const ContainerRenderer = (props: ContainerRendererProps) => {
   const {
@@ -43,6 +50,7 @@ const ContainerRenderer = (props: ContainerRendererProps) => {
     showBorders,
     active,
     isOuterContainer,
+    setActiveItem,
   } = props;
 
   const isRoot = id === 'root';
@@ -50,7 +58,17 @@ const ContainerRenderer = (props: ContainerRendererProps) => {
   const isBorderedElement = isRoot || isOuterContainer || isSecondLevelContainer;
   const isBorderVisible = isBorderedElement && showBorders || isBorderedElement && active;
 
-  const borderColor = active ? 'red' : '#1cc09f';
+  const borderColor = active && !isRoot ? 'red' : '#1cc09f';
+
+  const handleLabelClick = (event) => {
+    event.preventDefault();
+    document.activeElement?.blur();
+    setActiveItem({
+      itemId: id,
+      itemType: name,
+      name,
+    })
+  };
 
   return (
     <>
@@ -62,6 +80,7 @@ const ContainerRenderer = (props: ContainerRendererProps) => {
         key={id}
         className={cn(
           className,
+          isRoot && styles.root,
           styles.addedElem
           /* showBorders && isSecondLevelContainer && styles.withBorders,
           showBorders && isRoot && styles.withBorders,
@@ -82,35 +101,44 @@ const ContainerRenderer = (props: ContainerRendererProps) => {
           <>
             <span
               className={cn(
+                sharedClasses.unsortable,
                 styles.borderLabel,
                 active && styles.borderLabel_active,
-                (isOuterContainer || isRoot) && styles.borderLabel_outer
+                (isOuterContainer || isRoot) && styles.borderLabel_outer,
+                isRoot && styles.borderLabel_right,
+                isRoot && styles.borderLabel_hidden,
               )}
+              onClick={handleLabelClick}
             >
               {isRoot ? 'root' : name}
             </span>
             <span
+              className={cn(sharedClasses.unsortable, styles.border, isRoot && !showBorders && styles.border_hidden)}
               style={{
-                ...(isOuterContainer && !active && { zIndex: -1 }),
-                ...(isRoot && { zIndex: 1 }),
+                //...(isOuterContainer && !active && { zIndex: -1 }),
+                ...((isRoot || active) && { zIndex: 4 }),
                 position: 'absolute',
-                top: isRoot ? 0 : '-1px',
+                top: isRoot || isOuterContainer ? 0 : '-1px',
                 right: 0,
                 left: 0,
                 border: `1px solid ${borderColor}`,
               }}
+              onClick={handleLabelClick}
             ></span>
             <span
+            className={cn(sharedClasses.unsortable, styles.border, isRoot && !showBorders && styles.border_hidden)}
               style={{
-                ...(isRoot && { zIndex: 1 }),
+                ...((isRoot || active) && { zIndex: 4 }),
                 position: 'absolute',
                 top: isRoot ? 0 : '-1px',
                 right: 0,
                 bottom: isRoot ? 0 : '-1px',
                 border: `1px solid ${borderColor}`,
               }}
+              onClick={handleLabelClick}
             ></span>
             <span
+            className={cn(sharedClasses.unsortable, styles.border, isRoot && !showBorders && styles.border_hidden)}
               style={{
                 ...((isRoot || active) && { zIndex: 4 }),
                 position: 'absolute',
@@ -119,8 +147,10 @@ const ContainerRenderer = (props: ContainerRendererProps) => {
                 left: 0,
                 border: `1px solid ${borderColor}`,
               }}
+              onClick={handleLabelClick}
             ></span>
             <span
+            className={cn(sharedClasses.unsortable, styles.border, isRoot && !showBorders && styles.border_hidden)}
               style={{
                 ...((isRoot || active) && { zIndex: 4 }),
                 position: 'absolute',
@@ -129,6 +159,7 @@ const ContainerRenderer = (props: ContainerRendererProps) => {
                 left: 0,
                 border: `1px solid ${borderColor}`,
               }}
+              onClick={handleLabelClick}
             ></span>
           </>
         )}
@@ -236,7 +267,7 @@ const UndefinedRenderer = (props: SharedRendererProps) => {
 
 export const RENDERERS: Record<Entity, React.FunctionComponent<any>> = {
   root: ContainerRenderer,
-  container: ContainerRenderer,
+  container: connect(null, mapDispatch)(ContainerRenderer),
   button: withAction(Action, 'button'),
   textinput: Input,
   radiobutton: Radiobutton,
