@@ -70,10 +70,9 @@ export const ActiveElementBlock: React.FunctionComponent<IComponentProps> = memo
       return false;
     }
 
-    const itemChildren = AVAILABLE_CHILDREN[activeItem.itemType];
-    const childrenTypes = itemChildren && Object.keys(itemChildren);
+    const childrenTypes = Object.keys(AVAILABLE_CHILDREN[activeItem.itemType] ?? []);
+
     return (
-      itemChildren &&
       !!childrenTypes.length &&
       (R.head(childrenTypes) === 'all' ||
       childrenTypes.some((childType) => R.includes(childType, R.keys(ENTITIES))))
