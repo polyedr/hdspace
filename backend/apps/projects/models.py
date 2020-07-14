@@ -478,9 +478,9 @@ class ScenarioElement(MPTTModel, TimeStampedModel):
     # Order of elements, or the element weight, buoyancy
     buoyancy = models.IntegerField(null=True)
 
-    # Image upload to the image elements
+    # Image field
     image = models.ImageField(
-        upload_to=utils.get_file_path, blank=True, null=True, max_length=256
+        upload_to='uploads/', blank=True, null=True, max_length=256
     )
 
     def __str__(self):
