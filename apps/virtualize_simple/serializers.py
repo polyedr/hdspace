@@ -165,7 +165,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         root_element_data = {
-            "struct_type": "undefined",
+            "struct_type": "container",
             "func_type": "undefined",
             "parameters": {},
             "styles": {},
