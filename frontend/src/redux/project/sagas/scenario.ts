@@ -16,7 +16,7 @@ import { LibraryElement, ServerElement, LibraryElementUnion } from '$api/types';
 import { convertElementFromResponse } from '$api/converters/fromResponse';
 import { Entity } from '$domain/core';
 import { DEFAULT_INDENTS } from '$constants/defaultParams';
-import { DISALLOW_REMOVE_ELEMENT_NOTIFICATION_TEXT, DISALLOW_ADD_ELEMENT_NOTIFICATION_TEXT } from '$constants/notifications';
+import { DISALLOW_REMOVE_ELEMENT_NOTIFICATION_TEXT, DISALLOW_ADD_ELEMENT_NOTIFICATION_TEXT } from '$features/notification/types';
 import { reqWrapper } from '$redux/project/sagas/index';
 import { ReturnPromisedType } from '$shared/types';
 import { isElementCanBeRemove, isElementCanBeAdded } from '$utils/AvailableChildrenHelper';
