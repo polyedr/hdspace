@@ -26,9 +26,10 @@ import {
   DropdownMenuServerElement,
   DropdownItemServerElement,
   UndefinedServerElement,
+  DivBlockServerElement,
 } from '$api/types';
 
-import { root, container, image, video, dropdown, undefined, dropdownMenu, makeDropdownItem } from './otherElements';
+import { root, container, divBlock, image, video, dropdown, undefined, dropdownMenu, makeDropdownItem } from './otherElements';
 import { button, textarea, textinput, checkbox, radiobutton, label, select, selectMenu, makeSelectItem } from './formElements';
 import { heading, paragraph, hyperlink, list, text_block, ocrtext, makeListItem } from './typographyElements';
 import { map, calendar, clock } from './widgetElements';
@@ -44,6 +45,7 @@ export type ChildrenElements = {
 export type ElementsToAdd = {
   root: RootServerElement,
   container: ContainerServerElement,
+  divBlock: DivBlockServerElement,
   image: Omit<ImageServerElement, 'parameters'> & { parameters: { group: string } },
   button: Omit<ButtonServerElement, 'parameters'> & { parameters: { group: string } },
   hyperlink: Omit<HyperlinkServerElement, 'parameters'> & { parameters: { group: string } },
@@ -76,6 +78,7 @@ export type LibraryEntities = LibraryElements;
 export const LIBRARY_ELEMENTS: LibraryElements = {
   root,
   container,
+  divBlock,
   image,
   button,
   hyperlink,

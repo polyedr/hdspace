@@ -7,7 +7,9 @@ import {
   DropdownServerElement,
   VideoServerElement,
   UndefinedServerElement,
+  DivBlockServerElement,
 } from '$api/types';
+import { paragraph } from './typographyElements';
 
 export const root: RootServerElement = {
   buoyancy: 0,
@@ -31,6 +33,18 @@ export const container: ContainerServerElement = {
   styles: {},
   name: 'container',
   children: [],
+};
+
+export const divBlock: DivBlockServerElement = {
+  buoyancy: 0,
+  func_type: 'divBlock',
+  struct_type: 'divBlock',
+  parameters: {
+    group: 'containers',
+  },
+  styles: {},
+  name: 'divBlock',
+  children: [paragraph],
 };
 
 export const image: Omit<ImageServerElement, 'parameters'> & { parameters: { group: string } } = {

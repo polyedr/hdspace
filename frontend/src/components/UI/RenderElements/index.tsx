@@ -26,6 +26,7 @@ import { SelectMenu } from './SelectMenu/SelectMenu';
 import { MenuItem } from './MenuItem/MenuItem';
 import { DropdownMenu } from './DropdownMenu/DropdownMenu';
 import { DropdownItem } from './DropdownItem/DropdownItem';
+import { DivBlockRenderer } from './DivBlock/DivBlock';
 import { ImageRendererProps, MapRendererProps, ClockRendererProps, SharedRendererProps, ContainerRendererProps } from './types';
 const styles = require('./styles.scss');
 
@@ -148,6 +149,7 @@ const UndefinedRenderer = (props: SharedRendererProps) => {
 export const RENDERERS: Record<Entity, React.FunctionComponent<any>> = {
   root: ContainerRenderer,
   container: ContainerRenderer,
+  divBlock: DivBlockRenderer,
   button: withAction(Action, 'button'),
   textinput: Input,
   radiobutton: Radiobutton,

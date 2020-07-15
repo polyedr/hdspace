@@ -14,6 +14,8 @@ export type SharedRendererProps = {
 
 export type ContainerRendererProps = SharedRendererProps;
 
+export type DivBlockRendererProps = SharedRendererProps;
+
 export type ImageRendererProps = SharedRendererProps & {
   params: {
     imageURL: string,

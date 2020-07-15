@@ -91,7 +91,6 @@ export const ActionsBlock: React.FunctionComponent<Props> = ({
             })}
           </div>
         </Scrollbar>
-        ) }
       </div>
     </div>
   );

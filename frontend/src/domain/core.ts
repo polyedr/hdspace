@@ -50,6 +50,7 @@ export const ENTITIES: { [K in Exclude<ElementEntity, 'ocrtext' | 'root' | 'cont
   dropdown: 'dropdown',
   video: 'video',
   undefined: 'undefined',
+  divBlock: 'divBlock',
 };
 
 const CONTROLS_AFFECT_ON_PARAMS = [
@@ -100,6 +101,9 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
     root: ['background'],
   },
   container: {
+    root: ['indents', 'size', 'display', 'typography', 'border', 'background'],
+  },
+  divBlock: {
     root: ['indents', 'size', 'display', 'typography', 'border', 'background'],
   },
   button: {
@@ -196,6 +200,12 @@ export const AVAILABLE_CHILDREN: AvailableChildren = {
     },
   },
   container: {
+    all: {
+      min: 0,
+      max: Infinity,
+    },
+  },
+  divBlock: {
     all: {
       min: 0,
       max: Infinity,
@@ -315,6 +325,22 @@ const containerDefaults = {
       ...extractDefaults('container', 'root', 'size'),
       width: '100%',
     },
+  },
+};
+
+const divBlockDefaults = {
+  root: {
+    ...extractDefaults('divBlock', 'root'),
+    size: {
+      ...extractDefaults('divBlock', 'root', 'size'),
+      width: '100%',
+      height: '150px',
+    },
+    childrenParams: {
+      paragraph: {
+        textContent: 'This is div block',
+      }
+    }
   },
 };
 
@@ -829,6 +855,7 @@ const videoDefaults = {
 const ENTITY_TO_DEFAULTS: EntityToDefaults = {
   root: rootDefaults,
   container: containerDefaults,
+  divBlock: divBlockDefaults,
   button: buttonDefaults,
   textinput: textinputDefaults,
   checkbox: checkboxDefaults,
@@ -877,9 +904,10 @@ export const getConfigurablePropsOf = <
               ...acc[controlAffectsOn],
               ...entityControlsDefaults[c],
             },
+            childrenParams: { ...acc.childrenParams, ...entityControlsDefaults.childrenParams }
           };
         },
-        { styles: {}, params: {} as Params }
+        { styles: {}, params: {}, childrenParams: {} }
       );
     }
   );
