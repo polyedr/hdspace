@@ -272,7 +272,7 @@ export const DEFAULT_SCREEN_MODE = {
   isMobileMode: false,
 };
 
-export const MODAL_ADD_ELEMENTS_TABS = ['Screen', 'Widget', 'Typography', 'Form', 'Image', 'Other'];
+export const MODAL_ADD_ELEMENTS_TABS = ['Containers', 'Widget', 'Typography', 'Form', 'Image', 'Other'];
 
 export const DEFAULT_TEMPLATES: IDefaultTemplate = {
   signup: {

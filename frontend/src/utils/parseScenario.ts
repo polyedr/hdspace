@@ -45,6 +45,8 @@ export const convertScenarioElements = (
 
 const getCategoryTab = (structType: ElementEntity, libraryElements: ElementsToAdd, obj: IListCategoryEl) => {
   switch (structType) {
+    case 'div_block':
+      return { Containers: [...obj.Containers || [], libraryElements[structType]] };
     case 'textinput':
     case 'textarea':        
     case 'checkbox':
