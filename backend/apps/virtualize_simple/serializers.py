@@ -1,5 +1,4 @@
 import copy
-import re
 # import numpy as np
 from statistics import median
 
@@ -17,27 +16,6 @@ from keras.preprocessing.image import load_img
 from keras_preprocessing.image import img_to_array
 
 config_tesseract = "-l eng --oem 1 --psm 3"
-
-f_dictionary = {
-    "username": [
-        "username",
-        "user",
-        "username",
-        "alias",
-        "nickname",
-        "first-last",
-        "full",
-        "name",
-    ],
-    "phone": ["phone", "telephone", "mobile"],
-    "email": ["email", "e-mail"],
-    "password": ["password"],
-    "firstname": ["firstname", "first"],
-    "lastname": ["lastname", "last", "surname"],
-    "day": ["day"],
-    "month": ["month"],
-    "year": ["year"],
-}
 
 # The constant to remove rectangle when overlaps more than 90% with larger rectangle
 SQUARES_OVERLAP_THRESHOLD = 0.9
@@ -414,24 +392,8 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         # Functional class assignment
                         # Input: string from tesseract, output: functional class of the element
                         tess_string = text.lower().split()
-
                         # The whole string format to process further
                         letters_str = text
-
-                        fclasses_predictions = []
-                        for ts in tess_string:
-                            ts.strip()
-                            ts = re.sub("[^@a-z A-Z]+", "", ts)
-                            fclass = [
-                                key
-                                for key, value in f_dictionary.items()
-                                if ts in value
-                            ]
-                            fclasses_predictions = fclasses_predictions + fclass
-
-                        # Should choose the func_type from multiple predictions later
-                        if fclasses_predictions:
-                            func_type = fclasses_predictions[0]
 
                     # print(y1, x1, y2, x2, img_width, img_height)
                     # print(aligned_element, letters_str)
@@ -750,9 +712,6 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                 container_vertical.parameters.update({"roi": (ymin, xmin, ymax, xmax)})
                 # Assign the buoyancy to the vertical container, based on ymin or roi[0]
                 container_vertical.buoyancy = ymin
-                # Assignment of the functional class based on neighbourhood
-                if (element_data_vertical_input["func_type"] == "undefined"):
-                    element_data_vertical_input["func_type"] = element_data_vertical_text["func_type"]
                 # Create elements for vertical groups containers
                 for element_data_vertical in v_group_key:
                     children_dict_vgroups = {}
@@ -811,22 +770,6 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                 # print("id", container_horizontal.id)
                 # print("styles", container_horizontal.styles, container_horizontal_data["styles"])
                 # print("container", container_horizontal)
-
-                # If here was placed at least one select/input without the functional class assigned
-                # The second should be the text and it should exists with the functional class assigned
-                # Recognized input or select, vs ocrtext
-                # Assignment of the functional class based on neighbourhood
-                if(recognized_elements[h_group_key[0]]["struct_type"] in {"textinput", "select"}):
-                    if (recognized_elements[h_group_key[0]]["func_type"] == "undefined"):
-                        if (recognized_elements[h_group_key[1]]["struct_type"] in {"ocrtext"}):
-                            recognized_elements[h_group_key[0]]["func_type"] = \
-                                recognized_elements[h_group_key[1]]["func_type"]
-
-                if (recognized_elements[h_group_key[1]]["struct_type"] in {"textinput", "select"}):
-                    if (recognized_elements[h_group_key[1]]["func_type"] == "undefined"):
-                        if (recognized_elements[h_group_key[0]]["struct_type"] in {"ocrtext"}):
-                            recognized_elements[h_group_key[1]]["func_type"] = \
-                                recognized_elements[h_group_key[0]]["func_type"]
 
                 # Define the default flex alignment for the horizontal group
                 container_horizontal.styles["justify-content"] = "space-between"
@@ -1290,7 +1233,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
 
         # Calculate the mean value for inputs, selects, buttons end
 
-        node.parameters["children"] = [sub['ids'] for sub in children]
+        # node.parameters["children"] = [sub['ids'] for sub in children]
         node.styles["background-color"] = "rgba(" + bcolour_container_value + ")"
         # Assign the max width for the general container
         print("node.styles", node.styles)
