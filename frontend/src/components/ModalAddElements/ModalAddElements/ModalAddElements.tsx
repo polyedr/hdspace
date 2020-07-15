@@ -138,54 +138,49 @@ const Component: React.FunctionComponent<Props> = memo((props) => {
           <Icon icon="close" size={25} />
         </Button>
         <div className={styles.modalBody_addElements}>
-          { activeTab === 'Containers' && (
-            <React.Fragment>
-              <p className={styles.modalTitle_addElements}>
-                Upload UI Drawing or Sketch, or GUI Screenshot, or Document
-              </p>
-              <div className={styles.modalUploadBlock}>
-                <UploadFile
-                  active={activeTab === 'Containers'}
-                  title="upload my page"
-                  uploadFile={setUploadImg}
-                />
-                <ul className={styles.modalUploadList}>
-                  <li className={styles.modalUploadItem}>
-                    <Icon icon="modal-icon-file_1" size={20} />
-                    <span>Drawings: .png, .jpg, .jpeg, .gif (icon)</span>
-                  </li>
-                  <li className={styles.modalUploadItem}>
-                    <Icon icon="modal-icon-file_1" size={20} />
-                    <span>GUI screenshot: .png, .jpg, .jpeg, .gif (icon)</span>
-                  </li>
-                  <li className={styles.modalUploadItem}>
-                    <Icon icon="modal-icon-file_2" size={20} />
-                    <span>Document (RAD, Scope Document etc): .doc, .docx, *.pdf (doc icon)</span>
-                  </li>
-                </ul>
-              </div>
-              <div>
-                Image is processed,  The result of processing will be added automatically on the screen.
-              </div>
-              {imageURLToAccess && (
-                <div>Current screen has screenshot and you can access it by
-                  <a target="_blank" href={imageURLToAccess}>this link</a>.
-                </div>
-              )}
-              { /* '-------- TEST RESULT NEURAL NETWORK --------' */ }
-              <Button
-                type="primary"
-                onClick={() => {
-                  getScreenNN();
-                  onClose();
-                }}
-              >
-                Add Result Neural Network
-              </Button>
-              { /* '------------------- END -------------------' */ }
-              <p className={styles.modalTextDelimiter}>or</p>
-            </React.Fragment>
+          <p className={styles.modalTitle_addElements}>
+            Upload UI Drawing or Sketch, or GUI Screenshot, or Document
+          </p>
+          <div className={styles.modalUploadBlock}>
+            <UploadFile
+              title="upload my page"
+              uploadFile={setUploadImg}
+            />
+            <ul className={styles.modalUploadList}>
+              <li className={styles.modalUploadItem}>
+                <Icon icon="modal-icon-file_1" size={20} />
+                <span>Drawings: .png, .jpg, .jpeg, .gif (icon)</span>
+              </li>
+              <li className={styles.modalUploadItem}>
+                <Icon icon="modal-icon-file_1" size={20} />
+                <span>GUI screenshot: .png, .jpg, .jpeg, .gif (icon)</span>
+              </li>
+              <li className={styles.modalUploadItem}>
+                <Icon icon="modal-icon-file_2" size={20} />
+                <span>Document (RAD, Scope Document etc): .doc, .docx, *.pdf (doc icon)</span>
+              </li>
+            </ul>
+          </div>
+          <div>
+            Image is processed,  The result of processing will be added automatically on the screen.
+          </div>
+          {imageURLToAccess && (
+            <div>Current screen has screenshot and you can access it by
+              <a target="_blank" href={imageURLToAccess}>this link</a>.
+            </div>
           )}
+          { /* '-------- TEST RESULT NEURAL NETWORK --------' */ }
+          <Button
+            type="primary"
+            onClick={() => {
+              getScreenNN();
+              onClose();
+            }}
+          >
+            Add Result Neural Network
+          </Button>
+          { /* '------------------- END -------------------' */ }
+          <p className={styles.modalTextDelimiter}>or</p>
           <ActionsBlock
             activeItem={activeItem}
             tabs={MODAL_ADD_ELEMENTS_TABS}
