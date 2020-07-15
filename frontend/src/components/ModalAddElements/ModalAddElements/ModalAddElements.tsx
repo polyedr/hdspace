@@ -88,7 +88,7 @@ const Component: React.FunctionComponent<Props> = memo((props) => {
       onConfirm(selectedElements);
       onClose();
     }
-  }, [ selectedElements, onConfirm, onClose ]);
+  }, [selectedElements, onConfirm, onClose]);
 
   const handleCancel = useCallback(() => {
     onClose();
