@@ -30,7 +30,6 @@ export const ActiveElementBlock: React.FunctionComponent<IComponentProps> = memo
     activeItem,
     disablePanel,
     onDelScenarioItem,
-    scenarios,
     libraryElements,
     createElements,
     onWrapIntoContainer,

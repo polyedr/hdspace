@@ -293,7 +293,7 @@ const CONTROLS_DEFAULTS: Record<Control, any> = {
 
 type EntityToDefaults = {
   [P in Entity]: {
-    [T in SubEntity]: Record<Control, any>;
+    [T in SubEntity]: Record<Control | 'overrideChildrenParams', any>;
   };
 };
 
@@ -336,7 +336,7 @@ const divBlockDefaults = {
       width: '100%',
       height: '150px',
     },
-    childrenParams: {
+    overrideChildrenParams: {
       paragraph: {
         textContent: 'This is div block',
       }
@@ -895,19 +895,23 @@ export const getConfigurablePropsOf = <
       const entityControlsDefaults = ENTITY_TO_DEFAULTS[entity][subEntity];
       return R.keys(entityControlsDefaults).reduce(
         (acc, c) => {
-          const controlAffectsOn = controlAffectsOnStyles(c)
+          const controlAffectsOn =
+            c === 'overrideChildrenParams'
+            ? c
+            : controlAffectsOnStyles(c)
             ? 'styles'
             : 'params';
+
           return {
             ...acc,
             [controlAffectsOn]: {
               ...acc[controlAffectsOn],
               ...entityControlsDefaults[c],
             },
-            childrenParams: { ...acc.childrenParams, ...entityControlsDefaults.childrenParams }
+            overrideChildrenParams: { ...acc.overrideChildrenParams, ...entityControlsDefaults.overrideChildrenParams }
           };
         },
-        { styles: {}, params: {}, childrenParams: {} }
+        { styles: {}, params: {} as Params, overrideChildrenParams: {} as Record<Entity, Params> }
       );
     }
   );
