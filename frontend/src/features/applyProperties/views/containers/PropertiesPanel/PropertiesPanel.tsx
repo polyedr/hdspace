@@ -11,6 +11,7 @@ import { AVAILABLE_CONTROLS, Control, Entity } from '$domain/core';
 import { LIBRARY_ELEMENTS } from '$domain/libraryElements/libraryElements';
 import { LibraryElement } from '$api/types';
 
+import { ControlSection } from '../../components/ControlSection/ControlSection';
 import { ActiveElementBlock } from '../Controls/ActiveElementBlock';
 import { ActionBlock } from '../Controls/ActionBlock';
 import { MapProps } from '../Controls/MapProps/MapProps';
@@ -38,6 +39,7 @@ import { DropdownItems } from '../Controls/DropdownItems/DropdownItems';
 import { IsOpen } from '../Controls/IsOpen/IsOpen';
 import { VideoSettings } from '../Controls/VideoSettings/VideoSettings';
 import { findChildByID } from '$utils/ElementsTreeHelper';
+import { RenameElement } from '../Controls/RenameElement/RenameElement';
 const styles = require('./PropertiesPanel.scss');
 
 type StateProps = {
@@ -124,7 +126,6 @@ const Component: React.FC<PropertiesPanelProps> = ({
         autoHeightMin="100%"
       >
         <ActiveElementBlock
-          activeItem={activeItem}
           disablePanel={disablePanel}
           onDelScenarioItem={deleteActiveItem}
           scenarios={scenarios}
@@ -139,6 +140,13 @@ const Component: React.FC<PropertiesPanelProps> = ({
             <div className="propsPanelHeaderBlock">
               <p>Element properties</p>
             </div>
+            {activeItem.itemType !== 'root' && (
+              <div className="propsPanelContentBlock">
+                <ControlSection title="Element's name">
+                  <RenameElement />
+                </ControlSection>
+              </div>
+            )}
             {currentItemType && R.toPairs(AVAILABLE_CONTROLS[currentItemType as Entity]).map(([elementName, elementValue]) => {
                 return elementName === 'root' ? (
                   <div className="propsPanelContentBlock">

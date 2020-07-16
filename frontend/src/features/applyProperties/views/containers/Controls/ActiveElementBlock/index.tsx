@@ -5,15 +5,12 @@ import { LibraryElements } from '$domain/libraryElements/libraryElements';
 import { Icon } from '$components/UI/Icon/';
 import { Button } from '$components/UI/Button/';
 import { ModalAddElements } from '$components/ModalAddElements/ModalAddElements/ModalAddElements';
-import { ControlSection } from '$features/applyProperties/views/components/ControlSection/ControlSection';
 
 import { PropertiesPanelProps } from '../../PropertiesPanel/PropertiesPanel';
-import { RenameElement } from '../RenameElement/RenameElement';
 import { ShowBorders } from '../ShowBorders/ShowBorders';
 const styles = require('./styles.scss');
 
 interface IComponentProps {
-  activeItem: PropertiesPanelProps['activeItem'],
   disablePanel: boolean,
   scenarios: PropertiesPanelProps['scenarios'],
   libraryElements: LibraryElements,
@@ -26,7 +23,6 @@ interface IComponentProps {
 
 export const ActiveElementBlock: React.FunctionComponent<IComponentProps> = memo((props) => {
   const {
-    activeItem,
     scenarios,
     libraryElements,
     createElements,
@@ -55,14 +51,9 @@ export const ActiveElementBlock: React.FunctionComponent<IComponentProps> = memo
           <Icon icon="add" />
         </Button>
       </div>
-      {activeItem && (
-        <div className="propsPanelContentBlock">
-          <ShowBorders />
-          <ControlSection title="Element's name">
-            <RenameElement />
-          </ControlSection>
-        </div>
-      )}
+      <div className="propsPanelContentBlock">
+        <ShowBorders />
+      </div>
       <ModalAddElements
         active={isAddElementsModalOpened}
         scenarios={scenarios}
