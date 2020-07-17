@@ -218,7 +218,7 @@ function* updateElementStyles(action: ReturnType<typeof Actions.updateElementSty
   }
 }
 
-function* updateElementImage(action: ReturnType<typeof Actions.updateElementImage>) { // TODO fix working
+function* updateElementImage(action: ReturnType<typeof Actions.updateElementImage>) {
   const { itemID, image } = action.payload;
 
   const parsedID = parseInt(itemID, 10);

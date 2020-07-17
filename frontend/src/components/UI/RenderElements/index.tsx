@@ -57,7 +57,7 @@ const ContainerRenderer = (props: ContainerRendererProps) => {
           isRoot && styles.root,
           styles.addedElem
         )}
-        style={{ ...style, position: 'relative', ...(isBorderVisible && isDisabled && { outline: 'none' })}}
+        style={{ ...style, ...(isBorderVisible && isDisabled && { outline: 'none' })}}
         tabIndex={isDisabled ? 0 : -1}
       >
         {children}

@@ -143,7 +143,7 @@ const SortableComponent = (props: Props) => {
 
   const getIsActive = !disableInteractions && item.id === activeItemId;
 
-  const { id, type, styles, children, name } = item;
+  const { id, type, styles, children } = item;
 
   if (!isElementStructType(type)) {
     return null;

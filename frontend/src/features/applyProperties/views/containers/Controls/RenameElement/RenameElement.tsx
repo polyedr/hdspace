@@ -27,7 +27,7 @@ type Props = StateProps & typeof mapDispatch;
 
 const RenameElement = (props: Props) => {
   const { activeItemID, activeItemName, renameElement } = props;
-  const [currentElementName, setCurrentElementName] = useState(activeItemName); // TODO root do not renaming
+  const [currentElementName, setCurrentElementName] = useState(activeItemName);
 
   useEffect(() => {
     setCurrentElementName(activeItemName);
