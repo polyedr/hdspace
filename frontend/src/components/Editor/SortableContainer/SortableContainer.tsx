@@ -167,7 +167,8 @@ const SortableComponent = (props: Props) => {
 
   const getAdditionalProps = () => {
     switch (item.type) {
-      case 'container': {
+      case 'container':
+      case 'divBlock': {
         return {
           isBorderVisible,
         }

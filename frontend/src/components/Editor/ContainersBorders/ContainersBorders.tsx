@@ -67,7 +67,12 @@ class ContainersBordersComponent extends React.Component<Props, State> {
       this.setState({ rootElement });
     }
 
-    const borderedElements = [...root.children.filter(child => child.type === 'container'), root];
+    const borderedElements = [
+      ...root.children.filter(
+        (child) => child.type === 'container' || child.type === 'divBlock'
+      ),
+      root,
+    ];
 
     borderedElements.forEach(element => {
       const HTMLElement = document.getElementById(root.id === element.id ? 'root' : element.id);
@@ -128,16 +133,16 @@ class ContainersBordersComponent extends React.Component<Props, State> {
     Array.from(borders).forEach(label => label.classList.remove('border_hovered'));
   };
 
-  handleBorderClick = (event: React.MouseEvent<HTMLSpanElement, MouseEvent>, targetElementID: string) => {
+  handleBorderClick = (event: React.MouseEvent<HTMLSpanElement, MouseEvent>, targetElement: LibraryElement<Entity>) => {
     const { setActiveItem } = this.props;
 
     event.preventDefault();
     (document.activeElement as HTMLElement)?.blur();
 
     setActiveItem({
-      itemId: targetElementID,
-      itemType: name,
-      name,
+      itemId: targetElement.id,
+      itemType: targetElement.type,
+      name: targetElement.name,
     });
   };
 
@@ -153,7 +158,7 @@ class ContainersBordersComponent extends React.Component<Props, State> {
       data-position={position}
       className={cn(styles.border, isActive && styles.border_active)}
       style={style}
-      onClick={(event) => this.handleBorderClick(event, targetElement.id)}
+      onClick={(event) => this.handleBorderClick(event, targetElement)}
     />
   );
 
@@ -196,7 +201,7 @@ class ContainersBordersComponent extends React.Component<Props, State> {
                       right: isRoot ? coordinates.right : 'auto',
                       left: isRoot ? 'auto' : coordinates.left,
                     }}
-                    onClick={(event) => this.handleBorderClick(event, targetElement.id)}
+                    onClick={(event) => this.handleBorderClick(event, targetElement)}
                   >
                     {isRoot ? 'root' : targetElement.name}
                   </span>

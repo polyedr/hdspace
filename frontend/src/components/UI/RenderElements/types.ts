@@ -14,10 +14,11 @@ export type SharedRendererProps = {
 
 export type ContainerRendererProps = SharedRendererProps & {
   isBorderVisible: boolean,
-  showBorders: boolean,
 };
 
-export type DivBlockRendererProps = SharedRendererProps;
+export type DivBlockRendererProps = SharedRendererProps & {
+  isBorderVisible: boolean,
+};
 
 export type ImageRendererProps = SharedRendererProps & {
   params: {
