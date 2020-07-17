@@ -13,9 +13,7 @@ export type SharedRendererProps = {
 };
 
 export type ContainerRendererProps = SharedRendererProps & {
-  name: string,
-  isSecondLevelContainer: boolean,
-  isOuterContainer: boolean,
+  isBorderVisible: boolean,
   showBorders: boolean,
 };
 

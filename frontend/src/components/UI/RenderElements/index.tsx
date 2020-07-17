@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 import cn from 'classnames';
 
 import { GMap } from '$components/UI/GMap';
@@ -27,18 +27,10 @@ import { MenuItem } from './MenuItem/MenuItem';
 import { DropdownMenu } from './DropdownMenu/DropdownMenu';
 import { DropdownItem } from './DropdownItem/DropdownItem';
 import { ImageRendererProps, MapRendererProps, ClockRendererProps, SharedRendererProps, ContainerRendererProps } from './types';
-import { sharedClasses } from '$styles/sharedClasses';
-import { actionsCreators } from '$redux/project';
-import { connect } from 'react-redux';
 const styles = require('./styles.scss');
-
-const mapDispatch = {
-  setActiveItem: actionsCreators.setActiveItem,
-};
 
 const ContainerRenderer = (props: ContainerRendererProps) => {
   const {
-    name,
     id,
     sortableId,
     style,
@@ -46,29 +38,10 @@ const ContainerRenderer = (props: ContainerRendererProps) => {
     children,
     className,
     elementRef,
-    isSecondLevelContainer,
-    showBorders,
-    active,
-    isOuterContainer,
-    setActiveItem,
+    isBorderVisible,
   } = props;
 
   const isRoot = id === 'root';
-
-  const isBorderedElement = isRoot || isOuterContainer || isSecondLevelContainer;
-  const isBorderVisible = isBorderedElement && showBorders || isBorderedElement && active;
-
-  const borderColor = active && !isRoot ? 'red' : '#1cc09f';
-
-  const handleLabelClick = (event) => {
-    event.preventDefault();
-    document.activeElement?.blur();
-    setActiveItem({
-      itemId: id,
-      itemType: name,
-      name,
-    })
-  };
 
   return (
     <>
@@ -82,88 +55,10 @@ const ContainerRenderer = (props: ContainerRendererProps) => {
           className,
           isRoot && styles.root,
           styles.addedElem
-          /* showBorders && isSecondLevelContainer && styles.withBorders,
-          showBorders && isRoot && styles.withBorders,
-          showBorders && isRoot && styles.withBorders_inner,
-          showBorders && isOuterContainer && styles.withBorders_inner,
-          active && isSecondLevelContainer && styles.withBorders,
-          active && isRoot && styles.withBorders,
-          active && isSecondLevelContainer && styles.withBorders_active,
-          active && isRoot && styles.withBorders_active,
-          active && isRoot && styles.withBorders_inner,
-          active && isOuterContainer && styles.withBorders_inner, */
         )}
-        style={{ ...style, position: 'relative' }}
+        style={{ ...style, position: 'relative', ...(isBorderVisible && isDisabled && { outline: 'none' })}}
         tabIndex={isDisabled ? 0 : -1}
-        data-name={isRoot ? 'root' : name}
       >
-        {isBorderVisible && (
-          <>
-            <span
-              className={cn(
-                sharedClasses.unsortable,
-                styles.borderLabel,
-                active && styles.borderLabel_active,
-                (isOuterContainer || isRoot) && styles.borderLabel_outer,
-                isRoot && styles.borderLabel_right,
-                isRoot && styles.borderLabel_hidden,
-              )}
-              onClick={handleLabelClick}
-            >
-              {isRoot ? 'root' : name}
-            </span>
-            <span
-              className={cn(sharedClasses.unsortable, styles.border, isRoot && !showBorders && styles.border_hidden)}
-              style={{
-                //...(isOuterContainer && !active && { zIndex: -1 }),
-                ...((isRoot || active) && { zIndex: 4 }),
-                position: 'absolute',
-                top: isRoot || isOuterContainer ? 0 : '-1px',
-                right: 0,
-                left: 0,
-                border: `1px solid ${borderColor}`,
-              }}
-              onClick={handleLabelClick}
-            ></span>
-            <span
-            className={cn(sharedClasses.unsortable, styles.border, isRoot && !showBorders && styles.border_hidden)}
-              style={{
-                ...((isRoot || active) && { zIndex: 4 }),
-                position: 'absolute',
-                top: isRoot ? 0 : '-1px',
-                right: 0,
-                bottom: isRoot ? 0 : '-1px',
-                border: `1px solid ${borderColor}`,
-              }}
-              onClick={handleLabelClick}
-            ></span>
-            <span
-            className={cn(sharedClasses.unsortable, styles.border, isRoot && !showBorders && styles.border_hidden)}
-              style={{
-                ...((isRoot || active) && { zIndex: 4 }),
-                position: 'absolute',
-                right: 0,
-                bottom: isRoot ? 0 : '-1px',
-                left: 0,
-                border: `1px solid ${borderColor}`,
-              }}
-              onClick={handleLabelClick}
-            ></span>
-            <span
-            className={cn(sharedClasses.unsortable, styles.border, isRoot && !showBorders && styles.border_hidden)}
-              style={{
-                ...((isRoot || active) && { zIndex: 4 }),
-                position: 'absolute',
-                top: isRoot ? 0 : '-1px',
-                bottom: isRoot ? 0 : '-1px',
-                left: 0,
-                border: `1px solid ${borderColor}`,
-              }}
-              onClick={handleLabelClick}
-            ></span>
-          </>
-        )}
-
         {children}
       </div>
     </>
@@ -267,7 +162,7 @@ const UndefinedRenderer = (props: SharedRendererProps) => {
 
 export const RENDERERS: Record<Entity, React.FunctionComponent<any>> = {
   root: ContainerRenderer,
-  container: connect(null, mapDispatch)(ContainerRenderer),
+  container: ContainerRenderer,
   button: withAction(Action, 'button'),
   textinput: Input,
   radiobutton: Radiobutton,
