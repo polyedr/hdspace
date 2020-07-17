@@ -1,0 +1,48 @@
+.wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+.border {
+  position: absolute;
+  border: 1px solid $mainColor;
+
+  &_active {
+    z-index: 2;
+    border: 1px solid red;
+  }
+
+  &:global(.border_hovered) {
+    z-index: 4;
+  }
+}
+
+.borderLabel {
+  display: none;
+  position: absolute;
+  top: 0;
+  padding: 2px 4px;
+  font-size: 12px;
+  line-height: 1;
+  color: #fff;
+  background: $mainColor;
+  transform: translateY(-100%);
+
+  &:global(.borderLabel_hovered) {
+    display: block;
+    z-index: 3;
+  }
+
+  &_outer {
+    z-index: 1;
+    transform: translateY(0);
+  }
+
+  &_active {
+    display: inline-block;
+    z-index: 3;
+    background: red;
+  }
+}

@@ -242,7 +242,6 @@ const SortableComponent = (props: Props) => {
           setIsMoving={setIsMoving}
           isResizing={isResizing}
           setIsResizing={setIsResizing}
-          showBorders={restProps.showBorders}
         />
       ))}
     </ElementRenderer>
@@ -273,7 +272,6 @@ const SortableComponent = (props: Props) => {
           setIsMoving={setIsMoving}
           isResizing={isResizing}
           setIsResizing={setIsResizing}
-          showBorders={restProps.showBorders}
         />
       ))}
     </SortableGroup>
