@@ -23,6 +23,7 @@ const mapStateToProps = (state: AppReduxState) => {
   const currentScreen = selectors.selectCurrentScreen(state);
   const root = selectors.selectRootElement(state);
   const rootID = selectors.selectRootID(state);
+  const showBorders = selectors.selectShowingBorders(state);
   const { listSortable } = selectors.selectCurrentScreen(state);
   const scenarioElements = selectors.selectScenariosElements(state);
   const savedElements = selectors.selectSavedElementsValues(state);
@@ -31,6 +32,7 @@ const mapStateToProps = (state: AppReduxState) => {
   return {
     root,
     rootID,
+    showBorders,
     listSortable,
     scenarioElements,
     disableInteractions,
@@ -64,6 +66,7 @@ const SortableComponent = (props: Props) => {
   const {
     root,
     rootID,
+    showBorders,
     currentScreen,
     item,
     activeItemId,
@@ -147,9 +150,8 @@ const SortableComponent = (props: Props) => {
   const ElementRenderer = RENDERERS[type];
   const parsedStyles = convertPropCSS(styles);
 
-  const isSecondLevelContainer = findParentByChildID(root, id)?.id === rootID;
-
-  const isOuterContainer = isSecondLevelContainer && root.children[0].id === id;
+  const isBorderedElement = findParentByChildID(root, id)?.id === rootID || id === rootID;
+  const isBorderVisible = isBorderedElement && showBorders || isBorderedElement && getIsActive;
 
   const commonRendererProps: Omit<SharedRendererProps, 'children'> = {
     ...(disableInteractions && { className: '' }),
@@ -165,9 +167,7 @@ const SortableComponent = (props: Props) => {
     switch (item.type) {
       case 'container': {
         return {
-          name,
-          isOuterContainer,
-          isSecondLevelContainer,
+          isBorderVisible,
         }
       };
       case 'textinput': {

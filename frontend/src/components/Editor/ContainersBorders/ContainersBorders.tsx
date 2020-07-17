@@ -173,10 +173,9 @@ class ContainersBordersComponent extends React.Component<Props, State> {
       <div className={styles.wrapper}>
         {borders.map(
           ({ targetElement, isOuterContainer, isRoot, coordinates, height }) => {
-            const isActive = activeItem.itemId === targetElement.id;
             const isRootFocused = document.activeElement === rootElement && isRoot;
-
-            const isBorderVisible = !isRoot && (showBorders || isActive) || isRootFocused;
+            const isActive = isRoot ? isRootFocused : activeItem.itemId === targetElement.id;
+            const isBorderVisible = showBorders || isActive;
 
             const labelClasses = cn(
               styles.borderLabel,
