@@ -45,6 +45,8 @@ export const convertScenarioElements = (
 
 const getCategoryTab = (structType: ElementEntity, libraryElements: ElementsToAdd, obj: IListCategoryEl) => {
   switch (structType) {
+    case 'divBlock':
+      return { Containers: [...obj.Containers || [], libraryElements[structType]] };
     case 'textinput':
     case 'textarea':        
     case 'checkbox':
@@ -95,6 +97,13 @@ export const getCustomTemplateElements = (libraryElements: LibraryElements) => {
 
 export const getGroupElements = (group: string, listElement: IListCategoryEl): GroupElement[] => {
   switch (group) {
+    case 'Containers':
+      return listElement.Containers.map((x, idx) => ({
+        key: `key-${x.struct_type}-${x.func_type}-${idx}`,
+        value: { structType: x.struct_type, funcType: x.func_type },
+        label: `${x.struct_type}`,
+      }));
+
     case 'Typography':
       return listElement.Typography.map((x, idx) => ({
         key: `key-${x.struct_type}-${x.func_type}-${idx}`,

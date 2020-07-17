@@ -10,7 +10,6 @@ import { MODAL_ADD_ELEMENTS_TABS } from '$constants/defaultParams';
 import { getGroupElements, IListCategoryEl, parseAddElementsTabs } from '$utils/parseScenario';
 import { selectors, actionsCreators } from '$redux/project';
 import { AppReduxState } from '$shared/types/app';
-import { PropertiesPanelProps } from '$features/applyProperties';
 import { ServerStructType, CreatedElement, ActiveItem } from '$redux/project/types';
 import { LibraryElements } from '$domain/libraryElements/libraryElements';
 
@@ -37,7 +36,6 @@ const mapDispatchToProps = {
 type OwnProps = {
   activeItem: ActiveItem;
   active: boolean;
-  scenarios: PropertiesPanelProps['scenarios'];
   libraryElements: LibraryElements;
   onClose(): void;
   onConfirm(elementsToAdd: CreatedElement[]): void;
@@ -51,7 +49,6 @@ const Component: React.FunctionComponent<Props> = memo((props) => {
   const {
     activeItem,
     active,
-    scenarios,
     libraryElements,
     onClose,
     onConfirm,
@@ -60,13 +57,10 @@ const Component: React.FunctionComponent<Props> = memo((props) => {
     uploadedImageInfo,
     currentScreen,
   } = props;
-  const [activeTab, setActiveTab] = useState<string>('Screen');
+  const [activeTab, setActiveTab] = useState<string>('Containers');
   const [errorMsg, setErrorMsg] = React.useState<string>('');
   const [listElement, setListElement] = useState<IListCategoryEl>({});
   const [selectedElements, setSelectedElements] = useState<CreatedElement[]>([]);
-  const [scenarioState, setScenarioState] = useState<ScenarioStateType>('scenario_new');
-  const [scenarioName, setScenarioName] = React.useState<string>('');
-  const [scenarioTypeId, setScenarioTypeId] = React.useState<string | null>(null);
   const [imageToUpload, setUploadImg] = useState<IUploadFile | null>(null);
 
   const imageURLToAccess = uploadedImageInfo && currentScreen.id === uploadedImageInfo.screenID
@@ -79,43 +73,22 @@ const Component: React.FunctionComponent<Props> = memo((props) => {
     }
   }, [imageToUpload]);
 
-  const handleScenarioStateChange = useCallback((scenarioType: ScenarioStateType) => {
-    setScenarioState(scenarioType);
-    setErrorMsg('');
-  }, [setScenarioState]);
-
-  const handleScenarioTypeChange = useCallback((value: string) => {
-    setScenarioTypeId(value);
-    setScenarioName('');
-    setScenarioState('scenario_existing');
-    setErrorMsg('');
-  }, [setErrorMsg]);
-
-  const handleScenarioName = useCallback((event) => {
-    setScenarioTypeId(null);
-    setScenarioName(event.target.value);
-    setScenarioState('scenario_new');
-    setErrorMsg('');
-  }, [setErrorMsg]);
+  useEffect(() => {
+    const newListElement = parseAddElementsTabs(libraryElements);
+    setListElement(newListElement);
+  }, [libraryElements]);
 
   const handleConfirm = useCallback((event) => {
     event.preventDefault();
 
-    if (scenarioState === 'scenario_existing' && !scenarioTypeId) {
-      setErrorMsg('Specify the scenario to add items.');
-    } else if (!selectedElements.length) {
+    if (!selectedElements.length) {
       setErrorMsg('No items for the scenario.');
     } else {
       setErrorMsg('');
-      setScenarioName('');
-      setScenarioTypeId(null);
       onConfirm(selectedElements);
       onClose();
     }
-  }, [
-    scenarioState, scenarioTypeId, scenarioName, selectedElements,
-    onConfirm, onClose,
-  ]);
+  }, [selectedElements, onConfirm, onClose]);
 
   const handleCancel = useCallback(() => {
     onClose();
@@ -165,71 +138,57 @@ const Component: React.FunctionComponent<Props> = memo((props) => {
           <Icon icon="close" size={25} />
         </Button>
         <div className={styles.modalBody_addElements}>
-          { activeTab === 'Screen' && (
-            <React.Fragment>
-              <p className={styles.modalTitle_addElements}>
-                Upload UI Drawing or Sketch, or GUI Screenshot, or Document
-              </p>
-              <div className={styles.modalUploadBlock}>
-                <UploadFile
-                  active={activeTab === 'Screen'}
-                  title="upload my page"
-                  uploadFile={setUploadImg}
-                />
-                <ul className={styles.modalUploadList}>
-                  <li className={styles.modalUploadItem}>
-                    <Icon icon="modal-icon-file_1" size={20} />
-                    <span>Drawings: .png, .jpg, .jpeg, .gif (icon)</span>
-                  </li>
-                  <li className={styles.modalUploadItem}>
-                    <Icon icon="modal-icon-file_1" size={20} />
-                    <span>GUI screenshot: .png, .jpg, .jpeg, .gif (icon)</span>
-                  </li>
-                  <li className={styles.modalUploadItem}>
-                    <Icon icon="modal-icon-file_2" size={20} />
-                    <span>Document (RAD, Scope Document etc): .doc, .docx, *.pdf (doc icon)</span>
-                  </li>
-                </ul>
-              </div>
-              <div>
-                Image is processed,  The result of processing will be added automatically on the screen.
-              </div>
-              {imageURLToAccess && (
-                <div>Current screen has screenshot and you can access it by
-                  <a target="_blank" href={imageURLToAccess}>this link</a>.
-                </div>
-              )}
-              { /* '-------- TEST RESULT NEURAL NETWORK --------' */ }
-              <Button
-                type="primary"
-                onClick={() => {
-                  getScreenNN();
-                  onClose();
-                }}
-              >
-                Add Result Neural Network
-              </Button>
-              { /* '------------------- END -------------------' */ }
-              <p className={styles.modalTextDelimiter}>or</p>
-            </React.Fragment>
+          <p className={styles.modalTitle_addElements}>
+            Upload UI Drawing or Sketch, or GUI Screenshot, or Document
+          </p>
+          <div className={styles.modalUploadBlock}>
+            <UploadFile
+              title="upload my page"
+              uploadFile={setUploadImg}
+            />
+            <ul className={styles.modalUploadList}>
+              <li className={styles.modalUploadItem}>
+                <Icon icon="modal-icon-file_1" size={20} />
+                <span>Drawings: .png, .jpg, .jpeg, .gif (icon)</span>
+              </li>
+              <li className={styles.modalUploadItem}>
+                <Icon icon="modal-icon-file_1" size={20} />
+                <span>GUI screenshot: .png, .jpg, .jpeg, .gif (icon)</span>
+              </li>
+              <li className={styles.modalUploadItem}>
+                <Icon icon="modal-icon-file_2" size={20} />
+                <span>Document (RAD, Scope Document etc): .doc, .docx, *.pdf (doc icon)</span>
+              </li>
+            </ul>
+          </div>
+          <div>
+            Image is processed,  The result of processing will be added automatically on the screen.
+          </div>
+          {imageURLToAccess && (
+            <div>Current screen has screenshot and you can access it by
+              <a target="_blank" href={imageURLToAccess}>this link</a>.
+            </div>
           )}
+          { /* '-------- TEST RESULT NEURAL NETWORK --------' */ }
+          <Button
+            type="primary"
+            onClick={() => {
+              getScreenNN();
+              onClose();
+            }}
+          >
+            Add Result Neural Network
+          </Button>
+          { /* '------------------- END -------------------' */ }
+          <p className={styles.modalTextDelimiter}>or</p>
           <ActionsBlock
             activeItem={activeItem}
-            scenarios={scenarios}
             tabs={MODAL_ADD_ELEMENTS_TABS}
             groupElements={getContentStep()}
             activeTab={activeTab}
             selectedElements={selectedElements}
-            scenarioTypeId={scenarioTypeId}
-            scenarioName={scenarioName}
-            libraryElements={libraryElements}
-            scenarioState={scenarioState}
-            startTemplate="signup"
             changeTab={handleChangeTab}
             setSelectedElements={setSelectedElements}
-            changeScenarioType={handleScenarioTypeChange}
-            changeScenarioName={handleScenarioName}
-            changeScenarioState={handleScenarioStateChange}
           />
           {
             errorMsg && (

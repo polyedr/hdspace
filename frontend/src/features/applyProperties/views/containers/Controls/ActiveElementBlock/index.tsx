@@ -16,7 +16,6 @@ const styles = require('./styles.scss');
 interface IComponentProps {
   activeItem: PropertiesPanelProps['activeItem'],
   disablePanel: boolean,
-  scenarios: PropertiesPanelProps['scenarios'],
   libraryElements: LibraryElements,
   createElements: PropertiesPanelProps['createElements'],
   isAddElementsModalOpened: boolean;
@@ -31,7 +30,6 @@ export const ActiveElementBlock: React.FunctionComponent<IComponentProps> = memo
     activeItem,
     disablePanel,
     onDelScenarioItem,
-    scenarios,
     libraryElements,
     createElements,
     onWrapIntoContainer,
@@ -128,7 +126,6 @@ export const ActiveElementBlock: React.FunctionComponent<IComponentProps> = memo
       <ModalAddElements
         activeItem={activeItem}
         active={isAddElementsModalOpened}
-        scenarios={scenarios}
         libraryElements={libraryElements}
         onClose={closeModal}
         onConfirm={createElements}

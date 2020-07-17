@@ -8,7 +8,7 @@ export const convertCreatedElementToRequest = <T extends Entity, K extends Serve
   elementName?: string
 ): ServerElement<T, ServerElement<Entity>[], K> => {
   const libraryElement = LIBRARY_ELEMENTS[elementType];
-  const { styles, params } = getConfigurablePropsOf<Entity, K>('root')(libraryElement.struct_type);
+  const { styles, params, overrideChildrenParams } = getConfigurablePropsOf<Entity, K>('root')(libraryElement.struct_type);
   const { name, children } = libraryElement;
 
   const getChildrenWithConfigurableProps = <P extends Entity, R extends Entity, S extends ServerElement<T>['parameters']>(
@@ -21,7 +21,7 @@ export const convertCreatedElementToRequest = <T extends Entity, K extends Serve
       return {
         ...child,
         styles: { ...child.styles, ...styles },
-        parameters: { ...child.parameters, ...params },
+        parameters: { ...child.parameters, ...params, ...overrideChildrenParams[child.struct_type] },
         children: getChildrenWithConfigurableProps(child.children),
       };
     });

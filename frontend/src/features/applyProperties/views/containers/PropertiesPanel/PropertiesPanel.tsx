@@ -43,7 +43,6 @@ const styles = require('./PropertiesPanel.scss');
 
 type StateProps = {
   elementsTree: LibraryElement<'root'>,
-  scenarios: ProjectT.IScenarios;
   activeItem: ProjectT.ActiveItem;
   activeElement?: LibraryElement<Entity>;
   activeElementParent?: LibraryElement<Entity>;
@@ -63,7 +62,6 @@ const mapState = (state: AppReduxState): StateProps => {
     activeItem,
     activeElement,
     activeElementParent,
-    scenarios: selectors.selectScenarios(state),
     screen: selectors.selectCurrentScreen(state),
     isAddElementsModalOpened: selectors.selectIsAddElementsModalOpened(state),
     loader: selectors.selectLoader(state),
@@ -120,7 +118,6 @@ const Component: React.FC<PropertiesPanelProps> = ({
   screen,
   deleteActiveItem,
   loader,
-  scenarios,
   createElements,
   wrapIntoContainer,
   isAddElementsModalOpened,
@@ -143,7 +140,6 @@ const Component: React.FC<PropertiesPanelProps> = ({
           activeItem={activeItem}
           disablePanel={disablePanel}
           onDelScenarioItem={deleteActiveItem}
-          scenarios={scenarios}
           libraryElements={LIBRARY_ELEMENTS}
           createElements={createElements}
           onWrapIntoContainer={wrapIntoContainer}
