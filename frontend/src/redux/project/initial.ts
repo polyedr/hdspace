@@ -29,6 +29,7 @@ export const initial: T.ReduxState = {
     scenarioElements: {},
     rootElement: DEFAULT_ROOT,
     modifyElements: [],
+    notification: null,
   },
   // communication: {},
 };

@@ -38,6 +38,7 @@ export type ServerElement<Type extends Entity, Children = any[], Params = {}> = 
 
 export type RootServerElement = ServerElement<'root', []>;
 export type ContainerServerElement = ServerElement<'container', []>;
+export type DivBlockServerElement = ServerElement<'divBlock'>;
 export type ImageServerElement = ServerElement<'image', [], ImageParameters>;
 export type ButtonServerElement = ServerElement<'button', [], ButtonParameters>;
 export type HyperlinkServerElement = ServerElement<'hyperlink', [], HyperLinkParameters>;
@@ -89,6 +90,7 @@ export type LibraryElement<Type extends Entity, Children = any[], Params = {}> =
 
 export type RootElement = LibraryElement<'root', []>;
 export type ContainerElement = LibraryElement<'container', []>;
+export type DivBlockElement = LibraryElement<'divBlock'>;
 export type ImageElement = LibraryElement<'image', [], ImageParameters>;
 export type ButtonElement = LibraryElement<'button', [], ButtonParameters>;
 export type HyperlinkElement = LibraryElement<'hyperlink', [], HyperLinkParameters>;
@@ -118,6 +120,7 @@ export type UndefinedElement = LibraryElement<'undefined', []>;
 export type LibraryElementUnion =
   | RootElement
   | ContainerElement
+  | DivBlockElement
   | ImageElement
   | ButtonElement
   | HyperlinkElement

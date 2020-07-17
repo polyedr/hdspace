@@ -10,7 +10,7 @@ import { selectors, actionsCreators } from '$redux/project';
 import { LIST_SCENARIO_TYPE } from '$constants/defaultParams';
 import { convertPropCSS } from '$utils/StyleHelper';
 import { LIBRARY_ELEMENTS } from '$domain/libraryElements/libraryElements';
-import { ElementEntity, Entity } from '$domain/core';
+import { ElementEntity, Entity, AVAILABLE_CHILDREN } from '$domain/core';
 import { LibraryElementUnion, LibraryElement } from '$api/types';
 import { SharedRendererProps } from '$components/UI/RenderElements/types';
 import { findParentByChildID } from '$utils/ElementsTreeHelper';
@@ -131,9 +131,11 @@ const SortableComponent = (props: Props) => {
     LIST_SCENARIO_TYPE.indexOf(itemType) !== -1 ? itemType : 'element'
   ), []);
 
-  const getIsPutItem = useCallback((type: string): boolean => (
-    listNotDragging.indexOf(type) === -1
-  ), [listNotDragging]);
+  const getIsPutItem = (type: Entity): boolean | string[] => {
+    const availableChildren = Object.keys(AVAILABLE_CHILDREN[type]);
+    const put = R.head(availableChildren) === 'all' ? true : availableChildren;
+    return listNotDragging.indexOf(type) === -1 && put;
+  };
 
   const isRadioChecked = (value: string, checkedRadio: SavedElementsValues[string]) => value === checkedRadio?.savedValue;
 
@@ -223,8 +225,11 @@ const SortableComponent = (props: Props) => {
     }
   };
 
-  return currentScreen &&
-    currentScreen.screenLoader ? null : disableInteractions ? (
+  if (currentScreen?.screenLoader) {
+    return null;
+  };
+
+  return disableInteractions ? (
     <ElementRenderer
       key={id}
       {...commonRendererProps}

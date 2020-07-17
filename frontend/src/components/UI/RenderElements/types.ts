@@ -17,6 +17,8 @@ export type ContainerRendererProps = SharedRendererProps & {
   showBorders: boolean,
 };
 
+export type DivBlockRendererProps = SharedRendererProps;
+
 export type ImageRendererProps = SharedRendererProps & {
   params: {
     imageURL: string,
@@ -156,7 +158,7 @@ export type ListRendererProps = SharedRendererProps & {
 };
 
 export type VideoRendererProps = SharedRendererProps & {
-  params: VideoSettings,
+  params: { videoSettings: VideoSettings },
 };
 
 export type ListItemRendererProps = Omit<SharedRendererProps, 'sortableId' | 'activeItemId'> & {

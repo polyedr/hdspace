@@ -1,5 +1,3 @@
-import { CSSProperties } from 'react';
-
 import { IPlainAction, IPlainFailAction, IAction } from '$shared/redux';
 import { CssLikeStyles } from '$utils/StyleHelper';
 import { LibraryEntities } from '$domain/libraryElements/libraryElements';
@@ -30,13 +28,18 @@ export type ReduxState = {
     scenarioLoader?: boolean;
     modifyElements: number[];
     uploadedImageInfo?: UploadedImageInfo;
+    notification: Notification | null;
   };
   // communication: {};
 };
 
+export type Notification = {
+  text: string,
+};
+
 export type ActiveItem = {
   itemId: string;
-  itemType: string;
+  itemType: Entity | 'none';
   name: string;
 };
 
@@ -66,6 +69,8 @@ export type SetListProjectLoader = IAction<'PROJECTS:SET_LIST_PROJECT_LOADER', {
 export type SetProjectLoader = IAction<'PROJECTS:SET_PROJECT_LOADER', { active: boolean }>;
 export type SetScreenLoader = IAction<'PROJECTS:SET_SCREEN_LOADER', { active: boolean }>;
 export type SetLoader = IAction<'PROJECTS:SET_LOADER', { active: boolean }>;
+export type SetNotification = IAction<'PROJECTS:SET_NOTIFICATION', Notification>;
+export type RemoveNotification = IPlainAction<'PROJECTS:REMOVE_NOTIFICATION'>;
 export type SetScenarioLoader = IAction<'PROJECTS:SET_SCENARIO_LOADER', { active: boolean }>;
 export type DeleteScreen = IAction<'PROJECTS:DELETE_SCREEN', { projectID: number, screenID: number }>;
 export type RenameScreen = IAction<'PROJECTS:RENAME_SCREEN', { projectID: number, screenID: number, name: string }>;
@@ -168,7 +173,9 @@ export type Action =
   | ResetScreenState
   | UpdateSavedElementsValues
   | UpdateSavedElementValues
-  | UpdateElementsTree;
+  | UpdateElementsTree
+  | SetNotification
+  | RemoveNotification;
 
 export type ItemToCopyInfo = {
   id: string;

@@ -50,6 +50,7 @@ export const ENTITIES: { [K in Exclude<ElementEntity, 'ocrtext' | 'root' | 'cont
   dropdown: 'dropdown',
   video: 'video',
   undefined: 'undefined',
+  divBlock: 'divBlock',
 };
 
 const CONTROLS_AFFECT_ON_PARAMS = [
@@ -100,6 +101,9 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
     root: ['background'],
   },
   container: {
+    root: ['indents', 'size', 'display', 'typography', 'border', 'background'],
+  },
+  divBlock: {
     root: ['indents', 'size', 'display', 'typography', 'border', 'background'],
   },
   button: {
@@ -179,6 +183,86 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
   },
 };
 
+export type AvailableChildren = {
+  [P in Entity]: {
+    [key: string]: {
+      min: number,
+      max: number,
+    }
+  }
+};
+
+export const AVAILABLE_CHILDREN: AvailableChildren = {
+  root: {
+    all: {
+      min: 0,
+      max: Infinity,
+    },
+  },
+  container: {
+    all: {
+      min: 0,
+      max: Infinity,
+    },
+  },
+  divBlock: {
+    all: {
+      min: 0,
+      max: Infinity,
+    },
+  },
+  button: {},
+  textinput: {},
+  textarea: {},
+  checkbox: {},
+  radiobutton: {},
+  label: {},
+  hyperlink: {},
+  heading: {},
+  paragraph: {},
+  ocrtext: {},
+  text_block: {},
+  list: {
+    listItem: {
+      min: 1,
+      max: Infinity,
+    },
+  },
+  listItem: {},
+  image: {},
+  select: {
+    selectMenu: {
+      min: 1,
+      max: 1,
+    },
+  },
+  selectMenu: {
+    selectItem: {
+      min: 1,
+      max: Infinity,
+    },
+  },
+  selectItem: {},
+  map: {},
+  calendar: {},
+  clock: {},
+  dropdown: {
+    dropdownMenu: {
+      min: 1,
+      max: 1,
+    },
+  },
+  dropdownMenu: {
+    dropdownItem: {
+      min: 1,
+      max: Infinity,
+    },
+  },
+  dropdownItem: {},
+  video: {},
+  undefined: {},
+};
+
 const CONTROLS_DEFAULTS: Record<Control, any> = {
   display: DEFAULT_DISPLAY,
   indents: DEFAULT_INDENTS,
@@ -209,7 +293,7 @@ const CONTROLS_DEFAULTS: Record<Control, any> = {
 
 type EntityToDefaults = {
   [P in Entity]: {
-    [T in SubEntity]: Record<Control, any>;
+    [T in SubEntity]: Record<Control | 'overrideChildrenParams', any>;
   };
 };
 
@@ -241,6 +325,22 @@ const containerDefaults = {
       ...extractDefaults('container', 'root', 'size'),
       width: '100%',
     },
+  },
+};
+
+const divBlockDefaults = {
+  root: {
+    ...extractDefaults('divBlock', 'root'),
+    size: {
+      ...extractDefaults('divBlock', 'root', 'size'),
+      width: '100%',
+      height: '150px',
+    },
+    overrideChildrenParams: {
+      paragraph: {
+        textContent: 'This is div block',
+      }
+    }
   },
 };
 
@@ -755,6 +855,7 @@ const videoDefaults = {
 const ENTITY_TO_DEFAULTS: EntityToDefaults = {
   root: rootDefaults,
   container: containerDefaults,
+  divBlock: divBlockDefaults,
   button: buttonDefaults,
   textinput: textinputDefaults,
   checkbox: checkboxDefaults,
@@ -794,18 +895,23 @@ export const getConfigurablePropsOf = <
       const entityControlsDefaults = ENTITY_TO_DEFAULTS[entity][subEntity];
       return R.keys(entityControlsDefaults).reduce(
         (acc, c) => {
-          const controlAffectsOn = controlAffectsOnStyles(c)
+          const controlAffectsOn =
+            c === 'overrideChildrenParams'
+            ? c
+            : controlAffectsOnStyles(c)
             ? 'styles'
             : 'params';
+
           return {
             ...acc,
             [controlAffectsOn]: {
               ...acc[controlAffectsOn],
               ...entityControlsDefaults[c],
             },
+            overrideChildrenParams: { ...acc.overrideChildrenParams, ...entityControlsDefaults.overrideChildrenParams }
           };
         },
-        { styles: {}, params: {} as Params }
+        { styles: {}, params: {} as Params, overrideChildrenParams: {} as Record<Entity, Params> }
       );
     }
   );

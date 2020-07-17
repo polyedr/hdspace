@@ -26,6 +26,7 @@ import { SelectMenu } from './SelectMenu/SelectMenu';
 import { MenuItem } from './MenuItem/MenuItem';
 import { DropdownMenu } from './DropdownMenu/DropdownMenu';
 import { DropdownItem } from './DropdownItem/DropdownItem';
+import { DivBlockRenderer } from './DivBlock/DivBlock';
 import { ImageRendererProps, MapRendererProps, ClockRendererProps, SharedRendererProps, ContainerRendererProps } from './types';
 const styles = require('./styles.scss');
 
@@ -146,7 +147,7 @@ const ClockWidgetRenderer = (props: ClockRendererProps) => {
 }
 
 const UndefinedRenderer = (props: SharedRendererProps) => {
-  const { id, style, sortableId, isDisabled, className, elementRef } = props;
+  const { id, style, sortableId, isDisabled, className, elementRef, children } = props;
   return (
     <div
       ref={elementRef}
@@ -156,13 +157,16 @@ const UndefinedRenderer = (props: SharedRendererProps) => {
       className={cn(className, styles.addedContainer)}
       style={style}
       tabIndex={isDisabled ? 0 : -1}
-    />
+    >
+      {children}
+    </div>
   );
 }
 
 export const RENDERERS: Record<Entity, React.FunctionComponent<any>> = {
   root: ContainerRenderer,
   container: ContainerRenderer,
+  divBlock: DivBlockRenderer,
   button: withAction(Action, 'button'),
   textinput: Input,
   radiobutton: Radiobutton,

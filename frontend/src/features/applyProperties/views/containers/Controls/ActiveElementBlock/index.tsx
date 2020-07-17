@@ -11,11 +11,12 @@ import { ShowBorders } from '../ShowBorders/ShowBorders';
 const styles = require('./styles.scss');
 
 interface IComponentProps {
+  activeItem: PropertiesPanelProps['activeItem'],
   disablePanel: boolean,
-  scenarios: PropertiesPanelProps['scenarios'],
   libraryElements: LibraryElements,
   createElements: PropertiesPanelProps['createElements'],
   isAddElementsModalOpened: boolean;
+  showDeleteButton: boolean;
   onWrapIntoContainer(): void;
   onDelScenarioItem(): void;
   setIsAddElementsModalOpened(isOpened: boolean): void;
@@ -23,7 +24,7 @@ interface IComponentProps {
 
 export const ActiveElementBlock: React.FunctionComponent<IComponentProps> = memo((props) => {
   const {
-    scenarios,
+    activeItem,
     libraryElements,
     createElements,
     isAddElementsModalOpened,
@@ -55,8 +56,8 @@ export const ActiveElementBlock: React.FunctionComponent<IComponentProps> = memo
         <ShowBorders />
       </div>
       <ModalAddElements
+        activeItem={activeItem}
         active={isAddElementsModalOpened}
-        scenarios={scenarios}
         libraryElements={libraryElements}
         onClose={closeModal}
         onConfirm={createElements}
