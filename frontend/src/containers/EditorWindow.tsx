@@ -11,8 +11,8 @@ import ProjectsLogic from '$containers/ProjectsLogic';
 import EditorLogic from '$containers/EditorLogic';
 import { TopPanel } from '$components/TopPanel/TopPanel';
 import { LeftPanel } from '$components/LeftPanel/LeftPanel';
-import { IProject } from '$redux/project/types';
 import { selectors } from '$redux/project';
+import { Project } from '$api/types';
 
 const styles = require('$styles/global.scss');
 
@@ -32,7 +32,7 @@ const mapDispatchToProps = {
 };
 
 export type IAppProps = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & {
-  currentProject: IProject,
+  currentProject: Project,
 }
 
 const EditorWindow: React.FunctionComponent<IAppProps> = ({

@@ -3,7 +3,7 @@ import { CSSProperties } from 'react';
 import { CssLikeStyles } from '$utils/StyleHelper';
 import { LibraryEntities, ChildrenElements } from '$domain/libraryElements/libraryElements';
 import { ChildEntity, Entity } from '$domain/core';
-import { LibraryElement } from '$api/types';
+import { LibraryElement, Project } from '$api/types';
 
 import * as T from './types';
 
@@ -40,7 +40,7 @@ export const getProject = (id: number, screenID?: string): T.GetProject => ({
   payload: { id, screenID },
 });
 
-export const setProject = (project: T.IProject): T.SetProject => ({
+export const setProject = (project: Project): T.SetProject => ({
   type: 'PROJECTS:SET_PROJECT',
   payload: { project },
 });

@@ -2,7 +2,7 @@ import { IPlainAction, IPlainFailAction, IAction } from '$shared/redux';
 import { CssLikeStyles } from '$utils/StyleHelper';
 import { LibraryEntities } from '$domain/libraryElements/libraryElements';
 import { Entity } from '$domain/core';
-import { LibraryElement as RootElement, LinkParams, HeadingType, VideoSettings, InputType } from '$api/types';
+import { LibraryElement as RootElement, LinkParams, HeadingType, VideoSettings, InputType, Project } from '$api/types';
 
 export type ReduxState = {
   data: {
@@ -16,7 +16,7 @@ export type ReduxState = {
     savedElementsValues: SavedElementsValues;
   },
   edit: {
-    currentProject: IProject;
+    currentProject: Project;
     currentScreen: IProjectScreen;
     screens: IProjectScreen[];
     listProjectLoader: boolean;
@@ -61,7 +61,7 @@ export type LoadProjectsFail = IPlainFailAction<'PROJECTS:LOAD_PROJECTS_FAIL'>;
 export type AddProject = IAction<'PROJECTS:ADD_PROJECT', { name: string }>;
 export type DeleteProject = IAction<'PROJECTS:DELETE_PROJECT', { id: number }>;
 export type GetProject = IAction<'PROJECTS:GET_PROJECT', { id: number, screenID?: string }>;
-export type SetProject = IAction<'PROJECTS:SET_PROJECT', { project: IProject }>;
+export type SetProject = IAction<'PROJECTS:SET_PROJECT', { project: Project }>;
 export type ChangeScreensOrder = IAction<'PROJECTS:CHANGE_SCREENS_ORDER', { screens: IProjectScreen[] }>;
 export type RenameProject = IAction<'PROJECTS:RENAME_PROJECT', { projectID: number, name: string }>;
 export type SetListProjectLoader = IAction<'PROJECTS:SET_LIST_PROJECT_LOADER', { active: boolean }>;
@@ -449,14 +449,6 @@ export interface IProjectListItem {
   name: string,
   image: string,
   buoyancy: number,
-}
-
-export interface IProject {
-  id: number,
-  name: string,
-  status: string,
-  projectscreen: number[],
-  projectLoader?: boolean,
 }
 
 export interface IListProject {
