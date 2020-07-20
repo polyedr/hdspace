@@ -12,40 +12,40 @@ export function selectProjects(state: AppReduxState) {
 };
 
 export function selectScenarios(state: AppReduxState) {
-  return selectFeatureState(state).edit.scenarios;
+  return selectFeatureState(state).edit.present.scenarios;
 };
 
 export function selectScenario(state: AppReduxState, id: number) {
-  return selectFeatureState(state).edit.scenarios[id];
+  return selectFeatureState(state).edit.present.scenarios[id];
 }
 
 export function selectRootScenario(state: AppReduxState) {
-  const scenarios = selectFeatureState(state).edit.scenarios;
+  const scenarios = selectFeatureState(state).edit.present.scenarios;
   return Object.values(scenarios).find(x => x.parent_id === -1);
 };
 
 export function selectScenariosElements(state: AppReduxState) {
-  return selectFeatureState(state).edit.scenarioElements;
+  return selectFeatureState(state).edit.present.scenarioElements;
 };
 
 export function selectScenarioElement(state: AppReduxState, id: number) {
-  return selectFeatureState(state).edit.scenarioElements[id];
+  return selectFeatureState(state).edit.present.scenarioElements[id];
 };
 
 export function selectModifyElements(state: AppReduxState) {
-  return selectFeatureState(state).edit.modifyElements;
+  return selectFeatureState(state).edit.present.modifyElements;
 };
 
 export function selectCurrentScreen(state: AppReduxState) {
-  return selectFeatureState(state).edit.currentScreen;
+  return selectFeatureState(state).edit.present.currentScreen;
 };
 
 export function selectScreens(state: AppReduxState) {
-  return selectFeatureState(state).edit.screens;
+  return selectFeatureState(state).edit.present.screens;
 };
 
 export function selectNotification(state: AppReduxState) {
-  return selectFeatureState(state).edit.notification;
+  return selectFeatureState(state).edit.present.notification;
 };
 
 export function selectIsAddElementsModalOpened(state: AppReduxState) {
@@ -61,35 +61,35 @@ export function selectLibraryElements(state: AppReduxState) {
 };
 
 export function selectCurrentProject(state: AppReduxState) {
-  return selectFeatureState(state).edit.currentProject;
+  return selectFeatureState(state).edit.present.currentProject;
 };
 
 export function selectListSortable(state: AppReduxState) {
-  return selectFeatureState(state).edit.currentScreen.listSortable;
+  return selectFeatureState(state).edit.present.currentScreen.listSortable;
 };
 
 export function selectRootElement(state: AppReduxState) {
-  return selectFeatureState(state).edit.rootElement;
+  return selectFeatureState(state).edit.present.rootElement;
 };
 
 export function selectRootID(state: AppReduxState) {
-  return selectFeatureState(state).edit.rootElement.id;
+  return selectFeatureState(state).edit.present.rootElement.id;
 };
 
 export function selectUploadedImageInfo(state: AppReduxState) {
-  return selectFeatureState(state).edit.uploadedImageInfo;
+  return selectFeatureState(state).edit.present.uploadedImageInfo;
 };
 
 export function selectLoader(state: AppReduxState) {
-  return selectFeatureState(state).edit.loader;
+  return selectFeatureState(state).edit.present.loader;
 };
 
 export function selectScenarioLoader(state: AppReduxState) {
-  return selectFeatureState(state).edit.scenarioLoader;
+  return selectFeatureState(state).edit.present.scenarioLoader;
 };
 
 export function selectProjectLoader(state: AppReduxState) {
-  return selectFeatureState(state).edit.listProjectLoader;
+  return selectFeatureState(state).edit.present.listProjectLoader;
 };
 
 export function selectActiveItem(state: AppReduxState) {

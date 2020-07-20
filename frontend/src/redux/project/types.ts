@@ -3,6 +3,7 @@ import { CssLikeStyles } from '$utils/StyleHelper';
 import { LibraryEntities } from '$domain/libraryElements/libraryElements';
 import { Entity } from '$domain/core';
 import { LibraryElement as RootElement, LinkParams, HeadingType, VideoSettings, InputType } from '$api/types';
+import { StateWithHistory } from 'redux-undo';
 
 export type ReduxState = {
   data: {
@@ -15,7 +16,7 @@ export type ReduxState = {
     itemToCopyInfo: ItemToCopyInfo | null;
     savedElementsValues: SavedElementsValues;
   },
-  edit: {
+  edit: StateWithHistory<{
     currentProject: IProject;
     currentScreen: IProjectScreen;
     screens: IProjectScreen[];
@@ -28,7 +29,7 @@ export type ReduxState = {
     modifyElements: number[];
     uploadedImageInfo?: UploadedImageInfo;
     notification: Notification | null;
-  };
+  }>;
   // communication: {};
 };
 

@@ -19,6 +19,7 @@ export const initial: T.ReduxState = {
     savedElementsValues: {},
   },
   edit: {
+    // @ts-ignore
     currentProject: DEFAULT_PROJECT,
     currentScreen: DEFAULT_SCREEN,
     screens: [],

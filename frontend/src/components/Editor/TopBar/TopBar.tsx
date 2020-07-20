@@ -5,8 +5,10 @@ import { Icon } from '$components/UI/Icon';
 import { Checkbox } from '$components/UI/Checkbox';
 import { Button } from '$components/UI/Button';
 import { DEFAULT_SCREEN_MODE } from '$constants/defaultParams';
+import { ActionCreators } from 'redux-undo';
 
 import { ScreenMode } from '../Workspace/Workspace';
+import { useDispatch } from 'react-redux';
 const styles = require('./TopBar.scss');
 
 export type IScreenMode = {
@@ -28,6 +30,8 @@ type Props = {
 };
 
 export const TopBar = (props: Props) => {
+  const dispatch = useDispatch()
+
   const {
     screenID,
     isPrototypeMode,
@@ -40,13 +44,13 @@ export const TopBar = (props: Props) => {
     onExport,
   } = props;
 
-  const onHistoryBack = useCallback(() => {
-    console.log();
-  }, []);
+  const onHistoryBack = () => {
+    dispatch(ActionCreators.undo())
+  };
 
-  const onHistoryForward = useCallback(() => {
-    console.log();
-  }, []);
+  const onHistoryForward = () => {
+    dispatch(ActionCreators.redo())
+  };
 
   const handleDefaultScreenModeSelect = useCallback(() => {
     onScreenModeChange({ ...DEFAULT_SCREEN_MODE, isDefaultMode: true });

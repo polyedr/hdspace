@@ -1,8 +1,10 @@
+// @ts-nocheck
 import * as R from 'ramda';
 import { initial } from '../initial';
 import * as T from '../types';
+import { StateWithHistory } from 'redux-undo';
 
-export function editReducer(state: T.ReduxState['edit'] = initial.edit, action: T.Action): T.ReduxState['edit'] {
+export function editReducer(state: StateWithHistory<typeof initial.edit> = initial.edit as any, action: T.Action): T.ReduxState['edit'] {
   switch (action.type) {
     case 'PROJECTS:UPDATE_ELEMENTS_TREE': {
       return {
@@ -12,6 +14,7 @@ export function editReducer(state: T.ReduxState['edit'] = initial.edit, action: 
     }
 
     case 'PROJECTS:CLEAN_AFTER_PREV_SCREEN': {
+
       return {
         ...state,
         ...R.pick(

@@ -14,12 +14,11 @@ export default combineReducers({
     uiReducer, // TODO: resolve typings!
     makeResetStateReducer<T.ResetScreenState, T.ReduxState['ui']>('PROJECTS:RESET_SCREEN_STATE', initial.ui) as any,
   ]),
-  // @ts-ignore
-  edit: composeReducers([
+  edit: undoable(composeReducers([
     editReducer,
     makeResetStateReducer<T.ResetScreenState, T.ReduxState['edit']>(
       'PROJECTS:RESET_SCREEN_STATE',
       initial.edit
     ) as any,
-  ]),
+  ])) as any,
 });
