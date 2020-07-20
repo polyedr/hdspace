@@ -9,7 +9,7 @@ export function editReducer(state: T.ReduxState['edit'] = initial.edit, action: 
         ...state,
         rootElement: action.payload.root,
       };
-    };
+    }
 
     case 'PROJECTS:CLEAN_AFTER_PREV_SCREEN': {
       return {
@@ -39,15 +39,6 @@ export function editReducer(state: T.ReduxState['edit'] = initial.edit, action: 
 
     case 'PROJECTS:REMOVE_NOTIFICATION': {
       return { ...state, notification: null };
-    }
-
-    case 'PROJECTS:CLEAN_AFTER_PREV_SCREEN': {
-      return {
-        ...state,
-        scenarios: {},
-        scenarioElements: {},
-        modifyElements: [],
-      };
     }
 
     case 'PROJECTS:SET_SCREEN': {

@@ -1,5 +1,6 @@
 import { combineReducers } from 'redux';
 import { composeReducers, makeResetStateReducer } from '$shared/redux';
+import undoable  from 'redux-undo';
 
 import * as T from '../types';
 import { dataReducer } from './data';
@@ -13,6 +14,7 @@ export default combineReducers({
     uiReducer, // TODO: resolve typings!
     makeResetStateReducer<T.ResetScreenState, T.ReduxState['ui']>('PROJECTS:RESET_SCREEN_STATE', initial.ui) as any,
   ]),
+  // @ts-ignore
   edit: composeReducers([
     editReducer,
     makeResetStateReducer<T.ResetScreenState, T.ReduxState['edit']>(
