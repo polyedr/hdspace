@@ -130,7 +130,6 @@ export const Projects: React.FunctionComponent<IProjectsProps> = memo(({
                 <th className={styles.tableTitle}>Project Status</th>
                 <th className={styles.tableTitle}>Project Name</th>
                 <th className={styles.tableTitle}>Total Pages</th>
-                <th className={styles.tableTitle}>Edited</th>
                 <th className={styles.tableTitle}>Actions</th>
               </tr>
             </thead>
