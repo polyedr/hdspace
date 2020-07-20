@@ -19,17 +19,22 @@ export const initial: T.ReduxState = {
     savedElementsValues: {},
   },
   edit: {
-    // @ts-ignore
+    // @ts-ignore TODO: figure out this type
     currentProject: DEFAULT_PROJECT,
     currentScreen: DEFAULT_SCREEN,
     screens: [],
-    listProjectLoader: false,
-    loader: false,
     scenarios: {},
     scenarioElements: {},
     rootElement: DEFAULT_ROOT,
     modifyElements: [],
     notification: null,
   },
-  // communication: {},
+  communication: {
+    loader: false,
+    listProjectLoader: false,
+    screenLoader: false,
+    projectLoader: false,
+    scenarioLoader: false,
+  },
+  control: {},
 };

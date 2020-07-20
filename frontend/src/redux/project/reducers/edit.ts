@@ -28,14 +28,6 @@ export function editReducer(state: StateWithHistory<typeof initial.edit> = initi
       return { ...state, currentProject: action.payload.project };
     }
 
-    case 'PROJECTS:SET_LIST_PROJECT_LOADER': {
-      return { ...state, listProjectLoader: action.payload.active };
-    }
-
-    case 'PROJECTS:SET_LOADER': {
-      return { ...state, loader: action.payload.active };
-    }
-
     case 'PROJECTS:SET_NOTIFICATION': {
       return { ...state, notification: action.payload };
     }
@@ -50,18 +42,6 @@ export function editReducer(state: StateWithHistory<typeof initial.edit> = initi
 
     case 'PROJECTS:SET_SCREENS': {
       return { ...state, screens: action.payload.screens };
-    }
-
-    case 'PROJECTS:SET_PROJECT_LOADER': {
-      return { ...state, currentProject: { ...state.currentProject, projectLoader: action.payload.active } };
-    }
-
-    case 'PROJECTS:SET_SCREEN_LOADER': {
-      return { ...state, currentScreen: { ...state.currentScreen, screenLoader: action.payload.active } };
-    }
-
-    case 'PROJECTS:SET_SCENARIO_LOADER': {
-      return { ...state, scenarioLoader: action.payload.active };
     }
 
     case 'PROJECTS:SET_SCENARIOS': {

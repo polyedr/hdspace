@@ -5,96 +5,96 @@ import { findChildByID } from "$utils/ElementsTreeHelper";
 import { LibraryElement } from "$api/types";
 import { CssLikeStyles } from "$utils/StyleHelper";
 
-export const selectFeatureState = makeFeatureStateSelector('project');
+export const selectProjectState = makeFeatureStateSelector('project');
 
 export function selectProjects(state: AppReduxState) {
-  return selectFeatureState(state).data.listProject;
-};
+  return selectProjectState(state).data.listProject;
+}
 
 export function selectScenarios(state: AppReduxState) {
-  return selectFeatureState(state).edit.present.scenarios;
-};
+  return selectProjectState(state).edit.present.scenarios;
+}
 
 export function selectScenario(state: AppReduxState, id: number) {
-  return selectFeatureState(state).edit.present.scenarios[id];
+  return selectProjectState(state).edit.present.scenarios[id];
 }
 
 export function selectRootScenario(state: AppReduxState) {
-  const scenarios = selectFeatureState(state).edit.present.scenarios;
+  const scenarios = selectProjectState(state).edit.present.scenarios;
   return Object.values(scenarios).find(x => x.parent_id === -1);
-};
+}
 
 export function selectScenariosElements(state: AppReduxState) {
-  return selectFeatureState(state).edit.present.scenarioElements;
-};
+  return selectProjectState(state).edit.present.scenarioElements;
+}
 
 export function selectScenarioElement(state: AppReduxState, id: number) {
-  return selectFeatureState(state).edit.present.scenarioElements[id];
-};
+  return selectProjectState(state).edit.present.scenarioElements[id];
+}
 
 export function selectModifyElements(state: AppReduxState) {
-  return selectFeatureState(state).edit.present.modifyElements;
-};
+  return selectProjectState(state).edit.present.modifyElements;
+}
 
 export function selectCurrentScreen(state: AppReduxState) {
-  return selectFeatureState(state).edit.present.currentScreen;
-};
+  return selectProjectState(state).edit.present.currentScreen;
+}
 
 export function selectScreens(state: AppReduxState) {
-  return selectFeatureState(state).edit.present.screens;
-};
+  return selectProjectState(state).edit.present.screens;
+}
 
 export function selectNotification(state: AppReduxState) {
-  return selectFeatureState(state).edit.present.notification;
-};
+  return selectProjectState(state).edit.present.notification;
+}
 
 export function selectIsAddElementsModalOpened(state: AppReduxState) {
-  return selectFeatureState(state).ui.isAddElementsModalOpened;
-};
+  return selectProjectState(state).ui.isAddElementsModalOpened;
+}
 
 export function selectSavedElementsValues(state: AppReduxState) {
-  return selectFeatureState(state).ui.savedElementsValues;
-};
+  return selectProjectState(state).ui.savedElementsValues;
+}
 
 export function selectLibraryElements(state: AppReduxState) {
-  return selectFeatureState(state).data.libraryElements;
-};
+  return selectProjectState(state).data.libraryElements;
+}
 
 export function selectCurrentProject(state: AppReduxState) {
-  return selectFeatureState(state).edit.present.currentProject;
-};
+  return selectProjectState(state).edit.present.currentProject;
+}
 
 export function selectListSortable(state: AppReduxState) {
-  return selectFeatureState(state).edit.present.currentScreen.listSortable;
-};
+  return selectProjectState(state).edit.present.currentScreen.listSortable;
+}
 
 export function selectRootElement(state: AppReduxState) {
-  return selectFeatureState(state).edit.present.rootElement;
-};
+  return selectProjectState(state).edit.present.rootElement;
+}
 
 export function selectRootID(state: AppReduxState) {
-  return selectFeatureState(state).edit.present.rootElement.id;
-};
+  return selectProjectState(state).edit.present.rootElement.id;
+}
 
 export function selectUploadedImageInfo(state: AppReduxState) {
-  return selectFeatureState(state).edit.present.uploadedImageInfo;
-};
+  return selectProjectState(state).edit.present.uploadedImageInfo;
+}
 
 export function selectLoader(state: AppReduxState) {
-  return selectFeatureState(state).edit.present.loader;
-};
+  return selectProjectState(state).communication.loader;
+}
 
 export function selectScenarioLoader(state: AppReduxState) {
-  return selectFeatureState(state).edit.present.scenarioLoader;
-};
+  return selectProjectState(state).communication.scenarioLoader;
+}
 
-export function selectProjectLoader(state: AppReduxState) {
-  return selectFeatureState(state).edit.present.listProjectLoader;
-};
+export function selectListProjectLoader(state: AppReduxState) {
+  return selectProjectState(state).communication.listProjectLoader;
+}
 
 export function selectActiveItem(state: AppReduxState) {
-  return selectFeatureState(state).ui.activeItem;
-};
+  return selectProjectState(state).ui.activeItem;
+}
 
 export function selectActiveItemChildren(state: AppReduxState, childType: ChildEntity) {
   const activeItem = selectActiveItem(state);
@@ -107,7 +107,7 @@ export function selectActiveItemChildren(state: AppReduxState, childType: ChildE
  
   const children = element.children.filter(child => child.type === childType);
   return children;
-};
+}
 
 export const selectActiveItemStyles = makeActiveItemInfoSelector('styles');
 export const selectActiveItemChildrenStyles = makeActiveItemInfoSelector('styles');
@@ -130,5 +130,13 @@ function makeActiveItemInfoSelector<T extends LibraryElement<Entity>, K extends 
 }
 
 export function selectItemToCopyInfo(state: AppReduxState) {
-  return selectFeatureState(state).ui.itemToCopyInfo;
-};
+  return selectProjectState(state).ui.itemToCopyInfo;
+}
+
+export function selectScreenLoader (state: AppReduxState): boolean {
+  return selectProjectState(state).communication.screenLoader
+}
+
+export function selectProjectLoader (state: AppReduxState): boolean {
+  return selectProjectState(state).communication.projectLoader
+}

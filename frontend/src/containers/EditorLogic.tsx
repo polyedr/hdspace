@@ -28,6 +28,8 @@ const mapStateToProps = (state: AppReduxState) => ({
   currentScreen: selectors.selectCurrentScreen(state),
   scenarioLoader: selectors.selectScenarioLoader(state),
   projectScreens: selectors.selectScreens(state),
+  screenLoader: selectors.selectScreenLoader(state),
+  projectLoader: selectors.selectProjectLoader(state)
 });
 
 const mapDispatchToProps = {
@@ -50,14 +52,13 @@ export type EditorProps = ReturnType<typeof mapStateToProps> & typeof mapDispatc
 
 const EditorLogic: React.FunctionComponent<EditorProps> = ({
   match: { params: { projectID, screenID } },
-
   currentProject,
   currentScreen,
   isNavPanelMinimized,
   isPrototypeMode,
   scenarioLoader,
   projectScreens,
-
+  screenLoader,
   changeMinNavPanel,
   getProject,
   changeScreensOrder,
@@ -68,6 +69,7 @@ const EditorLogic: React.FunctionComponent<EditorProps> = ({
   renameScreen,
   updateElementStyles,
   resetScreenState,
+  projectLoader
 }: EditorProps) => (
   <>
     <NavPanelScreen
@@ -94,7 +96,7 @@ const EditorLogic: React.FunctionComponent<EditorProps> = ({
       resetScreenState={resetScreenState}
     />
     <Spinner
-      active={currentProject.projectLoader || currentScreen.screenLoader || scenarioLoader}
+      active={projectLoader || screenLoader || scenarioLoader}
     />
   </>
 );

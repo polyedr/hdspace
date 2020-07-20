@@ -20,17 +20,21 @@ export type ReduxState = {
     currentProject: IProject;
     currentScreen: IProjectScreen;
     screens: IProjectScreen[];
-    listProjectLoader: boolean;
-    loader: boolean;
     scenarios: IScenarios;
     scenarioElements: IScenarioElements;
     rootElement: RootElement<'root'>;
-    scenarioLoader?: boolean;
     modifyElements: number[];
     uploadedImageInfo?: UploadedImageInfo;
     notification: Notification | null;
   }>;
-  // communication: {};
+  communication: {
+    listProjectLoader: boolean;
+    loader: boolean; // TODO: pick more suitable name
+    screenLoader: boolean,
+    projectLoader: boolean,
+    scenarioLoader: boolean;
+  };
+  control: any;
 };
 
 export type Notification = {
@@ -439,7 +443,6 @@ export interface IProjectScreen {
   project: number;
   image: string | null;
   screenscenario: number[];
-  screenLoader: boolean;
   listSortable: IListSortable;
   buoyancy: number;
   // removed screen_data_json, ask if it will be needed on backend
@@ -457,7 +460,6 @@ export interface IProject {
   name: string,
   status: string,
   projectscreen: number[],
-  projectLoader?: boolean,
 }
 
 export interface IListProject {

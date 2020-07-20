@@ -7,6 +7,8 @@ import { dataReducer } from './data';
 import { editReducer } from './edit';
 import { uiReducer } from './ui';
 import { initial } from '../initial';
+import { communicationReducer } from '$redux/project/reducers/communication';
+import { controlReducer } from '$redux/project/reducers/control';
 
 export default combineReducers({
   data: dataReducer,
@@ -20,5 +22,7 @@ export default combineReducers({
       'PROJECTS:RESET_SCREEN_STATE',
       initial.edit
     ) as any,
-  ])) as any,
+  ])) as any, // TODO: figure out this type
+  communication: communicationReducer,
+  // control: controlReducer,
 });

@@ -25,6 +25,7 @@ const mapStateToProps = (state: AppReduxState) => {
   const scenarioElements = selectors.selectScenariosElements(state);
   const savedElements = selectors.selectSavedElementsValues(state);
   const disableInteractions = state.user.isPrototypeMode;
+  const screenLoader = selectors.selectScreenLoader(state)
 
   return {
     rootID,
@@ -33,6 +34,7 @@ const mapStateToProps = (state: AppReduxState) => {
     disableInteractions,
     currentScreen,
     savedElements,
+    screenLoader
   };
 };
 
@@ -76,6 +78,7 @@ const SortableComponent = (props: Props) => {
     scenarioElements,
     savedElements,
     updateSavedElementValues,
+    screenLoader,
     ...restProps
   } = props;
 
@@ -89,7 +92,7 @@ const SortableComponent = (props: Props) => {
     R.uniq(radioNames).forEach(groupName => {
       if (!groupName) {
         return;
-      };
+      }
 
       const groupRadios = Object.values(listSortable)
         .filter(item => item.type === 'radiobutton')
@@ -98,9 +101,9 @@ const SortableComponent = (props: Props) => {
 
       const firstRadio = R.head(groupRadios);
 
-      if(!savedElements[groupName]?.savedValue) {
+      if (!savedElements[groupName]?.savedValue) {
         updateSavedElementValues(groupName, firstRadio?.parameters.value || '');
-      };
+      }
     })
   }, [savedElements, listSortable, scenarioElements, updateSavedElementValues]);
 
@@ -163,16 +166,16 @@ const SortableComponent = (props: Props) => {
           currentValue: String(savedElements[id]?.savedValue),
           onElementChange: updateSavedElementValues,
           params: item.parameters,
-        }
-      };
+        };
+      }
 
       case 'textarea': {
         return {
           currentValue: savedElements[id]?.savedValue,
           onElementChange: updateSavedElementValues,
           params: item.parameters,
-        }
-      };
+        };
+      }
 
       case 'checkbox': {
         return {
@@ -180,8 +183,8 @@ const SortableComponent = (props: Props) => {
           isCheckboxChecked: isCheckboxChecked(id),
           onElementChange: updateSavedElementValues,
           params: item.parameters,
-        }
-      };
+        };
+      }
 
       case 'radiobutton': {
         return {
@@ -192,8 +195,8 @@ const SortableComponent = (props: Props) => {
           ),
           onElementChange: updateSavedElementValues,
           params: item.parameters,
-        }
-      };
+        };
+      }
 
       case 'select': {
         return {
@@ -201,8 +204,8 @@ const SortableComponent = (props: Props) => {
           onElementChange: updateSavedElementValues,
           childrenElements: children,
           params: item.parameters,
-        }
-      };
+        };
+      }
 
       default: return {
         params: item.parameters,
@@ -210,9 +213,9 @@ const SortableComponent = (props: Props) => {
     }
   };
 
-  if (currentScreen?.screenLoader) {
+  if (screenLoader) {
     return null;
-  };
+  }
 
   return disableInteractions ? (
     <ElementRenderer
