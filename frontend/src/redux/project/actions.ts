@@ -20,7 +20,7 @@ export const getListProject = (): T.LoadProjects => ({
   type: 'PROJECTS:LOAD_PROJECTS',
 });
 
-export const setListProject = (projects: T.IListProject[]): T.LoadProjectsSuccess => ({
+export const setListProject = (projects: Project[]): T.LoadProjectsSuccess => ({
   type: 'PROJECTS:LOAD_PROJECTS_SUCCESS',
   payload: { projects },
 });

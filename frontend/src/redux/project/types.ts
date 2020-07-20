@@ -7,7 +7,7 @@ import { LibraryElement as RootElement, LinkParams, HeadingType, VideoSettings, 
 export type ReduxState = {
   data: {
     libraryElements: LibraryEntities;
-    listProject: IListProject[];
+    listProject: Project[];
   };
   ui: {
     activeItem: ActiveItem;
@@ -54,7 +54,7 @@ export type LoadLibraryElementsFail = IPlainFailAction<'PROJECTS:LOAD_LIBRARY_EL
 
 export type LoadProjects = IPlainAction<'PROJECTS:LOAD_PROJECTS'>;
 export type LoadProjectsSuccess = IAction<
-  'PROJECTS:LOAD_PROJECTS_SUCCESS', { projects: IListProject[] }
+  'PROJECTS:LOAD_PROJECTS_SUCCESS', { projects: Project[] }
 >;
 export type LoadProjectsFail = IPlainFailAction<'PROJECTS:LOAD_PROJECTS_FAIL'>;
 
@@ -177,21 +177,6 @@ export type ItemToCopyInfo = {
   id: string;
   screenID: number;
 };
-
-export interface IListProject {
-  id: number,
-  status: string,
-  name: string,
-  preview?: string,
-  projectscreen: {
-    id: number,
-    project: number,
-    name: string,
-    status: string,
-    screenscenario: number[],
-    image?: any,
-  }[],
-}
 
 type Block = {
   display: 'block';
@@ -449,21 +434,6 @@ export interface IProjectListItem {
   name: string,
   image: string,
   buoyancy: number,
-}
-
-export interface IListProject {
-  id: number,
-  status: string,
-  name: string,
-  preview?: string,
-  projectscreen: {
-    id: number,
-    project: number,
-    name: string,
-    status: string,
-    screenscenario: number[],
-    image?: any,
-  }[],
 }
 
 export type UploadedImageInfo = {

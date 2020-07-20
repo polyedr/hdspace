@@ -12,7 +12,7 @@ import { apiGetElements } from '$api/element';
 import { apiGetScreen, apiSaveScreen } from '$api/screen';
 import { ReturnPromisedType } from '$shared/types';
 import { AppReduxState } from '$shared/types/app';
-import { IListProject, Page, IProjectScreen } from '$redux/project/types';
+import { Page, IProjectScreen } from '$redux/project/types';
 import { activateScreenSaga, addScreenSaga } from '$redux/project/sagas/screen';
 import * as Actions from '$redux/project/actions';
 import { setScreens } from '$redux/project/actions';
@@ -29,6 +29,7 @@ import { reqWrapper } from '$redux/project/sagas/index';
 import { generateFontFace } from '$utils/generateFontFace';
 
 import { selectors, T } from '../';
+import { Project } from '$api/types';
 
 export function* getListProjectSaga(): SagaIterator {
   yield put(Actions.setListProjectLoader(true));
@@ -222,7 +223,7 @@ export function* exportProjectSaga() {
 
 
 export function* addProjectSaga({ payload: { name } }: ReturnType<typeof Actions.addProject>) {
-  const project: IListProject = yield call(reqWrapper, apiAddProject, { data: { name, status: 'pending', projectscreen: [] } });
+  const project: Project = yield call(reqWrapper, apiAddProject, { data: { name, status: 'pending', projectscreen: [] } });
   
   if (!project) { // TODO: write communication for such case
     console.error('cannot create project', project);
@@ -239,7 +240,7 @@ export function* delProjectSaga({ payload: { id } }: ReturnType<typeof Actions.d
   yield call(reqWrapper, apiDelProject, { id });
 
   const listProject: ReturnType<typeof selectors.selectProjects> = yield select(selectors.selectProjects);
-  const newListProject: IListProject[] = listProject.filter(project => project.id !== id);
+  const newListProject: Project[] = listProject.filter(project => project.id !== id);
 
   yield put(Actions.setListProject(newListProject));
 }
@@ -272,7 +273,7 @@ export function* renameProjectSaga(
   yield put(Actions.setListProject(newListProject));
 
   if (currentProject.id === projectID) {
-    yield put(Actions.setProject(data as any)); // TODO: research what the difference between IListProject and IProject
+    yield put(Actions.setProject(data));
   }
 }
 
