@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
-
+import { ActionCreators as undoAC } from 'redux-undo';
 import { actionsCreators, selectors } from '$redux/project';
 import { AppReduxState } from '$shared/types/app';
 
@@ -15,6 +15,8 @@ const mapDispatch = {
   wrapIntoContainer: actionsCreators.wrapIntoContainer,
   copyActiveItem: actionsCreators.copyActiveItem,
   pasteCopiedItem: actionsCreators.pasteCopiedItem,
+  undo: undoAC.undo,
+  redo: undoAC.redo,
 };
 
 type Props = & ReturnType<typeof mapState> & typeof mapDispatch;
@@ -26,6 +28,8 @@ export const Component = (props: Props) => {
     wrapIntoContainer,
     copyActiveItem,
     pasteCopiedItem,
+    undo,
+    redo
   } = props;
   
   const root = document.getElementById('root');
@@ -79,6 +83,20 @@ export const Component = (props: Props) => {
     return () => root?.removeEventListener('keydown', listener);
   }, [rootElement, root, pasteCopiedItem]);
 
+  useEffect(() => {
+    const listener = (ev: KeyboardEvent) => {
+      if (ev.code === 'KeyZ' && (ev.metaKey || ev.ctrlKey) && !ev.shiftKey) {
+        undo();
+      }
+
+      if (ev.code === 'KeyZ' && (ev.metaKey || ev.ctrlKey) && ev.shiftKey) {
+        redo();
+      }
+    };
+
+    root?.addEventListener('keydown', listener);
+    return () => root?.removeEventListener('keydown', listener);
+  }, [rootElement, root, undo]);
   return null;
 };
 
