@@ -24,12 +24,12 @@ import {
   apiGetProject,
   apiSaveProject,
 } from '$api/project';
+import { Project } from '$api/types';
 import { DEFAULT_SCREEN } from '$constants/defaultParams';
 import { reqWrapper } from '$redux/project/sagas/index';
 import { generateFontFace } from '$utils/generateFontFace';
 
 import { selectors, T } from '../';
-import { Project } from '$api/types';
 
 export function* getListProjectSaga(): SagaIterator {
   yield put(Actions.setListProjectLoader(true));
