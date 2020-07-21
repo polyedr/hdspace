@@ -260,7 +260,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
             # Calculate the coordinates precisely with OpenCV text blocks start
             for idx1, (rect1, class_id1) in enumerate(zip(r["rois"], r["class_ids"])):
                 for text_contour in text_contours:
-                    if (class_id1 == 3):  # 3 means the text class
+                    if (class_id1 == 3) and (idx1 not in excluded_indices):  # 3 means the text class
                         x1 = rect1[1]
                         y1 = rect1[0]
                         x2 = rect1[3]
@@ -301,9 +301,8 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                                 rect1[2] = text_contour[2]
             # Calculate the coordinates precisely with OpenCV text blocks end
 
+            # Calculation of the excluded indices to remove overlapped elements start
             # Second, calculate the non-text blocks overlap
-            # Calculation of the excluded indices to remove overlapped elements
-            # excluded_indices = []
             for idx1, rect1 in enumerate(r["rois"]):
                 for idx2, rect2 in enumerate(r["rois"]):
                     if (idx1 < idx2) and (idx1 not in excluded_indices) and (idx2 not in excluded_indices):
@@ -349,6 +348,52 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                                 excluded_indices.append(idx1)
                             elif square > square2 * SQUARES_OVERLAP_THRESHOLD:
                                 excluded_indices.append(idx2)
+            # Calculation of the excluded indices to remove overlapped elements end
+
+            # Calculate the coordinates precisely with OpenCV non-text blocks start
+            for idx1, (rect1, class_id1) in enumerate(zip(r["rois"], r["class_ids"])):
+                # 1,2,4,5,7 means elements except the text class and the radiobutton
+                for rect_contour in rect_contours:
+                    if (class_id1 in {1,2,4,5,7}) and (idx1 not in excluded_indices):
+                        x1 = rect1[1]
+                        y1 = rect1[0]
+                        x2 = rect1[3]
+                        y2 = rect1[2]
+                        x3 = rect_contour[1]
+                        y3 = rect_contour[0]
+                        x4 = rect_contour[3]
+                        y4 = rect_contour[2]
+
+                        # Borders of the rectangles overlapped area
+                        left = max(x1, x3)
+                        bottom = max(y1, y3)
+                        right = min(x2, x4)
+                        top = min(y2, y4)
+                        # Sizes of the rectangles overlapped area
+                        width = right - left
+                        height = top - bottom
+
+                        # The first rectangle square
+                        width1, height1 = x2 - x1, y2 - y1
+
+                        # The second rectangle square
+                        width2, height2 = x4 - x3, y4 - y3
+
+                        # Check if width, height of the overlapped area less or equal 0
+                        if not (width <= 0 or height <= 0):
+                            # If the square > 0, calculate the squares of the 3 rectangles
+                            square = width * height
+                            square1 = width1 * height1
+                            square2 = width2 * height2
+
+                            if (square > square1 * SQUARES_OVERLAP_THRESHOLD) or (
+                                square > square2 * SQUARES_OVERLAP_THRESHOLD
+                            ):  # Change coordinates from Mask R CNN to the OpenCV values
+                                rect1[1] = rect_contour[1]
+                                rect1[0] = rect_contour[0]
+                                rect1[3] = rect_contour[3]
+                                rect1[2] = rect_contour[2]
+            # Calculate the coordinates precisely with OpenCV non-text blocks end
 
             for idx, (roi, class_id, score) in enumerate(
                 zip(r["rois"], r["class_ids"], r["scores"])
