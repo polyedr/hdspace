@@ -73,7 +73,7 @@ class ContainersBordersComponent extends React.Component<Props, State> {
 
     borderedElements.forEach(element => {
       const HTMLElement = document.getElementById(root.id === element.id ? 'root' : element.id);
-      HTMLElement?.addEventListener('mouseenter', this.handleElementMouseEnter);
+      HTMLElement?.addEventListener('mouseenter', this.handleElementMouseEnter); // TODO why listeners are removed after mounting?
       HTMLElement?.addEventListener('mouseleave', this.handleElementMouseLeave);
     })
   
