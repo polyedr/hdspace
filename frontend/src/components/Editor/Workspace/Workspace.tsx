@@ -18,6 +18,7 @@ import { LibraryElement, LibraryElementUnion } from '$api/types';
 import { TopBar } from '../TopBar/TopBar';
 import { HotKeys } from '../HotKeys/HotKeys';
 import { Entity } from '$domain/core';
+import { ContainersBorders } from '../ContainersBorders/ContainersBorders';
 const styles = require('./Workspace.scss');
 
 export type ScreenMode = {
@@ -177,6 +178,7 @@ export const Component = (props: Props) => {
             isResizing={hasItemBeingResized}
             setIsResizing={setHasItemBeingResized}
           />
+          {!isPrototypeMode && <ContainersBorders />}
         </Scrollbar>
       </div>
     </div>
