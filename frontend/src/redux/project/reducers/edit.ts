@@ -1,25 +1,15 @@
-// @ts-nocheck
 import * as R from 'ramda';
-import { initial } from '../initial';
+import { initialEdit } from '../initial';
 import * as T from '../types';
-import { StateWithHistory } from 'redux-undo';
 
-export function editReducer(state: StateWithHistory<typeof initial.edit> = initial.edit as any, action: T.Action): T.ReduxState['edit'] {
+export const editReducer = (state: T.ProjectEditState = initialEdit, action: T.Action): T.ProjectEditState => {
   switch (action.type) {
-    case 'PROJECTS:UPDATE_ELEMENTS_TREE': {
-      return {
-        ...state,
-        rootElement: action.payload.root,
-      };
-    }
-
     case 'PROJECTS:CLEAN_AFTER_PREV_SCREEN': {
-
       return {
         ...state,
         ...R.pick(
           ['currentScreen', 'scenarios', 'scenarioElements', 'modifyElements'],
-          initial.edit,
+          initialEdit,
         ),
       };
     }
@@ -61,4 +51,4 @@ export function editReducer(state: StateWithHistory<typeof initial.edit> = initi
     }
     default: return state;
   }
-}
+};

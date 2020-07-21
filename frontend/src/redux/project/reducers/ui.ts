@@ -1,8 +1,8 @@
 import * as R from 'ramda';
-import { initial } from '../initial';
+import { initialUi } from '../initial';
 import * as T from '../types';
 
-export function uiReducer(state: T.ReduxState['ui'] = initial.ui, action: T.Action): T.ReduxState['ui'] {
+export function uiReducer(state: T.ProjectUiState = initialUi, action: T.Action): T.ProjectUiState {
   switch (action.type) {
     case 'PROJECTS:SET_ACTIVE_ITEM': {
       return { ...state, activeItem: action.payload.activeItem };
@@ -17,7 +17,7 @@ export function uiReducer(state: T.ReduxState['ui'] = initial.ui, action: T.Acti
         ...state,
         ...R.pick(
           ['activeItem'],
-          initial.ui,
+          initialUi,
         ),
         itemToCopyInfo: state.itemToCopyInfo,
       };

@@ -5,37 +5,48 @@ import { Entity } from '$domain/core';
 import { LibraryElement as RootElement, LinkParams, HeadingType, VideoSettings, InputType } from '$api/types';
 import { StateWithHistory } from 'redux-undo';
 
-export type ReduxState = {
-  data: {
-    libraryElements: LibraryEntities;
-    listProject: IListProject[];
-  };
-  ui: {
-    activeItem: ActiveItem;
-    isAddElementsModalOpened: boolean;
-    itemToCopyInfo: ItemToCopyInfo | null;
-    savedElementsValues: SavedElementsValues;
-  },
-  edit: StateWithHistory<{
-    currentProject: IProject;
-    currentScreen: IProjectScreen;
-    screens: IProjectScreen[];
-    scenarios: IScenarios;
-    scenarioElements: IScenarioElements;
-    rootElement: RootElement<'root'>;
-    modifyElements: number[];
-    uploadedImageInfo?: UploadedImageInfo;
-    notification: Notification | null;
-  }>;
-  communication: {
-    listProjectLoader: boolean;
-    loader: boolean; // TODO: pick more suitable name
-    screenLoader: boolean,
-    projectLoader: boolean,
-    scenarioLoader: boolean;
-  };
-  control: any;
+export type ProjectState = {
+  data: ProjectDataState;
+  ui: ProjectUiState,
+  edit: ProjectEditState;
+  communication: ProjectCommunicationState;
+  control: StateWithHistory<ProjectControlState>;
 };
+
+export type ProjectDataState = {
+  libraryElements: LibraryEntities;
+  listProject: IListProject[];
+}
+
+export type ProjectUiState = {
+  activeItem: ActiveItem;
+  isAddElementsModalOpened: boolean;
+  itemToCopyInfo: ItemToCopyInfo | null;
+  savedElementsValues: SavedElementsValues;
+}
+
+export type ProjectEditState = {
+  currentProject: IProject;
+  currentScreen: IProjectScreen;
+  screens: IProjectScreen[];
+  scenarios: IScenarios;
+  scenarioElements: IScenarioElements;
+  modifyElements: number[];
+  uploadedImageInfo?: UploadedImageInfo;
+  notification: Notification | null;
+}
+
+export type ProjectCommunicationState = {
+  listProjectLoader: boolean;
+  loader: boolean; // TODO: pick more suitable name
+  screenLoader: boolean,
+  projectLoader: boolean,
+  scenarioLoader: boolean;
+}
+
+export type ProjectControlState = {
+  rootElement: RootElement<'root'>;
+}
 
 export type Notification = {
   text: string,

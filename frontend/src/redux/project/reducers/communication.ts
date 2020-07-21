@@ -1,8 +1,8 @@
 import * as T from '../types';
-import { initial } from '$redux/project/initial';
+import { initialCommunication } from '$redux/project/initial';
 
 
-export const communicationReducer = (state: T.ReduxState['communication'] = initial.communication, action: T.Action) => {
+export const communicationReducer = (state: T.ProjectCommunicationState = initialCommunication, action: T.Action): T.ProjectCommunicationState => {
   switch (action.type) {
     case 'PROJECTS:SET_LIST_PROJECT_LOADER': {
       return {

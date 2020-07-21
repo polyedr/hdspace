@@ -12,40 +12,40 @@ export function selectProjects(state: AppReduxState) {
 }
 
 export function selectScenarios(state: AppReduxState) {
-  return selectProjectState(state).edit.present.scenarios;
+  return selectProjectState(state).edit.scenarios;
 }
 
 export function selectScenario(state: AppReduxState, id: number) {
-  return selectProjectState(state).edit.present.scenarios[id];
+  return selectProjectState(state).edit.scenarios[id];
 }
 
 export function selectRootScenario(state: AppReduxState) {
-  const scenarios = selectProjectState(state).edit.present.scenarios;
+  const scenarios = selectProjectState(state).edit.scenarios;
   return Object.values(scenarios).find(x => x.parent_id === -1);
 }
 
 export function selectScenariosElements(state: AppReduxState) {
-  return selectProjectState(state).edit.present.scenarioElements;
+  return selectProjectState(state).edit.scenarioElements;
 }
 
 export function selectScenarioElement(state: AppReduxState, id: number) {
-  return selectProjectState(state).edit.present.scenarioElements[id];
+  return selectProjectState(state).edit.scenarioElements[id];
 }
 
 export function selectModifyElements(state: AppReduxState) {
-  return selectProjectState(state).edit.present.modifyElements;
+  return selectProjectState(state).edit.modifyElements;
 }
 
 export function selectCurrentScreen(state: AppReduxState) {
-  return selectProjectState(state).edit.present.currentScreen;
+  return selectProjectState(state).edit.currentScreen;
 }
 
 export function selectScreens(state: AppReduxState) {
-  return selectProjectState(state).edit.present.screens;
+  return selectProjectState(state).edit.screens;
 }
 
 export function selectNotification(state: AppReduxState) {
-  return selectProjectState(state).edit.present.notification;
+  return selectProjectState(state).edit.notification;
 }
 
 export function selectIsAddElementsModalOpened(state: AppReduxState) {
@@ -61,23 +61,23 @@ export function selectLibraryElements(state: AppReduxState) {
 }
 
 export function selectCurrentProject(state: AppReduxState) {
-  return selectProjectState(state).edit.present.currentProject;
+  return selectProjectState(state).edit.currentProject;
 }
 
 export function selectListSortable(state: AppReduxState) {
-  return selectProjectState(state).edit.present.currentScreen.listSortable;
+  return selectProjectState(state).edit.currentScreen.listSortable;
 }
 
 export function selectRootElement(state: AppReduxState) {
-  return selectProjectState(state).edit.present.rootElement;
+  return selectProjectState(state).control.present.rootElement;
 }
 
 export function selectRootID(state: AppReduxState) {
-  return selectProjectState(state).edit.present.rootElement.id;
+  return selectProjectState(state).control.present.rootElement.id;
 }
 
 export function selectUploadedImageInfo(state: AppReduxState) {
-  return selectProjectState(state).edit.present.uploadedImageInfo;
+  return selectProjectState(state).edit.uploadedImageInfo;
 }
 
 export function selectLoader(state: AppReduxState) {
