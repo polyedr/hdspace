@@ -36,10 +36,7 @@ ENABLE_DEBUG_TOOLBAR = DEBUG and ENV.bool("ENABLE_DEBUG_TOOLBAR", False)
 ALLOWED_HOSTS = ENV.list("ALLOWED_HOSTS", [])
 INTERNAL_IPS = ENV.list("INTERNAL_IPS", default=("127.0.0.1", ))
 
-
 # Application definition
-
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',

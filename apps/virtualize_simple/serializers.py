@@ -15,6 +15,8 @@ import pytesseract
 from keras.preprocessing.image import load_img
 from keras_preprocessing.image import img_to_array
 
+from apps.utils.object_detection import run_text_detection, get_rect_contours
+
 config_tesseract = "-l eng --oem 1 --psm 3"
 
 # The constant to remove rectangle when overlaps more than 90% with larger rectangle
@@ -165,6 +167,30 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
             node = ScenarioElement.objects.create(parent=element_root_pre, **root_element_data)
         # Create the root element mptt end
 
+        # Create the opencv recognition start
+        image_dict = {}
+        result_regions = {}
+        image_opencv_input = cv2.imread(imgpath)
+        text = False
+        watch = True
+        # Get list of random images in IMAGE_DIR
+        # if not filename:
+        #     image_dict = get_rand_images(IMAGE_DIR, image_count)
+        # else:
+        #     image_dict[filename] = cv2.imread(os.path.join(IMAGE_DIR, filename))
+        if True:
+            text_contours = []
+            rect_contours = []
+            # Detect text regions
+            text_contours = run_text_detection(image_opencv_input, text=text)
+            # Detect rect regions
+            rect_contours = get_rect_contours(image_opencv_input)
+            # Save all detected regions into dictionary
+            result = {"text": text_contours, "rect": rect_contours}
+
+        print(result)
+        # Create the opencv recognition end
+
         # Create the recognized_elements array start
         recognized_elements = []
         if imgpath:
@@ -292,7 +318,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                     The bottom right corner of the rectangle (x2, y2).
                     Next, the assignment of values.
                     y1, x1, y2, x2 = roi
-                    width_elem = x2 - x1
+                    width_elem = x2 - x1roi_our
                     height_elem = y2 - y1
                     '''
                     '''
@@ -514,12 +540,12 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                                 },
                             }
                         )
-            '''
-            test
+
+            # test
             # Display the recognized_elements to the command line
             for recognized_element in recognized_elements:
                 print(recognized_element)
-            '''
+
             # Create the recognized_elements array start
 
             # Sort the recognized_elements, extract the y1 parameter
@@ -1232,13 +1258,9 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         flvl_element.save()
 
         # Calculate the mean value for inputs, selects, buttons end
-
-        # node.parameters["children"] = [sub['ids'] for sub in children]
         node.styles["background-color"] = "rgba(" + bcolour_container_value + ")"
         # Assign the max width for the general container
-        print("node.styles", node.styles)
         node.styles["max-width"] = str(img_width) + "px"
-
         node.save()
 
         # Extract all the inputs, selects from the main container
