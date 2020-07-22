@@ -418,27 +418,22 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                                 if (centers_distance < centers_distance_min):
                                     centers_distance_min = centers_distance
                                     idx1_selected = idx1
-                                    rect1_selected = rect1
+                                    rect1[1] = rect_contour[1]
+                                    rect1[0] = rect_contour[0]
+                                    rect1[3] = rect_contour[3]
+                                    rect1[2] = rect_contour[2]
 
-                                '''
-                                # Change coordinates from Mask R CNN to the OpenCV values
-                                rect1[1] = rect_contour[1]
-                                rect1[0] = rect_contour[0]
-                                rect1[3] = rect_contour[3]
-                                rect1[2] = rect_contour[2]
-                                '''
                 # Save the idx1_selected to the array
                 # Update the r['roi'] with rect1_selected values
-                idx1_selected_array.append(idx1_selected)
-                rect1_selected[1] = rect_contour[1]
-                rect1_selected[0] = rect_contour[0]
-                rect1_selected[3] = rect_contour[3]
-                rect1_selected[2] = rect_contour[2]
+                if(idx1_selected != -1):
+                    idx1_selected_array.append(idx1_selected)
+
             # Find the excluded indices
             for idx1, (rect1, class_id1) in enumerate(zip(r["rois"], r["class_ids"])):
                 # 1,2,4,5,7 means elements except the text class and the radiobutton
                 if (class_id1 in {1, 2, 4, 5, 7}) and (idx1 not in excluded_indices) and (idx1 not in idx1_selected_array):
                     excluded_indices.append(idx1)
+
             # Calculate the coordinates precisely with OpenCV non-text blocks end
 
             for idx, (roi, class_id, score) in enumerate(
@@ -464,6 +459,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
 
                     y1, x1, y2, x2 = roi
                     roi_our = img[y1:y2, x1:x2]
+                    print(idx, roi_our)
 
                     roi_our = cv2.resize(
                         roi_our, None, fx=0.95, fy=0.95, interpolation=cv2.INTER_CUBIC
