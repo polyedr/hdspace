@@ -2,6 +2,7 @@ import { initialControl } from '$redux/project/initial';
 import * as R from 'ramda';
 import * as T from '../types';
 import undoable from 'redux-undo';
+import { deleteElement } from '$redux/project/actions';
 
 export const reducer = (state: T.ProjectControlState = initialControl, action: T.Action): T.ProjectControlState => {
   switch (action.type) {
@@ -12,6 +13,8 @@ export const reducer = (state: T.ProjectControlState = initialControl, action: T
       };
     }
 
+
+
     default:
       return state;
   }
@@ -19,6 +22,6 @@ export const reducer = (state: T.ProjectControlState = initialControl, action: T
 
 export const controlReducer = undoable(reducer, {
   filter: (action, currentState, previousHistory) => {
-    return !R.equals(previousHistory.present, currentState);
+    return !R.equals(previousHistory.present.rootElement, currentState.rootElement);
   }
 });

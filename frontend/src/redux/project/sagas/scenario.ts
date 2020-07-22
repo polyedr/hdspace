@@ -128,6 +128,11 @@ export function* deleteChildFromElementSaga(action: ReturnType<typeof Actions.de
   yield call(removeElement, childID);
 }
 
+export function* deleteElementSaga(action: ReturnType<typeof Actions.deleteElement>) {
+  const { id } = action.payload;
+  yield call(removeElement, id);
+}
+
 export function* removeElement(elementToRemoveID: string) {
   const root: ReturnType<typeof selectors.selectRootElement> = yield select(selectors.selectRootElement);
   const removedElement = findChildByID(root, elementToRemoveID);

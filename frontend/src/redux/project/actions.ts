@@ -200,6 +200,11 @@ export const deleteActiveItem = (): T.DeleteActiveItem => ({
   type: 'PROJECTS:DELETE_ACTIVE_ITEM',
 });
 
+export const deleteElement = (id: string): T.DeleteElement => ({
+  type: 'PROJECTS:DELETE_ELEMENT',
+  payload: { id }
+});
+
 export const createElements = (createdElements: T.CreatedElement[]): T.CreateElements => ({
   type: 'PROJECTS:CREATE_ELEMENTS',
   payload: { createdElements },

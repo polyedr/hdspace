@@ -46,6 +46,7 @@ export type ProjectCommunicationState = {
 
 export type ProjectControlState = {
   rootElement: RootElement<'root'>;
+  undoAction: any;
 }
 
 export type Notification = {
@@ -115,6 +116,7 @@ export type UpdateSavedElementValues = IAction<
   'PROJECTS:UPDATE_SAVED_ELEMENT_VALUES', { itemID: string, savedValue: string | boolean }
 >;
 export type DeleteActiveItem = IPlainAction<'PROJECTS:DELETE_ACTIVE_ITEM'>;
+export type DeleteElement = IAction<'PROJECTS:DELETE_ELEMENT', { id: string }>;
 export type CreateElements = IAction<
   'PROJECTS:CREATE_ELEMENTS', { createdElements: CreatedElement[] }>;
 export type AddChildToElement = IAction<
