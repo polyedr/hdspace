@@ -31,21 +31,38 @@ import { ImageRendererProps, MapRendererProps, ClockRendererProps, SharedRendere
 const styles = require('./styles.scss');
 
 const ContainerRenderer = (props: ContainerRendererProps) => {
-  const { id, sortableId, style, isDisabled, children, className, elementRef } = props;
+  const {
+    id,
+    sortableId,
+    style,
+    isDisabled,
+    children,
+    className,
+    elementRef,
+    isBorderVisible,
+  } = props;
+
+  const isRoot = id === 'root';
 
   return (
-    <div
-      ref={elementRef}
-      id={id}
-      data-ls-id={id}
-      data-id={sortableId}
-      key={id}
-      className={cn(className, styles.addedElem)}
-      style={style}
-      tabIndex={isDisabled ? 0 : -1}
-    >
-      {children}
-    </div>
+    <>
+      <div
+        ref={elementRef}
+        id={id}
+        data-ls-id={id}
+        data-id={sortableId}
+        key={id}
+        className={cn(
+          className,
+          isRoot && styles.root,
+          styles.addedElem
+        )}
+        style={{ ...style, ...(isBorderVisible && isDisabled && { outline: 'none' })}}
+        tabIndex={isDisabled ? 0 : -1}
+      >
+        {children}
+      </div>
+    </>
   );
 }
 

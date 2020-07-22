@@ -14,6 +14,7 @@ export const initial: T.ReduxState = {
   },
   ui: {
     activeItem: DEFAULT_ACTIVE_ITEM,
+    showContainersBorders: false,
     isAddElementsModalOpened: false,
     itemToCopyInfo: null,
     savedElementsValues: {},
