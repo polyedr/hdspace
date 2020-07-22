@@ -110,6 +110,9 @@ export function selectActiveItemChildren(state: AppReduxState, childType: ChildE
 }
 
 export const selectElementStyles = (id: string) => (state: AppReduxState) => findChildByID(state.project.control.present.rootElement, id)?.styles;
+
+export const selectElementParameters = (id: string) => (state: AppReduxState) => findChildByID(state.project.control.present.rootElement, id)?.parameters;
+
 export const selectUndoAction = (state: AppReduxState) => {
   return selectProjectState(state).control.present.undoAction
 }

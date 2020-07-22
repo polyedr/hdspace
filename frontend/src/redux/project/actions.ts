@@ -6,6 +6,7 @@ import { ChildEntity, Entity } from '$domain/core';
 import { LibraryElement } from '$api/types';
 
 import * as T from './types';
+import { Action } from './types';
 
 export const getLibraryElements = (): T.LoadLibraryElements => ({
   type: 'PROJECTS:LOAD_LIBRARY_ELEMENTS',
@@ -267,7 +268,7 @@ export const setItemToCopy = (id: string, screenID: number): T.SetItemToCopy => 
   payload: { id, screenID }
 });
 
-export const setUndoAction = (action: any) => ({
+export const setUndoAction = (action: Action) => ({
   type: 'PROJECTS:SET_UNDO_ACTION',
   payload: {
     ...action,

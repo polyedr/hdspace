@@ -243,7 +243,12 @@ function* updateElementParameters(action: ReturnType<typeof Actions.updateElemen
   const { itemID, parameters } = action.payload;
 
   const root: ReturnType<typeof selectors.selectRootElement> = yield select(selectors.selectRootElement);
-  
+
+  const oldParameters = yield select(selectors.selectElementParameters(itemID));
+  if (!R.equals(oldParameters, parameters)) {
+    yield put(Actions.setUndoAction(Actions.updateElementParameters(itemID, oldParameters)))
+  }
+
   const updatedTree = updateParameters(itemID, parameters, root);
   const updatedElement = findChildByID(updatedTree, itemID);
 
