@@ -1,5 +1,5 @@
 export type ImageParameters = {
-  image: string,
+  imageURL: string,
 };
 
 export type InternalLink = { type: 'internal-link', screenID: number | 'noScreen' };
@@ -9,7 +9,7 @@ export type LinkParams = InternalLink | ExternalLink;
 
 export type ButtonParameters = {
   textContent: string,
-  action: { action: LinkParams },
+  action: LinkParams,
   showRipple: boolean,
 };
 

@@ -9,52 +9,85 @@ import {
   LabelServerElement,
   TextareaServerElement,
 } from '$api/types';
+import { getDefaultStyles } from '$domain/defaultStyles/defaultStyles';
+import {
+  defaultButtonParams,
+  defaultTextinputParams,
+  defaultCheckboxParams,
+  defaultRadiobuttonParams,
+  defaultSelectParams,
+  defaultLabelParams,
+  defaultTextareaParams,
+} from '$domain/defaultParams/defaultParams';
 
-export const button: Omit<ButtonServerElement, 'parameters'> & { parameters: { group: string } } = {
+export const button: ButtonServerElement = {
   buoyancy: 1,
   func_type: 'button',
   struct_type: 'button',
   parameters: {
     group: 'form',
+    ...defaultButtonParams,
   },
-  styles: {},
+  styles: {
+    classNames: [],
+    tagStyles: getDefaultStyles('button'),
+    idStyles: {},
+    classStyles: {},
+  },
   name: 'button',
   children: [],
 };
 
-export const textinput: Omit<TextinputServerElement, 'parameters'> & { parameters: { group: string } } = {
+export const textinput:TextinputServerElement = {
   buoyancy: 0,
   func_type: 'textinput',
   struct_type: 'textinput',
   parameters: {
     group: 'form',
+    ...defaultTextinputParams,
   },
-  styles: {},
+  styles: {
+    classNames: [],
+    tagStyles: getDefaultStyles('textinput'),
+    idStyles: {},
+    classStyles: {},
+  },
   name: 'textinput',
   children: [],
 };
 
-export const checkbox: Omit<CheckboxServerElement, 'parameters'> & { parameters: { group: string, defaultChecked: boolean } } = {
+export const checkbox: CheckboxServerElement = {
   buoyancy: 0,
   func_type: 'checkbox',
   struct_type: 'checkbox',
   parameters: {
     group: 'form',
-    defaultChecked: true,
+    ...defaultCheckboxParams,
   },
-  styles: {},
+  styles: {
+    classNames: [],
+    tagStyles: getDefaultStyles('checkbox'),
+    idStyles: {},
+    classStyles: {},
+  },
   name: 'checkbox',
   children: [],
 };
 
-export const radiobutton: Omit<RadiobuttonServerElement, 'parameters'> & { parameters: { group: string } } = {
+export const radiobutton: RadiobuttonServerElement = {
   buoyancy: 0,
   func_type: 'radiobutton',
   struct_type: 'radiobutton',
   parameters: {
     group: 'form',
+    ...defaultRadiobuttonParams,
   },
-  styles: {},
+  styles: {
+    classNames: [],
+    tagStyles: getDefaultStyles('radiobutton'),
+    idStyles: {},
+    classStyles: {},
+  },
   name: 'radiobutton',
   children: [],
 };
@@ -67,17 +100,27 @@ export const makeSelectItem = (name: string, value: string): SelectItemServerEle
     name,
     value,
   },
-  styles: {},
+  styles: {
+    classNames: [],
+    tagStyles: getDefaultStyles('selectItem'),
+    idStyles: {},
+    classStyles: {},
+  },
   name: 'selectItem',
   children: [],
 });
 
-export const selectMenu: Omit<SelectMenuServerElement, 'parameters'> & { parameters: {} } = {
+export const selectMenu: SelectMenuServerElement = {
   buoyancy: 0,
   func_type: 'selectMenu',
   struct_type: 'selectMenu',
   parameters: {},
-  styles: {},
+  styles: {
+    classNames: [],
+    tagStyles: getDefaultStyles('selectMenu'),
+    idStyles: {},
+    classStyles: {},
+  },
   name: 'selectMenu',
   children: [
     makeSelectItem('First option', 'first option'),
@@ -86,38 +129,56 @@ export const selectMenu: Omit<SelectMenuServerElement, 'parameters'> & { paramet
   ],
 };
 
-export const select: Omit<SelectServerElement, 'parameters'> & { parameters: { group: string } } = {
+export const select: SelectServerElement = {
   buoyancy: 0,
   func_type: 'select',
   struct_type: 'select',
   parameters: {
     group: 'form',
+    ...defaultSelectParams,
   },
-  styles: {},
+  styles: {
+    classNames: [],
+    tagStyles: getDefaultStyles('select'),
+    idStyles: {},
+    classStyles: {},
+  },
   name: 'select',
   children: [selectMenu],
 };
 
-export const label: Omit<LabelServerElement, 'parameters'> & { parameters: { group: string } } = {
+export const label: LabelServerElement = {
   buoyancy: 0,
   func_type: 'label',
   struct_type: 'label',
   parameters: {
     group: 'typography',
+    ...defaultLabelParams,
   },
-  styles: {},
+  styles: {
+    classNames: [],
+    tagStyles: getDefaultStyles('label'),
+    idStyles: {},
+    classStyles: {},
+  },
   name: 'label',
   children: [],
 };
 
-export const textarea: Omit<TextareaServerElement, 'parameters'> & { parameters: { group: string } } = {
+export const textarea: TextareaServerElement = {
   buoyancy: 0,
   func_type: 'textarea',
   struct_type: 'textarea',
   parameters: {
     group: 'form',
+    ...defaultTextareaParams,
   },
-  styles: {},
+  styles: {
+    classNames: [],
+    tagStyles: getDefaultStyles('textarea'),
+    idStyles: {},
+    classStyles: {},
+  },
   name: 'textarea',
   children: [],
 };

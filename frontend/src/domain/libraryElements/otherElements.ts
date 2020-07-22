@@ -10,6 +10,8 @@ import {
   DivBlockServerElement,
 } from '$api/types';
 import { paragraph } from './typographyElements';
+import { getDefaultStyles } from '$domain/defaultStyles/defaultStyles';
+import { defaultImageParams, defaultDropdownParams, defaultVideoParams } from '$domain/defaultParams/defaultParams';
 
 export const root: RootServerElement = {
   buoyancy: 0,
@@ -18,7 +20,12 @@ export const root: RootServerElement = {
   parameters: {
     group: 'none',
   },
-  styles: {},
+  styles: {
+    classNames: [],
+    tagStyles: getDefaultStyles('root'),
+    idStyles: {},
+    classStyles: {},
+  },
   name: 'root',
   children: [],
 };
@@ -30,7 +37,12 @@ export const container: ContainerServerElement = {
   parameters: {
     group: 'none',
   },
-  styles: {},
+  styles: {
+    classNames: [],
+    tagStyles: getDefaultStyles('container'),
+    idStyles: {},
+    classStyles: {},
+  },
   name: 'container',
   children: [],
 };
@@ -42,19 +54,30 @@ export const divBlock: DivBlockServerElement = {
   parameters: {
     group: 'containers',
   },
-  styles: {},
+  styles: {
+    classNames: [],
+    tagStyles: getDefaultStyles('divBlock'),
+    idStyles: {},
+    classStyles: {},
+  },
   name: 'divBlock',
   children: [paragraph],
 };
 
-export const image: Omit<ImageServerElement, 'parameters'> & { parameters: { group: string } } = {
+export const image: ImageServerElement = {
   buoyancy: 0,
   func_type: 'image',
   struct_type: 'image',
   parameters: {
     group: 'image',
+    ...defaultImageParams,
   },
-  styles: {},
+  styles: {
+    classNames: [],
+    tagStyles: getDefaultStyles('image'),
+    idStyles: {},
+    classStyles: {},
+  },
   name: 'image',
   children: [],
 };
@@ -64,7 +87,12 @@ export const makeDropdownItem = (textContent: string): DropdownItemServerElement
   func_type: 'dropdownItem',
   struct_type: 'dropdownItem',
   parameters: { textContent },
-  styles: {},
+  styles: {
+    classNames: [],
+    tagStyles: getDefaultStyles('dropdownItem'),
+    idStyles: {},
+    classStyles: {},
+  },
   name: 'dropdownItem',
   children: [],
 });
@@ -74,7 +102,12 @@ export const dropdownMenu: DropdownMenuServerElement = {
   func_type: 'dropdownMenu',
   struct_type: 'dropdownMenu',
   parameters: {},
-  styles: {},
+  styles: {
+    classNames: [],
+    tagStyles: getDefaultStyles('dropdownMenu'),
+    idStyles: {},
+    classStyles: {},
+  },
   name: 'dropdownMenu',
   children: [
     makeDropdownItem('First option'),
@@ -83,38 +116,55 @@ export const dropdownMenu: DropdownMenuServerElement = {
   ],
 };
 
-export const dropdown: Omit<DropdownServerElement, 'parameters'> & { parameters: { group: string } } = {
+export const dropdown: DropdownServerElement = {
   buoyancy: 0,
   func_type: 'dropdown',
   struct_type: 'dropdown',
   parameters: {
     group: 'other',
+    ...defaultDropdownParams,
   },
-  styles: {},
+  styles: {
+    classNames: [],
+    tagStyles: getDefaultStyles('dropdown'),
+    idStyles: {},
+    classStyles: {},
+  },
   name: 'dropdown',
   children: [dropdownMenu],
 };
 
-export const video: Omit<VideoServerElement, 'parameters'> & { parameters: { group: string } } = {
+export const video: VideoServerElement = {
   buoyancy: 0,
   func_type: 'video',
   struct_type: 'video',
   parameters: {
     group: 'other',
+    ...defaultVideoParams,
   },
-  styles: {},
+  styles: {
+    classNames: [],
+    tagStyles: getDefaultStyles('video'),
+    idStyles: {},
+    classStyles: {},
+  },
   name: 'video',
   children: [],
 };
 
-export const undefined: Omit<UndefinedServerElement, 'parameters'> & { parameters: { group: string } } = {
+export const undefined: UndefinedServerElement = {
   buoyancy: 0,
   func_type: 'undefined',
   struct_type: 'undefined',
   parameters: {
     group: 'undefined',
   },
-  styles: {},
+  styles: {
+    classNames: [],
+    tagStyles: getDefaultStyles('undefined'),
+    idStyles: {},
+    classStyles: {},
+  },
   name: 'undefined',
   children: [],
 };

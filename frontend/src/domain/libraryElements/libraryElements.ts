@@ -46,31 +46,29 @@ export type ElementsToAdd = {
   root: RootServerElement,
   container: ContainerServerElement,
   divBlock: DivBlockServerElement,
-  image: Omit<ImageServerElement, 'parameters'> & { parameters: { group: string } },
-  button: Omit<ButtonServerElement, 'parameters'> & { parameters: { group: string } },
-  hyperlink: Omit<HyperlinkServerElement, 'parameters'> & { parameters: { group: string } },
-  textinput: Omit<TextinputServerElement, 'parameters'> & { parameters: { group: string } },
-  checkbox: Omit<CheckboxServerElement, 'parameters'> & { parameters: { group: string, defaultChecked: boolean } },
-  radiobutton: Omit<RadiobuttonServerElement, 'parameters'> & { parameters: { group: string } },
-  select: Omit<SelectServerElement, 'parameters'> & { parameters: { group: string } },
-  label: Omit<LabelServerElement, 'parameters'> & { parameters: { group: string } },
-  textarea: Omit<TextareaServerElement, 'parameters'> & { parameters: { group: string } },
-  heading: Omit<HeadingServerElement, 'parameters'> & { parameters: { group: string } },
-  paragraph: Omit<ParagraphServerElement, 'parameters'> & { parameters: { group: string } },
-  ocrtext: Omit<OcrtextServerElement, 'parameters'> & { parameters: { group: string } },
-  text_block: Omit<TextBlockServerElement, 'parameters'> & { parameters: { group: string } },
-  list: Omit<ListServerElement, 'parameters'> & { parameters: { group: string } },
-  map: Omit<MapServerElement, 'parameters'> & { parameters: { group: string } },
-  calendar: Omit<CalendarServerElement, 'parameters'> & { parameters: { group: string } },
-  clock: Omit<ClockServerElement, 'parameters'> & { parameters: { group: string } },
-  dropdown: Omit<DropdownServerElement, 'parameters'> & { parameters: { group: string } },
-  video: Omit<VideoServerElement, 'parameters'> & { parameters: { group: string } },
-  undefined: Omit<UndefinedServerElement, 'parameters'> & { parameters: { group: string } },
+  image: ImageServerElement,
+  button: ButtonServerElement,
+  hyperlink: HyperlinkServerElement,
+  textinput: TextinputServerElement,
+  checkbox: CheckboxServerElement,
+  radiobutton: RadiobuttonServerElement,
+  select: SelectServerElement,
+  label: LabelServerElement,
+  textarea: TextareaServerElement,
+  heading: HeadingServerElement,
+  paragraph: ParagraphServerElement,
+  ocrtext: OcrtextServerElement,
+  text_block: TextBlockServerElement,
+  list: ListServerElement,
+  map: MapServerElement,
+  calendar: CalendarServerElement,
+  clock: ClockServerElement,
+  dropdown: DropdownServerElement,
+  video: VideoServerElement,
+  undefined: UndefinedServerElement,
 };
 
-export type LibraryElements = {
-  [key in keyof ChildrenElements]: Omit<ChildrenElements[key], 'parameters'> & { parameters: {}};
-} & ElementsToAdd;
+export type LibraryElements = ChildrenElements & ElementsToAdd;
 
 export type LibraryEntities = LibraryElements;
 

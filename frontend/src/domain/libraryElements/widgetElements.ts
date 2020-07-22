@@ -1,37 +1,55 @@
 import { MapServerElement, CalendarServerElement, ClockServerElement } from "$api/types";
+import { getDefaultStyles } from "$domain/defaultStyles/defaultStyles";
+import { defaultMapParams } from "$domain/defaultParams/defaultParams";
 
-export const map: Omit<MapServerElement, 'parameters'> & { parameters: { group: string } } = {
+export const map: MapServerElement = {
   buoyancy: 0,
   func_type: 'map',
   struct_type: 'map',
   parameters: {
     group: 'widget',
+    ...defaultMapParams,
   },
-  styles: {},
+  styles: {
+    classNames: [],
+    tagStyles: getDefaultStyles('map'),
+    idStyles: {},
+    classStyles: {},
+  },
   name: 'map',
   children: [],
 };
 
-export const calendar: Omit<CalendarServerElement, 'parameters'> & { parameters: { group: string } } = {
+export const calendar: CalendarServerElement = {
   buoyancy: 0,
   func_type: 'calendar',
   struct_type: 'calendar',
   parameters: {
     group: 'widget',
   },
-  styles: {},
+  styles: {
+    classNames: [],
+    tagStyles: getDefaultStyles('calendar'),
+    idStyles: {},
+    classStyles: {},
+  },
   name: 'calendar',
   children: [],
 };
 
-export const clock: Omit<ClockServerElement, 'parameters'> & { parameters: { group: string } } = {
+export const clock: ClockServerElement = {
   buoyancy: 0,
   func_type: 'clock',
   struct_type: 'clock',
   parameters: {
     group: 'widget',
   },
-  styles: {},
+  styles: {
+    classNames: [],
+    tagStyles: getDefaultStyles('clock'),
+    idStyles: {},
+    classStyles: {},
+  },
   name: 'clock',
   children: [],
 };
