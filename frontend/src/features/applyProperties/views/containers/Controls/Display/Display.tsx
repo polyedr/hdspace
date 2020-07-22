@@ -49,7 +49,7 @@ function getDisplayStyles(activeItemStyles: Required<CssLikeStyles>): ScreenDisp
 }
 
 function mapState(state: AppReduxState): StateProps {
-  const activeItemStyles = selectors.selectActiveItemStyles(state);
+  const activeItemStyles = selectors.selectActiveItemStyles(state).tagStyles as Required<CssLikeStyles>;
   return { displayStyles: getDisplayStyles(activeItemStyles) };
 }
 

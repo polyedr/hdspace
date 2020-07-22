@@ -119,7 +119,7 @@ export const selectActiveItemParams = makeActiveItemInfoSelector('parameters');
 
 function makeActiveItemInfoSelector<T extends LibraryElement<Entity>, K extends 'styles' | 'parameters'>(
   prop: K
-): <R extends T>(state: AppReduxState) => K extends 'styles' ? Required<CssLikeStyles> : R['parameters'] {
+): <R extends T>(state: AppReduxState) => K extends 'styles' ? R['styles'] : R['parameters'] {
   return (state: AppReduxState) => {
     const activeItem = selectActiveItem(state);
     const elementsTree = selectRootElement(state);
@@ -129,7 +129,7 @@ function makeActiveItemInfoSelector<T extends LibraryElement<Entity>, K extends 
       throw new Error(`Can not find ${activeItem.itemId} in tree!`);
     }
 
-    return element[prop] as K extends 'styles' ? Required<CssLikeStyles> : T['parameters'];
+    return element[prop] as K extends 'styles' ? T['styles'] : T['parameters'];
   };
 }
 

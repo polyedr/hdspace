@@ -65,6 +65,6 @@ export const convertCreatedProjectToRequest = (name: string): CreatedServerProje
     name,
     status: 'pending',
     projectscreen: [],
-    project_data_json: JSON.stringify(projectClasses),
+    project_data_json: JSON.stringify({ classes: projectClasses }),
   }
 };

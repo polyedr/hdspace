@@ -225,6 +225,9 @@ export const DEFAULT_PROJECT = {
   projectLoader: false,
   updated: new Date(),
   created: new Date(),
+  projectData: {
+    classes: [],
+  }
 };
 
 export const DEFAULT_LS: { root: ILSItem } = {

@@ -18,7 +18,7 @@ type StateProps = {
 function mapState(state: AppReduxState): StateProps {
   const activeItemID = selectors.selectActiveItem(state).itemId;
   const scenarioElement = selectors.selectScenarioElement(state, parseInt(activeItemID));
-  const activeItemStyles = selectors.selectActiveItemStyles(state) as Required<CssLikeStyles>;
+  const activeItemStyles = selectors.selectActiveItemStyles(state).tagStyles;
   const activeItemChildrenStyles = selectors.selectActiveItemChildrenStyles(state) as Record<string, CssLikeStyles>;
 
   return {

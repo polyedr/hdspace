@@ -1,5 +1,6 @@
 import React from 'react';
 import cn from 'classnames';
+import { makeStyles } from '@material-ui/core';
 
 import { GMap } from '$components/UI/GMap';
 import { CalendarWidget } from '$components/UI/Calendar';
@@ -34,13 +35,19 @@ const ContainerRenderer = (props: ContainerRendererProps) => {
   const {
     id,
     sortableId,
-    style,
+    tagStyles,
+    ownStyles,
     isDisabled,
     children,
     className,
     elementRef,
     isBorderVisible,
   } = props;
+
+  const classes = makeStyles({
+    tagStyles,
+    ownStyles,
+  })();
 
   const isRoot = id === 'root';
 
@@ -55,9 +62,9 @@ const ContainerRenderer = (props: ContainerRendererProps) => {
         className={cn(
           className,
           isRoot && styles.root,
-          styles.addedElem
+          styles.addedElem, classes.tagStyles, classes.ownStyles
         )}
-        style={{ ...style, ...(isBorderVisible && isDisabled && { outline: 'none' })}}
+        style={{ ...(isBorderVisible && isDisabled && { outline: 'none' })}}
         tabIndex={isDisabled ? 0 : -1}
       >
         {children}

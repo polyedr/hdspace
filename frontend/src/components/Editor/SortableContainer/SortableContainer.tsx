@@ -20,6 +20,8 @@ const isElementStructType = (type: string): type is ElementEntity => {
 };
 
 const mapStateToProps = (state: AppReduxState) => {
+  const currentProject = selectors.selectCurrentProject(state);
+  const projectClasses = currentProject.projectData.classes;
   const currentScreen = selectors.selectCurrentScreen(state);
   const root = selectors.selectRootElement(state);
   const rootID = selectors.selectRootID(state);
@@ -38,6 +40,7 @@ const mapStateToProps = (state: AppReduxState) => {
     disableInteractions,
     currentScreen,
     savedElements,
+    projectClasses,
   };
 };
 
@@ -82,6 +85,7 @@ const SortableComponent = (props: Props) => {
     listSortable,
     scenarioElements,
     savedElements,
+    projectClasses,
     updateSavedElementValues,
     ...restProps
   } = props;
@@ -150,7 +154,9 @@ const SortableComponent = (props: Props) => {
   }
 
   const ElementRenderer = RENDERERS[type];
-  const parsedStyles = convertPropCSS(styles);
+  const ownStyles = convertPropCSS(styles.idStyles);
+  const tagStyles = projectClasses?.find(cssClass => cssClass.name === type)?.rules;
+  const parsedTagStyles = tagStyles && convertPropCSS(tagStyles) || {};
 
   const isBorderedElement = findParentByChildID(root, id)?.id === rootID || id === rootID;
   const isBorderVisible = isBorderedElement && showBorders || isBorderedElement && getIsActive;
@@ -159,7 +165,9 @@ const SortableComponent = (props: Props) => {
     ...(disableInteractions && { className: '' }),
     id: id === rootID ? 'root' : id,
     isDisabled: !disableInteractions,
-    style: parsedStyles,
+    style: ownStyles,
+    ownStyles,
+    tagStyles: parsedTagStyles,
     active: !disableInteractions && id === activeItemId,
     sortableId: id,
     elementRef: null,

@@ -21,9 +21,9 @@ export const root: RootServerElement = {
     group: 'none',
   },
   styles: {
-    classNames: [],
+    classNames: ['root'],
     tagStyles: getDefaultStyles('root'),
-    idStyles: {},
+    idStyles: getDefaultStyles('root'),
     classStyles: {},
   },
   name: 'root',
@@ -55,9 +55,9 @@ export const divBlock: DivBlockServerElement = {
     group: 'containers',
   },
   styles: {
-    classNames: [],
+    classNames: ['divBlock'],
     tagStyles: getDefaultStyles('divBlock'),
-    idStyles: {},
+    idStyles: getDefaultStyles('divBlock'),
     classStyles: {},
   },
   name: 'divBlock',
