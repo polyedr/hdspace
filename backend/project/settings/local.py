@@ -340,6 +340,8 @@ class LoginConfig(Config):
     # Skip detections with < 90% confidence
     DETECTION_MIN_CONFIDENCE = 0.75
 
+    BACKBONE = 'resnet101'
+
 
 config = LoginConfig()
 # config.display()
@@ -360,9 +362,9 @@ model = modellib.MaskRCNN(
 # Get path to saved weights
 # model_path = os.path.join(MODEL_DIR, "mask_rcnn_form_login_0029.h5")
 # Model 28 is the best for the 05.05.2020
-model_path = os.path.join(MODEL_DIR, "mask_rcnn_form_login_0028.h5")
+# model_path = os.path.join(MODEL_DIR, "mask_rcnn_form_login_0028.h5")
+model_path = os.path.join(MODEL_DIR, "mask_rcnn_form_login_0018.h5")
 
 # Load trained weights
 model.load_weights(model_path, by_name=True)
 model.keras_model._make_predict_function()
-
