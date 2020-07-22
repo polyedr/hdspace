@@ -1,5 +1,6 @@
 import copy
 # import numpy as np
+import math
 from statistics import median
 
 from rest_framework_recursive.fields import RecursiveField
@@ -115,6 +116,12 @@ def get_dominant_colour(image, k=4, image_processing_size=None):
     dominant_colour = clt.cluster_centers_[label_counts.most_common(1)[0][0]]
 
     return list(dominant_colour)
+
+
+# Calculate distance between two points
+def calculateDistance(x1, y1, x2, y2):
+    dist = math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
+    return dist
 
 
 class ScenarioElementSerializer(serializers.ModelSerializer):
@@ -351,10 +358,19 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
             # Calculation of the excluded indices to remove overlapped elements end
 
             # Calculate the coordinates precisely with OpenCV non-text blocks start
-            for idx1, (rect1, class_id1) in enumerate(zip(r["rois"], r["class_ids"])):
-                # 1,2,4,5,7 means elements except the text class and the radiobutton
-                for rect_contour in rect_contours:
-                    if (class_id1 in {1,2,4,5,7}) and (idx1 not in excluded_indices):
+            # Pass through the OpenCV contours predictions
+            # Select the closest Mask R CNN predicted non-textual block
+            # Final array where OpenCV non-text blocks are linked to Mask R CNN 1:1
+            # Add that Mask R CNN blocks which are not assigned to the excluded indices
+
+            # Mask R CNN predictions without OpenCV confirmation should be added to the excluded_indices
+            idx1_selected_array = []
+            for rect_contour in rect_contours:
+                centers_distance_min = 10000
+                idx1_selected = -1
+                for idx1, (rect1, class_id1) in enumerate(zip(r["rois"], r["class_ids"])):
+                    # 1,2,4,5,7 means elements except the text class and the radiobutton
+                    if (class_id1 in {1, 2, 4, 5, 7}) and (idx1 not in excluded_indices):
                         x1 = rect1[1]
                         y1 = rect1[0]
                         x2 = rect1[3]
@@ -379,6 +395,16 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         # The second rectangle square
                         width2, height2 = x4 - x3, y4 - y3
 
+                        # Calculate distance between rect_contour and idx1 with two dimensions
+                        # Find the pair with smallest distance
+                        # Save this pair for further processing
+                        center_x12 = (x1 + x2) / 2
+                        center_y12 = (y1 + y2) / 2
+                        center_x34 = (x3 + x4) / 2
+                        center_y34 = (y3 + y4) / 2
+                        # print(calculateDistance(center_x12, center_y12, center_x34, center_y34))
+                        centers_distance = calculateDistance(center_x12, center_y12, center_x34, center_y34)
+
                         # Check if width, height of the overlapped area less or equal 0
                         if not (width <= 0 or height <= 0):
                             # If the square > 0, calculate the squares of the 3 rectangles
@@ -386,13 +412,33 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                             square1 = width1 * height1
                             square2 = width2 * height2
 
-                            if (square > square1 * SQUARES_OVERLAP_THRESHOLD) or (
-                                square > square2 * SQUARES_OVERLAP_THRESHOLD
-                            ):  # Change coordinates from Mask R CNN to the OpenCV values
+                            if (square > square1 * SQUARES_OVERLAP_THRESHOLD_TEXT) or (
+                                square > square2 * SQUARES_OVERLAP_THRESHOLD_TEXT
+                            ):
+                                if (centers_distance < centers_distance_min):
+                                    centers_distance_min = centers_distance
+                                    idx1_selected = idx1
+                                    rect1_selected = rect1
+
+                                '''
+                                # Change coordinates from Mask R CNN to the OpenCV values
                                 rect1[1] = rect_contour[1]
                                 rect1[0] = rect_contour[0]
                                 rect1[3] = rect_contour[3]
                                 rect1[2] = rect_contour[2]
+                                '''
+                # Save the idx1_selected to the array
+                # Update the r['roi'] with rect1_selected values
+                idx1_selected_array.append(idx1_selected)
+                rect1_selected[1] = rect_contour[1]
+                rect1_selected[0] = rect_contour[0]
+                rect1_selected[3] = rect_contour[3]
+                rect1_selected[2] = rect_contour[2]
+            # Find the excluded indices
+            for idx1, (rect1, class_id1) in enumerate(zip(r["rois"], r["class_ids"])):
+                # 1,2,4,5,7 means elements except the text class and the radiobutton
+                if (class_id1 in {1, 2, 4, 5, 7}) and (idx1 not in excluded_indices) and (idx1 not in idx1_selected_array):
+                    excluded_indices.append(idx1)
             # Calculate the coordinates precisely with OpenCV non-text blocks end
 
             for idx, (roi, class_id, score) in enumerate(
