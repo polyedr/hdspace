@@ -137,6 +137,8 @@ export type SetItemToCopy = IAction<'PROJECTS:SET_ITEM_TO_COPY', ItemToCopyInfo>
 export type CopyActiveItem = IPlainAction<'PROJECTS:COPY_ACTIVE_ITEM'>;
 export type PasteCopiedItem = IPlainAction<'PROJECTS:PASTE_COPIED_ITEM'>;
 export type ResetScreenState = IPlainAction<'PROJECTS:RESET_SCREEN_STATE'>;
+export type SetUndoAction = IAction<'PROJECTS:SET_UNDO_ACTION', {action: any, args: any}>;
+export type UndoAction = IPlainAction<'EDITOR_UNDO'>;
 
 export type Action =
   | LoadLibraryElements
@@ -189,7 +191,8 @@ export type Action =
   | UpdateSavedElementValues
   | UpdateElementsTree
   | SetNotification
-  | RemoveNotification;
+  | RemoveNotification
+  | SetUndoAction;
 
 export type ItemToCopyInfo = {
   id: string;

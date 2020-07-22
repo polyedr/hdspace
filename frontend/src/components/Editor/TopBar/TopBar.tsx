@@ -8,7 +8,8 @@ import { DEFAULT_SCREEN_MODE } from '$constants/defaultParams';
 import { ActionCreators } from 'redux-undo';
 
 import { ScreenMode } from '../Workspace/Workspace';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectUndoAction } from '$redux/project/selectors';
 const styles = require('./TopBar.scss');
 
 export type IScreenMode = {
@@ -44,8 +45,11 @@ export const TopBar = (props: Props) => {
     onExport,
   } = props;
 
-  const onHistoryBack = () => {
-    dispatch(ActionCreators.undo())
+  const undo = useSelector(selectUndoAction);
+
+  const onHistoryBack = async () => {
+    await dispatch(ActionCreators.undo());
+    dispatch(undo)
   };
 
   const onHistoryForward = () => {

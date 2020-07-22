@@ -205,7 +205,13 @@ function* updateElementStyles(action: ReturnType<typeof Actions.updateElementSty
   const { id, styles } = action.payload;
 
   const root: ReturnType<typeof selectors.selectRootElement> = yield select(selectors.selectRootElement);
-  
+
+  const oldStyles = yield select(selectors.selectElementStyles(id));
+
+  if (!R.equals(oldStyles, styles)) {
+    yield put(Actions.setUndoAction(Actions.updateElementStyles(id, oldStyles)));
+  }
+
   const updatedTree = updateStyles(id, styles, root);
   const updatedElement = findChildByID(updatedTree, id);
 

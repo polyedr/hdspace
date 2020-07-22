@@ -2,7 +2,6 @@ import { initialControl } from '$redux/project/initial';
 import * as R from 'ramda';
 import * as T from '../types';
 import undoable from 'redux-undo';
-import { deleteElement } from '$redux/project/actions';
 
 export const reducer = (state: T.ProjectControlState = initialControl, action: T.Action): T.ProjectControlState => {
   switch (action.type) {
@@ -13,7 +12,12 @@ export const reducer = (state: T.ProjectControlState = initialControl, action: T
       };
     }
 
-
+    case 'PROJECTS:SET_UNDO_ACTION': {
+      return {
+        ...state,
+        undoAction: action.payload,
+      }
+    }
 
     default:
       return state;

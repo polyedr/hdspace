@@ -266,3 +266,10 @@ export const setItemToCopy = (id: string, screenID: number): T.SetItemToCopy => 
   type: 'PROJECTS:SET_ITEM_TO_COPY',
   payload: { id, screenID }
 });
+
+export const setUndoAction = (action: any) => ({
+  type: 'PROJECTS:SET_UNDO_ACTION',
+  payload: {
+    ...action,
+  }
+});
