@@ -52,6 +52,9 @@ class Project(TimeStampedModel):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
+    project_data_text = models.TextField(blank=True)
+    project_data_json = JSONField(blank=True, default=[])
+
     @staticmethod
     def generate_preview_token():
         return secrets.token_urlsafe(16)

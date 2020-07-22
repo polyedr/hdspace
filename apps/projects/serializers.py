@@ -3,6 +3,7 @@
 from rest_framework import serializers
 from rest_framework_bulk import BulkSerializerMixin, BulkListSerializer
 from rest_framework_recursive.fields import RecursiveField
+
 # from drf_writable_nested.serializers import WritableNestedModelSerializer
 
 from apps.accounts.serializers import UserSerializer
@@ -68,7 +69,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
     parameters = serializers.JSONField()
     styles = serializers.JSONField()
     children = RecursiveField(required=False, allow_null=True, many=True)
-    scenario = serializers.PrimaryKeyRelatedField(source='scenario.id', read_only=True)
+    scenario = serializers.PrimaryKeyRelatedField(source="scenario.id", read_only=True)
 
     class Meta:
         model = ScenarioElement
@@ -88,40 +89,40 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         # Remove nested objects to handle separately
-        children = validated_data.pop('children', [])
+        children = validated_data.pop("children", [])
         node = ScenarioElement.objects.create(
             # parent is null only on the root node
-            parent=self.context.get('parent'),
-            **validated_data)
+            parent=self.context.get("parent"),
+            **validated_data
+        )
         # Multiple level of the recursion
         for child_data in children:
-            s = ScenarioElementSerializer(data=child_data, context={'parent': node})
+            s = ScenarioElementSerializer(data=child_data, context={"parent": node})
             s.is_valid(raise_exception=True)
             s.save()
         return node
 
     def update(self, instance, validated_data):
         # Remove nested objects to handle separately
-        children = validated_data.pop('children', [])
+        children = validated_data.pop("children", [])
         node = super().update(instance, validated_data)
         for child_data in children:
             # child_data['scenario'] = child_data['scenario'].pk
-            s = ScenarioElementSerializer(data=child_data, context={'parent': node})
+            s = ScenarioElementSerializer(data=child_data, context={"parent": node})
             s.is_valid(raise_exception=True)
             s.save()
         return node
 
+
 # The serializer to change the children array only
 class ScenarioElementSerializerRecursive(serializers.ModelSerializer):
     children = serializers.PrimaryKeyRelatedField(
-        queryset=ScenarioElement.objects.all(),
-        many=True,
-        required=False
+        queryset=ScenarioElement.objects.all(), many=True, required=False
     )
 
     class Meta:
         model = ScenarioElement
-        fields = ("id", "name", "children",)
+        fields = ("id", "name", "children")
 
 
 class ScenarioElementMultipleSerializer(
@@ -130,7 +131,7 @@ class ScenarioElementMultipleSerializer(
     parameters = serializers.JSONField()
     styles = serializers.JSONField()
     children = RecursiveField(required=False, allow_null=True, many=True)
-    scenario = serializers.PrimaryKeyRelatedField(source='scenario.id', read_only=True)
+    scenario = serializers.PrimaryKeyRelatedField(source="scenario.id", read_only=True)
 
     class Meta:
         model = ScenarioElement
@@ -151,25 +152,26 @@ class ScenarioElementMultipleSerializer(
 
     def create(self, validated_data):
         # Remove nested objects to handle separately
-        children = validated_data.pop('children', [])
+        children = validated_data.pop("children", [])
         node = ScenarioElement.objects.create(
             # parent is null only on the root node
-            parent=self.context.get('parent'),
-            **validated_data)
+            parent=self.context.get("parent"),
+            **validated_data
+        )
         for child_data in children:
             # child_data['scenario'] = child_data['scenario'].pk
-            s = ScenarioElementSerializer(data=child_data, context={'parent': node})
+            s = ScenarioElementSerializer(data=child_data, context={"parent": node})
             s.is_valid(raise_exception=True)
             s.save()
         return node
 
     def update(self, instance, validated_data):
         # Remove nested objects to handle separately
-        children = validated_data.pop('children', [])
+        children = validated_data.pop("children", [])
         node = super().update(instance, validated_data)
         for child_data in children:
             # child_data['scenario'] = child_data['scenario'].pk
-            s = ScenarioElementSerializer(data=child_data, context={'parent': node})
+            s = ScenarioElementSerializer(data=child_data, context={"parent": node})
             s.is_valid(raise_exception=True)
             s.save()
         return node
@@ -201,7 +203,7 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def setup_eager_loading(qs):
-        queryset = qs.prefetch_related('elements')
+        queryset = qs.prefetch_related("elements")
         return queryset
 
 
@@ -232,19 +234,33 @@ class ScreenScenarioMultipleSerializer(
 
 class ProjectSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
-    projectscreen = serializers.PrimaryKeyRelatedField(many=True, queryset=ProjectScreen.objects.all())
+    projectscreen = serializers.PrimaryKeyRelatedField(
+        many=True, queryset=ProjectScreen.objects.all()
+    )
 
     class Meta:
         model = Project
-        fields = ("preview", "name", "favicon", "status", "projectscreen", "user", "id", "created", "updated")
+        fields = (
+            "preview",
+            "name",
+            "favicon",
+            "status",
+            "projectscreen",
+            "user",
+            "id",
+            "created",
+            "updated",
+            "screen_data_text",
+            "screen_data_json",
+        )
         extra_kwargs = {
             "preview": {"read_only": True},
             "created": {"read_only": True},
-            "updated": {"read_only": True}
+            "updated": {"read_only": True},
         }
 
     def create(self, validated_data):
-        projectscreens_data = validated_data.pop('projectscreen')
+        projectscreens_data = validated_data.pop("projectscreen")
         project = Project(id=None, **validated_data)
         project.preview = project.generate_preview_token()
         project.save()
@@ -255,18 +271,14 @@ class ProjectSerializer(serializers.ModelSerializer):
         """
         Update and return an existing `Project` instance, given the validated data.
         """
-        projectscreens_data = validated_data.get('projectscreen')
+        projectscreens_data = validated_data.get("projectscreen")
         instance.projectscreen.set(projectscreens_data, clear=True)
         instance.save()
         return instance
 
     @staticmethod
     def setup_eager_loading(qs):
-        queryset = qs.\
-            select_related('user').\
-            prefetch_related(
-                'projectscreen'
-            )
+        queryset = qs.select_related("user").prefetch_related("projectscreen")
         return queryset
 
 
