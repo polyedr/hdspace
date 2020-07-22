@@ -137,8 +137,8 @@ export const DEFAULT_NAME: { name: string } = {
   name: '',
 };
 
-export const DEFAULT_LABEL_FOR: { for: string } = {
-  for: 'no for attribute',
+export const DEFAULT_LABEL_FOR: { labelFor: string } = { // TODO take types from elements
+  labelFor: 'no for attribute',
 };
 
 export const DEFAULT_LIST_ITEMS: { listItems: ListItem[] } = {
@@ -253,7 +253,12 @@ export const DEFAULT_ROOT: LibraryElement<'root'> = {
   buoyancy: 0,
   image: null,
   parameters: {},
-  styles: {},
+  styles: {
+    classNames: [],
+    tagStyles: {},
+    idStyles: {},
+    classStyles: {},
+  },
 };
 
 export const DEFAULT_ACTIVE_ITEM: ActiveItem = {

@@ -1,42 +1,20 @@
 import { ServerElement, LibraryElement } from '$api/types';
 import { LIBRARY_ELEMENTS } from '$domain/libraryElements/libraryElements';
-import { getConfigurablePropsOf, Entity } from '$domain/core';
+import { Entity } from '$domain/core';
 
 export const convertCreatedElementToRequest = <T extends Entity, K extends ServerElement<T>['parameters']>(
   elementType: T,
   parentID: string | null,
   elementName?: string
 ): ServerElement<T, ServerElement<Entity>[], K> => {
-  const libraryElement = LIBRARY_ELEMENTS[elementType];
-  const { styles, params, overrideChildrenParams } = getConfigurablePropsOf<Entity, K>('root')(libraryElement.struct_type);
-  const { name, children } = libraryElement;
-
-  const getChildrenWithConfigurableProps = <P extends Entity, R extends Entity, S extends ServerElement<T>['parameters']>(
-    children: ServerElement<P, ServerElement<R, [], {}>[], {}>[]
-  ): ServerElement<P, ServerElement<R>[], S>[] =>
-    children.map((child) => {
-      const { styles, params } = getConfigurablePropsOf<Entity, S>('root')(
-        child.struct_type
-      );
-      return {
-        ...child,
-        styles: { ...child.styles, ...styles },
-        parameters: { ...child.parameters, ...params, ...overrideChildrenParams[child.struct_type] },
-        children: getChildrenWithConfigurableProps(child.children),
-      };
-    });
+  const libraryElement: ServerElement<T, ServerElement<Entity>[], K> = LIBRARY_ELEMENTS[elementType];
+  const { name } = libraryElement;
 
   return {
+    ...libraryElement,
     id: -1,
     name: elementName || name,
-    children: getChildrenWithConfigurableProps(children),
     ...(parentID && { scenario: parseInt(parentID) }),
-    struct_type: elementType,
-    func_type: elementType,
-    buoyancy: 0,
-    image: null,
-    parameters: params,
-    styles,
   };
 };
 
