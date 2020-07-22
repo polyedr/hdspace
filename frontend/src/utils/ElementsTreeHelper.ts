@@ -1,7 +1,9 @@
 import * as R from 'ramda';
 
-import { Entity, getConfigurablePropsOf } from '$domain/core';
+import { Entity } from '$domain/core';
 import { LibraryElement } from '$api/types';
+import { getDefaultStyles } from '$domain/defaultStyles/defaultStyles';
+import { LIBRARY_ELEMENTS } from '$domain/libraryElements/libraryElements';
 
 export const moveElement = <T extends Entity, K extends Entity, P extends Entity, R extends Entity>(
   parentID: string,
@@ -154,7 +156,8 @@ export const updateElementParameters = <T extends Entity, K extends Entity, P ex
 
 export const getTreeWithDefaultStylesAndParams = <T extends Entity>(root: LibraryElement<T>): LibraryElement<T> => {
   const rootWithDefaultStylesAndParams = getElementsArray(root).reduce((acc, element) => {
-    const { styles, params } = getConfigurablePropsOf('root')(element.type);
+    const styles = getDefaultStyles(element.type);
+    const params = LIBRARY_ELEMENTS[element.type].parameters;
     const rootWithUpdatedParameters = updateElementParameters(element.id, { ...params, ...element.parameters }, acc);
     const rootWithUpdatedStyles = updateElementStyles(element.id, { ...styles, ...element.styles }, rootWithUpdatedParameters);
     return rootWithUpdatedStyles;
