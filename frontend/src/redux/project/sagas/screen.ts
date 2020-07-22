@@ -41,7 +41,6 @@ import {
   apiSaveScreen,
 } from '$api/screen';
 import { ReturnPromisedType } from '$shared/types';
-import { getConfigurablePropsOf } from '$domain/core';
 
 import { reqWrapper } from '.';
 import { selectors, T } from '../';

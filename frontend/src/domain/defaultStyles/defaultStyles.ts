@@ -686,7 +686,7 @@ const defaultUndefinedStyles: { [K in UndefinedControls]: CssLikeStyles } & { ot
   },
 };
 
-const DEFAULT_ELEMENTS_STYLES: { [K in Entity]: { [key: string]: CssLikeStyles } } = {
+export const DEFAULT_ELEMENTS_STYLES: { [K in Entity]: { [key: string]: CssLikeStyles } } = {
   root: defaultRootStyles,
   container: defaultContainerStyles,
   divBlock: defaultDivBlockStyles,

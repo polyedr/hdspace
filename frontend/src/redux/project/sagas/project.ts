@@ -25,6 +25,7 @@ import {
   apiSaveProject,
 } from '$api/project';
 import { Project } from '$api/types';
+import { convertCreatedProjectToRequest } from '$api/converters/toRequest';
 import { DEFAULT_SCREEN } from '$constants/defaultParams';
 import { reqWrapper } from '$redux/project/sagas/index';
 import { generateFontFace } from '$utils/generateFontFace';
@@ -223,7 +224,8 @@ export function* exportProjectSaga() {
 
 
 export function* addProjectSaga({ payload: { name } }: ReturnType<typeof Actions.addProject>) {
-  const project: Project = yield call(reqWrapper, apiAddProject, { data: { name, status: 'pending', projectscreen: [] } });
+  const projectData = convertCreatedProjectToRequest(name);
+  const project: Project = yield call(reqWrapper, apiAddProject, { data: projectData });
   
   if (!project) { // TODO: write communication for such case
     console.error('cannot create project', project);
