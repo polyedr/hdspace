@@ -250,8 +250,8 @@ class ProjectSerializer(serializers.ModelSerializer):
             "id",
             "created",
             "updated",
-            "screen_data_text",
-            "screen_data_json",
+            "project_data_text",
+            "project_data_json",
         )
         extra_kwargs = {
             "preview": {"read_only": True},
