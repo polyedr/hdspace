@@ -5,11 +5,12 @@ import {
   call,
   take,
   select,
+  all
 } from 'redux-saga/effects';
 import * as R from 'ramda';
 import { REHYDRATE } from 'redux-persist';
 import { LOCATION_CHANGE, LocationChangeAction } from 'connected-react-router';
-
+import { ActionCreators } from 'redux-undo';
 import { AppReduxState } from '$shared/types/app';
 import { ReturnPromisedType } from '$shared/types';
 import * as Actions from '$redux/project/actions';
@@ -380,6 +381,15 @@ function* pasteCopiedItemSaga() {
   }
 }
 
+function* undoSaga() {
+  const historyLength = yield select(selectors.selectHistoryLength);
+  if (historyLength <= 1) return;
+  const undos = yield select(selectors.selectUndoActions);
+
+  yield put(ActionCreators.undo());
+  yield all(undos.map((undo: T.Action) => put(undo)));
+}
+
 const loadProjectsType: ProjectT.LoadProjects['type'] = 'PROJECTS:LOAD_PROJECTS';
 const addProjectType: ProjectT.AddProject['type'] = 'PROJECTS:ADD_PROJECT';
 const deleteProjectType: ProjectT.DeleteProject['type'] = 'PROJECTS:DELETE_PROJECT';
@@ -408,6 +418,7 @@ const copyActiveItemType: ProjectT.CopyActiveItem['type'] = 'PROJECTS:COPY_ACTIV
 const pasteCopiedItemType: ProjectT.PasteCopiedItem['type'] = 'PROJECTS:PASTE_COPIED_ITEM';
 const deleteElementType: ProjectT.DeleteElement['type'] = 'PROJECTS:DELETE_ELEMENT';
 const unwrapFromContainerType: ProjectT.UnwrapFromContainer['type'] = 'PROJECTS:UNWRAP_FROM_CONTAINER';
+const undoActionType: ProjectT.UndoAction['type'] = 'UNDO_ACTION';
 
 export default function* projectSaga() {
   yield takeLatest(REHYDRATE, authCheckSaga);
@@ -447,6 +458,7 @@ export default function* projectSaga() {
   yield takeLatest(uploadFileType, uploadFileSaga);
   yield takeLatest(getScreenNNType, screenSaga.getScreenNNSaga);
 
+  yield takeLatest(undoActionType, undoSaga)
   yield takeLatest(deleteElementType, deleteElementSaga);
   yield takeLatest(unwrapFromContainerType, unwrapFromContainerSaga);
 }

@@ -275,12 +275,16 @@ export const setItemToCopy = (id: string, screenID: number): T.SetItemToCopy => 
   payload: { id, screenID }
 });
 
-export const setUndoActions = (actions: Action[]) => ({
+export const undoAction = (): T.UndoAction => ({
+  type: 'UNDO_ACTION',
+});
+
+export const setUndoActions = (actions: Action[]): T.SetUndoActions => ({
   type: 'PROJECTS:SET_UNDO_ACTIONS',
   payload: [...actions],
 });
 
-export const addUndoAction = (action: Action) => ({
+export const addUndoAction = (action: Action): T.AddUndoAction => ({
   type: 'PROJECTS:ADD_UNDO_ACTIONS',
   payload: { ...action },
 });

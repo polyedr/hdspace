@@ -142,6 +142,7 @@ export type SetItemToCopy = IAction<'PROJECTS:SET_ITEM_TO_COPY', ItemToCopyInfo>
 export type CopyActiveItem = IPlainAction<'PROJECTS:COPY_ACTIVE_ITEM'>;
 export type PasteCopiedItem = IPlainAction<'PROJECTS:PASTE_COPIED_ITEM'>;
 export type ResetScreenState = IPlainAction<'PROJECTS:RESET_SCREEN_STATE'>;
+export type UndoAction = IPlainAction<'UNDO_ACTION'>;
 export type SetUndoActions = IAction<'PROJECTS:SET_UNDO_ACTIONS', Action[]>;
 export type AddUndoAction = IAction<'PROJECTS:ADD_UNDO_ACTIONS', Action>;
 export type UnwrapFromContainer = IAction<'PROJECTS:UNWRAP_FROM_CONTAINER', { elementID: string, wrapperID: string, parentID: string }>

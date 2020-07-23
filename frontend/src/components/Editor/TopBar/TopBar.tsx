@@ -10,6 +10,7 @@ import { ActionCreators } from 'redux-undo';
 import { ScreenMode } from '../Workspace/Workspace';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectUndoActions } from '$redux/project/selectors';
+import { undoAction } from '$redux/project/actions';
 const styles = require('./TopBar.scss');
 
 export type IScreenMode = {
@@ -31,7 +32,7 @@ type Props = {
 };
 
 export const TopBar = (props: Props) => {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   const {
     screenID,
@@ -48,8 +49,7 @@ export const TopBar = (props: Props) => {
   const undos = useSelector(selectUndoActions);
 
   const onHistoryBack = async () => {
-    await dispatch(ActionCreators.undo());
-    undos.forEach(undo => dispatch(undo))
+    dispatch(undoAction());
   };
 
   const onHistoryForward = () => {

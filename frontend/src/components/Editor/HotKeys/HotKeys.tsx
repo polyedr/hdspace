@@ -1,9 +1,7 @@
 import React, { useEffect } from 'react';
-import { connect, useDispatch, useSelector } from 'react-redux';
-import { ActionCreators as undoAC } from 'redux-undo';
+import { connect } from 'react-redux';
 import { actionsCreators, selectors } from '$redux/project';
 import { AppReduxState } from '$shared/types/app';
-import { selectUndoActions } from '$redux/project/selectors';
 
 const mapState = (state: AppReduxState) => {
   return {
@@ -16,8 +14,7 @@ const mapDispatch = {
   wrapIntoContainer: actionsCreators.wrapIntoContainer,
   copyActiveItem: actionsCreators.copyActiveItem,
   pasteCopiedItem: actionsCreators.pasteCopiedItem,
-  undo: undoAC.undo,
-  redo: undoAC.redo,
+  undo: actionsCreators.undoAction,
 };
 
 type Props = & ReturnType<typeof mapState> & typeof mapDispatch;
@@ -29,12 +26,9 @@ export const Component = (props: Props) => {
     wrapIntoContainer,
     copyActiveItem,
     pasteCopiedItem,
-    undo,
-    redo
+    undo
   } = props;
-  const dispatch = useDispatch();
-  const undos = useSelector(selectUndoActions);
-  
+
   const root = document.getElementById('root');
 
   useEffect(() => {
@@ -90,11 +84,10 @@ export const Component = (props: Props) => {
     const listener = (ev: KeyboardEvent) => {
       if (ev.code === 'KeyZ' && (ev.metaKey || ev.ctrlKey) && !ev.shiftKey) {
         undo();
-        undos.forEach(undo => dispatch(undo))
       }
 
       if (ev.code === 'KeyZ' && (ev.metaKey || ev.ctrlKey) && ev.shiftKey) {
-        redo();
+        console.log('redo');
       }
     };
 

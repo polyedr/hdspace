@@ -113,9 +113,9 @@ export const selectElementStyles = (id: string) => (state: AppReduxState) => fin
 
 export const selectElementParameters = (id: string) => (state: AppReduxState) => findChildByID(state.project.control.present.rootElement, id)?.parameters;
 
-export const selectUndoActions = (state: AppReduxState) => {
-  return selectProjectState(state).control.present.undoActions
-}
+export const selectUndoActions = (state: AppReduxState) => selectProjectState(state).control.present.undoActions;
+
+export const selectHistoryLength = (state: AppReduxState) => selectProjectState(state).control.past.length;
 
 export const selectActiveItemStyles = makeActiveItemInfoSelector('styles');
 export const selectActiveItemChildrenStyles = makeActiveItemInfoSelector('styles');
