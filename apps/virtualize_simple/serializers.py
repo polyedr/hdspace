@@ -263,7 +263,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                                 excluded_indices.append(idx2)
                             elif square > square2 * SQUARES_OVERLAP_THRESHOLD_TEXT:
                                 excluded_indices.append(idx1)
-
+            '''
             # Calculate the coordinates precisely with OpenCV text blocks start
             for idx1, (rect1, class_id1) in enumerate(zip(r["rois"], r["class_ids"])):
                 for text_contour in text_contours:
@@ -302,12 +302,13 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                             if (square > square1 * SQUARES_OVERLAP_THRESHOLD_TEXT) or (
                                 square > square2 * SQUARES_OVERLAP_THRESHOLD_TEXT
                             ):  # Change coordinates from Mask R CNN to the OpenCV values
+                                print(rect1, text_contour)
                                 rect1[1] = text_contour[1]
                                 rect1[0] = text_contour[0]
                                 rect1[3] = text_contour[3]
                                 rect1[2] = text_contour[2]
             # Calculate the coordinates precisely with OpenCV text blocks end
-
+            '''
 
             # Calculation of the excluded indices to remove overlapped elements start
             # Second, calculate the non-text blocks overlap
@@ -603,13 +604,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                                 "func_type": func_type,
                                 "buoyancy": roi[0],
                                 "parameters": {"textContent": text, "roi": roi},
-                                "styles": {"text-align": aligned_element, "width": str(img_width) + "px", "font-size": str(font_size_img) + "px", },
-                                #
-                                # "styles": {
-                                #     "width": str(width_elem) + "px",
-                                #     "height": str(height_elem) + "px",
-                                #     "background-color": "rgba(" + bcolour_element_value + ")",
-                                # },
+                                "styles": {"text-align": aligned_element, "font-size": str(font_size_img) + "px", },
                             }
                         )
                     # Select
