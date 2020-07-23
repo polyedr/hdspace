@@ -33,13 +33,7 @@ export const Projects: React.FunctionComponent<IProjectsProps> = memo(({
   const [modalRenameProjectOpen, setModalRenameProjectOpen] = useState(false);
   const [modalDeleteProjectOpen, setModalDeleteProjectOpen] = useState(false);
 
-  const getSortedListProject = () =>
-    [...listProject]
-      .sort(
-        (firstProject, secondProject) =>
-          firstProject.created.getTime() - secondProject.created.getTime()
-      )
-      .reverse(); 
+  const sortedListProject = R.sort(R.descend(project => project.created.getTime()), listProject);
 
   const handleCart = useCallback((e) => {
     e.preventDefault();
@@ -135,7 +129,7 @@ export const Projects: React.FunctionComponent<IProjectsProps> = memo(({
             </thead>
             <tbody>
               {
-                getSortedListProject().map(item => (
+                sortedListProject.map(item => (
                   <tr
                     className={styles.tableRow}
                     key={item.id}
