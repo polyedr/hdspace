@@ -144,6 +144,7 @@ export type PasteCopiedItem = IPlainAction<'PROJECTS:PASTE_COPIED_ITEM'>;
 export type ResetScreenState = IPlainAction<'PROJECTS:RESET_SCREEN_STATE'>;
 export type SetUndoActions = IAction<'PROJECTS:SET_UNDO_ACTIONS', Action[]>;
 export type AddUndoAction = IAction<'PROJECTS:ADD_UNDO_ACTIONS', Action>;
+export type UnwrapFromContainer = IAction<'PROJECTS:UNWRAP_FROM_CONTAINER', { elementID: string, wrapperID: string, parentID: string }>
 
 export type Action =
   | LoadLibraryElements
@@ -199,6 +200,7 @@ export type Action =
   | RemoveNotification
   | SetUndoActions
   | AddUndoAction
+  | UnwrapFromContainer
   | MoveElement;
 
 export type ItemToCopyInfo = {

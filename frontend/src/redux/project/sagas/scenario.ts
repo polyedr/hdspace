@@ -24,6 +24,7 @@ import { isElementCanBeRemove, isElementCanBeAdded } from '$utils/AvailableChild
 import { selectors, T } from '../';
 import { updateSavedElementsValues } from './screen';
 import { findParentByChildID, findChildByID, moveElement, addChildrenToElement, removeChildrenFromElement, updateElementParameters, getElementsArray } from '$utils/ElementsTreeHelper';
+import { setUndoActions } from '$redux/project/actions';
 
 export function* updateElementsTree(root: LibraryElement<'root'>) {
   const elementsArray = getElementsArray(root);
@@ -217,6 +218,8 @@ export function* wrapIntoContainerSaga() {
 
   const [createdContainer] = createdElements;
 
+  yield put(setUndoActions([Actions.unwrapFromContainer(activeItem.itemId, createdContainer.id, wrappedItemParent.id)]));
+
   yield call(addElementToElement, createdContainer, wrappedItemParent);
 
   yield call(addElementToElement, wrappedItem, createdContainer);
@@ -225,3 +228,27 @@ export function* wrapIntoContainerSaga() {
   const rootWithUpdatedContainer = moveElement(createdContainer.id, wrappedItem, rootWithUpdatedParent, 0);
   yield put(Actions.updateElementsTree(rootWithUpdatedContainer));
 }
+
+export function* unwrapFromContainerSaga(action: T.UnwrapFromContainer) {
+  const { elementID, wrapperID, parentID } = action.payload;
+
+  const root: ReturnType<typeof selectors.selectRootElement> = yield select(selectors.selectRootElement);
+  const element = findChildByID(root, elementID);
+  const parent = findChildByID(root, parentID);
+
+  if (!element) {
+    console.error(`Can not find element ${elementID} in tree!`);
+    return
+  }
+
+  if (!parent) {
+    console.error(`Can not find parent of wrapper ${wrapperID} in tree!`);
+    return
+  }
+
+  yield call(addElementToElement, element, parent);
+
+  // yield call(removeElement, wrapperID);
+  // cant get this moment - wrapper should remain in the tree, but it does not
+}
+

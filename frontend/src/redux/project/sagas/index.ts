@@ -32,7 +32,7 @@ import {
   createElements,
   addElementToElement,
   updateElementsTree,
-  deleteElementSaga,
+  deleteElementSaga, unwrapFromContainerSaga,
 } from '$redux/project/sagas/scenario';
 import {
   apiGetLibraryElements,
@@ -405,6 +405,7 @@ const getScreenNNType: ProjectT.GetScreenNN['type'] = 'PROJECTS:GET_SCREEN_NN';
 const copyActiveItemType: ProjectT.CopyActiveItem['type'] = 'PROJECTS:COPY_ACTIVE_ITEM';
 const pasteCopiedItemType: ProjectT.PasteCopiedItem['type'] = 'PROJECTS:PASTE_COPIED_ITEM';
 const deleteElementType: ProjectT.DeleteElement['type'] = 'PROJECTS:DELETE_ELEMENT';
+const unwrapFromContainerType: ProjectT.UnwrapFromContainer['type'] = 'PROJECTS:UNWRAP_FROM_CONTAINER';
 
 export default function* projectSaga() {
   yield takeLatest(REHYDRATE, authCheckSaga);
@@ -444,5 +445,6 @@ export default function* projectSaga() {
   yield takeLatest(uploadFileType, uploadFileSaga);
   yield takeLatest(getScreenNNType, screenSaga.getScreenNNSaga);
 
-  yield takeLatest(deleteElementType, deleteElementSaga)
+  yield takeLatest(deleteElementType, deleteElementSaga);
+  yield takeLatest(unwrapFromContainerType, unwrapFromContainerSaga);
 }

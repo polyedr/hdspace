@@ -284,3 +284,12 @@ export const addUndoAction = (action: Action) => ({
   type: 'PROJECTS:ADD_UNDO_ACTIONS',
   payload: { ...action },
 });
+
+export const unwrapFromContainer = (elementID: string, wrapperID: string, parentID: string): T.UnwrapFromContainer => ({
+  type: 'PROJECTS:UNWRAP_FROM_CONTAINER',
+  payload: {
+    elementID,
+    wrapperID,
+    parentID,
+  }
+});
