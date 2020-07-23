@@ -263,7 +263,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                                 excluded_indices.append(idx2)
                             elif square > square2 * SQUARES_OVERLAP_THRESHOLD_TEXT:
                                 excluded_indices.append(idx1)
-
+            '''
             # Calculate the coordinates precisely with OpenCV text blocks start
             for idx1, (rect1, class_id1) in enumerate(zip(r["rois"], r["class_ids"])):
                 for text_contour in text_contours:
@@ -307,6 +307,8 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                                 rect1[3] = text_contour[3]
                                 rect1[2] = text_contour[2]
             # Calculate the coordinates precisely with OpenCV text blocks end
+            '''
+
 
             # Calculation of the excluded indices to remove overlapped elements start
             # Second, calculate the non-text blocks overlap
@@ -356,6 +358,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                             elif square > square2 * SQUARES_OVERLAP_THRESHOLD:
                                 excluded_indices.append(idx2)
             # Calculation of the excluded indices to remove overlapped elements end
+
 
             '''
             # Calculate the coordinates precisely with OpenCV non-text blocks start
