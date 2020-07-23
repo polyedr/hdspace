@@ -124,7 +124,8 @@ export const moveElement = (
   indices: Indices,
   elementID: string,
   parentID: string,
-  undo: boolean = false
+  isRemote: boolean = false,
+  undo: boolean = false,
 ): T.MoveElement => ({
   type: 'PROJECTS:MOVE_ELEMENT',
   payload: {
@@ -132,6 +133,7 @@ export const moveElement = (
     elementID,
     parentID,
     undo,
+    isRemote
   },
 });
 
@@ -139,9 +141,9 @@ export const clearAfterPrevScreen = (): T.ClearAfterPrevScreen => ({
   type: 'PROJECTS:CLEAN_AFTER_PREV_SCREEN',
 });
 
-export const updateElementsTree = (root: LibraryElement<'root'>): T.UpdateElementsTree => ({
+export const updateElementsTree = (root: LibraryElement<'root'>, undo: boolean = false): T.UpdateElementsTree => ({
   type: 'PROJECTS:UPDATE_ELEMENTS_TREE',
-  payload: { root },
+  payload: { root, undo },
 });
 
 export const resetScreenState = (): T.ResetScreenState => ({
@@ -273,9 +275,12 @@ export const setItemToCopy = (id: string, screenID: number): T.SetItemToCopy => 
   payload: { id, screenID }
 });
 
-export const setUndoAction = (action: Action) => ({
-  type: 'PROJECTS:SET_UNDO_ACTION',
-  payload: {
-    ...action,
-  }
+export const setUndoActions = (actions: Action[]) => ({
+  type: 'PROJECTS:SET_UNDO_ACTIONS',
+  payload: [...actions],
+});
+
+export const addUndoAction = (action: Action) => ({
+  type: 'PROJECTS:ADD_UNDO_ACTIONS',
+  payload: { ...action },
 });

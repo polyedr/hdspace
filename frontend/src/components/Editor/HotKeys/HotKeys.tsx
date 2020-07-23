@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react';
-import { connect } from 'react-redux';
+import { connect, useDispatch, useSelector } from 'react-redux';
 import { ActionCreators as undoAC } from 'redux-undo';
 import { actionsCreators, selectors } from '$redux/project';
 import { AppReduxState } from '$shared/types/app';
+import { selectUndoActions } from '$redux/project/selectors';
 
 const mapState = (state: AppReduxState) => {
   return {
@@ -31,6 +32,8 @@ export const Component = (props: Props) => {
     undo,
     redo
   } = props;
+  const dispatch = useDispatch();
+  const undos = useSelector(selectUndoActions);
   
   const root = document.getElementById('root');
 
@@ -87,6 +90,7 @@ export const Component = (props: Props) => {
     const listener = (ev: KeyboardEvent) => {
       if (ev.code === 'KeyZ' && (ev.metaKey || ev.ctrlKey) && !ev.shiftKey) {
         undo();
+        undos.forEach(undo => dispatch(undo))
       }
 
       if (ev.code === 'KeyZ' && (ev.metaKey || ev.ctrlKey) && ev.shiftKey) {

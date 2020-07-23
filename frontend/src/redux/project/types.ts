@@ -46,7 +46,7 @@ export type ProjectCommunicationState = {
 
 export type ProjectControlState = {
   rootElement: RootElement<'root'>;
-  undoAction: any;
+  undoActions: Action[];
 }
 
 export type Indices = {
@@ -99,9 +99,9 @@ export type AddScreen = IAction<'PROJECTS:ADD_SCREEN', { projectID: number, name
 export type DuplicateScreen = IAction<'PROJECTS:DUPLICATE_SCREEN', { name: string, screenID: number }>;
 export type ActivateScreen = IAction<'PROJECTS:ACTIVATE_SCREEN', { projectID: number, screenID: number }>;
 export type MoveElement = IAction<
-  'PROJECTS:MOVE_ELEMENT', { indices: Indices, elementID: string, parentID: string, undo?:boolean }
+  'PROJECTS:MOVE_ELEMENT', { indices: Indices, elementID: string, parentID: string, undo: boolean, isRemote: boolean, }
 >;
-export type UpdateElementsTree = IAction<'PROJECTS:UPDATE_ELEMENTS_TREE', { root: RootElement<'root'>, parentID?: string }>;
+export type UpdateElementsTree = IAction<'PROJECTS:UPDATE_ELEMENTS_TREE', { root: RootElement<'root'>, undo: boolean, parentID?: string }>;
 export type ClearAfterPrevScreen = IPlainAction<'PROJECTS:CLEAN_AFTER_PREV_SCREEN'>;
 export type SaveScreen = IAction<'PROJECTS:SAVE_SCREEN', { canvas: HTMLCanvasElement }>;
 export type ExportProject = IPlainAction<'PROJECTS:EXPORT_PROJECT'>;
@@ -142,7 +142,8 @@ export type SetItemToCopy = IAction<'PROJECTS:SET_ITEM_TO_COPY', ItemToCopyInfo>
 export type CopyActiveItem = IPlainAction<'PROJECTS:COPY_ACTIVE_ITEM'>;
 export type PasteCopiedItem = IPlainAction<'PROJECTS:PASTE_COPIED_ITEM'>;
 export type ResetScreenState = IPlainAction<'PROJECTS:RESET_SCREEN_STATE'>;
-export type SetUndoAction = IAction<'PROJECTS:SET_UNDO_ACTION', {action: any, args: any}>;
+export type SetUndoActions = IAction<'PROJECTS:SET_UNDO_ACTIONS', Action[]>;
+export type AddUndoAction = IAction<'PROJECTS:ADD_UNDO_ACTIONS', Action>;
 
 export type Action =
   | LoadLibraryElements
@@ -196,7 +197,8 @@ export type Action =
   | UpdateElementsTree
   | SetNotification
   | RemoveNotification
-  | SetUndoAction
+  | SetUndoActions
+  | AddUndoAction
   | MoveElement;
 
 export type ItemToCopyInfo = {

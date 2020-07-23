@@ -118,9 +118,9 @@ const SortableComponent = (props: Props) => {
     }
   };
 
-  const handleItemPositionChange = (indices: Indices, list: string[], parentId: string) => {
+  const handleItemPositionChange = (indices: Indices, list: string[], parentId: string, isRemote: boolean) => {
     setIsDragging(false);
-    moveElement(indices, activeItemId, parentId === 'root' ? rootID : parentId);
+    moveElement(indices, activeItemId, parentId === 'root' ? rootID : parentId, isRemote);
   };
 
   const getGroupName = useCallback((itemType): string => (

@@ -155,7 +155,7 @@ function* authCheckSaga() {
 }
 
 function* moveElementSaga(action: ReturnType<typeof Actions.moveElement>) {
-  const { indices: { newIndex, oldIndex }, elementID, parentID, undo } = action.payload;
+  const { indices: { newIndex, oldIndex }, elementID, parentID, undo, isRemote } = action.payload;
 
   const root: ReturnType<typeof selectors.selectRootElement> = yield select(selectors.selectRootElement);
   const targetParent = findChildByID(root, parentID);
@@ -172,11 +172,17 @@ function* moveElementSaga(action: ReturnType<typeof Actions.moveElement>) {
     }
 
     if (!undo) {
-      yield put(Actions.setUndoAction(Actions.moveElement({newIndex: oldIndex, oldIndex: newIndex}, elementID, parentID, true)));
+      if (isRemote) {
+        yield put(Actions.addUndoAction(Actions.moveElement({newIndex: oldIndex, oldIndex: newIndex}, elementID, parentID, false, true)))
+      } else {
+        yield put(Actions.setUndoActions([
+          Actions.moveElement({newIndex: oldIndex, oldIndex: newIndex}, elementID, parentID, false, true),
+        ]));
+      }
     }
 
     const updatedTree = moveElement(targetParent.id, elementToMove, root, newIndex);
-    yield put(Actions.updateElementsTree(updatedTree));
+    yield put(Actions.updateElementsTree(updatedTree, undo));
 
     const updatedParent = findChildByID(updatedTree, parentID);
 
@@ -212,7 +218,7 @@ function* updateElementStyles(action: ReturnType<typeof Actions.updateElementSty
 
   if (!undo) {
     const oldStyles = yield select(selectors.selectElementStyles(id));
-    yield put(Actions.setUndoAction(Actions.updateElementStyles(id, oldStyles, true)));
+    yield put(Actions.setUndoActions([Actions.updateElementStyles(id, oldStyles, true)]));
   }
 
   const updatedTree = updateStyles(id, styles, root);
@@ -249,7 +255,7 @@ function* updateElementParameters(action: ReturnType<typeof Actions.updateElemen
 
   if (!undo) {
     const oldParameters = yield select(selectors.selectElementParameters(itemID));
-    yield put(Actions.setUndoAction(Actions.updateElementParameters(itemID, oldParameters, true)));
+    yield put(Actions.setUndoActions([Actions.updateElementParameters(itemID, oldParameters, true)]));
   }
 
   const updatedTree = updateParameters(itemID, parameters, root);
@@ -418,7 +424,7 @@ export default function* projectSaga() {
   yield takeLatest(saveScreenType, screenSaga.saveScreenSaga);
   yield takeLatest(deleteScreenType, screenSaga.delScreenSaga);
   yield takeLatest(renameScreenType, screenSaga.renameScreenSaga);
-  yield takeLatest(moveElementType, moveElementSaga);
+  yield takeEvery(moveElementType, moveElementSaga);
 
   yield takeLatest(updateElementStylesType, updateElementStyles);
   yield takeLatest(updateElementImageType, updateElementImage);

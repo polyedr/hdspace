@@ -21,7 +21,7 @@ type Props = {
   isSomeItemBeingDragged: boolean,
   isSomeItemResizable?: boolean;
   id: string;
-  onChange(indices: Indices, items: string[], parentId: string): void,
+  onChange(indices: Indices, items: string[], parentId: string, isRemote: boolean): void,
   onChoose(itemIndex: number, target?: React.SyntheticEvent): void,
 };
 
@@ -48,10 +48,10 @@ export const SortableGroup: React.FC<Props> = (props) => {
     onChoose(evt.oldIndex);
   }, [onChoose]);
 
-  const handlePositionChange = useCallback((itemsInCurrentSortableGroup: string[], _, evt) => {
+  const handlePositionChange = useCallback((itemsInCurrentSortableGroup: string[], _, evt, isRemote: boolean) => {
     const newIndex = evt.newIndex;
     const oldIndex = evt.oldIndex;
-    onChange({newIndex, oldIndex}, itemsInCurrentSortableGroup, id);
+    onChange({newIndex, oldIndex}, itemsInCurrentSortableGroup, id, isRemote);
   }, [id, onChange]);
 
   const handleDragEnter = useCallback((evt) => {
