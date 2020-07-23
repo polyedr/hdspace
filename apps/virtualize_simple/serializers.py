@@ -263,7 +263,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                                 excluded_indices.append(idx2)
                             elif square > square2 * SQUARES_OVERLAP_THRESHOLD_TEXT:
                                 excluded_indices.append(idx1)
-            '''
+
             # Calculate the coordinates precisely with OpenCV text blocks start
             for idx1, (rect1, class_id1) in enumerate(zip(r["rois"], r["class_ids"])):
                 for text_contour in text_contours:
@@ -307,7 +307,6 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                                 rect1[3] = text_contour[3]
                                 rect1[2] = text_contour[2]
             # Calculate the coordinates precisely with OpenCV text blocks end
-            '''
 
 
             # Calculation of the excluded indices to remove overlapped elements start
@@ -431,13 +430,13 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                 # Update the r['roi'] with rect1_selected values
                 if(idx1_selected != -1):
                     idx1_selected_array.append(idx1_selected)
-                
+
             # Find the excluded indices
             for idx1, (rect1, class_id1) in enumerate(zip(r["rois"], r["class_ids"])):
                 # 1,2,4,5,7 means elements except the text class and the radiobutton
                 if (class_id1 in {1, 2, 4, 5, 7}) and (idx1 not in excluded_indices) and (idx1 not in idx1_selected_array):
                     excluded_indices.append(idx1)
-        
+
             # Calculate the coordinates precisely with OpenCV non-text blocks end
             '''
 
