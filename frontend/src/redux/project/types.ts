@@ -49,6 +49,11 @@ export type ProjectControlState = {
   undoAction: any;
 }
 
+export type Indices = {
+  newIndex: number;
+  oldIndex: number;
+}
+
 export type Notification = {
   text: string,
 };
@@ -94,7 +99,7 @@ export type AddScreen = IAction<'PROJECTS:ADD_SCREEN', { projectID: number, name
 export type DuplicateScreen = IAction<'PROJECTS:DUPLICATE_SCREEN', { name: string, screenID: number }>;
 export type ActivateScreen = IAction<'PROJECTS:ACTIVATE_SCREEN', { projectID: number, screenID: number }>;
 export type MoveElement = IAction<
-  'PROJECTS:MOVE_ELEMENT', { elementIndex: number, elementID: string, parentID: string }
+  'PROJECTS:MOVE_ELEMENT', { indices: Indices, elementID: string, parentID: string, undo?:boolean }
 >;
 export type UpdateElementsTree = IAction<'PROJECTS:UPDATE_ELEMENTS_TREE', { root: RootElement<'root'>, parentID?: string }>;
 export type ClearAfterPrevScreen = IPlainAction<'PROJECTS:CLEAN_AFTER_PREV_SCREEN'>;
@@ -104,10 +109,10 @@ export type SetScreen = IAction<'PROJECTS:SET_SCREEN', { screen: IProjectScreen 
 export type SetScreens = IAction<'PROJECTS:SET_SCREENS', { screens: IProjectScreen[] }>;
 export type AddElement = IAction<'PROJECTS:ADD_ELEMENT', { parentID: string, type: string }>;
 export type SetScenarioElements = IAction<'PROJECTS:SET_SCENARIO_ELEMENTS', { elements: IScenarioElements }>;
-export type UpdateElementStyles = IAction<'PROJECTS:UPDATE_ELEMENT_STYLES', { id: string, styles: CssLikeStyles }>;
+export type UpdateElementStyles = IAction<'PROJECTS:UPDATE_ELEMENT_STYLES', { id: string, styles: CssLikeStyles, undo?: boolean }>;
 export type UpdateElementImage = IAction<'PROJECTS:UPDATE_ELEMENT_IMAGE', { itemID: string, image: File }>;
 export type UpdateElementParameters = IAction<
-  'PROJECTS:UPDATE_ELEMENT_PARAMETERS', { itemID: string, parameters: RootElement<Entity>['parameters'] }
+  'PROJECTS:UPDATE_ELEMENT_PARAMETERS', { itemID: string, parameters: RootElement<Entity>['parameters'], undo?: boolean }
 >;
 export type UpdateSavedElementsValues = IAction<
   'PROJECTS:UPDATE_SAVED_ELEMENTS_VALUES', { elementsValues: SavedElementsValues }
@@ -138,7 +143,6 @@ export type CopyActiveItem = IPlainAction<'PROJECTS:COPY_ACTIVE_ITEM'>;
 export type PasteCopiedItem = IPlainAction<'PROJECTS:PASTE_COPIED_ITEM'>;
 export type ResetScreenState = IPlainAction<'PROJECTS:RESET_SCREEN_STATE'>;
 export type SetUndoAction = IAction<'PROJECTS:SET_UNDO_ACTION', {action: any, args: any}>;
-export type UndoAction = IPlainAction<'EDITOR_UNDO'>;
 
 export type Action =
   | LoadLibraryElements
@@ -192,7 +196,8 @@ export type Action =
   | UpdateElementsTree
   | SetNotification
   | RemoveNotification
-  | SetUndoAction;
+  | SetUndoAction
+  | MoveElement;
 
 export type ItemToCopyInfo = {
   id: string;

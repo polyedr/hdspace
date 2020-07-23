@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { AppReduxState } from '$shared/types/app';
 import { SortableGroup } from '$components/Editor/SortableGroup/SortableGroup';
 import { RENDERERS } from '$components/UI/RenderElements';
-import { SavedElementsValues } from '$redux/project/types';
+import { Indices, SavedElementsValues } from '$redux/project/types';
 import { selectors, actionsCreators } from '$redux/project';
 import { LIST_SCENARIO_TYPE } from '$constants/defaultParams';
 import { convertPropCSS } from '$utils/StyleHelper';
@@ -118,9 +118,9 @@ const SortableComponent = (props: Props) => {
     }
   };
 
-  const handleItemPositionChange = (index: number, list: string[], parentId: string) => {
+  const handleItemPositionChange = (indices: Indices, list: string[], parentId: string) => {
     setIsDragging(false);
-    moveElement(index, activeItemId, parentId === 'root' ? rootID : parentId);
+    moveElement(indices, activeItemId, parentId === 'root' ? rootID : parentId);
   };
 
   const getGroupName = useCallback((itemType): string => (

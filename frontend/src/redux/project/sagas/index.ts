@@ -155,7 +155,7 @@ function* authCheckSaga() {
 }
 
 function* moveElementSaga(action: ReturnType<typeof Actions.moveElement>) {
-  const { elementID, elementIndex, parentID } = action.payload;
+  const { indices: { newIndex, oldIndex }, elementID, parentID, undo } = action.payload;
 
   const root: ReturnType<typeof selectors.selectRootElement> = yield select(selectors.selectRootElement);
   const targetParent = findChildByID(root, parentID);
@@ -171,7 +171,11 @@ function* moveElementSaga(action: ReturnType<typeof Actions.moveElement>) {
       return;
     }
 
-    const updatedTree = moveElement(targetParent.id, elementToMove, root, elementIndex);
+    if (!undo) {
+      yield put(Actions.setUndoAction(Actions.moveElement({newIndex: oldIndex, oldIndex: newIndex}, elementID, parentID, true)));
+    }
+
+    const updatedTree = moveElement(targetParent.id, elementToMove, root, newIndex);
     yield put(Actions.updateElementsTree(updatedTree));
 
     const updatedParent = findChildByID(updatedTree, parentID);
@@ -202,14 +206,13 @@ export function* updateElementsOnServerSaga(elements: ProjectT.IScenarioElements
 }
 
 function* updateElementStyles(action: ReturnType<typeof Actions.updateElementStyles>) {
-  const { id, styles } = action.payload;
+  const { id, styles, undo } = action.payload;
 
   const root: ReturnType<typeof selectors.selectRootElement> = yield select(selectors.selectRootElement);
 
-  const oldStyles = yield select(selectors.selectElementStyles(id));
-
-  if (!R.equals(oldStyles, styles)) {
-    yield put(Actions.setUndoAction(Actions.updateElementStyles(id, oldStyles)));
+  if (!undo) {
+    const oldStyles = yield select(selectors.selectElementStyles(id));
+    yield put(Actions.setUndoAction(Actions.updateElementStyles(id, oldStyles, true)));
   }
 
   const updatedTree = updateStyles(id, styles, root);
@@ -240,13 +243,13 @@ function* updateElementImage(action: ReturnType<typeof Actions.updateElementImag
 }
 
 function* updateElementParameters(action: ReturnType<typeof Actions.updateElementParameters>) {
-  const { itemID, parameters } = action.payload;
+  const { itemID, parameters, undo } = action.payload;
 
   const root: ReturnType<typeof selectors.selectRootElement> = yield select(selectors.selectRootElement);
 
-  const oldParameters = yield select(selectors.selectElementParameters(itemID));
-  if (!R.equals(oldParameters, parameters)) {
-    yield put(Actions.setUndoAction(Actions.updateElementParameters(itemID, oldParameters)))
+  if (!undo) {
+    const oldParameters = yield select(selectors.selectElementParameters(itemID));
+    yield put(Actions.setUndoAction(Actions.updateElementParameters(itemID, oldParameters, true)));
   }
 
   const updatedTree = updateParameters(itemID, parameters, root);

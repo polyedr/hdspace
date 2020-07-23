@@ -6,7 +6,7 @@ import { ChildEntity, Entity } from '$domain/core';
 import { LibraryElement } from '$api/types';
 
 import * as T from './types';
-import { Action } from './types';
+import { Action, Indices } from './types';
 
 export const getLibraryElements = (): T.LoadLibraryElements => ({
   type: 'PROJECTS:LOAD_LIBRARY_ELEMENTS',
@@ -121,13 +121,17 @@ export const activateScreen = (projectID: number, screenID: number): T.ActivateS
 });
 
 export const moveElement = (
-  elementIndex: number, elementID: string, parentID: string
+  indices: Indices,
+  elementID: string,
+  parentID: string,
+  undo: boolean = false
 ): T.MoveElement => ({
   type: 'PROJECTS:MOVE_ELEMENT',
   payload: {
-    elementIndex,
+    indices,
     elementID,
     parentID,
+    undo,
   },
 });
 
@@ -169,9 +173,9 @@ export const setScenarioElements = (elements: T.IScenarioElements): T.SetScenari
   payload: { elements },
 });
 
-export const updateElementStyles = (id: string, styles: CssLikeStyles): T.UpdateElementStyles => ({
+export const updateElementStyles = (id: string, styles: CssLikeStyles, undo?: boolean): T.UpdateElementStyles => ({
   type: 'PROJECTS:UPDATE_ELEMENT_STYLES',
-  payload: { id, styles },
+  payload: { id, styles, undo },
 });
 
 export const updateElementImage = (itemID: string, image: File ): T.UpdateElementImage => ({
@@ -181,10 +185,11 @@ export const updateElementImage = (itemID: string, image: File ): T.UpdateElemen
 
 export const updateElementParameters = <T extends Entity, K extends LibraryElement<T>['parameters']>(
   itemID: string,
-  parameters: K
+  parameters: K,
+  undo?: boolean
 ): T.UpdateElementParameters => ({
   type: 'PROJECTS:UPDATE_ELEMENT_PARAMETERS',
-  payload: { itemID, parameters },
+  payload: { itemID, parameters, undo },
 });
 
 export const updateSavedElementsValues = (elementsValues: T.SavedElementsValues): T.UpdateSavedElementsValues => ({

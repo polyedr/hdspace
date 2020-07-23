@@ -5,6 +5,7 @@ import { SortableOptions } from 'sortablejs';
 // @ts-ignore
 import { Sortable } from '$components/Editor/Sortable/Sortable';
 import { sharedClasses } from '$styles/sharedClasses';
+import { Indices } from '$redux/project/types';
 
 const styles = require('./SortableGroup.scss');
 
@@ -20,7 +21,7 @@ type Props = {
   isSomeItemBeingDragged: boolean,
   isSomeItemResizable?: boolean;
   id: string;
-  onChange(index: number, items: string[], parentId: string): void,
+  onChange(indices: Indices, items: string[], parentId: string): void,
   onChoose(itemIndex: number, target?: React.SyntheticEvent): void,
 };
 
@@ -48,8 +49,9 @@ export const SortableGroup: React.FC<Props> = (props) => {
   }, [onChoose]);
 
   const handlePositionChange = useCallback((itemsInCurrentSortableGroup: string[], _, evt) => {
-    const draggedItemPositionInCurrentSortableGroup = evt.newIndex;
-    onChange(draggedItemPositionInCurrentSortableGroup, itemsInCurrentSortableGroup, id);
+    const newIndex = evt.newIndex;
+    const oldIndex = evt.oldIndex;
+    onChange({newIndex, oldIndex}, itemsInCurrentSortableGroup, id);
   }, [id, onChange]);
 
   const handleDragEnter = useCallback((evt) => {
