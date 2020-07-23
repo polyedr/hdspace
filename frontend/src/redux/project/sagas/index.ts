@@ -387,7 +387,9 @@ function* undoSaga() {
   const undos = yield select(selectors.selectUndoActions);
 
   yield put(ActionCreators.undo());
-  yield all(undos.map((undo: T.Action) => put(undo)));
+  for (let undo of undos) {
+    yield put(undo);
+  }
 }
 
 const loadProjectsType: ProjectT.LoadProjects['type'] = 'PROJECTS:LOAD_PROJECTS';
