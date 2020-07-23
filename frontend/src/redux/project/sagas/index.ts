@@ -47,7 +47,7 @@ import { LibraryElement, LibraryElementUnion } from '$api/types';
 import { Entity } from '$domain/core';
 import { setTokenPair, setLoadedToken } from '$redux/user/actions';
 import { MAX_TOKEN_TRIALS } from '$config/settings';
-import { setScreenLoader } from '$redux/project/actions';
+import { setScreenLoader, setUndoActions } from '$redux/project/actions';
 import { addScreenSaga } from '$redux/project/sagas/screen';
 import { refreshUserTokenPair } from '$redux/user/sagas';
 import { openSignScreen, openProjects } from '$utils/history';
@@ -358,7 +358,7 @@ function* duplicateItems(
     console.error(`Can not find duplicated items ${JSON.stringify(itemsToCopyInfo.map(item => item.id))} in tree`);
   } else {
     const convertedItemsToDuplicate = itemsToDuplicate.map(item => convertElementToRequest(item!));
-    yield call(createElements, convertedItemsToDuplicate, targetParent);
+    return yield call(createElements, convertedItemsToDuplicate, targetParent);
   }
 }
 
@@ -373,7 +373,9 @@ function* pasteCopiedItemSaga() {
     const itemToCopyInfo: ReturnType<typeof selectors.selectItemToCopyInfo> = yield select(selectors.selectItemToCopyInfo);
 
     if (activeItem.itemType !== 'none' && itemToCopyInfo !== null) {
-      yield call(duplicateItems, root, [itemToCopyInfo], targetContainer);
+      const newIDs = yield call(duplicateItems, root, [itemToCopyInfo], targetContainer);
+
+      yield put(setUndoActions(newIDs.map((id: string) => Actions.deleteElement(id))))
     }
   }
 }

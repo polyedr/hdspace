@@ -89,6 +89,8 @@ export function* createElements(elements: ServerElement<Entity>[], parent: Libra
 
   const elementsWithUpdatedBuoyancy = findChildByID(updatedElements, parent.id)?.children.map(child => convertElementToPatchRequest(child));
   yield call(reqWrapper, apiSaveElements, { data: elementsWithUpdatedBuoyancy });
+
+  return newElements.map(el => el.id)
 }
 
 export function* createElementsSaga(action: ReturnType<typeof Actions.createElements>) {
