@@ -407,6 +407,7 @@ function* undoSaga() {
   for (let undo of undos) {
     yield put(undo);
   }
+
   yield put(ActionCreators.undo());
 }
 

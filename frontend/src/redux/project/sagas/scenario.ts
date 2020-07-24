@@ -235,7 +235,7 @@ export function* wrapIntoContainerSaga() {
 }
 
 export function* unwrapFromContainerSaga(action: T.UnwrapFromContainer) {
-  const { elementID, wrapperID, parentID } = action.payload;
+  const {elementID, wrapperID, parentID} = action.payload;
 
   const root: ReturnType<typeof selectors.selectRootElement> = yield select(selectors.selectRootElement);
   const element = findChildByID(root, elementID);
@@ -253,7 +253,5 @@ export function* unwrapFromContainerSaga(action: T.UnwrapFromContainer) {
 
   yield call(addElementToElement, element, parent);
 
-  // yield call(removeElement, wrapperID);
-  // cant get this moment - wrapper should remain in the tree, but it does not
+  yield call(reqWrapper, apiDelElements, {list: [wrapperID]});
 }
-
