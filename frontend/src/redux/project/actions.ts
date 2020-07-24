@@ -285,8 +285,13 @@ export const setUndoActions = (actions: Action[]): T.SetUndoActions => ({
 });
 
 export const addUndoAction = (action: Action): T.AddUndoAction => ({
-  type: 'PROJECTS:ADD_UNDO_ACTIONS',
+  type: 'PROJECTS:ADD_UNDO_ACTION',
   payload: { ...action },
+});
+
+export const setAdd = (add: boolean): T.SetAddAction => ({
+  type: 'PROJECTS:SET_ADD_ACTION',
+  payload: add,
 });
 
 export const unwrapFromContainer = (elementID: string, wrapperID: string, parentID: string): T.UnwrapFromContainer => ({

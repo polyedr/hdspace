@@ -40,4 +40,5 @@ export const initialCommunication: T.ProjectCommunicationState = {
 export const initialControl: T.ProjectControlState = {
   rootElement: DEFAULT_ROOT,
   undoActions: [],
+  add: false,
 };

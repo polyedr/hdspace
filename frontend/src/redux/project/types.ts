@@ -47,6 +47,7 @@ export type ProjectCommunicationState = {
 export type ProjectControlState = {
   rootElement: RootElement<'root'>;
   undoActions: Action[];
+  add: boolean;
 }
 
 export type Indices = {
@@ -144,8 +145,9 @@ export type PasteCopiedItem = IPlainAction<'PROJECTS:PASTE_COPIED_ITEM'>;
 export type ResetScreenState = IPlainAction<'PROJECTS:RESET_SCREEN_STATE'>;
 export type UndoAction = IPlainAction<'UNDO_ACTION'>;
 export type SetUndoActions = IAction<'PROJECTS:SET_UNDO_ACTIONS', Action[]>;
-export type AddUndoAction = IAction<'PROJECTS:ADD_UNDO_ACTIONS', Action>;
+export type AddUndoAction = IAction<'PROJECTS:ADD_UNDO_ACTION', Action>;
 export type UnwrapFromContainer = IAction<'PROJECTS:UNWRAP_FROM_CONTAINER', { elementID: string, wrapperID: string, parentID: string }>
+export type SetAddAction = IAction<'PROJECTS:SET_ADD_ACTION', boolean>
 
 export type Action =
   | LoadLibraryElements
@@ -202,6 +204,7 @@ export type Action =
   | SetUndoActions
   | AddUndoAction
   | UnwrapFromContainer
+  | SetAddAction
   | MoveElement;
 
 export type ItemToCopyInfo = {

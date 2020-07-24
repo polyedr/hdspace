@@ -175,13 +175,25 @@ function* moveElementSaga(action: ReturnType<typeof Actions.moveElement>): any {
     return;
   }
 
+  // i'm really sorry about next code block, we can get rid of it in case of better Sortable.js implementation
   if (!undo) {
     if (isRemote) {
       yield put(Actions.setUndoActions([
         Actions.moveElement({newIndex: oldIndex, oldIndex: newIndex}, elementID, parentID, false, true),
       ]));
+
+      yield put(Actions.setAdd(true))
     } else {
-      yield put(Actions.addUndoAction(Actions.moveElement({newIndex: oldIndex, oldIndex: newIndex}, elementID, parentID, true, true)))
+      const add = yield select(selectors.selectAdd);
+
+      if (add) {
+        yield put(Actions.addUndoAction(Actions.moveElement({newIndex: oldIndex, oldIndex: newIndex}, elementID, parentID, true, true)))
+      } else {
+        yield put(Actions.setUndoActions([
+          Actions.moveElement({newIndex: oldIndex, oldIndex: newIndex}, elementID, parentID, true, true),
+        ]));
+      }
+      yield put(Actions.setAdd(false))
     }
   }
 

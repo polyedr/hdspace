@@ -117,6 +117,8 @@ export const selectUndoActions = (state: AppReduxState) => selectProjectState(st
 
 export const selectHistoryLength = (state: AppReduxState) => selectProjectState(state).control.past.length;
 
+export const selectAdd = (state: AppReduxState) => selectProjectState(state).control.present.add;
+
 export const selectActiveItemStyles = makeActiveItemInfoSelector('styles');
 export const selectActiveItemChildrenStyles = makeActiveItemInfoSelector('styles');
 export const selectActiveItemParams = makeActiveItemInfoSelector('parameters');
