@@ -7,6 +7,8 @@ import {
   select,
   all
 } from 'redux-saga/effects';
+import objectDiff from '$utils/diff';
+
 import * as R from 'ramda';
 import { REHYDRATE } from 'redux-persist';
 import { LOCATION_CHANGE, LocationChangeAction } from 'connected-react-router';
@@ -155,7 +157,7 @@ function* authCheckSaga() {
   yield put(Actions.setLibraryElements(libraryElements));
 }
 
-function* moveElementSaga(action: ReturnType<typeof Actions.moveElement>) {
+function* moveElementSaga(action: ReturnType<typeof Actions.moveElement>): any {
   const { indices: { newIndex, oldIndex }, elementID, parentID, undo, isRemote } = action.payload;
 
   const root: ReturnType<typeof selectors.selectRootElement> = yield select(selectors.selectRootElement);
@@ -163,45 +165,49 @@ function* moveElementSaga(action: ReturnType<typeof Actions.moveElement>) {
 
   if (!targetParent) {
     console.error(`Can not find targetParent ${parentID} in tree`);
-  } else {
-    const root: ReturnType<typeof selectors.selectRootElement> = yield select(selectors.selectRootElement);
-    const elementToMove = findChildByID(root, elementID);
-
-    if (!elementToMove) {
-      console.error(`Can not find changedElement ${elementID} in tree`);
-      return;
-    }
-
-    if (!undo) {
-      if (isRemote) {
-        yield put(Actions.addUndoAction(Actions.moveElement({newIndex: oldIndex, oldIndex: newIndex}, elementID, parentID, false, true)))
-      } else {
-        yield put(Actions.setUndoActions([
-          Actions.moveElement({newIndex: oldIndex, oldIndex: newIndex}, elementID, parentID, false, true),
-        ]));
-      }
-    }
-
-    const updatedTree = moveElement(targetParent.id, elementToMove, root, newIndex);
-    yield put(Actions.updateElementsTree(updatedTree, undo));
-
-    const updatedParent = findChildByID(updatedTree, parentID);
-
-    if (!updatedParent) {
-      console.error(`Can not find updatedParent ${parentID} in tree`);
-      return;
-    }
-
-    const convertedElements = updatedParent.children.map(child => convertElementToPatchRequest(child));
-    yield call(reqWrapper, apiSaveElements, { data: convertedElements });
-
-    const elementData = {
-      name: targetParent.name,
-      children: [...targetParent.children.map(child => child.id), elementID],
-    };
-
-    yield call(reqWrapper, apiChangeRecursiveElement, { data: elementData, id: targetParent.id });
+    return;
   }
+
+  const elementToMove = findChildByID(root, elementID);
+
+  if (!elementToMove) {
+    console.error(`Can not find changedElement ${elementID} in tree`);
+    return;
+  }
+
+  if (!undo) {
+    if (isRemote) {
+      yield put(Actions.setUndoActions([
+        Actions.moveElement({newIndex: oldIndex, oldIndex: newIndex}, elementID, parentID, false, true),
+      ]));
+    } else {
+      yield put(Actions.addUndoAction(Actions.moveElement({newIndex: oldIndex, oldIndex: newIndex}, elementID, parentID, true, true)))
+    }
+  }
+
+  const updatedTree = moveElement(targetParent.id, elementToMove, root, newIndex);
+  if (!isRemote) {
+    yield put(Actions.updateElementsTree(updatedTree, undo));
+  }
+
+  const updatedParent = findChildByID(updatedTree, parentID);
+
+  if (!updatedParent) {
+    console.error(`Can not find updatedParent ${parentID} in tree`);
+    return;
+  }
+
+  const convertedElements = updatedParent.children.map(child => convertElementToPatchRequest(child));
+  yield call(reqWrapper, apiSaveElements, { data: convertedElements });
+
+  if (isRemote) return;
+
+  const elementData = {
+    name: targetParent.name,
+    children: [...targetParent.children.map(child => child.id), elementID],
+  };
+
+  yield call(reqWrapper, apiChangeRecursiveElement, { data: elementData, id: targetParent.id });
 }
 
 export function* updateScenariosOnServerSaga(scenarios: ProjectT.IScenarios) {
@@ -460,7 +466,7 @@ export default function* projectSaga() {
   yield takeLatest(uploadFileType, uploadFileSaga);
   yield takeLatest(getScreenNNType, screenSaga.getScreenNNSaga);
 
-  yield takeLatest(undoActionType, undoSaga)
+  yield takeLatest(undoActionType, undoSaga);
   yield takeLatest(deleteElementType, deleteElementSaga);
   yield takeLatest(unwrapFromContainerType, unwrapFromContainerSaga);
 }

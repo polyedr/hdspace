@@ -62,14 +62,11 @@ export class Sortable extends Component {
             const remoteOptions = remote.props.options || {};
 
             if ((typeof remoteOptions.group === 'object') && (remoteOptions.group.pull === 'clone')) {
-              // Remove the node with the same data-reactid
               evt.item.parentNode.removeChild(evt.item);
             }
-
-            remote.props.onChange && remote.props.onChange(remoteItems, remote.sortable, evt);
+            remote.props.onChange && remote.props.onChange(evt, isRemote);
           }
-
-          this.props.onChange && this.props.onChange(items, this.sortable, evt, isRemote);
+            this.props.onChange && this.props.onChange(evt);
         }
 
         if (evt.type === 'move') {

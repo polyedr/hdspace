@@ -40,7 +40,7 @@ const isSameState = (
   previousHistory: StateWithHistory<T.ProjectControlState>
 ) => !R.equals(previousHistory.present.rootElement, currentState.rootElement);
 
-const isUndo = (action: any) => !action.payload.undo;
+const isUndo = (action: any) => !action.payload?.undo;
 
 export const controlReducer = undoable(reducer, {
   filter: combineFilters(
