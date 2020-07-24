@@ -3,7 +3,6 @@ import { AppReduxState } from '$shared/types/app';
 import { ChildEntity, Entity } from "$domain/core";
 import { findChildByID } from "$utils/ElementsTreeHelper";
 import { LibraryElement } from "$api/types";
-import { CssLikeStyles } from "$utils/StyleHelper";
 
 export const selectFeatureState = makeFeatureStateSelector('project');
 
@@ -94,6 +93,10 @@ export function selectProjectLoader(state: AppReduxState) {
 
 export function selectActiveItem(state: AppReduxState) {
   return selectFeatureState(state).ui.activeItem;
+};
+
+export function selectEditableStyles(state: AppReduxState) {
+  return selectFeatureState(state).ui.editableStyles;
 };
 
 export function selectShowingBorders(state: AppReduxState) {

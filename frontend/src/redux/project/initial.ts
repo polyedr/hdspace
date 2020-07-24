@@ -13,6 +13,7 @@ export const initial: T.ReduxState = {
     listProject: [],
   },
   ui: {
+    editableStyles: 'idStyles',
     activeItem: DEFAULT_ACTIVE_ITEM,
     showContainersBorders: false,
     isAddElementsModalOpened: false,

@@ -11,6 +11,7 @@ export type ReduxState = {
   };
   ui: {
     activeItem: ActiveItem;
+    editableStyles: string;
     showContainersBorders: boolean;
     isAddElementsModalOpened: boolean;
     itemToCopyInfo: ItemToCopyInfo | null;
@@ -90,6 +91,7 @@ export type AddElement = IAction<'PROJECTS:ADD_ELEMENT', { parentID: string, typ
 export type RenameElement = IAction<'PROJECTS:RENAME_ELEMENT', { elementID: string, name: string }>;
 export type ToggleContainersBorders = IPlainAction<'PROJECTS:TOGGLE_CONTAINERS_BORDERS'>;
 export type SetScenarioElements = IAction<'PROJECTS:SET_SCENARIO_ELEMENTS', { elements: IScenarioElements }>;
+export type UpdateSharedStyles = IAction<'PROJECTS:UPDATE_SHARED_STYLES', { className: string, styles: CssLikeStyles }>;
 export type UpdateElementStyles = IAction<'PROJECTS:UPDATE_ELEMENT_STYLES', { id: string, styles: CssLikeStyles }>;
 export type UpdateElementImage = IAction<'PROJECTS:UPDATE_ELEMENT_IMAGE', { itemID: string, image: File }>;
 export type UpdateElementParameters = IAction<
@@ -117,6 +119,7 @@ export type uploadImageForNNSuccess = IAction<
 export type GetScreenNN = IPlainAction<'PROJECTS:GET_SCREEN_NN'>;
 export type WrapIntoContainer = IPlainAction<'PROJECTS:WRAP_INTO_CONTAINER'>;
 export type SetActiveItem = IAction<'PROJECTS:SET_ACTIVE_ITEM', { activeItem: ActiveItem }>;
+export type SetSharedStyles = IAction<'PROJECTS:SET_SHARED_STYLES', { className: string }>;
 export type SetIsAddElementsModalOpened = IAction<'PROJECTS:SET_IS_ADD_ELEMENTS_MODAL_OPENED', { isOpened: boolean }>;
 export type SetItemToCopy = IAction<'PROJECTS:SET_ITEM_TO_COPY', ItemToCopyInfo>;
 export type CopyActiveItem = IPlainAction<'PROJECTS:COPY_ACTIVE_ITEM'>;
@@ -175,7 +178,8 @@ export type Action =
   | UpdateSavedElementValues
   | UpdateElementsTree
   | SetNotification
-  | RemoveNotification;
+  | RemoveNotification
+  | SetSharedStyles;
 
 export type ItemToCopyInfo = {
   id: string;

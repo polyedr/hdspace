@@ -41,6 +41,7 @@ import { DropdownItems } from '../Controls/DropdownItems/DropdownItems';
 import { IsOpen } from '../Controls/IsOpen/IsOpen';
 import { VideoSettings } from '../Controls/VideoSettings/VideoSettings';
 import { RenameElement } from '../Controls/RenameElement/RenameElement';
+import { EditableStyles } from '../EditableStyles/EditableStyles';
 const styles = require('./PropertiesPanel.scss');
 
 type StateProps = {
@@ -161,6 +162,11 @@ const Component: React.FC<PropertiesPanelProps> = ({
                 </ControlSection>
               </div>
             )}
+            <div className="propsPanelContentBlock">
+              <ControlSection title="Edit styles of">
+                <EditableStyles />
+              </ControlSection>
+            </div>
             {currentItemType && R.toPairs(AVAILABLE_CONTROLS[currentItemType as Entity]).map(([elementName, elementValue]) => {
                 return elementName === 'root' ? (
                   <div className="propsPanelContentBlock">

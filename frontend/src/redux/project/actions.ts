@@ -177,6 +177,11 @@ export const setScenarioElements = (elements: T.IScenarioElements): T.SetScenari
   payload: { elements },
 });
 
+export const updateSharedStyles = (className: Entity, styles: CssLikeStyles): T.UpdateSharedStyles => ({
+  type: 'PROJECTS:UPDATE_SHARED_STYLES',
+  payload: { className, styles },
+});
+
 export const updateElementStyles = (id: string, styles: CssLikeStyles): T.UpdateElementStyles => ({
   type: 'PROJECTS:UPDATE_ELEMENT_STYLES',
   payload: { id, styles },
@@ -251,6 +256,11 @@ export const wrapIntoContainer = (): T.WrapIntoContainer => ({ type: 'PROJECTS:W
 export const setActiveItem = (activeItem: T.ActiveItem): T.SetActiveItem => ({
   type: 'PROJECTS:SET_ACTIVE_ITEM',
   payload: { activeItem },
+});
+
+export const setEditableStyles = (className: string): T.SetEditableStyles => ({
+  type: 'PROJECTS:SET_EDITABLE_STYLES',
+  payload: { className },
 });
 
 export const setIsAddElementsModalOpened = (isOpened: boolean): T.SetIsAddElementsModalOpened => ({
