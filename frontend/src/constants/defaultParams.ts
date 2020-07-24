@@ -223,6 +223,8 @@ export const DEFAULT_PROJECT = {
   status: '',
   projectscreen: [],
   projectLoader: false,
+  updated: new Date(),
+  created: new Date(),
 };
 
 export const DEFAULT_LS: { root: ILSItem } = {

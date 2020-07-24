@@ -7,20 +7,20 @@ import { Icon } from '$components/UI/Icon';
 import { Button } from '$components/UI/Button';
 import { IAppProps } from '$containers/App';
 import * as PATH_NAMES from '$constants/pathNames';
-import { IListProject } from '$redux/project/types';
 import { Scrollbar } from '$components/UI/Scrollbar';
 import * as Actions from '$redux/user/actions';
 import * as ActionsProject from '$redux/project/actions';
 import { openSignScreen } from '$utils/history';
 import { DEFAULT_AUTHORISATION_TOKEN } from '$constants/defaultParams';
 import { ITokenPair } from '$redux/user/reducer';
+import { Project } from '$api/types';
 
 const styles = require('./LeftPanel.scss');
 
 export interface ILeftPanel {
   pathname: IAppProps['pathname'],
   getListProject: IAppProps['getListProject']
-  projects: IListProject[],
+  projects: Project[],
   username?: string,
   userType: string,
   tokenPair: ITokenPair,

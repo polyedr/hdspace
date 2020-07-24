@@ -3,12 +3,13 @@ import classNames from 'classnames';
 import Sortable from 'react-sortablejs'; // maybe replace it with react-sortablejs-typescript?
 import { NavLink } from 'react-router-dom';
 
-import { IProject, IProjectScreen } from '$redux/project/types';
+import { IProjectScreen } from '$redux/project/types';
 import { Modal } from '$components/UI/Modal';
 import { Icon } from '$components/UI/Icon';
 import { Button } from '$components/UI/Button';
 import * as Actions from '$redux/project/actions';
 import { EditorProps } from '$containers/EditorLogic';
+import { Project } from '$api/types';
 
 const styles = require('./NavPanelScreen.scss');
 
@@ -17,7 +18,7 @@ interface INavPanelScreenProps {
   isNavPanelMinimized: EditorProps['isNavPanelMinimized'];
   onMinimizerNavPanel(): void;
   projectID: number;
-  project: IProject;
+  project: Project;
   screen: IProjectScreen;
   getProject: typeof Actions.getProject;
   changeScreensOrder: typeof Actions.changeScreensOrder;
