@@ -1,5 +1,5 @@
 import copy
-# import numpy as np
+import numpy as np
 import math
 from statistics import median
 
@@ -16,7 +16,9 @@ import pytesseract
 from keras.preprocessing.image import load_img
 from keras_preprocessing.image import img_to_array
 
-from apps.utils.object_detection import run_text_detection, get_rect_contours
+from apps.utils.object_detection import run_text_detection, get_rect_contours, show_rects, show_rois
+
+from matplotlib import pyplot as plt
 
 config_tesseract = "-l eng --oem 1 --psm 3"
 
@@ -124,6 +126,11 @@ def calculateDistance(x1, y1, x2, y2):
     return dist
 
 
+def contains_rectangle(r1, r2):
+    # Calculation for the case of rois
+   return r1[1] < r2[1] < r2[3] < r1[3] and r1[0] < r2[0] < r2[2] < r1[2]
+
+
 class ScenarioElementSerializer(serializers.ModelSerializer):
     parameters = serializers.JSONField()
     styles = serializers.JSONField()
@@ -204,6 +211,26 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
             img = load_img(imgpath)
             img = img_to_array(img)
 
+            # Detect the font-size with tesseract for the whole image start
+            whole_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+            result = pytesseract.image_to_boxes(whole_img)
+            # print(result)
+
+            # Detect the height and the width of the image
+            img_height, img_width, channels = img.shape
+
+            lines = result.strip().split('\n')
+            font_size = []
+
+            for line in lines:
+                chars = line.split(' ')
+                try:
+                    font_size.append(float(chars[4]) - float(chars[2]))
+                except Exception:
+                    font_size.append(12.0)  # Default font-size value is 12px
+            font_size_img = int(median(font_size) * 1.1 * 1.7)  # Font-size value of the image
+            # Detect the font-size with tesseract for the whole image end
+
             # Get the dominant colour for the parent container(take the whole image)
             bcolour_container_value = '255,255,255,0'
             domcolour_container = get_dominant_colour(img)
@@ -263,19 +290,34 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                                 excluded_indices.append(idx2)
                             elif square > square2 * SQUARES_OVERLAP_THRESHOLD_TEXT:
                                 excluded_indices.append(idx1)
-            '''
+
+            for text_contour in text_contours:
+                # Remove untypically wide text blocks
+                width2 = text_contour[3]
+                if (width2 > (font_size_img * 3)):
+                    text_contours.remove(text_contour)
+
+            for rect_contour in rect_contours:
+                # Remove untypically large rect blocks
+                width2 = rect_contour[2]
+                height2 = rect_contour[3]
+                if ((width2 * height2) > (img_height *img_width)*0.75):
+                    rect_contours.remove(rect_contour)
+
             # Calculate the coordinates precisely with OpenCV text blocks start
             for idx1, (rect1, class_id1) in enumerate(zip(r["rois"], r["class_ids"])):
                 for text_contour in text_contours:
                     if (class_id1 == 3) and (idx1 not in excluded_indices):  # 3 means the text class
+                        print("rect1", rect1)
+                        print("text_contour", text_contour)
                         x1 = rect1[1]
                         y1 = rect1[0]
                         x2 = rect1[3]
                         y2 = rect1[2]
-                        x3 = text_contour[1]
-                        y3 = text_contour[0]
-                        x4 = text_contour[3]
-                        y4 = text_contour[2]
+                        x3 = text_contour[0]
+                        y3 = text_contour[1]
+                        x4 = text_contour[2] + text_contour[0]
+                        y4 = text_contour[3] + text_contour[1]
 
                         # Borders of the rectangles overlapped area
                         left = max(x1, x3)
@@ -285,12 +327,15 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         # Sizes of the rectangles overlapped area
                         width = right - left
                         height = top - bottom
+                        print("width, height", width, height)
 
                         # The first rectangle square
                         width1, height1 = x2 - x1, y2 - y1
+                        print("width1, height1", width1, height1)
 
                         # The second rectangle square
-                        width2, height2 = x4 - x3, y4 - y3
+                        width2, height2 = text_contour[2], text_contour[3]
+                        print("width2, height2", width2, height2)
 
                         # Check if width, height of the overlapped area less or equal 0
                         if not (width <= 0 or height <= 0):
@@ -302,13 +347,12 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                             if (square > square1 * SQUARES_OVERLAP_THRESHOLD_TEXT) or (
                                 square > square2 * SQUARES_OVERLAP_THRESHOLD_TEXT
                             ):  # Change coordinates from Mask R CNN to the OpenCV values
-                                print(rect1, text_contour)
-                                rect1[1] = text_contour[1]
-                                rect1[0] = text_contour[0]
-                                rect1[3] = text_contour[3]
-                                rect1[2] = text_contour[2]
+                                rect1[1] = text_contour[0]
+                                rect1[0] = text_contour[1]
+                                rect1[3] = text_contour[2] + text_contour[0]
+                                rect1[2] = text_contour[3] + text_contour[1]
             # Calculate the coordinates precisely with OpenCV text blocks end
-            '''
+
 
             # Calculation of the excluded indices to remove overlapped elements start
             # Second, calculate the non-text blocks overlap
@@ -359,8 +403,102 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                                 excluded_indices.append(idx2)
             # Calculation of the excluded indices to remove overlapped elements end
 
-
             '''
+            # Plots generating start
+
+            #
+            #  # Show text contours on image start
+            # window_name1 = 'image_opencv_text'
+            # result_image = show_rects(image_opencv_input, text_contours, color=(255, 0, 0))
+            # cv2.imshow(window_name1, result_image)
+            # # waits for user to press any key
+            # # (this is necessary to avoid Python kernel form crashing)
+            # cv2.waitKey(0)
+            # # Show text contours on image end
+            #
+            # # Show non-text contours on image start
+            # # Window name in which image is displayed
+            # window_name2 = 'image_opencv_rect'
+            # result_image2 = show_rects(image_opencv_input, rect_contours, color=(255, 0, 0))
+            # cv2.imshow(window_name2, result_image2)
+            # # waits for user to press any key
+            # # (this is necessary to avoid Python kernel form crashing)
+            # cv2.waitKey(0)
+
+            # Show text contours on image start
+            window_name1 = 'image_opencv_text'
+            for text_contour in text_contours:
+                x1, y1, w1, h1 = text_contour
+                x2 = w1 + x1
+                y2 = h1 + y1
+                cv2.rectangle(image_opencv_input, (x1, y1), (x2, y2), (255, 0, 0), 1)
+
+            cv2.imshow(window_name1, image_opencv_input)
+            # waits for user to press any key
+            # (this is necessary to avoid Python kernel form crashing)
+            # cv2.waitKey(0)
+            # Show text contours on image end
+
+            # Show non-text contours on image start
+            # Window name in which image is displayed
+            window_name2 = 'image_opencv_rect'
+            for rect_contour in rect_contours:
+                x1, y1, w1, h1 = rect_contour
+                x2 = w1 + x1
+                y2 = h1 + y1
+                cv2.rectangle(image_opencv_input, (x1, y1), (x2, y2), (255, 155, 0), 1)
+            cv2.imshow(window_name2, image_opencv_input)
+            # waits for user to press any key
+            # (this is necessary to avoid Python kernel form crashing)
+            # cv2.waitKey(0)
+
+            window_name5 = 'image_maskrcnn'
+            for rroi in r['rois']:
+                y1, x1, y2, x2 = rroi
+
+                cv2.rectangle(image_opencv_input, (x1, y1), (x2, y2), (50,90,255), 2)
+
+            cv2.imshow(window_name5, image_opencv_input)
+            # waits for user to press any key
+            # (this is necessary to avoid Python kernel form crashing)
+            cv2.waitKey(0)
+
+            # Show non-text contours on image end
+
+            # Show rois adapted contours on image start
+            # window_name3 = 'image_opencv_rois'
+            # rois_contours = []
+            # for idx1, (rroi, class_id1) in enumerate(zip(r["rois"], r["class_ids"])):
+            #     # (class_id1 == 3) and
+            #     if (class_id1 == 3) and (idx1 not in excluded_indices):
+            #         tcontour = []
+            #         tcontour.append(rroi[1])
+            #         tcontour.append(rroi[0])
+            #         tcontour.append(rroi[3])
+            #         tcontour.append(rroi[0] - rroi[2])
+            #         rois_contours.append(tcontour)
+            #
+            # result_image3 = show_rects(image_opencv_input, rois_contours, color=(255, 0, 0))
+            # cv2.imshow(window_name3, result_image3)
+            # (this is necessary to avoid Python kernel form crashing)
+            # cv2.waitKey(0)
+            # Show rois adapted contours on image end
+
+            # Show rois contours on image start
+            # Window name in which image is displayed
+            window_name4 = 'image_opencv_rect'
+            result_image4 = show_rois(image_opencv_input, r['rois'], color=(0, 255, 0))
+            cv2.imshow(window_name4, result_image4)
+            # waits for user to press any key
+            # (this is necessary to avoid Python kernel form crashing)
+            cv2.waitKey(0)
+
+            # closing all open windows
+            cv2.destroyAllWindows()
+            # Plots generating end
+            '''
+
+
             # Calculate the coordinates precisely with OpenCV non-text blocks start
             # Pass through the OpenCV contours predictions
             # Select the closest Mask R CNN predicted non-textual block
@@ -375,14 +513,24 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                 for idx1, (rect1, class_id1) in enumerate(zip(r["rois"], r["class_ids"])):
                     # 1,2,4,5,7 means elements except the text class and the radiobutton
                     if (class_id1 in {1, 2, 4, 5, 7}) and (idx1 not in excluded_indices):
-                        x1 = rect1[1]
-                        y1 = rect1[0]
-                        x2 = rect1[3]
-                        y2 = rect1[2]
-                        x3 = rect_contour[1]
-                        y3 = rect_contour[0]
-                        x4 = rect_contour[3]
-                        y4 = rect_contour[2]
+                        x1 = rect_contour[0]
+                        y1 = rect_contour[1]
+                        x2 = rect_contour[2] + rect_contour[0]
+                        y2 = rect_contour[3] + rect_contour[1]
+                        x3 = rect1[1]
+                        y3 = rect1[0]
+                        x4 = rect1[3]
+                        y4 = rect1[2]
+
+                        '''
+                        window_name5 = 'image_maskrcnn'
+                        cv2.rectangle(image_opencv_input, (x3, y3), (x4, y4), (50, 90, 255), 2)
+                        cv2.imshow(window_name5, image_opencv_input)
+                        print("idx1, class_id1 =", idx1, class_id1)
+                        # waits for user to press any key
+                        # (this is necessary to avoid Python kernel form crashing)
+                        cv2.waitKey(0)
+                        '''
 
                         # Borders of the rectangles overlapped area
                         left = max(x1, x3)
@@ -422,24 +570,28 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                                 if (centers_distance < centers_distance_min):
                                     centers_distance_min = centers_distance
                                     idx1_selected = idx1
-                                    rect1[1] = rect_contour[1]
-                                    rect1[0] = rect_contour[0]
-                                    rect1[3] = rect_contour[3]
-                                    rect1[2] = rect_contour[2]
+                                    # print("idx1_select", idx1)
+                                    rect1[1] = rect_contour[0]
+                                    rect1[0] = rect_contour[1]
+                                    rect1[3] = rect_contour[2] + rect_contour[0]
+                                    rect1[2] = rect_contour[3] + rect_contour[1]
 
                 # Save the idx1_selected to the array
                 # Update the r['roi'] with rect1_selected values
                 if(idx1_selected != -1):
+                    # print("idx1_select_array", idx1)
                     idx1_selected_array.append(idx1_selected)
 
             # Find the excluded indices
             for idx1, (rect1, class_id1) in enumerate(zip(r["rois"], r["class_ids"])):
                 # 1,2,4,5,7 means elements except the text class and the radiobutton
                 if (class_id1 in {1, 2, 4, 5, 7}) and (idx1 not in excluded_indices) and (idx1 not in idx1_selected_array):
+                    # print("idx1", idx1)
+                    # input()
                     excluded_indices.append(idx1)
 
             # Calculate the coordinates precisely with OpenCV non-text blocks end
-            '''
+
 
             for idx, (roi, class_id, score) in enumerate(
                 zip(r["rois"], r["class_ids"], r["scores"])
@@ -464,11 +616,38 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
 
                     y1, x1, y2, x2 = roi
                     roi_our = img[y1:y2, x1:x2]
-                    print(idx, roi_our)
+                    # roi_our = image_opencv_input[y1:y2, x1:x2]
+                    # print(idx, roi_our)
 
                     roi_our = cv2.resize(
                         roi_our, None, fx=0.95, fy=0.95, interpolation=cv2.INTER_CUBIC
                     )
+                    '''
+                    # Show text contours on image start
+                    window_name1 = 'image_opencv_text'
+                    for text_contour in text_contours:
+                        x1, y1, w1, h1 = text_contour
+                        x2 = w1 + x1
+                        y2 = h1 + y1
+                        cv2.rectangle(image_opencv_input, (x1, y1), (x2, y2), (255, 0, 0), 1)
+
+                    cv2.imshow(window_name1, image_opencv_input)
+                    # waits for user to press any key
+                    # (this is necessary to avoid Python kernel form crashing)
+                    # cv2.waitKey(0)
+                    # Show text contours on image end
+
+                    window_name5 = 'image_maskrcnn'
+                    for rroi in r['rois']:
+                        y1, x1, y2, x2 = rroi
+
+                        cv2.rectangle(image_opencv_input, (x1, y1), (x2, y2), (50, 90, 255), 2)
+
+                    cv2.imshow(window_name5, image_opencv_input)
+                    # waits for user to press any key
+                    # (this is necessary to avoid Python kernel form crashing)
+                    cv2.waitKey(0)
+                    '''
 
                     # Get the dominant colour for the HTML element
                     bcolour_element_value = '255,255,255,0'
@@ -478,40 +657,6 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
 
                     # Convert to the grey colour
                     roi_our = cv2.cvtColor(roi_our, cv2.COLOR_BGR2GRAY)
-
-                    # Remove artifacts connected to image border
-                    # This can decrease the prediction quality for images
-                    # roi_our = clear_border(roi_our)
-                    """
-                    # Apply dilation and erosion to remove some noise
-                    kernel = np.ones((1, 1), np.uint8)
-                    roi_our = cv2.dilate(roi_our, kernel, iterations=1)
-                    roi_our = cv2.erode(roi_our, kernel, iterations=1)
-                    """
-                    # Apply threshold to get image with only black and white
-                    # roi_our = apply_threshold(roi_our, 20)
-                    # print(pytesseract.image_to_string(roi_our))
-                    """
-                    # contours = get_blocks(roi_our)
-                    contours = run_detection(roi_our)
-                    print("contours:", contours, "class id:", class_id)
-                    """
-
-                    # Detect the font-size with tesseract for the whole image
-                    whole_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-                    result = pytesseract.image_to_boxes(whole_img)
-                    # print(result)
-
-                    lines = result.strip().split('\n')
-                    font_size = []
-
-                    for line in lines:
-                        chars = line.split(' ')
-                        try:
-                            font_size.append(float(chars[4]) - float(chars[2]))
-                        except Exception:
-                            font_size.append(12.0)  # Default font-size value is 12px
-                    font_size_img = int(median(font_size) * 1.1 * 1.7)  # Font-size value of the image
 
                     # Detect the font-size with tesseract for some element
                     result = pytesseract.image_to_boxes(roi_our)
@@ -534,9 +679,6 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                     width_elem = x2 - x1
                     height_elem = y2 - y1
 
-                    # Detect the height and the width of the image
-                    img_height, img_width, channels = img.shape
-
                     # Detect the alignment of the element
                     # Text-align: left, if the left interval is smaller than the right interval
                     aligned_element = "left"
@@ -557,8 +699,27 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         # The whole string format to process further
                         letters_str = text
 
-                    # print(y1, x1, y2, x2, img_width, img_height)
-                    # print(aligned_element, letters_str)
+                    # Check if class id is: 1 input, 2 button 4 select
+                    # Calculate if the internal text_contours from the OpenCV were placed in that blocks
+                    # Recognize text with tesseract based on text_contours
+                    # Assign this new value
+                    if class_id in [1, 2, 3, 4]:
+                        for text_contour in text_contours:
+                            x1 = text_contour[0]
+                            x2 = text_contour[1]
+                            y1 = text_contour[2] + text_contour[0]
+                            y2 = text_contour[3] + text_contour[1]
+                            roi_text_contour = (y1, x1, y2, x2)
+
+                            if contains_rectangle(roi_text_contour, roi):
+                                roi_our = img[y1:y2, x1:x2]
+                                # Read the string with tesseract
+                                text = pytesseract.image_to_string(roi_our, config=config_tesseract)
+                                # Functional class assignment
+                                # Input: string from tesseract, output: functional class of the element
+                                tess_string = text.lower().split()
+                                # The whole string format to process further
+                                letters_str = text
 
                     # Input
                     if class_id == 1:
@@ -673,8 +834,8 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
 
             # test
             # Display the recognized_elements to the command line
-            for recognized_element in recognized_elements:
-                print(recognized_element)
+            # for recognized_element in recognized_elements:
+            #     print(recognized_element)
 
             # Create the recognized_elements array start
 

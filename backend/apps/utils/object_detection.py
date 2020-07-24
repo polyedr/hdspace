@@ -250,6 +250,14 @@ def show_rects(img, rects, color=(0, 255, 0), thickness=1, text=False):
     return img
 
 
+def show_rois(img, rects, color=(255, 255, 0), thickness=1, text=False):
+    """Add rois rectangles to image."""
+    for index, rect in enumerate(rects):
+        y1, x1, y2, x2 = rect
+        cv2.rectangle(img, (x1, y1), (x2, y2), color, thickness)
+    return img
+
+
 def run_text_detection(img, text=False, method="adaptive"):
     """Initial method for text recognition."""
     contours = get_blocks(img, method=method)
@@ -544,7 +552,7 @@ def get_hor_lines(rows, left_x):
 
 
 def get_invisible_grid(image):
-    """Get table grid using text detestion algorithm."""
+    """Get table grid using text detection algorithm."""
     img = image.copy()
     text_rects = run_text_detection(img)
     # merge text regions that intersect
