@@ -119,7 +119,7 @@ export type uploadImageForNNSuccess = IAction<
 export type GetScreenNN = IPlainAction<'PROJECTS:GET_SCREEN_NN'>;
 export type WrapIntoContainer = IPlainAction<'PROJECTS:WRAP_INTO_CONTAINER'>;
 export type SetActiveItem = IAction<'PROJECTS:SET_ACTIVE_ITEM', { activeItem: ActiveItem }>;
-export type SetSharedStyles = IAction<'PROJECTS:SET_SHARED_STYLES', { className: string }>;
+export type SetEditableStyles = IAction<'PROJECTS:SET_EDITABLE_STYLES', { className: string }>;
 export type SetIsAddElementsModalOpened = IAction<'PROJECTS:SET_IS_ADD_ELEMENTS_MODAL_OPENED', { isOpened: boolean }>;
 export type SetItemToCopy = IAction<'PROJECTS:SET_ITEM_TO_COPY', ItemToCopyInfo>;
 export type CopyActiveItem = IPlainAction<'PROJECTS:COPY_ACTIVE_ITEM'>;
@@ -179,7 +179,7 @@ export type Action =
   | UpdateElementsTree
   | SetNotification
   | RemoveNotification
-  | SetSharedStyles;
+  | SetEditableStyles;
 
 export type ItemToCopyInfo = {
   id: string;

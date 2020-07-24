@@ -42,7 +42,7 @@ import {
   apiChangeRecursiveElement,
 } from '$api/element';
 import { apiSaveScenarios } from '$api/scenario';
-import { convertElementToRequest, convertElementToPatchRequest } from '$api/converters/toRequest';
+import { convertElementToRequest, convertElementToPatchRequest, convertProjectToPatchRequest } from '$api/converters/toRequest';
 import { LibraryElement, LibraryElementUnion } from '$api/types';
 import { Entity } from '$domain/core';
 import { setTokenPair, setLoadedToken } from '$redux/user/actions';
@@ -63,6 +63,7 @@ import {
 import * as PATH_NAMES from '$constants/pathNames';
 import { DEFAULT_AUTHORISATION_TOKEN } from '$constants/defaultParams';
 import { LibraryEntities } from '$domain/libraryElements/libraryElements';
+import { apiSaveProject } from '$api/project';
 
 import { ItemToCopyInfo } from '../types';
 import { selectors, T as ProjectT, actionsCreators, T } from '../';
@@ -199,6 +200,42 @@ export function* updateScenariosOnServerSaga(scenarios: ProjectT.IScenarios) {
 
 export function* updateElementsOnServerSaga(elements: ProjectT.IScenarioElements) {
   yield call(reqWrapper, apiSaveElements, { data: R.values(elements).map(element => R.omit(['children'], element)) });
+}
+
+function* updateSharedStylesSaga(action: ReturnType<typeof Actions.updateSharedStyles>) {
+  const { className, styles } = action.payload;
+
+  console.log(action.payload)
+
+  const currentProject: ReturnType<typeof selectors.selectCurrentProject> = yield select(selectors.selectCurrentProject);
+
+  const newProject = {
+    ...currentProject,
+    projectData: {
+      ...currentProject.projectData,
+      classes: currentProject.projectData.classes.map(cssClass => (
+        cssClass.name === className ? { ...cssClass, rules: { ...cssClass.rules, ...styles } } : cssClass)),
+  }};
+
+  const listProject: ReturnType<typeof selectors.selectProjects> = yield select(selectors.selectProjects);
+
+  const newListProject = listProject.map((project) => {
+    if (project.id === currentProject.id) {
+      return {
+        ...project,
+        name: name,
+      };
+    }
+
+    return project;
+  });
+
+  yield put(Actions.setListProject(newListProject));
+  yield put(Actions.setProject(newProject));
+  
+
+  const convertedProject = convertProjectToPatchRequest(newProject);
+  yield call(reqWrapper, apiSaveProject, { data: convertedProject });
 }
 
 function* updateElementStyles(action: ReturnType<typeof Actions.updateElementStyles>) {
@@ -372,6 +409,7 @@ const saveScreenType: ProjectT.SaveScreen['type'] = 'PROJECTS:SAVE_SCREEN';
 const deleteScreenType: ProjectT.DeleteScreen['type'] = 'PROJECTS:DELETE_SCREEN';
 const renameScreenType: ProjectT.RenameScreen['type'] = 'PROJECTS:RENAME_SCREEN';
 const moveElementType: ProjectT.MoveElement['type'] = 'PROJECTS:MOVE_ELEMENT';
+const updateSharedStylesType: ProjectT.UpdateSharedStyles['type'] = 'PROJECTS:UPDATE_SHARED_STYLES';
 const updateElementStylesType: ProjectT.UpdateElementStyles['type'] = 'PROJECTS:UPDATE_ELEMENT_STYLES';
 const updateElementParametersType: ProjectT.UpdateElementParameters['type'] = 'PROJECTS:UPDATE_ELEMENT_PARAMETERS';
 const updateElementImageType: ProjectT.UpdateElementImage['type'] = 'PROJECTS:UPDATE_ELEMENT_IMAGE';
@@ -406,6 +444,7 @@ export default function* projectSaga() {
   yield takeLatest(renameScreenType, screenSaga.renameScreenSaga);
   yield takeLatest(moveElementType, moveElementSaga);
 
+  yield takeLatest(updateSharedStylesType, updateSharedStylesSaga);
   yield takeLatest(updateElementStylesType, updateElementStyles);
   yield takeLatest(updateElementImageType, updateElementImage);
   yield takeLatest(updateElementParametersType, updateElementParameters);

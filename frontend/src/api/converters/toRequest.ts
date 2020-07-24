@@ -1,4 +1,4 @@
-import { ServerElement, LibraryElement, ServerProject, CreatedServerProject, ProjectClass } from '$api/types';
+import { ServerElement, LibraryElement, ServerProject, CreatedServerProject, ProjectClass, Project } from '$api/types';
 import { LIBRARY_ELEMENTS } from '$domain/libraryElements/libraryElements';
 import { Entity } from '$domain/core';
 import * as R from 'ramda';
@@ -67,4 +67,18 @@ export const convertCreatedProjectToRequest = (name: string): CreatedServerProje
     projectscreen: [],
     project_data_json: JSON.stringify({ classes: projectClasses }),
   }
+};
+
+export const convertProjectToPatchRequest = (
+  project: Project
+): Omit<ServerProject, 'created' | 'updated' | 'project_data_text'> => {
+  const { id, name, status, projectscreen, projectData } = project;
+
+  return {
+    id,
+    name,
+    status,
+    projectscreen,
+    project_data_json: JSON.stringify(projectData),
+  };
 };

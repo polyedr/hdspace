@@ -9,20 +9,34 @@ import { LibraryElement } from '$api/types';
 import { Entity } from '$domain/core';
 
 type StateProps = {
+  activeItemType: Entity | 'none';
   activeItemID: string;
+  editableStyles: string;
   activeItemStyles: CssLikeStyles;
   activeItemChildrenStyles: Record<string, CssLikeStyles>;
   scenarioElement: IScenarioElement;
 };
 
 function mapState(state: AppReduxState): StateProps {
+  const activeItemType = selectors.selectActiveItem(state).itemType;
   const activeItemID = selectors.selectActiveItem(state).itemId;
+  const editableStyles = selectors.selectEditableStyles(state);
   const scenarioElement = selectors.selectScenarioElement(state, parseInt(activeItemID));
-  const activeItemStyles = selectors.selectActiveItemStyles(state).tagStyles;
+  const activeElementStyles = selectors.selectActiveItemStyles(state).idStyles;
+  const activeTagStyles = selectors.selectCurrentProject(state).projectData.classes.find(cssClass => cssClass.name === activeItemType);
+
+  const activeItemStyles = editableStyles === 'idStyles' || editableStyles === '' ? activeElementStyles : activeTagStyles?.rules || {};
+
+
+  console.log(editableStyles === 'tagStyles', activeItemStyles)
+
+
   const activeItemChildrenStyles = selectors.selectActiveItemChildrenStyles(state) as Record<string, CssLikeStyles>;
 
   return {
+    activeItemType,
     activeItemID,
+    editableStyles,
     scenarioElement,
     activeItemStyles,
     activeItemChildrenStyles,
@@ -31,6 +45,7 @@ function mapState(state: AppReduxState): StateProps {
 
 const mapDispatch = {
   updateElementParameters: actionsCreators.updateElementParameters,
+  updateSharedStyles: actionsCreators.updateSharedStyles,
   updateElementStyles: actionsCreators.updateElementStyles,
 };
 
@@ -48,18 +63,27 @@ export function withConfigurableProperties<K extends LibraryElement<Entity>, T e
 ): React.FC<Omit<T, keyof PropertiesChangeProps<K>>> {
   function WrapperComponent(props: any) {
     const {
+      activeItemType,
       activeItemID,
+      editableStyles,
       activeItemStyles,
       activeItemChildrenStyles,
       scenarioElement,
+      updateSharedStyles,
       updateElementStyles,
       updateElementParameters,
       ...restProps
     } = props;
 
     const updateStyles = useCallback((styles: CssLikeStyles, itemID?: string) => {
-      updateElementStyles(itemID || activeItemID, styles);
-    }, [activeItemID]);
+      if (editableStyles === 'idStyles') {
+        console.log('updateElementStyles');
+        updateElementStyles(itemID || activeItemID, styles);
+      } else {
+        console.log('updateSharedStyles');
+        updateSharedStyles(editableStyles, styles);
+      }
+    }, [activeItemID, editableStyles]);
 
     const updateParams = useCallback((params: Params<K>, itemID?: string) => {
       updateElementParameters(itemID || activeItemID, params);
