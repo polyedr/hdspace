@@ -122,9 +122,9 @@ export type UpdateSavedElementValues = IAction<
   'PROJECTS:UPDATE_SAVED_ELEMENT_VALUES', { itemID: string, savedValue: string | boolean }
 >;
 export type DeleteActiveItem = IPlainAction<'PROJECTS:DELETE_ACTIVE_ITEM'>;
-export type DeleteElement = IAction<'PROJECTS:DELETE_ELEMENT', { id: string }>;
+export type DeleteElement = IAction<'PROJECTS:DELETE_ELEMENT', { id: string, undo: boolean }>;
 export type CreateElements = IAction<
-  'PROJECTS:CREATE_ELEMENTS', { createdElements: CreatedElement[] }>;
+  'PROJECTS:CREATE_ELEMENTS', { createdElements: CreatedElement[], undo: boolean }>;
 export type AddChildToElement = IAction<
 'PROJECTS:ADD_CHILD_TO_ELEMENT', { childType: ServerStructType, elementID: string, parameters: {} }>;
 export type DeleteChildFromElement = IAction<

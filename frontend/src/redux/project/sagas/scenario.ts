@@ -24,7 +24,6 @@ import { isElementCanBeRemove, isElementCanBeAdded } from '$utils/AvailableChild
 import { selectors, T } from '../';
 import { updateSavedElementsValues } from './screen';
 import { findParentByChildID, findChildByID, moveElement, addChildrenToElement, removeChildrenFromElement, updateElementParameters, getElementsArray } from '$utils/ElementsTreeHelper';
-import { setUndoActions } from '$redux/project/actions';
 
 export function* updateElementsTree(root: LibraryElement<'root'>, undo: boolean = false) {
   const elementsArray = getElementsArray(root);
@@ -94,7 +93,7 @@ export function* createElements(elements: ServerElement<Entity>[], parent: Libra
 }
 
 export function* createElementsSaga(action: ReturnType<typeof Actions.createElements>) {
-  const { createdElements } = action.payload;
+  const { createdElements, undo } = action.payload;
 
   const activeItem: ReturnType<typeof selectors.selectActiveItem> = yield select(selectors.selectActiveItem);
   const root: ReturnType<typeof selectors.selectRootElement> = yield select(selectors.selectRootElement);
@@ -102,7 +101,11 @@ export function* createElementsSaga(action: ReturnType<typeof Actions.createElem
 
   if (activeItemElement) {
     const convertedCreatedElements = createdElements.map(element => convertCreatedElementToRequest(element.type, null));
-    yield call(createElements, convertedCreatedElements, activeItemElement);
+    const ids = yield call(createElements, convertedCreatedElements, activeItemElement);
+
+    if (!undo) {
+      yield put(Actions.setUndoActions(ids.map((id: string) => Actions.deleteElement(id, true))));
+    }
   } else {
     console.error(`Active item ${activeItem.itemId} not found in elements tree!`);
   }
@@ -132,11 +135,11 @@ export function* deleteChildFromElementSaga(action: ReturnType<typeof Actions.de
 }
 
 export function* deleteElementSaga(action: ReturnType<typeof Actions.deleteElement>) {
-  const { id } = action.payload;
-  yield call(removeElement, id);
+  const { id, undo } = action.payload;
+  yield call(removeElement, id, undo);
 }
 
-export function* removeElement(elementToRemoveID: string) {
+export function* removeElement(elementToRemoveID: string, undo: boolean = false) {
   const root: ReturnType<typeof selectors.selectRootElement> = yield select(selectors.selectRootElement);
   const removedElement = findChildByID(root, elementToRemoveID);
 
@@ -172,7 +175,7 @@ export function* removeElement(elementToRemoveID: string) {
 
   const updatedRoot = removeChildrenFromElement(itemToRemoveParentID, [removedElement], root);
   
-  yield put(Actions.updateElementsTree(updatedRoot));
+  yield put(Actions.updateElementsTree(updatedRoot, undo));
 
   const newActiveElemAfterDeletion = document.querySelector<HTMLElement>(`[data-ls-id='${itemToRemoveParentID}']`);
   newActiveElemAfterDeletion?.focus();
@@ -220,7 +223,7 @@ export function* wrapIntoContainerSaga() {
 
   const [createdContainer] = createdElements;
 
-  yield put(setUndoActions([Actions.unwrapFromContainer(activeItem.itemId, createdContainer.id, wrappedItemParent.id)]));
+  yield put(Actions.setUndoActions([Actions.unwrapFromContainer(activeItem.itemId, createdContainer.id, wrappedItemParent.id)]));
 
   yield call(addElementToElement, createdContainer, wrappedItemParent);
 

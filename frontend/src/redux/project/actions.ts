@@ -208,14 +208,14 @@ export const deleteActiveItem = (): T.DeleteActiveItem => ({
   type: 'PROJECTS:DELETE_ACTIVE_ITEM',
 });
 
-export const deleteElement = (id: string): T.DeleteElement => ({
+export const deleteElement = (id: string, undo: boolean = false): T.DeleteElement => ({
   type: 'PROJECTS:DELETE_ELEMENT',
-  payload: { id }
+  payload: { id, undo }
 });
 
-export const createElements = (createdElements: T.CreatedElement[]): T.CreateElements => ({
+export const createElements = (createdElements: T.CreatedElement[], undo: boolean = false): T.CreateElements => ({
   type: 'PROJECTS:CREATE_ELEMENTS',
-  payload: { createdElements },
+  payload: { createdElements, undo },
 });
 
 export const addChildToElement = (childType: ChildEntity, elementID: string, parameters: ChildrenElements[ChildEntity]['parameters']): T.AddChildToElement => ({
