@@ -51,7 +51,7 @@ const isUndo = (action: any) => !action.payload?.undo;
 
 export const controlReducer = undoable(reducer, {
   filter: combineFilters(
-    isSameState,
+    // isSameState,
     isUndo,
     includeAction(['PROJECTS:UPDATE_ELEMENTS_TREE']),
   )

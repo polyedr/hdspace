@@ -246,7 +246,7 @@ function* updateElementStyles(action: ReturnType<typeof Actions.updateElementSty
   if (!updatedElement) {
     console.error(`Can not find updated element ${id} in tree`);
   } else {
-    yield put(Actions.updateElementsTree(updatedTree));
+    yield put(Actions.updateElementsTree(updatedTree, undo));
     const convertedElement = convertElementToPatchRequest(updatedElement);
     yield call(reqWrapper, apiChangeElement, { data: convertedElement, id });
   }
@@ -285,7 +285,7 @@ function* updateElementParameters(action: ReturnType<typeof Actions.updateElemen
   } else {
     const savedValue = getSavedValue(updatedElement as LibraryElementUnion);
     yield put(Actions.updateSavedElementValues(itemID, savedValue));
-    yield call(updateElementsTree, updatedTree);
+    yield call(updateElementsTree, updatedTree, undo);
     const convertedElement = convertElementToPatchRequest(updatedElement);
     yield call(reqWrapper, apiChangeElement, { data: convertedElement, id: itemID });
   }
@@ -404,10 +404,10 @@ function* undoSaga() {
   if (historyLength <= 1) return;
   const undos = yield select(selectors.selectUndoActions);
 
-  yield put(ActionCreators.undo());
   for (let undo of undos) {
     yield put(undo);
   }
+  yield put(ActionCreators.undo());
 }
 
 const loadProjectsType: ProjectT.LoadProjects['type'] = 'PROJECTS:LOAD_PROJECTS';
