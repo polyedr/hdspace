@@ -33,10 +33,8 @@ export type ServerElement<Type extends Entity, Children = any[], Params = {}> = 
   image?: string | null,
   parameters: { group?: string } & Params,
   styles: {
-    classNames: string[],
-    tagStyles: CssLikeStyles,
+    classNames: [Type, ...string[]],
     idStyles: CssLikeStyles,
-    classStyles: CssLikeStyles,
   },
   children: Children,
 };

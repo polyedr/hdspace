@@ -7,13 +7,14 @@ import { selectors } from '$redux/project/';
 import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
 import { sharedClasses } from '$styles/sharedClasses';
 import { ListElement } from '$api/types';
+import { CssLikeStyles } from '$utils/StyleHelper';
 
 type StateProps = {
   bulletsStyles: 'disc' | 'none';
 };
 
 function mapState(state: AppReduxState): StateProps {
-  const activeItemStyles = selectors.selectActiveItemStyles(state);
+  const activeItemStyles = selectors.selectActiveItemStyles(state).tagStyles as Required<CssLikeStyles>;
 
   return {
     bulletsStyles: activeItemStyles['list-style-type'],

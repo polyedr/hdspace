@@ -25,10 +25,8 @@ export const hyperlink: HyperlinkServerElement = {
     ...defaultHyperlinkParams,
   },
   styles: {
-    classNames: [],
-    tagStyles: getDefaultStyles('hyperlink'),
+    classNames: ['hyperlink'],
     idStyles: {},
-    classStyles: {},
   },
   name: 'hyperlink',
   children: [],
@@ -43,10 +41,8 @@ export const heading: HeadingServerElement = {
     ...defaultHeadingParams,
   },
   styles: {
-    classNames: [],
-    tagStyles: getDefaultStyles('heading'),
+    classNames: ['heading'],
     idStyles: {},
-    classStyles: {},
   },
   name: 'heading',
   children: [],
@@ -61,10 +57,8 @@ export const paragraph: ParagraphServerElement = {
     ...defaultParagraphParams,
   },
   styles: {
-    classNames: [],
-    tagStyles: getDefaultStyles('paragraph'),
+    classNames: ['paragraph'],
     idStyles: {},
-    classStyles: {},
   },
   name: 'paragraph',
   children: [],
@@ -79,10 +73,8 @@ export const ocrtext: OcrtextServerElement = {
     ...defaultParagraphParams,
   },
   styles: {
-    classNames: [],
-    tagStyles: getDefaultStyles('ocrtext'),
+    classNames: ['ocrtext'],
     idStyles: {},
-    classStyles: {},
   },
   name: 'ocrtext',
   children: [],
@@ -90,17 +82,15 @@ export const ocrtext: OcrtextServerElement = {
 
 export const text_block: TextBlockServerElement = {
   buoyancy: 0,
-  func_type: 'text_block',
+  func_type: 'text_block', // TODO rename in camelCase
   struct_type: 'text_block',
   parameters: {
     group: 'typography',
     ...defaultTextBlockParams,
   },
   styles: {
-    classNames: [],
-    tagStyles: getDefaultStyles('text_block'),
+    classNames: ['text_block'],
     idStyles: {},
-    classStyles: {},
   },
   name: 'text_block',
   children: [],
@@ -116,10 +106,8 @@ export const makeListItem = (textContent: string): ListItemServerElement => ({
     link: '',
   },
   styles: {
-    classNames: [],
-    tagStyles: getDefaultStyles('listItem'),
+    classNames: ['listItem'],
     idStyles: {},
-    classStyles: {},
   },
   name: 'listItem',
   children: [],
@@ -134,10 +122,8 @@ export const list: ListServerElement = {
     ...defaultListParams,
   },
   styles: {
-    classNames: [],
-    tagStyles: getDefaultStyles('list'),
+    classNames: ['list'],
     idStyles: {},
-    classStyles: {},
   },
   name: 'list',
   children: [
