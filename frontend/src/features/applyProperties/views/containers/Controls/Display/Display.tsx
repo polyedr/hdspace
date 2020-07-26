@@ -49,7 +49,13 @@ function getDisplayStyles(activeItemStyles: Required<CssLikeStyles>): ScreenDisp
 }
 
 function mapState(state: AppReduxState): StateProps {
-  const activeItemStyles = selectors.selectActiveItemStyles(state).tagStyles as Required<CssLikeStyles>;
+  const activeItemStyles = {
+    display: selectors.selectCurrentEditableStyles(state, 'display'),
+    justifyContent: selectors.selectCurrentEditableStyles(state, 'justify-content'),
+    alignItems: selectors.selectCurrentEditableStyles(state, 'align-items'),
+    flexDirection: selectors.selectCurrentEditableStyles(state, 'flex-direction'),
+  };
+
   return { displayStyles: getDisplayStyles(activeItemStyles) };
 }
 

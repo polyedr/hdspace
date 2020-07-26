@@ -1,31 +1,29 @@
 import React, { memo, useCallback } from 'react';
+import { connect } from 'react-redux';
 
 import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
-import { CssLikeStyles } from '$utils/StyleHelper';
 import { ColorSettings } from '$features/applyProperties/views/components/ColorSettings/ColorSettings';
 import { LibraryElement } from '$api/types';
 import { Entity } from '$domain/core';
-import { Button } from '$components/UI/Button';
+import { AppReduxState } from '$shared/types/app';
+import { selectors } from '$redux/project';
+import { RemoveStyles } from '../../RemoveStyles/RemoveStyles';
 
-type OwnProps = {
-  activeItemStyles: Required<CssLikeStyles>;
-}
+function mapState(state: AppReduxState) {
+  return {
+    backgroundColor: selectors.selectCurrentEditableStyles(state, 'background-color'),
+  };
+};
 
-type Props = OwnProps & PropertiesChangeProps<LibraryElement<Entity>>;
+type Props = ReturnType<typeof mapState> & PropertiesChangeProps<LibraryElement<Entity>>;
 
 const BackgroundBlock: React.FC<Props> = memo((props) => {
   const {
     removeStyles,
     updateStyles,
     activeItemID,
-    activeItemStyles,
+    backgroundColor,
   } = props;
-
-  const backgroundColor = activeItemStyles['background-color'];
-
-  const handleButtonClick = () => {
-    removeStyles('background-color');
-  }
 
   const handleColorSettingsChange = useCallback((color: string) => {
     updateStyles({ 'background-color': color });
@@ -34,11 +32,7 @@ const BackgroundBlock: React.FC<Props> = memo((props) => {
   return (
     <div className="propsElementsBlock">
       <p className="propsElementsBlockTitle">Background</p>
-      {backgroundColor ? (
-        <Button onClick={handleButtonClick}>Clear styles</Button>
-      ) : (
-        <Button onClick={handleButtonClick}>Add styles</Button>
-      )}
+      <RemoveStyles onClick={removeStyles} ruleName={'background-color'} />
       {backgroundColor && (
         <div className="propsElementsContentBlock">
           <div className="propsElementsInnerBlock">
@@ -54,5 +48,5 @@ const BackgroundBlock: React.FC<Props> = memo((props) => {
   );
 });
 
-const Component = withConfigurableProperties(BackgroundBlock);
+const Component = connect(mapState)(withConfigurableProperties(BackgroundBlock));
 export { Component as BackgroundBlock };

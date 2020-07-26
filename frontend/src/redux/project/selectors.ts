@@ -3,6 +3,7 @@ import { AppReduxState } from '$shared/types/app';
 import { ChildEntity, Entity } from "$domain/core";
 import { findChildByID } from "$utils/ElementsTreeHelper";
 import { LibraryElement } from "$api/types";
+import { CssLikeStyles } from "$utils/StyleHelper";
 
 export const selectFeatureState = makeFeatureStateSelector('project');
 
@@ -98,6 +99,20 @@ export function selectActiveItem(state: AppReduxState) {
 export function selectEditableStyles(state: AppReduxState) {
   return selectFeatureState(state).ui.editableStyles;
 };
+
+export function selectTagStyles(state: AppReduxState, elementType: Entity) {
+  return selectCurrentProject(state).projectData.classes.find(cssClass => cssClass.name === elementType)?.rules || {};
+};
+
+export function selectCurrentEditableStyles(state: AppReduxState, ruleName: keyof CssLikeStyles) {
+  const activeItemType = selectActiveItem(state).itemType;
+  const activeElementStyles = selectActiveItemStyles(state).idStyles;
+  const editableStyles = selectEditableStyles(state);
+  const activeTagStyles = activeItemType !== 'none' && selectTagStyles(state, activeItemType) || {};
+
+  const activeItemStyles = editableStyles === 'idStyles' || editableStyles === '' ? activeElementStyles : activeTagStyles;
+  return activeItemStyles[ruleName] || activeTagStyles[ruleName]
+}
 
 export function selectShowingBorders(state: AppReduxState) {
   return selectFeatureState(state).ui.showContainersBorders;
