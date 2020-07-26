@@ -14,6 +14,7 @@ import { Entity } from '$domain/core';
 import { AppReduxState } from '$shared/types/app';
 import { selectors } from '$redux/project';
 
+import { StylesHeader } from '../../../components/StylesHeader/StylesHeader';
 const styles = require('./styles.scss');
 
 const MIN_FONT_SIZE = 1;
@@ -39,10 +40,9 @@ const TypographyBlock: React.FC<Props> = memo(({
   textAlign,
   color,
   updateStyles,
+  removeStyles,
   activeItemID,
 }) => {
- 
-
   const handleColorSettingsChange = useCallback((color: string) => {
     updateStyles({ color: color });
   }, [updateStyles]);
@@ -71,7 +71,18 @@ const TypographyBlock: React.FC<Props> = memo(({
 
   return (
     <div className="propsElementsBlock">
-      <p className="propsElementsBlockTitle">Font</p>
+      <StylesHeader
+        title="Font"
+        onClick={removeStyles}
+        ruleNames={[
+          'font-family',
+          'font-style',
+          'font-weight',
+          'font-size',
+          'text-align',
+          'color',
+        ]}
+      />
       <div className="propsElementsContentBlock">
         <div className="propsElementsInnerBlock">
           <div className={styles.fontLeftBlock}>

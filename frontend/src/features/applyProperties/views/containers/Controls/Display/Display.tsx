@@ -14,10 +14,9 @@ import { CssLikeStyles, convertFlexToCssLikeStyles } from '$utils/StyleHelper';
 import { LibraryElement } from '$api/types';
 import { Entity } from '$domain/core';
 
-import { ControlTitle } from '../../../components/ControlTitle/ControlTitle';
 import { FlexProperties } from '../../../components/FlexProperties/FlexProperties';
+import { StylesHeader } from '../../../components/StylesHeader/StylesHeader';
 import { DISPLAY } from './constants';
-const styles = require('./Display.scss');
 
 type StateProps = {
   displayStyles: ScreenDisplay;
@@ -62,7 +61,7 @@ function mapState(state: AppReduxState): StateProps {
 type Props = StateProps & PropertiesChangeProps<LibraryElement<Entity>>;
 
 export const Component: React.FC<Props> = memo((props) => {
-  const { displayStyles, updateStyles } = props;
+  const { displayStyles, updateStyles, removeStyles } = props;
 
   const handleDisplayDropdownChange = useCallback((value) => {
     updateStyles({ display: value });
@@ -76,9 +75,16 @@ export const Component: React.FC<Props> = memo((props) => {
   return (
     <>
       <section className="propsElementsBlock">
-        <header className={styles.header}>
-          <ControlTitle content="Display" />
-        </header>
+        <StylesHeader
+          title="Display"
+          onClick={removeStyles}
+          ruleNames={[
+            'display',
+            'justify-content',
+            'align-items',
+            'flex-direction',
+          ]}
+        />
         <div className="propsElementsContentBlock">
           <div className="propsElementsInnerBlock">
             <DropDown

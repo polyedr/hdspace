@@ -8,6 +8,7 @@ import { AppReduxState } from '$shared/types/app';
 import { selectors } from '$redux/project';
 import { connect } from 'react-redux';
 
+import { StylesHeader } from '../../../components/StylesHeader/StylesHeader';
 const styles = require('./styles.scss');
 
 const MIN_PADDING = 0;
@@ -30,6 +31,7 @@ type Props = ReturnType<typeof mapState> & PropertiesChangeProps<LibraryElement<
 const IndentsBlock: React.FC<Props> = (props) => {
   const {
     updateStyles,
+    removeStyles,
     marginTop,
     marginRight,
     marginBottom,
@@ -46,7 +48,20 @@ const IndentsBlock: React.FC<Props> = (props) => {
 
   return (
     <div className="propsElementsBlock">
-      <p className="propsElementsBlockTitle">Margins & Paddings</p>
+      <StylesHeader
+        title="Margins & Paddings"
+        onClick={removeStyles}
+        ruleNames={[
+          'margin-top',
+          'margin-right',
+          'margin-bottom',
+          'margin-left',
+          'padding-top',
+          'padding-right',
+          'padding-bottom',
+          'padding-left',
+        ]}
+      />
       <div className="propsElementsContentBlock">
         <div className="propsElementsInnerBlock">
           <div className={styles.indentsController}>

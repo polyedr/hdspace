@@ -7,7 +7,8 @@ import { LibraryElement } from '$api/types';
 import { Entity } from '$domain/core';
 import { AppReduxState } from '$shared/types/app';
 import { selectors } from '$redux/project';
-import { RemoveStyles } from '../../RemoveStyles/RemoveStyles';
+
+import { StylesHeader } from '../../../components/StylesHeader/StylesHeader';
 
 function mapState(state: AppReduxState) {
   return {
@@ -31,8 +32,11 @@ const BackgroundBlock: React.FC<Props> = memo((props) => {
 
   return (
     <div className="propsElementsBlock">
-      <p className="propsElementsBlockTitle">Background</p>
-      <RemoveStyles onClick={removeStyles} ruleName={'background-color'} />
+      <StylesHeader
+        title="Background"
+        onClick={removeStyles}
+        ruleNames={['background-color']}
+      />
       {backgroundColor && (
         <div className="propsElementsContentBlock">
           <div className="propsElementsInnerBlock">

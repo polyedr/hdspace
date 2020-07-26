@@ -18,6 +18,7 @@ import { Entity } from '$domain/core';
 import { AppReduxState } from '$shared/types/app';
 import { selectors } from '$redux/project';
 
+import { StylesHeader } from '../../../components/StylesHeader/StylesHeader';
 const styles = require('./styles.scss');
 
 const accessBorderRadius = (border: CssLikeStyles['border-radius']) => {
@@ -29,7 +30,7 @@ function mapState(state: AppReduxState) {
   return {
     borderColor: selectors.selectCurrentEditableStyles(state, 'border-color'),
     borderWidth: selectors.selectCurrentEditableStyles(state, 'border-width'),
-    borderRadius: selectors.selectCurrentEditableStyles(state, 'border-radius',
+    borderRadius: selectors.selectCurrentEditableStyles(state, 'border-radius'),
   };
 };
 
@@ -38,6 +39,7 @@ type Props = ReturnType<typeof mapState> & PropertiesChangeProps<LibraryElement<
 const BorderBlock: React.FunctionComponent<Props> = React.memo(({
   activeItemID,
   updateStyles,
+  removeStyles,
   borderColor,
   borderWidth,
   borderRadius,
@@ -63,7 +65,11 @@ const BorderBlock: React.FunctionComponent<Props> = React.memo(({
 
   return (
     <div className="propsElementsBlock">
-      <p className="propsElementsBlockTitle">Border</p>
+      <StylesHeader
+        title="Border"
+        onClick={removeStyles}
+        ruleNames={['border-color', 'border-width', 'border-radius']}
+      />
       <div className="propsElementsContentBlock">
         <div className="propsElementsInnerBlock">
           <div className={cn(styles.borderBlock, styles.borderBlock_width)}>

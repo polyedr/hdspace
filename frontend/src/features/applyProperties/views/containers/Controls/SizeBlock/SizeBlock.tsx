@@ -8,6 +8,7 @@ import { Entity } from '$domain/core';
 import { AppReduxState } from '$shared/types/app';
 import { selectors } from '$redux/project';
 
+import { StylesHeader } from '../../../components/StylesHeader/StylesHeader';
 const styles = require('./SizeBlock.scss');
 
 enum Unit {
@@ -46,7 +47,7 @@ const getUnitFromValue = (value: string): UnitName => {
 }
 
 const SizeBlock: React.FC<Props> = memo((props) => {
-  const { updateStyles, activeItemID, width, height } = props;
+  const { updateStyles, removeStyles, activeItemID, width, height } = props;
 
   const handleSelectChange = useCallback(({ target: { value } }, sizeName: SizeName) => {
     const el = document.getElementById(activeItemID);
@@ -125,7 +126,11 @@ const SizeBlock: React.FC<Props> = memo((props) => {
 
   return (
     <div className="propsElementsBlock">
-      <p className="propsElementsBlockTitle">Width & Height</p>
+      <StylesHeader
+        title="Width & Height"
+        onClick={removeStyles}
+        ruleNames={['width', 'height']}
+      />
       <div className="propsElementsContentBlock">
         <div className="propsElementsInnerBlock">
           <div className={styles.sizeBlock}>
