@@ -295,11 +295,11 @@ function* updateElementStyles(action: ReturnType<typeof Actions.updateElementSty
 }
 
 function* removeElementStyles(action: ReturnType<typeof Actions.removeElementStyles>) {
-  const { id, ruleName } = action.payload;
+  const { id, ruleNames } = action.payload;
 
   const root: ReturnType<typeof selectors.selectRootElement> = yield select(selectors.selectRootElement);
   
-  const updatedTree = removeStyles(id, ruleName, root);
+  const updatedTree = removeStyles(id, ruleNames, root);
   const updatedElement = findChildByID(updatedTree, id);
 
   if (!updatedElement) {

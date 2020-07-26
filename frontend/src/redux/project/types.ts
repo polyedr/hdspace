@@ -94,7 +94,7 @@ export type SetScenarioElements = IAction<'PROJECTS:SET_SCENARIO_ELEMENTS', { el
 export type UpdateSharedStyles = IAction<'PROJECTS:UPDATE_SHARED_STYLES', { className: Entity, styles: CssLikeStyles }>;
 export type RemoveSharedStyles = IAction<'PROJECTS:REMOVE_SHARED_STYLES', { className: Entity, ruleName: string }>;
 export type UpdateElementStyles = IAction<'PROJECTS:UPDATE_ELEMENT_STYLES', { id: string, styles: CssLikeStyles }>;
-export type RemoveElementStyles = IAction<'PROJECTS:REMOVE_ELEMENT_STYLES', { id: string, ruleName: string }>;
+export type RemoveElementStyles = IAction<'PROJECTS:REMOVE_ELEMENT_STYLES', { id: string, ruleNames: string[] }>;
 export type UpdateElementImage = IAction<'PROJECTS:UPDATE_ELEMENT_IMAGE', { itemID: string, image: File }>;
 export type UpdateElementParameters = IAction<
   'PROJECTS:UPDATE_ELEMENT_PARAMETERS', { itemID: string, parameters: RootElement<Entity>['parameters'] }

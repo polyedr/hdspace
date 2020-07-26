@@ -152,7 +152,7 @@ export const updateElementStyles = <T extends Entity, K extends Entity, P extend
 
 export const removeElementStyles = <T extends Entity, K extends Entity>(
   elementID: string,
-  removedRuleName: string,
+  removedRuleNames: string[],
   root: LibraryElement<T, LibraryElement<K>[]>
 ): LibraryElement<T, LibraryElement<K>[]> => {
   return {
@@ -162,14 +162,14 @@ export const removeElementStyles = <T extends Entity, K extends Entity>(
         ? {
             ...root.styles,
             idStyles: (R.toPairs(root.styles.idStyles) as [string, string])
-            .filter(([ruleName]) => ruleName !== removedRuleName)
+            .filter(([ruleName]) => removedRuleNames.every(name => name !== ruleName))
             .reduce(
               (acc, [ruleName, rule]) => ({ ...acc, [ruleName]: rule }),
               {} as CssLikeStyles
             ),
           }
         : root.styles,
-    children: root.children.map((child) => removeElementStyles(elementID, removedRuleName, child)),
+    children: root.children.map((child) => removeElementStyles(elementID, removedRuleNames, child)),
   };
 };
 

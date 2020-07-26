@@ -101,7 +101,7 @@ class ContainersBordersComponent extends React.Component<Props, State> {
     const filteredBorders = newBorders.filter(border => !!border) as Border[];
 
     if (filteredBorders.some((border, index) => !R.equals(border.coordinates, borders[index]?.coordinates))) {
-      this.setState({ borders: filteredBorders });
+      this.setState({ borders: filteredBorders }); // TODO borders are not updating sometimes!
     };
   };
 
