@@ -57,6 +57,7 @@ import {
   updateElementParameters as updateParameters,
   moveElement,
   updateElementStyles as updateStyles,
+  removeElementStyles as removeStyles,
   getElementsArray,
   getTreeWithDefaultStylesAndParams,
 } from '$utils/ElementsTreeHelper';
@@ -195,14 +196,6 @@ function* moveElementSaga(action: ReturnType<typeof Actions.moveElement>) {
   }
 }
 
-export function* updateScenariosOnServerSaga(scenarios: ProjectT.IScenarios) {
-  yield call(reqWrapper, apiSaveScenarios, { data: R.values(scenarios) });
-}
-
-export function* updateElementsOnServerSaga(elements: ProjectT.IScenarioElements) {
-  yield call(reqWrapper, apiSaveElements, { data: R.values(elements).map(element => R.omit(['children'], element)) });
-}
-
 function* removeSharedStylesSaga(action: ReturnType<typeof Actions.removeSharedStyles>) {
   const { className, ruleName: removedRuleName } = action.payload;
 
@@ -290,6 +283,23 @@ function* updateElementStyles(action: ReturnType<typeof Actions.updateElementSty
   const root: ReturnType<typeof selectors.selectRootElement> = yield select(selectors.selectRootElement);
   
   const updatedTree = updateStyles(id, styles, root);
+  const updatedElement = findChildByID(updatedTree, id);
+
+  if (!updatedElement) {
+    console.error(`Can not find updated element ${id} in tree`);
+  } else {
+    yield put(Actions.updateElementsTree(updatedTree));
+    const convertedElement = convertElementToPatchRequest(updatedElement);
+    yield call(reqWrapper, apiChangeElement, { data: convertedElement, id });
+  }
+}
+
+function* removeElementStyles(action: ReturnType<typeof Actions.removeElementStyles>) {
+  const { id, ruleName } = action.payload;
+
+  const root: ReturnType<typeof selectors.selectRootElement> = yield select(selectors.selectRootElement);
+  
+  const updatedTree = removeStyles(id, ruleName, root);
   const updatedElement = findChildByID(updatedTree, id);
 
   if (!updatedElement) {
@@ -457,6 +467,7 @@ const renameScreenType: ProjectT.RenameScreen['type'] = 'PROJECTS:RENAME_SCREEN'
 const moveElementType: ProjectT.MoveElement['type'] = 'PROJECTS:MOVE_ELEMENT';
 const removeSharedStylesType: ProjectT.RemoveSharedStyles['type'] = 'PROJECTS:REMOVE_SHARED_STYLES';
 const updateSharedStylesType: ProjectT.UpdateSharedStyles['type'] = 'PROJECTS:UPDATE_SHARED_STYLES';
+const removeElementStylesType: ProjectT.RemoveElementStyles['type'] = 'PROJECTS:REMOVE_ELEMENT_STYLES';
 const updateElementStylesType: ProjectT.UpdateElementStyles['type'] = 'PROJECTS:UPDATE_ELEMENT_STYLES';
 const updateElementParametersType: ProjectT.UpdateElementParameters['type'] = 'PROJECTS:UPDATE_ELEMENT_PARAMETERS';
 const updateElementImageType: ProjectT.UpdateElementImage['type'] = 'PROJECTS:UPDATE_ELEMENT_IMAGE';
@@ -493,6 +504,7 @@ export default function* projectSaga() {
 
   yield takeLatest(removeSharedStylesType, removeSharedStylesSaga);
   yield takeLatest(updateSharedStylesType, updateSharedStylesSaga);
+  yield takeLatest(removeElementStylesType, removeElementStyles);
   yield takeLatest(updateElementStylesType, updateElementStyles);
   yield takeLatest(updateElementImageType, updateElementImage);
   yield takeLatest(updateElementParametersType, updateElementParameters);

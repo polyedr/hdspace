@@ -5,6 +5,8 @@ import { LibraryElement } from '$api/types';
 import { getDefaultStyles } from '$domain/defaultStyles/defaultStyles';
 import { LIBRARY_ELEMENTS } from '$domain/libraryElements/libraryElements';
 
+import { CssLikeStyles } from './StyleHelper';
+
 export const moveElement = <T extends Entity, K extends Entity, P extends Entity, R extends Entity>(
   parentID: string,
   element: LibraryElement<T, LibraryElement<K>[]>,
@@ -145,6 +147,29 @@ export const updateElementStyles = <T extends Entity, K extends Entity, P extend
           }
         : root.styles,
     children: root.children.map((child) => updateElementStyles(elementID, newStyles, child)),
+  };
+};
+
+export const removeElementStyles = <T extends Entity, K extends Entity>(
+  elementID: string,
+  removedRuleName: string,
+  root: LibraryElement<T, LibraryElement<K>[]>
+): LibraryElement<T, LibraryElement<K>[]> => {
+  return {
+    ...root,
+    styles:
+      root.id === elementID
+        ? {
+            ...root.styles,
+            idStyles: (R.toPairs(root.styles.idStyles) as [string, string])
+            .filter(([ruleName]) => ruleName !== removedRuleName)
+            .reduce(
+              (acc, [ruleName, rule]) => ({ ...acc, [ruleName]: rule }),
+              {} as CssLikeStyles
+            ),
+          }
+        : root.styles,
+    children: root.children.map((child) => removeElementStyles(elementID, removedRuleName, child)),
   };
 };
 

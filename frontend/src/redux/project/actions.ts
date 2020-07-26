@@ -192,6 +192,11 @@ export const updateElementStyles = (id: string, styles: CssLikeStyles): T.Update
   payload: { id, styles },
 });
 
+export const removeElementStyles = (id: string, ruleName: string): T.RemoveElementStyles => ({
+  type: 'PROJECTS:REMOVE_ELEMENT_STYLES',
+  payload: { id, ruleName },
+});
+
 export const updateElementImage = (itemID: string, image: File ): T.UpdateElementImage => ({
   type: 'PROJECTS:UPDATE_ELEMENT_IMAGE',
   payload: { itemID, image },

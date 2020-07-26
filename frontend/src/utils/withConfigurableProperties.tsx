@@ -43,6 +43,7 @@ const mapDispatch = {
   updateElementParameters: actionsCreators.updateElementParameters,
   removeSharedStyles: actionsCreators.removeSharedStyles,
   updateSharedStyles: actionsCreators.updateSharedStyles,
+  removeElementStyles: actionsCreators.removeElementStyles,
   updateElementStyles: actionsCreators.updateElementStyles,
 };
 
@@ -69,6 +70,7 @@ export function withConfigurableProperties<K extends LibraryElement<Entity>, T e
       scenarioElement,
       removeSharedStyles,
       updateSharedStyles,
+      removeElementStyles,
       updateElementStyles,
       updateElementParameters,
       ...restProps
@@ -76,6 +78,7 @@ export function withConfigurableProperties<K extends LibraryElement<Entity>, T e
 
     const removeStyles = useCallback((ruleName: string, itemID?: string) => {
       if (editableStyles === 'idStyles') {
+        removeElementStyles(itemID || activeItemID, ruleName);
       } else {
         removeSharedStyles(editableStyles, ruleName);
       }
