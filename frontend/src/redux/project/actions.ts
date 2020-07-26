@@ -182,6 +182,11 @@ export const updateSharedStyles = (className: Entity, styles: CssLikeStyles): T.
   payload: { className, styles },
 });
 
+export const removeSharedStyles = (className: Entity, ruleName: string): T.RemoveSharedStyles => ({
+  type: 'PROJECTS:REMOVE_SHARED_STYLES',
+  payload: { className, ruleName },
+});
+
 export const updateElementStyles = (id: string, styles: CssLikeStyles): T.UpdateElementStyles => ({
   type: 'PROJECTS:UPDATE_ELEMENT_STYLES',
   payload: { id, styles },

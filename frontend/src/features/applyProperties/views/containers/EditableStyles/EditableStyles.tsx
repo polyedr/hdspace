@@ -19,8 +19,6 @@ const mapState = (state: AppReduxState) => {
   const classNames = [...(activeElement?.styles.classNames || []), 'idStyles'];
   const editableStyles = selectors.selectEditableStyles(state);
 
-  console.log(activeElement, classNames);
-
   return {
     editableStyles,
     classNames,
@@ -35,11 +33,6 @@ type Props = StateProps & typeof mapDispatch;
 
 const EditableStyles = (props: Props) => {
   const { editableStyles, classNames, setEditableStyles } = props;
-  /* const [currentEditableStyles, setCurrentEditableStyles] = useState(editableStyles);
-
-  useEffect(() => {
-    setCurrentEditableStyles(editableStyles);
-  }, [editableStyles]); */
 
   const handleDropdownChange = (value: string) => {
     setEditableStyles(value);

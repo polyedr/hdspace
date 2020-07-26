@@ -60,6 +60,7 @@ import {
   getElementsArray,
   getTreeWithDefaultStylesAndParams,
 } from '$utils/ElementsTreeHelper';
+import { CssLikeStyles } from '$utils/StyleHelper';
 import * as PATH_NAMES from '$constants/pathNames';
 import { DEFAULT_AUTHORISATION_TOKEN } from '$constants/defaultParams';
 import { LibraryEntities } from '$domain/libraryElements/libraryElements';
@@ -202,10 +203,55 @@ export function* updateElementsOnServerSaga(elements: ProjectT.IScenarioElements
   yield call(reqWrapper, apiSaveElements, { data: R.values(elements).map(element => R.omit(['children'], element)) });
 }
 
+function* removeSharedStylesSaga(action: ReturnType<typeof Actions.removeSharedStyles>) {
+  const { className, ruleName: removedRuleName } = action.payload;
+
+  const currentProject: ReturnType<typeof selectors.selectCurrentProject> = yield select(selectors.selectCurrentProject);
+
+  const newProject = {
+    ...currentProject,
+    projectData: {
+      ...currentProject.projectData,
+      classes: currentProject.projectData.classes.map((cssClass) => {
+        
+        return cssClass.name === className
+          ? {
+              ...cssClass,
+              rules: (R.toPairs(cssClass.rules) as [string, string])
+                .filter(([ruleName]) => ruleName !== removedRuleName)
+                .reduce(
+                  (acc, [ruleName, rule]) => ({ ...acc, [ruleName]: rule }),
+                  {} as CssLikeStyles
+                ),
+            }
+          : cssClass;
+      }),
+    },
+  };
+
+  const listProject: ReturnType<typeof selectors.selectProjects> = yield select(selectors.selectProjects);
+
+  const newListProject = listProject.map((project) => {
+    if (project.id === currentProject.id) {
+      return {
+        ...project,
+        name: name,
+      };
+    }
+
+    return project;
+  });
+
+  yield put(Actions.setListProject(newListProject));
+  yield put(Actions.setProject(newProject));
+  
+
+  const convertedProject = convertProjectToPatchRequest(newProject);
+  yield call(reqWrapper, apiSaveProject, { data: convertedProject });
+}
+
 function* updateSharedStylesSaga(action: ReturnType<typeof Actions.updateSharedStyles>) {
   const { className, styles } = action.payload;
-
-  console.log(action.payload)
 
   const currentProject: ReturnType<typeof selectors.selectCurrentProject> = yield select(selectors.selectCurrentProject);
 
@@ -409,6 +455,7 @@ const saveScreenType: ProjectT.SaveScreen['type'] = 'PROJECTS:SAVE_SCREEN';
 const deleteScreenType: ProjectT.DeleteScreen['type'] = 'PROJECTS:DELETE_SCREEN';
 const renameScreenType: ProjectT.RenameScreen['type'] = 'PROJECTS:RENAME_SCREEN';
 const moveElementType: ProjectT.MoveElement['type'] = 'PROJECTS:MOVE_ELEMENT';
+const removeSharedStylesType: ProjectT.RemoveSharedStyles['type'] = 'PROJECTS:REMOVE_SHARED_STYLES';
 const updateSharedStylesType: ProjectT.UpdateSharedStyles['type'] = 'PROJECTS:UPDATE_SHARED_STYLES';
 const updateElementStylesType: ProjectT.UpdateElementStyles['type'] = 'PROJECTS:UPDATE_ELEMENT_STYLES';
 const updateElementParametersType: ProjectT.UpdateElementParameters['type'] = 'PROJECTS:UPDATE_ELEMENT_PARAMETERS';
@@ -444,6 +491,7 @@ export default function* projectSaga() {
   yield takeLatest(renameScreenType, screenSaga.renameScreenSaga);
   yield takeLatest(moveElementType, moveElementSaga);
 
+  yield takeLatest(removeSharedStylesType, removeSharedStylesSaga);
   yield takeLatest(updateSharedStylesType, updateSharedStylesSaga);
   yield takeLatest(updateElementStylesType, updateElementStyles);
   yield takeLatest(updateElementImageType, updateElementImage);

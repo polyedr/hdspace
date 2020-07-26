@@ -27,10 +27,6 @@ function mapState(state: AppReduxState): StateProps {
 
   const activeItemStyles = editableStyles === 'idStyles' || editableStyles === '' ? activeElementStyles : activeTagStyles?.rules || {};
 
-
-  console.log(editableStyles === 'tagStyles', activeItemStyles)
-
-
   const activeItemChildrenStyles = selectors.selectActiveItemChildrenStyles(state) as Record<string, CssLikeStyles>;
 
   return {
@@ -45,12 +41,14 @@ function mapState(state: AppReduxState): StateProps {
 
 const mapDispatch = {
   updateElementParameters: actionsCreators.updateElementParameters,
+  removeSharedStyles: actionsCreators.removeSharedStyles,
   updateSharedStyles: actionsCreators.updateSharedStyles,
   updateElementStyles: actionsCreators.updateElementStyles,
 };
 
 export type PropertiesChangeProps<T extends LibraryElement<Entity>> = {
   activeItemID: string;
+  removeStyles(ruleName: string): void;
   updateStyles(payload: CssLikeStyles): void;
   updateParams(payload: Params<T>, updatedItemID?: string): void;
 };
@@ -69,18 +67,24 @@ export function withConfigurableProperties<K extends LibraryElement<Entity>, T e
       activeItemStyles,
       activeItemChildrenStyles,
       scenarioElement,
+      removeSharedStyles,
       updateSharedStyles,
       updateElementStyles,
       updateElementParameters,
       ...restProps
     } = props;
 
+    const removeStyles = useCallback((ruleName: string, itemID?: string) => {
+      if (editableStyles === 'idStyles') {
+      } else {
+        removeSharedStyles(editableStyles, ruleName);
+      }
+    }, [activeItemID, editableStyles]);
+
     const updateStyles = useCallback((styles: CssLikeStyles, itemID?: string) => {
       if (editableStyles === 'idStyles') {
-        console.log('updateElementStyles');
         updateElementStyles(itemID || activeItemID, styles);
       } else {
-        console.log('updateSharedStyles');
         updateSharedStyles(editableStyles, styles);
       }
     }, [activeItemID, editableStyles]);
@@ -94,6 +98,7 @@ export function withConfigurableProperties<K extends LibraryElement<Entity>, T e
         {...restProps}
         activeItemID={activeItemID}
         activeItemStyles={activeItemStyles}
+        removeStyles={removeStyles}
         updateStyles={updateStyles}
         updateParams={updateParams}
       />
