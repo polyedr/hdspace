@@ -17,7 +17,7 @@ const RemoveStyles = memo((props: Props) => {
   };
 
   return (
-    <Button className={styles.button} onClick={handleButtonClick}>Clear styles</Button>
+    <Button className={styles.button} styleType="grey" onClick={handleButtonClick}>Clear styles</Button>
   );
 });
 

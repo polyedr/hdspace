@@ -104,4 +104,29 @@
       border-color: darken($mainColor, 10%);
     }
   }
+
+  &_grey {
+    background-color: transparent;
+    border: 1px solid $panelBtnColor;
+
+    & span {
+      color: $panelBtnColor;
+    }
+
+    &:hover,
+    &:focus {
+      color: $white;
+
+      background-color: $panelBtnColor;
+
+      & span {
+        color: $white;
+      }
+    }
+
+    &:active {
+      background-color: darken($panelBtnColor, 10%);
+      border-color: darken($panelBtnColor, 10%);
+    }
+  }
 }
