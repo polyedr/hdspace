@@ -35,7 +35,7 @@ import {
   createElements,
   addElementToElement,
   updateElementsTree,
-  deleteElementSaga, unwrapFromContainerSaga,
+  deleteElementSaga, unwrapFromContainerSaga, softDeleteSaga, restoreElementSaga,
 } from '$redux/project/sagas/scenario';
 import {
   apiGetLibraryElements,
@@ -440,6 +440,7 @@ const pasteCopiedItemType: ProjectT.PasteCopiedItem['type'] = 'PROJECTS:PASTE_CO
 const deleteElementType: ProjectT.DeleteElement['type'] = 'PROJECTS:DELETE_ELEMENT';
 const unwrapFromContainerType: ProjectT.UnwrapFromContainer['type'] = 'PROJECTS:UNWRAP_FROM_CONTAINER';
 const undoActionType: ProjectT.UndoAction['type'] = 'UNDO_ACTION';
+const restoreElementType: ProjectT.RestoreElementChildren['type'] = 'PROJECTS:RESTORE_ELEMENT_CHILDREN';
 
 export default function* projectSaga() {
   yield takeLatest(REHYDRATE, authCheckSaga);
@@ -471,7 +472,8 @@ export default function* projectSaga() {
   yield takeEvery(deleteChildFromElementType, deleteChildFromElementSaga);
   yield takeEvery(wrapIntoContainerType, wrapIntoContainerSaga);
 
-  yield takeLatest(deleteActiveItemType, deleteActiveItemSaga);
+  yield takeLatest(deleteActiveItemType, /*deleteActiveItemSaga*/ softDeleteSaga);
+  yield takeEvery(restoreElementType, restoreElementSaga);
 
   yield takeLatest(copyActiveItemType, copyActiveItemSaga);
   yield takeEvery(pasteCopiedItemType, pasteCopiedItemSaga);

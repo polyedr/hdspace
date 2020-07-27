@@ -213,9 +213,9 @@ export const deleteElement = (id: string, undo: boolean = false): T.DeleteElemen
   payload: { id, undo }
 });
 
-export const createElements = (createdElements: T.CreatedElement[], undo: boolean = false): T.CreateElements => ({
+export const createElements = (createdElements: T.CreatedElement[]): T.CreateElements => ({
   type: 'PROJECTS:CREATE_ELEMENTS',
-  payload: { createdElements, undo },
+  payload: { createdElements },
 });
 
 export const addChildToElement = (childType: ChildEntity, elementID: string, parameters: ChildrenElements[ChildEntity]['parameters']): T.AddChildToElement => ({
@@ -300,5 +300,13 @@ export const unwrapFromContainer = (elementID: string, wrapperID: string, parent
     elementID,
     wrapperID,
     parentID,
+  }
+});
+
+export const restoreElementChildren = (elementId: string, childrenIds: string[]): T.RestoreElementChildren => ({
+  type: 'PROJECTS:RESTORE_ELEMENT_CHILDREN',
+  payload: {
+    elementId,
+    childrenIds,
   }
 });

@@ -24,6 +24,7 @@ import { isElementCanBeRemove, isElementCanBeAdded } from '$utils/AvailableChild
 import { selectors, T } from '../';
 import { updateSavedElementsValues } from './screen';
 import { findParentByChildID, findChildByID, moveElement, addChildrenToElement, removeChildrenFromElement, updateElementParameters, getElementsArray } from '$utils/ElementsTreeHelper';
+import { setUndoActions } from '$redux/project/actions';
 
 export function* updateElementsTree(root: LibraryElement<'root'>, undo: boolean = false) {
   const elementsArray = getElementsArray(root);
@@ -76,6 +77,8 @@ export function* createElements(elements: ServerElement<Entity>[], parent: Libra
   
   const newElements: ReturnPromisedType<typeof apiAddElements> = yield call(reqWrapper, apiAddElements, { data: allowedElements });
 
+  yield put(Actions.setUndoActions(newElements.map((el: any) => Actions.deleteElement(el.id, true))));
+
   const elementData = {
     name: parent.name,
     children: [...parent.children.map(child => child.id), ...newElements.map(element => element.id)],
@@ -93,7 +96,7 @@ export function* createElements(elements: ServerElement<Entity>[], parent: Libra
 }
 
 export function* createElementsSaga(action: ReturnType<typeof Actions.createElements>) {
-  const { createdElements, undo } = action.payload;
+  const { createdElements } = action.payload;
 
   const activeItem: ReturnType<typeof selectors.selectActiveItem> = yield select(selectors.selectActiveItem);
   const root: ReturnType<typeof selectors.selectRootElement> = yield select(selectors.selectRootElement);
@@ -101,11 +104,8 @@ export function* createElementsSaga(action: ReturnType<typeof Actions.createElem
 
   if (activeItemElement) {
     const convertedCreatedElements = createdElements.map(element => convertCreatedElementToRequest(element.type, null));
-    const ids = yield call(createElements, convertedCreatedElements, activeItemElement);
+    yield call(createElements, convertedCreatedElements, activeItemElement);
 
-    if (!undo) {
-      yield put(Actions.setUndoActions(ids.map((id: string) => Actions.deleteElement(id, true))));
-    }
   } else {
     console.error(`Active item ${activeItem.itemId} not found in elements tree!`);
   }
@@ -180,6 +180,52 @@ export function* removeElement(elementToRemoveID: string, undo: boolean = false)
   const newActiveElemAfterDeletion = document.querySelector<HTMLElement>(`[data-ls-id='${itemToRemoveParentID}']`);
   newActiveElemAfterDeletion?.focus();
   yield call(reqWrapper, apiDelElements, { list: [removedElement?.id] });
+}
+
+export function* softDeleteSaga() {
+  const root: ReturnType<typeof selectors.selectRootElement> = yield select(selectors.selectRootElement);
+  const activeItem: ReturnType<typeof selectors.selectActiveItem> = yield select(selectors.selectActiveItem);
+  if (['root', 'none'].includes(activeItem.itemType)) return;
+
+  const element = findChildByID(root, activeItem.itemId);
+  if (!element) {
+    console.error(`Can not find removed element ${activeItem.itemId} in the tree!`);
+    return
+  }
+
+  const parent = findParentByChildID(root, activeItem.itemId);
+
+  if (!parent) {
+    console.error(`Can not find parent of removed element  ${activeItem.itemId} in the tree!`);
+    return
+  }
+  const children = parent.children.map(child => child.id);
+
+  yield put(setUndoActions([
+    Actions.restoreElementChildren(parent.id, children)
+  ]));
+
+  const updatedRoot = removeChildrenFromElement(parent.id, [element], root);
+
+  yield put(Actions.updateElementsTree(updatedRoot));
+
+  const filtered = children.filter(id => id !== activeItem.itemId);
+
+  const elementData = {
+    children: filtered
+  };
+
+  yield call(reqWrapper, apiChangeRecursiveElement, { data: elementData, id: parent.id });
+}
+
+export function* restoreElementSaga(action: T.RestoreElementChildren) {
+  const { elementId, childrenIds } = action.payload;
+
+  const elementData = {
+    children: childrenIds,
+  };
+
+  yield call(reqWrapper, apiChangeRecursiveElement, { data: elementData, id: elementId});
 }
 
 export function* deleteActiveItemSaga() {

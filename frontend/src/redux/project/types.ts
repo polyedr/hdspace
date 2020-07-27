@@ -124,7 +124,7 @@ export type UpdateSavedElementValues = IAction<
 export type DeleteActiveItem = IPlainAction<'PROJECTS:DELETE_ACTIVE_ITEM'>;
 export type DeleteElement = IAction<'PROJECTS:DELETE_ELEMENT', { id: string, undo: boolean }>;
 export type CreateElements = IAction<
-  'PROJECTS:CREATE_ELEMENTS', { createdElements: CreatedElement[], undo: boolean }>;
+  'PROJECTS:CREATE_ELEMENTS', { createdElements: CreatedElement[] }>;
 export type AddChildToElement = IAction<
 'PROJECTS:ADD_CHILD_TO_ELEMENT', { childType: ServerStructType, elementID: string, parameters: {} }>;
 export type DeleteChildFromElement = IAction<
@@ -147,7 +147,8 @@ export type UndoAction = IPlainAction<'UNDO_ACTION'>;
 export type SetUndoActions = IAction<'PROJECTS:SET_UNDO_ACTIONS', Action[]>;
 export type AddUndoAction = IAction<'PROJECTS:ADD_UNDO_ACTION', Action>;
 export type UnwrapFromContainer = IAction<'PROJECTS:UNWRAP_FROM_CONTAINER', { elementID: string, wrapperID: string, parentID: string }>
-export type SetAddAction = IAction<'PROJECTS:SET_ADD_ACTION', boolean>
+export type SetAddAction = IAction<'PROJECTS:SET_ADD_ACTION', boolean>;
+export type RestoreElementChildren = IAction<'PROJECTS:RESTORE_ELEMENT_CHILDREN', { elementId: string, childrenIds: string[] }>;
 
 export type Action =
   | LoadLibraryElements
@@ -205,6 +206,8 @@ export type Action =
   | AddUndoAction
   | UnwrapFromContainer
   | SetAddAction
+  | RestoreElementChildren
+  | DeleteElement
   | MoveElement;
 
 export type ItemToCopyInfo = {
