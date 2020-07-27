@@ -130,6 +130,18 @@ def contains_rectangle(r1, r2):
     # Calculation for the case of rois
    return r1[1] < r2[1] < r2[3] < r1[3] and r1[0] < r2[0] < r2[2] < r1[2]
 
+def detect_aligned_element(x1, width_elem, img_width):
+    # Detect the alignment of the element
+    # Text-align: left, if the left interval is smaller than the right interval
+    aligned_element = "left"
+    if (x1 + (width_elem / 2) > (img_width / 2)):
+        aligned_element = "right"
+
+    # Middle if the middle point placed at the 20% middle width for the whole image
+    if (abs(x1 + (width_elem / 2) - (img_width / 2)) < img_width * 0.2):
+        aligned_element = "center"
+
+    return aligned_element
 
 class ScenarioElementSerializer(serializers.ModelSerializer):
     parameters = serializers.JSONField()
@@ -679,15 +691,8 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                     width_elem = x2 - x1
                     height_elem = y2 - y1
 
-                    # Detect the alignment of the element
-                    # Text-align: left, if the left interval is smaller than the right interval
-                    aligned_element = "left"
-                    if (x1 + (width_elem / 2) > (img_width / 2)):
-                        aligned_element = "right"
-
-                    # Middle if the middle point placed at the 20% middle width for the whole image
-                    if (abs(x1 + (width_elem / 2) - (img_width / 2)) < img_width * 0.2):
-                        aligned_element = "center"
+                    # Detect the text element alignment
+                    aligned_element = detect_aligned_element(x1, width_elem, img_width)
 
                     func_type = "undefined"
                     letters_str = ""
@@ -698,6 +703,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         tess_string = text.lower().split()
                         # The whole string format to process further
                         letters_str = text
+                        # Detect the text element alignment
 
                     # Check if class id is: 1 input, 2 button 4 select
                     # Calculate if the internal text_contours from the OpenCV were placed in that blocks
@@ -709,6 +715,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                             x2 = text_contour[1]
                             y1 = text_contour[2] + text_contour[0]
                             y2 = text_contour[3] + text_contour[1]
+                            width_text_elem = text_contour[2]
                             roi_text_contour = (y1, x1, y2, x2)
 
                             if contains_rectangle(roi_text_contour, roi):
@@ -720,6 +727,8 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                                 tess_string = text.lower().split()
                                 # The whole string format to process further
                                 letters_str = text
+                                # Detect the text element alignment
+                                aligned_element = detect_aligned_element(x1, width_text_elem, width_elem)
 
                     # Input
                     if class_id == 1:
