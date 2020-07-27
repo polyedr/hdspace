@@ -52,7 +52,7 @@ const ListItems: React.FC<Props> = ({
   };
 
   const handleDeleteButtonClick = (listItemID: string) => {
-    deleteChildFromElement(listItemID, activeItemID);
+    deleteChildFromElement(listItemID);
   };
 
   const handleCheckboxChange = (listItemID: string, { target: { checked } }: React.ChangeEvent<HTMLInputElement>) => {

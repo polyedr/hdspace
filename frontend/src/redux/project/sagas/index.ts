@@ -469,7 +469,7 @@ export default function* projectSaga() {
   yield takeEvery(createElementsType, createElementsSaga);
 
   yield takeEvery(addChildToElementType, addChildToElementSaga);
-  yield takeEvery(deleteChildFromElementType, deleteChildFromElementSaga);
+  yield takeEvery(deleteChildFromElementType, /*deleteChildFromElementSaga*/ deleteElementSaga);
   yield takeEvery(wrapIntoContainerType, wrapIntoContainerSaga);
 
   yield takeLatest(deleteActiveItemType, /*deleteActiveItemSaga*/ softDeleteSaga);

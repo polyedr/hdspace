@@ -75,7 +75,7 @@ const SelectOptions: React.FC<Props> = ({
   };
 
   const handleDeleteButtonClick = (selectOptionID: string) => {
-    deleteChildFromElement(selectOptionID, selectMenuID);
+    deleteChildFromElement(selectOptionID);
   };
 
   return (

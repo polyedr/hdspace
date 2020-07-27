@@ -218,14 +218,14 @@ export const createElements = (createdElements: T.CreatedElement[]): T.CreateEle
   payload: { createdElements },
 });
 
-export const addChildToElement = (childType: ChildEntity, elementID: string, parameters: ChildrenElements[ChildEntity]['parameters']): T.AddChildToElement => ({
+export const addChildToElement = (childType: ChildEntity, elementID: string, parameters: ChildrenElements[ChildEntity]['parameters'], undo: boolean = false): T.AddChildToElement => ({
   type: 'PROJECTS:ADD_CHILD_TO_ELEMENT',
-  payload: { childType, elementID, parameters },
+  payload: { childType, elementID, parameters, undo },
 });
 
-export const deleteChildFromElement = (childID: string, elementID: string): T.DeleteChildFromElement => ({
+export const deleteChildFromElement = (id: string): T.DeleteChildFromElement => ({
   type: 'PROJECTS:DELETE_CHILD_FROM_ELEMENT',
-  payload: { childID, elementID },
+  payload: { id },
 });
 
 export const setScenarios = (scenarios: T.IScenarios): T.SetScenarios => ({

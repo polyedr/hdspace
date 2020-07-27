@@ -64,7 +64,7 @@ export function* createContainer(scenario?: Partial<T.IScenarioItem>) {
   return createdContainers[0];
 }
 
-export function* createElements(elements: ServerElement<Entity>[], parent: LibraryElement<Entity>) {
+export function* createElements(elements: ServerElement<Entity>[], parent: LibraryElement<Entity>, undo: boolean = false) {
   const disallowedElements = elements.filter(element => !isElementCanBeAdded(parent, element.struct_type));
     
   if (disallowedElements.length) {
@@ -87,7 +87,7 @@ export function* createElements(elements: ServerElement<Entity>[], parent: Libra
   yield call(reqWrapper, apiChangeRecursiveElement, { data: elementData, id: parent.id });
 
   const updatedElements = addChildrenToElement(parent.id, newElements, root);
-  yield call(updateElementsTree, updatedElements);
+  yield call(updateElementsTree, updatedElements, undo);
 
   const elementsWithUpdatedBuoyancy = findChildByID(updatedElements, parent.id)?.children.map(child => convertElementToPatchRequest(child));
   yield call(reqWrapper, apiSaveElements, { data: elementsWithUpdatedBuoyancy });
@@ -112,7 +112,7 @@ export function* createElementsSaga(action: ReturnType<typeof Actions.createElem
 }
 
 export function* addChildToElementSaga(action: ReturnType<typeof Actions.addChildToElement>) {
-  const { childType, elementID, parameters } = action.payload;
+  const { childType, elementID, parameters, undo } = action.payload;
 
   const convertedCreatedChild = convertCreatedElementToRequest(childType, null);
   const createdChild = convertElementFromResponse(convertedCreatedChild);
@@ -125,18 +125,52 @@ export function* addChildToElementSaga(action: ReturnType<typeof Actions.addChil
   if (!parent) {
     console.error(`Could not find parent ${elementID} of ${childType}!`);
   } else {
-    yield call(createElements, [convertedChildWithUpdatedParameters], parent);
+    yield call(createElements, [convertedChildWithUpdatedParameters], parent, undo);
   }
 }
 
 export function* deleteChildFromElementSaga(action: ReturnType<typeof Actions.deleteChildFromElement>) {
-  const { childID } = action.payload;
-  yield call(removeElement, childID);
+  const { id } = action.payload;
+  yield call(removeElement, id);
 }
 
 export function* deleteElementSaga(action: ReturnType<typeof Actions.deleteElement>) {
   const { id, undo } = action.payload;
-  yield call(removeElement, id, undo);
+  const root: ReturnType<typeof selectors.selectRootElement> = yield select(selectors.selectRootElement);
+
+  const element = findChildByID(root, id);
+  if (!element) {
+    console.error(`Can not find removed element ${id} in the tree!`);
+    return
+  }
+
+  const parent = findParentByChildID(root, id);
+  console.log(parent);
+
+  if (!parent) {
+    console.error(`Can not find parent of removed element  ${id} in the tree!`);
+    return
+  }
+  const children = parent.children.map(child => child.id);
+
+  if (!undo) {
+    yield put(setUndoActions([
+      // @ts-ignore
+      Actions.addChildToElement(element.type, parent.id, element.parameters, true),
+    ]));
+  }
+
+  const updatedRoot = removeChildrenFromElement(parent.id, [element], root);
+
+  yield put(Actions.updateElementsTree(updatedRoot, undo));
+
+  const filtered = children.filter(childId => childId !== id);
+
+  const elementData = {
+    children: filtered
+  };
+
+  yield call(reqWrapper, apiChangeRecursiveElement, { data: elementData, id: parent.id });
 }
 
 export function* removeElement(elementToRemoveID: string, undo: boolean = false) {

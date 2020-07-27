@@ -126,9 +126,9 @@ export type DeleteElement = IAction<'PROJECTS:DELETE_ELEMENT', { id: string, und
 export type CreateElements = IAction<
   'PROJECTS:CREATE_ELEMENTS', { createdElements: CreatedElement[] }>;
 export type AddChildToElement = IAction<
-'PROJECTS:ADD_CHILD_TO_ELEMENT', { childType: ServerStructType, elementID: string, parameters: {} }>;
+'PROJECTS:ADD_CHILD_TO_ELEMENT', { childType: ServerStructType, elementID: string, parameters: {}, undo: boolean }>;
 export type DeleteChildFromElement = IAction<
-'PROJECTS:DELETE_CHILD_FROM_ELEMENT', { childID: string, elementID: string }>;
+'PROJECTS:DELETE_CHILD_FROM_ELEMENT', { id: string }>;
 export type SetScenarios = IAction<'PROJECTS:SET_SCENARIOS', { scenarios: IScenarios }>;
 export type SetModifyElements = IAction<'PROJECTS:SET_MODIFY_ELEMENTS', { elements: number[] }>;
 export type UploadFile = IAction<'PROJECTS:UPLOAD_FILE', { file: any }>;

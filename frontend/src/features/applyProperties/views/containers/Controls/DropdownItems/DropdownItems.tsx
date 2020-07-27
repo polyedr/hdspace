@@ -50,7 +50,7 @@ const DropdownItems: React.FC<Props> = ({
   };
 
   const handleDeleteButtonClick = (dropdownItemID: string) => {
-    deleteChildFromElement(dropdownItemID, dropdownMenuID);
+    deleteChildFromElement(dropdownItemID);
   };
 
   return (
