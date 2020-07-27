@@ -3,6 +3,7 @@ import numpy as np
 import math
 from statistics import median
 
+from pytesseract import Output
 from rest_framework_recursive.fields import RecursiveField
 
 from project.settings import model, MEDIA_ROOT
@@ -128,7 +129,8 @@ def calculateDistance(x1, y1, x2, y2):
 
 def contains_rectangle(r1, r2):
     # Calculation for the case of rois
-   return r1[1] < r2[1] < r2[3] < r1[3] and r1[0] < r2[0] < r2[2] < r1[2]
+    return r1[1] < r2[1] < r2[3] < r1[3] and r1[0] < r2[0] < r2[2] < r1[2]
+
 
 def detect_aligned_element(x1, width_elem, img_width):
     # Detect the alignment of the element
@@ -142,6 +144,7 @@ def detect_aligned_element(x1, width_elem, img_width):
         aligned_element = "center"
 
     return aligned_element
+
 
 class ScenarioElementSerializer(serializers.ModelSerializer):
     parameters = serializers.JSONField()
@@ -240,7 +243,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                     font_size.append(float(chars[4]) - float(chars[2]))
                 except Exception:
                     font_size.append(12.0)  # Default font-size value is 12px
-            font_size_img = int(median(font_size) * 1.1 * 1.7)  # Font-size value of the image
+            font_size_img = int(median(font_size) * 1.7)  # Font-size value of the image
             # Detect the font-size with tesseract for the whole image end
 
             # Get the dominant colour for the parent container(take the whole image)
@@ -313,7 +316,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                 # Remove untypically large rect blocks
                 width2 = rect_contour[2]
                 height2 = rect_contour[3]
-                if ((width2 * height2) > (img_height *img_width)*0.75):
+                if ((width2 * height2) > (img_height * img_width) * 0.75):
                     rect_contours.remove(rect_contour)
 
             # Calculate the coordinates precisely with OpenCV text blocks start
@@ -364,7 +367,6 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                                 rect1[3] = text_contour[2] + text_contour[0]
                                 rect1[2] = text_contour[3] + text_contour[1]
             # Calculate the coordinates precisely with OpenCV text blocks end
-
 
             # Calculation of the excluded indices to remove overlapped elements start
             # Second, calculate the non-text blocks overlap
@@ -510,7 +512,6 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
             # Plots generating end
             '''
 
-
             # Calculate the coordinates precisely with OpenCV non-text blocks start
             # Pass through the OpenCV contours predictions
             # Select the closest Mask R CNN predicted non-textual block
@@ -601,9 +602,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                     # print("idx1", idx1)
                     # input()
                     excluded_indices.append(idx1)
-
             # Calculate the coordinates precisely with OpenCV non-text blocks end
-
 
             for idx, (roi, class_id, score) in enumerate(
                 zip(r["rois"], r["class_ids"], r["scores"])
@@ -631,9 +630,9 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                     # roi_our = image_opencv_input[y1:y2, x1:x2]
                     # print(idx, roi_our)
 
-                    roi_our = cv2.resize(
-                        roi_our, None, fx=0.95, fy=0.95, interpolation=cv2.INTER_CUBIC
-                    )
+                    # roi_our = cv2.resize(
+                    #     roi_our, None, fx=0.95, fy=0.95, interpolation=cv2.INTER_CUBIC
+                    # )
                     '''
                     # Show text contours on image start
                     window_name1 = 'image_opencv_text'
@@ -683,7 +682,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                             font_size.append(float(chars[4]) - float(chars[2]))
                         except Exception:
                             font_size.append(12.0)  # Default font-size value is 12px
-                    font_size_value = int(median(font_size) * 1.1 * 1.7)
+                    font_size_value = int(median(font_size) * 1.7)
 
                     # Read the string with tesseract
                     text = pytesseract.image_to_string(roi_our, config=config_tesseract)
@@ -691,7 +690,13 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                     width_elem = x2 - x1
                     height_elem = y2 - y1
 
+                    '''
                     # Detect the text element alignment
+                    d = pytesseract.image_to_data(roi_our, output_type=Output.DICT)
+                    print("d", d, min(d['left']), max(d['width']))
+                    print("width_elem", width_elem)
+                    input()
+                    '''
                     aligned_element = detect_aligned_element(x1, width_elem, img_width)
 
                     func_type = "undefined"
@@ -705,6 +710,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         letters_str = text
                         # Detect the text element alignment
 
+
                     # Check if class id is: 1 input, 2 button 4 select
                     # Calculate if the internal text_contours from the OpenCV were placed in that blocks
                     # Recognize text with tesseract based on text_contours
@@ -712,23 +718,48 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                     if class_id in [1, 2, 3, 4]:
                         for text_contour in text_contours:
                             x1 = text_contour[0]
-                            x2 = text_contour[1]
-                            y1 = text_contour[2] + text_contour[0]
+                            y1 = text_contour[1]
+                            x2 = text_contour[2] + text_contour[0]
                             y2 = text_contour[3] + text_contour[1]
                             width_text_elem = text_contour[2]
                             roi_text_contour = (y1, x1, y2, x2)
 
-                            if contains_rectangle(roi_text_contour, roi):
+                            if contains_rectangle(roi, roi_text_contour):
                                 roi_our = img[y1:y2, x1:x2]
+                                # Convert to the grey colour
+                                roi_our = cv2.cvtColor(roi_our, cv2.COLOR_BGR2GRAY)
                                 # Read the string with tesseract
                                 text = pytesseract.image_to_string(roi_our, config=config_tesseract)
-                                # Functional class assignment
+
+                                '''
+                                # Show text contours on image start
+                                window_name1 = 'image_opencv_text'
+                                if True:
+                                    b, a, d, c = roi_text_contour
+                                    cv2.rectangle(image_opencv_input, (a, b), (c, d), (255, 0, 0), 1)
+
+                                cv2.imshow(window_name1, image_opencv_input)
+                                cv2.waitKey(0)
+
+                                window_name5 = 'image_maskrcnn'
+                                if True:
+                                    y1, x1, y2, x2 = roi
+
+                                    cv2.rectangle(image_opencv_input, (x1, y1), (x2, y2), (50, 90, 255), 2)
+
+                                cv2.imshow(window_name5, image_opencv_input)
+                                # waits for user to press any key
+                                # (this is necessary to avoid Python kernel form crashing)
+                                cv2.waitKey(0)
+                                # Show non-text contours on image end
+                                '''
+
                                 # Input: string from tesseract, output: functional class of the element
                                 tess_string = text.lower().split()
                                 # The whole string format to process further
                                 letters_str = text
                                 # Detect the text element alignment
-                                aligned_element = detect_aligned_element(x1, width_text_elem, width_elem)
+                                # aligned_element = detect_aligned_element(x1, width_text_elem, width_elem)
 
                     # Input
                     if class_id == 1:
