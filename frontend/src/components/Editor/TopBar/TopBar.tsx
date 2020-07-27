@@ -1,16 +1,12 @@
 import React, { useCallback } from 'react';
 import classNames from 'classnames';
-
 import { Icon } from '$components/UI/Icon';
 import { Checkbox } from '$components/UI/Checkbox';
 import { Button } from '$components/UI/Button';
 import { DEFAULT_SCREEN_MODE } from '$constants/defaultParams';
-import { ActionCreators } from 'redux-undo';
-
 import { ScreenMode } from '../Workspace/Workspace';
-import { useDispatch, useSelector } from 'react-redux';
-import { selectUndoActions } from '$redux/project/selectors';
-import { undoAction } from '$redux/project/actions';
+import { useDispatch } from 'react-redux';
+import { redoAction, undoAction } from '$redux/project/actions';
 const styles = require('./TopBar.scss');
 
 export type IScreenMode = {
@@ -46,14 +42,12 @@ export const TopBar = (props: Props) => {
     onExport,
   } = props;
 
-  const undos = useSelector(selectUndoActions);
-
-  const onHistoryBack = async () => {
+  const onHistoryBack = () => {
     dispatch(undoAction());
   };
 
   const onHistoryForward = () => {
-    dispatch(ActionCreators.redo())
+    dispatch(redoAction())
   };
 
   const handleDefaultScreenModeSelect = useCallback(() => {

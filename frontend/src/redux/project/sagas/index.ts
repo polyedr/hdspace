@@ -411,6 +411,17 @@ function* undoSaga() {
   yield put(ActionCreators.undo());
 }
 
+function* redoSaga() {
+
+  const redos = yield select(selectors.selectRedoActions);
+
+  for(let redo of redos) {
+    yield put(redo);
+  }
+
+  yield put(ActionCreators.redo());
+}
+
 const loadProjectsType: ProjectT.LoadProjects['type'] = 'PROJECTS:LOAD_PROJECTS';
 const addProjectType: ProjectT.AddProject['type'] = 'PROJECTS:ADD_PROJECT';
 const deleteProjectType: ProjectT.DeleteProject['type'] = 'PROJECTS:DELETE_PROJECT';
@@ -440,6 +451,7 @@ const pasteCopiedItemType: ProjectT.PasteCopiedItem['type'] = 'PROJECTS:PASTE_CO
 const deleteElementType: ProjectT.DeleteElement['type'] = 'PROJECTS:DELETE_ELEMENT';
 const unwrapFromContainerType: ProjectT.UnwrapFromContainer['type'] = 'PROJECTS:UNWRAP_FROM_CONTAINER';
 const undoActionType: ProjectT.UndoAction['type'] = 'UNDO_ACTION';
+const redoActionType: ProjectT.RedoAction['type'] = 'REDO_ACTION';
 const restoreElementType: ProjectT.RestoreElementChildren['type'] = 'PROJECTS:RESTORE_ELEMENT_CHILDREN';
 
 export default function* projectSaga() {
@@ -472,7 +484,7 @@ export default function* projectSaga() {
   yield takeEvery(deleteChildFromElementType, /*deleteChildFromElementSaga*/ deleteElementSaga);
   yield takeEvery(wrapIntoContainerType, wrapIntoContainerSaga);
 
-  yield takeLatest(deleteActiveItemType, /*deleteActiveItemSaga*/ softDeleteSaga);
+  yield takeEvery(deleteActiveItemType, /*deleteActiveItemSaga*/ softDeleteSaga);
   yield takeEvery(restoreElementType, restoreElementSaga);
 
   yield takeLatest(copyActiveItemType, copyActiveItemSaga);
@@ -481,7 +493,8 @@ export default function* projectSaga() {
   yield takeLatest(uploadFileType, uploadFileSaga);
   yield takeLatest(getScreenNNType, screenSaga.getScreenNNSaga);
 
-  yield takeLatest(undoActionType, undoSaga);
-  yield takeLatest(deleteElementType, deleteElementSaga);
-  yield takeLatest(unwrapFromContainerType, unwrapFromContainerSaga);
+  yield takeEvery(undoActionType, undoSaga);
+  yield takeEvery(redoActionType, redoSaga);
+  yield takeEvery(deleteElementType, deleteElementSaga);
+  yield takeEvery(unwrapFromContainerType, unwrapFromContainerSaga);
 }

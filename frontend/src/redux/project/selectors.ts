@@ -115,6 +115,8 @@ export const selectElementParameters = (id: string) => (state: AppReduxState) =>
 
 export const selectUndoActions = (state: AppReduxState) => selectProjectState(state).control.present.undoActions;
 
+export const selectRedoActions = (state: AppReduxState) => selectProjectState(state).control.present.redoActions;
+
 export const selectHistoryLength = (state: AppReduxState) => selectProjectState(state).control.past.length;
 
 export const selectAdd = (state: AppReduxState) => selectProjectState(state).control.present.add;

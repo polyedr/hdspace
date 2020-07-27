@@ -1,7 +1,6 @@
 import { initialControl } from '$redux/project/initial';
-import * as R from 'ramda';
 import * as T from '../types';
-import undoable, { combineFilters, StateWithHistory, includeAction } from 'redux-undo';
+import undoable, { combineFilters, includeAction } from 'redux-undo';
 
 export const reducer = (state: T.ProjectControlState = initialControl, action: T.Action): T.ProjectControlState => {
   switch (action.type) {
@@ -16,6 +15,13 @@ export const reducer = (state: T.ProjectControlState = initialControl, action: T
       return {
         ...state,
         undoActions: action.payload,
+      }
+    }
+
+    case 'PROJECTS:SET_REDO_ACTIONS': {
+      return {
+        ...state,
+        redoActions: action.payload,
       }
     }
 
@@ -41,18 +47,11 @@ export const reducer = (state: T.ProjectControlState = initialControl, action: T
   }
 };
 
-const isSameState = (
-  action: T.Action,
-  currentState: T.ProjectControlState,
-  previousHistory: StateWithHistory<T.ProjectControlState>
-) => !R.equals(previousHistory.present.rootElement, currentState.rootElement);
-
 const isUndo = (action: any) => !action.payload?.undo;
 
 export const controlReducer = undoable(reducer, {
   filter: combineFilters(
-    // isSameState,
     isUndo,
     includeAction(['PROJECTS:UPDATE_ELEMENTS_TREE']),
-  )
+  ),
 });

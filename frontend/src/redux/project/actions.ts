@@ -279,8 +279,17 @@ export const undoAction = (): T.UndoAction => ({
   type: 'UNDO_ACTION',
 });
 
+export const redoAction = (): T.RedoAction => ({
+  type: 'REDO_ACTION',
+});
+
 export const setUndoActions = (actions: Action[]): T.SetUndoActions => ({
   type: 'PROJECTS:SET_UNDO_ACTIONS',
+  payload: [...actions],
+});
+
+export const setRedoActions = (actions: Action[]): T.SetRedoActions => ({
+  type: 'PROJECTS:SET_REDO_ACTIONS',
   payload: [...actions],
 });
 

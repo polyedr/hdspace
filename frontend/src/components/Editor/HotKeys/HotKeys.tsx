@@ -15,6 +15,7 @@ const mapDispatch = {
   copyActiveItem: actionsCreators.copyActiveItem,
   pasteCopiedItem: actionsCreators.pasteCopiedItem,
   undo: actionsCreators.undoAction,
+  redo: actionsCreators.redoAction,
 };
 
 type Props = & ReturnType<typeof mapState> & typeof mapDispatch;
@@ -26,7 +27,8 @@ export const Component = (props: Props) => {
     wrapIntoContainer,
     copyActiveItem,
     pasteCopiedItem,
-    undo
+    undo,
+    redo,
   } = props;
 
   const root = document.getElementById('root');
@@ -87,7 +89,7 @@ export const Component = (props: Props) => {
       }
 
       if (ev.code === 'KeyZ' && (ev.metaKey || ev.ctrlKey) && ev.shiftKey) {
-        console.log('redo');
+        redo();
       }
     };
 
