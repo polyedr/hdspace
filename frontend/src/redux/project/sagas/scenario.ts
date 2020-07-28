@@ -26,11 +26,11 @@ import { updateSavedElementsValues } from './screen';
 import { findParentByChildID, findChildByID, moveElement, addChildrenToElement, removeChildrenFromElement, updateElementParameters, getElementsArray } from '$utils/ElementsTreeHelper';
 import { setUndoActions } from '$redux/project/actions';
 
-export function* updateElementsTree(root: LibraryElement<'root'>, undo: boolean = false) {
+export function* updateElementsTree(root: LibraryElement<'root'>, skip: boolean = false, sourceAction: T.Action | null = null) {
   const elementsArray = getElementsArray(root);
 
   yield call(updateSavedElementsValues, elementsArray as LibraryElementUnion[]);
-  yield put(Actions.updateElementsTree(root, undo));
+  yield put(Actions.updateElementsTree(root, skip, sourceAction));
 }
 
 export function* createContainer(scenario?: Partial<T.IScenarioItem>) {

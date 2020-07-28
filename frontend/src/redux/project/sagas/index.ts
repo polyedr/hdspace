@@ -268,13 +268,13 @@ function* updateElementImage(action: ReturnType<typeof Actions.updateElementImag
 }
 
 function* updateElementParameters(action: ReturnType<typeof Actions.updateElementParameters>) {
-  const { itemID, parameters, undo } = action.payload;
+  const { itemID, parameters, options: { undo, redo } } = action.payload;
 
   const root: ReturnType<typeof selectors.selectRootElement> = yield select(selectors.selectRootElement);
 
-  if (!undo) {
+  if (!undo && !redo) {
     const oldParameters = yield select(selectors.selectElementParameters(itemID));
-    yield put(Actions.setUndoActions([Actions.updateElementParameters(itemID, oldParameters, true)]));
+    yield put(Actions.setUndoActions([Actions.updateElementParameters(itemID, oldParameters, {undo: true})]));
   }
 
   const updatedTree = updateParameters(itemID, parameters, root);
@@ -285,7 +285,8 @@ function* updateElementParameters(action: ReturnType<typeof Actions.updateElemen
   } else {
     const savedValue = getSavedValue(updatedElement as LibraryElementUnion);
     yield put(Actions.updateSavedElementValues(itemID, savedValue));
-    yield call(updateElementsTree, updatedTree, undo);
+    yield call(updateElementsTree, updatedTree, undo || redo, action);
+
     const convertedElement = convertElementToPatchRequest(updatedElement);
     yield call(reqWrapper, apiChangeElement, { data: convertedElement, id: itemID });
   }

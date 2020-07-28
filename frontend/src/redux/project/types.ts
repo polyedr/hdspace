@@ -115,7 +115,7 @@ export type SetScenarioElements = IAction<'PROJECTS:SET_SCENARIO_ELEMENTS', { el
 export type UpdateElementStyles = IAction<'PROJECTS:UPDATE_ELEMENT_STYLES', { id: string, styles: CssLikeStyles, options: HistoryOptions }>;
 export type UpdateElementImage = IAction<'PROJECTS:UPDATE_ELEMENT_IMAGE', { itemID: string, image: File }>;
 export type UpdateElementParameters = IAction<
-  'PROJECTS:UPDATE_ELEMENT_PARAMETERS', { itemID: string, parameters: RootElement<Entity>['parameters'], undo?: boolean }
+  'PROJECTS:UPDATE_ELEMENT_PARAMETERS', { itemID: string, parameters: RootElement<Entity>['parameters'], options: HistoryOptions }
 >;
 export type UpdateSavedElementsValues = IAction<
   'PROJECTS:UPDATE_SAVED_ELEMENTS_VALUES', { elementsValues: SavedElementsValues }
