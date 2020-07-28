@@ -258,7 +258,7 @@ export function* softDeleteSaga(action: T.DeleteActiveItem) {
 }
 
 export function* restoreElementSaga(action: T.RestoreElementChildren) {
-  const { elementId, childrenIds, options: { undo, redo } } = action.payload;
+  const { elementId, childrenIds } = action.payload;
 
   const elementData = {
     children: childrenIds,

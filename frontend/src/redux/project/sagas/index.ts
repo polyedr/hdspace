@@ -396,7 +396,7 @@ function* pasteCopiedItemSaga() {
   if (activeItem.itemType !== 'none' && itemToCopyInfo !== null) {
     const newIDs = yield call(duplicateItems, root, [itemToCopyInfo], targetContainer);
 
-    yield put(setUndoActions(newIDs.map((id: string) => Actions.deleteElement(id))))
+    yield put(setUndoActions(newIDs.map((id: string) => Actions.deleteItem(id, {undo: true}))))
   }
 }
 
