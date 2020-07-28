@@ -204,8 +204,9 @@ export const updateSavedElementValues = (itemID: string, savedValue: string | bo
   payload: { itemID, savedValue },
 });
 
-export const deleteActiveItem = (): T.DeleteActiveItem => ({
+export const deleteItem = (id: string): T.DeleteActiveItem => ({
   type: 'PROJECTS:DELETE_ACTIVE_ITEM',
+  payload: { id }
 });
 
 export const deleteElement = (id: string, undo: boolean = false): T.DeleteElement => ({

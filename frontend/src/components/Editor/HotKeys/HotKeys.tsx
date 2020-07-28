@@ -10,7 +10,7 @@ const mapState = (state: AppReduxState) => {
 };
 
 const mapDispatch = {
-  deleteActiveItem: actionsCreators.deleteActiveItem,
+  deleteActiveItem: actionsCreators.deleteItem,
   wrapIntoContainer: actionsCreators.wrapIntoContainer,
   copyActiveItem: actionsCreators.copyActiveItem,
   pasteCopiedItem: actionsCreators.pasteCopiedItem,
@@ -37,13 +37,13 @@ export const Component = (props: Props) => {
   useEffect(() => {
     const listener = (event: KeyboardEvent) => {
       if (event.keyCode === 8) {
-        deleteActiveItem();
+        deleteActiveItem(itemId);
       }
     };
 
     root?.addEventListener('keydown', listener);
     return () => root?.removeEventListener('keydown', listener);
-  }, [rootElement, root, deleteActiveItem]);
+  }, [rootElement, root, deleteActiveItem, itemId]);
 
   useEffect(() => {
     const listener = (event: KeyboardEvent) => {

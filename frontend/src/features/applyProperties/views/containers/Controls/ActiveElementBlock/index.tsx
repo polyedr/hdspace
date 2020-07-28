@@ -11,6 +11,8 @@ import { ModalAddElements } from '$components/ModalAddElements/ModalAddElements/
 import { NavigateItem } from '$components/Editor/NavigateItem/NavigateItem';
 
 import { PropertiesPanelProps } from '../../PropertiesPanel/PropertiesPanel';
+import { useSelector } from 'react-redux';
+import { selectors } from '$redux/project';
 const styles = require('./styles.scss');
 
 interface IComponentProps {
@@ -21,7 +23,7 @@ interface IComponentProps {
   isAddElementsModalOpened: boolean;
   showDeleteButton: boolean;
   onWrapIntoContainer(id: string): void;
-  onDelScenarioItem(): void;
+  onDelScenarioItem(id: string): void;
   setIsAddElementsModalOpened(isOpened: boolean): void;
 }
 
@@ -38,6 +40,7 @@ export const ActiveElementBlock: React.FunctionComponent<IComponentProps> = memo
     setIsAddElementsModalOpened,
   } = props;
   const [modalDeleteElementOpen, setModalDeleteElementOpen] = useState<boolean>(false);
+  const { itemId } = useSelector(selectors.selectActiveItem);
 
   const closeModal = useCallback(() => {
     setIsAddElementsModalOpened(false);
@@ -55,9 +58,9 @@ export const ActiveElementBlock: React.FunctionComponent<IComponentProps> = memo
   const onDeleteScenarioItem = useCallback((event) => {
     event.preventDefault();
 
-    onDelScenarioItem();
+    onDelScenarioItem(itemId);
     closeModal();
-  }, [onDelScenarioItem, closeModal]);
+  }, [onDelScenarioItem, closeModal, itemId]);
 
   const renameElement = useCallback(() => {
     console.log('rename element');

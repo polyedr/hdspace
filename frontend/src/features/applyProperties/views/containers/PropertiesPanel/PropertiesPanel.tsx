@@ -73,7 +73,7 @@ const mapDispatch = {
   createElements: actionsCreators.createElements,
   wrapIntoContainer: actionsCreators.wrapIntoContainer,
   setIsAddElementsModalOpened: actionsCreators.setIsAddElementsModalOpened,
-  deleteActiveItem: actionsCreators.deleteActiveItem,
+  deleteActiveItem: actionsCreators.deleteItem,
 };
 
 const CONTROLS: Record<Control, React.ComponentType<any>> = {

@@ -216,21 +216,23 @@ export function* removeElement(elementToRemoveID: string, undo: boolean = false)
   yield call(reqWrapper, apiDelElements, { list: [removedElement?.id] });
 }
 
-export function* softDeleteSaga() {
-  const root: ReturnType<typeof selectors.selectRootElement> = yield select(selectors.selectRootElement);
-  const activeItem: ReturnType<typeof selectors.selectActiveItem> = yield select(selectors.selectActiveItem);
-  if (['root', 'none'].includes(activeItem.itemType)) return;
+export function* softDeleteSaga(action: T.DeleteActiveItem) {
+  const { id } = action.payload;
 
-  const element = findChildByID(root, activeItem.itemId);
+  const root: ReturnType<typeof selectors.selectRootElement> = yield select(selectors.selectRootElement);
+  const element = findChildByID(root, id);
   if (!element) {
-    console.error(`Can not find removed element ${activeItem.itemId} in the tree!`);
+    console.error(`Can not find removed element ${id} in the tree!`);
     return
   }
+  // const activeItem: ReturnType<typeof selectors.selectActiveItem> = yield select(selectors.selectActiveItem);
+  if (['root', 'none'].includes(element.type)) return;
 
-  const parent = findParentByChildID(root, activeItem.itemId);
+
+  const parent = findParentByChildID(root, id);
 
   if (!parent) {
-    console.error(`Can not find parent of removed element  ${activeItem.itemId} in the tree!`);
+    console.error(`Can not find parent of removed element  ${id} in the tree!`);
     return
   }
   const children = parent.children.map(child => child.id);
@@ -243,7 +245,7 @@ export function* softDeleteSaga() {
 
   yield put(Actions.updateElementsTree(updatedRoot, false));
 
-  const filtered = children.filter(id => id !== activeItem.itemId);
+  const filtered = children.filter(childId => childId !== id);
 
   const elementData = {
     children: filtered
