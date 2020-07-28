@@ -7,7 +7,6 @@ import {
   select,
   all
 } from 'redux-saga/effects';
-import objectDiff from '$utils/diff';
 
 import * as R from 'ramda';
 import { REHYDRATE } from 'redux-persist';
