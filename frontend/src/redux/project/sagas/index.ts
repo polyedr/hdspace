@@ -60,6 +60,7 @@ import {
   removeElementStyles as removeStyles,
   getElementsArray,
   getTreeWithDefaultStylesAndParams,
+  addElementClassName,
 } from '$utils/ElementsTreeHelper';
 import { CssLikeStyles } from '$utils/StyleHelper';
 import * as PATH_NAMES from '$constants/pathNames';
@@ -69,6 +70,7 @@ import { apiSaveProject } from '$api/project';
 
 import { ItemToCopyInfo } from '../types';
 import { selectors, T as ProjectT, actionsCreators, T } from '../';
+import { generateUniqueName } from '$utils/generateUniqueName';
 
 function* LocationChange({ payload: { location } }: LocationChangeAction) {
   const { user: { tokenPair } }: AppReduxState = yield select();
@@ -243,9 +245,38 @@ function* removeSharedStylesSaga(action: ReturnType<typeof Actions.removeSharedS
   yield call(reqWrapper, apiSaveProject, { data: convertedProject });
 }
 
-function* updateSharedStylesSaga(action: ReturnType<typeof Actions.updateSharedStyles>) {
-  const { className, styles } = action.payload;
+function* addSharedStyles(className: string, styles: CssLikeStyles) {
+  const currentProject: ReturnType<typeof selectors.selectCurrentProject> = yield select(selectors.selectCurrentProject);
 
+  const newProject = {
+    ...currentProject,
+    projectData: {
+      ...currentProject.projectData,
+      classes: [...currentProject.projectData.classes, { name: className, rules: styles }],
+  }};
+
+  const listProject: ReturnType<typeof selectors.selectProjects> = yield select(selectors.selectProjects);
+
+  const newListProject = listProject.map((project) => {
+    if (project.id === currentProject.id) {
+      return {
+        ...project,
+        name: name,
+      };
+    }
+
+    return project;
+  });
+
+  yield put(Actions.setListProject(newListProject));
+  yield put(Actions.setProject(newProject));
+  
+
+  const convertedProject = convertProjectToPatchRequest(newProject);
+  yield call(reqWrapper, apiSaveProject, { data: convertedProject });
+}
+
+function* updateSharedStyles(className: string, styles: CssLikeStyles) {
   const currentProject: ReturnType<typeof selectors.selectCurrentProject> = yield select(selectors.selectCurrentProject);
 
   const newProject = {
@@ -275,6 +306,55 @@ function* updateSharedStylesSaga(action: ReturnType<typeof Actions.updateSharedS
 
   const convertedProject = convertProjectToPatchRequest(newProject);
   yield call(reqWrapper, apiSaveProject, { data: convertedProject });
+}
+
+function* updateSharedStylesSaga(action: ReturnType<typeof Actions.updateSharedStyles>) {
+  const { className, styles } = action.payload;
+  yield call(updateSharedStyles, className, styles);
+}
+
+function* copyElementStylesSaga(action: ReturnType<typeof Actions.copyElementStyles>) {
+  const { elementType, elementID, styles } = action.payload;
+
+  const currentProject: ReturnType<typeof selectors.selectCurrentProject> = yield select(selectors.selectCurrentProject);
+
+  const sharedClassNames = currentProject.projectData.classes.map(cssClass => cssClass.name);
+  const uniqueClassName = generateUniqueName(`${elementType}-group`, sharedClassNames);
+
+  yield put(Actions.setCopiedStyles(elementType, uniqueClassName, styles));
+
+  yield call(addSharedStyles, uniqueClassName, styles);
+  yield call(updateElementClassNames, elementID, uniqueClassName);
+}
+
+function* pasteElementStylesSaga(action: ReturnType<typeof Actions.pasteElementStyles>) {
+  const { elementID } = action.payload;
+
+  const copiedStyles: ReturnType<typeof selectors.selectCopiedStyles> = yield select(selectors.selectCopiedStyles);
+
+  if (!copiedStyles) {
+    console.error('Copied styles not found!');
+    return;
+  }
+
+  yield call(updateElementClassNames, elementID, copiedStyles.className);
+}
+
+function* updateElementClassNames(elementID: string, newClassName: string) {
+  const root: ReturnType<typeof selectors.selectRootElement> = yield select(selectors.selectRootElement);
+
+  console.log('elementID', elementID)
+  
+  const updatedTree = addElementClassName(elementID, newClassName, root);
+  const updatedElement = findChildByID(updatedTree, elementID);
+
+  if (!updatedElement) {
+    console.error(`Can not find updated element ${elementID} in tree`);
+  } else {
+    yield put(Actions.updateElementsTree(updatedTree));
+    const convertedElement = convertElementToPatchRequest(updatedElement);
+    yield call(reqWrapper, apiChangeElement, { data: convertedElement, id: elementID });
+  }
 }
 
 function* updateElementStyles(action: ReturnType<typeof Actions.updateElementStyles>) {
@@ -469,6 +549,8 @@ const removeSharedStylesType: ProjectT.RemoveSharedStyles['type'] = 'PROJECTS:RE
 const updateSharedStylesType: ProjectT.UpdateSharedStyles['type'] = 'PROJECTS:UPDATE_SHARED_STYLES';
 const removeElementStylesType: ProjectT.RemoveElementStyles['type'] = 'PROJECTS:REMOVE_ELEMENT_STYLES';
 const updateElementStylesType: ProjectT.UpdateElementStyles['type'] = 'PROJECTS:UPDATE_ELEMENT_STYLES';
+const copyElementStylesType: ProjectT.CopyElementStyles['type'] = 'PROJECTS:COPY_ELEMENT_STYLES';
+const pasteElementStylesType: ProjectT.PasteElementStyles['type'] = 'PROJECTS:PASTE_ELEMENT_STYLES';
 const updateElementParametersType: ProjectT.UpdateElementParameters['type'] = 'PROJECTS:UPDATE_ELEMENT_PARAMETERS';
 const updateElementImageType: ProjectT.UpdateElementImage['type'] = 'PROJECTS:UPDATE_ELEMENT_IMAGE';
 const createElementsType: ProjectT.CreateElements['type'] = 'PROJECTS:CREATE_ELEMENTS';
@@ -506,6 +588,8 @@ export default function* projectSaga() {
   yield takeLatest(updateSharedStylesType, updateSharedStylesSaga);
   yield takeLatest(removeElementStylesType, removeElementStyles);
   yield takeLatest(updateElementStylesType, updateElementStyles);
+  yield takeLatest(copyElementStylesType, copyElementStylesSaga);
+  yield takeLatest(pasteElementStylesType, pasteElementStylesSaga);
   yield takeLatest(updateElementImageType, updateElementImage);
   yield takeLatest(updateElementParametersType, updateElementParameters);
 
