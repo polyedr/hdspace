@@ -217,7 +217,7 @@ export function* removeElement(elementToRemoveID: string, undo: boolean = false)
 }
 
 export function* softDeleteSaga(action: T.DeleteActiveItem) {
-  const { id } = action.payload;
+  const { id, options: { undo, redo } } = action.payload;
 
   const root: ReturnType<typeof selectors.selectRootElement> = yield select(selectors.selectRootElement);
   const element = findChildByID(root, id);
@@ -228,22 +228,23 @@ export function* softDeleteSaga(action: T.DeleteActiveItem) {
   // const activeItem: ReturnType<typeof selectors.selectActiveItem> = yield select(selectors.selectActiveItem);
   if (['root', 'none'].includes(element.type)) return;
 
-
   const parent = findParentByChildID(root, id);
-
   if (!parent) {
     console.error(`Can not find parent of removed element  ${id} in the tree!`);
     return
   }
+
   const children = parent.children.map(child => child.id);
 
-  yield put(setUndoActions([
-    Actions.restoreElementChildren(parent.id, children)
-  ]));
+  if (!undo && !redo) {
+    yield put(setUndoActions([
+      Actions.restoreElementChildren(parent.id, children)
+    ]));
+  }
 
   const updatedRoot = removeChildrenFromElement(parent.id, [element], root);
 
-  yield put(Actions.updateElementsTree(updatedRoot, false));
+  yield put(Actions.updateElementsTree(updatedRoot, undo || redo, action));
 
   const filtered = children.filter(childId => childId !== id);
 

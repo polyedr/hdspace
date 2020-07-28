@@ -123,7 +123,7 @@ export type UpdateSavedElementsValues = IAction<
 export type UpdateSavedElementValues = IAction<
   'PROJECTS:UPDATE_SAVED_ELEMENT_VALUES', { itemID: string, savedValue: string | boolean }
 >;
-export type DeleteActiveItem = IAction<'PROJECTS:DELETE_ACTIVE_ITEM', { id: string }>;
+export type DeleteActiveItem = IAction<'PROJECTS:DELETE_ACTIVE_ITEM', { id: string, options: HistoryOptions }>;
 export type DeleteElement = IAction<'PROJECTS:DELETE_ELEMENT', { id: string, undo: boolean }>;
 export type CreateElements = IAction<
   'PROJECTS:CREATE_ELEMENTS', { createdElements: CreatedElement[] }>;
