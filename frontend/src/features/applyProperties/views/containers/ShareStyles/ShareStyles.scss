@@ -1,0 +1,11 @@
+.container {
+  display: flex;
+}
+
+.shareButton {
+  margin-right: 10px;
+
+  & span {
+    font-size: 12px;
+  }
+}

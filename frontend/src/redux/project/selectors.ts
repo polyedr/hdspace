@@ -100,6 +100,10 @@ export function selectEditableStyles(state: AppReduxState) {
   return selectFeatureState(state).ui.editableStyles;
 };
 
+export function selectCopiedStyles(state: AppReduxState) {
+  return selectFeatureState(state).ui.copiedStyles;
+};
+
 export function selectTagStyles(state: AppReduxState, elementType: Entity) {
   return selectCurrentProject(state).projectData.classes.find(cssClass => cssClass.name === elementType)?.rules || {};
 };
