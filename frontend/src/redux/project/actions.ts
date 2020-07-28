@@ -182,6 +182,22 @@ export const updateSharedStyles = (className: Entity, styles: CssLikeStyles): T.
   payload: { className, styles },
 });
 
+export const copyElementStyles = (elementType: Entity, elementID: string, styles: CssLikeStyles): T.CopyElementStyles => ({
+  type: 'PROJECTS:COPY_ELEMENT_STYLES',
+  payload: { elementType, elementID, styles },
+});
+
+export const setCopiedStyles = (elementType: Entity, className: string, styles: CssLikeStyles): T.SetCopiedStyles => ({
+  type: 'PROJECTS:SET_COPIED_STYLES',
+  payload: { elementType, className, styles },
+});
+
+export const pasteElementStyles = (elementID: string): T.PasteElementStyles => ({
+  type: 'PROJECTS:PASTE_ELEMENT_STYLES',
+  payload: { elementID },
+});
+
+// TODO remove this action
 export const removeSharedStyles = (className: Entity, ruleName: string): T.RemoveSharedStyles => ({
   type: 'PROJECTS:REMOVE_SHARED_STYLES',
   payload: { className, ruleName },

@@ -12,6 +12,7 @@ export type ReduxState = {
   ui: {
     activeItem: ActiveItem;
     editableStyles: string;
+    copiedStyles: { elementType: Entity, className: string, styles: CssLikeStyles } | null,
     showContainersBorders: boolean;
     isAddElementsModalOpened: boolean;
     itemToCopyInfo: ItemToCopyInfo | null;
@@ -91,6 +92,9 @@ export type AddElement = IAction<'PROJECTS:ADD_ELEMENT', { parentID: string, typ
 export type RenameElement = IAction<'PROJECTS:RENAME_ELEMENT', { elementID: string, name: string }>;
 export type ToggleContainersBorders = IPlainAction<'PROJECTS:TOGGLE_CONTAINERS_BORDERS'>;
 export type SetScenarioElements = IAction<'PROJECTS:SET_SCENARIO_ELEMENTS', { elements: IScenarioElements }>;
+export type CopyElementStyles = IAction<'PROJECTS:COPY_ELEMENT_STYLES', { elementType: Entity, elementID: string, styles: CssLikeStyles }>;
+export type SetCopiedStyles = IAction<'PROJECTS:SET_COPIED_STYLES', { elementType: Entity, className: string, styles: CssLikeStyles }>;
+export type PasteElementStyles = IAction<'PROJECTS:PASTE_ELEMENT_STYLES', { elementID: string }>;
 export type UpdateSharedStyles = IAction<'PROJECTS:UPDATE_SHARED_STYLES', { className: Entity, styles: CssLikeStyles }>;
 export type RemoveSharedStyles = IAction<'PROJECTS:REMOVE_SHARED_STYLES', { className: Entity, ruleName: string }>;
 export type UpdateElementStyles = IAction<'PROJECTS:UPDATE_ELEMENT_STYLES', { id: string, styles: CssLikeStyles }>;
@@ -156,6 +160,7 @@ export type Action =
   | SetScreens
   | AddElement
   | SetScenarioElements
+  | CopyElementStyles
   | UpdateElementStyles
   | UpdateElementImage
   | UpdateElementParameters
@@ -181,7 +186,8 @@ export type Action =
   | UpdateElementsTree
   | SetNotification
   | RemoveNotification
-  | SetEditableStyles;
+  | SetEditableStyles
+  | SetCopiedStyles;
 
 export type ItemToCopyInfo = {
   id: string;
