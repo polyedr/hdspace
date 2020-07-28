@@ -174,7 +174,7 @@ function* moveElementSaga(action: ReturnType<typeof Actions.moveElement>): any {
     return;
   }
 
-  // i'm really sorry about next code block, we can get rid of it in case of better Sortable.js implementation
+  // we can get rid of this code block when we will get better Sortable.js implementation
   if (!undo && !redo) {
     if (isRemote) {
       yield put(Actions.setUndoActions([
@@ -324,8 +324,12 @@ function* uploadFileSaga({ payload: { file: { file } } }: ReturnType<typeof Acti
     yield call(reqWrapper, apiSaveElements, { data: convertedElements });
 
     const updatedElements = moveElement(root.id, nnRootWithDefaultParams, root, 0);
+    const childrenIds = updatedElements.children.map(child => child.id);
+    yield put(Actions.setUndoActions([
+      Actions.deleteItem(nnRootWithDefaultParams.id),
+    ]));
 
-    yield call(updateElementsTree, updatedElements);
+    yield call(updateElementsTree, updatedElements, false, Actions.restoreElementChildren(root.id, childrenIds));
   } catch (e) {
     console.error('Could not upload image for NN. Error: ', e.message);
   }
