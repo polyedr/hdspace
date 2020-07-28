@@ -131,94 +131,7 @@ export function* addChildToElementSaga(action: ReturnType<typeof Actions.addChil
   }
 }
 
-export function* deleteChildFromElementSaga(action: ReturnType<typeof Actions.deleteChildFromElement>) {
-  const { id } = action.payload;
-  yield call(removeElement, id);
-}
-
-export function* deleteElementSaga(action: ReturnType<typeof Actions.deleteElement>) {
-  const { id, undo } = action.payload;
-  const root: ReturnType<typeof selectors.selectRootElement> = yield select(selectors.selectRootElement);
-
-  const element = findChildByID(root, id);
-  if (!element) {
-    console.error(`Can not find removed element ${id} in the tree!`);
-    return
-  }
-
-  const parent = findParentByChildID(root, id);
-  console.log(parent);
-
-  if (!parent) {
-    console.error(`Can not find parent of removed element  ${id} in the tree!`);
-    return
-  }
-  const children = parent.children.map(child => child.id);
-
-  if (!undo) {
-    yield put(setUndoActions([
-      // @ts-ignore
-      Actions.addChildToElement(element.type, parent.id, element.parameters, true),
-    ]));
-  }
-
-  const updatedRoot = removeChildrenFromElement(parent.id, [element], root);
-
-  yield put(Actions.updateElementsTree(updatedRoot, undo));
-
-  const filtered = children.filter(childId => childId !== id);
-
-  const elementData = {
-    children: filtered
-  };
-
-  yield call(reqWrapper, apiChangeRecursiveElement, { data: elementData, id: parent.id });
-}
-
-export function* removeElement(elementToRemoveID: string, undo: boolean = false) {
-  const root: ReturnType<typeof selectors.selectRootElement> = yield select(selectors.selectRootElement);
-  const removedElement = findChildByID(root, elementToRemoveID);
-
-  if (!removedElement) {
-    console.error(`Can not find removed element ${elementToRemoveID} in tree!`);
-    return;
-  };
-
-  const activeItem: ReturnType<typeof selectors.selectActiveItem> = yield select(selectors.selectActiveItem);
-  const itemToRemoveParent = findParentByChildID(root, elementToRemoveID);
-
-  if (!itemToRemoveParent) {
-    console.error(`Can not find removed element parent ${itemToRemoveParent} in tree!`);
-    return;
-  };
-
-  if (!isElementCanBeRemove(itemToRemoveParent, removedElement.type)) {
-    yield put(Actions.setNotification(DISALLOW_REMOVE_ELEMENT_NOTIFICATION_TEXT));
-    return;
-  };
-
-  const itemToRemoveParentID = itemToRemoveParent.id;
-
-  if (activeItem.itemId === elementToRemoveID) {
-    const { type, name } = itemToRemoveParent;
-
-    yield put(Actions.setActiveItem({
-      itemId: itemToRemoveParentID,
-      itemType: type,
-      name,
-    }));
-  }
-
-  const updatedRoot = removeChildrenFromElement(itemToRemoveParentID, [removedElement], root);
-  
-  yield put(Actions.updateElementsTree(updatedRoot, undo));
-
-  const newActiveElemAfterDeletion = document.querySelector<HTMLElement>(`[data-ls-id='${itemToRemoveParentID}']`);
-  newActiveElemAfterDeletion?.focus();
-  yield call(reqWrapper, apiDelElements, { list: [removedElement?.id] });
-}
-
-export function* softDeleteSaga(action: T.DeleteActiveItem) {
+export function* softDeleteSaga(action: T.DeleteItem) {
   const { id, options: { undo, redo } } = action.payload;
 
   const root: ReturnType<typeof selectors.selectRootElement> = yield select(selectors.selectRootElement);
@@ -227,7 +140,6 @@ export function* softDeleteSaga(action: T.DeleteActiveItem) {
     console.error(`Can not find removed element ${id} in the tree!`);
     return
   }
-  // const activeItem: ReturnType<typeof selectors.selectActiveItem> = yield select(selectors.selectActiveItem);
   if (['root', 'none'].includes(element.type)) return;
 
   const parent = findParentByChildID(root, id);
@@ -265,12 +177,6 @@ export function* restoreElementSaga(action: T.RestoreElementChildren) {
   };
 
   yield call(reqWrapper, apiChangeRecursiveElement, { data: elementData, id: elementId});
-}
-
-export function* deleteActiveItemSaga() {
-  const activeItem: ReturnType<typeof selectors.selectActiveItem> = yield select(selectors.selectActiveItem);
-  if (['root', 'none'].includes(activeItem.itemType)) return;
-  yield call(removeElement, activeItem.itemId);
 }
 
 export function* addElementToElement(element: LibraryElement<Entity>, parent: LibraryElement<Entity>) {

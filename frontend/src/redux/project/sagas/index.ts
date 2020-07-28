@@ -27,15 +27,15 @@ import {
   exportProjectSaga,
 } from '$redux/project/sagas/project';
 import {
-  deleteActiveItemSaga,
   wrapIntoContainerSaga,
   addChildToElementSaga,
-  deleteChildFromElementSaga,
   createElementsSaga,
   createElements,
   addElementToElement,
   updateElementsTree,
-  deleteElementSaga, unwrapFromContainerSaga, softDeleteSaga, restoreElementSaga,
+  unwrapFromContainerSaga,
+  softDeleteSaga,
+  restoreElementSaga,
 } from '$redux/project/sagas/scenario';
 import {
   apiGetLibraryElements,
@@ -458,12 +458,11 @@ const createElementsType: ProjectT.CreateElements['type'] = 'PROJECTS:CREATE_ELE
 const addChildToElementType: ProjectT.AddChildToElement['type'] = 'PROJECTS:ADD_CHILD_TO_ELEMENT';
 const deleteChildFromElementType: ProjectT.DeleteChildFromElement['type'] = 'PROJECTS:DELETE_CHILD_FROM_ELEMENT';
 const wrapIntoContainerType: ProjectT.WrapIntoContainer['type'] = 'PROJECTS:WRAP_INTO_CONTAINER';
-const deleteActiveItemType: ProjectT.DeleteActiveItem['type'] = 'PROJECTS:DELETE_ACTIVE_ITEM';
+const deleteItemType: ProjectT.DeleteItem['type'] = 'PROJECTS:DELETE_ITEM';
 const uploadFileType: ProjectT.UploadFile['type'] = 'PROJECTS:UPLOAD_FILE';
 const getScreenNNType: ProjectT.GetScreenNN['type'] = 'PROJECTS:GET_SCREEN_NN';
 const copyActiveItemType: ProjectT.CopyActiveItem['type'] = 'PROJECTS:COPY_ACTIVE_ITEM';
 const pasteCopiedItemType: ProjectT.PasteCopiedItem['type'] = 'PROJECTS:PASTE_COPIED_ITEM';
-const deleteElementType: ProjectT.DeleteElement['type'] = 'PROJECTS:DELETE_ELEMENT';
 const unwrapFromContainerType: ProjectT.UnwrapFromContainer['type'] = 'PROJECTS:UNWRAP_FROM_CONTAINER';
 const undoActionType: ProjectT.UndoAction['type'] = 'UNDO_ACTION';
 const redoActionType: ProjectT.RedoAction['type'] = 'REDO_ACTION';
@@ -496,10 +495,10 @@ export default function* projectSaga() {
   yield takeEvery(createElementsType, createElementsSaga);
 
   yield takeEvery(addChildToElementType, addChildToElementSaga);
-  yield takeEvery(deleteChildFromElementType, /*deleteChildFromElementSaga*/ deleteElementSaga);
+  yield takeEvery(deleteChildFromElementType, /*deleteChildFromElementSaga*/ /*deleteElementSaga*/ softDeleteSaga);
   yield takeEvery(wrapIntoContainerType, wrapIntoContainerSaga);
 
-  yield takeEvery(deleteActiveItemType, /*deleteActiveItemSaga*/ softDeleteSaga);
+  yield takeEvery(deleteItemType, /*deleteActiveItemSaga*/ softDeleteSaga);
   yield takeEvery(restoreElementType, restoreElementSaga);
 
   yield takeLatest(copyActiveItemType, copyActiveItemSaga);
@@ -510,6 +509,5 @@ export default function* projectSaga() {
 
   yield takeEvery(undoActionType, undoSaga);
   yield takeEvery(redoActionType, redoSaga);
-  yield takeEvery(deleteElementType, deleteElementSaga);
   yield takeEvery(unwrapFromContainerType, unwrapFromContainerSaga);
 }

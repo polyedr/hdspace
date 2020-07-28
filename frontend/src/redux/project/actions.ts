@@ -204,14 +204,9 @@ export const updateSavedElementValues = (itemID: string, savedValue: string | bo
   payload: { itemID, savedValue },
 });
 
-export const deleteItem = (id: string, options: HistoryOptions = {}): T.DeleteActiveItem => ({
-  type: 'PROJECTS:DELETE_ACTIVE_ITEM',
+export const deleteItem = (id: string, options: HistoryOptions = {}): T.DeleteItem => ({
+  type: 'PROJECTS:DELETE_ITEM',
   payload: { id, options }
-});
-
-export const deleteElement = (id: string, undo: boolean = false): T.DeleteElement => ({
-  type: 'PROJECTS:DELETE_ELEMENT',
-  payload: { id, undo }
 });
 
 export const createElements = (createdElements: T.CreatedElement[]): T.CreateElements => ({
@@ -222,11 +217,6 @@ export const createElements = (createdElements: T.CreatedElement[]): T.CreateEle
 export const addChildToElement = (childType: ChildEntity, elementID: string, parameters: ChildrenElements[ChildEntity]['parameters'], undo: boolean = false): T.AddChildToElement => ({
   type: 'PROJECTS:ADD_CHILD_TO_ELEMENT',
   payload: { childType, elementID, parameters, undo },
-});
-
-export const deleteChildFromElement = (id: string): T.DeleteChildFromElement => ({
-  type: 'PROJECTS:DELETE_CHILD_FROM_ELEMENT',
-  payload: { id },
 });
 
 export const setScenarios = (scenarios: T.IScenarios): T.SetScenarios => ({

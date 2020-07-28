@@ -123,8 +123,7 @@ export type UpdateSavedElementsValues = IAction<
 export type UpdateSavedElementValues = IAction<
   'PROJECTS:UPDATE_SAVED_ELEMENT_VALUES', { itemID: string, savedValue: string | boolean }
 >;
-export type DeleteActiveItem = IAction<'PROJECTS:DELETE_ACTIVE_ITEM', { id: string, options: HistoryOptions }>;
-export type DeleteElement = IAction<'PROJECTS:DELETE_ELEMENT', { id: string, undo: boolean }>;
+export type DeleteItem = IAction<'PROJECTS:DELETE_ITEM', { id: string, options: HistoryOptions }>;
 export type CreateElements = IAction<
   'PROJECTS:CREATE_ELEMENTS', { createdElements: CreatedElement[] }>;
 export type AddChildToElement = IAction<
@@ -186,7 +185,7 @@ export type Action =
   | UpdateElementImage
   | UpdateElementParameters
   | CreateElements
-  | DeleteActiveItem
+  | DeleteItem
   | AddChildToElement
   | DeleteChildFromElement
   | SetScenarios
@@ -212,7 +211,6 @@ export type Action =
   | UnwrapFromContainer
   | SetAddAction
   | RestoreElementChildren
-  | DeleteElement
   | MoveElement;
 
 export type ItemToCopyInfo = {

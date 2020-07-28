@@ -33,7 +33,7 @@ function mapState(state: AppReduxState): StateProps {
 
 const mapDispatch = {
   addChildToElement: actionsCreators.addChildToElement,
-  deleteChildFromElement: actionsCreators.deleteChildFromElement,
+  deleteChildFromElement: actionsCreators.deleteItem,
 };
 
 type Props = StateProps & PropertiesChangeProps<SelectItemElement> & typeof mapDispatch;
