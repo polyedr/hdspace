@@ -42,6 +42,7 @@ import { IsOpen } from '../Controls/IsOpen/IsOpen';
 import { VideoSettings } from '../Controls/VideoSettings/VideoSettings';
 import { RenameElement } from '../Controls/RenameElement/RenameElement';
 import { EditableStyles } from '../EditableStyles/EditableStyles';
+import { ShareStyles } from '../ShareStyles/ShareStyles';
 const styles = require('./PropertiesPanel.scss');
 
 type StateProps = {
@@ -162,6 +163,9 @@ const Component: React.FC<PropertiesPanelProps> = ({
                 </ControlSection>
               </div>
             )}
+            <div className="propsPanelContentBlock">
+              <ShareStyles />
+            </div>
             <div className="propsPanelContentBlock">
               <ControlSection title="Edit styles of">
                 <EditableStyles />
