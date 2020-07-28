@@ -102,7 +102,7 @@ export type AddScreen = IAction<'PROJECTS:ADD_SCREEN', { projectID: number, name
 export type DuplicateScreen = IAction<'PROJECTS:DUPLICATE_SCREEN', { name: string, screenID: number }>;
 export type ActivateScreen = IAction<'PROJECTS:ACTIVATE_SCREEN', { projectID: number, screenID: number }>;
 export type MoveElement = IAction<
-  'PROJECTS:MOVE_ELEMENT', { indices: Indices, elementID: string, parentID: string, undo: boolean, isRemote?: boolean }
+  'PROJECTS:MOVE_ELEMENT', { indices: Indices, elementID: string, parentID: string, options: HistoryOptions, isRemote?: boolean }
 >;
 export type UpdateElementsTree = IAction<'PROJECTS:UPDATE_ELEMENTS_TREE', { root: RootElement<'root'>, skip: boolean, sourceAction: any, parentID?: string }>;
 export type ClearAfterPrevScreen = IPlainAction<'PROJECTS:CLEAN_AFTER_PREV_SCREEN'>;

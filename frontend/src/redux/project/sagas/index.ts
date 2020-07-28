@@ -158,7 +158,7 @@ function* authCheckSaga() {
 }
 
 function* moveElementSaga(action: ReturnType<typeof Actions.moveElement>): any {
-  const { indices: { newIndex, oldIndex }, elementID, parentID, undo, isRemote } = action.payload;
+  const { indices: { newIndex, oldIndex }, elementID, parentID, options: {undo, redo}, isRemote } = action.payload;
 
   const root: ReturnType<typeof selectors.selectRootElement> = yield select(selectors.selectRootElement);
   const targetParent = findChildByID(root, parentID);
@@ -176,10 +176,10 @@ function* moveElementSaga(action: ReturnType<typeof Actions.moveElement>): any {
   }
 
   // i'm really sorry about next code block, we can get rid of it in case of better Sortable.js implementation
-  if (!undo) {
+  if (!undo && !redo) {
     if (isRemote) {
       yield put(Actions.setUndoActions([
-        Actions.moveElement({newIndex: oldIndex, oldIndex: newIndex}, elementID, parentID, false, true),
+        Actions.moveElement({newIndex: oldIndex, oldIndex: newIndex}, elementID, parentID, false, {undo: true}),
       ]));
 
       yield put(Actions.setAdd(true))
@@ -187,10 +187,10 @@ function* moveElementSaga(action: ReturnType<typeof Actions.moveElement>): any {
       const add = yield select(selectors.selectAdd);
 
       if (add) {
-        yield put(Actions.addUndoAction(Actions.moveElement({newIndex: oldIndex, oldIndex: newIndex}, elementID, parentID, true, true)))
+        yield put(Actions.addUndoAction(Actions.moveElement({newIndex: oldIndex, oldIndex: newIndex}, elementID, parentID, true, {undo: true})))
       } else {
         yield put(Actions.setUndoActions([
-          Actions.moveElement({newIndex: oldIndex, oldIndex: newIndex}, elementID, parentID, true, true),
+          Actions.moveElement({newIndex: oldIndex, oldIndex: newIndex}, elementID, parentID, true, {undo: true}),
         ]));
       }
       yield put(Actions.setAdd(false))
@@ -199,7 +199,7 @@ function* moveElementSaga(action: ReturnType<typeof Actions.moveElement>): any {
 
   const updatedTree = moveElement(targetParent.id, elementToMove, root, newIndex);
   if (!isRemote) {
-    yield put(Actions.updateElementsTree(updatedTree, undo));
+    yield put(Actions.updateElementsTree(updatedTree, undo || redo, action));
   }
 
   const updatedParent = findChildByID(updatedTree, parentID);

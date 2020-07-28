@@ -18,6 +18,7 @@ export const reducer = (state: T.ProjectControlState = initialControl, action: T
             }
           }
         },
+        redoActions: [],
       };
     }
 

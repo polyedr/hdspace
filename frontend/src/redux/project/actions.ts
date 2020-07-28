@@ -125,14 +125,14 @@ export const moveElement = (
   elementID: string,
   parentID: string,
   isRemote: boolean = false,
-  undo: boolean = false,
+  options: HistoryOptions = {},
 ): T.MoveElement => ({
   type: 'PROJECTS:MOVE_ELEMENT',
   payload: {
     indices,
     elementID,
     parentID,
-    undo,
+    options,
     isRemote
   },
 });
