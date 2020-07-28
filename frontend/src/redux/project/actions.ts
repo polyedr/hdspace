@@ -314,3 +314,13 @@ export const restoreElementChildren = (elementId: string, childrenIds: string[],
     options,
   }
 });
+
+export const redoWrapIntoContainer = (elementId: string, wrapperId: string, parentId: string, options: HistoryOptions = {}): T.RedoWrapIntoContainer => ({
+  type: 'PROJECTS:REDO_WRAP_INTO_CONTAINER',
+  payload: {
+    elementId,
+    wrapperId,
+    parentId,
+    options,
+  }
+});

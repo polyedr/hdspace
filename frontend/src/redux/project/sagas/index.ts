@@ -34,7 +34,7 @@ import {
   updateElementsTree,
   unwrapFromContainerSaga,
   softDeleteSaga,
-  restoreElementSaga,
+  restoreElementSaga, redoWrapIntoContainerSaga,
 } from '$redux/project/sagas/scenario';
 import {
   apiGetLibraryElements,
@@ -470,6 +470,7 @@ const unwrapFromContainerType: ProjectT.UnwrapFromContainer['type'] = 'PROJECTS:
 const undoActionType: ProjectT.UndoAction['type'] = 'UNDO_ACTION';
 const redoActionType: ProjectT.RedoAction['type'] = 'REDO_ACTION';
 const restoreElementType: ProjectT.RestoreElementChildren['type'] = 'PROJECTS:RESTORE_ELEMENT_CHILDREN';
+const redoWrapIntoContainerType : ProjectT.RedoWrapIntoContainer['type'] = 'PROJECTS:REDO_WRAP_INTO_CONTAINER';
 
 export default function* projectSaga() {
   yield takeLatest(REHYDRATE, authCheckSaga);
@@ -498,10 +499,10 @@ export default function* projectSaga() {
   yield takeEvery(createElementsType, createElementsSaga);
 
   yield takeEvery(addChildToElementType, addChildToElementSaga);
-  yield takeEvery(deleteChildFromElementType, /*deleteChildFromElementSaga*/ /*deleteElementSaga*/ softDeleteSaga);
+  yield takeEvery(deleteChildFromElementType, softDeleteSaga);
   yield takeEvery(wrapIntoContainerType, wrapIntoContainerSaga);
 
-  yield takeEvery(deleteItemType, /*deleteActiveItemSaga*/ softDeleteSaga);
+  yield takeEvery(deleteItemType, softDeleteSaga);
   yield takeEvery(restoreElementType, restoreElementSaga);
 
   yield takeLatest(copyActiveItemType, copyActiveItemSaga);
@@ -513,4 +514,5 @@ export default function* projectSaga() {
   yield takeEvery(undoActionType, undoSaga);
   yield takeEvery(redoActionType, redoSaga);
   yield takeEvery(unwrapFromContainerType, unwrapFromContainerSaga);
+  yield takeEvery(redoWrapIntoContainerType, redoWrapIntoContainerSaga);
 }

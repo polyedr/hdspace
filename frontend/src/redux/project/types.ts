@@ -152,6 +152,7 @@ export type AddUndoAction = IAction<'PROJECTS:ADD_UNDO_ACTION', Action>;
 export type UnwrapFromContainer = IAction<'PROJECTS:UNWRAP_FROM_CONTAINER', { elementID: string, wrapperID: string, parentID: string }>
 export type SetAddAction = IAction<'PROJECTS:SET_ADD_ACTION', boolean>;
 export type RestoreElementChildren = IAction<'PROJECTS:RESTORE_ELEMENT_CHILDREN', { elementId: string, childrenIds: string[], options: HistoryOptions }>;
+export type RedoWrapIntoContainer = IAction<'PROJECTS:REDO_WRAP_INTO_CONTAINER', { elementId: string, wrapperId: string, parentId: string, options: HistoryOptions }>
 
 export type Action =
   | LoadLibraryElements
@@ -211,6 +212,7 @@ export type Action =
   | UnwrapFromContainer
   | SetAddAction
   | RestoreElementChildren
+  | RedoWrapIntoContainer
   | MoveElement;
 
 export type ItemToCopyInfo = {

@@ -222,27 +222,44 @@ export function* wrapIntoContainerSaga(action: T.WrapIntoContainer) {
 
   const rootWithUpdatedParent = moveElement(wrappedItemParent.id, createdContainer, root, wrappedItem.buoyancy);
   const rootWithUpdatedContainer = moveElement(createdContainer.id, wrappedItem, rootWithUpdatedParent, 0);
-  yield put(Actions.updateElementsTree(rootWithUpdatedContainer, undo || redo, Actions.wrapIntoContainer(id)));
+  yield put(Actions.updateElementsTree(rootWithUpdatedContainer, undo || redo, Actions.redoWrapIntoContainer(id, createdContainer.id, wrappedItemParent.id)));
 }
 
 export function* unwrapFromContainerSaga(action: T.UnwrapFromContainer) {
   const {elementID, wrapperID, parentID} = action.payload;
 
   const root: ReturnType<typeof selectors.selectRootElement> = yield select(selectors.selectRootElement);
-  const element = findChildByID(root, elementID);
+
   const parent = findChildByID(root, parentID);
-
-  if (!element) {
-    console.error(`Can not find element ${elementID} in tree!`);
-    return
-  }
-
   if (!parent) {
     console.error(`Can not find parent of wrapper ${wrapperID} in tree!`);
     return
   }
 
-  yield call(addElementToElement, element, parent);
+  const parentChildrenIds = parent.children.map(child => child.id);
+  const newParentChildrenIds = [
+    ...parentChildrenIds.filter(id => id !== wrapperID),
+    elementID,
+  ];
 
-  yield call(reqWrapper, apiDelElements, {list: [wrapperID]});
+  yield call(reqWrapper, apiChangeRecursiveElement, { data: {children: newParentChildrenIds}, id: parentID });
+}
+
+export function* redoWrapIntoContainerSaga(action: T.RedoWrapIntoContainer) {
+  const { parentId, wrapperId, elementId } = action.payload;
+
+  const root: ReturnType<typeof selectors.selectRootElement> = yield select(selectors.selectRootElement);
+
+  const parent = findChildByID(root, parentId);
+  if (!parent) {
+    console.error(`Can not find parent of wrapper ${elementId} in tree!`);
+    return
+  }
+
+  const parentChildrenIds = parent.children.map(child => child.id);
+  const index = parentChildrenIds.indexOf(elementId);
+
+  parentChildrenIds.splice(index, 1, wrapperId);
+  yield call(reqWrapper, apiChangeRecursiveElement, { data: {children: [elementId]}, id: wrapperId });
+  yield call(reqWrapper, apiChangeRecursiveElement, { data: {children: parentChildrenIds}, id: parentId });
 }
