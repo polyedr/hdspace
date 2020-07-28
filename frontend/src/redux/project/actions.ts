@@ -141,9 +141,9 @@ export const clearAfterPrevScreen = (): T.ClearAfterPrevScreen => ({
   type: 'PROJECTS:CLEAN_AFTER_PREV_SCREEN',
 });
 
-export const updateElementsTree = (root: LibraryElement<'root'>, undo: boolean = false): T.UpdateElementsTree => ({
+export const updateElementsTree = (root: LibraryElement<'root'>, skip: boolean = false, sourceAction: Action | null = null): T.UpdateElementsTree => ({
   type: 'PROJECTS:UPDATE_ELEMENTS_TREE',
-  payload: { root, undo },
+  payload: { root, skip, sourceAction },
 });
 
 export const resetScreenState = (): T.ResetScreenState => ({
@@ -175,9 +175,9 @@ export const setScenarioElements = (elements: T.IScenarioElements): T.SetScenari
   payload: { elements },
 });
 
-export const updateElementStyles = (id: string, styles: CssLikeStyles, undo?: boolean): T.UpdateElementStyles => ({
+export const updateElementStyles = (id: string, styles: CssLikeStyles, options: T.HistoryOptions = { undo: false, redo: false}): T.UpdateElementStyles => ({
   type: 'PROJECTS:UPDATE_ELEMENT_STYLES',
-  payload: { id, styles, undo },
+  payload: { id, styles, options },
 });
 
 export const updateElementImage = (itemID: string, image: File ): T.UpdateElementImage => ({

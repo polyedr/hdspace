@@ -48,6 +48,7 @@ export type ProjectControlState = {
   rootElement: RootElement<'root'>;
   undoActions: Action[];
   redoActions: Action[];
+  sourceAction: Action | null;
   add: boolean;
 }
 
@@ -103,7 +104,7 @@ export type ActivateScreen = IAction<'PROJECTS:ACTIVATE_SCREEN', { projectID: nu
 export type MoveElement = IAction<
   'PROJECTS:MOVE_ELEMENT', { indices: Indices, elementID: string, parentID: string, undo: boolean, isRemote?: boolean }
 >;
-export type UpdateElementsTree = IAction<'PROJECTS:UPDATE_ELEMENTS_TREE', { root: RootElement<'root'>, undo: boolean, parentID?: string }>;
+export type UpdateElementsTree = IAction<'PROJECTS:UPDATE_ELEMENTS_TREE', { root: RootElement<'root'>, skip: boolean, sourceAction: any, parentID?: string }>;
 export type ClearAfterPrevScreen = IPlainAction<'PROJECTS:CLEAN_AFTER_PREV_SCREEN'>;
 export type SaveScreen = IAction<'PROJECTS:SAVE_SCREEN', { canvas: HTMLCanvasElement }>;
 export type ExportProject = IPlainAction<'PROJECTS:EXPORT_PROJECT'>;
@@ -111,7 +112,7 @@ export type SetScreen = IAction<'PROJECTS:SET_SCREEN', { screen: IProjectScreen 
 export type SetScreens = IAction<'PROJECTS:SET_SCREENS', { screens: IProjectScreen[] }>;
 export type AddElement = IAction<'PROJECTS:ADD_ELEMENT', { parentID: string, type: string }>;
 export type SetScenarioElements = IAction<'PROJECTS:SET_SCENARIO_ELEMENTS', { elements: IScenarioElements }>;
-export type UpdateElementStyles = IAction<'PROJECTS:UPDATE_ELEMENT_STYLES', { id: string, styles: CssLikeStyles, undo?: boolean }>;
+export type UpdateElementStyles = IAction<'PROJECTS:UPDATE_ELEMENT_STYLES', { id: string, styles: CssLikeStyles, options: HistoryOptions }>;
 export type UpdateElementImage = IAction<'PROJECTS:UPDATE_ELEMENT_IMAGE', { itemID: string, image: File }>;
 export type UpdateElementParameters = IAction<
   'PROJECTS:UPDATE_ELEMENT_PARAMETERS', { itemID: string, parameters: RootElement<Entity>['parameters'], undo?: boolean }
@@ -528,3 +529,8 @@ export type Page = {
     elements: IScenarioElement[],
   },
 };
+
+export type HistoryOptions = {
+  undo?: boolean;
+  redo?: boolean;
+}

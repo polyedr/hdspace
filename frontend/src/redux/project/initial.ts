@@ -41,5 +41,6 @@ export const initialControl: T.ProjectControlState = {
   rootElement: DEFAULT_ROOT,
   undoActions: [],
   redoActions: [],
+  sourceAction: null,
   add: false,
 };

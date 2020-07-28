@@ -8,6 +8,16 @@ export const reducer = (state: T.ProjectControlState = initialControl, action: T
       return {
         ...state,
         rootElement: action.payload.root,
+        sourceAction: {
+          ...action.payload?.sourceAction,
+          payload: {
+            ...action.payload?.sourceAction?.payload,
+            options: {
+              ...action.payload?.sourceAction?.payload?.options,
+              redo: true
+            }
+          }
+        },
       };
     }
 
@@ -47,11 +57,11 @@ export const reducer = (state: T.ProjectControlState = initialControl, action: T
   }
 };
 
-const isUndo = (action: any) => !action.payload?.undo;
+const skip = (action: any) => !action.payload?.skip;
 
 export const controlReducer = undoable(reducer, {
   filter: combineFilters(
-    isUndo,
     includeAction(['PROJECTS:UPDATE_ELEMENTS_TREE']),
+    skip,
   ),
 });

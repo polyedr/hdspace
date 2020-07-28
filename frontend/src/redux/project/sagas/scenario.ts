@@ -241,7 +241,7 @@ export function* softDeleteSaga() {
 
   const updatedRoot = removeChildrenFromElement(parent.id, [element], root);
 
-  yield put(Actions.updateElementsTree(updatedRoot));
+  yield put(Actions.updateElementsTree(updatedRoot, false));
 
   const filtered = children.filter(id => id !== activeItem.itemId);
 
@@ -311,7 +311,7 @@ export function* wrapIntoContainerSaga() {
 
   const rootWithUpdatedParent = moveElement(wrappedItemParent.id, createdContainer, root, wrappedItem.buoyancy);
   const rootWithUpdatedContainer = moveElement(createdContainer.id, wrappedItem, rootWithUpdatedParent, 0);
-  yield put(Actions.updateElementsTree(rootWithUpdatedContainer));
+  yield put(Actions.updateElementsTree(rootWithUpdatedContainer, false));
 }
 
 export function* unwrapFromContainerSaga(action: T.UnwrapFromContainer) {

@@ -161,7 +161,7 @@ export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
 
   yield fork(reqWrapper, apiSaveScenarios, { data: [rootScenarioWithRootElement] });
 
-  yield put(Actions.updateElementsTree(createdRootElement));
+  yield put(Actions.updateElementsTree(createdRootElement, false));
   yield put(Actions.setActiveItem({ itemId: createdRootElement.id, itemType: 'root', name: 'Root' }));
 
   const currentProject: ReturnType<typeof selectors.selectCurrentProject> = yield select(

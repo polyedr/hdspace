@@ -50,7 +50,7 @@ import { LibraryElement, LibraryElementUnion } from '$api/types';
 import { Entity } from '$domain/core';
 import { setTokenPair, setLoadedToken } from '$redux/user/actions';
 import { MAX_TOKEN_TRIALS } from '$config/settings';
-import { setScreenLoader, setUndoActions } from '$redux/project/actions';
+import { setRedoActions, setScreenLoader, setUndoActions } from '$redux/project/actions';
 import { addScreenSaga } from '$redux/project/sagas/screen';
 import { refreshUserTokenPair } from '$redux/user/sagas';
 import { openSignScreen, openProjects } from '$utils/history';
@@ -231,13 +231,13 @@ export function* updateElementsOnServerSaga(elements: ProjectT.IScenarioElements
 }
 
 function* updateElementStyles(action: ReturnType<typeof Actions.updateElementStyles>) {
-  const { id, styles, undo } = action.payload;
+  const { id, styles, options: { undo, redo } } = action.payload;
 
   const root: ReturnType<typeof selectors.selectRootElement> = yield select(selectors.selectRootElement);
 
-  if (!undo) {
+  if (!undo && !redo) {
     const oldStyles = yield select(selectors.selectElementStyles(id));
-    yield put(Actions.setUndoActions([Actions.updateElementStyles(id, oldStyles, true)]));
+    yield put(Actions.setUndoActions([Actions.updateElementStyles(id, oldStyles, {undo: true})]));
   }
 
   const updatedTree = updateStyles(id, styles, root);
@@ -246,7 +246,7 @@ function* updateElementStyles(action: ReturnType<typeof Actions.updateElementSty
   if (!updatedElement) {
     console.error(`Can not find updated element ${id} in tree`);
   } else {
-    yield put(Actions.updateElementsTree(updatedTree, undo));
+    yield put(Actions.updateElementsTree(updatedTree, undo || redo, action));
     const convertedElement = convertElementToPatchRequest(updatedElement);
     yield call(reqWrapper, apiChangeElement, { data: convertedElement, id });
   }
@@ -400,6 +400,9 @@ function* pasteCopiedItemSaga() {
 }
 
 function* undoSaga() {
+  const sourceAction = yield select(selectors.selectSourceAction);
+  const redos = yield select(selectors.selectRedoActions);
+
   const historyLength = yield select(selectors.selectHistoryLength);
   if (historyLength <= 1) return;
   const undos = yield select(selectors.selectUndoActions);
@@ -409,17 +412,27 @@ function* undoSaga() {
   }
 
   yield put(ActionCreators.undo());
+
+  yield put(setRedoActions([
+    sourceAction,
+    ...redos,
+  ]));
 }
 
 function* redoSaga() {
 
   const redos = yield select(selectors.selectRedoActions);
 
-  for(let redo of redos) {
-    yield put(redo);
-  }
+  // for(let redo of redos) {
+  //   yield put(redo);
+  // }
+
+  yield put(redos[0]);
 
   yield put(ActionCreators.redo());
+  yield put(setRedoActions([
+    ...redos.slice(1),
+  ]));
 }
 
 const loadProjectsType: ProjectT.LoadProjects['type'] = 'PROJECTS:LOAD_PROJECTS';

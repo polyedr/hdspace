@@ -117,6 +117,8 @@ export const selectUndoActions = (state: AppReduxState) => selectProjectState(st
 
 export const selectRedoActions = (state: AppReduxState) => selectProjectState(state).control.present.redoActions;
 
+export const selectSourceAction = (state: AppReduxState) => selectProjectState(state).control.present.sourceAction;
+
 export const selectHistoryLength = (state: AppReduxState) => selectProjectState(state).control.past.length;
 
 export const selectAdd = (state: AppReduxState) => selectProjectState(state).control.present.add;
