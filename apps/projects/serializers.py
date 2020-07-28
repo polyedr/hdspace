@@ -271,6 +271,7 @@ class ProjectSerializer(serializers.ModelSerializer):
         """
         Update and return an existing `Project` instance, given the validated data.
         """
+        instance = super(ProjectSerializer, self).update(instance, validated_data)
         projectscreens_data = validated_data.get("projectscreen")
         instance.projectscreen.set(projectscreens_data, clear=True)
         instance.save()
