@@ -316,10 +316,11 @@ export const unwrapFromContainer = (elementID: string, wrapperID: string, parent
   }
 });
 
-export const restoreElementChildren = (elementId: string, childrenIds: string[]): T.RestoreElementChildren => ({
+export const restoreElementChildren = (elementId: string, childrenIds: string[], options: HistoryOptions = {}): T.RestoreElementChildren => ({
   type: 'PROJECTS:RESTORE_ELEMENT_CHILDREN',
   payload: {
     elementId,
     childrenIds,
+    options,
   }
 });

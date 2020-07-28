@@ -77,17 +77,19 @@ export function* createElements(elements: ServerElement<Entity>[], parent: Libra
   
   const newElements: ReturnPromisedType<typeof apiAddElements> = yield call(reqWrapper, apiAddElements, { data: allowedElements });
 
-  yield put(Actions.setUndoActions(newElements.map((el: any) => Actions.deleteElement(el.id, true))));
+  yield put(Actions.setUndoActions(newElements.map((el: any) => Actions.deleteItem(el.id, { undo: true }))));
+
+  const newChildren = [...parent.children.map(child => child.id), ...newElements.map(element => element.id)];
 
   const elementData = {
     name: parent.name,
-    children: [...parent.children.map(child => child.id), ...newElements.map(element => element.id)],
+    children: newChildren,
   };
 
   yield call(reqWrapper, apiChangeRecursiveElement, { data: elementData, id: parent.id });
 
   const updatedElements = addChildrenToElement(parent.id, newElements, root);
-  yield call(updateElementsTree, updatedElements, undo);
+  yield call(updateElementsTree, updatedElements, undo, Actions.restoreElementChildren(parent.id, newChildren));
 
   const elementsWithUpdatedBuoyancy = findChildByID(updatedElements, parent.id)?.children.map(child => convertElementToPatchRequest(child));
   yield call(reqWrapper, apiSaveElements, { data: elementsWithUpdatedBuoyancy });
@@ -256,7 +258,7 @@ export function* softDeleteSaga(action: T.DeleteActiveItem) {
 }
 
 export function* restoreElementSaga(action: T.RestoreElementChildren) {
-  const { elementId, childrenIds } = action.payload;
+  const { elementId, childrenIds, options: { undo, redo } } = action.payload;
 
   const elementData = {
     children: childrenIds,
