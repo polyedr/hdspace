@@ -5,8 +5,9 @@ import { Checkbox } from '$components/UI/Checkbox';
 import { Button } from '$components/UI/Button';
 import { DEFAULT_SCREEN_MODE } from '$constants/defaultParams';
 import { ScreenMode } from '../Workspace/Workspace';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { redoAction, undoAction } from '$redux/project/actions';
+import { selectors } from '$redux/project';
 const styles = require('./TopBar.scss');
 
 export type IScreenMode = {
@@ -41,6 +42,9 @@ export const TopBar = (props: Props) => {
     onScreenRotate,
     onExport,
   } = props;
+
+  const undoLength = useSelector(selectors.selectUndoActions).length;
+  const redoLength = useSelector(selectors.selectRedoActions).length;
 
   const onHistoryBack = () => {
     dispatch(undoAction());
@@ -145,7 +149,7 @@ export const TopBar = (props: Props) => {
         <Button
           className={classNames('mainImgBtn', styles.navBarBtn)}
           styleType="none"
-          disabled={screenID === -1}
+          disabled={screenID === -1 || !undoLength}
           onClick={onHistoryBack}
         >
           <Icon icon="undo" />
@@ -153,7 +157,7 @@ export const TopBar = (props: Props) => {
         <Button
           className={classNames('mainImgBtn', styles.navBarBtn)}
           styleType="none"
-          disabled={screenID === -1}
+          disabled={screenID === -1 || !redoLength}
           onClick={onHistoryForward}
         >
           <Icon icon="redo" />
