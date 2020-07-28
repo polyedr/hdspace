@@ -20,7 +20,7 @@ interface IComponentProps {
   createElements: PropertiesPanelProps['createElements'],
   isAddElementsModalOpened: boolean;
   showDeleteButton: boolean;
-  onWrapIntoContainer(): void;
+  onWrapIntoContainer(id: string): void;
   onDelScenarioItem(): void;
   setIsAddElementsModalOpened(isOpened: boolean): void;
 }

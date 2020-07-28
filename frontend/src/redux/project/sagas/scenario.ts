@@ -277,21 +277,21 @@ export function* addElementToElement(element: LibraryElement<Entity>, parent: Li
   yield call(reqWrapper, apiChangeRecursiveElement, { data: elementData, id: parent.id });
 }
 
-export function* wrapIntoContainerSaga() {
-  const activeItem: ReturnType<typeof selectors.selectActiveItem> = yield select(selectors.selectActiveItem);
+export function* wrapIntoContainerSaga(action: T.WrapIntoContainer) {
+  const { id, options: { undo, redo } } = action.payload;
 
   const root: ReturnType<typeof selectors.selectRootElement> = yield select(selectors.selectRootElement);
 
-  const wrappedItemParent = findParentByChildID(root, activeItem.itemId);
-  const wrappedItem = findChildByID(root, activeItem.itemId);
+  const wrappedItemParent = findParentByChildID(root, id);
+  const wrappedItem = findChildByID(root, id);
 
   if (!wrappedItemParent) {
-    console.error(`Can not find parent of wrappedItem ${activeItem.itemId} in tree!`);
+    console.error(`Can not find parent of wrappedItem ${id} in tree!`);
     return;
   };
 
   if (!wrappedItem) {
-    console.error(`Can not find wrappedItem ${activeItem.itemId} in tree!`);
+    console.error(`Can not find wrappedItem ${id} in tree!`);
     return;
   };
 
@@ -303,7 +303,7 @@ export function* wrapIntoContainerSaga() {
 
   const [createdContainer] = createdElements;
 
-  yield put(Actions.setUndoActions([Actions.unwrapFromContainer(activeItem.itemId, createdContainer.id, wrappedItemParent.id)]));
+  yield put(Actions.setUndoActions([Actions.unwrapFromContainer(id, createdContainer.id, wrappedItemParent.id)]));
 
   yield call(addElementToElement, createdContainer, wrappedItemParent);
 
@@ -311,7 +311,7 @@ export function* wrapIntoContainerSaga() {
 
   const rootWithUpdatedParent = moveElement(wrappedItemParent.id, createdContainer, root, wrappedItem.buoyancy);
   const rootWithUpdatedContainer = moveElement(createdContainer.id, wrappedItem, rootWithUpdatedParent, 0);
-  yield put(Actions.updateElementsTree(rootWithUpdatedContainer, false));
+  yield put(Actions.updateElementsTree(rootWithUpdatedContainer, undo || redo, Actions.wrapIntoContainer(id)));
 }
 
 export function* unwrapFromContainerSaga(action: T.UnwrapFromContainer) {

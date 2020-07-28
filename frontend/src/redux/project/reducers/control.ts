@@ -1,6 +1,7 @@
 import { initialControl } from '$redux/project/initial';
 import * as T from '../types';
-import undoable, { combineFilters, includeAction } from 'redux-undo';
+import * as R from 'ramda';
+import undoable, { combineFilters, includeAction, StateWithHistory } from 'redux-undo';
 
 export const reducer = (state: T.ProjectControlState = initialControl, action: T.Action): T.ProjectControlState => {
   switch (action.type) {
@@ -8,17 +9,8 @@ export const reducer = (state: T.ProjectControlState = initialControl, action: T
       return {
         ...state,
         rootElement: action.payload.root,
-        sourceAction: {
-          ...action.payload?.sourceAction,
-          payload: {
-            ...action.payload?.sourceAction?.payload,
-            options: {
-              ...action.payload?.sourceAction?.payload?.options,
-              redo: true
-            }
-          }
-        },
-        redoActions: [],
+        sourceAction: action.payload.sourceAction,
+        redoActions: action.payload.skip ? state.redoActions : [],
       };
     }
 
@@ -60,9 +52,16 @@ export const reducer = (state: T.ProjectControlState = initialControl, action: T
 
 const skip = (action: any) => !action.payload?.skip;
 
+const isSameState = (
+  action: T.Action,
+  currentState: T.ProjectControlState,
+  previousHistory: StateWithHistory<T.ProjectControlState>
+) => !R.equals(previousHistory.present.rootElement, currentState.rootElement);
+
 export const controlReducer = undoable(reducer, {
   filter: combineFilters(
     includeAction(['PROJECTS:UPDATE_ELEMENTS_TREE']),
     skip,
+    isSameState
   ),
 });

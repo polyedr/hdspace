@@ -250,7 +250,10 @@ export const uploadImageForNNSuccess = (payload: { imageURL: string, screenID: n
 
 export const getScreenNN = (): T.GetScreenNN => ({ type: 'PROJECTS:GET_SCREEN_NN' });
 
-export const wrapIntoContainer = (): T.WrapIntoContainer => ({ type: 'PROJECTS:WRAP_INTO_CONTAINER' });
+export const wrapIntoContainer = (id: string, options: HistoryOptions = {}): T.WrapIntoContainer => ({
+  type: 'PROJECTS:WRAP_INTO_CONTAINER',
+  payload: { id, options }
+});
 
 export const setActiveItem = (activeItem: T.ActiveItem): T.SetActiveItem => ({
   type: 'PROJECTS:SET_ACTIVE_ITEM',

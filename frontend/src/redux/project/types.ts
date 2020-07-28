@@ -138,7 +138,7 @@ export type uploadImageForNNSuccess = IAction<
   'PROJECTS:UPLOAD_IMAGE_FOR_NN_SUCCESS', { imageURL: string, screenID: number }
 >;
 export type GetScreenNN = IPlainAction<'PROJECTS:GET_SCREEN_NN'>;
-export type WrapIntoContainer = IPlainAction<'PROJECTS:WRAP_INTO_CONTAINER'>;
+export type WrapIntoContainer = IAction<'PROJECTS:WRAP_INTO_CONTAINER', { id: string, options: HistoryOptions }>;
 export type SetActiveItem = IAction<'PROJECTS:SET_ACTIVE_ITEM', { activeItem: ActiveItem }>;
 export type SetIsAddElementsModalOpened = IAction<'PROJECTS:SET_IS_ADD_ELEMENTS_MODAL_OPENED', { isOpened: boolean }>;
 export type SetItemToCopy = IAction<'PROJECTS:SET_ITEM_TO_COPY', ItemToCopyInfo>;

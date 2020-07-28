@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import { actionsCreators, selectors } from '$redux/project';
 import { AppReduxState } from '$shared/types/app';
 
@@ -32,6 +32,7 @@ export const Component = (props: Props) => {
   } = props;
 
   const root = document.getElementById('root');
+  const { itemId } = useSelector(selectors.selectActiveItem);
 
   useEffect(() => {
     const listener = (event: KeyboardEvent) => {
@@ -47,13 +48,13 @@ export const Component = (props: Props) => {
   useEffect(() => {
     const listener = (event: KeyboardEvent) => {
       if (event.code == 'KeyC' && event.altKey) {
-        wrapIntoContainer();
+        wrapIntoContainer(itemId);
       }
     };
 
     root?.addEventListener('keydown', listener);
     return () => root?.removeEventListener('keydown', listener);
-  }, [rootElement, root, wrapIntoContainer]);
+  }, [rootElement, root, wrapIntoContainer, itemId]);
 
   useEffect(() => {
     const listener = (event: KeyboardEvent) => {

@@ -389,14 +389,14 @@ function* pasteCopiedItemSaga() {
 
   if (!targetContainer) {
     console.error(`Can not find updated element ${activeItem.itemId} in tree`);
-  } else {
-    const itemToCopyInfo: ReturnType<typeof selectors.selectItemToCopyInfo> = yield select(selectors.selectItemToCopyInfo);
+    return
+  }
+  const itemToCopyInfo: ReturnType<typeof selectors.selectItemToCopyInfo> = yield select(selectors.selectItemToCopyInfo);
 
-    if (activeItem.itemType !== 'none' && itemToCopyInfo !== null) {
-      const newIDs = yield call(duplicateItems, root, [itemToCopyInfo], targetContainer);
+  if (activeItem.itemType !== 'none' && itemToCopyInfo !== null) {
+    const newIDs = yield call(duplicateItems, root, [itemToCopyInfo], targetContainer);
 
-      yield put(setUndoActions(newIDs.map((id: string) => Actions.deleteElement(id))))
-    }
+    yield put(setUndoActions(newIDs.map((id: string) => Actions.deleteElement(id))))
   }
 }
 
@@ -424,11 +424,12 @@ function* redoSaga() {
 
   const redos = yield select(selectors.selectRedoActions);
 
-  // for(let redo of redos) {
-  //   yield put(redo);
-  // }
+  if (!redos.length) return;
 
-  yield put(redos[0]);
+  const current = {...redos[0]};
+  current.payload.options.redo = true;
+
+  yield put(current);
 
   yield put(ActionCreators.redo());
   yield put(setRedoActions([
