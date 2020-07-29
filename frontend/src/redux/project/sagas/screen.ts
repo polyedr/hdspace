@@ -166,6 +166,8 @@ export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
   yield put(Actions.updateElementsTree(createdRootElement, true));
   yield put(Actions.setActiveItem({ itemId: createdRootElement.id, itemType: 'root', name: 'Root' }));
 
+  yield put(Actions.clearHistory());
+
   const currentProject: ReturnType<typeof selectors.selectCurrentProject> = yield select(
     selectors.selectCurrentProject
   );
@@ -190,7 +192,6 @@ export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
   yield put(setScreens([...screens, screen]));
 
   yield put(setProject(updateProject));
-  yield put(Actions.clearHistory());
 
   yield put(push(`/project/${projectID}/${screen.id}`))
 }
