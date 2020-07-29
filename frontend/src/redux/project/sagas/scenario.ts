@@ -118,7 +118,12 @@ export function* createElementsSaga(action: ReturnType<typeof Actions.createElem
 }
 
 export function* addChildToElementSaga(action: ReturnType<typeof Actions.addChildToElement>) {
-  const { childType, elementID, parameters, undo } = action.payload;
+  const { childType, elementID, parameters } = action.payload;
+  if (!action.meta) {
+    console.error(`You have to provide metainformation for action ${action.type}`)
+    return;
+  }
+  const { undo } = action.meta;
 
   const convertedCreatedChild = convertCreatedElementToRequest(childType, null);
   const createdChild = convertElementFromResponse(convertedCreatedChild);
@@ -136,7 +141,12 @@ export function* addChildToElementSaga(action: ReturnType<typeof Actions.addChil
 }
 
 export function* softDeleteSaga(action: T.DeleteItem) {
-  const { id, options: { undo, redo } } = action.payload;
+  const { id } = action.payload;
+  if (!action.meta) {
+    console.error(`You have to provide metainformation for action ${action.type}`)
+    return;
+  }
+  const { undo, redo } = action.meta;
 
   const root: ReturnType<typeof selectors.selectRootElement> = yield select(selectors.selectRootElement);
   const element = findChildByID(root, id);
@@ -203,7 +213,12 @@ export function* addElementToElement(element: LibraryElement<Entity>, parent: Li
 }
 
 export function* wrapIntoContainerSaga(action: T.WrapIntoContainer) {
-  const { id, options: { undo, redo } } = action.payload;
+  const { id } = action.payload;
+  if (!action.meta) {
+    console.error(`You have to provide metainformation for action ${action.type}`)
+    return;
+  }
+  const { undo, redo } = action.meta;
 
   const root: ReturnType<typeof selectors.selectRootElement> = yield select(selectors.selectRootElement);
 

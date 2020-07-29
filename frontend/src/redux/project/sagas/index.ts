@@ -157,7 +157,12 @@ function* authCheckSaga() {
 }
 
 function* moveElementSaga(action: ReturnType<typeof Actions.moveElement>): any {
-  const { indices: { newIndex, oldIndex }, elementID, parentID, options: {undo, redo}, isRemote } = action.payload;
+  const { indices: { newIndex, oldIndex }, elementID, parentID, isRemote } = action.payload;
+  if (!action.meta) {
+    console.error(`You have to provide metainformation for action ${action.type}`)
+    return;
+  }
+  const { undo, redo } = action.meta;
 
   const root: ReturnType<typeof selectors.selectRootElement> = yield select(selectors.selectRootElement);
   const targetParent = findChildByID(root, parentID);
@@ -232,7 +237,12 @@ export function* updateElementsOnServerSaga(elements: ProjectT.IScenarioElements
 }
 
 function* updateElementStyles(action: ReturnType<typeof Actions.updateElementStyles>) {
-  const { id, styles, options: { undo, redo } } = action.payload;
+  const { id, styles } = action.payload;
+  if (!action.meta) {
+    console.error(`You have to provide metainformation for action ${action.type}`)
+    return;
+  }
+  const { undo, redo } = action.meta;
 
   const root: ReturnType<typeof selectors.selectRootElement> = yield select(selectors.selectRootElement);
 
@@ -269,7 +279,12 @@ function* updateElementImage(action: ReturnType<typeof Actions.updateElementImag
 }
 
 function* updateElementParameters(action: ReturnType<typeof Actions.updateElementParameters>) {
-  const { itemID, parameters, options: { undo, redo } } = action.payload;
+  const { itemID, parameters } = action.payload;
+  if (!action.meta) {
+    console.error(`You have to provide metainformation for action ${action.type}`)
+    return;
+  }
+  const { undo, redo } = action.meta;
 
   const root: ReturnType<typeof selectors.selectRootElement> = yield select(selectors.selectRootElement);
 
@@ -417,10 +432,9 @@ function* undoSaga() {
   for (let undo of undos) {
     yield put({
       ...undo,
-      payload: {
-        ...undo.payload,
-        options: { undo: true }
-      }
+      meta: {
+        undo: true,
+      },
     });
   }
 
@@ -440,10 +454,12 @@ function* redoSaga() {
 
   if (!redos.length) return;
 
-  const current = {...redos[0]};
-  current.payload.options.redo = true;
-
-  yield put(current);
+  yield put({
+    ...redos[0],
+    meta: {
+      redo: true,
+    },
+  });
 
   yield put(ActionCreators.redo());
   yield put(setRedoActions([

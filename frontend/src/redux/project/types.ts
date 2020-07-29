@@ -102,7 +102,9 @@ export type AddScreen = IAction<'PROJECTS:ADD_SCREEN', { projectID: number, name
 export type DuplicateScreen = IAction<'PROJECTS:DUPLICATE_SCREEN', { name: string, screenID: number }>;
 export type ActivateScreen = IAction<'PROJECTS:ACTIVATE_SCREEN', { projectID: number, screenID: number }>;
 export type MoveElement = IAction<
-  'PROJECTS:MOVE_ELEMENT', { indices: Indices, elementID: string, parentID: string, options: HistoryOptions, isRemote?: boolean }
+  'PROJECTS:MOVE_ELEMENT',
+  { indices: Indices, elementID: string, parentID: string, options: HistoryMeta, isRemote?: boolean },
+  HistoryMeta
 >;
 export type UpdateElementsTree = IAction<'PROJECTS:UPDATE_ELEMENTS_TREE', { root: RootElement<'root'>, skip: boolean, sourceAction: any, parentID?: string }>;
 export type ClearAfterPrevScreen = IPlainAction<'PROJECTS:CLEAN_AFTER_PREV_SCREEN'>;
@@ -112,10 +114,16 @@ export type SetScreen = IAction<'PROJECTS:SET_SCREEN', { screen: IProjectScreen 
 export type SetScreens = IAction<'PROJECTS:SET_SCREENS', { screens: IProjectScreen[] }>;
 export type AddElement = IAction<'PROJECTS:ADD_ELEMENT', { parentID: string, type: string }>;
 export type SetScenarioElements = IAction<'PROJECTS:SET_SCENARIO_ELEMENTS', { elements: IScenarioElements }>;
-export type UpdateElementStyles = IAction<'PROJECTS:UPDATE_ELEMENT_STYLES', { id: string, styles: CssLikeStyles, options: HistoryOptions }>;
+export type UpdateElementStyles = IAction<
+  'PROJECTS:UPDATE_ELEMENT_STYLES',
+  { id: string, styles: CssLikeStyles },
+  HistoryMeta
+  >;
 export type UpdateElementImage = IAction<'PROJECTS:UPDATE_ELEMENT_IMAGE', { itemID: string, image: File }>;
 export type UpdateElementParameters = IAction<
-  'PROJECTS:UPDATE_ELEMENT_PARAMETERS', { itemID: string, parameters: RootElement<Entity>['parameters'], options: HistoryOptions }
+  'PROJECTS:UPDATE_ELEMENT_PARAMETERS',
+  { itemID: string, parameters: RootElement<Entity>['parameters'] },
+  HistoryMeta
 >;
 export type UpdateSavedElementsValues = IAction<
   'PROJECTS:UPDATE_SAVED_ELEMENTS_VALUES', { elementsValues: SavedElementsValues }
@@ -123,11 +131,11 @@ export type UpdateSavedElementsValues = IAction<
 export type UpdateSavedElementValues = IAction<
   'PROJECTS:UPDATE_SAVED_ELEMENT_VALUES', { itemID: string, savedValue: string | boolean }
 >;
-export type DeleteItem = IAction<'PROJECTS:DELETE_ITEM', { id: string, options: HistoryOptions }>;
+export type DeleteItem = IAction<'PROJECTS:DELETE_ITEM', { id: string }, HistoryMeta>;
 export type CreateElements = IAction<
   'PROJECTS:CREATE_ELEMENTS', { createdElements: CreatedElement[] }>;
 export type AddChildToElement = IAction<
-'PROJECTS:ADD_CHILD_TO_ELEMENT', { childType: ServerStructType, elementID: string, parameters: {}, undo: boolean }>;
+'PROJECTS:ADD_CHILD_TO_ELEMENT', { childType: ServerStructType, elementID: string, parameters: {} }, HistoryMeta>;
 export type DeleteChildFromElement = IAction<
 'PROJECTS:DELETE_CHILD_FROM_ELEMENT', { id: string }>;
 export type SetScenarios = IAction<'PROJECTS:SET_SCENARIOS', { scenarios: IScenarios }>;
@@ -137,7 +145,7 @@ export type uploadImageForNNSuccess = IAction<
   'PROJECTS:UPLOAD_IMAGE_FOR_NN_SUCCESS', { imageURL: string, screenID: number }
 >;
 export type GetScreenNN = IPlainAction<'PROJECTS:GET_SCREEN_NN'>;
-export type WrapIntoContainer = IAction<'PROJECTS:WRAP_INTO_CONTAINER', { id: string, options: HistoryOptions }>;
+export type WrapIntoContainer = IAction<'PROJECTS:WRAP_INTO_CONTAINER', { id: string }, HistoryMeta>;
 export type SetActiveItem = IAction<'PROJECTS:SET_ACTIVE_ITEM', { activeItem: ActiveItem }>;
 export type SetIsAddElementsModalOpened = IAction<'PROJECTS:SET_IS_ADD_ELEMENTS_MODAL_OPENED', { isOpened: boolean }>;
 export type SetItemToCopy = IAction<'PROJECTS:SET_ITEM_TO_COPY', ItemToCopyInfo>;
@@ -149,10 +157,10 @@ export type RedoAction = IPlainAction<'REDO_ACTION'>;
 export type SetUndoActions = IAction<'PROJECTS:SET_UNDO_ACTIONS', Action[]>;
 export type SetRedoActions = IAction<'PROJECTS:SET_REDO_ACTIONS', Action[]>;
 export type AddUndoAction = IAction<'PROJECTS:ADD_UNDO_ACTION', Action>;
-export type UnwrapFromContainer = IAction<'PROJECTS:UNWRAP_FROM_CONTAINER', { elementID: string, wrapperID: string, parentID: string, options: HistoryOptions }>
+export type UnwrapFromContainer = IAction<'PROJECTS:UNWRAP_FROM_CONTAINER', { elementID: string, wrapperID: string, parentID: string }, HistoryMeta>
 export type SetAddAction = IAction<'PROJECTS:SET_ADD_ACTION', boolean>;
-export type RestoreElementChildren = IAction<'PROJECTS:RESTORE_ELEMENT_CHILDREN', { elementId: string, childrenIds: string[], options: HistoryOptions }>;
-export type RedoWrapIntoContainer = IAction<'PROJECTS:REDO_WRAP_INTO_CONTAINER', { elementId: string, wrapperId: string, parentId: string, options: HistoryOptions }>
+export type RestoreElementChildren = IAction<'PROJECTS:RESTORE_ELEMENT_CHILDREN', { elementId: string, childrenIds: string[] }, HistoryMeta>;
+export type RedoWrapIntoContainer = IAction<'PROJECTS:REDO_WRAP_INTO_CONTAINER', { elementId: string, wrapperId: string, parentId: string }, HistoryMeta>
 
 export type Action =
   | LoadLibraryElements
@@ -452,7 +460,7 @@ export interface IScenarioItem { // compare with entity on backend
   parent_id: number; // id in database table
   buoyancy: number;
   direction: string; // 'vertical' | 'horizontal'
-  elements: number[]; // elements ids as foreign keys 
+  elements: number[]; // elements ids as foreign keys
   parameters: {
     children: string[]; // listSortable-specific ids
   } & ElementParameters;
@@ -530,7 +538,7 @@ export type Page = {
   },
 };
 
-export type HistoryOptions = {
+export type HistoryMeta = {
   undo?: boolean;
   redo?: boolean;
 }
