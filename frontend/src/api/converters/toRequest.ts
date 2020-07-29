@@ -58,7 +58,7 @@ export const convertElementToPatchRequest = <T extends Entity, K extends Entity,
 
 export const convertCreatedProjectToRequest = (name: string): CreatedServerProject => {
   const projectClasses: ProjectClass[] = R.keys(DEFAULT_ELEMENTS_STYLES).map(
-    name => ({ name, rules: getDefaultStyles(name) })
+    elementName => ({ className: elementName, supportedElement: elementName, rules: getDefaultStyles(elementName) })
   );
 
   return {

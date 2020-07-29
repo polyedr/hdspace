@@ -1,4 +1,5 @@
 import { CssLikeStyles } from '$utils/StyleHelper';
+import { Entity } from '$domain/core';
 
 export type CreatedServerProject = {
   name: string,
@@ -18,7 +19,11 @@ export type ServerProject = {
   project_data_text: string,
 };
 
-export type ProjectClass = { name: string, rules: CssLikeStyles };
+export type ProjectClass = {
+  className: string;
+  supportedElement: Entity;
+  rules: CssLikeStyles;
+};
 
 export type Project = {
   id: number,
