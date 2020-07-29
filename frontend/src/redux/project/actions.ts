@@ -279,17 +279,17 @@ export const redoAction = (): T.RedoAction => ({
 
 export const setUndoActions = (actions: Action[]): T.SetUndoActions => ({
   type: 'PROJECTS:SET_UNDO_ACTIONS',
-  payload: [...actions],
+  payload: actions,
 });
 
 export const setRedoActions = (actions: Action[]): T.SetRedoActions => ({
   type: 'PROJECTS:SET_REDO_ACTIONS',
-  payload: [...actions],
+  payload: actions,
 });
 
 export const addUndoAction = (action: Action): T.AddUndoAction => ({
   type: 'PROJECTS:ADD_UNDO_ACTION',
-  payload: { ...action },
+  payload: action,
 });
 
 export const setAdd = (add: boolean): T.SetAddAction => ({
@@ -297,12 +297,13 @@ export const setAdd = (add: boolean): T.SetAddAction => ({
   payload: add,
 });
 
-export const unwrapFromContainer = (elementID: string, wrapperID: string, parentID: string): T.UnwrapFromContainer => ({
+export const unwrapFromContainer = (elementID: string, wrapperID: string, parentID: string, options: HistoryOptions = {}): T.UnwrapFromContainer => ({
   type: 'PROJECTS:UNWRAP_FROM_CONTAINER',
   payload: {
     elementID,
     wrapperID,
     parentID,
+    options,
   }
 });
 

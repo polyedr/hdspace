@@ -178,7 +178,7 @@ function* moveElementSaga(action: ReturnType<typeof Actions.moveElement>): any {
   if (!undo && !redo) {
     if (isRemote) {
       yield put(Actions.setUndoActions([
-        Actions.moveElement({newIndex: oldIndex, oldIndex: newIndex}, elementID, parentID, false, {undo: true}),
+        Actions.moveElement({newIndex: oldIndex, oldIndex: newIndex}, elementID, parentID, false),
       ]));
 
       yield put(Actions.setAdd(true))
@@ -186,10 +186,10 @@ function* moveElementSaga(action: ReturnType<typeof Actions.moveElement>): any {
       const add = yield select(selectors.selectAdd);
 
       if (add) {
-        yield put(Actions.addUndoAction(Actions.moveElement({newIndex: oldIndex, oldIndex: newIndex}, elementID, parentID, true, {undo: true})))
+        yield put(Actions.addUndoAction(Actions.moveElement({newIndex: oldIndex, oldIndex: newIndex}, elementID, parentID, true)))
       } else {
         yield put(Actions.setUndoActions([
-          Actions.moveElement({newIndex: oldIndex, oldIndex: newIndex}, elementID, parentID, true, {undo: true}),
+          Actions.moveElement({newIndex: oldIndex, oldIndex: newIndex}, elementID, parentID, true),
         ]));
       }
       yield put(Actions.setAdd(false))
@@ -213,7 +213,7 @@ function* moveElementSaga(action: ReturnType<typeof Actions.moveElement>): any {
 
   if (isRemote) return;
 
-  document.querySelector<HTMLElement>(`[data-ls-id='${elementID}']`)?.focus();
+  !undo && !redo && document.querySelector<HTMLElement>(`[data-ls-id='${elementID}']`)?.focus();
 
   const elementData = {
     name: targetParent.name,
@@ -238,7 +238,7 @@ function* updateElementStyles(action: ReturnType<typeof Actions.updateElementSty
 
   if (!undo && !redo) {
     const oldStyles = yield select(selectors.selectElementStyles(id));
-    yield put(Actions.setUndoActions([Actions.updateElementStyles(id, oldStyles, {undo: true})]));
+    yield put(Actions.setUndoActions([Actions.updateElementStyles(id, oldStyles)]));
   }
 
   const updatedTree = updateStyles(id, styles, root);
@@ -275,7 +275,7 @@ function* updateElementParameters(action: ReturnType<typeof Actions.updateElemen
 
   if (!undo && !redo) {
     const oldParameters = yield select(selectors.selectElementParameters(itemID));
-    yield put(Actions.setUndoActions([Actions.updateElementParameters(itemID, oldParameters, {undo: true})]));
+    yield put(Actions.setUndoActions([Actions.updateElementParameters(itemID, oldParameters)]));
   }
 
   const updatedTree = updateParameters(itemID, parameters, root);
@@ -328,7 +328,7 @@ function* uploadFileSaga({ payload: { file: { file } } }: ReturnType<typeof Acti
     const updatedElements = moveElement(root.id, nnRootWithDefaultParams, root, 0);
     const childrenIds = updatedElements.children.map(child => child.id);
     yield put(Actions.setUndoActions([
-      Actions.deleteItem(nnRootWithDefaultParams.id, { undo: true }),
+      Actions.deleteItem(nnRootWithDefaultParams.id),
     ]));
 
     yield call(updateElementsTree, updatedElements, false, Actions.restoreElementChildren(root.id, childrenIds));
@@ -367,7 +367,7 @@ function* duplicateScreenSaga(action: ReturnType<typeof Actions.duplicateScreen>
   const targetRootID = targetRoot.id;
 
   yield put(Actions.setActiveItem({ itemId: targetRootID, itemType: 'root', name: 'Root' }));
-  yield call(duplicateItems, sourceRoot, duplicatedItems, targetRoot);
+  yield call(duplicateItems, sourceRoot, duplicatedItems, targetRoot, true);
   yield put(setScreenLoader(false));
 }
 
@@ -375,6 +375,7 @@ function* duplicateItems(
   sourceRoot: LibraryElement<Entity>,
   itemsToCopyInfo: ItemToCopyInfo[],
   targetParent: LibraryElement<Entity>,
+  undo: boolean = false,
 ) {
   const itemsToDuplicate = itemsToCopyInfo.map(item => findChildByID(sourceRoot, item.id));
   const isItemsToDuplicateInTree = itemsToDuplicate.every(item => !!item);
@@ -383,7 +384,7 @@ function* duplicateItems(
     console.error(`Can not find duplicated items ${JSON.stringify(itemsToCopyInfo.map(item => item.id))} in tree`);
   } else {
     const convertedItemsToDuplicate = itemsToDuplicate.map(item => convertElementToRequest(item!));
-    return yield call(createElements, convertedItemsToDuplicate, targetParent);
+    return yield call(createElements, convertedItemsToDuplicate, targetParent, undo);
   }
 }
 
@@ -414,7 +415,13 @@ function* undoSaga() {
   const undos = yield select(selectors.selectUndoActions);
 
   for (let undo of undos) {
-    yield put(undo);
+    yield put({
+      ...undo,
+      payload: {
+        ...undo.payload,
+        options: { undo: true }
+      }
+    });
   }
 
   yield put(ActionCreators.undo());
@@ -429,7 +436,6 @@ function* undoSaga() {
 }
 
 function* redoSaga() {
-
   const redos = yield select(selectors.selectRedoActions);
 
   if (!redos.length) return;

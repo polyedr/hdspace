@@ -2,6 +2,7 @@ import { initialControl } from '$redux/project/initial';
 import * as T from '../types';
 import * as R from 'ramda';
 import undoable, { combineFilters, includeAction, StateWithHistory } from 'redux-undo';
+import { IAction } from '$shared/redux';
 
 export const reducer = (state: T.ProjectControlState = initialControl, action: T.Action): T.ProjectControlState => {
   switch (action.type) {
@@ -15,21 +16,18 @@ export const reducer = (state: T.ProjectControlState = initialControl, action: T
     }
 
     case 'PROJECTS:SET_UNDO_ACTIONS': {
-      return {
-        ...state,
-        undoActions: action.payload,
-      }
-    }
+      const undoActions = [ ...action.payload ];
+      // undoActions.forEach((undo ) => (undo as IAction<any, any>).payload.options.undo = true);
 
-    case 'PROJECTS:SET_REDO_ACTIONS': {
       return {
         ...state,
-        redoActions: action.payload,
+        undoActions,
       }
     }
 
     case 'PROJECTS:ADD_UNDO_ACTION': {
       const copy = [...state.undoActions];
+      // (action.payload as IAction<any, any>).payload.options.undo = true;
       copy.unshift(action.payload);
 
       return {
@@ -42,6 +40,13 @@ export const reducer = (state: T.ProjectControlState = initialControl, action: T
       return {
         ...state,
         add: action.payload
+      }
+    }
+
+    case 'PROJECTS:SET_REDO_ACTIONS': {
+      return {
+        ...state,
+        redoActions: action.payload,
       }
     }
 

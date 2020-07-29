@@ -77,7 +77,9 @@ export function* createElements(elements: ServerElement<Entity>[], parent: Libra
   
   const newElements: ReturnPromisedType<typeof apiAddElements> = yield call(reqWrapper, apiAddElements, { data: allowedElements });
 
-  yield put(Actions.setUndoActions(newElements.map((el: any) => Actions.deleteItem(el.id, { undo: true }))));
+  if (!undo) {
+    yield put(Actions.setUndoActions(newElements.map((el: any) => Actions.deleteItem(el.id))));
+  }
 
   const newChildren = [...parent.children.map(child => child.id), ...newElements.map(element => element.id)];
 
