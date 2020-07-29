@@ -114,6 +114,7 @@ export function* updateSavedElementsValues(elements: LibraryElementUnion[]) {
 };
 
 export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
+  yield put(Actions.clearHistory());
   yield put(Actions.clearAfterPrevScreen());
   const { projectID, name, buoyancy } = payload;
 

@@ -425,7 +425,10 @@ function* undoSaga() {
   const redos = yield select(selectors.selectRedoActions);
 
   const historyLength = yield select(selectors.selectHistoryLength);
-  if (historyLength <= 1) return;
+  if (historyLength <= 1) {
+    yield put(Actions.setNotification('Nothing to undo.'));
+    return
+  }
   const undos = yield select(selectors.selectUndoActions);
 
   for (let undo of undos) {
@@ -451,7 +454,10 @@ function* undoSaga() {
 function* redoSaga() {
   const redos = yield select(selectors.selectRedoActions);
 
-  if (!redos.length) return;
+  if (!redos.length) {
+    yield put(Actions.setNotification('Nothing to redo.'));
+    return;
+  }
 
   yield put({
     ...redos[0],
