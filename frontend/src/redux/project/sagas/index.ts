@@ -425,7 +425,7 @@ function* undoSaga() {
   const redos = yield select(selectors.selectRedoActions);
 
   const historyLength = yield select(selectors.selectHistoryLength);
-  if (historyLength <= 1) {
+  if (!historyLength) {
     yield put(Actions.setNotification('Nothing to undo.'));
     return
   }

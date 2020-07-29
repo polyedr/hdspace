@@ -51,8 +51,6 @@ import { createContainer, updateElementsTree } from './scenario';
 export function* activateScreenSaga({ payload }: ReturnType<typeof activateScreen>) {
   const { screenID } = payload;
 
-  yield put(Actions.clearHistory());
-
   yield put(setScreenLoader(true));
 
   yield put(setActiveItem(DEFAULT_ACTIVE_ITEM));
@@ -80,9 +78,11 @@ export function* activateScreenSaga({ payload }: ReturnType<typeof activateScree
   const [rootElement] = scenarioElements;
   const rootElementWithChildren: LibraryElement<'root'> = yield call(reqWrapper, apiGetElement, { id: rootElement.id });
 
-  yield call(updateElementsTree, rootElementWithChildren);
+  yield call(updateElementsTree, rootElementWithChildren, true);
 
   yield put(Actions.setActiveItem({ itemId: rootElementWithChildren.id, itemType: 'root', name: 'Root' }));
+
+  yield put(Actions.clearHistory());
 
   yield put(Actions.setScenarioLoader(false));
   yield put(setScreenLoader(false));
@@ -114,7 +114,6 @@ export function* updateSavedElementsValues(elements: LibraryElementUnion[]) {
 };
 
 export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
-  yield put(Actions.clearHistory());
   yield put(Actions.clearAfterPrevScreen());
   const { projectID, name, buoyancy } = payload;
 
@@ -191,6 +190,8 @@ export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
   yield put(setScreens([...screens, screen]));
 
   yield put(setProject(updateProject));
+  yield put(Actions.clearHistory());
+
   yield put(push(`/project/${projectID}/${screen.id}`))
 }
 
