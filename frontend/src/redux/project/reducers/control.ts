@@ -69,5 +69,5 @@ export const controlReducer = undoable(reducer, {
     skip,
     isSameState
   ),
-  clearHistoryType: 'PROJECTS:SET_SCREEN',
+  clearHistoryType: 'PROJECTS:CLEAR_HISTORY',
 });

@@ -51,6 +51,8 @@ import { createContainer, updateElementsTree } from './scenario';
 export function* activateScreenSaga({ payload }: ReturnType<typeof activateScreen>) {
   const { screenID } = payload;
 
+  yield put(Actions.clearHistory());
+
   yield put(setScreenLoader(true));
 
   yield put(setActiveItem(DEFAULT_ACTIVE_ITEM));

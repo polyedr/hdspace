@@ -338,3 +338,7 @@ export const redoWrapIntoContainer = (elementId: string, wrapperId: string, pare
   },
   meta: options
 });
+
+export const clearHistory = (): T.ClearHistory => ({
+  type: 'PROJECTS:CLEAR_HISTORY',
+})

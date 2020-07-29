@@ -5,7 +5,6 @@ import {
   call,
   take,
   select,
-  all
 } from 'redux-saga/effects';
 
 import * as R from 'ramda';
@@ -470,6 +469,11 @@ function* redoSaga() {
   document.querySelector<HTMLElement>(`[data-ls-id='${itemType === 'root' ? 'root' : itemId}']`)?.focus();
 }
 
+function* clearHistorySaga() {
+  yield put(Actions.setUndoActions([]));
+  yield put(Actions.setRedoActions([]));
+}
+
 const loadProjectsType: ProjectT.LoadProjects['type'] = 'PROJECTS:LOAD_PROJECTS';
 const addProjectType: ProjectT.AddProject['type'] = 'PROJECTS:ADD_PROJECT';
 const deleteProjectType: ProjectT.DeleteProject['type'] = 'PROJECTS:DELETE_PROJECT';
@@ -500,7 +504,8 @@ const unwrapFromContainerType: ProjectT.UnwrapFromContainer['type'] = 'PROJECTS:
 const undoActionType: ProjectT.UndoAction['type'] = 'UNDO_ACTION';
 const redoActionType: ProjectT.RedoAction['type'] = 'REDO_ACTION';
 const restoreElementType: ProjectT.RestoreElementChildren['type'] = 'PROJECTS:RESTORE_ELEMENT_CHILDREN';
-const redoWrapIntoContainerType : ProjectT.RedoWrapIntoContainer['type'] = 'PROJECTS:REDO_WRAP_INTO_CONTAINER';
+const redoWrapIntoContainerType: ProjectT.RedoWrapIntoContainer['type'] = 'PROJECTS:REDO_WRAP_INTO_CONTAINER';
+const clearHistoryType: ProjectT.ClearHistory['type'] = 'PROJECTS:CLEAR_HISTORY';
 
 export default function* projectSaga() {
   yield takeLatest(REHYDRATE, authCheckSaga);
@@ -545,4 +550,5 @@ export default function* projectSaga() {
   yield takeEvery(redoActionType, redoSaga);
   yield takeEvery(unwrapFromContainerType, unwrapFromContainerSaga);
   yield takeEvery(redoWrapIntoContainerType, redoWrapIntoContainerSaga);
+  yield takeEvery(clearHistoryType, clearHistorySaga);
 }
