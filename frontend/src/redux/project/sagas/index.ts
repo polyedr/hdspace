@@ -213,6 +213,8 @@ function* moveElementSaga(action: ReturnType<typeof Actions.moveElement>): any {
 
   if (isRemote) return;
 
+  document.querySelector<HTMLElement>(`[data-ls-id='${elementID}']`)?.focus();
+
   const elementData = {
     name: targetParent.name,
     children: [...targetParent.children.map(child => child.id), elementID],
@@ -244,11 +246,11 @@ function* updateElementStyles(action: ReturnType<typeof Actions.updateElementSty
 
   if (!updatedElement) {
     console.error(`Can not find updated element ${id} in tree`);
-  } else {
-    yield put(Actions.updateElementsTree(updatedTree, undo || redo, action));
-    const convertedElement = convertElementToPatchRequest(updatedElement);
-    yield call(reqWrapper, apiChangeElement, { data: convertedElement, id });
+    return;
   }
+  yield put(Actions.updateElementsTree(updatedTree, undo || redo, action));
+  const convertedElement = convertElementToPatchRequest(updatedElement);
+  yield call(reqWrapper, apiChangeElement, { data: convertedElement, id });
 }
 
 function* updateElementImage(action: ReturnType<typeof Actions.updateElementImage>) {
@@ -326,7 +328,7 @@ function* uploadFileSaga({ payload: { file: { file } } }: ReturnType<typeof Acti
     const updatedElements = moveElement(root.id, nnRootWithDefaultParams, root, 0);
     const childrenIds = updatedElements.children.map(child => child.id);
     yield put(Actions.setUndoActions([
-      Actions.deleteItem(nnRootWithDefaultParams.id),
+      Actions.deleteItem(nnRootWithDefaultParams.id, { undo: true }),
     ]));
 
     yield call(updateElementsTree, updatedElements, false, Actions.restoreElementChildren(root.id, childrenIds));
@@ -421,6 +423,9 @@ function* undoSaga() {
     sourceAction,
     ...redos,
   ]));
+
+  const { itemType, itemId }: ReturnType<typeof selectors.selectActiveItem> = yield select(selectors.selectActiveItem);
+  document.querySelector<HTMLElement>(`[data-ls-id='${itemType === 'root' ? 'root' : itemId}']`)?.focus();
 }
 
 function* redoSaga() {
@@ -438,6 +443,9 @@ function* redoSaga() {
   yield put(setRedoActions([
     ...redos.slice(1),
   ]));
+
+  const { itemType, itemId }: ReturnType<typeof selectors.selectActiveItem> = yield select(selectors.selectActiveItem);
+  document.querySelector<HTMLElement>(`[data-ls-id='${itemType === 'root' ? 'root' : itemId}']`)?.focus();
 }
 
 const loadProjectsType: ProjectT.LoadProjects['type'] = 'PROJECTS:LOAD_PROJECTS';

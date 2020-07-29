@@ -104,13 +104,15 @@ export function* createElementsSaga(action: ReturnType<typeof Actions.createElem
   const root: ReturnType<typeof selectors.selectRootElement> = yield select(selectors.selectRootElement);
   const activeItemElement = findChildByID(root, activeItem.itemId);
 
-  if (activeItemElement) {
-    const convertedCreatedElements = createdElements.map(element => convertCreatedElementToRequest(element.type, null));
-    yield call(createElements, convertedCreatedElements, activeItemElement);
-
-  } else {
+  if (!activeItemElement) {
     console.error(`Active item ${activeItem.itemId} not found in elements tree!`);
+    return;
   }
+
+  const convertedCreatedElements = createdElements.map(element => convertCreatedElementToRequest(element.type, null));
+  yield call(createElements, convertedCreatedElements, activeItemElement);
+
+  document.querySelector<HTMLElement>(`[data-ls-id='${activeItem.itemType === 'root' ? 'root' : activeItem.itemId}']`)?.focus();
 }
 
 export function* addChildToElementSaga(action: ReturnType<typeof Actions.addChildToElement>) {
@@ -148,6 +150,11 @@ export function* softDeleteSaga(action: T.DeleteItem) {
     return
   }
 
+  if (!isElementCanBeRemove(parent, element.type)) {
+    yield put(Actions.setNotification(DISALLOW_REMOVE_ELEMENT_NOTIFICATION_TEXT));
+    return;
+  }
+
   const children = parent.children.map(child => child.id);
 
   if (!undo && !redo) {
@@ -156,27 +163,32 @@ export function* softDeleteSaga(action: T.DeleteItem) {
     ]));
   }
 
+  const activeItem: ReturnType<typeof selectors.selectActiveItem> = yield select(selectors.selectActiveItem);
+
+  if (activeItem.itemId === id) {
+    const { type, name } = parent;
+
+    yield put(Actions.setActiveItem({
+      itemId: parent.id,
+      itemType: type,
+      name,
+    }));
+  }
+
   const updatedRoot = removeChildrenFromElement(parent.id, [element], root);
 
   yield put(Actions.updateElementsTree(updatedRoot, undo || redo, action));
 
   const filtered = children.filter(childId => childId !== id);
+  document.querySelector<HTMLElement>(`[data-ls-id='${parent.type === 'root' ? 'root' : parent.id}']`)?.focus();
 
-  const elementData = {
-    children: filtered
-  };
-
-  yield call(reqWrapper, apiChangeRecursiveElement, { data: elementData, id: parent.id });
+  yield call(reqWrapper, apiChangeRecursiveElement, { data: { children: filtered }, id: parent.id });
 }
 
 export function* restoreElementSaga(action: T.RestoreElementChildren) {
   const { elementId, childrenIds } = action.payload;
 
-  const elementData = {
-    children: childrenIds,
-  };
-
-  yield call(reqWrapper, apiChangeRecursiveElement, { data: elementData, id: elementId});
+  yield call(reqWrapper, apiChangeRecursiveElement, { data: { children: childrenIds }, id: elementId});
 }
 
 export function* addElementToElement(element: LibraryElement<Entity>, parent: LibraryElement<Entity>) {
@@ -199,12 +211,12 @@ export function* wrapIntoContainerSaga(action: T.WrapIntoContainer) {
   if (!wrappedItemParent) {
     console.error(`Can not find parent of wrappedItem ${id} in tree!`);
     return;
-  };
+  }
 
   if (!wrappedItem) {
     console.error(`Can not find wrappedItem ${id} in tree!`);
     return;
-  };
+  }
 
   const serverContainer = convertCreatedElementToRequest('container', null);
 
@@ -223,6 +235,8 @@ export function* wrapIntoContainerSaga(action: T.WrapIntoContainer) {
   const rootWithUpdatedParent = moveElement(wrappedItemParent.id, createdContainer, root, wrappedItem.buoyancy);
   const rootWithUpdatedContainer = moveElement(createdContainer.id, wrappedItem, rootWithUpdatedParent, 0);
   yield put(Actions.updateElementsTree(rootWithUpdatedContainer, undo || redo, Actions.redoWrapIntoContainer(id, createdContainer.id, wrappedItemParent.id)));
+
+  document.querySelector<HTMLElement>(`[data-ls-id='${id}']`)?.focus();
 }
 
 export function* unwrapFromContainerSaga(action: T.UnwrapFromContainer) {
