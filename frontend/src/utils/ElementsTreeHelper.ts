@@ -161,10 +161,15 @@ export const addElementClassName = <T extends Entity, K extends Entity>(
       root.id === elementID
         ? {
             ...root.styles,
-            classNames: [...root.styles.classNames, newClassName],
+            // Allow only one additional class
+            classNames: R.head(root.styles.classNames)
+              ? [R.head(root.styles.classNames)!, newClassName]
+              : [newClassName],
           }
         : root.styles,
-    children: root.children.map((child) => addElementClassName(elementID, newClassName, child)),
+    children: root.children.map((child) =>
+      addElementClassName(elementID, newClassName, child)
+    ),
   };
 };
 
