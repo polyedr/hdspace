@@ -45,7 +45,7 @@ export const textinput:TextinputServerElement = {
     ...defaultTextinputParams,
   },
   styles: {
-    classNames: [],
+    classNames: ['textinput'],
     idStyles: {},
   },
   name: 'textinput',

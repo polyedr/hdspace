@@ -38,6 +38,8 @@ export const ActiveElementBlock: React.FunctionComponent<IComponentProps> = memo
     setIsAddElementsModalOpened(true);
   }, []);
 
+  // TODO why add elements button showing again?
+
   return (
     <div
       className={classNames('propsPanelBlock', styles.activeElementContainer)}

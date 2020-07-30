@@ -136,8 +136,6 @@ const defaultButtonStyles: { [K in ButtonControls]: CssLikeStyles } & { other?: 
   },
   size: {
     ...DEFAULT_SIZE,
-    width: '100%',
-    height: '150px',
   },
   display: {
     ...DEFAULT_DISPLAY,

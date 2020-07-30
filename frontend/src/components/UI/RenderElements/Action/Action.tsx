@@ -13,7 +13,6 @@ export type ActionRenderer = React.FC<WithActionProps & ActionRendererProps>;
 export const Action: ActionRenderer = (props) => {
   const {
     id,
-    style,
     isDisabled,
     params,
     onClick,
@@ -22,28 +21,67 @@ export const Action: ActionRenderer = (props) => {
     actionLink,
     elementRef,
     className,
+    tagStyles,
+    classStyles,
+    ownStyles,
   } = props;
 
-  const { backgroundColor, color, ...restStyles } = style;
   const { showRipple, textContent } = params;
 
   const classes = makeStyles({
     root: {
       cursor: isDisabled ? 'default' : 'pointer',
-      ...restStyles,
-      backgroundColor,
-      color,
       ...(isDisabled && { transition: 'none' }),
       '&:hover': {
-        backgroundColor,
-        color,
         ...(isDisabled && { boxShadow: '0px 3px 1px -2px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 1px 5px 0px rgba(0,0,0,0.12)' }),
       },
       '&:active': {
-        color,
         ...(isDisabled && { boxShadow: '0px 3px 1px -2px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 1px 5px 0px rgba(0,0,0,0.12)' }),
       },
+
+      '&$tagStyles': {
+        ...tagStyles,
+
+        '&:hover': {
+          backgroundColor: tagStyles.backgroundColor,
+          color: tagStyles.color,
+        },
+
+        '&:active': {
+          color: tagStyles.color,
+        },
+      },
+
+      '&$tagStyles$classStyles': {
+        ...classStyles,
+
+        '&:hover': {
+          backgroundColor: classStyles.backgroundColor,
+          color: classStyles.color,
+        },
+
+        '&:active': {
+          color: classStyles.color,
+        },
+      },
+
+      '&$tagStyles$classStyles$ownStyles': {
+        ...ownStyles,
+
+        '&:hover': {
+          backgroundColor: ownStyles.backgroundColor,
+          color: ownStyles.color,
+        },
+
+        '&:active': {
+          color: ownStyles.color,
+        },
+      },
     },
+
+    tagStyles: {},
+    classStyles: {},
+    ownStyles: {},
   })();
 
   const components: Record<ActionType, 'a' | 'button' | typeof Link> = {
@@ -61,11 +99,21 @@ export const Action: ActionRenderer = (props) => {
       key={id}
       variant="contained"
       color="primary"
-      className={cn(className, classes.root, isDisabled && styles.disabled)}
+      className={cn(
+        className,
+        classes.root,
+        classes.tagStyles,
+        classes.classStyles,
+        classes.ownStyles,
+        isDisabled && styles.disabled
+      )}
       disableRipple={isDisabled || !showRipple}
       component={components[actionType]}
-      {...actionType === 'external-link' && { href: actionLink, target: '_blank' }}
-      {...actionType === 'internal-link' && { to: actionLink }}
+      {...(actionType === 'external-link' && {
+        href: actionLink,
+        target: '_blank',
+      })}
+      {...(actionType === 'internal-link' && { to: actionLink })}
       onClick={onClick}
     >
       {textContent}

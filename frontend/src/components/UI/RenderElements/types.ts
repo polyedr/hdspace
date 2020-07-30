@@ -5,6 +5,7 @@ export type SharedRendererProps = {
   id: string;
   tagStyles: React.CSSProperties,
   ownStyles: React.CSSProperties,
+  classStyles: React.CSSProperties,
   style: React.CSSProperties,
   active: boolean,
   sortableId: string,

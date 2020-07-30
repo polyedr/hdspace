@@ -323,7 +323,7 @@ function* copyElementStylesSaga(action: ReturnType<typeof Actions.copyElementSty
   const currentProject: ReturnType<typeof selectors.selectCurrentProject> = yield select(selectors.selectCurrentProject);
 
   const sharedClassNames = currentProject.projectData.classes.map(cssClass => cssClass.className);
-  const uniqueClassName = generateUniqueName(`${elementType}-group`, sharedClassNames);
+  const uniqueClassName = generateUniqueName(`${elementType} group 1`, sharedClassNames);
 
   yield put(Actions.setCopiedStyles(elementType, uniqueClassName, styles));
 
