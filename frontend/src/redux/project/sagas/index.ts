@@ -329,6 +329,7 @@ function* copyElementStylesSaga(action: ReturnType<typeof Actions.copyElementSty
   yield put(Actions.setCopiedStyles(elementType, uniqueClassName, styles));
 
   yield call(addSharedStyles, uniqueClassName, elementType, styles);
+  yield call(removeElementStyles, elementID, Object.keys(styles));
   yield call(updateElementClassNames, elementID, uniqueClassName, 'add');
 }
 
@@ -378,9 +379,7 @@ function* updateElementStyles(action: ReturnType<typeof Actions.updateElementSty
   }
 }
 
-function* removeElementStyles(action: ReturnType<typeof Actions.removeElementStyles>) {
-  const { id, ruleNames } = action.payload;
-
+function* removeElementStyles(id: string, ruleNames: string[]) {
   const root: ReturnType<typeof selectors.selectRootElement> = yield select(selectors.selectRootElement);
   
   const updatedTree = removeStyles(id, ruleNames, root);
@@ -393,6 +392,11 @@ function* removeElementStyles(action: ReturnType<typeof Actions.removeElementSty
     const convertedElement = convertElementToPatchRequest(updatedElement);
     yield call(reqWrapper, apiChangeElement, { data: convertedElement, id });
   }
+}
+
+function* removeElementStylesSaga(action: ReturnType<typeof Actions.removeElementStyles>) {
+  const { id, ruleNames } = action.payload;
+  yield call(removeElementStyles, id, ruleNames);
 }
 
 function* updateElementImage(action: ReturnType<typeof Actions.updateElementImage>) {
@@ -591,7 +595,7 @@ export default function* projectSaga() {
 
   yield takeLatest(removeSharedStylesType, removeSharedStylesSaga);
   yield takeLatest(updateSharedStylesType, updateSharedStylesSaga);
-  yield takeLatest(removeElementStylesType, removeElementStyles);
+  yield takeLatest(removeElementStylesType, removeElementStylesSaga);
   yield takeLatest(updateElementStylesType, updateElementStyles);
   yield takeLatest(copyElementStylesType, copyElementStylesSaga);
   yield takeLatest(addElementClassNameType, addElementClassNameSaga);
