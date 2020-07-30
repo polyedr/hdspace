@@ -105,7 +105,7 @@ export function selectCopiedStyles(state: AppReduxState) {
 };
 
 export function selectTagStyles(state: AppReduxState, elementType: Entity) {
-  return selectCurrentProject(state).projectData.classes.find(cssClass => cssClass.name === elementType)?.rules || {};
+  return selectCurrentProject(state).projectData.classes.find(cssClass => cssClass.className === elementType)?.rules || {};
 };
 
 export function selectCurrentEditableStyles(state: AppReduxState, ruleName: keyof CssLikeStyles) {

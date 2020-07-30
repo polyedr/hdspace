@@ -192,9 +192,9 @@ export const setCopiedStyles = (elementType: Entity, className: string, styles: 
   payload: { elementType, className, styles },
 });
 
-export const pasteElementStyles = (elementID: string): T.PasteElementStyles => ({
-  type: 'PROJECTS:PASTE_ELEMENT_STYLES',
-  payload: { elementID },
+export const addElementClassName = (elementID: string, className: string): T.AddElementClassName => ({
+  type: 'PROJECTS:ADD_ELEMENT_CLASSNAME',
+  payload: { elementID, className },
 });
 
 // TODO remove this action

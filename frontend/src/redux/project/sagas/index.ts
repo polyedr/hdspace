@@ -245,15 +245,19 @@ function* removeSharedStylesSaga(action: ReturnType<typeof Actions.removeSharedS
   yield call(reqWrapper, apiSaveProject, { data: convertedProject });
 }
 
-function* addSharedStyles(className: string, styles: CssLikeStyles) {
+function* addSharedStyles(className: string, elementType: Entity, styles: CssLikeStyles) {
   const currentProject: ReturnType<typeof selectors.selectCurrentProject> = yield select(selectors.selectCurrentProject);
 
   const newProject = {
     ...currentProject,
     projectData: {
       ...currentProject.projectData,
-      classes: [...currentProject.projectData.classes, { name: className, rules: styles }],
-  }};
+      classes: [
+        ...currentProject.projectData.classes,
+        { className, supportedElement: elementType, rules: styles },
+      ],
+    },
+  };
 
   const listProject: ReturnType<typeof selectors.selectProjects> = yield select(selectors.selectProjects);
 
@@ -284,7 +288,7 @@ function* updateSharedStyles(className: string, styles: CssLikeStyles) {
     projectData: {
       ...currentProject.projectData,
       classes: currentProject.projectData.classes.map(cssClass => (
-        cssClass.name === className ? { ...cssClass, rules: { ...cssClass.rules, ...styles } } : cssClass)),
+        cssClass.className === className ? { ...cssClass, rules: { ...cssClass.rules, ...styles } } : cssClass)),
   }};
 
   const listProject: ReturnType<typeof selectors.selectProjects> = yield select(selectors.selectProjects);
@@ -318,26 +322,18 @@ function* copyElementStylesSaga(action: ReturnType<typeof Actions.copyElementSty
 
   const currentProject: ReturnType<typeof selectors.selectCurrentProject> = yield select(selectors.selectCurrentProject);
 
-  const sharedClassNames = currentProject.projectData.classes.map(cssClass => cssClass.name);
+  const sharedClassNames = currentProject.projectData.classes.map(cssClass => cssClass.className);
   const uniqueClassName = generateUniqueName(`${elementType}-group`, sharedClassNames);
 
   yield put(Actions.setCopiedStyles(elementType, uniqueClassName, styles));
 
-  yield call(addSharedStyles, uniqueClassName, styles);
+  yield call(addSharedStyles, uniqueClassName, elementType, styles);
   yield call(updateElementClassNames, elementID, uniqueClassName);
 }
 
-function* pasteElementStylesSaga(action: ReturnType<typeof Actions.pasteElementStyles>) {
-  const { elementID } = action.payload;
-
-  const copiedStyles: ReturnType<typeof selectors.selectCopiedStyles> = yield select(selectors.selectCopiedStyles);
-
-  if (!copiedStyles) {
-    console.error('Copied styles not found!');
-    return;
-  }
-
-  yield call(updateElementClassNames, elementID, copiedStyles.className);
+function* addElementClassNameSaga(action: ReturnType<typeof Actions.AddElementClassName>) {
+  const { elementID, className } = action.payload;
+  yield call(updateElementClassNames, elementID, className);
 }
 
 function* updateElementClassNames(elementID: string, newClassName: string) {
@@ -550,7 +546,7 @@ const updateSharedStylesType: ProjectT.UpdateSharedStyles['type'] = 'PROJECTS:UP
 const removeElementStylesType: ProjectT.RemoveElementStyles['type'] = 'PROJECTS:REMOVE_ELEMENT_STYLES';
 const updateElementStylesType: ProjectT.UpdateElementStyles['type'] = 'PROJECTS:UPDATE_ELEMENT_STYLES';
 const copyElementStylesType: ProjectT.CopyElementStyles['type'] = 'PROJECTS:COPY_ELEMENT_STYLES';
-const pasteElementStylesType: ProjectT.PasteElementStyles['type'] = 'PROJECTS:PASTE_ELEMENT_STYLES';
+const addElementClassNameType: ProjectT.AddElementClassName['type'] = 'PROJECTS:ADD_ELEMENT_CLASSNAME';
 const updateElementParametersType: ProjectT.UpdateElementParameters['type'] = 'PROJECTS:UPDATE_ELEMENT_PARAMETERS';
 const updateElementImageType: ProjectT.UpdateElementImage['type'] = 'PROJECTS:UPDATE_ELEMENT_IMAGE';
 const createElementsType: ProjectT.CreateElements['type'] = 'PROJECTS:CREATE_ELEMENTS';
@@ -589,7 +585,7 @@ export default function* projectSaga() {
   yield takeLatest(removeElementStylesType, removeElementStyles);
   yield takeLatest(updateElementStylesType, updateElementStyles);
   yield takeLatest(copyElementStylesType, copyElementStylesSaga);
-  yield takeLatest(pasteElementStylesType, pasteElementStylesSaga);
+  yield takeLatest(addElementClassNameType, addElementClassNameSaga);
   yield takeLatest(updateElementImageType, updateElementImage);
   yield takeLatest(updateElementParametersType, updateElementParameters);
 
