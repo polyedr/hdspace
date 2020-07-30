@@ -78,6 +78,9 @@ const defaultRootStyles: { [K in RootControls]: CssLikeStyles } & { other?: CssL
     width: '100%',
     'min-height': '100%',
     'min-width': '100%',
+    // Indents need to prevent margin collapsing
+    'padding-top': '1px',
+    'padding-bottom': '1px',
   },
 };
 
