@@ -1,6 +1,9 @@
-import { myAxios, MyAxiosProps } from '$config/settings';
-import { IProject } from '$redux/project/types';
 import { AxiosResponse, AxiosError } from 'axios';
+
+import { myAxios, MyAxiosProps } from '$config/settings';
+
+import { convertProjectFromResponse } from './converters/fromResponse';
+import { Project, ServerProject } from './types';
 
 export const onError = ({ response: r }: AxiosError) => {
   const response = r as any;
@@ -46,35 +49,35 @@ export const onError = ({ response: r }: AxiosError) => {
 
 export const parseResult = <T>(result: AxiosResponse<T>) => result && result.data;
 
-export const apiGetListProject = (props: MyAxiosProps): Promise<IProject[]> => (
+export const apiGetListProject = (props: MyAxiosProps): Promise<Project[]> => (
   myAxios({
     ...props,
     method: 'GET',
     url: '/projects/projects/',
   })
-    .then(parseResult)
+    .then(result => result.data.map(convertProjectFromResponse))
     .catch(onError)
 );
 
 // TODO: research here IProject or IProjectList in return type:
-export const apiGetProject = (props: MyAxiosProps & { id: string }): Promise<IProject> => (
+export const apiGetProject = (props: MyAxiosProps & { id: string }): Promise<Project> => (
   myAxios({
     ...props,
     method: 'GET',
     url: `/projects/projects/${props.id}/`,
   })
-    .then(parseResult)
+    .then(result => convertProjectFromResponse(result.data))
     .catch(onError)
 );
 
-export const apiAddProject = (props: MyAxiosProps) => (
+export const apiAddProject = (props: MyAxiosProps): Promise<Project> => (
   myAxios({
     ...props,
     method: 'POST',
     url: '/projects/projects/',
     data: props.data,
   })
-    .then(parseResult)
+    .then(result => convertProjectFromResponse(result.data))
     .catch(onError)
 );
 
@@ -88,22 +91,22 @@ export const apiDelProject = (props: MyAxiosProps & { id: string}) => (
     .catch(onError)
 );
 
-export const apiSaveProject = (props: MyAxiosProps): Promise<IProject> => (
+export const apiSaveProject = (props: MyAxiosProps): Promise<Project> => (
   myAxios({
     ...props,
     method: 'PATCH',
     url: `/projects/projects/${props.data.id}/`,
   })
-    .then(parseResult)
+    .then(result => convertProjectFromResponse(result.data))
     .catch(onError)
 );
 
-export const apiSaveScreens = (props: MyAxiosProps): Promise<IProject> => (
+export const apiSaveScreens = (props: MyAxiosProps): Promise<Project> => (
   myAxios({
     ...props,
     method: 'PATCH',
     url: '/projects/project-screens-multiple/',
   })
-    .then(parseResult)
+    .then(result => convertProjectFromResponse(result.data))
     .catch(onError)
 );

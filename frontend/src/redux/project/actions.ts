@@ -3,7 +3,7 @@ import { CSSProperties } from 'react';
 import { CssLikeStyles } from '$utils/StyleHelper';
 import { LibraryEntities, ChildrenElements } from '$domain/libraryElements/libraryElements';
 import { ChildEntity, Entity } from '$domain/core';
-import { LibraryElement } from '$api/types';
+import { LibraryElement, Project } from '$api/types';
 
 import * as T from './types';
 import { Action, HistoryMeta, Indices } from './types';
@@ -21,7 +21,7 @@ export const getListProject = (): T.LoadProjects => ({
   type: 'PROJECTS:LOAD_PROJECTS',
 });
 
-export const setListProject = (projects: T.IListProject[]): T.LoadProjectsSuccess => ({
+export const setListProject = (projects: Project[]): T.LoadProjectsSuccess => ({
   type: 'PROJECTS:LOAD_PROJECTS_SUCCESS',
   payload: { projects },
 });
@@ -41,7 +41,7 @@ export const getProject = (id: number, screenID?: string): T.GetProject => ({
   payload: { id, screenID },
 });
 
-export const setProject = (project: T.IProject): T.SetProject => ({
+export const setProject = (project: Project): T.SetProject => ({
   type: 'PROJECTS:SET_PROJECT',
   payload: { project },
 });
@@ -169,6 +169,15 @@ export const setScreens = (screens: T.IProjectScreen[]): T.SetScreens => ({
 export const addElement = (parentID: string, type: string): T.AddElement => ({
   type: 'PROJECTS:ADD_ELEMENT',
   payload: { parentID, type },
+});
+
+export const renameElement = (elementID: string, name: string): T.RenameElement => ({
+  type: 'PROJECTS:RENAME_ELEMENT',
+  payload: { elementID, name },
+});
+
+export const toggleContainersBorders = (): T.ToggleContainersBorders => ({
+  type: 'PROJECTS:TOGGLE_CONTAINERS_BORDERS',
 });
 
 export const setScenarioElements = (elements: T.IScenarioElements): T.SetScenarioElements => ({

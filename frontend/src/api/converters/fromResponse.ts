@@ -1,4 +1,11 @@
-import { ServerRecursiveElement, RecursiveElement, ServerElement, LibraryElement } from '$api/types';
+import {
+  ServerRecursiveElement,
+  RecursiveElement,
+  ServerElement,
+  LibraryElement,
+  ServerProject,
+  Project,
+} from '$api/types';
 import { Entity } from '$domain/core';
 
 export const convertElementFromResponse = <T extends Entity, K extends Entity, P extends ServerElement<T>['parameters']>(
@@ -31,3 +38,17 @@ export const convertRecursiveElementFromResponse = (element: ServerRecursiveElem
     children,
   };
 };
+
+export const convertProjectFromResponse = (project: ServerProject): Project => {
+  const { id, name, status, projectscreen, created, updated } = project;
+
+  return {
+    id,
+    name,
+    status,
+    projectscreen,
+    projectLoader: false,
+    created: new Date(created),
+    updated: new Date(updated),
+  }
+}

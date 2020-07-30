@@ -2,7 +2,7 @@ import { IPlainAction, IPlainFailAction, IAction } from '$shared/redux';
 import { CssLikeStyles } from '$utils/StyleHelper';
 import { LibraryEntities } from '$domain/libraryElements/libraryElements';
 import { Entity } from '$domain/core';
-import { LibraryElement as RootElement, LinkParams, HeadingType, VideoSettings, InputType } from '$api/types';
+import { LibraryElement as RootElement, LinkParams, HeadingType, VideoSettings, InputType, Project } from '$api/types';
 import { StateWithHistory } from 'redux-undo';
 
 export type ProjectState = {
@@ -15,7 +15,7 @@ export type ProjectState = {
 
 export type ProjectDataState = {
   libraryElements: LibraryEntities;
-  listProject: IListProject[];
+  listProject: Project[];
 }
 
 export type ProjectUiState = {
@@ -23,10 +23,11 @@ export type ProjectUiState = {
   isAddElementsModalOpened: boolean;
   itemToCopyInfo: ItemToCopyInfo | null;
   savedElementsValues: SavedElementsValues;
+  showContainersBorders: boolean;
 }
 
 export type ProjectEditState = {
-  currentProject: IProject;
+  currentProject: Project;
   currentScreen: IProjectScreen;
   screens: IProjectScreen[];
   scenarios: IScenarios;
@@ -79,14 +80,14 @@ export type LoadLibraryElementsFail = IPlainFailAction<'PROJECTS:LOAD_LIBRARY_EL
 
 export type LoadProjects = IPlainAction<'PROJECTS:LOAD_PROJECTS'>;
 export type LoadProjectsSuccess = IAction<
-  'PROJECTS:LOAD_PROJECTS_SUCCESS', { projects: IListProject[] }
+  'PROJECTS:LOAD_PROJECTS_SUCCESS', { projects: Project[] }
 >;
 export type LoadProjectsFail = IPlainFailAction<'PROJECTS:LOAD_PROJECTS_FAIL'>;
 
 export type AddProject = IAction<'PROJECTS:ADD_PROJECT', { name: string }>;
 export type DeleteProject = IAction<'PROJECTS:DELETE_PROJECT', { id: number }>;
 export type GetProject = IAction<'PROJECTS:GET_PROJECT', { id: number, screenID?: string }>;
-export type SetProject = IAction<'PROJECTS:SET_PROJECT', { project: IProject }>;
+export type SetProject = IAction<'PROJECTS:SET_PROJECT', { project: Project }>;
 export type ChangeScreensOrder = IAction<'PROJECTS:CHANGE_SCREENS_ORDER', { screens: IProjectScreen[] }>;
 export type RenameProject = IAction<'PROJECTS:RENAME_PROJECT', { projectID: number, name: string }>;
 export type SetListProjectLoader = IAction<'PROJECTS:SET_LIST_PROJECT_LOADER', { active: boolean }>;
@@ -113,6 +114,8 @@ export type ExportProject = IPlainAction<'PROJECTS:EXPORT_PROJECT'>;
 export type SetScreen = IAction<'PROJECTS:SET_SCREEN', { screen: IProjectScreen }>;
 export type SetScreens = IAction<'PROJECTS:SET_SCREENS', { screens: IProjectScreen[] }>;
 export type AddElement = IAction<'PROJECTS:ADD_ELEMENT', { parentID: string, type: string }>;
+export type RenameElement = IAction<'PROJECTS:RENAME_ELEMENT', { elementID: string, name: string }>;
+export type ToggleContainersBorders = IPlainAction<'PROJECTS:TOGGLE_CONTAINERS_BORDERS'>;
 export type SetScenarioElements = IAction<'PROJECTS:SET_SCENARIO_ELEMENTS', { elements: IScenarioElements }>;
 export type UpdateElementStyles = IAction<
   'PROJECTS:UPDATE_ELEMENT_STYLES',
@@ -205,6 +208,7 @@ export type Action =
   | GetScreenNN
   | WrapIntoContainer
   | SetActiveItem
+  | ToggleContainersBorders
   | SetIsAddElementsModalOpened
   | SetItemToCopy
   | CopyActiveItem
@@ -229,21 +233,6 @@ export type ItemToCopyInfo = {
   id: string;
   screenID: number;
 };
-
-export interface IListProject {
-  id: number,
-  status: string,
-  name: string,
-  preview?: string,
-  projectscreen: {
-    id: number,
-    project: number,
-    name: string,
-    status: string,
-    screenscenario: number[],
-    image?: any,
-  }[],
-}
 
 type Block = {
   display: 'block';
@@ -500,13 +489,6 @@ export interface IProjectListItem {
   name: string,
   image: string,
   buoyancy: number,
-}
-
-export interface IProject {
-  id: number,
-  name: string,
-  status: string,
-  projectscreen: number[],
 }
 
 export interface IListProject {

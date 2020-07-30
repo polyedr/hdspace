@@ -96,6 +96,10 @@ export function selectActiveItem(state: AppReduxState) {
   return selectProjectState(state).ui.activeItem;
 }
 
+export function selectShowingBorders(state: AppReduxState) {
+  return selectProjectState(state).ui.showContainersBorders;
+};
+
 export function selectActiveItemChildren(state: AppReduxState, childType: ChildEntity) {
   const activeItem = selectActiveItem(state);
   const elementsTree = selectRootElement(state);

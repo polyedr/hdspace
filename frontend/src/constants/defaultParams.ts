@@ -10,7 +10,7 @@ import {
   ServerStructType,
   Option,
   ILSItem,
-  ListItem, IProject,
+  ListItem,
 } from '$redux/project/types';
 import { IApiResponseError, ITokenPair } from '$redux/user/reducer';
 import { getDaysInMonth } from '$utils/NumberHelper';
@@ -217,11 +217,14 @@ export const DEFAULT_TYPOGRAPHY: IScreenTypography = {
   'text-align': 'left',
 };
 
-export const DEFAULT_PROJECT: IProject = {
+export const DEFAULT_PROJECT = {
   id: -1,
   name: '',
   status: '',
   projectscreen: [],
+  projectLoader: false,
+  updated: new Date(),
+  created: new Date(),
 };
 
 export const DEFAULT_LS: { root: ILSItem } = {

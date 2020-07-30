@@ -25,7 +25,6 @@ import {
 import { getSavedValue } from '$utils/getSavedValue';
 import { DEFAULT_LS, DEFAULT_SCREEN, DEFAULT_ACTIVE_ITEM } from '$constants/defaultParams';
 import {
-  IProject,
   IProjectScreen,
   IScenarioItem,
   IScenarioElement,
@@ -33,7 +32,7 @@ import {
 import { apiSaveScenario, apiSetScenarioNeuralNetwork, apiGetScenarios, apiSaveScenarios } from '$api/scenario';
 import { apiGetElements, apiSaveElements, apiAddElements, apiGetElement } from '$api/element';
 import { convertCreatedElementToRequest } from '$api/converters/toRequest';
-import { LibraryElementUnion, LibraryElement } from '$api/types';
+import { LibraryElementUnion, LibraryElement, Project } from '$api/types';
 import {
   apiAddScreen,
   apiDelScreen,
@@ -171,7 +170,7 @@ export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
   const currentProject: ReturnType<typeof selectors.selectCurrentProject> = yield select(
     selectors.selectCurrentProject
   );
-  const updateProject: IProject = R.assoc(
+  const updateProject: Project = R.assoc(
     'projectscreen',
     R.prepend(screen.id, currentProject.projectscreen),
     currentProject,
@@ -270,7 +269,7 @@ export function* delScreenSaga({ payload }: ReturnType<typeof delScreen>) {
 
   yield call(reqWrapper, apiDelScreen, { id: screenID });
 
-  const result: IProject = R.assoc(
+  const result: Project = R.assoc(
     'projectscreen',
     currentProject.projectscreen.filter(id => id !== screenID),
     currentProject,

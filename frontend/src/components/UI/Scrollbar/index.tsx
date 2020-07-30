@@ -17,6 +17,7 @@ interface IScrollbarProps {
 
 const renderTrack = ({ style, trackStylesBg, ...props }: any) => { // TODO: add correct typings!
   const trackStyle = {
+    zIndex: 10,
     backgroundColor: trackStylesBg || '#E7EAEC',
     borderRadius: '4px',
     top: 0,

@@ -8,6 +8,7 @@ import {
   apiDelElements,
   apiSaveElements,
   apiChangeRecursiveElement,
+  apiChangeElement,
 } from '$api/element';
 import {
   apiAddScenarios,
@@ -20,10 +21,20 @@ import { DISALLOW_REMOVE_ELEMENT_NOTIFICATION_TEXT, DISALLOW_ADD_ELEMENT_NOTIFIC
 import { reqWrapper } from '$redux/project/sagas/index';
 import { ReturnPromisedType } from '$shared/types';
 import { isElementCanBeRemove, isElementCanBeAdded } from '$utils/AvailableChildrenHelper';
+import { getSavedValue } from '$utils/getSavedValue';
+import {
+  findParentByChildID,
+  findChildByID,
+  moveElement,
+  addChildrenToElement,
+  removeChildrenFromElement,
+  updateElementParameters,
+  getElementsArray,
+  updateElementName,
+} from '$utils/ElementsTreeHelper';
 
 import { selectors, T } from '../';
 import { updateSavedElementsValues } from './screen';
-import { findParentByChildID, findChildByID, moveElement, addChildrenToElement, removeChildrenFromElement, updateElementParameters, getElementsArray } from '$utils/ElementsTreeHelper';
 import { setUndoActions } from '$redux/project/actions';
 
 export function* updateElementsTree(root: LibraryElement<'root'>, skip: boolean = false, sourceAction: T.Action | null = null) {
@@ -274,6 +285,29 @@ export function* unwrapFromContainerSaga(action: T.UnwrapFromContainer) {
   ];
 
   yield call(reqWrapper, apiChangeRecursiveElement, { data: {children: newParentChildrenIds}, id: parentID });
+}
+
+export function* renameElementSaga(action: ReturnType<typeof Actions.renameElement>) {
+  const { elementID, name } = action.payload;
+
+  const root: ReturnType<typeof selectors.selectRootElement> = yield select(selectors.selectRootElement);
+
+  const updatedTree = updateElementName(elementID, name, root);
+  const updatedElement = findChildByID(updatedTree, elementID);
+
+  if (!updatedElement) {
+    console.error(`Can not find updated element ${elementID} in tree`);
+  } else {
+    const savedValue = getSavedValue(updatedElement as LibraryElementUnion);
+    yield put(Actions.updateSavedElementValues(elementID, savedValue));
+
+    yield call(updateElementsTree, updatedTree);
+
+    yield put(Actions.setActiveItem({ itemId: elementID, itemType: updatedElement.type, name }));
+
+    const convertedElement = convertElementToPatchRequest(updatedElement);
+    yield call(reqWrapper, apiChangeElement, { data: convertedElement, id: elementID });
+  }
 }
 
 export function* redoWrapIntoContainerSaga(action: T.RedoWrapIntoContainer) {

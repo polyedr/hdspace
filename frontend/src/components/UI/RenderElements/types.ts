@@ -12,9 +12,13 @@ export type SharedRendererProps = {
   children: React.ReactElement[],
 };
 
-export type ContainerRendererProps = SharedRendererProps;
+export type ContainerRendererProps = SharedRendererProps & {
+  isBorderVisible: boolean,
+};
 
-export type DivBlockRendererProps = SharedRendererProps;
+export type DivBlockRendererProps = SharedRendererProps & {
+  isBorderVisible: boolean,
+};
 
 export type ImageRendererProps = SharedRendererProps & {
   params: {

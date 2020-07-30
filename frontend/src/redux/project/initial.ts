@@ -17,6 +17,7 @@ export const initialUi: T.ProjectUiState = {
   isAddElementsModalOpened: false,
   itemToCopyInfo: null,
   savedElementsValues: {},
+  showContainersBorders: false,
 };
 
 export const initialEdit: T.ProjectEditState = {

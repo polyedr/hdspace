@@ -5,16 +5,16 @@ import * as R from 'ramda';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 
-import { IListProject } from '$redux/project/types';
 import * as Actions from '$redux/project/actions';
 import { Button } from '$components/UI/Button';
 import { Modal } from '$components/UI/Modal';
 import { Icon } from '$components/UI/Icon';
+import { Project } from '$api/types';
 
 const styles = require('./Projects.scss');
 
 interface IProjectsProps {
-  listProject: IListProject[],
+  listProject: Project[],
   addProject: typeof Actions.addProject,
   delProject: typeof Actions.delProject,
   renameProject: typeof Actions.renameProject,
@@ -32,6 +32,8 @@ export const Projects: React.FunctionComponent<IProjectsProps> = memo(({
   const [changeProject, setChangeProject] = useState({ id: -1, name: '' });
   const [modalRenameProjectOpen, setModalRenameProjectOpen] = useState(false);
   const [modalDeleteProjectOpen, setModalDeleteProjectOpen] = useState(false);
+
+  const sortedListProject = R.sort(R.descend(project => project.created.getTime()), listProject);
 
   const handleCart = useCallback((e) => {
     e.preventDefault();
@@ -127,7 +129,7 @@ export const Projects: React.FunctionComponent<IProjectsProps> = memo(({
             </thead>
             <tbody>
               {
-                listProject.map(item => (
+                sortedListProject.map(item => (
                   <tr
                     className={styles.tableRow}
                     key={item.id}
