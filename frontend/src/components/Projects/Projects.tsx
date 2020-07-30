@@ -10,6 +10,7 @@ import { Button } from '$components/UI/Button';
 import { Modal } from '$components/UI/Modal';
 import { Icon } from '$components/UI/Icon';
 import { Project } from '$api/types';
+import { convertDateToRelative } from '$utils/convertDateToRelative';
 
 const styles = require('./Projects.scss');
 
@@ -123,6 +124,7 @@ export const Projects: React.FunctionComponent<IProjectsProps> = memo(({
                 </th>
                 <th className={styles.tableTitle}>Project Status</th>
                 <th className={styles.tableTitle}>Project Name</th>
+                <th className={styles.tableTitle}>Last Edit</th>
                 <th className={styles.tableTitle}>Total Pages</th>
                 <th className={styles.tableTitle}>Actions</th>
               </tr>
@@ -148,6 +150,9 @@ export const Projects: React.FunctionComponent<IProjectsProps> = memo(({
                       <Link to={`/project/${item.id}`}>
                         {item.name}
                       </Link>
+                    </td>
+                    <td className={styles.tableItem}>
+                      {convertDateToRelative(item.updated)}
                     </td>
                     <td className={styles.tableItem}>
                       {(R.prop('projectscreen', item) || []).length}
