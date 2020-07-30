@@ -19,6 +19,12 @@
     border-color: #949494;
   }
 
+  &:hover:disabled {
+    background-color: #949494;
+    border-color: #949494;
+    cursor: default;
+  }
+
   & svg {
     fill: $white;
   }

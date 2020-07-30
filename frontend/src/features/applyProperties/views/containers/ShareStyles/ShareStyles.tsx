@@ -72,6 +72,8 @@ const ShareStyles = (props: Props) => {
 
   const showApplyStylesButton = activeElement && copiedStyles && !activeElement.styles.classNames.includes(copiedStyles.className);
   
+  const isElementHasIDStyles = activeElement && Object.keys(activeElement.styles.idStyles).length;
+  
   const classes = makeStyles({
     root: {
       marginRight: '5px',
@@ -101,39 +103,47 @@ const ShareStyles = (props: Props) => {
 
   return (
     <>
-      <Button className={styles.shareButton} onClick={handleCopyButtonClick}>
+      <Button onClick={handleCopyButtonClick} disabled={!isElementHasIDStyles}>
         Share styles
       </Button>
       <ControlSection title="Shared classes">
         <>
-          {sharedClasses.length ? sharedClasses.map((sharedClass) => (
-            <Chip
-              size="small"
-              variant="outlined"
-              className={classes.root}
-              label={sharedClass.className}
-              clickable
-              color="primary"
-              onClick={() => handlePasteButtonClick(sharedClass.className)}
-              onDelete={() => handlePasteButtonClick(sharedClass.className)}
-              deleteIcon={<DoneIcon className={classes.icon} />}
-            />
-        )) : <p>No shared classes</p>}
-      </>
+          {sharedClasses.length ? (
+            sharedClasses.map((sharedClass) => (
+              <Chip
+                size="small"
+                variant="outlined"
+                className={classes.root}
+                label={sharedClass.className}
+                clickable
+                color="primary"
+                onClick={() => handlePasteButtonClick(sharedClass.className)}
+                onDelete={() => handlePasteButtonClick(sharedClass.className)}
+                deleteIcon={<DoneIcon className={classes.icon} />}
+              />
+            ))
+          ) : (
+            <p>No shared classes</p>
+          )}
+        </>
       </ControlSection>
       <ControlSection title="Element's classes">
         <>
-          {elementClassNames.length ? elementClassNames.map((className) => (
-            <Chip
-              size="small"
-              className={classes.elementsStylesChip}
-              label={className}
-              clickable
-              color="primary"
-              onClick={() => handleDeleteButtonClick(className)}
-              onDelete={() => handleDeleteButtonClick(className)}
-            />
-          )) : <p>No element's classes</p>}
+          {elementClassNames.length ? (
+            elementClassNames.map((className) => (
+              <Chip
+                size="small"
+                className={classes.elementsStylesChip}
+                label={className}
+                clickable
+                color="primary"
+                onClick={() => handleDeleteButtonClick(className)}
+                onDelete={() => handleDeleteButtonClick(className)}
+              />
+            ))
+          ) : (
+            <p>No element's classes</p>
+          )}
         </>
       </ControlSection>
     </>
