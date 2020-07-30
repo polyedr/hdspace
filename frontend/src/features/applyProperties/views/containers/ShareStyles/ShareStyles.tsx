@@ -1,7 +1,7 @@
 import React from 'react';
 import { Chip, makeStyles } from '@material-ui/core';
 import DoneIcon from '@material-ui/icons/Done';
-import HighlightOffIcon from '@material-ui/icons/HighlightOff';
+import CancelIcon from '@material-ui/icons/Cancel';
 
 import { actionsCreators, selectors } from '$redux/project';
 import { AppReduxState } from '$shared/types/app';
@@ -138,7 +138,7 @@ const ShareStyles = (props: Props) => {
                 label={className}
                 clickable={!isTagClassName(className)}
                 color="primary"
-                {...(!isTagClassName(className) && { deleteIcon: <HighlightOffIcon /> })}
+                {...(!isTagClassName(className) && { deleteIcon: <CancelIcon /> })}
                 {...(!isTagClassName(className) && {onClick: () => handleDeleteButtonClick(className)})}
                 {...(!isTagClassName(className) && {onDelete: () => handleDeleteButtonClick(className)})}
               />

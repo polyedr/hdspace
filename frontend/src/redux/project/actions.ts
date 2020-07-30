@@ -203,9 +203,9 @@ export const removeElementClassName = (elementID: string, className: string): T.
 });
 
 // TODO remove this action
-export const removeSharedStyles = (className: Entity, ruleName: string): T.RemoveSharedStyles => ({
+export const removeSharedStyles = (className: Entity, ruleNames: string[]): T.RemoveSharedStyles => ({
   type: 'PROJECTS:REMOVE_SHARED_STYLES',
-  payload: { className, ruleName },
+  payload: { className, ruleNames },
 });
 
 export const updateElementStyles = (id: string, styles: CssLikeStyles): T.UpdateElementStyles => ({

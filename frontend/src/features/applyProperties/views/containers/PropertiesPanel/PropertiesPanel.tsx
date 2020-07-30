@@ -163,14 +163,18 @@ const Component: React.FC<PropertiesPanelProps> = ({
                 </ControlSection>
               </div>
             )}
-            <div className="propsPanelContentBlock">
-              <ShareStyles />
-            </div>
-            <div className="propsPanelContentBlock">
-              <ControlSection title="Edit styles of">
-                <EditableStyles />
-              </ControlSection>
-            </div>
+            {activeItem.itemType !== 'root' && (
+              <>
+                <div className="propsPanelContentBlock">
+                  <ShareStyles />
+                </div>
+                <div className="propsPanelContentBlock">
+                  <ControlSection title="Edit styles of">
+                    <EditableStyles />
+                  </ControlSection>
+                </div>
+              </>
+            )}
             {currentItemType && R.toPairs(AVAILABLE_CONTROLS[currentItemType as Entity]).map(([elementName, elementValue]) => {
                 return elementName === 'root' ? (
                   <div className="propsPanelContentBlock">

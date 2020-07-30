@@ -15,19 +15,22 @@ type OwnProps = {
 const mapState = (state: AppReduxState) => {
   return {
     editableStyles: selectors.selectEditableStyles(state),
+    activeItem: selectors.selectActiveItem(state),
   }
 };
 
 type Props = OwnProps & ReturnType<typeof mapState>;
 
 const RemoveStyles = memo((props: Props) => {
-  const { onClick, ruleNames, editableStyles } = props;
+  const { onClick, ruleNames, editableStyles, activeItem } = props;
 
   const handleButtonClick = () => {
     onClick(ruleNames);
   };
 
-  return editableStyles === 'idStyles' ? (
+  const showClearButton = activeItem.itemType !== 'root' && editableStyles !== activeItem.itemType;
+
+  return showClearButton ? (
     <Button className={styles.button} styleType="grey" onClick={handleButtonClick}>Clear styles</Button>
   ) : null;
 });

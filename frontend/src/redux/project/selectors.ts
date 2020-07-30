@@ -104,18 +104,32 @@ export function selectCopiedStyles(state: AppReduxState) {
   return selectFeatureState(state).ui.copiedStyles;
 };
 
-export function selectTagStyles(state: AppReduxState, elementType: Entity) {
+export function selectSharedStyles(state: AppReduxState, elementType: string) {
   return selectCurrentProject(state).projectData.classes.find(cssClass => cssClass.className === elementType)?.rules || {};
 };
 
 export function selectCurrentEditableStyles(state: AppReduxState, ruleName: keyof CssLikeStyles) {
   const activeItemType = selectActiveItem(state).itemType;
   const activeElementStyles = selectActiveItemStyles(state).idStyles;
+  const activeElementClassNames = selectActiveItemStyles(state).classNames;
   const editableStyles = selectEditableStyles(state);
-  const activeTagStyles = activeItemType !== 'none' && selectTagStyles(state, activeItemType) || {};
+  const activeTagStyles = activeItemType !== 'none' && selectSharedStyles(state, activeItemType) || {};
 
-  const activeItemStyles = editableStyles === 'idStyles' || editableStyles === '' ? activeElementStyles : activeTagStyles;
-  return activeItemStyles[ruleName] || activeTagStyles[ruleName]
+  const activeSharedStyles = selectSharedStyles(state, activeElementClassNames[1]) || {};
+
+  const getActiveItemStyles = (editableStyles: string) => {
+    if (editableStyles === 'idStyles' || editableStyles === '') {
+      return activeElementStyles;
+    } else if (editableStyles === activeItemType) {
+      return activeTagStyles;
+    } else {
+      return activeSharedStyles;
+    }
+  }
+
+  const activeItemStyles = getActiveItemStyles(editableStyles);
+
+  return activeItemStyles[ruleName] || activeSharedStyles[ruleName] || activeTagStyles[ruleName];
 }
 
 export function selectShowingBorders(state: AppReduxState) {

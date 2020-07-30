@@ -200,7 +200,7 @@ function* moveElementSaga(action: ReturnType<typeof Actions.moveElement>) {
 }
 
 function* removeSharedStylesSaga(action: ReturnType<typeof Actions.removeSharedStyles>) {
-  const { className, ruleName: removedRuleName } = action.payload;
+  const { className, ruleNames: removedRuleNames } = action.payload;
 
   const currentProject: ReturnType<typeof selectors.selectCurrentProject> = yield select(selectors.selectCurrentProject);
 
@@ -209,12 +209,11 @@ function* removeSharedStylesSaga(action: ReturnType<typeof Actions.removeSharedS
     projectData: {
       ...currentProject.projectData,
       classes: currentProject.projectData.classes.map((cssClass) => {
-        
-        return cssClass.name === className
+        return cssClass.className === className
           ? {
               ...cssClass,
               rules: (R.toPairs(cssClass.rules) as [string, string])
-                .filter(([ruleName]) => ruleName !== removedRuleName)
+                .filter(([ruleName]) => removedRuleNames.every(name => name !== ruleName))
                 .reduce(
                   (acc, [ruleName, rule]) => ({ ...acc, [ruleName]: rule }),
                   {} as CssLikeStyles
