@@ -96,6 +96,7 @@ export type CopyElementStyles = IAction<'PROJECTS:COPY_ELEMENT_STYLES', { elemen
 export type SetCopiedStyles = IAction<'PROJECTS:SET_COPIED_STYLES', { elementType: Entity, className: string, styles: CssLikeStyles }>;
 export type AddSharedStyles = IAction<'PROJECTS:ADD_SHARED_STYLES', { elementID: string; className: string; elementType: Entity; styles: CssLikeStyles; }>;
 export type AddElementClassName = IAction<'PROJECTS:ADD_ELEMENT_CLASSNAME', { elementID: string, className: string }>;
+export type RemoveElementClassName = IAction<'PROJECTS:REMOVE_ELEMENT_CLASSNAME', { elementID: string, className: string }>;
 export type UpdateSharedStyles = IAction<'PROJECTS:UPDATE_SHARED_STYLES', { className: Entity, styles: CssLikeStyles }>;
 export type RemoveSharedStyles = IAction<'PROJECTS:REMOVE_SHARED_STYLES', { className: Entity, ruleName: string }>;
 export type UpdateElementStyles = IAction<'PROJECTS:UPDATE_ELEMENT_STYLES', { id: string, styles: CssLikeStyles }>;

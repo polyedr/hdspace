@@ -61,6 +61,7 @@ import {
   getElementsArray,
   getTreeWithDefaultStylesAndParams,
   addElementClassName,
+  removeElementClassName,
 } from '$utils/ElementsTreeHelper';
 import { CssLikeStyles } from '$utils/StyleHelper';
 import * as PATH_NAMES from '$constants/pathNames';
@@ -328,20 +329,27 @@ function* copyElementStylesSaga(action: ReturnType<typeof Actions.copyElementSty
   yield put(Actions.setCopiedStyles(elementType, uniqueClassName, styles));
 
   yield call(addSharedStyles, uniqueClassName, elementType, styles);
-  yield call(updateElementClassNames, elementID, uniqueClassName);
+  yield call(updateElementClassNames, elementID, uniqueClassName, 'add');
 }
 
-function* addElementClassNameSaga(action: ReturnType<typeof Actions.AddElementClassName>) {
+function* addElementClassNameSaga(action: ReturnType<typeof Actions.addElementClassName>) {
   const { elementID, className } = action.payload;
-  yield call(updateElementClassNames, elementID, className);
+  yield call(updateElementClassNames, elementID, className, 'add');
 }
 
-function* updateElementClassNames(elementID: string, newClassName: string) {
-  const root: ReturnType<typeof selectors.selectRootElement> = yield select(selectors.selectRootElement);
+function* removeElementClassNameSaga(action: ReturnType<typeof Actions.removeElementClassName>) {
+  const { elementID, className } = action.payload;
+  yield call(updateElementClassNames, elementID, className, 'remove');
+}
 
-  console.log('elementID', elementID)
+function* updateElementClassNames(elementID: string, newClassName: string, action: 'add' | 'remove') {
+  const root: ReturnType<typeof selectors.selectRootElement> = yield select(selectors.selectRootElement);
   
-  const updatedTree = addElementClassName(elementID, newClassName, root);
+  const updatedTree =
+    action === 'add'
+      ? addElementClassName(elementID, newClassName, root)
+      : removeElementClassName(elementID, newClassName, root);
+
   const updatedElement = findChildByID(updatedTree, elementID);
 
   if (!updatedElement) {
@@ -547,6 +555,7 @@ const removeElementStylesType: ProjectT.RemoveElementStyles['type'] = 'PROJECTS:
 const updateElementStylesType: ProjectT.UpdateElementStyles['type'] = 'PROJECTS:UPDATE_ELEMENT_STYLES';
 const copyElementStylesType: ProjectT.CopyElementStyles['type'] = 'PROJECTS:COPY_ELEMENT_STYLES';
 const addElementClassNameType: ProjectT.AddElementClassName['type'] = 'PROJECTS:ADD_ELEMENT_CLASSNAME';
+const removeElementClassNameType: ProjectT.RemoveElementClassName['type'] = 'PROJECTS:REMOVE_ELEMENT_CLASSNAME';
 const updateElementParametersType: ProjectT.UpdateElementParameters['type'] = 'PROJECTS:UPDATE_ELEMENT_PARAMETERS';
 const updateElementImageType: ProjectT.UpdateElementImage['type'] = 'PROJECTS:UPDATE_ELEMENT_IMAGE';
 const createElementsType: ProjectT.CreateElements['type'] = 'PROJECTS:CREATE_ELEMENTS';
@@ -586,6 +595,7 @@ export default function* projectSaga() {
   yield takeLatest(updateElementStylesType, updateElementStyles);
   yield takeLatest(copyElementStylesType, copyElementStylesSaga);
   yield takeLatest(addElementClassNameType, addElementClassNameSaga);
+  yield takeLatest(removeElementClassNameType, removeElementClassNameSaga);
   yield takeLatest(updateElementImageType, updateElementImage);
   yield takeLatest(updateElementParametersType, updateElementParameters);
 

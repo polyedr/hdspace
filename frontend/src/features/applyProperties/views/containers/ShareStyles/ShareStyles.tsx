@@ -40,12 +40,21 @@ const mapState = (state: AppReduxState) => {
 const mapDispatch = {
   copyStyles: actionsCreators.copyElementStyles,
   addElementClassName: actionsCreators.addElementClassName,
+  removeElementClassName: actionsCreators.removeElementClassName,
 };
 
 type Props = ReturnType<typeof mapState> & typeof mapDispatch;
 
 const ShareStyles = (props: Props) => {
-  const { activeElement, copiedStyles, copyStyles, addElementClassName, sharedClasses, elementClassNames } = props;
+  const {
+    activeElement,
+    copiedStyles,
+    copyStyles,
+    addElementClassName,
+    removeElementClassName,
+    sharedClasses,
+    elementClassNames,
+  } = props;
 
   const handleCopyButtonClick = () => {
     activeElement && copyStyles(activeElement.type, activeElement.id, activeElement.styles.idStyles);
@@ -53,6 +62,10 @@ const ShareStyles = (props: Props) => {
 
   const handlePasteButtonClick = (className: string) => {
     activeElement && addElementClassName(activeElement.id, className);
+  };
+
+  const handleDeleteButtonClick = (className: string) => {
+    activeElement && removeElementClassName(activeElement.id, className);
   };
 
   const showShareStylesButton = !copiedStyles || activeElement && copiedStyles && !activeElement.styles.classNames.includes(copiedStyles.className);
@@ -101,6 +114,7 @@ const ShareStyles = (props: Props) => {
               label={sharedClass.className}
               clickable
               color="primary"
+              onClick={() => handlePasteButtonClick(sharedClass.className)}
               onDelete={() => handlePasteButtonClick(sharedClass.className)}
               deleteIcon={<DoneIcon className={classes.icon} />}
             />
@@ -116,7 +130,8 @@ const ShareStyles = (props: Props) => {
               label={className}
               clickable
               color="primary"
-              onDelete={() => handlePasteButtonClick(className)}
+              onClick={() => handleDeleteButtonClick(className)}
+              onDelete={() => handleDeleteButtonClick(className)}
             />
           )) : <p>No element's classes</p>}
         </>

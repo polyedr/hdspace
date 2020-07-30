@@ -150,6 +150,42 @@ export const updateElementStyles = <T extends Entity, K extends Entity, P extend
   };
 };
 
+export const addElementClassName = <T extends Entity, K extends Entity>(
+  elementID: string,
+  newClassName: string,
+  root: LibraryElement<T, LibraryElement<K>[]>
+): LibraryElement<T, LibraryElement<K>[]> => {
+  return {
+    ...root,
+    styles:
+      root.id === elementID
+        ? {
+            ...root.styles,
+            classNames: [...root.styles.classNames, newClassName],
+          }
+        : root.styles,
+    children: root.children.map((child) => addElementClassName(elementID, newClassName, child)),
+  };
+};
+
+export const removeElementClassName = <T extends Entity, K extends Entity>(
+  elementID: string,
+  removedClassName: string,
+  root: LibraryElement<T, LibraryElement<K>[]>
+): LibraryElement<T, LibraryElement<K>[]> => {
+  return {
+    ...root,
+    styles:
+      root.id === elementID
+        ? {
+            ...root.styles,
+            classNames: root.styles.classNames.filter(className => className !== removedClassName),
+          }
+        : root.styles,
+    children: root.children.map((child) => removeElementClassName(elementID, removedClassName, child)),
+  };
+};
+
 export const removeElementStyles = <T extends Entity, K extends Entity>(
   elementID: string,
   removedRuleNames: string[],

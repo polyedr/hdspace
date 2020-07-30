@@ -197,6 +197,11 @@ export const addElementClassName = (elementID: string, className: string): T.Add
   payload: { elementID, className },
 });
 
+export const removeElementClassName = (elementID: string, className: string): T.RemoveElementClassName => ({
+  type: 'PROJECTS:REMOVE_ELEMENT_CLASSNAME',
+  payload: { elementID, className },
+});
+
 // TODO remove this action
 export const removeSharedStyles = (className: Entity, ruleName: string): T.RemoveSharedStyles => ({
   type: 'PROJECTS:REMOVE_SHARED_STYLES',
