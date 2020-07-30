@@ -1,6 +1,7 @@
 import React from 'react';
 import { Chip, makeStyles } from '@material-ui/core';
 import DoneIcon from '@material-ui/icons/Done';
+import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 
 import { actionsCreators, selectors } from '$redux/project';
 import { AppReduxState } from '$shared/types/app';
@@ -67,12 +68,12 @@ const ShareStyles = (props: Props) => {
   const handleDeleteButtonClick = (className: string) => {
     activeElement && removeElementClassName(activeElement.id, className);
   };
-
-  const showShareStylesButton = !copiedStyles || activeElement && copiedStyles && !activeElement.styles.classNames.includes(copiedStyles.className);
-
-  const showApplyStylesButton = activeElement && copiedStyles && !activeElement.styles.classNames.includes(copiedStyles.className);
-  
+ 
   const isElementHasIDStyles = activeElement && Object.keys(activeElement.styles.idStyles).length;
+  const isElementHasSharedClassName = activeElement?.styles.classNames[1];
+  const disableShareButton = !isElementHasIDStyles || isElementHasSharedClassName;
+
+  const isTagClassName = (className: string) => className === activeElement?.type; 
   
   const classes = makeStyles({
     root: {
@@ -103,7 +104,7 @@ const ShareStyles = (props: Props) => {
 
   return (
     <>
-      <Button onClick={handleCopyButtonClick} disabled={!isElementHasIDStyles}>
+      <Button onClick={handleCopyButtonClick} disabled={!!disableShareButton}>
         Share styles
       </Button>
       <ControlSection title="Shared classes">
@@ -135,10 +136,11 @@ const ShareStyles = (props: Props) => {
                 size="small"
                 className={classes.elementsStylesChip}
                 label={className}
-                clickable
+                clickable={!isTagClassName(className)}
                 color="primary"
-                onClick={() => handleDeleteButtonClick(className)}
-                onDelete={() => handleDeleteButtonClick(className)}
+                {...(!isTagClassName(className) && { deleteIcon: <HighlightOffIcon /> })}
+                {...(!isTagClassName(className) && {onClick: () => handleDeleteButtonClick(className)})}
+                {...(!isTagClassName(className) && {onDelete: () => handleDeleteButtonClick(className)})}
               />
             ))
           ) : (
