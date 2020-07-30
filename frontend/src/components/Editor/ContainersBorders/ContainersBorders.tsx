@@ -91,7 +91,7 @@ class ContainersBordersComponent extends React.Component<Props, State> {
           top: HTMLElement.getBoundingClientRect().top - rootElement.getBoundingClientRect().top,
           right: rootElement.getBoundingClientRect().right - HTMLElement.getBoundingClientRect().right,
           bottom: rootElement.getBoundingClientRect().bottom - HTMLElement.getBoundingClientRect().bottom,
-          left: rootElement.getBoundingClientRect().left - HTMLElement.getBoundingClientRect().left,
+          left: HTMLElement.getBoundingClientRect().left - rootElement.getBoundingClientRect().left,
         },
         width: HTMLElement.clientWidth,
         height: HTMLElement.clientHeight,
@@ -100,7 +100,15 @@ class ContainersBordersComponent extends React.Component<Props, State> {
 
     const filteredBorders = newBorders.filter(border => !!border) as Border[];
 
-    if (filteredBorders.some((border, index) => !R.equals(border.coordinates, borders[index]?.coordinates))) {
+    const isBordersCoordinatesChanged = filteredBorders.some(
+      (border, index) => !R.equals(border.coordinates, borders[index]?.coordinates)
+    );
+
+    const isElementNameChanged = filteredBorders.some(
+      (border, index) => border.targetElement.name !== borders[index]?.targetElement.name
+    );
+
+    if (isBordersCoordinatesChanged || isElementNameChanged) {
       this.setState({ borders: filteredBorders });
     };
   };
@@ -224,7 +232,7 @@ class ContainersBordersComponent extends React.Component<Props, State> {
                   {this.renderBorder(
                     'top',
                     {
-                      top: isRoot ? coordinates.top : coordinates.top,
+                      top: coordinates.top,
                       right: coordinates.right,
                       left: coordinates.left,
                     },
@@ -234,7 +242,7 @@ class ContainersBordersComponent extends React.Component<Props, State> {
                   {this.renderBorder(
                     'right',
                     {
-                      top: isRoot ? coordinates.top : coordinates.top,
+                      top: coordinates.top,
                       right: coordinates.right,
                       height: isRoot ? height - 2 : height,
                     },

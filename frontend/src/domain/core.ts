@@ -315,6 +315,11 @@ const rootDefaults = {
       'min-height': '100%',
       'min-width': '100%',
     },
+    // Indents need to prevent margin collapsing
+    indents: {
+      'padding-top': '1px',
+      'padding-bottom': '1px', 
+    },
   },
 };
 
