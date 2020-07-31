@@ -327,9 +327,9 @@ function* copyElementStylesSaga(action: ReturnType<typeof Actions.copyElementSty
 
   yield put(Actions.setCopiedStyles(elementType, uniqueClassName, styles));
 
-  yield call(addSharedStyles, uniqueClassName, elementType, styles);
   yield call(removeElementStyles, elementID, Object.keys(styles));
   yield call(updateElementClassNames, elementID, uniqueClassName, 'add');
+  yield call(addSharedStyles, uniqueClassName, elementType, styles);
 }
 
 function* addElementClassNameSaga(action: ReturnType<typeof Actions.addElementClassName>) {
