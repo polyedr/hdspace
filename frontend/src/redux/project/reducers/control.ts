@@ -13,32 +13,83 @@ import undoable, { combineFilters, includeAction, StateWithHistory } from 'redux
 // 4. as a third argument updateElementsTree should have action(sourceAction), that will be used to redo undid changes.
 // Often this source action is the same as initial action of this saga. But in case of creating elements it is not.
 
-export const reducer = (state: T.ProjectControlState = initialControl, action: T.Action): T.ProjectControlState => {
+export const controlReducer = (state: T.ProjectControlState = initialControl, action: T.Action): T.ProjectControlState => {
   switch (action.type) {
     case 'PROJECTS:UPDATE_ELEMENTS_TREE': {
-      return {
+      const newState = {
         ...state,
         rootElement: action.payload.root,
-        sourceAction: action.payload.sourceAction,
-        redoActions: action.payload.skip ? state.redoActions : [],
       };
+
+      if (!action?.meta?.redo && !action?.meta?.undo) {
+        newState.redoActions = [];
+      }
+
+      if (action.payload.sourceAction && !action.payload.skip) {
+        if (state.multi) {
+          const last = [state.history[state.history.length - 1], action.payload.sourceAction];
+          // @ts-ignore
+          newState.history = [
+            ...state.history.slice(0, -1),
+            last
+          ]
+        } else {
+          newState.history = [
+            ...state.history,
+            action.payload.sourceAction,
+          ]
+        }
+      }
+
+      return newState
     }
 
     case 'PROJECTS:SET_UNDO_ACTIONS': {
-      const undoActions = [ ...action.payload ];
+      if (state.add) {
+        const last = [
+          state.undoActions[state.undoActions.length - 1],
+          action.payload,
+        ];
+
+
+        return {
+          ...state,
+          // @ts-ignore
+          undoActions: [
+            ...state.undoActions.slice(0, -1),
+            last
+          ],
+        }
+      }
 
       return {
         ...state,
-        undoActions,
+      // @ts-ignore
+        undoActions: [
+          ...state.undoActions,
+          action.payload,
+        ],
+      }
+    }
+
+    case 'PROJECTS:POP_UNDO_ACTION': {
+      return {
+        ...state,
+        undoActions: state.undoActions.slice(0, -1),
       }
     }
 
     case 'PROJECTS:ADD_UNDO_ACTION': {
       const copy = [...state.undoActions];
-      copy.unshift(action.payload);
+      // @ts-ignore
+      copy[copy.length - 1] = [
+        copy[copy.length - 1],
+        action.payload,
+      ];
 
       return {
         ...state,
+        // @ts-ignore
         undoActions: copy,
       }
     }
@@ -57,6 +108,31 @@ export const reducer = (state: T.ProjectControlState = initialControl, action: T
       }
     }
 
+    case 'PROJECTS:CLEAR_HISTORY': {
+      return  {
+        ...state,
+        undoActions: [],
+        redoActions: [],
+        history: [],
+        sourceAction: null,
+        add: false,
+      }
+    }
+
+    case 'PROJECTS:POP_HISTORY': {
+      return {
+        ...state,
+        history: state.history.slice(0, -1),
+      }
+    }
+
+    case 'PROJECTS:SET_MULTI': {
+      return {
+        ...state,
+        multi: action.payload,
+      }
+    }
+
     default:
       return state;
   }
@@ -70,11 +146,11 @@ const isSameState = (
   previousHistory: StateWithHistory<T.ProjectControlState>
 ) => !R.equals(previousHistory.present.rootElement, currentState.rootElement);
 
-export const controlReducer = undoable(reducer, {
+/*export const controlReducer = undoable(reducer, {
   filter: combineFilters(
     includeAction(['PROJECTS:UPDATE_ELEMENTS_TREE']),
     skip,
     isSameState
   ),
   clearHistoryType: 'PROJECTS:CLEAR_HISTORY',
-});
+});*/

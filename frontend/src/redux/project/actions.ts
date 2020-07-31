@@ -132,7 +132,6 @@ export const moveElement = (
     indices,
     elementID,
     parentID,
-    options,
     isRemote
   },
   meta: options,
@@ -299,9 +298,9 @@ export const redoAction = (): T.RedoAction => ({
   type: 'REDO_ACTION',
 });
 
-export const setUndoActions = (actions: Action[]): T.SetUndoActions => ({
+export const setUndoActions = (action: Action | Action[]): T.SetUndoActions => ({
   type: 'PROJECTS:SET_UNDO_ACTIONS',
-  payload: actions,
+  payload: action,
 });
 
 export const setRedoActions = (actions: Action[]): T.SetRedoActions => ({
@@ -312,6 +311,10 @@ export const setRedoActions = (actions: Action[]): T.SetRedoActions => ({
 export const addUndoAction = (action: Action): T.AddUndoAction => ({
   type: 'PROJECTS:ADD_UNDO_ACTION',
   payload: action,
+});
+
+export const popUndoAction = (): T.PopUndoAction => ({
+  type: 'PROJECTS:POP_UNDO_ACTION',
 });
 
 export const setAdd = (add: boolean): T.SetAddAction => ({
@@ -350,4 +353,13 @@ export const redoWrapIntoContainer = (elementId: string, wrapperId: string, pare
 
 export const clearHistory = (): T.ClearHistory => ({
   type: 'PROJECTS:CLEAR_HISTORY',
-})
+});
+
+export const popHistory = (): T.PopHistory => ({
+  type: 'PROJECTS:POP_HISTORY',
+});
+
+export const setMulti = (multi: boolean): T.SetMulti => ({
+  type: 'PROJECTS:SET_MULTI',
+  payload: multi
+});

@@ -10,7 +10,7 @@ export type ProjectState = {
   ui: ProjectUiState,
   edit: ProjectEditState;
   communication: ProjectCommunicationState;
-  control: StateWithHistory<ProjectControlState>;
+  control: ProjectControlState;
 };
 
 export type ProjectDataState = {
@@ -47,10 +47,12 @@ export type ProjectCommunicationState = {
 
 export type ProjectControlState = {
   rootElement: RootElement<'root'>;
-  undoActions: Action[];
+  undoActions: Action[] | Action[][];
   redoActions: Action[];
+  history: Action[];
   sourceAction: Action | null;
   add: boolean;
+  multi: boolean;
 }
 
 export type Indices = {
@@ -104,7 +106,7 @@ export type DuplicateScreen = IAction<'PROJECTS:DUPLICATE_SCREEN', { name: strin
 export type ActivateScreen = IAction<'PROJECTS:ACTIVATE_SCREEN', { projectID: number, screenID: number }>;
 export type MoveElement = IAction<
   'PROJECTS:MOVE_ELEMENT',
-  { indices: Indices, elementID: string, parentID: string, options: HistoryMeta, isRemote?: boolean },
+  { indices: Indices, elementID: string, parentID: string, isRemote?: boolean },
   HistoryMeta
 >;
 export type UpdateElementsTree = IAction<'PROJECTS:UPDATE_ELEMENTS_TREE', { root: RootElement<'root'>, skip: boolean, sourceAction: any, parentID?: string }>;
@@ -157,7 +159,7 @@ export type PasteCopiedItem = IPlainAction<'PROJECTS:PASTE_COPIED_ITEM'>;
 export type ResetScreenState = IPlainAction<'PROJECTS:RESET_SCREEN_STATE'>;
 export type UndoAction = IPlainAction<'UNDO_ACTION'>;
 export type RedoAction = IPlainAction<'REDO_ACTION'>;
-export type SetUndoActions = IAction<'PROJECTS:SET_UNDO_ACTIONS', Action[]>;
+export type SetUndoActions = IAction<'PROJECTS:SET_UNDO_ACTIONS', Action | Action[]>;
 export type SetRedoActions = IAction<'PROJECTS:SET_REDO_ACTIONS', Action[]>;
 export type AddUndoAction = IAction<'PROJECTS:ADD_UNDO_ACTION', Action>;
 export type UnwrapFromContainer = IAction<'PROJECTS:UNWRAP_FROM_CONTAINER', { elementID: string, wrapperID: string, parentID: string }, HistoryMeta>
@@ -165,6 +167,9 @@ export type SetAddAction = IAction<'PROJECTS:SET_ADD_ACTION', boolean>;
 export type RestoreElementChildren = IAction<'PROJECTS:RESTORE_ELEMENT_CHILDREN', { elementId: string, childrenIds: string[] }, HistoryMeta>;
 export type RedoWrapIntoContainer = IAction<'PROJECTS:REDO_WRAP_INTO_CONTAINER', { elementId: string, wrapperId: string, parentId: string }, HistoryMeta>;
 export type ClearHistory = IPlainAction<'PROJECTS:CLEAR_HISTORY'>;
+export type PopUndoAction = IPlainAction<'PROJECTS:POP_UNDO_ACTION'>;
+export type PopHistory = IPlainAction<'PROJECTS:POP_HISTORY'>;
+export type SetMulti = IAction<'PROJECTS:SET_MULTI', boolean>;
 
 export type Action =
   | LoadLibraryElements
@@ -227,6 +232,9 @@ export type Action =
   | RestoreElementChildren
   | RedoWrapIntoContainer
   | ClearHistory
+  | PopUndoAction
+  | PopHistory
+  | SetMulti
   | MoveElement;
 
 export type ItemToCopyInfo = {
@@ -525,4 +533,5 @@ export type Page = {
 export type HistoryMeta = {
   undo?: boolean;
   redo?: boolean;
+  add?: boolean;
 }

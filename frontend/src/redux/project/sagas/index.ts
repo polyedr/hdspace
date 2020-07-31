@@ -9,7 +9,6 @@ import {
 import * as R from 'ramda';
 import { REHYDRATE } from 'redux-persist';
 import { LOCATION_CHANGE, LocationChangeAction } from 'connected-react-router';
-import { ActionCreators } from 'redux-undo';
 import { AppReduxState } from '$shared/types/app';
 import { ReturnPromisedType } from '$shared/types';
 import * as Actions from '$redux/project/actions';
@@ -158,7 +157,7 @@ function* authCheckSaga() {
 function* moveElementSaga(action: ReturnType<typeof Actions.moveElement>): any {
   const { indices: { newIndex, oldIndex }, elementID, parentID, isRemote } = action.payload;
   if (!action.meta) {
-    console.error(`You have to provide metainformation for action ${action.type}`)
+    console.error(`You have to provide metainformation for action ${action.type}`);
     return;
   }
   const { undo, redo } = action.meta;
@@ -179,31 +178,28 @@ function* moveElementSaga(action: ReturnType<typeof Actions.moveElement>): any {
   }
 
   // we can get rid of this code block when we will get better Sortable.js implementation
-  if (!undo && !redo) {
+  if (!undo) {
     if (isRemote) {
-      yield put(Actions.setUndoActions([
-        Actions.moveElement({newIndex: oldIndex, oldIndex: newIndex}, elementID, parentID, false),
-      ]));
+      yield put(Actions.setUndoActions(Actions.moveElement({newIndex: oldIndex, oldIndex: newIndex}, elementID, parentID, false)));
 
       yield put(Actions.setAdd(true))
     } else {
       const add = yield select(selectors.selectAdd);
 
-      if (add) {
-        yield put(Actions.addUndoAction(Actions.moveElement({newIndex: oldIndex, oldIndex: newIndex}, elementID, parentID, true)))
-      } else {
-        yield put(Actions.setUndoActions([
-          Actions.moveElement({newIndex: oldIndex, oldIndex: newIndex}, elementID, parentID, true),
-        ]));
-      }
+      yield put(Actions.setUndoActions(
+        Actions.moveElement({newIndex: oldIndex, oldIndex: newIndex}, elementID, parentID, add),
+      ));
       yield put(Actions.setAdd(false))
     }
   }
 
   const updatedTree = moveElement(targetParent.id, elementToMove, root, newIndex);
-  if (!isRemote) {
-    yield put(Actions.updateElementsTree(updatedTree, undo || redo, action));
-  }
+  yield put({
+    ...Actions.updateElementsTree(updatedTree, undo, action),
+    meta: { redo, undo },
+  });
+
+  yield put(Actions.setMulti(!!isRemote));
 
   const updatedParent = findChildByID(updatedTree, parentID);
 
@@ -217,7 +213,7 @@ function* moveElementSaga(action: ReturnType<typeof Actions.moveElement>): any {
 
   if (isRemote) return;
 
-  !undo && !redo && document.querySelector<HTMLElement>(`[data-ls-id='${elementID}']`)?.focus();
+  !undo && document.querySelector<HTMLElement>(`[data-ls-id='${elementID}']`)?.focus();
 
   const elementData = {
     name: targetParent.name,
@@ -238,16 +234,16 @@ export function* updateElementsOnServerSaga(elements: ProjectT.IScenarioElements
 function* updateElementStyles(action: ReturnType<typeof Actions.updateElementStyles>) {
   const { id, styles } = action.payload;
   if (!action.meta) {
-    console.error(`You have to provide metainformation for action ${action.type}`)
+    console.error(`You have to provide metainformation for action ${action.type}`);
     return;
   }
   const { undo, redo } = action.meta;
 
   const root: ReturnType<typeof selectors.selectRootElement> = yield select(selectors.selectRootElement);
 
-  if (!undo && !redo) {
+  if (!undo) {
     const oldStyles = yield select(selectors.selectElementStyles(id));
-    yield put(Actions.setUndoActions([Actions.updateElementStyles(id, oldStyles)]));
+    yield put(Actions.setUndoActions(Actions.updateElementStyles(id, oldStyles)));
   }
 
   const updatedTree = updateStyles(id, styles, root);
@@ -257,7 +253,10 @@ function* updateElementStyles(action: ReturnType<typeof Actions.updateElementSty
     console.error(`Can not find updated element ${id} in tree`);
     return;
   }
-  yield put(Actions.updateElementsTree(updatedTree, undo || redo, action));
+  yield put({
+    ...Actions.updateElementsTree(updatedTree, undo, action),
+    meta: { redo, undo },
+  });
   const convertedElement = convertElementToPatchRequest(updatedElement);
   yield call(reqWrapper, apiChangeElement, { data: convertedElement, id });
 }
@@ -280,16 +279,16 @@ function* updateElementImage(action: ReturnType<typeof Actions.updateElementImag
 function* updateElementParameters(action: ReturnType<typeof Actions.updateElementParameters>) {
   const { itemID, parameters } = action.payload;
   if (!action.meta) {
-    console.error(`You have to provide metainformation for action ${action.type}`)
+    console.error(`You have to provide metainformation for action ${action.type}`);
     return;
   }
   const { undo, redo } = action.meta;
 
   const root: ReturnType<typeof selectors.selectRootElement> = yield select(selectors.selectRootElement);
 
-  if (!undo && !redo) {
+  if (!undo) {
     const oldParameters = yield select(selectors.selectElementParameters(itemID));
-    yield put(Actions.setUndoActions([Actions.updateElementParameters(itemID, oldParameters)]));
+    yield put(Actions.setUndoActions(Actions.updateElementParameters(itemID, oldParameters)));
   }
 
   const updatedTree = updateParameters(itemID, parameters, root);
@@ -300,7 +299,7 @@ function* updateElementParameters(action: ReturnType<typeof Actions.updateElemen
   } else {
     const savedValue = getSavedValue(updatedElement as LibraryElementUnion);
     yield put(Actions.updateSavedElementValues(itemID, savedValue));
-    yield call(updateElementsTree, updatedTree, undo || redo, action);
+    yield call(updateElementsTree, updatedTree, undo, action, { redo, undo });
 
     const convertedElement = convertElementToPatchRequest(updatedElement);
     yield call(reqWrapper, apiChangeElement, { data: convertedElement, id: itemID });
@@ -341,9 +340,9 @@ function* uploadFileSaga({ payload: { file: { file } } }: ReturnType<typeof Acti
 
     const updatedElements = moveElement(root.id, nnRootWithDefaultParams, root, 0);
     const childrenIds = updatedElements.children.map(child => child.id);
-    yield put(Actions.setUndoActions([
+    yield put(Actions.setUndoActions(
       Actions.deleteItem(nnRootWithDefaultParams.id),
-    ]));
+    ));
 
     yield call(updateElementsTree, updatedElements, false, Actions.restoreElementChildren(root.id, childrenIds));
   } catch (e) {
@@ -414,36 +413,51 @@ function* pasteCopiedItemSaga() {
   const itemToCopyInfo: ReturnType<typeof selectors.selectItemToCopyInfo> = yield select(selectors.selectItemToCopyInfo);
 
   if (activeItem.itemType !== 'none' && itemToCopyInfo !== null) {
-    const newIDs = yield call(duplicateItems, root, [itemToCopyInfo], targetContainer);
-
-    yield put(setUndoActions(newIDs.map((id: string) => Actions.deleteItem(id, {undo: true}))))
+    yield call(duplicateItems, root, [itemToCopyInfo], targetContainer);
   }
 }
 
 function* undoSaga() {
-  const sourceAction = yield select(selectors.selectSourceAction);
+  const history = yield select(selectors.selectHistory);
   const redos = yield select(selectors.selectRedoActions);
 
-  const historyLength = yield select(selectors.selectHistoryLength);
+  const historyLength = yield select(selectors.selectUndoLength);
   if (!historyLength) {
     yield put(Actions.setNotification('Nothing to undo.'));
     return
   }
+
   const undos = yield select(selectors.selectUndoActions);
 
-  for (let undo of undos) {
+  const last = undos[undos.length - 1];
+
+  if (Array.isArray(last)) {
+    yield put(Actions.setMulti(true));
+
+    for (let undo of last.reverse()) {
+      yield put({
+        ...undo,
+        meta: {
+          undo: true,
+        },
+      });
+    }
+
+    yield put(Actions.setMulti(false));
+  } else {
     yield put({
-      ...undo,
+      ...last,
       meta: {
         undo: true,
       },
     });
   }
 
-  yield put(ActionCreators.undo());
+  yield put(Actions.popUndoAction());
+  yield put(Actions.popHistory());
 
   yield put(setRedoActions([
-    sourceAction,
+    history[history.length - 1],
     ...redos,
   ]));
 
@@ -458,15 +472,37 @@ function* redoSaga() {
     yield put(Actions.setNotification('Nothing to redo.'));
     return;
   }
+  const first = redos[0];
 
-  yield put({
-    ...redos[0],
-    meta: {
-      redo: true,
-    },
-  });
+  if (Array.isArray(first)) {
+    yield put(Actions.setMulti(true));
 
-  yield put(ActionCreators.redo());
+    for (let redo of first) {
+      yield put({
+        ...redo,
+        meta: {
+          redo: true,
+        },
+      });
+    }
+
+    yield put(Actions.setMulti(false));
+  } else {
+    yield put({
+      ...first,
+      meta: {
+        redo: true,
+      },
+    });
+  }
+
+  // yield put({
+  //   ...redos[0],
+  //   meta: {
+  //     redo: true,
+  //   },
+  // });
+
   yield put(setRedoActions([
     ...redos.slice(1),
   ]));
@@ -476,8 +512,8 @@ function* redoSaga() {
 }
 
 function* clearHistorySaga() {
-  yield put(Actions.setUndoActions([]));
-  yield put(Actions.setRedoActions([]));
+  // yield put(Actions.setUndoActions([]));
+  // yield put(Actions.setRedoActions([]));
 }
 
 const loadProjectsType: ProjectT.LoadProjects['type'] = 'PROJECTS:LOAD_PROJECTS';

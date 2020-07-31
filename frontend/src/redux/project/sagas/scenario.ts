@@ -8,7 +8,7 @@ import {
   apiDelElements,
   apiSaveElements,
   apiChangeRecursiveElement,
-  apiChangeElement,
+  apiChangeElement, apiGetElement,
 } from '$api/element';
 import {
   apiAddScenarios,
@@ -36,12 +36,16 @@ import {
 import { selectors, T } from '../';
 import { updateSavedElementsValues } from './screen';
 import { setUndoActions } from '$redux/project/actions';
+import { HistoryMeta } from '$redux/project/types';
 
-export function* updateElementsTree(root: LibraryElement<'root'>, skip: boolean = false, sourceAction: T.Action | null = null) {
+export function* updateElementsTree(root: LibraryElement<'root'>, skip: boolean = false, sourceAction: T.Action | null = null, meta?: HistoryMeta) {
   const elementsArray = getElementsArray(root);
 
   yield call(updateSavedElementsValues, elementsArray as LibraryElementUnion[]);
-  yield put(Actions.updateElementsTree(root, skip, sourceAction));
+  yield put({
+    ...Actions.updateElementsTree(root, skip, sourceAction),
+    meta: { ...meta },
+  });
 }
 
 export function* createContainer(scenario?: Partial<T.IScenarioItem>) {
@@ -102,7 +106,7 @@ export function* createElements(elements: ServerElement<Entity>[], parent: Libra
   yield call(reqWrapper, apiChangeRecursiveElement, { data: elementData, id: parent.id });
 
   const updatedElements = addChildrenToElement(parent.id, newElements, root);
-  yield call(updateElementsTree, updatedElements, undo, Actions.restoreElementChildren(parent.id, newChildren));
+  yield call(updateElementsTree, updatedElements, undo, Actions.restoreElementChildren(parent.id, newElements.map(element => element.id)));
 
   const elementsWithUpdatedBuoyancy = findChildByID(updatedElements, parent.id)?.children.map(child => convertElementToPatchRequest(child));
   yield call(reqWrapper, apiSaveElements, { data: elementsWithUpdatedBuoyancy });
@@ -178,12 +182,12 @@ export function* softDeleteSaga(action: T.DeleteItem) {
     return;
   }
 
-  const children = parent.children.map(child => child.id);
+  const childrenIds = parent.children.map(child => child.id);
 
-  if (!undo && !redo) {
-    yield put(setUndoActions([
-      Actions.restoreElementChildren(parent.id, children)
-    ]));
+  if (!undo) {
+    yield put(setUndoActions(
+      Actions.restoreElementChildren(parent.id, [id]),
+    ));
   }
 
   const activeItem: ReturnType<typeof selectors.selectActiveItem> = yield select(selectors.selectActiveItem);
@@ -200,9 +204,12 @@ export function* softDeleteSaga(action: T.DeleteItem) {
 
   const updatedRoot = removeChildrenFromElement(parent.id, [element], root);
 
-  yield put(Actions.updateElementsTree(updatedRoot, undo || redo, action));
+  yield put({
+    ...Actions.updateElementsTree(updatedRoot, undo, action),
+    meta: { redo, undo },
+  });
 
-  const filtered = children.filter(childId => childId !== id);
+  const filtered = childrenIds.filter(childId => childId !== id);
   document.querySelector<HTMLElement>(`[data-ls-id='${parent.type === 'root' ? 'root' : parent.id}']`)?.focus();
 
   yield call(reqWrapper, apiChangeRecursiveElement, { data: { children: filtered }, id: parent.id });
@@ -210,8 +217,39 @@ export function* softDeleteSaga(action: T.DeleteItem) {
 
 export function* restoreElementSaga(action: T.RestoreElementChildren) {
   const { elementId, childrenIds } = action.payload;
+  if (!action.meta) {
+    console.error(`You have to provide metainformation for action ${action.type}`);
+    return;
+  }
+  const { undo, redo } = action.meta;
 
-  yield call(reqWrapper, apiChangeRecursiveElement, { data: { children: childrenIds }, id: elementId});
+  const root: ReturnType<typeof selectors.selectRootElement> = yield select(selectors.selectRootElement);
+
+  const element = findChildByID(root, elementId);
+  if (!element) {
+    console.error(`Can not find removed element ${elementId} in the tree!`);
+    return
+  }
+
+  yield call(reqWrapper, apiChangeRecursiveElement, { data: { children: [...element.children.map(child => child.id), ...childrenIds] }, id: elementId});
+
+  if (!undo) {
+    yield put(Actions.setUndoActions(
+      childrenIds.map(id => Actions.deleteItem(id)),
+    ))
+  }
+
+  const children = [];
+  for (let id of childrenIds) {
+    const res = yield call(reqWrapper, apiGetElement, { id });
+    children.push(res);
+  }
+  const updatedRoot = yield call(addChildrenToElement, elementId, children, root);
+
+  yield put({
+    ...Actions.updateElementsTree(updatedRoot, undo, action),
+    meta: { redo, undo },
+  })
 }
 
 export function* addElementToElement(element: LibraryElement<Entity>, parent: LibraryElement<Entity>) {
@@ -254,7 +292,7 @@ export function* wrapIntoContainerSaga(action: T.WrapIntoContainer) {
 
   const [createdContainer] = createdElements;
 
-  yield put(Actions.setUndoActions([Actions.unwrapFromContainer(id, createdContainer.id, wrappedItemParent.id)]));
+  yield put(Actions.setUndoActions(Actions.unwrapFromContainer(id, createdContainer.id, wrappedItemParent.id)));
 
   yield call(addElementToElement, createdContainer, wrappedItemParent);
 
@@ -262,7 +300,14 @@ export function* wrapIntoContainerSaga(action: T.WrapIntoContainer) {
 
   const rootWithUpdatedParent = moveElement(wrappedItemParent.id, createdContainer, root, wrappedItem.buoyancy);
   const rootWithUpdatedContainer = moveElement(createdContainer.id, wrappedItem, rootWithUpdatedParent, 0);
-  yield put(Actions.updateElementsTree(rootWithUpdatedContainer, undo || redo, Actions.redoWrapIntoContainer(id, createdContainer.id, wrappedItemParent.id)));
+  yield put({
+    ...Actions.updateElementsTree(
+      rootWithUpdatedContainer,
+      undo,
+      Actions.redoWrapIntoContainer(id, createdContainer.id, wrappedItemParent.id),
+    ),
+    meta: { undo, redo },
+  });
 
   document.querySelector<HTMLElement>(`[data-ls-id='${id}']`)?.focus();
 }
@@ -285,6 +330,12 @@ export function* unwrapFromContainerSaga(action: T.UnwrapFromContainer) {
   ];
 
   yield call(reqWrapper, apiChangeRecursiveElement, { data: {children: newParentChildrenIds}, id: parentID });
+
+  const updatedRoot = yield call(reqWrapper, apiGetElement, { id: root.id});
+  yield put({
+    ...Actions.updateElementsTree(updatedRoot, true, action),
+    meta: { undo: true }
+  })
 }
 
 export function* renameElementSaga(action: ReturnType<typeof Actions.renameElement>) {
@@ -327,4 +378,14 @@ export function* redoWrapIntoContainerSaga(action: T.RedoWrapIntoContainer) {
   parentChildrenIds.splice(index, 1, wrapperId);
   yield call(reqWrapper, apiChangeRecursiveElement, { data: {children: [elementId]}, id: wrapperId });
   yield call(reqWrapper, apiChangeRecursiveElement, { data: {children: parentChildrenIds}, id: parentId });
+
+  yield put(Actions.setUndoActions(
+    Actions.unwrapFromContainer(elementId, wrapperId, parentId),
+  ));
+
+  const updatedRoot = yield call(reqWrapper, apiGetElement, { id: root.id});
+  yield put({
+    ...Actions.updateElementsTree(updatedRoot, false, action),
+    meta: { redo: true }
+  })
 }

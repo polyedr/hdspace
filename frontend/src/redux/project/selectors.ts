@@ -69,11 +69,11 @@ export function selectListSortable(state: AppReduxState) {
 }
 
 export function selectRootElement(state: AppReduxState) {
-  return selectProjectState(state).control.present.rootElement;
+  return selectProjectState(state).control.rootElement;
 }
 
 export function selectRootID(state: AppReduxState) {
-  return selectProjectState(state).control.present.rootElement.id;
+  return selectProjectState(state).control.rootElement.id;
 }
 
 export function selectUploadedImageInfo(state: AppReduxState) {
@@ -113,19 +113,21 @@ export function selectActiveItemChildren(state: AppReduxState, childType: ChildE
   return children;
 }
 
-export const selectElementStyles = (id: string) => (state: AppReduxState) => findChildByID(state.project.control.present.rootElement, id)?.styles;
+export const selectElementStyles = (id: string) => (state: AppReduxState) => findChildByID(state.project.control.rootElement, id)?.styles;
 
-export const selectElementParameters = (id: string) => (state: AppReduxState) => findChildByID(state.project.control.present.rootElement, id)?.parameters;
+export const selectElementParameters = (id: string) => (state: AppReduxState) => findChildByID(state.project.control.rootElement, id)?.parameters;
 
-export const selectUndoActions = (state: AppReduxState) => selectProjectState(state).control.present.undoActions;
+export const selectUndoActions = (state: AppReduxState) => selectProjectState(state).control.undoActions;
 
-export const selectRedoActions = (state: AppReduxState) => selectProjectState(state).control.present.redoActions;
+export const selectRedoActions = (state: AppReduxState) => selectProjectState(state).control.redoActions;
 
-export const selectSourceAction = (state: AppReduxState) => selectProjectState(state).control.present.sourceAction;
+export const selectSourceAction = (state: AppReduxState) => selectProjectState(state).control.sourceAction;
 
-export const selectHistoryLength = (state: AppReduxState) => selectProjectState(state).control.past.length;
+export const selectUndoLength = (state: AppReduxState) => selectProjectState(state).control.undoActions.length;
 
-export const selectAdd = (state: AppReduxState) => selectProjectState(state).control.present.add;
+export const selectHistory = (state: AppReduxState) => selectProjectState(state).control.history;
+
+export const selectAdd = (state: AppReduxState) => selectProjectState(state).control.add;
 
 export const selectActiveItemStyles = makeActiveItemInfoSelector('styles');
 export const selectActiveItemChildrenStyles = makeActiveItemInfoSelector('styles');
