@@ -8,16 +8,12 @@ import {
   IProjectScreen,
   ActiveItem,
   ServerStructType,
-  Option,
   ILSItem,
-  ListItem,
 } from '$redux/project/types';
 import { IApiResponseError, ITokenPair } from '$redux/user/reducer';
 import { getDaysInMonth } from '$utils/NumberHelper';
 import { CssLikeStyles } from '$utils/StyleHelper';
-import { LinkParams, InputType, HeadingType, VideoSettings, LibraryElement } from '$api/types';
-
-import { IMAGES } from './images';
+import { LibraryElement } from '$api/types';
 
 export interface ISignFormElement {
   label: string,
@@ -114,97 +110,12 @@ export const DEFAULT_BACKGROUND: IScreenBackground = {
   'background-size': 'cover',
 };
 
-export const DEFAULT_ACTION: { action: LinkParams } = {
-  action: {
-    type: 'internal-link',
-    screenID: 'noScreen',
-  },
-};
-
-export const DEFAULT_INPUT_TYPE: { type: InputType} = {
-  type: 'text',
-};
-
 export const DEFAULT_VALUE: { value: string } = {
   value: '',
 };
 
-export const DEFAULT_SELECT_VALUE: { value: string } = {
-  value: 'first option',
-};
-
-export const DEFAULT_NAME: { name: string } = {
-  name: '',
-};
-
-export const DEFAULT_LABEL_FOR: { labelFor: string } = { // TODO take types from elements
-  labelFor: 'no for attribute',
-};
-
-export const DEFAULT_LIST_ITEMS: { listItems: ListItem[] } = {
-  listItems: [
-    { textContent: 'First item', isLink: false, link: '' },
-    { textContent: 'Second item', isLink: false, link: '' },
-    { textContent: 'Third item', isLink: false, link: '' },
-  ],
-};
-
 export const DEFAULT_BULLETS: CssLikeStyles = {
   'list-style-type': 'disc',
-};
-
-export const DEFAULT_LIST_TYPE: { isOrdered: boolean } = {
-  isOrdered: false,
-};
-
-export const DEFAULT_SELECT_OPTIONS: { options: Option[] } = {
-  options: [
-    { name: 'First option', value: 'first option' },
-    { name: 'Second option', value: 'second option' },
-    { name: 'Third option', value: 'third option' },
-  ],
-};
-
-export const DEFAULT_DROPDOWN_ITEMS: { dropdownItems: string[] } = {
-  dropdownItems: ['First item', 'Second item', 'Third item'],
-};
-
-export const DEFAULT_SELECT_OPEN: { isOpen: boolean } = {
-  isOpen: false,
-};
-
-export const DEFAULT_HEADING_TYPE: { headingType: HeadingType } = {
-  headingType: 'h3',
-};
-
-export const DEFAULT_RIPPLE: { showRipple: boolean } = {
-  showRipple: true,
-};
-
-export const DEFAULT_VIDEO_SETTINGS: { videoSettings: VideoSettings } = {
-  videoSettings: {
-    link: '',
-    autoplay: false,
-    start: 0,
-    end: 0,
-    loop: false,
-    rel: true,
-  },
-};
-
-export const DEFAULT_MAP_PROPS = {
-  map_props: {
-    center: {
-      lat: 50.00008,
-      lng: 40.00008,
-    },
-    zoom: 10,
-    markerText: 'A',
-  },
-};
-
-export const DEFAULT_IMAGE_PROPS = { 
-  imageURL: IMAGES.imageIcon,
 };
 
 export const DEFAULT_TYPOGRAPHY: IScreenTypography = {
@@ -259,10 +170,8 @@ export const DEFAULT_ROOT: LibraryElement<'root'> = {
   image: null,
   parameters: {},
   styles: {
-    classNames: [],
-    entityStyles: {},
+    classNames: ['root'],
     ownStyles: {},
-    groupStyles: {},
   },
 };
 
@@ -390,10 +299,6 @@ export const getDefaultDateSelectOptions = (dateType = 'year'): ISelectOptions[]
     default:
       return DEFAULT_RENDER_SELECT_OPTIONS;
   }
-};
-
-export const DEFAULT_PLACEHOLDER = {
-  placeholder: 'Enter a label for the field',
 };
 
 export const DEFAULT_TEXT_CONTENT = {

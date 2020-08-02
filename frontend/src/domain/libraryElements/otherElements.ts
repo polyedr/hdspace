@@ -9,9 +9,9 @@ import {
   UndefinedServerElement,
   DivBlockServerElement,
 } from '$api/types';
+import { IMAGES } from '$constants/images';
+
 import { paragraph } from './typographyElements';
-import { getDefaultStyles } from '$domain/defaultStyles/defaultStyles';
-import { defaultImageParams, defaultDropdownParams, defaultVideoParams } from '$domain/defaultParams/defaultParams';
 
 export const root: RootServerElement = {
   buoyancy: 0,
@@ -64,7 +64,7 @@ export const image: ImageServerElement = {
   struct_type: 'image',
   parameters: {
     group: 'image',
-    ...defaultImageParams,
+    imageURL: IMAGES.imageIcon,
   },
   styles: {
     classNames: ['image'],
@@ -110,7 +110,10 @@ export const dropdown: DropdownServerElement = {
   struct_type: 'dropdown',
   parameters: {
     group: 'other',
-    ...defaultDropdownParams,
+    textContent: 'dropdown',
+    showRipple: true,
+    isOpen: false,
+    dropdownItems: ['First item', 'Second item', 'Third item'], // TODO research why we need items here
   },
   styles: {
     classNames: ['dropdown'],
@@ -126,7 +129,14 @@ export const video: VideoServerElement = {
   struct_type: 'video',
   parameters: {
     group: 'other',
-    ...defaultVideoParams,
+    videoSettings: {
+      link: '',
+      autoplay: false,
+      start: 0,
+      end: 0,
+      loop: false,
+      rel: true,
+    },
   },
   styles: {
     classNames: ['video'],

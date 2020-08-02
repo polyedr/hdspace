@@ -7,14 +7,6 @@ import {
   ListItemServerElement,
   ListServerElement,
 } from '$api/types';
-import { getDefaultStyles } from '$domain/defaultStyles/defaultStyles';
-import {
-  defaultHyperlinkParams,
-  defaultHeadingParams,
-  defaultParagraphParams,
-  defaultTextBlockParams,
-  defaultListParams,
-} from '$domain/defaultParams/defaultParams';
 
 export const hyperlink: HyperlinkServerElement = {
   buoyancy: 0,
@@ -22,7 +14,11 @@ export const hyperlink: HyperlinkServerElement = {
   struct_type: 'hyperlink',
   parameters: {
     group: 'other',
-    ...defaultHyperlinkParams,
+    textContent: 'hyperlink',
+    action: {
+      type: 'internal-link',
+      screenID: 'noScreen',
+    },
   },
   styles: {
     classNames: ['hyperlink'],
@@ -38,7 +34,8 @@ export const heading: HeadingServerElement = {
   struct_type: 'heading',
   parameters: {
     group: 'typography',
-    ...defaultHeadingParams,
+    textContent: 'Heading',
+    headingType: 'h3',
   },
   styles: {
     classNames: ['heading'],
@@ -54,7 +51,7 @@ export const paragraph: ParagraphServerElement = {
   struct_type: 'paragraph',
   parameters: {
     group: 'typography',
-    ...defaultParagraphParams,
+    textContent: 'This is paragraph',
   },
   styles: {
     classNames: ['paragraph'],
@@ -70,7 +67,7 @@ export const ocrtext: OcrtextServerElement = {
   struct_type: 'ocrtext',
   parameters: {
     group: 'typography',
-    ...defaultParagraphParams,
+    textContent: 'This is paragraph',
   },
   styles: {
     classNames: ['ocrtext'],
@@ -86,7 +83,7 @@ export const text_block: TextBlockServerElement = {
   struct_type: 'text_block',
   parameters: {
     group: 'typography',
-    ...defaultTextBlockParams,
+    textContent: 'This is text block',
   },
   styles: {
     classNames: ['text_block'],
@@ -119,7 +116,12 @@ export const list: ListServerElement = {
   struct_type: 'list',
   parameters: {
     group: 'typography',
-    ...defaultListParams,
+    listItems: [ // TODO research why we need items here
+      { textContent: 'First item', isLink: false, link: '' },
+      { textContent: 'Second item', isLink: false, link: '' },
+      { textContent: 'Third item', isLink: false, link: '' },
+    ],
+    isOrdered: false,
   },
   styles: {
     classNames: ['list'],

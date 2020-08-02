@@ -1,6 +1,4 @@
-import { MapServerElement, CalendarServerElement, ClockServerElement } from "$api/types";
-import { getDefaultStyles } from "$domain/defaultStyles/defaultStyles";
-import { defaultMapParams } from "$domain/defaultParams/defaultParams";
+import { MapServerElement, CalendarServerElement, ClockServerElement } from '$api/types';
 
 export const map: MapServerElement = {
   buoyancy: 0,
@@ -8,7 +6,14 @@ export const map: MapServerElement = {
   struct_type: 'map',
   parameters: {
     group: 'widget',
-    ...defaultMapParams,
+    map_props: {
+      center: {
+        lat: 50.00008,
+        lng: 40.00008,
+      },
+      zoom: 10,
+      markerText: 'A',
+    },
   },
   styles: {
     classNames: ['map'],

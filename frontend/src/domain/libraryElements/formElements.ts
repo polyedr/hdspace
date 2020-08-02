@@ -9,16 +9,6 @@ import {
   LabelServerElement,
   TextareaServerElement,
 } from '$api/types';
-import { getDefaultStyles } from '$domain/defaultStyles/defaultStyles';
-import {
-  defaultButtonParams,
-  defaultTextinputParams,
-  defaultCheckboxParams,
-  defaultRadiobuttonParams,
-  defaultSelectParams,
-  defaultLabelParams,
-  defaultTextareaParams,
-} from '$domain/defaultParams/defaultParams';
 
 export const button: ButtonServerElement = {
   buoyancy: 1,
@@ -26,7 +16,12 @@ export const button: ButtonServerElement = {
   struct_type: 'button',
   parameters: {
     group: 'form',
-    ...defaultButtonParams,
+    textContent: 'button',
+    action: {
+      type: 'internal-link',
+      screenID: 'noScreen',
+    },
+    showRipple: true,
   },
   styles: {
     classNames: ['button'],
@@ -36,13 +31,15 @@ export const button: ButtonServerElement = {
   children: [],
 };
 
-export const textinput:TextinputServerElement = {
+export const textinput: TextinputServerElement = {
   buoyancy: 0,
   func_type: 'textinput',
   struct_type: 'textinput',
   parameters: {
     group: 'form',
-    ...defaultTextinputParams,
+    textContent: '',
+    type: 'text',
+    placeholder: 'Enter a label for the field',
   },
   styles: {
     classNames: ['textinput'],
@@ -58,7 +55,10 @@ export const checkbox: CheckboxServerElement = {
   struct_type: 'checkbox',
   parameters: {
     group: 'form',
-    ...defaultCheckboxParams,
+    value: '',
+    defaultChecked: true,
+    name: '',
+    showRipple: true,
   },
   styles: {
     classNames: ['checkbox'],
@@ -74,7 +74,9 @@ export const radiobutton: RadiobuttonServerElement = {
   struct_type: 'radiobutton',
   parameters: {
     group: 'form',
-    ...defaultRadiobuttonParams,
+    value: '',
+    name: '',
+    showRipple: true,
   },
   styles: {
     classNames: ['radiobutton'],
@@ -123,7 +125,13 @@ export const select: SelectServerElement = {
   struct_type: 'select',
   parameters: {
     group: 'form',
-    ...defaultSelectParams,
+    value: 'first option',
+    options: [ // TODO research why we need options here
+      { name: 'First option', value: 'first option' },
+      { name: 'Second option', value: 'second option' },
+      { name: 'Third option', value: 'third option' },
+    ],
+    isOpen: false,
   },
   styles: {
     classNames: ['select'],
@@ -139,7 +147,8 @@ export const label: LabelServerElement = {
   struct_type: 'label',
   parameters: {
     group: 'typography',
-    ...defaultLabelParams,
+    textContent: 'This is label',
+    labelFor: 'no for attribute',
   },
   styles: {
     classNames: ['label'],
@@ -155,7 +164,8 @@ export const textarea: TextareaServerElement = {
   struct_type: 'textarea',
   parameters: {
     group: 'form',
-    ...defaultTextareaParams,
+    textContent: '',
+    placeholder: 'Enter a label for the field',
   },
   styles: {
     classNames: ['textarea'],
