@@ -1,5 +1,3 @@
-import * as R from 'ramda';
-
 import {
   IScreenBorders,
   IScreenBackground,
@@ -11,7 +9,6 @@ import {
   ILSItem,
 } from '$redux/project/types';
 import { IApiResponseError, ITokenPair } from '$redux/user/reducer';
-import { getDaysInMonth } from '$utils/NumberHelper';
 import { CssLikeStyles } from '$utils/StyleHelper';
 import { LibraryElement } from '$api/types';
 
@@ -40,20 +37,6 @@ export interface ITemplateElement {
   checked: boolean,
 }
 
-interface IDefaultTemplate {
-  [x: string]: {
-    label: string,
-    value: string,
-    elements: ITemplateElement[],
-  }
-}
-
-interface ISelectOptions {
-  label: string,
-  value: number,
-}
-
-const DEFAULT_QUONTITY_YEARS_FOR_SELECT = 10;
 export const MIN_WIDTH = '24px';
 export const MIN_HEIGHT = 'auto';
 
@@ -108,10 +91,6 @@ export const DEFAULT_BACKGROUND: IScreenBackground = {
   'background-image': 'none',
   'background-repeat': 'no-repeat',
   'background-size': 'cover',
-};
-
-export const DEFAULT_VALUE: { value: string } = {
-  value: '',
 };
 
 export const DEFAULT_BULLETS: CssLikeStyles = {
@@ -192,129 +171,6 @@ export const DEFAULT_SCREEN_MODE = {
 };
 
 export const MODAL_ADD_ELEMENTS_TABS = ['Containers', 'Widget', 'Typography', 'Form', 'Image', 'Other'];
-
-export const DEFAULT_TEMPLATES: IDefaultTemplate = {
-  signup: {
-    label: 'Sign Up',
-    value: 'signup',
-    elements: [
-      { label: 'input/email', value: { funcType: 'textinput', structType: 'textinput'}, checked: true },
-      { label: 'input/last name', value: { funcType: 'textinput', structType: 'textinput'}, checked: true },
-      { label: 'input/first name', value: { funcType: 'textinput', structType: 'textinput'}, checked: true },
-      { label: 'input/password', value: { funcType: 'textinput', structType: 'textinput'}, checked: true },
-      { label: 'select/day', value: { funcType: 'select', structType: 'select'}, checked: false },
-      { label: 'select/month', value: { funcType: 'select', structType: 'select'}, checked: false },
-      { label: 'select/year', value: { funcType: 'select', structType: 'select'}, checked: false },
-      { label: 'button/ok', value: { funcType: 'button', structType: 'button'}, checked: true },
-    ],
-  },
-  signin: {
-    label: 'Sign In',
-    value: 'signin',
-    elements: [
-      { label: 'input/email', value: { funcType: 'textinput', structType: 'textinput'}, checked: true },
-      { label: 'input/password', value: { funcType: 'textinput', structType: 'textinput'}, checked: true },
-      { label: 'button/ok', value: { funcType: 'button', structType: 'button'}, checked: true },
-      { label: 'hyperlink/forgotten account?', value: { funcType: 'hyperlink', structType: 'hyperlink'}, checked: true },
-    ],
-  },
-  custom: {
-    label: 'Custom',
-    value: 'custom',
-    elements: [],
-  },
-  template1: {
-    label: 'Template 1',
-    value: 'template1',
-    elements: [
-      { label: 'input/first name', value: { funcType: 'textinput', structType: 'textinput' }, checked: true },
-      { label: 'input/last name', value: { funcType: 'textinput', structType: 'textinput' }, checked: true },
-      { label: 'input/password', value: { funcType: 'textinput', structType: 'textinput' }, checked: true },
-      { label: 'button/ok', value: { funcType: 'button', structType: 'button' }, checked: false },
-    ],
-  },
-  template2: {
-    label: 'Template 2',
-    value: 'template1',
-    elements: [
-      { label: 'input/password', value: { funcType: 'textinput', structType: 'textinput' }, checked: true },
-      { label: 'button/ok', value: { funcType: 'button', structType: 'button' }, checked: true },
-    ],
-  },
-  template3: {
-    label: 'Template 3',
-    value: 'template3',
-    elements: [
-      { label: 'input/first name', value: { funcType: 'textinput', structType: 'textinput'}, checked: true },
-      { label: 'input/last name', value: { funcType: 'textinput', structType: 'textinput'}, checked: true },
-      { label: 'input/password', value: { funcType: 'textinput', structType: 'textinput'}, checked: true },
-      { label: 'button/ok', value: { funcType: 'button', structType: 'button'}, checked: false },
-    ],
-  },
-};
-
-export const DEFAULT_RENDER_SELECT_OPTIONS: ISelectOptions[] = [
-  { label: 'First', value: 0 },
-  { label: 'Second', value: 1 },
-  { label: 'Third', value: 2 },
-];
-
-const DEFAULT_MONTH: ISelectOptions[] = [
-  { label: 'January', value: 0 },
-  { label: 'February', value: 1 },
-  { label: 'March', value: 2 },
-  { label: 'April', value: 3 },
-  { label: 'May', value: 4 },
-  { label: 'June', value: 5 },
-  { label: 'July', value: 6 },
-  { label: 'August', value: 7 },
-  { label: 'September', value: 8 },
-  { label: 'October', value: 9 },
-  { label: 'November', value: 10 },
-  { label: 'December', value: 11 },
-];
-
-export const getDefaultDateSelectOptions = (dateType = 'year'): ISelectOptions[] => {
-  const currentDate = new Date();
-  const currentYear = currentDate.getFullYear();
-  const currentMonth = currentDate.getMonth();
-  const daysInMonth = getDaysInMonth(currentYear, currentMonth);
-
-  switch (dateType) {
-    case 'year':
-      return R.range(0, DEFAULT_QUONTITY_YEARS_FOR_SELECT).map((el) => {
-        const newYear = currentYear - el;
-        return { label: String(newYear), value: newYear };
-      });
-
-    case 'month':
-      return DEFAULT_MONTH;
-
-    case 'day':
-      return R.range(1, daysInMonth).map(day => ({
-        label: String(day),
-        value: day,
-      }));
-
-    default:
-      return DEFAULT_RENDER_SELECT_OPTIONS;
-  }
-};
-
-export const DEFAULT_TEXT_CONTENT = {
-  textContent: 'Enter a label for the field',
-};
-
-export const DEFAULT_MAP_WIDGET = {
-  struct_type: 'widget',
-  func_type: 'map',
-  func_type_human: 'Map',
-  buoyancy: 0,
-  parameters: {
-    group: 'widget',
-  },
-  styles: {},
-};
 
 export const DEFAULT_SIGNIN_FIELDS: ISignFormElement[] = [
   { label: 'Username or Email', value: 'username', placeholder: 'UserName', type: 'text' },
