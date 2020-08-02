@@ -155,10 +155,13 @@ const SortableComponent = (props: Props) => {
 
   const ElementRenderer = RENDERERS[type];
   const ownStyles = convertPropCSS(styles.ownStyles);
-  const entityStyles = projectClasses?.find(cssClass => cssClass.className === type)?.rules;
-  const groupStyles = projectClasses?.find(cssClass => cssClass.className === item.styles.classNames[1])?.rules || {};
+  
+  const [entityClass, groupClass] = item.styles.classNames;
 
-  const convertedEntityStyles = entityStyles && convertPropCSS(entityStyles) || {};
+  const entityStyles = projectClasses?.find(cssClass => cssClass.className === entityClass)?.rules || {};
+  const groupStyles = projectClasses?.find(cssClass => cssClass.className === groupClass)?.rules || {};
+  
+  const convertedEntityStyles = convertPropCSS(entityStyles);
   const convertedGroupStyles = convertPropCSS(groupStyles);
 
   const isBorderedElement = findParentByChildID(root, id)?.id === rootID || id === rootID;
@@ -168,7 +171,7 @@ const SortableComponent = (props: Props) => {
     ...(disableInteractions && { className: '' }),
     id: id === rootID ? 'root' : id,
     isDisabled: !disableInteractions,
-    style: ownStyles,
+    style: ownStyles, // TODO remove
     ownStyles,
     entityStyles: convertedEntityStyles,
     groupStyles: convertedGroupStyles,
