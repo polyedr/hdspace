@@ -1,6 +1,5 @@
 import React from 'react';
 import cn from 'classnames';
-import { makeStyles } from '@material-ui/core';
 
 import { GMap } from '$components/UI/GMap';
 import { CalendarWidget } from '$components/UI/Calendar';
