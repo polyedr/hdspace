@@ -9,7 +9,7 @@ export const convertCreatedElementToRequest = <T extends Entity, K extends Serve
   parentID: string | null,
   elementName?: string
 ): ServerElement<T, ServerElement<Entity>[], K> => {
-  const libraryElement = LIBRARY_ELEMENTS[elementType] as unknown as ServerElement<T, ServerElement<Entity>[], K>;
+  const libraryElement = LIBRARY_ELEMENTS[elementType] as unknown as ServerElement<T, ServerElement<Entity>[], K>; // TODO remove type assertion
   const { name } = libraryElement;
 
   return {
@@ -57,9 +57,11 @@ export const convertElementToPatchRequest = <T extends Entity, K extends Entity,
 };
 
 export const convertCreatedProjectToRequest = (name: string): CreatedServerProject => {
-  const projectClasses: ProjectClass[] = R.keys(DEFAULT_ELEMENTS_STYLES).map(
-    elementName => ({ className: elementName, supportedElement: elementName, rules: getDefaultStyles(elementName) })
-  );
+  const projectClasses: ProjectClass[] = R.keys(DEFAULT_ELEMENTS_STYLES).map(elementName => ({
+      className: elementName,
+      supportedElement: elementName,
+      rules: getDefaultStyles(elementName),
+    }));
 
   return {
     name,
