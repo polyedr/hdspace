@@ -30,7 +30,7 @@ export const button: ButtonServerElement = {
   },
   styles: {
     classNames: ['button'],
-    idStyles: {},
+    ownStyles: {},
   },
   name: 'button',
   children: [],
@@ -46,7 +46,7 @@ export const textinput:TextinputServerElement = {
   },
   styles: {
     classNames: ['textinput'],
-    idStyles: {},
+    ownStyles: {},
   },
   name: 'textinput',
   children: [],
@@ -62,7 +62,7 @@ export const checkbox: CheckboxServerElement = {
   },
   styles: {
     classNames: ['checkbox'],
-    idStyles: {},
+    ownStyles: {},
   },
   name: 'checkbox',
   children: [],
@@ -78,7 +78,7 @@ export const radiobutton: RadiobuttonServerElement = {
   },
   styles: {
     classNames: ['radiobutton'],
-    idStyles: {},
+    ownStyles: {},
   },
   name: 'radiobutton',
   children: [],
@@ -94,7 +94,7 @@ export const makeSelectItem = (name: string, value: string): SelectItemServerEle
   },
   styles: {
     classNames: ['selectItem'],
-    idStyles: {},
+    ownStyles: {},
   },
   name: 'selectItem',
   children: [],
@@ -107,7 +107,7 @@ export const selectMenu: SelectMenuServerElement = {
   parameters: {},
   styles: {
     classNames: ['selectMenu'],
-    idStyles: {},
+    ownStyles: {},
   },
   name: 'selectMenu',
   children: [
@@ -127,7 +127,7 @@ export const select: SelectServerElement = {
   },
   styles: {
     classNames: ['select'],
-    idStyles: {},
+    ownStyles: {},
   },
   name: 'select',
   children: [selectMenu],
@@ -143,7 +143,7 @@ export const label: LabelServerElement = {
   },
   styles: {
     classNames: ['label'],
-    idStyles: {},
+    ownStyles: {},
   },
   name: 'label',
   children: [],
@@ -159,7 +159,7 @@ export const textarea: TextareaServerElement = {
   },
   styles: {
     classNames: ['textarea'],
-    idStyles: {},
+    ownStyles: {},
   },
   name: 'textarea',
   children: [],

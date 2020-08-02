@@ -32,9 +32,11 @@ export type ServerElement<Type extends Entity, Children = any[], Params = {}> = 
   buoyancy: number,
   image?: string | null,
   parameters: { group?: string } & Params,
+  // Every element has entity css class, group css class and unique own css class
+  // Entity class has default entity styles, own class is empty by default, group classes is user custom classes
   styles: {
     classNames: [Type, ...string[]],
-    idStyles: CssLikeStyles,
+    ownStyles: CssLikeStyles,
   },
   children: Children,
 };
@@ -87,10 +89,8 @@ export type LibraryElement<Type extends Entity, Children = any[], Params = {}> =
   buoyancy: number,
   image: string | null | undefined,
   styles: {
-    classNames: string[],
-    tagStyles: CssLikeStyles,
-    idStyles: CssLikeStyles,
-    classStyles: CssLikeStyles,
+    classNames: [Type, ...string[]],
+    ownStyles: CssLikeStyles,
   },
   children: Children,
   parameters: { group?: string } & Params,

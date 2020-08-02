@@ -261,7 +261,7 @@ export const DEFAULT_ROOT: LibraryElement<'root'> = {
   styles: {
     classNames: [],
     tagStyles: {},
-    idStyles: {},
+    ownStyles: {},
     classStyles: {},
   },
 };

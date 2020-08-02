@@ -16,7 +16,7 @@ const mapState = (state: AppReduxState) => {
   const activeItem = selectors.selectActiveItem(state);
   const root = selectors.selectRootElement(state);
   const activeElement = findChildByID(root, activeItem.itemId);
-  const classNames = [...(activeElement?.styles.classNames || []), 'idStyles'];
+  const classNames = [...(activeElement?.styles.classNames || []), 'ownStyles'];
   const editableStyles = selectors.selectEditableStyles(state);
 
   return {

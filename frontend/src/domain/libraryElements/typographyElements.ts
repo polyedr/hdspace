@@ -26,7 +26,7 @@ export const hyperlink: HyperlinkServerElement = {
   },
   styles: {
     classNames: ['hyperlink'],
-    idStyles: {},
+    ownStyles: {},
   },
   name: 'hyperlink',
   children: [],
@@ -42,7 +42,7 @@ export const heading: HeadingServerElement = {
   },
   styles: {
     classNames: ['heading'],
-    idStyles: {},
+    ownStyles: {},
   },
   name: 'heading',
   children: [],
@@ -58,7 +58,7 @@ export const paragraph: ParagraphServerElement = {
   },
   styles: {
     classNames: ['paragraph'],
-    idStyles: {},
+    ownStyles: {},
   },
   name: 'paragraph',
   children: [],
@@ -74,7 +74,7 @@ export const ocrtext: OcrtextServerElement = {
   },
   styles: {
     classNames: ['ocrtext'],
-    idStyles: {},
+    ownStyles: {},
   },
   name: 'ocrtext',
   children: [],
@@ -90,7 +90,7 @@ export const text_block: TextBlockServerElement = {
   },
   styles: {
     classNames: ['text_block'],
-    idStyles: {},
+    ownStyles: {},
   },
   name: 'text_block',
   children: [],
@@ -107,7 +107,7 @@ export const makeListItem = (textContent: string): ListItemServerElement => ({
   },
   styles: {
     classNames: ['listItem'],
-    idStyles: {},
+    ownStyles: {},
   },
   name: 'listItem',
   children: [],
@@ -123,7 +123,7 @@ export const list: ListServerElement = {
   },
   styles: {
     classNames: ['list'],
-    idStyles: {},
+    ownStyles: {},
   },
   name: 'list',
   children: [

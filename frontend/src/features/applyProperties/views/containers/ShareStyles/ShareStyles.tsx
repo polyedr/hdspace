@@ -17,7 +17,7 @@ const mapState = (state: AppReduxState) => {
   const activeItem = selectors.selectActiveItem(state);
   const root = selectors.selectRootElement(state);
   const activeElement = findChildByID(root, activeItem.itemId);
-  const classNames = [...(activeElement?.styles.classNames || []), 'idStyles'];
+  const classNames = [...(activeElement?.styles.classNames || []), 'ownStyles'];
   const editableStyles = selectors.selectEditableStyles(state);
   const copiedStyles = selectors.selectCopiedStyles(state);
   const project = selectors.selectCurrentProject(state);
@@ -58,7 +58,7 @@ const ShareStyles = (props: Props) => {
   } = props;
 
   const handleCopyButtonClick = () => {
-    activeElement && copyStyles(activeElement.type, activeElement.id, activeElement.styles.idStyles);
+    activeElement && copyStyles(activeElement.type, activeElement.id, activeElement.styles.ownStyles);
   };
 
   const handlePasteButtonClick = (className: string) => {
@@ -69,9 +69,9 @@ const ShareStyles = (props: Props) => {
     activeElement && removeElementClassName(activeElement.id, className);
   };
  
-  const isElementHasIDStyles = activeElement && Object.keys(activeElement.styles.idStyles).length;
+  const isElementHasownStyles = activeElement && Object.keys(activeElement.styles.ownStyles).length;
   const isElementHasSharedClassName = activeElement?.styles.classNames[1];
-  const disableShareButton = !isElementHasIDStyles || isElementHasSharedClassName;
+  const disableShareButton = !isElementHasownStyles || isElementHasSharedClassName;
 
   const isTagClassName = (className: string) => className === activeElement?.type; 
   

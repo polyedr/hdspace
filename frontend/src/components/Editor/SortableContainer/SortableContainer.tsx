@@ -154,7 +154,7 @@ const SortableComponent = (props: Props) => {
   }
 
   const ElementRenderer = RENDERERS[type];
-  const ownStyles = convertPropCSS(styles.idStyles);
+  const ownStyles = convertPropCSS(styles.ownStyles);
   const tagStyles = projectClasses?.find(cssClass => cssClass.className === type)?.rules;
   const classStyles = projectClasses?.find(cssClass => cssClass.className === item.styles.classNames[1])?.rules || {};
 

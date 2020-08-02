@@ -134,7 +134,7 @@ export const findParentByChildID = (
 
 export const updateElementStyles = <T extends Entity, K extends Entity, P extends Entity, R extends Entity>(
   elementID: string,
-  newStyles: Partial<LibraryElement<T, LibraryElement<K>[]>['styles']['idStyles']>,
+  newStyles: Partial<LibraryElement<T, LibraryElement<K>[]>['styles']['ownStyles']>,
   root: LibraryElement<P, LibraryElement<R>[]>
 ): LibraryElement<P, LibraryElement<R>[]> => {
   return {
@@ -143,7 +143,7 @@ export const updateElementStyles = <T extends Entity, K extends Entity, P extend
       root.id === elementID
         ? {
             ...root.styles,
-            idStyles: { ...root.styles.idStyles, ...newStyles },
+            ownStyles: { ...root.styles.ownStyles, ...newStyles },
           }
         : root.styles,
     children: root.children.map((child) => updateElementStyles(elementID, newStyles, child)),
@@ -202,7 +202,7 @@ export const removeElementStyles = <T extends Entity, K extends Entity>(
       root.id === elementID
         ? {
             ...root.styles,
-            idStyles: (R.toPairs(root.styles.idStyles) as [string, string])
+            ownStyles: (R.toPairs(root.styles.ownStyles) as [string, string])
             .filter(([ruleName]) => removedRuleNames.every(name => name !== ruleName))
             .reduce(
               (acc, [ruleName, rule]) => ({ ...acc, [ruleName]: rule }),

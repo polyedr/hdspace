@@ -12,7 +12,7 @@ export const map: MapServerElement = {
   },
   styles: {
     classNames: ['map'],
-    idStyles: {},
+    ownStyles: {},
   },
   name: 'map',
   children: [],
@@ -27,7 +27,7 @@ export const calendar: CalendarServerElement = {
   },
   styles: {
     classNames: ['calendar'],
-    idStyles: {},
+    ownStyles: {},
   },
   name: 'calendar',
   children: [],
@@ -42,7 +42,7 @@ export const clock: ClockServerElement = {
   },
   styles: {
     classNames: ['clock'],
-    idStyles: {},
+    ownStyles: {},
   },
   name: 'clock',
   children: [],

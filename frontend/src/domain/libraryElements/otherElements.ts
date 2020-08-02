@@ -22,7 +22,7 @@ export const root: RootServerElement = {
   },
   styles: {
     classNames: ['root'],
-    idStyles: {},
+    ownStyles: {},
   },
   name: 'root',
   children: [],
@@ -37,7 +37,7 @@ export const container: ContainerServerElement = {
   },
   styles: {
     classNames: ['container'],
-    idStyles: {},
+    ownStyles: {},
   },
   name: 'container',
   children: [],
@@ -52,7 +52,7 @@ export const divBlock: DivBlockServerElement = {
   },
   styles: {
     classNames: ['divBlock'],
-    idStyles: {},
+    ownStyles: {},
   },
   name: 'divBlock',
   children: [paragraph],
@@ -68,7 +68,7 @@ export const image: ImageServerElement = {
   },
   styles: {
     classNames: ['image'],
-    idStyles: {},
+    ownStyles: {},
   },
   name: 'image',
   children: [],
@@ -81,7 +81,7 @@ export const makeDropdownItem = (textContent: string): DropdownItemServerElement
   parameters: { textContent },
   styles: {
     classNames: ['dropdownItem'],
-    idStyles: {},
+    ownStyles: {},
   },
   name: 'dropdownItem',
   children: [],
@@ -94,7 +94,7 @@ export const dropdownMenu: DropdownMenuServerElement = {
   parameters: {},
   styles: {
     classNames: ['dropdownMenu'],
-    idStyles: {},
+    ownStyles: {},
   },
   name: 'dropdownMenu',
   children: [
@@ -114,7 +114,7 @@ export const dropdown: DropdownServerElement = {
   },
   styles: {
     classNames: ['dropdown'],
-    idStyles: {},
+    ownStyles: {},
   },
   name: 'dropdown',
   children: [dropdownMenu],
@@ -130,7 +130,7 @@ export const video: VideoServerElement = {
   },
   styles: {
     classNames: ['video'],
-    idStyles: {},
+    ownStyles: {},
   },
   name: 'video',
   children: [],
@@ -145,7 +145,7 @@ export const undefined: UndefinedServerElement = {
   },
   styles: {
     classNames: ['undefined'],
-    idStyles: {},
+    ownStyles: {},
   },
   name: 'undefined',
   children: [],

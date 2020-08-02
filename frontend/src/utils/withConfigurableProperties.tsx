@@ -65,7 +65,7 @@ export function withConfigurableProperties<K extends LibraryElement<Entity>, T e
     } = props;
 
     const removeStyles = (ruleName: string, itemID?: string) => {
-      if (editableStyles === 'idStyles') {
+      if (editableStyles === 'ownStyles') {
         removeElementStyles(itemID || activeItemID, ruleName);
       } else {
         removeSharedStyles(editableStyles, ruleName);
@@ -73,7 +73,7 @@ export function withConfigurableProperties<K extends LibraryElement<Entity>, T e
     };
 
     const updateStyles = (styles: CssLikeStyles, itemID?: string) => {
-      if (editableStyles === 'idStyles') {
+      if (editableStyles === 'ownStyles') {
         updateElementStyles(itemID || activeItemID, styles);
       } else {
         updateSharedStyles(editableStyles, styles);
