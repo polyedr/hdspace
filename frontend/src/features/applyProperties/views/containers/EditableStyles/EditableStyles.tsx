@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
-import { TextField } from '$features/applyProperties/views/components/TextField/TextField';
 import { actionsCreators, selectors } from '$redux/project';
 import { AppReduxState } from '$shared/types/app';
 import { connect } from 'react-redux';

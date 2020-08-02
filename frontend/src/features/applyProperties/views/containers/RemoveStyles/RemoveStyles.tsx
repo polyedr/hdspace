@@ -1,9 +1,9 @@
 import React, { memo } from 'react';
+import { connect } from 'react-redux';
 
 import { Button } from '$components/UI/Button';
 import { AppReduxState } from '$shared/types/app';
 import { selectors } from '$redux/project';
-import { connect } from 'react-redux';
 
 const styles = require('./RemoveStyles.scss');
 
@@ -31,7 +31,13 @@ const RemoveStyles = memo((props: Props) => {
   const showClearButton = activeItem.itemType !== 'root' && editableStyles !== activeItem.itemType;
 
   return showClearButton ? (
-    <Button className={styles.button} styleType="grey" onClick={handleButtonClick}>Clear styles</Button>
+    <Button
+      className={styles.button}
+      styleType="grey"
+      onClick={handleButtonClick}
+    >
+      Clear styles
+    </Button>
   ) : null;
 });
 

@@ -8,24 +8,45 @@ import { AppReduxState } from '$shared/types/app';
 import { connect } from 'react-redux';
 import { findChildByID } from '$utils/ElementsTreeHelper';
 import { Button } from '$components/UI/Button';
-import { ProjectClass } from '$api/types';
 import { ControlSection } from '../../components/ControlSection/ControlSection';
 
-const styles = require('./ShareStyles.scss');
+const useStyles = makeStyles({
+  root: {
+    marginRight: '5px',
+    marginBottom: '5px',
+    color: '#1cc09f',
+    border: '1px solid #1cc09f'
+  },
+
+  icon: {
+    color: '#1cc09f',
+
+    '&:hover': {
+      color: '#1cc09f',
+    },
+  },
+
+  elementsStylesChip: {
+    marginRight: '5px',
+    marginBottom: '5px',
+    backgroundColor: '#1cc09f',
+
+    '&:hover, &:focus': {
+      backgroundColor: '#18a689',
+    },
+  },
+});
 
 const mapState = (state: AppReduxState) => {
   const activeItem = selectors.selectActiveItem(state);
   const root = selectors.selectRootElement(state);
   const activeElement = findChildByID(root, activeItem.itemId);
-  const classNames = [...(activeElement?.styles.classNames || []), 'ownStyles'];
-  const editableStyles = selectors.selectEditableStyles(state);
   const copiedStyles = selectors.selectCopiedStyles(state);
   const project = selectors.selectCurrentProject(state);
 
-  const sharedClasses = project.projectData.classes.filter(
-    (cssClass) =>
-      cssClass.supportedElement === activeElement?.type &&
-      !activeElement.styles.classNames.includes(cssClass.className)
+  const sharedClasses = project.projectData.classes.filter((cssClass) =>
+    cssClass.supportedElement === activeElement?.type &&
+    !activeElement.styles.classNames.includes(cssClass.className)
   );
 
   const elementClassNames = activeElement?.styles.classNames || [];
@@ -49,7 +70,6 @@ type Props = ReturnType<typeof mapState> & typeof mapDispatch;
 const ShareStyles = (props: Props) => {
   const {
     activeElement,
-    copiedStyles,
     copyStyles,
     addElementClassName,
     removeElementClassName,
@@ -68,39 +88,14 @@ const ShareStyles = (props: Props) => {
   const handleDeleteButtonClick = (className: string) => {
     activeElement && removeElementClassName(activeElement.id, className);
   };
+
+  const isTagClassName = (className: string) => className === activeElement?.type;
  
-  const isElementHasownStyles = activeElement && Object.keys(activeElement.styles.ownStyles).length;
+  const isElementHasOwnStyles = activeElement && Object.keys(activeElement.styles.ownStyles).length;
   const isElementHasSharedClassName = activeElement?.styles.classNames[1];
-  const disableShareButton = !isElementHasownStyles || isElementHasSharedClassName;
-
-  const isTagClassName = (className: string) => className === activeElement?.type; 
+  const disableShareButton = !isElementHasOwnStyles || isElementHasSharedClassName;
   
-  const classes = makeStyles({
-    root: {
-      marginRight: '5px',
-      marginBottom: '5px',
-      color: '#1cc09f',
-      border: '1px solid #1cc09f'
-    },
-
-    icon: {
-      color: '#1cc09f',
-
-      '&:hover': {
-        color: '#1cc09f',
-      },
-    },
-
-    elementsStylesChip: {
-      marginRight: '5px',
-      marginBottom: '5px',
-      backgroundColor: '#1cc09f',
-
-      '&:hover, &:focus': {
-        backgroundColor: '#18a689',
-      },
-    },
-  })();
+  const classes = useStyles();
 
   return (
     <>
@@ -131,7 +126,7 @@ const ShareStyles = (props: Props) => {
       <ControlSection title="Element's classes">
         <>
           {elementClassNames.length ? (
-            elementClassNames.map((className) => (
+            (elementClassNames as string[]).map((className) => (
               <Chip
                 size="small"
                 className={classes.elementsStylesChip}

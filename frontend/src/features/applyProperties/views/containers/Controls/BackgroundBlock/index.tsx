@@ -37,17 +37,15 @@ const BackgroundBlock: React.FC<Props> = memo((props) => {
         onClick={removeStyles}
         cssPropertiesNames={['background-color']}
       />
-      {backgroundColor && (
-        <div className="propsElementsContentBlock">
-          <div className="propsElementsInnerBlock">
-            <ColorSettings
-              currentColor={backgroundColor}
-              activeItemID={activeItemID}
-              onChange={handleColorSettingsChange}
-            />
-          </div>
+      <div className="propsElementsContentBlock">
+        <div className="propsElementsInnerBlock">
+          <ColorSettings
+            currentColor={backgroundColor}
+            activeItemID={activeItemID}
+            onChange={handleColorSettingsChange}
+          />
         </div>
-      )}
+      </div>
     </div>
   );
 });

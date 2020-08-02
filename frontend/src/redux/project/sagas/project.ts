@@ -25,7 +25,7 @@ import {
   apiSaveProject,
 } from '$api/project';
 import { Project } from '$api/types';
-import { convertCreatedProjectToRequest } from '$api/converters/toRequest';
+import { convertCreatedProjectToRequest, convertProjectToPatchRequest } from '$api/converters/toRequest';
 import { DEFAULT_SCREEN } from '$constants/defaultParams';
 import { reqWrapper } from '$redux/project/sagas/index';
 import { generateFontFace } from '$utils/generateFontFace';
@@ -288,4 +288,28 @@ export function* changeScreensOrderSaga(action: ReturnType<typeof Actions.change
     id: screen.id,
     data: screen,
   })));
+}
+
+export function* updateProject(newProject: Project) {
+  const currentProject: ReturnType<typeof selectors.selectCurrentProject> = yield select(selectors.selectCurrentProject);
+
+  const listProject: ReturnType<typeof selectors.selectProjects> = yield select(selectors.selectProjects);
+
+  const newListProject = listProject.map((project) => {
+    if (project.id === currentProject.id) {
+      return {
+        ...project,
+        name: name,
+      };
+    }
+
+    return project;
+  });
+
+  yield put(Actions.setListProject(newListProject));
+  yield put(Actions.setProject(newProject));
+  
+
+  const convertedProject = convertProjectToPatchRequest(newProject);
+  yield call(reqWrapper, apiSaveProject, { data: convertedProject });
 }
