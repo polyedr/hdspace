@@ -129,7 +129,7 @@ const SizeBlock: React.FC<Props> = memo((props) => {
       <StylesHeader
         title="Width & Height"
         onClick={removeStyles}
-        ruleNames={['width', 'height']}
+        cssPropertiesNames={['width', 'height']}
       />
       <div className="propsElementsContentBlock">
         <div className="propsElementsInnerBlock">

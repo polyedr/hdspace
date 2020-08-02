@@ -51,7 +51,7 @@ const IndentsBlock: React.FC<Props> = (props) => {
       <StylesHeader
         title="Margins & Paddings"
         onClick={removeStyles}
-        ruleNames={[
+        cssPropertiesNames={[
           'margin-top',
           'margin-right',
           'margin-bottom',

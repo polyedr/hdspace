@@ -47,7 +47,7 @@ const Bullets: React.FC<Props> = ({
       <StylesHeader
         title="Bullets"
         onClick={removeStyles}
-        ruleNames={['list-style-type']}
+        cssPropertiesNames={['list-style-type']}
       />
       <div className={sharedClasses.propsContent}>
         <div className={sharedClasses.propsContainer}>

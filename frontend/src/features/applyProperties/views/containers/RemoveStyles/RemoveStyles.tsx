@@ -8,8 +8,8 @@ import { connect } from 'react-redux';
 const styles = require('./RemoveStyles.scss');
 
 type OwnProps = {
-  ruleNames: string[];
-  onClick(ruleNames: string[]): void;
+  cssPropertiesNames: string[];
+  onClick(cssPropertiesNames: string[]): void;
 };
 
 const mapState = (state: AppReduxState) => {
@@ -22,10 +22,10 @@ const mapState = (state: AppReduxState) => {
 type Props = OwnProps & ReturnType<typeof mapState>;
 
 const RemoveStyles = memo((props: Props) => {
-  const { onClick, ruleNames, editableStyles, activeItem } = props;
+  const { onClick, cssPropertiesNames, editableStyles, activeItem } = props;
 
   const handleButtonClick = () => {
-    onClick(ruleNames);
+    onClick(cssPropertiesNames);
   };
 
   const showClearButton = activeItem.itemType !== 'root' && editableStyles !== activeItem.itemType;

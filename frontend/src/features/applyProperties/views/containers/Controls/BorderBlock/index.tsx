@@ -68,7 +68,7 @@ const BorderBlock: React.FunctionComponent<Props> = React.memo(({
       <StylesHeader
         title="Border"
         onClick={removeStyles}
-        ruleNames={['border-color', 'border-width', 'border-radius']}
+        cssPropertiesNames={['border-color', 'border-width', 'border-radius']}
       />
       <div className="propsElementsContentBlock">
         <div className="propsElementsInnerBlock">

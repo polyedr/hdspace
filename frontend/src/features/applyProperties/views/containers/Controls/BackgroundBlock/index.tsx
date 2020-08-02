@@ -35,7 +35,7 @@ const BackgroundBlock: React.FC<Props> = memo((props) => {
       <StylesHeader
         title="Background"
         onClick={removeStyles}
-        ruleNames={['background-color']}
+        cssPropertiesNames={['background-color']}
       />
       {backgroundColor && (
         <div className="propsElementsContentBlock">

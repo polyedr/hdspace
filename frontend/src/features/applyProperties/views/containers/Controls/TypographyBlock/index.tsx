@@ -74,7 +74,7 @@ const TypographyBlock: React.FC<Props> = memo(({
       <StylesHeader
         title="Font"
         onClick={removeStyles}
-        ruleNames={[
+        cssPropertiesNames={[
           'font-family',
           'font-style',
           'font-weight',

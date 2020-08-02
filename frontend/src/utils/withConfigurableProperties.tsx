@@ -39,7 +39,7 @@ const mapDispatch = {
 
 export type PropertiesChangeProps<T extends LibraryElement<Entity>> = {
   activeItemID: string;
-  removeStyles(ruleNames: string[]): void;
+  removeStyles(cssPropertiesNames: string[]): void;
   updateStyles(payload: CssLikeStyles): void;
   updateParams(payload: Params<T>, updatedItemID?: string): void;
 };

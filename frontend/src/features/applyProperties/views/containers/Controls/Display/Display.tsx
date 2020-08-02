@@ -78,7 +78,7 @@ export const Component: React.FC<Props> = memo((props) => {
         <StylesHeader
           title="Display"
           onClick={removeStyles}
-          ruleNames={[
+          cssPropertiesNames={[
             'display',
             'justify-content',
             'align-items',

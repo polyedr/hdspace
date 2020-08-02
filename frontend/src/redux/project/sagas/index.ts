@@ -200,7 +200,7 @@ function* moveElementSaga(action: ReturnType<typeof Actions.moveElement>) {
 }
 
 function* removeSharedStylesSaga(action: ReturnType<typeof Actions.removeSharedStyles>) {
-  const { className, ruleNames: removedRuleNames } = action.payload;
+  const { className, cssPropertiesNames: removedCssPropertiesNames } = action.payload;
 
   const currentProject: ReturnType<typeof selectors.selectCurrentProject> = yield select(selectors.selectCurrentProject);
 
@@ -213,7 +213,7 @@ function* removeSharedStylesSaga(action: ReturnType<typeof Actions.removeSharedS
           ? {
               ...cssClass,
               rules: (R.toPairs(cssClass.rules) as [string, string])
-                .filter(([ruleName]) => removedRuleNames.every(name => name !== ruleName))
+                .filter(([ruleName]) => removedCssPropertiesNames.every(name => name !== ruleName))
                 .reduce(
                   (acc, [ruleName, rule]) => ({ ...acc, [ruleName]: rule }),
                   {} as CssLikeStyles
@@ -378,10 +378,10 @@ function* updateElementStyles(action: ReturnType<typeof Actions.updateElementSty
   }
 }
 
-function* removeElementStyles(id: string, ruleNames: string[]) {
+function* removeElementStyles(id: string, cssPropertiesNames: string[]) {
   const root: ReturnType<typeof selectors.selectRootElement> = yield select(selectors.selectRootElement);
   
-  const updatedTree = removeStyles(id, ruleNames, root);
+  const updatedTree = removeStyles(id, cssPropertiesNames, root);
   const updatedElement = findChildByID(updatedTree, id);
 
   if (!updatedElement) {
@@ -394,8 +394,8 @@ function* removeElementStyles(id: string, ruleNames: string[]) {
 }
 
 function* removeElementStylesSaga(action: ReturnType<typeof Actions.removeElementStyles>) {
-  const { id, ruleNames } = action.payload;
-  yield call(removeElementStyles, id, ruleNames);
+  const { id, cssPropertiesNames } = action.payload;
+  yield call(removeElementStyles, id, cssPropertiesNames);
 }
 
 function* updateElementImage(action: ReturnType<typeof Actions.updateElementImage>) {

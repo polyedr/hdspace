@@ -98,9 +98,9 @@ export type AddSharedStyles = IAction<'PROJECTS:ADD_SHARED_STYLES', { elementID:
 export type AddElementClassName = IAction<'PROJECTS:ADD_ELEMENT_CLASSNAME', { elementID: string, className: string }>;
 export type RemoveElementClassName = IAction<'PROJECTS:REMOVE_ELEMENT_CLASSNAME', { elementID: string, className: string }>;
 export type UpdateSharedStyles = IAction<'PROJECTS:UPDATE_SHARED_STYLES', { className: Entity, styles: CssLikeStyles }>;
-export type RemoveSharedStyles = IAction<'PROJECTS:REMOVE_SHARED_STYLES', { className: Entity, ruleNames: string[] }>;
+export type RemoveSharedStyles = IAction<'PROJECTS:REMOVE_SHARED_STYLES', { className: Entity, cssPropertiesNames: string[] }>;
 export type UpdateElementStyles = IAction<'PROJECTS:UPDATE_ELEMENT_STYLES', { id: string, styles: CssLikeStyles }>;
-export type RemoveElementStyles = IAction<'PROJECTS:REMOVE_ELEMENT_STYLES', { id: string, ruleNames: string[] }>;
+export type RemoveElementStyles = IAction<'PROJECTS:REMOVE_ELEMENT_STYLES', { id: string, cssPropertiesNames: string[] }>;
 export type UpdateElementImage = IAction<'PROJECTS:UPDATE_ELEMENT_IMAGE', { itemID: string, image: File }>;
 export type UpdateElementParameters = IAction<
   'PROJECTS:UPDATE_ELEMENT_PARAMETERS', { itemID: string, parameters: RootElement<Entity>['parameters'] }

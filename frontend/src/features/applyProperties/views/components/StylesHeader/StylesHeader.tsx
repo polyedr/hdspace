@@ -7,8 +7,8 @@ const styles = require('./StylesHeader.scss');
 
 type Props = {
   title: string;
-  ruleNames: string[];
-  onClick(ruleNames: string[]): void;
+  cssPropertiesNames: string[];
+  onClick(cssPropertiesNames: string[]): void;
 };
 
 const StylesHeader = memo((props: Props) => {

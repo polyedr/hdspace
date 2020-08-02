@@ -55,7 +55,7 @@ export const divBlock: DivBlockServerElement = {
     ownStyles: {},
   },
   name: 'divBlock',
-  children: [paragraph],
+  children: [paragraph], // TODO make custom paragraph
 };
 
 export const image: ImageServerElement = {
