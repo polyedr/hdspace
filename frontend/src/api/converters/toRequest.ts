@@ -1,8 +1,8 @@
 import { ServerElement, LibraryElement, ServerProject, CreatedServerProject, ProjectClass, Project } from '$api/types';
+import { DEFAULT_ELEMENTS_STYLES, getDefaultStyles } from '$domain/libraryElements/defaultStyles';
 import { LIBRARY_ELEMENTS } from '$domain/libraryElements/libraryElements';
 import { Entity } from '$domain/core';
 import * as R from 'ramda';
-import { DEFAULT_ELEMENTS_STYLES, getDefaultStyles } from '$domain/defaultStyles/defaultStyles';
 
 export const convertCreatedElementToRequest = <T extends Entity, K extends ServerElement<T>['parameters']>(
   elementType: T,

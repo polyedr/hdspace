@@ -22,7 +22,7 @@ type StateProps = {
   displayStyles: ScreenDisplay;
 };
 
-function getDisplayStyles(activeItemStyles: Required<CssLikeStyles>): ScreenDisplay {
+function getDisplayStyles(activeItemStyles: Pick<Required<CssLikeStyles>, 'display' | 'flex-direction' | 'justify-content' | 'align-items'>): ScreenDisplay {
   switch(activeItemStyles.display) {
     case 'block': return { 
       display: activeItemStyles.display,
@@ -50,9 +50,9 @@ function getDisplayStyles(activeItemStyles: Required<CssLikeStyles>): ScreenDisp
 function mapState(state: AppReduxState): StateProps {
   const activeItemStyles = {
     display: selectors.selectCurrentEditableStyles(state, 'display'),
-    justifyContent: selectors.selectCurrentEditableStyles(state, 'justify-content'),
-    alignItems: selectors.selectCurrentEditableStyles(state, 'align-items'),
-    flexDirection: selectors.selectCurrentEditableStyles(state, 'flex-direction'),
+    'justify-content': selectors.selectCurrentEditableStyles(state, 'justify-content'),
+    'align-items': selectors.selectCurrentEditableStyles(state, 'align-items'),
+    'flex-direction': selectors.selectCurrentEditableStyles(state, 'flex-direction'),
   };
 
   return { displayStyles: getDisplayStyles(activeItemStyles) };

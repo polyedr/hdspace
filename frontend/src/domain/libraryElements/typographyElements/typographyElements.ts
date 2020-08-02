@@ -7,6 +7,7 @@ import {
   ListItemServerElement,
   ListServerElement,
 } from '$api/types';
+import { CssLikeStyles } from '$utils/StyleHelper';
 
 export const hyperlink: HyperlinkServerElement = {
   buoyancy: 0,
@@ -22,7 +23,7 @@ export const hyperlink: HyperlinkServerElement = {
   },
   styles: {
     classNames: ['hyperlink'],
-    ownStyles: {},
+    ownStyles: {} as Required<CssLikeStyles>,
   },
   name: 'hyperlink',
   children: [],
@@ -39,7 +40,7 @@ export const heading: HeadingServerElement = {
   },
   styles: {
     classNames: ['heading'],
-    ownStyles: {},
+    ownStyles: {} as Required<CssLikeStyles>,
   },
   name: 'heading',
   children: [],
@@ -55,7 +56,7 @@ export const paragraph: ParagraphServerElement = {
   },
   styles: {
     classNames: ['paragraph'],
-    ownStyles: {},
+    ownStyles: {} as Required<CssLikeStyles>,
   },
   name: 'paragraph',
   children: [],
@@ -71,7 +72,7 @@ export const ocrtext: OcrtextServerElement = {
   },
   styles: {
     classNames: ['ocrtext'],
-    ownStyles: {},
+    ownStyles: {} as Required<CssLikeStyles>,
   },
   name: 'ocrtext',
   children: [],
@@ -87,7 +88,7 @@ export const text_block: TextBlockServerElement = {
   },
   styles: {
     classNames: ['text_block'],
-    ownStyles: {},
+    ownStyles: {} as Required<CssLikeStyles>,
   },
   name: 'text_block',
   children: [],
@@ -104,7 +105,7 @@ export const makeListItem = (textContent: string): ListItemServerElement => ({
   },
   styles: {
     classNames: ['listItem'],
-    ownStyles: {},
+    ownStyles: {} as Required<CssLikeStyles>,
   },
   name: 'listItem',
   children: [],
@@ -125,7 +126,7 @@ export const list: ListServerElement = {
   },
   styles: {
     classNames: ['list'],
-    ownStyles: {},
+    ownStyles: {} as Required<CssLikeStyles>,
   },
   name: 'list',
   children: [

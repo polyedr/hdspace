@@ -1,4 +1,5 @@
 import { MapServerElement, CalendarServerElement, ClockServerElement } from '$api/types';
+import { CssLikeStyles } from '$utils/StyleHelper';
 
 export const map: MapServerElement = {
   buoyancy: 0,
@@ -17,7 +18,7 @@ export const map: MapServerElement = {
   },
   styles: {
     classNames: ['map'],
-    ownStyles: {},
+    ownStyles: {} as Required<CssLikeStyles>,
   },
   name: 'map',
   children: [],
@@ -32,7 +33,7 @@ export const calendar: CalendarServerElement = {
   },
   styles: {
     classNames: ['calendar'],
-    ownStyles: {},
+    ownStyles: {} as Required<CssLikeStyles>,
   },
   name: 'calendar',
   children: [],
@@ -47,7 +48,7 @@ export const clock: ClockServerElement = {
   },
   styles: {
     classNames: ['clock'],
-    ownStyles: {},
+    ownStyles: {} as Required<CssLikeStyles>,
   },
   name: 'clock',
   children: [],

@@ -2,7 +2,6 @@ import React, { memo } from 'react';
 
 import { RemoveStyles } from '../../containers/RemoveStyles/RemoveStyles';
 import { ControlTitle } from '../ControlTitle/ControlTitle';
-
 const styles = require('./StylesHeader.scss');
 
 type Props = {

@@ -22,7 +22,7 @@ export type ServerProject = {
 export type ProjectClass = {
   className: string;
   supportedElement: Entity;
-  rules: CssLikeStyles;
+  rules: Required<CssLikeStyles>;
 };
 
 export type Project = {

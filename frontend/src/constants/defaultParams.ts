@@ -6,6 +6,7 @@ import {
 } from '$redux/project/types';
 import { IApiResponseError, ITokenPair } from '$redux/user/reducer';
 import { LibraryElement } from '$api/types';
+import { CssLikeStyles } from '$utils/StyleHelper';
 
 export interface ISignFormElement {
   label: string,
@@ -88,7 +89,7 @@ export const DEFAULT_ROOT: LibraryElement<'root'> = {
   parameters: {},
   styles: {
     classNames: ['root'],
-    ownStyles: {},
+    ownStyles: {} as Required<CssLikeStyles>,
   },
 };
 

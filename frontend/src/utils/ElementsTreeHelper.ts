@@ -2,7 +2,7 @@ import * as R from 'ramda';
 
 import { Entity } from '$domain/core';
 import { LibraryElement } from '$api/types';
-import { getDefaultStyles } from '$domain/defaultStyles/defaultStyles';
+import { getDefaultStyles } from '$domain/libraryElements/defaultStyles';
 import { LIBRARY_ELEMENTS } from '$domain/libraryElements/libraryElements';
 
 import { CssLikeStyles } from './StyleHelper';

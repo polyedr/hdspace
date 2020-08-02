@@ -9,6 +9,7 @@ import {
   LabelServerElement,
   TextareaServerElement,
 } from '$api/types';
+import { CssLikeStyles } from '$utils/StyleHelper';
 
 export const button: ButtonServerElement = {
   buoyancy: 1,
@@ -25,7 +26,7 @@ export const button: ButtonServerElement = {
   },
   styles: {
     classNames: ['button'],
-    ownStyles: {},
+    ownStyles: {} as Required<CssLikeStyles>,
   },
   name: 'button',
   children: [],
@@ -43,7 +44,7 @@ export const textinput: TextinputServerElement = {
   },
   styles: {
     classNames: ['textinput'],
-    ownStyles: {},
+    ownStyles: {} as Required<CssLikeStyles>,
   },
   name: 'textinput',
   children: [],
@@ -62,7 +63,7 @@ export const checkbox: CheckboxServerElement = {
   },
   styles: {
     classNames: ['checkbox'],
-    ownStyles: {},
+    ownStyles: {} as Required<CssLikeStyles>,
   },
   name: 'checkbox',
   children: [],
@@ -80,7 +81,7 @@ export const radiobutton: RadiobuttonServerElement = {
   },
   styles: {
     classNames: ['radiobutton'],
-    ownStyles: {},
+    ownStyles: {} as Required<CssLikeStyles>,
   },
   name: 'radiobutton',
   children: [],
@@ -96,7 +97,7 @@ export const makeSelectItem = (name: string, value: string): SelectItemServerEle
   },
   styles: {
     classNames: ['selectItem'],
-    ownStyles: {},
+    ownStyles: {} as Required<CssLikeStyles>,
   },
   name: 'selectItem',
   children: [],
@@ -109,7 +110,7 @@ export const selectMenu: SelectMenuServerElement = {
   parameters: {},
   styles: {
     classNames: ['selectMenu'],
-    ownStyles: {},
+    ownStyles: {} as Required<CssLikeStyles>,
   },
   name: 'selectMenu',
   children: [
@@ -135,7 +136,7 @@ export const select: SelectServerElement = {
   },
   styles: {
     classNames: ['select'],
-    ownStyles: {},
+    ownStyles: {} as Required<CssLikeStyles>,
   },
   name: 'select',
   children: [selectMenu],
@@ -152,7 +153,7 @@ export const label: LabelServerElement = {
   },
   styles: {
     classNames: ['label'],
-    ownStyles: {},
+    ownStyles: {} as Required<CssLikeStyles>,
   },
   name: 'label',
   children: [],
@@ -169,7 +170,7 @@ export const textarea: TextareaServerElement = {
   },
   styles: {
     classNames: ['textarea'],
-    ownStyles: {},
+    ownStyles: {} as Required<CssLikeStyles>,
   },
   name: 'textarea',
   children: [],

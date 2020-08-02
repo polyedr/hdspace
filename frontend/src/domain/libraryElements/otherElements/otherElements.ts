@@ -10,6 +10,7 @@ import {
   DivBlockServerElement,
 } from '$api/types';
 import { IMAGES } from '$constants/images';
+import { CssLikeStyles } from '$utils/StyleHelper';
 
 import { paragraph } from '../typographyElements/typographyElements';
 
@@ -22,7 +23,7 @@ export const root: RootServerElement = {
   },
   styles: {
     classNames: ['root'],
-    ownStyles: {},
+    ownStyles: {} as Required<CssLikeStyles>,
   },
   name: 'root',
   children: [],
@@ -37,7 +38,7 @@ export const container: ContainerServerElement = {
   },
   styles: {
     classNames: ['container'],
-    ownStyles: {},
+    ownStyles: {} as Required<CssLikeStyles>,
   },
   name: 'container',
   children: [],
@@ -52,7 +53,7 @@ export const divBlock: DivBlockServerElement = {
   },
   styles: {
     classNames: ['divBlock'],
-    ownStyles: {},
+    ownStyles: {} as Required<CssLikeStyles>,
   },
   name: 'divBlock',
   children: [paragraph], // TODO make custom paragraph
@@ -68,7 +69,7 @@ export const image: ImageServerElement = {
   },
   styles: {
     classNames: ['image'],
-    ownStyles: {},
+    ownStyles: {} as Required<CssLikeStyles>,
   },
   name: 'image',
   children: [],
@@ -81,7 +82,7 @@ export const makeDropdownItem = (textContent: string): DropdownItemServerElement
   parameters: { textContent },
   styles: {
     classNames: ['dropdownItem'],
-    ownStyles: {},
+    ownStyles: {} as Required<CssLikeStyles>,
   },
   name: 'dropdownItem',
   children: [],
@@ -94,7 +95,7 @@ export const dropdownMenu: DropdownMenuServerElement = {
   parameters: {},
   styles: {
     classNames: ['dropdownMenu'],
-    ownStyles: {},
+    ownStyles: {} as Required<CssLikeStyles>,
   },
   name: 'dropdownMenu',
   children: [
@@ -117,7 +118,7 @@ export const dropdown: DropdownServerElement = {
   },
   styles: {
     classNames: ['dropdown'],
-    ownStyles: {},
+    ownStyles: {} as Required<CssLikeStyles>,
   },
   name: 'dropdown',
   children: [dropdownMenu],
@@ -140,7 +141,7 @@ export const video: VideoServerElement = {
   },
   styles: {
     classNames: ['video'],
-    ownStyles: {},
+    ownStyles: {} as Required<CssLikeStyles>,
   },
   name: 'video',
   children: [],
@@ -155,7 +156,7 @@ export const undefined: UndefinedServerElement = {
   },
   styles: {
     classNames: ['undefined'],
-    ownStyles: {},
+    ownStyles: {} as Required<CssLikeStyles>,
   },
   name: 'undefined',
   children: [],

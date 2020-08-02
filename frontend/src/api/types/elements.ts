@@ -36,7 +36,7 @@ export type ServerElement<Type extends Entity, Children = any[], Params = {}> = 
   // Entity class has default entity styles, own class is empty by default, group classes is user custom classes
   styles: {
     classNames: [Type, ...string[]],
-    ownStyles: CssLikeStyles,
+    ownStyles: Required<CssLikeStyles>,
   },
   children: Children,
 };
@@ -90,7 +90,7 @@ export type LibraryElement<Type extends Entity, Children = any[], Params = {}> =
   image: string | null | undefined,
   styles: {
     classNames: [Type, ...string[]],
-    ownStyles: CssLikeStyles,
+    ownStyles: Required<CssLikeStyles>,
   },
   children: Children,
   parameters: { group?: string } & Params,
