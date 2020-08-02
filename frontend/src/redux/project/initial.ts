@@ -15,7 +15,6 @@ export const initial: T.ReduxState = {
   ui: {
     editableStyles: 'ownStyles',
     activeItem: DEFAULT_ACTIVE_ITEM,
-    copiedStyles: null,
     showContainersBorders: false,
     isAddElementsModalOpened: false,
     itemToCopyInfo: null,

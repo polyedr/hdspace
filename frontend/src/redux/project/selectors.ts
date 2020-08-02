@@ -100,12 +100,10 @@ export function selectEditableStyles(state: AppReduxState) {
   return selectFeatureState(state).ui.editableStyles;
 };
 
-export function selectCopiedStyles(state: AppReduxState) {
-  return selectFeatureState(state).ui.copiedStyles;
-};
-
 export function selectSharedStyles(state: AppReduxState, elementType: string) {
-  return selectCurrentProject(state).projectData.classes.find(cssClass => cssClass.className === elementType)?.rules || {};
+  return selectCurrentProject(state).projectData.classes
+    .find(cssClass => cssClass.className === elementType)
+    ?.rules || {} as Required<CssLikeStyles>;
 };
 
 export function selectCurrentEditableStyles(state: AppReduxState, ruleName: keyof CssLikeStyles) {
@@ -113,9 +111,9 @@ export function selectCurrentEditableStyles(state: AppReduxState, ruleName: keyo
   const activeElementStyles = selectActiveItemStyles(state).ownStyles;
   const activeElementClassNames = selectActiveItemStyles(state).classNames;
   const editableStyles = selectEditableStyles(state);
-  const activeEntityStyles = activeItemType !== 'none' && selectSharedStyles(state, activeItemType) || {};
+  const activeEntityStyles = activeItemType !== 'none' && selectSharedStyles(state, activeItemType) || {} as Required<CssLikeStyles>;
 
-  const activeSharedStyles = selectSharedStyles(state, activeElementClassNames[1]) || {};
+  const activeSharedStyles = selectSharedStyles(state, activeElementClassNames[1]) || {} as Required<CssLikeStyles>;
 
   const getActiveItemStyles = (editableStyles: string) => {
     if (editableStyles === 'ownStyles' || editableStyles === '') {

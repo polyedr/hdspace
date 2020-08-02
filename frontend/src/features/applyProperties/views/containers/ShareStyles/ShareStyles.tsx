@@ -41,7 +41,6 @@ const mapState = (state: AppReduxState) => {
   const activeItem = selectors.selectActiveItem(state);
   const root = selectors.selectRootElement(state);
   const activeElement = findChildByID(root, activeItem.itemId);
-  const copiedStyles = selectors.selectCopiedStyles(state);
   const project = selectors.selectCurrentProject(state);
 
   const sharedClasses = project.projectData.classes.filter((cssClass) =>
@@ -53,7 +52,6 @@ const mapState = (state: AppReduxState) => {
 
   return {
     activeElement,
-    copiedStyles,
     sharedClasses,
     elementClassNames,
   }

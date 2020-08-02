@@ -8,10 +8,6 @@ export function uiReducer(state: T.ReduxState['ui'] = initial.ui, action: T.Acti
       return { ...state, activeItem: action.payload.activeItem };
     }
 
-    case 'PROJECTS:SET_COPIED_STYLES': {
-      return { ...state, copiedStyles: action.payload };
-    }
-
     case 'PROJECTS:SET_EDITABLE_STYLES': {
       return { ...state, editableStyles: action.payload.className };
     }
