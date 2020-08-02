@@ -45,9 +45,11 @@ const getStyles = (
   entityStyles: {
     ...getClassStyles(entityStyles),
   },
+
   groupStyles: {
     ...getClassStyles(groupStyles),
   },
+
   ownStyles: {
     ...getClassStyles(ownStyles),
   },

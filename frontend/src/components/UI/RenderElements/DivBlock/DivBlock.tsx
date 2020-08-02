@@ -6,11 +6,31 @@ import { DivBlockRendererProps } from '../types';
 const styles = require('../styles.scss');
 
 export const DivBlockRenderer = (props: DivBlockRendererProps) => {
-  const { id, sortableId, entityStyles, ownStyles, isDisabled, children, className, elementRef, isBorderVisible } = props;
+  const {
+    id,
+    sortableId,
+    entityStyles,
+    groupStyles,
+    ownStyles,
+    isDisabled,
+    children,
+    className,
+    elementRef,
+    isBorderVisible,
+  } = props;
 
   const classes = makeStyles({
-    entityStyles,
-    ownStyles,
+    entityStyles: {
+      ...entityStyles,
+    },
+
+    groupStyles: {
+      ...groupStyles,
+    },
+
+    ownStyles: {
+      ...ownStyles,
+    },
   })();
 
   return (
@@ -20,7 +40,7 @@ export const DivBlockRenderer = (props: DivBlockRendererProps) => {
       data-ls-id={id}
       data-id={sortableId}
       key={id}
-      className={cn(className, styles.addedElem, classes.entityStyles, classes.ownStyles)}
+      className={cn(className, styles.addedElem, classes.entityStyles, classes.groupStyles, classes.ownStyles)}
       style={{ ...(isBorderVisible && isDisabled && { outline: 'none' })}}
       tabIndex={isDisabled ? 0 : -1}
     >
