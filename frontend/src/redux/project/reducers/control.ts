@@ -1,7 +1,6 @@
 import { initialControl } from '$redux/project/initial';
 import * as T from '../types';
 import * as R from 'ramda';
-import undoable, { combineFilters, includeAction, StateWithHistory } from 'redux-undo';
 
 // To create undoable feature for the editor you have to implement action with "meta" field extends type HistoryMeta,
 // that will call correspondent saga, which should:
@@ -21,11 +20,11 @@ export const controlReducer = (state: T.ProjectControlState = initialControl, ac
         rootElement: action.payload.root,
       };
 
-      if (!action?.meta?.redo && !action?.meta?.undo) {
+      if (!action.meta.redo && !action.meta.undo) {
         newState.redoActions = [];
       }
 
-      if (action.payload.sourceAction && !action.payload.skip) {
+      if (action.payload.sourceAction && !action.meta.undo) {
         if (state.multi) {
           const last = [state.history[state.history.length - 1], action.payload.sourceAction];
           // @ts-ignore
@@ -45,7 +44,7 @@ export const controlReducer = (state: T.ProjectControlState = initialControl, ac
     }
 
     case 'PROJECTS:SET_UNDO_ACTIONS': {
-      if (state.add) {
+      if (state.remoteMove) {
         const last = [
           state.undoActions[state.undoActions.length - 1],
           action.payload,
@@ -97,7 +96,7 @@ export const controlReducer = (state: T.ProjectControlState = initialControl, ac
     case 'PROJECTS:SET_ADD_ACTION': {
       return {
         ...state,
-        add: action.payload
+        remoteMove: action.payload
       }
     }
 
@@ -115,7 +114,7 @@ export const controlReducer = (state: T.ProjectControlState = initialControl, ac
         redoActions: [],
         history: [],
         sourceAction: null,
-        add: false,
+        remoteMove: false,
       }
     }
 
@@ -137,20 +136,3 @@ export const controlReducer = (state: T.ProjectControlState = initialControl, ac
       return state;
   }
 };
-
-const skip = (action: any) => !action.payload?.skip;
-
-const isSameState = (
-  action: T.Action,
-  currentState: T.ProjectControlState,
-  previousHistory: StateWithHistory<T.ProjectControlState>
-) => !R.equals(previousHistory.present.rootElement, currentState.rootElement);
-
-/*export const controlReducer = undoable(reducer, {
-  filter: combineFilters(
-    includeAction(['PROJECTS:UPDATE_ELEMENTS_TREE']),
-    skip,
-    isSameState
-  ),
-  clearHistoryType: 'PROJECTS:CLEAR_HISTORY',
-});*/

@@ -6,7 +6,6 @@ import { ChildEntity, Entity } from '$domain/core';
 import { LibraryElement, Project } from '$api/types';
 
 import * as T from './types';
-import { Action, HistoryMeta, Indices } from './types';
 
 export const getLibraryElements = (): T.LoadLibraryElements => ({
   type: 'PROJECTS:LOAD_LIBRARY_ELEMENTS',
@@ -121,11 +120,11 @@ export const activateScreen = (projectID: number, screenID: number): T.ActivateS
 });
 
 export const moveElement = (
-  indices: Indices,
+  indices: T.Indices,
   elementID: string,
   parentID: string,
   isRemote: boolean = false,
-  options: HistoryMeta = {},
+  options: T.HistoryMeta = {},
 ): T.MoveElement => ({
   type: 'PROJECTS:MOVE_ELEMENT',
   payload: {
@@ -141,9 +140,10 @@ export const clearAfterPrevScreen = (): T.ClearAfterPrevScreen => ({
   type: 'PROJECTS:CLEAN_AFTER_PREV_SCREEN',
 });
 
-export const updateElementsTree = (root: LibraryElement<'root'>, skip: boolean = false, sourceAction: Action | null = null): T.UpdateElementsTree => ({
+export const updateElementsTree = (root: LibraryElement<'root'>, sourceAction: T.Action | null = null, meta: T.HistoryMeta = {}): T.UpdateElementsTree => ({
   type: 'PROJECTS:UPDATE_ELEMENTS_TREE',
-  payload: { root, skip, sourceAction },
+  payload: { root, sourceAction },
+  meta,
 });
 
 export const resetScreenState = (): T.ResetScreenState => ({
@@ -198,7 +198,7 @@ export const updateElementImage = (itemID: string, image: File ): T.UpdateElemen
 export const updateElementParameters = <T extends Entity, K extends LibraryElement<T>['parameters']>(
   itemID: string,
   parameters: K,
-  options: HistoryMeta = {},
+  options: T.HistoryMeta = {},
 ): T.UpdateElementParameters => ({
   type: 'PROJECTS:UPDATE_ELEMENT_PARAMETERS',
   payload: { itemID, parameters },
@@ -215,7 +215,7 @@ export const updateSavedElementValues = (itemID: string, savedValue: string | bo
   payload: { itemID, savedValue },
 });
 
-export const deleteItem = (id: string, options: HistoryMeta = {}): T.DeleteItem => ({
+export const deleteItem = (id: string, options: T.HistoryMeta = {}): T.DeleteItem => ({
   type: 'PROJECTS:DELETE_ITEM',
   payload: { id },
   meta: options,
@@ -261,7 +261,7 @@ export const uploadImageForNNSuccess = (payload: { imageURL: string, screenID: n
 
 export const getScreenNN = (): T.GetScreenNN => ({ type: 'PROJECTS:GET_SCREEN_NN' });
 
-export const wrapIntoContainer = (id: string, options: HistoryMeta = {}): T.WrapIntoContainer => ({
+export const wrapIntoContainer = (id: string, options: T.HistoryMeta = {}): T.WrapIntoContainer => ({
   type: 'PROJECTS:WRAP_INTO_CONTAINER',
   payload: { id },
   meta: options,
@@ -298,17 +298,17 @@ export const redoAction = (): T.RedoAction => ({
   type: 'REDO_ACTION',
 });
 
-export const setUndoActions = (action: Action | Action[]): T.SetUndoActions => ({
+export const setUndoActions = (action: T.Action | T.Action[]): T.SetUndoActions => ({
   type: 'PROJECTS:SET_UNDO_ACTIONS',
   payload: action,
 });
 
-export const setRedoActions = (actions: Action[]): T.SetRedoActions => ({
+export const setRedoActions = (actions: T.Action[]): T.SetRedoActions => ({
   type: 'PROJECTS:SET_REDO_ACTIONS',
   payload: actions,
 });
 
-export const addUndoAction = (action: Action): T.AddUndoAction => ({
+export const addUndoAction = (action: T.Action): T.AddUndoAction => ({
   type: 'PROJECTS:ADD_UNDO_ACTION',
   payload: action,
 });
@@ -322,7 +322,7 @@ export const setAdd = (add: boolean): T.SetAddAction => ({
   payload: add,
 });
 
-export const unwrapFromContainer = (elementID: string, wrapperID: string, parentID: string, options: HistoryMeta = {}): T.UnwrapFromContainer => ({
+export const unwrapFromContainer = (elementID: string, wrapperID: string, parentID: string, options: T.HistoryMeta = {}): T.UnwrapFromContainer => ({
   type: 'PROJECTS:UNWRAP_FROM_CONTAINER',
   payload: {
     elementID,
@@ -332,7 +332,7 @@ export const unwrapFromContainer = (elementID: string, wrapperID: string, parent
   meta: options,
 });
 
-export const restoreElementChildren = (elementId: string, childrenIds: string[], options: HistoryMeta = {}): T.RestoreElementChildren => ({
+export const restoreElementChildren = (elementId: string, childrenIds: string[], options: T.HistoryMeta = {}): T.RestoreElementChildren => ({
   type: 'PROJECTS:RESTORE_ELEMENT_CHILDREN',
   payload: {
     elementId,
@@ -341,7 +341,7 @@ export const restoreElementChildren = (elementId: string, childrenIds: string[],
   meta: options,
 });
 
-export const redoWrapIntoContainer = (elementId: string, wrapperId: string, parentId: string, options: HistoryMeta = {}): T.RedoWrapIntoContainer => ({
+export const redoWrapIntoContainer = (elementId: string, wrapperId: string, parentId: string, options: T.HistoryMeta = {}): T.RedoWrapIntoContainer => ({
   type: 'PROJECTS:REDO_WRAP_INTO_CONTAINER',
   payload: {
     elementId,

@@ -184,7 +184,7 @@ function* moveElementSaga(action: ReturnType<typeof Actions.moveElement>): any {
 
       yield put(Actions.setAdd(true))
     } else {
-      const add = yield select(selectors.selectAdd);
+      const add = yield select(selectors.selectRemoteMove);
 
       yield put(Actions.setUndoActions(
         Actions.moveElement({newIndex: oldIndex, oldIndex: newIndex}, elementID, parentID, add),
@@ -194,10 +194,7 @@ function* moveElementSaga(action: ReturnType<typeof Actions.moveElement>): any {
   }
 
   const updatedTree = moveElement(targetParent.id, elementToMove, root, newIndex);
-  yield put({
-    ...Actions.updateElementsTree(updatedTree, undo, action),
-    meta: { redo, undo },
-  });
+  yield put(Actions.updateElementsTree(updatedTree, action, { redo, undo }));
 
   yield put(Actions.setMulti(!!isRemote));
 
@@ -253,10 +250,7 @@ function* updateElementStyles(action: ReturnType<typeof Actions.updateElementSty
     console.error(`Can not find updated element ${id} in tree`);
     return;
   }
-  yield put({
-    ...Actions.updateElementsTree(updatedTree, undo, action),
-    meta: { redo, undo },
-  });
+  yield put(Actions.updateElementsTree(updatedTree, action, { redo, undo }));
   const convertedElement = convertElementToPatchRequest(updatedElement);
   yield call(reqWrapper, apiChangeElement, { data: convertedElement, id });
 }
@@ -420,14 +414,12 @@ function* pasteCopiedItemSaga() {
 function* undoSaga() {
   const history = yield select(selectors.selectHistory);
   const redos = yield select(selectors.selectRedoActions);
+  const undos = yield select(selectors.selectUndoActions);
 
-  const historyLength = yield select(selectors.selectUndoLength);
-  if (!historyLength) {
+  if (!undos.length) {
     yield put(Actions.setNotification('Nothing to undo.'));
     return
   }
-
-  const undos = yield select(selectors.selectUndoActions);
 
   const last = undos[undos.length - 1];
 
@@ -496,24 +488,12 @@ function* redoSaga() {
     });
   }
 
-  // yield put({
-  //   ...redos[0],
-  //   meta: {
-  //     redo: true,
-  //   },
-  // });
-
   yield put(setRedoActions([
     ...redos.slice(1),
   ]));
 
   const { itemType, itemId }: ReturnType<typeof selectors.selectActiveItem> = yield select(selectors.selectActiveItem);
   document.querySelector<HTMLElement>(`[data-ls-id='${itemType === 'root' ? 'root' : itemId}']`)?.focus();
-}
-
-function* clearHistorySaga() {
-  // yield put(Actions.setUndoActions([]));
-  // yield put(Actions.setRedoActions([]));
 }
 
 const loadProjectsType: ProjectT.LoadProjects['type'] = 'PROJECTS:LOAD_PROJECTS';
@@ -548,7 +528,6 @@ const undoActionType: ProjectT.UndoAction['type'] = 'UNDO_ACTION';
 const redoActionType: ProjectT.RedoAction['type'] = 'REDO_ACTION';
 const restoreElementType: ProjectT.RestoreElementChildren['type'] = 'PROJECTS:RESTORE_ELEMENT_CHILDREN';
 const redoWrapIntoContainerType: ProjectT.RedoWrapIntoContainer['type'] = 'PROJECTS:REDO_WRAP_INTO_CONTAINER';
-const clearHistoryType: ProjectT.ClearHistory['type'] = 'PROJECTS:CLEAR_HISTORY';
 
 export default function* projectSaga() {
   yield takeLatest(REHYDRATE, authCheckSaga);
@@ -594,5 +573,4 @@ export default function* projectSaga() {
   yield takeEvery(redoActionType, redoSaga);
   yield takeEvery(unwrapFromContainerType, unwrapFromContainerSaga);
   yield takeEvery(redoWrapIntoContainerType, redoWrapIntoContainerSaga);
-  yield takeEvery(clearHistoryType, clearHistorySaga);
 }

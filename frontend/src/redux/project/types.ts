@@ -51,7 +51,7 @@ export type ProjectControlState = {
   redoActions: Action[];
   history: Action[];
   sourceAction: Action | null;
-  add: boolean;
+  remoteMove: boolean;
   multi: boolean;
 }
 
@@ -109,7 +109,7 @@ export type MoveElement = IAction<
   { indices: Indices, elementID: string, parentID: string, isRemote?: boolean },
   HistoryMeta
 >;
-export type UpdateElementsTree = IAction<'PROJECTS:UPDATE_ELEMENTS_TREE', { root: RootElement<'root'>, skip: boolean, sourceAction: any, parentID?: string }>;
+export type UpdateElementsTree = IAction<'PROJECTS:UPDATE_ELEMENTS_TREE', { root: RootElement<'root'>, sourceAction: any, parentID?: string }>;
 export type ClearAfterPrevScreen = IPlainAction<'PROJECTS:CLEAN_AFTER_PREV_SCREEN'>;
 export type SaveScreen = IAction<'PROJECTS:SAVE_SCREEN', { canvas: HTMLCanvasElement }>;
 export type ExportProject = IPlainAction<'PROJECTS:EXPORT_PROJECT'>;

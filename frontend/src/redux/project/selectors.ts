@@ -121,13 +121,9 @@ export const selectUndoActions = (state: AppReduxState) => selectProjectState(st
 
 export const selectRedoActions = (state: AppReduxState) => selectProjectState(state).control.redoActions;
 
-export const selectSourceAction = (state: AppReduxState) => selectProjectState(state).control.sourceAction;
-
-export const selectUndoLength = (state: AppReduxState) => selectProjectState(state).control.undoActions.length;
-
 export const selectHistory = (state: AppReduxState) => selectProjectState(state).control.history;
 
-export const selectAdd = (state: AppReduxState) => selectProjectState(state).control.add;
+export const selectRemoteMove = (state: AppReduxState) => selectProjectState(state).control.remoteMove;
 
 export const selectActiveItemStyles = makeActiveItemInfoSelector('styles');
 export const selectActiveItemChildrenStyles = makeActiveItemInfoSelector('styles');
