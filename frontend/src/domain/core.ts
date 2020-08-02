@@ -260,9 +260,3 @@ export const AVAILABLE_CHILDREN: AvailableChildren = {
   video: {},
   undefined: {},
 };
-
-type EntityToDefaults = {
-  [P in Entity]: {
-    [T in SubEntity]: Record<Control | 'overrideChildrenParams', any>;
-  };
-};

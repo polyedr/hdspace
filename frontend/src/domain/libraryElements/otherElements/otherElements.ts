@@ -11,7 +11,7 @@ import {
 } from '$api/types';
 import { IMAGES } from '$constants/images';
 
-import { paragraph } from './typographyElements';
+import { paragraph } from '../typographyElements/typographyElements';
 
 export const root: RootServerElement = {
   buoyancy: 0,

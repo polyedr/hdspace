@@ -29,10 +29,10 @@ import {
   DivBlockServerElement,
 } from '$api/types';
 
-import { root, container, divBlock, image, video, dropdown, undefined, dropdownMenu, makeDropdownItem } from './otherElements';
-import { button, textarea, textinput, checkbox, radiobutton, label, select, selectMenu, makeSelectItem } from './formElements';
-import { heading, paragraph, hyperlink, list, text_block, ocrtext, makeListItem } from './typographyElements';
-import { map, calendar, clock } from './widgetElements';
+import { root, container, divBlock, image, video, dropdown, undefined, dropdownMenu, makeDropdownItem } from './otherElements/otherElements';
+import { button, textarea, textinput, checkbox, radiobutton, label, select, selectMenu, makeSelectItem } from './formElements/formElements';
+import { heading, paragraph, hyperlink, list, text_block, ocrtext, makeListItem } from './typographyElements/typographyElements';
+import { map, calendar, clock } from './widgetElements/widgetElements';
 
 export type ChildrenElements = {
   selectMenu: SelectMenuServerElement,
