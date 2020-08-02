@@ -21,8 +21,8 @@ export const Action: ActionRenderer = (props) => {
     actionLink,
     elementRef,
     className,
-    tagStyles,
-    classStyles,
+    entityStyles,
+    groupStyles,
     ownStyles,
   } = props;
 
@@ -39,33 +39,33 @@ export const Action: ActionRenderer = (props) => {
         ...(isDisabled && { boxShadow: '0px 3px 1px -2px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 1px 5px 0px rgba(0,0,0,0.12)' }),
       },
 
-      '&$tagStyles': {
-        ...tagStyles,
+      '&$entityStyles': {
+        ...entityStyles,
 
         '&:hover': {
-          backgroundColor: tagStyles.backgroundColor,
-          color: tagStyles.color,
+          backgroundColor: entityStyles.backgroundColor,
+          color: entityStyles.color,
         },
 
         '&:active': {
-          color: tagStyles.color,
+          color: entityStyles.color,
         },
       },
 
-      '&$tagStyles$classStyles': {
-        ...classStyles,
+      '&$entityStyles$groupStyles': {
+        ...groupStyles,
 
         '&:hover': {
-          backgroundColor: classStyles.backgroundColor,
-          color: classStyles.color,
+          backgroundColor: groupStyles.backgroundColor,
+          color: groupStyles.color,
         },
 
         '&:active': {
-          color: classStyles.color,
+          color: groupStyles.color,
         },
       },
 
-      '&$tagStyles$classStyles$ownStyles': {
+      '&$entityStyles$groupStyles$ownStyles': {
         ...ownStyles,
 
         '&:hover': {
@@ -79,8 +79,8 @@ export const Action: ActionRenderer = (props) => {
       },
     },
 
-    tagStyles: {},
-    classStyles: {},
+    entityStyles: {},
+    groupStyles: {},
     ownStyles: {},
   })();
 
@@ -102,18 +102,15 @@ export const Action: ActionRenderer = (props) => {
       className={cn(
         className,
         classes.root,
-        classes.tagStyles,
-        classes.classStyles,
+        classes.entityStyles,
+        classes.groupStyles,
         classes.ownStyles,
         isDisabled && styles.disabled
       )}
       disableRipple={isDisabled || !showRipple}
       component={components[actionType]}
-      {...(actionType === 'external-link' && {
-        href: actionLink,
-        target: '_blank',
-      })}
-      {...(actionType === 'internal-link' && { to: actionLink })}
+      {...actionType === 'external-link' && { href: actionLink, target: '_blank' }}
+      {...actionType === 'internal-link' && { to: actionLink }}
       onClick={onClick}
     >
       {textContent}

@@ -3,9 +3,9 @@ import { LibraryElement, HeadingType, LinkParams, VideoSettings, InputType } fro
 
 export type SharedRendererProps = {
   id: string;
-  tagStyles: React.CSSProperties,
+  entityStyles: React.CSSProperties,
+  groupStyles: React.CSSProperties,
   ownStyles: React.CSSProperties,
-  classStyles: React.CSSProperties,
   style: React.CSSProperties,
   active: boolean,
   sortableId: string,

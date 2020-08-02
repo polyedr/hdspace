@@ -113,7 +113,7 @@ export function selectCurrentEditableStyles(state: AppReduxState, ruleName: keyo
   const activeElementStyles = selectActiveItemStyles(state).ownStyles;
   const activeElementClassNames = selectActiveItemStyles(state).classNames;
   const editableStyles = selectEditableStyles(state);
-  const activeTagStyles = activeItemType !== 'none' && selectSharedStyles(state, activeItemType) || {};
+  const activeEntityStyles = activeItemType !== 'none' && selectSharedStyles(state, activeItemType) || {};
 
   const activeSharedStyles = selectSharedStyles(state, activeElementClassNames[1]) || {};
 
@@ -121,7 +121,7 @@ export function selectCurrentEditableStyles(state: AppReduxState, ruleName: keyo
     if (editableStyles === 'ownStyles' || editableStyles === '') {
       return activeElementStyles;
     } else if (editableStyles === activeItemType) {
-      return activeTagStyles;
+      return activeEntityStyles;
     } else {
       return activeSharedStyles;
     }
@@ -129,7 +129,7 @@ export function selectCurrentEditableStyles(state: AppReduxState, ruleName: keyo
 
   const activeItemStyles = getActiveItemStyles(editableStyles);
 
-  return activeItemStyles[ruleName] || activeSharedStyles[ruleName] || activeTagStyles[ruleName];
+  return activeItemStyles[ruleName] || activeSharedStyles[ruleName] || activeEntityStyles[ruleName];
 }
 
 export function selectShowingBorders(state: AppReduxState) {

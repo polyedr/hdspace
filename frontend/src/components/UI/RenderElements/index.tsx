@@ -35,7 +35,7 @@ const ContainerRenderer = (props: ContainerRendererProps) => {
   const {
     id,
     sortableId,
-    tagStyles,
+    entityStyles,
     ownStyles,
     isDisabled,
     children,
@@ -45,7 +45,7 @@ const ContainerRenderer = (props: ContainerRendererProps) => {
   } = props;
 
   const classes = makeStyles({
-    tagStyles,
+    entityStyles,
     ownStyles,
   })();
 
@@ -62,7 +62,7 @@ const ContainerRenderer = (props: ContainerRendererProps) => {
         className={cn(
           className,
           isRoot && styles.root,
-          styles.addedElem, classes.tagStyles, classes.ownStyles
+          styles.addedElem, classes.entityStyles, classes.ownStyles
         )}
         style={{ ...(isBorderVisible && isDisabled && { outline: 'none' })}}
         tabIndex={isDisabled ? 0 : -1}

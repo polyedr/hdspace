@@ -260,9 +260,9 @@ export const DEFAULT_ROOT: LibraryElement<'root'> = {
   parameters: {},
   styles: {
     classNames: [],
-    tagStyles: {},
+    entityStyles: {},
     ownStyles: {},
-    classStyles: {},
+    groupStyles: {},
   },
 };
 

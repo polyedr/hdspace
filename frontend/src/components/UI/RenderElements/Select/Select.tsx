@@ -106,8 +106,8 @@ const SelectComponent = (props: SelectRendererProps) => {
     MenuProps: {
       PaperProps: {
         style: {
-          ...(menuStyles && convertPropCSS(menuStyles.tagStyles)),
-          ...(menuStyles && { minWidth: menuStyles.tagStyles.width }),
+          ...(menuStyles && convertPropCSS(menuStyles.entityStyles)),
+          ...(menuStyles && { minWidth: menuStyles.entityStyles.width }),
         },
       },
     },
