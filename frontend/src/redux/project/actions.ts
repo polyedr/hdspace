@@ -187,11 +187,6 @@ export const copyElementStyles = (elementType: Entity, elementID: string, styles
   payload: { elementType, elementID, styles },
 });
 
-export const setCopiedStyles = (elementType: Entity, className: string, styles: CssLikeStyles): T.SetCopiedStyles => ({
-  type: 'PROJECTS:SET_COPIED_STYLES',
-  payload: { elementType, className, styles },
-});
-
 export const addElementClassName = (elementID: string, className: string): T.AddElementClassName => ({
   type: 'PROJECTS:ADD_ELEMENT_CLASSNAME',
   payload: { elementID, className },
@@ -202,7 +197,6 @@ export const removeElementClassName = (elementID: string, className: string): T.
   payload: { elementID, className },
 });
 
-// TODO remove this action
 export const removeSharedStyles = (className: Entity, cssPropertiesNames: string[]): T.RemoveSharedStyles => ({
   type: 'PROJECTS:REMOVE_SHARED_STYLES',
   payload: { className, cssPropertiesNames },

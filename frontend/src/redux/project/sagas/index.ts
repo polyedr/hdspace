@@ -223,8 +223,6 @@ function* copyElementStylesSaga(action: ReturnType<typeof Actions.copyElementSty
   const sharedClassNames = currentProject.projectData.classes.map(cssClass => cssClass.className);
   const uniqueClassName = generateUniqueName(`${elementType} group 1`, sharedClassNames);
 
-  yield put(Actions.setCopiedStyles(elementType, uniqueClassName, styles));
-
   yield call(updateElementClassNames, elementID, uniqueClassName, 'add');
 
   const newProject = addProjectStyles(currentProject, uniqueClassName, elementType, styles);
