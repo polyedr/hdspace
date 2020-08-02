@@ -1,12 +1,12 @@
 import {
-  DEFAULT_BACKGROUND,
   DEFAULT_SIZE,
   DEFAULT_INDENTS,
   DEFAULT_DISPLAY,
-  DEFAULT_TYPOGRAPHY,
   DEFAULT_BORDER,
+  DEFAULT_BACKGROUND,
   DEFAULT_BULLETS,
-} from '$constants/defaultParams';
+  DEFAULT_TYPOGRAPHY,
+} from '$domain/constants/defaultStyles';
 import {
   Entity,
   rootStyleControls,
@@ -15,7 +15,6 @@ import {
   buttonStyleControls,
   textinputStyleControls,
   textareaStyleControls,
-  AVAILABLE_CONTROLS,
   checkboxStyleControls,
   radiobuttonStyleControls,
   labelStyleControls,

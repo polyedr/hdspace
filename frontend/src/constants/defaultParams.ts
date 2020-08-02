@@ -1,15 +1,10 @@
 import {
-  IScreenBorders,
-  IScreenBackground,
-  IScreenTypography,
-  IScreenIndents,
   IProjectScreen,
   ActiveItem,
   ServerStructType,
   ILSItem,
 } from '$redux/project/types';
 import { IApiResponseError, ITokenPair } from '$redux/user/reducer';
-import { CssLikeStyles } from '$utils/StyleHelper';
 import { LibraryElement } from '$api/types';
 
 export interface ISignFormElement {
@@ -37,17 +32,6 @@ export interface ITemplateElement {
   checked: boolean,
 }
 
-export const MIN_WIDTH = '24px';
-export const MIN_HEIGHT = 'auto';
-
-export const DEFAULT_WIDTH = 'auto';
-export const DEFAULT_HEIGHT = 'auto';
-
-export const DEFAULT_SIZE = {
-  width: 'auto',
-  height: 'auto',
-};
-
 export const MIN_BORDER_WIDTH = 0;
 export const MAX_BORDER_WIDTH = 10;
 export const MIN_BORDER_RADIUS = 0;
@@ -60,52 +44,6 @@ export const MIN_LONGITUDE = -180;
 export const MAX_LONGITUDE = 180;
 export const MIN_MAP_ZOOM = 1;
 export const MAX_MAP_ZOOM = 18;
-
-export const DEFAULT_INDENTS: IScreenIndents = {
-  'margin-top': '0px',
-  'margin-right': '0px',
-  'margin-bottom': '0px',
-  'margin-left': '0px',
-  'padding-top': '5px',
-  'padding-right': '5px',
-  'padding-bottom': '5px',
-  'padding-left': '5px',
-};
-
-export const DEFAULT_DISPLAY: CssLikeStyles = { 
-  display: 'block',
-  'flex-direction': 'row',
-  'justify-content': 'flex-start',
-  'align-items': 'stretch',
- };
-
-export const DEFAULT_BORDER: IScreenBorders = {
-  'border-width': '0px',
-  'border-color': '#323232',
-  'border-style': 'solid',
-  'border-radius': '0px',
-};
-
-export const DEFAULT_BACKGROUND: IScreenBackground = {
-  'background-color': 'rgba(255, 255, 255, 0)',
-  'background-image': 'none',
-  'background-repeat': 'no-repeat',
-  'background-size': 'cover',
-};
-
-export const DEFAULT_BULLETS: CssLikeStyles = {
-  'list-style-type': 'disc',
-};
-
-export const DEFAULT_TYPOGRAPHY: IScreenTypography = {
-  color: '#323232',
-  'font-family': '"Roboto", sans-serif',
-  'font-size': '14px',
-  'font-style': 'none',
-  'font-weight': 400,
-  'line-height': '1.5',
-  'text-align': 'left',
-};
 
 export const DEFAULT_PROJECT = {
   id: -1,
