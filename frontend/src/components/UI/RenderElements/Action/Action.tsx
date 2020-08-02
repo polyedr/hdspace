@@ -10,6 +10,49 @@ const styles = require('../styles.scss');
 
 export type ActionRenderer = React.FC<WithActionProps & ActionRendererProps>;
 
+const getClassStyles = (styles: React.CSSProperties) => ({
+  ...styles,
+
+  '&:hover': {
+    backgroundColor: styles.backgroundColor,
+    color: styles.color,
+  },
+
+  '&:active': {
+    color: styles.color,
+  },
+});
+
+const getStyles = (
+  isDisabled: boolean,
+  entityStyles: React.CSSProperties,
+  groupStyles: React.CSSProperties,
+  ownStyles: React.CSSProperties
+) => makeStyles({
+  root: {
+    cursor: isDisabled ? 'default' : 'pointer',
+    ...(isDisabled && { transition: 'none' }),
+
+    '&:hover': {
+      ...(isDisabled && { boxShadow: '0px 3px 1px -2px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 1px 5px 0px rgba(0,0,0,0.12)' }),
+    },
+    
+    '&:active': {
+      ...(isDisabled && { boxShadow: '0px 3px 1px -2px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 1px 5px 0px rgba(0,0,0,0.12)' }),
+    },
+  },
+
+  entityStyles: {
+    ...getClassStyles(entityStyles),
+  },
+  groupStyles: {
+    ...getClassStyles(groupStyles),
+  },
+  ownStyles: {
+    ...getClassStyles(ownStyles),
+  },
+});
+
 export const Action: ActionRenderer = (props) => {
   const {
     id,
@@ -28,61 +71,7 @@ export const Action: ActionRenderer = (props) => {
 
   const { showRipple, textContent } = params;
 
-  const classes = makeStyles({
-    root: {
-      cursor: isDisabled ? 'default' : 'pointer',
-      ...(isDisabled && { transition: 'none' }),
-      '&:hover': {
-        ...(isDisabled && { boxShadow: '0px 3px 1px -2px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 1px 5px 0px rgba(0,0,0,0.12)' }),
-      },
-      '&:active': {
-        ...(isDisabled && { boxShadow: '0px 3px 1px -2px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 1px 5px 0px rgba(0,0,0,0.12)' }),
-      },
-
-      '&$entityStyles': {
-        ...entityStyles,
-
-        '&:hover': {
-          backgroundColor: entityStyles.backgroundColor,
-          color: entityStyles.color,
-        },
-
-        '&:active': {
-          color: entityStyles.color,
-        },
-      },
-
-      '&$entityStyles$groupStyles': {
-        ...groupStyles,
-
-        '&:hover': {
-          backgroundColor: groupStyles.backgroundColor,
-          color: groupStyles.color,
-        },
-
-        '&:active': {
-          color: groupStyles.color,
-        },
-      },
-
-      '&$entityStyles$groupStyles$ownStyles': {
-        ...ownStyles,
-
-        '&:hover': {
-          backgroundColor: ownStyles.backgroundColor,
-          color: ownStyles.color,
-        },
-
-        '&:active': {
-          color: ownStyles.color,
-        },
-      },
-    },
-
-    entityStyles: {},
-    groupStyles: {},
-    ownStyles: {},
-  })();
+  const classes = getStyles(isDisabled, entityStyles, groupStyles, ownStyles)();
 
   const components: Record<ActionType, 'a' | 'button' | typeof Link> = {
     'external-link': 'a',
