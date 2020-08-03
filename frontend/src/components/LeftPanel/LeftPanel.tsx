@@ -19,7 +19,6 @@ const styles = require('./LeftPanel.scss');
 
 export interface ILeftPanel {
   pathname: IAppProps['pathname'],
-  getListProject: IAppProps['getListProject']
   projects: Project[],
   username?: string,
   userType: string,
