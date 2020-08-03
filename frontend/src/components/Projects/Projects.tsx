@@ -50,7 +50,7 @@ export const Projects: React.FunctionComponent<IProjectsProps> = memo(({
   }, []);
 
   const handleProjectAdd = useCallback(() => {
-    addProject('Untitled');
+    addProject('AProject');
   }, []);
 
   const closeModal = useCallback(() => {
