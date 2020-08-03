@@ -55,7 +55,7 @@ export const DEFAULT_PROJECT = {
   updated: new Date(),
   created: new Date(),
   projectData: {
-    classes: [],
+    classes: [], // TODO maybe borders are not updating because project not updating
   }
 };
 

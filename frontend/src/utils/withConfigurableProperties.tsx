@@ -12,20 +12,17 @@ type StateProps = {
   activeItemType: Entity | 'none';
   activeItemID: string;
   editableStyles: string;
-  scenarioElement: IScenarioElement;
 };
 
 function mapState(state: AppReduxState): StateProps {
   const activeItemType = selectors.selectActiveItem(state).itemType;
   const activeItemID = selectors.selectActiveItem(state).itemId;
   const editableStyles = selectors.selectEditableStyles(state);
-  const scenarioElement = selectors.selectScenarioElement(state, parseInt(activeItemID));
 
   return {
     activeItemType,
     activeItemID,
     editableStyles,
-    scenarioElement,
   };
 }
 
@@ -55,7 +52,6 @@ export function withConfigurableProperties<K extends LibraryElement<Entity>, T e
       activeItemType,
       activeItemID,
       editableStyles,
-      scenarioElement,
       removeSharedStyles,
       updateSharedStyles,
       removeElementStyles,
