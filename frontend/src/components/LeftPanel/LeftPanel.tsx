@@ -37,18 +37,9 @@ export const LeftPanel: React.FunctionComponent<ILeftPanel> = ({
   tokenPair,
   isLPanelMinimized,
   setListProject,
-  getListProject,
   setTokenPair,
 }) => {
   const [isProjectsListActive, setIsProjectsListActive] = useState<boolean>(false);
-  const [isLoadProjectData, setIsLoadProjectData] = useState(false);
-
-  useLayoutEffect(() => {
-    if (getListProject && projects.length === 0 && !isLoadProjectData) {
-      getListProject();
-      setIsLoadProjectData(true);
-    }
-  }, [isLoadProjectData, getListProject, projects]);
 
   const handleLogoutClick = useCallback(() => {
     if (tokenPair.access !== '') {

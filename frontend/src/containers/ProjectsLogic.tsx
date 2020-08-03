@@ -23,7 +23,6 @@ type IDashboardProps = ReturnType<typeof mapStateToProps> & typeof mapDispatchTo
 const ProjectsLogic: React.FunctionComponent<IDashboardProps> = ({
   listProject,
   listProjectLoader,
-
   addProject,
   delProject,
   renameProject,
