@@ -27,7 +27,7 @@ const getStyles = (
   isDisabled: boolean,
   entityStyles: React.CSSProperties,
   groupStyles: React.CSSProperties,
-  ownStyles: React.CSSProperties
+  ownStyles: React.CSSProperties,
 ) => makeStyles({
   root: {
     cursor: isDisabled ? 'default' : 'pointer',
