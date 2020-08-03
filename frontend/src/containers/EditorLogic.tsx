@@ -1,5 +1,5 @@
-import React from 'react';
-import { connect } from 'react-redux';
+import React, { useEffect } from 'react';
+import { connect, useDispatch, useSelector } from 'react-redux';
 
 import { AppReduxState } from '$shared/types/app';
 import { Editor } from '$components/Editor/Editor';
@@ -50,14 +50,12 @@ export type EditorProps = ReturnType<typeof mapStateToProps> & typeof mapDispatc
 
 const EditorLogic: React.FunctionComponent<EditorProps> = ({
   match: { params: { projectID, screenID } },
-
   currentProject,
   currentScreen,
   isNavPanelMinimized,
   isPrototypeMode,
   scenarioLoader,
   projectScreens,
-
   changeMinNavPanel,
   getProject,
   changeScreensOrder,
@@ -68,35 +66,46 @@ const EditorLogic: React.FunctionComponent<EditorProps> = ({
   renameScreen,
   updateElementStyles,
   resetScreenState,
-}: EditorProps) => (
-  <>
-    <NavPanelScreen
-      isNavPanelMinimized={isNavPanelMinimized}
-      onMinimizerNavPanel={changeMinNavPanel}
-      projectID={projectID}
-      screenID={screenID}
-      project={currentProject}
-      screen={currentScreen}
-      getProject={getProject}
-      changeScreensOrder={changeScreensOrder}
-      activateScreen={activateScreen}
-      addScreen={addScreen}
-      duplicateScreen={duplicateScreen}
-      delScreen={delScreen}
-      renameScreen={renameScreen}
-      projectScreens={projectScreens}
-    />
-    <Editor
-      screen={currentScreen}
-      isNavPanelMinimized={isNavPanelMinimized}
-      isPrototypeMode={isPrototypeMode}
-      updateElementStyles={updateElementStyles}
-      resetScreenState={resetScreenState}
-    />
-    <Spinner
-      active={currentProject.projectLoader || currentScreen.screenLoader || scenarioLoader}
-    />
-  </>
-);
+}: EditorProps) => {
+  const dispatch = useDispatch();
+  const projectList = useSelector(selectors.selectProjects);
+
+  useEffect(() => {
+    if (!projectList.length) {
+      dispatch(Actions.getListProject());
+    }
+  }, [dispatch, projectList.length]);
+
+  return (
+    <>
+      <NavPanelScreen
+        isNavPanelMinimized={isNavPanelMinimized}
+        onMinimizerNavPanel={changeMinNavPanel}
+        projectID={projectID}
+        screenID={screenID}
+        project={currentProject}
+        screen={currentScreen}
+        getProject={getProject}
+        changeScreensOrder={changeScreensOrder}
+        activateScreen={activateScreen}
+        addScreen={addScreen}
+        duplicateScreen={duplicateScreen}
+        delScreen={delScreen}
+        renameScreen={renameScreen}
+        projectScreens={projectScreens}
+      />
+      <Editor
+        screen={currentScreen}
+        isNavPanelMinimized={isNavPanelMinimized}
+        isPrototypeMode={isPrototypeMode}
+        updateElementStyles={updateElementStyles}
+        resetScreenState={resetScreenState}
+      />
+      <Spinner
+        active={currentProject.projectLoader || currentScreen.screenLoader || scenarioLoader}
+      />
+    </>
+  );
+}
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditorLogic);

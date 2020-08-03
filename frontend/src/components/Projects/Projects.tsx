@@ -1,5 +1,5 @@
 import React, {
-  memo, useState, useCallback,
+  memo, useState, useCallback, useEffect,
 } from 'react';
 import * as R from 'ramda';
 import { Link } from 'react-router-dom';
@@ -11,6 +11,7 @@ import { Modal } from '$components/UI/Modal';
 import { Icon } from '$components/UI/Icon';
 import { Project } from '$api/types';
 import { convertDateToRelative } from '$utils/convertDateToRelative';
+import { useDispatch } from 'react-redux';
 
 const styles = require('./Projects.scss');
 
@@ -27,6 +28,8 @@ export const Projects: React.FunctionComponent<IProjectsProps> = memo(({
   delProject,
   renameProject,
 }) => {
+  const dispatch = useDispatch();
+
   const [search, setSearch] = useState('');
   const [newProjectName, setNewProjectName] = useState('');
   const [selectAll, setSelectAll] = useState(false);
@@ -35,6 +38,10 @@ export const Projects: React.FunctionComponent<IProjectsProps> = memo(({
   const [modalDeleteProjectOpen, setModalDeleteProjectOpen] = useState(false);
 
   const sortedListProject = R.sort(R.descend(project => project.created.getTime()), listProject);
+
+  useEffect(() => {
+    dispatch(Actions.getListProject());
+  }, [dispatch]);
 
   const handleCart = useCallback((e) => {
     e.preventDefault();

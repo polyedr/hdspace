@@ -266,14 +266,11 @@ export function* renameProjectSaga(
 
   const data = { ...currProject, name: name };
 
-  yield call(reqWrapper, apiSaveProject, { data });
+  const updatedProject = yield call(reqWrapper, apiSaveProject, { data });
 
   const newListProject = listProject.map((project) => {
     if (project.id === projectID) {
-      return {
-        ...project,
-        name: name,
-      };
+      return updatedProject;
     }
 
     return project;
@@ -282,7 +279,7 @@ export function* renameProjectSaga(
   yield put(Actions.setListProject(newListProject));
 
   if (currentProject.id === projectID) {
-    yield put(Actions.setProject(data));
+    yield put(Actions.setProject(updatedProject));
   }
 }
 
