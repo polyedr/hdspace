@@ -308,11 +308,6 @@ export const setRedoActions = (actions: T.Action[]): T.SetRedoActions => ({
   payload: actions,
 });
 
-export const addUndoAction = (action: T.Action): T.AddUndoAction => ({
-  type: 'PROJECTS:ADD_UNDO_ACTION',
-  payload: action,
-});
-
 export const popUndoAction = (): T.PopUndoAction => ({
   type: 'PROJECTS:POP_UNDO_ACTION',
 });

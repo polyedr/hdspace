@@ -5,12 +5,11 @@ import * as R from 'ramda';
 // To create undoable feature for the editor you have to implement action with "meta" field extends type HistoryMeta,
 // that will call correspondent saga, which should:
 // 1. accept that action
-// 2. put "updateElementsTree" action or call "updateElementsTree" function with the skip as a second argument. skip
-// should be true in case of you are redoing or undoing actions (or it is initial elements tree loading).
+// 2. put "updateElementsTree" action or call "updateElementsTree" function with the "sourceAction" as a second argument.
+// It will be used to redo undid changes. Often this source action is the same as initial action of this saga. But in
+// case of creating elements it is not.
 // 3. put "setUndoActions" action, with an array of actions that will lead to previous state as an argument,
 // so you will be able to undo your changes.
-// 4. as a third argument updateElementsTree should have action(sourceAction), that will be used to redo undid changes.
-// Often this source action is the same as initial action of this saga. But in case of creating elements it is not.
 
 export const controlReducer = (state: T.ProjectControlState = initialControl, action: T.Action): T.ProjectControlState => {
   switch (action.type) {
@@ -25,46 +24,34 @@ export const controlReducer = (state: T.ProjectControlState = initialControl, ac
       }
 
       if (action.payload.sourceAction && !action.meta.undo) {
-        if (state.multi) {
-          const last = [state.history[state.history.length - 1], action.payload.sourceAction];
-          // @ts-ignore
-          newState.history = [
-            ...state.history.slice(0, -1),
-            last
-          ]
-        } else {
-          newState.history = [
-            ...state.history,
-            action.payload.sourceAction,
-          ]
-        }
+        newState.history = state.multi
+          ? [
+              ...state.history.slice(0, -1),
+              [
+                state.history[state.history.length - 1],
+                action.payload.sourceAction
+              ],
+            ] : [
+              ...state.history,
+              action.payload.sourceAction,
+            ];
       }
 
       return newState
     }
 
     case 'PROJECTS:SET_UNDO_ACTIONS': {
-      if (state.remoteMove) {
-        const last = [
-          state.undoActions[state.undoActions.length - 1],
-          action.payload,
-        ];
-
-
-        return {
-          ...state,
-          // @ts-ignore
-          undoActions: [
-            ...state.undoActions.slice(0, -1),
-            last
-          ],
-        }
-      }
-
       return {
         ...state,
-      // @ts-ignore
-        undoActions: [
+        // @ts-ignore
+        undoActions: state.remoteMove
+          ? [
+            ...state.undoActions.slice(0, -1),
+            [
+              state.undoActions[state.undoActions.length - 1],
+              action.payload,
+            ]
+          ] : [
           ...state.undoActions,
           action.payload,
         ],
@@ -75,21 +62,6 @@ export const controlReducer = (state: T.ProjectControlState = initialControl, ac
       return {
         ...state,
         undoActions: state.undoActions.slice(0, -1),
-      }
-    }
-
-    case 'PROJECTS:ADD_UNDO_ACTION': {
-      const copy = [...state.undoActions];
-      // @ts-ignore
-      copy[copy.length - 1] = [
-        copy[copy.length - 1],
-        action.payload,
-      ];
-
-      return {
-        ...state,
-        // @ts-ignore
-        undoActions: copy,
       }
     }
 

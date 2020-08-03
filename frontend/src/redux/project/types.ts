@@ -3,7 +3,6 @@ import { CssLikeStyles } from '$utils/StyleHelper';
 import { LibraryEntities } from '$domain/libraryElements/libraryElements';
 import { Entity } from '$domain/core';
 import { LibraryElement as RootElement, LinkParams, HeadingType, VideoSettings, InputType, Project } from '$api/types';
-import { StateWithHistory } from 'redux-undo';
 
 export type ProjectState = {
   data: ProjectDataState;
@@ -161,7 +160,6 @@ export type UndoAction = IPlainAction<'UNDO_ACTION'>;
 export type RedoAction = IPlainAction<'REDO_ACTION'>;
 export type SetUndoActions = IAction<'PROJECTS:SET_UNDO_ACTIONS', Action | Action[]>;
 export type SetRedoActions = IAction<'PROJECTS:SET_REDO_ACTIONS', Action[]>;
-export type AddUndoAction = IAction<'PROJECTS:ADD_UNDO_ACTION', Action>;
 export type UnwrapFromContainer = IAction<'PROJECTS:UNWRAP_FROM_CONTAINER', { elementID: string, wrapperID: string, parentID: string }, HistoryMeta>
 export type SetAddAction = IAction<'PROJECTS:SET_ADD_ACTION', boolean>;
 export type RestoreElementChildren = IAction<'PROJECTS:RESTORE_ELEMENT_CHILDREN', { elementId: string, childrenIds: string[] }, HistoryMeta>;
@@ -226,7 +224,6 @@ export type Action =
   | RemoveNotification
   | SetUndoActions
   | SetRedoActions
-  | AddUndoAction
   | UnwrapFromContainer
   | SetAddAction
   | RestoreElementChildren
