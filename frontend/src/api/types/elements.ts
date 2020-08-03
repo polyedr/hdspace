@@ -23,7 +23,7 @@ import {
   DropdownItemParameters,
 } from './elementsParameters';
 
-export type ServerElement<Type extends Entity, Children = any[], Params = {}> = {
+export type ServerElement<Type extends Entity, Children = any[], Params = {}, Styles = {}> = {
   id?: number,
   name: string,
   scenario?: number,
@@ -36,7 +36,7 @@ export type ServerElement<Type extends Entity, Children = any[], Params = {}> = 
   // Entity class has default entity styles, own class is empty by default, group classes is user custom classes
   styles: {
     classNames: [Type, ...string[]],
-    ownStyles: Required<CssLikeStyles>,
+    ownStyles: Styles,
   },
   children: Children,
 };
@@ -82,7 +82,7 @@ export type RecursiveElement = {
   children: [],
 }
 
-export type LibraryElement<Type extends Entity, Children = any[], Params = {}> = {
+export type LibraryElement<Type extends Entity, Children = any[], Params = {}, Styles = {}> = {
   id: string,
   name: string,
   type: Type,
@@ -90,7 +90,7 @@ export type LibraryElement<Type extends Entity, Children = any[], Params = {}> =
   image: string | null | undefined,
   styles: {
     classNames: [Type, ...string[]],
-    ownStyles: Required<CssLikeStyles>,
+    ownStyles: Styles,
   },
   children: Children,
   parameters: { group?: string } & Params,

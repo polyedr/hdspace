@@ -103,16 +103,15 @@ export function selectEditableStyles(state: AppReduxState) {
 export function selectSharedStyles(state: AppReduxState, elementType: string) {
   return selectCurrentProject(state).projectData.classes
     .find(cssClass => cssClass.className === elementType)
-    ?.rules || {} as Required<CssLikeStyles>;
+    ?.rules;
 };
 
-export function selectCurrentEditableStyles(state: AppReduxState, ruleName: keyof CssLikeStyles) {
+export function selectCurrentEditableStyles<T extends keyof Required<CssLikeStyles>>(state: AppReduxState, ruleName: T) {
   const activeItemType = selectActiveItem(state).itemType;
-  const activeElementStyles = selectActiveItemStyles(state).ownStyles;
+  const activeElementStyles = selectActiveItemStyles<LibraryElement<Entity, [], {}, Required<CssLikeStyles>>>(state).ownStyles;
   const activeElementClassNames = selectActiveItemStyles(state).classNames;
   const editableStyles = selectEditableStyles(state);
   const activeEntityStyles = activeItemType !== 'none' && selectSharedStyles(state, activeItemType) || {} as Required<CssLikeStyles>;
-
   const activeSharedStyles = selectSharedStyles(state, activeElementClassNames[1]) || {} as Required<CssLikeStyles>;
 
   const getActiveItemStyles = (editableStyles: string) => {
@@ -127,8 +126,8 @@ export function selectCurrentEditableStyles(state: AppReduxState, ruleName: keyo
 
   const activeItemStyles = getActiveItemStyles(editableStyles);
 
-  return activeItemStyles[ruleName] || activeSharedStyles[ruleName] || activeEntityStyles[ruleName];
-}
+  return (activeItemStyles[ruleName] || activeSharedStyles[ruleName] || activeEntityStyles[ruleName]);
+};
 
 export function selectShowingBorders(state: AppReduxState) {
   return selectFeatureState(state).ui.showContainersBorders;

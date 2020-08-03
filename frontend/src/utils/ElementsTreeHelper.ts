@@ -1,7 +1,7 @@
 import * as R from 'ramda';
 
-import { Entity } from '$domain/core';
 import { LibraryElement } from '$api/types';
+import { Entity } from '$domain/core';
 import { getDefaultStyles } from '$domain/libraryElements/defaultStyles';
 import { LIBRARY_ELEMENTS } from '$domain/libraryElements/libraryElements';
 
@@ -139,13 +139,7 @@ export const updateElementStyles = <T extends Entity, K extends Entity, P extend
 ): LibraryElement<P, LibraryElement<R>[]> => {
   return {
     ...root,
-    styles:
-      root.id === elementID
-        ? {
-            ...root.styles,
-            ownStyles: { ...root.styles.ownStyles, ...newStyles },
-          }
-        : root.styles,
+    styles: root.id === elementID ? { ...root.styles, ownStyles: { ...root.styles.ownStyles, ...newStyles }} : root.styles,
     children: root.children.map((child) => updateElementStyles(elementID, newStyles, child)),
   };
 };
@@ -162,10 +156,8 @@ export const addElementClassName = <T extends Entity, K extends Entity>(
         ? {
             ...root.styles,
             // Allow only one additional class
-            classNames: R.head(root.styles.classNames)
-              ? [R.head(root.styles.classNames)!, newClassName]
-              : [newClassName],
-          }
+            classNames: [R.head(root.styles.classNames), newClassName],
+          } as LibraryElement<T, LibraryElement<K>[]>['styles']
         : root.styles,
     children: root.children.map((child) =>
       addElementClassName(elementID, newClassName, child)
@@ -185,7 +177,7 @@ export const removeElementClassName = <T extends Entity, K extends Entity>(
         ? {
             ...root.styles,
             classNames: root.styles.classNames.filter(className => className !== removedClassName),
-          }
+          } as LibraryElement<T, LibraryElement<K>[]>['styles']
         : root.styles,
     children: root.children.map((child) => removeElementClassName(elementID, removedClassName, child)),
   };
@@ -202,7 +194,7 @@ export const removeElementStyles = <T extends Entity, K extends Entity>(
       root.id === elementID
         ? {
             ...root.styles,
-            ownStyles: (R.toPairs(root.styles.ownStyles) as [string, string])
+            ownStyles: (R.toPairs(root.styles.ownStyles))
             .filter(([ruleName]) => removedCssPropertiesNames.every(name => name !== ruleName))
             .reduce(
               (acc, [ruleName, rule]) => ({ ...acc, [ruleName]: rule }),
