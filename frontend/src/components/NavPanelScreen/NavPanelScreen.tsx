@@ -10,6 +10,7 @@ import { Button } from '$components/UI/Button';
 import * as Actions from '$redux/project/actions';
 import { EditorProps } from '$containers/EditorLogic';
 import { Project } from '$api/types';
+import { Scrollbar } from '$components/UI/Scrollbar';
 
 const styles = require('./NavPanelScreen.scss');
 
@@ -170,6 +171,9 @@ const NavPanelScreen: React.FunctionComponent<INavPanelScreenProps> = memo(({
             <Icon icon="add" size={16} />
           </Button>
 
+          <Scrollbar
+            autoHeightMin={isNavPanelMinimized ? '38px' : '110px'}
+          >
             <Sortable
               className={styles.screensTabsContainer}
               onChange={handleChange}
@@ -221,6 +225,7 @@ const NavPanelScreen: React.FunctionComponent<INavPanelScreenProps> = memo(({
                 ))
               }
             </Sortable>
+          </Scrollbar>
         </div>
       </div>
 
