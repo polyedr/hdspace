@@ -1,5 +1,5 @@
 import React, {
-  memo, useState, useCallback,
+  memo, useState, useCallback, useEffect,
 } from 'react';
 import * as R from 'ramda';
 import { Link } from 'react-router-dom';
@@ -10,6 +10,8 @@ import { Button } from '$components/UI/Button';
 import { Modal } from '$components/UI/Modal';
 import { Icon } from '$components/UI/Icon';
 import { Project } from '$api/types';
+import { convertDateToRelative } from '$utils/convertDateToRelative';
+import { useDispatch } from 'react-redux';
 
 const styles = require('./Projects.scss');
 
@@ -26,6 +28,8 @@ export const Projects: React.FunctionComponent<IProjectsProps> = memo(({
   delProject,
   renameProject,
 }) => {
+  const dispatch = useDispatch();
+
   const [search, setSearch] = useState('');
   const [newProjectName, setNewProjectName] = useState('');
   const [selectAll, setSelectAll] = useState(false);
@@ -34,6 +38,10 @@ export const Projects: React.FunctionComponent<IProjectsProps> = memo(({
   const [modalDeleteProjectOpen, setModalDeleteProjectOpen] = useState(false);
 
   const sortedListProject = R.sort(R.descend(project => project.created.getTime()), listProject);
+
+  useEffect(() => {
+    dispatch(Actions.getListProject());
+  }, [dispatch]);
 
   const handleCart = useCallback((e) => {
     e.preventDefault();
@@ -49,7 +57,7 @@ export const Projects: React.FunctionComponent<IProjectsProps> = memo(({
   }, []);
 
   const handleProjectAdd = useCallback(() => {
-    addProject('Untitled');
+    addProject('AProject');
   }, []);
 
   const closeModal = useCallback(() => {
@@ -123,6 +131,7 @@ export const Projects: React.FunctionComponent<IProjectsProps> = memo(({
                 </th>
                 <th className={styles.tableTitle}>Project Status</th>
                 <th className={styles.tableTitle}>Project Name</th>
+                <th className={styles.tableTitle}>Last Edit</th>
                 <th className={styles.tableTitle}>Total Pages</th>
                 <th className={styles.tableTitle}>Actions</th>
               </tr>
@@ -148,6 +157,9 @@ export const Projects: React.FunctionComponent<IProjectsProps> = memo(({
                       <Link to={`/project/${item.id}`}>
                         {item.name}
                       </Link>
+                    </td>
+                    <td className={styles.tableItem}>
+                      {convertDateToRelative(item.updated)}
                     </td>
                     <td className={styles.tableItem}>
                       {(R.prop('projectscreen', item) || []).length}
