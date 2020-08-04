@@ -2,8 +2,9 @@ export interface IPlainAction<T> {
   type: T;
 }
 
-export interface IAction<T, P> extends IPlainAction<T> {
+export interface IAction<T, P, M = any> extends IPlainAction<T> {
   payload: P;
+  meta?: M;
 }
 
 export interface IPlainFailAction<T, E = string> extends IPlainAction<T> {

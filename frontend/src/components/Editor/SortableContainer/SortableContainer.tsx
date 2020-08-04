@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { AppReduxState } from '$shared/types/app';
 import { SortableGroup } from '$components/Editor/SortableGroup/SortableGroup';
 import { RENDERERS } from '$components/UI/RenderElements';
-import { SavedElementsValues } from '$redux/project/types';
+import { Indices, SavedElementsValues } from '$redux/project/types';
 import { selectors, actionsCreators } from '$redux/project';
 import { LIST_SCENARIO_TYPE } from '$constants/defaultParams';
 import { convertPropCSS } from '$utils/StyleHelper';
@@ -28,6 +28,7 @@ const mapStateToProps = (state: AppReduxState) => {
   const scenarioElements = selectors.selectScenariosElements(state);
   const savedElements = selectors.selectSavedElementsValues(state);
   const disableInteractions = state.user.isPrototypeMode;
+  const screenLoader = selectors.selectScreenLoader(state)
 
   return {
     root,
@@ -38,6 +39,7 @@ const mapStateToProps = (state: AppReduxState) => {
     disableInteractions,
     currentScreen,
     savedElements,
+    screenLoader
   };
 };
 
@@ -83,6 +85,7 @@ const SortableComponent = (props: Props) => {
     scenarioElements,
     savedElements,
     updateSavedElementValues,
+    screenLoader,
     ...restProps
   } = props;
 
@@ -96,7 +99,7 @@ const SortableComponent = (props: Props) => {
     R.uniq(radioNames).forEach(groupName => {
       if (!groupName) {
         return;
-      };
+      }
 
       const groupRadios = Object.values(listSortable)
         .filter(item => item.type === 'radiobutton')
@@ -105,9 +108,9 @@ const SortableComponent = (props: Props) => {
 
       const firstRadio = R.head(groupRadios);
 
-      if(!savedElements[groupName]?.savedValue) {
+      if (!savedElements[groupName]?.savedValue) {
         updateSavedElementValues(groupName, firstRadio?.parameters.value || '');
-      };
+      }
     })
   }, [savedElements, listSortable, scenarioElements, updateSavedElementValues]);
 
@@ -122,9 +125,10 @@ const SortableComponent = (props: Props) => {
     }
   };
 
-  const handleItemPositionChange = (index: number, list: string[], parentId: string) => {
-    setIsDragging(false);
-    moveElement(index, activeItemId, parentId === 'root' ? rootID : parentId);
+  const handleItemPositionChange = (indices: Indices, parentId: string, isRemote?: boolean) => {
+    setIsDragging(!!isRemote);
+    moveElement(indices, activeItemId, parentId === 'root' ? rootID : parentId, isRemote);
+    return
   };
 
   const getGroupName = useCallback((itemType): string => (
@@ -179,16 +183,16 @@ const SortableComponent = (props: Props) => {
           currentValue: String(savedElements[id]?.savedValue),
           onElementChange: updateSavedElementValues,
           params: item.parameters,
-        }
-      };
+        };
+      }
 
       case 'textarea': {
         return {
           currentValue: savedElements[id]?.savedValue,
           onElementChange: updateSavedElementValues,
           params: item.parameters,
-        }
-      };
+        };
+      }
 
       case 'checkbox': {
         return {
@@ -196,8 +200,8 @@ const SortableComponent = (props: Props) => {
           isCheckboxChecked: isCheckboxChecked(id),
           onElementChange: updateSavedElementValues,
           params: item.parameters,
-        }
-      };
+        };
+      }
 
       case 'radiobutton': {
         return {
@@ -208,8 +212,8 @@ const SortableComponent = (props: Props) => {
           ),
           onElementChange: updateSavedElementValues,
           params: item.parameters,
-        }
-      };
+        };
+      }
 
       case 'select': {
         return {
@@ -217,8 +221,8 @@ const SortableComponent = (props: Props) => {
           onElementChange: updateSavedElementValues,
           childrenElements: children,
           params: item.parameters,
-        }
-      };
+        };
+      }
 
       default: return {
         params: item.parameters,
@@ -226,9 +230,9 @@ const SortableComponent = (props: Props) => {
     }
   };
 
-  if (currentScreen?.screenLoader) {
+  if (screenLoader) {
     return null;
-  };
+  }
 
   return disableInteractions ? (
     <ElementRenderer

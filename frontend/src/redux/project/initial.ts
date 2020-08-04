@@ -7,29 +7,43 @@ import {
 
 import * as T from './types';
 
-export const initial: T.ReduxState = {
-  data: {
+export const initialData: T.ProjectDataState = {
     libraryElements: {} as any, // will be loaded on app start
     listProject: [],
-  },
-  ui: {
-    activeItem: DEFAULT_ACTIVE_ITEM,
-    showContainersBorders: false,
-    isAddElementsModalOpened: false,
-    itemToCopyInfo: null,
-    savedElementsValues: {},
-  },
-  edit: {
-    currentProject: DEFAULT_PROJECT,
-    currentScreen: DEFAULT_SCREEN,
-    screens: [],
-    listProjectLoader: false,
-    loader: false,
-    scenarios: {},
-    scenarioElements: {},
-    rootElement: DEFAULT_ROOT,
-    modifyElements: [],
-    notification: null,
-  },
-  // communication: {},
+};
+
+export const initialUi: T.ProjectUiState = {
+  activeItem: DEFAULT_ACTIVE_ITEM,
+  isAddElementsModalOpened: false,
+  itemToCopyInfo: null,
+  savedElementsValues: {},
+  showContainersBorders: false,
+};
+
+export const initialEdit: T.ProjectEditState = {
+  currentProject: DEFAULT_PROJECT,
+  currentScreen: DEFAULT_SCREEN,
+  screens: [],
+  scenarios: {},
+  scenarioElements: {},
+  modifyElements: [],
+  notification: null,
+};
+
+export const initialCommunication: T.ProjectCommunicationState = {
+  loader: false,
+  listProjectLoader: false,
+  screenLoader: false,
+  projectLoader: false,
+  scenarioLoader: false,
+};
+
+export const initialControl: T.ProjectControlState = {
+  rootElement: DEFAULT_ROOT,
+  undoActions: [],
+  redoActions: [],
+  history: [],
+  sourceAction: null,
+  remoteMove: false,
+  groupActionsUp: false,
 };

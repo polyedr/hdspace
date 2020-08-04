@@ -120,23 +120,30 @@ export const activateScreen = (projectID: number, screenID: number): T.ActivateS
 });
 
 export const moveElement = (
-  elementIndex: number, elementID: string, parentID: string
+  indices: T.Indices,
+  elementID: string,
+  parentID: string,
+  isRemote: boolean = false,
+  options: T.HistoryMeta = {},
 ): T.MoveElement => ({
   type: 'PROJECTS:MOVE_ELEMENT',
   payload: {
-    elementIndex,
+    indices,
     elementID,
     parentID,
+    isRemote
   },
+  meta: options,
 });
 
 export const clearAfterPrevScreen = (): T.ClearAfterPrevScreen => ({
   type: 'PROJECTS:CLEAN_AFTER_PREV_SCREEN',
 });
 
-export const updateElementsTree = (root: LibraryElement<'root'>): T.UpdateElementsTree => ({
+export const updateElementsTree = (root: LibraryElement<'root'>, sourceAction: T.Action | null = null, meta: T.HistoryMeta = {}): T.UpdateElementsTree => ({
   type: 'PROJECTS:UPDATE_ELEMENTS_TREE',
-  payload: { root },
+  payload: { root, sourceAction },
+  meta,
 });
 
 export const resetScreenState = (): T.ResetScreenState => ({
@@ -177,9 +184,10 @@ export const setScenarioElements = (elements: T.IScenarioElements): T.SetScenari
   payload: { elements },
 });
 
-export const updateElementStyles = (id: string, styles: CssLikeStyles): T.UpdateElementStyles => ({
+export const updateElementStyles = (id: string, styles: CssLikeStyles, options: T.HistoryMeta = {}): T.UpdateElementStyles => ({
   type: 'PROJECTS:UPDATE_ELEMENT_STYLES',
   payload: { id, styles },
+  meta: options,
 });
 
 export const updateElementImage = (itemID: string, image: File ): T.UpdateElementImage => ({
@@ -189,10 +197,12 @@ export const updateElementImage = (itemID: string, image: File ): T.UpdateElemen
 
 export const updateElementParameters = <T extends Entity, K extends LibraryElement<T>['parameters']>(
   itemID: string,
-  parameters: K
+  parameters: K,
+  options: T.HistoryMeta = {},
 ): T.UpdateElementParameters => ({
   type: 'PROJECTS:UPDATE_ELEMENT_PARAMETERS',
   payload: { itemID, parameters },
+  meta: options,
 });
 
 export const updateSavedElementsValues = (elementsValues: T.SavedElementsValues): T.UpdateSavedElementsValues => ({
@@ -205,8 +215,10 @@ export const updateSavedElementValues = (itemID: string, savedValue: string | bo
   payload: { itemID, savedValue },
 });
 
-export const deleteActiveItem = (): T.DeleteActiveItem => ({
-  type: 'PROJECTS:DELETE_ACTIVE_ITEM',
+export const deleteItem = (id: string, options: T.HistoryMeta = {}): T.DeleteItem => ({
+  type: 'PROJECTS:DELETE_ITEM',
+  payload: { id },
+  meta: options,
 });
 
 export const createElements = (createdElements: T.CreatedElement[]): T.CreateElements => ({
@@ -214,14 +226,17 @@ export const createElements = (createdElements: T.CreatedElement[]): T.CreateEle
   payload: { createdElements },
 });
 
-export const addChildToElement = (childType: ChildEntity, elementID: string, parameters: ChildrenElements[ChildEntity]['parameters']): T.AddChildToElement => ({
+export const addChildToElement = (
+  childType: ChildEntity,
+  elementID: string,
+  parameters: ChildrenElements[ChildEntity]['parameters'],
+  undo: boolean = false
+): T.AddChildToElement => ({
   type: 'PROJECTS:ADD_CHILD_TO_ELEMENT',
   payload: { childType, elementID, parameters },
-});
-
-export const deleteChildFromElement = (childID: string, elementID: string): T.DeleteChildFromElement => ({
-  type: 'PROJECTS:DELETE_CHILD_FROM_ELEMENT',
-  payload: { childID, elementID },
+  meta: {
+    undo,
+  },
 });
 
 export const setScenarios = (scenarios: T.IScenarios): T.SetScenarios => ({
@@ -246,7 +261,11 @@ export const uploadImageForNNSuccess = (payload: { imageURL: string, screenID: n
 
 export const getScreenNN = (): T.GetScreenNN => ({ type: 'PROJECTS:GET_SCREEN_NN' });
 
-export const wrapIntoContainer = (): T.WrapIntoContainer => ({ type: 'PROJECTS:WRAP_INTO_CONTAINER' });
+export const wrapIntoContainer = (id: string, options: T.HistoryMeta = {}): T.WrapIntoContainer => ({
+  type: 'PROJECTS:WRAP_INTO_CONTAINER',
+  payload: { id },
+  meta: options,
+});
 
 export const setActiveItem = (activeItem: T.ActiveItem): T.SetActiveItem => ({
   type: 'PROJECTS:SET_ACTIVE_ITEM',
@@ -269,4 +288,73 @@ export const pasteCopiedItem = (): T.PasteCopiedItem => ({
 export const setItemToCopy = (id: string, screenID: number): T.SetItemToCopy => ({
   type: 'PROJECTS:SET_ITEM_TO_COPY',
   payload: { id, screenID }
+});
+
+export const undoAction = (): T.UndoAction => ({
+  type: 'UNDO_ACTION',
+});
+
+export const redoAction = (): T.RedoAction => ({
+  type: 'REDO_ACTION',
+});
+
+export const setUndoActions = (action: T.Action | T.Action[]): T.SetUndoActions => ({
+  type: 'PROJECTS:SET_UNDO_ACTIONS',
+  payload: action,
+});
+
+export const setRedoActions = (actions: T.Action[]): T.SetRedoActions => ({
+  type: 'PROJECTS:SET_REDO_ACTIONS',
+  payload: actions,
+});
+
+export const popUndoAction = (): T.PopUndoAction => ({
+  type: 'PROJECTS:POP_UNDO_ACTION',
+});
+
+export const setRemoteMove = (isRemote: boolean): T.SetRemoteMove => ({
+  type: 'PROJECTS:SET_REMOTE_MOVE',
+  payload: isRemote,
+});
+
+export const unwrapFromContainer = (elementID: string, wrapperID: string, parentID: string, options: T.HistoryMeta = {}): T.UnwrapFromContainer => ({
+  type: 'PROJECTS:UNWRAP_FROM_CONTAINER',
+  payload: {
+    elementID,
+    wrapperID,
+    parentID,
+  },
+  meta: options,
+});
+
+export const restoreElementChildren = (elementId: string, childrenIds: string[], options: T.HistoryMeta = {}): T.RestoreElementChildren => ({
+  type: 'PROJECTS:RESTORE_ELEMENT_CHILDREN',
+  payload: {
+    elementId,
+    childrenIds,
+  },
+  meta: options,
+});
+
+export const redoWrapIntoContainer = (elementId: string, wrapperId: string, parentId: string, options: T.HistoryMeta = {}): T.RedoWrapIntoContainer => ({
+  type: 'PROJECTS:REDO_WRAP_INTO_CONTAINER',
+  payload: {
+    elementId,
+    wrapperId,
+    parentId,
+  },
+  meta: options
+});
+
+export const clearHistory = (): T.ClearHistory => ({
+  type: 'PROJECTS:CLEAR_HISTORY',
+});
+
+export const popHistory = (): T.PopHistory => ({
+  type: 'PROJECTS:POP_HISTORY',
+});
+
+export const setGroupActionsUp = (groupUp: boolean): T.SetGroupActionsUp => ({
+  type: 'PROJECTS:SET_GROUP_UP',
+  payload: groupUp
 });

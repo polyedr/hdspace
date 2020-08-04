@@ -30,7 +30,7 @@ type TTopPanelProps = ReturnType<typeof mapStateToProps> & typeof mapDispatchToP
 }
 
 const Component: React.FunctionComponent<TTopPanelProps> = memo(({
-  project,
+  project = {name: '', id: -1},
   pathname,
   isLPanelMinimized,
   onMinimiserLPanel,
@@ -44,7 +44,7 @@ const Component: React.FunctionComponent<TTopPanelProps> = memo(({
     setSearch(e.target.value);
   }, []);
 
-  const closelModal = useCallback(() => {
+  const closeModal = useCallback(() => {
     setNewProjectName(project.name);
     setModalRenameProjectOpen(false);
   }, [project.name]);
@@ -58,8 +58,8 @@ const Component: React.FunctionComponent<TTopPanelProps> = memo(({
     event.preventDefault();
 
     renameProject(project.id, newProjectName);
-    closelModal();
-  }, [project, newProjectName, renameProject, closelModal]);
+    closeModal();
+  }, [project, newProjectName, renameProject, closeModal]);
 
   const handleNewProjectName = useCallback(({ target: { value } }) => {
     setNewProjectName(value);
@@ -103,7 +103,7 @@ const Component: React.FunctionComponent<TTopPanelProps> = memo(({
         confirmText="Rename"
         onConfirm={event => onRenameProject(event)}
         cancelText="Close"
-        onClose={closelModal}
+        onClose={closeModal}
       >
         <div className={styles.modalBody}>
           <input

@@ -9,7 +9,6 @@ import {
 import * as R from 'ramda';
 import { REHYDRATE } from 'redux-persist';
 import { LOCATION_CHANGE, LocationChangeAction } from 'connected-react-router';
-
 import { AppReduxState } from '$shared/types/app';
 import { ReturnPromisedType } from '$shared/types';
 import * as Actions from '$redux/project/actions';
@@ -24,15 +23,16 @@ import {
   exportProjectSaga,
 } from '$redux/project/sagas/project';
 import {
-  deleteActiveItemSaga,
   wrapIntoContainerSaga,
   addChildToElementSaga,
-  deleteChildFromElementSaga,
   createElementsSaga,
   createElements,
   addElementToElement,
   updateElementsTree,
   renameElementSaga,
+  unwrapFromContainerSaga,
+  softDeleteSaga,
+  restoreElementSaga, redoWrapIntoContainerSaga,
 } from '$redux/project/sagas/scenario';
 import {
   apiGetLibraryElements,
@@ -47,7 +47,7 @@ import { LibraryElement, LibraryElementUnion } from '$api/types';
 import { Entity } from '$domain/core';
 import { setTokenPair, setLoadedToken } from '$redux/user/actions';
 import { MAX_TOKEN_TRIALS } from '$config/settings';
-import { setScreenLoader } from '$redux/project/actions';
+import { setRedoActions, setScreenLoader, setUndoActions } from '$redux/project/actions';
 import { addScreenSaga } from '$redux/project/sagas/screen';
 import { refreshUserTokenPair } from '$redux/user/sagas';
 import { openSignScreen, openProjects } from '$utils/history';
@@ -154,43 +154,70 @@ function* authCheckSaga() {
   yield put(Actions.setLibraryElements(libraryElements));
 }
 
-function* moveElementSaga(action: ReturnType<typeof Actions.moveElement>) {
-  const { elementID, elementIndex, parentID } = action.payload;
+function* moveElementSaga(action: ReturnType<typeof Actions.moveElement>): any {
+  const { indices: { newIndex, oldIndex }, elementID, parentID, isRemote } = action.payload;
+  if (!action.meta) {
+    console.error(`You have to provide metainformation for action ${action.type}`);
+    return;
+  }
+  const { undo, redo } = action.meta;
 
   const root: ReturnType<typeof selectors.selectRootElement> = yield select(selectors.selectRootElement);
   const targetParent = findChildByID(root, parentID);
 
   if (!targetParent) {
     console.error(`Can not find targetParent ${parentID} in tree`);
-  } else {
-    const root: ReturnType<typeof selectors.selectRootElement> = yield select(selectors.selectRootElement);
-    const elementToMove = findChildByID(root, elementID);
-
-    if (!elementToMove) {
-      console.error(`Can not find changedElement ${elementID} in tree`);
-      return;
-    }
-
-    const updatedTree = moveElement(targetParent.id, elementToMove, root, elementIndex);
-    yield put(Actions.updateElementsTree(updatedTree));
-
-    const updatedParent = findChildByID(updatedTree, parentID);
-
-    if (!updatedParent) {
-      console.error(`Can not find updatedParent ${parentID} in tree`);
-      return;
-    }
-
-    const convertedElements = updatedParent.children.map(child => convertElementToPatchRequest(child));
-    yield call(reqWrapper, apiSaveElements, { data: convertedElements });
-
-    const elementData = {
-      name: targetParent.name,
-      children: [...targetParent.children.map(child => child.id), elementID],
-    };
-
-    yield call(reqWrapper, apiChangeRecursiveElement, { data: elementData, id: targetParent.id });
+    return;
   }
+
+  const elementToMove = findChildByID(root, elementID);
+
+  if (!elementToMove) {
+    console.error(`Can not find changedElement ${elementID} in tree`);
+    return;
+  }
+
+  // we can get rid of this code block when we will get better Sortable.js implementation
+  if (!undo) {
+    if (isRemote) {
+      yield put(Actions.setUndoActions(Actions.moveElement({newIndex: oldIndex, oldIndex: newIndex}, elementID, parentID, false)));
+
+      yield put(Actions.setRemoteMove(true))
+    } else {
+      const add = yield select(selectors.selectRemoteMove);
+
+      yield put(Actions.setUndoActions(
+        Actions.moveElement({newIndex: oldIndex, oldIndex: newIndex}, elementID, parentID, add),
+      ));
+      yield put(Actions.setRemoteMove(false))
+    }
+  }
+
+  const updatedTree = moveElement(targetParent.id, elementToMove, root, newIndex);
+  yield put(Actions.updateElementsTree(updatedTree, action, { redo, undo }));
+
+  yield put(Actions.setGroupActionsUp(!!isRemote));
+
+  const updatedParent = findChildByID(updatedTree, parentID);
+
+  if (!updatedParent) {
+    console.error(`Can not find updatedParent ${parentID} in tree`);
+    return;
+  }
+
+  const convertedElements = updatedParent.children.map(child => convertElementToPatchRequest(child));
+  yield call(reqWrapper, apiSaveElements, { data: convertedElements });
+
+  if (isRemote) return;
+
+  !undo && document.querySelector<HTMLElement>(`[data-ls-id='${elementID}']`)?.focus();
+
+  const elementData = {
+    name: targetParent.name,
+    children: [...targetParent.children.map(child => child.id), elementID],
+  };
+
+  yield call(reqWrapper, apiChangeRecursiveElement, { data: elementData, id: targetParent.id });
 }
 
 export function* updateScenariosOnServerSaga(scenarios: ProjectT.IScenarios) {
@@ -203,19 +230,29 @@ export function* updateElementsOnServerSaga(elements: ProjectT.IScenarioElements
 
 function* updateElementStyles(action: ReturnType<typeof Actions.updateElementStyles>) {
   const { id, styles } = action.payload;
+  if (!action.meta) {
+    console.error(`You have to provide metainformation for action ${action.type}`);
+    return;
+  }
+  const { undo, redo } = action.meta;
 
   const root: ReturnType<typeof selectors.selectRootElement> = yield select(selectors.selectRootElement);
-  
+
+  if (!undo) {
+    const oldStyles = yield select(selectors.selectElementStyles(id));
+    yield put(Actions.setUndoActions(Actions.updateElementStyles(id, oldStyles)));
+  }
+
   const updatedTree = updateStyles(id, styles, root);
   const updatedElement = findChildByID(updatedTree, id);
 
   if (!updatedElement) {
     console.error(`Can not find updated element ${id} in tree`);
-  } else {
-    yield put(Actions.updateElementsTree(updatedTree));
-    const convertedElement = convertElementToPatchRequest(updatedElement);
-    yield call(reqWrapper, apiChangeElement, { data: convertedElement, id });
+    return;
   }
+  yield put(Actions.updateElementsTree(updatedTree, action, { redo, undo }));
+  const convertedElement = convertElementToPatchRequest(updatedElement);
+  yield call(reqWrapper, apiChangeElement, { data: convertedElement, id });
 }
 
 function* updateElementImage(action: ReturnType<typeof Actions.updateElementImage>) {
@@ -235,9 +272,19 @@ function* updateElementImage(action: ReturnType<typeof Actions.updateElementImag
 
 function* updateElementParameters(action: ReturnType<typeof Actions.updateElementParameters>) {
   const { itemID, parameters } = action.payload;
+  if (!action.meta) {
+    console.error(`You have to provide metainformation for action ${action.type}`);
+    return;
+  }
+  const { undo, redo } = action.meta;
 
   const root: ReturnType<typeof selectors.selectRootElement> = yield select(selectors.selectRootElement);
-  
+
+  if (!undo) {
+    const oldParameters = yield select(selectors.selectElementParameters(itemID));
+    yield put(Actions.setUndoActions(Actions.updateElementParameters(itemID, oldParameters)));
+  }
+
   const updatedTree = updateParameters(itemID, parameters, root);
   const updatedElement = findChildByID(updatedTree, itemID);
 
@@ -246,7 +293,8 @@ function* updateElementParameters(action: ReturnType<typeof Actions.updateElemen
   } else {
     const savedValue = getSavedValue(updatedElement as LibraryElementUnion);
     yield put(Actions.updateSavedElementValues(itemID, savedValue));
-    yield call(updateElementsTree, updatedTree);
+    yield call(updateElementsTree, updatedTree, undo, action, { redo, undo });
+
     const convertedElement = convertElementToPatchRequest(updatedElement);
     yield call(reqWrapper, apiChangeElement, { data: convertedElement, id: itemID });
   }
@@ -285,8 +333,12 @@ function* uploadFileSaga({ payload: { file: { file } } }: ReturnType<typeof Acti
     yield call(reqWrapper, apiSaveElements, { data: convertedElements });
 
     const updatedElements = moveElement(root.id, nnRootWithDefaultParams, root, 0);
+    const childrenIds = updatedElements.children.map(child => child.id);
+    yield put(Actions.setUndoActions(
+      Actions.deleteItem(nnRootWithDefaultParams.id),
+    ));
 
-    yield call(updateElementsTree, updatedElements);
+    yield call(updateElementsTree, updatedElements, false, Actions.restoreElementChildren(root.id, childrenIds));
   } catch (e) {
     console.error('Could not upload image for NN. Error: ', e.message);
   }
@@ -322,7 +374,7 @@ function* duplicateScreenSaga(action: ReturnType<typeof Actions.duplicateScreen>
   const targetRootID = targetRoot.id;
 
   yield put(Actions.setActiveItem({ itemId: targetRootID, itemType: 'root', name: 'Root' }));
-  yield call(duplicateItems, sourceRoot, duplicatedItems, targetRoot);
+  yield call(duplicateItems, sourceRoot, duplicatedItems, targetRoot, true);
   yield put(setScreenLoader(false));
 }
 
@@ -330,6 +382,7 @@ function* duplicateItems(
   sourceRoot: LibraryElement<Entity>,
   itemsToCopyInfo: ItemToCopyInfo[],
   targetParent: LibraryElement<Entity>,
+  undo: boolean = false,
 ) {
   const itemsToDuplicate = itemsToCopyInfo.map(item => findChildByID(sourceRoot, item.id));
   const isItemsToDuplicateInTree = itemsToDuplicate.every(item => !!item);
@@ -338,7 +391,7 @@ function* duplicateItems(
     console.error(`Can not find duplicated items ${JSON.stringify(itemsToCopyInfo.map(item => item.id))} in tree`);
   } else {
     const convertedItemsToDuplicate = itemsToDuplicate.map(item => convertElementToRequest(item!));
-    yield call(createElements, convertedItemsToDuplicate, targetParent);
+    return yield call(createElements, convertedItemsToDuplicate, targetParent, undo);
   }
 }
 
@@ -349,13 +402,98 @@ function* pasteCopiedItemSaga() {
 
   if (!targetContainer) {
     console.error(`Can not find updated element ${activeItem.itemId} in tree`);
-  } else {
-    const itemToCopyInfo: ReturnType<typeof selectors.selectItemToCopyInfo> = yield select(selectors.selectItemToCopyInfo);
-
-    if (activeItem.itemType !== 'none' && itemToCopyInfo !== null) {
-      yield call(duplicateItems, root, [itemToCopyInfo], targetContainer);
-    }
+    return
   }
+  const itemToCopyInfo: ReturnType<typeof selectors.selectItemToCopyInfo> = yield select(selectors.selectItemToCopyInfo);
+
+  if (activeItem.itemType !== 'none' && itemToCopyInfo !== null) {
+    yield call(duplicateItems, root, [itemToCopyInfo], targetContainer);
+  }
+}
+
+function* undoSaga() {
+  const history = yield select(selectors.selectHistory);
+  const redos = yield select(selectors.selectRedoActions);
+  const undos = yield select(selectors.selectUndoActions);
+
+  if (!undos.length) {
+    yield put(Actions.setNotification('Nothing to undo.'));
+    return
+  }
+
+  const last = undos[undos.length - 1];
+
+  if (Array.isArray(last)) {
+    yield put(Actions.setGroupActionsUp(true));
+
+    for (let undo of last.reverse()) {
+      yield put({
+        ...undo,
+        meta: {
+          undo: true,
+        },
+      });
+    }
+
+    yield put(Actions.setGroupActionsUp(false));
+  } else {
+    yield put({
+      ...last,
+      meta: {
+        undo: true,
+      },
+    });
+  }
+
+  yield put(Actions.popUndoAction());
+  yield put(Actions.popHistory());
+
+  yield put(setRedoActions([
+    history[history.length - 1],
+    ...redos,
+  ]));
+
+  const { itemType, itemId }: ReturnType<typeof selectors.selectActiveItem> = yield select(selectors.selectActiveItem);
+  document.querySelector<HTMLElement>(`[data-ls-id='${itemType === 'root' ? 'root' : itemId}']`)?.focus();
+}
+
+function* redoSaga() {
+  const redos = yield select(selectors.selectRedoActions);
+
+  if (!redos.length) {
+    yield put(Actions.setNotification('Nothing to redo.'));
+    return;
+  }
+  const first = redos[0];
+
+  if (Array.isArray(first)) {
+    yield put(Actions.setGroupActionsUp(true));
+
+    for (let redo of first) {
+      yield put({
+        ...redo,
+        meta: {
+          redo: true,
+        },
+      });
+    }
+
+    yield put(Actions.setGroupActionsUp(false));
+  } else {
+    yield put({
+      ...first,
+      meta: {
+        redo: true,
+      },
+    });
+  }
+
+  yield put(setRedoActions([
+    ...redos.slice(1),
+  ]));
+
+  const { itemType, itemId }: ReturnType<typeof selectors.selectActiveItem> = yield select(selectors.selectActiveItem);
+  document.querySelector<HTMLElement>(`[data-ls-id='${itemType === 'root' ? 'root' : itemId}']`)?.focus();
 }
 
 const loadProjectsType: ProjectT.LoadProjects['type'] = 'PROJECTS:LOAD_PROJECTS';
@@ -380,11 +518,16 @@ const renameElementType: ProjectT.RenameElement['type'] = 'PROJECTS:RENAME_ELEME
 const addChildToElementType: ProjectT.AddChildToElement['type'] = 'PROJECTS:ADD_CHILD_TO_ELEMENT';
 const deleteChildFromElementType: ProjectT.DeleteChildFromElement['type'] = 'PROJECTS:DELETE_CHILD_FROM_ELEMENT';
 const wrapIntoContainerType: ProjectT.WrapIntoContainer['type'] = 'PROJECTS:WRAP_INTO_CONTAINER';
-const deleteActiveItemType: ProjectT.DeleteActiveItem['type'] = 'PROJECTS:DELETE_ACTIVE_ITEM';
+const deleteItemType: ProjectT.DeleteItem['type'] = 'PROJECTS:DELETE_ITEM';
 const uploadFileType: ProjectT.UploadFile['type'] = 'PROJECTS:UPLOAD_FILE';
 const getScreenNNType: ProjectT.GetScreenNN['type'] = 'PROJECTS:GET_SCREEN_NN';
 const copyActiveItemType: ProjectT.CopyActiveItem['type'] = 'PROJECTS:COPY_ACTIVE_ITEM';
 const pasteCopiedItemType: ProjectT.PasteCopiedItem['type'] = 'PROJECTS:PASTE_COPIED_ITEM';
+const unwrapFromContainerType: ProjectT.UnwrapFromContainer['type'] = 'PROJECTS:UNWRAP_FROM_CONTAINER';
+const undoActionType: ProjectT.UndoAction['type'] = 'UNDO_ACTION';
+const redoActionType: ProjectT.RedoAction['type'] = 'REDO_ACTION';
+const restoreElementType: ProjectT.RestoreElementChildren['type'] = 'PROJECTS:RESTORE_ELEMENT_CHILDREN';
+const redoWrapIntoContainerType: ProjectT.RedoWrapIntoContainer['type'] = 'PROJECTS:REDO_WRAP_INTO_CONTAINER';
 
 export default function* projectSaga() {
   yield takeLatest(REHYDRATE, authCheckSaga);
@@ -404,7 +547,7 @@ export default function* projectSaga() {
   yield takeLatest(saveScreenType, screenSaga.saveScreenSaga);
   yield takeLatest(deleteScreenType, screenSaga.delScreenSaga);
   yield takeLatest(renameScreenType, screenSaga.renameScreenSaga);
-  yield takeLatest(moveElementType, moveElementSaga);
+  yield takeEvery(moveElementType, moveElementSaga);
 
   yield takeLatest(updateElementStylesType, updateElementStyles);
   yield takeLatest(updateElementImageType, updateElementImage);
@@ -414,14 +557,20 @@ export default function* projectSaga() {
   yield takeEvery(renameElementType, renameElementSaga);
 
   yield takeEvery(addChildToElementType, addChildToElementSaga);
-  yield takeEvery(deleteChildFromElementType, deleteChildFromElementSaga);
+  yield takeEvery(deleteChildFromElementType, softDeleteSaga);
   yield takeEvery(wrapIntoContainerType, wrapIntoContainerSaga);
 
-  yield takeLatest(deleteActiveItemType, deleteActiveItemSaga);
+  yield takeEvery(deleteItemType, softDeleteSaga);
+  yield takeEvery(restoreElementType, restoreElementSaga);
 
   yield takeLatest(copyActiveItemType, copyActiveItemSaga);
   yield takeEvery(pasteCopiedItemType, pasteCopiedItemSaga);
 
   yield takeLatest(uploadFileType, uploadFileSaga);
   yield takeLatest(getScreenNNType, screenSaga.getScreenNNSaga);
+
+  yield takeEvery(undoActionType, undoSaga);
+  yield takeEvery(redoActionType, redoSaga);
+  yield takeEvery(unwrapFromContainerType, unwrapFromContainerSaga);
+  yield takeEvery(redoWrapIntoContainerType, redoWrapIntoContainerSaga);
 }

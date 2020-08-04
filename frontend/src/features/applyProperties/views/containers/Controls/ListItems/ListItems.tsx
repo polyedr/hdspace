@@ -27,7 +27,7 @@ function mapState(state: AppReduxState): StateProps {
 
 const mapDispatch = {
   addChildToElement: actionsCreators.addChildToElement,
-  deleteChildFromElement: actionsCreators.deleteChildFromElement,
+  deleteChildFromElement: actionsCreators.deleteItem,
 };
 
 type Props = StateProps & PropertiesChangeProps<ListItemElement> & typeof mapDispatch;
@@ -52,7 +52,7 @@ const ListItems: React.FC<Props> = ({
   };
 
   const handleDeleteButtonClick = (listItemID: string) => {
-    deleteChildFromElement(listItemID, activeItemID);
+    deleteChildFromElement(listItemID);
   };
 
   const handleCheckboxChange = (listItemID: string, { target: { checked } }: React.ChangeEvent<HTMLInputElement>) => {

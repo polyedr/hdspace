@@ -9,7 +9,7 @@ import { selectors } from '$redux/project';
 
 const mapStateToProps = (state: AppReduxState) => ({
   listProject: selectors.selectProjects(state),
-  listProjectLoader: selectors.selectProjectLoader(state),
+  listProjectLoader: selectors.selectListProjectLoader(state),
 });
 
 const mapDispatchToProps = {

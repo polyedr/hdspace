@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
-import { connect } from 'react-redux';
-
+import { connect, useSelector } from 'react-redux';
 import { actionsCreators, selectors } from '$redux/project';
 import { AppReduxState } from '$shared/types/app';
 
@@ -11,10 +10,12 @@ const mapState = (state: AppReduxState) => {
 };
 
 const mapDispatch = {
-  deleteActiveItem: actionsCreators.deleteActiveItem,
+  deleteActiveItem: actionsCreators.deleteItem,
   wrapIntoContainer: actionsCreators.wrapIntoContainer,
   copyActiveItem: actionsCreators.copyActiveItem,
   pasteCopiedItem: actionsCreators.pasteCopiedItem,
+  undo: actionsCreators.undoAction,
+  redo: actionsCreators.redoAction,
 };
 
 type Props = & ReturnType<typeof mapState> & typeof mapDispatch;
@@ -26,31 +27,34 @@ export const Component = (props: Props) => {
     wrapIntoContainer,
     copyActiveItem,
     pasteCopiedItem,
+    undo,
+    redo,
   } = props;
-  
+
   const root = document.getElementById('root');
+  const { itemId } = useSelector(selectors.selectActiveItem);
 
   useEffect(() => {
     const listener = (event: KeyboardEvent) => {
       if (event.keyCode === 8) {
-        deleteActiveItem();
+        deleteActiveItem(itemId);
       }
     };
 
     root?.addEventListener('keydown', listener);
     return () => root?.removeEventListener('keydown', listener);
-  }, [rootElement, root, deleteActiveItem]);
+  }, [rootElement, root, deleteActiveItem, itemId]);
 
   useEffect(() => {
     const listener = (event: KeyboardEvent) => {
       if (event.code == 'KeyC' && event.altKey) {
-        wrapIntoContainer();
+        wrapIntoContainer(itemId);
       }
     };
 
     root?.addEventListener('keydown', listener);
     return () => root?.removeEventListener('keydown', listener);
-  }, [rootElement, root, wrapIntoContainer]);
+  }, [rootElement, root, wrapIntoContainer, itemId]);
 
   useEffect(() => {
     const listener = (event: KeyboardEvent) => {
@@ -79,6 +83,20 @@ export const Component = (props: Props) => {
     return () => root?.removeEventListener('keydown', listener);
   }, [rootElement, root, pasteCopiedItem]);
 
+  useEffect(() => {
+    const listener = (ev: KeyboardEvent) => {
+      if (ev.code === 'KeyZ' && (ev.metaKey || ev.ctrlKey) && !ev.shiftKey) {
+        undo();
+      }
+
+      if (ev.code === 'KeyZ' && (ev.metaKey || ev.ctrlKey) && ev.shiftKey) {
+        redo();
+      }
+    };
+
+    root?.addEventListener('keydown', listener);
+    return () => root?.removeEventListener('keydown', listener);
+  }, [rootElement, root, undo]);
   return null;
 };
 
