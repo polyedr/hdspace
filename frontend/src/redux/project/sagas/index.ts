@@ -182,21 +182,21 @@ function* moveElementSaga(action: ReturnType<typeof Actions.moveElement>): any {
     if (isRemote) {
       yield put(Actions.setUndoActions(Actions.moveElement({newIndex: oldIndex, oldIndex: newIndex}, elementID, parentID, false)));
 
-      yield put(Actions.setAdd(true))
+      yield put(Actions.setRemoteMove(true))
     } else {
       const add = yield select(selectors.selectRemoteMove);
 
       yield put(Actions.setUndoActions(
         Actions.moveElement({newIndex: oldIndex, oldIndex: newIndex}, elementID, parentID, add),
       ));
-      yield put(Actions.setAdd(false))
+      yield put(Actions.setRemoteMove(false))
     }
   }
 
   const updatedTree = moveElement(targetParent.id, elementToMove, root, newIndex);
   yield put(Actions.updateElementsTree(updatedTree, action, { redo, undo }));
 
-  yield put(Actions.setMulti(!!isRemote));
+  yield put(Actions.setGroupActionsUp(!!isRemote));
 
   const updatedParent = findChildByID(updatedTree, parentID);
 
@@ -424,7 +424,7 @@ function* undoSaga() {
   const last = undos[undos.length - 1];
 
   if (Array.isArray(last)) {
-    yield put(Actions.setMulti(true));
+    yield put(Actions.setGroupActionsUp(true));
 
     for (let undo of last.reverse()) {
       yield put({
@@ -435,7 +435,7 @@ function* undoSaga() {
       });
     }
 
-    yield put(Actions.setMulti(false));
+    yield put(Actions.setGroupActionsUp(false));
   } else {
     yield put({
       ...last,
@@ -467,7 +467,7 @@ function* redoSaga() {
   const first = redos[0];
 
   if (Array.isArray(first)) {
-    yield put(Actions.setMulti(true));
+    yield put(Actions.setGroupActionsUp(true));
 
     for (let redo of first) {
       yield put({
@@ -478,7 +478,7 @@ function* redoSaga() {
       });
     }
 
-    yield put(Actions.setMulti(false));
+    yield put(Actions.setGroupActionsUp(false));
   } else {
     yield put({
       ...first,

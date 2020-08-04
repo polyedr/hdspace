@@ -312,9 +312,9 @@ export const popUndoAction = (): T.PopUndoAction => ({
   type: 'PROJECTS:POP_UNDO_ACTION',
 });
 
-export const setAdd = (add: boolean): T.SetAddAction => ({
-  type: 'PROJECTS:SET_ADD_ACTION',
-  payload: add,
+export const setRemoteMove = (isRemote: boolean): T.SetRemoteMove => ({
+  type: 'PROJECTS:SET_REMOTE_MOVE',
+  payload: isRemote,
 });
 
 export const unwrapFromContainer = (elementID: string, wrapperID: string, parentID: string, options: T.HistoryMeta = {}): T.UnwrapFromContainer => ({
@@ -354,7 +354,7 @@ export const popHistory = (): T.PopHistory => ({
   type: 'PROJECTS:POP_HISTORY',
 });
 
-export const setMulti = (multi: boolean): T.SetMulti => ({
-  type: 'PROJECTS:SET_MULTI',
-  payload: multi
+export const setGroupActionsUp = (groupUp: boolean): T.SetGroupActionsUp => ({
+  type: 'PROJECTS:SET_GROUP_UP',
+  payload: groupUp
 });

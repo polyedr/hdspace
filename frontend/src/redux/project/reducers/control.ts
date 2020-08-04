@@ -24,7 +24,7 @@ export const controlReducer = (state: T.ProjectControlState = initialControl, ac
       }
 
       if (action.payload.sourceAction && !action.meta.undo) {
-        newState.history = state.multi
+        newState.history = state.groupActionsUp
           ? [
               ...state.history.slice(0, -1),
               [
@@ -65,7 +65,7 @@ export const controlReducer = (state: T.ProjectControlState = initialControl, ac
       }
     }
 
-    case 'PROJECTS:SET_ADD_ACTION': {
+    case 'PROJECTS:SET_REMOTE_MOVE': {
       return {
         ...state,
         remoteMove: action.payload
@@ -97,10 +97,10 @@ export const controlReducer = (state: T.ProjectControlState = initialControl, ac
       }
     }
 
-    case 'PROJECTS:SET_MULTI': {
+    case 'PROJECTS:SET_GROUP_UP': {
       return {
         ...state,
-        multi: action.payload,
+        groupActionsUp: action.payload,
       }
     }
 

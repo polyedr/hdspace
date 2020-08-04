@@ -51,7 +51,7 @@ export type ProjectControlState = {
   history: Action[];
   sourceAction: Action | null;
   remoteMove: boolean;
-  multi: boolean;
+  groupActionsUp: boolean;
 }
 
 export type Indices = {
@@ -161,13 +161,13 @@ export type RedoAction = IPlainAction<'REDO_ACTION'>;
 export type SetUndoActions = IAction<'PROJECTS:SET_UNDO_ACTIONS', Action | Action[]>;
 export type SetRedoActions = IAction<'PROJECTS:SET_REDO_ACTIONS', Action[]>;
 export type UnwrapFromContainer = IAction<'PROJECTS:UNWRAP_FROM_CONTAINER', { elementID: string, wrapperID: string, parentID: string }, HistoryMeta>
-export type SetAddAction = IAction<'PROJECTS:SET_ADD_ACTION', boolean>;
+export type SetRemoteMove = IAction<'PROJECTS:SET_REMOTE_MOVE', boolean>;
 export type RestoreElementChildren = IAction<'PROJECTS:RESTORE_ELEMENT_CHILDREN', { elementId: string, childrenIds: string[] }, HistoryMeta>;
 export type RedoWrapIntoContainer = IAction<'PROJECTS:REDO_WRAP_INTO_CONTAINER', { elementId: string, wrapperId: string, parentId: string }, HistoryMeta>;
 export type ClearHistory = IPlainAction<'PROJECTS:CLEAR_HISTORY'>;
 export type PopUndoAction = IPlainAction<'PROJECTS:POP_UNDO_ACTION'>;
 export type PopHistory = IPlainAction<'PROJECTS:POP_HISTORY'>;
-export type SetMulti = IAction<'PROJECTS:SET_MULTI', boolean>;
+export type SetGroupActionsUp = IAction<'PROJECTS:SET_GROUP_UP', boolean>;
 
 export type Action =
   | LoadLibraryElements
@@ -225,13 +225,13 @@ export type Action =
   | SetUndoActions
   | SetRedoActions
   | UnwrapFromContainer
-  | SetAddAction
+  | SetRemoteMove
   | RestoreElementChildren
   | RedoWrapIntoContainer
   | ClearHistory
   | PopUndoAction
   | PopHistory
-  | SetMulti
+  | SetGroupActionsUp
   | MoveElement;
 
 export type ItemToCopyInfo = {
