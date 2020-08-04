@@ -1,5 +1,7 @@
 import React from 'react';
 import { Scrollbars } from 'react-custom-scrollbars';
+import cn from 'classnames';
+const styles = require('./styles.scss')
 
 interface IStyle {
   [x: string]: string | number,
@@ -73,11 +75,12 @@ const renderView = ({ style, ...props }: any) => {
     display: 'block',
     height: '100%',
     minHeight: '100%',
-    overflowX: 'hidden',
+    marginRight: '0', // prevent react-custom-scrollbars to overwrite margins (we dont need it since we're not displaying native ones)
+    marginBottom: '0',
   };
   return (
     <div
-      className="box"
+      className={cn("box", styles.removeNativeScrollbars)}
       style={{ ...style, ...viewStyle }}
       {...props}
     />
