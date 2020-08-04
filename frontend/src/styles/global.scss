@@ -65,6 +65,8 @@ p {
   padding-left: $leftPanel_fullWidth;
   padding-top: $header_height;
   display: flex;
+  max-width: calc(100vw - #{leftPanel_fullWidth});
+  overflow: auto;
   flex-direction: column;
   flex: 1;
   transition: all 0.3s ease;

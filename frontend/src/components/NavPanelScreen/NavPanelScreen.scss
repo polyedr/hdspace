@@ -18,19 +18,21 @@
   transition: all 0.4s linear;
 
   .navPanelContainer_minimize & {
-    max-height: 50px;
-
+    max-height: 66px;
     transition: all 0.4s linear;
   }
 }
 
 .screensTabsContainer {
   display: flex;
+  overflow: auto;
 }
 
 .screensBlock {
+  max-width: calc(100% - 30px);
+  overflow: auto;
   display: flex;
-  flex-direction: row-reverse;
+  flex-direction: row;
   padding: $mainPadding;
 }
 
@@ -50,6 +52,7 @@
 .screenContainer {
   position: relative;
   text-decoration: none;
+  flex-shrink: 0;
 
   margin-right: 10px;
   width: 70px;
