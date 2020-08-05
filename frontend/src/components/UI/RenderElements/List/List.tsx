@@ -1,14 +1,44 @@
 import React from 'react';
 import cn from 'classnames';
+import { makeStyles } from '@material-ui/core';
 
 import { ListRendererProps } from '../types';
 const styles = require('../styles.scss');
 
 const List = (props: ListRendererProps) => {
-  const { id, style, params, sortableId, isDisabled, className, elementRef, children } = props;
+  const {
+    id,
+    entityStyles,
+    groupStyles,
+    ownStyles,
+    params,
+    sortableId,
+    isDisabled,
+    className,
+    elementRef,
+    children,
+  } = props;
+
   const { isOrdered } = params;
 
   const ListTag = isOrdered ? 'ol' : 'ul';
+
+  const classes = makeStyles({
+    entityStyles: {
+      ...entityStyles,
+      ...(isOrdered && { "list-style-type": "decimal" }),
+    },
+
+    groupStyles: {
+      ...groupStyles,
+      ...(isOrdered && { "list-style-type": "decimal" }),
+    },
+
+    ownStyles: {
+      ...ownStyles,
+      ...(isOrdered && { "list-style-type": "decimal" }),
+    },
+  })();
 
   return (
     <ListTag
@@ -20,8 +50,10 @@ const List = (props: ListRendererProps) => {
       className={cn(
         className,
         styles.addedElem,
+        classes.entityStyles,
+        classes.groupStyles,
+        classes.ownStyles,
       )}
-      style={{ ...style, ...(isOrdered && { "list-style-type": "decimal" }) }}
       tabIndex={isDisabled ? 0 : -1}
     >
       {children}
