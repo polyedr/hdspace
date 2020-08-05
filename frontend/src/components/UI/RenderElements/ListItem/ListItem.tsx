@@ -1,34 +1,98 @@
 import React from 'react';
 import cn from 'classnames';
+import { makeStyles } from '@material-ui/core';
+import * as R from 'ramda';
 
 import { sharedClasses } from '$styles/sharedClasses';
 
 import { ListItemRendererProps } from '../types';
 const styles = require('../styles.scss');
 
+const getListItemStyles = (
+  entityStyles: React.CSSProperties,
+  groupStyles: React.CSSProperties,
+  ownStyles: React.CSSProperties
+) => makeStyles({
+  entityStyles: {
+    ...entityStyles,
+  },
+
+  groupStyles: {
+    ...groupStyles,
+  },
+
+  ownStyles: {
+    ...ownStyles,
+  },
+});
+
+const getEditableListItemStyles = (
+  entityStyles: React.CSSProperties,
+  groupStyles: React.CSSProperties,
+  ownStyles: React.CSSProperties
+) => makeStyles({
+  entityStyles: {
+    ...R.omit(['paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft'], entityStyles),
+  },
+
+  groupStyles: {
+    ...R.omit(['paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft'], groupStyles),
+  },
+
+  ownStyles: {
+    ...R.omit(['paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft'], ownStyles),
+  },
+});
+
+const getLinkStyles = (
+  entityStyles: React.CSSProperties,
+  groupStyles: React.CSSProperties,
+  ownStyles: React.CSSProperties
+) => makeStyles({
+  entityStyles: {
+    ...R.omit(['marginTop', 'marginRight', 'marginBottom', 'marginLeft', 'borderWidth', 'borderColor', 'borderStyle', 'backgroundColor'], entityStyles),
+    width: '100%',
+    height: '100%',
+    display: 'inline-block',
+  },
+
+  groupStyles: {
+    ...R.omit(['marginTop', 'marginRight', 'marginBottom', 'marginLeft', 'borderWidth', 'borderColor', 'borderStyle', 'backgroundColor'], groupStyles),
+    width: '100%',
+    height: '100%',
+    display: 'inline-block',
+  },
+
+  ownStyles: {
+    ...R.omit(['marginTop', 'marginRight', 'marginBottom', 'marginLeft', 'borderWidth', 'borderColor', 'borderStyle', 'backgroundColor'], ownStyles),
+    width: '100%',
+    height: '100%',
+    display: 'inline-block',
+  },
+});
+
 const ListItem = (props: ListItemRendererProps) => {
-  const { id, style, params, isDisabled, className, elementRef } = props;
+  const {
+    id,
+    style,
+    entityStyles,
+    groupStyles,
+    ownStyles,
+    params,
+    isDisabled,
+    className,
+    elementRef,
+  } = props;
+
   const { textContent, isLink, link } = params;
 
   const handleListItemClick = (event: React.MouseEvent<HTMLLIElement>) => {
     (event.target as HTMLElement).focus();
   };
 
-  const {
-    marginTop,
-    marginRight,
-    marginBottom,
-    marginLeft,
-    paddingTop,
-    paddingRight,
-    paddingBottom,
-    paddingLeft,
-    borderWidth,
-    borderColor,
-    borderStyle,
-    backgroundColor,
-    ...restStyles
-  } = style;
+  const listItemClasses = getListItemStyles(entityStyles, groupStyles, ownStyles)();
+  const listItemWithLinkClasses = getEditableListItemStyles(entityStyles, groupStyles, ownStyles)();
+  const linkClasses = getLinkStyles(entityStyles, groupStyles, ownStyles)();
 
   return (
     <>
@@ -44,31 +108,18 @@ const ListItem = (props: ListItemRendererProps) => {
             sharedClasses.unsortable,
             styles.addedElem,
             isDisabled && styles.disabled,
+            listItemWithLinkClasses.entityStyles,
+            listItemWithLinkClasses.groupStyles,
+            listItemWithLinkClasses.ownStyles,
           )}
-          style={{
-            marginTop,
-            marginRight,
-            marginBottom,
-            marginLeft,
-            borderWidth,
-            borderColor,
-            borderStyle,
-            backgroundColor,
-            ...restStyles,
-          }}
         >
           <a
+            className={cn(
+              linkClasses.entityStyles,
+              linkClasses.groupStyles,
+              linkClasses.ownStyles,
+            )}
             href={link}
-            style={{
-              paddingTop,
-              paddingRight,
-              paddingBottom,
-              paddingLeft,
-              ...restStyles,
-              width: '100%',
-              height: '100%',
-              display: 'inline-block',
-            }}
             target="_blank"
           >
             {textContent}
@@ -86,6 +137,9 @@ const ListItem = (props: ListItemRendererProps) => {
             sharedClasses.unsortable,
             styles.addedElem,
             isDisabled && styles.disabled,
+            listItemClasses.entityStyles,
+            listItemClasses.groupStyles,
+            listItemClasses.ownStyles,
           )}
           {...isDisabled && { onClick: handleListItemClick }}
           style={style}
