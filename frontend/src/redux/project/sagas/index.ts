@@ -63,6 +63,7 @@ import {
   removeElementClassName,
 } from '$utils/ElementsTreeHelper';
 import { generateUniqueName } from '$utils/generateUniqueName';
+import { CssLikeStyles } from '$utils/StyleHelper';
 import { updateProjectClasses, removeProjectStyles, addProjectStyles } from '$utils/ProjectClassesHelper';
 import * as PATH_NAMES from '$constants/pathNames';
 import { DEFAULT_AUTHORISATION_TOKEN } from '$constants/defaultParams';
@@ -225,7 +226,7 @@ function* copyElementStylesSaga(action: ReturnType<typeof Actions.copyElementSty
 
   yield call(updateElementClassNames, elementID, uniqueClassName, 'add');
 
-  const newProject = addProjectStyles(currentProject, uniqueClassName, elementType, styles);
+  const newProject = addProjectStyles(currentProject, uniqueClassName, elementType, styles as Required<CssLikeStyles>);
   yield call(updateProject, newProject);
 
   yield call(removeElementStyles, elementID, Object.keys(styles));

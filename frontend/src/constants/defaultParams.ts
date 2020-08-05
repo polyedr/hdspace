@@ -5,7 +5,7 @@ import {
   ILSItem,
 } from '$redux/project/types';
 import { IApiResponseError, ITokenPair } from '$redux/user/reducer';
-import { LibraryElement } from '$api/types';
+import { LibraryElement, Project } from '$api/types';
 import { CssLikeStyles } from '$utils/StyleHelper';
 import { getDefaultStyles } from '$domain/libraryElements/defaultStyles';
 
@@ -47,7 +47,7 @@ export const MAX_LONGITUDE = 180;
 export const MIN_MAP_ZOOM = 1;
 export const MAX_MAP_ZOOM = 18;
 
-export const DEFAULT_PROJECT = {
+export const DEFAULT_PROJECT: Project = {
   id: -1,
   name: '',
   status: '',

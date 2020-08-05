@@ -182,7 +182,7 @@ export const updateSharedStyles = (className: Entity, styles: CssLikeStyles): T.
   payload: { className, styles },
 });
 
-export const copyElementStyles = (elementType: Entity, elementID: string, styles: Required<CssLikeStyles>): T.CopyElementStyles => ({
+export const copyElementStyles = (elementType: Entity, elementID: string, styles: CssLikeStyles): T.CopyElementStyles => ({
   type: 'PROJECTS:COPY_ELEMENT_STYLES',
   payload: { elementType, elementID, styles },
 });

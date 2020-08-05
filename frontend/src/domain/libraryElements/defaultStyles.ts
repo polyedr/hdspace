@@ -67,9 +67,9 @@ export const DEFAULT_ELEMENTS_STYLES: { [K in Entity]: { [key: string]: CssLikeS
   undefined: defaultUndefinedStyles,
 };
 
-export const getDefaultStyles = (elementType: Entity): CssLikeStyles => {
-  return Object.values(DEFAULT_ELEMENTS_STYLES[elementType]).reduce(
+export const getDefaultStyles = (elementType: Entity): Required<CssLikeStyles> => {
+  return Object.values(DEFAULT_ELEMENTS_STYLES[elementType] as { [key: string]: Required<CssLikeStyles> }).reduce(
     (acc, styles) => ({ ...acc, ...styles }),
-    {}
+    {} as Required<CssLikeStyles>
   );
 };
