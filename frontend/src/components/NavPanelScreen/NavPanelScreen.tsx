@@ -10,6 +10,7 @@ import { Button } from '$components/UI/Button';
 import * as Actions from '$redux/project/actions';
 import { EditorProps } from '$containers/EditorLogic';
 import { Project } from '$api/types';
+import { Scrollbar } from '$components/UI/Scrollbar';
 
 const styles = require('./NavPanelScreen.scss');
 
@@ -160,58 +161,8 @@ const NavPanelScreen: React.FunctionComponent<INavPanelScreenProps> = memo(({
         >
           <Icon icon="expand" size={28} />
         </Button>
+
         <div className={styles.screensBlock}>
-          <Sortable
-            className={styles.screensTabsContainer}
-            onChange={handleChange}
-          >
-            {
-              screens.map(screenItem => (
-                <NavLink
-                  key={screenItem.id}
-                  to={`/project/${projectID}/${screenItem.id}`}
-                  className={classNames(styles.screenContainer, screen && screenItem.id === screen.id ? styles.screenContainer_active : '')}
-                  data-id={screenItem.id}
-                  >
-                    <div
-                      className={styles.screenNavigate}
-                      onClick={() => openScreen(screenItem.id)}
-                    >
-                      <Button
-                        className="propsPanelImgBtn"
-                        styleType="none"
-                        onClick={e => handleEditButtonClick(e, screenItem.id)}
-                      >
-                        <Icon icon="edit" size={20} />
-                      </Button>
-                      <Button
-                        className="propsPanelImgBtn"
-                        styleType="none"
-                        onClick={e => handleDuplicateScreen(e, screenItem.id)}
-                      >
-                        <Icon icon="copy" size={20} />
-                      </Button>
-                      {screens.length > 1 && (
-                        <Button
-                          className="delBtn"
-                          styleType="none"
-                          onClick={e => handleDelScreen(e, screenItem.id, screenItem.name)}
-                        >
-                          <Icon icon="delete" size={20} />
-                        </Button>
-                      )}
-                    </div>
-                    <div
-                      className={classNames(
-                        styles.screenTab,
-                      )}
-                    >
-                      <span>{screenItem.name}</span>
-                    </div>
-                </NavLink>
-              ))
-            }
-          </Sortable>
           <Button
             className={classNames(styles.addScreenBtn)}
             styleType="confirm"
@@ -219,8 +170,65 @@ const NavPanelScreen: React.FunctionComponent<INavPanelScreenProps> = memo(({
           >
             <Icon icon="add" size={16} />
           </Button>
+
+          <Scrollbar
+            autoHeightMin={isNavPanelMinimized ? '38px' : '110px'}
+          >
+            <Sortable
+              className={styles.screensTabsContainer}
+              onChange={handleChange}
+            >
+              {
+                screens.map(screenItem => (
+                  <NavLink
+                    key={screenItem.id}
+                    to={`/project/${projectID}/${screenItem.id}`}
+                    className={classNames(styles.screenContainer, screen && screenItem.id === screen.id ? styles.screenContainer_active : '')}
+                    data-id={screenItem.id}
+                    >
+                      <div
+                        className={styles.screenNavigate}
+                        onClick={() => openScreen(screenItem.id)}
+                      >
+                        <Button
+                          className="propsPanelImgBtn"
+                          styleType="none"
+                          onClick={e => handleEditButtonClick(e, screenItem.id)}
+                        >
+                          <Icon icon="edit" size={20} />
+                        </Button>
+                        <Button
+                          className="propsPanelImgBtn"
+                          styleType="none"
+                          onClick={e => handleDuplicateScreen(e, screenItem.id)}
+                        >
+                          <Icon icon="copy" size={20} />
+                        </Button>
+                        {screens.length > 1 && (
+                          <Button
+                            className="delBtn"
+                            styleType="none"
+                            onClick={e => handleDelScreen(e, screenItem.id, screenItem.name)}
+                          >
+                            <Icon icon="delete" size={20} />
+                          </Button>
+                        )}
+                      </div>
+                      <div
+                        className={classNames(
+                          styles.screenTab,
+                        )}
+                      >
+                        <span>{screenItem.name}</span>
+                      </div>
+                  </NavLink>
+                ))
+              }
+            </Sortable>
+          </Scrollbar>
         </div>
       </div>
+
       {modalRenameScreenOpen && (
         <Modal
           animClassName="bubbleAnimation"
@@ -244,6 +252,7 @@ const NavPanelScreen: React.FunctionComponent<INavPanelScreenProps> = memo(({
           </div>
         </Modal>
       )}
+
       {modalDellScreen && (
         <Modal
           animClassName="bubbleAnimation"
