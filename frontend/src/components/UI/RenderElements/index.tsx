@@ -27,28 +27,12 @@ import { MenuItem } from './MenuItem/MenuItem';
 import { DropdownMenu } from './DropdownMenu/DropdownMenu';
 import { DropdownItem } from './DropdownItem/DropdownItem';
 import { DivBlockRenderer } from './DivBlock/DivBlock';
-import { ImageRendererProps, MapRendererProps, ClockRendererProps, SharedRendererProps, ContainerRendererProps } from './types';
+import { Image } from './Image/Image';
+import { MapRendererProps, ClockRendererProps, SharedRendererProps } from './types';
 import { Container } from './Container/Container';
 const styles = require('./styles.scss');
 
-const ImgRenderer = (props: ImageRendererProps) => {
-  const { id, params, sortableId, style, isDisabled, className, elementRef } = props;
 
-  return (
-    <img
-      ref={elementRef}
-      src={params.imageURL}
-      id={id}
-      data-ls-id={id}
-      data-id={sortableId}
-      key={id}
-      className={cn(className, styles.addedElem)}
-      style={style}
-      alt={id}
-      tabIndex={isDisabled ? 0 : -1}
-    />
-  );
-}
 
 const MapWidgetRenderer = (props: MapRendererProps) => {
   const { id, params, isDisabled, style, sortableId, className, elementRef } = props;
@@ -145,7 +129,7 @@ export const RENDERERS: Record<Entity, React.FunctionComponent<any>> = {
   listItem: ListItem,
   label: Label,
   hyperlink: withAction(Link, 'link'),
-  image: ImgRenderer,
+  image: Image,
   select: Select,
   selectMenu: SelectMenu,
   selectItem: MenuItem,
