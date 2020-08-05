@@ -7,8 +7,65 @@ import { sharedClasses } from '$styles/sharedClasses';
 import { DropdownMenuRendererProps } from '../types';
 const styles = require('../styles.scss');
 
+const getDropdownMenuStyles = (
+  entityStyles: React.CSSProperties,
+  groupStyles: React.CSSProperties,
+  ownStyles: React.CSSProperties,
+) => makeStyles({
+  root: {},
+
+  entityStyles: {
+    ...entityStyles,
+  },
+
+  groupStyles: {
+    ...groupStyles,
+  },
+
+  ownStyles: {
+    ...ownStyles,
+  },
+});
+
+const getEditableMenuStyles = (
+  entityStyles: React.CSSProperties,
+  groupStyles: React.CSSProperties,
+  ownStyles: React.CSSProperties,
+) => makeStyles({
+  root: {
+    position: 'absolute',
+    top: '0',
+    left: '0',
+    overflow: 'hidden',
+    zIndex: 1,
+  },
+
+  entityStyles: {
+    ...entityStyles,
+  },
+
+  groupStyles: {
+    ...groupStyles,
+  },
+
+  ownStyles: {
+    ...ownStyles,
+  },
+});
+
 const DropdownMenuComponent = (props: DropdownMenuRendererProps) => {
-  const { id, style, isDisabled, children, elementRef, className, anchorEl, setAnchorEl } = props;
+  const {
+    id,
+    entityStyles,
+    groupStyles,
+    ownStyles,
+    isDisabled,
+    children,
+    elementRef,
+    className,
+    anchorEl,
+    setAnchorEl,
+  } = props;
 
   const handlePaperClick = (event: React.MouseEvent<HTMLDivElement>) => {
     (event.target as HTMLElement).focus();
@@ -18,22 +75,9 @@ const DropdownMenuComponent = (props: DropdownMenuRendererProps) => {
     setAnchorEl(null);
   };
 
-  const classes = makeStyles({
-    paper: {
-      ...style,
-    },
-  })();
+  const dropdownMenuClasses = getDropdownMenuStyles(entityStyles, groupStyles, ownStyles)();
 
-  const EditableMenuClasses = makeStyles({
-    root: {
-      position: 'absolute',
-      top: '0',
-      left: '0',
-      overflow: 'hidden',
-      zIndex: 1,
-      ...style,
-    },
-  })();
+  const editableMenuClasses = getEditableMenuStyles(entityStyles, groupStyles, ownStyles)();
 
   return isDisabled ? (
     <div style={{ position: 'relative' }}>
@@ -47,7 +91,10 @@ const DropdownMenuComponent = (props: DropdownMenuRendererProps) => {
           className,
           sharedClasses.unsortable,
           styles.addedElem,
-          EditableMenuClasses.root
+          editableMenuClasses.root,
+          editableMenuClasses.entityStyles,
+          editableMenuClasses.groupStyles,
+          editableMenuClasses.ownStyles,
         )}
         elevation={8}
         onClick={handlePaperClick}
@@ -61,7 +108,12 @@ const DropdownMenuComponent = (props: DropdownMenuRendererProps) => {
         keepMounted
         open={Boolean(anchorEl)}
         onClose={handleMenuClose}
-        classes={classes}
+        classes={{ paper: cn(
+          dropdownMenuClasses.root,
+          dropdownMenuClasses.entityStyles,
+          dropdownMenuClasses.groupStyles,
+          dropdownMenuClasses.ownStyles,
+        )}}
       >
         {children}
       </Menu>

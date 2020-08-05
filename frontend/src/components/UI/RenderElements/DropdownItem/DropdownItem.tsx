@@ -66,7 +66,12 @@ const DropdownItemComponent = (props: DropdownItemRendererProps) => {
   ) : (
     <MenuItem
       key={id}
-      className={classes.root}
+      className={cn(
+        classes.root,
+        classes.entityStyles,
+        classes.groupStyles,
+        classes.ownStyles,
+      )}
       disableRipple={!showRipple}
     >
       {textContent}
