@@ -7,6 +7,7 @@ import {
 import { IApiResponseError, ITokenPair } from '$redux/user/reducer';
 import { LibraryElement } from '$api/types';
 import { CssLikeStyles } from '$utils/StyleHelper';
+import { getDefaultStyles } from '$domain/libraryElements/defaultStyles';
 
 export interface ISignFormElement {
   label: string,
@@ -55,7 +56,13 @@ export const DEFAULT_PROJECT = {
   updated: new Date(),
   created: new Date(),
   projectData: {
-    classes: [], // TODO maybe borders are not updating because project not updating
+    classes: [
+      {
+        className: 'root',
+        supportedElement: 'root',
+        rules: getDefaultStyles('root'),
+      }
+    ],
   }
 };
 
