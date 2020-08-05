@@ -9,7 +9,7 @@ export const convertCreatedElementToRequest = <T extends Entity, K extends Serve
   parentID: string | null,
   elementName?: string
 ): ServerElement<T, ServerElement<Entity>[], K> => {
-  const libraryElement = LIBRARY_ELEMENTS[elementType] as unknown as ServerElement<T, ServerElement<Entity>[], K>; // TODO remove type assertion
+  const libraryElement = LIBRARY_ELEMENTS[elementType] as unknown as ServerElement<T, ServerElement<Entity>[], K>;
   const { name } = libraryElement;
 
   return {

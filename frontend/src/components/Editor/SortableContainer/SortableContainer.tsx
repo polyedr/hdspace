@@ -171,7 +171,6 @@ const SortableComponent = (props: Props) => {
     ...(disableInteractions && { className: '' }),
     id: id === rootID ? 'root' : id,
     isDisabled: !disableInteractions,
-    style: ownStyles, // TODO remove
     ownStyles,
     entityStyles: convertedEntityStyles,
     groupStyles: convertedGroupStyles,

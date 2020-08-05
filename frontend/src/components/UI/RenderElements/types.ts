@@ -6,7 +6,6 @@ export type SharedRendererProps = {
   entityStyles: React.CSSProperties,
   groupStyles: React.CSSProperties,
   ownStyles: React.CSSProperties,
-  style: React.CSSProperties,
   active: boolean,
   sortableId: string,
   isDisabled: boolean,
