@@ -2,7 +2,7 @@ import { IPlainAction, IPlainFailAction, IAction } from '$shared/redux';
 import { CssLikeStyles } from '$utils/StyleHelper';
 import { LibraryEntities } from '$domain/libraryElements/libraryElements';
 import { Entity } from '$domain/core';
-import { LibraryElement as RootElement, LinkParams, HeadingType, VideoSettings, InputType, Project } from '$api/types';
+import { LibraryElement as RootElement, HeadingType, VideoSettings, InputType, Project } from '$api/types';
 
 export type ReduxState = {
   data: {
@@ -214,41 +214,6 @@ export type Flex = {
 
 export type ScreenDisplay = Block | Inline | InlineBlock | Flex;
 
-export interface IScreenIndents {
-  'margin-top'?: string,
-  'margin-right'?: string,
-  'margin-bottom'?: string,
-  'margin-left'?: string,
-  'padding-top': string,
-  'padding-right': string,
-  'padding-bottom': string,
-  'padding-left': string,
-}
-
-export interface IScreenBorders {
-  'border-width': string,
-  'border-color': string,
-  'border-style': string,
-  'border-radius': string,
-}
-
-export interface IScreenBackground {
-  'background-color': string,
-  'background-image': string,
-  'background-repeat': string,
-  'background-size': string,
-}
-
-export interface IScreenTypography {
-  'font-family': string,
-  'color': string,
-  'font-size': string,
-  'line-height': string,
-  'font-style': string,
-  'font-weight': number,
-  'text-align': string,
-}
-
 export interface ICenterProp {
   lat: number,
   lng: number,
@@ -268,52 +233,6 @@ export type ListItem = {
   link: string,
 };
 
-export interface IScreenProps {
-  buoyancy?: number,
-  html_type?: string,
-  content?: string,
-  url?: string;
-  textContent?: string,
-  width?: string,
-  height?: string,
-  align?: string,
-  indents?: IScreenIndents,
-  border?: IScreenBorders,
-  background?: IScreenBackground,
-  typography?: IScreenTypography,
-  placeholder?: string,
-  dynamic_placeholder?: string,
-  map_props: IMapProps,
-  source_img?: string,
-  scenarioId?: number,
-  action?: LinkParams,
-  imageURL?: string,
-  type?: InputType,
-  value?: string,
-  name?: string,
-  showRipple?: boolean,
-  options?: Option[],
-  headingType?: HeadingType,
-  listItems?: ListItem[],
-  showBullets?: boolean,
-  isOrdered?: boolean,
-  labelFor?: string,
-  dropdownItems?: string[],
-  link?: string,
-  isLink?: boolean,
-  isOpen?: boolean,
-  videoSettings?: VideoSettings,
-}
-
-export interface ISortableItem {
-  id: number,
-  type: string,
-  children: ISortableItem[],
-  orientation?: string,
-  props?: IScreenProps,
-  scenarioId?: number,
-}
-
 export type LibraryElement = {
   struct_type: ServerStructType;
   func_type: ServerStructType;
@@ -330,33 +249,6 @@ export type LibraryElement = {
 };
 
 export type ServerStructType = Entity;
-
-export interface IStylesElement {
-  marginTop?: string,
-  marginRight?: string,
-  marginBottom?: string,
-  marginLeft?: string,
-  paddingTop?: string,
-  paddingRight?: string,
-  paddingBottom?: string,
-  paddingLeft?: string,
-
-  height?: string,
-  width?: string,
-
-  borderRadius?: string,
-  backgroundColor?: string,
-  backgroundImage?: string,
-  backgroundSize?: string,
-  backgroundRepeat?: string,
-  color?: string,
-  fontSize?: string,
-  fontStyle?: string,
-  fontWeight?: string,
-  lineHeight?: string,
-  textAlign?: string,
-  fontFamily?: string,
-}
 
 export type ElementParameters = {
   group?: string,

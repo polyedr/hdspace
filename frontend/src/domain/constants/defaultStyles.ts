@@ -1,4 +1,3 @@
-import { IScreenIndents, IScreenBorders, IScreenBackground, IScreenTypography } from '$redux/project/types'; // TODO why redux
 import { CssLikeStyles } from '$utils/StyleHelper';
 
 export const DEFAULT_SIZE = {
@@ -6,7 +5,18 @@ export const DEFAULT_SIZE = {
   height: 'auto',
 };
 
-export const DEFAULT_INDENTS: IScreenIndents = {
+type ScreenIndents = {
+  'margin-top'?: string,
+  'margin-right'?: string,
+  'margin-bottom'?: string,
+  'margin-left'?: string,
+  'padding-top': string,
+  'padding-right': string,
+  'padding-bottom': string,
+  'padding-left': string,
+}
+
+export const DEFAULT_INDENTS: ScreenIndents = {
   'margin-top': '0px',
   'margin-right': '0px',
   'margin-bottom': '0px',
@@ -24,14 +34,29 @@ export const DEFAULT_DISPLAY: CssLikeStyles = {
   'align-items': 'stretch',
 };
 
-export const DEFAULT_BORDER: IScreenBorders = {
+type ScreenBorders = {
+  'border-width': string,
+  'border-color': string,
+  'border-style': string,
+  'border-radius': string,
+}
+
+export const DEFAULT_BORDER: ScreenBorders = {
   'border-width': '0px',
   'border-color': '#323232',
   'border-style': 'solid',
   'border-radius': '0px',
 };
 
-export const DEFAULT_BACKGROUND: IScreenBackground = {
+
+type ScreenBackground = {
+  'background-color': string,
+  'background-image': string,
+  'background-repeat': string,
+  'background-size': string,
+}
+
+export const DEFAULT_BACKGROUND: ScreenBackground = {
   'background-color': 'rgba(255, 255, 255, 0)',
   'background-image': 'none',
   'background-repeat': 'no-repeat',
@@ -42,7 +67,17 @@ export const DEFAULT_BULLETS: CssLikeStyles = {
   'list-style-type': 'disc',
 };
 
-export const DEFAULT_TYPOGRAPHY: IScreenTypography = {
+type ScreenTypography = {
+  'font-family': string,
+  'color': string,
+  'font-size': string,
+  'line-height': string,
+  'font-style': string,
+  'font-weight': number,
+  'text-align': string,
+}
+
+export const DEFAULT_TYPOGRAPHY: ScreenTypography = {
   color: '#323232',
   'font-family': '"Roboto", sans-serif',
   'font-size': '14px',

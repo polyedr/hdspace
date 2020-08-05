@@ -6,13 +6,6 @@ import {
   MIN_BORDER_RADIUS,
 } from '$constants/defaultParams';
 import { Flex, ScreenDisplay } from '$redux/project/types';
-// import {
-//   IScreenBackground, IScreenBorders,
-//   IScreenIndents,
-//   IScreenProps,
-//   IScreenTypography,
-// } from '$redux/project/types';
-// import { rgbToHex } from '$utils/parseColor';
 
 export interface CssLikeStyles {
   display?: ScreenDisplay['display'];
