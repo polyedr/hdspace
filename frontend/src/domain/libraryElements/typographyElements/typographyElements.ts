@@ -78,19 +78,19 @@ export const ocrtext: OcrtextServerElement = {
   children: [],
 };
 
-export const text_block: TextBlockServerElement = {
+export const textBlock: TextBlockServerElement = {
   buoyancy: 0,
-  func_type: 'text_block', // TODO rename in camelCase
-  struct_type: 'text_block',
+  func_type: 'textBlock',
+  struct_type: 'textBlock',
   parameters: {
     group: 'typography',
     textContent: 'This is text block',
   },
   styles: {
-    classNames: ['text_block'],
+    classNames: ['textBlock'],
     ownStyles: {} as Required<CssLikeStyles>,
   },
-  name: 'text_block',
+  name: 'textBlock',
   children: [],
 };
 

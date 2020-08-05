@@ -74,7 +74,6 @@ const getLinkStyles = (
 const ListItem = (props: ListItemRendererProps) => {
   const {
     id,
-    style,
     entityStyles,
     groupStyles,
     ownStyles,
@@ -142,7 +141,6 @@ const ListItem = (props: ListItemRendererProps) => {
             listItemClasses.ownStyles,
           )}
           {...isDisabled && { onClick: handleListItemClick }}
-          style={style}
         >
           {textContent}
         </li>

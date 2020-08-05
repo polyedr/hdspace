@@ -10,7 +10,7 @@ export const ENTITIES: { [K in Exclude<ElementEntity, 'ocrtext' | 'root' | 'cont
   hyperlink: 'hyperlink',
   heading: 'heading',
   paragraph: 'paragraph',
-  text_block: 'text_block',
+  textBlock: 'textBlock',
   list: 'list',
   image: 'image',
   select: 'select',
@@ -134,7 +134,7 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
   ocrtext: {
     root: [...paragraphStyleControls, 'textContent'],
   },
-  text_block: {
+  textBlock: {
     root: [...textBlockStyleControls, 'textContent'],
   },
   list: {
@@ -219,7 +219,7 @@ export const AVAILABLE_CHILDREN: AvailableChildren = {
   heading: {},
   paragraph: {},
   ocrtext: {},
-  text_block: {},
+  textBlock: {},
   list: {
     listItem: {
       min: 1,

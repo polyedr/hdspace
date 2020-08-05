@@ -58,7 +58,7 @@ const getCategoryTab = (structType: ElementEntity, libraryElements: ElementsToAd
     case 'heading':
     case 'paragraph':
     case 'hyperlink':
-    case 'text_block':
+    case 'textBlock':
     case 'list':    
       return { Typography: [...obj.Typography || [], libraryElements[structType]] };
     case 'map':

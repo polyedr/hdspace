@@ -50,7 +50,7 @@ export const DEFAULT_ELEMENTS_STYLES: { [K in Entity]: { [key: string]: CssLikeS
   heading: defaultHeadingStyles,
   paragraph: defaultParagraphStyles,
   ocrtext: defaultParagraphStyles,
-  text_block: defaultTextBlockStyles,
+  textBlock: defaultTextBlockStyles,
   list: defaultListStyles,
   listItem: defaultListItemStyles,
   image: defaultImageStyles,

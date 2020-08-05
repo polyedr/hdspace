@@ -31,7 +31,7 @@ import {
 
 import { root, container, divBlock, image, video, dropdown, undefined, dropdownMenu, makeDropdownItem } from './otherElements/otherElements';
 import { button, textarea, textinput, checkbox, radiobutton, label, select, selectMenu, makeSelectItem } from './formElements/formElements';
-import { heading, hyperlink, list, text_block, ocrtext, makeListItem, makeParagraph } from './typographyElements/typographyElements';
+import { heading, hyperlink, list, textBlock, ocrtext, makeListItem, makeParagraph } from './typographyElements/typographyElements';
 import { map, calendar, clock } from './widgetElements/widgetElements';
 
 export type ChildrenElements = {
@@ -58,7 +58,7 @@ export type ElementsToAdd = {
   heading: HeadingServerElement,
   paragraph: ParagraphServerElement,
   ocrtext: OcrtextServerElement,
-  text_block: TextBlockServerElement,
+  textBlock: TextBlockServerElement,
   list: ListServerElement,
   map: MapServerElement,
   calendar: CalendarServerElement,
@@ -91,7 +91,7 @@ export const LIBRARY_ELEMENTS: LibraryElements = {
   heading,
   paragraph: makeParagraph('This is paragraph'),
   ocrtext,
-  text_block,
+  textBlock,
   list,
   listItem: makeListItem(''),
   map,

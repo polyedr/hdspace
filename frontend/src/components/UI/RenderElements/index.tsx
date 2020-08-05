@@ -42,7 +42,7 @@ export const RENDERERS: Record<Entity, React.FunctionComponent<any>> = {
   heading: Heading,
   paragraph: Paragraph,
   ocrtext: Paragraph,
-  text_block: TextBlock,
+  textBlock: TextBlock,
   list: List,
   listItem: ListItem,
   label: Label,
