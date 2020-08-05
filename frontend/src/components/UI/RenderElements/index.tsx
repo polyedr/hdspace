@@ -1,7 +1,6 @@
 import React from 'react';
 import cn from 'classnames';
 
-import { ClockWidget } from '$components/UI/Clock';
 import { Entity } from '$domain/core';
 
 import { withAction } from '../../../utils/withAction';
@@ -28,31 +27,10 @@ import { DivBlockRenderer } from './DivBlock/DivBlock';
 import { Image } from './Image/Image';
 import { Map } from './Map/Map';
 import { Calendar } from './Calendar/Calendar';
-import { ClockRendererProps, SharedRendererProps } from './types';
+import { SharedRendererProps } from './types';
 import { Container } from './Container/Container';
+import { Clock } from './Clock/Clock';
 const styles = require('./styles.scss');
-
-
-
-const ClockWidgetRenderer = (props: ClockRendererProps) => {
-  const { id, params, style, sortableId, isDisabled, className, elementRef } = props;
-  return (
-    <div
-      ref={elementRef}
-      id={id}
-      data-ls-id={id}
-      data-id={sortableId}
-      key={id}
-      className={cn(className, styles.addedCalendar)}
-      style={style}
-      tabIndex={isDisabled ? 0 : -1}
-    >
-      <ClockWidget
-        size={typeof params.width === 'number' ? params.width : undefined}
-      />
-    </div>
-  );
-}
 
 const UndefinedRenderer = (props: SharedRendererProps) => {
   const { id, style, sortableId, isDisabled, className, elementRef, children } = props;
@@ -94,7 +72,7 @@ export const RENDERERS: Record<Entity, React.FunctionComponent<any>> = {
   selectItem: MenuItem,
   map: Map,
   calendar: Calendar,
-  clock: ClockWidgetRenderer,
+  clock: Clock,
   dropdown: Dropdown,
   dropdownMenu: DropdownMenu,
   dropdownItem: DropdownItem,
