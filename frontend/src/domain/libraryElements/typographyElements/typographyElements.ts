@@ -46,13 +46,13 @@ export const heading: HeadingServerElement = {
   children: [],
 };
 
-export const paragraph: ParagraphServerElement = {
+export const makeParagraph = (textContent: string): ParagraphServerElement => ({
   buoyancy: 0,
   func_type: 'paragraph',
   struct_type: 'paragraph',
   parameters: {
     group: 'typography',
-    textContent: 'This is paragraph',
+    textContent,
   },
   styles: {
     classNames: ['paragraph'],
@@ -60,7 +60,7 @@ export const paragraph: ParagraphServerElement = {
   },
   name: 'paragraph',
   children: [],
-};
+});
 
 export const ocrtext: OcrtextServerElement = {
   buoyancy: 0,

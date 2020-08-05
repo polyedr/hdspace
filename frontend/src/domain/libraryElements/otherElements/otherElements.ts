@@ -12,7 +12,7 @@ import {
 import { IMAGES } from '$constants/images';
 import { CssLikeStyles } from '$utils/StyleHelper';
 
-import { paragraph } from '../typographyElements/typographyElements';
+import { makeParagraph } from '../typographyElements/typographyElements';
 
 export const root: RootServerElement = {
   buoyancy: 0,
@@ -56,7 +56,7 @@ export const divBlock: DivBlockServerElement = {
     ownStyles: {} as Required<CssLikeStyles>,
   },
   name: 'divBlock',
-  children: [paragraph], // TODO make custom paragraph
+  children: [makeParagraph('This is divBlock')],
 };
 
 export const image: ImageServerElement = {

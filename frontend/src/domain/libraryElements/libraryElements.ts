@@ -31,7 +31,7 @@ import {
 
 import { root, container, divBlock, image, video, dropdown, undefined, dropdownMenu, makeDropdownItem } from './otherElements/otherElements';
 import { button, textarea, textinput, checkbox, radiobutton, label, select, selectMenu, makeSelectItem } from './formElements/formElements';
-import { heading, paragraph, hyperlink, list, text_block, ocrtext, makeListItem } from './typographyElements/typographyElements';
+import { heading, hyperlink, list, text_block, ocrtext, makeListItem, makeParagraph } from './typographyElements/typographyElements';
 import { map, calendar, clock } from './widgetElements/widgetElements';
 
 export type ChildrenElements = {
@@ -89,7 +89,7 @@ export const LIBRARY_ELEMENTS: LibraryElements = {
   label,
   textarea,
   heading,
-  paragraph,
+  paragraph: makeParagraph('This is paragraph'),
   ocrtext,
   text_block,
   list,
