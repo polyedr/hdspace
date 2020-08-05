@@ -1,7 +1,6 @@
 import React from 'react';
 import cn from 'classnames';
 
-import { CalendarWidget } from '$components/UI/Calendar';
 import { ClockWidget } from '$components/UI/Clock';
 import { Entity } from '$domain/core';
 
@@ -28,27 +27,12 @@ import { DropdownItem } from './DropdownItem/DropdownItem';
 import { DivBlockRenderer } from './DivBlock/DivBlock';
 import { Image } from './Image/Image';
 import { Map } from './Map/Map';
+import { Calendar } from './Calendar/Calendar';
 import { ClockRendererProps, SharedRendererProps } from './types';
 import { Container } from './Container/Container';
 const styles = require('./styles.scss');
 
-const CalendarWidgetRenderer = (props: SharedRendererProps) => {
-  const { id, style, isDisabled, sortableId, className, elementRef } = props;
-  return (
-    <div
-      ref={elementRef}
-      id={id}
-      data-ls-id={id}
-      data-id={sortableId}
-      key={id}
-      className={cn(className, styles.addedCalendar, isDisabled && styles.disabled)}
-      style={style}
-      tabIndex={isDisabled ? 0 : -1}
-    >
-      <CalendarWidget />
-    </div>
-  );
-}
+
 
 const ClockWidgetRenderer = (props: ClockRendererProps) => {
   const { id, params, style, sortableId, isDisabled, className, elementRef } = props;
@@ -109,7 +93,7 @@ export const RENDERERS: Record<Entity, React.FunctionComponent<any>> = {
   selectMenu: SelectMenu,
   selectItem: MenuItem,
   map: Map,
-  calendar: CalendarWidgetRenderer,
+  calendar: Calendar,
   clock: ClockWidgetRenderer,
   dropdown: Dropdown,
   dropdownMenu: DropdownMenu,
