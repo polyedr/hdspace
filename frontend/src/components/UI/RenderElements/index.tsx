@@ -1,5 +1,4 @@
 import React from 'react';
-import cn from 'classnames';
 
 import { Entity } from '$domain/core';
 
@@ -27,27 +26,9 @@ import { DivBlockRenderer } from './DivBlock/DivBlock';
 import { Image } from './Image/Image';
 import { Map } from './Map/Map';
 import { Calendar } from './Calendar/Calendar';
-import { SharedRendererProps } from './types';
 import { Container } from './Container/Container';
 import { Clock } from './Clock/Clock';
-const styles = require('./styles.scss');
-
-const UndefinedRenderer = (props: SharedRendererProps) => {
-  const { id, style, sortableId, isDisabled, className, elementRef, children } = props;
-  return (
-    <div
-      ref={elementRef}
-      data-ls-id={id}
-      data-id={sortableId}
-      key={id}
-      className={cn(className, styles.addedContainer)}
-      style={style}
-      tabIndex={isDisabled ? 0 : -1}
-    >
-      {children}
-    </div>
-  );
-}
+import { Undefined } from './Undefined/Undefined';
 
 export const RENDERERS: Record<Entity, React.FunctionComponent<any>> = {
   root: Container,
@@ -77,7 +58,7 @@ export const RENDERERS: Record<Entity, React.FunctionComponent<any>> = {
   dropdownMenu: DropdownMenu,
   dropdownItem: DropdownItem,
   video: Video,
-  undefined: UndefinedRenderer,
+  undefined: Undefined,
 };
 
 export const EXPORT_RENDERERS: Record<Entity, React.FunctionComponent<any>> = {
