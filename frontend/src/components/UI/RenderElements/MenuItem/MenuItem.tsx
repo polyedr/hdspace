@@ -7,18 +7,37 @@ import { sharedClasses } from '$styles/sharedClasses';
 import { MenuItemRendererProps } from '../types';
 const styles = require('../styles.scss');
 
+const getClassStyles = (styles: React.CSSProperties, isDisabled: boolean) => ({
+  ...styles,
+  '&:hover': {
+    backgroundColor: isDisabled ? styles.backgroundColor : 'rgba(0, 0, 0, 0.04)',
+  },
+});
+
+const getStyles = (
+  isDisabled: boolean,
+  entityStyles: React.CSSProperties,
+  groupStyles: React.CSSProperties,
+  ownStyles: React.CSSProperties,
+) => makeStyles({
+  entityStyles: {
+    ...getClassStyles(entityStyles, isDisabled),
+  },
+
+  groupStyles: {
+    ...getClassStyles(groupStyles, isDisabled),
+  },
+
+  ownStyles: {
+    ...getClassStyles(ownStyles, isDisabled),
+  },
+});
+
 const MenuItemComponent = (props: MenuItemRendererProps) => {
-  const { id, style, isDisabled, params, className, elementRef } = props;
+  const { id, entityStyles, groupStyles, ownStyles, isDisabled, params, className, elementRef } = props;
   const { showRipple, name, value } = params;
 
-  const classes = makeStyles({
-    root: {
-      ...style,
-      '&:hover': {
-        backgroundColor: isDisabled ? style.backgroundColor : 'rgba(0, 0, 0, 0.04)',
-      },
-    },
-  })();
+  const classes = getStyles(isDisabled, entityStyles, groupStyles, ownStyles)();
 
   return isDisabled ? (
     <MenuItem
@@ -28,11 +47,13 @@ const MenuItemComponent = (props: MenuItemRendererProps) => {
       tabIndex={0}
       key={id}
       className={cn(
-        classes.root,
         className,
         sharedClasses.unsortable,
         styles.addedElem,
         styles.disabled,
+        classes.entityStyles,
+        classes.groupStyles,
+        classes.ownStyles,
       )}
       value={value}
       disableRipple
@@ -42,7 +63,11 @@ const MenuItemComponent = (props: MenuItemRendererProps) => {
   ) : (
     <MenuItem
       key={id}
-      className={classes.root}
+      className={cn(
+        classes.entityStyles,
+        classes.groupStyles,
+        classes.ownStyles,
+      )}
       value={value}
       disableRipple={!showRipple}
     >

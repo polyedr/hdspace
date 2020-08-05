@@ -1,5 +1,5 @@
 import { IMapProps } from "$redux/project/types";
-import { LibraryElement, HeadingType, LinkParams, VideoSettings, InputType } from "$api/types";
+import { LibraryElement, HeadingType, LinkParams, VideoSettings, InputType, ProjectClass } from "$api/types";
 
 export type SharedRendererProps = {
   id: string;
@@ -142,6 +142,7 @@ export type SelectRendererProps = SharedRendererProps & {
   },
   currentValue: string,
   childrenElements: LibraryElement<'selectMenu'>[],
+  projectClasses: ProjectClass[],
   onElementChange(itemID: string, savedValue: string): void,
 };
 

@@ -232,6 +232,7 @@ const SortableComponent = (props: Props) => {
           onElementChange: updateSavedElementValues,
           childrenElements: children,
           params: item.parameters,
+          projectClasses,
         }
       };
 
