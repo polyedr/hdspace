@@ -1,7 +1,6 @@
 import React from 'react';
 import cn from 'classnames';
 
-import { GMap } from '$components/UI/GMap';
 import { CalendarWidget } from '$components/UI/Calendar';
 import { ClockWidget } from '$components/UI/Clock';
 import { Entity } from '$domain/core';
@@ -28,34 +27,10 @@ import { DropdownMenu } from './DropdownMenu/DropdownMenu';
 import { DropdownItem } from './DropdownItem/DropdownItem';
 import { DivBlockRenderer } from './DivBlock/DivBlock';
 import { Image } from './Image/Image';
-import { MapRendererProps, ClockRendererProps, SharedRendererProps } from './types';
+import { Map } from './Map/Map';
+import { ClockRendererProps, SharedRendererProps } from './types';
 import { Container } from './Container/Container';
 const styles = require('./styles.scss');
-
-
-
-const MapWidgetRenderer = (props: MapRendererProps) => {
-  const { id, params, isDisabled, style, sortableId, className, elementRef } = props;
-  return (
-    <div
-      ref={elementRef}
-      id={id}
-      data-ls-id={id}
-      data-id={sortableId}
-      key={id}
-      className={cn(className, styles.addedWidget, isDisabled && styles.disabled)}
-      style={style}
-      onClick={event => isDisabled && event.preventDefault()}
-      tabIndex={isDisabled ? 0 : -1}
-    >
-      <GMap
-        center={params.map_props.center}
-        zoom={params.map_props.zoom}
-        markerText={params.map_props.markerText}
-      />
-    </div>
-  );
-};
 
 const CalendarWidgetRenderer = (props: SharedRendererProps) => {
   const { id, style, isDisabled, sortableId, className, elementRef } = props;
@@ -133,7 +108,7 @@ export const RENDERERS: Record<Entity, React.FunctionComponent<any>> = {
   select: Select,
   selectMenu: SelectMenu,
   selectItem: MenuItem,
-  map: MapWidgetRenderer,
+  map: Map,
   calendar: CalendarWidgetRenderer,
   clock: ClockWidgetRenderer,
   dropdown: Dropdown,
