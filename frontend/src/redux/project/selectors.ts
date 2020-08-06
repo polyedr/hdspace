@@ -146,7 +146,7 @@ export function selectActiveItemChildren(state: AppReduxState, childType: ChildE
   return children;
 }
 
-export const selectElementStyles = (id: string) => (state: AppReduxState) => findChildByID(state.project.control.rootElement, id)?.styles;
+export const selectElementStyles = (id: string) => (state: AppReduxState) => findChildByID(state.project.control.rootElement, id)?.styles.ownStyles;
 
 export const selectElementParameters = (id: string) => (state: AppReduxState) => findChildByID(state.project.control.rootElement, id)?.parameters;
 

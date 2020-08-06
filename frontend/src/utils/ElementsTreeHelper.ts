@@ -132,6 +132,18 @@ export const findParentByChildID = (
   }
 };
 
+export const replaceElementStyles = <T extends Entity, K extends Entity, P extends Entity, R extends Entity>(
+  elementID: string,
+  newStyles: Partial<LibraryElement<T, LibraryElement<K>[]>['styles']['ownStyles']>,
+  root: LibraryElement<P, LibraryElement<R>[]>
+): LibraryElement<P, LibraryElement<R>[]> => {
+  return {
+    ...root,
+    styles: root.id === elementID ? { ...root.styles, ownStyles: newStyles } : root.styles,
+    children: root.children.map((child) => replaceElementStyles(elementID, newStyles, child)),
+  };
+};
+
 export const updateElementStyles = <T extends Entity, K extends Entity, P extends Entity, R extends Entity>(
   elementID: string,
   newStyles: Partial<LibraryElement<T, LibraryElement<K>[]>['styles']['ownStyles']>,

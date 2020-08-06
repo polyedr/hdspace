@@ -126,6 +126,11 @@ export type RemoveElementClassName = IAction<'PROJECTS:REMOVE_ELEMENT_CLASSNAME'
 export type UpdateSharedStyles = IAction<'PROJECTS:UPDATE_SHARED_STYLES', { className: Entity, styles: CssLikeStyles }>;
 export type RemoveSharedStyles = IAction<'PROJECTS:REMOVE_SHARED_STYLES', { className: Entity, cssPropertiesNames: string[] }>;
 export type RemoveElementStyles = IAction<'PROJECTS:REMOVE_ELEMENT_STYLES', { id: string, cssPropertiesNames: string[] }>;
+export type ReplaceElementStyles = IAction<
+  'PROJECTS:REPLACE_ELEMENT_STYLES',
+  { id: string, styles: CssLikeStyles },
+  HistoryMeta
+  >;
 export type UpdateElementStyles = IAction<
   'PROJECTS:UPDATE_ELEMENT_STYLES',
   { id: string, styles: CssLikeStyles },
@@ -243,7 +248,9 @@ export type Action =
   | PopUndoAction
   | PopHistory
   | SetGroupActionsUp
-  | MoveElement;
+  | MoveElement
+  | RemoveElementStyles
+  | ReplaceElementStyles;
 
 export type ItemToCopyInfo = {
   id: string;

@@ -207,15 +207,22 @@ export const removeSharedStyles = (className: Entity, cssPropertiesNames: string
   payload: { className, cssPropertiesNames },
 });
 
+export const replaceElementStyles = (id: string, styles: CssLikeStyles, options: T.HistoryMeta = {}): T.ReplaceElementStyles => ({
+  type: 'PROJECTS:REPLACE_ELEMENT_STYLES',
+  payload: { id, styles },
+  meta: options,
+});
+
 export const updateElementStyles = (id: string, styles: CssLikeStyles, options: T.HistoryMeta = {}): T.UpdateElementStyles => ({
   type: 'PROJECTS:UPDATE_ELEMENT_STYLES',
   payload: { id, styles },
   meta: options,
 });
 
-export const removeElementStyles = (id: string, cssPropertiesNames: string[]): T.RemoveElementStyles => ({
+export const removeElementStyles = (id: string, cssPropertiesNames: string[], options: T.HistoryMeta = {}): T.RemoveElementStyles => ({
   type: 'PROJECTS:REMOVE_ELEMENT_STYLES',
   payload: { id, cssPropertiesNames },
+  meta: options,
 });
 
 export const updateElementImage = (itemID: string, image: File ): T.UpdateElementImage => ({
