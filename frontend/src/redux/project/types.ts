@@ -90,6 +90,7 @@ export type AddProject = IAction<'PROJECTS:ADD_PROJECT', { name: string }>;
 export type DeleteProject = IAction<'PROJECTS:DELETE_PROJECT', { id: number }>;
 export type GetProject = IAction<'PROJECTS:GET_PROJECT', { id: number, screenID?: string }>;
 export type SetProject = IAction<'PROJECTS:SET_PROJECT', { project: Project }>;
+export type UpdateProject = IAction<'PROJECTS:UPDATE_PROJECT', { project: Project }>;
 export type ChangeScreensOrder = IAction<'PROJECTS:CHANGE_SCREENS_ORDER', { screens: IProjectScreen[] }>;
 export type RenameProject = IAction<'PROJECTS:RENAME_PROJECT', { projectID: number, name: string }>;
 export type SetListProjectLoader = IAction<'PROJECTS:SET_LIST_PROJECT_LOADER', { active: boolean }>;
@@ -250,7 +251,9 @@ export type Action =
   | SetGroupActionsUp
   | MoveElement
   | RemoveElementStyles
-  | ReplaceElementStyles;
+  | ReplaceElementStyles
+  | RemoveElementClassName
+  | UpdateProject;
 
 export type ItemToCopyInfo = {
   id: string;

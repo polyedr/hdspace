@@ -22,6 +22,7 @@ import {
   renameProjectSaga,
   exportProjectSaga,
   updateProject,
+  updateProjectSaga,
 } from '$redux/project/sagas/project';
 import {
   wrapIntoContainerSaga,
@@ -247,6 +248,11 @@ function* updateSharedStylesSaga(action: ReturnType<typeof Actions.updateSharedS
 function* copyElementStylesSaga(action: ReturnType<typeof Actions.copyElementStyles>) {
   const { elementType, elementID, styles } = action.payload;
 
+  if (!action.meta) {
+    console.error(`You have to provide metainformation for action ${action.type}`);
+    return;
+  }
+
   const currentProject: ReturnType<typeof selectors.selectCurrentProject> = yield select(selectors.selectCurrentProject);
 
   const sharedClassNames = currentProject.projectData.classes.map(cssClass => cssClass.className);
@@ -257,7 +263,17 @@ function* copyElementStylesSaga(action: ReturnType<typeof Actions.copyElementSty
   const newProject = addProjectStyles(currentProject, uniqueClassName, elementType, styles as Required<CssLikeStyles>);
   yield call(updateProject, newProject);
 
-  yield call(removeElementStyles, elementID, Object.keys(styles));
+  yield call(removeElementStyles, elementID, Object.keys(styles), action);
+
+  const { undo, redo } = action.meta;
+
+  if (!undo) {
+    yield put(Actions.setUndoActions([
+      Actions.removeElementClassName(elementID, uniqueClassName),
+      Actions.updateProject(currentProject),
+      Actions.updateElementStyles(elementID, styles),
+    ]));
+  } // TODO update elements tree
 }
 
 function* addElementClassNameSaga(action: ReturnType<typeof Actions.addElementClassName>) {
@@ -330,7 +346,7 @@ function* updateOrReplaceElementStyles(
 function* removeElementStyles(
   id: string,
   cssPropertiesNames: string[],
-  action: ReturnType<typeof Actions.removeElementStyles>,
+  action?: ReturnType<typeof Actions.removeElementStyles>,
 ) {
   const root: ReturnType<typeof selectors.selectRootElement> = yield select(
     selectors.selectRootElement
@@ -342,7 +358,7 @@ function* removeElementStyles(
   if (!updatedElement) {
     console.error(`Can not find updated element ${id} in tree`);
   } else {
-    const { undo, redo } = action.meta;
+    const { undo, redo } = action?.meta;
 
     yield put(Actions.updateElementsTree(updatedTree, action, { redo, undo }));
     const convertedElement = convertElementToPatchRequest(updatedElement);
@@ -612,6 +628,7 @@ function* redoSaga() {
 const loadProjectsType: ProjectT.LoadProjects['type'] = 'PROJECTS:LOAD_PROJECTS';
 const addProjectType: ProjectT.AddProject['type'] = 'PROJECTS:ADD_PROJECT';
 const deleteProjectType: ProjectT.DeleteProject['type'] = 'PROJECTS:DELETE_PROJECT';
+const updateProjectType: ProjectT.UpdateProject['type'] = 'PROJECTS:UPDATE_PROJECT';
 const getProjectType: ProjectT.GetProject['type'] = 'PROJECTS:GET_PROJECT';
 const exportProjectType: ProjectT.ExportProject['type'] = 'PROJECTS:EXPORT_PROJECT';
 const changeScreensOrderType: ProjectT.ChangeScreensOrder['type'] = 'PROJECTS:CHANGE_SCREENS_ORDER';
@@ -656,6 +673,7 @@ export default function* projectSaga() {
   yield takeLatest(loadProjectsType, getListProjectSaga);
   yield takeLatest(addProjectType, addProject);
   yield takeLatest(deleteProjectType, delProjectSaga);
+  yield takeLatest(updateProjectType, updateProjectSaga);
   yield takeLatest(getProjectType, getProjectSaga);
   yield takeLatest(exportProjectType, exportProjectSaga);
   yield takeLatest(changeScreensOrderType, changeScreensOrderSaga);

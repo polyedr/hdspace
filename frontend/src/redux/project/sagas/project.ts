@@ -319,3 +319,8 @@ export function* updateProject(newProject: Project) {
   const convertedProject = convertProjectToPatchRequest(newProject);
   yield call(reqWrapper, apiSaveProject, { data: convertedProject });
 }
+
+export function* updateProjectSaga(action: ReturnType<typeof Actions.updateProject>) {
+  const { project } = action.payload;
+  yield call(updateProject, project);
+}

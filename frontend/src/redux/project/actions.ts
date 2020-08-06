@@ -43,6 +43,11 @@ export const setProject = (project: Project): T.SetProject => ({
   payload: { project },
 });
 
+export const updateProject = (project: Project): T.UpdateProject => ({
+  type: 'PROJECTS:UPDATE_PROJECT',
+  payload: { project },
+});
+
 export const exportProject = (): T.ExportProject => ({
   type: 'PROJECTS:EXPORT_PROJECT',
 })
@@ -187,9 +192,10 @@ export const updateSharedStyles = (className: Entity, styles: CssLikeStyles): T.
   payload: { className, styles },
 });
 
-export const copyElementStyles = (elementType: Entity, elementID: string, styles: CssLikeStyles): T.CopyElementStyles => ({
+export const copyElementStyles = (elementType: Entity, elementID: string, styles: CssLikeStyles, options: T.HistoryMeta = {}): T.CopyElementStyles => ({
   type: 'PROJECTS:COPY_ELEMENT_STYLES',
   payload: { elementType, elementID, styles },
+  meta: options,
 });
 
 export const addElementClassName = (elementID: string, className: string): T.AddElementClassName => ({
