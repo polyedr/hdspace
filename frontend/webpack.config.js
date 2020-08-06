@@ -20,7 +20,7 @@ const miniCssExractPlugin = new MiniCssExtractPlugin({
 });
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
-const devtool = isDevelopment ? 'cheap-module-eval-source-map' : 'source-map';
+const devtool = isDevelopment ? 'eval-cheap-module-source-map' : undefined;
 
 const resolve = {
   alias: {
@@ -139,7 +139,7 @@ module.exports = () => {
         },
       ],
     },
-    devtool: isDevelopment ? devtool : undefined,
+    devtool,
     resolve,
     plugins,
     entry: {

@@ -9,6 +9,9 @@ const miniCssExractPlugin = new MiniCssExtractPlugin({
   chunkFilename: '[id].css',
 });
 
+const isDevelopment = process.env.NODE_ENV !== 'production';
+const devtool = isDevelopment ? 'eval-cheap-module-source-map' : undefined;
+
 const resolve = {
   alias: {
     'react-dom': '@hot-loader/react-dom',
@@ -102,6 +105,7 @@ module.exports = () => {
         },
       ],
     },
+    devtool,
     resolve,
     plugins,
     entry: {

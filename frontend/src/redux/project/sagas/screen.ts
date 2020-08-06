@@ -76,9 +76,11 @@ export function* activateScreenSaga({ payload }: ReturnType<typeof activateScree
   const [rootElement] = scenarioElements;
   const rootElementWithChildren: LibraryElement<'root'> = yield call(reqWrapper, apiGetElement, { id: rootElement.id });
 
-  yield call(updateElementsTree, rootElementWithChildren);
+  yield call(updateElementsTree, rootElementWithChildren, true);
 
   yield put(Actions.setActiveItem({ itemId: rootElementWithChildren.id, itemType: 'root', name: 'Root' }));
+
+  yield put(Actions.clearHistory());
 
   yield put(Actions.setScenarioLoader(false));
   yield put(setScreenLoader(false));
@@ -153,6 +155,8 @@ export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
   yield put(Actions.updateElementsTree(createdRootElement));
   yield put(Actions.setActiveItem({ itemId: createdRootElement.id, itemType: 'root', name: 'Root' }));
 
+  yield put(Actions.clearHistory());
+
   const currentProject: ReturnType<typeof selectors.selectCurrentProject> = yield select(
     selectors.selectCurrentProject
   );
@@ -177,6 +181,7 @@ export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
   yield put(setScreens([...screens, screen]));
 
   yield put(setProject(updateProject));
+
   yield put(push(`/project/${projectID}/${screen.id}`))
 }
 

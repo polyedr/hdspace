@@ -225,10 +225,19 @@ export function* exportProjectSaga() {
 
 export function* addProjectSaga({ payload: { name } }: ReturnType<typeof Actions.addProject>) {
   const projectData = convertCreatedProjectToRequest(name);
-  const project: Project = yield call(reqWrapper, apiAddProject, { data: projectData });
-  
+  let project: Project = yield call(reqWrapper, apiAddProject, { data: projectData });
+   
   if (!project) { // TODO: write communication for such case
     console.error('cannot create project', project);
+    return;
+  }
+
+  const newName = `${project.name}-${project.id}`;
+
+  project = yield call(reqWrapper, apiSaveProject, { data: {...project, name: newName} });
+
+  if (!project) {
+    console.error('Cannot rename project', name);
     return;
   }
 
@@ -259,14 +268,11 @@ export function* renameProjectSaga(
 
   const data = { ...currProject, name: name };
 
-  yield call(reqWrapper, apiSaveProject, { data });
+  const updatedProject = yield call(reqWrapper, apiSaveProject, { data });
 
   const newListProject = listProject.map((project) => {
     if (project.id === projectID) {
-      return {
-        ...project,
-        name: name,
-      };
+      return updatedProject;
     }
 
     return project;
@@ -275,7 +281,7 @@ export function* renameProjectSaga(
   yield put(Actions.setListProject(newListProject));
 
   if (currentProject.id === projectID) {
-    yield put(Actions.setProject(data));
+    yield put(Actions.setProject(updatedProject));
   }
 }
 

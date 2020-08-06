@@ -5,99 +5,99 @@ import { findChildByID } from "$utils/ElementsTreeHelper";
 import { LibraryElement } from "$api/types";
 import { CssLikeStyles } from "$utils/StyleHelper";
 
-export const selectFeatureState = makeFeatureStateSelector('project');
+export const selectProjectState = makeFeatureStateSelector('project');
 
 export function selectProjects(state: AppReduxState) {
-  return selectFeatureState(state).data.listProject;
-};
+  return selectProjectState(state).data.listProject;
+}
 
 export function selectScenarios(state: AppReduxState) {
-  return selectFeatureState(state).edit.scenarios;
-};
+  return selectProjectState(state).edit.scenarios;
+}
 
 export function selectScenario(state: AppReduxState, id: number) {
-  return selectFeatureState(state).edit.scenarios[id];
+  return selectProjectState(state).edit.scenarios[id];
 }
 
 export function selectRootScenario(state: AppReduxState) {
-  const scenarios = selectFeatureState(state).edit.scenarios;
+  const scenarios = selectProjectState(state).edit.scenarios;
   return Object.values(scenarios).find(x => x.parent_id === -1);
-};
+}
 
 export function selectScenariosElements(state: AppReduxState) {
-  return selectFeatureState(state).edit.scenarioElements;
-};
+  return selectProjectState(state).edit.scenarioElements;
+}
 
 export function selectScenarioElement(state: AppReduxState, id: number) {
-  return selectFeatureState(state).edit.scenarioElements[id];
-};
+  return selectProjectState(state).edit.scenarioElements[id];
+}
 
 export function selectModifyElements(state: AppReduxState) {
-  return selectFeatureState(state).edit.modifyElements;
-};
+  return selectProjectState(state).edit.modifyElements;
+}
 
 export function selectCurrentScreen(state: AppReduxState) {
-  return selectFeatureState(state).edit.currentScreen;
-};
+  return selectProjectState(state).edit.currentScreen;
+}
 
 export function selectScreens(state: AppReduxState) {
-  return selectFeatureState(state).edit.screens;
-};
+  return selectProjectState(state).edit.screens;
+}
 
 export function selectNotification(state: AppReduxState) {
-  return selectFeatureState(state).edit.notification;
-};
+  return selectProjectState(state).edit.notification;
+}
 
 export function selectIsAddElementsModalOpened(state: AppReduxState) {
-  return selectFeatureState(state).ui.isAddElementsModalOpened;
-};
+  return selectProjectState(state).ui.isAddElementsModalOpened;
+}
 
 export function selectSavedElementsValues(state: AppReduxState) {
-  return selectFeatureState(state).ui.savedElementsValues;
-};
+  return selectProjectState(state).ui.savedElementsValues;
+}
 
 export function selectLibraryElements(state: AppReduxState) {
-  return selectFeatureState(state).data.libraryElements;
-};
+  return selectProjectState(state).data.libraryElements;
+}
 
 export function selectCurrentProject(state: AppReduxState) {
-  return selectFeatureState(state).edit.currentProject;
-};
+  return selectProjectState(state).edit.currentProject;
+}
 
 export function selectListSortable(state: AppReduxState) {
-  return selectFeatureState(state).edit.currentScreen.listSortable;
-};
+  return selectProjectState(state).edit.currentScreen.listSortable;
+}
 
 export function selectRootElement(state: AppReduxState) {
-  return selectFeatureState(state).edit.rootElement;
-};
+  return selectProjectState(state).control.rootElement;
+}
 
 export function selectRootID(state: AppReduxState) {
-  return selectFeatureState(state).edit.rootElement.id;
-};
+  return selectProjectState(state).control.rootElement.id;
+}
 
 export function selectUploadedImageInfo(state: AppReduxState) {
-  return selectFeatureState(state).edit.uploadedImageInfo;
-};
+  return selectProjectState(state).edit.uploadedImageInfo;
+}
 
 export function selectLoader(state: AppReduxState) {
-  return selectFeatureState(state).edit.loader;
-};
+  return selectProjectState(state).communication.loader;
+}
 
 export function selectScenarioLoader(state: AppReduxState) {
-  return selectFeatureState(state).edit.scenarioLoader;
-};
+  return selectProjectState(state).communication.scenarioLoader;
+}
 
-export function selectProjectLoader(state: AppReduxState) {
-  return selectFeatureState(state).edit.listProjectLoader;
-};
+export function selectListProjectLoader(state: AppReduxState) {
+  return selectProjectState(state).communication.listProjectLoader;
+}
 
 export function selectActiveItem(state: AppReduxState) {
-  return selectFeatureState(state).ui.activeItem;
-};
+  return selectProjectState(state).ui.activeItem;
+}
 
 export function selectEditableStyles(state: AppReduxState) {
-  return selectFeatureState(state).ui.editableStyles;
+  return selectProjectState(state).ui.editableStyles;
 };
 
 export function selectSharedStyles(state: AppReduxState, elementType: string) {
@@ -130,7 +130,7 @@ export function selectCurrentEditableStyles<T extends keyof Required<CssLikeStyl
 };
 
 export function selectShowingBorders(state: AppReduxState) {
-  return selectFeatureState(state).ui.showContainersBorders;
+  return selectProjectState(state).ui.showContainersBorders;
 };
 
 export function selectActiveItemChildren(state: AppReduxState, childType: ChildEntity) {
@@ -144,7 +144,19 @@ export function selectActiveItemChildren(state: AppReduxState, childType: ChildE
  
   const children = element.children.filter(child => child.type === childType);
   return children;
-};
+}
+
+export const selectElementStyles = (id: string) => (state: AppReduxState) => findChildByID(state.project.control.rootElement, id)?.styles;
+
+export const selectElementParameters = (id: string) => (state: AppReduxState) => findChildByID(state.project.control.rootElement, id)?.parameters;
+
+export const selectUndoActions = (state: AppReduxState) => selectProjectState(state).control.undoActions;
+
+export const selectRedoActions = (state: AppReduxState) => selectProjectState(state).control.redoActions;
+
+export const selectHistory = (state: AppReduxState) => selectProjectState(state).control.history;
+
+export const selectRemoteMove = (state: AppReduxState) => selectProjectState(state).control.remoteMove;
 
 export const selectActiveItemStyles = makeActiveItemInfoSelector('styles');
 export const selectActiveItemChildrenStyles = makeActiveItemInfoSelector('styles');
@@ -167,5 +179,13 @@ function makeActiveItemInfoSelector<T extends LibraryElement<Entity>, K extends 
 }
 
 export function selectItemToCopyInfo(state: AppReduxState) {
-  return selectFeatureState(state).ui.itemToCopyInfo;
-};
+  return selectProjectState(state).ui.itemToCopyInfo;
+}
+
+export function selectScreenLoader (state: AppReduxState): boolean {
+  return selectProjectState(state).communication.screenLoader
+}
+
+export function selectProjectLoader (state: AppReduxState): boolean {
+  return selectProjectState(state).communication.projectLoader
+}

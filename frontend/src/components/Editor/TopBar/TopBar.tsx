@@ -1,12 +1,13 @@
 import React, { useCallback } from 'react';
 import classNames from 'classnames';
-
 import { Icon } from '$components/UI/Icon';
 import { Checkbox } from '$components/UI/Checkbox';
 import { Button } from '$components/UI/Button';
 import { DEFAULT_SCREEN_MODE } from '$constants/defaultParams';
-
 import { ScreenMode } from '../Workspace/Workspace';
+import { useDispatch, useSelector } from 'react-redux';
+import { redoAction, undoAction } from '$redux/project/actions';
+import { selectors } from '$redux/project';
 const styles = require('./TopBar.scss');
 
 export type IScreenMode = {
@@ -28,6 +29,8 @@ type Props = {
 };
 
 export const TopBar = (props: Props) => {
+  const dispatch = useDispatch();
+
   const {
     screenID,
     isPrototypeMode,
@@ -40,13 +43,16 @@ export const TopBar = (props: Props) => {
     onExport,
   } = props;
 
-  const onHistoryBack = useCallback(() => {
-    console.log();
-  }, []);
+  const undoLength = useSelector(selectors.selectUndoActions).length;
+  const redoLength = useSelector(selectors.selectRedoActions).length;
 
-  const onHistoryForward = useCallback(() => {
-    console.log();
-  }, []);
+  const onHistoryBack = () => {
+    dispatch(undoAction());
+  };
+
+  const onHistoryForward = () => {
+    dispatch(redoAction())
+  };
 
   const handleDefaultScreenModeSelect = useCallback(() => {
     onScreenModeChange({ ...DEFAULT_SCREEN_MODE, isDefaultMode: true });
@@ -143,7 +149,7 @@ export const TopBar = (props: Props) => {
         <Button
           className={classNames('mainImgBtn', styles.navBarBtn)}
           styleType="none"
-          disabled={screenID === -1}
+          disabled={screenID === -1 || !undoLength}
           onClick={onHistoryBack}
         >
           <Icon icon="undo" />
@@ -151,7 +157,7 @@ export const TopBar = (props: Props) => {
         <Button
           className={classNames('mainImgBtn', styles.navBarBtn)}
           styleType="none"
-          disabled={screenID === -1}
+          disabled={screenID === -1 || !redoLength}
           onClick={onHistoryForward}
         >
           <Icon icon="redo" />

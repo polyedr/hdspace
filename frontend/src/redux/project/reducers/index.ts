@@ -1,23 +1,26 @@
 import { combineReducers } from 'redux';
 import { composeReducers, makeResetStateReducer } from '$shared/redux';
-
 import * as T from '../types';
 import { dataReducer } from './data';
 import { editReducer } from './edit';
 import { uiReducer } from './ui';
-import { initial } from '../initial';
+import { initialEdit, initialUi } from '../initial';
+import { communicationReducer } from '$redux/project/reducers/communication';
+import { controlReducer } from '$redux/project/reducers/control';
 
 export default combineReducers({
   data: dataReducer,
   ui: composeReducers([
     uiReducer, // TODO: resolve typings!
-    makeResetStateReducer<T.ResetScreenState, T.ReduxState['ui']>('PROJECTS:RESET_SCREEN_STATE', initial.ui) as any,
+    makeResetStateReducer<T.ResetScreenState, T.ProjectUiState>('PROJECTS:RESET_SCREEN_STATE', initialUi) as any,
   ]),
   edit: composeReducers([
     editReducer,
-    makeResetStateReducer<T.ResetScreenState, T.ReduxState['edit']>(
+    makeResetStateReducer<T.ResetScreenState, T.ProjectEditState>(
       'PROJECTS:RESET_SCREEN_STATE',
-      initial.edit
+      initialEdit
     ) as any,
   ]),
+  communication: communicationReducer,
+  control: controlReducer,
 });

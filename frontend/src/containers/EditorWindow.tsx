@@ -42,7 +42,6 @@ const EditorWindow: React.FunctionComponent<IAppProps> = ({
   username,
   projects,
   pathname,
-  getListProject,
   changeMinLPanel,
   setTokenPair,
 }) => (
@@ -55,7 +54,6 @@ const EditorWindow: React.FunctionComponent<IAppProps> = ({
       isLPanelMinimized={isLPanelMinimized}
       tokenPair={tokenPair}
       setListProject={setListProject}
-      getListProject={getListProject}
       setTokenPair={setTokenPair}
     />
     <div className={classNames(styles.globalContainer, isLPanelMinimized && styles.minimiser)}>

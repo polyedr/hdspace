@@ -29,7 +29,7 @@ function mapState(state: AppReduxState): StateProps {
 
 const mapDispatch = {
   addChildToElement: actionsCreators.addChildToElement,
-  deleteChildFromElement: actionsCreators.deleteChildFromElement,
+  deleteChildFromElement: actionsCreators.deleteItem,
 };
 
 type Props = StateProps & PropertiesChangeProps<DropdownItemElement> & typeof mapDispatch;
@@ -50,7 +50,7 @@ const DropdownItems: React.FC<Props> = ({
   };
 
   const handleDeleteButtonClick = (dropdownItemID: string) => {
-    deleteChildFromElement(dropdownItemID, dropdownMenuID);
+    deleteChildFromElement(dropdownItemID);
   };
 
   return (
