@@ -43,9 +43,10 @@ export const setProject = (project: Project): T.SetProject => ({
   payload: { project },
 });
 
-export const updateProject = (project: Project): T.UpdateProject => ({
+export const updateProject = (project: Project, options: T.HistoryMeta = {}): T.UpdateProject => ({
   type: 'PROJECTS:UPDATE_PROJECT',
   payload: { project },
+  meta: options,
 });
 
 export const exportProject = (): T.ExportProject => ({
@@ -187,9 +188,10 @@ export const setScenarioElements = (elements: T.IScenarioElements): T.SetScenari
   payload: { elements },
 });
 
-export const updateSharedStyles = (className: Entity, styles: CssLikeStyles): T.UpdateSharedStyles => ({
+export const updateSharedStyles = (className: Entity, styles: CssLikeStyles, options: T.HistoryMeta = {}): T.UpdateSharedStyles => ({
   type: 'PROJECTS:UPDATE_SHARED_STYLES',
   payload: { className, styles },
+  meta: options,
 });
 
 export const copyElementStyles = (elementType: Entity, elementID: string, styles: CssLikeStyles, options: T.HistoryMeta = {}): T.CopyElementStyles => ({
@@ -198,19 +200,22 @@ export const copyElementStyles = (elementType: Entity, elementID: string, styles
   meta: options,
 });
 
-export const addElementClassName = (elementID: string, className: string): T.AddElementClassName => ({
+export const addElementClassName = (elementID: string, className: string, options: T.HistoryMeta = {}): T.AddElementClassName => ({
   type: 'PROJECTS:ADD_ELEMENT_CLASSNAME',
   payload: { elementID, className },
+  meta: options,
 });
 
-export const removeElementClassName = (elementID: string, className: string): T.RemoveElementClassName => ({
+export const removeElementClassName = (elementID: string, className: string, options: T.HistoryMeta = {}): T.RemoveElementClassName => ({
   type: 'PROJECTS:REMOVE_ELEMENT_CLASSNAME',
   payload: { elementID, className },
+  meta: options,
 });
 
-export const removeSharedStyles = (className: Entity, cssPropertiesNames: string[]): T.RemoveSharedStyles => ({
+export const removeSharedStyles = (className: Entity, cssPropertiesNames: string[], options: T.HistoryMeta = {}): T.RemoveSharedStyles => ({
   type: 'PROJECTS:REMOVE_SHARED_STYLES',
   payload: { className, cssPropertiesNames },
+  meta: options,
 });
 
 export const replaceElementStyles = (id: string, styles: CssLikeStyles, options: T.HistoryMeta = {}): T.ReplaceElementStyles => ({

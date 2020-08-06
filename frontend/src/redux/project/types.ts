@@ -253,7 +253,10 @@ export type Action =
   | RemoveElementStyles
   | ReplaceElementStyles
   | RemoveElementClassName
-  | UpdateProject;
+  | UpdateProject
+  | RemoveSharedStyles
+  | UpdateSharedStyles
+  | AddElementClassName;
 
 export type ItemToCopyInfo = {
   id: string;

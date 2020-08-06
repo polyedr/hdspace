@@ -230,19 +230,49 @@ function* moveElementSaga(action: ReturnType<typeof Actions.moveElement>): any {
 function* removeSharedStylesSaga(action: ReturnType<typeof Actions.removeSharedStyles>) {
   const { className, cssPropertiesNames } = action.payload;
 
+  if (!action.meta) {
+    console.error(`You have to provide metainformation for action ${action.type}`);
+    return;
+  }
+
   const currentProject: ReturnType<typeof selectors.selectCurrentProject> = yield select(selectors.selectCurrentProject);
   const newProject = removeProjectStyles(currentProject, className, cssPropertiesNames);
 
   yield call(updateProject, newProject);
+
+  const { undo, redo } = action.meta;
+
+  if (!undo) {
+    yield put(Actions.setUndoActions(Actions.updateProject(currentProject)));
+  }
+
+  const root: ReturnType<typeof selectors.selectRootElement> = yield select(selectors.selectRootElement);
+
+  yield put(Actions.updateElementsTree(root, action, { redo, undo }));
 }
 
 function* updateSharedStylesSaga(action: ReturnType<typeof Actions.updateSharedStyles>) {
   const { className, styles } = action.payload;
 
+  if (!action.meta) {
+    console.error(`You have to provide metainformation for action ${action.type}`);
+    return;
+  }
+
   const currentProject: ReturnType<typeof selectors.selectCurrentProject> = yield select(selectors.selectCurrentProject);
   const newProject = updateProjectClasses(currentProject, className, styles);
 
   yield call(updateProject, newProject);
+
+  const { undo, redo } = action.meta;
+
+  if (!undo) {
+    yield put(Actions.setUndoActions(Actions.updateProject(currentProject)));
+  }
+
+  const root: ReturnType<typeof selectors.selectRootElement> = yield select(selectors.selectRootElement);
+
+  yield put(Actions.updateElementsTree(root, action, { redo, undo }));
 }
 
 function* copyElementStylesSaga(action: ReturnType<typeof Actions.copyElementStyles>) {
@@ -258,14 +288,14 @@ function* copyElementStylesSaga(action: ReturnType<typeof Actions.copyElementSty
   const sharedClassNames = currentProject.projectData.classes.map(cssClass => cssClass.className);
   const uniqueClassName = generateUniqueName(`${elementType} group 1`, sharedClassNames);
 
-  yield call(updateElementClassNames, elementID, uniqueClassName, 'add');
+  yield call(updateElementClassNames, elementID, uniqueClassName, action, 'add');
 
   const newProject = addProjectStyles(currentProject, uniqueClassName, elementType, styles as Required<CssLikeStyles>);
   yield call(updateProject, newProject);
 
   yield call(removeElementStyles, elementID, Object.keys(styles), action);
 
-  const { undo, redo } = action.meta;
+  const { undo } = action.meta;
 
   if (!undo) {
     yield put(Actions.setUndoActions([
@@ -273,24 +303,44 @@ function* copyElementStylesSaga(action: ReturnType<typeof Actions.copyElementSty
       Actions.updateProject(currentProject),
       Actions.updateElementStyles(elementID, styles),
     ]));
-  } // TODO update elements tree
+  }
 }
 
 function* addElementClassNameSaga(action: ReturnType<typeof Actions.addElementClassName>) {
   const { elementID, className } = action.payload;
-  yield call(updateElementClassNames, elementID, className, 'add');
+  yield call(updateElementClassNames, elementID, className, action, 'add');
 }
 
 function* removeElementClassNameSaga(action: ReturnType<typeof Actions.removeElementClassName>) {
   const { elementID, className } = action.payload;
-  yield call(updateElementClassNames, elementID, className, 'remove');
+  yield call(updateElementClassNames, elementID, className, action, 'remove');
 }
 
-function* updateElementClassNames(elementID: string, newClassName: string, action: 'add' | 'remove') {
+function* updateElementClassNames(
+  elementID: string,
+  newClassName: string,
+  action: ReturnType<typeof Actions.addElementClassName | typeof Actions.removeElementClassName | typeof Actions.copyElementStyles>,
+  type: 'add' | 'remove',
+) {
   const root: ReturnType<typeof selectors.selectRootElement> = yield select(selectors.selectRootElement);
+
+  if (!action.meta) {
+    console.error(`You have to provide metainformation for action ${action.type}`);
+    return;
+  }
+
+  const { undo, redo } = action.meta;
+
+  if (!undo) {
+    if (type === 'add') {
+      yield put(Actions.setUndoActions(Actions.removeElementClassName(elementID, newClassName)));
+    } else {
+      yield put(Actions.setUndoActions(Actions.addElementClassName(elementID, newClassName)));
+    }
+  }
   
   const updatedTree =
-    action === 'add'
+    type === 'add'
       ? addElementClassName(elementID, newClassName, root)
       : removeElementClassName(elementID, newClassName, root);
 
@@ -299,7 +349,7 @@ function* updateElementClassNames(elementID: string, newClassName: string, actio
   if (!updatedElement) {
     console.error(`Can not find updated element ${elementID} in tree`);
   } else {
-    yield put(Actions.updateElementsTree(updatedTree));
+    yield put(Actions.updateElementsTree(updatedTree, action, { redo, undo }));
     const convertedElement = convertElementToPatchRequest(updatedElement);
     yield call(reqWrapper, apiChangeElement, { data: convertedElement, id: elementID });
   }
@@ -318,10 +368,12 @@ function* updateOrReplaceElementStyles(
   type: 'replace' | 'update',
 ) {
   const { id, styles } = action.payload;
+
   if (!action.meta) {
     console.error(`You have to provide metainformation for action ${action.type}`);
     return;
   }
+
   const { undo, redo } = action.meta;
 
   const root: ReturnType<typeof selectors.selectRootElement> = yield select(selectors.selectRootElement);
@@ -346,7 +398,7 @@ function* updateOrReplaceElementStyles(
 function* removeElementStyles(
   id: string,
   cssPropertiesNames: string[],
-  action?: ReturnType<typeof Actions.removeElementStyles>,
+  action?: ReturnType<typeof Actions.removeElementStyles | typeof Actions.copyElementStyles>,
 ) {
   const root: ReturnType<typeof selectors.selectRootElement> = yield select(
     selectors.selectRootElement

@@ -322,5 +322,23 @@ export function* updateProject(newProject: Project) {
 
 export function* updateProjectSaga(action: ReturnType<typeof Actions.updateProject>) {
   const { project } = action.payload;
+
+  if (!action.meta) {
+    console.error(`You have to provide metainformation for action ${action.type}`);
+    return;
+  }
+
+  const currentProject: ReturnType<typeof selectors.selectCurrentProject> = yield select(selectors.selectCurrentProject);
+
   yield call(updateProject, project);
+
+  const { undo, redo } = action.meta;
+
+  if (!undo) {
+    yield put(Actions.setUndoActions(Actions.updateProject(currentProject)));
+  }
+
+  const root: ReturnType<typeof selectors.selectRootElement> = yield select(selectors.selectRootElement);
+
+  yield put(Actions.updateElementsTree(root, action, { redo, undo }));
 }
