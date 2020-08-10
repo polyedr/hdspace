@@ -96,6 +96,39 @@ export function selectActiveItem(state: AppReduxState) {
   return selectProjectState(state).ui.activeItem;
 }
 
+export function selectEditableStyles(state: AppReduxState) {
+  return selectProjectState(state).ui.editableStyles;
+};
+
+export function selectSharedStyles(state: AppReduxState, elementType: string) {
+  return selectCurrentProject(state).projectData.classes
+    .find(cssClass => cssClass.className === elementType)
+    ?.rules;
+};
+
+export function selectCurrentEditableStyles<T extends keyof Required<CssLikeStyles>>(state: AppReduxState, ruleName: T) {
+  const activeItemType = selectActiveItem(state).itemType;
+  const activeElementStyles = selectActiveItemStyles<LibraryElement<Entity, [], {}, Required<CssLikeStyles>>>(state).ownStyles;
+  const activeElementClassNames = selectActiveItemStyles(state).classNames;
+  const editableStyles = selectEditableStyles(state);
+  const activeEntityStyles = activeItemType !== 'none' && selectSharedStyles(state, activeItemType) || {} as Required<CssLikeStyles>;
+  const activeSharedStyles = selectSharedStyles(state, activeElementClassNames[1]) || {} as Required<CssLikeStyles>;
+
+  const getActiveItemStyles = (editableStyles: string) => {
+    if (editableStyles === 'ownStyles' || editableStyles === '') {
+      return activeElementStyles;
+    } else if (editableStyles === activeItemType) {
+      return activeEntityStyles;
+    } else {
+      return activeSharedStyles;
+    }
+  }
+
+  const activeItemStyles = getActiveItemStyles(editableStyles);
+
+  return (activeItemStyles[ruleName] || activeSharedStyles[ruleName] || activeEntityStyles[ruleName]);
+};
+
 export function selectShowingBorders(state: AppReduxState) {
   return selectProjectState(state).ui.showContainersBorders;
 };
@@ -113,7 +146,7 @@ export function selectActiveItemChildren(state: AppReduxState, childType: ChildE
   return children;
 }
 
-export const selectElementStyles = (id: string) => (state: AppReduxState) => findChildByID(state.project.control.rootElement, id)?.styles;
+export const selectElementStyles = (id: string) => (state: AppReduxState) => findChildByID(state.project.control.rootElement, id)?.styles.ownStyles;
 
 export const selectElementParameters = (id: string) => (state: AppReduxState) => findChildByID(state.project.control.rootElement, id)?.parameters;
 
@@ -131,7 +164,7 @@ export const selectActiveItemParams = makeActiveItemInfoSelector('parameters');
 
 function makeActiveItemInfoSelector<T extends LibraryElement<Entity>, K extends 'styles' | 'parameters'>(
   prop: K
-): <R extends T>(state: AppReduxState) => K extends 'styles' ? Required<CssLikeStyles> : R['parameters'] {
+): <R extends T>(state: AppReduxState) => K extends 'styles' ? R['styles'] : R['parameters'] {
   return (state: AppReduxState) => {
     const activeItem = selectActiveItem(state);
     const elementsTree = selectRootElement(state);
@@ -141,7 +174,7 @@ function makeActiveItemInfoSelector<T extends LibraryElement<Entity>, K extends 
       throw new Error(`Can not find ${activeItem.itemId} in tree!`);
     }
 
-    return element[prop] as K extends 'styles' ? Required<CssLikeStyles> : T['parameters'];
+    return element[prop] as K extends 'styles' ? T['styles'] : T['parameters'];
   };
 }
 

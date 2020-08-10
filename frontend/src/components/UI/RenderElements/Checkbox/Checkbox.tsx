@@ -3,30 +3,93 @@ import cn from 'classnames';
 import { makeStyles, Checkbox } from '@material-ui/core';
 import CheckBoxIcon from '@material-ui/icons/CheckBox';
 import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
+import * as R from 'ramda';
 
 import { CheckboxRendererProps } from '../types';
 const styles = require('../styles.scss');
 
+const getCheckboxClassStyles = (styles: React.CSSProperties) => ({
+  color: styles.backgroundColor,
+
+  '&$checked': {
+    color: styles.backgroundColor,
+  },
+
+  '& $icon': {
+    width: styles.width,
+    height: styles.height,
+  },
+});
+
+const getCheckboxStyles = (
+  entityStyles: React.CSSProperties,
+  groupStyles: React.CSSProperties,
+  ownStyles: React.CSSProperties,
+) => makeStyles({
+  root: {},
+
+  entityStyles: {
+    ...getCheckboxClassStyles(entityStyles),
+  },
+
+  groupStyles: {
+    ...getCheckboxClassStyles(groupStyles),
+  },
+
+  ownStyles: {
+    ...getCheckboxClassStyles(ownStyles),
+  },
+
+  icon: {},
+
+  checked: {},
+});
+
+const getDivStyles = (
+  entityStyles: React.CSSProperties,
+  groupStyles: React.CSSProperties,
+  ownStyles: React.CSSProperties,
+) => makeStyles({
+  entityStyles: {
+    ...entityStyles,
+    display: 'inline-block',
+  },
+
+  groupStyles: {
+    ...groupStyles,
+    display: 'inline-block',
+  },
+
+  ownStyles: {
+    ...ownStyles,
+    display: 'inline-block',
+  },
+});
+
 const CheckboxComponent = (props: CheckboxRendererProps) => {
-  const { id, style, params, isDisabled, sortableId, currentValue, onElementChange, isCheckboxChecked, elementRef, className } = props;
-  const { backgroundColor, width, height, ...restStyles } = style;
+  const {
+    id,
+    entityStyles,
+    groupStyles,
+    ownStyles,
+    params,
+    isDisabled,
+    sortableId,
+    currentValue,
+    onElementChange,
+    isCheckboxChecked,
+    elementRef,
+    className,
+  } = props;
   const { name, showRipple } = params;
 
-  const classes = makeStyles({
-    root: {
-      color: backgroundColor,
-      '&$checked': {
-        color: backgroundColor,
-      },
-    },
-    icon: {
-      width,
-      height,
-    },
-    checked: {},
-  })();
+  const entityDivStyles = R.omit(['backgroundColor', 'width', 'height'], entityStyles);
+  const groupDivStyles = R.omit(['backgroundColor', 'width', 'height'], groupStyles);
+  const ownDivStyles = R.omit(['backgroundColor', 'width', 'height'], ownStyles);
 
-  const inlineStyles = { ...restStyles, display: 'inline-block' };
+  const divClasses = getDivStyles(entityDivStyles, groupDivStyles, ownDivStyles)();
+
+  const checkboxClasses = getCheckboxStyles(entityStyles, groupStyles, ownStyles)();
 
   const handleCheckboxChange = (event: ChangeEvent<HTMLInputElement>) => {
     onElementChange(id, event.target.checked);
@@ -39,15 +102,25 @@ const CheckboxComponent = (props: CheckboxRendererProps) => {
       data-ls-id={id}
       data-id={sortableId}
       key={id}
-      style={inlineStyles}
-      className={cn(className, isDisabled && styles.disabled)}
+      className={cn(
+        className,
+        isDisabled && styles.disabled,
+        divClasses.entityStyles,
+        divClasses.groupStyles,
+        divClasses.ownStyles,
+      )}
       tabIndex={isDisabled ? 0 : -1}
     >
       <Checkbox
-        checkedIcon={<CheckBoxIcon className={classes.icon} />}
-        icon={<CheckBoxOutlineBlankIcon className={classes.icon} />}
+        checkedIcon={<CheckBoxIcon className={checkboxClasses.icon} />}
+        icon={<CheckBoxOutlineBlankIcon className={checkboxClasses.icon} />}
         color="default"
-        className={classes.root}
+        className={cn(
+          checkboxClasses.root,
+          checkboxClasses.entityStyles,
+          checkboxClasses.groupStyles,
+          checkboxClasses.ownStyles,
+        )}
         value={currentValue}
         name={name}
         checked={isCheckboxChecked}

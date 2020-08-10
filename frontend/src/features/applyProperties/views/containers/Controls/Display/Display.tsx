@@ -14,16 +14,15 @@ import { CssLikeStyles, convertFlexToCssLikeStyles } from '$utils/StyleHelper';
 import { LibraryElement } from '$api/types';
 import { Entity } from '$domain/core';
 
-import { ControlTitle } from '../../../components/ControlTitle/ControlTitle';
 import { FlexProperties } from '../../../components/FlexProperties/FlexProperties';
+import { StylesHeader } from '../../../components/StylesHeader/StylesHeader';
 import { DISPLAY } from './constants';
-const styles = require('./Display.scss');
 
 type StateProps = {
   displayStyles: ScreenDisplay;
 };
 
-function getDisplayStyles(activeItemStyles: Required<CssLikeStyles>): ScreenDisplay {
+function getDisplayStyles(activeItemStyles: Pick<Required<CssLikeStyles>, 'display' | 'flex-direction' | 'justify-content' | 'align-items'>): ScreenDisplay {
   switch(activeItemStyles.display) {
     case 'block': return { 
       display: activeItemStyles.display,
@@ -49,14 +48,20 @@ function getDisplayStyles(activeItemStyles: Required<CssLikeStyles>): ScreenDisp
 }
 
 function mapState(state: AppReduxState): StateProps {
-  const activeItemStyles = selectors.selectActiveItemStyles(state);
+  const activeItemStyles = {
+    display: selectors.selectCurrentEditableStyles(state, 'display'),
+    'justify-content': selectors.selectCurrentEditableStyles(state, 'justify-content'),
+    'align-items': selectors.selectCurrentEditableStyles(state, 'align-items'),
+    'flex-direction': selectors.selectCurrentEditableStyles(state, 'flex-direction'),
+  };
+
   return { displayStyles: getDisplayStyles(activeItemStyles) };
 }
 
 type Props = StateProps & PropertiesChangeProps<LibraryElement<Entity>>;
 
 export const Component: React.FC<Props> = memo((props) => {
-  const { displayStyles, updateStyles } = props;
+  const { displayStyles, updateStyles, removeStyles } = props;
 
   const handleDisplayDropdownChange = useCallback((value) => {
     updateStyles({ display: value });
@@ -70,9 +75,16 @@ export const Component: React.FC<Props> = memo((props) => {
   return (
     <>
       <section className="propsElementsBlock">
-        <header className={styles.header}>
-          <ControlTitle content="Display" />
-        </header>
+        <StylesHeader
+          title="Display"
+          onClick={removeStyles}
+          cssPropertiesNames={[
+            'display',
+            'justify-content',
+            'align-items',
+            'flex-direction',
+          ]}
+        />
         <div className="propsElementsContentBlock">
           <div className="propsElementsInnerBlock">
             <DropDown

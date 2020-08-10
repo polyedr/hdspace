@@ -1,16 +1,19 @@
 import { removeChildrenFromElement } from '$utils/ElementsTreeHelper';
+import { LibraryElement } from '$api/types';
 
 import { mockRoot } from './mocks';
-import { Entity } from '$domain/core';
 
 describe('removeChildrenFromElement', () => {
   const mockParams = {
     name: 'heading',
-    type: 'heading' as Entity,
+    type: 'heading',
     image: null,
     parameters: {},
-    styles: {},
-  };
+    styles: {
+      classNames: ['heading'],
+      ownStyles: {},
+    },
+  } as LibraryElement<'heading'>;
 
   test('Should remove child from parent on 1 level', () => {
     const removedChild = { id: '2', children: [], buoyancy: 0, ...mockParams };

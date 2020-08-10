@@ -41,7 +41,6 @@ import {
   apiSaveScreen,
 } from '$api/screen';
 import { ReturnPromisedType } from '$shared/types';
-import { getConfigurablePropsOf } from '$domain/core';
 
 import { reqWrapper } from '.';
 import { selectors, T } from '../';
@@ -132,16 +131,7 @@ export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
   const createdScreen: ReturnPromisedType<typeof apiAddScreen> = yield call(reqWrapper, apiAddScreen, { data });
   if (!createdScreen) return;
 
-  const { styles } = getConfigurablePropsOf('root')('root');
-  const rootScenario: T.IScenarioItem = yield call(createContainer, {
-    screen: createdScreen.id,
-    styles: {
-      ...styles,
-      display: 'block',
-      'min-height': '100%',
-      'min-width': '100%',
-    },
-  });
+  const rootScenario: T.IScenarioItem = yield call(createContainer, { screen: createdScreen.id });
 
   const listSortable: T.IListSortable = { root: { ...DEFAULT_LS.root, id: rootScenario.id } };
 

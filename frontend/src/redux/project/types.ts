@@ -2,7 +2,7 @@ import { IPlainAction, IPlainFailAction, IAction } from '$shared/redux';
 import { CssLikeStyles } from '$utils/StyleHelper';
 import { LibraryEntities } from '$domain/libraryElements/libraryElements';
 import { Entity } from '$domain/core';
-import { LibraryElement as RootElement, LinkParams, HeadingType, VideoSettings, InputType, Project } from '$api/types';
+import { LibraryElement as RootElement, HeadingType, VideoSettings, InputType, Project } from '$api/types';
 
 export type ProjectState = {
   data: ProjectDataState;
@@ -19,6 +19,7 @@ export type ProjectDataState = {
 
 export type ProjectUiState = {
   activeItem: ActiveItem;
+  editableStyles: string;
   isAddElementsModalOpened: boolean;
   itemToCopyInfo: ItemToCopyInfo | null;
   savedElementsValues: SavedElementsValues;
@@ -89,6 +90,7 @@ export type AddProject = IAction<'PROJECTS:ADD_PROJECT', { name: string }>;
 export type DeleteProject = IAction<'PROJECTS:DELETE_PROJECT', { id: number }>;
 export type GetProject = IAction<'PROJECTS:GET_PROJECT', { id: number, screenID?: string }>;
 export type SetProject = IAction<'PROJECTS:SET_PROJECT', { project: Project }>;
+export type UpdateProject = IAction<'PROJECTS:UPDATE_PROJECT', { project: Project }>;
 export type ChangeScreensOrder = IAction<'PROJECTS:CHANGE_SCREENS_ORDER', { screens: IProjectScreen[] }>;
 export type RenameProject = IAction<'PROJECTS:RENAME_PROJECT', { projectID: number, name: string }>;
 export type SetListProjectLoader = IAction<'PROJECTS:SET_LIST_PROJECT_LOADER', { active: boolean }>;
@@ -118,6 +120,18 @@ export type AddElement = IAction<'PROJECTS:ADD_ELEMENT', { parentID: string, typ
 export type RenameElement = IAction<'PROJECTS:RENAME_ELEMENT', { elementID: string, name: string }>;
 export type ToggleContainersBorders = IPlainAction<'PROJECTS:TOGGLE_CONTAINERS_BORDERS'>;
 export type SetScenarioElements = IAction<'PROJECTS:SET_SCENARIO_ELEMENTS', { elements: IScenarioElements }>;
+export type CopyElementStyles = IAction<'PROJECTS:COPY_ELEMENT_STYLES', { elementType: Entity, elementID: string, styles: CssLikeStyles }>;
+export type AddSharedStyles = IAction<'PROJECTS:ADD_SHARED_STYLES', { elementID: string; className: string; elementType: Entity; styles: CssLikeStyles; }>;
+export type AddElementClassName = IAction<'PROJECTS:ADD_ELEMENT_CLASSNAME', { elementID: string, className: string }>;
+export type RemoveElementClassName = IAction<'PROJECTS:REMOVE_ELEMENT_CLASSNAME', { elementID: string, className: string }>;
+export type UpdateSharedStyles = IAction<'PROJECTS:UPDATE_SHARED_STYLES', { className: Entity, styles: CssLikeStyles }>;
+export type RemoveSharedStyles = IAction<'PROJECTS:REMOVE_SHARED_STYLES', { className: Entity, cssPropertiesNames: string[] }>;
+export type RemoveElementStyles = IAction<'PROJECTS:REMOVE_ELEMENT_STYLES', { id: string, cssPropertiesNames: string[] }>;
+export type ReplaceElementStyles = IAction<
+  'PROJECTS:REPLACE_ELEMENT_STYLES',
+  { id: string, styles: CssLikeStyles },
+  HistoryMeta
+  >;
 export type UpdateElementStyles = IAction<
   'PROJECTS:UPDATE_ELEMENT_STYLES',
   { id: string, styles: CssLikeStyles },
@@ -151,6 +165,7 @@ export type uploadImageForNNSuccess = IAction<
 export type GetScreenNN = IPlainAction<'PROJECTS:GET_SCREEN_NN'>;
 export type WrapIntoContainer = IAction<'PROJECTS:WRAP_INTO_CONTAINER', { id: string }, HistoryMeta>;
 export type SetActiveItem = IAction<'PROJECTS:SET_ACTIVE_ITEM', { activeItem: ActiveItem }>;
+export type SetEditableStyles = IAction<'PROJECTS:SET_EDITABLE_STYLES', { className: string }>;
 export type SetIsAddElementsModalOpened = IAction<'PROJECTS:SET_IS_ADD_ELEMENTS_MODAL_OPENED', { isOpened: boolean }>;
 export type SetItemToCopy = IAction<'PROJECTS:SET_ITEM_TO_COPY', ItemToCopyInfo>;
 export type CopyActiveItem = IPlainAction<'PROJECTS:COPY_ACTIVE_ITEM'>;
@@ -197,6 +212,7 @@ export type Action =
   | SetScreens
   | AddElement
   | SetScenarioElements
+  | CopyElementStyles
   | UpdateElementStyles
   | UpdateElementImage
   | UpdateElementParameters
@@ -222,6 +238,7 @@ export type Action =
   | UpdateElementsTree
   | SetNotification
   | RemoveNotification
+  | SetEditableStyles
   | SetUndoActions
   | SetRedoActions
   | UnwrapFromContainer
@@ -232,7 +249,14 @@ export type Action =
   | PopUndoAction
   | PopHistory
   | SetGroupActionsUp
-  | MoveElement;
+  | MoveElement
+  | RemoveElementStyles
+  | ReplaceElementStyles
+  | RemoveElementClassName
+  | UpdateProject
+  | RemoveSharedStyles
+  | UpdateSharedStyles
+  | AddElementClassName;
 
 export type ItemToCopyInfo = {
   id: string;
@@ -260,41 +284,6 @@ export type Flex = {
 
 export type ScreenDisplay = Block | Inline | InlineBlock | Flex;
 
-export interface IScreenIndents {
-  'margin-top'?: string,
-  'margin-right'?: string,
-  'margin-bottom'?: string,
-  'margin-left'?: string,
-  'padding-top': string,
-  'padding-right': string,
-  'padding-bottom': string,
-  'padding-left': string,
-}
-
-export interface IScreenBorders {
-  'border-width': string,
-  'border-color': string,
-  'border-style': string,
-  'border-radius': string,
-}
-
-export interface IScreenBackground {
-  'background-color': string,
-  'background-image': string,
-  'background-repeat': string,
-  'background-size': string,
-}
-
-export interface IScreenTypography {
-  'font-family': string,
-  'color': string,
-  'font-size': string,
-  'line-height': string,
-  'font-style': string,
-  'font-weight': number,
-  'text-align': string,
-}
-
 export interface ICenterProp {
   lat: number,
   lng: number,
@@ -314,52 +303,6 @@ export type ListItem = {
   link: string,
 };
 
-export interface IScreenProps {
-  buoyancy?: number,
-  html_type?: string,
-  content?: string,
-  url?: string;
-  textContent?: string,
-  width?: string,
-  height?: string,
-  align?: string,
-  indents?: IScreenIndents,
-  border?: IScreenBorders,
-  background?: IScreenBackground,
-  typography?: IScreenTypography,
-  placeholder?: string,
-  dynamic_placeholder?: string,
-  map_props: IMapProps,
-  source_img?: string,
-  scenarioId?: number,
-  action?: LinkParams,
-  imageURL?: string,
-  type?: InputType,
-  value?: string,
-  name?: string,
-  showRipple?: boolean,
-  options?: Option[],
-  headingType?: HeadingType,
-  listItems?: ListItem[],
-  showBullets?: boolean,
-  isOrdered?: boolean,
-  labelFor?: string,
-  dropdownItems?: string[],
-  link?: string,
-  isLink?: boolean,
-  isOpen?: boolean,
-  videoSettings?: VideoSettings,
-}
-
-export interface ISortableItem {
-  id: number,
-  type: string,
-  children: ISortableItem[],
-  orientation?: string,
-  props?: IScreenProps,
-  scenarioId?: number,
-}
-
 export type LibraryElement = {
   struct_type: ServerStructType;
   func_type: ServerStructType;
@@ -376,33 +319,6 @@ export type LibraryElement = {
 };
 
 export type ServerStructType = Entity;
-
-export interface IStylesElement {
-  marginTop?: string,
-  marginRight?: string,
-  marginBottom?: string,
-  marginLeft?: string,
-  paddingTop?: string,
-  paddingRight?: string,
-  paddingBottom?: string,
-  paddingLeft?: string,
-
-  height?: string,
-  width?: string,
-
-  borderRadius?: string,
-  backgroundColor?: string,
-  backgroundImage?: string,
-  backgroundSize?: string,
-  backgroundRepeat?: string,
-  color?: string,
-  fontSize?: string,
-  fontStyle?: string,
-  fontWeight?: string,
-  lineHeight?: string,
-  textAlign?: string,
-  fontFamily?: string,
-}
 
 export type ElementParameters = {
   group?: string,

@@ -1,11 +1,14 @@
 import React, { useCallback, memo } from 'react';
 import * as R from 'ramda';
+import { connect } from 'react-redux';
 
-import { CssLikeStyles } from '$utils/StyleHelper';
 import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
 import { LibraryElement } from '$api/types';
 import { Entity } from '$domain/core';
+import { AppReduxState } from '$shared/types/app';
+import { selectors } from '$redux/project';
 
+import { StylesHeader } from '../../../components/StylesHeader/StylesHeader';
 const styles = require('./SizeBlock.scss');
 
 enum Unit {
@@ -23,11 +26,14 @@ type SelectedUnit = {
 
 type SizeName = keyof SelectedUnit;
 
-type OwnProps = {
-  activeItemStyles: Required<CssLikeStyles>;
-}
+function mapState(state: AppReduxState) {
+  return {
+    width: selectors.selectCurrentEditableStyles(state, 'width'),
+    height: selectors.selectCurrentEditableStyles(state, 'height'),
+  };
+};
 
-type Props = OwnProps & PropertiesChangeProps<LibraryElement<Entity>>;
+type Props = ReturnType<typeof mapState> & PropertiesChangeProps<LibraryElement<Entity>>;
 
 const getUnitFromValue = (value: string): UnitName => {
   const unit = value.replace(/[0-9, \d+\.\d+]/g, '');
@@ -41,8 +47,7 @@ const getUnitFromValue = (value: string): UnitName => {
 }
 
 const SizeBlock: React.FC<Props> = memo((props) => {
-  const { updateStyles, activeItemID, activeItemStyles } = props;
-  const { width, height } = activeItemStyles;
+  const { updateStyles, removeStyles, activeItemID, width, height } = props;
 
   const handleSelectChange = useCallback(({ target: { value } }, sizeName: SizeName) => {
     const el = document.getElementById(activeItemID);
@@ -121,7 +126,11 @@ const SizeBlock: React.FC<Props> = memo((props) => {
 
   return (
     <div className="propsElementsBlock">
-      <p className="propsElementsBlockTitle">Width & Height</p>
+      <StylesHeader
+        title="Width & Height"
+        onClick={removeStyles}
+        cssPropertiesNames={['width', 'height']}
+      />
       <div className="propsElementsContentBlock">
         <div className="propsElementsInnerBlock">
           <div className={styles.sizeBlock}>
@@ -136,5 +145,5 @@ const SizeBlock: React.FC<Props> = memo((props) => {
   );
 });
 
-const Component = withConfigurableProperties(SizeBlock);
+const Component = connect(mapState)(withConfigurableProperties(SizeBlock));
 export { Component as SizeBlock };

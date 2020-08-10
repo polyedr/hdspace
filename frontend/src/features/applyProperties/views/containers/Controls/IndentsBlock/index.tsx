@@ -2,31 +2,45 @@ import React, { useCallback } from 'react';
 import classNames from 'classnames';
 
 import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
-import { CssLikeStyles } from '$utils/StyleHelper';
 import { LibraryElement } from '$api/types';
 import { Entity } from '$domain/core';
+import { AppReduxState } from '$shared/types/app';
+import { selectors } from '$redux/project';
+import { connect } from 'react-redux';
 
+import { StylesHeader } from '../../../components/StylesHeader/StylesHeader';
 const styles = require('./styles.scss');
 
 const MIN_PADDING = 0;
 
-type OwnProps = {
-  activeItemStyles: Required<CssLikeStyles>;
+function mapState(state: AppReduxState) {
+  return {
+    marginTop: selectors.selectCurrentEditableStyles(state, 'margin-top'),
+    marginRight: selectors.selectCurrentEditableStyles(state, 'margin-right'),
+    marginBottom: selectors.selectCurrentEditableStyles(state, 'margin-bottom'),
+    marginLeft: selectors.selectCurrentEditableStyles(state, 'margin-left'),
+    paddingTop: selectors.selectCurrentEditableStyles(state, 'padding-top'),
+    paddingRight: selectors.selectCurrentEditableStyles(state, 'padding-right'),
+    paddingBottom: selectors.selectCurrentEditableStyles(state, 'padding-bottom'),
+    paddingLeft: selectors.selectCurrentEditableStyles(state, 'padding-left'),
+  };
 };
 
-type Props = OwnProps & PropertiesChangeProps<LibraryElement<Entity>>;
+type Props = ReturnType<typeof mapState> & PropertiesChangeProps<LibraryElement<Entity>>;
 
 const IndentsBlock: React.FC<Props> = (props) => {
-  const { updateStyles, activeItemStyles } = props;
-
-  const marginTop = activeItemStyles['margin-top'];
-  const marginRight = activeItemStyles['margin-right'];
-  const marginBottom = activeItemStyles['margin-bottom'];
-  const marginLeft = activeItemStyles['margin-left'];
-  const paddingTop = activeItemStyles['padding-top'];
-  const paddingRight = activeItemStyles['padding-right'];
-  const paddingBottom = activeItemStyles['padding-bottom'];
-  const paddingLeft = activeItemStyles['padding-left'];
+  const {
+    updateStyles,
+    removeStyles,
+    marginTop,
+    marginRight,
+    marginBottom,
+    marginLeft,
+    paddingTop,
+    paddingRight,
+    paddingBottom,
+    paddingLeft,
+  } = props;
 
   const handleIndentChange = useCallback((type: string, value: string) => {
     updateStyles({ [type]: value });
@@ -34,7 +48,20 @@ const IndentsBlock: React.FC<Props> = (props) => {
 
   return (
     <div className="propsElementsBlock">
-      <p className="propsElementsBlockTitle">Margins & Paddings</p>
+      <StylesHeader
+        title="Margins & Paddings"
+        onClick={removeStyles}
+        cssPropertiesNames={[
+          'margin-top',
+          'margin-right',
+          'margin-bottom',
+          'margin-left',
+          'padding-top',
+          'padding-right',
+          'padding-bottom',
+          'padding-left',
+        ]}
+      />
       <div className="propsElementsContentBlock">
         <div className="propsElementsInnerBlock">
           <div className={styles.indentsController}>
@@ -129,5 +156,5 @@ const IndentsBlock: React.FC<Props> = (props) => {
   );
 };
 
-const Component = withConfigurableProperties(IndentsBlock);
+const Component = connect(mapState)(withConfigurableProperties(IndentsBlock));
 export { Component as IndentsBlock };

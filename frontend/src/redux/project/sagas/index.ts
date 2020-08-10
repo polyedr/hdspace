@@ -21,13 +21,14 @@ import {
   changeScreensOrderSaga,
   renameProjectSaga,
   exportProjectSaga,
+  updateProject,
+  updateProjectSaga,
 } from '$redux/project/sagas/project';
 import {
   wrapIntoContainerSaga,
   addChildToElementSaga,
   createElementsSaga,
   createElements,
-  addElementToElement,
   updateElementsTree,
   renameElementSaga,
   unwrapFromContainerSaga,
@@ -41,7 +42,6 @@ import {
   apiChangeElement,
   apiChangeRecursiveElement,
 } from '$api/element';
-import { apiSaveScenarios } from '$api/scenario';
 import { convertElementToRequest, convertElementToPatchRequest } from '$api/converters/toRequest';
 import { LibraryElement, LibraryElementUnion } from '$api/types';
 import { Entity } from '$domain/core';
@@ -57,9 +57,16 @@ import {
   updateElementParameters as updateParameters,
   moveElement,
   updateElementStyles as updateStyles,
+  removeElementStyles as removeStyles,
   getElementsArray,
   getTreeWithDefaultStylesAndParams,
+  addElementClassName,
+  removeElementClassName,
+  replaceElementStyles,
 } from '$utils/ElementsTreeHelper';
+import { generateUniqueName } from '$utils/generateUniqueName';
+import { CssLikeStyles } from '$utils/StyleHelper';
+import { updateProjectClasses, removeProjectStyles, addProjectStyles } from '$utils/ProjectClassesHelper';
 import * as PATH_NAMES from '$constants/pathNames';
 import { DEFAULT_AUTHORISATION_TOKEN } from '$constants/defaultParams';
 import { LibraryEntities } from '$domain/libraryElements/libraryElements';
@@ -220,30 +227,163 @@ function* moveElementSaga(action: ReturnType<typeof Actions.moveElement>): any {
   yield call(reqWrapper, apiChangeRecursiveElement, { data: elementData, id: targetParent.id });
 }
 
-export function* updateScenariosOnServerSaga(scenarios: ProjectT.IScenarios) {
-  yield call(reqWrapper, apiSaveScenarios, { data: R.values(scenarios) });
-}
+function* removeSharedStylesSaga(action: ReturnType<typeof Actions.removeSharedStyles>) {
+  const { className, cssPropertiesNames } = action.payload;
 
-export function* updateElementsOnServerSaga(elements: ProjectT.IScenarioElements) {
-  yield call(reqWrapper, apiSaveElements, { data: R.values(elements).map(element => R.omit(['children'], element)) });
-}
-
-function* updateElementStyles(action: ReturnType<typeof Actions.updateElementStyles>) {
-  const { id, styles } = action.payload;
   if (!action.meta) {
     console.error(`You have to provide metainformation for action ${action.type}`);
     return;
   }
+
+  const currentProject: ReturnType<typeof selectors.selectCurrentProject> = yield select(selectors.selectCurrentProject);
+  const newProject = removeProjectStyles(currentProject, className, cssPropertiesNames);
+
+  yield call(updateProject, newProject);
+
+  const { undo, redo } = action.meta;
+
+  if (!undo) {
+    yield put(Actions.setUndoActions(Actions.updateProject(currentProject)));
+  }
+
+  const root: ReturnType<typeof selectors.selectRootElement> = yield select(selectors.selectRootElement);
+
+  yield put(Actions.updateElementsTree(root, action, { redo, undo }));
+}
+
+function* updateSharedStylesSaga(action: ReturnType<typeof Actions.updateSharedStyles>) {
+  const { className, styles } = action.payload;
+
+  if (!action.meta) {
+    console.error(`You have to provide metainformation for action ${action.type}`);
+    return;
+  }
+
+  const currentProject: ReturnType<typeof selectors.selectCurrentProject> = yield select(selectors.selectCurrentProject);
+  const newProject = updateProjectClasses(currentProject, className, styles);
+
+  yield call(updateProject, newProject);
+
+  const { undo, redo } = action.meta;
+
+  if (!undo) {
+    yield put(Actions.setUndoActions(Actions.updateProject(currentProject)));
+  }
+
+  const root: ReturnType<typeof selectors.selectRootElement> = yield select(selectors.selectRootElement);
+
+  yield put(Actions.updateElementsTree(root, action, { redo, undo }));
+}
+
+function* copyElementStylesSaga(action: ReturnType<typeof Actions.copyElementStyles>) {
+  const { elementType, elementID, styles } = action.payload;
+
+  if (!action.meta) {
+    console.error(`You have to provide metainformation for action ${action.type}`);
+    return;
+  }
+
+  const currentProject: ReturnType<typeof selectors.selectCurrentProject> = yield select(selectors.selectCurrentProject);
+
+  const sharedClassNames = currentProject.projectData.classes.map(cssClass => cssClass.className);
+  const uniqueClassName = generateUniqueName(`${elementType} group 1`, sharedClassNames);
+
+  yield call(updateElementClassNames, elementID, uniqueClassName, action, 'add');
+
+  const newProject = addProjectStyles(currentProject, uniqueClassName, elementType, styles as Required<CssLikeStyles>);
+  yield call(updateProject, newProject);
+
+  yield call(removeElementStyles, elementID, Object.keys(styles), action);
+
+  const { undo } = action.meta;
+
+  if (!undo) {
+    yield put(Actions.setUndoActions([
+      Actions.removeElementClassName(elementID, uniqueClassName),
+      Actions.updateProject(currentProject),
+      Actions.updateElementStyles(elementID, styles),
+    ]));
+  }
+}
+
+function* addElementClassNameSaga(action: ReturnType<typeof Actions.addElementClassName>) {
+  const { elementID, className } = action.payload;
+  yield call(updateElementClassNames, elementID, className, action, 'add');
+}
+
+function* removeElementClassNameSaga(action: ReturnType<typeof Actions.removeElementClassName>) {
+  const { elementID, className } = action.payload;
+  yield call(updateElementClassNames, elementID, className, action, 'remove');
+}
+
+function* updateElementClassNames(
+  elementID: string,
+  newClassName: string,
+  action: ReturnType<typeof Actions.addElementClassName | typeof Actions.removeElementClassName | typeof Actions.copyElementStyles>,
+  type: 'add' | 'remove',
+) {
+  const root: ReturnType<typeof selectors.selectRootElement> = yield select(selectors.selectRootElement);
+
+  if (!action.meta) {
+    console.error(`You have to provide metainformation for action ${action.type}`);
+    return;
+  }
+
+  const { undo, redo } = action.meta;
+
+  if (!undo) {
+    if (type === 'add') {
+      yield put(Actions.setUndoActions(Actions.removeElementClassName(elementID, newClassName)));
+    } else {
+      yield put(Actions.setUndoActions(Actions.addElementClassName(elementID, newClassName)));
+    }
+  }
+  
+  const updatedTree =
+    type === 'add'
+      ? addElementClassName(elementID, newClassName, root)
+      : removeElementClassName(elementID, newClassName, root);
+
+  const updatedElement = findChildByID(updatedTree, elementID);
+
+  if (!updatedElement) {
+    console.error(`Can not find updated element ${elementID} in tree`);
+  } else {
+    yield put(Actions.updateElementsTree(updatedTree, action, { redo, undo }));
+    const convertedElement = convertElementToPatchRequest(updatedElement);
+    yield call(reqWrapper, apiChangeElement, { data: convertedElement, id: elementID });
+  }
+}
+
+function* updateElementStyles(action: ReturnType<typeof Actions.updateElementStyles>) {
+  yield call(updateOrReplaceElementStyles, action, 'update');
+}
+
+function* replaceElementStylesSaga(action: ReturnType<typeof Actions.replaceElementStyles>) {
+  yield call(updateOrReplaceElementStyles, action, 'replace');
+}
+
+function* updateOrReplaceElementStyles(
+  action: ReturnType<typeof Actions.updateElementStyles | typeof Actions.replaceElementStyles>,
+  type: 'replace' | 'update',
+) {
+  const { id, styles } = action.payload;
+
+  if (!action.meta) {
+    console.error(`You have to provide metainformation for action ${action.type}`);
+    return;
+  }
+
   const { undo, redo } = action.meta;
 
   const root: ReturnType<typeof selectors.selectRootElement> = yield select(selectors.selectRootElement);
 
   if (!undo) {
     const oldStyles = yield select(selectors.selectElementStyles(id));
-    yield put(Actions.setUndoActions(Actions.updateElementStyles(id, oldStyles)));
+    yield put(Actions.setUndoActions(Actions.replaceElementStyles(id, oldStyles)));
   }
 
-  const updatedTree = updateStyles(id, styles, root);
+  const updatedTree = type === 'replace' ? replaceElementStyles(id, styles, root) : updateStyles(id, styles, root);
   const updatedElement = findChildByID(updatedTree, id);
 
   if (!updatedElement) {
@@ -253,6 +393,47 @@ function* updateElementStyles(action: ReturnType<typeof Actions.updateElementSty
   yield put(Actions.updateElementsTree(updatedTree, action, { redo, undo }));
   const convertedElement = convertElementToPatchRequest(updatedElement);
   yield call(reqWrapper, apiChangeElement, { data: convertedElement, id });
+}
+
+function* removeElementStyles(
+  id: string,
+  cssPropertiesNames: string[],
+  action?: ReturnType<typeof Actions.removeElementStyles | typeof Actions.copyElementStyles>,
+) {
+  const root: ReturnType<typeof selectors.selectRootElement> = yield select(
+    selectors.selectRootElement
+  );
+
+  const updatedTree = removeStyles(id, cssPropertiesNames, root);
+  const updatedElement = findChildByID(updatedTree, id);
+
+  if (!updatedElement) {
+    console.error(`Can not find updated element ${id} in tree`);
+  } else {
+    const { undo, redo } = action?.meta;
+
+    yield put(Actions.updateElementsTree(updatedTree, action, { redo, undo }));
+    const convertedElement = convertElementToPatchRequest(updatedElement);
+    yield call(reqWrapper, apiChangeElement, { data: convertedElement, id });
+  }
+}
+
+function* removeElementStylesSaga(action: ReturnType<typeof Actions.removeElementStyles>) {
+  const { id, cssPropertiesNames } = action.payload;
+
+  if (!action.meta) {
+    console.error(`You have to provide metainformation for action ${action.type}`);
+    return;
+  }
+
+  const { undo } = action.meta;
+
+  if (!undo) {
+    const oldStyles = yield select(selectors.selectElementStyles(id));
+    yield put(Actions.setUndoActions(Actions.updateElementStyles(id, oldStyles)));
+  }
+
+  yield call(removeElementStyles, id, cssPropertiesNames, action);
 }
 
 function* updateElementImage(action: ReturnType<typeof Actions.updateElementImage>) {
@@ -499,6 +680,7 @@ function* redoSaga() {
 const loadProjectsType: ProjectT.LoadProjects['type'] = 'PROJECTS:LOAD_PROJECTS';
 const addProjectType: ProjectT.AddProject['type'] = 'PROJECTS:ADD_PROJECT';
 const deleteProjectType: ProjectT.DeleteProject['type'] = 'PROJECTS:DELETE_PROJECT';
+const updateProjectType: ProjectT.UpdateProject['type'] = 'PROJECTS:UPDATE_PROJECT';
 const getProjectType: ProjectT.GetProject['type'] = 'PROJECTS:GET_PROJECT';
 const exportProjectType: ProjectT.ExportProject['type'] = 'PROJECTS:EXPORT_PROJECT';
 const changeScreensOrderType: ProjectT.ChangeScreensOrder['type'] = 'PROJECTS:CHANGE_SCREENS_ORDER';
@@ -510,7 +692,14 @@ const saveScreenType: ProjectT.SaveScreen['type'] = 'PROJECTS:SAVE_SCREEN';
 const deleteScreenType: ProjectT.DeleteScreen['type'] = 'PROJECTS:DELETE_SCREEN';
 const renameScreenType: ProjectT.RenameScreen['type'] = 'PROJECTS:RENAME_SCREEN';
 const moveElementType: ProjectT.MoveElement['type'] = 'PROJECTS:MOVE_ELEMENT';
+const removeSharedStylesType: ProjectT.RemoveSharedStyles['type'] = 'PROJECTS:REMOVE_SHARED_STYLES';
+const updateSharedStylesType: ProjectT.UpdateSharedStyles['type'] = 'PROJECTS:UPDATE_SHARED_STYLES';
+const removeElementStylesType: ProjectT.RemoveElementStyles['type'] = 'PROJECTS:REMOVE_ELEMENT_STYLES';
 const updateElementStylesType: ProjectT.UpdateElementStyles['type'] = 'PROJECTS:UPDATE_ELEMENT_STYLES';
+const replaceElementStylesType: ProjectT.ReplaceElementStyles['type'] = 'PROJECTS:REPLACE_ELEMENT_STYLES';
+const copyElementStylesType: ProjectT.CopyElementStyles['type'] = 'PROJECTS:COPY_ELEMENT_STYLES';
+const addElementClassNameType: ProjectT.AddElementClassName['type'] = 'PROJECTS:ADD_ELEMENT_CLASSNAME';
+const removeElementClassNameType: ProjectT.RemoveElementClassName['type'] = 'PROJECTS:REMOVE_ELEMENT_CLASSNAME';
 const updateElementParametersType: ProjectT.UpdateElementParameters['type'] = 'PROJECTS:UPDATE_ELEMENT_PARAMETERS';
 const updateElementImageType: ProjectT.UpdateElementImage['type'] = 'PROJECTS:UPDATE_ELEMENT_IMAGE';
 const createElementsType: ProjectT.CreateElements['type'] = 'PROJECTS:CREATE_ELEMENTS';
@@ -536,6 +725,7 @@ export default function* projectSaga() {
   yield takeLatest(loadProjectsType, getListProjectSaga);
   yield takeLatest(addProjectType, addProject);
   yield takeLatest(deleteProjectType, delProjectSaga);
+  yield takeLatest(updateProjectType, updateProjectSaga);
   yield takeLatest(getProjectType, getProjectSaga);
   yield takeLatest(exportProjectType, exportProjectSaga);
   yield takeLatest(changeScreensOrderType, changeScreensOrderSaga);
@@ -549,7 +739,14 @@ export default function* projectSaga() {
   yield takeLatest(renameScreenType, screenSaga.renameScreenSaga);
   yield takeEvery(moveElementType, moveElementSaga);
 
+  yield takeLatest(removeSharedStylesType, removeSharedStylesSaga);
+  yield takeLatest(updateSharedStylesType, updateSharedStylesSaga);
+  yield takeLatest(removeElementStylesType, removeElementStylesSaga);
   yield takeLatest(updateElementStylesType, updateElementStyles);
+  yield takeLatest(replaceElementStylesType, replaceElementStylesSaga);
+  yield takeLatest(copyElementStylesType, copyElementStylesSaga);
+  yield takeLatest(addElementClassNameType, addElementClassNameSaga);
+  yield takeLatest(removeElementClassNameType, removeElementClassNameSaga);
   yield takeLatest(updateElementImageType, updateElementImage);
   yield takeLatest(updateElementParametersType, updateElementParameters);
 

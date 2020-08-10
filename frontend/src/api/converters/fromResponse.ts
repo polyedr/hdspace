@@ -8,23 +8,10 @@ import {
 } from '$api/types';
 import { Entity } from '$domain/core';
 
-export const convertElementFromResponse = <
-  T extends Entity,
-  K extends Entity,
-  P extends ServerElement<T>['parameters']
->(
-  element: ServerElement<T, ServerElement<K>[], P>,
+export const convertElementFromResponse = <T extends Entity, K extends Entity, P extends ServerElement<T>['parameters']>(
+  element: ServerElement<T, ServerElement<K>[], P>
 ): LibraryElement<T, LibraryElement<K>[], P> => {
-  const {
-    id,
-    name,
-    children,
-    struct_type,
-    buoyancy,
-    image,
-    parameters,
-    styles,
-  } = element;
+  const { id, name, children, struct_type, buoyancy, image, parameters, styles } = element;
 
   return {
     id: String(id),
@@ -32,7 +19,7 @@ export const convertElementFromResponse = <
     children: children
       .map((child) => convertElementFromResponse(child))
       .sort(
-        (firstChild, secondChild) => firstChild.buoyancy - secondChild.buoyancy,
+        (firstChild, secondChild) => firstChild.buoyancy - secondChild.buoyancy
       ),
     type: struct_type,
     buoyancy,
@@ -42,9 +29,7 @@ export const convertElementFromResponse = <
   };
 };
 
-export const convertRecursiveElementFromResponse = (
-  element: ServerRecursiveElement,
-): RecursiveElement => {
+export const convertRecursiveElementFromResponse = (element: ServerRecursiveElement): RecursiveElement => {
   const { id, name, children } = element;
 
   return {
@@ -55,7 +40,7 @@ export const convertRecursiveElementFromResponse = (
 };
 
 export const convertProjectFromResponse = (project: ServerProject): Project => {
-  const { id, name, status, projectscreen, created, updated } = project;
+  const { id, name, status, projectscreen, created, updated, project_data_json } = project;
 
   return {
     id,
@@ -65,5 +50,6 @@ export const convertProjectFromResponse = (project: ServerProject): Project => {
     projectLoader: false,
     created: new Date(created),
     updated: new Date(updated),
-  };
-};
+    projectData: JSON.parse(project_data_json),
+  }
+}

@@ -1,5 +1,3 @@
-import { CSSProperties } from 'react';
-
 import { CssLikeStyles } from '$utils/StyleHelper';
 import { LibraryEntities, ChildrenElements } from '$domain/libraryElements/libraryElements';
 import { ChildEntity, Entity } from '$domain/core';
@@ -43,6 +41,12 @@ export const getProject = (id: number, screenID?: string): T.GetProject => ({
 export const setProject = (project: Project): T.SetProject => ({
   type: 'PROJECTS:SET_PROJECT',
   payload: { project },
+});
+
+export const updateProject = (project: Project, options: T.HistoryMeta = {}): T.UpdateProject => ({
+  type: 'PROJECTS:UPDATE_PROJECT',
+  payload: { project },
+  meta: options,
 });
 
 export const exportProject = (): T.ExportProject => ({
@@ -184,9 +188,51 @@ export const setScenarioElements = (elements: T.IScenarioElements): T.SetScenari
   payload: { elements },
 });
 
+export const updateSharedStyles = (className: Entity, styles: CssLikeStyles, options: T.HistoryMeta = {}): T.UpdateSharedStyles => ({
+  type: 'PROJECTS:UPDATE_SHARED_STYLES',
+  payload: { className, styles },
+  meta: options,
+});
+
+export const copyElementStyles = (elementType: Entity, elementID: string, styles: CssLikeStyles, options: T.HistoryMeta = {}): T.CopyElementStyles => ({
+  type: 'PROJECTS:COPY_ELEMENT_STYLES',
+  payload: { elementType, elementID, styles },
+  meta: options,
+});
+
+export const addElementClassName = (elementID: string, className: string, options: T.HistoryMeta = {}): T.AddElementClassName => ({
+  type: 'PROJECTS:ADD_ELEMENT_CLASSNAME',
+  payload: { elementID, className },
+  meta: options,
+});
+
+export const removeElementClassName = (elementID: string, className: string, options: T.HistoryMeta = {}): T.RemoveElementClassName => ({
+  type: 'PROJECTS:REMOVE_ELEMENT_CLASSNAME',
+  payload: { elementID, className },
+  meta: options,
+});
+
+export const removeSharedStyles = (className: Entity, cssPropertiesNames: string[], options: T.HistoryMeta = {}): T.RemoveSharedStyles => ({
+  type: 'PROJECTS:REMOVE_SHARED_STYLES',
+  payload: { className, cssPropertiesNames },
+  meta: options,
+});
+
+export const replaceElementStyles = (id: string, styles: CssLikeStyles, options: T.HistoryMeta = {}): T.ReplaceElementStyles => ({
+  type: 'PROJECTS:REPLACE_ELEMENT_STYLES',
+  payload: { id, styles },
+  meta: options,
+});
+
 export const updateElementStyles = (id: string, styles: CssLikeStyles, options: T.HistoryMeta = {}): T.UpdateElementStyles => ({
   type: 'PROJECTS:UPDATE_ELEMENT_STYLES',
   payload: { id, styles },
+  meta: options,
+});
+
+export const removeElementStyles = (id: string, cssPropertiesNames: string[], options: T.HistoryMeta = {}): T.RemoveElementStyles => ({
+  type: 'PROJECTS:REMOVE_ELEMENT_STYLES',
+  payload: { id, cssPropertiesNames },
   meta: options,
 });
 
@@ -270,6 +316,11 @@ export const wrapIntoContainer = (id: string, options: T.HistoryMeta = {}): T.Wr
 export const setActiveItem = (activeItem: T.ActiveItem): T.SetActiveItem => ({
   type: 'PROJECTS:SET_ACTIVE_ITEM',
   payload: { activeItem },
+});
+
+export const setEditableStyles = (className: string): T.SetEditableStyles => ({
+  type: 'PROJECTS:SET_EDITABLE_STYLES',
+  payload: { className },
 });
 
 export const setIsAddElementsModalOpened = (isOpened: boolean): T.SetIsAddElementsModalOpened => ({

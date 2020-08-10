@@ -1,16 +1,19 @@
 import { addChildToElement } from '$utils/ElementsTreeHelper';
-import { Entity } from '$domain/core';
+import { LibraryElement } from '$api/types';
 
 import { mockRoot } from './mocks';
 
 describe('addChildToElement', () => {
   const mockParams = {
     name: 'heading',
-    type: 'heading' as Entity,
+    type: 'heading',
     image: null,
     parameters: {},
-    styles: {},
-  };
+    styles: {
+      classNames: ['heading'],
+      ownStyles: {},
+    },
+  } as LibraryElement<'heading'>;
 
   test('Should add child to element on 1 level', () => {
     const newChild = { id: '7', children: [], buoyancy: 0, ...mockParams };
