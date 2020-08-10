@@ -1,42 +1,22 @@
-import { ServerElement, LibraryElement } from '$api/types';
+import { ServerElement, LibraryElement, ServerProject, CreatedServerProject, ProjectClass, Project } from '$api/types';
+import { DEFAULT_ELEMENTS_STYLES, getDefaultStyles } from '$domain/libraryElements/defaultStyles';
 import { LIBRARY_ELEMENTS } from '$domain/libraryElements/libraryElements';
-import { getConfigurablePropsOf, Entity } from '$domain/core';
+import { Entity } from '$domain/core';
+import * as R from 'ramda';
 
 export const convertCreatedElementToRequest = <T extends Entity, K extends ServerElement<T>['parameters']>(
   elementType: T,
   parentID: string | null,
   elementName?: string
 ): ServerElement<T, ServerElement<Entity>[], K> => {
-  const libraryElement = LIBRARY_ELEMENTS[elementType];
-  const { styles, params, overrideChildrenParams } = getConfigurablePropsOf<Entity, K>('root')(libraryElement.struct_type);
-  const { name, children } = libraryElement;
-
-  const getChildrenWithConfigurableProps = <P extends Entity, R extends Entity, S extends ServerElement<T>['parameters']>(
-    children: ServerElement<P, ServerElement<R, [], {}>[], {}>[]
-  ): ServerElement<P, ServerElement<R>[], S>[] =>
-    children.map((child) => {
-      const { styles, params } = getConfigurablePropsOf<Entity, S>('root')(
-        child.struct_type
-      );
-      return {
-        ...child,
-        styles: { ...child.styles, ...styles },
-        parameters: { ...child.parameters, ...params, ...overrideChildrenParams[child.struct_type] },
-        children: getChildrenWithConfigurableProps(child.children),
-      };
-    });
+  const libraryElement = LIBRARY_ELEMENTS[elementType] as unknown as ServerElement<T, ServerElement<Entity>[], K>;
+  const { name } = libraryElement;
 
   return {
+    ...libraryElement,
     id: -1,
     name: elementName || name,
-    children: getChildrenWithConfigurableProps(children),
     ...(parentID && { scenario: parseInt(parentID) }),
-    struct_type: elementType,
-    func_type: elementType,
-    buoyancy: 0,
-    image: null,
-    parameters: params,
-    styles,
   };
 };
 
@@ -73,5 +53,34 @@ export const convertElementToPatchRequest = <T extends Entity, K extends Entity,
     image: null,
     parameters,
     styles,
+  };
+};
+
+export const convertCreatedProjectToRequest = (name: string): CreatedServerProject => {
+  const projectClasses: ProjectClass[] = R.keys(DEFAULT_ELEMENTS_STYLES).map(elementName => ({
+      className: elementName,
+      supportedElement: elementName,
+      rules: getDefaultStyles(elementName),
+    }));
+
+  return {
+    name,
+    status: 'pending',
+    projectscreen: [],
+    project_data_json: JSON.stringify({ classes: projectClasses }),
+  }
+};
+
+export const convertProjectToPatchRequest = (
+  project: Project
+): Omit<ServerProject, 'created' | 'updated' | 'project_data_text'> => {
+  const { id, name, status, projectscreen, projectData } = project;
+
+  return {
+    id,
+    name,
+    status,
+    projectscreen,
+    project_data_json: JSON.stringify(projectData),
   };
 };

@@ -8,19 +8,15 @@ import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withCo
 import { sharedClasses } from '$styles/sharedClasses';
 import { ListElement } from '$api/types';
 
-type StateProps = {
-  bulletsStyles: 'disc' | 'none';
-};
+import { StylesHeader } from '../../../components/StylesHeader/StylesHeader';
 
-function mapState(state: AppReduxState): StateProps {
-  const activeItemStyles = selectors.selectActiveItemStyles(state);
-
+function mapState(state: AppReduxState) {
   return {
-    bulletsStyles: activeItemStyles['list-style-type'],
+    bulletsStyles: selectors.selectCurrentEditableStyles(state, 'list-style-type'),
   };
 }
 
-type Props = StateProps & PropertiesChangeProps<ListElement>;
+type Props = ReturnType<typeof mapState> & PropertiesChangeProps<ListElement>;
 
 const useStyles = makeStyles({
   switchBase: {
@@ -38,6 +34,7 @@ const useStyles = makeStyles({
 const Bullets: React.FC<Props> = ({
   bulletsStyles,
   updateStyles,
+  removeStyles,
 }) => {
   const classes = useStyles();
 
@@ -47,7 +44,11 @@ const Bullets: React.FC<Props> = ({
 
   return (
     <div className={sharedClasses.propsSection}>
-      <p className={sharedClasses.propsTitle}>Bullets</p>
+      <StylesHeader
+        title="Bullets"
+        onClick={removeStyles}
+        cssPropertiesNames={['list-style-type']}
+      />
       <div className={sharedClasses.propsContent}>
         <div className={sharedClasses.propsContainer}>
           <Switch

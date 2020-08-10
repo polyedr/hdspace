@@ -1,11 +1,40 @@
 import React from 'react';
 import cn from 'classnames';
+import { makeStyles } from '@material-ui/core';
 
 import { HeadingRendererProps } from '../types';
 const styles = require('../styles.scss');
 
 const Heading = (props: HeadingRendererProps) => {
-  const { id, style, params, sortableId, isDisabled, className, elementRef } = props;
+  const {
+    id,
+    entityStyles,
+    groupStyles,
+    ownStyles,
+    params,
+    sortableId,
+    isDisabled,
+    className,
+    elementRef,
+  } = props;
+
+  const classes = makeStyles({
+    entityStyles: {
+      ...entityStyles,
+      wordBreak: 'break-word',
+    },
+
+    groupStyles: {
+      ...groupStyles,
+      wordBreak: 'break-word',
+    },
+
+    ownStyles: {
+      ...ownStyles,
+      wordBreak: 'break-word',
+    },
+  })();
+
   const { headingType, textContent } = params;
   const HeadingTag = headingType || 'h3';
 
@@ -16,8 +45,13 @@ const Heading = (props: HeadingRendererProps) => {
       data-ls-id={id}
       data-id={sortableId}
       key={id}
-      className={cn(className, styles.addedElem)}
-      style={{ ...style, wordBreak: 'break-word' }}
+      className={cn(
+        className,
+        styles.addedElem,
+        classes.entityStyles,
+        classes.groupStyles,
+        classes.ownStyles,
+      )}
       tabIndex={isDisabled ? 0 : -1}
     >
       {textContent}

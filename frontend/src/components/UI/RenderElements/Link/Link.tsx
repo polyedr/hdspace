@@ -1,7 +1,7 @@
 import React from 'react';
 import cn from 'classnames';
 import { Link as RouterLink } from 'react-router-dom';
-import { Link } from '@material-ui/core';
+import { Link, makeStyles } from '@material-ui/core';
 
 import { WithActionProps } from '$utils/withAction';
 
@@ -13,7 +13,9 @@ export type LinkRenderer = React.FC<WithActionProps & ActionRendererProps>;
 const LinkComponent: LinkRenderer = (props) => {
   const {
     id,
-    style,
+    entityStyles,
+    groupStyles,
+    ownStyles,
     isDisabled,
     params,
     onClick,
@@ -26,6 +28,20 @@ const LinkComponent: LinkRenderer = (props) => {
 
   const { textContent } = params;
 
+  const classes = makeStyles({
+    entityStyles: {
+      ...entityStyles,
+    },
+
+    groupStyles: {
+      ...groupStyles,
+    },
+
+    ownStyles: {
+      ...ownStyles,
+    },
+  })();
+
   return (
     <Link
       ref={elementRef}
@@ -33,8 +49,13 @@ const LinkComponent: LinkRenderer = (props) => {
       data-ls-id={id}
       data-id={sortableId}
       key={id}
-      className={cn(className, isDisabled && styles.disabled)}
-      style={style}
+      className={cn(
+        className,
+        isDisabled && styles.disabled,
+        classes.entityStyles,
+        classes.groupStyles,
+        classes.ownStyles,
+      )}
       underline={isDisabled ? 'none' : 'hover'}
       onClick={onClick}
       {...actionType === 'external-link' && { href: actionLink, target: '_blank' }}

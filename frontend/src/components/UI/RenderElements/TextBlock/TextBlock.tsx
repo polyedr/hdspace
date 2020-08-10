@@ -1,11 +1,39 @@
 import React from 'react';
 import cn from 'classnames';
+import { makeStyles } from '@material-ui/core';
 
 import { TextBlockRendererProps } from '../types';
 const styles = require('../styles.scss');
 
 const TextBlock = (props: TextBlockRendererProps) => {
-  const { id, style, params, sortableId, isDisabled, className, elementRef } = props;
+  const {
+    id,
+    entityStyles,
+    groupStyles,
+    ownStyles,
+    params,
+    sortableId,
+    isDisabled,
+    className,
+    elementRef,
+  } = props;
+
+  const classes = makeStyles({
+    entityStyles: {
+      ...entityStyles,
+      wordBreak: 'break-word',
+    },
+
+    groupStyles: {
+      ...groupStyles,
+      wordBreak: 'break-word',
+    },
+
+    ownStyles: {
+      ...ownStyles,
+      wordBreak: 'break-word',
+    },
+  })();
 
   return (
     <div
@@ -14,8 +42,13 @@ const TextBlock = (props: TextBlockRendererProps) => {
       data-ls-id={id}
       data-id={sortableId}
       key={id}
-      className={cn(className, styles.addedElem)}
-      style={{ ...style, wordBreak: 'break-word' }}
+      className={cn(
+        className,
+        styles.addedElem,
+        classes.entityStyles,
+        classes.groupStyles,
+        classes.ownStyles,
+      )}
       tabIndex={isDisabled ? 0 : -1}
     >
       {params.textContent}

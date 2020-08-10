@@ -9,7 +9,10 @@ import {
   UndefinedServerElement,
   DivBlockServerElement,
 } from '$api/types';
-import { paragraph } from './typographyElements';
+import { IMAGES } from '$constants/images';
+import { CssLikeStyles } from '$utils/StyleHelper';
+
+import { makeParagraph } from '../typographyElements/typographyElements';
 
 export const root: RootServerElement = {
   buoyancy: 0,
@@ -18,7 +21,10 @@ export const root: RootServerElement = {
   parameters: {
     group: 'none',
   },
-  styles: {},
+  styles: {
+    classNames: ['root'],
+    ownStyles: {} as Required<CssLikeStyles>,
+  },
   name: 'root',
   children: [],
 };
@@ -30,7 +36,10 @@ export const container: ContainerServerElement = {
   parameters: {
     group: 'none',
   },
-  styles: {},
+  styles: {
+    classNames: ['container'],
+    ownStyles: {} as Required<CssLikeStyles>,
+  },
   name: 'container',
   children: [],
 };
@@ -42,19 +51,26 @@ export const divBlock: DivBlockServerElement = {
   parameters: {
     group: 'containers',
   },
-  styles: {},
+  styles: {
+    classNames: ['divBlock'],
+    ownStyles: {} as Required<CssLikeStyles>,
+  },
   name: 'divBlock',
-  children: [paragraph],
+  children: [makeParagraph('This is divBlock')],
 };
 
-export const image: Omit<ImageServerElement, 'parameters'> & { parameters: { group: string } } = {
+export const image: ImageServerElement = {
   buoyancy: 0,
   func_type: 'image',
   struct_type: 'image',
   parameters: {
     group: 'image',
+    imageURL: IMAGES.imageIcon,
   },
-  styles: {},
+  styles: {
+    classNames: ['image'],
+    ownStyles: {} as Required<CssLikeStyles>,
+  },
   name: 'image',
   children: [],
 };
@@ -64,7 +80,10 @@ export const makeDropdownItem = (textContent: string): DropdownItemServerElement
   func_type: 'dropdownItem',
   struct_type: 'dropdownItem',
   parameters: { textContent },
-  styles: {},
+  styles: {
+    classNames: ['dropdownItem'],
+    ownStyles: {} as Required<CssLikeStyles>,
+  },
   name: 'dropdownItem',
   children: [],
 });
@@ -74,7 +93,10 @@ export const dropdownMenu: DropdownMenuServerElement = {
   func_type: 'dropdownMenu',
   struct_type: 'dropdownMenu',
   parameters: {},
-  styles: {},
+  styles: {
+    classNames: ['dropdownMenu'],
+    ownStyles: {} as Required<CssLikeStyles>,
+  },
   name: 'dropdownMenu',
   children: [
     makeDropdownItem('First option'),
@@ -83,38 +105,59 @@ export const dropdownMenu: DropdownMenuServerElement = {
   ],
 };
 
-export const dropdown: Omit<DropdownServerElement, 'parameters'> & { parameters: { group: string } } = {
+export const dropdown: DropdownServerElement = {
   buoyancy: 0,
   func_type: 'dropdown',
   struct_type: 'dropdown',
   parameters: {
     group: 'other',
+    textContent: 'dropdown',
+    showRipple: true,
+    isOpen: false,
+    dropdownItems: ['First item', 'Second item', 'Third item'], // TODO research why we need items here
   },
-  styles: {},
+  styles: {
+    classNames: ['dropdown'],
+    ownStyles: {} as Required<CssLikeStyles>,
+  },
   name: 'dropdown',
   children: [dropdownMenu],
 };
 
-export const video: Omit<VideoServerElement, 'parameters'> & { parameters: { group: string } } = {
+export const video: VideoServerElement = {
   buoyancy: 0,
   func_type: 'video',
   struct_type: 'video',
   parameters: {
     group: 'other',
+    videoSettings: {
+      link: '',
+      autoplay: false,
+      start: 0,
+      end: 0,
+      loop: false,
+      rel: true,
+    },
   },
-  styles: {},
+  styles: {
+    classNames: ['video'],
+    ownStyles: {} as Required<CssLikeStyles>,
+  },
   name: 'video',
   children: [],
 };
 
-export const undefined: Omit<UndefinedServerElement, 'parameters'> & { parameters: { group: string } } = {
+export const undefined: UndefinedServerElement = {
   buoyancy: 0,
   func_type: 'undefined',
   struct_type: 'undefined',
   parameters: {
     group: 'undefined',
   },
-  styles: {},
+  styles: {
+    classNames: ['undefined'],
+    ownStyles: {} as Required<CssLikeStyles>,
+  },
   name: 'undefined',
   children: [],
 };

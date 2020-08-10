@@ -3,34 +3,106 @@ import cn from 'classnames';
 import { makeStyles, Radio } from '@material-ui/core';
 import RadioButtonCheckedIcon from '@material-ui/icons/RadioButtonChecked';
 import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked';
+import * as R from 'ramda';
 
 import { RadioRendererProps } from '../types';
 const styles = require('../styles.scss');
 
+const getRadiobuttonClassStyles = (styles: React.CSSProperties) => ({
+  color: styles.backgroundColor,
+    '&$checked': {
+      color: styles.backgroundColor,
+  },
+});
+
+const getRadiobuttonStyles = (
+  entityStyles: React.CSSProperties,
+  groupStyles: React.CSSProperties,
+  ownStyles: React.CSSProperties,
+) => makeStyles({
+  root: {},
+
+  entityStyles: {
+    ...getRadiobuttonClassStyles(entityStyles),
+  },
+
+  groupStyles: {
+    ...getRadiobuttonClassStyles(groupStyles),
+  },
+
+  ownStyles: {
+    ...getRadiobuttonClassStyles(ownStyles),
+  },
+});
+
+const getIconClassStyles = (styles: React.CSSProperties) => ({
+  width: styles.width,
+  height: styles.height,
+});
+
+const getIconStyles = (
+  entityStyles: React.CSSProperties,
+  groupStyles: React.CSSProperties,
+  ownStyles: React.CSSProperties,
+) => makeStyles({
+  entityStyles: {
+    ...getIconClassStyles(entityStyles),
+  },
+
+  groupStyles: {
+    ...getIconClassStyles(groupStyles),
+  },
+
+  ownStyles: {
+    ...getIconClassStyles(ownStyles),
+  },
+});
+
+const getDivStyles = (
+  entityStyles: React.CSSProperties,
+  groupStyles: React.CSSProperties,
+  ownStyles: React.CSSProperties,
+) => makeStyles({
+  entityStyles: {
+    ...R.omit(['backgroundColor', 'width', 'height'], entityStyles),
+    display: 'inline-block',
+  },
+
+  groupStyles: {
+    ...R.omit(['backgroundColor', 'width', 'height'], groupStyles),
+    display: 'inline-block',
+  },
+
+  ownStyles: {
+    ...R.omit(['backgroundColor', 'width', 'height'], ownStyles),
+    display: 'inline-block',
+  },
+});
+
 const Radiobutton = (props: RadioRendererProps) => {
-  const { id, style, params, isDisabled, sortableId, isRadioChecked, onElementChange, className, elementRef } = props;
-  const { backgroundColor, width, height, ...restStyles } = style;
+  const {
+    id,
+    entityStyles,
+    groupStyles,
+    ownStyles,
+    params,
+    isDisabled,
+    sortableId,
+    isRadioChecked,
+    onElementChange,
+    className,
+    elementRef,
+  } = props;
+ 
   const { name, value, showRipple } = params;
 
-  const classes = makeStyles({
-    root: {
-      color: backgroundColor,
-      '&$checked': {
-        color: backgroundColor,
-      },
-    },
-    icon: {
-      width,
-      height,
-    },
-    checked: {},
-  })();
+  const radiobuttonClasses = getRadiobuttonStyles(entityStyles, groupStyles, ownStyles)();
+  const iconClasses = getIconStyles(entityStyles, groupStyles, ownStyles)();
+  const divClasses = getDivStyles(entityStyles, groupStyles, ownStyles)();
 
   const handleRadioChange = (event: ChangeEvent<HTMLInputElement>) => {
     onElementChange(name || '', event.target.value);
   };
-
-  const inlineStyles = { ...restStyles, display: 'inline-block' };
 
   return (
     <div
@@ -39,15 +111,33 @@ const Radiobutton = (props: RadioRendererProps) => {
       data-ls-id={id}
       data-id={sortableId}
       key={id}
-      style={inlineStyles}
-      className={cn(className, isDisabled && styles.disabled)}
+      className={cn(
+        className,
+        isDisabled && styles.disabled,
+        divClasses.entityStyles,
+        divClasses.groupStyles,
+        divClasses.ownStyles,
+      )}
       tabIndex={isDisabled ? 0 : -1}
     >
       <Radio
-        checkedIcon={<RadioButtonCheckedIcon className={classes.icon} />}
-        icon={<RadioButtonUncheckedIcon className={classes.icon} />}
+        checkedIcon={<RadioButtonCheckedIcon className={cn(
+          iconClasses.entityStyles,
+          iconClasses.groupStyles,
+          iconClasses.ownStyles,
+        )} />}
+        icon={<RadioButtonUncheckedIcon className={cn(
+          iconClasses.entityStyles,
+          iconClasses.groupStyles,
+          iconClasses.ownStyles,
+        )} />}
         color="default"
-        className={classes.root}
+        className={cn(
+          radiobuttonClasses.root,
+          radiobuttonClasses.entityStyles,
+          radiobuttonClasses.groupStyles,
+          radiobuttonClasses.ownStyles,
+        )}
         value={value}
         name={name}
         checked={isRadioChecked}

@@ -8,6 +8,10 @@ export function uiReducer(state: T.ProjectUiState = initialUi, action: T.Action)
       return { ...state, activeItem: action.payload.activeItem };
     }
 
+    case 'PROJECTS:SET_EDITABLE_STYLES': {
+      return { ...state, editableStyles: action.payload.className };
+    }
+
     case 'PROJECTS:TOGGLE_CONTAINERS_BORDERS': {
       return { ...state, showContainersBorders: !state.showContainersBorders };
     }

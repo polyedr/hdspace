@@ -1,14 +1,110 @@
 import React from 'react';
 import cn from 'classnames';
 import { makeStyles, Button } from '@material-ui/core';
+import * as R from 'ramda';
 
 import { DropdownRendererProps } from '../types';
 const styles = require('../styles.scss');
 
+const getDropdownClassStyles = (styles: React.CSSProperties) => {
+  const dropdownStyles = R.omit(['marginTop', 'marginRight', 'marginBottom', 'marginLeft'], styles);
+
+  return {
+    ...dropdownStyles,
+    backgroundColor: dropdownStyles.backgroundColor,
+    color: dropdownStyles.color,
+    '&:hover': {
+      backgroundColor: dropdownStyles.backgroundColor,
+      color: dropdownStyles.color,
+    },
+
+    '&:active': {
+      color: dropdownStyles.color,
+    },
+  };
+};
+
+const getDropdownStyles = (
+  isDisabled: boolean,
+  active: boolean,
+  entityStyles: React.CSSProperties,
+  groupStyles: React.CSSProperties,
+  ownStyles: React.CSSProperties,
+) => makeStyles({
+  root: {
+    cursor: isDisabled ? 'default' : 'pointer',
+    outline: active ? '1px red solid' : 'none',
+    ...(isDisabled && { transition: 'none' }),
+    '&:hover': {
+      ...(isDisabled && { boxShadow: '0px 3px 1px -2px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 1px 5px 0px rgba(0,0,0,0.12)' }),
+    },
+    '&:active': {
+      ...(isDisabled && { boxShadow: '0px 3px 1px -2px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 1px 5px 0px rgba(0,0,0,0.12)' }),
+    },
+  },
+
+  container: {
+    '&.hovered $root': {
+      outline: '1px solid #949494',
+    },
+  },
+
+  entityStyles: {
+    ...getDropdownClassStyles(entityStyles),
+  },
+
+  groupStyles: {
+    ...getDropdownClassStyles(groupStyles),
+  },
+
+  ownStyles: {
+    ...getDropdownClassStyles(ownStyles),
+  },
+});
+
+const getDivClassStyles = (styles: React.CSSProperties) => ({
+  marginTop: styles.marginTop,
+  marginRight: styles.marginRight,
+  marginBottom: styles.marginBottom,
+  marginLeft: styles.marginLeft,
+  position: 'relative' as React.CSSProperties['position'],
+  display: 'inline-block',
+  verticalAlign: 'top',
+});
+
+const getDivStyles = (
+  entityStyles: React.CSSProperties,
+  groupStyles: React.CSSProperties,
+  ownStyles: React.CSSProperties,
+) => makeStyles({
+  entityStyles: {
+    ...getDivClassStyles(entityStyles),
+  },
+
+  groupStyles: {
+    ...getDivClassStyles(groupStyles),
+  },
+
+  ownStyles: {
+    ...getDivClassStyles(ownStyles),
+  },
+});
+
 const DropdownComponent = (props: DropdownRendererProps) => {
-  const { id, style, isDisabled, active, sortableId, params, children, elementRef, className } = props;
-  const { backgroundColor, color, ...restStyles } = style;
-  const { marginTop, marginRight, marginBottom, marginLeft, ...editableRestStyles } = restStyles;
+  const {
+    id,
+    isDisabled,
+    active,
+    sortableId,
+    params,
+    children,
+    elementRef,
+    className,
+    entityStyles,
+    groupStyles,
+    ownStyles,
+  } = props;
+
   const { textContent, showRipple, isOpen } = params;
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -17,30 +113,8 @@ const DropdownComponent = (props: DropdownRendererProps) => {
     setAnchorEl(event.currentTarget);
   };
 
-  const classes = makeStyles({
-    container: {
-      '&.hovered $root': {
-        outline: '1px solid #949494',
-      },
-    },
-    root: {
-      cursor: isDisabled ? 'default' : 'pointer',
-      ...editableRestStyles,
-      backgroundColor,
-      color,
-      outline: active ? '1px red solid' : 'none',
-      ...(isDisabled && { transition: 'none' }),
-      '&:hover': {
-        backgroundColor,
-        color,
-        ...(isDisabled && { boxShadow: '0px 3px 1px -2px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 1px 5px 0px rgba(0,0,0,0.12)' }),
-      },
-      '&:active': {
-        color,
-        ...(isDisabled && { boxShadow: '0px 3px 1px -2px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 1px 5px 0px rgba(0,0,0,0.12)' }),
-      },
-    },
-  })();
+  const dropdownClasses = getDropdownStyles(isDisabled, active, entityStyles, groupStyles, ownStyles)();
+  const divClasses = getDivStyles( entityStyles, groupStyles, ownStyles)();
 
   const [Children] = React.Children.toArray(children);
 
@@ -48,15 +122,13 @@ const DropdownComponent = (props: DropdownRendererProps) => {
     <>
       <div
         key={id}
-        style={{
-          marginTop,
-          marginRight,
-          marginBottom,
-          marginLeft,
-          display: 'inline-block',
-          verticalAlign: 'top',
-        }}
-        className={cn(className, classes.container)}
+        className={cn(
+          className,
+          dropdownClasses.container,
+          divClasses.entityStyles,
+          divClasses.groupStyles,
+          divClasses.ownStyles
+        )}
       >
         <Button
           ref={elementRef}
@@ -67,7 +139,13 @@ const DropdownComponent = (props: DropdownRendererProps) => {
           aria-haspopup="true"
           variant="contained"
           color="primary"
-          className={cn(classes.root, styles.disabled)}
+          className={cn(
+            dropdownClasses.root,
+            styles.disabled,
+            dropdownClasses.entityStyles,
+            dropdownClasses.groupStyles,
+            dropdownClasses.ownStyles,
+          )}
           disableRipple
         >
           {textContent}
@@ -77,15 +155,11 @@ const DropdownComponent = (props: DropdownRendererProps) => {
     </>
   ) : (
     <div
-      style={{
-        marginTop,
-        marginRight,
-        marginBottom,
-        marginLeft,
-        position: 'relative',
-        display: 'inline-block',
-        verticalAlign: 'top',
-      }}
+      className={cn(
+        divClasses.entityStyles,
+        divClasses.groupStyles,
+        divClasses.ownStyles
+      )}
     >
       <Button
         aria-controls="simple-menu"
@@ -95,7 +169,12 @@ const DropdownComponent = (props: DropdownRendererProps) => {
         key={id}
         variant="contained"
         color="primary"
-        className={classes.root}
+        className={cn(
+          dropdownClasses.root,
+          dropdownClasses.entityStyles,
+          dropdownClasses.groupStyles,
+          dropdownClasses.ownStyles,
+        )}
         disableRipple={!showRipple}
       >
         {textContent}

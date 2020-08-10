@@ -1,23 +1,118 @@
 import React, { ChangeEvent } from 'react';
 import cn from 'classnames';
 import { makeStyles, TextField } from '@material-ui/core';
+import * as R from 'ramda';
 
 import { TextareaRendererProps } from '../types';
 const styles = require('../styles.scss');
 
-const Textarea = (props: TextareaRendererProps) => {
-  const { id, style, params, isDisabled, active, currentValue, sortableId, onElementChange, className, elementRef } = props;
+const getTextFieldClassStyles = (styles: React.CSSProperties) => ({
+  width: styles.width,
+  height: styles.height,
+});
 
+const getTextFieldStyles = (
+  isDisabled: boolean,
+  entityStyles: React.CSSProperties,
+  groupStyles: React.CSSProperties,
+  ownStyles: React.CSSProperties,
+) => makeStyles({
+  root: {
+    '& fieldset': {
+      border: 0,
+    },
+
+    '&.hovered $input': {
+      outline: isDisabled ? '1px solid #949494' : 'none',
+    },
+  },
+
+  entityStyles: {
+    ...getTextFieldClassStyles(entityStyles),
+  },
+
+  groupStyles: {
+    ...getTextFieldClassStyles(groupStyles),
+  },
+
+  ownStyles: {
+    ...getTextFieldClassStyles(ownStyles),
+  },
+
+  input: {},
+});
+
+const getInputClassStyles = (styles: React.CSSProperties) => ({
+  ...R.omit(['width', 'height', 'marginTop', 'marginRight', 'marginBottom', 'marginLeft', 'textAlign'], styles),
+
+  '& textarea': {
+    textAlign: styles.textAlign,
+  },
+
+  '&::placeholder': {
+    color: styles.color,
+  },
+});
+
+const getInputStyles = (
+  active: boolean,
+  entityStyles: React.CSSProperties,
+  groupStyles: React.CSSProperties,
+  ownStyles: React.CSSProperties,
+) => makeStyles({
+  root: {
+    width: '100%',
+    height: '100%',
+      
+    outline: active ? 'red solid 1px' : 'none',
+    outlineOffset: '-1px',
+    alignItems: 'flex-start',
+
+    '&:hover': {
+      borderColor: 'rgba(0, 0, 0, 0.87)',
+    },
+
+    '&.Mui-focused, &.Mui-focused:hover': {
+      borderColor: '#1890ff',
+      boxShadow: 'inset 0px 0px 0 1px #1890ff',
+    },
+
+    '& textarea': {
+      width: '100%',
+      height: '100%',
+    },
+  },
+
+  entityStyles: {
+    ...getInputClassStyles(entityStyles),
+  },
+
+  groupStyles: {
+    ...getInputClassStyles(groupStyles),
+  },
+
+  ownStyles: {
+    ...getInputClassStyles(ownStyles),
+  },
+
+  input: {},
+});
+
+const Textarea = (props: TextareaRendererProps) => {
   const {
-    width,
-    height,
-    marginTop,
-    marginRight,
-    marginBottom,
-    marginLeft,
-    textAlign,
-    ...restStyles
-  } = style;
+    id,
+    params,
+    isDisabled,
+    active,
+    currentValue,
+    sortableId,
+    onElementChange,
+    className,
+    elementRef,
+    entityStyles,
+    groupStyles,
+    ownStyles,
+  } = props;
 
   const { placeholder } = params;
 
@@ -25,62 +120,23 @@ const Textarea = (props: TextareaRendererProps) => {
     onElementChange(id, event.target.value);
   };
 
-  const classes = makeStyles({
-    root: {
-      width,
-      height,
+  const textFieldClasses = getTextFieldStyles(isDisabled, entityStyles, groupStyles, ownStyles)();
+  const inputClasses = getInputStyles(active, entityStyles, groupStyles, ownStyles)();
 
-      '& fieldset': {
-        border: 0,
-      },
-
-      '&.hovered $input': {
-        outline: isDisabled ? '1px solid #949494' : 'none',
-      },
-    },
-
-    input: {
-      width: '100%',
-      height: '100%',
-        ...restStyles,
-      outline: active ? 'red solid 1px' : 'none',
-      outlineOffset: '-1px',
-      alignItems: 'flex-start',
-
-      '&:hover': {
-        borderColor: 'rgba(0, 0, 0, 0.87)',
-      },
-
-      '&.Mui-focused, &.Mui-focused:hover': {
-        borderColor: '#1890ff',
-        boxShadow: 'inset 0px 0px 0 1px #1890ff',
-      },
-
-      '& textarea': {
-        width: '100%',
-        height: '100%',
-        textAlign,
-      },
-
-      '&::placeholder': {
-        color: style.color,
-      },
-    },
-
-    focused: {},
-  })();
-
-  const inlineStyles = {
-    marginTop,
-    marginRight,
-    marginBottom,
-    marginLeft,
-    transition: 'none',
-  };
+  const entityInlineStyles = R.pick(['marginTop', 'marginRight', 'marginBottom', 'marginLeft'], entityStyles);
+  const groupInlineStyles = R.pick(['marginTop', 'marginRight', 'marginBottom', 'marginLeft'], groupStyles);
+  const ownInlineStyles = R.pick(['marginTop', 'marginRight', 'marginBottom', 'marginLeft'], ownStyles);
+  const inlineStyles = { ...entityInlineStyles, ...groupInlineStyles, ...ownInlineStyles, transition: "none"};
 
   const InputProps = {
     readOnly: isDisabled,
-    className: cn(isDisabled && styles.disabled, classes.input),
+    className: cn(
+      isDisabled && styles.disabled,
+      inputClasses.root,
+      inputClasses.entityStyles,
+      inputClasses.groupStyles,
+      inputClasses.ownStyles
+    ),
   };
 
   return (
@@ -94,7 +150,14 @@ const Textarea = (props: TextareaRendererProps) => {
       rows={4}
       placeholder={placeholder}
       variant="outlined"
-      className={cn(className, isDisabled && styles.disabled, classes.root)}
+      className={cn(
+        className,
+        isDisabled && styles.disabled,
+        textFieldClasses.root,
+        textFieldClasses.entityStyles,
+        textFieldClasses.groupStyles,
+        textFieldClasses.ownStyles,
+      )}
       style={inlineStyles}
       InputProps={InputProps}
       value={currentValue}

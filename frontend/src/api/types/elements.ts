@@ -23,7 +23,7 @@ import {
   DropdownItemParameters,
 } from './elementsParameters';
 
-export type ServerElement<Type extends Entity, Children = any[], Params = {}> = {
+export type ServerElement<Type extends Entity, Children = any[], Params = {}, Styles = {}> = {
   id?: number,
   name: string,
   scenario?: number,
@@ -32,7 +32,12 @@ export type ServerElement<Type extends Entity, Children = any[], Params = {}> = 
   buoyancy: number,
   image?: string | null,
   parameters: { group?: string } & Params,
-  styles: {},
+  // Every element has entity css class, group css class and unique own css class
+  // Entity class has default entity styles, own class is empty by default, group classes is user custom classes
+  styles: {
+    classNames: [Type, ...string[]],
+    ownStyles: Styles,
+  },
   children: Children,
 };
 
@@ -53,7 +58,7 @@ export type HeadingServerElement = ServerElement<'heading', [], HeadingParameter
 export type ParagraphServerElement = ServerElement<'paragraph', [], ParagraphParameters>;
 export type OcrtextServerElement = ServerElement<'ocrtext', [], OcrtextParameters>;
 export type LabelServerElement = ServerElement<'label', [], LabelParameters>;
-export type TextBlockServerElement = ServerElement<'text_block', [], TextBlockParameters>;
+export type TextBlockServerElement = ServerElement<'textBlock', [], TextBlockParameters>;
 export type ListServerElement = ServerElement<'list', ListItemServerElement[], ListParameters>;
 export type ListItemServerElement = ServerElement<'listItem', [], ListItemParameters>;
 export type MapServerElement = ServerElement<'map', [], MapParameters>;
@@ -77,13 +82,16 @@ export type RecursiveElement = {
   children: [],
 }
 
-export type LibraryElement<Type extends Entity, Children = any[], Params = {}> = {
+export type LibraryElement<Type extends Entity, Children = any[], Params = {}, Styles = {}> = {
   id: string,
   name: string,
   type: Type,
   buoyancy: number,
   image: string | null | undefined,
-  styles: CssLikeStyles,
+  styles: {
+    classNames: [Type, ...string[]],
+    ownStyles: Styles,
+  },
   children: Children,
   parameters: { group?: string } & Params,
 };
@@ -105,7 +113,7 @@ export type HeadingElement = LibraryElement<'heading', [], HeadingParameters>;
 export type ParagraphElement = LibraryElement<'paragraph', [], ParagraphParameters>;
 export type OcrtextElement = LibraryElement<'ocrtext', [], OcrtextParameters>;
 export type LabelElement = LibraryElement<'label', [], LabelParameters>;
-export type TextBlockElement = LibraryElement<'text_block', [], TextBlockParameters>;
+export type TextBlockElement = LibraryElement<'textBlock', [], TextBlockParameters>;
 export type ListElement = LibraryElement<'list', ListItemElement[], ListParameters>;
 export type ListItemElement = LibraryElement<'listItem', [], ListItemParameters>;
 export type MapElement = LibraryElement<'map', [], MapParameters>;

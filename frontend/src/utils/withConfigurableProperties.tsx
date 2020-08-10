@@ -9,33 +9,34 @@ import { LibraryElement } from '$api/types';
 import { Entity } from '$domain/core';
 
 type StateProps = {
+  activeItemType: Entity | 'none';
   activeItemID: string;
-  activeItemStyles: CssLikeStyles;
-  activeItemChildrenStyles: Record<string, CssLikeStyles>;
-  scenarioElement: IScenarioElement;
+  editableStyles: string;
 };
 
 function mapState(state: AppReduxState): StateProps {
+  const activeItemType = selectors.selectActiveItem(state).itemType;
   const activeItemID = selectors.selectActiveItem(state).itemId;
-  const scenarioElement = selectors.selectScenarioElement(state, parseInt(activeItemID));
-  const activeItemStyles = selectors.selectActiveItemStyles(state) as Required<CssLikeStyles>;
-  const activeItemChildrenStyles = selectors.selectActiveItemChildrenStyles(state) as Record<string, CssLikeStyles>;
+  const editableStyles = selectors.selectEditableStyles(state);
 
   return {
+    activeItemType,
     activeItemID,
-    scenarioElement,
-    activeItemStyles,
-    activeItemChildrenStyles,
+    editableStyles,
   };
 }
 
 const mapDispatch = {
   updateElementParameters: actionsCreators.updateElementParameters,
+  removeSharedStyles: actionsCreators.removeSharedStyles,
+  updateSharedStyles: actionsCreators.updateSharedStyles,
+  removeElementStyles: actionsCreators.removeElementStyles,
   updateElementStyles: actionsCreators.updateElementStyles,
 };
 
 export type PropertiesChangeProps<T extends LibraryElement<Entity>> = {
   activeItemID: string;
+  removeStyles(cssPropertiesNames: string[]): void;
   updateStyles(payload: CssLikeStyles): void;
   updateParams(payload: Params<T>, updatedItemID?: string): void;
 };
@@ -48,18 +49,32 @@ export function withConfigurableProperties<K extends LibraryElement<Entity>, T e
 ): React.FC<Omit<T, keyof PropertiesChangeProps<K>>> {
   function WrapperComponent(props: any) {
     const {
+      activeItemType,
       activeItemID,
-      activeItemStyles,
-      activeItemChildrenStyles,
-      scenarioElement,
+      editableStyles,
+      removeSharedStyles,
+      updateSharedStyles,
+      removeElementStyles,
       updateElementStyles,
       updateElementParameters,
       ...restProps
     } = props;
 
-    const updateStyles = useCallback((styles: CssLikeStyles, itemID?: string) => {
-      updateElementStyles(itemID || activeItemID, styles);
-    }, [activeItemID]);
+    const removeStyles = (ruleName: string, itemID?: string) => {
+      if (editableStyles === 'ownStyles') {
+        removeElementStyles(itemID || activeItemID, ruleName);
+      } else {
+        removeSharedStyles(editableStyles, ruleName);
+      };
+    };
+
+    const updateStyles = (styles: CssLikeStyles, itemID?: string) => {
+      if (editableStyles === 'ownStyles') {
+        updateElementStyles(itemID || activeItemID, styles);
+      } else {
+        updateSharedStyles(editableStyles, styles);
+      }
+    };
 
     const updateParams = useCallback((params: Params<K>, itemID?: string) => {
       updateElementParameters(itemID || activeItemID, params);
@@ -69,7 +84,7 @@ export function withConfigurableProperties<K extends LibraryElement<Entity>, T e
       <Component
         {...restProps}
         activeItemID={activeItemID}
-        activeItemStyles={activeItemStyles}
+        removeStyles={removeStyles}
         updateStyles={updateStyles}
         updateParams={updateParams}
       />

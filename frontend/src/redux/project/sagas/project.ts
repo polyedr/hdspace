@@ -25,6 +25,7 @@ import {
   apiSaveProject,
 } from '$api/project';
 import { Project } from '$api/types';
+import { convertCreatedProjectToRequest, convertProjectToPatchRequest } from '$api/converters/toRequest';
 import { DEFAULT_SCREEN } from '$constants/defaultParams';
 import { reqWrapper } from '$redux/project/sagas/index';
 import { generateFontFace } from '$utils/generateFontFace';
@@ -223,8 +224,9 @@ export function* exportProjectSaga() {
 
 
 export function* addProjectSaga({ payload: { name } }: ReturnType<typeof Actions.addProject>) {
-  let project: Project = yield call(reqWrapper, apiAddProject, { data: { name, status: 'pending', projectscreen: [] } });
-  
+  const projectData = convertCreatedProjectToRequest(name);
+  let project: Project = yield call(reqWrapper, apiAddProject, { data: projectData });
+   
   if (!project) { // TODO: write communication for such case
     console.error('cannot create project', project);
     return;
@@ -292,4 +294,51 @@ export function* changeScreensOrderSaga(action: ReturnType<typeof Actions.change
     id: screen.id,
     data: screen,
   })));
+}
+
+export function* updateProject(newProject: Project) {
+  const currentProject: ReturnType<typeof selectors.selectCurrentProject> = yield select(selectors.selectCurrentProject);
+
+  const listProject: ReturnType<typeof selectors.selectProjects> = yield select(selectors.selectProjects);
+
+  const newListProject = listProject.map((project) => {
+    if (project.id === currentProject.id) {
+      return {
+        ...project,
+        name: name,
+      };
+    }
+
+    return project;
+  });
+
+  yield put(Actions.setListProject(newListProject));
+  yield put(Actions.setProject(newProject));
+  
+
+  const convertedProject = convertProjectToPatchRequest(newProject);
+  yield call(reqWrapper, apiSaveProject, { data: convertedProject });
+}
+
+export function* updateProjectSaga(action: ReturnType<typeof Actions.updateProject>) {
+  const { project } = action.payload;
+
+  if (!action.meta) {
+    console.error(`You have to provide metainformation for action ${action.type}`);
+    return;
+  }
+
+  const currentProject: ReturnType<typeof selectors.selectCurrentProject> = yield select(selectors.selectCurrentProject);
+
+  yield call(updateProject, project);
+
+  const { undo, redo } = action.meta;
+
+  if (!undo) {
+    yield put(Actions.setUndoActions(Actions.updateProject(currentProject)));
+  }
+
+  const root: ReturnType<typeof selectors.selectRootElement> = yield select(selectors.selectRootElement);
+
+  yield put(Actions.updateElementsTree(root, action, { redo, undo }));
 }

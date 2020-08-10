@@ -1,5 +1,6 @@
 import React, { memo, useCallback } from 'react';
 import cn from 'classnames';
+import { connect } from 'react-redux';
 
 import { DropDown } from '$components/UI/DropDown/';
 import { Icon } from '$components/UI/Icon/';
@@ -7,34 +8,41 @@ import { Button } from '$components/UI/Button/';
 import { FONTS } from '$constants/fonts';
 import { getPermissibleValue } from '$utils/NumberHelper';
 import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
-import { CssLikeStyles } from '$utils/StyleHelper';
 import { ColorSettings } from '$features/applyProperties/views/components/ColorSettings/ColorSettings';
 import { LibraryElement } from '$api/types';
 import { Entity } from '$domain/core';
+import { AppReduxState } from '$shared/types/app';
+import { selectors } from '$redux/project';
 
+import { StylesHeader } from '../../../components/StylesHeader/StylesHeader';
 const styles = require('./styles.scss');
 
 const MIN_FONT_SIZE = 1;
 const MAX_FONT_SIZE = 84;
 
-type OwnProps = {
-  activeItemStyles: Required<CssLikeStyles>;
+function mapState(state: AppReduxState) {
+  return {
+    fontFamily: selectors.selectCurrentEditableStyles(state, 'font-family'),
+    fontStyle: selectors.selectCurrentEditableStyles(state, 'font-style'),
+    fontWeight: selectors.selectCurrentEditableStyles(state, 'font-weight'),
+    fontSize: selectors.selectCurrentEditableStyles(state, 'font-size'),
+    textAlign: selectors.selectCurrentEditableStyles(state, 'text-align'),
+    color: selectors.selectCurrentEditableStyles(state, 'color'),
+  };
 };
-
-type Props = OwnProps & PropertiesChangeProps<LibraryElement<Entity>>;
+type Props = ReturnType<typeof mapState> & PropertiesChangeProps<LibraryElement<Entity>>;
 
 const TypographyBlock: React.FC<Props> = memo(({
-  activeItemStyles,
+  fontFamily,
+  fontStyle,
+  fontWeight,
+  fontSize,
+  textAlign,
+  color,
   updateStyles,
+  removeStyles,
   activeItemID,
 }) => {
-  const fontFamily = activeItemStyles['font-family'];
-  const fontStyle = activeItemStyles['font-style'];
-  const fontWeight = activeItemStyles['font-weight'];
-  const fontSize = activeItemStyles['font-size'];
-  const textAlign = activeItemStyles['text-align'];
-  const color = activeItemStyles.color;
-
   const handleColorSettingsChange = useCallback((color: string) => {
     updateStyles({ color: color });
   }, [updateStyles]);
@@ -63,7 +71,18 @@ const TypographyBlock: React.FC<Props> = memo(({
 
   return (
     <div className="propsElementsBlock">
-      <p className="propsElementsBlockTitle">Font</p>
+      <StylesHeader
+        title="Font"
+        onClick={removeStyles}
+        cssPropertiesNames={[
+          'font-family',
+          'font-style',
+          'font-weight',
+          'font-size',
+          'text-align',
+          'color',
+        ]}
+      />
       <div className="propsElementsContentBlock">
         <div className="propsElementsInnerBlock">
           <div className={styles.fontLeftBlock}>
@@ -149,5 +168,5 @@ const TypographyBlock: React.FC<Props> = memo(({
   );
 });
 
-const Component = withConfigurableProperties(TypographyBlock);
+const Component = connect(mapState)(withConfigurableProperties(TypographyBlock));
 export { Component as TypographyBlock };

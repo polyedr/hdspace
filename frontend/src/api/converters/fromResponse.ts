@@ -40,7 +40,7 @@ export const convertRecursiveElementFromResponse = (element: ServerRecursiveElem
 };
 
 export const convertProjectFromResponse = (project: ServerProject): Project => {
-  const { id, name, status, projectscreen, created, updated } = project;
+  const { id, name, status, projectscreen, created, updated, project_data_json } = project;
 
   return {
     id,
@@ -50,5 +50,6 @@ export const convertProjectFromResponse = (project: ServerProject): Project => {
     projectLoader: false,
     created: new Date(created),
     updated: new Date(updated),
+    projectData: JSON.parse(project_data_json),
   }
 }

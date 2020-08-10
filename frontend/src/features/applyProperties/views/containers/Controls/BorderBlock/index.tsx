@@ -1,5 +1,6 @@
 import React, { useCallback, } from 'react';
 import cn from 'classnames';
+import { connect } from 'react-redux';
 
 import {
   MAX_BORDER_RADIUS,
@@ -14,7 +15,10 @@ import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withCo
 import { ColorSettings } from '$features/applyProperties/views/components/ColorSettings/ColorSettings';
 import { LibraryElement } from '$api/types';
 import { Entity } from '$domain/core';
+import { AppReduxState } from '$shared/types/app';
+import { selectors } from '$redux/project';
 
+import { StylesHeader } from '../../../components/StylesHeader/StylesHeader';
 const styles = require('./styles.scss');
 
 const accessBorderRadius = (border: CssLikeStyles['border-radius']) => {
@@ -22,20 +26,24 @@ const accessBorderRadius = (border: CssLikeStyles['border-radius']) => {
   return matchedValue !== null ? matchedValue[0] : 'px';
 };
 
-type OwnProps = {
-  activeItemStyles: Required<CssLikeStyles>;
-}
+function mapState(state: AppReduxState) {
+  return {
+    borderColor: selectors.selectCurrentEditableStyles(state, 'border-color'),
+    borderWidth: selectors.selectCurrentEditableStyles(state, 'border-width'),
+    borderRadius: selectors.selectCurrentEditableStyles(state, 'border-radius'),
+  };
+};
 
-type Props = OwnProps & PropertiesChangeProps<LibraryElement<Entity>>;
+type Props = ReturnType<typeof mapState> & PropertiesChangeProps<LibraryElement<Entity>>;
 
 const BorderBlock: React.FunctionComponent<Props> = React.memo(({
-  activeItemStyles,
   activeItemID,
   updateStyles,
+  removeStyles,
+  borderColor,
+  borderWidth,
+  borderRadius,
 }) => {
-  const borderColor = activeItemStyles['border-color'];
-  const borderWidth = activeItemStyles['border-width'];
-  const borderRadius = activeItemStyles['border-radius'];
 
   const handleBorderWidthChange = useCallback(({ target: { value } }) => {
     const newWidth = getPermissibleValue(strToNumber(value), MIN_BORDER_WIDTH, MAX_BORDER_WIDTH);
@@ -57,7 +65,11 @@ const BorderBlock: React.FunctionComponent<Props> = React.memo(({
 
   return (
     <div className="propsElementsBlock">
-      <p className="propsElementsBlockTitle">Border</p>
+      <StylesHeader
+        title="Border"
+        onClick={removeStyles}
+        cssPropertiesNames={['border-color', 'border-width', 'border-radius']}
+      />
       <div className="propsElementsContentBlock">
         <div className="propsElementsInnerBlock">
           <div className={cn(styles.borderBlock, styles.borderBlock_width)}>
@@ -100,5 +112,5 @@ const BorderBlock: React.FunctionComponent<Props> = React.memo(({
   );
 });
 
-const Component = withConfigurableProperties(BorderBlock);
+const Component = connect(mapState)(withConfigurableProperties(BorderBlock));
 export { Component as BorderBlock };

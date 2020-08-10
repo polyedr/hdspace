@@ -7,18 +7,40 @@ import { sharedClasses } from '$styles/sharedClasses';
 import { DropdownItemRendererProps } from '../types';
 const styles = require('../styles.scss');
 
+const getDropdownItemClassStyles = (styles: React.CSSProperties, isDisabled: boolean) => ({
+  ...styles,
+
+  '&:hover': {
+    backgroundColor: isDisabled ? styles.backgroundColor : 'rgba(0, 0, 0, 0.04)',
+  },
+});
+
+const getDropdownItemStyles = (
+  isDisabled: boolean,
+  entityStyles: React.CSSProperties,
+  groupStyles: React.CSSProperties,
+  ownStyles: React.CSSProperties,
+) => makeStyles({
+  root: {},
+
+  entityStyles: {
+    ...getDropdownItemClassStyles(entityStyles, isDisabled),
+  },
+
+  groupStyles: {
+    ...getDropdownItemClassStyles(groupStyles, isDisabled),
+  },
+
+  ownStyles: {
+    ...getDropdownItemClassStyles(ownStyles, isDisabled),
+  },
+});
+
 const DropdownItemComponent = (props: DropdownItemRendererProps) => {
-  const { id, style, isDisabled, params, className, elementRef } = props;
+  const { id, entityStyles, groupStyles, ownStyles, isDisabled, params, className, elementRef } = props;
   const { showRipple, textContent } = params;
 
-  const classes = makeStyles({
-    root: {
-      ...style,
-      '&:hover': {
-        backgroundColor: isDisabled ? style.backgroundColor : 'rgba(0, 0, 0, 0.04)',
-      },
-    },
-  })();
+  const classes = getDropdownItemStyles(isDisabled, entityStyles, groupStyles, ownStyles)();
 
   return isDisabled ? (
     <MenuItem
@@ -33,6 +55,9 @@ const DropdownItemComponent = (props: DropdownItemRendererProps) => {
         sharedClasses.unsortable,
         styles.addedElem,
         styles.disabled,
+        classes.entityStyles,
+        classes.groupStyles,
+        classes.ownStyles,
       )}
       disableRipple
     >
@@ -41,7 +66,12 @@ const DropdownItemComponent = (props: DropdownItemRendererProps) => {
   ) : (
     <MenuItem
       key={id}
-      className={classes.root}
+      className={cn(
+        classes.root,
+        classes.entityStyles,
+        classes.groupStyles,
+        classes.ownStyles,
+      )}
       disableRipple={!showRipple}
     >
       {textContent}

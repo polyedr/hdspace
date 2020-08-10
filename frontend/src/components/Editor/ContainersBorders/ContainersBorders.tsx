@@ -1,7 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import cn from 'classnames';
-import * as R from 'ramda';
 
 import { actionsCreators, selectors } from '$redux/project';
 import { AppReduxState } from '$shared/types/app';
@@ -42,39 +41,22 @@ type Border = {
   height: number,
 };
 
-type State = {
-  isRootFocused: boolean,
-  borders: Border[],
-};
+const ContainersBordersComponent = (props: Props) => {
+  const [isRootFocused, setIsRootFocused] = useState(false);
+  const [borders, setBorders] = useState<Border[]>([]);
+  const { root, activeItem, showBorders } = props;
+  const rootElement = document.getElementById('root');
 
-class ContainersBordersComponent extends React.Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-
-    this.state = {
-      isRootFocused: false,
-      borders: [],
-    }
-  }
-
-  private updateBorders = () => {
-    const { root } = this.props;
-    const { borders } = this.state;
-
-    const rootElement = document.getElementById('root');
-
+  useEffect(() => {
     const isRootFocused = document.activeElement === rootElement;
+    setIsRootFocused(isRootFocused);
 
-    if (this.state.isRootFocused !== isRootFocused) {
-      this.setState({ isRootFocused });
-    };
-
-    const borderedElements = this.getBorderedElements();
+    const borderedElements = getBorderedElements();
 
     borderedElements.forEach(element => {
       const HTMLElement = document.getElementById(root.id === element.id ? 'root' : element.id);
-      HTMLElement?.addEventListener('mouseenter', this.handleElementMouseEnter); // TODO why listeners are removed after mounting?
-      HTMLElement?.addEventListener('mouseleave', this.handleElementMouseLeave);
+      HTMLElement?.addEventListener('mouseenter', handleElementMouseEnter); // TODO why listeners are removed after mounting?
+      HTMLElement?.addEventListener('mouseleave', handleElementMouseLeave);
     })
   
     const newBorders = borderedElements.map((element, index) => {
@@ -100,29 +82,24 @@ class ContainersBordersComponent extends React.Component<Props, State> {
 
     const filteredBorders = newBorders.filter(border => !!border) as Border[];
 
-    const isBordersCoordinatesChanged = filteredBorders.some(
-      (border, index) => !R.equals(border.coordinates, borders[index]?.coordinates)
-    );
+    setBorders(filteredBorders);
 
-    const isElementNameChanged = filteredBorders.some(
-      (border, index) => border.targetElement.name !== borders[index]?.targetElement.name
-    );
+    return () =>
+      borderedElements.forEach((element) => {
+        const HTMLElement = document.getElementById(root.id === element.id ? 'root' : element.id);
+        HTMLElement?.removeEventListener('mouseenter', handleElementMouseEnter);
+        HTMLElement?.removeEventListener('mouseleave', handleElementMouseLeave);
+      });
+  }, [root, rootElement, activeItem, showBorders]);
 
-    if (isBordersCoordinatesChanged || isElementNameChanged) {
-      this.setState({ borders: filteredBorders });
-    };
-  };
-
-  private getBorderedElements = () => {
-    const { root } = this.props;
- 
+  const getBorderedElements = () => {
     return [
       ...root.children.filter((child) => child.type === 'container' || child.type === 'divBlock'),
       root,
     ];
   }
 
-  private handleElementMouseEnter = (event: MouseEvent) => {
+  const handleElementMouseEnter = (event: MouseEvent) => {
     const id = (event.target as HTMLElement)?.id;
    
     const labels = document.querySelectorAll('[data-label-id]');
@@ -139,7 +116,7 @@ class ContainersBordersComponent extends React.Component<Props, State> {
     
   };
 
-  private handleElementMouseLeave = () => {
+  const handleElementMouseLeave = () => {
     const labels = document.querySelectorAll('[data-label-id]');
     Array.from(labels).forEach(label => label.classList.remove('borderLabel_hovered'));
 
@@ -147,8 +124,8 @@ class ContainersBordersComponent extends React.Component<Props, State> {
     Array.from(borders).forEach(label => label.classList.remove('border_hovered'));
   };
 
-  private handleBorderClick = (event: React.MouseEvent<HTMLSpanElement, MouseEvent>, targetElement: LibraryElement<Entity>) => {
-    const { setActiveItem } = this.props;
+  const handleBorderClick = (event: React.MouseEvent<HTMLSpanElement, MouseEvent>, targetElement: LibraryElement<Entity>) => {
+    const { setActiveItem } = props;
 
     event.preventDefault();
     (document.activeElement as HTMLElement)?.blur();
@@ -160,26 +137,7 @@ class ContainersBordersComponent extends React.Component<Props, State> {
     });
   };
 
-  componentDidMount() {
-    this.updateBorders();
-  };
-
-  componentDidUpdate() {
-    this.updateBorders();
-  };
-
-  componentWillUnmount() {
-    const { root } = this.props;
-    const borderedElements = this.getBorderedElements();
-
-    borderedElements.forEach(element => {
-      const HTMLElement = document.getElementById(root.id === element.id ? 'root' : element.id);
-      HTMLElement?.removeEventListener('mouseenter', this.handleElementMouseEnter);
-      HTMLElement?.removeEventListener('mouseleave', this.handleElementMouseLeave);
-    })
-  };
-
-  renderBorder = (
+  const renderBorder = (
     position: string,
     style: React.CSSProperties,
     targetElement: LibraryElement<Entity>,
@@ -191,13 +149,9 @@ class ContainersBordersComponent extends React.Component<Props, State> {
       data-position={position}
       className={cn(styles.border, isActive && styles.border_active)}
       style={style}
-      onClick={(event) => this.handleBorderClick(event, targetElement)}
+      onClick={(event) => handleBorderClick(event, targetElement)}
     />
   );
-
-  render() {
-    const { showBorders, activeItem } = this.props;
-    const { borders, isRootFocused } = this.state;
 
     return (
       <div className={styles.wrapper}>
@@ -225,11 +179,11 @@ class ContainersBordersComponent extends React.Component<Props, State> {
                       right: isRoot ? coordinates.right : 'auto',
                       left: isRoot ? 'auto' : coordinates.left,
                     }}
-                    onClick={(event) => this.handleBorderClick(event, targetElement)}
+                    onClick={(event) => handleBorderClick(event, targetElement)}
                   >
                     {isRoot ? 'root' : targetElement.name}
                   </span>
-                  {this.renderBorder(
+                  {renderBorder(
                     'top',
                     {
                       top: coordinates.top,
@@ -239,7 +193,7 @@ class ContainersBordersComponent extends React.Component<Props, State> {
                     targetElement,
                     isActive
                   )}
-                  {this.renderBorder(
+                  {renderBorder(
                     'right',
                     {
                       top: coordinates.top,
@@ -249,7 +203,7 @@ class ContainersBordersComponent extends React.Component<Props, State> {
                     targetElement,
                     isActive
                   )}
-                  {this.renderBorder(
+                  {renderBorder(
                     'bottom',
                     {
                       top: isRoot ? coordinates.top + height - 2 : coordinates.top + height,
@@ -259,7 +213,7 @@ class ContainersBordersComponent extends React.Component<Props, State> {
                     targetElement,
                     isActive
                   )}
-                  {this.renderBorder(
+                  {renderBorder(
                     'left',
                     {
                       top: coordinates.top,
@@ -276,7 +230,6 @@ class ContainersBordersComponent extends React.Component<Props, State> {
         )}
       </div>
     );
-  }
 };
 
 export const ContainersBorders = connect(mapState, mapDispatch)(ContainersBordersComponent);
