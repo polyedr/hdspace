@@ -1,0 +1,453 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`removeElementStyles Should remove element styles on 1 level 1`] = `
+Object {
+  "buoyancy": 0,
+  "children": Array [
+    Object {
+      "buoyancy": 0,
+      "children": Array [
+        Object {
+          "buoyancy": 0,
+          "children": Array [],
+          "id": "3",
+          "image": null,
+          "name": "heading",
+          "parameters": Object {},
+          "styles": Object {
+            "classNames": Array [
+              "heading",
+            ],
+            "ownStyles": Object {
+              "color": "blue",
+              "fontSize": "14px",
+            },
+          },
+          "type": "heading",
+        },
+        Object {
+          "buoyancy": 1,
+          "children": Array [
+            Object {
+              "buoyancy": 0,
+              "children": Array [],
+              "id": "5",
+              "image": null,
+              "name": "heading",
+              "parameters": Object {},
+              "styles": Object {
+                "classNames": Array [
+                  "heading",
+                ],
+                "ownStyles": Object {
+                  "color": "blue",
+                  "fontSize": "14px",
+                },
+              },
+              "type": "heading",
+            },
+            Object {
+              "buoyancy": 1,
+              "children": Array [],
+              "id": "6",
+              "image": null,
+              "name": "heading",
+              "parameters": Object {},
+              "styles": Object {
+                "classNames": Array [
+                  "heading",
+                ],
+                "ownStyles": Object {
+                  "color": "blue",
+                  "fontSize": "14px",
+                },
+              },
+              "type": "heading",
+            },
+          ],
+          "id": "4",
+          "image": null,
+          "name": "heading",
+          "parameters": Object {},
+          "styles": Object {
+            "classNames": Array [
+              "heading",
+            ],
+            "ownStyles": Object {
+              "color": "blue",
+              "fontSize": "14px",
+            },
+          },
+          "type": "heading",
+        },
+      ],
+      "id": "2",
+      "image": null,
+      "name": "heading",
+      "parameters": Object {},
+      "styles": Object {
+        "classNames": Array [
+          "heading",
+        ],
+        "ownStyles": Object {
+          "color": "blue",
+          "fontSize": "14px",
+        },
+      },
+      "type": "heading",
+    },
+  ],
+  "id": "1",
+  "image": null,
+  "name": "heading",
+  "parameters": Object {},
+  "styles": Object {
+    "classNames": Array [
+      "heading",
+    ],
+    "ownStyles": Object {
+      "fontSize": "14px",
+    },
+  },
+  "type": "heading",
+}
+`;
+
+exports[`removeElementStyles Should remove element styles on 2 level 1`] = `
+Object {
+  "buoyancy": 0,
+  "children": Array [
+    Object {
+      "buoyancy": 0,
+      "children": Array [
+        Object {
+          "buoyancy": 0,
+          "children": Array [],
+          "id": "3",
+          "image": null,
+          "name": "heading",
+          "parameters": Object {},
+          "styles": Object {
+            "classNames": Array [
+              "heading",
+            ],
+            "ownStyles": Object {
+              "color": "blue",
+              "fontSize": "14px",
+            },
+          },
+          "type": "heading",
+        },
+        Object {
+          "buoyancy": 1,
+          "children": Array [
+            Object {
+              "buoyancy": 0,
+              "children": Array [],
+              "id": "5",
+              "image": null,
+              "name": "heading",
+              "parameters": Object {},
+              "styles": Object {
+                "classNames": Array [
+                  "heading",
+                ],
+                "ownStyles": Object {
+                  "color": "blue",
+                  "fontSize": "14px",
+                },
+              },
+              "type": "heading",
+            },
+            Object {
+              "buoyancy": 1,
+              "children": Array [],
+              "id": "6",
+              "image": null,
+              "name": "heading",
+              "parameters": Object {},
+              "styles": Object {
+                "classNames": Array [
+                  "heading",
+                ],
+                "ownStyles": Object {
+                  "color": "blue",
+                  "fontSize": "14px",
+                },
+              },
+              "type": "heading",
+            },
+          ],
+          "id": "4",
+          "image": null,
+          "name": "heading",
+          "parameters": Object {},
+          "styles": Object {
+            "classNames": Array [
+              "heading",
+            ],
+            "ownStyles": Object {
+              "color": "blue",
+              "fontSize": "14px",
+            },
+          },
+          "type": "heading",
+        },
+      ],
+      "id": "2",
+      "image": null,
+      "name": "heading",
+      "parameters": Object {},
+      "styles": Object {
+        "classNames": Array [
+          "heading",
+        ],
+        "ownStyles": Object {
+          "fontSize": "14px",
+        },
+      },
+      "type": "heading",
+    },
+  ],
+  "id": "1",
+  "image": null,
+  "name": "heading",
+  "parameters": Object {},
+  "styles": Object {
+    "classNames": Array [
+      "heading",
+    ],
+    "ownStyles": Object {
+      "color": "blue",
+      "fontSize": "14px",
+    },
+  },
+  "type": "heading",
+}
+`;
+
+exports[`removeElementStyles Should remove element styles on 3 level 1`] = `
+Object {
+  "buoyancy": 0,
+  "children": Array [
+    Object {
+      "buoyancy": 0,
+      "children": Array [
+        Object {
+          "buoyancy": 0,
+          "children": Array [],
+          "id": "3",
+          "image": null,
+          "name": "heading",
+          "parameters": Object {},
+          "styles": Object {
+            "classNames": Array [
+              "heading",
+            ],
+            "ownStyles": Object {
+              "fontSize": "14px",
+            },
+          },
+          "type": "heading",
+        },
+        Object {
+          "buoyancy": 1,
+          "children": Array [
+            Object {
+              "buoyancy": 0,
+              "children": Array [],
+              "id": "5",
+              "image": null,
+              "name": "heading",
+              "parameters": Object {},
+              "styles": Object {
+                "classNames": Array [
+                  "heading",
+                ],
+                "ownStyles": Object {
+                  "color": "blue",
+                  "fontSize": "14px",
+                },
+              },
+              "type": "heading",
+            },
+            Object {
+              "buoyancy": 1,
+              "children": Array [],
+              "id": "6",
+              "image": null,
+              "name": "heading",
+              "parameters": Object {},
+              "styles": Object {
+                "classNames": Array [
+                  "heading",
+                ],
+                "ownStyles": Object {
+                  "color": "blue",
+                  "fontSize": "14px",
+                },
+              },
+              "type": "heading",
+            },
+          ],
+          "id": "4",
+          "image": null,
+          "name": "heading",
+          "parameters": Object {},
+          "styles": Object {
+            "classNames": Array [
+              "heading",
+            ],
+            "ownStyles": Object {
+              "color": "blue",
+              "fontSize": "14px",
+            },
+          },
+          "type": "heading",
+        },
+      ],
+      "id": "2",
+      "image": null,
+      "name": "heading",
+      "parameters": Object {},
+      "styles": Object {
+        "classNames": Array [
+          "heading",
+        ],
+        "ownStyles": Object {
+          "color": "blue",
+          "fontSize": "14px",
+        },
+      },
+      "type": "heading",
+    },
+  ],
+  "id": "1",
+  "image": null,
+  "name": "heading",
+  "parameters": Object {},
+  "styles": Object {
+    "classNames": Array [
+      "heading",
+    ],
+    "ownStyles": Object {
+      "color": "blue",
+      "fontSize": "14px",
+    },
+  },
+  "type": "heading",
+}
+`;
+
+exports[`removeElementStyles Should remove element styles on 5 level 1`] = `
+Object {
+  "buoyancy": 0,
+  "children": Array [
+    Object {
+      "buoyancy": 0,
+      "children": Array [
+        Object {
+          "buoyancy": 0,
+          "children": Array [],
+          "id": "3",
+          "image": null,
+          "name": "heading",
+          "parameters": Object {},
+          "styles": Object {
+            "classNames": Array [
+              "heading",
+            ],
+            "ownStyles": Object {
+              "color": "blue",
+              "fontSize": "14px",
+            },
+          },
+          "type": "heading",
+        },
+        Object {
+          "buoyancy": 1,
+          "children": Array [
+            Object {
+              "buoyancy": 0,
+              "children": Array [],
+              "id": "5",
+              "image": null,
+              "name": "heading",
+              "parameters": Object {},
+              "styles": Object {
+                "classNames": Array [
+                  "heading",
+                ],
+                "ownStyles": Object {
+                  "fontSize": "14px",
+                },
+              },
+              "type": "heading",
+            },
+            Object {
+              "buoyancy": 1,
+              "children": Array [],
+              "id": "6",
+              "image": null,
+              "name": "heading",
+              "parameters": Object {},
+              "styles": Object {
+                "classNames": Array [
+                  "heading",
+                ],
+                "ownStyles": Object {
+                  "color": "blue",
+                  "fontSize": "14px",
+                },
+              },
+              "type": "heading",
+            },
+          ],
+          "id": "4",
+          "image": null,
+          "name": "heading",
+          "parameters": Object {},
+          "styles": Object {
+            "classNames": Array [
+              "heading",
+            ],
+            "ownStyles": Object {
+              "color": "blue",
+              "fontSize": "14px",
+            },
+          },
+          "type": "heading",
+        },
+      ],
+      "id": "2",
+      "image": null,
+      "name": "heading",
+      "parameters": Object {},
+      "styles": Object {
+        "classNames": Array [
+          "heading",
+        ],
+        "ownStyles": Object {
+          "color": "blue",
+          "fontSize": "14px",
+        },
+      },
+      "type": "heading",
+    },
+  ],
+  "id": "1",
+  "image": null,
+  "name": "heading",
+  "parameters": Object {},
+  "styles": Object {
+    "classNames": Array [
+      "heading",
+    ],
+    "ownStyles": Object {
+      "color": "blue",
+      "fontSize": "14px",
+    },
+  },
+  "type": "heading",
+}
+`;

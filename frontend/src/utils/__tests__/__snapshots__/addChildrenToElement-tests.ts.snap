@@ -63,7 +63,12 @@ Object {
       "image": null,
       "name": "heading",
       "parameters": Object {},
-      "styles": Object {},
+      "styles": Object {
+        "classNames": Array [
+          "heading",
+        ],
+        "ownStyles": Object {},
+      },
       "type": "heading",
     },
   ],
@@ -131,7 +136,12 @@ Object {
           "image": null,
           "name": "heading",
           "parameters": Object {},
-          "styles": Object {},
+          "styles": Object {
+            "classNames": Array [
+              "heading",
+            ],
+            "ownStyles": Object {},
+          },
           "type": "heading",
         },
       ],
@@ -199,7 +209,12 @@ Object {
               "image": null,
               "name": "heading",
               "parameters": Object {},
-              "styles": Object {},
+              "styles": Object {
+                "classNames": Array [
+                  "heading",
+                ],
+                "ownStyles": Object {},
+              },
               "type": "heading",
             },
           ],
