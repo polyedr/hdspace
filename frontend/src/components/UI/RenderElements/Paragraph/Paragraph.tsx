@@ -3,11 +3,20 @@ import cn from 'classnames';
 import { makeStyles } from '@material-ui/core';
 
 import { ParagraphRendererProps } from '../types';
+
 const styles = require('../styles.scss');
 
-const Paragraph = (props: ParagraphRendererProps) => {
-  const { id, entityStyles, groupStyles, ownStyles, params, sortableId, isDisabled, className, elementRef } = props;
-
+const Paragraph: React.FC<ParagraphRendererProps> = ({
+  id,
+  entityStyles,
+  groupStyles,
+  ownStyles,
+  params,
+  sortableId,
+  isDisabled,
+  className,
+  elementRef,
+}) => {
   const classes = makeStyles({
     entityStyles: {
       ...entityStyles,
@@ -29,7 +38,13 @@ const Paragraph = (props: ParagraphRendererProps) => {
       data-ls-id={id}
       data-id={sortableId}
       key={id}
-      className={cn(className, styles.addedElem, classes.entityStyles, classes.groupStyles, classes.ownStyles)}
+      className={cn(
+        className,
+        styles.addedElem,
+        classes.entityStyles,
+        classes.groupStyles,
+        classes.ownStyles,
+      )}
       style={{ wordBreak: 'break-word' }}
       tabIndex={isDisabled ? 0 : -1}
     >

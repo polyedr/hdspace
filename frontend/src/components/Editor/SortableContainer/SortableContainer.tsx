@@ -30,7 +30,7 @@ const mapStateToProps = (state: AppReduxState) => {
   const scenarioElements = selectors.selectScenariosElements(state);
   const savedElements = selectors.selectSavedElementsValues(state);
   const disableInteractions = state.user.isPrototypeMode;
-  const screenLoader = selectors.selectScreenLoader(state)
+  const screenLoader = selectors.selectScreenLoader(state);
 
   return {
     root,
@@ -42,7 +42,7 @@ const mapStateToProps = (state: AppReduxState) => {
     currentScreen,
     savedElements,
     projectClasses,
-    screenLoader
+    screenLoader,
   };
 };
 
@@ -53,75 +53,77 @@ const mapDispatchToProps = {
 };
 
 export type OwnProps = {
-  item: LibraryElementUnion,
-  activeItemId: string,
-  isMoving: boolean,
-  listNotDragging: string[],
+  item: LibraryElementUnion;
+  activeItemId: string;
+  isMoving: boolean;
+  listNotDragging: string[];
   isResizing: boolean;
   isResizable?: boolean;
 
-  onActiveElementChange(parentId: number, child: LibraryElement<Entity>): void,
-  setIsMoving: (value: boolean) => void,
+  onActiveElementChange(parentId: number, child: LibraryElement<Entity>): void;
+  setIsMoving: (value: boolean) => void;
   setIsResizing: (value: boolean) => void;
-}
+};
 
-type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
+type Props = OwnProps &
+  ReturnType<typeof mapStateToProps> &
+  typeof mapDispatchToProps;
 
-const SortableComponent = (props: Props) => {
-  const {
-    root,
-    rootID,
-    showBorders,
-    currentScreen,
-    item,
-    activeItemId,
-    isMoving,
-    listNotDragging,
-    disableInteractions,
-    onActiveElementChange,
-    moveElement,
-    setIsMoving,
-    isResizing,
-    setIsResizing,
-    isResizable,
-    listSortable,
-    scenarioElements,
-    savedElements,
-    projectClasses,
-    updateSavedElementValues,
-    screenLoader,
-    ...restProps
-  } = props;
-
+const SortableComponent: React.FC<Props> = ({
+  root,
+  rootID,
+  showBorders,
+  currentScreen,
+  item,
+  activeItemId,
+  isMoving,
+  listNotDragging,
+  disableInteractions,
+  onActiveElementChange,
+  moveElement,
+  setIsMoving,
+  isResizing,
+  setIsResizing,
+  isResizable,
+  listSortable,
+  scenarioElements,
+  savedElements,
+  projectClasses,
+  updateSavedElementValues,
+  screenLoader,
+  ...restProps
+}) => {
   const [isDragging, setIsDragging] = useState<boolean>(false);
 
   useEffect(() => {
     const radioNames = Object.values(listSortable)
-      .filter(item => item.type === 'radiobutton')
-      .map(item => scenarioElements[item.id]?.parameters.name);
+      .filter((elem) => elem.type === 'radiobutton')
+      .map((elem) => scenarioElements[elem.id]?.parameters.name);
 
-    R.uniq(radioNames).forEach(groupName => {
+    R.uniq(radioNames).forEach((groupName) => {
       if (!groupName) {
         return;
       }
 
       const groupRadios = Object.values(listSortable)
-        .filter(item => item.type === 'radiobutton')
-        .map(item => scenarioElements[item.id])
-        .filter(item => item?.parameters.name === groupName);
+        .filter((elem) => elem.type === 'radiobutton')
+        .map((elem) => scenarioElements[elem.id])
+        .filter((elem) => elem?.parameters.name === groupName);
 
       const firstRadio = R.head(groupRadios);
 
       if (!savedElements[groupName]?.savedValue) {
         updateSavedElementValues(groupName, firstRadio?.parameters.value || '');
       }
-    })
+    });
   }, [savedElements, listSortable, scenarioElements, updateSavedElementValues]);
 
   const handleChooseToSort = (itemIndex: number) => {
     // TODO: called when item chosen for sorting. rewrite without onActiveElementChange use
     setIsDragging(true);
-    const draggedItem = (item.children as LibraryElementUnion[]).find(child => child.buoyancy === itemIndex);
+    const draggedItem = (item.children as LibraryElementUnion[]).find(
+      (child) => child.buoyancy === itemIndex,
+    );
     const itemID = draggedItem?.id;
 
     if (itemID !== activeItemId && draggedItem && itemID) {
@@ -129,15 +131,25 @@ const SortableComponent = (props: Props) => {
     }
   };
 
-  const handleItemPositionChange = (indices: Indices, parentId: string, isRemote?: boolean) => {
+  const handleItemPositionChange = (
+    indices: Indices,
+    parentId: string,
+    isRemote?: boolean,
+  ) => {
     setIsDragging(!!isRemote);
-    moveElement(indices, activeItemId, parentId === 'root' ? rootID : parentId, isRemote);
-    return
+    moveElement(
+      indices,
+      activeItemId,
+      parentId === 'root' ? rootID : parentId,
+      isRemote,
+    );
   };
 
-  const getGroupName = useCallback((itemType): string => (
-    LIST_SCENARIO_TYPE.indexOf(itemType) !== -1 ? itemType : 'element'
-  ), []);
+  const getGroupName = useCallback(
+    (itemType): string =>
+      LIST_SCENARIO_TYPE.indexOf(itemType) !== -1 ? itemType : 'element',
+    [],
+  );
 
   const getIsPutItem = (type: Entity): boolean | string[] => {
     const availableChildren = Object.keys(AVAILABLE_CHILDREN[type]);
@@ -145,9 +157,13 @@ const SortableComponent = (props: Props) => {
     return listNotDragging.indexOf(type) === -1 && put;
   };
 
-  const isRadioChecked = (value: string, checkedRadio: SavedElementsValues[string]) => value === checkedRadio?.savedValue;
+  const isRadioChecked = (
+    value: string,
+    checkedRadio: SavedElementsValues[string],
+  ) => value === checkedRadio?.savedValue;
 
-  const isCheckboxChecked = (itemId: string) => Boolean(savedElements[itemId]?.savedValue);
+  const isCheckboxChecked = (itemId: string) =>
+    Boolean(savedElements[itemId]?.savedValue);
 
   const getIsActive = !disableInteractions && item.id === activeItemId;
 
@@ -159,17 +175,23 @@ const SortableComponent = (props: Props) => {
 
   const ElementRenderer = RENDERERS[type];
   const ownStyles = convertPropCSS(styles.ownStyles);
-  
+
   const [entityClass, groupClass] = item.styles.classNames;
 
-  const entityStyles = projectClasses?.find(cssClass => cssClass.className === entityClass)?.rules || {};
-  const groupStyles = projectClasses?.find(cssClass => cssClass.className === groupClass)?.rules || {};
-  
+  const entityStyles =
+    projectClasses?.find((cssClass) => cssClass.className === entityClass)
+      ?.rules || {};
+  const groupStyles =
+    projectClasses?.find((cssClass) => cssClass.className === groupClass)
+      ?.rules || {};
+
   const convertedEntityStyles = convertPropCSS(entityStyles);
   const convertedGroupStyles = convertPropCSS(groupStyles);
 
-  const isBorderedElement = findParentByChildID(root, id)?.id === rootID || id === rootID;
-  const isBorderVisible = isBorderedElement && showBorders || isBorderedElement && getIsActive;
+  const isBorderedElement =
+    findParentByChildID(root, id)?.id === rootID || id === rootID;
+  const isBorderVisible =
+    (isBorderedElement && showBorders) || (isBorderedElement && getIsActive);
 
   const commonRendererProps: Omit<SharedRendererProps, 'children'> = {
     ...(disableInteractions && { className: '' }),
@@ -189,8 +211,8 @@ const SortableComponent = (props: Props) => {
       case 'divBlock': {
         return {
           isBorderVisible,
-        }
-      };
+        };
+      }
       case 'textinput': {
         return {
           ...commonRendererProps,
@@ -236,12 +258,13 @@ const SortableComponent = (props: Props) => {
           childrenElements: children,
           params: item.parameters,
           projectClasses,
-        }
-      };
+        };
+      }
 
-      default: return {
-        params: item.parameters,
-      };
+      default:
+        return {
+          params: item.parameters,
+        };
     }
   };
 
@@ -303,4 +326,7 @@ const SortableComponent = (props: Props) => {
   );
 };
 
-export const SortableContainer = connect(mapStateToProps, mapDispatchToProps)(SortableComponent);
+export const SortableContainer = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(SortableComponent);

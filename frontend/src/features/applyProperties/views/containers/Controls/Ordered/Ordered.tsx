@@ -4,7 +4,10 @@ import { Switch, makeStyles } from '@material-ui/core';
 
 import { AppReduxState } from '$shared/types/app';
 import { selectors } from '$redux/project/';
-import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
+import {
+  withConfigurableProperties,
+  PropertiesChangeProps,
+} from '$utils/withConfigurableProperties';
 import { sharedClasses } from '$styles/sharedClasses';
 import { ListElement } from '$api/types';
 
@@ -35,10 +38,7 @@ const useStyles = makeStyles({
   track: {},
 });
 
-const Ordered: React.FC<Props> = ({
-  isOrdered,
-  updateParams,
-}) => {
+const Ordered: React.FC<Props> = ({ isOrdered, updateParams }) => {
   const classes = useStyles();
 
   const handleSwitchChange = () => {

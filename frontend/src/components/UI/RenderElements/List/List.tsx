@@ -3,22 +3,21 @@ import cn from 'classnames';
 import { makeStyles } from '@material-ui/core';
 
 import { ListRendererProps } from '../types';
+
 const styles = require('../styles.scss');
 
-const List = (props: ListRendererProps) => {
-  const {
-    id,
-    entityStyles,
-    groupStyles,
-    ownStyles,
-    params,
-    sortableId,
-    isDisabled,
-    className,
-    elementRef,
-    children,
-  } = props;
-
+const List: React.FC<ListRendererProps> = ({
+  id,
+  entityStyles,
+  groupStyles,
+  ownStyles,
+  params,
+  sortableId,
+  isDisabled,
+  className,
+  elementRef,
+  children,
+}) => {
   const { isOrdered } = params;
 
   const ListTag = isOrdered ? 'ol' : 'ul';
@@ -26,17 +25,17 @@ const List = (props: ListRendererProps) => {
   const classes = makeStyles({
     entityStyles: {
       ...entityStyles,
-      ...(isOrdered && { "list-style-type": "decimal" }),
+      ...(isOrdered && { 'list-style-type': 'decimal' }),
     },
 
     groupStyles: {
       ...groupStyles,
-      ...(isOrdered && { "list-style-type": "decimal" }),
+      ...(isOrdered && { 'list-style-type': 'decimal' }),
     },
 
     ownStyles: {
       ...ownStyles,
-      ...(isOrdered && { "list-style-type": "decimal" }),
+      ...(isOrdered && { 'list-style-type': 'decimal' }),
     },
   })();
 

@@ -6,15 +6,15 @@ export const DEFAULT_SIZE = {
 };
 
 type ScreenIndents = {
-  'margin-top'?: string,
-  'margin-right'?: string,
-  'margin-bottom'?: string,
-  'margin-left'?: string,
-  'padding-top': string,
-  'padding-right': string,
-  'padding-bottom': string,
-  'padding-left': string,
-}
+  'margin-top'?: string;
+  'margin-right'?: string;
+  'margin-bottom'?: string;
+  'margin-left'?: string;
+  'padding-top': string;
+  'padding-right': string;
+  'padding-bottom': string;
+  'padding-left': string;
+};
 
 export const DEFAULT_INDENTS: ScreenIndents = {
   'margin-top': '0px',
@@ -27,7 +27,7 @@ export const DEFAULT_INDENTS: ScreenIndents = {
   'padding-left': '5px',
 };
 
-export const DEFAULT_DISPLAY: CssLikeStyles = { 
+export const DEFAULT_DISPLAY: CssLikeStyles = {
   display: 'block',
   'flex-direction': 'row',
   'justify-content': 'flex-start',
@@ -35,11 +35,11 @@ export const DEFAULT_DISPLAY: CssLikeStyles = {
 };
 
 type ScreenBorders = {
-  'border-width': string,
-  'border-color': string,
-  'border-style': string,
-  'border-radius': string,
-}
+  'border-width': string;
+  'border-color': string;
+  'border-style': string;
+  'border-radius': string;
+};
 
 export const DEFAULT_BORDER: ScreenBorders = {
   'border-width': '0px',
@@ -48,13 +48,12 @@ export const DEFAULT_BORDER: ScreenBorders = {
   'border-radius': '0px',
 };
 
-
 type ScreenBackground = {
-  'background-color': string,
-  'background-image': string,
-  'background-repeat': string,
-  'background-size': string,
-}
+  'background-color': string;
+  'background-image': string;
+  'background-repeat': string;
+  'background-size': string;
+};
 
 export const DEFAULT_BACKGROUND: ScreenBackground = {
   'background-color': 'rgba(255, 255, 255, 0)',
@@ -68,14 +67,14 @@ export const DEFAULT_BULLETS: CssLikeStyles = {
 };
 
 type ScreenTypography = {
-  'font-family': string,
-  'color': string,
-  'font-size': string,
-  'line-height': string,
-  'font-style': string,
-  'font-weight': number,
-  'text-align': string,
-}
+  'font-family': string;
+  color: string;
+  'font-size': string;
+  'line-height': string;
+  'font-style': string;
+  'font-weight': number;
+  'text-align': string;
+};
 
 export const DEFAULT_TYPOGRAPHY: ScreenTypography = {
   color: '#323232',

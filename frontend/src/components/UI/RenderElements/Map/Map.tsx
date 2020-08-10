@@ -5,21 +5,20 @@ import { makeStyles } from '@material-ui/core';
 import { GMap } from '$components/UI/GMap';
 
 import { MapRendererProps } from '../types';
+
 const styles = require('../styles.scss');
 
-const Map = (props: MapRendererProps) => {
-  const {
-    id,
-    params,
-    isDisabled,
-    entityStyles,
-    groupStyles,
-    ownStyles,
-    sortableId,
-    className,
-    elementRef,
-  } = props;
-
+const Map: React.FC<MapRendererProps> = ({
+  id,
+  params,
+  isDisabled,
+  entityStyles,
+  groupStyles,
+  ownStyles,
+  sortableId,
+  className,
+  elementRef,
+}) => {
   const classes = makeStyles({
     entityStyles: {
       ...entityStyles,
@@ -49,7 +48,7 @@ const Map = (props: MapRendererProps) => {
         classes.groupStyles,
         classes.ownStyles,
       )}
-      onClick={event => isDisabled && event.preventDefault()}
+      onClick={(event) => isDisabled && event.preventDefault()}
       tabIndex={isDisabled ? 0 : -1}
     >
       <GMap

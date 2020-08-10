@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { connect, useSelector } from 'react-redux';
 import { actionsCreators, selectors } from '$redux/project';
 import { AppReduxState } from '$shared/types/app';
@@ -18,19 +18,17 @@ const mapDispatch = {
   redo: actionsCreators.redoAction,
 };
 
-type Props = & ReturnType<typeof mapState> & typeof mapDispatch;
+type Props = ReturnType<typeof mapState> & typeof mapDispatch;
 
-export const Component = (props: Props) => {
-  const {
-    rootElement,
-    deleteActiveItem,
-    wrapIntoContainer,
-    copyActiveItem,
-    pasteCopiedItem,
-    undo,
-    redo,
-  } = props;
-
+export const Component = ({
+  rootElement,
+  deleteActiveItem,
+  wrapIntoContainer,
+  copyActiveItem,
+  pasteCopiedItem,
+  undo,
+  redo,
+}: Props) => {
   const root = document.getElementById('root');
   const { itemId } = useSelector(selectors.selectActiveItem);
 
@@ -47,7 +45,7 @@ export const Component = (props: Props) => {
 
   useEffect(() => {
     const listener = (event: KeyboardEvent) => {
-      if (event.code == 'KeyC' && event.altKey) {
+      if (event.code === 'KeyC' && event.altKey) {
         wrapIntoContainer(itemId);
       }
     };
@@ -58,7 +56,8 @@ export const Component = (props: Props) => {
 
   useEffect(() => {
     const listener = (event: KeyboardEvent) => {
-      const isItemCopyEvent = event.code == 'KeyC' && (event.metaKey || event.ctrlKey);
+      const isItemCopyEvent =
+        event.code === 'KeyC' && (event.metaKey || event.ctrlKey);
 
       if (isItemCopyEvent) {
         copyActiveItem();
@@ -72,7 +71,8 @@ export const Component = (props: Props) => {
 
   useEffect(() => {
     const listener = (event: KeyboardEvent) => {
-      const isItemPasteEvent = event.code == 'KeyV' && (event.metaKey || event.ctrlKey);
+      const isItemPasteEvent =
+        event.code === 'KeyV' && (event.metaKey || event.ctrlKey);
 
       if (isItemPasteEvent) {
         pasteCopiedItem();

@@ -18,16 +18,17 @@ const mapDispatchToProps = {
   renameProject: Actions.renameProject,
 };
 
-type IDashboardProps = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
+type IDashboardProps = ReturnType<typeof mapStateToProps> &
+  typeof mapDispatchToProps;
 
-const ProjectsLogic: React.FunctionComponent<IDashboardProps> = ({
+const ProjectsLogic: React.FC<IDashboardProps> = ({
   listProject,
   listProjectLoader,
   addProject,
   delProject,
   renameProject,
 }) => (
-  <React.Fragment>
+  <>
     <Projects
       listProject={listProject}
       addProject={addProject}
@@ -35,7 +36,7 @@ const ProjectsLogic: React.FunctionComponent<IDashboardProps> = ({
       renameProject={renameProject}
     />
     <Spinner active={listProjectLoader} />
-  </React.Fragment>
+  </>
 );
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProjectsLogic);

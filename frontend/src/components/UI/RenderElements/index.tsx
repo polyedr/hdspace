@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Entity } from '$domain/core';
 
-import { withAction } from '../../../utils/withAction';
+import { withAction } from '$utils/withAction';
 import { Action } from './Action/Action';
 import { Checkbox } from './Checkbox/Checkbox';
 import { Radiobutton } from './Radiobutton/Radiobutton';

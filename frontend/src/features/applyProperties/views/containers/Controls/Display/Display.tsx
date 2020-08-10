@@ -8,7 +8,7 @@ import { selectors } from '$redux/project/';
 import { DropDown } from '$components/UI/DropDown/';
 import {
   withConfigurableProperties,
-  PropertiesChangeProps
+  PropertiesChangeProps,
 } from '$utils/withConfigurableProperties';
 import { CssLikeStyles, convertFlexToCssLikeStyles } from '$utils/StyleHelper';
 import { LibraryElement } from '$api/types';
@@ -22,37 +22,53 @@ type StateProps = {
   displayStyles: ScreenDisplay;
 };
 
-function getDisplayStyles(activeItemStyles: Pick<Required<CssLikeStyles>, 'display' | 'flex-direction' | 'justify-content' | 'align-items'>): ScreenDisplay {
-  switch(activeItemStyles.display) {
-    case 'block': return { 
-      display: activeItemStyles.display,
-    };
+function getDisplayStyles(
+  activeItemStyles: Pick<
+    Required<CssLikeStyles>,
+    'display' | 'flex-direction' | 'justify-content' | 'align-items'
+  >,
+): ScreenDisplay {
+  switch (activeItemStyles.display) {
+    case 'block':
+      return {
+        display: activeItemStyles.display,
+      };
 
-    case 'inline': return { 
-      display: activeItemStyles.display,
-    };
+    case 'inline':
+      return {
+        display: activeItemStyles.display,
+      };
 
-    case 'inline-block': return { 
-      display: activeItemStyles.display,
-    };
+    case 'inline-block':
+      return {
+        display: activeItemStyles.display,
+      };
 
-    case 'flex': return {
-      display: activeItemStyles.display,
-      justifyContent: activeItemStyles['justify-content'],
-      alignItems: activeItemStyles['align-items'],
-      flexDirection: activeItemStyles['flex-direction'],
-    };
+    case 'flex':
+      return {
+        display: activeItemStyles.display,
+        justifyContent: activeItemStyles['justify-content'],
+        alignItems: activeItemStyles['align-items'],
+        flexDirection: activeItemStyles['flex-direction'],
+      };
 
-    default: return assertNever(activeItemStyles.display);
+    default:
+      return assertNever(activeItemStyles.display);
   }
 }
 
 function mapState(state: AppReduxState): StateProps {
   const activeItemStyles = {
     display: selectors.selectCurrentEditableStyles(state, 'display'),
-    'justify-content': selectors.selectCurrentEditableStyles(state, 'justify-content'),
+    'justify-content': selectors.selectCurrentEditableStyles(
+      state,
+      'justify-content',
+    ),
     'align-items': selectors.selectCurrentEditableStyles(state, 'align-items'),
-    'flex-direction': selectors.selectCurrentEditableStyles(state, 'flex-direction'),
+    'flex-direction': selectors.selectCurrentEditableStyles(
+      state,
+      'flex-direction',
+    ),
   };
 
   return { displayStyles: getDisplayStyles(activeItemStyles) };
@@ -60,47 +76,56 @@ function mapState(state: AppReduxState): StateProps {
 
 type Props = StateProps & PropertiesChangeProps<LibraryElement<Entity>>;
 
-export const Component: React.FC<Props> = memo((props) => {
-  const { displayStyles, updateStyles, removeStyles } = props;
+export const Component: React.FC<Props> = memo(
+  ({ displayStyles, updateStyles, removeStyles }) => {
+    const handleDisplayDropdownChange = useCallback(
+      (value) => {
+        updateStyles({ display: value });
+      },
+      [updateStyles],
+    );
 
-  const handleDisplayDropdownChange = useCallback((value) => {
-    updateStyles({ display: value });
-  }, [updateStyles]);
+    const handleFlexPropertiesChange = useCallback(
+      (prop: keyof Flex, value: Flex[keyof Flex]) => {
+        const styles = convertFlexToCssLikeStyles({ [prop]: value });
+        updateStyles(styles);
+      },
+      [updateStyles],
+    );
 
-  const handleFlexPropertiesChange = useCallback((prop: keyof Flex, value: Flex[keyof Flex]) => {
-    const styles = convertFlexToCssLikeStyles({ [prop]: value });
-    updateStyles(styles);
-  }, [updateStyles]);
-
-  return (
-    <>
-      <section className="propsElementsBlock">
-        <StylesHeader
-          title="Display"
-          onClick={removeStyles}
-          cssPropertiesNames={[
-            'display',
-            'justify-content',
-            'align-items',
-            'flex-direction',
-          ]}
-        />
-        <div className="propsElementsContentBlock">
-          <div className="propsElementsInnerBlock">
-            <DropDown
-              options={DISPLAY}
-              defaultValue={displayStyles.display}
-              value={displayStyles.display}
-              onChange={handleDisplayDropdownChange}
-            />
+    return (
+      <>
+        <section className="propsElementsBlock">
+          <StylesHeader
+            title="Display"
+            onClick={removeStyles}
+            cssPropertiesNames={[
+              'display',
+              'justify-content',
+              'align-items',
+              'flex-direction',
+            ]}
+          />
+          <div className="propsElementsContentBlock">
+            <div className="propsElementsInnerBlock">
+              <DropDown
+                options={DISPLAY}
+                defaultValue={displayStyles.display}
+                value={displayStyles.display}
+                onChange={handleDisplayDropdownChange}
+              />
+            </div>
           </div>
-        </div>
-      </section>
-      {displayStyles.display === 'flex' && <FlexProperties properties={displayStyles} onChange={handleFlexPropertiesChange} />}
-    </>
-  );
-});
-
-export const Display = connect(mapState)(
-  withConfigurableProperties(Component)
+        </section>
+        {displayStyles.display === 'flex' && (
+          <FlexProperties
+            properties={displayStyles}
+            onChange={handleFlexPropertiesChange}
+          />
+        )}
+      </>
+    );
+  },
 );
+
+export const Display = connect(mapState)(withConfigurableProperties(Component));

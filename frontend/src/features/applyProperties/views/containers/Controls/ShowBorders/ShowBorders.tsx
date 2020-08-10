@@ -14,7 +14,7 @@ type StateProps = {
 const mapState = (state: AppReduxState) => {
   return {
     showBorders: selectors.selectShowingBorders(state),
-  }
+  };
 };
 
 const mapDispatch = {
@@ -23,9 +23,7 @@ const mapDispatch = {
 
 type Props = StateProps & typeof mapDispatch;
 
-const ShowBorders = (props: Props) => {
-  const { showBorders, toggleBorders } = props;
-
+const ShowBorders: React.FC<Props> = ({ showBorders, toggleBorders }) => {
   return (
     <label className={styles.label}>
       <Checkbox

@@ -3,7 +3,10 @@ import { connect } from 'react-redux';
 
 import { AppReduxState } from '$shared/types/app';
 import { selectors } from '$redux/project/';
-import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
+import {
+  withConfigurableProperties,
+  PropertiesChangeProps,
+} from '$utils/withConfigurableProperties';
 import { sharedClasses } from '$styles/sharedClasses';
 import { SelectElement } from '$api/types';
 
@@ -14,7 +17,9 @@ type StateProps = {
 };
 
 function mapState(state: AppReduxState): StateProps {
-  const activeItemParams = selectors.selectActiveItemParams<SelectElement>(state);
+  const activeItemParams = selectors.selectActiveItemParams<SelectElement>(
+    state,
+  );
 
   return {
     value: activeItemParams.value,
@@ -23,12 +28,11 @@ function mapState(state: AppReduxState): StateProps {
 
 type Props = StateProps & PropertiesChangeProps<SelectElement>;
 
-const Value: React.FC<Props> = ({
-  value,
-  updateParams,
-}) => {
-  const handleTextFieldChange = ({ target: { value } }: React.ChangeEvent<HTMLTextAreaElement>) => {
-    updateParams({ value });
+const Value: React.FC<Props> = ({ value, updateParams }) => {
+  const handleTextFieldChange = ({
+    target: { value: newValue },
+  }: React.ChangeEvent<HTMLTextAreaElement>) => {
+    updateParams({ value: newValue });
   };
 
   return (

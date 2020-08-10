@@ -1,6 +1,11 @@
-import { ElementsToAdd, ChildrenElements } from './libraryElements/libraryElements';
+import {
+  ElementsToAdd,
+  ChildrenElements,
+} from './libraryElements/libraryElements';
 
-export const ENTITIES: { [K in Exclude<ElementEntity, 'ocrtext' | 'root' | 'container'>]: K } = {
+export const ENTITIES: {
+  [K in Exclude<ElementEntity, 'ocrtext' | 'root' | 'container'>]: K;
+} = {
   button: 'button',
   textinput: 'textinput',
   textarea: 'textarea',
@@ -44,7 +49,15 @@ const CONTROLS_AFFECT_ON_PARAMS = [
   'videoSettings',
 ] as const;
 
-const CONTROLS_AFFECT_ON_STYLES = ['display', 'indents', 'size', 'typography', 'border', 'background', 'bullets'] as const;
+const CONTROLS_AFFECT_ON_STYLES = [
+  'display',
+  'indents',
+  'size',
+  'typography',
+  'border',
+  'background',
+  'bullets',
+] as const;
 
 export type ElementEntity = keyof ElementsToAdd;
 export type ChildEntity = keyof ChildrenElements;
@@ -55,43 +68,194 @@ export type SubEntity = 'root';
 
 export type AvailableControls = {
   [P in Entity]: {
-    [T in SubEntity]: readonly Control[]
-  }
+    [T in SubEntity]: readonly Control[];
+  };
 };
 
 export const rootStyleControls = ['background'] as const;
-export const containerStyleControls = ['indents', 'size', 'display', 'typography', 'border', 'background'] as const;
-export const divBlockStyleControls = ['indents', 'size', 'display', 'typography', 'border', 'background'] as const;
+export const containerStyleControls = [
+  'indents',
+  'size',
+  'display',
+  'typography',
+  'border',
+  'background',
+] as const;
+export const divBlockStyleControls = [
+  'indents',
+  'size',
+  'display',
+  'typography',
+  'border',
+  'background',
+] as const;
 
-export const buttonStyleControls = ['indents', 'size', 'display', 'typography', 'border', 'background'] as const;
-export const buttonParamsControls = ['textContent', 'action', 'showRipple'] as const;
+export const buttonStyleControls = [
+  'indents',
+  'size',
+  'display',
+  'typography',
+  'border',
+  'background',
+] as const;
+export const buttonParamsControls = [
+  'textContent',
+  'action',
+  'showRipple',
+] as const;
 
-export const textinputStyleControls = ['indents', 'size', 'typography', 'border', 'background'] as const;
-export const textareaStyleControls = ['indents', 'size', 'typography', 'border', 'background'] as const;
+export const textinputStyleControls = [
+  'indents',
+  'size',
+  'typography',
+  'border',
+  'background',
+] as const;
+export const textareaStyleControls = [
+  'indents',
+  'size',
+  'typography',
+  'border',
+  'background',
+] as const;
 export const checkboxStyleControls = ['indents', 'size', 'background'] as const;
-export const radiobuttonStyleControls = ['indents', 'size', 'background'] as const;
-export const labelStyleControls = ['indents', 'display', 'size', 'typography', 'border', 'background'] as const;
-export const hyperlinkStyleControls = ['indents', 'size', 'display', 'typography', 'border', 'background'] as const;
-export const headingStyleControls = ['indents', 'size', 'typography', 'border', 'background'] as const;
-export const paragraphStyleControls = ['indents', 'size', 'typography', 'border', 'background'] as const;
-export const ocrtextStyleControls = ['indents', 'size', 'typography', 'border', 'background'] as const;
-export const textBlockStyleControls = ['indents', 'size', 'typography', 'border', 'background'] as const;
-export const listStyleControls = ['indents', 'size', 'display', 'border', 'background', 'bullets'] as const;
-export const listItemStyleControls = ['indents', 'size', 'typography', 'border', 'background'] as const;
-export const imageStyleControls = ['indents', 'size', 'border', 'background'] as const;
-export const selectStyleControls = ['indents', 'size', 'typography', 'border', 'background'] as const;
-export const selectMenuStyleControls = ['indents', 'size', 'border', 'background'] as const;
-export const selectItemStyleControls = ['indents', 'size', 'typography', 'border', 'background'] as const;
-export const mapStyleControls = ['indents', 'size', 'typography', 'border', 'background'] as const;
-export const calendarStyleControls = ['indents', 'size', 'typography', 'border', 'background'] as const;
-export const clockStyleControls = ['indents', 'size', 'typography', 'border', 'background'] as const;
-export const dropdownStyleControls = ['indents', 'size', 'typography', 'border', 'background'] as const;
-export const dropdownMenuStyleControls = ['indents', 'size', 'border', 'background'] as const;
-export const dropdownItemStyleControls = ['indents', 'size', 'typography', 'border', 'background'] as const;
+export const radiobuttonStyleControls = [
+  'indents',
+  'size',
+  'background',
+] as const;
+export const labelStyleControls = [
+  'indents',
+  'display',
+  'size',
+  'typography',
+  'border',
+  'background',
+] as const;
+export const hyperlinkStyleControls = [
+  'indents',
+  'size',
+  'display',
+  'typography',
+  'border',
+  'background',
+] as const;
+export const headingStyleControls = [
+  'indents',
+  'size',
+  'typography',
+  'border',
+  'background',
+] as const;
+export const paragraphStyleControls = [
+  'indents',
+  'size',
+  'typography',
+  'border',
+  'background',
+] as const;
+export const ocrtextStyleControls = [
+  'indents',
+  'size',
+  'typography',
+  'border',
+  'background',
+] as const;
+export const textBlockStyleControls = [
+  'indents',
+  'size',
+  'typography',
+  'border',
+  'background',
+] as const;
+export const listStyleControls = [
+  'indents',
+  'size',
+  'display',
+  'border',
+  'background',
+  'bullets',
+] as const;
+export const listItemStyleControls = [
+  'indents',
+  'size',
+  'typography',
+  'border',
+  'background',
+] as const;
+export const imageStyleControls = [
+  'indents',
+  'size',
+  'border',
+  'background',
+] as const;
+export const selectStyleControls = [
+  'indents',
+  'size',
+  'typography',
+  'border',
+  'background',
+] as const;
+export const selectMenuStyleControls = [
+  'indents',
+  'size',
+  'border',
+  'background',
+] as const;
+export const selectItemStyleControls = [
+  'indents',
+  'size',
+  'typography',
+  'border',
+  'background',
+] as const;
+export const mapStyleControls = [
+  'indents',
+  'size',
+  'typography',
+  'border',
+  'background',
+] as const;
+export const calendarStyleControls = [
+  'indents',
+  'size',
+  'typography',
+  'border',
+  'background',
+] as const;
+export const clockStyleControls = [
+  'indents',
+  'size',
+  'typography',
+  'border',
+  'background',
+] as const;
+export const dropdownStyleControls = [
+  'indents',
+  'size',
+  'typography',
+  'border',
+  'background',
+] as const;
+export const dropdownMenuStyleControls = [
+  'indents',
+  'size',
+  'border',
+  'background',
+] as const;
+export const dropdownItemStyleControls = [
+  'indents',
+  'size',
+  'typography',
+  'border',
+  'background',
+] as const;
 export const videoStyleControls = ['indents', 'size', 'border'] as const;
 export const undefinedControls = ['size', 'background'] as const;
 
-export type Control = typeof CONTROLS_AFFECT_ON_PARAMS[number] | typeof CONTROLS_AFFECT_ON_STYLES[number];
+export type Control =
+  | typeof CONTROLS_AFFECT_ON_PARAMS[number]
+  | typeof CONTROLS_AFFECT_ON_STYLES[number];
 
 // WARN: every time you add or remove some properties in prod, you must write migration to add/remove properties for existing entities in db
 export const AVAILABLE_CONTROLS: AvailableControls = {
@@ -147,7 +311,13 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
     root: [...imageStyleControls, 'image'],
   },
   select: {
-    root: [...selectStyleControls, 'showRipple', 'selectValue', 'selectOptions', 'isOpen'],
+    root: [
+      ...selectStyleControls,
+      'showRipple',
+      'selectValue',
+      'selectOptions',
+      'isOpen',
+    ],
   },
   selectMenu: {
     root: selectMenuStyleControls,
@@ -165,7 +335,13 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
     root: clockStyleControls,
   },
   dropdown: {
-    root: [...dropdownStyleControls, 'textContent', 'showRipple', 'dropdownItems', 'isOpen'],
+    root: [
+      ...dropdownStyleControls,
+      'textContent',
+      'showRipple',
+      'dropdownItems',
+      'isOpen',
+    ],
   },
   dropdownMenu: {
     root: dropdownMenuStyleControls,
@@ -184,10 +360,10 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
 export type AvailableChildren = {
   [P in Entity]: {
     [key: string]: {
-      min: number,
-      max: number,
-    }
-  }
+      min: number;
+      max: number;
+    };
+  };
 };
 
 export const AVAILABLE_CHILDREN: AvailableChildren = {

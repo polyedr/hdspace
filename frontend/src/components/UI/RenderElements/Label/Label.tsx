@@ -3,21 +3,20 @@ import cn from 'classnames';
 import { makeStyles } from '@material-ui/core';
 
 import { LabelRendererProps } from '../types';
+
 const styles = require('../styles.scss');
 
-const Label = (props: LabelRendererProps) => {
-  const {
-    id,
-    entityStyles,
-    groupStyles,
-    ownStyles,
-    params,
-    sortableId,
-    isDisabled,
-    className,
-    elementRef,
-  } = props;
-
+const Label: React.FC<LabelRendererProps> = ({
+  id,
+  entityStyles,
+  groupStyles,
+  ownStyles,
+  params,
+  sortableId,
+  isDisabled,
+  className,
+  elementRef,
+}) => {
   const { labelFor, textContent } = params;
 
   const classes = makeStyles({
@@ -47,7 +46,7 @@ const Label = (props: LabelRendererProps) => {
       data-ls-id={id}
       data-id={sortableId}
       key={id}
-      {...labelFor !== 'no for attribute' && { htmlFor: labelFor }}
+      {...(labelFor !== 'no for attribute' && { htmlFor: labelFor })}
       className={cn(
         className,
         styles.addedElem,
@@ -56,7 +55,7 @@ const Label = (props: LabelRendererProps) => {
         classes.ownStyles,
       )}
       tabIndex={isDisabled ? 0 : -1}
-      onClick={event => isDisabled && event.preventDefault()}
+      onClick={(event) => isDisabled && event.preventDefault()}
     >
       {textContent}
     </label>

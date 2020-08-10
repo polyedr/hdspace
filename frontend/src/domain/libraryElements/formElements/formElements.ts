@@ -87,7 +87,10 @@ export const radiobutton: RadiobuttonServerElement = {
   children: [],
 };
 
-export const makeSelectItem = (name: string, value: string): SelectItemServerElement => ({
+export const makeSelectItem = (
+  name: string,
+  value: string,
+): SelectItemServerElement => ({
   buoyancy: 0,
   func_type: 'selectItem',
   struct_type: 'selectItem',
@@ -127,7 +130,8 @@ export const select: SelectServerElement = {
   parameters: {
     group: 'form',
     value: 'first option',
-    options: [ // TODO research why we need options here
+    options: [
+      // TODO research why we need options here
       { name: 'First option', value: 'first option' },
       { name: 'Second option', value: 'second option' },
       { name: 'Third option', value: 'third option' },

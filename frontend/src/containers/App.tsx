@@ -1,5 +1,4 @@
 import React from 'react';
-import { hot } from 'react-hot-loader';
 import { connect } from 'react-redux';
 import { ConnectedRouter } from 'connected-react-router';
 import 'antd/dist/antd.css';
@@ -24,9 +23,10 @@ const mapDispatchToProps = {
   getListProject: ActionsProject.getListProject,
 };
 
-export type IAppProps = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
+export type IAppProps = ReturnType<typeof mapStateToProps> &
+  typeof mapDispatchToProps;
 
-const Component: React.FunctionComponent<IAppProps> = () => {
+const Component: React.FC<IAppProps> = () => {
   return (
     <ConnectedRouter history={history}>
       <Routes />

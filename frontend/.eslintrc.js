@@ -12,10 +12,6 @@ module.exports = {
     ecmaVersion: 2018,
     sourceType: 'module',
   },
-  globals: {
-    Atomics: 'readonly',
-    SharedArrayBuffer: 'readonly',
-  },
   settings: {
     'import/parsers': {
       '@typescript-eslint/parser': ['.ts', '.tsx'],
@@ -24,9 +20,6 @@ module.exports = {
       typescript: {
         alwaysTryTypes: true,
       },
-      /* node: {
-        extensions: ['.js', '.jsx', '.ts', '.tsx'],
-      }, */
     },
     typescript: {
       project: '.',
@@ -42,9 +35,7 @@ module.exports = {
   ],
   plugins: ['react', '@typescript-eslint', 'prettier', 'import'],
   rules: {
-    'prettier/prettier': 'error',
-    camelcase: 'warn',
-    'import/no-unresolved': 'error',
+    'prettier/prettier': 'error', // use prettier to enforce code style
     'import/extensions': [
       'error',
       'ignorePackages',
@@ -54,6 +45,22 @@ module.exports = {
         ts: 'never',
         tsx: 'never',
       },
-    ],
+    ], // suppress "missing file extension" for ts files
+    'react/jsx-filename-extension': [
+      2,
+      { extensions: ['.js', '.jsx', '.tsx'] },
+    ], // allow use jsx in ts files
+    'react/jsx-curly-newline': 'off', // should be disabled with prettier
+    'react/prop-types': 'off', // should be disabled with typescript
+    radix: [2, 'as-needed'], // allow to omit second parameter when possible
+    'react/jsx-props-no-spreading': 'warn',
+    'import/prefer-default-export': 'off',
+    'no-nested-ternary': 'warn',
+    camelcase: 'warn',
+    'jsx-a11y/no-static-element-interactions': 'warn',
+    'jsx-a11y/click-events-have-key-events': 'warn',
+    'jsx-a11y/mouse-events-have-key-events': 'warn',
+    'jsx-a11y/no-noninteractive-tabindex': 'warn',
+    'react/jsx-wrap-multilines': 'off',
   },
 };

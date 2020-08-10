@@ -4,7 +4,10 @@ import { Switch, makeStyles } from '@material-ui/core';
 
 import { AppReduxState } from '$shared/types/app';
 import { selectors } from '$redux/project/';
-import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
+import {
+  withConfigurableProperties,
+  PropertiesChangeProps,
+} from '$utils/withConfigurableProperties';
 import { sharedClasses } from '$styles/sharedClasses';
 import { ButtonElement } from '$api/types';
 
@@ -13,7 +16,9 @@ type StateProps = {
 };
 
 function mapState(state: AppReduxState): StateProps {
-  const activeItemParams = selectors.selectActiveItemParams<ButtonElement>(state);
+  const activeItemParams = selectors.selectActiveItemParams<ButtonElement>(
+    state,
+  );
 
   return {
     showRipple: activeItemParams.showRipple,
@@ -35,10 +40,7 @@ const useStyles = makeStyles({
   track: {},
 });
 
-const Ripple: React.FC<Props> = ({
-  showRipple,
-  updateParams,
-}) => {
+const Ripple: React.FC<Props> = ({ showRipple, updateParams }) => {
   const classes = useStyles();
 
   const handleSwitchChange = () => {

@@ -8,18 +8,14 @@ type Props = {
   onChange(event: React.ChangeEvent<HTMLInputElement>): void;
 };
 
-const TextField = (props: Props) => {
-  const { value, onBlur, onChange } = props;
-
-  return (
-    <input
-      className={styles.textField}
-      type="text"
-      value={value}
-      onBlur={onBlur}
-      onChange={onChange}
-    />
-  );
-};
+const TextField: React.FC<Props> = ({ value, onBlur, onChange }) => (
+  <input
+    className={styles.textField}
+    type="text"
+    value={value}
+    onBlur={onBlur}
+    onChange={onChange}
+  />
+);
 
 export { TextField };

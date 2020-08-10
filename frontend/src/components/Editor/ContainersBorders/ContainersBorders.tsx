@@ -10,7 +10,9 @@ import { Entity } from '$domain/core';
 const styles = require('./ContainersBorders.scss');
 
 const mapState = (state: AppReduxState) => {
-  const root = selectors.selectRootElement(state) as unknown as LibraryElement<'root', LibraryElement<Entity>[]>;
+  const root = (selectors.selectRootElement(
+    state,
+  ) as unknown) as LibraryElement<'root', LibraryElement<Entity>[]>;
   const activeItem = selectors.selectActiveItem(state);
   const showBorders = selectors.selectShowingBorders(state);
 
@@ -37,94 +39,124 @@ type Border = {
     bottom: number;
     left: number;
   };
-  width: number,
-  height: number,
+  width: number;
+  height: number;
 };
 
 const ContainersBordersComponent = (props: Props) => {
   const [isRootFocused, setIsRootFocused] = useState(false);
-  const [borders, setBorders] = useState<Border[]>([]);
+  const [bordersState, setBordersState] = useState<Border[]>([]);
   const { root, activeItem, showBorders } = props;
   const rootElement = document.getElementById('root');
 
-  useEffect(() => {
-    const isRootFocused = document.activeElement === rootElement;
-    setIsRootFocused(isRootFocused);
-
-    const borderedElements = getBorderedElements();
-
-    borderedElements.forEach(element => {
-      const HTMLElement = document.getElementById(root.id === element.id ? 'root' : element.id);
-      HTMLElement?.addEventListener('mouseenter', handleElementMouseEnter); // TODO why listeners are removed after mounting?
-      HTMLElement?.addEventListener('mouseleave', handleElementMouseLeave);
-    })
-  
-    const newBorders = borderedElements.map((element, index) => {
-      const isRoot = root.id === element.id;
-      const isOuterContainer = index === 0;
-
-      const HTMLElement = document.getElementById(isRoot ? 'root' : element.id);
-
-      return HTMLElement && rootElement ? {
-        isOuterContainer,
-        isRoot,
-        targetElement: element,
-        coordinates: {
-          top: HTMLElement.getBoundingClientRect().top - rootElement.getBoundingClientRect().top,
-          right: rootElement.getBoundingClientRect().right - HTMLElement.getBoundingClientRect().right,
-          bottom: rootElement.getBoundingClientRect().bottom - HTMLElement.getBoundingClientRect().bottom,
-          left: HTMLElement.getBoundingClientRect().left - rootElement.getBoundingClientRect().left,
-        },
-        width: HTMLElement.clientWidth,
-        height: HTMLElement.clientHeight,
-      } : null;
-    });
-
-    const filteredBorders = newBorders.filter(border => !!border) as Border[];
-
-    setBorders(filteredBorders);
-
-    return () =>
-      borderedElements.forEach((element) => {
-        const HTMLElement = document.getElementById(root.id === element.id ? 'root' : element.id);
-        HTMLElement?.removeEventListener('mouseenter', handleElementMouseEnter);
-        HTMLElement?.removeEventListener('mouseleave', handleElementMouseLeave);
-      });
-  }, [root, rootElement, activeItem, showBorders]);
-
   const getBorderedElements = () => {
     return [
-      ...root.children.filter((child) => child.type === 'container' || child.type === 'divBlock'),
+      ...root.children.filter(
+        (child) => child.type === 'container' || child.type === 'divBlock',
+      ),
       root,
     ];
-  }
+  };
 
   const handleElementMouseEnter = (event: MouseEvent) => {
     const id = (event.target as HTMLElement)?.id;
-   
+
     const labels = document.querySelectorAll('[data-label-id]');
-    Array.from(labels).forEach(label => label.classList.remove('borderLabel_hovered'));
+    Array.from(labels).forEach((label) =>
+      label.classList.remove('borderLabel_hovered'),
+    );
 
     const label = document.querySelector(`[data-label-id="${id}"]`);
     label?.classList.add('borderLabel_hovered');
 
     const borders = document.querySelectorAll('[data-border-id]');
-    Array.from(borders).forEach(label => label.classList.remove('border_hovered'));
+    Array.from(borders).forEach((border) =>
+      border.classList.remove('border_hovered'),
+    );
 
-    const currentElementBorders = document.querySelectorAll(`[data-border-id="${id}"]`);
-    Array.from(currentElementBorders).forEach(label => label.classList.add('border_hovered'));
-    
+    const currentElementBorders = document.querySelectorAll(
+      `[data-border-id="${id}"]`,
+    );
+    Array.from(currentElementBorders).forEach((border) =>
+      border.classList.add('border_hovered'),
+    );
   };
 
   const handleElementMouseLeave = () => {
     const labels = document.querySelectorAll('[data-label-id]');
-    Array.from(labels).forEach(label => label.classList.remove('borderLabel_hovered'));
+    Array.from(labels).forEach((label) =>
+      label.classList.remove('borderLabel_hovered'),
+    );
 
     const borders = document.querySelectorAll('[data-border-id]');
-    Array.from(borders).forEach(label => label.classList.remove('border_hovered'));
+    Array.from(borders).forEach((label) =>
+      label.classList.remove('border_hovered'),
+    );
   };
 
-  const handleBorderClick = (event: React.MouseEvent<HTMLSpanElement, MouseEvent>, targetElement: LibraryElement<Entity>) => {
+  useEffect(() => {
+    const isRoot = document.activeElement === rootElement;
+    setIsRootFocused(isRoot);
+
+    const borderedElements = getBorderedElements();
+
+    borderedElements.forEach((element) => {
+      const HTMLElement = document.getElementById(
+        root.id === element.id ? 'root' : element.id,
+      );
+      HTMLElement?.addEventListener('mouseenter', handleElementMouseEnter); // TODO why listeners are removed after mounting?
+      HTMLElement?.addEventListener('mouseleave', handleElementMouseLeave);
+    });
+
+    const newBorders = borderedElements.map((element, index) => {
+      const isElementRoot = root.id === element.id;
+      const isOuterContainer = index === 0;
+
+      const HTMLElement = document.getElementById(isRoot ? 'root' : element.id);
+
+      return HTMLElement && rootElement
+        ? {
+            isOuterContainer,
+            isRoot: isElementRoot,
+            targetElement: element,
+            coordinates: {
+              top:
+                HTMLElement.getBoundingClientRect().top -
+                rootElement.getBoundingClientRect().top,
+              right:
+                rootElement.getBoundingClientRect().right -
+                HTMLElement.getBoundingClientRect().right,
+              bottom:
+                rootElement.getBoundingClientRect().bottom -
+                HTMLElement.getBoundingClientRect().bottom,
+              left:
+                HTMLElement.getBoundingClientRect().left -
+                rootElement.getBoundingClientRect().left,
+            },
+            width: HTMLElement.clientWidth,
+            height: HTMLElement.clientHeight,
+          }
+        : null;
+    });
+
+    const filteredBorders = newBorders.filter((border) => !!border) as Border[];
+
+    setBordersState(filteredBorders);
+
+    return () =>
+      borderedElements.forEach((element) => {
+        const HTMLElement = document.getElementById(
+          root.id === element.id ? 'root' : element.id,
+        );
+        HTMLElement?.removeEventListener('mouseenter', handleElementMouseEnter);
+        HTMLElement?.removeEventListener('mouseleave', handleElementMouseLeave);
+      });
+  }, [root, rootElement, activeItem, showBorders]);
+
+  const handleBorderClick = (
+    event: React.MouseEvent<HTMLSpanElement, MouseEvent>,
+    targetElement: LibraryElement<Entity>,
+  ) => {
     const { setActiveItem } = props;
 
     event.preventDefault();
@@ -141,7 +173,7 @@ const ContainersBordersComponent = (props: Props) => {
     position: string,
     style: React.CSSProperties,
     targetElement: LibraryElement<Entity>,
-    isActive: boolean
+    isActive: boolean,
   ) => (
     <span
       data-border-id={targetElement.id}
@@ -153,83 +185,90 @@ const ContainersBordersComponent = (props: Props) => {
     />
   );
 
-    return (
-      <div className={styles.wrapper}>
-        {borders.map(
-          ({ targetElement, isOuterContainer, isRoot, coordinates, height }) => {
-            const isActive = isRoot ? isRootFocused : activeItem.itemId === targetElement.id;
-            const isBorderVisible = showBorders || isActive;
+  return (
+    <div className={styles.wrapper}>
+      {bordersState.map(
+        ({ targetElement, isOuterContainer, isRoot, coordinates, height }) => {
+          const isActive = isRoot
+            ? isRootFocused
+            : activeItem.itemId === targetElement.id;
+          const isBorderVisible = showBorders || isActive;
 
-            const labelClasses = cn(
-              styles.borderLabel,
-              isActive && styles.borderLabel_active,
-              (isOuterContainer || isRoot) && styles.borderLabel_outer,
-            );
+          const labelClasses = cn(
+            styles.borderLabel,
+            isActive && styles.borderLabel_active,
+            (isOuterContainer || isRoot) && styles.borderLabel_outer,
+          );
 
-            return (
-              coordinates &&
-              isBorderVisible && (
-                <React.Fragment key={targetElement.id}>
-                  <span
-                    data-label-id={targetElement.id}
-                    data-element-name={targetElement.name}
-                    className={labelClasses}
-                    style={{
-                      top: coordinates.top,
-                      right: isRoot ? coordinates.right : 'auto',
-                      left: isRoot ? 'auto' : coordinates.left,
-                    }}
-                    onClick={(event) => handleBorderClick(event, targetElement)}
-                  >
-                    {isRoot ? 'root' : targetElement.name}
-                  </span>
-                  {renderBorder(
-                    'top',
-                    {
-                      top: coordinates.top,
-                      right: coordinates.right,
-                      left: coordinates.left,
-                    },
-                    targetElement,
-                    isActive
-                  )}
-                  {renderBorder(
-                    'right',
-                    {
-                      top: coordinates.top,
-                      right: coordinates.right,
-                      height: isRoot ? height - 2 : height,
-                    },
-                    targetElement,
-                    isActive
-                  )}
-                  {renderBorder(
-                    'bottom',
-                    {
-                      top: isRoot ? coordinates.top + height - 2 : coordinates.top + height,
-                      right: coordinates.right,
-                      left: coordinates.left,
-                    },
-                    targetElement,
-                    isActive
-                  )}
-                  {renderBorder(
-                    'left',
-                    {
-                      top: coordinates.top,
-                      height: isRoot ? height - 2 : height,
-                      left: coordinates.left,
-                    },
-                    targetElement,
-                    isActive
-                  )}
-                </React.Fragment>
-              )
-            );
-          }
-        )}
-      </div>
-    );
+          return (
+            coordinates &&
+            isBorderVisible && (
+              <React.Fragment key={targetElement.id}>
+                <span
+                  data-label-id={targetElement.id}
+                  data-element-name={targetElement.name}
+                  className={labelClasses}
+                  style={{
+                    top: coordinates.top,
+                    right: isRoot ? coordinates.right : 'auto',
+                    left: isRoot ? 'auto' : coordinates.left,
+                  }}
+                  onClick={(event) => handleBorderClick(event, targetElement)}
+                >
+                  {isRoot ? 'root' : targetElement.name}
+                </span>
+                {renderBorder(
+                  'top',
+                  {
+                    top: coordinates.top,
+                    right: coordinates.right,
+                    left: coordinates.left,
+                  },
+                  targetElement,
+                  isActive,
+                )}
+                {renderBorder(
+                  'right',
+                  {
+                    top: coordinates.top,
+                    right: coordinates.right,
+                    height: isRoot ? height - 2 : height,
+                  },
+                  targetElement,
+                  isActive,
+                )}
+                {renderBorder(
+                  'bottom',
+                  {
+                    top: isRoot
+                      ? coordinates.top + height - 2
+                      : coordinates.top + height,
+                    right: coordinates.right,
+                    left: coordinates.left,
+                  },
+                  targetElement,
+                  isActive,
+                )}
+                {renderBorder(
+                  'left',
+                  {
+                    top: coordinates.top,
+                    height: isRoot ? height - 2 : height,
+                    left: coordinates.left,
+                  },
+                  targetElement,
+                  isActive,
+                )}
+              </React.Fragment>
+            )
+          );
+        },
+      )}
+    </div>
+  );
 };
 
-export const ContainersBorders = connect(mapState, mapDispatch)(ContainersBordersComponent);
+export const ContainersBorders = connect(
+  mapState,
+  mapDispatch,
+)(ContainersBordersComponent);

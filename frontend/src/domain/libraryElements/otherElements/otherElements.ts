@@ -75,7 +75,9 @@ export const image: ImageServerElement = {
   children: [],
 };
 
-export const makeDropdownItem = (textContent: string): DropdownItemServerElement => ({
+export const makeDropdownItem = (
+  textContent: string,
+): DropdownItemServerElement => ({
   buoyancy: 0,
   func_type: 'dropdownItem',
   struct_type: 'dropdownItem',

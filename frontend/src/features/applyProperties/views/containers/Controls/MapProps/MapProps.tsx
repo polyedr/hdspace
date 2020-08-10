@@ -12,7 +12,10 @@ import {
   MAX_MAP_ZOOM,
 } from '$constants/defaultParams';
 import { getPermissibleValue } from '$utils/NumberHelper';
-import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
+import {
+  withConfigurableProperties,
+  PropertiesChangeProps,
+} from '$utils/withConfigurableProperties';
 import { MapProps as MapParams, MapElement } from '$api/types';
 
 const styles = require('./MapProps.scss');
@@ -21,7 +24,7 @@ const ZOOM_STEP = 0.5;
 
 type StateProps = {
   map_props: MapParams['map_props'];
-}
+};
 
 function mapState(state: AppReduxState): StateProps {
   const activeItemParams = selectors.selectActiveItemParams<MapElement>(state);
@@ -33,55 +36,72 @@ function mapState(state: AppReduxState): StateProps {
 
 type Props = StateProps & PropertiesChangeProps<MapElement>;
 
-const Component: React.FC<Props> = ({
-  map_props,
-  updateParams,
-}) => {
+const Component: React.FC<Props> = ({ map_props, updateParams }) => {
+  const handleCenterMapCoordsChange = useCallback(
+    ({ target: { name, value } }: React.ChangeEvent<HTMLInputElement>) => {
+      let newCenter;
 
-  const handleCenterMapCoordsChange = useCallback(({ target: { name, value } }: React.ChangeEvent<HTMLInputElement>) => {
-    let newCenter;
+      if (name === 'center_lat') {
+        newCenter = {
+          lat: Number(
+            getPermissibleValue(
+              Number(value),
+              MIN_LATITUDE,
+              MAX_LATITUDE,
+            ).toFixed(5),
+          ),
+          lng: map_props.center.lng,
+        };
+      } else {
+        newCenter = {
+          lat: map_props.center.lat,
+          lng: Number(
+            getPermissibleValue(
+              Number(value),
+              MIN_LONGITUDE,
+              MAX_LONGITUDE,
+            ).toFixed(5),
+          ),
+        };
+      }
 
-    if (name === 'center_lat') {
-      newCenter = {
-        lat: Number(getPermissibleValue(Number(value), MIN_LATITUDE, MAX_LATITUDE).toFixed(5)),
-        lng: map_props.center.lng,
+      const newMapProps = {
+        ...map_props,
+        center: newCenter,
       };
-    } else {
-      newCenter = {
-        lat: map_props.center.lat,
-        lng: Number(getPermissibleValue(Number(value), MIN_LONGITUDE, MAX_LONGITUDE).toFixed(5)),
+
+      updateParams({ map_props: newMapProps });
+    },
+    [map_props, updateParams],
+  );
+
+  const handleMarkerTextChange = useCallback(
+    ({ target: { value } }) => {
+      if (value.length > 5) {
+        return;
+      }
+
+      const newMapProps = {
+        ...map_props,
+        markerText: value,
       };
-    }
 
-    const newMapProps = {
-      ...map_props,
-      center: newCenter,
-    };
+      updateParams({ map_props: newMapProps });
+    },
+    [map_props, updateParams],
+  );
 
-    updateParams({ map_props: newMapProps });
-  }, [map_props, updateParams]);
+  const handleMapZoomChange = useCallback(
+    ({ target: { value } }) => {
+      const newMapProps = {
+        ...map_props,
+        zoom: getPermissibleValue(Number(value), MIN_MAP_ZOOM, MAX_MAP_ZOOM),
+      };
 
-  const handleMarkerTextChange = useCallback(({ target: { value } }) => {
-    if (value.length > 5) {
-      return;
-    }
-
-    const newMapProps = {
-      ...map_props,
-      markerText: value,
-    };
-
-    updateParams({ map_props: newMapProps });
-  }, [map_props, updateParams]);
-
-  const handleMapZoomChange = useCallback(({ target: { value } }) => {
-    const newMapProps = {
-      ...map_props,
-      zoom: getPermissibleValue(Number(value), MIN_MAP_ZOOM, MAX_MAP_ZOOM),
-    };
-
-    updateParams({ map_props: newMapProps });
-  }, [map_props, updateParams]);
+      updateParams({ map_props: newMapProps });
+    },
+    [map_props, updateParams],
+  );
 
   return (
     <div className="propsElementsBlock">
@@ -93,7 +113,7 @@ const Component: React.FC<Props> = ({
             type="number"
             id="map_center_lat"
             name="center_lat"
-            value={(map_props.center.lat)}
+            value={map_props.center.lat}
             min={MIN_LATITUDE}
             max={MAX_LATITUDE}
             step={ZOOM_STEP}
@@ -104,7 +124,7 @@ const Component: React.FC<Props> = ({
             type="number"
             id="map_center_lng"
             name="center_lng"
-            value={(map_props.center.lng)}
+            value={map_props.center.lng}
             min={MIN_LONGITUDE}
             max={MAX_LONGITUDE}
             step={ZOOM_STEP}
@@ -115,7 +135,7 @@ const Component: React.FC<Props> = ({
             type="number"
             id="map_zoom"
             name="zoom"
-            value={(map_props.zoom)}
+            value={map_props.zoom}
             min={MIN_MAP_ZOOM}
             max={MAX_MAP_ZOOM}
             onChange={handleMapZoomChange}
@@ -127,7 +147,7 @@ const Component: React.FC<Props> = ({
             type="text"
             name="markerText"
             id="map_markerText"
-            value={(map_props.markerText)}
+            value={map_props.markerText}
             onChange={handleMarkerTextChange}
           />
         </div>
@@ -136,4 +156,6 @@ const Component: React.FC<Props> = ({
   );
 };
 
-export const MapProps = connect(mapState)(withConfigurableProperties(Component));
+export const MapProps = connect(mapState)(
+  withConfigurableProperties(Component),
+);

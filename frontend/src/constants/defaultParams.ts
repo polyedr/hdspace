@@ -10,28 +10,28 @@ import { CssLikeStyles } from '$utils/StyleHelper';
 import { getDefaultStyles } from '$domain/libraryElements/defaultStyles';
 
 export interface ISignFormElement {
-  label: string,
-  value: string,
-  placeholder: string,
-  type: string,
+  label: string;
+  value: string;
+  placeholder: string;
+  type: string;
 }
 
 export interface ISignFormField {
-  value: string,
-  label: string,
-  placeholder: string,
-  isError: boolean,
-  errorText: string,
+  value: string;
+  label: string;
+  placeholder: string;
+  isError: boolean;
+  errorText: string;
 }
 
 export interface ISignFormFields {
-  [x: string]: ISignFormField,
+  [x: string]: ISignFormField;
 }
 
 export interface ITemplateElement {
-  label: string,
-  value: { structType: ServerStructType; funcType: ServerStructType }
-  checked: boolean,
+  label: string;
+  value: { structType: ServerStructType; funcType: ServerStructType };
+  checked: boolean;
 }
 
 export const MIN_BORDER_WIDTH = 0;
@@ -61,9 +61,9 @@ export const DEFAULT_PROJECT: Project = {
         className: 'root',
         supportedElement: 'root',
         rules: getDefaultStyles('root'),
-      }
+      },
     ],
-  }
+  },
 };
 
 export const DEFAULT_LS: { root: ILSItem } = {
@@ -115,25 +115,77 @@ export const DEFAULT_SCREEN_MODE = {
   isMobileMode: false,
 };
 
-export const MODAL_ADD_ELEMENTS_TABS = ['Containers', 'Widget', 'Typography', 'Form', 'Image', 'Other'];
+export const MODAL_ADD_ELEMENTS_TABS = [
+  'Containers',
+  'Widget',
+  'Typography',
+  'Form',
+  'Image',
+  'Other',
+];
 
 export const DEFAULT_SIGNIN_FIELDS: ISignFormElement[] = [
-  { label: 'Username or Email', value: 'username', placeholder: 'UserName', type: 'text' },
-  { label: 'Password', value: 'password', placeholder: 'pass', type: 'password' },
+  {
+    label: 'Username or Email',
+    value: 'username',
+    placeholder: 'UserName',
+    type: 'text',
+  },
+  {
+    label: 'Password',
+    value: 'password',
+    placeholder: 'pass',
+    type: 'password',
+  },
 ];
 
 export const DEFAULT_SIGNUP_FIELDS: ISignFormElement[] = [
-  { label: 'Username', value: 'username', placeholder: 'UserName', type: 'text' },
-  { label: 'First name', value: 'firstName', placeholder: 'Jhon', type: 'text' },
+  {
+    label: 'Username',
+    value: 'username',
+    placeholder: 'UserName',
+    type: 'text',
+  },
+  {
+    label: 'First name',
+    value: 'firstName',
+    placeholder: 'Jhon',
+    type: 'text',
+  },
   { label: 'Last name', value: 'lastName', placeholder: 'Doe', type: 'text' },
-  { label: 'Email', value: 'email', placeholder: 'example@gmail.com', type: 'text' },
-  { label: 'Password', value: 'password', placeholder: 'pass', type: 'password' },
-  { label: 'Confirm password', value: 'confirmPassword', placeholder: 'pass', type: 'password' },
+  {
+    label: 'Email',
+    value: 'email',
+    placeholder: 'example@gmail.com',
+    type: 'text',
+  },
+  {
+    label: 'Password',
+    value: 'password',
+    placeholder: 'pass',
+    type: 'password',
+  },
+  {
+    label: 'Confirm password',
+    value: 'confirmPassword',
+    placeholder: 'pass',
+    type: 'password',
+  },
 ];
 
 export const DEFAULT_RESTORE_PASSWORD_FIELDS: ISignFormElement[] = [
-  { label: 'Password', value: 'password', placeholder: 'new password', type: 'text' },
-  { label: 'Confirm password ', value: 'confirmPassword', placeholder: 'confirm password', type: 'text' },
+  {
+    label: 'Password',
+    value: 'password',
+    placeholder: 'new password',
+    type: 'text',
+  },
+  {
+    label: 'Confirm password ',
+    value: 'confirmPassword',
+    placeholder: 'confirm password',
+    type: 'text',
+  },
 ];
 
 export const DEFAULT_AUTHORISATION_TOKEN: ITokenPair = {

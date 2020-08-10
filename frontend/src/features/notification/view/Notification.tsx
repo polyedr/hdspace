@@ -9,8 +9,8 @@ import { selectors, actionsCreators } from '$redux/project';
 import { NOTIFICATION_AUTO_HIDE_DURATION } from '$features/notification/types';
 
 type StateProps = {
-  notification:  NotificationType | null,
-}
+  notification: NotificationType | null;
+};
 
 function mapState(state: AppReduxState): StateProps {
   return {
@@ -24,10 +24,14 @@ const mapDispatch = {
 
 type Props = StateProps & typeof mapDispatch;
 
-const NotificationComponent = (props: Props) => {
-  const { notification, removeNotification } = props;
-
-  const handleSnackbarClose = (_event: React.SyntheticEvent<any, Event>, reason: SnackbarCloseReason) => {
+const NotificationComponent: React.FC<Props> = ({
+  notification,
+  removeNotification,
+}) => {
+  const handleSnackbarClose = (
+    _event: React.SyntheticEvent<any, Event>,
+    reason: SnackbarCloseReason,
+  ) => {
     if (reason === 'clickaway') {
       return;
     }
@@ -57,6 +61,9 @@ const NotificationComponent = (props: Props) => {
       }
     />
   );
-}
+};
 
-export const Notification = connect(mapState, mapDispatch)(NotificationComponent);
+export const Notification = connect(
+  mapState,
+  mapDispatch,
+)(NotificationComponent);

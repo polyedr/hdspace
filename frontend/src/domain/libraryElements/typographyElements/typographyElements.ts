@@ -117,7 +117,8 @@ export const list: ListServerElement = {
   struct_type: 'list',
   parameters: {
     group: 'typography',
-    listItems: [ // TODO research why we need items here
+    listItems: [
+      // TODO research why we need items here
       { textContent: 'First item', isLink: false, link: '' },
       { textContent: 'Second item', isLink: false, link: '' },
       { textContent: 'Third item', isLink: false, link: '' },

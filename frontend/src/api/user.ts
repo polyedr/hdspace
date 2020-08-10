@@ -4,29 +4,33 @@ import { onError, parseResult } from '$api/project';
 import { ISignInData, IApiResponseError } from '$redux/user/reducer';
 
 export interface ISignUpData {
-  username: string,
-  password: string,
-  email: string,
-  first_name: string,
-  last_name: string,
+  username: string;
+  password: string;
+  email: string;
+  first_name: string;
+  last_name: string;
 }
 
 // const generateId = () => {
 //   return `5cda${getRandomInt(10, 99)}b${getRandomInt(10, 99)}a5d3${getRandomInt(10, 99)}e72${getRandomInt(10, 99)}3b11`;
 // };
 
-export const onAuthorisationError = ({ response: r }: AxiosError): IApiResponseError => {
+export const onAuthorisationError = ({
+  response: r,
+}: AxiosError): IApiResponseError => {
   const response = r as any;
   switch (response.status) {
     case 400:
       return {
         errorStatus: response.status,
-        errorText: 'Entered data is incorrect or this login allready exist. Please, check fields data.',
+        errorText:
+          'Entered data is incorrect or this login allready exist. Please, check fields data.',
       };
     case 401:
       return {
         errorStatus: response.status,
-        errorText: 'Authorisation error. Check your username/email and password.',
+        errorText:
+          'Authorisation error. Check your username/email and password.',
       };
     case 404:
       return {
@@ -46,25 +50,23 @@ export const onAuthorisationError = ({ response: r }: AxiosError): IApiResponseE
   }
 };
 
-export const apiGetToken = (data: ISignInData) => (
+export const apiGetToken = (data: ISignInData) =>
   myAxios({
     data,
     method: 'POST',
     url: '/djauth/jwt/create/',
   })
     .then(parseResult)
-    .catch(onAuthorisationError)
-);
+    .catch(onAuthorisationError);
 
-export const apiRefreshToken = (refresh: string) => (
+export const apiRefreshToken = (refresh: string) =>
   myAxios({
     data: { refresh },
     method: 'POST',
     url: '/djauth/jwt/refresh/',
   })
     .then(parseResult)
-    .catch(onError)
-);
+    .catch(onError);
 
 export const apiSetNewUser = ({
   username,
@@ -72,7 +74,7 @@ export const apiSetNewUser = ({
   email,
   first_name,
   last_name,
-} : ISignUpData) => (
+}: ISignUpData) =>
   myAxios({
     data: {
       username,
@@ -87,29 +89,31 @@ export const apiSetNewUser = ({
     url: '/accounts/users/',
   })
     .then(parseResult)
-    .catch(onAuthorisationError)
-);
+    .catch(onAuthorisationError);
 
-export const apiRestorePassword = (email: string) => (
+export const apiRestorePassword = (email: string) =>
   myAxios({
     data: { email },
     method: 'POST',
     url: '/djauth/users/reset_password/',
   })
     .then(parseResult)
-    .catch(onError)
-);
+    .catch(onError);
 
-export const apiGetUsers = (): Promise<{ email: string; id: number }[] | IApiResponseError> => (
+export const apiGetUsers = (): Promise<
+  { email: string; id: number }[] | IApiResponseError
+> =>
   myAxios({
     method: 'GET',
     url: '/accounts/users/',
   })
     .then(parseResult)
-    .catch(onAuthorisationError)
-);
+    .catch(onAuthorisationError);
 
-export const apiSetNewPassword = (id: number, password: string): Promise<string | IApiResponseError> => (
+export const apiSetNewPassword = (
+  id: number,
+  password: string,
+): Promise<string | IApiResponseError> =>
   myAxios({
     data: {
       password,
@@ -118,5 +122,4 @@ export const apiSetNewPassword = (id: number, password: string): Promise<string 
     url: `/accounts/users/${id}/`,
   })
     .then(parseResult)
-    .catch(onAuthorisationError)
-);
+    .catch(onAuthorisationError);

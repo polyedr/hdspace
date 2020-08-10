@@ -1,23 +1,25 @@
 import React from 'react';
 import { Scrollbars } from 'react-custom-scrollbars';
 import cn from 'classnames';
-const styles = require('./styles.scss')
+
+const styles = require('./styles.scss');
 
 interface IStyle {
-  [x: string]: string | number,
+  [x: string]: string | number;
 }
 
 interface IScrollbarProps {
-  children: any,
-  style?: IStyle,
+  children: any;
+  style?: IStyle;
   className?: string;
-  trackStylesBg?: string,
-  maxHeight?: number | string,
-  autoHeightMin?: string,
-  hideTracksWhenNotNeeded?: boolean,
+  trackStylesBg?: string;
+  maxHeight?: number | string;
+  autoHeightMin?: string;
+  hideTracksWhenNotNeeded?: boolean;
 }
 
-const renderTrack = ({ style, trackStylesBg, ...props }: any) => { // TODO: add correct typings!
+const renderTrack = ({ style, trackStylesBg, ...props }: any) => {
+  // TODO: add correct typings!
   const trackStyle = {
     zIndex: 10,
     backgroundColor: trackStylesBg || '#E7EAEC',
@@ -80,7 +82,7 @@ const renderView = ({ style, ...props }: any) => {
   };
   return (
     <div
-      className={cn("box", styles.removeNativeScrollbars)}
+      className={cn('box', styles.removeNativeScrollbars)}
       style={{ ...style, ...viewStyle }}
       {...props}
     />
@@ -102,9 +104,11 @@ export const Scrollbar: React.FC<IScrollbarProps> = ({
     autoHeight
     autoHeightMin={autoHeightMin}
     autoHeightMax={maxHeight}
-    renderTrackVertical={args => renderTrack({ ...args, trackStylesBg })} // TODO: find typings for all elements!
-    renderTrackHorizontal={args => renderTrackHorizontal({ ...args, trackStylesBg })}
-    renderView={args => renderView({ ...args })}
+    renderTrackVertical={(args) => renderTrack({ ...args, trackStylesBg })} // TODO: find typings for all elements!
+    renderTrackHorizontal={(args) =>
+      renderTrackHorizontal({ ...args, trackStylesBg })
+    }
+    renderView={(args) => renderView({ ...args })}
     renderThumbVertical={renderThumb}
     renderThumbHorizontal={renderThumb}
     hideTracksWhenNotNeeded={hideTracksWhenNotNeeded}

@@ -16,7 +16,9 @@ type MapControls = typeof mapStyleControls[number];
 type CalendarControls = typeof calendarStyleControls[number];
 type ClockControls = typeof clockStyleControls[number];
 
-export const defaultMapStyles: { [K in MapControls]: CssLikeStyles } & { other?: CssLikeStyles } = {
+export const defaultMapStyles: { [K in MapControls]: CssLikeStyles } & {
+  other?: CssLikeStyles;
+} = {
   indents: {
     ...DEFAULT_INDENTS,
   },
@@ -36,7 +38,9 @@ export const defaultMapStyles: { [K in MapControls]: CssLikeStyles } & { other?:
   },
 };
 
-export const defaultCalendarStyles: { [K in CalendarControls]: CssLikeStyles } & { other?: CssLikeStyles } = {
+export const defaultCalendarStyles: {
+  [K in CalendarControls]: CssLikeStyles;
+} & { other?: CssLikeStyles } = {
   indents: {
     ...DEFAULT_INDENTS,
   },
@@ -54,7 +58,9 @@ export const defaultCalendarStyles: { [K in CalendarControls]: CssLikeStyles } &
   },
 };
 
-export const defaultClockStyles: { [K in ClockControls]: CssLikeStyles } & { other?: CssLikeStyles } = {
+export const defaultClockStyles: { [K in ClockControls]: CssLikeStyles } & {
+  other?: CssLikeStyles;
+} = {
   indents: {
     ...DEFAULT_INDENTS,
   },

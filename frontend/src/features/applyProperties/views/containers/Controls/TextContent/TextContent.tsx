@@ -3,7 +3,10 @@ import { connect } from 'react-redux';
 
 import { AppReduxState } from '$shared/types/app';
 import { selectors } from '$redux/project/';
-import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
+import {
+  withConfigurableProperties,
+  PropertiesChangeProps,
+} from '$utils/withConfigurableProperties';
 import { ParagraphElement } from '$api/types';
 
 const styles = require('./TextContent.scss');
@@ -13,7 +16,9 @@ type StateProps = {
 };
 
 function mapState(state: AppReduxState): StateProps {
-  const activeItemParams = selectors.selectActiveItemParams<ParagraphElement>(state);
+  const activeItemParams = selectors.selectActiveItemParams<ParagraphElement>(
+    state,
+  );
 
   return {
     content: activeItemParams.textContent,
@@ -22,13 +27,13 @@ function mapState(state: AppReduxState): StateProps {
 
 type Props = StateProps & PropertiesChangeProps<ParagraphElement>;
 
-const Component: React.FC<Props> = ({
-  content,
-  updateParams,
-}) => {
-  const handleTextContentChange = useCallback(({ target: { value } }) => {
-    updateParams({ textContent: value });
-  }, [updateParams]);
+const Component: React.FC<Props> = ({ content, updateParams }) => {
+  const handleTextContentChange = useCallback(
+    ({ target: { value } }) => {
+      updateParams({ textContent: value });
+    },
+    [updateParams],
+  );
 
   return (
     <div className="propsElementsBlock">
@@ -47,4 +52,6 @@ const Component: React.FC<Props> = ({
   );
 };
 
-export const TextContent = connect(mapState)(withConfigurableProperties(Component));
+export const TextContent = connect(mapState)(
+  withConfigurableProperties(Component),
+);

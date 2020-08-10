@@ -5,21 +5,20 @@ import { makeStyles } from '@material-ui/core';
 import { ClockWidget } from '$components/UI/Clock';
 
 import { ClockRendererProps } from '../types';
+
 const styles = require('../styles.scss');
 
-const Clock = (props: ClockRendererProps) => {
-  const {
-    id,
-    params,
-    entityStyles,
-    groupStyles,
-    ownStyles,
-    sortableId,
-    isDisabled,
-    className,
-    elementRef,
-  } = props;
-
+const Clock: React.FC<ClockRendererProps> = ({
+  id,
+  params,
+  entityStyles,
+  groupStyles,
+  ownStyles,
+  sortableId,
+  isDisabled,
+  className,
+  elementRef,
+}) => {
   const classes = makeStyles({
     entityStyles: {
       ...entityStyles,
@@ -55,6 +54,6 @@ const Clock = (props: ClockRendererProps) => {
       />
     </div>
   );
-}
+};
 
 export { Clock };

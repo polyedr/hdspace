@@ -7,19 +7,29 @@ import { selectors } from '$redux/project/';
 import { DropDown } from '$components/UI/DropDown/';
 import { Icon } from '$components/UI/Icon/';
 import { Button } from '$components/UI/Button/';
-import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
+import {
+  withConfigurableProperties,
+  PropertiesChangeProps,
+} from '$utils/withConfigurableProperties';
 import { IProjectScreen } from '$redux/project/types';
-import { LinkParams, InternalLink, ExternalLink, HyperlinkElement } from '$api/types';
+import {
+  LinkParams,
+  InternalLink,
+  ExternalLink,
+  HyperlinkElement,
+} from '$api/types';
 
 const styles = require('./styles.scss');
 
 type StateProps = {
   screens: IProjectScreen[];
   action: LinkParams;
-}
+};
 
 function mapState(state: AppReduxState): StateProps {
-  const activeItemParams = selectors.selectActiveItemParams<HyperlinkElement>(state);
+  const activeItemParams = selectors.selectActiveItemParams<HyperlinkElement>(
+    state,
+  );
 
   return {
     screens: selectors.selectScreens(state),
@@ -29,19 +39,25 @@ function mapState(state: AppReduxState): StateProps {
 
 type Props = StateProps & PropertiesChangeProps<HyperlinkElement>;
 
-const Component: React.FC<Props> = (props) => {
-  const {
-    action,
-    screens,
-    updateParams,
-  } = props;
+const Component: React.FC<Props> = ({ action, screens, updateParams }) => {
+  const [isExternalLink, setIsExternalLink] = React.useState<boolean>(
+    action && action.type === 'external-link',
+  );
 
-  const [isExternalLink, setIsExternalLink] = React.useState<boolean>(!!(action && action.type === 'external-link'));
+  const getCurrentUrl = React.useCallback(
+    (currentType: InternalLink['type'] | ExternalLink['type']): string => {
+      return (
+        (action &&
+          currentType === action.type &&
+          (action.type === 'external-link'
+            ? action.url
+            : String(action.screenID))) ||
+        ''
+      );
+    },
+    [action],
+  );
 
-  const getCurrentUrl =  React.useCallback((currentType: InternalLink['type'] | ExternalLink['type']): string => {
-    return action && currentType === action.type && (action.type === 'external-link' ? action.url : String(action.screenID)) || '';
-  }, [action]);
- 
   const handlePageLinkButtonClick = React.useCallback(() => {
     setIsExternalLink(false);
   }, []);
@@ -50,17 +66,32 @@ const Component: React.FC<Props> = (props) => {
     setIsExternalLink(true);
   }, []);
 
-  const handleExternalUrlInputChange = React.useCallback(({ target: { value } }) => {
-    updateParams({ action: { type: 'external-link', url: value } });
-  }, [updateParams]);
+  const handleExternalUrlInputChange = React.useCallback(
+    ({ target: { value } }) => {
+      updateParams({ action: { type: 'external-link', url: value } });
+    },
+    [updateParams],
+  );
 
-  const handlePageUrlDropdownChange = React.useCallback(value => {
-    updateParams({ action: { type: 'internal-link', screenID: value === 'noScreen' ? value : Number(value) } });
-  }, [updateParams]);
+  const handlePageUrlDropdownChange = React.useCallback(
+    (value) => {
+      updateParams({
+        action: {
+          type: 'internal-link',
+          screenID: value === 'noScreen' ? value : Number(value),
+        },
+      });
+    },
+    [updateParams],
+  );
 
   useEffect(() => {
-    action && action.type === 'external-link' && setIsExternalLink(true);
-    action && action.type === 'internal-link' && setIsExternalLink(false);
+    if (action && action.type === 'external-link') {
+      setIsExternalLink(true);
+    }
+    if (action && action.type === 'internal-link') {
+      setIsExternalLink(false);
+    }
   }, [action]);
 
   return (
@@ -69,14 +100,20 @@ const Component: React.FC<Props> = (props) => {
       <div className="propsElementsContentBlock">
         <div className="propsElementsInnerBlock">
           <Button
-            className={classNames('mainImgBtn', !isExternalLink && 'mainImgBtn_active')}
+            className={classNames(
+              'mainImgBtn',
+              !isExternalLink && 'mainImgBtn_active',
+            )}
             styleType="none"
             onClick={handlePageLinkButtonClick}
           >
             <Icon icon="link" />
           </Button>
           <Button
-            className={classNames('mainImgBtn', isExternalLink && 'mainImgBtn_active')}
+            className={classNames(
+              'mainImgBtn',
+              isExternalLink && 'mainImgBtn_active',
+            )}
             styleType="none"
             onClick={handleExternalLinkButtonClick}
           >
@@ -94,13 +131,12 @@ const Component: React.FC<Props> = (props) => {
               <DropDown
                 defaultValue={getCurrentUrl('internal-link')}
                 value={getCurrentUrl('internal-link')}
-                options={
-                  [{ label: 'No screen', value: 'noScreen' }].concat(
-                    screens.map((screen) => ({
-                      label: `${screen.name}`,
-                      value: `${screen.id}`,
-                  })))
-                }
+                options={[{ label: 'No screen', value: 'noScreen' }].concat(
+                  screens.map((screen) => ({
+                    label: `${screen.name}`,
+                    value: `${screen.id}`,
+                  })),
+                )}
                 onChange={handlePageUrlDropdownChange}
               />
             )}
@@ -111,4 +147,6 @@ const Component: React.FC<Props> = (props) => {
   );
 };
 
-export const ActionBlock = connect(mapState)(withConfigurableProperties(Component));
+export const ActionBlock = connect(mapState)(
+  withConfigurableProperties(Component),
+);

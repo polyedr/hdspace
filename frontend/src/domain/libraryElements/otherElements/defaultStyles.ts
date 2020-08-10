@@ -29,7 +29,9 @@ type DropdownItemControls = typeof dropdownItemStyleControls[number];
 type VideoControls = typeof videoStyleControls[number];
 type UndefinedControls = typeof undefinedControls[number];
 
-export const defaultRootStyles: { [K in RootControls]: CssLikeStyles } & { other?: CssLikeStyles } = {
+export const defaultRootStyles: { [K in RootControls]: CssLikeStyles } & {
+  other?: CssLikeStyles;
+} = {
   background: {
     ...DEFAULT_BACKGROUND,
     'background-color': '#ffffff',
@@ -45,7 +47,9 @@ export const defaultRootStyles: { [K in RootControls]: CssLikeStyles } & { other
   },
 };
 
-export const defaultContainerStyles: { [K in ContainerControls]: CssLikeStyles } & { other?: CssLikeStyles } = {
+export const defaultContainerStyles: {
+  [K in ContainerControls]: CssLikeStyles;
+} & { other?: CssLikeStyles } = {
   indents: {
     ...DEFAULT_INDENTS,
   },
@@ -67,7 +71,9 @@ export const defaultContainerStyles: { [K in ContainerControls]: CssLikeStyles }
   },
 };
 
-export const defaultDivBlockStyles: { [K in DivBlockControls]: CssLikeStyles } & { other?: CssLikeStyles } = {
+export const defaultDivBlockStyles: {
+  [K in DivBlockControls]: CssLikeStyles;
+} & { other?: CssLikeStyles } = {
   indents: {
     ...DEFAULT_INDENTS,
   },
@@ -90,7 +96,9 @@ export const defaultDivBlockStyles: { [K in DivBlockControls]: CssLikeStyles } &
   },
 };
 
-export const defaultImageStyles: { [K in ImageControls]: CssLikeStyles } & { other?: CssLikeStyles } = {
+export const defaultImageStyles: { [K in ImageControls]: CssLikeStyles } & {
+  other?: CssLikeStyles;
+} = {
   indents: {
     ...DEFAULT_INDENTS,
     'padding-top': '0',
@@ -111,7 +119,9 @@ export const defaultImageStyles: { [K in ImageControls]: CssLikeStyles } & { oth
   },
 };
 
-export const defaultDropdownStyles: { [K in DropdownControls]: CssLikeStyles } & { other?: CssLikeStyles } = {
+export const defaultDropdownStyles: {
+  [K in DropdownControls]: CssLikeStyles;
+} & { other?: CssLikeStyles } = {
   indents: {
     ...DEFAULT_INDENTS,
     'padding-top': '6px',
@@ -141,7 +151,9 @@ export const defaultDropdownStyles: { [K in DropdownControls]: CssLikeStyles } &
   },
 };
 
-export const defaultDropdownMenuStyles: { [K in DropdownMenuControls]: CssLikeStyles } & { other?: CssLikeStyles } = {
+export const defaultDropdownMenuStyles: {
+  [K in DropdownMenuControls]: CssLikeStyles;
+} & { other?: CssLikeStyles } = {
   indents: {
     ...DEFAULT_INDENTS,
     'padding-top': '0px',
@@ -169,7 +181,9 @@ export const defaultDropdownMenuStyles: { [K in DropdownMenuControls]: CssLikeSt
   },
 };
 
-export const defaultDropdownItemStyles: { [K in DropdownItemControls]: CssLikeStyles } & { other?: CssLikeStyles } = {
+export const defaultDropdownItemStyles: {
+  [K in DropdownItemControls]: CssLikeStyles;
+} & { other?: CssLikeStyles } = {
   indents: {
     ...DEFAULT_INDENTS,
     'padding-top': '6px',
@@ -194,7 +208,9 @@ export const defaultDropdownItemStyles: { [K in DropdownItemControls]: CssLikeSt
   },
 };
 
-export const defaultVideoStyles: { [K in VideoControls]: CssLikeStyles } & { other?: CssLikeStyles } = {
+export const defaultVideoStyles: { [K in VideoControls]: CssLikeStyles } & {
+  other?: CssLikeStyles;
+} = {
   indents: {
     ...DEFAULT_INDENTS,
     'padding-top': '0',
@@ -212,7 +228,9 @@ export const defaultVideoStyles: { [K in VideoControls]: CssLikeStyles } & { oth
   },
 };
 
-export const defaultUndefinedStyles: { [K in UndefinedControls]: CssLikeStyles } & { other?: CssLikeStyles } = {
+export const defaultUndefinedStyles: {
+  [K in UndefinedControls]: CssLikeStyles;
+} & { other?: CssLikeStyles } = {
   size: {
     ...DEFAULT_SIZE,
     width: '100px',

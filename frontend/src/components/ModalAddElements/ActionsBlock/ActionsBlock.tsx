@@ -29,20 +29,25 @@ export const ActionsBlock: React.FunctionComponent<Props> = ({
   selectedElements,
   setSelectedElements,
 }) => {
-  const handleChooseElement = useCallback((x: GroupElement['value']) => {
-    const element: CreatedElement = { type: x.structType };
-    const elements = getChooseElements(element, selectedElements);
+  const handleChooseElement = useCallback(
+    (x: GroupElement['value']) => {
+      const element: CreatedElement = { type: x.structType };
+      const elements = getChooseElements(element, selectedElements);
 
-    setSelectedElements(elements);
-  }, [selectedElements, setSelectedElements]);
+      setSelectedElements(elements);
+    },
+    [selectedElements, setSelectedElements],
+  );
 
   const onTabClick = useCallback((tabName) => changeTab(tabName), [changeTab]);
 
   const isAvailableChild = (type: Entity) => {
-    return activeItem.itemType !== 'none' && (
-      AVAILABLE_CHILDREN[activeItem.itemType]['all'] || AVAILABLE_CHILDREN[activeItem.itemType][type]
+    return (
+      activeItem.itemType !== 'none' &&
+      (AVAILABLE_CHILDREN[activeItem.itemType].all ||
+        AVAILABLE_CHILDREN[activeItem.itemType][type])
     );
-  }
+  };
 
   return (
     <div className={styles.modalActionsContainer}>
@@ -53,7 +58,7 @@ export const ActionsBlock: React.FunctionComponent<Props> = ({
               type="button"
               className={classNames(
                 styles.modalActionsTabBtn,
-                activeTab === tab && styles.modalActionsTabBtn_active
+                activeTab === tab && styles.modalActionsTabBtn_active,
               )}
               onClick={() => onTabClick(tab)}
             >
@@ -77,9 +82,9 @@ export const ActionsBlock: React.FunctionComponent<Props> = ({
                     styles.contentTemplateBtn,
                     !isDisabled &&
                       selectedElements.some(
-                        (el) => el.type === value.structType
+                        (el) => el.type === value.structType,
                       ) &&
-                      styles.contentTemplateBtn_active
+                      styles.contentTemplateBtn_active,
                   )}
                   disabled={isDisabled}
                   styleType="none" // TODO: disable elements that don't have controls or renderer

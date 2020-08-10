@@ -3,7 +3,10 @@ import { connect } from 'react-redux';
 
 import { AppReduxState } from '$shared/types/app';
 import { selectors, actionsCreators } from '$redux/project/';
-import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
+import {
+  withConfigurableProperties,
+  PropertiesChangeProps,
+} from '$utils/withConfigurableProperties';
 import { Button } from '$components/UI/Button';
 import { Icon } from '$components/UI/Icon';
 import { sharedClasses } from '$styles/sharedClasses';
@@ -12,12 +15,15 @@ import { DropdownItemElement } from '$api/types';
 const styles = require('./DropdownItems.scss');
 
 type StateProps = {
-  dropdownMenuID: string,
+  dropdownMenuID: string;
   dropdownItems: DropdownItemElement[];
 };
 
 function mapState(state: AppReduxState): StateProps {
-  const dropdownChildren = selectors.selectActiveItemChildren(state, 'dropdownMenu');
+  const dropdownChildren = selectors.selectActiveItemChildren(
+    state,
+    'dropdownMenu',
+  );
   const [dropdownMenu] = dropdownChildren;
   const dropdownItems = dropdownMenu.children;
 
@@ -32,7 +38,9 @@ const mapDispatch = {
   deleteChildFromElement: actionsCreators.deleteItem,
 };
 
-type Props = StateProps & PropertiesChangeProps<DropdownItemElement> & typeof mapDispatch;
+type Props = StateProps &
+  PropertiesChangeProps<DropdownItemElement> &
+  typeof mapDispatch;
 
 const DropdownItems: React.FC<Props> = ({
   dropdownMenuID,
@@ -41,12 +49,17 @@ const DropdownItems: React.FC<Props> = ({
   addChildToElement,
   deleteChildFromElement,
 }) => {
-  const handleTextFieldChange = (dropdownItemID: string, { target: { value } }: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleTextFieldChange = (
+    dropdownItemID: string,
+    { target: { value } }: React.ChangeEvent<HTMLTextAreaElement>,
+  ) => {
     updateParams({ textContent: value }, dropdownItemID);
   };
 
   const handleAddButtonClick = () => {
-    addChildToElement('dropdownItem', dropdownMenuID, { textContent: 'New item' });
+    addChildToElement('dropdownItem', dropdownMenuID, {
+      textContent: 'New item',
+    });
   };
 
   const handleDeleteButtonClick = (dropdownItemID: string) => {
@@ -73,7 +86,7 @@ const DropdownItems: React.FC<Props> = ({
                 className={styles.itemsField}
                 name="item text"
                 value={textContent}
-                onChange={event => handleTextFieldChange(id, event)}
+                onChange={(event) => handleTextFieldChange(id, event)}
               />
               {dropdownItems.length > 1 && (
                 <Button
@@ -92,5 +105,8 @@ const DropdownItems: React.FC<Props> = ({
   );
 };
 
-const Component = connect(mapState, mapDispatch)(withConfigurableProperties(DropdownItems));
+const Component = connect(
+  mapState,
+  mapDispatch,
+)(withConfigurableProperties(DropdownItems));
 export { Component as DropdownItems };

@@ -3,21 +3,20 @@ import cn from 'classnames';
 import { makeStyles } from '@material-ui/core';
 
 import { TextBlockRendererProps } from '../types';
+
 const styles = require('../styles.scss');
 
-const TextBlock = (props: TextBlockRendererProps) => {
-  const {
-    id,
-    entityStyles,
-    groupStyles,
-    ownStyles,
-    params,
-    sortableId,
-    isDisabled,
-    className,
-    elementRef,
-  } = props;
-
+const TextBlock: React.FC<TextBlockRendererProps> = ({
+  id,
+  entityStyles,
+  groupStyles,
+  ownStyles,
+  params,
+  sortableId,
+  isDisabled,
+  className,
+  elementRef,
+}) => {
   const classes = makeStyles({
     entityStyles: {
       ...entityStyles,

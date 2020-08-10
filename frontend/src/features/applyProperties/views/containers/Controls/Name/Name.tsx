@@ -3,7 +3,10 @@ import { connect } from 'react-redux';
 
 import { AppReduxState } from '$shared/types/app';
 import { selectors } from '$redux/project/';
-import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
+import {
+  withConfigurableProperties,
+  PropertiesChangeProps,
+} from '$utils/withConfigurableProperties';
 import { sharedClasses } from '$styles/sharedClasses';
 import { RadiobuttonElement } from '$api/types';
 
@@ -14,7 +17,9 @@ type StateProps = {
 };
 
 function mapState(state: AppReduxState): StateProps {
-  const activeItemParams = selectors.selectActiveItemParams<RadiobuttonElement>(state);
+  const activeItemParams = selectors.selectActiveItemParams<RadiobuttonElement>(
+    state,
+  );
 
   return {
     name: activeItemParams.name,
@@ -23,11 +28,10 @@ function mapState(state: AppReduxState): StateProps {
 
 type Props = StateProps & PropertiesChangeProps<RadiobuttonElement>;
 
-const Name: React.FC<Props> = ({
-  name,
-  updateParams,
-}) => {
-  const handleTextFieldChange = ({ target: { value } }: React.ChangeEvent<HTMLTextAreaElement>) => {
+const Name: React.FC<Props> = ({ name, updateParams }) => {
+  const handleTextFieldChange = ({
+    target: { value },
+  }: React.ChangeEvent<HTMLTextAreaElement>) => {
     updateParams({ name: value });
   };
 

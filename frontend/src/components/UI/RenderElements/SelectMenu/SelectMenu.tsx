@@ -5,46 +5,46 @@ import { makeStyles, Paper, MenuList } from '@material-ui/core';
 import { sharedClasses } from '$styles/sharedClasses';
 
 import { SelectMenuRendererProps } from '../types';
+
 const styles = require('../styles.scss');
 
 const getStyles = (
   entityStyles: React.CSSProperties,
   groupStyles: React.CSSProperties,
   ownStyles: React.CSSProperties,
-) => makeStyles({
-  root: {
-    position: 'absolute',
-    top: '0',
-    left: '0',
-    overflow: 'hidden',
-    zIndex: 1,
-  },
+) =>
+  makeStyles({
+    root: {
+      position: 'absolute',
+      top: '0',
+      left: '0',
+      overflow: 'hidden',
+      zIndex: 1,
+    },
 
-  entityStyles: {
-    ...entityStyles,
-  },
+    entityStyles: {
+      ...entityStyles,
+    },
 
-  groupStyles: {
-    ...groupStyles,
-  },
+    groupStyles: {
+      ...groupStyles,
+    },
 
-  ownStyles: {
-    ...ownStyles,
-  },
-});
+    ownStyles: {
+      ...ownStyles,
+    },
+  });
 
-const SelectMenuComponent = (props: SelectMenuRendererProps) => {
-  const {
-    id,
-    entityStyles,
-    groupStyles,
-    ownStyles,
-    isDisabled,
-    children,
-    className,
-    elementRef,
-  } = props;
-
+const SelectMenuComponent: React.FC<SelectMenuRendererProps> = ({
+  id,
+  entityStyles,
+  groupStyles,
+  ownStyles,
+  isDisabled,
+  children,
+  className,
+  elementRef,
+}) => {
   const handlePaperClick = (event: React.MouseEvent<HTMLDivElement>) => {
     (event.target as HTMLElement).focus();
   };
@@ -74,7 +74,9 @@ const SelectMenuComponent = (props: SelectMenuRendererProps) => {
         <MenuList>{children}</MenuList>
       </Paper>
     </div>
-  ) : <>{children}</>;
+  ) : (
+    <>{children}</>
+  );
 };
 
 export { SelectMenuComponent as SelectMenu };

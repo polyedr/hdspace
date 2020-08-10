@@ -17,9 +17,7 @@ const useStyles = makeStyles({
   checked: {},
 });
 
-const CheckboxComponent = (props: Props) => {
-  const { checked, name, onChange } = props;
-
+const CheckboxComponent: React.FC<Props> = ({ checked, name, onChange }) => {
   const classes = useStyles();
 
   return (

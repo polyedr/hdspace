@@ -1,3 +1,4 @@
+/* eslint-disable react/button-has-type */
 import React, { memo } from 'react';
 import classNames from 'classnames';
 
@@ -21,30 +22,23 @@ const getStyleType = (styleType = 'confirm') => {
 };
 
 interface IButtonProps {
-  children?: any,
-  type?: string,
-  styleType?: string,
-  disabled?: boolean,
-  onClick?: (e: any) => void
-  className?: string,
+  children?: any;
+  type?: string;
+  styleType?: string;
+  disabled?: boolean;
+  onClick?: (e: any) => void;
+  className?: string;
 }
 
-export const Button: React.FunctionComponent<IButtonProps> = memo(({
-  children,
-  type,
-  styleType,
-  disabled,
-  onClick,
-  className = '',
-}) => (
-  <button
-    type={type !== 'submit' ? 'button' : 'submit'}
-    className={classNames(styles.button, getStyleType(styleType), className)}
-    disabled={disabled}
-    onClick={type !== 'submit' ? onClick : undefined}
-  >
-    <span>
-      {children}
-    </span>
-  </button>
-));
+export const Button: React.FunctionComponent<IButtonProps> = memo(
+  ({ children, type, styleType, disabled, onClick, className = '' }) => (
+    <button
+      type={type !== 'submit' ? 'button' : 'submit'}
+      className={classNames(styles.button, getStyleType(styleType), className)}
+      disabled={disabled}
+      onClick={type !== 'submit' ? onClick : undefined}
+    >
+      <span>{children}</span>
+    </button>
+  ),
+);

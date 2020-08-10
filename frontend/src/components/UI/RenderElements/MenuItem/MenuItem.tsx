@@ -5,12 +5,13 @@ import { makeStyles, MenuItem } from '@material-ui/core';
 import { sharedClasses } from '$styles/sharedClasses';
 
 import { MenuItemRendererProps } from '../types';
+
 const styles = require('../styles.scss');
 
-const getClassStyles = (styles: React.CSSProperties, isDisabled: boolean) => ({
-  ...styles,
+const getClassStyles = (style: React.CSSProperties, isDisabled: boolean) => ({
+  ...style,
   '&:hover': {
-    backgroundColor: isDisabled ? styles.backgroundColor : 'rgba(0, 0, 0, 0.04)',
+    backgroundColor: isDisabled ? style.backgroundColor : 'rgba(0, 0, 0, 0.04)',
   },
 });
 
@@ -19,22 +20,31 @@ const getStyles = (
   entityStyles: React.CSSProperties,
   groupStyles: React.CSSProperties,
   ownStyles: React.CSSProperties,
-) => makeStyles({
-  entityStyles: {
-    ...getClassStyles(entityStyles, isDisabled),
-  },
+) =>
+  makeStyles({
+    entityStyles: {
+      ...getClassStyles(entityStyles, isDisabled),
+    },
 
-  groupStyles: {
-    ...getClassStyles(groupStyles, isDisabled),
-  },
+    groupStyles: {
+      ...getClassStyles(groupStyles, isDisabled),
+    },
 
-  ownStyles: {
-    ...getClassStyles(ownStyles, isDisabled),
-  },
-});
+    ownStyles: {
+      ...getClassStyles(ownStyles, isDisabled),
+    },
+  });
 
-const MenuItemComponent = (props: MenuItemRendererProps) => {
-  const { id, entityStyles, groupStyles, ownStyles, isDisabled, params, className, elementRef } = props;
+const MenuItemComponent: React.FC<MenuItemRendererProps> = ({
+  id,
+  entityStyles,
+  groupStyles,
+  ownStyles,
+  isDisabled,
+  params,
+  className,
+  elementRef,
+}) => {
   const { showRipple, name, value } = params;
 
   const classes = getStyles(isDisabled, entityStyles, groupStyles, ownStyles)();

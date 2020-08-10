@@ -7,15 +7,11 @@ type Props = {
   children: React.ReactElement;
 };
 
-const ControlSection = (props: Props) => {
-  const { title } = props;
-
-  return (
-    <div className={styles.section}>
-      <p className={styles.title}>{title}</p>
-      <div className={styles.content}>{props.children}</div>
-    </div>
-  );
-};
+const ControlSection: React.FC<Props> = ({ title, children }) => (
+  <div className={styles.section}>
+    <p className={styles.title}>{title}</p>
+    <div className={styles.content}>{children}</div>
+  </div>
+);
 
 export { ControlSection };

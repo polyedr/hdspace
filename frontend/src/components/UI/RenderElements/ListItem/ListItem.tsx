@@ -6,91 +6,146 @@ import * as R from 'ramda';
 import { sharedClasses } from '$styles/sharedClasses';
 
 import { ListItemRendererProps } from '../types';
+
 const styles = require('../styles.scss');
 
 const getListItemStyles = (
   entityStyles: React.CSSProperties,
   groupStyles: React.CSSProperties,
-  ownStyles: React.CSSProperties
-) => makeStyles({
-  entityStyles: {
-    ...entityStyles,
-  },
+  ownStyles: React.CSSProperties,
+) =>
+  makeStyles({
+    entityStyles: {
+      ...entityStyles,
+    },
 
-  groupStyles: {
-    ...groupStyles,
-  },
+    groupStyles: {
+      ...groupStyles,
+    },
 
-  ownStyles: {
-    ...ownStyles,
-  },
-});
+    ownStyles: {
+      ...ownStyles,
+    },
+  });
 
 const getEditableListItemStyles = (
   entityStyles: React.CSSProperties,
   groupStyles: React.CSSProperties,
-  ownStyles: React.CSSProperties
-) => makeStyles({
-  entityStyles: {
-    ...R.omit(['paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft'], entityStyles),
-  },
+  ownStyles: React.CSSProperties,
+) =>
+  makeStyles({
+    entityStyles: {
+      ...R.omit(
+        ['paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft'],
+        entityStyles,
+      ),
+    },
 
-  groupStyles: {
-    ...R.omit(['paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft'], groupStyles),
-  },
+    groupStyles: {
+      ...R.omit(
+        ['paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft'],
+        groupStyles,
+      ),
+    },
 
-  ownStyles: {
-    ...R.omit(['paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft'], ownStyles),
-  },
-});
+    ownStyles: {
+      ...R.omit(
+        ['paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft'],
+        ownStyles,
+      ),
+    },
+  });
 
 const getLinkStyles = (
   entityStyles: React.CSSProperties,
   groupStyles: React.CSSProperties,
-  ownStyles: React.CSSProperties
-) => makeStyles({
-  entityStyles: {
-    ...R.omit(['marginTop', 'marginRight', 'marginBottom', 'marginLeft', 'borderWidth', 'borderColor', 'borderStyle', 'backgroundColor'], entityStyles),
-    width: '100%',
-    height: '100%',
-    display: 'inline-block',
-  },
+  ownStyles: React.CSSProperties,
+) =>
+  makeStyles({
+    entityStyles: {
+      ...R.omit(
+        [
+          'marginTop',
+          'marginRight',
+          'marginBottom',
+          'marginLeft',
+          'borderWidth',
+          'borderColor',
+          'borderStyle',
+          'backgroundColor',
+        ],
+        entityStyles,
+      ),
+      width: '100%',
+      height: '100%',
+      display: 'inline-block',
+    },
 
-  groupStyles: {
-    ...R.omit(['marginTop', 'marginRight', 'marginBottom', 'marginLeft', 'borderWidth', 'borderColor', 'borderStyle', 'backgroundColor'], groupStyles),
-    width: '100%',
-    height: '100%',
-    display: 'inline-block',
-  },
+    groupStyles: {
+      ...R.omit(
+        [
+          'marginTop',
+          'marginRight',
+          'marginBottom',
+          'marginLeft',
+          'borderWidth',
+          'borderColor',
+          'borderStyle',
+          'backgroundColor',
+        ],
+        groupStyles,
+      ),
+      width: '100%',
+      height: '100%',
+      display: 'inline-block',
+    },
 
-  ownStyles: {
-    ...R.omit(['marginTop', 'marginRight', 'marginBottom', 'marginLeft', 'borderWidth', 'borderColor', 'borderStyle', 'backgroundColor'], ownStyles),
-    width: '100%',
-    height: '100%',
-    display: 'inline-block',
-  },
-});
+    ownStyles: {
+      ...R.omit(
+        [
+          'marginTop',
+          'marginRight',
+          'marginBottom',
+          'marginLeft',
+          'borderWidth',
+          'borderColor',
+          'borderStyle',
+          'backgroundColor',
+        ],
+        ownStyles,
+      ),
+      width: '100%',
+      height: '100%',
+      display: 'inline-block',
+    },
+  });
 
-const ListItem = (props: ListItemRendererProps) => {
-  const {
-    id,
-    entityStyles,
-    groupStyles,
-    ownStyles,
-    params,
-    isDisabled,
-    className,
-    elementRef,
-  } = props;
-
+const ListItem: React.FC<ListItemRendererProps> = ({
+  id,
+  entityStyles,
+  groupStyles,
+  ownStyles,
+  params,
+  isDisabled,
+  className,
+  elementRef,
+}) => {
   const { textContent, isLink, link } = params;
 
   const handleListItemClick = (event: React.MouseEvent<HTMLLIElement>) => {
     (event.target as HTMLElement).focus();
   };
 
-  const listItemClasses = getListItemStyles(entityStyles, groupStyles, ownStyles)();
-  const listItemWithLinkClasses = getEditableListItemStyles(entityStyles, groupStyles, ownStyles)();
+  const listItemClasses = getListItemStyles(
+    entityStyles,
+    groupStyles,
+    ownStyles,
+  )();
+  const listItemWithLinkClasses = getEditableListItemStyles(
+    entityStyles,
+    groupStyles,
+    ownStyles,
+  )();
   const linkClasses = getLinkStyles(entityStyles, groupStyles, ownStyles)();
 
   return (
@@ -140,7 +195,7 @@ const ListItem = (props: ListItemRendererProps) => {
             listItemClasses.groupStyles,
             listItemClasses.ownStyles,
           )}
-          {...isDisabled && { onClick: handleListItemClick }}
+          {...(isDisabled && { onClick: handleListItemClick })}
         >
           {textContent}
         </li>

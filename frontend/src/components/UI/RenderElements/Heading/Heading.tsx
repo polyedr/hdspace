@@ -3,21 +3,20 @@ import cn from 'classnames';
 import { makeStyles } from '@material-ui/core';
 
 import { HeadingRendererProps } from '../types';
+
 const styles = require('../styles.scss');
 
-const Heading = (props: HeadingRendererProps) => {
-  const {
-    id,
-    entityStyles,
-    groupStyles,
-    ownStyles,
-    params,
-    sortableId,
-    isDisabled,
-    className,
-    elementRef,
-  } = props;
-
+const Heading: React.FC<HeadingRendererProps> = ({
+  id,
+  entityStyles,
+  groupStyles,
+  ownStyles,
+  params,
+  sortableId,
+  isDisabled,
+  className,
+  elementRef,
+}) => {
   const classes = makeStyles({
     entityStyles: {
       ...entityStyles,

@@ -24,7 +24,9 @@ type TextBlockControls = typeof textBlockStyleControls[number];
 type ListControls = typeof listStyleControls[number];
 type ListItemControls = typeof listItemStyleControls[number];
 
-export const defaultHyperlinkStyles: { [K in HyperlinkControls]: CssLikeStyles } & { other?: CssLikeStyles } = {
+export const defaultHyperlinkStyles: {
+  [K in HyperlinkControls]: CssLikeStyles;
+} & { other?: CssLikeStyles } = {
   indents: {
     ...DEFAULT_INDENTS,
     'padding-top': '0',
@@ -51,7 +53,9 @@ export const defaultHyperlinkStyles: { [K in HyperlinkControls]: CssLikeStyles }
   },
 };
 
-export const defaultHeadingStyles: { [K in HeadingControls]: CssLikeStyles } & { other?: CssLikeStyles } = {
+export const defaultHeadingStyles: { [K in HeadingControls]: CssLikeStyles } & {
+  other?: CssLikeStyles;
+} = {
   indents: {
     ...DEFAULT_INDENTS,
     'padding-top': '0',
@@ -75,7 +79,9 @@ export const defaultHeadingStyles: { [K in HeadingControls]: CssLikeStyles } & {
   },
 };
 
-export const defaultParagraphStyles: { [K in ParagraphControls]: CssLikeStyles } & { other?: CssLikeStyles } = {
+export const defaultParagraphStyles: {
+  [K in ParagraphControls]: CssLikeStyles;
+} & { other?: CssLikeStyles } = {
   indents: {
     ...DEFAULT_INDENTS,
     'padding-top': '0',
@@ -97,7 +103,9 @@ export const defaultParagraphStyles: { [K in ParagraphControls]: CssLikeStyles }
   },
 };
 
-export const defaultTextBlockStyles: { [K in TextBlockControls]: CssLikeStyles } & { other?: CssLikeStyles } = {
+export const defaultTextBlockStyles: {
+  [K in TextBlockControls]: CssLikeStyles;
+} & { other?: CssLikeStyles } = {
   indents: {
     ...DEFAULT_INDENTS,
     'padding-top': '0',
@@ -119,7 +127,9 @@ export const defaultTextBlockStyles: { [K in TextBlockControls]: CssLikeStyles }
   },
 };
 
-export const defaultListStyles: { [K in ListControls]: CssLikeStyles } & { other?: CssLikeStyles } = {
+export const defaultListStyles: { [K in ListControls]: CssLikeStyles } & {
+  other?: CssLikeStyles;
+} = {
   indents: {
     ...DEFAULT_INDENTS,
     'padding-top': '0',
@@ -144,7 +154,9 @@ export const defaultListStyles: { [K in ListControls]: CssLikeStyles } & { other
   },
 };
 
-export const defaultListItemStyles: { [K in ListItemControls]: CssLikeStyles } & { other?: CssLikeStyles } = {
+export const defaultListItemStyles: {
+  [K in ListItemControls]: CssLikeStyles;
+} & { other?: CssLikeStyles } = {
   indents: {
     ...DEFAULT_INDENTS,
     'padding-top': '0',

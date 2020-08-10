@@ -5,20 +5,19 @@ import { makeStyles } from '@material-ui/core';
 import { CalendarWidget } from '$components/UI/Calendar';
 
 import { SharedRendererProps } from '../types';
+
 const styles = require('../styles.scss');
 
-const Calendar = (props: SharedRendererProps) => {
-  const {
-    id,
-    entityStyles,
-    groupStyles,
-    ownStyles,
-    isDisabled,
-    sortableId,
-    className,
-    elementRef,
-  } = props;
-
+const Calendar: React.FC<SharedRendererProps> = ({
+  id,
+  entityStyles,
+  groupStyles,
+  ownStyles,
+  isDisabled,
+  sortableId,
+  className,
+  elementRef,
+}) => {
   const classes = makeStyles({
     entityStyles: {
       ...entityStyles,
@@ -53,6 +52,6 @@ const Calendar = (props: SharedRendererProps) => {
       <CalendarWidget />
     </div>
   );
-}
+};
 
 export { Calendar };

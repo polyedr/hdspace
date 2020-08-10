@@ -1,11 +1,19 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, Checkbox } from '@material-ui/core';
+import {
+  ExpansionPanel,
+  ExpansionPanelSummary,
+  ExpansionPanelDetails,
+  Checkbox,
+} from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import { AppReduxState } from '$shared/types/app';
 import { selectors, actionsCreators } from '$redux/project/';
-import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
+import {
+  withConfigurableProperties,
+  PropertiesChangeProps,
+} from '$utils/withConfigurableProperties';
 import { Button } from '$components/UI/Button';
 import { Icon } from '$components/UI/Icon';
 import { sharedClasses } from '$styles/sharedClasses';
@@ -18,7 +26,10 @@ type StateProps = {
 };
 
 function mapState(state: AppReduxState): StateProps {
-  const listItems = selectors.selectActiveItemChildren(state, 'listItem') as ListItemElement[];
+  const listItems = selectors.selectActiveItemChildren(
+    state,
+    'listItem',
+  ) as ListItemElement[];
 
   return {
     listItems,
@@ -30,7 +41,9 @@ const mapDispatch = {
   deleteChildFromElement: actionsCreators.deleteItem,
 };
 
-type Props = StateProps & PropertiesChangeProps<ListItemElement> & typeof mapDispatch;
+type Props = StateProps &
+  PropertiesChangeProps<ListItemElement> &
+  typeof mapDispatch;
 
 const ListItems: React.FC<Props> = ({
   activeItemID,
@@ -39,23 +52,36 @@ const ListItems: React.FC<Props> = ({
   addChildToElement,
   deleteChildFromElement,
 }) => {
-  const handleTextContentFieldChange = (listItemID: string, { target: { value } }: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleTextContentFieldChange = (
+    listItemID: string,
+    { target: { value } }: React.ChangeEvent<HTMLTextAreaElement>,
+  ) => {
     updateParams({ textContent: value }, listItemID);
   };
 
-  const handleUrlFieldChange = (listItemID: string, { target: { value } }: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleUrlFieldChange = (
+    listItemID: string,
+    { target: { value } }: React.ChangeEvent<HTMLTextAreaElement>,
+  ) => {
     updateParams({ link: value }, listItemID);
   };
 
   const handleAddButtonClick = () => {
-    addChildToElement('listItem', activeItemID, { textContent: 'New item', isLink: false, link: '' });
+    addChildToElement('listItem', activeItemID, {
+      textContent: 'New item',
+      isLink: false,
+      link: '',
+    });
   };
 
   const handleDeleteButtonClick = (listItemID: string) => {
     deleteChildFromElement(listItemID);
   };
 
-  const handleCheckboxChange = (listItemID: string, { target: { checked } }: React.ChangeEvent<HTMLInputElement>) => {
+  const handleCheckboxChange = (
+    listItemID: string,
+    { target: { checked } }: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     updateParams({ isLink: checked }, listItemID);
   };
 
@@ -99,7 +125,7 @@ const ListItems: React.FC<Props> = ({
                   className={styles.listItemsField}
                   name="text-content"
                   value={textContent}
-                  onChange={event => handleTextContentFieldChange(id, event)}
+                  onChange={(event) => handleTextContentFieldChange(id, event)}
                 />
               </div>
               <div className={sharedClasses.propsContainer}>
@@ -109,7 +135,7 @@ const ListItems: React.FC<Props> = ({
                   value="make link"
                   name="make link"
                   checked={isLink}
-                  onChange={event => handleCheckboxChange(id, event)}
+                  onChange={(event) => handleCheckboxChange(id, event)}
                 />
               </div>
               {isLink && (
@@ -120,7 +146,7 @@ const ListItems: React.FC<Props> = ({
                       className={styles.listItemsField}
                       name="link"
                       value={link}
-                      onChange={event => handleUrlFieldChange(id, event)}
+                      onChange={(event) => handleUrlFieldChange(id, event)}
                     />
                   </div>
                 </>
@@ -133,5 +159,8 @@ const ListItems: React.FC<Props> = ({
   );
 };
 
-const Component = connect(mapState, mapDispatch)(withConfigurableProperties(ListItems));
+const Component = connect(
+  mapState,
+  mapDispatch,
+)(withConfigurableProperties(ListItems));
 export { Component as ListItems };

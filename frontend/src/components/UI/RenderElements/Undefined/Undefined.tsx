@@ -3,21 +3,20 @@ import cn from 'classnames';
 import { makeStyles } from '@material-ui/core';
 
 import { SharedRendererProps } from '../types';
+
 const styles = require('../styles.scss');
 
-const Undefined = (props: SharedRendererProps) => {
-  const {
-    id,
-    entityStyles,
-    groupStyles,
-    ownStyles,
-    sortableId,
-    isDisabled,
-    className,
-    elementRef,
-    children,
-  } = props;
-
+const Undefined: React.FC<SharedRendererProps> = ({
+  id,
+  entityStyles,
+  groupStyles,
+  ownStyles,
+  sortableId,
+  isDisabled,
+  className,
+  elementRef,
+  children,
+}) => {
   const classes = makeStyles({
     entityStyles: {
       ...entityStyles,
@@ -50,6 +49,6 @@ const Undefined = (props: SharedRendererProps) => {
       {children}
     </div>
   );
-}
+};
 
 export { Undefined };
