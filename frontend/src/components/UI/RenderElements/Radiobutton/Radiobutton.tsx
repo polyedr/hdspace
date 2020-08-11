@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/no-noninteractive-tabindex */
+
 import React, { ChangeEvent } from 'react';
 import cn from 'classnames';
 import { makeStyles, Radio } from '@material-ui/core';
@@ -37,9 +39,9 @@ const getRadiobuttonStyles = (
     },
   });
 
-const getIconClassStyles = (styles: React.CSSProperties) => ({
-  width: styles.width,
-  height: styles.height,
+const getIconClassStyles = (style: React.CSSProperties) => ({
+  width: style.width,
+  height: style.height,
 });
 
 const getIconStyles = (

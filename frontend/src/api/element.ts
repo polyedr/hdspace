@@ -1,3 +1,5 @@
+/* eslint-disable camelcase */
+
 import { myAxios, MyAxiosProps } from '$config/settings';
 import { onError, parseResult } from '$api/project';
 import { IScenarioElement, ServerStructType } from '$redux/project/types';

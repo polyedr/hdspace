@@ -1,3 +1,5 @@
+/* eslint-disable camelcase */
+
 import React, { useCallback } from 'react';
 import { connect } from 'react-redux';
 
@@ -52,7 +54,7 @@ const RenderTreeComponent: React.FC<Props> = ({
             scenarioList.find((elem) => elem.id === parseInt(itemID)) ||
             elementList.find((elem) => elem.id === parseInt(itemID));
 
-          if (!currentItem) return;
+          if (!currentItem) return null;
 
           const { struct_type, parameters, styles, name } = currentItem;
 

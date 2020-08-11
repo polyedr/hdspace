@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+
 import { AxiosResponse, AxiosError } from 'axios';
 
 import { myAxios, MyAxiosProps } from '$config/settings';

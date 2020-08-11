@@ -1,3 +1,5 @@
+/* eslint-disable camelcase */
+
 import { IPlainAction, IPlainFailAction, IAction } from '$shared/redux';
 import { CssLikeStyles } from '$utils/StyleHelper';
 import { LibraryEntities } from '$domain/libraryElements/libraryElements';
@@ -5,7 +7,7 @@ import { Entity } from '$domain/core';
 import {
   LibraryElement as RootElement,
   HeadingType,
-  VideoSettings,
+  VideoSettingsType,
   InputType,
   Project,
 } from '$api/types';
@@ -507,7 +509,7 @@ export type ElementParameters = {
   isLink?: boolean;
   link?: string;
   isOpen?: boolean;
-  videoSettings?: VideoSettings;
+  videoSettings?: VideoSettingsType;
 };
 
 export interface IScenarioElement {

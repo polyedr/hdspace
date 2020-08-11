@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+
 import React, { useCallback, memo } from 'react';
 import * as R from 'ramda';
 import { connect } from 'react-redux';
@@ -137,6 +139,7 @@ const SizeBlock: React.FC<Props> = memo((props) => {
           name={`${sizeName}_unit`}
         >
           {R.keys(Unit).map((key, index) => (
+            // eslint-disable-next-line react/no-array-index-key
             <option key={index} value={key}>
               {Unit[key]}
             </option>

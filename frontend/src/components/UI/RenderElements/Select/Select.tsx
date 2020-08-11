@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/no-noninteractive-tabindex */
+
 import React, { ChangeEvent } from 'react';
 import cn from 'classnames';
 import { makeStyles, TextField, MenuItem } from '@material-ui/core';
@@ -9,9 +11,9 @@ import { SelectRendererProps } from '../types';
 
 const styles = require('../styles.scss');
 
-const getTextFieldClassStyles = (styles: React.CSSProperties) => ({
+const getTextFieldClassStyles = (style: React.CSSProperties) => ({
   '&$focused $input': {
-    borderRadius: styles.borderRadius,
+    borderRadius: style.borderRadius,
   },
 
   input: {},
@@ -375,23 +377,25 @@ const SelectComponent: React.FC<SelectRendererProps> = ({
           } = menuItem;
           const [entityClass, groupClass] = menuItemStyles.classNames;
 
-          const entityStyles =
+          const menuItemEntityStyles =
             projectClasses?.find(
               (cssClass) => cssClass.className === entityClass,
             )?.rules || {};
-          const groupStyles =
+          const menuItemGroupStyles =
             projectClasses?.find(
               (cssClass) => cssClass.className === groupClass,
             )?.rules || {};
 
-          const convertedEntityStyles = convertPropCSS(entityStyles);
-          const convertedGroupStyles = convertPropCSS(groupStyles);
-          const ownStyles = convertPropCSS(styles.ownStyles);
+          const convertedEntityStyles = convertPropCSS(menuItemEntityStyles);
+          const menuItemConvertedGroupStyles = convertPropCSS(
+            menuItemGroupStyles,
+          );
+          const menuItemOwnStyles = convertPropCSS(styles.ownStyles);
 
           const menuItemClasses = getMenuItemClasses(
             convertedEntityStyles,
-            convertedGroupStyles,
-            ownStyles,
+            menuItemConvertedGroupStyles,
+            menuItemOwnStyles,
           )();
 
           return (

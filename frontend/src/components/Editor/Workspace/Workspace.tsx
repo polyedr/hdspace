@@ -126,10 +126,10 @@ export const Component = ({
             name: 'Root',
           });
         } else {
-          const activeItem = findChildByID(elementsTree, itemID);
+          const actualActiveItem = findChildByID(elementsTree, itemID);
 
-          if (activeItem) {
-            const { type, name } = activeItem;
+          if (actualActiveItem) {
+            const { type, name } = actualActiveItem;
             const list = getListNotDragging(type);
 
             setActiveItem({ itemId: itemID, itemType: type, name });
@@ -143,22 +143,22 @@ export const Component = ({
 
   const handleLSItemMouseOver = useCallback(
     (event: React.MouseEvent) => {
-      !isPrototypeMode &&
-        !hasItemBeingResized &&
+      if (!isPrototypeMode && !hasItemBeingResized) {
         (event.target as HTMLElement)
           ?.closest?.('.ls-item')
           ?.classList.add('hovered');
+      }
     },
     [isPrototypeMode, hasItemBeingResized],
   );
 
   const handleLSItemMouseOut = useCallback(
     (event: React.MouseEvent) => {
-      !isPrototypeMode &&
-        !hasItemBeingResized &&
+      if (!isPrototypeMode && !hasItemBeingResized) {
         (event.target as HTMLElement)
           ?.closest?.('.ls-item')
           ?.classList.remove('hovered');
+      }
     },
     [isPrototypeMode, hasItemBeingResized],
   );

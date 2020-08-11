@@ -188,8 +188,8 @@ const Component: React.FC<PropertiesPanelProps> = ({
                       {currentItemType &&
                         AVAILABLE_CONTROLS[currentItemType as Entity].root.map(
                           (controlName) => {
-                            const Component = CONTROLS[controlName];
-                            return <Component key={controlName} />;
+                            const ControlComponent = CONTROLS[controlName];
+                            return <ControlComponent key={controlName} />;
                           },
                         )}
                     </div>
@@ -200,9 +200,9 @@ const Component: React.FC<PropertiesPanelProps> = ({
                       </div>
                       <div className="propsPanelContentBlock">
                         {elementValue.map((controlName) => {
-                          const Component = CONTROLS[controlName];
+                          const ControlComponent = CONTROLS[controlName];
                           return (
-                            <Component
+                            <ControlComponent
                               key={`${controlName}${elementName}`}
                               childName={elementName}
                             />

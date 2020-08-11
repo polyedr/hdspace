@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/no-noninteractive-tabindex */
+
 import React from 'react';
 import cn from 'classnames';
 import { makeStyles } from '@material-ui/core';

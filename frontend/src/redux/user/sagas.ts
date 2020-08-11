@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { SagaIterator } from 'redux-saga';
 import { takeLatest, call, put, select } from 'redux-saga/effects';
 import {

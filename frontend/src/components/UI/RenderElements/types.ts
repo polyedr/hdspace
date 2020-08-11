@@ -1,9 +1,11 @@
+/* eslint-disable camelcase */
+
 import { IMapProps } from '$redux/project/types';
 import {
   LibraryElement,
   HeadingType,
   LinkParams,
-  VideoSettings,
+  VideoSettingsType,
   InputType,
   ProjectClass,
 } from '$api/types';
@@ -169,7 +171,7 @@ export type ListRendererProps = SharedRendererProps & {
 };
 
 export type VideoRendererProps = SharedRendererProps & {
-  params: { videoSettings: VideoSettings };
+  params: { videoSettings: VideoSettingsType };
 };
 
 export type ListItemRendererProps = Omit<

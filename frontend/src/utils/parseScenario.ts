@@ -1,3 +1,5 @@
+/* eslint-disable camelcase */
+
 import * as R from 'ramda';
 
 import { IDropDownOptions } from '$components/UI/DropDown';

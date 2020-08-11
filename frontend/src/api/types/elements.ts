@@ -1,3 +1,5 @@
+/* eslint-disable camelcase */
+
 import { Entity } from '$domain/core';
 import {
   ImageParameters,

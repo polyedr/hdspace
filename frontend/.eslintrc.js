@@ -53,14 +53,14 @@ module.exports = {
     'react/jsx-curly-newline': 'off', // should be disabled with prettier
     'react/prop-types': 'off', // should be disabled with typescript
     radix: [2, 'as-needed'], // allow to omit second parameter when possible
-    'react/jsx-props-no-spreading': 'warn',
+    'react/jsx-wrap-multilines': 'off', // to avoid conflicts with prettier
     'import/prefer-default-export': 'off',
+    'import/no-cycle': 'off', // TODO: get rid of cyclic dependencies
+    'react/jsx-props-no-spreading': 'off',
+    'jsx-a11y/label-has-associated-control': 'off',
     'no-nested-ternary': 'warn',
-    camelcase: 'warn',
-    'jsx-a11y/no-static-element-interactions': 'warn',
-    'jsx-a11y/click-events-have-key-events': 'warn',
-    'jsx-a11y/mouse-events-have-key-events': 'warn',
-    'jsx-a11y/no-noninteractive-tabindex': 'warn',
-    'react/jsx-wrap-multilines': 'off',
+    'jsx-a11y/click-events-have-key-events': 'off',
+    'jsx-a11y/mouse-events-have-key-events': 'off',
+    'jsx-a11y/no-static-element-interactions': 'off',
   },
 };

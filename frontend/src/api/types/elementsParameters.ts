@@ -1,3 +1,5 @@
+/* eslint-disable camelcase */
+
 export type ImageParameters = {
   imageURL: string;
 };
@@ -123,7 +125,7 @@ export type MapParameters = {
   };
 };
 
-export type VideoSettings = {
+export type VideoSettingsType = {
   link: string;
   autoplay: boolean;
   start: number;
@@ -133,7 +135,7 @@ export type VideoSettings = {
 };
 
 export type VideoParameters = {
-  videoSettings: VideoSettings;
+  videoSettings: VideoSettingsType;
 };
 
 export type DropdownParameters = {

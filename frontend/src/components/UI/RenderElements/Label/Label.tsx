@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/no-noninteractive-tabindex */
 import React from 'react';
 import cn from 'classnames';
 import { makeStyles } from '@material-ui/core';
@@ -40,6 +41,7 @@ const Label: React.FC<LabelRendererProps> = ({
   })();
 
   return (
+    // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
     <label
       ref={elementRef}
       id={id}

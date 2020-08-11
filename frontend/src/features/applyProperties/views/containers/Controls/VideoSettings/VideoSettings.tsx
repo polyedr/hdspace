@@ -11,14 +11,14 @@ import {
 } from '$utils/withConfigurableProperties';
 import { extractPlayerLinkInfo } from '$utils/extractVideoLink';
 import { Switch } from '$components/UI/Switch/Switch';
-import { VideoSettings, VideoElement } from '$api/types';
+import { VideoSettingsType, VideoElement } from '$api/types';
 
 import { ControlSection } from '../../../components/ControlSection/ControlSection';
 
 const styles = require('./VideoSettings.scss');
 
 type StateProps = {
-  videoSettings: VideoSettings;
+  videoSettings: VideoSettingsType;
 };
 
 function mapState(state: AppReduxState): StateProps {
@@ -27,7 +27,7 @@ function mapState(state: AppReduxState): StateProps {
   );
 
   return {
-    videoSettings: activeItemParams.videoSettings as VideoSettings,
+    videoSettings: activeItemParams.videoSettings as VideoSettingsType,
   };
 }
 
@@ -105,7 +105,7 @@ const VideoSettings: React.FC<Props> = ({ videoSettings, updateParams }) => {
       {isYoutubeVideo && (
         <>
           <ControlSection title="Autoplay">
-            <Switch checked={!!autoplay} onChange={handleSwitchChange} />
+            <Switch checked={autoplay} onChange={handleSwitchChange} />
           </ControlSection>
           <ControlSection title="Start at">
             <input

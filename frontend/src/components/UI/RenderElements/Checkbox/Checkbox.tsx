@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/no-noninteractive-tabindex */
 import React, { ChangeEvent } from 'react';
 import cn from 'classnames';
 import { makeStyles, Checkbox } from '@material-ui/core';
@@ -9,16 +10,16 @@ import { CheckboxRendererProps } from '../types';
 
 const styles = require('../styles.scss');
 
-const getCheckboxClassStyles = (styles: React.CSSProperties) => ({
-  color: styles.backgroundColor,
+const getCheckboxClassStyles = (style: React.CSSProperties) => ({
+  color: style.backgroundColor,
 
   '&$checked': {
-    color: styles.backgroundColor,
+    color: style.backgroundColor,
   },
 
   '& $icon': {
-    width: styles.width,
-    height: styles.height,
+    width: style.width,
+    height: style.height,
   },
 });
 

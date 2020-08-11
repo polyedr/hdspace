@@ -1,3 +1,5 @@
+/* eslint-disable camelcase */
+
 import { AxiosError } from 'axios';
 import { myAxios } from '$config/settings';
 import { onError, parseResult } from '$api/project';

@@ -1,3 +1,5 @@
+/* eslint-disable camelcase */
+
 import { CssLikeStyles } from '$utils/StyleHelper';
 import { Entity } from '$domain/core';
 

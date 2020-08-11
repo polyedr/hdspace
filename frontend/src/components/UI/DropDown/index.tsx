@@ -1,3 +1,4 @@
+/* eslint-disable react/no-array-index-key */ // TODO: refactor this component
 import React from 'react';
 import classNames from 'classnames';
 import { autobind } from 'core-decorators';
@@ -70,6 +71,7 @@ export class DropDown<T> extends React.PureComponent<Props<T>, State<T>> {
       (prevProps.value !== value || prevProps.options !== options) &&
       value !== undefined
     ) {
+      // eslint-disable-next-line react/no-did-update-set-state
       this.setState({
         currentValue: value,
         optionsToRender: options,

@@ -1,3 +1,5 @@
+/* eslint-disable camelcase */
+
 import React, { useCallback } from 'react';
 import { connect } from 'react-redux';
 

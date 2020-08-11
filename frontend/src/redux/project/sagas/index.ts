@@ -1,3 +1,5 @@
+/* eslint-disable camelcase, no-console */
+
 import {
   takeLatest,
   takeEvery,

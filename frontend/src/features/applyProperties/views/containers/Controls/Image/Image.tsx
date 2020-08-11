@@ -24,6 +24,7 @@ const Component: React.FC<Props> = (props) => {
       const file = target.files[0];
 
       if (file.size > 5242880) {
+        // eslint-disable-next-line no-alert
         alert('Choose image up to 5Mb!');
       } else {
         updateElementImage(activeItemID, file);

@@ -10,11 +10,13 @@ import { CssLikeStyles } from './StyleHelper';
 export const findParentByChildID = (
   element: LibraryElement<Entity, LibraryElement<Entity>[]>,
   targetID: string,
+  // eslint-disable-next-line consistent-return
 ): LibraryElement<Entity, LibraryElement<Entity>[]> | undefined => {
   if (element.children.some((child) => child.id === targetID)) {
     return element;
   }
 
+  // eslint-disable-next-line no-restricted-syntax
   for (const child of element.children) {
     const targetParent = findParentByChildID(child, targetID);
 
@@ -97,27 +99,19 @@ export const moveElement = <
   const oldParentID = findParentByChildID(root, element.id)?.id;
 
   if (!oldParentID) {
-    const rootWithNewChild = addChildToElement(
-      parentID,
-      element,
-      root,
-      elementBuoyancy,
-    );
-    return rootWithNewChild;
+    return addChildToElement(parentID, element, root, elementBuoyancy);
   }
   const rootWithoutOldChild = removeChildrenFromElement(
     oldParentID,
     [element],
     root,
   );
-  const rootWithNewChild = addChildToElement(
+  return addChildToElement(
     parentID,
     element,
     rootWithoutOldChild,
     elementBuoyancy,
   );
-
-  return rootWithNewChild;
 };
 
 export const addChildrenToElement = <
@@ -149,11 +143,13 @@ export const addChildrenToElement = <
 export const findChildByID = (
   element: LibraryElement<Entity, LibraryElement<Entity>[]>,
   targetID: string,
+  // eslint-disable-next-line consistent-return
 ): LibraryElement<Entity, LibraryElement<Entity>[]> | undefined => {
   if (element.id === targetID) {
     return element;
   }
 
+  // eslint-disable-next-line no-restricted-syntax
   for (const child of element.children) {
     const targetChild = findChildByID(child, targetID);
 
@@ -333,24 +329,18 @@ export const updateElementName = <P extends Entity, R extends Entity>(
 export const getTreeWithDefaultStylesAndParams = <T extends Entity>(
   root: LibraryElement<T>,
 ): LibraryElement<T> => {
-  const rootWithDefaultStylesAndParams = getElementsArray(root).reduce(
-    (acc, element) => {
-      const styles = getDefaultStyles(element.type);
-      const params = LIBRARY_ELEMENTS[element.type].parameters;
-      const rootWithUpdatedParameters = updateElementParameters(
-        element.id,
-        { ...params, ...element.parameters },
-        acc,
-      );
-      const rootWithUpdatedStyles = updateElementStyles(
-        element.id,
-        { ...styles, ...element.styles },
-        rootWithUpdatedParameters,
-      );
-      return rootWithUpdatedStyles;
-    },
-    root,
-  );
-
-  return rootWithDefaultStylesAndParams;
+  return getElementsArray(root).reduce((acc, element) => {
+    const styles = getDefaultStyles(element.type);
+    const params = LIBRARY_ELEMENTS[element.type].parameters;
+    const rootWithUpdatedParameters = updateElementParameters(
+      element.id,
+      { ...params, ...element.parameters },
+      acc,
+    );
+    return updateElementStyles(
+      element.id,
+      { ...styles, ...element.styles },
+      rootWithUpdatedParameters,
+    );
+  }, root);
 };

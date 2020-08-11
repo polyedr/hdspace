@@ -1,7 +1,7 @@
 import * as R from 'ramda';
 
 import { PLAYERS } from '$constants/players';
-import { VideoSettings } from '$api/types';
+import { VideoSettingsType } from '$api/types';
 
 type LinkInfo = {
   player: keyof typeof PLAYERS | 'none';
@@ -29,7 +29,10 @@ export function extractPlayerLinkInfo(link: string): LinkInfo {
   return R.head(currentVideoLink) || { player: 'none', link: '' };
 }
 
-export function getPlayerLink(params: VideoSettings, isPreviewMode: boolean) {
+export function getPlayerLink(
+  params: VideoSettingsType,
+  isPreviewMode: boolean,
+) {
   const { link, autoplay, start, end, loop, rel } = params;
 
   const linkInfo = extractPlayerLinkInfo(link);

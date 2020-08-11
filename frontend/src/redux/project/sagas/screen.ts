@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+
 import { SagaIterator } from 'redux-saga';
 import { call, select, put, all, fork } from 'redux-saga/effects';
 import * as R from 'ramda';

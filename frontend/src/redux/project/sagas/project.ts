@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+
 import { SagaIterator } from 'redux-saga';
 import { put, call, select, all } from 'redux-saga/effects';
 import { push } from 'connected-react-router';
@@ -135,6 +137,7 @@ export function* addProjectSaga({
   );
   yield put(Actions.setListProject([...projects, project]));
 
+  // eslint-disable-next-line consistent-return
   return project;
 }
 
@@ -409,28 +412,7 @@ export function* changeScreensOrderSaga(
 }
 
 export function* updateProject(newProject: Project) {
-  const currentProject: ReturnType<typeof selectors.selectCurrentProject> = yield select(
-    selectors.selectCurrentProject,
-  );
-
-  const listProject: ReturnType<typeof selectors.selectProjects> = yield select(
-    selectors.selectProjects,
-  );
-
-  const newListProject = listProject.map((project) => {
-    if (project.id === currentProject.id) {
-      return {
-        ...project,
-        name,
-      };
-    }
-
-    return project;
-  });
-
-  yield put(Actions.setListProject(newListProject));
   yield put(Actions.setProject(newProject));
-
   const convertedProject = convertProjectToPatchRequest(newProject);
   yield call(reqWrapper, apiSaveProject, { data: convertedProject });
 }
