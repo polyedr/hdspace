@@ -1,7 +1,5 @@
 import { SagaIterator } from 'redux-saga';
-import {
-  put, call, select, all,
-} from 'redux-saga/effects';
+import { put, call, select, all } from 'redux-saga/effects';
 import { push } from 'connected-react-router';
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
@@ -25,12 +23,15 @@ import {
   apiSaveProject,
 } from '$api/project';
 import { Project } from '$api/types';
-import { convertCreatedProjectToRequest, convertProjectToPatchRequest } from '$api/converters/toRequest';
+import {
+  convertCreatedProjectToRequest,
+  convertProjectToPatchRequest,
+} from '$api/converters/toRequest';
 import { DEFAULT_SCREEN } from '$constants/defaultParams';
 import { reqWrapper } from '$redux/project/sagas/index';
 import { generateFontFace } from '$utils/generateFontFace';
 
-import { selectors, T } from '../';
+import { selectors, T } from '..';
 
 export function* getListProjectSaga(): SagaIterator {
   yield put(Actions.setListProjectLoader(true));
@@ -50,8 +51,12 @@ export function* getListProjectSaga(): SagaIterator {
 
 export function* getProjectSaga(action: ReturnType<typeof Actions.getProject>) {
   const { id, screenID } = action.payload;
-  const currentProject: ReturnType<typeof selectors.selectCurrentProject> = yield select(selectors.selectCurrentProject);
-  const { user: { isPrototypeMode } }: AppReduxState = yield select();
+  const currentProject: ReturnType<typeof selectors.selectCurrentProject> = yield select(
+    selectors.selectCurrentProject,
+  );
+  const {
+    user: { isPrototypeMode },
+  }: AppReduxState = yield select();
 
   if (currentProject.id === id) {
     yield put(changePrototypeMode(isPrototypeMode));
@@ -62,18 +67,32 @@ export function* getProjectSaga(action: ReturnType<typeof Actions.getProject>) {
   if (!currentProject || currentProject.id !== id) {
     yield put(Actions.setProjectLoader(true));
 
-    const project: ReturnPromisedType<typeof apiGetProject> = yield call(reqWrapper, apiGetProject, { id });
+    const project: ReturnPromisedType<typeof apiGetProject> = yield call(
+      reqWrapper,
+      apiGetProject,
+      { id },
+    );
 
     if (project) {
       yield put(Actions.setProject(project));
       const projectScreensIDs = project.projectscreen;
-      const finalScreenID = screenID && projectScreensIDs.includes(Number(screenID)) ? screenID : projectScreensIDs[0];
+      const finalScreenID =
+        screenID && projectScreensIDs.includes(Number(screenID))
+          ? screenID
+          : projectScreensIDs[0];
 
       if (finalScreenID) {
-        yield call(activateScreenSaga, Actions.activateScreen(id, Number(finalScreenID)));
+        yield call(
+          activateScreenSaga,
+          Actions.activateScreen(id, Number(finalScreenID)),
+        );
         yield put(push(`/project/${id}/${finalScreenID}`));
 
-        const screens: IProjectScreen[] = yield all(projectScreensIDs.map(screenID => call(reqWrapper, apiGetScreen, { id: screenID })));
+        const screens: IProjectScreen[] = yield all(
+          projectScreensIDs.map((screenId) =>
+            call(reqWrapper, apiGetScreen, { id: screenId }),
+          ),
+        );
         yield put(setScreens(screens));
       } else {
         yield put(Actions.setScreen(DEFAULT_SCREEN));
@@ -86,6 +105,39 @@ export function* getProjectSaga(action: ReturnType<typeof Actions.getProject>) {
   }
 }
 
+export function* addProjectSaga({
+  payload: { name },
+}: ReturnType<typeof Actions.addProject>) {
+  const projectData = convertCreatedProjectToRequest(name);
+  let project: Project = yield call(reqWrapper, apiAddProject, {
+    data: projectData,
+  });
+
+  if (!project) {
+    // TODO: write communication for such case
+    console.error('cannot create project', project);
+    return;
+  }
+
+  const newName = `${project.name}-${project.id}`;
+
+  project = yield call(reqWrapper, apiSaveProject, {
+    data: { ...project, name: newName },
+  });
+
+  if (!project) {
+    console.error('Cannot rename project', name);
+    return;
+  }
+
+  const projects: ReturnType<typeof selectors.selectProjects> = yield select(
+    selectors.selectProjects,
+  );
+  yield put(Actions.setListProject([...projects, project]));
+
+  return project;
+}
+
 export function* addProject(action: ReturnType<typeof Actions.addProject>) {
   const { id: projectID } = yield call(addProjectSaga, action);
   yield call(addScreenSaga, Actions.addScreen(projectID, 'Screen 1', 0));
@@ -93,110 +145,176 @@ export function* addProject(action: ReturnType<typeof Actions.addProject>) {
 }
 
 export function* exportProjectSaga() {
-  const currentProject: ReturnType<typeof selectors.selectCurrentProject> = yield select(selectors.selectCurrentProject);
-  const screens: ReturnType<typeof selectors.selectScreens> = yield select(selectors.selectScreens);
-  const screensIDs = screens.sort((a, b) => (a.buoyancy - b.buoyancy)).map(screen => screen.id);
+  const currentProject: ReturnType<typeof selectors.selectCurrentProject> = yield select(
+    selectors.selectCurrentProject,
+  );
+  const screens: ReturnType<typeof selectors.selectScreens> = yield select(
+    selectors.selectScreens,
+  );
+  const screensIDs = screens
+    .sort((a, b) => a.buoyancy - b.buoyancy)
+    .map((screen) => screen.id);
 
-  const screensContainers: ReturnPromisedType<typeof apiGetScenarios>[] = yield all(screensIDs.map(screenID =>
-    call(reqWrapper, apiGetScenarios, { screenID }),
-  ));
+  const screensContainers: ReturnPromisedType<
+    typeof apiGetScenarios
+  >[] = yield all(
+    screensIDs.map((screenID) =>
+      call(reqWrapper, apiGetScenarios, { screenID }),
+    ),
+  );
 
-  const elements: ReturnPromisedType<typeof apiGetElements>[] = yield all(screensContainers.map(screenContainers => {
-    const containersIDs = screenContainers.map(screenContainer => screenContainer.id);
-    return call(reqWrapper, apiGetElements, { scenariosIDs: containersIDs });
-  }));
+  const elements: ReturnPromisedType<typeof apiGetElements>[] = yield all(
+    screensContainers.map((screenContainers) => {
+      const containersIDs = screenContainers.map(
+        (screenContainer) => screenContainer.id,
+      );
+      return call(reqWrapper, apiGetElements, { scenariosIDs: containersIDs });
+    }),
+  );
 
-  const elementsWithImages = (R.flatten(elements) as unknown as T.IScenarioElement[]).filter(element => element.parameters.imageURL);
+  const elementsWithImages = ((R.flatten(
+    elements,
+  ) as unknown) as T.IScenarioElement[]).filter(
+    (element) => element.parameters.imageURL,
+  );
 
-  const imagesResponses: Response[] = yield all(elementsWithImages.map(element => call(fetch, element.parameters.imageURL || '')));
+  const imagesResponses: Response[] = yield all(
+    elementsWithImages.map((element) =>
+      call(fetch, element.parameters.imageURL || ''),
+    ),
+  );
 
-  const imagesBlobs: Blob[] = yield all(imagesResponses.map(imageResponse => call([imageResponse, 'blob'])));
+  const imagesBlobs: Blob[] = yield all(
+    imagesResponses.map((imageResponse) => call([imageResponse, 'blob'])),
+  );
 
   const renderElements = elements;
   const zip = new JSZip();
 
   imagesBlobs.forEach((imageBlob, imageIndex) => {
-    const filename = imagesResponses[imageIndex].url.match(/([^\\/?]+(?=\\.(?!.*\\.))[^'\\)\\/]*|[^\\/$\\?)']*$)/);
+    const filename = imagesResponses[imageIndex].url.match(
+      /([^\\/?]+(?=\\.(?!.*\\.))[^'\\)\\/]*|[^\\/$\\?)']*$)/,
+    );
     const elementID = elementsWithImages[imageIndex].id;
 
     if (filename) {
-      renderElements.forEach(screenElements => {
-        const elementToAddImage = screenElements.find(element => element.id === elementID);
-        if (elementToAddImage) elementToAddImage.parameters.imageURL = `images/${filename[0]}`;
-      })
+      renderElements.forEach((screenElements) => {
+        const elementToAddImage = screenElements.find(
+          (element) => element.id === elementID,
+        );
+        if (elementToAddImage)
+          elementToAddImage.parameters.imageURL = `images/${filename[0]}`;
+      });
 
       zip.file(`images/${filename[0]}`, imageBlob);
     }
   });
 
-  const renderTreeInfo: Page[] = screensContainers.map((screenContainers, index) => {
-    const pageScreenID = screenContainers.length && screenContainers[0].screen || -1;
+  const renderTreeInfo: Page[] = screensContainers.map(
+    (screenContainers, index) => {
+      const pageScreenID =
+        (screenContainers.length && screenContainers[0].screen) || -1;
 
-    return {
-      screenInfo: {
-        name: screens.find(screen => screen.id === pageScreenID)?.name || '',
-        id: pageScreenID,
-      },
-      renderTree: {
-        containers: screenContainers,
-        elements: renderElements[index],
-      },
-    };
-  });
+      return {
+        screenInfo: {
+          name:
+            screens.find((screen) => screen.id === pageScreenID)?.name || '',
+          id: pageScreenID,
+        },
+        renderTree: {
+          containers: screenContainers,
+          elements: renderElements[index],
+        },
+      };
+    },
+  );
 
-  const fontsInfo = R.uniq((R.flatten(elements) as unknown as T.IScenarioElement[])
-    .filter(element => element.styles['font-family'])
-    .map(element => {
-      const fontFamilyName = element.styles['font-family']?.split(', ')[0].replace(/"/g,"");
-      const capitalizedFontFamilyName = fontFamilyName?.split(' ').map(word => `${word[0].toUpperCase()}${word.substring(1)}`).join('');
-      
-      const isBold = element.styles['font-weight'] === 700;
-      const isItalic = element.styles['font-style'] === 'italic';
+  const fontsInfo = R.uniq(
+    ((R.flatten(elements) as unknown) as T.IScenarioElement[])
+      .filter((element) => element.styles['font-family'])
+      .map((element) => {
+        const fontFamilyName = element.styles['font-family']
+          ?.split(', ')[0]
+          .replace(/"/g, '');
+        const capitalizedFontFamilyName = fontFamilyName
+          ?.split(' ')
+          .map((word) => `${word[0].toUpperCase()}${word.substring(1)}`)
+          .join('');
 
-      const fileName = `${capitalizedFontFamilyName}-${isBold ? "Bold" : ""}${isItalic ? "Italic" : ""}${!isBold && !isItalic ? "Regular" : ""}`;
+        const isBold = element.styles['font-weight'] === 700;
+        const isItalic = element.styles['font-style'] === 'italic';
 
-      const fontFace = generateFontFace(
-        fontFamilyName || 'Open Sans',
-        fileName || 'OpenSans-Regular',
-        element.styles['font-weight'] || 400,
-        element.styles['font-style'] || 'normal'
-      );
+        const fileName = `${capitalizedFontFamilyName}-${isBold ? 'Bold' : ''}${
+          isItalic ? 'Italic' : ''
+        }${!isBold && !isItalic ? 'Regular' : ''}`;
 
-      return { fileName, fontFace };
-  }));
+        const fontFace = generateFontFace(
+          fontFamilyName || 'Open Sans',
+          fileName || 'OpenSans-Regular',
+          element.styles['font-weight'] || 400,
+          element.styles['font-style'] || 'normal',
+        );
 
-  const fontsSVGResponses: Response[] = yield all(fontsInfo.map(font => call(fetch, `/fonts/${font.fileName}.svg`)));
-  const fontsTTFResponses: Response[] = yield all(fontsInfo.map(font => call(fetch, `/fonts/${font.fileName}.ttf`)));
-  const fontsWOFFResponses: Response[] = yield all(fontsInfo.map(font => call(fetch, `/fonts/${font.fileName}.woff`)));
+        return { fileName, fontFace };
+      }),
+  );
 
-  const fontsSVGFiles: Blob[] = yield all(fontsSVGResponses.map(fontResponse => call([fontResponse, 'blob'])));
-  const fontsTTFFiles: Blob[] = yield all(fontsTTFResponses.map(fontResponse => call([fontResponse, 'blob'])));
-  const fontsWOFFFiles: Blob[] = yield all(fontsWOFFResponses.map(fontResponse => call([fontResponse, 'blob'])));
+  const fontsSVGResponses: Response[] = yield all(
+    fontsInfo.map((font) => call(fetch, `/fonts/${font.fileName}.svg`)),
+  );
+  const fontsTTFResponses: Response[] = yield all(
+    fontsInfo.map((font) => call(fetch, `/fonts/${font.fileName}.ttf`)),
+  );
+  const fontsWOFFResponses: Response[] = yield all(
+    fontsInfo.map((font) => call(fetch, `/fonts/${font.fileName}.woff`)),
+  );
+
+  const fontsSVGFiles: Blob[] = yield all(
+    fontsSVGResponses.map((fontResponse) => call([fontResponse, 'blob'])),
+  );
+  const fontsTTFFiles: Blob[] = yield all(
+    fontsTTFResponses.map((fontResponse) => call([fontResponse, 'blob'])),
+  );
+  const fontsWOFFFiles: Blob[] = yield all(
+    fontsWOFFResponses.map((fontResponse) => call([fontResponse, 'blob'])),
+  );
 
   fontsSVGFiles.forEach((fontFile, index) => {
-    zip.file(`fonts/${fontsInfo[index]?.fileName || "OpenSans-Regular"}.svg`, fontFile);
+    zip.file(
+      `fonts/${fontsInfo[index]?.fileName || 'OpenSans-Regular'}.svg`,
+      fontFile,
+    );
   });
 
   fontsTTFFiles.forEach((fontFile, index) => {
-    zip.file(`fonts/${fontsInfo[index]?.fileName || "OpenSans-Regular"}.ttf`, fontFile);
+    zip.file(
+      `fonts/${fontsInfo[index]?.fileName || 'OpenSans-Regular'}.ttf`,
+      fontFile,
+    );
   });
 
   fontsWOFFFiles.forEach((fontFile, index) => {
-    zip.file(`fonts/${fontsInfo[index]?.fileName || "OpenSans-Regular"}.woff`, fontFile);
+    zip.file(
+      `fonts/${fontsInfo[index]?.fileName || 'OpenSans-Regular'}.woff`,
+      fontFile,
+    );
   });
 
   const jsBundleResponse = yield call(fetch, '/export/bundle.js');
-  const jsBundleFile = yield call([jsBundleResponse, "text"]);
+  const jsBundleFile = yield call([jsBundleResponse, 'text']);
 
   const stylesResponse = yield call(fetch, '/export/styles.css');
-  const stylesFile = yield call([stylesResponse, "text"]);
+  const stylesFile = yield call([stylesResponse, 'text']);
 
   const renderTreeInfoInString = JSON.stringify(renderTreeInfo);
 
-  const fontFaces = fontsInfo.map(font => font.fontFace).reduce((acc, font) => acc + font);
+  const fontFaces = fontsInfo
+    .map((font) => font.fontFace)
+    .reduce((acc, font) => acc + font);
 
-  zip.file('index.html', 
-  `
+  zip.file(
+    'index.html',
+    `
   <!doctype html>
   <html lang="en">
     <head>
@@ -214,59 +332,47 @@ export function* exportProjectSaga() {
       <script src="bundle.js"></script>
     </body>
   </html>
-  `);
+  `,
+  );
 
   zip.file('bundle.js', jsBundleFile);
   zip.file('styles.css', stylesFile);
 
-  zip.generateAsync({ type: 'blob' }).then(blob => saveAs(blob, `${currentProject.name}.zip`));
+  zip
+    .generateAsync({ type: 'blob' })
+    .then((blob) => saveAs(blob, `${currentProject.name}.zip`));
 }
 
-
-export function* addProjectSaga({ payload: { name } }: ReturnType<typeof Actions.addProject>) {
-  const projectData = convertCreatedProjectToRequest(name);
-  let project: Project = yield call(reqWrapper, apiAddProject, { data: projectData });
-   
-  if (!project) { // TODO: write communication for such case
-    console.error('cannot create project', project);
-    return;
-  }
-
-  const newName = `${project.name}-${project.id}`;
-
-  project = yield call(reqWrapper, apiSaveProject, { data: {...project, name: newName} });
-
-  if (!project) {
-    console.error('Cannot rename project', name);
-    return;
-  }
-
-  const projects: ReturnType<typeof selectors.selectProjects> = yield select(selectors.selectProjects);
-  yield put(Actions.setListProject([...projects, project]));
-
-  return project;
-}
-
-export function* delProjectSaga({ payload: { id } }: ReturnType<typeof Actions.delProject>): SagaIterator {
+export function* delProjectSaga({
+  payload: { id },
+}: ReturnType<typeof Actions.delProject>): SagaIterator {
   yield call(reqWrapper, apiDelProject, { id });
 
-  const listProject: ReturnType<typeof selectors.selectProjects> = yield select(selectors.selectProjects);
-  const newListProject: Project[] = listProject.filter(project => project.id !== id);
+  const listProject: ReturnType<typeof selectors.selectProjects> = yield select(
+    selectors.selectProjects,
+  );
+  const newListProject: Project[] = listProject.filter(
+    (project) => project.id !== id,
+  );
 
   yield put(Actions.setListProject(newListProject));
 }
 
-export function* renameProjectSaga(
-  { payload: { projectID, name } }: ReturnType<typeof Actions.renameProject>,
-): SagaIterator {
-  const listProject: ReturnType<typeof selectors.selectProjects> = yield select(selectors.selectProjects);
-  const currentProject: ReturnType<typeof selectors.selectCurrentProject> = yield select(selectors.selectCurrentProject);
+export function* renameProjectSaga({
+  payload: { projectID, name },
+}: ReturnType<typeof Actions.renameProject>): SagaIterator {
+  const listProject: ReturnType<typeof selectors.selectProjects> = yield select(
+    selectors.selectProjects,
+  );
+  const currentProject: ReturnType<typeof selectors.selectCurrentProject> = yield select(
+    selectors.selectCurrentProject,
+  );
 
-  const currProject = listProject.find(project => project.id === projectID);
+  const currProject = listProject.find((project) => project.id === projectID);
 
   if (!currProject) return;
 
-  const data = { ...currProject, name: name };
+  const data = { ...currProject, name };
 
   const updatedProject = yield call(reqWrapper, apiSaveProject, { data });
 
@@ -285,27 +391,37 @@ export function* renameProjectSaga(
   }
 }
 
-export function* changeScreensOrderSaga(action: ReturnType<typeof Actions.changeScreensOrder>) {
+export function* changeScreensOrderSaga(
+  action: ReturnType<typeof Actions.changeScreensOrder>,
+) {
   const { screens } = action.payload;
 
   yield put(setScreens(screens));
 
-  yield all(screens.map(screen => call(reqWrapper, apiSaveScreen, {
-    id: screen.id,
-    data: screen,
-  })));
+  yield all(
+    screens.map((screen) =>
+      call(reqWrapper, apiSaveScreen, {
+        id: screen.id,
+        data: screen,
+      }),
+    ),
+  );
 }
 
 export function* updateProject(newProject: Project) {
-  const currentProject: ReturnType<typeof selectors.selectCurrentProject> = yield select(selectors.selectCurrentProject);
+  const currentProject: ReturnType<typeof selectors.selectCurrentProject> = yield select(
+    selectors.selectCurrentProject,
+  );
 
-  const listProject: ReturnType<typeof selectors.selectProjects> = yield select(selectors.selectProjects);
+  const listProject: ReturnType<typeof selectors.selectProjects> = yield select(
+    selectors.selectProjects,
+  );
 
   const newListProject = listProject.map((project) => {
     if (project.id === currentProject.id) {
       return {
         ...project,
-        name: name,
+        name,
       };
     }
 
@@ -314,21 +430,26 @@ export function* updateProject(newProject: Project) {
 
   yield put(Actions.setListProject(newListProject));
   yield put(Actions.setProject(newProject));
-  
 
   const convertedProject = convertProjectToPatchRequest(newProject);
   yield call(reqWrapper, apiSaveProject, { data: convertedProject });
 }
 
-export function* updateProjectSaga(action: ReturnType<typeof Actions.updateProject>) {
+export function* updateProjectSaga(
+  action: ReturnType<typeof Actions.updateProject>,
+) {
   const { project } = action.payload;
 
   if (!action.meta) {
-    console.error(`You have to provide metainformation for action ${action.type}`);
+    console.error(
+      `You have to provide metainformation for action ${action.type}`,
+    );
     return;
   }
 
-  const currentProject: ReturnType<typeof selectors.selectCurrentProject> = yield select(selectors.selectCurrentProject);
+  const currentProject: ReturnType<typeof selectors.selectCurrentProject> = yield select(
+    selectors.selectCurrentProject,
+  );
 
   yield call(updateProject, project);
 
@@ -338,7 +459,9 @@ export function* updateProjectSaga(action: ReturnType<typeof Actions.updateProje
     yield put(Actions.setUndoActions(Actions.updateProject(currentProject)));
   }
 
-  const root: ReturnType<typeof selectors.selectRootElement> = yield select(selectors.selectRootElement);
+  const root: ReturnType<typeof selectors.selectRootElement> = yield select(
+    selectors.selectRootElement,
+  );
 
   yield put(Actions.updateElementsTree(root, action, { redo, undo }));
 }

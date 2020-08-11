@@ -10,38 +10,38 @@ import { Flex, ScreenDisplay } from '$redux/project/types';
 export interface CssLikeStyles {
   display?: ScreenDisplay['display'];
 
-  width?: string,
-  height?: string,
-  'min-height'?: string,
-  'min-width'?: string,
-  'max-width'?: string,
+  width?: string;
+  height?: string;
+  'min-height'?: string;
+  'min-width'?: string;
+  'max-width'?: string;
 
-  'margin-top'?: string,
-  'margin-right'?: string,
-  'margin-bottom'?: string,
-  'margin-left'?: string,
-  'padding-top'?: string,
-  'padding-right'?: string,
-  'padding-bottom'?: string,
-  'padding-left'?: string,
+  'margin-top'?: string;
+  'margin-right'?: string;
+  'margin-bottom'?: string;
+  'margin-left'?: string;
+  'padding-top'?: string;
+  'padding-right'?: string;
+  'padding-bottom'?: string;
+  'padding-left'?: string;
 
-  'border-style'?: string,
-  'border-width'?: string,
-  'border-color'?: string,
-  'border-radius'?: string,
+  'border-style'?: string;
+  'border-width'?: string;
+  'border-color'?: string;
+  'border-radius'?: string;
 
-  'background-color'?: string,
-  'background-image'?: string,
-  'background-repeat'?: string,
-  'background-size'?: string,
+  'background-color'?: string;
+  'background-image'?: string;
+  'background-repeat'?: string;
+  'background-size'?: string;
 
-  'font-family'?: string,
-  'color'?: string,
-  'font-size'?: string,
-  'line-height'?: string,
-  'font-style'?: string,
-  'font-weight'?: number,
-  'text-align'?: string,
+  'font-family'?: string;
+  color?: string;
+  'font-size'?: string;
+  'line-height'?: string;
+  'font-style'?: string;
+  'font-weight'?: number;
+  'text-align'?: string;
 
   'flex-direction'?: Flex['flexDirection'];
   'align-items'?: Flex['alignItems'];
@@ -50,44 +50,52 @@ export interface CssLikeStyles {
   'list-style-type'?: 'none' | 'disc';
 }
 
-type TConvertIndents = (styles: CssLikeStyles) => {
-  marginTop?: string,
-  marginRight?: string,
-  marginBottom?: string,
-  marginLeft?: string,
-  paddingTop?: string,
-  paddingRight?: string,
-  paddingBottom?: string,
-  paddingLeft?: string,
+type TConvertIndents = (
+  styles: CssLikeStyles,
+) => {
+  marginTop?: string;
+  marginRight?: string;
+  marginBottom?: string;
+  marginLeft?: string;
+  paddingTop?: string;
+  paddingRight?: string;
+  paddingBottom?: string;
+  paddingLeft?: string;
 };
 
-type TConvertBackground = (styles: CssLikeStyles) => {
-  backgroundColor?: string,
-  backgroundImage?: string,
-  backgroundSize?: string,
-  backgroundRepeat?: string,
+type TConvertBackground = (
+  styles: CssLikeStyles,
+) => {
+  backgroundColor?: string;
+  backgroundImage?: string;
+  backgroundSize?: string;
+  backgroundRepeat?: string;
 };
 
-type TConvertBorders = (styles: CssLikeStyles) => {
-  borderWidth?: string,
-  borderStyle?: string,
-  borderColor?: string,
-  borderRadius?: string,
+type TConvertBorders = (
+  styles: CssLikeStyles,
+) => {
+  borderWidth?: string;
+  borderStyle?: string;
+  borderColor?: string;
+  borderRadius?: string;
 };
 
-type TConvertTypography = (styles: CssLikeStyles) => {
-  fontFamily?: string,
-  color?: string,
-  fontSize?: string,
-  fontStyle?: string,
-  lineHeight?: string,
+type TConvertTypography = (
+  styles: CssLikeStyles,
+) => {
+  fontFamily?: string;
+  color?: string;
+  fontSize?: string;
+  fontStyle?: string;
+  lineHeight?: string;
 
   // TODO: ошибка, когда эти свойста присутствуют
-  fontWeight?: any,
-  textAlign?: any,
+  fontWeight?: any;
+  textAlign?: any;
 };
 
-const convertIndents: TConvertIndents = styles => (
+const convertIndents: TConvertIndents = (styles) =>
   R.keys(styles).reduce((result, key) => {
     switch (key) {
       case 'margin-top':
@@ -106,12 +114,12 @@ const convertIndents: TConvertIndents = styles => (
         return { ...result, paddingBottom: styles[key] };
       case 'padding-left':
         return { ...result, paddingLeft: styles[key] };
-      default: return result;
+      default:
+        return result;
     }
-  }, {})
-);
+  }, {});
 
-const convertBackground: TConvertBackground = styles => (
+const convertBackground: TConvertBackground = (styles) =>
   R.keys(styles).reduce((result, key) => {
     switch (key) {
       case 'background-color':
@@ -122,12 +130,12 @@ const convertBackground: TConvertBackground = styles => (
         return { ...result, backgroundSize: styles[key] };
       case 'background-repeat':
         return { ...result, backgroundRepeat: styles[key] };
-      default: return result;
+      default:
+        return result;
     }
-  }, {})
-);
+  }, {});
 
-const otherStyles = (styles: CssLikeStyles): React.CSSProperties => (
+const otherStyles = (styles: CssLikeStyles): React.CSSProperties =>
   R.keys(styles).reduce((acc, key) => {
     switch (key) {
       case 'flex-direction':
@@ -138,20 +146,20 @@ const otherStyles = (styles: CssLikeStyles): React.CSSProperties => (
         return { ...acc, alignItems: styles[key] };
       case 'min-height':
         return { ...acc, minHeight: styles[key] };
-      case 'max-width': 
-        return { ...acc, maxWidth: styles[key] };  
+      case 'max-width':
+        return { ...acc, maxWidth: styles[key] };
       case 'min-width':
         return { ...acc, minWidth: styles[key] };
       case 'display':
         return { ...acc, display: styles[key] };
       case 'list-style-type':
         return { ...acc, listStyleType: styles[key] };
-      default: return acc;
+      default:
+        return acc;
     }
-  }, {})
-);
+  }, {});
 
-export const convertBorders: TConvertBorders = styles => (
+export const convertBorders: TConvertBorders = (styles) =>
   R.keys(styles).reduce((result, key) => {
     switch (key) {
       case 'border-style':
@@ -162,12 +170,12 @@ export const convertBorders: TConvertBorders = styles => (
         return { ...result, borderWidth: styles[key] };
       case 'border-radius':
         return { ...result, borderRadius: styles[key] };
-      default: return result;
+      default:
+        return result;
     }
-  }, {})
-);
+  }, {});
 
-export const convertTypography: TConvertTypography = styles => (
+export const convertTypography: TConvertTypography = (styles) =>
   R.keys(styles).reduce((result, key) => {
     switch (key) {
       case 'font-family':
@@ -184,10 +192,10 @@ export const convertTypography: TConvertTypography = styles => (
         return { ...result, lineHeight: styles[key] };
       case 'text-align':
         return { ...result, textAlign: styles[key] };
-      default: return result;
+      default:
+        return result;
     }
-  }, {})
-);
+  }, {});
 
 export const convertPropCSS = (styles: CssLikeStyles): React.CSSProperties => ({
   width: styles.width,
@@ -199,7 +207,9 @@ export const convertPropCSS = (styles: CssLikeStyles): React.CSSProperties => ({
   ...otherStyles(styles),
 });
 
-export const convertFlexToCssLikeStyles = (styles: Partial<Flex>): CssLikeStyles => (
+export const convertFlexToCssLikeStyles = (
+  styles: Partial<Flex>,
+): CssLikeStyles =>
   R.keys(styles).reduce((result, key) => {
     switch (key) {
       case 'display':
@@ -210,15 +220,15 @@ export const convertFlexToCssLikeStyles = (styles: Partial<Flex>): CssLikeStyles
         return { ...result, 'align-items': styles[key] };
       case 'justifyContent':
         return { ...result, 'justify-content': styles[key] };
-      default: return result;
+      default:
+        return result;
     }
-  }, {})
-);
+  }, {});
 
 export const validateBorderRadius = (radius?: string): string | undefined => {
   if (typeof radius === 'undefined') return undefined;
 
-  const value = parseInt(radius, 10) || MIN_BORDER_RADIUS;
+  const value = parseInt(radius) || MIN_BORDER_RADIUS;
 
   if (!radius || radius.indexOf('%') === -1) {
     return `${R.clamp(MIN_BORDER_RADIUS, MAX_BORDER_RADIUS, value)}px`;

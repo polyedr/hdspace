@@ -2,7 +2,10 @@ import * as R from 'ramda';
 import { initialUi } from '../initial';
 import * as T from '../types';
 
-export function uiReducer(state: T.ProjectUiState = initialUi, action: T.Action): T.ProjectUiState {
+export function uiReducer(
+  state: T.ProjectUiState = initialUi,
+  action: T.Action,
+): T.ProjectUiState {
   switch (action.type) {
     case 'PROJECTS:SET_ACTIVE_ITEM': {
       return { ...state, activeItem: action.payload.activeItem };
@@ -23,10 +26,7 @@ export function uiReducer(state: T.ProjectUiState = initialUi, action: T.Action)
     case 'PROJECTS:CLEAN_AFTER_PREV_SCREEN': {
       return {
         ...state,
-        ...R.pick(
-          ['activeItem'],
-          initialUi,
-        ),
+        ...R.pick(['activeItem'], initialUi),
         itemToCopyInfo: state.itemToCopyInfo,
       };
     }
@@ -38,21 +38,31 @@ export function uiReducer(state: T.ProjectUiState = initialUi, action: T.Action)
     case 'PROJECTS:UPDATE_SAVED_ELEMENTS_VALUES': {
       const { elementsValues } = action.payload;
 
-      return { ...state, savedElementsValues: { ...state.savedElementsValues, ...elementsValues } };
+      return {
+        ...state,
+        savedElementsValues: {
+          ...state.savedElementsValues,
+          ...elementsValues,
+        },
+      };
     }
 
     case 'PROJECTS:UPDATE_SAVED_ELEMENT_VALUES': {
       const { itemID, savedValue } = action.payload;
 
-      return { ...state, savedElementsValues: {
-        ...state.savedElementsValues,
-        [itemID]: {
-          ...state.savedElementsValues[itemID],
-          savedValue,
-        }
-      }};
+      return {
+        ...state,
+        savedElementsValues: {
+          ...state.savedElementsValues,
+          [itemID]: {
+            ...state.savedElementsValues[itemID],
+            savedValue,
+          },
+        },
+      };
     }
 
-    default: return state;
+    default:
+      return state;
   }
 }

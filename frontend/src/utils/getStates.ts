@@ -1,8 +1,10 @@
 import { ISignFormElement, ISignFormFields } from '$constants/defaultParams';
 
-export const getInitialFieldsState = (fields: ISignFormElement[]): ISignFormFields => (
-  fields.reduce((currentInitialState, currentField) => (
-    {
+export const getInitialFieldsState = (
+  fields: ISignFormElement[],
+): ISignFormFields =>
+  fields.reduce(
+    (currentInitialState, currentField) => ({
       ...currentInitialState,
       [currentField.value]: {
         value: '',
@@ -11,6 +13,6 @@ export const getInitialFieldsState = (fields: ISignFormElement[]): ISignFormFiel
         isError: false,
         errorText: '',
       },
-    }
-  ), {})
-);
+    }),
+    {},
+  );

@@ -1,5 +1,5 @@
-import { ReduxState } from "./initial";
+import { ReduxState } from './initial';
 
 export function selectSavedElementsValues(state: ReduxState) {
   return state.savedElementsValues;
-};
+}

@@ -1,5 +1,9 @@
 import {
-  createStore, applyMiddleware, combineReducers, compose, Store,
+  createStore,
+  applyMiddleware,
+  combineReducers,
+  compose,
+  Store,
 } from 'redux';
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
@@ -15,7 +19,12 @@ import userSaga from '$redux/user/sagas';
 
 const userPersistConfig: PersistConfig = {
   key: 'user',
-  whitelist: ['isLPanelMinimized', 'isNavPanelMinimized', 'isPrototypeMode', 'tokenPair'],
+  whitelist: [
+    'isLPanelMinimized',
+    'isNavPanelMinimized',
+    'isPrototypeMode',
+    'tokenPair',
+  ],
   storage,
 };
 
@@ -29,10 +38,11 @@ const projectPersistConfig: PersistConfig = {
 export const sagaMiddleware = createSagaMiddleware();
 export const history = createBrowserHistory();
 
-const composeEnhancers = typeof window === 'object'
-  && (<any>window).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
-  ? (<any>window).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({})
-  : compose;
+const composeEnhancers =
+  typeof window === 'object' &&
+  (<any>window).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
+    ? (<any>window).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({})
+    : compose;
 
 export const store = createStore(
   combineReducers({
@@ -40,13 +50,10 @@ export const store = createStore(
     project: projectReducer, // persistReducer(projectPersistConfig, projectReducer),
     router: connectRouter(history),
   }),
-  composeEnhancers(applyMiddleware(
-    routerMiddleware(history),
-    sagaMiddleware,
-  )),
+  composeEnhancers(applyMiddleware(routerMiddleware(history), sagaMiddleware)),
 );
 
-export function configureStore(): { store: Store<any>, persistor: Persistor } {
+export function configureStore(): { store: Store<any>; persistor: Persistor } {
   sagaMiddleware.run(userSaga);
   sagaMiddleware.run(projectSaga as any); // TODO: type action types!
 

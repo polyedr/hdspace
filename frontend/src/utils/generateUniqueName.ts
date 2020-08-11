@@ -8,7 +8,9 @@ function generateUniqueName(newName: string, names: string[]): string {
   const nameNumber = nameNumberRegExp ? parseInt(nameNumberRegExp[0]) : 0;
 
   const newNumber = nameNumber + 1;
-  const numberedName = newNumber ? `${nameWithoutNumber} ${newNumber}` : `${newName}`;
+  const numberedName = newNumber
+    ? `${nameWithoutNumber} ${newNumber}`
+    : `${newName}`;
 
   return generateUniqueName(numberedName, names);
 }

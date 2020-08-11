@@ -1,4 +1,4 @@
-import { SavedElementsValues } from "$redux/project/types";
+import { SavedElementsValues } from '$redux/project/types';
 
 export type ReduxState = {
   savedElementsValues: SavedElementsValues;

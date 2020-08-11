@@ -1,9 +1,9 @@
-import { makeFeatureStateSelector } from "$shared/redux";
+import { makeFeatureStateSelector } from '$shared/redux';
 import { AppReduxState } from '$shared/types/app';
-import { ChildEntity, Entity } from "$domain/core";
-import { findChildByID } from "$utils/ElementsTreeHelper";
-import { LibraryElement } from "$api/types";
-import { CssLikeStyles } from "$utils/StyleHelper";
+import { ChildEntity, Entity } from '$domain/core';
+import { findChildByID } from '$utils/ElementsTreeHelper';
+import { LibraryElement } from '$api/types';
+import { CssLikeStyles } from '$utils/StyleHelper';
 
 export const selectProjectState = makeFeatureStateSelector('project');
 
@@ -20,8 +20,8 @@ export function selectScenario(state: AppReduxState, id: number) {
 }
 
 export function selectRootScenario(state: AppReduxState) {
-  const scenarios = selectProjectState(state).edit.scenarios;
-  return Object.values(scenarios).find(x => x.parent_id === -1);
+  const { scenarios } = selectProjectState(state).edit;
+  return Object.values(scenarios).find((x) => x.parent_id === -1);
 }
 
 export function selectScenariosElements(state: AppReduxState) {
@@ -98,79 +98,28 @@ export function selectActiveItem(state: AppReduxState) {
 
 export function selectEditableStyles(state: AppReduxState) {
   return selectProjectState(state).ui.editableStyles;
-};
-
-export function selectSharedStyles(state: AppReduxState, elementType: string) {
-  return selectCurrentProject(state).projectData.classes
-    .find(cssClass => cssClass.className === elementType)
-    ?.rules;
-};
-
-export function selectCurrentEditableStyles<T extends keyof Required<CssLikeStyles>>(state: AppReduxState, ruleName: T) {
-  const activeItemType = selectActiveItem(state).itemType;
-  const activeElementStyles = selectActiveItemStyles<LibraryElement<Entity, [], {}, Required<CssLikeStyles>>>(state).ownStyles;
-  const activeElementClassNames = selectActiveItemStyles(state).classNames;
-  const editableStyles = selectEditableStyles(state);
-  const activeEntityStyles = activeItemType !== 'none' && selectSharedStyles(state, activeItemType) || {} as Required<CssLikeStyles>;
-  const activeSharedStyles = selectSharedStyles(state, activeElementClassNames[1]) || {} as Required<CssLikeStyles>;
-
-  const getActiveItemStyles = (editableStyles: string) => {
-    if (editableStyles === 'ownStyles' || editableStyles === '') {
-      return activeElementStyles;
-    } else if (editableStyles === activeItemType) {
-      return activeEntityStyles;
-    } else {
-      return activeSharedStyles;
-    }
-  }
-
-  const activeItemStyles = getActiveItemStyles(editableStyles);
-
-  return (activeItemStyles[ruleName] || activeSharedStyles[ruleName] || activeEntityStyles[ruleName]);
-};
-
-export function selectShowingBorders(state: AppReduxState) {
-  return selectProjectState(state).ui.showContainersBorders;
-};
-
-export function selectActiveItemChildren(state: AppReduxState, childType: ChildEntity) {
-  const activeItem = selectActiveItem(state);
-  const elementsTree = selectRootElement(state);
-  const element = findChildByID(elementsTree, activeItem.itemId);
-
-  if (!element) {
-    return [];
-  }
- 
-  const children = element.children.filter(child => child.type === childType);
-  return children;
 }
 
-export const selectElementStyles = (id: string) => (state: AppReduxState) => findChildByID(state.project.control.rootElement, id)?.styles.ownStyles;
+export function selectSharedStyles(state: AppReduxState, elementType: string) {
+  return selectCurrentProject(state).projectData.classes.find(
+    (cssClass) => cssClass.className === elementType,
+  )?.rules;
+}
 
-export const selectElementParameters = (id: string) => (state: AppReduxState) => findChildByID(state.project.control.rootElement, id)?.parameters;
-
-export const selectUndoActions = (state: AppReduxState) => selectProjectState(state).control.undoActions;
-
-export const selectRedoActions = (state: AppReduxState) => selectProjectState(state).control.redoActions;
-
-export const selectHistory = (state: AppReduxState) => selectProjectState(state).control.history;
-
-export const selectRemoteMove = (state: AppReduxState) => selectProjectState(state).control.remoteMove;
-
-export const selectActiveItemStyles = makeActiveItemInfoSelector('styles');
-export const selectActiveItemChildrenStyles = makeActiveItemInfoSelector('styles');
-export const selectActiveItemParams = makeActiveItemInfoSelector('parameters');
-
-function makeActiveItemInfoSelector<T extends LibraryElement<Entity>, K extends 'styles' | 'parameters'>(
-  prop: K
-): <R extends T>(state: AppReduxState) => K extends 'styles' ? R['styles'] : R['parameters'] {
+function makeActiveItemInfoSelector<
+  T extends LibraryElement<Entity>,
+  K extends 'styles' | 'parameters'
+>(
+  prop: K,
+): <R extends T>(
+  state: AppReduxState,
+) => K extends 'styles' ? R['styles'] : R['parameters'] {
   return (state: AppReduxState) => {
     const activeItem = selectActiveItem(state);
     const elementsTree = selectRootElement(state);
     const element = findChildByID(elementsTree, activeItem.itemId);
 
-    if(!element) {
+    if (!element) {
       throw new Error(`Can not find ${activeItem.itemId} in tree!`);
     }
 
@@ -178,14 +127,94 @@ function makeActiveItemInfoSelector<T extends LibraryElement<Entity>, K extends 
   };
 }
 
+export const selectActiveItemStyles = makeActiveItemInfoSelector('styles');
+
+export function selectCurrentEditableStyles<
+  T extends keyof Required<CssLikeStyles>
+>(state: AppReduxState, ruleName: T) {
+  const activeItemType = selectActiveItem(state).itemType;
+  const activeElementStyles = selectActiveItemStyles<
+    LibraryElement<Entity, [], {}, Required<CssLikeStyles>>
+  >(state).ownStyles;
+  const activeElementClassNames = selectActiveItemStyles(state).classNames;
+  const editableStyles = selectEditableStyles(state);
+  const activeEntityStyles =
+    (activeItemType !== 'none' && selectSharedStyles(state, activeItemType)) ||
+    ({} as Required<CssLikeStyles>);
+  const activeSharedStyles =
+    selectSharedStyles(state, activeElementClassNames[1]) ||
+    ({} as Required<CssLikeStyles>);
+
+  const getActiveItemStyles = (activeStyles: string) => {
+    if (activeStyles === 'ownStyles' || activeStyles === '') {
+      return activeElementStyles;
+    }
+    if (activeStyles === activeItemType) {
+      return activeEntityStyles;
+    }
+    return activeSharedStyles;
+  };
+
+  const activeItemStyles = getActiveItemStyles(editableStyles);
+
+  return (
+    activeItemStyles[ruleName] ||
+    activeSharedStyles[ruleName] ||
+    activeEntityStyles[ruleName]
+  );
+}
+
+export function selectShowingBorders(state: AppReduxState) {
+  return selectProjectState(state).ui.showContainersBorders;
+}
+
+export function selectActiveItemChildren(
+  state: AppReduxState,
+  childType: ChildEntity,
+) {
+  const activeItem = selectActiveItem(state);
+  const elementsTree = selectRootElement(state);
+  const element = findChildByID(elementsTree, activeItem.itemId);
+
+  if (!element) {
+    return [];
+  }
+
+  const children = element.children.filter((child) => child.type === childType);
+  return children;
+}
+
+export const selectElementStyles = (id: string) => (state: AppReduxState) =>
+  findChildByID(state.project.control.rootElement, id)?.styles.ownStyles;
+
+export const selectElementParameters = (id: string) => (state: AppReduxState) =>
+  findChildByID(state.project.control.rootElement, id)?.parameters;
+
+export const selectUndoActions = (state: AppReduxState) =>
+  selectProjectState(state).control.undoActions;
+
+export const selectRedoActions = (state: AppReduxState) =>
+  selectProjectState(state).control.redoActions;
+
+export const selectHistory = (state: AppReduxState) =>
+  selectProjectState(state).control.history;
+
+export const selectRemoteMove = (state: AppReduxState) =>
+  selectProjectState(state).control.remoteMove;
+
+export const selectActiveItemChildrenStyles = makeActiveItemInfoSelector(
+  'styles',
+);
+export const selectActiveItemParams = makeActiveItemInfoSelector('parameters');
+
 export function selectItemToCopyInfo(state: AppReduxState) {
   return selectProjectState(state).ui.itemToCopyInfo;
 }
 
-export function selectScreenLoader (state: AppReduxState): boolean {
-  return selectProjectState(state).communication.screenLoader
+export function selectScreenLoader(state: AppReduxState): boolean {
+  return selectProjectState(state).communication.screenLoader;
 }
 
-export function selectProjectLoader (state: AppReduxState): boolean {
-  return selectProjectState(state).communication.projectLoader
+export function selectProjectLoader(state: AppReduxState): boolean {
+  return selectProjectState(state).communication.projectLoader;
 }

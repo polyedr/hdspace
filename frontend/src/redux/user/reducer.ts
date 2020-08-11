@@ -4,75 +4,88 @@ import * as ACTIONS from '$redux/user/actions';
 import { TYPES } from '$constants/actions';
 
 export interface ITokenPair {
-  access: string,
-  refresh: string,
+  access: string;
+  refresh: string;
 }
 
 export interface ISignInData {
-  username?: string,
-  password?: string,
+  username?: string;
+  password?: string;
 }
 
 export interface IApiResponseError {
-  errorStatus: number,
-  errorText: string,
+  errorStatus: number;
+  errorText: string;
 }
 
 export type IRootState = Readonly<{
-  isLPanelMinimized: boolean,
-  isNavPanelMinimized: boolean,
-  isPrototypeMode: boolean,
-  tokenPair: ITokenPair,
-  isLoadedToken: boolean,
-  apiResponseError: IApiResponseError,
-  userData: ISignInData,
-  restorePasswordEmail?: string,
-  restoreUserId?: number,
-  isSignLoader: boolean,
+  isLPanelMinimized: boolean;
+  isNavPanelMinimized: boolean;
+  isPrototypeMode: boolean;
+  tokenPair: ITokenPair;
+  isLoadedToken: boolean;
+  apiResponseError: IApiResponseError;
+  userData: ISignInData;
+  restorePasswordEmail?: string;
+  restoreUserId?: number;
+  isSignLoader: boolean;
 }>;
 
 type UnsafeReturnType<T> = T extends (...args: any[]) => infer R ? R : any;
 
 interface ActionHandler<T> {
-    (state: IRootState, payload: UnsafeReturnType<T>): IRootState;
+  (state: IRootState, payload: UnsafeReturnType<T>): IRootState;
 }
 
-const changeMinLPanel: ActionHandler<ReturnType<typeof ACTIONS.changeMinLPanel>> = state => ({
+const changeMinLPanel: ActionHandler<ReturnType<
+  typeof ACTIONS.changeMinLPanel
+>> = (state) => ({
   ...state,
   isLPanelMinimized: !state.isLPanelMinimized,
 });
 
-const changeMinNavPanel: ActionHandler<typeof ACTIONS.changeMinNavPanel> = state => ({
+const changeMinNavPanel: ActionHandler<typeof ACTIONS.changeMinNavPanel> = (
+  state,
+) => ({
   ...state,
   isNavPanelMinimized: !state.isNavPanelMinimized,
 });
 
-const changeSignLoader: ActionHandler<typeof ACTIONS.changeSignLoader> = (state, { isSignLoader }) => ({
+const changeSignLoader: ActionHandler<typeof ACTIONS.changeSignLoader> = (
+  state,
+  { isSignLoader },
+) => ({
   ...state,
   isSignLoader,
 });
 
-const setApiResponseError: ActionHandler<typeof ACTIONS.setApiResponseError> = (state, { apiResponseError }) => ({
+const setApiResponseError: ActionHandler<typeof ACTIONS.setApiResponseError> = (
+  state,
+  { apiResponseError },
+) => ({
   ...state,
   apiResponseError,
 });
 
 const changePrototypeMode: ActionHandler<typeof ACTIONS.changePrototypeMode> = (
-  state, { isPrototypeMode },
+  state,
+  { isPrototypeMode },
 ) => ({
   ...state,
   isPrototypeMode,
 });
 
 const setTokenPair: ActionHandler<typeof ACTIONS.setTokenPair> = (
-  state, { tokenPair },
+  state,
+  { tokenPair },
 ) => ({
   ...state,
   tokenPair,
 });
 
 const setUserData: ActionHandler<typeof ACTIONS.setUserData> = (
-  state, { data },
+  state,
+  { data },
 ) => ({
   ...state,
   userData: {
@@ -82,21 +95,24 @@ const setUserData: ActionHandler<typeof ACTIONS.setUserData> = (
 });
 
 const setLoadedToken: ActionHandler<typeof ACTIONS.setLoadedToken> = (
-  state, { isLoadedToken },
+  state,
+  { isLoadedToken },
 ) => ({
   ...state,
   isLoadedToken,
 });
 
 const setRestorePasswordEmail: ActionHandler<typeof ACTIONS.setRestorePasswordEmail> = (
-  state, { restorePasswordEmail },
+  state,
+  { restorePasswordEmail },
 ) => ({
   ...state,
   restorePasswordEmail,
 });
 
 const setRestoreUserId: ActionHandler<typeof ACTIONS.setRestoreUserId> = (
-  state, { restoreUserId },
+  state,
+  { restoreUserId },
 ) => ({
   ...state,
   restoreUserId,

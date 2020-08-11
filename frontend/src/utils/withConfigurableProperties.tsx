@@ -2,7 +2,6 @@ import React, { useCallback } from 'react';
 import { connect } from 'react-redux';
 
 import { AppReduxState } from '$shared/types/app';
-import { IScenarioElement } from '$redux/project/types';
 import { actionsCreators, selectors } from '$redux/project/';
 import { CssLikeStyles } from '$utils/StyleHelper';
 import { LibraryElement } from '$api/types';
@@ -44,28 +43,29 @@ export type PropertiesChangeProps<T extends LibraryElement<Entity>> = {
 type Params<T extends LibraryElement<Entity>> = Partial<T['parameters']>;
 
 // potentially pass config with needed styles/params first
-export function withConfigurableProperties<K extends LibraryElement<Entity>, T extends PropertiesChangeProps<K>>(
-  Component: React.ComponentType<T>
+export function withConfigurableProperties<
+  K extends LibraryElement<Entity>,
+  T extends PropertiesChangeProps<K>
+>(
+  Component: React.ComponentType<T>,
 ): React.FC<Omit<T, keyof PropertiesChangeProps<K>>> {
-  function WrapperComponent(props: any) {
-    const {
-      activeItemType,
-      activeItemID,
-      editableStyles,
-      removeSharedStyles,
-      updateSharedStyles,
-      removeElementStyles,
-      updateElementStyles,
-      updateElementParameters,
-      ...restProps
-    } = props;
-
+  function WrapperComponent({
+    activeItemType,
+    activeItemID,
+    editableStyles,
+    removeSharedStyles,
+    updateSharedStyles,
+    removeElementStyles,
+    updateElementStyles,
+    updateElementParameters,
+    ...restProps
+  }: any) {
     const removeStyles = (ruleName: string, itemID?: string) => {
       if (editableStyles === 'ownStyles') {
         removeElementStyles(itemID || activeItemID, ruleName);
       } else {
         removeSharedStyles(editableStyles, ruleName);
-      };
+      }
     };
 
     const updateStyles = (styles: CssLikeStyles, itemID?: string) => {
@@ -76,9 +76,12 @@ export function withConfigurableProperties<K extends LibraryElement<Entity>, T e
       }
     };
 
-    const updateParams = useCallback((params: Params<K>, itemID?: string) => {
-      updateElementParameters(itemID || activeItemID, params);
-    }, [activeItemID]);
+    const updateParams = useCallback(
+      (params: Params<K>, itemID?: string) => {
+        updateElementParameters(itemID || activeItemID, params);
+      },
+      [activeItemID],
+    );
 
     return (
       <Component

@@ -8,8 +8,8 @@ import {
 import * as T from './types';
 
 export const initialData: T.ProjectDataState = {
-    libraryElements: {} as any, // will be loaded on app start
-    listProject: [],
+  libraryElements: {} as any, // will be loaded on app start
+  listProject: [],
 };
 
 export const initialUi: T.ProjectUiState = {
