@@ -9,7 +9,7 @@
     "build:export": "NODE_ENV=production webpack --env production --config=webpack.export.config.js",
     "heroku-postbuild": "npm run build",
     "start:prod": "node server.js",
-    "lint": "eslint src/** --ext .ts,.tsx --fix",
+    "lint": "eslint src/**/*.{ts,tsx} --fix",
     "status": "webpack  --env production --json > stats.json",
     "test": "jest"
   },

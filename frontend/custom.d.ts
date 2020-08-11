@@ -4,11 +4,11 @@ declare module '*.svg' {
 }
 
 declare module '*.scss' {
-  const content: {[className: string]: string};
+  const content: { [className: string]: string };
   export = content;
 }
 
 declare module '*.less' {
-  const content: {[className: string]: string};
+  const content: { [className: string]: string };
   export = content;
 }

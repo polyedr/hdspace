@@ -79,7 +79,7 @@ import { DEFAULT_AUTHORISATION_TOKEN } from '$constants/defaultParams';
 import { LibraryEntities } from '$domain/libraryElements/libraryElements';
 
 import { ItemToCopyInfo } from '../types';
-import { selectors, T as ProjectT, actionsCreators, T } from '..';
+import { selectors, T as ProjectT, actionsCreators } from '..';
 
 function* LocationChange({ payload: { location } }: LocationChangeAction) {
   const {

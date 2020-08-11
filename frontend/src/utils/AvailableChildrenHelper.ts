@@ -39,7 +39,5 @@ export const isElementCanBeAdded = (
     return false;
   }
 
-  const isElementCanBeRemove = sameChildrenAmount < availableSameChildren.max;
-
-  return isElementCanBeRemove;
+  return sameChildrenAmount < availableSameChildren.max;
 };
