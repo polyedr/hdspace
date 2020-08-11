@@ -12,13 +12,16 @@ export default combineReducers({
   data: dataReducer,
   ui: composeReducers([
     uiReducer, // TODO: resolve typings!
-    makeResetStateReducer<T.ResetScreenState, T.ProjectUiState>('PROJECTS:RESET_SCREEN_STATE', initialUi) as any,
+    makeResetStateReducer<T.ResetScreenState, T.ProjectUiState>(
+      'PROJECTS:RESET_SCREEN_STATE',
+      initialUi,
+    ) as any,
   ]),
   edit: composeReducers([
     editReducer,
     makeResetStateReducer<T.ResetScreenState, T.ProjectEditState>(
       'PROJECTS:RESET_SCREEN_STATE',
-      initialEdit
+      initialEdit,
     ) as any,
   ]),
   communication: communicationReducer,

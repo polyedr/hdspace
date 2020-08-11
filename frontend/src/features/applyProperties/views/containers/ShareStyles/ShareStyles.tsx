@@ -3,9 +3,9 @@ import { Chip, makeStyles } from '@material-ui/core';
 import DoneIcon from '@material-ui/icons/Done';
 import CancelIcon from '@material-ui/icons/Cancel';
 
+import { connect } from 'react-redux';
 import { actionsCreators, selectors } from '$redux/project';
 import { AppReduxState } from '$shared/types/app';
-import { connect } from 'react-redux';
 import { findChildByID } from '$utils/ElementsTreeHelper';
 import { Button } from '$components/UI/Button';
 import { ControlSection } from '../../components/ControlSection/ControlSection';
@@ -15,7 +15,7 @@ const useStyles = makeStyles({
     marginRight: '5px',
     marginBottom: '5px',
     color: '#1cc09f',
-    border: '1px solid #1cc09f'
+    border: '1px solid #1cc09f',
   },
 
   icon: {
@@ -43,9 +43,10 @@ const mapState = (state: AppReduxState) => {
   const activeElement = findChildByID(root, activeItem.itemId);
   const project = selectors.selectCurrentProject(state);
 
-  const sharedClasses = project.projectData.classes.filter((cssClass) =>
-    cssClass.supportedElement === activeElement?.type &&
-    !activeElement.styles.classNames.includes(cssClass.className)
+  const sharedClasses = project.projectData.classes.filter(
+    (cssClass) =>
+      cssClass.supportedElement === activeElement?.type &&
+      !activeElement.styles.classNames.includes(cssClass.className),
   );
 
   const elementClassNames = activeElement?.styles.classNames || [];
@@ -54,7 +55,7 @@ const mapState = (state: AppReduxState) => {
     activeElement,
     sharedClasses,
     elementClassNames,
-  }
+  };
 };
 
 const mapDispatch = {
@@ -65,34 +66,36 @@ const mapDispatch = {
 
 type Props = ReturnType<typeof mapState> & typeof mapDispatch;
 
-const ShareStyles = (props: Props) => {
-  const {
-    activeElement,
-    copyStyles,
-    addElementClassName,
-    removeElementClassName,
-    sharedClasses,
-    elementClassNames,
-  } = props;
+const ShareStyles: React.FC<Props> = ({
+  activeElement,
+  copyStyles,
+  addElementClassName,
+  removeElementClassName,
+  sharedClasses,
+  elementClassNames,
+}) => {
+  const handleCopyButtonClick = () =>
+    activeElement &&
+    copyStyles(
+      activeElement.type,
+      activeElement.id,
+      activeElement.styles.ownStyles,
+    );
 
-  const handleCopyButtonClick = () => {
-    activeElement && copyStyles(activeElement.type, activeElement.id, activeElement.styles.ownStyles);
-  };
-
-  const handlePasteButtonClick = (className: string) => {
+  const handlePasteButtonClick = (className: string) =>
     activeElement && addElementClassName(activeElement.id, className);
-  };
 
-  const handleDeleteButtonClick = (className: string) => {
+  const handleDeleteButtonClick = (className: string) =>
     activeElement && removeElementClassName(activeElement.id, className);
-  };
+  const isTagClassName = (className: string) =>
+    className === activeElement?.type;
 
-  const isTagClassName = (className: string) => className === activeElement?.type;
- 
-  const isElementHasOwnStyles = activeElement && Object.keys(activeElement.styles.ownStyles).length;
+  const isElementHasOwnStyles =
+    activeElement && Object.keys(activeElement.styles.ownStyles).length;
   const isElementHasSharedClassName = activeElement?.styles.classNames[1];
-  const disableShareButton = !isElementHasOwnStyles || isElementHasSharedClassName;
-  
+  const disableShareButton =
+    !isElementHasOwnStyles || isElementHasSharedClassName;
+
   const classes = useStyles();
 
   return (
@@ -131,13 +134,19 @@ const ShareStyles = (props: Props) => {
                 label={className}
                 clickable={!isTagClassName(className)}
                 color="primary"
-                {...(!isTagClassName(className) && { deleteIcon: <CancelIcon /> })}
-                {...(!isTagClassName(className) && {onClick: () => handleDeleteButtonClick(className)})}
-                {...(!isTagClassName(className) && {onDelete: () => handleDeleteButtonClick(className)})}
+                {...(!isTagClassName(className) && {
+                  deleteIcon: <CancelIcon />,
+                })}
+                {...(!isTagClassName(className) && {
+                  onClick: () => handleDeleteButtonClick(className),
+                })}
+                {...(!isTagClassName(className) && {
+                  onDelete: () => handleDeleteButtonClick(className),
+                })}
               />
             ))
           ) : (
-            <p>No element's classes</p>
+            <p>No element&apos;s classes</p>
           )}
         </>
       </ControlSection>

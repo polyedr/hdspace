@@ -1,15 +1,30 @@
-import { ServerElement, LibraryElement, ServerProject, CreatedServerProject, ProjectClass, Project } from '$api/types';
-import { DEFAULT_ELEMENTS_STYLES, getDefaultStyles } from '$domain/libraryElements/defaultStyles';
+import * as R from 'ramda';
+import {
+  ServerElement,
+  LibraryElement,
+  ServerProject,
+  CreatedServerProject,
+  ProjectClass,
+  Project,
+} from '$api/types';
+import {
+  DEFAULT_ELEMENTS_STYLES,
+  getDefaultStyles,
+} from '$domain/libraryElements/defaultStyles';
 import { LIBRARY_ELEMENTS } from '$domain/libraryElements/libraryElements';
 import { Entity } from '$domain/core';
-import * as R from 'ramda';
 
-export const convertCreatedElementToRequest = <T extends Entity, K extends ServerElement<T>['parameters']>(
+export const convertCreatedElementToRequest = <
+  T extends Entity,
+  K extends ServerElement<T>['parameters']
+>(
   elementType: T,
   parentID: string | null,
-  elementName?: string
+  elementName?: string,
 ): ServerElement<T, ServerElement<Entity>[], K> => {
-  const libraryElement = LIBRARY_ELEMENTS[elementType] as unknown as ServerElement<T, ServerElement<Entity>[], K>;
+  const libraryElement = (LIBRARY_ELEMENTS[
+    elementType
+  ] as unknown) as ServerElement<T, ServerElement<Entity>[], K>;
   const { name } = libraryElement;
 
   return {
@@ -20,10 +35,23 @@ export const convertCreatedElementToRequest = <T extends Entity, K extends Serve
   };
 };
 
-export const convertElementToRequest = <T extends Entity, K extends Entity, P extends ServerElement<T>['parameters']>(
-  element: LibraryElement<T, LibraryElement<K>[], P>
+export const convertElementToRequest = <
+  T extends Entity,
+  K extends Entity,
+  P extends ServerElement<T>['parameters']
+>(
+  element: LibraryElement<T, LibraryElement<K>[], P>,
 ): ServerElement<T, ServerElement<K>[], P> => {
-  const { id, name, children, type, buoyancy, image, parameters, styles } = element;
+  const {
+    id,
+    name,
+    children,
+    type,
+    buoyancy,
+    image,
+    parameters,
+    styles,
+  } = element;
 
   return {
     id: Number(id),
@@ -38,10 +66,14 @@ export const convertElementToRequest = <T extends Entity, K extends Entity, P ex
   };
 };
 
-export const convertElementToPatchRequest = <T extends Entity, K extends Entity, P extends ServerElement<T>['parameters']>(
-  element: LibraryElement<T, LibraryElement<K>[], P>
+export const convertElementToPatchRequest = <
+  T extends Entity,
+  K extends Entity,
+  P extends ServerElement<T>['parameters']
+>(
+  element: LibraryElement<T, LibraryElement<K>[], P>,
 ): ServerElement<T, ServerElement<K>[], P> => {
-  const { id, name, type, buoyancy, image, parameters, styles } = element;
+  const { id, name, type, buoyancy, parameters, styles } = element;
 
   return {
     id: Number(id),
@@ -56,23 +88,27 @@ export const convertElementToPatchRequest = <T extends Entity, K extends Entity,
   };
 };
 
-export const convertCreatedProjectToRequest = (name: string): CreatedServerProject => {
-  const projectClasses: ProjectClass[] = R.keys(DEFAULT_ELEMENTS_STYLES).map(elementName => ({
+export const convertCreatedProjectToRequest = (
+  name: string,
+): CreatedServerProject => {
+  const projectClasses: ProjectClass[] = R.keys(DEFAULT_ELEMENTS_STYLES).map(
+    (elementName) => ({
       className: elementName,
       supportedElement: elementName,
       rules: getDefaultStyles(elementName),
-    }));
+    }),
+  );
 
   return {
     name,
     status: 'pending',
     projectscreen: [],
     project_data_json: JSON.stringify({ classes: projectClasses }),
-  }
+  };
 };
 
 export const convertProjectToPatchRequest = (
-  project: Project
+  project: Project,
 ): Omit<ServerProject, 'created' | 'updated' | 'project_data_text'> => {
   const { id, name, status, projectscreen, projectData } = project;
 

@@ -10,48 +10,52 @@ import { Indices } from '$redux/project/types';
 const styles = require('./SortableGroup.scss');
 
 type Props = {
-  elementRenderer: React.FunctionComponent,
-  isActive: boolean,
-  disableSortable: boolean,
-  disableInteractions: boolean,
-  isPutItem: boolean | string[],
-  group: string,
-  children?: any,
-  align?: string,
-  isSomeItemBeingDragged: boolean,
+  elementRenderer: React.FunctionComponent;
+  isActive: boolean;
+  disableSortable: boolean;
+  disableInteractions: boolean;
+  isPutItem: boolean | string[];
+  group: string;
+  children?: any;
+  align?: string;
+  isSomeItemBeingDragged: boolean;
   isSomeItemResizable?: boolean;
   id: string;
-  onChange(indices: Indices, parentId: string, isRemote?: boolean): void,
-  onChoose(itemIndex: number, target?: React.SyntheticEvent): void,
+  onChange(indices: Indices, parentId: string, isRemote?: boolean): void;
+  onChoose(itemIndex: number, target?: React.SyntheticEvent): void;
 };
 
-export const SortableGroup: React.FC<Props> = (props) => {
-  const {
-    elementRenderer,
-    isActive,
-    disableSortable,
-    disableInteractions,
-    isPutItem,
-    group,
-    children,
-    onChoose,
-    onChange,
-    align,
-    isSomeItemBeingDragged,
-    isSomeItemResizable,
-    ...elementProps
-  } = props;
-
+export const SortableGroup: React.FC<Props> = ({
+  elementRenderer,
+  isActive,
+  disableSortable,
+  disableInteractions,
+  isPutItem,
+  group,
+  children,
+  onChoose,
+  onChange,
+  align,
+  isSomeItemBeingDragged,
+  isSomeItemResizable,
+  ...elementProps
+}) => {
   const { id } = elementProps;
 
-  const handleChoose = useCallback((evt) => {
-    onChoose(evt.oldIndex);
-  }, [onChoose]);
+  const handleChoose = useCallback(
+    (evt) => {
+      onChoose(evt.oldIndex);
+    },
+    [onChoose],
+  );
 
-  const handlePositionChange = useCallback((evt, isRemote) => {
-    const { newIndex, oldIndex } = evt;
-    onChange({newIndex, oldIndex}, id, isRemote);
-  }, [id, onChange]);
+  const handlePositionChange = useCallback(
+    (evt, isRemote) => {
+      const { newIndex, oldIndex } = evt;
+      onChange({ newIndex, oldIndex }, id, isRemote);
+    },
+    [id, onChange],
+  );
 
   const handleDragEnter = useCallback((evt) => {
     const container = evt.target.closest('.sortable-group');
@@ -59,25 +63,35 @@ export const SortableGroup: React.FC<Props> = (props) => {
     if (container && !isSomeItemResizable) {
       container.classList.add('hovered');
     }
-  }, [])
+  }, []);
 
   const handleDragLeave = useCallback((evt) => {
     const container = evt.target.closest('.sortable-group');
 
-    if (container && !container.contains(evt.relatedTarget) && !isSomeItemResizable) { // when dragging over element with drag resizers, they stop dragging process by firing 'dragleave' event
+    if (
+      container &&
+      !container.contains(evt.relatedTarget) &&
+      !isSomeItemResizable
+    ) {
+      // when dragging over element with drag resizers, they stop dragging process by firing 'dragleave' event
       container.classList.remove('hovered');
     }
-  }, [])
+  }, []);
   // prevent items from hovering in Workspace’s mouse handlers when sorting items
-  const handleSortableMouseOver = useCallback((event: React.MouseEvent) => {
-    isSomeItemBeingDragged && event.stopPropagation();
-  }, []);
+  const handleSortableMouseOver = useCallback(
+    (event: React.MouseEvent) =>
+      isSomeItemBeingDragged && event.stopPropagation(),
+    [],
+  );
 
-  const handleSortableMouseOut = useCallback((event: React.MouseEvent) => {
-    isSomeItemBeingDragged && event.stopPropagation();
-  }, []);
+  const handleSortableMouseOut = useCallback(
+    (event: React.MouseEvent) =>
+      isSomeItemBeingDragged && event.stopPropagation(),
+    [],
+  );
 
-  const className = id === 'root'
+  const className =
+    id === 'root'
       ? !disableSortable && styles.moving
       : cn(
           sharedClasses.lsItem,

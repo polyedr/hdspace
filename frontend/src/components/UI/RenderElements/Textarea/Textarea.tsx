@@ -4,11 +4,12 @@ import { makeStyles, TextField } from '@material-ui/core';
 import * as R from 'ramda';
 
 import { TextareaRendererProps } from '../types';
+
 const styles = require('../styles.scss');
 
-const getTextFieldClassStyles = (styles: React.CSSProperties) => ({
-  width: styles.width,
-  height: styles.height,
+const getTextFieldClassStyles = (style: React.CSSProperties) => ({
+  width: style.width,
+  height: style.height,
 });
 
 const getTextFieldStyles = (
@@ -16,41 +17,53 @@ const getTextFieldStyles = (
   entityStyles: React.CSSProperties,
   groupStyles: React.CSSProperties,
   ownStyles: React.CSSProperties,
-) => makeStyles({
-  root: {
-    '& fieldset': {
-      border: 0,
+) =>
+  makeStyles({
+    root: {
+      '& fieldset': {
+        border: 0,
+      },
+
+      '&.hovered $input': {
+        outline: isDisabled ? '1px solid #949494' : 'none',
+      },
     },
 
-    '&.hovered $input': {
-      outline: isDisabled ? '1px solid #949494' : 'none',
+    entityStyles: {
+      ...getTextFieldClassStyles(entityStyles),
     },
-  },
 
-  entityStyles: {
-    ...getTextFieldClassStyles(entityStyles),
-  },
+    groupStyles: {
+      ...getTextFieldClassStyles(groupStyles),
+    },
 
-  groupStyles: {
-    ...getTextFieldClassStyles(groupStyles),
-  },
+    ownStyles: {
+      ...getTextFieldClassStyles(ownStyles),
+    },
 
-  ownStyles: {
-    ...getTextFieldClassStyles(ownStyles),
-  },
+    input: {},
+  });
 
-  input: {},
-});
-
-const getInputClassStyles = (styles: React.CSSProperties) => ({
-  ...R.omit(['width', 'height', 'marginTop', 'marginRight', 'marginBottom', 'marginLeft', 'textAlign'], styles),
+const getInputClassStyles = (style: React.CSSProperties) => ({
+  ...R.omit(
+    [
+      'width',
+      'height',
+      'marginTop',
+      'marginRight',
+      'marginBottom',
+      'marginLeft',
+      'textAlign',
+    ],
+    style,
+  ),
 
   '& textarea': {
-    textAlign: styles.textAlign,
+    textAlign: style.textAlign,
   },
 
   '&::placeholder': {
-    color: styles.color,
+    color: style.color,
   },
 });
 
@@ -59,74 +72,97 @@ const getInputStyles = (
   entityStyles: React.CSSProperties,
   groupStyles: React.CSSProperties,
   ownStyles: React.CSSProperties,
-) => makeStyles({
-  root: {
-    width: '100%',
-    height: '100%',
-      
-    outline: active ? 'red solid 1px' : 'none',
-    outlineOffset: '-1px',
-    alignItems: 'flex-start',
-
-    '&:hover': {
-      borderColor: 'rgba(0, 0, 0, 0.87)',
-    },
-
-    '&.Mui-focused, &.Mui-focused:hover': {
-      borderColor: '#1890ff',
-      boxShadow: 'inset 0px 0px 0 1px #1890ff',
-    },
-
-    '& textarea': {
+) =>
+  makeStyles({
+    root: {
       width: '100%',
       height: '100%',
+
+      outline: active ? 'red solid 1px' : 'none',
+      outlineOffset: '-1px',
+      alignItems: 'flex-start',
+
+      '&:hover': {
+        borderColor: 'rgba(0, 0, 0, 0.87)',
+      },
+
+      '&.Mui-focused, &.Mui-focused:hover': {
+        borderColor: '#1890ff',
+        boxShadow: 'inset 0px 0px 0 1px #1890ff',
+      },
+
+      '& textarea': {
+        width: '100%',
+        height: '100%',
+      },
     },
-  },
 
-  entityStyles: {
-    ...getInputClassStyles(entityStyles),
-  },
+    entityStyles: {
+      ...getInputClassStyles(entityStyles),
+    },
 
-  groupStyles: {
-    ...getInputClassStyles(groupStyles),
-  },
+    groupStyles: {
+      ...getInputClassStyles(groupStyles),
+    },
 
-  ownStyles: {
-    ...getInputClassStyles(ownStyles),
-  },
+    ownStyles: {
+      ...getInputClassStyles(ownStyles),
+    },
 
-  input: {},
-});
+    input: {},
+  });
 
-const Textarea = (props: TextareaRendererProps) => {
-  const {
-    id,
-    params,
-    isDisabled,
-    active,
-    currentValue,
-    sortableId,
-    onElementChange,
-    className,
-    elementRef,
-    entityStyles,
-    groupStyles,
-    ownStyles,
-  } = props;
-
+const Textarea: React.FC<TextareaRendererProps> = ({
+  id,
+  params,
+  isDisabled,
+  active,
+  currentValue,
+  sortableId,
+  onElementChange,
+  className,
+  elementRef,
+  entityStyles,
+  groupStyles,
+  ownStyles,
+}) => {
   const { placeholder } = params;
 
   const handleTextareaChange = (event: ChangeEvent<HTMLInputElement>) => {
     onElementChange(id, event.target.value);
   };
 
-  const textFieldClasses = getTextFieldStyles(isDisabled, entityStyles, groupStyles, ownStyles)();
-  const inputClasses = getInputStyles(active, entityStyles, groupStyles, ownStyles)();
+  const textFieldClasses = getTextFieldStyles(
+    isDisabled,
+    entityStyles,
+    groupStyles,
+    ownStyles,
+  )();
+  const inputClasses = getInputStyles(
+    active,
+    entityStyles,
+    groupStyles,
+    ownStyles,
+  )();
 
-  const entityInlineStyles = R.pick(['marginTop', 'marginRight', 'marginBottom', 'marginLeft'], entityStyles);
-  const groupInlineStyles = R.pick(['marginTop', 'marginRight', 'marginBottom', 'marginLeft'], groupStyles);
-  const ownInlineStyles = R.pick(['marginTop', 'marginRight', 'marginBottom', 'marginLeft'], ownStyles);
-  const inlineStyles = { ...entityInlineStyles, ...groupInlineStyles, ...ownInlineStyles, transition: "none"};
+  const entityInlineStyles = R.pick(
+    ['marginTop', 'marginRight', 'marginBottom', 'marginLeft'],
+    entityStyles,
+  );
+  const groupInlineStyles = R.pick(
+    ['marginTop', 'marginRight', 'marginBottom', 'marginLeft'],
+    groupStyles,
+  );
+  const ownInlineStyles = R.pick(
+    ['marginTop', 'marginRight', 'marginBottom', 'marginLeft'],
+    ownStyles,
+  );
+  const inlineStyles = {
+    ...entityInlineStyles,
+    ...groupInlineStyles,
+    ...ownInlineStyles,
+    transition: 'none',
+  };
 
   const InputProps = {
     readOnly: isDisabled,
@@ -135,7 +171,7 @@ const Textarea = (props: TextareaRendererProps) => {
       inputClasses.root,
       inputClasses.entityStyles,
       inputClasses.groupStyles,
-      inputClasses.ownStyles
+      inputClasses.ownStyles,
     ),
   };
 

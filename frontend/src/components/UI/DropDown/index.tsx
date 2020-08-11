@@ -1,3 +1,4 @@
+/* eslint-disable react/no-array-index-key */ // TODO: refactor this component
 import React from 'react';
 import classNames from 'classnames';
 import { autobind } from 'core-decorators';
@@ -17,15 +18,19 @@ type Props<T> = {
   onChange: (value: string) => void;
 };
 
-const OPTIONS_IF_NO_SELECTED_YET: IDropDownOptions<undefined>[] = [{
-  value: undefined,
-  label: 'Select option',
-}];
+const OPTIONS_IF_NO_SELECTED_YET: IDropDownOptions<undefined>[] = [
+  {
+    value: undefined,
+    label: 'Select option',
+  },
+];
 
-const DEFAULT_OPTIONS: IDropDownOptions<undefined>[] = [{
-  value: undefined,
-  label: 'No available options',
-}];
+const DEFAULT_OPTIONS: IDropDownOptions<undefined>[] = [
+  {
+    value: undefined,
+    label: 'No available options',
+  },
+];
 
 type State<T> = {
   currentValue: T;
@@ -40,9 +45,33 @@ export class DropDown<T> extends React.PureComponent<Props<T>, State<T>> {
     this.state = { currentValue, optionsToRender };
   }
 
+  private getInitialState(): State<T> {
+    const { defaultValue, options } = this.props;
+
+    const hasSpecifiedDefaultValue =
+      defaultValue !== undefined &&
+      options.map((x) => x.value).includes(defaultValue);
+    const optionsToRender: IDropDownOptions<any>[] =
+      options.length === 0
+        ? DEFAULT_OPTIONS
+        : (hasSpecifiedDefaultValue ? [] : OPTIONS_IF_NO_SELECTED_YET).concat(
+            options as any,
+          );
+    return {
+      currentValue: hasSpecifiedDefaultValue
+        ? (defaultValue as T)
+        : optionsToRender[0].value,
+      optionsToRender,
+    };
+  }
+
   public componentDidUpdate(prevProps: Props<T>) {
     const { value, options } = this.props;
-    if ((prevProps.value !== value || prevProps.options !== options) && value !== undefined) {
+    if (
+      (prevProps.value !== value || prevProps.options !== options) &&
+      value !== undefined
+    ) {
+      // eslint-disable-next-line react/no-did-update-set-state
       this.setState({
         currentValue: value,
         optionsToRender: options,
@@ -50,32 +79,22 @@ export class DropDown<T> extends React.PureComponent<Props<T>, State<T>> {
     }
   }
 
-  private getInitialState(): State<T> {
-    const { defaultValue, options } = this.props;
-
-    const hasSpecifiedDefaultValue = defaultValue !== undefined && options.map(x => x.value).includes(defaultValue);
-    const optionsToRender: IDropDownOptions<any>[] = options.length === 0
-      ? DEFAULT_OPTIONS
-      : (hasSpecifiedDefaultValue ? [] : OPTIONS_IF_NO_SELECTED_YET).concat(options as any);
-    return {
-      currentValue: hasSpecifiedDefaultValue ? (defaultValue as T) : optionsToRender[0].value,
-      optionsToRender,
-    };
+  @autobind
+  private handleChange(event: React.ChangeEvent<HTMLSelectElement>) {
+    const { onChange } = this.props;
+    onChange(event.target.value);
   }
 
   public render() {
-    const {
-      options,
-      disabled,
-    } = this.props;
+    const { options, disabled } = this.props;
 
-    const {
-      currentValue,
-      optionsToRender,
-    } = this.state;
+    const { currentValue, optionsToRender } = this.state;
     return (
       <select
-        className={classNames(styles.dropDown, disabled && styles.dropDown_disabled)}
+        className={classNames(
+          styles.dropDown,
+          disabled && styles.dropDown_disabled,
+        )}
         disabled={options.length === 0 || disabled}
         value={currentValue as any}
         onChange={this.handleChange}
@@ -91,10 +110,5 @@ export class DropDown<T> extends React.PureComponent<Props<T>, State<T>> {
         ))}
       </select>
     );
-  }
-
-  @autobind
-  private handleChange(event: React.ChangeEvent<HTMLSelectElement>) {
-    this.props.onChange(event.target.value)
   }
 }

@@ -1,6 +1,5 @@
 import { initialControl } from '$redux/project/initial';
 import * as T from '../types';
-import * as R from 'ramda';
 
 // To create undoable feature for the editor you have to implement action with "meta" field extends type HistoryMeta,
 // that will call correspondent saga, which should:
@@ -11,7 +10,10 @@ import * as R from 'ramda';
 // 3. put "setUndoActions" action, with an array of actions that will lead to previous state as an argument,
 // so you will be able to undo your changes.
 
-export const controlReducer = (state: T.ProjectControlState = initialControl, action: T.Action): T.ProjectControlState => {
+export const controlReducer = (
+  state: T.ProjectControlState = initialControl,
+  action: T.Action,
+): T.ProjectControlState => {
   switch (action.type) {
     case 'PROJECTS:UPDATE_ELEMENTS_TREE': {
       const newState = {
@@ -29,15 +31,13 @@ export const controlReducer = (state: T.ProjectControlState = initialControl, ac
               ...state.history.slice(0, -1),
               [
                 state.history[state.history.length - 1],
-                action.payload.sourceAction
+                action.payload.sourceAction,
               ],
-            ] : [
-              ...state.history,
-              action.payload.sourceAction,
-            ];
+            ]
+          : [...state.history, action.payload.sourceAction];
       }
 
-      return newState
+      return newState;
     }
 
     case 'PROJECTS:SET_UNDO_ACTIONS': {
@@ -46,62 +46,57 @@ export const controlReducer = (state: T.ProjectControlState = initialControl, ac
         // @ts-ignore
         undoActions: state.remoteMove
           ? [
-            ...state.undoActions.slice(0, -1),
-            [
-              state.undoActions[state.undoActions.length - 1],
-              action.payload,
+              ...state.undoActions.slice(0, -1),
+              [state.undoActions[state.undoActions.length - 1], action.payload],
             ]
-          ] : [
-          ...state.undoActions,
-          action.payload,
-        ],
-      }
+          : [...state.undoActions, action.payload],
+      };
     }
 
     case 'PROJECTS:POP_UNDO_ACTION': {
       return {
         ...state,
         undoActions: state.undoActions.slice(0, -1),
-      }
+      };
     }
 
     case 'PROJECTS:SET_REMOTE_MOVE': {
       return {
         ...state,
-        remoteMove: action.payload
-      }
+        remoteMove: action.payload,
+      };
     }
 
     case 'PROJECTS:SET_REDO_ACTIONS': {
       return {
         ...state,
         redoActions: action.payload,
-      }
+      };
     }
 
     case 'PROJECTS:CLEAR_HISTORY': {
-      return  {
+      return {
         ...state,
         undoActions: [],
         redoActions: [],
         history: [],
         sourceAction: null,
         remoteMove: false,
-      }
+      };
     }
 
     case 'PROJECTS:POP_HISTORY': {
       return {
         ...state,
         history: state.history.slice(0, -1),
-      }
+      };
     }
 
     case 'PROJECTS:SET_GROUP_UP': {
       return {
         ...state,
         groupActionsUp: action.payload,
-      }
+      };
     }
 
     default:

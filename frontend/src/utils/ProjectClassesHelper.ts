@@ -8,7 +8,7 @@ import { CssLikeStyles } from './StyleHelper';
 export const updateProjectClasses = (
   project: Project,
   className: string,
-  styles: CssLikeStyles
+  styles: CssLikeStyles,
 ): Project => {
   return {
     ...project,
@@ -17,13 +17,17 @@ export const updateProjectClasses = (
       classes: project.projectData.classes.map((cssClass) =>
         cssClass.className === className
           ? { ...cssClass, rules: { ...cssClass.rules, ...styles } }
-          : cssClass
+          : cssClass,
       ),
     },
   };
 };
 
-export const removeProjectStyles = (project: Project, className: string, cssPropertiesNames: string[]): Project => {
+export const removeProjectStyles = (
+  project: Project,
+  className: string,
+  cssPropertiesNames: string[],
+): Project => {
   return {
     ...project,
     projectData: {
@@ -32,24 +36,26 @@ export const removeProjectStyles = (project: Project, className: string, cssProp
         return cssClass.className === className
           ? {
               ...cssClass,
-              rules: (R.toPairs(cssClass.rules))
-                .filter(([ruleName]) => cssPropertiesNames.every(name => name !== ruleName))
+              rules: R.toPairs(cssClass.rules)
+                .filter(([ruleName]) =>
+                  cssPropertiesNames.every((name) => name !== ruleName),
+                )
                 .reduce(
                   (acc, [ruleName, rule]) => ({ ...acc, [ruleName]: rule }),
-                  {} as Required<CssLikeStyles>
+                  {} as Required<CssLikeStyles>,
                 ),
             }
           : cssClass;
       }),
     },
-  }
+  };
 };
 
 export const addProjectStyles = (
   project: Project,
   className: string,
   elementType: Entity,
-  styles: Required<CssLikeStyles>
+  styles: Required<CssLikeStyles>,
 ): Project => {
   return {
     ...project,

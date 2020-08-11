@@ -36,7 +36,9 @@ import {
   defaultClockStyles,
 } from './widgetElements/defaultStyles';
 
-export const DEFAULT_ELEMENTS_STYLES: { [K in Entity]: { [key: string]: CssLikeStyles } } = {
+export const DEFAULT_ELEMENTS_STYLES: {
+  [K in Entity]: { [key: string]: CssLikeStyles };
+} = {
   root: defaultRootStyles,
   container: defaultContainerStyles,
   divBlock: defaultDivBlockStyles,
@@ -67,9 +69,15 @@ export const DEFAULT_ELEMENTS_STYLES: { [K in Entity]: { [key: string]: CssLikeS
   undefined: defaultUndefinedStyles,
 };
 
-export const getDefaultStyles = (elementType: Entity): Required<CssLikeStyles> => {
-  return Object.values(DEFAULT_ELEMENTS_STYLES[elementType] as { [key: string]: Required<CssLikeStyles> }).reduce(
+export const getDefaultStyles = (
+  elementType: Entity,
+): Required<CssLikeStyles> => {
+  return Object.values(
+    DEFAULT_ELEMENTS_STYLES[elementType] as {
+      [key: string]: Required<CssLikeStyles>;
+    },
+  ).reduce(
     (acc, styles) => ({ ...acc, ...styles }),
-    {} as Required<CssLikeStyles>
+    {} as Required<CssLikeStyles>,
   );
 };

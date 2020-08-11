@@ -4,10 +4,14 @@ import { makeStyles, Button } from '@material-ui/core';
 import * as R from 'ramda';
 
 import { DropdownRendererProps } from '../types';
+
 const styles = require('../styles.scss');
 
-const getDropdownClassStyles = (styles: React.CSSProperties) => {
-  const dropdownStyles = R.omit(['marginTop', 'marginRight', 'marginBottom', 'marginLeft'], styles);
+const getDropdownClassStyles = (style: React.CSSProperties) => {
+  const dropdownStyles = R.omit(
+    ['marginTop', 'marginRight', 'marginBottom', 'marginLeft'],
+    style,
+  );
 
   return {
     ...dropdownStyles,
@@ -30,43 +34,50 @@ const getDropdownStyles = (
   entityStyles: React.CSSProperties,
   groupStyles: React.CSSProperties,
   ownStyles: React.CSSProperties,
-) => makeStyles({
-  root: {
-    cursor: isDisabled ? 'default' : 'pointer',
-    outline: active ? '1px red solid' : 'none',
-    ...(isDisabled && { transition: 'none' }),
-    '&:hover': {
-      ...(isDisabled && { boxShadow: '0px 3px 1px -2px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 1px 5px 0px rgba(0,0,0,0.12)' }),
+) =>
+  makeStyles({
+    root: {
+      cursor: isDisabled ? 'default' : 'pointer',
+      outline: active ? '1px red solid' : 'none',
+      ...(isDisabled && { transition: 'none' }),
+      '&:hover': {
+        ...(isDisabled && {
+          boxShadow:
+            '0px 3px 1px -2px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 1px 5px 0px rgba(0,0,0,0.12)',
+        }),
+      },
+      '&:active': {
+        ...(isDisabled && {
+          boxShadow:
+            '0px 3px 1px -2px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 1px 5px 0px rgba(0,0,0,0.12)',
+        }),
+      },
     },
-    '&:active': {
-      ...(isDisabled && { boxShadow: '0px 3px 1px -2px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 1px 5px 0px rgba(0,0,0,0.12)' }),
+
+    container: {
+      '&.hovered $root': {
+        outline: '1px solid #949494',
+      },
     },
-  },
 
-  container: {
-    '&.hovered $root': {
-      outline: '1px solid #949494',
+    entityStyles: {
+      ...getDropdownClassStyles(entityStyles),
     },
-  },
 
-  entityStyles: {
-    ...getDropdownClassStyles(entityStyles),
-  },
+    groupStyles: {
+      ...getDropdownClassStyles(groupStyles),
+    },
 
-  groupStyles: {
-    ...getDropdownClassStyles(groupStyles),
-  },
+    ownStyles: {
+      ...getDropdownClassStyles(ownStyles),
+    },
+  });
 
-  ownStyles: {
-    ...getDropdownClassStyles(ownStyles),
-  },
-});
-
-const getDivClassStyles = (styles: React.CSSProperties) => ({
-  marginTop: styles.marginTop,
-  marginRight: styles.marginRight,
-  marginBottom: styles.marginBottom,
-  marginLeft: styles.marginLeft,
+const getDivClassStyles = (style: React.CSSProperties) => ({
+  marginTop: style.marginTop,
+  marginRight: style.marginRight,
+  marginBottom: style.marginBottom,
+  marginLeft: style.marginLeft,
   position: 'relative' as React.CSSProperties['position'],
   display: 'inline-block',
   verticalAlign: 'top',
@@ -76,45 +87,52 @@ const getDivStyles = (
   entityStyles: React.CSSProperties,
   groupStyles: React.CSSProperties,
   ownStyles: React.CSSProperties,
-) => makeStyles({
-  entityStyles: {
-    ...getDivClassStyles(entityStyles),
-  },
+) =>
+  makeStyles({
+    entityStyles: {
+      ...getDivClassStyles(entityStyles),
+    },
 
-  groupStyles: {
-    ...getDivClassStyles(groupStyles),
-  },
+    groupStyles: {
+      ...getDivClassStyles(groupStyles),
+    },
 
-  ownStyles: {
-    ...getDivClassStyles(ownStyles),
-  },
-});
+    ownStyles: {
+      ...getDivClassStyles(ownStyles),
+    },
+  });
 
-const DropdownComponent = (props: DropdownRendererProps) => {
-  const {
-    id,
-    isDisabled,
-    active,
-    sortableId,
-    params,
-    children,
-    elementRef,
-    className,
-    entityStyles,
-    groupStyles,
-    ownStyles,
-  } = props;
-
+const DropdownComponent: React.FC<DropdownRendererProps> = ({
+  id,
+  isDisabled,
+  active,
+  sortableId,
+  params,
+  children,
+  elementRef,
+  className,
+  entityStyles,
+  groupStyles,
+  ownStyles,
+}) => {
   const { textContent, showRipple, isOpen } = params;
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
-  const handleMenuButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleMenuButtonClick = (
+    event: React.MouseEvent<HTMLButtonElement>,
+  ) => {
     setAnchorEl(event.currentTarget);
   };
 
-  const dropdownClasses = getDropdownStyles(isDisabled, active, entityStyles, groupStyles, ownStyles)();
-  const divClasses = getDivStyles( entityStyles, groupStyles, ownStyles)();
+  const dropdownClasses = getDropdownStyles(
+    isDisabled,
+    active,
+    entityStyles,
+    groupStyles,
+    ownStyles,
+  )();
+  const divClasses = getDivStyles(entityStyles, groupStyles, ownStyles)();
 
   const [Children] = React.Children.toArray(children);
 
@@ -127,7 +145,7 @@ const DropdownComponent = (props: DropdownRendererProps) => {
           dropdownClasses.container,
           divClasses.entityStyles,
           divClasses.groupStyles,
-          divClasses.ownStyles
+          divClasses.ownStyles,
         )}
       >
         <Button
@@ -158,7 +176,7 @@ const DropdownComponent = (props: DropdownRendererProps) => {
       className={cn(
         divClasses.entityStyles,
         divClasses.groupStyles,
-        divClasses.ownStyles
+        divClasses.ownStyles,
       )}
     >
       <Button

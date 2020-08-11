@@ -2,8 +2,7 @@ interface Window {
   renderTreeInfo: any;
 }
 
-
-declare module "react-clock" {
+declare module 'react-clock' {
   type HandLength = number; // 0 - 100
   type OppositeHandLength = number; // -100 - 100
   type HandWidth = number; // >= 0
@@ -37,9 +36,10 @@ declare module "react-clock" {
   }
 }
 
-declare module "react-sortablejs"{
+declare module 'react-sortablejs' {
   import React from 'react';
   import { default as SortableJsSortable } from 'sortablejs';
+
   export type Props = {
     className?: string;
     onChange?(items: string[], sortable: SortableJsSortable): void;
@@ -55,7 +55,10 @@ declare namespace NodeJS {
 }
 
 declare module 'react-color/lib/helpers' {
-  export const toState: (data: any, oldHue?: any) => {
+  export const toState: (
+    data: any,
+    oldHue?: any,
+  ) => {
     hsl: any;
     hex: string;
     rgb: any;

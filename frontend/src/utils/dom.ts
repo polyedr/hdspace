@@ -11,13 +11,11 @@ export const getClassDevice = (
       [styles.editorLayout_default]: mode.isDefaultMode,
     },
     {
-      [styles.editorLayout_tablet_rotated]: mode.isTabletMode
-      && isRotated,
+      [styles.editorLayout_tablet_rotated]: mode.isTabletMode && isRotated,
       [styles.editorLayout_tablet]: mode.isTabletMode,
     },
     {
-      [styles.editorLayout_mobile_rotated]: mode.isMobileMode
-      && isRotated,
+      [styles.editorLayout_mobile_rotated]: mode.isMobileMode && isRotated,
       [styles.editorLayout_mobile]: mode.isMobileMode,
     },
   );

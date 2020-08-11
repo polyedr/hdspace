@@ -3,7 +3,10 @@ import { connect } from 'react-redux';
 
 import { AppReduxState } from '$shared/types/app';
 import { selectors } from '$redux/project/';
-import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
+import {
+  withConfigurableProperties,
+  PropertiesChangeProps,
+} from '$utils/withConfigurableProperties';
 import { TextinputElement } from '$api/types';
 
 const styles = require('./Placeholder.scss');
@@ -13,7 +16,9 @@ type StateProps = {
 };
 
 function mapState(state: AppReduxState): StateProps {
-  const activeItemParams = selectors.selectActiveItemParams<TextinputElement>(state);
+  const activeItemParams = selectors.selectActiveItemParams<TextinputElement>(
+    state,
+  );
 
   return {
     placeholder: activeItemParams.placeholder,
@@ -22,14 +27,13 @@ function mapState(state: AppReduxState): StateProps {
 
 type Props = StateProps & PropertiesChangeProps<TextinputElement>;
 
-const Component: React.FC<Props> = ({
-  placeholder,
-  updateParams,
-}) => {
-
-  const handlePlaceholderChange = useCallback(({ target: { value } }) => {
-    updateParams({ placeholder: value });
-  }, [updateParams]);
+const Component: React.FC<Props> = ({ placeholder, updateParams }) => {
+  const handlePlaceholderChange = useCallback(
+    ({ target: { value } }) => {
+      updateParams({ placeholder: value });
+    },
+    [updateParams],
+  );
 
   return (
     <div className="propsElementsBlock">
@@ -50,4 +54,6 @@ const Component: React.FC<Props> = ({
   );
 };
 
-export const Placeholder = connect(mapState)(withConfigurableProperties(Component));
+export const Placeholder = connect(mapState)(
+  withConfigurableProperties(Component),
+);

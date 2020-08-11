@@ -21,69 +21,69 @@ const mapDispatchToProps = {
   renameProject: Actions.renameProject,
 };
 
-type TTopPanelProps = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & {
-  pathname: string,
-  isLPanelMinimized: ILeftPanel['isLPanelMinimized'],
-  project: EditorProps['currentProject'],
-  onMinimiserLPanel(): void,
-  renameProject: typeof Actions.renameProject,
-}
+type TTopPanelProps = ReturnType<typeof mapStateToProps> &
+  typeof mapDispatchToProps & {
+    pathname: string;
+    isLPanelMinimized: ILeftPanel['isLPanelMinimized'];
+    project: EditorProps['currentProject'];
+    onMinimiserLPanel(): void;
+    renameProject: typeof Actions.renameProject;
+  };
 
-const Component: React.FunctionComponent<TTopPanelProps> = memo(({
-  project = {name: '', id: -1},
-  pathname,
-  isLPanelMinimized,
-  onMinimiserLPanel,
-  renameProject,
-}) => {
-  const [search, setSearch] = useState('');
-  const [newProjectName, setNewProjectName] = useState('');
-  const [modalRenameProjectOpen, setModalRenameProjectOpen] = useState(false);
+const Component: React.FunctionComponent<TTopPanelProps> = memo(
+  ({
+    project = { name: '', id: -1 },
+    pathname,
+    isLPanelMinimized,
+    onMinimiserLPanel,
+    renameProject,
+  }) => {
+    const [newProjectName, setNewProjectName] = useState('');
+    const [modalRenameProjectOpen, setModalRenameProjectOpen] = useState(false);
 
-  const handleChange = useCallback((e) => {
-    setSearch(e.target.value);
-  }, []);
+    const closeModal = useCallback(() => {
+      setNewProjectName(project.name);
+      setModalRenameProjectOpen(false);
+    }, [project.name]);
 
-  const closeModal = useCallback(() => {
-    setNewProjectName(project.name);
-    setModalRenameProjectOpen(false);
-  }, [project.name]);
+    const handleRenameProject = useCallback(() => {
+      setNewProjectName(project.name);
+      setModalRenameProjectOpen(true);
+    }, [project.name]);
 
-  const handleRenameProject = useCallback(() => {
-    setNewProjectName(project.name);
-    setModalRenameProjectOpen(true);
-  }, [project.name]);
+    const onRenameProject = useCallback(
+      (event) => {
+        event.preventDefault();
 
-  const onRenameProject = useCallback((event) => {
-    event.preventDefault();
+        renameProject(project.id, newProjectName);
+        closeModal();
+      },
+      [project, newProjectName, renameProject, closeModal],
+    );
 
-    renameProject(project.id, newProjectName);
-    closeModal();
-  }, [project, newProjectName, renameProject, closeModal]);
+    const handleNewProjectName = useCallback(({ target: { value } }) => {
+      setNewProjectName(value);
+    }, []);
 
-  const handleNewProjectName = useCallback(({ target: { value } }) => {
-    setNewProjectName(value);
-  }, []);
-
-  return (
-    <header className={classNames(styles.topPanel, isLPanelMinimized && styles.topPanel_minimize)}>
-      <div className={styles.topPanelLeftBlock}>
-        <Button
-          className={styles.topPanelBtn}
-          styleType="confirm"
-          onClick={onMinimiserLPanel}
-        >
-          <Icon icon="menu" size={20} />
-        </Button>
-      </div>
-      {
-        pathname !== '/projects' && (
+    return (
+      <header
+        className={classNames(
+          styles.topPanel,
+          isLPanelMinimized && styles.topPanel_minimize,
+        )}
+      >
+        <div className={styles.topPanelLeftBlock}>
+          <Button
+            className={styles.topPanelBtn}
+            styleType="confirm"
+            onClick={onMinimiserLPanel}
+          >
+            <Icon icon="menu" size={20} />
+          </Button>
+        </div>
+        {pathname !== '/projects' && (
           <div className={styles.topPanelCenterBlock}>
-            <p
-              className={styles.topPanelProjectTitle}
-            >
-              {project.name}
-            </p>
+            <p className={styles.topPanelProjectTitle}>{project.name}</p>
             <Button
               className={classNames('mainImgBtn', styles.editProjectBtn)}
               styleType="none"
@@ -93,31 +93,31 @@ const Component: React.FunctionComponent<TTopPanelProps> = memo(({
               <Icon icon="edit" size={20} />
             </Button>
           </div>
-        )
-      }
-      <div className={styles.topPanelRightBlock} />
-      { modalRenameProjectOpen && (
-      <Modal
-        animClassName="bubbleAnimation"
-        title="Rename project"
-        confirmText="Rename"
-        onConfirm={event => onRenameProject(event)}
-        cancelText="Close"
-        onClose={closeModal}
-      >
-        <div className={styles.modalBody}>
-          <input
-            type="text"
-            className={styles.screenName}
-            value={newProjectName}
-            placeholder="New project name"
-            onChange={handleNewProjectName}
-          />
-        </div>
-      </Modal>
-      )}
-    </header>
-  );
-});
+        )}
+        <div className={styles.topPanelRightBlock} />
+        {modalRenameProjectOpen && (
+          <Modal
+            animClassName="bubbleAnimation"
+            title="Rename project"
+            confirmText="Rename"
+            onConfirm={(event) => onRenameProject(event)}
+            cancelText="Close"
+            onClose={closeModal}
+          >
+            <div className={styles.modalBody}>
+              <input
+                type="text"
+                className={styles.screenName}
+                value={newProjectName}
+                placeholder="New project name"
+                onChange={handleNewProjectName}
+              />
+            </div>
+          </Modal>
+        )}
+      </header>
+    );
+  },
+);
 
 export const TopPanel = connect(mapStateToProps, mapDispatchToProps)(Component);

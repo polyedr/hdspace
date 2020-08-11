@@ -1,14 +1,38 @@
 import * as R from 'ramda';
 
 import { PLAYERS } from '$constants/players';
-import { VideoSettings } from '$api/types';
+import { VideoSettingsType } from '$api/types';
 
 type LinkInfo = {
-  player: keyof typeof PLAYERS | 'none',
-  link: string,
+  player: keyof typeof PLAYERS | 'none';
+  link: string;
 };
 
-export function getPlayerLink(params: VideoSettings, isPreviewMode: boolean) {
+export function extractPlayerLinkInfo(link: string): LinkInfo {
+  const currentVideoLink = R.toPairs(PLAYERS)
+    .filter(([, parameters]) =>
+      parameters.aliases.some((alias) => link.startsWith(alias)),
+    )
+    ?.map(([name, parameters]) => {
+      const alias = parameters.aliases.find((targetAlias) =>
+        link.startsWith(targetAlias),
+      )!;
+      const linkWithID = link.replace(alias, parameters.playerLink);
+      const linkWithoutAttributes = R.head(linkWithID.split('?')) || linkWithID;
+
+      return {
+        player: name as keyof typeof PLAYERS,
+        link: linkWithoutAttributes,
+      };
+    });
+
+  return R.head(currentVideoLink) || { player: 'none', link: '' };
+}
+
+export function getPlayerLink(
+  params: VideoSettingsType,
+  isPreviewMode: boolean,
+) {
   const { link, autoplay, start, end, loop, rel } = params;
 
   const linkInfo = extractPlayerLinkInfo(link);
@@ -23,7 +47,9 @@ export function getPlayerLink(params: VideoSettings, isPreviewMode: boolean) {
     }
 
     case 'twitch': {
-      return `${PLAYERS.twitch.playerLink}${link.split('https://www.twitch.tv/')[1]}&parent=www.example.com`;
+      return `${PLAYERS.twitch.playerLink}${
+        link.split('https://www.twitch.tv/')[1]
+      }&parent=www.example.com`;
     }
 
     case 'youtube': {
@@ -49,14 +75,14 @@ export function getPlayerLink(params: VideoSettings, isPreviewMode: boolean) {
           value: autoplay && isPreviewMode,
         },
       };
-    
+
       const linkAttributes = Object.entries(attributes)
-        .filter(([key, { value }]) => !!value)
+        .filter(([, { value }]) => !!value)
         .map(([key, { attribute }]) => `${key}=${attribute}`)
-        .join("&");
-    
+        .join('&');
+
       const fullLink = `${linkInfo.link}?${linkAttributes}`;
-    
+
       return fullLink;
     }
 
@@ -64,18 +90,4 @@ export function getPlayerLink(params: VideoSettings, isPreviewMode: boolean) {
       return linkInfo.link;
     }
   }
-}
-
-export function extractPlayerLinkInfo(link: string): LinkInfo {
-  const currentVideoLink = R.toPairs(PLAYERS)
-    .filter(([name, parameters]) => parameters.aliases.some((alias) => link.startsWith(alias)))
-    ?.map(([name, parameters]) => {
-      const alias = parameters.aliases.find((alias) => link.startsWith(alias))!;
-      const linkWithID = link.replace(alias, parameters.playerLink);
-      const linkWithoutAttributes = R.head(linkWithID.split('?')) || linkWithID;
-
-      return { player: name as keyof typeof PLAYERS, link: linkWithoutAttributes };
-    });
-
-  return R.head(currentVideoLink) || { player: 'none', link: '' };
 }

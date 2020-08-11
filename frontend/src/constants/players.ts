@@ -63,11 +63,7 @@ export const PLAYERS = {
   },
   wistia: {
     playerLink: '//fast.wistia.net/embed/iframe/',
-    aliases: [
-      'https://wistia.com/',
-      'http://wistia.com/',
-      'wistia.com/',
-    ],
+    aliases: ['https://wistia.com/', 'http://wistia.com/', 'wistia.com/'],
   },
   ustream: {
     playerLink: 'https://ustream.tv/embed/',
@@ -94,8 +90,6 @@ export const PLAYERS = {
   },
   sproutvideo: {
     playerLink: 'https://videos.sproutvideo.com/embed/',
-    aliases: [
-      'https://videos.sproutvideo.com/embed/',
-    ],
+    aliases: ['https://videos.sproutvideo.com/embed/'],
   },
 };

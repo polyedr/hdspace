@@ -75,7 +75,9 @@ export const image: ImageServerElement = {
   children: [],
 };
 
-export const makeDropdownItem = (textContent: string): DropdownItemServerElement => ({
+export const makeDropdownItem = (
+  textContent: string,
+): DropdownItemServerElement => ({
   buoyancy: 0,
   func_type: 'dropdownItem',
   struct_type: 'dropdownItem',
@@ -147,7 +149,9 @@ export const video: VideoServerElement = {
   children: [],
 };
 
+// eslint-disable-next-line no-shadow-restricted-names
 export const undefined: UndefinedServerElement = {
+  // TODO: RENAME THIS CONST
   buoyancy: 0,
   func_type: 'undefined',
   struct_type: 'undefined',

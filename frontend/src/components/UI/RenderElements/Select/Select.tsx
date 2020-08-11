@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/no-noninteractive-tabindex */
+
 import React, { ChangeEvent } from 'react';
 import cn from 'classnames';
 import { makeStyles, TextField, MenuItem } from '@material-ui/core';
@@ -6,11 +8,12 @@ import * as R from 'ramda';
 import { convertPropCSS } from '$utils/StyleHelper';
 
 import { SelectRendererProps } from '../types';
+
 const styles = require('../styles.scss');
 
-const getTextFieldClassStyles = (styles: React.CSSProperties) => ({
+const getTextFieldClassStyles = (style: React.CSSProperties) => ({
   '&$focused $input': {
-    borderRadius: styles.borderRadius,
+    borderRadius: style.borderRadius,
   },
 
   input: {},
@@ -20,38 +23,39 @@ const getTextFieldStyles = (
   entityStyles: React.CSSProperties,
   groupStyles: React.CSSProperties,
   ownStyles: React.CSSProperties,
-) => makeStyles({
-  root: {
-    height: '100%',
+) =>
+  makeStyles({
+    root: {
+      height: '100%',
 
-    '& fieldset': {
-      border: 0,
+      '& fieldset': {
+        border: 0,
+      },
+
+      '&$focused $input': {
+        borderColor: '#1890ff',
+        boxShadow: 'inset 0px 0px 0 1px #1890ff',
+      },
     },
 
-    '&$focused $input': {
-      borderColor: '#1890ff',
-      boxShadow: 'inset 0px 0px 0 1px #1890ff'
+    input: {},
+
+    focused: {},
+
+    entityStyles: {
+      ...getTextFieldClassStyles(entityStyles),
     },
-  },
 
-  input: {},
+    groupStyles: {
+      ...getTextFieldClassStyles(groupStyles),
+    },
 
-  focused: {},
+    ownStyles: {
+      ...getTextFieldClassStyles(ownStyles),
+    },
+  });
 
-  entityStyles: {
-    ...getTextFieldClassStyles(entityStyles),
-  },
-
-  groupStyles: {
-    ...getTextFieldClassStyles(groupStyles),
-  },
-
-  ownStyles: {
-    ...getTextFieldClassStyles(ownStyles),
-  },
-});
-
-const getInputClassStyles = (styles: React.CSSProperties) => ({
+const getInputClassStyles = (style: React.CSSProperties) => ({
   ...R.omit(
     [
       'width',
@@ -65,18 +69,18 @@ const getInputClassStyles = (styles: React.CSSProperties) => ({
       'paddingBottom',
       'paddingLeft',
     ],
-    styles
+    style,
   ),
 
   '& .MuiSelect-outlined.MuiSelect-outlined': {
-    paddingTop: styles.paddingTop,
-    paddingRight: `calc(${styles.paddingRight} + 18px)`,
-    paddingBottom: styles.paddingBottom,
-    paddingLeft: styles.paddingLeft,
+    paddingTop: style.paddingTop,
+    paddingRight: `calc(${style.paddingRight} + 18px)`,
+    paddingBottom: style.paddingBottom,
+    paddingLeft: style.paddingLeft,
   },
 
   '&::placeholder': {
-    color: styles.color,
+    color: style.color,
   },
 });
 
@@ -86,35 +90,36 @@ const getInputStyles = (
   entityStyles: React.CSSProperties,
   groupStyles: React.CSSProperties,
   ownStyles: React.CSSProperties,
-) => makeStyles({
-  root: {
-    height: '100%',
-    boxSizing: 'border-box',
-    outline: active ? '1px red solid' : 'none',
-    outlineOffset: '-1px',
+) =>
+  makeStyles({
+    root: {
+      height: '100%',
+      boxSizing: 'border-box',
+      outline: active ? '1px red solid' : 'none',
+      outlineOffset: '-1px',
 
-    '&:hover': {
-      ...(!isDisabled && { borderColor: 'rgba(0, 0, 0, 0.87)' }),
+      '&:hover': {
+        ...(!isDisabled && { borderColor: 'rgba(0, 0, 0, 0.87)' }),
+      },
     },
-  },
 
-  entityStyles: {
-    ...getInputClassStyles(entityStyles),
-  },
+    entityStyles: {
+      ...getInputClassStyles(entityStyles),
+    },
 
-  groupStyles: {
-    ...getInputClassStyles(groupStyles),
-  },
+    groupStyles: {
+      ...getInputClassStyles(groupStyles),
+    },
 
-  ownStyles: {
-    ...getInputClassStyles(ownStyles),
-  },
-});
+    ownStyles: {
+      ...getInputClassStyles(ownStyles),
+    },
+  });
 
 const getMenuItemClasses = (
   entityStyles: React.CSSProperties,
   groupStyles: React.CSSProperties,
-  ownStyles: React.CSSProperties
+  ownStyles: React.CSSProperties,
 ) =>
   makeStyles({
     root: {
@@ -134,95 +139,118 @@ const getMenuItemClasses = (
     ownStyles: {
       ...ownStyles,
     },
-});
+  });
 
-const getMenuClassStyles = (styles: React.CSSProperties) => ({
-  ...styles,
-  minWidth: styles.width,
+const getMenuClassStyles = (style: React.CSSProperties) => ({
+  ...style,
+  minWidth: style.width,
 });
 
 const getMenuStyles = (
   entityStyles: React.CSSProperties,
   groupStyles: React.CSSProperties,
   ownStyles: React.CSSProperties,
-) => makeStyles({
-  entityStyles: {
-    ...getMenuClassStyles(entityStyles),
-  },
+) =>
+  makeStyles({
+    entityStyles: {
+      ...getMenuClassStyles(entityStyles),
+    },
 
-  groupStyles: {
-    ...getMenuClassStyles(groupStyles),
-  },
+    groupStyles: {
+      ...getMenuClassStyles(groupStyles),
+    },
 
-  ownStyles: {
-    ...getMenuClassStyles(ownStyles),
-  },
-});
+    ownStyles: {
+      ...getMenuClassStyles(ownStyles),
+    },
+  });
 
 const getDivClasses = (
   entityStyles: React.CSSProperties,
   groupStyles: React.CSSProperties,
-  ownStyles: React.CSSProperties
+  ownStyles: React.CSSProperties,
 ) =>
   makeStyles({
     entityStyles: {
-      ...R.pick(['marginTop', 'marginRight', 'marginBottom', 'marginLeft'], entityStyles),
+      ...R.pick(
+        ['marginTop', 'marginRight', 'marginBottom', 'marginLeft'],
+        entityStyles,
+      ),
       position: 'relative',
       display: 'inline-block',
       verticalAlign: 'top',
     },
 
     groupStyles: {
-      ...R.pick(['marginTop', 'marginRight', 'marginBottom', 'marginLeft'], groupStyles),
+      ...R.pick(
+        ['marginTop', 'marginRight', 'marginBottom', 'marginLeft'],
+        groupStyles,
+      ),
       position: 'relative',
       display: 'inline-block',
       verticalAlign: 'top',
     },
 
     ownStyles: {
-      ...R.pick(['marginTop', 'marginRight', 'marginBottom', 'marginLeft'], ownStyles),
+      ...R.pick(
+        ['marginTop', 'marginRight', 'marginBottom', 'marginLeft'],
+        ownStyles,
+      ),
       position: 'relative',
       display: 'inline-block',
       verticalAlign: 'top',
     },
-});
+  });
 
-const SelectComponent = (props: SelectRendererProps) => {
-  const {
-    id,
-    entityStyles,
-    groupStyles,
-    ownStyles,
-    isDisabled,
-    active,
-    sortableId,
-    currentValue,
-    onElementChange,
-    params,
-    children,
-    className,
-    elementRef,
-    childrenElements,
-    projectClasses,
-  } = props;
-  
+const SelectComponent: React.FC<SelectRendererProps> = ({
+  id,
+  entityStyles,
+  groupStyles,
+  ownStyles,
+  isDisabled,
+  active,
+  sortableId,
+  currentValue,
+  onElementChange,
+  params,
+  children,
+  className,
+  elementRef,
+  childrenElements,
+  projectClasses,
+}) => {
   const { isOpen } = params;
 
-  const handleSelectChange = (event: ChangeEvent<{ name?: string | undefined; value: any; }>) => {
+  const handleSelectChange = (
+    event: ChangeEvent<{ name?: string | undefined; value: any }>,
+  ) => {
     onElementChange(id, event.target.value);
   };
 
   const entityInlineStyles = R.pick(['width', 'height'], entityStyles);
   const groupInlineStyles = R.pick(['width', 'height'], groupStyles);
   const ownInlineStyles = R.pick(['width', 'height'], ownStyles);
-  const inlineStyles = { ...entityInlineStyles, ...groupInlineStyles, ...ownInlineStyles};
-
+  const inlineStyles = {
+    ...entityInlineStyles,
+    ...groupInlineStyles,
+    ...ownInlineStyles,
+  };
 
   const [menu] = childrenElements;
   const menuItems = menu.children;
 
-  const textFieldClasses = getTextFieldStyles(entityStyles, groupStyles, ownStyles)();
-  const inputClasses = getInputStyles(isDisabled, active, entityStyles, groupStyles, ownStyles)();
+  const textFieldClasses = getTextFieldStyles(
+    entityStyles,
+    groupStyles,
+    ownStyles,
+  )();
+  const inputClasses = getInputStyles(
+    isDisabled,
+    active,
+    entityStyles,
+    groupStyles,
+    ownStyles,
+  )();
   const divClasses = getDivClasses(entityStyles, groupStyles, ownStyles)();
 
   const wrapperClasses = makeStyles({
@@ -237,19 +265,31 @@ const SelectComponent = (props: SelectRendererProps) => {
 
   const [menuEntityClass, menuGroupClass] = menu.styles.classNames;
 
-  const menuEntityStyles = projectClasses?.find(cssClass => cssClass.className === menuEntityClass)?.rules || {};
-  const menuGroupStyles = projectClasses?.find(cssClass => cssClass.className === menuGroupClass)?.rules || {};
-  
+  const menuEntityStyles =
+    projectClasses?.find((cssClass) => cssClass.className === menuEntityClass)
+      ?.rules || {};
+  const menuGroupStyles =
+    projectClasses?.find((cssClass) => cssClass.className === menuGroupClass)
+      ?.rules || {};
+
   const convertedMenuEntityStyles = convertPropCSS(menuEntityStyles);
   const convertedGroupStyles = convertPropCSS(menuGroupStyles);
   const menuOwnStyles = convertPropCSS(menu.styles.ownStyles);
 
-  const menuClasses = getMenuStyles(convertedMenuEntityStyles, convertedGroupStyles, menuOwnStyles)();
+  const menuClasses = getMenuStyles(
+    convertedMenuEntityStyles,
+    convertedGroupStyles,
+    menuOwnStyles,
+  )();
 
   const PrototypeMenuProps = {
     MenuProps: {
       PaperProps: {
-        className: cn(menuClasses.entityStyles, menuClasses.groupStyles, menuClasses.ownStyles),
+        className: cn(
+          menuClasses.entityStyles,
+          menuClasses.groupStyles,
+          menuClasses.ownStyles,
+        ),
       },
     },
   };
@@ -260,7 +300,7 @@ const SelectComponent = (props: SelectRendererProps) => {
       inputClasses.root,
       inputClasses.entityStyles,
       inputClasses.groupStyles,
-      inputClasses.ownStyles
+      inputClasses.ownStyles,
     ),
   };
 
@@ -329,37 +369,51 @@ const SelectComponent = (props: SelectRendererProps) => {
         SelectProps={PrototypeMenuProps}
         select
       >
-        {menuItems.map(
-          (menuItem) => {
-            const { id: itemID, parameters: { name, value, showRipple }, styles } = menuItem;
-            const [entityClass, groupClass] = menuItem.styles.classNames;
+        {menuItems.map((menuItem) => {
+          const {
+            id: itemID,
+            parameters: { name, value, showRipple },
+            styles: menuItemStyles,
+          } = menuItem;
+          const [entityClass, groupClass] = menuItemStyles.classNames;
 
-            const entityStyles = projectClasses?.find(cssClass => cssClass.className === entityClass)?.rules || {};
-            const groupStyles = projectClasses?.find(cssClass => cssClass.className === groupClass)?.rules || {};
-            
-            const convertedEntityStyles = convertPropCSS(entityStyles);
-            const convertedGroupStyles = convertPropCSS(groupStyles);
-            const ownStyles = convertPropCSS(styles.ownStyles);
+          const menuItemEntityStyles =
+            projectClasses?.find(
+              (cssClass) => cssClass.className === entityClass,
+            )?.rules || {};
+          const menuItemGroupStyles =
+            projectClasses?.find(
+              (cssClass) => cssClass.className === groupClass,
+            )?.rules || {};
 
-            const menuItemClasses = getMenuItemClasses(convertedEntityStyles, convertedGroupStyles, ownStyles)();
+          const convertedEntityStyles = convertPropCSS(menuItemEntityStyles);
+          const menuItemConvertedGroupStyles = convertPropCSS(
+            menuItemGroupStyles,
+          );
+          const menuItemOwnStyles = convertPropCSS(styles.ownStyles);
 
-            return (
-              <MenuItem
-                key={itemID}
-                value={value}
-                className={cn(
-                  menuItemClasses.root,
-                  menuItemClasses.entityStyles,
-                  menuItemClasses.groupStyles,
-                  menuItemClasses.ownStyles,
-                )}
-                disableRipple={!showRipple}
-              >
-                {name}
-              </MenuItem>
-            );
-          }
-        )}
+          const menuItemClasses = getMenuItemClasses(
+            convertedEntityStyles,
+            menuItemConvertedGroupStyles,
+            menuItemOwnStyles,
+          )();
+
+          return (
+            <MenuItem
+              key={itemID}
+              value={value}
+              className={cn(
+                menuItemClasses.root,
+                menuItemClasses.entityStyles,
+                menuItemClasses.groupStyles,
+                menuItemClasses.ownStyles,
+              )}
+              disableRipple={!showRipple}
+            >
+              {name}
+            </MenuItem>
+          );
+        })}
       </TextField>
     </div>
   );

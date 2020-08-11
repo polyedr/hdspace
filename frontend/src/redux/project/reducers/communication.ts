@@ -1,41 +1,43 @@
 import * as T from '../types';
 import { initialCommunication } from '$redux/project/initial';
 
-
-export const communicationReducer = (state: T.ProjectCommunicationState = initialCommunication, action: T.Action): T.ProjectCommunicationState => {
+export const communicationReducer = (
+  state: T.ProjectCommunicationState = initialCommunication,
+  action: T.Action,
+): T.ProjectCommunicationState => {
   switch (action.type) {
     case 'PROJECTS:SET_LIST_PROJECT_LOADER': {
       return {
         ...state,
-        listProjectLoader: action.payload.active
+        listProjectLoader: action.payload.active,
       };
     }
 
     case 'PROJECTS:SET_LOADER': {
       return {
         ...state,
-        loader: action.payload.active
+        loader: action.payload.active,
       };
     }
 
     case 'PROJECTS:SET_SCREEN_LOADER': {
       return {
         ...state,
-        screenLoader: action.payload.active
+        screenLoader: action.payload.active,
       };
     }
 
     case 'PROJECTS:SET_PROJECT_LOADER': {
       return {
         ...state,
-        projectLoader: action.payload.active
+        projectLoader: action.payload.active,
       };
     }
 
     case 'PROJECTS:SET_SCENARIO_LOADER': {
       return {
         ...state,
-        scenarioLoader: action.payload.active
+        scenarioLoader: action.payload.active,
       };
     }
 

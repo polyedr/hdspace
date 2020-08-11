@@ -1,7 +1,10 @@
 import React, { useCallback } from 'react';
 import { connect } from 'react-redux';
 
-import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
+import {
+  withConfigurableProperties,
+  PropertiesChangeProps,
+} from '$utils/withConfigurableProperties';
 import { actionsCreators } from '$redux/project';
 import { ImageElement } from '$api/types';
 
@@ -16,15 +19,19 @@ type Props = PropertiesChangeProps<ImageElement> & typeof mapDispatch;
 const Component: React.FC<Props> = (props) => {
   const { activeItemID, updateElementImage } = props;
 
-  const handleChangeFileInput = useCallback(({ target }) => {
-    const file = target.files[0];
+  const handleChangeFileInput = useCallback(
+    ({ target }) => {
+      const file = target.files[0];
 
-    if (file.size > 5242880) {
-      alert('Choose image up to 5Mb!');
-    } else {
-      updateElementImage(activeItemID, file);
-    }
-  }, [activeItemID, updateElementImage]);
+      if (file.size > 5242880) {
+        // eslint-disable-next-line no-alert
+        alert('Choose image up to 5Mb!');
+      } else {
+        updateElementImage(activeItemID, file);
+      }
+    },
+    [activeItemID, updateElementImage],
+  );
 
   return (
     <div className="propsElementsBlock">
@@ -47,4 +54,7 @@ const Component: React.FC<Props> = (props) => {
   );
 };
 
-export const Image = connect(null, mapDispatch)(withConfigurableProperties(Component));
+export const Image = connect(
+  null,
+  mapDispatch,
+)(withConfigurableProperties(Component));

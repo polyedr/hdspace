@@ -4,7 +4,10 @@ import { Switch, makeStyles } from '@material-ui/core';
 
 import { AppReduxState } from '$shared/types/app';
 import { selectors } from '$redux/project/';
-import { withConfigurableProperties, PropertiesChangeProps } from '$utils/withConfigurableProperties';
+import {
+  withConfigurableProperties,
+  PropertiesChangeProps,
+} from '$utils/withConfigurableProperties';
 import { sharedClasses } from '$styles/sharedClasses';
 import { ListElement } from '$api/types';
 
@@ -12,7 +15,10 @@ import { StylesHeader } from '../../../components/StylesHeader/StylesHeader';
 
 function mapState(state: AppReduxState) {
   return {
-    bulletsStyles: selectors.selectCurrentEditableStyles(state, 'list-style-type'),
+    bulletsStyles: selectors.selectCurrentEditableStyles(
+      state,
+      'list-style-type',
+    ),
   };
 }
 

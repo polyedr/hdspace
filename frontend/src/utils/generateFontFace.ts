@@ -1,4 +1,9 @@
-export const generateFontFace = (fontFamily: string, pathName: string, fontWeight: number, fontStyle: string): string => {
+export const generateFontFace = (
+  fontFamily: string,
+  pathName: string,
+  fontWeight: number,
+  fontStyle: string,
+): string => {
   return `
     @font-face {
       font-family: "${fontFamily}";
@@ -9,5 +14,5 @@ export const generateFontFace = (fontFamily: string, pathName: string, fontWeigh
       url("fonts/${pathName}.woff") format("woff"),
       url("fonts/${pathName}.svg#${pathName}") format("svg");
     }
-  `
+  `;
 };

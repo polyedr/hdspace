@@ -1,4 +1,8 @@
-import { MapServerElement, CalendarServerElement, ClockServerElement } from '$api/types';
+import {
+  MapServerElement,
+  CalendarServerElement,
+  ClockServerElement,
+} from '$api/types';
 import { CssLikeStyles } from '$utils/StyleHelper';
 
 export const map: MapServerElement = {

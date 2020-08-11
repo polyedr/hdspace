@@ -39,5 +39,10 @@ export type IGenericFailAction = IFailAction<string, any>;
 export type NullaryAC<A extends IGenericPlainAction> = () => A;
 export type UnaryAC<A extends IGenericAction> = (payload: A['payload']) => A;
 
-export type NullaryFailedAC<A extends IGenericPlainFailAction> = (error: A['error']) => A;
-export type UnaryFailedAC<A extends IGenericFailAction> = (error: A['error'], payload: A['payload']) => A;
+export type NullaryFailedAC<A extends IGenericPlainFailAction> = (
+  error: A['error'],
+) => A;
+export type UnaryFailedAC<A extends IGenericFailAction> = (
+  error: A['error'],
+  payload: A['payload'],
+) => A;

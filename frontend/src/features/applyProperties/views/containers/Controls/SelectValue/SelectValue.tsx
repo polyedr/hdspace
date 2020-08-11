@@ -6,25 +6,30 @@ import { selectors } from '$redux/project/';
 import { DropDown } from '$components/UI/DropDown/';
 import {
   withConfigurableProperties,
-  PropertiesChangeProps
+  PropertiesChangeProps,
 } from '$utils/withConfigurableProperties';
 import { sharedClasses } from '$styles/sharedClasses';
 import { SelectElement } from '$api/types';
 
 import { ControlTitle } from '../../../components/ControlTitle/ControlTitle';
+
 const styles = require('./SelectValue.scss');
 
 type StateProps = {
   value: string;
-  optionsValues: string[],
+  optionsValues: string[];
 };
 
 function mapState(state: AppReduxState): StateProps {
-  const activeItemParams = selectors.selectActiveItemParams<SelectElement>(state);
-  const value = activeItemParams.value;
+  const activeItemParams = selectors.selectActiveItemParams<SelectElement>(
+    state,
+  );
+  const { value } = activeItemParams;
   const selectMenu = selectors.selectActiveItemChildren(state, 'selectMenu');
   const selectOptions = selectMenu[0].children;
-  const optionsValues = selectOptions.map(({ parameters: { value } }) => value || '');
+  const optionsValues = selectOptions.map(
+    ({ parameters: { value: optionValue } }) => optionValue || '',
+  );
 
   return {
     value,
@@ -37,15 +42,17 @@ const SelectValue: React.FC<Props> = memo((props) => {
   const { value, optionsValues = [], updateParams } = props;
 
   useEffect(() => {
-    const isValueInOptions = optionsValues.some(optionValue => optionValue === value);
+    const isValueInOptions = optionsValues.some(
+      (optionValue) => optionValue === value,
+    );
 
     if (!isValueInOptions && optionsValues.length) {
       updateParams({ value: optionsValues[0] });
     }
   }, [optionsValues]);
 
-  const handleDropdownChange = (value: string) => {
-    updateParams({ value });
+  const handleDropdownChange = (newValue: string) => {
+    updateParams({ value: newValue });
   };
 
   return (
@@ -57,7 +64,10 @@ const SelectValue: React.FC<Props> = memo((props) => {
         <div className={sharedClasses.propsContent}>
           <div className={sharedClasses.propsContainer}>
             <DropDown
-              options={optionsValues.map(option => ({ label: option, value: option }))}
+              options={optionsValues.map((option) => ({
+                label: option,
+                value: option,
+              }))}
               defaultValue={value}
               value={value}
               onChange={handleDropdownChange}

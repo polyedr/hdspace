@@ -1,8 +1,8 @@
 import React from 'react';
 
+import { connect } from 'react-redux';
 import { actionsCreators, selectors } from '$redux/project';
 import { AppReduxState } from '$shared/types/app';
-import { connect } from 'react-redux';
 import { DropDown } from '$components/UI/DropDown';
 import { findChildByID } from '$utils/ElementsTreeHelper';
 
@@ -21,7 +21,7 @@ const mapState = (state: AppReduxState) => {
   return {
     editableStyles,
     classNames,
-  }
+  };
 };
 
 const mapDispatch = {
@@ -30,16 +30,21 @@ const mapDispatch = {
 
 type Props = StateProps & typeof mapDispatch;
 
-const EditableStyles = (props: Props) => {
-  const { editableStyles, classNames, setEditableStyles } = props;
-
+const EditableStyles: React.FC<Props> = ({
+  editableStyles,
+  classNames,
+  setEditableStyles,
+}) => {
   const handleDropdownChange = (value: string) => {
     setEditableStyles(value);
   };
 
   return (
     <DropDown
-      options={classNames.map(className => ({ label: className, value: className }))}
+      options={classNames.map((className) => ({
+        label: className,
+        value: className,
+      }))}
       defaultValue={editableStyles}
       value={editableStyles}
       onChange={handleDropdownChange}

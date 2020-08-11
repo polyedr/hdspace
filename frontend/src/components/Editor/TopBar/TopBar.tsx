@@ -1,20 +1,21 @@
 import React, { useCallback } from 'react';
 import classNames from 'classnames';
+import { useDispatch, useSelector } from 'react-redux';
 import { Icon } from '$components/UI/Icon';
 import { Checkbox } from '$components/UI/Checkbox';
 import { Button } from '$components/UI/Button';
 import { DEFAULT_SCREEN_MODE } from '$constants/defaultParams';
 import { ScreenMode } from '../Workspace/Workspace';
-import { useDispatch, useSelector } from 'react-redux';
 import { redoAction, undoAction } from '$redux/project/actions';
 import { selectors } from '$redux/project';
+
 const styles = require('./TopBar.scss');
 
 export type IScreenMode = {
-  isDefaultMode: boolean,
-  isTabletMode: boolean,
-  isMobileMode: boolean,
-}
+  isDefaultMode: boolean;
+  isTabletMode: boolean;
+  isMobileMode: boolean;
+};
 
 type Props = {
   screenID: number;
@@ -28,20 +29,18 @@ type Props = {
   onExport(): void;
 };
 
-export const TopBar = (props: Props) => {
+export const TopBar = ({
+  screenID,
+  isPrototypeMode,
+  isScreenRotated,
+  screenMode,
+  onPrototypeModeToggle,
+  onScreenSave,
+  onScreenModeChange,
+  onScreenRotate,
+  onExport,
+}: Props) => {
   const dispatch = useDispatch();
-
-  const {
-    screenID,
-    isPrototypeMode,
-    isScreenRotated,
-    screenMode,
-    onPrototypeModeToggle,
-    onScreenSave,
-    onScreenModeChange,
-    onScreenRotate,
-    onExport,
-  } = props;
 
   const undoLength = useSelector(selectors.selectUndoActions).length;
   const redoLength = useSelector(selectors.selectRedoActions).length;
@@ -51,7 +50,7 @@ export const TopBar = (props: Props) => {
   };
 
   const onHistoryForward = () => {
-    dispatch(redoAction())
+    dispatch(redoAction());
   };
 
   const handleDefaultScreenModeSelect = useCallback(() => {
@@ -114,29 +113,30 @@ export const TopBar = (props: Props) => {
         >
           <Icon icon="phone" />
         </Button>
-        {
-          (screenMode.isTabletMode || screenMode.isMobileMode) && (
-            <Button
-              className={classNames(
-                'mainImgBtn',
-                styles.navBarBtn,
-                styles.rotateScreenBtn,
-                isScreenRotated && styles.rotateScreenBtn_active,
-              )}
-              styleType="none"
-              disabled={screenID === -1}
-              onClick={handleScreenRotate}
-            >
-              <Icon icon="screen-rotate" />
-            </Button>
-          )
-        }
+        {(screenMode.isTabletMode || screenMode.isMobileMode) && (
+          <Button
+            className={classNames(
+              'mainImgBtn',
+              styles.navBarBtn,
+              styles.rotateScreenBtn,
+              isScreenRotated && styles.rotateScreenBtn_active,
+            )}
+            styleType="none"
+            disabled={screenID === -1}
+            onClick={handleScreenRotate}
+          >
+            <Icon icon="screen-rotate" />
+          </Button>
+        )}
       </div>
       <div className="navBarModeBlock">
         <Checkbox
           name="isPrototypeMode"
           label={isPrototypeMode ? 'ON' : 'OFF'}
-          className={classNames(styles.prototypeModeIndicator, !isPrototypeMode && styles.prototypeModeIndicator_off)}
+          className={classNames(
+            styles.prototypeModeIndicator,
+            !isPrototypeMode && styles.prototypeModeIndicator_off,
+          )}
           checked={isPrototypeMode}
           disabled={screenID === -1}
           isHidden

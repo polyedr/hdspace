@@ -16,30 +16,31 @@ const mapState = (state: AppReduxState) => {
   return {
     editableStyles: selectors.selectEditableStyles(state),
     activeItem: selectors.selectActiveItem(state),
-  }
+  };
 };
 
 type Props = OwnProps & ReturnType<typeof mapState>;
 
-const RemoveStyles = memo((props: Props) => {
-  const { onClick, cssPropertiesNames, editableStyles, activeItem } = props;
+const RemoveStyles: React.FC<Props> = memo(
+  ({ onClick, cssPropertiesNames, editableStyles, activeItem }) => {
+    const handleButtonClick = () => {
+      onClick(cssPropertiesNames);
+    };
 
-  const handleButtonClick = () => {
-    onClick(cssPropertiesNames);
-  };
+    const showClearButton =
+      activeItem.itemType !== 'root' && editableStyles !== activeItem.itemType;
 
-  const showClearButton = activeItem.itemType !== 'root' && editableStyles !== activeItem.itemType;
-
-  return showClearButton ? (
-    <Button
-      className={styles.button}
-      styleType="grey"
-      onClick={handleButtonClick}
-    >
-      Clear styles
-    </Button>
-  ) : null;
-});
+    return showClearButton ? (
+      <Button
+        className={styles.button}
+        styleType="grey"
+        onClick={handleButtonClick}
+      >
+        Clear styles
+      </Button>
+    ) : null;
+  },
+);
 
 const Component = connect(mapState)(RemoveStyles);
 export { Component as RemoveStyles };

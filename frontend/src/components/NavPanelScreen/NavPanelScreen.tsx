@@ -32,243 +32,280 @@ interface INavPanelScreenProps {
 }
 
 type Screen = {
-  id: number, 
-  name: string,
-}
+  id: number;
+  name: string;
+};
 
-const NavPanelScreen: React.FunctionComponent<INavPanelScreenProps> = memo(({
-  isNavPanelMinimized,
-  onMinimizerNavPanel,
-  projectID,
-  project,
-  screen,
-  screenID,
+const NavPanelScreen: React.FunctionComponent<INavPanelScreenProps> = memo(
+  ({
+    isNavPanelMinimized,
+    onMinimizerNavPanel,
+    projectID,
+    screen: currentScreen,
+    screenID,
+    activateScreen,
+    getProject,
+    changeScreensOrder,
+    addScreen,
+    duplicateScreen,
+    delScreen,
+    renameScreen,
+    projectScreens,
+  }) => {
+    const [modalRenameScreenOpen, setModalRenameScreenOpen] = React.useState<
+      boolean
+    >(false);
+    const [editableScreen, setEditableScreen] = React.useState<Screen>({
+      id: -1,
+      name: '',
+    });
+    const [screens, setScreens] = React.useState<IProjectScreen[]>(
+      projectScreens,
+    );
+    const [modalMsgDanger, setModalMsgDanger] = React.useState<string>('');
+    const [modalDellScreen, setModalDellScreen] = React.useState<boolean>(
+      false,
+    );
 
-  activateScreen,
-  getProject,
-  changeScreensOrder,
-  addScreen,
-  duplicateScreen,
-  delScreen,
-  renameScreen,
-  projectScreens,
-}) => {
-  const [modalRenameScreenOpen, setModalRenameScreenOpen] = React.useState<boolean>(false);
-  const [editableScreen, setEditableScreen] = React.useState<Screen>({ id: -1, name: '' });
-  const [screens, setScreens] = React.useState<IProjectScreen[]>(projectScreens);
-  const [modalMsgDanger, setModalMsgDanger] = React.useState<string>('');
-  const [modalDellScreen, setModalDellScreen] = React.useState<boolean>(false);
+    useEffect(() => {
+      getProject(projectID, screenID);
+    }, [projectID, getProject]);
 
-  useEffect(() => {
-    getProject(projectID, screenID);
-  }, [projectID, getProject]);
+    useEffect(() => {
+      const orderedScreens = [...projectScreens].sort(
+        (a, b) => a.buoyancy - b.buoyancy,
+      );
 
-  useEffect(() => {
-    const orderedScreens = [...projectScreens]
-      .sort((a, b) => (a.buoyancy - b.buoyancy));
+      setScreens(orderedScreens);
+    }, [projectScreens]);
 
-    setScreens(orderedScreens);
-  }, [projectScreens]);
+    const openScreen = useCallback(
+      (id: number) => {
+        if (id === currentScreen.id) return;
 
-  const openScreen = useCallback((id: number) => {
-    if (id === screen.id) return;
+        activateScreen(projectID, id);
+      },
+      [currentScreen, projectID, activateScreen],
+    );
 
-    activateScreen(projectID, id);
-  }, [screen, projectID, activateScreen]);
+    const handleScreenNameInputChange = useCallback(
+      (e) => {
+        const changedScreen = { ...editableScreen, name: e.target.value };
+        setEditableScreen(changedScreen);
+        setModalMsgDanger('');
+      },
+      [editableScreen],
+    );
 
-  const handleScreenNameInputChange = useCallback((e) => {
-    const changedScreen = { ...editableScreen, name: e.target.value };
-    setEditableScreen(changedScreen);
-    setModalMsgDanger('');
-  }, [editableScreen]);
+    const cancelModal = useCallback(() => {
+      setModalMsgDanger('');
+      setModalRenameScreenOpen(false);
+      setModalDellScreen(false);
+    }, []);
 
-  const cancelModal = useCallback(() => {
-    setModalMsgDanger('');
-    setModalRenameScreenOpen(false);
-    setModalDellScreen(false);
-  }, []);
+    const handleScreenAdd = useCallback(() => {
+      addScreen(projectID, `Screen 1`, screens.length);
+    }, [projectID, screens]);
 
-  const handleScreenAdd = useCallback(() => {
-    addScreen(projectID, `Screen 1`, screens.length);
-  }, [projectID, screens]);
+    const handleEditButtonClick = useCallback(
+      (e, id: number) => {
+        e.preventDefault();
+        e.stopPropagation();
 
-  const handleEditButtonClick = useCallback((e, id: number) => {
-    e.preventDefault();
-    e.stopPropagation();
+        const changedScreen = screens.find((screen) => screen.id === id);
 
-    const changedScreen = screens.find(screen => screen.id === id);
+        if (changedScreen) {
+          setEditableScreen(changedScreen);
+        }
+        setModalRenameScreenOpen(true);
+      },
+      [screens],
+    );
 
-    changedScreen && setEditableScreen(changedScreen);
-    setModalRenameScreenOpen(true);
-  }, [screens]);
+    const handleDuplicateScreen = useCallback(
+      (event, id: number) => {
+        event.preventDefault();
+        event.stopPropagation();
 
-  const handleDuplicateScreen = useCallback((event, id: number) => {
-    event.preventDefault();
-    event.stopPropagation();
+        const changedScreen = screens.find((screen) => screen.id === id);
+        if (changedScreen) {
+          setEditableScreen(changedScreen);
+        }
 
-    const changedScreen = screens.find(screen => screen.id === id);
-    changedScreen && setEditableScreen(changedScreen);
+        duplicateScreen(changedScreen?.name || 'copy', changedScreen?.id || -1);
+      },
+      [screens],
+    );
 
-    duplicateScreen(changedScreen?.name || 'copy', changedScreen?.id || -1);
-  }, [screens]);
+    const handleDelScreen = useCallback((e, id: number, name: string) => {
+      e.preventDefault();
+      e.stopPropagation();
+      setEditableScreen({ id, name });
+      setModalDellScreen(true);
+    }, []);
 
-  const handleDelScreen = useCallback((e, id: number, name: string) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setEditableScreen({ id, name });
-    setModalDellScreen(true);
-  }, []);
+    const handleRenameModalConfirm = useCallback(
+      (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        cancelModal();
 
-  const handleRenameModalConfirm = useCallback((event) => {
-    event.preventDefault();
-    event.stopPropagation();
-    cancelModal();
+        renameScreen(projectID, editableScreen.id, editableScreen.name);
 
-    renameScreen(projectID, editableScreen.id, editableScreen.name);
-    
-    const newScreens = screens.map(screen => screen.id === editableScreen.id ? { ...screen, name: editableScreen.name } : screen);
-    setScreens(newScreens);
-  }, [cancelModal, editableScreen, screens, projectID, renameScreen]);
+        const newScreens = screens.map((screen) =>
+          screen.id === editableScreen.id
+            ? { ...screen, name: editableScreen.name }
+            : screen,
+        );
+        setScreens(newScreens);
+      },
+      [cancelModal, editableScreen, screens, projectID, renameScreen],
+    );
 
-  const onDelScreen = useCallback((e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    cancelModal();
-    delScreen(projectID, editableScreen.id);
-  }, [cancelModal, editableScreen, projectID, delScreen]);
+    const onDelScreen = useCallback(
+      (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        cancelModal();
+        delScreen(projectID, editableScreen.id);
+      },
+      [cancelModal, editableScreen, projectID, delScreen],
+    );
 
-  const handleChange = useCallback((order: string[]) => {
-    const newScreens = [...screens].map(screen => {
-      const newBuoyancy = order.indexOf(String(screen.id));
-      return { ...screen, buoyancy: newBuoyancy };
-    })
+    const handleChange = useCallback(
+      (order: string[]) => {
+        const newScreens = [...screens].map((screen) => {
+          const newBuoyancy = order.indexOf(String(screen.id));
+          return { ...screen, buoyancy: newBuoyancy };
+        });
 
-    changeScreensOrder(newScreens);
-  }, [changeScreensOrder, screens]);
+        changeScreensOrder(newScreens);
+      },
+      [changeScreensOrder, screens],
+    );
 
-  return (
-    <div
-      className={classNames(
-        styles.navPanelContainer,
-        isNavPanelMinimized && styles.navPanelContainer_minimize,
-      )}
-    >
-      <div className={styles.navPanelBlock}>
-        <Button
-          className={classNames('expandBtn', styles.navPanelExpandBtn)}
-          styleType="none"
-          onClick={onMinimizerNavPanel}
-        >
-          <Icon icon="expand" size={28} />
-        </Button>
-
-        <div className={styles.screensBlock}>
+    return (
+      <div
+        className={classNames(
+          styles.navPanelContainer,
+          isNavPanelMinimized && styles.navPanelContainer_minimize,
+        )}
+      >
+        <div className={styles.navPanelBlock}>
           <Button
-            className={classNames(styles.addScreenBtn)}
-            styleType="confirm"
-            onClick={handleScreenAdd}
+            className={classNames('expandBtn', styles.navPanelExpandBtn)}
+            styleType="none"
+            onClick={onMinimizerNavPanel}
           >
-            <Icon icon="add" size={16} />
+            <Icon icon="expand" size={28} />
           </Button>
 
-          <Scrollbar
-            autoHeightMin={isNavPanelMinimized ? '38px' : '110px'}
-          >
-            <Sortable
-              className={styles.screensTabsContainer}
-              onChange={handleChange}
+          <div className={styles.screensBlock}>
+            <Button
+              className={classNames(styles.addScreenBtn)}
+              styleType="confirm"
+              onClick={handleScreenAdd}
             >
-              {
-                screens.map(screenItem => (
+              <Icon icon="add" size={16} />
+            </Button>
+
+            <Scrollbar autoHeightMin={isNavPanelMinimized ? '38px' : '110px'}>
+              <Sortable
+                className={styles.screensTabsContainer}
+                onChange={handleChange}
+              >
+                {screens.map((screenItem) => (
                   <NavLink
                     key={screenItem.id}
                     to={`/project/${projectID}/${screenItem.id}`}
-                    className={classNames(styles.screenContainer, screen && screenItem.id === screen.id ? styles.screenContainer_active : '')}
+                    className={classNames(
+                      styles.screenContainer,
+                      currentScreen && screenItem.id === currentScreen.id
+                        ? styles.screenContainer_active
+                        : '',
+                    )}
                     data-id={screenItem.id}
+                  >
+                    <div
+                      className={styles.screenNavigate}
+                      onClick={() => openScreen(screenItem.id)}
                     >
-                      <div
-                        className={styles.screenNavigate}
-                        onClick={() => openScreen(screenItem.id)}
+                      <Button
+                        className="propsPanelImgBtn"
+                        styleType="none"
+                        onClick={(e) => handleEditButtonClick(e, screenItem.id)}
                       >
-                        <Button
-                          className="propsPanelImgBtn"
-                          styleType="none"
-                          onClick={e => handleEditButtonClick(e, screenItem.id)}
-                        >
-                          <Icon icon="edit" size={20} />
-                        </Button>
-                        <Button
-                          className="propsPanelImgBtn"
-                          styleType="none"
-                          onClick={e => handleDuplicateScreen(e, screenItem.id)}
-                        >
-                          <Icon icon="copy" size={20} />
-                        </Button>
-                        {screens.length > 1 && (
-                          <Button
-                            className="delBtn"
-                            styleType="none"
-                            onClick={e => handleDelScreen(e, screenItem.id, screenItem.name)}
-                          >
-                            <Icon icon="delete" size={20} />
-                          </Button>
-                        )}
-                      </div>
-                      <div
-                        className={classNames(
-                          styles.screenTab,
-                        )}
+                        <Icon icon="edit" size={20} />
+                      </Button>
+                      <Button
+                        className="propsPanelImgBtn"
+                        styleType="none"
+                        onClick={(e) => handleDuplicateScreen(e, screenItem.id)}
                       >
-                        <span>{screenItem.name}</span>
-                      </div>
+                        <Icon icon="copy" size={20} />
+                      </Button>
+                      {screens.length > 1 && (
+                        <Button
+                          className="delBtn"
+                          styleType="none"
+                          onClick={(e) =>
+                            handleDelScreen(e, screenItem.id, screenItem.name)
+                          }
+                        >
+                          <Icon icon="delete" size={20} />
+                        </Button>
+                      )}
+                    </div>
+                    <div className={classNames(styles.screenTab)}>
+                      <span>{screenItem.name}</span>
+                    </div>
                   </NavLink>
-                ))
-              }
-            </Sortable>
-          </Scrollbar>
+                ))}
+              </Sortable>
+            </Scrollbar>
+          </div>
         </div>
+
+        {modalRenameScreenOpen && (
+          <Modal
+            animClassName="bubbleAnimation"
+            title="Rename screen"
+            confirmText="Rename"
+            onConfirm={(e) => handleRenameModalConfirm(e)}
+            cancelText="Close"
+            onClose={cancelModal}
+          >
+            <div className={styles.modalBody}>
+              <input
+                type="text"
+                className="modalTextInput"
+                value={editableScreen.name}
+                placeholder="New screen name"
+                onChange={handleScreenNameInputChange}
+                required
+              />
+              {modalMsgDanger && <p>{modalMsgDanger}</p>}
+            </div>
+          </Modal>
+        )}
+
+        {modalDellScreen && (
+          <Modal
+            animClassName="bubbleAnimation"
+            title=""
+            confirmText="Delete"
+            onConfirm={(e) => onDelScreen(e)}
+            cancelText="Close"
+            onClose={cancelModal}
+          >
+            <div className={styles.modalBody}>
+              {`Delete Screen: ${editableScreen.name}`}
+            </div>
+          </Modal>
+        )}
       </div>
-
-      {modalRenameScreenOpen && (
-        <Modal
-          animClassName="bubbleAnimation"
-          title="Rename screen"
-          confirmText="Rename"
-          onConfirm={e => handleRenameModalConfirm(e)}
-          cancelText="Close"
-          onClose={cancelModal}
-        >
-          <div className={styles.modalBody}>
-            <input
-              type="text"
-              className="modalTextInput"
-              value={editableScreen.name}
-              placeholder="New screen name"
-              onChange={handleScreenNameInputChange}
-              required
-            />
-            {modalMsgDanger && <p>{modalMsgDanger}</p>
-            }
-          </div>
-        </Modal>
-      )}
-
-      {modalDellScreen && (
-        <Modal
-          animClassName="bubbleAnimation"
-          title=""
-          confirmText="Delete"
-          onConfirm={e => onDelScreen(e)}
-          cancelText="Close"
-          onClose={cancelModal}
-        >
-          <div className={styles.modalBody}>
-            {`Delete Screen: ${editableScreen.name}`}
-          </div>
-        </Modal>
-      )}
-    </div>
-  );
-});
+    );
+  },
+);
 
 export default NavPanelScreen;

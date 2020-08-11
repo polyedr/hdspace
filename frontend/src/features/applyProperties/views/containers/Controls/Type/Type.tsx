@@ -6,13 +6,14 @@ import { selectors } from '$redux/project/';
 import { DropDown } from '$components/UI/DropDown/';
 import {
   withConfigurableProperties,
-  PropertiesChangeProps
+  PropertiesChangeProps,
 } from '$utils/withConfigurableProperties';
 import { sharedClasses } from '$styles/sharedClasses';
 import { InputType, TextinputElement } from '$api/types';
 
 import { ControlTitle } from '../../../components/ControlTitle/ControlTitle';
 import { TYPE } from './constants';
+
 const styles = require('./Type.scss');
 
 type StateProps = {
@@ -20,7 +21,9 @@ type StateProps = {
 };
 
 function mapState(state: AppReduxState): StateProps {
-  const activeItemParams = selectors.selectActiveItemParams<TextinputElement>(state);
+  const activeItemParams = selectors.selectActiveItemParams<TextinputElement>(
+    state,
+  );
 
   return {
     type: activeItemParams.type,
@@ -28,9 +31,7 @@ function mapState(state: AppReduxState): StateProps {
 }
 type Props = StateProps & PropertiesChangeProps<TextinputElement>;
 
-const Type: React.FC<Props> = memo((props) => {
-  const { type, updateParams } = props;
-
+const Type: React.FC<Props> = memo(({ type, updateParams }) => {
   const handleDropdownChange = (value: string) => {
     updateParams({ type: value as InputType });
   };

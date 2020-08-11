@@ -5,13 +5,17 @@ import { makeStyles, MenuItem } from '@material-ui/core';
 import { sharedClasses } from '$styles/sharedClasses';
 
 import { DropdownItemRendererProps } from '../types';
+
 const styles = require('../styles.scss');
 
-const getDropdownItemClassStyles = (styles: React.CSSProperties, isDisabled: boolean) => ({
-  ...styles,
+const getDropdownItemClassStyles = (
+  style: React.CSSProperties,
+  isDisabled: boolean,
+) => ({
+  ...style,
 
   '&:hover': {
-    backgroundColor: isDisabled ? styles.backgroundColor : 'rgba(0, 0, 0, 0.04)',
+    backgroundColor: isDisabled ? style.backgroundColor : 'rgba(0, 0, 0, 0.04)',
   },
 });
 
@@ -20,27 +24,41 @@ const getDropdownItemStyles = (
   entityStyles: React.CSSProperties,
   groupStyles: React.CSSProperties,
   ownStyles: React.CSSProperties,
-) => makeStyles({
-  root: {},
+) =>
+  makeStyles({
+    root: {},
 
-  entityStyles: {
-    ...getDropdownItemClassStyles(entityStyles, isDisabled),
-  },
+    entityStyles: {
+      ...getDropdownItemClassStyles(entityStyles, isDisabled),
+    },
 
-  groupStyles: {
-    ...getDropdownItemClassStyles(groupStyles, isDisabled),
-  },
+    groupStyles: {
+      ...getDropdownItemClassStyles(groupStyles, isDisabled),
+    },
 
-  ownStyles: {
-    ...getDropdownItemClassStyles(ownStyles, isDisabled),
-  },
-});
+    ownStyles: {
+      ...getDropdownItemClassStyles(ownStyles, isDisabled),
+    },
+  });
 
-const DropdownItemComponent = (props: DropdownItemRendererProps) => {
-  const { id, entityStyles, groupStyles, ownStyles, isDisabled, params, className, elementRef } = props;
+const DropdownItemComponent: React.FC<DropdownItemRendererProps> = ({
+  id,
+  entityStyles,
+  groupStyles,
+  ownStyles,
+  isDisabled,
+  params,
+  className,
+  elementRef,
+}) => {
   const { showRipple, textContent } = params;
 
-  const classes = getDropdownItemStyles(isDisabled, entityStyles, groupStyles, ownStyles)();
+  const classes = getDropdownItemStyles(
+    isDisabled,
+    entityStyles,
+    groupStyles,
+    ownStyles,
+  )();
 
   return isDisabled ? (
     <MenuItem

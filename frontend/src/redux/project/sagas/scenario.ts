@@ -1,26 +1,36 @@
+/* eslint-disable no-console */
+
 import { call, put, select } from 'redux-saga/effects';
 import * as R from 'ramda';
 
 import * as Actions from '$redux/project/actions';
-import { convertCreatedElementToRequest, convertElementToPatchRequest, convertElementToRequest } from '$api/converters/toRequest';
+import {
+  convertCreatedElementToRequest,
+  convertElementToPatchRequest,
+  convertElementToRequest,
+} from '$api/converters/toRequest';
 import {
   apiAddElements,
-  apiDelElements,
   apiSaveElements,
   apiChangeRecursiveElement,
-  apiChangeElement, apiGetElement,
+  apiChangeElement,
+  apiGetElement,
 } from '$api/element';
-import {
-  apiAddScenarios,
-} from '$api/scenario';
+import { apiAddScenarios } from '$api/scenario';
 import { LibraryElement, ServerElement, LibraryElementUnion } from '$api/types';
 import { convertElementFromResponse } from '$api/converters/fromResponse';
 import { Entity } from '$domain/core';
 import { DEFAULT_INDENTS } from '$domain/constants/defaultStyles';
-import { DISALLOW_REMOVE_ELEMENT_NOTIFICATION_TEXT, DISALLOW_ADD_ELEMENT_NOTIFICATION_TEXT } from '$features/notification/types';
+import {
+  DISALLOW_REMOVE_ELEMENT_NOTIFICATION_TEXT,
+  DISALLOW_ADD_ELEMENT_NOTIFICATION_TEXT,
+} from '$features/notification/types';
 import { reqWrapper } from '$redux/project/sagas/index';
 import { ReturnPromisedType } from '$shared/types';
-import { isElementCanBeRemove, isElementCanBeAdded } from '$utils/AvailableChildrenHelper';
+import {
+  isElementCanBeRemove,
+  isElementCanBeAdded,
+} from '$utils/AvailableChildrenHelper';
 import { getSavedValue } from '$utils/getSavedValue';
 import {
   findParentByChildID,
@@ -30,15 +40,20 @@ import {
   removeChildrenFromElement,
   updateElementParameters,
   getElementsArray,
-  updateElementName, addChildToElement,
+  updateElementName,
+  addChildToElement,
 } from '$utils/ElementsTreeHelper';
 
-import { selectors, T } from '../';
+import { selectors, T } from '..';
 import { updateSavedElementsValues } from './screen';
 import { setUndoActions } from '$redux/project/actions';
 import { HistoryMeta } from '$redux/project/types';
 
-export function* updateElementsTree(root: LibraryElement<'root'>, skip: boolean = false, sourceAction: T.Action | null = null, meta?: HistoryMeta) {
+export function* updateElementsTree(
+  root: LibraryElement<'root'>,
+  sourceAction: T.Action | null = null,
+  meta?: HistoryMeta,
+) {
   const elementsArray = getElementsArray(root);
 
   yield call(updateSavedElementsValues, elementsArray as LibraryElementUnion[]);
@@ -47,7 +62,7 @@ export function* updateElementsTree(root: LibraryElement<'root'>, skip: boolean 
 
 export function* createContainer(scenario?: Partial<T.IScenarioItem>) {
   const currentScreen: ReturnType<typeof selectors.selectCurrentScreen> = yield select(
-    selectors.selectCurrentScreen
+    selectors.selectCurrentScreen,
   );
 
   const containerToCreate: T.IScenarioItem = {
@@ -70,167 +85,262 @@ export function* createContainer(scenario?: Partial<T.IScenarioItem>) {
   };
 
   const createdContainers: ReturnPromisedType<typeof apiAddScenarios> = yield call(
-    reqWrapper, apiAddScenarios, { data: [R.omit(['id'], containerToCreate)] }
+    reqWrapper,
+    apiAddScenarios,
+    { data: [R.omit(['id'], containerToCreate)] },
   );
 
   return createdContainers[0];
 }
 
-export function* createElements(elements: ServerElement<Entity>[], parent: LibraryElement<Entity>, undo: boolean = false) {
-  const disallowedElements = elements.filter(element => !isElementCanBeAdded(parent, element.struct_type));
-    
+export function* createElements(
+  elements: ServerElement<Entity>[],
+  parent: LibraryElement<Entity>,
+  undo: boolean = false,
+) {
+  const disallowedElements = elements.filter(
+    (element) => !isElementCanBeAdded(parent, element.struct_type),
+  );
+
   if (disallowedElements.length) {
     yield put(Actions.setNotification(DISALLOW_ADD_ELEMENT_NOTIFICATION_TEXT));
-  };
-    
-  const allowedElements = elements.filter(element => isElementCanBeAdded(parent, element.struct_type));
-
-  const root: ReturnType<typeof selectors.selectRootElement> = yield select(selectors.selectRootElement);
-  
-  const newElements: ReturnPromisedType<typeof apiAddElements> = yield call(reqWrapper, apiAddElements, { data: allowedElements });
-
-  if (!undo) {
-    yield put(Actions.setUndoActions(newElements.map((el: any) => Actions.deleteItem(el.id))));
   }
 
-  const newChildren = [...parent.children.map(child => child.id), ...newElements.map(element => element.id)];
+  const allowedElements = elements.filter((element) =>
+    isElementCanBeAdded(parent, element.struct_type),
+  );
+
+  const root: ReturnType<typeof selectors.selectRootElement> = yield select(
+    selectors.selectRootElement,
+  );
+
+  const newElements: ReturnPromisedType<typeof apiAddElements> = yield call(
+    reqWrapper,
+    apiAddElements,
+    { data: allowedElements },
+  );
+
+  if (!undo) {
+    yield put(
+      Actions.setUndoActions(
+        newElements.map((el: any) => Actions.deleteItem(el.id)),
+      ),
+    );
+  }
+
+  const newChildren = [
+    ...parent.children.map((child) => child.id),
+    ...newElements.map((element) => element.id),
+  ];
 
   const elementData = {
     name: parent.name,
     children: newChildren,
   };
 
-  yield call(reqWrapper, apiChangeRecursiveElement, { data: elementData, id: parent.id });
+  yield call(reqWrapper, apiChangeRecursiveElement, {
+    data: elementData,
+    id: parent.id,
+  });
 
   const updatedElements = addChildrenToElement(parent.id, newElements, root);
-  yield call(updateElementsTree, updatedElements, undo, Actions.restoreElementChildren(parent.id, newElements.map(element => element.id)));
+  yield call(
+    updateElementsTree,
+    updatedElements,
+    Actions.restoreElementChildren(
+      parent.id,
+      newElements.map((element) => element.id),
+    ),
+  );
 
-  const elementsWithUpdatedBuoyancy = findChildByID(updatedElements, parent.id)?.children.map(child => convertElementToPatchRequest(child));
-  yield call(reqWrapper, apiSaveElements, { data: elementsWithUpdatedBuoyancy });
+  const elementsWithUpdatedBuoyancy = findChildByID(
+    updatedElements,
+    parent.id,
+  )?.children.map((child) => convertElementToPatchRequest(child));
+  yield call(reqWrapper, apiSaveElements, {
+    data: elementsWithUpdatedBuoyancy,
+  });
 
-  return newElements.map(el => el.id)
+  return newElements.map((el) => el.id);
 }
 
-export function* createElementsSaga(action: ReturnType<typeof Actions.createElements>) {
+export function* createElementsSaga(
+  action: ReturnType<typeof Actions.createElements>,
+) {
   const { createdElements } = action.payload;
 
-  const activeItem: ReturnType<typeof selectors.selectActiveItem> = yield select(selectors.selectActiveItem);
-  const root: ReturnType<typeof selectors.selectRootElement> = yield select(selectors.selectRootElement);
+  const activeItem: ReturnType<typeof selectors.selectActiveItem> = yield select(
+    selectors.selectActiveItem,
+  );
+  const root: ReturnType<typeof selectors.selectRootElement> = yield select(
+    selectors.selectRootElement,
+  );
   const activeItemElement = findChildByID(root, activeItem.itemId);
 
   if (!activeItemElement) {
-    console.error(`Active item ${activeItem.itemId} not found in elements tree!`);
+    console.error(
+      `Active item ${activeItem.itemId} not found in elements tree!`,
+    );
     return;
   }
 
-  const convertedCreatedElements = createdElements.map(element => convertCreatedElementToRequest(element.type, null));
+  const convertedCreatedElements = createdElements.map((element) =>
+    convertCreatedElementToRequest(element.type, null),
+  );
   yield call(createElements, convertedCreatedElements, activeItemElement);
 
-  document.querySelector<HTMLElement>(`[data-ls-id='${activeItem.itemType === 'root' ? 'root' : activeItem.itemId}']`)?.focus();
+  document
+    .querySelector<HTMLElement>(
+      `[data-ls-id='${
+        activeItem.itemType === 'root' ? 'root' : activeItem.itemId
+      }']`,
+    )
+    ?.focus();
 }
 
-export function* addChildToElementSaga(action: ReturnType<typeof Actions.addChildToElement>) {
+export function* addChildToElementSaga(
+  action: ReturnType<typeof Actions.addChildToElement>,
+) {
   const { childType, elementID, parameters } = action.payload;
   if (!action.meta) {
-    console.error(`You have to provide metainformation for action ${action.type}`)
+    console.error(
+      `You have to provide metainformation for action ${action.type}`,
+    );
     return;
   }
   const { undo } = action.meta;
 
   const convertedCreatedChild = convertCreatedElementToRequest(childType, null);
   const createdChild = convertElementFromResponse(convertedCreatedChild);
-  const childWithUpdatedParameters = updateElementParameters('-1', parameters, createdChild);
-  const convertedChildWithUpdatedParameters = convertElementToRequest(childWithUpdatedParameters);
+  const childWithUpdatedParameters = updateElementParameters(
+    '-1',
+    parameters,
+    createdChild,
+  );
+  const convertedChildWithUpdatedParameters = convertElementToRequest(
+    childWithUpdatedParameters,
+  );
 
-  const root: ReturnType<typeof selectors.selectRootElement> = yield select(selectors.selectRootElement);
+  const root: ReturnType<typeof selectors.selectRootElement> = yield select(
+    selectors.selectRootElement,
+  );
   const parent = findChildByID(root, elementID);
 
   if (!parent) {
     console.error(`Could not find parent ${elementID} of ${childType}!`);
   } else {
-    yield call(createElements, [convertedChildWithUpdatedParameters], parent, undo);
+    yield call(
+      createElements,
+      [convertedChildWithUpdatedParameters],
+      parent,
+      undo,
+    );
   }
 }
 
 export function* softDeleteSaga(action: T.DeleteItem) {
   const { id } = action.payload;
   if (!action.meta) {
-    console.error(`You have to provide metainformation for action ${action.type}`)
+    console.error(
+      `You have to provide metainformation for action ${action.type}`,
+    );
     return;
   }
   const { undo, redo } = action.meta;
 
-  const root: ReturnType<typeof selectors.selectRootElement> = yield select(selectors.selectRootElement);
+  const root: ReturnType<typeof selectors.selectRootElement> = yield select(
+    selectors.selectRootElement,
+  );
   const element = findChildByID(root, id);
   if (!element) {
     console.error(`Can not find removed element ${id} in the tree!`);
-    return
+    return;
   }
   if (['root', 'none'].includes(element.type)) return;
 
   const parent = findParentByChildID(root, id);
   if (!parent) {
     console.error(`Can not find parent of removed element  ${id} in the tree!`);
-    return
-  }
-
-  if (!isElementCanBeRemove(parent, element.type)) {
-    yield put(Actions.setNotification(DISALLOW_REMOVE_ELEMENT_NOTIFICATION_TEXT));
     return;
   }
 
-  const childrenIds = parent.children.map(child => child.id);
-
-  if (!undo) {
-    yield put(setUndoActions(
-      Actions.restoreElementChildren(parent.id, [id]),
-    ));
+  if (!isElementCanBeRemove(parent, element.type)) {
+    yield put(
+      Actions.setNotification(DISALLOW_REMOVE_ELEMENT_NOTIFICATION_TEXT),
+    );
+    return;
   }
 
-  const activeItem: ReturnType<typeof selectors.selectActiveItem> = yield select(selectors.selectActiveItem);
+  const childrenIds = parent.children.map((child) => child.id);
+
+  if (!undo) {
+    yield put(setUndoActions(Actions.restoreElementChildren(parent.id, [id])));
+  }
+
+  const activeItem: ReturnType<typeof selectors.selectActiveItem> = yield select(
+    selectors.selectActiveItem,
+  );
 
   if (activeItem.itemId === id) {
     const { type, name } = parent;
 
-    yield put(Actions.setActiveItem({
-      itemId: parent.id,
-      itemType: type,
-      name,
-    }));
+    yield put(
+      Actions.setActiveItem({
+        itemId: parent.id,
+        itemType: type,
+        name,
+      }),
+    );
   }
 
   const updatedRoot = removeChildrenFromElement(parent.id, [element], root);
 
   yield put(Actions.updateElementsTree(updatedRoot, action, { redo, undo }));
 
-  const filtered = childrenIds.filter(childId => childId !== id);
-  document.querySelector<HTMLElement>(`[data-ls-id='${parent.type === 'root' ? 'root' : parent.id}']`)?.focus();
+  const filtered = childrenIds.filter((childId) => childId !== id);
+  document
+    .querySelector<HTMLElement>(
+      `[data-ls-id='${parent.type === 'root' ? 'root' : parent.id}']`,
+    )
+    ?.focus();
 
-  yield call(reqWrapper, apiChangeRecursiveElement, { data: { children: filtered }, id: parent.id });
+  yield call(reqWrapper, apiChangeRecursiveElement, {
+    data: { children: filtered },
+    id: parent.id,
+  });
 }
 
 export function* restoreElementSaga(action: T.RestoreElementChildren) {
   const { elementId, childrenIds } = action.payload;
   if (!action.meta) {
-    console.error(`You have to provide metainformation for action ${action.type}`);
+    console.error(
+      `You have to provide metainformation for action ${action.type}`,
+    );
     return;
   }
   const { undo, redo } = action.meta;
 
-  const root: ReturnType<typeof selectors.selectRootElement> = yield select(selectors.selectRootElement);
+  const root: ReturnType<typeof selectors.selectRootElement> = yield select(
+    selectors.selectRootElement,
+  );
 
   const element = findChildByID(root, elementId);
   if (!element) {
     console.error(`Can not find removed element ${elementId} in the tree!`);
-    return
+    return;
   }
 
-  yield call(reqWrapper, apiChangeRecursiveElement, { data: { children: [...element.children.map(child => child.id), ...childrenIds] }, id: elementId});
+  yield call(reqWrapper, apiChangeRecursiveElement, {
+    data: {
+      children: [...element.children.map((child) => child.id), ...childrenIds],
+    },
+    id: elementId,
+  });
 
   if (!undo) {
-    yield put(Actions.setUndoActions(
-      childrenIds.map(id => Actions.deleteItem(id)),
-    ))
+    yield put(
+      Actions.setUndoActions(childrenIds.map((id) => Actions.deleteItem(id))),
+    );
   }
 
   const updatedRoot = yield call(reqWrapper, apiGetElement, { id: root.id });
@@ -238,24 +348,34 @@ export function* restoreElementSaga(action: T.RestoreElementChildren) {
   yield put(Actions.updateElementsTree(updatedRoot, action, { redo, undo }));
 }
 
-export function* addElementToElement(element: LibraryElement<Entity>, parent: LibraryElement<Entity>) {
+export function* addElementToElement(
+  element: LibraryElement<Entity>,
+  parent: LibraryElement<Entity>,
+) {
   const elementData = {
     name: parent.name,
-    children: [...parent.children.map(child => child.id), element.id],
+    children: [...parent.children.map((child) => child.id), element.id],
   };
 
-  yield call(reqWrapper, apiChangeRecursiveElement, { data: elementData, id: parent.id });
+  yield call(reqWrapper, apiChangeRecursiveElement, {
+    data: elementData,
+    id: parent.id,
+  });
 }
 
 export function* wrapIntoContainerSaga(action: T.WrapIntoContainer) {
   const { id } = action.payload;
   if (!action.meta) {
-    console.error(`You have to provide metainformation for action ${action.type}`)
+    console.error(
+      `You have to provide metainformation for action ${action.type}`,
+    );
     return;
   }
   const { undo, redo } = action.meta;
 
-  const root: ReturnType<typeof selectors.selectRootElement> = yield select(selectors.selectRootElement);
+  const root: ReturnType<typeof selectors.selectRootElement> = yield select(
+    selectors.selectRootElement,
+  );
 
   const wrappedItemParent = findParentByChildID(root, id);
   const wrappedItem = findChildByID(root, id);
@@ -273,57 +393,90 @@ export function* wrapIntoContainerSaga(action: T.WrapIntoContainer) {
   const serverContainer = convertCreatedElementToRequest('container', null);
 
   const createdElements: ReturnPromisedType<typeof apiAddElements> = yield call(
-    reqWrapper, apiAddElements, { data: [serverContainer] },
+    reqWrapper,
+    apiAddElements,
+    { data: [serverContainer] },
   );
 
   const [createdContainer] = createdElements;
 
-  yield put(Actions.setUndoActions(Actions.unwrapFromContainer(id, createdContainer.id, wrappedItemParent.id)));
+  yield put(
+    Actions.setUndoActions(
+      Actions.unwrapFromContainer(
+        id,
+        createdContainer.id,
+        wrappedItemParent.id,
+      ),
+    ),
+  );
 
   yield call(addElementToElement, createdContainer, wrappedItemParent);
 
   yield call(addElementToElement, wrappedItem, createdContainer);
 
-  const rootWithUpdatedParent = moveElement(wrappedItemParent.id, createdContainer, root, wrappedItem.buoyancy);
-  const rootWithUpdatedContainer = moveElement(createdContainer.id, wrappedItem, rootWithUpdatedParent, 0);
+  const rootWithUpdatedParent = moveElement(
+    wrappedItemParent.id,
+    createdContainer,
+    root,
+    wrappedItem.buoyancy,
+  );
+  const rootWithUpdatedContainer = moveElement(
+    createdContainer.id,
+    wrappedItem,
+    rootWithUpdatedParent,
+    0,
+  );
   yield put(
     Actions.updateElementsTree(
       rootWithUpdatedContainer,
-      Actions.redoWrapIntoContainer(id, createdContainer.id, wrappedItemParent.id),
+      Actions.redoWrapIntoContainer(
+        id,
+        createdContainer.id,
+        wrappedItemParent.id,
+      ),
       { undo, redo },
-    )
+    ),
   );
 
   document.querySelector<HTMLElement>(`[data-ls-id='${id}']`)?.focus();
 }
 
 export function* unwrapFromContainerSaga(action: T.UnwrapFromContainer) {
-  const {elementID, wrapperID, parentID} = action.payload;
+  const { elementID, wrapperID, parentID } = action.payload;
 
-  const root: ReturnType<typeof selectors.selectRootElement> = yield select(selectors.selectRootElement);
+  const root: ReturnType<typeof selectors.selectRootElement> = yield select(
+    selectors.selectRootElement,
+  );
 
   const parent = findChildByID(root, parentID);
   if (!parent) {
     console.error(`Can not find parent of wrapper ${wrapperID} in tree!`);
-    return
+    return;
   }
 
-  const parentChildrenIds = parent.children.map(child => child.id);
+  const parentChildrenIds = parent.children.map((child) => child.id);
   const newParentChildrenIds = [
-    ...parentChildrenIds.filter(id => id !== wrapperID),
+    ...parentChildrenIds.filter((id) => id !== wrapperID),
     elementID,
   ];
 
-  yield call(reqWrapper, apiChangeRecursiveElement, { data: {children: newParentChildrenIds}, id: parentID });
+  yield call(reqWrapper, apiChangeRecursiveElement, {
+    data: { children: newParentChildrenIds },
+    id: parentID,
+  });
 
-  const updatedRoot = yield call(reqWrapper, apiGetElement, { id: root.id});
-  yield put(Actions.updateElementsTree(updatedRoot, action, { undo: true }))
+  const updatedRoot = yield call(reqWrapper, apiGetElement, { id: root.id });
+  yield put(Actions.updateElementsTree(updatedRoot, action, { undo: true }));
 }
 
-export function* renameElementSaga(action: ReturnType<typeof Actions.renameElement>) {
+export function* renameElementSaga(
+  action: ReturnType<typeof Actions.renameElement>,
+) {
   const { elementID, name } = action.payload;
 
-  const root: ReturnType<typeof selectors.selectRootElement> = yield select(selectors.selectRootElement);
+  const root: ReturnType<typeof selectors.selectRootElement> = yield select(
+    selectors.selectRootElement,
+  );
 
   const updatedTree = updateElementName(elementID, name, root);
   const updatedElement = findChildByID(updatedTree, elementID);
@@ -336,35 +489,54 @@ export function* renameElementSaga(action: ReturnType<typeof Actions.renameEleme
 
     yield call(updateElementsTree, updatedTree);
 
-    yield put(Actions.setActiveItem({ itemId: elementID, itemType: updatedElement.type, name }));
+    yield put(
+      Actions.setActiveItem({
+        itemId: elementID,
+        itemType: updatedElement.type,
+        name,
+      }),
+    );
 
     const convertedElement = convertElementToPatchRequest(updatedElement);
-    yield call(reqWrapper, apiChangeElement, { data: convertedElement, id: elementID });
+    yield call(reqWrapper, apiChangeElement, {
+      data: convertedElement,
+      id: elementID,
+    });
   }
 }
 
 export function* redoWrapIntoContainerSaga(action: T.RedoWrapIntoContainer) {
   const { parentId, wrapperId, elementId } = action.payload;
 
-  const root: ReturnType<typeof selectors.selectRootElement> = yield select(selectors.selectRootElement);
+  const root: ReturnType<typeof selectors.selectRootElement> = yield select(
+    selectors.selectRootElement,
+  );
 
   const parent = findChildByID(root, parentId);
   if (!parent) {
     console.error(`Can not find parent of wrapper ${elementId} in tree!`);
-    return
+    return;
   }
 
-  const parentChildrenIds = parent.children.map(child => child.id);
+  const parentChildrenIds = parent.children.map((child) => child.id);
   const index = parentChildrenIds.indexOf(elementId);
 
   parentChildrenIds.splice(index, 1, wrapperId);
-  yield call(reqWrapper, apiChangeRecursiveElement, { data: {children: [elementId]}, id: wrapperId });
-  yield call(reqWrapper, apiChangeRecursiveElement, { data: {children: parentChildrenIds}, id: parentId });
+  yield call(reqWrapper, apiChangeRecursiveElement, {
+    data: { children: [elementId] },
+    id: wrapperId,
+  });
+  yield call(reqWrapper, apiChangeRecursiveElement, {
+    data: { children: parentChildrenIds },
+    id: parentId,
+  });
 
-  yield put(Actions.setUndoActions(
-    Actions.unwrapFromContainer(elementId, wrapperId, parentId),
-  ));
+  yield put(
+    Actions.setUndoActions(
+      Actions.unwrapFromContainer(elementId, wrapperId, parentId),
+    ),
+  );
 
-  const updatedRoot = yield call(reqWrapper, apiGetElement, { id: root.id});
+  const updatedRoot = yield call(reqWrapper, apiGetElement, { id: root.id });
   yield put(Actions.updateElementsTree(updatedRoot, action, { redo: true }));
 }

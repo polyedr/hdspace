@@ -29,43 +29,71 @@ import {
   DivBlockServerElement,
 } from '$api/types';
 
-import { root, container, divBlock, image, video, dropdown, undefined, dropdownMenu, makeDropdownItem } from './otherElements/otherElements';
-import { button, textarea, textinput, checkbox, radiobutton, label, select, selectMenu, makeSelectItem } from './formElements/formElements';
-import { heading, hyperlink, list, textBlock, ocrtext, makeListItem, makeParagraph } from './typographyElements/typographyElements';
+import {
+  root,
+  container,
+  divBlock,
+  image,
+  video,
+  dropdown,
+  undefined,
+  dropdownMenu,
+  makeDropdownItem,
+} from './otherElements/otherElements';
+import {
+  button,
+  textarea,
+  textinput,
+  checkbox,
+  radiobutton,
+  label,
+  select,
+  selectMenu,
+  makeSelectItem,
+} from './formElements/formElements';
+import {
+  heading,
+  hyperlink,
+  list,
+  textBlock,
+  ocrtext,
+  makeListItem,
+  makeParagraph,
+} from './typographyElements/typographyElements';
 import { map, calendar, clock } from './widgetElements/widgetElements';
 
 export type ChildrenElements = {
-  selectMenu: SelectMenuServerElement,
-  selectItem: SelectItemServerElement,
-  listItem: ListItemServerElement,
-  dropdownMenu: DropdownMenuServerElement,
-  dropdownItem: DropdownItemServerElement,
+  selectMenu: SelectMenuServerElement;
+  selectItem: SelectItemServerElement;
+  listItem: ListItemServerElement;
+  dropdownMenu: DropdownMenuServerElement;
+  dropdownItem: DropdownItemServerElement;
 };
 
 export type ElementsToAdd = {
-  root: RootServerElement,
-  container: ContainerServerElement,
-  divBlock: DivBlockServerElement,
-  image: ImageServerElement,
-  button: ButtonServerElement,
-  hyperlink: HyperlinkServerElement,
-  textinput: TextinputServerElement,
-  checkbox: CheckboxServerElement,
-  radiobutton: RadiobuttonServerElement,
-  select: SelectServerElement,
-  label: LabelServerElement,
-  textarea: TextareaServerElement,
-  heading: HeadingServerElement,
-  paragraph: ParagraphServerElement,
-  ocrtext: OcrtextServerElement,
-  textBlock: TextBlockServerElement,
-  list: ListServerElement,
-  map: MapServerElement,
-  calendar: CalendarServerElement,
-  clock: ClockServerElement,
-  dropdown: DropdownServerElement,
-  video: VideoServerElement,
-  undefined: UndefinedServerElement,
+  root: RootServerElement;
+  container: ContainerServerElement;
+  divBlock: DivBlockServerElement;
+  image: ImageServerElement;
+  button: ButtonServerElement;
+  hyperlink: HyperlinkServerElement;
+  textinput: TextinputServerElement;
+  checkbox: CheckboxServerElement;
+  radiobutton: RadiobuttonServerElement;
+  select: SelectServerElement;
+  label: LabelServerElement;
+  textarea: TextareaServerElement;
+  heading: HeadingServerElement;
+  paragraph: ParagraphServerElement;
+  ocrtext: OcrtextServerElement;
+  textBlock: TextBlockServerElement;
+  list: ListServerElement;
+  map: MapServerElement;
+  calendar: CalendarServerElement;
+  clock: ClockServerElement;
+  dropdown: DropdownServerElement;
+  video: VideoServerElement;
+  undefined: UndefinedServerElement;
 };
 
 export type LibraryElements = ChildrenElements & ElementsToAdd;

@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/no-noninteractive-tabindex */
 import React from 'react';
 import cn from 'classnames';
 import { makeStyles } from '@material-ui/core';
@@ -7,29 +8,33 @@ import { VIMEO_HEIGHT_RATIO } from '$constants/players';
 import { getPlayerLink } from '$utils/extractVideoLink';
 
 import { VideoRendererProps } from '../types';
+
 const styles = require('../styles.scss');
 
 const getWrapperStyles = (
   entityStyles: React.CSSProperties,
   groupStyles: React.CSSProperties,
   ownStyles: React.CSSProperties,
-) => makeStyles({
-  entityStyles: {
-    ...entityStyles,
-  },
+) =>
+  makeStyles({
+    entityStyles: {
+      ...entityStyles,
+    },
 
-  groupStyles: {
-    ...groupStyles,
-  },
+    groupStyles: {
+      ...groupStyles,
+    },
 
-  ownStyles: {
-    ...ownStyles,
-  },
-});
+    ownStyles: {
+      ...ownStyles,
+    },
+  });
 
-const getIframeContainerClassStyles = (styles: React.CSSProperties) => ({
-  height: styles.height,
-  ...(styles.height && { paddingTop: styles.height === 'auto' ? `${VIMEO_HEIGHT_RATIO}%` : '0' }),
+const getIframeContainerClassStyles = (style: React.CSSProperties) => ({
+  height: style.height,
+  ...(style.height && {
+    paddingTop: style.height === 'auto' ? `${VIMEO_HEIGHT_RATIO}%` : '0',
+  }),
   overflow: 'hidden',
   position: 'relative' as React.CSSProperties['position'],
 });
@@ -38,23 +43,26 @@ const getIframeContainerStyles = (
   entityStyles: React.CSSProperties,
   groupStyles: React.CSSProperties,
   ownStyles: React.CSSProperties,
-) => makeStyles({
-  entityStyles: {
-    ...getIframeContainerClassStyles(entityStyles),
-  },
+) =>
+  makeStyles({
+    entityStyles: {
+      ...getIframeContainerClassStyles(entityStyles),
+    },
 
-  groupStyles: {
-    ...getIframeContainerClassStyles(groupStyles),
-  },
+    groupStyles: {
+      ...getIframeContainerClassStyles(groupStyles),
+    },
 
-  ownStyles: {
-    ...getIframeContainerClassStyles(ownStyles),
-  },
-});
+    ownStyles: {
+      ...getIframeContainerClassStyles(ownStyles),
+    },
+  });
 
-const getEmptyWrapperClassStyles = (styles: React.CSSProperties) => ({
-  ...styles,
-  ...(styles.height && { paddingTop: styles.height === 'auto' ? `${VIMEO_HEIGHT_RATIO}%` : '0' }),
+const getEmptyWrapperClassStyles = (style: React.CSSProperties) => ({
+  ...style,
+  ...(style.height && {
+    paddingTop: style.height === 'auto' ? `${VIMEO_HEIGHT_RATIO}%` : '0',
+  }),
   background: `no-repeat center #E0E0E0 url(${IMAGES.youtubeIcon})`,
 });
 
@@ -62,40 +70,51 @@ const getEmptyWrapperStyles = (
   entityStyles: React.CSSProperties,
   groupStyles: React.CSSProperties,
   ownStyles: React.CSSProperties,
-) => makeStyles({
-  entityStyles: {
-    ...getEmptyWrapperClassStyles(entityStyles),
-  },
+) =>
+  makeStyles({
+    entityStyles: {
+      ...getEmptyWrapperClassStyles(entityStyles),
+    },
 
-  groupStyles: {
-    ...getEmptyWrapperClassStyles(groupStyles),
-  },
+    groupStyles: {
+      ...getEmptyWrapperClassStyles(groupStyles),
+    },
 
-  ownStyles: {
-    ...getEmptyWrapperClassStyles(ownStyles),
-  },
-});
+    ownStyles: {
+      ...getEmptyWrapperClassStyles(ownStyles),
+    },
+  });
 
-const Video = (props: VideoRendererProps) => {
-  const {
-    id,
-    params,
-    sortableId,
-    entityStyles,
-    groupStyles,
-    ownStyles,
-    isDisabled,
-    className,
-    elementRef,
-  } = props;
-
+const Video: React.FC<VideoRendererProps> = ({
+  id,
+  params,
+  sortableId,
+  entityStyles,
+  groupStyles,
+  ownStyles,
+  isDisabled,
+  className,
+  elementRef,
+}) => {
   const { videoSettings } = params;
 
   const playerLink = getPlayerLink(videoSettings, !isDisabled);
 
-  const wrapperStyles = getWrapperStyles(entityStyles, groupStyles, ownStyles)();
-  const iframeContainerStyles = getIframeContainerStyles(entityStyles, groupStyles, ownStyles)();
-  const emptyWrapperStyles = getEmptyWrapperStyles(entityStyles, groupStyles, ownStyles)();
+  const wrapperStyles = getWrapperStyles(
+    entityStyles,
+    groupStyles,
+    ownStyles,
+  )();
+  const iframeContainerStyles = getIframeContainerStyles(
+    entityStyles,
+    groupStyles,
+    ownStyles,
+  )();
+  const emptyWrapperStyles = getEmptyWrapperStyles(
+    entityStyles,
+    groupStyles,
+    ownStyles,
+  )();
 
   return playerLink ? (
     <div
@@ -121,6 +140,7 @@ const Video = (props: VideoRendererProps) => {
           iframeContainerStyles.ownStyles,
         )}
       >
+        {/* eslint-disable-next-line jsx-a11y/iframe-has-title */}
         <iframe
           width="100%"
           height="100%"
@@ -150,6 +170,6 @@ const Video = (props: VideoRendererProps) => {
       tabIndex={isDisabled ? 0 : -1}
     />
   );
-}
+};
 
 export { Video };

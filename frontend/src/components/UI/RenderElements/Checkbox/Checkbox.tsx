@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/no-noninteractive-tabindex */
 import React, { ChangeEvent } from 'react';
 import cn from 'classnames';
 import { makeStyles, Checkbox } from '@material-ui/core';
@@ -6,18 +7,19 @@ import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 import * as R from 'ramda';
 
 import { CheckboxRendererProps } from '../types';
+
 const styles = require('../styles.scss');
 
-const getCheckboxClassStyles = (styles: React.CSSProperties) => ({
-  color: styles.backgroundColor,
+const getCheckboxClassStyles = (style: React.CSSProperties) => ({
+  color: style.backgroundColor,
 
   '&$checked': {
-    color: styles.backgroundColor,
+    color: style.backgroundColor,
   },
 
   '& $icon': {
-    width: styles.width,
-    height: styles.height,
+    width: style.width,
+    height: style.height,
   },
 });
 
@@ -25,71 +27,89 @@ const getCheckboxStyles = (
   entityStyles: React.CSSProperties,
   groupStyles: React.CSSProperties,
   ownStyles: React.CSSProperties,
-) => makeStyles({
-  root: {},
+) =>
+  makeStyles({
+    root: {},
 
-  entityStyles: {
-    ...getCheckboxClassStyles(entityStyles),
-  },
+    entityStyles: {
+      ...getCheckboxClassStyles(entityStyles),
+    },
 
-  groupStyles: {
-    ...getCheckboxClassStyles(groupStyles),
-  },
+    groupStyles: {
+      ...getCheckboxClassStyles(groupStyles),
+    },
 
-  ownStyles: {
-    ...getCheckboxClassStyles(ownStyles),
-  },
+    ownStyles: {
+      ...getCheckboxClassStyles(ownStyles),
+    },
 
-  icon: {},
+    icon: {},
 
-  checked: {},
-});
+    checked: {},
+  });
 
 const getDivStyles = (
   entityStyles: React.CSSProperties,
   groupStyles: React.CSSProperties,
   ownStyles: React.CSSProperties,
-) => makeStyles({
-  entityStyles: {
-    ...entityStyles,
-    display: 'inline-block',
-  },
+) =>
+  makeStyles({
+    entityStyles: {
+      ...entityStyles,
+      display: 'inline-block',
+    },
 
-  groupStyles: {
-    ...groupStyles,
-    display: 'inline-block',
-  },
+    groupStyles: {
+      ...groupStyles,
+      display: 'inline-block',
+    },
 
-  ownStyles: {
-    ...ownStyles,
-    display: 'inline-block',
-  },
-});
+    ownStyles: {
+      ...ownStyles,
+      display: 'inline-block',
+    },
+  });
 
-const CheckboxComponent = (props: CheckboxRendererProps) => {
-  const {
-    id,
+const CheckboxComponent: React.FC<CheckboxRendererProps> = ({
+  id,
+  entityStyles,
+  groupStyles,
+  ownStyles,
+  params,
+  isDisabled,
+  sortableId,
+  currentValue,
+  onElementChange,
+  isCheckboxChecked,
+  elementRef,
+  className,
+}) => {
+  const { name, showRipple } = params;
+
+  const entityDivStyles = R.omit(
+    ['backgroundColor', 'width', 'height'],
+    entityStyles,
+  );
+  const groupDivStyles = R.omit(
+    ['backgroundColor', 'width', 'height'],
+    groupStyles,
+  );
+  const ownDivStyles = R.omit(
+    ['backgroundColor', 'width', 'height'],
+    ownStyles,
+  );
+
+  const divClasses = getDivStyles(
+    entityDivStyles,
+    groupDivStyles,
+    ownDivStyles,
+  )();
+
+  const checkboxClasses = getCheckboxStyles(
     entityStyles,
     groupStyles,
     ownStyles,
-    params,
-    isDisabled,
-    sortableId,
-    currentValue,
-    onElementChange,
-    isCheckboxChecked,
-    elementRef,
-    className,
-  } = props;
-  const { name, showRipple } = params;
-
-  const entityDivStyles = R.omit(['backgroundColor', 'width', 'height'], entityStyles);
-  const groupDivStyles = R.omit(['backgroundColor', 'width', 'height'], groupStyles);
-  const ownDivStyles = R.omit(['backgroundColor', 'width', 'height'], ownStyles);
-
-  const divClasses = getDivStyles(entityDivStyles, groupDivStyles, ownDivStyles)();
-
-  const checkboxClasses = getCheckboxStyles(entityStyles, groupStyles, ownStyles)();
+  )();
 
   const handleCheckboxChange = (event: ChangeEvent<HTMLInputElement>) => {
     onElementChange(id, event.target.checked);
@@ -129,6 +149,6 @@ const CheckboxComponent = (props: CheckboxRendererProps) => {
       />
     </div>
   );
-}
+};
 
-export { CheckboxComponent as Checkbox};
+export { CheckboxComponent as Checkbox };

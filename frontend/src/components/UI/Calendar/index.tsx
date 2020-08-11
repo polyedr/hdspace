@@ -8,10 +8,5 @@ export const CalendarWidget: React.FunctionComponent = memo(() => {
     setLocalDate(date);
   }, []);
 
-  return (
-    <Calendar
-      onChange={onChangeDate}
-      value={localDate}
-    />
-  );
+  return <Calendar onChange={onChangeDate} value={localDate} />;
 });

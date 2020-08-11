@@ -1,70 +1,79 @@
-import { IMapProps } from "$redux/project/types";
-import { LibraryElement, HeadingType, LinkParams, VideoSettings, InputType, ProjectClass } from "$api/types";
+/* eslint-disable camelcase */
+
+import { IMapProps } from '$redux/project/types';
+import {
+  LibraryElement,
+  HeadingType,
+  LinkParams,
+  VideoSettingsType,
+  InputType,
+  ProjectClass,
+} from '$api/types';
 
 export type SharedRendererProps = {
   id: string;
-  entityStyles: React.CSSProperties,
-  groupStyles: React.CSSProperties,
-  ownStyles: React.CSSProperties,
-  active: boolean,
-  sortableId: string,
-  isDisabled: boolean,
-  className?: string,
-  elementRef: ((element: any) => void) | null,
-  children: React.ReactElement[],
+  entityStyles: React.CSSProperties;
+  groupStyles: React.CSSProperties;
+  ownStyles: React.CSSProperties;
+  active: boolean;
+  sortableId: string;
+  isDisabled: boolean;
+  className?: string;
+  elementRef: ((element: any) => void) | null;
+  children: React.ReactElement[];
 };
 
 export type ContainerRendererProps = SharedRendererProps & {
-  isBorderVisible: boolean,
+  isBorderVisible: boolean;
 };
 
 export type DivBlockRendererProps = SharedRendererProps & {
-  isBorderVisible: boolean,
+  isBorderVisible: boolean;
 };
 
 export type ImageRendererProps = SharedRendererProps & {
   params: {
-    imageURL: string,
-  },
+    imageURL: string;
+  };
 };
 
 export type MapRendererProps = SharedRendererProps & {
   params: {
-    map_props: IMapProps,
-  },
+    map_props: IMapProps;
+  };
 };
 
 export type ClockRendererProps = SharedRendererProps & {
   params: {
-    width: string,
-    height: string,
-  },
+    width: string;
+    height: string;
+  };
 };
 
 export type HeadingRendererProps = SharedRendererProps & {
   params: {
-    headingType: HeadingType,
-    textContent: string,
-  },
+    headingType: HeadingType;
+    textContent: string;
+  };
 };
 
 export type ParagraphRendererProps = SharedRendererProps & {
   params: {
-    textContent: string,
-  },
+    textContent: string;
+  };
 };
 
 export type LabelRendererProps = SharedRendererProps & {
   params: {
-    labelFor: string,
-    textContent: string,
-  },
+    labelFor: string;
+    textContent: string;
+  };
 };
 
 export type TextBlockRendererProps = SharedRendererProps & {
   params: {
-    textContent: string,
-  },
+    textContent: string;
+  };
 };
 
 export type DropdownRendererProps = SharedRendererProps & {
@@ -76,99 +85,102 @@ export type DropdownRendererProps = SharedRendererProps & {
 };
 
 export type DropdownMenuRendererProps = SharedRendererProps & {
-  params: {},
-  anchorEl: HTMLElement | null,
-  setAnchorEl: React.Dispatch<React.SetStateAction<HTMLElement | null>>,
+  params: {};
+  anchorEl: HTMLElement | null;
+  setAnchorEl: React.Dispatch<React.SetStateAction<HTMLElement | null>>;
 };
 
 export type DropdownItemRendererProps = SharedRendererProps & {
   params: {
-    textContent: string,
-    showRipple: boolean,
-  },
+    textContent: string;
+    showRipple: boolean;
+  };
 };
 
 export type ActionRendererProps = SharedRendererProps & {
   params: {
-    action: LinkParams,
-    textContent: string,
-    showRipple: boolean,
-  },
-  onClick?(event: any): void,
+    action: LinkParams;
+    textContent: string;
+    showRipple: boolean;
+  };
+  onClick?(event: any): void;
 };
 
 export type CheckboxRendererProps = SharedRendererProps & {
-  currentValue: string,
+  currentValue: string;
   params: {
-    name: string,
-    showRipple: boolean,
-  },
-  isCheckboxChecked: boolean,
-  onElementChange(itemID: string, savedValue: boolean): void,
+    name: string;
+    showRipple: boolean;
+  };
+  isCheckboxChecked: boolean;
+  onElementChange(itemID: string, savedValue: boolean): void;
 };
 
 export type InputRendererProps = SharedRendererProps & {
   params: {
-    type: InputType,
-    placeholder: string,
-  },
-  currentValue: string,
-  onElementChange(itemID: string, savedValue: string): void,
+    type: InputType;
+    placeholder: string;
+  };
+  currentValue: string;
+  onElementChange(itemID: string, savedValue: string): void;
 };
 
 export type TextareaRendererProps = SharedRendererProps & {
   params: {
-    placeholder: string,
-  },
-  currentValue: string,
-  onElementChange(itemID: string, savedValue: string): void,
+    placeholder: string;
+  };
+  currentValue: string;
+  onElementChange(itemID: string, savedValue: string): void;
 };
 
 export type RadioRendererProps = SharedRendererProps & {
   params: {
-    value: string,
-    name: string,
-    showRipple: boolean,
-  },
-  currentValue: string,
-  isRadioChecked: boolean,
-  onElementChange(itemID: string, savedValue: string): void,
+    value: string;
+    name: string;
+    showRipple: boolean;
+  };
+  currentValue: string;
+  isRadioChecked: boolean;
+  onElementChange(itemID: string, savedValue: string): void;
 };
 
 export type SelectRendererProps = SharedRendererProps & {
   params: {
-    isOpen: boolean,
-  },
-  currentValue: string,
-  childrenElements: LibraryElement<'selectMenu'>[],
-  projectClasses: ProjectClass[],
-  onElementChange(itemID: string, savedValue: string): void,
+    isOpen: boolean;
+  };
+  currentValue: string;
+  childrenElements: LibraryElement<'selectMenu'>[];
+  projectClasses: ProjectClass[];
+  onElementChange(itemID: string, savedValue: string): void;
 };
 
 export type SelectMenuRendererProps = SharedRendererProps;
 
 export type MenuItemRendererProps = SharedRendererProps & {
   params: {
-    name: string,
-    value: string,
-    showRipple: boolean,
-  },
+    name: string;
+    value: string;
+    showRipple: boolean;
+  };
 };
 
 export type ListRendererProps = SharedRendererProps & {
   params: {
-    isOrdered: boolean,
-  },
+    isOrdered: boolean;
+  };
 };
 
 export type VideoRendererProps = SharedRendererProps & {
-  params: { videoSettings: VideoSettings },
+  params: { videoSettings: VideoSettingsType };
 };
 
-export type ListItemRendererProps = Omit<SharedRendererProps, 'sortableId' | 'activeItemId'> & {
+export type ListItemRendererProps = Omit<
+  SharedRendererProps,
+  'sortableId' | 'activeItemId'
+> & {
   params: {
-    textContent: string,
-    isLink: boolean,
-    link: string,
-  },
+    textContent: string;
+    isLink: boolean;
+    link: string;
+  };
 };

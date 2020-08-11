@@ -1,11 +1,11 @@
-/* eslint consistent-return: 0 */
+/* eslint-disable */
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import SortableJS from 'sortablejs';
 
 const store = {
   nextSibling: null,
-  activeComponent: null
+  activeComponent: null,
 };
 
 export class Sortable extends Component {
@@ -13,17 +13,14 @@ export class Sortable extends Component {
     options: PropTypes.object,
     onChange: PropTypes.func,
     onChoose: PropTypes.func,
-    tag: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.func
-    ]),
+    tag: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
     style: PropTypes.object,
   };
 
   static defaultProps = {
     options: {},
     tag: 'div',
-    style: {}
+    style: {},
   };
 
   sortable = null;
@@ -39,7 +36,7 @@ export class Sortable extends Component {
       'onRemove',
       'onFilter',
       'onMove',
-      'onClone'
+      'onClone',
     ].forEach((name) => {
       const eventHandler = options[name];
 
@@ -49,29 +46,40 @@ export class Sortable extends Component {
         if (name === 'onChoose') {
           store.nextSibling = evt.item.nextElementSibling;
           store.activeComponent = this;
-        } else if ((name === 'onAdd' || name === 'onUpdate') && this.props.onChange) {
+        } else if (
+          (name === 'onAdd' || name === 'onUpdate') &&
+          this.props.onChange
+        ) {
           const items = this.sortable.toArray();
           const remote = store.activeComponent;
           const remoteItems = remote.sortable.toArray();
 
-          const referenceNode = (store.nextSibling && store.nextSibling.parentNode !== null) ? store.nextSibling : null;
+          const referenceNode =
+            store.nextSibling && store.nextSibling.parentNode !== null
+              ? store.nextSibling
+              : null;
           evt.from.insertBefore(evt.item, referenceNode);
 
           const isRemote = remote !== this;
           if (isRemote) {
             const remoteOptions = remote.props.options || {};
 
-            if ((typeof remoteOptions.group === 'object') && (remoteOptions.group.pull === 'clone')) {
+            if (
+              typeof remoteOptions.group === 'object' &&
+              remoteOptions.group.pull === 'clone'
+            ) {
               evt.item.parentNode.removeChild(evt.item);
             }
             remote.props.onChange && remote.props.onChange(evt, isRemote);
           }
-            this.props.onChange && this.props.onChange(evt);
+          this.props.onChange && this.props.onChange(evt);
         }
 
         if (evt.type === 'move') {
           const [evt, originalEvent] = params;
-          const canMove = eventHandler ? eventHandler(evt, originalEvent) : true;
+          const canMove = eventHandler
+            ? eventHandler(evt, originalEvent)
+            : true;
           return canMove;
         }
 
@@ -134,7 +142,7 @@ export class Sortable extends Component {
     return (
       <ElementRenderer
         {...props}
-        elementRef={node => {
+        elementRef={(node) => {
           this.node = node;
         }}
       />

@@ -7,95 +7,101 @@ import { Icon } from '$components/UI/Icon';
 const styles = require('./styles.scss');
 
 interface IModalProps {
-  title: string,
-  confirmText?: string,
-  cancelText?: string,
-  onConfirm?: (event:  React.FormEvent<HTMLFormElement>) => void,
-  onClose: () => void,
-  children?: any,
-  confirmDisabled?: boolean,
-  animClassName?: string,
-  bodyClassName?: string,
+  title: string;
+  confirmText?: string;
+  cancelText?: string;
+  onConfirm?: (event: React.FormEvent<HTMLFormElement>) => void;
+  onClose: () => void;
+  children?: any;
+  confirmDisabled?: boolean;
+  animClassName?: string;
+  bodyClassName?: string;
 }
 
-export const Modal: React.FunctionComponent<IModalProps> = memo(({
-  title,
-  confirmText,
-  cancelText,
-  onConfirm,
-  onClose,
-  confirmDisabled,
-  children,
-  animClassName,
-  bodyClassName,
-}) => {
-  const handleCloseModal = useCallback((event) => {
-    event.preventDefault();
+export const Modal: React.FunctionComponent<IModalProps> = memo(
+  ({
+    title,
+    confirmText,
+    cancelText,
+    onConfirm,
+    onClose,
+    confirmDisabled,
+    children,
+    animClassName,
+    bodyClassName,
+  }) => {
+    const handleCloseModal = useCallback(
+      (event) => {
+        event.preventDefault();
 
-    onClose();
-  }, [onClose]);
+        onClose();
+      },
+      [onClose],
+    );
 
-  const onModalWrapperClick = useCallback((event) => {
-    const modal = event.target.closest('form');
+    const onModalWrapperClick = useCallback(
+      (event) => {
+        const modal = event.target.closest('form');
 
-    if (modal) {
-      return;
-    }
-
-    handleCloseModal(event);
-  }, [handleCloseModal]);
-
-  const handleConfirm = useCallback((event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    onConfirm?.(event);
-  }, [onConfirm]);
-
-  return (
-    <div
-      className={classNames(styles.modalWrapper)}
-      onClick={onModalWrapperClick}
-    >
-      <form
-        className={classNames(styles.modalContainer, 'brakeAnimation', animClassName)}
-        onSubmit={handleConfirm}
-      >
-        <Button
-          styleType="none"
-          className={styles.modalCloseButton}
-          onClick={handleCloseModal}
-        >
-          <Icon icon="close" size={20} />
-        </Button>
-        {
-          title !== '' && (
-            <p className={styles.modalTitle}>
-              {title}
-            </p>
-          )
+        if (modal) {
+          return;
         }
-        <div className={classNames(styles.modalBody, bodyClassName)}>
-          {children}
-        </div>
-        <div className={styles.modalActions}>
-          {cancelText && (
-            <Button
-              styleType="secondary"
-              onClick={handleCloseModal}
-            >
-              {cancelText}
-            </Button>
+
+        handleCloseModal(event);
+      },
+      [handleCloseModal],
+    );
+
+    const handleConfirm = useCallback(
+      (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+
+        onConfirm?.(event);
+      },
+      [onConfirm],
+    );
+
+    return (
+      <div
+        className={classNames(styles.modalWrapper)}
+        onClick={onModalWrapperClick}
+      >
+        <form
+          className={classNames(
+            styles.modalContainer,
+            'brakeAnimation',
+            animClassName,
           )}
-          {confirmText && onConfirm && (
-            <Button
-              type={cancelText ? 'submit' : 'confirm'}
-              disabled={!!confirmDisabled}
-            >
-              {confirmText}
-            </Button>
-          )}
-        </div>
-      </form>
-    </div>
-  );
-});
+          onSubmit={handleConfirm}
+        >
+          <Button
+            styleType="none"
+            className={styles.modalCloseButton}
+            onClick={handleCloseModal}
+          >
+            <Icon icon="close" size={20} />
+          </Button>
+          {title !== '' && <p className={styles.modalTitle}>{title}</p>}
+          <div className={classNames(styles.modalBody, bodyClassName)}>
+            {children}
+          </div>
+          <div className={styles.modalActions}>
+            {cancelText && (
+              <Button styleType="secondary" onClick={handleCloseModal}>
+                {cancelText}
+              </Button>
+            )}
+            {confirmText && onConfirm && (
+              <Button
+                type={cancelText ? 'submit' : 'confirm'}
+                disabled={!!confirmDisabled}
+              >
+                {confirmText}
+              </Button>
+            )}
+          </div>
+        </form>
+      </div>
+    );
+  },
+);

@@ -10,10 +10,10 @@ import * as UserActions from '$redux/user/actions';
 import { Spinner } from '$components/UI/Spinner';
 
 export interface IMatch<P> {
-  params: P,
-  isExact: boolean,
-  path: string,
-  url: string,
+  params: P;
+  isExact: boolean;
+  path: string;
+  url: string;
 }
 
 interface MatchParams {
@@ -29,7 +29,7 @@ const mapStateToProps = (state: AppReduxState) => ({
   scenarioLoader: selectors.selectScenarioLoader(state),
   projectScreens: selectors.selectScreens(state),
   screenLoader: selectors.selectScreenLoader(state),
-  projectLoader: selectors.selectProjectLoader(state)
+  projectLoader: selectors.selectProjectLoader(state),
 });
 
 const mapDispatchToProps = {
@@ -46,12 +46,15 @@ const mapDispatchToProps = {
   resetScreenState: Actions.resetScreenState,
 };
 
-export type EditorProps = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & {
-  match: IMatch<MatchParams>,
-}
+export type EditorProps = ReturnType<typeof mapStateToProps> &
+  typeof mapDispatchToProps & {
+    match: IMatch<MatchParams>;
+  };
 
-const EditorLogic: React.FunctionComponent<EditorProps> = ({
-  match: { params: { projectID, screenID } },
+const EditorLogic: React.FC<EditorProps> = ({
+  match: {
+    params: { projectID, screenID },
+  },
   currentProject,
   currentScreen,
   isNavPanelMinimized,
@@ -70,7 +73,7 @@ const EditorLogic: React.FunctionComponent<EditorProps> = ({
   updateElementStyles,
   resetScreenState,
   projectLoader,
-}: EditorProps) => {
+}) => {
   const dispatch = useDispatch();
   const projectList = useSelector(selectors.selectProjects);
 
@@ -105,11 +108,9 @@ const EditorLogic: React.FunctionComponent<EditorProps> = ({
         updateElementStyles={updateElementStyles}
         resetScreenState={resetScreenState}
       />
-      <Spinner
-        active={projectLoader || screenLoader || scenarioLoader}
-      />
+      <Spinner active={projectLoader || screenLoader || scenarioLoader} />
     </>
   );
-}
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditorLogic);

@@ -1,24 +1,24 @@
+/* eslint-disable jsx-a11y/no-noninteractive-tabindex */
 import React from 'react';
 import cn from 'classnames';
 import { makeStyles } from '@material-ui/core';
 
 import { ContainerRendererProps } from '../types';
+
 const styles = require('../styles.scss');
 
-const Container = (props: ContainerRendererProps) => {
-  const {
-    id,
-    sortableId,
-    entityStyles,
-    groupStyles,
-    ownStyles,
-    isDisabled,
-    children,
-    className,
-    elementRef,
-    isBorderVisible,
-  } = props;
-
+const Container: React.FC<ContainerRendererProps> = ({
+  id,
+  sortableId,
+  entityStyles,
+  groupStyles,
+  ownStyles,
+  isDisabled,
+  children,
+  className,
+  elementRef,
+  isBorderVisible,
+}) => {
   const classes = makeStyles({
     entityStyles: {
       ...entityStyles,
@@ -51,7 +51,7 @@ const Container = (props: ContainerRendererProps) => {
           classes.groupStyles,
           classes.ownStyles,
         )}
-        style={{ ...(isBorderVisible && isDisabled && { outline: 'none' })}}
+        style={{ ...(isBorderVisible && isDisabled && { outline: 'none' }) }}
         tabIndex={isDisabled ? 0 : -1}
       >
         {children}

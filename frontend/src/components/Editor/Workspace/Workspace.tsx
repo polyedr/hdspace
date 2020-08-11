@@ -19,17 +19,18 @@ import { TopBar } from '../TopBar/TopBar';
 import { HotKeys } from '../HotKeys/HotKeys';
 import { Entity } from '$domain/core';
 import { ContainersBorders } from '../ContainersBorders/ContainersBorders';
+
 const styles = require('./Workspace.scss');
 
 export type ScreenMode = {
-  isDefaultMode: boolean,
-  isTabletMode: boolean,
-  isMobileMode: boolean,
-}
+  isDefaultMode: boolean;
+  isTabletMode: boolean;
+  isMobileMode: boolean;
+};
 
 type StateProps = {
   screen: ProjectT.IProjectScreen;
-  elementsTree: LibraryElement<'root'>,
+  elementsTree: LibraryElement<'root'>;
   isPrototypeMode: boolean;
   activeItem: ProjectT.ActiveItem;
 };
@@ -52,27 +53,28 @@ const mapState = (state: AppReduxState): StateProps => ({
 
 type Props = StateProps & typeof mapDispatch;
 
-export const Component = (props: Props) => {
-  const {
-    screen,
-    elementsTree,
-    isPrototypeMode,
-    activeItem,
-    setActiveItem,
-    saveScreen,
-    changePrototypeMode,
-    resetScreenState,
-    exportProject,
-  } = props;
-
+export const Component = ({
+  screen,
+  elementsTree,
+  isPrototypeMode,
+  activeItem,
+  setActiveItem,
+  saveScreen,
+  changePrototypeMode,
+  resetScreenState,
+  exportProject,
+}: Props) => {
   const [screenId, setScreenId] = useState<number>(-1);
   const [isMoving, setIsMoving] = useState<boolean>(true);
   const [listNotDragging, setListNotDragging] = useState<string[]>([]);
   const [currentScreenMode, setCurrentScreenMode] = useState<ScreenMode>({
-    ...DEFAULT_SCREEN_MODE, isDefaultMode: true,
+    ...DEFAULT_SCREEN_MODE,
+    isDefaultMode: true,
   });
   const [isScreenRotated, setIsScreenRotated] = useState<boolean>(false);
-  const [hasItemBeingResized, setHasItemBeingResized] = useState<boolean>(false);
+  const [hasItemBeingResized, setHasItemBeingResized] = useState<boolean>(
+    false,
+  );
 
   useEffect(() => {
     if (screen.id !== screenId) {
@@ -80,9 +82,17 @@ export const Component = (props: Props) => {
     }
   }, [screen.id]);
 
-  useEffect(() => () => { resetScreenState(); }, []);
+  useEffect(
+    () => () => {
+      resetScreenState();
+    },
+    [],
+  );
 
-  const handleActiveElementChange = (parentId: number, item: LibraryElement<Entity>) => {
+  const handleActiveElementChange = (
+    parentId: number,
+    item: LibraryElement<Entity>,
+  ) => {
     const { id: itemId, type, name } = item;
     const list = getListNotDragging(type);
 
@@ -90,61 +100,87 @@ export const Component = (props: Props) => {
     setListNotDragging(list);
   };
 
-  const handleRootClick = useCallback((event: React.MouseEvent) => {
-    const target = (event.nativeEvent.target as HTMLElement)?.closest('[data-ls-id]') as HTMLElement;
-    if (!target) return;
+  const handleRootClick = useCallback(
+    (event: React.MouseEvent) => {
+      const target = (event.nativeEvent.target as HTMLElement)?.closest(
+        '[data-ls-id]',
+      ) as HTMLElement;
+      if (!target) return;
 
-    const currentActiveElement = (document.activeElement as HTMLElement)?.closest('[data-ls-id]');
-    const mouseUpTriggeredClick = currentActiveElement !== target;
+      const currentActiveElement = (document.activeElement as HTMLElement)?.closest(
+        '[data-ls-id]',
+      );
+      const mouseUpTriggeredClick = currentActiveElement !== target;
 
-    if (mouseUpTriggeredClick) return;
+      if (mouseUpTriggeredClick) return;
 
-    const itemID = target.dataset['lsId'];
+      const itemID = target.dataset.lsId;
 
-    if (itemID === activeItem.itemId) return;
+      if (itemID === activeItem.itemId) return;
 
-    if (itemID) {
-      if (itemID === 'root') {
-        setActiveItem({ itemId: elementsTree.id, itemType: 'root', name: 'Root' });
-      } else {
-        const activeItem = findChildByID(elementsTree, itemID);
+      if (itemID) {
+        if (itemID === 'root') {
+          setActiveItem({
+            itemId: elementsTree.id,
+            itemType: 'root',
+            name: 'Root',
+          });
+        } else {
+          const actualActiveItem = findChildByID(elementsTree, itemID);
 
-        if (activeItem) {
-          const { type, name } = activeItem;
-          const list = getListNotDragging(type);
-  
-          setActiveItem({ itemId: itemID, itemType: type, name });
-          setListNotDragging(list);
+          if (actualActiveItem) {
+            const { type, name } = actualActiveItem;
+            const list = getListNotDragging(type);
+
+            setActiveItem({ itemId: itemID, itemType: type, name });
+            setListNotDragging(list);
+          }
         }
       }
-    }
-  }, [activeItem, elementsTree, findChildByID]);
+    },
+    [activeItem, elementsTree, findChildByID],
+  );
 
-  const handleLSItemMouseOver = useCallback((event: React.MouseEvent) => {
-    !isPrototypeMode && !hasItemBeingResized && (event.target as HTMLElement)?.closest?.('.ls-item')?.classList.add('hovered');
-  }, [isPrototypeMode, hasItemBeingResized]);
+  const handleLSItemMouseOver = useCallback(
+    (event: React.MouseEvent) => {
+      if (!isPrototypeMode && !hasItemBeingResized) {
+        (event.target as HTMLElement)
+          ?.closest?.('.ls-item')
+          ?.classList.add('hovered');
+      }
+    },
+    [isPrototypeMode, hasItemBeingResized],
+  );
 
-  const handleLSItemMouseOut = useCallback((event: React.MouseEvent) => {
-    !isPrototypeMode && !hasItemBeingResized && (event.target as HTMLElement)?.closest?.('.ls-item')?.classList.remove('hovered');
-  }, [isPrototypeMode, hasItemBeingResized]);
+  const handleLSItemMouseOut = useCallback(
+    (event: React.MouseEvent) => {
+      if (!isPrototypeMode && !hasItemBeingResized) {
+        (event.target as HTMLElement)
+          ?.closest?.('.ls-item')
+          ?.classList.remove('hovered');
+      }
+    },
+    [isPrototypeMode, hasItemBeingResized],
+  );
 
   const handleSaveScreen = useCallback(() => {
     const screenBody = document.getElementById('root');
     const widgets = Array.from(document.querySelectorAll('iframe'));
 
     if (screenBody !== null) {
-      const ignore = (element: Element) => widgets.some(widget => element === widget);
+      const ignore = (element: Element) =>
+        widgets.some((widget) => element === widget);
 
       html2canvas(screenBody, {
         useCORS: true,
         allowTaint: true,
         logging: true,
         ignoreElements: ignore,
-      }).then(canvas => saveScreen(canvas));
+      }).then((canvas) => saveScreen(canvas));
     }
   }, [saveScreen]);
 
-  return (screen && R.hasPath(['listSortable', 'root'], screen)) ? (
+  return screen && R.hasPath(['listSortable', 'root'], screen) ? (
     <div className={cn(styles.editorWorkspace)}>
       {!isPrototypeMode && <HotKeys />}
       <TopBar
@@ -164,8 +200,11 @@ export const Component = (props: Props) => {
         onMouseOver={handleLSItemMouseOver}
         onMouseOut={handleLSItemMouseOut}
       >
-        <Scrollbar 
-          className={cn(styles.editorLayout, getClassDevice(styles, currentScreenMode, isScreenRotated))}
+        <Scrollbar
+          className={cn(
+            styles.editorLayout,
+            getClassDevice(styles, currentScreenMode, isScreenRotated),
+          )}
           autoHeightMin="100%"
         >
           <SortableContainer

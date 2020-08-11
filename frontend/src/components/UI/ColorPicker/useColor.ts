@@ -3,9 +3,12 @@ import { useEffect, useState } from 'react';
 type Color = {
   value: string;
   isValid: boolean;
-}
+};
 
-export const useColor = (defaultColor: string, activeItemID: string): [Color, (newColor: Color) => void] => {
+export const useColor = (
+  defaultColor: string,
+  activeItemID: string,
+): [Color, (newColor: Color) => void] => {
   const [color, setColor] = useState<string>(defaultColor);
   const [isValid, setIsValid] = useState<boolean>(true);
 
@@ -15,10 +18,10 @@ export const useColor = (defaultColor: string, activeItemID: string): [Color, (n
 
   const changeColor = (newColor: Color) => {
     setIsValid(newColor.isValid);
-    setColor(newColor.value)
-  }
+    setColor(newColor.value);
+  };
 
-  const colorInfo = { value: color, isValid }
+  const colorInfo = { value: color, isValid };
 
   return [colorInfo, changeColor];
-}
+};

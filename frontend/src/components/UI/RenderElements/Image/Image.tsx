@@ -1,23 +1,23 @@
+/* eslint-disable jsx-a11y/no-noninteractive-tabindex */
 import React from 'react';
 import cn from 'classnames';
 import { makeStyles } from '@material-ui/core';
 
 import { ImageRendererProps } from '../types';
+
 const styles = require('../styles.scss');
 
-const Image = (props: ImageRendererProps) => {
-  const {
-    id,
-    params,
-    sortableId,
-    entityStyles,
-    groupStyles,
-    ownStyles,
-    isDisabled,
-    className,
-    elementRef,
-  } = props;
-
+const Image: React.FC<ImageRendererProps> = ({
+  id,
+  params,
+  sortableId,
+  entityStyles,
+  groupStyles,
+  ownStyles,
+  isDisabled,
+  className,
+  elementRef,
+}) => {
   const classes = makeStyles({
     entityStyles: {
       ...entityStyles,
@@ -51,6 +51,6 @@ const Image = (props: ImageRendererProps) => {
       tabIndex={isDisabled ? 0 : -1}
     />
   );
-}
+};
 
 export { Image };

@@ -6,26 +6,25 @@ import { Link, makeStyles } from '@material-ui/core';
 import { WithActionProps } from '$utils/withAction';
 
 import { ActionRendererProps } from '../types';
+
 const styles = require('../styles.scss');
 
 export type LinkRenderer = React.FC<WithActionProps & ActionRendererProps>;
 
-const LinkComponent: LinkRenderer = (props) => {
-  const {
-    id,
-    entityStyles,
-    groupStyles,
-    ownStyles,
-    isDisabled,
-    params,
-    onClick,
-    sortableId,
-    actionType,
-    actionLink,
-    className,
-    elementRef,
-  } = props;
-
+const LinkComponent: LinkRenderer = ({
+  id,
+  entityStyles,
+  groupStyles,
+  ownStyles,
+  isDisabled,
+  params,
+  onClick,
+  sortableId,
+  actionType,
+  actionLink,
+  className,
+  elementRef,
+}) => {
   const { textContent } = params;
 
   const classes = makeStyles({
@@ -58,12 +57,18 @@ const LinkComponent: LinkRenderer = (props) => {
       )}
       underline={isDisabled ? 'none' : 'hover'}
       onClick={onClick}
-      {...actionType === 'external-link' && { href: actionLink, target: '_blank' }}
-      {...actionType === 'internal-link' && { component: RouterLink, to: actionLink }}
+      {...(actionType === 'external-link' && {
+        href: actionLink,
+        target: '_blank',
+      })}
+      {...(actionType === 'internal-link' && {
+        component: RouterLink,
+        to: actionLink,
+      })}
     >
       {textContent}
     </Link>
   );
-}
+};
 
 export { LinkComponent as Link };

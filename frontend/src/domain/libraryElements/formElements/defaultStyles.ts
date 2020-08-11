@@ -29,7 +29,9 @@ type SelectControls = typeof selectStyleControls[number];
 type SelectMenuControls = typeof selectMenuStyleControls[number];
 type SelectItemControls = typeof selectItemStyleControls[number];
 
-export const defaultButtonStyles: { [K in ButtonControls]: CssLikeStyles } & { other?: CssLikeStyles } = {
+export const defaultButtonStyles: { [K in ButtonControls]: CssLikeStyles } & {
+  other?: CssLikeStyles;
+} = {
   indents: {
     ...DEFAULT_INDENTS,
     'padding-top': '6px',
@@ -60,7 +62,9 @@ export const defaultButtonStyles: { [K in ButtonControls]: CssLikeStyles } & { o
   },
 };
 
-export const defaultTextinputStyles: { [K in TextinputControls]: CssLikeStyles } & { other?: CssLikeStyles } = {
+export const defaultTextinputStyles: {
+  [K in TextinputControls]: CssLikeStyles;
+} & { other?: CssLikeStyles } = {
   indents: {
     ...DEFAULT_INDENTS,
     'padding-top': '18.5px',
@@ -86,7 +90,9 @@ export const defaultTextinputStyles: { [K in TextinputControls]: CssLikeStyles }
   },
 };
 
-export const defaultTextareaStyles: { [K in TextareaControls]: CssLikeStyles } & { other?: CssLikeStyles } = {
+export const defaultTextareaStyles: {
+  [K in TextareaControls]: CssLikeStyles;
+} & { other?: CssLikeStyles } = {
   indents: {
     ...DEFAULT_INDENTS,
     'padding-top': '18.5px',
@@ -112,7 +118,9 @@ export const defaultTextareaStyles: { [K in TextareaControls]: CssLikeStyles } &
   },
 };
 
-export const defaultCheckboxStyles: { [K in CheckboxControls]: CssLikeStyles } & { other?: CssLikeStyles } = {
+export const defaultCheckboxStyles: {
+  [K in CheckboxControls]: CssLikeStyles;
+} & { other?: CssLikeStyles } = {
   indents: {
     ...DEFAULT_INDENTS,
     'padding-top': '0',
@@ -131,7 +139,9 @@ export const defaultCheckboxStyles: { [K in CheckboxControls]: CssLikeStyles } &
   },
 };
 
-export const defaultRadiobuttonStyles: { [K in RadiobuttonControls]: CssLikeStyles } & { other?: CssLikeStyles } = {
+export const defaultRadiobuttonStyles: {
+  [K in RadiobuttonControls]: CssLikeStyles;
+} & { other?: CssLikeStyles } = {
   indents: {
     ...DEFAULT_INDENTS,
     'padding-top': '0',
@@ -150,7 +160,9 @@ export const defaultRadiobuttonStyles: { [K in RadiobuttonControls]: CssLikeStyl
   },
 };
 
-export const defaultLabelStyles: { [K in LabelControls]: CssLikeStyles } & { other?: CssLikeStyles } = {
+export const defaultLabelStyles: { [K in LabelControls]: CssLikeStyles } & {
+  other?: CssLikeStyles;
+} = {
   indents: {
     ...DEFAULT_INDENTS,
     'padding-top': '0',
@@ -176,7 +188,9 @@ export const defaultLabelStyles: { [K in LabelControls]: CssLikeStyles } & { oth
   },
 };
 
-export const defaultSelectStyles: { [K in SelectControls]: CssLikeStyles } & { other?: CssLikeStyles } = {
+export const defaultSelectStyles: { [K in SelectControls]: CssLikeStyles } & {
+  other?: CssLikeStyles;
+} = {
   indents: {
     ...DEFAULT_INDENTS,
     'padding-top': '18.5px',
@@ -202,7 +216,9 @@ export const defaultSelectStyles: { [K in SelectControls]: CssLikeStyles } & { o
   },
 };
 
-export const defaultSelectMenuStyles: { [K in SelectMenuControls]: CssLikeStyles } & { other?: CssLikeStyles } = {
+export const defaultSelectMenuStyles: {
+  [K in SelectMenuControls]: CssLikeStyles;
+} & { other?: CssLikeStyles } = {
   indents: {
     ...DEFAULT_INDENTS,
     'padding-top': '0px',
@@ -230,7 +246,9 @@ export const defaultSelectMenuStyles: { [K in SelectMenuControls]: CssLikeStyles
   },
 };
 
-export const defaultSelectItemStyles: { [K in SelectItemControls]: CssLikeStyles } & { other?: CssLikeStyles } = {
+export const defaultSelectItemStyles: {
+  [K in SelectItemControls]: CssLikeStyles;
+} & { other?: CssLikeStyles } = {
   indents: {
     ...DEFAULT_INDENTS,
     'padding-top': '6px',

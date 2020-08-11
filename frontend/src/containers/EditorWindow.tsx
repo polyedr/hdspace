@@ -31,11 +31,12 @@ const mapDispatchToProps = {
   setListProject: ActionsProject.setListProject,
 };
 
-export type IAppProps = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps & {
-  currentProject: Project,
-}
+export type IAppProps = ReturnType<typeof mapStateToProps> &
+  typeof mapDispatchToProps & {
+    currentProject: Project;
+  };
 
-const EditorWindow: React.FunctionComponent<IAppProps> = ({
+const EditorWindow: React.FC<IAppProps> = ({
   isLPanelMinimized,
   tokenPair,
   setListProject,
@@ -45,7 +46,7 @@ const EditorWindow: React.FunctionComponent<IAppProps> = ({
   changeMinLPanel,
   setTokenPair,
 }) => (
-  <React.Fragment>
+  <>
     <LeftPanel
       pathname={pathname}
       projects={projects}
@@ -56,7 +57,12 @@ const EditorWindow: React.FunctionComponent<IAppProps> = ({
       setListProject={setListProject}
       setTokenPair={setTokenPair}
     />
-    <div className={classNames(styles.globalContainer, isLPanelMinimized && styles.minimiser)}>
+    <div
+      className={classNames(
+        styles.globalContainer,
+        isLPanelMinimized && styles.minimiser,
+      )}
+    >
       <TopPanel
         pathname={pathname}
         isLPanelMinimized={isLPanelMinimized}
@@ -64,10 +70,7 @@ const EditorWindow: React.FunctionComponent<IAppProps> = ({
       />
       <div className={styles.workContainer}>
         <Switch>
-          <Route
-            path={PATH_NAMES.projects}
-            component={ProjectsLogic}
-          />
+          <Route path={PATH_NAMES.projects} component={ProjectsLogic} />
           <Route
             path="/project/:projectID/:screenID?"
             component={EditorLogic}
@@ -76,7 +79,7 @@ const EditorWindow: React.FunctionComponent<IAppProps> = ({
         </Switch>
       </div>
     </div>
-  </React.Fragment>
+  </>
 );
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditorWindow);

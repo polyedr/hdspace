@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 
+import { connect } from 'react-redux';
 import { TextField } from '$features/applyProperties/views/components/TextField/TextField';
 import { actionsCreators, selectors } from '$redux/project';
 import { AppReduxState } from '$shared/types/app';
-import { connect } from 'react-redux';
 
 type StateProps = {
   activeItemID: string;
@@ -16,7 +16,7 @@ const mapState = (state: AppReduxState) => {
   return {
     activeItemID: activeItem.itemId,
     activeItemName: activeItem.name,
-  }
+  };
 };
 
 const mapDispatch = {
@@ -25,17 +25,22 @@ const mapDispatch = {
 
 type Props = StateProps & typeof mapDispatch;
 
-const RenameElement = (props: Props) => {
-  const { activeItemID, activeItemName, renameElement } = props;
+const RenameElement: React.FC<Props> = ({
+  activeItemID,
+  activeItemName,
+  renameElement,
+}) => {
   const [currentElementName, setCurrentElementName] = useState(activeItemName);
 
   useEffect(() => {
     setCurrentElementName(activeItemName);
   }, [activeItemName]);
 
-  const handleTextFieldBlur = ({ target: { value } }: React.FocusEvent<HTMLInputElement>) => {
+  const handleTextFieldBlur = ({
+    target: { value },
+  }: React.FocusEvent<HTMLInputElement>) => {
     renameElement(activeItemID, value);
-  }
+  };
 
   return (
     <TextField

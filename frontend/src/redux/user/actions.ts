@@ -1,5 +1,9 @@
 import { TYPES } from '$constants/actions';
-import { ITokenPair, IApiResponseError, ISignInData } from '$redux/user/reducer';
+import {
+  ITokenPair,
+  IApiResponseError,
+  ISignInData,
+} from '$redux/user/reducer';
 
 export const changeMinLPanel = () => ({ type: TYPES.CHANGE_L_PANEL });
 export const changeMinNavPanel = () => ({ type: TYPES.CHANGE_NAV_PANEL });
@@ -52,11 +56,6 @@ export const setNewUser = (
 export const setApiResponseError = (apiResponseError: IApiResponseError) => ({
   type: TYPES.SET_API_ERROR,
   apiResponseError,
-});
-
-export const onConfirmModal = (status: any) => ({
-  // type: TYPES.ON_CONFIRM_MODAL,
-  // status,
 });
 
 export const setLoadedToken = (isLoadedToken: boolean) => ({

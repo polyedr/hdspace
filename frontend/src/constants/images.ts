@@ -1,5 +1,6 @@
+/* eslint-disable global-require */
 export interface IImages {
-    [key: string]: string,
+  [key: string]: string;
 }
 
 export const IMAGES = {

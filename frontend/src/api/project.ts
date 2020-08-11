@@ -1,9 +1,11 @@
+/* eslint-disable no-console */
+
 import { AxiosResponse, AxiosError } from 'axios';
 
 import { myAxios, MyAxiosProps } from '$config/settings';
 
 import { convertProjectFromResponse } from './converters/fromResponse';
-import { Project, ServerProject } from './types';
+import { Project } from './types';
 
 export const onError = ({ response: r }: AxiosError) => {
   const response = r as any;
@@ -38,75 +40,73 @@ export const onError = ({ response: r }: AxiosError) => {
         return response.statusText;
     }
   } else {
-    const errorMsg = 'Request is not present in axios error, look at onError handler!';
+    const errorMsg =
+      'Request is not present in axios error, look at onError handler!';
     console.error(errorMsg);
     return {
       msg: 'Request is not present in axios error, look at onError handler!',
       response,
-    }
+    };
   }
 };
 
-export const parseResult = <T>(result: AxiosResponse<T>) => result && result.data;
+export const parseResult = <T>(result: AxiosResponse<T>) =>
+  result && result.data;
 
-export const apiGetListProject = (props: MyAxiosProps): Promise<Project[]> => (
+export const apiGetListProject = (props: MyAxiosProps): Promise<Project[]> =>
   myAxios({
     ...props,
     method: 'GET',
     url: '/projects/projects/',
   })
-    .then(result => result.data.map(convertProjectFromResponse))
-    .catch(onError)
-);
+    .then((result) => result.data.map(convertProjectFromResponse))
+    .catch(onError);
 
 // TODO: research here IProject or IProjectList in return type:
-export const apiGetProject = (props: MyAxiosProps & { id: string }): Promise<Project> => (
+export const apiGetProject = (
+  props: MyAxiosProps & { id: string },
+): Promise<Project> =>
   myAxios({
     ...props,
     method: 'GET',
     url: `/projects/projects/${props.id}/`,
   })
-    .then(result => convertProjectFromResponse(result.data))
-    .catch(onError)
-);
+    .then((result) => convertProjectFromResponse(result.data))
+    .catch(onError);
 
-export const apiAddProject = (props: MyAxiosProps): Promise<Project> => (
+export const apiAddProject = (props: MyAxiosProps): Promise<Project> =>
   myAxios({
     ...props,
     method: 'POST',
     url: '/projects/projects/',
     data: props.data,
   })
-    .then(result => convertProjectFromResponse(result.data))
-    .catch(onError)
-);
+    .then((result) => convertProjectFromResponse(result.data))
+    .catch(onError);
 
-export const apiDelProject = (props: MyAxiosProps & { id: string}) => (
+export const apiDelProject = (props: MyAxiosProps & { id: string }) =>
   myAxios({
     ...props,
     method: 'DELETE',
     url: `/projects/projects/${props.id}/`,
   })
     .then(parseResult)
-    .catch(onError)
-);
+    .catch(onError);
 
-export const apiSaveProject = (props: MyAxiosProps): Promise<Project> => (
+export const apiSaveProject = (props: MyAxiosProps): Promise<Project> =>
   myAxios({
     ...props,
     method: 'PATCH',
     url: `/projects/projects/${props.data.id}/`,
   })
-    .then(result => convertProjectFromResponse(result.data))
-    .catch(onError)
-);
+    .then((result) => convertProjectFromResponse(result.data))
+    .catch(onError);
 
-export const apiSaveScreens = (props: MyAxiosProps): Promise<Project> => (
+export const apiSaveScreens = (props: MyAxiosProps): Promise<Project> =>
   myAxios({
     ...props,
     method: 'PATCH',
     url: '/projects/project-screens-multiple/',
   })
-    .then(result => convertProjectFromResponse(result.data))
-    .catch(onError)
-);
+    .then((result) => convertProjectFromResponse(result.data))
+    .catch(onError);

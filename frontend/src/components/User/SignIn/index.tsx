@@ -1,17 +1,23 @@
 import React, { useCallback, useState, useEffect } from 'react';
-import { hot } from 'react-hot-loader';
 import { connect } from 'react-redux';
 
 import { AppReduxState } from '$shared/types/app';
 import { Info } from '$components/User/Info';
 import { Button } from '$components/UI/Button';
 import { Modal } from '$components/UI/Modal';
-import { DEFAULT_SIGNIN_FIELDS, DEFAULT_RESPONSE_ERROR, ISignFormFields } from '$constants/defaultParams';
+import {
+  DEFAULT_SIGNIN_FIELDS,
+  DEFAULT_RESPONSE_ERROR,
+  ISignFormFields,
+} from '$constants/defaultParams';
 import * as Actions from '$redux/user/actions';
 import { getInitialFieldsState } from '$utils/getStates';
 import { IApiResponseError } from '$redux/user/reducer';
 import { SignFormList } from '$components/User/SignFormList';
-import { generateValidatedFormData, INewFormData } from '$utils/generateValidatedFormData';
+import {
+  generateValidatedFormData,
+  INewFormData,
+} from '$utils/generateValidatedFormData';
 import { Spinner } from '$components/UI/Spinner';
 
 const styles = require('./SignIn.scss');
@@ -32,19 +38,23 @@ const mapDispatchToProps = {
 };
 
 type IProps = typeof mapDispatchToProps & {
-  apiResponseError: IApiResponseError,
-  isSignLoader: boolean,
+  apiResponseError: IApiResponseError;
+  isSignLoader: boolean;
 };
 
-export const UnmountedSignIn: React.FunctionComponent<IProps> = ({
+export const UnmountedSignIn: React.FC<IProps> = ({
   apiResponseError,
   isSignLoader,
   restorePassword,
   getTokenPair,
   setApiResponseError,
 }) => {
-  const [formData, setFormData] = useState<ISignFormFields>(getInitialFieldsState(DEFAULT_SIGNIN_FIELDS));
-  const [isRestorePasswordModalOpen, setIsRestorePasswordModalOpen] = useState<boolean>(false);
+  const [formData, setFormData] = useState<ISignFormFields>(
+    getInitialFieldsState(DEFAULT_SIGNIN_FIELDS),
+  );
+  const [isRestorePasswordModalOpen, setIsRestorePasswordModalOpen] = useState<
+    boolean
+  >(false);
   const [restoreEmail, setRestoreEmail] = useState<string>('');
 
   useEffect(() => {
@@ -60,60 +70,74 @@ export const UnmountedSignIn: React.FunctionComponent<IProps> = ({
     setIsRestorePasswordModalOpen(!isRestorePasswordModalOpen);
   }, [isRestorePasswordModalOpen]);
 
-  const handleOnSubmit = useCallback((event) => {
-    event.preventDefault();
+  const handleOnSubmit = useCallback(
+    (event) => {
+      event.preventDefault();
 
-    if (apiResponseError.errorStatus !== -1) {
-      setApiResponseError(DEFAULT_RESPONSE_ERROR);
-    }
+      if (apiResponseError.errorStatus !== -1) {
+        setApiResponseError(DEFAULT_RESPONSE_ERROR);
+      }
 
-    const newFormData: INewFormData = generateValidatedFormData(formData, IS_NAME_AND_PASSWORD_CHECK);
+      const newFormData: INewFormData = generateValidatedFormData(
+        formData,
+        IS_NAME_AND_PASSWORD_CHECK,
+      );
 
-    setFormData(newFormData.formData);
+      setFormData(newFormData.formData);
 
-    if (!newFormData.isValidationError) {
-      getTokenPair(newFormData.formData['username'].value, newFormData.formData['password'].value);
-    }
-  }, [formData, getTokenPair, apiResponseError, setApiResponseError]);
+      if (!newFormData.isValidationError) {
+        getTokenPair(
+          newFormData.formData.username.value,
+          newFormData.formData.password.value,
+        );
+      }
+    },
+    [formData, getTokenPair, apiResponseError, setApiResponseError],
+  );
 
-  const handleOnChange = useCallback((event) => {
-    const newFormData = {
-      ...formData,
-      [event.target.name]: {
-        ...formData[event.target.name],
-        value: event.target.value,
-      },
-    };
+  const handleOnChange = useCallback(
+    (event) => {
+      const newFormData = {
+        ...formData,
+        [event.target.name]: {
+          ...formData[event.target.name],
+          value: event.target.value,
+        },
+      };
 
-    setFormData(newFormData);
-  }, [formData]);
+      setFormData(newFormData);
+    },
+    [formData],
+  );
 
-  const handleRestorePasswordBtn = useCallback((event) => {
-    event.preventDefault();
+  const handleRestorePasswordBtn = useCallback(
+    (event) => {
+      event.preventDefault();
 
-    setIsRestorePasswordModalOpen(!isRestorePasswordModalOpen);
-  }, [isRestorePasswordModalOpen]);
+      setIsRestorePasswordModalOpen(!isRestorePasswordModalOpen);
+    },
+    [isRestorePasswordModalOpen],
+  );
 
   const onRestoreEmailFieldChange = useCallback(({ target }) => {
     setRestoreEmail(target.value);
   }, []);
 
-  const handleConfirmPasswordRestore = useCallback((event) => {
-    event.preventDefault();
+  const handleConfirmPasswordRestore = useCallback(
+    (event) => {
+      event.preventDefault();
 
-    restorePassword(restoreEmail);
-    closeModal();
-  }, [restoreEmail, restorePassword, closeModal]);
+      restorePassword(restoreEmail);
+      closeModal();
+    },
+    [restoreEmail, restorePassword, closeModal],
+  );
 
   return (
-    <React.Fragment>
-      <Info
-        isSignUp
-      />
+    <>
+      <Info isSignUp />
       <div className="signContainer">
-        <form
-          onSubmit={handleOnSubmit}
-        >
+        <form onSubmit={handleOnSubmit}>
           <p className={styles.signinTitle}>Login to your account</p>
           <SignFormList
             fields={DEFAULT_SIGNIN_FIELDS}
@@ -121,18 +145,12 @@ export const UnmountedSignIn: React.FunctionComponent<IProps> = ({
             handleInputChange={handleOnChange}
           />
           <div className="signButtonBlock">
-            {
-              apiResponseError.errorStatus !== -1 && (
-                <p className="signAuthorisationErrorText">
-                  {apiResponseError.errorText}
-                </p>
-              )
-            }
-            <Button
-              className="signSubmitBtn"
-              type="submit"
-              styleType="none"
-            >
+            {apiResponseError.errorStatus !== -1 && (
+              <p className="signAuthorisationErrorText">
+                {apiResponseError.errorText}
+              </p>
+            )}
+            <Button className="signSubmitBtn" type="submit" styleType="none">
               Login
             </Button>
             <Button
@@ -145,33 +163,34 @@ export const UnmountedSignIn: React.FunctionComponent<IProps> = ({
           </div>
         </form>
       </div>
-      {
-        isRestorePasswordModalOpen && (
-          <Modal
-            animClassName="bubbleAnimation"
-            bodyClassName={styles.passwordRestoreModalBody}
-            title="Restore password"
-            confirmText="Send"
-            cancelText="Close"
-            onClose={closeModal}
-            onConfirm={handleConfirmPasswordRestore}
-          >
-            <p>Please, enter your email adress.</p>
-            <input
-              className="modalTextInput"
-              type="email"
-              name="restore_email"
-              id="restore_email"
-              placeholder="example@gmail.com"
-              value={restoreEmail}
-              onChange={onRestoreEmailFieldChange}
-            />
-          </Modal>
-        )
-      }
+      {isRestorePasswordModalOpen && (
+        <Modal
+          animClassName="bubbleAnimation"
+          bodyClassName={styles.passwordRestoreModalBody}
+          title="Restore password"
+          confirmText="Send"
+          cancelText="Close"
+          onClose={closeModal}
+          onConfirm={handleConfirmPasswordRestore}
+        >
+          <p>Please, enter your email adress.</p>
+          <input
+            className="modalTextInput"
+            type="email"
+            name="restore_email"
+            id="restore_email"
+            placeholder="example@gmail.com"
+            value={restoreEmail}
+            onChange={onRestoreEmailFieldChange}
+          />
+        </Modal>
+      )}
       <Spinner active={isSignLoader} />
-    </React.Fragment>
+    </>
   );
 };
 
-export const SignIn = connect(mapStateToProps, mapDispatchToProps)(UnmountedSignIn);
+export const SignIn = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(UnmountedSignIn);

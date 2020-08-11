@@ -1,23 +1,24 @@
+/* eslint-disable jsx-a11y/no-noninteractive-tabindex */
+
 import React from 'react';
 import cn from 'classnames';
 import { makeStyles } from '@material-ui/core';
 
 import { TextBlockRendererProps } from '../types';
+
 const styles = require('../styles.scss');
 
-const TextBlock = (props: TextBlockRendererProps) => {
-  const {
-    id,
-    entityStyles,
-    groupStyles,
-    ownStyles,
-    params,
-    sortableId,
-    isDisabled,
-    className,
-    elementRef,
-  } = props;
-
+const TextBlock: React.FC<TextBlockRendererProps> = ({
+  id,
+  entityStyles,
+  groupStyles,
+  ownStyles,
+  params,
+  sortableId,
+  isDisabled,
+  className,
+  elementRef,
+}) => {
   const classes = makeStyles({
     entityStyles: {
       ...entityStyles,

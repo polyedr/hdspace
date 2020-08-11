@@ -2,7 +2,10 @@ import * as R from 'ramda';
 import { initialEdit } from '../initial';
 import * as T from '../types';
 
-export const editReducer = (state: T.ProjectEditState = initialEdit, action: T.Action): T.ProjectEditState => {
+export const editReducer = (
+  state: T.ProjectEditState = initialEdit,
+  action: T.Action,
+): T.ProjectEditState => {
   switch (action.type) {
     case 'PROJECTS:CLEAN_AFTER_PREV_SCREEN': {
       return {
@@ -49,6 +52,7 @@ export const editReducer = (state: T.ProjectEditState = initialEdit, action: T.A
     case 'PROJECTS:UPLOAD_IMAGE_FOR_NN_SUCCESS': {
       return { ...state, uploadedImageInfo: action.payload };
     }
-    default: return state;
+    default:
+      return state;
   }
 };
