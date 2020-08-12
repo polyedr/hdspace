@@ -59,7 +59,7 @@ export const LeftPanel: React.FunctionComponent<LeftPanelProps> = ({
         <NavLink
           to="/profile"
           exact
-          className={isLPanelMinimized && styles.profileLink_minimized}
+          className={isLPanelMinimized ? styles.profileLink_minimized : ''}
         >
           <img
             className={styles.profileAvatar}

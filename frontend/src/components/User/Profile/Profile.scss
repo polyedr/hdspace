@@ -1,0 +1,110 @@
+.profileContainer {
+  background-color: $white;
+  border-radius: 4px;
+}
+
+.profileHeaderContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+
+  border-bottom: 1px solid $gainsboro;
+}
+
+.button {
+  background: none;
+  border: none;
+  color: $mainColor;
+  padding: 0;
+  &:hover {
+    background: none;
+    color: $mainColor;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+}
+
+.profileHeader {
+  font-size: 19px;
+  font-weight: bold;
+}
+
+.profileMainBlock {
+  padding: 16px;
+}
+
+.profileForm {
+  display: flex;
+}
+
+.profileFieldContainer {
+  display: flex;
+  flex-wrap: wrap;
+  max-width: 1000px;
+  height: 122px;
+  align-content: space-between;
+  & > div {
+    flex: 0 50%;
+  }
+}
+
+.profileFieldWrapper {
+  display: flex;
+  flex-direction: column;
+  padding: 0 7px;
+  label {
+    font-size: 11px;
+  }
+  input, select {
+    padding: 6px;
+    border-radius: 2px;
+    border: 1px solid black;
+  }
+  select {
+    background: none;
+  }
+}
+
+.profileImageWrapper {
+  display: flex;
+  flex-direction: column;
+  padding: 0 7px;
+  label {
+    cursor: pointer;
+  }
+  input {
+    display: none;
+  }
+  img {
+    height: 102px;
+    object-fit: contain;
+  }
+}
+
+.imageInputLabel {
+  font-size: 11px;
+}
+
+.profileImageActions {
+  display: flex;
+  justify-content: space-between;
+}
+
+.imageActionButton {
+  font-size: 12px;
+  padding: 5px 0;
+}
+
+.strong {
+  font-weight: bold;
+}
+
+.profileCredentials {
+  margin-top: 40px;
+  padding: 5px;
+  .subheader {
+    font-weight: bold;
+  }
+}
+
