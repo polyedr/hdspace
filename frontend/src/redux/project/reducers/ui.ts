@@ -62,6 +62,12 @@ export function uiReducer(
       };
     }
 
+    case 'LOGOUT': {
+      return {
+        ...initialUi,
+      };
+    }
+
     default:
       return state;
   }

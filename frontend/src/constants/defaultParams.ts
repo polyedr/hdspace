@@ -4,7 +4,7 @@ import {
   ServerStructType,
   ILSItem,
 } from '$redux/project/types';
-import { IApiResponseError, ITokenPair } from '$redux/user/reducer';
+import { IApiResponseError, ITokenPair } from '$redux/user/types';
 import { LibraryElement, Project } from '$api/types';
 import { CssLikeStyles } from '$utils/StyleHelper';
 import { getDefaultStyles } from '$domain/libraryElements/defaultStyles';

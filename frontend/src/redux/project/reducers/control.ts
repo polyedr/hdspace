@@ -99,6 +99,12 @@ export const controlReducer = (
       };
     }
 
+    case 'LOGOUT': {
+      return {
+        ...initialControl,
+      };
+    }
+
     default:
       return state;
   }

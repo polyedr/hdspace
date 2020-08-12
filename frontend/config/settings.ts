@@ -35,17 +35,23 @@ export const { api } = settings[env] || settings.test;
 //   && `Bearer ${getAccessTokenFromStorage()}`
 // ) || '';
 
-export type MyAxiosProps = { access?: string, contentType?: string } & Partial<AxiosRequestConfig>;
+export type MyAxiosProps = { access?: string; contentType?: string } & Partial<
+  AxiosRequestConfig
+>;
 
 export const myAxios = (props: MyAxiosProps) => {
-  const authorization = props.access ? { Authorization: `Bearer ${props.access}` } : {};
+  const authorization = props.access
+    ? { Authorization: `Bearer ${props.access}` }
+    : {};
 
   return axios({
     method: props.method,
     baseURL: `${api.host}/api/v${api.version}`,
     url: props.url,
     headers: {
-      'Content-Type': props.contentType ? props.contentType : 'application/json',
+      'Content-Type': props.contentType
+        ? props.contentType
+        : 'application/json',
       ...authorization,
     },
     data: props.data || {},

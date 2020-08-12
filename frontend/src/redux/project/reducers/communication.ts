@@ -41,6 +41,12 @@ export const communicationReducer = (
       };
     }
 
+    case 'LOGOUT': {
+      return {
+        ...initialCommunication,
+      };
+    }
+
     default:
       return state;
   }

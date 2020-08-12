@@ -2,40 +2,35 @@ import { createReducer, Handlers } from 'reduxsauce';
 
 import * as ACTIONS from '$redux/user/actions';
 import { TYPES } from '$constants/actions';
-
-export interface ITokenPair {
-  access: string;
-  refresh: string;
-}
-
-export interface ISignInData {
-  username?: string;
-  password?: string;
-}
-
-export interface IApiResponseError {
-  errorStatus: number;
-  errorText: string;
-}
-
-export type IRootState = Readonly<{
-  isLPanelMinimized: boolean;
-  isNavPanelMinimized: boolean;
-  isPrototypeMode: boolean;
-  tokenPair: ITokenPair;
-  isLoadedToken: boolean;
-  apiResponseError: IApiResponseError;
-  userData: ISignInData;
-  restorePasswordEmail?: string;
-  restoreUserId?: number;
-  isSignLoader: boolean;
-}>;
-
-type UnsafeReturnType<T> = T extends (...args: any[]) => infer R ? R : any;
+import { IRootState, UnsafeReturnType } from '$redux/user/types';
 
 interface ActionHandler<T> {
   (state: IRootState, payload: UnsafeReturnType<T>): IRootState;
 }
+
+const INITIAL_STATE: IRootState = {
+  isLPanelMinimized: false,
+  isNavPanelMinimized: false,
+  isPrototypeMode: false,
+  userData: {
+    username: '',
+    firstName: '',
+    lastName: '',
+    email: '',
+    password: '',
+    id: undefined,
+  },
+  tokenPair: {
+    access: '',
+    refresh: '',
+  },
+  isLoadedToken: true,
+  apiResponseError: {
+    errorStatus: -1,
+    errorText: '',
+  },
+  isSignLoader: false,
+};
 
 const changeMinLPanel: ActionHandler<ReturnType<
   typeof ACTIONS.changeMinLPanel
@@ -85,12 +80,12 @@ const setTokenPair: ActionHandler<typeof ACTIONS.setTokenPair> = (
 
 const setUserData: ActionHandler<typeof ACTIONS.setUserData> = (
   state,
-  { data },
+  { payload },
 ) => ({
   ...state,
   userData: {
     ...state.userData,
-    ...data,
+    ...payload,
   },
 });
 
@@ -118,6 +113,10 @@ const setRestoreUserId: ActionHandler<typeof ACTIONS.setRestoreUserId> = (
   restoreUserId,
 });
 
+const logout: ActionHandler<typeof ACTIONS.logout> = () => ({
+  ...INITIAL_STATE,
+});
+
 // TODO: type Action in Handlers
 const HANDLERS: Handlers<IRootState, any> = {
   [TYPES.CHANGE_L_PANEL]: changeMinLPanel,
@@ -130,26 +129,7 @@ const HANDLERS: Handlers<IRootState, any> = {
   [TYPES.SET_API_ERROR]: setApiResponseError,
   [TYPES.SET_RESTORE_PASSWORD_EMAIL]: setRestorePasswordEmail,
   [TYPES.SET_RESTORE_USER_ID]: setRestoreUserId,
+  [TYPES.LOGOUT]: logout,
 } as const;
-
-const INITIAL_STATE: IRootState = {
-  isLPanelMinimized: false,
-  isNavPanelMinimized: false,
-  isPrototypeMode: false,
-  userData: {
-    username: '',
-    password: '',
-  },
-  tokenPair: {
-    access: '',
-    refresh: '',
-  },
-  isLoadedToken: true,
-  apiResponseError: {
-    errorStatus: -1,
-    errorText: '',
-  },
-  isSignLoader: false,
-};
 
 export default createReducer(INITIAL_STATE, HANDLERS);

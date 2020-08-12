@@ -16,7 +16,7 @@ import {
   INewFormData,
 } from '$utils/generateValidatedFormData';
 import { getInitialFieldsState } from '$utils/getStates';
-import { IApiResponseError } from '$redux/user/reducer';
+import { IApiResponseError } from '$redux/user/types';
 import { SignFormList } from '$components/User/SignFormList';
 
 const mapStateToProps = ({

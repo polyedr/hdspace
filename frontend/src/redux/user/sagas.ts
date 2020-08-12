@@ -11,24 +11,23 @@ import {
 import { TYPES } from '$constants/actions';
 import * as Actions from '$redux/user/actions';
 import {
-  openProjects,
   openPasswordRestore,
+  openProjects,
   openSignScreen,
 } from '$utils/history';
 import { DEFAULT_RESPONSE_ERROR } from '$constants/defaultParams';
 import { AppReduxState } from '$shared/types/app';
 import { ReturnPromisedType } from '$shared/types';
+import { convertUserDataFromResponse } from '$api/converters/fromResponse';
+import { reqWrapper } from '$redux/project/sagas';
+import { ServerUserData } from '$redux/user/types';
 
-export function* getTokenPairSaga({
-  payload: { username, password },
-}: ReturnType<typeof Actions.getTokenPair>): SagaIterator {
+export function* getTokenPairSaga(username: string, password: string) {
   const {
     user: { apiResponseError },
   }: AppReduxState = yield select();
 
-  yield put(Actions.changeSignLoader(true));
   const authorisationData = yield call(apiGetToken, { username, password });
-  yield put(Actions.changeSignLoader(false));
 
   if (authorisationData && authorisationData.access) {
     if (apiResponseError.errorStatus !== -1) {
@@ -36,11 +35,30 @@ export function* getTokenPairSaga({
     }
 
     yield put(Actions.setTokenPair(authorisationData));
-    yield put(Actions.setUserData({ username }));
-    yield call(openProjects);
   } else {
     yield put(Actions.setApiResponseError(authorisationData));
   }
+}
+
+export function* loginSaga({
+  payload: { username, password },
+}: ReturnType<typeof Actions.login>) {
+  yield put(Actions.changeSignLoader(true));
+
+  yield call(getTokenPairSaga, username, password);
+
+  const users = yield call(reqWrapper, apiGetUsers);
+  if (!users) {
+    console.error('Login error while fetching users');
+    return;
+  }
+  const userData = users.find(
+    (user: ServerUserData) => username === user.username,
+  );
+  yield put(Actions.setUserData(convertUserDataFromResponse(userData)));
+  yield put(Actions.changeSignLoader(false));
+
+  yield call(openProjects);
 }
 
 function* setNewUserSaga(action: ReturnType<typeof Actions.setNewUser>) {
@@ -56,8 +74,10 @@ function* setNewUserSaga(action: ReturnType<typeof Actions.setNewUser>) {
     last_name: lastName,
   });
 
+  yield put(Actions.setUserData(convertUserDataFromResponse(newUserData)));
+
   if (newUserData && newUserData.username && newUserData.password) {
-    yield call(getTokenPairSaga, Actions.getTokenPair(username, password));
+    yield call(getTokenPairSaga, username, password);
   } else {
     yield put(Actions.setApiResponseError(newUserData));
   }
@@ -149,7 +169,7 @@ export function* setNewPasswordSaga({
 }
 
 export default function* userSaga() {
-  yield takeLatest(TYPES.GET_TOKEN_PAIR, getTokenPairSaga);
+  yield takeLatest(TYPES.LOGIN, loginSaga);
   yield takeLatest(TYPES.SET_NEW_USER, setNewUserSaga);
   yield takeLatest(TYPES.RESTORE_PASSWORD, restorePasswordSaga);
   yield takeLatest(TYPES.SET_NEW_PASSWORD, setNewPasswordSaga);

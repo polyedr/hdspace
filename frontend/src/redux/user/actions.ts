@@ -2,8 +2,9 @@ import { TYPES } from '$constants/actions';
 import {
   ITokenPair,
   IApiResponseError,
-  ISignInData,
-} from '$redux/user/reducer';
+  UserData,
+  LoginFormData,
+} from '$redux/user/types';
 
 export const changeMinLPanel = () => ({ type: TYPES.CHANGE_L_PANEL });
 export const changeMinNavPanel = () => ({ type: TYPES.CHANGE_NAV_PANEL });
@@ -18,12 +19,13 @@ export const changePrototypeMode = (isPrototypeMode: boolean) => ({
   isPrototypeMode,
 });
 
-export const getTokenPair = (username: string, password: string) => ({
-  type: TYPES.GET_TOKEN_PAIR,
-  payload: {
-    username,
-    password,
-  },
+export const login = (data: LoginFormData) => ({
+  type: TYPES.LOGIN,
+  payload: data,
+});
+
+export const logout = () => ({
+  type: TYPES.LOGOUT,
 });
 
 export const setTokenPair = (tokenPair: ITokenPair) => ({
@@ -31,9 +33,9 @@ export const setTokenPair = (tokenPair: ITokenPair) => ({
   tokenPair,
 });
 
-export const setUserData = (data: ISignInData) => ({
+export const setUserData = (data: UserData) => ({
   type: TYPES.SET_USER_DATA,
-  data,
+  payload: data,
 });
 
 export const setNewUser = (

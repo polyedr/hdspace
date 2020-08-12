@@ -52,6 +52,13 @@ export const editReducer = (
     case 'PROJECTS:UPLOAD_IMAGE_FOR_NN_SUCCESS': {
       return { ...state, uploadedImageInfo: action.payload };
     }
+
+    case 'LOGOUT': {
+      return {
+        ...initialEdit,
+      };
+    }
+
     default:
       return state;
   }

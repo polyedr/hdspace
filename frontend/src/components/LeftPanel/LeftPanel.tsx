@@ -2,18 +2,17 @@ import React, { useCallback, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import classNames from 'classnames';
 
+import { useDispatch } from 'react-redux';
 import { IMAGES } from '$constants/images';
 import { Icon } from '$components/UI/Icon';
 import { Button } from '$components/UI/Button';
 import { IAppProps } from '$containers/App';
 import * as PATH_NAMES from '$constants/pathNames';
 import { Scrollbar } from '$components/UI/Scrollbar';
-import * as Actions from '$redux/user/actions';
 import * as ActionsProject from '$redux/project/actions';
 import { openSignScreen } from '$utils/history';
-import { DEFAULT_AUTHORISATION_TOKEN } from '$constants/defaultParams';
-import { ITokenPair } from '$redux/user/reducer';
 import { Project } from '$api/types';
+import { logout } from '$redux/user/actions';
 
 const styles = require('./LeftPanel.scss');
 
@@ -22,10 +21,8 @@ export interface ILeftPanel {
   projects: Project[];
   username?: string;
   userType: string;
-  tokenPair: ITokenPair;
   isLPanelMinimized: boolean;
   setListProject: typeof ActionsProject.setListProject;
-  setTokenPair: typeof Actions.setTokenPair;
 }
 
 export const LeftPanel: React.FunctionComponent<ILeftPanel> = ({
@@ -33,22 +30,17 @@ export const LeftPanel: React.FunctionComponent<ILeftPanel> = ({
   projects,
   username,
   userType,
-  tokenPair,
   isLPanelMinimized,
-  setListProject,
-  setTokenPair,
 }) => {
+  const dispatch = useDispatch();
   const [isProjectsListActive, setIsProjectsListActive] = useState<boolean>(
     false,
   );
 
-  const handleLogoutClick = useCallback(() => {
-    if (tokenPair.access !== '') {
-      setTokenPair(DEFAULT_AUTHORISATION_TOKEN);
-      setListProject([]);
-      openSignScreen('signin');
-    }
-  }, [tokenPair, setTokenPair, setListProject]);
+  const handleLogoutClick = () => {
+    dispatch(logout());
+    openSignScreen('signin');
+  };
 
   const openProjectsList = useCallback(() => {
     setIsProjectsListActive(!isProjectsListActive);

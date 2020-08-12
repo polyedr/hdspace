@@ -3,7 +3,7 @@
 import { AxiosError } from 'axios';
 import { myAxios } from '$config/settings';
 import { onError, parseResult } from '$api/project';
-import { ISignInData, IApiResponseError } from '$redux/user/reducer';
+import { IApiResponseError, LoginFormData } from '$redux/user/types';
 
 export interface ISignUpData {
   username: string;
@@ -52,7 +52,7 @@ export const onAuthorisationError = ({
   }
 };
 
-export const apiGetToken = (data: ISignInData) =>
+export const apiGetToken = (data: LoginFormData) =>
   myAxios({
     data,
     method: 'POST',
