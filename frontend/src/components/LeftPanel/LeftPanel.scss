@@ -1,3 +1,5 @@
+$transition_config: 0.3s ease;
+
 .leftPanel {
   position: fixed;
 
@@ -10,23 +12,12 @@
   background-color: $lightMatteTurq;
 
   overflow: hidden;
-  transition: width 0.3s ease;
+  transition: width $transition_config;
   user-select: none;
 }
 
 .minPanel {
   width: $leftPanel_minWidth;
-}
-
-.logo {
-  text-align: center;
-  padding: 16px 0;
-  background-color: $almostBlue;
-
-  & img {
-    width: auto;
-    height: 52px;
-  }
 }
 
 .profileBlock {
@@ -35,8 +26,22 @@
   justify-content: center;
   align-items: center;
   padding: 8px;
-
   background-color: $almostBlue;
+  & img {
+    transition: all $transition_config;
+  }
+
+  &_minimized {
+    height: $header_height;
+    & img {
+      width: 25px;
+      height: 25px;
+    }
+  }
+}
+
+.profileLink_minimized {
+ height: 25px;
 }
 
 .profileAvatar {

@@ -51,28 +51,38 @@ export const LeftPanel: React.FunctionComponent<LeftPanelProps> = ({
     <aside
       className={`${styles.leftPanel} ${isLPanelMinimized && styles.minPanel}`}
     >
-      {isLPanelMinimized ? (
-        <div className={styles.logo}>
-          <img src={IMAGES.logo} alt="logo" />
-        </div>
-      ) : (
-        <div className={styles.profileBlock}>
+      <div
+        className={`${styles.profileBlock} ${
+          isLPanelMinimized && styles.profileBlock_minimized
+        }`}
+      >
+        <NavLink
+          to="/profile"
+          exact
+          className={isLPanelMinimized && styles.profileLink_minimized}
+        >
           <img
             className={styles.profileAvatar}
             src={IMAGES.prof}
             alt="profile"
           />
-          <div className={styles.profileName}>
-            <span className={styles.profileText}>
-              {typeof username !== 'undefined' ? username : 'Without name'}
-            </span>
-            <span className={styles.profileText}>{email}</span>
-          </div>
-          <Button onClick={handleLogoutClick} className={styles.profileBtn}>
-            Log out
-          </Button>
-        </div>
-      )}
+        </NavLink>
+
+        {!isLPanelMinimized && (
+          <>
+            <div className={styles.profileName}>
+              <span className={styles.profileText}>
+                {typeof username !== 'undefined' ? username : 'Without name'}
+              </span>
+              <span className={styles.profileText}>{email}</span>
+            </div>
+            <Button onClick={handleLogoutClick} className={styles.profileBtn}>
+              Log out
+            </Button>
+          </>
+        )}
+      </div>
+
       <nav className={styles.mainNavigation}>
         <ul className={styles.navigationList}>
           <li
@@ -149,17 +159,6 @@ export const LeftPanel: React.FunctionComponent<LeftPanelProps> = ({
             >
               <Icon icon="folder-open" />
               <span>Workflow</span>
-            </NavLink>
-          </li>
-          <li className={styles.navigationItem}>
-            <NavLink
-              to="/profile"
-              exact
-              className={styles.navigationLink}
-              activeClassName="active"
-            >
-              <Icon icon="folder-open" />
-              <span>Profile</span>
             </NavLink>
           </li>
         </ul>
