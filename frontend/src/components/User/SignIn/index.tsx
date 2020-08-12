@@ -1,28 +1,28 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import { connect } from 'react-redux';
+import { Form, Field } from 'react-final-form';
 
 import { AppReduxState } from '$shared/types/app';
 import { Info } from '$components/User/Info';
 import { Button } from '$components/UI/Button';
 import { Modal } from '$components/UI/Modal';
-import {
-  DEFAULT_SIGNIN_FIELDS,
-  DEFAULT_RESPONSE_ERROR,
-  ISignFormFields,
-} from '$constants/defaultParams';
+import { DEFAULT_RESPONSE_ERROR } from '$constants/defaultParams';
 import * as Actions from '$redux/user/actions';
-import { getInitialFieldsState } from '$utils/getStates';
 import { IApiResponseError } from '$redux/user/reducer';
-import { SignFormList } from '$components/User/SignFormList';
-import {
-  generateValidatedFormData,
-  INewFormData,
-} from '$utils/generateValidatedFormData';
 import { Spinner } from '$components/UI/Spinner';
+import {
+  composeValidators,
+  isValidEmail,
+  isRequired,
+  isLongPassword,
+} from '$shared/validators';
 
 const styles = require('./SignIn.scss');
 
-const IS_NAME_AND_PASSWORD_CHECK = false;
+type FormData = {
+  username: string;
+  password: string;
+};
 
 const mapStateToProps = ({
   user: { apiResponseError, isSignLoader },
@@ -49,13 +49,16 @@ export const UnmountedSignIn: React.FC<IProps> = ({
   getTokenPair,
   setApiResponseError,
 }) => {
-  const [formData, setFormData] = useState<ISignFormFields>(
-    getInitialFieldsState(DEFAULT_SIGNIN_FIELDS),
-  );
   const [isRestorePasswordModalOpen, setIsRestorePasswordModalOpen] = useState<
     boolean
   >(false);
+
   const [restoreEmail, setRestoreEmail] = useState<string>('');
+
+  const initialValues: FormData = {
+    username: '',
+    password: '',
+  };
 
   useEffect(() => {
     return () => {
@@ -70,45 +73,17 @@ export const UnmountedSignIn: React.FC<IProps> = ({
     setIsRestorePasswordModalOpen(!isRestorePasswordModalOpen);
   }, [isRestorePasswordModalOpen]);
 
-  const handleOnSubmit = useCallback(
-    (event) => {
-      event.preventDefault();
+  const handleFormSubmit = (values: FormData) => {
+    if (apiResponseError.errorStatus !== -1) {
+      setApiResponseError(DEFAULT_RESPONSE_ERROR);
+    }
 
-      if (apiResponseError.errorStatus !== -1) {
-        setApiResponseError(DEFAULT_RESPONSE_ERROR);
-      }
+    getTokenPair(values.username, values.password);
+  };
 
-      const newFormData: INewFormData = generateValidatedFormData(
-        formData,
-        IS_NAME_AND_PASSWORD_CHECK,
-      );
+  const emailValidator = composeValidators(isRequired, isValidEmail);
 
-      setFormData(newFormData.formData);
-
-      if (!newFormData.isValidationError) {
-        getTokenPair(
-          newFormData.formData.username.value,
-          newFormData.formData.password.value,
-        );
-      }
-    },
-    [formData, getTokenPair, apiResponseError, setApiResponseError],
-  );
-
-  const handleOnChange = useCallback(
-    (event) => {
-      const newFormData = {
-        ...formData,
-        [event.target.name]: {
-          ...formData[event.target.name],
-          value: event.target.value,
-        },
-      };
-
-      setFormData(newFormData);
-    },
-    [formData],
-  );
+  const passwordValidator = composeValidators(isRequired, isLongPassword);
 
   const handleRestorePasswordBtn = useCallback(
     (event) => {
@@ -137,31 +112,78 @@ export const UnmountedSignIn: React.FC<IProps> = ({
     <>
       <Info isSignUp />
       <div className="signContainer">
-        <form onSubmit={handleOnSubmit}>
-          <p className={styles.signinTitle}>Login to your account</p>
-          <SignFormList
-            fields={DEFAULT_SIGNIN_FIELDS}
-            formData={formData}
-            handleInputChange={handleOnChange}
-          />
-          <div className="signButtonBlock">
-            {apiResponseError.errorStatus !== -1 && (
-              <p className="signAuthorisationErrorText">
-                {apiResponseError.errorText}
-              </p>
-            )}
-            <Button className="signSubmitBtn" type="submit" styleType="none">
-              Login
-            </Button>
-            <Button
-              className={styles.signinLink}
-              styleType="none"
-              onClick={handleRestorePasswordBtn}
-            >
-              Forgot password?
-            </Button>
-          </div>
-        </form>
+        <Form
+          onSubmit={handleFormSubmit}
+          initialValues={initialValues}
+          subscription={{ submitError: true, submitting: true }}
+        >
+          {({ handleSubmit, submitError, submitting }) => (
+            <form onSubmit={handleSubmit}>
+              <p className={styles.signinTitle}>Login to your account</p>
+              <div className={styles.signFormItem}>
+                <Field name="username" validate={emailValidator}>
+                  {({ input, meta }) => (
+                    <div>
+                      <label className={styles.signFormLabel}>Username</label>
+                      <input
+                        {...input}
+                        type="text"
+                        placeholder="Username"
+                        className={styles.signFormInput}
+                      />
+                      {meta.error && meta.touched && (
+                        <p className={styles.signFormErrorText}>{meta.error}</p>
+                      )}
+                    </div>
+                  )}
+                </Field>
+              </div>
+              <div className={styles.signFormItem}>
+                <Field name="password" validate={isRequired}>
+                  {({ input, meta }) => (
+                    <div>
+                      <label className={styles.signFormLabel}>Password</label>
+                      <input
+                        {...input}
+                        type="text"
+                        placeholder="Password"
+                        className={styles.signFormInput}
+                      />
+                      {meta.error && meta.touched && (
+                        <p className={styles.signFormErrorText}>{meta.error}</p>
+                      )}
+                    </div>
+                  )}
+                </Field>
+              </div>
+              <div className="signButtonBlock">
+                {!!submitError && (
+                  <p className="signAuthorisationErrorText">{submitError}</p>
+                )}
+                {apiResponseError.errorStatus !== -1 && (
+                  <p className="signAuthorisationErrorText">
+                    {apiResponseError.errorText}
+                  </p>
+                )}
+                <Button
+                  className="signSubmitBtn"
+                  type="submit"
+                  styleType="none"
+                  disabled={submitting}
+                >
+                  Login
+                </Button>
+                <Button
+                  className={styles.signinLink}
+                  styleType="none"
+                  onClick={handleRestorePasswordBtn}
+                >
+                  Forgot password?
+                </Button>
+              </div>
+            </form>
+          )}
+        </Form>
       </div>
       {isRestorePasswordModalOpen && (
         <Modal
