@@ -84,7 +84,8 @@ export const Projects: React.FunctionComponent<IProjectsProps> = memo(
     return (
       <main className={classNames(styles.projectsContainer, 'showAnimation')}>
         <div className={styles.projectsWrapper}>
-          <div className={styles.projectsHeader}>
+          <div className={styles.projectsHeaderContainer}>
+            <div className={styles.projectsHeader}>All projects</div>
             <Button
               onClick={handleProjectAdd}
               className={styles.projectsHeaderBtn}

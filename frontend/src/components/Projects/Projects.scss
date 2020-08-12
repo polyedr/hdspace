@@ -55,12 +55,18 @@
   }
 }
 
-.projectsHeader {
+.projectsHeaderContainer {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
+  align-items: center;
   padding: 16px;
 
   border-bottom: 1px solid $gainsboro;
+}
+
+.projectsHeader {
+  font-size: 19px;
+  font-weight: bold;
 }
 
 .projectsHeaderBtn {
