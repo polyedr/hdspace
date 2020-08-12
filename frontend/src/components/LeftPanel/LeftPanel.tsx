@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import classNames from 'classnames';
 
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { IMAGES } from '$constants/images';
 import { Icon } from '$components/UI/Icon';
 import { Button } from '$components/UI/Button';
@@ -13,29 +13,30 @@ import * as ActionsProject from '$redux/project/actions';
 import { openSignScreen } from '$utils/history';
 import { Project } from '$api/types';
 import { logout } from '$redux/user/actions';
+import { selectUserEmail } from '$redux/user/selectors';
 
 const styles = require('./LeftPanel.scss');
 
-export interface ILeftPanel {
+export type LeftPanelProps = {
   pathname: IAppProps['pathname'];
   projects: Project[];
   username?: string;
-  userType: string;
   isLPanelMinimized: boolean;
   setListProject: typeof ActionsProject.setListProject;
-}
+};
 
-export const LeftPanel: React.FunctionComponent<ILeftPanel> = ({
+export const LeftPanel: React.FunctionComponent<LeftPanelProps> = ({
   pathname,
   projects,
   username,
-  userType,
   isLPanelMinimized,
 }) => {
   const dispatch = useDispatch();
   const [isProjectsListActive, setIsProjectsListActive] = useState<boolean>(
     false,
   );
+
+  const email = useSelector(selectUserEmail);
 
   const handleLogoutClick = () => {
     dispatch(logout());
@@ -65,7 +66,7 @@ export const LeftPanel: React.FunctionComponent<ILeftPanel> = ({
             <span className={styles.profileText}>
               {typeof username !== 'undefined' ? username : 'Without name'}
             </span>
-            <span className={styles.profileText}>{userType}</span>
+            <span className={styles.profileText}>{email}</span>
           </div>
           <Button onClick={handleLogoutClick} className={styles.profileBtn}>
             Log out
@@ -148,6 +149,17 @@ export const LeftPanel: React.FunctionComponent<ILeftPanel> = ({
             >
               <Icon icon="folder-open" />
               <span>Workflow</span>
+            </NavLink>
+          </li>
+          <li className={styles.navigationItem}>
+            <NavLink
+              to="/profile"
+              exact
+              className={styles.navigationLink}
+              activeClassName="active"
+            >
+              <Icon icon="folder-open" />
+              <span>Profile</span>
             </NavLink>
           </li>
         </ul>

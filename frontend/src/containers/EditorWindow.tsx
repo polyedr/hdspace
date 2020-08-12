@@ -13,6 +13,7 @@ import { TopPanel } from '$components/TopPanel/TopPanel';
 import { LeftPanel } from '$components/LeftPanel/LeftPanel';
 import { selectors } from '$redux/project';
 import { Project } from '$api/types';
+import Profile from '$components/User/Profile';
 
 const styles = require('$styles/global.scss');
 
@@ -47,7 +48,6 @@ const EditorWindow: React.FC<IAppProps> = ({
       pathname={pathname}
       projects={projects}
       username={username}
-      userType="Web Developer"
       isLPanelMinimized={isLPanelMinimized}
       setListProject={setListProject}
     />
@@ -69,6 +69,7 @@ const EditorWindow: React.FC<IAppProps> = ({
             path="/project/:projectID/:screenID?"
             component={EditorLogic}
           />
+          <Route path={PATH_NAMES.profile} component={Profile} />
           <Redirect from="/*" to={PATH_NAMES.projects} />
         </Switch>
       </div>
