@@ -3,7 +3,12 @@
 import { AxiosError } from 'axios';
 import { myAxios } from '$config/settings';
 import { onError, parseResult } from '$api/project';
-import { IApiResponseError, LoginFormData, UserData } from '$redux/user/types';
+import {
+  IApiResponseError,
+  LoginFormData,
+  ProfileData,
+  UserData,
+} from '$redux/user/types';
 
 export interface ISignUpData {
   username: string;
@@ -143,7 +148,7 @@ export const apiChangeUserData = (id: number, data: Partial<UserData>) =>
     .then(parseResult)
     .catch(onError);
 
-export const apiChangeProfileData = (id: number, data: Partial<UserData>) =>
+export const apiChangeProfileData = (id: number, data: Partial<ProfileData>) =>
   myAxios({
     data,
     method: 'PATCH',

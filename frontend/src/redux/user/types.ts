@@ -28,13 +28,14 @@ export type ServerUserData = {
   is_active: boolean;
 };
 
-export type TotalServerUserData = ServerUserData & ServerProfileData;
-
-export interface UserData {
+export type ProfileData = {
   avatar: null | string;
   approved: boolean;
   role: string;
   hourlyRate: number;
+};
+
+export type UserData = {
   username: string;
   email: string;
   firstName: string;
@@ -43,7 +44,9 @@ export interface UserData {
   isActive: boolean;
   id: number;
   password?: string;
-}
+};
+
+export type TotalUserData = ProfileData & UserData;
 
 export interface IApiResponseError {
   errorStatus: number;
@@ -57,7 +60,7 @@ export type IRootState = Readonly<{
   tokenPair: ITokenPair;
   isLoadedToken: boolean;
   apiResponseError: IApiResponseError;
-  userData: UserData;
+  userData: TotalUserData;
   restorePasswordEmail?: string;
   restoreUserId?: number;
   isSignLoader: boolean;

@@ -9,6 +9,7 @@ import {
   apiSetNewPassword,
   apiGetProfile,
   apiChangeUserData,
+  apiChangeProfileData,
 } from '$api/user';
 import { TYPES } from '$constants/actions';
 import * as Actions from '$redux/user/actions';
@@ -20,10 +21,16 @@ import {
 import { DEFAULT_RESPONSE_ERROR } from '$constants/defaultParams';
 import { AppReduxState } from '$shared/types/app';
 import { ReturnPromisedType } from '$shared/types';
-import { convertUserDataFromResponse } from '$api/converters/fromResponse';
+import {
+  convertProfileDataFromResponse,
+  convertUserDataFromResponse,
+} from '$api/converters/fromResponse';
 import { reqWrapper } from '$redux/project/sagas';
 import { ServerUserData } from '$redux/user/types';
-import { convertUserDataToRequest } from '$api/converters/toRequest';
+import {
+  convertProfileDataToRequest,
+  convertUserDataToRequest,
+} from '$api/converters/toRequest';
 
 export function* getTokenPairSaga(username: string, password: string) {
   const {
@@ -66,9 +73,10 @@ export function* loginSaga({
   }
 
   yield put(
-    Actions.setUserData(
-      convertUserDataFromResponse({ ...userData, ...profileData }),
-    ),
+    Actions.setUserData({
+      ...convertUserDataFromResponse(userData),
+      ...convertProfileDataFromResponse(profileData),
+    }),
   );
   yield put(Actions.changeSignLoader(false));
 
@@ -89,6 +97,24 @@ export function* changeUserDataSaga({
     return;
   }
   yield put(Actions.setUserData(convertUserDataFromResponse(newUserData)));
+}
+
+export function* changeProfileDataSaga({
+  payload: { id, data },
+}: ReturnType<typeof Actions.changeProfileData>) {
+  const newProfileData = yield call(
+    apiChangeProfileData,
+    id,
+    convertProfileDataToRequest(data),
+  );
+
+  if (!newProfileData) {
+    console.error('Error while patching profile data');
+    return;
+  }
+  yield put(
+    Actions.setUserData(convertProfileDataFromResponse(newProfileData)),
+  );
 }
 
 function* setNewUserSaga(action: ReturnType<typeof Actions.setNewUser>) {
@@ -204,4 +230,5 @@ export default function* userSaga() {
   yield takeLatest(TYPES.RESTORE_PASSWORD, restorePasswordSaga);
   yield takeLatest(TYPES.SET_NEW_PASSWORD, setNewPasswordSaga);
   yield takeEvery(TYPES.CHANGE_USER_DATA, changeUserDataSaga);
+  yield takeEvery(TYPES.CHANGE_PROFILE_DATA, changeProfileDataSaga);
 }

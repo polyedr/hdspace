@@ -4,6 +4,8 @@ import {
   IApiResponseError,
   UserData,
   LoginFormData,
+  ProfileData,
+  TotalUserData,
 } from '$redux/user/types';
 
 export const changeMinLPanel = () => ({ type: TYPES.CHANGE_L_PANEL });
@@ -33,7 +35,7 @@ export const setTokenPair = (tokenPair: ITokenPair) => ({
   tokenPair,
 });
 
-export const setUserData = (data: UserData) => ({
+export const setUserData = (data: Partial<TotalUserData>) => ({
   type: TYPES.SET_USER_DATA,
   payload: data,
 });
@@ -93,7 +95,7 @@ export const changeUserData = (id: number, data: Partial<UserData>) => ({
   },
 });
 
-export const changeProfileData = (id: number, data: Partial<UserData>) => ({
+export const changeProfileData = (id: number, data: Partial<ProfileData>) => ({
   type: TYPES.CHANGE_PROFILE_DATA,
   payload: {
     id,

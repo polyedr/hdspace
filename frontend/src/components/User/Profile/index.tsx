@@ -85,7 +85,7 @@ const Profile: React.FC = () => {
                       name="role"
                       component="select"
                       defaultValue={role}
-                      onChange={handleSubmit}
+                      onBlur={handleSubmit}
                     >
                       <option value="Designer">Designer</option>
                       <option value="Developer">Developer</option>
