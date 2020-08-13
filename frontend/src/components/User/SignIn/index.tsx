@@ -6,16 +6,13 @@ import { AppReduxState } from '$shared/types/app';
 import { Info } from '$components/User/Info';
 import { Button } from '$components/UI/Button';
 import { Modal } from '$components/UI/Modal';
-import { DEFAULT_RESPONSE_ERROR } from '$constants/defaultParams';
+import {
+  DEFAULT_RESPONSE_ERROR,
+  DEFAULT_SIGNIN_FIELDS,
+} from '$constants/defaultParams';
 import * as Actions from '$redux/user/actions';
 import { IApiResponseError } from '$redux/user/reducer';
 import { Spinner } from '$components/UI/Spinner';
-import {
-  composeValidators,
-  isValidEmail,
-  isRequired,
-  isLongPassword,
-} from '$shared/validators';
 
 import { FormField } from '../FormField/FormField';
 
@@ -83,8 +80,6 @@ export const UnmountedSignIn: React.FC<IProps> = ({
     getTokenPair(values.username, values.password);
   };
 
-  const emailValidator = composeValidators(isRequired, isValidEmail);
-
   const handleRestorePasswordBtn = useCallback(
     (event) => {
       event.preventDefault();
@@ -120,18 +115,17 @@ export const UnmountedSignIn: React.FC<IProps> = ({
           {({ handleSubmit, submitError, submitting }) => (
             <form onSubmit={handleSubmit}>
               <p className={styles.signinTitle}>Login to your account</p>
-              <FormField
-                name="username"
-                placeholder="Username"
-                label="Username"
-                validator={emailValidator}
-              />
-              <FormField
-                name="password"
-                placeholder="Password"
-                label="Password"
-                validator={isRequired}
-              />
+              {DEFAULT_SIGNIN_FIELDS.map(
+                ({ name, placeholder, label, type, validator }) => (
+                  <FormField
+                    name={name}
+                    placeholder={placeholder}
+                    label={label}
+                    type={type}
+                    validator={validator}
+                  />
+                ),
+              )}
               <div className="signButtonBlock">
                 {!!submitError && (
                   <p className="signAuthorisationErrorText">{submitError}</p>
