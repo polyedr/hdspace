@@ -1,6 +1,6 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { Form, Field } from 'react-final-form';
+import { Form } from 'react-final-form';
 
 import { AppReduxState } from '$shared/types/app';
 import { Info } from '$components/User/Info';
@@ -16,6 +16,8 @@ import {
   isRequired,
   isLongPassword,
 } from '$shared/validators';
+
+import { FormField } from '../FormField/FormField';
 
 const styles = require('./SignIn.scss');
 
@@ -120,42 +122,18 @@ export const UnmountedSignIn: React.FC<IProps> = ({
           {({ handleSubmit, submitError, submitting }) => (
             <form onSubmit={handleSubmit}>
               <p className={styles.signinTitle}>Login to your account</p>
-              <div className={styles.signFormItem}>
-                <Field name="username" validate={emailValidator}>
-                  {({ input, meta }) => (
-                    <div>
-                      <label className={styles.signFormLabel}>Username</label>
-                      <input
-                        {...input}
-                        type="text"
-                        placeholder="Username"
-                        className={styles.signFormInput}
-                      />
-                      {meta.error && meta.touched && (
-                        <p className={styles.signFormErrorText}>{meta.error}</p>
-                      )}
-                    </div>
-                  )}
-                </Field>
-              </div>
-              <div className={styles.signFormItem}>
-                <Field name="password" validate={isRequired}>
-                  {({ input, meta }) => (
-                    <div>
-                      <label className={styles.signFormLabel}>Password</label>
-                      <input
-                        {...input}
-                        type="text"
-                        placeholder="Password"
-                        className={styles.signFormInput}
-                      />
-                      {meta.error && meta.touched && (
-                        <p className={styles.signFormErrorText}>{meta.error}</p>
-                      )}
-                    </div>
-                  )}
-                </Field>
-              </div>
+              <FormField
+                name="username"
+                placeholder="Username"
+                label="Username"
+                validator={emailValidator}
+              />
+              <FormField
+                name="password"
+                placeholder="Password"
+                label="Password"
+                validator={isRequired}
+              />
               <div className="signButtonBlock">
                 {!!submitError && (
                   <p className="signAuthorisationErrorText">{submitError}</p>
