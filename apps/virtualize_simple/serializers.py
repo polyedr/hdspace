@@ -146,6 +146,27 @@ def detect_aligned_element(x1, width_elem, img_width):
     return aligned_element
 
 
+# Python program to check if two
+# to get unique values from list
+# using set
+# function to get unique values
+def unique(list1):
+    # insert the list to the set
+    list_set = set(list1)
+    # convert the set to the list
+    unique_list = (list(list_set))
+    return unique_list
+
+
+list1 = [10, 20, 10, 30, 40, 40]
+print("the unique values from 1st list is")
+unique(list1)
+
+list2 = [1, 2, 1, 1, 3, 4, 3, 3, 5]
+print("\nthe unique values from 2nd list is")
+unique(list2)
+
+
 class ScenarioElementSerializer(serializers.ModelSerializer):
     parameters = serializers.JSONField()
     styles = serializers.JSONField()
@@ -323,8 +344,8 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
             for idx1, (rect1, class_id1) in enumerate(zip(r["rois"], r["class_ids"])):
                 for text_contour in text_contours:
                     if (class_id1 == 3) and (idx1 not in excluded_indices):  # 3 means the text class
-                        print("rect1", rect1)
-                        print("text_contour", text_contour)
+                        # print("rect1", rect1)
+                        # print("text_contour", text_contour)
                         x1 = rect1[1]
                         y1 = rect1[0]
                         x2 = rect1[3]
@@ -346,11 +367,11 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
 
                         # The first rectangle square
                         width1, height1 = x2 - x1, y2 - y1
-                        print("width1, height1", width1, height1)
+                        # print("width1, height1", width1, height1)
 
                         # The second rectangle square
                         width2, height2 = text_contour[2], text_contour[3]
-                        print("width2, height2", width2, height2)
+                        # print("width2, height2", width2, height2)
 
                         # Check if width, height of the overlapped area less or equal 0
                         if not (width <= 0 or height <= 0):
@@ -690,15 +711,35 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                     width_elem = x2 - x1
                     height_elem = y2 - y1
 
-                    '''
                     # Detect the text element alignment
-                    d = pytesseract.image_to_data(roi_our, output_type=Output.DICT)
-                    print("d", d, min(d['left']), max(d['width']))
-                    print("width_elem", width_elem)
-                    input()
+                    # Improve this try except finally constructiom for better one later
+                    # do this later
+                    '''
+                    try:
+                        d = pytesseract.image_to_data(roi_our, output_type=Output.DICT)
+
+                        dlefts = unique(d['left'].copy())
+                        dlefts.sort()
+                        dwidths = unique(d['width'].copy())
+                        dwidths.sort()
+
+                        dlefts_1min = dlefts[1]
+                        dwidths_lmax = dwidths[-1]
+
+
+                        print(dlefts, dwidths)
+                        print("d", d, dlefts_1min, dwidths_lmax)
+                        print("width_elem", width_elem)
+                        input()
+
+
+                        aligned_element = detect_aligned_element(dlefts_1min, dwidths_lmax, img_width)
+                    except Exception:
+                        pass
+                    finally:
+                        pass
                     '''
                     aligned_element = detect_aligned_element(x1, width_elem, img_width)
-
                     func_type = "undefined"
                     letters_str = ""
                     # Check if class id is: 1 input, 2 button, 3 text or 4 select
@@ -709,7 +750,6 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         # The whole string format to process further
                         letters_str = text
                         # Detect the text element alignment
-
 
                     # Check if class id is: 1 input, 2 button 4 select
                     # Calculate if the internal text_contours from the OpenCV were placed in that blocks
