@@ -1,6 +1,7 @@
 .profileContainer {
   background-color: $white;
   border-radius: 4px;
+  height: 100%;
 }
 
 .profileHeaderContainer {
@@ -12,16 +13,21 @@
   border-bottom: 1px solid $gainsboro;
 }
 
-.button {
-  background: none;
-  border: none;
-  color: $mainColor;
+.linkButton {
   padding: 0;
-  &:hover {
-    background: none;
-    color: $mainColor;
+
+  opacity: 0.5;
+
+  transition: opacity .05s ease;
+  &:hover,
+  &:focus {
+    opacity: 1;
     text-decoration: underline;
-    cursor: pointer;
+    text-decoration-style: dotted;
+    text-decoration-color: $confirmBtnColor;
+    span {
+      color: $confirmBtnColor;
+    }
   }
 }
 
@@ -70,12 +76,6 @@
   display: flex;
   flex-direction: column;
   padding: 0 7px;
-  label {
-    cursor: pointer;
-  }
-  input {
-    display: none;
-  }
   img {
     height: 102px;
     object-fit: contain;
@@ -92,8 +92,22 @@
 }
 
 .imageActionButton {
-  font-size: 12px;
-  padding: 5px 0;
+  font-size: 11px;
+  padding: 3px;
+  border: none;
+  border-radius: 3px;
+  margin-top: 10px;
+  cursor: pointer;
+  background-color: #efefef;
+
+  &:hover,
+  &:focus {
+    background-color: darken(#efefef, 10%);
+  }
+}
+
+.hidden {
+  display: none;
 }
 
 .strong {
@@ -101,10 +115,10 @@
 }
 
 .profileCredentials {
-  margin-top: 40px;
+  margin-top: 50px;
   padding: 5px;
   .subheader {
-    font-weight: bold;
+    margin-bottom: 10px;
   }
 }
 

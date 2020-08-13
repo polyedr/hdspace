@@ -6,6 +6,7 @@ import { logout } from '$redux/user/actions';
 import { openSignScreen } from '$utils/history';
 import { selectUserData } from '$redux/user/selectors';
 import { IMAGES } from '$constants/images';
+import { Button } from '$components/UI/Button';
 
 const styles = require('./Profile.scss');
 
@@ -28,9 +29,9 @@ const Profile: React.FC = () => {
       <div className={styles.profileHeaderContainer}>
         <div className={styles.profileHeader}>Profile settings</div>
 
-        <button type="button" className={styles.button} onClick={handleLogout}>
+        <Button styleType="link" onClick={handleLogout}>
           Log out
-        </button>
+        </Button>
       </div>
 
       <div className={styles.profileMainBlock}>
@@ -43,10 +44,10 @@ const Profile: React.FC = () => {
                   <label>First Name</label>
                   <Field
                     name="firstName"
+                    onBlur={handleSubmit}
                     defaultValue={firstName}
                     component="input"
                     type="text"
-                    placeholder="First Name"
                   />
                 </div>
 
@@ -54,21 +55,16 @@ const Profile: React.FC = () => {
                   <label>Last Name</label>
                   <Field
                     name="lastName"
+                    onBlur={handleSubmit}
                     defaultValue={lastName}
                     component="input"
                     type="text"
-                    placeholder="Last Name"
                   />
                 </div>
 
                 <div className={styles.profileFieldWrapper}>
                   <label>Company Name</label>
-                  <Field
-                    name="Company Name"
-                    component="input"
-                    type="text"
-                    placeholder="Company Name"
-                  />
+                  <Field name="Company Name" component="input" type="text" />
                 </div>
 
                 <div className={styles.profileFieldWrapper}>
@@ -88,19 +84,12 @@ const Profile: React.FC = () => {
                 <img src={IMAGES.prof} alt="profile" />
 
                 <div className={styles.profileImageActions}>
-                  <label>
-                    <button
-                      className={cn(styles.button, styles.imageActionButton)}
-                      type="button"
-                    >
-                      Upload
-                    </button>
-                    <input type="file" />
+                  {/* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex */}
+                  <label className={styles.imageActionButton} tabIndex={0}>
+                    Upload
+                    <input type="file" className={styles.hidden} />
                   </label>
-                  <button
-                    className={cn(styles.button, styles.imageActionButton)}
-                    type="button"
-                  >
+                  <button className={styles.imageActionButton} type="button">
                     Remove
                   </button>
                 </div>
@@ -110,21 +99,23 @@ const Profile: React.FC = () => {
         />
 
         <div className={styles.profileCredentials}>
-          <div className={styles.subheader}>Email address</div>
-          <div>
+          <div className={cn(styles.subheader, styles.strong)}>
+            Email address
+          </div>
+          <div className={styles.subheader}>
             {'Your email address is '}
             <span className={styles.strong}>{email}</span>
           </div>
-          <button className={styles.button} type="button">
+          <Button className={styles.linkButton} styleType="link">
             Change
-          </button>
+          </Button>
         </div>
 
         <div className={styles.profileCredentials}>
           <div className={styles.subheader}>Password</div>
-          <button className={styles.button} type="button">
+          <Button className={styles.linkButton} styleType="link">
             Change
-          </button>
+          </Button>
         </div>
       </div>
     </main>
