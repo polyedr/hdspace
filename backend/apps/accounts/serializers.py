@@ -13,7 +13,13 @@ class UserSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         instance = super(UserSerializer, self).update(instance, validated_data)
-        instance.set_password(validated_data["password"])
+        # Should chenge later for better construction than try except finally
+        try:
+            instance.set_password(validated_data["password"])
+        except Exception:
+            pass
+        finally:
+            pass
         instance.save()
         return instance
 
