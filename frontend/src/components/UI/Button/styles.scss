@@ -134,4 +134,20 @@
       border-color: darken($panelBtnColor, 10%);
     }
   }
+
+  &_link {
+    background: none;
+    border: none;
+
+    span {
+      color: $confirmBtnColor;
+    }
+
+    &:hover,
+    &:focus {
+      span {
+        color: lighten($confirmBtnColor, 10%);
+      }
+    }
+  }
 }

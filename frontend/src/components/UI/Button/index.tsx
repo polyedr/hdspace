@@ -11,6 +11,7 @@ const validTypes = [
   'secondary',
   'submit',
   'grey',
+  'link',
 ];
 
 const getStyleType = (styleType = 'confirm') => {
