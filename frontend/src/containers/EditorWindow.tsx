@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import classNames from 'classnames';
 
 import { AppReduxState } from '$shared/types/app';
@@ -45,41 +45,49 @@ const EditorWindow: React.FC<IAppProps> = ({
   pathname,
   changeMinLPanel,
   setTokenPair,
-}) => (
-  <>
-    <LeftPanel
-      pathname={pathname}
-      projects={projects}
-      username={username}
-      userType="Web Developer"
-      isLPanelMinimized={isLPanelMinimized}
-      tokenPair={tokenPair}
-      setListProject={setListProject}
-      setTokenPair={setTokenPair}
-    />
-    <div
-      className={classNames(
-        styles.globalContainer,
-        isLPanelMinimized && styles.minimiser,
-      )}
-    >
-      <TopPanel
+}) => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(ActionsProject.getListProject());
+  }, [dispatch]);
+
+  return (
+    <>
+      <LeftPanel
         pathname={pathname}
+        projects={projects}
+        username={username}
+        userType="Web Developer"
         isLPanelMinimized={isLPanelMinimized}
-        onMinimiserLPanel={changeMinLPanel}
+        tokenPair={tokenPair}
+        setListProject={setListProject}
+        setTokenPair={setTokenPair}
       />
-      <div className={styles.workContainer}>
-        <Switch>
-          <Route path={PATH_NAMES.projects} component={ProjectsLogic} />
-          <Route
-            path="/project/:projectID/:screenID?"
-            component={EditorLogic}
-          />
-          <Redirect from="/*" to={PATH_NAMES.projects} />
-        </Switch>
+      <div
+        className={classNames(
+          styles.globalContainer,
+          isLPanelMinimized && styles.minimiser,
+        )}
+      >
+        <TopPanel
+          pathname={pathname}
+          isLPanelMinimized={isLPanelMinimized}
+          onMinimiserLPanel={changeMinLPanel}
+        />
+        <div className={styles.workContainer}>
+          <Switch>
+            <Route path={PATH_NAMES.projects} component={ProjectsLogic} />
+            <Route
+              path="/project/:projectID/:screenID?"
+              component={EditorLogic}
+            />
+            <Redirect from="/*" to={PATH_NAMES.projects} />
+          </Switch>
+        </div>
       </div>
-    </div>
-  </>
-);
+    </>
+  );
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditorWindow);
