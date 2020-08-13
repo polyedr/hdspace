@@ -8,7 +8,7 @@ import {
   Project,
 } from '$api/types';
 import { Entity } from '$domain/core';
-import { ServerUserData, UserData } from '$redux/user/types';
+import { TotalServerUserData, UserData } from '$redux/user/types';
 
 export const convertElementFromResponse = <
   T extends Entity,
@@ -80,15 +80,17 @@ export const convertProjectFromResponse = (project: ServerProject): Project => {
 };
 
 export const convertUserDataFromResponse = ({
-  email,
   first_name,
-  id,
   last_name,
-  username,
-}: ServerUserData): UserData => ({
-  email,
-  username,
-  id,
+  date_joined,
+  hourly_rate,
+  is_active,
+  ...rest
+}: TotalServerUserData): UserData => ({
   firstName: first_name,
   lastName: last_name,
+  dateJoined: new Date(date_joined),
+  hourlyRate: hourly_rate,
+  isActive: is_active,
+  ...rest,
 });

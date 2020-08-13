@@ -1,12 +1,14 @@
 /* eslint-disable no-console */
 import { SagaIterator } from 'redux-saga';
-import { takeLatest, call, put, select } from 'redux-saga/effects';
+import { takeLatest, call, put, select, takeEvery } from 'redux-saga/effects';
 import {
   apiGetToken,
   apiSetNewUser,
   apiRefreshToken,
   apiGetUsers,
   apiSetNewPassword,
+  apiGetProfile,
+  apiChangeUserData,
 } from '$api/user';
 import { TYPES } from '$constants/actions';
 import * as Actions from '$redux/user/actions';
@@ -21,6 +23,7 @@ import { ReturnPromisedType } from '$shared/types';
 import { convertUserDataFromResponse } from '$api/converters/fromResponse';
 import { reqWrapper } from '$redux/project/sagas';
 import { ServerUserData } from '$redux/user/types';
+import { convertUserDataToRequest } from '$api/converters/toRequest';
 
 export function* getTokenPairSaga(username: string, password: string) {
   const {
@@ -55,10 +58,37 @@ export function* loginSaga({
   const userData = users.find(
     (user: ServerUserData) => username === user.username,
   );
-  yield put(Actions.setUserData(convertUserDataFromResponse(userData)));
+
+  const profileData = yield call(apiGetProfile, userData.id);
+  if (!profileData) {
+    console.error('Login error while fetching users');
+    return;
+  }
+
+  yield put(
+    Actions.setUserData(
+      convertUserDataFromResponse({ ...userData, ...profileData }),
+    ),
+  );
   yield put(Actions.changeSignLoader(false));
 
   yield call(openProjects);
+}
+
+export function* changeUserDataSaga({
+  payload: { id, data },
+}: ReturnType<typeof Actions.changeUserData>) {
+  const newUserData = yield call(
+    apiChangeUserData,
+    id,
+    convertUserDataToRequest(data),
+  );
+
+  if (!newUserData) {
+    console.error('Error while patching user data');
+    return;
+  }
+  yield put(Actions.setUserData(convertUserDataFromResponse(newUserData)));
 }
 
 function* setNewUserSaga(action: ReturnType<typeof Actions.setNewUser>) {
@@ -173,4 +203,5 @@ export default function* userSaga() {
   yield takeLatest(TYPES.SET_NEW_USER, setNewUserSaga);
   yield takeLatest(TYPES.RESTORE_PASSWORD, restorePasswordSaga);
   yield takeLatest(TYPES.SET_NEW_PASSWORD, setNewPasswordSaga);
+  yield takeEvery(TYPES.CHANGE_USER_DATA, changeUserDataSaga);
 }

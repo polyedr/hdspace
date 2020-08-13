@@ -10,6 +10,13 @@ export type LoginFormData = {
   password: string;
 };
 
+export type ServerProfileData = {
+  avatar: null | string;
+  hourly_rate: number;
+  approved: boolean;
+  role: string;
+};
+
 export type ServerUserData = {
   date_joined: string;
   email: string;
@@ -21,12 +28,20 @@ export type ServerUserData = {
   is_active: boolean;
 };
 
+export type TotalServerUserData = ServerUserData & ServerProfileData;
+
 export interface UserData {
+  avatar: null | string;
+  approved: boolean;
+  role: string;
+  hourlyRate: number;
   username: string;
   email: string;
   firstName: string;
   lastName: string;
-  id?: number;
+  dateJoined: Date | null;
+  isActive: boolean;
+  id: number;
   password?: string;
 }
 

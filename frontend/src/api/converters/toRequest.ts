@@ -13,6 +13,7 @@ import {
 } from '$domain/libraryElements/defaultStyles';
 import { LIBRARY_ELEMENTS } from '$domain/libraryElements/libraryElements';
 import { Entity } from '$domain/core';
+import { TotalServerUserData, UserData } from '$redux/user/types';
 
 export const convertCreatedElementToRequest = <
   T extends Entity,
@@ -120,3 +121,19 @@ export const convertProjectToPatchRequest = (
     project_data_json: JSON.stringify(projectData),
   };
 };
+
+export const convertUserDataToRequest = ({
+  firstName,
+  dateJoined,
+  hourlyRate,
+  isActive,
+  lastName,
+  ...rest
+}: Partial<UserData>): Partial<TotalServerUserData> => ({
+  first_name: firstName,
+  date_joined: dateJoined?.toString(),
+  hourly_rate: hourlyRate,
+  is_active: isActive,
+  last_name: lastName,
+  ...rest,
+});

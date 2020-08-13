@@ -84,3 +84,19 @@ export const setNewPassword = (password: string) => ({
   type: TYPES.SET_NEW_PASSWORD,
   password,
 });
+
+export const changeUserData = (id: number, data: Partial<UserData>) => ({
+  type: TYPES.CHANGE_USER_DATA,
+  payload: {
+    id,
+    data,
+  },
+});
+
+export const changeProfileData = (id: number, data: Partial<UserData>) => ({
+  type: TYPES.CHANGE_PROFILE_DATA,
+  payload: {
+    id,
+    data,
+  },
+});

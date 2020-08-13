@@ -44,19 +44,23 @@
   display: flex;
 }
 
-.profileFieldContainer {
+.profileFormsContainer {
   display: flex;
-  flex-wrap: wrap;
   max-width: 1000px;
   height: 122px;
-  align-content: space-between;
-  & > div {
-    flex: 0 50%;
-  }
+}
+
+.textFieldsContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex: 1;
 }
 
 .profileFieldWrapper {
   display: flex;
+  justify-content: center;
+  flex: 1;
   flex-direction: column;
   padding: 0 7px;
   label {
