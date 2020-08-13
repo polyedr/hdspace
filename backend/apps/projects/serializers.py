@@ -263,7 +263,8 @@ class ProjectSerializer(serializers.ModelSerializer):
         projectscreens_data = validated_data.pop("projectscreen")
         project = Project(id=None, **validated_data)
         project.preview = project.generate_preview_token()
-        project.name = 'AProject-' + project.generate_preview_token()
+        project.save()
+        project.name = 'AProject-' + str(project.id)
         project.save()
         project.projectscreen.set(projectscreens_data, clear=True)
         return project
