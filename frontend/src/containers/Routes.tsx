@@ -10,8 +10,8 @@ import {
 
 import * as PATH_NAMES from '$constants/pathNames';
 import EditorWindow from '$containers/EditorWindow';
-import { SignIn } from '$components/User/SignIn';
-import { SignUp } from '$components/User/SignUp';
+import { SignIn } from '$components/User/SignIn/SignIn';
+import { SignUp } from '$components/User/SignUp/SignUp';
 import { PasswordRestore } from '$components/User/PasswordRestore';
 
 const styles = require('$styles/global.scss');

@@ -2,6 +2,7 @@ import React, { useCallback, useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Form } from 'react-final-form';
 
+import { NavLink } from 'react-router-dom';
 import { AppReduxState } from '$shared/types/app';
 import { Info } from '$components/User/Info';
 import { Button } from '$components/UI/Button';
@@ -15,6 +16,7 @@ import { IApiResponseError } from '$redux/user/reducer';
 import { Spinner } from '$components/UI/Spinner';
 
 import { FormField } from '../FormField/FormField';
+import { user } from '$constants/pathNames';
 
 const styles = require('./SignIn.scss');
 
@@ -105,55 +107,67 @@ export const UnmountedSignIn: React.FC<IProps> = ({
 
   return (
     <>
-      <Info isSignUp />
+      <Info />
       <div className="signContainer">
-        <Form
-          onSubmit={handleFormSubmit}
-          initialValues={initialValues}
-          subscription={{ submitError: true, submitting: true }}
-        >
-          {({ handleSubmit, submitError, submitting }) => (
-            <form onSubmit={handleSubmit}>
-              <p className={styles.signinTitle}>Login to your account</p>
-              {DEFAULT_SIGNIN_FIELDS.map(
-                ({ name, placeholder, label, type, validator }) => (
-                  <FormField
-                    name={name}
-                    placeholder={placeholder}
-                    label={label}
-                    type={type}
-                    validator={validator}
-                  />
-                ),
-              )}
-              <div className="signButtonBlock">
-                {!!submitError && (
-                  <p className="signAuthorisationErrorText">{submitError}</p>
+        <div className={styles.formContainer}>
+          <Form
+            onSubmit={handleFormSubmit}
+            initialValues={initialValues}
+            subscription={{ submitError: true, submitting: true }}
+          >
+            {({ handleSubmit, submitError, submitting }) => (
+              <form onSubmit={handleSubmit}>
+                <p className={styles.signinTitle}>Login to your account</p>
+                {DEFAULT_SIGNIN_FIELDS.map(
+                  ({ name, placeholder, label, type, validator }) => (
+                    <FormField
+                      name={name}
+                      placeholder={placeholder}
+                      label={label}
+                      type={type}
+                      validator={validator}
+                    />
+                  ),
                 )}
-                {apiResponseError.errorStatus !== -1 && (
-                  <p className="signAuthorisationErrorText">
-                    {apiResponseError.errorText}
-                  </p>
-                )}
-                <Button
-                  className="signSubmitBtn"
-                  type="submit"
-                  styleType="none"
-                  disabled={submitting}
-                >
-                  Login
-                </Button>
-                <Button
-                  className={styles.signinLink}
-                  styleType="none"
-                  onClick={handleRestorePasswordBtn}
-                >
-                  Forgot password?
-                </Button>
-              </div>
-            </form>
-          )}
-        </Form>
+                <div className="signButtonBlock">
+                  {!!submitError && (
+                    <p className="signAuthorisationErrorText">{submitError}</p>
+                  )}
+                  {apiResponseError.errorStatus !== -1 && (
+                    <p className="signAuthorisationErrorText">
+                      {apiResponseError.errorText}
+                    </p>
+                  )}
+                  <Button
+                    className="signSubmitBtn"
+                    type="submit"
+                    styleType="none"
+                    disabled={submitting}
+                  >
+                    Login
+                  </Button>
+                  <Button
+                    className={styles.signinLink}
+                    styleType="none"
+                    onClick={handleRestorePasswordBtn}
+                  >
+                    Forgot password?
+                  </Button>
+                </div>
+              </form>
+            )}
+          </Form>
+          <p className={styles.logInText}>
+            Create an account
+            <NavLink
+              className={styles.link}
+              to={user.signup}
+              activeClassName="active"
+            >
+              for free
+            </NavLink>
+          </p>
+        </div>
       </div>
       {isRestorePasswordModalOpen && (
         <Modal

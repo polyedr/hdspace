@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
-
 import { Form } from 'react-final-form';
+import { NavLink } from 'react-router-dom';
+
 import { AppReduxState } from '$shared/types/app';
 import { Info } from '$components/User/Info';
 import { Button } from '$components/UI/Button';
@@ -10,9 +11,13 @@ import {
   DEFAULT_RESPONSE_ERROR,
   DEFAULT_SIGNUP_FIELDS,
 } from '$constants/defaultParams';
+import { user } from '$constants/pathNames';
 import * as Actions from '$redux/user/actions';
 import { IApiResponseError } from '$redux/user/reducer';
+
 import { FormField } from '../FormField/FormField';
+
+const styles = require('./SignUp.scss');
 
 type FormData = {
   username: string;
@@ -77,47 +82,59 @@ const UnconnectedSignUp: React.FunctionComponent<IProps> = ({
 
   return (
     <>
-      <Info isSignUp={false} />
+      <Info />
       <div className="signContainer">
-        <Form
-          onSubmit={handleFormSubmit}
-          initialValues={initialValues}
-          subscription={{ submitError: true, submitting: true }}
-        >
-          {({ handleSubmit, submitError, submitting }) => (
-            <form onSubmit={handleSubmit}>
-              {DEFAULT_SIGNUP_FIELDS.map(
-                ({ name, placeholder, label, type, validator }) => (
-                  <FormField
-                    name={name}
-                    placeholder={placeholder}
-                    label={label}
-                    type={type}
-                    validator={validator}
-                  />
-                ),
-              )}
-              <div className="signButtonBlock">
-                {!!submitError && (
-                  <p className="signAuthorisationErrorText">{submitError}</p>
+        <div className={styles.formContainer}>
+          <Form
+            onSubmit={handleFormSubmit}
+            initialValues={initialValues}
+            subscription={{ submitError: true, submitting: true }}
+          >
+            {({ handleSubmit, submitError, submitting }) => (
+              <form onSubmit={handleSubmit}>
+                {DEFAULT_SIGNUP_FIELDS.map(
+                  ({ name, placeholder, label, type, validator }) => (
+                    <FormField
+                      name={name}
+                      placeholder={placeholder}
+                      label={label}
+                      type={type}
+                      validator={validator}
+                    />
+                  ),
                 )}
-                {apiResponseError.errorStatus !== -1 && (
-                  <p className="signAuthorisationErrorText">
-                    {apiResponseError.errorText}
-                  </p>
-                )}
-                <Button
-                  className="signSubmitBtn"
-                  type="submit"
-                  styleType="none"
-                  disabled={submitting}
-                >
-                  Sign Up
-                </Button>
-              </div>
-            </form>
-          )}
-        </Form>
+                <div className="signButtonBlock">
+                  {!!submitError && (
+                    <p className="signAuthorisationErrorText">{submitError}</p>
+                  )}
+                  {apiResponseError.errorStatus !== -1 && (
+                    <p className="signAuthorisationErrorText">
+                      {apiResponseError.errorText}
+                    </p>
+                  )}
+                  <Button
+                    className="signSubmitBtn"
+                    type="submit"
+                    styleType="none"
+                    disabled={submitting}
+                  >
+                    Sign Up
+                  </Button>
+                </div>
+              </form>
+            )}
+          </Form>
+          <p className={styles.logInText}>
+            Already have an account?
+            <NavLink
+              className={styles.link}
+              to={user.signin}
+              activeClassName="active"
+            >
+              Log in.
+            </NavLink>
+          </p>
+        </div>
       </div>
       <Spinner active={isSignLoader} />
     </>

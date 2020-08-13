@@ -43,8 +43,21 @@ form {
   }
 }
 
-.signFormErrorText {
-  margin-top: 5px;
+.formContainer {
+  width: 100%;
+}
 
-  color: $red;
+.logInText {
+  margin-top: 20px;
+}
+
+.link {
+  margin-left: 5px;
+  color: $mainTextColor;
+  text-decoration: underline;
+
+  &:hover {
+    color: $mainTextColor;
+    text-decoration: none;
+  }
 }

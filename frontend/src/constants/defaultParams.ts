@@ -14,6 +14,7 @@ import {
   isValidEmail,
   isLongPassword,
 } from '$shared/validators';
+import { isLatinOrNumbers } from '$shared/validators/isLatinOrNumbers';
 
 export interface ISignFormElement {
   label: string;
@@ -160,7 +161,7 @@ export const DEFAULT_SIGNUP_FIELDS: ISignFormElement[] = [
     value: 'username',
     placeholder: 'UserName',
     type: 'text',
-    validator: isRequired,
+    validator: composeValidators(isRequired, isLatinOrNumbers),
   },
   {
     label: 'First name',
@@ -168,7 +169,7 @@ export const DEFAULT_SIGNUP_FIELDS: ISignFormElement[] = [
     value: 'firstName',
     placeholder: 'Jhon',
     type: 'text',
-    validator: isRequired,
+    validator: composeValidators(isRequired, isLatinOrNumbers),
   },
   {
     label: 'Last name',
@@ -176,7 +177,7 @@ export const DEFAULT_SIGNUP_FIELDS: ISignFormElement[] = [
     value: 'lastName',
     placeholder: 'Doe',
     type: 'text',
-    validator: isRequired,
+    validator: composeValidators(isRequired, isLatinOrNumbers),
   },
   {
     label: 'Email',
@@ -192,7 +193,7 @@ export const DEFAULT_SIGNUP_FIELDS: ISignFormElement[] = [
     value: 'password',
     placeholder: 'pass',
     type: 'password',
-    validator: composeValidators(isRequired, isLongPassword),
+    validator: composeValidators(isRequired, isLongPassword, isLatinOrNumbers),
   },
 ];
 
