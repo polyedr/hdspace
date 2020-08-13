@@ -218,3 +218,6 @@ export function selectScreenLoader(state: AppReduxState): boolean {
 export function selectProjectLoader(state: AppReduxState): boolean {
   return selectProjectState(state).communication.projectLoader;
 }
+
+export const selectInitialProjectLoad = (state: AppReduxState): boolean =>
+  selectProjectState(state).communication.initialProjectLoadDone;

@@ -2,7 +2,6 @@ import * as R from 'ramda';
 
 import { LibraryElement } from '$api/types';
 import { Entity } from '$domain/core';
-import { getDefaultStyles } from '$domain/libraryElements/defaultStyles';
 import { LIBRARY_ELEMENTS } from '$domain/libraryElements/libraryElements';
 
 import { CssLikeStyles } from './StyleHelper';
@@ -326,21 +325,40 @@ export const updateElementName = <P extends Entity, R extends Entity>(
   };
 };
 
+export const replaceChild = (
+  elementID: string,
+  newChild: LibraryElement<Entity>,
+  root: LibraryElement<Entity>,
+): LibraryElement<Entity> => {
+  return elementID === root.id
+    ? newChild
+    : {
+        ...root,
+        children: root.children.map((child) =>
+          replaceChild(elementID, newChild, child),
+        ),
+      };
+};
+
 export const getTreeWithDefaultStylesAndParams = <T extends Entity>(
   root: LibraryElement<T>,
 ): LibraryElement<T> => {
   return getElementsArray(root).reduce((acc, element) => {
-    const styles = getDefaultStyles(element.type);
     const params = LIBRARY_ELEMENTS[element.type].parameters;
-    const rootWithUpdatedParameters = updateElementParameters(
-      element.id,
-      { ...params, ...element.parameters },
-      acc,
-    );
-    return updateElementStyles(
-      element.id,
-      { ...styles, ...element.styles },
-      rootWithUpdatedParameters,
-    );
+
+    const newElement: LibraryElement<Entity> = {
+      ...element,
+      name: element.name || element.type,
+      parameters: {
+        ...params,
+        ...element.parameters,
+      },
+      styles: {
+        classNames: [element.type],
+        ownStyles: element.styles,
+      },
+    };
+
+    return replaceChild(element.id, newElement, acc) as LibraryElement<T>;
   }, root);
 };
