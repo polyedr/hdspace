@@ -100,22 +100,53 @@ const Profile: React.FC = () => {
             />
           </div>
 
-          <div className={styles.profileImageWrapper}>
-            <div className={styles.imageInputLabel}>Your photo</div>
+          <Form
+            onSubmit={handleChangeProfileData}
+            render={({ handleSubmit }) => (
+              <form
+                onSubmit={handleSubmit}
+                className={styles.profileImageWrapper}
+              >
+                <div className={styles.imageInputLabel}>Your photo</div>
 
-            <img src={IMAGES.prof} alt="profile" />
+                <img src={IMAGES.prof} alt="profile" />
 
-            <div className={styles.profileImageActions}>
-              {/* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex */}
-              <label className={styles.imageActionButton} tabIndex={0}>
-                Upload
-                <input type="file" className={styles.hidden} />
-              </label>
-              <button className={styles.imageActionButton} type="button">
-                Remove
-              </button>
-            </div>
-          </div>
+                <div className={styles.profileImageActions}>
+                  {/* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex */}
+                  <label className={styles.imageActionButton} tabIndex={0}>
+                    Upload
+                    <Field
+                      name="avatar"
+                      render={({ input: { value, onChange, ...input } }) => {
+                        const handleChange = ({
+                          target,
+                        }: React.ChangeEvent<HTMLInputElement>) => {
+                          // onChange(target.files); // instead of the default target.value
+                          dispatch(
+                            changeProfileData(id, {
+                              // @ts-ignore
+                              avatar: target.files[0],
+                            }),
+                          );
+                        };
+                        return (
+                          <input
+                            {...input}
+                            type="file"
+                            onChange={handleChange}
+                            className={styles.hidden}
+                          />
+                        );
+                      }}
+                    />
+                  </label>
+                  <button className={styles.imageActionButton} type="button">
+                    Remove
+                  </button>
+                </div>
+              </form>
+            )}
+          />
         </div>
 
         <div className={styles.profileCredentials}>
