@@ -85,8 +85,6 @@ export const UnmountedSignIn: React.FC<IProps> = ({
 
   const emailValidator = composeValidators(isRequired, isValidEmail);
 
-  const passwordValidator = composeValidators(isRequired, isLongPassword);
-
   const handleRestorePasswordBtn = useCallback(
     (event) => {
       event.preventDefault();

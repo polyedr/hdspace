@@ -8,15 +8,24 @@ import { IApiResponseError, ITokenPair } from '$redux/user/reducer';
 import { LibraryElement, Project } from '$api/types';
 import { CssLikeStyles } from '$utils/StyleHelper';
 import { getDefaultStyles } from '$domain/libraryElements/defaultStyles';
+import {
+  isRequired,
+  composeValidators,
+  isValidEmail,
+  isLongPassword,
+} from '$shared/validators';
 
 export interface ISignFormElement {
   label: string;
+  name: string;
   value: string;
   placeholder: string;
   type: string;
+  validator: (value: string) => string | undefined;
 }
 
 export interface ISignFormField {
+  // TODO remove
   value: string;
   label: string;
   placeholder: string;
@@ -25,6 +34,7 @@ export interface ISignFormField {
 }
 
 export interface ISignFormFields {
+  // TODO remove
   [x: string]: ISignFormField;
 }
 
@@ -126,50 +136,63 @@ export const MODAL_ADD_ELEMENTS_TABS = [
 
 export const DEFAULT_SIGNIN_FIELDS: ISignFormElement[] = [
   {
-    label: 'Username or Email',
+    label: 'Username',
+    name: 'username',
     value: 'username',
     placeholder: 'UserName',
     type: 'text',
+    validator: isRequired,
   },
   {
     label: 'Password',
+    name: 'password',
     value: 'password',
     placeholder: 'pass',
     type: 'password',
+    validator: isRequired,
   },
 ];
 
 export const DEFAULT_SIGNUP_FIELDS: ISignFormElement[] = [
   {
     label: 'Username',
+    name: 'username',
     value: 'username',
     placeholder: 'UserName',
     type: 'text',
+    validator: isRequired,
   },
   {
     label: 'First name',
+    name: 'firstName',
     value: 'firstName',
     placeholder: 'Jhon',
     type: 'text',
+    validator: isRequired,
   },
-  { label: 'Last name', value: 'lastName', placeholder: 'Doe', type: 'text' },
+  {
+    label: 'Last name',
+    name: 'lastName',
+    value: 'lastName',
+    placeholder: 'Doe',
+    type: 'text',
+    validator: isRequired,
+  },
   {
     label: 'Email',
+    name: 'email',
     value: 'email',
     placeholder: 'example@gmail.com',
-    type: 'text',
+    type: 'email',
+    validator: composeValidators(isRequired, isValidEmail),
   },
   {
     label: 'Password',
+    name: 'password',
     value: 'password',
     placeholder: 'pass',
     type: 'password',
-  },
-  {
-    label: 'Confirm password',
-    value: 'confirmPassword',
-    placeholder: 'pass',
-    type: 'password',
+    validator: composeValidators(isRequired, isLongPassword),
   },
 ];
 

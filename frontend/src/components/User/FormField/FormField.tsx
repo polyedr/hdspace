@@ -7,11 +7,12 @@ type Props = {
   name: string;
   placeholder: string;
   label: string;
+  type: string;
   validator: (value: string) => string | undefined;
 };
 
 const FormField = (props: Props) => {
-  const { name, placeholder, label, validator } = props;
+  const { name, placeholder, label, type, validator } = props;
 
   return (
     <div className={styles.container}>
@@ -22,7 +23,7 @@ const FormField = (props: Props) => {
               {label}
               <input
                 {...input}
-                type="text"
+                type={type}
                 placeholder={placeholder}
                 className={styles.textField}
               />

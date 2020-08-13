@@ -1,23 +1,34 @@
-import React, { useCallback, useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 
+import { Form } from 'react-final-form';
 import { AppReduxState } from '$shared/types/app';
 import { Info } from '$components/User/Info';
 import { Button } from '$components/UI/Button';
 import { Spinner } from '$components/UI/Spinner';
 import {
-  DEFAULT_SIGNUP_FIELDS,
   DEFAULT_RESPONSE_ERROR,
-  ISignFormFields,
+  DEFAULT_SIGNUP_FIELDS,
 } from '$constants/defaultParams';
 import * as Actions from '$redux/user/actions';
-import {
-  generateValidatedFormData,
-  INewFormData,
-} from '$utils/generateValidatedFormData';
-import { getInitialFieldsState } from '$utils/getStates';
 import { IApiResponseError } from '$redux/user/reducer';
-import { SignFormList } from '$components/User/SignFormList';
+import { FormField } from '../FormField/FormField';
+
+type FormData = {
+  username: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+};
+
+const initialValues: FormData = {
+  username: '',
+  firstName: '',
+  lastName: '',
+  email: '',
+  password: '',
+};
 
 const mapStateToProps = ({
   user: { apiResponseError, isSignLoader },
@@ -42,10 +53,6 @@ const UnconnectedSignUp: React.FunctionComponent<IProps> = ({
   setApiResponseError,
   setNewUser,
 }) => {
-  const [formData, setFormData] = useState<ISignFormFields>(
-    getInitialFieldsState(DEFAULT_SIGNUP_FIELDS),
-  );
-
   useEffect(() => {
     return () => {
       if (apiResponseError.errorStatus !== -1) {
@@ -54,67 +61,63 @@ const UnconnectedSignUp: React.FunctionComponent<IProps> = ({
     };
   }, [apiResponseError, setApiResponseError]);
 
-  const handleOnSubmit = useCallback(
-    (event) => {
-      event.preventDefault();
+  const handleFormSubmit = (values: FormData) => {
+    if (apiResponseError.errorStatus !== -1) {
+      setApiResponseError(DEFAULT_RESPONSE_ERROR);
+    }
 
-      if (apiResponseError.errorStatus !== -1) {
-        setApiResponseError(DEFAULT_RESPONSE_ERROR);
-      }
-
-      const newFormData: INewFormData = generateValidatedFormData(formData);
-
-      setFormData(newFormData.formData);
-
-      if (!newFormData.isValidationError) {
-        setNewUser(
-          newFormData.formData.username.value,
-          newFormData.formData.email.value,
-          newFormData.formData.firstName.value,
-          newFormData.formData.lastName.value,
-          newFormData.formData.password.value,
-        );
-      }
-    },
-    [formData, apiResponseError, setApiResponseError, setNewUser],
-  );
-
-  const handleOnChange = useCallback(
-    (event) => {
-      const newFormData = {
-        ...formData,
-        [event.target.name]: {
-          ...formData[event.target.name],
-          value: event.target.value,
-        },
-      };
-
-      setFormData(newFormData);
-    },
-    [formData],
-  );
+    setNewUser(
+      values.username,
+      values.email,
+      values.firstName,
+      values.lastName,
+      values.password,
+    );
+  };
 
   return (
     <>
       <Info isSignUp={false} />
       <div className="signContainer">
-        <form onSubmit={handleOnSubmit}>
-          <SignFormList
-            fields={DEFAULT_SIGNUP_FIELDS}
-            formData={formData}
-            handleInputChange={handleOnChange}
-          />
-          <div className="signButtonBlock">
-            {apiResponseError.errorStatus !== -1 && (
-              <p className="signAuthorisationErrorText">
-                {apiResponseError.errorText}
-              </p>
-            )}
-            <Button className="signSubmitBtn" type="submit" styleType="none">
-              Sign Up
-            </Button>
-          </div>
-        </form>
+        <Form
+          onSubmit={handleFormSubmit}
+          initialValues={initialValues}
+          subscription={{ submitError: true, submitting: true }}
+        >
+          {({ handleSubmit, submitError, submitting }) => (
+            <form onSubmit={handleSubmit}>
+              {DEFAULT_SIGNUP_FIELDS.map(
+                ({ name, placeholder, label, type, validator }) => (
+                  <FormField
+                    name={name}
+                    placeholder={placeholder}
+                    label={label}
+                    type={type}
+                    validator={validator}
+                  />
+                ),
+              )}
+              <div className="signButtonBlock">
+                {!!submitError && (
+                  <p className="signAuthorisationErrorText">{submitError}</p>
+                )}
+                {apiResponseError.errorStatus !== -1 && (
+                  <p className="signAuthorisationErrorText">
+                    {apiResponseError.errorText}
+                  </p>
+                )}
+                <Button
+                  className="signSubmitBtn"
+                  type="submit"
+                  styleType="none"
+                  disabled={submitting}
+                >
+                  Sign Up
+                </Button>
+              </div>
+            </form>
+          )}
+        </Form>
       </div>
       <Spinner active={isSignLoader} />
     </>
