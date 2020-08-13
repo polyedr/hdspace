@@ -64,7 +64,7 @@ class Profile(TimeStampedModel):
     )
     reset_password_token = models.CharField(max_length=64, editable=False, null=True)
     invitation_token = models.CharField(max_length=64, editable=False, null=True)
-    avatar = models.ImageField(upload_to=utils.get_file_path, blank=True)
+    avatar = models.ImageField(upload_to=utils.get_file_path, blank=True, null=True)
     approved = models.BooleanField(default=False)
     role = models.CharField(choices=USER_ROLE, default=ROLE_DESIGNER, max_length=32)
     hourly_rate = models.IntegerField(default=0)
