@@ -7,16 +7,15 @@ import { openSignScreen } from '$utils/history';
 import { selectUserData } from '$redux/user/selectors';
 import { IMAGES } from '$constants/images';
 import { Button } from '$components/UI/Button';
-import { ProfileData } from '$redux/user/types';
+import { ProfileData, UserData } from '$redux/user/types';
 
 const styles = require('./Profile.scss');
 
 const Profile: React.FC = () => {
   const dispatch = useDispatch();
 
-  const { firstName, lastName, email, role, id, avatar } = useSelector(
-    selectUserData,
-  );
+  const userData = useSelector(selectUserData);
+  const { firstName, lastName, email, role, id, avatar } = userData;
 
   const handleLogout = () => {
     dispatch(logout());
@@ -24,11 +23,23 @@ const Profile: React.FC = () => {
   };
 
   const handleChangeUserData = async (values: any) => {
-    dispatch(changeUserData(id, values));
+    if (
+      Object.entries(values).some(
+        ([key, value]) => value !== userData[key as keyof UserData],
+      )
+    ) {
+      dispatch(changeUserData(id, values));
+    }
   };
 
   const handleChangeProfileData = async (values: any) => {
-    dispatch(changeProfileData(id, values));
+    if (
+      Object.entries(values).some(
+        ([key, value]) => value !== userData[key as keyof ProfileData],
+      )
+    ) {
+      dispatch(changeProfileData(id, values));
+    }
   };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
