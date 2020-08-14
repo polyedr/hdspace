@@ -34,34 +34,32 @@ DEBUG = ENV.bool("DEBUG", True)
 ENABLE_DEBUG_TOOLBAR = DEBUG and ENV.bool("ENABLE_DEBUG_TOOLBAR", False)
 
 ALLOWED_HOSTS = ENV.list("ALLOWED_HOSTS", [])
-INTERNAL_IPS = ENV.list("INTERNAL_IPS", default=("127.0.0.1", ))
+INTERNAL_IPS = ENV.list("INTERNAL_IPS", default=("127.0.0.1",))
 
 # Application definition
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'rest_framework',
-    'rest_framework.authtoken',
-    'djoser',
-    'rest_framework_swagger',
-    'corsheaders',
-    'mptt',
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    "rest_framework",
+    "rest_framework.authtoken",
+    "djoser",
+    "rest_framework_swagger",
+    "corsheaders",
+    "mptt",
+    "anymail",
 ]
 
-EXTERNAL_APPS = [
-    'social_django',
-]
+EXTERNAL_APPS = ["social_django"]
 
 PROJECT_APPS = [
-    'apps.virtualize_emulation',
-    'apps.utils',
-    'apps.accounts',
-    'apps.projects',
-
+    "apps.virtualize_emulation",
+    "apps.utils",
+    "apps.accounts",
+    "apps.projects",
 ]
 
 INSTALLED_APPS.extend(EXTERNAL_APPS + PROJECT_APPS)
@@ -84,14 +82,14 @@ CORS_ORIGIN_ALLOW_ALL = True
 
 # Set default permissions to anyone can access our API
 REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': [
+    "DEFAULT_PERMISSION_CLASSES": [
         # 'rest_framework.permissions.AllowAny',
     ],
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.BasicAuthentication',
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ]
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.SessionAuthentication",
+        "rest_framework.authentication.BasicAuthentication",
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ],
 }
 
 # Django Debug Toolbar settings
@@ -126,9 +124,9 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
                 "social_django.context_processors.backends",
                 "social_django.context_processors.login_redirect",
-            ],
+            ]
         },
-    },
+    }
 ]
 
 WSGI_APPLICATION = "project.wsgi.application"
@@ -137,13 +135,13 @@ WSGI_APPLICATION = "project.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DB_NAME', 'adevi_db'),
-        'USER': os.getenv('DB_USER', 'adevi_user'),
-        'PASSWORD': os.getenv('DB_PASSWORD'),
-        'HOST': os.getenv('DB_HOST', '127.0.0.1'),
-        'PORT': os.getenv('DB_PORT', 5432),
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.getenv("DB_NAME", "adevi_db"),
+        "USER": os.getenv("DB_USER", "adevi_user"),
+        "PASSWORD": os.getenv("DB_PASSWORD"),
+        "HOST": os.getenv("DB_HOST", "127.0.0.1"),
+        "PORT": os.getenv("DB_PORT", 5432),
     }
 }
 
@@ -152,20 +150,14 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
     },
-    {
-        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
-    },
+    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
+    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
+    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
-AUTH_USER_MODEL = 'accounts.User'
+AUTH_USER_MODEL = "accounts.User"
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
@@ -184,20 +176,16 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = "/static/"
-STATICFILES_DIRS = [
-    BASE_DIR.child("static"),
-]
+STATICFILES_DIRS = [BASE_DIR.child("static")]
 STATIC_ROOT = BASE_DIR.child("collectstatic")
 
 MEDIA_ROOT = BASE_DIR.child("media")
-MEDIA_URL = '/media/'
+MEDIA_URL = "/media/"
 
 
 # Redis settings
 REDIS_URL = "redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_PATH}".format(
-    REDIS_HOST=ENV.str("REDIS_HOST", "127.0.0.1"),
-    REDIS_PORT="6379",
-    REDIS_PATH="0",
+    REDIS_HOST=ENV.str("REDIS_HOST", "127.0.0.1"), REDIS_PORT="6379", REDIS_PATH="0"
 )
 
 # Celery settings
@@ -205,9 +193,9 @@ REDIS_URL = "redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_PATH}".format(
 
 BROKER_URL = REDIS_URL
 CELERYBEAT_SCHEDULE = {
-    'check_user_subscription': {
-        'task': 'core.tasks.check_user_subscription',
-        'schedule': crontab(minute=59, hour=23)
+    "check_user_subscription": {
+        "task": "core.tasks.check_user_subscription",
+        "schedule": crontab(minute=59, hour=23),
     }
 }
 CELERY_RESULT_BACKEND = REDIS_URL
@@ -216,34 +204,61 @@ CELERY_RESULT_BACKEND = REDIS_URL
 EMAIL_BASE_TEMPLATE = "email/base.html"
 DOWNLOAD_BASE_TEMPLATE = "base_download.html"
 EMAIL_HOST = ENV.str("EMAIL_HOST", "localhost")
-EMAIL_PORT = ENV.int("EMAIL_PORT", 25)
-EMAIL_BACKEND_CONFIG = ENV.str("EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend")
-DEFAULT_FROM_EMAIL = "from@example.com"
+EMAIL_PORT = ENV.int("EMAIL_PORT", 1025)
+EMAIL_BACKEND_CONFIG = ENV.str(
+    "EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend"
+)
+DEFAULT_FROM_EMAIL = "demo@178-21-8-79.xen.vps.regruhosting.ru"
 
-SITE_NAME = "PM"
+SITE_NAME = "Adevi_reg"
 BASE_URL = ENV.str("BASE_URL", "http://localhost:8000")
 LOGIN_REDIRECT_URL = "/"
 
+"""
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'localhost'
+EMAIL_PORT = 25
+EMAIL_HOST_USER = 'demo'
+EMAIL_HOST_PASSWORD = ''
+EMAIL_USE_TLS = False
+DEFAULT_FROM_EMAIL = 'demo@178-21-8-79.xen.vps.regruhosting.ru'
 
-EMAIL_HOST = 'smtp.gmail.com'
+
+EMAIL_HOST = 'smtp.mailgun.org'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = "iishchukov@allmax.team"
-EMAIL_HOST_PASSWORD = "temporary"
+EMAIL_HOST_USER = "ivan.ishchukov@gmail.com"
+EMAIL_HOST_PASSWORD = "000"
 EMAIL_USE_TLS = True
+"""
+
+ANYMAIL = {
+    # (exact settings here depend on your ESP...)
+    "MAILGUN_API_KEY": "9b183c06fa8ef2d44ec552d82885b75f-060550c6-baabc369",
+    "MAILGUN_SENDER_DOMAIN": "sandbox923ebbd91bc2439f8f563665740f571b.mailgun.org",  # your Mailgun domain, if needed
+}
+EMAIL_BACKEND = (
+    "anymail.backends.mailgun.EmailBackend"
+)  # or sendgrid.EmailBackend, or...
+# DEFAULT_FROM_EMAIL = "demo@178-21-8-79.xen.vps.regruhosting.ru"  # if you don't already have this in settings
+DEFAULT_FROM_EMAIL = "info@poly-edr.com"  # if you don't already have this in settings
 
 # Django PayPal settings
-'''
+"""
 PAYPAL_RECEIVER_EMAIL = ENV.str("PAYPAL_RECEIVER_EMAIL", None)
 PAYPAL_TEST = ENV.str("PAYPAL_TEST", True)
 CART_SESSION_ID = 'cart'
-'''
+"""
 
 # Social Auth
 SOCIAL_AUTH_FACEBOOK_KEY = ENV.int("SOCIAL_AUTH_FACEBOOK_KEY", 199947097440935)
-SOCIAL_AUTH_FACEBOOK_SECRET = ENV.str("SOCIAL_AUTH_FACEBOOK_SECRET", "560593e1d7e86fdee6ba0cb121ad9729")
+SOCIAL_AUTH_FACEBOOK_SECRET = ENV.str(
+    "SOCIAL_AUTH_FACEBOOK_SECRET", "560593e1d7e86fdee6ba0cb121ad9729"
+)
 
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = ENV.str("SOCIAL_AUTH_GOOGLE_OAUTH2_KEY", None)
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = ENV.str("SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET", "Iu7_-la7rdyuOjQKw8ao3dKL")
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = ENV.str(
+    "SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET", "Iu7_-la7rdyuOjQKw8ao3dKL"
+)
 
 SOCIAL_AUTH_TWITTER_KEY = ENV.str("SOCIAL_AUTH_TWITTER_KEY", "")
 SOCIAL_AUTH_TWITTER_SECRET = ENV.str("SOCIAL_AUTH_TWITTER_SECRET", "")
@@ -253,18 +268,18 @@ SOCIAL_AUTH_LINKEDIN_SECRET = ENV.str("SOCIAL_AUTH_LINKEDIN_SECRET", "USlZYcBnCs
 
 
 AUTHENTICATION_BACKENDS = (
-    'social_core.backends.facebook.FacebookOAuth2',
-    'social_core.backends.google.GoogleOAuth2',
-    'social_core.backends.linkedin.LinkedinOAuth',
-    'social_core.backends.twitter.TwitterOAuth',
-    'django.contrib.auth.backends.ModelBackend',
+    "social_core.backends.facebook.FacebookOAuth2",
+    "social_core.backends.google.GoogleOAuth2",
+    "social_core.backends.linkedin.LinkedinOAuth",
+    "social_core.backends.twitter.TwitterOAuth",
+    "django.contrib.auth.backends.ModelBackend",
 )
 
 
 CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-        'LOCATION': 'default-cache'
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "default-cache",
     }
 }
 
@@ -274,37 +289,32 @@ USER_LASTSEEN_TIMEOUT = 60 * 60 * 24 * 7
 
 # JWT tokens settings
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(hours=12),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
-    'ROTATE_REFRESH_TOKENS': False,
-    'BLACKLIST_AFTER_ROTATION': True,
-
-    'ALGORITHM': 'HS256',
-    'SIGNING_KEY': SECRET_KEY,
-    'VERIFYING_KEY': None,
-
-    'AUTH_HEADER_TYPES': ('Bearer',),
-    'USER_ID_FIELD': 'id',
-    'USER_ID_CLAIM': 'user_id',
-
-    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
-    'TOKEN_TYPE_CLAIM': 'token_type',
-
-    'JTI_CLAIM': 'jti',
-
-    'SLIDING_TOKEN_REFRESH_EXP_CLAIM': 'refresh_exp',
-    'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5),
-    'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
+    "ACCESS_TOKEN_LIFETIME": timedelta(hours=12),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "ROTATE_REFRESH_TOKENS": False,
+    "BLACKLIST_AFTER_ROTATION": True,
+    "ALGORITHM": "HS256",
+    "SIGNING_KEY": SECRET_KEY,
+    "VERIFYING_KEY": None,
+    "AUTH_HEADER_TYPES": ("Bearer",),
+    "USER_ID_FIELD": "id",
+    "USER_ID_CLAIM": "user_id",
+    "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
+    "TOKEN_TYPE_CLAIM": "token_type",
+    "JTI_CLAIM": "jti",
+    "SLIDING_TOKEN_REFRESH_EXP_CLAIM": "refresh_exp",
+    "SLIDING_TOKEN_LIFETIME": timedelta(minutes=5),
+    "SLIDING_TOKEN_REFRESH_LIFETIME": timedelta(days=1),
 }
 
 
 # Djoser settings
 DJOSER = {
-    'PASSWORD_RESET_CONFIRM_URL': '#/password/reset/confirm/{uid}/{token}',
-    'USERNAME_RESET_CONFIRM_URL': '#/username/reset/confirm/{uid}/{token}',
-    'ACTIVATION_URL': '#/activate/{uid}/{token}',
-    'SEND_ACTIVATION_EMAIL': True,
-    'SERIALIZERS': {},
+    "PASSWORD_RESET_CONFIRM_URL": "/password/reset/confirm/{uid}/{token}",
+    "USERNAME_RESET_CONFIRM_URL": "/username/reset/confirm/{uid}/{token}",
+    "ACTIVATION_URL": "/activate/{uid}/{token}",
+    "SEND_ACTIVATION_EMAIL": True,
+    "SERIALIZERS": {},
 }
 
 
@@ -324,6 +334,7 @@ class LoginConfig(Config):
     Derives from the base Config class and overrides values specific
     to the toy shapes dataset.
     """
+
     # Give the configuration a recognizable name
     NAME = "form_login"
 
@@ -339,6 +350,7 @@ class LoginConfig(Config):
 
     # Skip detections with < 90% confidence
     DETECTION_MIN_CONFIDENCE = 0.75
+
 
 config = LoginConfig()
 # config.display()
