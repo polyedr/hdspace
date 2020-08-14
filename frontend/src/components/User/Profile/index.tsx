@@ -51,6 +51,8 @@ const Profile: React.FC = () => {
     dispatch(changeProfileData(id, (formData as any) as ProfileData));
   };
 
+  const removeProfileImage = () => handleChangeProfileData({ avatar: null });
+
   return (
     <main className={styles.profileContainer}>
       <div className={styles.profileHeaderContainer}>
@@ -152,7 +154,11 @@ const Profile: React.FC = () => {
                       }}
                     />
                   </label>
-                  <button className={styles.imageActionButton} type="button">
+                  <button
+                    className={styles.imageActionButton}
+                    type="button"
+                    onClick={removeProfileImage}
+                  >
                     Remove
                   </button>
                 </div>
