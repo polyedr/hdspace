@@ -27,10 +27,7 @@ import {
 } from '$api/converters/fromResponse';
 import { reqWrapper } from '$redux/project/sagas';
 import { ServerUserData } from '$redux/user/types';
-import {
-  convertProfileDataToRequest,
-  convertUserDataToRequest,
-} from '$api/converters/toRequest';
+import { convertUserDataToRequest } from '$api/converters/toRequest';
 
 export function* getTokenPairSaga(username: string, password: string) {
   const {
@@ -102,11 +99,7 @@ export function* changeUserDataSaga({
 export function* changeProfileDataSaga({
   payload: { id, data },
 }: ReturnType<typeof Actions.changeProfileData>) {
-  const newProfileData = yield call(
-    apiChangeProfileData,
-    id,
-    convertProfileDataToRequest(data),
-  );
+  const newProfileData = yield call(apiChangeProfileData, id, data);
 
   if (!newProfileData) {
     console.error('Error while patching profile data');

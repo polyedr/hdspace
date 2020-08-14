@@ -7,13 +7,16 @@ import { openSignScreen } from '$utils/history';
 import { selectUserData } from '$redux/user/selectors';
 import { IMAGES } from '$constants/images';
 import { Button } from '$components/UI/Button';
+import { ProfileData } from '$redux/user/types';
 
 const styles = require('./Profile.scss');
 
 const Profile: React.FC = () => {
   const dispatch = useDispatch();
 
-  const { firstName, lastName, email, role, id } = useSelector(selectUserData);
+  const { firstName, lastName, email, role, id, avatar } = useSelector(
+    selectUserData,
+  );
 
   const handleLogout = () => {
     dispatch(logout());
@@ -26,6 +29,15 @@ const Profile: React.FC = () => {
 
   const handleChangeProfileData = async (values: any) => {
     dispatch(changeProfileData(id, values));
+  };
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files) return;
+    const file = e.target.files[0];
+    const formData = new FormData();
+    formData.append('avatar', file, file.name);
+
+    dispatch(changeProfileData(id, (formData as any) as ProfileData));
   };
 
   return (
@@ -109,7 +121,7 @@ const Profile: React.FC = () => {
               >
                 <div className={styles.imageInputLabel}>Your photo</div>
 
-                <img src={IMAGES.prof} alt="profile" />
+                <img src={avatar ?? IMAGES.prof} alt="profile" />
 
                 <div className={styles.profileImageActions}>
                   {/* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex */}
@@ -117,23 +129,12 @@ const Profile: React.FC = () => {
                     Upload
                     <Field
                       name="avatar"
-                      render={({ input: { value, onChange, ...input } }) => {
-                        const handleChange = ({
-                          target,
-                        }: React.ChangeEvent<HTMLInputElement>) => {
-                          // onChange(target.files); // instead of the default target.value
-                          dispatch(
-                            changeProfileData(id, {
-                              // @ts-ignore
-                              avatar: target.files[0],
-                            }),
-                          );
-                        };
+                      render={({ input }) => {
                         return (
                           <input
                             {...input}
                             type="file"
-                            onChange={handleChange}
+                            onChange={handleImageUpload}
                             className={styles.hidden}
                           />
                         );

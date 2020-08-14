@@ -144,7 +144,9 @@ export const convertUserDataToRequest = ({
 export const convertProfileDataToRequest = ({
   hourlyRate,
   ...rest
-}: Partial<ProfileData>): Partial<ServerProfileData> => ({
-  hourly_rate: hourlyRate,
-  ...rest,
-});
+}: Partial<ProfileData>): Partial<ServerProfileData> => {
+  return {
+    hourly_rate: hourlyRate,
+    ...rest,
+  };
+};

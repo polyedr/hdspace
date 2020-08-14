@@ -13,7 +13,7 @@ import * as ActionsProject from '$redux/project/actions';
 import { openSignScreen } from '$utils/history';
 import { Project } from '$api/types';
 import { logout } from '$redux/user/actions';
-import { selectUserEmail } from '$redux/user/selectors';
+import { selectUserData } from '$redux/user/selectors';
 
 const styles = require('./LeftPanel.scss');
 
@@ -36,7 +36,7 @@ export const LeftPanel: React.FunctionComponent<LeftPanelProps> = ({
     false,
   );
 
-  const email = useSelector(selectUserEmail);
+  const { email, avatar } = useSelector(selectUserData);
 
   const handleLogoutClick = () => {
     dispatch(logout());
@@ -63,7 +63,7 @@ export const LeftPanel: React.FunctionComponent<LeftPanelProps> = ({
         >
           <img
             className={styles.profileAvatar}
-            src={IMAGES.prof}
+            src={avatar ?? IMAGES.prof}
             alt="profile"
           />
         </NavLink>
