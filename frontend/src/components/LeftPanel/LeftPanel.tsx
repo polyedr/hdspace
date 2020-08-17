@@ -49,7 +49,7 @@ export const LeftPanel: React.FunctionComponent<LeftPanelProps> = ({
 
   return (
     <aside
-      className={`${styles.leftPanel} ${isLPanelMinimized && styles.minPanel}`}
+      className={cn(styles.leftPanel, isLPanelMinimized && styles.minPanel)}
     >
       <div
         className={cn(
