@@ -36,19 +36,19 @@ import { generateFontFace } from '$utils/generateFontFace';
 import { selectors, T } from '..';
 
 export function* getListProjectSaga(): SagaIterator {
-  yield put(Actions.setListProjectLoader(true));
+  yield put(Actions.setProjectListLoader(true));
   yield put(Actions.getLibraryElements());
 
   const result = yield call(reqWrapper, apiGetListProject);
 
   if (!result) {
-    yield put(Actions.setListProjectLoader(false));
+    yield put(Actions.setProjectListLoader(false));
 
     return;
   }
 
-  yield put(Actions.setListProject(result));
-  yield put(Actions.setListProjectLoader(false));
+  yield put(Actions.setProjectList(result));
+  yield put(Actions.setProjectListLoader(false));
 }
 
 export function* getProjectSaga(action: ReturnType<typeof Actions.getProject>) {
@@ -135,7 +135,7 @@ export function* addProjectSaga({
   const projects: ReturnType<typeof selectors.selectProjects> = yield select(
     selectors.selectProjects,
   );
-  yield put(Actions.setListProject([...projects, project]));
+  yield put(Actions.setProjectList([...projects, project]));
 
   // eslint-disable-next-line consistent-return
   return project;
@@ -358,7 +358,7 @@ export function* delProjectSaga({
     (project) => project.id !== id,
   );
 
-  yield put(Actions.setListProject(newListProject));
+  yield put(Actions.setProjectList(newListProject));
 }
 
 export function* renameProjectSaga({
@@ -387,7 +387,7 @@ export function* renameProjectSaga({
     return project;
   });
 
-  yield put(Actions.setListProject(newListProject));
+  yield put(Actions.setProjectList(newListProject));
 
   if (currentProject.id === projectID) {
     yield put(Actions.setProject(updatedProject));

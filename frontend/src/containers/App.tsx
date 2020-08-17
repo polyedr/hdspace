@@ -20,7 +20,7 @@ const mapStateToProps = (state: AppReduxState) => ({
 
 const mapDispatchToProps = {
   changeMinLPanel: ActionsUser.changeMinLPanel,
-  getListProject: ActionsProject.getListProject,
+  getListProject: ActionsProject.getProjectList,
 };
 
 export type IAppProps = ReturnType<typeof mapStateToProps> &

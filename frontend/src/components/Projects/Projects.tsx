@@ -11,7 +11,7 @@ import { Icon } from '$components/UI/Icon';
 import { Project } from '$api/types';
 import { convertDateToRelative } from '$utils/convertDateToRelative';
 import { selectInitialProjectLoad } from '$redux/project/selectors';
-import { getListProject } from '$redux/project/actions';
+import { getProjectList } from '$redux/project/actions';
 
 const styles = require('./Projects.scss');
 
@@ -40,7 +40,7 @@ export const Projects: React.FunctionComponent<IProjectsProps> = memo(
 
     useEffect(() => {
       if (initialLoadDone) {
-        dispatch(getListProject());
+        dispatch(getProjectList());
       }
     }, [dispatch]);
 

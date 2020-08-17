@@ -81,7 +81,8 @@ import { DEFAULT_AUTHORISATION_TOKEN } from '$constants/defaultParams';
 import { LibraryEntities } from '$domain/libraryElements/libraryElements';
 
 import { ItemToCopyInfo } from '../types';
-import { selectors, T as ProjectT, actionsCreators } from '..';
+import { selectors, actionsCreators } from '..';
+import { TYPES } from '$constants/actions';
 
 function* LocationChange({ payload: { location } }: LocationChangeAction) {
   const {
@@ -933,127 +934,56 @@ function* redoSaga() {
     ?.focus();
 }
 
-const loadProjectsType: ProjectT.LoadProjects['type'] =
-  'PROJECTS:LOAD_PROJECTS';
-const addProjectType: ProjectT.AddProject['type'] = 'PROJECTS:ADD_PROJECT';
-const deleteProjectType: ProjectT.DeleteProject['type'] =
-  'PROJECTS:DELETE_PROJECT';
-const updateProjectType: ProjectT.UpdateProject['type'] =
-  'PROJECTS:UPDATE_PROJECT';
-const getProjectType: ProjectT.GetProject['type'] = 'PROJECTS:GET_PROJECT';
-const exportProjectType: ProjectT.ExportProject['type'] =
-  'PROJECTS:EXPORT_PROJECT';
-const changeScreensOrderType: ProjectT.ChangeScreensOrder['type'] =
-  'PROJECTS:CHANGE_SCREENS_ORDER';
-const renameProjectType: ProjectT.RenameProject['type'] =
-  'PROJECTS:RENAME_PROJECT';
-const activateScreenType: ProjectT.ActivateScreen['type'] =
-  'PROJECTS:ACTIVATE_SCREEN';
-const addScreenType: ProjectT.AddScreen['type'] = 'PROJECTS:ADD_SCREEN';
-const duplicateScreenType: ProjectT.DuplicateScreen['type'] =
-  'PROJECTS:DUPLICATE_SCREEN';
-const saveScreenType: ProjectT.SaveScreen['type'] = 'PROJECTS:SAVE_SCREEN';
-const deleteScreenType: ProjectT.DeleteScreen['type'] =
-  'PROJECTS:DELETE_SCREEN';
-const renameScreenType: ProjectT.RenameScreen['type'] =
-  'PROJECTS:RENAME_SCREEN';
-const moveElementType: ProjectT.MoveElement['type'] = 'PROJECTS:MOVE_ELEMENT';
-const removeSharedStylesType: ProjectT.RemoveSharedStyles['type'] =
-  'PROJECTS:REMOVE_SHARED_STYLES';
-const updateSharedStylesType: ProjectT.UpdateSharedStyles['type'] =
-  'PROJECTS:UPDATE_SHARED_STYLES';
-const removeElementStylesType: ProjectT.RemoveElementStyles['type'] =
-  'PROJECTS:REMOVE_ELEMENT_STYLES';
-const updateElementStylesType: ProjectT.UpdateElementStyles['type'] =
-  'PROJECTS:UPDATE_ELEMENT_STYLES';
-const replaceElementStylesType: ProjectT.ReplaceElementStyles['type'] =
-  'PROJECTS:REPLACE_ELEMENT_STYLES';
-const copyElementStylesType: ProjectT.CopyElementStyles['type'] =
-  'PROJECTS:COPY_ELEMENT_STYLES';
-const addElementClassNameType: ProjectT.AddElementClassName['type'] =
-  'PROJECTS:ADD_ELEMENT_CLASSNAME';
-const removeElementClassNameType: ProjectT.RemoveElementClassName['type'] =
-  'PROJECTS:REMOVE_ELEMENT_CLASSNAME';
-const updateElementParametersType: ProjectT.UpdateElementParameters['type'] =
-  'PROJECTS:UPDATE_ELEMENT_PARAMETERS';
-const updateElementImageType: ProjectT.UpdateElementImage['type'] =
-  'PROJECTS:UPDATE_ELEMENT_IMAGE';
-const createElementsType: ProjectT.CreateElements['type'] =
-  'PROJECTS:CREATE_ELEMENTS';
-const renameElementType: ProjectT.RenameElement['type'] =
-  'PROJECTS:RENAME_ELEMENT';
-const addChildToElementType: ProjectT.AddChildToElement['type'] =
-  'PROJECTS:ADD_CHILD_TO_ELEMENT';
-const deleteChildFromElementType: ProjectT.DeleteChildFromElement['type'] =
-  'PROJECTS:DELETE_CHILD_FROM_ELEMENT';
-const wrapIntoContainerType: ProjectT.WrapIntoContainer['type'] =
-  'PROJECTS:WRAP_INTO_CONTAINER';
-const deleteItemType: ProjectT.DeleteItem['type'] = 'PROJECTS:DELETE_ITEM';
-const uploadFileType: ProjectT.UploadFile['type'] = 'PROJECTS:UPLOAD_FILE';
-const getScreenNNType: ProjectT.GetScreenNN['type'] = 'PROJECTS:GET_SCREEN_NN';
-const copyActiveItemType: ProjectT.CopyActiveItem['type'] =
-  'PROJECTS:COPY_ACTIVE_ITEM';
-const pasteCopiedItemType: ProjectT.PasteCopiedItem['type'] =
-  'PROJECTS:PASTE_COPIED_ITEM';
-const unwrapFromContainerType: ProjectT.UnwrapFromContainer['type'] =
-  'PROJECTS:UNWRAP_FROM_CONTAINER';
-const undoActionType: ProjectT.UndoAction['type'] = 'UNDO_ACTION';
-const redoActionType: ProjectT.RedoAction['type'] = 'REDO_ACTION';
-const restoreElementType: ProjectT.RestoreElementChildren['type'] =
-  'PROJECTS:RESTORE_ELEMENT_CHILDREN';
-const redoWrapIntoContainerType: ProjectT.RedoWrapIntoContainer['type'] =
-  'PROJECTS:REDO_WRAP_INTO_CONTAINER';
-
 export default function* projectSaga() {
   yield takeLatest(REHYDRATE, authCheckSaga);
   yield takeLatest(LOCATION_CHANGE, LocationChange);
 
-  yield takeLatest(loadProjectsType, getListProjectSaga);
-  yield takeLatest(addProjectType, addProject);
-  yield takeLatest(deleteProjectType, delProjectSaga);
-  yield takeLatest(updateProjectType, updateProjectSaga);
-  yield takeLatest(getProjectType, getProjectSaga);
-  yield takeLatest(exportProjectType, exportProjectSaga);
-  yield takeLatest(changeScreensOrderType, changeScreensOrderSaga);
-  yield takeLatest(renameProjectType, renameProjectSaga);
+  yield takeLatest(TYPES.LOAD_PROJECTS, getListProjectSaga);
+  yield takeLatest(TYPES.ADD_PROJECT, addProject);
+  yield takeLatest(TYPES.DELETE_PROJECT, delProjectSaga);
+  yield takeLatest(TYPES.UPDATE_PROJECT, updateProjectSaga);
+  yield takeLatest(TYPES.GET_PROJECT, getProjectSaga);
+  yield takeLatest(TYPES.EXPORT_PROJECT, exportProjectSaga);
+  yield takeLatest(TYPES.CHANGE_SCREENS_ORDER, changeScreensOrderSaga);
+  yield takeLatest(TYPES.RENAME_PROJECT, renameProjectSaga);
 
-  yield takeLatest(activateScreenType, screenSaga.activateScreenSaga);
-  yield takeLatest(addScreenType, screenSaga.addScreenSaga);
-  yield takeEvery(duplicateScreenType, duplicateScreenSaga);
-  yield takeLatest(saveScreenType, screenSaga.saveScreenSaga);
-  yield takeLatest(deleteScreenType, screenSaga.delScreenSaga);
-  yield takeLatest(renameScreenType, screenSaga.renameScreenSaga);
-  yield takeEvery(moveElementType, moveElementSaga);
+  yield takeLatest(TYPES.ACTIVATE_SCREEN, screenSaga.activateScreenSaga);
+  yield takeLatest(TYPES.ADD_SCREEN, screenSaga.addScreenSaga);
+  yield takeEvery(TYPES.DUPLICATE_SCREEN, duplicateScreenSaga);
+  yield takeLatest(TYPES.SAVE_SCREEN, screenSaga.saveScreenSaga);
+  yield takeLatest(TYPES.DELETE_SCREEN, screenSaga.delScreenSaga);
+  yield takeEvery(TYPES.SOFT_DELETE_SCREEN, softDeleteSaga);
+  yield takeLatest(TYPES.RENAME_SCREEN, screenSaga.renameScreenSaga);
+  yield takeEvery(TYPES.MOVE_ELEMENT, moveElementSaga);
 
-  yield takeLatest(removeSharedStylesType, removeSharedStylesSaga);
-  yield takeLatest(updateSharedStylesType, updateSharedStylesSaga);
-  yield takeLatest(removeElementStylesType, removeElementStylesSaga);
-  yield takeLatest(updateElementStylesType, updateElementStyles);
-  yield takeLatest(replaceElementStylesType, replaceElementStylesSaga);
-  yield takeLatest(copyElementStylesType, copyElementStylesSaga);
-  yield takeLatest(addElementClassNameType, addElementClassNameSaga);
-  yield takeLatest(removeElementClassNameType, removeElementClassNameSaga);
-  yield takeLatest(updateElementImageType, updateElementImage);
-  yield takeLatest(updateElementParametersType, updateElementParameters);
+  yield takeLatest(TYPES.REMOVE_SHARED_STYLES, removeSharedStylesSaga);
+  yield takeLatest(TYPES.UPDATE_SHARED_STYLES, updateSharedStylesSaga);
+  yield takeLatest(TYPES.REMOVE_ELEMENT_STYLES, removeElementStylesSaga);
+  yield takeLatest(TYPES.UPDATE_ELEMENT_STYLES, updateElementStyles);
+  yield takeLatest(TYPES.REPLACE_ELEMENT_STYLES, replaceElementStylesSaga);
+  yield takeLatest(TYPES.COPY_ELEMENT_STYLES, copyElementStylesSaga);
+  yield takeLatest(TYPES.ADD_ELEMENT_CLASSNAME, addElementClassNameSaga);
+  yield takeLatest(TYPES.REMOVE_ELEMENT_CLASSNAME, removeElementClassNameSaga);
+  yield takeLatest(TYPES.UPDATE_ELEMENT_IMAGE, updateElementImage);
+  yield takeLatest(TYPES.UPDATE_ELEMENT_PARAMETERS, updateElementParameters);
 
-  yield takeEvery(createElementsType, createElementsSaga);
-  yield takeEvery(renameElementType, renameElementSaga);
+  yield takeEvery(TYPES.CREATE_ELEMENTS, createElementsSaga);
+  yield takeEvery(TYPES.RENAME_ELEMENT, renameElementSaga);
 
-  yield takeEvery(addChildToElementType, addChildToElementSaga);
-  yield takeEvery(deleteChildFromElementType, softDeleteSaga);
-  yield takeEvery(wrapIntoContainerType, wrapIntoContainerSaga);
+  yield takeEvery(TYPES.ADD_CHILD_TO_ELEMENT, addChildToElementSaga);
+  yield takeEvery(TYPES.WRAP_INTO_CONTAINER, wrapIntoContainerSaga);
 
-  yield takeEvery(deleteItemType, softDeleteSaga);
-  yield takeEvery(restoreElementType, restoreElementSaga);
+  yield takeEvery(TYPES.DELETE_ITEM, softDeleteSaga);
+  yield takeEvery(TYPES.RESTORE_ELEMENT_CHILDREN, restoreElementSaga);
 
-  yield takeLatest(copyActiveItemType, copyActiveItemSaga);
-  yield takeEvery(pasteCopiedItemType, pasteCopiedItemSaga);
+  yield takeLatest(TYPES.COPY_ACTIVE_ITEM, copyActiveItemSaga);
+  yield takeEvery(TYPES.PASTE_COPIED_ITEM, pasteCopiedItemSaga);
 
-  yield takeLatest(uploadFileType, uploadFileSaga);
-  yield takeLatest(getScreenNNType, screenSaga.getScreenNNSaga);
+  yield takeLatest(TYPES.UPLOAD_FILE, uploadFileSaga);
+  yield takeLatest(TYPES.GET_SCREEN_NN, screenSaga.getScreenNNSaga);
 
-  yield takeEvery(undoActionType, undoSaga);
-  yield takeEvery(redoActionType, redoSaga);
-  yield takeEvery(unwrapFromContainerType, unwrapFromContainerSaga);
-  yield takeEvery(redoWrapIntoContainerType, redoWrapIntoContainerSaga);
+  yield takeEvery(TYPES.UNDO_ACTION, undoSaga);
+  yield takeEvery(TYPES.REDO_ACTION, redoSaga);
+  yield takeEvery(TYPES.UNWRAP_FROM_CONTAINER, unwrapFromContainerSaga);
+  yield takeEvery(TYPES.REDO_WRAP_INTO_CONTAINER, redoWrapIntoContainerSaga);
 }

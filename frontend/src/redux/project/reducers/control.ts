@@ -1,5 +1,6 @@
 import { initialControl } from '$redux/project/initial';
 import * as T from '../types';
+import { TYPES } from '$constants/actions';
 
 // To create undoable feature for the editor you have to implement action with "meta" field extends type HistoryMeta,
 // that will call correspondent saga, which should:
@@ -15,7 +16,7 @@ export const controlReducer = (
   action: T.Action,
 ): T.ProjectControlState => {
   switch (action.type) {
-    case 'PROJECTS:UPDATE_ELEMENTS_TREE': {
+    case TYPES.UPDATE_ELEMENTS_TREE: {
       const newState = {
         ...state,
         rootElement: action.payload.root,
@@ -40,7 +41,7 @@ export const controlReducer = (
       return newState;
     }
 
-    case 'PROJECTS:SET_UNDO_ACTIONS': {
+    case TYPES.SET_UNDO_ACTIONS: {
       return {
         ...state,
         // @ts-ignore
@@ -53,28 +54,28 @@ export const controlReducer = (
       };
     }
 
-    case 'PROJECTS:POP_UNDO_ACTION': {
+    case TYPES.POP_UNDO_ACTION: {
       return {
         ...state,
         undoActions: state.undoActions.slice(0, -1),
       };
     }
 
-    case 'PROJECTS:SET_REMOTE_MOVE': {
+    case TYPES.SET_REMOTE_MOVE: {
       return {
         ...state,
         remoteMove: action.payload,
       };
     }
 
-    case 'PROJECTS:SET_REDO_ACTIONS': {
+    case TYPES.SET_REDO_ACTIONS: {
       return {
         ...state,
         redoActions: action.payload,
       };
     }
 
-    case 'PROJECTS:CLEAR_HISTORY': {
+    case TYPES.CLEAR_HISTORY: {
       return {
         ...state,
         undoActions: [],
@@ -85,21 +86,21 @@ export const controlReducer = (
       };
     }
 
-    case 'PROJECTS:POP_HISTORY': {
+    case TYPES.POP_HISTORY: {
       return {
         ...state,
         history: state.history.slice(0, -1),
       };
     }
 
-    case 'PROJECTS:SET_GROUP_UP': {
+    case TYPES.SET_GROUP_UP: {
       return {
         ...state,
         groupActionsUp: action.payload,
       };
     }
 
-    case 'LOGOUT': {
+    case TYPES.LOGOUT: {
       return {
         ...initialControl,
       };

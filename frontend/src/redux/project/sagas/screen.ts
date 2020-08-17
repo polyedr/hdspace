@@ -19,6 +19,7 @@ import {
   setLoader,
   setActiveItem,
   setScreens,
+  softDelScreen,
 } from '$redux/project/actions';
 import * as Actions from '$redux/project/actions';
 import { generateUniqueName } from '$utils/generateUniqueName';
@@ -119,7 +120,7 @@ export function* activateScreenSaga({
     }),
   );
 
-  yield put(Actions.clearHistory());
+  // yield put(Actions.clearHistory());
 
   yield put(Actions.setScenarioLoader(false));
   yield put(setScreenLoader(false));
@@ -235,7 +236,7 @@ export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
     }),
   );
 
-  yield put(Actions.clearHistory());
+  // yield put(Actions.clearHistory());
 
   const currentProject: ReturnType<typeof selectors.selectCurrentProject> = yield select(
     selectors.selectCurrentProject,
@@ -401,6 +402,13 @@ export function* delScreenSaga({ payload }: ReturnType<typeof delScreen>) {
     yield put(push(`/project/${projectID}/${lastScreenID}`));
   }
   // yield call(getListProjectSaga);
+}
+
+export function* softScreenDeleteSaga({
+  payload: { screenId, projectId },
+}: ReturnType<typeof softDelScreen>) {
+  // yield call(reqWrapper, apiSaveProject, )
+  yield console.log(screenId, projectId);
 }
 
 export function* renameScreenSaga({

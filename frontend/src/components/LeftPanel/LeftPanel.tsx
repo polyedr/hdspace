@@ -22,7 +22,7 @@ export type LeftPanelProps = {
   projects: Project[];
   username?: string;
   isLPanelMinimized: boolean;
-  setListProject: typeof ActionsProject.setListProject;
+  setListProject: typeof ActionsProject.setProjectList;
 };
 
 export const LeftPanel: React.FunctionComponent<LeftPanelProps> = ({
