@@ -55,6 +55,7 @@ export const UnmountedSignIn: React.FC<IProps> = ({
   >(false);
 
   const [restoreEmail, setRestoreEmail] = useState<string>('');
+  const [isRestoreEmailSend, setIsRestoreEmailSend] = useState(false);
 
   const initialValues: FormData = {
     username: '',
@@ -99,8 +100,10 @@ export const UnmountedSignIn: React.FC<IProps> = ({
     (event) => {
       event.preventDefault();
 
-      restorePassword(restoreEmail);
-      closeModal();
+      setIsRestoreEmailSend(true);
+
+      /* restorePassword(restoreEmail);
+      closeModal(); */
     },
     [restoreEmail, restorePassword, closeModal],
   );
@@ -177,18 +180,35 @@ export const UnmountedSignIn: React.FC<IProps> = ({
           confirmText="Send"
           cancelText="Close"
           onClose={closeModal}
-          onConfirm={handleConfirmPasswordRestore}
+          {...(!isRestoreEmailSend && {
+            onConfirm: handleConfirmPasswordRestore,
+          })}
         >
-          <p>Please, enter your email adress.</p>
-          <input
-            className="modalTextInput"
-            type="email"
-            name="restore_email"
-            id="restore_email"
-            placeholder="example@gmail.com"
-            value={restoreEmail}
-            onChange={onRestoreEmailFieldChange}
-          />
+          {isRestoreEmailSend ? (
+            <p>
+              <span>If there's an account for</span>
+              <span>{restoreEmail}</span>
+              <span>
+                , you will get an email on how to reset your password. Check the
+                spam folder, as it may be there. If you've used a different
+                service for logging in, please contact your administrator to
+                reset your password.
+              </span>
+            </p>
+          ) : (
+            <>
+              <p>Please, enter your email adress.</p>
+              <input
+                className="modalTextInput"
+                type="email"
+                name="restore_email"
+                id="restore_email"
+                placeholder="example@gmail.com"
+                value={restoreEmail}
+                onChange={onRestoreEmailFieldChange}
+              />
+            </>
+          )}
         </Modal>
       )}
       <Spinner active={isSignLoader} />

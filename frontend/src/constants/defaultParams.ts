@@ -191,7 +191,7 @@ export const DEFAULT_SIGNUP_FIELDS: ISignFormElement[] = [
     label: 'Password',
     name: 'password',
     value: 'password',
-    placeholder: 'pass',
+    placeholder: 'password',
     type: 'password',
     validator: composeValidators(isRequired, isLongPassword, isLatinOrNumbers),
   },
@@ -200,15 +200,19 @@ export const DEFAULT_SIGNUP_FIELDS: ISignFormElement[] = [
 export const DEFAULT_RESTORE_PASSWORD_FIELDS: ISignFormElement[] = [
   {
     label: 'Password',
+    name: 'password',
     value: 'password',
     placeholder: 'new password',
-    type: 'text',
+    type: 'password',
+    validator: composeValidators(isRequired, isLongPassword, isLatinOrNumbers),
   },
   {
     label: 'Confirm password ',
+    name: 'confirmPassword',
     value: 'confirmPassword',
     placeholder: 'confirm password',
-    type: 'text',
+    type: 'password',
+    validator: isRequired,
   },
 ];
 

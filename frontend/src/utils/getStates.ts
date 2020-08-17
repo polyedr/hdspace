@@ -1,6 +1,7 @@
 import { ISignFormElement, ISignFormFields } from '$constants/defaultParams';
 
 export const getInitialFieldsState = (
+  // TODO remove
   fields: ISignFormElement[],
 ): ISignFormFields =>
   fields.reduce(

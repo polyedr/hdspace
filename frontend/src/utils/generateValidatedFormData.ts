@@ -11,6 +11,7 @@ export interface INewFormData {
 }
 
 export const generateValidatedFormData = (
+  // TODO remove
   formData: ISignFormFields,
   isUsernameAndPasswordCheck: boolean = true,
 ): INewFormData => {

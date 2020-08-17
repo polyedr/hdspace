@@ -1,24 +1,20 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 
+import { Form } from 'react-final-form';
 import { AppReduxState } from '$shared/types/app';
 import { Button } from '$components/UI/Button';
 import { Spinner } from '$components/UI/Spinner';
 import { openSignScreen } from '$utils/history';
-import { getInitialFieldsState } from '$utils/getStates';
 import {
   DEFAULT_RESTORE_PASSWORD_FIELDS,
   DEFAULT_RESPONSE_ERROR,
-  ISignFormFields,
 } from '$constants/defaultParams';
 import { IApiResponseError } from '$redux/user/reducer';
 import * as Actions from '$redux/user/actions';
-import { SignFormList } from '$components/User/SignFormList';
-import {
-  generateValidatedFormData,
-  INewFormData,
-} from '$utils/generateValidatedFormData';
+
+import { FormField } from '../FormField/FormField';
 
 const styles = require('./PasswordRestore.scss');
 
@@ -39,16 +35,22 @@ type IProps = typeof mapDispatchToProps & {
   isSignLoader: boolean;
 };
 
+type FormData = {
+  password: string;
+  confirmPassword: string;
+};
+
+const initialValues: FormData = {
+  password: '',
+  confirmPassword: '',
+};
+
 const UnconnectedPasswordRestore: React.FC<IProps> = ({
   isSignLoader,
   apiResponseError,
   setApiResponseError,
   setNewPassword,
 }) => {
-  const [restorePassword, setRestorePassword] = useState<ISignFormFields>(
-    getInitialFieldsState(DEFAULT_RESTORE_PASSWORD_FIELDS),
-  );
-
   const handleCloseButton = useCallback(() => {
     if (apiResponseError.errorStatus !== -1) {
       setApiResponseError(DEFAULT_RESPONSE_ERROR);
@@ -57,71 +59,76 @@ const UnconnectedPasswordRestore: React.FC<IProps> = ({
     openSignScreen('signin');
   }, [setApiResponseError, apiResponseError]);
 
-  const handleFormSubmit = useCallback(
-    (event) => {
-      event.preventDefault();
+  const handleFormSubmit = (values: FormData) => {
+    if (apiResponseError.errorStatus !== -1) {
+      setApiResponseError(DEFAULT_RESPONSE_ERROR);
+    }
 
-      if (apiResponseError.errorStatus !== -1) {
-        setApiResponseError(DEFAULT_RESPONSE_ERROR);
-      }
-
-      const newRestorePassword: INewFormData = generateValidatedFormData(
-        restorePassword,
-      );
-
-      setRestorePassword(newRestorePassword.formData);
-
-      if (!newRestorePassword.isValidationError) {
-        setNewPassword(newRestorePassword.formData.password.value);
-      }
-    },
-    [apiResponseError, setApiResponseError, restorePassword, setNewPassword],
-  );
-
-  const handleInputChange = useCallback(
-    ({ target }) => {
-      const newRestorePassword = {
-        ...restorePassword,
-        [target.name]: {
-          ...restorePassword[target.name],
-          value: target.value,
-        },
-      };
-
-      setRestorePassword(newRestorePassword);
-    },
-    [restorePassword],
-  );
+    setNewPassword(values.password);
+  };
 
   return (
     <div className={styles.restoreContainer}>
-      <form className={styles.restoreForm} onSubmit={handleFormSubmit}>
-        <SignFormList
-          fields={DEFAULT_RESTORE_PASSWORD_FIELDS}
-          formData={restorePassword}
-          handleInputChange={handleInputChange}
-        />
-        {apiResponseError.errorStatus !== -1 && (
-          <p className="signAuthorisationErrorText">
-            {apiResponseError.errorText}
-          </p>
+      <Form
+        onSubmit={handleFormSubmit}
+        initialValues={initialValues}
+        subscription={{ submitError: true, submitting: true }}
+        validate={(values: FormData) => {
+          const errors = {} as { [key in keyof FormData]: string };
+
+          if (values.confirmPassword !== values.password) {
+            errors.confirmPassword = 'Entered passwords must be identical';
+          }
+          return errors;
+        }}
+      >
+        {({ handleSubmit, submitError, submitting }) => (
+          <form onSubmit={handleSubmit}>
+            <p className={styles.signinTitle}>Change your password:</p>
+            {DEFAULT_RESTORE_PASSWORD_FIELDS.map(
+              ({ name, placeholder, label, type, validator }) => (
+                <FormField
+                  name={name}
+                  placeholder={placeholder}
+                  label={label}
+                  type={type}
+                  validator={validator}
+                />
+              ),
+            )}
+            <div className="signButtonBlock">
+              {!!submitError && (
+                <p className="signAuthorisationErrorText">{submitError}</p>
+              )}
+              {apiResponseError.errorStatus !== -1 && (
+                <p className="signAuthorisationErrorText">
+                  {apiResponseError.errorText}
+                </p>
+              )}
+              <Button
+                className={classNames(styles.restoreBtn, 'signSubmitBtn')}
+                onClick={handleCloseButton}
+              >
+                Close
+              </Button>
+              <Button
+                className="signSubmitBtn"
+                type="submit"
+                styleType="none"
+                disabled={submitting}
+              >
+                Confirm
+              </Button>
+            </div>
+          </form>
         )}
-        <div className={styles.restoreBtnBlock}>
-          <Button
-            className={classNames(styles.restoreBtn, 'signSubmitBtn')}
-            onClick={handleCloseButton}
-          >
-            Close
-          </Button>
-          <Button className="signSubmitBtn" type="submit">
-            Confirm
-          </Button>
-        </div>
-      </form>
+      </Form>
       <Spinner active={isSignLoader} />
     </div>
   );
 };
+
+// TODO check confirm buttons disabled if error
 
 export const PasswordRestore = connect(
   mapStateToProps,
