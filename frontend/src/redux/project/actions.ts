@@ -121,17 +121,6 @@ export const delScreen = (
   payload: { projectID, screenID },
 });
 
-export const softDelScreen = (
-  projectId: number,
-  screenId: number,
-): T.SoftDeleteScreen => ({
-  type: TYPES.SOFT_DELETE_SCREEN,
-  payload: {
-    projectId,
-    screenId,
-  },
-});
-
 export const renameScreen = (
   projectID: number,
   screenID: number,

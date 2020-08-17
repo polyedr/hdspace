@@ -581,6 +581,7 @@ export interface IProjectScreen {
   screenscenario: number[];
   listSortable: IListSortable;
   buoyancy: number;
+  projectscreen: number[];
   // removed screen_data_json, ask if it will be needed on backend
 }
 

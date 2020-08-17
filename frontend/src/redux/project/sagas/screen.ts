@@ -19,7 +19,6 @@ import {
   setLoader,
   setActiveItem,
   setScreens,
-  softDelScreen,
 } from '$redux/project/actions';
 import * as Actions from '$redux/project/actions';
 import { generateUniqueName } from '$utils/generateUniqueName';
@@ -51,7 +50,6 @@ import { convertCreatedElementToRequest } from '$api/converters/toRequest';
 import { LibraryElementUnion, LibraryElement, Project } from '$api/types';
 import {
   apiAddScreen,
-  apiDelScreen,
   apiGetAllScreen,
   apiGetScreen,
   apiSaveScreen,
@@ -61,6 +59,7 @@ import { ReturnPromisedType } from '$shared/types';
 import { reqWrapper } from '.';
 import { selectors, T } from '..';
 import { createContainer, updateElementsTree } from './scenario';
+import { apiSaveProject } from '$api/project';
 
 export function* activateScreenSaga({
   payload,
@@ -362,8 +361,9 @@ export function* saveScreenSaga({
   console.log('save', { resultScreen, resultScenarios, resultElements });
 }
 
-export function* delScreenSaga({ payload }: ReturnType<typeof delScreen>) {
-  const { projectID, screenID } = payload;
+export function* delScreenSaga({
+  payload: { projectID, screenID },
+}: ReturnType<typeof delScreen>) {
   const currentScreen: ReturnType<typeof selectors.selectCurrentScreen> = yield select(
     selectors.selectCurrentScreen,
   );
@@ -374,8 +374,18 @@ export function* delScreenSaga({ payload }: ReturnType<typeof delScreen>) {
   if (currentProject.projectscreen.length < 2) {
     return;
   }
+  const newScreenIdList = currentProject.projectscreen.filter(
+    (id) => id !== screenID,
+  );
 
-  yield call(reqWrapper, apiDelScreen, { id: screenID });
+  yield call(reqWrapper, apiSaveProject, {
+    data: {
+      projectscreen: newScreenIdList,
+      id: projectID,
+    },
+  });
+
+  // yield call(reqWrapper, apiDelScreen, { id: screenID });
 
   const result: Project = R.assoc(
     'projectscreen',
@@ -402,13 +412,6 @@ export function* delScreenSaga({ payload }: ReturnType<typeof delScreen>) {
     yield put(push(`/project/${projectID}/${lastScreenID}`));
   }
   // yield call(getListProjectSaga);
-}
-
-export function* softDeleteScreenSaga({
-  payload: { screenId, projectId },
-}: ReturnType<typeof softDelScreen>) {
-  // yield call(reqWrapper, apiSaveProject, { data: {} });
-  yield console.log(screenId, projectId);
 }
 
 export function* renameScreenSaga({

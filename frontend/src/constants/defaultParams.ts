@@ -83,6 +83,7 @@ export const DEFAULT_SCREEN: IProjectScreen = {
   buoyancy: 0,
   image: null,
   listSortable: DEFAULT_LS,
+  projectscreen: [],
 };
 
 export const DEFAULT_ROOT: LibraryElement<'root'> = {
