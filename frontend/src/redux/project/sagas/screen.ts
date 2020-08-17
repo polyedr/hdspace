@@ -404,10 +404,10 @@ export function* delScreenSaga({ payload }: ReturnType<typeof delScreen>) {
   // yield call(getListProjectSaga);
 }
 
-export function* softScreenDeleteSaga({
+export function* softDeleteScreenSaga({
   payload: { screenId, projectId },
 }: ReturnType<typeof softDelScreen>) {
-  // yield call(reqWrapper, apiSaveProject, )
+  // yield call(reqWrapper, apiSaveProject, { data: {} });
   yield console.log(screenId, projectId);
 }
 

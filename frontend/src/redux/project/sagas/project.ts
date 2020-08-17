@@ -111,24 +111,13 @@ export function* addProjectSaga({
   payload: { name },
 }: ReturnType<typeof Actions.addProject>) {
   const projectData = convertCreatedProjectToRequest(name);
-  let project: Project = yield call(reqWrapper, apiAddProject, {
+  const project: Project = yield call(reqWrapper, apiAddProject, {
     data: projectData,
   });
 
   if (!project) {
     // TODO: write communication for such case
     console.error('cannot create project', project);
-    return;
-  }
-
-  const newName = `${project.name}-${project.id}`;
-
-  project = yield call(reqWrapper, apiSaveProject, {
-    data: { ...project, name: newName },
-  });
-
-  if (!project) {
-    console.error('Cannot rename project', name);
     return;
   }
 
