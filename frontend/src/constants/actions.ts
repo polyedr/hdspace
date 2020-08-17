@@ -45,6 +45,7 @@ export const TYPES = {
   // Screen Actions
   SET_SCREEN_LOADER: 'screens:SET_SCREEN_LOADER',
   DELETE_SCREEN: 'screens:DELETE_SCREEN',
+  RESTORE_SCREEN: 'screens:RESTORE_SCREEN',
   SOFT_DELETE_SCREEN: 'screens:SOFT_DELETE_SCREEN',
   ADD_SCREEN: 'screens:ADD_SCREEN',
   RENAME_SCREEN: 'screens:RENAME_SCREEN',

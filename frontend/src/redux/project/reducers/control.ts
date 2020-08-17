@@ -41,6 +41,16 @@ export const controlReducer = (
       return newState;
     }
 
+    case TYPES.DELETE_SCREEN: {
+      if (!action.meta.undo) {
+        return {
+          ...state,
+          history: [...state.history, action],
+        };
+      }
+      return state;
+    }
+
     case TYPES.SET_UNDO_ACTIONS: {
       return {
         ...state,

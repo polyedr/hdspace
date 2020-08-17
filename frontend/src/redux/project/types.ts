@@ -155,8 +155,8 @@ export type DeleteScreen = IAction<
   typeof TYPES.DELETE_SCREEN,
   { projectID: number; screenID: number }
 >;
-export type SoftDeleteScreen = IAction<
-  typeof TYPES.SOFT_DELETE_SCREEN,
+export type RestoreScreen = IAction<
+  typeof TYPES.RESTORE_SCREEN,
   { projectId: number; screenId: number }
 >;
 export type RenameScreen = IAction<
@@ -428,7 +428,8 @@ export type Action =
   | RemoveSharedStyles
   | UpdateSharedStyles
   | AddElementClassName
-  | Logout;
+  | Logout
+  | RestoreScreen;
 
 export type ItemToCopyInfo = {
   id: string;

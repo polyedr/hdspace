@@ -952,6 +952,7 @@ export default function* projectSaga() {
   yield takeEvery(TYPES.DUPLICATE_SCREEN, duplicateScreenSaga);
   yield takeLatest(TYPES.SAVE_SCREEN, screenSaga.saveScreenSaga);
   yield takeLatest(TYPES.DELETE_SCREEN, screenSaga.delScreenSaga);
+  yield takeEvery(TYPES.RESTORE_SCREEN, screenSaga.restoreScreenSaga);
   yield takeLatest(TYPES.RENAME_SCREEN, screenSaga.renameScreenSaga);
   yield takeEvery(TYPES.MOVE_ELEMENT, moveElementSaga);
 

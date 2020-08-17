@@ -121,6 +121,17 @@ export const delScreen = (
   payload: { projectID, screenID },
 });
 
+export const restoreScreen = (
+  screenId: number,
+  projectId: number,
+): T.RestoreScreen => ({
+  type: TYPES.RESTORE_SCREEN,
+  payload: {
+    screenId,
+    projectId,
+  },
+});
+
 export const renameScreen = (
   projectID: number,
   screenID: number,
