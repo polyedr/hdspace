@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import classNames from 'classnames';
+import cn from 'classnames';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { IMAGES } from '$constants/images';
@@ -52,9 +52,10 @@ export const LeftPanel: React.FunctionComponent<LeftPanelProps> = ({
       className={`${styles.leftPanel} ${isLPanelMinimized && styles.minPanel}`}
     >
       <div
-        className={`${styles.profileBlock} ${
-          isLPanelMinimized && styles.profileBlock_minimized
-        }`}
+        className={cn(
+          styles.profileBlock,
+          isLPanelMinimized && styles.profileBlock_minimized,
+        )}
       >
         <NavLink
           to="/profile"
@@ -86,14 +87,11 @@ export const LeftPanel: React.FunctionComponent<LeftPanelProps> = ({
       <nav className={styles.mainNavigation}>
         <ul className={styles.navigationList}>
           <li
-            className={classNames(
-              styles.navigationItem,
-              styles.navigationItem_column,
-            )}
+            className={cn(styles.navigationItem, styles.navigationItem_column)}
           >
             <div>
               <NavLink
-                className={classNames(
+                className={cn(
                   styles.navigationLink,
                   pathname === PATH_NAMES.projects &&
                     styles.navigationLink_active,
@@ -106,7 +104,7 @@ export const LeftPanel: React.FunctionComponent<LeftPanelProps> = ({
                 <span>My Projects</span>
               </NavLink>
               <Button
-                className={classNames(
+                className={cn(
                   styles.navigationExpandBtn,
                   isProjectsListActive && styles.navigationExpandBtn_active,
                 )}
@@ -117,7 +115,7 @@ export const LeftPanel: React.FunctionComponent<LeftPanelProps> = ({
               </Button>
             </div>
             <ul
-              className={classNames(
+              className={cn(
                 styles.navigationInnerList,
                 isProjectsListActive && styles.navigationInnerList_active,
               )}
@@ -130,12 +128,9 @@ export const LeftPanel: React.FunctionComponent<LeftPanelProps> = ({
                 maxHeight={165}
               >
                 {projects.map((project) => (
-                  <li
-                    key={project.id}
-                    className={classNames(styles.navigationItem)}
-                  >
+                  <li key={project.id} className={cn(styles.navigationItem)}>
                     <NavLink
-                      className={classNames(
+                      className={cn(
                         styles.navigationLink,
                         styles.navigationLink_inner,
                       )}
