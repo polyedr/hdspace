@@ -13,12 +13,12 @@ import { TopPanel } from '$components/TopPanel/TopPanel';
 import { LeftPanel } from '$components/LeftPanel/LeftPanel';
 import { selectors } from '$redux/project';
 import { Project } from '$api/types';
+import Profile from '$components/User/Profile';
 
 const styles = require('$styles/global.scss');
 
 const mapStateToProps = (state: AppReduxState) => ({
   isLPanelMinimized: state.user.isLPanelMinimized,
-  tokenPair: state.user.tokenPair,
   username: state.user.userData.username,
   projects: selectors.selectProjects(state),
   pathname: state.router.location.pathname,
@@ -26,7 +26,6 @@ const mapStateToProps = (state: AppReduxState) => ({
 
 const mapDispatchToProps = {
   changeMinLPanel: ActionsUser.changeMinLPanel,
-  setTokenPair: ActionsUser.setTokenPair,
   getListProject: ActionsProject.getListProject,
   setListProject: ActionsProject.setListProject,
 };
@@ -38,13 +37,11 @@ export type IAppProps = ReturnType<typeof mapStateToProps> &
 
 const EditorWindow: React.FC<IAppProps> = ({
   isLPanelMinimized,
-  tokenPair,
   setListProject,
   username,
   projects,
   pathname,
   changeMinLPanel,
-  setTokenPair,
 }) => {
   const dispatch = useDispatch();
 
@@ -58,11 +55,8 @@ const EditorWindow: React.FC<IAppProps> = ({
         pathname={pathname}
         projects={projects}
         username={username}
-        userType="Web Developer"
         isLPanelMinimized={isLPanelMinimized}
-        tokenPair={tokenPair}
         setListProject={setListProject}
-        setTokenPair={setTokenPair}
       />
       <div
         className={classNames(
@@ -82,6 +76,7 @@ const EditorWindow: React.FC<IAppProps> = ({
               path="/project/:projectID/:screenID?"
               component={EditorLogic}
             />
+            <Route path={PATH_NAMES.profile} component={Profile} />
             <Redirect from="/*" to={PATH_NAMES.projects} />
           </Switch>
         </div>

@@ -12,7 +12,7 @@ import {
 } from '$constants/defaultParams';
 import * as Actions from '$redux/user/actions';
 import { getInitialFieldsState } from '$utils/getStates';
-import { IApiResponseError } from '$redux/user/reducer';
+import { IApiResponseError } from '$redux/user/types';
 import { SignFormList } from '$components/User/SignFormList';
 import {
   generateValidatedFormData,
@@ -33,8 +33,8 @@ const mapStateToProps = ({
 
 const mapDispatchToProps = {
   restorePassword: Actions.restorePassword,
-  getTokenPair: Actions.getTokenPair,
   setApiResponseError: Actions.setApiResponseError,
+  login: Actions.login,
 };
 
 type IProps = typeof mapDispatchToProps & {
@@ -46,8 +46,8 @@ export const UnmountedSignIn: React.FC<IProps> = ({
   apiResponseError,
   isSignLoader,
   restorePassword,
-  getTokenPair,
   setApiResponseError,
+  login,
 }) => {
   const [formData, setFormData] = useState<ISignFormFields>(
     getInitialFieldsState(DEFAULT_SIGNIN_FIELDS),
@@ -86,13 +86,13 @@ export const UnmountedSignIn: React.FC<IProps> = ({
       setFormData(newFormData.formData);
 
       if (!newFormData.isValidationError) {
-        getTokenPair(
-          newFormData.formData.username.value,
-          newFormData.formData.password.value,
-        );
+        login({
+          username: newFormData.formData.username.value,
+          password: newFormData.formData.password.value,
+        });
       }
     },
-    [formData, getTokenPair, apiResponseError, setApiResponseError],
+    [formData, login, apiResponseError, setApiResponseError],
   );
 
   const handleOnChange = useCallback(

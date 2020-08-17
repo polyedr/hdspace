@@ -12,7 +12,7 @@ import {
   DEFAULT_RESPONSE_ERROR,
   ISignFormFields,
 } from '$constants/defaultParams';
-import { IApiResponseError } from '$redux/user/reducer';
+import { IApiResponseError } from '$redux/user/types';
 import * as Actions from '$redux/user/actions';
 import { SignFormList } from '$components/User/SignFormList';
 import {

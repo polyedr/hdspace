@@ -24,6 +24,7 @@ const userPersistConfig: PersistConfig = {
     'isNavPanelMinimized',
     'isPrototypeMode',
     'tokenPair',
+    'userData',
   ],
   storage,
 };
