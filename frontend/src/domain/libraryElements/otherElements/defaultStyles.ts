@@ -16,6 +16,7 @@ import {
   dropdownItemStyleControls,
   videoStyleControls,
   undefinedControls,
+  screenshotStyleControls,
 } from '$domain/core';
 import { CssLikeStyles } from '$utils/StyleHelper';
 
@@ -23,6 +24,7 @@ type RootControls = typeof rootStyleControls[number];
 type ContainerControls = typeof containerStyleControls[number];
 type DivBlockControls = typeof divBlockStyleControls[number];
 type ImageControls = typeof imageStyleControls[number];
+type ScreenshotControls = typeof screenshotStyleControls[number];
 type DropdownControls = typeof dropdownStyleControls[number];
 type DropdownMenuControls = typeof dropdownMenuStyleControls[number];
 type DropdownItemControls = typeof dropdownItemStyleControls[number];
@@ -110,6 +112,29 @@ export const defaultImageStyles: { [K in ImageControls]: CssLikeStyles } & {
     ...DEFAULT_SIZE,
     width: 'auto',
     height: 'auto',
+  },
+  border: {
+    ...DEFAULT_BORDER,
+  },
+  background: {
+    ...DEFAULT_BACKGROUND,
+  },
+};
+
+export const defaultScreenshotStyles: {
+  [K in ScreenshotControls]: CssLikeStyles;
+} = {
+  indents: {
+    ...DEFAULT_INDENTS,
+    'padding-top': '0',
+    'padding-right': '0',
+    'padding-bottom': '0',
+    'padding-left': '0',
+  },
+  size: {
+    ...DEFAULT_SIZE,
+    width: '100%',
+    height: '100%',
   },
   border: {
     ...DEFAULT_BORDER,

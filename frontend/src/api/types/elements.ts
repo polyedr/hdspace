@@ -22,6 +22,8 @@ import {
   VideoParameters,
   DropdownParameters,
   DropdownItemParameters,
+  PageTemplateParameters,
+  ScreenshotParameters,
 } from './elementsParameters';
 
 export type ServerElement<
@@ -48,9 +50,22 @@ export type ServerElement<
 };
 
 export type RootServerElement = ServerElement<'root', []>;
-export type ContainerServerElement = ServerElement<'container', []>;
+export type ContainerServerElement = ServerElement<
+  'container',
+  ServerElement<Entity>[]
+>;
 export type DivBlockServerElement = ServerElement<'divBlock'>;
+export type PageTemplateServerElement = ServerElement<
+  'pageTemplate',
+  ContainerServerElement[],
+  PageTemplateParameters
+>;
 export type ImageServerElement = ServerElement<'image', [], ImageParameters>;
+export type ScreenshotServerElement = ServerElement<
+  'screenshot',
+  [],
+  ScreenshotParameters
+>;
 export type ButtonServerElement = ServerElement<'button', [], ButtonParameters>;
 export type HyperlinkServerElement = ServerElement<
   'hyperlink',
@@ -176,7 +191,17 @@ export type LibraryElement<
 export type RootElement = LibraryElement<'root', []>;
 export type ContainerElement = LibraryElement<'container', []>;
 export type DivBlockElement = LibraryElement<'divBlock'>;
+export type PageTemplateElement = LibraryElement<
+  'pageTemplate',
+  ContainerElement[],
+  PageTemplateParameters
+>;
 export type ImageElement = LibraryElement<'image', [], ImageParameters>;
+export type ScreenshotElement = LibraryElement<
+  'screenshot',
+  [],
+  ScreenshotParameters
+>;
 export type ButtonElement = LibraryElement<'button', [], ButtonParameters>;
 export type HyperlinkElement = LibraryElement<
   'hyperlink',
@@ -265,6 +290,7 @@ export type LibraryElementUnion =
   | ContainerElement
   | DivBlockElement
   | ImageElement
+  | ScreenshotElement
   | ButtonElement
   | HyperlinkElement
   | TextinputElement
@@ -288,4 +314,5 @@ export type LibraryElementUnion =
   | DropdownElement
   | DropdownMenuElement
   | DropdownItemElement
+  | PageTemplateElement
   | UndefinedElement;

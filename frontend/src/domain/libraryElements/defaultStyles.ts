@@ -10,6 +10,7 @@ import {
   defaultDropdownItemStyles,
   defaultVideoStyles,
   defaultUndefinedStyles,
+  defaultScreenshotStyles,
 } from './otherElements/defaultStyles';
 import {
   defaultButtonStyles,
@@ -35,6 +36,7 @@ import {
   defaultCalendarStyles,
   defaultClockStyles,
 } from './widgetElements/defaultStyles';
+import { defaultPageTemplateStyles } from './blocksTemplates/defaultStyles';
 
 export const DEFAULT_ELEMENTS_STYLES: {
   [K in Entity]: { [key: string]: CssLikeStyles };
@@ -42,6 +44,7 @@ export const DEFAULT_ELEMENTS_STYLES: {
   root: defaultRootStyles,
   container: defaultContainerStyles,
   divBlock: defaultDivBlockStyles,
+  pageTemplate: defaultPageTemplateStyles,
   button: defaultButtonStyles,
   textinput: defaultTextinputStyles,
   textarea: defaultTextareaStyles,
@@ -56,6 +59,7 @@ export const DEFAULT_ELEMENTS_STYLES: {
   list: defaultListStyles,
   listItem: defaultListItemStyles,
   image: defaultImageStyles,
+  screenshot: defaultScreenshotStyles,
   select: defaultSelectStyles,
   selectMenu: defaultSelectMenuStyles,
   selectItem: defaultSelectItemStyles,

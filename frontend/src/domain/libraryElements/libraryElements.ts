@@ -27,18 +27,21 @@ import {
   DropdownItemServerElement,
   UndefinedServerElement,
   DivBlockServerElement,
+  PageTemplateServerElement,
+  ScreenshotServerElement,
 } from '$api/types';
 
 import {
   root,
-  container,
-  divBlock,
   image,
+  screenshot,
   video,
   dropdown,
   undefined,
   dropdownMenu,
   makeDropdownItem,
+  makeDivBlock,
+  makeContainer,
 } from './otherElements/otherElements';
 import {
   button,
@@ -61,6 +64,7 @@ import {
   makeParagraph,
 } from './typographyElements/typographyElements';
 import { map, calendar, clock } from './widgetElements/widgetElements';
+import { pageTemplate } from './blocksTemplates/blocksTemplates';
 
 export type ChildrenElements = {
   selectMenu: SelectMenuServerElement;
@@ -74,7 +78,9 @@ export type ElementsToAdd = {
   root: RootServerElement;
   container: ContainerServerElement;
   divBlock: DivBlockServerElement;
+  pageTemplate: PageTemplateServerElement;
   image: ImageServerElement;
+  screenshot: ScreenshotServerElement;
   button: ButtonServerElement;
   hyperlink: HyperlinkServerElement;
   textinput: TextinputServerElement;
@@ -103,9 +109,11 @@ export type LibraryEntities = LibraryElements;
 // WARN: every time you add or remove some LibraryElements in prod, you must write migration in db
 export const LIBRARY_ELEMENTS: LibraryElements = {
   root,
-  container,
-  divBlock,
+  container: makeContainer(),
+  divBlock: makeDivBlock('This is divBlock'),
+  pageTemplate,
   image,
+  screenshot,
   button,
   hyperlink,
   textinput,

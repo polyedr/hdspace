@@ -8,9 +8,12 @@ import {
   VideoServerElement,
   UndefinedServerElement,
   DivBlockServerElement,
+  ServerElement,
+  ScreenshotServerElement,
 } from '$api/types';
 import { IMAGES } from '$constants/images';
 import { CssLikeStyles } from '$utils/StyleHelper';
+import { Entity } from '$domain/core';
 
 import { makeParagraph } from '../typographyElements/typographyElements';
 
@@ -29,7 +32,13 @@ export const root: RootServerElement = {
   children: [],
 };
 
-export const container: ContainerServerElement = {
+export const makeContainer = ({
+  children,
+  ownStyles,
+}: {
+  children?: ServerElement<Entity>[];
+  ownStyles?: Required<CssLikeStyles>;
+} = {}): ContainerServerElement => ({
   buoyancy: 0,
   func_type: 'container',
   struct_type: 'container',
@@ -38,13 +47,13 @@ export const container: ContainerServerElement = {
   },
   styles: {
     classNames: ['container'],
-    ownStyles: {} as Required<CssLikeStyles>,
+    ownStyles: { ...ownStyles } as Required<CssLikeStyles>,
   },
   name: 'container',
-  children: [],
-};
+  children: children || [],
+});
 
-export const divBlock: DivBlockServerElement = {
+export const makeDivBlock = (textContent: string): DivBlockServerElement => ({
   buoyancy: 0,
   func_type: 'divBlock',
   struct_type: 'divBlock',
@@ -56,8 +65,8 @@ export const divBlock: DivBlockServerElement = {
     ownStyles: {} as Required<CssLikeStyles>,
   },
   name: 'divBlock',
-  children: [makeParagraph('This is divBlock')],
-};
+  children: [makeParagraph(textContent)],
+});
 
 export const image: ImageServerElement = {
   buoyancy: 0,
@@ -72,6 +81,22 @@ export const image: ImageServerElement = {
     ownStyles: {} as Required<CssLikeStyles>,
   },
   name: 'image',
+  children: [],
+};
+
+export const screenshot: ScreenshotServerElement = {
+  buoyancy: 0,
+  func_type: 'screenshot',
+  struct_type: 'screenshot',
+  parameters: {
+    group: 'undefined',
+    imageURL: IMAGES.imageIcon,
+  },
+  styles: {
+    classNames: ['screenshot'],
+    ownStyles: {} as Required<CssLikeStyles>,
+  },
+  name: 'screenshot',
   children: [],
 };
 

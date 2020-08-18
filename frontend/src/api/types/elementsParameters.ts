@@ -1,6 +1,12 @@
 /* eslint-disable camelcase */
 
+export type PageTemplateParameters = {}; // TODO remove if empty
+
 export type ImageParameters = {
+  imageURL: string;
+};
+
+export type ScreenshotParameters = {
   imageURL: string;
 };
 
