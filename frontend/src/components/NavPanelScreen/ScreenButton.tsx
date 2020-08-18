@@ -62,7 +62,7 @@ const ScreenButton: React.FC<Props> = ({
 
   const openScreen = () => {
     if (id === currentScreen.id) return;
-    dispatch(activateScreen(project, id));
+    dispatch(activateScreen(id));
   };
 
   const handleDuplicateScreen = (ev: MouseEvent) => {

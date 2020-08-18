@@ -111,7 +111,7 @@ export type DeleteProject = IAction<
 >;
 export type GetProject = IAction<
   typeof TYPES.GET_PROJECT,
-  { id: number; screenID?: string }
+  { id: number; screenID?: number }
 >;
 export type SetProject = IAction<
   typeof TYPES.SET_PROJECT,
@@ -174,7 +174,7 @@ export type DuplicateScreen = IAction<
 >;
 export type ActivateScreen = IAction<
   typeof TYPES.ACTIVATE_SCREEN,
-  { projectID: number; screenID: number },
+  { screenID: number },
   HistoryMeta
 >;
 export type MoveElement = IAction<
@@ -584,7 +584,6 @@ export interface IProjectScreen {
   screenscenario: number[];
   listSortable: IListSortable;
   buoyancy: number;
-  projectscreen: number[];
   // removed screen_data_json, ask if it will be needed on backend
 }
 

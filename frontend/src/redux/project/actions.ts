@@ -40,7 +40,7 @@ export const delProject = (id: number): T.DeleteProject => ({
   payload: { id },
 });
 
-export const getProject = (id: number, screenID?: string): T.GetProject => ({
+export const getProject = (id: number, screenID?: number): T.GetProject => ({
   type: TYPES.GET_PROJECT,
   payload: { id, screenID },
 });
@@ -161,14 +161,12 @@ export const duplicateScreen = (
   payload: { name, screenID },
 });
 
-// projectID is unused
 export const activateScreen = (
-  projectID: number,
   screenID: number,
   meta: HistoryMeta = {},
 ): T.ActivateScreen => ({
   type: TYPES.ACTIVATE_SCREEN,
-  payload: { projectID, screenID },
+  payload: { screenID },
   meta,
 });
 

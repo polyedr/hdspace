@@ -11,12 +11,10 @@ import { apiGetScenarios } from '$api/scenario';
 import { apiGetElements } from '$api/element';
 import { apiGetScreen, apiSaveScreen } from '$api/screen';
 import { ReturnPromisedType } from '$shared/types';
-import { AppReduxState } from '$shared/types/app';
 import { Page, IProjectScreen } from '$redux/project/types';
 import { activateScreenSaga, addScreenSaga } from '$redux/project/sagas/screen';
 import * as Actions from '$redux/project/actions';
 import { setScreens } from '$redux/project/actions';
-import { changePrototypeMode } from '$redux/user/actions';
 import {
   apiGetListProject,
   apiAddProject,
@@ -53,58 +51,42 @@ export function* getListProjectSaga(): SagaIterator {
 
 export function* getProjectSaga(action: ReturnType<typeof Actions.getProject>) {
   const { id, screenID } = action.payload;
-  const currentProject: ReturnType<typeof selectors.selectCurrentProject> = yield select(
-    selectors.selectCurrentProject,
-  );
-  const {
-    user: { isPrototypeMode },
-  }: AppReduxState = yield select();
 
-  if (currentProject.id === id) {
-    yield put(changePrototypeMode(isPrototypeMode));
-  } else {
-    yield put(changePrototypeMode(false));
+  yield put(Actions.setProjectLoader(true));
+
+  const project: ReturnPromisedType<typeof apiGetProject> = yield call(
+    reqWrapper,
+    apiGetProject,
+    { id },
+  );
+  if (!project) {
+    console.error(`Error while fetching project ${id}`);
+    return;
   }
 
-  if (!currentProject || currentProject.id !== id) {
-    yield put(Actions.setProjectLoader(true));
+  yield put(Actions.setProject(project));
 
-    const project: ReturnPromisedType<typeof apiGetProject> = yield call(
-      reqWrapper,
-      apiGetProject,
-      { id },
+  const screens: IProjectScreen[] = yield all(
+    project.projectscreen.map((screenId) =>
+      call(reqWrapper, apiGetScreen, { id: screenId }),
+    ),
+  );
+  yield put(setScreens(screens));
+
+  const finalScreenID = screenID || project.projectscreen[0];
+
+  if (finalScreenID) {
+    yield call(
+      activateScreenSaga,
+      Actions.activateScreen(Number(finalScreenID)),
     );
 
-    if (project) {
-      yield put(Actions.setProject(project));
-      const projectScreensIDs = project.projectscreen;
-      const finalScreenID =
-        screenID && projectScreensIDs.includes(Number(screenID))
-          ? screenID
-          : projectScreensIDs[0];
-
-      if (finalScreenID) {
-        yield call(
-          activateScreenSaga,
-          Actions.activateScreen(id, Number(finalScreenID)),
-        );
-        yield put(push(`/project/${id}/${finalScreenID}`));
-
-        const screens: IProjectScreen[] = yield all(
-          projectScreensIDs.map((screenId) =>
-            call(reqWrapper, apiGetScreen, { id: screenId }),
-          ),
-        );
-        yield put(setScreens(screens));
-      } else {
-        yield put(Actions.setScreen(DEFAULT_SCREEN));
-      }
-    } else {
-      // msg Error
-    }
-
-    yield put(Actions.setProjectLoader(false));
+    yield put(push(`/project/${id}/${finalScreenID}`));
+  } else {
+    yield put(Actions.setScreen(DEFAULT_SCREEN));
   }
+
+  yield put(Actions.setProjectLoader(false));
 }
 
 export function* addProjectSaga({

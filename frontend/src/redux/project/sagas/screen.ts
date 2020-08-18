@@ -39,7 +39,6 @@ import {
 import {
   apiSaveScenario,
   apiSetScenarioNeuralNetwork,
-  apiGetScenarios,
   apiSaveScenarios,
 } from '$api/scenario';
 import {
@@ -62,6 +61,7 @@ import { reqWrapper } from '.';
 import { selectors, T } from '..';
 import { createContainer, updateElementsTree } from './scenario';
 import { apiGetProject, apiSaveProject } from '$api/project';
+import { selectScreenById } from '$redux/project/selectors';
 
 export function* activateScreenSaga({
   payload,
@@ -78,37 +78,16 @@ export function* activateScreenSaga({
 
   yield put(setActiveItem(DEFAULT_ACTIVE_ITEM));
 
-  const screen: ReturnPromisedType<typeof apiGetScreen> = yield call(
-    reqWrapper,
-    apiGetScreen,
-    { id: screenID },
-  );
+  const screen: IProjectScreen = yield select(selectScreenById(screenID));
 
-  if (!screen) return;
-
-  const screenToActivate: IProjectScreen = {
-    ...DEFAULT_SCREEN,
-    ...R.omit(['screen_data_text'], screen),
-  };
-  yield put(setScreen(screenToActivate));
+  yield put(setScreen({ ...screen, listSortable: DEFAULT_LS }));
 
   yield put(Actions.setScenarioLoader(true));
 
-  const serverScreenScenarios: ReturnPromisedType<typeof apiGetScenarios> = yield call(
-    reqWrapper,
-    apiGetScenarios,
-    { screenID },
-  );
-
-  if (!serverScreenScenarios) return;
-
-  const rootScenario = serverScreenScenarios.find(
-    (x) => x.parent_id === -1,
-  ) as T.IScenarioItem;
   const scenarioElements: ReturnPromisedType<typeof apiGetElements> = yield call(
     reqWrapper,
     apiGetElements,
-    { scenariosIDs: [rootScenario.id] },
+    { scenariosIDs: [screen.screenscenario[0]] },
   );
   const [rootElement] = scenarioElements;
   const rootElementWithChildren: LibraryElement<'root'> = yield call(
@@ -434,7 +413,7 @@ export function* delScreenSaga({
     yield put(setScreen(DEFAULT_SCREEN));
     yield put(push(`/project/${projectID}`));
   } else if (lastScreenID !== currentScreen.id) {
-    yield put(activateScreen(projectID, lastScreenID));
+    yield put(activateScreen(lastScreenID));
     yield put(push(`/project/${projectID}/${lastScreenID}`));
   }
 }
@@ -464,7 +443,7 @@ export function* restoreScreenSaga({
 
   yield put(setProject(updatedProject));
 
-  yield put(activateScreen(projectId, screenId, { undo: true }));
+  yield put(activateScreen(screenId, { undo: true }));
 }
 
 export function* renameScreenSaga({
@@ -558,6 +537,6 @@ export function* getScreenNNSaga() {
   yield all([
     put(setProject(updateProject)),
     put(setScenarioElements(scenarioElements)),
-    put(activateScreen(currentProject.id, lastScreenId)),
+    put(activateScreen(lastScreenId)),
   ]);
 }

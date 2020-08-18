@@ -44,6 +44,9 @@ export function selectScreens(state: AppReduxState) {
   return selectProjectState(state).edit.screens;
 }
 
+export const selectScreenById = (id: number) => (state: AppReduxState) =>
+  selectProjectState(state).edit.screens.find((screen) => screen.id === id);
+
 export function selectNotification(state: AppReduxState) {
   return selectProjectState(state).edit.notification;
 }

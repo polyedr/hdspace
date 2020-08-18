@@ -18,7 +18,7 @@ export interface IMatch<P> {
 
 interface MatchParams {
   projectID: number;
-  screenID?: string;
+  screenID?: number;
 }
 
 const mapStateToProps = (state: AppReduxState) => ({

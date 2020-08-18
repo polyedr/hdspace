@@ -13,7 +13,7 @@ import { selectScreens } from '$redux/project/selectors';
 const styles = require('./NavPanelScreen.scss');
 
 type Props = {
-  screenID?: string;
+  screenID?: number;
   isNavPanelMinimized: EditorProps['isNavPanelMinimized'];
   onMinimizerNavPanel(): void;
   projectID: number;
