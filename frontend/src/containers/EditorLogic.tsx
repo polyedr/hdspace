@@ -27,7 +27,6 @@ const mapStateToProps = (state: AppReduxState) => ({
   isPrototypeMode: state.user.isPrototypeMode,
   currentScreen: selectors.selectCurrentScreen(state),
   scenarioLoader: selectors.selectScenarioLoader(state),
-  projectScreens: selectors.selectScreens(state),
   screenLoader: selectors.selectScreenLoader(state),
   projectLoader: selectors.selectProjectLoader(state),
 });
@@ -35,12 +34,8 @@ const mapStateToProps = (state: AppReduxState) => ({
 const mapDispatchToProps = {
   getProject: Actions.getProject,
   changeScreensOrder: Actions.changeScreensOrder,
-  activateScreen: Actions.activateScreen,
   addScreen: Actions.addScreen,
-  duplicateScreen: Actions.duplicateScreen,
   setScreen: Actions.setScreen,
-  delScreen: Actions.delScreen,
-  renameScreen: Actions.renameScreen,
   updateElementStyles: Actions.updateElementStyles,
   changeMinNavPanel: UserActions.changeMinNavPanel,
   resetScreenState: Actions.resetScreenState,
@@ -55,21 +50,15 @@ const EditorLogic: React.FC<EditorProps> = ({
   match: {
     params: { projectID, screenID },
   },
-  currentProject,
   currentScreen,
   isNavPanelMinimized,
   isPrototypeMode,
   scenarioLoader,
-  projectScreens,
   screenLoader,
   changeMinNavPanel,
   getProject,
   changeScreensOrder,
-  activateScreen,
   addScreen,
-  duplicateScreen,
-  delScreen,
-  renameScreen,
   updateElementStyles,
   resetScreenState,
   projectLoader,
@@ -80,16 +69,9 @@ const EditorLogic: React.FC<EditorProps> = ({
       onMinimizerNavPanel={changeMinNavPanel}
       projectID={projectID}
       screenID={screenID}
-      project={currentProject}
-      screen={currentScreen}
       getProject={getProject}
       changeScreensOrder={changeScreensOrder}
-      activateScreen={activateScreen}
       addScreen={addScreen}
-      duplicateScreen={duplicateScreen}
-      delScreen={delScreen}
-      renameScreen={renameScreen}
-      projectScreens={projectScreens}
     />
     <Editor
       screen={currentScreen}

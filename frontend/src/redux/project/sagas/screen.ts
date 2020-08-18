@@ -132,8 +132,6 @@ export function* activateScreenSaga({
     }),
   );
 
-  // yield put(Actions.clearHistory());
-
   yield put(Actions.setScenarioLoader(false));
   yield put(setScreenLoader(false));
 }
@@ -254,8 +252,6 @@ export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
       name: 'Root',
     }),
   );
-
-  // yield put(Actions.clearHistory());
 
   const currentProject: ReturnType<typeof selectors.selectCurrentProject> = yield select(
     selectors.selectCurrentProject,

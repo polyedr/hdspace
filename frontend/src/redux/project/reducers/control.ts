@@ -56,6 +56,17 @@ export const controlReducer = (
       return newState;
     }
 
+    case TYPES.RESET_SCREEN_STATE: {
+      return {
+        ...state,
+        undoActions: [],
+        redoActions: [],
+        history: [],
+        sourceAction: null,
+        remoteMove: false,
+      };
+    }
+
     case TYPES.SET_UNDO_ACTIONS: {
       return {
         ...state,
