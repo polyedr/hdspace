@@ -65,7 +65,13 @@ import { apiGetProject, apiSaveProject } from '$api/project';
 
 export function* activateScreenSaga({
   payload,
+  type,
+  meta,
 }: ReturnType<typeof activateScreen>) {
+  if (!meta) {
+    console.error(`You have to provide metainformation for action ${type}`);
+    return;
+  }
   const { screenID } = payload;
 
   yield put(setScreenLoader(true));
@@ -111,7 +117,12 @@ export function* activateScreenSaga({
     { id: rootElement.id },
   );
 
-  yield call(updateElementsTree, rootElementWithChildren);
+  yield call(
+    updateElementsTree,
+    rootElementWithChildren,
+    meta.undo ? restoreScreen(screenID, screen.project) : undefined,
+    meta,
+  );
 
   yield put(
     Actions.setActiveItem({
@@ -372,8 +383,15 @@ export function* saveScreenSaga({
 
 export function* delScreenSaga({
   payload: { projectID, screenID },
-  meta: { undo },
+  meta,
+  type,
 }: ReturnType<typeof delScreen>) {
+  if (!meta) {
+    console.error(`You have to provide metainformation for action ${type}`);
+    return;
+  }
+  const { undo } = meta;
+
   const currentScreen: ReturnType<typeof selectors.selectCurrentScreen> = yield select(
     selectors.selectCurrentScreen,
   );
@@ -450,7 +468,7 @@ export function* restoreScreenSaga({
 
   yield put(setProject(updatedProject));
 
-  yield put(activateScreen(projectId, screenId));
+  yield put(activateScreen(projectId, screenId, { undo: true }));
 }
 
 export function* renameScreenSaga({

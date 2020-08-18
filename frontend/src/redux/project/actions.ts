@@ -8,6 +8,7 @@ import { LibraryElement, Project } from '$api/types';
 
 import * as T from './types';
 import { TYPES } from '$constants/actions';
+import { HistoryMeta } from './types';
 
 export const getLibraryElements = (): T.LoadLibraryElements => ({
   type: TYPES.GET_LIBRARY_ELEMENTS,
@@ -116,9 +117,11 @@ export const removeNotification = (): T.RemoveNotification => ({
 export const delScreen = (
   projectID: number,
   screenID: number,
+  meta: HistoryMeta = {},
 ): T.DeleteScreen => ({
   type: TYPES.DELETE_SCREEN,
   payload: { projectID, screenID },
+  meta,
 });
 
 export const restoreScreen = (
@@ -162,9 +165,11 @@ export const duplicateScreen = (
 export const activateScreen = (
   projectID: number,
   screenID: number,
+  meta: HistoryMeta = {},
 ): T.ActivateScreen => ({
   type: TYPES.ACTIVATE_SCREEN,
   payload: { projectID, screenID },
+  meta,
 });
 
 export const moveElement = (

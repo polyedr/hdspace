@@ -153,7 +153,8 @@ export type SetScenarioLoader = IAction<
 >;
 export type DeleteScreen = IAction<
   typeof TYPES.DELETE_SCREEN,
-  { projectID: number; screenID: number }
+  { projectID: number; screenID: number },
+  HistoryMeta
 >;
 export type RestoreScreen = IAction<
   typeof TYPES.RESTORE_SCREEN,
@@ -173,7 +174,8 @@ export type DuplicateScreen = IAction<
 >;
 export type ActivateScreen = IAction<
   typeof TYPES.ACTIVATE_SCREEN,
-  { projectID: number; screenID: number }
+  { projectID: number; screenID: number },
+  HistoryMeta
 >;
 export type MoveElement = IAction<
   typeof TYPES.MOVE_ELEMENT,
@@ -627,5 +629,4 @@ export type Page = {
 export type HistoryMeta = {
   undo?: boolean;
   redo?: boolean;
-  add?: boolean;
 };

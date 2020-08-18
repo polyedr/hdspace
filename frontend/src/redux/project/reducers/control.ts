@@ -1,3 +1,4 @@
+import * as R from 'ramda';
 import { initialControl } from '$redux/project/initial';
 import * as T from '../types';
 import { TYPES } from '$constants/actions';
@@ -17,38 +18,42 @@ export const controlReducer = (
 ): T.ProjectControlState => {
   switch (action.type) {
     case TYPES.UPDATE_ELEMENTS_TREE: {
-      const newState = {
-        ...state,
-        rootElement: action.payload.root,
-      };
+      const {
+        meta: { undo, redo },
+        payload: { root, sourceAction },
+      } = action;
 
-      if (!action.meta.redo && !action.meta.undo) {
+      const { groupActionsUp, history } = state;
+
+      const newState = R.assoc('rootElement', root, state);
+
+      if (sourceAction && !redo && !undo) {
         newState.redoActions = [];
       }
 
-      if (action.payload.sourceAction && !action.meta.undo) {
-        newState.history = state.groupActionsUp
+      if (sourceAction && !undo) {
+        newState.history = groupActionsUp
           ? [
-              ...state.history.slice(0, -1),
-              [
-                state.history[state.history.length - 1],
-                action.payload.sourceAction,
-              ],
+              ...history.slice(0, -1),
+              [history[history.length - 1], sourceAction],
             ]
-          : [...state.history, action.payload.sourceAction];
+          : [...history, sourceAction];
       }
 
       return newState;
     }
 
     case TYPES.DELETE_SCREEN: {
-      if (!action.meta.undo) {
-        return {
-          ...state,
-          history: [...state.history, action],
-        };
+      const newState = { ...state };
+
+      if (!action.meta?.undo) {
+        newState.history = [...state.history, action];
       }
-      return state;
+      if (!action.meta?.undo && !action.meta?.redo) {
+        newState.redoActions = [];
+      }
+
+      return newState;
     }
 
     case TYPES.SET_UNDO_ACTIONS: {
