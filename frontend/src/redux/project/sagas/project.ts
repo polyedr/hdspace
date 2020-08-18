@@ -50,7 +50,6 @@ export function* getListProjectSaga(): SagaIterator {
 }
 
 export function* getProjectSaga(action: ReturnType<typeof Actions.getProject>) {
-  console.log('test');
   const { id, screenID } = action.payload;
 
   yield put(Actions.setProjectLoader(true));
