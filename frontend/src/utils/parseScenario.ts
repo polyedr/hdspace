@@ -56,6 +56,7 @@ const getCategoryTab = (
 ) => {
   switch (structType) {
     case 'divBlock':
+    case 'pageTemplate':
       return {
         Containers: [...(obj.Containers || []), libraryElements[structType]],
       };
@@ -124,6 +125,13 @@ export const getGroupElements = (
   switch (group) {
     case 'Containers':
       return listElement.Containers.map((x, idx) => ({
+        key: `key-${x.struct_type}-${x.func_type}-${idx}`,
+        value: { structType: x.struct_type, funcType: x.func_type },
+        label: `${x.struct_type}`,
+      }));
+
+    case 'Templates':
+      return listElement.Templates.map((x, idx) => ({
         key: `key-${x.struct_type}-${x.func_type}-${idx}`,
         value: { structType: x.struct_type, funcType: x.func_type },
         label: `${x.struct_type}`,
