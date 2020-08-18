@@ -26,6 +26,8 @@ export const ENTITIES: {
   video: 'video',
   undefined: 'undefined',
   divBlock: 'divBlock',
+  pageTemplate: 'pageTemplate',
+  screenshot: 'screenshot',
 };
 
 const CONTROLS_AFFECT_ON_PARAMS = [
@@ -34,6 +36,7 @@ const CONTROLS_AFFECT_ON_PARAMS = [
   'placeholder',
   'textContent',
   'image',
+  'screenshot',
   'value',
   'name',
   'showRipple',
@@ -189,6 +192,12 @@ export const imageStyleControls = [
   'border',
   'background',
 ] as const;
+export const screenshotStyleControls = [
+  'indents',
+  'size',
+  'border',
+  'background',
+] as const;
 export const selectStyleControls = [
   'indents',
   'size',
@@ -251,6 +260,14 @@ export const dropdownItemStyleControls = [
   'background',
 ] as const;
 export const videoStyleControls = ['indents', 'size', 'border'] as const;
+export const pageTemplateStyleControls = [
+  'indents',
+  'size',
+  'display',
+  'typography',
+  'border',
+  'background',
+] as const;
 export const undefinedControls = ['size', 'background'] as const;
 
 export type Control =
@@ -352,6 +369,12 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
   video: {
     root: [...videoStyleControls, 'videoSettings'],
   },
+  pageTemplate: {
+    root: [...pageTemplateStyleControls],
+  },
+  screenshot: {
+    root: [...screenshotStyleControls, 'screenshot'],
+  },
   undefined: {
     root: undefinedControls,
   },
@@ -434,5 +457,12 @@ export const AVAILABLE_CHILDREN: AvailableChildren = {
   },
   dropdownItem: {},
   video: {},
+  pageTemplate: {
+    all: {
+      min: 0,
+      max: Infinity,
+    },
+  },
+  screenshot: {},
   undefined: {},
 };

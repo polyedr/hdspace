@@ -43,6 +43,7 @@ import { VideoSettings } from '../Controls/VideoSettings/VideoSettings';
 import { RenameElement } from '../Controls/RenameElement/RenameElement';
 import { EditableStyles } from '../EditableStyles/EditableStyles';
 import { ShareStyles } from '../ShareStyles/ShareStyles';
+import { Screenshot } from '../Controls/Screenshot/Screenshot';
 
 const styles = require('./PropertiesPanel.scss');
 
@@ -93,6 +94,7 @@ const CONTROLS: Record<Control, React.ComponentType<any>> = {
   placeholder: Placeholder,
   textContent: TextContent,
   image: Image,
+  screenshot: Screenshot,
   type: Type,
   value: Value,
   name: Name,
