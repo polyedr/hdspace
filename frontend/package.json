@@ -20,9 +20,11 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npm run lint",
-      "pre-push": "npm run lint"
+      "pre-commit": "lint-staged"
     }
+  },
+  "lint-staged": {
+    "*.(ts|tsx)": ["eslint", "git add"]
   },
   "license": "MIT",
   "devDependencies": {
