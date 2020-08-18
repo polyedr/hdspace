@@ -63,9 +63,6 @@ const NavPanelScreen: React.FunctionComponent<INavPanelScreenProps> = memo(
       projectScreens,
     );
     const [modalMsgDanger, setModalMsgDanger] = React.useState<string>('');
-    const [modalDellScreen, setModalDellScreen] = React.useState<boolean>(
-      false,
-    );
 
     useEffect(() => {
       getProject(projectID, screenID);
@@ -100,7 +97,6 @@ const NavPanelScreen: React.FunctionComponent<INavPanelScreenProps> = memo(
     const cancelModal = useCallback(() => {
       setModalMsgDanger('');
       setModalRenameScreenOpen(false);
-      setModalDellScreen(false);
     }, []);
 
     const handleScreenAdd = useCallback(() => {
@@ -137,12 +133,11 @@ const NavPanelScreen: React.FunctionComponent<INavPanelScreenProps> = memo(
       [screens],
     );
 
-    const handleDelScreen = useCallback((e, id: number, name: string) => {
+    const handleDelScreen = (e: Event, id: number) => {
       e.preventDefault();
       e.stopPropagation();
-      setEditableScreen({ id, name });
-      setModalDellScreen(true);
-    }, []);
+      delScreen(projectID, id);
+    };
 
     const handleRenameModalConfirm = useCallback(
       (event) => {
@@ -160,16 +155,6 @@ const NavPanelScreen: React.FunctionComponent<INavPanelScreenProps> = memo(
         setScreens(newScreens);
       },
       [cancelModal, editableScreen, screens, projectID, renameScreen],
-    );
-
-    const onDelScreen = useCallback(
-      (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        cancelModal();
-        delScreen(projectID, editableScreen.id);
-      },
-      [cancelModal, editableScreen, projectID, delScreen],
     );
 
     const handleChange = useCallback(
@@ -248,9 +233,7 @@ const NavPanelScreen: React.FunctionComponent<INavPanelScreenProps> = memo(
                         <Button
                           className="delBtn"
                           styleType="none"
-                          onClick={(e) =>
-                            handleDelScreen(e, screenItem.id, screenItem.name)
-                          }
+                          onClick={(e) => handleDelScreen(e, screenItem.id)}
                         >
                           <Icon icon="delete" size={20} />
                         </Button>
@@ -285,21 +268,6 @@ const NavPanelScreen: React.FunctionComponent<INavPanelScreenProps> = memo(
                 required
               />
               {modalMsgDanger && <p>{modalMsgDanger}</p>}
-            </div>
-          </Modal>
-        )}
-
-        {modalDellScreen && (
-          <Modal
-            animClassName="bubbleAnimation"
-            title=""
-            confirmText="Delete"
-            onConfirm={(e) => onDelScreen(e)}
-            cancelText="Close"
-            onClose={cancelModal}
-          >
-            <div className={styles.modalBody}>
-              {`Delete Screen: ${editableScreen.name}`}
             </div>
           </Modal>
         )}
