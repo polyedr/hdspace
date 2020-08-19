@@ -4,7 +4,7 @@ import { ChildEntity, Entity } from '$domain/core';
 import { findChildByID } from '$utils/ElementsTreeHelper';
 import { LibraryElement } from '$api/types';
 import { CssLikeStyles } from '$utils/StyleHelper';
-import { DEFAULT_SCREEN } from '$constants/defaultParams';
+import { DEFAULT_PROJECT, DEFAULT_SCREEN } from '$constants/defaultParams';
 
 export const selectProjectState = makeFeatureStateSelector('project');
 
@@ -47,7 +47,7 @@ export function selectModifyElements(state: AppReduxState) {
 }
 
 export const selectCurrentScreen = (state: AppReduxState) => {
-  const activeScreenId = selectProjectState(state).edit.currentScreen;
+  const activeScreenId = selectProjectState(state).edit.currentScreenId;
   if (activeScreenId === -1) return DEFAULT_SCREEN;
   return (
     selectProjectState(state).data.screens.find(
@@ -80,7 +80,13 @@ export function selectLibraryElements(state: AppReduxState) {
 }
 
 export function selectCurrentProject(state: AppReduxState) {
-  return selectProjectState(state).edit.currentProject;
+  const { currentProjectId } = selectProjectState(state).edit;
+  if (currentProjectId === -1) return DEFAULT_PROJECT;
+  return (
+    selectProjectState(state).data.listProject.find(
+      ({ id }) => id === currentProjectId,
+    ) || DEFAULT_PROJECT
+  );
 }
 
 export function selectRootElement(state: AppReduxState) {

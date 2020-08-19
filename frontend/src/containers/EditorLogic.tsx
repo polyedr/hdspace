@@ -35,7 +35,7 @@ const mapDispatchToProps = {
   getProject: Actions.getProject,
   changeScreensOrder: Actions.changeScreensOrder,
   addScreen: Actions.addScreen,
-  setScreen: Actions.setScreen,
+  setScreen: Actions.setCurrentScreenId,
   updateElementStyles: Actions.updateElementStyles,
   changeMinNavPanel: UserActions.changeMinNavPanel,
   resetScreenState: Actions.resetScreenState,

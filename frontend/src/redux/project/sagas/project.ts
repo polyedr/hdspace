@@ -18,7 +18,7 @@ import {
   getScreenSaga,
 } from '$redux/project/sagas/screen';
 import * as Actions from '$redux/project/actions';
-import { setScreens } from '$redux/project/actions';
+import { setProject, setProjectList, setScreens } from '$redux/project/actions';
 import {
   apiGetListProject,
   apiAddProject,
@@ -35,6 +35,7 @@ import { reqWrapper } from '$redux/project/sagas/index';
 import { generateFontFace } from '$utils/generateFontFace';
 
 import { selectors, T } from '..';
+import { selectProjects } from '$redux/project/selectors';
 
 export function* getListProjectSaga(): SagaIterator {
   yield put(Actions.setProjectListLoader(true));
@@ -67,7 +68,7 @@ export function* getProjectSaga(action: ReturnType<typeof Actions.getProject>) {
     return;
   }
 
-  yield put(Actions.setProject(project));
+  yield put(Actions.setCurrentProjectId(project.id));
 
   const screens = yield all(
     project.projectscreen.map((screenId) => getScreenSaga(screenId)),
@@ -85,7 +86,7 @@ export function* getProjectSaga(action: ReturnType<typeof Actions.getProject>) {
 
     yield put(push(`/project/${id}/${finalScreenID}`));
   } else {
-    yield put(Actions.setScreen(-1));
+    yield put(Actions.setCurrentScreenId(-1));
   }
 
   yield put(Actions.setProjectLoader(false));
@@ -336,23 +337,19 @@ export function* delProjectSaga({
 
 export function* renameProjectSaga({
   payload: { projectID, name },
-}: ReturnType<typeof Actions.renameProject>): SagaIterator {
-  const listProject: ReturnType<typeof selectors.selectProjects> = yield select(
+}: ReturnType<typeof Actions.renameProject>) {
+  const projectList: ReturnType<typeof selectors.selectProjects> = yield select(
     selectors.selectProjects,
   );
   const currentProject: ReturnType<typeof selectors.selectCurrentProject> = yield select(
     selectors.selectCurrentProject,
   );
 
-  const currProject = listProject.find((project) => project.id === projectID);
+  const updatedProject = yield call(reqWrapper, apiSaveProject, {
+    data: { id: projectID, name, projectscreen: currentProject.projectscreen },
+  });
 
-  if (!currProject) return;
-
-  const data = { ...currProject, name };
-
-  const updatedProject = yield call(reqWrapper, apiSaveProject, { data });
-
-  const newListProject = listProject.map((project) => {
+  const newListProject = projectList.map((project) => {
     if (project.id === projectID) {
       return updatedProject;
     }
@@ -361,10 +358,6 @@ export function* renameProjectSaga({
   });
 
   yield put(Actions.setProjectList(newListProject));
-
-  if (currentProject.id === projectID) {
-    yield put(Actions.setProject(updatedProject));
-  }
 }
 
 export function* changeScreensOrderSaga(
@@ -419,4 +412,17 @@ export function* updateProjectSaga(
   );
 
   yield put(Actions.updateElementsTree(root, action, { redo, undo }));
+}
+
+export function* setProjectSaga({ payload }: ReturnType<typeof setProject>) {
+  const projects: Project[] = yield select(selectProjects);
+
+  const newProjectList = projects.map((project) => {
+    if (project.id === payload.project.id) {
+      return payload.project;
+    }
+    return project;
+  });
+
+  yield put(setProjectList(newProjectList));
 }

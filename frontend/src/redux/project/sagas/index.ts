@@ -25,6 +25,7 @@ import {
   exportProjectSaga,
   updateProject,
   updateProjectSaga,
+  setProjectSaga,
 } from '$redux/project/sagas/project';
 import {
   wrapIntoContainerSaga,
@@ -946,6 +947,7 @@ export default function* projectSaga() {
   yield takeLatest(TYPES.EXPORT_PROJECT, exportProjectSaga);
   yield takeLatest(TYPES.CHANGE_SCREENS_ORDER, changeScreensOrderSaga);
   yield takeLatest(TYPES.RENAME_PROJECT, renameProjectSaga);
+  yield takeEvery(TYPES.SET_PROJECT, setProjectSaga);
 
   yield takeLatest(TYPES.ACTIVATE_SCREEN, screenSaga.activateScreenSaga);
   yield takeLatest(TYPES.ADD_SCREEN, screenSaga.addScreenSaga);

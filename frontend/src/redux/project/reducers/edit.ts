@@ -18,8 +18,8 @@ export const editReducer = (
       };
     }
 
-    case TYPES.SET_PROJECT: {
-      return { ...state, currentProject: action.payload.project };
+    case TYPES.SET_CURRENT_PROJECT_ID: {
+      return { ...state, currentProjectId: action.payload.projectId };
     }
 
     case TYPES.SET_NOTIFICATION: {
@@ -30,8 +30,8 @@ export const editReducer = (
       return { ...state, notification: null };
     }
 
-    case TYPES.SET_SCREEN: {
-      return { ...state, currentScreen: action.payload.screenId };
+    case TYPES.SET_CURRENT_SCREEN_ID: {
+      return { ...state, currentScreenId: action.payload.screenId };
     }
 
     case TYPES.SET_SCENARIOS: {

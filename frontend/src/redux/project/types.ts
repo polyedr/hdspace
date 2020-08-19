@@ -38,8 +38,8 @@ export type ProjectUiState = {
 };
 
 export type ProjectEditState = {
-  currentProject: Project;
-  currentScreen: number;
+  currentProjectId: number;
+  currentScreenId: number;
   scenarios: IScenarios;
   scenarioElements: IScenarioElements;
   modifyElements: number[];
@@ -113,6 +113,10 @@ export type DeleteProject = IAction<
 export type GetProject = IAction<
   typeof TYPES.GET_PROJECT,
   { id: number; screenID?: number }
+>;
+export type SetCurrentProjectId = IAction<
+  typeof TYPES.SET_CURRENT_PROJECT_ID,
+  { projectId: number }
 >;
 export type SetProject = IAction<
   typeof TYPES.SET_PROJECT,
@@ -195,7 +199,10 @@ export type SaveScreen = IAction<
   { canvas: HTMLCanvasElement }
 >;
 export type ExportProject = IPlainAction<typeof TYPES.EXPORT_PROJECT>;
-export type SetScreen = IAction<typeof TYPES.SET_SCREEN, { screenId: number }>;
+export type SetScreen = IAction<
+  typeof TYPES.SET_CURRENT_SCREEN_ID,
+  { screenId: number }
+>;
 export type SetScreens = IAction<
   typeof TYPES.SET_SCREENS,
   { screens: IProjectScreen[] }
@@ -366,7 +373,7 @@ export type Action =
   | AddProject
   | DeleteProject
   | GetProject
-  | SetProject
+  | SetCurrentProjectId
   | ChangeScreensOrder
   | RenameProject
   | SetProjectListLoader
@@ -429,7 +436,8 @@ export type Action =
   | UpdateSharedStyles
   | AddElementClassName
   | Logout
-  | RestoreScreen;
+  | RestoreScreen
+  | SetProject;
 
 export type ItemToCopyInfo = {
   id: string;

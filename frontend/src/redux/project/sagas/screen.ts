@@ -11,9 +11,8 @@ import {
   delScreen,
   renameScreen,
   saveScreen,
-  setProject,
   setScenarioElements,
-  setScreen,
+  setCurrentScreenId,
   setScreenLoader,
   setModifyElements,
   setLoader,
@@ -21,6 +20,7 @@ import {
   setScreens,
   restoreScreen,
   setUndoActions,
+  setProject,
 } from '$redux/project/actions';
 import * as Actions from '$redux/project/actions';
 import { generateUniqueName } from '$utils/generateUniqueName';
@@ -75,7 +75,7 @@ export function* activateScreenSaga({
 
   const screen: IProjectScreen = yield select(selectScreenById(screenID));
 
-  yield put(setScreen(screen.id));
+  yield put(setCurrentScreenId(screen.id));
 
   yield put(Actions.setScenarioLoader(true));
 
@@ -239,7 +239,7 @@ export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
 
   yield put(setScreens([...screens, updatedScreen]));
 
-  yield put(setScreen(screen.id));
+  yield put(setCurrentScreenId(screen.id));
 
   yield put(push(`/project/${projectID}/${screen.id}`));
 }
@@ -300,7 +300,7 @@ export function* saveScreenSaga({
     data: formData,
   });
   const updateScreen = { ...currentScreen, ...resultScreen };
-  yield put(setScreen(screen.id));
+  // yield put(setScreen(screen.id));
   yield put(
     setProject({
       ...currentProject,
@@ -391,7 +391,7 @@ export function* delScreenSaga({
   yield put(setScreens(newScreens));
 
   if (!lastScreenID) {
-    yield put(setScreen(-1));
+    yield put(setCurrentScreenId(-1));
     yield put(push(`/project/${projectID}`));
   } else if (lastScreenID !== currentScreen.id) {
     yield put(activateScreen(lastScreenID));

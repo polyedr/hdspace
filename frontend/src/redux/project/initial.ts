@@ -1,8 +1,4 @@
-import {
-  DEFAULT_PROJECT,
-  DEFAULT_ACTIVE_ITEM,
-  DEFAULT_ROOT,
-} from '$constants/defaultParams';
+import { DEFAULT_ACTIVE_ITEM, DEFAULT_ROOT } from '$constants/defaultParams';
 
 import * as T from './types';
 
@@ -22,8 +18,8 @@ export const initialUi: T.ProjectUiState = {
 };
 
 export const initialEdit: T.ProjectEditState = {
-  currentProject: DEFAULT_PROJECT,
-  currentScreen: -1,
+  currentProjectId: -1,
+  currentScreenId: -1,
   scenarios: {},
   scenarioElements: {},
   modifyElements: [],
