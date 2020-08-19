@@ -3,11 +3,11 @@ import React from 'react';
 import cn from 'classnames';
 import { makeStyles } from '@material-ui/core';
 
-import { ImageRendererProps } from '../types';
+import { ScreenshotRendererProps } from '../types';
 
 const styles = require('../styles.scss');
 
-const Screenshot: React.FC<ImageRendererProps> = ({
+const Screenshot: React.FC<ScreenshotRendererProps> = ({
   id,
   params,
   sortableId,
