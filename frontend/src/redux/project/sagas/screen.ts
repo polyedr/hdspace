@@ -21,7 +21,6 @@ import {
   setScreens,
   restoreScreen,
   setUndoActions,
-  setScreenElement,
 } from '$redux/project/actions';
 import * as Actions from '$redux/project/actions';
 import { generateUniqueName } from '$utils/generateUniqueName';
@@ -80,17 +79,7 @@ export function* activateScreenSaga({
 
   yield put(Actions.setScenarioLoader(true));
 
-  let screenElement = yield select(selectScreenElement(screenID));
-
-  if (!screenElement) {
-    const [scenarioElement] = yield call(reqWrapper, apiGetElements, {
-      scenariosIDs: [screen.screenscenario[0]],
-    });
-
-    screenElement = convertElementFromResponse(scenarioElement);
-
-    yield put(setScreenElement(screenID, screenElement));
-  }
+  const screenElement = yield select(selectScreenElement(screenID));
 
   yield call(
     updateElementsTree,
@@ -238,16 +227,18 @@ export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
     ),
   });
 
+  screen.element = createdRootElement;
+
   const currentScreen: ReturnType<typeof selectors.selectCurrentScreen> = yield select(
     selectors.selectCurrentScreen,
   );
 
   const updatedScreen = { ...currentScreen, ...savedScreen };
-  yield put(setScreen(updatedScreen));
+  yield put(setProject(updateProject));
 
   yield put(setScreens([...screens, screen]));
 
-  yield put(setProject(updateProject));
+  yield put(setScreen({ ...updatedScreen, element: createdRootElement }));
 
   yield put(push(`/project/${projectID}/${screen.id}`));
 }
@@ -428,6 +419,12 @@ export function* restoreScreenSaga({
   const screen = yield call(reqWrapper, apiGetScreen, {
     id: screenId,
   });
+  const [element] = yield call(reqWrapper, apiGetElements, {
+    scenariosIDs: [screen.screenscenario[0]],
+  });
+
+  screen.element = convertElementFromResponse(element);
+
   yield put(setScreens([screen, ...screens]));
 
   yield put(setProject(updatedProject));
@@ -528,4 +525,14 @@ export function* getScreenNNSaga() {
     put(setScenarioElements(scenarioElements)),
     put(activateScreen(lastScreenId)),
   ]);
+}
+
+export function* getScreenSaga(screenId: number) {
+  const screen = yield call(reqWrapper, apiGetScreen, { id: screenId });
+  const [element] = yield call(reqWrapper, apiGetElements, {
+    scenariosIDs: [screen.screenscenario[0]],
+  });
+
+  screen.element = convertElementFromResponse(element);
+  return screen;
 }

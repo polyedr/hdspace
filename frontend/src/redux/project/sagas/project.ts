@@ -9,10 +9,14 @@ import * as R from 'ramda';
 
 import { apiGetScenarios } from '$api/scenario';
 import { apiGetElements } from '$api/element';
-import { apiGetScreen, apiSaveScreen } from '$api/screen';
+import { apiSaveScreen } from '$api/screen';
 import { ReturnPromisedType } from '$shared/types';
-import { Page, IProjectScreen } from '$redux/project/types';
-import { activateScreenSaga, addScreenSaga } from '$redux/project/sagas/screen';
+import { Page } from '$redux/project/types';
+import {
+  activateScreenSaga,
+  addScreenSaga,
+  getScreenSaga,
+} from '$redux/project/sagas/screen';
 import * as Actions from '$redux/project/actions';
 import { setScreens } from '$redux/project/actions';
 import {
@@ -66,11 +70,15 @@ export function* getProjectSaga(action: ReturnType<typeof Actions.getProject>) {
 
   yield put(Actions.setProject(project));
 
-  const screens: IProjectScreen[] = yield all(
-    project.projectscreen.map((screenId) =>
-      call(reqWrapper, apiGetScreen, { id: screenId }),
-    ),
+  const screens = yield all(
+    project.projectscreen.map((screenId) => getScreenSaga(screenId)),
   );
+
+  // const screens: IProjectScreen[] = yield all(
+  //   project.projectscreen.map((screenId) =>
+  //     call(reqWrapper, apiGetScreen, { id: screenId }),
+  //   ),
+  // );
   yield put(setScreens(screens));
 
   const finalScreenID = screenID || project.projectscreen[0];
