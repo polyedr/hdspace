@@ -40,7 +40,7 @@ djangorestframework-bulk==0.2.1
 djangorestframework-recursive==0.1.2
 djangorestframework-simplejwt==4.3.0
 djongo==1.2.32
-djoser==2.0.1
+djoser==2.0.3
 drf-nested-routers==0.91
 drf-writable-nested==0.6.0
 factory-boy==2.11.1
