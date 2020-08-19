@@ -23,7 +23,7 @@ type Props = {
 
 const ScreenButton: React.FC<Props> = ({
   screens,
-  screen: { id, project, name },
+  screen: { id, project, name, image },
 }) => {
   const dispatch = useDispatch();
   const currentScreen = useSelector(selectCurrentScreen);
@@ -112,7 +112,7 @@ const ScreenButton: React.FC<Props> = ({
         </div>
 
         <div className={classNames(styles.screenTab)}>
-          <span>{name}</span>
+          {image ? <img src={image} alt="img" /> : <span>{name}</span>}
         </div>
       </NavLink>
 

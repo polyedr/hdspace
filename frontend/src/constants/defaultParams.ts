@@ -82,6 +82,7 @@ export const DEFAULT_SCREEN: IProjectScreen = {
   screenscenario: [],
   buoyancy: 0,
   image: null,
+  element: undefined,
 };
 
 export const DEFAULT_ROOT: LibraryElement<'root'> = {

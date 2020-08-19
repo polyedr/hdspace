@@ -10,6 +10,7 @@ import {
   VideoSettingsType,
   InputType,
   Project,
+  LibraryElement,
 } from '$api/types';
 import { TYPES } from '$constants/actions';
 
@@ -357,6 +358,10 @@ export type PopUndoAction = IPlainAction<typeof TYPES.POP_UNDO_ACTION>;
 export type PopHistory = IPlainAction<typeof TYPES.POP_HISTORY>;
 export type SetGroupActionsUp = IAction<typeof TYPES.SET_GROUP_UP, boolean>;
 export type Logout = IPlainAction<typeof TYPES.LOGOUT>;
+export type SetScreenElement = IAction<
+  typeof TYPES.SET_SCREEN_ELEMENT,
+  { screenId: number; element: any }
+>;
 
 export type Action =
   | LoadLibraryElements
@@ -431,7 +436,8 @@ export type Action =
   | UpdateSharedStyles
   | AddElementClassName
   | Logout
-  | RestoreScreen;
+  | RestoreScreen
+  | SetScreenElement;
 
 export type ItemToCopyInfo = {
   id: string;
@@ -483,7 +489,7 @@ export type ListItem = {
   link: string;
 };
 
-export type LibraryElement = {
+export type ScenarioLibraryElement = {
   struct_type: ServerStructType;
   func_type: ServerStructType;
   func_type_human?: string;
@@ -583,6 +589,7 @@ export interface IProjectScreen {
   image: string | null;
   screenscenario: number[];
   buoyancy: number;
+  element: LibraryElement<'root'> | undefined;
   // removed screen_data_json, ask if it will be needed on backend
 }
 

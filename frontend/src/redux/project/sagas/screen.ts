@@ -21,6 +21,7 @@ import {
   setScreens,
   restoreScreen,
   setUndoActions,
+  setScreenElement,
 } from '$redux/project/actions';
 import * as Actions from '$redux/project/actions';
 import { generateUniqueName } from '$utils/generateUniqueName';
@@ -37,12 +38,7 @@ import {
   apiSetScenarioNeuralNetwork,
   apiSaveScenarios,
 } from '$api/scenario';
-import {
-  apiGetElements,
-  apiSaveElements,
-  apiAddElements,
-  apiGetElement,
-} from '$api/element';
+import { apiGetElements, apiSaveElements, apiAddElements } from '$api/element';
 import { convertCreatedElementToRequest } from '$api/converters/toRequest';
 import { LibraryElementUnion, LibraryElement, Project } from '$api/types';
 import {
@@ -57,7 +53,11 @@ import { reqWrapper } from '.';
 import { selectors, T } from '..';
 import { createContainer, updateElementsTree } from './scenario';
 import { apiGetProject, apiSaveProject } from '$api/project';
-import { selectScreenById } from '$redux/project/selectors';
+import {
+  selectScreenById,
+  selectScreenElement,
+} from '$redux/project/selectors';
+import { convertElementFromResponse } from '$api/converters/fromResponse';
 
 export function* activateScreenSaga({
   payload,
@@ -80,28 +80,28 @@ export function* activateScreenSaga({
 
   yield put(Actions.setScenarioLoader(true));
 
-  const scenarioElements: ReturnPromisedType<typeof apiGetElements> = yield call(
-    reqWrapper,
-    apiGetElements,
-    { scenariosIDs: [screen.screenscenario[0]] },
-  );
-  const [rootElement] = scenarioElements;
-  const rootElementWithChildren: LibraryElement<'root'> = yield call(
-    reqWrapper,
-    apiGetElement,
-    { id: rootElement.id },
-  );
+  let screenElement = yield select(selectScreenElement(screenID));
+
+  if (!screenElement) {
+    const [scenarioElement] = yield call(reqWrapper, apiGetElements, {
+      scenariosIDs: [screen.screenscenario[0]],
+    });
+
+    screenElement = convertElementFromResponse(scenarioElement);
+
+    yield put(setScreenElement(screenID, screenElement));
+  }
 
   yield call(
     updateElementsTree,
-    rootElementWithChildren,
+    screenElement,
     meta.undo ? restoreScreen(screenID, screen.project) : undefined,
     meta,
   );
 
   yield put(
     Actions.setActiveItem({
-      itemId: rootElementWithChildren.id,
+      itemId: screenElement.id,
       itemType: 'root',
       name: 'Root',
     }),

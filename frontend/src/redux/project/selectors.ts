@@ -15,6 +15,15 @@ export function selectScenarios(state: AppReduxState) {
   return selectProjectState(state).edit.scenarios;
 }
 
+export const selectScreenElement = (screenId: number) => (
+  state: AppReduxState,
+): LibraryElement<'root'> | undefined => {
+  const targetScreen = selectProjectState(state).edit.screens.find(
+    ({ id }) => id === screenId,
+  );
+  return targetScreen ? targetScreen.element : undefined;
+};
+
 export function selectScenario(state: AppReduxState, id: number) {
   return selectProjectState(state).edit.scenarios[id];
 }
