@@ -186,11 +186,11 @@ export const UnmountedSignIn: React.FC<IProps> = ({
         >
           {isRestoreEmailSend ? (
             <p>
-              <span>If there's an account for</span>
+              <span>If there&apos;s an account for</span>
               <span>{restoreEmail}</span>
               <span>
                 , you will get an email on how to reset your password. Check the
-                spam folder, as it may be there. If you've used a different
+                spam folder, as it may be there. If you&apos;ve used a different
                 service for logging in, please contact your administrator to
                 reset your password.
               </span>

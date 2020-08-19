@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Form } from 'react-final-form';
 import { NavLink } from 'react-router-dom';
+import { GoogleLogin } from 'react-google-login';
 
 import { AppReduxState } from '$shared/types/app';
 import { Info } from '$components/User/Info';
@@ -80,11 +81,23 @@ const UnconnectedSignUp: React.FunctionComponent<IProps> = ({
     );
   };
 
+  const responseGoogle = (response: any) => {
+    // eslint-disable-next-line no-console
+    console.log(response);
+  };
+
   return (
     <>
       <Info />
       <div className="signContainer">
         <div className={styles.formContainer}>
+          <GoogleLogin
+            clientId="http://97708805893-kqh3efrnsd7i8nbu30p0mhlvhub029he.apps.googleusercontent.com/"
+            buttonText="Login"
+            onSuccess={responseGoogle}
+            onFailure={responseGoogle}
+            cookiePolicy="single_host_origin"
+          />
           <Form
             onSubmit={handleFormSubmit}
             initialValues={initialValues}
