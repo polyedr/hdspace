@@ -15,6 +15,32 @@ export function dataReducer(
       return { ...state, listProject: action.payload.projects };
     }
 
+    case TYPES.SET_SCREENS: {
+      return { ...state, screens: action.payload.screens };
+    }
+
+    case TYPES.UPDATE_ELEMENTS_TREE: {
+      const { root } = action.payload;
+      const newState = { ...state };
+
+      newState.screens = newState.screens.map((screen) => {
+        const result = { ...screen };
+        if (screen.element?.id === root.id) {
+          result.element = root;
+        }
+        return result;
+      });
+
+      return newState;
+    }
+
+    case TYPES.RESET_SCREEN_STATE: {
+      return {
+        ...state,
+        screens: [],
+      };
+    }
+
     case TYPES.LOGOUT: {
       return {
         ...initialData,

@@ -26,7 +26,7 @@ import * as Actions from '$redux/project/actions';
 import { generateUniqueName } from '$utils/generateUniqueName';
 import { convertScenarioElements } from '$utils/parseScenario';
 import { getSavedValue } from '$utils/getSavedValue';
-import { DEFAULT_SCREEN, DEFAULT_ACTIVE_ITEM } from '$constants/defaultParams';
+import { DEFAULT_ACTIVE_ITEM } from '$constants/defaultParams';
 import {
   IProjectScreen,
   IScenarioItem,
@@ -75,7 +75,7 @@ export function* activateScreenSaga({
 
   const screen: IProjectScreen = yield select(selectScreenById(screenID));
 
-  yield put(setScreen({ ...screen }));
+  yield put(setScreen(screen.id));
 
   yield put(Actions.setScenarioLoader(true));
 
@@ -227,18 +227,19 @@ export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
     ),
   });
 
-  screen.element = createdRootElement;
-
   const currentScreen: ReturnType<typeof selectors.selectCurrentScreen> = yield select(
     selectors.selectCurrentScreen,
   );
 
   const updatedScreen = { ...currentScreen, ...savedScreen };
+
+  updatedScreen.element = createdRootElement;
+
   yield put(setProject(updateProject));
 
-  yield put(setScreens([...screens, screen]));
+  yield put(setScreens([...screens, updatedScreen]));
 
-  yield put(setScreen({ ...updatedScreen, element: createdRootElement }));
+  yield put(setScreen(screen.id));
 
   yield put(push(`/project/${projectID}/${screen.id}`));
 }
@@ -299,7 +300,7 @@ export function* saveScreenSaga({
     data: formData,
   });
   const updateScreen = { ...currentScreen, ...resultScreen };
-  yield put(setScreen(updateScreen));
+  yield put(setScreen(screen.id));
   yield put(
     setProject({
       ...currentProject,
@@ -390,7 +391,7 @@ export function* delScreenSaga({
   yield put(setScreens(newScreens));
 
   if (!lastScreenID) {
-    yield put(setScreen(DEFAULT_SCREEN));
+    yield put(setScreen(-1));
     yield put(push(`/project/${projectID}`));
   } else if (lastScreenID !== currentScreen.id) {
     yield put(activateScreen(lastScreenID));

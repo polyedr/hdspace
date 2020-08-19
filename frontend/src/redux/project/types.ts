@@ -25,6 +25,7 @@ export type ProjectState = {
 export type ProjectDataState = {
   libraryElements: LibraryEntities;
   listProject: Project[];
+  screens: IProjectScreen[];
 };
 
 export type ProjectUiState = {
@@ -38,8 +39,7 @@ export type ProjectUiState = {
 
 export type ProjectEditState = {
   currentProject: Project;
-  currentScreen: IProjectScreen;
-  screens: IProjectScreen[];
+  currentScreen: number;
   scenarios: IScenarios;
   scenarioElements: IScenarioElements;
   modifyElements: number[];
@@ -195,10 +195,7 @@ export type SaveScreen = IAction<
   { canvas: HTMLCanvasElement }
 >;
 export type ExportProject = IPlainAction<typeof TYPES.EXPORT_PROJECT>;
-export type SetScreen = IAction<
-  typeof TYPES.SET_SCREEN,
-  { screen: IProjectScreen }
->;
+export type SetScreen = IAction<typeof TYPES.SET_SCREEN, { screenId: number }>;
 export type SetScreens = IAction<
   typeof TYPES.SET_SCREENS,
   { screens: IProjectScreen[] }
@@ -358,10 +355,6 @@ export type PopUndoAction = IPlainAction<typeof TYPES.POP_UNDO_ACTION>;
 export type PopHistory = IPlainAction<typeof TYPES.POP_HISTORY>;
 export type SetGroupActionsUp = IAction<typeof TYPES.SET_GROUP_UP, boolean>;
 export type Logout = IPlainAction<typeof TYPES.LOGOUT>;
-export type SetScreenElement = IAction<
-  typeof TYPES.SET_SCREEN_ELEMENT,
-  { screenId: number; element: any }
->;
 
 export type Action =
   | LoadLibraryElements
@@ -436,8 +429,7 @@ export type Action =
   | UpdateSharedStyles
   | AddElementClassName
   | Logout
-  | RestoreScreen
-  | SetScreenElement;
+  | RestoreScreen;
 
 export type ItemToCopyInfo = {
   id: string;

@@ -31,41 +31,7 @@ export const editReducer = (
     }
 
     case TYPES.SET_SCREEN: {
-      return { ...state, currentScreen: action.payload.screen };
-    }
-
-    case TYPES.SET_SCREENS: {
-      return { ...state, screens: action.payload.screens };
-    }
-
-    case TYPES.UPDATE_ELEMENTS_TREE: {
-      const { root } = action.payload;
-      const newState = { ...state };
-
-      newState.screens = newState.screens.map((screen) => {
-        const result = { ...screen };
-        if (screen.element?.id === root.id) {
-          result.element = root;
-        }
-        return result;
-      });
-
-      return newState;
-    }
-
-    case TYPES.SET_SCREEN_ELEMENT: {
-      const { screenId, element } = action.payload;
-      const newState = { ...state };
-
-      newState.screens = newState.screens.map((screen) => {
-        const result = { ...screen };
-        if (screen.id === screenId) {
-          result.element = element;
-        }
-        return result;
-      });
-
-      return newState;
+      return { ...state, currentScreen: action.payload.screenId };
     }
 
     case TYPES.SET_SCENARIOS: {

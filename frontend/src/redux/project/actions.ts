@@ -210,17 +210,9 @@ export const saveScreen = (canvas: HTMLCanvasElement): T.SaveScreen => ({
   payload: { canvas },
 });
 
-export const setScreen = (screen: T.IProjectScreen): T.SetScreen => ({
+export const setScreen = (screenId: number): T.SetScreen => ({
   type: TYPES.SET_SCREEN,
-  payload: { screen },
-});
-
-export const setScreenElement = (screenId: number, element: any) => ({
-  type: TYPES.SET_SCREEN_ELEMENT,
-  payload: {
-    screenId,
-    element,
-  },
+  payload: { screenId },
 });
 
 export const setScreens = (screens: T.IProjectScreen[]): T.SetScreens => ({

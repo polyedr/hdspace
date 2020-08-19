@@ -31,7 +31,6 @@ import {
   convertCreatedProjectToRequest,
   convertProjectToPatchRequest,
 } from '$api/converters/toRequest';
-import { DEFAULT_SCREEN } from '$constants/defaultParams';
 import { reqWrapper } from '$redux/project/sagas/index';
 import { generateFontFace } from '$utils/generateFontFace';
 
@@ -74,11 +73,6 @@ export function* getProjectSaga(action: ReturnType<typeof Actions.getProject>) {
     project.projectscreen.map((screenId) => getScreenSaga(screenId)),
   );
 
-  // const screens: IProjectScreen[] = yield all(
-  //   project.projectscreen.map((screenId) =>
-  //     call(reqWrapper, apiGetScreen, { id: screenId }),
-  //   ),
-  // );
   yield put(setScreens(screens));
 
   const finalScreenID = screenID || project.projectscreen[0];
@@ -91,7 +85,7 @@ export function* getProjectSaga(action: ReturnType<typeof Actions.getProject>) {
 
     yield put(push(`/project/${id}/${finalScreenID}`));
   } else {
-    yield put(Actions.setScreen(DEFAULT_SCREEN));
+    yield put(Actions.setScreen(-1));
   }
 
   yield put(Actions.setProjectLoader(false));

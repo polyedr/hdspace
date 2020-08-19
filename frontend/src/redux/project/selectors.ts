@@ -4,6 +4,7 @@ import { ChildEntity, Entity } from '$domain/core';
 import { findChildByID } from '$utils/ElementsTreeHelper';
 import { LibraryElement } from '$api/types';
 import { CssLikeStyles } from '$utils/StyleHelper';
+import { DEFAULT_SCREEN } from '$constants/defaultParams';
 
 export const selectProjectState = makeFeatureStateSelector('project');
 
@@ -18,7 +19,7 @@ export function selectScenarios(state: AppReduxState) {
 export const selectScreenElement = (screenId: number) => (
   state: AppReduxState,
 ): LibraryElement<'root'> | undefined => {
-  const targetScreen = selectProjectState(state).edit.screens.find(
+  const targetScreen = selectProjectState(state).data.screens.find(
     ({ id }) => id === screenId,
   );
   return targetScreen ? targetScreen.element : undefined;
@@ -45,16 +46,22 @@ export function selectModifyElements(state: AppReduxState) {
   return selectProjectState(state).edit.modifyElements;
 }
 
-export function selectCurrentScreen(state: AppReduxState) {
-  return selectProjectState(state).edit.currentScreen;
-}
+export const selectCurrentScreen = (state: AppReduxState) => {
+  const activeScreenId = selectProjectState(state).edit.currentScreen;
+  if (activeScreenId === -1) return DEFAULT_SCREEN;
+  return (
+    selectProjectState(state).data.screens.find(
+      ({ id }) => id === activeScreenId,
+    ) || DEFAULT_SCREEN
+  );
+};
 
 export function selectScreens(state: AppReduxState) {
-  return selectProjectState(state).edit.screens;
+  return selectProjectState(state).data.screens;
 }
 
 export const selectScreenById = (id: number) => (state: AppReduxState) =>
-  selectProjectState(state).edit.screens.find((screen) => screen.id === id);
+  selectProjectState(state).data.screens.find((screen) => screen.id === id);
 
 export function selectNotification(state: AppReduxState) {
   return selectProjectState(state).edit.notification;

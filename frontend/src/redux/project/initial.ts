@@ -1,6 +1,5 @@
 import {
   DEFAULT_PROJECT,
-  DEFAULT_SCREEN,
   DEFAULT_ACTIVE_ITEM,
   DEFAULT_ROOT,
 } from '$constants/defaultParams';
@@ -10,6 +9,7 @@ import * as T from './types';
 export const initialData: T.ProjectDataState = {
   libraryElements: {} as any, // will be loaded on app start
   listProject: [],
+  screens: [],
 };
 
 export const initialUi: T.ProjectUiState = {
@@ -23,8 +23,7 @@ export const initialUi: T.ProjectUiState = {
 
 export const initialEdit: T.ProjectEditState = {
   currentProject: DEFAULT_PROJECT,
-  currentScreen: DEFAULT_SCREEN,
-  screens: [],
+  currentScreen: -1,
   scenarios: {},
   scenarioElements: {},
   modifyElements: [],
