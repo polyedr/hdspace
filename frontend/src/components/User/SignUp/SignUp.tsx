@@ -92,7 +92,7 @@ const UnconnectedSignUp: React.FunctionComponent<IProps> = ({
       <div className="signContainer">
         <div className={styles.formContainer}>
           <GoogleLogin
-            clientId="http://97708805893-kqh3efrnsd7i8nbu30p0mhlvhub029he.apps.googleusercontent.com/"
+            clientId="97708805893-kqh3efrnsd7i8nbu30p0mhlvhub029he.apps.googleusercontent.com"
             buttonText="Login"
             onSuccess={responseGoogle}
             onFailure={responseGoogle}
