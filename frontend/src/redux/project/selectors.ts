@@ -67,10 +67,6 @@ export function selectCurrentProject(state: AppReduxState) {
   return selectProjectState(state).edit.currentProject;
 }
 
-export function selectListSortable(state: AppReduxState) {
-  return selectProjectState(state).edit.currentScreen.listSortable;
-}
-
 export function selectRootElement(state: AppReduxState) {
   return selectProjectState(state).control.rootElement;
 }
@@ -183,8 +179,7 @@ export function selectActiveItemChildren(
     return [];
   }
 
-  const children = element.children.filter((child) => child.type === childType);
-  return children;
+  return element.children.filter((child) => child.type === childType);
 }
 
 export const selectElementStyles = (id: string) => (state: AppReduxState) =>

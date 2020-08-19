@@ -26,11 +26,7 @@ import * as Actions from '$redux/project/actions';
 import { generateUniqueName } from '$utils/generateUniqueName';
 import { convertScenarioElements } from '$utils/parseScenario';
 import { getSavedValue } from '$utils/getSavedValue';
-import {
-  DEFAULT_LS,
-  DEFAULT_SCREEN,
-  DEFAULT_ACTIVE_ITEM,
-} from '$constants/defaultParams';
+import { DEFAULT_SCREEN, DEFAULT_ACTIVE_ITEM } from '$constants/defaultParams';
 import {
   IProjectScreen,
   IScenarioItem,
@@ -80,7 +76,7 @@ export function* activateScreenSaga({
 
   const screen: IProjectScreen = yield select(selectScreenById(screenID));
 
-  yield put(setScreen({ ...screen, listSortable: DEFAULT_LS }));
+  yield put(setScreen({ ...screen }));
 
   yield put(Actions.setScenarioLoader(true));
 
@@ -186,14 +182,7 @@ export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
     screen: createdScreen.id,
   });
 
-  const listSortable: T.IListSortable = {
-    root: { ...DEFAULT_LS.root, id: rootScenario.id },
-  };
-
-  const screen = R.omit(
-    ['screen_data_text'],
-    R.assoc('listSortable', listSortable, createdScreen),
-  );
+  const screen = R.omit(['screen_data_text'], createdScreen);
 
   const rootElement = convertCreatedElementToRequest(
     'root',
@@ -244,7 +233,7 @@ export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
   const savedScreen = yield call(reqWrapper, apiSaveScreen, {
     id: screen.id,
     data: R.omit(
-      ['listSortable', 'screenLoader', 'image', 'screen_data_json', 'buoyancy'],
+      ['screenLoader', 'image', 'screen_data_json', 'buoyancy'],
       screen,
     ),
   });
@@ -297,7 +286,7 @@ export function* saveScreenSaga({
   yield put(setLoader(true));
 
   const screen = R.omit(
-    ['listSortable', 'screenLoader', 'image', 'screen_data_json', 'buoyancy'],
+    ['screenLoader', 'image', 'screen_data_json', 'buoyancy'],
     currentScreen,
   );
   // buoyancy must be send, but it null.

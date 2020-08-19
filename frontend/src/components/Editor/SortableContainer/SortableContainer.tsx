@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect } from 'react';
+import React, { useCallback, useState } from 'react';
 import * as R from 'ramda';
 import { connect } from 'react-redux';
 
@@ -26,7 +26,6 @@ const mapStateToProps = (state: AppReduxState) => {
   const root = selectors.selectRootElement(state);
   const rootID = selectors.selectRootID(state);
   const showBorders = selectors.selectShowingBorders(state);
-  const { listSortable } = selectors.selectCurrentScreen(state);
   const scenarioElements = selectors.selectScenariosElements(state);
   const savedElements = selectors.selectSavedElementsValues(state);
   const disableInteractions = state.user.isPrototypeMode;
@@ -36,7 +35,6 @@ const mapStateToProps = (state: AppReduxState) => {
     root,
     rootID,
     showBorders,
-    listSortable,
     scenarioElements,
     disableInteractions,
     currentScreen,
@@ -85,7 +83,6 @@ const SortableComponent: React.FC<Props> = ({
   isResizing,
   setIsResizing,
   isResizable,
-  listSortable,
   scenarioElements,
   savedElements,
   projectClasses,
@@ -94,29 +91,6 @@ const SortableComponent: React.FC<Props> = ({
   ...restProps
 }) => {
   const [isDragging, setIsDragging] = useState<boolean>(false);
-
-  useEffect(() => {
-    const radioNames = Object.values(listSortable)
-      .filter((elem) => elem.type === 'radiobutton')
-      .map((elem) => scenarioElements[elem.id]?.parameters.name);
-
-    R.uniq(radioNames).forEach((groupName) => {
-      if (!groupName) {
-        return;
-      }
-
-      const groupRadios = Object.values(listSortable)
-        .filter((elem) => elem.type === 'radiobutton')
-        .map((elem) => scenarioElements[elem.id])
-        .filter((elem) => elem?.parameters.name === groupName);
-
-      const firstRadio = R.head(groupRadios);
-
-      if (!savedElements[groupName]?.savedValue) {
-        updateSavedElementValues(groupName, firstRadio?.parameters.value || '');
-      }
-    });
-  }, [savedElements, listSortable, scenarioElements, updateSavedElementValues]);
 
   const handleChooseToSort = (itemIndex: number) => {
     // TODO: called when item chosen for sorting. rewrite without onActiveElementChange use
