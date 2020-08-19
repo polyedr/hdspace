@@ -11,7 +11,7 @@ import {
   DEFAULT_RESTORE_PASSWORD_FIELDS,
   DEFAULT_RESPONSE_ERROR,
 } from '$constants/defaultParams';
-import { IApiResponseError } from '$redux/user/reducer';
+import { IApiResponseError } from '$redux/user/types';
 import * as Actions from '$redux/user/actions';
 
 import { FormField } from '../FormField/FormField';

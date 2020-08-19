@@ -51,6 +51,7 @@ export type ProjectCommunicationState = {
   screenLoader: boolean;
   projectLoader: boolean;
   scenarioLoader: boolean;
+  initialProjectLoadDone: boolean;
 };
 
 export type ProjectControlState = {
@@ -346,6 +347,7 @@ export type ClearHistory = IPlainAction<'PROJECTS:CLEAR_HISTORY'>;
 export type PopUndoAction = IPlainAction<'PROJECTS:POP_UNDO_ACTION'>;
 export type PopHistory = IPlainAction<'PROJECTS:POP_HISTORY'>;
 export type SetGroupActionsUp = IAction<'PROJECTS:SET_GROUP_UP', boolean>;
+export type Logout = IPlainAction<'LOGOUT'>;
 
 export type Action =
   | LoadLibraryElements
@@ -419,7 +421,8 @@ export type Action =
   | UpdateProject
   | RemoveSharedStyles
   | UpdateSharedStyles
-  | AddElementClassName;
+  | AddElementClassName
+  | Logout;
 
 export type ItemToCopyInfo = {
   id: string;

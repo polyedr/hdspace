@@ -41,6 +41,19 @@ export const communicationReducer = (
       };
     }
 
+    case 'PROJECTS:LOAD_PROJECTS_SUCCESS': {
+      return {
+        ...state,
+        initialProjectLoadDone: true,
+      };
+    }
+
+    case 'LOGOUT': {
+      return {
+        ...initialCommunication,
+      };
+    }
+
     default:
       return state;
   }

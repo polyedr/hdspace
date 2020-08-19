@@ -6,7 +6,7 @@ import { AppReduxState } from '$shared/types/app';
 import { Button } from '$components/UI/Button';
 import { Icon } from '$components/UI/Icon';
 import { Modal } from '$components/UI/Modal';
-import { ILeftPanel } from '$components/LeftPanel/LeftPanel';
+import { LeftPanelProps } from '$components/LeftPanel/LeftPanel';
 import { EditorProps } from '$containers/EditorLogic';
 import * as Actions from '$redux/project/actions';
 import { selectors } from '$redux/project';
@@ -24,7 +24,7 @@ const mapDispatchToProps = {
 type TTopPanelProps = ReturnType<typeof mapStateToProps> &
   typeof mapDispatchToProps & {
     pathname: string;
-    isLPanelMinimized: ILeftPanel['isLPanelMinimized'];
+    isLPanelMinimized: LeftPanelProps['isLPanelMinimized'];
     project: EditorProps['currentProject'];
     onMinimiserLPanel(): void;
     renameProject: typeof Actions.renameProject;

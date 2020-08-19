@@ -1,54 +1,47 @@
 import React, { useCallback, useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import classNames from 'classnames';
+import cn from 'classnames';
 
+import { useDispatch, useSelector } from 'react-redux';
 import { IMAGES } from '$constants/images';
 import { Icon } from '$components/UI/Icon';
 import { Button } from '$components/UI/Button';
 import { IAppProps } from '$containers/App';
 import * as PATH_NAMES from '$constants/pathNames';
 import { Scrollbar } from '$components/UI/Scrollbar';
-import * as Actions from '$redux/user/actions';
 import * as ActionsProject from '$redux/project/actions';
 import { openSignScreen } from '$utils/history';
-import { DEFAULT_AUTHORISATION_TOKEN } from '$constants/defaultParams';
-import { ITokenPair } from '$redux/user/reducer';
 import { Project } from '$api/types';
+import { logout } from '$redux/user/actions';
+import { selectUserData } from '$redux/user/selectors';
 
 const styles = require('./LeftPanel.scss');
 
-export interface ILeftPanel {
+export type LeftPanelProps = {
   pathname: IAppProps['pathname'];
   projects: Project[];
   username?: string;
-  userType: string;
-  tokenPair: ITokenPair;
   isLPanelMinimized: boolean;
   setListProject: typeof ActionsProject.setListProject;
-  setTokenPair: typeof Actions.setTokenPair;
-}
+};
 
-export const LeftPanel: React.FunctionComponent<ILeftPanel> = ({
+export const LeftPanel: React.FunctionComponent<LeftPanelProps> = ({
   pathname,
   projects,
   username,
-  userType,
-  tokenPair,
   isLPanelMinimized,
-  setListProject,
-  setTokenPair,
 }) => {
+  const dispatch = useDispatch();
   const [isProjectsListActive, setIsProjectsListActive] = useState<boolean>(
     false,
   );
 
-  const handleLogoutClick = useCallback(() => {
-    if (tokenPair.access !== '') {
-      setTokenPair(DEFAULT_AUTHORISATION_TOKEN);
-      setListProject([]);
-      openSignScreen('signin');
-    }
-  }, [tokenPair, setTokenPair, setListProject]);
+  const { email, avatar } = useSelector(selectUserData);
+
+  const handleLogoutClick = () => {
+    dispatch(logout());
+    openSignScreen('signin');
+  };
 
   const openProjectsList = useCallback(() => {
     setIsProjectsListActive(!isProjectsListActive);
@@ -56,41 +49,49 @@ export const LeftPanel: React.FunctionComponent<ILeftPanel> = ({
 
   return (
     <aside
-      className={`${styles.leftPanel} ${isLPanelMinimized && styles.minPanel}`}
+      className={cn(styles.leftPanel, isLPanelMinimized && styles.minPanel)}
     >
-      {isLPanelMinimized ? (
-        <div className={styles.logo}>
-          <img src={IMAGES.logo} alt="logo" />
-        </div>
-      ) : (
-        <div className={styles.profileBlock}>
+      <div
+        className={cn(
+          styles.profileBlock,
+          isLPanelMinimized && styles.profileBlock_minimized,
+        )}
+      >
+        <NavLink
+          to="/profile"
+          exact
+          className={isLPanelMinimized ? styles.profileLink_minimized : ''}
+        >
           <img
             className={styles.profileAvatar}
-            src={IMAGES.prof}
+            src={avatar ?? IMAGES.prof}
             alt="profile"
           />
-          <div className={styles.profileName}>
-            <span className={styles.profileText}>
-              {typeof username !== 'undefined' ? username : 'Without name'}
-            </span>
-            <span className={styles.profileText}>{userType}</span>
-          </div>
-          <Button onClick={handleLogoutClick} className={styles.profileBtn}>
-            Log out
-          </Button>
-        </div>
-      )}
+        </NavLink>
+
+        {!isLPanelMinimized && (
+          <>
+            <div className={styles.profileName}>
+              <span className={styles.profileText}>
+                {typeof username !== 'undefined' ? username : 'Without name'}
+              </span>
+              <span className={styles.profileText}>{email}</span>
+            </div>
+            <Button onClick={handleLogoutClick} className={styles.profileBtn}>
+              Log out
+            </Button>
+          </>
+        )}
+      </div>
+
       <nav className={styles.mainNavigation}>
         <ul className={styles.navigationList}>
           <li
-            className={classNames(
-              styles.navigationItem,
-              styles.navigationItem_column,
-            )}
+            className={cn(styles.navigationItem, styles.navigationItem_column)}
           >
             <div>
               <NavLink
-                className={classNames(
+                className={cn(
                   styles.navigationLink,
                   pathname === PATH_NAMES.projects &&
                     styles.navigationLink_active,
@@ -103,7 +104,7 @@ export const LeftPanel: React.FunctionComponent<ILeftPanel> = ({
                 <span>My Projects</span>
               </NavLink>
               <Button
-                className={classNames(
+                className={cn(
                   styles.navigationExpandBtn,
                   isProjectsListActive && styles.navigationExpandBtn_active,
                 )}
@@ -114,7 +115,7 @@ export const LeftPanel: React.FunctionComponent<ILeftPanel> = ({
               </Button>
             </div>
             <ul
-              className={classNames(
+              className={cn(
                 styles.navigationInnerList,
                 isProjectsListActive && styles.navigationInnerList_active,
               )}
@@ -127,12 +128,9 @@ export const LeftPanel: React.FunctionComponent<ILeftPanel> = ({
                 maxHeight={165}
               >
                 {projects.map((project) => (
-                  <li
-                    key={project.id}
-                    className={classNames(styles.navigationItem)}
-                  >
+                  <li key={project.id} className={cn(styles.navigationItem)}>
                     <NavLink
-                      className={classNames(
+                      className={cn(
                         styles.navigationLink,
                         styles.navigationLink_inner,
                       )}

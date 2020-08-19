@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import classNames from 'classnames';
 
 import { AppReduxState } from '$shared/types/app';
@@ -13,12 +13,12 @@ import { TopPanel } from '$components/TopPanel/TopPanel';
 import { LeftPanel } from '$components/LeftPanel/LeftPanel';
 import { selectors } from '$redux/project';
 import { Project } from '$api/types';
+import Profile from '$components/User/Profile';
 
 const styles = require('$styles/global.scss');
 
 const mapStateToProps = (state: AppReduxState) => ({
   isLPanelMinimized: state.user.isLPanelMinimized,
-  tokenPair: state.user.tokenPair,
   username: state.user.userData.username,
   projects: selectors.selectProjects(state),
   pathname: state.router.location.pathname,
@@ -26,7 +26,6 @@ const mapStateToProps = (state: AppReduxState) => ({
 
 const mapDispatchToProps = {
   changeMinLPanel: ActionsUser.changeMinLPanel,
-  setTokenPair: ActionsUser.setTokenPair,
   getListProject: ActionsProject.getListProject,
   setListProject: ActionsProject.setListProject,
 };
@@ -38,48 +37,52 @@ export type IAppProps = ReturnType<typeof mapStateToProps> &
 
 const EditorWindow: React.FC<IAppProps> = ({
   isLPanelMinimized,
-  tokenPair,
   setListProject,
   username,
   projects,
   pathname,
   changeMinLPanel,
-  setTokenPair,
-}) => (
-  <>
-    <LeftPanel
-      pathname={pathname}
-      projects={projects}
-      username={username}
-      userType="Web Developer"
-      isLPanelMinimized={isLPanelMinimized}
-      tokenPair={tokenPair}
-      setListProject={setListProject}
-      setTokenPair={setTokenPair}
-    />
-    <div
-      className={classNames(
-        styles.globalContainer,
-        isLPanelMinimized && styles.minimiser,
-      )}
-    >
-      <TopPanel
+}) => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(ActionsProject.getListProject());
+  }, [dispatch]);
+
+  return (
+    <>
+      <LeftPanel
         pathname={pathname}
+        projects={projects}
+        username={username}
         isLPanelMinimized={isLPanelMinimized}
-        onMinimiserLPanel={changeMinLPanel}
+        setListProject={setListProject}
       />
-      <div className={styles.workContainer}>
-        <Switch>
-          <Route path={PATH_NAMES.projects} component={ProjectsLogic} />
-          <Route
-            path="/project/:projectID/:screenID?"
-            component={EditorLogic}
-          />
-          <Redirect from="/*" to={PATH_NAMES.projects} />
-        </Switch>
+      <div
+        className={classNames(
+          styles.globalContainer,
+          isLPanelMinimized && styles.minimiser,
+        )}
+      >
+        <TopPanel
+          pathname={pathname}
+          isLPanelMinimized={isLPanelMinimized}
+          onMinimiserLPanel={changeMinLPanel}
+        />
+        <div className={styles.workContainer}>
+          <Switch>
+            <Route path={PATH_NAMES.projects} component={ProjectsLogic} />
+            <Route
+              path="/project/:projectID/:screenID?"
+              component={EditorLogic}
+            />
+            <Route path={PATH_NAMES.profile} component={Profile} />
+            <Redirect from="/*" to={PATH_NAMES.projects} />
+          </Switch>
+        </div>
       </div>
-    </div>
-  </>
-);
+    </>
+  );
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditorWindow);

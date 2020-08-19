@@ -12,7 +12,7 @@ import {
   DEFAULT_SIGNIN_FIELDS,
 } from '$constants/defaultParams';
 import * as Actions from '$redux/user/actions';
-import { IApiResponseError } from '$redux/user/reducer';
+import { IApiResponseError } from '$redux/user/types';
 import { Spinner } from '$components/UI/Spinner';
 
 import { FormField } from '../FormField/FormField';
@@ -34,8 +34,8 @@ const mapStateToProps = ({
 
 const mapDispatchToProps = {
   restorePassword: Actions.restorePassword,
-  getTokenPair: Actions.getTokenPair,
   setApiResponseError: Actions.setApiResponseError,
+  login: Actions.login,
 };
 
 type IProps = typeof mapDispatchToProps & {
@@ -47,8 +47,8 @@ export const UnmountedSignIn: React.FC<IProps> = ({
   apiResponseError,
   isSignLoader,
   restorePassword,
-  getTokenPair,
   setApiResponseError,
+  login,
 }) => {
   const [isRestorePasswordModalOpen, setIsRestorePasswordModalOpen] = useState<
     boolean
@@ -80,7 +80,7 @@ export const UnmountedSignIn: React.FC<IProps> = ({
       setApiResponseError(DEFAULT_RESPONSE_ERROR);
     }
 
-    getTokenPair(values.username, values.password);
+    login({ username: values.username, password: values.password });
   };
 
   const handleRestorePasswordBtn = useCallback(

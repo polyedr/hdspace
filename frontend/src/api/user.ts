@@ -3,7 +3,12 @@
 import { AxiosError } from 'axios';
 import { myAxios } from '$config/settings';
 import { onError, parseResult } from '$api/project';
-import { ISignInData, IApiResponseError } from '$redux/user/reducer';
+import {
+  IApiResponseError,
+  LoginFormData,
+  ProfileData,
+  UserData,
+} from '$redux/user/types';
 
 export interface ISignUpData {
   username: string;
@@ -52,7 +57,7 @@ export const onAuthorisationError = ({
   }
 };
 
-export const apiGetToken = (data: ISignInData) =>
+export const apiGetToken = (data: LoginFormData) =>
   myAxios({
     data,
     method: 'POST',
@@ -125,3 +130,29 @@ export const apiSetNewPassword = (
   })
     .then(parseResult)
     .catch(onAuthorisationError);
+
+export const apiGetProfile = (id: number) =>
+  myAxios({
+    method: 'GET',
+    url: `/accounts/profiles/${id}/`,
+  })
+    .then(parseResult)
+    .catch(onError);
+
+export const apiChangeUserData = (id: number, data: Partial<UserData>) =>
+  myAxios({
+    data,
+    method: 'PATCH',
+    url: `/accounts/users/${id}/`,
+  })
+    .then(parseResult)
+    .catch(onError);
+
+export const apiChangeProfileData = (id: number, data: Partial<ProfileData>) =>
+  myAxios({
+    data,
+    method: 'PATCH',
+    url: `/accounts/profiles/${id}/`,
+  })
+    .then(parseResult)
+    .catch(onError);

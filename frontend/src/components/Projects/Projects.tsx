@@ -3,13 +3,15 @@ import * as R from 'ramda';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import * as Actions from '$redux/project/actions';
 import { Button } from '$components/UI/Button';
 import { Modal } from '$components/UI/Modal';
 import { Icon } from '$components/UI/Icon';
 import { Project } from '$api/types';
 import { convertDateToRelative } from '$utils/convertDateToRelative';
+import { selectInitialProjectLoad } from '$redux/project/selectors';
+import { getListProject } from '$redux/project/actions';
 
 const styles = require('./Projects.scss');
 
@@ -34,8 +36,12 @@ export const Projects: React.FunctionComponent<IProjectsProps> = memo(
       listProject,
     );
 
+    const initialLoadDone = useSelector(selectInitialProjectLoad);
+
     useEffect(() => {
-      dispatch(Actions.getListProject());
+      if (initialLoadDone) {
+        dispatch(getListProject());
+      }
     }, [dispatch]);
 
     const handleProjectAdd = useCallback(() => {
@@ -84,7 +90,8 @@ export const Projects: React.FunctionComponent<IProjectsProps> = memo(
     return (
       <main className={classNames(styles.projectsContainer, 'showAnimation')}>
         <div className={styles.projectsWrapper}>
-          <div className={styles.projectsHeader}>
+          <div className={styles.projectsHeaderContainer}>
+            <div className={styles.projectsHeader}>All projects</div>
             <Button
               onClick={handleProjectAdd}
               className={styles.projectsHeaderBtn}

@@ -14,6 +14,12 @@ export function dataReducer(
       return { ...state, listProject: action.payload.projects };
     }
 
+    case 'LOGOUT': {
+      return {
+        ...initialData,
+      };
+    }
+
     default:
       return state;
   }

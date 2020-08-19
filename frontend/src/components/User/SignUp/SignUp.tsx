@@ -13,7 +13,7 @@ import {
 } from '$constants/defaultParams';
 import { user } from '$constants/pathNames';
 import * as Actions from '$redux/user/actions';
-import { IApiResponseError } from '$redux/user/reducer';
+import { IApiResponseError } from '$redux/user/types';
 
 import { FormField } from '../FormField/FormField';
 

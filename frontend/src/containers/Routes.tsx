@@ -37,6 +37,7 @@ const Component: React.FunctionComponent<Props> = (props) => {
         <Route path={PATH_NAMES.projects} component={EditorWindow} />
         <Route path={PATH_NAMES.passwordRestore} component={PasswordRestore} />
         <Route path="/project/:projectID/:screenID?" component={EditorWindow} />
+        <Route path={PATH_NAMES.profile} component={EditorWindow} />
         <Redirect from="/*" to={PATH_NAMES.projects} />
       </Switch>
     </div>

@@ -3,6 +3,7 @@ const HtmlWebPackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const path = require('path');
+
 const { join } = path;
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 
@@ -114,8 +115,11 @@ module.exports = () => {
             loader: 'babel-loader',
           },
         },
-        { test: /\.(ts|tsx)?$/, loader: 'awesome-typescript-loader', 
-          options: { transpileOnly: !isDevelopment }},
+        {
+          test: /\.(ts|tsx)?$/,
+          loader: 'awesome-typescript-loader',
+          options: { transpileOnly: !isDevelopment },
+        },
         {
           test: /\.(eot|ttf|woff|woff2|otf|svg)$/,
           include: [/fonts/],
