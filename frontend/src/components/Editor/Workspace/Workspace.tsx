@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { connect } from 'react-redux';
-import * as R from 'ramda';
 import cn from 'classnames';
 import html2canvas from 'html2canvas';
 
@@ -180,48 +179,50 @@ export const Component = ({
     }
   }, [saveScreen]);
 
-  return screen && R.hasPath(['listSortable', 'root'], screen) ? (
-    <div className={cn(styles.editorWorkspace)}>
-      {!isPrototypeMode && <HotKeys />}
-      <TopBar
-        screenID={screen.id}
-        isPrototypeMode={isPrototypeMode}
-        isScreenRotated={isScreenRotated}
-        screenMode={currentScreenMode}
-        onPrototypeModeToggle={changePrototypeMode}
-        onScreenModeChange={setCurrentScreenMode}
-        onScreenRotate={setIsScreenRotated}
-        onScreenSave={handleSaveScreen}
-        onExport={exportProject}
-      />
-      <div
-        className={styles.editorViewport}
-        onClick={handleRootClick}
-        onMouseOver={handleLSItemMouseOver}
-        onMouseOut={handleLSItemMouseOut}
-      >
-        <Scrollbar
-          className={cn(
-            styles.editorLayout,
-            getClassDevice(styles, currentScreenMode, isScreenRotated),
-          )}
-          autoHeightMin="100%"
+  return (
+    screen && (
+      <div className={cn(styles.editorWorkspace)}>
+        {!isPrototypeMode && <HotKeys />}
+        <TopBar
+          screenID={screen.id}
+          isPrototypeMode={isPrototypeMode}
+          isScreenRotated={isScreenRotated}
+          screenMode={currentScreenMode}
+          onPrototypeModeToggle={changePrototypeMode}
+          onScreenModeChange={setCurrentScreenMode}
+          onScreenRotate={setIsScreenRotated}
+          onScreenSave={handleSaveScreen}
+          onExport={exportProject}
+        />
+        <div
+          className={styles.editorViewport}
+          onClick={handleRootClick}
+          onMouseOver={handleLSItemMouseOver}
+          onMouseOut={handleLSItemMouseOut}
         >
-          <SortableContainer
-            item={elementsTree as LibraryElementUnion}
-            activeItemId={activeItem.itemId}
-            isMoving={isMoving}
-            listNotDragging={listNotDragging}
-            setIsMoving={setIsMoving}
-            onActiveElementChange={handleActiveElementChange} // needed to activate item before dragging, in order to get new listNotDraggable
-            isResizing={hasItemBeingResized}
-            setIsResizing={setHasItemBeingResized}
-          />
-          {!isPrototypeMode && <ContainersBorders />}
-        </Scrollbar>
+          <Scrollbar
+            className={cn(
+              styles.editorLayout,
+              getClassDevice(styles, currentScreenMode, isScreenRotated),
+            )}
+            autoHeightMin="100%"
+          >
+            <SortableContainer
+              item={elementsTree as LibraryElementUnion}
+              activeItemId={activeItem.itemId}
+              isMoving={isMoving}
+              listNotDragging={listNotDragging}
+              setIsMoving={setIsMoving}
+              onActiveElementChange={handleActiveElementChange} // needed to activate item before dragging, in order to get new listNotDraggable
+              isResizing={hasItemBeingResized}
+              setIsResizing={setHasItemBeingResized}
+            />
+            {!isPrototypeMode && <ContainersBorders />}
+          </Scrollbar>
+        </div>
       </div>
-    </div>
-  ) : null;
+    )
+  );
 };
 
 export const Workspace = connect(mapState, mapDispatch)(Component);
