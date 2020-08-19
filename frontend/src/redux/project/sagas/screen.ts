@@ -21,6 +21,7 @@ import {
   setScreens,
   restoreScreen,
   setUndoActions,
+  setScreenElement,
 } from '$redux/project/actions';
 import * as Actions from '$redux/project/actions';
 import { generateUniqueName } from '$utils/generateUniqueName';
@@ -57,7 +58,10 @@ import { reqWrapper } from '.';
 import { selectors, T } from '..';
 import { createContainer, updateElementsTree } from './scenario';
 import { apiGetProject, apiSaveProject } from '$api/project';
-import { selectScreenById } from '$redux/project/selectors';
+import {
+  selectScreenById,
+  selectScreenElement,
+} from '$redux/project/selectors';
 
 export function* activateScreenSaga({
   payload,
@@ -80,28 +84,34 @@ export function* activateScreenSaga({
 
   yield put(Actions.setScenarioLoader(true));
 
-  const scenarioElements: ReturnPromisedType<typeof apiGetElements> = yield call(
-    reqWrapper,
-    apiGetElements,
-    { scenariosIDs: [screen.screenscenario[0]] },
-  );
-  const [rootElement] = scenarioElements;
-  const rootElementWithChildren: LibraryElement<'root'> = yield call(
-    reqWrapper,
-    apiGetElement,
-    { id: rootElement.id },
-  );
+  let screenElement = yield select(selectScreenElement(screenID));
+
+  if (!screenElement) {
+    const scenarioElements: ReturnPromisedType<typeof apiGetElements> = yield call(
+      reqWrapper,
+      apiGetElements,
+      { scenariosIDs: [screen.screenscenario[0]] },
+    );
+
+    const [rootElement] = scenarioElements;
+
+    screenElement = yield call(reqWrapper, apiGetElement, {
+      id: rootElement.id,
+    });
+
+    yield put(setScreenElement(screenID, screenElement));
+  }
 
   yield call(
     updateElementsTree,
-    rootElementWithChildren,
+    screenElement,
     meta.undo ? restoreScreen(screenID, screen.project) : undefined,
     meta,
   );
 
   yield put(
     Actions.setActiveItem({
-      itemId: rootElementWithChildren.id,
+      itemId: screenElement.id,
       itemType: 'root',
       name: 'Root',
     }),

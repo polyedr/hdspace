@@ -215,6 +215,14 @@ export const setScreen = (screen: T.IProjectScreen): T.SetScreen => ({
   payload: { screen },
 });
 
+export const setScreenElement = (screenId: number, element: any) => ({
+  type: TYPES.SET_SCREEN_ELEMENT,
+  payload: {
+    screenId,
+    element,
+  },
+});
+
 export const setScreens = (screens: T.IProjectScreen[]): T.SetScreens => ({
   type: TYPES.SET_SCREENS,
   payload: { screens },
