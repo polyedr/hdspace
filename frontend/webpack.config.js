@@ -15,12 +15,6 @@ const htmlPlugin = new HtmlWebPackPlugin({
   favicon: './src/assets/sprites/favicon.png',
 });
 
-const googleVerificationPage = new HtmlWebPackPlugin({
-  template: './src/assets/googleVerification/google63e8b69f84f0ab59.html',
-  filename: './google63e8b69f84f0ab59.html',
-  hash: false,
-});
-
 const miniCssExractPlugin = new MiniCssExtractPlugin({
   filename: '[name].css',
   chunkFilename: '[id].css',
