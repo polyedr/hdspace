@@ -50,7 +50,6 @@ module.exports = () => {
   const plugins = [
     htmlPlugin,
     miniCssExractPlugin,
-    googleVerificationPage,
     new webpack.HashedModuleIdsPlugin(),
   ];
 
