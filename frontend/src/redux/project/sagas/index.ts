@@ -373,8 +373,10 @@ function* updateElementClassNames(
   >,
   type: 'add' | 'remove',
 ) {
+  const { screenId } = action.payload;
+
   const root: ReturnType<typeof selectors.selectRootElement> = yield select(
-    selectors.selectRootElement,
+    selectors.selectScreenElement(screenId),
   );
 
   if (!action.meta) {
@@ -390,13 +392,13 @@ function* updateElementClassNames(
     if (type === 'add') {
       yield put(
         Actions.setUndoActions(
-          Actions.removeElementClassName(elementID, newClassName),
+          Actions.removeElementClassName(elementID, newClassName, screenId),
         ),
       );
     } else {
       yield put(
         Actions.setUndoActions(
-          Actions.addElementClassName(elementID, newClassName),
+          Actions.addElementClassName(elementID, newClassName, screenId),
         ),
       );
     }
@@ -424,12 +426,14 @@ function* updateElementClassNames(
 function* removeElementStyles(
   id: string,
   cssPropertiesNames: string[],
-  action?: ReturnType<
+  action: ReturnType<
     typeof Actions.removeElementStyles | typeof Actions.copyElementStyles
   >,
 ) {
+  const { screenId } = action.payload;
+
   const root: ReturnType<typeof selectors.selectRootElement> = yield select(
-    selectors.selectRootElement,
+    selectors.selectScreenElement(screenId),
   );
 
   const updatedTree = removeStyles(id, cssPropertiesNames, root);
@@ -438,9 +442,7 @@ function* removeElementStyles(
   if (!updatedElement) {
     console.error(`Can not find updated element ${id} in tree`);
   } else {
-    const { undo, redo } = action?.meta;
-
-    yield put(Actions.updateElementsTree(updatedTree, action, { redo, undo }));
+    yield put(Actions.updateElementsTree(updatedTree, action, action.meta));
     const convertedElement = convertElementToPatchRequest(updatedElement);
     yield call(reqWrapper, apiChangeElement, { data: convertedElement, id });
   }
@@ -449,7 +451,7 @@ function* removeElementStyles(
 function* copyElementStylesSaga(
   action: ReturnType<typeof Actions.copyElementStyles>,
 ) {
-  const { elementType, elementID, styles } = action.payload;
+  const { elementType, elementID, styles, screenId } = action.payload;
 
   if (!action.meta) {
     console.error(
@@ -493,9 +495,9 @@ function* copyElementStylesSaga(
   if (!undo) {
     yield put(
       Actions.setUndoActions([
-        Actions.removeElementClassName(elementID, uniqueClassName),
+        Actions.removeElementClassName(elementID, uniqueClassName, screenId),
         Actions.updateProject(currentProject),
-        Actions.updateElementStyles(elementID, styles),
+        Actions.updateElementStyles(elementID, styles, screenId),
       ]),
     );
   }
@@ -521,7 +523,7 @@ function* updateOrReplaceElementStyles(
   >,
   type: 'replace' | 'update',
 ) {
-  const { id, styles } = action.payload;
+  const { id, styles, screenId } = action.payload;
 
   if (!action.meta) {
     console.error(
@@ -533,13 +535,15 @@ function* updateOrReplaceElementStyles(
   const { undo, redo } = action.meta;
 
   const root: ReturnType<typeof selectors.selectRootElement> = yield select(
-    selectors.selectRootElement,
+    selectors.selectScreenElement(screenId),
   );
 
   if (!undo) {
-    const oldStyles = yield select(selectors.selectElementStyles(id));
+    const oldStyles = yield select(selectors.selectElementStyles(screenId, id));
     yield put(
-      Actions.setUndoActions(Actions.replaceElementStyles(id, oldStyles)),
+      Actions.setUndoActions(
+        Actions.replaceElementStyles(id, oldStyles, screenId),
+      ),
     );
   }
 
@@ -554,6 +558,7 @@ function* updateOrReplaceElementStyles(
     return;
   }
   yield put(Actions.updateElementsTree(updatedTree, action, { redo, undo }));
+
   const convertedElement = convertElementToPatchRequest(updatedElement);
   yield call(reqWrapper, apiChangeElement, { data: convertedElement, id });
 }
@@ -573,7 +578,7 @@ function* replaceElementStylesSaga(
 function* removeElementStylesSaga(
   action: ReturnType<typeof Actions.removeElementStyles>,
 ) {
-  const { id, cssPropertiesNames } = action.payload;
+  const { id, cssPropertiesNames, screenId } = action.payload;
 
   if (!action.meta) {
     console.error(
@@ -585,9 +590,11 @@ function* removeElementStylesSaga(
   const { undo } = action.meta;
 
   if (!undo) {
-    const oldStyles = yield select(selectors.selectElementStyles(id));
+    const oldStyles = yield select(selectors.selectElementStyles(screenId, id));
     yield put(
-      Actions.setUndoActions(Actions.updateElementStyles(id, oldStyles)),
+      Actions.setUndoActions(
+        Actions.updateElementStyles(id, oldStyles, screenId),
+      ),
     );
   }
 
@@ -597,7 +604,7 @@ function* removeElementStylesSaga(
 function* updateElementImage(
   action: ReturnType<typeof Actions.updateElementImage>,
 ) {
-  const { itemID, image } = action.payload;
+  const { itemID, image, screenId } = action.payload;
 
   const parsedID = parseInt(itemID);
   const formData = new FormData();
@@ -610,17 +617,21 @@ function* updateElementImage(
   );
 
   yield put(
-    Actions.updateElementParameters(itemID, {
-      ...changedElement.parameters,
-      imageURL: changedElement.image,
-    }),
+    Actions.updateElementParameters(
+      itemID,
+      {
+        ...changedElement.parameters,
+        imageURL: changedElement.image,
+      },
+      screenId,
+    ),
   );
 }
 
 function* updateElementParameters(
   action: ReturnType<typeof Actions.updateElementParameters>,
 ) {
-  const { itemID, parameters } = action.payload;
+  const { itemID, parameters, screenId } = action.payload;
   if (!action.meta) {
     console.error(
       `You have to provide metainformation for action ${action.type}`,
@@ -630,16 +641,16 @@ function* updateElementParameters(
   const { undo, redo } = action.meta;
 
   const root: ReturnType<typeof selectors.selectRootElement> = yield select(
-    selectors.selectRootElement,
+    selectors.selectScreenElement(screenId),
   );
 
   if (!undo) {
     const oldParameters = yield select(
-      selectors.selectElementParameters(itemID),
+      selectors.selectElementParameters(screenId, itemID),
     );
     yield put(
       Actions.setUndoActions(
-        Actions.updateElementParameters(itemID, oldParameters),
+        Actions.updateElementParameters(itemID, oldParameters, screenId),
       ),
     );
   }

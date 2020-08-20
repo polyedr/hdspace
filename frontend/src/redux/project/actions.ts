@@ -271,30 +271,33 @@ export const copyElementStyles = (
   elementType: Entity,
   elementID: string,
   styles: CssLikeStyles,
+  screenId: number,
   options: T.HistoryMeta = {},
 ): T.CopyElementStyles => ({
   type: TYPES.COPY_ELEMENT_STYLES,
-  payload: { elementType, elementID, styles },
+  payload: { elementType, elementID, styles, screenId },
   meta: options,
 });
 
 export const addElementClassName = (
   elementID: string,
   className: string,
+  screenId: number,
   options: T.HistoryMeta = {},
 ): T.AddElementClassName => ({
   type: TYPES.ADD_ELEMENT_CLASSNAME,
-  payload: { elementID, className },
+  payload: { elementID, className, screenId },
   meta: options,
 });
 
 export const removeElementClassName = (
   elementID: string,
   className: string,
+  screenId: number,
   options: T.HistoryMeta = {},
 ): T.RemoveElementClassName => ({
   type: TYPES.REMOVE_ELEMENT_CLASSNAME,
-  payload: { elementID, className },
+  payload: { elementID, className, screenId },
   meta: options,
 });
 
@@ -311,39 +314,43 @@ export const removeSharedStyles = (
 export const replaceElementStyles = (
   id: string,
   styles: CssLikeStyles,
+  screenId: number,
   options: T.HistoryMeta = {},
 ): T.ReplaceElementStyles => ({
   type: TYPES.REPLACE_ELEMENT_STYLES,
-  payload: { id, styles },
+  payload: { id, styles, screenId },
   meta: options,
 });
 
 export const updateElementStyles = (
   id: string,
   styles: CssLikeStyles,
+  screenId: number,
   options: T.HistoryMeta = {},
 ): T.UpdateElementStyles => ({
   type: TYPES.UPDATE_ELEMENT_STYLES,
-  payload: { id, styles },
+  payload: { id, styles, screenId },
   meta: options,
 });
 
 export const removeElementStyles = (
   id: string,
   cssPropertiesNames: string[],
+  screenId: number,
   options: T.HistoryMeta = {},
 ): T.RemoveElementStyles => ({
   type: TYPES.REMOVE_ELEMENT_STYLES,
-  payload: { id, cssPropertiesNames },
+  payload: { id, cssPropertiesNames, screenId },
   meta: options,
 });
 
 export const updateElementImage = (
   itemID: string,
   image: File,
+  screenId: number,
 ): T.UpdateElementImage => ({
   type: TYPES.UPDATE_ELEMENT_IMAGE,
-  payload: { itemID, image },
+  payload: { itemID, image, screenId },
 });
 
 export const updateElementParameters = <
@@ -352,10 +359,11 @@ export const updateElementParameters = <
 >(
   itemID: string,
   parameters: K,
+  screenId: number,
   options: T.HistoryMeta = {},
 ): T.UpdateElementParameters => ({
   type: TYPES.UPDATE_ELEMENT_PARAMETERS,
-  payload: { itemID, parameters },
+  payload: { itemID, parameters, screenId },
   meta: options,
 });
 

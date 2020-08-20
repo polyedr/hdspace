@@ -37,7 +37,6 @@ type StateProps = {
 const mapDispatch = {
   saveScreen: actionsCreators.saveScreenImage,
   changePrototypeMode: userActions.changePrototypeMode,
-  updateElementStyles: actionsCreators.updateElementStyles,
   resetScreenState: actionsCreators.resetScreenState,
   setActiveItem: actionsCreators.setActiveItem,
   exportProject: actionsCreators.exportProject,

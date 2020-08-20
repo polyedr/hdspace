@@ -4,7 +4,11 @@ import { ChildEntity, Entity } from '$domain/core';
 import { findChildByID } from '$utils/ElementsTreeHelper';
 import { LibraryElement } from '$api/types';
 import { CssLikeStyles } from '$utils/StyleHelper';
-import { DEFAULT_PROJECT, DEFAULT_SCREEN } from '$constants/defaultParams';
+import {
+  DEFAULT_PROJECT,
+  DEFAULT_ROOT,
+  DEFAULT_SCREEN,
+} from '$constants/defaultParams';
 
 export const selectProjectState = makeFeatureStateSelector('project');
 
@@ -14,11 +18,11 @@ export function selectProjects(state: AppReduxState) {
 
 export const selectScreenElement = (screenId: number) => (
   state: AppReduxState,
-): LibraryElement<'root'> | undefined => {
+): LibraryElement<'root'> => {
   const targetScreen = selectProjectState(state).data.screens.find(
     ({ id }) => id === screenId,
   );
-  return targetScreen ? targetScreen.element : undefined;
+  return targetScreen ? targetScreen.element : DEFAULT_ROOT;
 };
 
 export const selectCurrentScreenId = (state: AppReduxState) =>
@@ -70,7 +74,6 @@ export function selectCurrentProject(state: AppReduxState) {
 
 export const selectRootElement = (state: AppReduxState) =>
   selectCurrentScreen(state).element;
-// return selectProjectState(state).control.rootElement;
 
 export const selectRootID = (state: AppReduxState) =>
   selectCurrentScreen(state).element?.id || -1;
@@ -182,11 +185,17 @@ export function selectActiveItemChildren(
   return element.children.filter((child) => child.type === childType);
 }
 
-export const selectElementStyles = (id: string) => (state: AppReduxState) =>
-  findChildByID(selectCurrentScreen(state).element, id)?.styles.ownStyles;
+export const selectElementStyles = (screenId: number, elementId: string) => (
+  state: AppReduxState,
+) =>
+  findChildByID(selectScreenElement(screenId)(state), elementId)?.styles
+    .ownStyles;
 
-export const selectElementParameters = (id: string) => (state: AppReduxState) =>
-  findChildByID(selectCurrentScreen(state).element, id)?.parameters;
+export const selectElementParameters = (
+  screenId: number,
+  elementId: string,
+) => (state: AppReduxState) =>
+  findChildByID(selectScreenElement(screenId)(state), elementId)?.parameters;
 
 export const selectUndoActions = (state: AppReduxState) =>
   selectProjectState(state).control.undoActions;

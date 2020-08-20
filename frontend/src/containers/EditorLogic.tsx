@@ -36,7 +36,6 @@ const mapDispatchToProps = {
   changeScreensOrder: Actions.changeScreensOrder,
   addScreen: Actions.addScreen,
   setScreen: Actions.setCurrentScreenId,
-  updateElementStyles: Actions.updateElementStyles,
   changeMinNavPanel: UserActions.changeMinNavPanel,
   resetScreenState: Actions.resetScreenState,
 };
@@ -59,7 +58,6 @@ const EditorLogic: React.FC<EditorProps> = ({
   getProject,
   changeScreensOrder,
   addScreen,
-  updateElementStyles,
   resetScreenState,
   projectLoader,
 }) => (
@@ -77,7 +75,6 @@ const EditorLogic: React.FC<EditorProps> = ({
       screen={currentScreen}
       isNavPanelMinimized={isNavPanelMinimized}
       isPrototypeMode={isPrototypeMode}
-      updateElementStyles={updateElementStyles}
       resetScreenState={resetScreenState}
     />
     <Spinner active={projectLoader || screenLoader || scenarioLoader} />

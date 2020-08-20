@@ -221,7 +221,12 @@ export type ToggleContainersBorders = IPlainAction<
 >;
 export type CopyElementStyles = IAction<
   typeof TYPES.COPY_ELEMENT_STYLES,
-  { elementType: Entity; elementID: string; styles: CssLikeStyles }
+  {
+    elementType: Entity;
+    elementID: string;
+    styles: CssLikeStyles;
+    screenId: number;
+  }
 >;
 export type AddSharedStyles = IAction<
   'PROJECTS:ADD_SHARED_STYLES',
@@ -234,11 +239,11 @@ export type AddSharedStyles = IAction<
 >;
 export type AddElementClassName = IAction<
   typeof TYPES.ADD_ELEMENT_CLASSNAME,
-  { elementID: string; className: string }
+  { elementID: string; className: string; screenId: number }
 >;
 export type RemoveElementClassName = IAction<
   typeof TYPES.REMOVE_ELEMENT_CLASSNAME,
-  { elementID: string; className: string }
+  { elementID: string; className: string; screenId: number }
 >;
 export type UpdateSharedStyles = IAction<
   typeof TYPES.UPDATE_SHARED_STYLES,
@@ -250,25 +255,29 @@ export type RemoveSharedStyles = IAction<
 >;
 export type RemoveElementStyles = IAction<
   typeof TYPES.REMOVE_ELEMENT_STYLES,
-  { id: string; cssPropertiesNames: string[] }
+  { id: string; cssPropertiesNames: string[]; screenId: number }
 >;
 export type ReplaceElementStyles = IAction<
   typeof TYPES.REPLACE_ELEMENT_STYLES,
-  { id: string; styles: CssLikeStyles },
+  { id: string; styles: CssLikeStyles; screenId: number },
   HistoryMeta
 >;
 export type UpdateElementStyles = IAction<
   typeof TYPES.UPDATE_ELEMENT_STYLES,
-  { id: string; styles: CssLikeStyles },
+  { id: string; styles: CssLikeStyles; screenId: number },
   HistoryMeta
 >;
 export type UpdateElementImage = IAction<
   typeof TYPES.UPDATE_ELEMENT_IMAGE,
-  { itemID: string; image: File }
+  { itemID: string; image: File; screenId: number }
 >;
 export type UpdateElementParameters = IAction<
   typeof TYPES.UPDATE_ELEMENT_PARAMETERS,
-  { itemID: string; parameters: RootElement<Entity>['parameters'] },
+  {
+    itemID: string;
+    parameters: RootElement<Entity>['parameters'];
+    screenId: number;
+  },
   HistoryMeta
 >;
 export type UpdateSavedElementsValues = IAction<

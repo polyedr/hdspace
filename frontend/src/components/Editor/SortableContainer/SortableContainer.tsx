@@ -43,7 +43,6 @@ const mapStateToProps = (state: AppReduxState) => {
 };
 
 const mapDispatchToProps = {
-  updateElementStyles: actionsCreators.updateElementStyles,
   moveElement: actionsCreators.moveElement,
   updateSavedElementValues: actionsCreators.updateSavedElementValues,
 };
