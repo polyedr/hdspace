@@ -196,10 +196,14 @@ export type ClearAfterPrevScreen = IPlainAction<
 >;
 export type SaveScreen = IAction<
   typeof TYPES.SAVE_SCREEN,
-  { canvas: HTMLCanvasElement }
+  { screenId: number; canvas: HTMLCanvasElement }
+>;
+export type SetScreen = IAction<
+  typeof TYPES.SET_SCREEN,
+  { screen: IProjectScreen }
 >;
 export type ExportProject = IPlainAction<typeof TYPES.EXPORT_PROJECT>;
-export type SetScreen = IAction<
+export type SetCurrentScreenId = IAction<
   typeof TYPES.SET_CURRENT_SCREEN_ID,
   { screenId: number }
 >;
@@ -387,7 +391,7 @@ export type Action =
   | ActivateScreen
   | ClearAfterPrevScreen
   | SaveScreen
-  | SetScreen
+  | SetCurrentScreenId
   | SetScreens
   | AddElement
   | SetScenarioElements
@@ -437,7 +441,8 @@ export type Action =
   | AddElementClassName
   | Logout
   | RestoreScreen
-  | SetProject;
+  | SetProject
+  | SetScreen;
 
 export type ItemToCopyInfo = {
   id: string;

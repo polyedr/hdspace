@@ -18,7 +18,7 @@ import {
   getScreenSaga,
 } from '$redux/project/sagas/screen';
 import * as Actions from '$redux/project/actions';
-import { setProject, setProjectList, setScreens } from '$redux/project/actions';
+import { setScreens } from '$redux/project/actions';
 import {
   apiGetListProject,
   apiAddProject,
@@ -35,7 +35,6 @@ import { reqWrapper } from '$redux/project/sagas/index';
 import { generateFontFace } from '$utils/generateFontFace';
 
 import { selectors, T } from '..';
-import { selectProjects } from '$redux/project/selectors';
 
 export function* getListProjectSaga(): SagaIterator {
   yield put(Actions.setProjectListLoader(true));
@@ -412,17 +411,4 @@ export function* updateProjectSaga(
   );
 
   yield put(Actions.updateElementsTree(root, action, { redo, undo }));
-}
-
-export function* setProjectSaga({ payload }: ReturnType<typeof setProject>) {
-  const projects: Project[] = yield select(selectProjects);
-
-  const newProjectList = projects.map((project) => {
-    if (project.id === payload.project.id) {
-      return payload.project;
-    }
-    return project;
-  });
-
-  yield put(setProjectList(newProjectList));
 }

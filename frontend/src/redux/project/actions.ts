@@ -8,7 +8,7 @@ import { LibraryElement, Project } from '$api/types';
 
 import * as T from './types';
 import { TYPES } from '$constants/actions';
-import { HistoryMeta } from './types';
+import { HistoryMeta, IProjectScreen } from './types';
 
 export const getLibraryElements = (): T.LoadLibraryElements => ({
   type: TYPES.GET_LIBRARY_ELEMENTS,
@@ -212,14 +212,27 @@ export const resetScreenState = (): T.ResetScreenState => ({
   type: TYPES.RESET_SCREEN_STATE,
 });
 
-export const saveScreen = (canvas: HTMLCanvasElement): T.SaveScreen => ({
+export const saveScreenImage = (
+  screenId: number,
+  canvas: HTMLCanvasElement,
+): T.SaveScreen => ({
   type: TYPES.SAVE_SCREEN,
-  payload: { canvas },
+  payload: {
+    screenId,
+    canvas,
+  },
 });
 
-export const setCurrentScreenId = (screenId: number): T.SetScreen => ({
+export const setCurrentScreenId = (screenId: number): T.SetCurrentScreenId => ({
   type: TYPES.SET_CURRENT_SCREEN_ID,
   payload: { screenId },
+});
+
+export const setScreen = (screen: IProjectScreen): T.SetScreen => ({
+  type: TYPES.SET_SCREEN,
+  payload: {
+    screen,
+  },
 });
 
 export const setScreens = (screens: T.IProjectScreen[]): T.SetScreens => ({

@@ -46,8 +46,12 @@ export function selectModifyElements(state: AppReduxState) {
   return selectProjectState(state).edit.modifyElements;
 }
 
+export const selectCurrentScreenId = (state: AppReduxState) =>
+  selectProjectState(state).edit.currentScreenId;
+
 export const selectCurrentScreen = (state: AppReduxState) => {
-  const activeScreenId = selectProjectState(state).edit.currentScreenId;
+  const activeScreenId = selectCurrentScreenId(state);
+
   if (activeScreenId === -1) return DEFAULT_SCREEN;
   return (
     selectProjectState(state).data.screens.find(

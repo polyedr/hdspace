@@ -34,6 +34,28 @@ export function dataReducer(
       return newState;
     }
 
+    case TYPES.SET_SCREEN: {
+      const newState = { ...state };
+      newState.screens = newState.screens.map((screen) => {
+        if (screen.id === action.payload.screen.id) {
+          return action.payload.screen;
+        }
+        return screen;
+      });
+      return newState;
+    }
+
+    case TYPES.SET_PROJECT: {
+      const newState = { ...state };
+      newState.listProject = newState.listProject.map((project) => {
+        if (project.id === action.payload.project.id) {
+          return action.payload.project;
+        }
+        return project;
+      });
+      return newState;
+    }
+
     case TYPES.RESET_SCREEN_STATE: {
       return {
         ...state,

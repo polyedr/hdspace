@@ -10,34 +10,26 @@ import {
   addScreen,
   delScreen,
   renameScreen,
-  saveScreen,
+  saveScreenImage,
   setScenarioElements,
   setCurrentScreenId,
   setScreenLoader,
-  setModifyElements,
   setLoader,
   setActiveItem,
   setScreens,
   restoreScreen,
   setUndoActions,
   setProject,
+  setScreen,
 } from '$redux/project/actions';
 import * as Actions from '$redux/project/actions';
 import { generateUniqueName } from '$utils/generateUniqueName';
 import { convertScenarioElements } from '$utils/parseScenario';
 import { getSavedValue } from '$utils/getSavedValue';
 import { DEFAULT_ACTIVE_ITEM } from '$constants/defaultParams';
-import {
-  IProjectScreen,
-  IScenarioItem,
-  IScenarioElement,
-} from '$redux/project/types';
-import {
-  apiSaveScenario,
-  apiSetScenarioNeuralNetwork,
-  apiSaveScenarios,
-} from '$api/scenario';
-import { apiGetElements, apiSaveElements, apiAddElements } from '$api/element';
+import { IProjectScreen, IScenarioItem } from '$redux/project/types';
+import { apiSetScenarioNeuralNetwork, apiSaveScenarios } from '$api/scenario';
+import { apiGetElements, apiAddElements } from '$api/element';
 import { convertCreatedElementToRequest } from '$api/converters/toRequest';
 import { LibraryElementUnion, LibraryElement, Project } from '$api/types';
 import {
@@ -256,85 +248,29 @@ async function canvasToBlob(canvas: HTMLCanvasElement): Promise<Blob> {
   return dataBlob;
 }
 
-export function* saveScreenSaga({
-  payload: { canvas },
-}: ReturnType<typeof saveScreen>): SagaIterator {
-  const currentProject: ReturnType<typeof selectors.selectCurrentProject> = yield select(
-    selectors.selectCurrentProject,
-  );
-  const scenarios: ReturnType<typeof selectors.selectScenarios> = yield select(
-    selectors.selectScenarios,
-  );
-  const modifyElements: ReturnType<typeof selectors.selectModifyElements> = yield select(
-    selectors.selectModifyElements,
-  );
-  const scenarioElements: ReturnType<typeof selectors.selectScenariosElements> = yield select(
-    selectors.selectScenariosElements,
-  );
-  const currentScreen: ReturnType<typeof selectors.selectCurrentScreen> = yield select(
-    selectors.selectCurrentScreen,
-  );
-
+export function* saveScreenImageSaga({
+  payload: { screenId, canvas },
+}: ReturnType<typeof saveScreenImage>): SagaIterator {
   yield put(setLoader(true));
 
-  const screen = R.omit(
-    ['screenLoader', 'image', 'screen_data_json', 'buoyancy'],
-    currentScreen,
-  );
   // buoyancy must be send, but it null.
   const blobFile = yield call(canvasToBlob, canvas);
   const formData = new FormData();
 
-  R.keys(screen).forEach((key) => {
-    formData.append(key, screen[key] as string);
-  });
-
-  formData.append(
-    'image',
-    blobFile,
-    `${currentScreen.name}-${currentScreen.id}.png`,
-  );
+  formData.append('image', blobFile, `${screenId}.png`);
 
   const resultScreen = yield call(reqWrapper, apiSaveScreen, {
-    id: screen.id,
+    id: screenId,
     data: formData,
   });
-  const updateScreen = { ...currentScreen, ...resultScreen };
-  // yield put(setScreen(screen.id));
-  yield put(
-    setProject({
-      ...currentProject,
-      projectscreen: currentProject.projectscreen.map((screenID) =>
-        screenID !== updateScreen.id ? screenID : updateScreen,
-      ),
-    }),
-  );
 
-  const resultScenarios: ReturnPromisedType<typeof apiSaveScenario> = yield all(
-    Object.keys(scenarios).map((key) =>
-      call(reqWrapper, apiSaveScenario, { data: scenarios[key] }),
-    ),
-  );
-
-  const listElement = modifyElements.reduce(
-    (acc: IScenarioElement[], elId) =>
-      scenarioElements[elId] ? acc.concat(scenarioElements[elId]) : acc,
-    [],
-  );
-
-  if (listElement.length === 0) {
-    yield put(setLoader(false));
-    return;
+  if (!resultScreen) {
+    console.error(`Error while patching screen ${screenId}`);
   }
 
-  const resultElements = yield call(reqWrapper, apiSaveElements, {
-    data: listElement,
-  });
+  yield put(setScreen(resultScreen));
 
   yield put(setLoader(false));
-  yield put(setModifyElements([]));
-
-  console.log('save', { resultScreen, resultScenarios, resultElements });
 }
 
 export function* delScreenSaga({
@@ -533,6 +469,10 @@ export function* getScreenSaga(screenId: number) {
   const [element] = yield call(reqWrapper, apiGetElements, {
     scenariosIDs: [screen.screenscenario[0]],
   });
+
+  if (!screen || !element) {
+    console.error(`Error while fetching screen ${screenId}`);
+  }
 
   screen.element = convertElementFromResponse(element);
   return screen;
