@@ -13,6 +13,7 @@ import EditorWindow from '$containers/EditorWindow';
 import { SignIn } from '$components/User/SignIn/SignIn';
 import { SignUp } from '$components/User/SignUp/SignUp';
 import { PasswordRestore } from '$components/User/PasswordRestore';
+import { Activation } from '$components/User/Activation/Activation';
 
 const styles = require('$styles/global.scss');
 
@@ -34,6 +35,7 @@ const Component: React.FunctionComponent<Props> = (props) => {
       <Switch>
         <Route path={PATH_NAMES.user.signin} component={SignIn} />
         <Route path={PATH_NAMES.user.signup} component={SignUp} />
+        <Route path={PATH_NAMES.user.activate} component={Activation} />
         <Route path={PATH_NAMES.projects} component={EditorWindow} />
         <Route path={PATH_NAMES.passwordRestore} component={PasswordRestore} />
         <Route path="/project/:projectID/:screenID?" component={EditorWindow} />

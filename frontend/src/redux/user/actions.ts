@@ -57,6 +57,34 @@ export const setNewUser = (
   },
 });
 
+export const sendActivationMail = (
+  username: string,
+  email: string,
+  password: string,
+) => ({
+  type: TYPES.SEND_ACTIVATION_MAIL,
+  payload: {
+    username,
+    email,
+    password,
+  },
+});
+
+export const setConfirmMessage = (showMessage: boolean) => ({
+  type: TYPES.SET_CONFIRM_MESSAGE,
+  payload: {
+    showMessage,
+  },
+});
+
+export const activateUser = (uid: string, token: string) => ({
+  type: TYPES.ACTIVATE_USER,
+  payload: {
+    uid,
+    token,
+  },
+});
+
 export const setApiResponseError = (apiResponseError: IApiResponseError) => ({
   type: TYPES.SET_API_ERROR,
   apiResponseError,

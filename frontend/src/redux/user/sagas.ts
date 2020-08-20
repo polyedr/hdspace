@@ -10,6 +10,8 @@ import {
   apiGetProfile,
   apiChangeUserData,
   apiChangeProfileData,
+  apiSendActivationMail,
+  apiActivateUser,
 } from '$api/user';
 import { TYPES } from '$constants/actions';
 import * as Actions from '$redux/user/actions';
@@ -54,16 +56,28 @@ export function* loginSaga({
 
   yield call(getTokenPairSaga, username, password);
 
+  const {
+    user: { apiResponseError },
+  }: AppReduxState = yield select();
+
+  if (apiResponseError.errorStatus !== -1) {
+    yield put(Actions.changeSignLoader(false));
+    return;
+  }
+
   const users = yield call(reqWrapper, apiGetUsers);
+
   if (!users) {
     console.error('Login error while fetching users');
     return;
   }
+
   const userData = users.find(
     (user: ServerUserData) => username === user.username,
   );
 
   const profileData = yield call(apiGetProfile, userData.id);
+
   if (!profileData) {
     console.error('Login error while fetching users');
     return;
@@ -75,6 +89,7 @@ export function* loginSaga({
       ...convertProfileDataFromResponse(profileData),
     }),
   );
+
   yield put(Actions.changeSignLoader(false));
 
   yield call(openProjects);
@@ -130,6 +145,53 @@ function* setNewUserSaga(action: ReturnType<typeof Actions.setNewUser>) {
   } else {
     yield put(Actions.setApiResponseError(newUserData));
   }
+  yield put(Actions.changeSignLoader(false));
+}
+
+function* sendActivationMailSaga(
+  action: ReturnType<typeof Actions.sendActivationMail>,
+) {
+  const {
+    payload: { username, email, password },
+  } = action;
+  yield put(Actions.changeSignLoader(true));
+
+  const response = yield call(apiSendActivationMail, {
+    username,
+    email,
+    password,
+  });
+
+  if (response.errorStatus) {
+    yield put(Actions.setApiResponseError(response));
+  }
+
+  const {
+    user: { apiResponseError },
+  }: AppReduxState = yield select();
+
+  yield put(Actions.changeSignLoader(false));
+
+  if (apiResponseError.errorStatus === -1) {
+    openSignScreen('signin');
+    yield put(Actions.setConfirmMessage(true));
+  }
+}
+
+function* activateUserSaga(action: ReturnType<typeof Actions.activateUser>) {
+  const {
+    payload: { uid, token },
+  } = action;
+  yield put(Actions.changeSignLoader(true));
+
+  yield call(apiActivateUser, { uid, token });
+
+  yield put(Actions.setTokenPair({ access: token, refresh: '' }));
+
+  // const currentUser = yield call(reqWrapper, apiGetCurrentUser);
+
+  // console.log(currentUser);
+
   yield put(Actions.changeSignLoader(false));
 }
 
@@ -220,6 +282,8 @@ export function* setNewPasswordSaga({
 export default function* userSaga() {
   yield takeLatest(TYPES.LOGIN, loginSaga);
   yield takeLatest(TYPES.SET_NEW_USER, setNewUserSaga);
+  yield takeLatest(TYPES.SEND_ACTIVATION_MAIL, sendActivationMailSaga);
+  yield takeLatest(TYPES.ACTIVATE_USER, activateUserSaga);
   yield takeLatest(TYPES.RESTORE_PASSWORD, restorePasswordSaga);
   yield takeLatest(TYPES.SET_NEW_PASSWORD, setNewPasswordSaga);
   yield takeEvery(TYPES.CHANGE_USER_DATA, changeUserDataSaga);

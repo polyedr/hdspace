@@ -64,6 +64,7 @@ export type IRootState = Readonly<{
   restorePasswordEmail?: string;
   restoreUserId?: number;
   isSignLoader: boolean;
+  showConfirmMessage: boolean;
 }>;
 
 export type UnsafeReturnType<T> = T extends (...args: any[]) => infer R

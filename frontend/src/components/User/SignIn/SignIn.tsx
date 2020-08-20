@@ -26,10 +26,11 @@ type FormData = {
 };
 
 const mapStateToProps = ({
-  user: { apiResponseError, isSignLoader },
+  user: { apiResponseError, isSignLoader, showConfirmMessage },
 }: AppReduxState) => ({
   apiResponseError,
   isSignLoader,
+  showConfirmMessage,
 });
 
 const mapDispatchToProps = {
@@ -41,6 +42,7 @@ const mapDispatchToProps = {
 type IProps = typeof mapDispatchToProps & {
   apiResponseError: IApiResponseError;
   isSignLoader: boolean;
+  showConfirmMessage: boolean;
 };
 
 export const UnmountedSignIn: React.FC<IProps> = ({
@@ -49,6 +51,7 @@ export const UnmountedSignIn: React.FC<IProps> = ({
   restorePassword,
   setApiResponseError,
   login,
+  showConfirmMessage,
 }) => {
   const [isRestorePasswordModalOpen, setIsRestorePasswordModalOpen] = useState<
     boolean
@@ -113,6 +116,11 @@ export const UnmountedSignIn: React.FC<IProps> = ({
       <Info />
       <div className="signContainer">
         <div className={styles.formContainer}>
+          {showConfirmMessage && (
+            <p className="signAuthorisationErrorText">
+              Please, check your mail and confirm registration
+            </p>
+          )}
           <Form
             onSubmit={handleFormSubmit}
             initialValues={initialValues}

@@ -18,6 +18,17 @@ export interface ISignUpData {
   last_name: string;
 }
 
+type SendActivationMailData = {
+  username: string;
+  password: string;
+  email: string;
+};
+
+type activateUserData = {
+  uid: string;
+  token: string;
+};
+
 // const generateId = () => {
 //   return `5cda${getRandomInt(10, 99)}b${getRandomInt(10, 99)}a5d3${getRandomInt(10, 99)}e72${getRandomInt(10, 99)}3b11`;
 // };
@@ -94,6 +105,35 @@ export const apiSetNewUser = ({
     },
     method: 'POST',
     url: '/accounts/users/',
+  })
+    .then(parseResult)
+    .catch(onAuthorisationError);
+
+export const apiSendActivationMail = ({
+  username,
+  password,
+  email,
+}: SendActivationMailData) =>
+  myAxios({
+    data: {
+      username,
+      email,
+      password,
+    },
+    method: 'POST',
+    url: '/djauth/users/',
+  })
+    .then(parseResult)
+    .catch(onAuthorisationError);
+
+export const apiActivateUser = ({ uid, token }: activateUserData) =>
+  myAxios({
+    data: {
+      uid,
+      token,
+    },
+    method: 'POST',
+    url: '/djauth/users/activation/',
   })
     .then(parseResult)
     .catch(onAuthorisationError);

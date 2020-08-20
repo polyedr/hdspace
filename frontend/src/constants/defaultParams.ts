@@ -13,6 +13,7 @@ import {
   composeValidators,
   isValidEmail,
   isLongPassword,
+  isOnlyNumeric,
 } from '$shared/validators';
 import { isLatinOrNumbers } from '$shared/validators/isLatinOrNumbers';
 
@@ -193,7 +194,12 @@ export const DEFAULT_SIGNUP_FIELDS: ISignFormElement[] = [
     value: 'password',
     placeholder: 'password',
     type: 'password',
-    validator: composeValidators(isRequired, isLongPassword, isLatinOrNumbers),
+    validator: composeValidators(
+      isRequired,
+      isLongPassword,
+      isLatinOrNumbers,
+      isOnlyNumeric,
+    ),
   },
 ];
 

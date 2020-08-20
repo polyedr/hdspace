@@ -45,7 +45,7 @@ const mapStateToProps = ({
 
 const mapDispatchToProps = {
   setApiResponseError: Actions.setApiResponseError,
-  setNewUser: Actions.setNewUser,
+  sendActivationMail: Actions.sendActivationMail,
 };
 
 type IProps = typeof mapDispatchToProps & {
@@ -57,14 +57,14 @@ const UnconnectedSignUp: React.FunctionComponent<IProps> = ({
   isSignLoader,
   apiResponseError,
   setApiResponseError,
-  setNewUser,
+  sendActivationMail,
 }) => {
   useEffect(() => {
-    return () => {
+    /* return () => {
       if (apiResponseError.errorStatus !== -1) {
         setApiResponseError(DEFAULT_RESPONSE_ERROR);
       }
-    };
+    }; */
   }, [apiResponseError, setApiResponseError]);
 
   const handleFormSubmit = (values: FormData) => {
@@ -72,13 +72,7 @@ const UnconnectedSignUp: React.FunctionComponent<IProps> = ({
       setApiResponseError(DEFAULT_RESPONSE_ERROR);
     }
 
-    setNewUser(
-      values.username,
-      values.email,
-      values.firstName,
-      values.lastName,
-      values.password,
-    );
+    sendActivationMail(values.username, values.email, values.password);
   };
 
   const responseGoogle = (response: any) => {

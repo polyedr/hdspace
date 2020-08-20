@@ -88,14 +88,17 @@ function* LocationChange({ payload: { location } }: LocationChangeAction) {
     user: { tokenPair },
   }: AppReduxState = yield select();
 
-  if (
+  /* if (
     tokenPair.access === '' &&
     location.pathname !== PATH_NAMES.user.signup &&
     location.pathname !== PATH_NAMES.user.signin &&
+    location.pathname !== PATH_NAMES.user.activate &&
     location.pathname !== PATH_NAMES.passwordRestore
   ) {
     openSignScreen('signin');
-  } else if (
+  } */
+
+  if (
     tokenPair.access !== '' &&
     (location.pathname === PATH_NAMES.user.signin ||
       location.pathname === PATH_NAMES.user.signup)
