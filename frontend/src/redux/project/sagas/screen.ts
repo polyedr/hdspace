@@ -346,8 +346,15 @@ export function* delScreenSaga({
 }
 
 export function* restoreScreenSaga({
+  type,
   payload: { projectId, screenId },
+  meta,
 }: ReturnType<typeof restoreScreen>) {
+  if (!meta) {
+    console.error(`You have to provide metainformation for action ${type}`);
+    return;
+  }
+
   yield put(Actions.clearAfterPrevScreen());
 
   const project = yield call(reqWrapper, apiGetProject, { id: projectId });
@@ -361,6 +368,10 @@ export function* restoreScreenSaga({
       projectscreen: [...projectscreen, screenId],
     },
   });
+
+  if (!meta.undo) {
+    yield put(setUndoActions(delScreen(projectId, screenId)));
+  }
 
   const screens = yield select(selectors.selectScreens);
   const screen = yield call(reqWrapper, apiGetScreen, {
@@ -376,7 +387,7 @@ export function* restoreScreenSaga({
 
   yield put(setProject(updatedProject));
 
-  yield put(activateScreen(screenId, { undo: true }));
+  yield put(activateScreen(screenId, meta));
 }
 
 export function* renameScreenSaga({

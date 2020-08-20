@@ -55,6 +55,16 @@ export const controlReducer = (
       return newState;
     }
 
+    case TYPES.RESTORE_SCREEN: {
+      const newState = { ...state };
+
+      if (!action.meta?.undo) {
+        newState.history = [...state.history, action];
+      }
+
+      return newState;
+    }
+
     case TYPES.RESET_SCREEN_STATE: {
       return {
         ...state,
