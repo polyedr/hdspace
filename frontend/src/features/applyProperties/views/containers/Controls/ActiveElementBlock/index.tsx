@@ -19,7 +19,6 @@ interface IComponentProps {
   isAddElementsModalOpened: boolean;
   showDeleteButton: boolean;
   onWrapIntoContainer(id: string): void;
-  onDelScenarioItem(id: string): void;
   setIsAddElementsModalOpened(isOpened: boolean): void;
 }
 

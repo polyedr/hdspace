@@ -78,7 +78,6 @@ const mapDispatch = {
   createElements: actionsCreators.createElements,
   wrapIntoContainer: actionsCreators.wrapIntoContainer,
   setIsAddElementsModalOpened: actionsCreators.setIsAddElementsModalOpened,
-  deleteActiveItem: actionsCreators.deleteItem,
 };
 
 const CONTROLS: Record<Control, React.ComponentType<any>> = {
@@ -121,7 +120,6 @@ const Component: React.FC<PropertiesPanelProps> = ({
   activeElementParent,
   elementsTree,
   screen,
-  deleteActiveItem,
   loader,
   createElements,
   wrapIntoContainer,
@@ -148,7 +146,6 @@ const Component: React.FC<PropertiesPanelProps> = ({
         <ActiveElementBlock
           activeItem={activeItem}
           disablePanel={disablePanel}
-          onDelScenarioItem={deleteActiveItem}
           libraryElements={LIBRARY_ELEMENTS}
           createElements={createElements}
           onWrapIntoContainer={wrapIntoContainer}

@@ -290,19 +290,27 @@ export type UpdateSavedElementValues = IAction<
 >;
 export type DeleteItem = IAction<
   typeof TYPES.DELETE_ITEM,
-  { id: string },
+  { id: string; screenId: number },
   HistoryMeta
 >;
 export type CreateElements = IAction<
   typeof TYPES.CREATE_ELEMENTS,
-  { createdElements: CreatedElement[] }
+  { createdElements: CreatedElement[]; screenId: number }
 >;
 export type AddChildToElement = IAction<
   typeof TYPES.ADD_CHILD_TO_ELEMENT,
-  { childType: ServerStructType; elementID: string; parameters: {} },
+  {
+    childType: ServerStructType;
+    elementID: string;
+    parameters: {};
+    screenId: number;
+  },
   HistoryMeta
 >;
-export type UploadFile = IAction<typeof TYPES.UPLOAD_FILE, { file: any }>;
+export type UploadFile = IAction<
+  typeof TYPES.UPLOAD_FILE,
+  { file: any; screenId: number }
+>;
 export type uploadImageForNNSuccess = IAction<
   typeof TYPES.UPLOAD_IMAGE_FOR_NN_SUCCESS,
   { imageURL: string; screenID: number }
@@ -330,7 +338,10 @@ export type SetItemToCopy = IAction<
   ItemToCopyInfo
 >;
 export type CopyActiveItem = IPlainAction<typeof TYPES.COPY_ACTIVE_ITEM>;
-export type PasteCopiedItem = IPlainAction<typeof TYPES.PASTE_COPIED_ITEM>;
+export type PasteCopiedItem = IAction<
+  typeof TYPES.PASTE_COPIED_ITEM,
+  { screenId: number }
+>;
 export type ResetScreenState = IPlainAction<typeof TYPES.RESET_SCREEN_STATE>;
 export type UndoAction = IPlainAction<typeof TYPES.UNDO_ACTION>;
 export type RedoAction = IPlainAction<typeof TYPES.REDO_ACTION>;
@@ -347,7 +358,7 @@ export type UnwrapFromContainer = IAction<
 export type SetRemoteMove = IAction<typeof TYPES.SET_REMOTE_MOVE, boolean>;
 export type RestoreElementChildren = IAction<
   typeof TYPES.RESTORE_ELEMENT_CHILDREN,
-  { elementId: string; childrenIds: string[] },
+  { elementId: string; childrenIds: string[]; screenId: number },
   HistoryMeta
 >;
 export type RedoWrapIntoContainer = IAction<

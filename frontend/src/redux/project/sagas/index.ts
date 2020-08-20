@@ -674,19 +674,12 @@ function* updateElementParameters(
 }
 
 function* uploadFileSaga({
-  payload: {
-    file: { file },
-  },
+  payload: { file, screenId },
 }: ReturnType<typeof Actions.uploadFile>) {
   try {
     // TODO: show loader in addModalElements
-    const currentScreen: ReturnType<typeof selectors.selectCurrentScreen> = yield select(
-      selectors.selectCurrentScreen,
-    );
-    const { id: currentScreenID } = currentScreen;
-
     const root: ReturnType<typeof selectors.selectRootElement> = yield select(
-      selectors.selectRootElement,
+      selectors.selectScreenElement(screenId),
     );
 
     const formData = new FormData();
@@ -695,7 +688,7 @@ function* uploadFileSaga({
     formData.append('struct_type', 'container');
     formData.append('func_type', 'container');
     formData.append('name', 'TESTING NEURAL NETWORK');
-    formData.append('screen', currentScreenID.toString());
+    formData.append('screen', screenId.toString());
     formData.append('parameters', JSON.stringify({}));
     formData.append('styles', JSON.stringify({}));
 
@@ -726,13 +719,15 @@ function* uploadFileSaga({
     );
     const childrenIds = updatedElements.children.map((child) => child.id);
     yield put(
-      Actions.setUndoActions(Actions.deleteItem(nnRootWithDefaultParams.id)),
+      Actions.setUndoActions(
+        Actions.deleteItem(nnRootWithDefaultParams.id, screenId),
+      ),
     );
 
     yield call(
       updateElementsTree,
       updatedElements,
-      Actions.restoreElementChildren(root.id, childrenIds),
+      Actions.restoreElementChildren(root.id, childrenIds, screenId),
     );
   } catch (e) {
     console.error('Could not upload image for NN. Error: ', e.message);
@@ -757,6 +752,7 @@ function* duplicateItems(
   sourceRoot: LibraryElement<Entity>,
   itemsToCopyInfo: ItemToCopyInfo[],
   targetParent: LibraryElement<Entity>,
+  screenId: number,
   undo: boolean = false,
 ) {
   const itemsToDuplicate = itemsToCopyInfo.map((item) =>
@@ -777,16 +773,22 @@ function* duplicateItems(
     convertElementToRequest(item!),
   );
 
-  yield call(createElements, convertedItemsToDuplicate, targetParent, undo);
+  yield call(
+    createElements,
+    convertedItemsToDuplicate,
+    targetParent,
+    screenId,
+    undo,
+  );
 }
 
 function* duplicateScreenSaga(
   action: ReturnType<typeof Actions.duplicateScreen>,
 ) {
-  const { name } = action.payload;
+  const { name, screenID } = action.payload;
 
   const sourceRoot: ReturnType<typeof selectors.selectRootElement> = yield select(
-    selectors.selectRootElement,
+    selectors.selectScreenElement(screenID),
   );
 
   const sourceCurrentScreen: ReturnType<typeof selectors.selectCurrentScreen> = yield select(
@@ -804,11 +806,14 @@ function* duplicateScreenSaga(
   const projectID = currentProject.id;
   const screensNumber = currentProject.projectscreen.length;
 
-  yield call(addScreenSaga, Actions.addScreen(projectID, name, screensNumber));
+  const { id: newScreenId } = yield call(
+    addScreenSaga,
+    Actions.addScreen(projectID, name, screensNumber),
+  );
   yield put(Actions.setScreenLoader(true));
 
   const targetRoot: ReturnType<typeof selectors.selectRootElement> = yield select(
-    selectors.selectRootElement,
+    selectors.selectScreenElement(newScreenId),
   );
   const targetRootID = targetRoot.id;
 
@@ -819,16 +824,26 @@ function* duplicateScreenSaga(
       name: 'Root',
     }),
   );
-  yield call(duplicateItems, sourceRoot, duplicatedItems, targetRoot, true);
+
+  yield call(
+    duplicateItems,
+    sourceRoot,
+    duplicatedItems,
+    targetRoot,
+    newScreenId,
+    true,
+  );
   yield put(Actions.setScreenLoader(false));
 }
 
-function* pasteCopiedItemSaga() {
+function* pasteCopiedItemSaga({
+  payload: { screenId },
+}: ReturnType<typeof Actions.pasteCopiedItem>) {
   const activeItem: ReturnType<typeof selectors.selectActiveItem> = yield select(
     selectors.selectActiveItem,
   );
   const root: ReturnType<typeof selectors.selectRootElement> = yield select(
-    selectors.selectRootElement,
+    selectors.selectScreenElement(screenId),
   );
   const targetContainer = findChildByID(root, activeItem.itemId);
 
@@ -841,7 +856,13 @@ function* pasteCopiedItemSaga() {
   );
 
   if (activeItem.itemType !== 'none' && itemToCopyInfo !== null) {
-    yield call(duplicateItems, root, [itemToCopyInfo], targetContainer);
+    yield call(
+      duplicateItems,
+      root,
+      [itemToCopyInfo],
+      targetContainer,
+      screenId,
+    );
   }
 }
 

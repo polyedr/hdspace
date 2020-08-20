@@ -46,7 +46,7 @@ type OwnProps = {
   active: boolean;
   libraryElements: LibraryElements;
   onClose(): void;
-  onConfirm(elementsToAdd: CreatedElement[]): void;
+  onConfirm(elementsToAdd: CreatedElement[], screenId: number): void;
 };
 
 type Props = typeof mapDispatchToProps &
@@ -82,9 +82,9 @@ const Component: React.FunctionComponent<Props> = memo(
 
     useEffect(() => {
       if (imageToUpload) {
-        uploadImg({ file: imageToUpload });
+        uploadImg(imageToUpload, currentScreen.id);
       }
-    }, [imageToUpload]);
+    }, [imageToUpload, currentScreen.id]);
 
     useEffect(() => {
       const newListElement = parseAddElementsTabs(libraryElements);
@@ -99,11 +99,11 @@ const Component: React.FunctionComponent<Props> = memo(
           setErrorMsg('No items for the scenario.');
         } else {
           setErrorMsg('');
-          onConfirm(selectedElements);
+          onConfirm(selectedElements, currentScreen.id);
           onClose();
         }
       },
-      [selectedElements, onConfirm, onClose],
+      [selectedElements, onConfirm, onClose, currentScreen.id],
     );
 
     const handleCancel = useCallback(() => {

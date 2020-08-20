@@ -96,6 +96,7 @@ export function* createContainer(scenario?: Partial<T.IScenarioItem>) {
 export function* createElements(
   elements: ServerElement<Entity>[],
   parent: LibraryElement<Entity>,
+  screenId: number,
   undo: boolean = false,
 ) {
   const disallowedElements = elements.filter(
@@ -111,7 +112,7 @@ export function* createElements(
   );
 
   const root: ReturnType<typeof selectors.selectRootElement> = yield select(
-    selectors.selectRootElement,
+    selectors.selectScreenElement(screenId),
   );
 
   const newElements: ReturnPromisedType<typeof apiAddElements> = yield call(
@@ -123,7 +124,7 @@ export function* createElements(
   if (!undo) {
     yield put(
       Actions.setUndoActions(
-        newElements.map((el: any) => Actions.deleteItem(el.id)),
+        newElements.map((el: any) => Actions.deleteItem(el.id, screenId)),
       ),
     );
   }
@@ -150,6 +151,7 @@ export function* createElements(
     Actions.restoreElementChildren(
       parent.id,
       newElements.map((element) => element.id),
+      screenId,
     ),
   );
 
@@ -157,6 +159,7 @@ export function* createElements(
     updatedElements,
     parent.id,
   )?.children.map((child) => convertElementToPatchRequest(child));
+
   yield call(reqWrapper, apiSaveElements, {
     data: elementsWithUpdatedBuoyancy,
   });
@@ -167,13 +170,13 @@ export function* createElements(
 export function* createElementsSaga(
   action: ReturnType<typeof Actions.createElements>,
 ) {
-  const { createdElements } = action.payload;
+  const { createdElements, screenId } = action.payload;
 
   const activeItem: ReturnType<typeof selectors.selectActiveItem> = yield select(
     selectors.selectActiveItem,
   );
   const root: ReturnType<typeof selectors.selectRootElement> = yield select(
-    selectors.selectRootElement,
+    selectors.selectScreenElement(screenId),
   );
   const activeItemElement = findChildByID(root, activeItem.itemId);
 
@@ -187,7 +190,12 @@ export function* createElementsSaga(
   const convertedCreatedElements = createdElements.map((element) =>
     convertCreatedElementToRequest(element.type, null),
   );
-  yield call(createElements, convertedCreatedElements, activeItemElement);
+  yield call(
+    createElements,
+    convertedCreatedElements,
+    activeItemElement,
+    screenId,
+  );
 
   document
     .querySelector<HTMLElement>(
@@ -201,7 +209,7 @@ export function* createElementsSaga(
 export function* addChildToElementSaga(
   action: ReturnType<typeof Actions.addChildToElement>,
 ) {
-  const { childType, elementID, parameters } = action.payload;
+  const { childType, elementID, parameters, screenId } = action.payload;
   if (!action.meta) {
     console.error(
       `You have to provide metainformation for action ${action.type}`,
@@ -222,7 +230,7 @@ export function* addChildToElementSaga(
   );
 
   const root: ReturnType<typeof selectors.selectRootElement> = yield select(
-    selectors.selectRootElement,
+    selectors.selectScreenElement(screenId),
   );
   const parent = findChildByID(root, elementID);
 
@@ -233,13 +241,14 @@ export function* addChildToElementSaga(
       createElements,
       [convertedChildWithUpdatedParameters],
       parent,
+      screenId,
       undo,
     );
   }
 }
 
 export function* softDeleteSaga(action: T.DeleteItem) {
-  const { id } = action.payload;
+  const { id, screenId } = action.payload;
   if (!action.meta) {
     console.error(
       `You have to provide metainformation for action ${action.type}`,
@@ -249,7 +258,7 @@ export function* softDeleteSaga(action: T.DeleteItem) {
   const { undo, redo } = action.meta;
 
   const root: ReturnType<typeof selectors.selectRootElement> = yield select(
-    selectors.selectRootElement,
+    selectors.selectScreenElement(screenId),
   );
   const element = findChildByID(root, id);
   if (!element) {
@@ -274,7 +283,9 @@ export function* softDeleteSaga(action: T.DeleteItem) {
   const childrenIds = parent.children.map((child) => child.id);
 
   if (!undo) {
-    yield put(setUndoActions(Actions.restoreElementChildren(parent.id, [id])));
+    yield put(
+      setUndoActions(Actions.restoreElementChildren(parent.id, [id], screenId)),
+    );
   }
 
   const activeItem: ReturnType<typeof selectors.selectActiveItem> = yield select(
@@ -311,7 +322,7 @@ export function* softDeleteSaga(action: T.DeleteItem) {
 }
 
 export function* restoreElementSaga(action: T.RestoreElementChildren) {
-  const { elementId, childrenIds } = action.payload;
+  const { elementId, childrenIds, screenId } = action.payload;
   if (!action.meta) {
     console.error(
       `You have to provide metainformation for action ${action.type}`,
@@ -321,7 +332,7 @@ export function* restoreElementSaga(action: T.RestoreElementChildren) {
   const { undo, redo } = action.meta;
 
   const root: ReturnType<typeof selectors.selectRootElement> = yield select(
-    selectors.selectRootElement,
+    selectors.selectScreenElement(screenId),
   );
 
   const element = findChildByID(root, elementId);
@@ -339,7 +350,9 @@ export function* restoreElementSaga(action: T.RestoreElementChildren) {
 
   if (!undo) {
     yield put(
-      Actions.setUndoActions(childrenIds.map((id) => Actions.deleteItem(id))),
+      Actions.setUndoActions(
+        childrenIds.map((id) => Actions.deleteItem(id, screenId)),
+      ),
     );
   }
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import * as R from 'ramda';
 import {
   ExpansionPanel,
@@ -19,6 +19,7 @@ import { Button } from '$components/UI/Button';
 import { Icon } from '$components/UI/Icon';
 import { sharedClasses } from '$styles/sharedClasses';
 import { SelectItemElement } from '$api/types';
+import { selectCurrentScreenId } from '$redux/project/selectors';
 
 const styles = require('./SelectOptions.scss');
 
@@ -58,6 +59,7 @@ const SelectOptions: React.FC<Props> = ({
   deleteChildFromElement,
 }) => {
   const [options, setOptions] = useState(selectOptions);
+  const currentScreenId = useSelector(selectCurrentScreenId);
 
   useEffect(() => {
     setOptions(selectOptions);
@@ -95,14 +97,19 @@ const SelectOptions: React.FC<Props> = ({
       'New option',
       selectOptions.map((option) => option.parameters.name || '') || [],
     );
-    addChildToElement('selectItem', selectMenuID, {
-      name: newOptionName,
-      value: newOptionName,
-    });
+    addChildToElement(
+      'selectItem',
+      selectMenuID,
+      {
+        name: newOptionName,
+        value: newOptionName,
+      },
+      currentScreenId,
+    );
   };
 
   const handleDeleteButtonClick = (selectOptionID: string) => {
-    deleteChildFromElement(selectOptionID);
+    deleteChildFromElement(selectOptionID, currentScreenId);
   };
 
   return (

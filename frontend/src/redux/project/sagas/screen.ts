@@ -234,6 +234,8 @@ export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
   );
 
   yield put(push(`/project/${projectID}/${screen.id}`));
+  // eslint-disable-next-line consistent-return
+  return updatedScreen;
 }
 
 async function canvasToBlob(canvas: HTMLCanvasElement): Promise<Blob> {

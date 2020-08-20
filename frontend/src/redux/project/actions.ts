@@ -384,36 +384,42 @@ export const updateSavedElementValues = (
 
 export const deleteItem = (
   id: string,
+  screenId: number,
   options: T.HistoryMeta = {},
 ): T.DeleteItem => ({
   type: TYPES.DELETE_ITEM,
-  payload: { id },
+  payload: { id, screenId },
   meta: options,
 });
 
 export const createElements = (
   createdElements: T.CreatedElement[],
+  screenId: number,
 ): T.CreateElements => ({
   type: TYPES.CREATE_ELEMENTS,
-  payload: { createdElements },
+  payload: { createdElements, screenId },
 });
 
 export const addChildToElement = (
   childType: ChildEntity,
   elementID: string,
   parameters: ChildrenElements[ChildEntity]['parameters'],
+  screenId: number,
   undo: boolean = false,
 ): T.AddChildToElement => ({
   type: TYPES.ADD_CHILD_TO_ELEMENT,
-  payload: { childType, elementID, parameters },
+  payload: { childType, elementID, parameters, screenId },
   meta: {
     undo,
   },
 });
 
-export const uploadFile = (payload: { file: any }): T.UploadFile => ({
+export const uploadFile = (file: any, screenId: number): T.UploadFile => ({
   type: TYPES.UPLOAD_FILE,
-  payload,
+  payload: {
+    file,
+    screenId,
+  },
 });
 
 export const uploadImageForNNSuccess = (payload: {
@@ -458,8 +464,9 @@ export const copyActiveItem = (): T.CopyActiveItem => ({
   type: TYPES.COPY_ACTIVE_ITEM,
 });
 
-export const pasteCopiedItem = (): T.PasteCopiedItem => ({
+export const pasteCopiedItem = (screenId: number): T.PasteCopiedItem => ({
   type: TYPES.PASTE_COPIED_ITEM,
+  payload: { screenId },
 });
 
 export const setItemToCopy = (
@@ -517,12 +524,14 @@ export const unwrapFromContainer = (
 export const restoreElementChildren = (
   elementId: string,
   childrenIds: string[],
+  screenId: number,
   options: T.HistoryMeta = {},
 ): T.RestoreElementChildren => ({
   type: TYPES.RESTORE_ELEMENT_CHILDREN,
   payload: {
     elementId,
     childrenIds,
+    screenId,
   },
   meta: options,
 });
