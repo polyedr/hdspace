@@ -11,7 +11,6 @@ import {
   delScreen,
   renameScreen,
   saveScreenImage,
-  setScenarioElements,
   setCurrentScreenId,
   setScreenLoader,
   setLoader,
@@ -24,7 +23,6 @@ import {
 } from '$redux/project/actions';
 import * as Actions from '$redux/project/actions';
 import { generateUniqueName } from '$utils/generateUniqueName';
-import { convertScenarioElements } from '$utils/parseScenario';
 import { getSavedValue } from '$utils/getSavedValue';
 import { DEFAULT_ACTIVE_ITEM } from '$constants/defaultParams';
 import { IProjectScreen, IScenarioItem } from '$redux/project/types';
@@ -450,16 +448,14 @@ export function* getScreenNNSaga() {
   };
 
   const screenscenario = [resultScenario.id];
-  const resultElements: ReturnPromisedType<typeof apiGetElements> = yield call(
-    reqWrapper,
-    apiGetElements,
-    { scenariosIDs: screenscenario },
-  );
-  const scenarioElements = convertScenarioElements(resultElements);
+  const [rootElement] = yield call(reqWrapper, apiGetElements, {
+    scenariosIDs: screenscenario,
+  });
+  resultScreen.element = convertElementFromResponse(rootElement);
 
   yield all([
     put(setProject(updateProject)),
-    put(setScenarioElements(scenarioElements)),
+    put(setScreen(resultScreen)),
     put(activateScreen(lastScreenId)),
   ]);
 }

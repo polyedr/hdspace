@@ -12,10 +12,6 @@ export function selectProjects(state: AppReduxState) {
   return selectProjectState(state).data.listProject;
 }
 
-export function selectScenarios(state: AppReduxState) {
-  return selectProjectState(state).edit.scenarios;
-}
-
 export const selectScreenElement = (screenId: number) => (
   state: AppReduxState,
 ): LibraryElement<'root'> | undefined => {
@@ -24,27 +20,6 @@ export const selectScreenElement = (screenId: number) => (
   );
   return targetScreen ? targetScreen.element : undefined;
 };
-
-export function selectScenario(state: AppReduxState, id: number) {
-  return selectProjectState(state).edit.scenarios[id];
-}
-
-export function selectRootScenario(state: AppReduxState) {
-  const { scenarios } = selectProjectState(state).edit;
-  return Object.values(scenarios).find((x) => x.parent_id === -1);
-}
-
-export function selectScenariosElements(state: AppReduxState) {
-  return selectProjectState(state).edit.scenarioElements;
-}
-
-export function selectScenarioElement(state: AppReduxState, id: number) {
-  return selectProjectState(state).edit.scenarioElements[id];
-}
-
-export function selectModifyElements(state: AppReduxState) {
-  return selectProjectState(state).edit.modifyElements;
-}
 
 export const selectCurrentScreenId = (state: AppReduxState) =>
   selectProjectState(state).edit.currentScreenId;

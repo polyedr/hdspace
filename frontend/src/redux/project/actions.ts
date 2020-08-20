@@ -257,13 +257,6 @@ export const toggleContainersBorders = (): T.ToggleContainersBorders => ({
   type: TYPES.TOGGLE_CONTAINERS_BORDERS,
 });
 
-export const setScenarioElements = (
-  elements: T.IScenarioElements,
-): T.SetScenarioElements => ({
-  type: TYPES.SET_SCENARIO_ELEMENTS,
-  payload: { elements },
-});
-
 export const updateSharedStyles = (
   className: Entity,
   styles: CssLikeStyles,
@@ -410,16 +403,6 @@ export const addChildToElement = (
   },
 });
 
-export const setScenarios = (scenarios: T.IScenarios): T.SetScenarios => ({
-  type: TYPES.SET_SCENARIOS,
-  payload: { scenarios },
-});
-
-export const setModifyElements = (elements: number[]): T.SetModifyElements => ({
-  type: TYPES.SET_MODIFY_ELEMENTS,
-  payload: { elements },
-});
-
 export const uploadFile = (payload: { file: any }): T.UploadFile => ({
   type: TYPES.UPLOAD_FILE,
   payload,
@@ -549,10 +532,6 @@ export const redoWrapIntoContainer = (
     parentId,
   },
   meta: options,
-});
-
-export const clearHistory = (): T.ClearHistory => ({
-  type: TYPES.CLEAR_HISTORY,
 });
 
 export const popHistory = (): T.PopHistory => ({

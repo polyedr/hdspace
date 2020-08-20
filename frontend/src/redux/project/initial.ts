@@ -20,9 +20,6 @@ export const initialUi: T.ProjectUiState = {
 export const initialEdit: T.ProjectEditState = {
   currentProjectId: -1,
   currentScreenId: -1,
-  scenarios: {},
-  scenarioElements: {},
-  modifyElements: [],
   notification: null,
 };
 

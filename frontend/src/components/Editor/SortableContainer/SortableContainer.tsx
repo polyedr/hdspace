@@ -26,7 +26,6 @@ const mapStateToProps = (state: AppReduxState) => {
   const root = selectors.selectRootElement(state);
   const rootID = selectors.selectRootID(state);
   const showBorders = selectors.selectShowingBorders(state);
-  const scenarioElements = selectors.selectScenariosElements(state);
   const savedElements = selectors.selectSavedElementsValues(state);
   const disableInteractions = state.user.isPrototypeMode;
   const screenLoader = selectors.selectScreenLoader(state);
@@ -35,7 +34,6 @@ const mapStateToProps = (state: AppReduxState) => {
     root,
     rootID,
     showBorders,
-    scenarioElements,
     disableInteractions,
     currentScreen,
     savedElements,
@@ -83,7 +81,6 @@ const SortableComponent: React.FC<Props> = ({
   isResizing,
   setIsResizing,
   isResizable,
-  scenarioElements,
   savedElements,
   projectClasses,
   updateSavedElementValues,

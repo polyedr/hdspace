@@ -34,18 +34,6 @@ export const editReducer = (
       return { ...state, currentScreenId: action.payload.screenId };
     }
 
-    case TYPES.SET_SCENARIOS: {
-      return { ...state, scenarios: action.payload.scenarios };
-    }
-
-    case TYPES.SET_SCENARIO_ELEMENTS: {
-      return { ...state, scenarioElements: action.payload.elements };
-    }
-
-    case TYPES.SET_MODIFY_ELEMENTS: {
-      return { ...state, modifyElements: action.payload.elements };
-    }
-
     case TYPES.UPLOAD_IMAGE_FOR_NN_SUCCESS: {
       return { ...state, uploadedImageInfo: action.payload };
     }

@@ -40,9 +40,6 @@ export type ProjectUiState = {
 export type ProjectEditState = {
   currentProjectId: number;
   currentScreenId: number;
-  scenarios: IScenarios;
-  scenarioElements: IScenarioElements;
-  modifyElements: number[];
   uploadedImageInfo?: UploadedImageInfo;
   notification: Notification | null;
 };
@@ -222,10 +219,6 @@ export type RenameElement = IAction<
 export type ToggleContainersBorders = IPlainAction<
   typeof TYPES.TOGGLE_CONTAINERS_BORDERS
 >;
-export type SetScenarioElements = IAction<
-  typeof TYPES.SET_SCENARIO_ELEMENTS,
-  { elements: IScenarioElements }
->;
 export type CopyElementStyles = IAction<
   typeof TYPES.COPY_ELEMENT_STYLES,
   { elementType: Entity; elementID: string; styles: CssLikeStyles }
@@ -299,14 +292,6 @@ export type AddChildToElement = IAction<
   typeof TYPES.ADD_CHILD_TO_ELEMENT,
   { childType: ServerStructType; elementID: string; parameters: {} },
   HistoryMeta
->;
-export type SetScenarios = IAction<
-  typeof TYPES.SET_SCENARIOS,
-  { scenarios: IScenarios }
->;
-export type SetModifyElements = IAction<
-  typeof TYPES.SET_MODIFY_ELEMENTS,
-  { elements: number[] }
 >;
 export type UploadFile = IAction<typeof TYPES.UPLOAD_FILE, { file: any }>;
 export type uploadImageForNNSuccess = IAction<
@@ -394,7 +379,6 @@ export type Action =
   | SetCurrentScreenId
   | SetScreens
   | AddElement
-  | SetScenarioElements
   | CopyElementStyles
   | UpdateElementStyles
   | UpdateElementImage
@@ -402,8 +386,6 @@ export type Action =
   | CreateElements
   | DeleteItem
   | AddChildToElement
-  | SetScenarios
-  | SetModifyElements
   | UploadFile
   | uploadImageForNNSuccess
   | GetScreenNN
@@ -582,10 +564,6 @@ export interface ILSItem {
   children: string[];
 }
 
-export interface IListSortable {
-  [itemID: string]: ILSItem;
-}
-
 export interface IProjectScreen {
   id: number;
   name: string;
@@ -596,28 +574,6 @@ export interface IProjectScreen {
   buoyancy: number;
   element: LibraryElement<'root'> | undefined;
   // removed screen_data_json, ask if it will be needed on backend
-}
-
-export interface IProjectListItem {
-  id: number;
-  name: string;
-  image: string;
-  buoyancy: number;
-}
-
-export interface IListProject {
-  id: number;
-  status: string;
-  name: string;
-  preview?: string;
-  projectscreen: {
-    id: number;
-    project: number;
-    name: string;
-    status: string;
-    screenscenario: number[];
-    image?: any;
-  }[];
 }
 
 export type UploadedImageInfo = {
