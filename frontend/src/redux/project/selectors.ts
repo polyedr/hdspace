@@ -13,8 +13,13 @@ import {
 export const selectProjectState = makeFeatureStateSelector('project');
 
 export function selectProjects(state: AppReduxState) {
-  return selectProjectState(state).data.listProject;
+  return selectProjectState(state).data.projectList;
 }
+
+export const selectProjectById = (projectId: number) => (
+  state: AppReduxState,
+) =>
+  selectProjectState(state).data.projectList.find(({ id }) => id === projectId);
 
 export const selectScreenElement = (screenId: number) => (
   state: AppReduxState,
@@ -66,7 +71,7 @@ export function selectCurrentProject(state: AppReduxState) {
   const { currentProjectId } = selectProjectState(state).edit;
   if (currentProjectId === -1) return DEFAULT_PROJECT;
   return (
-    selectProjectState(state).data.listProject.find(
+    selectProjectState(state).data.projectList.find(
       ({ id }) => id === currentProjectId,
     ) || DEFAULT_PROJECT
   );
@@ -90,8 +95,8 @@ export function selectScenarioLoader(state: AppReduxState) {
   return selectProjectState(state).communication.scenarioLoader;
 }
 
-export function selectListProjectLoader(state: AppReduxState) {
-  return selectProjectState(state).communication.listProjectLoader;
+export function selectProjectListLoader(state: AppReduxState) {
+  return selectProjectState(state).communication.projectListLoader;
 }
 
 export function selectActiveItem(state: AppReduxState) {

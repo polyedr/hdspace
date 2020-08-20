@@ -24,7 +24,7 @@ export type ProjectState = {
 
 export type ProjectDataState = {
   libraryElements: LibraryEntities;
-  listProject: Project[];
+  projectList: Project[];
   screens: IProjectScreen[];
 };
 
@@ -45,7 +45,7 @@ export type ProjectEditState = {
 };
 
 export type ProjectCommunicationState = {
-  listProjectLoader: boolean;
+  projectListLoader: boolean;
   loader: boolean; // TODO: pick more suitable name
   screenLoader: boolean;
   projectLoader: boolean;
@@ -54,11 +54,9 @@ export type ProjectCommunicationState = {
 };
 
 export type ProjectControlState = {
-  // rootElement: RootElement<'root'>;
   undoActions: Action[] | Action[][];
   redoActions: Action[];
   history: Action[];
-  sourceAction: Action | null;
   remoteMove: boolean;
   groupActionsUp: boolean;
 };

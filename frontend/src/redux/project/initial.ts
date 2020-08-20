@@ -4,7 +4,7 @@ import * as T from './types';
 
 export const initialData: T.ProjectDataState = {
   libraryElements: {} as any, // will be loaded on app start
-  listProject: [],
+  projectList: [],
   screens: [],
 };
 
@@ -25,7 +25,7 @@ export const initialEdit: T.ProjectEditState = {
 
 export const initialCommunication: T.ProjectCommunicationState = {
   loader: false,
-  listProjectLoader: false,
+  projectListLoader: false,
   screenLoader: false,
   projectLoader: false,
   scenarioLoader: false,
@@ -33,11 +33,9 @@ export const initialCommunication: T.ProjectCommunicationState = {
 };
 
 export const initialControl: T.ProjectControlState = {
-  // rootElement: DEFAULT_ROOT,
   undoActions: [],
   redoActions: [],
   history: [],
-  sourceAction: null,
   remoteMove: false,
   groupActionsUp: false,
 };

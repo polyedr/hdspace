@@ -2,41 +2,21 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import { AppReduxState } from '$shared/types/app';
-import * as Actions from '$redux/project/actions';
 import { Projects } from '$components/Projects/Projects';
 import { Spinner } from '$components/UI/Spinner';
 import { selectors } from '$redux/project';
 
 const mapStateToProps = (state: AppReduxState) => ({
-  listProject: selectors.selectProjects(state),
-  listProjectLoader: selectors.selectListProjectLoader(state),
+  projectListLoader: selectors.selectProjectListLoader(state),
 });
 
-const mapDispatchToProps = {
-  addProject: Actions.addProject,
-  delProject: Actions.delProject,
-  renameProject: Actions.renameProject,
-};
+type IDashboardProps = ReturnType<typeof mapStateToProps>;
 
-type IDashboardProps = ReturnType<typeof mapStateToProps> &
-  typeof mapDispatchToProps;
-
-const ProjectsLogic: React.FC<IDashboardProps> = ({
-  listProject,
-  listProjectLoader,
-  addProject,
-  delProject,
-  renameProject,
-}) => (
+const ProjectsLogic: React.FC<IDashboardProps> = ({ projectListLoader }) => (
   <>
-    <Projects
-      listProject={listProject}
-      addProject={addProject}
-      delProject={delProject}
-      renameProject={renameProject}
-    />
-    <Spinner active={listProjectLoader} />
+    <Projects />
+    <Spinner active={projectListLoader} />
   </>
 );
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProjectsLogic);
+export default connect(mapStateToProps, null)(ProjectsLogic);

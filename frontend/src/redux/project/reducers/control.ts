@@ -71,7 +71,6 @@ export const controlReducer = (
         undoActions: [],
         redoActions: [],
         history: [],
-        sourceAction: null,
         remoteMove: false,
       };
     }
@@ -107,17 +106,6 @@ export const controlReducer = (
       return {
         ...state,
         redoActions: action.payload,
-      };
-    }
-
-    case TYPES.CLEAR_HISTORY: {
-      return {
-        ...state,
-        undoActions: [],
-        redoActions: [],
-        history: [],
-        sourceAction: null,
-        remoteMove: false,
       };
     }
 

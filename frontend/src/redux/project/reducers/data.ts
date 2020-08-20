@@ -12,7 +12,7 @@ export function dataReducer(
     }
 
     case TYPES.LOAD_PROJECTS_SUCCESS: {
-      return { ...state, listProject: action.payload.projects };
+      return { ...state, projectList: action.payload.projects };
     }
 
     case TYPES.SET_SCREENS: {
@@ -47,7 +47,7 @@ export function dataReducer(
 
     case TYPES.SET_PROJECT: {
       const newState = { ...state };
-      newState.listProject = newState.listProject.map((project) => {
+      newState.projectList = newState.projectList.map((project) => {
         if (project.id === action.payload.project.id) {
           return action.payload.project;
         }

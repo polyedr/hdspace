@@ -10,7 +10,7 @@ export const communicationReducer = (
     case TYPES.SET_PROJECT_LIST_LOADER: {
       return {
         ...state,
-        listProjectLoader: action.payload.active,
+        projectListLoader: action.payload.active,
       };
     }
 

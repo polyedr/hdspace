@@ -790,14 +790,15 @@ function* duplicateScreenSaga(
 ) {
   const { name, screenID } = action.payload;
 
-  const sourceRoot = yield select(selectors.selectScreenElement(screenID));
+  const sourceRoot: LibraryElement<'root'> = yield select(
+    selectors.selectScreenElement(screenID),
+  );
 
   const sourceCurrentScreen: ReturnType<typeof selectors.selectCurrentScreen> = yield select(
     selectors.selectCurrentScreen,
   );
 
-  const duplicatedItems = sourceRoot.children.map((child: any) => ({
-    // TODO: fix types
+  const duplicatedItems = sourceRoot.children.map((child) => ({
     id: child.id,
     screenID: sourceCurrentScreen.id,
   }));

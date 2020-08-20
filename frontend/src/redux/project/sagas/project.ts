@@ -324,39 +324,26 @@ export function* delProjectSaga({
 }: ReturnType<typeof Actions.delProject>): SagaIterator {
   yield call(reqWrapper, apiDelProject, { id });
 
-  const listProject: ReturnType<typeof selectors.selectProjects> = yield select(
+  const projectList: ReturnType<typeof selectors.selectProjects> = yield select(
     selectors.selectProjects,
   );
-  const newListProject: Project[] = listProject.filter(
+  const newProjectList: Project[] = projectList.filter(
     (project) => project.id !== id,
   );
 
-  yield put(Actions.setProjectList(newListProject));
+  yield put(Actions.setProjectList(newProjectList));
 }
 
 export function* renameProjectSaga({
   payload: { projectID, name },
 }: ReturnType<typeof Actions.renameProject>) {
-  const projectList: ReturnType<typeof selectors.selectProjects> = yield select(
-    selectors.selectProjects,
-  );
-  const currentProject: ReturnType<typeof selectors.selectCurrentProject> = yield select(
-    selectors.selectCurrentProject,
-  );
+  const project: Project = yield select(selectors.selectProjectById(projectID));
 
   const updatedProject = yield call(reqWrapper, apiSaveProject, {
-    data: { id: projectID, name, projectscreen: currentProject.projectscreen },
+    data: { id: projectID, name, projectscreen: project.projectscreen },
   });
 
-  const newListProject = projectList.map((project) => {
-    if (project.id === projectID) {
-      return updatedProject;
-    }
-
-    return project;
-  });
-
-  yield put(Actions.setProjectList(newListProject));
+  yield put(Actions.setProject(updatedProject));
 }
 
 export function* changeScreensOrderSaga(
