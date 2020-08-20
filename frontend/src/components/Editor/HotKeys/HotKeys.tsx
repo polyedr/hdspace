@@ -48,13 +48,13 @@ export const Component = ({
   useEffect(() => {
     const listener = (event: KeyboardEvent) => {
       if (event.code === 'KeyC' && event.altKey) {
-        wrapIntoContainer(itemId);
+        wrapIntoContainer(itemId, currentScreenId);
       }
     };
 
     root?.addEventListener('keydown', listener);
     return () => root?.removeEventListener('keydown', listener);
-  }, [rootElement, root, wrapIntoContainer, itemId]);
+  }, [rootElement, root, wrapIntoContainer, itemId, currentScreenId]);
 
   useEffect(() => {
     const listener = (event: KeyboardEvent) => {

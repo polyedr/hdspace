@@ -181,7 +181,13 @@ export type ActivateScreen = IAction<
 >;
 export type MoveElement = IAction<
   typeof TYPES.MOVE_ELEMENT,
-  { indices: Indices; elementID: string; parentID: string; isRemote?: boolean },
+  {
+    indices: Indices;
+    elementID: string;
+    parentID: string;
+    isRemote: boolean;
+    screenId: number;
+  },
   HistoryMeta
 >;
 export type UpdateElementsTree = IAction<
@@ -318,7 +324,7 @@ export type uploadImageForNNSuccess = IAction<
 export type GetScreenNN = IPlainAction<typeof TYPES.GET_SCREEN_NN>;
 export type WrapIntoContainer = IAction<
   typeof TYPES.WRAP_INTO_CONTAINER,
-  { id: string },
+  { id: string; screenId: number },
   HistoryMeta
 >;
 export type SetActiveItem = IAction<
@@ -352,7 +358,7 @@ export type SetUndoActions = IAction<
 export type SetRedoActions = IAction<typeof TYPES.SET_REDO_ACTIONS, Action[]>;
 export type UnwrapFromContainer = IAction<
   typeof TYPES.UNWRAP_FROM_CONTAINER,
-  { elementID: string; wrapperID: string; parentID: string },
+  { elementID: string; wrapperID: string; parentID: string; screenId: number },
   HistoryMeta
 >;
 export type SetRemoteMove = IAction<typeof TYPES.SET_REMOTE_MOVE, boolean>;
@@ -363,7 +369,7 @@ export type RestoreElementChildren = IAction<
 >;
 export type RedoWrapIntoContainer = IAction<
   typeof TYPES.REDO_WRAP_INTO_CONTAINER,
-  { elementId: string; wrapperId: string; parentId: string },
+  { elementId: string; wrapperId: string; parentId: string; screenId: number },
   HistoryMeta
 >;
 export type ClearHistory = IPlainAction<typeof TYPES.CLEAR_HISTORY>;

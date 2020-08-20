@@ -111,7 +111,7 @@ export function* createElements(
     isElementCanBeAdded(parent, element.struct_type),
   );
 
-  const root: ReturnType<typeof selectors.selectRootElement> = yield select(
+  const root: LibraryElement<'root'> = yield select(
     selectors.selectScreenElement(screenId),
   );
 
@@ -175,9 +175,7 @@ export function* createElementsSaga(
   const activeItem: ReturnType<typeof selectors.selectActiveItem> = yield select(
     selectors.selectActiveItem,
   );
-  const root: ReturnType<typeof selectors.selectRootElement> = yield select(
-    selectors.selectScreenElement(screenId),
-  );
+  const root = yield select(selectors.selectScreenElement(screenId));
   const activeItemElement = findChildByID(root, activeItem.itemId);
 
   if (!activeItemElement) {
@@ -229,9 +227,7 @@ export function* addChildToElementSaga(
     childWithUpdatedParameters,
   );
 
-  const root: ReturnType<typeof selectors.selectRootElement> = yield select(
-    selectors.selectScreenElement(screenId),
-  );
+  const root = yield select(selectors.selectScreenElement(screenId));
   const parent = findChildByID(root, elementID);
 
   if (!parent) {
@@ -257,7 +253,7 @@ export function* softDeleteSaga(action: T.DeleteItem) {
   }
   const { undo, redo } = action.meta;
 
-  const root: ReturnType<typeof selectors.selectRootElement> = yield select(
+  const root: LibraryElement<'root'> = yield select(
     selectors.selectScreenElement(screenId),
   );
   const element = findChildByID(root, id);
@@ -331,9 +327,7 @@ export function* restoreElementSaga(action: T.RestoreElementChildren) {
   }
   const { undo, redo } = action.meta;
 
-  const root: ReturnType<typeof selectors.selectRootElement> = yield select(
-    selectors.selectScreenElement(screenId),
-  );
+  const root = yield select(selectors.selectScreenElement(screenId));
 
   const element = findChildByID(root, elementId);
   if (!element) {
@@ -377,7 +371,7 @@ export function* addElementToElement(
 }
 
 export function* wrapIntoContainerSaga(action: T.WrapIntoContainer) {
-  const { id } = action.payload;
+  const { id, screenId } = action.payload;
   if (!action.meta) {
     console.error(
       `You have to provide metainformation for action ${action.type}`,
@@ -386,8 +380,8 @@ export function* wrapIntoContainerSaga(action: T.WrapIntoContainer) {
   }
   const { undo, redo } = action.meta;
 
-  const root: ReturnType<typeof selectors.selectRootElement> = yield select(
-    selectors.selectRootElement,
+  const root: LibraryElement<'root'> = yield select(
+    selectors.selectScreenElement(screenId),
   );
 
   const wrappedItemParent = findParentByChildID(root, id);
@@ -405,13 +399,13 @@ export function* wrapIntoContainerSaga(action: T.WrapIntoContainer) {
 
   const serverContainer = convertCreatedElementToRequest('container', null);
 
-  const createdElements: ReturnPromisedType<typeof apiAddElements> = yield call(
+  const [
+    createdContainer,
+  ]: ReturnPromisedType<typeof apiAddElements> = yield call(
     reqWrapper,
     apiAddElements,
     { data: [serverContainer] },
   );
-
-  const [createdContainer] = createdElements;
 
   yield put(
     Actions.setUndoActions(
@@ -419,6 +413,7 @@ export function* wrapIntoContainerSaga(action: T.WrapIntoContainer) {
         id,
         createdContainer.id,
         wrappedItemParent.id,
+        screenId,
       ),
     ),
   );
@@ -446,6 +441,7 @@ export function* wrapIntoContainerSaga(action: T.WrapIntoContainer) {
         id,
         createdContainer.id,
         wrappedItemParent.id,
+        screenId,
       ),
       { undo, redo },
     ),
@@ -455,11 +451,9 @@ export function* wrapIntoContainerSaga(action: T.WrapIntoContainer) {
 }
 
 export function* unwrapFromContainerSaga(action: T.UnwrapFromContainer) {
-  const { elementID, wrapperID, parentID } = action.payload;
+  const { elementID, wrapperID, parentID, screenId } = action.payload;
 
-  const root: ReturnType<typeof selectors.selectRootElement> = yield select(
-    selectors.selectRootElement,
-  );
+  const root = yield select(selectors.selectScreenElement(screenId));
 
   const parent = findChildByID(root, parentID);
   if (!parent) {
@@ -519,11 +513,9 @@ export function* renameElementSaga(
 }
 
 export function* redoWrapIntoContainerSaga(action: T.RedoWrapIntoContainer) {
-  const { parentId, wrapperId, elementId } = action.payload;
+  const { parentId, wrapperId, elementId, screenId } = action.payload;
 
-  const root: ReturnType<typeof selectors.selectRootElement> = yield select(
-    selectors.selectRootElement,
-  );
+  const root = yield select(selectors.selectScreenElement(screenId));
 
   const parent = findChildByID(root, parentId);
   if (!parent) {
@@ -546,7 +538,7 @@ export function* redoWrapIntoContainerSaga(action: T.RedoWrapIntoContainer) {
 
   yield put(
     Actions.setUndoActions(
-      Actions.unwrapFromContainer(elementId, wrapperId, parentId),
+      Actions.unwrapFromContainer(elementId, wrapperId, parentId, screenId),
     ),
   );
 

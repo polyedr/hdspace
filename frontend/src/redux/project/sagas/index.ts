@@ -198,6 +198,7 @@ function* moveElementSaga(action: ReturnType<typeof Actions.moveElement>): any {
     elementID,
     parentID,
     isRemote,
+    screenId,
   } = action.payload;
   if (!action.meta) {
     console.error(
@@ -207,8 +208,8 @@ function* moveElementSaga(action: ReturnType<typeof Actions.moveElement>): any {
   }
   const { undo, redo } = action.meta;
 
-  const root: ReturnType<typeof selectors.selectRootElement> = yield select(
-    selectors.selectRootElement,
+  const root: LibraryElement<'root'> = yield select(
+    selectors.selectScreenElement(screenId),
   );
   const targetParent = findChildByID(root, parentID);
 
@@ -234,6 +235,7 @@ function* moveElementSaga(action: ReturnType<typeof Actions.moveElement>): any {
             elementID,
             parentID,
             false,
+            screenId,
           ),
         ),
       );
@@ -249,6 +251,7 @@ function* moveElementSaga(action: ReturnType<typeof Actions.moveElement>): any {
             elementID,
             parentID,
             add,
+            screenId,
           ),
         ),
       );
@@ -264,7 +267,7 @@ function* moveElementSaga(action: ReturnType<typeof Actions.moveElement>): any {
   );
   yield put(Actions.updateElementsTree(updatedTree, action, { redo, undo }));
 
-  yield put(Actions.setGroupActionsUp(!!isRemote));
+  yield put(Actions.setGroupActionsUp(isRemote));
 
   const updatedParent = findChildByID(updatedTree, parentID);
 
@@ -375,7 +378,7 @@ function* updateElementClassNames(
 ) {
   const { screenId } = action.payload;
 
-  const root: ReturnType<typeof selectors.selectRootElement> = yield select(
+  const root: LibraryElement<'root'> = yield select(
     selectors.selectScreenElement(screenId),
   );
 
@@ -432,7 +435,7 @@ function* removeElementStyles(
 ) {
   const { screenId } = action.payload;
 
-  const root: ReturnType<typeof selectors.selectRootElement> = yield select(
+  const root: LibraryElement<'root'> = yield select(
     selectors.selectScreenElement(screenId),
   );
 
@@ -534,7 +537,7 @@ function* updateOrReplaceElementStyles(
 
   const { undo, redo } = action.meta;
 
-  const root: ReturnType<typeof selectors.selectRootElement> = yield select(
+  const root: LibraryElement<'root'> = yield select(
     selectors.selectScreenElement(screenId),
   );
 
@@ -640,7 +643,7 @@ function* updateElementParameters(
   }
   const { undo, redo } = action.meta;
 
-  const root: ReturnType<typeof selectors.selectRootElement> = yield select(
+  const root: LibraryElement<'root'> = yield select(
     selectors.selectScreenElement(screenId),
   );
 
@@ -678,7 +681,7 @@ function* uploadFileSaga({
 }: ReturnType<typeof Actions.uploadFile>) {
   try {
     // TODO: show loader in addModalElements
-    const root: ReturnType<typeof selectors.selectRootElement> = yield select(
+    const root: LibraryElement<'root'> = yield select(
       selectors.selectScreenElement(screenId),
     );
 
@@ -787,15 +790,14 @@ function* duplicateScreenSaga(
 ) {
   const { name, screenID } = action.payload;
 
-  const sourceRoot: ReturnType<typeof selectors.selectRootElement> = yield select(
-    selectors.selectScreenElement(screenID),
-  );
+  const sourceRoot = yield select(selectors.selectScreenElement(screenID));
 
   const sourceCurrentScreen: ReturnType<typeof selectors.selectCurrentScreen> = yield select(
     selectors.selectCurrentScreen,
   );
 
-  const duplicatedItems = sourceRoot.children.map((child) => ({
+  const duplicatedItems = sourceRoot.children.map((child: any) => ({
+    // TODO: fix types
     id: child.id,
     screenID: sourceCurrentScreen.id,
   }));
@@ -812,9 +814,7 @@ function* duplicateScreenSaga(
   );
   yield put(Actions.setScreenLoader(true));
 
-  const targetRoot: ReturnType<typeof selectors.selectRootElement> = yield select(
-    selectors.selectScreenElement(newScreenId),
-  );
+  const targetRoot = yield select(selectors.selectScreenElement(newScreenId));
   const targetRootID = targetRoot.id;
 
   yield put(
@@ -842,9 +842,7 @@ function* pasteCopiedItemSaga({
   const activeItem: ReturnType<typeof selectors.selectActiveItem> = yield select(
     selectors.selectActiveItem,
   );
-  const root: ReturnType<typeof selectors.selectRootElement> = yield select(
-    selectors.selectScreenElement(screenId),
-  );
+  const root = yield select(selectors.selectScreenElement(screenId));
   const targetContainer = findChildByID(root, activeItem.itemId);
 
   if (!targetContainer) {

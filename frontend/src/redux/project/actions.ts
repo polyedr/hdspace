@@ -182,7 +182,8 @@ export const moveElement = (
   elementID: string,
   parentID: string,
   isRemote: boolean = false,
-  options: T.HistoryMeta = {},
+  screenId: number,
+  meta: T.HistoryMeta = {},
 ): T.MoveElement => ({
   type: TYPES.MOVE_ELEMENT,
   payload: {
@@ -190,8 +191,9 @@ export const moveElement = (
     elementID,
     parentID,
     isRemote,
+    screenId,
   },
-  meta: options,
+  meta,
 });
 
 export const clearAfterPrevScreen = (): T.ClearAfterPrevScreen => ({
@@ -436,10 +438,11 @@ export const getScreenNN = (): T.GetScreenNN => ({
 
 export const wrapIntoContainer = (
   id: string,
+  screenId: number,
   options: T.HistoryMeta = {},
 ): T.WrapIntoContainer => ({
   type: TYPES.WRAP_INTO_CONTAINER,
-  payload: { id },
+  payload: { id, screenId },
   meta: options,
 });
 
@@ -510,6 +513,7 @@ export const unwrapFromContainer = (
   elementID: string,
   wrapperID: string,
   parentID: string,
+  screenId: number,
   options: T.HistoryMeta = {},
 ): T.UnwrapFromContainer => ({
   type: TYPES.UNWRAP_FROM_CONTAINER,
@@ -517,6 +521,7 @@ export const unwrapFromContainer = (
     elementID,
     wrapperID,
     parentID,
+    screenId,
   },
   meta: options,
 });
@@ -540,6 +545,7 @@ export const redoWrapIntoContainer = (
   elementId: string,
   wrapperId: string,
   parentId: string,
+  screenId: number,
   options: T.HistoryMeta = {},
 ): T.RedoWrapIntoContainer => ({
   type: TYPES.REDO_WRAP_INTO_CONTAINER,
@@ -547,6 +553,7 @@ export const redoWrapIntoContainer = (
     elementId,
     wrapperId,
     parentId,
+    screenId,
   },
   meta: options,
 });
