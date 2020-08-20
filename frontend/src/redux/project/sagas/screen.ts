@@ -153,7 +153,10 @@ export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
     apiAddScreen,
     { data },
   );
-  if (!createdScreen) return;
+  if (!createdScreen) {
+    console.error(`Error while creating new screen for project ${projectID}`);
+    return;
+  }
 
   yield put(setUndoActions(delScreen(projectID, createdScreen.id)));
 
@@ -169,13 +172,11 @@ export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
     'Root',
   );
 
-  const newElements: [LibraryElement<'root'>] = yield call(
+  const [createdRootElement]: [LibraryElement<'root'>] = yield call(
     reqWrapper,
     apiAddElements,
     { data: [rootElement] },
   );
-
-  const [createdRootElement] = newElements;
 
   const rootScenarioWithRootElement = {
     ...rootScenario,
@@ -185,20 +186,6 @@ export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
   yield fork(reqWrapper, apiSaveScenarios, {
     data: [rootScenarioWithRootElement],
   });
-
-  yield put(
-    Actions.updateElementsTree(
-      createdRootElement,
-      restoreScreen(screen.id, projectID),
-    ),
-  );
-  yield put(
-    Actions.setActiveItem({
-      itemId: createdRootElement.id,
-      itemType: 'root',
-      name: 'Root',
-    }),
-  );
 
   const currentProject: ReturnType<typeof selectors.selectCurrentProject> = yield select(
     selectors.selectCurrentProject,
@@ -230,6 +217,21 @@ export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
   yield put(setScreens([...screens, updatedScreen]));
 
   yield put(setCurrentScreenId(screen.id));
+
+  yield put(
+    Actions.updateElementsTree(
+      createdRootElement,
+      restoreScreen(screen.id, projectID),
+    ),
+  );
+
+  yield put(
+    Actions.setActiveItem({
+      itemId: createdRootElement.id,
+      itemType: 'root',
+      name: 'Root',
+    }),
+  );
 
   yield put(push(`/project/${projectID}/${screen.id}`));
 }
@@ -282,16 +284,23 @@ export function* delScreenSaga({
   }
   const { undo } = meta;
 
-  const currentScreen: ReturnType<typeof selectors.selectCurrentScreen> = yield select(
-    selectors.selectCurrentScreen,
-  );
+  const currentScreenId = yield select(selectors.selectCurrentScreenId);
+
+  if (currentScreenId === screenID) {
+    yield put(setActiveItem(DEFAULT_ACTIVE_ITEM));
+    yield put(setCurrentScreenId(-1));
+  }
+
   const currentProject: ReturnType<typeof selectors.selectCurrentProject> = yield select(
     selectors.selectCurrentProject,
   );
+  const screenList = currentProject.projectscreen;
 
-  if (currentProject.projectscreen.length < 2) {
+  if (screenList.length <= 1) {
+    console.log('Project must have at least 1 screen');
     return;
   }
+
   const newScreenIdList = currentProject.projectscreen.filter(
     (id) => id !== screenID,
   );
@@ -317,6 +326,12 @@ export function* delScreenSaga({
 
   const lastScreenID = R.head(result.projectscreen);
 
+  if (!lastScreenID) {
+    yield put(setCurrentScreenId(-1));
+    yield put(push(`/project/${projectID}`));
+    return;
+  }
+
   const screens: ReturnType<typeof selectors.selectScreens> = yield select(
     selectors.selectScreens,
   );
@@ -324,10 +339,7 @@ export function* delScreenSaga({
   const newScreens = screens.filter((screen) => screen.id !== screenID);
   yield put(setScreens(newScreens));
 
-  if (!lastScreenID) {
-    yield put(setCurrentScreenId(-1));
-    yield put(push(`/project/${projectID}`));
-  } else if (lastScreenID !== currentScreen.id) {
+  if (lastScreenID !== currentScreenId) {
     yield put(activateScreen(lastScreenID));
     yield put(push(`/project/${projectID}/${lastScreenID}`));
   }

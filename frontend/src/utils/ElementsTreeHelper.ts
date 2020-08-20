@@ -140,7 +140,7 @@ export const addChildrenToElement = <
 };
 
 export const findChildByID = (
-  element: LibraryElement<Entity, LibraryElement<Entity>[]>,
+  element: LibraryElement<any, any>, // TODO: fix types
   targetID: string,
   // eslint-disable-next-line consistent-return
 ): LibraryElement<Entity, LibraryElement<Entity>[]> | undefined => {

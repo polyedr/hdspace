@@ -54,7 +54,7 @@ export type ProjectCommunicationState = {
 };
 
 export type ProjectControlState = {
-  rootElement: RootElement<'root'>;
+  // rootElement: RootElement<'root'>;
   undoActions: Action[] | Action[][];
   redoActions: Action[];
   history: Action[];
@@ -572,7 +572,7 @@ export interface IProjectScreen {
   image: string | null;
   screenscenario: number[];
   buoyancy: number;
-  element: LibraryElement<'root'> | undefined;
+  element: LibraryElement<'root'>;
   // removed screen_data_json, ask if it will be needed on backend
 }
 
@@ -595,4 +595,5 @@ export type Page = {
 export type HistoryMeta = {
   undo?: boolean;
   redo?: boolean;
+  screenId?: number;
 };

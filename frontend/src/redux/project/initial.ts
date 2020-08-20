@@ -1,4 +1,4 @@
-import { DEFAULT_ACTIVE_ITEM, DEFAULT_ROOT } from '$constants/defaultParams';
+import { DEFAULT_ACTIVE_ITEM } from '$constants/defaultParams';
 
 import * as T from './types';
 
@@ -33,7 +33,7 @@ export const initialCommunication: T.ProjectCommunicationState = {
 };
 
 export const initialControl: T.ProjectControlState = {
-  rootElement: DEFAULT_ROOT,
+  // rootElement: DEFAULT_ROOT,
   undoActions: [],
   redoActions: [],
   history: [],

@@ -68,13 +68,12 @@ export function selectCurrentProject(state: AppReduxState) {
   );
 }
 
-export function selectRootElement(state: AppReduxState) {
-  return selectProjectState(state).control.rootElement;
-}
+export const selectRootElement = (state: AppReduxState) =>
+  selectCurrentScreen(state).element;
+// return selectProjectState(state).control.rootElement;
 
-export function selectRootID(state: AppReduxState) {
-  return selectProjectState(state).control.rootElement.id;
-}
+export const selectRootID = (state: AppReduxState) =>
+  selectCurrentScreen(state).element?.id || -1;
 
 export function selectUploadedImageInfo(state: AppReduxState) {
   return selectProjectState(state).edit.uploadedImageInfo;
@@ -184,10 +183,10 @@ export function selectActiveItemChildren(
 }
 
 export const selectElementStyles = (id: string) => (state: AppReduxState) =>
-  findChildByID(state.project.control.rootElement, id)?.styles.ownStyles;
+  findChildByID(selectCurrentScreen(state).element, id)?.styles.ownStyles;
 
 export const selectElementParameters = (id: string) => (state: AppReduxState) =>
-  findChildByID(state.project.control.rootElement, id)?.parameters;
+  findChildByID(selectCurrentScreen(state).element, id)?.parameters;
 
 export const selectUndoActions = (state: AppReduxState) =>
   selectProjectState(state).control.undoActions;

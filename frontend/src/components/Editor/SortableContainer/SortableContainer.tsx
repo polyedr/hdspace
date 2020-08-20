@@ -111,7 +111,7 @@ const SortableComponent: React.FC<Props> = ({
     moveElement(
       indices,
       activeItemId,
-      parentId === 'root' ? rootID : parentId,
+      parentId === 'root' ? rootID.toString() : parentId,
       isRemote,
     );
   };

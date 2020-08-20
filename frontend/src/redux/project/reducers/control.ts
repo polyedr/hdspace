@@ -1,4 +1,3 @@
-import * as R from 'ramda';
 import { initialControl } from '$redux/project/initial';
 import * as T from '../types';
 import { TYPES } from '$constants/actions';
@@ -20,12 +19,12 @@ export const controlReducer = (
     case TYPES.UPDATE_ELEMENTS_TREE: {
       const {
         meta: { undo, redo },
-        payload: { root, sourceAction },
+        payload: { sourceAction },
       } = action;
 
       const { groupActionsUp, history } = state;
 
-      const newState = R.assoc('rootElement', root, state);
+      const newState = { ...state };
 
       if (sourceAction && !redo && !undo) {
         newState.redoActions = [];
