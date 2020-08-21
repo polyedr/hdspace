@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Form } from 'react-final-form';
 
 import { NavLink } from 'react-router-dom';
+import GoogleLogin from 'react-google-login';
 import { AppReduxState } from '$shared/types/app';
 import { Button } from '$components/UI/Button';
 import { Modal } from '$components/UI/Modal';
@@ -11,7 +12,6 @@ import {
   DEFAULT_SIGNIN_FIELDS,
 } from '$constants/defaultParams';
 import * as Actions from '$redux/user/actions';
-import { IApiResponseError } from '$redux/user/types';
 
 import { FormField } from '../FormField/FormField';
 import { user } from '$constants/pathNames';
@@ -33,9 +33,7 @@ const mapDispatch = {
   login: Actions.login,
 };
 
-type IProps = typeof mapDispatch & {
-  apiResponseError: IApiResponseError;
-};
+type IProps = typeof mapDispatch & ReturnType<typeof mapState>;
 
 const SignInForm = (props: IProps) => {
   const {
@@ -103,6 +101,11 @@ const SignInForm = (props: IProps) => {
     [restoreEmail, restorePassword, closeModal],
   );
 
+  const responseGoogle = (response: any) => {
+    // eslint-disable-next-line no-console
+    console.log(response);
+  };
+
   return (
     <>
       <Form
@@ -113,6 +116,14 @@ const SignInForm = (props: IProps) => {
         {({ handleSubmit, submitError, submitting }) => (
           <form onSubmit={handleSubmit}>
             <p className={styles.signinTitle}>Login to your account</p>
+            <GoogleLogin // TODO make as separate component
+              className={styles.googleLogin}
+              clientId="97708805893-kqh3efrnsd7i8nbu30p0mhlvhub029he.apps.googleusercontent.com"
+              buttonText="Sign in with google"
+              onSuccess={responseGoogle}
+              onFailure={responseGoogle}
+              cookiePolicy="single_host_origin"
+            />
             {DEFAULT_SIGNIN_FIELDS.map(
               ({ name, placeholder, label, type, validator }) => (
                 <FormField
