@@ -68,6 +68,7 @@ import {
   addElementClassName,
   removeElementClassName,
   replaceElementStyles,
+  focusOnElement,
 } from '$utils/ElementsTreeHelper';
 import { generateUniqueName } from '$utils/generateUniqueName';
 import { CssLikeStyles } from '$utils/StyleHelper';
@@ -285,7 +286,7 @@ function* moveElementSaga(action: ReturnType<typeof Actions.moveElement>): any {
   if (isRemote) return;
 
   if (!undo) {
-    document.querySelector<HTMLElement>(`[data-ls-id='${elementID}']`)?.focus();
+    yield call(focusOnElement, elementID);
   }
 
   const elementData = {
@@ -944,11 +945,8 @@ function* undoSaga() {
   }: ReturnType<typeof selectors.selectActiveItem> = yield select(
     selectors.selectActiveItem,
   );
-  document
-    .querySelector<HTMLElement>(
-      `[data-ls-id='${itemType === 'root' ? 'root' : itemId}']`,
-    )
-    ?.focus();
+
+  yield call(focusOnElement, itemType === 'root' ? 'root' : itemId);
 }
 
 function* redoSaga() {
@@ -1002,11 +1000,8 @@ function* redoSaga() {
   }: ReturnType<typeof selectors.selectActiveItem> = yield select(
     selectors.selectActiveItem,
   );
-  document
-    .querySelector<HTMLElement>(
-      `[data-ls-id='${itemType === 'root' ? 'root' : itemId}']`,
-    )
-    ?.focus();
+
+  yield call(focusOnElement, itemType === 'root' ? 'root' : itemId);
 }
 
 export default function* projectSaga() {

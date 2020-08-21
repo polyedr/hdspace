@@ -41,6 +41,7 @@ import {
   updateElementParameters,
   getElementsArray,
   updateElementName,
+  focusOnElement,
 } from '$utils/ElementsTreeHelper';
 
 import { selectors, T } from '..';
@@ -202,13 +203,10 @@ export function* createElementsSaga(
     screenId,
   });
 
-  document
-    .querySelector<HTMLElement>(
-      `[data-ls-id='${
-        activeItem.itemType === 'root' ? 'root' : activeItem.itemId
-      }']`,
-    )
-    ?.focus();
+  yield call(
+    focusOnElement,
+    activeItem.itemType === 'root' ? 'root' : activeItem.itemId,
+  );
 }
 
 export function* addChildToElementSaga(
@@ -311,11 +309,8 @@ export function* softDeleteSaga(action: T.DeleteItem) {
   yield put(Actions.updateElementsTree(updatedRoot, action, action.meta));
 
   const filtered = childrenIds.filter((childId) => childId !== id);
-  document
-    .querySelector<HTMLElement>(
-      `[data-ls-id='${parent.type === 'root' ? 'root' : parent.id}']`,
-    )
-    ?.focus();
+
+  yield call(focusOnElement, parent.type === 'root' ? 'root' : parent.id);
 
   yield call(reqWrapper, apiChangeRecursiveElement, {
     data: { children: filtered },
@@ -453,7 +448,7 @@ export function* wrapIntoContainerSaga(action: T.WrapIntoContainer) {
     ),
   );
 
-  document.querySelector<HTMLElement>(`[data-ls-id='${id}']`)?.focus();
+  yield call(focusOnElement, id);
 }
 
 export function* unwrapFromContainerSaga(
@@ -495,6 +490,7 @@ export function* unwrapFromContainerSaga(
       undo: true,
     }),
   );
+  yield call(focusOnElement, elementID);
 }
 
 export function* renameElementSaga(
@@ -582,4 +578,5 @@ export function* redoWrapIntoContainerSaga(
   yield put(
     Actions.updateElementsTree(updatedRoot, action, { screenId, redo: true }),
   );
+  yield call(focusOnElement, elementId);
 }
