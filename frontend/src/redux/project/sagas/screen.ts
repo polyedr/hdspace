@@ -40,24 +40,20 @@ import { ReturnPromisedType } from '$shared/types';
 
 import { reqWrapper } from '.';
 import { selectors, T } from '..';
-import { createContainer, updateElementsTree } from './scenario';
+import { createContainer } from './scenario';
 import { apiGetProject, apiSaveProject } from '$api/project';
 import {
+  selectCurrentScreenId,
   selectScreenById,
   selectScreenElement,
 } from '$redux/project/selectors';
 import { convertElementFromResponse } from '$api/converters/fromResponse';
 
 export function* activateScreenSaga({
-  payload,
-  type,
-  meta,
+  payload: { screenID },
 }: ReturnType<typeof activateScreen>) {
-  if (!meta) {
-    console.error(`You have to provide metainformation for action ${type}`);
-    return;
-  }
-  const { screenID } = payload;
+  const currentScreenId = yield select(selectCurrentScreenId);
+  if (currentScreenId === screenID) return;
 
   yield put(setScreenLoader(true));
 
@@ -70,13 +66,6 @@ export function* activateScreenSaga({
   yield put(Actions.setScenarioLoader(true));
 
   const screenElement = yield select(selectScreenElement(screenID));
-
-  yield call(
-    updateElementsTree,
-    screenElement,
-    meta.undo ? restoreScreen(screenID, screen.project) : undefined,
-    meta,
-  );
 
   yield put(
     Actions.setActiveItem({
@@ -246,7 +235,6 @@ async function canvasToBlob(canvas: HTMLCanvasElement): Promise<Blob> {
       1,
     ),
   );
-  console.log(dataBlob);
   return dataBlob;
 }
 
@@ -268,6 +256,7 @@ export function* saveScreenImageSaga({
 
   if (!resultScreen) {
     console.error(`Error while patching screen ${screenId}`);
+    return;
   }
 
   yield put(setScreen(resultScreen));
@@ -389,7 +378,7 @@ export function* restoreScreenSaga({
 
   yield put(setProject(updatedProject));
 
-  yield put(activateScreen(screenId, meta));
+  yield put(activateScreen(screenId));
 }
 
 export function* renameScreenSaga({

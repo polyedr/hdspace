@@ -38,7 +38,10 @@ export function dataReducer(
       const newState = { ...state };
       newState.screens = newState.screens.map((screen) => {
         if (screen.id === action.payload.screen.id) {
-          return action.payload.screen;
+          return {
+            ...screen,
+            ...action.payload.screen,
+          };
         }
         return screen;
       });
