@@ -7,13 +7,17 @@ import { Spinner } from '$components/UI/Spinner';
 import * as Actions from '$redux/user/actions';
 import { IApiResponseError } from '$redux/user/types';
 import { AppReduxState } from '$shared/types/app';
+import { DEFAULT_RESPONSE_ERROR } from '$constants/defaultParams';
 
 import { SignInForm } from '../SigninForm/SigninForm';
 
 const styles = require('./Activation.scss');
 
-const mapState = ({ user: { isSignLoader } }: AppReduxState) => ({
+const mapState = ({
+  user: { isSignLoader, apiResponseError },
+}: AppReduxState) => ({
   isSignLoader,
+  apiResponseError,
 });
 
 const mapDispatch = {
@@ -26,18 +30,30 @@ type IProps = typeof mapDispatch & {
   isSignLoader: boolean;
 };
 
-const Activation: React.FC<IProps> = ({ activateUser, isSignLoader }) => {
+const Activation: React.FC<IProps> = ({
+  activateUser,
+  isSignLoader,
+  apiResponseError,
+  setApiResponseError,
+}) => {
   const match = useRouteMatch<{ params: any }>('/activate/:uid/:token');
 
+  const { uid, token } = (match?.params as unknown) as {
+    uid: string;
+    token: string;
+  };
+
   useEffect(() => {
-    if (match) {
-      const { uid, token } = (match.params as unknown) as {
-        uid: string;
-        token: string;
-      };
-      activateUser(uid, token);
-    }
-  }, [activateUser, match]);
+    activateUser(uid, token);
+  }, [activateUser]);
+
+  useEffect(() => {
+    return () => {
+      if (apiResponseError.errorStatus !== -1) {
+        setApiResponseError(DEFAULT_RESPONSE_ERROR);
+      }
+    };
+  }, [apiResponseError, setApiResponseError]);
 
   return (
     <>
