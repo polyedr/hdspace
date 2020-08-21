@@ -112,7 +112,7 @@ const SortableComponent: React.FC<Props> = ({
       activeItemId,
       parentId === 'root' ? rootID.toString() : parentId,
       isRemote,
-      currentScreen.id,
+      { screenId: currentScreen.id },
     );
   };
 

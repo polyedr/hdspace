@@ -17,6 +17,8 @@ export const controlReducer = (
 ): T.ProjectControlState => {
   switch (action.type) {
     case TYPES.UPDATE_ELEMENTS_TREE: {
+      if (!action.meta) return state;
+
       const {
         meta: { undo, redo },
         payload: { sourceAction },

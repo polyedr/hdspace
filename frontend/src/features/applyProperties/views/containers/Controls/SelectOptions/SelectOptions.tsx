@@ -104,12 +104,12 @@ const SelectOptions: React.FC<Props> = ({
         name: newOptionName,
         value: newOptionName,
       },
-      currentScreenId,
+      { screenId: currentScreenId },
     );
   };
 
   const handleDeleteButtonClick = (selectOptionID: string) => {
-    deleteChildFromElement(selectOptionID, currentScreenId);
+    deleteChildFromElement(selectOptionID, { screenId: currentScreenId });
   };
 
   return (

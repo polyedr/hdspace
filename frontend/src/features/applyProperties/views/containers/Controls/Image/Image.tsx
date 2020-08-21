@@ -30,7 +30,7 @@ const Component: React.FC<Props> = (props) => {
         // eslint-disable-next-line no-alert
         alert('Choose image up to 5Mb!');
       } else {
-        updateElementImage(activeItemID, file, currentScreenId);
+        updateElementImage(activeItemID, file, { screenId: currentScreenId });
       }
     },
     [activeItemID, updateElementImage, currentScreenId],

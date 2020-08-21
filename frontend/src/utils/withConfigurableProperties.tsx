@@ -65,27 +65,33 @@ export function withConfigurableProperties<
 
     const removeStyles = (ruleName: string, itemID?: string) => {
       if (editableStyles === 'ownStyles') {
-        removeElementStyles(itemID || activeItemID, ruleName, currentScreenId);
+        removeElementStyles(itemID || activeItemID, ruleName, {
+          screenId: currentScreenId,
+        });
       } else {
-        removeSharedStyles(editableStyles, ruleName);
+        removeSharedStyles(editableStyles, ruleName, {
+          screenId: currentScreenId,
+        });
       }
     };
 
     const updateStyles = (styles: CssLikeStyles, itemID?: string) => {
       if (editableStyles === 'ownStyles') {
-        updateElementStyles(itemID || activeItemID, styles, currentScreenId);
+        updateElementStyles(itemID || activeItemID, styles, {
+          screenId: currentScreenId,
+        });
       } else {
-        updateSharedStyles(editableStyles, styles);
+        updateSharedStyles(editableStyles, styles, {
+          screenId: currentScreenId,
+        });
       }
     };
 
     const updateParams = useCallback(
       (params: Params<K>, itemID?: string) => {
-        updateElementParameters(
-          itemID || activeItemID,
-          params,
-          currentScreenId,
-        );
+        updateElementParameters(itemID || activeItemID, params, {
+          screenId: currentScreenId,
+        });
       },
       [activeItemID, currentScreenId],
     );

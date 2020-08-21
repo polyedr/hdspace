@@ -83,16 +83,20 @@ const ShareStyles: React.FC<Props> = ({
       activeElement.type,
       activeElement.id,
       activeElement.styles.ownStyles,
-      currentScreenId,
+      { screenId: currentScreenId },
     );
 
   const handlePasteButtonClick = (className: string) =>
     activeElement &&
-    addElementClassName(activeElement.id, className, currentScreenId);
+    addElementClassName(activeElement.id, className, {
+      screenId: currentScreenId,
+    });
 
   const handleDeleteButtonClick = (className: string) =>
     activeElement &&
-    removeElementClassName(activeElement.id, className, currentScreenId);
+    removeElementClassName(activeElement.id, className, {
+      screenId: currentScreenId,
+    });
   const isTagClassName = (className: string) =>
     className === activeElement?.type;
 

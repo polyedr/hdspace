@@ -78,12 +78,12 @@ const ListItems: React.FC<Props> = ({
         isLink: false,
         link: '',
       },
-      currentScreenId,
+      { screenId: currentScreenId },
     );
   };
 
   const handleDeleteButtonClick = (listItemID: string) => {
-    deleteChildFromElement(listItemID, currentScreenId);
+    deleteChildFromElement(listItemID, { screenId: currentScreenId });
   };
 
   const handleCheckboxChange = (

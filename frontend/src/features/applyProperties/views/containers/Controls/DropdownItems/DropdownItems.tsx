@@ -66,12 +66,12 @@ const DropdownItems: React.FC<Props> = ({
       {
         textContent: 'New item',
       },
-      currentScreenId,
+      { screenId: currentScreenId },
     );
   };
 
   const handleDeleteButtonClick = (dropdownItemID: string) => {
-    deleteChildFromElement(dropdownItemID, currentScreenId);
+    deleteChildFromElement(dropdownItemID, { screenId: currentScreenId });
   };
 
   return (

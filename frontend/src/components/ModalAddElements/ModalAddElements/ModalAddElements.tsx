@@ -18,6 +18,7 @@ import {
   ServerStructType,
   CreatedElement,
   ActiveItem,
+  ElementHistoryMeta,
 } from '$redux/project/types';
 import { LibraryElements } from '$domain/libraryElements/libraryElements';
 
@@ -46,7 +47,7 @@ type OwnProps = {
   active: boolean;
   libraryElements: LibraryElements;
   onClose(): void;
-  onConfirm(elementsToAdd: CreatedElement[], screenId: number): void;
+  onConfirm(elementsToAdd: CreatedElement[], meta: ElementHistoryMeta): void;
 };
 
 type Props = typeof mapDispatchToProps &
@@ -82,7 +83,7 @@ const Component: React.FunctionComponent<Props> = memo(
 
     useEffect(() => {
       if (imageToUpload) {
-        uploadImg(imageToUpload, currentScreen.id);
+        uploadImg(imageToUpload, { screenId: currentScreen.id });
       }
     }, [imageToUpload, currentScreen.id]);
 
@@ -99,7 +100,7 @@ const Component: React.FunctionComponent<Props> = memo(
           setErrorMsg('No items for the scenario.');
         } else {
           setErrorMsg('');
-          onConfirm(selectedElements, currentScreen.id);
+          onConfirm(selectedElements, { screenId: currentScreen.id });
           onClose();
         }
       },
@@ -139,8 +140,7 @@ const Component: React.FunctionComponent<Props> = memo(
     );
 
     const getContentStep = useCallback(() => {
-      const contentStep = getGroupElements(activeTab, listElement);
-      return contentStep;
+      return getGroupElements(activeTab, listElement);
     }, [activeTab, listElement]);
 
     return active ? (

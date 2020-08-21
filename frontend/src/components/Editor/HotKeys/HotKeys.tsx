@@ -37,7 +37,7 @@ export const Component = ({
   useEffect(() => {
     const listener = (event: KeyboardEvent) => {
       if (event.keyCode === 8) {
-        deleteActiveItem(itemId, currentScreenId);
+        deleteActiveItem(itemId, { screenId: currentScreenId });
       }
     };
 
@@ -48,7 +48,7 @@ export const Component = ({
   useEffect(() => {
     const listener = (event: KeyboardEvent) => {
       if (event.code === 'KeyC' && event.altKey) {
-        wrapIntoContainer(itemId, currentScreenId);
+        wrapIntoContainer(itemId, { screenId: currentScreenId });
       }
     };
 
@@ -77,7 +77,7 @@ export const Component = ({
         event.code === 'KeyV' && (event.metaKey || event.ctrlKey);
 
       if (isItemPasteEvent) {
-        pasteCopiedItem(currentScreenId);
+        pasteCopiedItem({ screenId: currentScreenId });
       }
     };
 

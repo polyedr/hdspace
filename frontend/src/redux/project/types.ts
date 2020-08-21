@@ -153,8 +153,7 @@ export type SetScenarioLoader = IAction<
 >;
 export type DeleteScreen = IAction<
   typeof TYPES.DELETE_SCREEN,
-  { projectId: number; screenId: number },
-  HistoryMeta
+  { projectId: number; screenId: number }
 >;
 export type RestoreScreen = IAction<
   typeof TYPES.RESTORE_SCREEN,
@@ -174,7 +173,7 @@ export type DuplicateScreen = IAction<
 >;
 export type ActivateScreen = IAction<
   typeof TYPES.ACTIVATE_SCREEN,
-  { screenID: number }
+  { screenId: number }
 >;
 export type MoveElement = IAction<
   typeof TYPES.MOVE_ELEMENT,
@@ -183,9 +182,8 @@ export type MoveElement = IAction<
     elementID: string;
     parentID: string;
     isRemote: boolean;
-    screenId: number;
   },
-  HistoryMeta
+  ElementHistoryMeta
 >;
 export type UpdateElementsTree = IAction<
   typeof TYPES.UPDATE_ELEMENTS_TREE,
@@ -217,7 +215,8 @@ export type AddElement = IAction<
 >;
 export type RenameElement = IAction<
   typeof TYPES.RENAME_ELEMENT,
-  { elementID: string; name: string }
+  { elementID: string; name: string },
+  ElementHistoryMeta
 >;
 export type ToggleContainersBorders = IPlainAction<
   typeof TYPES.TOGGLE_CONTAINERS_BORDERS
@@ -228,8 +227,8 @@ export type CopyElementStyles = IAction<
     elementType: Entity;
     elementID: string;
     styles: CssLikeStyles;
-    screenId: number;
-  }
+  },
+  ElementHistoryMeta
 >;
 export type AddSharedStyles = IAction<
   'PROJECTS:ADD_SHARED_STYLES',
@@ -242,46 +241,51 @@ export type AddSharedStyles = IAction<
 >;
 export type AddElementClassName = IAction<
   typeof TYPES.ADD_ELEMENT_CLASSNAME,
-  { elementID: string; className: string; screenId: number }
+  { elementID: string; className: string },
+  ElementHistoryMeta
 >;
 export type RemoveElementClassName = IAction<
   typeof TYPES.REMOVE_ELEMENT_CLASSNAME,
-  { elementID: string; className: string; screenId: number }
+  { elementID: string; className: string },
+  ElementHistoryMeta
 >;
 export type UpdateSharedStyles = IAction<
   typeof TYPES.UPDATE_SHARED_STYLES,
-  { className: Entity; styles: CssLikeStyles }
+  { className: Entity; styles: CssLikeStyles },
+  ElementHistoryMeta
 >;
 export type RemoveSharedStyles = IAction<
   typeof TYPES.REMOVE_SHARED_STYLES,
-  { className: Entity; cssPropertiesNames: string[] }
+  { className: Entity; cssPropertiesNames: string[] },
+  ElementHistoryMeta
 >;
 export type RemoveElementStyles = IAction<
   typeof TYPES.REMOVE_ELEMENT_STYLES,
-  { id: string; cssPropertiesNames: string[]; screenId: number }
+  { id: string; cssPropertiesNames: string[] },
+  ElementHistoryMeta
 >;
 export type ReplaceElementStyles = IAction<
   typeof TYPES.REPLACE_ELEMENT_STYLES,
-  { id: string; styles: CssLikeStyles; screenId: number },
-  HistoryMeta
+  { id: string; styles: CssLikeStyles },
+  ElementHistoryMeta
 >;
 export type UpdateElementStyles = IAction<
   typeof TYPES.UPDATE_ELEMENT_STYLES,
-  { id: string; styles: CssLikeStyles; screenId: number },
-  HistoryMeta
+  { id: string; styles: CssLikeStyles },
+  ElementHistoryMeta
 >;
 export type UpdateElementImage = IAction<
   typeof TYPES.UPDATE_ELEMENT_IMAGE,
-  { itemID: string; image: File; screenId: number }
+  { itemID: string; image: File },
+  ElementHistoryMeta
 >;
 export type UpdateElementParameters = IAction<
   typeof TYPES.UPDATE_ELEMENT_PARAMETERS,
   {
     itemID: string;
     parameters: RootElement<Entity>['parameters'];
-    screenId: number;
   },
-  HistoryMeta
+  ElementHistoryMeta
 >;
 export type UpdateSavedElementsValues = IAction<
   typeof TYPES.UPDATE_SAVED_ELEMENTS_VALUES,
@@ -293,12 +297,13 @@ export type UpdateSavedElementValues = IAction<
 >;
 export type DeleteItem = IAction<
   typeof TYPES.DELETE_ITEM,
-  { id: string; screenId: number },
-  HistoryMeta
+  { id: string },
+  ElementHistoryMeta
 >;
 export type CreateElements = IAction<
   typeof TYPES.CREATE_ELEMENTS,
-  { createdElements: CreatedElement[]; screenId: number }
+  { createdElements: CreatedElement[] },
+  ElementHistoryMeta
 >;
 export type AddChildToElement = IAction<
   typeof TYPES.ADD_CHILD_TO_ELEMENT,
@@ -306,13 +311,13 @@ export type AddChildToElement = IAction<
     childType: ServerStructType;
     elementID: string;
     parameters: {};
-    screenId: number;
   },
-  HistoryMeta
+  ElementHistoryMeta
 >;
 export type UploadFile = IAction<
   typeof TYPES.UPLOAD_FILE,
-  { file: any; screenId: number }
+  { file: any },
+  ElementHistoryMeta
 >;
 export type uploadImageForNNSuccess = IAction<
   typeof TYPES.UPLOAD_IMAGE_FOR_NN_SUCCESS,
@@ -321,8 +326,8 @@ export type uploadImageForNNSuccess = IAction<
 export type GetScreenNN = IPlainAction<typeof TYPES.GET_SCREEN_NN>;
 export type WrapIntoContainer = IAction<
   typeof TYPES.WRAP_INTO_CONTAINER,
-  { id: string; screenId: number },
-  HistoryMeta
+  { id: string },
+  ElementHistoryMeta
 >;
 export type SetActiveItem = IAction<
   typeof TYPES.SET_ACTIVE_ITEM,
@@ -341,9 +346,9 @@ export type SetItemToCopy = IAction<
   ItemToCopyInfo
 >;
 export type CopyActiveItem = IPlainAction<typeof TYPES.COPY_ACTIVE_ITEM>;
-export type PasteCopiedItem = IAction<
+export type PasteCopiedItem = IPlainAction<
   typeof TYPES.PASTE_COPIED_ITEM,
-  { screenId: number }
+  ElementHistoryMeta
 >;
 export type ResetScreenState = IPlainAction<typeof TYPES.RESET_SCREEN_STATE>;
 export type UndoAction = IPlainAction<typeof TYPES.UNDO_ACTION>;
@@ -355,19 +360,19 @@ export type SetUndoActions = IAction<
 export type SetRedoActions = IAction<typeof TYPES.SET_REDO_ACTIONS, Action[]>;
 export type UnwrapFromContainer = IAction<
   typeof TYPES.UNWRAP_FROM_CONTAINER,
-  { elementID: string; wrapperID: string; parentID: string; screenId: number },
-  HistoryMeta
+  { elementID: string; wrapperID: string; parentID: string },
+  ElementHistoryMeta
 >;
 export type SetRemoteMove = IAction<typeof TYPES.SET_REMOTE_MOVE, boolean>;
 export type RestoreElementChildren = IAction<
   typeof TYPES.RESTORE_ELEMENT_CHILDREN,
-  { elementId: string; childrenIds: string[]; screenId: number },
-  HistoryMeta
+  { elementId: string; childrenIds: string[] },
+  ElementHistoryMeta
 >;
 export type RedoWrapIntoContainer = IAction<
   typeof TYPES.REDO_WRAP_INTO_CONTAINER,
-  { elementId: string; wrapperId: string; parentId: string; screenId: number },
-  HistoryMeta
+  { elementId: string; wrapperId: string; parentId: string },
+  ElementHistoryMeta
 >;
 export type ClearHistory = IPlainAction<typeof TYPES.CLEAR_HISTORY>;
 export type PopUndoAction = IPlainAction<typeof TYPES.POP_UNDO_ACTION>;
@@ -618,5 +623,7 @@ export type Page = {
 export type HistoryMeta = {
   undo?: boolean;
   redo?: boolean;
-  screenId?: number;
+};
+export type ElementHistoryMeta = HistoryMeta & {
+  screenId: number;
 };

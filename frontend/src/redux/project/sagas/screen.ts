@@ -50,23 +50,23 @@ import {
 import { convertElementFromResponse } from '$api/converters/fromResponse';
 
 export function* activateScreenSaga({
-  payload: { screenID },
+  payload: { screenId },
 }: ReturnType<typeof activateScreen>) {
   const currentScreenId = yield select(selectCurrentScreenId);
-  if (currentScreenId === screenID) return;
+  if (currentScreenId === screenId) return;
 
   yield put(setScreenLoader(true));
 
   yield put(setActiveItem(DEFAULT_ACTIVE_ITEM));
 
-  const screen: IProjectScreen = yield select(selectScreenById(screenID));
+  const screen: IProjectScreen = yield select(selectScreenById(screenId));
   if (!screen) return;
 
   yield put(setCurrentScreenId(screen.id));
 
   yield put(Actions.setScenarioLoader(true));
 
-  const screenElement = yield select(selectScreenElement(screenID));
+  const screenElement = yield select(selectScreenElement(screenId));
   if (!screenElement) return;
 
   yield put(
@@ -213,6 +213,7 @@ export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
     Actions.updateElementsTree(
       createdRootElement,
       restoreScreen(screen.id, projectID),
+      { screenId: screen.id },
     ),
   );
 
