@@ -84,6 +84,7 @@ import { ElementHistoryMeta, ItemToCopyInfo } from '../types';
 import { selectors, actionsCreators } from '..';
 import { TYPES } from '$constants/actions';
 import { activateScreen } from '$redux/project/actions';
+import { selectScreenElement } from '$redux/project/selectors';
 
 function* LocationChange({ payload: { location } }: LocationChangeAction) {
   const {
@@ -875,9 +876,14 @@ function* pasteCopiedItemSaga({
   const itemToCopyInfo: ReturnType<typeof selectors.selectItemToCopyInfo> = yield select(
     selectors.selectItemToCopyInfo,
   );
+  if (!itemToCopyInfo) return;
 
-  if (activeItem.itemType !== 'none' && itemToCopyInfo !== null) {
-    yield call(duplicateItems, root, [itemToCopyInfo], targetContainer, {
+  const sourceRoot: LibraryElement<'root'> = yield select(
+    selectScreenElement(itemToCopyInfo.screenID),
+  );
+
+  if (activeItem.itemType !== 'none') {
+    yield call(duplicateItems, sourceRoot, [itemToCopyInfo], targetContainer, {
       screenId,
     });
   }
