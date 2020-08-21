@@ -1,13 +1,20 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
-import { useRouteMatch, NavLink } from 'react-router-dom';
+import { useRouteMatch } from 'react-router-dom';
 
-import { user } from '$constants/pathNames';
 import { Info } from '$components/User/Info';
+import { Spinner } from '$components/UI/Spinner';
 import * as Actions from '$redux/user/actions';
 import { IApiResponseError } from '$redux/user/types';
+import { AppReduxState } from '$shared/types/app';
+
+import { SignInForm } from '../SigninForm/SigninForm';
 
 const styles = require('./Activation.scss');
+
+const mapState = ({ user: { isSignLoader } }: AppReduxState) => ({
+  isSignLoader,
+});
 
 const mapDispatch = {
   setApiResponseError: Actions.setApiResponseError,
@@ -19,7 +26,7 @@ type IProps = typeof mapDispatch & {
   isSignLoader: boolean;
 };
 
-const Activation: React.FC<IProps> = ({ activateUser }) => {
+const Activation: React.FC<IProps> = ({ activateUser, isSignLoader }) => {
   const match = useRouteMatch<{ params: any }>('/activate/:uid/:token');
 
   useEffect(() => {
@@ -35,19 +42,17 @@ const Activation: React.FC<IProps> = ({ activateUser }) => {
   return (
     <>
       <Info />
-
-      <p>Thanks for registration!</p>
-      <NavLink
-        className={styles.link}
-        to={user.signin}
-        activeClassName="active"
-      >
-        Log in.
-      </NavLink>
+      <div className="signContainer">
+        <div className={styles.formContainer}>
+          <p className={styles.title}>Thanks for registration!</p>
+          <SignInForm />
+        </div>
+      </div>
+      <Spinner active={isSignLoader} />
     </>
   );
 };
 
-const Component = connect(null, mapDispatch)(Activation);
+const Component = connect(mapState, mapDispatch)(Activation);
 
 export { Component as Activation };
