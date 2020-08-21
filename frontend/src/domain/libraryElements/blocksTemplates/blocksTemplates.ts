@@ -1,6 +1,6 @@
 import { PageTemplateServerElement } from '$api/types';
 import { CssLikeStyles } from '$utils/StyleHelper';
-import { makeContainer, screenshot } from '../otherElements/otherElements';
+import { makeContainer, makeScreenshot } from '../otherElements/otherElements';
 
 export const pageTemplate: PageTemplateServerElement = {
   buoyancy: 0,
@@ -16,15 +16,35 @@ export const pageTemplate: PageTemplateServerElement = {
   name: 'pageTemplate',
   children: [
     makeContainer({
-      children: [screenshot],
+      children: [makeScreenshot()],
       ownStyles: { height: '80px' } as Required<CssLikeStyles>, // TODO maybe need move into default styles
     }),
     makeContainer({
-      children: [screenshot],
-      ownStyles: { height: '150px' } as Required<CssLikeStyles>, // TODO remove type assertions
+      children: [
+        makeScreenshot({
+          ownStyles: { 'margin-right': '5px', width: '25%' } as Required<
+            CssLikeStyles
+          >,
+        }),
+        makeScreenshot({
+          ownStyles: {
+            'margin-right': '5px',
+            'margin-left': '5px',
+            width: '50%',
+          } as Required<CssLikeStyles>,
+        }),
+        makeScreenshot({
+          ownStyles: { 'margin-left': '5px', width: '25%' } as Required<
+            CssLikeStyles
+          >,
+        }),
+      ],
+      ownStyles: { height: '150px', display: 'flex' } as Required<
+        CssLikeStyles
+      >, // TODO remove type assertions
     }),
     makeContainer({
-      children: [screenshot],
+      children: [makeScreenshot()],
       ownStyles: { height: '80px' } as Required<CssLikeStyles>,
     }),
   ],

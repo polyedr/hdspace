@@ -4,6 +4,7 @@ import cn from 'classnames';
 import { makeStyles } from '@material-ui/core';
 
 import { ScreenshotRendererProps } from '../types';
+import { IMAGES } from '$constants/images';
 
 const styles = require('../styles.scss');
 
@@ -27,12 +28,17 @@ const Screenshot: React.FC<ScreenshotRendererProps> = ({
       ...groupStyles,
     },
 
-    ownStyles: {
-      ...ownStyles,
-      backgroundImage: `url(${params.imageURL})`, // TODO maybe need move
-      backgroundPosition: 'top left',
-      backgroundSize: 'cover',
-    },
+    ownStyles: params.imageURL
+      ? {
+          ...ownStyles,
+          backgroundImage: `url(${params.imageURL})`, // TODO maybe need move
+          backgroundPosition: 'top left',
+          backgroundSize: 'cover',
+        }
+      : {
+          ...ownStyles,
+          background: `no-repeat center #E0E0E0 url(${IMAGES.imageIconSmall});`,
+        },
   })();
 
   return (

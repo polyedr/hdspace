@@ -84,21 +84,26 @@ export const image: ImageServerElement = {
   children: [],
 };
 
-export const screenshot: ScreenshotServerElement = {
+export const makeScreenshot = ({
+  ownStyles,
+}: {
+  children?: ServerElement<Entity>[];
+  ownStyles?: Required<CssLikeStyles>;
+} = {}): ScreenshotServerElement => ({
   buoyancy: 0,
   func_type: 'screenshot',
   struct_type: 'screenshot',
   parameters: {
     group: 'undefined',
-    imageURL: IMAGES.imageIcon,
+    imageURL: '',
   },
   styles: {
     classNames: ['screenshot'],
-    ownStyles: {} as Required<CssLikeStyles>,
+    ownStyles: { ...ownStyles } as Required<CssLikeStyles>,
   },
   name: 'screenshot',
   children: [],
-};
+});
 
 export const makeDropdownItem = (
   textContent: string,

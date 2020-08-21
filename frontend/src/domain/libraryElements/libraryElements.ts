@@ -34,7 +34,7 @@ import {
 import {
   root,
   image,
-  screenshot,
+  makeScreenshot,
   video,
   dropdown,
   undefined,
@@ -113,7 +113,7 @@ export const LIBRARY_ELEMENTS: LibraryElements = {
   divBlock: makeDivBlock('This is divBlock'),
   pageTemplate,
   image,
-  screenshot,
+  screenshot: makeScreenshot(),
   button,
   hyperlink,
   textinput,
