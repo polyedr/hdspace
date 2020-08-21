@@ -168,13 +168,9 @@ export const duplicateScreen = (
   payload: { name, screenID },
 });
 
-export const activateScreen = (
-  screenID: number,
-  meta: HistoryMeta = {},
-): T.ActivateScreen => ({
+export const activateScreen = (screenID: number): T.ActivateScreen => ({
   type: TYPES.ACTIVATE_SCREEN,
   payload: { screenID },
-  meta,
 });
 
 export const moveElement = (

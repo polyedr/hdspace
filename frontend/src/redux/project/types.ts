@@ -174,8 +174,7 @@ export type DuplicateScreen = IAction<
 >;
 export type ActivateScreen = IAction<
   typeof TYPES.ACTIVATE_SCREEN,
-  { screenID: number },
-  HistoryMeta
+  { screenID: number }
 >;
 export type MoveElement = IAction<
   typeof TYPES.MOVE_ELEMENT,

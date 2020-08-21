@@ -83,6 +83,7 @@ import { LibraryEntities } from '$domain/libraryElements/libraryElements';
 import { ItemToCopyInfo } from '../types';
 import { selectors, actionsCreators } from '..';
 import { TYPES } from '$constants/actions';
+import { activateScreen } from '$redux/project/actions';
 
 function* LocationChange({ payload: { location } }: LocationChangeAction) {
   const {
@@ -878,6 +879,7 @@ function* undoSaga() {
   const last = undos[undos.length - 1];
 
   if (Array.isArray(last)) {
+    yield put(activateScreen(last[0].payload.screenId));
     yield put(Actions.setGroupActionsUp(true));
 
     // eslint-disable-next-line no-restricted-syntax
@@ -892,6 +894,8 @@ function* undoSaga() {
 
     yield put(Actions.setGroupActionsUp(false));
   } else {
+    yield put(activateScreen(last.payload.screenId));
+
     yield put({
       ...last,
       meta: {
@@ -925,9 +929,12 @@ function* redoSaga() {
     yield put(Actions.setNotification('Nothing to redo.'));
     return;
   }
+
   const first = redos[0];
 
   if (Array.isArray(first)) {
+    yield put(activateScreen(first[0].payload.screenId));
+
     yield put(Actions.setGroupActionsUp(true));
 
     // eslint-disable-next-line no-restricted-syntax
@@ -942,6 +949,8 @@ function* redoSaga() {
 
     yield put(Actions.setGroupActionsUp(false));
   } else {
+    yield put(activateScreen(first.payload.screenId));
+
     yield put({
       ...first,
       meta: {
