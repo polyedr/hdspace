@@ -155,7 +155,7 @@ export function* createElements(
       newElements.map((element) => element.id),
       { screenId },
     ),
-    { screenId },
+    { screenId, undo },
   );
 
   const elementsWithUpdatedBuoyancy = findChildByID(
