@@ -122,12 +122,12 @@ export const removeNotification = (): T.RemoveNotification => ({
 });
 
 export const delScreen = (
-  projectID: number,
-  screenID: number,
+  projectId: number,
+  screenId: number,
   meta: HistoryMeta = {},
 ): T.DeleteScreen => ({
   type: TYPES.DELETE_SCREEN,
-  payload: { projectID, screenID },
+  payload: { projectId, screenId },
   meta,
 });
 

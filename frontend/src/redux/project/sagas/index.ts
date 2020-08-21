@@ -879,7 +879,9 @@ function* undoSaga() {
   const last = undos[undos.length - 1];
 
   if (Array.isArray(last)) {
-    yield put(activateScreen(last[0].payload.screenId));
+    if (last[0].payload?.screenId) {
+      yield put(activateScreen(last[0].payload.screenId));
+    }
     yield put(Actions.setGroupActionsUp(true));
 
     // eslint-disable-next-line no-restricted-syntax
@@ -894,7 +896,9 @@ function* undoSaga() {
 
     yield put(Actions.setGroupActionsUp(false));
   } else {
-    yield put(activateScreen(last.payload.screenId));
+    if (last.payload?.screenId) {
+      yield put(activateScreen(last.payload.screenId));
+    }
 
     yield put({
       ...last,
@@ -933,7 +937,9 @@ function* redoSaga() {
   const first = redos[0];
 
   if (Array.isArray(first)) {
-    yield put(activateScreen(first[0].payload.screenId));
+    if (first[0].payload?.screenId) {
+      yield put(activateScreen(first[0].payload.screenId));
+    }
 
     yield put(Actions.setGroupActionsUp(true));
 
@@ -949,7 +955,9 @@ function* redoSaga() {
 
     yield put(Actions.setGroupActionsUp(false));
   } else {
-    yield put(activateScreen(first.payload.screenId));
+    if (first.payload?.screenId) {
+      yield put(activateScreen(first.payload.screenId));
+    }
 
     yield put({
       ...first,

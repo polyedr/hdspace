@@ -60,12 +60,14 @@ export function* activateScreenSaga({
   yield put(setActiveItem(DEFAULT_ACTIVE_ITEM));
 
   const screen: IProjectScreen = yield select(selectScreenById(screenID));
+  if (!screen) return;
 
   yield put(setCurrentScreenId(screen.id));
 
   yield put(Actions.setScenarioLoader(true));
 
   const screenElement = yield select(selectScreenElement(screenID));
+  if (!screenElement) return;
 
   yield put(
     Actions.setActiveItem({
@@ -265,7 +267,7 @@ export function* saveScreenImageSaga({
 }
 
 export function* delScreenSaga({
-  payload: { projectID, screenID },
+  payload: { projectId, screenId },
   meta,
   type,
 }: ReturnType<typeof delScreen>) {
@@ -277,7 +279,7 @@ export function* delScreenSaga({
 
   const currentScreenId = yield select(selectors.selectCurrentScreenId);
 
-  if (currentScreenId === screenID) {
+  if (currentScreenId === screenId) {
     yield put(setActiveItem(DEFAULT_ACTIVE_ITEM));
     yield put(setCurrentScreenId(-1));
   }
@@ -293,23 +295,23 @@ export function* delScreenSaga({
   }
 
   const newScreenIdList = currentProject.projectscreen.filter(
-    (id) => id !== screenID,
+    (id) => id !== screenId,
   );
 
   yield call(reqWrapper, apiSaveProject, {
     data: {
       projectscreen: newScreenIdList,
-      id: projectID,
+      id: projectId,
     },
   });
 
   if (!undo) {
-    yield put(setUndoActions(restoreScreen(screenID, projectID)));
+    yield put(setUndoActions(restoreScreen(screenId, projectId)));
   }
 
   const result: Project = R.assoc(
     'projectscreen',
-    currentProject.projectscreen.filter((id) => id !== screenID),
+    currentProject.projectscreen.filter((id) => id !== screenId),
     currentProject,
   );
 
@@ -319,7 +321,7 @@ export function* delScreenSaga({
 
   if (!lastScreenID) {
     yield put(setCurrentScreenId(-1));
-    yield put(push(`/project/${projectID}`));
+    yield put(push(`/project/${projectId}`));
     return;
   }
 
@@ -327,12 +329,12 @@ export function* delScreenSaga({
     selectors.selectScreens,
   );
 
-  const newScreens = screens.filter((screen) => screen.id !== screenID);
+  const newScreens = screens.filter((screen) => screen.id !== screenId);
   yield put(setScreens(newScreens));
 
   if (lastScreenID !== currentScreenId) {
     yield put(activateScreen(lastScreenID));
-    yield put(push(`/project/${projectID}/${lastScreenID}`));
+    yield put(push(`/project/${projectId}/${lastScreenID}`));
   }
 }
 

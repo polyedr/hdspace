@@ -153,7 +153,7 @@ export type SetScenarioLoader = IAction<
 >;
 export type DeleteScreen = IAction<
   typeof TYPES.DELETE_SCREEN,
-  { projectID: number; screenID: number },
+  { projectId: number; screenId: number },
   HistoryMeta
 >;
 export type RestoreScreen = IAction<
