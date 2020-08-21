@@ -1,0 +1,50 @@
+form {
+  flex-grow: 1;
+}
+
+.signinTitle {
+  margin-bottom: 30px;
+
+  color: $mainTextColor;
+  font-size: 24px;
+  line-height: 36px;
+  font-weight: 600;
+}
+
+.signinLink {
+  display: block;
+
+  color: $white;
+
+  text-decoration: none;
+
+  &:hover,
+  &:focus {
+    color: transparentize($white, 0.2);
+  }
+}
+
+.logInText {
+  margin-top: 20px;
+}
+
+.link {
+  margin-left: 5px;
+  color: $mainTextColor;
+  text-decoration: underline;
+
+  &:hover {
+    color: $mainTextColor;
+    text-decoration: none;
+  }
+}
+
+.passwordRestoreModalBody {
+  width: 300px;
+
+  p {
+    margin-bottom: 10px;
+
+    font-size: 12px;
+  }
+}
