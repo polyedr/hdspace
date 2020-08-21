@@ -86,8 +86,9 @@ const UnconnectedSignUp: React.FunctionComponent<IProps> = ({
       <div className="signContainer">
         <div className={styles.formContainer}>
           <GoogleLogin
+            className={styles.googleLogin}
             clientId="97708805893-kqh3efrnsd7i8nbu30p0mhlvhub029he.apps.googleusercontent.com"
-            buttonText="Login"
+            buttonText="Sign up with google"
             onSuccess={responseGoogle}
             onFailure={responseGoogle}
             cookiePolicy="single_host_origin"
