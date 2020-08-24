@@ -12,6 +12,7 @@ import {
   apiChangeProfileData,
   apiSendActivationMail,
   apiActivateUser,
+  apiRestorePassword,
 } from '$api/user';
 import { TYPES } from '$constants/actions';
 import * as Actions from '$redux/user/actions';
@@ -178,6 +179,32 @@ function* sendActivationMailSaga(
   }
 }
 
+function* sendResetPasswordMailSaga( // TODO make as one mail saga
+  action: ReturnType<typeof Actions.sendResetPasswordMail>,
+) {
+  const {
+    payload: { email },
+  } = action;
+  yield put(Actions.changeSignLoader(true));
+
+  const response = yield call(apiRestorePassword, email);
+
+  if (response.errorStatus) {
+    yield put(Actions.setApiResponseError(response));
+  }
+
+  const {
+    user: { apiResponseError },
+  }: AppReduxState = yield select();
+
+  yield put(Actions.changeSignLoader(false));
+
+  if (apiResponseError.errorStatus === -1) {
+    openSignScreen('signin');
+    yield put(Actions.setConfirmMessage(true));
+  }
+}
+
 function* activateUserSaga(action: ReturnType<typeof Actions.activateUser>) {
   const {
     payload: { uid, token },
@@ -283,6 +310,7 @@ export default function* userSaga() {
   yield takeLatest(TYPES.LOGIN, loginSaga);
   yield takeLatest(TYPES.SET_NEW_USER, setNewUserSaga);
   yield takeLatest(TYPES.SEND_ACTIVATION_MAIL, sendActivationMailSaga);
+  yield takeLatest(TYPES.SEND_RESET_PASSWORD_MAIL, sendResetPasswordMailSaga);
   yield takeLatest(TYPES.ACTIVATE_USER, activateUserSaga);
   yield takeLatest(TYPES.RESTORE_PASSWORD, restorePasswordSaga);
   yield takeLatest(TYPES.SET_NEW_PASSWORD, setNewPasswordSaga);

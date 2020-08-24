@@ -70,6 +70,13 @@ export const sendActivationMail = (
   },
 });
 
+export const sendResetPasswordMail = (email: string) => ({
+  type: TYPES.SEND_RESET_PASSWORD_MAIL,
+  payload: {
+    email,
+  },
+});
+
 export const setConfirmMessage = (showMessage: boolean) => ({
   type: TYPES.SET_CONFIRM_MESSAGE,
   payload: {

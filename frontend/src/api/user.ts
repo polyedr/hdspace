@@ -24,6 +24,10 @@ type SendActivationMailData = {
   email: string;
 };
 
+type SendResetPasswordMailData = {
+  email: string;
+};
+
 type activateUserData = {
   uid: string;
   token: string;
@@ -122,6 +126,20 @@ export const apiSendActivationMail = ({
     },
     method: 'POST',
     url: '/djauth/users/',
+  })
+    .then(parseResult)
+    .catch(onAuthorisationError);
+
+export const apiSendResetPasswordMail = ({
+  // TODO check duplicated methods
+  email,
+}: SendResetPasswordMailData) =>
+  myAxios({
+    data: {
+      email,
+    },
+    method: 'POST',
+    url: '/djauth/reset_password/',
   })
     .then(parseResult)
     .catch(onAuthorisationError);

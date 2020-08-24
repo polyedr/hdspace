@@ -15,6 +15,11 @@ import * as Actions from '$redux/user/actions';
 
 import { FormField } from '../FormField/FormField';
 import { user } from '$constants/pathNames';
+import {
+  composeValidators,
+  isRequired,
+  isValidEmail,
+} from '$shared/validators';
 
 const styles = require('./SignInForm.scss');
 
@@ -28,9 +33,10 @@ const mapState = ({ user: { apiResponseError } }: AppReduxState) => ({
 });
 
 const mapDispatch = {
-  restorePassword: Actions.restorePassword,
+  // restorePassword: Actions.restorePassword,
   setApiResponseError: Actions.setApiResponseError,
   login: Actions.login,
+  sendResetPasswordMail: Actions.sendResetPasswordMail,
 };
 
 type IProps = typeof mapDispatch & ReturnType<typeof mapState>;
@@ -38,8 +44,9 @@ type IProps = typeof mapDispatch & ReturnType<typeof mapState>;
 const SignInForm = (props: IProps) => {
   const {
     apiResponseError,
-    restorePassword,
+    // restorePassword,
     setApiResponseError,
+    sendResetPasswordMail,
     login,
   } = props;
 
@@ -85,21 +92,20 @@ const SignInForm = (props: IProps) => {
     [isRestorePasswordModalOpen],
   );
 
-  const onRestoreEmailFieldChange = useCallback(({ target }) => {
+  /* const onRestoreEmailFieldChange = useCallback(({ target }) => {
     setRestoreEmail(target.value);
-  }, []);
+  }, []); */
 
-  const handleConfirmPasswordRestore = useCallback(
-    (event) => {
-      event.preventDefault();
+  const handleConfirmPasswordRestore = (values: { email: string }) => {
+    setIsRestoreEmailSend(true);
+    sendResetPasswordMail(values.email);
 
-      setIsRestoreEmailSend(true);
+    // eslint-disable-next-line no-console
+    console.log(values);
 
-      /* restorePassword(restoreEmail);
+    /* restorePassword(restoreEmail);
       closeModal(); */
-    },
-    [restoreEmail, restorePassword, closeModal],
-  );
+  };
 
   const responseGoogle = (response: any) => {
     // eslint-disable-next-line no-console
@@ -174,42 +180,72 @@ const SignInForm = (props: IProps) => {
         </NavLink>
       </p>
       {isRestorePasswordModalOpen && (
+        // TODO reset error and isRestoreEmailSend after closing
         <Modal
           animClassName="bubbleAnimation"
           bodyClassName={styles.passwordRestoreModalBody}
           title="Restore password"
-          confirmText="Send"
-          cancelText="Close"
           onClose={closeModal}
-          {...(!isRestoreEmailSend && {
-            onConfirm: handleConfirmPasswordRestore,
-          })}
         >
-          {isRestoreEmailSend ? (
-            <p>
-              <span>If there&apos;s an account for</span>
-              <span>{restoreEmail}</span>
-              <span>
-                , you will get an email on how to reset your password. Check the
-                spam folder, as it may be there. If you&apos;ve used a different
-                service for logging in, please contact your administrator to
-                reset your password.
-              </span>
-            </p>
-          ) : (
-            <>
-              <p>Please, enter your email adress.</p>
-              <input
-                className="modalTextInput"
-                type="email"
-                name="restore_email"
-                id="restore_email"
-                placeholder="example@gmail.com"
-                value={restoreEmail}
-                onChange={onRestoreEmailFieldChange}
-              />
-            </>
-          )}
+          <Form
+            onSubmit={handleConfirmPasswordRestore}
+            initialValues={initialValues}
+            subscription={{ submitError: true, submitting: true }}
+          >
+            {({ handleSubmit, submitError, submitting }) => (
+              <form onSubmit={handleSubmit}>
+                <p>Please, enter your email address.</p>
+                <FormField
+                  name="email"
+                  placeholder="email"
+                  label="email"
+                  type="email"
+                  validator={composeValidators(isRequired, isValidEmail)}
+                />
+                <div className="signButtonBlock">
+                  {!!submitError && (
+                    <p className="signAuthorisationErrorText">{submitError}</p>
+                  )}
+                  {apiResponseError.errorStatus !== -1 && (
+                    <p className="signAuthorisationErrorText">
+                      {apiResponseError.errorText}
+                    </p>
+                  )}
+                </div>
+                <Button
+                  className="signSubmitBtn"
+                  styleType="none"
+                  disabled={submitting}
+                  onClick={closeModal}
+                >
+                  Close
+                </Button>
+                <Button
+                  className={styles.signinLink}
+                  styleType="none"
+                  type="submit"
+                  onClick={handleConfirmPasswordRestore}
+                >
+                  Send
+                </Button>
+
+                {isRestoreEmailSend ? (
+                  <p>
+                    <span>If there&apos;s an account for</span>
+                    <span>{restoreEmail}</span>
+                    <span>
+                      , you will get an email on how to reset your password.
+                      Check the spam folder, as it may be there. If you&apos;ve
+                      used a different service for logging in, please contact
+                      your administrator to reset your password.
+                    </span>
+                  </p>
+                ) : (
+                  <></>
+                )}
+              </form>
+            )}
+          </Form>
         </Modal>
       )}
     </>
