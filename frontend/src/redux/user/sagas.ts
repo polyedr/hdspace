@@ -13,6 +13,7 @@ import {
   apiSendActivationMail,
   apiActivateUser,
   apiRestorePassword,
+  apiRegisterWithGoogle,
 } from '$api/user';
 import { TYPES } from '$constants/actions';
 import * as Actions from '$redux/user/actions';
@@ -306,6 +307,12 @@ export function* setNewPasswordSaga({
   }
 }
 
+export function* registerWithGoogleSaga() {
+  console.log('registerWithGoogleSaga');
+  const res = yield call(apiRegisterWithGoogle);
+  console.log(res);
+}
+
 export default function* userSaga() {
   yield takeLatest(TYPES.LOGIN, loginSaga);
   yield takeLatest(TYPES.SET_NEW_USER, setNewUserSaga);
@@ -314,6 +321,7 @@ export default function* userSaga() {
   yield takeLatest(TYPES.ACTIVATE_USER, activateUserSaga);
   yield takeLatest(TYPES.RESTORE_PASSWORD, restorePasswordSaga);
   yield takeLatest(TYPES.SET_NEW_PASSWORD, setNewPasswordSaga);
+  yield takeLatest(TYPES.REGISTER_WITH_GOOGLE, registerWithGoogleSaga);
   yield takeEvery(TYPES.CHANGE_USER_DATA, changeUserDataSaga);
   yield takeEvery(TYPES.CHANGE_PROFILE_DATA, changeProfileDataSaga);
 }

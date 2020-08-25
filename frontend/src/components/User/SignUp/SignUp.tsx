@@ -46,6 +46,7 @@ const mapStateToProps = ({
 const mapDispatchToProps = {
   setApiResponseError: Actions.setApiResponseError,
   sendActivationMail: Actions.sendActivationMail,
+  registerWithGoogle: Actions.registerWithGoogle,
 };
 
 type IProps = typeof mapDispatchToProps & {
@@ -58,6 +59,7 @@ const UnconnectedSignUp: React.FunctionComponent<IProps> = ({
   apiResponseError,
   setApiResponseError,
   sendActivationMail,
+  registerWithGoogle,
 }) => {
   useEffect(() => {
     /* return () => {
@@ -76,6 +78,7 @@ const UnconnectedSignUp: React.FunctionComponent<IProps> = ({
   };
 
   const responseGoogle = (response: any) => {
+    registerWithGoogle();
     // eslint-disable-next-line no-console
     console.log(response);
   };
@@ -93,6 +96,7 @@ const UnconnectedSignUp: React.FunctionComponent<IProps> = ({
             onSuccess={responseGoogle}
             onFailure={responseGoogle}
             cookiePolicy="single_host_origin"
+            redirectUri="https://staging-26-10.firebaseapp.com/projects"
           />
           <Form
             onSubmit={handleFormSubmit}

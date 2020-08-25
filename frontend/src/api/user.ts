@@ -144,6 +144,17 @@ export const apiSendResetPasswordMail = ({
     .then(parseResult)
     .catch(onAuthorisationError);
 
+export const apiRegisterWithGoogle = () =>
+  myAxios({
+    method: 'GET',
+    url: '/djauth/o/google-oauth2/',
+    params: {
+      redirect_uri: 'https://staging-26-10.firebaseapp.com/projects',
+    },
+  })
+    .then(parseResult)
+    .catch(onAuthorisationError);
+
 export const apiActivateUser = ({ uid, token }: activateUserData) =>
   myAxios({
     data: {

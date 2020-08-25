@@ -77,6 +77,10 @@ export const sendResetPasswordMail = (email: string) => ({
   },
 });
 
+export const registerWithGoogle = () => ({
+  type: TYPES.REGISTER_WITH_GOOGLE,
+});
+
 export const setConfirmMessage = (showMessage: boolean) => ({
   type: TYPES.SET_CONFIRM_MESSAGE,
   payload: {
