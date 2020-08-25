@@ -387,15 +387,9 @@ export function* updateProjectSaga(
 
   yield call(updateProject, project);
 
-  const { undo /* redo */ } = action.meta;
+  const { undo } = action.meta;
 
   if (!undo) {
     yield put(Actions.setUndoActions(Actions.updateProject(currentProject)));
   }
-
-  // const root: ReturnType<typeof selectors.selectRootElement> = yield select(
-  //   selectors.selectRootElement,
-  // );
-
-  // yield put(Actions.updateElementsTree(root, action, { redo, undo }));
 }

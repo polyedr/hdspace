@@ -82,7 +82,7 @@ export const selectRootElement = (state: AppReduxState) =>
   selectCurrentScreen(state).element;
 
 export const selectRootID = (state: AppReduxState) =>
-  selectCurrentScreen(state).element?.id || -1;
+  selectCurrentScreen(state).element?.id || '-1';
 
 export function selectUploadedImageInfo(state: AppReduxState) {
   return selectProjectState(state).edit.uploadedImageInfo;

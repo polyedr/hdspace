@@ -246,7 +246,6 @@ export function* saveScreenImageSaga({
 }: ReturnType<typeof saveScreenImage>): SagaIterator {
   yield put(setLoader(true));
 
-  // buoyancy must be send, but it null.
   const blobFile = yield call(canvasToBlob, canvas);
   const formData = new FormData();
 
