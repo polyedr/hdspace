@@ -313,6 +313,7 @@ SIMPLE_JWT = {
     "SLIDING_TOKEN_REFRESH_LIFETIME": timedelta(days=1),
 }
 
+white_list = ['http://localhost:8080/projects', 'https://staging-26-10.firebaseapp.com/projects']
 
 # Djoser settings
 DJOSER = {
@@ -322,6 +323,7 @@ DJOSER = {
     "ACTIVATION_URL": "/activate/{uid}/{token}",
     "SEND_ACTIVATION_EMAIL": True,
     "SERIALIZERS": {},
+    "SOCIAL_AUTH_ALLOWED_REDIRECT_URIS": white_list  # Redirected URL we listen on google console
 }
 
 
