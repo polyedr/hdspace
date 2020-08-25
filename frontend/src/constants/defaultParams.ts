@@ -230,4 +230,5 @@ export const DEFAULT_AUTHORISATION_TOKEN: ITokenPair = {
 export const DEFAULT_RESPONSE_ERROR: IApiResponseError = {
   errorStatus: -1,
   errorText: '',
+  data: {},
 };

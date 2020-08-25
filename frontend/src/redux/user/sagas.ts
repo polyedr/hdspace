@@ -266,6 +266,7 @@ export function* refreshUserTokenPair() {
 }
 
 export function* restorePasswordSaga({
+  // TODO remove this saga
   email,
 }: ReturnType<typeof Actions.restorePassword>): SagaIterator {
   const {
@@ -294,12 +295,12 @@ export function* restorePasswordSaga({
       yield put(Actions.setRestoreUserId(user.id));
       yield call(openPasswordRestore);
     } else {
-      yield put(
+      /* yield put(
         Actions.setApiResponseError({
           errorStatus: 404,
           errorText: 'User not found.',
         }),
-      );
+      ); */
     }
   } else {
     yield put(Actions.setApiResponseError(usersList));

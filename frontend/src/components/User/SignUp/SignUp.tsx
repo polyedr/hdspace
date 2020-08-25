@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { Form } from 'react-final-form';
 import { NavLink } from 'react-router-dom';
@@ -61,14 +61,6 @@ const UnconnectedSignUp: React.FunctionComponent<IProps> = ({
   sendActivationMail,
   registerWithGoogle,
 }) => {
-  useEffect(() => {
-    /* return () => {
-      if (apiResponseError.errorStatus !== -1) {
-        setApiResponseError(DEFAULT_RESPONSE_ERROR);
-      }
-    }; */
-  }, [apiResponseError, setApiResponseError]);
-
   const handleFormSubmit = (values: FormData) => {
     if (apiResponseError.errorStatus !== -1) {
       setApiResponseError(DEFAULT_RESPONSE_ERROR);
@@ -82,6 +74,10 @@ const UnconnectedSignUp: React.FunctionComponent<IProps> = ({
     // eslint-disable-next-line no-console
     console.log(response);
   };
+
+  const isAccountExist =
+    apiResponseError.errorStatus === 400 &&
+    (apiResponseError.data.email || apiResponseError.data.username);
 
   return (
     <>
@@ -120,9 +116,21 @@ const UnconnectedSignUp: React.FunctionComponent<IProps> = ({
                   {!!submitError && (
                     <p className="signAuthorisationErrorText">{submitError}</p>
                   )}
-                  {apiResponseError.errorStatus !== -1 && (
+                  {apiResponseError.errorStatus !== -1 && !isAccountExist && (
                     <p className="signAuthorisationErrorText">
                       {apiResponseError.errorText}
+                    </p>
+                  )}
+                  {isAccountExist && (
+                    <p className="signAuthorisationErrorText">
+                      Looks like you already have an account.
+                      <NavLink
+                        className={styles.link}
+                        to={user.signin}
+                        activeClassName="active"
+                      >
+                        Log in.
+                      </NavLink>
                     </p>
                   )}
                   <Button

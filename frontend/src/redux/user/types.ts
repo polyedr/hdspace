@@ -51,6 +51,7 @@ export type TotalUserData = ProfileData & UserData;
 export interface IApiResponseError {
   errorStatus: number;
   errorText: string;
+  data: { [key: string]: string };
 }
 
 export type IRootState = Readonly<{

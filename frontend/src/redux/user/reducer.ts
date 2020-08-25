@@ -34,6 +34,7 @@ const INITIAL_STATE: IRootState = {
   apiResponseError: {
     errorStatus: -1,
     errorText: '',
+    data: {},
   },
   isSignLoader: false,
   confirmMessage: '',

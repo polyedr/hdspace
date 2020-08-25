@@ -54,27 +54,32 @@ export const onAuthorisationError = ({
         errorStatus: response.status,
         errorText:
           'Entered data is incorrect or this login allready exist. Please, check fields data.',
+        data: response.data,
       };
     case 401:
       return {
         errorStatus: response.status,
         errorText:
           'Authorisation error. Check your username/email and password.',
+        data: response.data,
       };
     case 404:
       return {
         errorStatus: response.status,
         errorText: 'User not found!',
+        data: response.data,
       };
     case response.status >= 500:
       return {
         errorStatus: response.status,
         errorText: 'It seems something went wrong. Please, try later.',
+        data: response.data,
       };
     default:
       return {
         errorStatus: response.status,
         errorText: response.statusText,
+        data: response.data,
       };
   }
 };
