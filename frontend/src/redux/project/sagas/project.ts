@@ -116,7 +116,8 @@ export function* addProjectSaga({
 
 export function* addProject(action: ReturnType<typeof Actions.addProject>) {
   const { id: projectID } = yield call(addProjectSaga, action);
-  yield call(addScreenSaga, Actions.addScreen(projectID, 'Screen 1', 0));
+  yield put(Actions.setCurrentProjectId(projectID));
+  yield call(addScreenSaga, Actions.addScreen(projectID, 'Screen 1', 0, true));
   yield put(push(`/project/${projectID}`));
 }
 

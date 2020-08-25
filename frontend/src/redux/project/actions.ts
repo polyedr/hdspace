@@ -155,9 +155,10 @@ export const addScreen = (
   projectID: number,
   name: string,
   buoyancy: number,
+  skip: boolean = false,
 ): T.AddScreen => ({
   type: TYPES.ADD_SCREEN,
-  payload: { projectID, name, buoyancy },
+  payload: { projectID, name, buoyancy, skip },
 });
 
 export const duplicateScreen = (

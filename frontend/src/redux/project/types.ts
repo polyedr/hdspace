@@ -165,7 +165,7 @@ export type RenameScreen = IAction<
 >;
 export type AddScreen = IAction<
   typeof TYPES.ADD_SCREEN,
-  { projectID: number; name: string; buoyancy: number }
+  { projectID: number; name: string; buoyancy: number; skip: boolean }
 >;
 export type DuplicateScreen = IAction<
   typeof TYPES.DUPLICATE_SCREEN,
