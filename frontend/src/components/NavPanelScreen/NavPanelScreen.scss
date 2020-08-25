@@ -147,6 +147,14 @@
     overflow: hidden;
   }
 
+  img {
+    position: absolute;
+    width: 100%;
+    max-height: 100%;
+    object-fit: cover;
+    object-position: 0 0;
+  }
+
   // .navPanelContainer_minimize & {
   //   transition: all 0.3s linear;
   // }

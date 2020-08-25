@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 
 import {
   withConfigurableProperties,
@@ -7,6 +7,7 @@ import {
 } from '$utils/withConfigurableProperties';
 import { actionsCreators } from '$redux/project';
 import { ImageElement } from '$api/types';
+import { selectCurrentScreenId } from '$redux/project/selectors';
 
 const styles = require('./Image.scss');
 
@@ -19,6 +20,8 @@ type Props = PropertiesChangeProps<ImageElement> & typeof mapDispatch;
 const Component: React.FC<Props> = (props) => {
   const { activeItemID, updateElementImage } = props;
 
+  const currentScreenId = useSelector(selectCurrentScreenId);
+
   const handleChangeFileInput = useCallback(
     ({ target }) => {
       const file = target.files[0];
@@ -27,10 +30,10 @@ const Component: React.FC<Props> = (props) => {
         // eslint-disable-next-line no-alert
         alert('Choose image up to 5Mb!');
       } else {
-        updateElementImage(activeItemID, file);
+        updateElementImage(activeItemID, file, { screenId: currentScreenId });
       }
     },
-    [activeItemID, updateElementImage],
+    [activeItemID, updateElementImage, currentScreenId],
   );
 
   return (

@@ -20,7 +20,6 @@ export interface IEditProps {
   screen: EditorProps['currentScreen'];
   isNavPanelMinimized: EditorProps['isNavPanelMinimized'];
   isPrototypeMode: EditorProps['isPrototypeMode'];
-  updateElementStyles: typeof Actions.updateElementStyles;
   resetScreenState: typeof Actions.resetScreenState;
 }
 

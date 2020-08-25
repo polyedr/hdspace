@@ -362,3 +362,6 @@ export const getTreeWithDefaultStylesAndParams = <T extends Entity>(
     return replaceChild(element.id, newElement, acc) as LibraryElement<T>;
   }, root);
 };
+
+export const focusOnElement = (id: string) =>
+  document.querySelector<HTMLElement>(`[data-ls-id='${id}']`)?.focus();

@@ -26,8 +26,8 @@ const mapStateToProps = (state: AppReduxState) => ({
 
 const mapDispatchToProps = {
   changeMinLPanel: ActionsUser.changeMinLPanel,
-  getListProject: ActionsProject.getListProject,
-  setListProject: ActionsProject.setListProject,
+  getListProject: ActionsProject.getProjectList,
+  setListProject: ActionsProject.setProjectList,
 };
 
 export type IAppProps = ReturnType<typeof mapStateToProps> &
@@ -46,7 +46,7 @@ const EditorWindow: React.FC<IAppProps> = ({
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(ActionsProject.getListProject());
+    dispatch(ActionsProject.getProjectList());
   }, [dispatch]);
 
   return (

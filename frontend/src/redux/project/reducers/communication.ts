@@ -1,54 +1,55 @@
 import * as T from '../types';
 import { initialCommunication } from '$redux/project/initial';
+import { TYPES } from '$constants/actions';
 
 export const communicationReducer = (
   state: T.ProjectCommunicationState = initialCommunication,
   action: T.Action,
 ): T.ProjectCommunicationState => {
   switch (action.type) {
-    case 'PROJECTS:SET_LIST_PROJECT_LOADER': {
+    case TYPES.SET_PROJECT_LIST_LOADER: {
       return {
         ...state,
-        listProjectLoader: action.payload.active,
+        projectListLoader: action.payload.active,
       };
     }
 
-    case 'PROJECTS:SET_LOADER': {
+    case TYPES.SET_LOADER: {
       return {
         ...state,
         loader: action.payload.active,
       };
     }
 
-    case 'PROJECTS:SET_SCREEN_LOADER': {
+    case TYPES.SET_SCREEN_LOADER: {
       return {
         ...state,
         screenLoader: action.payload.active,
       };
     }
 
-    case 'PROJECTS:SET_PROJECT_LOADER': {
+    case TYPES.SET_PROJECT_LOADER: {
       return {
         ...state,
         projectLoader: action.payload.active,
       };
     }
 
-    case 'PROJECTS:SET_SCENARIO_LOADER': {
+    case TYPES.SET_SCENARIO_LOADER: {
       return {
         ...state,
         scenarioLoader: action.payload.active,
       };
     }
 
-    case 'PROJECTS:LOAD_PROJECTS_SUCCESS': {
+    case TYPES.LOAD_PROJECTS_SUCCESS: {
       return {
         ...state,
         initialProjectLoadDone: true,
       };
     }
 
-    case 'LOGOUT': {
+    case TYPES.LOGOUT: {
       return {
         ...initialCommunication,
       };

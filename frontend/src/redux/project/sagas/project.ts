@@ -9,14 +9,16 @@ import * as R from 'ramda';
 
 import { apiGetScenarios } from '$api/scenario';
 import { apiGetElements } from '$api/element';
-import { apiGetScreen, apiSaveScreen } from '$api/screen';
+import { apiSaveScreen } from '$api/screen';
 import { ReturnPromisedType } from '$shared/types';
-import { AppReduxState } from '$shared/types/app';
-import { Page, IProjectScreen } from '$redux/project/types';
-import { activateScreenSaga, addScreenSaga } from '$redux/project/sagas/screen';
+import { Page } from '$redux/project/types';
+import {
+  activateScreenSaga,
+  addScreenSaga,
+  getScreenSaga,
+} from '$redux/project/sagas/screen';
 import * as Actions from '$redux/project/actions';
 import { setScreens } from '$redux/project/actions';
-import { changePrototypeMode } from '$redux/user/actions';
 import {
   apiGetListProject,
   apiAddProject,
@@ -29,89 +31,71 @@ import {
   convertCreatedProjectToRequest,
   convertProjectToPatchRequest,
 } from '$api/converters/toRequest';
-import { DEFAULT_SCREEN } from '$constants/defaultParams';
 import { reqWrapper } from '$redux/project/sagas/index';
 import { generateFontFace } from '$utils/generateFontFace';
 
 import { selectors, T } from '..';
 
 export function* getListProjectSaga(): SagaIterator {
-  yield put(Actions.setListProjectLoader(true));
+  yield put(Actions.setProjectListLoader(true));
   yield put(Actions.getLibraryElements());
 
   const result = yield call(reqWrapper, apiGetListProject);
 
   if (!result) {
-    yield put(Actions.setListProjectLoader(false));
+    yield put(Actions.setProjectListLoader(false));
 
     return;
   }
 
-  yield put(Actions.setListProject(result));
-  yield put(Actions.setListProjectLoader(false));
+  yield put(Actions.setProjectList(result));
+  yield put(Actions.setProjectListLoader(false));
 }
 
 export function* getProjectSaga(action: ReturnType<typeof Actions.getProject>) {
   const { id, screenID } = action.payload;
-  const currentProject: ReturnType<typeof selectors.selectCurrentProject> = yield select(
-    selectors.selectCurrentProject,
-  );
-  const {
-    user: { isPrototypeMode },
-  }: AppReduxState = yield select();
 
-  if (currentProject.id === id) {
-    yield put(changePrototypeMode(isPrototypeMode));
-  } else {
-    yield put(changePrototypeMode(false));
+  yield put(Actions.setProjectLoader(true));
+
+  const project: ReturnPromisedType<typeof apiGetProject> = yield call(
+    reqWrapper,
+    apiGetProject,
+    { id },
+  );
+  if (!project) {
+    console.error(`Error while fetching project ${id}`);
+    return;
   }
 
-  if (!currentProject || currentProject.id !== id) {
-    yield put(Actions.setProjectLoader(true));
+  yield put(Actions.setCurrentProjectId(project.id));
 
-    const project: ReturnPromisedType<typeof apiGetProject> = yield call(
-      reqWrapper,
-      apiGetProject,
-      { id },
+  const screens = yield all(
+    project.projectscreen.map((screenId) => getScreenSaga(screenId)),
+  );
+
+  yield put(setScreens(screens));
+
+  const finalScreenID = screenID || project.projectscreen[0];
+
+  if (finalScreenID) {
+    yield call(
+      activateScreenSaga,
+      Actions.activateScreen(Number(finalScreenID)),
     );
 
-    if (project) {
-      yield put(Actions.setProject(project));
-      const projectScreensIDs = project.projectscreen;
-      const finalScreenID =
-        screenID && projectScreensIDs.includes(Number(screenID))
-          ? screenID
-          : projectScreensIDs[0];
-
-      if (finalScreenID) {
-        yield call(
-          activateScreenSaga,
-          Actions.activateScreen(id, Number(finalScreenID)),
-        );
-        yield put(push(`/project/${id}/${finalScreenID}`));
-
-        const screens: IProjectScreen[] = yield all(
-          projectScreensIDs.map((screenId) =>
-            call(reqWrapper, apiGetScreen, { id: screenId }),
-          ),
-        );
-        yield put(setScreens(screens));
-      } else {
-        yield put(Actions.setScreen(DEFAULT_SCREEN));
-      }
-    } else {
-      // msg Error
-    }
-
-    yield put(Actions.setProjectLoader(false));
+    yield put(push(`/project/${id}/${finalScreenID}`));
+  } else {
+    yield put(Actions.setCurrentScreenId(-1));
   }
+
+  yield put(Actions.setProjectLoader(false));
 }
 
 export function* addProjectSaga({
   payload: { name },
 }: ReturnType<typeof Actions.addProject>) {
   const projectData = convertCreatedProjectToRequest(name);
-  let project: Project = yield call(reqWrapper, apiAddProject, {
+  const project: Project = yield call(reqWrapper, apiAddProject, {
     data: projectData,
   });
 
@@ -121,21 +105,10 @@ export function* addProjectSaga({
     return;
   }
 
-  const newName = `${project.name}-${project.id}`;
-
-  project = yield call(reqWrapper, apiSaveProject, {
-    data: { ...project, name: newName },
-  });
-
-  if (!project) {
-    console.error('Cannot rename project', name);
-    return;
-  }
-
   const projects: ReturnType<typeof selectors.selectProjects> = yield select(
     selectors.selectProjects,
   );
-  yield put(Actions.setListProject([...projects, project]));
+  yield put(Actions.setProjectList([...projects, project]));
 
   // eslint-disable-next-line consistent-return
   return project;
@@ -351,47 +324,26 @@ export function* delProjectSaga({
 }: ReturnType<typeof Actions.delProject>): SagaIterator {
   yield call(reqWrapper, apiDelProject, { id });
 
-  const listProject: ReturnType<typeof selectors.selectProjects> = yield select(
+  const projectList: ReturnType<typeof selectors.selectProjects> = yield select(
     selectors.selectProjects,
   );
-  const newListProject: Project[] = listProject.filter(
+  const newProjectList: Project[] = projectList.filter(
     (project) => project.id !== id,
   );
 
-  yield put(Actions.setListProject(newListProject));
+  yield put(Actions.setProjectList(newProjectList));
 }
 
 export function* renameProjectSaga({
   payload: { projectID, name },
-}: ReturnType<typeof Actions.renameProject>): SagaIterator {
-  const listProject: ReturnType<typeof selectors.selectProjects> = yield select(
-    selectors.selectProjects,
-  );
-  const currentProject: ReturnType<typeof selectors.selectCurrentProject> = yield select(
-    selectors.selectCurrentProject,
-  );
+}: ReturnType<typeof Actions.renameProject>) {
+  const project: Project = yield select(selectors.selectProjectById(projectID));
 
-  const currProject = listProject.find((project) => project.id === projectID);
-
-  if (!currProject) return;
-
-  const data = { ...currProject, name };
-
-  const updatedProject = yield call(reqWrapper, apiSaveProject, { data });
-
-  const newListProject = listProject.map((project) => {
-    if (project.id === projectID) {
-      return updatedProject;
-    }
-
-    return project;
+  const updatedProject = yield call(reqWrapper, apiSaveProject, {
+    data: { id: projectID, name, projectscreen: project.projectscreen },
   });
 
-  yield put(Actions.setListProject(newListProject));
-
-  if (currentProject.id === projectID) {
-    yield put(Actions.setProject(updatedProject));
-  }
+  yield put(Actions.setProject(updatedProject));
 }
 
 export function* changeScreensOrderSaga(
@@ -435,15 +387,9 @@ export function* updateProjectSaga(
 
   yield call(updateProject, project);
 
-  const { undo, redo } = action.meta;
+  const { undo } = action.meta;
 
   if (!undo) {
     yield put(Actions.setUndoActions(Actions.updateProject(currentProject)));
   }
-
-  const root: ReturnType<typeof selectors.selectRootElement> = yield select(
-    selectors.selectRootElement,
-  );
-
-  yield put(Actions.updateElementsTree(root, action, { redo, undo }));
 }

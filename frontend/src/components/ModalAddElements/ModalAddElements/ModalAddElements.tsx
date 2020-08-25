@@ -18,6 +18,7 @@ import {
   ServerStructType,
   CreatedElement,
   ActiveItem,
+  ElementHistoryMeta,
 } from '$redux/project/types';
 import { LibraryElements } from '$domain/libraryElements/libraryElements';
 
@@ -46,7 +47,7 @@ type OwnProps = {
   active: boolean;
   libraryElements: LibraryElements;
   onClose(): void;
-  onConfirm(elementsToAdd: CreatedElement[]): void;
+  onConfirm(elementsToAdd: CreatedElement[], meta: ElementHistoryMeta): void;
 };
 
 type Props = typeof mapDispatchToProps &
@@ -82,9 +83,9 @@ const Component: React.FunctionComponent<Props> = memo(
 
     useEffect(() => {
       if (imageToUpload) {
-        uploadImg({ file: imageToUpload });
+        uploadImg(imageToUpload, { screenId: currentScreen.id });
       }
-    }, [imageToUpload]);
+    }, [imageToUpload, currentScreen.id]);
 
     useEffect(() => {
       const newListElement = parseAddElementsTabs(libraryElements);
@@ -99,11 +100,11 @@ const Component: React.FunctionComponent<Props> = memo(
           setErrorMsg('No items for the scenario.');
         } else {
           setErrorMsg('');
-          onConfirm(selectedElements);
+          onConfirm(selectedElements, { screenId: currentScreen.id });
           onClose();
         }
       },
-      [selectedElements, onConfirm, onClose],
+      [selectedElements, onConfirm, onClose, currentScreen.id],
     );
 
     const handleCancel = useCallback(() => {
@@ -139,8 +140,7 @@ const Component: React.FunctionComponent<Props> = memo(
     );
 
     const getContentStep = useCallback(() => {
-      const contentStep = getGroupElements(activeTab, listElement);
-      return contentStep;
+      return getGroupElements(activeTab, listElement);
     }, [activeTab, listElement]);
 
     return active ? (

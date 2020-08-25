@@ -3,12 +3,13 @@ import { Chip, makeStyles } from '@material-ui/core';
 import DoneIcon from '@material-ui/icons/Done';
 import CancelIcon from '@material-ui/icons/Cancel';
 
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import { actionsCreators, selectors } from '$redux/project';
 import { AppReduxState } from '$shared/types/app';
 import { findChildByID } from '$utils/ElementsTreeHelper';
 import { Button } from '$components/UI/Button';
 import { ControlSection } from '../../components/ControlSection/ControlSection';
+import { selectCurrentScreenId } from '$redux/project/selectors';
 
 const useStyles = makeStyles({
   root: {
@@ -74,19 +75,28 @@ const ShareStyles: React.FC<Props> = ({
   sharedClasses,
   elementClassNames,
 }) => {
+  const currentScreenId = useSelector(selectCurrentScreenId);
+
   const handleCopyButtonClick = () =>
     activeElement &&
     copyStyles(
       activeElement.type,
       activeElement.id,
       activeElement.styles.ownStyles,
+      { screenId: currentScreenId },
     );
 
   const handlePasteButtonClick = (className: string) =>
-    activeElement && addElementClassName(activeElement.id, className);
+    activeElement &&
+    addElementClassName(activeElement.id, className, {
+      screenId: currentScreenId,
+    });
 
   const handleDeleteButtonClick = (className: string) =>
-    activeElement && removeElementClassName(activeElement.id, className);
+    activeElement &&
+    removeElementClassName(activeElement.id, className, {
+      screenId: currentScreenId,
+    });
   const isTagClassName = (className: string) =>
     className === activeElement?.type;
 

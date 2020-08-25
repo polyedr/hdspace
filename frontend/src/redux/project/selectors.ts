@@ -4,45 +4,53 @@ import { ChildEntity, Entity } from '$domain/core';
 import { findChildByID } from '$utils/ElementsTreeHelper';
 import { LibraryElement } from '$api/types';
 import { CssLikeStyles } from '$utils/StyleHelper';
+import {
+  DEFAULT_PROJECT,
+  DEFAULT_ROOT,
+  DEFAULT_SCREEN,
+} from '$constants/defaultParams';
 
 export const selectProjectState = makeFeatureStateSelector('project');
 
 export function selectProjects(state: AppReduxState) {
-  return selectProjectState(state).data.listProject;
+  return selectProjectState(state).data.projectList;
 }
 
-export function selectScenarios(state: AppReduxState) {
-  return selectProjectState(state).edit.scenarios;
-}
+export const selectProjectById = (projectId: number) => (
+  state: AppReduxState,
+) =>
+  selectProjectState(state).data.projectList.find(({ id }) => id === projectId);
 
-export function selectScenario(state: AppReduxState, id: number) {
-  return selectProjectState(state).edit.scenarios[id];
-}
+export const selectScreenElement = (screenId: number) => (
+  state: AppReduxState,
+): LibraryElement<'root'> => {
+  const targetScreen = selectProjectState(state).data.screens.find(
+    ({ id }) => id === screenId,
+  );
+  return targetScreen ? targetScreen.element : DEFAULT_ROOT;
+};
 
-export function selectRootScenario(state: AppReduxState) {
-  const { scenarios } = selectProjectState(state).edit;
-  return Object.values(scenarios).find((x) => x.parent_id === -1);
-}
+export const selectCurrentScreenId = (state: AppReduxState) =>
+  selectProjectState(state).edit.currentScreenId;
 
-export function selectScenariosElements(state: AppReduxState) {
-  return selectProjectState(state).edit.scenarioElements;
-}
+export const selectCurrentScreen = (state: AppReduxState) => {
+  const activeScreenId = selectCurrentScreenId(state);
 
-export function selectScenarioElement(state: AppReduxState, id: number) {
-  return selectProjectState(state).edit.scenarioElements[id];
-}
-
-export function selectModifyElements(state: AppReduxState) {
-  return selectProjectState(state).edit.modifyElements;
-}
-
-export function selectCurrentScreen(state: AppReduxState) {
-  return selectProjectState(state).edit.currentScreen;
-}
+  if (activeScreenId === -1) return DEFAULT_SCREEN;
+  return (
+    selectProjectState(state).data.screens.find(
+      ({ id }) => id === activeScreenId,
+    ) || DEFAULT_SCREEN
+  );
+};
 
 export function selectScreens(state: AppReduxState) {
-  return selectProjectState(state).edit.screens;
+  return selectProjectState(state).data.screens;
 }
+
+export const selectScreenById = (id: number) => (state: AppReduxState) =>
+  selectProjectState(state).data.screens.find((screen) => screen.id === id) ||
+  DEFAULT_SCREEN;
 
 export function selectNotification(state: AppReduxState) {
   return selectProjectState(state).edit.notification;
@@ -61,20 +69,20 @@ export function selectLibraryElements(state: AppReduxState) {
 }
 
 export function selectCurrentProject(state: AppReduxState) {
-  return selectProjectState(state).edit.currentProject;
+  const { currentProjectId } = selectProjectState(state).edit;
+  if (currentProjectId === -1) return DEFAULT_PROJECT;
+  return (
+    selectProjectState(state).data.projectList.find(
+      ({ id }) => id === currentProjectId,
+    ) || DEFAULT_PROJECT
+  );
 }
 
-export function selectListSortable(state: AppReduxState) {
-  return selectProjectState(state).edit.currentScreen.listSortable;
-}
+export const selectRootElement = (state: AppReduxState) =>
+  selectCurrentScreen(state).element;
 
-export function selectRootElement(state: AppReduxState) {
-  return selectProjectState(state).control.rootElement;
-}
-
-export function selectRootID(state: AppReduxState) {
-  return selectProjectState(state).control.rootElement.id;
-}
+export const selectRootID = (state: AppReduxState) =>
+  selectCurrentScreen(state).element?.id || '-1';
 
 export function selectUploadedImageInfo(state: AppReduxState) {
   return selectProjectState(state).edit.uploadedImageInfo;
@@ -88,8 +96,8 @@ export function selectScenarioLoader(state: AppReduxState) {
   return selectProjectState(state).communication.scenarioLoader;
 }
 
-export function selectListProjectLoader(state: AppReduxState) {
-  return selectProjectState(state).communication.listProjectLoader;
+export function selectProjectListLoader(state: AppReduxState) {
+  return selectProjectState(state).communication.projectListLoader;
 }
 
 export function selectActiveItem(state: AppReduxState) {
@@ -180,15 +188,20 @@ export function selectActiveItemChildren(
     return [];
   }
 
-  const children = element.children.filter((child) => child.type === childType);
-  return children;
+  return element.children.filter((child) => child.type === childType);
 }
 
-export const selectElementStyles = (id: string) => (state: AppReduxState) =>
-  findChildByID(state.project.control.rootElement, id)?.styles.ownStyles;
+export const selectElementStyles = (screenId: number, elementId: string) => (
+  state: AppReduxState,
+) =>
+  findChildByID(selectScreenElement(screenId)(state), elementId)?.styles
+    .ownStyles;
 
-export const selectElementParameters = (id: string) => (state: AppReduxState) =>
-  findChildByID(state.project.control.rootElement, id)?.parameters;
+export const selectElementParameters = (
+  screenId: number,
+  elementId: string,
+) => (state: AppReduxState) =>
+  findChildByID(selectScreenElement(screenId)(state), elementId)?.parameters;
 
 export const selectUndoActions = (state: AppReduxState) =>
   selectProjectState(state).control.undoActions;

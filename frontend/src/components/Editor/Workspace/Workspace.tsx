@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { connect } from 'react-redux';
-import * as R from 'ramda';
+import { connect, useSelector } from 'react-redux';
 import cn from 'classnames';
 import html2canvas from 'html2canvas';
 
@@ -19,6 +18,7 @@ import { TopBar } from '../TopBar/TopBar';
 import { HotKeys } from '../HotKeys/HotKeys';
 import { Entity } from '$domain/core';
 import { ContainersBorders } from '../ContainersBorders/ContainersBorders';
+import { selectCurrentScreenId } from '$redux/project/selectors';
 
 const styles = require('./Workspace.scss');
 
@@ -29,23 +29,20 @@ export type ScreenMode = {
 };
 
 type StateProps = {
-  screen: ProjectT.IProjectScreen;
   elementsTree: LibraryElement<'root'>;
   isPrototypeMode: boolean;
   activeItem: ProjectT.ActiveItem;
 };
 
 const mapDispatch = {
-  saveScreen: actionsCreators.saveScreen,
+  saveScreen: actionsCreators.saveScreenImage,
   changePrototypeMode: userActions.changePrototypeMode,
-  updateElementStyles: actionsCreators.updateElementStyles,
   resetScreenState: actionsCreators.resetScreenState,
   setActiveItem: actionsCreators.setActiveItem,
   exportProject: actionsCreators.exportProject,
 };
 
 const mapState = (state: AppReduxState): StateProps => ({
-  screen: selectors.selectCurrentScreen(state),
   elementsTree: selectors.selectRootElement(state),
   activeItem: selectors.selectActiveItem(state),
   isPrototypeMode: state.user.isPrototypeMode,
@@ -54,7 +51,6 @@ const mapState = (state: AppReduxState): StateProps => ({
 type Props = StateProps & typeof mapDispatch;
 
 export const Component = ({
-  screen,
   elementsTree,
   isPrototypeMode,
   activeItem,
@@ -64,7 +60,6 @@ export const Component = ({
   resetScreenState,
   exportProject,
 }: Props) => {
-  const [screenId, setScreenId] = useState<number>(-1);
   const [isMoving, setIsMoving] = useState<boolean>(true);
   const [listNotDragging, setListNotDragging] = useState<string[]>([]);
   const [currentScreenMode, setCurrentScreenMode] = useState<ScreenMode>({
@@ -75,12 +70,7 @@ export const Component = ({
   const [hasItemBeingResized, setHasItemBeingResized] = useState<boolean>(
     false,
   );
-
-  useEffect(() => {
-    if (screen.id !== screenId) {
-      setScreenId(screen.id);
-    }
-  }, [screen.id]);
+  const currentScreenId = useSelector(selectCurrentScreenId);
 
   useEffect(
     () => () => {
@@ -163,7 +153,7 @@ export const Component = ({
     [isPrototypeMode, hasItemBeingResized],
   );
 
-  const handleSaveScreen = useCallback(() => {
+  const handleSaveScreen = () => {
     const screenBody = document.getElementById('root');
     const widgets = Array.from(document.querySelectorAll('iframe'));
 
@@ -176,15 +166,15 @@ export const Component = ({
         allowTaint: true,
         logging: true,
         ignoreElements: ignore,
-      }).then((canvas) => saveScreen(canvas));
+      }).then((canvas) => saveScreen(currentScreenId, canvas));
     }
-  }, [saveScreen]);
+  };
 
-  return screen && R.hasPath(['listSortable', 'root'], screen) ? (
+  return (
     <div className={cn(styles.editorWorkspace)}>
       {!isPrototypeMode && <HotKeys />}
       <TopBar
-        screenID={screen.id}
+        screenID={currentScreenId}
         isPrototypeMode={isPrototypeMode}
         isScreenRotated={isScreenRotated}
         screenMode={currentScreenMode}
@@ -221,7 +211,7 @@ export const Component = ({
         </Scrollbar>
       </div>
     </div>
-  ) : null;
+  );
 };
 
 export const Workspace = connect(mapState, mapDispatch)(Component);

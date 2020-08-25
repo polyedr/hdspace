@@ -76,9 +76,7 @@ const mapState = (state: AppReduxState): StateProps => {
 const mapDispatch = {
   addElement: actionsCreators.addElement,
   createElements: actionsCreators.createElements,
-  wrapIntoContainer: actionsCreators.wrapIntoContainer,
   setIsAddElementsModalOpened: actionsCreators.setIsAddElementsModalOpened,
-  deleteActiveItem: actionsCreators.deleteItem,
 };
 
 const CONTROLS: Record<Control, React.ComponentType<any>> = {
@@ -121,10 +119,8 @@ const Component: React.FC<PropertiesPanelProps> = ({
   activeElementParent,
   elementsTree,
   screen,
-  deleteActiveItem,
   loader,
   createElements,
-  wrapIntoContainer,
   isAddElementsModalOpened,
   setIsAddElementsModalOpened,
 }) => {
@@ -148,10 +144,8 @@ const Component: React.FC<PropertiesPanelProps> = ({
         <ActiveElementBlock
           activeItem={activeItem}
           disablePanel={disablePanel}
-          onDelScenarioItem={deleteActiveItem}
           libraryElements={LIBRARY_ELEMENTS}
           createElements={createElements}
-          onWrapIntoContainer={wrapIntoContainer}
           isAddElementsModalOpened={isAddElementsModalOpened}
           showDeleteButton={showDeleteButton}
           setIsAddElementsModalOpened={setIsAddElementsModalOpened}
