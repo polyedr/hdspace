@@ -9,7 +9,7 @@ interface IProps {
   isSignUp: boolean;
 }
 
-export const Info: React.FC<IProps> = ({ isSignUp }) => {
+const Info: React.FC<IProps> = ({ isSignUp }) => {
   return (
     <div className={styles.infoContainer}>
       <h2 className={styles.infoTitle}>adevi</h2>
@@ -38,3 +38,5 @@ export const Info: React.FC<IProps> = ({ isSignUp }) => {
     </div>
   );
 };
+
+export default Info;

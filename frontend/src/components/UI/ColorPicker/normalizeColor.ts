@@ -9,7 +9,7 @@ const needOpacityNormalize = (color: ColorResult, prevColor: ColorResult) => {
   return isRGBChanged && isOpacityZero;
 };
 
-export const normalizeColor = (
+const normalizeColor = (
   color: string | ColorResult,
   prevColor: ColorResult,
   normalizeOpacity?: boolean,
@@ -53,3 +53,5 @@ export const normalizeColor = (
   }
   return { value: '', isValid: false };
 };
+
+export default normalizeColor;

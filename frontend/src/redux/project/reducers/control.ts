@@ -1,6 +1,6 @@
 import { initialControl } from '$redux/project/initial';
 import * as T from '../types';
-import { TYPES } from '$constants/actions';
+import TYPES from '$constants/actions';
 
 // To create undoable feature for the editor you have to implement action with "meta" field extends type HistoryMeta,
 // that will call correspondent saga, which should:
@@ -11,7 +11,7 @@ import { TYPES } from '$constants/actions';
 // 3. put "setUndoActions" action, with an array of actions that will lead to previous state as an argument,
 // so you will be able to undo your changes.
 
-export const controlReducer = (
+const controlReducer = (
   state: T.ProjectControlState = initialControl,
   action: T.Action,
 ): T.ProjectControlState => {
@@ -135,3 +135,5 @@ export const controlReducer = (
       return state;
   }
 };
+
+export default controlReducer;

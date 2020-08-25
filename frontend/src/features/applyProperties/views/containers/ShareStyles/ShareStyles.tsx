@@ -7,8 +7,8 @@ import { connect, useSelector } from 'react-redux';
 import { actionsCreators, selectors } from '$redux/project';
 import { AppReduxState } from '$shared/types/app';
 import { findChildByID } from '$utils/ElementsTreeHelper';
-import { Button } from '$components/UI/Button';
-import { ControlSection } from '../../components/ControlSection/ControlSection';
+import Button from '$components/UI/Button';
+import ControlSection from '../../components/ControlSection/ControlSection';
 import { selectCurrentScreenId } from '$redux/project/selectors';
 
 const useStyles = makeStyles({
@@ -164,5 +164,4 @@ const ShareStyles: React.FC<Props> = ({
   );
 };
 
-const Component = connect(mapState, mapDispatch)(ShareStyles);
-export { Component as ShareStyles };
+export default connect(mapState, mapDispatch)(ShareStyles);

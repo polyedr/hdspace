@@ -1,4 +1,4 @@
-export const generateFontFace = (
+const generateFontFace = (
   fontFamily: string,
   pathName: string,
   fontWeight: number,
@@ -16,3 +16,5 @@ export const generateFontFace = (
     }
   `;
 };
+
+export default generateFontFace;

@@ -1,9 +1,9 @@
 import * as R from 'ramda';
 import { initialUi } from '../initial';
 import * as T from '../types';
-import { TYPES } from '$constants/actions';
+import TYPES from '$constants/actions';
 
-export function uiReducer(
+function uiReducer(
   state: T.ProjectUiState = initialUi,
   action: T.Action,
 ): T.ProjectUiState {
@@ -73,3 +73,5 @@ export function uiReducer(
       return state;
   }
 }
+
+export default uiReducer;

@@ -3,7 +3,7 @@ import {
   UpdateSavedElementsValues,
   UpdateSavedElementValues,
 } from '$redux/project/types';
-import { TYPES } from '$constants/actions';
+import TYPES from '$constants/actions';
 
 export const updateSavedElementsValues = (
   elementsValues: SavedElementsValues,

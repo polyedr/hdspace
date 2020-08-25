@@ -27,7 +27,7 @@ function mapState(state: AppReduxState): StateProps {
 
 type Props = StateProps & PropertiesChangeProps<ParagraphElement>;
 
-const Component: React.FC<Props> = ({ content, updateParams }) => {
+const TextContent: React.FC<Props> = ({ content, updateParams }) => {
   const handleTextContentChange = useCallback(
     ({ target: { value } }) => {
       updateParams({ textContent: value });
@@ -52,6 +52,4 @@ const Component: React.FC<Props> = ({ content, updateParams }) => {
   );
 };
 
-export const TextContent = connect(mapState)(
-  withConfigurableProperties(Component),
-);
+export default connect(mapState)(withConfigurableProperties(TextContent));

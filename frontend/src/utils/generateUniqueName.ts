@@ -15,4 +15,4 @@ function generateUniqueName(newName: string, names: string[]): string {
   return generateUniqueName(numberedName, names);
 }
 
-export { generateUniqueName };
+export default generateUniqueName;

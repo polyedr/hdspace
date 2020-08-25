@@ -57,7 +57,7 @@ const Component: React.FC<Props> = (props) => {
   );
 };
 
-export const Image = connect(
+export default connect(
   null,
   mapDispatch,
 )(withConfigurableProperties(Component));

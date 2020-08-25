@@ -7,9 +7,9 @@ import {
   withConfigurableProperties,
   PropertiesChangeProps,
 } from '$utils/withConfigurableProperties';
-import { Button } from '$components/UI/Button';
-import { Icon } from '$components/UI/Icon';
-import { sharedClasses } from '$styles/sharedClasses';
+import Button from '$components/UI/Button';
+import Icon from '$components/UI/Icon';
+import sharedClasses from '$styles/sharedClasses';
 import { DropdownItemElement } from '$api/types';
 import { selectCurrentScreenId } from '$redux/project/selectors';
 
@@ -113,8 +113,7 @@ const DropdownItems: React.FC<Props> = ({
   );
 };
 
-const Component = connect(
+export default connect(
   mapState,
   mapDispatch,
 )(withConfigurableProperties(DropdownItems));
-export { Component as DropdownItems };

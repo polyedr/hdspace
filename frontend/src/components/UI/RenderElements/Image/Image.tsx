@@ -53,4 +53,4 @@ const Image: React.FC<ImageRendererProps> = ({
   );
 };
 
-export { Image };
+export default Image;

@@ -8,7 +8,7 @@ import {
   withConfigurableProperties,
   PropertiesChangeProps,
 } from '$utils/withConfigurableProperties';
-import { sharedClasses } from '$styles/sharedClasses';
+import sharedClasses from '$styles/sharedClasses';
 import { ListElement } from '$api/types';
 
 type StateProps = {
@@ -66,5 +66,4 @@ const Ordered: React.FC<Props> = ({ isOrdered, updateParams }) => {
   );
 };
 
-const Component = connect(mapState)(withConfigurableProperties(Ordered));
-export { Component as Ordered };
+export default connect(mapState)(withConfigurableProperties(Ordered));

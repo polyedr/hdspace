@@ -12,7 +12,7 @@ import {
   Project,
   LibraryElement,
 } from '$api/types';
-import { TYPES } from '$constants/actions';
+import TYPES from '$constants/actions';
 
 export type ProjectState = {
   data: ProjectDataState;

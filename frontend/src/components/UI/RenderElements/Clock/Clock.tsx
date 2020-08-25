@@ -3,7 +3,7 @@ import React from 'react';
 import cn from 'classnames';
 import { makeStyles } from '@material-ui/core';
 
-import { ClockWidget } from '$components/UI/Clock';
+import ClockWidget from '$components/UI/Clock';
 
 import { ClockRendererProps } from '../types';
 
@@ -57,4 +57,4 @@ const Clock: React.FC<ClockRendererProps> = ({
   );
 };
 
-export { Clock };
+export default Clock;

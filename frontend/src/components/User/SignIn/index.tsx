@@ -2,9 +2,9 @@ import React, { useCallback, useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 
 import { AppReduxState } from '$shared/types/app';
-import { Info } from '$components/User/Info';
-import { Button } from '$components/UI/Button';
-import { Modal } from '$components/UI/Modal';
+import Info from '$components/User/Info';
+import Button from '$components/UI/Button';
+import Modal from '$components/UI/Modal';
 import {
   DEFAULT_SIGNIN_FIELDS,
   DEFAULT_RESPONSE_ERROR,
@@ -13,12 +13,12 @@ import {
 import * as Actions from '$redux/user/actions';
 import { getInitialFieldsState } from '$utils/getStates';
 import { IApiResponseError } from '$redux/user/types';
-import { SignFormList } from '$components/User/SignFormList';
+import SignFormList from '$components/User/SignFormList';
 import {
   generateValidatedFormData,
   INewFormData,
 } from '$utils/generateValidatedFormData';
-import { Spinner } from '$components/UI/Spinner';
+import Spinner from '$components/UI/Spinner';
 
 const styles = require('./SignIn.scss');
 

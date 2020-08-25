@@ -1,9 +1,9 @@
 import * as R from 'ramda';
 import { initialEdit } from '../initial';
 import * as T from '../types';
-import { TYPES } from '$constants/actions';
+import TYPES from '$constants/actions';
 
-export const editReducer = (
+const editReducer = (
   state: T.ProjectEditState = initialEdit,
   action: T.Action,
 ): T.ProjectEditState => {
@@ -48,3 +48,5 @@ export const editReducer = (
       return state;
   }
 };
+
+export default editReducer;

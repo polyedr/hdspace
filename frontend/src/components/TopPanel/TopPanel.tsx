@@ -3,9 +3,9 @@ import { connect } from 'react-redux';
 import classNames from 'classnames';
 
 import { AppReduxState } from '$shared/types/app';
-import { Button } from '$components/UI/Button';
-import { Icon } from '$components/UI/Icon';
-import { Modal } from '$components/UI/Modal';
+import Button from '$components/UI/Button';
+import Icon from '$components/UI/Icon';
+import Modal from '$components/UI/Modal';
 import { LeftPanelProps } from '$components/LeftPanel/LeftPanel';
 import { EditorProps } from '$containers/EditorLogic';
 import * as Actions from '$redux/project/actions';
@@ -30,94 +30,92 @@ type TTopPanelProps = ReturnType<typeof mapStateToProps> &
     renameProject: typeof Actions.renameProject;
   };
 
-const Component: React.FunctionComponent<TTopPanelProps> = memo(
-  ({
-    project = { name: '', id: -1 },
-    pathname,
-    isLPanelMinimized,
-    onMinimiserLPanel,
-    renameProject,
-  }) => {
-    const [newProjectName, setNewProjectName] = useState('');
-    const [modalRenameProjectOpen, setModalRenameProjectOpen] = useState(false);
+const TopPanel: React.FunctionComponent<TTopPanelProps> = ({
+  project = { name: '', id: -1 },
+  pathname,
+  isLPanelMinimized,
+  onMinimiserLPanel,
+  renameProject,
+}) => {
+  const [newProjectName, setNewProjectName] = useState('');
+  const [modalRenameProjectOpen, setModalRenameProjectOpen] = useState(false);
 
-    const closeModal = useCallback(() => {
-      setNewProjectName(project.name);
-      setModalRenameProjectOpen(false);
-    }, [project.name]);
+  const closeModal = useCallback(() => {
+    setNewProjectName(project.name);
+    setModalRenameProjectOpen(false);
+  }, [project.name]);
 
-    const handleRenameProject = useCallback(() => {
-      setNewProjectName(project.name);
-      setModalRenameProjectOpen(true);
-    }, [project.name]);
+  const handleRenameProject = useCallback(() => {
+    setNewProjectName(project.name);
+    setModalRenameProjectOpen(true);
+  }, [project.name]);
 
-    const onRenameProject = useCallback(
-      (event) => {
-        event.preventDefault();
+  const onRenameProject = useCallback(
+    (event) => {
+      event.preventDefault();
 
-        renameProject(project.id, newProjectName);
-        closeModal();
-      },
-      [project, newProjectName, renameProject, closeModal],
-    );
+      renameProject(project.id, newProjectName);
+      closeModal();
+    },
+    [project, newProjectName, renameProject, closeModal],
+  );
 
-    const handleNewProjectName = useCallback(({ target: { value } }) => {
-      setNewProjectName(value);
-    }, []);
+  const handleNewProjectName = useCallback(({ target: { value } }) => {
+    setNewProjectName(value);
+  }, []);
 
-    return (
-      <header
-        className={classNames(
-          styles.topPanel,
-          isLPanelMinimized && styles.topPanel_minimize,
-        )}
-      >
-        <div className={styles.topPanelLeftBlock}>
+  return (
+    <header
+      className={classNames(
+        styles.topPanel,
+        isLPanelMinimized && styles.topPanel_minimize,
+      )}
+    >
+      <div className={styles.topPanelLeftBlock}>
+        <Button
+          className={styles.topPanelBtn}
+          styleType="confirm"
+          onClick={onMinimiserLPanel}
+        >
+          <Icon icon="menu" size={20} />
+        </Button>
+      </div>
+      {pathname !== '/projects' && (
+        <div className={styles.topPanelCenterBlock}>
+          <p className={styles.topPanelProjectTitle}>{project.name}</p>
           <Button
-            className={styles.topPanelBtn}
-            styleType="confirm"
-            onClick={onMinimiserLPanel}
+            className={classNames('mainImgBtn', styles.editProjectBtn)}
+            styleType="none"
+            onClick={handleRenameProject}
+            // onClick={event => this.handleRenameProject(event)}
           >
-            <Icon icon="menu" size={20} />
+            <Icon icon="edit" size={20} />
           </Button>
         </div>
-        {pathname !== '/projects' && (
-          <div className={styles.topPanelCenterBlock}>
-            <p className={styles.topPanelProjectTitle}>{project.name}</p>
-            <Button
-              className={classNames('mainImgBtn', styles.editProjectBtn)}
-              styleType="none"
-              onClick={handleRenameProject}
-              // onClick={event => this.handleRenameProject(event)}
-            >
-              <Icon icon="edit" size={20} />
-            </Button>
+      )}
+      <div className={styles.topPanelRightBlock} />
+      {modalRenameProjectOpen && (
+        <Modal
+          animClassName="bubbleAnimation"
+          title="Rename project"
+          confirmText="Rename"
+          onConfirm={(event) => onRenameProject(event)}
+          cancelText="Close"
+          onClose={closeModal}
+        >
+          <div className={styles.modalBody}>
+            <input
+              type="text"
+              className={styles.screenName}
+              value={newProjectName}
+              placeholder="New project name"
+              onChange={handleNewProjectName}
+            />
           </div>
-        )}
-        <div className={styles.topPanelRightBlock} />
-        {modalRenameProjectOpen && (
-          <Modal
-            animClassName="bubbleAnimation"
-            title="Rename project"
-            confirmText="Rename"
-            onConfirm={(event) => onRenameProject(event)}
-            cancelText="Close"
-            onClose={closeModal}
-          >
-            <div className={styles.modalBody}>
-              <input
-                type="text"
-                className={styles.screenName}
-                value={newProjectName}
-                placeholder="New project name"
-                onChange={handleNewProjectName}
-              />
-            </div>
-          </Modal>
-        )}
-      </header>
-    );
-  },
-);
+        </Modal>
+      )}
+    </header>
+  );
+};
 
-export const TopPanel = connect(mapStateToProps, mapDispatchToProps)(Component);
+export default connect(mapStateToProps, mapDispatchToProps)(memo(TopPanel));

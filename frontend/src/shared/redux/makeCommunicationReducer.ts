@@ -5,7 +5,7 @@ import {
   IProtectAction,
 } from './types';
 
-export function makeCommunicationReducer<
+function makeCommunicationReducer<
   E extends IPlainAction<string> = IProtectAction,
   C extends IPlainAction<string> = IProtectAction,
   F extends IPlainFailAction<string> = IProtectAction
@@ -34,3 +34,5 @@ export function makeCommunicationReducer<
     }
   };
 }
+
+export default makeCommunicationReducer;

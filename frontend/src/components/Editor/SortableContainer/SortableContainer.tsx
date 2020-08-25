@@ -3,7 +3,7 @@ import * as R from 'ramda';
 import { connect } from 'react-redux';
 
 import { AppReduxState } from '$shared/types/app';
-import { SortableGroup } from '$components/Editor/SortableGroup/SortableGroup';
+import SortableGroup from '$components/Editor/SortableGroup/SortableGroup';
 import { RENDERERS } from '$components/UI/RenderElements';
 import { Indices, SavedElementsValues } from '$redux/project/types';
 import { selectors, actionsCreators } from '$redux/project';

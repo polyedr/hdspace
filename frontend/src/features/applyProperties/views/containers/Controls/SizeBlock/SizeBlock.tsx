@@ -13,7 +13,7 @@ import { Entity } from '$domain/core';
 import { AppReduxState } from '$shared/types/app';
 import { selectors } from '$redux/project';
 
-import { StylesHeader } from '../../../components/StylesHeader/StylesHeader';
+import StylesHeader from '../../../components/StylesHeader/StylesHeader';
 
 const styles = require('./SizeBlock.scss');
 
@@ -52,7 +52,7 @@ const getUnitFromValue = (value: string): UnitName => {
   return Unit.px;
 };
 
-const SizeBlock: React.FC<Props> = memo((props) => {
+const SizeBlock: React.FC<Props> = (props) => {
   const { updateStyles, removeStyles, activeItemID, width, height } = props;
 
   const handleSelectChange = useCallback(
@@ -164,7 +164,6 @@ const SizeBlock: React.FC<Props> = memo((props) => {
       </div>
     </div>
   );
-});
+};
 
-const Component = connect(mapState)(withConfigurableProperties(SizeBlock));
-export { Component as SizeBlock };
+export default connect(mapState)(withConfigurableProperties(memo(SizeBlock)));

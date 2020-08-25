@@ -60,4 +60,4 @@ const Container: React.FC<ContainerRendererProps> = ({
   );
 };
 
-export { Container };
+export default Container;

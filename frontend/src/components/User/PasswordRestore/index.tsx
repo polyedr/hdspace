@@ -3,8 +3,8 @@ import { connect } from 'react-redux';
 import classNames from 'classnames';
 
 import { AppReduxState } from '$shared/types/app';
-import { Button } from '$components/UI/Button';
-import { Spinner } from '$components/UI/Spinner';
+import Button from '$components/UI/Button';
+import Spinner from '$components/UI/Spinner';
 import { openSignScreen } from '$utils/history';
 import { getInitialFieldsState } from '$utils/getStates';
 import {
@@ -14,7 +14,7 @@ import {
 } from '$constants/defaultParams';
 import { IApiResponseError } from '$redux/user/types';
 import * as Actions from '$redux/user/actions';
-import { SignFormList } from '$components/User/SignFormList';
+import SignFormList from '$components/User/SignFormList';
 import {
   generateValidatedFormData,
   INewFormData,
@@ -39,7 +39,7 @@ type IProps = typeof mapDispatchToProps & {
   isSignLoader: boolean;
 };
 
-const UnconnectedPasswordRestore: React.FC<IProps> = ({
+const PasswordRestore: React.FC<IProps> = ({
   isSignLoader,
   apiResponseError,
   setApiResponseError,
@@ -123,7 +123,4 @@ const UnconnectedPasswordRestore: React.FC<IProps> = ({
   );
 };
 
-export const PasswordRestore = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(UnconnectedPasswordRestore);
+export default connect(mapStateToProps, mapDispatchToProps)(PasswordRestore);

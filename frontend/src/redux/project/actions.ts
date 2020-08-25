@@ -7,7 +7,7 @@ import { ChildEntity, Entity } from '$domain/core';
 import { LibraryElement, Project } from '$api/types';
 
 import * as T from './types';
-import { TYPES } from '$constants/actions';
+import TYPES from '$constants/actions';
 import { ElementHistoryMeta, HistoryMeta, IProjectScreen } from './types';
 
 export const getLibraryElements = (): T.LoadLibraryElements => ({

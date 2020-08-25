@@ -20,39 +20,39 @@ interface IRadioButton {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-export const RadioButtons: React.FunctionComponent<IRadioButton> = memo(
-  ({
-    value,
-    name,
-    onChange,
-    label,
-    options,
-    disabled = false,
-    className = '',
-  }) => (
-    <div
-      className={classNames(
-        className,
-        styles.radiobuttonGroup,
-        label ? styles.hasLabel : '',
-        disabled ? styles.disabled : '',
-      )}
-    >
-      {label && <span className="label">{label}</span>}
-      {options.map((o: IOptionsRadiobutton) => (
-        <label key={o.name} htmlFor={o.name}>
-          <input
-            type="radio"
-            value={o.value}
-            name={name}
-            id={o.name}
-            checked={value === o.value}
-            onChange={onChange}
-            disabled={o.disabled || disabled}
-          />
-          <span>{o.label}</span>
-        </label>
-      ))}
-    </div>
-  ),
+const RadioButtons: React.FunctionComponent<IRadioButton> = ({
+  value,
+  name,
+  onChange,
+  label,
+  options,
+  disabled = false,
+  className = '',
+}) => (
+  <div
+    className={classNames(
+      className,
+      styles.radiobuttonGroup,
+      label ? styles.hasLabel : '',
+      disabled ? styles.disabled : '',
+    )}
+  >
+    {label && <span className="label">{label}</span>}
+    {options.map((o: IOptionsRadiobutton) => (
+      <label key={o.name} htmlFor={o.name}>
+        <input
+          type="radio"
+          value={o.value}
+          name={name}
+          id={o.name}
+          checked={value === o.value}
+          onChange={onChange}
+          disabled={o.disabled || disabled}
+        />
+        <span>{o.label}</span>
+      </label>
+    ))}
+  </div>
 );
+
+export default memo(RadioButtons);

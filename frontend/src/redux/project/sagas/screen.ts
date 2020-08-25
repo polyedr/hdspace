@@ -22,8 +22,8 @@ import {
   setScreen,
 } from '$redux/project/actions';
 import * as Actions from '$redux/project/actions';
-import { generateUniqueName } from '$utils/generateUniqueName';
-import { getSavedValue } from '$utils/getSavedValue';
+import generateUniqueName from '$utils/generateUniqueName';
+import getSavedValue from '$utils/getSavedValue';
 import { DEFAULT_ACTIVE_ITEM } from '$constants/defaultParams';
 import { IProjectScreen, IScenarioItem } from '$redux/project/types';
 import { apiSetScenarioNeuralNetwork, apiSaveScenarios } from '$api/scenario';

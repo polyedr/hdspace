@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import { actionsCreators, selectors } from '$redux/project';
 import { AppReduxState } from '$shared/types/app';
-import { Checkbox } from '$features/applyProperties/views/components/Checkbox/Checkbox';
+import Checkbox from '$features/applyProperties/views/components/Checkbox/Checkbox';
 
 const styles = require('./ShowBorders.scss');
 
@@ -36,5 +36,4 @@ const ShowBorders: React.FC<Props> = ({ showBorders, toggleBorders }) => {
   );
 };
 
-const Component = connect(mapState, mapDispatch)(ShowBorders);
-export { Component as ShowBorders };
+export default connect(mapState, mapDispatch)(ShowBorders);

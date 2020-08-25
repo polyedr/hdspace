@@ -7,7 +7,7 @@ import {
   withConfigurableProperties,
   PropertiesChangeProps,
 } from '$utils/withConfigurableProperties';
-import { sharedClasses } from '$styles/sharedClasses';
+import sharedClasses from '$styles/sharedClasses';
 import { RadiobuttonElement } from '$api/types';
 
 const styles = require('./Name.scss');
@@ -52,5 +52,4 @@ const Name: React.FC<Props> = ({ name, updateParams }) => {
   );
 };
 
-const Component = connect(mapState)(withConfigurableProperties(Name));
-export { Component as Name };
+export default connect(mapState)(withConfigurableProperties(Name));

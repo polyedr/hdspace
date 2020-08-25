@@ -32,7 +32,7 @@ import {
   convertProjectToPatchRequest,
 } from '$api/converters/toRequest';
 import { reqWrapper } from '$redux/project/sagas/index';
-import { generateFontFace } from '$utils/generateFontFace';
+import generateFontFace from '$utils/generateFontFace';
 
 import { selectors, T } from '..';
 

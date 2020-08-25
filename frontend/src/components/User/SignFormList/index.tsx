@@ -10,7 +10,7 @@ interface IProps {
   handleInputChange: (event: React.FormEvent) => void;
 }
 
-export const SignFormList: React.FC<IProps> = ({
+const SignFormList: React.FC<IProps> = ({
   fields,
   formData,
   handleInputChange,
@@ -39,3 +39,5 @@ export const SignFormList: React.FC<IProps> = ({
     ))}
   </ul>
 );
+
+export default SignFormList;

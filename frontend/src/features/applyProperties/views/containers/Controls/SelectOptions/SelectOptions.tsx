@@ -14,10 +14,10 @@ import {
   withConfigurableProperties,
   PropertiesChangeProps,
 } from '$utils/withConfigurableProperties';
-import { generateUniqueName } from '$utils/generateUniqueName';
-import { Button } from '$components/UI/Button';
-import { Icon } from '$components/UI/Icon';
-import { sharedClasses } from '$styles/sharedClasses';
+import generateUniqueName from '$utils/generateUniqueName';
+import Button from '$components/UI/Button';
+import Icon from '$components/UI/Icon';
+import sharedClasses from '$styles/sharedClasses';
 import { SelectItemElement } from '$api/types';
 import { selectCurrentScreenId } from '$redux/project/selectors';
 
@@ -175,8 +175,7 @@ const SelectOptions: React.FC<Props> = ({
   );
 };
 
-const Component = connect(
+export default connect(
   mapState,
   mapDispatch,
 )(withConfigurableProperties(SelectOptions));
-export { Component as SelectOptions };

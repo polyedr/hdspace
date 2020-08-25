@@ -1,8 +1,8 @@
 import * as T from '../types';
 import { initialCommunication } from '$redux/project/initial';
-import { TYPES } from '$constants/actions';
+import TYPES from '$constants/actions';
 
-export const communicationReducer = (
+const communicationReducer = (
   state: T.ProjectCommunicationState = initialCommunication,
   action: T.Action,
 ): T.ProjectCommunicationState => {
@@ -59,3 +59,5 @@ export const communicationReducer = (
       return state;
   }
 };
+
+export default communicationReducer;

@@ -5,13 +5,13 @@ import {
   withConfigurableProperties,
   PropertiesChangeProps,
 } from '$utils/withConfigurableProperties';
-import { ColorSettings } from '$features/applyProperties/views/components/ColorSettings/ColorSettings';
+import ColorSettings from '$features/applyProperties/views/components/ColorSettings/ColorSettings';
 import { LibraryElement } from '$api/types';
 import { Entity } from '$domain/core';
 import { AppReduxState } from '$shared/types/app';
 import { selectors } from '$redux/project';
 
-import { StylesHeader } from '../../../components/StylesHeader/StylesHeader';
+import StylesHeader from '../../../components/StylesHeader/StylesHeader';
 
 function mapState(state: AppReduxState) {
   return {
@@ -25,37 +25,39 @@ function mapState(state: AppReduxState) {
 type Props = ReturnType<typeof mapState> &
   PropertiesChangeProps<LibraryElement<Entity>>;
 
-const BackgroundBlock: React.FC<Props> = memo(
-  ({ removeStyles, updateStyles, activeItemID, backgroundColor }) => {
-    const handleColorSettingsChange = useCallback(
-      (color: string) => {
-        updateStyles({ 'background-color': color });
-      },
-      [updateStyles],
-    );
+const BackgroundBlock: React.FC<Props> = ({
+  removeStyles,
+  updateStyles,
+  activeItemID,
+  backgroundColor,
+}) => {
+  const handleColorSettingsChange = useCallback(
+    (color: string) => {
+      updateStyles({ 'background-color': color });
+    },
+    [updateStyles],
+  );
 
-    return (
-      <div className="propsElementsBlock">
-        <StylesHeader
-          title="Background"
-          onClick={removeStyles}
-          cssPropertiesNames={['background-color']}
-        />
-        <div className="propsElementsContentBlock">
-          <div className="propsElementsInnerBlock">
-            <ColorSettings
-              currentColor={backgroundColor}
-              activeItemID={activeItemID}
-              onChange={handleColorSettingsChange}
-            />
-          </div>
+  return (
+    <div className="propsElementsBlock">
+      <StylesHeader
+        title="Background"
+        onClick={removeStyles}
+        cssPropertiesNames={['background-color']}
+      />
+      <div className="propsElementsContentBlock">
+        <div className="propsElementsInnerBlock">
+          <ColorSettings
+            currentColor={backgroundColor}
+            activeItemID={activeItemID}
+            onChange={handleColorSettingsChange}
+          />
         </div>
       </div>
-    );
-  },
-);
+    </div>
+  );
+};
 
-const Component = connect(mapState)(
-  withConfigurableProperties(BackgroundBlock),
+export default connect(mapState)(
+  withConfigurableProperties(memo(BackgroundBlock)),
 );
-export { Component as BackgroundBlock };
