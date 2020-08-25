@@ -36,7 +36,7 @@ const INITIAL_STATE: IRootState = {
     errorText: '',
   },
   isSignLoader: false,
-  showConfirmMessage: false,
+  confirmMessage: '',
 };
 
 const changeMinLPanel: ActionHandler<ReturnType<
@@ -101,7 +101,7 @@ const setConfirmMessage: ActionHandler<typeof ACTIONS.setConfirmMessage> = (
   { payload },
 ) => ({
   ...state,
-  showConfirmMessage: payload.showMessage,
+  confirmMessage: payload.confirmMessage,
 });
 
 const setLoadedToken: ActionHandler<typeof ACTIONS.setLoadedToken> = (

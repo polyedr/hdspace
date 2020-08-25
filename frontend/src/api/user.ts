@@ -33,6 +33,13 @@ type activateUserData = {
   token: string;
 };
 
+type ResetPasswordConfirmationData = {
+  uid: string;
+  token: string;
+  newPassword: string;
+  reNewPassword: string;
+};
+
 // const generateId = () => {
 //   return `5cda${getRandomInt(10, 99)}b${getRandomInt(10, 99)}a5d3${getRandomInt(10, 99)}e72${getRandomInt(10, 99)}3b11`;
 // };
@@ -140,6 +147,26 @@ export const apiSendResetPasswordMail = ({
     },
     method: 'POST',
     url: '/djauth/reset_password/',
+  })
+    .then(parseResult)
+    .catch(onAuthorisationError);
+
+export const apiResetPasswordConfirmation = ({
+  // TODO check duplicated methods
+  uid,
+  token,
+  newPassword,
+  reNewPassword,
+}: ResetPasswordConfirmationData) =>
+  myAxios({
+    data: {
+      uid,
+      token,
+      new_password: newPassword,
+      re_new_password: reNewPassword,
+    },
+    method: 'POST',
+    url: '/djauth/users/reset_password_confirm/',
   })
     .then(parseResult)
     .catch(onAuthorisationError);

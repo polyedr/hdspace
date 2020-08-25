@@ -13,11 +13,11 @@ import { SignInForm } from '../SigninForm/SigninForm';
 const styles = require('./SignIn.scss');
 
 const mapStateToProps = ({
-  user: { apiResponseError, isSignLoader, showConfirmMessage },
+  user: { apiResponseError, isSignLoader, confirmMessage },
 }: AppReduxState) => ({
   apiResponseError,
   isSignLoader,
-  showConfirmMessage,
+  confirmMessage,
 });
 
 const mapDispatchToProps = {
@@ -27,14 +27,14 @@ const mapDispatchToProps = {
 type IProps = typeof mapDispatchToProps & {
   apiResponseError: IApiResponseError;
   isSignLoader: boolean;
-  showConfirmMessage: boolean;
+  confirmMessage: string;
 };
 
 export const UnmountedSignIn: React.FC<IProps> = ({
   apiResponseError,
   isSignLoader,
   setApiResponseError,
-  showConfirmMessage,
+  confirmMessage,
 }) => {
   useEffect(() => {
     return () => {
@@ -49,10 +49,8 @@ export const UnmountedSignIn: React.FC<IProps> = ({
       <Info />
       <div className="signContainer">
         <div className={styles.formContainer}>
-          {showConfirmMessage && (
-            <p className="signAuthorisationErrorText">
-              Please, check your mail and confirm registration
-            </p>
+          {confirmMessage && (
+            <p className="signAuthorisationErrorText">{confirmMessage}</p>
           )}
           <SignInForm />
         </div>

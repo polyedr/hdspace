@@ -33,7 +33,6 @@ const mapState = ({ user: { apiResponseError } }: AppReduxState) => ({
 });
 
 const mapDispatch = {
-  // restorePassword: Actions.restorePassword,
   setApiResponseError: Actions.setApiResponseError,
   login: Actions.login,
   sendResetPasswordMail: Actions.sendResetPasswordMail,
@@ -44,7 +43,6 @@ type IProps = typeof mapDispatch & ReturnType<typeof mapState>;
 const SignInForm = (props: IProps) => {
   const {
     apiResponseError,
-    // restorePassword,
     setApiResponseError,
     sendResetPasswordMail,
     login,
@@ -53,9 +51,6 @@ const SignInForm = (props: IProps) => {
   const [isRestorePasswordModalOpen, setIsRestorePasswordModalOpen] = useState<
     boolean
   >(false);
-
-  const [restoreEmail, setRestoreEmail] = useState<string>('');
-  const [isRestoreEmailSend, setIsRestoreEmailSend] = useState(false);
 
   const initialValues: FormData = {
     username: '',
@@ -71,7 +66,6 @@ const SignInForm = (props: IProps) => {
   }, [apiResponseError, setApiResponseError]);
 
   const closeModal = useCallback(() => {
-    setRestoreEmail('');
     setIsRestorePasswordModalOpen(!isRestorePasswordModalOpen);
   }, [isRestorePasswordModalOpen]);
 
@@ -92,19 +86,9 @@ const SignInForm = (props: IProps) => {
     [isRestorePasswordModalOpen],
   );
 
-  /* const onRestoreEmailFieldChange = useCallback(({ target }) => {
-    setRestoreEmail(target.value);
-  }, []); */
-
   const handleConfirmPasswordRestore = (values: { email: string }) => {
-    setIsRestoreEmailSend(true);
     sendResetPasswordMail(values.email);
-
-    // eslint-disable-next-line no-console
-    console.log(values);
-
-    /* restorePassword(restoreEmail);
-      closeModal(); */
+    closeModal();
   };
 
   const responseGoogle = (response: any) => {
@@ -198,8 +182,8 @@ const SignInForm = (props: IProps) => {
                 <FormField
                   name="email"
                   placeholder="email"
-                  label="email"
                   type="email"
+                  className={styles.modalTextInput}
                   validator={composeValidators(isRequired, isValidEmail)}
                 />
                 <div className="signButtonBlock">
@@ -212,37 +196,19 @@ const SignInForm = (props: IProps) => {
                     </p>
                   )}
                 </div>
-                <Button
-                  className="signSubmitBtn"
-                  styleType="none"
-                  disabled={submitting}
-                  onClick={closeModal}
-                >
-                  Close
-                </Button>
-                <Button
-                  className={styles.signinLink}
-                  styleType="none"
-                  type="submit"
-                  onClick={handleConfirmPasswordRestore}
-                >
-                  Send
-                </Button>
-
-                {isRestoreEmailSend ? (
-                  <p>
-                    <span>If there&apos;s an account for</span>
-                    <span>{restoreEmail}</span>
-                    <span>
-                      , you will get an email on how to reset your password.
-                      Check the spam folder, as it may be there. If you&apos;ve
-                      used a different service for logging in, please contact
-                      your administrator to reset your password.
-                    </span>
-                  </p>
-                ) : (
-                  <></>
-                )}
+                <div className={styles.modalButtons}>
+                  <Button
+                    className={styles.closeButton}
+                    styleType="secondary"
+                    disabled={submitting}
+                    onClick={closeModal}
+                  >
+                    Close
+                  </Button>
+                  <Button type="submit" onClick={handleConfirmPasswordRestore}>
+                    Send
+                  </Button>
+                </div>
               </form>
             )}
           </Form>

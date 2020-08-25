@@ -81,10 +81,10 @@ export const registerWithGoogle = () => ({
   type: TYPES.REGISTER_WITH_GOOGLE,
 });
 
-export const setConfirmMessage = (showMessage: boolean) => ({
+export const setConfirmMessage = (confirmMessage: string) => ({
   type: TYPES.SET_CONFIRM_MESSAGE,
   payload: {
-    showMessage,
+    confirmMessage,
   },
 });
 
@@ -114,6 +114,21 @@ export const restorePassword = (email: string) => ({
 export const setRestorePasswordEmail = (restorePasswordEmail: string) => ({
   type: TYPES.SET_RESTORE_PASSWORD_EMAIL,
   restorePasswordEmail,
+});
+
+export const resetPasswordConfirmation = (
+  uid: string,
+  token: string,
+  newPassword: string,
+  reNewPassword: string,
+) => ({
+  type: TYPES.RESET_PASSWORD_CONFIRMATION,
+  payload: {
+    uid,
+    token,
+    newPassword,
+    reNewPassword,
+  },
 });
 
 export const setRestoreUserId = (restoreUserId: number) => ({

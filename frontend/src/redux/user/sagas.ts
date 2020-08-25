@@ -14,6 +14,7 @@ import {
   apiActivateUser,
   apiRestorePassword,
   apiRegisterWithGoogle,
+  apiResetPasswordConfirmation,
 } from '$api/user';
 import { TYPES } from '$constants/actions';
 import * as Actions from '$redux/user/actions';
@@ -176,7 +177,11 @@ function* sendActivationMailSaga(
 
   if (apiResponseError.errorStatus === -1) {
     openSignScreen('signin');
-    yield put(Actions.setConfirmMessage(true));
+    yield put(
+      Actions.setConfirmMessage(
+        'Please, check your mail and confirm registration',
+      ),
+    );
   }
 }
 
@@ -201,9 +206,30 @@ function* sendResetPasswordMailSaga( // TODO make as one mail saga
   yield put(Actions.changeSignLoader(false));
 
   if (apiResponseError.errorStatus === -1) {
-    openSignScreen('signin');
-    yield put(Actions.setConfirmMessage(true));
+    yield put(
+      Actions.setConfirmMessage('Please, check your mail and set new password'),
+    );
   }
+}
+
+function* resetPasswordConfirmationSaga(
+  action: ReturnType<typeof Actions.resetPasswordConfirmation>,
+) {
+  const {
+    payload: { uid, token, newPassword, reNewPassword },
+  } = action;
+  yield put(Actions.changeSignLoader(true));
+
+  yield call(apiResetPasswordConfirmation, {
+    uid,
+    token,
+    newPassword,
+    reNewPassword,
+  });
+
+  yield put(Actions.setTokenPair({ access: token, refresh: '' }));
+  openSignScreen('signin');
+  yield put(Actions.changeSignLoader(false));
 }
 
 function* activateUserSaga(action: ReturnType<typeof Actions.activateUser>) {
@@ -318,6 +344,10 @@ export default function* userSaga() {
   yield takeLatest(TYPES.SET_NEW_USER, setNewUserSaga);
   yield takeLatest(TYPES.SEND_ACTIVATION_MAIL, sendActivationMailSaga);
   yield takeLatest(TYPES.SEND_RESET_PASSWORD_MAIL, sendResetPasswordMailSaga);
+  yield takeLatest(
+    TYPES.RESET_PASSWORD_CONFIRMATION,
+    resetPasswordConfirmationSaga,
+  );
   yield takeLatest(TYPES.ACTIVATE_USER, activateUserSaga);
   yield takeLatest(TYPES.RESTORE_PASSWORD, restorePasswordSaga);
   yield takeLatest(TYPES.SET_NEW_PASSWORD, setNewPasswordSaga);

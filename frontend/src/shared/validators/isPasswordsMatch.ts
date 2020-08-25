@@ -1,4 +1,5 @@
 export const isPasswordsMatch = (firstValue: string, secondValue: string) =>
   firstValue !== '' && secondValue !== '' && firstValue !== secondValue
-    ? 'Passwords does not match'
+    ? 'Entered passwords must be identical'
     : undefined;
+// TODO remove?
