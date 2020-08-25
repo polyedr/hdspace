@@ -1,8 +1,8 @@
 import { initialData } from '../initial';
 import * as T from '../types';
-import { TYPES } from '$constants/actions';
+import TYPES from '$constants/actions';
 
-export function dataReducer(
+function dataReducer(
   state: T.ProjectDataState = initialData,
   action: T.Action,
 ): T.ProjectDataState {
@@ -76,3 +76,5 @@ export function dataReducer(
       return state;
   }
 }
+
+export default dataReducer;

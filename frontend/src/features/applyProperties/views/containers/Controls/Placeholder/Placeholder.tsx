@@ -27,7 +27,7 @@ function mapState(state: AppReduxState): StateProps {
 
 type Props = StateProps & PropertiesChangeProps<TextinputElement>;
 
-const Component: React.FC<Props> = ({ placeholder, updateParams }) => {
+const Placeholder: React.FC<Props> = ({ placeholder, updateParams }) => {
   const handlePlaceholderChange = useCallback(
     ({ target: { value } }) => {
       updateParams({ placeholder: value });
@@ -54,6 +54,4 @@ const Component: React.FC<Props> = ({ placeholder, updateParams }) => {
   );
 };
 
-export const Placeholder = connect(mapState)(
-  withConfigurableProperties(Component),
-);
+export default connect(mapState)(withConfigurableProperties(Placeholder));

@@ -102,7 +102,7 @@ const getDivStyles = (
     },
   });
 
-const DropdownComponent: React.FC<DropdownRendererProps> = ({
+const Dropdown: React.FC<DropdownRendererProps> = ({
   id,
   isDisabled,
   active,
@@ -202,4 +202,4 @@ const DropdownComponent: React.FC<DropdownRendererProps> = ({
   );
 };
 
-export { DropdownComponent as Dropdown };
+export default Dropdown;

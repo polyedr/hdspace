@@ -1,6 +1,6 @@
 export * from './types';
-export { makeCommunicationActionCreators } from './makeCommunicationActionCreators';
-export { makeCommunicationReducer } from './makeCommunicationReducer';
-export { makeFeatureStateSelector } from './makeFeatureStateSelector';
-export { composeReducers } from './composeReducers';
-export { makeResetStateReducer } from './makeResetStateReducer';
+export { default as makeCommunicationActionCreators } from './makeCommunicationActionCreators';
+export { default as makeCommunicationReducer } from './makeCommunicationReducer';
+export { default as makeFeatureStateSelector } from './makeFeatureStateSelector';
+export { default as composeReducers } from './composeReducers';
+export { default as makeResetStateReducer } from './makeResetStateReducer';

@@ -8,7 +8,7 @@ import {
 import { connect } from 'react-redux';
 import 'antd/dist/antd.css';
 
-import { RenderTree } from '$components/RenderTree/RenderTree';
+import RenderTree from '$components/RenderTree/RenderTree';
 import { Page } from '$redux/project/types';
 import { selectors, actionsCreators, ReduxState } from '$redux/export';
 

@@ -2,9 +2,9 @@ import React, { useCallback, useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 
 import { AppReduxState } from '$shared/types/app';
-import { Info } from '$components/User/Info';
-import { Button } from '$components/UI/Button';
-import { Spinner } from '$components/UI/Spinner';
+import Info from '$components/User/Info';
+import Button from '$components/UI/Button';
+import Spinner from '$components/UI/Spinner';
 import {
   DEFAULT_SIGNUP_FIELDS,
   DEFAULT_RESPONSE_ERROR,
@@ -17,7 +17,7 @@ import {
 } from '$utils/generateValidatedFormData';
 import { getInitialFieldsState } from '$utils/getStates';
 import { IApiResponseError } from '$redux/user/types';
-import { SignFormList } from '$components/User/SignFormList';
+import SignFormList from '$components/User/SignFormList';
 
 const mapStateToProps = ({
   user: { apiResponseError, isSignLoader },
@@ -36,7 +36,7 @@ type IProps = typeof mapDispatchToProps & {
   isSignLoader: boolean;
 };
 
-const UnconnectedSignUp: React.FunctionComponent<IProps> = ({
+const SignUp: React.FunctionComponent<IProps> = ({
   isSignLoader,
   apiResponseError,
   setApiResponseError,
@@ -121,7 +121,4 @@ const UnconnectedSignUp: React.FunctionComponent<IProps> = ({
   );
 };
 
-export const SignUp = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(UnconnectedSignUp);
+export default connect(mapStateToProps, mapDispatchToProps)(SignUp);

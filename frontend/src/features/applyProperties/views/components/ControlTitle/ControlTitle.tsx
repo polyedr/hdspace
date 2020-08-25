@@ -6,8 +6,8 @@ type Props = {
   content: string;
 };
 
-const ControlTitle: React.FC<Props> = memo(({ content }) => {
+const ControlTitle: React.FC<Props> = ({ content }) => {
   return <h4 className={styles['control-title']}>{content}</h4>;
-});
+};
 
-export { ControlTitle };
+export default memo(ControlTitle);

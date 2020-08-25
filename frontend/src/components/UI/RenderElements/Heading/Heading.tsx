@@ -58,4 +58,4 @@ const Heading: React.FC<HeadingRendererProps> = ({
   );
 };
 
-export { Heading };
+export default Heading;

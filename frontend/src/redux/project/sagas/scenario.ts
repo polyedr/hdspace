@@ -31,7 +31,7 @@ import {
   isElementCanBeRemove,
   isElementCanBeAdded,
 } from '$utils/AvailableChildrenHelper';
-import { getSavedValue } from '$utils/getSavedValue';
+import getSavedValue from '$utils/getSavedValue';
 import {
   findParentByChildID,
   findChildByID,

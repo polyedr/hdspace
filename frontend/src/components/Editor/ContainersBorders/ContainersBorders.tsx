@@ -43,7 +43,7 @@ type Border = {
   height: number;
 };
 
-const ContainersBordersComponent = (props: Props) => {
+const ContainersBorders: React.FC<Props> = (props) => {
   const [isRootFocused, setIsRootFocused] = useState(false);
   const [bordersState, setBordersState] = useState<Border[]>([]);
   const { root, activeItem, showBorders } = props;
@@ -268,7 +268,4 @@ const ContainersBordersComponent = (props: Props) => {
   );
 };
 
-export const ContainersBorders = connect(
-  mapState,
-  mapDispatch,
-)(ContainersBordersComponent);
+export default connect(mapState, mapDispatch)(ContainersBorders);

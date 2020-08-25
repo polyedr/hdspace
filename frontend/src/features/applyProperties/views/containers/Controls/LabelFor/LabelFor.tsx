@@ -8,11 +8,11 @@ import {
   withConfigurableProperties,
   PropertiesChangeProps,
 } from '$utils/withConfigurableProperties';
-import { sharedClasses } from '$styles/sharedClasses';
+import sharedClasses from '$styles/sharedClasses';
 import { LabelElement } from '$api/types';
 import { getElementsArray } from '$utils/ElementsTreeHelper';
 
-import { ControlTitle } from '../../../components/ControlTitle/ControlTitle';
+import ControlTitle from '../../../components/ControlTitle/ControlTitle';
 
 const styles = require('./LabelFor.scss');
 
@@ -46,36 +46,33 @@ function mapState(state: AppReduxState): StateProps {
 
 type Props = StateProps & PropertiesChangeProps<LabelElement>;
 
-const LabelFor: React.FC<Props> = memo(
-  ({ labelFor, inputsIDs, updateParams }) => {
-    const options = [
-      { label: 'No for attribute', value: 'no for attribute' },
-      ...inputsIDs.map((id) => ({ label: id, value: id })),
-    ];
+const LabelFor: React.FC<Props> = ({ labelFor, inputsIDs, updateParams }) => {
+  const options = [
+    { label: 'No for attribute', value: 'no for attribute' },
+    ...inputsIDs.map((id) => ({ label: id, value: id })),
+  ];
 
-    const handleDropdownChange = (value: string) => {
-      updateParams({ labelFor: value });
-    };
+  const handleDropdownChange = (value: string) => {
+    updateParams({ labelFor: value });
+  };
 
-    return (
-      <section className={sharedClasses.propsSection}>
-        <header className={styles.header}>
-          <ControlTitle content="For attribute" />
-        </header>
-        <div className={sharedClasses.propsContent}>
-          <div className={sharedClasses.propsContainer}>
-            <DropDown
-              options={options}
-              defaultValue={labelFor}
-              value={labelFor}
-              onChange={handleDropdownChange}
-            />
-          </div>
+  return (
+    <section className={sharedClasses.propsSection}>
+      <header className={styles.header}>
+        <ControlTitle content="For attribute" />
+      </header>
+      <div className={sharedClasses.propsContent}>
+        <div className={sharedClasses.propsContainer}>
+          <DropDown
+            options={options}
+            defaultValue={labelFor}
+            value={labelFor}
+            onChange={handleDropdownChange}
+          />
         </div>
-      </section>
-    );
-  },
-);
+      </div>
+    </section>
+  );
+};
 
-const Component = connect(mapState)(withConfigurableProperties(LabelFor));
-export { Component as LabelFor };
+export default connect(mapState)(withConfigurableProperties(memo(LabelFor)));

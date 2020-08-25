@@ -4,10 +4,10 @@ import cn from 'classnames';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { IMAGES } from '$constants/images';
-import { Icon } from '$components/UI/Icon';
-import { Button } from '$components/UI/Button';
+import Icon from '$components/UI/Icon';
+import Button from '$components/UI/Button';
 import * as PATH_NAMES from '$constants/pathNames';
-import { Scrollbar } from '$components/UI/Scrollbar';
+import Scrollbar from '$components/UI/Scrollbar';
 import * as ActionsProject from '$redux/project/actions';
 import { openSignScreen } from '$utils/history';
 import { Project } from '$api/types';

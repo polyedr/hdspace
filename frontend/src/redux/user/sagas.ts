@@ -11,7 +11,7 @@ import {
   apiChangeUserData,
   apiChangeProfileData,
 } from '$api/user';
-import { TYPES } from '$constants/actions';
+import TYPES from '$constants/actions';
 import * as Actions from '$redux/user/actions';
 import {
   openPasswordRestore,

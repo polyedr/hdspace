@@ -12,7 +12,7 @@ import {
   Project,
   LibraryElement,
 } from '$api/types';
-import { TYPES } from '$constants/actions';
+import TYPES from '$constants/actions';
 
 export type ProjectState = {
   data: ProjectDataState;
@@ -165,7 +165,7 @@ export type RenameScreen = IAction<
 >;
 export type AddScreen = IAction<
   typeof TYPES.ADD_SCREEN,
-  { projectID: number; name: string; buoyancy: number }
+  { projectID: number; name: string; buoyancy: number; skip: boolean }
 >;
 export type DuplicateScreen = IAction<
   typeof TYPES.DUPLICATE_SCREEN,

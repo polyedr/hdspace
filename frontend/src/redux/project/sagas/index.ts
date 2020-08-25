@@ -56,7 +56,7 @@ import { MAX_TOKEN_TRIALS } from '$config/settings';
 import { addScreenSaga } from '$redux/project/sagas/screen';
 import { refreshUserTokenPair } from '$redux/user/sagas';
 import { openSignScreen, openProjects } from '$utils/history';
-import { getSavedValue } from '$utils/getSavedValue';
+import getSavedValue from '$utils/getSavedValue';
 import {
   findChildByID,
   updateElementParameters as updateParameters,
@@ -70,7 +70,7 @@ import {
   replaceElementStyles,
   focusOnElement,
 } from '$utils/ElementsTreeHelper';
-import { generateUniqueName } from '$utils/generateUniqueName';
+import generateUniqueName from '$utils/generateUniqueName';
 import { CssLikeStyles } from '$utils/StyleHelper';
 import {
   updateProjectClasses,
@@ -83,7 +83,7 @@ import { LibraryEntities } from '$domain/libraryElements/libraryElements';
 
 import { ElementHistoryMeta, ItemToCopyInfo } from '../types';
 import { selectors, actionsCreators } from '..';
-import { TYPES } from '$constants/actions';
+import TYPES from '$constants/actions';
 import { activateScreen } from '$redux/project/actions';
 import { selectScreenElement } from '$redux/project/selectors';
 

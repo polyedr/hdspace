@@ -1,8 +1,8 @@
 import React, { memo, useCallback } from 'react';
 import classNames from 'classnames';
 
-import { Button } from '$components/UI/Button';
-import { Icon } from '$components/UI/Icon';
+import Button from '$components/UI/Button';
+import Icon from '$components/UI/Icon';
 
 const styles = require('./styles.scss');
 
@@ -18,90 +18,90 @@ interface IModalProps {
   bodyClassName?: string;
 }
 
-export const Modal: React.FunctionComponent<IModalProps> = memo(
-  ({
-    title,
-    confirmText,
-    cancelText,
-    onConfirm,
-    onClose,
-    confirmDisabled,
-    children,
-    animClassName,
-    bodyClassName,
-  }) => {
-    const handleCloseModal = useCallback(
-      (event) => {
-        event.preventDefault();
+const Modal: React.FC<IModalProps> = ({
+  title,
+  confirmText,
+  cancelText,
+  onConfirm,
+  onClose,
+  confirmDisabled,
+  children,
+  animClassName,
+  bodyClassName,
+}) => {
+  const handleCloseModal = useCallback(
+    (event) => {
+      event.preventDefault();
 
-        onClose();
-      },
-      [onClose],
-    );
+      onClose();
+    },
+    [onClose],
+  );
 
-    const onModalWrapperClick = useCallback(
-      (event) => {
-        const modal = event.target.closest('form');
+  const onModalWrapperClick = useCallback(
+    (event) => {
+      const modal = event.target.closest('form');
 
-        if (modal) {
-          return;
-        }
+      if (modal) {
+        return;
+      }
 
-        handleCloseModal(event);
-      },
-      [handleCloseModal],
-    );
+      handleCloseModal(event);
+    },
+    [handleCloseModal],
+  );
 
-    const handleConfirm = useCallback(
-      (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
+  const handleConfirm = useCallback(
+    (event: React.FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
 
-        onConfirm?.(event);
-      },
-      [onConfirm],
-    );
+      onConfirm?.(event);
+    },
+    [onConfirm],
+  );
 
-    return (
-      <div
-        className={classNames(styles.modalWrapper)}
-        onClick={onModalWrapperClick}
+  return (
+    <div
+      className={classNames(styles.modalWrapper)}
+      onClick={onModalWrapperClick}
+    >
+      <form
+        className={classNames(
+          styles.modalContainer,
+          'brakeAnimation',
+          animClassName,
+        )}
+        onSubmit={handleConfirm}
       >
-        <form
-          className={classNames(
-            styles.modalContainer,
-            'brakeAnimation',
-            animClassName,
-          )}
-          onSubmit={handleConfirm}
+        <Button
+          styleType="none"
+          className={styles.modalCloseButton}
+          onClick={handleCloseModal}
         >
-          <Button
-            styleType="none"
-            className={styles.modalCloseButton}
-            onClick={handleCloseModal}
-          >
-            <Icon icon="close" size={20} />
-          </Button>
-          {title !== '' && <p className={styles.modalTitle}>{title}</p>}
-          <div className={classNames(styles.modalBody, bodyClassName)}>
-            {children}
-          </div>
-          <div className={styles.modalActions}>
-            {cancelText && (
-              <Button styleType="secondary" onClick={handleCloseModal}>
-                {cancelText}
-              </Button>
-            )}
-            {confirmText && onConfirm && (
-              <Button
-                type={cancelText ? 'submit' : 'confirm'}
-                disabled={!!confirmDisabled}
-              >
-                {confirmText}
-              </Button>
-            )}
-          </div>
-        </form>
-      </div>
-    );
-  },
-);
+          <Icon icon="close" size={20} />
+        </Button>
+        {title !== '' && <p className={styles.modalTitle}>{title}</p>}
+        <div className={classNames(styles.modalBody, bodyClassName)}>
+          {children}
+        </div>
+        <div className={styles.modalActions}>
+          {cancelText && (
+            <Button styleType="secondary" onClick={handleCloseModal}>
+              {cancelText}
+            </Button>
+          )}
+          {confirmText && onConfirm && (
+            <Button
+              type={cancelText ? 'submit' : 'confirm'}
+              disabled={!!confirmDisabled}
+            >
+              {confirmText}
+            </Button>
+          )}
+        </div>
+      </form>
+    </div>
+  );
+};
+
+export default memo(Modal);

@@ -2,7 +2,7 @@ import React, { memo, useEffect } from 'react';
 import * as R from 'ramda';
 import classNames from 'classnames';
 import { useDispatch, useSelector } from 'react-redux';
-import { Button } from '$components/UI/Button';
+import Button from '$components/UI/Button';
 import {
   selectInitialProjectLoad,
   selectProjects,
@@ -12,7 +12,7 @@ import ProjectListItem from '$components/Projects/ProjectListItem';
 
 const styles = require('./Projects.scss');
 
-export const Projects: React.FC = memo(() => {
+const Projects: React.FC = () => {
   const dispatch = useDispatch();
   const projectList = useSelector(selectProjects);
 
@@ -76,4 +76,6 @@ export const Projects: React.FC = memo(() => {
       </div>
     </main>
   );
-});
+};
+
+export default memo(Projects);

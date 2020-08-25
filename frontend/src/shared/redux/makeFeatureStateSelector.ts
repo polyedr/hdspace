@@ -1,6 +1,6 @@
 import { AppReduxState } from '$shared/types/app';
 
-export function makeFeatureStateSelector<
+function makeFeatureStateSelector<
   T extends AppReduxState,
   K extends keyof AppReduxState
 >(featureName: K) {
@@ -12,3 +12,5 @@ export function makeFeatureStateSelector<
     return state[featureName];
   };
 }
+
+export default makeFeatureStateSelector;

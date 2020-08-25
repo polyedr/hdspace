@@ -181,4 +181,4 @@ const Input: React.FC<InputRendererProps> = ({
   );
 };
 
-export { Input };
+export default Input;

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 import { connect, useSelector } from 'react-redux';
-import { TextField } from '$features/applyProperties/views/components/TextField/TextField';
+import TextField from '$features/applyProperties/views/components/TextField/TextField';
 import { actionsCreators, selectors } from '$redux/project';
 import { AppReduxState } from '$shared/types/app';
 import { selectCurrentScreenId } from '$redux/project/selectors';
@@ -53,5 +53,4 @@ const RenameElement: React.FC<Props> = ({
   );
 };
 
-const Component = connect(mapState, mapDispatch)(RenameElement);
-export { Component as RenameElement };
+export default connect(mapState, mapDispatch)(RenameElement);

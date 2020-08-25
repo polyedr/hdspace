@@ -5,7 +5,7 @@ import { createStore } from 'redux';
 import 'antd/dist/antd.css';
 
 import { ExportedApp } from '$containers/ExportedApp';
-import { uiReducer } from '$redux/export/reducer';
+import uiReducer from '$redux/export/reducer';
 
 const store = createStore(uiReducer);
 

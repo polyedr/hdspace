@@ -1,4 +1,4 @@
-export const TYPES = {
+const TYPES = {
   // User Actions
   CHANGE_L_PANEL: 'CHANGE_L_PANEL',
   CHANGE_NAV_PANEL: 'CHANGE_NAV_PANEL',
@@ -131,3 +131,5 @@ export const TYPES = {
   POP_HISTORY: 'history:POP_HISTORY',
   SET_GROUP_UP: 'history:SET_GROUP_UP',
 } as const;
+
+export default TYPES;
