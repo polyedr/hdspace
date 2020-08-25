@@ -36,7 +36,10 @@ export const Component = ({
 
   useEffect(() => {
     const listener = (event: KeyboardEvent) => {
-      if (event.keyCode === 8) {
+      if (
+        event.key === 'Delete' ||
+        (event.key === 'Backspace' && event.metaKey)
+      ) {
         deleteActiveItem(itemId, { screenId: currentScreenId });
       }
     };
