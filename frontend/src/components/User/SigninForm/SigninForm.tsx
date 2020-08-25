@@ -96,6 +96,11 @@ const SignInForm = (props: IProps) => {
     console.log(response);
   };
 
+  const isEmailHasBeenSend =
+    apiResponseError.errorStatus === 401 &&
+    apiResponseError.data.detail ===
+      'No active account found with the given credentials';
+
   return (
     <>
       <Form
@@ -131,7 +136,9 @@ const SignInForm = (props: IProps) => {
               )}
               {apiResponseError.errorStatus !== -1 && (
                 <p className="signAuthorisationErrorText">
-                  {apiResponseError.errorText}
+                  {isEmailHasBeenSend
+                    ? 'Please, confirm your email'
+                    : apiResponseError.errorText}
                 </p>
               )}
               <Button
