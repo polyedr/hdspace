@@ -181,7 +181,7 @@ export const apiRegisterWithGoogle = () =>
     method: 'GET',
     url: '/djauth/o/google-oauth2/',
     params: {
-      redirect_uri: 'https://staging-26-10.firebaseapp.com/projects',
+      redirect_uri: 'http://localhost:8080/projects',
     },
   })
     .then(parseResult)

@@ -337,6 +337,7 @@ export function* setNewPasswordSaga({
 export function* registerWithGoogleSaga() {
   console.log('registerWithGoogleSaga');
   const res = yield call(apiRegisterWithGoogle);
+  window.open(res.authorization_url);
   console.log(res);
 }
 
