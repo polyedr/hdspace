@@ -11,41 +11,70 @@ export const pageTemplate: PageTemplateServerElement = {
   },
   styles: {
     classNames: ['pageTemplate'],
-    ownStyles: {} as Required<CssLikeStyles>,
+    ownStyles: {
+      width: '100%',
+      height: '100%',
+      display: 'flex',
+      'flex-direction': 'column',
+    } as Required<CssLikeStyles>,
   },
   name: 'pageTemplate',
   children: [
     makeContainer({
       children: [makeScreenshot()],
-      ownStyles: { height: '80px' } as Required<CssLikeStyles>, // TODO maybe need move into default styles
+      ownStyles: {
+        'padding-right': '5px',
+        'padding-left': '5px',
+        height: '80px',
+      } as Required<CssLikeStyles>, // TODO maybe need move into default styles
     }),
     makeContainer({
       children: [
-        makeScreenshot({
-          ownStyles: { 'margin-right': '5px', width: '25%' } as Required<
-            CssLikeStyles
-          >,
-        }),
-        makeScreenshot({
+        makeContainer({
+          children: [makeScreenshot()],
           ownStyles: {
-            'margin-right': '5px',
-            'margin-left': '5px',
-            width: '50%',
-          } as Required<CssLikeStyles>,
+            'padding-right': '5px',
+            'padding-left': '5px',
+            width: '25%',
+            'flex-grow': 1,
+          } as Required<CssLikeStyles>, // TODO maybe need move into default styles
         }),
-        makeScreenshot({
-          ownStyles: { 'margin-left': '5px', width: '25%' } as Required<
-            CssLikeStyles
-          >,
+        makeContainer({
+          children: [makeScreenshot()],
+          ownStyles: {
+            'padding-right': '5px',
+            'padding-left': '5px',
+            width: '50%',
+            'flex-grow': 3000,
+          } as Required<CssLikeStyles>, // TODO maybe need move into default styles
+        }),
+        makeContainer({
+          children: [makeScreenshot()],
+          ownStyles: {
+            'padding-right': '5px',
+            'padding-left': '5px',
+            width: '25%',
+            'flex-grow': 1,
+          } as Required<CssLikeStyles>, // TODO maybe need move into default styles
         }),
       ],
-      ownStyles: { height: '150px', display: 'flex' } as Required<
-        CssLikeStyles
-      >, // TODO remove type assertions
+      ownStyles: {
+        height: '150px',
+        display: 'flex',
+        'padding-top': '0px',
+        'padding-right': '0px',
+        'padding-bottom': '0px',
+        'padding-left': '0px',
+        'flex-grow': 1,
+      } as Required<CssLikeStyles>, // TODO remove type assertions
     }),
     makeContainer({
       children: [makeScreenshot()],
-      ownStyles: { height: '80px' } as Required<CssLikeStyles>,
+      ownStyles: {
+        'padding-right': '5px',
+        'padding-left': '5px',
+        height: '80px',
+      } as Required<CssLikeStyles>,
     }),
   ],
 };

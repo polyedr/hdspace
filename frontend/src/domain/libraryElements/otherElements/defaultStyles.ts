@@ -41,6 +41,7 @@ export const defaultRootStyles: { [K in RootControls]: CssLikeStyles } & {
   other: {
     ...DEFAULT_SIZE,
     width: '100%',
+    height: '100%',
     'min-height': '100%',
     'min-width': '100%',
     // Indents need to prevent margin collapsing
@@ -70,6 +71,9 @@ export const defaultContainerStyles: {
   },
   background: {
     ...DEFAULT_BACKGROUND,
+  },
+  other: {
+    'flex-grow': 0,
   },
 };
 
