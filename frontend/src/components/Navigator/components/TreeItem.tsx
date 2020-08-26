@@ -1,4 +1,3 @@
-/* eslint-disable */
 import React, { useEffect } from 'react';
 import ChevronDown from './Icons/chevron-down';
 import ChevronRight from './Icons/chevron-right';
@@ -6,7 +5,7 @@ import ChevronRight from './Icons/chevron-right';
 const styles = require('../Navigator.scss');
 
 const GroupIcon = ({ onClick, icon }) => (
-  <button tabIndex={-1} onClick={onClick} className="icon">
+  <button tabIndex={-1} onClick={onClick} className={styles.icon} type="button">
     {icon}
   </button>
 );
@@ -28,14 +27,15 @@ export default ({
   onCollapse,
   provided,
   select,
-  deselect,
   selectedItem,
 }) => {
   const isParent = item.children.length;
 
   useEffect(() => {
     if (selectedItem === item.id) {
-      const elem = document.querySelector(`#treeitem-${item.id}`) as HTMLElement;
+      const elem = document.querySelector(
+        `#treeitem-${item.id}`,
+      ) as HTMLElement;
       elem?.focus();
     }
   }, [item.id, selectedItem]);
@@ -46,7 +46,7 @@ export default ({
       ref={provided.innerRef}
       {...provided.draggableProps}
       {...provided.dragHandleProps}
-      onClick={(e) => select(item.id)}
+      onClick={() => select(item.id)}
       onFocus={() => select(item.id)}
       aria-selected={item.id === selectedItem}
       {...(isParent

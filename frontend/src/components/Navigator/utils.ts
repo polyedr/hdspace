@@ -1,6 +1,7 @@
 /* eslint-disable */
 import { nanoid } from 'nanoid';
 import { LibraryElement } from "$api/types";
+import { Tree } from "$components/Navigator/types";
 
 export const node = (title, data, children) => ({
   id: nanoid(),
@@ -20,7 +21,7 @@ export const convertTree = (element: LibraryElement<any>) => ({
   children: element.children.map(child => convertTree(child)),
 })
 
-export const makeTree = (nodes) => ({
+export const makeTree = (nodes): Tree => ({
   rootId: 'root',
   selectedItem: null,
   isDragging: false,

@@ -1,41 +1,40 @@
-/* eslint-disable */
-import React, { useEffect } from "react";
+/* eslint-disable no-unused-vars */
+import React, { useEffect } from 'react';
 import useProfunctorState from '@staltz/use-profunctor-state';
-import TreeView, {
-  deselect,
-  addNode,
-  removeSelectedNode,
-} from "./components/TreeView";
+import { useSelector } from 'react-redux';
+import TreeView from './components/TreeView';
+import { makeTree, convertTree } from './utils';
 import {
-  makeTree,
-  node,
-  convertTree
-} from './utils'
+  selectActiveItem,
+  selectCurrentScreenElement,
+} from '$redux/project/selectors';
+import { Tree } from '$components/Navigator/types';
 
 const styles = require('./Navigator.scss');
-import { useSelector } from "react-redux";
-import { selectCurrentScreenElement } from "$redux/project/selectors";
 
-const initialTree = makeTree([
-  node('First parent', {}, [
-    node('Child one', {}, [
-      node('Subchild 1', {}, [])
-    ]),
-    node('Child two', {}, []),
-  ]),
-  node('Second parent', { stuff: 789 }, [
-    node('Child one', {}, []),
-    node('Child two', {}, []),
-  ]),
-]);
+export type State = {
+  tree: Tree;
+};
 
 const Navigator: React.FC = () => {
   const rootElement = useSelector(selectCurrentScreenElement);
+  const { itemId: activeItemId } = useSelector(selectActiveItem);
 
-  const appState = useProfunctorState({ tree: makeTree([convertTree(rootElement)]) });
+  const appState = useProfunctorState<State>({
+    tree: makeTree([convertTree(rootElement)]),
+  });
 
   useEffect(() => {
-    appState.setState(() => ({tree: makeTree([convertTree(rootElement)])}));
+    appState.setState(() => ({
+      tree: {
+        ...appState.state.tree,
+        selectedItem: activeItemId,
+      },
+    }));
+  }, [activeItemId]);
+
+  useEffect(() => {
+    appState.setState(() => ({ tree: makeTree([convertTree(rootElement)]) }));
   }, [rootElement]);
 
   const treeState = appState.promap(
@@ -44,48 +43,33 @@ const Navigator: React.FC = () => {
   );
 
   return (
-    <div
-      // onClick={(e) => {
-      //   if (
-      //     // @ts-ignore
-      //   !e.target.matches('.tree > div *') &&
-      //     // @ts-ignore
-      //   !e.target.matches('[role=toolbar] *')
-      //   ) {
-      //     deselect(treeState);
-      //   }
-      // }}
-    >
-      <div className={styles.componentPane}>
-        <div
-          className={styles.toolbar}
-          role="toolbar"
-          aria-controls="tree"
-          aria-label="add or remove components"
+    <div className={styles.componentPane}>
+      <div
+        className={styles.toolbar}
+        role="toolbar"
+        aria-controls="tree"
+        aria-label="add or remove components"
+      >
+        <button
+          disabled={!treeState.state.selectedItem}
+          onClick={() => {}}
+          type="button"
+          aria-label="remove component"
         >
-          <button
-            disabled={!treeState.state.selectedItem}
-            onClick={() => removeSelectedNode(treeState)}
-            aria-label="remove component"
-          >
-            −
-          </button>
+          −
+        </button>
 
-          <button
-            onClick={() => addNode(treeState, node('New item', {}, []))}
-            aria-label="add component"
-          >
-            +
-          </button>
-        </div>
-
-        <TreeView
-          addNode={(selected) => addNode(treeState, node('New item', {}, []))}
-          {...treeState}
-        />
+        <button onClick={() => {}} type="button" aria-label="add component">
+          +
+        </button>
       </div>
+
+      <TreeView
+        // addNode={(selected) => addNode(treeState, node('New item', {}, []))}
+        {...treeState}
+      />
     </div>
   );
-}
+};
 
 export default Navigator;
