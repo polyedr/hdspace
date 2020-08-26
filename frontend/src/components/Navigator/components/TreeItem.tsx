@@ -1,7 +1,9 @@
 /* eslint-disable */
 import React, { useEffect } from 'react';
-import ChevronDown from '../Icons/chevron-down';
-import ChevronRight from '../Icons/chevron-right';
+import ChevronDown from './Icons/chevron-down';
+import ChevronRight from './Icons/chevron-right';
+
+const styles = require('../Navigator.scss');
 
 const GroupIcon = ({ onClick, icon }) => (
   <button tabIndex={-1} onClick={onClick} className="icon">
@@ -17,7 +19,7 @@ const getIcon = (item, expand, collapse) => {
       <GroupIcon icon={<ChevronRight />} onClick={() => expand(item.id)} />
     );
   }
-  return <span className="icon" />;
+  return <span className={styles.icon} />;
 };
 
 export default ({

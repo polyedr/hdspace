@@ -4,9 +4,9 @@ import Tree, { moveItemOnTree, mutateTree } from '@atlaskit/tree';
 import { curry } from 'ramda';
 import produce from 'immer';
 import TreeItem from './TreeItem';
-import { findPrevNode, findNextNode } from './utils';
+import { findPrevNode, findNextNode } from '../utils';
 
-export * from './utils';
+const styles = require('../Navigator.scss');
 
 export const expand = curry(({ setState }, itemId) => {
   setState((state) => mutateTree(state, itemId, { isExpanded: true }));
@@ -78,6 +78,7 @@ export const removeNode = ({ state, setState }, itemId) => {
 
 export const removeSelectedNode = ({ state, setState }) => {
   removeNode({ state, setState }, state.selectedItem);
+  console.log('node removed');
 };
 
 export const handleKeyDown = curry(({ addNode, state, setState }, e) => {
@@ -115,7 +116,7 @@ export const handleKeyDown = curry(({ addNode, state, setState }, e) => {
 export default ({ addNode, state, setState, promap }) => {
   return (
     <div
-      className="tree"
+      className={styles.tree}
       id="tree"
       onKeyDown={handleKeyDown({ addNode, state, setState })}
     >

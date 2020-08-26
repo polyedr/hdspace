@@ -6,7 +6,7 @@ import { PropertiesPanel } from '$features/applyProperties';
 import * as Actions from '$redux/project/actions';
 import { EditorProps } from '$containers/EditorLogic';
 
-import { Workspace } from './Workspace/Workspace';
+import Workspace from './Workspace/Workspace';
 
 const styles = require('./Editor.scss');
 

@@ -113,7 +113,7 @@ const SCROLLBAR_STYLES = {
   height: '100%',
 };
 
-const Component: React.FC<PropertiesPanelProps> = ({
+const PropertiesPanel: React.FC<PropertiesPanelProps> = ({
   activeItem,
   activeElement,
   activeElementParent,
@@ -215,4 +215,4 @@ const Component: React.FC<PropertiesPanelProps> = ({
   );
 };
 
-export const PropertiesPanel = connect(mapState, mapDispatch)(Component);
+export default connect(mapState, mapDispatch)(PropertiesPanel);

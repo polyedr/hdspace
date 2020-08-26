@@ -1,19 +1,26 @@
 /* eslint-disable */
-import React from 'react';
+import React, { useEffect } from "react";
 import useProfunctorState from '@staltz/use-profunctor-state';
 import TreeView, {
-  makeTree,
-  node,
   deselect,
   addNode,
   removeSelectedNode,
-} from './components/TreeView';
+} from "./components/TreeView";
+import {
+  makeTree,
+  node,
+  convertTree
+} from './utils'
 
-import './styles.css';
+const styles = require('./Navigator.scss');
+import { useSelector } from "react-redux";
+import { selectCurrentScreenElement } from "$redux/project/selectors";
 
 const initialTree = makeTree([
   node('First parent', {}, [
-    node('Child one', {}, []),
+    node('Child one', {}, [
+      node('Subchild 1', {}, [])
+    ]),
     node('Child two', {}, []),
   ]),
   node('Second parent', { stuff: 789 }, [
@@ -22,8 +29,14 @@ const initialTree = makeTree([
   ]),
 ]);
 
-function Navigator() {
-  const appState = useProfunctorState({ tree: initialTree });
+const Navigator: React.FC = () => {
+  const rootElement = useSelector(selectCurrentScreenElement);
+
+  const appState = useProfunctorState({ tree: makeTree([convertTree(rootElement)]) });
+
+  useEffect(() => {
+    appState.setState(() => ({tree: makeTree([convertTree(rootElement)])}));
+  }, [rootElement]);
 
   const treeState = appState.promap(
     (state) => state.tree,
@@ -32,20 +45,20 @@ function Navigator() {
 
   return (
     <div
-      onClick={(e) => {
-        if (
-          // @ts-ignore
-        !e.target.matches('.tree > div *') &&
-          // @ts-ignore
-        !e.target.matches('[role=toolbar] *')
-        )
-          deselect(treeState);
-      }}
+      // onClick={(e) => {
+      //   if (
+      //     // @ts-ignore
+      //   !e.target.matches('.tree > div *') &&
+      //     // @ts-ignore
+      //   !e.target.matches('[role=toolbar] *')
+      //   ) {
+      //     deselect(treeState);
+      //   }
+      // }}
     >
-      <div className="component-pane">
-        <h1>Tree View</h1>
-
+      <div className={styles.componentPane}>
         <div
+          className={styles.toolbar}
           role="toolbar"
           aria-controls="tree"
           aria-label="add or remove components"

@@ -50,7 +50,7 @@ const mapState = (state: AppReduxState): StateProps => ({
 
 type Props = StateProps & typeof mapDispatch;
 
-export const Component = ({
+const Workspace = ({
   elementsTree,
   isPrototypeMode,
   activeItem,
@@ -214,4 +214,4 @@ export const Component = ({
   );
 };
 
-export const Workspace = connect(mapState, mapDispatch)(Component);
+export default connect(mapState, mapDispatch)(Workspace);

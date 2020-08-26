@@ -1,5 +1,6 @@
 /* eslint-disable */
 import { nanoid } from 'nanoid';
+import { LibraryElement } from "$api/types";
 
 export const node = (title, data, children) => ({
   id: nanoid(),
@@ -9,6 +10,15 @@ export const node = (title, data, children) => ({
   isChildrenLoading: false,
   children,
 });
+
+export const convertTree = (element: LibraryElement<any>) => ({
+  id: element.id,
+  data: { title: element.name },
+  hasChildren: !!element.children.length,
+  isExpanded: !!element.children.length,
+  isChildrenLoading: false,
+  children: element.children.map(child => convertTree(child)),
+})
 
 export const makeTree = (nodes) => ({
   rootId: 'root',
