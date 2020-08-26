@@ -1,0 +1,145 @@
+/* Theme Colors
+ *
+ * Dark Blue .  : hsl(213, 50%, 46%)
+ * Bright Blue  : hsl(204, 80%, 50%)
+ * Light Blue . : hsl(213, 60%, 80%)
+ * Grayish Blue : hsl(213, 30%, 92%)
+ */
+
+* {
+    background: transparent;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: inherit;
+}
+
+h1 {
+    /* font-family: "Cantata One", serif; */
+    color: white;
+    font-size: 1em;
+    font-weight: bold;
+    line-height: 1.5;
+    padding: 0 0.5em;
+    margin-top: 1.25em;
+    margin-bottom: 0.75em;
+}
+
+/*::placeholder {*/
+/*    color: #000;*/
+/*    !*font-style: italic;*!*/
+/*}*/
+
+/*::-webkit-input-placeholder {*/
+/*    color: #000;*/
+/*    font-style: italic;*/
+/*}*/
+
+/*::-moz-placeholder {*/
+/*    color: #000;*/
+/*    font-style: italic;*/
+/*}*/
+
+svg[id^="icon"] {
+    width: 1.25em; /* Width is proportional to parent fs */
+    height: 1.25em; /* Height is proportional to parent fs */
+    display: inline-block; /* Flow with text content */
+    vertical-align: middle; /* Vertically align icon with adjacent text */
+    pointer-events: none;
+}
+
+button {
+    border: none;
+    appearance: none;
+    box-shadow: none;
+    outline: none;
+    color: #fff;
+}
+
+button[disabled] {
+    color: hsla(215, 29%, 92%, 0.562);
+}
+
+.vh {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(1px, 1px, 1px, 1px);
+}
+
+@media print {
+    body > *:not(main) {
+        display: none;
+    }
+}
+
+/* Components */
+
+.component-pane {
+    outline: none;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+}
+
+.tree {
+    font-size: 0.75em;
+    overflow: auto;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    order: 1;
+}
+
+.tree > :first-child {
+    flex: 1;
+    /*overflow: scroll;*/
+}
+
+.tree * {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.tree .icon {
+    cursor: pointer;
+}
+
+.tree .icon:empty {
+    display: inline-block;
+    width: 0.9em;
+}
+
+[role="group"],
+[role="treeitem"] {
+    display: flex;
+    align-items: center;
+    min-height: 2em;
+    padding: 0.25em;
+}
+
+[role="group"][aria-selected="true"],
+[role="treeitem"][aria-selected="true"] {
+    background-color: hsl(204, 80%, 50%);
+}
+
+[role="toolbar"] {
+    box-shadow: 0px -1px 0 0 hsl(213, 30%, 92%);
+    text-align: right;
+    order: 2;
+}
+
+[role="toolbar"] button {
+    font-size: 1.25em;
+    padding: 0.25em;
+    display: inline-block;
+    min-width: 1.5em;
+}
+
+[role="toolbar"] button:focus {
+    color: hsl(204, 100%, 75%);
+}

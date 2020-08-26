@@ -13,6 +13,7 @@ import { openSignScreen } from '$utils/history';
 import { Project } from '$api/types';
 import { logout } from '$redux/user/actions';
 import { selectUserData } from '$redux/user/selectors';
+import Navigator from '$components/Navigator';
 
 const styles = require('./LeftPanel.scss');
 
@@ -154,6 +155,9 @@ export const LeftPanel: React.FunctionComponent<LeftPanelProps> = ({
               <Icon icon="folder-open" />
               <span>Workflow</span>
             </NavLink>
+          </li>
+          <li>
+            <Navigator />
           </li>
         </ul>
       </nav>
