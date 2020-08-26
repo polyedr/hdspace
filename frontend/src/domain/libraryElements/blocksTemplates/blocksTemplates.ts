@@ -21,6 +21,7 @@ export const pageTemplate: PageTemplateServerElement = {
   name: 'pageTemplate',
   children: [
     makeContainer({
+      name: 'Header',
       children: [makeScreenshot()],
       ownStyles: {
         'padding-right': '5px',
@@ -31,6 +32,7 @@ export const pageTemplate: PageTemplateServerElement = {
     makeContainer({
       children: [
         makeContainer({
+          name: 'Left Panel',
           children: [makeScreenshot()],
           ownStyles: {
             'padding-top': '0px',
@@ -42,6 +44,7 @@ export const pageTemplate: PageTemplateServerElement = {
           } as Required<CssLikeStyles>, // TODO maybe need move into default styles
         }),
         makeContainer({
+          name: 'Main Content',
           children: [makeScreenshot()],
           ownStyles: {
             'padding-top': '0px',
@@ -53,6 +56,7 @@ export const pageTemplate: PageTemplateServerElement = {
           } as Required<CssLikeStyles>, // TODO maybe need move into default styles
         }),
         makeContainer({
+          name: 'Right Panel',
           children: [makeScreenshot()],
           ownStyles: {
             'padding-top': '0px',
@@ -75,6 +79,7 @@ export const pageTemplate: PageTemplateServerElement = {
       } as Required<CssLikeStyles>, // TODO remove type assertions
     }),
     makeContainer({
+      name: 'Footer',
       children: [makeScreenshot()],
       ownStyles: {
         'padding-right': '5px',

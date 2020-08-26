@@ -35,9 +35,11 @@ export const root: RootServerElement = {
 export const makeContainer = ({
   children,
   ownStyles,
+  name,
 }: {
   children?: ServerElement<Entity>[];
   ownStyles?: Required<CssLikeStyles>;
+  name?: string;
 } = {}): ContainerServerElement => ({
   buoyancy: 0,
   func_type: 'container',
@@ -49,7 +51,7 @@ export const makeContainer = ({
     classNames: ['container'],
     ownStyles: { ...ownStyles } as Required<CssLikeStyles>,
   },
-  name: 'container',
+  name: name || 'container',
   children: children || [],
 });
 
