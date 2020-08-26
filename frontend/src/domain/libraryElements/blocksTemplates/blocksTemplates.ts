@@ -33,7 +33,9 @@ export const pageTemplate: PageTemplateServerElement = {
         makeContainer({
           children: [makeScreenshot()],
           ownStyles: {
+            'padding-top': '0px',
             'padding-right': '5px',
+            'padding-bottom': '0px',
             'padding-left': '5px',
             width: '25%',
             'flex-grow': 1,
@@ -42,7 +44,9 @@ export const pageTemplate: PageTemplateServerElement = {
         makeContainer({
           children: [makeScreenshot()],
           ownStyles: {
+            'padding-top': '0px',
             'padding-right': '5px',
+            'padding-bottom': '0px',
             'padding-left': '5px',
             width: '50%',
             'flex-grow': 3000,
@@ -51,7 +55,9 @@ export const pageTemplate: PageTemplateServerElement = {
         makeContainer({
           children: [makeScreenshot()],
           ownStyles: {
+            'padding-top': '0px',
             'padding-right': '5px',
+            'padding-bottom': '0px',
             'padding-left': '5px',
             width: '25%',
             'flex-grow': 1,
@@ -61,9 +67,9 @@ export const pageTemplate: PageTemplateServerElement = {
       ownStyles: {
         height: '150px',
         display: 'flex',
-        'padding-top': '0px',
+        'padding-top': '5px',
         'padding-right': '0px',
-        'padding-bottom': '0px',
+        'padding-bottom': '5px',
         'padding-left': '0px',
         'flex-grow': 1,
       } as Required<CssLikeStyles>, // TODO remove type assertions
