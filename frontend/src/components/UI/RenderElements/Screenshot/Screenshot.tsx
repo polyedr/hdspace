@@ -32,12 +32,13 @@ const Screenshot: React.FC<ScreenshotRendererProps> = ({
       ? {
           ...ownStyles,
           backgroundImage: `url(${params.imageURL})`, // TODO maybe need move
-          backgroundPosition: 'top left',
-          backgroundSize: 'cover',
+          // backgroundPosition: 'top left',
+          backgroundSize: 'auto',
         }
       : {
           ...ownStyles,
-          background: `no-repeat center #E0E0E0 url(${IMAGES.imageIconSmall});`,
+          background: `no-repeat #E0E0E0 url(${IMAGES.imageIconSmall});`,
+          backgroundPosition: 'center center',
         },
   })();
 

@@ -49,6 +49,7 @@ export interface CssLikeStyles {
   'flex-grow'?: number;
 
   'list-style-type'?: 'none' | 'disc';
+  'background-position'?: string;
 }
 
 type TConvertIndents = (
@@ -157,6 +158,8 @@ const otherStyles = (styles: CssLikeStyles): React.CSSProperties =>
         return { ...acc, display: styles[key] };
       case 'list-style-type':
         return { ...acc, listStyleType: styles[key] };
+      case 'background-position':
+        return { ...acc, backgroundPosition: styles[key] };
       default:
         return acc;
     }

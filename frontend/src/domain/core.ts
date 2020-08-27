@@ -61,6 +61,7 @@ const CONTROLS_AFFECT_ON_STYLES = [
   'background',
   'bullets',
   'flexGrow',
+  'backgroundPosition',
 ] as const;
 
 export type ElementEntity = keyof ElementsToAdd;
@@ -199,6 +200,7 @@ export const screenshotStyleControls = [
   'size',
   'border',
   'background',
+  'backgroundPosition',
 ] as const;
 export const selectStyleControls = [
   'indents',

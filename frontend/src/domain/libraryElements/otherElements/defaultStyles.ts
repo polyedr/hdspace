@@ -6,6 +6,7 @@ import {
   DEFAULT_BACKGROUND,
   DEFAULT_TYPOGRAPHY,
   DEFAULT_FLEX_GROW,
+  DEFAULT_BACKGROUND_POSITION,
 } from '$domain/constants/defaultStyles';
 import {
   rootStyleControls,
@@ -142,6 +143,9 @@ export const defaultScreenshotStyles: {
   },
   background: {
     ...DEFAULT_BACKGROUND,
+  },
+  backgroundPosition: {
+    ...DEFAULT_BACKGROUND_POSITION,
   },
 };
 

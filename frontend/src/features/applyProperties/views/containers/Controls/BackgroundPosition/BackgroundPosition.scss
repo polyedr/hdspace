@@ -1,0 +1,27 @@
+.container {
+  display: flex;
+}
+
+.textField {
+  flex: 1 1 100px;
+  width: 100%;
+  padding: $propsPanelInputsPadding;
+  padding-right: 2px;
+
+  @include props_panel_text;
+  font-weight: 400;
+
+  border: 1px solid $mainBorderColor;
+  border-radius: 3px;
+  outline: none;
+
+  &:hover,
+  &:focus,
+  &:active {
+    border-color: $secondBorderColor;
+  }
+
+  &:first-child {
+    margin-right: 10px;
+  }
+}

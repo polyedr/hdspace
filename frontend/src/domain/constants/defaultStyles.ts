@@ -62,6 +62,10 @@ export const DEFAULT_BACKGROUND: ScreenBackground = {
   'background-size': 'cover',
 };
 
+export const DEFAULT_BACKGROUND_POSITION: CssLikeStyles = {
+  'background-position': '0% 0%',
+};
+
 export const DEFAULT_BULLETS: CssLikeStyles = {
   'list-style-type': 'disc',
 };
