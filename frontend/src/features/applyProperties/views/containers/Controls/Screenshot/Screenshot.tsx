@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 
 import {
@@ -19,19 +19,18 @@ type Props = PropertiesChangeProps<ImageElement> & typeof mapDispatch;
 const Screenshot: React.FC<Props> = (props) => {
   const { activeItemID, updateElementImage } = props;
 
-  const handleChangeFileInput = useCallback(
-    ({ target }) => {
-      const file = target.files[0];
+  const handleFileInputChange = ({
+    target,
+  }: React.ChangeEvent<HTMLInputElement>) => {
+    const file = target.files && target.files[0];
 
-      if (file.size > 5242880) {
-        // eslint-disable-next-line no-alert
-        alert('Choose image up to 5Mb!');
-      } else {
-        updateElementImage(activeItemID, file);
-      }
-    },
-    [activeItemID, updateElementImage],
-  );
+    if (file && file.size > 5242880) {
+      // eslint-disable-next-line no-alert
+      alert('Choose image up to 5Mb!');
+    } else if (file) {
+      updateElementImage(activeItemID, file);
+    }
+  };
 
   return (
     <div className="propsElementsBlock">
@@ -45,7 +44,7 @@ const Screenshot: React.FC<Props> = (props) => {
               type="file"
               accept=".jpg, .jpeg, .png"
               name="upload"
-              onChange={handleChangeFileInput}
+              onChange={handleFileInputChange}
             />
           </label>
         </div>

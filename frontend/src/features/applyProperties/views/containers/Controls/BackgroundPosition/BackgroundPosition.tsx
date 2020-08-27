@@ -8,8 +8,7 @@ import {
   PropertiesChangeProps,
 } from '$utils/withConfigurableProperties';
 import { ScreenshotElement } from '$api/types';
-
-import { ControlSection } from '../../../components/ControlSection/ControlSection';
+import { StylesHeader } from '$features/applyProperties/views/components/StylesHeader/StylesHeader';
 
 const styles = require('./BackgroundPosition.scss');
 
@@ -30,6 +29,7 @@ type Props = ReturnType<typeof mapState> &
 const BackgroundPosition: React.FC<Props> = ({
   backgroundPosition,
   updateStyles,
+  removeStyles,
 }) => {
   const [leftPosition, topPosition] = backgroundPosition.split(' ');
 
@@ -47,24 +47,27 @@ const BackgroundPosition: React.FC<Props> = ({
 
   return (
     <>
-      <ControlSection title="Background position">
+      <div className="propsElementsBlock">
+        <StylesHeader
+          title="Background position"
+          onClick={removeStyles}
+          cssPropertiesNames={['background-position']}
+        />
         <div className={styles.container}>
           <input
             className={styles.textField}
             type="number"
             value={parseFloat(topPosition)}
-            min={0}
             onChange={handleTopPositionFieldChange}
           />
           <input
             className={styles.textField}
             type="number"
             value={parseFloat(leftPosition)}
-            min={0}
             onChange={handleLeftPositionFieldChange}
           />
         </div>
-      </ControlSection>
+      </div>
     </>
   );
 };

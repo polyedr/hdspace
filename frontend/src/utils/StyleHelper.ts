@@ -34,6 +34,7 @@ export interface CssLikeStyles {
   'background-image'?: string;
   'background-repeat'?: string;
   'background-size'?: string;
+  'background-position'?: string;
 
   'font-family'?: string;
   color?: string;
@@ -49,7 +50,6 @@ export interface CssLikeStyles {
   'flex-grow'?: number;
 
   'list-style-type'?: 'none' | 'disc';
-  'background-position'?: string;
 }
 
 type TConvertIndents = (
@@ -160,6 +160,8 @@ const otherStyles = (styles: CssLikeStyles): React.CSSProperties =>
         return { ...acc, listStyleType: styles[key] };
       case 'background-position':
         return { ...acc, backgroundPosition: styles[key] };
+      case 'background-size':
+        return { ...acc, backgroundSize: styles[key] };
       default:
         return acc;
     }

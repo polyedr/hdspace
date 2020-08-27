@@ -1,0 +1,62 @@
+.sizeBlock {
+  position: relative;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  flex: 1 1 20%;
+  margin-right: 20px;
+  box-sizing: border-box;
+
+  border: 1px solid $mainBorderColor;
+  border-radius: 3px;
+
+  &::before {
+    position: absolute;
+    top: center;
+    right: 27px;
+    z-index: 1;
+
+    color: $secondBorderColor;
+    @include props_panel_text;
+    font-weight: 400;
+  }
+
+  &:first-child::before {
+      content: "W";
+  }
+
+  &:last-child {
+    margin-right: 0;
+
+    &::before {
+      content: "H";
+    }
+  }
+
+  &:hover,
+  &:focus {
+    border-color: $secondBorderColor;
+  }
+}
+
+.sizeField {
+  position: relative;
+
+  flex: 1 1 40px;
+  max-width: 60px;
+  padding: $propsPanelInputsPadding;
+  padding-right: 0;
+
+  @include props_panel_text;
+  font-weight: 400;
+
+  background-color: rgb(255, 255, 255);
+  border: none;
+  outline: none;
+
+  &:disabled {
+    background-color: rgba(134, 133, 133, 0.2);
+  }
+}

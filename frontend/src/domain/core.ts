@@ -62,6 +62,7 @@ const CONTROLS_AFFECT_ON_STYLES = [
   'bullets',
   'flexGrow',
   'backgroundPosition',
+  'backgroundSize',
 ] as const;
 
 export type ElementEntity = keyof ElementsToAdd;
@@ -200,6 +201,7 @@ export const screenshotStyleControls = [
   'size',
   'border',
   'background',
+  'backgroundSize',
   'backgroundPosition',
 ] as const;
 export const selectStyleControls = [

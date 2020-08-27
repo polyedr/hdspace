@@ -46,6 +46,7 @@ import { ShareStyles } from '../ShareStyles/ShareStyles';
 import { Screenshot } from '../Controls/Screenshot/Screenshot';
 import { FlexGrow } from '../Controls/FlexGrow/FlexGrow';
 import { BackgroundPosition } from '../Controls/BackgroundPosition/BackgroundPosition';
+import { BackgroundSize } from '../Controls/BackgroundSize/BackgroundSize';
 
 const styles = require('./PropertiesPanel.scss');
 
@@ -113,6 +114,7 @@ const CONTROLS: Record<Control, React.ComponentType<any>> = {
   videoSettings: VideoSettings,
   flexGrow: FlexGrow,
   backgroundPosition: BackgroundPosition,
+  backgroundSize: BackgroundSize,
 };
 
 export type PropertiesPanelProps = StateProps & typeof mapDispatch;

@@ -9,7 +9,7 @@ import {
 } from '$utils/withConfigurableProperties';
 import { ContainerElement } from '$api/types';
 
-import { ControlSection } from '../../../components/ControlSection/ControlSection';
+import { StylesHeader } from '$features/applyProperties/views/components/StylesHeader/StylesHeader';
 
 const styles = require('./FlexGrow.scss');
 
@@ -30,6 +30,7 @@ const FlexGrow: React.FC<Props> = ({
   flexGrow,
   activeItemID,
   updateStyles,
+  removeStyles,
 }) => {
   const el = document.getElementById(activeItemID);
   const parentStyles = el?.parentElement && getComputedStyle(el.parentElement);
@@ -42,19 +43,22 @@ const FlexGrow: React.FC<Props> = ({
   };
 
   return isFlexItem ? (
-    <>
-      <ControlSection title="Flex grow">
-        <>
-          <input
-            className={styles.textField}
-            type="number"
-            value={flexGrow}
-            min={0}
-            onChange={handleTextFieldChange}
-          />
-        </>
-      </ControlSection>
-    </>
+    <div className={styles.container}>
+      <StylesHeader
+        title="Flex Grow"
+        onClick={removeStyles}
+        cssPropertiesNames={['flex-grow']}
+      />
+      <div>
+        <input
+          className={styles.textField}
+          type="number"
+          value={flexGrow}
+          min={0}
+          onChange={handleTextFieldChange}
+        />
+      </div>
+    </div>
   ) : null;
 };
 
