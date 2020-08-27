@@ -32,12 +32,12 @@ const TreeItem: React.FC<any> = ({
   const isParent = item.children.length;
 
   useEffect(() => {
-    if (selectedItem === item.id) {
+    /* if (selectedItem === item.id) {
       const elem = document.querySelector(
         `#treeitem-${item.id}`,
       ) as HTMLElement;
       elem?.focus();
-    }
+    } */
   }, [item.id, selectedItem]);
 
   return (

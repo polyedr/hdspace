@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign,no-return-assign,no-unused-vars,no-shadow */
-import React from 'react';
+import React, { useEffect } from 'react';
 import AtlasTree, {
   moveItemOnTree,
   mutateTree,
@@ -12,7 +12,10 @@ import TreeItem from './TreeItem';
 import { findPrevNode, findNextNode } from '../utils';
 import { setActiveItem } from '$redux/project/actions';
 import { findChildByID } from '$utils/ElementsTreeHelper';
-import { selectCurrentScreenElement } from '$redux/project/selectors';
+import {
+  selectActiveItem,
+  selectCurrentScreenElement,
+} from '$redux/project/selectors';
 
 const styles = require('../Navigator.scss');
 
@@ -49,6 +52,7 @@ const TreeView: React.FC<Props> = ({
 }) => {
   const dispatch = useDispatch();
   const rootElement = useSelector(selectCurrentScreenElement);
+  const { itemId: activeItemId } = useSelector(selectActiveItem);
 
   const expand = (itemId) =>
     setTree((state) => mutateTree(state, itemId, { isExpanded: true }));
@@ -163,6 +167,21 @@ const TreeView: React.FC<Props> = ({
     );
   };
 
+  const expandParents = (itemId) => {
+    if (itemId === 'root') return;
+    // @ts-ignore
+    const parentId = tree.items[itemId]?.parent;
+    if (!parentId) return;
+
+    setTree((prevTree) => mutateTree(prevTree, parentId, { isExpanded: true }));
+    expandParents(parentId);
+  };
+
+  useEffect(() => {
+    select(activeItemId);
+    expandParents(activeItemId);
+  }, [activeItemId]);
+
   const renderItem = (props) => (
     <TreeItem
       {...props}
@@ -171,6 +190,7 @@ const TreeView: React.FC<Props> = ({
       selectedItem={selectedItem}
     />
   );
+
   return (
     <div className={styles.tree} id="tree" onKeyDown={handleKeyDown}>
       <AtlasTree
