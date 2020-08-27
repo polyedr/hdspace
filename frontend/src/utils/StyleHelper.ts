@@ -140,12 +140,12 @@ const convertBackground: TConvertBackground = (styles) =>
 const otherStyles = (styles: CssLikeStyles): React.CSSProperties =>
   R.keys(styles).reduce((acc, key) => {
     switch (key) {
-      case 'flex-direction':
-        return { ...acc, flexDirection: styles[key] };
       case 'flex-grow':
         return { ...acc, flexGrow: styles[key] };
       case 'justify-content':
         return { ...acc, justifyContent: styles[key] };
+      case 'flex-direction':
+        return { ...acc, flexDirection: styles[key] };
       case 'align-items':
         return { ...acc, alignItems: styles[key] };
       case 'min-height':
@@ -222,6 +222,8 @@ export const convertFlexToCssLikeStyles = (
     switch (key) {
       case 'display':
         return { ...result, display: styles[key] };
+      case 'flexDirection':
+        return { ...result, 'flex-direction': styles[key] };
       case 'alignItems':
         return { ...result, 'align-items': styles[key] };
       case 'justifyContent':

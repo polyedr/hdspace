@@ -54,18 +54,24 @@ const BackgroundPosition: React.FC<Props> = ({
           cssPropertiesNames={['background-position']}
         />
         <div className={styles.container}>
-          <input
-            className={styles.textField}
-            type="number"
-            value={parseFloat(topPosition)}
-            onChange={handleTopPositionFieldChange}
-          />
-          <input
-            className={styles.textField}
-            type="number"
-            value={parseFloat(leftPosition)}
-            onChange={handleLeftPositionFieldChange}
-          />
+          <label className={styles.label}>
+            <span>Top</span>
+            <input
+              className={styles.textField}
+              type="number"
+              value={parseFloat(topPosition)}
+              onChange={handleTopPositionFieldChange}
+            />
+          </label>
+          <label className={styles.label}>
+            <span>Left</span>
+            <input
+              className={styles.textField}
+              type="number"
+              value={parseFloat(leftPosition)}
+              onChange={handleLeftPositionFieldChange}
+            />
+          </label>
         </div>
       </div>
     </>

@@ -22,7 +22,6 @@ import {
   VideoParameters,
   DropdownParameters,
   DropdownItemParameters,
-  PageTemplateParameters,
   ScreenshotParameters,
 } from './elementsParameters';
 
@@ -57,8 +56,7 @@ export type ContainerServerElement = ServerElement<
 export type DivBlockServerElement = ServerElement<'divBlock'>;
 export type PageTemplateServerElement = ServerElement<
   'pageTemplate',
-  ContainerServerElement[],
-  PageTemplateParameters
+  ContainerServerElement[]
 >;
 export type ImageServerElement = ServerElement<'image', [], ImageParameters>;
 export type ScreenshotServerElement = ServerElement<
@@ -193,8 +191,7 @@ export type ContainerElement = LibraryElement<'container', []>;
 export type DivBlockElement = LibraryElement<'divBlock'>;
 export type PageTemplateElement = LibraryElement<
   'pageTemplate',
-  ContainerElement[],
-  PageTemplateParameters
+  ContainerElement[]
 >;
 export type ImageElement = LibraryElement<'image', [], ImageParameters>;
 export type ScreenshotElement = LibraryElement<
