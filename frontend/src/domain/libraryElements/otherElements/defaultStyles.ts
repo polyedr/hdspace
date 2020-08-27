@@ -131,10 +131,6 @@ export const defaultScreenshotStyles: {
 } = {
   indents: {
     ...DEFAULT_INDENTS,
-    'padding-top': '0',
-    'padding-right': '0',
-    'padding-bottom': '0',
-    'padding-left': '0',
   },
   size: {
     ...DEFAULT_SIZE,

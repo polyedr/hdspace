@@ -46,6 +46,7 @@ export const pageTemplate: PageTemplateServerElement = {
         makeContainer({
           name: 'Main Content',
           children: [makeScreenshot()],
+          buoyancy: 1,
           ownStyles: {
             'padding-top': '0px',
             'padding-right': '5px',
@@ -58,6 +59,7 @@ export const pageTemplate: PageTemplateServerElement = {
         makeContainer({
           name: 'Right Panel',
           children: [makeScreenshot()],
+          buoyancy: 2,
           ownStyles: {
             'padding-top': '0px',
             'padding-right': '5px',

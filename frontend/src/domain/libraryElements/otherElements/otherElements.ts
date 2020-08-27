@@ -33,15 +33,17 @@ export const root: RootServerElement = {
 };
 
 export const makeContainer = ({
-  children,
-  ownStyles,
-  name,
+  children = [],
+  ownStyles = {} as Required<CssLikeStyles>,
+  name = 'container',
+  buoyancy = 0,
 }: {
   children?: ServerElement<Entity>[];
   ownStyles?: Required<CssLikeStyles>;
   name?: string;
+  buoyancy?: number;
 } = {}): ContainerServerElement => ({
-  buoyancy: 0,
+  buoyancy,
   func_type: 'container',
   struct_type: 'container',
   parameters: {
@@ -49,10 +51,10 @@ export const makeContainer = ({
   },
   styles: {
     classNames: ['container'],
-    ownStyles: { ...ownStyles } as Required<CssLikeStyles>,
+    ownStyles,
   },
-  name: name || 'container',
-  children: children || [],
+  name,
+  children,
 });
 
 export const makeDivBlock = (textContent: string): DivBlockServerElement => ({
