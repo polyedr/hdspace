@@ -5,7 +5,12 @@ import ChevronRight from './Icons/chevron-right';
 const styles = require('../Navigator.scss');
 
 const GroupIcon = ({ onClick, icon }) => (
-  <button tabIndex={-1} onClick={onClick} className={styles.icon} type="button">
+  <button
+    tabIndex={-1}
+    onClick={onClick}
+    className={styles.iconButton}
+    type="button"
+  >
     {icon}
   </button>
 );
@@ -18,7 +23,7 @@ const getIcon = (item, expand, collapse) => {
       <GroupIcon icon={<ChevronRight />} onClick={() => expand(item.id)} />
     );
   }
-  return <span className={styles.icon} />;
+  return <span className={styles.iconButton} />;
 };
 
 const TreeItem: React.FC<any> = ({

@@ -62,6 +62,8 @@ const TreeView: React.FC<Props> = ({
     setTree((state) => mutateTree(state, itemId, { isExpanded: false }));
 
   const select = (itemId) => {
+    if (selectedItem === itemId) return;
+
     const item = findChildByID(rootElement, itemId);
     if (!item) return;
 
@@ -144,25 +146,37 @@ const TreeView: React.FC<Props> = ({
     destination?: TreeDestinationPosition,
   ) => {
     if (!destination) return;
+    if (destination.index === undefined) destination.index = -1;
     const { items } = tree;
 
     const oldParent = items[source.parentId];
     const newParent = items[destination.parentId];
     const childId = oldParent.children[source.index];
 
-    setIsDragging(false);
-
-    if (destination.index) {
+    const isRemote = source.parentId !== destination.parentId;
+    if (isRemote) {
       dispatch(
         moveElement(
           { newIndex: destination.index, oldIndex: source.index },
           childId as string,
-          destination.parentId as string,
-          destination.parentId === source.parentId,
+          source.parentId as string,
+          true,
           { screenId: currentScreenId },
         ),
       );
     }
+
+    dispatch(
+      moveElement(
+        { newIndex: destination.index, oldIndex: source.index },
+        childId as string,
+        destination.parentId as string,
+        false,
+        { screenId: currentScreenId },
+      ),
+    );
+
+    setIsDragging(false);
     select(
       newParent.isExpanded ? oldParent.children[source.index] : newParent.id,
     );
@@ -179,7 +193,7 @@ const TreeView: React.FC<Props> = ({
   };
 
   useEffect(() => {
-    select(activeItemId);
+    setSelectedItem(activeItemId);
     expandParents(activeItemId);
   }, [activeItemId]);
 
@@ -201,7 +215,7 @@ const TreeView: React.FC<Props> = ({
         onCollapse={collapse}
         onDragStart={dragStart}
         onDragEnd={dragEnd}
-        offsetPerLevel={20}
+        offsetPerLevel={10}
         isDragEnabled
         isNestingEnabled
       />

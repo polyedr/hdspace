@@ -22,7 +22,7 @@
     padding: .2em .4em;
 }
 
-svg[id^="icon"] {
+.icon {
     width: 1.25em; /* Width is proportional to parent fs */
     height: 1.25em; /* Height is proportional to parent fs */
     display: inline-block; /* Flow with text content */
@@ -64,11 +64,11 @@ button {
         overflow: hidden;
     }
 
-    .icon {
+    .iconButton {
         cursor: pointer;
     }
 
-    .icon:empty {
+    .iconButton:empty {
         display: inline-block;
         width: 0.9em;
     }
@@ -80,8 +80,13 @@ button {
     min-height: 2em;
     padding: 0.25em;
     outline: none;
-}
-.treeItem[aria-selected="true"]{
-    background-color: hsl(204, 80%, 50%);
-    //background-color: $mainColor;
+
+    &:hover {
+        background-color: lighten($lightMatteTurq, 5%);
+    }
+
+    &[aria-selected="true"] {
+        background-color: hsl(204, 80%, 50%);
+        //background-color: $mainColor;
+    }
 }

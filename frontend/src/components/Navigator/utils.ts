@@ -4,7 +4,7 @@ import { Node } from '$components/Navigator/types';
 
 export const convertTree = (element: LibraryElement<any>) => ({
   id: element.id,
-  data: { title: element.id },
+  data: { title: element.name },
   hasChildren: !!element.children.length,
   isExpanded: !!element.children.length,
   isChildrenLoading: false,
