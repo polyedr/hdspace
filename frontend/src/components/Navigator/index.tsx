@@ -1,72 +1,43 @@
-/* eslint-disable no-unused-vars */
-import React, { useEffect } from 'react';
-import useProfunctorState from '@staltz/use-profunctor-state';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { TreeData } from '@atlaskit/tree/types';
 import TreeView from './components/TreeView';
 import { makeTree, convertTree } from './utils';
 import {
   selectActiveItem,
   selectCurrentScreenElement,
 } from '$redux/project/selectors';
-import { Tree } from '$components/Navigator/types';
 
 const styles = require('./Navigator.scss');
-
-export type State = {
-  tree: Tree;
-};
 
 const Navigator: React.FC = () => {
   const rootElement = useSelector(selectCurrentScreenElement);
   const { itemId: activeItemId } = useSelector(selectActiveItem);
 
-  const appState = useProfunctorState<State>({
-    tree: makeTree([convertTree(rootElement)]),
-  });
+  const [treeData, setTreeData] = useState<TreeData>(
+    makeTree([convertTree(rootElement)]),
+  );
+  const [selectedItem, setSelectedItem] = useState<string | null>(null);
+
+  const [isDragging, setIsDragging] = useState<boolean>(false);
 
   useEffect(() => {
-    appState.setState(() => ({
-      tree: {
-        ...appState.state.tree,
-        selectedItem: activeItemId,
-      },
-    }));
+    setSelectedItem(activeItemId);
   }, [activeItemId]);
 
   useEffect(() => {
-    appState.setState(() => ({ tree: makeTree([convertTree(rootElement)]) }));
+    setTreeData(makeTree([convertTree(rootElement)]));
   }, [rootElement]);
-
-  const treeState = appState.promap(
-    (state) => state.tree,
-    (tree, state) => ({ ...state, tree }),
-  );
 
   return (
     <div className={styles.componentPane}>
-      <div
-        className={styles.toolbar}
-        role="toolbar"
-        aria-controls="tree"
-        aria-label="add or remove components"
-      >
-        <button
-          disabled={!treeState.state.selectedItem}
-          onClick={() => {}}
-          type="button"
-          aria-label="remove component"
-        >
-          −
-        </button>
-
-        <button onClick={() => {}} type="button" aria-label="add component">
-          +
-        </button>
-      </div>
-
       <TreeView
-        // addNode={(selected) => addNode(treeState, node('New item', {}, []))}
-        {...treeState}
+        tree={treeData}
+        setTree={setTreeData}
+        selectedItem={selectedItem}
+        setSelectedItem={setSelectedItem}
+        isDragging={isDragging}
+        setIsDragging={setIsDragging}
       />
     </div>
   );

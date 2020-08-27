@@ -1,16 +1,6 @@
-/* eslint-disable */
-import { nanoid } from 'nanoid';
-import { LibraryElement } from "$api/types";
-import { Tree } from "$components/Navigator/types";
-
-export const node = (title, data, children) => ({
-  id: nanoid(),
-  data: { title, ...data },
-  hasChildren: !!children.length,
-  isExpanded: !!children.length,
-  isChildrenLoading: false,
-  children,
-});
+import { TreeData } from '@atlaskit/tree';
+import { LibraryElement } from '$api/types';
+import { Node } from '$components/Navigator/types';
 
 export const convertTree = (element: LibraryElement<any>) => ({
   id: element.id,
@@ -18,26 +8,7 @@ export const convertTree = (element: LibraryElement<any>) => ({
   hasChildren: !!element.children.length,
   isExpanded: !!element.children.length,
   isChildrenLoading: false,
-  children: element.children.map(child => convertTree(child)),
-})
-
-export const makeTree = (nodes): Tree => ({
-  rootId: 'root',
-  selectedItem: null,
-  isDragging: false,
-  items: {
-    root: {
-      id: 'root',
-      children: nodes.map((node) => node.id),
-      hasChildren: true,
-      isExpanded: true,
-      isChildrenLoading: false,
-      data: {
-        title: 'root',
-      },
-    },
-    ...flattenNodes({}, nodes, 'root'),
-  },
+  children: element.children.map((child) => convertTree(child)),
 });
 
 const flattenNodes = (root, nodes, parent) =>
@@ -54,9 +25,26 @@ const flattenNodes = (root, nodes, parent) =>
     root,
   );
 
-export const findNextNode = (state, itemId, traverseChildren = true) => {
-  const item = state.items[itemId];
-  const parent = state.items[item.parent];
+export const makeTree = (nodes: Node[]): TreeData => ({
+  rootId: 'root',
+  items: {
+    root: {
+      id: 'root',
+      children: nodes.map((node) => node.id),
+      hasChildren: true,
+      isExpanded: true,
+      isChildrenLoading: false,
+      data: {
+        title: 'root',
+      },
+    },
+    ...flattenNodes({}, nodes, 'root'),
+  },
+});
+
+export const findNextNode = (tree, itemId, traverseChildren = true) => {
+  const item = tree.items[itemId];
+  const parent = tree.items[item.parent];
 
   if (!parent) return item.children[0];
 
@@ -66,7 +54,7 @@ export const findNextNode = (state, itemId, traverseChildren = true) => {
   const itemsIndex = parent.children.indexOf(itemId);
 
   if (!parent.children[itemsIndex + 1]) {
-    return findNextNode(state, parent.id, false);
+    return findNextNode(tree, parent.id, false);
   }
 
   return parent.children[itemsIndex + 1];
@@ -83,25 +71,25 @@ const findLastExpandedChild = (state, itemId) => {
   return itemId;
 };
 
-export const findPrevNode = (state, itemId) => {
-  const item = state.items[itemId];
-  const parent = state.items[item.parent];
+export const findPrevNode = (tree, itemId) => {
+  const item = tree.items[itemId];
+  const parent = tree.items[item.parent];
   const itemIndex = parent.children.indexOf(itemId);
 
   if (parent.id === 'root' && item.id === parent.children[0]) {
     return findLastExpandedChild(
-      state,
+      tree,
       parent.children[parent.children.length - 1],
     );
   }
 
-  const prevItem = state.items[parent.children[itemIndex - 1]];
+  const prevItem = tree.items[parent.children[itemIndex - 1]];
 
   if (!prevItem) return parent.id;
 
   return prevItem.hasChildren && prevItem.isExpanded
     ? findLastExpandedChild(
-        state,
+        tree,
         prevItem.children[prevItem.children.length - 1],
       )
     : prevItem.id;

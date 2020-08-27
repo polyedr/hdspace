@@ -21,7 +21,7 @@ const getIcon = (item, expand, collapse) => {
   return <span className={styles.icon} />;
 };
 
-export default ({
+const TreeItem: React.FC<any> = ({
   item,
   onExpand,
   onCollapse,
@@ -58,3 +58,5 @@ export default ({
     </div>
   );
 };
+
+export default TreeItem;
