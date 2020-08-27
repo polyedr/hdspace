@@ -111,6 +111,7 @@ const SizeBlock: React.FC<Props> = memo((props) => {
       };
 
       updateStyles(newSize);
+      updateStyles({ 'flex-grow': 0 });
     },
     [updateStyles, width, height],
   );
