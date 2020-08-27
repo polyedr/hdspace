@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     "rest_framework.authtoken",
     "djoser",
     "rest_framework_swagger",
+    "drf_yasg", 
     "corsheaders",
     "mptt",
     "anymail",
@@ -134,6 +135,8 @@ WSGI_APPLICATION = "project.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
+print('DB User: '+ os.getenv("DB_USER", "adevi_user"))
+print('DB PASSWORD: '+ os.getenv("DB_PASSWORD"))
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
@@ -321,7 +324,9 @@ DJOSER = {
     "DOMAIN": "staging-26-10.firebaseapp.com",
     "ACTIVATION_URL": "/activate/{uid}/{token}",
     "SEND_ACTIVATION_EMAIL": True,
-    "SERIALIZERS": {},
+    "SERIALIZERS": {
+        'user':'apps.accounts.serializers.UserSerializer',
+    },
 }
 
 
