@@ -139,8 +139,9 @@ const Component: React.FunctionComponent<Props> = memo(
     );
 
     const getContentStep = useCallback(() => {
-      const contentStep = getGroupElements(activeTab, listElement);
-      return contentStep;
+      return Object.keys(listElement).length
+        ? getGroupElements(activeTab, listElement)
+        : [];
     }, [activeTab, listElement]);
 
     return active ? (

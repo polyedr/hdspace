@@ -7,7 +7,7 @@ export const pageTemplate: PageTemplateServerElement = {
   func_type: 'pageTemplate',
   struct_type: 'pageTemplate',
   parameters: {
-    group: 'templates',
+    group: 'containers',
   },
   styles: {
     classNames: ['pageTemplate'],

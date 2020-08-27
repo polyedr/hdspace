@@ -137,6 +137,8 @@ export function* addProjectSaga({
   );
   yield put(Actions.setListProject([...projects, project]));
 
+  yield put(Actions.setIsAddElementsModalOpened(true));
+
   // eslint-disable-next-line consistent-return
   return project;
 }

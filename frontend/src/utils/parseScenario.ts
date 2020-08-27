@@ -130,13 +130,6 @@ export const getGroupElements = (
         label: `${x.struct_type}`,
       }));
 
-    case 'Templates':
-      return listElement.Templates.map((x, idx) => ({
-        key: `key-${x.struct_type}-${x.func_type}-${idx}`,
-        value: { structType: x.struct_type, funcType: x.func_type },
-        label: `${x.struct_type}`,
-      }));
-
     case 'Typography':
       return listElement.Typography.map((x, idx) => ({
         key: `key-${x.struct_type}-${x.func_type}-${idx}`,

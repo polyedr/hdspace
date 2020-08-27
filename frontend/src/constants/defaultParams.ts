@@ -117,7 +117,6 @@ export const DEFAULT_SCREEN_MODE = {
 
 export const MODAL_ADD_ELEMENTS_TABS = [
   'Containers',
-  'Templates',
   'Widget',
   'Typography',
   'Form',
