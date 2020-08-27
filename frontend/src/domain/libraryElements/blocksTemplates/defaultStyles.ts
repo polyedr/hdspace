@@ -15,7 +15,7 @@ export const defaultPageTemplateStyles: {
   [K in pageTemplateControls]: CssLikeStyles;
 } = {
   indents: {
-    ...DEFAULT_INDENTS, // TODO remove styles controls from pageTemplate
+    ...DEFAULT_INDENTS,
   },
   size: {
     ...DEFAULT_SIZE,

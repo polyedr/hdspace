@@ -31,7 +31,7 @@ const Screenshot: React.FC<ScreenshotRendererProps> = ({
     ownStyles: params.imageURL
       ? {
           ...ownStyles,
-          backgroundImage: `url(${params.imageURL})`, // TODO maybe need move
+          backgroundImage: `url(${params.imageURL})`,
         }
       : {
           ...ownStyles,

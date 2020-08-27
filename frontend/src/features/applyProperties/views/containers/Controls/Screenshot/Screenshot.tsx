@@ -11,7 +11,7 @@ import { ImageElement } from '$api/types';
 const styles = require('./Screenshot.scss');
 
 const mapDispatch = {
-  updateElementImage: actionsCreators.updateElementImage, // TODO usedispatch?
+  updateElementImage: actionsCreators.updateElementImage,
 };
 
 type Props = PropertiesChangeProps<ImageElement> & typeof mapDispatch;

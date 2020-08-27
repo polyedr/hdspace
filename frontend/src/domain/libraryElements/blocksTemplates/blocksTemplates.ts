@@ -27,7 +27,7 @@ export const pageTemplate: PageTemplateServerElement = {
         'padding-right': '5px',
         'padding-left': '5px',
         height: '80px',
-      } as Required<CssLikeStyles>, // TODO maybe need move into default styles
+      } as Required<CssLikeStyles>,
     }),
     makeContainer({
       children: [
@@ -41,7 +41,7 @@ export const pageTemplate: PageTemplateServerElement = {
             'padding-left': '5px',
             width: '25%',
             'flex-grow': 1,
-          } as Required<CssLikeStyles>, // TODO maybe need move into default styles
+          } as Required<CssLikeStyles>,
         }),
         makeContainer({
           name: 'Main Content',
@@ -54,7 +54,7 @@ export const pageTemplate: PageTemplateServerElement = {
             'padding-left': '5px',
             width: '50%',
             'flex-grow': 3000,
-          } as Required<CssLikeStyles>, // TODO maybe need move into default styles
+          } as Required<CssLikeStyles>,
         }),
         makeContainer({
           name: 'Right Panel',
@@ -67,7 +67,7 @@ export const pageTemplate: PageTemplateServerElement = {
             'padding-left': '5px',
             width: '25%',
             'flex-grow': 1,
-          } as Required<CssLikeStyles>, // TODO maybe need move into default styles
+          } as Required<CssLikeStyles>,
         }),
       ],
       ownStyles: {
@@ -78,7 +78,7 @@ export const pageTemplate: PageTemplateServerElement = {
         'padding-bottom': '5px',
         'padding-left': '0px',
         'flex-grow': 1,
-      } as Required<CssLikeStyles>, // TODO remove type assertions
+      } as Required<CssLikeStyles>,
     }),
     makeContainer({
       name: 'Footer',

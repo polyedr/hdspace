@@ -50,7 +50,7 @@ const getUnitFromValue = (value: string): UnitName => {
   if (unit in Unit) {
     return unit as UnitName;
   }
-  console.error('Incorrect unit', unit); // TODO validate users input value
+  console.error('Incorrect unit', unit);
   return Unit.px;
 };
 
