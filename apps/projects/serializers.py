@@ -86,6 +86,8 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
             "parameters",
             "styles",
         )
+        ref_name = "Scenario 1" # Added to avoid SwaggerGeneration Conflicts
+
 
     def create(self, validated_data):
         # Remove nested objects to handle separately

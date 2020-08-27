@@ -19,7 +19,24 @@ from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework_swagger.views import get_swagger_view
 
+# drf_yasg
+from drf_yasg.views import get_schema_view
+from drf_yasg import openapi
 
+# drf_yasg SchemaView
+SchemaView = get_schema_view(
+    openapi.Info(
+        title="Adevi API",
+        default_version='v1',
+        description="Test description",
+        terms_of_service="https://www.google.com/policies/terms/",
+        contact=openapi.Contact(email="contact@snippets.local"),
+        license=openapi.License(name="BSD License"),
+    ),
+    public=True,
+)
+
+# Old Swagger API View
 schema_view = get_swagger_view(title="Adevi API")
 
 urlpatterns = [
@@ -34,7 +51,18 @@ urlpatterns = [
         "api/v1/virtualize_simple/",
         include("apps.virtualize_simple.apiurls", namespace="apivirtualize_simple"),
     ),
+    
+    # Swagger
     path("api/v1/schema/", schema_view),
+
+    # drf_yasg
+    path("api/v1/yasg-swagger/", SchemaView.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+    path("api/v1/yasg-redoc/", SchemaView.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+    path("api/v1/yasg-redoc-old/", SchemaView.with_ui('redoc-old', cache_timeout=0), name='schema-redoc-old'),
+    path("api/v1/yasg-swagger/", SchemaView.with_ui('swagger', cache_timeout=None), name='cschema-swagger-ui'),
+    path("api/v1/yasg-redoc/", SchemaView.with_ui('redoc', cache_timeout=None), name='cschema-redoc'),
+
+    # djoser
     path("api/v1/djauth/", include("djoser.urls"), name="djoserauth"),
     path("api/v1/djauth/", include("djoser.urls.jwt"), name="djoserauthjwt"),
     path("api/v1/djauth/", include("djoser.social.urls"), name="djosersocial"),
