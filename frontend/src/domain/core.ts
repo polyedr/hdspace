@@ -60,6 +60,7 @@ const CONTROLS_AFFECT_ON_STYLES = [
   'border',
   'background',
   'bullets',
+  'flexGrow',
 ] as const;
 
 export type ElementEntity = keyof ElementsToAdd;
@@ -83,6 +84,7 @@ export const containerStyleControls = [
   'typography',
   'border',
   'background',
+  'flexGrow',
 ] as const;
 export const divBlockStyleControls = [
   'indents',

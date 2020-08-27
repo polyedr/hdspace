@@ -217,8 +217,6 @@ export const convertFlexToCssLikeStyles = (
     switch (key) {
       case 'display':
         return { ...result, display: styles[key] };
-      case 'flexGrow':
-        return { ...result, 'flex-grow': styles[key] };
       case 'alignItems':
         return { ...result, 'align-items': styles[key] };
       case 'justifyContent':

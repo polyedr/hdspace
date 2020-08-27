@@ -5,6 +5,7 @@ import {
   DEFAULT_BORDER,
   DEFAULT_BACKGROUND,
   DEFAULT_TYPOGRAPHY,
+  DEFAULT_FLEX_GROW,
 } from '$domain/constants/defaultStyles';
 import {
   rootStyleControls,
@@ -72,8 +73,8 @@ export const defaultContainerStyles: {
   background: {
     ...DEFAULT_BACKGROUND,
   },
-  other: {
-    'flex-grow': 0,
+  flexGrow: {
+    ...DEFAULT_FLEX_GROW,
   },
 };
 

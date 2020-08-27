@@ -66,6 +66,10 @@ export const DEFAULT_BULLETS: CssLikeStyles = {
   'list-style-type': 'disc',
 };
 
+export const DEFAULT_FLEX_GROW: CssLikeStyles = {
+  'flex-grow': 0,
+};
+
 type ScreenTypography = {
   'font-family': string;
   color: string;
