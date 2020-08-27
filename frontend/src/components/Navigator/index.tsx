@@ -23,6 +23,8 @@ const Navigator: React.FC = () => {
 
   return (
     <div className={styles.componentPane}>
+      <h3 className={styles.header}>Navigator</h3>
+
       <TreeView
         tree={tree}
         setTree={setTree}

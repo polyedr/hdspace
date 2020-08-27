@@ -1,7 +1,6 @@
 /* eslint-disable no-param-reassign,no-return-assign,no-unused-vars,no-shadow */
 import React, { useEffect } from 'react';
 import AtlasTree, {
-  moveItemOnTree,
   mutateTree,
   TreeSourcePosition,
   TreeDestinationPosition,
@@ -10,11 +9,12 @@ import AtlasTree, {
 import { useDispatch, useSelector } from 'react-redux';
 import TreeItem from './TreeItem';
 import { findPrevNode, findNextNode } from '../utils';
-import { setActiveItem } from '$redux/project/actions';
+import { moveElement, setActiveItem } from '$redux/project/actions';
 import { findChildByID } from '$utils/ElementsTreeHelper';
 import {
   selectActiveItem,
   selectCurrentScreenElement,
+  selectCurrentScreenId,
 } from '$redux/project/selectors';
 
 const styles = require('../Navigator.scss');
@@ -51,6 +51,7 @@ const TreeView: React.FC<Props> = ({
   setIsDragging,
 }) => {
   const dispatch = useDispatch();
+  const currentScreenId = useSelector(selectCurrentScreenId);
   const rootElement = useSelector(selectCurrentScreenElement);
   const { itemId: activeItemId } = useSelector(selectActiveItem);
 
@@ -148,20 +149,20 @@ const TreeView: React.FC<Props> = ({
     const oldParent = items[source.parentId];
     const newParent = items[destination.parentId];
     const childId = oldParent.children[source.index];
-    const child = items[childId];
 
     setIsDragging(false);
 
-    setTree((state) => {
-      const nextState = moveItemOnTree(state, source, destination);
-      return {
-        ...nextState,
-        items: {
-          ...nextState.items,
-          [childId]: { ...child, parent: newParent.id },
-        },
-      };
-    });
+    if (destination.index) {
+      dispatch(
+        moveElement(
+          { newIndex: destination.index, oldIndex: source.index },
+          childId as string,
+          destination.parentId as string,
+          destination.parentId === source.parentId,
+          { screenId: currentScreenId },
+        ),
+      );
+    }
     select(
       newParent.isExpanded ? oldParent.children[source.index] : newParent.id,
     );
