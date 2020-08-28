@@ -58,6 +58,10 @@ export type PageTemplateServerElement = ServerElement<
   'pageTemplate',
   ContainerServerElement[]
 >;
+export type SubscribeFormServerElement = ServerElement<
+  'subscribeForm',
+  ServerElement<Entity>[]
+>;
 export type ImageServerElement = ServerElement<'image', [], ImageParameters>;
 export type ScreenshotServerElement = ServerElement<
   'screenshot',
@@ -193,6 +197,10 @@ export type PageTemplateElement = LibraryElement<
   'pageTemplate',
   ContainerElement[]
 >;
+export type SubscribeFormElement = LibraryElement<
+  'subscribeForm',
+  ContainerElement[] // TODO change child
+>;
 export type ImageElement = LibraryElement<'image', [], ImageParameters>;
 export type ScreenshotElement = LibraryElement<
   'screenshot',
@@ -312,4 +320,5 @@ export type LibraryElementUnion =
   | DropdownMenuElement
   | DropdownItemElement
   | PageTemplateElement
-  | UndefinedElement;
+  | UndefinedElement
+  | SubscribeFormElement;

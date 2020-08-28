@@ -28,6 +28,7 @@ export const ENTITIES: {
   divBlock: 'divBlock',
   pageTemplate: 'pageTemplate',
   screenshot: 'screenshot',
+  subscribeForm: 'subscribeForm',
 };
 
 const CONTROLS_AFFECT_ON_PARAMS = [
@@ -274,6 +275,14 @@ export const pageTemplateStyleControls = [
   'border',
   'background',
 ] as const;
+export const subscribeFormStyleControls = [
+  'indents',
+  'size',
+  'display',
+  'typography',
+  'border',
+  'background',
+] as const;
 export const undefinedControls = ['size', 'background'] as const;
 
 export type Control =
@@ -378,6 +387,9 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
   pageTemplate: {
     root: [...pageTemplateStyleControls],
   },
+  subscribeForm: {
+    root: [...subscribeFormStyleControls],
+  },
   screenshot: {
     root: [...screenshotStyleControls, 'screenshot'],
   },
@@ -464,6 +476,12 @@ export const AVAILABLE_CHILDREN: AvailableChildren = {
   dropdownItem: {},
   video: {},
   pageTemplate: {
+    all: {
+      min: 0,
+      max: Infinity,
+    },
+  },
+  subscribeForm: {
     all: {
       min: 0,
       max: Infinity,

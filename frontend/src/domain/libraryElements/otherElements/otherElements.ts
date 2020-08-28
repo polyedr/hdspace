@@ -69,7 +69,7 @@ export const makeDivBlock = (textContent: string): DivBlockServerElement => ({
     ownStyles: {} as Required<CssLikeStyles>,
   },
   name: 'divBlock',
-  children: [makeParagraph(textContent)],
+  children: [makeParagraph({ textContent })],
 });
 
 export const image: ImageServerElement = {

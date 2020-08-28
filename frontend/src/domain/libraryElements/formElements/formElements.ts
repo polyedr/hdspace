@@ -11,13 +11,19 @@ import {
 } from '$api/types';
 import { CssLikeStyles } from '$utils/StyleHelper';
 
-export const button: ButtonServerElement = {
-  buoyancy: 1,
+export const makeButton = ({
+  buoyancy = 0,
+  textContent = 'button',
+}: {
+  buoyancy?: number;
+  textContent?: string;
+} = {}): ButtonServerElement => ({
+  buoyancy,
   func_type: 'button',
   struct_type: 'button',
   parameters: {
     group: 'form',
-    textContent: 'button',
+    textContent,
     action: {
       type: 'internal-link',
       screenID: 'noScreen',
@@ -30,9 +36,9 @@ export const button: ButtonServerElement = {
   },
   name: 'button',
   children: [],
-};
+});
 
-export const textinput: TextinputServerElement = {
+export const makeTextinput = (): TextinputServerElement => ({
   buoyancy: 0,
   func_type: 'textinput',
   struct_type: 'textinput',
@@ -48,7 +54,7 @@ export const textinput: TextinputServerElement = {
   },
   name: 'textinput',
   children: [],
-};
+});
 
 export const checkbox: CheckboxServerElement = {
   buoyancy: 0,
@@ -146,22 +152,28 @@ export const select: SelectServerElement = {
   children: [selectMenu],
 };
 
-export const label: LabelServerElement = {
+export const makeLabel = ({
+  textContent = 'This is label',
+  ownStyles = {} as Required<CssLikeStyles>,
+}: {
+  textContent?: string;
+  ownStyles?: Required<CssLikeStyles>;
+} = {}): LabelServerElement => ({
   buoyancy: 0,
   func_type: 'label',
   struct_type: 'label',
   parameters: {
     group: 'typography',
-    textContent: 'This is label',
+    textContent,
     labelFor: 'no for attribute',
   },
   styles: {
     classNames: ['label'],
-    ownStyles: {} as Required<CssLikeStyles>,
+    ownStyles,
   },
   name: 'label',
   children: [],
-};
+});
 
 export const textarea: TextareaServerElement = {
   buoyancy: 0,

@@ -6,6 +6,7 @@ import {
   TextBlockServerElement,
   ListItemServerElement,
   ListServerElement,
+  HeadingType,
 } from '$api/types';
 import { CssLikeStyles } from '$utils/StyleHelper';
 
@@ -29,14 +30,20 @@ export const hyperlink: HyperlinkServerElement = {
   children: [],
 };
 
-export const heading: HeadingServerElement = {
+export const makeHeading = ({
+  textContent = 'Heading',
+  headingType = 'h3',
+}: {
+  textContent?: string;
+  headingType?: HeadingType;
+} = {}): HeadingServerElement => ({
   buoyancy: 0,
   func_type: 'heading',
   struct_type: 'heading',
   parameters: {
     group: 'typography',
-    textContent: 'Heading',
-    headingType: 'h3',
+    textContent,
+    headingType,
   },
   styles: {
     classNames: ['heading'],
@@ -44,10 +51,18 @@ export const heading: HeadingServerElement = {
   },
   name: 'heading',
   children: [],
-};
+});
 
-export const makeParagraph = (textContent: string): ParagraphServerElement => ({
-  buoyancy: 0,
+export const makeParagraph = ({
+  buoyancy = 0,
+  textContent = 'This is paragraph',
+  ownStyles = {} as Required<CssLikeStyles>,
+}: {
+  buoyancy?: number;
+  textContent?: string;
+  ownStyles?: Required<CssLikeStyles>;
+} = {}): ParagraphServerElement => ({
+  buoyancy,
   func_type: 'paragraph',
   struct_type: 'paragraph',
   parameters: {
@@ -56,7 +71,7 @@ export const makeParagraph = (textContent: string): ParagraphServerElement => ({
   },
   styles: {
     classNames: ['paragraph'],
-    ownStyles: {} as Required<CssLikeStyles>,
+    ownStyles,
   },
   name: 'paragraph',
   children: [],
