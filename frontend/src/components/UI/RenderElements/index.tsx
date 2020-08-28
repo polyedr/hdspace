@@ -63,6 +63,7 @@ export const RENDERERS: Record<Entity, React.FunctionComponent<any>> = {
   video: Video,
   undefined: Undefined,
   subscribeForm: Container,
+  cardsSection: Container,
 };
 
 export const EXPORT_RENDERERS: Record<Entity, React.FunctionComponent<any>> = {

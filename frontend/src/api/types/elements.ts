@@ -62,6 +62,10 @@ export type SubscribeFormServerElement = ServerElement<
   'subscribeForm',
   ServerElement<Entity>[]
 >;
+export type CardsSectionServerElement = ServerElement<
+  'cardsSection',
+  ServerElement<Entity>[]
+>;
 export type ImageServerElement = ServerElement<'image', [], ImageParameters>;
 export type ScreenshotServerElement = ServerElement<
   'screenshot',
@@ -199,6 +203,10 @@ export type PageTemplateElement = LibraryElement<
 >;
 export type SubscribeFormElement = LibraryElement<
   'subscribeForm',
+  ContainerElement[] // TODO change child
+>;
+export type CardsSectionElement = LibraryElement<
+  'cardsSection',
   ContainerElement[] // TODO change child
 >;
 export type ImageElement = LibraryElement<'image', [], ImageParameters>;

@@ -31,13 +31,17 @@ export const hyperlink: HyperlinkServerElement = {
 };
 
 export const makeHeading = ({
+  buoyancy = 0,
   textContent = 'Heading',
   headingType = 'h3',
+  ownStyles = {} as Required<CssLikeStyles>,
 }: {
   textContent?: string;
   headingType?: HeadingType;
+  buoyancy?: number;
+  ownStyles?: Required<CssLikeStyles>;
 } = {}): HeadingServerElement => ({
-  buoyancy: 0,
+  buoyancy,
   func_type: 'heading',
   struct_type: 'heading',
   parameters: {
@@ -47,7 +51,7 @@ export const makeHeading = ({
   },
   styles: {
     classNames: ['heading'],
-    ownStyles: {} as Required<CssLikeStyles>,
+    ownStyles,
   },
   name: 'heading',
   children: [],

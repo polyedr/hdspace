@@ -58,6 +58,7 @@ const getCategoryTab = (
     case 'divBlock':
     case 'pageTemplate':
     case 'subscribeForm':
+    case 'cardsSection':
       return {
         Containers: [...(obj.Containers || []), libraryElements[structType]],
       };

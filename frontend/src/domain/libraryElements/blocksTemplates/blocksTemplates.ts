@@ -1,9 +1,14 @@
 import {
   PageTemplateServerElement,
   SubscribeFormServerElement,
+  CardsSectionServerElement,
 } from '$api/types';
 import { CssLikeStyles } from '$utils/StyleHelper';
-import { makeContainer, makeScreenshot } from '../otherElements/otherElements';
+import {
+  makeContainer,
+  makeScreenshot,
+  makeImage,
+} from '../otherElements/otherElements';
 import {
   makeHeading,
   makeParagraph,
@@ -126,7 +131,13 @@ export const subscribeForm: SubscribeFormServerElement = {
   },
   name: 'subscribeForm',
   children: [
-    makeHeading({ textContent: 'Subscribe form' }),
+    makeHeading({
+      headingType: 'h2',
+      textContent: 'Subscribe form',
+      ownStyles: {
+        'font-size': '52px',
+      } as Required<CssLikeStyles>,
+    }),
     makeParagraph({
       ownStyles: {
         'margin-bottom': '20px',
@@ -161,6 +172,119 @@ export const subscribeForm: SubscribeFormServerElement = {
             makeTextinput(),
             makeButton({ buoyancy: 1, textContent: 'subscribe' }),
           ],
+        }),
+      ],
+    }),
+  ],
+};
+
+export const cardsSection: CardsSectionServerElement = {
+  buoyancy: 0,
+  func_type: 'cardsSection',
+  struct_type: 'cardsSection',
+  parameters: {
+    group: 'containers',
+  },
+  styles: {
+    classNames: ['cardsSection'],
+    ownStyles: {} as Required<CssLikeStyles>,
+  },
+  name: 'cardsSection',
+  children: [
+    makeHeading({
+      headingType: 'h2',
+      textContent: 'Cards Section',
+      ownStyles: {
+        'text-align': 'center',
+        'font-size': '52px',
+      } as Required<CssLikeStyles>,
+    }),
+    makeParagraph({
+      ownStyles: {
+        'margin-bottom': '20px',
+        'text-align': 'center',
+      } as Required<CssLikeStyles>,
+      buoyancy: 1,
+      textContent:
+        'Lorem ipsum dolor sit amet consectetur adipisicing elit. Id labore error ipsum laboriosam necessitatibus aperiam facere aut quo quibusdam, possimus quia odit placeat nostrum, similique pariatur corporis nobis sint rerum laborum architecto natus! Aut illum a minus cumque iste, quibusdam corporis atque odit magnam impedit esse possimus perspiciatis culpa non id tempore fugiat molestiae eos dolorem, labore maiores ratione? Sequi tenetur porro enim reprehenderit amet accusamus eos itaque saepe quidem quod, sit vero ab recusandae vitae, facere nobis cumque minima libero aut quos nihil labore eius. Soluta doloremque mollitia nihil voluptatibus, nostrum commodi eaque similique ipsam ad libero at tenetur.',
+    }),
+    makeContainer({
+      buoyancy: 2,
+      ownStyles: {
+        display: 'flex',
+        'justify-content': 'space-between',
+      } as Required<CssLikeStyles>,
+      children: [
+        makeContainer({
+          children: [
+            makeImage({
+              ownStyles: {
+                width: '100%',
+              } as Required<CssLikeStyles>,
+            }),
+            makeHeading({ buoyancy: 1, textContent: 'Card one' }),
+            makeParagraph({
+              buoyancy: 2,
+              textContent:
+                'Lorem ipsum dolor sit amet consectetur adipisicing elit. Id labore error ipsum laboriosam necessitatibus aperiam facere aut quo quibusdam, possimus quia odit placeat nostrum, similique pariatur corporis nobis sint rerum laborum architecto natus!',
+            }),
+          ],
+          ownStyles: {
+            'padding-top': '0px',
+            'padding-right': '20px',
+            'padding-bottom': '0px',
+            'padding-left': '20px',
+            width: '33%',
+            'flex-grow': 1,
+          } as Required<CssLikeStyles>,
+        }),
+        makeContainer({
+          children: [
+            makeImage({
+              ownStyles: {
+                width: '100%',
+              } as Required<CssLikeStyles>,
+            }),
+            makeHeading({ buoyancy: 1, textContent: 'Card two' }),
+            makeParagraph({
+              buoyancy: 2,
+              textContent:
+                'Lorem ipsum dolor sit amet consectetur adipisicing elit. Id labore error ipsum laboriosam necessitatibus aperiam facere aut quo quibusdam, possimus quia odit placeat nostrum, similique pariatur corporis nobis sint rerum laborum architecto natus!',
+            }),
+          ],
+          buoyancy: 1,
+          ownStyles: {
+            'padding-top': '0px',
+            'padding-right': '20px',
+            'padding-bottom': '0px',
+            'padding-left': '20px',
+            width: '33%',
+            'flex-grow': 1,
+          } as Required<CssLikeStyles>,
+        }),
+        makeContainer({
+          children: [
+            makeImage({
+              ownStyles: {
+                width: '100%',
+              } as Required<CssLikeStyles>,
+            }),
+            makeHeading({ buoyancy: 1, textContent: 'Card three' }),
+            makeParagraph({
+              buoyancy: 2,
+              textContent:
+                'Lorem ipsum dolor sit amet consectetur adipisicing elit. Id labore error ipsum laboriosam necessitatibus aperiam facere aut quo quibusdam, possimus quia odit placeat nostrum, similique pariatur corporis nobis sint rerum laborum architecto natus!',
+            }),
+          ],
+          buoyancy: 2,
+          ownStyles: {
+            'padding-top': '0px',
+            'padding-right': '20px',
+            'padding-bottom': '0px',
+            'padding-left': '20px',
+            width: '33%',
+            'flex-grow': 1,
+          } as Required<CssLikeStyles>,
         }),
       ],
     }),

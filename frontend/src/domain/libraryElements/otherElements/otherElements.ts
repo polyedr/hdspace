@@ -72,7 +72,11 @@ export const makeDivBlock = (textContent: string): DivBlockServerElement => ({
   children: [makeParagraph({ textContent })],
 });
 
-export const image: ImageServerElement = {
+export const makeImage = ({
+  ownStyles = {} as Required<CssLikeStyles>,
+}: {
+  ownStyles?: Required<CssLikeStyles>;
+} = {}): ImageServerElement => ({
   buoyancy: 0,
   func_type: 'image',
   struct_type: 'image',
@@ -82,11 +86,11 @@ export const image: ImageServerElement = {
   },
   styles: {
     classNames: ['image'],
-    ownStyles: {} as Required<CssLikeStyles>,
+    ownStyles,
   },
   name: 'image',
   children: [],
-};
+});
 
 export const makeScreenshot = ({
   ownStyles,

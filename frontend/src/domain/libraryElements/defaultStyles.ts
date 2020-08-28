@@ -39,6 +39,7 @@ import {
 import {
   defaultPageTemplateStyles,
   defaultSubscribeFormStyles,
+  defaultCardsSectionStyles,
 } from './blocksTemplates/defaultStyles';
 
 export const DEFAULT_ELEMENTS_STYLES: {
@@ -75,6 +76,7 @@ export const DEFAULT_ELEMENTS_STYLES: {
   video: defaultVideoStyles,
   undefined: defaultUndefinedStyles,
   subscribeForm: defaultSubscribeFormStyles,
+  cardsSection: defaultCardsSectionStyles,
 };
 
 export const getDefaultStyles = (

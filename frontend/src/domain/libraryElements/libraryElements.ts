@@ -30,11 +30,12 @@ import {
   PageTemplateServerElement,
   ScreenshotServerElement,
   SubscribeFormServerElement,
+  CardsSectionServerElement,
 } from '$api/types';
 
 import {
   root,
-  image,
+  makeImage,
   makeScreenshot,
   video,
   dropdown,
@@ -65,7 +66,11 @@ import {
   makeHeading,
 } from './typographyElements/typographyElements';
 import { map, calendar, clock } from './widgetElements/widgetElements';
-import { pageTemplate, subscribeForm } from './blocksTemplates/blocksTemplates';
+import {
+  pageTemplate,
+  subscribeForm,
+  cardsSection,
+} from './blocksTemplates/blocksTemplates';
 
 export type ChildrenElements = {
   selectMenu: SelectMenuServerElement;
@@ -102,6 +107,7 @@ export type ElementsToAdd = {
   video: VideoServerElement;
   undefined: UndefinedServerElement;
   subscribeForm: SubscribeFormServerElement;
+  cardsSection: CardsSectionServerElement;
 };
 
 export type LibraryElements = ChildrenElements & ElementsToAdd;
@@ -115,7 +121,7 @@ export const LIBRARY_ELEMENTS: LibraryElements = {
   divBlock: makeDivBlock('This is divBlock'),
   pageTemplate,
   subscribeForm,
-  image,
+  image: makeImage(),
   screenshot: makeScreenshot(),
   button: makeButton(),
   hyperlink,
@@ -141,4 +147,5 @@ export const LIBRARY_ELEMENTS: LibraryElements = {
   dropdownItem: makeDropdownItem(''),
   video,
   undefined,
+  cardsSection,
 };

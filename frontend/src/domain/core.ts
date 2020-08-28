@@ -29,6 +29,7 @@ export const ENTITIES: {
   pageTemplate: 'pageTemplate',
   screenshot: 'screenshot',
   subscribeForm: 'subscribeForm',
+  cardsSection: 'cardsSection',
 };
 
 const CONTROLS_AFFECT_ON_PARAMS = [
@@ -284,6 +285,14 @@ export const subscribeFormStyleControls = [
   'background',
 ] as const;
 export const undefinedControls = ['size', 'background'] as const;
+export const cardsSectionStyleControls = [
+  'indents',
+  'size',
+  'display',
+  'typography',
+  'border',
+  'background',
+] as const;
 
 export type Control =
   | typeof CONTROLS_AFFECT_ON_PARAMS[number]
@@ -396,6 +405,9 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
   undefined: {
     root: undefinedControls,
   },
+  cardsSection: {
+    root: [...cardsSectionStyleControls],
+  },
 } as const;
 
 export type AvailableChildren = {
@@ -489,4 +501,10 @@ export const AVAILABLE_CHILDREN: AvailableChildren = {
   },
   screenshot: {},
   undefined: {},
+  cardsSection: {
+    all: {
+      min: 0,
+      max: Infinity,
+    },
+  },
 };
