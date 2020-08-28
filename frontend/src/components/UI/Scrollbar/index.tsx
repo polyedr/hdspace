@@ -89,7 +89,7 @@ const renderView = ({ style, ...props }: any) => {
   );
 };
 
-export const Scrollbar: React.FC<IScrollbarProps> = ({
+const Scrollbar: React.FC<IScrollbarProps> = ({
   children,
   style,
   className,
@@ -116,3 +116,5 @@ export const Scrollbar: React.FC<IScrollbarProps> = ({
     {children}
   </Scrollbars>
 );
+
+export default Scrollbar;

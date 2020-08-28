@@ -8,10 +8,10 @@ import {
   withConfigurableProperties,
   PropertiesChangeProps,
 } from '$utils/withConfigurableProperties';
-import { sharedClasses } from '$styles/sharedClasses';
+import sharedClasses from '$styles/sharedClasses';
 import { HeadingType as HeadingTagType, HeadingElement } from '$api/types';
 
-import { ControlTitle } from '../../../components/ControlTitle/ControlTitle';
+import ControlTitle from '../../../components/ControlTitle/ControlTitle';
 import { HEADING_TYPE, HEADING_SETTINGS } from './constants';
 
 const styles = require('./HeadingType.scss');
@@ -32,36 +32,37 @@ function mapState(state: AppReduxState): StateProps {
 
 type Props = StateProps & PropertiesChangeProps<HeadingElement>;
 
-const HeadingType: React.FC<Props> = memo(
-  ({ headingType, updateParams, updateStyles }) => {
-    const handleDropdownChange = (value: string) => {
-      const newHeadingType = value as HeadingTagType;
+const HeadingType: React.FC<Props> = ({
+  headingType,
+  updateParams,
+  updateStyles,
+}) => {
+  const handleDropdownChange = (value: string) => {
+    const newHeadingType = value as HeadingTagType;
 
-      updateParams({ headingType: newHeadingType });
-      updateStyles({ 'font-size': HEADING_SETTINGS[newHeadingType].fontSize });
-    };
+    updateParams({ headingType: newHeadingType });
+    updateStyles({ 'font-size': HEADING_SETTINGS[newHeadingType].fontSize });
+  };
 
-    return (
-      <>
-        <section className={sharedClasses.propsSection}>
-          <header className={styles.header}>
-            <ControlTitle content="Heading type" />
-          </header>
-          <div className={sharedClasses.propsContent}>
-            <div className={sharedClasses.propsContainer}>
-              <DropDown
-                options={HEADING_TYPE}
-                defaultValue={headingType}
-                value={headingType}
-                onChange={handleDropdownChange}
-              />
-            </div>
+  return (
+    <>
+      <section className={sharedClasses.propsSection}>
+        <header className={styles.header}>
+          <ControlTitle content="Heading type" />
+        </header>
+        <div className={sharedClasses.propsContent}>
+          <div className={sharedClasses.propsContainer}>
+            <DropDown
+              options={HEADING_TYPE}
+              defaultValue={headingType}
+              value={headingType}
+              onChange={handleDropdownChange}
+            />
           </div>
-        </section>
-      </>
-    );
-  },
-);
+        </div>
+      </section>
+    </>
+  );
+};
 
-const Component = connect(mapState)(withConfigurableProperties(HeadingType));
-export { Component as HeadingType };
+export default connect(mapState)(withConfigurableProperties(memo(HeadingType)));

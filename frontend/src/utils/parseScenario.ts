@@ -8,7 +8,7 @@ import {
   IScenarios,
   IScenarioItem,
   IScenarioElements,
-  LibraryElement,
+  ScenarioLibraryElement,
   ILSItem,
   IScenarioElement,
   ServerStructType,
@@ -27,7 +27,7 @@ export type GroupElement = {
 };
 
 export interface IListCategoryEl {
-  [x: string]: LibraryElement[];
+  [x: string]: ScenarioLibraryElement[];
 }
 
 export const getOptionsOfListScenario = (scenarios: IScenarios) =>

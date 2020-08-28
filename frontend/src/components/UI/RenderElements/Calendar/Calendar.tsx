@@ -3,7 +3,7 @@ import React from 'react';
 import cn from 'classnames';
 import { makeStyles } from '@material-ui/core';
 
-import { CalendarWidget } from '$components/UI/Calendar';
+import CalendarWidget from '$components/UI/Calendar';
 
 import { SharedRendererProps } from '../types';
 
@@ -55,4 +55,4 @@ const Calendar: React.FC<SharedRendererProps> = ({
   );
 };
 
-export { Calendar };
+export default Calendar;

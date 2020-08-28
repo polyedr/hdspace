@@ -2,7 +2,7 @@ import React from 'react';
 import cn from 'classnames';
 import { makeStyles, Paper, MenuList } from '@material-ui/core';
 
-import { sharedClasses } from '$styles/sharedClasses';
+import sharedClasses from '$styles/sharedClasses';
 
 import { SelectMenuRendererProps } from '../types';
 
@@ -35,7 +35,7 @@ const getStyles = (
     },
   });
 
-const SelectMenuComponent: React.FC<SelectMenuRendererProps> = ({
+const SelectMenu: React.FC<SelectMenuRendererProps> = ({
   id,
   entityStyles,
   groupStyles,
@@ -79,4 +79,4 @@ const SelectMenuComponent: React.FC<SelectMenuRendererProps> = ({
   );
 };
 
-export { SelectMenuComponent as SelectMenu };
+export default SelectMenu;

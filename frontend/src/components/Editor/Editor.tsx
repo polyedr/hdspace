@@ -20,41 +20,45 @@ export interface IEditProps {
   screen: EditorProps['currentScreen'];
   isNavPanelMinimized: EditorProps['isNavPanelMinimized'];
   isPrototypeMode: EditorProps['isPrototypeMode'];
-  updateElementStyles: typeof Actions.updateElementStyles;
   resetScreenState: typeof Actions.resetScreenState;
 }
 
-export const Editor: React.FC<IEditProps> = memo(
-  ({ screen, isNavPanelMinimized, isPrototypeMode, resetScreenState }) => {
-    const [screenId, setScreenId] = useState<number>(-1);
+const Editor: React.FC<IEditProps> = ({
+  screen,
+  isNavPanelMinimized,
+  isPrototypeMode,
+  resetScreenState,
+}) => {
+  const [screenId, setScreenId] = useState<number>(-1);
 
-    useEffect(() => {
-      if (screen.id !== screenId) {
-        setScreenId(screen.id);
-      }
-    }, [screen.id]);
+  useEffect(() => {
+    if (screen.id !== screenId) {
+      setScreenId(screen.id);
+    }
+  }, [screen.id]);
 
-    useEffect(
-      () => () => {
-        resetScreenState();
-      },
-      [],
-    );
+  useEffect(
+    () => () => {
+      resetScreenState();
+    },
+    [],
+  );
 
-    return (
-      <div
-        className={cn(
-          styles.editorContainer,
-          isNavPanelMinimized && styles.editorContainer_minimized,
-        )}
-      >
-        <Workspace />
-        {!isPrototypeMode && <PropertiesPanel />}
-        <Prompt
-          when={false}
-          message="You have unsaved changes, are you sure you want to leave?"
-        />
-      </div>
-    );
-  },
-);
+  return (
+    <div
+      className={cn(
+        styles.editorContainer,
+        isNavPanelMinimized && styles.editorContainer_minimized,
+      )}
+    >
+      <Workspace />
+      {!isPrototypeMode && <PropertiesPanel />}
+      <Prompt
+        when={false}
+        message="You have unsaved changes, are you sure you want to leave?"
+      />
+    </div>
+  );
+};
+
+export default memo(Editor);

@@ -8,7 +8,7 @@ import {
   PropertiesChangeProps,
 } from '$utils/withConfigurableProperties';
 import { ScreenshotElement } from '$api/types';
-import { StylesHeader } from '$features/applyProperties/views/components/StylesHeader/StylesHeader';
+import StylesHeader from '$features/applyProperties/views/components/StylesHeader/StylesHeader';
 
 const styles = require('./BackgroundPosition.scss');
 
@@ -78,7 +78,6 @@ const BackgroundPosition: React.FC<Props> = ({
   );
 };
 
-const Component = connect(mapState)(
+export default connect(mapState)(
   withConfigurableProperties(BackgroundPosition),
 );
-export { Component as BackgroundPosition };

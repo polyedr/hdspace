@@ -1,10 +1,12 @@
-export interface IPlainAction<T> {
+import { HistoryMeta } from '$redux/project/types';
+
+export interface IPlainAction<T, M = HistoryMeta> {
   type: T;
+  meta?: M;
 }
 
-export interface IAction<T, P, M = any> extends IPlainAction<T> {
+export interface IAction<T, P, M = HistoryMeta> extends IPlainAction<T, M> {
   payload: P;
-  meta?: M;
 }
 
 export interface IPlainFailAction<T, E = string> extends IPlainAction<T> {

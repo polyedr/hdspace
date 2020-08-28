@@ -31,15 +31,22 @@ interface IButtonProps {
   className?: string;
 }
 
-export const Button: React.FunctionComponent<IButtonProps> = memo(
-  ({ children, type, styleType, disabled, onClick, className = '' }) => (
-    <button
-      type={type !== 'submit' ? 'button' : 'submit'}
-      className={classNames(styles.button, getStyleType(styleType), className)}
-      disabled={disabled}
-      onClick={type !== 'submit' ? onClick : undefined}
-    >
-      <span>{children}</span>
-    </button>
-  ),
+const Button: React.FC<IButtonProps> = ({
+  children,
+  type,
+  styleType,
+  disabled,
+  onClick,
+  className = '',
+}) => (
+  <button
+    type={type !== 'submit' ? 'button' : 'submit'}
+    className={classNames(styles.button, getStyleType(styleType), className)}
+    disabled={disabled}
+    onClick={type !== 'submit' ? onClick : undefined}
+  >
+    <span>{children}</span>
+  </button>
 );
+
+export default memo(Button);

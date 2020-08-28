@@ -52,5 +52,4 @@ const EditableStyles: React.FC<Props> = ({
   );
 };
 
-const Component = connect(mapState, mapDispatch)(EditableStyles);
-export { Component as EditableStyles };
+export default connect(mapState, mapDispatch)(EditableStyles);

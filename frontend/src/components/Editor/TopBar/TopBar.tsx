@@ -1,9 +1,9 @@
 import React, { useCallback } from 'react';
 import classNames from 'classnames';
 import { useDispatch, useSelector } from 'react-redux';
-import { Icon } from '$components/UI/Icon';
-import { Checkbox } from '$components/UI/Checkbox';
-import { Button } from '$components/UI/Button';
+import Icon from '$components/UI/Icon';
+import Checkbox from '$components/UI/Checkbox';
+import Button from '$components/UI/Button';
 import { DEFAULT_SCREEN_MODE } from '$constants/defaultParams';
 import { ScreenMode } from '../Workspace/Workspace';
 import { redoAction, undoAction } from '$redux/project/actions';

@@ -14,31 +14,31 @@ interface IComponentProps {
   children?: any;
 }
 
-export const Checkbox: React.FunctionComponent<IComponentProps> = memo(
-  ({
-    name,
-    label,
-    onChange,
-    checked,
-    disabled,
-    isHidden,
-    children,
-    className = '',
-  }) => (
-    <label className={classNames(styles.checkbox, className)} htmlFor={name}>
-      <input
-        name={name}
-        id={name}
-        className={isHidden ? 'visuallyHidden' : undefined}
-        type="checkbox"
-        onChange={onChange}
-        checked={checked}
-        disabled={disabled}
-      />
-      <span>
-        {label}
-        {children}
-      </span>
-    </label>
-  ),
+const Checkbox: React.FC<IComponentProps> = ({
+  name,
+  label,
+  onChange,
+  checked,
+  disabled,
+  isHidden,
+  children,
+  className = '',
+}) => (
+  <label className={classNames(styles.checkbox, className)} htmlFor={name}>
+    <input
+      name={name}
+      id={name}
+      className={isHidden ? 'visuallyHidden' : undefined}
+      type="checkbox"
+      onChange={onChange}
+      checked={checked}
+      disabled={disabled}
+    />
+    <span>
+      {label}
+      {children}
+    </span>
+  </label>
 );
+
+export default memo(Checkbox);

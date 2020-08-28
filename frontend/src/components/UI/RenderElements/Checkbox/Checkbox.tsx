@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/no-noninteractive-tabindex */
 import React, { ChangeEvent } from 'react';
 import cn from 'classnames';
-import { makeStyles, Checkbox } from '@material-ui/core';
+import { makeStyles, Checkbox as MaterialCheckbox } from '@material-ui/core';
 import CheckBoxIcon from '@material-ui/icons/CheckBox';
 import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 import * as R from 'ramda';
@@ -70,7 +70,7 @@ const getDivStyles = (
     },
   });
 
-const CheckboxComponent: React.FC<CheckboxRendererProps> = ({
+const Checkbox: React.FC<CheckboxRendererProps> = ({
   id,
   entityStyles,
   groupStyles,
@@ -131,7 +131,7 @@ const CheckboxComponent: React.FC<CheckboxRendererProps> = ({
       )}
       tabIndex={isDisabled ? 0 : -1}
     >
-      <Checkbox
+      <MaterialCheckbox
         checkedIcon={<CheckBoxIcon className={checkboxClasses.icon} />}
         icon={<CheckBoxOutlineBlankIcon className={checkboxClasses.icon} />}
         color="default"
@@ -151,4 +151,4 @@ const CheckboxComponent: React.FC<CheckboxRendererProps> = ({
   );
 };
 
-export { CheckboxComponent as Checkbox };
+export default Checkbox;

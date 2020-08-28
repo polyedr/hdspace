@@ -4,11 +4,10 @@ import cn from 'classnames';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { IMAGES } from '$constants/images';
-import { Icon } from '$components/UI/Icon';
-import { Button } from '$components/UI/Button';
-import { IAppProps } from '$containers/App';
+import Icon from '$components/UI/Icon';
+import Button from '$components/UI/Button';
 import * as PATH_NAMES from '$constants/pathNames';
-import { Scrollbar } from '$components/UI/Scrollbar';
+import Scrollbar from '$components/UI/Scrollbar';
 import * as ActionsProject from '$redux/project/actions';
 import { openSignScreen } from '$utils/history';
 import { Project } from '$api/types';
@@ -18,11 +17,11 @@ import { selectUserData } from '$redux/user/selectors';
 const styles = require('./LeftPanel.scss');
 
 export type LeftPanelProps = {
-  pathname: IAppProps['pathname'];
+  pathname: string;
   projects: Project[];
   username?: string;
   isLPanelMinimized: boolean;
-  setListProject: typeof ActionsProject.setListProject;
+  setListProject: typeof ActionsProject.setProjectList;
 };
 
 export const LeftPanel: React.FunctionComponent<LeftPanelProps> = ({

@@ -4,34 +4,34 @@ import { Entity } from '$domain/core';
 
 import { withAction } from '$utils/withAction';
 import { Action } from './Action/Action';
-import { Checkbox } from './Checkbox/Checkbox';
-import { Radiobutton } from './Radiobutton/Radiobutton';
-import { Input } from './Input/Input';
-import { Select } from './Select/Select';
-import { Heading } from './Heading/Heading';
-import { Paragraph } from './Paragraph/Paragraph';
-import { Link } from './Link/Link';
-import { TextBlock } from './TextBlock/TextBlock';
-import { List } from './List/List';
-import { Textarea } from './Textarea/Textarea';
-import { Label } from './Label/Label';
-import { Dropdown } from './Dropdown/Dropdown';
-import { Video } from './Video/Video';
-import { ListItem } from './ListItem/ListItem';
-import { SelectMenu } from './SelectMenu/SelectMenu';
-import { MenuItem } from './MenuItem/MenuItem';
-import { DropdownMenu } from './DropdownMenu/DropdownMenu';
-import { DropdownItem } from './DropdownItem/DropdownItem';
-import { DivBlockRenderer } from './DivBlock/DivBlock';
-import { Image } from './Image/Image';
-import { Map } from './Map/Map';
-import { Calendar } from './Calendar/Calendar';
-import { Container } from './Container/Container';
-import { Clock } from './Clock/Clock';
-import { Undefined } from './Undefined/Undefined';
-import { Screenshot } from './Screenshot/Screenshot';
+import Checkbox from './Checkbox/Checkbox';
+import Radiobutton from './Radiobutton/Radiobutton';
+import Input from './Input/Input';
+import Select from './Select/Select';
+import Heading from './Heading/Heading';
+import Paragraph from './Paragraph/Paragraph';
+import Link from './Link/Link';
+import TextBlock from './TextBlock/TextBlock';
+import List from './List/List';
+import Textarea from './Textarea/Textarea';
+import Label from './Label/Label';
+import Dropdown from './Dropdown/Dropdown';
+import Video from './Video/Video';
+import ListItem from './ListItem/ListItem';
+import SelectMenu from './SelectMenu/SelectMenu';
+import MenuItem from './MenuItem/MenuItem';
+import DropdownMenu from './DropdownMenu/DropdownMenu';
+import DropdownItem from './DropdownItem/DropdownItem';
+import DivBlockRenderer from './DivBlock/DivBlock';
+import Image from './Image/Image';
+import Map from './Map/Map';
+import Calendar from './Calendar/Calendar';
+import Container from './Container/Container';
+import Clock from './Clock/Clock';
+import Undefined from './Undefined/Undefined';
+import Screenshot from './Screenshot/Screenshot';
 
-export const RENDERERS: Record<Entity, React.FunctionComponent<any>> = {
+export const RENDERERS: Record<Entity, React.FC<any>> = {
   root: Container,
   container: Container,
   divBlock: DivBlockRenderer,

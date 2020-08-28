@@ -2,8 +2,8 @@ import React, { useCallback } from 'react';
 import classNames from 'classnames';
 import * as R from 'ramda';
 
-import { Button } from '$components/UI/Button';
-import { Scrollbar } from '$components/UI/Scrollbar';
+import Button from '$components/UI/Button';
+import Scrollbar from '$components/UI/Scrollbar';
 import { getChooseElements, GroupElement } from '$utils/parseScenario';
 import { ENTITIES, Entity, AVAILABLE_CHILDREN } from '$domain/core';
 import { CreatedElement, ActiveItem } from '$redux/project/types';
@@ -20,7 +20,7 @@ type Props = {
   setSelectedElements(elements: CreatedElement[]): void;
 };
 
-export const ActionsBlock: React.FunctionComponent<Props> = ({
+const ActionsBlock: React.FC<Props> = ({
   activeItem,
   tabs,
   groupElements,
@@ -100,3 +100,5 @@ export const ActionsBlock: React.FunctionComponent<Props> = ({
     </div>
   );
 };
+
+export default ActionsBlock;

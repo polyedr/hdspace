@@ -1,12 +1,10 @@
 import { initial, ReduxState } from './initial';
 import { Action } from '$redux/project/types';
+import TYPES from '$constants/actions';
 
-export function uiReducer(
-  state: ReduxState = initial,
-  action: Action,
-): ReduxState {
+function uiReducer(state: ReduxState = initial, action: Action): ReduxState {
   switch (action.type) {
-    case 'PROJECTS:UPDATE_SAVED_ELEMENTS_VALUES': {
+    case TYPES.UPDATE_SAVED_ELEMENTS_VALUES: {
       const { elementsValues } = action.payload;
 
       return {
@@ -18,7 +16,7 @@ export function uiReducer(
       };
     }
 
-    case 'PROJECTS:UPDATE_SAVED_ELEMENT_VALUES': {
+    case TYPES.UPDATE_SAVED_ELEMENT_VALUES: {
       const { itemID, savedValue } = action.payload;
 
       return {
@@ -37,3 +35,5 @@ export function uiReducer(
       return state;
   }
 }
+
+export default uiReducer;

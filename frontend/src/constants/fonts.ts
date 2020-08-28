@@ -1,4 +1,4 @@
-export const FONTS = [
+const FONTS = [
   { label: 'Lato', value: '"Lato", sans-serif' },
   { label: 'Merriweather', value: '"Merriweather", serif' },
   { label: 'Montserrat', value: '"Montserrat", sans-serif' },
@@ -11,3 +11,5 @@ export const FONTS = [
   { label: 'Source Sans Pro', value: '"Source Sans Pro", sans-serif' },
   { label: 'Ubuntu', value: '"Ubuntu", sans-serif' },
 ];
+
+export default FONTS;

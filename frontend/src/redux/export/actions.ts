@@ -3,11 +3,12 @@ import {
   UpdateSavedElementsValues,
   UpdateSavedElementValues,
 } from '$redux/project/types';
+import TYPES from '$constants/actions';
 
 export const updateSavedElementsValues = (
   elementsValues: SavedElementsValues,
 ): UpdateSavedElementsValues => ({
-  type: 'PROJECTS:UPDATE_SAVED_ELEMENTS_VALUES',
+  type: TYPES.UPDATE_SAVED_ELEMENTS_VALUES,
   payload: { elementsValues },
 });
 
@@ -15,6 +16,6 @@ export const updateSavedElementValues = (
   itemID: string,
   savedValue: string,
 ): UpdateSavedElementValues => ({
-  type: 'PROJECTS:UPDATE_SAVED_ELEMENT_VALUES',
+  type: TYPES.UPDATE_SAVED_ELEMENT_VALUES,
   payload: { itemID, savedValue },
 });

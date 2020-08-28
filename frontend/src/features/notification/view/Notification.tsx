@@ -24,7 +24,7 @@ const mapDispatch = {
 
 type Props = StateProps & typeof mapDispatch;
 
-const NotificationComponent: React.FC<Props> = ({
+const Notification: React.FC<Props> = ({
   notification,
   removeNotification,
 }) => {
@@ -63,7 +63,4 @@ const NotificationComponent: React.FC<Props> = ({
   );
 };
 
-export const Notification = connect(
-  mapState,
-  mapDispatch,
-)(NotificationComponent);
+export default connect(mapState, mapDispatch)(Notification);

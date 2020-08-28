@@ -8,10 +8,10 @@ import {
   withConfigurableProperties,
   PropertiesChangeProps,
 } from '$utils/withConfigurableProperties';
-import { sharedClasses } from '$styles/sharedClasses';
+import sharedClasses from '$styles/sharedClasses';
 import { SelectElement } from '$api/types';
 
-import { ControlTitle } from '../../../components/ControlTitle/ControlTitle';
+import ControlTitle from '../../../components/ControlTitle/ControlTitle';
 
 const styles = require('./SelectValue.scss');
 
@@ -38,7 +38,7 @@ function mapState(state: AppReduxState): StateProps {
 }
 type Props = StateProps & PropertiesChangeProps<SelectElement>;
 
-const SelectValue: React.FC<Props> = memo((props) => {
+const SelectValue: React.FC<Props> = (props) => {
   const { value, optionsValues = [], updateParams } = props;
 
   useEffect(() => {
@@ -77,7 +77,6 @@ const SelectValue: React.FC<Props> = memo((props) => {
       </section>
     </>
   );
-});
+};
 
-const Component = connect(mapState)(withConfigurableProperties(SelectValue));
-export { Component as SelectValue };
+export default connect(mapState)(withConfigurableProperties(memo(SelectValue)));

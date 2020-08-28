@@ -3,9 +3,9 @@ import cn from 'classnames';
 
 import { Flex } from '$redux/project/types';
 import { DropDown } from '$components/UI/DropDown/';
-import { Button } from '$components/UI/Button/';
+import Button from '$components/UI/Button/';
 
-import { ControlTitle } from '../ControlTitle/ControlTitle';
+import ControlTitle from '../ControlTitle/ControlTitle';
 import { JUSTIFY_VALUES, ALIGN_VALUES } from './constants';
 
 const styles = require('./FlexProperties.scss');
@@ -17,7 +17,7 @@ type Props = {
   onChange<T extends keyof Flex>(prop: T, value: Flex[T]): void;
 };
 
-const FlexProperties: React.FC<Props> = memo(({ properties, onChange }) => {
+const FlexProperties: React.FC<Props> = ({ properties, onChange }) => {
   const orientation: Orientation =
     properties.flexDirection === 'row' ||
     properties.flexDirection === 'row-reverse'
@@ -102,6 +102,6 @@ const FlexProperties: React.FC<Props> = memo(({ properties, onChange }) => {
       </section>
     </>
   );
-});
+};
 
-export { FlexProperties };
+export default memo(FlexProperties);

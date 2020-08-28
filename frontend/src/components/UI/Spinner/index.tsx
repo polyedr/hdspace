@@ -6,7 +6,7 @@ type Props = {
   active?: boolean;
 };
 
-export const Spinner: React.FC<Props> = memo(({ active = false }) =>
+const Spinner: React.FC<Props> = ({ active = false }) =>
   active ? (
     <div className={styles.spinnerWrapper}>
       <svg
@@ -30,5 +30,6 @@ export const Spinner: React.FC<Props> = memo(({ active = false }) =>
         </path>
       </svg>
     </div>
-  ) : null,
-);
+  ) : null;
+
+export default memo(Spinner);

@@ -8,7 +8,7 @@ import {
   withConfigurableProperties,
   PropertiesChangeProps,
 } from '$utils/withConfigurableProperties';
-import { sharedClasses } from '$styles/sharedClasses';
+import sharedClasses from '$styles/sharedClasses';
 import { ButtonElement } from '$api/types';
 
 type StateProps = {
@@ -68,5 +68,4 @@ const Ripple: React.FC<Props> = ({ showRipple, updateParams }) => {
   );
 };
 
-const Component = connect(mapState)(withConfigurableProperties(Ripple));
-export { Component as Ripple };
+export default connect(mapState)(withConfigurableProperties(Ripple));

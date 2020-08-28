@@ -9,7 +9,7 @@ import * as ActionsProject from '$redux/project/actions';
 import * as PATH_NAMES from '$constants/pathNames';
 import ProjectsLogic from '$containers/ProjectsLogic';
 import EditorLogic from '$containers/EditorLogic';
-import { TopPanel } from '$components/TopPanel/TopPanel';
+import TopPanel from '$components/TopPanel/TopPanel';
 import { LeftPanel } from '$components/LeftPanel/LeftPanel';
 import { selectors } from '$redux/project';
 import { Project } from '$api/types';
@@ -26,8 +26,8 @@ const mapStateToProps = (state: AppReduxState) => ({
 
 const mapDispatchToProps = {
   changeMinLPanel: ActionsUser.changeMinLPanel,
-  getListProject: ActionsProject.getListProject,
-  setListProject: ActionsProject.setListProject,
+  getListProject: ActionsProject.getProjectList,
+  setListProject: ActionsProject.setProjectList,
 };
 
 export type IAppProps = ReturnType<typeof mapStateToProps> &
@@ -46,7 +46,7 @@ const EditorWindow: React.FC<IAppProps> = ({
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(ActionsProject.getListProject());
+    dispatch(ActionsProject.getProjectList());
   }, [dispatch]);
 
   return (

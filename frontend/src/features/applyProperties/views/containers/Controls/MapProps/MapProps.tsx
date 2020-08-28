@@ -38,7 +38,7 @@ function mapState(state: AppReduxState): StateProps {
 
 type Props = StateProps & PropertiesChangeProps<MapElement>;
 
-const Component: React.FC<Props> = ({ map_props, updateParams }) => {
+const MapProps: React.FC<Props> = ({ map_props, updateParams }) => {
   const handleCenterMapCoordsChange = useCallback(
     ({ target: { name, value } }: React.ChangeEvent<HTMLInputElement>) => {
       let newCenter;
@@ -158,6 +158,4 @@ const Component: React.FC<Props> = ({ map_props, updateParams }) => {
   );
 };
 
-export const MapProps = connect(mapState)(
-  withConfigurableProperties(Component),
-);
+export default connect(mapState)(withConfigurableProperties(MapProps));

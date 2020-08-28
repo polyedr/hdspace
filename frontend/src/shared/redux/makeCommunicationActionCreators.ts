@@ -108,4 +108,4 @@ function makeCommunicationActionCreators(
   };
 }
 
-export { makeCommunicationActionCreators };
+export default makeCommunicationActionCreators;

@@ -1,7 +1,7 @@
 import { createReducer, Handlers } from 'reduxsauce';
 
 import * as ACTIONS from '$redux/user/actions';
-import { TYPES } from '$constants/actions';
+import TYPES from '$constants/actions';
 import { IRootState, UnsafeReturnType } from '$redux/user/types';
 
 interface ActionHandler<T> {

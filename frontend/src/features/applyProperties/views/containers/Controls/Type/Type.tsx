@@ -8,11 +8,11 @@ import {
   withConfigurableProperties,
   PropertiesChangeProps,
 } from '$utils/withConfigurableProperties';
-import { sharedClasses } from '$styles/sharedClasses';
+import sharedClasses from '$styles/sharedClasses';
 import { InputType, TextinputElement } from '$api/types';
 
-import { ControlTitle } from '../../../components/ControlTitle/ControlTitle';
-import { TYPE } from './constants';
+import ControlTitle from '../../../components/ControlTitle/ControlTitle';
+import TYPE from './constants';
 
 const styles = require('./Type.scss');
 
@@ -31,7 +31,7 @@ function mapState(state: AppReduxState): StateProps {
 }
 type Props = StateProps & PropertiesChangeProps<TextinputElement>;
 
-const Type: React.FC<Props> = memo(({ type, updateParams }) => {
+const Type: React.FC<Props> = ({ type, updateParams }) => {
   const handleDropdownChange = (value: string) => {
     updateParams({ type: value as InputType });
   };
@@ -55,7 +55,6 @@ const Type: React.FC<Props> = memo(({ type, updateParams }) => {
       </section>
     </>
   );
-});
+};
 
-const Component = connect(mapState)(withConfigurableProperties(Type));
-export { Component as Type };
+export default connect(mapState)(withConfigurableProperties(memo(Type)));

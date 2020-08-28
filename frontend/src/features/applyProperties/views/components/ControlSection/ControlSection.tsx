@@ -14,4 +14,4 @@ const ControlSection: React.FC<Props> = ({ title, children }) => (
   </div>
 );
 
-export { ControlSection };
+export default ControlSection;

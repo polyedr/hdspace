@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 
-import { connect } from 'react-redux';
-import { TextField } from '$features/applyProperties/views/components/TextField/TextField';
+import { connect, useSelector } from 'react-redux';
+import TextField from '$features/applyProperties/views/components/TextField/TextField';
 import { actionsCreators, selectors } from '$redux/project';
 import { AppReduxState } from '$shared/types/app';
+import { selectCurrentScreenId } from '$redux/project/selectors';
 
 type StateProps = {
   activeItemID: string;
@@ -31,6 +32,7 @@ const RenameElement: React.FC<Props> = ({
   renameElement,
 }) => {
   const [currentElementName, setCurrentElementName] = useState(activeItemName);
+  const currentScreenId = useSelector(selectCurrentScreenId);
 
   useEffect(() => {
     setCurrentElementName(activeItemName);
@@ -39,7 +41,7 @@ const RenameElement: React.FC<Props> = ({
   const handleTextFieldBlur = ({
     target: { value },
   }: React.FocusEvent<HTMLInputElement>) => {
-    renameElement(activeItemID, value);
+    renameElement(activeItemID, value, { screenId: currentScreenId });
   };
 
   return (
@@ -51,5 +53,4 @@ const RenameElement: React.FC<Props> = ({
   );
 };
 
-const Component = connect(mapState, mapDispatch)(RenameElement);
-export { Component as RenameElement };
+export default connect(mapState, mapDispatch)(RenameElement);

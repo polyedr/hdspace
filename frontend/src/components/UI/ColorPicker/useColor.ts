@@ -5,7 +5,7 @@ type Color = {
   isValid: boolean;
 };
 
-export const useColor = (
+const useColor = (
   defaultColor: string,
   activeItemID: string,
 ): [Color, (newColor: Color) => void] => {
@@ -25,3 +25,5 @@ export const useColor = (
 
   return [colorInfo, changeColor];
 };
+
+export default useColor;

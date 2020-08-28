@@ -1,3 +1,4 @@
+/* eslint-disable import/prefer-default-export */
 import { ISignFormElement, ISignFormFields } from '$constants/defaultParams';
 
 export const getInitialFieldsState = (

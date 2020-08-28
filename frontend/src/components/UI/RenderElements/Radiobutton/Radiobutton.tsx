@@ -164,4 +164,4 @@ const Radiobutton: React.FC<RadioRendererProps> = ({
   );
 };
 
-export { Radiobutton };
+export default Radiobutton;

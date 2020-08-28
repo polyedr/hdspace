@@ -18,4 +18,4 @@ const TextField: React.FC<Props> = ({ value, onBlur, onChange }) => (
   />
 );
 
-export { TextField };
+export default TextField;

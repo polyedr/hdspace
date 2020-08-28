@@ -2,7 +2,7 @@ import React from 'react';
 import cn from 'classnames';
 import { makeStyles, Menu, Paper, MenuList } from '@material-ui/core';
 
-import { sharedClasses } from '$styles/sharedClasses';
+import sharedClasses from '$styles/sharedClasses';
 
 import { DropdownMenuRendererProps } from '../types';
 
@@ -56,7 +56,7 @@ const getEditableMenuStyles = (
     },
   });
 
-const DropdownMenuComponent: React.FC<DropdownMenuRendererProps> = ({
+const DropdownMenu: React.FC<DropdownMenuRendererProps> = ({
   id,
   entityStyles,
   groupStyles,
@@ -131,4 +131,4 @@ const DropdownMenuComponent: React.FC<DropdownMenuRendererProps> = ({
   );
 };
 
-export { DropdownMenuComponent as DropdownMenu };
+export default DropdownMenu;

@@ -56,7 +56,7 @@ function withAction(
         ) {
           event.preventDefault();
         } else if (!isExportedAction && action?.type === 'internal-link') {
-          activateScreen(projectID, Number(action.screenID));
+          activateScreen(Number(action.screenID));
         }
       },
       [isDisabled, action, projectID],

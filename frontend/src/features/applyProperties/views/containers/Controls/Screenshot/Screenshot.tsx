@@ -1,11 +1,12 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 
 import {
   withConfigurableProperties,
   PropertiesChangeProps,
 } from '$utils/withConfigurableProperties';
 import { actionsCreators } from '$redux/project';
+import { selectCurrentScreenId } from '$redux/project/selectors';
 import { ImageElement } from '$api/types';
 
 const styles = require('./Screenshot.scss');
@@ -19,6 +20,8 @@ type Props = PropertiesChangeProps<ImageElement> & typeof mapDispatch;
 const Screenshot: React.FC<Props> = (props) => {
   const { activeItemID, updateElementImage } = props;
 
+  const currentScreenId = useSelector(selectCurrentScreenId);
+
   const handleFileInputChange = ({
     target,
   }: React.ChangeEvent<HTMLInputElement>) => {
@@ -28,7 +31,7 @@ const Screenshot: React.FC<Props> = (props) => {
       // eslint-disable-next-line no-alert
       alert('Choose image up to 5Mb!');
     } else if (file) {
-      updateElementImage(activeItemID, file);
+      updateElementImage(activeItemID, file, { screenId: currentScreenId });
     }
   };
 
@@ -53,9 +56,7 @@ const Screenshot: React.FC<Props> = (props) => {
   );
 };
 
-const Component = connect(
+export default connect(
   null,
   mapDispatch,
 )(withConfigurableProperties(Screenshot));
-
-export { Component as Screenshot };

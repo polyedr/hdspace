@@ -6,7 +6,7 @@ interface IProps {
   size?: number;
 }
 
-export const Icon: React.FunctionComponent<IProps> = ({ icon, size = 24 }) => (
+const Icon: React.FC<IProps> = ({ icon, size = 24 }) => (
   <svg width={size} height={size} viewBox="0 0 24 24">
     <use
       xlinkHref={`${require('$assets/sprites/icons.svg')}#icon-${icon}`}
@@ -15,3 +15,5 @@ export const Icon: React.FunctionComponent<IProps> = ({ icon, size = 24 }) => (
     />
   </svg>
 );
+
+export default Icon;

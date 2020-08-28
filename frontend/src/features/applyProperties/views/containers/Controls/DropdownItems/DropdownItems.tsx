@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 
 import { AppReduxState } from '$shared/types/app';
 import { selectors, actionsCreators } from '$redux/project/';
@@ -7,10 +7,11 @@ import {
   withConfigurableProperties,
   PropertiesChangeProps,
 } from '$utils/withConfigurableProperties';
-import { Button } from '$components/UI/Button';
-import { Icon } from '$components/UI/Icon';
-import { sharedClasses } from '$styles/sharedClasses';
+import Button from '$components/UI/Button';
+import Icon from '$components/UI/Icon';
+import sharedClasses from '$styles/sharedClasses';
 import { DropdownItemElement } from '$api/types';
+import { selectCurrentScreenId } from '$redux/project/selectors';
 
 const styles = require('./DropdownItems.scss');
 
@@ -49,6 +50,8 @@ const DropdownItems: React.FC<Props> = ({
   addChildToElement,
   deleteChildFromElement,
 }) => {
+  const currentScreenId = useSelector(selectCurrentScreenId);
+
   const handleTextFieldChange = (
     dropdownItemID: string,
     { target: { value } }: React.ChangeEvent<HTMLTextAreaElement>,
@@ -57,13 +60,18 @@ const DropdownItems: React.FC<Props> = ({
   };
 
   const handleAddButtonClick = () => {
-    addChildToElement('dropdownItem', dropdownMenuID, {
-      textContent: 'New item',
-    });
+    addChildToElement(
+      'dropdownItem',
+      dropdownMenuID,
+      {
+        textContent: 'New item',
+      },
+      { screenId: currentScreenId },
+    );
   };
 
   const handleDeleteButtonClick = (dropdownItemID: string) => {
-    deleteChildFromElement(dropdownItemID);
+    deleteChildFromElement(dropdownItemID, { screenId: currentScreenId });
   };
 
   return (
@@ -105,8 +113,7 @@ const DropdownItems: React.FC<Props> = ({
   );
 };
 
-const Component = connect(
+export default connect(
   mapState,
   mapDispatch,
 )(withConfigurableProperties(DropdownItems));
-export { Component as DropdownItems };
