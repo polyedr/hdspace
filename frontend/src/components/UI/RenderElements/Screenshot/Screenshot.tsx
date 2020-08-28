@@ -60,4 +60,4 @@ const Screenshot: React.FC<ScreenshotRendererProps> = ({
   );
 };
 
-export { Screenshot };
+export default Screenshot;

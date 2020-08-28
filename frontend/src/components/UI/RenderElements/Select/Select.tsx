@@ -202,7 +202,7 @@ const getDivClasses = (
     },
   });
 
-const SelectComponent: React.FC<SelectRendererProps> = ({
+const Select: React.FC<SelectRendererProps> = ({
   id,
   entityStyles,
   groupStyles,
@@ -419,4 +419,4 @@ const SelectComponent: React.FC<SelectRendererProps> = ({
   );
 };
 
-export { SelectComponent as Select };
+export default Select;

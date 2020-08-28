@@ -10,10 +10,10 @@ import {
   PropertiesChangeProps,
 } from '$utils/withConfigurableProperties';
 import { extractPlayerLinkInfo } from '$utils/extractVideoLink';
-import { Switch } from '$components/UI/Switch/Switch';
+import Switch from '$components/UI/Switch/Switch';
 import { VideoSettingsType, VideoElement } from '$api/types';
 
-import { ControlSection } from '../../../components/ControlSection/ControlSection';
+import ControlSection from '../../../components/ControlSection/ControlSection';
 
 const styles = require('./VideoSettings.scss');
 
@@ -151,5 +151,4 @@ const VideoSettings: React.FC<Props> = ({ videoSettings, updateParams }) => {
   );
 };
 
-const Component = connect(mapState)(withConfigurableProperties(VideoSettings));
-export { Component as VideoSettings };
+export default connect(mapState)(withConfigurableProperties(VideoSettings));

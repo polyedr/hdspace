@@ -13,7 +13,7 @@ import { Entity } from '$domain/core';
 import { AppReduxState } from '$shared/types/app';
 import { selectors } from '$redux/project';
 
-import { StylesHeader } from '../../../components/StylesHeader/StylesHeader';
+import StylesHeader from '../../../components/StylesHeader/StylesHeader';
 
 const styles = require('./BackgroundSize.scss');
 
@@ -188,5 +188,4 @@ const BackgroundSize: React.FC<Props> = memo((props) => {
   );
 });
 
-const Component = connect(mapState)(withConfigurableProperties(BackgroundSize));
-export { Component as BackgroundSize };
+export default connect(mapState)(withConfigurableProperties(BackgroundSize));

@@ -8,10 +8,10 @@ import {
   withConfigurableProperties,
   PropertiesChangeProps,
 } from '$utils/withConfigurableProperties';
-import { sharedClasses } from '$styles/sharedClasses';
+import sharedClasses from '$styles/sharedClasses';
 import { ListElement } from '$api/types';
 
-import { StylesHeader } from '../../../components/StylesHeader/StylesHeader';
+import StylesHeader from '../../../components/StylesHeader/StylesHeader';
 
 function mapState(state: AppReduxState) {
   return {
@@ -73,5 +73,4 @@ const Bullets: React.FC<Props> = ({
   );
 };
 
-const Component = connect(mapState)(withConfigurableProperties(Bullets));
-export { Component as Bullets };
+export default connect(mapState)(withConfigurableProperties(Bullets));

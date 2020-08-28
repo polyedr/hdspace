@@ -20,9 +20,14 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npm run lint",
-      "pre-push": "npm run lint"
+      "pre-commit": "lint-staged"
     }
+  },
+  "lint-staged": {
+    "*.(ts|tsx)": [
+      "eslint --fix",
+      "bash -c \"tsc -p ./tsconfig.json --noEmit\""
+    ]
   },
   "license": "MIT",
   "devDependencies": {
@@ -70,6 +75,7 @@
     "husky": "^4.2.5",
     "jest": "^25.1.0",
     "less-loader": "^4.1.0",
+    "lint-staged": "^10.2.11",
     "mini-css-extract-plugin": "^0.5.0",
     "optimize-css-assets-webpack-plugin": "^5.0.1",
     "prettier": "^2.0.5",

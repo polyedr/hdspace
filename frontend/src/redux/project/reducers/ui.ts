@@ -1,29 +1,30 @@
 import * as R from 'ramda';
 import { initialUi } from '../initial';
 import * as T from '../types';
+import TYPES from '$constants/actions';
 
-export function uiReducer(
+function uiReducer(
   state: T.ProjectUiState = initialUi,
   action: T.Action,
 ): T.ProjectUiState {
   switch (action.type) {
-    case 'PROJECTS:SET_ACTIVE_ITEM': {
+    case TYPES.SET_ACTIVE_ITEM: {
       return { ...state, activeItem: action.payload.activeItem };
     }
 
-    case 'PROJECTS:SET_EDITABLE_STYLES': {
+    case TYPES.SET_EDITABLE_STYLES: {
       return { ...state, editableStyles: action.payload.className };
     }
 
-    case 'PROJECTS:TOGGLE_CONTAINERS_BORDERS': {
+    case TYPES.TOGGLE_CONTAINERS_BORDERS: {
       return { ...state, showContainersBorders: !state.showContainersBorders };
     }
 
-    case 'PROJECTS:SET_ITEM_TO_COPY': {
+    case TYPES.SET_ITEM_TO_COPY: {
       return { ...state, itemToCopyInfo: action.payload };
     }
 
-    case 'PROJECTS:CLEAN_AFTER_PREV_SCREEN': {
+    case TYPES.CLEAN_AFTER_PREV_SCREEN: {
       return {
         ...state,
         ...R.pick(['activeItem'], initialUi),
@@ -31,11 +32,11 @@ export function uiReducer(
       };
     }
 
-    case 'PROJECTS:SET_IS_ADD_ELEMENTS_MODAL_OPENED': {
+    case TYPES.SET_IS_ADD_ELEMENTS_MODAL_OPENED: {
       return { ...state, isAddElementsModalOpened: action.payload.isOpened };
     }
 
-    case 'PROJECTS:UPDATE_SAVED_ELEMENTS_VALUES': {
+    case TYPES.UPDATE_SAVED_ELEMENTS_VALUES: {
       const { elementsValues } = action.payload;
 
       return {
@@ -47,7 +48,7 @@ export function uiReducer(
       };
     }
 
-    case 'PROJECTS:UPDATE_SAVED_ELEMENT_VALUES': {
+    case TYPES.UPDATE_SAVED_ELEMENT_VALUES: {
       const { itemID, savedValue } = action.payload;
 
       return {
@@ -62,7 +63,7 @@ export function uiReducer(
       };
     }
 
-    case 'LOGOUT': {
+    case TYPES.LOGOUT: {
       return {
         ...initialUi,
       };
@@ -72,3 +73,5 @@ export function uiReducer(
       return state;
   }
 }
+
+export default uiReducer;

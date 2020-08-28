@@ -7,7 +7,7 @@ import {
   withConfigurableProperties,
   PropertiesChangeProps,
 } from '$utils/withConfigurableProperties';
-import { sharedClasses } from '$styles/sharedClasses';
+import sharedClasses from '$styles/sharedClasses';
 import { SelectElement } from '$api/types';
 
 const styles = require('./Value.scss');
@@ -52,5 +52,4 @@ const Value: React.FC<Props> = ({ value, updateParams }) => {
   );
 };
 
-const Component = connect(mapState)(withConfigurableProperties(Value));
-export { Component as Value };
+export default connect(mapState)(withConfigurableProperties(Value));

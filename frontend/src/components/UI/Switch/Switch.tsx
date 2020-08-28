@@ -1,5 +1,5 @@
 import React from 'react';
-import { makeStyles, Switch } from '@material-ui/core';
+import { makeStyles, Switch as MaterialSwitch } from '@material-ui/core';
 
 type Props = {
   checked: boolean;
@@ -19,11 +19,11 @@ const useStyles = makeStyles({
   track: {},
 });
 
-const SwitchComponent = (props: Props) => {
+const Switch = (props: Props) => {
   const classes = useStyles();
 
   return (
-    <Switch
+    <MaterialSwitch
       size="small"
       classes={{
         switchBase: classes.switchBase,
@@ -35,4 +35,4 @@ const SwitchComponent = (props: Props) => {
   );
 };
 
-export { SwitchComponent as Switch };
+export default Switch;

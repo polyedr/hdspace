@@ -1,5 +1,6 @@
 import { initialControl } from '$redux/project/initial';
 import * as T from '../types';
+import TYPES from '$constants/actions';
 
 // To create undoable feature for the editor you have to implement action with "meta" field extends type HistoryMeta,
 // that will call correspondent saga, which should:
@@ -10,37 +11,73 @@ import * as T from '../types';
 // 3. put "setUndoActions" action, with an array of actions that will lead to previous state as an argument,
 // so you will be able to undo your changes.
 
-export const controlReducer = (
+const controlReducer = (
   state: T.ProjectControlState = initialControl,
   action: T.Action,
 ): T.ProjectControlState => {
   switch (action.type) {
-    case 'PROJECTS:UPDATE_ELEMENTS_TREE': {
-      const newState = {
-        ...state,
-        rootElement: action.payload.root,
-      };
+    case TYPES.UPDATE_ELEMENTS_TREE: {
+      if (!action.meta) return state;
 
-      if (!action.meta.redo && !action.meta.undo) {
+      const {
+        meta: { undo, redo },
+        payload: { sourceAction },
+      } = action;
+
+      const { groupActionsUp, history } = state;
+
+      const newState = { ...state };
+
+      if (sourceAction && !redo && !undo) {
         newState.redoActions = [];
       }
 
-      if (action.payload.sourceAction && !action.meta.undo) {
-        newState.history = state.groupActionsUp
+      if (sourceAction && !undo) {
+        newState.history = groupActionsUp
           ? [
-              ...state.history.slice(0, -1),
-              [
-                state.history[state.history.length - 1],
-                action.payload.sourceAction,
-              ],
+              ...history.slice(0, -1),
+              [history[history.length - 1], sourceAction],
             ]
-          : [...state.history, action.payload.sourceAction];
+          : [...history, sourceAction];
       }
 
       return newState;
     }
 
-    case 'PROJECTS:SET_UNDO_ACTIONS': {
+    case TYPES.DELETE_SCREEN: {
+      const newState = { ...state };
+
+      if (!action.meta?.undo) {
+        newState.history = [...state.history, action];
+      }
+      if (!action.meta?.undo && !action.meta?.redo) {
+        newState.redoActions = [];
+      }
+
+      return newState;
+    }
+
+    case TYPES.RESTORE_SCREEN: {
+      const newState = { ...state };
+
+      if (!action.meta?.undo) {
+        newState.history = [...state.history, action];
+      }
+
+      return newState;
+    }
+
+    case TYPES.RESET_SCREEN_STATE: {
+      return {
+        ...state,
+        undoActions: [],
+        redoActions: [],
+        history: [],
+        remoteMove: false,
+      };
+    }
+
+    case TYPES.SET_UNDO_ACTIONS: {
       return {
         ...state,
         // @ts-ignore
@@ -53,53 +90,42 @@ export const controlReducer = (
       };
     }
 
-    case 'PROJECTS:POP_UNDO_ACTION': {
+    case TYPES.POP_UNDO_ACTION: {
       return {
         ...state,
         undoActions: state.undoActions.slice(0, -1),
       };
     }
 
-    case 'PROJECTS:SET_REMOTE_MOVE': {
+    case TYPES.SET_REMOTE_MOVE: {
       return {
         ...state,
         remoteMove: action.payload,
       };
     }
 
-    case 'PROJECTS:SET_REDO_ACTIONS': {
+    case TYPES.SET_REDO_ACTIONS: {
       return {
         ...state,
         redoActions: action.payload,
       };
     }
 
-    case 'PROJECTS:CLEAR_HISTORY': {
-      return {
-        ...state,
-        undoActions: [],
-        redoActions: [],
-        history: [],
-        sourceAction: null,
-        remoteMove: false,
-      };
-    }
-
-    case 'PROJECTS:POP_HISTORY': {
+    case TYPES.POP_HISTORY: {
       return {
         ...state,
         history: state.history.slice(0, -1),
       };
     }
 
-    case 'PROJECTS:SET_GROUP_UP': {
+    case TYPES.SET_GROUP_UP: {
       return {
         ...state,
         groupActionsUp: action.payload,
       };
     }
 
-    case 'LOGOUT': {
+    case TYPES.LOGOUT: {
       return {
         ...initialControl,
       };
@@ -109,3 +135,5 @@ export const controlReducer = (
       return state;
   }
 };
+
+export default controlReducer;

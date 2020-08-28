@@ -56,7 +56,7 @@ import { MAX_TOKEN_TRIALS } from '$config/settings';
 import { addScreenSaga } from '$redux/project/sagas/screen';
 import { refreshUserTokenPair } from '$redux/user/sagas';
 import { openSignScreen, openProjects } from '$utils/history';
-import { getSavedValue } from '$utils/getSavedValue';
+import getSavedValue from '$utils/getSavedValue';
 import {
   findChildByID,
   updateElementParameters as updateParameters,
@@ -68,8 +68,9 @@ import {
   addElementClassName,
   removeElementClassName,
   replaceElementStyles,
+  focusOnElement,
 } from '$utils/ElementsTreeHelper';
-import { generateUniqueName } from '$utils/generateUniqueName';
+import generateUniqueName from '$utils/generateUniqueName';
 import { CssLikeStyles } from '$utils/StyleHelper';
 import {
   updateProjectClasses,
@@ -80,8 +81,11 @@ import * as PATH_NAMES from '$constants/pathNames';
 import { DEFAULT_AUTHORISATION_TOKEN } from '$constants/defaultParams';
 import { LibraryEntities } from '$domain/libraryElements/libraryElements';
 
-import { ItemToCopyInfo } from '../types';
-import { selectors, T as ProjectT, actionsCreators } from '..';
+import { ElementHistoryMeta, ItemToCopyInfo } from '../types';
+import { selectors, actionsCreators } from '..';
+import TYPES from '$constants/actions';
+import { activateScreen } from '$redux/project/actions';
+import { selectScreenElement } from '$redux/project/selectors';
 
 function* LocationChange({ payload: { location } }: LocationChangeAction) {
   const {
@@ -204,10 +208,10 @@ function* moveElementSaga(action: ReturnType<typeof Actions.moveElement>): any {
     );
     return;
   }
-  const { undo, redo } = action.meta;
+  const { screenId, undo } = action.meta;
 
-  const root: ReturnType<typeof selectors.selectRootElement> = yield select(
-    selectors.selectRootElement,
+  const root: LibraryElement<'root'> = yield select(
+    selectors.selectScreenElement(screenId),
   );
   const targetParent = findChildByID(root, parentID);
 
@@ -233,6 +237,7 @@ function* moveElementSaga(action: ReturnType<typeof Actions.moveElement>): any {
             elementID,
             parentID,
             false,
+            { screenId },
           ),
         ),
       );
@@ -248,6 +253,7 @@ function* moveElementSaga(action: ReturnType<typeof Actions.moveElement>): any {
             elementID,
             parentID,
             add,
+            { screenId },
           ),
         ),
       );
@@ -261,9 +267,9 @@ function* moveElementSaga(action: ReturnType<typeof Actions.moveElement>): any {
     root,
     newIndex,
   );
-  yield put(Actions.updateElementsTree(updatedTree, action, { redo, undo }));
+  yield put(Actions.updateElementsTree(updatedTree, action, action.meta));
 
-  yield put(Actions.setGroupActionsUp(!!isRemote));
+  yield put(Actions.setGroupActionsUp(isRemote));
 
   const updatedParent = findChildByID(updatedTree, parentID);
 
@@ -280,7 +286,7 @@ function* moveElementSaga(action: ReturnType<typeof Actions.moveElement>): any {
   if (isRemote) return;
 
   if (!undo) {
-    document.querySelector<HTMLElement>(`[data-ls-id='${elementID}']`)?.focus();
+    yield call(focusOnElement, elementID);
   }
 
   const elementData = {
@@ -317,17 +323,17 @@ function* removeSharedStylesSaga(
 
   yield call(updateProject, newProject);
 
-  const { undo, redo } = action.meta;
+  const { screenId, undo } = action.meta;
 
   if (!undo) {
     yield put(Actions.setUndoActions(Actions.updateProject(currentProject)));
   }
 
-  const root: ReturnType<typeof selectors.selectRootElement> = yield select(
-    selectors.selectRootElement,
+  const root: LibraryElement<'root'> = yield select(
+    selectors.selectScreenElement(screenId),
   );
 
-  yield put(Actions.updateElementsTree(root, action, { redo, undo }));
+  yield put(Actions.updateElementsTree(root, action, action.meta));
 }
 
 function* updateSharedStylesSaga(
@@ -349,17 +355,17 @@ function* updateSharedStylesSaga(
 
   yield call(updateProject, newProject);
 
-  const { undo, redo } = action.meta;
+  const { screenId, undo } = action.meta;
 
   if (!undo) {
     yield put(Actions.setUndoActions(Actions.updateProject(currentProject)));
   }
 
-  const root: ReturnType<typeof selectors.selectRootElement> = yield select(
-    selectors.selectRootElement,
+  const root: LibraryElement<'root'> = yield select(
+    selectors.selectScreenElement(screenId),
   );
 
-  yield put(Actions.updateElementsTree(root, action, { redo, undo }));
+  yield put(Actions.updateElementsTree(root, action, action.meta));
 }
 
 function* updateElementClassNames(
@@ -372,30 +378,29 @@ function* updateElementClassNames(
   >,
   type: 'add' | 'remove',
 ) {
-  const root: ReturnType<typeof selectors.selectRootElement> = yield select(
-    selectors.selectRootElement,
-  );
-
   if (!action.meta) {
     console.error(
       `You have to provide metainformation for action ${action.type}`,
     );
     return;
   }
+  const { screenId, undo } = action.meta;
 
-  const { undo, redo } = action.meta;
+  const root: LibraryElement<'root'> = yield select(
+    selectors.selectScreenElement(screenId),
+  );
 
   if (!undo) {
     if (type === 'add') {
       yield put(
         Actions.setUndoActions(
-          Actions.removeElementClassName(elementID, newClassName),
+          Actions.removeElementClassName(elementID, newClassName, { screenId }),
         ),
       );
     } else {
       yield put(
         Actions.setUndoActions(
-          Actions.addElementClassName(elementID, newClassName),
+          Actions.addElementClassName(elementID, newClassName, { screenId }),
         ),
       );
     }
@@ -411,7 +416,8 @@ function* updateElementClassNames(
   if (!updatedElement) {
     console.error(`Can not find updated element ${elementID} in tree`);
   } else {
-    yield put(Actions.updateElementsTree(updatedTree, action, { redo, undo }));
+    yield put(Actions.updateElementsTree(updatedTree, action, action.meta));
+
     const convertedElement = convertElementToPatchRequest(updatedElement);
     yield call(reqWrapper, apiChangeElement, {
       data: convertedElement,
@@ -423,12 +429,20 @@ function* updateElementClassNames(
 function* removeElementStyles(
   id: string,
   cssPropertiesNames: string[],
-  action?: ReturnType<
+  action: ReturnType<
     typeof Actions.removeElementStyles | typeof Actions.copyElementStyles
   >,
 ) {
-  const root: ReturnType<typeof selectors.selectRootElement> = yield select(
-    selectors.selectRootElement,
+  if (!action.meta) {
+    console.error(
+      `You have to provide metainformation for action ${action.type}`,
+    );
+    return;
+  }
+  const { screenId } = action.meta;
+
+  const root: LibraryElement<'root'> = yield select(
+    selectors.selectScreenElement(screenId),
   );
 
   const updatedTree = removeStyles(id, cssPropertiesNames, root);
@@ -437,9 +451,8 @@ function* removeElementStyles(
   if (!updatedElement) {
     console.error(`Can not find updated element ${id} in tree`);
   } else {
-    const { undo, redo } = action?.meta;
+    yield put(Actions.updateElementsTree(updatedTree, action, action.meta));
 
-    yield put(Actions.updateElementsTree(updatedTree, action, { redo, undo }));
     const convertedElement = convertElementToPatchRequest(updatedElement);
     yield call(reqWrapper, apiChangeElement, { data: convertedElement, id });
   }
@@ -487,14 +500,16 @@ function* copyElementStylesSaga(
 
   yield call(removeElementStyles, elementID, Object.keys(styles), action);
 
-  const { undo } = action.meta;
+  const { screenId, undo } = action.meta;
 
   if (!undo) {
     yield put(
       Actions.setUndoActions([
-        Actions.removeElementClassName(elementID, uniqueClassName),
+        Actions.removeElementClassName(elementID, uniqueClassName, {
+          screenId,
+        }),
         Actions.updateProject(currentProject),
-        Actions.updateElementStyles(elementID, styles),
+        Actions.updateElementStyles(elementID, styles, { screenId }),
       ]),
     );
   }
@@ -529,16 +544,18 @@ function* updateOrReplaceElementStyles(
     return;
   }
 
-  const { undo, redo } = action.meta;
+  const { screenId, undo } = action.meta;
 
-  const root: ReturnType<typeof selectors.selectRootElement> = yield select(
-    selectors.selectRootElement,
+  const root: LibraryElement<'root'> = yield select(
+    selectors.selectScreenElement(screenId),
   );
 
   if (!undo) {
-    const oldStyles = yield select(selectors.selectElementStyles(id));
+    const oldStyles = yield select(selectors.selectElementStyles(screenId, id));
     yield put(
-      Actions.setUndoActions(Actions.replaceElementStyles(id, oldStyles)),
+      Actions.setUndoActions(
+        Actions.replaceElementStyles(id, oldStyles, { screenId }),
+      ),
     );
   }
 
@@ -552,7 +569,8 @@ function* updateOrReplaceElementStyles(
     console.error(`Can not find updated element ${id} in tree`);
     return;
   }
-  yield put(Actions.updateElementsTree(updatedTree, action, { redo, undo }));
+  yield put(Actions.updateElementsTree(updatedTree, action, action.meta));
+
   const convertedElement = convertElementToPatchRequest(updatedElement);
   yield call(reqWrapper, apiChangeElement, { data: convertedElement, id });
 }
@@ -581,12 +599,14 @@ function* removeElementStylesSaga(
     return;
   }
 
-  const { undo } = action.meta;
+  const { screenId, undo } = action.meta;
 
   if (!undo) {
-    const oldStyles = yield select(selectors.selectElementStyles(id));
+    const oldStyles = yield select(selectors.selectElementStyles(screenId, id));
     yield put(
-      Actions.setUndoActions(Actions.updateElementStyles(id, oldStyles)),
+      Actions.setUndoActions(
+        Actions.updateElementStyles(id, oldStyles, { screenId }),
+      ),
     );
   }
 
@@ -596,7 +616,14 @@ function* removeElementStylesSaga(
 function* updateElementImage(
   action: ReturnType<typeof Actions.updateElementImage>,
 ) {
+  if (!action.meta) {
+    console.error(
+      `You have to provide metainformation for action ${action.type}`,
+    );
+    return;
+  }
   const { itemID, image } = action.payload;
+  const { screenId } = action.meta;
 
   const parsedID = parseInt(itemID);
   const formData = new FormData();
@@ -609,10 +636,14 @@ function* updateElementImage(
   );
 
   yield put(
-    Actions.updateElementParameters(itemID, {
-      ...changedElement.parameters,
-      imageURL: changedElement.image,
-    }),
+    Actions.updateElementParameters(
+      itemID,
+      {
+        ...changedElement.parameters,
+        imageURL: changedElement.image,
+      },
+      { screenId },
+    ),
   );
 }
 
@@ -626,19 +657,19 @@ function* updateElementParameters(
     );
     return;
   }
-  const { undo, redo } = action.meta;
+  const { screenId, undo } = action.meta;
 
-  const root: ReturnType<typeof selectors.selectRootElement> = yield select(
-    selectors.selectRootElement,
+  const root: LibraryElement<'root'> = yield select(
+    selectors.selectScreenElement(screenId),
   );
 
   if (!undo) {
     const oldParameters = yield select(
-      selectors.selectElementParameters(itemID),
+      selectors.selectElementParameters(screenId, itemID),
     );
     yield put(
       Actions.setUndoActions(
-        Actions.updateElementParameters(itemID, oldParameters),
+        Actions.updateElementParameters(itemID, oldParameters, { screenId }),
       ),
     );
   }
@@ -651,7 +682,7 @@ function* updateElementParameters(
   } else {
     const savedValue = getSavedValue(updatedElement as LibraryElementUnion);
     yield put(Actions.updateSavedElementValues(itemID, savedValue));
-    yield call(updateElementsTree, updatedTree, action, { redo, undo });
+    yield call(updateElementsTree, updatedTree, action, action.meta);
 
     const convertedElement = convertElementToPatchRequest(updatedElement);
     yield call(reqWrapper, apiChangeElement, {
@@ -662,19 +693,19 @@ function* updateElementParameters(
 }
 
 function* uploadFileSaga({
-  payload: {
-    file: { file },
-  },
+  type,
+  payload: { file },
+  meta,
 }: ReturnType<typeof Actions.uploadFile>) {
+  if (!meta) {
+    console.error(`You have to provide metainformation for action ${type}`);
+    return;
+  }
+  const { screenId } = meta;
   try {
     // TODO: show loader in addModalElements
-    const currentScreen: ReturnType<typeof selectors.selectCurrentScreen> = yield select(
-      selectors.selectCurrentScreen,
-    );
-    const { id: currentScreenID } = currentScreen;
-
-    const root: ReturnType<typeof selectors.selectRootElement> = yield select(
-      selectors.selectRootElement,
+    const root: LibraryElement<'root'> = yield select(
+      selectors.selectScreenElement(screenId),
     );
 
     const formData = new FormData();
@@ -683,7 +714,7 @@ function* uploadFileSaga({
     formData.append('struct_type', 'container');
     formData.append('func_type', 'container');
     formData.append('name', 'TESTING NEURAL NETWORK');
-    formData.append('screen', currentScreenID.toString());
+    formData.append('screen', screenId.toString());
     formData.append('parameters', JSON.stringify({}));
     formData.append('styles', JSON.stringify({}));
 
@@ -714,13 +745,16 @@ function* uploadFileSaga({
     );
     const childrenIds = updatedElements.children.map((child) => child.id);
     yield put(
-      Actions.setUndoActions(Actions.deleteItem(nnRootWithDefaultParams.id)),
+      Actions.setUndoActions(
+        Actions.deleteItem(nnRootWithDefaultParams.id, { screenId }),
+      ),
     );
 
     yield call(
       updateElementsTree,
       updatedElements,
-      Actions.restoreElementChildren(root.id, childrenIds),
+      Actions.restoreElementChildren(root.id, childrenIds, { screenId }),
+      meta,
     );
   } catch (e) {
     console.error('Could not upload image for NN. Error: ', e.message);
@@ -745,7 +779,7 @@ function* duplicateItems(
   sourceRoot: LibraryElement<Entity>,
   itemsToCopyInfo: ItemToCopyInfo[],
   targetParent: LibraryElement<Entity>,
-  undo: boolean = false,
+  { screenId, undo }: ElementHistoryMeta,
 ) {
   const itemsToDuplicate = itemsToCopyInfo.map((item) =>
     findChildByID(sourceRoot, item.id),
@@ -765,16 +799,19 @@ function* duplicateItems(
     convertElementToRequest(item!),
   );
 
-  yield call(createElements, convertedItemsToDuplicate, targetParent, undo);
+  yield call(createElements, convertedItemsToDuplicate, targetParent, {
+    screenId,
+    undo,
+  });
 }
 
 function* duplicateScreenSaga(
   action: ReturnType<typeof Actions.duplicateScreen>,
 ) {
-  const { name } = action.payload;
+  const { name, screenID } = action.payload;
 
-  const sourceRoot: ReturnType<typeof selectors.selectRootElement> = yield select(
-    selectors.selectRootElement,
+  const sourceRoot: LibraryElement<'root'> = yield select(
+    selectors.selectScreenElement(screenID),
   );
 
   const sourceCurrentScreen: ReturnType<typeof selectors.selectCurrentScreen> = yield select(
@@ -792,12 +829,13 @@ function* duplicateScreenSaga(
   const projectID = currentProject.id;
   const screensNumber = currentProject.projectscreen.length;
 
-  yield call(addScreenSaga, Actions.addScreen(projectID, name, screensNumber));
+  const { id: newScreenId } = yield call(
+    addScreenSaga,
+    Actions.addScreen(projectID, name, screensNumber),
+  );
   yield put(Actions.setScreenLoader(true));
 
-  const targetRoot: ReturnType<typeof selectors.selectRootElement> = yield select(
-    selectors.selectRootElement,
-  );
+  const targetRoot = yield select(selectors.selectScreenElement(newScreenId));
   const targetRootID = targetRoot.id;
 
   yield put(
@@ -807,16 +845,28 @@ function* duplicateScreenSaga(
       name: 'Root',
     }),
   );
-  yield call(duplicateItems, sourceRoot, duplicatedItems, targetRoot, true);
+
+  yield call(duplicateItems, sourceRoot, duplicatedItems, targetRoot, {
+    screenId: newScreenId,
+    undo: true,
+  });
   yield put(Actions.setScreenLoader(false));
 }
 
-function* pasteCopiedItemSaga() {
+function* pasteCopiedItemSaga({
+  type,
+  meta,
+}: ReturnType<typeof Actions.pasteCopiedItem>) {
+  if (!meta) {
+    console.error(`You have to provide metainformation for action ${type}`);
+    return;
+  }
+  const { screenId } = meta;
   const activeItem: ReturnType<typeof selectors.selectActiveItem> = yield select(
     selectors.selectActiveItem,
   );
-  const root: ReturnType<typeof selectors.selectRootElement> = yield select(
-    selectors.selectRootElement,
+  const root: LibraryElement<'root'> = yield select(
+    selectors.selectScreenElement(screenId),
   );
   const targetContainer = findChildByID(root, activeItem.itemId);
 
@@ -827,9 +877,16 @@ function* pasteCopiedItemSaga() {
   const itemToCopyInfo: ReturnType<typeof selectors.selectItemToCopyInfo> = yield select(
     selectors.selectItemToCopyInfo,
   );
+  if (!itemToCopyInfo) return;
 
-  if (activeItem.itemType !== 'none' && itemToCopyInfo !== null) {
-    yield call(duplicateItems, root, [itemToCopyInfo], targetContainer);
+  const sourceRoot: LibraryElement<'root'> = yield select(
+    selectScreenElement(itemToCopyInfo.screenID),
+  );
+
+  if (activeItem.itemType !== 'none') {
+    yield call(duplicateItems, sourceRoot, [itemToCopyInfo], targetContainer, {
+      screenId,
+    });
   }
 }
 
@@ -846,6 +903,9 @@ function* undoSaga() {
   const last = undos[undos.length - 1];
 
   if (Array.isArray(last)) {
+    if (last[0].meta?.screenId) {
+      yield put(activateScreen(last[0].meta.screenId));
+    }
     yield put(Actions.setGroupActionsUp(true));
 
     // eslint-disable-next-line no-restricted-syntax
@@ -853,6 +913,7 @@ function* undoSaga() {
       yield put({
         ...undo,
         meta: {
+          ...undo.meta,
           undo: true,
         },
       });
@@ -860,9 +921,14 @@ function* undoSaga() {
 
     yield put(Actions.setGroupActionsUp(false));
   } else {
+    if (last.meta?.screenId) {
+      yield put(activateScreen(last.meta.screenId));
+    }
+
     yield put({
       ...last,
       meta: {
+        ...last.meta,
         undo: true,
       },
     });
@@ -879,11 +945,8 @@ function* undoSaga() {
   }: ReturnType<typeof selectors.selectActiveItem> = yield select(
     selectors.selectActiveItem,
   );
-  document
-    .querySelector<HTMLElement>(
-      `[data-ls-id='${itemType === 'root' ? 'root' : itemId}']`,
-    )
-    ?.focus();
+
+  yield call(focusOnElement, itemType === 'root' ? 'root' : itemId);
 }
 
 function* redoSaga() {
@@ -893,9 +956,14 @@ function* redoSaga() {
     yield put(Actions.setNotification('Nothing to redo.'));
     return;
   }
+
   const first = redos[0];
 
   if (Array.isArray(first)) {
+    if (first[0].meta?.screenId) {
+      yield put(activateScreen(first[0].meta.screenId));
+    }
+
     yield put(Actions.setGroupActionsUp(true));
 
     // eslint-disable-next-line no-restricted-syntax
@@ -903,6 +971,7 @@ function* redoSaga() {
       yield put({
         ...redo,
         meta: {
+          ...redo.meta,
           redo: true,
         },
       });
@@ -910,9 +979,14 @@ function* redoSaga() {
 
     yield put(Actions.setGroupActionsUp(false));
   } else {
+    if (first.meta?.screenId) {
+      yield put(activateScreen(first.meta.screenId));
+    }
+
     yield put({
       ...first,
       meta: {
+        ...first.meta,
         redo: true,
       },
     });
@@ -926,134 +1000,60 @@ function* redoSaga() {
   }: ReturnType<typeof selectors.selectActiveItem> = yield select(
     selectors.selectActiveItem,
   );
-  document
-    .querySelector<HTMLElement>(
-      `[data-ls-id='${itemType === 'root' ? 'root' : itemId}']`,
-    )
-    ?.focus();
-}
 
-const loadProjectsType: ProjectT.LoadProjects['type'] =
-  'PROJECTS:LOAD_PROJECTS';
-const addProjectType: ProjectT.AddProject['type'] = 'PROJECTS:ADD_PROJECT';
-const deleteProjectType: ProjectT.DeleteProject['type'] =
-  'PROJECTS:DELETE_PROJECT';
-const updateProjectType: ProjectT.UpdateProject['type'] =
-  'PROJECTS:UPDATE_PROJECT';
-const getProjectType: ProjectT.GetProject['type'] = 'PROJECTS:GET_PROJECT';
-const exportProjectType: ProjectT.ExportProject['type'] =
-  'PROJECTS:EXPORT_PROJECT';
-const changeScreensOrderType: ProjectT.ChangeScreensOrder['type'] =
-  'PROJECTS:CHANGE_SCREENS_ORDER';
-const renameProjectType: ProjectT.RenameProject['type'] =
-  'PROJECTS:RENAME_PROJECT';
-const activateScreenType: ProjectT.ActivateScreen['type'] =
-  'PROJECTS:ACTIVATE_SCREEN';
-const addScreenType: ProjectT.AddScreen['type'] = 'PROJECTS:ADD_SCREEN';
-const duplicateScreenType: ProjectT.DuplicateScreen['type'] =
-  'PROJECTS:DUPLICATE_SCREEN';
-const saveScreenType: ProjectT.SaveScreen['type'] = 'PROJECTS:SAVE_SCREEN';
-const deleteScreenType: ProjectT.DeleteScreen['type'] =
-  'PROJECTS:DELETE_SCREEN';
-const renameScreenType: ProjectT.RenameScreen['type'] =
-  'PROJECTS:RENAME_SCREEN';
-const moveElementType: ProjectT.MoveElement['type'] = 'PROJECTS:MOVE_ELEMENT';
-const removeSharedStylesType: ProjectT.RemoveSharedStyles['type'] =
-  'PROJECTS:REMOVE_SHARED_STYLES';
-const updateSharedStylesType: ProjectT.UpdateSharedStyles['type'] =
-  'PROJECTS:UPDATE_SHARED_STYLES';
-const removeElementStylesType: ProjectT.RemoveElementStyles['type'] =
-  'PROJECTS:REMOVE_ELEMENT_STYLES';
-const updateElementStylesType: ProjectT.UpdateElementStyles['type'] =
-  'PROJECTS:UPDATE_ELEMENT_STYLES';
-const replaceElementStylesType: ProjectT.ReplaceElementStyles['type'] =
-  'PROJECTS:REPLACE_ELEMENT_STYLES';
-const copyElementStylesType: ProjectT.CopyElementStyles['type'] =
-  'PROJECTS:COPY_ELEMENT_STYLES';
-const addElementClassNameType: ProjectT.AddElementClassName['type'] =
-  'PROJECTS:ADD_ELEMENT_CLASSNAME';
-const removeElementClassNameType: ProjectT.RemoveElementClassName['type'] =
-  'PROJECTS:REMOVE_ELEMENT_CLASSNAME';
-const updateElementParametersType: ProjectT.UpdateElementParameters['type'] =
-  'PROJECTS:UPDATE_ELEMENT_PARAMETERS';
-const updateElementImageType: ProjectT.UpdateElementImage['type'] =
-  'PROJECTS:UPDATE_ELEMENT_IMAGE';
-const createElementsType: ProjectT.CreateElements['type'] =
-  'PROJECTS:CREATE_ELEMENTS';
-const renameElementType: ProjectT.RenameElement['type'] =
-  'PROJECTS:RENAME_ELEMENT';
-const addChildToElementType: ProjectT.AddChildToElement['type'] =
-  'PROJECTS:ADD_CHILD_TO_ELEMENT';
-const deleteChildFromElementType: ProjectT.DeleteChildFromElement['type'] =
-  'PROJECTS:DELETE_CHILD_FROM_ELEMENT';
-const wrapIntoContainerType: ProjectT.WrapIntoContainer['type'] =
-  'PROJECTS:WRAP_INTO_CONTAINER';
-const deleteItemType: ProjectT.DeleteItem['type'] = 'PROJECTS:DELETE_ITEM';
-const uploadFileType: ProjectT.UploadFile['type'] = 'PROJECTS:UPLOAD_FILE';
-const getScreenNNType: ProjectT.GetScreenNN['type'] = 'PROJECTS:GET_SCREEN_NN';
-const copyActiveItemType: ProjectT.CopyActiveItem['type'] =
-  'PROJECTS:COPY_ACTIVE_ITEM';
-const pasteCopiedItemType: ProjectT.PasteCopiedItem['type'] =
-  'PROJECTS:PASTE_COPIED_ITEM';
-const unwrapFromContainerType: ProjectT.UnwrapFromContainer['type'] =
-  'PROJECTS:UNWRAP_FROM_CONTAINER';
-const undoActionType: ProjectT.UndoAction['type'] = 'UNDO_ACTION';
-const redoActionType: ProjectT.RedoAction['type'] = 'REDO_ACTION';
-const restoreElementType: ProjectT.RestoreElementChildren['type'] =
-  'PROJECTS:RESTORE_ELEMENT_CHILDREN';
-const redoWrapIntoContainerType: ProjectT.RedoWrapIntoContainer['type'] =
-  'PROJECTS:REDO_WRAP_INTO_CONTAINER';
+  yield call(focusOnElement, itemType === 'root' ? 'root' : itemId);
+}
 
 export default function* projectSaga() {
   yield takeLatest(REHYDRATE, authCheckSaga);
   yield takeLatest(LOCATION_CHANGE, LocationChange);
 
-  yield takeLatest(loadProjectsType, getListProjectSaga);
-  yield takeLatest(addProjectType, addProject);
-  yield takeLatest(deleteProjectType, delProjectSaga);
-  yield takeLatest(updateProjectType, updateProjectSaga);
-  yield takeLatest(getProjectType, getProjectSaga);
-  yield takeLatest(exportProjectType, exportProjectSaga);
-  yield takeLatest(changeScreensOrderType, changeScreensOrderSaga);
-  yield takeLatest(renameProjectType, renameProjectSaga);
+  yield takeLatest(TYPES.LOAD_PROJECTS, getListProjectSaga);
+  yield takeLatest(TYPES.ADD_PROJECT, addProject);
+  yield takeLatest(TYPES.DELETE_PROJECT, delProjectSaga);
+  yield takeLatest(TYPES.UPDATE_PROJECT, updateProjectSaga);
+  yield takeLatest(TYPES.GET_PROJECT, getProjectSaga);
+  yield takeLatest(TYPES.EXPORT_PROJECT, exportProjectSaga);
+  yield takeLatest(TYPES.CHANGE_SCREENS_ORDER, changeScreensOrderSaga);
+  yield takeLatest(TYPES.RENAME_PROJECT, renameProjectSaga);
 
-  yield takeLatest(activateScreenType, screenSaga.activateScreenSaga);
-  yield takeLatest(addScreenType, screenSaga.addScreenSaga);
-  yield takeEvery(duplicateScreenType, duplicateScreenSaga);
-  yield takeLatest(saveScreenType, screenSaga.saveScreenSaga);
-  yield takeLatest(deleteScreenType, screenSaga.delScreenSaga);
-  yield takeLatest(renameScreenType, screenSaga.renameScreenSaga);
-  yield takeEvery(moveElementType, moveElementSaga);
+  yield takeLatest(TYPES.ACTIVATE_SCREEN, screenSaga.activateScreenSaga);
+  yield takeLatest(TYPES.ADD_SCREEN, screenSaga.addScreenSaga);
+  yield takeEvery(TYPES.DUPLICATE_SCREEN, duplicateScreenSaga);
+  yield takeLatest(TYPES.SAVE_SCREEN, screenSaga.saveScreenImageSaga);
+  yield takeLatest(TYPES.DELETE_SCREEN, screenSaga.delScreenSaga);
+  yield takeEvery(TYPES.RESTORE_SCREEN, screenSaga.restoreScreenSaga);
+  yield takeLatest(TYPES.RENAME_SCREEN, screenSaga.renameScreenSaga);
+  yield takeEvery(TYPES.MOVE_ELEMENT, moveElementSaga);
 
-  yield takeLatest(removeSharedStylesType, removeSharedStylesSaga);
-  yield takeLatest(updateSharedStylesType, updateSharedStylesSaga);
-  yield takeLatest(removeElementStylesType, removeElementStylesSaga);
-  yield takeLatest(updateElementStylesType, updateElementStyles);
-  yield takeLatest(replaceElementStylesType, replaceElementStylesSaga);
-  yield takeLatest(copyElementStylesType, copyElementStylesSaga);
-  yield takeLatest(addElementClassNameType, addElementClassNameSaga);
-  yield takeLatest(removeElementClassNameType, removeElementClassNameSaga);
-  yield takeLatest(updateElementImageType, updateElementImage);
-  yield takeLatest(updateElementParametersType, updateElementParameters);
+  yield takeLatest(TYPES.REMOVE_SHARED_STYLES, removeSharedStylesSaga);
+  yield takeLatest(TYPES.UPDATE_SHARED_STYLES, updateSharedStylesSaga);
+  yield takeLatest(TYPES.REMOVE_ELEMENT_STYLES, removeElementStylesSaga);
+  yield takeLatest(TYPES.UPDATE_ELEMENT_STYLES, updateElementStyles);
+  yield takeLatest(TYPES.REPLACE_ELEMENT_STYLES, replaceElementStylesSaga);
+  yield takeLatest(TYPES.COPY_ELEMENT_STYLES, copyElementStylesSaga);
+  yield takeLatest(TYPES.ADD_ELEMENT_CLASSNAME, addElementClassNameSaga);
+  yield takeLatest(TYPES.REMOVE_ELEMENT_CLASSNAME, removeElementClassNameSaga);
+  yield takeLatest(TYPES.UPDATE_ELEMENT_IMAGE, updateElementImage);
+  yield takeLatest(TYPES.UPDATE_ELEMENT_PARAMETERS, updateElementParameters);
 
-  yield takeEvery(createElementsType, createElementsSaga);
-  yield takeEvery(renameElementType, renameElementSaga);
+  yield takeEvery(TYPES.CREATE_ELEMENTS, createElementsSaga);
+  yield takeEvery(TYPES.RENAME_ELEMENT, renameElementSaga);
 
-  yield takeEvery(addChildToElementType, addChildToElementSaga);
-  yield takeEvery(deleteChildFromElementType, softDeleteSaga);
-  yield takeEvery(wrapIntoContainerType, wrapIntoContainerSaga);
+  yield takeEvery(TYPES.ADD_CHILD_TO_ELEMENT, addChildToElementSaga);
+  yield takeEvery(TYPES.WRAP_INTO_CONTAINER, wrapIntoContainerSaga);
 
-  yield takeEvery(deleteItemType, softDeleteSaga);
-  yield takeEvery(restoreElementType, restoreElementSaga);
+  yield takeEvery(TYPES.DELETE_ITEM, softDeleteSaga);
+  yield takeEvery(TYPES.RESTORE_ELEMENT_CHILDREN, restoreElementSaga);
 
-  yield takeLatest(copyActiveItemType, copyActiveItemSaga);
-  yield takeEvery(pasteCopiedItemType, pasteCopiedItemSaga);
+  yield takeLatest(TYPES.COPY_ACTIVE_ITEM, copyActiveItemSaga);
+  yield takeEvery(TYPES.PASTE_COPIED_ITEM, pasteCopiedItemSaga);
 
-  yield takeLatest(uploadFileType, uploadFileSaga);
-  yield takeLatest(getScreenNNType, screenSaga.getScreenNNSaga);
+  yield takeLatest(TYPES.UPLOAD_FILE, uploadFileSaga);
+  yield takeLatest(TYPES.GET_SCREEN_NN, screenSaga.getScreenNNSaga);
 
-  yield takeEvery(undoActionType, undoSaga);
-  yield takeEvery(redoActionType, redoSaga);
-  yield takeEvery(unwrapFromContainerType, unwrapFromContainerSaga);
-  yield takeEvery(redoWrapIntoContainerType, redoWrapIntoContainerSaga);
+  yield takeEvery(TYPES.UNDO_ACTION, undoSaga);
+  yield takeEvery(TYPES.REDO_ACTION, redoSaga);
+  yield takeEvery(TYPES.UNWRAP_FROM_CONTAINER, unwrapFromContainerSaga);
+  yield takeEvery(TYPES.REDO_WRAP_INTO_CONTAINER, redoWrapIntoContainerSaga);
 }

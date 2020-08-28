@@ -1,7 +1,7 @@
 import React from 'react';
 import cn from 'classnames';
 import { Link as RouterLink } from 'react-router-dom';
-import { Link, makeStyles } from '@material-ui/core';
+import { Link as MaterialLink, makeStyles } from '@material-ui/core';
 
 import { WithActionProps } from '$utils/withAction';
 
@@ -11,7 +11,7 @@ const styles = require('../styles.scss');
 
 export type LinkRenderer = React.FC<WithActionProps & ActionRendererProps>;
 
-const LinkComponent: LinkRenderer = ({
+const Link: LinkRenderer = ({
   id,
   entityStyles,
   groupStyles,
@@ -42,7 +42,7 @@ const LinkComponent: LinkRenderer = ({
   })();
 
   return (
-    <Link
+    <MaterialLink
       ref={elementRef}
       id={id}
       data-ls-id={id}
@@ -67,8 +67,8 @@ const LinkComponent: LinkRenderer = ({
       })}
     >
       {textContent}
-    </Link>
+    </MaterialLink>
   );
 };
 
-export { LinkComponent as Link };
+export default Link;

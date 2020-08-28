@@ -91,7 +91,9 @@ const RenderTreeComponent: React.FC<Props> = ({
   );
 };
 
-export const RenderTree = connect(
+const RenderTree = connect(
   mapStateToProps,
   mapDispatchToProps,
 )(RenderTreeComponent);
+
+export default RenderTree;

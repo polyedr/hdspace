@@ -1,5 +1,5 @@
 import React from 'react';
-import { Checkbox, makeStyles } from '@material-ui/core';
+import { Checkbox as MaterialCheckbox, makeStyles } from '@material-ui/core';
 
 type Props = {
   name: string;
@@ -17,11 +17,11 @@ const useStyles = makeStyles({
   checked: {},
 });
 
-const CheckboxComponent: React.FC<Props> = ({ checked, name, onChange }) => {
+const Checkbox: React.FC<Props> = ({ checked, name, onChange }) => {
   const classes = useStyles();
 
   return (
-    <Checkbox
+    <MaterialCheckbox
       color="default"
       className={classes.root}
       name={name}
@@ -31,4 +31,4 @@ const CheckboxComponent: React.FC<Props> = ({ checked, name, onChange }) => {
   );
 };
 
-export { CheckboxComponent as Checkbox };
+export default Checkbox;

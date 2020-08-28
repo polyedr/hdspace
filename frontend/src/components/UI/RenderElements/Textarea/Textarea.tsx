@@ -203,4 +203,4 @@ const Textarea: React.FC<TextareaRendererProps> = ({
   );
 };
 
-export { Textarea };
+export default Textarea;

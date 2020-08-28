@@ -31,7 +31,7 @@ import {
   isElementCanBeRemove,
   isElementCanBeAdded,
 } from '$utils/AvailableChildrenHelper';
-import { getSavedValue } from '$utils/getSavedValue';
+import getSavedValue from '$utils/getSavedValue';
 import {
   findParentByChildID,
   findChildByID,
@@ -41,18 +41,22 @@ import {
   updateElementParameters,
   getElementsArray,
   updateElementName,
-  addChildToElement,
+  focusOnElement,
 } from '$utils/ElementsTreeHelper';
 
 import { selectors, T } from '..';
 import { updateSavedElementsValues } from './screen';
-import { setUndoActions } from '$redux/project/actions';
-import { HistoryMeta } from '$redux/project/types';
+import {
+  redoWrapIntoContainer,
+  setUndoActions,
+  unwrapFromContainer,
+} from '$redux/project/actions';
+import { ElementHistoryMeta } from '$redux/project/types';
 
 export function* updateElementsTree(
   root: LibraryElement<'root'>,
   sourceAction: T.Action | null = null,
-  meta?: HistoryMeta,
+  meta: ElementHistoryMeta,
 ) {
   const elementsArray = getElementsArray(root);
 
@@ -96,7 +100,7 @@ export function* createContainer(scenario?: Partial<T.IScenarioItem>) {
 export function* createElements(
   elements: ServerElement<Entity>[],
   parent: LibraryElement<Entity>,
-  undo: boolean = false,
+  { screenId, undo }: ElementHistoryMeta,
 ) {
   const disallowedElements = elements.filter(
     (element) => !isElementCanBeAdded(parent, element.struct_type),
@@ -110,8 +114,8 @@ export function* createElements(
     isElementCanBeAdded(parent, element.struct_type),
   );
 
-  const root: ReturnType<typeof selectors.selectRootElement> = yield select(
-    selectors.selectRootElement,
+  const root: LibraryElement<'root'> = yield select(
+    selectors.selectScreenElement(screenId),
   );
 
   const newElements: ReturnPromisedType<typeof apiAddElements> = yield call(
@@ -123,7 +127,7 @@ export function* createElements(
   if (!undo) {
     yield put(
       Actions.setUndoActions(
-        newElements.map((el: any) => Actions.deleteItem(el.id)),
+        newElements.map((el: any) => Actions.deleteItem(el.id, { screenId })),
       ),
     );
   }
@@ -150,13 +154,16 @@ export function* createElements(
     Actions.restoreElementChildren(
       parent.id,
       newElements.map((element) => element.id),
+      { screenId },
     ),
+    { screenId, undo },
   );
 
   const elementsWithUpdatedBuoyancy = findChildByID(
     updatedElements,
     parent.id,
   )?.children.map((child) => convertElementToPatchRequest(child));
+
   yield call(reqWrapper, apiSaveElements, {
     data: elementsWithUpdatedBuoyancy,
   });
@@ -167,14 +174,19 @@ export function* createElements(
 export function* createElementsSaga(
   action: ReturnType<typeof Actions.createElements>,
 ) {
+  if (!action.meta) {
+    console.error(
+      `You have to provide metainformation for action ${action.type}`,
+    );
+    return;
+  }
   const { createdElements } = action.payload;
+  const { screenId } = action.meta;
 
   const activeItem: ReturnType<typeof selectors.selectActiveItem> = yield select(
     selectors.selectActiveItem,
   );
-  const root: ReturnType<typeof selectors.selectRootElement> = yield select(
-    selectors.selectRootElement,
-  );
+  const root = yield select(selectors.selectScreenElement(screenId));
   const activeItemElement = findChildByID(root, activeItem.itemId);
 
   if (!activeItemElement) {
@@ -187,15 +199,14 @@ export function* createElementsSaga(
   const convertedCreatedElements = createdElements.map((element) =>
     convertCreatedElementToRequest(element.type, null),
   );
-  yield call(createElements, convertedCreatedElements, activeItemElement);
+  yield call(createElements, convertedCreatedElements, activeItemElement, {
+    screenId,
+  });
 
-  document
-    .querySelector<HTMLElement>(
-      `[data-ls-id='${
-        activeItem.itemType === 'root' ? 'root' : activeItem.itemId
-      }']`,
-    )
-    ?.focus();
+  yield call(
+    focusOnElement,
+    activeItem.itemType === 'root' ? 'root' : activeItem.itemId,
+  );
 }
 
 export function* addChildToElementSaga(
@@ -208,7 +219,7 @@ export function* addChildToElementSaga(
     );
     return;
   }
-  const { undo } = action.meta;
+  const { screenId, undo } = action.meta;
 
   const convertedCreatedChild = convertCreatedElementToRequest(childType, null);
   const createdChild = convertElementFromResponse(convertedCreatedChild);
@@ -221,20 +232,16 @@ export function* addChildToElementSaga(
     childWithUpdatedParameters,
   );
 
-  const root: ReturnType<typeof selectors.selectRootElement> = yield select(
-    selectors.selectRootElement,
-  );
+  const root = yield select(selectors.selectScreenElement(screenId));
   const parent = findChildByID(root, elementID);
 
   if (!parent) {
     console.error(`Could not find parent ${elementID} of ${childType}!`);
   } else {
-    yield call(
-      createElements,
-      [convertedChildWithUpdatedParameters],
-      parent,
+    yield call(createElements, [convertedChildWithUpdatedParameters], parent, {
+      screenId,
       undo,
-    );
+    });
   }
 }
 
@@ -246,10 +253,10 @@ export function* softDeleteSaga(action: T.DeleteItem) {
     );
     return;
   }
-  const { undo, redo } = action.meta;
+  const { screenId, undo } = action.meta;
 
-  const root: ReturnType<typeof selectors.selectRootElement> = yield select(
-    selectors.selectRootElement,
+  const root: LibraryElement<'root'> = yield select(
+    selectors.selectScreenElement(screenId),
   );
   const element = findChildByID(root, id);
   if (!element) {
@@ -274,7 +281,11 @@ export function* softDeleteSaga(action: T.DeleteItem) {
   const childrenIds = parent.children.map((child) => child.id);
 
   if (!undo) {
-    yield put(setUndoActions(Actions.restoreElementChildren(parent.id, [id])));
+    yield put(
+      setUndoActions(
+        Actions.restoreElementChildren(parent.id, [id], { screenId }),
+      ),
+    );
   }
 
   const activeItem: ReturnType<typeof selectors.selectActiveItem> = yield select(
@@ -295,14 +306,11 @@ export function* softDeleteSaga(action: T.DeleteItem) {
 
   const updatedRoot = removeChildrenFromElement(parent.id, [element], root);
 
-  yield put(Actions.updateElementsTree(updatedRoot, action, { redo, undo }));
+  yield put(Actions.updateElementsTree(updatedRoot, action, action.meta));
 
   const filtered = childrenIds.filter((childId) => childId !== id);
-  document
-    .querySelector<HTMLElement>(
-      `[data-ls-id='${parent.type === 'root' ? 'root' : parent.id}']`,
-    )
-    ?.focus();
+
+  yield call(focusOnElement, parent.type === 'root' ? 'root' : parent.id);
 
   yield call(reqWrapper, apiChangeRecursiveElement, {
     data: { children: filtered },
@@ -318,11 +326,9 @@ export function* restoreElementSaga(action: T.RestoreElementChildren) {
     );
     return;
   }
-  const { undo, redo } = action.meta;
+  const { screenId, undo } = action.meta;
 
-  const root: ReturnType<typeof selectors.selectRootElement> = yield select(
-    selectors.selectRootElement,
-  );
+  const root = yield select(selectors.selectScreenElement(screenId));
 
   const element = findChildByID(root, elementId);
   if (!element) {
@@ -339,13 +345,15 @@ export function* restoreElementSaga(action: T.RestoreElementChildren) {
 
   if (!undo) {
     yield put(
-      Actions.setUndoActions(childrenIds.map((id) => Actions.deleteItem(id))),
+      Actions.setUndoActions(
+        childrenIds.map((id) => Actions.deleteItem(id, { screenId })),
+      ),
     );
   }
 
   const updatedRoot = yield call(reqWrapper, apiGetElement, { id: root.id });
 
-  yield put(Actions.updateElementsTree(updatedRoot, action, { redo, undo }));
+  yield put(Actions.updateElementsTree(updatedRoot, action, action.meta));
 }
 
 export function* addElementToElement(
@@ -371,10 +379,10 @@ export function* wrapIntoContainerSaga(action: T.WrapIntoContainer) {
     );
     return;
   }
-  const { undo, redo } = action.meta;
+  const { screenId } = action.meta;
 
-  const root: ReturnType<typeof selectors.selectRootElement> = yield select(
-    selectors.selectRootElement,
+  const root: LibraryElement<'root'> = yield select(
+    selectors.selectScreenElement(screenId),
   );
 
   const wrappedItemParent = findParentByChildID(root, id);
@@ -392,13 +400,13 @@ export function* wrapIntoContainerSaga(action: T.WrapIntoContainer) {
 
   const serverContainer = convertCreatedElementToRequest('container', null);
 
-  const createdElements: ReturnPromisedType<typeof apiAddElements> = yield call(
+  const [
+    createdContainer,
+  ]: ReturnPromisedType<typeof apiAddElements> = yield call(
     reqWrapper,
     apiAddElements,
     { data: [serverContainer] },
   );
-
-  const [createdContainer] = createdElements;
 
   yield put(
     Actions.setUndoActions(
@@ -406,6 +414,7 @@ export function* wrapIntoContainerSaga(action: T.WrapIntoContainer) {
         id,
         createdContainer.id,
         wrappedItemParent.id,
+        { screenId },
       ),
     ),
   );
@@ -433,20 +442,29 @@ export function* wrapIntoContainerSaga(action: T.WrapIntoContainer) {
         id,
         createdContainer.id,
         wrappedItemParent.id,
+        action.meta,
       ),
-      { undo, redo },
+      action.meta,
     ),
   );
 
-  document.querySelector<HTMLElement>(`[data-ls-id='${id}']`)?.focus();
+  yield call(focusOnElement, id);
 }
 
-export function* unwrapFromContainerSaga(action: T.UnwrapFromContainer) {
-  const { elementID, wrapperID, parentID } = action.payload;
+export function* unwrapFromContainerSaga(
+  action: ReturnType<typeof unwrapFromContainer>,
+) {
+  if (!action.meta) {
+    console.error(
+      `You have to provide metainformation for action ${action.type}`,
+    );
+    return;
+  }
 
-  const root: ReturnType<typeof selectors.selectRootElement> = yield select(
-    selectors.selectRootElement,
-  );
+  const { elementID, wrapperID, parentID } = action.payload;
+  const { screenId } = action.meta;
+
+  const root = yield select(selectors.selectScreenElement(screenId));
 
   const parent = findChildByID(root, parentID);
   if (!parent) {
@@ -466,12 +484,24 @@ export function* unwrapFromContainerSaga(action: T.UnwrapFromContainer) {
   });
 
   const updatedRoot = yield call(reqWrapper, apiGetElement, { id: root.id });
-  yield put(Actions.updateElementsTree(updatedRoot, action, { undo: true }));
+  yield put(
+    Actions.updateElementsTree(updatedRoot, action, {
+      screenId,
+      undo: true,
+    }),
+  );
+  yield call(focusOnElement, elementID);
 }
 
 export function* renameElementSaga(
   action: ReturnType<typeof Actions.renameElement>,
 ) {
+  if (!action.meta) {
+    console.error(
+      `You have to provide metainformation for action ${action.type}`,
+    );
+    return;
+  }
   const { elementID, name } = action.payload;
 
   const root: ReturnType<typeof selectors.selectRootElement> = yield select(
@@ -487,7 +517,7 @@ export function* renameElementSaga(
     const savedValue = getSavedValue(updatedElement as LibraryElementUnion);
     yield put(Actions.updateSavedElementValues(elementID, savedValue));
 
-    yield call(updateElementsTree, updatedTree);
+    yield call(updateElementsTree, updatedTree, null, action.meta);
 
     yield put(
       Actions.setActiveItem({
@@ -505,12 +535,19 @@ export function* renameElementSaga(
   }
 }
 
-export function* redoWrapIntoContainerSaga(action: T.RedoWrapIntoContainer) {
+export function* redoWrapIntoContainerSaga(
+  action: ReturnType<typeof redoWrapIntoContainer>,
+) {
+  if (!action.meta) {
+    console.error(
+      `You have to provide metainformation for action ${action.type}`,
+    );
+    return;
+  }
   const { parentId, wrapperId, elementId } = action.payload;
+  const { screenId } = action.meta;
 
-  const root: ReturnType<typeof selectors.selectRootElement> = yield select(
-    selectors.selectRootElement,
-  );
+  const root = yield select(selectors.selectScreenElement(screenId));
 
   const parent = findChildByID(root, parentId);
   if (!parent) {
@@ -533,10 +570,13 @@ export function* redoWrapIntoContainerSaga(action: T.RedoWrapIntoContainer) {
 
   yield put(
     Actions.setUndoActions(
-      Actions.unwrapFromContainer(elementId, wrapperId, parentId),
+      Actions.unwrapFromContainer(elementId, wrapperId, parentId, { screenId }),
     ),
   );
 
   const updatedRoot = yield call(reqWrapper, apiGetElement, { id: root.id });
-  yield put(Actions.updateElementsTree(updatedRoot, action, { redo: true }));
+  yield put(
+    Actions.updateElementsTree(updatedRoot, action, { screenId, redo: true }),
+  );
+  yield call(focusOnElement, elementId);
 }

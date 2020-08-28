@@ -11,14 +11,14 @@ import {
 import * as PATH_NAMES from '$constants/pathNames';
 import EditorWindow from '$containers/EditorWindow';
 import { SignIn } from '$components/User/SignIn';
-import { SignUp } from '$components/User/SignUp';
-import { PasswordRestore } from '$components/User/PasswordRestore';
+import SignUp from '$components/User/SignUp';
+import PasswordRestore from '$components/User/PasswordRestore';
 
 const styles = require('$styles/global.scss');
 
 type Props = RouteComponentProps;
 
-const Component: React.FunctionComponent<Props> = (props) => {
+const Routes: React.FC<Props> = (props) => {
   const {
     location: { pathname },
   } = props;
@@ -44,4 +44,4 @@ const Component: React.FunctionComponent<Props> = (props) => {
   );
 };
 
-export const Routes = withRouter(Component);
+export default withRouter(Routes);

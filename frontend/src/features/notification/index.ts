@@ -1,1 +1,3 @@
-export { Notification } from './view/Notification';
+import Notification from './view/Notification';
+
+export default Notification;

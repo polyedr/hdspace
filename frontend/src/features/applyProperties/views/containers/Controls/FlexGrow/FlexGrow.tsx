@@ -8,8 +8,7 @@ import {
   PropertiesChangeProps,
 } from '$utils/withConfigurableProperties';
 import { ContainerElement } from '$api/types';
-
-import { StylesHeader } from '$features/applyProperties/views/components/StylesHeader/StylesHeader';
+import StylesHeader from '$features/applyProperties/views/components/StylesHeader/StylesHeader';
 
 const styles = require('./FlexGrow.scss');
 
@@ -62,5 +61,4 @@ const FlexGrow: React.FC<Props> = ({
   ) : null;
 };
 
-const Component = connect(mapState)(withConfigurableProperties(FlexGrow));
-export { Component as FlexGrow };
+export default connect(mapState)(withConfigurableProperties(FlexGrow));

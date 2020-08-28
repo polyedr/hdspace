@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 import { connect } from 'react-redux';
 
-import { Button } from '$components/UI/Button';
+import Button from '$components/UI/Button';
 import { AppReduxState } from '$shared/types/app';
 import { selectors } from '$redux/project';
 
@@ -21,26 +21,28 @@ const mapState = (state: AppReduxState) => {
 
 type Props = OwnProps & ReturnType<typeof mapState>;
 
-const RemoveStyles: React.FC<Props> = memo(
-  ({ onClick, cssPropertiesNames, editableStyles, activeItem }) => {
-    const handleButtonClick = () => {
-      onClick(cssPropertiesNames);
-    };
+const RemoveStyles: React.FC<Props> = ({
+  onClick,
+  cssPropertiesNames,
+  editableStyles,
+  activeItem,
+}) => {
+  const handleButtonClick = () => {
+    onClick(cssPropertiesNames);
+  };
 
-    const showClearButton =
-      activeItem.itemType !== 'root' && editableStyles !== activeItem.itemType;
+  const showClearButton =
+    activeItem.itemType !== 'root' && editableStyles !== activeItem.itemType;
 
-    return showClearButton ? (
-      <Button
-        className={styles.button}
-        styleType="grey"
-        onClick={handleButtonClick}
-      >
-        Clear styles
-      </Button>
-    ) : null;
-  },
-);
+  return showClearButton ? (
+    <Button
+      className={styles.button}
+      styleType="grey"
+      onClick={handleButtonClick}
+    >
+      Clear styles
+    </Button>
+  ) : null;
+};
 
-const Component = connect(mapState)(RemoveStyles);
-export { Component as RemoveStyles };
+export default connect(mapState)(memo(RemoveStyles));

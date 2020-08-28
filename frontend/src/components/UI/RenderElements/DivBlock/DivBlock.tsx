@@ -7,7 +7,7 @@ import { DivBlockRendererProps } from '../types';
 
 const styles = require('../styles.scss');
 
-export const DivBlockRenderer: React.FC<DivBlockRendererProps> = ({
+const DivBlockRenderer: React.FC<DivBlockRendererProps> = ({
   id,
   sortableId,
   entityStyles,
@@ -54,3 +54,5 @@ export const DivBlockRenderer: React.FC<DivBlockRendererProps> = ({
     </div>
   );
 };
+
+export default DivBlockRenderer;
