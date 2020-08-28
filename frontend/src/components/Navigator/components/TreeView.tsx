@@ -152,8 +152,20 @@ const TreeView: React.FC<Props> = ({
     const oldParent = items[source.parentId];
     const newParent = items[destination.parentId];
     const childId = oldParent.children[source.index];
+    const child = items[childId];
+    console.log(child);
 
     const isRemote = source.parentId !== destination.parentId;
+
+    // const destElement = findChildByID(
+    //   rootElement,
+    //   destination.parentId as string,
+    // );
+    // const element = findChildByID()
+    // if (!destElement) {
+    //   return;
+    // }
+
     if (isRemote) {
       dispatch(
         moveElement(

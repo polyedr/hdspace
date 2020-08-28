@@ -1,4 +1,6 @@
 import React, { useEffect } from 'react';
+import { RenderItemParams } from '@atlaskit/tree';
+import cn from 'classnames';
 import ChevronDown from './Icons/chevron-down';
 import ChevronRight from './Icons/chevron-right';
 
@@ -26,13 +28,19 @@ const getIcon = (item, expand, collapse) => {
   return <span className={styles.iconButton} />;
 };
 
-const TreeItem: React.FC<any> = ({
+type Props = RenderItemParams & {
+  select: (itemId: string) => void;
+  selectedItem: string | null;
+};
+
+const TreeItem: React.FC<Props> = ({
   item,
   onExpand,
   onCollapse,
   provided,
   select,
   selectedItem,
+  snapshot,
 }) => {
   const isParent = item.children.length;
 
@@ -47,13 +55,16 @@ const TreeItem: React.FC<any> = ({
 
   return (
     <div
-      className={styles.treeItem}
+      className={cn(
+        styles.treeItem,
+        snapshot.isDragging ? styles.isDragging : '',
+      )}
       id={`treeitem-${item.id}`}
       ref={provided.innerRef}
       {...provided.draggableProps}
       {...provided.dragHandleProps}
-      onClick={() => select(item.id)}
-      onFocus={() => select(item.id)}
+      onClick={() => select(item.id as string)}
+      onFocus={() => select(item.id as string)}
       aria-selected={item.id === selectedItem}
       {...(isParent
         ? { role: 'group', 'aria-expanded': item.isExpanded }
