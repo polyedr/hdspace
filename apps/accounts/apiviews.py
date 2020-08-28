@@ -4,10 +4,12 @@ from rest_framework import generics
 from .models import User, Profile, Team, TeamMember
 from .serializers import UserSerializer, ProfileSerializer
 
+
 class UserList(generics.ListCreateAPIView):
     """
     List all users, or create a new user.
     """
+
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
@@ -16,6 +18,7 @@ class UserDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     Retrieve, update or delete a user
     """
+
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
