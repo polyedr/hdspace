@@ -80,6 +80,7 @@ venv.bak/
 
 # OS generated files #
 .DS_Store
+.vscode
 
 # Confirmation files
 google63e8b69f84f0ab59.html

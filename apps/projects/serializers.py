@@ -86,6 +86,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
             "parameters",
             "styles",
         )
+        ref_name = "ScenarioProjects"  # Added to avoid SwaggerGeneration Conflicts
 
     def create(self, validated_data):
         # Remove nested objects to handle separately
@@ -264,7 +265,7 @@ class ProjectSerializer(serializers.ModelSerializer):
         project = Project(id=None, **validated_data)
         project.preview = project.generate_preview_token()
         project.save()
-        project.name = 'AProject-' + str(project.id)
+        project.name = "AProject-" + str(project.id)
         project.save()
         project.projectscreen.set(projectscreens_data, clear=True)
         return project
