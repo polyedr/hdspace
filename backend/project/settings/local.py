@@ -15,14 +15,13 @@ import sys
 from .base import *  # noqa
 from celery.schedules import crontab
 from datetime import timedelta
-from apps.virtualize_simple.mask_rcnn.mrcnn.config import Config
-import apps.virtualize_simple.mask_rcnn.mrcnn.model as modellib
 
 # Mask R-CNN model initial load
 ROOT_DIR = os.path.abspath(BASE_DIR + "/apps/virtualize_simple/mask_rcnn")
 # Import Mask RCNN
 sys.path.append(ROOT_DIR)  # To find local version of the library
-
+from apps.virtualize_simple.mask_rcnn.mrcnn.config import Config
+import apps.virtualize_simple.mask_rcnn.mrcnn.model as modellib
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
