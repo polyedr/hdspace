@@ -34,7 +34,7 @@ class UserSerializer(serializers.ModelSerializer):
             "password",
             "is_active",
         )
-        ref_name = "User 1" # Added to avoid SwaggerGeneration Conflicts
+        ref_name = "User Django" # Added to avoid SwaggerGeneration Conflicts
         extra_kwargs = {"id": {"read_only": True}}
 
 

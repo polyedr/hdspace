@@ -50,29 +50,9 @@ urlpatterns = [
     ),
     # drf_yasg
     path(
-        "api/v1/yasg-swagger/",
+        "api/v1/schema/",
         SchemaView.with_ui("swagger", cache_timeout=0),
         name="schema-swagger-ui",
-    ),
-    path(
-        "api/v1/yasg-redoc/",
-        SchemaView.with_ui("redoc", cache_timeout=0),
-        name="schema-redoc",
-    ),
-    path(
-        "api/v1/yasg-redoc-old/",
-        SchemaView.with_ui("redoc-old", cache_timeout=0),
-        name="schema-redoc-old",
-    ),
-    path(
-        "api/v1/yasg-swagger/",
-        SchemaView.with_ui("swagger", cache_timeout=None),
-        name="cschema-swagger-ui",
-    ),
-    path(
-        "api/v1/yasg-redoc/",
-        SchemaView.with_ui("redoc", cache_timeout=None),
-        name="cschema-redoc",
     ),
     # djoser
     path("api/v1/djauth/", include("djoser.urls"), name="djoserauth"),
