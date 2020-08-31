@@ -3,10 +3,8 @@ import { SagaIterator } from 'redux-saga';
 import { takeLatest, call, put, select, takeEvery } from 'redux-saga/effects';
 import {
   apiGetToken,
-  apiSetNewUser,
   apiRefreshToken,
   apiGetUsers,
-  apiSetNewPassword,
   apiGetProfile,
   apiChangeUserData,
   apiChangeProfileData,
@@ -128,34 +126,11 @@ export function* changeProfileDataSaga({
   );
 }
 
-function* setNewUserSaga(action: ReturnType<typeof Actions.setNewUser>) {
-  const {
-    payload: { username, email, firstName, lastName, password },
-  } = action;
-  yield put(Actions.changeSignLoader(true));
-  const newUserData = yield call(apiSetNewUser, {
-    username,
-    password,
-    email,
-    first_name: firstName,
-    last_name: lastName,
-  });
-
-  yield put(Actions.setUserData(convertUserDataFromResponse(newUserData)));
-
-  if (newUserData && newUserData.username && newUserData.password) {
-    yield call(getTokenPairSaga, username, password);
-  } else {
-    yield put(Actions.setApiResponseError(newUserData));
-  }
-  yield put(Actions.changeSignLoader(false));
-}
-
 function* sendActivationMailSaga(
   action: ReturnType<typeof Actions.sendActivationMail>,
 ) {
   const {
-    payload: { username, email, password },
+    payload: { username, email, password, firstName, lastName },
   } = action;
   yield put(Actions.changeSignLoader(true));
 
@@ -163,6 +138,8 @@ function* sendActivationMailSaga(
     username,
     email,
     password,
+    first_name: firstName, // TODO ask backend to set user's data, such as first name, etc
+    last_name: lastName,
   });
 
   if (response.errorStatus) {
@@ -307,43 +284,13 @@ export function* restorePasswordSaga({
   }
 }
 
-export function* setNewPasswordSaga({
-  password,
-}: ReturnType<typeof Actions.setNewPassword>): SagaIterator {
-  const {
-    user: { restoreUserId },
-  }: AppReduxState = yield select();
-
-  if (restoreUserId === undefined) {
-    console.error('restoreUserId is undefined!');
-    return;
-  }
-
-  yield put(Actions.changeSignLoader(true));
-  const newPassword: ReturnPromisedType<typeof apiSetNewPassword> = yield call(
-    apiSetNewPassword,
-    restoreUserId,
-    password,
-  );
-  yield put(Actions.changeSignLoader(false));
-
-  if (typeof newPassword === 'string') {
-    yield call(openSignScreen, 'signin');
-  } else {
-    yield put(Actions.setApiResponseError(newPassword));
-  }
-}
-
 export function* registerWithGoogleSaga() {
-  console.log('registerWithGoogleSaga');
   const res = yield call(apiRegisterWithGoogle);
   window.open(res.authorization_url);
-  console.log(res);
 }
 
 export default function* userSaga() {
   yield takeLatest(TYPES.LOGIN, loginSaga);
-  yield takeLatest(TYPES.SET_NEW_USER, setNewUserSaga);
   yield takeLatest(TYPES.SEND_ACTIVATION_MAIL, sendActivationMailSaga);
   yield takeLatest(TYPES.SEND_RESET_PASSWORD_MAIL, sendResetPasswordMailSaga);
   yield takeLatest(
@@ -352,7 +299,6 @@ export default function* userSaga() {
   );
   yield takeLatest(TYPES.ACTIVATE_USER, activateUserSaga);
   yield takeLatest(TYPES.RESTORE_PASSWORD, restorePasswordSaga);
-  yield takeLatest(TYPES.SET_NEW_PASSWORD, setNewPasswordSaga);
   yield takeLatest(TYPES.REGISTER_WITH_GOOGLE, registerWithGoogleSaga);
   yield takeEvery(TYPES.CHANGE_USER_DATA, changeUserDataSaga);
   yield takeEvery(TYPES.CHANGE_PROFILE_DATA, changeProfileDataSaga);

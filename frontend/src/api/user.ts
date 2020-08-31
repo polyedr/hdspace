@@ -22,6 +22,8 @@ type SendActivationMailData = {
   username: string;
   password: string;
   email: string;
+  first_name: string;
+  last_name: string;
 };
 
 type SendResetPasswordMailData = {
@@ -102,39 +104,20 @@ export const apiRefreshToken = (refresh: string) =>
     .then(parseResult)
     .catch(onError);
 
-export const apiSetNewUser = ({
+export const apiSendActivationMail = ({
   username,
   password,
   email,
   first_name,
   last_name,
-}: ISignUpData) =>
-  myAxios({
-    data: {
-      username,
-      email,
-      first_name,
-      last_name,
-      password,
-      date_joined: new Date(),
-      is_active: true,
-    },
-    method: 'POST',
-    url: '/accounts/users/',
-  })
-    .then(parseResult)
-    .catch(onAuthorisationError);
-
-export const apiSendActivationMail = ({
-  username,
-  password,
-  email,
 }: SendActivationMailData) =>
   myAxios({
     data: {
       username,
       email,
       password,
+      first_name,
+      last_name,
     },
     method: 'POST',
     url: '/djauth/users/',
@@ -142,22 +125,7 @@ export const apiSendActivationMail = ({
     .then(parseResult)
     .catch(onAuthorisationError);
 
-export const apiSendResetPasswordMail = ({
-  // TODO check duplicated methods
-  email,
-}: SendResetPasswordMailData) =>
-  myAxios({
-    data: {
-      email,
-    },
-    method: 'POST',
-    url: '/djauth/reset_password/',
-  })
-    .then(parseResult)
-    .catch(onAuthorisationError);
-
 export const apiResetPasswordConfirmation = ({
-  // TODO check duplicated methods
   uid,
   token,
   newPassword,
@@ -214,20 +182,6 @@ export const apiGetUsers = (): Promise<
   myAxios({
     method: 'GET',
     url: '/accounts/users/',
-  })
-    .then(parseResult)
-    .catch(onAuthorisationError);
-
-export const apiSetNewPassword = (
-  id: number,
-  password: string,
-): Promise<string | IApiResponseError> =>
-  myAxios({
-    data: {
-      password,
-    },
-    method: 'PATCH',
-    url: `/accounts/users/${id}/`,
   })
     .then(parseResult)
     .catch(onAuthorisationError);

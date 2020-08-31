@@ -40,33 +40,20 @@ export const setUserData = (data: Partial<TotalUserData>) => ({
   payload: data,
 });
 
-export const setNewUser = (
-  username: string,
-  email: string,
-  firstName: string,
-  lastName: string,
-  password: string,
-) => ({
-  type: TYPES.SET_NEW_USER,
-  payload: {
-    username,
-    email,
-    firstName,
-    lastName,
-    password,
-  },
-});
-
 export const sendActivationMail = (
   username: string,
   email: string,
   password: string,
+  firstName: string,
+  lastName: string,
 ) => ({
   type: TYPES.SEND_ACTIVATION_MAIL,
   payload: {
     username,
     email,
     password,
+    firstName,
+    lastName,
   },
 });
 
@@ -134,11 +121,6 @@ export const resetPasswordConfirmation = (
 export const setRestoreUserId = (restoreUserId: number) => ({
   type: TYPES.SET_RESTORE_USER_ID,
   restoreUserId,
-});
-
-export const setNewPassword = (password: string) => ({
-  type: TYPES.SET_NEW_PASSWORD,
-  password,
 });
 
 export const changeUserData = (id: number, data: Partial<UserData>) => ({

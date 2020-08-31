@@ -12,7 +12,6 @@ import * as PATH_NAMES from '$constants/pathNames';
 import EditorWindow from '$containers/EditorWindow';
 import { SignIn } from '$components/User/SignIn/SignIn';
 import { SignUp } from '$components/User/SignUp/SignUp';
-import { PasswordRestore } from '$components/User/PasswordRestore';
 import { Activation } from '$components/User/Activation/Activation';
 import { ResetPassword } from '$components/User/ResetPassword/ResetPassword';
 
@@ -39,7 +38,6 @@ const Component: React.FunctionComponent<Props> = (props) => {
         <Route path={PATH_NAMES.user.activate} component={Activation} />
         <Route path={PATH_NAMES.user.password} component={ResetPassword} />
         <Route path={PATH_NAMES.projects} component={EditorWindow} />
-        <Route path={PATH_NAMES.passwordRestore} component={PasswordRestore} />
         <Route path="/project/:projectID/:screenID?" component={EditorWindow} />
         <Route path={PATH_NAMES.profile} component={EditorWindow} />
         {/* <Redirect from="/*" to={PATH_NAMES.projects} /> */}

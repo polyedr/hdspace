@@ -66,7 +66,13 @@ const UnconnectedSignUp: React.FunctionComponent<IProps> = ({
       setApiResponseError(DEFAULT_RESPONSE_ERROR);
     }
 
-    sendActivationMail(values.username, values.email, values.password);
+    sendActivationMail(
+      values.username,
+      values.email,
+      values.password,
+      values.firstName,
+      values.lastName,
+    );
   };
 
   const responseGoogle = (response: any) => {
