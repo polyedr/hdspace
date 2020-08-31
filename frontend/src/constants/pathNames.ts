@@ -6,4 +6,3 @@ export const user = {
   password: '/password',
 } as const;
 export const profile = '/profile';
-export const passwordRestore = '/password_restore';

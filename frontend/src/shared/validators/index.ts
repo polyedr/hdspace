@@ -1,5 +1,5 @@
-export { composeValidators } from './composeValidators';
-export { isValidEmail } from './isValidEmail';
-export { isRequired } from './isRequired';
-export { isLongPassword } from './isLongPassword';
-export { isOnlyNumeric } from './isOnlyNumeric';
+export { default as composeValidators } from './composeValidators';
+export { default as isValidEmail } from './isValidEmail';
+export { default as isRequired } from './isRequired';
+export { default as isLongPassword } from './isLongPassword';
+export { default as isOnlyNumeric } from './isOnlyNumeric';

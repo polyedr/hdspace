@@ -1,7 +1,9 @@
 type ValidationError = string;
 type Validator<T> = (value: T) => ValidationError | undefined;
 
-export function composeValidators<T>(...validators: Array<Validator<T>>) {
+export default function composeValidators<T>(
+  ...validators: Array<Validator<T>>
+) {
   return (value: T) =>
     validators.reduce<ValidationError | undefined>(
       (error, validator) => error || validator(value),
