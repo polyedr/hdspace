@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable no-unused-vars */
 import React from 'react';
 import { connect } from 'react-redux';
 import { Form } from 'react-final-form';
@@ -75,11 +77,12 @@ const UnconnectedSignUp: React.FunctionComponent<IProps> = ({
     );
   };
 
-  const responseGoogle = (response: any) => {
+  // TODO add google button and this method, when the backend will register new users using google token
+  /* const responseGoogle = (response: any) => {
     registerWithGoogle();
     // eslint-disable-next-line no-console
     console.log(response);
-  };
+  }; */
 
   const isAccountExist =
     apiResponseError.errorStatus === 400 &&
@@ -91,7 +94,7 @@ const UnconnectedSignUp: React.FunctionComponent<IProps> = ({
       <div className="signContainer">
         <div className={styles.formContainer}>
           <p className={styles.signinTitle}>Register your account</p>
-          <GoogleLogin
+          {/* <GoogleLogin
             className={styles.googleLogin}
             clientId="97708805893-kqh3efrnsd7i8nbu30p0mhlvhub029he.apps.googleusercontent.com"
             buttonText="Sign up with google"
@@ -99,7 +102,7 @@ const UnconnectedSignUp: React.FunctionComponent<IProps> = ({
             onFailure={responseGoogle}
             cookiePolicy="single_host_origin"
             redirectUri="https://staging-26-10.firebaseapp.com/projects"
-          />
+          /> */}
           <Form
             onSubmit={handleFormSubmit}
             initialValues={initialValues}

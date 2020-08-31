@@ -1,5 +1,4 @@
 /* eslint-disable no-console */
-import { SagaIterator } from 'redux-saga';
 import { takeLatest, call, put, select, takeEvery } from 'redux-saga/effects';
 import {
   apiGetToken,
@@ -11,19 +10,13 @@ import {
   apiSendActivationMail,
   apiActivateUser,
   apiRestorePassword,
-  apiRegisterWithGoogle,
   apiResetPasswordConfirmation,
 } from '$api/user';
 import { TYPES } from '$constants/actions';
 import * as Actions from '$redux/user/actions';
-import {
-  openPasswordRestore,
-  openProjects,
-  openSignScreen,
-} from '$utils/history';
+import { openProjects, openSignScreen } from '$utils/history';
 import { DEFAULT_RESPONSE_ERROR } from '$constants/defaultParams';
 import { AppReduxState } from '$shared/types/app';
-import { ReturnPromisedType } from '$shared/types';
 import {
   convertProfileDataFromResponse,
   convertUserDataFromResponse,
@@ -138,8 +131,6 @@ function* sendActivationMailSaga(
     username,
     email,
     password,
-    first_name: firstName, // TODO ask backend to set user's data, such as first name, etc
-    last_name: lastName,
   });
 
   const userData = convertUserDataToRequest({ firstName, lastName });
@@ -166,7 +157,7 @@ function* sendActivationMailSaga(
   }
 }
 
-function* sendResetPasswordMailSaga( // TODO make as one mail saga
+function* sendResetPasswordMailSaga(
   action: ReturnType<typeof Actions.sendResetPasswordMail>,
 ) {
   const {
@@ -242,51 +233,8 @@ export function* refreshUserTokenPair() {
   return accessResult;
 }
 
-export function* restorePasswordSaga({
-  // TODO remove this saga
-  email,
-}: ReturnType<typeof Actions.restorePassword>): SagaIterator {
-  const {
-    user: { apiResponseError },
-  }: AppReduxState = yield select();
-
-  if (apiResponseError.errorStatus !== -1) {
-    yield put(Actions.setApiResponseError(DEFAULT_RESPONSE_ERROR));
-  }
-
-  // yield call(apiRestorePassword, email);
-  yield put(Actions.setRestorePasswordEmail(email));
-
-  yield put(Actions.changeSignLoader(true));
-  const usersList: ReturnPromisedType<typeof apiGetUsers> = yield call(
-    apiGetUsers,
-  );
-  yield put(Actions.changeSignLoader(false));
-
-  // TODO: research what is errorStatus
-  if (Array.isArray(usersList)) {
-    const user = usersList.find((currentEmail) => currentEmail.email === email);
-
-    if (user !== undefined) {
-      yield put(Actions.setApiResponseError(DEFAULT_RESPONSE_ERROR));
-      yield put(Actions.setRestoreUserId(user.id));
-      yield call(openPasswordRestore);
-    } else {
-      /* yield put(
-        Actions.setApiResponseError({
-          errorStatus: 404,
-          errorText: 'User not found.',
-        }),
-      ); */
-    }
-  } else {
-    yield put(Actions.setApiResponseError(usersList));
-  }
-}
-
 export function* registerWithGoogleSaga() {
-  const res = yield call(apiRegisterWithGoogle);
-  window.open(res.authorization_url);
+  // TODO Write when the backend will register new users using google token
 }
 
 export default function* userSaga() {
@@ -298,7 +246,6 @@ export default function* userSaga() {
     resetPasswordConfirmationSaga,
   );
   yield takeLatest(TYPES.ACTIVATE_USER, activateUserSaga);
-  yield takeLatest(TYPES.RESTORE_PASSWORD, restorePasswordSaga);
   yield takeLatest(TYPES.REGISTER_WITH_GOOGLE, registerWithGoogleSaga);
   yield takeEvery(TYPES.CHANGE_USER_DATA, changeUserDataSaga);
   yield takeEvery(TYPES.CHANGE_PROFILE_DATA, changeProfileDataSaga);

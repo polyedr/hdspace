@@ -22,8 +22,6 @@ type SendActivationMailData = {
   username: string;
   password: string;
   email: string;
-  first_name: string;
-  last_name: string;
 };
 
 type activateUserData = {
@@ -104,16 +102,12 @@ export const apiSendActivationMail = ({
   username,
   password,
   email,
-  first_name,
-  last_name,
 }: SendActivationMailData) =>
   myAxios({
     data: {
       username,
       email,
       password,
-      first_name,
-      last_name,
     },
     method: 'POST',
     url: '/djauth/users/',

@@ -93,11 +93,6 @@ export const setLoadedToken = (isLoadedToken: boolean) => ({
   isLoadedToken,
 });
 
-export const restorePassword = (email: string) => ({
-  type: TYPES.RESTORE_PASSWORD,
-  email,
-});
-
 export const setRestorePasswordEmail = (restorePasswordEmail: string) => ({
   type: TYPES.SET_RESTORE_PASSWORD_EMAIL,
   restorePasswordEmail,
