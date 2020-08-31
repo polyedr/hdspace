@@ -29,11 +29,14 @@ import {
   DivBlockServerElement,
   PageTemplateServerElement,
   ScreenshotServerElement,
+  SubscribeFormServerElement,
+  CardsSectionServerElement,
+  FeatureSectionServerElement,
 } from '$api/types';
 
 import {
   root,
-  image,
+  makeImage,
   makeScreenshot,
   video,
   dropdown,
@@ -44,27 +47,32 @@ import {
   makeContainer,
 } from './otherElements/otherElements';
 import {
-  button,
+  makeButton,
   textarea,
-  textinput,
+  makeTextinput,
   checkbox,
   radiobutton,
-  label,
   select,
   selectMenu,
   makeSelectItem,
+  makeLabel,
 } from './formElements/formElements';
 import {
-  heading,
   hyperlink,
   list,
   textBlock,
   ocrtext,
   makeListItem,
   makeParagraph,
+  makeHeading,
 } from './typographyElements/typographyElements';
 import { map, calendar, clock } from './widgetElements/widgetElements';
-import { pageTemplate } from './blocksTemplates/blocksTemplates';
+import {
+  pageTemplate,
+  subscribeForm,
+  cardsSection,
+  featureSection,
+} from './blocksTemplates/blocksTemplates';
 
 export type ChildrenElements = {
   selectMenu: SelectMenuServerElement;
@@ -100,6 +108,9 @@ export type ElementsToAdd = {
   dropdown: DropdownServerElement;
   video: VideoServerElement;
   undefined: UndefinedServerElement;
+  subscribeForm: SubscribeFormServerElement;
+  cardsSection: CardsSectionServerElement;
+  featureSection: FeatureSectionServerElement;
 };
 
 export type LibraryElements = ChildrenElements & ElementsToAdd;
@@ -112,20 +123,21 @@ export const LIBRARY_ELEMENTS: LibraryElements = {
   container: makeContainer(),
   divBlock: makeDivBlock('This is divBlock'),
   pageTemplate,
-  image,
+  subscribeForm,
+  image: makeImage(),
   screenshot: makeScreenshot(),
-  button,
+  button: makeButton(),
   hyperlink,
-  textinput,
+  textinput: makeTextinput(),
   checkbox,
   radiobutton,
   select,
   selectMenu,
   selectItem: makeSelectItem('', ''),
-  label,
+  label: makeLabel(),
   textarea,
-  heading,
-  paragraph: makeParagraph('This is paragraph'),
+  heading: makeHeading(),
+  paragraph: makeParagraph(),
   ocrtext,
   textBlock,
   list,
@@ -138,4 +150,6 @@ export const LIBRARY_ELEMENTS: LibraryElements = {
   dropdownItem: makeDropdownItem(''),
   video,
   undefined,
+  cardsSection,
+  featureSection,
 };

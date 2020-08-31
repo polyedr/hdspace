@@ -36,7 +36,12 @@ import {
   defaultCalendarStyles,
   defaultClockStyles,
 } from './widgetElements/defaultStyles';
-import { defaultPageTemplateStyles } from './blocksTemplates/defaultStyles';
+import {
+  defaultPageTemplateStyles,
+  defaultSubscribeFormStyles,
+  defaultCardsSectionStyles,
+  defaultFeatureSectionStyles,
+} from './blocksTemplates/defaultStyles';
 
 export const DEFAULT_ELEMENTS_STYLES: {
   [K in Entity]: { [key: string]: CssLikeStyles };
@@ -71,6 +76,9 @@ export const DEFAULT_ELEMENTS_STYLES: {
   dropdownItem: defaultDropdownItemStyles,
   video: defaultVideoStyles,
   undefined: defaultUndefinedStyles,
+  subscribeForm: defaultSubscribeFormStyles,
+  cardsSection: defaultCardsSectionStyles,
+  featureSection: defaultFeatureSectionStyles,
 };
 
 export const getDefaultStyles = (

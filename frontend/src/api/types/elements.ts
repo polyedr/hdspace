@@ -58,6 +58,18 @@ export type PageTemplateServerElement = ServerElement<
   'pageTemplate',
   ContainerServerElement[]
 >;
+export type SubscribeFormServerElement = ServerElement<
+  'subscribeForm',
+  ServerElement<Entity>[]
+>;
+export type CardsSectionServerElement = ServerElement<
+  'cardsSection',
+  ServerElement<Entity>[]
+>;
+export type FeatureSectionServerElement = ServerElement<
+  'featureSection',
+  ServerElement<Entity>[]
+>;
 export type ImageServerElement = ServerElement<'image', [], ImageParameters>;
 export type ScreenshotServerElement = ServerElement<
   'screenshot',
@@ -193,6 +205,14 @@ export type PageTemplateElement = LibraryElement<
   'pageTemplate',
   ContainerElement[]
 >;
+export type SubscribeFormElement = LibraryElement<
+  'subscribeForm',
+  LibraryElement<Entity>[]
+>;
+export type CardsSectionElement = LibraryElement<
+  'cardsSection',
+  LibraryElement<Entity>
+>;
 export type ImageElement = LibraryElement<'image', [], ImageParameters>;
 export type ScreenshotElement = LibraryElement<
   'screenshot',
@@ -282,6 +302,11 @@ export type DropdownItemElement = LibraryElement<
 >;
 export type UndefinedElement = LibraryElement<'undefined', []>;
 
+export type FeatureSectionElement = LibraryElement<
+  'featureSection',
+  LibraryElement<Entity>[]
+>;
+
 export type LibraryElementUnion =
   | RootElement
   | ContainerElement
@@ -312,4 +337,6 @@ export type LibraryElementUnion =
   | DropdownMenuElement
   | DropdownItemElement
   | PageTemplateElement
-  | UndefinedElement;
+  | UndefinedElement
+  | SubscribeFormElement
+  | FeatureSectionElement;

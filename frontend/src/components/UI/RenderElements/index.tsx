@@ -62,6 +62,9 @@ export const RENDERERS: Record<Entity, React.FC<any>> = {
   dropdownItem: DropdownItem,
   video: Video,
   undefined: Undefined,
+  subscribeForm: Container,
+  cardsSection: Container,
+  featureSection: Container,
 };
 
 export const EXPORT_RENDERERS: Record<Entity, React.FunctionComponent<any>> = {

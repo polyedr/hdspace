@@ -28,6 +28,9 @@ export const ENTITIES: {
   divBlock: 'divBlock',
   pageTemplate: 'pageTemplate',
   screenshot: 'screenshot',
+  subscribeForm: 'subscribeForm',
+  cardsSection: 'cardsSection',
+  featureSection: 'featureSection',
 };
 
 const CONTROLS_AFFECT_ON_PARAMS = [
@@ -274,7 +277,31 @@ export const pageTemplateStyleControls = [
   'border',
   'background',
 ] as const;
+export const subscribeFormStyleControls = [
+  'indents',
+  'size',
+  'display',
+  'typography',
+  'border',
+  'background',
+] as const;
 export const undefinedControls = ['size', 'background'] as const;
+export const cardsSectionStyleControls = [
+  'indents',
+  'size',
+  'display',
+  'typography',
+  'border',
+  'background',
+] as const;
+export const featureSectionStyleControls = [
+  'indents',
+  'size',
+  'display',
+  'typography',
+  'border',
+  'background',
+] as const;
 
 export type Control =
   | typeof CONTROLS_AFFECT_ON_PARAMS[number]
@@ -378,11 +405,20 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
   pageTemplate: {
     root: [...pageTemplateStyleControls],
   },
+  subscribeForm: {
+    root: [...subscribeFormStyleControls],
+  },
   screenshot: {
     root: [...screenshotStyleControls, 'screenshot'],
   },
   undefined: {
     root: undefinedControls,
+  },
+  cardsSection: {
+    root: [...cardsSectionStyleControls],
+  },
+  featureSection: {
+    root: [...featureSectionStyleControls],
   },
 } as const;
 
@@ -469,6 +505,24 @@ export const AVAILABLE_CHILDREN: AvailableChildren = {
       max: Infinity,
     },
   },
+  subscribeForm: {
+    all: {
+      min: 0,
+      max: Infinity,
+    },
+  },
   screenshot: {},
   undefined: {},
+  cardsSection: {
+    all: {
+      min: 0,
+      max: Infinity,
+    },
+  },
+  featureSection: {
+    all: {
+      min: 0,
+      max: Infinity,
+    },
+  },
 };
