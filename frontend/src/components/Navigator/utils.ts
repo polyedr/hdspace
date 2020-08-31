@@ -6,7 +6,7 @@ export const convertTree = (element: LibraryElement<any>) => ({
   id: element.id,
   data: { title: element.name, type: element.type },
   hasChildren: !!element.children.length,
-  isExpanded: false,
+  isExpanded: !!element.children.length,
   isChildrenLoading: false,
   children: element.children.map((child) => convertTree(child)),
 });

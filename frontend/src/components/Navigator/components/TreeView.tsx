@@ -22,6 +22,7 @@ import {
 } from '$redux/project/selectors';
 import { isElementCanBeAdded } from '$utils/AvailableChildrenHelper';
 import { DISALLOW_ADD_ELEMENT_NOTIFICATION_TEXT } from '$features/notification/types';
+import Scrollbar from '$components/UI/Scrollbar';
 
 const styles = require('../Navigator.scss');
 
@@ -216,18 +217,20 @@ const TreeView: React.FC<Props> = ({
   );
 
   return (
-    <div className={styles.tree} id="tree" onKeyDown={handleKeyDown}>
-      <AtlasTree
-        tree={tree}
-        renderItem={renderItem}
-        onExpand={expand}
-        onCollapse={collapse}
-        onDragStart={dragStart}
-        onDragEnd={dragEnd}
-        offsetPerLevel={10}
-        isDragEnabled
-        isNestingEnabled
-      />
+    <div className={styles.tree} onKeyDown={handleKeyDown}>
+      <Scrollbar autoHeightMin="100%">
+        <AtlasTree
+          tree={tree}
+          renderItem={renderItem}
+          onExpand={expand}
+          onCollapse={collapse}
+          onDragStart={dragStart}
+          onDragEnd={dragEnd}
+          offsetPerLevel={10}
+          isDragEnabled
+          isNestingEnabled
+        />
+      </Scrollbar>
     </div>
   );
 };

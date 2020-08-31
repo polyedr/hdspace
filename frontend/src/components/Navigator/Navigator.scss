@@ -38,6 +38,7 @@ button {
 }
 
 .componentPane {
+    flex: 1;
     outline: none;
     color: #fff;
     display: flex;
@@ -45,9 +46,7 @@ button {
 }
 
 .tree {
-    height: 200px;
-    border: 1px solid white;
-    overflow: auto;
+    background-color: darken($lightMatteTurq, 5%);
     font-size: 0.75em;
     flex: 1;
     display: flex;

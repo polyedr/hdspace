@@ -77,6 +77,7 @@ export const LeftPanel: React.FunctionComponent<LeftPanelProps> = ({
               </span>
               <span className={styles.profileText}>{email}</span>
             </div>
+
             <Button onClick={handleLogoutClick} className={styles.profileBtn}>
               Log out
             </Button>
@@ -103,6 +104,7 @@ export const LeftPanel: React.FunctionComponent<LeftPanelProps> = ({
                 <Icon icon="dashboard" />
                 <span>My Projects</span>
               </NavLink>
+
               <Button
                 className={cn(
                   styles.navigationExpandBtn,
@@ -114,6 +116,7 @@ export const LeftPanel: React.FunctionComponent<LeftPanelProps> = ({
                 <Icon icon="expand" size={30} />
               </Button>
             </div>
+
             <ul
               className={cn(
                 styles.navigationInnerList,
@@ -145,6 +148,7 @@ export const LeftPanel: React.FunctionComponent<LeftPanelProps> = ({
               </Scrollbar>
             </ul>
           </li>
+
           <li className={styles.navigationItem}>
             <NavLink
               className={styles.navigationLink}
@@ -156,11 +160,10 @@ export const LeftPanel: React.FunctionComponent<LeftPanelProps> = ({
               <span>Workflow</span>
             </NavLink>
           </li>
-          <li>
-            <Navigator />
-          </li>
         </ul>
       </nav>
+
+      <Navigator />
     </aside>
   );
 };
