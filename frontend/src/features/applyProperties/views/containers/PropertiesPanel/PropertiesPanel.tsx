@@ -5,44 +5,47 @@ import * as R from 'ramda';
 
 import { AppReduxState } from '$shared/types/app';
 import { actionsCreators, selectors, T as ProjectT } from '$redux/project';
-import { Scrollbar } from '$components/UI/Scrollbar/';
-import { Spinner } from '$components/UI/Spinner/';
+import Scrollbar from '$components/UI/Scrollbar/';
+import Spinner from '$components/UI/Spinner/';
 import { AVAILABLE_CONTROLS, Control, Entity } from '$domain/core';
 import { LIBRARY_ELEMENTS } from '$domain/libraryElements/libraryElements';
 import { LibraryElement } from '$api/types';
 import { findChildByID, findParentByChildID } from '$utils/ElementsTreeHelper';
 import { isElementCanBeRemove } from '$utils/AvailableChildrenHelper';
-
-import { ControlSection } from '../../components/ControlSection/ControlSection';
 import { ActiveElementBlock, MapProps } from '$features/applyProperties';
-import { ActionBlock } from '../Controls/ActionBlock';
 
-import { SizeBlock } from '../Controls/SizeBlock/SizeBlock';
-import { IndentsBlock } from '../Controls/IndentsBlock';
-import { BackgroundBlock } from '../Controls/BackgroundBlock';
-import { BorderBlock } from '../Controls/BorderBlock';
-import { TypographyBlock } from '../Controls/TypographyBlock';
-import { Placeholder } from '../Controls/Placeholder/Placeholder';
-import { TextContent } from '../Controls/TextContent/TextContent';
-import { Display } from '../Controls/Display/Display';
-import { Image } from '../Controls/Image/Image';
-import { Value } from '../Controls/Value/Value';
-import { Name } from '../Controls/Name/Name';
-import { Ripple } from '../Controls/Ripple/Ripple';
-import { Type } from '../Controls/Type/Type';
-import { SelectOptions } from '../Controls/SelectOptions/SelectOptions';
-import { SelectValue } from '../Controls/SelectValue/SelectValue';
-import { HeadingType } from '../Controls/HeadingType/HeadingType';
-import { ListItems } from '../Controls/ListItems/ListItems';
-import { Bullets } from '../Controls/Bullets/Bullets';
-import { Ordered } from '../Controls/Ordered/Ordered';
-import { LabelFor } from '../Controls/LabelFor/LabelFor';
-import { DropdownItems } from '../Controls/DropdownItems/DropdownItems';
-import { IsOpen } from '../Controls/IsOpen/IsOpen';
-import { VideoSettings } from '../Controls/VideoSettings/VideoSettings';
-import { RenameElement } from '../Controls/RenameElement/RenameElement';
-import { EditableStyles } from '../EditableStyles/EditableStyles';
-import { ShareStyles } from '../ShareStyles/ShareStyles';
+import ControlSection from '../../components/ControlSection/ControlSection';
+import ActionBlock from '../Controls/ActionBlock';
+import SizeBlock from '../Controls/SizeBlock/SizeBlock';
+import IndentsBlock from '../Controls/IndentsBlock';
+import BackgroundBlock from '../Controls/BackgroundBlock';
+import BorderBlock from '../Controls/BorderBlock';
+import TypographyBlock from '../Controls/TypographyBlock';
+import Placeholder from '../Controls/Placeholder/Placeholder';
+import TextContent from '../Controls/TextContent/TextContent';
+import Display from '../Controls/Display/Display';
+import Image from '../Controls/Image/Image';
+import Value from '../Controls/Value/Value';
+import Name from '../Controls/Name/Name';
+import Ripple from '../Controls/Ripple/Ripple';
+import Type from '../Controls/Type/Type';
+import SelectOptions from '../Controls/SelectOptions/SelectOptions';
+import SelectValue from '../Controls/SelectValue/SelectValue';
+import HeadingType from '../Controls/HeadingType/HeadingType';
+import ListItems from '../Controls/ListItems/ListItems';
+import Bullets from '../Controls/Bullets/Bullets';
+import Ordered from '../Controls/Ordered/Ordered';
+import LabelFor from '../Controls/LabelFor/LabelFor';
+import DropdownItems from '../Controls/DropdownItems/DropdownItems';
+import IsOpen from '../Controls/IsOpen/IsOpen';
+import VideoSettings from '../Controls/VideoSettings/VideoSettings';
+import RenameElement from '../Controls/RenameElement/RenameElement';
+import EditableStyles from '../EditableStyles/EditableStyles';
+import ShareStyles from '../ShareStyles/ShareStyles';
+import Screenshot from '../Controls/Screenshot/Screenshot';
+import FlexGrow from '../Controls/FlexGrow/FlexGrow';
+import BackgroundPosition from '../Controls/BackgroundPosition/BackgroundPosition';
+import BackgroundSize from '../Controls/BackgroundSize/BackgroundSize';
 
 const styles = require('./PropertiesPanel.scss');
 
@@ -76,9 +79,7 @@ const mapState = (state: AppReduxState): StateProps => {
 const mapDispatch = {
   addElement: actionsCreators.addElement,
   createElements: actionsCreators.createElements,
-  wrapIntoContainer: actionsCreators.wrapIntoContainer,
   setIsAddElementsModalOpened: actionsCreators.setIsAddElementsModalOpened,
-  deleteActiveItem: actionsCreators.deleteItem,
 };
 
 const CONTROLS: Record<Control, React.ComponentType<any>> = {
@@ -93,6 +94,7 @@ const CONTROLS: Record<Control, React.ComponentType<any>> = {
   placeholder: Placeholder,
   textContent: TextContent,
   image: Image,
+  screenshot: Screenshot,
   type: Type,
   value: Value,
   name: Name,
@@ -107,6 +109,9 @@ const CONTROLS: Record<Control, React.ComponentType<any>> = {
   dropdownItems: DropdownItems,
   isOpen: IsOpen,
   videoSettings: VideoSettings,
+  flexGrow: FlexGrow,
+  backgroundPosition: BackgroundPosition,
+  backgroundSize: BackgroundSize,
 };
 
 export type PropertiesPanelProps = StateProps & typeof mapDispatch;
@@ -121,10 +126,8 @@ const Component: React.FC<PropertiesPanelProps> = ({
   activeElementParent,
   elementsTree,
   screen,
-  deleteActiveItem,
   loader,
   createElements,
-  wrapIntoContainer,
   isAddElementsModalOpened,
   setIsAddElementsModalOpened,
 }) => {
@@ -148,10 +151,8 @@ const Component: React.FC<PropertiesPanelProps> = ({
         <ActiveElementBlock
           activeItem={activeItem}
           disablePanel={disablePanel}
-          onDelScenarioItem={deleteActiveItem}
           libraryElements={LIBRARY_ELEMENTS}
           createElements={createElements}
-          onWrapIntoContainer={wrapIntoContainer}
           isAddElementsModalOpened={isAddElementsModalOpened}
           showDeleteButton={showDeleteButton}
           setIsAddElementsModalOpened={setIsAddElementsModalOpened}

@@ -5,8 +5,8 @@ import { connect } from 'react-redux';
 import { AppReduxState } from '$shared/types/app';
 import { selectors } from '$redux/project/';
 import { DropDown } from '$components/UI/DropDown/';
-import { Icon } from '$components/UI/Icon/';
-import { Button } from '$components/UI/Button/';
+import Icon from '$components/UI/Icon/';
+import Button from '$components/UI/Button/';
 import {
   withConfigurableProperties,
   PropertiesChangeProps,
@@ -39,7 +39,7 @@ function mapState(state: AppReduxState): StateProps {
 
 type Props = StateProps & PropertiesChangeProps<HyperlinkElement>;
 
-const Component: React.FC<Props> = ({ action, screens, updateParams }) => {
+const ActionBlock: React.FC<Props> = ({ action, screens, updateParams }) => {
   const [isExternalLink, setIsExternalLink] = React.useState<boolean>(
     action && action.type === 'external-link',
   );
@@ -147,6 +147,4 @@ const Component: React.FC<Props> = ({ action, screens, updateParams }) => {
   );
 };
 
-export const ActionBlock = connect(mapState)(
-  withConfigurableProperties(Component),
-);
+export default connect(mapState)(withConfigurableProperties(ActionBlock));

@@ -55,4 +55,4 @@ const Paragraph: React.FC<ParagraphRendererProps> = ({
   );
 };
 
-export { Paragraph };
+export default Paragraph;

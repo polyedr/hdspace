@@ -52,4 +52,4 @@ const Undefined: React.FC<SharedRendererProps> = ({
   );
 };
 
-export { Undefined };
+export default Undefined;

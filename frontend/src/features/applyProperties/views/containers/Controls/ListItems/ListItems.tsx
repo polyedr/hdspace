@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import {
   ExpansionPanel,
   ExpansionPanelSummary,
@@ -14,10 +14,11 @@ import {
   withConfigurableProperties,
   PropertiesChangeProps,
 } from '$utils/withConfigurableProperties';
-import { Button } from '$components/UI/Button';
-import { Icon } from '$components/UI/Icon';
-import { sharedClasses } from '$styles/sharedClasses';
+import Button from '$components/UI/Button';
+import Icon from '$components/UI/Icon';
+import sharedClasses from '$styles/sharedClasses';
 import { ListItemElement } from '$api/types';
+import { selectCurrentScreenId } from '$redux/project/selectors';
 
 const styles = require('./ListItems.scss');
 
@@ -52,6 +53,8 @@ const ListItems: React.FC<Props> = ({
   addChildToElement,
   deleteChildFromElement,
 }) => {
+  const currentScreenId = useSelector(selectCurrentScreenId);
+
   const handleTextContentFieldChange = (
     listItemID: string,
     { target: { value } }: React.ChangeEvent<HTMLTextAreaElement>,
@@ -67,15 +70,20 @@ const ListItems: React.FC<Props> = ({
   };
 
   const handleAddButtonClick = () => {
-    addChildToElement('listItem', activeItemID, {
-      textContent: 'New item',
-      isLink: false,
-      link: '',
-    });
+    addChildToElement(
+      'listItem',
+      activeItemID,
+      {
+        textContent: 'New item',
+        isLink: false,
+        link: '',
+      },
+      { screenId: currentScreenId },
+    );
   };
 
   const handleDeleteButtonClick = (listItemID: string) => {
-    deleteChildFromElement(listItemID);
+    deleteChildFromElement(listItemID, { screenId: currentScreenId });
   };
 
   const handleCheckboxChange = (
@@ -159,8 +167,7 @@ const ListItems: React.FC<Props> = ({
   );
 };
 
-const Component = connect(
+export default connect(
   mapState,
   mapDispatch,
 )(withConfigurableProperties(ListItems));
-export { Component as ListItems };

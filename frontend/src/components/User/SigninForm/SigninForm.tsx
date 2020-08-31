@@ -7,8 +7,8 @@ import { Form } from 'react-final-form';
 import { NavLink } from 'react-router-dom';
 import GoogleLogin from 'react-google-login';
 import { AppReduxState } from '$shared/types/app';
-import { Button } from '$components/UI/Button';
-import { Modal } from '$components/UI/Modal';
+import Button from '$components/UI/Button';
+import Modal from '$components/UI/Modal';
 import {
   DEFAULT_RESPONSE_ERROR,
   DEFAULT_SIGNIN_FIELDS,
@@ -227,6 +227,4 @@ const SignInForm = (props: IProps) => {
   );
 };
 
-const Component = connect(mapState, mapDispatch)(SignInForm);
-
-export { Component as SignInForm };
+export default connect(mapState, mapDispatch)(SignInForm);

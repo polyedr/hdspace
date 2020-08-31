@@ -1,8 +1,8 @@
 import React from 'react';
 import cn from 'classnames';
-import { makeStyles, MenuItem } from '@material-ui/core';
+import { makeStyles, MenuItem as MaterialMenuItem } from '@material-ui/core';
 
-import { sharedClasses } from '$styles/sharedClasses';
+import sharedClasses from '$styles/sharedClasses';
 
 import { MenuItemRendererProps } from '../types';
 
@@ -35,7 +35,7 @@ const getStyles = (
     },
   });
 
-const MenuItemComponent: React.FC<MenuItemRendererProps> = ({
+const MenuItem: React.FC<MenuItemRendererProps> = ({
   id,
   entityStyles,
   groupStyles,
@@ -50,7 +50,7 @@ const MenuItemComponent: React.FC<MenuItemRendererProps> = ({
   const classes = getStyles(isDisabled, entityStyles, groupStyles, ownStyles)();
 
   return isDisabled ? (
-    <MenuItem
+    <MaterialMenuItem
       ref={elementRef}
       id={id}
       data-ls-id={id}
@@ -69,9 +69,9 @@ const MenuItemComponent: React.FC<MenuItemRendererProps> = ({
       disableRipple
     >
       {name}
-    </MenuItem>
+    </MaterialMenuItem>
   ) : (
-    <MenuItem
+    <MaterialMenuItem
       key={id}
       className={cn(
         classes.entityStyles,
@@ -82,8 +82,8 @@ const MenuItemComponent: React.FC<MenuItemRendererProps> = ({
       disableRipple={!showRipple}
     >
       {name}
-    </MenuItem>
+    </MaterialMenuItem>
   );
 };
 
-export { MenuItemComponent as MenuItem };
+export default MenuItem;

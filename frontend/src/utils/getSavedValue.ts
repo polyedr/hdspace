@@ -1,6 +1,6 @@
 import { LibraryElementUnion } from '$api/types';
 
-export const getSavedValue = (element: LibraryElementUnion) => {
+const getSavedValue = (element: LibraryElementUnion) => {
   switch (element.type) {
     case 'textarea':
     case 'textinput': {
@@ -21,3 +21,5 @@ export const getSavedValue = (element: LibraryElementUnion) => {
     }
   }
 };
+
+export default getSavedValue;

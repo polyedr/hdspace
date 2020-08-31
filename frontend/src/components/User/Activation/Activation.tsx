@@ -3,13 +3,13 @@ import { connect } from 'react-redux';
 import { useRouteMatch } from 'react-router-dom';
 
 import { Info } from '$components/User/Info';
-import { Spinner } from '$components/UI/Spinner';
+import Spinner from '$components/UI/Spinner';
 import * as Actions from '$redux/user/actions';
 import { IApiResponseError } from '$redux/user/types';
 import { AppReduxState } from '$shared/types/app';
 import { DEFAULT_RESPONSE_ERROR } from '$constants/defaultParams';
 
-import { SignInForm } from '../SigninForm/SigninForm';
+import SignInForm from '../SigninForm/SigninForm';
 
 const styles = require('./Activation.scss');
 
@@ -69,6 +69,4 @@ const Activation: React.FC<IProps> = ({
   );
 };
 
-const Component = connect(mapState, mapDispatch)(Activation);
-
-export { Component as Activation };
+export default connect(mapState, mapDispatch)(Activation);

@@ -11,7 +11,7 @@ interface IMarkerProps {
   lng: number;
 }
 
-const Marker: React.FunctionComponent<IMarkerProps> = ({ text }) => {
+const Marker: React.FC<IMarkerProps> = ({ text }) => {
   return (
     <div className={styles.mapMarker}>
       <p>{text}</p>
@@ -19,11 +19,7 @@ const Marker: React.FunctionComponent<IMarkerProps> = ({ text }) => {
   );
 };
 
-export const GMap: React.FunctionComponent<IMapProps> = ({
-  center,
-  zoom,
-  markerText,
-}) => (
+const GMap: React.FC<IMapProps> = ({ center, zoom, markerText }) => (
   <GoogleMapReact
     center={center}
     zoom={zoom}
@@ -32,3 +28,5 @@ export const GMap: React.FunctionComponent<IMapProps> = ({
     <Marker lat={center.lat} lng={center.lng} text={markerText || ''} />
   </GoogleMapReact>
 );
+
+export default GMap;

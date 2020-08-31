@@ -60,4 +60,4 @@ const List: React.FC<ListRendererProps> = ({
   );
 };
 
-export { List };
+export default List;

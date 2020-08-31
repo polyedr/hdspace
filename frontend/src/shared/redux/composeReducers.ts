@@ -1,6 +1,6 @@
 import { Reducer, Action } from 'redux';
 
-export function composeReducers<S>(reducers: Array<Reducer<S>>) {
+function composeReducers<S>(reducers: Array<Reducer<S>>) {
   return <A extends Action>(state: S, action: A) =>
     reducers
       .reverse()
@@ -9,3 +9,5 @@ export function composeReducers<S>(reducers: Array<Reducer<S>>) {
         state,
       );
 }
+
+export default composeReducers;

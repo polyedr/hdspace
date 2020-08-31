@@ -12,7 +12,7 @@ import {
   apiRestorePassword,
   apiResetPasswordConfirmation,
 } from '$api/user';
-import { TYPES } from '$constants/actions';
+import TYPES from '$constants/actions';
 import * as Actions from '$redux/user/actions';
 import { openProjects, openSignScreen } from '$utils/history';
 import { DEFAULT_RESPONSE_ERROR } from '$constants/defaultParams';

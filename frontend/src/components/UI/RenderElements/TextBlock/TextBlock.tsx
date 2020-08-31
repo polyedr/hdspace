@@ -57,4 +57,4 @@ const TextBlock: React.FC<TextBlockRendererProps> = ({
   );
 };
 
-export { TextBlock };
+export default TextBlock;

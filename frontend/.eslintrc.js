@@ -54,7 +54,6 @@ module.exports = {
     'react/prop-types': 'off', // should be disabled with typescript
     radix: [2, 'as-needed'], // allow to omit second parameter when possible
     'react/jsx-wrap-multilines': 'off', // to avoid conflicts with prettier
-    'import/prefer-default-export': 'off',
     'import/no-cycle': 'off', // TODO: get rid of cyclic dependencies
     'react/jsx-props-no-spreading': 'off',
     'jsx-a11y/label-has-associated-control': 'off',

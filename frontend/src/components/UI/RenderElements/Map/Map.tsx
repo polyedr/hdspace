@@ -4,7 +4,7 @@ import React from 'react';
 import cn from 'classnames';
 import { makeStyles } from '@material-ui/core';
 
-import { GMap } from '$components/UI/GMap';
+import GMap from '$components/UI/GMap';
 
 import { MapRendererProps } from '../types';
 
@@ -62,4 +62,4 @@ const Map: React.FC<MapRendererProps> = ({
   );
 };
 
-export { Map };
+export default Map;

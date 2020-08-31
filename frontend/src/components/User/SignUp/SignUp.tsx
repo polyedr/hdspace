@@ -8,8 +8,8 @@ import { GoogleLogin } from 'react-google-login';
 
 import { AppReduxState } from '$shared/types/app';
 import { Info } from '$components/User/Info';
-import { Button } from '$components/UI/Button';
-import { Spinner } from '$components/UI/Spinner';
+import Button from '$components/UI/Button';
+import Spinner from '$components/UI/Spinner';
 import {
   DEFAULT_RESPONSE_ERROR,
   DEFAULT_SIGNUP_FIELDS,
@@ -171,7 +171,4 @@ const UnconnectedSignUp: React.FunctionComponent<IProps> = ({
   );
 };
 
-export const SignUp = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(UnconnectedSignUp);
+export default connect(mapStateToProps, mapDispatchToProps)(UnconnectedSignUp);

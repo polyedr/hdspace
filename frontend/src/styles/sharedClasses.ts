@@ -1,4 +1,4 @@
-export const sharedClasses = {
+const sharedClasses = {
   propsSection: 'propsElementsBlock',
   propsTitle: 'propsElementsBlockTitle',
   propsContent: 'propsElementsContentBlock',
@@ -12,3 +12,5 @@ export const sharedClasses = {
   unsortable: 'unsortable',
   activated: 'activated',
 };
+
+export default sharedClasses;

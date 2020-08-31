@@ -4,7 +4,7 @@ import cn from 'classnames';
 import { makeStyles } from '@material-ui/core';
 import * as R from 'ramda';
 
-import { sharedClasses } from '$styles/sharedClasses';
+import sharedClasses from '$styles/sharedClasses';
 
 import { ListItemRendererProps } from '../types';
 
@@ -206,4 +206,4 @@ const ListItem: React.FC<ListItemRendererProps> = ({
   );
 };
 
-export { ListItem };
+export default ListItem;

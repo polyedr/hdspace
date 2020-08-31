@@ -1,4 +1,4 @@
-export const convertDateToRelative = (date: Date) => {
+const convertDateToRelative = (date: Date) => {
   const insertSIfNecessary = (x: number): 's' | '' => (x === 1 ? '' : 's');
 
   const m = Math.round((Date.now() - Number(date)) / 1000 / 60);
@@ -28,3 +28,5 @@ export const convertDateToRelative = (date: Date) => {
   const y = Math.round(m / 60 / 24 / 30 / 12);
   return y < 2 ? 'last year' : `${y} years ago`;
 };
+
+export default convertDateToRelative;

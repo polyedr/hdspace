@@ -11,7 +11,7 @@ import { Entity } from '$domain/core';
 import { AppReduxState } from '$shared/types/app';
 import { selectors } from '$redux/project';
 
-import { StylesHeader } from '../../../components/StylesHeader/StylesHeader';
+import StylesHeader from '../../../components/StylesHeader/StylesHeader';
 
 const styles = require('./styles.scss');
 
@@ -183,5 +183,4 @@ const IndentsBlock: React.FC<Props> = (props) => {
   );
 };
 
-const Component = connect(mapState)(withConfigurableProperties(IndentsBlock));
-export { Component as IndentsBlock };
+export default connect(mapState)(withConfigurableProperties(IndentsBlock));

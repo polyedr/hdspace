@@ -4,8 +4,8 @@ import { useRouteMatch } from 'react-router-dom';
 import { Form } from 'react-final-form';
 
 import { Info } from '$components/User/Info';
-import { Spinner } from '$components/UI/Spinner';
-import { Button } from '$components/UI/Button';
+import Spinner from '$components/UI/Spinner';
+import Button from '$components/UI/Button';
 import * as Actions from '$redux/user/actions';
 import { IApiResponseError } from '$redux/user/types';
 import { AppReduxState } from '$shared/types/app';
@@ -153,6 +153,4 @@ const ResetPassword: React.FC<IProps> = ({
   );
 };
 
-const Component = connect(mapState, mapDispatch)(ResetPassword);
-
-export { Component as ResetPassword };
+export default connect(mapState, mapDispatch)(ResetPassword);

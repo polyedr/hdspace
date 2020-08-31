@@ -62,8 +62,20 @@ export const DEFAULT_BACKGROUND: ScreenBackground = {
   'background-size': 'cover',
 };
 
+export const DEFAULT_BACKGROUND_POSITION: CssLikeStyles = {
+  'background-position': '0% 0%',
+};
+
+export const DEFAULT_BACKGROUND_SIZE: CssLikeStyles = {
+  'background-size': '100% auto',
+};
+
 export const DEFAULT_BULLETS: CssLikeStyles = {
   'list-style-type': 'disc',
+};
+
+export const DEFAULT_FLEX_GROW: CssLikeStyles = {
+  'flex-grow': 0,
 };
 
 type ScreenTypography = {

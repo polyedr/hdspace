@@ -72,17 +72,6 @@ export const DEFAULT_LS: { root: ILSItem } = {
   },
 };
 
-export const DEFAULT_SCREEN: IProjectScreen = {
-  id: -1,
-  project: -1,
-  name: '',
-  status: '',
-  screenscenario: [],
-  buoyancy: 0,
-  image: null,
-  listSortable: DEFAULT_LS,
-};
-
 export const DEFAULT_ROOT: LibraryElement<'root'> = {
   id: '-1',
   name: 'Root',
@@ -95,6 +84,17 @@ export const DEFAULT_ROOT: LibraryElement<'root'> = {
     classNames: ['root'],
     ownStyles: {} as Required<CssLikeStyles>,
   },
+};
+
+export const DEFAULT_SCREEN: IProjectScreen = {
+  id: -1,
+  project: -1,
+  name: '',
+  status: '',
+  screenscenario: [],
+  buoyancy: 0,
+  image: null,
+  element: DEFAULT_ROOT,
 };
 
 export const DEFAULT_ACTIVE_ITEM: ActiveItem = {

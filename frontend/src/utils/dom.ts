@@ -1,3 +1,4 @@
+/* eslint-disable import/prefer-default-export */
 import classNames from 'classnames';
 import { IScreenMode } from '$components/Editor/Editor';
 

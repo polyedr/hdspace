@@ -8,7 +8,7 @@ import {
   withConfigurableProperties,
   PropertiesChangeProps,
 } from '$utils/withConfigurableProperties';
-import { sharedClasses } from '$styles/sharedClasses';
+import sharedClasses from '$styles/sharedClasses';
 import { DropdownElement } from '$api/types';
 
 type StateProps = {
@@ -68,5 +68,4 @@ const IsOpen: React.FC<Props> = ({ isOpen, updateParams }) => {
   );
 };
 
-const Component = connect(mapState)(withConfigurableProperties(IsOpen));
-export { Component as IsOpen };
+export default connect(mapState)(withConfigurableProperties(IsOpen));

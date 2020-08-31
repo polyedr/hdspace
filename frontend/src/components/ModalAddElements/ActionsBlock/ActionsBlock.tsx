@@ -2,8 +2,8 @@ import React, { useCallback } from 'react';
 import classNames from 'classnames';
 import * as R from 'ramda';
 
-import { Button } from '$components/UI/Button';
-import { Scrollbar } from '$components/UI/Scrollbar';
+import Button from '$components/UI/Button';
+import Scrollbar from '$components/UI/Scrollbar';
 import { getChooseElements, GroupElement } from '$utils/parseScenario';
 import { ENTITIES, Entity, AVAILABLE_CHILDREN } from '$domain/core';
 import { CreatedElement, ActiveItem } from '$redux/project/types';
@@ -20,7 +20,7 @@ type Props = {
   setSelectedElements(elements: CreatedElement[]): void;
 };
 
-export const ActionsBlock: React.FunctionComponent<Props> = ({
+const ActionsBlock: React.FC<Props> = ({
   activeItem,
   tabs,
   groupElements,
@@ -52,7 +52,7 @@ export const ActionsBlock: React.FunctionComponent<Props> = ({
   return (
     <div className={styles.modalActionsContainer}>
       <ul className={styles.modalActionsTabsList}>
-        {tabs.map((tab) => (
+        {tabs?.map((tab) => (
           <li key={`key-${tab}`} className={styles.modalActionsTabsItem}>
             <button
               type="button"
@@ -71,7 +71,7 @@ export const ActionsBlock: React.FunctionComponent<Props> = ({
         <p className={styles.contentTitle}>Choose a template</p>
         <Scrollbar style={{ marginBottom: 20 }} maxHeight={100}>
           <div className={styles.contentList}>
-            {groupElements.map(({ key, value, label }) => {
+            {groupElements?.map(({ key, value, label }) => {
               const isDisabled =
                 !R.includes(value.structType, R.keys(ENTITIES)) ||
                 !isAvailableChild(value.structType);
@@ -100,3 +100,5 @@ export const ActionsBlock: React.FunctionComponent<Props> = ({
     </div>
   );
 };
+
+export default ActionsBlock;

@@ -172,4 +172,4 @@ const Video: React.FC<VideoRendererProps> = ({
   );
 };
 
-export { Video };
+export default Video;

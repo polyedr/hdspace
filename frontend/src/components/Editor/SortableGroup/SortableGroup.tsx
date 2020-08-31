@@ -4,7 +4,7 @@ import { SortableOptions } from 'sortablejs';
 
 // @ts-ignore
 import { Sortable } from '$components/Editor/Sortable/Sortable';
-import { sharedClasses } from '$styles/sharedClasses';
+import sharedClasses from '$styles/sharedClasses';
 import { Indices } from '$redux/project/types';
 
 const styles = require('./SortableGroup.scss');
@@ -25,7 +25,7 @@ type Props = {
   onChoose(itemIndex: number, target?: React.SyntheticEvent): void;
 };
 
-export const SortableGroup: React.FC<Props> = ({
+const SortableGroup: React.FC<Props> = ({
   elementRenderer,
   isActive,
   disableSortable,
@@ -135,3 +135,5 @@ export const SortableGroup: React.FC<Props> = ({
     </Sortable>
   );
 };
+
+export default SortableGroup;

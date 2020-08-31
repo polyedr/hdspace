@@ -6,9 +6,9 @@ import { Info } from '$components/User/Info';
 import { DEFAULT_RESPONSE_ERROR } from '$constants/defaultParams';
 import * as Actions from '$redux/user/actions';
 import { IApiResponseError } from '$redux/user/types';
-import { Spinner } from '$components/UI/Spinner';
+import Spinner from '$components/UI/Spinner';
 
-import { SignInForm } from '../SigninForm/SigninForm';
+import SignInForm from '../SigninForm/SigninForm';
 
 const styles = require('./SignIn.scss');
 
@@ -60,7 +60,4 @@ export const UnmountedSignIn: React.FC<IProps> = ({
   );
 };
 
-export const SignIn = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(UnmountedSignIn);
+export default connect(mapStateToProps, mapDispatchToProps)(UnmountedSignIn);

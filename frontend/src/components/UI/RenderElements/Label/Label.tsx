@@ -64,4 +64,4 @@ const Label: React.FC<LabelRendererProps> = ({
   );
 };
 
-export { Label };
+export default Label;

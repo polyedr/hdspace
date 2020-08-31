@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { connect, useSelector } from 'react-redux';
 import { actionsCreators, selectors } from '$redux/project';
 import { AppReduxState } from '$shared/types/app';
+import { selectCurrentScreenId } from '$redux/project/selectors';
 
 const mapState = (state: AppReduxState) => {
   return {
@@ -30,29 +31,33 @@ export const Component = ({
   redo,
 }: Props) => {
   const root = document.getElementById('root');
+  const currentScreenId = useSelector(selectCurrentScreenId);
   const { itemId } = useSelector(selectors.selectActiveItem);
 
   useEffect(() => {
     const listener = (event: KeyboardEvent) => {
-      if (event.keyCode === 8) {
-        deleteActiveItem(itemId);
+      if (
+        event.key === 'Delete' ||
+        (event.key === 'Backspace' && event.metaKey)
+      ) {
+        deleteActiveItem(itemId, { screenId: currentScreenId });
       }
     };
 
     root?.addEventListener('keydown', listener);
     return () => root?.removeEventListener('keydown', listener);
-  }, [rootElement, root, deleteActiveItem, itemId]);
+  }, [rootElement, root, deleteActiveItem, itemId, currentScreenId]);
 
   useEffect(() => {
     const listener = (event: KeyboardEvent) => {
       if (event.code === 'KeyC' && event.altKey) {
-        wrapIntoContainer(itemId);
+        wrapIntoContainer(itemId, { screenId: currentScreenId });
       }
     };
 
     root?.addEventListener('keydown', listener);
     return () => root?.removeEventListener('keydown', listener);
-  }, [rootElement, root, wrapIntoContainer, itemId]);
+  }, [rootElement, root, wrapIntoContainer, itemId, currentScreenId]);
 
   useEffect(() => {
     const listener = (event: KeyboardEvent) => {
@@ -75,13 +80,13 @@ export const Component = ({
         event.code === 'KeyV' && (event.metaKey || event.ctrlKey);
 
       if (isItemPasteEvent) {
-        pasteCopiedItem();
+        pasteCopiedItem({ screenId: currentScreenId });
       }
     };
 
     root?.addEventListener('keydown', listener);
     return () => root?.removeEventListener('keydown', listener);
-  }, [rootElement, root, pasteCopiedItem]);
+  }, [rootElement, root, pasteCopiedItem, currentScreenId]);
 
   useEffect(() => {
     const listener = (ev: KeyboardEvent) => {

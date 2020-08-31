@@ -1,11 +1,12 @@
 import React, { useCallback } from 'react';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 
 import { AppReduxState } from '$shared/types/app';
 import { actionsCreators, selectors } from '$redux/project/';
 import { CssLikeStyles } from '$utils/StyleHelper';
 import { LibraryElement } from '$api/types';
 import { Entity } from '$domain/core';
+import { selectCurrentScreenId } from '$redux/project/selectors';
 
 type StateProps = {
   activeItemType: Entity | 'none';
@@ -60,27 +61,39 @@ export function withConfigurableProperties<
     updateElementParameters,
     ...restProps
   }: any) {
+    const currentScreenId = useSelector(selectCurrentScreenId);
+
     const removeStyles = (ruleName: string, itemID?: string) => {
       if (editableStyles === 'ownStyles') {
-        removeElementStyles(itemID || activeItemID, ruleName);
+        removeElementStyles(itemID || activeItemID, ruleName, {
+          screenId: currentScreenId,
+        });
       } else {
-        removeSharedStyles(editableStyles, ruleName);
+        removeSharedStyles(editableStyles, ruleName, {
+          screenId: currentScreenId,
+        });
       }
     };
 
     const updateStyles = (styles: CssLikeStyles, itemID?: string) => {
       if (editableStyles === 'ownStyles') {
-        updateElementStyles(itemID || activeItemID, styles);
+        updateElementStyles(itemID || activeItemID, styles, {
+          screenId: currentScreenId,
+        });
       } else {
-        updateSharedStyles(editableStyles, styles);
+        updateSharedStyles(editableStyles, styles, {
+          screenId: currentScreenId,
+        });
       }
     };
 
     const updateParams = useCallback(
       (params: Params<K>, itemID?: string) => {
-        updateElementParameters(itemID || activeItemID, params);
+        updateElementParameters(itemID || activeItemID, params, {
+          screenId: currentScreenId,
+        });
       },
-      [activeItemID],
+      [activeItemID, currentScreenId],
     );
 
     return (
