@@ -208,6 +208,7 @@ const TreeView: React.FC<Props> = ({
   const renderItem = (props) => (
     <TreeItem
       {...props}
+      expand={expand}
       select={select}
       deselect={deselect}
       selectedItem={selectedItem}

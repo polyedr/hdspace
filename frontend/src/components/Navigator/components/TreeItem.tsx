@@ -44,6 +44,11 @@ const TreeItem: React.FC<Props> = ({
 }) => {
   const isParent = item.children.length;
 
+  const handleDoubleClick = () =>
+    item.isExpanded ? onCollapse(item.id) : onExpand(item.id);
+
+  const handleFocus = () => select(item.id as string);
+
   useEffect(() => {
     if (selectedItem === item.id) {
       const elem = document.querySelector(
@@ -63,8 +68,9 @@ const TreeItem: React.FC<Props> = ({
       ref={provided.innerRef}
       {...provided.draggableProps}
       {...provided.dragHandleProps}
-      onClick={() => select(item.id as string)}
-      onFocus={() => select(item.id as string)}
+      onDoubleClick={handleDoubleClick}
+      onClick={handleFocus}
+      onFocus={handleFocus}
       aria-selected={item.id === selectedItem}
       {...(isParent
         ? { role: 'group', 'aria-expanded': item.isExpanded }
