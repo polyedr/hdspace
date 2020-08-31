@@ -207,11 +207,11 @@ export type PageTemplateElement = LibraryElement<
 >;
 export type SubscribeFormElement = LibraryElement<
   'subscribeForm',
-  ContainerElement[] // TODO change child
+  LibraryElement<Entity>[]
 >;
 export type CardsSectionElement = LibraryElement<
   'cardsSection',
-  ContainerElement[] // TODO change child
+  LibraryElement<Entity>
 >;
 export type ImageElement = LibraryElement<'image', [], ImageParameters>;
 export type ScreenshotElement = LibraryElement<
