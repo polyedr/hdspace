@@ -27,40 +27,52 @@ import {
   DropdownItemServerElement,
   UndefinedServerElement,
   DivBlockServerElement,
+  PageTemplateServerElement,
+  ScreenshotServerElement,
+  SubscribeFormServerElement,
+  CardsSectionServerElement,
+  FeatureSectionServerElement,
 } from '$api/types';
 
 import {
   root,
-  container,
-  divBlock,
-  image,
+  makeImage,
+  makeScreenshot,
   video,
   dropdown,
   undefined,
   dropdownMenu,
   makeDropdownItem,
+  makeDivBlock,
+  makeContainer,
 } from './otherElements/otherElements';
 import {
-  button,
+  makeButton,
   textarea,
-  textinput,
+  makeTextinput,
   checkbox,
   radiobutton,
-  label,
   select,
   selectMenu,
   makeSelectItem,
+  makeLabel,
 } from './formElements/formElements';
 import {
-  heading,
   hyperlink,
   list,
   textBlock,
   ocrtext,
   makeListItem,
   makeParagraph,
+  makeHeading,
 } from './typographyElements/typographyElements';
 import { map, calendar, clock } from './widgetElements/widgetElements';
+import {
+  pageTemplate,
+  subscribeForm,
+  cardsSection,
+  featureSection,
+} from './blocksTemplates/blocksTemplates';
 
 export type ChildrenElements = {
   selectMenu: SelectMenuServerElement;
@@ -74,7 +86,9 @@ export type ElementsToAdd = {
   root: RootServerElement;
   container: ContainerServerElement;
   divBlock: DivBlockServerElement;
+  pageTemplate: PageTemplateServerElement;
   image: ImageServerElement;
+  screenshot: ScreenshotServerElement;
   button: ButtonServerElement;
   hyperlink: HyperlinkServerElement;
   textinput: TextinputServerElement;
@@ -94,6 +108,9 @@ export type ElementsToAdd = {
   dropdown: DropdownServerElement;
   video: VideoServerElement;
   undefined: UndefinedServerElement;
+  subscribeForm: SubscribeFormServerElement;
+  cardsSection: CardsSectionServerElement;
+  featureSection: FeatureSectionServerElement;
 };
 
 export type LibraryElements = ChildrenElements & ElementsToAdd;
@@ -103,21 +120,24 @@ export type LibraryEntities = LibraryElements;
 // WARN: every time you add or remove some LibraryElements in prod, you must write migration in db
 export const LIBRARY_ELEMENTS: LibraryElements = {
   root,
-  container,
-  divBlock,
-  image,
-  button,
+  container: makeContainer(),
+  divBlock: makeDivBlock('This is divBlock'),
+  pageTemplate,
+  subscribeForm,
+  image: makeImage(),
+  screenshot: makeScreenshot(),
+  button: makeButton(),
   hyperlink,
-  textinput,
+  textinput: makeTextinput(),
   checkbox,
   radiobutton,
   select,
   selectMenu,
   selectItem: makeSelectItem('', ''),
-  label,
+  label: makeLabel(),
   textarea,
-  heading,
-  paragraph: makeParagraph('This is paragraph'),
+  heading: makeHeading(),
+  paragraph: makeParagraph(),
   ocrtext,
   textBlock,
   list,
@@ -130,4 +150,6 @@ export const LIBRARY_ELEMENTS: LibraryElements = {
   dropdownItem: makeDropdownItem(''),
   video,
   undefined,
+  cardsSection,
+  featureSection,
 };

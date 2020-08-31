@@ -5,6 +5,9 @@ import {
   DEFAULT_BORDER,
   DEFAULT_BACKGROUND,
   DEFAULT_TYPOGRAPHY,
+  DEFAULT_FLEX_GROW,
+  DEFAULT_BACKGROUND_POSITION,
+  DEFAULT_BACKGROUND_SIZE,
 } from '$domain/constants/defaultStyles';
 import {
   rootStyleControls,
@@ -16,6 +19,7 @@ import {
   dropdownItemStyleControls,
   videoStyleControls,
   undefinedControls,
+  screenshotStyleControls,
 } from '$domain/core';
 import { CssLikeStyles } from '$utils/StyleHelper';
 
@@ -23,6 +27,7 @@ type RootControls = typeof rootStyleControls[number];
 type ContainerControls = typeof containerStyleControls[number];
 type DivBlockControls = typeof divBlockStyleControls[number];
 type ImageControls = typeof imageStyleControls[number];
+type ScreenshotControls = typeof screenshotStyleControls[number];
 type DropdownControls = typeof dropdownStyleControls[number];
 type DropdownMenuControls = typeof dropdownMenuStyleControls[number];
 type DropdownItemControls = typeof dropdownItemStyleControls[number];
@@ -39,6 +44,7 @@ export const defaultRootStyles: { [K in RootControls]: CssLikeStyles } & {
   other: {
     ...DEFAULT_SIZE,
     width: '100%',
+    height: '100%',
     'min-height': '100%',
     'min-width': '100%',
     // Indents need to prevent margin collapsing
@@ -68,6 +74,9 @@ export const defaultContainerStyles: {
   },
   background: {
     ...DEFAULT_BACKGROUND,
+  },
+  flexGrow: {
+    ...DEFAULT_FLEX_GROW,
   },
 };
 
@@ -116,6 +125,31 @@ export const defaultImageStyles: { [K in ImageControls]: CssLikeStyles } & {
   },
   background: {
     ...DEFAULT_BACKGROUND,
+  },
+};
+
+export const defaultScreenshotStyles: {
+  [K in ScreenshotControls]: CssLikeStyles;
+} = {
+  indents: {
+    ...DEFAULT_INDENTS,
+  },
+  size: {
+    ...DEFAULT_SIZE,
+    width: '100%',
+    height: '100%',
+  },
+  border: {
+    ...DEFAULT_BORDER,
+  },
+  background: {
+    ...DEFAULT_BACKGROUND,
+  },
+  backgroundPosition: {
+    ...DEFAULT_BACKGROUND_POSITION,
+  },
+  backgroundSize: {
+    ...DEFAULT_BACKGROUND_SIZE,
   },
 };
 

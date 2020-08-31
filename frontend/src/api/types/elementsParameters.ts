@@ -4,6 +4,10 @@ export type ImageParameters = {
   imageURL: string;
 };
 
+export type ScreenshotParameters = {
+  imageURL: string;
+};
+
 export type InternalLink = {
   type: 'internal-link';
   screenID: number | 'noScreen';

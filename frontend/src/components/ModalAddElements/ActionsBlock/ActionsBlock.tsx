@@ -52,7 +52,7 @@ const ActionsBlock: React.FC<Props> = ({
   return (
     <div className={styles.modalActionsContainer}>
       <ul className={styles.modalActionsTabsList}>
-        {tabs.map((tab) => (
+        {tabs?.map((tab) => (
           <li key={`key-${tab}`} className={styles.modalActionsTabsItem}>
             <button
               type="button"
@@ -71,7 +71,7 @@ const ActionsBlock: React.FC<Props> = ({
         <p className={styles.contentTitle}>Choose a template</p>
         <Scrollbar style={{ marginBottom: 20 }} maxHeight={100}>
           <div className={styles.contentList}>
-            {groupElements.map(({ key, value, label }) => {
+            {groupElements?.map(({ key, value, label }) => {
               const isDisabled =
                 !R.includes(value.structType, R.keys(ENTITIES)) ||
                 !isAvailableChild(value.structType);

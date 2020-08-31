@@ -12,11 +12,10 @@ import { LIBRARY_ELEMENTS } from '$domain/libraryElements/libraryElements';
 import { LibraryElement } from '$api/types';
 import { findChildByID, findParentByChildID } from '$utils/ElementsTreeHelper';
 import { isElementCanBeRemove } from '$utils/AvailableChildrenHelper';
+import { ActiveElementBlock, MapProps } from '$features/applyProperties';
 
 import ControlSection from '../../components/ControlSection/ControlSection';
-import { ActiveElementBlock, MapProps } from '$features/applyProperties';
 import ActionBlock from '../Controls/ActionBlock';
-
 import SizeBlock from '../Controls/SizeBlock/SizeBlock';
 import IndentsBlock from '../Controls/IndentsBlock';
 import BackgroundBlock from '../Controls/BackgroundBlock';
@@ -43,6 +42,10 @@ import VideoSettings from '../Controls/VideoSettings/VideoSettings';
 import RenameElement from '../Controls/RenameElement/RenameElement';
 import EditableStyles from '../EditableStyles/EditableStyles';
 import ShareStyles from '../ShareStyles/ShareStyles';
+import Screenshot from '../Controls/Screenshot/Screenshot';
+import FlexGrow from '../Controls/FlexGrow/FlexGrow';
+import BackgroundPosition from '../Controls/BackgroundPosition/BackgroundPosition';
+import BackgroundSize from '../Controls/BackgroundSize/BackgroundSize';
 
 const styles = require('./PropertiesPanel.scss');
 
@@ -91,6 +94,7 @@ const CONTROLS: Record<Control, React.ComponentType<any>> = {
   placeholder: Placeholder,
   textContent: TextContent,
   image: Image,
+  screenshot: Screenshot,
   type: Type,
   value: Value,
   name: Name,
@@ -105,6 +109,9 @@ const CONTROLS: Record<Control, React.ComponentType<any>> = {
   dropdownItems: DropdownItems,
   isOpen: IsOpen,
   videoSettings: VideoSettings,
+  flexGrow: FlexGrow,
+  backgroundPosition: BackgroundPosition,
+  backgroundSize: BackgroundSize,
 };
 
 export type PropertiesPanelProps = StateProps & typeof mapDispatch;
