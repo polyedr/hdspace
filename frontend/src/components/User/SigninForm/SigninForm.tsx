@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable no-unused-vars */
 import React, { useCallback, useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Form } from 'react-final-form';
@@ -91,10 +93,11 @@ const SignInForm = (props: IProps) => {
     closeModal();
   };
 
-  const responseGoogle = (response: any) => {
+  // TODO add google button and this method, when the backend will register new users using google token
+  /* const responseGoogle = (response: any) => {
     // eslint-disable-next-line no-console
     console.log(response);
-  };
+  }; */
 
   const isEmailHasBeenSend =
     apiResponseError.errorStatus === 401 &&
@@ -111,14 +114,14 @@ const SignInForm = (props: IProps) => {
         {({ handleSubmit, submitError, submitting }) => (
           <form onSubmit={handleSubmit}>
             <p className={styles.signinTitle}>Login to your account</p>
-            <GoogleLogin // TODO make as separate component
+            {/* <GoogleLogin
               className={styles.googleLogin}
               clientId="97708805893-kqh3efrnsd7i8nbu30p0mhlvhub029he.apps.googleusercontent.com"
               buttonText="Sign in with google"
               onSuccess={responseGoogle}
               onFailure={responseGoogle}
               cookiePolicy="single_host_origin"
-            />
+            /> */}
             {DEFAULT_SIGNIN_FIELDS.map(
               ({ name, placeholder, label, type, validator }) => (
                 <FormField
@@ -171,7 +174,6 @@ const SignInForm = (props: IProps) => {
         </NavLink>
       </p>
       {isRestorePasswordModalOpen && (
-        // TODO reset error and isRestoreEmailSend after closing
         <Modal
           animClassName="bubbleAnimation"
           bodyClassName={styles.passwordRestoreModalBody}

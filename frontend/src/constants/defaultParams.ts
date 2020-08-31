@@ -26,20 +26,6 @@ export interface ISignFormElement {
   validator: (value: string) => string | undefined;
 }
 
-export interface ISignFormField {
-  // TODO remove
-  value: string;
-  label: string;
-  placeholder: string;
-  isError: boolean;
-  errorText: string;
-}
-
-export interface ISignFormFields {
-  // TODO remove
-  [x: string]: ISignFormField;
-}
-
 export interface ITemplateElement {
   label: string;
   value: { structType: ServerStructType; funcType: ServerStructType };
