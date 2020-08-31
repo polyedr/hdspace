@@ -28,9 +28,12 @@ export const defaultPageTemplateStyles: {
   size: {
     ...DEFAULT_SIZE,
     width: '100%',
+    height: '100%',
   },
   display: {
     ...DEFAULT_DISPLAY,
+    display: 'flex',
+    'flex-direction': 'column',
   },
   typography: {
     ...DEFAULT_TYPOGRAPHY,
@@ -48,6 +51,8 @@ export const defaultSubscribeFormStyles: {
 } = {
   indents: {
     ...DEFAULT_INDENTS,
+    'padding-top': '100px',
+    'padding-bottom': '100px',
   },
   size: {
     ...DEFAULT_SIZE,
@@ -55,6 +60,10 @@ export const defaultSubscribeFormStyles: {
   },
   display: {
     ...DEFAULT_DISPLAY,
+    display: 'flex',
+    'flex-direction': 'column',
+    'align-items': 'center',
+    'justify-content': 'center',
   },
   typography: {
     ...DEFAULT_TYPOGRAPHY,
@@ -72,6 +81,8 @@ export const defaultCardsSectionStyles: {
 } = {
   indents: {
     ...DEFAULT_INDENTS,
+    'padding-top': '100px',
+    'padding-bottom': '100px',
   },
   size: {
     ...DEFAULT_SIZE,
@@ -79,6 +90,9 @@ export const defaultCardsSectionStyles: {
   },
   display: {
     ...DEFAULT_DISPLAY,
+    display: 'flex',
+    'flex-direction': 'column',
+    'align-items': 'center',
   },
   typography: {
     ...DEFAULT_TYPOGRAPHY,

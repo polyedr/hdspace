@@ -14,9 +14,11 @@ import { CssLikeStyles } from '$utils/StyleHelper';
 export const makeButton = ({
   buoyancy = 0,
   textContent = 'button',
+  ownStyles = {} as Required<CssLikeStyles>,
 }: {
   buoyancy?: number;
   textContent?: string;
+  ownStyles?: Required<CssLikeStyles>;
 } = {}): ButtonServerElement => ({
   buoyancy,
   func_type: 'button',
@@ -32,13 +34,17 @@ export const makeButton = ({
   },
   styles: {
     classNames: ['button'],
-    ownStyles: {} as Required<CssLikeStyles>,
+    ownStyles,
   },
   name: 'button',
   children: [],
 });
 
-export const makeTextinput = (): TextinputServerElement => ({
+export const makeTextinput = ({
+  ownStyles = {} as Required<CssLikeStyles>,
+}: {
+  ownStyles?: Required<CssLikeStyles>;
+} = {}): TextinputServerElement => ({
   buoyancy: 0,
   func_type: 'textinput',
   struct_type: 'textinput',
@@ -50,7 +56,7 @@ export const makeTextinput = (): TextinputServerElement => ({
   },
   styles: {
     classNames: ['textinput'],
-    ownStyles: {} as Required<CssLikeStyles>,
+    ownStyles,
   },
   name: 'textinput',
   children: [],
