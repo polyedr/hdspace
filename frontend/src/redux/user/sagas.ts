@@ -142,6 +142,10 @@ function* sendActivationMailSaga(
     last_name: lastName,
   });
 
+  const userData = convertUserDataToRequest({ firstName, lastName });
+
+  yield call(apiChangeUserData, response.id, userData);
+
   if (response.errorStatus) {
     yield put(Actions.setApiResponseError(response));
   }
@@ -218,10 +222,6 @@ function* activateUserSaga(action: ReturnType<typeof Actions.activateUser>) {
   yield call(apiActivateUser, { uid, token });
 
   yield put(Actions.setTokenPair({ access: token, refresh: '' }));
-
-  // const currentUser = yield call(reqWrapper, apiGetCurrentUser);
-
-  // console.log(currentUser);
 
   yield put(Actions.changeSignLoader(false));
 }

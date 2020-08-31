@@ -26,10 +26,6 @@ type SendActivationMailData = {
   last_name: string;
 };
 
-type SendResetPasswordMailData = {
-  email: string;
-};
-
 type activateUserData = {
   uid: string;
   token: string;
