@@ -33,6 +33,7 @@ type Border = {
   targetElement: LibraryElement<Entity>;
   isOuterContainer: boolean;
   isRoot: boolean;
+  isPageTemplate: boolean;
   coordinates: {
     top: number;
     right: number;
@@ -52,7 +53,10 @@ const ContainersBorders: React.FC<Props> = (props) => {
   const getBorderedElements = () => {
     return [
       ...root.children.filter(
-        (child) => child.type === 'container' || child.type === 'divBlock',
+        (child) =>
+          child.type === 'container' ||
+          child.type === 'divBlock' ||
+          child.type === 'pageTemplate',
       ),
       root,
     ];
@@ -110,6 +114,7 @@ const ContainersBorders: React.FC<Props> = (props) => {
 
     const newBorders = borderedElements.map((element, index) => {
       const isElementRoot = root.id === element.id;
+      const isElementPageTemplate = element.type === 'pageTemplate';
       const isOuterContainer = index === 0;
 
       const HTMLElement = document.getElementById(isRoot ? 'root' : element.id);
@@ -118,6 +123,7 @@ const ContainersBorders: React.FC<Props> = (props) => {
         ? {
             isOuterContainer,
             isRoot: isElementRoot,
+            isPageTemplate: isElementPageTemplate,
             targetElement: element,
             coordinates: {
               top:
@@ -188,7 +194,14 @@ const ContainersBorders: React.FC<Props> = (props) => {
   return (
     <div className={styles.wrapper}>
       {bordersState.map(
-        ({ targetElement, isOuterContainer, isRoot, coordinates, height }) => {
+        ({
+          targetElement,
+          isOuterContainer,
+          isRoot,
+          isPageTemplate,
+          coordinates,
+          height,
+        }) => {
           const isActive = isRoot
             ? isRootFocused
             : activeItem.itemId === targetElement.id;
@@ -197,7 +210,8 @@ const ContainersBorders: React.FC<Props> = (props) => {
           const labelClasses = cn(
             styles.borderLabel,
             isActive && styles.borderLabel_active,
-            (isOuterContainer || isRoot) && styles.borderLabel_outer,
+            (isOuterContainer || isRoot || isPageTemplate) &&
+              styles.borderLabel_outer,
           );
 
           return (
@@ -210,8 +224,9 @@ const ContainersBorders: React.FC<Props> = (props) => {
                   className={labelClasses}
                   style={{
                     top: coordinates.top,
-                    right: isRoot ? coordinates.right : 'auto',
-                    left: isRoot ? 'auto' : coordinates.left,
+                    right:
+                      isRoot || isPageTemplate ? coordinates.right : 'auto',
+                    left: isRoot || isPageTemplate ? 'auto' : coordinates.left,
                   }}
                   onClick={(event) => handleBorderClick(event, targetElement)}
                 >
@@ -232,7 +247,7 @@ const ContainersBorders: React.FC<Props> = (props) => {
                   {
                     top: coordinates.top,
                     right: coordinates.right,
-                    height: isRoot ? height - 2 : height,
+                    height: isRoot || isPageTemplate ? height - 2 : height,
                   },
                   targetElement,
                   isActive,
@@ -240,9 +255,10 @@ const ContainersBorders: React.FC<Props> = (props) => {
                 {renderBorder(
                   'bottom',
                   {
-                    top: isRoot
-                      ? coordinates.top + height - 2
-                      : coordinates.top + height,
+                    top:
+                      isRoot || isPageTemplate
+                        ? coordinates.top + height - 2
+                        : coordinates.top + height,
                     right: coordinates.right,
                     left: coordinates.left,
                   },
@@ -253,7 +269,7 @@ const ContainersBorders: React.FC<Props> = (props) => {
                   'left',
                   {
                     top: coordinates.top,
-                    height: isRoot ? height - 2 : height,
+                    height: isRoot || isPageTemplate ? height - 2 : height,
                     left: coordinates.left,
                   },
                   targetElement,

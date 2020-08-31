@@ -26,6 +26,11 @@ export const ENTITIES: {
   video: 'video',
   undefined: 'undefined',
   divBlock: 'divBlock',
+  pageTemplate: 'pageTemplate',
+  screenshot: 'screenshot',
+  subscribeForm: 'subscribeForm',
+  cardsSection: 'cardsSection',
+  featureSection: 'featureSection',
 };
 
 const CONTROLS_AFFECT_ON_PARAMS = [
@@ -34,6 +39,7 @@ const CONTROLS_AFFECT_ON_PARAMS = [
   'placeholder',
   'textContent',
   'image',
+  'screenshot',
   'value',
   'name',
   'showRipple',
@@ -57,6 +63,9 @@ const CONTROLS_AFFECT_ON_STYLES = [
   'border',
   'background',
   'bullets',
+  'flexGrow',
+  'backgroundPosition',
+  'backgroundSize',
 ] as const;
 
 export type ElementEntity = keyof ElementsToAdd;
@@ -80,6 +89,7 @@ export const containerStyleControls = [
   'typography',
   'border',
   'background',
+  'flexGrow',
 ] as const;
 export const divBlockStyleControls = [
   'indents',
@@ -189,6 +199,14 @@ export const imageStyleControls = [
   'border',
   'background',
 ] as const;
+export const screenshotStyleControls = [
+  'indents',
+  'size',
+  'border',
+  'background',
+  'backgroundSize',
+  'backgroundPosition',
+] as const;
 export const selectStyleControls = [
   'indents',
   'size',
@@ -251,7 +269,39 @@ export const dropdownItemStyleControls = [
   'background',
 ] as const;
 export const videoStyleControls = ['indents', 'size', 'border'] as const;
+export const pageTemplateStyleControls = [
+  'indents',
+  'size',
+  'display',
+  'typography',
+  'border',
+  'background',
+] as const;
+export const subscribeFormStyleControls = [
+  'indents',
+  'size',
+  'display',
+  'typography',
+  'border',
+  'background',
+] as const;
 export const undefinedControls = ['size', 'background'] as const;
+export const cardsSectionStyleControls = [
+  'indents',
+  'size',
+  'display',
+  'typography',
+  'border',
+  'background',
+] as const;
+export const featureSectionStyleControls = [
+  'indents',
+  'size',
+  'display',
+  'typography',
+  'border',
+  'background',
+] as const;
 
 export type Control =
   | typeof CONTROLS_AFFECT_ON_PARAMS[number]
@@ -352,8 +402,23 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
   video: {
     root: [...videoStyleControls, 'videoSettings'],
   },
+  pageTemplate: {
+    root: [...pageTemplateStyleControls],
+  },
+  subscribeForm: {
+    root: [...subscribeFormStyleControls],
+  },
+  screenshot: {
+    root: [...screenshotStyleControls, 'screenshot'],
+  },
   undefined: {
     root: undefinedControls,
+  },
+  cardsSection: {
+    root: [...cardsSectionStyleControls],
+  },
+  featureSection: {
+    root: [...featureSectionStyleControls],
   },
 } as const;
 
@@ -434,5 +499,30 @@ export const AVAILABLE_CHILDREN: AvailableChildren = {
   },
   dropdownItem: {},
   video: {},
+  pageTemplate: {
+    all: {
+      min: 0,
+      max: Infinity,
+    },
+  },
+  subscribeForm: {
+    all: {
+      min: 0,
+      max: Infinity,
+    },
+  },
+  screenshot: {},
   undefined: {},
+  cardsSection: {
+    all: {
+      min: 0,
+      max: Infinity,
+    },
+  },
+  featureSection: {
+    all: {
+      min: 0,
+      max: Infinity,
+    },
+  },
 };

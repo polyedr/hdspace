@@ -29,11 +29,13 @@ import Calendar from './Calendar/Calendar';
 import Container from './Container/Container';
 import Clock from './Clock/Clock';
 import Undefined from './Undefined/Undefined';
+import Screenshot from './Screenshot/Screenshot';
 
 export const RENDERERS: Record<Entity, React.FC<any>> = {
   root: Container,
   container: Container,
   divBlock: DivBlockRenderer,
+  pageTemplate: Container,
   button: withAction(Action, 'button'),
   textinput: Input,
   radiobutton: Radiobutton,
@@ -48,6 +50,7 @@ export const RENDERERS: Record<Entity, React.FC<any>> = {
   label: Label,
   hyperlink: withAction(Link, 'link'),
   image: Image,
+  screenshot: Screenshot,
   select: Select,
   selectMenu: SelectMenu,
   selectItem: MenuItem,
@@ -59,6 +62,9 @@ export const RENDERERS: Record<Entity, React.FC<any>> = {
   dropdownItem: DropdownItem,
   video: Video,
   undefined: Undefined,
+  subscribeForm: Container,
+  cardsSection: Container,
+  featureSection: Container,
 };
 
 export const EXPORT_RENDERERS: Record<Entity, React.FunctionComponent<any>> = {

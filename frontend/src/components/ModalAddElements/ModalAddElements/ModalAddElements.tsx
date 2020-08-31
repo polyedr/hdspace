@@ -139,7 +139,9 @@ const ModalAddElements: React.FunctionComponent<Props> = ({
   );
 
   const getContentStep = useCallback(() => {
-    return getGroupElements(activeTab, listElement);
+    return Object.keys(listElement).length
+      ? getGroupElements(activeTab, listElement)
+      : [];
   }, [activeTab, listElement]);
 
   return active ? (

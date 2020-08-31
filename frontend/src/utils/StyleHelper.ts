@@ -34,6 +34,7 @@ export interface CssLikeStyles {
   'background-image'?: string;
   'background-repeat'?: string;
   'background-size'?: string;
+  'background-position'?: string;
 
   'font-family'?: string;
   color?: string;
@@ -46,6 +47,7 @@ export interface CssLikeStyles {
   'flex-direction'?: Flex['flexDirection'];
   'align-items'?: Flex['alignItems'];
   'justify-content'?: Flex['justifyContent'];
+  'flex-grow'?: number;
 
   'list-style-type'?: 'none' | 'disc';
 }
@@ -138,10 +140,12 @@ const convertBackground: TConvertBackground = (styles) =>
 const otherStyles = (styles: CssLikeStyles): React.CSSProperties =>
   R.keys(styles).reduce((acc, key) => {
     switch (key) {
-      case 'flex-direction':
-        return { ...acc, flexDirection: styles[key] };
+      case 'flex-grow':
+        return { ...acc, flexGrow: styles[key] };
       case 'justify-content':
         return { ...acc, justifyContent: styles[key] };
+      case 'flex-direction':
+        return { ...acc, flexDirection: styles[key] };
       case 'align-items':
         return { ...acc, alignItems: styles[key] };
       case 'min-height':
@@ -154,6 +158,10 @@ const otherStyles = (styles: CssLikeStyles): React.CSSProperties =>
         return { ...acc, display: styles[key] };
       case 'list-style-type':
         return { ...acc, listStyleType: styles[key] };
+      case 'background-position':
+        return { ...acc, backgroundPosition: styles[key] };
+      case 'background-size':
+        return { ...acc, backgroundSize: styles[key] };
       default:
         return acc;
     }

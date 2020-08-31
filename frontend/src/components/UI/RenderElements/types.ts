@@ -37,6 +37,12 @@ export type ImageRendererProps = SharedRendererProps & {
   };
 };
 
+export type ScreenshotRendererProps = SharedRendererProps & {
+  params: {
+    imageURL: string;
+  };
+};
+
 export type MapRendererProps = SharedRendererProps & {
   params: {
     map_props: IMapProps;

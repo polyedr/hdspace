@@ -8,9 +8,12 @@ import {
   VideoServerElement,
   UndefinedServerElement,
   DivBlockServerElement,
+  ServerElement,
+  ScreenshotServerElement,
 } from '$api/types';
 import { IMAGES } from '$constants/images';
 import { CssLikeStyles } from '$utils/StyleHelper';
+import { Entity } from '$domain/core';
 
 import { makeParagraph } from '../typographyElements/typographyElements';
 
@@ -29,8 +32,18 @@ export const root: RootServerElement = {
   children: [],
 };
 
-export const container: ContainerServerElement = {
-  buoyancy: 0,
+export const makeContainer = ({
+  children = [],
+  ownStyles = {} as Required<CssLikeStyles>,
+  name = 'container',
+  buoyancy = 0,
+}: {
+  children?: ServerElement<Entity>[];
+  ownStyles?: Required<CssLikeStyles>;
+  name?: string;
+  buoyancy?: number;
+} = {}): ContainerServerElement => ({
+  buoyancy,
   func_type: 'container',
   struct_type: 'container',
   parameters: {
@@ -38,13 +51,13 @@ export const container: ContainerServerElement = {
   },
   styles: {
     classNames: ['container'],
-    ownStyles: {} as Required<CssLikeStyles>,
+    ownStyles,
   },
-  name: 'container',
-  children: [],
-};
+  name,
+  children,
+});
 
-export const divBlock: DivBlockServerElement = {
+export const makeDivBlock = (textContent: string): DivBlockServerElement => ({
   buoyancy: 0,
   func_type: 'divBlock',
   struct_type: 'divBlock',
@@ -56,10 +69,14 @@ export const divBlock: DivBlockServerElement = {
     ownStyles: {} as Required<CssLikeStyles>,
   },
   name: 'divBlock',
-  children: [makeParagraph('This is divBlock')],
-};
+  children: [makeParagraph({ textContent })],
+});
 
-export const image: ImageServerElement = {
+export const makeImage = ({
+  ownStyles = {} as Required<CssLikeStyles>,
+}: {
+  ownStyles?: Required<CssLikeStyles>;
+} = {}): ImageServerElement => ({
   buoyancy: 0,
   func_type: 'image',
   struct_type: 'image',
@@ -69,11 +86,32 @@ export const image: ImageServerElement = {
   },
   styles: {
     classNames: ['image'],
-    ownStyles: {} as Required<CssLikeStyles>,
+    ownStyles,
   },
   name: 'image',
   children: [],
-};
+});
+
+export const makeScreenshot = ({
+  ownStyles,
+}: {
+  children?: ServerElement<Entity>[];
+  ownStyles?: Required<CssLikeStyles>;
+} = {}): ScreenshotServerElement => ({
+  buoyancy: 0,
+  func_type: 'screenshot',
+  struct_type: 'screenshot',
+  parameters: {
+    group: 'undefined',
+    imageURL: '',
+  },
+  styles: {
+    classNames: ['screenshot'],
+    ownStyles: { ...ownStyles } as Required<CssLikeStyles>,
+  },
+  name: 'screenshot',
+  children: [],
+});
 
 export const makeDropdownItem = (
   textContent: string,

@@ -22,6 +22,7 @@ import {
   VideoParameters,
   DropdownParameters,
   DropdownItemParameters,
+  ScreenshotParameters,
 } from './elementsParameters';
 
 export type ServerElement<
@@ -48,9 +49,33 @@ export type ServerElement<
 };
 
 export type RootServerElement = ServerElement<'root', []>;
-export type ContainerServerElement = ServerElement<'container', []>;
+export type ContainerServerElement = ServerElement<
+  'container',
+  ServerElement<Entity>[]
+>;
 export type DivBlockServerElement = ServerElement<'divBlock'>;
+export type PageTemplateServerElement = ServerElement<
+  'pageTemplate',
+  ContainerServerElement[]
+>;
+export type SubscribeFormServerElement = ServerElement<
+  'subscribeForm',
+  ServerElement<Entity>[]
+>;
+export type CardsSectionServerElement = ServerElement<
+  'cardsSection',
+  ServerElement<Entity>[]
+>;
+export type FeatureSectionServerElement = ServerElement<
+  'featureSection',
+  ServerElement<Entity>[]
+>;
 export type ImageServerElement = ServerElement<'image', [], ImageParameters>;
+export type ScreenshotServerElement = ServerElement<
+  'screenshot',
+  [],
+  ScreenshotParameters
+>;
 export type ButtonServerElement = ServerElement<'button', [], ButtonParameters>;
 export type HyperlinkServerElement = ServerElement<
   'hyperlink',
@@ -176,7 +201,24 @@ export type LibraryElement<
 export type RootElement = LibraryElement<'root', []>;
 export type ContainerElement = LibraryElement<'container', []>;
 export type DivBlockElement = LibraryElement<'divBlock'>;
+export type PageTemplateElement = LibraryElement<
+  'pageTemplate',
+  ContainerElement[]
+>;
+export type SubscribeFormElement = LibraryElement<
+  'subscribeForm',
+  LibraryElement<Entity>[]
+>;
+export type CardsSectionElement = LibraryElement<
+  'cardsSection',
+  LibraryElement<Entity>
+>;
 export type ImageElement = LibraryElement<'image', [], ImageParameters>;
+export type ScreenshotElement = LibraryElement<
+  'screenshot',
+  [],
+  ScreenshotParameters
+>;
 export type ButtonElement = LibraryElement<'button', [], ButtonParameters>;
 export type HyperlinkElement = LibraryElement<
   'hyperlink',
@@ -260,11 +302,17 @@ export type DropdownItemElement = LibraryElement<
 >;
 export type UndefinedElement = LibraryElement<'undefined', []>;
 
+export type FeatureSectionElement = LibraryElement<
+  'featureSection',
+  LibraryElement<Entity>[]
+>;
+
 export type LibraryElementUnion =
   | RootElement
   | ContainerElement
   | DivBlockElement
   | ImageElement
+  | ScreenshotElement
   | ButtonElement
   | HyperlinkElement
   | TextinputElement
@@ -288,4 +336,7 @@ export type LibraryElementUnion =
   | DropdownElement
   | DropdownMenuElement
   | DropdownItemElement
-  | UndefinedElement;
+  | PageTemplateElement
+  | UndefinedElement
+  | SubscribeFormElement
+  | FeatureSectionElement;
