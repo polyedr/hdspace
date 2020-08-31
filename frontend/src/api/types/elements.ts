@@ -66,6 +66,10 @@ export type CardsSectionServerElement = ServerElement<
   'cardsSection',
   ServerElement<Entity>[]
 >;
+export type FeatureSectionServerElement = ServerElement<
+  'featureSection',
+  ServerElement<Entity>[]
+>;
 export type ImageServerElement = ServerElement<'image', [], ImageParameters>;
 export type ScreenshotServerElement = ServerElement<
   'screenshot',
@@ -298,6 +302,11 @@ export type DropdownItemElement = LibraryElement<
 >;
 export type UndefinedElement = LibraryElement<'undefined', []>;
 
+export type FeatureSectionElement = LibraryElement<
+  'featureSection',
+  LibraryElement<Entity>[]
+>;
+
 export type LibraryElementUnion =
   | RootElement
   | ContainerElement
@@ -329,4 +338,5 @@ export type LibraryElementUnion =
   | DropdownItemElement
   | PageTemplateElement
   | UndefinedElement
-  | SubscribeFormElement;
+  | SubscribeFormElement
+  | FeatureSectionElement;

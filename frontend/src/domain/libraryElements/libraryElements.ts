@@ -31,6 +31,7 @@ import {
   ScreenshotServerElement,
   SubscribeFormServerElement,
   CardsSectionServerElement,
+  FeatureSectionServerElement,
 } from '$api/types';
 
 import {
@@ -70,6 +71,7 @@ import {
   pageTemplate,
   subscribeForm,
   cardsSection,
+  featureSection,
 } from './blocksTemplates/blocksTemplates';
 
 export type ChildrenElements = {
@@ -108,6 +110,7 @@ export type ElementsToAdd = {
   undefined: UndefinedServerElement;
   subscribeForm: SubscribeFormServerElement;
   cardsSection: CardsSectionServerElement;
+  featureSection: FeatureSectionServerElement;
 };
 
 export type LibraryElements = ChildrenElements & ElementsToAdd;
@@ -148,4 +151,5 @@ export const LIBRARY_ELEMENTS: LibraryElements = {
   video,
   undefined,
   cardsSection,
+  featureSection,
 };

@@ -64,6 +64,7 @@ export const RENDERERS: Record<Entity, React.FC<any>> = {
   undefined: Undefined,
   subscribeForm: Container,
   cardsSection: Container,
+  featureSection: Container,
 };
 
 export const EXPORT_RENDERERS: Record<Entity, React.FunctionComponent<any>> = {

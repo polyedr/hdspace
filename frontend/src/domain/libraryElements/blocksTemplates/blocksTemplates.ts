@@ -2,6 +2,7 @@ import {
   PageTemplateServerElement,
   SubscribeFormServerElement,
   CardsSectionServerElement,
+  FeatureSectionServerElement,
 } from '$api/types';
 import { CssLikeStyles } from '$utils/StyleHelper';
 import {
@@ -29,6 +30,7 @@ export const pageTemplate: PageTemplateServerElement = {
   styles: {
     classNames: ['pageTemplate'],
     ownStyles: {
+      // TODO move it into default styles
       width: '100%',
       height: '100%',
       display: 'flex',
@@ -285,6 +287,73 @@ export const cardsSection: CardsSectionServerElement = {
             width: '33%',
             'flex-grow': 1,
           } as Required<CssLikeStyles>,
+        }),
+      ],
+    }),
+  ],
+};
+
+export const featureSection: FeatureSectionServerElement = {
+  buoyancy: 0,
+  func_type: 'featureSection',
+  struct_type: 'featureSection',
+  parameters: {
+    group: 'containers',
+  },
+  styles: {
+    classNames: ['featureSection'],
+    ownStyles: {} as Required<CssLikeStyles>,
+  },
+  name: 'featureSection',
+  children: [
+    makeContainer({
+      ownStyles: {
+        display: 'flex',
+        'align-items': 'center',
+        'max-width': '940px',
+      } as Required<CssLikeStyles>,
+      children: [
+        makeImage({
+          ownStyles: {
+            width: '100%',
+            height: 'auto',
+            'margin-right': '40px',
+          } as Required<CssLikeStyles>,
+        }),
+        makeContainer({
+          buoyancy: 1,
+          ownStyles: {} as Required<CssLikeStyles>,
+          children: [
+            makeHeading({
+              textContent: 'Feature section',
+              ownStyles: {
+                'font-size': '32px',
+                'line-height': '36px',
+                'margin-top': '20px',
+                'margin-bottom': '10px',
+              } as Required<CssLikeStyles>,
+            }),
+            makeParagraph({
+              buoyancy: 1,
+              ownStyles: {
+                'font-size': '14px',
+                'line-height': '20px',
+                'margin-bottom': '16px',
+              } as Required<CssLikeStyles>,
+              textContent:
+                'Lorem ipsum dolor sit amet consectetur adipisicing elit. Id labore error ipsum laboriosam necessitatibus aperiam facere aut quo quibusdam, possimus quia odit placeat nostrum, similique pariatur corporis nobis sint rerum laborum architecto natus!',
+            }),
+            makeParagraph({
+              buoyancy: 2,
+              ownStyles: {
+                'font-size': '14px',
+                'line-height': '20px',
+                'margin-bottom': '16px',
+              } as Required<CssLikeStyles>,
+              textContent:
+                'Lorem ipsum dolor sit amet consectetur adipisicing elit. Id labore error ipsum laboriosam necessitatibus aperiam facere aut quo quibusdam, possimus quia odit placeat nostrum, similique pariatur corporis nobis sint rerum laborum architecto natus!',
+            }),
+          ],
         }),
       ],
     }),

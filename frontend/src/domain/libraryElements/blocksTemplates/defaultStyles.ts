@@ -10,12 +10,14 @@ import {
   pageTemplateStyleControls,
   subscribeFormStyleControls,
   cardsSectionStyleControls,
+  featureSectionStyleControls,
 } from '$domain/core';
 import { CssLikeStyles } from '$utils/StyleHelper';
 
 type pageTemplateControls = typeof pageTemplateStyleControls[number];
 type subscribeFormControls = typeof subscribeFormStyleControls[number];
 type cardsSectionControls = typeof cardsSectionStyleControls[number];
+type featureSectionControls = typeof featureSectionStyleControls[number];
 
 export const defaultPageTemplateStyles: {
   [K in pageTemplateControls]: CssLikeStyles;
@@ -66,7 +68,7 @@ export const defaultSubscribeFormStyles: {
 };
 
 export const defaultCardsSectionStyles: {
-  [K in subscribeFormControls]: CssLikeStyles;
+  [K in cardsSectionControls]: CssLikeStyles;
 } = {
   indents: {
     ...DEFAULT_INDENTS,
@@ -77,6 +79,34 @@ export const defaultCardsSectionStyles: {
   },
   display: {
     ...DEFAULT_DISPLAY,
+  },
+  typography: {
+    ...DEFAULT_TYPOGRAPHY,
+  },
+  border: {
+    ...DEFAULT_BORDER,
+  },
+  background: {
+    ...DEFAULT_BACKGROUND,
+  },
+};
+
+export const defaultFeatureSectionStyles: {
+  [K in featureSectionControls]: CssLikeStyles;
+} = {
+  indents: {
+    ...DEFAULT_INDENTS,
+    'padding-top': '100px',
+    'padding-bottom': '100px',
+  },
+  size: {
+    ...DEFAULT_SIZE,
+    width: '100%',
+  },
+  display: {
+    ...DEFAULT_DISPLAY,
+    display: 'flex',
+    'justify-content': 'center',
   },
   typography: {
     ...DEFAULT_TYPOGRAPHY,
