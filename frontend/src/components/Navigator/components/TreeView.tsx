@@ -9,13 +9,19 @@ import AtlasTree, {
 import { useDispatch, useSelector } from 'react-redux';
 import TreeItem from './TreeItem';
 import { findPrevNode, findNextNode } from '../utils';
-import { moveElement, setActiveItem } from '$redux/project/actions';
+import {
+  moveElement,
+  setActiveItem,
+  setNotification,
+} from '$redux/project/actions';
 import { findChildByID } from '$utils/ElementsTreeHelper';
 import {
   selectActiveItem,
   selectCurrentScreenElement,
   selectCurrentScreenId,
 } from '$redux/project/selectors';
+import { isElementCanBeAdded } from '$utils/AvailableChildrenHelper';
+import { DISALLOW_ADD_ELEMENT_NOTIFICATION_TEXT } from '$features/notification/types';
 
 const styles = require('../Navigator.scss');
 
@@ -125,14 +131,6 @@ const TreeView: React.FC<Props> = ({
         select(selectedItem);
       }
 
-      // if (e.key === 'n') {
-      //   addNode(selectedItem);
-      // }
-
-      // if (e.key === 'Delete') {
-      //   removeSelectedNode();
-      // }
-
       if (e.key === ' ') {
         setIsDragging((state) => !state);
       }
@@ -153,18 +151,16 @@ const TreeView: React.FC<Props> = ({
     const newParent = items[destination.parentId];
     const childId = oldParent.children[source.index];
     const child = items[childId];
-    console.log(child);
-
+    const parentElement = findChildByID(rootElement, newParent.id as string);
+    if (!parentElement) {
+      console.error(`No element ${newParent.id}`);
+      return;
+    }
+    if (!isElementCanBeAdded(parentElement, child.data.type)) {
+      dispatch(setNotification(DISALLOW_ADD_ELEMENT_NOTIFICATION_TEXT));
+      return;
+    }
     const isRemote = source.parentId !== destination.parentId;
-
-    // const destElement = findChildByID(
-    //   rootElement,
-    //   destination.parentId as string,
-    // );
-    // const element = findChildByID()
-    // if (!destElement) {
-    //   return;
-    // }
 
     if (isRemote) {
       dispatch(
