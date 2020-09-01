@@ -41,6 +41,7 @@ export const Component = ({
         (event.key === 'Backspace' && event.metaKey)
       ) {
         deleteActiveItem(itemId, { screenId: currentScreenId });
+        root?.focus();
       }
     };
 
@@ -52,6 +53,7 @@ export const Component = ({
     const listener = (event: KeyboardEvent) => {
       if (event.code === 'KeyC' && event.altKey) {
         wrapIntoContainer(itemId, { screenId: currentScreenId });
+        root?.focus();
       }
     };
 
@@ -67,6 +69,7 @@ export const Component = ({
       if (isItemCopyEvent) {
         copyActiveItem();
         navigator.clipboard.writeText('');
+        root?.focus();
       }
     };
 
@@ -81,6 +84,7 @@ export const Component = ({
 
       if (isItemPasteEvent) {
         pasteCopiedItem({ screenId: currentScreenId });
+        root?.focus();
       }
     };
 
@@ -92,10 +96,12 @@ export const Component = ({
     const listener = (ev: KeyboardEvent) => {
       if (ev.code === 'KeyZ' && (ev.metaKey || ev.ctrlKey) && !ev.shiftKey) {
         undo();
+        root?.focus();
       }
 
       if (ev.code === 'KeyZ' && (ev.metaKey || ev.ctrlKey) && ev.shiftKey) {
         redo();
+        root?.focus();
       }
     };
 

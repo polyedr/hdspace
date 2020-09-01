@@ -1,8 +1,9 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { RenderItemParams } from '@atlaskit/tree';
 import cn from 'classnames';
 import ChevronDown from './Icons/chevron-down';
 import ChevronRight from './Icons/chevron-right';
+import { focusTreeItem } from '$components/Navigator/utils';
 
 const styles = require('../Navigator.scss');
 
@@ -18,7 +19,7 @@ const GroupIcon = ({ onClick, icon }) => (
 );
 
 const getIcon = (item, expand, collapse) => {
-  if (item.children && item.children.length > 0) {
+  if (item.children?.length > 0) {
     return item.isExpanded ? (
       <GroupIcon icon={<ChevronDown />} onClick={() => collapse(item.id)} />
     ) : (
@@ -30,7 +31,7 @@ const getIcon = (item, expand, collapse) => {
 
 type Props = RenderItemParams & {
   select: (itemId: string) => void;
-  selectedItem: string | null;
+  selectedItemId: string | null;
 };
 
 const TreeItem: React.FC<Props> = ({
@@ -39,7 +40,7 @@ const TreeItem: React.FC<Props> = ({
   onCollapse,
   provided,
   select,
-  selectedItem,
+  selectedItemId,
   snapshot,
 }) => {
   const isParent = item.children.length;
@@ -47,16 +48,11 @@ const TreeItem: React.FC<Props> = ({
   const handleDoubleClick = () =>
     item.isExpanded ? onCollapse(item.id) : onExpand(item.id);
 
-  const handleFocus = () => select(item.id as string);
+  const handleClick = () => {
+    focusTreeItem(item.id);
+  };
 
-  useEffect(() => {
-    if (selectedItem === item.id) {
-      const elem = document.querySelector(
-        `#treeitem-${item.id}`,
-      ) as HTMLElement;
-      elem?.focus();
-    }
-  }, [item.id, selectedItem]);
+  const handleFocus = () => select(item.id as string);
 
   return (
     <div
@@ -69,9 +65,9 @@ const TreeItem: React.FC<Props> = ({
       {...provided.draggableProps}
       {...provided.dragHandleProps}
       onDoubleClick={handleDoubleClick}
-      onClick={handleFocus}
+      onClick={handleClick}
       onFocus={handleFocus}
-      aria-selected={item.id === selectedItem}
+      aria-selected={item.id === selectedItemId}
       {...(isParent
         ? { role: 'group', 'aria-expanded': item.isExpanded }
         : { role: 'treeitem' })}

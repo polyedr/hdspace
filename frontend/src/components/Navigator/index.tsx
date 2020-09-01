@@ -13,7 +13,7 @@ const Navigator: React.FC = () => {
   const [tree, setTree] = useState<TreeData>(
     makeTree([convertTree(rootElement)]),
   );
-  const [selectedItem, setSelectedItem] = useState<string | null>(null);
+  const [selectedItemId, setSelectedItem] = useState<string | null>(null);
 
   const [isDragging, setIsDragging] = useState<boolean>(false);
 
@@ -28,7 +28,7 @@ const Navigator: React.FC = () => {
       <TreeView
         tree={tree}
         setTree={setTree}
-        selectedItem={selectedItem}
+        selectedItemId={selectedItemId}
         setSelectedItem={setSelectedItem}
         isDragging={isDragging}
         setIsDragging={setIsDragging}

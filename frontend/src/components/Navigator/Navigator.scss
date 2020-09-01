@@ -1,11 +1,3 @@
-/* Theme Colors
- *
- * Dark Blue .  : hsl(213, 50%, 46%)
- * Bright Blue  : hsl(204, 80%, 50%)
- * Light Blue . : hsl(213, 60%, 80%)
- * Grayish Blue : hsl(213, 30%, 92%)
- */
-
 * {
     background: transparent;
 }
@@ -58,19 +50,17 @@ button {
         overflow: auto;
     }
 
-    * {
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        overflow: hidden;
-    }
 
     .iconButton {
         cursor: pointer;
+        box-sizing: border-box;
+        width: 20px;
     }
 
     .iconButton:empty {
+        box-sizing: border-box;
         display: inline-block;
-        width: 0.9em;
+        width: 20px;
     }
 }
 
@@ -80,6 +70,7 @@ button {
     min-height: 2em;
     padding: 0.25em;
     outline: none;
+    white-space: nowrap;
 
     &:hover {
         background-color: lighten($lightMatteTurq, 5%);
@@ -92,5 +83,6 @@ button {
 }
 
 .isDragging {
-    box-shadow: 0 4px 8px -2px rgba(112, 115, 121, 0.31), 0 0 1px rgba(112, 115, 121, 0.31);
+    box-shadow: 0 4px 8px -2px rgba(147, 151, 159, 0.31), 0 0 1px rgba(147, 151, 159, 0.31);
+    outline: 1px solid #5b5f67;
 }

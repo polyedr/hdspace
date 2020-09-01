@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign,no-return-assign,no-unused-vars,no-shadow */
-import React, { useEffect } from 'react';
+import React, { useEffect, KeyboardEvent } from 'react';
 import AtlasTree, {
   mutateTree,
   TreeSourcePosition,
@@ -8,11 +8,16 @@ import AtlasTree, {
 } from '@atlaskit/tree';
 import { useDispatch, useSelector } from 'react-redux';
 import TreeItem from './TreeItem';
-import { findPrevNode, findNextNode } from '../utils';
+import { findPrevNodeId, findNextNodeId, focusTreeItem } from '../utils';
 import {
+  copyActiveItem,
+  deleteItem,
   moveElement,
+  pasteCopiedItem,
+  redoAction,
   setActiveItem,
   setNotification,
+  undoAction,
 } from '$redux/project/actions';
 import { findChildByID } from '$utils/ElementsTreeHelper';
 import {
@@ -27,7 +32,7 @@ import Scrollbar from '$components/UI/Scrollbar';
 const styles = require('../Navigator.scss');
 
 // export const addNode = ({ state, setState }, node) => {
-//   const parent = state.selectedItem || 'root';
+//   const parent = state.selectedItemId || 'root';
 //
 //   setState(
 //     produce((draft) => {
@@ -43,7 +48,7 @@ const styles = require('../Navigator.scss');
 type Props = {
   tree: TreeData;
   setTree: React.Dispatch<React.SetStateAction<TreeData>>;
-  selectedItem: string | null;
+  selectedItemId: string | null;
   setSelectedItem: React.Dispatch<React.SetStateAction<string | null>>;
   isDragging: boolean;
   setIsDragging: React.Dispatch<React.SetStateAction<boolean>>;
@@ -52,7 +57,7 @@ type Props = {
 const TreeView: React.FC<Props> = ({
   tree,
   setTree,
-  selectedItem,
+  selectedItemId,
   setSelectedItem,
   isDragging,
   setIsDragging,
@@ -69,7 +74,7 @@ const TreeView: React.FC<Props> = ({
     setTree((state) => mutateTree(state, itemId, { isExpanded: false }));
 
   const select = (itemId) => {
-    if (selectedItem === itemId) return;
+    if (selectedItemId === itemId) return;
 
     const item = findChildByID(rootElement, itemId);
     if (!item) return;
@@ -113,27 +118,68 @@ const TreeView: React.FC<Props> = ({
   // };
 
   // const removeSelectedNode = ({ state, setState }) => {
-  //   removeNode({ state, setState }, state.selectedItem);
+  //   removeNode({ state, setState }, state.selectedItemId);
   // };
 
-  const handleKeyDown = (e) => {
-    if (selectedItem && !isDragging) {
-      if (e.key === 'ArrowUp') select(findPrevNode(tree, selectedItem));
+  const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
+    if (selectedItemId && !isDragging) {
+      if (e.key === 'ArrowUp') {
+        // TODO: add throttling
+        e.preventDefault();
+        const prevNodeId = findPrevNodeId(tree, selectedItemId);
+        select(prevNodeId);
+        focusTreeItem(prevNodeId);
+      }
 
-      if (e.key === 'ArrowDown') select(findNextNode(tree, selectedItem));
+      if (e.key === 'ArrowDown') {
+        // TODO: add throttling
+        e.preventDefault();
+        const nextNodeId = findNextNodeId(tree, selectedItemId);
+        focusTreeItem(nextNodeId);
+      }
 
       if (e.key === 'ArrowRight') {
-        expand(selectedItem);
-        select(selectedItem);
+        expand(selectedItemId);
+        select(selectedItemId);
       }
 
       if (e.key === 'ArrowLeft') {
-        collapse(selectedItem);
-        select(selectedItem);
+        collapse(selectedItemId);
+        select(selectedItemId);
       }
 
       if (e.key === ' ') {
         setIsDragging((state) => !state);
+      }
+
+      if ((e.key === 'c' || e.key === 'C') && (e.ctrlKey || e.metaKey)) {
+        dispatch(copyActiveItem());
+      }
+
+      if ((e.key === 'v' || e.key === 'V') && (e.ctrlKey || e.metaKey)) {
+        dispatch(pasteCopiedItem({ screenId: currentScreenId }));
+      }
+
+      if (e.key === 'Delete' || (e.key === 'Backspace' && e.metaKey)) {
+        const prevItemId = findPrevNodeId(tree, selectedItemId);
+        dispatch(deleteItem(selectedItemId, { screenId: currentScreenId }));
+        focusTreeItem(prevItemId);
+      }
+
+      if (
+        (e.key === 'z' || e.key === 'Z') &&
+        (e.ctrlKey || e.metaKey) &&
+        !e.shiftKey
+      ) {
+        dispatch(undoAction());
+      }
+
+      if (
+        (e.key === 'z' || e.key === 'Z') &&
+        (e.ctrlKey || e.metaKey) &&
+        e.shiftKey
+      ) {
+        dispatch(redoAction());
       }
     }
   };
@@ -155,10 +201,12 @@ const TreeView: React.FC<Props> = ({
     const parentElement = findChildByID(rootElement, newParent.id as string);
     if (!parentElement) {
       console.error(`No element ${newParent.id}`);
+      setIsDragging(false);
       return;
     }
     if (!isElementCanBeAdded(parentElement, child.data.type)) {
       dispatch(setNotification(DISALLOW_ADD_ELEMENT_NOTIFICATION_TEXT));
+      setIsDragging(false);
       return;
     }
     const isRemote = source.parentId !== destination.parentId;
@@ -212,7 +260,7 @@ const TreeView: React.FC<Props> = ({
       expand={expand}
       select={select}
       deselect={deselect}
-      selectedItem={selectedItem}
+      selectedItemId={selectedItemId}
     />
   );
 

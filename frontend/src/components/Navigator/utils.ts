@@ -25,6 +25,14 @@ const flattenNodes = (root, nodes, parent) =>
     root,
   );
 
+// export const updateTree = (oldTree: TreeData, newTree: TreeData) => {
+//   return R.mergeDeepWithKey(
+//     (k, l, r) => (k === 'isExpanded' ? l : r),
+//     oldTree,
+//     newTree,
+//   );
+// };
+
 export const makeTree = (nodes: Node[]): TreeData => ({
   rootId: 'root',
   items: {
@@ -33,7 +41,6 @@ export const makeTree = (nodes: Node[]): TreeData => ({
       children: nodes.map((node) => node.id),
       hasChildren: true,
       isExpanded: true,
-      isChildrenLoading: false,
       data: {
         title: 'root',
       },
@@ -42,7 +49,7 @@ export const makeTree = (nodes: Node[]): TreeData => ({
   },
 });
 
-export const findNextNode = (tree, itemId, traverseChildren = true) => {
+export const findNextNodeId = (tree, itemId, traverseChildren = true) => {
   const item = tree.items[itemId];
   const parent = tree.items[item.parent];
 
@@ -54,7 +61,7 @@ export const findNextNode = (tree, itemId, traverseChildren = true) => {
   const itemsIndex = parent.children.indexOf(itemId);
 
   if (!parent.children[itemsIndex + 1]) {
-    return findNextNode(tree, parent.id, false);
+    return findNextNodeId(tree, parent.id, false);
   }
 
   return parent.children[itemsIndex + 1];
@@ -71,7 +78,7 @@ const findLastExpandedChild = (state, itemId) => {
   return itemId;
 };
 
-export const findPrevNode = (tree, itemId) => {
+export const findPrevNodeId = (tree, itemId) => {
   const item = tree.items[itemId];
   const parent = tree.items[item.parent];
   const itemIndex = parent.children.indexOf(itemId);
@@ -93,4 +100,8 @@ export const findPrevNode = (tree, itemId) => {
         prevItem.children[prevItem.children.length - 1],
       )
     : prevItem.id;
+};
+
+export const focusTreeItem = (itemId) => {
+  (document.querySelector(`#treeitem-${itemId}`) as HTMLElement)?.focus();
 };
