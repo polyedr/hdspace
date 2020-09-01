@@ -1,6 +1,9 @@
-import React from 'react';
+import React, { MouseEvent, useState } from 'react';
 import { RenderItemParams } from '@atlaskit/tree';
 import cn from 'classnames';
+import Menu, { MenuProps } from '@material-ui/core/Menu';
+import { withStyles } from '@material-ui/core/styles';
+import MenuItem from '@material-ui/core/MenuItem';
 import ChevronDown from './Icons/chevron-down';
 import ChevronRight from './Icons/chevron-right';
 import { focusTreeItem } from '$components/Navigator/utils';
@@ -34,6 +37,19 @@ type Props = RenderItemParams & {
   selectedItemId: string | null;
 };
 
+type State = {
+  mouseX: number | null;
+  mouseY: number | null;
+};
+
+const StyledMenu = withStyles({
+  paper: {
+    borderRadius: 0,
+    backgroundColor: '#2f4050',
+    color: 'white',
+  },
+})((props: MenuProps) => <Menu {...props} />);
+
 const TreeItem: React.FC<Props> = ({
   item,
   onExpand,
@@ -43,6 +59,12 @@ const TreeItem: React.FC<Props> = ({
   selectedItemId,
   snapshot,
 }) => {
+  const initialState = {
+    mouseX: null,
+    mouseY: null,
+  };
+
+  const [state, setState] = useState<State>(initialState);
   const isParent = item.children.length;
 
   const handleDoubleClick = () =>
@@ -54,6 +76,17 @@ const TreeItem: React.FC<Props> = ({
 
   const handleFocus = () => select(item.id as string);
 
+  const handleContextMenu = (ev: MouseEvent<HTMLDivElement>) => {
+    ev.preventDefault();
+
+    setState({
+      mouseX: ev.clientX - 2,
+      mouseY: ev.clientY - 4,
+    });
+  };
+
+  const handleClose = () => setState(initialState);
+
   return (
     <div
       className={cn(
@@ -64,6 +97,7 @@ const TreeItem: React.FC<Props> = ({
       ref={provided.innerRef}
       {...provided.draggableProps}
       {...provided.dragHandleProps}
+      onContextMenu={handleContextMenu}
       onDoubleClick={handleDoubleClick}
       onClick={handleClick}
       onFocus={handleFocus}
@@ -74,6 +108,21 @@ const TreeItem: React.FC<Props> = ({
     >
       <span>{getIcon(item, onExpand, onCollapse)}</span>
       <span>{item.data ? item.data.title : ''}</span>
+
+      <StyledMenu
+        open={state.mouseY !== null}
+        onClose={handleClose}
+        anchorReference="anchorPosition"
+        anchorPosition={
+          state.mouseY !== null && state.mouseX !== null
+            ? { top: state.mouseY, left: state.mouseX }
+            : undefined
+        }
+      >
+        <MenuItem>first</MenuItem>
+        <MenuItem>second</MenuItem>
+        <MenuItem>third</MenuItem>
+      </StyledMenu>
     </div>
   );
 };

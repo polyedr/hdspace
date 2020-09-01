@@ -67,6 +67,7 @@ button {
 .treeItem {
     display: flex;
     align-items: center;
+    position: relative;
     min-height: 2em;
     padding: 0.25em;
     outline: none;
