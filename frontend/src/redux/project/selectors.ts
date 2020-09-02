@@ -1,14 +1,14 @@
-import { makeFeatureStateSelector } from '$shared/redux';
-import { AppReduxState } from '$shared/types/app';
-import { ChildEntity, Entity } from '$domain/core';
-import { findChildByID } from '$utils/ElementsTreeHelper';
-import { LibraryElement } from '$api/types';
-import { CssLikeStyles } from '$utils/StyleHelper';
 import {
   DEFAULT_PROJECT,
   DEFAULT_ROOT,
   DEFAULT_SCREEN,
-} from '$constants/defaultParams';
+} from '../../constants/defaultParams';
+import { ChildEntity, Entity } from '../../domain/core';
+import { findChildByID } from '../../utils/ElementsTreeHelper';
+import { AppReduxState } from '../../shared/types/app';
+import { LibraryElement } from '../../api/types';
+import { CssLikeStyles } from '../../utils/StyleHelper';
+import { makeFeatureStateSelector } from '../../shared/redux';
 
 export const selectProjectState = makeFeatureStateSelector('project');
 

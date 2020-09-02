@@ -1,7 +1,6 @@
 import * as R from 'ramda';
-
-import { PLAYERS } from '$constants/players';
-import { VideoSettingsType } from '$api/types';
+import { PLAYERS } from '../constants/players';
+import { VideoSettingsType } from '../api/types';
 
 type LinkInfo = {
   player: keyof typeof PLAYERS | 'none';

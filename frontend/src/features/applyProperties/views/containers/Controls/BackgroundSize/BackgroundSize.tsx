@@ -3,17 +3,15 @@
 import React, { useCallback, memo } from 'react';
 import * as R from 'ramda';
 import { connect } from 'react-redux';
-
-import {
-  withConfigurableProperties,
-  PropertiesChangeProps,
-} from '$utils/withConfigurableProperties';
-import { LibraryElement } from '$api/types';
-import { Entity } from '$domain/core';
-import { AppReduxState } from '$shared/types/app';
-import { selectors } from '$redux/project';
-
 import StylesHeader from '../../../components/StylesHeader/StylesHeader';
+import { AppReduxState } from '../../../../../../shared/types/app';
+import { Entity } from '../../../../../../domain/core';
+import { LibraryElement } from '../../../../../../api/types';
+import {
+  PropertiesChangeProps,
+  withConfigurableProperties,
+} from '../../../../../../utils/withConfigurableProperties';
+import { selectCurrentEditableStyles } from '../../../../../../redux/project/selectors';
 
 const styles = require('./BackgroundSize.scss');
 
@@ -34,10 +32,7 @@ type SizeName = keyof SelectedUnit;
 
 function mapState(state: AppReduxState) {
   return {
-    backgroundSize: selectors.selectCurrentEditableStyles(
-      state,
-      'background-size',
-    ),
+    backgroundSize: selectCurrentEditableStyles(state, 'background-size'),
   };
 }
 

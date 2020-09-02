@@ -1,9 +1,9 @@
 import {
+  checkEmailFieldValidity,
   checkFormFieldValidity,
   checkPasswordFieldValidity,
-  checkEmailFieldValidity,
-} from '$utils/StringHelper';
-import { ISignFormFields } from '$constants/defaultParams';
+} from './StringHelper';
+import { ISignFormFields } from '../constants/defaultParams';
 
 export interface INewFormData {
   formData: ISignFormFields;

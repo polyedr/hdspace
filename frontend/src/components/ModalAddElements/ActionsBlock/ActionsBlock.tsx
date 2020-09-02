@@ -2,11 +2,11 @@ import React, { useCallback } from 'react';
 import classNames from 'classnames';
 import * as R from 'ramda';
 
-import { getChooseElements, GroupElement } from '$utils/parseScenario';
-import { ENTITIES, Entity, AVAILABLE_CHILDREN } from '$domain/core';
-import { CreatedElement, ActiveItem } from '$redux/project/types';
 import Button from '../../UI/Button';
 import Scrollbar from '../../UI/Scrollbar';
+import { AVAILABLE_CHILDREN, ENTITIES, Entity } from '../../../domain/core';
+import { getChooseElements, GroupElement } from '../../../utils/parseScenario';
+import { ActiveItem, CreatedElement } from '../../../redux/project/types';
 
 const styles = require('./ActionsBlock.scss');
 

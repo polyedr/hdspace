@@ -1,22 +1,23 @@
 import React, { memo, useCallback } from 'react';
 import { connect } from 'react-redux';
-
-import { AppReduxState } from '$shared/types/app';
-import { assertNever } from '$shared/helpers/ts';
-import { ScreenDisplay, Flex } from '$redux/project/types';
-import { selectors } from '$redux/project/';
-import {
-  withConfigurableProperties,
-  PropertiesChangeProps,
-} from '$utils/withConfigurableProperties';
-import { CssLikeStyles, convertFlexToCssLikeStyles } from '$utils/StyleHelper';
-import { LibraryElement } from '$api/types';
-import { Entity } from '$domain/core';
-
 import FlexProperties from '../../../components/FlexProperties/FlexProperties';
 import StylesHeader from '../../../components/StylesHeader/StylesHeader';
 import DISPLAY from './constants';
 import { DropDown } from '../../../../../../components/UI/DropDown';
+import { Entity } from '../../../../../../domain/core';
+import { AppReduxState } from '../../../../../../shared/types/app';
+import { LibraryElement } from '../../../../../../api/types';
+import { Flex, ScreenDisplay } from '../../../../../../redux/project/types';
+import {
+  convertFlexToCssLikeStyles,
+  CssLikeStyles,
+} from '../../../../../../utils/StyleHelper';
+import {
+  PropertiesChangeProps,
+  withConfigurableProperties,
+} from '../../../../../../utils/withConfigurableProperties';
+import { assertNever } from '../../../../../../shared/helpers/ts';
+import { selectCurrentEditableStyles } from '../../../../../../redux/project/selectors';
 
 type StateProps = {
   displayStyles: ScreenDisplay;
@@ -59,16 +60,10 @@ function getDisplayStyles(
 
 function mapState(state: AppReduxState): StateProps {
   const activeItemStyles = {
-    display: selectors.selectCurrentEditableStyles(state, 'display'),
-    'justify-content': selectors.selectCurrentEditableStyles(
-      state,
-      'justify-content',
-    ),
-    'align-items': selectors.selectCurrentEditableStyles(state, 'align-items'),
-    'flex-direction': selectors.selectCurrentEditableStyles(
-      state,
-      'flex-direction',
-    ),
+    display: selectCurrentEditableStyles(state, 'display'),
+    'justify-content': selectCurrentEditableStyles(state, 'justify-content'),
+    'align-items': selectCurrentEditableStyles(state, 'align-items'),
+    'flex-direction': selectCurrentEditableStyles(state, 'flex-direction'),
   };
 
   return { displayStyles: getDisplayStyles(activeItemStyles) };

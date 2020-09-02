@@ -3,16 +3,16 @@ import { NavLink } from 'react-router-dom';
 import cn from 'classnames';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { IMAGES } from '$constants/images';
-import * as PATH_NAMES from '$constants/pathNames';
-import * as ActionsProject from '$redux/project/actions';
-import { openSignScreen } from '$utils/history';
-import { Project } from '$api/types';
-import { logout } from '$redux/user/actions';
-import { selectUserData } from '$redux/user/selectors';
 import Button from '../UI/Button';
 import Icon from '../UI/Icon';
 import Scrollbar from '../UI/Scrollbar';
+import { Project } from '../../api/types';
+import { setProjectList } from '../../redux/project/actions';
+import { selectUserData } from '../../redux/user/selectors';
+import { logout } from '../../redux/user/actions';
+import { IMAGES } from '../../constants/images';
+import { openSignScreen } from '../../utils/history';
+import { PATH_NAMES } from '../../constants/pathNames';
 
 const styles = require('./LeftPanel.scss');
 
@@ -21,7 +21,7 @@ export type LeftPanelProps = {
   projects: Project[];
   username?: string;
   isLPanelMinimized: boolean;
-  setListProject: typeof ActionsProject.setProjectList;
+  setListProject: typeof setProjectList;
 };
 
 export const LeftPanel: React.FunctionComponent<LeftPanelProps> = ({

@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import convertDateToRelative from '$utils/convertDateToRelative';
-import { Project } from '$api/types';
-import { delProject, renameProject } from '$redux/project/actions';
 import Button from '../UI/Button';
 import Icon from '../UI/Icon';
 import Modal from '../UI/Modal';
+import convertDateToRelative from '../../utils/convertDateToRelative';
+import { Project } from '../../api/types';
+import { delProject, renameProject } from '../../redux/project/actions';
 
 const styles = require('./Projects.scss');
 

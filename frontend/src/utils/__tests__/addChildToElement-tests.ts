@@ -1,7 +1,7 @@
-import { addChildToElement } from '$utils/ElementsTreeHelper';
-import { LibraryElement } from '$api/types';
 
 import { mockRoot } from './mocks';
+import { LibraryElement } from '../../api/types';
+import { addChildToElement } from '../ElementsTreeHelper';
 
 describe('addChildToElement', () => {
   const mockParams = {

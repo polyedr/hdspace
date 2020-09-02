@@ -1,6 +1,6 @@
-import { findParentByChildID } from '$utils/ElementsTreeHelper';
 
 import { mockRoot } from './mocks';
+import { findParentByChildID } from '../ElementsTreeHelper';
 
 describe('findParentByChildID', () => {
   test('Should find parent of element on 2 level', () => {

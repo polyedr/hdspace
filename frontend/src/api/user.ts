@@ -1,14 +1,14 @@
 /* eslint-disable camelcase */
 
 import { AxiosError } from 'axios';
-import { myAxios } from '$config/settings';
-import { onError, parseResult } from '$api/project';
 import {
   IApiResponseError,
   LoginFormData,
   ProfileData,
   UserData,
-} from '$redux/user/types';
+} from '../redux/user/types';
+import { onError, parseResult } from './project';
+import { myAxios } from '../../config/settings';
 
 export interface ISignUpData {
   username: string;

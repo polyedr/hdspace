@@ -2,12 +2,16 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Form, Field } from 'react-final-form';
 import cn from 'classnames';
-import { changeProfileData, changeUserData, logout } from '$redux/user/actions';
-import { openSignScreen } from '$utils/history';
-import { selectUserData } from '$redux/user/selectors';
-import { IMAGES } from '$constants/images';
-import { ProfileData, UserData } from '$redux/user/types';
 import Button from '../../UI/Button';
+import { selectUserData } from '../../../redux/user/selectors';
+import {
+  changeProfileData,
+  changeUserData,
+  logout,
+} from '../../../redux/user/actions';
+import { ProfileData, UserData } from '../../../redux/user/types';
+import { IMAGES } from '../../../constants/images';
+import { openSignScreen } from '../../../utils/history';
 
 const styles = require('./Profile.scss');
 

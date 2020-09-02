@@ -8,18 +8,24 @@ import {
 } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
-import { AppReduxState } from '$shared/types/app';
-import { selectors, actionsCreators } from '$redux/project/';
-import {
-  withConfigurableProperties,
-  PropertiesChangeProps,
-} from '$utils/withConfigurableProperties';
-import generateUniqueName from '$utils/generateUniqueName';
-import sharedClasses from '$styles/sharedClasses';
-import { SelectItemElement } from '$api/types';
-import { selectCurrentScreenId } from '$redux/project/selectors';
 import Button from '../../../../../../components/UI/Button';
 import Icon from '../../../../../../components/UI/Icon';
+import { SelectItemElement } from '../../../../../../api/types';
+import {
+  selectActiveItemChildren,
+  selectCurrentScreenId,
+} from '../../../../../../redux/project/selectors';
+import { AppReduxState } from '../../../../../../shared/types/app';
+import sharedClasses from '../../../../../../styles/sharedClasses';
+import {
+  addChildToElement,
+  deleteItem,
+} from '../../../../../../redux/project/actions';
+import {
+  PropertiesChangeProps,
+  withConfigurableProperties,
+} from '../../../../../../utils/withConfigurableProperties';
+import generateUniqueName from '../../../../../../utils/generateUniqueName';
 
 const styles = require('./SelectOptions.scss');
 
@@ -29,10 +35,7 @@ type StateProps = {
 };
 
 function mapState(state: AppReduxState): StateProps {
-  const selectChildren = selectors.selectActiveItemChildren(
-    state,
-    'selectMenu',
-  );
+  const selectChildren = selectActiveItemChildren(state, 'selectMenu');
   const [selectMenu] = selectChildren;
   const selectOptions = selectMenu.children;
 
@@ -43,8 +46,8 @@ function mapState(state: AppReduxState): StateProps {
 }
 
 const mapDispatch = {
-  addChildToElement: actionsCreators.addChildToElement,
-  deleteChildFromElement: actionsCreators.deleteItem,
+  addChildToElement,
+  deleteChildFromElement: deleteItem,
 };
 
 type Props = StateProps &

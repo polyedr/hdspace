@@ -1,18 +1,19 @@
 import React, { memo } from 'react';
 import { connect } from 'react-redux';
-
-import { AppReduxState } from '$shared/types/app';
-import { selectors } from '$redux/project/';
-import {
-  withConfigurableProperties,
-  PropertiesChangeProps,
-} from '$utils/withConfigurableProperties';
-import sharedClasses from '$styles/sharedClasses';
-import { LabelElement } from '$api/types';
-import { getElementsArray } from '$utils/ElementsTreeHelper';
-
 import ControlTitle from '../../../components/ControlTitle/ControlTitle';
 import { DropDown } from '../../../../../../components/UI/DropDown';
+import { AppReduxState } from '../../../../../../shared/types/app';
+import { getElementsArray } from '../../../../../../utils/ElementsTreeHelper';
+import sharedClasses from '../../../../../../styles/sharedClasses';
+import { LabelElement } from '../../../../../../api/types';
+import {
+  selectActiveItemParams,
+  selectRootElement,
+} from '../../../../../../redux/project/selectors';
+import {
+  PropertiesChangeProps,
+  withConfigurableProperties,
+} from '../../../../../../utils/withConfigurableProperties';
 
 const styles = require('./LabelFor.scss');
 
@@ -22,10 +23,8 @@ type StateProps = {
 };
 
 function mapState(state: AppReduxState): StateProps {
-  const activeItemParams = selectors.selectActiveItemParams<LabelElement>(
-    state,
-  );
-  const elements = getElementsArray(selectors.selectRootElement(state));
+  const activeItemParams = selectActiveItemParams<LabelElement>(state);
+  const elements = getElementsArray(selectRootElement(state));
 
   const inputsIDs = Object.values(elements)
     .filter(

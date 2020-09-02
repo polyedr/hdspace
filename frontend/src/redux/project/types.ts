@@ -1,18 +1,18 @@
 /* eslint-disable camelcase */
 
-import { IPlainAction, IPlainFailAction, IAction } from '$shared/redux';
-import { CssLikeStyles } from '$utils/StyleHelper';
-import { LibraryEntities } from '$domain/libraryElements/libraryElements';
-import { Entity } from '$domain/core';
+import { IAction, IPlainAction, IPlainFailAction } from '../../shared/redux';
+import { Entity } from '../../domain/core';
 import {
-  LibraryElement as RootElement,
   HeadingType,
-  VideoSettingsType,
   InputType,
-  Project,
   LibraryElement,
-} from '$api/types';
-import TYPES from '$constants/actions';
+  LibraryElement as RootElement,
+  Project,
+  VideoSettingsType,
+} from '../../api/types';
+import TYPES from '../../constants/actions';
+import { CssLikeStyles } from '../../utils/StyleHelper';
+import { LibraryEntities } from '../../domain/libraryElements/libraryElements';
 
 export type ProjectState = {
   data: ProjectDataState;

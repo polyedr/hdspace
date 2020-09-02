@@ -1,4 +1,4 @@
-import { LibraryElementUnion } from '$api/types';
+import { LibraryElementUnion } from '../api/types';
 
 const getSavedValue = (element: LibraryElementUnion) => {
   switch (element.type) {

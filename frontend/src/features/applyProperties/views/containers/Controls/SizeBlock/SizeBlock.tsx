@@ -3,17 +3,15 @@
 import React, { useCallback, memo } from 'react';
 import * as R from 'ramda';
 import { connect } from 'react-redux';
-
-import {
-  withConfigurableProperties,
-  PropertiesChangeProps,
-} from '$utils/withConfigurableProperties';
-import { LibraryElement } from '$api/types';
-import { Entity } from '$domain/core';
-import { AppReduxState } from '$shared/types/app';
-import { selectors } from '$redux/project';
-
 import StylesHeader from '../../../components/StylesHeader/StylesHeader';
+import { Entity } from '../../../../../../domain/core';
+import { AppReduxState } from '../../../../../../shared/types/app';
+import { LibraryElement } from '../../../../../../api/types';
+import {
+  PropertiesChangeProps,
+  withConfigurableProperties,
+} from '../../../../../../utils/withConfigurableProperties';
+import { selectCurrentEditableStyles } from '../../../../../../redux/project/selectors';
 
 const styles = require('./SizeBlock.scss');
 
@@ -34,8 +32,8 @@ type SizeName = keyof SelectedUnit;
 
 function mapState(state: AppReduxState) {
   return {
-    width: selectors.selectCurrentEditableStyles(state, 'width'),
-    height: selectors.selectCurrentEditableStyles(state, 'height'),
+    width: selectCurrentEditableStyles(state, 'width'),
+    height: selectCurrentEditableStyles(state, 'height'),
   };
 }
 

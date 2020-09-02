@@ -1,15 +1,13 @@
 import React, { memo, useCallback } from 'react';
 import classNames from 'classnames';
 import * as R from 'ramda';
-
-import { LibraryElements } from '$domain/libraryElements/libraryElements';
-import { AVAILABLE_CHILDREN, ENTITIES } from '$domain/core';
-import { PropertiesPanelProps } from '$features/applyProperties';
-
 import ShowBorders from '../ShowBorders/ShowBorders';
-import Button from "../../../../../../components/UI/Button";
-import Icon from "../../../../../../components/UI/Icon";
-import ModalAddElements from "../../../../../../components/ModalAddElements/ModalAddElements/ModalAddElements";
+import Button from '../../../../../../components/UI/Button';
+import Icon from '../../../../../../components/UI/Icon';
+import ModalAddElements from '../../../../../../components/ModalAddElements/ModalAddElements/ModalAddElements';
+import { PropertiesPanelProps } from '../..';
+import { AVAILABLE_CHILDREN, ENTITIES } from '../../../../../../domain/core';
+import { LibraryElements } from '../../../../../../domain/libraryElements/libraryElements';
 
 const styles = require('./styles.scss');
 

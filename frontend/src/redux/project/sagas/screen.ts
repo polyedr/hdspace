@@ -4,50 +4,55 @@ import { SagaIterator } from 'redux-saga';
 import { call, select, put, all, fork } from 'redux-saga/effects';
 import * as R from 'ramda';
 import { push } from 'connected-react-router';
-
+import * as Actions from '../actions';
+import { reqWrapper } from '.';
+import { selectors, T } from '..';
+import { createContainer } from './scenario';
 import {
-  activateScreen,
-  addScreen,
-  delScreen,
-  renameScreen,
-  saveScreenImage,
-  setCurrentScreenId,
-  setScreenLoader,
-  setLoader,
-  setActiveItem,
-  setScreens,
-  restoreScreen,
-  setUndoActions,
-  setProject,
-  setScreen,
-} from '$redux/project/actions';
-import * as Actions from '$redux/project/actions';
-import generateUniqueName from '$utils/generateUniqueName';
-import getSavedValue from '$utils/getSavedValue';
-import { DEFAULT_ACTIVE_ITEM } from '$constants/defaultParams';
-import { IProjectScreen, IScenarioItem } from '$redux/project/types';
-import { apiSetScenarioNeuralNetwork, apiSaveScenarios } from '$api/scenario';
-import { apiGetElements, apiAddElements } from '$api/element';
-import { convertCreatedElementToRequest } from '$api/converters/toRequest';
-import { LibraryElementUnion, LibraryElement, Project } from '$api/types';
+  selectCurrentScreenId,
+  selectScreenById,
+  selectScreenElement,
+} from '../selectors';
 import {
   apiAddScreen,
   apiGetAllScreen,
   apiGetScreen,
   apiSaveScreen,
-} from '$api/screen';
-import { ReturnPromisedType } from '$shared/types';
-
-import { reqWrapper } from '.';
-import { selectors, T } from '..';
-import { createContainer } from './scenario';
-import { apiGetProject, apiSaveProject } from '$api/project';
+} from '../../../api/screen';
+import { convertCreatedElementToRequest } from '../../../api/converters/toRequest';
+import { apiGetProject, apiSaveProject } from '../../../api/project';
+import { IProjectScreen, IScenarioItem } from '../types';
 import {
-  selectCurrentScreenId,
-  selectScreenById,
-  selectScreenElement,
-} from '$redux/project/selectors';
-import { convertElementFromResponse } from '$api/converters/fromResponse';
+  activateScreen,
+  addScreen,
+  delScreen,
+  renameScreen,
+  restoreScreen,
+  saveScreenImage,
+  setActiveItem,
+  setCurrentScreenId,
+  setLoader,
+  setProject,
+  setScreen,
+  setScreenLoader,
+  setScreens,
+  setUndoActions,
+} from '../actions';
+import { apiAddElements, apiGetElements } from '../../../api/element';
+import { DEFAULT_ACTIVE_ITEM } from '../../../constants/defaultParams';
+import {
+  LibraryElement,
+  LibraryElementUnion,
+  Project,
+} from '../../../api/types';
+import { ReturnPromisedType } from '../../../shared/types';
+import generateUniqueName from '../../../utils/generateUniqueName';
+import {
+  apiSaveScenarios,
+  apiSetScenarioNeuralNetwork,
+} from '../../../api/scenario';
+import { convertElementFromResponse } from '../../../api/converters/fromResponse';
+import getSavedValue from '../../../utils/getSavedValue';
 
 export function* activateScreenSaga({
   payload: { screenId },

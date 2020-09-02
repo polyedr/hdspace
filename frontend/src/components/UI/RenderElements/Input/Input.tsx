@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import React, { ChangeEvent } from 'react';
 import cn from 'classnames';
 import { makeStyles, TextField } from '@material-ui/core';

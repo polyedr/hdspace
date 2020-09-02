@@ -1,9 +1,11 @@
 import React, { memo } from 'react';
 import { connect } from 'react-redux';
-
-import { AppReduxState } from '$shared/types/app';
-import { selectors } from '$redux/project';
 import Button from '../../../../../components/UI/Button';
+import { AppReduxState } from '../../../../../shared/types/app';
+import {
+  selectActiveItem,
+  selectEditableStyles,
+} from '../../../../../redux/project/selectors';
 
 const styles = require('./RemoveStyles.scss');
 
@@ -14,8 +16,8 @@ type OwnProps = {
 
 const mapState = (state: AppReduxState) => {
   return {
-    editableStyles: selectors.selectEditableStyles(state),
-    activeItem: selectors.selectActiveItem(state),
+    editableStyles: selectEditableStyles(state),
+    activeItem: selectActiveItem(state),
   };
 };
 

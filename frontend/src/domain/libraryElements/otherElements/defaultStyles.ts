@@ -1,27 +1,27 @@
 import {
-  DEFAULT_SIZE,
-  DEFAULT_INDENTS,
-  DEFAULT_DISPLAY,
-  DEFAULT_BORDER,
-  DEFAULT_BACKGROUND,
-  DEFAULT_TYPOGRAPHY,
-  DEFAULT_FLEX_GROW,
-  DEFAULT_BACKGROUND_POSITION,
-  DEFAULT_BACKGROUND_SIZE,
-} from '$domain/constants/defaultStyles';
-import {
-  rootStyleControls,
   containerStyleControls,
   divBlockStyleControls,
-  imageStyleControls,
-  dropdownStyleControls,
-  dropdownMenuStyleControls,
   dropdownItemStyleControls,
-  videoStyleControls,
-  undefinedControls,
+  dropdownMenuStyleControls,
+  dropdownStyleControls,
+  imageStyleControls,
+  rootStyleControls,
   screenshotStyleControls,
-} from '$domain/core';
-import { CssLikeStyles } from '$utils/StyleHelper';
+  undefinedControls,
+  videoStyleControls,
+} from '../../core';
+import {
+  DEFAULT_BACKGROUND,
+  DEFAULT_BACKGROUND_POSITION,
+  DEFAULT_BACKGROUND_SIZE,
+  DEFAULT_BORDER,
+  DEFAULT_DISPLAY,
+  DEFAULT_FLEX_GROW,
+  DEFAULT_INDENTS,
+  DEFAULT_SIZE,
+  DEFAULT_TYPOGRAPHY,
+} from '../../constants/defaultStyles';
+import { CssLikeStyles } from '../../../utils/StyleHelper';
 
 type RootControls = typeof rootStyleControls[number];
 type ContainerControls = typeof containerStyleControls[number];

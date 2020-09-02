@@ -1,24 +1,27 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-
-import { AppReduxState } from '$shared/types/app';
-import {
-  DEFAULT_SIGNIN_FIELDS,
-  DEFAULT_RESPONSE_ERROR,
-  ISignFormFields,
-} from '$constants/defaultParams';
-import * as Actions from '$redux/user/actions';
-import { getInitialFieldsState } from '$utils/getStates';
-import { IApiResponseError } from '$redux/user/types';
-import {
-  generateValidatedFormData,
-  INewFormData,
-} from '$utils/generateValidatedFormData';
 import Info from '../Info';
 import SignFormList from '../SignFormList';
 import Button from '../../UI/Button';
 import Modal from '../../UI/Modal';
 import Spinner from '../../UI/Spinner';
+import {
+  login,
+  restorePassword,
+  setApiResponseError,
+} from '../../../redux/user/actions';
+import {
+  DEFAULT_RESPONSE_ERROR,
+  DEFAULT_SIGNIN_FIELDS,
+  ISignFormFields,
+} from '../../../constants/defaultParams';
+import { AppReduxState } from '../../../shared/types/app';
+import { getInitialFieldsState } from '../../../utils/getStates';
+import {
+  generateValidatedFormData,
+  INewFormData,
+} from '../../../utils/generateValidatedFormData';
+import { IApiResponseError } from '../../../redux/user/types';
 
 const styles = require('./SignIn.scss');
 
@@ -32,9 +35,9 @@ const mapStateToProps = ({
 });
 
 const mapDispatchToProps = {
-  restorePassword: Actions.restorePassword,
-  setApiResponseError: Actions.setApiResponseError,
-  login: Actions.login,
+  restorePassword,
+  setApiResponseError,
+  login,
 };
 
 type IProps = typeof mapDispatchToProps & {

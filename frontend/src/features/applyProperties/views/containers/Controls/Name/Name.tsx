@@ -1,14 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
-
-import { AppReduxState } from '$shared/types/app';
-import { selectors } from '$redux/project/';
+import { AppReduxState } from '../../../../../../shared/types/app';
+import sharedClasses from '../../../../../../styles/sharedClasses';
+import { selectActiveItemParams } from '../../../../../../redux/project/selectors';
 import {
-  withConfigurableProperties,
   PropertiesChangeProps,
-} from '$utils/withConfigurableProperties';
-import sharedClasses from '$styles/sharedClasses';
-import { RadiobuttonElement } from '$api/types';
+  withConfigurableProperties,
+} from '../../../../../../utils/withConfigurableProperties';
+import { RadiobuttonElement } from '../../../../../../api/types';
 
 const styles = require('./Name.scss');
 
@@ -17,9 +16,7 @@ type StateProps = {
 };
 
 function mapState(state: AppReduxState): StateProps {
-  const activeItemParams = selectors.selectActiveItemParams<RadiobuttonElement>(
-    state,
-  );
+  const activeItemParams = selectActiveItemParams<RadiobuttonElement>(state);
 
   return {
     name: activeItemParams.name,

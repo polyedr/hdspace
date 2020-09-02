@@ -1,10 +1,10 @@
+// @ts-nocheck
+
 import React from 'react';
 import cn from 'classnames';
 import { makeStyles, MenuItem } from '@material-ui/core';
-
-import sharedClasses from '$styles/sharedClasses';
-
 import { DropdownItemRendererProps } from '../types';
+import sharedClasses from '../../../../styles/sharedClasses';
 
 const styles = require('../styles.scss');
 

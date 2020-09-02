@@ -1,6 +1,6 @@
-import { initialControl } from '$redux/project/initial';
 import * as T from '../types';
-import TYPES from '$constants/actions';
+import TYPES from '../../../constants/actions';
+import { initialControl } from '../initial';
 
 // To create undoable feature for the editor you have to implement action with "meta" field extends type HistoryMeta,
 // that will call correspondent saga, which should:

@@ -1,4 +1,4 @@
-import { AppReduxState } from '$shared/types/app';
+import { AppReduxState } from '../types/app';
 
 function makeFeatureStateSelector<
   T extends AppReduxState,

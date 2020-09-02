@@ -1,4 +1,4 @@
-import { CssLikeStyles } from '$utils/StyleHelper';
+import { CssLikeStyles } from '../../utils/StyleHelper';
 
 export const DEFAULT_SIZE = {
   width: 'auto',

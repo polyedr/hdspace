@@ -2,23 +2,26 @@ import React, { useCallback, useState } from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 
-import { AppReduxState } from '$shared/types/app';
-import { openSignScreen } from '$utils/history';
-import { getInitialFieldsState } from '$utils/getStates';
-import {
-  DEFAULT_RESTORE_PASSWORD_FIELDS,
-  DEFAULT_RESPONSE_ERROR,
-  ISignFormFields,
-} from '$constants/defaultParams';
-import { IApiResponseError } from '$redux/user/types';
-import * as Actions from '$redux/user/actions';
-import {
-  generateValidatedFormData,
-  INewFormData,
-} from '$utils/generateValidatedFormData';
 import SignFormList from '../SignFormList';
 import Button from '../../UI/Button';
 import Spinner from '../../UI/Spinner';
+import {
+  DEFAULT_RESPONSE_ERROR,
+  DEFAULT_RESTORE_PASSWORD_FIELDS,
+  ISignFormFields,
+} from '../../../constants/defaultParams';
+import { AppReduxState } from '../../../shared/types/app';
+import { getInitialFieldsState } from '../../../utils/getStates';
+import {
+  setApiResponseError,
+  setNewPassword,
+} from '../../../redux/user/actions';
+import {
+  generateValidatedFormData,
+  INewFormData,
+} from '../../../utils/generateValidatedFormData';
+import { IApiResponseError } from '../../../redux/user/types';
+import { openSignScreen } from '../../../utils/history';
 
 const styles = require('./PasswordRestore.scss');
 
@@ -30,8 +33,8 @@ const mapStateToProps = ({
 });
 
 const mapDispatchToProps = {
-  setApiResponseError: Actions.setApiResponseError,
-  setNewPassword: Actions.setNewPassword,
+  setApiResponseError,
+  setNewPassword,
 };
 
 type IProps = typeof mapDispatchToProps & {

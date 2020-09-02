@@ -1,5 +1,5 @@
-import { AVAILABLE_CHILDREN, Entity } from '$domain/core';
-import { LibraryElement } from '$api/types';
+import { AVAILABLE_CHILDREN, Entity } from '../domain/core';
+import { LibraryElement } from '../api/types';
 
 export const isElementCanBeRemove = (
   itemToRemoveParent: LibraryElement<Entity>,

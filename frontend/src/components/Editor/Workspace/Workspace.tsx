@@ -3,22 +3,31 @@ import { connect, useSelector } from 'react-redux';
 import cn from 'classnames';
 import html2canvas from 'html2canvas';
 
-import { T as ProjectT, selectors, actionsCreators } from '$redux/project';
-import * as userActions from '$redux/user/actions';
-import { DEFAULT_SCREEN_MODE } from '$constants/defaultParams';
-import { getClassDevice } from '$utils/dom';
-import { getListNotDragging } from '$utils/parseScenario';
-import { findChildByID } from '$utils/ElementsTreeHelper';
-import { AppReduxState } from '$shared/types/app';
-import { LibraryElement, LibraryElementUnion } from '$api/types';
-
 import { TopBar } from '../TopBar/TopBar';
 import { HotKeys } from '../HotKeys/HotKeys';
-import { Entity } from '$domain/core';
 import ContainersBorders from '../ContainersBorders/ContainersBorders';
-import { selectCurrentScreenId } from '$redux/project/selectors';
 import Scrollbar from '../../UI/Scrollbar';
 import { SortableContainer } from '../SortableContainer/SortableContainer';
+import { Entity } from '../../../domain/core';
+import { LibraryElement, LibraryElementUnion } from '../../../api/types';
+import { getListNotDragging } from '../../../utils/parseScenario';
+import { getClassDevice } from '../../../utils/dom';
+import { findChildByID } from '../../../utils/ElementsTreeHelper';
+import { AppReduxState } from '../../../shared/types/app';
+import { DEFAULT_SCREEN_MODE } from '../../../constants/defaultParams';
+import { ActiveItem } from '../../../redux/project/types';
+import {
+  exportProject,
+  resetScreenState,
+  saveScreenImage,
+  setActiveItem,
+} from '../../../redux/project/actions';
+import { changePrototypeMode } from '../../../redux/user/actions';
+import {
+  selectActiveItem,
+  selectRootElement,
+  selectCurrentScreenId,
+} from '../../../redux/project/selectors';
 
 const styles = require('./Workspace.scss');
 
@@ -31,20 +40,20 @@ export type ScreenMode = {
 type StateProps = {
   elementsTree: LibraryElement<'root'>;
   isPrototypeMode: boolean;
-  activeItem: ProjectT.ActiveItem;
+  activeItem: ActiveItem;
 };
 
 const mapDispatch = {
-  saveScreen: actionsCreators.saveScreenImage,
-  changePrototypeMode: userActions.changePrototypeMode,
-  resetScreenState: actionsCreators.resetScreenState,
-  setActiveItem: actionsCreators.setActiveItem,
-  exportProject: actionsCreators.exportProject,
+  saveScreen: saveScreenImage,
+  changePrototypeMode,
+  resetScreenState,
+  setActiveItem,
+  exportProject,
 };
 
 const mapState = (state: AppReduxState): StateProps => ({
-  elementsTree: selectors.selectRootElement(state),
-  activeItem: selectors.selectActiveItem(state),
+  elementsTree: selectRootElement(state),
+  activeItem: selectActiveItem(state),
   isPrototypeMode: state.user.isPrototypeMode,
 });
 

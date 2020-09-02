@@ -2,13 +2,13 @@ import React, { useCallback, memo, useEffect } from 'react';
 import classNames from 'classnames';
 import Sortable from 'react-sortablejs'; // maybe replace it with react-sortablejs-typescript?
 import { useSelector } from 'react-redux';
-import * as Actions from '$redux/project/actions';
-import { EditorProps } from '$containers/EditorLogic';
-import { selectScreens } from '$redux/project/selectors';
+import * as Actions from '../../redux/project/actions';
 import Button from '../UI/Button';
 import Icon from '../UI/Icon';
 import Scrollbar from '../UI/Scrollbar';
 import ScreenButton from './ScreenButton';
+import { EditorProps } from '../../containers/EditorLogic';
+import { selectScreens } from '../../redux/project/selectors';
 
 const styles = require('./NavPanelScreen.scss');
 

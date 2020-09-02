@@ -1,6 +1,6 @@
-import { addElementClassName } from '$utils/ElementsTreeHelper';
 
 import { mockRootWithStyles as mockRoot } from './mocks';
+import { addElementClassName } from '../ElementsTreeHelper';
 
 describe('addElementClassName', () => {
   test('Should add element className on 1 level', () => {

@@ -8,17 +8,23 @@ import {
 } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
-import { AppReduxState } from '$shared/types/app';
-import { selectors, actionsCreators } from '$redux/project/';
-import {
-  withConfigurableProperties,
-  PropertiesChangeProps,
-} from '$utils/withConfigurableProperties';
-import sharedClasses from '$styles/sharedClasses';
-import { ListItemElement } from '$api/types';
-import { selectCurrentScreenId } from '$redux/project/selectors';
 import Button from '../../../../../../components/UI/Button';
 import Icon from '../../../../../../components/UI/Icon';
+import { ListItemElement } from '../../../../../../api/types';
+import {
+  selectActiveItemChildren,
+  selectCurrentScreenId,
+} from '../../../../../../redux/project/selectors';
+import { AppReduxState } from '../../../../../../shared/types/app';
+import sharedClasses from '../../../../../../styles/sharedClasses';
+import {
+  PropertiesChangeProps,
+  withConfigurableProperties,
+} from '../../../../../../utils/withConfigurableProperties';
+import {
+  addChildToElement,
+  deleteItem,
+} from '../../../../../../redux/project/actions';
 
 const styles = require('./ListItems.scss');
 
@@ -27,7 +33,7 @@ type StateProps = {
 };
 
 function mapState(state: AppReduxState): StateProps {
-  const listItems = selectors.selectActiveItemChildren(
+  const listItems = selectActiveItemChildren(
     state,
     'listItem',
   ) as ListItemElement[];
@@ -38,8 +44,8 @@ function mapState(state: AppReduxState): StateProps {
 }
 
 const mapDispatch = {
-  addChildToElement: actionsCreators.addChildToElement,
-  deleteChildFromElement: actionsCreators.deleteItem,
+  addChildToElement,
+  deleteChildFromElement: deleteItem,
 };
 
 type Props = StateProps &

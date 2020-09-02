@@ -1,4 +1,4 @@
-import { LibraryElement } from '$api/types';
+import { LibraryElement } from '../../api/types';
 
 export const mockRoot = {
   id: '1',

@@ -2,12 +2,16 @@
 
 import React, { useCallback } from 'react';
 import { connect } from 'react-redux';
-
-import { convertPropCSS } from '$utils/StyleHelper';
-import { SavedElementsValues } from '$redux/project/types';
-import { T } from '$redux/project';
-import { selectors, actionsCreators, ReduxState } from '$redux/export';
 import { EXPORT_RENDERERS } from '../UI/RenderElements';
+import { SavedElementsValues } from '../../redux/project/types';
+import { convertPropCSS } from '../../utils/StyleHelper';
+import { ReduxState } from '../../redux/export';
+import { T } from '../../redux/project';
+import {
+  updateSavedElementsValues,
+  updateSavedElementValues,
+} from '../../redux/export/actions';
+import { selectSavedElementsValues } from '../../redux/export/selectors';
 
 type OwnProps = {
   elementList: T.IScenarioElement[];
@@ -18,13 +22,13 @@ type OwnProps = {
 
 const mapStateToProps = (state: ReduxState) => {
   return {
-    savedElements: selectors.selectSavedElementsValues(state),
+    savedElements: selectSavedElementsValues(state),
   };
 };
 
 const mapDispatchToProps = {
-  updateSavedElementsValues: actionsCreators.updateSavedElementsValues,
-  updateSavedElementValues: actionsCreators.updateSavedElementValues,
+  updateSavedElementsValues,
+  updateSavedElementValues,
 };
 
 type Props = OwnProps &

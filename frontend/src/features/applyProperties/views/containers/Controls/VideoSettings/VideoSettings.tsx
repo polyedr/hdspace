@@ -2,18 +2,16 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { Checkbox } from '@material-ui/core';
 import cn from 'classnames';
-
-import { AppReduxState } from '$shared/types/app';
-import { selectors } from '$redux/project/';
-import {
-  withConfigurableProperties,
-  PropertiesChangeProps,
-} from '$utils/withConfigurableProperties';
-import { extractPlayerLinkInfo } from '$utils/extractVideoLink';
-import { VideoSettingsType, VideoElement } from '$api/types';
-
 import ControlSection from '../../../components/ControlSection/ControlSection';
 import Switch from '../../../../../../components/UI/Switch/Switch';
+import { AppReduxState } from '../../../../../../shared/types/app';
+import { VideoElement, VideoSettingsType } from '../../../../../../api/types';
+import { selectActiveItemParams } from '../../../../../../redux/project/selectors';
+import {
+  PropertiesChangeProps,
+  withConfigurableProperties,
+} from '../../../../../../utils/withConfigurableProperties';
+import { extractPlayerLinkInfo } from '../../../../../../utils/extractVideoLink';
 
 const styles = require('./VideoSettings.scss');
 
@@ -22,9 +20,7 @@ type StateProps = {
 };
 
 function mapState(state: AppReduxState): StateProps {
-  const activeItemParams = selectors.selectActiveItemParams<VideoElement>(
-    state,
-  );
+  const activeItemParams = selectActiveItemParams<VideoElement>(state);
 
   return {
     videoSettings: activeItemParams.videoSettings as VideoSettingsType,

@@ -1,23 +1,25 @@
 import React, { useEffect } from 'react';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
-
-import { AppReduxState } from '$shared/types/app';
-import { selectors } from '$redux/project/';
-import {
-  withConfigurableProperties,
-  PropertiesChangeProps,
-} from '$utils/withConfigurableProperties';
-import { IProjectScreen } from '$redux/project/types';
-import {
-  LinkParams,
-  InternalLink,
-  ExternalLink,
-  HyperlinkElement,
-} from '$api/types';
 import Button from '../../../../../../components/UI/Button';
 import Icon from '../../../../../../components/UI/Icon';
 import { DropDown } from '../../../../../../components/UI/DropDown';
+import { AppReduxState } from '../../../../../../shared/types/app';
+import {
+  ExternalLink,
+  HyperlinkElement,
+  InternalLink,
+  LinkParams,
+} from '../../../../../../api/types';
+import {
+  PropertiesChangeProps,
+  withConfigurableProperties,
+} from '../../../../../../utils/withConfigurableProperties';
+import { IProjectScreen } from '../../../../../../redux/project/types';
+import {
+  selectActiveItemParams,
+  selectScreens,
+} from '../../../../../../redux/project/selectors';
 
 const styles = require('./styles.scss');
 
@@ -27,12 +29,10 @@ type StateProps = {
 };
 
 function mapState(state: AppReduxState): StateProps {
-  const activeItemParams = selectors.selectActiveItemParams<HyperlinkElement>(
-    state,
-  );
+  const activeItemParams = selectActiveItemParams<HyperlinkElement>(state);
 
   return {
-    screens: selectors.selectScreens(state),
+    screens: selectScreens(state),
     action: activeItemParams.action,
   };
 }

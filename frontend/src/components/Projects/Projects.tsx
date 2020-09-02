@@ -2,13 +2,13 @@ import React, { memo, useEffect } from 'react';
 import * as R from 'ramda';
 import classNames from 'classnames';
 import { useDispatch, useSelector } from 'react-redux';
+import Button from '../UI/Button';
+import ProjectListItem from './ProjectListItem';
+import { addProject, getProjectList } from '../../redux/project/actions';
 import {
   selectInitialProjectLoad,
   selectProjects,
-} from '$redux/project/selectors';
-import { addProject, getProjectList } from '$redux/project/actions';
-import Button from '../UI/Button';
-import ProjectListItem from './ProjectListItem';
+} from '../../redux/project/selectors';
 
 const styles = require('./Projects.scss');
 
@@ -17,7 +17,7 @@ const Projects: React.FC = () => {
   const projectList = useSelector(selectProjects);
 
   const sortedProjectList = R.sort(
-    R.descend((project) => project.created.getTime()),
+    R.descend((project: any) => project.created.getTime()),
     projectList,
   );
 

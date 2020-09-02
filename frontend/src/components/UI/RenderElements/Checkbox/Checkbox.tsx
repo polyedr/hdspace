@@ -1,4 +1,6 @@
 /* eslint-disable jsx-a11y/no-noninteractive-tabindex */
+// @ts-nocheck
+
 import React, { ChangeEvent } from 'react';
 import cn from 'classnames';
 import { makeStyles, Checkbox as MaterialCheckbox } from '@material-ui/core';

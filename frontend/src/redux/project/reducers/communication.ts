@@ -1,6 +1,6 @@
 import * as T from '../types';
-import { initialCommunication } from '$redux/project/initial';
-import TYPES from '$constants/actions';
+import TYPES from '../../../constants/actions';
+import { initialCommunication } from '../initial';
 
 const communicationReducer = (
   state: T.ProjectCommunicationState = initialCommunication,

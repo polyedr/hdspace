@@ -7,9 +7,14 @@ import {
 } from 'react-router-dom';
 import { connect } from 'react-redux';
 import 'antd/dist/antd.css';
-import { Page } from '$redux/project/types';
-import { selectors, actionsCreators, ReduxState } from '$redux/export';
 import RenderTree from '../components/RenderTree/RenderTree';
+import { Page } from '../redux/project/types';
+import { ReduxState } from '../redux/export';
+import { selectSavedElementsValues } from '../redux/export/selectors';
+import {
+  updateSavedElementsValues,
+  updateSavedElementValues,
+} from '../redux/export/actions';
 
 const renderTreeInfo = window.renderTreeInfo as Page[];
 const screensInfo =
@@ -25,13 +30,13 @@ export const LinkContext = React.createContext<Page['screenInfo'][] | null>(
 
 const mapStateToProps = (state: ReduxState) => {
   return {
-    savedElements: selectors.selectSavedElementsValues(state),
+    savedElements: selectSavedElementsValues(state),
   };
 };
 
 const mapDispatchToProps = {
-  updateSavedElementsValues: actionsCreators.updateSavedElementsValues,
-  updateSavedElementValues: actionsCreators.updateSavedElementValues,
+  updateSavedElementsValues,
+  updateSavedElementValues,
 };
 
 type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;

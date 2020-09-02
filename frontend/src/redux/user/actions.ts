@@ -1,12 +1,12 @@
-import TYPES from '$constants/actions';
+import TYPES from '../../constants/actions';
 import {
-  ITokenPair,
   IApiResponseError,
-  UserData,
+  ITokenPair,
   LoginFormData,
   ProfileData,
   TotalUserData,
-} from '$redux/user/types';
+  UserData,
+} from './types';
 
 export const changeMinLPanel = () => ({ type: TYPES.CHANGE_L_PANEL });
 export const changeMinNavPanel = () => ({ type: TYPES.CHANGE_NAV_PANEL });

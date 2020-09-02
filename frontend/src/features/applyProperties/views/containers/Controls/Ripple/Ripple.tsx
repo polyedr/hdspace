@@ -1,24 +1,21 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Switch, makeStyles } from '@material-ui/core';
-
-import { AppReduxState } from '$shared/types/app';
-import { selectors } from '$redux/project/';
+import { AppReduxState } from '../../../../../../shared/types/app';
+import { ButtonElement } from '../../../../../../api/types';
+import sharedClasses from '../../../../../../styles/sharedClasses';
 import {
-  withConfigurableProperties,
   PropertiesChangeProps,
-} from '$utils/withConfigurableProperties';
-import sharedClasses from '$styles/sharedClasses';
-import { ButtonElement } from '$api/types';
+  withConfigurableProperties,
+} from '../../../../../../utils/withConfigurableProperties';
+import { selectActiveItemParams } from '../../../../../../redux/project/selectors';
 
 type StateProps = {
   showRipple: boolean;
 };
 
 function mapState(state: AppReduxState): StateProps {
-  const activeItemParams = selectors.selectActiveItemParams<ButtonElement>(
-    state,
-  );
+  const activeItemParams = selectActiveItemParams<ButtonElement>(state);
 
   return {
     showRipple: activeItemParams.showRipple,
