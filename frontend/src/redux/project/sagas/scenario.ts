@@ -107,6 +107,7 @@ export function* createElements(
 
   if (disallowedElements.length) {
     yield put(Actions.setNotification(DISALLOW_ADD_ELEMENT_NOTIFICATION_TEXT));
+    return;
   }
 
   const allowedElements = elements.filter((element) =>
@@ -167,6 +168,7 @@ export function* createElements(
     data: elementsWithUpdatedBuoyancy,
   });
 
+  // eslint-disable-next-line consistent-return
   return newElements.map((el) => el.id);
 }
 

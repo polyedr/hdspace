@@ -4,9 +4,21 @@ import cn from 'classnames';
 import Menu, { MenuProps } from '@material-ui/core/Menu';
 import { withStyles } from '@material-ui/core/styles';
 import MenuItem from '@material-ui/core/MenuItem';
+import { useDispatch, useSelector } from 'react-redux';
 import ChevronDown from './Icons/chevron-down';
 import ChevronRight from './Icons/chevron-right';
 import { focusTreeItem } from '$components/Navigator/utils';
+import {
+  copyActiveItem,
+  deleteItem,
+  pasteCopiedItem,
+  setIsAddElementsModalOpened,
+} from '$redux/project/actions';
+import {
+  selectActiveItem,
+  selectCurrentScreenId,
+} from '$redux/project/selectors';
+import { canElementHaveChildren } from '$utils/AvailableChildrenHelper';
 
 const styles = require('../Navigator.scss');
 
@@ -48,6 +60,16 @@ const StyledMenu = withStyles({
     backgroundColor: '#2f4050',
     color: 'white',
   },
+  list: {
+    padding: 0,
+    '& li': {
+      padding: '2px 5px',
+      fontSize: '.9em',
+      '&:hover': {
+        backgroundColor: '#52616e',
+      },
+    },
+  },
 })((props: MenuProps) => <Menu {...props} />);
 
 const TreeItem: React.FC<Props> = ({
@@ -59,6 +81,10 @@ const TreeItem: React.FC<Props> = ({
   selectedItemId,
   snapshot,
 }) => {
+  const dispatch = useDispatch();
+  const currentScreenId = useSelector(selectCurrentScreenId);
+  const { itemType: activeItemType } = useSelector(selectActiveItem);
+
   const initialState = {
     mouseX: null,
     mouseY: null,
@@ -66,6 +92,7 @@ const TreeItem: React.FC<Props> = ({
 
   const [state, setState] = useState<State>(initialState);
   const isParent = item.children.length;
+  const canHaveChildren = canElementHaveChildren(activeItemType);
 
   const handleDoubleClick = () =>
     item.isExpanded ? onCollapse(item.id) : onExpand(item.id);
@@ -86,6 +113,27 @@ const TreeItem: React.FC<Props> = ({
   };
 
   const handleClose = () => setState(initialState);
+
+  const handleAddNew = () => {
+    dispatch(setIsAddElementsModalOpened(true));
+    handleClose();
+  };
+
+  const handleCopy = () => {
+    dispatch(copyActiveItem());
+    handleClose();
+  };
+
+  const handlePaste = () => {
+    dispatch(pasteCopiedItem({ screenId: currentScreenId }));
+    handleClose();
+  };
+
+  const handleDelete = () => {
+    if (!selectedItemId) return;
+    dispatch(deleteItem(selectedItemId, { screenId: currentScreenId }));
+    handleClose();
+  };
 
   return (
     <div
@@ -119,9 +167,17 @@ const TreeItem: React.FC<Props> = ({
             : undefined
         }
       >
-        <MenuItem>first</MenuItem>
-        <MenuItem>second</MenuItem>
-        <MenuItem>third</MenuItem>
+        <MenuItem disabled={canHaveChildren} onClick={handleAddNew}>
+          Add new...
+        </MenuItem>
+
+        <MenuItem onClick={handleCopy}>Copy</MenuItem>
+
+        <MenuItem disabled={canHaveChildren} onClick={handlePaste}>
+          Paste
+        </MenuItem>
+
+        <MenuItem onClick={handleDelete}>Delete</MenuItem>
       </StyledMenu>
     </div>
   );
