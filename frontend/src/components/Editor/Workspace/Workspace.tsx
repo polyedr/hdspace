@@ -3,11 +3,9 @@ import { connect, useSelector } from 'react-redux';
 import cn from 'classnames';
 import html2canvas from 'html2canvas';
 
-import { SortableContainer } from '$components/Editor/SortableContainer/SortableContainer';
 import { T as ProjectT, selectors, actionsCreators } from '$redux/project';
 import * as userActions from '$redux/user/actions';
 import { DEFAULT_SCREEN_MODE } from '$constants/defaultParams';
-import Scrollbar from '$components/UI/Scrollbar';
 import { getClassDevice } from '$utils/dom';
 import { getListNotDragging } from '$utils/parseScenario';
 import { findChildByID } from '$utils/ElementsTreeHelper';
@@ -19,6 +17,8 @@ import { HotKeys } from '../HotKeys/HotKeys';
 import { Entity } from '$domain/core';
 import ContainersBorders from '../ContainersBorders/ContainersBorders';
 import { selectCurrentScreenId } from '$redux/project/selectors';
+import Scrollbar from '../../UI/Scrollbar';
+import { SortableContainer } from '../SortableContainer/SortableContainer';
 
 const styles = require('./Workspace.scss');
 

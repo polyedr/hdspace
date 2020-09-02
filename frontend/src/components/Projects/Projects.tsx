@@ -2,13 +2,13 @@ import React, { memo, useEffect } from 'react';
 import * as R from 'ramda';
 import classNames from 'classnames';
 import { useDispatch, useSelector } from 'react-redux';
-import Button from '$components/UI/Button';
 import {
   selectInitialProjectLoad,
   selectProjects,
 } from '$redux/project/selectors';
 import { addProject, getProjectList } from '$redux/project/actions';
-import ProjectListItem from '$components/Projects/ProjectListItem';
+import Button from '../UI/Button';
+import ProjectListItem from './ProjectListItem';
 
 const styles = require('./Projects.scss');
 

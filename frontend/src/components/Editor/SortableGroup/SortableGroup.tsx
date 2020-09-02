@@ -3,7 +3,7 @@ import cn from 'classnames';
 import { SortableOptions } from 'sortablejs';
 
 // @ts-ignore
-import { Sortable } from '$components/Editor/Sortable/Sortable';
+import Sortable from '../Sortable/Sortable';
 import sharedClasses from '$styles/sharedClasses';
 import { Indices } from '$redux/project/types';
 

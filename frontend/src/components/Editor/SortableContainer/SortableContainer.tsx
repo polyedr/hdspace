@@ -3,8 +3,6 @@ import * as R from 'ramda';
 import { connect } from 'react-redux';
 
 import { AppReduxState } from '$shared/types/app';
-import SortableGroup from '$components/Editor/SortableGroup/SortableGroup';
-import { RENDERERS } from '$components/UI/RenderElements';
 import { Indices, SavedElementsValues } from '$redux/project/types';
 import { selectors, actionsCreators } from '$redux/project';
 import { LIST_SCENARIO_TYPE } from '$constants/defaultParams';
@@ -12,8 +10,10 @@ import { convertPropCSS } from '$utils/StyleHelper';
 import { LIBRARY_ELEMENTS } from '$domain/libraryElements/libraryElements';
 import { ElementEntity, Entity, AVAILABLE_CHILDREN } from '$domain/core';
 import { LibraryElementUnion, LibraryElement } from '$api/types';
-import { SharedRendererProps } from '$components/UI/RenderElements/types';
 import { findParentByChildID } from '$utils/ElementsTreeHelper';
+import { RENDERERS } from '../../UI/RenderElements';
+import { SharedRendererProps } from '../../UI/RenderElements/types';
+import SortableGroup from '../SortableGroup/SortableGroup';
 
 const isElementStructType = (type: string): type is ElementEntity => {
   return type in LIBRARY_ELEMENTS;

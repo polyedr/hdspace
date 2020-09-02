@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 
 import { AppReduxState } from '$shared/types/app';
 import { selectors } from '$redux/project/';
-import { DropDown } from '$components/UI/DropDown/';
 import {
   withConfigurableProperties,
   PropertiesChangeProps,
@@ -13,6 +12,7 @@ import { LabelElement } from '$api/types';
 import { getElementsArray } from '$utils/ElementsTreeHelper';
 
 import ControlTitle from '../../../components/ControlTitle/ControlTitle';
+import { DropDown } from '../../../../../../components/UI/DropDown';
 
 const styles = require('./LabelFor.scss');
 

@@ -4,9 +4,6 @@ import { connect } from 'react-redux';
 
 import { AppReduxState } from '$shared/types/app';
 import { selectors } from '$redux/project/';
-import { DropDown } from '$components/UI/DropDown/';
-import Icon from '$components/UI/Icon/';
-import Button from '$components/UI/Button/';
 import {
   withConfigurableProperties,
   PropertiesChangeProps,
@@ -18,6 +15,9 @@ import {
   ExternalLink,
   HyperlinkElement,
 } from '$api/types';
+import Button from '../../../../../../components/UI/Button';
+import Icon from '../../../../../../components/UI/Icon';
+import { DropDown } from '../../../../../../components/UI/DropDown';
 
 const styles = require('./styles.scss');
 

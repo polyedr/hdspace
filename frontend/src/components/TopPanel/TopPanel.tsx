@@ -3,13 +3,13 @@ import { connect } from 'react-redux';
 import classNames from 'classnames';
 
 import { AppReduxState } from '$shared/types/app';
-import Button from '$components/UI/Button';
-import Icon from '$components/UI/Icon';
-import Modal from '$components/UI/Modal';
-import { LeftPanelProps } from '$components/LeftPanel/LeftPanel';
 import { EditorProps } from '$containers/EditorLogic';
 import * as Actions from '$redux/project/actions';
 import { selectors } from '$redux/project';
+import { LeftPanelProps } from '../LeftPanel/LeftPanel';
+import Button from '../UI/Button';
+import Icon from '../UI/Icon';
+import Modal from '../UI/Modal';
 
 const styles = require('./TopPanel.scss');
 

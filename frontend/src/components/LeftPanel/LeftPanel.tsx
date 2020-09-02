@@ -4,15 +4,15 @@ import cn from 'classnames';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { IMAGES } from '$constants/images';
-import Icon from '$components/UI/Icon';
-import Button from '$components/UI/Button';
 import * as PATH_NAMES from '$constants/pathNames';
-import Scrollbar from '$components/UI/Scrollbar';
 import * as ActionsProject from '$redux/project/actions';
 import { openSignScreen } from '$utils/history';
 import { Project } from '$api/types';
 import { logout } from '$redux/user/actions';
 import { selectUserData } from '$redux/user/selectors';
+import Button from '../UI/Button';
+import Icon from '../UI/Icon';
+import Scrollbar from '../UI/Scrollbar';
 
 const styles = require('./LeftPanel.scss');
 

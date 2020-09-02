@@ -6,8 +6,8 @@ import { changeProfileData, changeUserData, logout } from '$redux/user/actions';
 import { openSignScreen } from '$utils/history';
 import { selectUserData } from '$redux/user/selectors';
 import { IMAGES } from '$constants/images';
-import Button from '$components/UI/Button';
 import { ProfileData, UserData } from '$redux/user/types';
+import Button from '../../UI/Button';
 
 const styles = require('./Profile.scss');
 

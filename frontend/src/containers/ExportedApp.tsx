@@ -7,10 +7,9 @@ import {
 } from 'react-router-dom';
 import { connect } from 'react-redux';
 import 'antd/dist/antd.css';
-
-import RenderTree from '$components/RenderTree/RenderTree';
 import { Page } from '$redux/project/types';
 import { selectors, actionsCreators, ReduxState } from '$redux/export';
+import RenderTree from '../components/RenderTree/RenderTree';
 
 const renderTreeInfo = window.renderTreeInfo as Page[];
 const screensInfo =

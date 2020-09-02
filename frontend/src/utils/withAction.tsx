@@ -5,9 +5,9 @@ import { selectors, actionsCreators } from '$redux/project';
 import { AppReduxState } from '$shared/types/app';
 import { LinkContext } from '$containers/ExportedApp';
 import {
-  SharedRendererProps,
   ActionRendererProps,
-} from '$components/UI/RenderElements/types';
+  SharedRendererProps,
+} from '../components/UI/RenderElements/types';
 
 const mapStateToProps = (state: AppReduxState) => {
   const projectID = selectors.selectCurrentProject(state).id;

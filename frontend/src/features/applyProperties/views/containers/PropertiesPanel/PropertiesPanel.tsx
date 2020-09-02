@@ -5,8 +5,6 @@ import * as R from 'ramda';
 
 import { AppReduxState } from '$shared/types/app';
 import { actionsCreators, selectors, T as ProjectT } from '$redux/project';
-import Scrollbar from '$components/UI/Scrollbar/';
-import Spinner from '$components/UI/Spinner/';
 import { AVAILABLE_CONTROLS, Control, Entity } from '$domain/core';
 import { LIBRARY_ELEMENTS } from '$domain/libraryElements/libraryElements';
 import { LibraryElement } from '$api/types';
@@ -46,6 +44,8 @@ import Screenshot from '../Controls/Screenshot/Screenshot';
 import FlexGrow from '../Controls/FlexGrow/FlexGrow';
 import BackgroundPosition from '../Controls/BackgroundPosition/BackgroundPosition';
 import BackgroundSize from '../Controls/BackgroundSize/BackgroundSize';
+import Spinner from '../../../../../components/UI/Spinner';
+import Scrollbar from '../../../../../components/UI/Scrollbar';
 
 const styles = require('./PropertiesPanel.scss');
 

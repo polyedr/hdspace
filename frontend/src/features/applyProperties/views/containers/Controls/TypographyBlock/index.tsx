@@ -2,9 +2,6 @@ import React, { memo, useCallback } from 'react';
 import cn from 'classnames';
 import { connect } from 'react-redux';
 
-import { DropDown } from '$components/UI/DropDown/';
-import Icon from '$components/UI/Icon/';
-import Button from '$components/UI/Button/';
 import FONTS from '$constants/fonts';
 import { getPermissibleValue } from '$utils/NumberHelper';
 import {
@@ -18,6 +15,9 @@ import { AppReduxState } from '$shared/types/app';
 import { selectors } from '$redux/project';
 
 import StylesHeader from '../../../components/StylesHeader/StylesHeader';
+import { DropDown } from '../../../../../../components/UI/DropDown';
+import Button from '../../../../../../components/UI/Button';
+import Icon from '../../../../../../components/UI/Icon';
 
 const styles = require('./styles.scss');
 

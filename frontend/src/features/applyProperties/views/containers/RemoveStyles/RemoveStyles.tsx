@@ -1,9 +1,9 @@
 import React, { memo } from 'react';
 import { connect } from 'react-redux';
 
-import Button from '$components/UI/Button';
 import { AppReduxState } from '$shared/types/app';
 import { selectors } from '$redux/project';
+import Button from '../../../../../components/UI/Button';
 
 const styles = require('./RemoveStyles.scss');
 

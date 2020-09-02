@@ -7,11 +7,11 @@ import {
   withConfigurableProperties,
   PropertiesChangeProps,
 } from '$utils/withConfigurableProperties';
-import Button from '$components/UI/Button';
-import Icon from '$components/UI/Icon';
 import sharedClasses from '$styles/sharedClasses';
 import { DropdownItemElement } from '$api/types';
 import { selectCurrentScreenId } from '$redux/project/selectors';
+import Button from '../../../../../../components/UI/Button';
+import Icon from '../../../../../../components/UI/Icon';
 
 const styles = require('./DropdownItems.scss');
 

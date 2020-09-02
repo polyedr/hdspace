@@ -10,10 +10,10 @@ import {
   PropertiesChangeProps,
 } from '$utils/withConfigurableProperties';
 import { extractPlayerLinkInfo } from '$utils/extractVideoLink';
-import Switch from '$components/UI/Switch/Switch';
 import { VideoSettingsType, VideoElement } from '$api/types';
 
 import ControlSection from '../../../components/ControlSection/ControlSection';
+import Switch from '../../../../../../components/UI/Switch/Switch';
 
 const styles = require('./VideoSettings.scss');
 

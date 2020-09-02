@@ -1,8 +1,6 @@
 /* eslint-disable camelcase */
 
 import * as R from 'ramda';
-
-import { IDropDownOptions } from '$components/UI/DropDown';
 import { ITemplateElement } from '$constants/defaultParams';
 import {
   IScenarios,
@@ -19,6 +17,7 @@ import {
   LibraryElements,
   ElementsToAdd,
 } from '$domain/libraryElements/libraryElements';
+import { IDropDownOptions } from '../components/UI/DropDown';
 
 export type GroupElement = {
   key: string;

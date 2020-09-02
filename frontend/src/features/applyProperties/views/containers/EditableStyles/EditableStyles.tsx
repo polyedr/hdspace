@@ -3,8 +3,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { actionsCreators, selectors } from '$redux/project';
 import { AppReduxState } from '$shared/types/app';
-import { DropDown } from '$components/UI/DropDown';
 import { findChildByID } from '$utils/ElementsTreeHelper';
+import { DropDown } from '../../../../../components/UI/DropDown';
 
 type StateProps = {
   editableStyles: string;

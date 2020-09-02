@@ -15,11 +15,11 @@ import {
   PropertiesChangeProps,
 } from '$utils/withConfigurableProperties';
 import generateUniqueName from '$utils/generateUniqueName';
-import Button from '$components/UI/Button';
-import Icon from '$components/UI/Icon';
 import sharedClasses from '$styles/sharedClasses';
 import { SelectItemElement } from '$api/types';
 import { selectCurrentScreenId } from '$redux/project/selectors';
+import Button from '../../../../../../components/UI/Button';
+import Icon from '../../../../../../components/UI/Icon';
 
 const styles = require('./SelectOptions.scss');
 

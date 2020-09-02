@@ -2,9 +2,6 @@ import React, { useCallback, useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 
 import { AppReduxState } from '$shared/types/app';
-import Info from '$components/User/Info';
-import Button from '$components/UI/Button';
-import Spinner from '$components/UI/Spinner';
 import {
   DEFAULT_SIGNUP_FIELDS,
   DEFAULT_RESPONSE_ERROR,
@@ -17,7 +14,10 @@ import {
 } from '$utils/generateValidatedFormData';
 import { getInitialFieldsState } from '$utils/getStates';
 import { IApiResponseError } from '$redux/user/types';
-import SignFormList from '$components/User/SignFormList';
+import Info from '../Info';
+import SignFormList from '../SignFormList';
+import Button from '../../UI/Button';
+import Spinner from '../../UI/Spinner';
 
 const mapStateToProps = ({
   user: { apiResponseError, isSignLoader },

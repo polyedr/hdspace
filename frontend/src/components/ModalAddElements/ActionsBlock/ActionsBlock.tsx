@@ -2,11 +2,11 @@ import React, { useCallback } from 'react';
 import classNames from 'classnames';
 import * as R from 'ramda';
 
-import Button from '$components/UI/Button';
-import Scrollbar from '$components/UI/Scrollbar';
 import { getChooseElements, GroupElement } from '$utils/parseScenario';
 import { ENTITIES, Entity, AVAILABLE_CHILDREN } from '$domain/core';
 import { CreatedElement, ActiveItem } from '$redux/project/types';
+import Button from '../../UI/Button';
+import Scrollbar from '../../UI/Scrollbar';
 
 const styles = require('./ActionsBlock.scss');
 

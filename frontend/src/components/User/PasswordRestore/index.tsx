@@ -3,8 +3,6 @@ import { connect } from 'react-redux';
 import classNames from 'classnames';
 
 import { AppReduxState } from '$shared/types/app';
-import Button from '$components/UI/Button';
-import Spinner from '$components/UI/Spinner';
 import { openSignScreen } from '$utils/history';
 import { getInitialFieldsState } from '$utils/getStates';
 import {
@@ -14,11 +12,13 @@ import {
 } from '$constants/defaultParams';
 import { IApiResponseError } from '$redux/user/types';
 import * as Actions from '$redux/user/actions';
-import SignFormList from '$components/User/SignFormList';
 import {
   generateValidatedFormData,
   INewFormData,
 } from '$utils/generateValidatedFormData';
+import SignFormList from '../SignFormList';
+import Button from '../../UI/Button';
+import Spinner from '../../UI/Spinner';
 
 const styles = require('./PasswordRestore.scss');
 

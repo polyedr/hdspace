@@ -5,7 +5,6 @@ import { AppReduxState } from '$shared/types/app';
 import { assertNever } from '$shared/helpers/ts';
 import { ScreenDisplay, Flex } from '$redux/project/types';
 import { selectors } from '$redux/project/';
-import { DropDown } from '$components/UI/DropDown/';
 import {
   withConfigurableProperties,
   PropertiesChangeProps,
@@ -17,6 +16,7 @@ import { Entity } from '$domain/core';
 import FlexProperties from '../../../components/FlexProperties/FlexProperties';
 import StylesHeader from '../../../components/StylesHeader/StylesHeader';
 import DISPLAY from './constants';
+import { DropDown } from '../../../../../../components/UI/DropDown';
 
 type StateProps = {
   displayStyles: ScreenDisplay;

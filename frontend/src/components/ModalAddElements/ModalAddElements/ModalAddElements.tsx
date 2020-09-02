@@ -2,10 +2,6 @@ import React, { useState, useCallback, memo, useEffect } from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 
-import Button from '$components/UI/Button';
-import Icon from '$components/UI/Icon';
-import ActionsBlock from '$components/ModalAddElements/ActionsBlock/ActionsBlock';
-import UploadFile, { IUploadFile } from '$components/UI/UploadFile';
 import { MODAL_ADD_ELEMENTS_TABS } from '$constants/defaultParams';
 import {
   getGroupElements,
@@ -21,6 +17,10 @@ import {
   ElementHistoryMeta,
 } from '$redux/project/types';
 import { LibraryElements } from '$domain/libraryElements/libraryElements';
+import Button from '../../UI/Button';
+import Icon from '../../UI/Icon';
+import UploadFile, { IUploadFile } from '../../UI/UploadFile';
+import ActionsBlock from '../ActionsBlock/ActionsBlock';
 
 const styles = require('./ModalAddElements.scss');
 

@@ -3,11 +3,11 @@
 import React, { useCallback } from 'react';
 import { connect } from 'react-redux';
 
-import { EXPORT_RENDERERS } from '$components/UI/RenderElements';
 import { convertPropCSS } from '$utils/StyleHelper';
 import { SavedElementsValues } from '$redux/project/types';
 import { T } from '$redux/project';
 import { selectors, actionsCreators, ReduxState } from '$redux/export';
+import { EXPORT_RENDERERS } from '../UI/RenderElements';
 
 type OwnProps = {
   elementList: T.IScenarioElement[];

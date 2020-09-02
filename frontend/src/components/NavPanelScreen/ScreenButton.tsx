@@ -2,8 +2,6 @@ import React, { ChangeEvent, FormEvent, useState } from 'react';
 import classNames from 'classnames';
 import { NavLink } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import Button from '$components/UI/Button';
-import Icon from '$components/UI/Icon';
 import { IProjectScreen } from '$redux/project/types';
 import { selectCurrentScreen } from '$redux/project/selectors';
 import {
@@ -12,7 +10,9 @@ import {
   duplicateScreen,
   renameScreen,
 } from '$redux/project/actions';
-import Modal from '$components/UI/Modal';
+import Button from '../UI/Button';
+import Icon from '../UI/Icon';
+import Modal from '../UI/Modal';
 
 const styles = require('./NavPanelScreen.scss');
 

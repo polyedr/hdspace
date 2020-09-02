@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-
+import React from 'react';
 import { IMapProps } from '$redux/project/types';
 import {
   LibraryElement,
