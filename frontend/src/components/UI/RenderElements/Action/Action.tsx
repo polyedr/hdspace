@@ -62,7 +62,7 @@ const getStyles = (
     },
   });
 
-export const Action: ActionRenderer = ({
+const Action: ActionRenderer = ({
   id,
   isDisabled,
   params,
@@ -116,3 +116,5 @@ export const Action: ActionRenderer = ({
     </Button>
   );
 };
+
+export default Action;

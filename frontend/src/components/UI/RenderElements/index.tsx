@@ -1,5 +1,5 @@
 import React from 'react';
-import { Action } from './Action/Action';
+import Action from './Action/Action';
 import Checkbox from './Checkbox/Checkbox';
 import Radiobutton from './Radiobutton/Radiobutton';
 import Input from './Input/Input';
