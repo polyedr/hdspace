@@ -10,9 +10,12 @@
       "@babel/plugin-transform-runtime",
       {
         "corejs": 2,
-        "regenerator": true
+        "regenerator": true,
+        "useESModules": true,
+        "helpers": true
       }
     ],
+    "@babel/plugin-transform-modules-commonjs",
     "@babel/plugin-syntax-dynamic-import",
     "@babel/plugin-syntax-import-meta",
     "@babel/plugin-proposal-class-properties",
