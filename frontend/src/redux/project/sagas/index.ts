@@ -68,7 +68,6 @@ import {
   addElementClassName,
   removeElementClassName,
   replaceElementStyles,
-  focusOnElement,
 } from '$utils/ElementsTreeHelper';
 import generateUniqueName from '$utils/generateUniqueName';
 import { CssLikeStyles } from '$utils/StyleHelper';
@@ -284,10 +283,6 @@ function* moveElementSaga(action: ReturnType<typeof Actions.moveElement>): any {
   yield call(reqWrapper, apiSaveElements, { data: convertedElements });
 
   if (isRemote) return;
-
-  if (!undo) {
-    yield call(focusOnElement, elementID);
-  }
 
   const elementData = {
     name: targetParent.name,
@@ -938,15 +933,6 @@ function* undoSaga() {
   yield put(Actions.popHistory());
 
   yield put(Actions.setRedoActions([history[history.length - 1], ...redos]));
-
-  const {
-    itemType,
-    itemId,
-  }: ReturnType<typeof selectors.selectActiveItem> = yield select(
-    selectors.selectActiveItem,
-  );
-
-  yield call(focusOnElement, itemType === 'root' ? 'root' : itemId);
 }
 
 function* redoSaga() {
@@ -993,15 +979,6 @@ function* redoSaga() {
   }
 
   yield put(Actions.setRedoActions([...redos.slice(1)]));
-
-  const {
-    itemType,
-    itemId,
-  }: ReturnType<typeof selectors.selectActiveItem> = yield select(
-    selectors.selectActiveItem,
-  );
-
-  yield call(focusOnElement, itemType === 'root' ? 'root' : itemId);
 }
 
 export default function* projectSaga() {

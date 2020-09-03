@@ -91,6 +91,7 @@
     "webpack-dev-server": "^3.7.2"
   },
   "dependencies": {
+    "@atlaskit/tree": "^8.1.1",
     "@hot-loader/react-dom": "^16.8.6",
     "@material-ui/core": "^4.9.8",
     "@material-ui/icons": "^4.9.1",

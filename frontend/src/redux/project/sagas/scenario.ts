@@ -41,7 +41,6 @@ import {
   updateElementParameters,
   getElementsArray,
   updateElementName,
-  focusOnElement,
 } from '$utils/ElementsTreeHelper';
 
 import { selectors, T } from '..';
@@ -108,6 +107,7 @@ export function* createElements(
 
   if (disallowedElements.length) {
     yield put(Actions.setNotification(DISALLOW_ADD_ELEMENT_NOTIFICATION_TEXT));
+    return;
   }
 
   const allowedElements = elements.filter((element) =>
@@ -168,6 +168,7 @@ export function* createElements(
     data: elementsWithUpdatedBuoyancy,
   });
 
+  // eslint-disable-next-line consistent-return
   return newElements.map((el) => el.id);
 }
 
@@ -202,11 +203,6 @@ export function* createElementsSaga(
   yield call(createElements, convertedCreatedElements, activeItemElement, {
     screenId,
   });
-
-  yield call(
-    focusOnElement,
-    activeItem.itemType === 'root' ? 'root' : activeItem.itemId,
-  );
 }
 
 export function* addChildToElementSaga(
@@ -309,8 +305,6 @@ export function* softDeleteSaga(action: T.DeleteItem) {
   yield put(Actions.updateElementsTree(updatedRoot, action, action.meta));
 
   const filtered = childrenIds.filter((childId) => childId !== id);
-
-  yield call(focusOnElement, parent.type === 'root' ? 'root' : parent.id);
 
   yield call(reqWrapper, apiChangeRecursiveElement, {
     data: { children: filtered },
@@ -447,8 +441,6 @@ export function* wrapIntoContainerSaga(action: T.WrapIntoContainer) {
       action.meta,
     ),
   );
-
-  yield call(focusOnElement, id);
 }
 
 export function* unwrapFromContainerSaga(
@@ -490,7 +482,6 @@ export function* unwrapFromContainerSaga(
       undo: true,
     }),
   );
-  yield call(focusOnElement, elementID);
 }
 
 export function* renameElementSaga(
@@ -578,5 +569,4 @@ export function* redoWrapIntoContainerSaga(
   yield put(
     Actions.updateElementsTree(updatedRoot, action, { screenId, redo: true }),
   );
-  yield call(focusOnElement, elementId);
 }

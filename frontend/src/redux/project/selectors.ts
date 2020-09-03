@@ -44,6 +44,11 @@ export const selectCurrentScreen = (state: AppReduxState) => {
   );
 };
 
+export const selectCurrentScreenElement = (state: AppReduxState) => {
+  const currentScreen = selectCurrentScreen(state);
+  return currentScreen.element;
+};
+
 export function selectScreens(state: AppReduxState) {
   return selectProjectState(state).data.screens;
 }

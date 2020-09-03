@@ -120,7 +120,7 @@ const SCROLLBAR_STYLES = {
   height: '100%',
 };
 
-const Component: React.FC<PropertiesPanelProps> = ({
+const PropertiesPanel: React.FC<PropertiesPanelProps> = ({
   activeItem,
   activeElement,
   activeElementParent,
@@ -185,7 +185,10 @@ const Component: React.FC<PropertiesPanelProps> = ({
               R.toPairs(AVAILABLE_CONTROLS[currentItemType as Entity]).map(
                 ([elementName, elementValue]) => {
                   return elementName === 'root' ? (
-                    <div className="propsPanelContentBlock">
+                    <div
+                      className="propsPanelContentBlock"
+                      key={`${elementName}-propsPanelContentBlock`}
+                    >
                       {currentItemType &&
                         AVAILABLE_CONTROLS[currentItemType as Entity].root.map(
                           (controlName) => {
@@ -222,4 +225,4 @@ const Component: React.FC<PropertiesPanelProps> = ({
   );
 };
 
-export const PropertiesPanel = connect(mapState, mapDispatch)(Component);
+export default connect(mapState, mapDispatch)(PropertiesPanel);
