@@ -1,16 +1,4 @@
-.header {
-    color: #fff;
-    background-color: darken($lightMatteTurq, 10%);
-    padding: .2em .4em;
-}
 
-.icon {
-    width: 1.25em; /* Width is proportional to parent fs */
-    height: 1.25em; /* Height is proportional to parent fs */
-    display: inline-block; /* Flow with text content */
-    vertical-align: middle; /* Vertically align icon with adjacent text */
-    pointer-events: none;
-}
 
 .componentPane {
     * {
@@ -34,6 +22,20 @@
         box-shadow: none;
         outline: none;
     }
+}
+
+.header {
+    color: #fff;
+    background-color: darken($lightMatteTurq, 10%);
+    padding: .2em .4em;
+}
+
+.icon {
+    width: 1.25em; /* Width is proportional to parent fs */
+    height: 1.25em; /* Height is proportional to parent fs */
+    display: inline-block; /* Flow with text content */
+    vertical-align: middle; /* Vertically align icon with adjacent text */
+    pointer-events: none;
 }
 
 .tree {
