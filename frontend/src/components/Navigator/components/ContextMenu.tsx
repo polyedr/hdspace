@@ -32,7 +32,6 @@ const StyledMenu = withStyles({
         backgroundColor: '#52616e',
       },
       '& svg': {
-        // fill: 'white',
         marginRight: 5,
       },
     },

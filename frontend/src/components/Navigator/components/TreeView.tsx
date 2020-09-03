@@ -31,20 +31,6 @@ import Scrollbar from '$components/UI/Scrollbar';
 
 const styles = require('../Navigator.scss');
 
-// export const addNode = ({ state, setState }, node) => {
-//   const parent = state.selectedItemId || 'root';
-//
-//   setState(
-//     produce((draft) => {
-//       draft.items[parent].isExpanded = true;
-//       draft.items[parent].hasChildren = true;
-//       draft.items[parent].children.push(node.id);
-//       draft.items[node.id] = { ...node, parent };
-//       selectItem(draft, node.id);
-//     }),
-//   );
-// };
-
 type Props = {
   tree: TreeData;
   setTree: React.Dispatch<React.SetStateAction<TreeData>>;
@@ -93,36 +79,7 @@ const TreeView: React.FC<Props> = ({
     setSelectedItem(null);
   };
 
-  // const removeNode = ({ state, setState }, itemId) => {
-  //   setState(
-  //     produce((draft) => {
-  //       if (!itemId || itemId === 'root') return;
-  //       const item = draft.items[itemId];
-  //       const parent = draft.items[item.parent];
-  //       const itemIndex = parent.children.indexOf(itemId);
-  //
-  //       draft.items[item.parent].children = parent.children.filter(
-  //         (id) => id !== itemId,
-  //       );
-  //
-  //       delete draft.items[itemId];
-  //
-  //       parent.hasChildren = !!parent.children.length;
-  //
-  //       selectItem(
-  //         draft,
-  //         parent.children[itemIndex === 0 ? 0 : itemIndex - 1] || parent.id,
-  //       );
-  //     }),
-  //   );
-  // };
-
-  // const removeSelectedNode = ({ state, setState }) => {
-  //   removeNode({ state, setState }, state.selectedItemId);
-  // };
-
   const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
-    console.log(e.keyCode);
     if (selectedItemId && !isDragging) {
       if (e.keyCode === 38) {
         // ArrowUp
@@ -154,7 +111,7 @@ const TreeView: React.FC<Props> = ({
       }
 
       if (e.keyCode === 32) {
-        // Spacebar
+        // Space
         setIsDragging((state) => !state);
       }
 
