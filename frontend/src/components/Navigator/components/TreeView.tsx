@@ -122,8 +122,10 @@ const TreeView: React.FC<Props> = ({
   // };
 
   const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
+    console.log(e.keyCode);
     if (selectedItemId && !isDragging) {
-      if (e.key === 'ArrowUp') {
+      if (e.keyCode === 38) {
+        // ArrowUp
         // TODO: add throttling
         e.preventDefault();
         const prevNodeId = findPrevNodeId(tree, selectedItemId);
@@ -131,54 +133,55 @@ const TreeView: React.FC<Props> = ({
         focusTreeItem(prevNodeId);
       }
 
-      if (e.key === 'ArrowDown') {
+      if (e.keyCode === 40) {
+        // ArrowDown
         // TODO: add throttling
         e.preventDefault();
         const nextNodeId = findNextNodeId(tree, selectedItemId);
         focusTreeItem(nextNodeId);
       }
 
-      if (e.key === 'ArrowRight') {
+      if (e.keyCode === 39) {
+        // ArrowRight
         expand(selectedItemId);
         select(selectedItemId);
       }
 
-      if (e.key === 'ArrowLeft') {
+      if (e.keyCode === 37) {
+        // ArrowLeft
         collapse(selectedItemId);
         select(selectedItemId);
       }
 
-      if (e.key === ' ') {
+      if (e.keyCode === 32) {
+        // Spacebar
         setIsDragging((state) => !state);
       }
 
-      if ((e.key === 'c' || e.key === 'C') && (e.ctrlKey || e.metaKey)) {
+      if (e.keyCode === 67 && (e.ctrlKey || e.metaKey)) {
+        // Ctrl/Cmd + C
         dispatch(copyActiveItem());
       }
 
-      if ((e.key === 'v' || e.key === 'V') && (e.ctrlKey || e.metaKey)) {
+      if (e.keyCode === 86 && (e.ctrlKey || e.metaKey)) {
+        // Ctrl/Cmd + V
         dispatch(pasteCopiedItem({ screenId: currentScreenId }));
       }
 
-      if (e.key === 'Delete' || (e.key === 'Backspace' && e.metaKey)) {
+      if (e.keyCode === 46 || (e.keyCode === 8 && e.metaKey)) {
+        // Delete or Cmd + Backspace
         const prevItemId = findPrevNodeId(tree, selectedItemId);
         dispatch(deleteItem(selectedItemId, { screenId: currentScreenId }));
         focusTreeItem(prevItemId);
       }
 
-      if (
-        (e.key === 'z' || e.key === 'Z') &&
-        (e.ctrlKey || e.metaKey) &&
-        !e.shiftKey
-      ) {
+      if (e.keyCode === 90 && (e.ctrlKey || e.metaKey) && !e.shiftKey) {
+        // Ctrl/Cmd + Z
         dispatch(undoAction());
       }
 
-      if (
-        (e.key === 'z' || e.key === 'Z') &&
-        (e.ctrlKey || e.metaKey) &&
-        e.shiftKey
-      ) {
+      if (e.keyCode === 90 && (e.ctrlKey || e.metaKey) && e.shiftKey) {
+        // Ctrl/Cmd + Shift + Z
         dispatch(redoAction());
       }
     }
@@ -190,7 +193,11 @@ const TreeView: React.FC<Props> = ({
     source: TreeSourcePosition,
     destination?: TreeDestinationPosition,
   ) => {
-    if (!destination) return;
+    if (!destination) {
+      setIsDragging(false);
+      return;
+    }
+
     if (destination.index === undefined) destination.index = -1;
     const { items } = tree;
 
