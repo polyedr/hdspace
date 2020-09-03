@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { TreeData } from '@atlaskit/tree/types';
 import TreeView from './components/TreeView';
-import { makeTree, convertTree } from './utils';
+import { makeTree, convertTree, updateTree, focusTreeItem } from './utils';
 import { selectCurrentScreenElement } from '$redux/project/selectors';
 
 const styles = require('./Navigator.scss');
@@ -18,7 +18,9 @@ const Navigator: React.FC = () => {
   const [isDragging, setIsDragging] = useState<boolean>(false);
 
   useEffect(() => {
-    setTree(makeTree([convertTree(rootElement)]));
+    const newTree = makeTree([convertTree(rootElement)]);
+    setTree(updateTree(tree, newTree));
+    focusTreeItem(selectedItemId);
   }, [rootElement]);
 
   return (

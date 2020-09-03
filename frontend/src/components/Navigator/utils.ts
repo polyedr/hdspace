@@ -1,4 +1,4 @@
-import { TreeData } from '@atlaskit/tree';
+import { mutateTree, TreeData } from '@atlaskit/tree';
 import { LibraryElement } from '$api/types';
 import { Node } from '$components/Navigator/types';
 
@@ -6,8 +6,7 @@ export const convertTree = (element: LibraryElement<any>) => ({
   id: element.id,
   data: { title: element.name, type: element.type },
   hasChildren: !!element.children.length,
-  isExpanded: !!element.children.length,
-  isChildrenLoading: false,
+  isExpanded: element.type === 'root',
   children: element.children.map((child) => convertTree(child)),
 });
 
@@ -25,13 +24,17 @@ const flattenNodes = (root, nodes, parent) =>
     root,
   );
 
-// export const updateTree = (oldTree: TreeData, newTree: TreeData) => {
-//   return R.mergeDeepWithKey(
-//     (k, l, r) => (k === 'isExpanded' ? l : r),
-//     oldTree,
-//     newTree,
-//   );
-// };
+export const updateTree = (oldTree: TreeData, newTree: TreeData): TreeData => {
+  let res = { ...newTree };
+  Object.keys(newTree.items).forEach((itemId) => {
+    if (oldTree.items[itemId]) {
+      res = mutateTree(res, itemId, {
+        isExpanded: oldTree.items[itemId]?.isExpanded,
+      });
+    }
+  });
+  return res;
+};
 
 export const makeTree = (nodes: Node[]): TreeData => ({
   rootId: 'root',
