@@ -46,5 +46,5 @@ export const canElementHaveChildren = (
   elementType: Entity | 'none',
 ): boolean => {
   if (elementType === 'none') return false;
-  return !Object.entries(AVAILABLE_CHILDREN[elementType]).length;
+  return !!Object.entries(AVAILABLE_CHILDREN[elementType]).length;
 };
