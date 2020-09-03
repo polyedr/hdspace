@@ -185,7 +185,10 @@ const PropertiesPanel: React.FC<PropertiesPanelProps> = ({
               R.toPairs(AVAILABLE_CONTROLS[currentItemType as Entity]).map(
                 ([elementName, elementValue]) => {
                   return elementName === 'root' ? (
-                    <div className="propsPanelContentBlock">
+                    <div
+                      className="propsPanelContentBlock"
+                      key={`${elementName}-propsPanelContentBlock`}
+                    >
                       {currentItemType &&
                         AVAILABLE_CONTROLS[currentItemType as Entity].root.map(
                           (controlName) => {
