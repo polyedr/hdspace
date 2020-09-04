@@ -13,6 +13,7 @@ import { logout } from '../../redux/user/actions';
 import { IMAGES } from '../../constants/images';
 import { openSignScreen } from '../../utils/history';
 import { PATH_NAMES } from '../../constants/pathNames';
+import { selectCurrentScreenId } from '../../redux/project/selectors';
 
 const styles = require('./LeftPanel.scss');
 
@@ -36,6 +37,7 @@ export const LeftPanel: React.FunctionComponent<LeftPanelProps> = ({
   );
 
   const { email, avatar } = useSelector(selectUserData);
+  const currentScreenId = useSelector(selectCurrentScreenId);
 
   const handleLogoutClick = () => {
     dispatch(logout());
@@ -162,7 +164,7 @@ export const LeftPanel: React.FunctionComponent<LeftPanelProps> = ({
         </ul>
       </nav>
 
-      <Navigator />
+      {currentScreenId !== -1 && <Navigator />}
     </aside>
   );
 };
