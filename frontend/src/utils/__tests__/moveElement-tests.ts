@@ -16,14 +16,14 @@ describe('moveElement', () => {
   } as LibraryElement<'heading'>;
 
   test('Should remove child from 3 level and add on 4 level', () => {
-    const movedElement = { id: '3', children: [], buoyancy: 0, ...mockParams };
+    const movedElement = { ...mockParams , id: '3', children: [], buoyancy: 0};
     const updatedTree = moveElement('4', movedElement, mockRoot, 2);
 
     expect(updatedTree).toMatchSnapshot();
   });
 
   test('Should remove child from 4 level and add on 2 level', () => {
-    const movedElement = { id: '5', children: [], buoyancy: 0, ...mockParams };
+    const movedElement = {  ...mockParams, id: '5', children: [], buoyancy: 0 };
     const updatedTree = moveElement('1', movedElement, mockRoot, 0);
 
     expect(updatedTree).toMatchSnapshot();
@@ -31,23 +31,23 @@ describe('moveElement', () => {
 
   test('Should remove child from 3 level and add on 2 level', () => {
     const movedElement = {
+      ...mockParams,
       id: '4',
       children: [
         {
-          id: '5',
-          buoyancy: 0,
           ...mockParams,
+          id: '5',
+          buoyancy: 0,          
           children: [],
         },
         {
-          id: '6',
-          buoyancy: 1,
           ...mockParams,
+          id: '6',
+          buoyancy: 1,          
           children: [],
         },
-      ],
-      buoyancy: 0,
-      ...mockParams,
+      ],      
+      buoyancy: 0,      
     };
 
     const updatedTree = moveElement('1', movedElement, mockRoot, 1);
@@ -56,7 +56,7 @@ describe('moveElement', () => {
   });
 
   test('If element not exist in tree, just add new element to parent', () => {
-    const newElement = { id: '7', children: [], buoyancy: 0, ...mockParams };
+    const newElement = {  ...mockParams, id: '7', children: [], buoyancy: 0};
     const updatedTree = moveElement('2', newElement, mockRoot, 1);
 
     expect(updatedTree).toMatchSnapshot();
