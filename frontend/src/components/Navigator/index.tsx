@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { TreeData } from '@atlaskit/tree/types';
 import TreeView from './components/TreeView';
 import { makeTree, convertTree, updateTree, focusTreeItem } from './utils';
-import { selectCurrentScreenElement } from '$redux/project/selectors';
+import { selectCurrentScreenElement } from '../../redux/project/selectors';
 
 const styles = require('./Navigator.scss');
 

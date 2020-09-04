@@ -20,7 +20,6 @@ import {
   addChildrenToElement,
   findChildByID,
   findParentByChildID,
-  focusOnElement,
   getElementsArray,
   moveElement,
   removeChildrenFromElement,

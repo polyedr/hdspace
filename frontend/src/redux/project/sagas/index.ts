@@ -61,7 +61,6 @@ import { LibraryElement, LibraryElementUnion } from '../../../api/types';
 import {
   addElementClassName,
   findChildByID,
-  focusOnElement,
   getElementsArray,
   getTreeWithDefaultStylesAndParams,
   moveElement,
@@ -948,13 +947,6 @@ function* undoSaga() {
   yield put(Actions.popHistory());
 
   yield put(Actions.setRedoActions([history[history.length - 1], ...redos]));
-
-  const {
-    itemType,
-    itemId,
-  }: ReturnType<typeof selectActiveItem> = yield select(selectActiveItem);
-
-  yield call(focusOnElement, itemType === 'root' ? 'root' : itemId);
 }
 
 function* redoSaga() {
@@ -1001,13 +993,6 @@ function* redoSaga() {
   }
 
   yield put(Actions.setRedoActions([...redos.slice(1)]));
-
-  const {
-    itemType,
-    itemId,
-  }: ReturnType<typeof selectActiveItem> = yield select(selectActiveItem);
-
-  yield call(focusOnElement, itemType === 'root' ? 'root' : itemId);
 }
 
 export default function* projectSaga() {

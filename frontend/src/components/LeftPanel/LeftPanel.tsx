@@ -1,8 +1,8 @@
 import React, { useCallback, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import cn from 'classnames';
-
 import { useDispatch, useSelector } from 'react-redux';
+import Navigator from '../Navigator';
 import Button from '../UI/Button';
 import Icon from '../UI/Icon';
 import Scrollbar from '../UI/Scrollbar';

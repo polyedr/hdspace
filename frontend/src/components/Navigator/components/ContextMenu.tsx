@@ -3,19 +3,19 @@ import { withStyles } from '@material-ui/core/styles';
 import Menu, { MenuProps } from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import { useDispatch, useSelector } from 'react-redux';
-import { canElementHaveChildren } from '$utils/AvailableChildrenHelper';
 import {
   selectActiveItem,
   selectCurrentScreenId,
   selectItemToCopyInfo,
-} from '$redux/project/selectors';
+} from '../../../redux/project/selectors';
 import {
   copyActiveItem,
   deleteItem,
   pasteCopiedItem,
   setIsAddElementsModalOpened,
-} from '$redux/project/actions';
-import Icon from '$components/UI/Icon';
+} from '../../../redux/project/actions';
+import { canElementHaveChildren } from '../../../utils/AvailableChildrenHelper';
+import Icon from '../../UI/Icon';
 
 const StyledMenu = withStyles({
   paper: {

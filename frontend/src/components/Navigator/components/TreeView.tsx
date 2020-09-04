@@ -10,6 +10,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import TreeItem from './TreeItem';
 import { findPrevNodeId, findNextNodeId, focusTreeItem } from '../utils';
 import {
+  selectActiveItem,
+  selectCurrentScreenElement,
+  selectCurrentScreenId,
+} from '../../../redux/project/selectors';
+import { DISALLOW_ADD_ELEMENT_NOTIFICATION_TEXT } from '../../../features/notification/types';
+import {
   copyActiveItem,
   deleteItem,
   moveElement,
@@ -18,16 +24,10 @@ import {
   setActiveItem,
   setNotification,
   undoAction,
-} from '$redux/project/actions';
-import { findChildByID } from '$utils/ElementsTreeHelper';
-import {
-  selectActiveItem,
-  selectCurrentScreenElement,
-  selectCurrentScreenId,
-} from '$redux/project/selectors';
-import { isElementCanBeAdded } from '$utils/AvailableChildrenHelper';
-import { DISALLOW_ADD_ELEMENT_NOTIFICATION_TEXT } from '$features/notification/types';
-import Scrollbar from '$components/UI/Scrollbar';
+} from '../../../redux/project/actions';
+import { findChildByID } from '../../../utils/ElementsTreeHelper';
+import { isElementCanBeAdded } from '../../../utils/AvailableChildrenHelper';
+import Scrollbar from '../../UI/Scrollbar';
 
 const styles = require('../Navigator.scss');
 

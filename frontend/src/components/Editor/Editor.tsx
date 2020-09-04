@@ -2,7 +2,7 @@ import React, { memo, useState, useEffect } from 'react';
 import { Prompt } from 'react-router';
 import cn from 'classnames';
 import * as Actions from '../../redux/project/actions';
-import { Workspace } from './Workspace/Workspace';
+import Workspace from './Workspace/Workspace';
 import { EditorProps } from '../../containers/EditorLogic';
 import { PropertiesPanel } from '../../features/applyProperties/views/containers';
 
