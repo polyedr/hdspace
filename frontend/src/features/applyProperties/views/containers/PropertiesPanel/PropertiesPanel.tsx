@@ -2,18 +2,11 @@ import React from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 import * as R from 'ramda';
-
-import { AppReduxState } from '$shared/types/app';
-import { actionsCreators, selectors, T as ProjectT } from '$redux/project';
-import Scrollbar from '$components/UI/Scrollbar/';
-import Spinner from '$components/UI/Spinner/';
-import { AVAILABLE_CONTROLS, Control, Entity } from '$domain/core';
-import { LIBRARY_ELEMENTS } from '$domain/libraryElements/libraryElements';
-import { LibraryElement } from '$api/types';
-import { findChildByID, findParentByChildID } from '$utils/ElementsTreeHelper';
-import { isElementCanBeRemove } from '$utils/AvailableChildrenHelper';
-import { ActiveElementBlock, MapProps } from '$features/applyProperties';
-
+import {
+  actionsCreators,
+  selectors,
+  T as ProjectT,
+} from '../../../../../redux/project';
 import ControlSection from '../../components/ControlSection/ControlSection';
 import ActionBlock from '../Controls/ActionBlock';
 import SizeBlock from '../Controls/SizeBlock/SizeBlock';
@@ -46,6 +39,23 @@ import Screenshot from '../Controls/Screenshot/Screenshot';
 import FlexGrow from '../Controls/FlexGrow/FlexGrow';
 import BackgroundPosition from '../Controls/BackgroundPosition/BackgroundPosition';
 import BackgroundSize from '../Controls/BackgroundSize/BackgroundSize';
+import Spinner from '../../../../../components/UI/Spinner';
+import Scrollbar from '../../../../../components/UI/Scrollbar';
+import MapProps from '../Controls/MapProps/MapProps';
+import ActiveElementBlock from '../Controls/ActiveElementBlock';
+import {
+  findChildByID,
+  findParentByChildID,
+} from '../../../../../utils/ElementsTreeHelper';
+import {
+  AVAILABLE_CONTROLS,
+  Control,
+  Entity,
+} from '../../../../../domain/core';
+import { isElementCanBeRemove } from '../../../../../utils/AvailableChildrenHelper';
+import { AppReduxState } from '../../../../../shared/types/app';
+import { LibraryElement } from '../../../../../api/types';
+import { LIBRARY_ELEMENTS } from '../../../../../domain/libraryElements/libraryElements';
 
 const styles = require('./PropertiesPanel.scss');
 

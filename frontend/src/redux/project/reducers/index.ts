@@ -1,13 +1,13 @@
 import { combineReducers } from 'redux';
-import { composeReducers, makeResetStateReducer } from '$shared/redux';
-import * as T from '../types';
 import dataReducer from './data';
-import editReducer from './edit';
-import uiReducer from './ui';
+import TYPES from '../../../constants/actions';
 import { initialEdit, initialUi } from '../initial';
-import communicationReducer from '$redux/project/reducers/communication';
-import controlReducer from '$redux/project/reducers/control';
-import TYPES from '$constants/actions';
+import controlReducer from './control';
+import editReducer from './edit';
+import communicationReducer from './communication';
+import { composeReducers, makeResetStateReducer } from '../../../shared/redux';
+import uiReducer from './ui';
+import * as T from '../types';
 
 export default combineReducers({
   data: dataReducer,

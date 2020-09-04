@@ -3,8 +3,8 @@ import { RenderItemParams } from '@atlaskit/tree';
 import cn from 'classnames';
 import ChevronDown from './Icons/chevron-down';
 import ChevronRight from './Icons/chevron-right';
-import { focusTreeItem } from '$components/Navigator/utils';
-import ContextMenu from '$components/Navigator/components/ContextMenu';
+import { focusTreeItem } from '../utils';
+import ContextMenu from './ContextMenu';
 
 const styles = require('../Navigator.scss');
 

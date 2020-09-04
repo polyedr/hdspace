@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-
 import { connect, useSelector } from 'react-redux';
-import TextField from '$features/applyProperties/views/components/TextField/TextField';
-import { actionsCreators, selectors } from '$redux/project';
-import { AppReduxState } from '$shared/types/app';
-import { selectCurrentScreenId } from '$redux/project/selectors';
+import TextField from '../../../components/TextField/TextField';
+import { AppReduxState } from '../../../../../../shared/types/app';
+import {
+  selectActiveItem,
+  selectCurrentScreenId,
+} from '../../../../../../redux/project/selectors';
+import { renameElement } from '../../../../../../redux/project/actions';
 
 type StateProps = {
   activeItemID: string;
@@ -12,7 +14,7 @@ type StateProps = {
 };
 
 const mapState = (state: AppReduxState) => {
-  const activeItem = selectors.selectActiveItem(state);
+  const activeItem = selectActiveItem(state);
 
   return {
     activeItemID: activeItem.itemId,
@@ -21,7 +23,7 @@ const mapState = (state: AppReduxState) => {
 };
 
 const mapDispatch = {
-  renameElement: actionsCreators.renameElement,
+  renameElement,
 };
 
 type Props = StateProps & typeof mapDispatch;

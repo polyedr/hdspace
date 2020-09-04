@@ -1,6 +1,8 @@
 import React from 'react';
-
-import { ISignFormElement, ISignFormFields } from '$constants/defaultParams';
+import {
+  ISignFormElement,
+  ISignFormFields,
+} from '../../../constants/defaultParams';
 
 const styles = require('./SignFormList.scss');
 

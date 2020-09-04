@@ -1,13 +1,16 @@
 import React, { useCallback } from 'react';
 import classNames from 'classnames';
 import { useDispatch, useSelector } from 'react-redux';
-import Icon from '$components/UI/Icon';
-import Checkbox from '$components/UI/Checkbox';
-import Button from '$components/UI/Button';
-import { DEFAULT_SCREEN_MODE } from '$constants/defaultParams';
 import { ScreenMode } from '../Workspace/Workspace';
-import { redoAction, undoAction } from '$redux/project/actions';
-import { selectors } from '$redux/project';
+import Button from '../../UI/Button';
+import Icon from '../../UI/Icon';
+import Checkbox from '../../UI/Checkbox';
+import {
+  selectRedoActions,
+  selectUndoActions,
+} from '../../../redux/project/selectors';
+import { redoAction, undoAction } from '../../../redux/project/actions';
+import { DEFAULT_SCREEN_MODE } from '../../../constants/defaultParams';
 
 const styles = require('./TopBar.scss');
 
@@ -42,8 +45,8 @@ export const TopBar = ({
 }: Props) => {
   const dispatch = useDispatch();
 
-  const undoLength = useSelector(selectors.selectUndoActions).length;
-  const redoLength = useSelector(selectors.selectRedoActions).length;
+  const undoLength = useSelector(selectUndoActions).length;
+  const redoLength = useSelector(selectRedoActions).length;
 
   const onHistoryBack = () => {
     dispatch(undoAction());

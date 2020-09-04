@@ -1,9 +1,8 @@
 import React from 'react';
 import { ConnectedRouter } from 'connected-react-router';
 import 'antd/dist/antd.css';
-import { history } from '$redux/store';
-import Notification from '$features/notification';
-
+import { history } from '../redux/store';
+import Notification from '../features/notification/view/Notification';
 import Routes from './Routes';
 
 const App: React.FC = () => {

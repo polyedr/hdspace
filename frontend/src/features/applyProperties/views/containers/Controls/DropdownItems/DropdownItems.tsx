@@ -1,17 +1,23 @@
 import React from 'react';
 import { connect, useSelector } from 'react-redux';
 
-import { AppReduxState } from '$shared/types/app';
-import { selectors, actionsCreators } from '$redux/project/';
+import Button from '../../../../../../components/UI/Button';
+import Icon from '../../../../../../components/UI/Icon';
+import { DropdownItemElement } from '../../../../../../api/types';
 import {
-  withConfigurableProperties,
+  selectActiveItemChildren,
+  selectCurrentScreenId,
+} from '../../../../../../redux/project/selectors';
+import { AppReduxState } from '../../../../../../shared/types/app';
+import sharedClasses from '../../../../../../styles/sharedClasses';
+import {
   PropertiesChangeProps,
-} from '$utils/withConfigurableProperties';
-import Button from '$components/UI/Button';
-import Icon from '$components/UI/Icon';
-import sharedClasses from '$styles/sharedClasses';
-import { DropdownItemElement } from '$api/types';
-import { selectCurrentScreenId } from '$redux/project/selectors';
+  withConfigurableProperties,
+} from '../../../../../../utils/withConfigurableProperties';
+import {
+  addChildToElement,
+  deleteItem,
+} from '../../../../../../redux/project/actions';
 
 const styles = require('./DropdownItems.scss');
 
@@ -21,10 +27,7 @@ type StateProps = {
 };
 
 function mapState(state: AppReduxState): StateProps {
-  const dropdownChildren = selectors.selectActiveItemChildren(
-    state,
-    'dropdownMenu',
-  );
+  const dropdownChildren = selectActiveItemChildren(state, 'dropdownMenu');
   const [dropdownMenu] = dropdownChildren;
   const dropdownItems = dropdownMenu.children;
 
@@ -35,8 +38,8 @@ function mapState(state: AppReduxState): StateProps {
 }
 
 const mapDispatch = {
-  addChildToElement: actionsCreators.addChildToElement,
-  deleteChildFromElement: actionsCreators.deleteItem,
+  addChildToElement,
+  deleteChildFromElement: deleteItem,
 };
 
 type Props = StateProps &

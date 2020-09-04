@@ -1,11 +1,12 @@
 /* eslint-disable jsx-a11y/no-noninteractive-tabindex */
+// @ts-nocheck
+
 import React from 'react';
 import cn from 'classnames';
 import { makeStyles } from '@material-ui/core';
 
-import ClockWidget from '$components/UI/Clock';
-
 import { ClockRendererProps } from '../types';
+import ClockWidget from '../../Clock';
 
 const styles = require('../styles.scss');
 

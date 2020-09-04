@@ -1,10 +1,15 @@
 import React from 'react';
 
 import { connect } from 'react-redux';
-import { actionsCreators, selectors } from '$redux/project';
-import { AppReduxState } from '$shared/types/app';
-import { DropDown } from '$components/UI/DropDown';
-import { findChildByID } from '$utils/ElementsTreeHelper';
+import { DropDown } from '../../../../../components/UI/DropDown';
+import { findChildByID } from '../../../../../utils/ElementsTreeHelper';
+import { AppReduxState } from '../../../../../shared/types/app';
+import {
+  selectActiveItem,
+  selectEditableStyles,
+  selectRootElement,
+} from '../../../../../redux/project/selectors';
+import { setEditableStyles } from '../../../../../redux/project/actions';
 
 type StateProps = {
   editableStyles: string;
@@ -12,11 +17,11 @@ type StateProps = {
 };
 
 const mapState = (state: AppReduxState) => {
-  const activeItem = selectors.selectActiveItem(state);
-  const root = selectors.selectRootElement(state);
+  const activeItem = selectActiveItem(state);
+  const root = selectRootElement(state);
   const activeElement = findChildByID(root, activeItem.itemId);
   const classNames = [...(activeElement?.styles.classNames || []), 'ownStyles'];
-  const editableStyles = selectors.selectEditableStyles(state);
+  const editableStyles = selectEditableStyles(state);
 
   return {
     editableStyles,
@@ -25,7 +30,7 @@ const mapState = (state: AppReduxState) => {
 };
 
 const mapDispatch = {
-  setEditableStyles: actionsCreators.setEditableStyles,
+  setEditableStyles,
 };
 
 type Props = StateProps & typeof mapDispatch;

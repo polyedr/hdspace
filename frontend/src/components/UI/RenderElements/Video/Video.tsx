@@ -1,13 +1,13 @@
 /* eslint-disable jsx-a11y/no-noninteractive-tabindex */
+// @ts-nocheck
+
 import React from 'react';
 import cn from 'classnames';
 import { makeStyles } from '@material-ui/core';
-
-import { IMAGES } from '$constants/images';
-import { VIMEO_HEIGHT_RATIO } from '$constants/players';
-import { getPlayerLink } from '$utils/extractVideoLink';
-
 import { VideoRendererProps } from '../types';
+import { VIMEO_HEIGHT_RATIO } from '../../../../constants/players';
+import { IMAGES } from '../../../../constants/images';
+import { getPlayerLink } from '../../../../utils/extractVideoLink';
 
 const styles = require('../styles.scss');
 

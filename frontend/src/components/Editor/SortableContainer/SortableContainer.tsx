@@ -1,34 +1,49 @@
 import React, { useCallback, useState } from 'react';
 import * as R from 'ramda';
 import { connect } from 'react-redux';
-
-import { AppReduxState } from '$shared/types/app';
-import SortableGroup from '$components/Editor/SortableGroup/SortableGroup';
-import { RENDERERS } from '$components/UI/RenderElements';
-import { Indices, SavedElementsValues } from '$redux/project/types';
-import { selectors, actionsCreators } from '$redux/project';
-import { LIST_SCENARIO_TYPE } from '$constants/defaultParams';
-import { convertPropCSS } from '$utils/StyleHelper';
-import { LIBRARY_ELEMENTS } from '$domain/libraryElements/libraryElements';
-import { ElementEntity, Entity, AVAILABLE_CHILDREN } from '$domain/core';
-import { LibraryElementUnion, LibraryElement } from '$api/types';
-import { SharedRendererProps } from '$components/UI/RenderElements/types';
-import { findParentByChildID } from '$utils/ElementsTreeHelper';
+import { RENDERERS } from '../../UI/RenderElements';
+import { SharedRendererProps } from '../../UI/RenderElements/types';
+import SortableGroup from '../SortableGroup/SortableGroup';
+import {
+  AVAILABLE_CHILDREN,
+  ElementEntity,
+  Entity,
+} from '../../../domain/core';
+import { LibraryElement, LibraryElementUnion } from '../../../api/types';
+import { LIST_SCENARIO_TYPE } from '../../../constants/defaultParams';
+import { Indices, SavedElementsValues } from '../../../redux/project/types';
+import { LIBRARY_ELEMENTS } from '../../../domain/libraryElements/libraryElements';
+import { findParentByChildID } from '../../../utils/ElementsTreeHelper';
+import { AppReduxState } from '../../../shared/types/app';
+import { convertPropCSS } from '../../../utils/StyleHelper';
+import {
+  selectCurrentProject,
+  selectCurrentScreen,
+  selectRootElement,
+  selectRootID,
+  selectSavedElementsValues,
+  selectScreenLoader,
+  selectShowingBorders,
+} from '../../../redux/project/selectors';
+import {
+  moveElement,
+  updateSavedElementValues,
+} from '../../../redux/project/actions';
 
 const isElementStructType = (type: string): type is ElementEntity => {
   return type in LIBRARY_ELEMENTS;
 };
 
 const mapStateToProps = (state: AppReduxState) => {
-  const currentProject = selectors.selectCurrentProject(state);
+  const currentProject = selectCurrentProject(state);
   const projectClasses = currentProject.projectData.classes;
-  const currentScreen = selectors.selectCurrentScreen(state);
-  const root = selectors.selectRootElement(state);
-  const rootID = selectors.selectRootID(state);
-  const showBorders = selectors.selectShowingBorders(state);
-  const savedElements = selectors.selectSavedElementsValues(state);
+  const currentScreen = selectCurrentScreen(state);
+  const root = selectRootElement(state);
+  const rootID = selectRootID(state);
+  const showBorders = selectShowingBorders(state);
+  const savedElements = selectSavedElementsValues(state);
   const disableInteractions = state.user.isPrototypeMode;
-  const screenLoader = selectors.selectScreenLoader(state);
+  const screenLoader = selectScreenLoader(state);
 
   return {
     root,
@@ -43,8 +58,8 @@ const mapStateToProps = (state: AppReduxState) => {
 };
 
 const mapDispatchToProps = {
-  moveElement: actionsCreators.moveElement,
-  updateSavedElementValues: actionsCreators.updateSavedElementValues,
+  moveElement,
+  updateSavedElementValues,
 };
 
 export type OwnProps = {
@@ -150,10 +165,10 @@ const SortableComponent: React.FC<Props> = ({
   const [entityClass, groupClass] = item.styles.classNames;
 
   const entityStyles =
-    projectClasses?.find((cssClass) => cssClass.className === entityClass)
+    projectClasses?.find((cssClass: any) => cssClass.className === entityClass)
       ?.rules || {};
   const groupStyles =
-    projectClasses?.find((cssClass) => cssClass.className === groupClass)
+    projectClasses?.find((cssClass: any) => cssClass.className === groupClass)
       ?.rules || {};
 
   const convertedEntityStyles = convertPropCSS(entityStyles);

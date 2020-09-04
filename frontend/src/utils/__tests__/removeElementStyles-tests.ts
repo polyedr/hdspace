@@ -1,6 +1,6 @@
-import { removeElementStyles } from '$utils/ElementsTreeHelper';
 
 import { mockRootWithStyles as mockRoot } from './mocks';
+import { removeElementStyles } from '../ElementsTreeHelper';
 
 describe('removeElementStyles', () => {
   test('Should remove element styles on 1 level', () => {

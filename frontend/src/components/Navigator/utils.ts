@@ -1,6 +1,6 @@
 import { mutateTree, TreeData } from '@atlaskit/tree';
-import { LibraryElement } from '$api/types';
-import { Node } from '$components/Navigator/types';
+import { LibraryElement } from '../../api/types';
+import { Node } from './types';
 
 export const convertTree = (element: LibraryElement<any>) => ({
   id: element.id,

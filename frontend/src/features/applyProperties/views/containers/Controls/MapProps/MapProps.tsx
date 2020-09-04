@@ -2,23 +2,22 @@
 
 import React, { useCallback } from 'react';
 import { connect } from 'react-redux';
-
-import { AppReduxState } from '$shared/types/app';
-import { selectors } from '$redux/project/';
+import { AppReduxState } from '../../../../../../shared/types/app';
 import {
-  MIN_LATITUDE,
   MAX_LATITUDE,
-  MIN_LONGITUDE,
   MAX_LONGITUDE,
-  MIN_MAP_ZOOM,
   MAX_MAP_ZOOM,
-} from '$constants/defaultParams';
-import { getPermissibleValue } from '$utils/NumberHelper';
+  MIN_LATITUDE,
+  MIN_LONGITUDE,
+  MIN_MAP_ZOOM,
+} from '../../../../../../constants/defaultParams';
+import { MapElement, MapProps as MapParams } from '../../../../../../api/types';
+import { selectActiveItemParams } from '../../../../../../redux/project/selectors';
 import {
-  withConfigurableProperties,
   PropertiesChangeProps,
-} from '$utils/withConfigurableProperties';
-import { MapProps as MapParams, MapElement } from '$api/types';
+  withConfigurableProperties,
+} from '../../../../../../utils/withConfigurableProperties';
+import { getPermissibleValue } from '../../../../../../utils/NumberHelper';
 
 const styles = require('./MapProps.scss');
 
@@ -29,7 +28,7 @@ type StateProps = {
 };
 
 function mapState(state: AppReduxState): StateProps {
-  const activeItemParams = selectors.selectActiveItemParams<MapElement>(state);
+  const activeItemParams = selectActiveItemParams<MapElement>(state);
 
   return {
     map_props: activeItemParams.map_props,

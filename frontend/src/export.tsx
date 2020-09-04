@@ -4,8 +4,8 @@ import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 import 'antd/dist/antd.css';
 
-import { ExportedApp } from '$containers/ExportedApp';
-import uiReducer from '$redux/export/reducer';
+import { ExportedApp } from './containers/ExportedApp';
+import uiReducer from './redux/project/reducers/ui';
 
 const store = createStore(uiReducer);
 

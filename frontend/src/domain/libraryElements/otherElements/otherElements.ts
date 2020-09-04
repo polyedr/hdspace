@@ -1,21 +1,20 @@
+import { makeParagraph } from '../typographyElements/typographyElements';
 import {
-  RootServerElement,
   ContainerServerElement,
-  ImageServerElement,
+  DivBlockServerElement,
   DropdownItemServerElement,
   DropdownMenuServerElement,
   DropdownServerElement,
-  VideoServerElement,
-  UndefinedServerElement,
-  DivBlockServerElement,
-  ServerElement,
+  ImageServerElement,
+  RootServerElement,
   ScreenshotServerElement,
-} from '$api/types';
-import { IMAGES } from '$constants/images';
-import { CssLikeStyles } from '$utils/StyleHelper';
-import { Entity } from '$domain/core';
-
-import { makeParagraph } from '../typographyElements/typographyElements';
+  ServerElement,
+  UndefinedServerElement,
+  VideoServerElement,
+} from '../../../api/types';
+import { Entity } from '../../core';
+import { IMAGES } from '../../../constants/images';
+import { CssLikeStyles } from '../../../utils/StyleHelper';
 
 export const root: RootServerElement = {
   buoyancy: 0,

@@ -1,33 +1,33 @@
 /* eslint-disable no-console */
 import { SagaIterator } from 'redux-saga';
 import { takeLatest, call, put, select, takeEvery } from 'redux-saga/effects';
+import * as Actions from './actions';
 import {
-  apiGetToken,
-  apiSetNewUser,
-  apiRefreshToken,
-  apiGetUsers,
-  apiSetNewPassword,
-  apiGetProfile,
-  apiChangeUserData,
+  convertProfileDataFromResponse,
+  convertUserDataFromResponse,
+} from '../../api/converters/fromResponse';
+import { ReturnPromisedType } from '../../shared/types';
+import {
   apiChangeProfileData,
-} from '$api/user';
-import TYPES from '$constants/actions';
-import * as Actions from '$redux/user/actions';
+  apiChangeUserData,
+  apiGetProfile,
+  apiGetToken,
+  apiGetUsers,
+  apiRefreshToken,
+  apiSetNewPassword,
+  apiSetNewUser,
+} from '../../api/user';
 import {
   openPasswordRestore,
   openProjects,
   openSignScreen,
-} from '$utils/history';
-import { DEFAULT_RESPONSE_ERROR } from '$constants/defaultParams';
-import { AppReduxState } from '$shared/types/app';
-import { ReturnPromisedType } from '$shared/types';
-import {
-  convertProfileDataFromResponse,
-  convertUserDataFromResponse,
-} from '$api/converters/fromResponse';
-import { reqWrapper } from '$redux/project/sagas';
-import { ServerUserData } from '$redux/user/types';
-import { convertUserDataToRequest } from '$api/converters/toRequest';
+} from '../../utils/history';
+import { DEFAULT_RESPONSE_ERROR } from '../../constants/defaultParams';
+import TYPES from '../../constants/actions';
+import { AppReduxState } from '../../shared/types/app';
+import { convertUserDataToRequest } from '../../api/converters/toRequest';
+import { ServerUserData } from './types';
+import { reqWrapper } from '../project/sagas';
 
 export function* getTokenPairSaga(username: string, password: string) {
   const {

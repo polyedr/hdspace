@@ -1,23 +1,22 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-
-import { AppReduxState } from '$shared/types/app';
-import Info from '$components/User/Info';
-import Button from '$components/UI/Button';
-import Spinner from '$components/UI/Spinner';
+import Info from '../Info';
+import SignFormList from '../SignFormList';
+import Button from '../../UI/Button';
+import Spinner from '../../UI/Spinner';
 import {
-  DEFAULT_SIGNUP_FIELDS,
   DEFAULT_RESPONSE_ERROR,
+  DEFAULT_SIGNUP_FIELDS,
   ISignFormFields,
-} from '$constants/defaultParams';
-import * as Actions from '$redux/user/actions';
+} from '../../../constants/defaultParams';
+import { AppReduxState } from '../../../shared/types/app';
+import { setApiResponseError, setNewUser } from '../../../redux/user/actions';
+import { getInitialFieldsState } from '../../../utils/getStates';
 import {
   generateValidatedFormData,
   INewFormData,
-} from '$utils/generateValidatedFormData';
-import { getInitialFieldsState } from '$utils/getStates';
-import { IApiResponseError } from '$redux/user/types';
-import SignFormList from '$components/User/SignFormList';
+} from '../../../utils/generateValidatedFormData';
+import { IApiResponseError } from '../../../redux/user/types';
 
 const mapStateToProps = ({
   user: { apiResponseError, isSignLoader },
@@ -27,8 +26,8 @@ const mapStateToProps = ({
 });
 
 const mapDispatchToProps = {
-  setApiResponseError: Actions.setApiResponseError,
-  setNewUser: Actions.setNewUser,
+  setApiResponseError,
+  setNewUser,
 };
 
 type IProps = typeof mapDispatchToProps & {

@@ -1,13 +1,19 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { AppReduxState } from '$shared/types/app';
-import Editor from '$components/Editor/Editor';
-import NavPanelScreen from '$components/NavPanelScreen/NavPanelScreen';
-import * as Actions from '$redux/project/actions';
-import { selectors } from '$redux/project';
-import * as UserActions from '$redux/user/actions';
-import Spinner from '$components/UI/Spinner';
+import * as Actions from '../redux/project/actions';
+import * as UserActions from '../redux/user/actions';
+import NavPanelScreen from '../components/NavPanelScreen/NavPanelScreen';
+import Editor from '../components/Editor/Editor';
+import Spinner from '../components/UI/Spinner';
+import { AppReduxState } from '../shared/types/app';
+import {
+  selectCurrentProject,
+  selectCurrentScreen,
+  selectProjectLoader,
+  selectScenarioLoader,
+  selectScreenLoader,
+} from '../redux/project/selectors';
 
 export interface IMatch<P> {
   params: P;
@@ -22,13 +28,13 @@ interface MatchParams {
 }
 
 const mapStateToProps = (state: AppReduxState) => ({
-  currentProject: selectors.selectCurrentProject(state),
+  currentProject: selectCurrentProject(state),
   isNavPanelMinimized: state.user.isNavPanelMinimized,
   isPrototypeMode: state.user.isPrototypeMode,
-  currentScreen: selectors.selectCurrentScreen(state),
-  scenarioLoader: selectors.selectScenarioLoader(state),
-  screenLoader: selectors.selectScreenLoader(state),
-  projectLoader: selectors.selectProjectLoader(state),
+  currentScreen: selectCurrentScreen(state),
+  scenarioLoader: selectScenarioLoader(state),
+  screenLoader: selectScreenLoader(state),
+  projectLoader: selectProjectLoader(state),
 });
 
 const mapDispatchToProps = {

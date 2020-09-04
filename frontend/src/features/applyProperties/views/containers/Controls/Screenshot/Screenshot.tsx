@@ -1,18 +1,17 @@
 import React from 'react';
 import { connect, useSelector } from 'react-redux';
-
+import { updateElementImage } from '../../../../../../redux/project/actions';
 import {
-  withConfigurableProperties,
   PropertiesChangeProps,
-} from '$utils/withConfigurableProperties';
-import { actionsCreators } from '$redux/project';
-import { selectCurrentScreenId } from '$redux/project/selectors';
-import { ImageElement } from '$api/types';
+  withConfigurableProperties,
+} from '../../../../../../utils/withConfigurableProperties';
+import { ImageElement } from '../../../../../../api/types';
+import { selectCurrentScreenId } from '../../../../../../redux/project/selectors';
 
 const styles = require('./Screenshot.scss');
 
 const mapDispatch = {
-  updateElementImage: actionsCreators.updateElementImage,
+  updateElementImage,
 };
 
 type Props = PropertiesChangeProps<ImageElement> & typeof mapDispatch;

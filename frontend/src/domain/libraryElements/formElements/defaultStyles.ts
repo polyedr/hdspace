@@ -1,23 +1,23 @@
 import {
-  DEFAULT_SIZE,
-  DEFAULT_INDENTS,
-  DEFAULT_DISPLAY,
-  DEFAULT_BORDER,
   DEFAULT_BACKGROUND,
+  DEFAULT_BORDER,
+  DEFAULT_DISPLAY,
+  DEFAULT_INDENTS,
+  DEFAULT_SIZE,
   DEFAULT_TYPOGRAPHY,
-} from '$domain/constants/defaultStyles';
+} from '../../constants/defaultStyles';
 import {
   buttonStyleControls,
-  textinputStyleControls,
-  textareaStyleControls,
   checkboxStyleControls,
-  radiobuttonStyleControls,
   labelStyleControls,
-  selectStyleControls,
-  selectMenuStyleControls,
+  radiobuttonStyleControls,
   selectItemStyleControls,
-} from '$domain/core';
-import { CssLikeStyles } from '$utils/StyleHelper';
+  selectMenuStyleControls,
+  selectStyleControls,
+  textareaStyleControls,
+  textinputStyleControls,
+} from '../../core';
+import { CssLikeStyles } from '../../../utils/StyleHelper';
 
 type ButtonControls = typeof buttonStyleControls[number];
 type TextinputControls = typeof textinputStyleControls[number];

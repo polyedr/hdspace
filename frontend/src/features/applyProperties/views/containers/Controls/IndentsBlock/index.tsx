@@ -1,17 +1,15 @@
 import React, { useCallback } from 'react';
 import classNames from 'classnames';
-
 import { connect } from 'react-redux';
-import {
-  withConfigurableProperties,
-  PropertiesChangeProps,
-} from '$utils/withConfigurableProperties';
-import { LibraryElement } from '$api/types';
-import { Entity } from '$domain/core';
-import { AppReduxState } from '$shared/types/app';
-import { selectors } from '$redux/project';
-
 import StylesHeader from '../../../components/StylesHeader/StylesHeader';
+import { Entity } from '../../../../../../domain/core';
+import { AppReduxState } from '../../../../../../shared/types/app';
+import { LibraryElement } from '../../../../../../api/types';
+import {
+  PropertiesChangeProps,
+  withConfigurableProperties,
+} from '../../../../../../utils/withConfigurableProperties';
+import { selectCurrentEditableStyles } from '../../../../../../redux/project/selectors';
 
 const styles = require('./styles.scss');
 
@@ -19,17 +17,14 @@ const MIN_PADDING = 0;
 
 function mapState(state: AppReduxState) {
   return {
-    marginTop: selectors.selectCurrentEditableStyles(state, 'margin-top'),
-    marginRight: selectors.selectCurrentEditableStyles(state, 'margin-right'),
-    marginBottom: selectors.selectCurrentEditableStyles(state, 'margin-bottom'),
-    marginLeft: selectors.selectCurrentEditableStyles(state, 'margin-left'),
-    paddingTop: selectors.selectCurrentEditableStyles(state, 'padding-top'),
-    paddingRight: selectors.selectCurrentEditableStyles(state, 'padding-right'),
-    paddingBottom: selectors.selectCurrentEditableStyles(
-      state,
-      'padding-bottom',
-    ),
-    paddingLeft: selectors.selectCurrentEditableStyles(state, 'padding-left'),
+    marginTop: selectCurrentEditableStyles(state, 'margin-top'),
+    marginRight: selectCurrentEditableStyles(state, 'margin-right'),
+    marginBottom: selectCurrentEditableStyles(state, 'margin-bottom'),
+    marginLeft: selectCurrentEditableStyles(state, 'margin-left'),
+    paddingTop: selectCurrentEditableStyles(state, 'padding-top'),
+    paddingRight: selectCurrentEditableStyles(state, 'padding-right'),
+    paddingBottom: selectCurrentEditableStyles(state, 'padding-bottom'),
+    paddingLeft: selectCurrentEditableStyles(state, 'padding-left'),
   };
 }
 

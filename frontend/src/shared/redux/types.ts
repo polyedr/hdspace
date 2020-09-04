@@ -1,4 +1,4 @@
-import { HistoryMeta } from '$redux/project/types';
+import { HistoryMeta } from '../../redux/project/types';
 
 export interface IPlainAction<T, M = HistoryMeta> {
   type: T;

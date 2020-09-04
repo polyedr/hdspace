@@ -2,12 +2,11 @@ import React, { memo, useCallback, useState, useEffect } from 'react';
 import cn from 'classnames';
 import { toState } from 'react-color/lib/helpers';
 import { ColorResult } from 'react-color';
-
 import {
   ColorPicker,
-  useColor,
   normalizeColor,
-} from '$components/UI/ColorPicker/';
+  useColor,
+} from '../../../../../components/UI/ColorPicker';
 
 type Props = {
   currentColor: string;

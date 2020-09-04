@@ -6,35 +6,30 @@ import { push } from 'connected-react-router';
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 import * as R from 'ramda';
+import * as Actions from '../actions';
 
-import { apiGetScenarios } from '$api/scenario';
-import { apiGetElements } from '$api/element';
-import { apiSaveScreen } from '$api/screen';
-import { ReturnPromisedType } from '$shared/types';
-import { Page } from '$redux/project/types';
-import {
-  activateScreenSaga,
-  addScreenSaga,
-  getScreenSaga,
-} from '$redux/project/sagas/screen';
-import * as Actions from '$redux/project/actions';
-import { setScreens } from '$redux/project/actions';
-import {
-  apiGetListProject,
-  apiAddProject,
-  apiDelProject,
-  apiGetProject,
-  apiSaveProject,
-} from '$api/project';
-import { Project } from '$api/types';
+import { selectors, T } from '..';
+import { reqWrapper } from './index';
+import { ReturnPromisedType } from '../../../shared/types';
+import { activateScreenSaga, addScreenSaga, getScreenSaga } from './screen';
 import {
   convertCreatedProjectToRequest,
   convertProjectToPatchRequest,
-} from '$api/converters/toRequest';
-import { reqWrapper } from '$redux/project/sagas/index';
-import generateFontFace from '$utils/generateFontFace';
-
-import { selectors, T } from '..';
+} from '../../../api/converters/toRequest';
+import {
+  apiAddProject,
+  apiDelProject,
+  apiGetListProject,
+  apiGetProject,
+  apiSaveProject,
+} from '../../../api/project';
+import generateFontFace from '../../../utils/generateFontFace';
+import { Page } from '../types';
+import { apiGetScenarios } from '../../../api/scenario';
+import { apiGetElements } from '../../../api/element';
+import { apiSaveScreen } from '../../../api/screen';
+import { Project } from '../../../api/types';
+import { setScreens } from '../actions';
 
 export function* getListProjectSaga(): SagaIterator {
   yield put(Actions.setProjectListLoader(true));

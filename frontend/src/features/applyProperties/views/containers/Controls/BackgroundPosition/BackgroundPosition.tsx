@@ -1,19 +1,18 @@
 import React from 'react';
 import { connect } from 'react-redux';
-
-import { AppReduxState } from '$shared/types/app';
-import { selectors } from '$redux/project/';
+import StylesHeader from '../../../components/StylesHeader/StylesHeader';
+import { AppReduxState } from '../../../../../../shared/types/app';
 import {
-  withConfigurableProperties,
   PropertiesChangeProps,
-} from '$utils/withConfigurableProperties';
-import { ScreenshotElement } from '$api/types';
-import StylesHeader from '$features/applyProperties/views/components/StylesHeader/StylesHeader';
+  withConfigurableProperties,
+} from '../../../../../../utils/withConfigurableProperties';
+import { ScreenshotElement } from '../../../../../../api/types';
+import { selectCurrentEditableStyles } from '../../../../../../redux/project/selectors';
 
 const styles = require('./BackgroundPosition.scss');
 
 function mapState(state: AppReduxState) {
-  const backgroundPosition = selectors.selectCurrentEditableStyles(
+  const backgroundPosition = selectCurrentEditableStyles(
     state,
     'background-position',
   );

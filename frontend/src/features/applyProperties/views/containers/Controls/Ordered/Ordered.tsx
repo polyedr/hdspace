@@ -1,22 +1,21 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Switch, makeStyles } from '@material-ui/core';
-
-import { AppReduxState } from '$shared/types/app';
-import { selectors } from '$redux/project/';
+import { AppReduxState } from '../../../../../../shared/types/app';
+import sharedClasses from '../../../../../../styles/sharedClasses';
+import { ListElement } from '../../../../../../api/types';
 import {
-  withConfigurableProperties,
   PropertiesChangeProps,
-} from '$utils/withConfigurableProperties';
-import sharedClasses from '$styles/sharedClasses';
-import { ListElement } from '$api/types';
+  withConfigurableProperties,
+} from '../../../../../../utils/withConfigurableProperties';
+import { selectActiveItemParams } from '../../../../../../redux/project/selectors';
 
 type StateProps = {
   isOrdered: boolean;
 };
 
 function mapState(state: AppReduxState): StateProps {
-  const activeItemParams = selectors.selectActiveItemParams<ListElement>(state);
+  const activeItemParams = selectActiveItemParams<ListElement>(state);
 
   return {
     isOrdered: activeItemParams.isOrdered,

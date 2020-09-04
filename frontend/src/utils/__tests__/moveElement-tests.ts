@@ -1,7 +1,7 @@
-import { moveElement } from '$utils/ElementsTreeHelper';
-import { LibraryElement } from '$api/types';
 
 import { mockRoot } from './mocks';
+import { LibraryElement } from '../../api/types';
+import { moveElement } from '../ElementsTreeHelper';
 
 describe('moveElement', () => {
   const mockParams = {

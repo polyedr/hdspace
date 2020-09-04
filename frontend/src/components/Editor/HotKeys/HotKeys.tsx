@@ -1,22 +1,33 @@
 import { useEffect } from 'react';
 import { connect, useSelector } from 'react-redux';
-import { actionsCreators, selectors } from '$redux/project';
-import { AppReduxState } from '$shared/types/app';
-import { selectCurrentScreenId } from '$redux/project/selectors';
+import {
+  selectActiveItem,
+  selectCurrentScreenId,
+  selectRootElement,
+} from '../../../redux/project/selectors';
+import { AppReduxState } from '../../../shared/types/app';
+import {
+  copyActiveItem,
+  deleteItem,
+  pasteCopiedItem,
+  redoAction,
+  undoAction,
+  wrapIntoContainer,
+} from '../../../redux/project/actions';
 
 const mapState = (state: AppReduxState) => {
   return {
-    rootElement: selectors.selectRootElement(state),
+    rootElement: selectRootElement(state),
   };
 };
 
 const mapDispatch = {
-  deleteActiveItem: actionsCreators.deleteItem,
-  wrapIntoContainer: actionsCreators.wrapIntoContainer,
-  copyActiveItem: actionsCreators.copyActiveItem,
-  pasteCopiedItem: actionsCreators.pasteCopiedItem,
-  undo: actionsCreators.undoAction,
-  redo: actionsCreators.redoAction,
+  deleteActiveItem: deleteItem,
+  wrapIntoContainer,
+  copyActiveItem,
+  pasteCopiedItem,
+  undo: undoAction,
+  redo: redoAction,
 };
 
 type Props = ReturnType<typeof mapState> & typeof mapDispatch;
@@ -32,7 +43,7 @@ export const Component = ({
 }: Props) => {
   const root = document.getElementById('root');
   const currentScreenId = useSelector(selectCurrentScreenId);
-  const { itemId } = useSelector(selectors.selectActiveItem);
+  const { itemId } = useSelector(selectActiveItem);
 
   useEffect(() => {
     const listener = (event: KeyboardEvent) => {

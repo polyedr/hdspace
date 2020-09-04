@@ -4,12 +4,21 @@ import DoneIcon from '@material-ui/icons/Done';
 import CancelIcon from '@material-ui/icons/Cancel';
 
 import { connect, useSelector } from 'react-redux';
-import { actionsCreators, selectors } from '$redux/project';
-import { AppReduxState } from '$shared/types/app';
-import { findChildByID } from '$utils/ElementsTreeHelper';
-import Button from '$components/UI/Button';
 import ControlSection from '../../components/ControlSection/ControlSection';
-import { selectCurrentScreenId } from '$redux/project/selectors';
+import Button from '../../../../../components/UI/Button';
+import { AppReduxState } from '../../../../../shared/types/app';
+import {
+  selectActiveItem,
+  selectCurrentProject,
+  selectCurrentScreenId,
+  selectRootElement,
+} from '../../../../../redux/project/selectors';
+import { findChildByID } from '../../../../../utils/ElementsTreeHelper';
+import {
+  addElementClassName,
+  copyElementStyles,
+  removeElementClassName,
+} from '../../../../../redux/project/actions';
 
 const useStyles = makeStyles({
   root: {
@@ -39,10 +48,10 @@ const useStyles = makeStyles({
 });
 
 const mapState = (state: AppReduxState) => {
-  const activeItem = selectors.selectActiveItem(state);
-  const root = selectors.selectRootElement(state);
+  const activeItem = selectActiveItem(state);
+  const root = selectRootElement(state);
   const activeElement = findChildByID(root, activeItem.itemId);
-  const project = selectors.selectCurrentProject(state);
+  const project = selectCurrentProject(state);
 
   const sharedClasses = project.projectData.classes.filter(
     (cssClass) =>
@@ -60,9 +69,9 @@ const mapState = (state: AppReduxState) => {
 };
 
 const mapDispatch = {
-  copyStyles: actionsCreators.copyElementStyles,
-  addElementClassName: actionsCreators.addElementClassName,
-  removeElementClassName: actionsCreators.removeElementClassName,
+  copyStyles: copyElementStyles,
+  addElementClassName,
+  removeElementClassName,
 };
 
 type Props = ReturnType<typeof mapState> & typeof mapDispatch;

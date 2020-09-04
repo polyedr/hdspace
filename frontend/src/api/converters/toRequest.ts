@@ -1,24 +1,24 @@
 import * as R from 'ramda';
 import {
-  ServerElement,
-  LibraryElement,
-  ServerProject,
-  CreatedServerProject,
-  ProjectClass,
-  Project,
-} from '$api/types';
-import {
   DEFAULT_ELEMENTS_STYLES,
   getDefaultStyles,
-} from '$domain/libraryElements/defaultStyles';
-import { LIBRARY_ELEMENTS } from '$domain/libraryElements/libraryElements';
-import { Entity } from '$domain/core';
+} from '../../domain/libraryElements/defaultStyles';
+import { Entity } from '../../domain/core';
+import {
+  CreatedServerProject,
+  LibraryElement,
+  Project,
+  ProjectClass,
+  ServerElement,
+  ServerProject,
+} from '../types';
 import {
   ProfileData,
   ServerProfileData,
   ServerUserData,
   UserData,
-} from '$redux/user/types';
+} from '../../redux/user/types';
+import { LIBRARY_ELEMENTS } from '../../domain/libraryElements/libraryElements';
 
 export const convertCreatedElementToRequest = <
   T extends Entity,

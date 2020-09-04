@@ -1,6 +1,5 @@
 import React, { memo, useCallback } from 'react';
-
-import Icon from '$components/UI/Icon';
+import Icon from '../Icon';
 
 const styles = require('./styles.scss');
 

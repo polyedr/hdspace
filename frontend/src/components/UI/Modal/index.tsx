@@ -1,8 +1,7 @@
 import React, { memo, useCallback } from 'react';
 import classNames from 'classnames';
-
-import Button from '$components/UI/Button';
-import Icon from '$components/UI/Icon';
+import Button from '../Button';
+import Icon from '../Icon';
 
 const styles = require('./styles.scss');
 

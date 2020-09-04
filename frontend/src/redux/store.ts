@@ -12,10 +12,10 @@ import { connectRouter, routerMiddleware } from 'connected-react-router';
 import { createBrowserHistory } from 'history';
 import { PersistConfig, Persistor } from 'redux-persist/es/types';
 
-import userReducer from '$redux/user/reducer';
-import projectReducer from '$redux/project/reducers';
-import projectSaga from '$redux/project/sagas';
-import userSaga from '$redux/user/sagas';
+import userReducer from './user/reducer';
+import projectReducer from './project/reducers';
+import projectSaga from './project/sagas';
+import userSaga from './user/sagas';
 
 const userPersistConfig: PersistConfig = {
   key: 'user',

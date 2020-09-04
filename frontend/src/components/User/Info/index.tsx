@@ -1,7 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-
-import { user } from '$constants/pathNames';
+import { user } from '../../../constants/pathNames';
 
 const styles = require('./Info.scss');
 

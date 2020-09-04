@@ -1,15 +1,15 @@
 import {
   ButtonServerElement,
-  TextinputServerElement,
   CheckboxServerElement,
+  LabelServerElement,
   RadiobuttonServerElement,
   SelectItemServerElement,
   SelectMenuServerElement,
   SelectServerElement,
-  LabelServerElement,
   TextareaServerElement,
-} from '$api/types';
-import { CssLikeStyles } from '$utils/StyleHelper';
+  TextinputServerElement,
+} from '../../../api/types';
+import { CssLikeStyles } from '../../../utils/StyleHelper';
 
 export const makeButton = ({
   buoyancy = 0,

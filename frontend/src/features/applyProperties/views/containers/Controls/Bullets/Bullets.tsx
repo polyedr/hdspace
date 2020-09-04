@@ -2,23 +2,19 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Switch, makeStyles } from '@material-ui/core';
 
-import { AppReduxState } from '$shared/types/app';
-import { selectors } from '$redux/project/';
-import {
-  withConfigurableProperties,
-  PropertiesChangeProps,
-} from '$utils/withConfigurableProperties';
-import sharedClasses from '$styles/sharedClasses';
-import { ListElement } from '$api/types';
-
 import StylesHeader from '../../../components/StylesHeader/StylesHeader';
+import { AppReduxState } from '../../../../../../shared/types/app';
+import sharedClasses from '../../../../../../styles/sharedClasses';
+import {
+  PropertiesChangeProps,
+  withConfigurableProperties,
+} from '../../../../../../utils/withConfigurableProperties';
+import { ListElement } from '../../../../../../api/types';
+import { selectCurrentEditableStyles } from '../../../../../../redux/project/selectors';
 
 function mapState(state: AppReduxState) {
   return {
-    bulletsStyles: selectors.selectCurrentEditableStyles(
-      state,
-      'list-style-type',
-    ),
+    bulletsStyles: selectCurrentEditableStyles(state, 'list-style-type'),
   };
 }
 

@@ -1,20 +1,22 @@
 import React from 'react';
 import { connect } from 'react-redux';
-
-import { AppReduxState } from '$shared/types/app';
-import { selectors } from '$redux/project/';
+import StylesHeader from '../../../components/StylesHeader/StylesHeader';
 import {
-  withConfigurableProperties,
+  selectActiveItem,
+  selectCurrentEditableStyles,
+} from '../../../../../../redux/project/selectors';
+import { AppReduxState } from '../../../../../../shared/types/app';
+import { ContainerElement } from '../../../../../../api/types';
+import {
   PropertiesChangeProps,
-} from '$utils/withConfigurableProperties';
-import { ContainerElement } from '$api/types';
-import StylesHeader from '$features/applyProperties/views/components/StylesHeader/StylesHeader';
+  withConfigurableProperties,
+} from '../../../../../../utils/withConfigurableProperties';
 
 const styles = require('./FlexGrow.scss');
 
 function mapState(state: AppReduxState) {
-  const flexGrow = selectors.selectCurrentEditableStyles(state, 'flex-grow');
-  const activeItemID = selectors.selectActiveItem(state).itemId;
+  const flexGrow = selectCurrentEditableStyles(state, 'flex-grow');
+  const activeItemID = selectActiveItem(state).itemId;
 
   return {
     flexGrow,

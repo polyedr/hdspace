@@ -1,6 +1,5 @@
-import { getElementsArray } from '$utils/ElementsTreeHelper';
-
 import { mockRoot } from './mocks';
+import { getElementsArray } from '../ElementsTreeHelper';
 
 describe('getElementsArray', () => {
   test('Should add all elements in array', () => {

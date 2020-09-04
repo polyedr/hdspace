@@ -1,11 +1,4 @@
 import {
-  PageTemplateServerElement,
-  SubscribeFormServerElement,
-  CardsSectionServerElement,
-  FeatureSectionServerElement,
-} from '$api/types';
-import { CssLikeStyles } from '$utils/StyleHelper';
-import {
   makeContainer,
   makeScreenshot,
   makeImage,
@@ -19,6 +12,13 @@ import {
   makeTextinput,
   makeButton,
 } from '../formElements/formElements';
+import {
+  CardsSectionServerElement,
+  FeatureSectionServerElement,
+  PageTemplateServerElement,
+  SubscribeFormServerElement,
+} from '../../../api/types';
+import { CssLikeStyles } from '../../../utils/StyleHelper';
 
 export const pageTemplate: PageTemplateServerElement = {
   buoyancy: 0,

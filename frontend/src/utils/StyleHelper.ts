@@ -1,13 +1,12 @@
 import * as R from 'ramda';
-
 import {
   MAX_BORDER_RADIUS,
   MAX_BORDER_RADIUS_PERCENT,
   MIN_BORDER_RADIUS,
-} from '$constants/defaultParams';
-import { Flex, ScreenDisplay } from '$redux/project/types';
+} from '../constants/defaultParams';
+import { Flex, ScreenDisplay } from '../redux/project/types';
 
-export interface CssLikeStyles {
+export type CssLikeStyles = {
   display?: ScreenDisplay['display'];
 
   width?: string;
@@ -50,7 +49,7 @@ export interface CssLikeStyles {
   'flex-grow'?: number;
 
   'list-style-type'?: 'none' | 'disc';
-}
+};
 
 type TConvertIndents = (
   styles: CssLikeStyles,

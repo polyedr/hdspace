@@ -1,7 +1,7 @@
 import * as R from 'ramda';
 import { initialUi } from '../initial';
 import * as T from '../types';
-import TYPES from '$constants/actions';
+import TYPES from '../../../constants/actions';
 
 function uiReducer(
   state: T.ProjectUiState = initialUi,
