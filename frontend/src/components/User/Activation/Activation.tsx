@@ -2,14 +2,14 @@ import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { useRouteMatch } from 'react-router-dom';
 
-import { Info } from '$components/User/Info';
-import Spinner from '$components/UI/Spinner';
-import * as Actions from '$redux/user/actions';
-import { IApiResponseError } from '$redux/user/types';
-import { AppReduxState } from '$shared/types/app';
-import { DEFAULT_RESPONSE_ERROR } from '$constants/defaultParams';
+import * as Actions from '../../../redux/user/actions';
 
 import SignInForm from '../SigninForm/SigninForm';
+import { DEFAULT_RESPONSE_ERROR } from '../../../constants/defaultParams';
+import { AppReduxState } from '../../../shared/types/app';
+import Spinner from '../../UI/Spinner';
+import { IApiResponseError } from '../../../redux/user/types';
+import { Info } from '../Info';
 
 const styles = require('./Activation.scss');
 

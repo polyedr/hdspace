@@ -2,23 +2,21 @@ import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { useRouteMatch } from 'react-router-dom';
 import { Form } from 'react-final-form';
-
-import { Info } from '$components/User/Info';
-import Spinner from '$components/UI/Spinner';
-import Button from '$components/UI/Button';
-import * as Actions from '$redux/user/actions';
-import { IApiResponseError } from '$redux/user/types';
-import { AppReduxState } from '$shared/types/app';
+import { FormField } from '../FormField/FormField';
+import * as Actions from '../../../redux/user/actions';
+import { DEFAULT_RESPONSE_ERROR } from '../../../constants/defaultParams';
+import { isLatinOrNumbers } from '../../../shared/validators/isLatinOrNumbers';
+import { AppReduxState } from '../../../shared/types/app';
+import { Info } from '../Info';
+import Spinner from '../../UI/Spinner';
+import { IApiResponseError } from '../../../redux/user/types';
 import {
   composeValidators,
-  isRequired,
   isLongPassword,
   isOnlyNumeric,
-} from '$shared/validators';
-import { isLatinOrNumbers } from '$shared/validators/isLatinOrNumbers';
-import { DEFAULT_RESPONSE_ERROR } from '$constants/defaultParams';
-
-import { FormField } from '../FormField/FormField';
+  isRequired,
+} from '../../../shared/validators';
+import Button from '../../UI/Button';
 
 const styles = require('./ResetPassword.scss');
 

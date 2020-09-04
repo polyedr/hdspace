@@ -6,22 +6,22 @@ import { Form } from 'react-final-form';
 
 import { NavLink } from 'react-router-dom';
 import GoogleLogin from 'react-google-login';
-import { AppReduxState } from '$shared/types/app';
-import Button from '$components/UI/Button';
-import Modal from '$components/UI/Modal';
+import * as Actions from '../../../redux/user/actions';
+
+import { FormField } from '../FormField/FormField';
 import {
   DEFAULT_RESPONSE_ERROR,
   DEFAULT_SIGNIN_FIELDS,
-} from '$constants/defaultParams';
-import * as Actions from '$redux/user/actions';
-
-import { FormField } from '../FormField/FormField';
-import { user } from '$constants/pathNames';
+} from '../../../constants/defaultParams';
+import { AppReduxState } from '../../../shared/types/app';
+import { user } from '../../../constants/pathNames';
+import Button from '../../UI/Button';
+import Modal from '../../UI/Modal';
 import {
   composeValidators,
   isRequired,
   isValidEmail,
-} from '$shared/validators';
+} from '../../../shared/validators';
 
 const styles = require('./SignInForm.scss');
 
@@ -31,6 +31,7 @@ type FormData = {
 };
 
 const mapState = ({ user: { apiResponseError } }: AppReduxState) => ({
+  // eslint-disable-next-line react/require-default-props
   apiResponseError,
 });
 

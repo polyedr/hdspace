@@ -112,7 +112,6 @@ const setConfirmMessage: ActionHandler<typeof Actions.setConfirmMessage> = (
   confirmMessage: payload.confirmMessage,
 });
 
-
 const setRestorePasswordEmail: ActionHandler<typeof Actions.setRestorePasswordEmail> = (
   state,
   { restorePasswordEmail },

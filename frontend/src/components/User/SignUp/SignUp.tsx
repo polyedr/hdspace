@@ -6,19 +6,19 @@ import { Form } from 'react-final-form';
 import { NavLink } from 'react-router-dom';
 import { GoogleLogin } from 'react-google-login';
 
-import { AppReduxState } from '$shared/types/app';
-import { Info } from '$components/User/Info';
-import Button from '$components/UI/Button';
-import Spinner from '$components/UI/Spinner';
+import * as Actions from '../../../redux/user/actions';
+
+import { FormField } from '../FormField/FormField';
+import { AppReduxState } from '../../../shared/types/app';
 import {
   DEFAULT_RESPONSE_ERROR,
   DEFAULT_SIGNUP_FIELDS,
-} from '$constants/defaultParams';
-import { user } from '$constants/pathNames';
-import * as Actions from '$redux/user/actions';
-import { IApiResponseError } from '$redux/user/types';
-
-import { FormField } from '../FormField/FormField';
+} from '../../../constants/defaultParams';
+import Spinner from '../../UI/Spinner';
+import { IApiResponseError } from '../../../redux/user/types';
+import { user } from '../../../constants/pathNames';
+import { Info } from '../Info';
+import Button from '../../UI/Button';
 
 const styles = require('./SignUp.scss');
 

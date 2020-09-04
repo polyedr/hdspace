@@ -8,6 +8,14 @@ import {
   ServerStructType,
 } from '../redux/project/types';
 import { CssLikeStyles } from '../utils/StyleHelper';
+import { isLatinOrNumbers } from '../shared/validators/isLatinOrNumbers';
+import {
+  composeValidators,
+  isLongPassword,
+  isOnlyNumeric,
+  isRequired,
+  isValidEmail,
+} from '../shared/validators';
 
 export interface ISignFormElement {
   label: string;

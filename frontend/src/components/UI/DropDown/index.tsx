@@ -1,7 +1,6 @@
 /* eslint-disable react/no-array-index-key */ // TODO: refactor this component
 import React from 'react';
 import classNames from 'classnames';
-import { autobind } from 'core-decorators';
 
 const styles = require('./styles.scss');
 
@@ -79,11 +78,10 @@ export class DropDown<T> extends React.PureComponent<Props<T>, State<T>> {
     }
   }
 
-  @autobind
-  private handleChange(event: React.ChangeEvent<HTMLSelectElement>) {
+  private handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const { onChange } = this.props;
     onChange(event.target.value);
-  }
+  };
 
   public render() {
     const { options, disabled } = this.props;

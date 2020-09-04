@@ -1,27 +1,23 @@
 /* eslint-disable no-console */
-import { SagaIterator } from 'redux-saga';
 import { takeLatest, call, put, select, takeEvery } from 'redux-saga/effects';
 import * as Actions from './actions';
 import {
   convertProfileDataFromResponse,
   convertUserDataFromResponse,
 } from '../../api/converters/fromResponse';
-import { ReturnPromisedType } from '../../shared/types';
 import {
+  apiActivateUser,
   apiChangeProfileData,
   apiChangeUserData,
   apiGetProfile,
   apiGetToken,
   apiGetUsers,
   apiRefreshToken,
-  apiSetNewPassword,
-  apiSetNewUser,
+  apiResetPasswordConfirmation,
+  apiRestorePassword,
+  apiSendActivationMail,
 } from '../../api/user';
-import {
-  openPasswordRestore,
-  openProjects,
-  openSignScreen,
-} from '../../utils/history';
+import { openProjects, openSignScreen } from '../../utils/history';
 import { DEFAULT_RESPONSE_ERROR } from '../../constants/defaultParams';
 import TYPES from '../../constants/actions';
 import { AppReduxState } from '../../shared/types/app';
