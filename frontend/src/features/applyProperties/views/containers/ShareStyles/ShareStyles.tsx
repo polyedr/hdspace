@@ -127,6 +127,7 @@ const ShareStyles: React.FC<Props> = ({
           {sharedClasses.length ? (
             sharedClasses.map((sharedClass) => (
               <Chip
+                key={sharedClass.className}
                 size="small"
                 variant="outlined"
                 className={classes.root}
@@ -148,6 +149,7 @@ const ShareStyles: React.FC<Props> = ({
           {elementClassNames.length ? (
             (elementClassNames as string[]).map((className) => (
               <Chip
+                key={className}
                 size="small"
                 className={classes.elementsStylesChip}
                 label={className}

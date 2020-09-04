@@ -41,3 +41,10 @@ export const isElementCanBeAdded = (
 
   return sameChildrenAmount < availableSameChildren.max;
 };
+
+export const canElementHaveChildren = (
+  elementType: Entity | 'none',
+): boolean => {
+  if (elementType === 'none') return false;
+  return !!Object.entries(AVAILABLE_CHILDREN[elementType]).length;
+};

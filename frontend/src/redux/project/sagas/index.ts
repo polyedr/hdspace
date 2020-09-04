@@ -301,10 +301,6 @@ function* moveElementSaga(action: ReturnType<typeof Actions.moveElement>): any {
 
   if (isRemote) return;
 
-  if (!undo) {
-    yield call(focusOnElement, elementID);
-  }
-
   const elementData = {
     name: targetParent.name,
     children: [...targetParent.children.map((child) => child.id), elementID],
