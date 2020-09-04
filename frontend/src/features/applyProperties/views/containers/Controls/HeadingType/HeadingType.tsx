@@ -1,18 +1,20 @@
 import React, { memo } from 'react';
 import { connect } from 'react-redux';
 
-import { AppReduxState } from '$shared/types/app';
-import { selectors } from '$redux/project/';
-import { DropDown } from '$components/UI/DropDown/';
-import {
-  withConfigurableProperties,
-  PropertiesChangeProps,
-} from '$utils/withConfigurableProperties';
-import sharedClasses from '$styles/sharedClasses';
-import { HeadingType as HeadingTagType, HeadingElement } from '$api/types';
-
 import ControlTitle from '../../../components/ControlTitle/ControlTitle';
 import { HEADING_TYPE, HEADING_SETTINGS } from './constants';
+import { DropDown } from '../../../../../../components/UI/DropDown';
+import {
+  HeadingElement,
+  HeadingType as HeadingTagType,
+} from '../../../../../../api/types';
+import { AppReduxState } from '../../../../../../shared/types/app';
+import sharedClasses from '../../../../../../styles/sharedClasses';
+import { selectActiveItemParams } from '../../../../../../redux/project/selectors';
+import {
+  PropertiesChangeProps,
+  withConfigurableProperties,
+} from '../../../../../../utils/withConfigurableProperties';
 
 const styles = require('./HeadingType.scss');
 
@@ -21,9 +23,7 @@ type StateProps = {
 };
 
 function mapState(state: AppReduxState): StateProps {
-  const activeItemParams = selectors.selectActiveItemParams<HeadingElement>(
-    state,
-  );
+  const activeItemParams = selectActiveItemParams<HeadingElement>(state);
 
   return {
     headingType: activeItemParams.headingType,

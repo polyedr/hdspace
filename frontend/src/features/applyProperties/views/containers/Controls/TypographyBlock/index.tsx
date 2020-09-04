@@ -1,23 +1,21 @@
 import React, { memo, useCallback } from 'react';
 import cn from 'classnames';
 import { connect } from 'react-redux';
-
-import { DropDown } from '$components/UI/DropDown/';
-import Icon from '$components/UI/Icon/';
-import Button from '$components/UI/Button/';
-import FONTS from '$constants/fonts';
-import { getPermissibleValue } from '$utils/NumberHelper';
-import {
-  withConfigurableProperties,
-  PropertiesChangeProps,
-} from '$utils/withConfigurableProperties';
-import ColorSettings from '$features/applyProperties/views/components/ColorSettings/ColorSettings';
-import { LibraryElement } from '$api/types';
-import { Entity } from '$domain/core';
-import { AppReduxState } from '$shared/types/app';
-import { selectors } from '$redux/project';
-
 import StylesHeader from '../../../components/StylesHeader/StylesHeader';
+import { DropDown } from '../../../../../../components/UI/DropDown';
+import Button from '../../../../../../components/UI/Button';
+import Icon from '../../../../../../components/UI/Icon';
+import ColorSettings from '../../../components/ColorSettings/ColorSettings';
+import { Entity } from '../../../../../../domain/core';
+import { AppReduxState } from '../../../../../../shared/types/app';
+import { LibraryElement } from '../../../../../../api/types';
+import {
+  PropertiesChangeProps,
+  withConfigurableProperties,
+} from '../../../../../../utils/withConfigurableProperties';
+import { getPermissibleValue } from '../../../../../../utils/NumberHelper';
+import FONTS from '../../../../../../constants/fonts';
+import { selectCurrentEditableStyles } from '../../../../../../redux/project/selectors';
 
 const styles = require('./styles.scss');
 
@@ -26,12 +24,12 @@ const MAX_FONT_SIZE = 84;
 
 function mapState(state: AppReduxState) {
   return {
-    fontFamily: selectors.selectCurrentEditableStyles(state, 'font-family'),
-    fontStyle: selectors.selectCurrentEditableStyles(state, 'font-style'),
-    fontWeight: selectors.selectCurrentEditableStyles(state, 'font-weight'),
-    fontSize: selectors.selectCurrentEditableStyles(state, 'font-size'),
-    textAlign: selectors.selectCurrentEditableStyles(state, 'text-align'),
-    color: selectors.selectCurrentEditableStyles(state, 'color'),
+    fontFamily: selectCurrentEditableStyles(state, 'font-family'),
+    fontStyle: selectCurrentEditableStyles(state, 'font-style'),
+    fontWeight: selectCurrentEditableStyles(state, 'font-weight'),
+    fontSize: selectCurrentEditableStyles(state, 'font-size'),
+    textAlign: selectCurrentEditableStyles(state, 'text-align'),
+    color: selectCurrentEditableStyles(state, 'color'),
   };
 }
 type Props = ReturnType<typeof mapState> &

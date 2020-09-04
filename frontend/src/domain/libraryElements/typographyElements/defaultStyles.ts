@@ -1,21 +1,21 @@
 import {
-  DEFAULT_SIZE,
-  DEFAULT_INDENTS,
-  DEFAULT_DISPLAY,
-  DEFAULT_BORDER,
   DEFAULT_BACKGROUND,
+  DEFAULT_BORDER,
   DEFAULT_BULLETS,
+  DEFAULT_DISPLAY,
+  DEFAULT_INDENTS,
+  DEFAULT_SIZE,
   DEFAULT_TYPOGRAPHY,
-} from '$domain/constants/defaultStyles';
+} from '../../constants/defaultStyles';
 import {
-  hyperlinkStyleControls,
   headingStyleControls,
+  hyperlinkStyleControls,
+  listItemStyleControls,
+  listStyleControls,
   paragraphStyleControls,
   textBlockStyleControls,
-  listStyleControls,
-  listItemStyleControls,
-} from '$domain/core';
-import { CssLikeStyles } from '$utils/StyleHelper';
+} from '../../core';
+import { CssLikeStyles } from '../../../utils/StyleHelper';
 
 type HyperlinkControls = typeof hyperlinkStyleControls[number];
 type HeadingControls = typeof headingStyleControls[number];

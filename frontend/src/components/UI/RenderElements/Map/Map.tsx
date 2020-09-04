@@ -1,12 +1,11 @@
 /* eslint-disable jsx-a11y/no-noninteractive-tabindex */
+// @ts-nocheck
 
 import React from 'react';
 import cn from 'classnames';
 import { makeStyles } from '@material-ui/core';
-
-import GMap from '$components/UI/GMap';
-
 import { MapRendererProps } from '../types';
+import GMap from '../../GMap';
 
 const styles = require('../styles.scss');
 

@@ -1,9 +1,5 @@
 import React from 'react';
-
-import { Entity } from '$domain/core';
-
-import { withAction } from '$utils/withAction';
-import { Action } from './Action/Action';
+import Action from './Action/Action';
 import Checkbox from './Checkbox/Checkbox';
 import Radiobutton from './Radiobutton/Radiobutton';
 import Input from './Input/Input';
@@ -30,6 +26,8 @@ import Container from './Container/Container';
 import Clock from './Clock/Clock';
 import Undefined from './Undefined/Undefined';
 import Screenshot from './Screenshot/Screenshot';
+import { Entity } from '../../../domain/core';
+import { withAction } from '../../../utils/withAction';
 
 export const RENDERERS: Record<Entity, React.FC<any>> = {
   root: Container,

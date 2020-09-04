@@ -1,6 +1,5 @@
-import { replaceElementStyles } from '$utils/ElementsTreeHelper';
-
 import { mockRootWithStyles as mockRoot } from './mocks';
+import { replaceElementStyles } from '../ElementsTreeHelper';
 
 describe('replaceElementStyles', () => {
   test('Should replace element styles on 1 level', () => {

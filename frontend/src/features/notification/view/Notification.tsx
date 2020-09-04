@@ -3,10 +3,11 @@ import { connect } from 'react-redux';
 import { Snackbar, SnackbarCloseReason, IconButton } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 
-import { AppReduxState } from '$shared/types/app';
-import { Notification as NotificationType } from '$redux/project/types';
-import { selectors, actionsCreators } from '$redux/project';
-import { NOTIFICATION_AUTO_HIDE_DURATION } from '$features/notification/types';
+import { Notification as NotificationType } from '../../../redux/project/types';
+import { NOTIFICATION_AUTO_HIDE_DURATION } from '../types';
+import { AppReduxState } from '../../../shared/types/app';
+import { removeNotification } from '../../../redux/project/actions';
+import { selectNotification } from '../../../redux/project/selectors';
 
 type StateProps = {
   notification: NotificationType | null;
@@ -14,12 +15,12 @@ type StateProps = {
 
 function mapState(state: AppReduxState): StateProps {
   return {
-    notification: selectors.selectNotification(state),
+    notification: selectNotification(state),
   };
 }
 
 const mapDispatch = {
-  removeNotification: actionsCreators.removeNotification,
+  removeNotification,
 };
 
 type Props = StateProps & typeof mapDispatch;

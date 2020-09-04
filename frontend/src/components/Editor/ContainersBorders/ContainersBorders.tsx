@@ -1,20 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import cn from 'classnames';
-
-import { actionsCreators, selectors } from '$redux/project';
-import { AppReduxState } from '$shared/types/app';
-import { LibraryElement } from '$api/types';
-import { Entity } from '$domain/core';
+import { Entity } from '../../../domain/core';
+import { AppReduxState } from '../../../shared/types/app';
+import { LibraryElement } from '../../../api/types';
+import {
+  selectActiveItem,
+  selectRootElement,
+  selectShowingBorders,
+} from '../../../redux/project/selectors';
+import { setActiveItem } from '../../../redux/project/actions';
 
 const styles = require('./ContainersBorders.scss');
 
 const mapState = (state: AppReduxState) => {
-  const root = (selectors.selectRootElement(
-    state,
-  ) as unknown) as LibraryElement<'root', LibraryElement<Entity>[]>;
-  const activeItem = selectors.selectActiveItem(state);
-  const showBorders = selectors.selectShowingBorders(state);
+  const root = (selectRootElement(state) as unknown) as LibraryElement<
+    'root',
+    LibraryElement<Entity>[]
+  >;
+  const activeItem = selectActiveItem(state);
+  const showBorders = selectShowingBorders(state);
 
   return {
     root,
@@ -24,7 +29,7 @@ const mapState = (state: AppReduxState) => {
 };
 
 const mapDispatch = {
-  setActiveItem: actionsCreators.setActiveItem,
+  setActiveItem,
 };
 
 type Props = ReturnType<typeof mapState> & typeof mapDispatch;

@@ -2,56 +2,58 @@
 
 import { call, put, select } from 'redux-saga/effects';
 import * as R from 'ramda';
+import * as Actions from '../actions';
+import { selectors, T } from '..';
+import { updateSavedElementsValues } from './screen';
 
-import * as Actions from '$redux/project/actions';
+import {
+  DISALLOW_ADD_ELEMENT_NOTIFICATION_TEXT,
+  DISALLOW_REMOVE_ELEMENT_NOTIFICATION_TEXT,
+} from '../../../features/notification/types';
+import {
+  LibraryElement,
+  LibraryElementUnion,
+  ServerElement,
+} from '../../../api/types';
+import { Entity } from '../../../domain/core';
+import {
+  addChildrenToElement,
+  findChildByID,
+  findParentByChildID,
+  getElementsArray,
+  moveElement,
+  removeChildrenFromElement,
+  updateElementName,
+  updateElementParameters,
+} from '../../../utils/ElementsTreeHelper';
 import {
   convertCreatedElementToRequest,
   convertElementToPatchRequest,
   convertElementToRequest,
-} from '$api/converters/toRequest';
-import {
-  apiAddElements,
-  apiSaveElements,
-  apiChangeRecursiveElement,
-  apiChangeElement,
-  apiGetElement,
-} from '$api/element';
-import { apiAddScenarios } from '$api/scenario';
-import { LibraryElement, ServerElement, LibraryElementUnion } from '$api/types';
-import { convertElementFromResponse } from '$api/converters/fromResponse';
-import { Entity } from '$domain/core';
-import { DEFAULT_INDENTS } from '$domain/constants/defaultStyles';
-import {
-  DISALLOW_REMOVE_ELEMENT_NOTIFICATION_TEXT,
-  DISALLOW_ADD_ELEMENT_NOTIFICATION_TEXT,
-} from '$features/notification/types';
-import { reqWrapper } from '$redux/project/sagas/index';
-import { ReturnPromisedType } from '$shared/types';
-import {
-  isElementCanBeRemove,
-  isElementCanBeAdded,
-} from '$utils/AvailableChildrenHelper';
-import getSavedValue from '$utils/getSavedValue';
-import {
-  findParentByChildID,
-  findChildByID,
-  moveElement,
-  addChildrenToElement,
-  removeChildrenFromElement,
-  updateElementParameters,
-  getElementsArray,
-  updateElementName,
-  focusOnElement,
-} from '$utils/ElementsTreeHelper';
-
-import { selectors, T } from '..';
-import { updateSavedElementsValues } from './screen';
+} from '../../../api/converters/toRequest';
 import {
   redoWrapIntoContainer,
   setUndoActions,
   unwrapFromContainer,
-} from '$redux/project/actions';
-import { ElementHistoryMeta } from '$redux/project/types';
+} from '../actions';
+import {
+  apiAddElements,
+  apiChangeElement,
+  apiChangeRecursiveElement,
+  apiGetElement,
+  apiSaveElements,
+} from '../../../api/element';
+import {
+  isElementCanBeAdded,
+  isElementCanBeRemove,
+} from '../../../utils/AvailableChildrenHelper';
+import { DEFAULT_INDENTS } from '../../../domain/constants/defaultStyles';
+import { apiAddScenarios } from '../../../api/scenario';
+import { ElementHistoryMeta } from '../types';
+import { ReturnPromisedType } from '../../../shared/types';
+import { convertElementFromResponse } from '../../../api/converters/fromResponse';
+import getSavedValue from '../../../utils/getSavedValue';
+import { reqWrapper } from './index';
 
 export function* updateElementsTree(
   root: LibraryElement<'root'>,
@@ -108,6 +110,7 @@ export function* createElements(
 
   if (disallowedElements.length) {
     yield put(Actions.setNotification(DISALLOW_ADD_ELEMENT_NOTIFICATION_TEXT));
+    return;
   }
 
   const allowedElements = elements.filter((element) =>
@@ -168,6 +171,7 @@ export function* createElements(
     data: elementsWithUpdatedBuoyancy,
   });
 
+  // eslint-disable-next-line consistent-return
   return newElements.map((el) => el.id);
 }
 
@@ -202,11 +206,6 @@ export function* createElementsSaga(
   yield call(createElements, convertedCreatedElements, activeItemElement, {
     screenId,
   });
-
-  yield call(
-    focusOnElement,
-    activeItem.itemType === 'root' ? 'root' : activeItem.itemId,
-  );
 }
 
 export function* addChildToElementSaga(
@@ -309,8 +308,6 @@ export function* softDeleteSaga(action: T.DeleteItem) {
   yield put(Actions.updateElementsTree(updatedRoot, action, action.meta));
 
   const filtered = childrenIds.filter((childId) => childId !== id);
-
-  yield call(focusOnElement, parent.type === 'root' ? 'root' : parent.id);
 
   yield call(reqWrapper, apiChangeRecursiveElement, {
     data: { children: filtered },
@@ -447,8 +444,6 @@ export function* wrapIntoContainerSaga(action: T.WrapIntoContainer) {
       action.meta,
     ),
   );
-
-  yield call(focusOnElement, id);
 }
 
 export function* unwrapFromContainerSaga(
@@ -490,7 +485,6 @@ export function* unwrapFromContainerSaga(
       undo: true,
     }),
   );
-  yield call(focusOnElement, elementID);
 }
 
 export function* renameElementSaga(
@@ -578,5 +572,4 @@ export function* redoWrapIntoContainerSaga(
   yield put(
     Actions.updateElementsTree(updatedRoot, action, { screenId, redo: true }),
   );
-  yield call(focusOnElement, elementId);
 }

@@ -1,11 +1,9 @@
 /* eslint-disable no-console */
 
 import { AxiosResponse, AxiosError } from 'axios';
-
-import { myAxios, MyAxiosProps } from '$config/settings';
-
 import { convertProjectFromResponse } from './converters/fromResponse';
 import { Project } from './types';
+import { myAxios, MyAxiosProps } from '../../config/settings';
 
 export const onError = ({ response: r }: AxiosError) => {
   const response = r as any;

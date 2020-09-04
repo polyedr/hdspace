@@ -1,24 +1,19 @@
 import React, { memo, useCallback } from 'react';
 import { connect } from 'react-redux';
-
-import {
-  withConfigurableProperties,
-  PropertiesChangeProps,
-} from '$utils/withConfigurableProperties';
-import ColorSettings from '$features/applyProperties/views/components/ColorSettings/ColorSettings';
-import { LibraryElement } from '$api/types';
-import { Entity } from '$domain/core';
-import { AppReduxState } from '$shared/types/app';
-import { selectors } from '$redux/project';
-
 import StylesHeader from '../../../components/StylesHeader/StylesHeader';
+import ColorSettings from '../../../components/ColorSettings/ColorSettings';
+import { Entity } from '../../../../../../domain/core';
+import { AppReduxState } from '../../../../../../shared/types/app';
+import { LibraryElement } from '../../../../../../api/types';
+import {
+  PropertiesChangeProps,
+  withConfigurableProperties,
+} from '../../../../../../utils/withConfigurableProperties';
+import { selectCurrentEditableStyles } from '../../../../../../redux/project/selectors';
 
 function mapState(state: AppReduxState) {
   return {
-    backgroundColor: selectors.selectCurrentEditableStyles(
-      state,
-      'background-color',
-    ),
+    backgroundColor: selectCurrentEditableStyles(state, 'background-color'),
   };
 }
 

@@ -1,13 +1,12 @@
 import React, { useCallback } from 'react';
 import { connect } from 'react-redux';
-
-import { AppReduxState } from '$shared/types/app';
-import { selectors } from '$redux/project/';
+import { AppReduxState } from '../../../../../../shared/types/app';
+import { selectActiveItemParams } from '../../../../../../redux/project/selectors';
 import {
-  withConfigurableProperties,
   PropertiesChangeProps,
-} from '$utils/withConfigurableProperties';
-import { TextinputElement } from '$api/types';
+  withConfigurableProperties,
+} from '../../../../../../utils/withConfigurableProperties';
+import { TextinputElement } from '../../../../../../api/types';
 
 const styles = require('./Placeholder.scss');
 
@@ -16,9 +15,7 @@ type StateProps = {
 };
 
 function mapState(state: AppReduxState): StateProps {
-  const activeItemParams = selectors.selectActiveItemParams<TextinputElement>(
-    state,
-  );
+  const activeItemParams = selectActiveItemParams<TextinputElement>(state);
 
   return {
     placeholder: activeItemParams.placeholder,

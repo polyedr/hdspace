@@ -1,22 +1,23 @@
 import React, { useCallback, useContext } from 'react';
 import { connect } from 'react-redux';
 
-import { selectors, actionsCreators } from '$redux/project';
-import { AppReduxState } from '$shared/types/app';
-import { LinkContext } from '$containers/ExportedApp';
 import {
-  SharedRendererProps,
   ActionRendererProps,
-} from '$components/UI/RenderElements/types';
+  SharedRendererProps,
+} from '../components/UI/RenderElements/types';
+import { LinkContext } from '../containers/ExportedApp';
+import { AppReduxState } from '../shared/types/app';
+import { selectCurrentProject } from '../redux/project/selectors';
+import { activateScreen } from '../redux/project/actions';
 
 const mapStateToProps = (state: AppReduxState) => {
-  const projectID = selectors.selectCurrentProject(state).id;
+  const projectID = selectCurrentProject(state).id;
 
   return { projectID };
 };
 
 const mapDispatchToProps = {
-  activateScreen: actionsCreators.activateScreen,
+  activateScreen,
 };
 
 export type ActionType = 'external-link' | 'internal-link' | 'button';

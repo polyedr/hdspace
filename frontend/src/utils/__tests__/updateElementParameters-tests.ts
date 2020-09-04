@@ -1,6 +1,5 @@
-import { updateElementParameters } from '$utils/ElementsTreeHelper';
-
 import { mockRoot } from './mocks';
+import { updateElementParameters } from '../ElementsTreeHelper';
 
 describe('updateElementParameters', () => {
   test('Should update element parameters on 1 level', () => {

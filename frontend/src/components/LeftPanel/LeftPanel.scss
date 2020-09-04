@@ -1,16 +1,14 @@
 $transition_config: 0.3s ease;
 
 .leftPanel {
+  display: flex;
+  flex-direction: column;
   position: fixed;
-
   width: $leftPanel_fullWidth;
   height: 100vh;
-
   font-weight: 600;
   color: $lightBlue;
-
   background-color: $lightMatteTurq;
-
   overflow: hidden;
   transition: width $transition_config;
   user-select: none;

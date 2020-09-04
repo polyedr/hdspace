@@ -1,8 +1,7 @@
 import { createReducer, Handlers } from 'reduxsauce';
-
-import * as ACTIONS from '$redux/user/actions';
-import TYPES from '$constants/actions';
-import { IRootState, UnsafeReturnType } from '$redux/user/types';
+import TYPES from '../../constants/actions';
+import { IRootState, UnsafeReturnType } from './types';
+import * as Actions from './actions';
 
 interface ActionHandler<T> {
   (state: IRootState, payload: UnsafeReturnType<T>): IRootState;
@@ -41,20 +40,20 @@ const INITIAL_STATE: IRootState = {
 };
 
 const changeMinLPanel: ActionHandler<ReturnType<
-  typeof ACTIONS.changeMinLPanel
+  typeof Actions.changeMinLPanel
 >> = (state) => ({
   ...state,
   isLPanelMinimized: !state.isLPanelMinimized,
 });
 
-const changeMinNavPanel: ActionHandler<typeof ACTIONS.changeMinNavPanel> = (
+const changeMinNavPanel: ActionHandler<typeof Actions.changeMinNavPanel> = (
   state,
 ) => ({
   ...state,
   isNavPanelMinimized: !state.isNavPanelMinimized,
 });
 
-const changeSignLoader: ActionHandler<typeof ACTIONS.changeSignLoader> = (
+const changeSignLoader: ActionHandler<typeof Actions.changeSignLoader> = (
   state,
   { isSignLoader },
 ) => ({
@@ -62,7 +61,7 @@ const changeSignLoader: ActionHandler<typeof ACTIONS.changeSignLoader> = (
   isSignLoader,
 });
 
-const setApiResponseError: ActionHandler<typeof ACTIONS.setApiResponseError> = (
+const setApiResponseError: ActionHandler<typeof Actions.setApiResponseError> = (
   state,
   { apiResponseError },
 ) => ({
@@ -70,7 +69,7 @@ const setApiResponseError: ActionHandler<typeof ACTIONS.setApiResponseError> = (
   apiResponseError,
 });
 
-const changePrototypeMode: ActionHandler<typeof ACTIONS.changePrototypeMode> = (
+const changePrototypeMode: ActionHandler<typeof Actions.changePrototypeMode> = (
   state,
   { isPrototypeMode },
 ) => ({
@@ -78,7 +77,7 @@ const changePrototypeMode: ActionHandler<typeof ACTIONS.changePrototypeMode> = (
   isPrototypeMode,
 });
 
-const setTokenPair: ActionHandler<typeof ACTIONS.setTokenPair> = (
+const setTokenPair: ActionHandler<typeof Actions.setTokenPair> = (
   state,
   { tokenPair },
 ) => ({
@@ -86,7 +85,7 @@ const setTokenPair: ActionHandler<typeof ACTIONS.setTokenPair> = (
   tokenPair,
 });
 
-const setUserData: ActionHandler<typeof ACTIONS.setUserData> = (
+const setUserData: ActionHandler<typeof Actions.setUserData> = (
   state,
   { payload },
 ) => ({
@@ -97,15 +96,7 @@ const setUserData: ActionHandler<typeof ACTIONS.setUserData> = (
   },
 });
 
-const setConfirmMessage: ActionHandler<typeof ACTIONS.setConfirmMessage> = (
-  state,
-  { payload },
-) => ({
-  ...state,
-  confirmMessage: payload.confirmMessage,
-});
-
-const setLoadedToken: ActionHandler<typeof ACTIONS.setLoadedToken> = (
+const setLoadedToken: ActionHandler<typeof Actions.setLoadedToken> = (
   state,
   { isLoadedToken },
 ) => ({
@@ -113,7 +104,16 @@ const setLoadedToken: ActionHandler<typeof ACTIONS.setLoadedToken> = (
   isLoadedToken,
 });
 
-const setRestorePasswordEmail: ActionHandler<typeof ACTIONS.setRestorePasswordEmail> = (
+const setConfirmMessage: ActionHandler<typeof Actions.setConfirmMessage> = (
+  state,
+  { payload },
+) => ({
+  ...state,
+  confirmMessage: payload.confirmMessage,
+});
+
+
+const setRestorePasswordEmail: ActionHandler<typeof Actions.setRestorePasswordEmail> = (
   state,
   { restorePasswordEmail },
 ) => ({
@@ -121,7 +121,7 @@ const setRestorePasswordEmail: ActionHandler<typeof ACTIONS.setRestorePasswordEm
   restorePasswordEmail,
 });
 
-const setRestoreUserId: ActionHandler<typeof ACTIONS.setRestoreUserId> = (
+const setRestoreUserId: ActionHandler<typeof Actions.setRestoreUserId> = (
   state,
   { restoreUserId },
 ) => ({
@@ -129,12 +129,12 @@ const setRestoreUserId: ActionHandler<typeof ACTIONS.setRestoreUserId> = (
   restoreUserId,
 });
 
-const logout: ActionHandler<typeof ACTIONS.logout> = () => ({
+const logout: ActionHandler<typeof Actions.logout> = () => ({
   ...INITIAL_STATE,
 });
 
 // TODO: type Action in Handlers
-const HANDLERS: Handlers<IRootState, any> = {
+const HANDLERS: Handlers<IRootState> = {
   [TYPES.CHANGE_L_PANEL]: changeMinLPanel,
   [TYPES.CHANGE_NAV_PANEL]: changeMinNavPanel,
   [TYPES.CHANGE_PROTOTYPE_MODE]: changePrototypeMode,

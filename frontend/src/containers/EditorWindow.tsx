@@ -3,31 +3,31 @@ import { Switch, Route, Redirect } from 'react-router-dom';
 import { connect, useDispatch } from 'react-redux';
 import classNames from 'classnames';
 
-import { AppReduxState } from '$shared/types/app';
-import * as ActionsUser from '$redux/user/actions';
-import * as ActionsProject from '$redux/project/actions';
-import * as PATH_NAMES from '$constants/pathNames';
-import ProjectsLogic from '$containers/ProjectsLogic';
-import EditorLogic from '$containers/EditorLogic';
-import TopPanel from '$components/TopPanel/TopPanel';
-import { LeftPanel } from '$components/LeftPanel/LeftPanel';
-import { selectors } from '$redux/project';
-import { Project } from '$api/types';
-import Profile from '$components/User/Profile';
+import { LeftPanel } from '../components/LeftPanel/LeftPanel';
+import TopPanel from '../components/TopPanel/TopPanel';
+import Profile from '../components/User/Profile';
+import ProjectsLogic from './ProjectsLogic';
+import EditorLogic from './EditorLogic';
+import { Project } from '../api/types';
+import { AppReduxState } from '../shared/types/app';
+import { PATH_NAMES } from '../constants/pathNames';
+import { selectProjects } from '../redux/project/selectors';
+import { changeMinLPanel } from '../redux/user/actions';
+import { getProjectList, setProjectList } from '../redux/project/actions';
 
-const styles = require('$styles/global.scss');
+const styles = require('../styles/global.scss');
 
 const mapStateToProps = (state: AppReduxState) => ({
   isLPanelMinimized: state.user.isLPanelMinimized,
   username: state.user.userData.username,
-  projects: selectors.selectProjects(state),
+  projects: selectProjects(state),
   pathname: state.router.location.pathname,
 });
 
 const mapDispatchToProps = {
-  changeMinLPanel: ActionsUser.changeMinLPanel,
-  getListProject: ActionsProject.getProjectList,
-  setListProject: ActionsProject.setProjectList,
+  changeMinLPanel,
+  getListProject: getProjectList,
+  setListProject: setProjectList,
 };
 
 export type IAppProps = ReturnType<typeof mapStateToProps> &
@@ -46,7 +46,7 @@ const EditorWindow: React.FC<IAppProps> = ({
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(ActionsProject.getProjectList());
+    dispatch(getProjectList());
   }, [dispatch]);
 
   return (

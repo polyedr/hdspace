@@ -1,14 +1,14 @@
 /* eslint-disable camelcase */
-
-import { IMapProps } from '$redux/project/types';
+import React from 'react';
+import { IMapProps } from '../../../redux/project/types';
 import {
-  LibraryElement,
   HeadingType,
-  LinkParams,
-  VideoSettingsType,
   InputType,
+  LibraryElement,
+  LinkParams,
   ProjectClass,
-} from '$api/types';
+  VideoSettingsType,
+} from '../../../api/types';
 
 export type SharedRendererProps = {
   id: string;

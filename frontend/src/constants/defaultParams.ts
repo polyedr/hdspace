@@ -1,21 +1,13 @@
+import { getDefaultStyles } from '../domain/libraryElements/defaultStyles';
+import { LibraryElement, Project } from '../api/types';
+import { IApiResponseError, ITokenPair } from '../redux/user/types';
 import {
-  IProjectScreen,
   ActiveItem,
-  ServerStructType,
   ILSItem,
-} from '$redux/project/types';
-import { IApiResponseError, ITokenPair } from '$redux/user/types';
-import { LibraryElement, Project } from '$api/types';
-import { CssLikeStyles } from '$utils/StyleHelper';
-import { getDefaultStyles } from '$domain/libraryElements/defaultStyles';
-import {
-  isRequired,
-  composeValidators,
-  isValidEmail,
-  isLongPassword,
-  isOnlyNumeric,
-} from '$shared/validators';
-import { isLatinOrNumbers } from '$shared/validators/isLatinOrNumbers';
+  IProjectScreen,
+  ServerStructType,
+} from '../redux/project/types';
+import { CssLikeStyles } from '../utils/StyleHelper';
 
 export interface ISignFormElement {
   label: string;

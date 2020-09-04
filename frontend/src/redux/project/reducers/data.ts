@@ -1,6 +1,6 @@
 import { initialData } from '../initial';
 import * as T from '../types';
-import TYPES from '$constants/actions';
+import TYPES from '../../../constants/actions';
 
 function dataReducer(
   state: T.ProjectDataState = initialData,

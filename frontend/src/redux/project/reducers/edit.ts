@@ -1,7 +1,7 @@
 import * as R from 'ramda';
 import { initialEdit } from '../initial';
 import * as T from '../types';
-import TYPES from '$constants/actions';
+import TYPES from '../../../constants/actions';
 
 const editReducer = (
   state: T.ProjectEditState = initialEdit,

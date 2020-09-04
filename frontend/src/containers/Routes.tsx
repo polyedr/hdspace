@@ -7,15 +7,14 @@ import {
   Redirect,
   RouteComponentProps,
 } from 'react-router-dom';
+import SignIn from '../components/User/SignIn/SignIn';
+import SignUp from '../components/User/SignUp/SignUp';
+import Activation from '../components/User/Activation/Activation';
+import ResetPassword from '../components/User/ResetPassword/ResetPassword';
+import EditorWindow from './EditorWindow';
+import { PATH_NAMES } from '../constants/pathNames';
 
-import * as PATH_NAMES from '$constants/pathNames';
-import EditorWindow from '$containers/EditorWindow';
-import SignIn from '$components/User/SignIn/SignIn';
-import SignUp from '$components/User/SignUp/SignUp';
-import Activation from '$components/User/Activation/Activation';
-import ResetPassword from '$components/User/ResetPassword/ResetPassword';
-
-const styles = require('$styles/global.scss');
+const styles = require('../styles/global.scss');
 
 type Props = RouteComponentProps;
 

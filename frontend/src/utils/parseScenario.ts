@@ -1,24 +1,23 @@
 /* eslint-disable camelcase */
 
 import * as R from 'ramda';
-
-import { IDropDownOptions } from '$components/UI/DropDown';
-import { ITemplateElement } from '$constants/defaultParams';
+import { IDropDownOptions } from '../components/UI/DropDown';
 import {
-  IScenarios,
-  IScenarioItem,
-  IScenarioElements,
-  ScenarioLibraryElement,
+  CreatedElement,
   ILSItem,
   IScenarioElement,
+  IScenarioElements,
+  IScenarioItem,
+  IScenarios,
+  ScenarioLibraryElement,
   ServerStructType,
-  CreatedElement,
-} from '$redux/project/types';
-import { ENTITIES, ElementEntity } from '$domain/core';
+} from '../redux/project/types';
+import { ITemplateElement } from '../constants/defaultParams';
+import { ElementEntity, ENTITIES } from '../domain/core';
 import {
-  LibraryElements,
   ElementsToAdd,
-} from '$domain/libraryElements/libraryElements';
+  LibraryElements,
+} from '../domain/libraryElements/libraryElements';
 
 export type GroupElement = {
   key: string;

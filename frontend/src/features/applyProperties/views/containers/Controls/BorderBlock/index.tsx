@@ -1,32 +1,33 @@
 import React, { memo, useCallback } from 'react';
 import cn from 'classnames';
 import { connect } from 'react-redux';
-
+import StylesHeader from '../../../components/StylesHeader/StylesHeader';
+import ColorSettings from '../../../components/ColorSettings/ColorSettings';
 import {
   MAX_BORDER_RADIUS,
   MAX_BORDER_RADIUS_PERCENT,
   MAX_BORDER_WIDTH,
   MIN_BORDER_RADIUS,
   MIN_BORDER_WIDTH,
-} from '$constants/defaultParams';
+} from '../../../../../../constants/defaultParams';
+import { Entity } from '../../../../../../domain/core';
+import { LibraryElement } from '../../../../../../api/types';
 import {
-  strToNumber,
   getPermissibleValue,
-  safeParseFloat,
   safeMatch,
-} from '$utils/NumberHelper';
-import { validateBorderRadius, CssLikeStyles } from '$utils/StyleHelper';
+  safeParseFloat,
+  strToNumber,
+} from '../../../../../../utils/NumberHelper';
 import {
-  withConfigurableProperties,
   PropertiesChangeProps,
-} from '$utils/withConfigurableProperties';
-import ColorSettings from '$features/applyProperties/views/components/ColorSettings/ColorSettings';
-import { LibraryElement } from '$api/types';
-import { Entity } from '$domain/core';
-import { AppReduxState } from '$shared/types/app';
-import { selectors } from '$redux/project';
-
-import StylesHeader from '../../../components/StylesHeader/StylesHeader';
+  withConfigurableProperties,
+} from '../../../../../../utils/withConfigurableProperties';
+import {
+  CssLikeStyles,
+  validateBorderRadius,
+} from '../../../../../../utils/StyleHelper';
+import { AppReduxState } from '../../../../../../shared/types/app';
+import { selectCurrentEditableStyles } from '../../../../../../redux/project/selectors';
 
 const styles = require('./styles.scss');
 
@@ -37,9 +38,9 @@ const accessBorderRadius = (border: CssLikeStyles['border-radius']) => {
 
 function mapState(state: AppReduxState) {
   return {
-    borderColor: selectors.selectCurrentEditableStyles(state, 'border-color'),
-    borderWidth: selectors.selectCurrentEditableStyles(state, 'border-width'),
-    borderRadius: selectors.selectCurrentEditableStyles(state, 'border-radius'),
+    borderColor: selectCurrentEditableStyles(state, 'border-color'),
+    borderWidth: selectCurrentEditableStyles(state, 'border-width'),
+    borderRadius: selectCurrentEditableStyles(state, 'border-radius'),
   };
 }
 

@@ -1,18 +1,18 @@
 import React, { useCallback, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import cn from 'classnames';
-
 import { useDispatch, useSelector } from 'react-redux';
-import { IMAGES } from '$constants/images';
-import Icon from '$components/UI/Icon';
-import Button from '$components/UI/Button';
-import * as PATH_NAMES from '$constants/pathNames';
-import Scrollbar from '$components/UI/Scrollbar';
-import * as ActionsProject from '$redux/project/actions';
-import { openSignScreen } from '$utils/history';
-import { Project } from '$api/types';
-import { logout } from '$redux/user/actions';
-import { selectUserData } from '$redux/user/selectors';
+import Navigator from '../Navigator';
+import Button from '../UI/Button';
+import Icon from '../UI/Icon';
+import Scrollbar from '../UI/Scrollbar';
+import { Project } from '../../api/types';
+import { setProjectList } from '../../redux/project/actions';
+import { selectUserData } from '../../redux/user/selectors';
+import { logout } from '../../redux/user/actions';
+import { IMAGES } from '../../constants/images';
+import { openSignScreen } from '../../utils/history';
+import { PATH_NAMES } from '../../constants/pathNames';
 
 const styles = require('./LeftPanel.scss');
 
@@ -21,7 +21,7 @@ export type LeftPanelProps = {
   projects: Project[];
   username?: string;
   isLPanelMinimized: boolean;
-  setListProject: typeof ActionsProject.setProjectList;
+  setListProject: typeof setProjectList;
 };
 
 export const LeftPanel: React.FunctionComponent<LeftPanelProps> = ({
@@ -76,6 +76,7 @@ export const LeftPanel: React.FunctionComponent<LeftPanelProps> = ({
               </span>
               <span className={styles.profileText}>{email}</span>
             </div>
+
             <Button onClick={handleLogoutClick} className={styles.profileBtn}>
               Log out
             </Button>
@@ -102,6 +103,7 @@ export const LeftPanel: React.FunctionComponent<LeftPanelProps> = ({
                 <Icon icon="dashboard" />
                 <span>My Projects</span>
               </NavLink>
+
               <Button
                 className={cn(
                   styles.navigationExpandBtn,
@@ -113,6 +115,7 @@ export const LeftPanel: React.FunctionComponent<LeftPanelProps> = ({
                 <Icon icon="expand" size={30} />
               </Button>
             </div>
+
             <ul
               className={cn(
                 styles.navigationInnerList,
@@ -144,6 +147,7 @@ export const LeftPanel: React.FunctionComponent<LeftPanelProps> = ({
               </Scrollbar>
             </ul>
           </li>
+
           <li className={styles.navigationItem}>
             <NavLink
               className={styles.navigationLink}
@@ -157,6 +161,8 @@ export const LeftPanel: React.FunctionComponent<LeftPanelProps> = ({
           </li>
         </ul>
       </nav>
+
+      <Navigator />
     </aside>
   );
 };

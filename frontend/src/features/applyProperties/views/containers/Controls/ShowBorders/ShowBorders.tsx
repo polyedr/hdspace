@@ -1,9 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
-
-import { actionsCreators, selectors } from '$redux/project';
-import { AppReduxState } from '$shared/types/app';
-import Checkbox from '$features/applyProperties/views/components/Checkbox/Checkbox';
+import Checkbox from '../../../components/Checkbox/Checkbox';
+import { AppReduxState } from '../../../../../../shared/types/app';
+import { toggleContainersBorders } from '../../../../../../redux/project/actions';
+import { selectShowingBorders } from '../../../../../../redux/project/selectors';
 
 const styles = require('./ShowBorders.scss');
 
@@ -13,12 +13,12 @@ type StateProps = {
 
 const mapState = (state: AppReduxState) => {
   return {
-    showBorders: selectors.selectShowingBorders(state),
+    showBorders: selectShowingBorders(state),
   };
 };
 
 const mapDispatch = {
-  toggleBorders: actionsCreators.toggleContainersBorders,
+  toggleBorders: toggleContainersBorders,
 };
 
 type Props = StateProps & typeof mapDispatch;

@@ -1,14 +1,14 @@
 import {
-  HyperlinkServerElement,
   HeadingServerElement,
-  ParagraphServerElement,
-  OcrtextServerElement,
-  TextBlockServerElement,
+  HeadingType,
+  HyperlinkServerElement,
   ListItemServerElement,
   ListServerElement,
-  HeadingType,
-} from '$api/types';
-import { CssLikeStyles } from '$utils/StyleHelper';
+  OcrtextServerElement,
+  ParagraphServerElement,
+  TextBlockServerElement,
+} from '../../../api/types';
+import { CssLikeStyles } from '../../../utils/StyleHelper';
 
 export const hyperlink: HyperlinkServerElement = {
   buoyancy: 0,

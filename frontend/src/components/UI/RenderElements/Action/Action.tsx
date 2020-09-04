@@ -1,11 +1,10 @@
+// @ts-nocheck
 import React from 'react';
 import cn from 'classnames';
 import { Link } from 'react-router-dom';
 import { makeStyles, Button } from '@material-ui/core';
-
-import { WithActionProps, ActionType } from '$utils/withAction';
-
 import { ActionRendererProps } from '../types';
+import { ActionType, WithActionProps } from '../../../../utils/withAction';
 
 const styles = require('../styles.scss');
 
@@ -63,7 +62,7 @@ const getStyles = (
     },
   });
 
-export const Action: ActionRenderer = ({
+const Action: ActionRenderer = ({
   id,
   isDisabled,
   params,
@@ -117,3 +116,5 @@ export const Action: ActionRenderer = ({
     </Button>
   );
 };
+
+export default Action;

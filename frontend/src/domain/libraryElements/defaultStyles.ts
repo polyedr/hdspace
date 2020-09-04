@@ -1,5 +1,3 @@
-import { Entity } from '$domain/core';
-import { CssLikeStyles } from '$utils/StyleHelper';
 import {
   defaultRootStyles,
   defaultContainerStyles,
@@ -42,9 +40,11 @@ import {
   defaultCardsSectionStyles,
   defaultFeatureSectionStyles,
 } from './blocksTemplates/defaultStyles';
+import { Entity } from '../core';
+import { CssLikeStyles } from '../../utils/StyleHelper';
 
 export const DEFAULT_ELEMENTS_STYLES: {
-  [K in Entity]: { [key: string]: CssLikeStyles };
+  [K in Entity]: { [key: string]: CssLikeStyles | undefined };
 } = {
   root: defaultRootStyles,
   container: defaultContainerStyles,

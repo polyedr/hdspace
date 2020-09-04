@@ -1,6 +1,5 @@
-import { updateElementStyles } from '$utils/ElementsTreeHelper';
-
 import { mockRoot } from './mocks';
+import { updateElementStyles } from '../ElementsTreeHelper';
 
 describe('updateElementStyles', () => {
   test('Should update element styles on 1 level', () => {

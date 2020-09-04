@@ -1,18 +1,17 @@
 import React, { useCallback } from 'react';
 import { connect, useSelector } from 'react-redux';
-
+import { selectCurrentScreenId } from '../../../../../../redux/project/selectors';
+import { ImageElement } from '../../../../../../api/types';
 import {
-  withConfigurableProperties,
   PropertiesChangeProps,
-} from '$utils/withConfigurableProperties';
-import { actionsCreators } from '$redux/project';
-import { ImageElement } from '$api/types';
-import { selectCurrentScreenId } from '$redux/project/selectors';
+  withConfigurableProperties,
+} from '../../../../../../utils/withConfigurableProperties';
+import { updateElementImage } from '../../../../../../redux/project/actions';
 
 const styles = require('./Image.scss');
 
 const mapDispatch = {
-  updateElementImage: actionsCreators.updateElementImage,
+  updateElementImage,
 };
 
 type Props = PropertiesChangeProps<ImageElement> & typeof mapDispatch;

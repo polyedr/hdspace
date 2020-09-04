@@ -1,18 +1,18 @@
 import {
-  DEFAULT_TYPOGRAPHY,
-  DEFAULT_INDENTS,
-  DEFAULT_SIZE,
-  DEFAULT_DISPLAY,
-  DEFAULT_BORDER,
-  DEFAULT_BACKGROUND,
-} from '$domain/constants/defaultStyles';
-import {
-  pageTemplateStyleControls,
-  subscribeFormStyleControls,
   cardsSectionStyleControls,
   featureSectionStyleControls,
-} from '$domain/core';
-import { CssLikeStyles } from '$utils/StyleHelper';
+  pageTemplateStyleControls,
+  subscribeFormStyleControls,
+} from '../../core';
+import {
+  DEFAULT_BACKGROUND,
+  DEFAULT_BORDER,
+  DEFAULT_DISPLAY,
+  DEFAULT_INDENTS,
+  DEFAULT_SIZE,
+  DEFAULT_TYPOGRAPHY,
+} from '../../constants/defaultStyles';
+import { CssLikeStyles } from '../../../utils/StyleHelper';
 
 type pageTemplateControls = typeof pageTemplateStyleControls[number];
 type subscribeFormControls = typeof subscribeFormStyleControls[number];

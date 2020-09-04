@@ -1,6 +1,7 @@
 {
   "allowSyntheticDefaultImports": true,
   "compilerOptions": {
+    "skipLibCheck": true,
     "esModuleInterop": true,
     "outDir": "./dist/",
     "sourceMap": true,
@@ -10,27 +11,14 @@
     "target": "es6",
     "jsx": "react",
     "lib": [ "es2020", "dom", "scripthost"],
+    "noImplicitAny": false,
     "experimentalDecorators": true,
-    "baseUrl": ".",
-    "paths": {
-      "$components/*": [ "src/components/*" ],
-      "$containers/*": [ "src/containers/*" ],
-      "$features/*": [ "src/features/*" ],
-      "$constants/*": [ "src/constants/*" ],
-      "$assets/*": [ "src/assets/*" ],
-      "$config/*": [ "./config/*" ],
-      "$styles/*": [ "src/styles/*" ],
-      "$redux/*": [ "src/redux/*" ],
-      "$utils/*": [ "src/utils/*" ],
-      "$api/*": [ "src/api/*" ],
-      "$test/*": [ "./test/*" ],
-      "$shared/*": [ "src/shared/*" ],
-      "$domain/*": [ "src/domain/*" ]
-    }
+    "baseUrl": "."
   },
   "include": [
     //"./src/index.tsx",
     "src/**/*"
     // "./src/**/*",
-  ]
+  ],
+  "exclude": ["node_modules", "**/__tests__/**"]
 }

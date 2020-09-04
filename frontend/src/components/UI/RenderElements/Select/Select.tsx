@@ -1,13 +1,12 @@
 /* eslint-disable jsx-a11y/no-noninteractive-tabindex */
+// @ts-nocheck
 
 import React, { ChangeEvent } from 'react';
 import cn from 'classnames';
 import { makeStyles, TextField, MenuItem } from '@material-ui/core';
 import * as R from 'ramda';
-
-import { convertPropCSS } from '$utils/StyleHelper';
-
 import { SelectRendererProps } from '../types';
+import { convertPropCSS } from '../../../../utils/StyleHelper';
 
 const styles = require('../styles.scss');
 

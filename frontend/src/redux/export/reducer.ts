@@ -1,6 +1,6 @@
 import { initial, ReduxState } from './initial';
-import { Action } from '$redux/project/types';
-import TYPES from '$constants/actions';
+import TYPES from '../../constants/actions';
+import { Action } from '../project/types';
 
 function uiReducer(state: ReduxState = initial, action: Action): ReduxState {
   switch (action.type) {

@@ -1,12 +1,10 @@
 import React, { memo, useCallback } from 'react';
 import cn from 'classnames';
-
-import { Flex } from '$redux/project/types';
-import { DropDown } from '$components/UI/DropDown/';
-import Button from '$components/UI/Button/';
-
 import ControlTitle from '../ControlTitle/ControlTitle';
 import { JUSTIFY_VALUES, ALIGN_VALUES } from './constants';
+import Button from '../../../../../components/UI/Button';
+import { DropDown } from '../../../../../components/UI/DropDown';
+import { Flex } from '../../../../../redux/project/types';
 
 const styles = require('./FlexProperties.scss');
 

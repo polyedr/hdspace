@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 
-import { CssLikeStyles } from '$utils/StyleHelper';
-import { Entity } from '$domain/core';
+import { Entity } from '../../domain/core';
+import { CssLikeStyles } from '../../utils/StyleHelper';
 
 export type CreatedServerProject = {
   name: string;

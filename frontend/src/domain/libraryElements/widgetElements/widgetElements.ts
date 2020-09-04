@@ -1,9 +1,9 @@
 import {
-  MapServerElement,
   CalendarServerElement,
   ClockServerElement,
-} from '$api/types';
-import { CssLikeStyles } from '$utils/StyleHelper';
+  MapServerElement,
+} from '../../../api/types';
+import { CssLikeStyles } from '../../../utils/StyleHelper';
 
 export const map: MapServerElement = {
   buoyancy: 0,

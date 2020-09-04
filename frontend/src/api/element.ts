@@ -1,15 +1,13 @@
 /* eslint-disable camelcase */
-
-import { myAxios, MyAxiosProps } from '$config/settings';
-import { onError, parseResult } from '$api/project';
-import { IScenarioElement, ServerStructType } from '$redux/project/types';
-
 import { RecursiveElement, ServerElement, LibraryElement } from './types';
 import {
   convertElementFromResponse,
   convertRecursiveElementFromResponse,
 } from './converters/fromResponse';
-import { Entity } from '$domain/core';
+import { IScenarioElement, ServerStructType } from '../redux/project/types';
+import { Entity } from '../domain/core';
+import { onError, parseResult } from './project';
+import { myAxios, MyAxiosProps } from '../../config/settings';
 
 type ServerLibraryElement = {
   // TODO: compare with entity on backend!

@@ -1,17 +1,18 @@
 import React, { memo, useEffect } from 'react';
 import { connect } from 'react-redux';
-
-import { AppReduxState } from '$shared/types/app';
-import { selectors } from '$redux/project/';
-import { DropDown } from '$components/UI/DropDown/';
-import {
-  withConfigurableProperties,
-  PropertiesChangeProps,
-} from '$utils/withConfigurableProperties';
-import sharedClasses from '$styles/sharedClasses';
-import { SelectElement } from '$api/types';
-
 import ControlTitle from '../../../components/ControlTitle/ControlTitle';
+import { DropDown } from '../../../../../../components/UI/DropDown';
+import { SelectElement } from '../../../../../../api/types';
+import { AppReduxState } from '../../../../../../shared/types/app';
+import sharedClasses from '../../../../../../styles/sharedClasses';
+import {
+  selectActiveItemChildren,
+  selectActiveItemParams,
+} from '../../../../../../redux/project/selectors';
+import {
+  PropertiesChangeProps,
+  withConfigurableProperties,
+} from '../../../../../../utils/withConfigurableProperties';
 
 const styles = require('./SelectValue.scss');
 
@@ -21,11 +22,9 @@ type StateProps = {
 };
 
 function mapState(state: AppReduxState): StateProps {
-  const activeItemParams = selectors.selectActiveItemParams<SelectElement>(
-    state,
-  );
+  const activeItemParams = selectActiveItemParams<SelectElement>(state);
   const { value } = activeItemParams;
-  const selectMenu = selectors.selectActiveItemChildren(state, 'selectMenu');
+  const selectMenu = selectActiveItemChildren(state, 'selectMenu');
   const selectOptions = selectMenu[0].children;
   const optionsValues = selectOptions.map(
     ({ parameters: { value: optionValue } }) => optionValue || '',

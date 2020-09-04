@@ -1,10 +1,9 @@
 import * as R from 'ramda';
 
-import { LibraryElement } from '$api/types';
-import { Entity } from '$domain/core';
-import { LIBRARY_ELEMENTS } from '$domain/libraryElements/libraryElements';
-
 import { CssLikeStyles } from './StyleHelper';
+import { Entity } from '../domain/core';
+import { LibraryElement } from '../api/types';
+import { LIBRARY_ELEMENTS } from '../domain/libraryElements/libraryElements';
 
 export const findParentByChildID = (
   element: LibraryElement<Entity, LibraryElement<Entity>[]>,
@@ -362,6 +361,3 @@ export const getTreeWithDefaultStylesAndParams = <T extends Entity>(
     return replaceChild(element.id, newElement, acc) as LibraryElement<T>;
   }, root);
 };
-
-export const focusOnElement = (id: string) =>
-  document.querySelector<HTMLElement>(`[data-ls-id='${id}']`)?.focus();

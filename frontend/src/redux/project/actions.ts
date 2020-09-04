@@ -1,14 +1,13 @@
-import { CssLikeStyles } from '$utils/StyleHelper';
-import {
-  LibraryEntities,
-  ChildrenElements,
-} from '$domain/libraryElements/libraryElements';
-import { ChildEntity, Entity } from '$domain/core';
-import { LibraryElement, Project } from '$api/types';
-
-import * as T from './types';
-import TYPES from '$constants/actions';
 import { ElementHistoryMeta, HistoryMeta, IProjectScreen } from './types';
+import TYPES from '../../constants/actions';
+import { LibraryElement, Project } from '../../api/types';
+import { ChildEntity, Entity } from '../../domain/core';
+import {
+  ChildrenElements,
+  LibraryEntities,
+} from '../../domain/libraryElements/libraryElements';
+import { CssLikeStyles } from '../../utils/StyleHelper';
+import * as T from './types';
 
 export const getLibraryElements = (): T.LoadLibraryElements => ({
   type: TYPES.GET_LIBRARY_ELEMENTS,

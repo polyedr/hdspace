@@ -1,7 +1,7 @@
 import React from 'react';
 import GoogleMapReact from 'google-map-react';
 
-import { IMapProps } from '$redux/project/types';
+import { IMapProps } from '../../../redux/project/types';
 
 const styles = require('./styles.scss');
 

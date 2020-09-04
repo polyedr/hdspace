@@ -2,25 +2,29 @@ import React, { useState, useCallback, memo, useEffect } from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 
-import Button from '$components/UI/Button';
-import Icon from '$components/UI/Icon';
-import ActionsBlock from '$components/ModalAddElements/ActionsBlock/ActionsBlock';
-import UploadFile, { IUploadFile } from '$components/UI/UploadFile';
-import { MODAL_ADD_ELEMENTS_TABS } from '$constants/defaultParams';
+import Button from '../../UI/Button';
+import Icon from '../../UI/Icon';
+import UploadFile, { IUploadFile } from '../../UI/UploadFile';
+import ActionsBlock from '../ActionsBlock/ActionsBlock';
 import {
   getGroupElements,
   IListCategoryEl,
   parseAddElementsTabs,
-} from '$utils/parseScenario';
-import { selectors, actionsCreators } from '$redux/project';
-import { AppReduxState } from '$shared/types/app';
+} from '../../../utils/parseScenario';
+import { AppReduxState } from '../../../shared/types/app';
 import {
-  ServerStructType,
-  CreatedElement,
   ActiveItem,
+  CreatedElement,
   ElementHistoryMeta,
-} from '$redux/project/types';
-import { LibraryElements } from '$domain/libraryElements/libraryElements';
+  ServerStructType,
+} from '../../../redux/project/types';
+import { MODAL_ADD_ELEMENTS_TABS } from '../../../constants/defaultParams';
+import { LibraryElements } from '../../../domain/libraryElements/libraryElements';
+import {
+  selectCurrentScreen,
+  selectUploadedImageInfo,
+} from '../../../redux/project/selectors';
+import { getScreenNN, uploadFile } from '../../../redux/project/actions';
 
 const styles = require('./ModalAddElements.scss');
 
@@ -32,14 +36,14 @@ export interface IChooseElement {
 
 function mapStateToProps(state: AppReduxState) {
   return {
-    uploadedImageInfo: selectors.selectUploadedImageInfo(state),
-    currentScreen: selectors.selectCurrentScreen(state),
+    uploadedImageInfo: selectUploadedImageInfo(state),
+    currentScreen: selectCurrentScreen(state),
   };
 }
 
 const mapDispatchToProps = {
-  getScreenNN: actionsCreators.getScreenNN,
-  uploadImg: actionsCreators.uploadFile,
+  getScreenNN,
+  uploadImg: uploadFile,
 };
 
 type OwnProps = {

@@ -1,6 +1,5 @@
 /* eslint-disable camelcase */
 
-import { Entity } from '$domain/core';
 import {
   ImageParameters,
   ButtonParameters,
@@ -24,6 +23,7 @@ import {
   DropdownItemParameters,
   ScreenshotParameters,
 } from './elementsParameters';
+import { Entity } from '../../domain/core';
 
 export type ServerElement<
   Type extends Entity,

@@ -1,6 +1,6 @@
 /* eslint-disable import/prefer-default-export */
 import classNames from 'classnames';
-import { IScreenMode } from '$components/Editor/Editor';
+import { IScreenMode } from '../components/Editor/Editor';
 
 export const getClassDevice = (
   styles: { [className: string]: string },

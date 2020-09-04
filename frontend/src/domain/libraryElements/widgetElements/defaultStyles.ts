@@ -1,16 +1,16 @@
 import {
-  DEFAULT_SIZE,
-  DEFAULT_INDENTS,
-  DEFAULT_BORDER,
   DEFAULT_BACKGROUND,
+  DEFAULT_BORDER,
+  DEFAULT_INDENTS,
+  DEFAULT_SIZE,
   DEFAULT_TYPOGRAPHY,
-} from '$domain/constants/defaultStyles';
+} from '../../constants/defaultStyles';
 import {
-  mapStyleControls,
   calendarStyleControls,
   clockStyleControls,
-} from '$domain/core';
-import { CssLikeStyles } from '$utils/StyleHelper';
+  mapStyleControls,
+} from '../../core';
+import { CssLikeStyles } from '../../../utils/StyleHelper';
 
 type MapControls = typeof mapStyleControls[number];
 type CalendarControls = typeof calendarStyleControls[number];

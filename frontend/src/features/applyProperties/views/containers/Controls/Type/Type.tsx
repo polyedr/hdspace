@@ -1,18 +1,16 @@
 import React, { memo } from 'react';
 import { connect } from 'react-redux';
-
-import { AppReduxState } from '$shared/types/app';
-import { selectors } from '$redux/project/';
-import { DropDown } from '$components/UI/DropDown/';
-import {
-  withConfigurableProperties,
-  PropertiesChangeProps,
-} from '$utils/withConfigurableProperties';
-import sharedClasses from '$styles/sharedClasses';
-import { InputType, TextinputElement } from '$api/types';
-
 import ControlTitle from '../../../components/ControlTitle/ControlTitle';
 import TYPE from './constants';
+import { DropDown } from '../../../../../../components/UI/DropDown';
+import { AppReduxState } from '../../../../../../shared/types/app';
+import { selectActiveItemParams } from '../../../../../../redux/project/selectors';
+import sharedClasses from '../../../../../../styles/sharedClasses';
+import {
+  PropertiesChangeProps,
+  withConfigurableProperties,
+} from '../../../../../../utils/withConfigurableProperties';
+import { InputType, TextinputElement } from '../../../../../../api/types';
 
 const styles = require('./Type.scss');
 
@@ -21,9 +19,7 @@ type StateProps = {
 };
 
 function mapState(state: AppReduxState): StateProps {
-  const activeItemParams = selectors.selectActiveItemParams<TextinputElement>(
-    state,
-  );
+  const activeItemParams = selectActiveItemParams<TextinputElement>(state);
 
   return {
     type: activeItemParams.type,

@@ -1,11 +1,11 @@
+// @ts-nocheck
+
 import React from 'react';
 import cn from 'classnames';
 import { Link as RouterLink } from 'react-router-dom';
 import { Link as MaterialLink, makeStyles } from '@material-ui/core';
-
-import { WithActionProps } from '$utils/withAction';
-
 import { ActionRendererProps } from '../types';
+import { WithActionProps } from '../../../../utils/withAction';
 
 const styles = require('../styles.scss');
 

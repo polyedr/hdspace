@@ -8,7 +8,7 @@ const store = {
   activeComponent: null,
 };
 
-export class Sortable extends Component {
+export default class Sortable extends Component {
   static propTypes = {
     options: PropTypes.object,
     onChange: PropTypes.func,

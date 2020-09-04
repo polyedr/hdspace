@@ -1,12 +1,21 @@
 import React, { useCallback } from 'react';
 import { connect, useSelector } from 'react-redux';
-
-import { AppReduxState } from '$shared/types/app';
-import { actionsCreators, selectors } from '$redux/project/';
-import { CssLikeStyles } from '$utils/StyleHelper';
-import { LibraryElement } from '$api/types';
-import { Entity } from '$domain/core';
-import { selectCurrentScreenId } from '$redux/project/selectors';
+import {
+  selectActiveItem,
+  selectCurrentScreenId,
+  selectEditableStyles,
+} from '../redux/project/selectors';
+import { Entity } from '../domain/core';
+import { AppReduxState } from '../shared/types/app';
+import {
+  removeElementStyles,
+  removeSharedStyles,
+  updateElementParameters,
+  updateElementStyles,
+  updateSharedStyles,
+} from '../redux/project/actions';
+import { LibraryElement } from '../api/types';
+import { CssLikeStyles } from './StyleHelper';
 
 type StateProps = {
   activeItemType: Entity | 'none';
@@ -15,9 +24,9 @@ type StateProps = {
 };
 
 function mapState(state: AppReduxState): StateProps {
-  const activeItemType = selectors.selectActiveItem(state).itemType;
-  const activeItemID = selectors.selectActiveItem(state).itemId;
-  const editableStyles = selectors.selectEditableStyles(state);
+  const activeItemType = selectActiveItem(state).itemType;
+  const activeItemID = selectActiveItem(state).itemId;
+  const editableStyles = selectEditableStyles(state);
 
   return {
     activeItemType,
@@ -27,11 +36,11 @@ function mapState(state: AppReduxState): StateProps {
 }
 
 const mapDispatch = {
-  updateElementParameters: actionsCreators.updateElementParameters,
-  removeSharedStyles: actionsCreators.removeSharedStyles,
-  updateSharedStyles: actionsCreators.updateSharedStyles,
-  removeElementStyles: actionsCreators.removeElementStyles,
-  updateElementStyles: actionsCreators.updateElementStyles,
+  updateElementParameters,
+  removeSharedStyles,
+  updateSharedStyles,
+  removeElementStyles,
+  updateElementStyles,
 };
 
 export type PropertiesChangeProps<T extends LibraryElement<Entity>> = {
