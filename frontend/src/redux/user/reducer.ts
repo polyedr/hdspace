@@ -33,8 +33,10 @@ const INITIAL_STATE: IRootState = {
   apiResponseError: {
     errorStatus: -1,
     errorText: '',
+    data: {},
   },
   isSignLoader: false,
+  confirmMessage: '',
 };
 
 const changeMinLPanel: ActionHandler<ReturnType<
@@ -102,6 +104,14 @@ const setLoadedToken: ActionHandler<typeof Actions.setLoadedToken> = (
   isLoadedToken,
 });
 
+const setConfirmMessage: ActionHandler<typeof Actions.setConfirmMessage> = (
+  state,
+  { payload },
+) => ({
+  ...state,
+  confirmMessage: payload.confirmMessage,
+});
+
 const setRestorePasswordEmail: ActionHandler<typeof Actions.setRestorePasswordEmail> = (
   state,
   { restorePasswordEmail },
@@ -135,6 +145,7 @@ const HANDLERS: Handlers<IRootState> = {
   [TYPES.SET_RESTORE_PASSWORD_EMAIL]: setRestorePasswordEmail,
   [TYPES.SET_RESTORE_USER_ID]: setRestoreUserId,
   [TYPES.LOGOUT]: logout,
+  [TYPES.SET_CONFIRM_MESSAGE]: setConfirmMessage,
 } as const;
 
 export default createReducer(INITIAL_STATE, HANDLERS);

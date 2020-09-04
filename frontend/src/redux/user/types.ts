@@ -51,6 +51,7 @@ export type TotalUserData = ProfileData & UserData;
 export interface IApiResponseError {
   errorStatus: number;
   errorText: string;
+  data: { [key: string]: string };
 }
 
 export type IRootState = Readonly<{
@@ -64,6 +65,7 @@ export type IRootState = Readonly<{
   restorePasswordEmail?: string;
   restoreUserId?: number;
   isSignLoader: boolean;
+  confirmMessage: string;
 }>;
 
 export type UnsafeReturnType<T> = T extends (...args: any[]) => infer R

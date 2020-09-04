@@ -40,20 +40,46 @@ export const setUserData = (data: Partial<TotalUserData>) => ({
   payload: data,
 });
 
-export const setNewUser = (
+export const sendActivationMail = (
   username: string,
   email: string,
+  password: string,
   firstName: string,
   lastName: string,
-  password: string,
 ) => ({
-  type: TYPES.SET_NEW_USER,
+  type: TYPES.SEND_ACTIVATION_MAIL,
   payload: {
     username,
     email,
+    password,
     firstName,
     lastName,
-    password,
+  },
+});
+
+export const sendResetPasswordMail = (email: string) => ({
+  type: TYPES.SEND_RESET_PASSWORD_MAIL,
+  payload: {
+    email,
+  },
+});
+
+export const registerWithGoogle = () => ({
+  type: TYPES.REGISTER_WITH_GOOGLE,
+});
+
+export const setConfirmMessage = (confirmMessage: string) => ({
+  type: TYPES.SET_CONFIRM_MESSAGE,
+  payload: {
+    confirmMessage,
+  },
+});
+
+export const activateUser = (uid: string, token: string) => ({
+  type: TYPES.ACTIVATE_USER,
+  payload: {
+    uid,
+    token,
   },
 });
 
@@ -67,24 +93,29 @@ export const setLoadedToken = (isLoadedToken: boolean) => ({
   isLoadedToken,
 });
 
-export const restorePassword = (email: string) => ({
-  type: TYPES.RESTORE_PASSWORD,
-  email,
-});
-
 export const setRestorePasswordEmail = (restorePasswordEmail: string) => ({
   type: TYPES.SET_RESTORE_PASSWORD_EMAIL,
   restorePasswordEmail,
 });
 
+export const resetPasswordConfirmation = (
+  uid: string,
+  token: string,
+  newPassword: string,
+  reNewPassword: string,
+) => ({
+  type: TYPES.RESET_PASSWORD_CONFIRMATION,
+  payload: {
+    uid,
+    token,
+    newPassword,
+    reNewPassword,
+  },
+});
+
 export const setRestoreUserId = (restoreUserId: number) => ({
   type: TYPES.SET_RESTORE_USER_ID,
   restoreUserId,
-});
-
-export const setNewPassword = (password: string) => ({
-  type: TYPES.SET_NEW_PASSWORD,
-  password,
 });
 
 export const changeUserData = (id: number, data: Partial<UserData>) => ({

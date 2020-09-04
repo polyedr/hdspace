@@ -55,6 +55,7 @@ export const myAxios = (props: MyAxiosProps) => {
       ...authorization,
     },
     data: props.data || {},
+    params: props.params,
   });
 };
 

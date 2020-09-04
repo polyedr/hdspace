@@ -111,7 +111,6 @@
     "bem-cn": "^3.0.1",
     "classnames": "^2.2.6",
     "connected-react-router": "^6.8.0",
-    "core-decorators": "^0.20.0",
     "core-js": "^3.6.5",
     "express": "^4.17.1",
     "file-saver": "^2.0.2",
@@ -135,6 +134,7 @@
     "react-custom-scrollbars": "^4.2.1",
     "react-dom": "^16.13.1",
     "react-final-form": "^6.5.1",
+    "react-google-login": "^5.1.21",
     "react-hot-loader": "^4.12.21",
     "react-redux": "^7.2.1",
     "react-router": "^5.2.0",
@@ -148,7 +148,6 @@
     "reselect": "^4.0.0",
     "sass-loader": "^7.3.1",
     "sass-resources-loader": "^2.1.0",
-    "scrypt": "^6.0.3",
     "sortablejs": "^1.10.2",
     "throttle-debounce": "^2.3.0"
   }
