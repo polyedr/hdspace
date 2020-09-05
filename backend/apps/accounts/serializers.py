@@ -46,22 +46,13 @@ class ProfileSerializer(serializers.ModelSerializer):
         fields = ("users", "avatar", "approved", "role", "hourly_rate")
 
 
-"""
 class TeamSerializer(serializers.ModelSerializer):
     class Meta:
         model = Team
-        fields = (
-            # "charge",
-            # "time_log",
-            # "position",
-            # "date_joined",
-            "is_active",
-            "role",
-        )
+        fields = '__all__'
 
 
 class TeamMemberSerializer(serializers.ModelSerializer):
     class Meta:
         model = TeamMember
-        fields = ("owner", "members")
-"""
+        fields = '__all__'

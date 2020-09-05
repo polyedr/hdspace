@@ -1,7 +1,17 @@
 """Urls for the accounts api"""
 
 from django.urls import path, include
-from .apiviews import UserList, UserDetail, ProfileList, ProfileDetail
+from .apiviews import (
+    UserList,
+    UserDetail,
+    ProfileList,
+    ProfileDetail,
+    TeamList,
+    TeamMemberDetail,
+    TeamMember,
+    TeamMemberList,
+    TeamDetail
+)
 
 
 api_user_patterns = [
@@ -14,22 +24,20 @@ api_profile_patterns = [
     path("profiles/<int:pk>/", ProfileDetail.as_view()),
 ]
 
-"""
 api_teammember_patterns = [
-    path('teammembers/', TeamMemberList.as_view()),
-    path('teammembers/<int:pk>/', TeamMemberDetail.as_view()),
+    path("teammembers/", TeamMemberList.as_view()),
+    path("teammembers/<int:pk>/", TeamMemberDetail.as_view()),
 ]
 
 api_team_patterns = [
-    path('teams/', TeamList.as_view()),
-    path('teams/<int:pk>/', TeamDetail.as_view()),
+    path("teams/", TeamList.as_view()),
+    path("teams/<int:pk>/", TeamDetail.as_view()),
 ]
-"""
 
 app_name = "api_accounts"
 urlpatterns = [
     path("", include(api_user_patterns)),
     path("", include(api_profile_patterns)),
-    # path("", include(api_teammember_patterns)),
-    # path("", include(api_team_patterns)),
+    path("", include(api_teammember_patterns)),
+    path("", include(api_team_patterns)),
 ]
