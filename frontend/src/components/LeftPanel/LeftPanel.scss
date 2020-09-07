@@ -76,9 +76,7 @@ $transition_config: 0.3s ease;
 
 .navigationItem {
   position: relative;
-
   box-sizing: border-box;
-
   overflow: hidden;
 
   &_column {
@@ -118,7 +116,6 @@ $transition_config: 0.3s ease;
 
 .navigationLink {
   position: relative;
-
   display: flex;
   justify-content: flex-start;
   align-items: center;
@@ -126,18 +123,14 @@ $transition_config: 0.3s ease;
   margin: 0;
   padding: 8px 0 8px 24px;
   box-sizing: border-box;
-
   color: $lightBlue;
   text-decoration: none;
-
   border-radius: 0;
   outline: none;
-
   cursor: pointer;
 
   &_inner {
     padding-left: 50px;
-
     background-color: $almostBlue;
   }
 
@@ -149,14 +142,12 @@ $transition_config: 0.3s ease;
   & svg {
     min-width: 24px;
     margin-right: 16px;
-
     fill: $lightBlue;
   }
 
   &:hover,
   &:focus {
     color: $veryLightBlue;
-
     background-color: $almostBlue;
 
     & svg {
@@ -174,9 +165,7 @@ $transition_config: 0.3s ease;
 
   &_active {
     box-sizing: border-box;
-
     color: $veryLightBlue;
-
     border-left: 5px solid $mainColor;
 
     &,
