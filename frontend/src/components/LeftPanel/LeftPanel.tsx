@@ -149,18 +149,6 @@ export const LeftPanel: React.FunctionComponent<LeftPanelProps> = ({
               </Scrollbar>
             </ul>
           </li>
-
-          <li className={styles.navigationItem}>
-            <NavLink
-              className={styles.navigationLink}
-              exact
-              to="/payments"
-              activeClassName="active"
-            >
-              <Icon icon="folder-open" />
-              <span>Workflow</span>
-            </NavLink>
-          </li>
         </ul>
       </nav>
 
