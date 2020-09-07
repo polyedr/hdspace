@@ -2,6 +2,7 @@ import React, { useCallback, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import cn from 'classnames';
 import { useDispatch, useSelector } from 'react-redux';
+import SubjectIcon from '@material-ui/icons/Subject';
 import Navigator from '../Navigator';
 import Button from '../UI/Button';
 import Icon from '../UI/Icon';
@@ -9,7 +10,7 @@ import Scrollbar from '../UI/Scrollbar';
 import { Project } from '../../api/types';
 import { setProjectList } from '../../redux/project/actions';
 import { selectUserData } from '../../redux/user/selectors';
-import { logout } from '../../redux/user/actions';
+import { changeMinLPanel, logout } from '../../redux/user/actions';
 import { IMAGES } from '../../constants/images';
 import { openSignScreen } from '../../utils/history';
 import { PATH_NAMES } from '../../constants/pathNames';
@@ -48,6 +49,10 @@ export const LeftPanel: React.FunctionComponent<LeftPanelProps> = ({
     setIsProjectsListActive(!isProjectsListActive);
   }, [isProjectsListActive, setIsProjectsListActive]);
 
+  const handleOpenLPanel = () => {
+    dispatch(changeMinLPanel());
+  };
+
   return (
     <aside
       className={cn(styles.leftPanel, isLPanelMinimized && styles.minPanel)}
@@ -59,7 +64,7 @@ export const LeftPanel: React.FunctionComponent<LeftPanelProps> = ({
         )}
       >
         <NavLink
-          to="/profile"
+          to={PATH_NAMES.profile}
           exact
           className={isLPanelMinimized ? styles.profileLink_minimized : ''}
         >
@@ -86,7 +91,7 @@ export const LeftPanel: React.FunctionComponent<LeftPanelProps> = ({
         )}
       </div>
 
-      <nav className={styles.mainNavigation}>
+      <nav>
         <ul className={styles.navigationList}>
           <li
             className={cn(styles.navigationItem, styles.navigationItem_column)}
@@ -112,7 +117,7 @@ export const LeftPanel: React.FunctionComponent<LeftPanelProps> = ({
                   isProjectsListActive && styles.navigationExpandBtn_active,
                 )}
                 styleType="none"
-                onClick={() => openProjectsList()}
+                onClick={openProjectsList}
               >
                 <Icon icon="expand" size={30} />
               </Button>
@@ -125,10 +130,8 @@ export const LeftPanel: React.FunctionComponent<LeftPanelProps> = ({
               )}
             >
               <Scrollbar
-                style={{
-                  paddingBottom: 15,
-                }}
                 trackStylesBg="transparent"
+                hideTracksWhenNotNeeded
                 maxHeight={165}
               >
                 {projects.map((project) => (
@@ -149,22 +152,21 @@ export const LeftPanel: React.FunctionComponent<LeftPanelProps> = ({
               </Scrollbar>
             </ul>
           </li>
-
-          <li className={styles.navigationItem}>
-            <NavLink
-              className={styles.navigationLink}
-              exact
-              to="/payments"
-              activeClassName="active"
-            >
-              <Icon icon="folder-open" />
-              <span>Workflow</span>
-            </NavLink>
-          </li>
         </ul>
       </nav>
 
-      {currentScreenId !== -1 && <Navigator />}
+      {currentScreenId !== -1 &&
+        (isLPanelMinimized ? (
+          <div
+            className={styles.navigationLink}
+            onClick={handleOpenLPanel}
+            title="Navigator"
+          >
+            <SubjectIcon />
+          </div>
+        ) : (
+          <Navigator />
+        ))}
     </aside>
   );
 };
