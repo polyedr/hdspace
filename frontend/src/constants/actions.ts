@@ -47,7 +47,7 @@ const TYPES = {
   SET_NOTIFICATION: 'notification:SET_NOTIFICATION',
   REMOVE_NOTIFICATION: 'notification:REMOVE_NOTIFICATION',
 
-  // Screen Actions
+  // ProjectScreen Actions
   SET_SCREEN_LOADER: 'screens:SET_SCREEN_LOADER',
   DELETE_SCREEN: 'screens:DELETE_SCREEN',
   RESTORE_SCREEN: 'screens:RESTORE_SCREEN',

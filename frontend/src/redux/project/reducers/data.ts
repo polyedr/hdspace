@@ -3,6 +3,7 @@ import * as T from '../types';
 import TYPES from '../../../constants/actions';
 import { arrayToMap } from '../../../utils/mappings';
 import { Project } from '../../../api/types';
+import { ProjectScreen } from '../types';
 
 function dataReducer(
   state: T.ProjectDataState = initialData,
@@ -21,47 +22,47 @@ function dataReducer(
     }
 
     case TYPES.SET_SCREENS: {
-      return { ...state, screens: action.payload.screens };
+      return {
+        ...state,
+        screens: arrayToMap<ProjectScreen>(action.payload.screens),
+      };
     }
 
     case TYPES.UPDATE_ELEMENTS_TREE: {
       const { root } = action.payload;
-      const newState = { ...state };
 
-      newState.screens = newState.screens.map((screen) => {
-        const result = { ...screen };
-        if (screen.element?.id === root.id) {
-          result.element = root;
-        }
-        return result;
-      });
+      const targetScreen = Object.values(state.screens).find(
+        (screen) => screen.element.id === root.id,
+      );
+      if (!targetScreen) return state;
 
-      return newState;
+      return {
+        ...state,
+        screens: {
+          ...state.screens,
+          [targetScreen.id]: {
+            ...state.screens[targetScreen.id],
+            element: root,
+          },
+        },
+      };
     }
 
     case TYPES.SET_SCREEN: {
-      const newState = { ...state };
-      newState.screens = newState.screens.map((screen) => {
-        if (screen.id === action.payload.screen.id) {
-          return {
+      const { screen } = action.payload;
+      return {
+        ...state,
+        screens: {
+          ...state.screens,
+          [screen.id]: {
+            ...state.screens[screen.id],
             ...screen,
-            ...action.payload.screen,
-          };
-        }
-        return screen;
-      });
-      return newState;
+          },
+        },
+      };
     }
 
     case TYPES.SET_PROJECT: {
-      /* const newState = { ...state };
-      newState.projects = newState.projects.map((project) => {
-        if (project.id === action.payload.project.id) {
-          return action.payload.project;
-        }
-        return project;
-      });
-      return newState; */
       return {
         ...state,
         projects: {
@@ -74,7 +75,7 @@ function dataReducer(
     case TYPES.RESET_SCREEN_STATE: {
       return {
         ...state,
-        screens: [],
+        screens: {},
       };
     }
 

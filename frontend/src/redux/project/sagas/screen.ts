@@ -21,7 +21,7 @@ import {
 } from '../../../api/screen';
 import { convertCreatedElementToRequest } from '../../../api/converters/toRequest';
 import { apiGetProject, apiSaveProject } from '../../../api/project';
-import { IProjectScreen, IScenarioItem } from '../types';
+import { ProjectScreen, IScenarioItem } from '../types';
 import {
   activateScreen,
   addScreen,
@@ -64,7 +64,7 @@ export function* activateScreenSaga({
 
   yield put(setActiveItem(DEFAULT_ACTIVE_ITEM));
 
-  const screen: IProjectScreen = yield select(selectScreenById(screenId));
+  const screen: ProjectScreen = yield select(selectScreenById(screenId));
   if (!screen) return;
 
   yield put(setCurrentScreenId(screen.id));
@@ -409,7 +409,7 @@ export function* renameScreenSaga({
     screens.map((screen) => screen.name),
   );
 
-  const renamedScreen: IProjectScreen = {
+  const renamedScreen: ProjectScreen = {
     ...targetScreen,
     name: numberedName,
   };
@@ -429,7 +429,7 @@ export function* getScreenNNSaga() {
     selectors.selectCurrentProject,
   );
 
-  const resultListScreen: IProjectScreen[] = yield call(
+  const resultListScreen: ProjectScreen[] = yield call(
     reqWrapper,
     apiGetAllScreen,
   );

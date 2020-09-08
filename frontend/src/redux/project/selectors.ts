@@ -10,6 +10,7 @@ import { LibraryElement, Project } from '../../api/types';
 import { CssLikeStyles } from '../../utils/StyleHelper';
 import { makeFeatureStateSelector } from '../../shared/redux';
 import { mapToArr } from '../../utils/mappings';
+import { ProjectScreen } from './types';
 
 export const selectProjectState = makeFeatureStateSelector('project');
 
@@ -21,41 +22,28 @@ export const selectProjectById = (projectId: number) => (
   state: AppReduxState,
 ) => selectProjectState(state).data.projects[projectId];
 
-export const selectScreenElement = (screenId: number) => (
-  state: AppReduxState,
-): LibraryElement<'root'> => {
-  const targetScreen = selectProjectState(state).data.screens.find(
-    ({ id }) => id === screenId,
-  );
-  return targetScreen ? targetScreen.element : DEFAULT_ROOT;
-};
+export const selectScreenElement = (screenId: number) => ({
+  project,
+}: AppReduxState): LibraryElement<'root'> =>
+  project.data.screens[screenId]?.element || DEFAULT_ROOT;
 
 export const selectCurrentScreenId = (state: AppReduxState) =>
   selectProjectState(state).edit.currentScreenId;
 
-export const selectCurrentScreen = (state: AppReduxState) => {
-  const activeScreenId = selectCurrentScreenId(state);
-
-  if (activeScreenId === -1) return DEFAULT_SCREEN;
-  return (
-    selectProjectState(state).data.screens.find(
-      ({ id }) => id === activeScreenId,
-    ) || DEFAULT_SCREEN
-  );
-};
+export const selectCurrentScreen = (state: AppReduxState) =>
+  state.project.data.screens[selectCurrentScreenId(state)] || DEFAULT_SCREEN;
 
 export const selectCurrentScreenElement = (state: AppReduxState) => {
   const currentScreen = selectCurrentScreen(state);
   return currentScreen.element;
 };
 
-export function selectScreens(state: AppReduxState) {
-  return selectProjectState(state).data.screens;
+export function selectScreens({ project }: AppReduxState) {
+  return mapToArr<ProjectScreen>(project.data.screens);
 }
 
-export const selectScreenById = (id: number) => (state: AppReduxState) =>
-  selectProjectState(state).data.screens.find((screen) => screen.id === id) ||
-  DEFAULT_SCREEN;
+export const selectScreenById = (id: number) => ({ project }: AppReduxState) =>
+  project.data.screens[id] || DEFAULT_SCREEN;
 
 export function selectNotification(state: AppReduxState) {
   return selectProjectState(state).edit.notification;
@@ -78,13 +66,6 @@ export const selectCurrentProjectId = ({ project }: AppReduxState) =>
 
 export const selectCurrentProject = (state: AppReduxState) =>
   state.project.data.projects[selectCurrentProjectId(state)] || DEFAULT_PROJECT;
-/* const { currentProjectId } = selectProjectState(state).edit;
-  if (currentProjectId === -1) return DEFAULT_PROJECT;
-  return (
-    selectProjectState(state).data.projects.find(
-      ({ id }) => id === currentProjectId,
-    ) || DEFAULT_PROJECT
-  ); */
 
 export const selectRootElement = (state: AppReduxState) =>
   selectCurrentScreen(state).element;

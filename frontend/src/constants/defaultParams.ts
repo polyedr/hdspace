@@ -4,7 +4,7 @@ import { IApiResponseError, ITokenPair } from '../redux/user/types';
 import {
   ActiveItem,
   ILSItem,
-  IProjectScreen,
+  ProjectScreen,
   ServerStructType,
 } from '../redux/project/types';
 import { CssLikeStyles } from '../utils/StyleHelper';
@@ -86,7 +86,7 @@ export const DEFAULT_ROOT: LibraryElement<'root'> = {
   },
 };
 
-export const DEFAULT_SCREEN: IProjectScreen = {
+export const DEFAULT_SCREEN: ProjectScreen = {
   id: -1,
   project: -1,
   name: '',

@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Button from '../UI/Button';
 import Icon from '../UI/Icon';
 import Modal from '../UI/Modal';
-import { IProjectScreen } from '../../redux/project/types';
+import { ProjectScreen } from '../../redux/project/types';
 import { selectCurrentScreen } from '../../redux/project/selectors';
 import {
   activateScreen,
@@ -17,8 +17,8 @@ import {
 const styles = require('./NavPanelScreen.scss');
 
 type Props = {
-  screen: IProjectScreen;
-  screens: IProjectScreen[];
+  screen: ProjectScreen;
+  screens: ProjectScreen[];
 };
 
 const ScreenButton: React.FC<Props> = ({

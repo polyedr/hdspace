@@ -1,4 +1,4 @@
-import { ElementHistoryMeta, HistoryMeta, IProjectScreen } from './types';
+import { ElementHistoryMeta, HistoryMeta, ProjectScreen } from './types';
 import TYPES from '../../constants/actions';
 import { LibraryElement, Project } from '../../api/types';
 import { ChildEntity, Entity } from '../../domain/core';
@@ -70,7 +70,7 @@ export const exportProject = (): T.ExportProject => ({
 });
 
 export const changeScreensOrder = (
-  screens: T.IProjectScreen[],
+  screens: T.ProjectScreen[],
 ): T.ChangeScreensOrder => ({
   type: TYPES.CHANGE_SCREENS_ORDER,
   payload: { screens },
@@ -224,14 +224,14 @@ export const setCurrentScreenId = (screenId: number): T.SetCurrentScreenId => ({
   payload: { screenId },
 });
 
-export const setScreen = (screen: IProjectScreen): T.SetScreen => ({
+export const setScreen = (screen: ProjectScreen): T.SetScreen => ({
   type: TYPES.SET_SCREEN,
   payload: {
     screen,
   },
 });
 
-export const setScreens = (screens: T.IProjectScreen[]): T.SetScreens => ({
+export const setScreens = (screens: T.ProjectScreen[]): T.SetScreens => ({
   type: TYPES.SET_SCREENS,
   payload: { screens },
 });

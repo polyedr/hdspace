@@ -1,6 +1,4 @@
-type Map<T> = {
-  [id: number]: T;
-};
+import { Map } from '../redux/project/types';
 
 export const arrayToMap = <T extends { id: any }>(arr: T[]): Map<T> => {
   const res = {};

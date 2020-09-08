@@ -64,7 +64,7 @@ type StateProps = {
   activeItem: ProjectT.ActiveItem;
   activeElement?: LibraryElement<Entity>;
   activeElementParent?: LibraryElement<Entity>;
-  screen: ProjectT.IProjectScreen;
+  screen: ProjectT.ProjectScreen;
   isAddElementsModalOpened: boolean;
   loader: boolean;
 };

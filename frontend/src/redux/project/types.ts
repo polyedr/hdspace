@@ -24,10 +24,8 @@ export type ProjectState = {
 
 export type ProjectDataState = {
   libraryElements: LibraryEntities;
-  projects: {
-    [id: number]: Project;
-  };
-  screens: IProjectScreen[];
+  projects: Map<Project>;
+  screens: Map<ProjectScreen>;
 };
 
 export type ProjectUiState = {
@@ -125,7 +123,7 @@ export type UpdateProject = IAction<
 >;
 export type ChangeScreensOrder = IAction<
   typeof TYPES.CHANGE_SCREENS_ORDER,
-  { screens: IProjectScreen[] }
+  { screens: ProjectScreen[] }
 >;
 export type RenameProject = IAction<
   typeof TYPES.RENAME_PROJECT,
@@ -189,7 +187,8 @@ export type MoveElement = IAction<
 >;
 export type UpdateElementsTree = IAction<
   typeof TYPES.UPDATE_ELEMENTS_TREE,
-  { root: RootElement<'root'>; sourceAction: any; parentID?: string }
+  { root: RootElement<'root'>; sourceAction: any },
+  ElementHistoryMeta
 >;
 export type ClearAfterPrevScreen = IPlainAction<
   typeof TYPES.CLEAN_AFTER_PREV_SCREEN
@@ -200,7 +199,7 @@ export type SaveScreen = IAction<
 >;
 export type SetScreen = IAction<
   typeof TYPES.SET_SCREEN,
-  { screen: IProjectScreen }
+  { screen: ProjectScreen }
 >;
 export type ExportProject = IPlainAction<typeof TYPES.EXPORT_PROJECT>;
 export type SetCurrentScreenId = IAction<
@@ -209,7 +208,7 @@ export type SetCurrentScreenId = IAction<
 >;
 export type SetScreens = IAction<
   typeof TYPES.SET_SCREENS,
-  { screens: IProjectScreen[] }
+  { screens: ProjectScreen[] }
 >;
 export type AddElement = IAction<
   typeof TYPES.ADD_ELEMENT,
@@ -594,7 +593,7 @@ export interface ILSItem {
   children: string[];
 }
 
-export interface IProjectScreen {
+export interface ProjectScreen {
   id: number;
   name: string;
   status: string; // compare with entity on backend!
@@ -628,4 +627,8 @@ export type HistoryMeta = {
 };
 export type ElementHistoryMeta = HistoryMeta & {
   screenId: number;
+};
+
+export type Map<T> = {
+  [id in number | string]: T;
 };

@@ -15,7 +15,7 @@ import {
   PropertiesChangeProps,
   withConfigurableProperties,
 } from '../../../../../../utils/withConfigurableProperties';
-import { IProjectScreen } from '../../../../../../redux/project/types';
+import { ProjectScreen } from '../../../../../../redux/project/types';
 import {
   selectActiveItemParams,
   selectScreens,
@@ -24,7 +24,7 @@ import {
 const styles = require('./styles.scss');
 
 type StateProps = {
-  screens: IProjectScreen[];
+  screens: ProjectScreen[];
   action: LinkParams;
 };
 
