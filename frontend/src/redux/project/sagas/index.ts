@@ -28,6 +28,7 @@ import {
   restoreElementSaga,
   softDeleteSaga,
   unwrapFromContainerSaga,
+  updateElementsTree,
   wrapIntoContainerSaga,
 } from './scenario';
 import {
@@ -73,7 +74,6 @@ import {
 import { openProjects, openSignScreen } from '../../../utils/history';
 import { refreshUserTokenPair } from '../../user/sagas';
 import { DEFAULT_AUTHORISATION_TOKEN } from '../../../constants/defaultParams';
-import { activateScreen, setItemToCopy, updateElementsTree } from '../actions';
 import {
   selectActiveItem,
   selectCurrentProject,
@@ -783,7 +783,7 @@ function* copyActiveItemSaga() {
     selectCurrentScreen,
   );
   if (activeItemID !== 'none') {
-    yield put(setItemToCopy(activeItemID, currentScreen.id));
+    yield put(Actions.setItemToCopy(activeItemID, currentScreen.id));
   }
 }
 
@@ -916,7 +916,7 @@ function* undoSaga() {
 
   if (Array.isArray(last)) {
     if (last[0].meta?.screenId) {
-      yield put(activateScreen(last[0].meta.screenId));
+      yield put(Actions.activateScreen(last[0].meta.screenId));
     }
     yield put(Actions.setGroupActionsUp(true));
 
@@ -934,7 +934,7 @@ function* undoSaga() {
     yield put(Actions.setGroupActionsUp(false));
   } else {
     if (last.meta?.screenId) {
-      yield put(activateScreen(last.meta.screenId));
+      yield put(Actions.activateScreen(last.meta.screenId));
     }
 
     yield put({
@@ -964,7 +964,7 @@ function* redoSaga() {
 
   if (Array.isArray(first)) {
     if (first[0].meta?.screenId) {
-      yield put(activateScreen(first[0].meta.screenId));
+      yield put(Actions.activateScreen(first[0].meta.screenId));
     }
 
     yield put(Actions.setGroupActionsUp(true));
@@ -983,7 +983,7 @@ function* redoSaga() {
     yield put(Actions.setGroupActionsUp(false));
   } else {
     if (first.meta?.screenId) {
-      yield put(activateScreen(first.meta.screenId));
+      yield put(Actions.activateScreen(first.meta.screenId));
     }
 
     yield put({
