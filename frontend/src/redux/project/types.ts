@@ -24,7 +24,9 @@ export type ProjectState = {
 
 export type ProjectDataState = {
   libraryElements: LibraryEntities;
-  projectList: Project[];
+  projects: {
+    [id: number]: Project;
+  };
   screens: IProjectScreen[];
 };
 

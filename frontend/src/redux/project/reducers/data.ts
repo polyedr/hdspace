@@ -1,6 +1,8 @@
 import { initialData } from '../initial';
 import * as T from '../types';
 import TYPES from '../../../constants/actions';
+import { arrayToMap } from '../../../utils/mappings';
+import { Project } from '../../../api/types';
 
 function dataReducer(
   state: T.ProjectDataState = initialData,
@@ -12,7 +14,10 @@ function dataReducer(
     }
 
     case TYPES.LOAD_PROJECTS_SUCCESS: {
-      return { ...state, projectList: action.payload.projects };
+      return {
+        ...state,
+        projects: arrayToMap<Project>(action.payload.projects),
+      };
     }
 
     case TYPES.SET_SCREENS: {
@@ -49,14 +54,21 @@ function dataReducer(
     }
 
     case TYPES.SET_PROJECT: {
-      const newState = { ...state };
-      newState.projectList = newState.projectList.map((project) => {
+      /* const newState = { ...state };
+      newState.projects = newState.projects.map((project) => {
         if (project.id === action.payload.project.id) {
           return action.payload.project;
         }
         return project;
       });
-      return newState;
+      return newState; */
+      return {
+        ...state,
+        projects: {
+          ...state.projects,
+          [action.payload.project.id]: action.payload.project,
+        },
+      };
     }
 
     case TYPES.RESET_SCREEN_STATE: {

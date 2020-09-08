@@ -3,7 +3,7 @@ import { DEFAULT_ACTIVE_ITEM } from '../../constants/defaultParams';
 
 export const initialData: T.ProjectDataState = {
   libraryElements: {} as any, // will be loaded on app start
-  projectList: [],
+  projects: [],
   screens: [],
 };
 

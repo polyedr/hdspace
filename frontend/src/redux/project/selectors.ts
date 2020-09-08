@@ -6,20 +6,20 @@ import {
 import { ChildEntity, Entity } from '../../domain/core';
 import { findChildByID } from '../../utils/ElementsTreeHelper';
 import { AppReduxState } from '../../shared/types/app';
-import { LibraryElement } from '../../api/types';
+import { LibraryElement, Project } from '../../api/types';
 import { CssLikeStyles } from '../../utils/StyleHelper';
 import { makeFeatureStateSelector } from '../../shared/redux';
+import { mapToArr } from '../../utils/mappings';
 
 export const selectProjectState = makeFeatureStateSelector('project');
 
 export function selectProjects(state: AppReduxState) {
-  return selectProjectState(state).data.projectList;
+  return mapToArr<Project>(selectProjectState(state).data.projects);
 }
 
 export const selectProjectById = (projectId: number) => (
   state: AppReduxState,
-) =>
-  selectProjectState(state).data.projectList.find(({ id }) => id === projectId);
+) => selectProjectState(state).data.projects[projectId];
 
 export const selectScreenElement = (screenId: number) => (
   state: AppReduxState,
@@ -73,15 +73,18 @@ export function selectLibraryElements(state: AppReduxState) {
   return selectProjectState(state).data.libraryElements;
 }
 
-export function selectCurrentProject(state: AppReduxState) {
-  const { currentProjectId } = selectProjectState(state).edit;
+export const selectCurrentProjectId = ({ project }: AppReduxState) =>
+  project.edit.currentProjectId;
+
+export const selectCurrentProject = (state: AppReduxState) =>
+  state.project.data.projects[selectCurrentProjectId(state)] || DEFAULT_PROJECT;
+/* const { currentProjectId } = selectProjectState(state).edit;
   if (currentProjectId === -1) return DEFAULT_PROJECT;
   return (
-    selectProjectState(state).data.projectList.find(
+    selectProjectState(state).data.projects.find(
       ({ id }) => id === currentProjectId,
     ) || DEFAULT_PROJECT
-  );
-}
+  ); */
 
 export const selectRootElement = (state: AppReduxState) =>
   selectCurrentScreen(state).element;
