@@ -45,12 +45,14 @@ const composeEnhancers =
     ? (<any>window).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({})
     : compose;
 
+export const rootReducer = combineReducers({
+  user: persistReducer(userPersistConfig, userReducer),
+  project: projectReducer, // persistReducer(projectPersistConfig, projectReducer),
+  router: connectRouter(history),
+});
+
 export const store = createStore(
-  combineReducers({
-    user: persistReducer(userPersistConfig, userReducer),
-    project: projectReducer, // persistReducer(projectPersistConfig, projectReducer),
-    router: connectRouter(history),
-  }),
+  rootReducer,
   composeEnhancers(applyMiddleware(routerMiddleware(history), sagaMiddleware)),
 );
 

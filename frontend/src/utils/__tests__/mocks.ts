@@ -1,4 +1,5 @@
 import { LibraryElement } from '../../api/types';
+import { IProjectScreen } from '../../redux/project/types';
 
 export const mockRoot = {
   id: '1',
@@ -163,3 +164,26 @@ export const mockRootWithStyles = {
     },
   ],
 } as LibraryElement<'heading'>;
+
+export const mockRootElement: LibraryElement<'root'> = {
+  id: '1',
+  name: 'root',
+  type: 'root',
+  buoyancy: 0,
+  image: null,
+  children: [],
+  parameters: {},
+  // @ts-ignore
+  styles: {},
+};
+
+export const mockScreen: IProjectScreen = {
+  status: 'in_progress',
+  project: 7777,
+  name: 'test_screen',
+  buoyancy: 0,
+  id: 3333,
+  image: null,
+  screenscenario: [11111],
+  element: mockRootElement,
+};
