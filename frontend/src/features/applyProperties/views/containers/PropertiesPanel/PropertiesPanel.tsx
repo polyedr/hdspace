@@ -1,6 +1,5 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import classNames from 'classnames';
 import * as R from 'ramda';
 import {
   actionsCreators,
@@ -44,53 +43,14 @@ import Scrollbar from '../../../../../components/UI/Scrollbar';
 import MapProps from '../Controls/MapProps/MapProps';
 import ActiveElementBlock from '../Controls/ActiveElementBlock';
 import {
-  findChildByID,
-  findParentByChildID,
-} from '../../../../../utils/ElementsTreeHelper';
-import {
   AVAILABLE_CONTROLS,
   Control,
   Entity,
 } from '../../../../../domain/core';
-import { isElementCanBeRemove } from '../../../../../utils/AvailableChildrenHelper';
 import { AppReduxState } from '../../../../../shared/types/app';
-import { LibraryElement } from '../../../../../api/types';
 import { LIBRARY_ELEMENTS } from '../../../../../domain/libraryElements/libraryElements';
 
 const styles = require('./PropertiesPanel.scss');
-
-type StateProps = {
-  elementsTree: LibraryElement<'root'>;
-  activeItem: ProjectT.ActiveItem;
-  activeElement?: LibraryElement<Entity>;
-  activeElementParent?: LibraryElement<Entity>;
-  screen: ProjectT.IProjectScreen;
-  isAddElementsModalOpened: boolean;
-  loader: boolean;
-};
-
-const mapState = (state: AppReduxState): StateProps => {
-  const root = selectors.selectRootElement(state);
-  const activeItem = selectors.selectActiveItem(state);
-  const activeElement = findChildByID(root, activeItem.itemId);
-  const activeElementParent = findParentByChildID(root, activeItem.itemId);
-
-  return {
-    elementsTree: root,
-    activeItem,
-    activeElement,
-    activeElementParent,
-    screen: selectors.selectCurrentScreen(state),
-    isAddElementsModalOpened: selectors.selectIsAddElementsModalOpened(state),
-    loader: selectors.selectLoader(state),
-  };
-};
-
-const mapDispatch = {
-  addElement: actionsCreators.addElement,
-  createElements: actionsCreators.createElements,
-  setIsAddElementsModalOpened: actionsCreators.setIsAddElementsModalOpened,
-};
 
 const CONTROLS: Record<Control, React.ComponentType<any>> = {
   display: Display,
@@ -124,47 +84,46 @@ const CONTROLS: Record<Control, React.ComponentType<any>> = {
   backgroundSize: BackgroundSize,
 };
 
-export type PropertiesPanelProps = StateProps & typeof mapDispatch;
-
-const SCROLLBAR_STYLES = {
-  height: '100%',
+type StateProps = {
+  activeItem: ProjectT.ActiveItem;
+  isAddElementsModalOpened: boolean;
+  loader: boolean;
 };
+
+const mapState = (state: AppReduxState): StateProps => {
+  const activeItem = selectors.selectActiveItem(state);
+
+  return {
+    activeItem,
+    isAddElementsModalOpened: selectors.selectIsAddElementsModalOpened(state),
+    loader: selectors.selectLoader(state),
+  };
+};
+
+const mapDispatch = {
+  createElements: actionsCreators.createElements,
+  setIsAddElementsModalOpened: actionsCreators.setIsAddElementsModalOpened,
+};
+
+type PropertiesPanelProps = StateProps & typeof mapDispatch;
 
 const PropertiesPanel: React.FC<PropertiesPanelProps> = ({
   activeItem,
-  activeElement,
-  activeElementParent,
-  elementsTree,
-  screen,
   loader,
   createElements,
   isAddElementsModalOpened,
   setIsAddElementsModalOpened,
 }) => {
-  const activeItemID =
-    activeItem.itemType === 'root' ? 'root' : activeItem.itemId;
-
-  const currentItemType =
-    activeItem.itemType === 'root'
-      ? 'root'
-      : findChildByID(elementsTree, activeItemID)?.type;
-  const disablePanel = !screen;
-
-  const showDeleteButton =
-    !!activeElementParent &&
-    !!activeElement &&
-    isElementCanBeRemove(activeElementParent, activeElement.type);
+  const { itemType } = activeItem;
 
   return (
-    <div className={classNames(styles.editorRightPanel)}>
-      <Scrollbar style={SCROLLBAR_STYLES} autoHeightMin="100%">
+    <div className={styles.editorRightPanel}>
+      <Scrollbar autoHeightMin="100%">
         <ActiveElementBlock
           activeItem={activeItem}
-          disablePanel={disablePanel}
           libraryElements={LIBRARY_ELEMENTS}
           createElements={createElements}
           isAddElementsModalOpened={isAddElementsModalOpened}
-          showDeleteButton={showDeleteButton}
           setIsAddElementsModalOpened={setIsAddElementsModalOpened}
         />
         {activeItem.itemType !== 'none' && (
@@ -172,6 +131,7 @@ const PropertiesPanel: React.FC<PropertiesPanelProps> = ({
             <div className="propsPanelHeaderBlock">
               <p>Element properties</p>
             </div>
+
             {activeItem.itemType !== 'root' && (
               <div className="propsPanelContentBlock">
                 <ControlSection title="Element's name">
@@ -179,11 +139,13 @@ const PropertiesPanel: React.FC<PropertiesPanelProps> = ({
                 </ControlSection>
               </div>
             )}
+
             {activeItem.itemType !== 'root' && (
               <>
                 <div className="propsPanelContentBlock">
                   <ShareStyles />
                 </div>
+
                 <div className="propsPanelContentBlock">
                   <ControlSection title="Edit styles of">
                     <EditableStyles />
@@ -191,16 +153,17 @@ const PropertiesPanel: React.FC<PropertiesPanelProps> = ({
                 </div>
               </>
             )}
-            {currentItemType &&
-              R.toPairs(AVAILABLE_CONTROLS[currentItemType as Entity]).map(
+
+            {itemType &&
+              R.toPairs(AVAILABLE_CONTROLS[itemType as Entity]).map(
                 ([elementName, elementValue]) => {
                   return elementName === 'root' ? (
                     <div
                       className="propsPanelContentBlock"
                       key={`${elementName}-propsPanelContentBlock`}
                     >
-                      {currentItemType &&
-                        AVAILABLE_CONTROLS[currentItemType as Entity].root.map(
+                      {itemType &&
+                        AVAILABLE_CONTROLS[itemType as Entity].root.map(
                           (controlName) => {
                             const ControlComponent = CONTROLS[controlName];
                             return <ControlComponent key={controlName} />;
@@ -212,6 +175,7 @@ const PropertiesPanel: React.FC<PropertiesPanelProps> = ({
                       <div className="propsPanelHeaderBlock">
                         <p>{elementName}</p>
                       </div>
+
                       <div className="propsPanelContentBlock">
                         {elementValue.map((controlName) => {
                           const ControlComponent = CONTROLS[controlName];
