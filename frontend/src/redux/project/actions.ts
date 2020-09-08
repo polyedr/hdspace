@@ -224,8 +224,8 @@ export const setCurrentScreenId = (screenId: number): T.SetCurrentScreenId => ({
   payload: { screenId },
 });
 
-export const setScreen = (screen: Screen): T.SetScreen => ({
-  type: TYPES.SET_SCREEN,
+export const updateScreen = (screen: Screen): T.UpdateScreen => ({
+  type: TYPES.UPDATE_SCREEN,
   payload: {
     screen,
   },

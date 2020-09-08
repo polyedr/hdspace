@@ -1,7 +1,7 @@
 import { initialData } from '../initial';
 import * as T from '../types';
 import TYPES from '../../../constants/actions';
-import { arrayToMap } from '../../../utils/mappings';
+import { arrayToMap, flattenElements } from '../../../utils/mappings';
 import { Project } from '../../../api/types';
 import { Screen } from '../types';
 
@@ -58,7 +58,7 @@ function dataReducer(
       };
     }
 
-    case TYPES.SET_SCREEN: {
+    case TYPES.UPDATE_SCREEN: {
       const { screen } = action.payload;
       return {
         ...state,
@@ -73,12 +73,11 @@ function dataReducer(
     }
 
     case TYPES.ADD_ELEMENT: {
-      const element = action.payload;
       return {
         ...state,
         elements: {
           ...state.elements,
-          [element.id]: element,
+          ...flattenElements([action.payload]),
         },
       };
     }

@@ -198,7 +198,10 @@ export type SaveScreen = IAction<
   typeof TYPES.SAVE_SCREEN,
   { screenId: number; canvas: HTMLCanvasElement }
 >;
-export type SetScreen = IAction<typeof TYPES.SET_SCREEN, { screen: Screen }>;
+export type UpdateScreen = IAction<
+  typeof TYPES.UPDATE_SCREEN,
+  { screen: Screen }
+>;
 export type ExportProject = IPlainAction<typeof TYPES.EXPORT_PROJECT>;
 export type SetCurrentScreenId = IAction<
   typeof TYPES.SET_CURRENT_SCREEN_ID,
@@ -452,7 +455,7 @@ export type Action =
   | Logout
   | RestoreScreen
   | SetProject
-  | SetScreen
+  | UpdateScreen
   | AddElement;
 
 export type ItemToCopyInfo = {

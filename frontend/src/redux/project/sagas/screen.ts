@@ -34,7 +34,7 @@ import {
   setCurrentScreenId,
   setLoader,
   setProject,
-  setScreen,
+  updateScreen,
   setScreenLoader,
   setScreens,
   setUndoActions,
@@ -54,6 +54,7 @@ import {
 } from '../../../api/scenario';
 import { convertElementFromResponse } from '../../../api/converters/fromResponse';
 import getSavedValue from '../../../utils/getSavedValue';
+import { flattenElements } from '../../../utils/mappings';
 
 export function* activateScreenSaga({
   payload: { screenId },
@@ -269,7 +270,7 @@ export function* saveScreenImageSaga({
     return;
   }
 
-  yield put(setScreen(resultScreen));
+  yield put(updateScreen(resultScreen));
 
   yield put(setLoader(false));
 }
@@ -476,7 +477,7 @@ export function* getScreenNNSaga() {
 
   yield all([
     put(setProject(updateProject)),
-    put(setScreen(resultScreen)),
+    put(updateScreen(resultScreen)),
     put(activateScreen(lastScreenId)),
   ]);
 }
@@ -492,6 +493,7 @@ export function* getScreenSaga(screenId: number) {
   }
 
   yield put(addElement(convertElementFromResponse(element)));
+  console.log(flattenElements([convertElementFromResponse(element)]));
 
   screen.element = convertElementFromResponse(element);
   // screen.element = element.id;
