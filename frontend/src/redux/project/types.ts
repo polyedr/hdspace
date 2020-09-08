@@ -25,7 +25,8 @@ export type ProjectState = {
 export type ProjectDataState = {
   libraryElements: LibraryEntities;
   projects: Map<Project>;
-  screens: Map<ProjectScreen>;
+  screens: Map<Screen>;
+  elements: Map<LibraryElement<any>>;
 };
 
 export type ProjectUiState = {
@@ -123,7 +124,7 @@ export type UpdateProject = IAction<
 >;
 export type ChangeScreensOrder = IAction<
   typeof TYPES.CHANGE_SCREENS_ORDER,
-  { screens: ProjectScreen[] }
+  { screens: Screen[] }
 >;
 export type RenameProject = IAction<
   typeof TYPES.RENAME_PROJECT,
@@ -197,10 +198,7 @@ export type SaveScreen = IAction<
   typeof TYPES.SAVE_SCREEN,
   { screenId: number; canvas: HTMLCanvasElement }
 >;
-export type SetScreen = IAction<
-  typeof TYPES.SET_SCREEN,
-  { screen: ProjectScreen }
->;
+export type SetScreen = IAction<typeof TYPES.SET_SCREEN, { screen: Screen }>;
 export type ExportProject = IPlainAction<typeof TYPES.EXPORT_PROJECT>;
 export type SetCurrentScreenId = IAction<
   typeof TYPES.SET_CURRENT_SCREEN_ID,
@@ -208,10 +206,10 @@ export type SetCurrentScreenId = IAction<
 >;
 export type SetScreens = IAction<
   typeof TYPES.SET_SCREENS,
-  { screens: ProjectScreen[] }
+  { screens: Screen[] }
 >;
-export type AddElement = IAction<
-  typeof TYPES.ADD_ELEMENT,
+export type CreateElement = IAction<
+  typeof TYPES.CREATE_ELEMENT,
   { parentID: string; type: string }
 >;
 export type RenameElement = IAction<
@@ -380,6 +378,7 @@ export type PopUndoAction = IPlainAction<typeof TYPES.POP_UNDO_ACTION>;
 export type PopHistory = IPlainAction<typeof TYPES.POP_HISTORY>;
 export type SetGroupActionsUp = IAction<typeof TYPES.SET_GROUP_UP, boolean>;
 export type Logout = IPlainAction<typeof TYPES.LOGOUT>;
+export type AddElement = IAction<typeof TYPES.ADD_ELEMENT, LibraryElement<any>>;
 
 export type Action =
   | LoadLibraryElements
@@ -407,7 +406,7 @@ export type Action =
   | SaveScreen
   | SetCurrentScreenId
   | SetScreens
-  | AddElement
+  | CreateElement
   | CopyElementStyles
   | UpdateElementStyles
   | UpdateElementImage
@@ -453,7 +452,8 @@ export type Action =
   | Logout
   | RestoreScreen
   | SetProject
-  | SetScreen;
+  | SetScreen
+  | AddElement;
 
 export type ItemToCopyInfo = {
   id: string;
@@ -593,7 +593,7 @@ export interface ILSItem {
   children: string[];
 }
 
-export interface ProjectScreen {
+export interface Screen {
   id: number;
   name: string;
   status: string; // compare with entity on backend!

@@ -64,7 +64,7 @@ type StateProps = {
   activeItem: ProjectT.ActiveItem;
   activeElement?: LibraryElement<Entity>;
   activeElementParent?: LibraryElement<Entity>;
-  screen: ProjectT.ProjectScreen;
+  screen: ProjectT.Screen;
   isAddElementsModalOpened: boolean;
   loader: boolean;
 };
@@ -87,7 +87,7 @@ const mapState = (state: AppReduxState): StateProps => {
 };
 
 const mapDispatch = {
-  addElement: actionsCreators.addElement,
+  addElement: actionsCreators.createElement,
   createElements: actionsCreators.createElements,
   setIsAddElementsModalOpened: actionsCreators.setIsAddElementsModalOpened,
 };

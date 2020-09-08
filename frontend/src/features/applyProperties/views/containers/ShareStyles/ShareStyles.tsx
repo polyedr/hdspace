@@ -167,7 +167,7 @@ const ShareStyles: React.FC<Props> = ({
               />
             ))
           ) : (
-            <p>No element&apos;s classes</p>
+            <p>No elementId&apos;s classes</p>
           )}
         </>
       </ControlSection>

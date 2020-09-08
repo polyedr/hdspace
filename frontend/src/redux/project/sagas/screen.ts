@@ -21,9 +21,10 @@ import {
 } from '../../../api/screen';
 import { convertCreatedElementToRequest } from '../../../api/converters/toRequest';
 import { apiGetProject, apiSaveProject } from '../../../api/project';
-import { ProjectScreen, IScenarioItem } from '../types';
+import { Screen, IScenarioItem } from '../types';
 import {
   activateScreen,
+  addElement,
   addScreen,
   delScreen,
   renameScreen,
@@ -64,7 +65,7 @@ export function* activateScreenSaga({
 
   yield put(setActiveItem(DEFAULT_ACTIVE_ITEM));
 
-  const screen: ProjectScreen = yield select(selectScreenById(screenId));
+  const screen: Screen = yield select(selectScreenById(screenId));
   if (!screen) return;
 
   yield put(setCurrentScreenId(screen.id));
@@ -409,7 +410,7 @@ export function* renameScreenSaga({
     screens.map((screen) => screen.name),
   );
 
-  const renamedScreen: ProjectScreen = {
+  const renamedScreen: Screen = {
     ...targetScreen,
     name: numberedName,
   };
@@ -429,10 +430,7 @@ export function* getScreenNNSaga() {
     selectors.selectCurrentProject,
   );
 
-  const resultListScreen: ProjectScreen[] = yield call(
-    reqWrapper,
-    apiGetAllScreen,
-  );
+  const resultListScreen: Screen[] = yield call(reqWrapper, apiGetAllScreen);
   const lastScreenId = resultListScreen[resultListScreen.length - 1].id;
   const data = {
     screen: lastScreenId,
@@ -493,6 +491,9 @@ export function* getScreenSaga(screenId: number) {
     console.error(`Error while fetching screen ${screenId}`);
   }
 
+  yield put(addElement(convertElementFromResponse(element)));
+
   screen.element = convertElementFromResponse(element);
+  // screen.element = element.id;
   return screen;
 }

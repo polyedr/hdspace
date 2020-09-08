@@ -10,7 +10,7 @@ import { LibraryElement, Project } from '../../api/types';
 import { CssLikeStyles } from '../../utils/StyleHelper';
 import { makeFeatureStateSelector } from '../../shared/redux';
 import { mapToArr } from '../../utils/mappings';
-import { ProjectScreen } from './types';
+import { Screen } from './types';
 
 export const selectProjectState = makeFeatureStateSelector('project');
 
@@ -39,7 +39,7 @@ export const selectCurrentScreenElement = (state: AppReduxState) => {
 };
 
 export function selectScreens({ project }: AppReduxState) {
-  return mapToArr<ProjectScreen>(project.data.screens);
+  return mapToArr<Screen>(project.data.screens);
 }
 
 export const selectScreenById = (id: number) => ({ project }: AppReduxState) =>

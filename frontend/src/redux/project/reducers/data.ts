@@ -3,31 +3,13 @@ import * as T from '../types';
 import TYPES from '../../../constants/actions';
 import { arrayToMap } from '../../../utils/mappings';
 import { Project } from '../../../api/types';
-import { ProjectScreen } from '../types';
+import { Screen } from '../types';
 
 function dataReducer(
   state: T.ProjectDataState = initialData,
   action: T.Action,
 ): T.ProjectDataState {
   switch (action.type) {
-    case TYPES.LOAD_LIBRARY_ELEMENTS_SUCCESS: {
-      return { ...state, libraryElements: action.payload.libraryElements };
-    }
-
-    case TYPES.LOAD_PROJECTS_SUCCESS: {
-      return {
-        ...state,
-        projects: arrayToMap<Project>(action.payload.projects),
-      };
-    }
-
-    case TYPES.SET_SCREENS: {
-      return {
-        ...state,
-        screens: arrayToMap<ProjectScreen>(action.payload.screens),
-      };
-    }
-
     case TYPES.UPDATE_ELEMENTS_TREE: {
       const { root } = action.payload;
 
@@ -48,6 +30,34 @@ function dataReducer(
       };
     }
 
+    case TYPES.LOAD_LIBRARY_ELEMENTS_SUCCESS: {
+      return { ...state, libraryElements: action.payload.libraryElements };
+    }
+
+    case TYPES.LOAD_PROJECTS_SUCCESS: {
+      return {
+        ...state,
+        projects: arrayToMap<Project>(action.payload.projects),
+      };
+    }
+
+    case TYPES.SET_PROJECT: {
+      return {
+        ...state,
+        projects: {
+          ...state.projects,
+          [action.payload.project.id]: action.payload.project,
+        },
+      };
+    }
+
+    case TYPES.SET_SCREENS: {
+      return {
+        ...state,
+        screens: arrayToMap<Screen>(action.payload.screens),
+      };
+    }
+
     case TYPES.SET_SCREEN: {
       const { screen } = action.payload;
       return {
@@ -62,12 +72,13 @@ function dataReducer(
       };
     }
 
-    case TYPES.SET_PROJECT: {
+    case TYPES.ADD_ELEMENT: {
+      const element = action.payload;
       return {
         ...state,
-        projects: {
-          ...state.projects,
-          [action.payload.project.id]: action.payload.project,
+        elements: {
+          ...state.elements,
+          [element.id]: element,
         },
       };
     }

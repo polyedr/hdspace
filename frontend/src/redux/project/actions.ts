@@ -1,4 +1,4 @@
-import { ElementHistoryMeta, HistoryMeta, ProjectScreen } from './types';
+import { ElementHistoryMeta, HistoryMeta, Screen } from './types';
 import TYPES from '../../constants/actions';
 import { LibraryElement, Project } from '../../api/types';
 import { ChildEntity, Entity } from '../../domain/core';
@@ -70,7 +70,7 @@ export const exportProject = (): T.ExportProject => ({
 });
 
 export const changeScreensOrder = (
-  screens: T.ProjectScreen[],
+  screens: T.Screen[],
 ): T.ChangeScreensOrder => ({
   type: TYPES.CHANGE_SCREENS_ORDER,
   payload: { screens },
@@ -224,20 +224,23 @@ export const setCurrentScreenId = (screenId: number): T.SetCurrentScreenId => ({
   payload: { screenId },
 });
 
-export const setScreen = (screen: ProjectScreen): T.SetScreen => ({
+export const setScreen = (screen: Screen): T.SetScreen => ({
   type: TYPES.SET_SCREEN,
   payload: {
     screen,
   },
 });
 
-export const setScreens = (screens: T.ProjectScreen[]): T.SetScreens => ({
+export const setScreens = (screens: T.Screen[]): T.SetScreens => ({
   type: TYPES.SET_SCREENS,
   payload: { screens },
 });
 
-export const addElement = (parentID: string, type: string): T.AddElement => ({
-  type: TYPES.ADD_ELEMENT,
+export const createElement = (
+  parentID: string,
+  type: string,
+): T.CreateElement => ({
+  type: TYPES.CREATE_ELEMENT,
   payload: { parentID, type },
 });
 
@@ -550,4 +553,9 @@ export const popHistory = (): T.PopHistory => ({
 export const setGroupActionsUp = (groupUp: boolean): T.SetGroupActionsUp => ({
   type: TYPES.SET_GROUP_UP,
   payload: groupUp,
+});
+
+export const addElement = (element: LibraryElement<any>): T.AddElement => ({
+  type: TYPES.ADD_ELEMENT,
+  payload: element,
 });

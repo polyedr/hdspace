@@ -5,6 +5,7 @@ export const initialData: T.ProjectDataState = {
   libraryElements: {} as any, // will be loaded on app start
   projects: {},
   screens: {},
+  elements: {},
 };
 
 export const initialUi: T.ProjectUiState = {
