@@ -233,5 +233,10 @@
 
   @include props_panel_text;
 
-  overflow-x: hidden;
+  overflow: hidden;
+}
+
+.tabPanel {
+  flex: 1;
+  display: flex;
 }
