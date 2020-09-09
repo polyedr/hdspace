@@ -1,6 +1,8 @@
 """Urls for the accounts api"""
 
 from django.urls import path, include
+from schema_graph.views import Schema
+
 from .apiviews import (
     UserList,
     UserDetail,
@@ -10,7 +12,7 @@ from .apiviews import (
     TeamMemberDetail,
     TeamMember,
     TeamMemberList,
-    TeamDetail
+    TeamDetail,
 )
 
 
@@ -40,4 +42,5 @@ urlpatterns = [
     path("", include(api_profile_patterns)),
     path("", include(api_teammember_patterns)),
     path("", include(api_team_patterns)),
+    path("graph/", Schema.as_view()),
 ]

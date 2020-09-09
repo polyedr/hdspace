@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "mptt",
     "anymail",
+    "schema_graph",
 ]
 
 EXTERNAL_APPS = ["social_django"]
