@@ -2,6 +2,7 @@ import React, { ChangeEvent, useState } from 'react';
 import { connect } from 'react-redux';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
+import withStyles from '@material-ui/core/styles/withStyles';
 import { actionsCreators, selectors } from '../../../../../redux/project';
 import Spinner from '../../../../../components/UI/Spinner';
 import { AppReduxState } from '../../../../../shared/types/app';
@@ -9,6 +10,26 @@ import PropertiesTab from './PropertiesTab';
 import Scrollbar from '../../../../../components/UI/Scrollbar';
 
 const styles = require('./PropertiesPanel.scss');
+
+const StyledTabs = withStyles({
+  root: {},
+  indicator: {
+    backgroundColor: '#1cc09f',
+  },
+})(Tabs);
+
+const StyledTab = withStyles({
+  root: {
+    minWidth: 72,
+    '&:hover': {},
+    '&$selected': {},
+    '&:focus': {},
+  },
+  selected: {
+    borderRadius: '2px 2px 0 0',
+    backgroundColor: '#ececec',
+  },
+})(Tab);
 
 type TabPanelProps = {
   children?: React.ReactNode;
@@ -52,11 +73,16 @@ const PropertiesPanel: React.FC<PropertiesPanelProps> = ({
 
   return (
     <div className={styles.editorRightPanel}>
-      <Tabs value={value} onChange={handleChange}>
-        <Tab label="Properties" />
+      <StyledTabs
+        value={value}
+        onChange={handleChange}
+        className={styles.tabs}
+        variant="fullWidth"
+      >
+        <StyledTab className={styles.tab} label="Properties" />
 
-        <Tab label="Elements" />
-      </Tabs>
+        <StyledTab className={styles.tab} label="Elements" />
+      </StyledTabs>
 
       <TabPanel index={0} value={value}>
         <PropertiesTab

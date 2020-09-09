@@ -4,7 +4,7 @@ import cn from 'classnames';
 import * as Actions from '../../redux/project/actions';
 import Workspace from './Workspace/Workspace';
 import { EditorProps } from '../../containers/EditorLogic';
-import { PropertiesPanel } from '../../features/applyProperties/views/containers';
+import { RightPanel } from '../../features/applyProperties/views/containers';
 
 const styles = require('./Editor.scss');
 
@@ -50,7 +50,7 @@ const Editor: React.FC<IEditProps> = ({
       )}
     >
       <Workspace />
-      {!isPrototypeMode && <PropertiesPanel />}
+      {!isPrototypeMode && <RightPanel />}
       <Prompt
         when={false}
         message="You have unsaved changes, are you sure you want to leave?"
