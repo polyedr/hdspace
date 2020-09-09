@@ -51,7 +51,7 @@ export const onError = ({ response: r }: AxiosError) => {
 export const parseResult = <T>(result: AxiosResponse<T>) =>
   result && result.data;
 
-export const apiGetListProject = (props: MyAxiosProps): Promise<Project[]> =>
+export const apiGetProjectList = (props: MyAxiosProps): Promise<Project[]> =>
   myAxios({
     ...props,
     method: 'GET',

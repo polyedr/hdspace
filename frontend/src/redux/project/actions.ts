@@ -2,23 +2,9 @@ import { ElementHistoryMeta, HistoryMeta, Screen } from './types';
 import TYPES from '../../constants/actions';
 import { LibraryElement, Project } from '../../api/types';
 import { ChildEntity, Entity } from '../../domain/core';
-import {
-  ChildrenElements,
-  LibraryEntities,
-} from '../../domain/libraryElements/libraryElements';
+import { ChildrenElements } from '../../domain/libraryElements/libraryElements';
 import { CssLikeStyles } from '../../utils/StyleHelper';
 import * as T from './types';
-
-export const getLibraryElements = (): T.LoadLibraryElements => ({
-  type: TYPES.GET_LIBRARY_ELEMENTS,
-});
-
-export const setLibraryElements = (
-  libraryElements: LibraryEntities,
-): T.LoadLibraryElementsSuccess => ({
-  type: TYPES.LOAD_LIBRARY_ELEMENTS_SUCCESS,
-  payload: { libraryElements },
-});
 
 export const getProjectList = (): T.LoadProjects => ({
   type: TYPES.LOAD_PROJECTS,

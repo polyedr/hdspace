@@ -30,10 +30,6 @@ function dataReducer(
       };
     }
 
-    case TYPES.LOAD_LIBRARY_ELEMENTS_SUCCESS: {
-      return { ...state, libraryElements: action.payload.libraryElements };
-    }
-
     case TYPES.LOAD_PROJECTS_SUCCESS: {
       return {
         ...state,

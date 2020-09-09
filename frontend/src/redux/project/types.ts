@@ -12,7 +12,6 @@ import {
 } from '../../api/types';
 import TYPES from '../../constants/actions';
 import { CssLikeStyles } from '../../utils/StyleHelper';
-import { LibraryEntities } from '../../domain/libraryElements/libraryElements';
 
 export type ProjectState = {
   data: ProjectDataState;
@@ -23,7 +22,6 @@ export type ProjectState = {
 };
 
 export type ProjectDataState = {
-  libraryElements: LibraryEntities;
   projects: Map<Project>;
   screens: Map<Screen>;
   elements: Map<LibraryElement<any>>;
@@ -76,24 +74,10 @@ export type ActiveItem = {
   itemType: Entity | 'none';
   name: string;
 };
-
 export type SavedElementsValues = {
   [elementID: string]: { id: number; savedValue: string | boolean };
 };
-
 export type CreatedElement = { type: Entity; parentID?: number };
-
-export type LoadLibraryElements = IPlainAction<
-  typeof TYPES.GET_LIBRARY_ELEMENTS
->;
-export type LoadLibraryElementsSuccess = IAction<
-  typeof TYPES.LOAD_LIBRARY_ELEMENTS_SUCCESS,
-  { libraryElements: LibraryEntities }
->;
-export type LoadLibraryElementsFail = IPlainFailAction<
-  'PROJECTS:LOAD_LIBRARY_ELEMENTS_FAIL'
->;
-
 export type LoadProjects = IPlainAction<typeof TYPES.LOAD_PROJECTS>;
 export type LoadProjectsSuccess = IAction<
   typeof TYPES.LOAD_PROJECTS_SUCCESS,
@@ -384,9 +368,6 @@ export type Logout = IPlainAction<typeof TYPES.LOGOUT>;
 export type AddElement = IAction<typeof TYPES.ADD_ELEMENT, LibraryElement<any>>;
 
 export type Action =
-  | LoadLibraryElements
-  | LoadLibraryElementsSuccess
-  | LoadLibraryElementsFail
   | LoadProjects
   | LoadProjectsSuccess
   | LoadProjectsFail

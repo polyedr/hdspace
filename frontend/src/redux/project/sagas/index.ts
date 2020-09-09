@@ -9,7 +9,6 @@ import {
   select,
 } from 'redux-saga/effects';
 import * as R from 'ramda';
-import { REHYDRATE } from 'redux-persist';
 import { LOCATION_CHANGE, LocationChangeAction } from 'connected-react-router';
 import * as Actions from '../actions';
 import { AppReduxState } from '../../../shared/types/app';
@@ -35,7 +34,7 @@ import {
   changeScreensOrderSaga,
   delProjectSaga,
   exportProjectSaga,
-  getListProjectSaga,
+  getProjectListSaga,
   getProjectSaga,
   renameProjectSaga,
   updateProject,
@@ -49,7 +48,6 @@ import { MAX_TOKEN_TRIALS } from '../../../../config/settings';
 import {
   apiChangeElement,
   apiChangeRecursiveElement,
-  apiGetLibraryElements,
   apiSaveElements,
   parseImgUsingNN,
 } from '../../../api/element';
@@ -87,7 +85,6 @@ import {
   selectScreenElement,
   selectUndoActions,
 } from '../selectors';
-import { LibraryEntities } from '../../../domain/libraryElements/libraryElements';
 import {
   activateScreenSaga,
   addScreenSaga,
@@ -177,40 +174,6 @@ export function* reqWrapper(
   }
 
   return result;
-}
-
-function* authCheckSaga() {
-  // TODO: temporary realisation
-  const result: ReturnPromisedType<typeof apiGetLibraryElements> = yield call(
-    reqWrapper,
-    apiGetLibraryElements,
-  );
-
-  if (!result) return;
-
-  // TODO: potentially inject default properties right here
-  const libraryElements = result.reduce(
-    (acc, x) => ({
-      ...acc,
-      [x.struct_type]: x.func_type.reduce(
-        (innerAcc, funcType, idx) => ({
-          ...innerAcc,
-          [funcType]: {
-            buoyancy: x.buoyancy[idx],
-            func_type: funcType,
-            struct_type: x.struct_type,
-            parameters: x.parameters[idx] || {},
-            styles: x.styles[idx] || {},
-            name: x.struct_type,
-          },
-        }),
-        {},
-      ),
-    }),
-    {},
-  ) as LibraryEntities;
-
-  yield put(Actions.setLibraryElements(libraryElements));
 }
 
 function* moveElementSaga(action: ReturnType<typeof Actions.moveElement>): any {
@@ -999,10 +962,9 @@ function* redoSaga() {
 }
 
 export default function* projectSaga() {
-  yield takeLatest(REHYDRATE, authCheckSaga);
   yield takeLatest(LOCATION_CHANGE, LocationChange);
 
-  yield takeLatest(TYPES.LOAD_PROJECTS, getListProjectSaga);
+  yield takeLatest(TYPES.LOAD_PROJECTS, getProjectListSaga);
   yield takeLatest(TYPES.ADD_PROJECT, addProject);
   yield takeLatest(TYPES.DELETE_PROJECT, delProjectSaga);
   yield takeLatest(TYPES.UPDATE_PROJECT, updateProjectSaga);

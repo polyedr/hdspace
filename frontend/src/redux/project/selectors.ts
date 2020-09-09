@@ -57,10 +57,6 @@ export function selectSavedElementsValues(state: AppReduxState) {
   return selectProjectState(state).ui.savedElementsValues;
 }
 
-export function selectLibraryElements(state: AppReduxState) {
-  return selectProjectState(state).data.libraryElements;
-}
-
 export const selectCurrentProjectId = ({ project }: AppReduxState) =>
   project.edit.currentProjectId;
 
