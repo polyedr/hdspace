@@ -8,6 +8,7 @@ import Spinner from '../../../../../components/UI/Spinner';
 import { AppReduxState } from '../../../../../shared/types/app';
 import PropertiesTab from './PropertiesTab';
 import Scrollbar from '../../../../../components/UI/Scrollbar';
+import ElementsTab from './ElementsTab';
 
 const styles = require('./PropertiesPanel.scss');
 
@@ -27,7 +28,7 @@ const StyledTab = withStyles({
   },
   selected: {
     borderRadius: '2px 2px 0 0',
-    backgroundColor: '#ececec',
+    backgroundColor: '#fff',
   },
 })(Tab);
 
@@ -66,15 +67,15 @@ const PropertiesPanel: React.FC<PropertiesPanelProps> = ({
   activeItem,
   setIsAddElementsModalOpened,
 }) => {
-  const [value, setValue] = useState(0);
+  const [tab, setTab] = useState(1);
 
   const handleChange = (ev: ChangeEvent<{}>, newValue: number) =>
-    setValue(newValue);
+    setTab(newValue);
 
   return (
     <div className={styles.editorRightPanel}>
       <StyledTabs
-        value={value}
+        value={tab}
         onChange={handleChange}
         className={styles.tabs}
         variant="fullWidth"
@@ -84,7 +85,7 @@ const PropertiesPanel: React.FC<PropertiesPanelProps> = ({
         <StyledTab className={styles.tab} label="Elements" />
       </StyledTabs>
 
-      <TabPanel index={0} value={value}>
+      <TabPanel index={0} value={tab}>
         <PropertiesTab
           activeItem={activeItem}
           setIsAddElementsModalOpened={setIsAddElementsModalOpened}
@@ -93,8 +94,8 @@ const PropertiesPanel: React.FC<PropertiesPanelProps> = ({
         />
       </TabPanel>
 
-      <TabPanel index={1} value={value}>
-        Elements
+      <TabPanel index={1} value={tab}>
+        <ElementsTab />
       </TabPanel>
 
       <Spinner active={loader} />
