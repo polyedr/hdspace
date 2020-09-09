@@ -11,7 +11,7 @@ import { createContainer } from './scenario';
 import {
   selectCurrentScreenId,
   selectScreenById,
-  selectScreenElement,
+  selectElementByScreenId,
 } from '../selectors';
 import {
   apiAddScreen,
@@ -54,7 +54,6 @@ import {
 } from '../../../api/scenario';
 import { convertElementFromResponse } from '../../../api/converters/fromResponse';
 import getSavedValue from '../../../utils/getSavedValue';
-import { flattenElements } from '../../../utils/mappings';
 
 export function* activateScreenSaga({
   payload: { screenId },
@@ -73,7 +72,7 @@ export function* activateScreenSaga({
 
   yield put(Actions.setScenarioLoader(true));
 
-  const screenElement = yield select(selectScreenElement(screenId));
+  const screenElement = yield select(selectElementByScreenId(screenId));
   if (!screenElement) return;
 
   yield put(
@@ -210,7 +209,7 @@ export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
 
   const updatedScreen = { ...currentScreen, ...savedScreen };
 
-  updatedScreen.element = createdRootElement;
+  updatedScreen.element = createdRootElement.id.toString();
 
   yield put(setProject(updateProject));
 
@@ -483,7 +482,7 @@ export function* getScreenNNSaga() {
 }
 
 export function* getScreenSaga(screenId: number) {
-  const screen = yield call(reqWrapper, apiGetScreen, { id: screenId });
+  const screen: Screen = yield call(reqWrapper, apiGetScreen, { id: screenId });
   const [element] = yield call(reqWrapper, apiGetElements, {
     scenariosIDs: [screen.screenscenario[0]],
   });
@@ -493,9 +492,7 @@ export function* getScreenSaga(screenId: number) {
   }
 
   yield put(addElement(convertElementFromResponse(element)));
-  console.log(flattenElements([convertElementFromResponse(element)]));
 
-  screen.element = convertElementFromResponse(element);
-  // screen.element = element.id;
+  screen.elementId = element.id.toString();
   return screen;
 }

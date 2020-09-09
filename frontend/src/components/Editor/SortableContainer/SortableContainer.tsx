@@ -19,8 +19,8 @@ import { convertPropCSS } from '../../../utils/StyleHelper';
 import {
   selectCurrentProject,
   selectCurrentScreen,
-  selectRootElement,
-  selectRootID,
+  selectElementsTree,
+  selectRootId,
   selectSavedElementsValues,
   selectScreenLoader,
   selectShowingBorders,
@@ -38,8 +38,9 @@ const mapStateToProps = (state: AppReduxState) => {
   const currentProject = selectCurrentProject(state);
   const projectClasses = currentProject.projectData.classes;
   const currentScreen = selectCurrentScreen(state);
-  const root = selectRootElement(state);
-  const rootID = selectRootID(state);
+  // const root = selectRootElement(state);
+  const root = selectElementsTree(state);
+  const rootID = selectRootId(state);
   const showBorders = selectShowingBorders(state);
   const savedElements = selectSavedElementsValues(state);
   const disableInteractions = state.user.isPrototypeMode;
@@ -125,7 +126,7 @@ const SortableComponent: React.FC<Props> = ({
     moveElement(
       indices,
       activeItemId,
-      parentId === 'root' ? rootID : parentId,
+      parentId === 'root' ? rootID.toString() : parentId,
       isRemote,
       { screenId: currentScreen.id },
     );

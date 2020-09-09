@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`findParentByChildID Should find parent of element on 2 level 1`] = `
+exports[`findParentByChildID Should find parent of elementId on 2 level 1`] = `
 Object {
   "buoyancy": 0,
   "children": Array [
@@ -66,7 +66,7 @@ Object {
 }
 `;
 
-exports[`findParentByChildID Should find parent of element on 3 level 1`] = `
+exports[`findParentByChildID Should find parent of elementId on 3 level 1`] = `
 Object {
   "buoyancy": 0,
   "children": Array [
@@ -121,7 +121,7 @@ Object {
 }
 `;
 
-exports[`findParentByChildID Should find parent of element on 4 level 1`] = `
+exports[`findParentByChildID Should find parent of elementId on 4 level 1`] = `
 Object {
   "buoyancy": 1,
   "children": Array [

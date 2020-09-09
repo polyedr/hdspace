@@ -585,7 +585,7 @@ export interface Screen {
   image: string | null;
   screenscenario: number[];
   buoyancy: number;
-  element: LibraryElement<'root'>;
+  elementId: string;
   // removed screen_data_json, ask if it will be needed on backend
 }
 

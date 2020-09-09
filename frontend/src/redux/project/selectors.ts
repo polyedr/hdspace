@@ -22,21 +22,20 @@ export const selectProjectById = (projectId: number) => (
   state: AppReduxState,
 ) => selectProjectState(state).data.projects[projectId];
 
-export const selectScreenElement = (screenId: number) => ({
-  project,
-}: AppReduxState): LibraryElement<'root'> =>
-  project.data.screens[screenId]?.element || DEFAULT_ROOT;
+export const selectElementByScreenId = (screenId: number) => ({
+  project: {
+    data: { screens, elements },
+  },
+}: AppReduxState): LibraryElement<'root'> => {
+  const { elementId } = screens[screenId];
+  return elements[elementId] || DEFAULT_ROOT;
+};
 
 export const selectCurrentScreenId = (state: AppReduxState) =>
   selectProjectState(state).edit.currentScreenId;
 
 export const selectCurrentScreen = (state: AppReduxState) =>
   state.project.data.screens[selectCurrentScreenId(state)] || DEFAULT_SCREEN;
-
-export const selectCurrentScreenElement = (state: AppReduxState) => {
-  const currentScreen = selectCurrentScreen(state);
-  return currentScreen.element;
-};
 
 export function selectScreens({ project }: AppReduxState) {
   return mapToArr<Screen>(project.data.screens);
@@ -63,11 +62,31 @@ export const selectCurrentProjectId = ({ project }: AppReduxState) =>
 export const selectCurrentProject = (state: AppReduxState) =>
   state.project.data.projects[selectCurrentProjectId(state)] || DEFAULT_PROJECT;
 
-export const selectRootElement = (state: AppReduxState) =>
-  selectCurrentScreen(state).element;
+export const selectRootId = (state: AppReduxState) =>
+  selectCurrentScreen(state).elementId || '-1';
 
-export const selectRootID = (state: AppReduxState) =>
-  selectCurrentScreen(state).element?.id || '-1';
+export const selectElementById = (id: string) => (
+  state: AppReduxState,
+): LibraryElement<any> => state.project.data.elements[id];
+
+export const buildElementsTree = (elementId: string) => (
+  state: AppReduxState,
+): LibraryElement<any> => {
+  const rootElement = selectElementById(elementId)(state);
+
+  return {
+    ...rootElement,
+    children: rootElement?.children?.map((childId) =>
+      buildElementsTree(childId)(state),
+    ),
+  };
+};
+
+export const selectElementsTree = (state) => {
+  const rootId = selectRootId(state);
+  if (rootId === '-1') return DEFAULT_ROOT;
+  return buildElementsTree(rootId)(state);
+};
 
 export function selectUploadedImageInfo(state: AppReduxState) {
   return selectProjectState(state).edit.uploadedImageInfo;
@@ -109,7 +128,8 @@ function makeActiveItemInfoSelector<
 ) => K extends 'styles' ? R['styles'] : R['parameters'] {
   return (state: AppReduxState) => {
     const activeItem = selectActiveItem(state);
-    const elementsTree = selectRootElement(state);
+    // const elementsTree = selectRootElement(state);
+    const elementsTree = selectElementsTree(state);
     const element = findChildByID(elementsTree, activeItem.itemId);
 
     if (!element) {
@@ -166,7 +186,8 @@ export function selectActiveItemChildren(
   childType: ChildEntity,
 ) {
   const activeItem = selectActiveItem(state);
-  const elementsTree = selectRootElement(state);
+  const elementsTree = selectElementsTree(state);
+  // const elementsTree = selectRootElement(state);
   const element = findChildByID(elementsTree, activeItem.itemId);
 
   if (!element) {
@@ -179,14 +200,15 @@ export function selectActiveItemChildren(
 export const selectElementStyles = (screenId: number, elementId: string) => (
   state: AppReduxState,
 ) =>
-  findChildByID(selectScreenElement(screenId)(state), elementId)?.styles
+  findChildByID(selectElementByScreenId(screenId)(state), elementId)?.styles
     .ownStyles;
 
 export const selectElementParameters = (
   screenId: number,
   elementId: string,
 ) => (state: AppReduxState) =>
-  findChildByID(selectScreenElement(screenId)(state), elementId)?.parameters;
+  findChildByID(selectElementByScreenId(screenId)(state), elementId)
+    ?.parameters;
 
 export const selectUndoActions = (state: AppReduxState) =>
   selectProjectState(state).control.undoActions;
@@ -200,9 +222,6 @@ export const selectHistory = (state: AppReduxState) =>
 export const selectRemoteMove = (state: AppReduxState) =>
   selectProjectState(state).control.remoteMove;
 
-export const selectActiveItemChildrenStyles = makeActiveItemInfoSelector(
-  'styles',
-);
 export const selectActiveItemParams = makeActiveItemInfoSelector('parameters');
 
 export function selectItemToCopyInfo(state: AppReduxState) {

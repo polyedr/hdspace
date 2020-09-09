@@ -25,8 +25,8 @@ import {
 import { changePrototypeMode } from '../../../redux/user/actions';
 import {
   selectActiveItem,
-  selectRootElement,
   selectCurrentScreenId,
+  selectElementsTree,
 } from '../../../redux/project/selectors';
 
 const styles = require('./Workspace.scss');
@@ -52,7 +52,8 @@ const mapDispatch = {
 };
 
 const mapState = (state: AppReduxState): StateProps => ({
-  elementsTree: selectRootElement(state),
+  // elementsTree: selectRootElement(state),
+  elementsTree: selectElementsTree(state),
   activeItem: selectActiveItem(state),
   isPrototypeMode: state.user.isPrototypeMode,
 });

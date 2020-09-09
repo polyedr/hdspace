@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`removeElementClassName Should remove element className on 1 level 1`] = `
+exports[`removeElementClassName Should remove elementId className on 1 level 1`] = `
 Object {
   "buoyancy": 0,
   "children": Array [
@@ -112,7 +112,7 @@ Object {
 }
 `;
 
-exports[`removeElementClassName Should remove element className on 2 level 1`] = `
+exports[`removeElementClassName Should remove elementId className on 2 level 1`] = `
 Object {
   "buoyancy": 0,
   "children": Array [
@@ -224,7 +224,7 @@ Object {
 }
 `;
 
-exports[`removeElementClassName Should remove element className on 3 level 1`] = `
+exports[`removeElementClassName Should remove elementId className on 3 level 1`] = `
 Object {
   "buoyancy": 0,
   "children": Array [
@@ -336,7 +336,7 @@ Object {
 }
 `;
 
-exports[`removeElementClassName Should remove element className on 5 level 1`] = `
+exports[`removeElementClassName Should remove elementId className on 5 level 1`] = `
 Object {
   "buoyancy": 0,
   "children": Array [

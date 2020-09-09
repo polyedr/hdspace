@@ -70,7 +70,8 @@ type StateProps = {
 };
 
 const mapState = (state: AppReduxState): StateProps => {
-  const root = selectors.selectRootElement(state);
+  // const root = selectors.selectRootElement(state);
+  const root = selectors.selectElementsTree(state);
   const activeItem = selectors.selectActiveItem(state);
   const activeElement = findChildByID(root, activeItem.itemId);
   const activeElementParent = findParentByChildID(root, activeItem.itemId);

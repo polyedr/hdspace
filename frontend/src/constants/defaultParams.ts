@@ -94,7 +94,7 @@ export const DEFAULT_SCREEN: Screen = {
   screenscenario: [],
   buoyancy: 0,
   image: null,
-  element: DEFAULT_ROOT,
+  elementId: '-1',
 };
 
 export const DEFAULT_ACTIVE_ITEM: ActiveItem = {
