@@ -1,0 +1,26 @@
+.borderLabel {
+  display: none;
+  position: absolute;
+  top: 0;
+  padding: 2px 4px;
+  font-size: 12px;
+  line-height: 1;
+  color: #fff;
+  background: $mainColor;
+
+  &:global(.borderLabel_hovered) {
+    display: block;
+    z-index: 3;
+  }
+
+  &_outer {
+    z-index: 1;
+    transform: translateY(0);
+  }
+
+  &_active {
+    display: inline-block;
+    z-index: 3;
+    background: red;
+  }
+}

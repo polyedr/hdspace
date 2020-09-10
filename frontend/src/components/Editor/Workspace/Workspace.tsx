@@ -5,7 +5,8 @@ import html2canvas from 'html2canvas';
 
 import { TopBar } from '../TopBar/TopBar';
 import { HotKeys } from '../HotKeys/HotKeys';
-import ContainersBorders from '../ContainersBorders/ContainersBorders';
+// import ContainersBorders from '../ContainersBorders/ContainersBorders';
+import Borders from '../ContainersBorders/Borders';
 import Scrollbar from '../../UI/Scrollbar';
 import { SortableContainer } from '../SortableContainer/SortableContainer';
 import { Entity } from '../../../domain/core';
@@ -216,7 +217,8 @@ const Workspace = ({
             isResizing={hasItemBeingResized}
             setIsResizing={setHasItemBeingResized}
           />
-          {!isPrototypeMode && <ContainersBorders />}
+          {/*! isPrototypeMode && <ContainersBorders /> */}
+          {!isPrototypeMode && <Borders />}
         </Scrollbar>
       </div>
     </div>
