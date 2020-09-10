@@ -45,6 +45,7 @@ import {
   createElements,
   setIsAddElementsModalOpened,
 } from '../../../../../redux/project/actions';
+import Scrollbar from '../../../../../components/UI/Scrollbar';
 
 const CONTROLS: Record<Control, React.ComponentType<any>> = {
   display: Display,
@@ -94,7 +95,7 @@ const PropertiesTab: React.FC<Props> = ({
   const { itemType } = activeItem;
 
   return (
-    <>
+    <Scrollbar autoHeightMin="100%">
       <ActiveElementBlock
         activeItem={activeItem}
         libraryElements={LIBRARY_ELEMENTS}
@@ -169,7 +170,7 @@ const PropertiesTab: React.FC<Props> = ({
             )}
         </div>
       )}
-    </>
+    </Scrollbar>
   );
 };
 

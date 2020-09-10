@@ -241,17 +241,25 @@
   display: flex;
 }
 
-.section {
-  background-color: #fff;
+.elementsTab {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
 }
 
-.sectionHeader {
-  padding: .5em 2em;
-  font-size: 1.1em;
-  font-weight: bold;
+.section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: stretch;
+  & > * {
+    flex: 1
+  }
 }
 
 .elementsBlock {
+  background-color: rgba(0, 0, 0, 0.075);
   display: flex;
   flex-flow: row wrap;
   & > * {
@@ -276,17 +284,16 @@
   svg {
     fill: rgb(0, 0, 0);
   }
-  //border: 1px solid rgba(0, 0, 0, 0.4);
   border: none;
   border-radius: 3px;
   transition: background-color .1s ease-in-out;
   &:hover {
-    background-color: rgba(0, 0, 0, .05);
+    background-color: white;
     box-shadow: 0 2px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0,0,0,0.12);
   }
   &:focus,
   &:active {
-    background-color: rgb(220, 220, 220);
+    background-color: white;
     border: 2px solid black;
   }
 }

@@ -64,13 +64,18 @@ const StyledAccordionDetails = withStyles({
 })(AccordionDetails);
 
 type Props = {
-  title: string;
+  title?: string;
   elements: {
     [key: string]: { type: Entity; icon: any };
   };
+  expandable?: boolean;
 };
 
-const ElementsBlock: React.FC<Props> = ({ title, elements }) => {
+const ElementsBlock: React.FC<Props> = ({
+  title,
+  elements,
+  expandable = false,
+}) => {
   const dispatch = useDispatch();
   const screenId = useSelector(selectCurrentScreenId);
   const { itemType: activeItemType } = useSelector(selectActiveItem);
@@ -85,7 +90,7 @@ const ElementsBlock: React.FC<Props> = ({ title, elements }) => {
     (AVAILABLE_CHILDREN[activeItemType].all ||
       type in AVAILABLE_CHILDREN[activeItemType]);
 
-  return (
+  return expandable ? (
     <StyledAccordion defaultExpanded>
       <StyledAccordionSummary expandIcon={<ExpandMoreIcon />}>
         {title}
@@ -105,6 +110,20 @@ const ElementsBlock: React.FC<Props> = ({ title, elements }) => {
         ))}
       </StyledAccordionDetails>
     </StyledAccordion>
+  ) : (
+    <div className={styles.elementsBlock}>
+      {Object.values(elements).map((key) => (
+        <Button
+          key={key.type}
+          disabled={!isAvailableChild(key.type)}
+          className={styles.elementButton}
+          onClick={handleClick(key.type)}
+        >
+          {key.icon && <key.icon />}
+          {splitWords(key.type)}
+        </Button>
+      ))}
+    </div>
   );
 };
 

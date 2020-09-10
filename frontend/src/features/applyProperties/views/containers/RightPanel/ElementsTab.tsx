@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import SlideshowIcon from '@material-ui/icons/Slideshow';
 import ListIcon from '@material-ui/icons/List';
 import Crop169Icon from '@material-ui/icons/Crop169';
@@ -15,18 +15,19 @@ import RadioButtonCheckedIcon from '@material-ui/icons/RadioButtonChecked';
 import LabelIcon from '@material-ui/icons/Label';
 import TocIcon from '@material-ui/icons/Toc';
 import CropOriginalIcon from '@material-ui/icons/CropOriginal';
+import ToggleButton from '@material-ui/lab/ToggleButton';
+import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
+import withStyles from '@material-ui/core/styles/withStyles';
+import { omit } from 'ramda';
 import ElementsBlock from './ElementsBlock';
+import Section from './Section';
 
 const styles = require('./PropertiesPanel.scss');
 
+const sections = ['elements', 'templates', 'library'];
+
 const elementsBlocks = {
-  layout: {
-    pageTemplate: { type: 'pageTemplate', icon: null },
-    screenshot: { type: 'screenshot', icon: CropOriginalIcon },
-    subscribeForm: { type: 'subscribeForm', icon: null },
-    cardsSection: { type: 'cardsSection', icon: null },
-    featureSection: { type: 'featureSection', icon: null },
-  },
+  layout: {},
   basic: {
     button: { type: 'button', icon: SlideshowIcon },
     list: { type: 'list', icon: ListIcon },
@@ -51,27 +52,82 @@ const elementsBlocks = {
     label: { type: 'label', icon: LabelIcon },
     select: { type: 'select', icon: TocIcon },
   },
+  templates: {
+    pageTemplate: { type: 'pageTemplate', icon: null },
+    screenshot: { type: 'screenshot', icon: CropOriginalIcon },
+    subscribeForm: { type: 'subscribeForm', icon: null },
+    cardsSection: { type: 'cardsSection', icon: null },
+    featureSection: { type: 'featureSection', icon: null },
+  },
 } as const;
 
+const StyledToggleButtonGroup = withStyles({
+  root: {
+    width: '100%',
+    display: 'flex',
+  },
+  grouped: {
+    flex: 1,
+    '&:not(:first-child)': {},
+    '&:first-child': {},
+  },
+})(ToggleButtonGroup);
+
+const StyledToggleButton = withStyles({
+  root: {
+    textTransform: 'none',
+    '&$selected': {
+      '&:hover': {},
+    },
+  },
+  disabled: {},
+  selected: {},
+  label: {},
+})(ToggleButton);
+
 const ElementsTab = () => {
+  const [section, setSection] = useState(sections[0]);
+
+  const handleChangeSection = (
+    ev: React.MouseEvent<HTMLElement>,
+    newSection: string,
+  ) => {
+    if (newSection) {
+      setSection(newSection);
+    }
+  };
+
   return (
-    <>
-      <section className={styles.section}>
-        <h3 className={styles.sectionHeader}>Elements</h3>
+    <div className={styles.elementsTab}>
+      <StyledToggleButtonGroup
+        value={section}
+        onChange={handleChangeSection}
+        exclusive
+        size="small"
+      >
+        <StyledToggleButton value="elements">Elements</StyledToggleButton>
 
-        {Object.entries(elementsBlocks).map(([key, value]) => (
-          <ElementsBlock key={key} title={key} elements={value} />
-        ))}
-      </section>
+        <StyledToggleButton value="templates">Templates</StyledToggleButton>
 
-      <section className={styles.section}>
-        <h3 className={styles.sectionHeader}>Templates</h3>
-      </section>
+        <StyledToggleButton value="library">Library</StyledToggleButton>
+      </StyledToggleButtonGroup>
 
-      <section className={styles.section}>
-        <h3 className={styles.sectionHeader}>Library</h3>
-      </section>
-    </>
+      <Section title="elements" activeSection={section}>
+        {Object.entries(omit(['templates'], elementsBlocks)).map(
+          ([key, value]) => (
+            <ElementsBlock key={key} title={key} elements={value} expandable />
+          ),
+        )}
+      </Section>
+
+      <Section title="templates" activeSection={section}>
+        <ElementsBlock elements={elementsBlocks.templates} />
+      </Section>
+
+      <Section title="library" activeSection={section}>
+        Library
+      </Section>
+    </div>
   );
 };
 

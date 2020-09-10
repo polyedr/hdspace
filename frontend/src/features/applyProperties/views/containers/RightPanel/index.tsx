@@ -7,7 +7,6 @@ import { actionsCreators, selectors } from '../../../../../redux/project';
 import Spinner from '../../../../../components/UI/Spinner';
 import { AppReduxState } from '../../../../../shared/types/app';
 import PropertiesTab from './PropertiesTab';
-import Scrollbar from '../../../../../components/UI/Scrollbar';
 import ElementsTab from './ElementsTab';
 
 const styles = require('./PropertiesPanel.scss');
@@ -28,7 +27,7 @@ const StyledTab = withStyles({
   },
   selected: {
     borderRadius: '2px 2px 0 0',
-    backgroundColor: '#fff',
+    backgroundColor: 'rgba(0, 0, 0, 0.05)',
   },
 })(Tab);
 
@@ -40,7 +39,7 @@ type TabPanelProps = {
 const TabPanel: React.FC<TabPanelProps> = ({ value, index, children }) => {
   return (
     <div hidden={value !== index} className={styles.tabPanel}>
-      <Scrollbar autoHeightMin="100%">{children}</Scrollbar>
+      {children}
     </div>
   );
 };
