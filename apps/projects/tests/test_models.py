@@ -1,5 +1,25 @@
 from django.test import TestCase
 from ..models import Project, ScreenScenario
+from guardian.shortcuts import assign_perm
+from apps.accounts.models import Profile, User
+
+
+class UserPermissionTest(TestCase):
+    """ Test if user has permission to a project """
+
+    def setUp(self):
+        self.User = User.objects.create(email="yamamoto265@gmail.com")
+        self.project_attributes1 = {
+            "user_id": 1,
+            "name": "testproject",
+            "status": "pending",
+        }
+        self.project = Project.objects.create(**self.project_attributes1)
+
+    def test_user_has_permission(self):
+        assign_perm("view_this_project", self.User, self.project)
+        print("is it true ? ", self.User.has_perm("view_this_project", self.project))
+        self.assertEqual(True, self.User.has_perm("view_this_project", self.project))
 
 
 class ProjectTest(TestCase):
@@ -28,10 +48,17 @@ class ScreenScenarioTest(TestCase):
 
     def setUp(self):
         self.ScreenScenarioattributes1 = {"name": "testscreenscenario", "type": "login"}
-        self.screenscenario = ScreenScenario.objects.create(**self.ScreenScenarioattributes1)
+        self.screenscenario = ScreenScenario.objects.create(
+            **self.ScreenScenarioattributes1
+        )
 
-        self.ScreenScenarioattributes2 = {"name": "testscreenscenario2", "type": "contact_info"}
-        self.screenscenario = ScreenScenario.objects.create(**self.ScreenScenarioattributes2)
+        self.ScreenScenarioattributes2 = {
+            "name": "testscreenscenario2",
+            "type": "contact_info",
+        }
+        self.screenscenario = ScreenScenario.objects.create(
+            **self.ScreenScenarioattributes2
+        )
 
     def test_ScreenScenariostr(self):
         ScreenScenariotest1 = ScreenScenario.objects.get(name="testscreenscenario")

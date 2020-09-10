@@ -1,14 +1,13 @@
 import secrets
 import uuid
-
 from django.db import models
 from mptt.models import MPTTModel, TreeForeignKey
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from jsonfield import JSONField
-
 from apps.utils.models import TimeStampedModel
 from apps.accounts.utils import utils
+from rest_framework import permissions  # Django-Gardian testing Custom Permission
 
 
 __all__ = (
@@ -64,6 +63,14 @@ class Project(TimeStampedModel):
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        permissions = [
+            ("view_this_project", "Has view only permissions"),
+            ("edit_this_project", "Can edit the project"),
+            ("share_this_project", "Can share the project"),
+            ("delete_this_project", "Can delete the project"),
+        ]
 
 
 class ProjectScreen(TimeStampedModel):
@@ -315,7 +322,7 @@ class ScreenScenario(TimeStampedModel):
 
     # Image field
     image = models.ImageField(
-        upload_to='uploads/', blank=True, null=True, max_length=256
+        upload_to="uploads/", blank=True, null=True, max_length=256
     )
 
     # Parent id and type
@@ -463,14 +470,19 @@ class ScenarioElement(MPTTModel, TimeStampedModel):
     )
 
     direction = models.CharField(
-        choices=SCENARIO_DIRECTION_TYPE_CHOICES, default=VERTICAL, max_length=50, null=True
+        choices=SCENARIO_DIRECTION_TYPE_CHOICES,
+        default=VERTICAL,
+        max_length=50,
+        null=True,
     )
 
     scenario = models.ForeignKey(
         ScreenScenario, related_name="elements", on_delete=models.CASCADE, null=True
     )
 
-    parent = TreeForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='children')
+    parent = TreeForeignKey(
+        "self", on_delete=models.CASCADE, null=True, blank=True, related_name="children"
+    )
 
     name = models.CharField(max_length=250, null=True)
 
@@ -483,7 +495,7 @@ class ScenarioElement(MPTTModel, TimeStampedModel):
 
     # Image field
     image = models.ImageField(
-        upload_to='uploads/', blank=True, null=True, max_length=256
+        upload_to="uploads/", blank=True, null=True, max_length=256
     )
 
     # Sharing the element flag
@@ -493,7 +505,7 @@ class ScenarioElement(MPTTModel, TimeStampedModel):
         return "{}".format(self.pk)
 
     class MPTTMeta:
-        level_attr = 'mptt_level'
+        level_attr = "mptt_level"
 
 
 # Non-model model to expose the scenario library
