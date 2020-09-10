@@ -84,6 +84,19 @@ p {
   padding: $mainPadding;
 }
 
+.editorLogic {
+  flex: 1;
+  display: flex;
+  align-items: stretch;
+}
+.workArea {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  margin-right: $mainPadding;
+  flex: 1;
+}
+
 :global(.hovered) {
   outline: $secondBorderColor solid 1px;
   outline-offset: -1px;

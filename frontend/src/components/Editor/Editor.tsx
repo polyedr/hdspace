@@ -4,7 +4,6 @@ import cn from 'classnames';
 import * as Actions from '../../redux/project/actions';
 import Workspace from './Workspace/Workspace';
 import { EditorProps } from '../../containers/EditorLogic';
-import { RightPanel } from '../../features/applyProperties/views/containers';
 
 const styles = require('./Editor.scss');
 
@@ -17,14 +16,12 @@ export interface IScreenMode {
 export interface IEditProps {
   screen: EditorProps['currentScreen'];
   isNavPanelMinimized: EditorProps['isNavPanelMinimized'];
-  isPrototypeMode: EditorProps['isPrototypeMode'];
   resetScreenState: typeof Actions.resetScreenState;
 }
 
 const Editor: React.FC<IEditProps> = ({
   screen,
   isNavPanelMinimized,
-  isPrototypeMode,
   resetScreenState,
 }) => {
   const [screenId, setScreenId] = useState<number>(-1);
@@ -50,7 +47,6 @@ const Editor: React.FC<IEditProps> = ({
       )}
     >
       <Workspace />
-      {!isPrototypeMode && <RightPanel />}
       <Prompt
         when={false}
         message="You have unsaved changes, are you sure you want to leave?"

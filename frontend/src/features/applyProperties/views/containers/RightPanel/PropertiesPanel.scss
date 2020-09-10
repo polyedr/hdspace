@@ -229,7 +229,6 @@
   display: flex;
   flex: 0 0 $rightPanel_width;
   flex-direction: column;
-  margin-top: 10px;
 
   @include props_panel_text;
 

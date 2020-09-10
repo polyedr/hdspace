@@ -3,3 +3,6 @@
 import { AppReduxState } from '../../shared/types/app';
 
 export const selectUserData = ({ user }: AppReduxState) => user.userData;
+
+export const selectIsLeftPanelMinimized = ({ user }: AppReduxState) =>
+  user.isLPanelMinimized;
