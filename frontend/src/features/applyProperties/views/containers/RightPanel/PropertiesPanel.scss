@@ -251,7 +251,7 @@
   font-weight: bold;
 }
 
-.block {
+.elementsBlock {
   display: flex;
   flex-flow: row wrap;
   & > * {
@@ -263,6 +263,8 @@
   background-color: rgba(0, 0, 0, .05);
   padding: 0;
   span {
+    text-transform: capitalize;
+    font-size: .8em;
     color: rgb(0, 0, 0);
     display: flex;
     flex-direction: column;
