@@ -4,16 +4,13 @@ import withStyles from '@material-ui/core/styles/withStyles';
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
+import { useDispatch, useSelector } from 'react-redux';
 import Button from '../../../../../components/UI/Button';
+import { createElements } from '../../../../../redux/project/actions';
+import { selectCurrentScreenId } from '../../../../../redux/project/selectors';
+import { Entity } from '../../../../../domain/core';
 
 const styles = require('./PropertiesPanel.scss');
-
-type Props = {
-  title: string;
-  elements: {
-    [key: string]: { type: string; icon: any };
-  };
-};
 
 const StyledAccordion = withStyles({
   root: {
@@ -63,8 +60,21 @@ const StyledAccordionDetails = withStyles({
   },
 })(AccordionDetails);
 
+type Props = {
+  title: string;
+  elements: {
+    [key: string]: { type: Entity; icon: any };
+  };
+};
+
 const ElementsBlock: React.FC<Props> = ({ title, elements }) => {
+  const dispatch = useDispatch();
+  const screenId = useSelector(selectCurrentScreenId);
   const splitWords = (str: string) => str.replace(/([a-z])([A-Z])/g, '$1 $2');
+
+  const handleClick = (type: Entity) => () => {
+    dispatch(createElements([{ type }], { screenId }));
+  };
 
   return (
     <StyledAccordion defaultExpanded>
@@ -74,7 +84,11 @@ const ElementsBlock: React.FC<Props> = ({ title, elements }) => {
 
       <StyledAccordionDetails className={styles.elementsBlock}>
         {Object.values(elements).map((key) => (
-          <Button key={key.type} className={styles.elementButton}>
+          <Button
+            key={key.type}
+            className={styles.elementButton}
+            onClick={handleClick(key.type)}
+          >
             {key.icon && <key.icon />}
             {splitWords(key.type)}
           </Button>

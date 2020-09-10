@@ -40,9 +40,7 @@ type TabPanelProps = {
 const TabPanel: React.FC<TabPanelProps> = ({ value, index, children }) => {
   return (
     <div hidden={value !== index} className={styles.tabPanel}>
-      {value === index && (
-        <Scrollbar autoHeightMin="100%">{children}</Scrollbar>
-      )}
+      <Scrollbar autoHeightMin="100%">{children}</Scrollbar>
     </div>
   );
 };
