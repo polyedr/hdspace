@@ -13,7 +13,7 @@ from .utils import utils
 
 __all__ = ("User", "Profile", "Team", "TeamMember")
 
-'''
+"""
 # The abstract class converts MongoDB _id to the integer with auto-incremented value
 # Not for the Postgres
 class MongoModel(models.Model):
@@ -37,15 +37,11 @@ class MongoModel(models.Model):
                 {"name": name}, {"$inc": {"next_id": 1}}
             )
             return sq["next_id"]
-'''
+"""
 
 
 class User(AbstractUser):
-    email = models.EmailField(
-        verbose_name='email address',
-        max_length=255,
-        unique=True,
-    )
+    email = models.EmailField(verbose_name="email address", max_length=255, unique=True)
 
 
 class Profile(TimeStampedModel):
@@ -66,11 +62,25 @@ class Profile(TimeStampedModel):
     email_confirmation_token = models.CharField(
         max_length=64, editable=False, null=True
     )
+    INTERNAL_ROLE_SUPERADMIN = "SuperAdmin"
+    INTERNAL_ROLE_STAFF = "Staff"
+    INTERNAL_ROLE_LIBRARIAN = "Librarian"
+    USER_INTERNAL_ROLE = (
+        (INTERNAL_ROLE_SUPERADMIN, "SuperAdmin"),
+        (INTERNAL_ROLE_STAFF, "Staff"),
+        (INTERNAL_ROLE_LIBRARIAN, "Librarian"),
+    )
+    email_confirmation_token = models.CharField(
+        max_length=64, editable=False, null=True
+    )
     reset_password_token = models.CharField(max_length=64, editable=False, null=True)
     invitation_token = models.CharField(max_length=64, editable=False, null=True)
     avatar = models.ImageField(upload_to=utils.get_file_path, blank=True, null=True)
     approved = models.BooleanField(default=False)
     role = models.CharField(choices=USER_ROLE, default=ROLE_DESIGNER, max_length=32)
+    internal_role = models.CharField(
+        choices=USER_INTERNAL_ROLE, default=ROLE_DESIGNER, max_length=32
+    )
     hourly_rate = models.IntegerField(default=0)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 

@@ -233,7 +233,14 @@ class ScreenScenarioMultipleSerializer(
         list_serializer_class = BulkListSerializer
 
 
-class ProjectSerializer(serializers.ModelSerializer):
+from rest_framework_guardian.serializers import (
+    ObjectPermissionsAssignmentMixin,
+)  # Django-Guardian Test
+from django.contrib.auth.models import Group
+from rest_framework import permissions
+
+
+class ProjectSerializer(ObjectPermissionsAssignmentMixin, serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
     projectscreen = serializers.PrimaryKeyRelatedField(
         many=True, queryset=ProjectScreen.objects.all()
@@ -258,6 +265,18 @@ class ProjectSerializer(serializers.ModelSerializer):
             "preview": {"read_only": True},
             "created": {"read_only": True},
             "updated": {"read_only": True},
+        }
+
+    def get_permissions_map(self, created):  # Django-Guardian Mixins
+        current_user = self.context["request"].user
+        readers = Group.objects.get(name="readers")
+        supervisors = Group.objects.get(name="supervisors")
+
+        return {
+            "view_this_project": [current_user, readers],
+            "edit_this_project": [current_user],
+            "share_this_project": [current_user, supervisors],
+            "delete_this_project": [current_user, supervisors],
         }
 
     def create(self, validated_data):
