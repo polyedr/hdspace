@@ -63,7 +63,7 @@ const StyledAccordionSummary = withStyles({
 const StyledAccordionDetails = withStyles({
   root: {
     padding: 0,
-    backgroundColor: '#e7e7e7',
+    backgroundColor: '#fff',
   },
 })(AccordionDetails);
 

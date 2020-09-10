@@ -84,11 +84,17 @@ const StyledToggleButton = withStyles({
   root: {
     textTransform: 'none',
     '&$selected': {
-      '&:hover': {},
+      backgroundColor: '#fff',
+      '&:hover': {
+        backgroundColor: '#fff',
+        color: '#1cc09f',
+      },
     },
   },
   disabled: {},
-  selected: {},
+  selected: {
+    backgroundColor: '#fff',
+  },
   label: {},
 })(ToggleButton);
 
