@@ -5,6 +5,8 @@ import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import { useDispatch, useSelector } from 'react-redux';
+import { OverridableComponent } from '@material-ui/core/OverridableComponent';
+import { SvgIconTypeMap } from '@material-ui/core';
 import Button from '../../../../../components/UI/Button';
 import { createElements } from '../../../../../redux/project/actions';
 import {
@@ -12,6 +14,7 @@ import {
   selectCurrentScreenId,
 } from '../../../../../redux/project/selectors';
 import { AVAILABLE_CHILDREN, Entity } from '../../../../../domain/core';
+import { splitWords } from '../../../../../utils/StringHelper';
 
 const styles = require('./PropertiesPanel.scss');
 
@@ -60,26 +63,29 @@ const StyledAccordionSummary = withStyles({
 const StyledAccordionDetails = withStyles({
   root: {
     padding: 0,
+    backgroundColor: '#e7e7e7',
   },
 })(AccordionDetails);
 
 type Props = {
   title?: string;
   elements: {
-    [key: string]: { type: Entity; icon: any };
+    [key: string]: {
+      type: Entity;
+      icon: OverridableComponent<SvgIconTypeMap> | null;
+    };
   };
   expandable?: boolean;
 };
 
 const ElementsBlock: React.FC<Props> = ({
-  title,
+  title = '',
   elements,
   expandable = false,
 }) => {
   const dispatch = useDispatch();
   const screenId = useSelector(selectCurrentScreenId);
   const { itemType: activeItemType } = useSelector(selectActiveItem);
-  const splitWords = (str: string) => str.replace(/([a-z])([A-Z])/g, '$1 $2');
 
   const handleClick = (type: Entity) => () => {
     dispatch(createElements([{ type }], { screenId }));
@@ -90,40 +96,31 @@ const ElementsBlock: React.FC<Props> = ({
     (AVAILABLE_CHILDREN[activeItemType].all ||
       type in AVAILABLE_CHILDREN[activeItemType]);
 
+  const renderContent = () =>
+    Object.values(elements).map((key) => (
+      <Button
+        key={key.type}
+        disabled={!isAvailableChild(key.type)}
+        className={styles.elementButton}
+        onClick={handleClick(key.type)}
+      >
+        {key.icon && <key.icon />}
+        {splitWords(key.type)}
+      </Button>
+    ));
+
   return expandable ? (
     <StyledAccordion defaultExpanded>
       <StyledAccordionSummary expandIcon={<ExpandMoreIcon />}>
-        {title}
+        {splitWords(title)}
       </StyledAccordionSummary>
 
       <StyledAccordionDetails className={styles.elementsBlock}>
-        {Object.values(elements).map((key) => (
-          <Button
-            key={key.type}
-            disabled={!isAvailableChild(key.type)}
-            className={styles.elementButton}
-            onClick={handleClick(key.type)}
-          >
-            {key.icon && <key.icon />}
-            {splitWords(key.type)}
-          </Button>
-        ))}
+        {renderContent()}
       </StyledAccordionDetails>
     </StyledAccordion>
   ) : (
-    <div className={styles.elementsBlock}>
-      {Object.values(elements).map((key) => (
-        <Button
-          key={key.type}
-          disabled={!isAvailableChild(key.type)}
-          className={styles.elementButton}
-          onClick={handleClick(key.type)}
-        >
-          {key.icon && <key.icon />}
-          {splitWords(key.type)}
-        </Button>
-      ))}
-    </div>
+    <div className={styles.elementsBlock}>{renderContent()}</div>
   );
 };
 

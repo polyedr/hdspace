@@ -18,7 +18,7 @@ import CropOriginalIcon from '@material-ui/icons/CropOriginal';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import withStyles from '@material-ui/core/styles/withStyles';
-import { omit } from 'ramda';
+import TitleOutlinedIcon from '@material-ui/icons/TitleOutlined';
 import ElementsBlock from './ElementsBlock';
 import Section from './Section';
 
@@ -27,37 +27,44 @@ const styles = require('./PropertiesPanel.scss');
 const sections = ['elements', 'templates', 'library'];
 
 const elementsBlocks = {
-  layout: {},
-  basic: {
-    button: { type: 'button', icon: SlideshowIcon },
-    list: { type: 'list', icon: ListIcon },
-    divBlock: { type: 'divBlock', icon: Crop169Icon },
-    paragraph: { type: 'paragraph', icon: NotesIcon },
-    heading: { type: 'heading', icon: LineWeightIcon },
-    hyperlink: { type: 'hyperlink', icon: LinkIcon },
-    image: { type: 'image', icon: ImageIcon },
-    video: { type: 'video', icon: MovieIcon },
-    // textBlock: { type: 'textBlock', icon: null },
-    // map: 'map',
-    // calendar: 'calendar',
-    // clock: 'clock',
-    // undefined: 'undefined',
-  },
-  form: {
-    dropdown: { type: 'dropdown', icon: ArrowDropDownCircleIcon },
-    textinput: { type: 'textinput', icon: MessageIcon },
-    textarea: { type: 'textarea', icon: TextFieldsIcon },
-    checkbox: { type: 'checkbox', icon: CheckBoxIcon },
-    radiobutton: { type: 'radiobutton', icon: RadioButtonCheckedIcon },
-    label: { type: 'label', icon: LabelIcon },
-    select: { type: 'select', icon: TocIcon },
+  elements: {
+    layout: {},
+    basic: {
+      button: { type: 'button', icon: SlideshowIcon },
+      list: { type: 'list', icon: ListIcon },
+      divBlock: { type: 'divBlock', icon: Crop169Icon },
+      paragraph: { type: 'paragraph', icon: NotesIcon },
+      heading: { type: 'heading', icon: LineWeightIcon },
+      hyperlink: { type: 'hyperlink', icon: LinkIcon },
+      image: { type: 'image', icon: ImageIcon },
+      video: { type: 'video', icon: MovieIcon },
+      textBlock: { type: 'textBlock', icon: TitleOutlinedIcon },
+      // map: 'map',
+      // calendar: 'calendar',
+      // clock: 'clock',
+      // undefined: 'undefined',
+    },
+    form: {
+      dropdown: { type: 'dropdown', icon: ArrowDropDownCircleIcon },
+      textinput: { type: 'textinput', icon: MessageIcon },
+      textarea: { type: 'textarea', icon: TextFieldsIcon },
+      checkbox: { type: 'checkbox', icon: CheckBoxIcon },
+      radiobutton: { type: 'radiobutton', icon: RadioButtonCheckedIcon },
+      label: { type: 'label', icon: LabelIcon },
+      select: { type: 'select', icon: TocIcon },
+    },
   },
   templates: {
     pageTemplate: { type: 'pageTemplate', icon: null },
     screenshot: { type: 'screenshot', icon: CropOriginalIcon },
-    subscribeForm: { type: 'subscribeForm', icon: null },
-    cardsSection: { type: 'cardsSection', icon: null },
     featureSection: { type: 'featureSection', icon: null },
+  },
+  library: {
+    adeviLibrary: {
+      subscribeForm: { type: 'subscribeForm', icon: null },
+      cardsSection: { type: 'cardsSection', icon: null },
+    },
+    customUI: {},
   },
 } as const;
 
@@ -113,11 +120,9 @@ const ElementsTab = () => {
       </StyledToggleButtonGroup>
 
       <Section title="elements" activeSection={section}>
-        {Object.entries(omit(['templates'], elementsBlocks)).map(
-          ([key, value]) => (
-            <ElementsBlock key={key} title={key} elements={value} expandable />
-          ),
-        )}
+        {Object.entries(elementsBlocks.elements).map(([key, value]) => (
+          <ElementsBlock key={key} title={key} elements={value} expandable />
+        ))}
       </Section>
 
       <Section title="templates" activeSection={section}>
@@ -125,7 +130,9 @@ const ElementsTab = () => {
       </Section>
 
       <Section title="library" activeSection={section}>
-        Library
+        {Object.entries(elementsBlocks.library).map(([key, value]) => (
+          <ElementsBlock key={key} title={key} elements={value} expandable />
+        ))}
       </Section>
     </div>
   );

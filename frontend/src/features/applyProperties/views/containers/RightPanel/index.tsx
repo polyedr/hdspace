@@ -27,7 +27,7 @@ const StyledTab = withStyles({
   },
   selected: {
     borderRadius: '2px 2px 0 0',
-    backgroundColor: 'rgba(0, 0, 0, 0.05)',
+    backgroundColor: '#e7e7e7',
   },
 })(Tab);
 
