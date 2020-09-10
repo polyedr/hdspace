@@ -7,8 +7,11 @@ import AccordionDetails from '@material-ui/core/AccordionDetails';
 import { useDispatch, useSelector } from 'react-redux';
 import Button from '../../../../../components/UI/Button';
 import { createElements } from '../../../../../redux/project/actions';
-import { selectCurrentScreenId } from '../../../../../redux/project/selectors';
-import { Entity } from '../../../../../domain/core';
+import {
+  selectActiveItem,
+  selectCurrentScreenId,
+} from '../../../../../redux/project/selectors';
+import { AVAILABLE_CHILDREN, Entity } from '../../../../../domain/core';
 
 const styles = require('./PropertiesPanel.scss');
 
@@ -31,7 +34,7 @@ const StyledAccordion = withStyles({
 const StyledAccordionSummary = withStyles({
   root: {
     minHeight: 0,
-    backgroundColor: 'rgba(0, 0, 0, .15)',
+    backgroundColor: 'rgb(220,220,220)',
     border: '1px solid rgba(0, 0, 0, .25)',
     '&$expanded': {
       minHeight: 0,
@@ -70,11 +73,17 @@ type Props = {
 const ElementsBlock: React.FC<Props> = ({ title, elements }) => {
   const dispatch = useDispatch();
   const screenId = useSelector(selectCurrentScreenId);
+  const { itemType: activeItemType } = useSelector(selectActiveItem);
   const splitWords = (str: string) => str.replace(/([a-z])([A-Z])/g, '$1 $2');
 
   const handleClick = (type: Entity) => () => {
     dispatch(createElements([{ type }], { screenId }));
   };
+
+  const isAvailableChild = (type: Entity) =>
+    activeItemType !== 'none' &&
+    (AVAILABLE_CHILDREN[activeItemType].all ||
+      type in AVAILABLE_CHILDREN[activeItemType]);
 
   return (
     <StyledAccordion defaultExpanded>
@@ -86,6 +95,7 @@ const ElementsBlock: React.FC<Props> = ({ title, elements }) => {
         {Object.values(elements).map((key) => (
           <Button
             key={key.type}
+            disabled={!isAvailableChild(key.type)}
             className={styles.elementButton}
             onClick={handleClick(key.type)}
           >

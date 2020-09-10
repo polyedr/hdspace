@@ -255,12 +255,13 @@
   display: flex;
   flex-flow: row wrap;
   & > * {
-    width: calc(100% / 4);
-    height: calc(300px/4);
+    margin: 1px;
+    width: calc(100%/4 - 2px);
+    height: calc(300px/4 - 2px);
   }
 }
 .elementButton {
-  background-color: rgba(0, 0, 0, .05);
+  background-color: transparent;
   padding: 0;
   span {
     height: 100%;
@@ -275,7 +276,17 @@
   svg {
     fill: rgb(0, 0, 0);
   }
-  border: 1px solid rgba(0, 0, 0, 0.4);
-  border-radius: 2px;
+  //border: 1px solid rgba(0, 0, 0, 0.4);
+  border: none;
+  border-radius: 3px;
   transition: background-color .1s ease-in-out;
+  &:hover {
+    background-color: rgba(0, 0, 0, .05);
+    box-shadow: 0 2px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0,0,0,0.12);
+  }
+  &:focus,
+  &:active {
+    background-color: rgb(220, 220, 220);
+    border: 2px solid black;
+  }
 }
