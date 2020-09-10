@@ -120,6 +120,7 @@ export const MODAL_ADD_ELEMENTS_TABS = [
   'Form',
   'Image',
   'Other',
+  'Custom',
 ];
 
 export const DEFAULT_SIGNIN_FIELDS: ISignFormElement[] = [

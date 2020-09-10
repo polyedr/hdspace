@@ -11,12 +11,16 @@ import {
   selectShowingBorders,
 } from '../../../redux/project/selectors';
 import { ActiveItem } from '../../../redux/project/types';
-import BorderLabel from './BorderLabel';
 import SaveElementAction from './actions/SaveElementAction';
+import BorderCrumb from './BorderCrumb';
 
 const styles = require('./ContainersBorders.scss');
 
-// const elementTypes = ['container', 'divBlock', 'pageTemplate'];
+const elementTypes = ['container', 'divBlock', 'pageTemplate'];
+
+const isBorderedItem = (el: any): boolean => {
+  return elementTypes.indexOf(el.type) >= 0;
+};
 
 export type NamedItem = {
   id: string;
@@ -77,7 +81,10 @@ const Borders: React.FC<Props> = ({ root, activeItem, showBorders }) => {
         ...[
           { id: 'root', name: root.name } as NamedItem,
           ...root.children
-            .filter((child) => !!child.id && child.id !== 'none')
+            .filter(
+              (child) =>
+                !!child.id && child.id !== 'none' && isBorderedItem(child),
+            )
             .map((child) => ({ id: child.id, name: child.name } as NamedItem)),
         ],
       );
@@ -121,8 +128,9 @@ const Borders: React.FC<Props> = ({ root, activeItem, showBorders }) => {
               <Border position="bottom" item={item} isActive={isActive} />
               <Border position="left" item={item} isActive={isActive} />
               <Border position="right" item={item} isActive={isActive} />
-              <BorderLabel item={item} />
-              <SaveElementAction item={item} />
+              <BorderCrumb item={item}>
+                <SaveElementAction item={item} />
+              </BorderCrumb>
             </React.Fragment>
           );
         })}

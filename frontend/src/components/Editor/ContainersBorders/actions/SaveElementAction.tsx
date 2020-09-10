@@ -1,62 +1,68 @@
-import React, { useState } from 'react';
-import Popover from 'react-tiny-popover';
+import React from 'react';
+// import { useDispatch } from 'react-redux';
+import { Popover, IconButton } from '@material-ui/core';
+import SaveIcon from '@material-ui/icons/Save';
+import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state';
 import cn from 'classnames';
 
 import { BorderedItem } from '../Border';
-import { Button, Icon } from '../../../UI';
-import BorderAction from './BorderActions';
 
 const styles = require('./SaveElementAction.scss');
-
-const popoverStyle = {
-  opacity: '1',
-  overflow: 'visibility',
-  zIndex: '20',
-  border: '1px solid #e7eaec',
-  borderRadius: '4px',
-};
 
 type SaveElementAction = {
   item: BorderedItem;
 };
 
 const SaveElementAction: React.FC<SaveElementAction> = ({ item }) => {
-  const [isPopoverOpen, setIsPopoverOpen] = useState<boolean>(false);
-  const [componentName, setComponentName] = useState<string>();
+  // const [isPopoverOpen, setIsPopoverOpen] = useState<boolean>(false);
+  const inputRef = React.createRef<HTMLInputElement>();
+  // const dispatch = useDispatch();
   return (
-    <Popover
-      isOpen={isPopoverOpen}
-      position="right"
-      onClickOutside={() => setIsPopoverOpen(!isPopoverOpen)}
-      align="start"
-      transitionDuration={0}
-      containerStyle={popoverStyle}
-      content={
-        <div className={cn(styles.popoverContent)}>
-          <input
-            type="text"
-            className={styles.screenName}
-            value={componentName}
-            placeholder="Enter component name"
-            onChange={({ target: { value } }) => setComponentName(value)}
-          />
-          <Button
-            styleType="none"
-            onClick={() => {
-              console.log('SAVE ACTION CLICKED!');
-            }}
+    <PopupState variant="popover" popupId={`${item.id}-save-popup`}>
+      {(popupState) => (
+        <div>
+          <IconButton
+            size="small"
+            disableRipple
+            edge={false}
+            {...bindTrigger(popupState)}
           >
-            <Icon icon="save" />
-          </Button>
+            <SaveIcon fontSize="inherit" />
+          </IconButton>
+          <Popover
+            {...bindPopover(popupState)}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'center',
+            }}
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'center',
+            }}
+            onEntered={() => inputRef.current!.focus()}
+          >
+            <div className={cn(styles.popoverContent)}>
+              <input
+                ref={inputRef}
+                type="text"
+                className={styles.componentNameInput}
+                placeholder="Enter component name"
+                onKeyPress={(event: React.SyntheticEvent) => {
+                  console.log('KEY PRESSED!', event);
+                  const e: KeyboardEvent = event.nativeEvent as KeyboardEvent;
+                  if (e.keyCode === 13) {
+                    // Enter pressed
+                    const componentName = inputRef.current!.value;
+                    inputRef.current!.value = '';
+                    console.log('SUCCESS!', componentName);
+                  }
+                }}
+              />
+            </div>
+          </Popover>
         </div>
-      }
-    >
-      <BorderAction
-        item={item}
-        icon="save"
-        onClick={() => setIsPopoverOpen(!isPopoverOpen)}
-      />
-    </Popover>
+      )}
+    </PopupState>
   );
 };
 

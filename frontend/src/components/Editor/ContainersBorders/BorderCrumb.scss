@@ -1,4 +1,4 @@
-.borderLabel {
+.borderCrumb {
   display: none;
   position: absolute;
   top: 0;
@@ -7,20 +7,27 @@
   line-height: 1;
   color: #fff;
   background: $mainColor;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 
   &:global(.borderLabel_hovered) {
-    display: block;
+    /*display: block;*/
     z-index: 3;
   }
 
   &_outer {
     z-index: 1;
-    transform: translateY(0);
   }
 
   &_active {
-    display: inline-block;
+    /*display: inline-block;*/
     z-index: 3;
     background: red;
+  }
+
+  .borderLabel {
+    display: block;
+    margin: 0 3px;
   }
 }

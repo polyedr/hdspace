@@ -27,7 +27,6 @@ type BorderProps = {
   position: string;
   isActive: boolean;
   onClick?: (event: React.SyntheticEvent<EventTarget>) => void;
-  children?: any;
 };
 
 const Border: React.FC<BorderProps> = ({
@@ -35,7 +34,6 @@ const Border: React.FC<BorderProps> = ({
   position,
   isActive,
   onClick,
-  children,
 }) => {
   const [styleProps, setStyleProps] = useState({});
 
@@ -85,9 +83,6 @@ const Border: React.FC<BorderProps> = ({
     setStyleProps(styleProps);
   }, [isActive]);
 
-  /* if (['top', 'bottom'].findIndex((pos) => pos === position) >= 0) {
-    console.log('STYLE PROPS!!', styleProps, position);
-  } */
   return (
     <div
       data-border-id={item.id}
@@ -96,9 +91,7 @@ const Border: React.FC<BorderProps> = ({
       className={cn(styles.border, isActive && styles.border_active)}
       style={styleProps}
       onClick={onClick}
-    >
-      {children}
-    </div>
+    />
   );
 };
 
