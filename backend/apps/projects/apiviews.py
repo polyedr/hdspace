@@ -3,7 +3,12 @@ from rest_framework import generics, viewsets, permissions
 from rest_framework.response import Response
 from rest_framework_bulk import ListBulkCreateUpdateDestroyAPIView, BulkModelViewSet
 from rest_framework.permissions import IsAuthenticated
+<<<<<<< HEAD
 from rest_framework.pagination import CursorPagination
+=======
+from rest_framework_guardian import filters # Django-Guardian
+from permissions import CustomObjectPermissions
+>>>>>>> implemented django-guardian, created the first testcase giving a custom permission to a user in order to view a project
 
 from .models import (
     Project,
@@ -46,6 +51,7 @@ from .serializers import (
 
 class IsOwner(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
+            print('is owner ? : ' + obj.owner == request.user)
             return obj.owner == request.user
 
 
@@ -63,7 +69,12 @@ class ProjectViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
+<<<<<<< HEAD
     pagination_class = ProjectCursorSetPagination
+=======
+    permission_classes = [CustomObjectPermissions] # Django-Guardian
+    filter_backends = [filters.ObjectPermissionsFilter] # Django-Guardian
+>>>>>>> implemented django-guardian, created the first testcase giving a custom permission to a user in order to view a project
 
     def get_queryset(self):
         return self.get_serializer_class().setup_eager_loading(self.queryset)
