@@ -32,10 +32,10 @@ import {
 } from './typographyElements/typographyElements';
 import { map, calendar, clock } from './widgetElements/widgetElements';
 import {
-  pageTemplate,
   subscribeForm,
   cardsSection,
   featureSection,
+  makePageTemplate,
 } from './blocksTemplates/blocksTemplates';
 import {
   ButtonServerElement,
@@ -86,6 +86,7 @@ export type ElementsToAdd = {
   container: ContainerServerElement;
   divBlock: DivBlockServerElement;
   pageTemplate: PageTemplateServerElement;
+  emptyPageTemplate: PageTemplateServerElement;
   image: ImageServerElement;
   screenshot: ScreenshotServerElement;
   button: ButtonServerElement;
@@ -121,7 +122,8 @@ export const LIBRARY_ELEMENTS: LibraryElements = {
   root,
   container: makeContainer(),
   divBlock: makeDivBlock('This is divBlock'),
-  pageTemplate,
+  pageTemplate: makePageTemplate(),
+  emptyPageTemplate: makePageTemplate(true),
   subscribeForm,
   image: makeImage(),
   screenshot: makeScreenshot(),

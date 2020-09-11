@@ -3,9 +3,9 @@ import { connect } from 'react-redux';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import withStyles from '@material-ui/core/styles/withStyles';
-import { actionsCreators, selectors } from '../../../../../redux/project';
-import Spinner from '../../../../../components/UI/Spinner';
-import { AppReduxState } from '../../../../../shared/types/app';
+import { actionsCreators, selectors } from '../../redux/project';
+import Spinner from '../UI/Spinner';
+import { AppReduxState } from '../../shared/types/app';
 import PropertiesTab from './PropertiesTab';
 import ElementsTab from './ElementsTab';
 

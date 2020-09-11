@@ -19,6 +19,10 @@ import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import withStyles from '@material-ui/core/styles/withStyles';
 import TitleOutlinedIcon from '@material-ui/icons/TitleOutlined';
+import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
+import MapIcon from '@material-ui/icons/Map';
+import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
+import QueryBuilderIcon from '@material-ui/icons/QueryBuilder';
 import ElementsBlock from './ElementsBlock';
 import Section from './Section';
 
@@ -26,46 +30,47 @@ const styles = require('./PropertiesPanel.scss');
 
 const sections = ['elements', 'templates', 'library'];
 
-const elementsBlocks = {
-  elements: {
-    layout: {},
-    basic: {
-      button: { type: 'button', icon: SlideshowIcon },
-      list: { type: 'list', icon: ListIcon },
-      divBlock: { type: 'divBlock', icon: Crop169Icon },
-      paragraph: { type: 'paragraph', icon: NotesIcon },
-      heading: { type: 'heading', icon: LineWeightIcon },
-      hyperlink: { type: 'hyperlink', icon: LinkIcon },
-      image: { type: 'image', icon: ImageIcon },
-      video: { type: 'video', icon: MovieIcon },
-      textBlock: { type: 'textBlock', icon: TitleOutlinedIcon },
-      // map: 'map',
-      // calendar: 'calendar',
-      // clock: 'clock',
-      // undefined: 'undefined',
-    },
-    form: {
-      dropdown: { type: 'dropdown', icon: ArrowDropDownCircleIcon },
-      textinput: { type: 'textinput', icon: MessageIcon },
-      textarea: { type: 'textarea', icon: TextFieldsIcon },
-      checkbox: { type: 'checkbox', icon: CheckBoxIcon },
-      radiobutton: { type: 'radiobutton', icon: RadioButtonCheckedIcon },
-      label: { type: 'label', icon: LabelIcon },
-      select: { type: 'select', icon: TocIcon },
-    },
+const elements = {
+  layout: {},
+  basic: {
+    button: { type: 'button', icon: SlideshowIcon },
+    list: { type: 'list', icon: ListIcon },
+    divBlock: { type: 'divBlock', icon: Crop169Icon },
+    paragraph: { type: 'paragraph', icon: NotesIcon },
+    heading: { type: 'heading', icon: LineWeightIcon },
+    hyperlink: { type: 'hyperlink', icon: LinkIcon },
+    image: { type: 'image', icon: ImageIcon },
+    video: { type: 'video', icon: MovieIcon },
+    textBlock: { type: 'textBlock', icon: TitleOutlinedIcon },
+    undefined: { type: 'undefined', icon: HelpOutlineIcon },
   },
-  templates: {
-    pageTemplate: { type: 'pageTemplate', icon: null },
-    screenshot: { type: 'screenshot', icon: CropOriginalIcon },
-    featureSection: { type: 'featureSection', icon: null },
+  form: {
+    dropdown: { type: 'dropdown', icon: ArrowDropDownCircleIcon },
+    textinput: { type: 'textinput', icon: MessageIcon },
+    textarea: { type: 'textarea', icon: TextFieldsIcon },
+    checkbox: { type: 'checkbox', icon: CheckBoxIcon },
+    radiobutton: { type: 'radiobutton', icon: RadioButtonCheckedIcon },
+    label: { type: 'label', icon: LabelIcon },
+    select: { type: 'select', icon: TocIcon },
   },
-  library: {
-    adeviLibrary: {
-      subscribeForm: { type: 'subscribeForm', icon: null },
-      cardsSection: { type: 'cardsSection', icon: null },
-    },
-    customUI: {},
+  widget: {
+    map: { type: 'map', icon: MapIcon },
+    calendar: { type: 'calendar', icon: CalendarTodayIcon },
+    clock: { type: 'clock', icon: QueryBuilderIcon },
   },
+} as const;
+const templates = {
+  pageTemplate: { type: 'pageTemplate', icon: null },
+  emptyPageTemplate: { type: 'emptyPageTemplate', icon: null },
+  screenshot: { type: 'screenshot', icon: CropOriginalIcon },
+  featureSection: { type: 'featureSection', icon: null },
+} as const;
+const library = {
+  adeviLibrary: {
+    subscribeForm: { type: 'subscribeForm', icon: null },
+    cardsSection: { type: 'cardsSection', icon: null },
+  },
+  customUI: {},
 } as const;
 
 const StyledToggleButtonGroup = withStyles({
@@ -126,17 +131,17 @@ const ElementsTab = () => {
       </StyledToggleButtonGroup>
 
       <Section title="elements" activeSection={section}>
-        {Object.entries(elementsBlocks.elements).map(([key, value]) => (
+        {Object.entries(elements).map(([key, value]) => (
           <ElementsBlock key={key} title={key} elements={value} expandable />
         ))}
       </Section>
 
       <Section title="templates" activeSection={section}>
-        <ElementsBlock elements={elementsBlocks.templates} />
+        <ElementsBlock elements={templates} />
       </Section>
 
       <Section title="library" activeSection={section}>
-        {Object.entries(elementsBlocks.library).map(([key, value]) => (
+        {Object.entries(library).map(([key, value]) => (
           <ElementsBlock key={key} title={key} elements={value} expandable />
         ))}
       </Section>

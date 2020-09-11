@@ -27,6 +27,7 @@ export const ENTITIES: {
   undefined: 'undefined',
   divBlock: 'divBlock',
   pageTemplate: 'pageTemplate',
+  emptyPageTemplate: 'emptyPageTemplate',
   screenshot: 'screenshot',
   subscribeForm: 'subscribeForm',
   cardsSection: 'cardsSection',
@@ -277,6 +278,14 @@ export const pageTemplateStyleControls = [
   'border',
   'background',
 ] as const;
+export const emptyPageTemplateStyleControls = [
+  'indents',
+  'size',
+  'display',
+  'typography',
+  'border',
+  'background',
+] as const;
 export const subscribeFormStyleControls = [
   'indents',
   'size',
@@ -405,6 +414,9 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
   pageTemplate: {
     root: [...pageTemplateStyleControls],
   },
+  emptyPageTemplate: {
+    root: [...emptyPageTemplateStyleControls],
+  },
   subscribeForm: {
     root: [...subscribeFormStyleControls],
   },
@@ -500,6 +512,12 @@ export const AVAILABLE_CHILDREN: AvailableChildren = {
   dropdownItem: {},
   video: {},
   pageTemplate: {
+    all: {
+      min: 0,
+      max: Infinity,
+    },
+  },
+  emptyPageTemplate: {
     all: {
       min: 0,
       max: Infinity,

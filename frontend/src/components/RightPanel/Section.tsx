@@ -1,5 +1,5 @@
 import React from 'react';
-import Scrollbar from '../../../../../components/UI/Scrollbar';
+import Scrollbar from '../UI/Scrollbar';
 
 const styles = require('./PropertiesPanel.scss');
 

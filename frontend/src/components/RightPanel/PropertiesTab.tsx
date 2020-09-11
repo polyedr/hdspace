@@ -1,51 +1,47 @@
 import React from 'react';
 import * as R from 'ramda';
-import ActiveElementBlock from '../Controls/ActiveElementBlock';
-import { LIBRARY_ELEMENTS } from '../../../../../domain/libraryElements/libraryElements';
-import ControlSection from '../../components/ControlSection/ControlSection';
-import RenameElement from '../Controls/RenameElement/RenameElement';
-import ShareStyles from '../ShareStyles/ShareStyles';
-import EditableStyles from '../EditableStyles/EditableStyles';
-import {
-  AVAILABLE_CONTROLS,
-  Control,
-  Entity,
-} from '../../../../../domain/core';
-import Display from '../Controls/Display/Display';
-import IndentsBlock from '../Controls/IndentsBlock';
-import SizeBlock from '../Controls/SizeBlock/SizeBlock';
-import TypographyBlock from '../Controls/TypographyBlock';
-import BorderBlock from '../Controls/BorderBlock';
-import BackgroundBlock from '../Controls/BackgroundBlock';
-import ActionBlock from '../Controls/ActionBlock';
-import MapProps from '../Controls/MapProps/MapProps';
-import Placeholder from '../Controls/Placeholder/Placeholder';
-import TextContent from '../Controls/TextContent/TextContent';
-import Image from '../Controls/Image/Image';
-import Screenshot from '../Controls/Screenshot/Screenshot';
-import Type from '../Controls/Type/Type';
-import Value from '../Controls/Value/Value';
-import Name from '../Controls/Name/Name';
-import Ripple from '../Controls/Ripple/Ripple';
-import SelectOptions from '../Controls/SelectOptions/SelectOptions';
-import SelectValue from '../Controls/SelectValue/SelectValue';
-import HeadingType from '../Controls/HeadingType/HeadingType';
-import ListItems from '../Controls/ListItems/ListItems';
-import Bullets from '../Controls/Bullets/Bullets';
-import Ordered from '../Controls/Ordered/Ordered';
-import LabelFor from '../Controls/LabelFor/LabelFor';
-import DropdownItems from '../Controls/DropdownItems/DropdownItems';
-import IsOpen from '../Controls/IsOpen/IsOpen';
-import VideoSettings from '../Controls/VideoSettings/VideoSettings';
-import FlexGrow from '../Controls/FlexGrow/FlexGrow';
-import BackgroundPosition from '../Controls/BackgroundPosition/BackgroundPosition';
-import BackgroundSize from '../Controls/BackgroundSize/BackgroundSize';
-import { ActiveItem } from '../../../../../redux/project/types';
+import ActiveElementBlock from '../../features/applyProperties/views/containers/Controls/ActiveElementBlock';
+import { LIBRARY_ELEMENTS } from '../../domain/libraryElements/libraryElements';
+import ControlSection from '../../features/applyProperties/views/components/ControlSection/ControlSection';
+import RenameElement from '../../features/applyProperties/views/containers/Controls/RenameElement/RenameElement';
+import ShareStyles from '../../features/applyProperties/views/containers/ShareStyles/ShareStyles';
+import EditableStyles from '../../features/applyProperties/views/containers/EditableStyles/EditableStyles';
+import { AVAILABLE_CONTROLS, Control, Entity } from '../../domain/core';
+import Display from '../../features/applyProperties/views/containers/Controls/Display/Display';
+import IndentsBlock from '../../features/applyProperties/views/containers/Controls/IndentsBlock';
+import SizeBlock from '../../features/applyProperties/views/containers/Controls/SizeBlock/SizeBlock';
+import TypographyBlock from '../../features/applyProperties/views/containers/Controls/TypographyBlock';
+import BorderBlock from '../../features/applyProperties/views/containers/Controls/BorderBlock';
+import BackgroundBlock from '../../features/applyProperties/views/containers/Controls/BackgroundBlock';
+import ActionBlock from '../../features/applyProperties/views/containers/Controls/ActionBlock';
+import MapProps from '../../features/applyProperties/views/containers/Controls/MapProps/MapProps';
+import Placeholder from '../../features/applyProperties/views/containers/Controls/Placeholder/Placeholder';
+import TextContent from '../../features/applyProperties/views/containers/Controls/TextContent/TextContent';
+import Image from '../../features/applyProperties/views/containers/Controls/Image/Image';
+import Screenshot from '../../features/applyProperties/views/containers/Controls/Screenshot/Screenshot';
+import Type from '../../features/applyProperties/views/containers/Controls/Type/Type';
+import Value from '../../features/applyProperties/views/containers/Controls/Value/Value';
+import Name from '../../features/applyProperties/views/containers/Controls/Name/Name';
+import Ripple from '../../features/applyProperties/views/containers/Controls/Ripple/Ripple';
+import SelectOptions from '../../features/applyProperties/views/containers/Controls/SelectOptions/SelectOptions';
+import SelectValue from '../../features/applyProperties/views/containers/Controls/SelectValue/SelectValue';
+import HeadingType from '../../features/applyProperties/views/containers/Controls/HeadingType/HeadingType';
+import ListItems from '../../features/applyProperties/views/containers/Controls/ListItems/ListItems';
+import Bullets from '../../features/applyProperties/views/containers/Controls/Bullets/Bullets';
+import Ordered from '../../features/applyProperties/views/containers/Controls/Ordered/Ordered';
+import LabelFor from '../../features/applyProperties/views/containers/Controls/LabelFor/LabelFor';
+import DropdownItems from '../../features/applyProperties/views/containers/Controls/DropdownItems/DropdownItems';
+import IsOpen from '../../features/applyProperties/views/containers/Controls/IsOpen/IsOpen';
+import VideoSettings from '../../features/applyProperties/views/containers/Controls/VideoSettings/VideoSettings';
+import FlexGrow from '../../features/applyProperties/views/containers/Controls/FlexGrow/FlexGrow';
+import BackgroundPosition from '../../features/applyProperties/views/containers/Controls/BackgroundPosition/BackgroundPosition';
+import BackgroundSize from '../../features/applyProperties/views/containers/Controls/BackgroundSize/BackgroundSize';
+import { ActiveItem } from '../../redux/project/types';
 import {
   createElements,
   setIsAddElementsModalOpened,
-} from '../../../../../redux/project/actions';
-import Scrollbar from '../../../../../components/UI/Scrollbar';
+} from '../../redux/project/actions';
+import Scrollbar from '../UI/Scrollbar';
 
 const CONTROLS: Record<Control, React.ComponentType<any>> = {
   display: Display,

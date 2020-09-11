@@ -4,6 +4,6 @@ export { default as BackgroundBlock } from './Controls/BackgroundBlock';
 export { default as BorderBlock } from './Controls/BorderBlock';
 export { default as MapProps } from './Controls/MapProps/MapProps';
 export { default as IndentsBlock } from './Controls/IndentsBlock';
-export { default as RightPanel } from './RightPanel';
+export { default as RightPanel } from '../../../../components/RightPanel';
 export { default as SizeBlock } from './Controls/SizeBlock/SizeBlock';
 export { default as TypographyBlock } from './Controls/TypographyBlock';

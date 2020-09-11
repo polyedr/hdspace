@@ -55,7 +55,7 @@ export type ContainerServerElement = ServerElement<
 >;
 export type DivBlockServerElement = ServerElement<'divBlock'>;
 export type PageTemplateServerElement = ServerElement<
-  'pageTemplate',
+  'pageTemplate' | 'emptyPageTemplate',
   ContainerServerElement[]
 >;
 export type SubscribeFormServerElement = ServerElement<

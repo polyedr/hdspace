@@ -7,14 +7,14 @@ import AccordionDetails from '@material-ui/core/AccordionDetails';
 import { useDispatch, useSelector } from 'react-redux';
 import { OverridableComponent } from '@material-ui/core/OverridableComponent';
 import { SvgIconTypeMap } from '@material-ui/core';
-import Button from '../../../../../components/UI/Button';
-import { createElements } from '../../../../../redux/project/actions';
+import Button from '../UI/Button';
+import { createElements } from '../../redux/project/actions';
 import {
   selectActiveItem,
   selectCurrentScreenId,
-} from '../../../../../redux/project/selectors';
-import { AVAILABLE_CHILDREN, Entity } from '../../../../../domain/core';
-import { splitWords } from '../../../../../utils/StringHelper';
+} from '../../redux/project/selectors';
+import { AVAILABLE_CHILDREN, Entity } from '../../domain/core';
+import { splitWords } from '../../utils/StringHelper';
 
 const styles = require('./PropertiesPanel.scss');
 
