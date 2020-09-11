@@ -2,7 +2,7 @@ import { mockRoot } from './mocks';
 import { updateElementParameters } from '../ElementsTreeHelper';
 
 describe('updateElementParameters', () => {
-  test('Should update elementId parameters on 1 level', () => {
+  test('Should update element parameters on 1 level', () => {
     const updatedTree = updateElementParameters(
       '1',
       { value: '123', name: '456' } as {},
@@ -12,7 +12,7 @@ describe('updateElementParameters', () => {
     expect(updatedTree).toMatchSnapshot();
   });
 
-  test('Should update elementId parameters on 2 level', () => {
+  test('Should update element parameters on 2 level', () => {
     const updatedTree = updateElementParameters(
       '2',
       { value: '123', name: '456' } as {},
@@ -22,7 +22,7 @@ describe('updateElementParameters', () => {
     expect(updatedTree).toMatchSnapshot();
   });
 
-  test('Should update elementId parameters on 3 level', () => {
+  test('Should update element parameters on 3 level', () => {
     const updatedTree = updateElementParameters(
       '3',
       { value: '123', name: '456' } as {},
@@ -32,7 +32,7 @@ describe('updateElementParameters', () => {
     expect(updatedTree).toMatchSnapshot();
   });
 
-  test('Should update elementId parameters on 5 level', () => {
+  test('Should update element parameters on 5 level', () => {
     const updatedTree = updateElementParameters(
       '5',
       { value: '123', name: '456' } as {},

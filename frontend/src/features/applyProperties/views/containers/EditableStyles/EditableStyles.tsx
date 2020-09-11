@@ -7,7 +7,7 @@ import { AppReduxState } from '../../../../../shared/types/app';
 import {
   selectActiveItem,
   selectEditableStyles,
-  selectElementsTree,
+  selectRootElement,
 } from '../../../../../redux/project/selectors';
 import { setEditableStyles } from '../../../../../redux/project/actions';
 
@@ -18,8 +18,7 @@ type StateProps = {
 
 const mapState = (state: AppReduxState) => {
   const activeItem = selectActiveItem(state);
-  // const root = selectRootElement(state);
-  const root = selectElementsTree(state);
+  const root = selectRootElement(state);
   const activeElement = findChildByID(root, activeItem.itemId);
   const classNames = [...(activeElement?.styles.classNames || []), 'ownStyles'];
   const editableStyles = selectEditableStyles(state);

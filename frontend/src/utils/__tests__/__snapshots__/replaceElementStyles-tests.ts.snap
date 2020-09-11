@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`replaceElementStyles Should replace elementId styles on 1 level 1`] = `
+exports[`replaceElementStyles Should replace element styles on 1 level 1`] = `
 Object {
   "buoyancy": 0,
   "children": Array [
@@ -113,7 +113,7 @@ Object {
 }
 `;
 
-exports[`replaceElementStyles Should replace elementId styles on 2 level 1`] = `
+exports[`replaceElementStyles Should replace element styles on 2 level 1`] = `
 Object {
   "buoyancy": 0,
   "children": Array [
@@ -226,7 +226,7 @@ Object {
 }
 `;
 
-exports[`replaceElementStyles Should replace elementId styles on 3 level 1`] = `
+exports[`replaceElementStyles Should replace element styles on 3 level 1`] = `
 Object {
   "buoyancy": 0,
   "children": Array [
@@ -339,7 +339,7 @@ Object {
 }
 `;
 
-exports[`replaceElementStyles Should replace elementId styles on 5 level 1`] = `
+exports[`replaceElementStyles Should replace element styles on 5 level 1`] = `
 Object {
   "buoyancy": 0,
   "children": Array [

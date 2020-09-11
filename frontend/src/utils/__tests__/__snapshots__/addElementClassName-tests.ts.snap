@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`addElementClassName Should add elementId className on 1 level 1`] = `
+exports[`addElementClassName Should add element className on 1 level 1`] = `
 Object {
   "buoyancy": 0,
   "children": Array [
@@ -115,7 +115,7 @@ Object {
 }
 `;
 
-exports[`addElementClassName Should add elementId className on 2 level 1`] = `
+exports[`addElementClassName Should add element className on 2 level 1`] = `
 Object {
   "buoyancy": 0,
   "children": Array [
@@ -230,7 +230,7 @@ Object {
 }
 `;
 
-exports[`addElementClassName Should add elementId className on 3 level 1`] = `
+exports[`addElementClassName Should add element className on 3 level 1`] = `
 Object {
   "buoyancy": 0,
   "children": Array [
@@ -345,7 +345,7 @@ Object {
 }
 `;
 
-exports[`addElementClassName Should add elementId className on 5 level 1`] = `
+exports[`addElementClassName Should add element className on 5 level 1`] = `
 Object {
   "buoyancy": 0,
   "children": Array [

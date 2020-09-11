@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`addChildrenToElement Should add child to elementId on 1 level 1`] = `
+exports[`addChildrenToElement Should add child to element on 1 level 1`] = `
 Object {
   "buoyancy": 0,
   "children": Array [
@@ -81,7 +81,7 @@ Object {
 }
 `;
 
-exports[`addChildrenToElement Should add new child to elementId on 2 level 1`] = `
+exports[`addChildrenToElement Should add new child to element on 2 level 1`] = `
 Object {
   "buoyancy": 0,
   "children": Array [
@@ -162,7 +162,7 @@ Object {
 }
 `;
 
-exports[`addChildrenToElement Should add new child to elementId on 3 level 1`] = `
+exports[`addChildrenToElement Should add new child to element on 3 level 1`] = `
 Object {
   "buoyancy": 0,
   "children": Array [

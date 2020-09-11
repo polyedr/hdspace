@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`moveElement If elementId not exist in tree, just add new elementId to parent 1`] = `
+exports[`moveElement If element not exist in tree, just add new element to parent 1`] = `
 Object {
   "buoyancy": 0,
   "children": Array [

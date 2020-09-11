@@ -54,7 +54,7 @@ describe('moveElement', () => {
     expect(updatedTree).toMatchSnapshot();
   });
 
-  test('If elementId not exist in tree, just add new elementId to parent', () => {
+  test('If element not exist in tree, just add new element to parent', () => {
     const newElement = { ...mockParams, id: '7', children: [], buoyancy: 0 };
     const updatedTree = moveElement('2', newElement, mockRoot, 1);
 

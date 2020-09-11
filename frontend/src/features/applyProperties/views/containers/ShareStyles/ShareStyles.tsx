@@ -11,7 +11,7 @@ import {
   selectActiveItem,
   selectCurrentProject,
   selectCurrentScreenId,
-  selectElementsTree,
+  selectRootElement,
 } from '../../../../../redux/project/selectors';
 import { findChildByID } from '../../../../../utils/ElementsTreeHelper';
 import {
@@ -49,8 +49,7 @@ const useStyles = makeStyles({
 
 const mapState = (state: AppReduxState) => {
   const activeItem = selectActiveItem(state);
-  // const root = selectRootElement(state);
-  const root = selectElementsTree(state);
+  const root = selectRootElement(state);
   const activeElement = findChildByID(root, activeItem.itemId);
   const project = selectCurrentProject(state);
 

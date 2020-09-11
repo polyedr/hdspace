@@ -73,7 +73,7 @@ const SortableGroup: React.FC<Props> = ({
       !container.contains(evt.relatedTarget) &&
       !isSomeItemResizable
     ) {
-      // when dragging over elementId with drag resizers, they stop dragging process by firing 'dragleave' event
+      // when dragging over element with drag resizers, they stop dragging process by firing 'dragleave' event
       container.classList.remove('hovered');
     }
   }, []);

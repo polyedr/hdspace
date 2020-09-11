@@ -14,7 +14,7 @@ function dataReducer(
       const { root } = action.payload;
 
       const targetScreen = Object.values(state.screens).find(
-        (screen) => screen.elementId === root.id,
+        (screen) => screen.element.id === root.id,
       );
       if (!targetScreen) return state;
 
@@ -24,7 +24,7 @@ function dataReducer(
           ...state.screens,
           [targetScreen.id]: {
             ...state.screens[targetScreen.id],
-            elementId: root.id,
+            element: root,
           },
         },
       };

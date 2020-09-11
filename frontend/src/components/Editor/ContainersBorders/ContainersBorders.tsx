@@ -6,7 +6,7 @@ import { AppReduxState } from '../../../shared/types/app';
 import { LibraryElement } from '../../../api/types';
 import {
   selectActiveItem,
-  selectElementsTree,
+  selectRootElement,
   selectShowingBorders,
 } from '../../../redux/project/selectors';
 import { setActiveItem } from '../../../redux/project/actions';
@@ -14,8 +14,10 @@ import { setActiveItem } from '../../../redux/project/actions';
 const styles = require('./ContainersBorders.scss');
 
 const mapState = (state: AppReduxState) => {
-  // const root = selectRootElement(state);
-  const root = selectElementsTree(state);
+  const root = (selectRootElement(state) as unknown) as LibraryElement<
+    'root',
+    LibraryElement<Entity>[]
+  >;
   const activeItem = selectActiveItem(state);
   const showBorders = selectShowingBorders(state);
 

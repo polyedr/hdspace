@@ -18,8 +18,8 @@ import {
 } from './utils';
 import {
   selectActiveItem,
+  selectCurrentScreenElement,
   selectCurrentScreenId,
-  selectElementsTree,
 } from '../../redux/project/selectors';
 import { DISALLOW_ADD_ELEMENT_NOTIFICATION_TEXT } from '../../features/notification/types';
 import {
@@ -41,8 +41,7 @@ const styles = require('./Navigator.scss');
 const Navigator: React.FC = () => {
   const dispatch = useDispatch();
 
-  // const rootElement = useSelector(selectRootElement);
-  const rootElement = useSelector(selectElementsTree);
+  const rootElement = useSelector(selectCurrentScreenElement);
 
   const [tree, setTree] = useState<TreeData>(
     makeTree([convertTree(rootElement)]),

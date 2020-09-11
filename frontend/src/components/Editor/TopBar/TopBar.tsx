@@ -146,7 +146,7 @@ export const TopBar = ({
           onChange={handlePrototypeModeToggle}
         />
         <span>Prototype Mode</span>
-        {/* <span>Active elementId ID: {`${activeItem.itemId}-${activeItem.itemType}-where parent is-${activeItem.parentId}-and-scenario-id-${activeItem.scenarioId}`}</span> */}
+        {/* <span>Active element ID: {`${activeItem.itemId}-${activeItem.itemType}-where parent is-${activeItem.parentId}-and-scenario-id-${activeItem.scenarioId}`}</span> */}
       </div>
       <div className={styles.navBarStateControlBlock}>
         <Button
