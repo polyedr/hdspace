@@ -64,12 +64,11 @@ class Project(TimeStampedModel):
     def __str__(self):
         return self.name
 
+    # User needs to be part of a group that has the following permission:
+    # Add custom permissions here
     class Meta:
         permissions = [
-            ("view_this_project", "Has view only permissions"),
-            ("edit_this_project", "Can edit the project"),
-            ("share_this_project", "Can share the project"),
-            ("delete_this_project", "Can delete the project"),
+            ("assign_project", "Can Assign Projects"),
         ]
 
 
