@@ -17,9 +17,10 @@ class UserPermissionTest(TestCase):
         self.project = Project.objects.create(**self.project_attributes1)
 
     def test_user_has_permission(self):
-        assign_perm("view_this_project", self.User, self.project)
-        print("is it true ? ", self.User.has_perm("view_this_project", self.project))
-        self.assertEqual(True, self.User.has_perm("view_this_project", self.project))
+        assign_perm("assign_project", self.User, self.project)
+        self.assertEqual(True, self.User.has_perm("assign_project", self.project))
+
+# Create more test cases showing object level permission
 
 
 class ProjectTest(TestCase):

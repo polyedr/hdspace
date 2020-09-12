@@ -235,9 +235,8 @@ class ScreenScenarioMultipleSerializer(
         list_serializer_class = BulkListSerializer
 
 
-from rest_framework_guardian.serializers import (
-    ObjectPermissionsAssignmentMixin,
-)  # Django-Guardian Test
+# DRF-Guardian Test
+from rest_framework_guardian.serializers import ObjectPermissionsAssignmentMixin
 from django.contrib.auth.models import Group
 from rest_framework import permissions
 
@@ -247,7 +246,7 @@ class ProjectSerializer(ObjectPermissionsAssignmentMixin, serializers.ModelSeria
     projectscreen = serializers.PrimaryKeyRelatedField(
         many=True, queryset=ProjectScreen.objects.all()
     )
-
+    print('inside serializer, user is :' + str(user))
     class Meta:
         model = Project
         fields = (
@@ -269,16 +268,15 @@ class ProjectSerializer(ObjectPermissionsAssignmentMixin, serializers.ModelSeria
             "updated": {"read_only": True},
         }
 
-    def get_permissions_map(self, created):  # Django-Guardian Mixins
+    def get_permissions_map(self, created):  # DRF-Guardian Mixins
         current_user = self.context["request"].user
         readers = Group.objects.get(name="readers")
         supervisors = Group.objects.get(name="supervisors")
-
+        print('inside permission map, User is :' + str(current_user)) # Triggers only when POST
         return {
-            "view_this_project": [current_user, readers],
-            "edit_this_project": [current_user],
-            "share_this_project": [current_user, supervisors],
-            "delete_this_project": [current_user, supervisors],
+            'view_project': [current_user, readers],
+            'change_project': [current_user],
+            'delete_project': [current_user, supervisors]
         }
 
     def create(self, validated_data):
