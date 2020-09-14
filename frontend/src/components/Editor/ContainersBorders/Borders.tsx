@@ -14,9 +14,10 @@ import { ActiveItem } from '../../../redux/project/types';
 import SaveElementAction from './actions/SaveElementAction';
 import BorderCrumb from './BorderCrumb';
 
-const styles = require('./ContainersBorders.scss');
+const styles = require('./Borders.scss');
 
 const elementTypes = ['container', 'divBlock', 'pageTemplate'];
+const saveableElements = ['section'];
 
 const isBorderedItem = (el: any): boolean => {
   return elementTypes.indexOf(el.type) >= 0;
@@ -64,7 +65,7 @@ const Borders: React.FC<Props> = ({ root, activeItem, showBorders }) => {
           top: elClientRect.top - top,
           bottom: bottom - elClientRect.bottom,
           right: right - elClientRect.right,
-          left: left - elClientRect.left,
+          left: elClientRect.left - left,
         },
       };
     },
@@ -129,7 +130,9 @@ const Borders: React.FC<Props> = ({ root, activeItem, showBorders }) => {
               <Border position="left" item={item} isActive={isActive} />
               <Border position="right" item={item} isActive={isActive} />
               <BorderCrumb item={item}>
-                <SaveElementAction item={item} />
+                {saveableElements.indexOf(item.name) >= 0 && (
+                  <SaveElementAction item={item} />
+                )}
               </BorderCrumb>
             </React.Fragment>
           );

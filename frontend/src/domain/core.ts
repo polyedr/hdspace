@@ -31,6 +31,7 @@ export const ENTITIES: {
   subscribeForm: 'subscribeForm',
   cardsSection: 'cardsSection',
   featureSection: 'featureSection',
+  section: 'section',
 };
 
 const CONTROLS_AFFECT_ON_PARAMS = [
@@ -420,6 +421,9 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
   featureSection: {
     root: [...featureSectionStyleControls],
   },
+  section: {
+    root: [...containerStyleControls],
+  },
 } as const;
 
 export type AvailableChildren = {
@@ -520,6 +524,12 @@ export const AVAILABLE_CHILDREN: AvailableChildren = {
     },
   },
   featureSection: {
+    all: {
+      min: 0,
+      max: Infinity,
+    },
+  },
+  section: {
     all: {
       min: 0,
       max: Infinity,

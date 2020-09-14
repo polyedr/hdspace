@@ -1,6 +1,6 @@
+import * as R from 'ramda';
 /* eslint-disable camelcase */
 
-import * as R from 'ramda';
 import { IDropDownOptions } from '../components/UI/DropDown';
 import {
   CreatedElement,
@@ -11,6 +11,7 @@ import {
   IScenarios,
   ScenarioLibraryElement,
   ServerStructType,
+  NamedServerElements,
 } from '../redux/project/types';
 import { ITemplateElement } from '../constants/defaultParams';
 import { ElementEntity, ENTITIES } from '../domain/core';
@@ -59,6 +60,7 @@ const getCategoryTab = (
     case 'subscribeForm':
     case 'cardsSection':
     case 'featureSection':
+    case 'section':
       return {
         Containers: [...(obj.Containers || []), libraryElements[structType]],
       };
@@ -89,20 +91,29 @@ const getCategoryTab = (
     case 'undefined':
       return { Other: [...(obj.Other || []), libraryElements[structType]] };
     default:
-      return null;
+      return null; // { Custom: [...(obj.Custom || []), };
   }
 };
 
 export const parseAddElementsTabs = (
   libraryElements: ElementsToAdd,
 ): IListCategoryEl =>
-  R.keys(libraryElements).reduce(
-    (acc, structType) => ({
+  R.keys(libraryElements).reduce((acc, structType) => {
+    return {
       ...acc,
       ...getCategoryTab(structType, libraryElements, acc),
-    }),
-    {},
-  );
+    };
+  }, {});
+
+export const parseAddCustomElementsTabs = (
+  customLibraryElements: NamedServerElements,
+): IListCategoryEl => {
+  return {
+    Custom: R.keys(customLibraryElements).map(
+      (libElName) => customLibraryElements[libElName] as ScenarioLibraryElement,
+    ),
+  };
+};
 
 export const getCustomTemplateElements = (libraryElements: LibraryElements) => {
   return R.keys(libraryElements).reduce(
@@ -169,7 +180,15 @@ export const getGroupElements = (
         value: { structType: x.struct_type, funcType: x.func_type },
         label: `${x.struct_type}`,
       }));
-
+    case 'Custom':
+      return listElement.Custom.map((libraryElement, idx) => {
+        const { struct_type, func_type, name = 'section' } = libraryElement;
+        return {
+          key: `key-${struct_type}-${func_type}-${idx}`,
+          value: { structType: struct_type, funcType: func_type },
+          label: name,
+        };
+      });
     default:
       return [];
   }

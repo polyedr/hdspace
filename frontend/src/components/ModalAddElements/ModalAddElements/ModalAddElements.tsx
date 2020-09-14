@@ -2,6 +2,8 @@ import React, { useState, useCallback, memo, useEffect } from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 
+import { LibraryElements } from 'src/domain/libraryElements/libraryElements';
+
 import Button from '../../UI/Button';
 import Icon from '../../UI/Icon';
 import UploadFile, { IUploadFile } from '../../UI/UploadFile';
@@ -10,6 +12,7 @@ import {
   getGroupElements,
   IListCategoryEl,
   parseAddElementsTabs,
+  parseAddCustomElementsTabs,
 } from '../../../utils/parseScenario';
 import { AppReduxState } from '../../../shared/types/app';
 import {
@@ -19,7 +22,6 @@ import {
   ServerStructType,
 } from '../../../redux/project/types';
 import { MODAL_ADD_ELEMENTS_TABS } from '../../../constants/defaultParams';
-import { LibraryElements } from '../../../domain/libraryElements/libraryElements';
 import {
   selectCurrentScreen,
   selectUploadedImageInfo,
@@ -38,6 +40,7 @@ function mapStateToProps(state: AppReduxState) {
   return {
     uploadedImageInfo: selectUploadedImageInfo(state),
     currentScreen: selectCurrentScreen(state),
+    customLibraryElements: state.project.ui.customLibraryElements,
   };
 }
 
@@ -64,6 +67,7 @@ const ModalAddElements: React.FunctionComponent<Props> = ({
   activeItem,
   active,
   libraryElements,
+  customLibraryElements,
   onClose,
   onConfirm,
   getScreenNN,
@@ -91,9 +95,12 @@ const ModalAddElements: React.FunctionComponent<Props> = ({
   }, [imageToUpload, currentScreen.id]);
 
   useEffect(() => {
-    const newListElement = parseAddElementsTabs(libraryElements);
+    const newListElement = {
+      ...parseAddElementsTabs(libraryElements),
+      ...parseAddCustomElementsTabs(customLibraryElements),
+    };
     setListElement(newListElement);
-  }, [libraryElements]);
+  }, [libraryElements, customLibraryElements]);
 
   const handleConfirm = useCallback(
     (event) => {
@@ -131,9 +138,10 @@ const ModalAddElements: React.FunctionComponent<Props> = ({
   const handleChangeTab = useCallback(
     (tabName) => {
       if (tabName === activeTab) return;
-
-      const newListElement = parseAddElementsTabs(libraryElements);
-
+      const newListElement = {
+        ...parseAddElementsTabs(libraryElements),
+        ...parseAddCustomElementsTabs(customLibraryElements),
+      };
       setListElement(newListElement);
       setActiveTab(tabName);
       setErrorMsg('');
@@ -147,6 +155,8 @@ const ModalAddElements: React.FunctionComponent<Props> = ({
       ? getGroupElements(activeTab, listElement)
       : [];
   }, [activeTab, listElement]);
+
+  const contentStep = getContentStep();
 
   return active ? (
     <div className={styles.modalWrapper} onClick={onModalWrapperClick}>
@@ -216,7 +226,7 @@ const ModalAddElements: React.FunctionComponent<Props> = ({
           <ActionsBlock
             activeItem={activeItem}
             tabs={MODAL_ADD_ELEMENTS_TABS}
-            groupElements={getContentStep()}
+            groupElements={contentStep}
             activeTab={activeTab}
             selectedElements={selectedElements}
             changeTab={handleChangeTab}

@@ -17,6 +17,7 @@ import {
   FeatureSectionServerElement,
   PageTemplateServerElement,
   SubscribeFormServerElement,
+  SectionServerElement,
 } from '../../../api/types';
 import { CssLikeStyles } from '../../../utils/StyleHelper';
 
@@ -435,6 +436,28 @@ export const featureSection: FeatureSectionServerElement = {
           ],
         }),
       ],
+    }),
+  ],
+};
+
+export const section: SectionServerElement = {
+  buoyancy: 0,
+  func_type: 'section',
+  struct_type: 'section',
+  parameters: {
+    group: 'containers',
+  },
+  styles: {
+    classNames: ['section'],
+    ownStyles: {} as Required<CssLikeStyles>,
+  },
+  name: 'section',
+  children: [
+    makeContainer({
+      ownStyles: {
+        'max-width': '940px',
+      } as Required<CssLikeStyles>,
+      children: [],
     }),
   ],
 };

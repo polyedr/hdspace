@@ -22,7 +22,6 @@ const BorderCrumb = ({ item, children }) => {
       className={labelClasses}
       style={{
         top: coordinates.top,
-        right: 'auto',
         left: coordinates.left,
       }}
     >
