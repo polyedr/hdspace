@@ -39,6 +39,7 @@ export type ProjectUiState = {
 export type ProjectEditState = {
   currentProjectId: number;
   currentScreenId: number;
+  activeElementId: string;
   uploadedImageInfo?: UploadedImageInfo;
   notification: Notification | null;
 };
@@ -194,10 +195,6 @@ export type SetCurrentScreenId = IAction<
 export type SetScreens = IAction<
   typeof TYPES.SET_SCREENS,
   { screens: Screen[] }
->;
-export type CreateElement = IAction<
-  typeof TYPES.CREATE_ELEMENT,
-  { parentID: string; type: string }
 >;
 export type RenameElement = IAction<
   typeof TYPES.RENAME_ELEMENT,
@@ -365,7 +362,18 @@ export type PopUndoAction = IPlainAction<typeof TYPES.POP_UNDO_ACTION>;
 export type PopHistory = IPlainAction<typeof TYPES.POP_HISTORY>;
 export type SetGroupActionsUp = IAction<typeof TYPES.SET_GROUP_UP, boolean>;
 export type Logout = IPlainAction<typeof TYPES.LOGOUT>;
-export type AddElement = IAction<typeof TYPES.ADD_ELEMENT, LibraryElement<any>>;
+export type AddElements = IAction<
+  typeof TYPES.ADD_ELEMENTS,
+  { elements: LibraryElement<any>[]; parentId?: string }
+>;
+export type RemoveElements = IAction<
+  typeof TYPES.REMOVE_ELEMENTS,
+  LibraryElement<any>[]
+>;
+export type UpdateElement = IAction<
+  typeof TYPES.UPDATE_ELEMENT,
+  { elementId: string; data: Partial<LibraryElement<any>> }
+>;
 
 export type Action =
   | LoadProjects
@@ -390,7 +398,6 @@ export type Action =
   | SaveScreen
   | SetCurrentScreenId
   | SetScreens
-  | CreateElement
   | CopyElementStyles
   | UpdateElementStyles
   | UpdateElementImage
@@ -437,7 +444,9 @@ export type Action =
   | RestoreScreen
   | SetProject
   | UpdateScreen
-  | AddElement;
+  | AddElements
+  | RemoveElements
+  | UpdateElement;
 
 export type ItemToCopyInfo = {
   id: string;

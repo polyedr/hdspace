@@ -68,15 +68,52 @@ function dataReducer(
       };
     }
 
-    case TYPES.ADD_ELEMENT: {
+    case TYPES.ADD_ELEMENTS: {
+      const { parentId, elements } = action.payload;
+
+      const newState = {
+        ...state,
+        elements: {
+          ...state.elements,
+          ...flattenElements(elements, parentId),
+        },
+      };
+
+      if (parentId) {
+        newState.elements[parentId].children = [
+          ...new Set([
+            ...newState.elements[parentId].children,
+            ...elements.map((el) => el.id),
+          ]),
+        ];
+      }
+
+      return newState;
+    }
+
+    case TYPES.UPDATE_ELEMENT: {
+      const { elementId: id, data } = action.payload;
       return {
         ...state,
         elements: {
           ...state.elements,
-          ...flattenElements([action.payload]),
+          [id]: {
+            ...state.elements[id],
+            ...data,
+          },
         },
       };
     }
+
+    /* case TYPES.REMOVE_ELEMENTS: {
+      const { elementIds } = action.payload;
+      return {
+        ...state,
+        elements: {
+          ...state.elements,
+        },
+      };
+    } */
 
     case TYPES.RESET_SCREEN_STATE: {
       return {

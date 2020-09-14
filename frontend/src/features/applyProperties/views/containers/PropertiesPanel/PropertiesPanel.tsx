@@ -87,7 +87,6 @@ const mapState = (state: AppReduxState): StateProps => {
 };
 
 const mapDispatch = {
-  addElement: actionsCreators.createElement,
   createElements: actionsCreators.createElements,
   setIsAddElementsModalOpened: actionsCreators.setIsAddElementsModalOpened,
 };

@@ -24,7 +24,7 @@ import { apiGetProject, apiSaveProject } from '../../../api/project';
 import { Screen, IScenarioItem } from '../types';
 import {
   activateScreen,
-  addElement,
+  addElements,
   addScreen,
   delScreen,
   renameScreen,
@@ -54,7 +54,6 @@ import {
 } from '../../../api/scenario';
 import { convertElementFromResponse } from '../../../api/converters/fromResponse';
 import getSavedValue from '../../../utils/getSavedValue';
-import { flattenElements } from '../../../utils/mappings';
 
 export function* activateScreenSaga({
   payload: { screenId },
@@ -211,6 +210,7 @@ export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
   const updatedScreen = { ...currentScreen, ...savedScreen };
 
   updatedScreen.element = createdRootElement;
+  yield put(addElements([createdRootElement]));
 
   yield put(setProject(updateProject));
 
@@ -492,10 +492,8 @@ export function* getScreenSaga(screenId: number) {
     console.error(`Error while fetching screen ${screenId}`);
   }
 
-  yield put(addElement(convertElementFromResponse(element)));
-  console.log(flattenElements([convertElementFromResponse(element)]));
+  yield put(addElements([convertElementFromResponse(element)]));
 
   screen.element = convertElementFromResponse(element);
-  // screen.element = element.id;
   return screen;
 }

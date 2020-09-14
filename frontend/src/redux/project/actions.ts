@@ -222,14 +222,6 @@ export const setScreens = (screens: T.Screen[]): T.SetScreens => ({
   payload: { screens },
 });
 
-export const createElement = (
-  parentID: string,
-  type: string,
-): T.CreateElement => ({
-  type: TYPES.CREATE_ELEMENT,
-  payload: { parentID, type },
-});
-
 export const renameElement = (
   elementID: string,
   name: string,
@@ -541,7 +533,28 @@ export const setGroupActionsUp = (groupUp: boolean): T.SetGroupActionsUp => ({
   payload: groupUp,
 });
 
-export const addElement = (element: LibraryElement<any>): T.AddElement => ({
-  type: TYPES.ADD_ELEMENT,
-  payload: element,
+export const addElements = (
+  elements: LibraryElement<any>[],
+  parentId?: string,
+): T.AddElements => ({
+  type: TYPES.ADD_ELEMENTS,
+  payload: { elements, parentId },
+});
+
+export const removeElements = (
+  elementIds: LibraryElement<any>[],
+): T.RemoveElements => ({
+  type: TYPES.REMOVE_ELEMENTS,
+  payload: elementIds,
+});
+
+export const updateElement = (
+  elementId: string,
+  data: Partial<LibraryElement<any>>,
+): T.UpdateElement => ({
+  type: TYPES.UPDATE_ELEMENT,
+  payload: {
+    elementId,
+    data,
+  },
 });

@@ -32,6 +32,7 @@ import {
   convertElementToRequest,
 } from '../../../api/converters/toRequest';
 import {
+  addElements,
   redoWrapIntoContainer,
   setUndoActions,
   unwrapFromContainer,
@@ -167,12 +168,21 @@ export function* createElements(
     parent.id,
   )?.children.map((child) => convertElementToPatchRequest(child));
 
-  yield call(reqWrapper, apiSaveElements, {
+  const createdElements = yield call(reqWrapper, apiSaveElements, {
     data: elementsWithUpdatedBuoyancy,
   });
 
+  const childrenIds = createdElements.map((el) => el.id);
+
+  yield put(
+    addElements(
+      createdElements.map((el) => convertElementFromResponse(el)),
+      parent.id,
+    ),
+  );
+
   // eslint-disable-next-line consistent-return
-  return newElements.map((el) => el.id);
+  return childrenIds;
 }
 
 export function* createElementsSaga(
