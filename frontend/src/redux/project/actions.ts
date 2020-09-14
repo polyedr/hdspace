@@ -541,9 +541,7 @@ export const addElements = (
   payload: { elements, parentId },
 });
 
-export const removeElements = (
-  elementIds: LibraryElement<any>[],
-): T.RemoveElements => ({
+export const removeElements = (elementIds: string[]): T.RemoveElements => ({
   type: TYPES.REMOVE_ELEMENTS,
   payload: elementIds,
 });

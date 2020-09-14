@@ -38,6 +38,7 @@ import {
   setScreenLoader,
   setScreens,
   setUndoActions,
+  removeElements,
 } from '../actions';
 import { apiAddElements, apiGetElements } from '../../../api/element';
 import { DEFAULT_ACTIVE_ITEM } from '../../../constants/defaultParams';
@@ -317,6 +318,8 @@ export function* delScreenSaga({
   if (!undo) {
     yield put(setUndoActions(restoreScreen(screenId, projectId)));
   }
+  const rootToRemove = yield select(selectScreenElement(screenId));
+  yield put(removeElements([rootToRemove.id]));
 
   const result: Project = R.assoc(
     'projectscreen',
@@ -388,6 +391,8 @@ export function* restoreScreenSaga({
   yield put(setScreens([screen, ...screens]));
 
   yield put(setProject(updatedProject));
+
+  yield put(addElements([convertElementFromResponse(element)]));
 
   yield put(activateScreen(screenId));
 }

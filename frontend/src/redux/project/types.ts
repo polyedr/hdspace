@@ -366,10 +366,7 @@ export type AddElements = IAction<
   typeof TYPES.ADD_ELEMENTS,
   { elements: LibraryElement<any>[]; parentId?: string }
 >;
-export type RemoveElements = IAction<
-  typeof TYPES.REMOVE_ELEMENTS,
-  LibraryElement<any>[]
->;
+export type RemoveElements = IAction<typeof TYPES.REMOVE_ELEMENTS, string[]>;
 export type UpdateElement = IAction<
   typeof TYPES.UPDATE_ELEMENT,
   { elementId: string; data: Partial<LibraryElement<any>> }

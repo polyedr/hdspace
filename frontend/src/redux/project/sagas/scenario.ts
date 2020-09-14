@@ -316,6 +316,7 @@ export function* softDeleteSaga(action: T.DeleteItem) {
   const updatedRoot = removeChildrenFromElement(parent.id, [element], root);
 
   yield put(Actions.updateElementsTree(updatedRoot, action, action.meta));
+  yield put(Actions.removeElements([id]));
 
   const filtered = childrenIds.filter((childId) => childId !== id);
 
@@ -361,6 +362,8 @@ export function* restoreElementSaga(action: T.RestoreElementChildren) {
   const updatedRoot = yield call(reqWrapper, apiGetElement, { id: root.id });
 
   yield put(Actions.updateElementsTree(updatedRoot, action, action.meta));
+
+  yield put(Actions.addElements([updatedRoot]));
 }
 
 export function* addElementToElement(

@@ -91,7 +91,7 @@ function dataReducer(
       return newState;
     }
 
-    case TYPES.UPDATE_ELEMENT: {
+    /* case TYPES.UPDATE_ELEMENT: {
       const { elementId: id, data } = action.payload;
       return {
         ...state,
@@ -103,17 +103,33 @@ function dataReducer(
           },
         },
       };
-    }
-
-    /* case TYPES.REMOVE_ELEMENTS: {
-      const { elementIds } = action.payload;
-      return {
-        ...state,
-        elements: {
-          ...state.elements,
-        },
-      };
     } */
+
+    case TYPES.REMOVE_ELEMENTS: {
+      const elementIds = action.payload;
+      const newState = {
+        ...state,
+      };
+
+      elementIds.forEach((id) => {
+        const target = newState.elements[id];
+        if (target?.parentId) {
+          const parent = newState.elements[target.parentId];
+
+          parent.children = parent?.children.filter(
+            (childId) => childId !== id,
+          );
+        }
+
+        target.children.forEach((childId) => {
+          delete newState.elements[childId];
+        });
+
+        delete newState.elements[id];
+      });
+
+      return newState;
+    }
 
     case TYPES.RESET_SCREEN_STATE: {
       return {
