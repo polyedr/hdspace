@@ -23,7 +23,7 @@ import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 import MapIcon from '@material-ui/icons/Map';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import QueryBuilderIcon from '@material-ui/icons/QueryBuilder';
-import ElementsBlock from './ElementsBlock';
+import ElementsBlock, { ElementData } from './ElementsBlock';
 import Section from './Section';
 
 const styles = require('./PropertiesPanel.scss');
@@ -62,12 +62,18 @@ const elements = {
     clock: { type: 'clock', icon: QueryBuilderIcon },
   },
 } as const;
-const templates = {
-  pageTemplate: { type: 'pageTemplate', icon: null },
-  emptyPageTemplate: { type: 'emptyPageTemplate', icon: null },
+
+const templates: {
+  [key: string]: ElementData | ElementData[];
+} = {
+  pageTemplate: [
+    { type: 'pageTemplate', icon: null },
+    { type: 'emptyPageTemplate', icon: null },
+  ],
   screenshot: { type: 'screenshot', icon: CropOriginalIcon },
   featureSection: { type: 'featureSection', icon: null },
-} as const;
+};
+
 const library = {
   adeviLibrary: {
     subscribeForm: { type: 'subscribeForm', icon: null },
