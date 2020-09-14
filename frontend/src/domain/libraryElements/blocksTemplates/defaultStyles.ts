@@ -46,6 +46,56 @@ export const defaultPageTemplateStyles: {
   },
 };
 
+export const defaultGridStyles: {
+  [K in pageTemplateControls]: CssLikeStyles;
+} = {
+  indents: {
+    ...DEFAULT_INDENTS,
+  },
+  size: {
+    ...DEFAULT_SIZE,
+    width: '100%',
+    height: '100%',
+  },
+  display: {
+    ...DEFAULT_DISPLAY,
+  },
+  typography: {
+    ...DEFAULT_TYPOGRAPHY,
+  },
+  border: {
+    ...DEFAULT_BORDER,
+  },
+  background: {
+    ...DEFAULT_BACKGROUND,
+  },
+};
+
+export const defaultColumnStyles: {
+  [K in pageTemplateControls]: CssLikeStyles;
+} = {
+  indents: {
+    ...DEFAULT_INDENTS,
+  },
+  size: {
+    ...DEFAULT_SIZE,
+    width: '100%',
+    height: '100%',
+  },
+  display: {
+    ...DEFAULT_DISPLAY,
+  },
+  typography: {
+    ...DEFAULT_TYPOGRAPHY,
+  },
+  border: {
+    ...DEFAULT_BORDER,
+  },
+  background: {
+    ...DEFAULT_BACKGROUND,
+  },
+};
+
 export const defaultEmptyPageTemplateStyles: {
   [K in pageTemplateControls]: CssLikeStyles;
 } = {

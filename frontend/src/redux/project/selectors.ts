@@ -174,11 +174,6 @@ export function selectCurrentEditableStyles<
   };
 
   const activeItemStyles = getActiveItemStyles(editableStyles);
-  console.log(
-    activeItemStyles[ruleName] ||
-      activeSharedStyles[ruleName] ||
-      activeEntityStyles[ruleName],
-  );
 
   return (
     activeItemStyles[ruleName] ||

@@ -31,7 +31,10 @@ const styles = require('./PropertiesPanel.scss');
 const sections = ['elements', 'templates', 'library'];
 
 const elements = {
-  layout: {},
+  layout: {
+    grid: { type: 'grid', icon: null },
+    columns: { type: 'columns', icon: null },
+  },
   basic: {
     button: { type: 'button', icon: SlideshowIcon },
     list: { type: 'list', icon: ListIcon },

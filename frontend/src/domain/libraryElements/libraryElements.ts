@@ -9,6 +9,8 @@ import {
   makeDropdownItem,
   makeDivBlock,
   makeContainer,
+  makeGrid,
+  makeColumns,
 } from './otherElements/otherElements';
 import {
   makeButton,
@@ -43,12 +45,14 @@ import {
   CardsSectionServerElement,
   CheckboxServerElement,
   ClockServerElement,
+  ColumnsServerElement,
   ContainerServerElement,
   DivBlockServerElement,
   DropdownItemServerElement,
   DropdownMenuServerElement,
   DropdownServerElement,
   FeatureSectionServerElement,
+  GridServerElement,
   HeadingServerElement,
   HyperlinkServerElement,
   ImageServerElement,
@@ -87,6 +91,8 @@ export type ElementsToAdd = {
   divBlock: DivBlockServerElement;
   pageTemplate: PageTemplateServerElement;
   emptyPageTemplate: PageTemplateServerElement;
+  grid: GridServerElement;
+  columns: ColumnsServerElement;
   image: ImageServerElement;
   screenshot: ScreenshotServerElement;
   button: ButtonServerElement;
@@ -124,6 +130,8 @@ export const LIBRARY_ELEMENTS: LibraryElements = {
   divBlock: makeDivBlock('This is divBlock'),
   pageTemplate: makePageTemplate(),
   emptyPageTemplate: makePageTemplate(true),
+  grid: makeGrid(),
+  columns: makeColumns(),
   subscribeForm,
   image: makeImage(),
   screenshot: makeScreenshot(),

@@ -28,6 +28,8 @@ export const ENTITIES: {
   divBlock: 'divBlock',
   pageTemplate: 'pageTemplate',
   emptyPageTemplate: 'emptyPageTemplate',
+  grid: 'grid',
+  columns: 'columns',
   screenshot: 'screenshot',
   subscribeForm: 'subscribeForm',
   cardsSection: 'cardsSection',
@@ -286,6 +288,22 @@ export const emptyPageTemplateStyleControls = [
   'border',
   'background',
 ] as const;
+export const gridStyleControls = [
+  'indents',
+  'size',
+  'display',
+  'typography',
+  'border',
+  'background',
+] as const;
+export const columnsStyleControls = [
+  'indents',
+  'size',
+  'display',
+  'typography',
+  'border',
+  'background',
+] as const;
 export const subscribeFormStyleControls = [
   'indents',
   'size',
@@ -417,6 +435,12 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
   emptyPageTemplate: {
     root: [...emptyPageTemplateStyleControls],
   },
+  grid: {
+    root: [...gridStyleControls],
+  },
+  columns: {
+    root: [...columnsStyleControls],
+  },
   subscribeForm: {
     root: [...subscribeFormStyleControls],
   },
@@ -518,6 +542,18 @@ export const AVAILABLE_CHILDREN: AvailableChildren = {
     },
   },
   emptyPageTemplate: {
+    all: {
+      min: 0,
+      max: Infinity,
+    },
+  },
+  grid: {
+    all: {
+      min: 0,
+      max: Infinity,
+    },
+  },
+  columns: {
     all: {
       min: 0,
       max: Infinity,

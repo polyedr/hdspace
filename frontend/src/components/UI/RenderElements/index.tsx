@@ -35,6 +35,8 @@ export const RENDERERS: Record<Entity, React.FC<any>> = {
   divBlock: DivBlockRenderer,
   pageTemplate: Container,
   emptyPageTemplate: Container,
+  grid: Container,
+  columns: Container,
   button: withAction(Action, 'button'),
   textinput: Input,
   radiobutton: Radiobutton,

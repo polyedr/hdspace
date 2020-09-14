@@ -40,6 +40,8 @@ import {
   defaultCardsSectionStyles,
   defaultFeatureSectionStyles,
   defaultEmptyPageTemplateStyles,
+  defaultColumnStyles,
+  defaultGridStyles,
 } from './blocksTemplates/defaultStyles';
 import { Entity } from '../core';
 import { CssLikeStyles } from '../../utils/StyleHelper';
@@ -52,6 +54,8 @@ export const DEFAULT_ELEMENTS_STYLES: {
   divBlock: defaultDivBlockStyles,
   pageTemplate: defaultPageTemplateStyles,
   emptyPageTemplate: defaultEmptyPageTemplateStyles,
+  grid: defaultGridStyles,
+  columns: defaultColumnStyles,
   button: defaultButtonStyles,
   textinput: defaultTextinputStyles,
   textarea: defaultTextareaStyles,

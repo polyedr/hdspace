@@ -58,6 +58,11 @@ export type PageTemplateServerElement = ServerElement<
   'pageTemplate' | 'emptyPageTemplate',
   ContainerServerElement[]
 >;
+export type GridServerElement = ServerElement<'grid', ContainerServerElement[]>;
+export type ColumnsServerElement = ServerElement<
+  'columns',
+  ContainerServerElement[]
+>;
 export type SubscribeFormServerElement = ServerElement<
   'subscribeForm',
   ServerElement<Entity>[]
