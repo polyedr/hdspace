@@ -1,7 +1,7 @@
 import React from 'react';
 import Scrollbar from '../UI/Scrollbar';
 
-const styles = require('./PropertiesPanel.scss');
+const styles = require('./styles.scss');
 
 type Props = {
   title: string;

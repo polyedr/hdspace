@@ -1,5 +1,7 @@
 /* eslint-disable camelcase */
 
+import { OverridableComponent } from '@material-ui/core/OverridableComponent';
+import { SvgIconTypeMap } from '@material-ui/core';
 import { IAction, IPlainAction, IPlainFailAction } from '../../shared/redux';
 import { Entity } from '../../domain/core';
 import {
@@ -626,4 +628,9 @@ export type HistoryMeta = {
 };
 export type ElementHistoryMeta = HistoryMeta & {
   screenId: number;
+};
+
+export type ElementData = {
+  type: Entity;
+  icon: OverridableComponent<SvgIconTypeMap> | null;
 };

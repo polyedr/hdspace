@@ -262,15 +262,12 @@
   display: flex;
   flex-flow: row wrap;
   & > * {
-    margin: 1px;
     width: calc(100%/4 - 2px);
     height: calc(300px/4 - 2px);
   }
 }
 .elementButton {
   background-color: transparent;
-  //border: 1px solid grey;
-  //border: none;
   padding: 0;
   span {
     height: 100%;
@@ -295,5 +292,21 @@
   &:active {
     background-color: #e7e7e7;
     border: 2px solid black;
+  }
+}
+
+.elementDropdown {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  .elementButton {
+    flex: 1;
+  }
+}
+
+.dropdownButton {
+  padding: 0;
+  svg {
+    height: 16px;
   }
 }

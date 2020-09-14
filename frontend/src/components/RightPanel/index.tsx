@@ -9,7 +9,7 @@ import { AppReduxState } from '../../shared/types/app';
 import PropertiesTab from './PropertiesTab';
 import ElementsTab from './ElementsTab';
 
-const styles = require('./PropertiesPanel.scss');
+const styles = require('./styles.scss');
 
 const StyledTabs = withStyles({
   root: {},

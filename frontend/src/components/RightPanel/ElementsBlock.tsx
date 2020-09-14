@@ -1,24 +1,15 @@
-import React, { useState, MouseEvent, Fragment } from 'react';
+import React from 'react';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import withStyles from '@material-ui/core/styles/withStyles';
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
-import { useDispatch, useSelector } from 'react-redux';
-import { OverridableComponent } from '@material-ui/core/OverridableComponent';
-import { SvgIconTypeMap } from '@material-ui/core';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import Button from '../UI/Button';
-import { createElements } from '../../redux/project/actions';
-import {
-  selectActiveItem,
-  selectCurrentScreenId,
-} from '../../redux/project/selectors';
-import { AVAILABLE_CHILDREN, Entity } from '../../domain/core';
 import { splitWords } from '../../utils/StringHelper';
+import { ElementData } from '../../redux/project/types';
+import ElementButton from './ElementButton';
+import ElementDropdown from './ElementDropdown';
 
-const styles = require('./PropertiesPanel.scss');
+const styles = require('./styles.scss');
 
 const StyledAccordion = withStyles({
   root: {
@@ -69,23 +60,6 @@ const StyledAccordionDetails = withStyles({
   },
 })(AccordionDetails);
 
-const StyledMenu = withStyles({
-  list: {
-    padding: 0,
-  },
-})(Menu);
-
-const StyledMenuItem = withStyles({
-  root: {
-    fontSize: '0.8em',
-  },
-})(MenuItem);
-
-export type ElementData = {
-  type: Entity;
-  icon: OverridableComponent<SvgIconTypeMap> | null;
-};
-
 type Props = {
   title?: string;
   elements: {
@@ -99,74 +73,12 @@ const ElementsBlock: React.FC<Props> = ({
   elements,
   expandable = false,
 }) => {
-  const dispatch = useDispatch();
-  const screenId = useSelector(selectCurrentScreenId);
-  const { itemType: activeItemType } = useSelector(selectActiveItem);
-
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-
-  const handleOpenMenu = (ev: MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(ev.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
-  const handleClick = (type: Entity) => () => {
-    dispatch(createElements([{ type }], { screenId }));
-  };
-
-  const isAvailableChild = (type: Entity) =>
-    activeItemType !== 'none' &&
-    (AVAILABLE_CHILDREN[activeItemType].all ||
-      type in AVAILABLE_CHILDREN[activeItemType]);
-
   const renderContent = () =>
     Object.values(elements).map((element) => {
       if (Array.isArray(element)) {
-        return (
-          <Fragment key={element[0].type}>
-            <Button
-              onClick={handleOpenMenu}
-              className={styles.elementButton}
-              disabled={!isAvailableChild(element[0].type)}
-            >
-              {splitWords(element[0].type)}
-            </Button>
-
-            <StyledMenu
-              anchorEl={anchorEl}
-              keepMounted
-              open={Boolean(anchorEl)}
-              onClose={handleClose}
-            >
-              {element.map((elementData) => (
-                <StyledMenuItem
-                  onClick={() => {
-                    handleClick(elementData.type)();
-                    handleClose();
-                  }}
-                  key={elementData.type}
-                >
-                  {splitWords(elementData.type)}
-                </StyledMenuItem>
-              ))}
-            </StyledMenu>
-          </Fragment>
-        );
+        return <ElementDropdown options={element} key={element[0].type} />;
       }
-      return (
-        <Button
-          key={element.type}
-          disabled={!isAvailableChild(element.type)}
-          className={styles.elementButton}
-          onClick={handleClick(element.type)}
-        >
-          {element.icon && <element.icon />}
-          {splitWords(element.type)}
-        </Button>
-      );
+      return <ElementButton elementData={element} key={element.type} />;
     });
 
   return expandable ? (

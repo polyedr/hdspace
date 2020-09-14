@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import SlideshowIcon from '@material-ui/icons/Slideshow';
+import ViewColumnIcon from '@material-ui/icons/ViewColumn';
 import ListIcon from '@material-ui/icons/List';
 import Crop169Icon from '@material-ui/icons/Crop169';
 import NotesIcon from '@material-ui/icons/Notes';
@@ -17,23 +18,25 @@ import TocIcon from '@material-ui/icons/Toc';
 import CropOriginalIcon from '@material-ui/icons/CropOriginal';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
+import GridOnIcon from '@material-ui/icons/GridOn';
 import withStyles from '@material-ui/core/styles/withStyles';
 import TitleOutlinedIcon from '@material-ui/icons/TitleOutlined';
 import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 import MapIcon from '@material-ui/icons/Map';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import QueryBuilderIcon from '@material-ui/icons/QueryBuilder';
-import ElementsBlock, { ElementData } from './ElementsBlock';
+import { ElementData } from 'src/redux/project/types';
+import ElementsBlock from './ElementsBlock';
 import Section from './Section';
 
-const styles = require('./PropertiesPanel.scss');
+const styles = require('./styles.scss');
 
 const sections = ['elements', 'templates', 'library'];
 
 const elements = {
   layout: {
-    grid: { type: 'grid', icon: null },
-    columns: { type: 'columns', icon: null },
+    grid: { type: 'grid', icon: GridOnIcon },
+    columns: { type: 'columns', icon: ViewColumnIcon },
   },
   basic: {
     button: { type: 'button', icon: SlideshowIcon },
