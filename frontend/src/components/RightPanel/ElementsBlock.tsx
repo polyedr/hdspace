@@ -1,4 +1,4 @@
-import React, { useState, MouseEvent } from 'react';
+import React, { useState, MouseEvent, Fragment } from 'react';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import withStyles from '@material-ui/core/styles/withStyles';
 import Accordion from '@material-ui/core/Accordion';
@@ -69,6 +69,18 @@ const StyledAccordionDetails = withStyles({
   },
 })(AccordionDetails);
 
+const StyledMenu = withStyles({
+  list: {
+    padding: 0,
+  },
+})(Menu);
+
+const StyledMenuItem = withStyles({
+  root: {
+    fontSize: '0.8em',
+  },
+})(MenuItem);
+
 export type ElementData = {
   type: Entity;
   icon: OverridableComponent<SvgIconTypeMap> | null;
@@ -111,42 +123,48 @@ const ElementsBlock: React.FC<Props> = ({
       type in AVAILABLE_CHILDREN[activeItemType]);
 
   const renderContent = () =>
-    Object.values(elements).map((key) => {
-      if (Array.isArray(key)) {
+    Object.values(elements).map((element) => {
+      if (Array.isArray(element)) {
         return (
-          <>
+          <Fragment key={element[0].type}>
             <Button
               onClick={handleOpenMenu}
               className={styles.elementButton}
-              disabled={!isAvailableChild(key[0].type)}
+              disabled={!isAvailableChild(element[0].type)}
             >
-              {splitWords(key[0].type)}
+              {splitWords(element[0].type)}
             </Button>
 
-            <Menu
+            <StyledMenu
               anchorEl={anchorEl}
               keepMounted
               open={Boolean(anchorEl)}
               onClose={handleClose}
             >
-              {key.map((item) => (
-                <MenuItem onClick={handleClose} key={item.type}>
-                  {splitWords(item.type)}
-                </MenuItem>
+              {element.map((elementData) => (
+                <StyledMenuItem
+                  onClick={() => {
+                    handleClick(elementData.type)();
+                    handleClose();
+                  }}
+                  key={elementData.type}
+                >
+                  {splitWords(elementData.type)}
+                </StyledMenuItem>
               ))}
-            </Menu>
-          </>
+            </StyledMenu>
+          </Fragment>
         );
       }
       return (
         <Button
-          key={key.type}
-          disabled={!isAvailableChild(key.type)}
+          key={element.type}
+          disabled={!isAvailableChild(element.type)}
           className={styles.elementButton}
-          onClick={handleClick(key.type)}
+          onClick={handleClick(element.type)}
         >
-          {key.icon && <key.icon />}
-          {splitWords(key.type)}
+          {element.icon && <element.icon />}
+          {splitWords(element.type)}
         </Button>
       );
     });
