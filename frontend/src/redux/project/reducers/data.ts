@@ -27,6 +27,10 @@ function dataReducer(
             element: root,
           },
         },
+        elements: {
+          ...state.elements,
+          ...flattenElements([root]),
+        },
       };
     }
 
@@ -90,20 +94,6 @@ function dataReducer(
 
       return newState;
     }
-
-    /* case TYPES.UPDATE_ELEMENT: {
-      const { elementId: id, data } = action.payload;
-      return {
-        ...state,
-        elements: {
-          ...state.elements,
-          [id]: {
-            ...state.elements[id],
-            ...data,
-          },
-        },
-      };
-    } */
 
     case TYPES.REMOVE_ELEMENTS: {
       const elementIds = action.payload;

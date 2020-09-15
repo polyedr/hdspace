@@ -32,7 +32,6 @@ import {
   convertElementToRequest,
 } from '../../../api/converters/toRequest';
 import {
-  addElements,
   redoWrapIntoContainer,
   setUndoActions,
   unwrapFromContainer,
@@ -174,12 +173,12 @@ export function* createElements(
 
   const childrenIds = createdElements.map((el) => el.id);
 
-  yield put(
+  /* yield put(
     addElements(
       createdElements.map((el) => convertElementFromResponse(el)),
       parent.id,
     ),
-  );
+  ); */
 
   // eslint-disable-next-line consistent-return
   return childrenIds;
@@ -363,7 +362,7 @@ export function* restoreElementSaga(action: T.RestoreElementChildren) {
 
   yield put(Actions.updateElementsTree(updatedRoot, action, action.meta));
 
-  yield put(Actions.addElements([updatedRoot]));
+  // yield put(Actions.addElements([updatedRoot]));
 }
 
 export function* addElementToElement(

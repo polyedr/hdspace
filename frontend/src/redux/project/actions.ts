@@ -545,14 +545,3 @@ export const removeElements = (elementIds: string[]): T.RemoveElements => ({
   type: TYPES.REMOVE_ELEMENTS,
   payload: elementIds,
 });
-
-export const updateElement = (
-  elementId: string,
-  data: Partial<LibraryElement<any>>,
-): T.UpdateElement => ({
-  type: TYPES.UPDATE_ELEMENT,
-  payload: {
-    elementId,
-    data,
-  },
-});

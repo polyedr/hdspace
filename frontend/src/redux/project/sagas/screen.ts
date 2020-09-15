@@ -211,7 +211,7 @@ export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
   const updatedScreen = { ...currentScreen, ...savedScreen };
 
   updatedScreen.element = createdRootElement;
-  yield put(addElements([createdRootElement]));
+  // yield put(addElements([createdRootElement]));
 
   yield put(setProject(updateProject));
 
