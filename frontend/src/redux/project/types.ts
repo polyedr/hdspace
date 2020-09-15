@@ -28,7 +28,6 @@ export type ProjectDataState = {
 };
 
 export type ProjectUiState = {
-  activeItem: ActiveItem;
   editableStyles: string;
   isAddElementsModalOpened: boolean;
   itemToCopyInfo: ItemToCopyInfo | null;
@@ -71,10 +70,20 @@ export type Notification = {
 };
 
 export type ActiveItem = {
-  itemId: string;
-  itemType: Entity | 'none';
+  id: string;
+  type: Entity | 'none';
   name: string;
+  children?: LibraryElement<any>[];
+  buoyancy?: number;
+  image?: string | null;
+  styles?: {
+    classNames: [Entity, ...string[]];
+    ownStyles: any;
+  };
+  parameters?: { group?: string } & any;
+  parentId?: string;
 };
+
 export type SavedElementsValues = {
   [elementID: string]: { id: number; savedValue: string | boolean };
 };
@@ -312,9 +321,9 @@ export type WrapIntoContainer = IAction<
   { id: string },
   ElementHistoryMeta
 >;
-export type SetActiveItem = IAction<
-  typeof TYPES.SET_ACTIVE_ITEM,
-  { activeItem: ActiveItem }
+export type SetActiveElementId = IAction<
+  typeof TYPES.SET_ACTIVE_ELEMENT_ID,
+  string
 >;
 export type SetEditableStyles = IAction<
   typeof TYPES.SET_EDITABLE_STYLES,
@@ -402,7 +411,7 @@ export type Action =
   | uploadImageForNNSuccess
   | GetScreenNN
   | WrapIntoContainer
-  | SetActiveItem
+  | SetActiveElementId
   | ToggleContainersBorders
   | SetIsAddElementsModalOpened
   | SetItemToCopy

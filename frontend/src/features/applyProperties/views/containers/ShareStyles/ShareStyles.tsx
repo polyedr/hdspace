@@ -8,10 +8,10 @@ import ControlSection from '../../components/ControlSection/ControlSection';
 import Button from '../../../../../components/UI/Button';
 import { AppReduxState } from '../../../../../shared/types/app';
 import {
-  selectActiveItem,
+  selectActiveElement,
   selectCurrentProject,
   selectCurrentScreenId,
-  selectRootElement,
+  selectCurrentRootElement,
 } from '../../../../../redux/project/selectors';
 import { findChildByID } from '../../../../../utils/ElementsTreeHelper';
 import {
@@ -48,9 +48,9 @@ const useStyles = makeStyles({
 });
 
 const mapState = (state: AppReduxState) => {
-  const activeItem = selectActiveItem(state);
-  const root = selectRootElement(state);
-  const activeElement = findChildByID(root, activeItem.itemId);
+  const activeItem = selectActiveElement(state);
+  const root = selectCurrentRootElement(state);
+  const activeElement = findChildByID(root, activeItem.id);
   const project = selectCurrentProject(state);
 
   const sharedClasses = project.projectData.classes.filter(

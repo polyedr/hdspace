@@ -118,7 +118,7 @@ export function* createElements(
   );
 
   const root: LibraryElement<'root'> = yield select(
-    selectors.selectScreenElement(screenId),
+    selectors.selectScreenRootElement(screenId),
   );
 
   const newElements: ReturnPromisedType<typeof apiAddElements> = yield call(
@@ -196,16 +196,14 @@ export function* createElementsSaga(
   const { createdElements } = action.payload;
   const { screenId } = action.meta;
 
-  const activeItem: ReturnType<typeof selectors.selectActiveItem> = yield select(
-    selectors.selectActiveItem,
+  const activeItem: ReturnType<typeof selectors.selectActiveElement> = yield select(
+    selectors.selectActiveElement,
   );
-  const root = yield select(selectors.selectScreenElement(screenId));
-  const activeItemElement = findChildByID(root, activeItem.itemId);
+  const root = yield select(selectors.selectScreenRootElement(screenId));
+  const activeItemElement = findChildByID(root, activeItem.id);
 
   if (!activeItemElement) {
-    console.error(
-      `Active item ${activeItem.itemId} not found in elements tree!`,
-    );
+    console.error(`Active item ${activeItem.id} not found in elements tree!`);
     return;
   }
 
@@ -240,7 +238,7 @@ export function* addChildToElementSaga(
     childWithUpdatedParameters,
   );
 
-  const root = yield select(selectors.selectScreenElement(screenId));
+  const root = yield select(selectors.selectScreenRootElement(screenId));
   const parent = findChildByID(root, elementID);
 
   if (!parent) {
@@ -264,7 +262,7 @@ export function* softDeleteSaga(action: T.DeleteItem) {
   const { screenId, undo } = action.meta;
 
   const root: LibraryElement<'root'> = yield select(
-    selectors.selectScreenElement(screenId),
+    selectors.selectScreenRootElement(screenId),
   );
   const element = findChildByID(root, id);
   if (!element) {
@@ -296,20 +294,12 @@ export function* softDeleteSaga(action: T.DeleteItem) {
     );
   }
 
-  const activeItem: ReturnType<typeof selectors.selectActiveItem> = yield select(
-    selectors.selectActiveItem,
+  const activeItem: ReturnType<typeof selectors.selectActiveElement> = yield select(
+    selectors.selectActiveElement,
   );
 
-  if (activeItem.itemId === id) {
-    const { type, name } = parent;
-
-    yield put(
-      Actions.setActiveItem({
-        itemId: parent.id,
-        itemType: type,
-        name,
-      }),
-    );
+  if (activeItem.id === id) {
+    yield put(Actions.setActiveElementId(parent.id));
   }
 
   const updatedRoot = removeChildrenFromElement(parent.id, [element], root);
@@ -335,7 +325,7 @@ export function* restoreElementSaga(action: T.RestoreElementChildren) {
   }
   const { screenId, undo } = action.meta;
 
-  const root = yield select(selectors.selectScreenElement(screenId));
+  const root = yield select(selectors.selectScreenRootElement(screenId));
 
   const element = findChildByID(root, elementId);
   if (!element) {
@@ -391,7 +381,7 @@ export function* wrapIntoContainerSaga(action: T.WrapIntoContainer) {
   const { screenId } = action.meta;
 
   const root: LibraryElement<'root'> = yield select(
-    selectors.selectScreenElement(screenId),
+    selectors.selectScreenRootElement(screenId),
   );
 
   const wrappedItemParent = findParentByChildID(root, id);
@@ -471,7 +461,7 @@ export function* unwrapFromContainerSaga(
   const { elementID, wrapperID, parentID } = action.payload;
   const { screenId } = action.meta;
 
-  const root = yield select(selectors.selectScreenElement(screenId));
+  const root = yield select(selectors.selectScreenRootElement(screenId));
 
   const parent = findChildByID(root, parentID);
   if (!parent) {
@@ -510,8 +500,8 @@ export function* renameElementSaga(
   }
   const { elementID, name } = action.payload;
 
-  const root: ReturnType<typeof selectors.selectRootElement> = yield select(
-    selectors.selectRootElement,
+  const root: ReturnType<typeof selectors.selectCurrentRootElement> = yield select(
+    selectors.selectCurrentRootElement,
   );
 
   const updatedTree = updateElementName(elementID, name, root);
@@ -525,13 +515,7 @@ export function* renameElementSaga(
 
     yield call(updateElementsTree, updatedTree, null, action.meta);
 
-    yield put(
-      Actions.setActiveItem({
-        itemId: elementID,
-        itemType: updatedElement.type,
-        name,
-      }),
-    );
+    yield put(Actions.setActiveElementId(elementID));
 
     const convertedElement = convertElementToPatchRequest(updatedElement);
     yield call(reqWrapper, apiChangeElement, {
@@ -553,7 +537,7 @@ export function* redoWrapIntoContainerSaga(
   const { parentId, wrapperId, elementId } = action.payload;
   const { screenId } = action.meta;
 
-  const root = yield select(selectors.selectScreenElement(screenId));
+  const root = yield select(selectors.selectScreenRootElement(screenId));
 
   const parent = findChildByID(root, parentId);
   if (!parent) {

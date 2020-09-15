@@ -5,20 +5,20 @@ import { Entity } from '../../../domain/core';
 import { AppReduxState } from '../../../shared/types/app';
 import { LibraryElement } from '../../../api/types';
 import {
-  selectActiveItem,
-  selectRootElement,
+  selectActiveElement,
+  selectCurrentRootElement,
   selectShowingBorders,
 } from '../../../redux/project/selectors';
-import { setActiveItem } from '../../../redux/project/actions';
+import { setActiveElementId } from '../../../redux/project/actions';
 
 const styles = require('./ContainersBorders.scss');
 
 const mapState = (state: AppReduxState) => {
-  const root = (selectRootElement(state) as unknown) as LibraryElement<
+  const root = (selectCurrentRootElement(state) as unknown) as LibraryElement<
     'root',
     LibraryElement<Entity>[]
   >;
-  const activeItem = selectActiveItem(state);
+  const activeItem = selectActiveElement(state);
   const showBorders = selectShowingBorders(state);
 
   return {
@@ -29,7 +29,7 @@ const mapState = (state: AppReduxState) => {
 };
 
 const mapDispatch = {
-  setActiveItem,
+  setActiveItem: setActiveElementId,
 };
 
 type Props = ReturnType<typeof mapState> & typeof mapDispatch;
@@ -173,11 +173,7 @@ const ContainersBorders: React.FC<Props> = (props) => {
     event.preventDefault();
     (document.activeElement as HTMLElement)?.blur();
 
-    setActiveItem({
-      itemId: targetElement.id,
-      itemType: targetElement.type,
-      name: targetElement.name,
-    });
+    setActiveItem(targetElement.id);
   };
 
   const renderBorder = (
@@ -209,7 +205,7 @@ const ContainersBorders: React.FC<Props> = (props) => {
         }) => {
           const isActive = isRoot
             ? isRootFocused
-            : activeItem.itemId === targetElement.id;
+            : activeItem.id === targetElement.id;
           const isBorderVisible = showBorders || isActive;
 
           const labelClasses = cn(

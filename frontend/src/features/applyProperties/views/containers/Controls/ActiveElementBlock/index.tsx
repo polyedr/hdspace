@@ -37,12 +37,12 @@ const ActiveElementBlock: React.FC<IComponentProps> = ({
   }, []);
 
   const isElementHaveChildren = () => {
-    if (activeItem.itemType === 'none') {
+    if (activeItem.type === 'none') {
       return false;
     }
 
     const childrenTypes = Object.keys(
-      AVAILABLE_CHILDREN[activeItem.itemType] ?? [],
+      AVAILABLE_CHILDREN[activeItem.type] ?? [],
     );
 
     return (

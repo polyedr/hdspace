@@ -3,7 +3,7 @@ import { connect, useSelector } from 'react-redux';
 import TextField from '../../../components/TextField/TextField';
 import { AppReduxState } from '../../../../../../shared/types/app';
 import {
-  selectActiveItem,
+  selectActiveElement,
   selectCurrentScreenId,
 } from '../../../../../../redux/project/selectors';
 import { renameElement } from '../../../../../../redux/project/actions';
@@ -14,10 +14,10 @@ type StateProps = {
 };
 
 const mapState = (state: AppReduxState) => {
-  const activeItem = selectActiveItem(state);
+  const activeItem = selectActiveElement(state);
 
   return {
-    activeItemID: activeItem.itemId,
+    activeItemID: activeItem.id,
     activeItemName: activeItem.name,
   };
 };

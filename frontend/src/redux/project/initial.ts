@@ -1,5 +1,4 @@
 import * as T from './types';
-import { DEFAULT_ACTIVE_ITEM } from '../../constants/defaultParams';
 
 export const initialData: T.ProjectDataState = {
   projects: {},
@@ -8,7 +7,6 @@ export const initialData: T.ProjectDataState = {
 };
 
 export const initialUi: T.ProjectUiState = {
-  activeItem: DEFAULT_ACTIVE_ITEM,
   editableStyles: 'ownStyles',
   isAddElementsModalOpened: false,
   itemToCopyInfo: null,

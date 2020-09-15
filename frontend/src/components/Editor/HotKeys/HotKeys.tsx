@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
 import { connect, useSelector } from 'react-redux';
 import {
-  selectActiveItem,
+  selectActiveElement,
   selectCurrentScreenId,
-  selectRootElement,
+  selectCurrentRootElement,
 } from '../../../redux/project/selectors';
 import { AppReduxState } from '../../../shared/types/app';
 import {
@@ -17,7 +17,7 @@ import {
 
 const mapState = (state: AppReduxState) => {
   return {
-    rootElement: selectRootElement(state),
+    rootElement: selectCurrentRootElement(state),
   };
 };
 
@@ -43,7 +43,7 @@ export const Component = ({
 }: Props) => {
   const root = document.getElementById('root');
   const currentScreenId = useSelector(selectCurrentScreenId);
-  const { itemId } = useSelector(selectActiveItem);
+  const { id } = useSelector(selectActiveElement);
 
   useEffect(() => {
     const listener = (event: KeyboardEvent) => {
@@ -51,26 +51,26 @@ export const Component = ({
         event.key === 'Delete' ||
         (event.key === 'Backspace' && event.metaKey)
       ) {
-        deleteActiveItem(itemId, { screenId: currentScreenId });
+        deleteActiveItem(id, { screenId: currentScreenId });
         root?.focus();
       }
     };
 
     root?.addEventListener('keydown', listener);
     return () => root?.removeEventListener('keydown', listener);
-  }, [rootElement, root, deleteActiveItem, itemId, currentScreenId]);
+  }, [rootElement, root, deleteActiveItem, id, currentScreenId]);
 
   useEffect(() => {
     const listener = (event: KeyboardEvent) => {
       if (event.code === 'KeyC' && event.altKey) {
-        wrapIntoContainer(itemId, { screenId: currentScreenId });
+        wrapIntoContainer(id, { screenId: currentScreenId });
         root?.focus();
       }
     };
 
     root?.addEventListener('keydown', listener);
     return () => root?.removeEventListener('keydown', listener);
-  }, [rootElement, root, wrapIntoContainer, itemId, currentScreenId]);
+  }, [rootElement, root, wrapIntoContainer, id, currentScreenId]);
 
   useEffect(() => {
     const listener = (event: KeyboardEvent) => {

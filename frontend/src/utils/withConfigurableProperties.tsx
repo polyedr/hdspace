@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import { connect, useSelector } from 'react-redux';
 import {
-  selectActiveItem,
+  selectActiveElement,
   selectCurrentScreenId,
   selectEditableStyles,
 } from '../redux/project/selectors';
@@ -24,8 +24,8 @@ type StateProps = {
 };
 
 function mapState(state: AppReduxState): StateProps {
-  const activeItemType = selectActiveItem(state).itemType;
-  const activeItemID = selectActiveItem(state).itemId;
+  const activeItemType = selectActiveElement(state).type;
+  const activeItemID = selectActiveElement(state).id;
   const editableStyles = selectEditableStyles(state);
 
   return {

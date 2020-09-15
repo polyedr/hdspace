@@ -11,7 +11,7 @@ import { createContainer } from './scenario';
 import {
   selectCurrentScreenId,
   selectScreenById,
-  selectScreenElement,
+  selectScreenRootElement,
 } from '../selectors';
 import {
   apiAddScreen,
@@ -30,7 +30,7 @@ import {
   renameScreen,
   restoreScreen,
   saveScreenImage,
-  setActiveItem,
+  setActiveElementId,
   setCurrentScreenId,
   setLoader,
   setProject,
@@ -41,7 +41,6 @@ import {
   removeElements,
 } from '../actions';
 import { apiAddElements, apiGetElements } from '../../../api/element';
-import { DEFAULT_ACTIVE_ITEM } from '../../../constants/defaultParams';
 import {
   LibraryElement,
   LibraryElementUnion,
@@ -64,7 +63,7 @@ export function* activateScreenSaga({
 
   yield put(setScreenLoader(true));
 
-  yield put(setActiveItem(DEFAULT_ACTIVE_ITEM));
+  yield put(setActiveElementId('none'));
 
   const screen: Screen = yield select(selectScreenById(screenId));
   if (!screen) return;
@@ -73,16 +72,10 @@ export function* activateScreenSaga({
 
   yield put(Actions.setScenarioLoader(true));
 
-  const screenElement = yield select(selectScreenElement(screenId));
+  const screenElement = yield select(selectScreenRootElement(screenId));
   if (!screenElement) return;
 
-  yield put(
-    Actions.setActiveItem({
-      itemId: screenElement.id,
-      itemType: 'root',
-      name: 'Root',
-    }),
-  );
+  yield put(Actions.setActiveElementId(screenElement.id));
 
   yield put(Actions.setScenarioLoader(false));
   yield put(setScreenLoader(false));
@@ -227,13 +220,7 @@ export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
     ),
   );
 
-  yield put(
-    Actions.setActiveItem({
-      itemId: createdRootElement.id,
-      itemType: 'root',
-      name: 'Root',
-    }),
-  );
+  yield put(Actions.setActiveElementId(createdRootElement.id));
 
   yield put(push(`/project/${projectID}/${screen.id}`));
   // eslint-disable-next-line consistent-return
@@ -290,7 +277,7 @@ export function* delScreenSaga({
   const currentScreenId = yield select(selectors.selectCurrentScreenId);
 
   if (currentScreenId === screenId) {
-    yield put(setActiveItem(DEFAULT_ACTIVE_ITEM));
+    yield put(setActiveElementId('none'));
     yield put(setCurrentScreenId(-1));
   }
 
@@ -318,7 +305,7 @@ export function* delScreenSaga({
   if (!undo) {
     yield put(setUndoActions(restoreScreen(screenId, projectId)));
   }
-  const rootToRemove = yield select(selectScreenElement(screenId));
+  const rootToRemove = yield select(selectScreenRootElement(screenId));
   yield put(removeElements([rootToRemove.id]));
 
   const result: Project = R.assoc(

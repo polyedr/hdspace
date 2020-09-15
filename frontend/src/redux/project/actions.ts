@@ -416,9 +416,9 @@ export const wrapIntoContainer = (
   meta,
 });
 
-export const setActiveItem = (activeItem: T.ActiveItem): T.SetActiveItem => ({
-  type: TYPES.SET_ACTIVE_ITEM,
-  payload: { activeItem },
+export const setActiveElementId = (id: string): T.SetActiveElementId => ({
+  type: TYPES.SET_ACTIVE_ELEMENT_ID,
+  payload: id,
 });
 
 export const setEditableStyles = (className: string): T.SetEditableStyles => ({

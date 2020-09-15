@@ -97,10 +97,18 @@ export const DEFAULT_SCREEN: Screen = {
   element: DEFAULT_ROOT,
 };
 
-export const DEFAULT_ACTIVE_ITEM: ActiveItem = {
-  itemId: 'none',
-  itemType: 'none',
+export const DEFAULT_ACTIVE_ELEMENT: ActiveItem = {
+  id: 'none',
+  type: 'none',
   name: 'Not selected',
+  children: [],
+  buoyancy: 0,
+  image: null,
+  parameters: {},
+  styles: {
+    classNames: ['root'],
+    ownStyles: {} as Required<CssLikeStyles>,
+  },
 };
 
 export const STATUS = ['on_hold', 'in_progress', 'review', 'approved'];

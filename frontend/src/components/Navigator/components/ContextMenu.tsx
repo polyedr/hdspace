@@ -4,7 +4,7 @@ import Menu, { MenuProps } from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  selectActiveItem,
+  selectActiveElement,
   selectCurrentScreenId,
   selectItemToCopyInfo,
 } from '../../../redux/project/selectors';
@@ -46,8 +46,8 @@ type Props = {
 
 const ContextMenu: React.FC<Props> = ({ open, onClose, anchorPosition }) => {
   const dispatch = useDispatch();
-  const { itemType: activeItemType, itemId: activeItemId } = useSelector(
-    selectActiveItem,
+  const { type: activeItemType, id: activeItemId } = useSelector(
+    selectActiveElement,
   );
   const emptyClipboard = !useSelector(selectItemToCopyInfo);
   const currentScreenId = useSelector(selectCurrentScreenId);

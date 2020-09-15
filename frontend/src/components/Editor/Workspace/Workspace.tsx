@@ -20,12 +20,12 @@ import {
   exportProject,
   resetScreenState,
   saveScreenImage,
-  setActiveItem,
+  setActiveElementId,
 } from '../../../redux/project/actions';
 import { changePrototypeMode } from '../../../redux/user/actions';
 import {
-  selectActiveItem,
-  selectRootElement,
+  selectActiveElement,
+  selectCurrentRootElement,
   selectCurrentScreenId,
 } from '../../../redux/project/selectors';
 
@@ -47,13 +47,13 @@ const mapDispatch = {
   saveScreen: saveScreenImage,
   changePrototypeMode,
   resetScreenState,
-  setActiveItem,
+  setActiveItem: setActiveElementId,
   exportProject,
 };
 
 const mapState = (state: AppReduxState): StateProps => ({
-  elementsTree: selectRootElement(state),
-  activeItem: selectActiveItem(state),
+  elementsTree: selectCurrentRootElement(state),
+  activeItem: selectActiveElement(state),
   isPrototypeMode: state.user.isPrototypeMode,
 });
 
@@ -92,10 +92,10 @@ const Workspace = ({
     parentId: number,
     item: LibraryElement<Entity>,
   ) => {
-    const { id: itemId, type, name } = item;
+    const { id: itemId, type } = item;
     const list = getListNotDragging(type);
 
-    setActiveItem({ itemId, itemType: parentId === -1 ? 'root' : type, name });
+    setActiveItem(itemId);
     setListNotDragging(list);
   };
 
@@ -115,23 +115,19 @@ const Workspace = ({
 
       const itemID = target.dataset.lsId;
 
-      if (itemID === activeItem.itemId) return;
+      if (itemID === activeItem.id) return;
 
       if (itemID) {
         if (itemID === 'root') {
-          setActiveItem({
-            itemId: elementsTree.id,
-            itemType: 'root',
-            name: 'Root',
-          });
+          setActiveItem(elementsTree.id);
         } else {
           const actualActiveItem = findChildByID(elementsTree, itemID);
 
           if (actualActiveItem) {
-            const { type, name } = actualActiveItem;
+            const { type } = actualActiveItem;
             const list = getListNotDragging(type);
 
-            setActiveItem({ itemId: itemID, itemType: type, name });
+            setActiveItem(itemID);
             setListNotDragging(list);
           }
         }
@@ -208,7 +204,7 @@ const Workspace = ({
         >
           <SortableContainer
             item={elementsTree as LibraryElementUnion}
-            activeItemId={activeItem.itemId}
+            activeItemId={activeItem.id}
             isMoving={isMoving}
             listNotDragging={listNotDragging}
             setIsMoving={setIsMoving}

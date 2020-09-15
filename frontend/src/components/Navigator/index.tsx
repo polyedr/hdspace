@@ -17,9 +17,9 @@ import {
   updateTree,
 } from './utils';
 import {
-  selectActiveItem,
+  selectActiveElement,
   selectCurrentScreenId,
-  selectRootElement,
+  selectCurrentRootElement,
 } from '../../redux/project/selectors';
 import { DISALLOW_ADD_ELEMENT_NOTIFICATION_TEXT } from '../../features/notification/types';
 import {
@@ -28,7 +28,7 @@ import {
   moveElement,
   pasteCopiedItem,
   redoAction,
-  setActiveItem,
+  setActiveElementId,
   setNotification,
   undoAction,
 } from '../../redux/project/actions';
@@ -41,7 +41,7 @@ const styles = require('./Navigator.scss');
 const Navigator: React.FC = () => {
   const dispatch = useDispatch();
 
-  const rootElement = useSelector(selectRootElement);
+  const rootElement = useSelector(selectCurrentRootElement);
 
   const [tree, setTree] = useState<TreeData>(
     makeTree([convertTree(rootElement)]),
@@ -56,7 +56,7 @@ const Navigator: React.FC = () => {
   }, [rootElement]);
 
   const currentScreenId = useSelector(selectCurrentScreenId);
-  const { itemId: activeItemId } = useSelector(selectActiveItem);
+  const { id: activeItemId } = useSelector(selectActiveElement);
 
   const expandParents = (itemId) => {
     if (itemId === 'root') return;
@@ -85,13 +85,7 @@ const Navigator: React.FC = () => {
     const item = findChildByID(rootElement, itemId);
     if (!item) return;
 
-    dispatch(
-      setActiveItem({
-        itemId,
-        itemType: item.type,
-        name: item.name,
-      }),
-    );
+    dispatch(setActiveElementId(itemId));
     setSelectedItem(itemId);
   };
 

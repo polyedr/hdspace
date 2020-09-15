@@ -43,9 +43,9 @@ const ActionsBlock: React.FC<Props> = ({
 
   const isAvailableChild = (type: Entity) => {
     return (
-      activeItem.itemType !== 'none' &&
-      (AVAILABLE_CHILDREN[activeItem.itemType].all ||
-        AVAILABLE_CHILDREN[activeItem.itemType][type])
+      activeItem.type !== 'none' &&
+      (AVAILABLE_CHILDREN[activeItem.type].all ||
+        AVAILABLE_CHILDREN[activeItem.type][type])
     );
   };
 

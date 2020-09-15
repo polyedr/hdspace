@@ -70,10 +70,10 @@ type StateProps = {
 };
 
 const mapState = (state: AppReduxState): StateProps => {
-  const root = selectors.selectRootElement(state);
-  const activeItem = selectors.selectActiveItem(state);
-  const activeElement = findChildByID(root, activeItem.itemId);
-  const activeElementParent = findParentByChildID(root, activeItem.itemId);
+  const root = selectors.selectCurrentRootElement(state);
+  const activeItem = selectors.selectActiveElement(state);
+  const activeElement = findChildByID(root, activeItem.id);
+  const activeElementParent = findParentByChildID(root, activeItem.id);
 
   return {
     elementsTree: root,
@@ -140,11 +140,10 @@ const PropertiesPanel: React.FC<PropertiesPanelProps> = ({
   isAddElementsModalOpened,
   setIsAddElementsModalOpened,
 }) => {
-  const activeItemID =
-    activeItem.itemType === 'root' ? 'root' : activeItem.itemId;
+  const activeItemID = activeItem.type === 'root' ? 'root' : activeItem.id;
 
   const currentItemType =
-    activeItem.itemType === 'root'
+    activeItem.type === 'root'
       ? 'root'
       : findChildByID(elementsTree, activeItemID)?.type;
   const disablePanel = !screen;
@@ -166,19 +165,19 @@ const PropertiesPanel: React.FC<PropertiesPanelProps> = ({
           showDeleteButton={showDeleteButton}
           setIsAddElementsModalOpened={setIsAddElementsModalOpened}
         />
-        {activeItem.itemType !== 'none' && (
+        {activeItem.type !== 'none' && (
           <div className="propsPanelBlock">
             <div className="propsPanelHeaderBlock">
               <p>Element properties</p>
             </div>
-            {activeItem.itemType !== 'root' && (
+            {activeItem.type !== 'root' && (
               <div className="propsPanelContentBlock">
                 <ControlSection title="Element's name">
                   <RenameElement />
                 </ControlSection>
               </div>
             )}
-            {activeItem.itemType !== 'root' && (
+            {activeItem.type !== 'root' && (
               <>
                 <div className="propsPanelContentBlock">
                   <ShareStyles />

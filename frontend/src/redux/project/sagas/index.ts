@@ -73,7 +73,7 @@ import { refreshUserTokenPair } from '../../user/sagas';
 import { DEFAULT_AUTHORISATION_TOKEN } from '../../../constants/defaultParams';
 import { activateScreen, setItemToCopy, updateElementsTree } from '../actions';
 import {
-  selectActiveItem,
+  selectActiveElement,
   selectCurrentProject,
   selectCurrentScreen,
   selectElementParameters,
@@ -82,7 +82,7 @@ import {
   selectItemToCopyInfo,
   selectRedoActions,
   selectRemoteMove,
-  selectScreenElement,
+  selectScreenRootElement,
   selectUndoActions,
 } from '../selectors';
 import {
@@ -192,7 +192,7 @@ function* moveElementSaga(action: ReturnType<typeof Actions.moveElement>): any {
   const { screenId, undo } = action.meta;
 
   const root: LibraryElement<'root'> = yield select(
-    selectScreenElement(screenId),
+    selectScreenRootElement(screenId),
   );
   const targetParent = findChildByID(root, parentID);
 
@@ -307,7 +307,7 @@ function* removeSharedStylesSaga(
   }
 
   const root: LibraryElement<'root'> = yield select(
-    selectScreenElement(screenId),
+    selectScreenRootElement(screenId),
   );
 
   yield put(Actions.updateElementsTree(root, action, action.meta));
@@ -339,7 +339,7 @@ function* updateSharedStylesSaga(
   }
 
   const root: LibraryElement<'root'> = yield select(
-    selectScreenElement(screenId),
+    selectScreenRootElement(screenId),
   );
 
   yield put(Actions.updateElementsTree(root, action, action.meta));
@@ -364,7 +364,7 @@ function* updateElementClassNames(
   const { screenId, undo } = action.meta;
 
   const root: LibraryElement<'root'> = yield select(
-    selectScreenElement(screenId),
+    selectScreenRootElement(screenId),
   );
 
   if (!undo) {
@@ -419,7 +419,7 @@ function* removeElementStyles(
   const { screenId } = action.meta;
 
   const root: LibraryElement<'root'> = yield select(
-    selectScreenElement(screenId),
+    selectScreenRootElement(screenId),
   );
 
   const updatedTree = removeStyles(id, cssPropertiesNames, root);
@@ -524,7 +524,7 @@ function* updateOrReplaceElementStyles(
   const { screenId, undo } = action.meta;
 
   const root: LibraryElement<'root'> = yield select(
-    selectScreenElement(screenId),
+    selectScreenRootElement(screenId),
   );
 
   if (!undo) {
@@ -637,7 +637,7 @@ function* updateElementParameters(
   const { screenId, undo } = action.meta;
 
   const root: LibraryElement<'root'> = yield select(
-    selectScreenElement(screenId),
+    selectScreenRootElement(screenId),
   );
 
   if (!undo) {
@@ -682,7 +682,7 @@ function* uploadFileSaga({
   try {
     // TODO: show loader in addModalElements
     const root: LibraryElement<'root'> = yield select(
-      selectScreenElement(screenId),
+      selectScreenRootElement(screenId),
     );
 
     const formData = new FormData();
@@ -740,8 +740,8 @@ function* uploadFileSaga({
 
 function* copyActiveItemSaga() {
   const {
-    itemId: activeItemID,
-  }: ReturnType<typeof selectActiveItem> = yield select(selectActiveItem);
+    id: activeItemID,
+  }: ReturnType<typeof selectActiveElement> = yield select(selectActiveElement);
   const currentScreen: ReturnType<typeof selectCurrentScreen> = yield select(
     selectCurrentScreen,
   );
@@ -786,7 +786,7 @@ function* duplicateScreenSaga(
   const { name, screenID } = action.payload;
 
   const sourceRoot: LibraryElement<'root'> = yield select(
-    selectScreenElement(screenID),
+    selectScreenRootElement(screenID),
   );
 
   const sourceCurrentScreen: ReturnType<typeof selectCurrentScreen> = yield select(
@@ -810,16 +810,10 @@ function* duplicateScreenSaga(
   );
   yield put(Actions.setScreenLoader(true));
 
-  const targetRoot = yield select(selectScreenElement(newScreenId));
+  const targetRoot = yield select(selectScreenRootElement(newScreenId));
   const targetRootID = targetRoot.id;
 
-  yield put(
-    Actions.setActiveItem({
-      itemId: targetRootID,
-      itemType: 'root',
-      name: 'Root',
-    }),
-  );
+  yield put(Actions.setActiveElementId(targetRootID));
 
   yield call(duplicateItems, sourceRoot, duplicatedItems, targetRoot, {
     screenId: newScreenId,
@@ -837,16 +831,16 @@ function* pasteCopiedItemSaga({
     return;
   }
   const { screenId } = meta;
-  const activeItem: ReturnType<typeof selectActiveItem> = yield select(
-    selectActiveItem,
+  const activeItem: ReturnType<typeof selectActiveElement> = yield select(
+    selectActiveElement,
   );
   const root: LibraryElement<'root'> = yield select(
-    selectScreenElement(screenId),
+    selectScreenRootElement(screenId),
   );
-  const targetContainer = findChildByID(root, activeItem.itemId);
+  const targetContainer = findChildByID(root, activeItem.id);
 
   if (!targetContainer) {
-    console.error(`Can not find updated element ${activeItem.itemId} in tree`);
+    console.error(`Can not find updated element ${activeItem.id} in tree`);
     return;
   }
   const itemToCopyInfo: ReturnType<typeof selectItemToCopyInfo> = yield select(
@@ -855,10 +849,10 @@ function* pasteCopiedItemSaga({
   if (!itemToCopyInfo) return;
 
   const sourceRoot: LibraryElement<'root'> = yield select(
-    selectScreenElement(itemToCopyInfo.screenID),
+    selectScreenRootElement(itemToCopyInfo.screenID),
   );
 
-  if (activeItem.itemType !== 'none') {
+  if (activeItem.type !== 'none') {
     yield call(duplicateItems, sourceRoot, [itemToCopyInfo], targetContainer, {
       screenId,
     });

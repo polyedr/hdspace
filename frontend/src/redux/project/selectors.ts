@@ -1,4 +1,5 @@
 import {
+  DEFAULT_ACTIVE_ELEMENT,
   DEFAULT_PROJECT,
   DEFAULT_ROOT,
   DEFAULT_SCREEN,
@@ -21,7 +22,7 @@ export const selectProjectById = (projectId: number) => ({
   project,
 }: AppReduxState) => project.data.projects[projectId];
 
-export const selectScreenElement = (screenId: number) => ({
+export const selectScreenRootElement = (screenId: number) => ({
   project,
 }: AppReduxState) => project.data.screens[screenId]?.element || DEFAULT_ROOT;
 
@@ -53,10 +54,10 @@ export const selectCurrentProjectId = ({ project }: AppReduxState) =>
 export const selectCurrentProject = (state: AppReduxState) =>
   state.project.data.projects[selectCurrentProjectId(state)] || DEFAULT_PROJECT;
 
-export const selectRootElement = (state: AppReduxState) =>
+export const selectCurrentRootElement = (state: AppReduxState) =>
   selectCurrentScreen(state).element;
 
-export const selectRootID = (state: AppReduxState) =>
+export const selectRootId = (state: AppReduxState) =>
   selectCurrentScreen(state).element?.id || '-1';
 
 export function selectUploadedImageInfo(state: AppReduxState) {
@@ -75,19 +76,32 @@ export function selectProjectListLoader(state: AppReduxState) {
   return selectProjectState(state).communication.projectListLoader;
 }
 
-export function selectActiveItem(state: AppReduxState) {
-  return selectProjectState(state).ui.activeItem;
-}
-
 export const selectActiveElementId = ({ project }: AppReduxState) =>
   project.edit.activeElementId;
 
 export const selectActiveElement = (state: AppReduxState) =>
-  state.project.data.elements[selectActiveElementId(state)];
+  state.project.data.elements[selectActiveElementId(state)] ||
+  DEFAULT_ACTIVE_ELEMENT;
 
 export function selectEditableStyles(state: AppReduxState) {
   return selectProjectState(state).ui.editableStyles;
 }
+
+export const selectElementById = (id: string) => ({ project }: AppReduxState) =>
+  project.data.elements[id];
+
+export const buildElementsTree = (elementId: string) => (
+  state: AppReduxState,
+): LibraryElement<any> => {
+  const rootElement = selectElementById(elementId)(state);
+
+  return {
+    ...rootElement,
+    children: rootElement?.children?.map((childId) =>
+      buildElementsTree(childId)(state),
+    ),
+  };
+};
 
 export function selectSharedStyles(state: AppReduxState, elementType: string) {
   return selectCurrentProject(state).projectData.classes.find(
@@ -104,12 +118,12 @@ function makeActiveItemInfoSelector<
   state: AppReduxState,
 ) => K extends 'styles' ? R['styles'] : R['parameters'] {
   return (state: AppReduxState) => {
-    const activeItem = selectActiveItem(state);
-    const elementsTree = selectRootElement(state);
-    const element = findChildByID(elementsTree, activeItem.itemId);
+    const activeItem = selectActiveElement(state);
+    const elementsTree = selectCurrentRootElement(state);
+    const element = findChildByID(elementsTree, activeItem.id);
 
     if (!element) {
-      throw new Error(`Can not find ${activeItem.itemId} in tree!`);
+      throw new Error(`Can not find ${activeItem.id} in tree!`);
     }
 
     return element[prop] as K extends 'styles' ? T['styles'] : T['parameters'];
@@ -121,7 +135,7 @@ export const selectActiveItemStyles = makeActiveItemInfoSelector('styles');
 export function selectCurrentEditableStyles<
   T extends keyof Required<CssLikeStyles>
 >(state: AppReduxState, ruleName: T) {
-  const activeItemType = selectActiveItem(state).itemType;
+  const activeItemType = selectActiveElement(state).type;
   const activeElementStyles = selectActiveItemStyles<
     LibraryElement<Entity, [], {}, Required<CssLikeStyles>>
   >(state).ownStyles;
@@ -161,9 +175,9 @@ export function selectActiveItemChildren(
   state: AppReduxState,
   childType: ChildEntity,
 ) {
-  const activeItem = selectActiveItem(state);
-  const elementsTree = selectRootElement(state);
-  const element = findChildByID(elementsTree, activeItem.itemId);
+  const activeItem = selectActiveElement(state);
+  const elementsTree = selectCurrentRootElement(state);
+  const element = findChildByID(elementsTree, activeItem.id);
 
   if (!element) {
     return [];
@@ -175,14 +189,15 @@ export function selectActiveItemChildren(
 export const selectElementStyles = (screenId: number, elementId: string) => (
   state: AppReduxState,
 ) =>
-  findChildByID(selectScreenElement(screenId)(state), elementId)?.styles
+  findChildByID(selectScreenRootElement(screenId)(state), elementId)?.styles
     .ownStyles;
 
 export const selectElementParameters = (
   screenId: number,
   elementId: string,
 ) => (state: AppReduxState) =>
-  findChildByID(selectScreenElement(screenId)(state), elementId)?.parameters;
+  findChildByID(selectScreenRootElement(screenId)(state), elementId)
+    ?.parameters;
 
 export const selectUndoActions = ({ project }: AppReduxState) =>
   project.control.undoActions;
