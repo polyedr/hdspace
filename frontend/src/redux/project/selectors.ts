@@ -14,33 +14,25 @@ import { Screen } from './types';
 
 export const selectProjectState = makeFeatureStateSelector('project');
 
-export function selectProjects(state: AppReduxState) {
-  return mapToArr<Project>(selectProjectState(state).data.projects);
-}
+export const selectProjects = ({ project }: AppReduxState) =>
+  mapToArr<Project>(project.data.projects);
 
-export const selectProjectById = (projectId: number) => (
-  state: AppReduxState,
-) => selectProjectState(state).data.projects[projectId];
+export const selectProjectById = (projectId: number) => ({
+  project,
+}: AppReduxState) => project.data.projects[projectId];
 
 export const selectScreenElement = (screenId: number) => ({
   project,
-}: AppReduxState): LibraryElement<'root'> =>
-  project.data.screens[screenId]?.element || DEFAULT_ROOT;
+}: AppReduxState) => project.data.screens[screenId]?.element || DEFAULT_ROOT;
 
-export const selectCurrentScreenId = (state: AppReduxState) =>
-  selectProjectState(state).edit.currentScreenId;
+export const selectCurrentScreenId = ({ project }: AppReduxState) =>
+  project.edit.currentScreenId;
 
 export const selectCurrentScreen = (state: AppReduxState) =>
   state.project.data.screens[selectCurrentScreenId(state)] || DEFAULT_SCREEN;
 
-export const selectCurrentScreenElement = (state: AppReduxState) => {
-  const currentScreen = selectCurrentScreen(state);
-  return currentScreen.element;
-};
-
-export function selectScreens({ project }: AppReduxState) {
-  return mapToArr<Screen>(project.data.screens);
-}
+export const selectScreens = ({ project }: AppReduxState) =>
+  mapToArr<Screen>(project.data.screens);
 
 export const selectScreenById = (id: number) => ({ project }: AppReduxState) =>
   project.data.screens[id] || DEFAULT_SCREEN;
@@ -49,13 +41,11 @@ export function selectNotification(state: AppReduxState) {
   return selectProjectState(state).edit.notification;
 }
 
-export function selectIsAddElementsModalOpened(state: AppReduxState) {
-  return selectProjectState(state).ui.isAddElementsModalOpened;
-}
+export const selectIsAddElementsModalOpened = ({ project }: AppReduxState) =>
+  project.ui.isAddElementsModalOpened;
 
-export function selectSavedElementsValues(state: AppReduxState) {
-  return selectProjectState(state).ui.savedElementsValues;
-}
+export const selectSavedElementsValues = ({ project }: AppReduxState) =>
+  project.ui.savedElementsValues;
 
 export const selectCurrentProjectId = ({ project }: AppReduxState) =>
   project.edit.currentProjectId;
@@ -88,6 +78,12 @@ export function selectProjectListLoader(state: AppReduxState) {
 export function selectActiveItem(state: AppReduxState) {
   return selectProjectState(state).ui.activeItem;
 }
+
+export const selectActiveElementId = ({ project }: AppReduxState) =>
+  project.edit.activeElementId;
+
+export const selectActiveElement = (state: AppReduxState) =>
+  state.project.data.elements[selectActiveElementId(state)];
 
 export function selectEditableStyles(state: AppReduxState) {
   return selectProjectState(state).ui.editableStyles;
@@ -188,17 +184,17 @@ export const selectElementParameters = (
 ) => (state: AppReduxState) =>
   findChildByID(selectScreenElement(screenId)(state), elementId)?.parameters;
 
-export const selectUndoActions = (state: AppReduxState) =>
-  selectProjectState(state).control.undoActions;
+export const selectUndoActions = ({ project }: AppReduxState) =>
+  project.control.undoActions;
 
-export const selectRedoActions = (state: AppReduxState) =>
-  selectProjectState(state).control.redoActions;
+export const selectRedoActions = ({ project }: AppReduxState) =>
+  project.control.redoActions;
 
-export const selectHistory = (state: AppReduxState) =>
-  selectProjectState(state).control.history;
+export const selectHistory = ({ project }: AppReduxState) =>
+  project.control.history;
 
-export const selectRemoteMove = (state: AppReduxState) =>
-  selectProjectState(state).control.remoteMove;
+export const selectRemoteMove = ({ project }: AppReduxState) =>
+  project.control.remoteMove;
 
 export const selectActiveItemChildrenStyles = makeActiveItemInfoSelector(
   'styles',
