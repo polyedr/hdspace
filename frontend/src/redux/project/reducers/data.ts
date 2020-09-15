@@ -7,9 +7,9 @@ function dataReducer(
   action: T.Action,
 ): T.ProjectDataState {
   switch (action.type) {
-    case TYPES.LOAD_LIBRARY_ELEMENTS_SUCCESS: {
+    /* case TYPES.LOAD_LIBRARY_ELEMENTS_SUCCESS: {
       return { ...state, libraryElements: action.payload.libraryElements };
-    }
+    } */
 
     case TYPES.LOAD_PROJECTS_SUCCESS: {
       return { ...state, projectList: action.payload.projects };

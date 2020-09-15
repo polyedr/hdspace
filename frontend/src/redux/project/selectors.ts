@@ -1,3 +1,4 @@
+import { NamedServerElements } from './types';
 import {
   DEFAULT_PROJECT,
   DEFAULT_ROOT,
@@ -239,3 +240,23 @@ export function selectProjectLoader(state: AppReduxState): boolean {
 
 export const selectInitialProjectLoad = (state: AppReduxState): boolean =>
   selectProjectState(state).communication.initialProjectLoadDone;
+
+export const selectActiveItemElement = (
+  state: AppReduxState,
+): LibraryElement<Entity, LibraryElement<Entity>[]> => {
+  const activeItem = selectActiveItem(state);
+  const elementsTree = selectRootElement(state);
+  const element = findChildByID(elementsTree, activeItem.itemId);
+
+  if (!element) {
+    throw new Error(`Can not find ${activeItem.itemId} in tree!`);
+  }
+
+  return element;
+};
+
+export function selectCustomLibraryElements(
+  state: AppReduxState,
+): NamedServerElements {
+  return selectProjectState(state).ui.customLibraryElements;
+}

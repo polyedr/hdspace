@@ -42,13 +42,17 @@ export type ServerElement<
   // Every element has entity css class, group css class and unique own css class
   // Entity class has default entity styles, own class is empty by default, group classes is user custom classes
   styles: {
-    classNames: [Type, ...string[]];
+    classNames: string[];
     ownStyles: Styles;
   };
   children: Children;
 };
 
 export type RootServerElement = ServerElement<'root', []>;
+export type SectionServerElement = ServerElement<
+  'section',
+  ServerElement<Entity>[]
+>;
 export type ContainerServerElement = ServerElement<
   'container',
   ServerElement<Entity>[]
@@ -191,7 +195,7 @@ export type LibraryElement<
   buoyancy: number;
   image: string | null | undefined;
   styles: {
-    classNames: [Type, ...string[]];
+    classNames: string[];
     ownStyles: Styles;
   };
   children: Children;

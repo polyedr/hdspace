@@ -1,4 +1,3 @@
-
 import { mockRootWithStyles as mockRoot } from './mocks';
 import { removeElementStyles } from '../ElementsTreeHelper';
 

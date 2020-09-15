@@ -88,7 +88,6 @@ const mapState = (state: AppReduxState): StateProps => {
 
 const mapDispatch = {
   addElement: actionsCreators.addElement,
-  createElements: actionsCreators.createElements,
   setIsAddElementsModalOpened: actionsCreators.setIsAddElementsModalOpened,
 };
 
@@ -137,7 +136,6 @@ const PropertiesPanel: React.FC<PropertiesPanelProps> = ({
   elementsTree,
   screen,
   loader,
-  createElements,
   isAddElementsModalOpened,
   setIsAddElementsModalOpened,
 }) => {
@@ -162,7 +160,6 @@ const PropertiesPanel: React.FC<PropertiesPanelProps> = ({
           activeItem={activeItem}
           disablePanel={disablePanel}
           libraryElements={LIBRARY_ELEMENTS}
-          createElements={createElements}
           isAddElementsModalOpened={isAddElementsModalOpened}
           showDeleteButton={showDeleteButton}
           setIsAddElementsModalOpened={setIsAddElementsModalOpened}

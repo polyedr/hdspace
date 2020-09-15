@@ -1,3 +1,5 @@
+import { ServerElement } from '../../api/types/elements';
+import { LibraryElements } from '../../domain/libraryElements/libraryElements';
 /* eslint-disable camelcase */
 
 import { IAction, IPlainAction, IPlainFailAction } from '../../shared/redux';
@@ -12,7 +14,6 @@ import {
 } from '../../api/types';
 import TYPES from '../../constants/actions';
 import { CssLikeStyles } from '../../utils/StyleHelper';
-import { LibraryEntities } from '../../domain/libraryElements/libraryElements';
 
 export type ProjectState = {
   data: ProjectDataState;
@@ -22,8 +23,20 @@ export type ProjectState = {
   control: ProjectControlState;
 };
 
+export type ProjectLibraryElements = {
+  [id: number]: IScenarioElement;
+};
+
+export type NamedLibraryElements = {
+  [name: string]: LibraryElement<Entity>;
+};
+
+export type NamedServerElements = {
+  [name: string]: ServerElement<Entity, ServerElement<Entity>[]>;
+};
+
 export type ProjectDataState = {
-  libraryElements: LibraryEntities;
+  libraryElements: LibraryElements;
   projectList: Project[];
   screens: IProjectScreen[];
 };
@@ -35,6 +48,7 @@ export type ProjectUiState = {
   itemToCopyInfo: ItemToCopyInfo | null;
   savedElementsValues: SavedElementsValues;
   showContainersBorders: boolean;
+  customLibraryElements: NamedServerElements;
 };
 
 export type ProjectEditState = {
@@ -76,18 +90,26 @@ export type ActiveItem = {
   name: string;
 };
 
+export type ActiveItemTree = {
+  children?: any[];
+} & ActiveItem;
+
 export type SavedElementsValues = {
   [elementID: string]: { id: number; savedValue: string | boolean };
 };
 
-export type CreatedElement = { type: Entity; parentID?: number };
+export type CreatedElement = {
+  type: Entity | string;
+  name: string;
+  custom: boolean;
+};
 
 export type LoadLibraryElements = IPlainAction<
   typeof TYPES.GET_LIBRARY_ELEMENTS
 >;
 export type LoadLibraryElementsSuccess = IAction<
   typeof TYPES.LOAD_LIBRARY_ELEMENTS_SUCCESS,
-  { libraryElements: LibraryEntities }
+  { libraryElements: LibraryElements }
 >;
 export type LoadLibraryElementsFail = IPlainFailAction<
   'PROJECTS:LOAD_LIBRARY_ELEMENTS_FAIL'
@@ -305,6 +327,7 @@ export type CreateElements = IAction<
   { createdElements: CreatedElement[] },
   ElementHistoryMeta
 >;
+
 export type AddChildToElement = IAction<
   typeof TYPES.ADD_CHILD_TO_ELEMENT,
   {
@@ -358,6 +381,10 @@ export type SetUndoActions = IAction<
   Action | Action[]
 >;
 export type SetRedoActions = IAction<typeof TYPES.SET_REDO_ACTIONS, Action[]>;
+export type SaveLibraryElement = IAction<
+  typeof TYPES.SAVE_LIBRARY_ELEMENT_TO_STATE,
+  ServerElement<Entity, ServerElement<Entity>[]>
+>;
 export type UnwrapFromContainer = IAction<
   typeof TYPES.UNWRAP_FROM_CONTAINER,
   { elementID: string; wrapperID: string; parentID: string },
@@ -452,7 +479,8 @@ export type Action =
   | Logout
   | RestoreScreen
   | SetProject
-  | SetScreen;
+  | SetScreen
+  | SaveLibraryElement;
 
 export type ItemToCopyInfo = {
   id: string;
@@ -556,7 +584,7 @@ export interface IScenarioElement {
   buoyancy: number;
   dynamic_buoyancy: number;
   image: string | null;
-  parameters: { parent_id: number } & ElementParameters;
+  parameters: { parent_id?: number } & ElementParameters;
   styles: CssLikeStyles;
   children: IScenarioElement[];
 }
