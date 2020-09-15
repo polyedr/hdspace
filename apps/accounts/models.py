@@ -1,6 +1,5 @@
 import uuid
 import datetime
-
 from django.urls import reverse
 from django.db import models
 from django.contrib.auth.models import AbstractUser
@@ -40,11 +39,7 @@ class MongoModel(models.Model):
 """
 
 
-class User(AbstractUser):
-    email = models.EmailField(verbose_name="email address", max_length=255, unique=True)
-
-
-class Profile(TimeStampedModel):
+class Role:
     ROLE_DESIGNER = "Designer"
     ROLE_DEVELOPER = "Developer"
     ROLE_ADMINISTRATOR = "Administrator"
@@ -59,30 +54,69 @@ class Profile(TimeStampedModel):
         (ROLE_EXPERT, "EXPERT"),
         (ROLE_COMMUNICATION, "COMMUNICATION"),
     )
-    email_confirmation_token = models.CharField(
-        max_length=64, editable=False, null=True
-    )
-    INTERNAL_ROLE_SUPERADMIN = "SuperAdmin"
-    INTERNAL_ROLE_STAFF = "Staff"
-    INTERNAL_ROLE_LIBRARIAN = "Librarian"
+    INTERNAL_ROLE_SUPERADMIN = "SUPERADMIN"
+    INTERNAL_ROLE_STAFF = "STAFF"
+    INTERNAL_ROLE_LIBRARIAN = "LIBRARIAN"
     USER_INTERNAL_ROLE = (
         (INTERNAL_ROLE_SUPERADMIN, "SuperAdmin"),
         (INTERNAL_ROLE_STAFF, "Staff"),
         (INTERNAL_ROLE_LIBRARIAN, "Librarian"),
     )
+    EXTERNAL_ROLE_PROJECT_OWNER = "PROJECT OWNER"
+    EXTERNAL_ROLE_PROJECT_MANAGER = "PROJECT MANAGER"
+    EXTERNAL_ROLE_BA = "BUSSINESS ANALYST"
+    EXTERNAL_ROLE_BACKEND_DEVELOPER = "BACKEND DEVELOPER"
+    EXTERNAL_ROLE_FRONTEND_DEVELOPER = "FRONTEND DEVELOPER"
+    EXTERNAL_ROLE_ANNOTATOR = "ANNOTATOR"
+    EXTERNAL_ROLE_CONTENT_MANAGER = "CONTENT MANAGER"
+    USER_EXTERNAL_ROLE = (
+        (EXTERNAL_ROLE_PROJECT_OWNER, "Owns the project"),
+        (EXTERNAL_ROLE_PROJECT_MANAGER, "Can edit the project"),
+        (EXTERNAL_ROLE_BA, "Can edit the project"),
+        (EXTERNAL_ROLE_BACKEND_DEVELOPER, "Is able to apply backend constructor"),
+        (EXTERNAL_ROLE_FRONTEND_DEVELOPER, "Is able to apply front-end constructor"),
+        (EXTERNAL_ROLE_ANNOTATOR, "Annotate HTML elements and components"),
+        (EXTERNAL_ROLE_CONTENT_MANAGER, "Manage contents from project text blocks"),
+    )
+
+
+class User(AbstractUser):
+    email = models.EmailField(verbose_name="email address", max_length=255, unique=True)
+
+
+class Profile(TimeStampedModel):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    roles = Role()
+    default_role = models.CharField(
+        choices=roles.USER_ROLE, default="any", max_length=500
+    )
+    internal_role = models.CharField(
+        choices=roles.USER_INTERNAL_ROLE, default="any", max_length=500
+    )
+    external_role = models.CharField(
+        choices=roles.USER_EXTERNAL_ROLE, default="any", max_length=500
+    )
     email_confirmation_token = models.CharField(
         max_length=64, editable=False, null=True
     )
+    email_confirmation_token = models.CharField(
+        max_length=64, editable=False, null=True
+    )
+
     reset_password_token = models.CharField(max_length=64, editable=False, null=True)
     invitation_token = models.CharField(max_length=64, editable=False, null=True)
     avatar = models.ImageField(upload_to=utils.get_file_path, blank=True, null=True)
     approved = models.BooleanField(default=False)
-    role = models.CharField(choices=USER_ROLE, default=ROLE_DESIGNER, max_length=32)
-    internal_role = models.CharField(
-        choices=USER_INTERNAL_ROLE, default=ROLE_DESIGNER, max_length=32
-    )
     hourly_rate = models.IntegerField(default=0)
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+
+    class Meta:  # This is an example showing that permissions for external roles can be added here
+        permissions = (
+            ("Dummy permission 1", "Can do dummy action 1"),
+            ("Dummy permission 2", "Can do dummy action 2"),
+            ("Dummy permission 3", "Can do dummy action 3"),
+            ("Dummy permission 4", "Can do dummy action 4"),
+            ("Dummy permission 5", "Can do dummy action 5"),
+        )
 
     def get_confirmation_url(self) -> str:
         return reverse(
@@ -135,7 +169,7 @@ class TeamMember(TimeStampedModel):
     position = models.CharField(max_length=250)
     date_joined = models.DateField(auto_now_add=True)
     is_active = models.BooleanField(default=False)
-    role = models.CharField(choices=MEMBER_ROLE, default=ROLE_MEMBER, max_length=32)
+    role = models.CharField(choices=MEMBER_ROLE, default=ROLE_MEMBER, max_length=64)
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
