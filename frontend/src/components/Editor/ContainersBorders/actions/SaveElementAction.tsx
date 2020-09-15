@@ -1,5 +1,5 @@
-import React, { useCallback } from 'react';
-import { connect, useDispatch } from 'react-redux';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Popover, IconButton } from '@material-ui/core';
 import SaveIcon from '@material-ui/icons/Save';
 import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state';
@@ -10,53 +10,45 @@ import { BorderedItem } from '../Border';
 import { saveElementToLibrary } from '../../../../redux/project/actions';
 import { LibraryElement, SectionServerElement } from '../../../../api/types';
 import { Entity } from '../../../../domain/core';
-import { AppReduxState } from '../../../../shared/types/app';
 import { selectActiveItemElement } from '../../../../redux/project/selectors';
 
 const styles = require('./SaveElementAction.scss');
 
 type SaveElementAction = {
   item: BorderedItem;
-  activeElement: LibraryElement<Entity, LibraryElement<Entity>[]>;
 };
 
-const SaveElementAction: React.FC<SaveElementAction> = ({
-  item,
-  activeElement,
-}) => {
-  // const [isPopoverOpen, setIsPopoverOpen] = useState<boolean>(false);
+const SaveElementAction: React.FC<SaveElementAction> = ({ item }) => {
+  const activeElement = useSelector(selectActiveItemElement);
   const inputRef = React.createRef<HTMLInputElement>();
   const dispatch = useDispatch();
 
-  const convertElementToSection = useCallback(
-    (
-      activeElement: LibraryElement<Entity, LibraryElement<Entity>[]>,
-    ): SectionServerElement => {
-      const {
-        name,
-        type,
-        buoyancy,
-        image,
-        styles,
-        parameters,
-        children,
-      } = activeElement;
-      return {
-        name,
-        buoyancy,
-        image,
-        func_type: type,
-        struct_type: type,
-        styles,
-        parameters: {
-          ...parameters,
-          group: 'custom',
-        },
-        children: children.map((child) => convertElementToSection(child)),
-      } as SectionServerElement;
-    },
-    [],
-  );
+  const convertElementToSection = (
+    activeElement: LibraryElement<Entity, LibraryElement<Entity>[]>,
+  ): SectionServerElement => {
+    const {
+      name,
+      type,
+      buoyancy,
+      image,
+      styles,
+      parameters,
+      children,
+    } = activeElement;
+    return {
+      name,
+      buoyancy,
+      image,
+      func_type: type,
+      struct_type: type,
+      styles,
+      parameters: {
+        ...parameters,
+        group: 'custom',
+      },
+      children: children.map((child) => convertElementToSection(child)),
+    } as SectionServerElement;
+  };
 
   return (
     <PopupState variant="popover" popupId={`${item.id}-save-popup`}>
@@ -93,7 +85,9 @@ const SaveElementAction: React.FC<SaveElementAction> = ({
                   const e: KeyboardEvent = event.nativeEvent as KeyboardEvent;
                   if (e.code === 'Enter') {
                     // Enter pressed
-                    const name = inputRef.current!.value;
+                    const name = inputRef
+                      .current!.value.toLowerCase()
+                      .replace(/ /g, '_');
                     inputRef.current!.value = '';
                     popupState.close();
                     const newLibraryElement = convertElementToSection(
@@ -112,11 +106,4 @@ const SaveElementAction: React.FC<SaveElementAction> = ({
   );
 };
 
-const mapStateToProps = (state: AppReduxState) => {
-  const activeElement = selectActiveItemElement(state);
-  return {
-    activeElement,
-  };
-};
-
-export default connect(mapStateToProps)(SaveElementAction);
+export default SaveElementAction;

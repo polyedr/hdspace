@@ -555,7 +555,7 @@ export const setGroupActionsUp = (groupUp: boolean): T.SetGroupActionsUp => ({
 
 export const saveElementToLibrary = <T extends Entity>(
   id: string,
-  element: ServerElement<Entity, ServerElement<Entity>[]>,
+  element: ServerElement<T, ServerElement<T>[]>,
 ) => {
   return {
     type: TYPES.SAVE_LIBRARY_ELEMENT,

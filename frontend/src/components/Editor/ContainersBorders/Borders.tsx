@@ -1,16 +1,12 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { connect } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 
 import Border, { BorderedItem, BorderDOMProps } from './Border';
-import { Entity } from '../../../domain/core';
-import { AppReduxState } from '../../../shared/types/app';
-import { LibraryElement } from '../../../api/types';
 import {
   selectActiveItem,
   selectRootElement,
   selectShowingBorders,
 } from '../../../redux/project/selectors';
-import { ActiveItem } from '../../../redux/project/types';
 import SaveElementAction from './actions/SaveElementAction';
 import BorderCrumb from './BorderCrumb';
 
@@ -29,49 +25,32 @@ export type NamedItem = {
   type: string;
 };
 
-const mapState = (state: AppReduxState) => {
-  const root = (selectRootElement(state) as unknown) as LibraryElement<
-    'root',
-    LibraryElement<Entity>[]
-  >;
-  const activeItem = selectActiveItem(state) as ActiveItem;
-  const showBorders = selectShowingBorders(state);
+const Borders: React.FC = () => {
+  const root = useSelector(selectRootElement);
+  const activeItem = useSelector(selectActiveItem);
+  const showBorders = useSelector(selectShowingBorders);
 
-  return {
-    root,
-    activeItem,
-    showBorders,
-  };
-};
-
-type Props = ReturnType<typeof mapState>;
-
-const Borders: React.FC<Props> = ({ root, activeItem, showBorders }) => {
   const [borderedItems, setBorderedItems] = useState([] as BorderedItem[]);
   const rootElement = document.getElementById('root');
 
-  const getBorderDomProps = useCallback(
-    (
-      item: NamedItem,
-      rootElement: HTMLElement,
-      domElement: HTMLElement,
-    ): BorderDOMProps => {
-      const rootClientRect = rootElement.getBoundingClientRect();
-      const { top, bottom, left, right } = rootClientRect;
-      const elClientRect = domElement.getBoundingClientRect();
-      return {
-        width: domElement.clientWidth,
-        height: domElement.clientHeight,
-        coordinates: {
-          top: elClientRect.top - top,
-          bottom: bottom - elClientRect.bottom,
-          right: right - elClientRect.right,
-          left: elClientRect.left - left,
-        },
-      };
-    },
-    [],
-  );
+  const getBorderDomProps = (
+    rootElement: HTMLElement,
+    domElement: HTMLElement,
+  ): BorderDOMProps => {
+    const rootClientRect = rootElement.getBoundingClientRect();
+    const { top, bottom, left, right } = rootClientRect;
+    const elClientRect = domElement.getBoundingClientRect();
+    return {
+      width: domElement.clientWidth,
+      height: domElement.clientHeight,
+      coordinates: {
+        top: elClientRect.top - top,
+        bottom: bottom - elClientRect.bottom,
+        right: right - elClientRect.right,
+        left: elClientRect.left - left,
+      },
+    };
+  };
 
   useEffect(() => {
     if (!rootElement) {
@@ -118,7 +97,7 @@ const Borders: React.FC<Props> = ({ root, activeItem, showBorders }) => {
       }
       return {
         ...item,
-        borderDom: getBorderDomProps(item, rootElement, domEl),
+        borderDom: getBorderDomProps(rootElement, domEl),
       };
     });
     setBorderedItems(newBorderedItems);
@@ -149,4 +128,4 @@ const Borders: React.FC<Props> = ({ root, activeItem, showBorders }) => {
   );
 };
 
-export default connect(mapState)(Borders);
+export default Borders;

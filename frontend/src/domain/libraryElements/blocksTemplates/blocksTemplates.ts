@@ -449,18 +449,10 @@ export const section: SectionServerElement = {
   },
   styles: {
     classNames: ['section'],
-    ownStyles: {} as Required<CssLikeStyles>,
+    ownStyles: {
+      'min-height': '50px',
+    } as Required<CssLikeStyles>,
   },
   name: 'section',
-  children: [
-    makeHeading({
-      textContent: 'Custom section',
-      ownStyles: {
-        'font-size': '32px',
-        'line-height': '36px',
-        'margin-top': '20px',
-        'margin-bottom': '10px',
-      } as Required<CssLikeStyles>,
-    }),
-  ],
+  children: [],
 };
