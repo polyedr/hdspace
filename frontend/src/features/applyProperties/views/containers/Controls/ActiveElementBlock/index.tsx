@@ -17,7 +17,6 @@ interface IComponentProps {
   libraryElements: LibraryElements;
   createElements: PropertiesPanelProps['createElements'];
   isAddElementsModalOpened: boolean;
-  showDeleteButton: boolean;
   setIsAddElementsModalOpened(isOpened: boolean): void;
 }
 

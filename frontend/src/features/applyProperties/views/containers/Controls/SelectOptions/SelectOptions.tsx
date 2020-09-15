@@ -14,6 +14,7 @@ import { SelectItemElement } from '../../../../../../api/types';
 import {
   selectActiveItemChildren,
   selectCurrentScreenId,
+  selectElementById,
 } from '../../../../../../redux/project/selectors';
 import { AppReduxState } from '../../../../../../shared/types/app';
 import sharedClasses from '../../../../../../styles/sharedClasses';
@@ -37,7 +38,9 @@ type StateProps = {
 function mapState(state: AppReduxState): StateProps {
   const selectChildren = selectActiveItemChildren(state, 'selectMenu');
   const [selectMenu] = selectChildren;
-  const selectOptions = selectMenu.children;
+  const selectOptions = selectMenu.children.map((childId) =>
+    selectElementById(childId)(state),
+  ) as SelectItemElement[];
 
   return {
     selectMenuID: selectMenu.id,

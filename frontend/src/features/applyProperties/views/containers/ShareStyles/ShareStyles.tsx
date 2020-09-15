@@ -11,9 +11,7 @@ import {
   selectActiveElement,
   selectCurrentProject,
   selectCurrentScreenId,
-  selectCurrentRootElement,
 } from '../../../../../redux/project/selectors';
-import { findChildByID } from '../../../../../utils/ElementsTreeHelper';
 import {
   addElementClassName,
   copyElementStyles,
@@ -48,9 +46,7 @@ const useStyles = makeStyles({
 });
 
 const mapState = (state: AppReduxState) => {
-  const activeItem = selectActiveElement(state);
-  const root = selectCurrentRootElement(state);
-  const activeElement = findChildByID(root, activeItem.id);
+  const activeElement = selectActiveElement(state);
   const project = selectCurrentProject(state);
 
   const sharedClasses = project.projectData.classes.filter(

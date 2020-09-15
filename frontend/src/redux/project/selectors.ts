@@ -5,7 +5,6 @@ import {
   DEFAULT_SCREEN,
 } from '../../constants/defaultParams';
 import { ChildEntity, Entity } from '../../domain/core';
-import { findChildByID } from '../../utils/ElementsTreeHelper';
 import { AppReduxState } from '../../shared/types/app';
 import { LibraryElement, Project } from '../../api/types';
 import { CssLikeStyles } from '../../utils/StyleHelper';
@@ -118,15 +117,11 @@ function makeActiveItemInfoSelector<
   state: AppReduxState,
 ) => K extends 'styles' ? R['styles'] : R['parameters'] {
   return (state: AppReduxState) => {
-    const activeItem = selectActiveElement(state);
-    const elementsTree = selectCurrentRootElement(state);
-    const element = findChildByID(elementsTree, activeItem.id);
+    const activeElement = selectActiveElement(state);
 
-    if (!element) {
-      throw new Error(`Can not find ${activeItem.id} in tree!`);
-    }
-
-    return element[prop] as K extends 'styles' ? T['styles'] : T['parameters'];
+    return activeElement[prop] as K extends 'styles'
+      ? T['styles']
+      : T['parameters'];
   };
 }
 
@@ -175,29 +170,19 @@ export function selectActiveItemChildren(
   state: AppReduxState,
   childType: ChildEntity,
 ) {
-  const activeItem = selectActiveElement(state);
-  const elementsTree = selectCurrentRootElement(state);
-  const element = findChildByID(elementsTree, activeItem.id);
-
-  if (!element) {
-    return [];
-  }
-
-  return element.children.filter((child) => child.type === childType);
+  const activeElement = selectActiveElement(state);
+  return activeElement.children
+    .map((childId) => selectElementById(childId)(state))
+    .filter((child) => child.type === childType);
 }
 
-export const selectElementStyles = (screenId: number, elementId: string) => (
-  state: AppReduxState,
-) =>
-  findChildByID(selectScreenRootElement(screenId)(state), elementId)?.styles
-    .ownStyles;
+export const selectElementStyles = (elementId: string) => ({
+  project,
+}: AppReduxState) => project.data.elements[elementId]?.styles.ownStyles;
 
-export const selectElementParameters = (
-  screenId: number,
-  elementId: string,
-) => (state: AppReduxState) =>
-  findChildByID(selectScreenRootElement(screenId)(state), elementId)
-    ?.parameters;
+export const selectElementParameters = (elementId: string) => ({
+  project,
+}: AppReduxState) => project.data.elements[elementId]?.parameters;
 
 export const selectUndoActions = ({ project }: AppReduxState) =>
   project.control.undoActions;

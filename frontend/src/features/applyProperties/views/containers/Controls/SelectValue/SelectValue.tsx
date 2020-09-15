@@ -8,6 +8,7 @@ import sharedClasses from '../../../../../../styles/sharedClasses';
 import {
   selectActiveItemChildren,
   selectActiveItemParams,
+  selectElementById,
 } from '../../../../../../redux/project/selectors';
 import {
   PropertiesChangeProps,
@@ -25,9 +26,8 @@ function mapState(state: AppReduxState): StateProps {
   const activeItemParams = selectActiveItemParams<SelectElement>(state);
   const { value } = activeItemParams;
   const selectMenu = selectActiveItemChildren(state, 'selectMenu');
-  const selectOptions = selectMenu[0].children;
-  const optionsValues = selectOptions.map(
-    ({ parameters: { value: optionValue } }) => optionValue || '',
+  const optionsValues = selectMenu[0].children.map(
+    (childId) => selectElementById(childId)(state).parameters.value || '',
   );
 
   return {

@@ -82,9 +82,6 @@ const Navigator: React.FC = () => {
   const select = (itemId) => {
     if (selectedItemId === itemId) return;
 
-    const item = findChildByID(rootElement, itemId);
-    if (!item) return;
-
     dispatch(setActiveElementId(itemId));
     setSelectedItem(itemId);
   };

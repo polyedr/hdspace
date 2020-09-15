@@ -43,16 +43,12 @@ import Spinner from '../../../../../components/UI/Spinner';
 import Scrollbar from '../../../../../components/UI/Scrollbar';
 import MapProps from '../Controls/MapProps/MapProps';
 import ActiveElementBlock from '../Controls/ActiveElementBlock';
-import {
-  findChildByID,
-  findParentByChildID,
-} from '../../../../../utils/ElementsTreeHelper';
+import { findChildByID } from '../../../../../utils/ElementsTreeHelper';
 import {
   AVAILABLE_CONTROLS,
   Control,
   Entity,
 } from '../../../../../domain/core';
-import { isElementCanBeRemove } from '../../../../../utils/AvailableChildrenHelper';
 import { AppReduxState } from '../../../../../shared/types/app';
 import { LibraryElement } from '../../../../../api/types';
 import { LIBRARY_ELEMENTS } from '../../../../../domain/libraryElements/libraryElements';
@@ -72,14 +68,10 @@ type StateProps = {
 const mapState = (state: AppReduxState): StateProps => {
   const root = selectors.selectCurrentRootElement(state);
   const activeItem = selectors.selectActiveElement(state);
-  const activeElement = findChildByID(root, activeItem.id);
-  const activeElementParent = findParentByChildID(root, activeItem.id);
 
   return {
     elementsTree: root,
     activeItem,
-    activeElement,
-    activeElementParent,
     screen: selectors.selectCurrentScreen(state),
     isAddElementsModalOpened: selectors.selectIsAddElementsModalOpened(state),
     loader: selectors.selectLoader(state),
@@ -131,8 +123,6 @@ const SCROLLBAR_STYLES = {
 
 const PropertiesPanel: React.FC<PropertiesPanelProps> = ({
   activeItem,
-  activeElement,
-  activeElementParent,
   elementsTree,
   screen,
   loader,
@@ -146,12 +136,8 @@ const PropertiesPanel: React.FC<PropertiesPanelProps> = ({
     activeItem.type === 'root'
       ? 'root'
       : findChildByID(elementsTree, activeItemID)?.type;
-  const disablePanel = !screen;
 
-  const showDeleteButton =
-    !!activeElementParent &&
-    !!activeElement &&
-    isElementCanBeRemove(activeElementParent, activeElement.type);
+  const disablePanel = !screen;
 
   return (
     <div className={classNames(styles.editorRightPanel)}>
@@ -162,7 +148,6 @@ const PropertiesPanel: React.FC<PropertiesPanelProps> = ({
           libraryElements={LIBRARY_ELEMENTS}
           createElements={createElements}
           isAddElementsModalOpened={isAddElementsModalOpened}
-          showDeleteButton={showDeleteButton}
           setIsAddElementsModalOpened={setIsAddElementsModalOpened}
         />
         {activeItem.type !== 'none' && (

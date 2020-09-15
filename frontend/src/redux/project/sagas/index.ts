@@ -528,7 +528,7 @@ function* updateOrReplaceElementStyles(
   );
 
   if (!undo) {
-    const oldStyles = yield select(selectElementStyles(screenId, id));
+    const oldStyles = yield select(selectElementStyles(id));
     yield put(
       Actions.setUndoActions(
         Actions.replaceElementStyles(id, oldStyles, { screenId }),
@@ -579,7 +579,7 @@ function* removeElementStylesSaga(
   const { screenId, undo } = action.meta;
 
   if (!undo) {
-    const oldStyles = yield select(selectElementStyles(screenId, id));
+    const oldStyles = yield select(selectElementStyles(id));
     yield put(
       Actions.setUndoActions(
         Actions.updateElementStyles(id, oldStyles, { screenId }),
@@ -641,9 +641,7 @@ function* updateElementParameters(
   );
 
   if (!undo) {
-    const oldParameters = yield select(
-      selectElementParameters(screenId, itemID),
-    );
+    const oldParameters = yield select(selectElementParameters(itemID));
     yield put(
       Actions.setUndoActions(
         Actions.updateElementParameters(itemID, oldParameters, { screenId }),

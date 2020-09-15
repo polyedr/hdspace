@@ -12,7 +12,6 @@ import { Entity } from '../../../domain/core';
 import { LibraryElement, LibraryElementUnion } from '../../../api/types';
 import { getListNotDragging } from '../../../utils/parseScenario';
 import { getClassDevice } from '../../../utils/dom';
-import { findChildByID } from '../../../utils/ElementsTreeHelper';
 import { AppReduxState } from '../../../shared/types/app';
 import { DEFAULT_SCREEN_MODE } from '../../../constants/defaultParams';
 import { ActiveItem } from '../../../redux/project/types';
@@ -40,7 +39,7 @@ export type ScreenMode = {
 type StateProps = {
   elementsTree: LibraryElement<'root'>;
   isPrototypeMode: boolean;
-  activeItem: ActiveItem;
+  activeElement: ActiveItem;
 };
 
 const mapDispatch = {
@@ -53,22 +52,22 @@ const mapDispatch = {
 
 const mapState = (state: AppReduxState): StateProps => ({
   elementsTree: selectCurrentRootElement(state),
-  activeItem: selectActiveElement(state),
+  activeElement: selectActiveElement(state),
   isPrototypeMode: state.user.isPrototypeMode,
 });
 
 type Props = StateProps & typeof mapDispatch;
 
-const Workspace = ({
+const Workspace: React.FC<Props> = ({
   elementsTree,
   isPrototypeMode,
-  activeItem,
+  activeElement,
   setActiveItem,
   saveScreen,
   changePrototypeMode,
   resetScreenState,
   exportProject,
-}: Props) => {
+}) => {
   const [isMoving, setIsMoving] = useState<boolean>(true);
   const [listNotDragging, setListNotDragging] = useState<string[]>([]);
   const [currentScreenMode, setCurrentScreenMode] = useState<ScreenMode>({
@@ -115,25 +114,21 @@ const Workspace = ({
 
       const itemID = target.dataset.lsId;
 
-      if (itemID === activeItem.id) return;
+      if (itemID === activeElement.id) return;
 
       if (itemID) {
         if (itemID === 'root') {
           setActiveItem(elementsTree.id);
         } else {
-          const actualActiveItem = findChildByID(elementsTree, itemID);
+          const { type } = activeElement;
+          const list = getListNotDragging(type);
 
-          if (actualActiveItem) {
-            const { type } = actualActiveItem;
-            const list = getListNotDragging(type);
-
-            setActiveItem(itemID);
-            setListNotDragging(list);
-          }
+          setActiveItem(itemID);
+          setListNotDragging(list);
         }
       }
     },
-    [activeItem, elementsTree, findChildByID],
+    [activeElement, elementsTree],
   );
 
   const handleLSItemMouseOver = useCallback(
@@ -204,7 +199,7 @@ const Workspace = ({
         >
           <SortableContainer
             item={elementsTree as LibraryElementUnion}
-            activeItemId={activeItem.id}
+            activeItemId={activeElement.id}
             isMoving={isMoving}
             listNotDragging={listNotDragging}
             setIsMoving={setIsMoving}
