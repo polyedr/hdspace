@@ -9,6 +9,7 @@ import {
   defaultVideoStyles,
   defaultUndefinedStyles,
   defaultScreenshotStyles,
+  defaultSectionStyles,
 } from './otherElements/defaultStyles';
 import {
   defaultButtonStyles,
@@ -85,6 +86,7 @@ export const DEFAULT_ELEMENTS_STYLES: {
   subscribeForm: defaultSubscribeFormStyles,
   cardsSection: defaultCardsSectionStyles,
   featureSection: defaultFeatureSectionStyles,
+  section: defaultSectionStyles,
 };
 
 export const getDefaultStyles = (

@@ -80,6 +80,33 @@ export const defaultContainerStyles: {
   },
 };
 
+export const defaultSectionStyles: {
+  [K in ContainerControls]: CssLikeStyles;
+} & { other?: CssLikeStyles } = {
+  indents: {
+    ...DEFAULT_INDENTS,
+  },
+  size: {
+    ...DEFAULT_SIZE,
+    width: '100%',
+  },
+  display: {
+    ...DEFAULT_DISPLAY,
+  },
+  typography: {
+    ...DEFAULT_TYPOGRAPHY,
+  },
+  border: {
+    ...DEFAULT_BORDER,
+  },
+  background: {
+    ...DEFAULT_BACKGROUND,
+  },
+  flexGrow: {
+    ...DEFAULT_FLEX_GROW,
+  },
+};
+
 export const defaultDivBlockStyles: {
   [K in DivBlockControls]: CssLikeStyles;
 } & { other?: CssLikeStyles } = {

@@ -24,7 +24,9 @@ const ElementButton: React.FC<Props> = ({
   const { itemType: activeItemType } = useSelector(selectActiveItem);
 
   const handleClick = (type: Entity) => () => {
-    dispatch(createElements([{ type }], { screenId }));
+    dispatch(
+      createElements([{ type, name: type, custom: false }], { screenId }),
+    );
   };
 
   const isAvailableChild = (type: Entity) =>

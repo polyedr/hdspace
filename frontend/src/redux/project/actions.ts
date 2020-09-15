@@ -1,6 +1,7 @@
+import { ServerElement } from '../../api/types/elements';
 import { ElementHistoryMeta, HistoryMeta, IProjectScreen } from './types';
 import TYPES from '../../constants/actions';
-import { LibraryElement, Project } from '../../api/types';
+import { Project, LibraryElement } from '../../api/types';
 import { ChildEntity, Entity } from '../../domain/core';
 import {
   ChildrenElements,
@@ -550,4 +551,21 @@ export const popHistory = (): T.PopHistory => ({
 export const setGroupActionsUp = (groupUp: boolean): T.SetGroupActionsUp => ({
   type: TYPES.SET_GROUP_UP,
   payload: groupUp,
+});
+
+export const saveElementToLibrary = <T extends Entity>(
+  id: string,
+  element: ServerElement<T, ServerElement<T>[]>,
+) => {
+  return {
+    type: TYPES.SAVE_LIBRARY_ELEMENT,
+    payload: { id, element },
+  };
+};
+
+export const saveLibraryElementToState = <T extends Entity>(
+  element: ServerElement<T, ServerElement<Entity>[]>,
+) => ({
+  type: TYPES.SAVE_LIBRARY_ELEMENT_TO_STATE,
+  payload: element,
 });

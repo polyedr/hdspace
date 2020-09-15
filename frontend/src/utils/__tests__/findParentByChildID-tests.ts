@@ -1,4 +1,3 @@
-
 import { mockRoot } from './mocks';
 import { findParentByChildID } from '../ElementsTreeHelper';
 
