@@ -98,7 +98,11 @@ export type SavedElementsValues = {
   [elementID: string]: { id: number; savedValue: string | boolean };
 };
 
-export type CreatedElement = { type: Entity; parentID?: number };
+export type CreatedElement = {
+  type: Entity | string;
+  name: string;
+  custom: boolean;
+};
 
 export type LoadLibraryElements = IPlainAction<
   typeof TYPES.GET_LIBRARY_ELEMENTS
@@ -323,6 +327,7 @@ export type CreateElements = IAction<
   { createdElements: CreatedElement[] },
   ElementHistoryMeta
 >;
+
 export type AddChildToElement = IAction<
   typeof TYPES.ADD_CHILD_TO_ELEMENT,
   {

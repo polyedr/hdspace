@@ -453,11 +453,14 @@ export const section: SectionServerElement = {
   },
   name: 'section',
   children: [
-    makeContainer({
+    makeHeading({
+      textContent: 'Custom section',
       ownStyles: {
-        'max-width': '940px',
+        'font-size': '32px',
+        'line-height': '36px',
+        'margin-top': '20px',
+        'margin-bottom': '10px',
       } as Required<CssLikeStyles>,
-      children: [],
     }),
   ],
 };

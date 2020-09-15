@@ -200,9 +200,15 @@ export function* createElementsSaga(
     return;
   }
 
-  const convertedCreatedElements = createdElements.map((element) =>
-    convertCreatedElementToRequest(element.type, null),
+  const customLibraryElements = yield select(
+    selectors.selectCustomLibraryElements,
   );
+
+  const convertedCreatedElements = createdElements.map((element) => {
+    return element.custom
+      ? customLibraryElements[element.name]
+      : convertCreatedElementToRequest(element.type as Entity, null);
+  });
   yield call(createElements, convertedCreatedElements, activeItemElement, {
     screenId,
   });

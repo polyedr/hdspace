@@ -14,6 +14,7 @@ import {
   selectElementStyles,
   selectRemoteMove,
   selectScreenElement,
+  selectCurrentScreen,
 } from '../selectors';
 
 import {
@@ -575,6 +576,13 @@ export function* uploadFileSaga({
 export function* saveCustomLibraryElement(
   action: ReturnType<typeof Actions.saveElementToLibrary>,
 ) {
-  yield put(Actions.saveLibraryElementToState(action.payload));
-  // yield call(reqWrapper, apiAddElement, { data: action.payload });
+  const currentScreen = yield select(selectCurrentScreen);
+  yield put(Actions.saveLibraryElementToState(action.payload.element));
+  yield put(
+    Actions.renameElement(
+      action.payload.id,
+      action.payload.element.name,
+      currentScreen.id,
+    ),
+  );
 }

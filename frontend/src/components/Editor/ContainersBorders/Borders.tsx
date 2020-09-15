@@ -26,6 +26,7 @@ const isBorderedItem = (el: any): boolean => {
 export type NamedItem = {
   id: string;
   name: string;
+  type: string;
 };
 
 const mapState = (state: AppReduxState) => {
@@ -86,7 +87,14 @@ const Borders: React.FC<Props> = ({ root, activeItem, showBorders }) => {
               (child) =>
                 !!child.id && child.id !== 'none' && isBorderedItem(child),
             )
-            .map((child) => ({ id: child.id, name: child.name } as NamedItem)),
+            .map(
+              (child) =>
+                ({
+                  id: child.id,
+                  name: child.name,
+                  type: child.type,
+                } as NamedItem),
+            ),
         ],
       );
     }
@@ -98,6 +106,7 @@ const Borders: React.FC<Props> = ({ root, activeItem, showBorders }) => {
       namedItems.push({
         id: activeItem.itemId,
         name: activeItem.name,
+        type: activeItem.itemType,
       } as NamedItem);
     }
     const newBorderedItems: BorderedItem[] = namedItems.map((item) => {
@@ -108,8 +117,7 @@ const Borders: React.FC<Props> = ({ root, activeItem, showBorders }) => {
         );
       }
       return {
-        id: item.id,
-        name: item.name,
+        ...item,
         borderDom: getBorderDomProps(item, rootElement, domEl),
       };
     });
@@ -130,7 +138,7 @@ const Borders: React.FC<Props> = ({ root, activeItem, showBorders }) => {
               <Border position="left" item={item} isActive={isActive} />
               <Border position="right" item={item} isActive={isActive} />
               <BorderCrumb item={item}>
-                {saveableElements.indexOf(item.name) >= 0 && (
+                {saveableElements.indexOf(item.type) >= 0 && (
                   <SaveElementAction item={item} />
                 )}
               </BorderCrumb>

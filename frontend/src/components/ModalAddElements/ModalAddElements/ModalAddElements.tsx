@@ -18,15 +18,19 @@ import { AppReduxState } from '../../../shared/types/app';
 import {
   ActiveItem,
   CreatedElement,
-  ElementHistoryMeta,
   ServerStructType,
 } from '../../../redux/project/types';
 import { MODAL_ADD_ELEMENTS_TABS } from '../../../constants/defaultParams';
 import {
   selectCurrentScreen,
+  selectCustomLibraryElements,
   selectUploadedImageInfo,
 } from '../../../redux/project/selectors';
-import { getScreenNN, uploadFile } from '../../../redux/project/actions';
+import {
+  getScreenNN,
+  uploadFile,
+  createElements,
+} from '../../../redux/project/actions';
 
 const styles = require('./ModalAddElements.scss');
 
@@ -40,13 +44,14 @@ function mapStateToProps(state: AppReduxState) {
   return {
     uploadedImageInfo: selectUploadedImageInfo(state),
     currentScreen: selectCurrentScreen(state),
-    customLibraryElements: state.project.ui.customLibraryElements,
+    customLibraryElements: selectCustomLibraryElements(state),
   };
 }
 
 const mapDispatchToProps = {
   getScreenNN,
   uploadImg: uploadFile,
+  createElements,
 };
 
 type OwnProps = {
@@ -54,7 +59,6 @@ type OwnProps = {
   active: boolean;
   libraryElements: LibraryElements;
   onClose(): void;
-  onConfirm(elementsToAdd: CreatedElement[], meta: ElementHistoryMeta): void;
 };
 
 type Props = typeof mapDispatchToProps &
@@ -69,8 +73,8 @@ const ModalAddElements: React.FunctionComponent<Props> = ({
   libraryElements,
   customLibraryElements,
   onClose,
-  onConfirm,
   getScreenNN,
+  createElements,
   uploadImg,
   uploadedImageInfo,
   currentScreen,
@@ -105,16 +109,15 @@ const ModalAddElements: React.FunctionComponent<Props> = ({
   const handleConfirm = useCallback(
     (event) => {
       event.preventDefault();
-
       if (!selectedElements.length) {
         setErrorMsg('No items for the scenario.');
       } else {
         setErrorMsg('');
-        onConfirm(selectedElements, { screenId: currentScreen.id });
+        createElements(selectedElements, { screenId: currentScreen.id });
         onClose();
       }
     },
-    [selectedElements, onConfirm, onClose, currentScreen.id],
+    [selectedElements, onClose, currentScreen.id],
   );
 
   const handleCancel = useCallback(() => {
@@ -147,7 +150,7 @@ const ModalAddElements: React.FunctionComponent<Props> = ({
       setErrorMsg('');
       setSelectedElements([]);
     },
-    [activeTab, libraryElements],
+    [activeTab, libraryElements, customLibraryElements],
   );
 
   const getContentStep = useCallback(() => {
@@ -155,8 +158,6 @@ const ModalAddElements: React.FunctionComponent<Props> = ({
       ? getGroupElements(activeTab, listElement)
       : [];
   }, [activeTab, listElement]);
-
-  const contentStep = getContentStep();
 
   return active ? (
     <div className={styles.modalWrapper} onClick={onModalWrapperClick}>
@@ -226,7 +227,7 @@ const ModalAddElements: React.FunctionComponent<Props> = ({
           <ActionsBlock
             activeItem={activeItem}
             tabs={MODAL_ADD_ELEMENTS_TABS}
-            groupElements={contentStep}
+            groupElements={getContentStep()}
             activeTab={activeTab}
             selectedElements={selectedElements}
             changeTab={handleChangeTab}

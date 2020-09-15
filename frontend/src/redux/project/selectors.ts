@@ -1,3 +1,4 @@
+import { NamedServerElements } from './types';
 import {
   DEFAULT_PROJECT,
   DEFAULT_ROOT,
@@ -253,3 +254,9 @@ export const selectActiveItemElement = (
 
   return element;
 };
+
+export function selectCustomLibraryElements(
+  state: AppReduxState,
+): NamedServerElements {
+  return selectProjectState(state).ui.customLibraryElements;
+}

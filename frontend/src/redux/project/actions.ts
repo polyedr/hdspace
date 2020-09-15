@@ -554,11 +554,12 @@ export const setGroupActionsUp = (groupUp: boolean): T.SetGroupActionsUp => ({
 });
 
 export const saveElementToLibrary = <T extends Entity>(
+  id: string,
   element: ServerElement<Entity, ServerElement<Entity>[]>,
 ) => {
   return {
     type: TYPES.SAVE_LIBRARY_ELEMENT,
-    payload: element,
+    payload: { id, element },
   };
 };
 

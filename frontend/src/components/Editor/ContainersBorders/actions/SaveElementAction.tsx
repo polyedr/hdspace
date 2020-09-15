@@ -100,7 +100,7 @@ const SaveElementAction: React.FC<SaveElementAction> = ({
                       activeElement,
                     );
                     newLibraryElement.name = name;
-                    dispatch(saveElementToLibrary(newLibraryElement));
+                    dispatch(saveElementToLibrary(item.id, newLibraryElement));
                   }
                 }}
               />

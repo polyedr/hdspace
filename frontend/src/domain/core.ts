@@ -427,7 +427,7 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
 } as const;
 
 export type AvailableChildren = {
-  [P in Entity]: {
+  [P in Entity | string]: {
     [key: string]: {
       min: number;
       max: number;
@@ -530,6 +530,12 @@ export const AVAILABLE_CHILDREN: AvailableChildren = {
     },
   },
   section: {
+    all: {
+      min: 0,
+      max: Infinity,
+    },
+  },
+  custom: {
     all: {
       min: 0,
       max: Infinity,

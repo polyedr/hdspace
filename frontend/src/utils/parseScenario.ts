@@ -14,15 +14,14 @@ import {
   NamedServerElements,
 } from '../redux/project/types';
 import { ITemplateElement } from '../constants/defaultParams';
-import { ElementEntity, ENTITIES } from '../domain/core';
-import {
-  ElementsToAdd,
-  LibraryElements,
-} from '../domain/libraryElements/libraryElements';
+import { ElementEntity } from '../domain/core';
+import { ElementsToAdd } from '../domain/libraryElements/libraryElements';
 
 export type GroupElement = {
   key: string;
+  name: string;
   label: string;
+  custom?: boolean;
   value: { structType: ServerStructType; funcType: ServerStructType };
 };
 
@@ -102,6 +101,7 @@ export const parseAddElementsTabs = (
     return {
       ...acc,
       ...getCategoryTab(structType, libraryElements, acc),
+      custom: false,
     };
   }, {});
 
@@ -110,25 +110,10 @@ export const parseAddCustomElementsTabs = (
 ): IListCategoryEl => {
   return {
     Custom: R.keys(customLibraryElements).map(
-      (libElName) => customLibraryElements[libElName] as ScenarioLibraryElement,
+      (libElName) =>
+        ({ ...customLibraryElements[libElName] } as ScenarioLibraryElement),
     ),
   };
-};
-
-export const getCustomTemplateElements = (libraryElements: LibraryElements) => {
-  return R.keys(libraryElements).reduce(
-    (acc: ITemplateElement[], structType) => {
-      if (R.keys(ENTITIES).some((x) => x === structType)) {
-        return acc.concat({
-          label: `${structType}`,
-          value: { funcType: structType, structType },
-          checked: false,
-        });
-      }
-      return acc;
-    },
-    [],
-  );
 };
 
 export const getGroupElements = (
@@ -139,6 +124,7 @@ export const getGroupElements = (
     case 'Containers':
       return listElement.Containers.map((x, idx) => ({
         key: `key-${x.struct_type}-${x.func_type}-${idx}`,
+        name: x.name,
         value: { structType: x.struct_type, funcType: x.func_type },
         label: `${x.struct_type}`,
       }));
@@ -146,6 +132,7 @@ export const getGroupElements = (
     case 'Typography':
       return listElement.Typography.map((x, idx) => ({
         key: `key-${x.struct_type}-${x.func_type}-${idx}`,
+        name: x.name,
         value: { structType: x.struct_type, funcType: x.func_type },
         label: `${x.struct_type}`,
       }));
@@ -153,6 +140,7 @@ export const getGroupElements = (
     case 'Form':
       return listElement.Form.map((x) => ({
         key: `key-${x.struct_type}-${x.func_type}`,
+        name: x.name,
         value: { structType: x.struct_type, funcType: x.func_type },
         label: `${x.struct_type}`,
       }));
@@ -160,6 +148,7 @@ export const getGroupElements = (
     case 'Other':
       return listElement.Other.map((x, idx) => ({
         key: `key-${x.struct_type}-${x.func_type}-${idx}`,
+        name: x.name,
         value: { structType: x.struct_type, funcType: x.func_type },
         label: `${x.struct_type}`,
       }));
@@ -169,6 +158,7 @@ export const getGroupElements = (
         const { struct_type, func_type, name = 'widget' } = libraryElement;
         return {
           key: `key-${struct_type}-${func_type}-${idx}`,
+          name: libraryElement.name,
           value: { structType: struct_type, funcType: func_type },
           label: name,
         };
@@ -177,6 +167,7 @@ export const getGroupElements = (
     case 'Image':
       return listElement.Image.map((x) => ({
         key: `key-${x.struct_type}-${x.func_type}`,
+        name: x.name,
         value: { structType: x.struct_type, funcType: x.func_type },
         label: `${x.struct_type}`,
       }));
@@ -185,8 +176,10 @@ export const getGroupElements = (
         const { struct_type, func_type, name = 'section' } = libraryElement;
         return {
           key: `key-${struct_type}-${func_type}-${idx}`,
+          name: libraryElement.name,
           value: { structType: struct_type, funcType: func_type },
           label: name,
+          custom: true,
         };
       });
     default:
@@ -206,7 +199,13 @@ export const getChooseElements = (
 export const getCheckedElements = (listElements: ITemplateElement[]) =>
   listElements.reduce(
     (acc: CreatedElement[], x) =>
-      x.checked ? acc.concat({ type: x.value.structType }) : acc,
+      x.checked
+        ? acc.concat({
+            type: x.value.structType,
+            name: x.name,
+            custom: x.custom || false,
+          })
+        : acc,
     [],
   );
 

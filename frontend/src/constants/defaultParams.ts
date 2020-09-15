@@ -28,8 +28,10 @@ export interface ISignFormElement {
 
 export interface ITemplateElement {
   label: string;
+  name: string;
   value: { structType: ServerStructType; funcType: ServerStructType };
   checked: boolean;
+  custom: boolean;
 }
 
 export const MIN_BORDER_WIDTH = 0;

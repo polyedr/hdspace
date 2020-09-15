@@ -30,8 +30,12 @@ const ActionsBlock: React.FC<Props> = ({
   setSelectedElements,
 }) => {
   const handleChooseElement = useCallback(
-    (x: GroupElement['value']) => {
-      const element: CreatedElement = { type: x.structType };
+    (x: GroupElement) => {
+      const element: CreatedElement = {
+        type: x.value.structType,
+        name: x.name,
+        custom: x.custom || false,
+      };
       const elements = getChooseElements(element, selectedElements);
 
       setSelectedElements(elements);
@@ -71,7 +75,8 @@ const ActionsBlock: React.FC<Props> = ({
         <p className={styles.contentTitle}>Choose a template</p>
         <Scrollbar style={{ marginBottom: 20 }} maxHeight={100}>
           <div className={styles.contentList}>
-            {groupElements?.map(({ key, value, label }) => {
+            {groupElements?.map((el) => {
+              const { key, value, label } = el;
               const isDisabled =
                 !R.includes(value.structType, R.keys(ENTITIES)) ||
                 !isAvailableChild(value.structType);
@@ -88,7 +93,7 @@ const ActionsBlock: React.FC<Props> = ({
                   )}
                   disabled={isDisabled}
                   styleType="none" // TODO: disable elements that don't have controls or renderer
-                  onClick={() => handleChooseElement(value)}
+                  onClick={() => handleChooseElement(el)}
                 >
                   {label}
                 </Button>
