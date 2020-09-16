@@ -243,7 +243,7 @@ function* copyActiveItemSaga() {
   }
 }
 
-function* duplicateItems(
+function* duplicateElements(
   sourceRoot: LibraryElement<Entity>,
   itemsToCopyInfo: ItemToCopyInfo[],
   targetParent: LibraryElement<Entity>,
@@ -308,17 +308,17 @@ function* duplicateScreenSaga(
 
   yield put(Actions.setActiveElementId(targetRootID));
 
-  yield call(duplicateItems, sourceRoot, duplicatedItems, targetRoot, {
+  yield call(duplicateElements, sourceRoot, duplicatedItems, targetRoot, {
     screenId: newScreenId,
     undo: true,
   });
   yield put(Actions.setScreenLoader(false));
 }
 
-function* pasteCopiedItemSaga({
+function* pasteCopiedElementSaga({
   type,
   meta,
-}: ReturnType<typeof Actions.pasteCopiedItem>) {
+}: ReturnType<typeof Actions.pasteCopiedElement>) {
   if (!meta) {
     console.error(`You have to provide metainformation for action ${type}`);
     return;
@@ -346,9 +346,15 @@ function* pasteCopiedItemSaga({
   );
 
   if (activeItem.type !== 'none') {
-    yield call(duplicateItems, sourceRoot, [itemToCopyInfo], targetContainer, {
-      screenId,
-    });
+    yield call(
+      duplicateElements,
+      sourceRoot,
+      [itemToCopyInfo],
+      targetContainer,
+      {
+        screenId,
+      },
+    );
   }
 }
 
@@ -490,7 +496,7 @@ export default function* projectSaga() {
   yield takeEvery(TYPES.RESTORE_ELEMENT_CHILDREN, restoreElementSaga);
 
   yield takeLatest(TYPES.COPY_ACTIVE_ITEM, copyActiveItemSaga);
-  yield takeEvery(TYPES.PASTE_COPIED_ITEM, pasteCopiedItemSaga);
+  yield takeEvery(TYPES.PASTE_COPIED_ELEMENT, pasteCopiedElementSaga);
 
   yield takeLatest(TYPES.UPLOAD_FILE, uploadFileSaga);
   yield takeLatest(TYPES.GET_SCREEN_NN, getScreenNNSaga);

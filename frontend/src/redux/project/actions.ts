@@ -438,10 +438,10 @@ export const copyActiveItem = (): T.CopyActiveItem => ({
   type: TYPES.COPY_ACTIVE_ITEM,
 });
 
-export const pasteCopiedItem = (
+export const pasteCopiedElement = (
   meta: ElementHistoryMeta,
 ): T.PasteCopiedItem => ({
-  type: TYPES.PASTE_COPIED_ITEM,
+  type: TYPES.PASTE_COPIED_ELEMENT,
   meta,
 });
 

@@ -206,7 +206,6 @@ export type LibraryElement<
   };
   children: Children;
   parameters: { group?: string } & Params;
-  parentId?: string;
 };
 
 export type RootElement = LibraryElement<'root', []>;

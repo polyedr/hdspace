@@ -1,4 +1,9 @@
-import { NamedServerElements, Screen } from './types';
+import {
+  ActiveElement,
+  NamedServerElements,
+  Screen,
+  StateElement,
+} from './types';
 import {
   DEFAULT_ACTIVE_ELEMENT,
   DEFAULT_PROJECT,
@@ -10,7 +15,7 @@ import { AppReduxState } from '../../shared/types/app';
 import { LibraryElement, Project } from '../../api/types';
 import { CssLikeStyles } from '../../utils/StyleHelper';
 import { makeFeatureStateSelector } from '../../shared/redux';
-import { mapToArr } from '../../utils/mappings';
+import { mapToArr } from '../../utils/normalizedStateHelpers';
 
 export const selectProjectState = makeFeatureStateSelector('project');
 
@@ -35,7 +40,7 @@ export const selectScreens = ({ project }: AppReduxState) =>
   mapToArr<Screen>(project.data.screens);
 
 export const selectScreenById = (id: number) => ({ project }: AppReduxState) =>
-  project.data.screens[id] || DEFAULT_SCREEN;
+  project.data.screens[id] || DEFAULT_SCREEN; // TODO: should it return default screen?
 
 export function selectNotification(state: AppReduxState) {
   return selectProjectState(state).edit.notification;
@@ -56,7 +61,7 @@ export const selectCurrentProject = (state: AppReduxState) =>
 export const selectCurrentRootElement = (state: AppReduxState) =>
   selectCurrentScreen(state).element;
 
-export const selectRootId = (state: AppReduxState) =>
+export const selectCurrentRootId = (state: AppReduxState) =>
   selectCurrentScreen(state).element?.id || '-1';
 
 export function selectUploadedImageInfo(state: AppReduxState) {
@@ -78,7 +83,7 @@ export function selectProjectListLoader(state: AppReduxState) {
 export const selectActiveElementId = ({ project }: AppReduxState) =>
   project.edit.activeElementId;
 
-export const selectActiveElement = (state: AppReduxState) =>
+export const selectActiveElement = (state: AppReduxState): ActiveElement =>
   state.project.data.elements[selectActiveElementId(state)] ||
   DEFAULT_ACTIVE_ELEMENT;
 
@@ -89,27 +94,14 @@ export function selectEditableStyles(state: AppReduxState) {
 export const selectElementById = (id: string) => ({ project }: AppReduxState) =>
   project.data.elements[id];
 
-export const buildElementsTree = (elementId: string) => (
-  state: AppReduxState,
-): LibraryElement<any> => {
-  const rootElement = selectElementById(elementId)(state);
-
-  return {
-    ...rootElement,
-    children: rootElement?.children?.map((childId) =>
-      buildElementsTree(childId)(state),
-    ),
-  };
-};
-
 export function selectSharedStyles(state: AppReduxState, elementType: string) {
   return selectCurrentProject(state).projectData.classes.find(
     (cssClass) => cssClass.className === elementType,
   )?.rules;
 }
 
-function makeActiveItemInfoSelector<
-  T extends LibraryElement<Entity>,
+function makeActiveElementInfoSelector<
+  T extends StateElement,
   K extends 'styles' | 'parameters'
 >(
   prop: K,
@@ -125,22 +117,25 @@ function makeActiveItemInfoSelector<
   };
 }
 
-export const selectActiveItemStyles = makeActiveItemInfoSelector('styles');
+export const selectActiveElementStyles = makeActiveElementInfoSelector(
+  'styles',
+);
 
 export function selectCurrentEditableStyles<
   T extends keyof Required<CssLikeStyles>
 >(state: AppReduxState, ruleName: T) {
-  const activeItemType = selectActiveElement(state).type;
-  const activeElementStyles = selectActiveItemStyles<
-    LibraryElement<Entity, [], {}, Required<CssLikeStyles>>
-  >(state).ownStyles;
+  const activeElementType = selectActiveElement(state).type;
 
-  const activeElementClassNames = selectActiveItemStyles(state).classNames;
+  const activeElementStyles = selectActiveElementStyles<StateElement>(state)
+    .ownStyles;
+
+  const activeElementClassNames = selectActiveElementStyles(state).classNames;
 
   const editableStyles = selectEditableStyles(state);
 
   const activeEntityStyles =
-    (activeItemType !== 'none' && selectSharedStyles(state, activeItemType)) ||
+    (activeElementType !== 'none' &&
+      selectSharedStyles(state, activeElementType)) ||
     ({} as Required<CssLikeStyles>);
 
   const activeSharedStyles =
@@ -151,7 +146,7 @@ export function selectCurrentEditableStyles<
     if (activeStyles === 'ownStyles' || activeStyles === '') {
       return activeElementStyles;
     }
-    if (activeStyles === activeItemType) {
+    if (activeStyles === activeElementType) {
       return activeEntityStyles;
     }
     return activeSharedStyles;
@@ -200,10 +195,12 @@ export const selectHistory = ({ project }: AppReduxState) =>
 export const selectRemoteMove = ({ project }: AppReduxState) =>
   project.control.remoteMove;
 
-export const selectActiveItemChildrenStyles = makeActiveItemInfoSelector(
+export const selectActiveItemChildrenStyles = makeActiveElementInfoSelector(
   'styles',
 );
-export const selectActiveItemParams = makeActiveItemInfoSelector('parameters');
+export const selectActiveItemParams = makeActiveElementInfoSelector(
+  'parameters',
+);
 
 export function selectItemToCopyInfo(state: AppReduxState) {
   return selectProjectState(state).ui.itemToCopyInfo;

@@ -17,6 +17,7 @@ import { Entity } from '../../domain/core';
 
 import TYPES from '../../constants/actions';
 import { CssLikeStyles } from '../../utils/StyleHelper';
+import { DEFAULT_ACTIVE_ELEMENT } from '../../constants/defaultParams';
 
 export type ProjectState = {
   data: ProjectDataState;
@@ -38,10 +39,25 @@ export type NamedServerElements = {
   [name: string]: ServerElement<Entity, ServerElement<Entity>[]>;
 };
 
+export type StateElement = {
+  id: string;
+  name: string;
+  type: keyof Entity;
+  buoyancy: number;
+  parent: string;
+  children: string[];
+  image: string | null | undefined;
+  styles: {
+    classNames: string[];
+    ownStyles: CSSStyleDeclaration;
+  };
+  parameters: any;
+};
+
 export type ProjectDataState = {
   projects: Map<Project>;
   screens: Map<Screen>;
-  elements: Map<LibraryElement<any>>;
+  elements: Map<StateElement>;
 };
 
 export type ProjectUiState = {
@@ -87,24 +103,11 @@ export type Notification = {
   text: string;
 };
 
-export type ActiveItem = {
-  id: string;
-  type: Entity | 'none';
-  name: string;
-  children?: LibraryElement<any>[];
-  buoyancy?: number;
-  image?: string | null;
-  styles?: {
-    classNames: [Entity, ...string[]];
-    ownStyles: any;
-  };
-  parameters?: { group?: string } & any;
-  parentId?: string;
-};
+export type ActiveElement = StateElement | typeof DEFAULT_ACTIVE_ELEMENT;
 
 export type ActiveItemTree = {
   children?: any[];
-} & ActiveItem;
+} & ActiveElement;
 
 export type SavedElementsValues = {
   [elementID: string]: { id: number; savedValue: string | boolean };
@@ -379,7 +382,7 @@ export type SetItemToCopy = IAction<
 >;
 export type CopyActiveItem = IPlainAction<typeof TYPES.COPY_ACTIVE_ITEM>;
 export type PasteCopiedItem = IPlainAction<
-  typeof TYPES.PASTE_COPIED_ITEM,
+  typeof TYPES.PASTE_COPIED_ELEMENT,
   ElementHistoryMeta
 >;
 export type ResetScreenState = IPlainAction<typeof TYPES.RESET_SCREEN_STATE>;

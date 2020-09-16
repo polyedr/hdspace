@@ -11,7 +11,7 @@ import {
 import {
   copyActiveItem,
   deleteItem,
-  pasteCopiedItem,
+  pasteCopiedElement,
   setIsAddElementsModalOpened,
 } from '../../../redux/project/actions';
 import { canElementHaveChildren } from '../../../utils/AvailableChildrenHelper';
@@ -70,7 +70,7 @@ const ContextMenu: React.FC<Props> = ({ open, onClose, anchorPosition }) => {
   };
 
   const handlePaste = () => {
-    dispatch(pasteCopiedItem({ screenId: currentScreenId }));
+    dispatch(pasteCopiedElement({ screenId: currentScreenId }));
     onClose();
   };
 

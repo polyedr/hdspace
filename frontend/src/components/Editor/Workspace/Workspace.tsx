@@ -15,7 +15,7 @@ import { getListNotDragging } from '../../../utils/parseScenario';
 import { getClassDevice } from '../../../utils/dom';
 import { AppReduxState } from '../../../shared/types/app';
 import { DEFAULT_SCREEN_MODE } from '../../../constants/defaultParams';
-import { ActiveItem } from '../../../redux/project/types';
+import { ActiveElement } from '../../../redux/project/types';
 import {
   exportProject,
   resetScreenState,
@@ -40,7 +40,7 @@ export type ScreenMode = {
 type StateProps = {
   elementsTree: LibraryElement<'root'>;
   isPrototypeMode: boolean;
-  activeElement: ActiveItem;
+  activeElement: ActiveElement;
 };
 
 const mapDispatch = {
@@ -53,7 +53,7 @@ const mapDispatch = {
 
 const mapState = (state: AppReduxState): StateProps => ({
   elementsTree: selectCurrentRootElement(state),
-  activeElement: selectActiveElement(state) as ActiveItem,
+  activeElement: selectActiveElement(state) as ActiveElement,
   isPrototypeMode: state.user.isPrototypeMode,
 });
 

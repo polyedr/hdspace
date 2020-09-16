@@ -6,12 +6,12 @@ import Button from '../../UI/Button';
 import Scrollbar from '../../UI/Scrollbar';
 import { AVAILABLE_CHILDREN, ENTITIES, Entity } from '../../../domain/core';
 import { getChooseElements, GroupElement } from '../../../utils/parseScenario';
-import { ActiveItem, CreatedElement } from '../../../redux/project/types';
+import { ActiveElement, CreatedElement } from '../../../redux/project/types';
 
 const styles = require('./ActionsBlock.scss');
 
 type Props = {
-  activeItem: ActiveItem;
+  activeItem: ActiveElement;
   tabs: string[];
   groupElements: GroupElement[];
   activeTab: string;

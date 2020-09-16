@@ -1,9 +1,12 @@
 import { initialData } from '../initial';
 import * as T from '../types';
 import TYPES from '../../../constants/actions';
-import { arrayToMap, flattenElements } from '../../../utils/mappings';
 import { Project } from '../../../api/types';
 import { Screen } from '../types';
+import {
+  arrayToMap,
+  flattenElements,
+} from '../../../utils/normalizedStateHelpers';
 
 function dataReducer(
   state: T.ProjectDataState = initialData,
@@ -103,8 +106,8 @@ function dataReducer(
 
       elementIds.forEach((id) => {
         const target = newState.elements[id];
-        if (target?.parentId) {
-          const parent = newState.elements[target.parentId];
+        if (target?.parent) {
+          const parent = newState.elements[target.parent];
 
           parent.children = parent?.children.filter(
             (childId) => childId !== id,

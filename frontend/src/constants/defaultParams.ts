@@ -2,7 +2,7 @@ import { getDefaultStyles } from '../domain/libraryElements/defaultStyles';
 import { LibraryElement, Project } from '../api/types';
 import { IApiResponseError, ITokenPair } from '../redux/user/types';
 import {
-  ActiveItem,
+  ActiveElement,
   ILSItem,
   Screen,
   ServerStructType,
@@ -99,7 +99,7 @@ export const DEFAULT_SCREEN: Screen = {
   element: DEFAULT_ROOT,
 };
 
-export const DEFAULT_ACTIVE_ELEMENT: ActiveItem = {
+export const DEFAULT_ACTIVE_ELEMENT = {
   id: 'none',
   type: 'none',
   name: 'Not selected',
@@ -109,9 +109,9 @@ export const DEFAULT_ACTIVE_ELEMENT: ActiveItem = {
   parameters: {},
   styles: {
     classNames: ['root'],
-    ownStyles: {} as Required<CssLikeStyles>,
+    ownStyles: {},
   },
-};
+} as const;
 
 export const STATUS = ['on_hold', 'in_progress', 'review', 'approved'];
 

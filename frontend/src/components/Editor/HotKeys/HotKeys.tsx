@@ -9,7 +9,7 @@ import { AppReduxState } from '../../../shared/types/app';
 import {
   copyActiveItem,
   deleteItem,
-  pasteCopiedItem,
+  pasteCopiedElement,
   redoAction,
   undoAction,
   wrapIntoContainer,
@@ -25,7 +25,7 @@ const mapDispatch = {
   deleteActiveItem: deleteItem,
   wrapIntoContainer,
   copyActiveItem,
-  pasteCopiedItem,
+  pasteCopiedItem: pasteCopiedElement,
   undo: undoAction,
   redo: redoAction,
 };

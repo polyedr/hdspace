@@ -20,7 +20,7 @@ import {
   selectCurrentProject,
   selectCurrentScreen,
   selectCurrentRootElement,
-  selectRootId,
+  selectCurrentRootId,
   selectSavedElementsValues,
   selectScreenLoader,
   selectShowingBorders,
@@ -39,7 +39,7 @@ const mapStateToProps = (state: AppReduxState) => {
   const projectClasses = currentProject.projectData.classes;
   const currentScreen = selectCurrentScreen(state);
   const root = selectCurrentRootElement(state);
-  const rootID = selectRootId(state);
+  const rootID = selectCurrentRootId(state);
   const showBorders = selectShowingBorders(state);
   const savedElements = selectSavedElementsValues(state);
   const disableInteractions = state.user.isPrototypeMode;

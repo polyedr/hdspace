@@ -26,7 +26,7 @@ import {
   copyActiveItem,
   deleteItem,
   moveElement,
-  pasteCopiedItem,
+  pasteCopiedElement,
   redoAction,
   setActiveElementId,
   setNotification,
@@ -133,7 +133,7 @@ const Navigator: React.FC = () => {
 
       if (e.keyCode === 86 && (e.ctrlKey || e.metaKey)) {
         // Ctrl/Cmd + V
-        dispatch(pasteCopiedItem({ screenId: currentScreenId }));
+        dispatch(pasteCopiedElement({ screenId: currentScreenId }));
       }
 
       if (e.keyCode === 46 || (e.keyCode === 8 && e.metaKey)) {
