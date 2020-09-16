@@ -12,6 +12,7 @@ export const initialUi: T.ProjectUiState = {
   itemToCopyInfo: null,
   savedElementsValues: {},
   showContainersBorders: false,
+  customLibraryElements: {},
 };
 
 export const initialEdit: T.ProjectEditState = {

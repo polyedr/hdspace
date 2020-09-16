@@ -32,7 +32,7 @@ export const apiAddElement = <
 ): Promise<LibraryElement<T, LibraryElement<K>[], P>> =>
   myAxios({
     ...props,
-    method: 'GET',
+    method: 'POST',
     url: `/projects/scenario-elements/`,
   })
     .then((result) => convertElementFromResponse(result.data))

@@ -1,6 +1,7 @@
 import { ElementHistoryMeta, HistoryMeta, Screen } from './types';
+import { ServerElement } from '../../api/types/elements';
 import TYPES from '../../constants/actions';
-import { LibraryElement, Project } from '../../api/types';
+import { Project, LibraryElement } from '../../api/types';
 import { ChildEntity, Entity } from '../../domain/core';
 import { ChildrenElements } from '../../domain/libraryElements/libraryElements';
 import { CssLikeStyles } from '../../utils/StyleHelper';
@@ -544,4 +545,21 @@ export const addElements = (
 export const removeElements = (elementIds: string[]): T.RemoveElements => ({
   type: TYPES.REMOVE_ELEMENTS,
   payload: elementIds,
+});
+
+export const saveElementToLibrary = <T extends Entity>(
+  id: string,
+  element: ServerElement<T, ServerElement<T>[]>,
+) => {
+  return {
+    type: TYPES.SAVE_LIBRARY_ELEMENT,
+    payload: { id, element },
+  };
+};
+
+export const saveLibraryElementToState = <T extends Entity>(
+  element: ServerElement<T, ServerElement<Entity>[]>,
+) => ({
+  type: TYPES.SAVE_LIBRARY_ELEMENT_TO_STATE,
+  payload: element,
 });

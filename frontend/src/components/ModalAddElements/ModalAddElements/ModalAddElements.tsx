@@ -2,6 +2,8 @@ import React, { useState, useCallback, memo, useEffect } from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 
+import { LibraryElements } from 'src/domain/libraryElements/libraryElements';
+
 import Button from '../../UI/Button';
 import Icon from '../../UI/Icon';
 import UploadFile, { IUploadFile } from '../../UI/UploadFile';
@@ -10,21 +12,25 @@ import {
   getGroupElements,
   IListCategoryEl,
   parseAddElementsTabs,
+  parseAddCustomElementsTabs,
 } from '../../../utils/parseScenario';
 import { AppReduxState } from '../../../shared/types/app';
 import {
   ActiveItem,
   CreatedElement,
-  ElementHistoryMeta,
   ServerStructType,
 } from '../../../redux/project/types';
 import { MODAL_ADD_ELEMENTS_TABS } from '../../../constants/defaultParams';
-import { LibraryElements } from '../../../domain/libraryElements/libraryElements';
 import {
   selectCurrentScreen,
+  selectCustomLibraryElements,
   selectUploadedImageInfo,
 } from '../../../redux/project/selectors';
-import { getScreenNN, uploadFile } from '../../../redux/project/actions';
+import {
+  getScreenNN,
+  uploadFile,
+  createElements,
+} from '../../../redux/project/actions';
 
 const styles = require('./ModalAddElements.scss');
 
@@ -38,12 +44,14 @@ function mapStateToProps(state: AppReduxState) {
   return {
     uploadedImageInfo: selectUploadedImageInfo(state),
     currentScreen: selectCurrentScreen(state),
+    customLibraryElements: selectCustomLibraryElements(state),
   };
 }
 
 const mapDispatchToProps = {
   getScreenNN,
   uploadImg: uploadFile,
+  createElements,
 };
 
 type OwnProps = {
@@ -51,7 +59,6 @@ type OwnProps = {
   active: boolean;
   libraryElements: LibraryElements;
   onClose(): void;
-  onConfirm(elementsToAdd: CreatedElement[], meta: ElementHistoryMeta): void;
 };
 
 type Props = typeof mapDispatchToProps &
@@ -64,9 +71,10 @@ const ModalAddElements: React.FunctionComponent<Props> = ({
   activeItem,
   active,
   libraryElements,
+  customLibraryElements,
   onClose,
-  onConfirm,
   getScreenNN,
+  createElements,
   uploadImg,
   uploadedImageInfo,
   currentScreen,
@@ -91,23 +99,25 @@ const ModalAddElements: React.FunctionComponent<Props> = ({
   }, [imageToUpload, currentScreen.id]);
 
   useEffect(() => {
-    const newListElement = parseAddElementsTabs(libraryElements);
+    const newListElement = {
+      ...parseAddElementsTabs(libraryElements),
+      ...parseAddCustomElementsTabs(customLibraryElements),
+    };
     setListElement(newListElement);
-  }, [libraryElements]);
+  }, [libraryElements, customLibraryElements]);
 
   const handleConfirm = useCallback(
     (event) => {
       event.preventDefault();
-
       if (!selectedElements.length) {
         setErrorMsg('No items for the scenario.');
       } else {
         setErrorMsg('');
-        onConfirm(selectedElements, { screenId: currentScreen.id });
+        createElements(selectedElements, { screenId: currentScreen.id });
         onClose();
       }
     },
-    [selectedElements, onConfirm, onClose, currentScreen.id],
+    [selectedElements, onClose, currentScreen.id],
   );
 
   const handleCancel = useCallback(() => {
@@ -131,15 +141,16 @@ const ModalAddElements: React.FunctionComponent<Props> = ({
   const handleChangeTab = useCallback(
     (tabName) => {
       if (tabName === activeTab) return;
-
-      const newListElement = parseAddElementsTabs(libraryElements);
-
+      const newListElement = {
+        ...parseAddElementsTabs(libraryElements),
+        ...parseAddCustomElementsTabs(customLibraryElements),
+      };
       setListElement(newListElement);
       setActiveTab(tabName);
       setErrorMsg('');
       setSelectedElements([]);
     },
-    [activeTab, libraryElements],
+    [activeTab, libraryElements, customLibraryElements],
   );
 
   const getContentStep = useCallback(() => {

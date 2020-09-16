@@ -1,3 +1,5 @@
+import { ServerElement } from '../../api/types/elements';
+import { LibraryElements } from '../../domain/libraryElements/libraryElements';
 /* eslint-disable camelcase */
 
 import { IAction, IPlainAction, IPlainFailAction } from '../../shared/redux';
@@ -21,10 +23,23 @@ export type ProjectState = {
   control: ProjectControlState;
 };
 
+export type ProjectLibraryElements = {
+  [id: number]: IScenarioElement;
+};
+
+export type NamedLibraryElements = {
+  [name: string]: LibraryElement<Entity>;
+};
+
+export type NamedServerElements = {
+  [name: string]: ServerElement<Entity, ServerElement<Entity>[]>;
+};
+
 export type ProjectDataState = {
   projects: Map<Project>;
   screens: Map<Screen>;
   elements: Map<LibraryElement<any>>;
+  libraryElements: LibraryElements;
 };
 
 export type ProjectUiState = {
@@ -33,6 +48,7 @@ export type ProjectUiState = {
   itemToCopyInfo: ItemToCopyInfo | null;
   savedElementsValues: SavedElementsValues;
   showContainersBorders: boolean;
+  customLibraryElements: NamedServerElements;
 };
 
 export type ProjectEditState = {
@@ -84,10 +100,31 @@ export type ActiveItem = {
   parentId?: string;
 };
 
+export type ActiveItemTree = {
+  children?: any[];
+} & ActiveItem;
+
 export type SavedElementsValues = {
   [elementID: string]: { id: number; savedValue: string | boolean };
 };
-export type CreatedElement = { type: Entity; parentID?: number };
+
+export type CreatedElement = {
+  type: Entity | string;
+  name: string;
+  custom: boolean;
+};
+
+export type LoadLibraryElements = IPlainAction<
+  typeof TYPES.GET_LIBRARY_ELEMENTS
+>;
+export type LoadLibraryElementsSuccess = IAction<
+  typeof TYPES.LOAD_LIBRARY_ELEMENTS_SUCCESS,
+  { libraryElements: LibraryElements }
+>;
+export type LoadLibraryElementsFail = IPlainFailAction<
+  'PROJECTS:LOAD_LIBRARY_ELEMENTS_FAIL'
+>;
+
 export type LoadProjects = IPlainAction<typeof TYPES.LOAD_PROJECTS>;
 export type LoadProjectsSuccess = IAction<
   typeof TYPES.LOAD_PROJECTS_SUCCESS,
@@ -297,6 +334,7 @@ export type CreateElements = IAction<
   { createdElements: CreatedElement[] },
   ElementHistoryMeta
 >;
+
 export type AddChildToElement = IAction<
   typeof TYPES.ADD_CHILD_TO_ELEMENT,
   {
@@ -350,6 +388,10 @@ export type SetUndoActions = IAction<
   Action | Action[]
 >;
 export type SetRedoActions = IAction<typeof TYPES.SET_REDO_ACTIONS, Action[]>;
+export type SaveLibraryElement = IAction<
+  typeof TYPES.SAVE_LIBRARY_ELEMENT_TO_STATE,
+  ServerElement<Entity, ServerElement<Entity>[]>
+>;
 export type UnwrapFromContainer = IAction<
   typeof TYPES.UNWRAP_FROM_CONTAINER,
   { elementID: string; wrapperID: string; parentID: string },
@@ -447,7 +489,8 @@ export type Action =
   | SetProject
   | UpdateScreen
   | AddElements
-  | RemoveElements;
+  | RemoveElements
+  | SaveLibraryElement;
 
 export type ItemToCopyInfo = {
   id: string;
@@ -551,7 +594,7 @@ export interface IScenarioElement {
   buoyancy: number;
   dynamic_buoyancy: number;
   image: string | null;
-  parameters: { parent_id: number } & ElementParameters;
+  parameters: { parent_id?: number } & ElementParameters;
   styles: CssLikeStyles;
   children: IScenarioElement[];
 }

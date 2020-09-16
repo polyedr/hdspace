@@ -59,6 +59,16 @@ function uiReducer(
       };
     }
 
+    case TYPES.SAVE_LIBRARY_ELEMENT_TO_STATE: {
+      return {
+        ...state,
+        customLibraryElements: {
+          ...state.customLibraryElements,
+          [action.payload.name]: action.payload,
+        },
+      };
+    }
+
     case TYPES.LOGOUT: {
       return {
         ...initialUi,

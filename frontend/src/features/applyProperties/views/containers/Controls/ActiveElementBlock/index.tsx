@@ -15,7 +15,6 @@ interface IComponentProps {
   activeItem: PropertiesPanelProps['activeItem'];
   disablePanel: boolean;
   libraryElements: LibraryElements;
-  createElements: PropertiesPanelProps['createElements'];
   isAddElementsModalOpened: boolean;
   setIsAddElementsModalOpened(isOpened: boolean): void;
 }
@@ -23,7 +22,6 @@ interface IComponentProps {
 const ActiveElementBlock: React.FC<IComponentProps> = ({
   activeItem,
   libraryElements,
-  createElements,
   isAddElementsModalOpened,
   setIsAddElementsModalOpened,
 }) => {
@@ -77,7 +75,6 @@ const ActiveElementBlock: React.FC<IComponentProps> = ({
         active={isAddElementsModalOpened}
         libraryElements={libraryElements}
         onClose={closeModal}
-        onConfirm={createElements}
       />
     </div>
   );
