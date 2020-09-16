@@ -15,6 +15,8 @@ const styles = require('./Borders.scss');
 const elementTypes = ['container', 'divBlock', 'pageTemplate'];
 const saveableElements = ['section'];
 
+const typesToExclude = ['root', 'none'];
+
 const isBorderedItem = (el: any): boolean => {
   return elementTypes.indexOf(el.type) >= 0;
 };
@@ -79,8 +81,8 @@ const Borders: React.FC = () => {
     }
     if (
       activeItem &&
-      activeItem.type !== 'root' &&
-      namedItems.findIndex((item) => item.id === activeItem.type) < 0
+      !typesToExclude.includes(activeItem.type) &&
+      namedItems.findIndex((item) => item.id === activeItem.id) < 0
     ) {
       namedItems.push({
         id: activeItem.id,
