@@ -17,16 +17,14 @@ type Props = {
 };
 
 const ElementButton: React.FC<Props> = ({
-  elementData: { type, icon: ElementIcon },
+  elementData: { type, icon: ElementIcon, custom, name },
 }) => {
   const dispatch = useDispatch();
   const screenId = useSelector(selectCurrentScreenId);
   const { itemType: activeItemType } = useSelector(selectActiveItem);
 
   const handleClick = (type: Entity) => () => {
-    dispatch(
-      createElements([{ type, name: type, custom: false }], { screenId }),
-    );
+    dispatch(createElements([{ type, name, custom }], { screenId }));
   };
 
   const isAvailableChild = (type: Entity) =>
@@ -41,7 +39,7 @@ const ElementButton: React.FC<Props> = ({
       onClick={handleClick(type)}
     >
       {ElementIcon && <ElementIcon />}
-      {splitWords(type)}
+      {splitWords(name)}
     </Button>
   );
 };

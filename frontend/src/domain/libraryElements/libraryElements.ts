@@ -1,3 +1,29 @@
+import GridOnIcon from '@material-ui/icons/GridOn';
+import ViewColumnIcon from '@material-ui/icons/ViewColumn';
+import SlideshowIcon from '@material-ui/icons/Slideshow';
+import ListIcon from '@material-ui/icons/List';
+import Crop169Icon from '@material-ui/icons/Crop169';
+import NotesIcon from '@material-ui/icons/Notes';
+import LineWeightIcon from '@material-ui/icons/LineWeight';
+import LinkIcon from '@material-ui/icons/Link';
+import ImageIcon from '@material-ui/icons/Image';
+import MovieIcon from '@material-ui/icons/Movie';
+import TitleOutlinedIcon from '@material-ui/icons/TitleOutlined';
+import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
+import ArrowDropDownCircleIcon from '@material-ui/icons/ArrowDropDownCircle';
+import MessageIcon from '@material-ui/icons/Message';
+import TextFieldsIcon from '@material-ui/icons/TextFields';
+import CheckBoxIcon from '@material-ui/icons/CheckBox';
+import RadioButtonCheckedIcon from '@material-ui/icons/RadioButtonChecked';
+import LabelIcon from '@material-ui/icons/Label';
+import TocIcon from '@material-ui/icons/Toc';
+import MapIcon from '@material-ui/icons/Map';
+import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
+import QueryBuilderIcon from '@material-ui/icons/QueryBuilder';
+import CropOriginalIcon from '@material-ui/icons/CropOriginal';
+import Crop75Icon from '@material-ui/icons/Crop75';
+import { OverridableComponent } from '@material-ui/core/OverridableComponent';
+import { SvgIconTypeMap } from '@material-ui/core';
 import {
   root,
   makeImage,
@@ -78,6 +104,7 @@ import {
   VideoServerElement,
   SectionServerElement,
 } from '../../api/types';
+import { Entity } from '../core';
 
 export type ChildrenElements = {
   selectMenu: SelectMenuServerElement;
@@ -165,4 +192,35 @@ export const LIBRARY_ELEMENTS: LibraryElements = {
   cardsSection,
   featureSection,
   section,
+};
+
+export const ICONS: Partial<
+  {
+    [key in Entity]: OverridableComponent<SvgIconTypeMap> | undefined;
+  }
+> = {
+  grid: GridOnIcon,
+  columns: ViewColumnIcon,
+  button: SlideshowIcon,
+  list: ListIcon,
+  divBlock: Crop169Icon,
+  paragraph: NotesIcon,
+  heading: LineWeightIcon,
+  hyperlink: LinkIcon,
+  image: ImageIcon,
+  video: MovieIcon,
+  textBlock: TitleOutlinedIcon,
+  undefined: HelpOutlineIcon,
+  dropdown: ArrowDropDownCircleIcon,
+  textinput: MessageIcon,
+  textarea: TextFieldsIcon,
+  checkbox: CheckBoxIcon,
+  radiobutton: RadioButtonCheckedIcon,
+  label: LabelIcon,
+  select: TocIcon,
+  map: MapIcon,
+  calendar: CalendarTodayIcon,
+  clock: QueryBuilderIcon,
+  screenshot: CropOriginalIcon,
+  section: Crop75Icon,
 };
