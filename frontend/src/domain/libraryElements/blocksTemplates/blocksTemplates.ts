@@ -21,10 +21,12 @@ import {
 } from '../../../api/types';
 import { CssLikeStyles } from '../../../utils/StyleHelper';
 
-export const pageTemplate: PageTemplateServerElement = {
+export const makePageTemplate = (
+  withoutScreenshots: boolean = false,
+): PageTemplateServerElement => ({
   buoyancy: 0,
-  func_type: 'pageTemplate',
-  struct_type: 'pageTemplate',
+  func_type: withoutScreenshots ? 'emptyPageTemplate' : 'pageTemplate',
+  struct_type: withoutScreenshots ? 'emptyPageTemplate' : 'pageTemplate',
   parameters: {
     group: 'containers',
   },
@@ -32,11 +34,11 @@ export const pageTemplate: PageTemplateServerElement = {
     classNames: ['pageTemplate'],
     ownStyles: {} as Required<CssLikeStyles>,
   },
-  name: 'pageTemplate',
+  name: withoutScreenshots ? 'emptyPageTemplate' : 'pageTemplate',
   children: [
     makeContainer({
       name: 'Header',
-      children: [makeScreenshot()],
+      children: withoutScreenshots ? [] : [makeScreenshot()],
       ownStyles: {
         'padding-right': '5px',
         'padding-left': '5px',
@@ -47,7 +49,7 @@ export const pageTemplate: PageTemplateServerElement = {
       children: [
         makeContainer({
           name: 'Left Panel',
-          children: [makeScreenshot()],
+          children: withoutScreenshots ? [] : [makeScreenshot()],
           ownStyles: {
             'padding-top': '0px',
             'padding-right': '5px',
@@ -59,7 +61,7 @@ export const pageTemplate: PageTemplateServerElement = {
         }),
         makeContainer({
           name: 'Main Content',
-          children: [makeScreenshot()],
+          children: withoutScreenshots ? [] : [makeScreenshot()],
           buoyancy: 1,
           ownStyles: {
             'padding-top': '0px',
@@ -72,7 +74,7 @@ export const pageTemplate: PageTemplateServerElement = {
         }),
         makeContainer({
           name: 'Right Panel',
-          children: [makeScreenshot()],
+          children: withoutScreenshots ? [] : [makeScreenshot()],
           buoyancy: 2,
           ownStyles: {
             'padding-top': '0px',
@@ -96,7 +98,7 @@ export const pageTemplate: PageTemplateServerElement = {
     }),
     makeContainer({
       name: 'Footer',
-      children: [makeScreenshot()],
+      children: withoutScreenshots ? [] : [makeScreenshot()],
       ownStyles: {
         'padding-right': '5px',
         'padding-left': '5px',
@@ -104,7 +106,7 @@ export const pageTemplate: PageTemplateServerElement = {
       } as Required<CssLikeStyles>,
     }),
   ],
-};
+});
 
 export const subscribeForm: SubscribeFormServerElement = {
   buoyancy: 1,

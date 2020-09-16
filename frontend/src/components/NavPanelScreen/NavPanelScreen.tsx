@@ -9,6 +9,7 @@ import Scrollbar from '../UI/Scrollbar';
 import ScreenButton from './ScreenButton';
 import { EditorProps } from '../../containers/EditorLogic';
 import { selectScreens } from '../../redux/project/selectors';
+import { selectIsLeftPanelMinimized } from '../../redux/user/selectors';
 
 const styles = require('./NavPanelScreen.scss');
 
@@ -32,6 +33,7 @@ const NavPanelScreen: React.FunctionComponent<Props> = ({
   addScreen,
 }) => {
   const screens = useSelector(selectScreens);
+  const isLeftPanelMinimized = useSelector(selectIsLeftPanelMinimized);
 
   useEffect(() => {
     getProject(projectID, screenID);
@@ -58,6 +60,7 @@ const NavPanelScreen: React.FunctionComponent<Props> = ({
       className={classNames(
         styles.navPanelContainer,
         isNavPanelMinimized && styles.navPanelContainer_minimize,
+        isLeftPanelMinimized && styles.navPanelContainer_left_minimized,
       )}
     >
       <div className={styles.navPanelBlock}>

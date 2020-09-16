@@ -1,3 +1,5 @@
+import { OverridableComponent } from '@material-ui/core/OverridableComponent';
+import { SvgIconTypeMap } from '@material-ui/core';
 import { ServerElement } from '../../api/types/elements';
 import { LibraryElements } from '../../domain/libraryElements/libraryElements';
 /* eslint-disable camelcase */
@@ -654,4 +656,39 @@ export type HistoryMeta = {
 };
 export type ElementHistoryMeta = HistoryMeta & {
   screenId: number;
+};
+
+export type ElementData = {
+  type: Entity;
+  icon: OverridableComponent<SvgIconTypeMap> | undefined;
+  name: string;
+  custom: boolean;
+};
+
+export type ElementsHierarchy = {
+  elements: {
+    layout: {
+      [elementName in Entity]: ElementData;
+    };
+    basic: {
+      [elementName in Entity]: ElementData;
+    };
+    form: {
+      [elementName in Entity]: ElementData;
+    };
+    widget: {
+      [elementName in Entity]: ElementData;
+    };
+  };
+  templates: {
+    [elementName in Entity]: ElementData;
+  };
+  library: {
+    adeviLibrary: {
+      [elementName in Entity]: ElementData;
+    };
+    customUI: {
+      [elementName in Entity]: ElementData;
+    };
+  };
 };

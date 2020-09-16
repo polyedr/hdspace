@@ -1,9 +1,9 @@
 import React from 'react';
 import { connect, useSelector } from 'react-redux';
 import {
-  ExpansionPanel,
-  ExpansionPanelSummary,
-  ExpansionPanelDetails,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
   Checkbox,
 } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -112,8 +112,8 @@ const ListItems: React.FC<Props> = ({
         </Button>
       </div>
       {listItems.map(({ id, parameters: { textContent, isLink, link } }) => (
-        <ExpansionPanel key={id}>
-          <ExpansionPanelSummary
+        <Accordion key={id}>
+          <AccordionSummary
             expandIcon={<ExpandMoreIcon />}
             aria-controls="panel1a-content"
             id="panel1a-header"
@@ -130,8 +130,8 @@ const ListItems: React.FC<Props> = ({
                 </Button>
               )}
             </div>
-          </ExpansionPanelSummary>
-          <ExpansionPanelDetails>
+          </AccordionSummary>
+          <AccordionDetails>
             <div className={styles.listItemsBlock}>
               <p className={sharedClasses.propsTitle}>Item text</p>
               <div className={sharedClasses.propsContainer}>
@@ -166,8 +166,8 @@ const ListItems: React.FC<Props> = ({
                 </>
               )}
             </div>
-          </ExpansionPanelDetails>
-        </ExpansionPanel>
+          </AccordionDetails>
+        </Accordion>
       ))}
     </div>
   );

@@ -147,14 +147,19 @@ export function selectCurrentEditableStyles<
   T extends keyof Required<CssLikeStyles>
 >(state: AppReduxState, ruleName: T) {
   const activeItemType = selectActiveItem(state).itemType;
+
   const activeElementStyles = selectActiveItemStyles<
     LibraryElement<Entity, [], {}, Required<CssLikeStyles>>
   >(state).ownStyles;
+
   const activeElementClassNames = selectActiveItemStyles(state).classNames;
+
   const editableStyles = selectEditableStyles(state);
+
   const activeEntityStyles =
     (activeItemType !== 'none' && selectSharedStyles(state, activeItemType)) ||
     ({} as Required<CssLikeStyles>);
+
   const activeSharedStyles =
     selectSharedStyles(state, activeElementClassNames[1]) ||
     ({} as Required<CssLikeStyles>);

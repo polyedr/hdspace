@@ -1,10 +1,12 @@
 import { makeParagraph } from '../typographyElements/typographyElements';
 import {
+  ColumnsServerElement,
   ContainerServerElement,
   DivBlockServerElement,
   DropdownItemServerElement,
   DropdownMenuServerElement,
   DropdownServerElement,
+  GridServerElement,
   ImageServerElement,
   RootServerElement,
   ScreenshotServerElement,
@@ -54,6 +56,32 @@ export const makeContainer = ({
   },
   name,
   children,
+});
+
+export const makeGrid = (): GridServerElement => ({
+  buoyancy: 0,
+  name: 'grid',
+  func_type: 'grid',
+  struct_type: 'grid' as const,
+  parameters: {},
+  styles: {
+    classNames: ['grid'],
+    ownStyles: {},
+  },
+  children: [],
+});
+
+export const makeColumns = (): ColumnsServerElement => ({
+  buoyancy: 0,
+  name: 'columns',
+  func_type: 'columns',
+  struct_type: 'columns' as const,
+  parameters: {},
+  styles: {
+    classNames: ['columns'],
+    ownStyles: {},
+  },
+  children: [],
 });
 
 export const makeDivBlock = (textContent: string): DivBlockServerElement => ({
