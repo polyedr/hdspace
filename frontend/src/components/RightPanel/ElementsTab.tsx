@@ -16,58 +16,6 @@ const styles = require('./styles.scss');
 
 const sections = ['elements', 'templates', 'library'];
 
-// const elements = {
-//   layout: {
-//     grid: { type: 'grid', icon: GridOnIcon },
-//     columns: { type: 'columns', icon: ViewColumnIcon },
-//   },
-//   basic: {
-//     button: { type: 'button', icon: SlideshowIcon },
-//     list: { type: 'list', icon: ListIcon },
-//     divBlock: { type: 'divBlock', icon: Crop169Icon },
-//     paragraph: { type: 'paragraph', icon: NotesIcon },
-//     heading: { type: 'heading', icon: LineWeightIcon },
-//     hyperlink: { type: 'hyperlink', icon: LinkIcon },
-//     image: { type: 'image', icon: ImageIcon },
-//     video: { type: 'video', icon: MovieIcon },
-//     textBlock: { type: 'textBlock', icon: TitleOutlinedIcon },
-//     undefined: { type: 'undefined', icon: HelpOutlineIcon },
-//   },
-//   form: {
-//     dropdown: { type: 'dropdown', icon: ArrowDropDownCircleIcon },
-//     textinput: { type: 'textinput', icon: MessageIcon },
-//     textarea: { type: 'textarea', icon: TextFieldsIcon },
-//     checkbox: { type: 'checkbox', icon: CheckBoxIcon },
-//     radiobutton: { type: 'radiobutton', icon: RadioButtonCheckedIcon },
-//     label: { type: 'label', icon: LabelIcon },
-//     select: { type: 'select', icon: TocIcon },
-//   },
-//   widget: {
-//     map: { type: 'map', icon: MapIcon },
-//     calendar: { type: 'calendar', icon: CalendarTodayIcon },
-//     clock: { type: 'clock', icon: QueryBuilderIcon },
-//   },
-// } as const;
-
-// const templates: {
-//   [key: string]: ElementData | ElementData[];
-// } = {
-//   pageTemplate: [
-//     { type: 'pageTemplate', icon: undefined },
-//     { type: 'emptyPageTemplate', icon: undefined },
-//   ],
-//   screenshot: { type: 'screenshot', icon: CropOriginalIcon },
-//   featureSection: { type: 'featureSection', icon: undefined },
-// };
-
-// const library = {
-//   adeviLibrary: {
-//     subscribeForm: { type: 'subscribeForm', icon: undefined },
-//     cardsSection: { type: 'cardsSection', icon: undefined },
-//   },
-//   customUI: {},
-// } as const;
-
 const StyledToggleButtonGroup = withStyles({
   root: {
     width: '100%',
