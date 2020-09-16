@@ -24,6 +24,7 @@ const StyledMenuList = withStyles({
 const StyledMenuItem = withStyles({
   root: {
     fontSize: '1em',
+    textTransform: 'capitalize',
   },
 })(MenuItem);
 
