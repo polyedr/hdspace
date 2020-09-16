@@ -1,4 +1,4 @@
-import { NamedServerElements } from './types';
+import { NamedServerElements, Screen } from './types';
 import {
   DEFAULT_ACTIVE_ELEMENT,
   DEFAULT_PROJECT,
@@ -11,7 +11,6 @@ import { LibraryElement, Project } from '../../api/types';
 import { CssLikeStyles } from '../../utils/StyleHelper';
 import { makeFeatureStateSelector } from '../../shared/redux';
 import { mapToArr } from '../../utils/mappings';
-import { Screen } from './types';
 
 export const selectProjectState = makeFeatureStateSelector('project');
 
@@ -131,7 +130,6 @@ export const selectActiveItemStyles = makeActiveItemInfoSelector('styles');
 export function selectCurrentEditableStyles<
   T extends keyof Required<CssLikeStyles>
 >(state: AppReduxState, ruleName: T) {
-
   const activeItemType = selectActiveElement(state).type;
   const activeElementStyles = selectActiveItemStyles<
     LibraryElement<Entity, [], {}, Required<CssLikeStyles>>
@@ -221,20 +219,6 @@ export function selectProjectLoader(state: AppReduxState): boolean {
 
 export const selectInitialProjectLoad = (state: AppReduxState): boolean =>
   selectProjectState(state).communication.initialProjectLoadDone;
-
-export const selectActiveItemElement = (
-  state: AppReduxState,
-): LibraryElement<Entity, LibraryElement<Entity>[]> => {
-  const activeItem = selectActiveItem(state);
-  const elementsTree = selectRootElement(state);
-  const element = findChildByID(elementsTree, activeItem.itemId);
-
-  if (!element) {
-    throw new Error(`Can not find ${activeItem.itemId} in tree!`);
-  }
-
-  return element;
-};
 
 export function selectCustomLibraryElements(
   state: AppReduxState,

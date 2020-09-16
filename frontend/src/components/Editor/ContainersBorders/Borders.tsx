@@ -3,8 +3,8 @@ import { useSelector } from 'react-redux';
 
 import Border, { BorderedItem, BorderDOMProps } from './Border';
 import {
-  selectActiveItem,
-  selectRootElement,
+  selectActiveElement,
+  selectCurrentRootElement,
   selectShowingBorders,
 } from '../../../redux/project/selectors';
 import SaveElementAction from './actions/SaveElementAction';
@@ -26,8 +26,8 @@ export type NamedItem = {
 };
 
 const Borders: React.FC = () => {
-  const root = useSelector(selectRootElement);
-  const activeItem = useSelector(selectActiveItem);
+  const root = useSelector(selectCurrentRootElement);
+  const activeItem = useSelector(selectActiveElement);
   const showBorders = useSelector(selectShowingBorders);
 
   const [borderedItems, setBorderedItems] = useState([] as BorderedItem[]);
@@ -79,13 +79,13 @@ const Borders: React.FC = () => {
     }
     if (
       activeItem &&
-      activeItem.itemType !== 'root' &&
-      namedItems.findIndex((item) => item.id === activeItem.itemId) < 0
+      activeItem.type !== 'root' &&
+      namedItems.findIndex((item) => item.id === activeItem.type) < 0
     ) {
       namedItems.push({
-        id: activeItem.itemId,
+        id: activeItem.id,
         name: activeItem.name,
-        type: activeItem.itemType,
+        type: activeItem.type,
       } as NamedItem);
     }
     const newBorderedItems: BorderedItem[] = namedItems.map((item) => {
@@ -108,7 +108,7 @@ const Borders: React.FC = () => {
       {borderedItems &&
         (showBorders || !!activeItem) &&
         borderedItems.map((item) => {
-          const isActive = item.id === activeItem.itemId;
+          const isActive = item.id === activeItem.id;
 
           return item.id === 'none' ? null : (
             <React.Fragment key={item.id}>

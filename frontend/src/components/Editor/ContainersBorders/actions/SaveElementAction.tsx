@@ -10,7 +10,7 @@ import { BorderedItem } from '../Border';
 import { saveElementToLibrary } from '../../../../redux/project/actions';
 import { LibraryElement, SectionServerElement } from '../../../../api/types';
 import { Entity } from '../../../../domain/core';
-import { selectActiveItemElement } from '../../../../redux/project/selectors';
+import { selectActiveElement } from '../../../../redux/project/selectors';
 
 const styles = require('./SaveElementAction.scss');
 
@@ -19,7 +19,7 @@ type SaveElementAction = {
 };
 
 const SaveElementAction: React.FC<SaveElementAction> = ({ item }) => {
-  const activeElement = useSelector(selectActiveItemElement);
+  const activeElement = useSelector(selectActiveElement);
   const inputRef = React.createRef<HTMLInputElement>();
   const dispatch = useDispatch();
 

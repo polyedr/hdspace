@@ -1,12 +1,7 @@
 import { OverridableComponent } from '@material-ui/core/OverridableComponent';
 import { SvgIconTypeMap } from '@material-ui/core';
-import { ServerElement } from '../../api/types/elements';
-import { LibraryElements } from '../../domain/libraryElements/libraryElements';
-/* eslint-disable camelcase */
-
-import { IAction, IPlainAction, IPlainFailAction } from '../../shared/redux';
-import { Entity } from '../../domain/core';
 import {
+  ServerElement,
   HeadingType,
   InputType,
   LibraryElement,
@@ -14,6 +9,12 @@ import {
   Project,
   VideoSettingsType,
 } from '../../api/types';
+import { LibraryElements } from '../../domain/libraryElements/libraryElements';
+/* eslint-disable camelcase */
+
+import { IAction, IPlainAction, IPlainFailAction } from '../../shared/redux';
+import { Entity } from '../../domain/core';
+
 import TYPES from '../../constants/actions';
 import { CssLikeStyles } from '../../utils/StyleHelper';
 
@@ -41,7 +42,6 @@ export type ProjectDataState = {
   projects: Map<Project>;
   screens: Map<Screen>;
   elements: Map<LibraryElement<any>>;
-  libraryElements: LibraryElements;
 };
 
 export type ProjectUiState = {

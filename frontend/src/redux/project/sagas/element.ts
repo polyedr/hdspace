@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+
 import { put, call, select } from 'redux-saga/effects';
 
 import * as Actions from '../actions';
@@ -5,16 +7,14 @@ import * as Actions from '../actions';
 import { reqWrapper } from './index';
 import { ReturnPromisedType } from '../../../shared/types';
 import { convertElementToPatchRequest } from '../../../api/converters/toRequest';
-
-import { LibraryEntities } from '../../../domain/libraryElements/libraryElements';
 import { LibraryElement, LibraryElementUnion } from '../../../api/types';
 import {
   selectCurrentProject,
   selectElementParameters,
   selectElementStyles,
   selectRemoteMove,
-  selectScreenElement,
   selectCurrentScreen,
+  selectScreenRootElement,
 } from '../selectors';
 
 import {
@@ -33,7 +33,6 @@ import {
 import {
   apiChangeElement,
   apiChangeRecursiveElement,
-  apiGetLibraryElements,
   apiSaveElements,
   parseImgUsingNN,
 } from '../../../api/element';
@@ -42,40 +41,8 @@ import generateUniqueName from '../../../utils/generateUniqueName';
 import { CssLikeStyles } from '../../../utils/StyleHelper';
 import getSavedValue from '../../../utils/getSavedValue';
 import { addProjectStyles } from '../../../utils/ProjectClassesHelper';
-
-export function* authCheckSaga() {
-  // TODO: temporary realisation
-  const result: ReturnPromisedType<typeof apiGetLibraryElements> = yield call(
-    reqWrapper,
-    apiGetLibraryElements,
-  );
-
-  if (!result) return;
-
-  // TODO: potentially inject default properties right here
-  const libraryElements = result.reduce(
-    (acc, x) => ({
-      ...acc,
-      [x.struct_type]: x.func_type.reduce(
-        (innerAcc, funcType, idx) => ({
-          ...innerAcc,
-          [funcType]: {
-            buoyancy: x.buoyancy[idx],
-            func_type: funcType,
-            struct_type: x.struct_type,
-            parameters: x.parameters[idx] || {},
-            styles: x.styles[idx] || {},
-            name: x.struct_type,
-          },
-        }),
-        {},
-      ),
-    }),
-    {},
-  ) as LibraryEntities;
-
-  yield put(Actions.setLibraryElements(libraryElements));
-}
+import { updateProject } from './project';
+import { updateElementsTree } from './scenario';
 
 export function* moveElementSaga(
   action: ReturnType<typeof Actions.moveElement>,
@@ -95,7 +62,7 @@ export function* moveElementSaga(
   const { screenId, undo } = action.meta;
 
   const root: LibraryElement<'root'> = yield select(
-    selectScreenElement(screenId),
+    selectScreenRootElement(screenId),
   );
   const targetParent = findChildByID(root, parentID);
 
@@ -180,7 +147,7 @@ export function* moveElementSaga(
   });
 }
 
-export function* updateElementClassNames(
+function* updateElementClassNames(
   elementID: string,
   newClassName: string,
   action: ReturnType<
@@ -199,7 +166,7 @@ export function* updateElementClassNames(
   const { screenId, undo } = action.meta;
 
   const root: LibraryElement<'root'> = yield select(
-    selectScreenElement(screenId),
+    selectScreenRootElement(screenId),
   );
 
   if (!undo) {
@@ -238,7 +205,7 @@ export function* updateElementClassNames(
   }
 }
 
-export function* removeElementStyles(
+function* removeElementStyles(
   id: string,
   cssPropertiesNames: string[],
   action: ReturnType<
@@ -254,7 +221,7 @@ export function* removeElementStyles(
   const { screenId } = action.meta;
 
   const root: LibraryElement<'root'> = yield select(
-    selectScreenElement(screenId),
+    selectScreenRootElement(screenId),
   );
 
   const updatedTree = removeStyles(id, cssPropertiesNames, root);
@@ -308,7 +275,7 @@ export function* copyElementStylesSaga(
     elementType,
     styles as Required<CssLikeStyles>,
   );
-  yield call(Actions.updateProject, newProject);
+  yield call(updateProject, newProject);
 
   yield call(removeElementStyles, elementID, Object.keys(styles), action);
 
@@ -341,7 +308,7 @@ export function* removeElementClassNameSaga(
   yield call(updateElementClassNames, elementID, className, action, 'remove');
 }
 
-export function* updateOrReplaceElementStyles(
+function* updateOrReplaceElementStyles(
   action: ReturnType<
     typeof Actions.updateElementStyles | typeof Actions.replaceElementStyles
   >,
@@ -359,11 +326,11 @@ export function* updateOrReplaceElementStyles(
   const { screenId, undo } = action.meta;
 
   const root: LibraryElement<'root'> = yield select(
-    selectScreenElement(screenId),
+    selectScreenRootElement(screenId),
   );
 
   if (!undo) {
-    const oldStyles = yield select(selectElementStyles(screenId, id));
+    const oldStyles = yield select(selectElementStyles(id));
     yield put(
       Actions.setUndoActions(
         Actions.replaceElementStyles(id, oldStyles, { screenId }),
@@ -414,7 +381,7 @@ export function* removeElementStylesSaga(
   const { screenId, undo } = action.meta;
 
   if (!undo) {
-    const oldStyles = yield select(selectElementStyles(screenId, id));
+    const oldStyles = yield select(selectElementStyles(id));
     yield put(
       Actions.setUndoActions(
         Actions.updateElementStyles(id, oldStyles, { screenId }),
@@ -472,13 +439,11 @@ export function* updateElementParameters(
   const { screenId, undo } = action.meta;
 
   const root: LibraryElement<'root'> = yield select(
-    selectScreenElement(screenId),
+    selectScreenRootElement(screenId),
   );
 
   if (!undo) {
-    const oldParameters = yield select(
-      selectElementParameters(screenId, itemID),
-    );
+    const oldParameters = yield select(selectElementParameters(itemID));
     yield put(
       Actions.setUndoActions(
         Actions.updateElementParameters(itemID, oldParameters, { screenId }),
@@ -494,7 +459,7 @@ export function* updateElementParameters(
   } else {
     const savedValue = getSavedValue(updatedElement as LibraryElementUnion);
     yield put(Actions.updateSavedElementValues(itemID, savedValue));
-    yield call(Actions.updateElementsTree, updatedTree, action, action.meta);
+    yield call(updateElementsTree, updatedTree, action, action.meta);
 
     const convertedElement = convertElementToPatchRequest(updatedElement);
     yield call(reqWrapper, apiChangeElement, {
@@ -517,7 +482,7 @@ export function* uploadFileSaga({
   try {
     // TODO: show loader in addModalElements
     const root: LibraryElement<'root'> = yield select(
-      selectScreenElement(screenId),
+      selectScreenRootElement(screenId),
     );
 
     const formData = new FormData();
@@ -563,7 +528,7 @@ export function* uploadFileSaga({
     );
 
     yield call(
-      Actions.updateElementsTree,
+      updateElementsTree,
       updatedElements,
       Actions.restoreElementChildren(root.id, childrenIds, { screenId }),
       meta,

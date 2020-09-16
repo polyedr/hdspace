@@ -40,7 +40,6 @@ import {
   updateProjectSaga,
 } from './project';
 import {
-  authCheckSaga,
   moveElementSaga,
   removeElementStylesSaga,
   updateElementStyles,
@@ -55,12 +54,6 @@ import {
 } from './element';
 import { convertElementToRequest } from '../../../api/converters/toRequest';
 import { MAX_TOKEN_TRIALS } from '../../../../config/settings';
-import {
-  apiChangeElement,
-  apiChangeRecursiveElement,
-  apiSaveElements,
-  parseImgUsingNN,
-} from '../../../api/element';
 import TYPES from '../../../constants/actions';
 import { setLoadedToken, setTokenPair } from '../../user/actions';
 import { ElementHistoryMeta, ItemToCopyInfo } from '../types';
@@ -77,8 +70,6 @@ import {
   selectHistory,
   selectItemToCopyInfo,
   selectRedoActions,
-  selectScreenElement,
-  selectRemoteMove,
   selectScreenRootElement,
   selectUndoActions,
 } from '../selectors';

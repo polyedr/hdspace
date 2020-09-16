@@ -53,7 +53,7 @@ const mapDispatch = {
 
 const mapState = (state: AppReduxState): StateProps => ({
   elementsTree: selectCurrentRootElement(state),
-  activeElement: selectActiveElement(state),
+  activeElement: selectActiveElement(state) as ActiveItem,
   isPrototypeMode: state.user.isPrototypeMode,
 });
 
