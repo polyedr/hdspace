@@ -1,20 +1,21 @@
-import React, { memo, useCallback } from 'react';
+import React, { memo } from 'react';
 import classNames from 'classnames';
 import * as R from 'ramda';
 import ShowBorders from '../ShowBorders/ShowBorders';
 import Button from '../../../../../../components/UI/Button';
 import Icon from '../../../../../../components/UI/Icon';
 import ModalAddElements from '../../../../../../components/ModalAddElements/ModalAddElements/ModalAddElements';
-import { PropertiesPanelProps } from '../..';
 import { AVAILABLE_CHILDREN, ENTITIES } from '../../../../../../domain/core';
+import { ActiveItem } from '../../../../../../redux/project/types';
+import { createElements } from '../../../../../../redux/project/actions';
 import { LibraryElements } from '../../../../../../domain/libraryElements/libraryElements';
 
 const styles = require('./styles.scss');
 
 interface IComponentProps {
-  activeItem: PropertiesPanelProps['activeItem'];
-  disablePanel: boolean;
+  activeItem: ActiveItem;
   libraryElements: LibraryElements;
+  createElements: typeof createElements;
   isAddElementsModalOpened: boolean;
   setIsAddElementsModalOpened(isOpened: boolean): void;
 }
@@ -25,13 +26,13 @@ const ActiveElementBlock: React.FC<IComponentProps> = ({
   isAddElementsModalOpened,
   setIsAddElementsModalOpened,
 }) => {
-  const closeModal = useCallback(() => {
+  const closeModal = () => {
     setIsAddElementsModalOpened(false);
-  }, []);
+  };
 
-  const showModalAddElements = useCallback(() => {
+  const showModalAddElements = () => {
     setIsAddElementsModalOpened(true);
-  }, []);
+  };
 
   const isElementHaveChildren = () => {
     if (activeItem.type === 'none') {
@@ -67,9 +68,11 @@ const ActiveElementBlock: React.FC<IComponentProps> = ({
           </Button>
         </div>
       )}
+
       <div className="propsPanelContentBlock">
         <ShowBorders />
       </div>
+
       <ModalAddElements
         activeItem={activeItem}
         active={isAddElementsModalOpened}

@@ -40,6 +40,9 @@ import {
   defaultSubscribeFormStyles,
   defaultCardsSectionStyles,
   defaultFeatureSectionStyles,
+  defaultEmptyPageTemplateStyles,
+  defaultColumnStyles,
+  defaultGridStyles,
 } from './blocksTemplates/defaultStyles';
 import { Entity } from '../core';
 import { CssLikeStyles } from '../../utils/StyleHelper';
@@ -51,6 +54,9 @@ export const DEFAULT_ELEMENTS_STYLES: {
   container: defaultContainerStyles,
   divBlock: defaultDivBlockStyles,
   pageTemplate: defaultPageTemplateStyles,
+  emptyPageTemplate: defaultEmptyPageTemplateStyles,
+  grid: defaultGridStyles,
+  columns: defaultColumnStyles,
   button: defaultButtonStyles,
   textinput: defaultTextinputStyles,
   textarea: defaultTextareaStyles,

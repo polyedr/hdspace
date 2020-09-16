@@ -3,9 +3,14 @@
   z-index: 1;
 
   max-height: 500px;
+  max-width: calc(100vw - #{3*$mainPadding} - #{$leftPanel_fullWidth} - #{$rightPanel_width});
   margin-bottom: 20px;
 
   background-color: $panelBgColor;
+}
+
+.navPanelContainer_left_minimized {
+  max-width: calc(100vw - #{3*$mainPadding} - #{$leftPanel_minWidth} - #{$rightPanel_width});
 }
 
 .navPanelBlock {

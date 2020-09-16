@@ -14,6 +14,9 @@ import {
   selectScenarioLoader,
   selectScreenLoader,
 } from '../redux/project/selectors';
+import { RightPanel } from '../features/applyProperties/views/containers';
+
+const styles = require('../styles/global.scss');
 
 export interface IMatch<P> {
   params: P;
@@ -67,24 +70,29 @@ const EditorLogic: React.FC<EditorProps> = ({
   resetScreenState,
   projectLoader,
 }) => (
-  <>
-    <NavPanelScreen
-      isNavPanelMinimized={isNavPanelMinimized}
-      onMinimizerNavPanel={changeMinNavPanel}
-      projectID={projectID}
-      screenID={screenID}
-      getProject={getProject}
-      changeScreensOrder={changeScreensOrder}
-      addScreen={addScreen}
-    />
-    <Editor
-      screen={currentScreen}
-      isNavPanelMinimized={isNavPanelMinimized}
-      isPrototypeMode={isPrototypeMode}
-      resetScreenState={resetScreenState}
-    />
+  <div className={styles.editorLogic}>
+    <div className={styles.workArea}>
+      <NavPanelScreen
+        isNavPanelMinimized={isNavPanelMinimized}
+        onMinimizerNavPanel={changeMinNavPanel}
+        projectID={projectID}
+        screenID={screenID}
+        getProject={getProject}
+        changeScreensOrder={changeScreensOrder}
+        addScreen={addScreen}
+      />
+
+      <Editor
+        screen={currentScreen}
+        isNavPanelMinimized={isNavPanelMinimized}
+        resetScreenState={resetScreenState}
+      />
+    </div>
+
+    {!isPrototypeMode && <RightPanel />}
+
     <Spinner active={projectLoader || screenLoader || scenarioLoader} />
-  </>
+  </div>
 );
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditorLogic);
