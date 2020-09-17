@@ -1,6 +1,6 @@
 import React from 'react';
 import { ConnectedRouter } from 'connected-react-router';
-import 'antd/dist/antd.css';
+import '../styles/antd.fork.css';
 import { history } from '../redux/store';
 import Notification from '../features/notification/view/Notification';
 import Routes from './Routes';

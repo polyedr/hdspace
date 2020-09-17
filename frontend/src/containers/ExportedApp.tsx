@@ -6,7 +6,7 @@ import {
   Redirect,
 } from 'react-router-dom';
 import { connect } from 'react-redux';
-import 'antd/dist/antd.css';
+import '../styles/antd.fork.css';
 import RenderTree from '../components/RenderTree/RenderTree';
 import { Page } from '../redux/project/types';
 import { ReduxState } from '../redux/export';
