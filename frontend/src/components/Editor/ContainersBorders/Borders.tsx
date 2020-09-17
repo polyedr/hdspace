@@ -56,6 +56,7 @@ const Borders: React.FC = () => {
 
   useEffect(() => {
     if (!rootElement) {
+      setBorderedItems([]);
       return;
     }
     const namedItems: NamedItem[] = [];
