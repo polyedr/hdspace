@@ -54,12 +54,6 @@ export const removeStateElement = (
     const parent = newState[target.parent];
     parent.children = parent.children.filter((id) => id !== elementId);
   }
-  const removeChild = (id: string) => {
-    newState[id].children.forEach((childId) => removeChild(childId));
-    delete newState[id];
-  };
-
-  removeChild(elementId);
 
   return newState;
 };

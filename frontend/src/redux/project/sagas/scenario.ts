@@ -5,7 +5,7 @@ import * as R from 'ramda';
 import * as Actions from '../actions';
 import { selectors, T } from '..';
 import { updateSavedElementsValues } from './screen';
-import { ElementHistoryMeta } from '../types';
+import { ElementHistoryMeta, StateElement, Map } from '../types';
 import {
   DISALLOW_ADD_ELEMENT_NOTIFICATION_TEXT,
   DISALLOW_REMOVE_ELEMENT_NOTIFICATION_TEXT,
@@ -22,7 +22,6 @@ import {
   findParentByChildID,
   getElementsArray,
   moveElement,
-  removeChildrenFromElement,
   updateElementName,
   updateElementParameters,
 } from '../../../utils/ElementsTreeHelper';
@@ -56,12 +55,16 @@ import getSavedValue from '../../../utils/getSavedValue';
 import { reqWrapper } from './index';
 import {
   addStateElements,
-  buildElementsTree,
+  removeStateElement,
+  updateStateElement,
 } from '../../../utils/normalizedStateHelpers';
 import {
   selectActiveElementId,
   selectElementAsTree,
+  selectElementById,
   selectElementsForCurrentScreen,
+  selectElementsForScreen,
+  selectScreenRootElement,
 } from '../selectors';
 
 export function* updateElementsTree(
@@ -160,8 +163,9 @@ export function* createElements(
   });
 
   const state = yield select(selectElementsForCurrentScreen);
-  const updatedState = addStateElements(state, newElements, parent.id);
-  yield put(Actions.updateElements(updatedState));
+  yield put(
+    Actions.updateElements(addStateElements(state, newElements, parent.id)),
+  );
 
   const updatedElements = addChildrenToElement(parent.id, newElements, root);
   yield call(
@@ -180,10 +184,12 @@ export function* createElements(
   //   parent.id,
   // )?.children.map((child) => convertElementToPatchRequest(child));
 
-  const elementsWithUpdatedBuoyancy = buildElementsTree(
-    updatedState,
-    parent.id,
-  ).children.map((child) => convertElementToPatchRequest(child));
+  const updatedParent: LibraryElement<Entity> = yield select(
+    selectElementAsTree(parent.id),
+  );
+  const elementsWithUpdatedBuoyancy = updatedParent.children.map((child) =>
+    convertElementToPatchRequest(child),
+  );
 
   const createdElements = yield call(reqWrapper, apiSaveElements, {
     data: elementsWithUpdatedBuoyancy,
@@ -260,6 +266,7 @@ export function* addChildToElementSaga(
 
 export function* softDeleteSaga(action: T.DeleteItem) {
   const { id } = action.payload;
+
   if (!action.meta) {
     console.error(
       `You have to provide metainformation for action ${action.type}`,
@@ -268,30 +275,22 @@ export function* softDeleteSaga(action: T.DeleteItem) {
   }
   const { screenId, undo } = action.meta;
 
-  const root: LibraryElement<'root'> = yield select(
-    selectors.selectScreenRootElement(screenId),
+  const element: StateElement = yield select(selectElementById(id));
+
+  if (!element.parent) return;
+
+  const parent: LibraryElement<Entity> = yield select(
+    selectElementAsTree(element.parent),
   );
-  const element = findChildByID(root, id);
-  if (!element) {
-    console.error(`Can not find removed element ${id} in the tree!`);
-    return;
-  }
-  if (['root', 'none'].includes(element.type)) return;
 
-  const parent = findParentByChildID(root, id);
-  if (!parent) {
-    console.error(`Can not find parent of removed element  ${id} in the tree!`);
-    return;
-  }
-
-  if (!isElementCanBeRemove(parent, element.type)) {
+  if (!isElementCanBeRemove(parent, element.type as Entity)) {
     yield put(
       Actions.setNotification(DISALLOW_REMOVE_ELEMENT_NOTIFICATION_TEXT),
     );
     return;
   }
 
-  const childrenIds = parent.children.map((child) => child.id);
+  // const childrenIds = parent.children.map((child) => child.id);
 
   if (!undo) {
     yield put(
@@ -301,23 +300,32 @@ export function* softDeleteSaga(action: T.DeleteItem) {
     );
   }
 
-  const activeItem: ReturnType<typeof selectors.selectActiveElement> = yield select(
-    selectors.selectActiveElement,
-  );
+  const activeElementId = yield select(selectActiveElementId);
 
-  if (activeItem.id === id) {
+  if (activeElementId === id) {
     yield put(Actions.setActiveElementId(parent.id));
   }
 
-  const updatedRoot = removeChildrenFromElement(parent.id, [element], root);
+  const state = yield select(selectElementsForScreen(screenId));
+  yield put(Actions.updateElements(removeStateElement(state, id)));
+
+  // const updatedRoot = removeChildrenFromElement(parent.id, [element], root);
+  const updatedParent: StateElement = yield select(
+    selectElementById(parent.id),
+  );
+
+  const root: StateElement = yield select(selectScreenRootElement(screenId));
+  const updatedRoot: LibraryElement<'root'> = yield select(
+    selectElementAsTree(root.id),
+  );
 
   yield put(Actions.updateElementsTree(updatedRoot, action, action.meta));
-  yield put(Actions.removeElements([id]));
+  // yield put(Actions.removeElements([id]));
 
-  const filtered = childrenIds.filter((childId) => childId !== id);
+  // const filtered = childrenIds.filter((childId) => childId !== id);
 
   yield call(reqWrapper, apiChangeRecursiveElement, {
-    data: { children: filtered },
+    data: { children: updatedParent.children },
     id: parent.id,
   });
 }
@@ -332,20 +340,7 @@ export function* restoreElementSaga(action: T.RestoreElementChildren) {
   }
   const { screenId, undo } = action.meta;
 
-  const root = yield select(selectors.selectScreenRootElement(screenId));
-
-  const element = findChildByID(root, elementId);
-  if (!element) {
-    console.error(`Can not find removed element ${elementId} in the tree!`);
-    return;
-  }
-
-  yield call(reqWrapper, apiChangeRecursiveElement, {
-    data: {
-      children: [...element.children.map((child) => child.id), ...childrenIds],
-    },
-    id: elementId,
-  });
+  const element: StateElement = yield select(selectElementById(elementId));
 
   if (!undo) {
     yield put(
@@ -354,11 +349,32 @@ export function* restoreElementSaga(action: T.RestoreElementChildren) {
       ),
     );
   }
+  const state: Map<StateElement> = yield select(
+    selectElementsForScreen(screenId),
+  );
 
-  const updatedRoot = yield call(reqWrapper, apiGetElement, { id: root.id });
+  yield put(
+    Actions.updateElements(
+      updateStateElement(state, elementId, {
+        children: [...state[elementId].children, ...childrenIds],
+      }),
+    ),
+  );
+
+  // const updatedRoot = yield call(reqWrapper, apiGetElement, { id: root.id });
+  const root = yield select(selectScreenRootElement(screenId));
+  const updatedRoot: LibraryElement<'root'> = yield select(
+    selectElementAsTree(root.id),
+  );
 
   yield put(Actions.updateElementsTree(updatedRoot, action, action.meta));
 
+  yield call(reqWrapper, apiChangeRecursiveElement, {
+    data: {
+      children: [...element.children, ...childrenIds],
+    },
+    id: elementId,
+  });
   // yield put(Actions.addElements([updatedRoot]));
 }
 

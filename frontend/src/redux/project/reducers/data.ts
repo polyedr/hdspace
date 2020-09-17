@@ -40,7 +40,10 @@ function dataReducer(
     case TYPES.UPDATE_ELEMENTS: {
       return {
         ...state,
-        ...action.payload,
+        elements: {
+          ...state.elements,
+          ...action.payload,
+        },
       };
     }
 
