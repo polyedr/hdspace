@@ -208,7 +208,6 @@ const Workspace = ({
             isResizing={hasItemBeingResized}
             setIsResizing={setHasItemBeingResized}
           />
-          {/*! isPrototypeMode && <ContainersBorders /> */}
           {!isPrototypeMode && <Borders />}
         </Scrollbar>
       </div>

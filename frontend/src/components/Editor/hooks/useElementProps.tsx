@@ -26,7 +26,7 @@ const isElementStructType = (type: string): type is ElementEntity => {
   return type in LIBRARY_ELEMENTS;
 };
 
-export type RendererProps = {
+export type ElementProps = {
   currentValue?: any;
   isBorderVisible?: boolean;
   params?: any;
@@ -37,7 +37,7 @@ export type RendererProps = {
   projectClasses?: ProjectClass[];
 } & Omit<SharedRendererProps, 'children'>;
 
-const useItemProps = (item: LibraryElementUnion): RendererProps | null => {
+const useElementProps = (item: LibraryElementUnion): ElementProps | null => {
   const { id, type, styles, children } = item;
   const root = useSelector(selectRootElement);
   const rootID = useSelector(selectRootID);
@@ -175,7 +175,7 @@ const useItemProps = (item: LibraryElementUnion): RendererProps | null => {
   return {
     ...commonRendererProps,
     ...additionalProps,
-  } as RendererProps;
+  } as ElementProps;
 };
 
-export default useItemProps;
+export default useElementProps;

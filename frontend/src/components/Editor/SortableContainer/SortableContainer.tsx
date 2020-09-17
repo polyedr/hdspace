@@ -7,7 +7,7 @@ import { LibraryElement, LibraryElementUnion } from '../../../api/types';
 import { LIST_SCENARIO_TYPE } from '../../../constants/defaultParams';
 import { Indices } from '../../../redux/project/types';
 
-import useItemProps from '../hooks/useItemProps';
+import useElementProps from '../hooks/useElementProps';
 import { RENDERERS } from '../../UI/RenderElements';
 import {
   selectActiveItem,
@@ -52,7 +52,7 @@ const SortableContainer: React.FC<Props> = ({
   const dispatch = useDispatch();
 
   const [isDragging, setIsDragging] = useState<boolean>(false);
-  const itemProps = useItemProps(item);
+  const itemProps = useElementProps(item);
 
   if (itemProps === null) {
     return null;
