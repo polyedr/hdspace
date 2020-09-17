@@ -1,16 +1,58 @@
-// import { useMemo } from 'react';
-// import { LibraryElementUnion } from '../../../api/types';
+import { useMemo } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { LibraryElementUnion, ProjectClass } from '../../../api/types';
 import { SharedRendererProps } from '../../UI/RenderElements/types';
-// import { convertPropCSS } from '../../../utils/StyleHelper';
-// import { findParentByChildID } from '../../../utils/ElementsTreeHelper';
-// import { SavedElementsValues } from '../../../redux/project/types';
+import { convertPropCSS } from '../../../utils/StyleHelper';
+import { findParentByChildID } from '../../../utils/ElementsTreeHelper';
+import { SavedElementsValues } from '../../../redux/project/types';
+import {
+  selectActiveItem,
+  selectCurrentProject,
+  selectRootElement,
+  selectRootID,
+  selectSavedElementsValues,
+  selectScreenLoader,
+  selectShowingBorders,
+} from '../../../redux/project/selectors';
+import { updateSavedElementValues } from '../../../redux/project/actions';
+import { selectIsPrototypeMode } from '../../../redux/user/selectors';
+import {
+  ChildrenElements,
+  LIBRARY_ELEMENTS,
+} from '../../../domain/libraryElements/libraryElements';
+import { ElementEntity } from '../../../domain/core';
 
-type CommonRendererProps = Omit<SharedRendererProps, 'children'>;
+const isElementStructType = (type: string): type is ElementEntity => {
+  return type in LIBRARY_ELEMENTS;
+};
 
-const useItemProps = (/* item: LibraryElementUnion */) => {
-  /* const { id, styles, children } = item;
-  
+export type RendererProps = {
+  currentValue?: any;
+  isBorderVisible?: boolean;
+  params?: any;
+  onElementChange?: (item, value) => void;
+  childrenElements?: ChildrenElements;
+  isRadioChecked?: boolean;
+  isCheckboxChecked?: boolean;
+  projectClasses?: ProjectClass[];
+} & Omit<SharedRendererProps, 'children'>;
 
+const useItemProps = (item: LibraryElementUnion): RendererProps | null => {
+  const { id, type, styles, children } = item;
+  const root = useSelector(selectRootElement);
+  const rootID = useSelector(selectRootID);
+  const savedElements = useSelector(selectSavedElementsValues);
+  const disableInteractions = useSelector(selectIsPrototypeMode);
+  const activeItem = useSelector(selectActiveItem);
+  const showBorders = useSelector(selectShowingBorders);
+  const screenLoader = useSelector(selectScreenLoader);
+  const currentProject = useSelector(selectCurrentProject);
+  const projectClasses = currentProject.projectData.classes;
+
+  const dispatch = useDispatch();
+
+  const onElementChange = (item, value) =>
+    dispatch(updateSavedElementValues(item, value));
 
   const isRadioChecked = (
     value: string,
@@ -20,7 +62,7 @@ const useItemProps = (/* item: LibraryElementUnion */) => {
   const isCheckboxChecked = (itemId: string) =>
     Boolean(savedElements[itemId]?.savedValue);
 
-  const getIsActive = !disableInteractions && item.id === activeItemId;
+  const getIsActive = !disableInteractions && item.id === activeItem.itemId;
 
   const ownStyles = convertPropCSS(styles.ownStyles);
 
@@ -36,11 +78,6 @@ const useItemProps = (/* item: LibraryElementUnion */) => {
   const convertedEntityStyles = convertPropCSS(entityStyles);
   const convertedGroupStyles = convertPropCSS(groupStyles);
 
-  const isBorderedElement =
-    findParentByChildID(root, id)?.id === rootID || id === rootID;
-  const isBorderVisible =
-    (isBorderedElement && showBorders) || (isBorderedElement && getIsActive);
-
   const commonRendererProps: Omit<SharedRendererProps, 'children'> = {
     ...(disableInteractions && { className: '' }),
     id: id === rootID ? 'root' : id,
@@ -48,16 +85,16 @@ const useItemProps = (/* item: LibraryElementUnion */) => {
     ownStyles,
     entityStyles: convertedEntityStyles,
     groupStyles: convertedGroupStyles,
-    active: !disableInteractions && id === activeItemId,
+    active: !disableInteractions && id === activeItem.itemId,
     sortableId: id,
     elementRef: null,
   };
 
-  const getAdditionalProps = useMemo(() => {
+  const additionalProps = useMemo(() => {
     const isBorderedElement =
-    findParentByChildID(root, id)?.id === rootID || id === rootID;
+      findParentByChildID(root, id)?.id === rootID || id === rootID;
     const isBorderVisible =
-    (isBorderedElement && showBorders) || (isBorderedElement && getIsActive); 
+      (isBorderedElement && showBorders) || (isBorderedElement && getIsActive);
 
     const commonRendererProps = {
       ...(disableInteractions && { className: '' }),
@@ -66,10 +103,10 @@ const useItemProps = (/* item: LibraryElementUnion */) => {
       ownStyles,
       entityStyles: convertedEntityStyles,
       groupStyles: convertedGroupStyles,
-      active: !disableInteractions && id === activeItemId,
+      active: !disableInteractions && id === activeItem.itemId,
       sortableId: id,
       elementRef: null,
-      }
+    };
     switch (item.type) {
       case 'container':
       case 'divBlock': {
@@ -81,7 +118,7 @@ const useItemProps = (/* item: LibraryElementUnion */) => {
         return {
           ...commonRendererProps,
           currentValue: String(savedElements[id]?.savedValue),
-          onElementChange: updateSavedElementValues,
+          onElementChange,
           params: item.parameters,
         };
       }
@@ -89,7 +126,7 @@ const useItemProps = (/* item: LibraryElementUnion */) => {
       case 'textarea': {
         return {
           currentValue: savedElements[id]?.savedValue,
-          onElementChange: updateSavedElementValues,
+          onElementChange,
           params: item.parameters,
         };
       }
@@ -98,7 +135,7 @@ const useItemProps = (/* item: LibraryElementUnion */) => {
         return {
           currentValue: savedElements[id]?.savedValue,
           isCheckboxChecked: isCheckboxChecked(id),
-          onElementChange: updateSavedElementValues,
+          onElementChange,
           params: item.parameters,
         };
       }
@@ -130,7 +167,15 @@ const useItemProps = (/* item: LibraryElementUnion */) => {
           params: item.parameters,
         };
     }
-  }, [item]); */
+  }, [item]);
+
+  if (screenLoader || !isElementStructType(type)) {
+    return null;
+  }
+  return {
+    ...commonRendererProps,
+    ...additionalProps,
+  } as RendererProps;
 };
 
 export default useItemProps;

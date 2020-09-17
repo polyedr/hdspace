@@ -370,14 +370,3 @@ export const elementToLS = ({
   type: struct_type,
   children: [],
 });
-
-export const getListNotDragging = (type: string): string[] => {
-  switch (type) {
-    case 'container': {
-      return ['element'];
-    }
-
-    default:
-      return ['element'];
-  }
-};

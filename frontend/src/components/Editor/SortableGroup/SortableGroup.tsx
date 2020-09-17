@@ -1,4 +1,5 @@
 import React, { useCallback } from 'react';
+import { useSelector } from 'react-redux';
 import cn from 'classnames';
 import { SortableOptions } from 'sortablejs';
 
@@ -6,14 +7,14 @@ import { SortableOptions } from 'sortablejs';
 import Sortable from '../Sortable/Sortable';
 import sharedClasses from '../../../styles/sharedClasses';
 import { Indices } from '../../../redux/project/types';
+import { selectActiveItem } from '../../../redux/project/selectors';
+import { selectIsPrototypeMode } from '../../../redux/user/selectors';
 
 const styles = require('./SortableGroup.scss');
 
 type Props = {
   elementRenderer: React.FunctionComponent;
-  isActive: boolean;
   disableSortable: boolean;
-  disableInteractions: boolean;
   isPutItem: boolean | string[];
   group: string;
   children?: any;
@@ -27,9 +28,7 @@ type Props = {
 
 const SortableGroup: React.FC<Props> = ({
   elementRenderer,
-  isActive,
   disableSortable,
-  disableInteractions,
   isPutItem,
   group,
   children,
@@ -41,6 +40,10 @@ const SortableGroup: React.FC<Props> = ({
   ...elementProps
 }) => {
   const { id } = elementProps;
+  const activeItem = useSelector(selectActiveItem);
+  const disableInteractions = useSelector(selectIsPrototypeMode);
+
+  const isActive = !disableInteractions && id === activeItem.itemId;
 
   const handleChoose = useCallback(
     (evt) => {
