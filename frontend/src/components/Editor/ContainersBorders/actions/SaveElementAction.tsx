@@ -28,6 +28,10 @@ const SaveElementAction: React.FC<SaveElementAction> = ({ item }) => {
   const inputRef = React.createRef<HTMLInputElement>();
   const dispatch = useDispatch();
 
+  if (!activeElement) {
+    return null;
+  }
+
   const convertElementToSection = (
     activeElement: StateElement,
   ): SectionServerElement => {

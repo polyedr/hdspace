@@ -103,11 +103,14 @@ const getCategoryTab = (
   }
 };
 
-const convertElementToData = (element: ServerElement<any>): ElementData => ({
+const convertElementToData = (
+  element: ServerElement<any>,
+  isCustom: boolean = false,
+): ElementData => ({
   type: element.struct_type,
   icon: ICONS[element.struct_type],
   name: element.name,
-  custom: !!element.custom,
+  custom: isCustom,
 });
 
 export const getRightPanelCategoryTabs = (
@@ -253,7 +256,7 @@ export const createCustomElementsHierarchy = (
   customUI: R.keys(customLibraryElements).reduce(
     (acc, name) => ({
       ...acc,
-      [name]: convertElementToData(customLibraryElements[name]),
+      [name]: convertElementToData(customLibraryElements[name], true),
     }),
     {},
   ),
@@ -370,14 +373,3 @@ export const elementToLS = ({
   type: struct_type,
   children: [],
 });
-
-export const getListNotDragging = (type: string): string[] => {
-  switch (type) {
-    case 'container': {
-      return ['element'];
-    }
-
-    default:
-      return ['element'];
-  }
-};

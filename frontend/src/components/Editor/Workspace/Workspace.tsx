@@ -8,10 +8,9 @@ import { HotKeys } from '../HotKeys/HotKeys';
 // import ContainersBorders from '../ContainersBorders/ContainersBorders';
 import Borders from '../ContainersBorders/Borders';
 import Scrollbar from '../../UI/Scrollbar';
-import { SortableContainer } from '../SortableContainer/SortableContainer';
+import SortableContainer from '../SortableContainer/SortableContainer';
 import { Entity } from '../../../domain/core';
 import { LibraryElement, LibraryElementUnion } from '../../../api/types';
-import { getListNotDragging } from '../../../utils/parseScenario';
 import { getClassDevice } from '../../../utils/dom';
 import { AppReduxState } from '../../../shared/types/app';
 import { DEFAULT_SCREEN_MODE } from '../../../constants/defaultParams';
@@ -70,7 +69,6 @@ const Workspace: React.FC<Props> = ({
   exportProject,
 }) => {
   const [isMoving, setIsMoving] = useState<boolean>(true);
-  const [listNotDragging, setListNotDragging] = useState<string[]>([]);
   const [currentScreenMode, setCurrentScreenMode] = useState<ScreenMode>({
     ...DEFAULT_SCREEN_MODE,
     isDefaultMode: true,
@@ -92,11 +90,8 @@ const Workspace: React.FC<Props> = ({
     parentId: number,
     item: LibraryElement<Entity>,
   ) => {
-    const { id: itemId, type } = item;
-    const list = getListNotDragging(type);
-
+    const { id: itemId } = item;
     setActiveItem(itemId);
-    setListNotDragging(list);
   };
 
   const handleRootClick = useCallback(
@@ -118,15 +113,7 @@ const Workspace: React.FC<Props> = ({
       if (itemID === activeElement.id) return;
 
       if (itemID) {
-        if (itemID === 'root') {
-          setActiveItem(elementsTree.id);
-        } else {
-          const { type } = activeElement;
-          const list = getListNotDragging(type);
-
-          setActiveItem(itemID);
-          setListNotDragging(list);
-        }
+        setActiveItem(elementsTree.id);
       }
     },
     [activeElement, elementsTree],
@@ -200,15 +187,12 @@ const Workspace: React.FC<Props> = ({
         >
           <SortableContainer
             item={elementsTree as LibraryElementUnion}
-            activeItemId={activeElement.id}
             isMoving={isMoving}
-            listNotDragging={listNotDragging}
             setIsMoving={setIsMoving}
             onActiveElementChange={handleActiveElementChange} // needed to activate item before dragging, in order to get new listNotDraggable
             isResizing={hasItemBeingResized}
             setIsResizing={setHasItemBeingResized}
           />
-          {/*! isPrototypeMode && <ContainersBorders /> */}
           {!isPrototypeMode && <Borders />}
         </Scrollbar>
       </div>
