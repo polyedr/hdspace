@@ -109,7 +109,6 @@
     "@types/node": "^11.15.20",
     "@types/ramda": "^0.26.44",
     "@types/react-redux": "^7.1.9",
-    "antd": "^3.26.18",
     "axios": "^0.18.1",
     "bem-cn": "^3.0.1",
     "classnames": "^2.2.6",

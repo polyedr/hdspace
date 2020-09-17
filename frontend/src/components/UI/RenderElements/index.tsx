@@ -23,6 +23,7 @@ import Image from './Image/Image';
 import Map from './Map/Map';
 import Calendar from './Calendar/Calendar';
 import Container from './Container/Container';
+import Section from './Section/Section';
 import Clock from './Clock/Clock';
 import Undefined from './Undefined/Undefined';
 import Screenshot from './Screenshot/Screenshot';
@@ -66,7 +67,7 @@ export const RENDERERS: Record<Entity, React.FC<any>> = {
   subscribeForm: Container,
   cardsSection: Container,
   featureSection: Container,
-  section: Container,
+  section: Section,
 };
 
 export const EXPORT_RENDERERS: Record<Entity, React.FunctionComponent<any>> = {
