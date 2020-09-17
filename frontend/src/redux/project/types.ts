@@ -416,6 +416,10 @@ export type AddElements = IAction<
   { elements: LibraryElement<any>[]; parentId?: string }
 >;
 export type RemoveElements = IAction<typeof TYPES.REMOVE_ELEMENTS, string[]>;
+export type UpdateElements = IAction<
+  typeof TYPES.UPDATE_ELEMENTS,
+  Map<StateElement>
+>;
 
 export type Action =
   | LoadProjects
@@ -488,7 +492,8 @@ export type Action =
   | UpdateScreen
   | AddElements
   | RemoveElements
-  | SaveLibraryElement;
+  | SaveLibraryElement
+  | UpdateElements;
 
 export type ItemToCopyInfo = {
   id: string;

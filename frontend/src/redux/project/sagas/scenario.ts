@@ -5,7 +5,7 @@ import * as R from 'ramda';
 import * as Actions from '../actions';
 import { selectors, T } from '..';
 import { updateSavedElementsValues } from './screen';
-
+import { Map, ElementHistoryMeta, StateElement } from '../types';
 import {
   DISALLOW_ADD_ELEMENT_NOTIFICATION_TEXT,
   DISALLOW_REMOVE_ELEMENT_NOTIFICATION_TEXT,
@@ -49,11 +49,20 @@ import {
 } from '../../../utils/AvailableChildrenHelper';
 import { DEFAULT_INDENTS } from '../../../domain/constants/defaultStyles';
 import { apiAddScenarios } from '../../../api/scenario';
-import { ElementHistoryMeta } from '../types';
+
 import { ReturnPromisedType } from '../../../shared/types';
 import { convertElementFromResponse } from '../../../api/converters/fromResponse';
 import getSavedValue from '../../../utils/getSavedValue';
 import { reqWrapper } from './index';
+import {
+  addStateElements,
+  buildElementsTree,
+} from '../../../utils/normalizedStateHelpers';
+import {
+  selectActiveElementId,
+  selectElementsForCurrentScreen,
+  selectElementsForScreen,
+} from '../selectors';
 
 export function* updateElementsTree(
   root: LibraryElement<'root'>,
@@ -101,7 +110,7 @@ export function* createContainer(scenario?: Partial<T.IScenarioItem>) {
 
 export function* createElements(
   elements: ServerElement<Entity>[],
-  parent: LibraryElement<Entity>,
+  parent: LibraryElement<Entity>, // TODO: need to use here parent id only
   { screenId, undo }: ElementHistoryMeta,
 ) {
   const disallowedElements = elements.filter(
@@ -150,6 +159,10 @@ export function* createElements(
     id: parent.id,
   });
 
+  const state = yield select(selectElementsForCurrentScreen);
+  const updatedState = addStateElements(state, newElements, parent.id);
+  yield put(Actions.updateElements(updatedState));
+
   const updatedElements = addChildrenToElement(parent.id, newElements, root);
   yield call(
     updateElementsTree,
@@ -162,26 +175,22 @@ export function* createElements(
     { screenId, undo },
   );
 
-  const elementsWithUpdatedBuoyancy = findChildByID(
-    updatedElements,
+  // const elementsWithUpdatedBuoyancy = findChildByID(
+  //   updatedElements,
+  //   parent.id,
+  // )?.children.map((child) => convertElementToPatchRequest(child));
+
+  const elementsWithUpdatedBuoyancy = buildElementsTree(
+    updatedState,
     parent.id,
-  )?.children.map((child) => convertElementToPatchRequest(child));
+  ).children.map((child) => convertElementToPatchRequest(child));
 
   const createdElements = yield call(reqWrapper, apiSaveElements, {
     data: elementsWithUpdatedBuoyancy,
   });
 
-  const childrenIds = createdElements.map((el) => el.id);
-
-  /* yield put(
-    addElements(
-      createdElements.map((el) => convertElementFromResponse(el)),
-      parent.id,
-    ),
-  ); */
-
   // eslint-disable-next-line consistent-return
-  return childrenIds;
+  return createdElements.map((el) => el.id);
 }
 
 export function* createElementsSaga(
@@ -193,19 +202,16 @@ export function* createElementsSaga(
     );
     return;
   }
+
   const { createdElements } = action.payload;
   const { screenId } = action.meta;
 
-  const activeItem: ReturnType<typeof selectors.selectActiveElement> = yield select(
-    selectors.selectActiveElement,
+  const elements: Map<StateElement> = yield select(
+    selectElementsForScreen(screenId),
   );
-  const root = yield select(selectors.selectScreenRootElement(screenId));
-  const activeItemElement = findChildByID(root, activeItem.id);
+  const activeElementId: string = yield select(selectActiveElementId);
 
-  if (!activeItemElement) {
-    console.error(`Active item ${activeItem.id} not found in elements tree!`);
-    return;
-  }
+  const activeElementTree = buildElementsTree(elements, activeElementId);
 
   const customLibraryElements = yield select(
     selectors.selectCustomLibraryElements,
@@ -216,7 +222,7 @@ export function* createElementsSaga(
       ? customLibraryElements[element.name]
       : convertCreatedElementToRequest(element.type as Entity, null);
   });
-  yield call(createElements, convertedCreatedElements, activeItemElement, {
+  yield call(createElements, convertedCreatedElements, activeElementTree, {
     screenId,
   });
 }

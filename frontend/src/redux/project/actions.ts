@@ -1,7 +1,7 @@
-import { ElementHistoryMeta, HistoryMeta, Screen } from './types';
-import { ServerElement } from '../../api/types/elements';
+import { ElementHistoryMeta, HistoryMeta, Screen, StateElement } from './types';
+import { ServerElement, Project, LibraryElement } from '../../api/types';
 import TYPES from '../../constants/actions';
-import { Project, LibraryElement } from '../../api/types';
+
 import { ChildEntity, Entity } from '../../domain/core';
 import { ChildrenElements } from '../../domain/libraryElements/libraryElements';
 import { CssLikeStyles } from '../../utils/StyleHelper';
@@ -562,4 +562,11 @@ export const saveLibraryElementToState = <T extends Entity>(
 ) => ({
   type: TYPES.SAVE_LIBRARY_ELEMENT_TO_STATE,
   payload: element,
+});
+
+export const updateElements = (
+  chunk: T.Map<StateElement>,
+): T.UpdateElements => ({
+  type: TYPES.UPDATE_ELEMENTS,
+  payload: chunk,
 });

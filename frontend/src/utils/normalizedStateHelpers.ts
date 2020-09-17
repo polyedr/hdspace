@@ -1,4 +1,4 @@
-import { Map, StateElement } from '../redux/project/types';
+import { Indices, Map, StateElement } from '../redux/project/types';
 import { LibraryElement } from '../api/types';
 
 export const arrayToMap = <T extends { id: any }>(arr: T[]): Map<T> => {
@@ -64,14 +64,62 @@ export const removeStateElement = (
   return newState;
 };
 
+export const updateBuoyancy = (
+  state: Map<StateElement>,
+  parentId: string,
+): Map<StateElement> => {
+  const newState = { ...state };
+  const parent = newState[parentId];
+  parent.children.forEach((id, i) => {
+    newState[id].buoyancy = i;
+  });
+  return newState;
+};
+
 export const addStateElements = (
   state: Map<StateElement>,
   elements: LibraryElement<any>[],
-  parent?: string,
+  parentId: string,
 ): Map<StateElement> => {
-  const newPart = flattenElements(elements, parent);
-  return {
+  const newState = {
     ...state,
-    ...newPart,
+    ...flattenElements(elements, parentId),
+    [parentId]: {
+      ...state[parentId],
+      children: [...state[parentId].children, ...elements.map((el) => el.id)],
+    },
   };
+
+  return updateBuoyancy(newState, parentId);
+};
+
+export const updateStateElement = (
+  state: Map<StateElement>,
+  elementId: string,
+  data: Partial<StateElement>,
+): Map<StateElement> => ({
+  ...state,
+  [elementId]: {
+    ...state[elementId],
+    ...data,
+  },
+});
+
+export const moveStateElement = (
+  state: Map<StateElement>,
+  indices: Indices,
+  elementId: string,
+  oldParentId: string,
+  newParentId: string,
+): Map<StateElement> => {
+  const newState = { ...state };
+  newState[oldParentId].children = newState[oldParentId].children.filter(
+    (id) => id !== elementId,
+  );
+  newState[newParentId].children = [
+    ...newState[newParentId].children,
+    elementId,
+  ];
+  newState[elementId].parent = newParentId;
+  return newState;
 };

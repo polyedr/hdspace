@@ -37,6 +37,13 @@ function dataReducer(
       };
     }
 
+    case TYPES.UPDATE_ELEMENTS: {
+      return {
+        ...state,
+        ...action.payload,
+      };
+    }
+
     case TYPES.LOAD_PROJECTS_SUCCESS: {
       return {
         ...state,

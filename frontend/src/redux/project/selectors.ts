@@ -10,7 +10,11 @@ import { AppReduxState } from '../../shared/types/app';
 import { Project } from '../../api/types';
 import { CssLikeStyles } from '../../utils/StyleHelper';
 import { makeFeatureStateSelector } from '../../shared/redux';
-import { mapToArr } from '../../utils/normalizedStateHelpers';
+import {
+  buildElementsTree,
+  flattenElements,
+  mapToArr,
+} from '../../utils/normalizedStateHelpers';
 
 export const selectProjectState = makeFeatureStateSelector('project');
 
@@ -78,7 +82,7 @@ export function selectProjectListLoader(state: AppReduxState) {
 export const selectActiveElementId = ({ project }: AppReduxState) =>
   project.edit.activeElementId;
 
-export const selectElements = ({ project }: AppReduxState) =>
+export const selectAllElements = ({ project }: AppReduxState) =>
   project.data.elements;
 
 export const selectActiveElement = (state: AppReduxState) =>
@@ -226,3 +230,17 @@ export function selectCustomLibraryElements(
 ): NamedServerElements {
   return selectProjectState(state).ui.customLibraryElements;
 }
+
+export const selectElementsForScreen = (screenId: number) => (
+  state: AppReduxState,
+) => {
+  const screen = selectScreenById(screenId)(state);
+  const rootId = screen.element?.id;
+  const tree = buildElementsTree(state.project.data.elements, rootId);
+  return flattenElements([tree]);
+};
+
+export const selectElementsForCurrentScreen = (state: AppReduxState) => {
+  const currentScreenId = selectCurrentScreenId(state);
+  return selectElementsForScreen(currentScreenId)(state);
+};

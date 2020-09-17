@@ -11,7 +11,7 @@ import { saveElementToLibrary } from '../../../../redux/project/actions';
 import { SectionServerElement } from '../../../../api/types';
 import {
   selectActiveElement,
-  selectElements,
+  selectElementsForCurrentScreen,
 } from '../../../../redux/project/selectors';
 import { StateElement } from '../../../../redux/project/types';
 import { buildElementsTree } from '../../../../utils/normalizedStateHelpers';
@@ -24,7 +24,7 @@ type SaveElementAction = {
 
 const SaveElementAction: React.FC<SaveElementAction> = ({ item }) => {
   const activeElement = useSelector(selectActiveElement);
-  const elements = useSelector(selectElements);
+  const elements = useSelector(selectElementsForCurrentScreen);
   const inputRef = React.createRef<HTMLInputElement>();
   const dispatch = useDispatch();
 

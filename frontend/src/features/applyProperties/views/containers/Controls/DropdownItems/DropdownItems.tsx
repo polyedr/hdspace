@@ -7,7 +7,7 @@ import { DropdownItemElement } from '../../../../../../api/types';
 import {
   selectActiveElementId,
   selectCurrentScreenId,
-  selectElements,
+  selectElementsForCurrentScreen,
 } from '../../../../../../redux/project/selectors';
 import { AppReduxState } from '../../../../../../shared/types/app';
 import sharedClasses from '../../../../../../styles/sharedClasses';
@@ -29,7 +29,7 @@ type StateProps = {
 };
 
 function mapState(state: AppReduxState): StateProps {
-  const elements = selectElements(state);
+  const elements = selectElementsForCurrentScreen(state);
   const activeElementId = selectActiveElementId(state);
   const tree = buildElementsTree(elements, activeElementId);
 
