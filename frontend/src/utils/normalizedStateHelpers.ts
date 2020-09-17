@@ -117,3 +117,18 @@ export const moveStateElement = (
   newState[elementId].parent = newParentId;
   return newState;
 };
+
+export const insertStateElement = (
+  state: Map<StateElement>,
+  element: LibraryElement<any>,
+  parentId: string,
+  childId: string,
+): Map<StateElement> => {
+  const newState = { ...state, ...flattenElements([element], parentId) };
+  newState[parentId].children = [
+    ...newState[parentId].children.filter((id) => id !== childId),
+    element.id,
+  ];
+  newState[childId].parent = element.id;
+  return newState;
+};

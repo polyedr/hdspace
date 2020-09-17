@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 
-import { call, put, select } from 'redux-saga/effects';
+import { call, put, select, fork } from 'redux-saga/effects';
 import * as R from 'ramda';
 import * as Actions from '../actions';
 import { selectors, T } from '..';
@@ -19,9 +19,7 @@ import { Entity } from '../../../domain/core';
 import {
   addChildrenToElement,
   findChildByID,
-  findParentByChildID,
   getElementsArray,
-  moveElement,
   updateElementName,
   updateElementParameters,
 } from '../../../utils/ElementsTreeHelper';
@@ -55,6 +53,7 @@ import getSavedValue from '../../../utils/getSavedValue';
 import { reqWrapper } from './index';
 import {
   addStateElements,
+  insertStateElement,
   removeStateElement,
   updateStateElement,
 } from '../../../utils/normalizedStateHelpers';
@@ -379,12 +378,12 @@ export function* restoreElementSaga(action: T.RestoreElementChildren) {
 }
 
 export function* addElementToElement(
-  element: LibraryElement<Entity>,
-  parent: LibraryElement<Entity>,
+  element: StateElement,
+  parent: StateElement,
 ) {
   const elementData = {
     name: parent.name,
-    children: [...parent.children.map((child) => child.id), element.id],
+    children: [...parent.children, element.id],
   };
 
   yield call(reqWrapper, apiChangeRecursiveElement, {
@@ -393,7 +392,9 @@ export function* addElementToElement(
   });
 }
 
-export function* wrapIntoContainerSaga(action: T.WrapIntoContainer) {
+export function* wrapIntoContainerSaga(
+  action: ReturnType<typeof Actions.wrapIntoContainer>,
+) {
   const { id } = action.payload;
   if (!action.meta) {
     console.error(
@@ -403,22 +404,25 @@ export function* wrapIntoContainerSaga(action: T.WrapIntoContainer) {
   }
   const { screenId } = action.meta;
 
-  const root: LibraryElement<'root'> = yield select(
-    selectors.selectScreenRootElement(screenId),
-  );
+  const element = yield select(selectElementById(id));
+  const parent = yield select(selectElementById(element.parent));
 
-  const wrappedItemParent = findParentByChildID(root, id);
-  const wrappedItem = findChildByID(root, id);
-
-  if (!wrappedItemParent) {
-    console.error(`Can not find parent of wrappedItem ${id} in tree!`);
-    return;
-  }
-
-  if (!wrappedItem) {
-    console.error(`Can not find wrappedItem ${id} in tree!`);
-    return;
-  }
+  // const root: LibraryElement<'root'> = yield select(
+  //   selectors.selectScreenRootElement(screenId),
+  // );
+  //
+  // const wrappedItemParent = findParentByChildID(root, id);
+  // const wrappedItem = findChildByID(root, id);
+  //
+  // if (!wrappedItemParent) {
+  //   console.error(`Can not find parent of wrappedItem ${id} in tree!`);
+  //   return;
+  // }
+  //
+  // if (!wrappedItem) {
+  //   console.error(`Can not find wrappedItem ${id} in tree!`);
+  //   return;
+  // }
 
   const serverContainer = convertCreatedElementToRequest('container', null);
 
@@ -432,20 +436,25 @@ export function* wrapIntoContainerSaga(action: T.WrapIntoContainer) {
 
   yield put(
     Actions.setUndoActions(
-      Actions.unwrapFromContainer(
-        id,
-        createdContainer.id,
-        wrappedItemParent.id,
-        { screenId },
-      ),
+      Actions.unwrapFromContainer(id, createdContainer.id, parent.id, {
+        screenId,
+      }),
     ),
   );
 
-  yield call(addElementToElement, createdContainer, wrappedItemParent);
+  const state = yield select(selectElementsForScreen(screenId));
+  yield put(
+    Actions.updateElements(
+      insertStateElement(state, createdContainer, parent.id, element.id),
+    ),
+  );
+  const container = yield select(selectElementById(createdContainer.id));
 
-  yield call(addElementToElement, wrappedItem, createdContainer);
+  yield fork(addElementToElement, container, parent);
 
-  const rootWithUpdatedParent = moveElement(
+  yield fork(addElementToElement, element, container);
+
+  /* const rootWithUpdatedParent = moveElement(
     wrappedItemParent.id,
     createdContainer,
     root,
@@ -456,14 +465,16 @@ export function* wrapIntoContainerSaga(action: T.WrapIntoContainer) {
     wrappedItem,
     rootWithUpdatedParent,
     0,
-  );
+  ); */
+  const root = yield select(selectScreenRootElement(screenId));
+  const updatedRoot = yield select(selectElementAsTree(root.id));
   yield put(
     Actions.updateElementsTree(
-      rootWithUpdatedContainer,
+      updatedRoot,
       Actions.redoWrapIntoContainer(
         id,
         createdContainer.id,
-        wrappedItemParent.id,
+        parent.id,
         action.meta,
       ),
       action.meta,
