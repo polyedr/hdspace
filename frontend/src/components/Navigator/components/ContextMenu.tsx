@@ -46,16 +46,16 @@ type Props = {
 
 const ContextMenu: React.FC<Props> = ({ open, onClose, anchorPosition }) => {
   const dispatch = useDispatch();
-  const { type: activeItemType, id: activeItemId } = useSelector(
+  const { type: activeElementType, id: activeElementId } = useSelector(
     selectActiveElement,
   );
   const emptyClipboard = !useSelector(selectItemToCopyInfo);
   const currentScreenId = useSelector(selectCurrentScreenId);
-  const canHaveChildren = canElementHaveChildren(activeItemType);
+  const canHaveChildren = canElementHaveChildren(activeElementType);
 
   const handleDelete = () => {
-    if (!activeItemId) return;
-    dispatch(deleteItem(activeItemId, { screenId: currentScreenId }));
+    if (!activeElementId) return;
+    dispatch(deleteItem(activeElementId, { screenId: currentScreenId }));
     onClose();
   };
 
@@ -86,7 +86,7 @@ const ContextMenu: React.FC<Props> = ({ open, onClose, anchorPosition }) => {
         Add new...
       </MenuItem>
 
-      <MenuItem disabled={activeItemType === 'root'} onClick={handleCopy}>
+      <MenuItem disabled={activeElementType === 'root'} onClick={handleCopy}>
         <Icon icon="copy" size={16} color="white" />
         Copy
       </MenuItem>
@@ -99,7 +99,7 @@ const ContextMenu: React.FC<Props> = ({ open, onClose, anchorPosition }) => {
         Paste
       </MenuItem>
 
-      <MenuItem disabled={activeItemType === 'root'} onClick={handleDelete}>
+      <MenuItem disabled={activeElementType === 'root'} onClick={handleDelete}>
         <Icon icon="delete" size={16} color="white" />
         Delete
       </MenuItem>

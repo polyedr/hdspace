@@ -8,7 +8,6 @@ import Spinner from '../UI/Spinner';
 import { AppReduxState } from '../../shared/types/app';
 import PropertiesTab from './PropertiesTab';
 import ElementsTab from './ElementsTab';
-import { ActiveElement } from '../../redux/project/types';
 
 const styles = require('./styles.scss');
 
@@ -46,7 +45,7 @@ const TabPanel: React.FC<TabPanelProps> = ({ value, index, children }) => {
 };
 
 const mapState = (state: AppReduxState) => ({
-  activeItem: selectors.selectActiveElement(state) as ActiveElement,
+  activeItem: selectors.selectActiveElement(state),
   isAddElementsModalOpened: selectors.selectIsAddElementsModalOpened(state),
   loader: selectors.selectLoader(state),
 });

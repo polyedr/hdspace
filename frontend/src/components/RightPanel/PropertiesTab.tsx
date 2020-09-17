@@ -36,7 +36,7 @@ import VideoSettings from '../../features/applyProperties/views/containers/Contr
 import FlexGrow from '../../features/applyProperties/views/containers/Controls/FlexGrow/FlexGrow';
 import BackgroundPosition from '../../features/applyProperties/views/containers/Controls/BackgroundPosition/BackgroundPosition';
 import BackgroundSize from '../../features/applyProperties/views/containers/Controls/BackgroundSize/BackgroundSize';
-import { ActiveElement } from '../../redux/project/types';
+import { StateElement } from '../../redux/project/types';
 import {
   createElements,
   setIsAddElementsModalOpened,
@@ -76,7 +76,7 @@ const CONTROLS: Record<Control, React.ComponentType<any>> = {
 };
 
 type Props = {
-  activeItem: ActiveElement;
+  activeItem: StateElement;
   createElements: typeof createElements;
   setIsAddElementsModalOpened: typeof setIsAddElementsModalOpened;
   isAddElementsModalOpened: boolean;

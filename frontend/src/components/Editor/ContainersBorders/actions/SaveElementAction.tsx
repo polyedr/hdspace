@@ -8,9 +8,13 @@ import cn from 'classnames';
 import { BorderedItem } from '../Border';
 
 import { saveElementToLibrary } from '../../../../redux/project/actions';
-import { LibraryElement, SectionServerElement } from '../../../../api/types';
-import { Entity } from '../../../../domain/core';
-import { selectActiveElement } from '../../../../redux/project/selectors';
+import { SectionServerElement } from '../../../../api/types';
+import {
+  selectActiveElement,
+  selectElements,
+} from '../../../../redux/project/selectors';
+import { StateElement } from '../../../../redux/project/types';
+import { buildElementsTree } from '../../../../utils/normalizedStateHelpers';
 
 const styles = require('./SaveElementAction.scss');
 
@@ -20,21 +24,17 @@ type SaveElementAction = {
 
 const SaveElementAction: React.FC<SaveElementAction> = ({ item }) => {
   const activeElement = useSelector(selectActiveElement);
+  const elements = useSelector(selectElements);
   const inputRef = React.createRef<HTMLInputElement>();
   const dispatch = useDispatch();
 
   const convertElementToSection = (
-    activeElement: LibraryElement<Entity, LibraryElement<Entity>[]>,
+    activeElement: StateElement,
   ): SectionServerElement => {
-    const {
-      name,
-      type,
-      buoyancy,
-      image,
-      styles,
-      parameters,
-      children,
-    } = activeElement;
+    const tree = buildElementsTree(elements, activeElement.id);
+
+    const { name, type, buoyancy, image, styles, parameters, children } = tree;
+
     return {
       name,
       buoyancy,

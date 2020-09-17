@@ -16,9 +16,9 @@ import {
 } from '../../../utils/parseScenario';
 import { AppReduxState } from '../../../shared/types/app';
 import {
-  ActiveElement,
   CreatedElement,
   ServerStructType,
+  StateElement,
 } from '../../../redux/project/types';
 import { MODAL_ADD_ELEMENTS_TABS } from '../../../constants/defaultParams';
 import {
@@ -55,7 +55,7 @@ const mapDispatchToProps = {
 };
 
 type OwnProps = {
-  activeItem: ActiveElement;
+  activeItem: StateElement;
   active: boolean;
   libraryElements: LibraryElements;
   onClose(): void;

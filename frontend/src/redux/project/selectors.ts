@@ -1,18 +1,13 @@
-import {
-  ActiveElement,
-  NamedServerElements,
-  Screen,
-  StateElement,
-} from './types';
+import { NamedServerElements, Screen, StateElement } from './types';
 import {
   DEFAULT_ACTIVE_ELEMENT,
   DEFAULT_PROJECT,
   DEFAULT_ROOT,
   DEFAULT_SCREEN,
 } from '../../constants/defaultParams';
-import { ChildEntity, Entity } from '../../domain/core';
+import { ChildEntity } from '../../domain/core';
 import { AppReduxState } from '../../shared/types/app';
-import { LibraryElement, Project } from '../../api/types';
+import { Project } from '../../api/types';
 import { CssLikeStyles } from '../../utils/StyleHelper';
 import { makeFeatureStateSelector } from '../../shared/redux';
 import { mapToArr } from '../../utils/normalizedStateHelpers';
@@ -83,7 +78,10 @@ export function selectProjectListLoader(state: AppReduxState) {
 export const selectActiveElementId = ({ project }: AppReduxState) =>
   project.edit.activeElementId;
 
-export const selectActiveElement = (state: AppReduxState): ActiveElement =>
+export const selectElements = ({ project }: AppReduxState) =>
+  project.data.elements;
+
+export const selectActiveElement = (state: AppReduxState) =>
   state.project.data.elements[selectActiveElementId(state)] ||
   DEFAULT_ACTIVE_ELEMENT;
 
@@ -142,9 +140,11 @@ export function selectCurrentEditableStyles<
     selectSharedStyles(state, activeElementClassNames[1]) ||
     ({} as Required<CssLikeStyles>);
 
-  const getActiveItemStyles = (activeStyles: string) => {
+  const getActiveItemStyles = (
+    activeStyles: string,
+  ): Required<CssLikeStyles> => {
     if (activeStyles === 'ownStyles' || activeStyles === '') {
-      return activeElementStyles;
+      return activeElementStyles as Required<CssLikeStyles>;
     }
     if (activeStyles === activeElementType) {
       return activeEntityStyles;
@@ -198,9 +198,13 @@ export const selectRemoteMove = ({ project }: AppReduxState) =>
 export const selectActiveItemChildrenStyles = makeActiveElementInfoSelector(
   'styles',
 );
-export const selectActiveItemParams = makeActiveElementInfoSelector(
-  'parameters',
-);
+// export const selectActiveItemParams = makeActiveElementInfoSelector(
+//   'parameters',
+// );
+export const selectActiveElementParams = (state: AppReduxState) => {
+  const activeElement = selectActiveElement(state);
+  return activeElement.parameters;
+};
 
 export function selectItemToCopyInfo(state: AppReduxState) {
   return selectProjectState(state).ui.itemToCopyInfo;

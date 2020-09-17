@@ -2,10 +2,10 @@ import { getDefaultStyles } from '../domain/libraryElements/defaultStyles';
 import { LibraryElement, Project } from '../api/types';
 import { IApiResponseError, ITokenPair } from '../redux/user/types';
 import {
-  ActiveElement,
   ILSItem,
   Screen,
   ServerStructType,
+  StateElement,
 } from '../redux/project/types';
 import { CssLikeStyles } from '../utils/StyleHelper';
 import { isLatinOrNumbers } from '../shared/validators/isLatinOrNumbers';
@@ -99,7 +99,7 @@ export const DEFAULT_SCREEN: Screen = {
   element: DEFAULT_ROOT,
 };
 
-export const DEFAULT_ACTIVE_ELEMENT = {
+export const DEFAULT_ACTIVE_ELEMENT: StateElement = {
   id: 'none',
   type: 'none',
   name: 'Not selected',
@@ -111,7 +111,7 @@ export const DEFAULT_ACTIVE_ELEMENT = {
     classNames: ['root'],
     ownStyles: {},
   },
-} as const;
+};
 
 export const STATUS = ['on_hold', 'in_progress', 'review', 'approved'];
 

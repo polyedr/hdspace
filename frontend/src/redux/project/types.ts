@@ -17,7 +17,6 @@ import { Entity } from '../../domain/core';
 
 import TYPES from '../../constants/actions';
 import { CssLikeStyles } from '../../utils/StyleHelper';
-import { DEFAULT_ACTIVE_ELEMENT } from '../../constants/defaultParams';
 
 export type ProjectState = {
   data: ProjectDataState;
@@ -42,14 +41,14 @@ export type NamedServerElements = {
 export type StateElement = {
   id: string;
   name: string;
-  type: keyof Entity;
+  type: Entity | 'none';
   buoyancy: number;
-  parent: string;
+  parent?: string;
   children: string[];
   image: string | null | undefined;
   styles: {
     classNames: string[];
-    ownStyles: CSSStyleDeclaration;
+    ownStyles: CssLikeStyles;
   };
   parameters: any;
 };
@@ -102,12 +101,6 @@ export type Indices = {
 export type Notification = {
   text: string;
 };
-
-export type ActiveElement = StateElement | typeof DEFAULT_ACTIVE_ELEMENT;
-
-export type ActiveItemTree = {
-  children?: any[];
-} & ActiveElement;
 
 export type SavedElementsValues = {
   [elementID: string]: { id: number; savedValue: string | boolean };

@@ -84,6 +84,7 @@ const ShareStyles: React.FC<Props> = ({
 
   const handleCopyButtonClick = () =>
     activeElement &&
+    activeElement.type !== 'none' &&
     copyStyles(
       activeElement.type,
       activeElement.id,

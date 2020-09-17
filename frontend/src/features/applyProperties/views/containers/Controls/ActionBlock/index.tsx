@@ -17,7 +17,7 @@ import {
 } from '../../../../../../utils/withConfigurableProperties';
 import { Screen } from '../../../../../../redux/project/types';
 import {
-  selectActiveItemParams,
+  selectActiveElementParams,
   selectScreens,
 } from '../../../../../../redux/project/selectors';
 
@@ -29,7 +29,7 @@ type StateProps = {
 };
 
 function mapState(state: AppReduxState): StateProps {
-  const activeItemParams = selectActiveItemParams<HyperlinkElement>(state);
+  const activeItemParams = selectActiveElementParams(state);
 
   return {
     screens: selectScreens(state),

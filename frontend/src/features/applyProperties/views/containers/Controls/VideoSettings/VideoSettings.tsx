@@ -6,7 +6,7 @@ import ControlSection from '../../../components/ControlSection/ControlSection';
 import Switch from '../../../../../../components/UI/Switch/Switch';
 import { AppReduxState } from '../../../../../../shared/types/app';
 import { VideoElement, VideoSettingsType } from '../../../../../../api/types';
-import { selectActiveItemParams } from '../../../../../../redux/project/selectors';
+import { selectActiveElementParams } from '../../../../../../redux/project/selectors';
 import {
   PropertiesChangeProps,
   withConfigurableProperties,
@@ -20,7 +20,7 @@ type StateProps = {
 };
 
 function mapState(state: AppReduxState): StateProps {
-  const activeItemParams = selectActiveItemParams<VideoElement>(state);
+  const activeItemParams = selectActiveElementParams(state);
 
   return {
     videoSettings: activeItemParams.videoSettings as VideoSettingsType,

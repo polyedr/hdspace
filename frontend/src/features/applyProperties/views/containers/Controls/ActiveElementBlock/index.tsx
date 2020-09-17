@@ -6,14 +6,14 @@ import Button from '../../../../../../components/UI/Button';
 import Icon from '../../../../../../components/UI/Icon';
 import ModalAddElements from '../../../../../../components/ModalAddElements/ModalAddElements/ModalAddElements';
 import { AVAILABLE_CHILDREN, ENTITIES } from '../../../../../../domain/core';
-import { ActiveElement } from '../../../../../../redux/project/types';
+import { StateElement } from '../../../../../../redux/project/types';
 import { createElements } from '../../../../../../redux/project/actions';
 import { LibraryElements } from '../../../../../../domain/libraryElements/libraryElements';
 
 const styles = require('./styles.scss');
 
 interface IComponentProps {
-  activeItem: ActiveElement;
+  activeItem: StateElement;
   libraryElements: LibraryElements;
   createElements: typeof createElements;
   isAddElementsModalOpened: boolean;

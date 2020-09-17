@@ -5,8 +5,9 @@ import Button from '../../../../../../components/UI/Button';
 import Icon from '../../../../../../components/UI/Icon';
 import { DropdownItemElement } from '../../../../../../api/types';
 import {
-  selectActiveItemChildren,
+  selectActiveElementId,
   selectCurrentScreenId,
+  selectElements,
 } from '../../../../../../redux/project/selectors';
 import { AppReduxState } from '../../../../../../shared/types/app';
 import sharedClasses from '../../../../../../styles/sharedClasses';
@@ -18,6 +19,7 @@ import {
   addChildToElement,
   deleteItem,
 } from '../../../../../../redux/project/actions';
+import { buildElementsTree } from '../../../../../../utils/normalizedStateHelpers';
 
 const styles = require('./DropdownItems.scss');
 
@@ -27,7 +29,11 @@ type StateProps = {
 };
 
 function mapState(state: AppReduxState): StateProps {
-  const dropdownChildren = selectActiveItemChildren(state, 'dropdownMenu');
+  const elements = selectElements(state);
+  const activeElementId = selectActiveElementId(state);
+  const tree = buildElementsTree(elements, activeElementId);
+
+  const dropdownChildren = tree.children;
   const [dropdownMenu] = dropdownChildren;
   const dropdownItems = dropdownMenu.children;
 

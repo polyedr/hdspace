@@ -7,7 +7,7 @@ import { getElementsArray } from '../../../../../../utils/ElementsTreeHelper';
 import sharedClasses from '../../../../../../styles/sharedClasses';
 import { LabelElement } from '../../../../../../api/types';
 import {
-  selectActiveItemParams,
+  selectActiveElementParams,
   selectCurrentRootElement,
 } from '../../../../../../redux/project/selectors';
 import {
@@ -23,7 +23,7 @@ type StateProps = {
 };
 
 function mapState(state: AppReduxState): StateProps {
-  const activeItemParams = selectActiveItemParams<LabelElement>(state);
+  const activeItemParams = selectActiveElementParams(state);
   const elements = getElementsArray(selectCurrentRootElement(state));
 
   const inputsIDs = Object.values(elements)
