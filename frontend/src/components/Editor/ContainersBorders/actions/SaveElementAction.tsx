@@ -8,13 +8,11 @@ import cn from 'classnames';
 import { BorderedItem } from '../Border';
 
 import { saveElementToLibrary } from '../../../../redux/project/actions';
-import { SectionServerElement } from '../../../../api/types';
+import { LibraryElement, SectionServerElement } from '../../../../api/types';
 import {
-  selectActiveElement,
-  selectElementsForCurrentScreen,
+  selectActiveElementId,
+  selectElementAsTree,
 } from '../../../../redux/project/selectors';
-import { StateElement } from '../../../../redux/project/types';
-import { buildElementsTree } from '../../../../utils/normalizedStateHelpers';
 
 const styles = require('./SaveElementAction.scss');
 
@@ -23,8 +21,8 @@ type SaveElementAction = {
 };
 
 const SaveElementAction: React.FC<SaveElementAction> = ({ item }) => {
-  const activeElement = useSelector(selectActiveElement);
-  const elements = useSelector(selectElementsForCurrentScreen);
+  const activeElementId = useSelector(selectActiveElementId);
+  const activeElement = useSelector(selectElementAsTree(activeElementId));
   const inputRef = React.createRef<HTMLInputElement>();
   const dispatch = useDispatch();
 
@@ -33,11 +31,17 @@ const SaveElementAction: React.FC<SaveElementAction> = ({ item }) => {
   }
 
   const convertElementToSection = (
-    activeElement: StateElement,
+    element: LibraryElement<any>,
   ): SectionServerElement => {
-    const tree = buildElementsTree(elements, activeElement.id);
-
-    const { name, type, buoyancy, image, styles, parameters, children } = tree;
+    const {
+      name,
+      type,
+      buoyancy,
+      image,
+      styles,
+      parameters,
+      children,
+    } = element;
 
     return {
       name,

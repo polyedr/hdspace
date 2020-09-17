@@ -337,7 +337,7 @@ export type AddChildToElement = IAction<
   typeof TYPES.ADD_CHILD_TO_ELEMENT,
   {
     childType: ServerStructType;
-    elementID: string;
+    elementId: string;
     parameters: {};
   },
   ElementHistoryMeta

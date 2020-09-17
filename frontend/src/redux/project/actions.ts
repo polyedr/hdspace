@@ -381,7 +381,7 @@ export const addChildToElement = (
   meta: ElementHistoryMeta,
 ): T.AddChildToElement => ({
   type: TYPES.ADD_CHILD_TO_ELEMENT,
-  payload: { childType, elementID, parameters },
+  payload: { childType, elementId: elementID, parameters },
   meta,
 });
 

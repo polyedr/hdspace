@@ -5,7 +5,7 @@ import * as R from 'ramda';
 import * as Actions from '../actions';
 import { selectors, T } from '..';
 import { updateSavedElementsValues } from './screen';
-import { Map, ElementHistoryMeta, StateElement } from '../types';
+import { ElementHistoryMeta } from '../types';
 import {
   DISALLOW_ADD_ELEMENT_NOTIFICATION_TEXT,
   DISALLOW_REMOVE_ELEMENT_NOTIFICATION_TEXT,
@@ -60,8 +60,8 @@ import {
 } from '../../../utils/normalizedStateHelpers';
 import {
   selectActiveElementId,
+  selectElementAsTree,
   selectElementsForCurrentScreen,
-  selectElementsForScreen,
 } from '../selectors';
 
 export function* updateElementsTree(
@@ -206,12 +206,10 @@ export function* createElementsSaga(
   const { createdElements } = action.payload;
   const { screenId } = action.meta;
 
-  const elements: Map<StateElement> = yield select(
-    selectElementsForScreen(screenId),
-  );
   const activeElementId: string = yield select(selectActiveElementId);
-
-  const activeElementTree = buildElementsTree(elements, activeElementId);
+  const activeElementTree: LibraryElement<Entity> = yield select(
+    selectElementAsTree(activeElementId),
+  );
 
   const customLibraryElements = yield select(
     selectors.selectCustomLibraryElements,
@@ -230,7 +228,7 @@ export function* createElementsSaga(
 export function* addChildToElementSaga(
   action: ReturnType<typeof Actions.addChildToElement>,
 ) {
-  const { childType, elementID, parameters } = action.payload;
+  const { childType, elementId, parameters } = action.payload;
   if (!action.meta) {
     console.error(
       `You have to provide metainformation for action ${action.type}`,
@@ -250,17 +248,14 @@ export function* addChildToElementSaga(
     childWithUpdatedParameters,
   );
 
-  const root = yield select(selectors.selectScreenRootElement(screenId));
-  const parent = findChildByID(root, elementID);
+  const element: LibraryElement<Entity> = yield select(
+    selectElementAsTree(elementId),
+  );
 
-  if (!parent) {
-    console.error(`Could not find parent ${elementID} of ${childType}!`);
-  } else {
-    yield call(createElements, [convertedChildWithUpdatedParameters], parent, {
-      screenId,
-      undo,
-    });
-  }
+  yield call(createElements, [convertedChildWithUpdatedParameters], element, {
+    screenId,
+    undo,
+  });
 }
 
 export function* softDeleteSaga(action: T.DeleteItem) {

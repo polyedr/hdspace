@@ -7,7 +7,7 @@ import { DropdownItemElement } from '../../../../../../api/types';
 import {
   selectActiveElementId,
   selectCurrentScreenId,
-  selectElementsForCurrentScreen,
+  selectElementAsTree,
 } from '../../../../../../redux/project/selectors';
 import { AppReduxState } from '../../../../../../shared/types/app';
 import sharedClasses from '../../../../../../styles/sharedClasses';
@@ -19,7 +19,6 @@ import {
   addChildToElement,
   deleteItem,
 } from '../../../../../../redux/project/actions';
-import { buildElementsTree } from '../../../../../../utils/normalizedStateHelpers';
 
 const styles = require('./DropdownItems.scss');
 
@@ -29,12 +28,10 @@ type StateProps = {
 };
 
 function mapState(state: AppReduxState): StateProps {
-  const elements = selectElementsForCurrentScreen(state);
   const activeElementId = selectActiveElementId(state);
-  const tree = buildElementsTree(elements, activeElementId);
+  const element = selectElementAsTree(activeElementId)(state);
 
-  const dropdownChildren = tree.children;
-  const [dropdownMenu] = dropdownChildren;
+  const [dropdownMenu] = element.children;
   const dropdownItems = dropdownMenu.children;
 
   return {
