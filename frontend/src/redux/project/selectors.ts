@@ -248,9 +248,12 @@ export const selectInitialProjectLoad = (state: AppReduxState): boolean =>
 
 export const selectActiveItemElement = (
   state: AppReduxState,
-): LibraryElement<Entity, LibraryElement<Entity>[]> => {
+): LibraryElement<Entity, LibraryElement<Entity>[]> | null => {
   const activeItem = selectActiveItem(state);
   const elementsTree = selectRootElement(state);
+  if (activeItem.itemType === 'none') {
+    return null;
+  }
   const element = findChildByID(elementsTree, activeItem.itemId);
 
   if (!element) {
