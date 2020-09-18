@@ -392,7 +392,7 @@ export type SaveLibraryElement = IAction<
 >;
 export type UnwrapFromContainer = IAction<
   typeof TYPES.UNWRAP_FROM_CONTAINER,
-  { elementID: string; wrapperID: string; parentID: string },
+  { elementId: string; wrapperId: string; parentId: string },
   ElementHistoryMeta
 >;
 export type SetRemoteMove = IAction<typeof TYPES.SET_REMOTE_MOVE, boolean>;

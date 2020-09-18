@@ -125,10 +125,12 @@ export const insertStateElement = (
   childId: string,
 ): Map<StateElement> => {
   const newState = { ...state, ...flattenElements([element], parentId) };
+
   newState[parentId].children = [
     ...newState[parentId].children.filter((id) => id !== childId),
     element.id,
   ];
   newState[childId].parent = element.id;
+  newState[element.id].children = [...newState[element.id].children, childId];
   return newState;
 };

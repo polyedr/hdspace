@@ -490,9 +490,9 @@ export const unwrapFromContainer = (
 ): T.UnwrapFromContainer => ({
   type: TYPES.UNWRAP_FROM_CONTAINER,
   payload: {
-    elementID,
-    wrapperID,
-    parentID,
+    elementId: elementID,
+    wrapperId: wrapperID,
+    parentId: parentID,
   },
   meta,
 });

@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 
-import { call, put, select, fork } from 'redux-saga/effects';
+import { call, put, select } from 'redux-saga/effects';
 import * as R from 'ramda';
 import * as Actions from '../actions';
 import { selectors, T } from '..';
@@ -37,7 +37,6 @@ import {
   apiAddElements,
   apiChangeElement,
   apiChangeRecursiveElement,
-  apiGetElement,
   apiSaveElements,
 } from '../../../api/element';
 import {
@@ -377,17 +376,16 @@ export function* restoreElementSaga(action: T.RestoreElementChildren) {
   // yield put(Actions.addElements([updatedRoot]));
 }
 
-export function* addElementToElement(
-  element: StateElement,
-  parent: StateElement,
-) {
-  const elementData = {
+export function* addElementToElement(elementId: string, parentId: string) {
+  const parent: StateElement = yield select(selectElementById(parentId));
+
+  const parentData = {
     name: parent.name,
-    children: [...parent.children, element.id],
+    children: [...new Set([...parent.children, elementId])],
   };
 
   yield call(reqWrapper, apiChangeRecursiveElement, {
-    data: elementData,
+    data: parentData,
     id: parent.id,
   });
 }
@@ -442,18 +440,21 @@ export function* wrapIntoContainerSaga(
     ),
   );
 
-  const state = yield select(selectElementsForScreen(screenId));
+  const state: Map<StateElement> = yield select(
+    selectElementsForScreen(screenId),
+  );
   yield put(
     Actions.updateElements(
       insertStateElement(state, createdContainer, parent.id, element.id),
     ),
   );
-  const container = yield select(selectElementById(createdContainer.id));
+  const container: StateElement = yield select(
+    selectElementById(createdContainer.id),
+  );
 
-  yield fork(addElementToElement, container, parent);
+  yield call(addElementToElement, container.id, parent.id);
 
-  yield fork(addElementToElement, element, container);
-
+  yield call(addElementToElement, element.id, container.id);
   /* const rootWithUpdatedParent = moveElement(
     wrappedItemParent.id,
     createdContainer,
@@ -466,6 +467,7 @@ export function* wrapIntoContainerSaga(
     rootWithUpdatedParent,
     0,
   ); */
+
   const root = yield select(selectScreenRootElement(screenId));
   const updatedRoot = yield select(selectElementAsTree(root.id));
   yield put(
@@ -492,29 +494,55 @@ export function* unwrapFromContainerSaga(
     return;
   }
 
-  const { elementID, wrapperID, parentID } = action.payload;
+  const { elementId, wrapperId, parentId } = action.payload;
   const { screenId } = action.meta;
 
-  const root = yield select(selectors.selectScreenRootElement(screenId));
+  const parent: StateElement = yield select(selectElementById(parentId));
 
-  const parent = findChildByID(root, parentID);
-  if (!parent) {
-    console.error(`Can not find parent of wrapper ${wrapperID} in tree!`);
-    return;
-  }
-
-  const parentChildrenIds = parent.children.map((child) => child.id);
   const newParentChildrenIds = [
-    ...parentChildrenIds.filter((id) => id !== wrapperID),
-    elementID,
+    ...parent.children.filter((id) => id !== wrapperId),
+    elementId,
   ];
+
+  const state: Map<StateElement> = yield select(
+    selectElementsForScreen(screenId),
+  );
+
+  const stateWithUpdatedParent = updateStateElement(state, parentId, {
+    children: newParentChildrenIds,
+  });
+  const stateWithUpdatedWrapper = updateStateElement(
+    stateWithUpdatedParent,
+    wrapperId,
+    {
+      children: stateWithUpdatedParent[wrapperId].children.filter(
+        (id) => id !== elementId,
+      ),
+      parent: undefined,
+    },
+  );
+
+  yield put(
+    Actions.updateElements(
+      updateStateElement(stateWithUpdatedWrapper, elementId, {
+        parent: parentId,
+      }),
+    ),
+  );
 
   yield call(reqWrapper, apiChangeRecursiveElement, {
     data: { children: newParentChildrenIds },
-    id: parentID,
+    id: parentId,
   });
 
-  const updatedRoot = yield call(reqWrapper, apiGetElement, { id: root.id });
+  const root: LibraryElement<any> = yield select(
+    selectScreenRootElement(screenId),
+  );
+
+  const updatedRoot: LibraryElement<any> = yield select(
+    selectElementAsTree(root.id),
+  );
+
   yield put(
     Actions.updateElementsTree(updatedRoot, action, {
       screenId,
@@ -571,24 +599,32 @@ export function* redoWrapIntoContainerSaga(
   const { parentId, wrapperId, elementId } = action.payload;
   const { screenId } = action.meta;
 
-  const root = yield select(selectors.selectScreenRootElement(screenId));
+  const parent: StateElement = yield select(selectElementById(parentId));
 
-  const parent = findChildByID(root, parentId);
-  if (!parent) {
-    console.error(`Can not find parent of wrapper ${elementId} in tree!`);
-    return;
-  }
+  const newParentChildren = [
+    ...parent.children.filter((id) => id !== elementId),
+    wrapperId,
+  ];
 
-  const parentChildrenIds = parent.children.map((child) => child.id);
-  const index = parentChildrenIds.indexOf(elementId);
+  const state: Map<StateElement> = yield select(
+    selectElementsForScreen(screenId),
+  );
+  const wrapper: LibraryElement<any> = yield select(
+    selectElementAsTree(wrapperId),
+  );
 
-  parentChildrenIds.splice(index, 1, wrapperId);
+  yield put(
+    Actions.updateElements(
+      insertStateElement(state, wrapper, parentId, elementId),
+    ),
+  );
+
   yield call(reqWrapper, apiChangeRecursiveElement, {
     data: { children: [elementId] },
     id: wrapperId,
   });
   yield call(reqWrapper, apiChangeRecursiveElement, {
-    data: { children: parentChildrenIds },
+    data: { children: newParentChildren },
     id: parentId,
   });
 
@@ -598,7 +634,13 @@ export function* redoWrapIntoContainerSaga(
     ),
   );
 
-  const updatedRoot = yield call(reqWrapper, apiGetElement, { id: root.id });
+  const root: LibraryElement<'root'> = yield select(
+    selectScreenRootElement(screenId),
+  );
+  const updatedRoot: LibraryElement<'root'> = yield select(
+    selectElementAsTree(root.id),
+  );
+
   yield put(
     Actions.updateElementsTree(updatedRoot, action, { screenId, redo: true }),
   );
