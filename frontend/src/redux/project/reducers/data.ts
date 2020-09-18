@@ -138,6 +138,7 @@ function dataReducer(
       return {
         ...state,
         screens: {},
+        elements: {},
       };
     }
 

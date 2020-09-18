@@ -7,7 +7,7 @@ import * as Actions from '../actions';
 import { reqWrapper } from './index';
 import { ReturnPromisedType } from '../../../shared/types';
 import { convertElementToPatchRequest } from '../../../api/converters/toRequest';
-import { LibraryElement, LibraryElementUnion } from '../../../api/types';
+import { LibraryElement } from '../../../api/types';
 import {
   selectCurrentProject,
   selectElementParameters,
@@ -15,6 +15,9 @@ import {
   selectRemoteMove,
   selectCurrentScreen,
   selectScreenRootElement,
+  selectElementsForScreen,
+  selectElementById,
+  selectElementAsTree,
 } from '../selectors';
 
 import {
@@ -27,7 +30,6 @@ import {
   replaceElementStyles,
   removeElementStyles as removeStyles,
   updateElementStyles as updateStyles,
-  updateElementParameters as updateParameters,
 } from '../../../utils/ElementsTreeHelper';
 
 import {
@@ -43,10 +45,12 @@ import getSavedValue from '../../../utils/getSavedValue';
 import { addProjectStyles } from '../../../utils/ProjectClassesHelper';
 import { updateProject } from './project';
 import { updateElementsTree } from './scenario';
+import { Map, StateElement } from '../types';
+import { updateStateElement } from '../../../utils/normalizedStateHelpers';
 
 export function* moveElementSaga(
   action: ReturnType<typeof Actions.moveElement>,
-): any {
+) {
   const {
     indices: { newIndex, oldIndex },
     elementID,
@@ -429,7 +433,7 @@ export function* updateElementImage(
 export function* updateElementParameters(
   action: ReturnType<typeof Actions.updateElementParameters>,
 ) {
-  const { itemID, parameters } = action.payload;
+  const { elementId, parameters } = action.payload;
   if (!action.meta) {
     console.error(
       `You have to provide metainformation for action ${action.type}`,
@@ -438,35 +442,56 @@ export function* updateElementParameters(
   }
   const { screenId, undo } = action.meta;
 
-  const root: LibraryElement<'root'> = yield select(
-    selectScreenRootElement(screenId),
-  );
-
   if (!undo) {
-    const oldParameters = yield select(selectElementParameters(itemID));
+    const oldParameters = yield select(selectElementParameters(elementId));
     yield put(
       Actions.setUndoActions(
-        Actions.updateElementParameters(itemID, oldParameters, { screenId }),
+        Actions.updateElementParameters(elementId, oldParameters, { screenId }),
       ),
     );
   }
 
-  const updatedTree = updateParameters(itemID, parameters, root);
-  const updatedElement = findChildByID(updatedTree, itemID);
+  const state: Map<StateElement> = yield select(
+    selectElementsForScreen(screenId),
+  );
+  yield put(
+    Actions.updateElements(
+      updateStateElement(state, elementId, {
+        parameters: { ...state[elementId].parameters, ...parameters },
+      }),
+    ),
+  );
 
-  if (!updatedElement) {
-    console.error(`Can not find updated element ${itemID} in tree`);
-  } else {
-    const savedValue = getSavedValue(updatedElement as LibraryElementUnion);
-    yield put(Actions.updateSavedElementValues(itemID, savedValue));
-    yield call(updateElementsTree, updatedTree, action, action.meta);
+  // const updatedTree = updateParameters(elementId, parameters, root);
+  // const updatedElement = findChildByID(updatedTree, elementId);
+  //
+  // if (!updatedElement) {
+  //   console.error(`Can not find updated element ${elementId} in tree`);
+  //   return;
+  // }
+  const updatedElement: StateElement = yield select(
+    selectElementById(elementId),
+  );
 
-    const convertedElement = convertElementToPatchRequest(updatedElement);
-    yield call(reqWrapper, apiChangeElement, {
-      data: convertedElement,
-      id: itemID,
-    });
-  }
+  yield put(
+    Actions.updateSavedElementValues(elementId, getSavedValue(updatedElement)),
+  );
+
+  const root: LibraryElement<any> = yield select(
+    selectScreenRootElement(screenId),
+  );
+  const updatedRoot = yield select(selectElementAsTree(root.id));
+  const updatedElementTree: LibraryElement<any> = yield select(
+    selectElementAsTree(elementId),
+  );
+
+  yield call(updateElementsTree, updatedRoot, action, action.meta);
+
+  const convertedElement = convertElementToPatchRequest(updatedElementTree);
+  yield call(reqWrapper, apiChangeElement, {
+    data: convertedElement,
+    id: elementId,
+  });
 }
 
 export function* uploadFileSaga({

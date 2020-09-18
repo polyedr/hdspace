@@ -332,12 +332,12 @@ export const updateElementParameters = <
   T extends Entity,
   K extends LibraryElement<T>['parameters']
 >(
-  itemID: string,
+  elementId: string,
   parameters: K,
   meta: T.ElementHistoryMeta,
 ): T.UpdateElementParameters => ({
   type: TYPES.UPDATE_ELEMENT_PARAMETERS,
-  payload: { itemID, parameters },
+  payload: { elementId, parameters },
   meta,
 });
 

@@ -309,7 +309,7 @@ export type UpdateElementImage = IAction<
 export type UpdateElementParameters = IAction<
   typeof TYPES.UPDATE_ELEMENT_PARAMETERS,
   {
-    itemID: string;
+    elementId: string;
     parameters: RootElement<Entity>['parameters'];
   },
   ElementHistoryMeta
