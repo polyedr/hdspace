@@ -6,7 +6,7 @@ import { SortableOptions } from 'sortablejs';
 // @ts-ignore
 import Sortable from '../Sortable/Sortable';
 import sharedClasses from '../../../styles/sharedClasses';
-import { Indices } from '../../../redux/project/types';
+import { Indices, ParentIds } from '../../../redux/project/types';
 import { selectActiveElement } from '../../../redux/project/selectors';
 import { selectIsPrototypeMode } from '../../../redux/user/selectors';
 
@@ -22,7 +22,7 @@ type Props = {
   isSomeItemBeingDragged: boolean;
   isSomeItemResizable?: boolean;
   id: string;
-  onChange(indices: Indices, parentId: string, isRemote?: boolean): void;
+  onChange(indices: Indices, parents: ParentIds): void;
   onChoose(itemIndex: number, target?: React.SyntheticEvent): void;
 };
 
@@ -53,9 +53,13 @@ const SortableGroup: React.FC<Props> = ({
   );
 
   const handlePositionChange = useCallback(
-    (evt, isRemote) => {
+    (evt) => {
       const { newIndex, oldIndex } = evt;
-      onChange({ newIndex, oldIndex }, id, isRemote);
+      const parents = {
+        oldParentId: evt.from.dataset.id,
+        newParentId: evt.to.dataset.id,
+      };
+      onChange({ newIndex, oldIndex }, parents);
     },
     [id, onChange],
   );

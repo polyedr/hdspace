@@ -23,6 +23,7 @@ import {
   createElementsSaga,
   redoWrapIntoContainerSaga,
   renameElementSaga,
+  restoreElementChildrenSaga,
   restoreElementSaga,
   softDeleteSaga,
   unwrapFromContainerSaga,
@@ -493,7 +494,8 @@ export default function* projectSaga() {
   yield takeEvery(TYPES.WRAP_INTO_CONTAINER, wrapIntoContainerSaga);
 
   yield takeEvery(TYPES.DELETE_ITEM, softDeleteSaga);
-  yield takeEvery(TYPES.RESTORE_ELEMENT_CHILDREN, restoreElementSaga);
+  yield takeEvery(TYPES.RESTORE_ELEMENT_CHILDREN, restoreElementChildrenSaga);
+  yield takeEvery(TYPES.RESTORE_ELEMENT, restoreElementSaga);
 
   yield takeLatest(TYPES.COPY_ACTIVE_ITEM, copyActiveItemSaga);
   yield takeEvery(TYPES.PASTE_COPIED_ELEMENT, pasteCopiedElementSaga);

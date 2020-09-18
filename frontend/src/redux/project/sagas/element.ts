@@ -12,12 +12,12 @@ import {
   selectCurrentProject,
   selectElementParameters,
   selectElementStyles,
-  selectRemoteMove,
   selectCurrentScreen,
   selectScreenRootElement,
   selectElementsForScreen,
   selectElementById,
   selectElementAsTree,
+  selectAllElements,
 } from '../selectors';
 
 import {
@@ -46,17 +46,19 @@ import { addProjectStyles } from '../../../utils/ProjectClassesHelper';
 import { updateProject } from './project';
 import { updateElementsTree } from './scenario';
 import { Map, StateElement } from '../types';
-import { updateStateElement } from '../../../utils/normalizedStateHelpers';
+import {
+  moveStateElement,
+  updateStateElement,
+} from '../../../utils/normalizedStateHelpers';
 
 export function* moveElementSaga(
   action: ReturnType<typeof Actions.moveElement>,
 ) {
-  const {
-    indices: { newIndex, oldIndex },
-    elementID,
-    parentID,
-    isRemote,
-  } = action.payload;
+  const { indices, elementId, parents } = action.payload;
+
+  const { newParentId, oldParentId } = parents;
+  const { newIndex, oldIndex } = indices;
+
   if (!action.meta) {
     console.error(
       `You have to provide metainformation for action ${action.type}`,
@@ -65,31 +67,14 @@ export function* moveElementSaga(
   }
   const { screenId, undo } = action.meta;
 
-  const root: LibraryElement<'root'> = yield select(
-    selectScreenRootElement(screenId),
-  );
-  const targetParent = findChildByID(root, parentID);
-
-  if (!targetParent) {
-    console.error(`Can not find targetParent ${parentID} in tree`);
-    return;
-  }
-
-  const elementToMove = findChildByID(root, elementID);
-
-  if (!elementToMove) {
-    console.error(`Can not find changedElement ${elementID} in tree`);
-    return;
-  }
-
   // we can get rid of this code block when we will get better Sortable.js implementation
-  if (!undo) {
+  /* if (!undo) {
     if (isRemote) {
       yield put(
         Actions.setUndoActions(
           Actions.moveElement(
             { newIndex: oldIndex, oldIndex: newIndex },
-            elementID,
+            elementId,
             parentID,
             false,
             { screenId },
@@ -105,7 +90,7 @@ export function* moveElementSaga(
         Actions.setUndoActions(
           Actions.moveElement(
             { newIndex: oldIndex, oldIndex: newIndex },
-            elementID,
+            elementId,
             parentID,
             add,
             { screenId },
@@ -114,40 +99,64 @@ export function* moveElementSaga(
       );
       yield put(Actions.setRemoteMove(false));
     }
+  } */
+
+  if (!undo) {
+    yield put(
+      Actions.setUndoActions([
+        Actions.moveElement(
+          elementId,
+          { oldIndex: newIndex, newIndex: oldIndex },
+          { oldParentId: newParentId, newParentId: oldParentId },
+          { screenId },
+        ),
+      ]),
+    );
   }
 
-  const updatedTree = moveElement(
+  const state: Map<StateElement> = yield select(selectAllElements);
+  yield put(
+    Actions.updateElements(
+      moveStateElement(state, elementId, indices, parents),
+    ),
+  );
+
+  /* const updatedTree = moveElement(
     targetParent.id,
     elementToMove,
     root,
     newIndex,
-  );
+  ); */
+  const root = yield select(selectScreenRootElement(screenId));
+  const updatedTree = yield select(selectElementAsTree(root.id));
   yield put(Actions.updateElementsTree(updatedTree, action, action.meta));
 
-  yield put(Actions.setGroupActionsUp(isRemote));
+  // yield put(Actions.setGroupActionsUp(isRemote));
 
-  const updatedParent = findChildByID(updatedTree, parentID);
+  /* const updatedParent = findChildByID(updatedTree, parentID);
 
   if (!updatedParent) {
     console.error(`Can not find updatedParent ${parentID} in tree`);
     return;
-  }
+  } */
 
-  const convertedElements = updatedParent.children.map((child) =>
+  const updatedNewParent = yield select(selectElementAsTree(newParentId));
+
+  const convertedElements = updatedNewParent.children.map((child) =>
     convertElementToPatchRequest(child),
   );
   yield call(reqWrapper, apiSaveElements, { data: convertedElements });
 
-  if (isRemote) return;
+  // if (isRemote) return;
 
-  const elementData = {
-    name: targetParent.name,
-    children: [...targetParent.children.map((child) => child.id), elementID],
-  };
+  // const elementData = {
+  //   name: targetParent.name,
+  //   children: [...targetParent.children.map((child) => child.id), elementId],
+  // };
 
   yield call(reqWrapper, apiChangeRecursiveElement, {
-    data: elementData,
-    id: targetParent.id,
+    data: { children: updatedNewParent.children.map((el) => el.id) },
+    id: newParentId,
   });
 }
 
@@ -545,7 +554,6 @@ export function* uploadFileSaga({
       root,
       0,
     );
-    const childrenIds = updatedElements.children.map((child) => child.id);
     yield put(
       Actions.setUndoActions(
         Actions.deleteItem(nnRootWithDefaultParams.id, { screenId }),
@@ -555,7 +563,7 @@ export function* uploadFileSaga({
     yield call(
       updateElementsTree,
       updatedElements,
-      Actions.restoreElementChildren(root.id, childrenIds, { screenId }),
+      Actions.restoreElement(nnRootWithDefaultParams.id, { screenId }),
       meta,
     );
   } catch (e) {

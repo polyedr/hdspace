@@ -5,13 +5,12 @@ import SortableGroup from '../SortableGroup/SortableGroup';
 import { AVAILABLE_CHILDREN, Entity } from '../../../domain/core';
 import { LibraryElement, LibraryElementUnion } from '../../../api/types';
 import { LIST_SCENARIO_TYPE } from '../../../constants/defaultParams';
-import { Indices } from '../../../redux/project/types';
+import { Indices, ParentIds } from '../../../redux/project/types';
 
 import useElementProps from '../hooks/useElementProps';
 import { RENDERERS } from '../../UI/RenderElements';
 import {
   selectActiveElement,
-  selectCurrentRootId,
   selectCurrentScreen,
 } from '../../../redux/project/selectors';
 import { selectIsPrototypeMode } from '../../../redux/user/selectors';
@@ -38,7 +37,6 @@ const SortableContainer: React.FC<Props> = ({
   setIsResizing,
   isResizable,
 }) => {
-  const rootID = useSelector(selectCurrentRootId);
   const currentScreen = useSelector(selectCurrentScreen);
   const disableInteractions = useSelector(selectIsPrototypeMode);
   const activeElement = useSelector(selectActiveElement);
@@ -71,20 +69,12 @@ const SortableContainer: React.FC<Props> = ({
     }
   };
 
-  const handleItemPositionChange = (
-    indices: Indices,
-    parentId: string,
-    isRemote?: boolean,
-  ) => {
-    setIsDragging(!!isRemote);
+  const handleItemPositionChange = (indices: Indices, parents: ParentIds) => {
+    setIsDragging(false);
     dispatch(
-      moveElement(
-        indices,
-        activeElement.id,
-        parentId === 'root' ? rootID : parentId,
-        isRemote,
-        { screenId: currentScreen.id },
-      ),
+      moveElement(activeElement.id, indices, parents, {
+        screenId: currentScreen.id,
+      }),
     );
   };
 

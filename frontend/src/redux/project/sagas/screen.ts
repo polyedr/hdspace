@@ -378,7 +378,7 @@ export function* restoreScreenSaga({
 
   yield put(setProject(updatedProject));
 
-  yield put(addElements([convertElementFromResponse(element)]));
+  // yield put(addElements([convertElementFromResponse(element)]));
 
   yield put(activateScreen(screenId));
 }

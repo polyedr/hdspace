@@ -184,9 +184,21 @@ const Navigator: React.FC = () => {
       setIsDragging(false);
       return;
     }
-    const isRemote = source.parentId !== destination.parentId;
 
-    if (isRemote) {
+    dispatch(
+      moveElement(
+        childId as string,
+        { newIndex: destination.index, oldIndex: source.index },
+        {
+          newParentId: source.parentId as string,
+          oldParentId: destination.parentId as string,
+        },
+        { screenId: currentScreenId },
+      ),
+    );
+    // const isRemote = source.parentId !== destination.parentId;
+
+    /* if (isRemote) {
       dispatch(
         moveElement(
           { newIndex: destination.index, oldIndex: source.index },
@@ -206,7 +218,7 @@ const Navigator: React.FC = () => {
         false,
         { screenId: currentScreenId },
       ),
-    );
+    ); */
 
     setIsDragging(false);
     select(

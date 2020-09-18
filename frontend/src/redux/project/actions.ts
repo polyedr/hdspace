@@ -1,4 +1,10 @@
-import { ElementHistoryMeta, HistoryMeta, Screen, StateElement } from './types';
+import {
+  ElementHistoryMeta,
+  HistoryMeta,
+  ParentIds,
+  Screen,
+  StateElement,
+} from './types';
 import { ServerElement, Project, LibraryElement } from '../../api/types';
 import TYPES from '../../constants/actions';
 
@@ -161,18 +167,16 @@ export const activateScreen = (screenId: number): T.ActivateScreen => ({
 });
 
 export const moveElement = (
+  elementId: string,
   indices: T.Indices,
-  elementID: string,
-  parentID: string,
-  isRemote: boolean = false,
+  parents: ParentIds,
   meta: T.ElementHistoryMeta,
 ): T.MoveElement => ({
   type: TYPES.MOVE_ELEMENT,
   payload: {
     indices,
-    elementID,
-    parentID,
-    isRemote,
+    elementId,
+    parents,
   },
   meta,
 });
@@ -507,6 +511,15 @@ export const restoreElementChildren = (
     elementId,
     childrenIds,
   },
+  meta,
+});
+
+export const restoreElement = (
+  elementId: string,
+  meta: T.ElementHistoryMeta,
+): T.RestoreElement => ({
+  type: TYPES.RESTORE_ELEMENT,
+  payload: elementId,
   meta,
 });
 

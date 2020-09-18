@@ -209,9 +209,8 @@ export type MoveElement = IAction<
   typeof TYPES.MOVE_ELEMENT,
   {
     indices: Indices;
-    elementID: string;
-    parentID: string;
-    isRemote: boolean;
+    elementId: string;
+    parents: ParentIds;
   },
   ElementHistoryMeta
 >;
@@ -401,6 +400,11 @@ export type RestoreElementChildren = IAction<
   { elementId: string; childrenIds: string[] },
   ElementHistoryMeta
 >;
+export type RestoreElement = IAction<
+  typeof TYPES.RESTORE_ELEMENT,
+  string,
+  ElementHistoryMeta
+>;
 export type RedoWrapIntoContainer = IAction<
   typeof TYPES.REDO_WRAP_INTO_CONTAINER,
   { elementId: string; wrapperId: string; parentId: string },
@@ -493,7 +497,8 @@ export type Action =
   | AddElements
   | RemoveElements
   | SaveLibraryElement
-  | UpdateElements;
+  | UpdateElements
+  | RestoreElement;
 
 export type ItemToCopyInfo = {
   id: string;
@@ -706,4 +711,9 @@ export type ElementsHierarchy = {
       [elementName in Entity]: ElementData;
     };
   };
+};
+
+export type ParentIds = {
+  oldParentId: string;
+  newParentId: string;
 };

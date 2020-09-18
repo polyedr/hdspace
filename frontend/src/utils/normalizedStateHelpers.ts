@@ -1,4 +1,4 @@
-import { Indices, Map, StateElement } from '../redux/project/types';
+import { Indices, Map, ParentIds, StateElement } from '../redux/project/types';
 import { LibraryElement } from '../api/types';
 
 export const arrayToMap = <T extends { id: any }>(arr: T[]): Map<T> => {
@@ -48,44 +48,47 @@ export const removeStateElement = (
 ): Map<StateElement> => {
   const newState = { ...state };
   const target = newState[elementId];
-  if (!target) return newState;
 
   if (target.parent) {
     const parent = newState[target.parent];
     parent.children = parent.children.filter((id) => id !== elementId);
+    parent.children.forEach((id, i) => {
+      newState[id] = {
+        ...newState[id],
+        buoyancy: i,
+      };
+    });
   }
 
   return newState;
 };
 
-export const updateBuoyancy = (
-  state: Map<StateElement>,
-  parentId: string,
-): Map<StateElement> => {
-  const newState = { ...state };
-  const parent = newState[parentId];
-  parent.children.forEach((id, i) => {
-    newState[id].buoyancy = i;
-  });
-  return newState;
-};
+// export const updateBuoyancy = (
+//   state: Map<StateElement>,
+//   elementId: string,
+//   buoyancy: number,
+// ): Map<StateElement> => {
+//   const newState = {
+//     ...state,
+//     [elementId]: {
+//       ...state[elementId],
+//       buoyancy,
+//     },
+//   };
+// };
 
 export const addStateElements = (
   state: Map<StateElement>,
   elements: LibraryElement<any>[],
   parentId: string,
-): Map<StateElement> => {
-  const newState = {
-    ...state,
-    ...flattenElements(elements, parentId),
-    [parentId]: {
-      ...state[parentId],
-      children: [...state[parentId].children, ...elements.map((el) => el.id)],
-    },
-  };
-
-  return updateBuoyancy(newState, parentId);
-};
+): Map<StateElement> => ({
+  ...state,
+  ...flattenElements(elements, parentId),
+  [parentId]: {
+    ...state[parentId],
+    children: [...state[parentId].children, ...elements.map((el) => el.id)],
+  },
+});
 
 export const updateStateElement = (
   state: Map<StateElement>,
@@ -101,19 +104,30 @@ export const updateStateElement = (
 
 export const moveStateElement = (
   state: Map<StateElement>,
-  indices: Indices,
   elementId: string,
-  oldParentId: string,
-  newParentId: string,
+  indices: Indices,
+  parents: ParentIds,
 ): Map<StateElement> => {
+  const { newIndex, oldIndex } = indices;
+  const { oldParentId, newParentId } = parents;
   const newState = { ...state };
-  newState[oldParentId].children = newState[oldParentId].children.filter(
-    (id) => id !== elementId,
-  );
-  newState[newParentId].children = [
-    ...newState[newParentId].children,
-    elementId,
-  ];
+
+  newState[oldParentId].children.splice(oldIndex, 1);
+
+  newState[oldParentId].children.forEach((id, i) => {
+    newState[id] = {
+      ...newState[id],
+      buoyancy: i,
+    };
+  });
+
+  newState[newParentId].children.splice(newIndex, 0, elementId);
+  newState[newParentId].children.forEach((id, i) => {
+    newState[id] = {
+      ...newState[id],
+      buoyancy: i,
+    };
+  });
   newState[elementId].parent = newParentId;
   return newState;
 };
@@ -132,5 +146,43 @@ export const insertStateElement = (
   ];
   newState[childId].parent = element.id;
   newState[element.id].children = [...newState[element.id].children, childId];
+  return newState;
+};
+
+export const restoreStateElement = (
+  state: Map<StateElement>,
+  elementId: string,
+): Map<StateElement> => {
+  const newState = { ...state };
+  const element = newState[elementId];
+  if (!element.parent) return newState;
+
+  const parent = newState[element.parent];
+  parent.children.splice(element.buoyancy, 0, element.id);
+  parent.children.forEach((id, i) => {
+    newState[id] = {
+      ...newState[id],
+      buoyancy: i,
+    };
+  });
+
+  return newState;
+};
+
+export const restoreStateElementChildren = (
+  state: Map<StateElement>,
+  elementId: string,
+  childrenIds: string[],
+): Map<StateElement> => {
+  const newState = { ...state };
+  const element = newState[elementId];
+  const startIndex = newState[childrenIds[0]].buoyancy;
+  element.children.splice(startIndex, 0, ...childrenIds);
+  element.children.forEach((id, i) => {
+    newState[id] = {
+      ...newState[id],
+      buoyancy: i,
+    };
+  });
   return newState;
 };

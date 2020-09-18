@@ -54,10 +54,13 @@ import {
   addStateElements,
   insertStateElement,
   removeStateElement,
+  restoreStateElement,
+  restoreStateElementChildren,
   updateStateElement,
 } from '../../../utils/normalizedStateHelpers';
 import {
   selectActiveElementId,
+  selectAllElements,
   selectElementAsTree,
   selectElementById,
   selectElementsForCurrentScreen,
@@ -262,7 +265,7 @@ export function* addChildToElementSaga(
   });
 }
 
-export function* softDeleteSaga(action: T.DeleteItem) {
+export function* softDeleteSaga(action: ReturnType<typeof Actions.deleteItem>) {
   const { id } = action.payload;
 
   if (!action.meta) {
@@ -291,11 +294,7 @@ export function* softDeleteSaga(action: T.DeleteItem) {
   // const childrenIds = parent.children.map((child) => child.id);
 
   if (!undo) {
-    yield put(
-      setUndoActions(
-        Actions.restoreElementChildren(parent.id, [id], { screenId }),
-      ),
-    );
+    yield put(setUndoActions(Actions.restoreElement(id, { screenId })));
   }
 
   const activeElementId = yield select(selectActiveElementId);
@@ -328,7 +327,7 @@ export function* softDeleteSaga(action: T.DeleteItem) {
   });
 }
 
-export function* restoreElementSaga(action: T.RestoreElementChildren) {
+export function* restoreElementChildrenSaga(action: T.RestoreElementChildren) {
   const { elementId, childrenIds } = action.payload;
   if (!action.meta) {
     console.error(
@@ -347,15 +346,12 @@ export function* restoreElementSaga(action: T.RestoreElementChildren) {
       ),
     );
   }
-  const state: Map<StateElement> = yield select(
-    selectElementsForScreen(screenId),
-  );
+
+  const state: Map<StateElement> = yield select(selectAllElements);
 
   yield put(
     Actions.updateElements(
-      updateStateElement(state, elementId, {
-        children: [...state[elementId].children, ...childrenIds],
-      }),
+      restoreStateElementChildren(state, elementId, childrenIds),
     ),
   );
 
@@ -369,11 +365,49 @@ export function* restoreElementSaga(action: T.RestoreElementChildren) {
 
   yield call(reqWrapper, apiChangeRecursiveElement, {
     data: {
-      children: [...element.children, ...childrenIds],
+      children: [...element.children, elementId],
     },
     id: elementId,
   });
   // yield put(Actions.addElements([updatedRoot]));
+}
+
+export function* restoreElementSaga(
+  action: ReturnType<typeof Actions.restoreElement>,
+) {
+  const elementId = action.payload;
+  if (!action.meta) {
+    console.error(
+      `You have to provide metainformation for action ${action.type}`,
+    );
+    return;
+  }
+  const { screenId, undo } = action.meta;
+  const element: StateElement = yield select(selectElementById(elementId));
+
+  if (!undo) {
+    yield put(
+      Actions.setUndoActions([Actions.deleteItem(elementId, { screenId })]),
+    );
+  }
+
+  const state: Map<StateElement> = yield select(selectAllElements);
+
+  yield put(Actions.updateElements(restoreStateElement(state, elementId)));
+
+  const root = yield select(selectScreenRootElement(screenId));
+  const updatedRoot: LibraryElement<'root'> = yield select(
+    selectElementAsTree(root.id),
+  );
+
+  yield put(Actions.updateElementsTree(updatedRoot, action, action.meta));
+
+  yield call(reqWrapper, apiChangeRecursiveElement, {
+    data: {
+      children: [...element.children, elementId],
+    },
+    id: elementId,
+  });
 }
 
 export function* addElementToElement(elementId: string, parentId: string) {
