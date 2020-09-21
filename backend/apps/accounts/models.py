@@ -64,19 +64,21 @@ class Role:
     )
     EXTERNAL_ROLE_PROJECT_OWNER = "PROJECT OWNER"
     EXTERNAL_ROLE_PROJECT_MANAGER = "PROJECT MANAGER"
+    EXTERNAL_ROLE_PRODUCT_MANAGER = "PROJECT MANAGER"
     EXTERNAL_ROLE_BA = "BUSSINESS ANALYST"
     EXTERNAL_ROLE_BACKEND_DEVELOPER = "BACKEND DEVELOPER"
     EXTERNAL_ROLE_FRONTEND_DEVELOPER = "FRONTEND DEVELOPER"
     EXTERNAL_ROLE_ANNOTATOR = "ANNOTATOR"
     EXTERNAL_ROLE_CONTENT_MANAGER = "CONTENT MANAGER"
     USER_EXTERNAL_ROLE = (
-        (EXTERNAL_ROLE_PROJECT_OWNER, "Owns the project"),
-        (EXTERNAL_ROLE_PROJECT_MANAGER, "Can edit the project"),
+        (EXTERNAL_ROLE_PROJECT_OWNER, "Creates Projects"),
+        (EXTERNAL_ROLE_PROJECT_MANAGER, "Is Project Mangers Planning Assistant"),
+        (EXTERNAL_ROLE_PRODUCT_MANAGER, "Is Project Manager's Executive Assistant"),
         (EXTERNAL_ROLE_BA, "Can edit the project"),
-        (EXTERNAL_ROLE_BACKEND_DEVELOPER, "Is able to apply backend constructor"),
-        (EXTERNAL_ROLE_FRONTEND_DEVELOPER, "Is able to apply front-end constructor"),
-        (EXTERNAL_ROLE_ANNOTATOR, "Annotate HTML elements and components"),
-        (EXTERNAL_ROLE_CONTENT_MANAGER, "Manage contents from project text blocks"),
+        (EXTERNAL_ROLE_BACKEND_DEVELOPER, "Can apply backend constructor"),
+        (EXTERNAL_ROLE_FRONTEND_DEVELOPER, "Can apply frontend constructor"),
+        (EXTERNAL_ROLE_ANNOTATOR, "Can Annotate HTML elements and components"),
+        (EXTERNAL_ROLE_CONTENT_MANAGER, "Can Manage contents from project text blocks"),
     )
 
 
