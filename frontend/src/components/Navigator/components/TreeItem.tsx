@@ -97,7 +97,7 @@ const TreeItem: React.FC<Props> = ({
         : { role: 'treeitem' })}
     >
       <span>{getIcon(item, onExpand, onCollapse)}</span>
-      <span>{/* item.data ? item.data.title : '' */ item.id}</span>
+      <span>{item.data ? item.data.title : ''}</span>
 
       <ContextMenu
         open={state.mouseY !== null}
