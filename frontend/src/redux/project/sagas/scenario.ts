@@ -327,7 +327,9 @@ export function* softDeleteSaga(action: ReturnType<typeof Actions.deleteItem>) {
   });
 }
 
-export function* restoreElementChildrenSaga(action: T.RestoreElementChildren) {
+export function* restoreElementChildrenSaga(
+  action: ReturnType<typeof Actions.restoreElementChildren>,
+) {
   const { elementId, childrenIds } = action.payload;
   if (!action.meta) {
     console.error(

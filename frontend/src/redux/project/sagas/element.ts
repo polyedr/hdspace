@@ -18,18 +18,12 @@ import {
   selectElementById,
   selectElementAsTree,
   selectAllElements,
+  selectElementsForCurrentScreen,
 } from '../selectors';
-
 import {
-  addElementClassName,
-  findChildByID,
   getElementsArray,
   getTreeWithDefaultStylesAndParams,
   moveElement,
-  removeElementClassName,
-  replaceElementStyles,
-  removeElementStyles as removeStyles,
-  updateElementStyles as updateStyles,
 } from '../../../utils/ElementsTreeHelper';
 
 import {
@@ -47,6 +41,7 @@ import { updateProject } from './project';
 import { updateElementsTree } from './scenario';
 import { Map, StateElement } from '../types';
 import {
+  addStateElements,
   moveStateElement,
   updateStateElement,
 } from '../../../utils/normalizedStateHelpers';
@@ -161,7 +156,7 @@ export function* moveElementSaga(
 }
 
 function* updateElementClassNames(
-  elementID: string,
+  elementId: string,
   newClassName: string,
   action: ReturnType<
     | typeof Actions.addElementClassName
@@ -186,36 +181,59 @@ function* updateElementClassNames(
     if (type === 'add') {
       yield put(
         Actions.setUndoActions(
-          Actions.removeElementClassName(elementID, newClassName, { screenId }),
+          Actions.removeElementClassName(elementId, newClassName, { screenId }),
         ),
       );
     } else {
       yield put(
         Actions.setUndoActions(
-          Actions.addElementClassName(elementID, newClassName, { screenId }),
+          Actions.addElementClassName(elementId, newClassName, { screenId }),
         ),
       );
     }
   }
 
-  const updatedTree =
-    type === 'add'
-      ? addElementClassName(elementID, newClassName, root)
-      : removeElementClassName(elementID, newClassName, root);
+  const state: Map<StateElement> = yield select(selectAllElements);
+  yield put(
+    Actions.updateElements(
+      updateStateElement(state, elementId, {
+        styles: {
+          ...state[elementId].styles,
+          classNames:
+            type === 'add'
+              ? [state[elementId].styles.classNames[0], newClassName]
+              : state[elementId].styles.classNames.filter(
+                  (name) => name !== newClassName,
+                ),
+        },
+      }),
+    ),
+  );
 
-  const updatedElement = findChildByID(updatedTree, elementID);
+  // const updatedTree =
+  //   type === 'add'
+  //     ? addElementClassName(elementID, newClassName, root)
+  //     : removeElementClassName(elementID, newClassName, root);
+  const updatedTree = yield select(selectElementAsTree(root.id));
+
+  yield put(Actions.updateElementsTree(updatedTree, action, action.meta));
+  /* const updatedElement = findChildByID(updatedTree, elementID);
 
   if (!updatedElement) {
     console.error(`Can not find updated element ${elementID} in tree`);
-  } else {
-    yield put(Actions.updateElementsTree(updatedTree, action, action.meta));
+    return;
+  } */
 
-    const convertedElement = convertElementToPatchRequest(updatedElement);
-    yield call(reqWrapper, apiChangeElement, {
-      data: convertedElement,
-      id: elementID,
-    });
-  }
+  const updatedElement: LibraryElement<any> = yield select(
+    selectElementAsTree(elementId),
+  );
+
+  const convertedElement = convertElementToPatchRequest(updatedElement);
+
+  yield call(reqWrapper, apiChangeElement, {
+    data: convertedElement,
+    id: elementId,
+  });
 }
 
 function* removeElementStyles(
@@ -237,17 +255,39 @@ function* removeElementStyles(
     selectScreenRootElement(screenId),
   );
 
-  const updatedTree = removeStyles(id, cssPropertiesNames, root);
+  const state: Map<StateElement> = yield select(selectAllElements);
+  yield put(
+    Actions.updateElements(
+      updateStateElement(state, id, {
+        styles: {
+          ...state[id].styles,
+          ownStyles: Object.fromEntries(
+            Object.entries(state[id].styles.ownStyles).filter(([rule]) =>
+              cssPropertiesNames.every((name) => name !== rule),
+            ),
+          ),
+        },
+      }),
+    ),
+  );
+
+  const updatedElement: LibraryElement<any> = yield select(
+    selectElementAsTree(id),
+  );
+
+  const updatedTree = yield select(selectElementAsTree(root.id));
+
+  /* const updatedTree = removeStyles(id, cssPropertiesNames, root);
   const updatedElement = findChildByID(updatedTree, id);
 
   if (!updatedElement) {
     console.error(`Can not find updated element ${id} in tree`);
-  } else {
-    yield put(Actions.updateElementsTree(updatedTree, action, action.meta));
+    return;
+  } */
+  yield put(Actions.updateElementsTree(updatedTree, action, action.meta));
 
-    const convertedElement = convertElementToPatchRequest(updatedElement);
-    yield call(reqWrapper, apiChangeElement, { data: convertedElement, id });
-  }
+  const convertedElement = convertElementToPatchRequest(updatedElement);
+  yield call(reqWrapper, apiChangeElement, { data: convertedElement, id });
 }
 
 export function* copyElementStylesSaga(
@@ -351,7 +391,32 @@ function* updateOrReplaceElementStyles(
     );
   }
 
-  const updatedTree =
+  const state: Map<StateElement> = yield select(selectAllElements);
+  yield put(
+    Actions.updateElements(
+      updateStateElement(state, id, {
+        styles: {
+          ...state[id].styles,
+          ownStyles:
+            type === 'replace'
+              ? styles
+              : {
+                  ...state[id].styles.ownStyles,
+                  ...styles,
+                },
+        },
+      }),
+    ),
+  );
+
+  const updatedElement: LibraryElement<any> = yield select(
+    selectElementAsTree(id),
+  );
+  const updatedTree: LibraryElement<'root'> = yield select(
+    selectElementAsTree(root.id),
+  );
+
+  /* const updatedTree =
     type === 'replace'
       ? replaceElementStyles(id, styles, root)
       : updateStyles(id, styles, root);
@@ -360,7 +425,7 @@ function* updateOrReplaceElementStyles(
   if (!updatedElement) {
     console.error(`Can not find updated element ${id} in tree`);
     return;
-  }
+  } */
   yield put(Actions.updateElementsTree(updatedTree, action, action.meta));
 
   const convertedElement = convertElementToPatchRequest(updatedElement);
@@ -554,6 +619,16 @@ export function* uploadFileSaga({
       root,
       0,
     );
+
+    const state: Map<StateElement> = yield select(
+      selectElementsForCurrentScreen,
+    );
+    yield put(
+      Actions.updateElements(
+        addStateElements(state, [nnRootWithDefaultParams], root.id),
+      ),
+    );
+
     yield put(
       Actions.setUndoActions(
         Actions.deleteItem(nnRootWithDefaultParams.id, { screenId }),
