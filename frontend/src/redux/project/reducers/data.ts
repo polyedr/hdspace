@@ -14,30 +14,6 @@ function dataReducer(
 ): T.ProjectDataState {
   switch (action.type) {
     case TYPES.UPDATE_ELEMENTS_TREE: {
-      const { root } = action.payload;
-
-      const targetScreen = Object.values(state.screens).find(
-        (screen) => screen.element.id === root.id,
-      );
-      if (!targetScreen) return state;
-
-      return {
-        ...state,
-        screens: {
-          ...state.screens,
-          [targetScreen.id]: {
-            ...state.screens[targetScreen.id],
-            element: root,
-          },
-        },
-        elements: {
-          ...state.elements,
-          ...flattenElements([root]),
-        },
-      };
-    }
-
-    case TYPES.UPDATE_ELEMENTS: {
       return {
         ...state,
         elements: {

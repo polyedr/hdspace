@@ -216,7 +216,7 @@ export type MoveElement = IAction<
 >;
 export type UpdateElementsTree = IAction<
   typeof TYPES.UPDATE_ELEMENTS_TREE,
-  { root: RootElement<'root'>; sourceAction: any },
+  Map<StateElement>,
   ElementHistoryMeta
 >;
 export type ClearAfterPrevScreen = IPlainAction<
@@ -420,10 +420,6 @@ export type AddElements = IAction<
   { elements: LibraryElement<any>[]; parentId?: string }
 >;
 export type RemoveElements = IAction<typeof TYPES.REMOVE_ELEMENTS, string[]>;
-export type UpdateElements = IAction<
-  typeof TYPES.UPDATE_ELEMENTS,
-  Map<StateElement>
->;
 
 export type Action =
   | LoadProjects
@@ -497,7 +493,6 @@ export type Action =
   | AddElements
   | RemoveElements
   | SaveLibraryElement
-  | UpdateElements
   | RestoreElement;
 
 export type ItemToCopyInfo = {
@@ -646,7 +641,7 @@ export interface Screen {
   image: string | null;
   screenscenario: number[];
   buoyancy: number;
-  element: LibraryElement<'root'>;
+  element: string;
   // removed screen_data_json, ask if it will be needed on backend
 }
 
@@ -672,6 +667,7 @@ export type HistoryMeta = {
 };
 export type ElementHistoryMeta = HistoryMeta & {
   screenId: number;
+  sourceAction?: Action | null;
 };
 
 export type Map<T> = {

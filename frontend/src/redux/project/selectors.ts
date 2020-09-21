@@ -57,11 +57,24 @@ export const selectCurrentProjectId = ({ project }: AppReduxState) =>
 export const selectCurrentProject = (state: AppReduxState) =>
   state.project.data.projects[selectCurrentProjectId(state)] || DEFAULT_PROJECT;
 
-export const selectCurrentRootElement = (state: AppReduxState) =>
-  selectCurrentScreen(state).element;
-
 export const selectCurrentRootId = (state: AppReduxState) =>
-  selectCurrentScreen(state).element?.id || '-1';
+  selectCurrentScreen(state).element || '-1';
+
+export const selectElementById = (id: string) => ({ project }: AppReduxState) =>
+  project.data.elements[id];
+
+export const selectElementAsTree = (id: string) => ({
+  project,
+}: AppReduxState) => {
+  if (!(id in project.data.elements)) return DEFAULT_ROOT;
+
+  return buildElementsTree(project.data.elements, id);
+};
+
+export const selectCurrentRootElement = (state: AppReduxState) => {
+  const currentRootId = selectCurrentRootId(state);
+  return selectElementAsTree(currentRootId)(state);
+};
 
 export function selectUploadedImageInfo(state: AppReduxState) {
   return selectProjectState(state).edit.uploadedImageInfo;
@@ -92,9 +105,6 @@ export const selectActiveElement = (state: AppReduxState) =>
 export function selectEditableStyles(state: AppReduxState) {
   return selectProjectState(state).ui.editableStyles;
 }
-
-export const selectElementById = (id: string) => ({ project }: AppReduxState) =>
-  project.data.elements[id];
 
 export function selectSharedStyles(state: AppReduxState, elementType: string) {
   return selectCurrentProject(state).projectData.classes.find(
@@ -235,7 +245,7 @@ export const selectElementsForScreen = (screenId: number) => (
   state: AppReduxState,
 ) => {
   const screen = selectScreenById(screenId)(state);
-  const rootId = screen.element?.id;
+  const rootId = screen.element;
   const tree = buildElementsTree(state.project.data.elements, rootId);
   return flattenElements([tree]);
 };
@@ -244,7 +254,3 @@ export const selectElementsForCurrentScreen = (state: AppReduxState) => {
   const currentScreenId = selectCurrentScreenId(state);
   return selectElementsForScreen(currentScreenId)(state);
 };
-
-export const selectElementAsTree = (id: string) => ({
-  project,
-}: AppReduxState) => buildElementsTree(project.data.elements, id);

@@ -186,12 +186,11 @@ export const clearAfterPrevScreen = (): T.ClearAfterPrevScreen => ({
 });
 
 export const updateElementsTree = (
-  root: LibraryElement<'root'>,
-  sourceAction: T.Action | null = null,
+  chunk: T.Map<StateElement>,
   meta: T.ElementHistoryMeta,
 ): T.UpdateElementsTree => ({
   type: TYPES.UPDATE_ELEMENTS_TREE,
-  payload: { root, sourceAction },
+  payload: chunk,
   meta,
 });
 
@@ -575,11 +574,4 @@ export const saveLibraryElementToState = <T extends Entity>(
 ) => ({
   type: TYPES.SAVE_LIBRARY_ELEMENT_TO_STATE,
   payload: element,
-});
-
-export const updateElements = (
-  chunk: T.Map<StateElement>,
-): T.UpdateElements => ({
-  type: TYPES.UPDATE_ELEMENTS,
-  payload: chunk,
 });

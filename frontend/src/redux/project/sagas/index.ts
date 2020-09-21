@@ -57,7 +57,12 @@ import { convertElementToRequest } from '../../../api/converters/toRequest';
 import { MAX_TOKEN_TRIALS } from '../../../../config/settings';
 import TYPES from '../../../constants/actions';
 import { setLoadedToken, setTokenPair } from '../../user/actions';
-import { ElementHistoryMeta, ItemToCopyInfo } from '../types';
+import {
+  ElementHistoryMeta,
+  ItemToCopyInfo,
+  Map,
+  StateElement,
+} from '../types';
 
 import { LibraryElement } from '../../../api/types';
 import { findChildByID } from '../../../utils/ElementsTreeHelper';
@@ -66,6 +71,7 @@ import { refreshUserTokenPair } from '../../user/sagas';
 import { DEFAULT_AUTHORISATION_TOKEN } from '../../../constants/defaultParams';
 import {
   selectActiveElement,
+  selectAllElements,
   selectCurrentProject,
   selectCurrentScreen,
   selectHistory,
@@ -187,17 +193,17 @@ function* removeSharedStylesSaga(
 
   yield call(updateProject, newProject);
 
-  const { screenId, undo } = action.meta;
+  const { undo } = action.meta;
 
   if (!undo) {
     yield put(Actions.setUndoActions(Actions.updateProject(currentProject)));
   }
 
-  const root: LibraryElement<'root'> = yield select(
-    selectScreenRootElement(screenId),
-  );
+  const state: Map<StateElement> = yield select(selectAllElements);
 
-  yield put(Actions.updateElementsTree(root, action, action.meta));
+  yield put(
+    Actions.updateElementsTree(state, { ...action.meta, sourceAction: action }),
+  );
 }
 
 function* updateSharedStylesSaga(
@@ -219,17 +225,17 @@ function* updateSharedStylesSaga(
 
   yield call(updateProject, newProject);
 
-  const { screenId, undo } = action.meta;
+  const { undo } = action.meta;
 
   if (!undo) {
     yield put(Actions.setUndoActions(Actions.updateProject(currentProject)));
   }
 
-  const root: LibraryElement<'root'> = yield select(
-    selectScreenRootElement(screenId),
-  );
+  const state: Map<StateElement> = yield select(selectAllElements);
 
-  yield put(Actions.updateElementsTree(root, action, action.meta));
+  yield put(
+    Actions.updateElementsTree(state, { ...action.meta, sourceAction: action }),
+  );
 }
 
 function* copyActiveItemSaga() {

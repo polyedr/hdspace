@@ -9,6 +9,7 @@ import { reqWrapper } from '.';
 import { selectors, T } from '..';
 import { createContainer } from './scenario';
 import {
+  selectAllElements,
   selectCurrentScreenId,
   selectScreenById,
   selectScreenRootElement,
@@ -21,7 +22,7 @@ import {
 } from '../../../api/screen';
 import { convertCreatedElementToRequest } from '../../../api/converters/toRequest';
 import { apiGetProject, apiSaveProject } from '../../../api/project';
-import { Screen, IScenarioItem } from '../types';
+import { Screen, IScenarioItem, StateElement, Map } from '../types';
 import {
   activateScreen,
   addElements,
@@ -202,8 +203,7 @@ export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
 
   const updatedScreen = { ...currentScreen, ...savedScreen };
 
-  updatedScreen.element = createdRootElement;
-  // yield put(addElements([createdRootElement]));
+  updatedScreen.element = createdRootElement.id;
 
   yield put(setProject(updateProject));
 
@@ -211,12 +211,15 @@ export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
 
   yield put(setCurrentScreenId(screen.id));
 
+  yield put(addElements([createdRootElement]));
+
+  const state: Map<StateElement> = yield select(selectAllElements);
   yield put(
-    Actions.updateElementsTree(
-      createdRootElement,
-      restoreScreen(screen.id, projectID),
-      { screenId: screen.id, undo: skip },
-    ),
+    Actions.updateElementsTree(state, {
+      screenId: screen.id,
+      undo: skip,
+      sourceAction: restoreScreen(screen.id, projectID),
+    }),
   );
 
   yield put(Actions.setActiveElementId(createdRootElement.id));
@@ -372,7 +375,7 @@ export function* restoreScreenSaga({
     scenariosIDs: [screen.screenscenario[0]],
   });
 
-  screen.element = convertElementFromResponse(element);
+  screen.element = element.id;
 
   yield put(setScreens([screen, ...screens]));
 
@@ -464,9 +467,10 @@ export function* getScreenNNSaga() {
   const [rootElement] = yield call(reqWrapper, apiGetElements, {
     scenariosIDs: screenscenario,
   });
-  resultScreen.element = convertElementFromResponse(rootElement);
+  resultScreen.element = rootElement.id;
 
   yield all([
+    put(addElements([convertElementFromResponse(rootElement)])),
     put(setProject(updateProject)),
     put(updateScreen(resultScreen)),
     put(activateScreen(lastScreenId)),
@@ -485,6 +489,7 @@ export function* getScreenSaga(screenId: number) {
 
   yield put(addElements([convertElementFromResponse(element)]));
 
-  screen.element = convertElementFromResponse(element);
+  screen.element = element.id.toString();
+
   return screen;
 }

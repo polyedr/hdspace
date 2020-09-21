@@ -96,7 +96,7 @@ export const DEFAULT_SCREEN: Screen = {
   screenscenario: [],
   buoyancy: 0,
   image: null,
-  element: DEFAULT_ROOT,
+  element: '-1',
 };
 
 export const DEFAULT_ACTIVE_ELEMENT: StateElement = {

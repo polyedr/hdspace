@@ -23,7 +23,6 @@ import {
 import {
   getElementsArray,
   getTreeWithDefaultStylesAndParams,
-  moveElement,
 } from '../../../utils/ElementsTreeHelper';
 
 import {
@@ -38,7 +37,6 @@ import { CssLikeStyles } from '../../../utils/StyleHelper';
 import getSavedValue from '../../../utils/getSavedValue';
 import { addProjectStyles } from '../../../utils/ProjectClassesHelper';
 import { updateProject } from './project';
-import { updateElementsTree } from './scenario';
 import { Map, StateElement } from '../types';
 import {
   addStateElements,
@@ -62,40 +60,6 @@ export function* moveElementSaga(
   }
   const { screenId, undo } = action.meta;
 
-  // we can get rid of this code block when we will get better Sortable.js implementation
-  /* if (!undo) {
-    if (isRemote) {
-      yield put(
-        Actions.setUndoActions(
-          Actions.moveElement(
-            { newIndex: oldIndex, oldIndex: newIndex },
-            elementId,
-            parentID,
-            false,
-            { screenId },
-          ),
-        ),
-      );
-
-      yield put(Actions.setRemoteMove(true));
-    } else {
-      const add = yield select(selectRemoteMove);
-
-      yield put(
-        Actions.setUndoActions(
-          Actions.moveElement(
-            { newIndex: oldIndex, oldIndex: newIndex },
-            elementId,
-            parentID,
-            add,
-            { screenId },
-          ),
-        ),
-      );
-      yield put(Actions.setRemoteMove(false));
-    }
-  } */
-
   if (!undo) {
     yield put(
       Actions.setUndoActions([
@@ -111,43 +75,20 @@ export function* moveElementSaga(
 
   const state: Map<StateElement> = yield select(selectAllElements);
   yield put(
-    Actions.updateElements(
+    Actions.updateElementsTree(
       moveStateElement(state, elementId, indices, parents),
+      {
+        ...action.meta,
+        sourceAction: action,
+      },
     ),
   );
-
-  /* const updatedTree = moveElement(
-    targetParent.id,
-    elementToMove,
-    root,
-    newIndex,
-  ); */
-  const root = yield select(selectScreenRootElement(screenId));
-  const updatedTree = yield select(selectElementAsTree(root.id));
-  yield put(Actions.updateElementsTree(updatedTree, action, action.meta));
-
-  // yield put(Actions.setGroupActionsUp(isRemote));
-
-  /* const updatedParent = findChildByID(updatedTree, parentID);
-
-  if (!updatedParent) {
-    console.error(`Can not find updatedParent ${parentID} in tree`);
-    return;
-  } */
-
   const updatedNewParent = yield select(selectElementAsTree(newParentId));
 
   const convertedElements = updatedNewParent.children.map((child) =>
     convertElementToPatchRequest(child),
   );
   yield call(reqWrapper, apiSaveElements, { data: convertedElements });
-
-  // if (isRemote) return;
-
-  // const elementData = {
-  //   name: targetParent.name,
-  //   children: [...targetParent.children.map((child) => child.id), elementId],
-  // };
 
   yield call(reqWrapper, apiChangeRecursiveElement, {
     data: { children: updatedNewParent.children.map((el) => el.id) },
@@ -173,10 +114,6 @@ function* updateElementClassNames(
   }
   const { screenId, undo } = action.meta;
 
-  const root: LibraryElement<'root'> = yield select(
-    selectScreenRootElement(screenId),
-  );
-
   if (!undo) {
     if (type === 'add') {
       yield put(
@@ -194,8 +131,9 @@ function* updateElementClassNames(
   }
 
   const state: Map<StateElement> = yield select(selectAllElements);
+
   yield put(
-    Actions.updateElements(
+    Actions.updateElementsTree(
       updateStateElement(state, elementId, {
         styles: {
           ...state[elementId].styles,
@@ -207,22 +145,9 @@ function* updateElementClassNames(
                 ),
         },
       }),
+      { ...action.meta, sourceAction: action },
     ),
   );
-
-  // const updatedTree =
-  //   type === 'add'
-  //     ? addElementClassName(elementID, newClassName, root)
-  //     : removeElementClassName(elementID, newClassName, root);
-  const updatedTree = yield select(selectElementAsTree(root.id));
-
-  yield put(Actions.updateElementsTree(updatedTree, action, action.meta));
-  /* const updatedElement = findChildByID(updatedTree, elementID);
-
-  if (!updatedElement) {
-    console.error(`Can not find updated element ${elementID} in tree`);
-    return;
-  } */
 
   const updatedElement: LibraryElement<any> = yield select(
     selectElementAsTree(elementId),
@@ -249,15 +174,10 @@ function* removeElementStyles(
     );
     return;
   }
-  const { screenId } = action.meta;
-
-  const root: LibraryElement<'root'> = yield select(
-    selectScreenRootElement(screenId),
-  );
 
   const state: Map<StateElement> = yield select(selectAllElements);
   yield put(
-    Actions.updateElements(
+    Actions.updateElementsTree(
       updateStateElement(state, id, {
         styles: {
           ...state[id].styles,
@@ -268,23 +188,13 @@ function* removeElementStyles(
           ),
         },
       }),
+      { ...action.meta, sourceAction: action },
     ),
   );
 
   const updatedElement: LibraryElement<any> = yield select(
     selectElementAsTree(id),
   );
-
-  const updatedTree = yield select(selectElementAsTree(root.id));
-
-  /* const updatedTree = removeStyles(id, cssPropertiesNames, root);
-  const updatedElement = findChildByID(updatedTree, id);
-
-  if (!updatedElement) {
-    console.error(`Can not find updated element ${id} in tree`);
-    return;
-  } */
-  yield put(Actions.updateElementsTree(updatedTree, action, action.meta));
 
   const convertedElement = convertElementToPatchRequest(updatedElement);
   yield call(reqWrapper, apiChangeElement, { data: convertedElement, id });
@@ -378,10 +288,6 @@ function* updateOrReplaceElementStyles(
 
   const { screenId, undo } = action.meta;
 
-  const root: LibraryElement<'root'> = yield select(
-    selectScreenRootElement(screenId),
-  );
-
   if (!undo) {
     const oldStyles = yield select(selectElementStyles(id));
     yield put(
@@ -393,7 +299,7 @@ function* updateOrReplaceElementStyles(
 
   const state: Map<StateElement> = yield select(selectAllElements);
   yield put(
-    Actions.updateElements(
+    Actions.updateElementsTree(
       updateStateElement(state, id, {
         styles: {
           ...state[id].styles,
@@ -406,27 +312,13 @@ function* updateOrReplaceElementStyles(
                 },
         },
       }),
+      { ...action.meta, sourceAction: action },
     ),
   );
 
   const updatedElement: LibraryElement<any> = yield select(
     selectElementAsTree(id),
   );
-  const updatedTree: LibraryElement<'root'> = yield select(
-    selectElementAsTree(root.id),
-  );
-
-  /* const updatedTree =
-    type === 'replace'
-      ? replaceElementStyles(id, styles, root)
-      : updateStyles(id, styles, root);
-  const updatedElement = findChildByID(updatedTree, id);
-
-  if (!updatedElement) {
-    console.error(`Can not find updated element ${id} in tree`);
-    return;
-  } */
-  yield put(Actions.updateElementsTree(updatedTree, action, action.meta));
 
   const convertedElement = convertElementToPatchRequest(updatedElement);
   yield call(reqWrapper, apiChangeElement, { data: convertedElement, id });
@@ -529,20 +421,17 @@ export function* updateElementParameters(
     selectElementsForScreen(screenId),
   );
   yield put(
-    Actions.updateElements(
+    Actions.updateElementsTree(
       updateStateElement(state, elementId, {
         parameters: { ...state[elementId].parameters, ...parameters },
       }),
+      {
+        ...action.meta,
+        sourceAction: action,
+      },
     ),
   );
 
-  // const updatedTree = updateParameters(elementId, parameters, root);
-  // const updatedElement = findChildByID(updatedTree, elementId);
-  //
-  // if (!updatedElement) {
-  //   console.error(`Can not find updated element ${elementId} in tree`);
-  //   return;
-  // }
   const updatedElement: StateElement = yield select(
     selectElementById(elementId),
   );
@@ -551,15 +440,9 @@ export function* updateElementParameters(
     Actions.updateSavedElementValues(elementId, getSavedValue(updatedElement)),
   );
 
-  const root: LibraryElement<any> = yield select(
-    selectScreenRootElement(screenId),
-  );
-  const updatedRoot = yield select(selectElementAsTree(root.id));
   const updatedElementTree: LibraryElement<any> = yield select(
     selectElementAsTree(elementId),
   );
-
-  yield call(updateElementsTree, updatedRoot, action, action.meta);
 
   const convertedElement = convertElementToPatchRequest(updatedElementTree);
   yield call(reqWrapper, apiChangeElement, {
@@ -613,33 +496,26 @@ export function* uploadFileSaga({
 
     yield call(reqWrapper, apiSaveElements, { data: convertedElements });
 
-    const updatedElements = moveElement(
-      root.id,
-      nnRootWithDefaultParams,
-      root,
-      0,
-    );
-
-    const state: Map<StateElement> = yield select(
-      selectElementsForCurrentScreen,
-    );
-    yield put(
-      Actions.updateElements(
-        addStateElements(state, [nnRootWithDefaultParams], root.id),
-      ),
-    );
-
     yield put(
       Actions.setUndoActions(
         Actions.deleteItem(nnRootWithDefaultParams.id, { screenId }),
       ),
     );
 
-    yield call(
-      updateElementsTree,
-      updatedElements,
-      Actions.restoreElement(nnRootWithDefaultParams.id, { screenId }),
-      meta,
+    const state: Map<StateElement> = yield select(
+      selectElementsForCurrentScreen,
+    );
+
+    yield put(
+      Actions.updateElementsTree(
+        addStateElements(state, [nnRootWithDefaultParams], root.id),
+        {
+          ...meta,
+          sourceAction: Actions.restoreElement(nnRootWithDefaultParams.id, {
+            screenId,
+          }),
+        },
+      ),
     );
   } catch (e) {
     console.error('Could not upload image for NN. Error: ', e.message);

@@ -20,8 +20,7 @@ const controlReducer = (
       if (!action.meta) return state;
 
       const {
-        meta: { undo, redo },
-        payload: { sourceAction },
+        meta: { undo, redo, sourceAction },
       } = action;
 
       const { groupActionsUp, history } = state;
@@ -33,6 +32,7 @@ const controlReducer = (
       }
 
       if (sourceAction && !undo) {
+        // @ts-ignore
         newState.history = groupActionsUp
           ? [
               ...history.slice(0, -1),

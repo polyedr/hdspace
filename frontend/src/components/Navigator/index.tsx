@@ -173,7 +173,9 @@ const Navigator: React.FC = () => {
     const newParent = items[destination.parentId];
     const childId = oldParent.children[source.index];
     const child = items[childId];
+
     const parentElement = findChildByID(rootElement, newParent.id as string);
+
     if (!parentElement) {
       console.error(`No element ${newParent.id}`);
       setIsDragging(false);
@@ -196,30 +198,6 @@ const Navigator: React.FC = () => {
         { screenId: currentScreenId },
       ),
     );
-    // const isRemote = source.parentId !== destination.parentId;
-
-    /* if (isRemote) {
-      dispatch(
-        moveElement(
-          { newIndex: destination.index, oldIndex: source.index },
-          childId as string,
-          source.parentId as string,
-          true,
-          { screenId: currentScreenId },
-        ),
-      );
-    }
-
-    dispatch(
-      moveElement(
-        { newIndex: destination.index, oldIndex: source.index },
-        childId as string,
-        destination.parentId as string,
-        false,
-        { screenId: currentScreenId },
-      ),
-    ); */
-
     setIsDragging(false);
     select(
       newParent.isExpanded ? oldParent.children[source.index] : newParent.id,

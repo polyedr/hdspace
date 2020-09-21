@@ -3,9 +3,7 @@ import { connect, useSelector } from 'react-redux';
 import {
   selectActiveElement,
   selectCurrentScreenId,
-  selectCurrentRootElement,
 } from '../../../redux/project/selectors';
-import { AppReduxState } from '../../../shared/types/app';
 import {
   copyActiveItem,
   deleteItem,
@@ -14,12 +12,6 @@ import {
   undoAction,
   wrapIntoContainer,
 } from '../../../redux/project/actions';
-
-const mapState = (state: AppReduxState) => {
-  return {
-    rootElement: selectCurrentRootElement(state),
-  };
-};
 
 const mapDispatch = {
   deleteActiveItem: deleteItem,
@@ -30,10 +22,9 @@ const mapDispatch = {
   redo: redoAction,
 };
 
-type Props = ReturnType<typeof mapState> & typeof mapDispatch;
+type Props = typeof mapDispatch;
 
 export const Component = ({
-  rootElement,
   deleteActiveItem,
   wrapIntoContainer,
   copyActiveItem,
@@ -58,7 +49,7 @@ export const Component = ({
 
     root?.addEventListener('keydown', listener);
     return () => root?.removeEventListener('keydown', listener);
-  }, [rootElement, root, deleteActiveItem, id, currentScreenId]);
+  }, [root, deleteActiveItem, id, currentScreenId]);
 
   useEffect(() => {
     const listener = (event: KeyboardEvent) => {
@@ -70,7 +61,7 @@ export const Component = ({
 
     root?.addEventListener('keydown', listener);
     return () => root?.removeEventListener('keydown', listener);
-  }, [rootElement, root, wrapIntoContainer, id, currentScreenId]);
+  }, [root, wrapIntoContainer, id, currentScreenId]);
 
   useEffect(() => {
     const listener = (event: KeyboardEvent) => {
@@ -86,7 +77,7 @@ export const Component = ({
 
     root?.addEventListener('keydown', listener);
     return () => root?.removeEventListener('keydown', listener);
-  }, [rootElement, root, copyActiveItem]);
+  }, [root, copyActiveItem]);
 
   useEffect(() => {
     const listener = (event: KeyboardEvent) => {
@@ -101,7 +92,7 @@ export const Component = ({
 
     root?.addEventListener('keydown', listener);
     return () => root?.removeEventListener('keydown', listener);
-  }, [rootElement, root, pasteCopiedItem, currentScreenId]);
+  }, [root, pasteCopiedItem, currentScreenId]);
 
   useEffect(() => {
     const listener = (ev: KeyboardEvent) => {
@@ -118,8 +109,8 @@ export const Component = ({
 
     root?.addEventListener('keydown', listener);
     return () => root?.removeEventListener('keydown', listener);
-  }, [rootElement, root, undo]);
+  }, [root, undo]);
   return null;
 };
 
-export const HotKeys = connect(mapState, mapDispatch)(Component);
+export const HotKeys = connect(null, mapDispatch)(Component);
