@@ -27,7 +27,11 @@ export const selectProjectById = (projectId: number) => ({
 
 export const selectScreenRootElement = (screenId: number) => ({
   project,
-}: AppReduxState) => project.data.screens[screenId]?.element || DEFAULT_ROOT;
+}: AppReduxState) => {
+  const rootId = project.data.screens[screenId].element;
+
+  return buildElementsTree(project.data.elements, rootId) || DEFAULT_ROOT;
+};
 
 export const selectCurrentScreenId = ({ project }: AppReduxState) =>
   project.edit.currentScreenId;
@@ -206,15 +210,10 @@ export const selectRedoActions = ({ project }: AppReduxState) =>
 export const selectHistory = ({ project }: AppReduxState) =>
   project.control.history;
 
-export const selectRemoteMove = ({ project }: AppReduxState) =>
-  project.control.remoteMove;
-
 export const selectActiveItemChildrenStyles = makeActiveElementInfoSelector(
   'styles',
 );
-// export const selectActiveItemParams = makeActiveElementInfoSelector(
-//   'parameters',
-// );
+
 export const selectActiveElementParams = (state: AppReduxState) => {
   const activeElement = selectActiveElement(state);
   return activeElement.parameters;

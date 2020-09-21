@@ -48,19 +48,16 @@ import { convertElementFromResponse } from '../../../api/converters/fromResponse
 import getSavedValue from '../../../utils/getSavedValue';
 import { reqWrapper } from './index';
 import {
-  addStateElements,
-  insertStateElement,
-  removeStateElement,
-  restoreStateElement,
-  restoreStateElementChildren,
-  updateStateElement,
+  removeMapElement,
+  restoreMapElement,
+  restoreMapElementChildren,
+  updateMapElement,
 } from '../../../utils/normalizedStateHelpers';
 import {
   selectActiveElementId,
   selectAllElements,
   selectElementAsTree,
   selectElementById,
-  selectElementsForCurrentScreen,
   selectElementsForScreen,
   selectScreenRootElement,
 } from '../selectors';
@@ -160,20 +157,16 @@ export function* createElements(
     id: parent.id,
   });
 
-  const state = yield select(selectElementsForCurrentScreen);
   yield put(
-    Actions.updateElementsTree(
-      addStateElements(state, newElements, parent.id),
-      {
-        screenId,
-        undo,
-        sourceAction: Actions.restoreElementChildren(
-          parent.id,
-          newElements.map((element) => element.id),
-          { screenId },
-        ),
-      },
-    ),
+    Actions.addStateElements(newElements, parent.id, {
+      screenId,
+      undo,
+      sourceAction: Actions.restoreElementChildren(
+        parent.id,
+        newElements.map((element) => element.id),
+        { screenId },
+      ),
+    }),
   );
 
   const updatedParent: LibraryElement<Entity> = yield select(
@@ -297,7 +290,7 @@ export function* softDeleteSaga(action: ReturnType<typeof Actions.deleteItem>) {
 
   const state = yield select(selectElementsForScreen(screenId));
   yield put(
-    Actions.updateElementsTree(removeStateElement(state, id), {
+    Actions.updateElementsTree(removeMapElement(state, id), {
       ...action.meta,
       sourceAction: action,
     }),
@@ -338,7 +331,7 @@ export function* restoreElementChildrenSaga(
   const state: Map<StateElement> = yield select(selectAllElements);
   yield put(
     Actions.updateElementsTree(
-      restoreStateElementChildren(state, elementId, childrenIds),
+      restoreMapElementChildren(state, elementId, childrenIds),
       { ...action.meta, sourceAction: action },
     ),
   );
@@ -373,7 +366,7 @@ export function* restoreElementSaga(
   const state: Map<StateElement> = yield select(selectAllElements);
 
   yield put(
-    Actions.updateElementsTree(restoreStateElement(state, elementId), {
+    Actions.updateElementsTree(restoreMapElement(state, elementId), {
       ...action.meta,
       sourceAction: action,
     }),
@@ -434,22 +427,16 @@ export function* wrapIntoContainerSaga(
     ),
   );
 
-  const state: Map<StateElement> = yield select(
-    selectElementsForScreen(screenId),
-  );
   yield put(
-    Actions.updateElementsTree(
-      insertStateElement(state, createdContainer, parent.id, element.id),
-      {
-        ...action.meta,
-        sourceAction: Actions.redoWrapIntoContainer(
-          id,
-          createdContainer.id,
-          parent.id,
-          action.meta,
-        ),
-      },
-    ),
+    Actions.insertStateElement(createdContainer, parent.id, element.id, {
+      ...action.meta,
+      sourceAction: Actions.redoWrapIntoContainer(
+        id,
+        createdContainer.id,
+        parent.id,
+        action.meta,
+      ),
+    }),
   );
   const container: StateElement = yield select(
     selectElementById(createdContainer.id),
@@ -473,6 +460,7 @@ export function* unwrapFromContainerSaga(
   const { elementId, wrapperId, parentId } = action.payload;
   const { screenId } = action.meta;
 
+  yield put(Actions.setActiveElementId(parentId));
   const parent: StateElement = yield select(selectElementById(parentId));
 
   const newParentChildrenIds = [
@@ -484,10 +472,10 @@ export function* unwrapFromContainerSaga(
     selectElementsForScreen(screenId),
   );
 
-  const stateWithUpdatedParent = updateStateElement(state, parentId, {
+  const stateWithUpdatedParent = updateMapElement(state, parentId, {
     children: newParentChildrenIds,
   });
-  const stateWithUpdatedWrapper = updateStateElement(
+  const stateWithUpdatedWrapper = updateMapElement(
     stateWithUpdatedParent,
     wrapperId,
     {
@@ -500,7 +488,7 @@ export function* unwrapFromContainerSaga(
 
   yield put(
     Actions.updateElementsTree(
-      updateStateElement(stateWithUpdatedWrapper, elementId, {
+      updateMapElement(stateWithUpdatedWrapper, elementId, {
         parent: parentId,
       }),
       { undo: true, screenId, sourceAction: action },
@@ -524,12 +512,15 @@ export function* renameElementSaga(
   }
   const { elementID, name } = action.payload;
 
-  const state: Map<StateElement> = yield select(selectAllElements);
   yield put(
-    Actions.updateElementsTree(updateStateElement(state, elementID, { name }), {
-      ...action.meta,
-      sourceAction: null,
-    }),
+    Actions.updateStateElement(
+      elementID,
+      { name },
+      {
+        ...action.meta,
+        sourceAction: null,
+      },
+    ),
   );
 
   const updatedElement: LibraryElement<any> = yield select(
@@ -567,18 +558,16 @@ export function* redoWrapIntoContainerSaga(
     wrapperId,
   ];
 
-  const state: Map<StateElement> = yield select(
-    selectElementsForScreen(screenId),
-  );
   const wrapper: LibraryElement<any> = yield select(
     selectElementAsTree(wrapperId),
   );
 
   yield put(
-    Actions.updateElementsTree(
-      insertStateElement(state, wrapper, parentId, elementId),
-      { screenId, redo: true, sourceAction: action },
-    ),
+    Actions.insertStateElement(wrapper, parentId, elementId, {
+      screenId,
+      redo: true,
+      sourceAction: action,
+    }),
   );
 
   yield call(reqWrapper, apiChangeRecursiveElement, {

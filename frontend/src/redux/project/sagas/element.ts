@@ -18,7 +18,6 @@ import {
   selectElementById,
   selectElementAsTree,
   selectAllElements,
-  selectElementsForCurrentScreen,
 } from '../selectors';
 import {
   getElementsArray,
@@ -38,11 +37,6 @@ import getSavedValue from '../../../utils/getSavedValue';
 import { addProjectStyles } from '../../../utils/ProjectClassesHelper';
 import { updateProject } from './project';
 import { Map, StateElement } from '../types';
-import {
-  addStateElements,
-  moveStateElement,
-  updateStateElement,
-} from '../../../utils/normalizedStateHelpers';
 
 export function* moveElementSaga(
   action: ReturnType<typeof Actions.moveElement>,
@@ -73,15 +67,11 @@ export function* moveElementSaga(
     );
   }
 
-  const state: Map<StateElement> = yield select(selectAllElements);
   yield put(
-    Actions.updateElementsTree(
-      moveStateElement(state, elementId, indices, parents),
-      {
-        ...action.meta,
-        sourceAction: action,
-      },
-    ),
+    Actions.moveStateElement(elementId, indices, parents, {
+      ...action.meta,
+      sourceAction: action,
+    }),
   );
   const updatedNewParent = yield select(selectElementAsTree(newParentId));
 
@@ -133,8 +123,9 @@ function* updateElementClassNames(
   const state: Map<StateElement> = yield select(selectAllElements);
 
   yield put(
-    Actions.updateElementsTree(
-      updateStateElement(state, elementId, {
+    Actions.updateStateElement(
+      elementId,
+      {
         styles: {
           ...state[elementId].styles,
           classNames:
@@ -144,7 +135,7 @@ function* updateElementClassNames(
                   (name) => name !== newClassName,
                 ),
         },
-      }),
+      },
       { ...action.meta, sourceAction: action },
     ),
   );
@@ -177,8 +168,9 @@ function* removeElementStyles(
 
   const state: Map<StateElement> = yield select(selectAllElements);
   yield put(
-    Actions.updateElementsTree(
-      updateStateElement(state, id, {
+    Actions.updateStateElement(
+      id,
+      {
         styles: {
           ...state[id].styles,
           ownStyles: Object.fromEntries(
@@ -187,7 +179,7 @@ function* removeElementStyles(
             ),
           ),
         },
-      }),
+      },
       { ...action.meta, sourceAction: action },
     ),
   );
@@ -299,8 +291,9 @@ function* updateOrReplaceElementStyles(
 
   const state: Map<StateElement> = yield select(selectAllElements);
   yield put(
-    Actions.updateElementsTree(
-      updateStateElement(state, id, {
+    Actions.updateStateElement(
+      id,
+      {
         styles: {
           ...state[id].styles,
           ownStyles:
@@ -311,7 +304,7 @@ function* updateOrReplaceElementStyles(
                   ...styles,
                 },
         },
-      }),
+      },
       { ...action.meta, sourceAction: action },
     ),
   );
@@ -421,10 +414,11 @@ export function* updateElementParameters(
     selectElementsForScreen(screenId),
   );
   yield put(
-    Actions.updateElementsTree(
-      updateStateElement(state, elementId, {
+    Actions.updateStateElement(
+      elementId,
+      {
         parameters: { ...state[elementId].parameters, ...parameters },
-      }),
+      },
       {
         ...action.meta,
         sourceAction: action,
@@ -502,20 +496,13 @@ export function* uploadFileSaga({
       ),
     );
 
-    const state: Map<StateElement> = yield select(
-      selectElementsForCurrentScreen,
-    );
-
     yield put(
-      Actions.updateElementsTree(
-        addStateElements(state, [nnRootWithDefaultParams], root.id),
-        {
-          ...meta,
-          sourceAction: Actions.restoreElement(nnRootWithDefaultParams.id, {
-            screenId,
-          }),
-        },
-      ),
+      Actions.addStateElements([nnRootWithDefaultParams], root.id, {
+        ...meta,
+        sourceAction: Actions.restoreElement(nnRootWithDefaultParams.id, {
+          screenId,
+        }),
+      }),
     );
   } catch (e) {
     console.error('Could not upload image for NN. Error: ', e.message);

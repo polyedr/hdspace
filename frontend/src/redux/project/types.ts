@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import { OverridableComponent } from '@material-ui/core/OverridableComponent';
 import { SvgIconTypeMap } from '@material-ui/core';
 import {
@@ -10,13 +11,17 @@ import {
   VideoSettingsType,
 } from '../../api/types';
 import { LibraryElements } from '../../domain/libraryElements/libraryElements';
-/* eslint-disable camelcase */
-
 import { IAction, IPlainAction, IPlainFailAction } from '../../shared/redux';
 import { Entity } from '../../domain/core';
-
 import TYPES from '../../constants/actions';
 import { CssLikeStyles } from '../../utils/StyleHelper';
+import {
+  addStateElements,
+  insertStateElement,
+  moveStateElement,
+  removeStateElement,
+  updateStateElement,
+} from './actions';
 
 export type ProjectState = {
   data: ProjectDataState;
@@ -89,7 +94,6 @@ export type ProjectControlState = {
   undoActions: Action[] | Action[][];
   redoActions: Action[];
   history: Action[];
-  remoteMove: boolean;
   groupActionsUp: boolean;
 };
 
@@ -394,7 +398,6 @@ export type UnwrapFromContainer = IAction<
   { elementId: string; wrapperId: string; parentId: string },
   ElementHistoryMeta
 >;
-export type SetRemoteMove = IAction<typeof TYPES.SET_REMOTE_MOVE, boolean>;
 export type RestoreElementChildren = IAction<
   typeof TYPES.RESTORE_ELEMENT_CHILDREN,
   { elementId: string; childrenIds: string[] },
@@ -471,7 +474,6 @@ export type Action =
   | SetUndoActions
   | SetRedoActions
   | UnwrapFromContainer
-  | SetRemoteMove
   | RestoreElementChildren
   | RedoWrapIntoContainer
   | ClearHistory
@@ -493,7 +495,12 @@ export type Action =
   | AddElements
   | RemoveElements
   | SaveLibraryElement
-  | RestoreElement;
+  | RestoreElement
+  | ReturnType<typeof moveStateElement>
+  | ReturnType<typeof updateStateElement>
+  | ReturnType<typeof addStateElements>
+  | ReturnType<typeof insertStateElement>
+  | ReturnType<typeof removeStateElement>;
 
 export type ItemToCopyInfo = {
   id: string;

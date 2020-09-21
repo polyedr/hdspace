@@ -65,15 +65,16 @@ import {
 } from '../types';
 
 import { LibraryElement } from '../../../api/types';
-import { findChildByID } from '../../../utils/ElementsTreeHelper';
 import { openProjects, openSignScreen } from '../../../utils/history';
 import { refreshUserTokenPair } from '../../user/sagas';
 import { DEFAULT_AUTHORISATION_TOKEN } from '../../../constants/defaultParams';
 import {
   selectActiveElement,
+  selectActiveElementId,
   selectAllElements,
   selectCurrentProject,
   selectCurrentScreen,
+  selectElementAsTree,
   selectHistory,
   selectItemToCopyInfo,
   selectRedoActions,
@@ -251,26 +252,18 @@ function* copyActiveItemSaga() {
 }
 
 function* duplicateElements(
-  sourceRoot: LibraryElement<Entity>,
   itemsToCopyInfo: ItemToCopyInfo[],
   targetParent: LibraryElement<Entity>,
   { screenId, undo }: ElementHistoryMeta,
 ) {
-  const itemsToDuplicate = itemsToCopyInfo.map((item) =>
-    findChildByID(sourceRoot, item.id),
-  );
-  const isItemsToDuplicateInTree = itemsToDuplicate.every((item) => !!item);
-
-  if (!isItemsToDuplicateInTree) {
-    console.error(
-      `Can not find duplicated items ${JSON.stringify(
-        itemsToCopyInfo.map((item) => item.id),
-      )} in tree`,
-    );
-    return;
+  const elements: LibraryElement<any>[] = [];
+  // eslint-disable-next-line no-restricted-syntax
+  for (const el of itemsToCopyInfo) {
+    const element = yield select(selectElementAsTree(el.id));
+    elements.push(element);
   }
 
-  const convertedItemsToDuplicate = itemsToDuplicate.map((item) =>
+  const convertedItemsToDuplicate = elements.map((item) =>
     convertElementToRequest(item!),
   );
 
@@ -310,12 +303,14 @@ function* duplicateScreenSaga(
   );
   yield put(Actions.setScreenLoader(true));
 
-  const targetRoot = yield select(selectScreenRootElement(newScreenId));
+  const targetRoot: LibraryElement<'root'> = yield select(
+    selectScreenRootElement(newScreenId),
+  );
   const targetRootID = targetRoot.id;
 
   yield put(Actions.setActiveElementId(targetRootID));
 
-  yield call(duplicateElements, sourceRoot, duplicatedItems, targetRoot, {
+  yield call(duplicateElements, duplicatedItems, targetRoot, {
     screenId: newScreenId,
     undo: true,
   });
@@ -331,37 +326,20 @@ function* pasteCopiedElementSaga({
     return;
   }
   const { screenId } = meta;
-  const activeItem: ReturnType<typeof selectActiveElement> = yield select(
-    selectActiveElement,
+  const activeElementId: string = yield select(selectActiveElementId);
+  const activeElement: LibraryElement<any> = yield select(
+    selectElementAsTree(activeElementId),
   );
-  const root: LibraryElement<'root'> = yield select(
-    selectScreenRootElement(screenId),
-  );
-  const targetContainer = findChildByID(root, activeItem.id);
 
-  if (!targetContainer) {
-    console.error(`Can not find updated element ${activeItem.id} in tree`);
-    return;
-  }
   const itemToCopyInfo: ReturnType<typeof selectItemToCopyInfo> = yield select(
     selectItemToCopyInfo,
   );
   if (!itemToCopyInfo) return;
 
-  const sourceRoot: LibraryElement<'root'> = yield select(
-    selectScreenRootElement(itemToCopyInfo.screenID),
-  );
-
-  if (activeItem.type !== 'none') {
-    yield call(
-      duplicateElements,
-      sourceRoot,
-      [itemToCopyInfo],
-      targetContainer,
-      {
-        screenId,
-      },
-    );
+  if (activeElement.type !== 'none') {
+    yield call(duplicateElements, [itemToCopyInfo], activeElement, {
+      screenId,
+    });
   }
 }
 

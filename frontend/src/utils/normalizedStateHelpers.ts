@@ -42,7 +42,7 @@ export const buildElementsTree = (
   };
 };
 
-export const removeStateElement = (
+export const removeMapElement = (
   state: Map<StateElement>,
   elementId: string,
 ): Map<StateElement> => {
@@ -63,34 +63,26 @@ export const removeStateElement = (
   return newState;
 };
 
-// export const updateBuoyancy = (
-//   state: Map<StateElement>,
-//   elementId: string,
-//   buoyancy: number,
-// ): Map<StateElement> => {
-//   const newState = {
-//     ...state,
-//     [elementId]: {
-//       ...state[elementId],
-//       buoyancy,
-//     },
-//   };
-// };
-
-export const addStateElements = (
+export const addMapElements = (
   state: Map<StateElement>,
   elements: LibraryElement<any>[],
   parentId: string,
-): Map<StateElement> => ({
-  ...state,
-  ...flattenElements(elements, parentId),
-  [parentId]: {
-    ...state[parentId],
-    children: [...state[parentId].children, ...elements.map((el) => el.id)],
-  },
-});
+): Map<StateElement> => {
+  const result = {
+    ...state,
+    ...flattenElements(elements, parentId),
+    [parentId]: {
+      ...state[parentId],
+      children: [...state[parentId].children, ...elements.map((el) => el.id)],
+    },
+  };
+  result[parentId].children.forEach((child, i) => {
+    result[child].buoyancy = i;
+  });
+  return result;
+};
 
-export const updateStateElement = (
+export const updateMapElement = (
   state: Map<StateElement>,
   elementId: string,
   data: Partial<StateElement>,
@@ -102,7 +94,7 @@ export const updateStateElement = (
   },
 });
 
-export const moveStateElement = (
+export const moveMapElement = (
   state: Map<StateElement>,
   elementId: string,
   indices: Indices,
@@ -132,7 +124,7 @@ export const moveStateElement = (
   return newState;
 };
 
-export const insertStateElement = (
+export const insertMapElement = (
   state: Map<StateElement>,
   element: LibraryElement<any>,
   parentId: string,
@@ -149,7 +141,7 @@ export const insertStateElement = (
   return newState;
 };
 
-export const restoreStateElement = (
+export const restoreMapElement = (
   state: Map<StateElement>,
   elementId: string,
 ): Map<StateElement> => {
@@ -169,7 +161,7 @@ export const restoreStateElement = (
   return newState;
 };
 
-export const restoreStateElementChildren = (
+export const restoreMapElementChildren = (
   state: Map<StateElement>,
   elementId: string,
   childrenIds: string[],

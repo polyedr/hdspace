@@ -35,6 +35,5 @@ export const initialControl: T.ProjectControlState = {
   undoActions: [],
   redoActions: [],
   history: [],
-  remoteMove: false,
   groupActionsUp: false,
 };

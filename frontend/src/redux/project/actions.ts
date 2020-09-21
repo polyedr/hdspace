@@ -1,6 +1,7 @@
 import {
   ElementHistoryMeta,
   HistoryMeta,
+  Indices,
   ParentIds,
   Screen,
   StateElement,
@@ -191,6 +192,73 @@ export const updateElementsTree = (
 ): T.UpdateElementsTree => ({
   type: TYPES.UPDATE_ELEMENTS_TREE,
   payload: chunk,
+  meta,
+});
+
+export const moveStateElement = (
+  elementId: string,
+  indices: Indices,
+  parents: ParentIds,
+  meta: ElementHistoryMeta,
+) => ({
+  type: TYPES.MOVE_STATE_ELEMENT,
+  payload: {
+    elementId,
+    indices,
+    parents,
+  },
+  meta,
+});
+
+export const updateStateElement = (
+  elementId: string,
+  data: Partial<StateElement>,
+  meta: ElementHistoryMeta,
+) => ({
+  type: TYPES.UPDATE_STATE_ELEMENT,
+  payload: {
+    elementId,
+    data,
+  },
+  meta,
+});
+
+export const addStateElements = (
+  elements: LibraryElement<any>[],
+  parentId: string,
+  meta: ElementHistoryMeta,
+) => ({
+  type: TYPES.ADD_STATE_ELEMENTS,
+  payload: {
+    elements,
+    parentId,
+  },
+  meta,
+});
+
+export const insertStateElement = (
+  element: LibraryElement<any>,
+  parentId: string,
+  childId: string,
+  meta: ElementHistoryMeta,
+) => ({
+  type: TYPES.INSERT_STATE_ELEMENT,
+  payload: {
+    parentId,
+    element,
+    childId,
+  },
+  meta,
+});
+
+export const removeStateElement = (
+  elementId: string,
+  meta: ElementHistoryMeta,
+) => ({
+  type: TYPES.REMOVE_STATE_ELEMENT,
+  payload: {
+    elementId,
+  },
   meta,
 });
 
@@ -478,11 +546,6 @@ export const setRedoActions = (actions: T.Action[]): T.SetRedoActions => ({
 
 export const popUndoAction = (): T.PopUndoAction => ({
   type: TYPES.POP_UNDO_ACTION,
-});
-
-export const setRemoteMove = (isRemote: boolean): T.SetRemoteMove => ({
-  type: TYPES.SET_REMOTE_MOVE,
-  payload: isRemote,
 });
 
 export const unwrapFromContainer = (

@@ -4,8 +4,13 @@ import TYPES from '../../../constants/actions';
 import { Project } from '../../../api/types';
 import { Screen } from '../types';
 import {
+  addMapElements,
   arrayToMap,
   flattenElements,
+  insertMapElement,
+  moveMapElement,
+  removeMapElement,
+  updateMapElement,
 } from '../../../utils/normalizedStateHelpers';
 
 function dataReducer(
@@ -19,6 +24,61 @@ function dataReducer(
         elements: {
           ...state.elements,
           ...action.payload,
+        },
+      };
+    }
+
+    case TYPES.MOVE_STATE_ELEMENT: {
+      const { elementId, indices, parents } = action.payload;
+      return {
+        ...state,
+        elements: {
+          ...state.elements,
+          ...moveMapElement(state.elements, elementId, indices, parents),
+        },
+      };
+    }
+
+    case TYPES.UPDATE_STATE_ELEMENT: {
+      const { elementId, data } = action.payload;
+      return {
+        ...state,
+        elements: {
+          ...state.elements,
+          ...updateMapElement(state.elements, elementId, data),
+        },
+      };
+    }
+
+    case TYPES.ADD_STATE_ELEMENTS: {
+      const { elements, parentId } = action.payload;
+      return {
+        ...state,
+        elements: {
+          ...state.elements,
+          ...addMapElements(state.elements, elements, parentId),
+        },
+      };
+    }
+
+    case TYPES.INSERT_STATE_ELEMENT: {
+      const { parentId, childId, element } = action.payload;
+      return {
+        ...state,
+        elements: {
+          ...state.elements,
+          ...insertMapElement(state.elements, element, parentId, childId),
+        },
+      };
+    }
+
+    case TYPES.REMOVE_STATE_ELEMENT: {
+      const { elementId } = action.payload;
+      return {
+        ...state,
+        elements: {
+          ...state.elements,
+          ...removeMapElement(state.elements, elementId),
         },
       };
     }
