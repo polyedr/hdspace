@@ -51,6 +51,7 @@ export type ProjectUiState = {
   savedElementsValues: SavedElementsValues;
   showContainersBorders: boolean;
   customLibraryElements: NamedServerElements;
+  draggableItemId: string | null;
 };
 
 export type ProjectEditState = {

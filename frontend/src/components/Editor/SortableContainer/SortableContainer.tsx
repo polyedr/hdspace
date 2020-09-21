@@ -4,7 +4,10 @@ import { useSelector, useDispatch } from 'react-redux';
 import SortableGroup from '../SortableGroup/SortableGroup';
 import { AVAILABLE_CHILDREN, Entity } from '../../../domain/core';
 import { LibraryElement, LibraryElementUnion } from '../../../api/types';
-import { LIST_SCENARIO_TYPE } from '../../../constants/defaultParams';
+import {
+  LIST_SCENARIO_TYPE,
+  LIST_NOT_DRAGGING,
+} from '../../../constants/defaultParams';
 import { Indices } from '../../../redux/project/types';
 
 import useElementProps from '../hooks/useElementProps';
@@ -16,7 +19,6 @@ import {
 } from '../../../redux/project/selectors';
 import { selectIsPrototypeMode } from '../../../redux/user/selectors';
 import { moveElement } from '../../../redux/project/actions';
-import LIST_NOT_DRAGGING from '../../../domain/constants/listNotDragging';
 
 type Props = {
   item: LibraryElementUnion;

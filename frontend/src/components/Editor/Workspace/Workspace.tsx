@@ -70,15 +70,11 @@ const Workspace = ({
   resetScreenState,
   exportProject,
 }: Props) => {
-  // const [isMoving, setIsMoving] = useState<boolean>(true);
   const [currentScreenMode, setCurrentScreenMode] = useState<ScreenMode>({
     ...DEFAULT_SCREEN_MODE,
     isDefaultMode: true,
   });
   const [isScreenRotated, setIsScreenRotated] = useState<boolean>(false);
-  /* const [hasItemBeingResized, setHasItemBeingResized] = useState<boolean>(
-    false,
-  ); */
   const currentScreenId = useSelector(selectCurrentScreenId);
 
   useEffect(
@@ -87,14 +83,6 @@ const Workspace = ({
     },
     [],
   );
-
-  /* const handleActiveElementChange = (
-    parentId: number,
-    item: LibraryElement<Entity>,
-  ) => {
-    const { id: itemId, type, name } = item;
-    setActiveItem({ itemId, itemType: parentId === -1 ? 'root' : type, name });
-  }; */
 
   const handleRootClick = useCallback(
     (event: React.MouseEvent) => {
@@ -134,28 +122,6 @@ const Workspace = ({
     },
     [activeItem, elementsTree, findChildByID],
   );
-
-  /* const handleLSItemMouseOver = useCallback(
-    (event: React.MouseEvent) => {
-      if (!isPrototypeMode && !hasItemBeingResized) {
-        (event.target as HTMLElement)
-          ?.closest?.('.ls-item')
-          ?.classList.add('hovered');
-      }
-    },
-    [isPrototypeMode, hasItemBeingResized],
-  );
-
-  const handleLSItemMouseOut = useCallback(
-    (event: React.MouseEvent) => {
-      if (!isPrototypeMode && !hasItemBeingResized) {
-        (event.target as HTMLElement)
-          ?.closest?.('.ls-item')
-          ?.classList.remove('hovered');
-      }
-    },
-    [isPrototypeMode, hasItemBeingResized],
-  ); */
 
   const handleSaveScreen = () => {
     const screenBody = document.getElementById('root');
@@ -197,14 +163,6 @@ const Workspace = ({
           autoHeightMin="100%"
         >
           <DraggableItem item={elementsTree as LibraryElementUnion} />
-          {/* <SortableContainer
-            item={elementsTree as LibraryElementUnion}
-            isMoving={isMoving}
-            setIsMoving={setIsMoving}
-            onActiveElementChange={handleActiveElementChange} // needed to activate item before dragging, in order to get new listNotDraggable
-            isResizing={hasItemBeingResized}
-            setIsResizing={setHasItemBeingResized}
-          /> */}
           {!isPrototypeMode && <Borders />}
         </Scrollbar>
       </div>

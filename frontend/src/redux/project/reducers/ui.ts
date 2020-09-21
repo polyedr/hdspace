@@ -73,6 +73,13 @@ function uiReducer(
       };
     }
 
+    /* case TYPES.SET_DRAGGABLE_ITEM_ID: {
+      return {
+        ...state,
+        draggableItemId: action.payload.itemId
+      };
+    } */
+
     case TYPES.LOGOUT: {
       return {
         ...initialUi,

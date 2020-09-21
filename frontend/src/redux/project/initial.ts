@@ -15,6 +15,7 @@ export const initialUi: T.ProjectUiState = {
   savedElementsValues: {},
   showContainersBorders: false,
   customLibraryElements: {},
+  draggableItemId: null,
 };
 
 export const initialEdit: T.ProjectEditState = {

@@ -1,6 +1,6 @@
 enum ItemType {
   ELEMENT = 'element',
-  CONTAINER = 'container',
+  CONSTRUCTOR = 'constructor',
 }
 
 export default ItemType;

@@ -221,3 +221,7 @@ export const DEFAULT_RESPONSE_ERROR: IApiResponseError = {
   errorText: '',
   data: {},
 };
+
+export const LIST_NOT_DRAGGING = ['element'];
+
+export const CONTAINER_GROUPS = ['containers', 'custom'];
