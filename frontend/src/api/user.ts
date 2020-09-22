@@ -173,7 +173,7 @@ export const apiGetUsers = (): Promise<
     method: 'GET',
     url: '/accounts/users/',
   })
-    .then(parseResult)
+    .then((res) => parseResult(res).results)
     .catch(onAuthorisationError);
 
 export const apiGetProfile = (id: number) =>
