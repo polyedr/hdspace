@@ -9,9 +9,10 @@ import { reqWrapper } from '.';
 import { selectors, T } from '..';
 import { createContainer } from './scenario';
 import {
+  selectAllElements,
   selectCurrentScreenId,
   selectScreenById,
-  selectScreenElement,
+  selectScreenRootElement,
 } from '../selectors';
 import {
   apiAddScreen,
@@ -21,25 +22,25 @@ import {
 } from '../../../api/screen';
 import { convertCreatedElementToRequest } from '../../../api/converters/toRequest';
 import { apiGetProject, apiSaveProject } from '../../../api/project';
-import { IProjectScreen, IScenarioItem } from '../types';
+import { Screen, IScenarioItem, StateElement, Map } from '../types';
 import {
   activateScreen,
+  addElements,
   addScreen,
   delScreen,
   renameScreen,
   restoreScreen,
   saveScreenImage,
-  setActiveItem,
+  setActiveElementId,
   setCurrentScreenId,
   setLoader,
   setProject,
-  setScreen,
+  updateScreen,
   setScreenLoader,
   setScreens,
   setUndoActions,
 } from '../actions';
 import { apiAddElements, apiGetElements } from '../../../api/element';
-import { DEFAULT_ACTIVE_ITEM } from '../../../constants/defaultParams';
 import {
   LibraryElement,
   LibraryElementUnion,
@@ -62,25 +63,19 @@ export function* activateScreenSaga({
 
   yield put(setScreenLoader(true));
 
-  yield put(setActiveItem(DEFAULT_ACTIVE_ITEM));
+  yield put(setActiveElementId('none'));
 
-  const screen: IProjectScreen = yield select(selectScreenById(screenId));
+  const screen: Screen = yield select(selectScreenById(screenId));
   if (!screen) return;
 
   yield put(setCurrentScreenId(screen.id));
 
   yield put(Actions.setScenarioLoader(true));
 
-  const screenElement = yield select(selectScreenElement(screenId));
+  const screenElement = yield select(selectScreenRootElement(screenId));
   if (!screenElement) return;
 
-  yield put(
-    Actions.setActiveItem({
-      itemId: screenElement.id,
-      itemType: 'root',
-      name: 'Root',
-    }),
-  );
+  yield put(Actions.setActiveElementId(screenElement.id));
 
   yield put(Actions.setScenarioLoader(false));
   yield put(setScreenLoader(false));
@@ -208,7 +203,7 @@ export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
 
   const updatedScreen = { ...currentScreen, ...savedScreen };
 
-  updatedScreen.element = createdRootElement;
+  updatedScreen.element = createdRootElement.id;
 
   yield put(setProject(updateProject));
 
@@ -216,21 +211,18 @@ export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
 
   yield put(setCurrentScreenId(screen.id));
 
-  yield put(
-    Actions.updateElementsTree(
-      createdRootElement,
-      restoreScreen(screen.id, projectID),
-      { screenId: screen.id, undo: skip },
-    ),
-  );
+  yield put(addElements([createdRootElement]));
 
+  const state: Map<StateElement> = yield select(selectAllElements);
   yield put(
-    Actions.setActiveItem({
-      itemId: createdRootElement.id,
-      itemType: 'root',
-      name: 'Root',
+    Actions.updateElementsTree(state, {
+      screenId: screen.id,
+      undo: skip,
+      sourceAction: restoreScreen(screen.id, projectID),
     }),
   );
+
+  yield put(Actions.setActiveElementId(createdRootElement.id));
 
   yield put(push(`/project/${projectID}/${screen.id}`));
   // eslint-disable-next-line consistent-return
@@ -268,7 +260,7 @@ export function* saveScreenImageSaga({
     return;
   }
 
-  yield put(setScreen(resultScreen));
+  yield put(updateScreen(resultScreen));
 
   yield put(setLoader(false));
 }
@@ -287,7 +279,7 @@ export function* delScreenSaga({
   const currentScreenId = yield select(selectors.selectCurrentScreenId);
 
   if (currentScreenId === screenId) {
-    yield put(setActiveItem(DEFAULT_ACTIVE_ITEM));
+    yield put(setActiveElementId('none'));
     yield put(setCurrentScreenId(-1));
   }
 
@@ -315,6 +307,8 @@ export function* delScreenSaga({
   if (!undo) {
     yield put(setUndoActions(restoreScreen(screenId, projectId)));
   }
+  // const rootToRemove = yield select(selectScreenRootElement(screenId));
+  // yield put(removeElements([rootToRemove.id]));
 
   const result: Project = R.assoc(
     'projectscreen',
@@ -381,11 +375,13 @@ export function* restoreScreenSaga({
     scenariosIDs: [screen.screenscenario[0]],
   });
 
-  screen.element = convertElementFromResponse(element);
+  screen.element = element.id;
 
   yield put(setScreens([screen, ...screens]));
 
   yield put(setProject(updatedProject));
+
+  // yield put(addElements([convertElementFromResponse(element)]));
 
   yield put(activateScreen(screenId));
 }
@@ -409,7 +405,7 @@ export function* renameScreenSaga({
     screens.map((screen) => screen.name),
   );
 
-  const renamedScreen: IProjectScreen = {
+  const renamedScreen: Screen = {
     ...targetScreen,
     name: numberedName,
   };
@@ -429,10 +425,7 @@ export function* getScreenNNSaga() {
     selectors.selectCurrentProject,
   );
 
-  const resultListScreen: IProjectScreen[] = yield call(
-    reqWrapper,
-    apiGetAllScreen,
-  );
+  const resultListScreen: Screen[] = yield call(reqWrapper, apiGetAllScreen);
   const lastScreenId = resultListScreen[resultListScreen.length - 1].id;
   const data = {
     screen: lastScreenId,
@@ -474,11 +467,12 @@ export function* getScreenNNSaga() {
   const [rootElement] = yield call(reqWrapper, apiGetElements, {
     scenariosIDs: screenscenario,
   });
-  resultScreen.element = convertElementFromResponse(rootElement);
+  resultScreen.element = rootElement.id;
 
   yield all([
+    put(addElements([convertElementFromResponse(rootElement)])),
     put(setProject(updateProject)),
-    put(setScreen(resultScreen)),
+    put(updateScreen(resultScreen)),
     put(activateScreen(lastScreenId)),
   ]);
 }
@@ -493,6 +487,9 @@ export function* getScreenSaga(screenId: number) {
     console.error(`Error while fetching screen ${screenId}`);
   }
 
-  screen.element = convertElementFromResponse(element);
+  yield put(addElements([convertElementFromResponse(element)]));
+
+  screen.element = element.id.toString();
+
   return screen;
 }

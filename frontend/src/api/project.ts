@@ -51,13 +51,13 @@ export const onError = ({ response: r }: AxiosError) => {
 export const parseResult = <T>(result: AxiosResponse<T>) =>
   result && result.data;
 
-export const apiGetListProject = (props: MyAxiosProps): Promise<Project[]> =>
+export const apiGetProjectList = (props: MyAxiosProps): Promise<Project[]> =>
   myAxios({
     ...props,
     method: 'GET',
     url: '/projects/projects/',
   })
-    .then((result) => result.data.map(convertProjectFromResponse))
+    .then((result) => result.data.results.map(convertProjectFromResponse))
     .catch(onError);
 
 // TODO: research here IProject or IProjectList in return type:

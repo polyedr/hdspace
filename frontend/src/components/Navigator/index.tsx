@@ -13,50 +13,49 @@ import {
   findNextNodeId,
   focusTreeItem,
   makeTree,
-  convertTree,
   updateTree,
+  convertElements,
 } from './utils';
 import {
-  selectActiveItem,
-  selectCurrentScreenElement,
+  selectActiveElement,
   selectCurrentScreenId,
+  selectElementsForCurrentScreen,
+  selectCurrentRootId,
 } from '../../redux/project/selectors';
 import { DISALLOW_ADD_ELEMENT_NOTIFICATION_TEXT } from '../../features/notification/types';
 import {
   copyActiveItem,
   deleteItem,
   moveElement,
-  pasteCopiedItem,
+  pasteCopiedElement,
   redoAction,
-  setActiveItem,
+  setActiveElementId,
   setNotification,
   undoAction,
 } from '../../redux/project/actions';
-import { findChildByID } from '../../utils/ElementsTreeHelper';
-import { isElementCanBeAdded } from '../../utils/AvailableChildrenHelper';
 import Scrollbar from '../UI/Scrollbar';
+import { canElementBeAdded } from '../../utils/normalizedStateHelpers';
 
 const styles = require('./Navigator.scss');
 
 const Navigator: React.FC = () => {
   const dispatch = useDispatch();
-
-  const rootElement = useSelector(selectCurrentScreenElement);
+  const elements = useSelector(selectElementsForCurrentScreen);
+  const rootId = useSelector(selectCurrentRootId);
+  const currentScreenId = useSelector(selectCurrentScreenId);
+  const { id: activeItemId } = useSelector(selectActiveElement);
 
   const [tree, setTree] = useState<TreeData>(
-    makeTree([convertTree(rootElement)]),
+    makeTree(convertElements(elements), rootId),
   );
   const [selectedItemId, setSelectedItem] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState<boolean>(false);
 
   useEffect(() => {
-    const newTree = makeTree([convertTree(rootElement)]);
+    const newTree = makeTree(convertElements(elements), rootId);
     setTree(updateTree(tree, newTree));
     focusTreeItem(selectedItemId);
-  }, [rootElement]);
-
-  const currentScreenId = useSelector(selectCurrentScreenId);
-  const { itemId: activeItemId } = useSelector(selectActiveItem);
+  }, [elements, rootId]);
 
   const expandParents = (itemId) => {
     if (itemId === 'root') return;
@@ -82,16 +81,7 @@ const Navigator: React.FC = () => {
   const select = (itemId) => {
     if (selectedItemId === itemId) return;
 
-    const item = findChildByID(rootElement, itemId);
-    if (!item) return;
-
-    dispatch(
-      setActiveItem({
-        itemId,
-        itemType: item.type,
-        name: item.name,
-      }),
-    );
+    dispatch(setActiveElementId(itemId));
     setSelectedItem(itemId);
   };
 
@@ -142,7 +132,7 @@ const Navigator: React.FC = () => {
 
       if (e.keyCode === 86 && (e.ctrlKey || e.metaKey)) {
         // Ctrl/Cmd + V
-        dispatch(pasteCopiedItem({ screenId: currentScreenId }));
+        dispatch(pasteCopiedElement({ screenId: currentScreenId }));
       }
 
       if (e.keyCode === 46 || (e.keyCode === 8 && e.metaKey)) {
@@ -175,48 +165,50 @@ const Navigator: React.FC = () => {
       return;
     }
 
-    if (destination.index === undefined) destination.index = -1;
     const { items } = tree;
 
     const oldParent = items[source.parentId];
     const newParent = items[destination.parentId];
+
+    if (destination.index === undefined) {
+      destination.index =
+        newParent.id === oldParent.id
+          ? newParent.children.length - 1
+          : newParent.children.length;
+    }
+
     const childId = oldParent.children[source.index];
     const child = items[childId];
-    const parentElement = findChildByID(rootElement, newParent.id as string);
+
+    const parentElement = elements[newParent.id];
+
     if (!parentElement) {
       console.error(`No element ${newParent.id}`);
       setIsDragging(false);
       return;
     }
-    if (!isElementCanBeAdded(parentElement, child.data.type)) {
+    if (!canElementBeAdded(elements, newParent.id as string, child.data.type)) {
       dispatch(setNotification(DISALLOW_ADD_ELEMENT_NOTIFICATION_TEXT));
       setIsDragging(false);
       return;
     }
-    const isRemote = source.parentId !== destination.parentId;
 
-    if (isRemote) {
-      dispatch(
-        moveElement(
-          { newIndex: destination.index, oldIndex: source.index },
-          childId as string,
-          source.parentId as string,
-          true,
-          { screenId: currentScreenId },
-        ),
-      );
+    if (newParent.id === oldParent.id && source.index === destination.index) {
+      setIsDragging(false);
+      return;
     }
 
     dispatch(
       moveElement(
-        { newIndex: destination.index, oldIndex: source.index },
         childId as string,
-        destination.parentId as string,
-        false,
+        { newIndex: destination.index, oldIndex: source.index },
+        {
+          newParentId: destination.parentId as string,
+          oldParentId: source.parentId as string,
+        },
         { screenId: currentScreenId },
       ),
     );
-
     setIsDragging(false);
     select(
       newParent.isExpanded ? oldParent.children[source.index] : newParent.id,
@@ -232,7 +224,6 @@ const Navigator: React.FC = () => {
       selectedItemId={selectedItemId}
     />
   );
-
   return (
     <div className={styles.componentPane}>
       <h3 className={styles.header}>Navigator</h3>

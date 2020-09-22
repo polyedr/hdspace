@@ -6,7 +6,7 @@ import { ElementData } from '../../redux/project/types';
 import { AVAILABLE_CHILDREN, Entity } from '../../domain/core';
 import { createElements } from '../../redux/project/actions';
 import {
-  selectActiveItem,
+  selectActiveElement,
   selectCurrentScreenId,
 } from '../../redux/project/selectors';
 
@@ -21,7 +21,7 @@ const ElementButton: React.FC<Props> = ({
 }) => {
   const dispatch = useDispatch();
   const screenId = useSelector(selectCurrentScreenId);
-  const { itemType: activeItemType } = useSelector(selectActiveItem);
+  const { type: activeItemType } = useSelector(selectActiveElement);
 
   const handleClick = (type: Entity) => () => {
     dispatch(createElements([{ type, name, custom }], { screenId }));

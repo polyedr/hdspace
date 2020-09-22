@@ -5,17 +5,16 @@ import SortableGroup from '../SortableGroup/SortableGroup';
 import { AVAILABLE_CHILDREN, Entity } from '../../../domain/core';
 import { LibraryElement, LibraryElementUnion } from '../../../api/types';
 import {
-  LIST_SCENARIO_TYPE,
   LIST_NOT_DRAGGING,
+  LIST_SCENARIO_TYPE,
 } from '../../../constants/defaultParams';
-import { Indices } from '../../../redux/project/types';
+import { Indices, ParentIds } from '../../../redux/project/types';
 
 import useElementProps from '../hooks/useElementProps';
 import { RENDERERS } from '../../UI/RenderElements';
 import {
-  selectActiveItem,
+  selectActiveElement,
   selectCurrentScreen,
-  selectRootID,
 } from '../../../redux/project/selectors';
 import { selectIsPrototypeMode } from '../../../redux/user/selectors';
 import { moveElement } from '../../../redux/project/actions';
@@ -40,10 +39,9 @@ const SortableContainer: React.FC<Props> = ({
   setIsResizing,
   isResizable,
 }) => {
-  const rootID = useSelector(selectRootID);
   const currentScreen = useSelector(selectCurrentScreen);
   const disableInteractions = useSelector(selectIsPrototypeMode);
-  const activeItem = useSelector(selectActiveItem);
+  const activeElement = useSelector(selectActiveElement);
 
   const getGroupName = useCallback(
     (itemType): string =>
@@ -68,25 +66,17 @@ const SortableContainer: React.FC<Props> = ({
     );
     const itemID = draggedItem?.id;
 
-    if (itemID !== activeItem.itemId && draggedItem && itemID) {
+    if (itemID !== activeElement.id && draggedItem && itemID) {
       onActiveElementChange(Number(itemID), draggedItem);
     }
   };
 
-  const handleItemPositionChange = (
-    indices: Indices,
-    parentId: string,
-    isRemote?: boolean,
-  ) => {
-    setIsDragging(!!isRemote);
+  const handleItemPositionChange = (indices: Indices, parents: ParentIds) => {
+    setIsDragging(false);
     dispatch(
-      moveElement(
-        indices,
-        activeItem.itemId,
-        parentId === 'root' ? rootID : parentId,
-        isRemote,
-        { screenId: currentScreen.id },
-      ),
+      moveElement(activeElement.id, indices, parents, {
+        screenId: currentScreen.id,
+      }),
     );
   };
 

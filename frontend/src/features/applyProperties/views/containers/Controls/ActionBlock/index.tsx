@@ -15,21 +15,21 @@ import {
   PropertiesChangeProps,
   withConfigurableProperties,
 } from '../../../../../../utils/withConfigurableProperties';
-import { IProjectScreen } from '../../../../../../redux/project/types';
+import { Screen } from '../../../../../../redux/project/types';
 import {
-  selectActiveItemParams,
+  selectActiveElementParams,
   selectScreens,
 } from '../../../../../../redux/project/selectors';
 
 const styles = require('./styles.scss');
 
 type StateProps = {
-  screens: IProjectScreen[];
+  screens: Screen[];
   action: LinkParams;
 };
 
 function mapState(state: AppReduxState): StateProps {
-  const activeItemParams = selectActiveItemParams<HyperlinkElement>(state);
+  const activeItemParams = selectActiveElementParams(state);
 
   return {
     screens: selectScreens(state),

@@ -7,8 +7,8 @@ import useElementProps from '../Editor/hooks/useElementProps';
 import { RENDERERS } from '../UI/RenderElements';
 import ItemType from './ItemTypes';
 import {
+  selectCurrentRootId,
   selectCurrentScreenId,
-  selectRootID,
 } from '../../redux/project/selectors';
 import { CONTAINER_GROUPS } from '../../constants/defaultParams';
 
@@ -26,7 +26,7 @@ type DraggableItemProps = {
 };
 const DraggableItem: React.FC<DraggableItemProps> = ({ item, parent }) => {
   const elementProps = useElementProps(item);
-  const rootID = useSelector(selectRootID);
+  const rootID = useSelector(selectCurrentRootId);
   const screenId = useSelector(selectCurrentScreenId);
   const dispatch = useDispatch();
   const dropTarget = useMemo(() => {
@@ -67,13 +67,15 @@ const DraggableItem: React.FC<DraggableItemProps> = ({ item, parent }) => {
           : item.buoyancy;
       dispatch(
         moveElement(
+          draggedItem.original.id,
           {
             oldIndex,
             newIndex,
           },
-          draggedItem.original.id,
-          dropTarget.id,
-          false,
+          {
+            oldParentId: draggedItem.parent?.id || '',
+            newParentId: dropTarget.id,
+          },
           { screenId },
         ),
       );

@@ -2,10 +2,10 @@ import { getDefaultStyles } from '../domain/libraryElements/defaultStyles';
 import { LibraryElement, Project } from '../api/types';
 import { IApiResponseError, ITokenPair } from '../redux/user/types';
 import {
-  ActiveItem,
   ILSItem,
-  IProjectScreen,
+  Screen,
   ServerStructType,
+  StateElement,
 } from '../redux/project/types';
 import { CssLikeStyles } from '../utils/StyleHelper';
 import { isLatinOrNumbers } from '../shared/validators/isLatinOrNumbers';
@@ -88,7 +88,7 @@ export const DEFAULT_ROOT: LibraryElement<'root'> = {
   },
 };
 
-export const DEFAULT_SCREEN: IProjectScreen = {
+export const DEFAULT_SCREEN: Screen = {
   id: -1,
   project: -1,
   name: '',
@@ -96,13 +96,21 @@ export const DEFAULT_SCREEN: IProjectScreen = {
   screenscenario: [],
   buoyancy: 0,
   image: null,
-  element: DEFAULT_ROOT,
+  element: '-1',
 };
 
-export const DEFAULT_ACTIVE_ITEM: ActiveItem = {
-  itemId: 'none',
-  itemType: 'none',
+export const DEFAULT_ACTIVE_ELEMENT: StateElement = {
+  id: 'none',
+  type: 'none',
   name: 'Not selected',
+  children: [],
+  buoyancy: 0,
+  image: null,
+  parameters: {},
+  styles: {
+    classNames: ['root'],
+    ownStyles: {},
+  },
 };
 
 export const STATUS = ['on_hold', 'in_progress', 'review', 'approved'];

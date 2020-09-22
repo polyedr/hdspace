@@ -2,12 +2,10 @@ import React from 'react';
 
 import { connect } from 'react-redux';
 import { DropDown } from '../../../../../components/UI/DropDown';
-import { findChildByID } from '../../../../../utils/ElementsTreeHelper';
 import { AppReduxState } from '../../../../../shared/types/app';
 import {
-  selectActiveItem,
+  selectActiveElement,
   selectEditableStyles,
-  selectRootElement,
 } from '../../../../../redux/project/selectors';
 import { setEditableStyles } from '../../../../../redux/project/actions';
 
@@ -17,9 +15,7 @@ type StateProps = {
 };
 
 const mapState = (state: AppReduxState) => {
-  const activeItem = selectActiveItem(state);
-  const root = selectRootElement(state);
-  const activeElement = findChildByID(root, activeItem.itemId);
+  const activeElement = selectActiveElement(state);
   const classNames = [...(activeElement?.styles.classNames || []), 'ownStyles'];
   const editableStyles = selectEditableStyles(state);
 

@@ -4,30 +4,10 @@ import {
   convertElementFromResponse,
   convertRecursiveElementFromResponse,
 } from './converters/fromResponse';
-import { IScenarioElement, ServerStructType } from '../redux/project/types';
+import { IScenarioElement } from '../redux/project/types';
 import { Entity } from '../domain/core';
 import { onError, parseResult } from './project';
 import { myAxios, MyAxiosProps } from '../../config/settings';
-
-type ServerLibraryElement = {
-  // TODO: compare with entity on backend!
-  buoyancy: number[];
-  func_type: string[];
-  func_type_human: string;
-  id: number;
-  image: string | null;
-  parameters: any[];
-  struct_type: ServerStructType;
-  styles: {}[];
-};
-
-export const apiGetLibraryElements = (): Promise<ServerLibraryElement[]> =>
-  myAxios({
-    method: 'GET',
-    url: '/projects/library-elements/',
-  })
-    .then(parseResult)
-    .catch(onError);
 
 export const apiGetElements = ({
   scenariosIDs,
@@ -40,7 +20,7 @@ export const apiGetElements = ({
       scenariosIDs.length ? `/?scenariosIds=${scenariosIDs.join(',')}` : '/'
     }`,
   })
-    .then(parseResult)
+    .then((res) => parseResult(res).results)
     .catch(onError);
 
 export const apiAddElement = <

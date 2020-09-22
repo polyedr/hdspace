@@ -192,7 +192,7 @@ export type RecursiveElement = {
 export type LibraryElement<
   Type extends Entity,
   Children = any[],
-  Params = {},
+  Params = any,
   Styles = {}
 > = {
   id: string;

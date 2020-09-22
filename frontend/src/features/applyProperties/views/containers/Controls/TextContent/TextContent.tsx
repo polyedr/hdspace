@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 import { connect } from 'react-redux';
 import { AppReduxState } from '../../../../../../shared/types/app';
 import { ParagraphElement } from '../../../../../../api/types';
-import { selectActiveItemParams } from '../../../../../../redux/project/selectors';
+import { selectActiveElementParams } from '../../../../../../redux/project/selectors';
 import {
   PropertiesChangeProps,
   withConfigurableProperties,
@@ -15,7 +15,7 @@ type StateProps = {
 };
 
 function mapState(state: AppReduxState): StateProps {
-  const activeItemParams = selectActiveItemParams<ParagraphElement>(state);
+  const activeItemParams = selectActiveElementParams(state);
 
   return {
     content: activeItemParams.textContent,

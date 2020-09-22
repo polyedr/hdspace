@@ -1,10 +1,10 @@
 import { onError, parseResult } from './project';
 import { myAxios, MyAxiosProps } from '../../config/settings';
-import { IProjectScreen } from '../redux/project/types';
+import { Screen } from '../redux/project/types';
 
 export const apiGetScreen = (
   props: MyAxiosProps & { id: string },
-): Promise<IProjectScreen> =>
+): Promise<Screen> =>
   myAxios({
     ...props,
     method: 'GET',
@@ -13,9 +13,7 @@ export const apiGetScreen = (
     .then(parseResult)
     .catch(onError);
 
-export const apiGetAllScreen = (
-  props: MyAxiosProps,
-): Promise<IProjectScreen[]> =>
+export const apiGetAllScreen = (props: MyAxiosProps): Promise<Screen[]> =>
   myAxios({
     ...props,
     method: 'GET',
@@ -24,7 +22,7 @@ export const apiGetAllScreen = (
     .then(parseResult)
     .catch(onError);
 
-export const apiAddScreen = (props: MyAxiosProps): Promise<IProjectScreen> =>
+export const apiAddScreen = (props: MyAxiosProps): Promise<Screen> =>
   myAxios({
     ...props,
     method: 'POST',
@@ -35,7 +33,7 @@ export const apiAddScreen = (props: MyAxiosProps): Promise<IProjectScreen> =>
 
 export const apiSaveScreen = (
   props: MyAxiosProps & { id: string },
-): Promise<IProjectScreen> =>
+): Promise<Screen> =>
   myAxios({
     ...props,
     method: 'PATCH',
@@ -46,7 +44,7 @@ export const apiSaveScreen = (
 
 export const apiDelScreen = (
   props: MyAxiosProps & { id: string },
-): Promise<IProjectScreen> =>
+): Promise<Screen> =>
   myAxios({
     ...props,
     method: 'DELETE',

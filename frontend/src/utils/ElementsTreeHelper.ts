@@ -1,6 +1,4 @@
 import * as R from 'ramda';
-
-import { CssLikeStyles } from './StyleHelper';
 import { Entity } from '../domain/core';
 import { LibraryElement } from '../api/types';
 import { LIBRARY_ELEMENTS } from '../domain/libraryElements/libraryElements';
@@ -22,37 +20,6 @@ export const findParentByChildID = (
       return targetParent;
     }
   }
-};
-
-export const removeChildrenFromElement = <
-  T extends Entity,
-  K extends Entity,
-  P extends Entity,
-  R extends Entity
->(
-  elementID: string,
-  childrenToRemove: LibraryElement<T, LibraryElement<K>[]>[],
-  root: LibraryElement<P, LibraryElement<T | R>[]>,
-): LibraryElement<P, LibraryElement<T | R>[]> => {
-  const newChildren =
-    root.id === elementID
-      ? [
-          ...root.children
-            .filter((child) =>
-              childrenToRemove.every(
-                (childToRemove) => childToRemove.id !== child.id,
-              ),
-            )
-            .map((child, index) => ({ ...child, buoyancy: index })),
-        ]
-      : root.children.map((child) =>
-          removeChildrenFromElement(elementID, childrenToRemove, child),
-        );
-
-  return {
-    ...root,
-    children: newChildren,
-  };
 };
 
 export const addChildToElement = <
@@ -80,61 +47,6 @@ export const addChildToElement = <
   return {
     ...root,
     children: sortedChildren,
-  };
-};
-
-export const moveElement = <
-  T extends Entity,
-  K extends Entity,
-  P extends Entity,
-  R extends Entity
->(
-  parentID: string,
-  element: LibraryElement<T, LibraryElement<K>[]>,
-  root: LibraryElement<P, LibraryElement<R>[]>,
-  elementBuoyancy: number,
-) => {
-  const oldParentID = findParentByChildID(root, element.id)?.id;
-
-  if (!oldParentID) {
-    return addChildToElement(parentID, element, root, elementBuoyancy);
-  }
-  const rootWithoutOldChild = removeChildrenFromElement(
-    oldParentID,
-    [element],
-    root,
-  );
-  return addChildToElement(
-    parentID,
-    element,
-    rootWithoutOldChild,
-    elementBuoyancy,
-  );
-};
-
-export const addChildrenToElement = <
-  T extends Entity,
-  K extends Entity,
-  P extends Entity,
-  R extends Entity
->(
-  elementID: string,
-  newChildren: LibraryElement<T, LibraryElement<K>[]>[],
-  root: LibraryElement<P, LibraryElement<T | R>[]>,
-): LibraryElement<P, LibraryElement<T | R>[]> => {
-  const addedChildren =
-    root.id === elementID
-      ? [...root.children, ...newChildren].map((child, index) => ({
-          ...child,
-          buoyancy: index,
-        }))
-      : root.children.map((child) =>
-          addChildrenToElement(elementID, newChildren, child),
-        );
-
-  return {
-    ...root,
-    children: addedChildren,
   };
 };
 
@@ -167,127 +79,6 @@ export const getElementsArray = (
   >[];
 };
 
-export const replaceElementStyles = <
-  T extends Entity,
-  K extends Entity,
-  P extends Entity,
-  R extends Entity
->(
-  elementID: string,
-  newStyles: Partial<
-    LibraryElement<T, LibraryElement<K>[]>['styles']['ownStyles']
-  >,
-  root: LibraryElement<P, LibraryElement<R>[]>,
-): LibraryElement<P, LibraryElement<R>[]> => {
-  return {
-    ...root,
-    styles:
-      root.id === elementID
-        ? { ...root.styles, ownStyles: newStyles }
-        : root.styles,
-    children: root.children.map((child) =>
-      replaceElementStyles(elementID, newStyles, child),
-    ),
-  };
-};
-
-export const updateElementStyles = <
-  T extends Entity,
-  K extends Entity,
-  P extends Entity,
-  R extends Entity
->(
-  elementID: string,
-  newStyles: Partial<
-    LibraryElement<T, LibraryElement<K>[]>['styles']['ownStyles']
-  >,
-  root: LibraryElement<P, LibraryElement<R>[]>,
-): LibraryElement<P, LibraryElement<R>[]> => {
-  return {
-    ...root,
-    styles:
-      root.id === elementID
-        ? {
-            ...root.styles,
-            ownStyles: { ...root.styles.ownStyles, ...newStyles },
-          }
-        : root.styles,
-    children: root.children.map((child) =>
-      updateElementStyles(elementID, newStyles, child),
-    ),
-  };
-};
-
-export const addElementClassName = <T extends Entity, K extends Entity>(
-  elementID: string,
-  newClassName: string,
-  root: LibraryElement<T, LibraryElement<K>[]>,
-): LibraryElement<T, LibraryElement<K>[]> => {
-  return {
-    ...root,
-    styles:
-      root.id === elementID
-        ? ({
-            ...root.styles,
-            // Allow only one additional class
-            classNames: [R.head(root.styles.classNames), newClassName],
-          } as LibraryElement<T, LibraryElement<K>[]>['styles'])
-        : root.styles,
-    children: root.children.map((child) =>
-      addElementClassName(elementID, newClassName, child),
-    ),
-  };
-};
-
-export const removeElementClassName = <T extends Entity, K extends Entity>(
-  elementID: string,
-  removedClassName: string,
-  root: LibraryElement<T, LibraryElement<K>[]>,
-): LibraryElement<T, LibraryElement<K>[]> => {
-  return {
-    ...root,
-    styles:
-      root.id === elementID
-        ? ({
-            ...root.styles,
-            classNames: root.styles.classNames.filter(
-              (className) => className !== removedClassName,
-            ),
-          } as LibraryElement<T, LibraryElement<K>[]>['styles'])
-        : root.styles,
-    children: root.children.map((child) =>
-      removeElementClassName(elementID, removedClassName, child),
-    ),
-  };
-};
-
-export const removeElementStyles = <T extends Entity, K extends Entity>(
-  elementID: string,
-  removedCssPropertiesNames: string[],
-  root: LibraryElement<T, LibraryElement<K>[]>,
-): LibraryElement<T, LibraryElement<K>[]> => {
-  return {
-    ...root,
-    styles:
-      root.id === elementID
-        ? {
-            ...root.styles,
-            ownStyles: R.toPairs(root.styles.ownStyles)
-              .filter(([ruleName]) =>
-                removedCssPropertiesNames.every((name) => name !== ruleName),
-              )
-              .reduce(
-                (acc, [ruleName, rule]) => ({ ...acc, [ruleName]: rule }),
-                {} as CssLikeStyles,
-              ),
-          }
-        : root.styles,
-    children: root.children.map((child) =>
-      removeElementStyles(elementID, removedCssPropertiesNames, child),
-    ),
-  };
-};
-
 export const updateElementParameters = <
   T extends Entity,
   K extends Entity,
@@ -306,20 +97,6 @@ export const updateElementParameters = <
         : root.parameters,
     children: root.children.map((child) =>
       updateElementParameters(elementID, parameters, child),
-    ),
-  };
-};
-
-export const updateElementName = <P extends Entity, R extends Entity>(
-  elementID: string,
-  name: string,
-  root: LibraryElement<P, LibraryElement<R>[]>,
-): LibraryElement<P, LibraryElement<R>[]> => {
-  return {
-    ...root,
-    name: root.id === elementID ? name : root.name,
-    children: root.children.map((child) =>
-      updateElementName(elementID, name, child),
     ),
   };
 };

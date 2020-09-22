@@ -3,13 +3,12 @@ import { useSelector } from 'react-redux';
 
 import Border, { BorderedItem, BorderDOMProps } from './Border';
 import {
-  selectActiveItem,
-  selectRootElement,
+  selectActiveElement,
+  selectCurrentRootElement,
   selectShowingBorders,
 } from '../../../redux/project/selectors';
 import SaveElementAction from './actions/SaveElementAction';
 import BorderCrumb from './BorderCrumb';
-import { findParentByChildID } from '../../../utils/ElementsTreeHelper';
 
 const styles = require('./Borders.scss');
 
@@ -29,13 +28,12 @@ export type NamedItem = {
 };
 
 const Borders: React.FC = () => {
-  const root = useSelector(selectRootElement);
-  const activeItem = useSelector(selectActiveItem);
+  const root = useSelector(selectCurrentRootElement);
+  const activeElement = useSelector(selectActiveElement);
   const showBorders = useSelector(selectShowingBorders);
 
   const [borderedItems, setBorderedItems] = useState([] as BorderedItem[]);
   const rootElement = document.getElementById('root');
-  const activeItemParent = findParentByChildID(root, activeItem.itemId);
 
   const getBorderDomProps = (
     rootElement: HTMLElement,
@@ -83,14 +81,14 @@ const Borders: React.FC = () => {
       );
     }
     if (
-      activeItem &&
-      !typesToExclude.includes(activeItem.itemType) &&
-      namedItems.findIndex((item) => item.id === activeItem.itemId) < 0
+      activeElement &&
+      !typesToExclude.includes(activeElement.type) &&
+      namedItems.findIndex((item) => item.id === activeElement.id) < 0
     ) {
       namedItems.push({
-        id: activeItem.itemId,
-        name: activeItem.name,
-        type: activeItem.itemType,
+        id: activeElement.id,
+        name: activeElement.name,
+        type: activeElement.type,
       } as NamedItem);
     }
     const newBorderedItems: BorderedItem[] = namedItems.map((item) => {
@@ -106,14 +104,14 @@ const Borders: React.FC = () => {
       };
     });
     setBorderedItems(newBorderedItems);
-  }, [root, rootElement, activeItem, showBorders, activeItemParent]);
+  }, [root, rootElement, activeElement, showBorders, activeElement.parent]);
 
   return (
     <div className={styles.wrapper}>
       {borderedItems &&
-        (showBorders || !!activeItem) &&
+        (showBorders || !!activeElement) &&
         borderedItems.map((item) => {
-          const isActive = item.id === activeItem.itemId;
+          const isActive = item.id === activeElement.id;
 
           return item.id === 'none' ? null : (
             <React.Fragment key={item.id}>
