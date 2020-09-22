@@ -1,9 +1,8 @@
 """Views for the projects api"""
-from rest_framework import generics, viewsets, permissions, request
+from rest_framework import generics, viewsets, permissions
 from rest_framework.response import Response
 from rest_framework_bulk import ListBulkCreateUpdateDestroyAPIView, BulkModelViewSet
 from rest_framework.permissions import IsAuthenticated
-from filter_and_pagination import FilterPagination
 
 from .models import (
     Project,
@@ -369,18 +368,21 @@ class ScreenScenarioDestroyCascadeViewSet(BulkModelViewSet):
 
 
 class ScenarioElementViewSet(viewsets.ModelViewSet):
-    queryset = FilterPagination.filter_and_pagination(request, ScenarioElement)
+    queryset = ScenarioElement.objects.all()
     # queryset = ScenarioElement.objects.root_nodes()
-    serializer_class = ScenarioElementSerializer(queryset['queryset'], many=True).data
-    resultset = {'dataset': serializer_class, 'pagination': queryset['pagination']}
+    serializer_class = ScenarioElementSerializer
 
     def filter_queryset(self, queryset):
         ids = self.request.query_params.get('scenariosIds')
+        is_shared = self.request.query_params.get('is_shared')
 
         if ids:
             scenarios_ids = ids.split(',')
             if all(sid.isdigit() for sid in scenarios_ids):
                 queryset = queryset.filter(scenario__in=scenarios_ids)
+
+        if is_shared:
+            queryset = queryset.filter(shared=True)
 
         return queryset
 
