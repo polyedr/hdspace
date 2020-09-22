@@ -57,7 +57,7 @@ export const apiGetListProject = (props: MyAxiosProps): Promise<Project[]> =>
     method: 'GET',
     url: '/projects/projects/',
   })
-    .then((result) => result.data.map(convertProjectFromResponse))
+    .then((result) => result.data.results.map(convertProjectFromResponse))
     .catch(onError);
 
 // TODO: research here IProject or IProjectList in return type:
