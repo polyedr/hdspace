@@ -1,4 +1,10 @@
-import { NamedServerElements, Screen, StateElement } from './types';
+import {
+  NamedServerElements,
+  Screen,
+  StateElement,
+  BorderedItemsRect,
+} from './types';
+
 import {
   DEFAULT_ACTIVE_ELEMENT,
   DEFAULT_PROJECT,
@@ -234,11 +240,11 @@ export function selectProjectLoader(state: AppReduxState): boolean {
 export const selectInitialProjectLoad = (state: AppReduxState): boolean =>
   selectProjectState(state).communication.initialProjectLoadDone;
 
-export function selectCustomLibraryElements(
+export const selectCustomLibraryElements = (
   state: AppReduxState,
-): NamedServerElements {
+): NamedServerElements => {
   return selectProjectState(state).ui.customLibraryElements;
-}
+};
 
 export const selectElementsForScreen = (screenId: number) => (
   state: AppReduxState,
@@ -252,4 +258,10 @@ export const selectElementsForScreen = (screenId: number) => (
 export const selectElementsForCurrentScreen = (state: AppReduxState) => {
   const currentScreenId = selectCurrentScreenId(state);
   return selectElementsForScreen(currentScreenId)(state);
+};
+
+export const selectBorderedItemsRect = (
+  state: AppReduxState,
+): BorderedItemsRect => {
+  return selectProjectState(state).ui.borderedItemsRect;
 };

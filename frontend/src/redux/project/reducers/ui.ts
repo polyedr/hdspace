@@ -69,10 +69,22 @@ function uiReducer(
       };
     }
 
-    /* case TYPES.SET_DRAGGABLE_ITEM_ID: {
+    /* case TYPES.ADD_BORDERED_ELEMENT_RECT: {
       return {
         ...state,
-        draggableItemId: action.payload.itemId
+        borderedItemsRect: {
+          ...state.borderedItemsRect,
+          [action.payload.id]: action.payload.rect,
+        },
+      };
+    }
+
+    case TYPES.REMOVE_BORDERED_ELEMENT_RECT: {
+      const newBorderedItemsRect = { ...state.borderedItemsRect };
+      delete newBorderedItemsRect[action.payload.id];
+      return {
+        ...state,
+        borderedItemsRect: newBorderedItemsRect,
       };
     } */
 

@@ -5,11 +5,7 @@ import html2canvas from 'html2canvas';
 
 import { TopBar } from '../TopBar/TopBar';
 import { HotKeys } from '../HotKeys/HotKeys';
-// import ContainersBorders from '../ContainersBorders/ContainersBorders';
-import Borders from '../ContainersBorders/Borders';
 import Scrollbar from '../../UI/Scrollbar';
-/* import SortableContainer from '../SortableContainer/SortableContainer';
-import { Entity } from '../../../domain/core'; */
 import { LibraryElement, LibraryElementUnion } from '../../../api/types';
 import { getClassDevice } from '../../../utils/dom';
 import { AppReduxState } from '../../../shared/types/app';
@@ -148,7 +144,7 @@ const Workspace: React.FC<Props> = ({
           autoHeightMin="100%"
         >
           <DraggableItem item={elementsTree as LibraryElementUnion} />
-          {!isPrototypeMode && <Borders />}
+          {/* !isPrototypeMode && <ContainersBorders /> */}
         </Scrollbar>
       </div>
     </div>

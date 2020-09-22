@@ -1,12 +1,17 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useRef, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { DropTargetMonitor, useDrag, useDrop } from 'react-dnd';
-import { moveElement } from '../../redux/project/actions';
+import {
+  /* addBorderedElementRect, */
+  moveElement,
+  /* removeBorderedElementRect, */
+} from '../../redux/project/actions';
 import { LibraryElementUnion } from '../../api/types';
 import useElementProps from '../Editor/hooks/useElementProps';
 import { RENDERERS } from '../UI/RenderElements';
 import ItemType from './ItemTypes';
 import {
+  /* selectActiveElement, */
   selectCurrentRootId,
   selectCurrentScreenId,
 } from '../../redux/project/selectors';
@@ -28,7 +33,10 @@ const DraggableItem: React.FC<DraggableItemProps> = ({ item, parent }) => {
   const elementProps = useElementProps(item);
   const rootID = useSelector(selectCurrentRootId);
   const screenId = useSelector(selectCurrentScreenId);
+  // const activeElement = useSelector(selectActiveElement);
   const dispatch = useDispatch();
+  const ref = useRef<HTMLElement>(null);
+
   const dropTarget = useMemo(() => {
     if (
       !!parent &&
@@ -84,17 +92,45 @@ const DraggableItem: React.FC<DraggableItemProps> = ({ item, parent }) => {
       isOver: monitor.isOver({ shallow: true }),
     }),
   });
+
+  useEffect(() => {
+    if (!ref.current) {
+      return;
+    }
+    drag(ref);
+    drop(ref);
+  }, [ref.current]);
+
+  /*  useEffect(() => {
+    if (!ref.current) {
+      return;
+    }
+    if (
+      [rootID, activeElement.id].includes(item.id) ||
+      (!!parent && parent.id === rootID)
+    ) {
+      dispatch(
+        addBorderedElementRect(item.id, ref.current.getBoundingClientRect()),
+      );
+    }
+  }, [
+    ref.current,
+    activeElement,
+    item.styles.classNames,
+    item.styles.ownStyles,
+  ]);
+
+  useEffect(() => {
+    return () => {
+      dispatch(removeBorderedElementRect(item.id));
+    };
+  }); */
+
   const ElementRenderer = RENDERERS[item.type];
 
   return (
     elementProps && (
-      <ElementRenderer
-        {...elementProps}
-        elementRef={(ref: React.RefObject<HTMLElement>) => {
-          drag(ref);
-          drop(ref);
-        }}
-      >
+      <ElementRenderer {...elementProps} elementRef={ref}>
         {(item.children as LibraryElementUnion[])?.map((child) => (
           <DraggableItem key={`item-${child.id}`} item={child} parent={item} />
         ))}
