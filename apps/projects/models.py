@@ -486,6 +486,9 @@ class ScenarioElement(MPTTModel, TimeStampedModel):
         upload_to='uploads/', blank=True, null=True, max_length=256
     )
 
+    # Sharing the element flag
+    shared = models.BooleanField(default=False, null=True)
+
     def __str__(self):
         return "{}".format(self.pk)
 

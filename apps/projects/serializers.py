@@ -85,6 +85,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
             "image",
             "parameters",
             "styles",
+            "shared",
         )
         ref_name = "ScenarioProjects"  # Added to avoid SwaggerGeneration Conflicts
 
@@ -148,6 +149,7 @@ class ScenarioElementMultipleSerializer(
             "image",
             "parameters",
             "styles",
+            "shared",
         )
         list_serializer_class = BulkListSerializer
 
