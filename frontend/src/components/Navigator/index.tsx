@@ -165,11 +165,15 @@ const Navigator: React.FC = () => {
       return;
     }
 
-    if (destination.index === undefined) destination.index = -1;
     const { items } = tree;
 
     const oldParent = items[source.parentId];
     const newParent = items[destination.parentId];
+
+    if (destination.index === undefined) {
+      destination.index = newParent.children.length;
+    }
+
     const childId = oldParent.children[source.index];
     const child = items[childId];
 
