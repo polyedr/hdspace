@@ -16,12 +16,16 @@ const controlReducer = (
   action: T.Action,
 ): T.ProjectControlState => {
   switch (action.type) {
+    case TYPES.REMOVE_STATE_ELEMENT:
+    case TYPES.INSERT_STATE_ELEMENT:
+    case TYPES.ADD_STATE_ELEMENTS:
+    case TYPES.UPDATE_STATE_ELEMENT:
+    case TYPES.MOVE_STATE_ELEMENT:
     case TYPES.UPDATE_ELEMENTS_TREE: {
       if (!action.meta) return state;
 
       const {
-        meta: { undo, redo },
-        payload: { sourceAction },
+        meta: { undo, redo, sourceAction },
       } = action;
 
       const { groupActionsUp, history } = state;
@@ -33,6 +37,7 @@ const controlReducer = (
       }
 
       if (sourceAction && !undo) {
+        // @ts-ignore
         newState.history = groupActionsUp
           ? [
               ...history.slice(0, -1),
@@ -73,7 +78,6 @@ const controlReducer = (
         undoActions: [],
         redoActions: [],
         history: [],
-        remoteMove: false,
       };
     }
 
@@ -81,12 +85,7 @@ const controlReducer = (
       return {
         ...state,
         // @ts-ignore
-        undoActions: state.remoteMove
-          ? [
-              ...state.undoActions.slice(0, -1),
-              [state.undoActions[state.undoActions.length - 1], action.payload],
-            ]
-          : [...state.undoActions, action.payload],
+        undoActions: [...state.undoActions, action.payload],
       };
     }
 
@@ -94,13 +93,6 @@ const controlReducer = (
       return {
         ...state,
         undoActions: state.undoActions.slice(0, -1),
-      };
-    }
-
-    case TYPES.SET_REMOTE_MOVE: {
-      return {
-        ...state,
-        remoteMove: action.payload,
       };
     }
 

@@ -70,7 +70,7 @@ export default class Sortable extends Component {
             ) {
               evt.item.parentNode.removeChild(evt.item);
             }
-            remote.props.onChange && remote.props.onChange(evt, isRemote);
+            // remote.props.onChange && remote.props.onChange(evt, isRemote);
           }
           this.props.onChange && this.props.onChange(evt);
         }

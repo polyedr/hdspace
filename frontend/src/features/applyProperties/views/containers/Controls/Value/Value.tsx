@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { selectActiveItemParams } from '../../../../../../redux/project/selectors';
+import { selectActiveElementParams } from '../../../../../../redux/project/selectors';
 import { SelectElement } from '../../../../../../api/types';
 import { AppReduxState } from '../../../../../../shared/types/app';
 import sharedClasses from '../../../../../../styles/sharedClasses';
@@ -16,7 +16,7 @@ type StateProps = {
 };
 
 function mapState(state: AppReduxState): StateProps {
-  const activeItemParams = selectActiveItemParams<SelectElement>(state);
+  const activeItemParams = selectActiveElementParams(state);
 
   return {
     value: activeItemParams.value,

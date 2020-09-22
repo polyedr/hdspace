@@ -3,12 +3,11 @@ import { connect } from 'react-redux';
 import ControlTitle from '../../../components/ControlTitle/ControlTitle';
 import { DropDown } from '../../../../../../components/UI/DropDown';
 import { AppReduxState } from '../../../../../../shared/types/app';
-import { getElementsArray } from '../../../../../../utils/ElementsTreeHelper';
 import sharedClasses from '../../../../../../styles/sharedClasses';
 import { LabelElement } from '../../../../../../api/types';
 import {
-  selectActiveItemParams,
-  selectRootElement,
+  selectActiveElementParams,
+  selectElementsForCurrentScreen,
 } from '../../../../../../redux/project/selectors';
 import {
   PropertiesChangeProps,
@@ -23,8 +22,8 @@ type StateProps = {
 };
 
 function mapState(state: AppReduxState): StateProps {
-  const activeItemParams = selectActiveItemParams<LabelElement>(state);
-  const elements = getElementsArray(selectRootElement(state));
+  const activeItemParams = selectActiveElementParams(state);
+  const elements = selectElementsForCurrentScreen(state);
 
   const inputsIDs = Object.values(elements)
     .filter(

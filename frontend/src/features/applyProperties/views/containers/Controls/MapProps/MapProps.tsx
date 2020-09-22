@@ -12,7 +12,7 @@ import {
   MIN_MAP_ZOOM,
 } from '../../../../../../constants/defaultParams';
 import { MapElement, MapProps as MapParams } from '../../../../../../api/types';
-import { selectActiveItemParams } from '../../../../../../redux/project/selectors';
+import { selectActiveElementParams } from '../../../../../../redux/project/selectors';
 import {
   PropertiesChangeProps,
   withConfigurableProperties,
@@ -28,7 +28,7 @@ type StateProps = {
 };
 
 function mapState(state: AppReduxState): StateProps {
-  const activeItemParams = selectActiveItemParams<MapElement>(state);
+  const activeItemParams = selectActiveElementParams(state);
 
   return {
     map_props: activeItemParams.map_props,

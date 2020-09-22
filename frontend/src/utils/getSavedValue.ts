@@ -1,6 +1,7 @@
 import { LibraryElementUnion } from '../api/types';
+import { StateElement } from '../redux/project/types';
 
-const getSavedValue = (element: LibraryElementUnion) => {
+const getSavedValue = (element: LibraryElementUnion | StateElement) => {
   switch (element.type) {
     case 'textarea':
     case 'textinput': {

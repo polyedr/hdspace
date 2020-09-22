@@ -1,12 +1,8 @@
+/* eslint-disable camelcase */
 import { OverridableComponent } from '@material-ui/core/OverridableComponent';
 import { SvgIconTypeMap } from '@material-ui/core';
-import { ServerElement } from '../../api/types/elements';
-import { LibraryElements } from '../../domain/libraryElements/libraryElements';
-/* eslint-disable camelcase */
-
-import { IAction, IPlainAction, IPlainFailAction } from '../../shared/redux';
-import { Entity } from '../../domain/core';
 import {
+  ServerElement,
   HeadingType,
   InputType,
   LibraryElement,
@@ -14,8 +10,18 @@ import {
   Project,
   VideoSettingsType,
 } from '../../api/types';
+import { LibraryElements } from '../../domain/libraryElements/libraryElements';
+import { IAction, IPlainAction, IPlainFailAction } from '../../shared/redux';
+import { Entity } from '../../domain/core';
 import TYPES from '../../constants/actions';
 import { CssLikeStyles } from '../../utils/StyleHelper';
+import {
+  addStateElements,
+  insertStateElement,
+  moveStateElement,
+  removeStateElement,
+  updateStateElement,
+} from './actions';
 
 export type ProjectState = {
   data: ProjectDataState;
@@ -37,14 +43,28 @@ export type NamedServerElements = {
   [name: string]: ServerElement<Entity, ServerElement<Entity>[]>;
 };
 
+export type StateElement = {
+  id: string;
+  name: string;
+  type: Entity | 'none';
+  buoyancy: number;
+  parent?: string;
+  children: string[];
+  image: string | null | undefined;
+  styles: {
+    classNames: string[];
+    ownStyles: CssLikeStyles;
+  };
+  parameters: any;
+};
+
 export type ProjectDataState = {
-  libraryElements: LibraryElements;
-  projectList: Project[];
-  screens: IProjectScreen[];
+  projects: Map<Project>;
+  screens: Map<Screen>;
+  elements: Map<StateElement>;
 };
 
 export type ProjectUiState = {
-  activeItem: ActiveItem;
   editableStyles: string;
   isAddElementsModalOpened: boolean;
   itemToCopyInfo: ItemToCopyInfo | null;
@@ -56,6 +76,7 @@ export type ProjectUiState = {
 export type ProjectEditState = {
   currentProjectId: number;
   currentScreenId: number;
+  activeElementId: string;
   uploadedImageInfo?: UploadedImageInfo;
   notification: Notification | null;
 };
@@ -73,7 +94,6 @@ export type ProjectControlState = {
   undoActions: Action[] | Action[][];
   redoActions: Action[];
   history: Action[];
-  remoteMove: boolean;
   groupActionsUp: boolean;
 };
 
@@ -85,16 +105,6 @@ export type Indices = {
 export type Notification = {
   text: string;
 };
-
-export type ActiveItem = {
-  itemId: string;
-  itemType: Entity | 'none';
-  name: string;
-};
-
-export type ActiveItemTree = {
-  children?: any[];
-} & ActiveItem;
 
 export type SavedElementsValues = {
   [elementID: string]: { id: number; savedValue: string | boolean };
@@ -147,7 +157,7 @@ export type UpdateProject = IAction<
 >;
 export type ChangeScreensOrder = IAction<
   typeof TYPES.CHANGE_SCREENS_ORDER,
-  { screens: IProjectScreen[] }
+  { screens: Screen[] }
 >;
 export type RenameProject = IAction<
   typeof TYPES.RENAME_PROJECT,
@@ -203,15 +213,15 @@ export type MoveElement = IAction<
   typeof TYPES.MOVE_ELEMENT,
   {
     indices: Indices;
-    elementID: string;
-    parentID: string;
-    isRemote: boolean;
+    elementId: string;
+    parents: ParentIds;
   },
   ElementHistoryMeta
 >;
 export type UpdateElementsTree = IAction<
   typeof TYPES.UPDATE_ELEMENTS_TREE,
-  { root: RootElement<'root'>; sourceAction: any; parentID?: string }
+  Map<StateElement>,
+  ElementHistoryMeta
 >;
 export type ClearAfterPrevScreen = IPlainAction<
   typeof TYPES.CLEAN_AFTER_PREV_SCREEN
@@ -220,9 +230,9 @@ export type SaveScreen = IAction<
   typeof TYPES.SAVE_SCREEN,
   { screenId: number; canvas: HTMLCanvasElement }
 >;
-export type SetScreen = IAction<
-  typeof TYPES.SET_SCREEN,
-  { screen: IProjectScreen }
+export type UpdateScreen = IAction<
+  typeof TYPES.UPDATE_SCREEN,
+  { screen: Screen }
 >;
 export type ExportProject = IPlainAction<typeof TYPES.EXPORT_PROJECT>;
 export type SetCurrentScreenId = IAction<
@@ -231,11 +241,7 @@ export type SetCurrentScreenId = IAction<
 >;
 export type SetScreens = IAction<
   typeof TYPES.SET_SCREENS,
-  { screens: IProjectScreen[] }
->;
-export type AddElement = IAction<
-  typeof TYPES.ADD_ELEMENT,
-  { parentID: string; type: string }
+  { screens: Screen[] }
 >;
 export type RenameElement = IAction<
   typeof TYPES.RENAME_ELEMENT,
@@ -306,7 +312,7 @@ export type UpdateElementImage = IAction<
 export type UpdateElementParameters = IAction<
   typeof TYPES.UPDATE_ELEMENT_PARAMETERS,
   {
-    itemID: string;
+    elementId: string;
     parameters: RootElement<Entity>['parameters'];
   },
   ElementHistoryMeta
@@ -334,7 +340,7 @@ export type AddChildToElement = IAction<
   typeof TYPES.ADD_CHILD_TO_ELEMENT,
   {
     childType: ServerStructType;
-    elementID: string;
+    elementId: string;
     parameters: {};
   },
   ElementHistoryMeta
@@ -354,9 +360,9 @@ export type WrapIntoContainer = IAction<
   { id: string },
   ElementHistoryMeta
 >;
-export type SetActiveItem = IAction<
-  typeof TYPES.SET_ACTIVE_ITEM,
-  { activeItem: ActiveItem }
+export type SetActiveElementId = IAction<
+  typeof TYPES.SET_ACTIVE_ELEMENT_ID,
+  string
 >;
 export type SetEditableStyles = IAction<
   typeof TYPES.SET_EDITABLE_STYLES,
@@ -372,7 +378,7 @@ export type SetItemToCopy = IAction<
 >;
 export type CopyActiveItem = IPlainAction<typeof TYPES.COPY_ACTIVE_ITEM>;
 export type PasteCopiedItem = IPlainAction<
-  typeof TYPES.PASTE_COPIED_ITEM,
+  typeof TYPES.PASTE_COPIED_ELEMENT,
   ElementHistoryMeta
 >;
 export type ResetScreenState = IPlainAction<typeof TYPES.RESET_SCREEN_STATE>;
@@ -389,13 +395,17 @@ export type SaveLibraryElement = IAction<
 >;
 export type UnwrapFromContainer = IAction<
   typeof TYPES.UNWRAP_FROM_CONTAINER,
-  { elementID: string; wrapperID: string; parentID: string },
+  { elementId: string; wrapperId: string; parentId: string },
   ElementHistoryMeta
 >;
-export type SetRemoteMove = IAction<typeof TYPES.SET_REMOTE_MOVE, boolean>;
 export type RestoreElementChildren = IAction<
   typeof TYPES.RESTORE_ELEMENT_CHILDREN,
   { elementId: string; childrenIds: string[] },
+  ElementHistoryMeta
+>;
+export type RestoreElement = IAction<
+  typeof TYPES.RESTORE_ELEMENT,
+  string,
   ElementHistoryMeta
 >;
 export type RedoWrapIntoContainer = IAction<
@@ -408,11 +418,13 @@ export type PopUndoAction = IPlainAction<typeof TYPES.POP_UNDO_ACTION>;
 export type PopHistory = IPlainAction<typeof TYPES.POP_HISTORY>;
 export type SetGroupActionsUp = IAction<typeof TYPES.SET_GROUP_UP, boolean>;
 export type Logout = IPlainAction<typeof TYPES.LOGOUT>;
+export type AddElements = IAction<
+  typeof TYPES.ADD_ELEMENTS,
+  { elements: LibraryElement<any>[]; parentId?: string }
+>;
+export type RemoveElements = IAction<typeof TYPES.REMOVE_ELEMENTS, string[]>;
 
 export type Action =
-  | LoadLibraryElements
-  | LoadLibraryElementsSuccess
-  | LoadLibraryElementsFail
   | LoadProjects
   | LoadProjectsSuccess
   | LoadProjectsFail
@@ -435,7 +447,6 @@ export type Action =
   | SaveScreen
   | SetCurrentScreenId
   | SetScreens
-  | AddElement
   | CopyElementStyles
   | UpdateElementStyles
   | UpdateElementImage
@@ -447,7 +458,7 @@ export type Action =
   | uploadImageForNNSuccess
   | GetScreenNN
   | WrapIntoContainer
-  | SetActiveItem
+  | SetActiveElementId
   | ToggleContainersBorders
   | SetIsAddElementsModalOpened
   | SetItemToCopy
@@ -463,7 +474,6 @@ export type Action =
   | SetUndoActions
   | SetRedoActions
   | UnwrapFromContainer
-  | SetRemoteMove
   | RestoreElementChildren
   | RedoWrapIntoContainer
   | ClearHistory
@@ -481,8 +491,16 @@ export type Action =
   | Logout
   | RestoreScreen
   | SetProject
-  | SetScreen
-  | SaveLibraryElement;
+  | UpdateScreen
+  | AddElements
+  | RemoveElements
+  | SaveLibraryElement
+  | RestoreElement
+  | ReturnType<typeof moveStateElement>
+  | ReturnType<typeof updateStateElement>
+  | ReturnType<typeof addStateElements>
+  | ReturnType<typeof insertStateElement>
+  | ReturnType<typeof removeStateElement>;
 
 export type ItemToCopyInfo = {
   id: string;
@@ -622,7 +640,7 @@ export interface ILSItem {
   children: string[];
 }
 
-export interface IProjectScreen {
+export interface Screen {
   id: number;
   name: string;
   status: string; // compare with entity on backend!
@@ -630,7 +648,7 @@ export interface IProjectScreen {
   image: string | null;
   screenscenario: number[];
   buoyancy: number;
-  element: LibraryElement<'root'>;
+  element: string;
   // removed screen_data_json, ask if it will be needed on backend
 }
 
@@ -656,6 +674,11 @@ export type HistoryMeta = {
 };
 export type ElementHistoryMeta = HistoryMeta & {
   screenId: number;
+  sourceAction?: Action | null;
+};
+
+export type Map<T> = {
+  [id in number | string]: T;
 };
 
 export type ElementData = {
@@ -691,4 +714,9 @@ export type ElementsHierarchy = {
       [elementName in Entity]: ElementData;
     };
   };
+};
+
+export type ParentIds = {
+  oldParentId: string;
+  newParentId: string;
 };

@@ -6,10 +6,10 @@ import { convertPropCSS } from '../../../utils/StyleHelper';
 import { findParentByChildID } from '../../../utils/ElementsTreeHelper';
 import { SavedElementsValues } from '../../../redux/project/types';
 import {
-  selectActiveItem,
+  selectActiveElement,
   selectCurrentProject,
-  selectRootElement,
-  selectRootID,
+  selectCurrentRootElement,
+  selectCurrentRootId,
   selectSavedElementsValues,
   selectScreenLoader,
   selectShowingBorders,
@@ -39,11 +39,11 @@ export type ElementProps = {
 
 const useElementProps = (item: LibraryElementUnion): ElementProps | null => {
   const { id, type, styles, children } = item;
-  const root = useSelector(selectRootElement);
-  const rootID = useSelector(selectRootID);
+  const root = useSelector(selectCurrentRootElement);
+  const rootID = useSelector(selectCurrentRootId);
   const savedElements = useSelector(selectSavedElementsValues);
   const disableInteractions = useSelector(selectIsPrototypeMode);
-  const activeItem = useSelector(selectActiveItem);
+  const activeElement = useSelector(selectActiveElement);
   const showBorders = useSelector(selectShowingBorders);
   const screenLoader = useSelector(selectScreenLoader);
   const currentProject = useSelector(selectCurrentProject);
@@ -62,7 +62,7 @@ const useElementProps = (item: LibraryElementUnion): ElementProps | null => {
   const isCheckboxChecked = (itemId: string) =>
     Boolean(savedElements[itemId]?.savedValue);
 
-  const getIsActive = !disableInteractions && item.id === activeItem.itemId;
+  const getIsActive = !disableInteractions && item.id === activeElement.id;
 
   const ownStyles = convertPropCSS(styles.ownStyles);
 
@@ -85,7 +85,7 @@ const useElementProps = (item: LibraryElementUnion): ElementProps | null => {
     ownStyles,
     entityStyles: convertedEntityStyles,
     groupStyles: convertedGroupStyles,
-    active: !disableInteractions && id === activeItem.itemId,
+    active: !disableInteractions && id === activeElement.id,
     sortableId: id,
     elementRef: null,
   };
@@ -103,7 +103,7 @@ const useElementProps = (item: LibraryElementUnion): ElementProps | null => {
       ownStyles,
       entityStyles: convertedEntityStyles,
       groupStyles: convertedGroupStyles,
-      active: !disableInteractions && id === activeItem.itemId,
+      active: !disableInteractions && id === activeElement.id,
       sortableId: id,
       elementRef: null,
     };

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import Button from '../../../../../components/UI/Button';
 import { AppReduxState } from '../../../../../shared/types/app';
 import {
-  selectActiveItem,
+  selectActiveElement,
   selectEditableStyles,
 } from '../../../../../redux/project/selectors';
 
@@ -17,7 +17,7 @@ type OwnProps = {
 const mapState = (state: AppReduxState) => {
   return {
     editableStyles: selectEditableStyles(state),
-    activeItem: selectActiveItem(state),
+    activeItem: selectActiveElement(state),
   };
 };
 
@@ -34,7 +34,7 @@ const RemoveStyles: React.FC<Props> = ({
   };
 
   const showClearButton =
-    activeItem.itemType !== 'root' && editableStyles !== activeItem.itemType;
+    activeItem.type !== 'root' && editableStyles !== activeItem.type;
 
   return showClearButton ? (
     <Button

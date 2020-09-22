@@ -8,14 +8,14 @@ import {
   PropertiesChangeProps,
   withConfigurableProperties,
 } from '../../../../../../utils/withConfigurableProperties';
-import { selectActiveItemParams } from '../../../../../../redux/project/selectors';
+import { selectActiveElementParams } from '../../../../../../redux/project/selectors';
 
 type StateProps = {
   isOrdered: boolean;
 };
 
 function mapState(state: AppReduxState): StateProps {
-  const activeItemParams = selectActiveItemParams<ListElement>(state);
+  const activeItemParams = selectActiveElementParams(state);
 
   return {
     isOrdered: activeItemParams.isOrdered,

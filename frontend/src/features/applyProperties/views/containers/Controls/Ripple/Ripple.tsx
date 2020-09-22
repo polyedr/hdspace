@@ -8,14 +8,14 @@ import {
   PropertiesChangeProps,
   withConfigurableProperties,
 } from '../../../../../../utils/withConfigurableProperties';
-import { selectActiveItemParams } from '../../../../../../redux/project/selectors';
+import { selectActiveElementParams } from '../../../../../../redux/project/selectors';
 
 type StateProps = {
   showRipple: boolean;
 };
 
 function mapState(state: AppReduxState): StateProps {
-  const activeItemParams = selectActiveItemParams<ButtonElement>(state);
+  const activeItemParams = selectActiveElementParams(state);
 
   return {
     showRipple: activeItemParams.showRipple,
