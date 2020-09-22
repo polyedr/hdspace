@@ -1,5 +1,6 @@
 import { Indices, Map, ParentIds, StateElement } from '../redux/project/types';
 import { LibraryElement } from '../api/types';
+import { AVAILABLE_CHILDREN, Entity } from '../domain/core';
 
 export const arrayToMap = <T extends { id: any }>(arr: T[]): Map<T> => {
   const res = {};
@@ -177,4 +178,30 @@ export const restoreMapElementChildren = (
     };
   });
   return newState;
+};
+
+export const canElementBeAdded = (
+  elements: Map<StateElement>,
+  parentId: string,
+  childType: Entity,
+): boolean => {
+  const parent = elements[parentId];
+
+  const sameTypeChildrenAmount =
+    parent.children
+      .map((id) => elements[id])
+      .filter((child) => child.type === childType).length || 0;
+
+  const availableChildrenType = AVAILABLE_CHILDREN[parent.type].all
+    ? 'all'
+    : childType;
+
+  const availableSameChildren =
+    AVAILABLE_CHILDREN[parent.type]?.[availableChildrenType];
+
+  if (!availableSameChildren) {
+    return false;
+  }
+
+  return sameTypeChildrenAmount < availableSameChildren.max;
 };

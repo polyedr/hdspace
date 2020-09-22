@@ -1,8 +1,9 @@
+import { Entity } from '../../domain/core';
+
 export type Node = {
   id: string;
-  data: { title: string };
+  data: { title: string; type: Entity | 'none' };
   hasChildren: boolean;
   isExpanded: boolean;
-  isChildrenLoading: boolean;
   children: string[];
 };

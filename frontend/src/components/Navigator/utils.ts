@@ -1,5 +1,6 @@
 import { mutateTree, TreeData } from '@atlaskit/tree';
 import { LibraryElement } from '../../api/types';
+import { StateElement, Map } from '../../redux/project/types';
 import { Node } from './types';
 
 export const convertTree = (element: LibraryElement<any>) => ({
@@ -10,19 +11,36 @@ export const convertTree = (element: LibraryElement<any>) => ({
   children: element.children.map((child) => convertTree(child)),
 });
 
-const flattenNodes = (root, nodes, parent) =>
-  nodes.reduce(
-    (acc, node) => ({
-      ...acc,
-      [node.id]: {
-        ...node,
-        parent,
-        children: node.children.map((child) => child.id),
+export const convertElements = (elements: Map<StateElement>): Map<Node> =>
+  Object.fromEntries(
+    Object.entries(elements).map(([key, value]) => [
+      key,
+      {
+        id: value.id,
+        data: { title: value.name, type: value.type },
+        children: value.children,
+        hasChildren: !!value.children.length,
+        isExpanded: value.type === 'root',
+        parent: value.type === 'root' ? 'root' : value.parent,
       },
-      ...flattenNodes(root, node.children, node.id),
-    }),
-    root,
+    ]),
   );
+
+export const makeTree = (nodes: Map<Node>, rootId: string): TreeData => ({
+  rootId: 'root',
+  items: {
+    root: {
+      id: 'root',
+      children: [rootId],
+      hasChildren: true,
+      isExpanded: true,
+      data: {
+        title: 'root',
+      },
+    },
+    ...nodes,
+  },
+});
 
 export const updateTree = (oldTree: TreeData, newTree: TreeData): TreeData => {
   let res = { ...newTree };
@@ -35,22 +53,6 @@ export const updateTree = (oldTree: TreeData, newTree: TreeData): TreeData => {
   });
   return res;
 };
-
-export const makeTree = (nodes: Node[]): TreeData => ({
-  rootId: 'root',
-  items: {
-    root: {
-      id: 'root',
-      children: nodes.map((node) => node.id),
-      hasChildren: true,
-      isExpanded: true,
-      data: {
-        title: 'root',
-      },
-    },
-    ...flattenNodes({}, nodes, 'root'),
-  },
-});
 
 export const findNextNodeId = (tree, itemId, traverseChildren = true) => {
   const item = tree.items[itemId];

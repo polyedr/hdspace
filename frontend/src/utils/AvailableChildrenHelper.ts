@@ -29,9 +29,11 @@ export const isElementCanBeAdded = (
   const sameChildrenAmount =
     itemToAddParent.children.filter((child) => child.type === addedElementType)
       ?.length || 0;
+
   const availableChildrenType = AVAILABLE_CHILDREN[itemToAddParent.type].all
     ? 'all'
     : addedElementType;
+
   const availableSameChildren =
     AVAILABLE_CHILDREN[itemToAddParent.type]?.[availableChildrenType];
 

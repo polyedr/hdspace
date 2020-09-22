@@ -13,13 +13,14 @@ import {
   findNextNodeId,
   focusTreeItem,
   makeTree,
-  convertTree,
   updateTree,
+  convertElements,
 } from './utils';
 import {
   selectActiveElement,
   selectCurrentScreenId,
-  selectCurrentRootElement,
+  selectElementsForCurrentScreen,
+  selectCurrentRootId,
 } from '../../redux/project/selectors';
 import { DISALLOW_ADD_ELEMENT_NOTIFICATION_TEXT } from '../../features/notification/types';
 import {
@@ -32,31 +33,29 @@ import {
   setNotification,
   undoAction,
 } from '../../redux/project/actions';
-import { findChildByID } from '../../utils/ElementsTreeHelper';
-import { isElementCanBeAdded } from '../../utils/AvailableChildrenHelper';
 import Scrollbar from '../UI/Scrollbar';
+import { canElementBeAdded } from '../../utils/normalizedStateHelpers';
 
 const styles = require('./Navigator.scss');
 
 const Navigator: React.FC = () => {
   const dispatch = useDispatch();
-
-  const rootElement = useSelector(selectCurrentRootElement);
+  const elements = useSelector(selectElementsForCurrentScreen);
+  const rootId = useSelector(selectCurrentRootId);
+  const currentScreenId = useSelector(selectCurrentScreenId);
+  const { id: activeItemId } = useSelector(selectActiveElement);
 
   const [tree, setTree] = useState<TreeData>(
-    makeTree([convertTree(rootElement)]),
+    makeTree(convertElements(elements), rootId),
   );
   const [selectedItemId, setSelectedItem] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState<boolean>(false);
 
   useEffect(() => {
-    const newTree = makeTree([convertTree(rootElement)]);
+    const newTree = makeTree(convertElements(elements), rootId);
     setTree(updateTree(tree, newTree));
     focusTreeItem(selectedItemId);
-  }, [rootElement]);
-
-  const currentScreenId = useSelector(selectCurrentScreenId);
-  const { id: activeItemId } = useSelector(selectActiveElement);
+  }, [elements, rootId]);
 
   const expandParents = (itemId) => {
     if (itemId === 'root') return;
@@ -174,14 +173,14 @@ const Navigator: React.FC = () => {
     const childId = oldParent.children[source.index];
     const child = items[childId];
 
-    const parentElement = findChildByID(rootElement, newParent.id as string);
+    const parentElement = elements[newParent.id];
 
     if (!parentElement) {
       console.error(`No element ${newParent.id}`);
       setIsDragging(false);
       return;
     }
-    if (!isElementCanBeAdded(parentElement, child.data.type)) {
+    if (!canElementBeAdded(elements, newParent.id as string, child.data.type)) {
       dispatch(setNotification(DISALLOW_ADD_ELEMENT_NOTIFICATION_TEXT));
       setIsDragging(false);
       return;
@@ -192,8 +191,8 @@ const Navigator: React.FC = () => {
         childId as string,
         { newIndex: destination.index, oldIndex: source.index },
         {
-          newParentId: source.parentId as string,
-          oldParentId: destination.parentId as string,
+          newParentId: destination.parentId as string,
+          oldParentId: source.parentId as string,
         },
         { screenId: currentScreenId },
       ),
@@ -213,7 +212,6 @@ const Navigator: React.FC = () => {
       selectedItemId={selectedItemId}
     />
   );
-
   return (
     <div className={styles.componentPane}>
       <h3 className={styles.header}>Navigator</h3>
