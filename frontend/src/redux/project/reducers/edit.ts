@@ -38,6 +38,10 @@ const editReducer = (
       return { ...state, uploadedImageInfo: action.payload };
     }
 
+    case TYPES.SET_ACTIVE_ELEMENT_ID: {
+      return { ...state, activeElementId: action.payload };
+    }
+
     case TYPES.LOGOUT: {
       return {
         ...initialEdit,

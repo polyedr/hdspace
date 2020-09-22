@@ -19,7 +19,7 @@ import {
 import {
   apiAddProject,
   apiDelProject,
-  apiGetListProject,
+  apiGetProjectList,
   apiGetProject,
   apiSaveProject,
 } from '../../../api/project';
@@ -31,11 +31,10 @@ import { apiSaveScreen } from '../../../api/screen';
 import { Project } from '../../../api/types';
 import { setScreens } from '../actions';
 
-export function* getListProjectSaga(): SagaIterator {
+export function* getProjectListSaga(): SagaIterator {
   yield put(Actions.setProjectListLoader(true));
-  yield put(Actions.getLibraryElements());
 
-  const result = yield call(reqWrapper, apiGetListProject);
+  const result = yield call(reqWrapper, apiGetProjectList);
 
   if (!result) {
     yield put(Actions.setProjectListLoader(false));

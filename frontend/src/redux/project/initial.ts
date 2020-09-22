@@ -1,14 +1,12 @@
 import * as T from './types';
-import { DEFAULT_ACTIVE_ITEM } from '../../constants/defaultParams';
 
 export const initialData: T.ProjectDataState = {
-  libraryElements: {} as any, // will be loaded on app start
-  projectList: [],
-  screens: [],
+  projects: {},
+  screens: {},
+  elements: {},
 };
 
 export const initialUi: T.ProjectUiState = {
-  activeItem: DEFAULT_ACTIVE_ITEM,
   editableStyles: 'ownStyles',
   isAddElementsModalOpened: false,
   itemToCopyInfo: null,
@@ -20,6 +18,7 @@ export const initialUi: T.ProjectUiState = {
 export const initialEdit: T.ProjectEditState = {
   currentProjectId: -1,
   currentScreenId: -1,
+  activeElementId: '-1',
   notification: null,
 };
 
@@ -36,6 +35,5 @@ export const initialControl: T.ProjectControlState = {
   undoActions: [],
   redoActions: [],
   history: [],
-  remoteMove: false,
   groupActionsUp: false,
 };

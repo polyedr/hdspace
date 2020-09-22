@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import StylesHeader from '../../../components/StylesHeader/StylesHeader';
 import {
-  selectActiveItem,
+  selectActiveElement,
   selectCurrentEditableStyles,
 } from '../../../../../../redux/project/selectors';
 import { AppReduxState } from '../../../../../../shared/types/app';
@@ -16,7 +16,7 @@ const styles = require('./FlexGrow.scss');
 
 function mapState(state: AppReduxState) {
   const flexGrow = selectCurrentEditableStyles(state, 'flex-grow');
-  const activeItemID = selectActiveItem(state).itemId;
+  const activeItemID = selectActiveElement(state).id;
 
   return {
     flexGrow,

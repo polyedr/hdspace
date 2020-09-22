@@ -45,7 +45,7 @@ const TabPanel: React.FC<TabPanelProps> = ({ value, index, children }) => {
 };
 
 const mapState = (state: AppReduxState) => ({
-  activeItem: selectors.selectActiveItem(state),
+  activeItem: selectors.selectActiveElement(state),
   isAddElementsModalOpened: selectors.selectIsAddElementsModalOpened(state),
   loader: selectors.selectLoader(state),
 });
@@ -64,7 +64,7 @@ const PropertiesPanel: React.FC<PropertiesPanelProps> = ({
   activeItem,
   setIsAddElementsModalOpened,
 }) => {
-  const [tab, setTab] = useState(1);
+  const [tab, setTab] = useState(0);
 
   const handleChange = (ev: ChangeEvent<{}>, newValue: number) =>
     setTab(newValue);

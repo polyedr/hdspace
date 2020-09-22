@@ -36,7 +36,7 @@ import VideoSettings from '../../features/applyProperties/views/containers/Contr
 import FlexGrow from '../../features/applyProperties/views/containers/Controls/FlexGrow/FlexGrow';
 import BackgroundPosition from '../../features/applyProperties/views/containers/Controls/BackgroundPosition/BackgroundPosition';
 import BackgroundSize from '../../features/applyProperties/views/containers/Controls/BackgroundSize/BackgroundSize';
-import { ActiveItem } from '../../redux/project/types';
+import { StateElement } from '../../redux/project/types';
 import {
   createElements,
   setIsAddElementsModalOpened,
@@ -76,7 +76,7 @@ const CONTROLS: Record<Control, React.ComponentType<any>> = {
 };
 
 type Props = {
-  activeItem: ActiveItem;
+  activeItem: StateElement;
   createElements: typeof createElements;
   setIsAddElementsModalOpened: typeof setIsAddElementsModalOpened;
   isAddElementsModalOpened: boolean;
@@ -88,7 +88,7 @@ const PropertiesTab: React.FC<Props> = ({
   createElements: handleCreateElements,
   activeItem,
 }) => {
-  const { itemType } = activeItem;
+  const { type } = activeItem;
 
   return (
     <Scrollbar autoHeightMin="100%">
@@ -99,13 +99,13 @@ const PropertiesTab: React.FC<Props> = ({
         isAddElementsModalOpened={isAddElementsModalOpened}
         setIsAddElementsModalOpened={setIsAddElementsModalOpened}
       />
-      {activeItem.itemType !== 'none' && (
+      {activeItem.type !== 'none' && (
         <div className="propsPanelBlock">
           <div className="propsPanelHeaderBlock">
             <p>Element properties</p>
           </div>
 
-          {activeItem.itemType !== 'root' && (
+          {activeItem.type !== 'root' && (
             <div className="propsPanelContentBlock">
               <ControlSection title="Element's name">
                 <RenameElement />
@@ -113,7 +113,7 @@ const PropertiesTab: React.FC<Props> = ({
             </div>
           )}
 
-          {activeItem.itemType !== 'root' && (
+          {activeItem.type !== 'root' && (
             <>
               <div className="propsPanelContentBlock">
                 <ShareStyles />
@@ -127,16 +127,16 @@ const PropertiesTab: React.FC<Props> = ({
             </>
           )}
 
-          {itemType &&
-            R.toPairs(AVAILABLE_CONTROLS[itemType as Entity]).map(
+          {type &&
+            R.toPairs(AVAILABLE_CONTROLS[type as Entity]).map(
               ([elementName, elementValue]) => {
                 return elementName === 'root' ? (
                   <div
                     className="propsPanelContentBlock"
                     key={`${elementName}-propsPanelContentBlock`}
                   >
-                    {itemType &&
-                      AVAILABLE_CONTROLS[itemType as Entity].root.map(
+                    {type &&
+                      AVAILABLE_CONTROLS[type as Entity].root.map(
                         (controlName) => {
                           const ControlComponent = CONTROLS[controlName];
                           return <ControlComponent key={controlName} />;

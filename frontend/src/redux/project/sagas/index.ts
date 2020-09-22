@@ -9,7 +9,6 @@ import {
   select,
 } from 'redux-saga/effects';
 import * as R from 'ramda';
-import { REHYDRATE } from 'redux-persist';
 import { LOCATION_CHANGE, LocationChangeAction } from 'connected-react-router';
 import * as Actions from '../actions';
 import { AppReduxState } from '../../../shared/types/app';
@@ -24,6 +23,7 @@ import {
   createElementsSaga,
   redoWrapIntoContainerSaga,
   renameElementSaga,
+  restoreElementChildrenSaga,
   restoreElementSaga,
   softDeleteSaga,
   unwrapFromContainerSaga,
@@ -34,14 +34,13 @@ import {
   changeScreensOrderSaga,
   delProjectSaga,
   exportProjectSaga,
-  getListProjectSaga,
+  getProjectListSaga,
   getProjectSaga,
   renameProjectSaga,
   updateProject,
   updateProjectSaga,
 } from './project';
 import {
-  authCheckSaga,
   moveElementSaga,
   removeElementStylesSaga,
   updateElementStyles,
@@ -58,21 +57,28 @@ import { convertElementToRequest } from '../../../api/converters/toRequest';
 import { MAX_TOKEN_TRIALS } from '../../../../config/settings';
 import TYPES from '../../../constants/actions';
 import { setLoadedToken, setTokenPair } from '../../user/actions';
-import { ElementHistoryMeta, ItemToCopyInfo } from '../types';
+import {
+  ElementHistoryMeta,
+  ItemToCopyInfo,
+  Map,
+  StateElement,
+} from '../types';
 
 import { LibraryElement } from '../../../api/types';
-import { findChildByID } from '../../../utils/ElementsTreeHelper';
 import { openProjects, openSignScreen } from '../../../utils/history';
 import { refreshUserTokenPair } from '../../user/sagas';
 import { DEFAULT_AUTHORISATION_TOKEN } from '../../../constants/defaultParams';
 import {
-  selectActiveItem,
+  selectActiveElement,
+  selectActiveElementId,
+  selectAllElements,
   selectCurrentProject,
   selectCurrentScreen,
+  selectElementAsTree,
   selectHistory,
   selectItemToCopyInfo,
   selectRedoActions,
-  selectScreenElement,
+  selectScreenRootElement,
   selectUndoActions,
 } from '../selectors';
 
@@ -188,17 +194,17 @@ function* removeSharedStylesSaga(
 
   yield call(updateProject, newProject);
 
-  const { screenId, undo } = action.meta;
+  const { undo } = action.meta;
 
   if (!undo) {
     yield put(Actions.setUndoActions(Actions.updateProject(currentProject)));
   }
 
-  const root: LibraryElement<'root'> = yield select(
-    selectScreenElement(screenId),
-  );
+  const state: Map<StateElement> = yield select(selectAllElements);
 
-  yield put(Actions.updateElementsTree(root, action, action.meta));
+  yield put(
+    Actions.updateElementsTree(state, { ...action.meta, sourceAction: action }),
+  );
 }
 
 function* updateSharedStylesSaga(
@@ -220,23 +226,23 @@ function* updateSharedStylesSaga(
 
   yield call(updateProject, newProject);
 
-  const { screenId, undo } = action.meta;
+  const { undo } = action.meta;
 
   if (!undo) {
     yield put(Actions.setUndoActions(Actions.updateProject(currentProject)));
   }
 
-  const root: LibraryElement<'root'> = yield select(
-    selectScreenElement(screenId),
-  );
+  const state: Map<StateElement> = yield select(selectAllElements);
 
-  yield put(Actions.updateElementsTree(root, action, action.meta));
+  yield put(
+    Actions.updateElementsTree(state, { ...action.meta, sourceAction: action }),
+  );
 }
 
 function* copyActiveItemSaga() {
   const {
-    itemId: activeItemID,
-  }: ReturnType<typeof selectActiveItem> = yield select(selectActiveItem);
+    id: activeItemID,
+  }: ReturnType<typeof selectActiveElement> = yield select(selectActiveElement);
   const currentScreen: ReturnType<typeof selectCurrentScreen> = yield select(
     selectCurrentScreen,
   );
@@ -245,27 +251,19 @@ function* copyActiveItemSaga() {
   }
 }
 
-function* duplicateItems(
-  sourceRoot: LibraryElement<Entity>,
+function* duplicateElements(
   itemsToCopyInfo: ItemToCopyInfo[],
   targetParent: LibraryElement<Entity>,
   { screenId, undo }: ElementHistoryMeta,
 ) {
-  const itemsToDuplicate = itemsToCopyInfo.map((item) =>
-    findChildByID(sourceRoot, item.id),
-  );
-  const isItemsToDuplicateInTree = itemsToDuplicate.every((item) => !!item);
-
-  if (!isItemsToDuplicateInTree) {
-    console.error(
-      `Can not find duplicated items ${JSON.stringify(
-        itemsToCopyInfo.map((item) => item.id),
-      )} in tree`,
-    );
-    return;
+  const elements: LibraryElement<any>[] = [];
+  // eslint-disable-next-line no-restricted-syntax
+  for (const el of itemsToCopyInfo) {
+    const element = yield select(selectElementAsTree(el.id));
+    elements.push(element);
   }
 
-  const convertedItemsToDuplicate = itemsToDuplicate.map((item) =>
+  const convertedItemsToDuplicate = elements.map((item) =>
     convertElementToRequest(item!),
   );
 
@@ -281,7 +279,7 @@ function* duplicateScreenSaga(
   const { name, screenID } = action.payload;
 
   const sourceRoot: LibraryElement<'root'> = yield select(
-    selectScreenElement(screenID),
+    selectScreenRootElement(screenID),
   );
 
   const sourceCurrentScreen: ReturnType<typeof selectCurrentScreen> = yield select(
@@ -305,56 +303,41 @@ function* duplicateScreenSaga(
   );
   yield put(Actions.setScreenLoader(true));
 
-  const targetRoot = yield select(selectScreenElement(newScreenId));
+  const targetRoot: LibraryElement<'root'> = yield select(
+    selectScreenRootElement(newScreenId),
+  );
   const targetRootID = targetRoot.id;
 
-  yield put(
-    Actions.setActiveItem({
-      itemId: targetRootID,
-      itemType: 'root',
-      name: 'Root',
-    }),
-  );
+  yield put(Actions.setActiveElementId(targetRootID));
 
-  yield call(duplicateItems, sourceRoot, duplicatedItems, targetRoot, {
+  yield call(duplicateElements, duplicatedItems, targetRoot, {
     screenId: newScreenId,
     undo: true,
   });
   yield put(Actions.setScreenLoader(false));
 }
 
-function* pasteCopiedItemSaga({
+function* pasteCopiedElementSaga({
   type,
   meta,
-}: ReturnType<typeof Actions.pasteCopiedItem>) {
+}: ReturnType<typeof Actions.pasteCopiedElement>) {
   if (!meta) {
     console.error(`You have to provide metainformation for action ${type}`);
     return;
   }
   const { screenId } = meta;
-  const activeItem: ReturnType<typeof selectActiveItem> = yield select(
-    selectActiveItem,
+  const activeElementId: string = yield select(selectActiveElementId);
+  const activeElement: LibraryElement<any> = yield select(
+    selectElementAsTree(activeElementId),
   );
-  const root: LibraryElement<'root'> = yield select(
-    selectScreenElement(screenId),
-  );
-  const targetContainer = findChildByID(root, activeItem.itemId);
 
-  if (!targetContainer) {
-    console.error(`Can not find updated element ${activeItem.itemId} in tree`);
-    return;
-  }
   const itemToCopyInfo: ReturnType<typeof selectItemToCopyInfo> = yield select(
     selectItemToCopyInfo,
   );
   if (!itemToCopyInfo) return;
 
-  const sourceRoot: LibraryElement<'root'> = yield select(
-    selectScreenElement(itemToCopyInfo.screenID),
-  );
-
-  if (activeItem.itemType !== 'none') {
-    yield call(duplicateItems, sourceRoot, [itemToCopyInfo], targetContainer, {
+  if (activeElement.type !== 'none') {
+    yield call(duplicateElements, [itemToCopyInfo], activeElement, {
       screenId,
     });
   }
@@ -457,10 +440,9 @@ function* redoSaga() {
 }
 
 export default function* projectSaga() {
-  yield takeLatest(REHYDRATE, authCheckSaga);
   yield takeLatest(LOCATION_CHANGE, LocationChange);
 
-  yield takeLatest(TYPES.LOAD_PROJECTS, getListProjectSaga);
+  yield takeLatest(TYPES.LOAD_PROJECTS, getProjectListSaga);
   yield takeLatest(TYPES.ADD_PROJECT, addProject);
   yield takeLatest(TYPES.DELETE_PROJECT, delProjectSaga);
   yield takeLatest(TYPES.UPDATE_PROJECT, updateProjectSaga);
@@ -496,10 +478,11 @@ export default function* projectSaga() {
   yield takeEvery(TYPES.WRAP_INTO_CONTAINER, wrapIntoContainerSaga);
 
   yield takeEvery(TYPES.DELETE_ITEM, softDeleteSaga);
-  yield takeEvery(TYPES.RESTORE_ELEMENT_CHILDREN, restoreElementSaga);
+  yield takeEvery(TYPES.RESTORE_ELEMENT_CHILDREN, restoreElementChildrenSaga);
+  yield takeEvery(TYPES.RESTORE_ELEMENT, restoreElementSaga);
 
   yield takeLatest(TYPES.COPY_ACTIVE_ITEM, copyActiveItemSaga);
-  yield takeEvery(TYPES.PASTE_COPIED_ITEM, pasteCopiedItemSaga);
+  yield takeEvery(TYPES.PASTE_COPIED_ELEMENT, pasteCopiedElementSaga);
 
   yield takeLatest(TYPES.UPLOAD_FILE, uploadFileSaga);
   yield takeLatest(TYPES.GET_SCREEN_NN, getScreenNNSaga);

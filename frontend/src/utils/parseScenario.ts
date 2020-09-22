@@ -131,7 +131,6 @@ export const getRightPanelCategoryTabs = (
           },
         },
       };
-    case 'button':
     case 'list':
     case 'divBlock':
     case 'paragraph':
@@ -150,6 +149,7 @@ export const getRightPanelCategoryTabs = (
           },
         },
       };
+    case 'button':
     case 'dropdown':
     case 'textinput':
     case 'textarea':

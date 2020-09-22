@@ -6,12 +6,12 @@ import Button from '../../UI/Button';
 import Scrollbar from '../../UI/Scrollbar';
 import { AVAILABLE_CHILDREN, ENTITIES, Entity } from '../../../domain/core';
 import { getChooseElements, GroupElement } from '../../../utils/parseScenario';
-import { ActiveItem, CreatedElement } from '../../../redux/project/types';
+import { CreatedElement, StateElement } from '../../../redux/project/types';
 
 const styles = require('./ActionsBlock.scss');
 
 type Props = {
-  activeItem: ActiveItem;
+  activeItem: StateElement;
   tabs: string[];
   groupElements: GroupElement[];
   activeTab: string;
@@ -47,9 +47,9 @@ const ActionsBlock: React.FC<Props> = ({
 
   const isAvailableChild = (type: Entity) => {
     return (
-      activeItem.itemType !== 'none' &&
-      (AVAILABLE_CHILDREN[activeItem.itemType].all ||
-        AVAILABLE_CHILDREN[activeItem.itemType][type])
+      activeItem.type !== 'none' &&
+      (AVAILABLE_CHILDREN[activeItem.type].all ||
+        AVAILABLE_CHILDREN[activeItem.type][type])
     );
   };
 

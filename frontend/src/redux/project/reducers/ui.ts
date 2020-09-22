@@ -8,10 +8,6 @@ function uiReducer(
   action: T.Action,
 ): T.ProjectUiState {
   switch (action.type) {
-    case TYPES.SET_ACTIVE_ITEM: {
-      return { ...state, activeItem: action.payload.activeItem };
-    }
-
     case TYPES.SET_EDITABLE_STYLES: {
       return { ...state, editableStyles: action.payload.className };
     }

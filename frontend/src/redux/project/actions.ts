@@ -1,25 +1,18 @@
-import { ServerElement } from '../../api/types/elements';
-import { ElementHistoryMeta, HistoryMeta, IProjectScreen } from './types';
-import TYPES from '../../constants/actions';
-import { Project, LibraryElement } from '../../api/types';
-import { ChildEntity, Entity } from '../../domain/core';
 import {
-  ChildrenElements,
-  LibraryEntities,
-} from '../../domain/libraryElements/libraryElements';
+  ElementHistoryMeta,
+  HistoryMeta,
+  Indices,
+  ParentIds,
+  Screen,
+  StateElement,
+} from './types';
+import { ServerElement, Project, LibraryElement } from '../../api/types';
+import TYPES from '../../constants/actions';
+
+import { ChildEntity, Entity } from '../../domain/core';
+import { ChildrenElements } from '../../domain/libraryElements/libraryElements';
 import { CssLikeStyles } from '../../utils/StyleHelper';
 import * as T from './types';
-
-export const getLibraryElements = (): T.LoadLibraryElements => ({
-  type: TYPES.GET_LIBRARY_ELEMENTS,
-});
-
-export const setLibraryElements = (
-  libraryElements: LibraryEntities,
-): T.LoadLibraryElementsSuccess => ({
-  type: TYPES.LOAD_LIBRARY_ELEMENTS_SUCCESS,
-  payload: { libraryElements },
-});
 
 export const getProjectList = (): T.LoadProjects => ({
   type: TYPES.LOAD_PROJECTS,
@@ -71,7 +64,7 @@ export const exportProject = (): T.ExportProject => ({
 });
 
 export const changeScreensOrder = (
-  screens: T.IProjectScreen[],
+  screens: T.Screen[],
 ): T.ChangeScreensOrder => ({
   type: TYPES.CHANGE_SCREENS_ORDER,
   payload: { screens },
@@ -175,18 +168,16 @@ export const activateScreen = (screenId: number): T.ActivateScreen => ({
 });
 
 export const moveElement = (
+  elementId: string,
   indices: T.Indices,
-  elementID: string,
-  parentID: string,
-  isRemote: boolean = false,
+  parents: ParentIds,
   meta: T.ElementHistoryMeta,
 ): T.MoveElement => ({
   type: TYPES.MOVE_ELEMENT,
   payload: {
     indices,
-    elementID,
-    parentID,
-    isRemote,
+    elementId,
+    parents,
   },
   meta,
 });
@@ -196,12 +187,78 @@ export const clearAfterPrevScreen = (): T.ClearAfterPrevScreen => ({
 });
 
 export const updateElementsTree = (
-  root: LibraryElement<'root'>,
-  sourceAction: T.Action | null = null,
+  chunk: T.Map<StateElement>,
   meta: T.ElementHistoryMeta,
 ): T.UpdateElementsTree => ({
   type: TYPES.UPDATE_ELEMENTS_TREE,
-  payload: { root, sourceAction },
+  payload: chunk,
+  meta,
+});
+
+export const moveStateElement = (
+  elementId: string,
+  indices: Indices,
+  parents: ParentIds,
+  meta: ElementHistoryMeta,
+) => ({
+  type: TYPES.MOVE_STATE_ELEMENT,
+  payload: {
+    elementId,
+    indices,
+    parents,
+  },
+  meta,
+});
+
+export const updateStateElement = (
+  elementId: string,
+  data: Partial<StateElement>,
+  meta: ElementHistoryMeta,
+) => ({
+  type: TYPES.UPDATE_STATE_ELEMENT,
+  payload: {
+    elementId,
+    data,
+  },
+  meta,
+});
+
+export const addStateElements = (
+  elements: LibraryElement<any>[],
+  parentId: string,
+  meta: ElementHistoryMeta,
+) => ({
+  type: TYPES.ADD_STATE_ELEMENTS,
+  payload: {
+    elements,
+    parentId,
+  },
+  meta,
+});
+
+export const insertStateElement = (
+  element: LibraryElement<any>,
+  parentId: string,
+  childId: string,
+  meta: ElementHistoryMeta,
+) => ({
+  type: TYPES.INSERT_STATE_ELEMENT,
+  payload: {
+    parentId,
+    element,
+    childId,
+  },
+  meta,
+});
+
+export const removeStateElement = (
+  elementId: string,
+  meta: ElementHistoryMeta,
+) => ({
+  type: TYPES.REMOVE_STATE_ELEMENT,
+  payload: {
+    elementId,
+  },
   meta,
 });
 
@@ -225,21 +282,16 @@ export const setCurrentScreenId = (screenId: number): T.SetCurrentScreenId => ({
   payload: { screenId },
 });
 
-export const setScreen = (screen: IProjectScreen): T.SetScreen => ({
-  type: TYPES.SET_SCREEN,
+export const updateScreen = (screen: Screen): T.UpdateScreen => ({
+  type: TYPES.UPDATE_SCREEN,
   payload: {
     screen,
   },
 });
 
-export const setScreens = (screens: T.IProjectScreen[]): T.SetScreens => ({
+export const setScreens = (screens: T.Screen[]): T.SetScreens => ({
   type: TYPES.SET_SCREENS,
   payload: { screens },
-});
-
-export const addElement = (parentID: string, type: string): T.AddElement => ({
-  type: TYPES.ADD_ELEMENT,
-  payload: { parentID, type },
 });
 
 export const renameElement = (
@@ -351,12 +403,12 @@ export const updateElementParameters = <
   T extends Entity,
   K extends LibraryElement<T>['parameters']
 >(
-  itemID: string,
+  elementId: string,
   parameters: K,
   meta: T.ElementHistoryMeta,
 ): T.UpdateElementParameters => ({
   type: TYPES.UPDATE_ELEMENT_PARAMETERS,
-  payload: { itemID, parameters },
+  payload: { elementId, parameters },
   meta,
 });
 
@@ -400,7 +452,7 @@ export const addChildToElement = (
   meta: ElementHistoryMeta,
 ): T.AddChildToElement => ({
   type: TYPES.ADD_CHILD_TO_ELEMENT,
-  payload: { childType, elementID, parameters },
+  payload: { childType, elementId: elementID, parameters },
   meta,
 });
 
@@ -436,9 +488,9 @@ export const wrapIntoContainer = (
   meta,
 });
 
-export const setActiveItem = (activeItem: T.ActiveItem): T.SetActiveItem => ({
-  type: TYPES.SET_ACTIVE_ITEM,
-  payload: { activeItem },
+export const setActiveElementId = (id: string): T.SetActiveElementId => ({
+  type: TYPES.SET_ACTIVE_ELEMENT_ID,
+  payload: id,
 });
 
 export const setEditableStyles = (className: string): T.SetEditableStyles => ({
@@ -457,10 +509,10 @@ export const copyActiveItem = (): T.CopyActiveItem => ({
   type: TYPES.COPY_ACTIVE_ITEM,
 });
 
-export const pasteCopiedItem = (
+export const pasteCopiedElement = (
   meta: ElementHistoryMeta,
 ): T.PasteCopiedItem => ({
-  type: TYPES.PASTE_COPIED_ITEM,
+  type: TYPES.PASTE_COPIED_ELEMENT,
   meta,
 });
 
@@ -496,11 +548,6 @@ export const popUndoAction = (): T.PopUndoAction => ({
   type: TYPES.POP_UNDO_ACTION,
 });
 
-export const setRemoteMove = (isRemote: boolean): T.SetRemoteMove => ({
-  type: TYPES.SET_REMOTE_MOVE,
-  payload: isRemote,
-});
-
 export const unwrapFromContainer = (
   elementID: string,
   wrapperID: string,
@@ -509,9 +556,9 @@ export const unwrapFromContainer = (
 ): T.UnwrapFromContainer => ({
   type: TYPES.UNWRAP_FROM_CONTAINER,
   payload: {
-    elementID,
-    wrapperID,
-    parentID,
+    elementId: elementID,
+    wrapperId: wrapperID,
+    parentId: parentID,
   },
   meta,
 });
@@ -526,6 +573,15 @@ export const restoreElementChildren = (
     elementId,
     childrenIds,
   },
+  meta,
+});
+
+export const restoreElement = (
+  elementId: string,
+  meta: T.ElementHistoryMeta,
+): T.RestoreElement => ({
+  type: TYPES.RESTORE_ELEMENT,
+  payload: elementId,
   meta,
 });
 
@@ -551,6 +607,19 @@ export const popHistory = (): T.PopHistory => ({
 export const setGroupActionsUp = (groupUp: boolean): T.SetGroupActionsUp => ({
   type: TYPES.SET_GROUP_UP,
   payload: groupUp,
+});
+
+export const addElements = (
+  elements: LibraryElement<any>[],
+  parentId?: string,
+): T.AddElements => ({
+  type: TYPES.ADD_ELEMENTS,
+  payload: { elements, parentId },
+});
+
+export const removeElements = (elementIds: string[]): T.RemoveElements => ({
+  type: TYPES.REMOVE_ELEMENTS,
+  payload: elementIds,
 });
 
 export const saveElementToLibrary = <T extends Entity>(

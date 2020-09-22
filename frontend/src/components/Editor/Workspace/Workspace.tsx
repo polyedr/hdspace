@@ -12,20 +12,19 @@ import SortableContainer from '../SortableContainer/SortableContainer';
 import { Entity } from '../../../domain/core';
 import { LibraryElement, LibraryElementUnion } from '../../../api/types';
 import { getClassDevice } from '../../../utils/dom';
-import { findChildByID } from '../../../utils/ElementsTreeHelper';
 import { AppReduxState } from '../../../shared/types/app';
 import { DEFAULT_SCREEN_MODE } from '../../../constants/defaultParams';
-import { ActiveItem } from '../../../redux/project/types';
+import { StateElement } from '../../../redux/project/types';
 import {
   exportProject,
   resetScreenState,
   saveScreenImage,
-  setActiveItem,
+  setActiveElementId,
 } from '../../../redux/project/actions';
 import { changePrototypeMode } from '../../../redux/user/actions';
 import {
-  selectActiveItem,
-  selectRootElement,
+  selectActiveElement,
+  selectCurrentRootElement,
   selectCurrentScreenId,
 } from '../../../redux/project/selectors';
 
@@ -40,35 +39,35 @@ export type ScreenMode = {
 type StateProps = {
   elementsTree: LibraryElement<'root'>;
   isPrototypeMode: boolean;
-  activeItem: ActiveItem;
+  activeElement: StateElement;
 };
 
 const mapDispatch = {
   saveScreen: saveScreenImage,
   changePrototypeMode,
   resetScreenState,
-  setActiveItem,
+  setActiveItem: setActiveElementId,
   exportProject,
 };
 
 const mapState = (state: AppReduxState): StateProps => ({
-  elementsTree: selectRootElement(state),
-  activeItem: selectActiveItem(state),
+  elementsTree: selectCurrentRootElement(state),
+  activeElement: selectActiveElement(state),
   isPrototypeMode: state.user.isPrototypeMode,
 });
 
 type Props = StateProps & typeof mapDispatch;
 
-const Workspace = ({
+const Workspace: React.FC<Props> = ({
   elementsTree,
   isPrototypeMode,
-  activeItem,
+  activeElement,
   setActiveItem,
   saveScreen,
   changePrototypeMode,
   resetScreenState,
   exportProject,
-}: Props) => {
+}) => {
   const [isMoving, setIsMoving] = useState<boolean>(true);
   const [currentScreenMode, setCurrentScreenMode] = useState<ScreenMode>({
     ...DEFAULT_SCREEN_MODE,
@@ -91,8 +90,8 @@ const Workspace = ({
     parentId: number,
     item: LibraryElement<Entity>,
   ) => {
-    const { id: itemId, type, name } = item;
-    setActiveItem({ itemId, itemType: parentId === -1 ? 'root' : type, name });
+    const { id: itemId } = item;
+    setActiveItem(itemId);
   };
 
   const handleRootClick = useCallback(
@@ -111,27 +110,13 @@ const Workspace = ({
 
       const itemID = target.dataset.lsId;
 
-      if (itemID === activeItem.itemId) return;
+      if (itemID === activeElement.id) return;
 
       if (itemID) {
-        if (itemID === 'root') {
-          setActiveItem({
-            itemId: elementsTree.id,
-            itemType: 'root',
-            name: 'Root',
-          });
-        } else {
-          const actualActiveItem = findChildByID(elementsTree, itemID);
-
-          if (actualActiveItem) {
-            const { type, name } = actualActiveItem;
-
-            setActiveItem({ itemId: itemID, itemType: type, name });
-          }
-        }
+        setActiveItem(elementsTree.id);
       }
     },
-    [activeItem, elementsTree, findChildByID],
+    [activeElement, elementsTree],
   );
 
   const handleLSItemMouseOver = useCallback(

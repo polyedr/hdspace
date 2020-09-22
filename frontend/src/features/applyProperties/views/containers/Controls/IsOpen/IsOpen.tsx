@@ -8,14 +8,14 @@ import {
   PropertiesChangeProps,
   withConfigurableProperties,
 } from '../../../../../../utils/withConfigurableProperties';
-import { selectActiveItemParams } from '../../../../../../redux/project/selectors';
+import { selectActiveElementParams } from '../../../../../../redux/project/selectors';
 
 type StateProps = {
   isOpen: boolean;
 };
 
 function mapState(state: AppReduxState): StateProps {
-  const activeItemParams = selectActiveItemParams<DropdownElement>(state);
+  const activeItemParams = selectActiveElementParams(state);
 
   return {
     isOpen: activeItemParams.isOpen,

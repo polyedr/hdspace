@@ -9,8 +9,10 @@ import { BorderedItem } from '../Border';
 
 import { saveElementToLibrary } from '../../../../redux/project/actions';
 import { LibraryElement, SectionServerElement } from '../../../../api/types';
-import { Entity } from '../../../../domain/core';
-import { selectActiveItemElement } from '../../../../redux/project/selectors';
+import {
+  selectActiveElementId,
+  selectElementAsTree,
+} from '../../../../redux/project/selectors';
 
 const styles = require('./SaveElementAction.scss');
 
@@ -19,7 +21,8 @@ type SaveElementAction = {
 };
 
 const SaveElementAction: React.FC<SaveElementAction> = ({ item }) => {
-  const activeElement = useSelector(selectActiveItemElement);
+  const activeElementId = useSelector(selectActiveElementId);
+  const activeElement = useSelector(selectElementAsTree(activeElementId));
   const inputRef = React.createRef<HTMLInputElement>();
   const dispatch = useDispatch();
 
@@ -28,7 +31,7 @@ const SaveElementAction: React.FC<SaveElementAction> = ({ item }) => {
   }
 
   const convertElementToSection = (
-    activeElement: LibraryElement<Entity, LibraryElement<Entity>[]>,
+    element: LibraryElement<any>,
   ): SectionServerElement => {
     const {
       name,
@@ -38,7 +41,8 @@ const SaveElementAction: React.FC<SaveElementAction> = ({ item }) => {
       styles,
       parameters,
       children,
-    } = activeElement;
+    } = element;
+
     return {
       name,
       buoyancy,

@@ -4,7 +4,7 @@ import ControlTitle from '../../../components/ControlTitle/ControlTitle';
 import TYPE from './constants';
 import { DropDown } from '../../../../../../components/UI/DropDown';
 import { AppReduxState } from '../../../../../../shared/types/app';
-import { selectActiveItemParams } from '../../../../../../redux/project/selectors';
+import { selectActiveElementParams } from '../../../../../../redux/project/selectors';
 import sharedClasses from '../../../../../../styles/sharedClasses';
 import {
   PropertiesChangeProps,
@@ -19,7 +19,7 @@ type StateProps = {
 };
 
 function mapState(state: AppReduxState): StateProps {
-  const activeItemParams = selectActiveItemParams<TextinputElement>(state);
+  const activeItemParams = selectActiveElementParams(state);
 
   return {
     type: activeItemParams.type,

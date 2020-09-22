@@ -8,12 +8,10 @@ import ControlSection from '../../components/ControlSection/ControlSection';
 import Button from '../../../../../components/UI/Button';
 import { AppReduxState } from '../../../../../shared/types/app';
 import {
-  selectActiveItem,
+  selectActiveElement,
   selectCurrentProject,
   selectCurrentScreenId,
-  selectRootElement,
 } from '../../../../../redux/project/selectors';
-import { findChildByID } from '../../../../../utils/ElementsTreeHelper';
 import {
   addElementClassName,
   copyElementStyles,
@@ -48,9 +46,7 @@ const useStyles = makeStyles({
 });
 
 const mapState = (state: AppReduxState) => {
-  const activeItem = selectActiveItem(state);
-  const root = selectRootElement(state);
-  const activeElement = findChildByID(root, activeItem.itemId);
+  const activeElement = selectActiveElement(state);
   const project = selectCurrentProject(state);
 
   const sharedClasses = project.projectData.classes.filter(
@@ -88,6 +84,7 @@ const ShareStyles: React.FC<Props> = ({
 
   const handleCopyButtonClick = () =>
     activeElement &&
+    activeElement.type !== 'none' &&
     copyStyles(
       activeElement.type,
       activeElement.id,
@@ -167,7 +164,7 @@ const ShareStyles: React.FC<Props> = ({
               />
             ))
           ) : (
-            <p>No element&apos;s classes</p>
+            <p>No elementId&apos;s classes</p>
           )}
         </>
       </ControlSection>

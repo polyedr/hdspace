@@ -32,7 +32,7 @@ const userPersistConfig: PersistConfig = {
 /* const projectPersistConfig: PersistConfig = {
   key: 'project',
   whitelist: ['currentProjectId', 'scenarios'],
-  blacklist: ['projectList', 'currentScreenId'],
+  blacklist: ['projects', 'currentScreenId'],
   storage,
 }; */
 
