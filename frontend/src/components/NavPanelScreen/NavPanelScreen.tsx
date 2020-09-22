@@ -7,7 +7,6 @@ import Button from '../UI/Button';
 import Icon from '../UI/Icon';
 import Scrollbar from '../UI/Scrollbar';
 import ScreenButton from './ScreenButton';
-import { EditorProps } from '../../containers/EditorLogic';
 import { selectScreens } from '../../redux/project/selectors';
 import { selectIsLeftPanelMinimized } from '../../redux/user/selectors';
 
@@ -15,7 +14,7 @@ const styles = require('./NavPanelScreen.scss');
 
 type Props = {
   screenID?: number;
-  isNavPanelMinimized: EditorProps['isNavPanelMinimized'];
+  isNavPanelMinimized: boolean;
   onMinimizerNavPanel(): void;
   projectID: number;
   getProject: typeof Actions.getProject;

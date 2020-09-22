@@ -1,9 +1,10 @@
 import React, { memo, useState, useEffect } from 'react';
-import { Prompt } from 'react-router';
 import cn from 'classnames';
-import * as Actions from '../../redux/project/actions';
+import { useDispatch, useSelector } from 'react-redux';
 import Workspace from './Workspace/Workspace';
-import { EditorProps } from '../../containers/EditorLogic';
+import { selectIsNavPanelMinimized } from '../../redux/user/selectors';
+import { selectCurrentScreenId } from '../../redux/project/selectors';
+import { resetScreenState } from '../../redux/project/actions';
 
 const styles = require('./Editor.scss');
 
@@ -13,28 +14,22 @@ export interface IScreenMode {
   isMobileMode: boolean;
 }
 
-export interface IEditProps {
-  screen: EditorProps['currentScreen'];
-  isNavPanelMinimized: EditorProps['isNavPanelMinimized'];
-  resetScreenState: typeof Actions.resetScreenState;
-}
+const Editor: React.FC = () => {
+  const dispatch = useDispatch();
+  const isNavPanelMinimized = useSelector(selectIsNavPanelMinimized);
+  const currentScreenId = useSelector(selectCurrentScreenId);
 
-const Editor: React.FC<IEditProps> = ({
-  screen,
-  isNavPanelMinimized,
-  resetScreenState,
-}) => {
   const [screenId, setScreenId] = useState<number>(-1);
 
   useEffect(() => {
-    if (screen.id !== screenId) {
-      setScreenId(screen.id);
+    if (currentScreenId !== screenId) {
+      setScreenId(currentScreenId);
     }
-  }, [screen.id]);
+  }, [currentScreenId]);
 
   useEffect(
     () => () => {
-      resetScreenState();
+      dispatch(resetScreenState());
     },
     [],
   );
@@ -47,10 +42,6 @@ const Editor: React.FC<IEditProps> = ({
       )}
     >
       <Workspace />
-      <Prompt
-        when={false}
-        message="You have unsaved changes, are you sure you want to leave?"
-      />
     </div>
   );
 };
