@@ -171,7 +171,10 @@ const Navigator: React.FC = () => {
     const newParent = items[destination.parentId];
 
     if (destination.index === undefined) {
-      destination.index = newParent.children.length;
+      destination.index =
+        newParent.id === oldParent.id
+          ? newParent.children.length - 1
+          : newParent.children.length;
     }
 
     const childId = oldParent.children[source.index];
@@ -186,6 +189,11 @@ const Navigator: React.FC = () => {
     }
     if (!canElementBeAdded(elements, newParent.id as string, child.data.type)) {
       dispatch(setNotification(DISALLOW_ADD_ELEMENT_NOTIFICATION_TEXT));
+      setIsDragging(false);
+      return;
+    }
+
+    if (newParent.id === oldParent.id && source.index === destination.index) {
       setIsDragging(false);
       return;
     }
