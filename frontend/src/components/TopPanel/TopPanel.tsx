@@ -7,19 +7,22 @@ import Avatar from '@material-ui/core/Avatar';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Divider from '@material-ui/core/Divider';
+import Tooltip from '@material-ui/core/Tooltip';
 import * as Actions from '../../redux/project/actions';
-import { LeftPanelProps } from '../LeftPanel/LeftPanel';
 import Button from '../UI/Button';
 import Icon from '../UI/Icon';
 import Modal from '../UI/Modal';
-import { EditorProps } from '../../containers/EditorLogic';
 import { selectCurrentProject } from '../../redux/project/selectors';
 import { AppReduxState } from '../../shared/types/app';
-import { selectUserData } from '../../redux/user/selectors';
+import {
+  selectIsLeftPanelMinimized,
+  selectUserData,
+} from '../../redux/user/selectors';
 import { IMAGES } from '../../constants/images';
 import { PATH_NAMES } from '../../constants/pathNames';
-import { logout } from '../../redux/user/actions';
+import { changeMinLPanel, logout } from '../../redux/user/actions';
 import { openSignScreen } from '../../utils/history';
+import { Project } from '../../api/types';
 
 const styles = require('./TopPanel.scss');
 
@@ -31,24 +34,21 @@ const mapDispatchToProps = {
   renameProject: Actions.renameProject,
 };
 
-type TTopPanelProps = ReturnType<typeof mapStateToProps> &
+type Props = ReturnType<typeof mapStateToProps> &
   typeof mapDispatchToProps & {
-    pathname: string;
-    isLPanelMinimized: LeftPanelProps['isLPanelMinimized'];
-    project: EditorProps['currentProject'];
-    onMinimiserLPanel(): void;
-    renameProject: typeof Actions.renameProject;
+    project: Project;
   };
 
-const TopPanel: React.FunctionComponent<TTopPanelProps> = ({
+const TopPanel: React.FC<Props> = ({
   project = { name: '', id: -1 },
-  pathname,
-  isLPanelMinimized,
-  onMinimiserLPanel,
   renameProject,
 }) => {
   const dispatch = useDispatch();
   const { avatar, username } = useSelector(selectUserData);
+  const pathname = useSelector(
+    (state: AppReduxState) => state.router.location.pathname,
+  );
+  const isLPanelMinimized = useSelector(selectIsLeftPanelMinimized);
 
   const [newProjectName, setNewProjectName] = useState('');
   const [modalRenameProjectOpen, setModalRenameProjectOpen] = useState(false);
@@ -63,6 +63,8 @@ const TopPanel: React.FunctionComponent<TTopPanelProps> = ({
     dispatch(logout());
     openSignScreen('signin');
   };
+
+  const toggleLeftPanel = () => dispatch(changeMinLPanel());
 
   const closeModal = useCallback(() => {
     setNewProjectName(project.name);
@@ -98,7 +100,7 @@ const TopPanel: React.FunctionComponent<TTopPanelProps> = ({
         <Button
           className={styles.topPanelBtn}
           styleType="confirm"
-          onClick={onMinimiserLPanel}
+          onClick={toggleLeftPanel}
         >
           <Icon icon="menu" size={20} />
         </Button>
@@ -119,9 +121,11 @@ const TopPanel: React.FunctionComponent<TTopPanelProps> = ({
       )}
 
       <div className={styles.topPanelRightBlock}>
-        <IconButton size="small" onClick={handleAvatarClick}>
-          <Avatar alt={username} src={avatar || IMAGES.prof} />
-        </IconButton>
+        <Tooltip title={username} arrow enterDelay={500}>
+          <IconButton size="small" onClick={handleAvatarClick}>
+            <Avatar alt={username} src={avatar || IMAGES.prof} />
+          </IconButton>
+        </Tooltip>
 
         <Menu
           open={Boolean(menuAnchorEl)}
