@@ -120,9 +120,7 @@ export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
   yield put(Actions.clearAfterPrevScreen());
   const { projectID, name, buoyancy, skip } = payload;
 
-  const screens: ReturnType<typeof selectors.selectScreens> = yield select(
-    selectors.selectScreens,
-  );
+  const screens: Screen[] = yield select(selectors.selectScreens);
   const numberedName = generateUniqueName(
     name,
     screens.map((screen) => screen.name),
@@ -139,11 +137,8 @@ export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
     styles_root: {},
   };
 
-  const createdScreen: ReturnPromisedType<typeof apiAddScreen> = yield call(
-    reqWrapper,
-    apiAddScreen,
-    { data },
-  );
+  const createdScreen: Screen = yield call(reqWrapper, apiAddScreen, { data });
+
   if (!createdScreen) {
     console.error(`Error while creating new screen for project ${projectID}`);
     return;
@@ -170,6 +165,8 @@ export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
     apiAddElements,
     { data: [rootElement] },
   );
+
+  yield put(addElements([createdRootElement]));
 
   const rootScenarioWithRootElement = {
     ...rootScenario,
@@ -210,8 +207,6 @@ export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
   yield put(setScreens([...screens, updatedScreen]));
 
   yield put(setCurrentScreenId(screen.id));
-
-  yield put(addElements([createdRootElement]));
 
   const state: Map<StateElement> = yield select(selectAllElements);
   yield put(
