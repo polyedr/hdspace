@@ -180,6 +180,7 @@ export const getRightPanelCategoryTabs = (
       };
     case 'subscribeForm':
     case 'cardsSection':
+    case 'featureSection':
       return {
         library: {
           ...obj.library,
@@ -202,7 +203,6 @@ export const getRightPanelCategoryTabs = (
         },
       };
     case 'screenshot':
-    case 'featureSection':
       return {
         templates: {
           ...(obj.templates || {}),

@@ -20,7 +20,7 @@ export const apiGetElements = ({
       scenariosIDs.length ? `/?scenariosIds=${scenariosIDs.join(',')}` : '/'
     }`,
   })
-    .then(parseResult)
+    .then((res) => parseResult(res).results)
     .catch(onError);
 
 export const apiAddElement = <
