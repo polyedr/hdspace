@@ -32,7 +32,6 @@ const DraggableItem: React.FC<DraggableItemProps> = ({ item, parent }) => {
   const dropTarget = useMemo(() => {
     if (
       !!parent &&
-      parent.id !== rootID &&
       (!item.parameters.group ||
         !CONTAINER_GROUPS.includes(item.parameters.group))
     ) {
@@ -49,6 +48,7 @@ const DraggableItem: React.FC<DraggableItemProps> = ({ item, parent }) => {
     } as SyntheticItem,
     canDrag: () => item.id !== rootID,
   });
+
   const [, drop] = useDrop({
     accept: [ItemType.ELEMENT, ItemType.CONSTRUCTOR],
     drop: (draggedItem: SyntheticItem, monitor: DropTargetMonitor) => {
@@ -61,17 +61,10 @@ const DraggableItem: React.FC<DraggableItemProps> = ({ item, parent }) => {
         return; // drop into same position
       }
 
-      let newIndex = 0;
-      if (
-        draggedItem.parent?.id === dropTarget.id ||
-        item.id !== dropTarget.id
-      ) {
-        // put on the place of the drop target
-        newIndex = item.buoyancy;
-      } else {
-        // put as the last element in the list
-        newIndex = (dropTarget.children as LibraryElementUnion[]).length;
-      }
+      const newIndex =
+        dropTarget.id === item.id
+          ? (dropTarget.children as LibraryElementUnion[]).length
+          : item.buoyancy;
       dispatch(
         moveElement(
           {
@@ -85,6 +78,9 @@ const DraggableItem: React.FC<DraggableItemProps> = ({ item, parent }) => {
         ),
       );
     },
+    collect: (monitor: DropTargetMonitor) => ({
+      isOver: monitor.isOver({ shallow: true }),
+    }),
   });
   const ElementRenderer = RENDERERS[item.type];
 

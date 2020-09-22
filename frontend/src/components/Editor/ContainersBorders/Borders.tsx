@@ -9,6 +9,7 @@ import {
 } from '../../../redux/project/selectors';
 import SaveElementAction from './actions/SaveElementAction';
 import BorderCrumb from './BorderCrumb';
+import { findParentByChildID } from '../../../utils/ElementsTreeHelper';
 
 const styles = require('./Borders.scss');
 
@@ -34,6 +35,7 @@ const Borders: React.FC = () => {
 
   const [borderedItems, setBorderedItems] = useState([] as BorderedItem[]);
   const rootElement = document.getElementById('root');
+  const activeItemParent = findParentByChildID(root, activeItem.itemId);
 
   const getBorderDomProps = (
     rootElement: HTMLElement,
@@ -104,7 +106,7 @@ const Borders: React.FC = () => {
       };
     });
     setBorderedItems(newBorderedItems);
-  }, [root, rootElement, activeItem, showBorders]);
+  }, [root, rootElement, activeItem, showBorders, activeItemParent]);
 
   return (
     <div className={styles.wrapper}>

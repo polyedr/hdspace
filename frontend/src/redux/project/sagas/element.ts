@@ -155,6 +155,14 @@ export function* moveElementSaga(
 
   yield put(Actions.setGroupActionsUp(isRemote));
 
+  yield put(
+    Actions.setActiveItem({
+      itemId: elementToMove.id,
+      itemType: elementToMove.type,
+      name: elementToMove.name,
+    }),
+  );
+
   const updatedParent = findChildByID(updatedTree, parentID);
 
   if (!updatedParent) {
