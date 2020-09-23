@@ -38,7 +38,7 @@ const EditorWindow: React.FC = () => {
             <Route path={PATH_NAMES.projects} component={ProjectsLogic} />
 
             <Route
-              path="/project/:projectID/:screenID?"
+              path="/project/:projectId/:screenId?"
               component={EditorLogic}
             />
 

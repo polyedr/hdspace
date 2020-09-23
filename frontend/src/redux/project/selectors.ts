@@ -28,7 +28,7 @@ export const selectProjectById = (projectId: number) => ({
 export const selectScreenRootElement = (screenId: number) => ({
   project,
 }: AppReduxState) => {
-  const rootId = project.data.screens[screenId].element;
+  const rootId = project.data.screens[screenId]?.element;
 
   return buildElementsTree(project.data.elements, rootId) || DEFAULT_ROOT;
 };

@@ -1,14 +1,20 @@
-import React, { useCallback, memo, useEffect } from 'react';
+import React, { useCallback, memo } from 'react';
 import classNames from 'classnames';
 import Sortable from 'react-sortablejs'; // maybe replace it with react-sortablejs-typescript?
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import * as Actions from '../../redux/project/actions';
 import Button from '../UI/Button';
 import Icon from '../UI/Icon';
 import Scrollbar from '../UI/Scrollbar';
 import ScreenButton from './ScreenButton';
-import { selectScreens } from '../../redux/project/selectors';
-import { selectIsLeftPanelMinimized } from '../../redux/user/selectors';
+import {
+  selectCurrentProjectId,
+  selectScreens,
+} from '../../redux/project/selectors';
+import {
+  selectIsLeftPanelMinimized,
+  selectIsNavPanelMinimized,
+} from '../../redux/user/selectors';
 
 const styles = require('./NavPanelScreen.scss');
 
@@ -22,22 +28,20 @@ type Props = {
   addScreen: typeof Actions.addScreen;
 };
 
-const NavPanelScreen: React.FunctionComponent<Props> = ({
-  isNavPanelMinimized,
-  onMinimizerNavPanel,
-  projectID,
-  screenID,
-  getProject,
-  changeScreensOrder,
-  addScreen,
-}) => {
+const NavPanelScreen: React.FunctionComponent = () => {
+  const dispatch = useDispatch();
+  const isNavPanelMinimized = useSelector(selectIsNavPanelMinimized);
+  const onMinimizerNavPanel = () => {};
+  const projectID = useSelector(selectCurrentProjectId);
+  const changeScreensOrder = (some) => dispatch(changeScreensOrder(some));
+  const addScreen = (a, b, c) => dispatch(addScreen(a, b, c));
   const screens = useSelector(selectScreens);
   const isLeftPanelMinimized = useSelector(selectIsLeftPanelMinimized);
 
-  useEffect(() => {
+  /* useEffect(() => {
     getProject(projectID, screenID);
   }, [projectID, getProject]);
-
+*/
   const handleScreenAdd = useCallback(() => {
     addScreen(projectID, `Screen 1`, screens.length);
   }, [projectID, screens]);

@@ -8,7 +8,7 @@ import {
   selectScreenLoader,
 } from '../redux/project/selectors';
 import { RightPanel } from '../features/applyProperties/views/containers';
-import { getProject } from '../redux/project/actions';
+import { activateScreen, getProject } from '../redux/project/actions';
 import { selectIsPrototypeMode } from '../redux/user/selectors';
 
 const styles = require('../styles/global.scss');
@@ -21,8 +21,8 @@ export interface IMatch<P> {
 }
 
 interface MatchParams {
-  projectID: number;
-  screenID?: number;
+  projectId: number;
+  screenId?: number;
 }
 
 type Props = {
@@ -31,7 +31,7 @@ type Props = {
 
 const EditorLogic: React.FC<Props> = ({
   match: {
-    params: { projectID, screenID },
+    params: { projectId, screenId },
   },
 }) => {
   const dispatch = useDispatch();
@@ -41,8 +41,14 @@ const EditorLogic: React.FC<Props> = ({
   const projectLoader = useSelector(selectProjectLoader);
 
   useEffect(() => {
-    dispatch(getProject(projectID, screenID));
-  }, [projectID]);
+    dispatch(getProject(projectId, screenId));
+  }, [projectId]);
+
+  useEffect(() => {
+    if (screenId) {
+      dispatch(activateScreen(screenId));
+    }
+  }, [screenId]);
 
   return (
     <div className={styles.editorLogic}>
