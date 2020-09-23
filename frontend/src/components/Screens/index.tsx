@@ -2,6 +2,9 @@ import List from '@material-ui/core/List';
 import React from 'react';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { useDispatch, useSelector } from 'react-redux';
+import IconButton from '@material-ui/core/IconButton';
+import AddIcon from '@material-ui/icons/Add';
+import { darken, lighten } from '@material-ui/core';
 import {
   selectCurrentProjectId,
   selectScreens,
@@ -15,14 +18,20 @@ const useStyles = makeStyles({
     fontWeight: 'normal',
   },
   header: {
-    padding: '.8em',
+    padding: '.7em',
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    borderBottom: '1px solid #8f8f8f',
+    borderBottom: '1px solid',
+    borderBottomColor: lighten('#2f4050', 0.1),
+    backgroundColor: darken('#2f4050', 0.1),
+    fontWeight: 600,
   },
   button: {
-    color: '#000',
+    color: '#eee',
+    '&:hover': {
+      backgroundColor: lighten('#2f4050', 0.1),
+    },
   },
   list: {
     padding: 0,
@@ -44,13 +53,15 @@ const Screens = () => {
     <div className={classes.root}>
       <div className={classes.header}>
         <span>Screens</span>
-        <button
+
+        <IconButton
+          title="Add Screen"
+          size="small"
           onClick={handleAddScreen}
-          type="button"
           className={classes.button}
         >
-          +
-        </button>
+          <AddIcon />
+        </IconButton>
       </div>
 
       <List className={classes.list}>

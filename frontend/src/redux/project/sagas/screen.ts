@@ -46,7 +46,6 @@ import {
   LibraryElementUnion,
   Project,
 } from '../../../api/types';
-import { ReturnPromisedType } from '../../../shared/types';
 import generateUniqueName from '../../../utils/generateUniqueName';
 import {
   apiSaveScenarios,
@@ -385,11 +384,6 @@ export function* renameScreenSaga({
   payload,
 }: ReturnType<typeof renameScreen>) {
   const { screenID, name } = payload;
-  const targetScreen: ReturnPromisedType<typeof apiGetScreen> = yield call(
-    reqWrapper,
-    apiGetScreen,
-    { id: screenID },
-  );
 
   const screens: ReturnType<typeof selectors.selectScreens> = yield select(
     selectors.selectScreens,
@@ -400,8 +394,7 @@ export function* renameScreenSaga({
     screens.map((screen) => screen.name),
   );
 
-  const renamedScreen: Screen = {
-    ...targetScreen,
+  const renamedScreen: Partial<Screen> = {
     name: numberedName,
   };
 
