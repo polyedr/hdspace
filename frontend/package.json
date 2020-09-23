@@ -131,6 +131,7 @@
     "ramda": "^0.26.1",
     "react": "^16.13.1",
     "react-addons-css-transition-group": "^15.6.2",
+    "react-beautiful-dnd": "^13.0.0",
     "react-calendar": "^2.19.2",
     "react-clock": "^2.4.0",
     "react-color": "^2.18.1",

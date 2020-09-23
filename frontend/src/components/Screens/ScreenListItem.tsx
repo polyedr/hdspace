@@ -1,3 +1,4 @@
+import { Draggable } from 'react-beautiful-dnd';
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import makeStyles from '@material-ui/core/styles/makeStyles';
@@ -48,9 +49,10 @@ const useStyles = makeStyles({
 
 type Props = {
   screen: Screen;
+  index: number;
 };
 
-const ScreenListItem: React.FC<Props> = ({ screen }) => {
+const ScreenListItem: React.FC<Props> = ({ screen, index }) => {
   const dispatch = useDispatch();
   const { name, project, id, image } = screen;
   const classes = useStyles();
@@ -69,72 +71,80 @@ const ScreenListItem: React.FC<Props> = ({ screen }) => {
   };
 
   return (
-    <>
-      <ListItem
-        button
-        component={NavLink}
-        to={`/project/${project}/${id}`}
-        activeClassName={classes.active}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-        className={classes.listItem}
-      >
-        <div className={classes.screenData}>
-          <ListItemIcon className={classes.icon}>
-            <ScreenLogo image={image} />
-          </ListItemIcon>
+    <Draggable draggableId={screen.id.toString()} index={index}>
+      {(provided) => (
+        <div
+          {...provided.draggableProps}
+          {...provided.dragHandleProps}
+          ref={provided.innerRef}
+        >
+          <ListItem
+            button
+            component={NavLink}
+            to={`/project/${project}/${id}`}
+            activeClassName={classes.active}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+            className={classes.listItem}
+          >
+            <div className={classes.screenData}>
+              <ListItemIcon className={classes.icon}>
+                <ScreenLogo image={image} />
+              </ListItemIcon>
 
-          <span>{name}</span>
+              <span>{name}</span>
+            </div>
+
+            {/* it's a bad practice to place interactive elements into anchor, but the app design is going to change soon */}
+            <ScreenControls
+              show={show}
+              screen={screen}
+              openEdit={openEdit}
+              closeEdit={closeEdit}
+            />
+          </ListItem>
+
+          <Dialog open={edit} onClose={closeEdit}>
+            <Form
+              onSubmit={handleSubmit}
+              render={({ handleSubmit }) => (
+                <form onSubmit={handleSubmit}>
+                  <DialogTitle>Rename Screen</DialogTitle>
+
+                  <DialogContent>
+                    <DialogContentText>
+                      Enter screen&apos;s new name
+                    </DialogContentText>
+
+                    <Field name="name" initialValue={name}>
+                      {({ input }) => (
+                        <TextField
+                          autoFocus
+                          margin="dense"
+                          type="text"
+                          fullWidth
+                          {...input}
+                        />
+                      )}
+                    </Field>
+                  </DialogContent>
+
+                  <DialogActions>
+                    <Button onClick={closeEdit} color="primary">
+                      Cancel
+                    </Button>
+
+                    <Button type="submit" color="primary">
+                      Confirm
+                    </Button>
+                  </DialogActions>
+                </form>
+              )}
+            />
+          </Dialog>
         </div>
-
-        {/* it's a bad practice to place interactive elements into anchor, but the app design is going to change soon */}
-        <ScreenControls
-          show={show}
-          screen={screen}
-          openEdit={openEdit}
-          closeEdit={closeEdit}
-        />
-      </ListItem>
-
-      <Dialog open={edit} onClose={closeEdit}>
-        <Form
-          onSubmit={handleSubmit}
-          render={({ handleSubmit }) => (
-            <form onSubmit={handleSubmit}>
-              <DialogTitle>Rename Screen</DialogTitle>
-
-              <DialogContent>
-                <DialogContentText>
-                  Enter screen&apos;s new name
-                </DialogContentText>
-
-                <Field name="name" initialValue={name}>
-                  {({ input }) => (
-                    <TextField
-                      autoFocus
-                      margin="dense"
-                      type="text"
-                      fullWidth
-                      {...input}
-                    />
-                  )}
-                </Field>
-              </DialogContent>
-
-              <DialogActions>
-                <Button onClick={closeEdit} color="primary">
-                  Cancel
-                </Button>
-
-                <Button type="submit" color="primary">
-                  Confirm
-                </Button>
-              </DialogActions>
-            </form>
-          )}
-        />
-      </Dialog>
-    </>
+      )}
+    </Draggable>
   );
 };
 

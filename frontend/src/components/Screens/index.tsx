@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
 import { darken, lighten } from '@material-ui/core';
+import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import {
   selectCurrentProjectId,
   selectScreens,
@@ -64,11 +65,22 @@ const Screens = () => {
         </IconButton>
       </div>
 
-      <List className={classes.list}>
-        {screens.map((screen) => (
-          <ScreenListItem key={screen.id} screen={screen} />
-        ))}
-      </List>
+      <DragDropContext onDragEnd={() => {}}>
+        <Droppable droppableId="droppable">
+          {(provided) => (
+            <List
+              className={classes.list}
+              innerRef={provided.innerRef}
+              {...provided.droppableProps}
+            >
+              {screens.map((screen, i) => (
+                <ScreenListItem key={screen.id} screen={screen} index={i} />
+              ))}
+              {provided.placeholder}
+            </List>
+          )}
+        </Droppable>
+      </DragDropContext>
     </div>
   );
 };
