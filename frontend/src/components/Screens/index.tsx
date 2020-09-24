@@ -10,12 +10,14 @@ import MuiAccordion from '@material-ui/core/Accordion';
 import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
 import MuiAccordionDetails from '@material-ui/core/AccordionDetails';
 import withStyles from '@material-ui/core/styles/withStyles';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ScreenListItem from './ScreenListItem';
 import { addScreen, changeScreensOrder } from '../../redux/project/actions';
 import {
   selectCurrentProjectId,
   selectScreens,
 } from '../../redux/project/selectors';
+import { Scrollbar } from '../UI';
 
 const useStyles = makeStyles({
   button: {
@@ -44,11 +46,15 @@ const Accordion = withStyles({
 
 const AccordionSummary = withStyles({
   root: {
-    padding: 0,
+    paddingLeft: 0,
     minHeight: 0,
     '&$expanded': {
       minHeight: 0,
     },
+    borderBottom: '1px solid',
+    borderBottomColor: lighten('#2f4050', 0.1),
+    backgroundColor: darken('#2f4050', 0.1),
+    fontWeight: 600,
   },
   content: {
     margin: 0,
@@ -56,16 +62,16 @@ const AccordionSummary = withStyles({
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    borderBottom: '1px solid',
-    borderBottomColor: lighten('#2f4050', 0.1),
-    backgroundColor: darken('#2f4050', 0.1),
-    fontWeight: 600,
     '&$expanded': {
       margin: 0,
     },
   },
   expanded: {
     minHeight: 0,
+  },
+  expandIcon: {
+    padding: '.5em',
+    color: '#eee',
   },
 })(MuiAccordionSummary);
 
@@ -98,7 +104,7 @@ const Screens = () => {
 
   return (
     <Accordion>
-      <AccordionSummary>
+      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
         <span>Screens</span>
 
         <IconButton
@@ -115,16 +121,18 @@ const Screens = () => {
         <Droppable droppableId="droppable">
           {(provided) => (
             <AccordionDetails>
-              <List
-                className={classes.list}
-                innerRef={provided.innerRef}
-                {...provided.droppableProps}
-              >
-                {screens.map((screen, i) => (
-                  <ScreenListItem key={screen.id} screen={screen} index={i} />
-                ))}
-                {provided.placeholder}
-              </List>
+              <Scrollbar maxHeight={200}>
+                <List
+                  className={classes.list}
+                  innerRef={provided.innerRef}
+                  {...provided.droppableProps}
+                >
+                  {screens.map((screen, i) => (
+                    <ScreenListItem key={screen.id} screen={screen} index={i} />
+                  ))}
+                  {provided.placeholder}
+                </List>
+              </Scrollbar>
             </AccordionDetails>
           )}
         </Droppable>
