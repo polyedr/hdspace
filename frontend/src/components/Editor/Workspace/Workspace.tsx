@@ -57,27 +57,32 @@ const Workspace: React.FC<any> = () => {
     [],
   );
 
-  const handleRootClick = useCallback((event: React.MouseEvent) => {
-    const target = (event.nativeEvent.target as HTMLElement)?.closest(
-      '[data-ls-id]',
-    ) as HTMLElement;
-    if (!target) return;
+  const handleRootClick = useCallback(
+    (event: React.MouseEvent) => {
+      const target = (event.nativeEvent.target as HTMLElement)?.closest(
+        '[data-ls-id]',
+      ) as HTMLElement;
+      if (!target) return;
 
-    const currentActiveElement = (document.activeElement as HTMLElement)?.closest(
-      '[data-ls-id]',
-    );
-    const mouseUpTriggeredClick = currentActiveElement !== target;
+      const currentActiveElement = (document.activeElement as HTMLElement)?.closest(
+        '[data-ls-id]',
+      );
+      const mouseUpTriggeredClick = currentActiveElement !== target;
 
-    if (mouseUpTriggeredClick) return;
+      if (mouseUpTriggeredClick) return;
 
-    const elementId = target.dataset.lsId;
+      const elementId = target.dataset.lsId;
 
-    if (elementId === activeElementId) return;
+      if (elementId === activeElementId) return;
 
-    if (elementId) {
-      dispatch(setActiveElement(elementId));
-    }
-  }, []);
+      if (elementId) {
+        dispatch(
+          setActiveElement(elementId === 'root' ? rootElementId : elementId),
+        );
+      }
+    },
+    [rootElementId],
+  );
 
   const handleSaveScreen = () => {
     const screenBody = document.getElementById('root');
@@ -96,6 +101,7 @@ const Workspace: React.FC<any> = () => {
     }
   };
 
+  console.log('GET DATA!!', rootElementId);
   return (
     <div className={cn(styles.editorWorkspace)}>
       {!isPrototypeMode && <HotKeys />}
