@@ -13,7 +13,8 @@ export const initialUi: T.ProjectUiState = {
   savedElementsValues: {},
   showContainersBorders: false,
   customLibraryElements: {},
-  borderedItemsRect: {},
+  borderedElementsRect: {},
+  currentDropTargetId: null,
 };
 
 export const initialEdit: T.ProjectEditState = {

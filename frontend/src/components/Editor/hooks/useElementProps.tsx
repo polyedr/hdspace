@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { LibraryElementUnion, ProjectClass } from '../../../api/types';
+import { ProjectClass } from '../../../api/types';
 import { SharedRendererProps } from '../../UI/RenderElements/types';
 import { convertPropCSS } from '../../../utils/StyleHelper';
 import { findParentByChildID } from '../../../utils/ElementsTreeHelper';
@@ -10,6 +10,7 @@ import {
   selectCurrentProject,
   selectCurrentRootElement,
   selectCurrentRootId,
+  selectElementById,
   selectSavedElementsValues,
   selectScreenLoader,
   selectShowingBorders,
@@ -21,6 +22,7 @@ import {
   LIBRARY_ELEMENTS,
 } from '../../../domain/libraryElements/libraryElements';
 import { ElementEntity } from '../../../domain/core';
+import { AppReduxState } from '../../../shared/types/app';
 
 const isElementStructType = (type: string): type is ElementEntity => {
   return type in LIBRARY_ELEMENTS;
@@ -37,16 +39,29 @@ export type ElementProps = {
   projectClasses?: ProjectClass[];
 } & Omit<SharedRendererProps, 'children'>;
 
-const useElementProps = (item: LibraryElementUnion): ElementProps | null => {
-  const { id, type, styles, children } = item;
-  const root = useSelector(selectCurrentRootElement);
-  const rootID = useSelector(selectCurrentRootId);
-  const savedElements = useSelector(selectSavedElementsValues);
-  const disableInteractions = useSelector(selectIsPrototypeMode);
-  const activeElement = useSelector(selectActiveElement);
-  const showBorders = useSelector(selectShowingBorders);
-  const screenLoader = useSelector(selectScreenLoader);
-  const currentProject = useSelector(selectCurrentProject);
+const useElementProps = (elementId: string): ElementProps | null => {
+  const {
+    element,
+    root,
+    rootID,
+    savedElements,
+    disableInteractions,
+    activeElement,
+    showBorders,
+    screenLoader,
+    currentProject,
+  } = useSelector((state: AppReduxState) => ({
+    element: selectElementById(elementId)(state),
+    root: selectCurrentRootElement(state),
+    rootID: selectCurrentRootId(state),
+    savedElements: selectSavedElementsValues(state),
+    disableInteractions: selectIsPrototypeMode(state),
+    activeElement: selectActiveElement(state),
+    showBorders: selectShowingBorders(state),
+    screenLoader: selectScreenLoader(state),
+    currentProject: selectCurrentProject(state),
+  }));
+
   const projectClasses = currentProject.projectData.classes;
 
   const dispatch = useDispatch();
@@ -62,11 +77,90 @@ const useElementProps = (item: LibraryElementUnion): ElementProps | null => {
   const isCheckboxChecked = (itemId: string) =>
     Boolean(savedElements[itemId]?.savedValue);
 
-  const getIsActive = !disableInteractions && item.id === activeElement.id;
+  const additionalProps = useMemo(() => {
+    if (!element) {
+      return null;
+    }
+
+    const { id, children } = element;
+
+    const getIsActive = !disableInteractions && element.id === activeElement.id;
+
+    const isBorderedElement =
+      findParentByChildID(root, id)?.id === rootID || id === rootID;
+    const isBorderVisible =
+      (isBorderedElement && showBorders) || (isBorderedElement && getIsActive);
+
+    switch (element.type) {
+      case 'container':
+      case 'divBlock': {
+        return {
+          isBorderVisible,
+        };
+      }
+      case 'textinput': {
+        return {
+          currentValue: String(savedElements[id]?.savedValue),
+          onElementChange,
+          params: element.parameters,
+        };
+      }
+
+      case 'textarea': {
+        return {
+          currentValue: savedElements[id]?.savedValue,
+          onElementChange,
+          params: element.parameters,
+        };
+      }
+
+      case 'checkbox': {
+        return {
+          currentValue: savedElements[id]?.savedValue,
+          isCheckboxChecked: isCheckboxChecked(id),
+          onElementChange,
+          params: element.parameters,
+        };
+      }
+
+      case 'radiobutton': {
+        return {
+          currentValue: savedElements[id]?.savedValue,
+          isRadioChecked: isRadioChecked(
+            element.parameters.value,
+            savedElements[element.parameters.name],
+          ),
+          onElementChange: updateSavedElementValues,
+          params: element.parameters,
+        };
+      }
+
+      case 'select': {
+        return {
+          currentValue: savedElements[id]?.savedValue,
+          onElementChange: updateSavedElementValues,
+          childrenElements: children,
+          params: element.parameters,
+          projectClasses,
+        };
+      }
+
+      default:
+        return {
+          params: element.parameters,
+        };
+    }
+  }, [element]);
+
+  if (!element) {
+    return null;
+  }
+
+  const { id, type, styles } = element;
 
   const ownStyles = convertPropCSS(styles.ownStyles);
 
-  const [entityClass, groupClass] = item.styles.classNames;
+  const [entityClass, groupClass] = element.styles.classNames;
 
   const entityStyles =
     projectClasses?.find((cssClass: any) => cssClass.className === entityClass)
@@ -86,92 +180,13 @@ const useElementProps = (item: LibraryElementUnion): ElementProps | null => {
     entityStyles: convertedEntityStyles,
     groupStyles: convertedGroupStyles,
     active: !disableInteractions && id === activeElement.id,
-    sortableId: id,
     elementRef: null,
   };
-
-  const additionalProps = useMemo(() => {
-    const isBorderedElement =
-      findParentByChildID(root, id)?.id === rootID || id === rootID;
-    const isBorderVisible =
-      (isBorderedElement && showBorders) || (isBorderedElement && getIsActive);
-
-    const commonRendererProps = {
-      ...(disableInteractions && { className: '' }),
-      id: id === rootID ? 'root' : id,
-      isDisabled: !disableInteractions,
-      ownStyles,
-      entityStyles: convertedEntityStyles,
-      groupStyles: convertedGroupStyles,
-      active: !disableInteractions && id === activeElement.id,
-      sortableId: id,
-      elementRef: null,
-    };
-    switch (item.type) {
-      case 'container':
-      case 'divBlock': {
-        return {
-          isBorderVisible,
-        };
-      }
-      case 'textinput': {
-        return {
-          ...commonRendererProps,
-          currentValue: String(savedElements[id]?.savedValue),
-          onElementChange,
-          params: item.parameters,
-        };
-      }
-
-      case 'textarea': {
-        return {
-          currentValue: savedElements[id]?.savedValue,
-          onElementChange,
-          params: item.parameters,
-        };
-      }
-
-      case 'checkbox': {
-        return {
-          currentValue: savedElements[id]?.savedValue,
-          isCheckboxChecked: isCheckboxChecked(id),
-          onElementChange,
-          params: item.parameters,
-        };
-      }
-
-      case 'radiobutton': {
-        return {
-          currentValue: savedElements[id]?.savedValue,
-          isRadioChecked: isRadioChecked(
-            item.parameters.value,
-            savedElements[item.parameters.name],
-          ),
-          onElementChange: updateSavedElementValues,
-          params: item.parameters,
-        };
-      }
-
-      case 'select': {
-        return {
-          currentValue: savedElements[id]?.savedValue,
-          onElementChange: updateSavedElementValues,
-          childrenElements: children,
-          params: item.parameters,
-          projectClasses,
-        };
-      }
-
-      default:
-        return {
-          params: item.parameters,
-        };
-    }
-  }, [item]);
 
   if (screenLoader || !isElementStructType(type)) {
     return null;
   }
+
   return {
     ...commonRendererProps,
     ...additionalProps,

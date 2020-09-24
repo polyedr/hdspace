@@ -58,7 +58,7 @@ export type StateElement = {
   parameters: any;
 };
 
-export type BorderedItemsRect = {
+export type BorderedElementsRect = {
   [id: string]: DOMRect;
 };
 
@@ -75,7 +75,8 @@ export type ProjectUiState = {
   savedElementsValues: SavedElementsValues;
   showContainersBorders: boolean;
   customLibraryElements: NamedServerElements;
-  borderedItemsRect: BorderedItemsRect;
+  borderedElementsRect: BorderedElementsRect;
+  currentDropTargetId: string | null;
 };
 
 export type ProjectEditState = {
@@ -369,6 +370,11 @@ export type SetActiveElementId = IAction<
   typeof TYPES.SET_ACTIVE_ELEMENT_ID,
   string
 >;
+export type SetActiveElement = IAction<typeof TYPES.SET_ACTIVE_ELEMENT, string>;
+export type SetCurrentDropTargetId = IAction<
+  typeof TYPES.SET_CURRENT_DROP_TARGET_ID,
+  { id: string }
+>;
 export type SetEditableStyles = IAction<
   typeof TYPES.SET_EDITABLE_STYLES,
   { className: string }
@@ -474,6 +480,7 @@ export type Action =
   | GetScreenNN
   | WrapIntoContainer
   | SetActiveElementId
+  | SetActiveElement
   | ToggleContainersBorders
   | SetIsAddElementsModalOpened
   | SetItemToCopy
@@ -519,7 +526,8 @@ export type Action =
   | SetScreens
   | SaveLibraryElement
   | AddBorderedElementRect
-  | RemoveBorderedElementRect;
+  | RemoveBorderedElementRect
+  | SetCurrentDropTargetId;
 
 export type ItemToCopyInfo = {
   id: string;

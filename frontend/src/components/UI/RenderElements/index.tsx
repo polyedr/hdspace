@@ -28,7 +28,7 @@ import Clock from './Clock/Clock';
 import Undefined from './Undefined/Undefined';
 import Screenshot from './Screenshot/Screenshot';
 import { Entity } from '../../../domain/core';
-import { withAction } from '../../../utils/withAction';
+import withAction from '../../../utils/withAction';
 
 export const RENDERERS: Record<Entity, React.FC<any>> = {
   root: Container,

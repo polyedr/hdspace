@@ -2,7 +2,7 @@ import {
   NamedServerElements,
   Screen,
   StateElement,
-  BorderedItemsRect,
+  BorderedElementsRect,
 } from './types';
 
 import {
@@ -39,11 +39,15 @@ export const selectScreenRootElement = (screenId: number) => ({
   return buildElementsTree(project.data.elements, rootId) || DEFAULT_ROOT;
 };
 
-export const selectCurrentScreenId = ({ project }: AppReduxState) =>
-  project.edit.currentScreenId;
+export const selectCurrentScreenId = (state: AppReduxState) =>
+  selectProjectState(state).edit.currentScreenId;
 
-export const selectCurrentScreen = (state: AppReduxState) =>
-  state.project.data.screens[selectCurrentScreenId(state)] || DEFAULT_SCREEN;
+export const selectCurrentScreen = (state: AppReduxState) => {
+  const currentScreenId = selectCurrentScreenId(state);
+  return (
+    selectProjectState(state).data.screens[currentScreenId] || DEFAULT_SCREEN
+  );
+};
 
 export const selectScreens = ({ project }: AppReduxState) =>
   mapToArr<Screen>(project.data.screens);
@@ -70,8 +74,8 @@ export const selectCurrentProject = (state: AppReduxState) =>
 export const selectCurrentRootId = (state: AppReduxState) =>
   selectCurrentScreen(state).element || '-1';
 
-export const selectElementById = (id: string) => ({ project }: AppReduxState) =>
-  project.data.elements[id];
+export const selectElementById = (id: string) => (state: AppReduxState) =>
+  selectProjectState(state).data.elements[id];
 
 export const selectElementAsTree = (id: string) => ({
   project,
@@ -93,6 +97,15 @@ export function selectUploadedImageInfo(state: AppReduxState) {
 export function selectLoader(state: AppReduxState) {
   return selectProjectState(state).communication.loader;
 }
+
+export const selectElementByChildId = (id: string) => (
+  state: AppReduxState,
+) => {
+  const element = selectElementById(id)(state);
+  return element && element.parent
+    ? selectElementById(element.parent)(state)
+    : null;
+};
 
 export function selectScenarioLoader(state: AppReduxState) {
   return selectProjectState(state).communication.scenarioLoader;
@@ -260,8 +273,23 @@ export const selectElementsForCurrentScreen = (state: AppReduxState) => {
   return selectElementsForScreen(currentScreenId)(state);
 };
 
-export const selectBorderedItemsRect = (
+export const selectBorderedElementsRect = (
   state: AppReduxState,
-): BorderedItemsRect => {
-  return selectProjectState(state).ui.borderedItemsRect;
+): BorderedElementsRect => {
+  return selectProjectState(state).ui.borderedElementsRect;
+};
+
+export const selectRootBorderedRect = (state: AppReduxState): DOMRect => {
+  const rootID = selectCurrentRootId(state);
+  return selectProjectState(state).ui.borderedElementsRect[rootID];
+};
+
+export const selectElementBorderedRect = (id: string) => (
+  state: AppReduxState,
+) => {
+  return selectProjectState(state).ui.borderedElementsRect[id];
+};
+
+export const selectCurrentDropTargetId = (state: AppReduxState) => {
+  return selectProjectState(state).ui.currentDropTargetId;
 };

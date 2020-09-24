@@ -31,7 +31,7 @@ import {
   renameScreen,
   restoreScreen,
   saveScreenImage,
-  setActiveElementId,
+  setActiveElement,
   setCurrentScreenId,
   setLoader,
   setProject,
@@ -63,7 +63,7 @@ export function* activateScreenSaga({
 
   yield put(setScreenLoader(true));
 
-  yield put(setActiveElementId('none'));
+  yield put(setActiveElement('none'));
 
   const screen: Screen = yield select(selectScreenById(screenId));
   if (!screen) return;
@@ -75,7 +75,7 @@ export function* activateScreenSaga({
   const screenElement = yield select(selectScreenRootElement(screenId));
   if (!screenElement) return;
 
-  yield put(Actions.setActiveElementId(screenElement.id));
+  yield put(Actions.setActiveElement(screenElement.id));
 
   yield put(Actions.setScenarioLoader(false));
   yield put(setScreenLoader(false));
@@ -222,7 +222,7 @@ export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
     }),
   );
 
-  yield put(Actions.setActiveElementId(createdRootElement.id));
+  yield put(Actions.setActiveElement(createdRootElement.id));
 
   yield put(push(`/project/${projectID}/${screen.id}`));
   // eslint-disable-next-line consistent-return
@@ -279,7 +279,7 @@ export function* delScreenSaga({
   const currentScreenId = yield select(selectors.selectCurrentScreenId);
 
   if (currentScreenId === screenId) {
-    yield put(setActiveElementId('none'));
+    yield put(setActiveElement('none'));
     yield put(setCurrentScreenId(-1));
   }
 

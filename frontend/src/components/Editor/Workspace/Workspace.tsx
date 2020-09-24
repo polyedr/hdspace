@@ -1,29 +1,29 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { connect, useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import cn from 'classnames';
 import html2canvas from 'html2canvas';
 
 import { TopBar } from '../TopBar/TopBar';
 import { HotKeys } from '../HotKeys/HotKeys';
 import Scrollbar from '../../UI/Scrollbar';
-import { LibraryElement, LibraryElementUnion } from '../../../api/types';
 import { getClassDevice } from '../../../utils/dom';
 import { AppReduxState } from '../../../shared/types/app';
 import { DEFAULT_SCREEN_MODE } from '../../../constants/defaultParams';
-import { StateElement } from '../../../redux/project/types';
 import {
   exportProject,
   resetScreenState,
   saveScreenImage,
-  setActiveElementId,
+  setActiveElement,
 } from '../../../redux/project/actions';
 import { changePrototypeMode } from '../../../redux/user/actions';
 import {
-  selectActiveElement,
-  selectCurrentRootElement,
+  selectActiveElementId,
+  selectCurrentRootId,
   selectCurrentScreenId,
 } from '../../../redux/project/selectors';
-import DraggableItem from '../../Draggable/DraggableItem';
+import DraggableItem from '../../Draggable/DraggableElement';
+import ElementsInteractions from '../ElementsInteractions/ElementsInteractions';
+import { selectIsPrototypeMode } from '../../../redux/user/selectors';
 
 const styles = require('./Workspace.scss');
 
@@ -33,38 +33,16 @@ export type ScreenMode = {
   isMobileMode: boolean;
 };
 
-type StateProps = {
-  elementsTree: LibraryElement<'root'>;
-  isPrototypeMode: boolean;
-  activeElement: StateElement;
-};
+const Workspace: React.FC<any> = () => {
+  const { rootElementId, activeElementId, isPrototypeMode } = useSelector(
+    (state: AppReduxState) => ({
+      rootElementId: selectCurrentRootId(state),
+      isPrototypeMode: selectIsPrototypeMode(state),
+      activeElementId: selectActiveElementId(state),
+    }),
+  );
+  const dispatch = useDispatch();
 
-const mapDispatch = {
-  saveScreen: saveScreenImage,
-  changePrototypeMode,
-  resetScreenState,
-  setActiveItem: setActiveElementId,
-  exportProject,
-};
-
-const mapState = (state: AppReduxState): StateProps => ({
-  elementsTree: selectCurrentRootElement(state),
-  activeElement: selectActiveElement(state),
-  isPrototypeMode: state.user.isPrototypeMode,
-});
-
-type Props = StateProps & typeof mapDispatch;
-
-const Workspace: React.FC<Props> = ({
-  elementsTree,
-  isPrototypeMode,
-  activeElement,
-  setActiveItem,
-  saveScreen,
-  changePrototypeMode,
-  resetScreenState,
-  exportProject,
-}) => {
   const [currentScreenMode, setCurrentScreenMode] = useState<ScreenMode>({
     ...DEFAULT_SCREEN_MODE,
     isDefaultMode: true,
@@ -74,35 +52,32 @@ const Workspace: React.FC<Props> = ({
 
   useEffect(
     () => () => {
-      resetScreenState();
+      dispatch(resetScreenState());
     },
     [],
   );
 
-  const handleRootClick = useCallback(
-    (event: React.MouseEvent) => {
-      const target = (event.nativeEvent.target as HTMLElement)?.closest(
-        '[data-ls-id]',
-      ) as HTMLElement;
-      if (!target) return;
+  const handleRootClick = useCallback((event: React.MouseEvent) => {
+    const target = (event.nativeEvent.target as HTMLElement)?.closest(
+      '[data-ls-id]',
+    ) as HTMLElement;
+    if (!target) return;
 
-      const currentActiveElement = (document.activeElement as HTMLElement)?.closest(
-        '[data-ls-id]',
-      );
-      const mouseUpTriggeredClick = currentActiveElement !== target;
+    const currentActiveElement = (document.activeElement as HTMLElement)?.closest(
+      '[data-ls-id]',
+    );
+    const mouseUpTriggeredClick = currentActiveElement !== target;
 
-      if (mouseUpTriggeredClick) return;
+    if (mouseUpTriggeredClick) return;
 
-      const itemID = target.dataset.lsId;
+    const elementId = target.dataset.lsId;
 
-      if (itemID === activeElement.id) return;
+    if (elementId === activeElementId) return;
 
-      if (itemID) {
-        setActiveItem(elementsTree.id);
-      }
-    },
-    [activeElement, elementsTree],
-  );
+    if (elementId) {
+      dispatch(setActiveElement(elementId));
+    }
+  }, []);
 
   const handleSaveScreen = () => {
     const screenBody = document.getElementById('root');
@@ -117,7 +92,7 @@ const Workspace: React.FC<Props> = ({
         allowTaint: true,
         logging: true,
         ignoreElements: ignore,
-      }).then((canvas) => saveScreen(currentScreenId, canvas));
+      }).then((canvas) => dispatch(saveScreenImage(currentScreenId, canvas)));
     }
   };
 
@@ -129,11 +104,13 @@ const Workspace: React.FC<Props> = ({
         isPrototypeMode={isPrototypeMode}
         isScreenRotated={isScreenRotated}
         screenMode={currentScreenMode}
-        onPrototypeModeToggle={changePrototypeMode}
+        onPrototypeModeToggle={(mode: boolean) =>
+          dispatch(changePrototypeMode(mode))
+        }
         onScreenModeChange={setCurrentScreenMode}
         onScreenRotate={setIsScreenRotated}
         onScreenSave={handleSaveScreen}
-        onExport={exportProject}
+        onExport={() => dispatch(exportProject())}
       />
       <div className={styles.editorViewport} onClick={handleRootClick}>
         <Scrollbar
@@ -143,12 +120,12 @@ const Workspace: React.FC<Props> = ({
           )}
           autoHeightMin="100%"
         >
-          <DraggableItem item={elementsTree as LibraryElementUnion} />
-          {/* !isPrototypeMode && <ContainersBorders /> */}
+          <DraggableItem elementId={rootElementId} />
+          {!isPrototypeMode && <ElementsInteractions />}
         </Scrollbar>
       </div>
     </div>
   );
 };
 
-export default connect(mapState, mapDispatch)(Workspace);
+export default Workspace;

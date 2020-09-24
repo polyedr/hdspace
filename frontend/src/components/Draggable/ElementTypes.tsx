@@ -1,6 +1,6 @@
-enum ItemType {
+enum ElementType {
   ELEMENT = 'element',
   CONSTRUCTOR = 'constructor',
 }
 
-export default ItemType;
+export default ElementType;
