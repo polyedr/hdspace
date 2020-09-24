@@ -33,7 +33,7 @@ export type ScreenMode = {
   isMobileMode: boolean;
 };
 
-const Workspace: React.FC<any> = () => {
+const Workspace: React.FC<{}> = () => {
   const { rootElementId, activeElementId, isPrototypeMode } = useSelector(
     (state: AppReduxState) => ({
       rootElementId: selectCurrentRootId(state),

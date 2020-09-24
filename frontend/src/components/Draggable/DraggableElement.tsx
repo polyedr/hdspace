@@ -23,8 +23,6 @@ import { CONTAINER_GROUPS } from '../../constants/defaultParams';
 import { StateElement } from '../../redux/project/types';
 import { AppReduxState } from '../../shared/types/app';
 
-// const styles = require('./DraggableItem.scss');
-
 type SyntheticElement = {
   original: StateElement;
   parent?: StateElement;
@@ -128,7 +126,7 @@ const DraggableElement: React.FC<DraggableElementProps> = ({ elementId }) => {
   }, [ref.current]);
 
   useEffect(() => {
-    if (!ref.current || screenLoader === true || !rootID) {
+    if (!ref.current || screenLoader || !rootID) {
       return;
     }
     if (
