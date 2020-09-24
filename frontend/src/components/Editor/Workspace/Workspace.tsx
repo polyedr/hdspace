@@ -101,7 +101,6 @@ const Workspace: React.FC<any> = () => {
     }
   };
 
-  console.log('GET DATA!!', rootElementId);
   return (
     <div className={cn(styles.editorWorkspace)}>
       {!isPrototypeMode && <HotKeys />}
