@@ -58,6 +58,10 @@ export type StateElement = {
   parameters: any;
 };
 
+export type BorderedElementsRect = {
+  [id: string]: DOMRect;
+};
+
 export type ProjectDataState = {
   projects: Map<Project>;
   screens: Map<Screen>;
@@ -71,6 +75,8 @@ export type ProjectUiState = {
   savedElementsValues: SavedElementsValues;
   showContainersBorders: boolean;
   customLibraryElements: NamedServerElements;
+  borderedElementsRect: BorderedElementsRect;
+  currentDropTargetId: string | null;
 };
 
 export type ProjectEditState = {
@@ -364,6 +370,11 @@ export type SetActiveElementId = IAction<
   typeof TYPES.SET_ACTIVE_ELEMENT_ID,
   string
 >;
+export type SetActiveElement = IAction<typeof TYPES.SET_ACTIVE_ELEMENT, string>;
+export type SetCurrentDropTargetId = IAction<
+  typeof TYPES.SET_CURRENT_DROP_TARGET_ID,
+  { id: string }
+>;
 export type SetEditableStyles = IAction<
   typeof TYPES.SET_EDITABLE_STYLES,
   { className: string }
@@ -413,6 +424,16 @@ export type RedoWrapIntoContainer = IAction<
   { elementId: string; wrapperId: string; parentId: string },
   ElementHistoryMeta
 >;
+export type AddBorderedElementRect = IAction<
+  typeof TYPES.ADD_BORDERED_ELEMENT_RECT,
+  { id: string; rect: DOMRect }
+>;
+
+export type RemoveBorderedElementRect = IAction<
+  typeof TYPES.REMOVE_BORDERED_ELEMENT_RECT,
+  { id: string }
+>;
+
 export type ClearHistory = IPlainAction<typeof TYPES.CLEAR_HISTORY>;
 export type PopUndoAction = IPlainAction<typeof TYPES.POP_UNDO_ACTION>;
 export type PopHistory = IPlainAction<typeof TYPES.POP_HISTORY>;
@@ -459,6 +480,7 @@ export type Action =
   | GetScreenNN
   | WrapIntoContainer
   | SetActiveElementId
+  | SetActiveElement
   | ToggleContainersBorders
   | SetIsAddElementsModalOpened
   | SetItemToCopy
@@ -500,7 +522,12 @@ export type Action =
   | ReturnType<typeof updateStateElement>
   | ReturnType<typeof addStateElements>
   | ReturnType<typeof insertStateElement>
-  | ReturnType<typeof removeStateElement>;
+  | ReturnType<typeof removeStateElement>
+  | SetScreens
+  | SaveLibraryElement
+  | AddBorderedElementRect
+  | RemoveBorderedElementRect
+  | SetCurrentDropTargetId;
 
 export type ItemToCopyInfo = {
   id: string;

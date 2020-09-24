@@ -7,6 +7,7 @@ import {
   call,
   take,
   select,
+  takeLeading,
 } from 'redux-saga/effects';
 import * as R from 'ramda';
 import { LOCATION_CHANGE, LocationChangeAction } from 'connected-react-router';
@@ -73,6 +74,7 @@ import {
   selectActiveElementId,
   selectAllElements,
   selectCurrentProject,
+  selectCurrentRootId,
   selectCurrentScreen,
   selectElementAsTree,
   selectHistory,
@@ -308,7 +310,7 @@ function* duplicateScreenSaga(
   );
   const targetRootID = targetRoot.id;
 
-  yield put(Actions.setActiveElementId(targetRootID));
+  yield put(Actions.setActiveElement(targetRootID));
 
   yield call(duplicateElements, duplicatedItems, targetRoot, {
     screenId: newScreenId,
@@ -439,6 +441,26 @@ function* redoSaga() {
   yield put(Actions.setRedoActions([...redos.slice(1)]));
 }
 
+export function* setActiveElementSaga(
+  action: ReturnType<typeof Actions.setActiveElementId>,
+) {
+  const prevActiveElementId = yield select(selectActiveElementId);
+  const rootID = yield select(selectCurrentRootId);
+  if (
+    prevActiveElementId !== action.payload &&
+    prevActiveElementId !== rootID
+  ) {
+    yield put(Actions.removeBorderedElementRect(prevActiveElementId));
+  }
+  yield put(Actions.setActiveElementId(action.payload));
+}
+
+export function* setCurrentDropTargetSaga(
+  action: ReturnType<typeof Actions.setCurrentDropTarget>,
+) {
+  yield put(Actions.setCurrentDropTargetId(action.payload.id));
+}
+
 export default function* projectSaga() {
   yield takeLatest(LOCATION_CHANGE, LocationChange);
 
@@ -492,4 +514,6 @@ export default function* projectSaga() {
   yield takeEvery(TYPES.UNWRAP_FROM_CONTAINER, unwrapFromContainerSaga);
   yield takeEvery(TYPES.REDO_WRAP_INTO_CONTAINER, redoWrapIntoContainerSaga);
   yield takeEvery(TYPES.SAVE_LIBRARY_ELEMENT, saveCustomLibraryElement);
+  yield takeEvery(TYPES.SET_ACTIVE_ELEMENT, setActiveElementSaga);
+  yield takeLeading(TYPES.SET_CURRENT_DROP_TARGET, setCurrentDropTargetSaga);
 }

@@ -135,6 +135,8 @@
     "react-clock": "^2.4.0",
     "react-color": "^2.18.1",
     "react-custom-scrollbars": "^4.2.1",
+    "react-dnd": "^11.1.3",
+    "react-dnd-html5-backend": "^11.1.3",
     "react-dom": "^16.13.1",
     "react-final-form": "^6.5.1",
     "react-google-login": "^5.1.21",

@@ -73,6 +73,9 @@ export function* moveElementSaga(
       sourceAction: action,
     }),
   );
+
+  yield put(Actions.setCurrentDropTarget(null));
+
   const updatedNewParent = yield select(selectElementAsTree(newParentId));
 
   const convertedElements = updatedNewParent.children.map((child) =>

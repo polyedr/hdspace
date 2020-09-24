@@ -1,5 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 
 import * as Actions from '../redux/project/actions';
 import * as UserActions from '../redux/user/actions';
@@ -71,26 +73,27 @@ const EditorLogic: React.FC<EditorProps> = ({
   projectLoader,
 }) => (
   <div className={styles.editorLogic}>
-    <div className={styles.workArea}>
-      <NavPanelScreen
-        isNavPanelMinimized={isNavPanelMinimized}
-        onMinimizerNavPanel={changeMinNavPanel}
-        projectID={projectID}
-        screenID={screenID}
-        getProject={getProject}
-        changeScreensOrder={changeScreensOrder}
-        addScreen={addScreen}
-      />
+    <DndProvider backend={HTML5Backend}>
+      <div className={styles.workArea}>
+        <NavPanelScreen
+          isNavPanelMinimized={isNavPanelMinimized}
+          onMinimizerNavPanel={changeMinNavPanel}
+          projectID={projectID}
+          screenID={screenID}
+          getProject={getProject}
+          changeScreensOrder={changeScreensOrder}
+          addScreen={addScreen}
+        />
 
-      <Editor
-        screen={currentScreen}
-        isNavPanelMinimized={isNavPanelMinimized}
-        resetScreenState={resetScreenState}
-      />
-    </div>
+        <Editor
+          screen={currentScreen}
+          isNavPanelMinimized={isNavPanelMinimized}
+          resetScreenState={resetScreenState}
+        />
+      </div>
 
-    {!isPrototypeMode && <RightPanel />}
-
+      {!isPrototypeMode && <RightPanel />}
+    </DndProvider>
     <Spinner active={projectLoader || screenLoader || scenarioLoader} />
   </div>
 );
