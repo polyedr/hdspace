@@ -21,7 +21,7 @@ import {
   selectCurrentRootId,
   selectCurrentScreenId,
 } from '../../../redux/project/selectors';
-import DraggableItem from '../../Draggable/DraggableElement';
+import DraggableItem from '../Draggable/DraggableElement';
 import ElementsInteractions from '../ElementsInteractions/ElementsInteractions';
 import { selectIsPrototypeMode } from '../../../redux/user/selectors';
 

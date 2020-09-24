@@ -5,9 +5,9 @@ import {
   addBorderedElementRect,
   moveElement,
   setCurrentDropTarget,
-} from '../../redux/project/actions';
-import useElementProps from '../Editor/hooks/useElementProps';
-import { RENDERERS } from '../UI/RenderElements';
+} from '../../../redux/project/actions';
+import useElementProps from '../hooks/useElementProps';
+import { RENDERERS } from '../../UI/RenderElements';
 import ElementType from './ElementTypes';
 import {
   selectActiveElementId,
@@ -18,10 +18,10 @@ import {
   selectElementById,
   selectScreenLoader,
   selectShowingBorders,
-} from '../../redux/project/selectors';
-import { CONTAINER_GROUPS } from '../../constants/defaultParams';
-import { StateElement } from '../../redux/project/types';
-import { AppReduxState } from '../../shared/types/app';
+} from '../../../redux/project/selectors';
+import { CONTAINER_GROUPS } from '../../../constants/defaultParams';
+import { StateElement } from '../../../redux/project/types';
+import { AppReduxState } from '../../../shared/types/app';
 
 type SyntheticElement = {
   original: StateElement;
