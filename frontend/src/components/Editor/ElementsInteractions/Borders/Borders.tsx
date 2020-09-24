@@ -43,9 +43,9 @@ const Borders: React.FC<Props> = ({ elementId }) => {
     }
     return {
       top: borderTop,
-      left: (styleProps.left || 0) + (styles.width / 2 - 5),
-      right: (styleProps.right || styles.width) - (styles.width / 2 + 5),
-      width: 10,
+      left: (styleProps.left || 0) + 5,
+      right: (styleProps.right || styles.width) + 5,
+      width: styles.width - 10,
       height: 1,
     };
   }, []);
