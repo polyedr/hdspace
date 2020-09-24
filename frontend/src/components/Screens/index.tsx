@@ -6,19 +6,52 @@ import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
 import { darken, lighten } from '@material-ui/core';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
+import MuiAccordion from '@material-ui/core/Accordion';
+import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
+import MuiAccordionDetails from '@material-ui/core/AccordionDetails';
+import withStyles from '@material-ui/core/styles/withStyles';
+import ScreenListItem from './ScreenListItem';
+import { addScreen, changeScreensOrder } from '../../redux/project/actions';
 import {
   selectCurrentProjectId,
   selectScreens,
 } from '../../redux/project/selectors';
-import { addScreen, changeScreensOrder } from '../../redux/project/actions';
-import ScreenListItem from './ScreenListItem';
 
 const useStyles = makeStyles({
+  button: {
+    color: '#eee',
+    '&:hover': {
+      backgroundColor: lighten('#2f4050', 0.1),
+    },
+  },
+  list: {
+    width: '100%',
+    padding: 0,
+  },
+});
+
+const Accordion = withStyles({
   root: {
     color: '#fff',
     fontWeight: 'normal',
+    backgroundColor: 'transparent',
+    '&$expanded': {
+      margin: 0,
+    },
   },
-  header: {
+  expanded: {},
+})(MuiAccordion);
+
+const AccordionSummary = withStyles({
+  root: {
+    padding: 0,
+    minHeight: 0,
+    '&$expanded': {
+      minHeight: 0,
+    },
+  },
+  content: {
+    margin: 0,
     padding: '.7em',
     display: 'flex',
     justifyContent: 'space-between',
@@ -27,17 +60,20 @@ const useStyles = makeStyles({
     borderBottomColor: lighten('#2f4050', 0.1),
     backgroundColor: darken('#2f4050', 0.1),
     fontWeight: 600,
-  },
-  button: {
-    color: '#eee',
-    '&:hover': {
-      backgroundColor: lighten('#2f4050', 0.1),
+    '&$expanded': {
+      margin: 0,
     },
   },
-  list: {
+  expanded: {
+    minHeight: 0,
+  },
+})(MuiAccordionSummary);
+
+const AccordionDetails = withStyles({
+  root: {
     padding: 0,
   },
-});
+})(MuiAccordionDetails);
 
 const Screens = () => {
   const dispatch = useDispatch();
@@ -46,7 +82,9 @@ const Screens = () => {
   const currentProjectId = useSelector(selectCurrentProjectId);
   const screens = useSelector(selectScreens);
 
-  const handleAddScreen = () => {
+  const handleAddScreen = (ev) => {
+    ev.preventDefault();
+    ev.stopPropagation();
     dispatch(addScreen(currentProjectId, 'Screen 1', screens.length));
   };
 
@@ -59,8 +97,8 @@ const Screens = () => {
   };
 
   return (
-    <div className={classes.root}>
-      <div className={classes.header}>
+    <Accordion>
+      <AccordionSummary>
         <span>Screens</span>
 
         <IconButton
@@ -71,25 +109,27 @@ const Screens = () => {
         >
           <AddIcon />
         </IconButton>
-      </div>
+      </AccordionSummary>
 
       <DragDropContext onDragEnd={handleReorder}>
         <Droppable droppableId="droppable">
           {(provided) => (
-            <List
-              className={classes.list}
-              innerRef={provided.innerRef}
-              {...provided.droppableProps}
-            >
-              {screens.map((screen, i) => (
-                <ScreenListItem key={screen.id} screen={screen} index={i} />
-              ))}
-              {provided.placeholder}
-            </List>
+            <AccordionDetails>
+              <List
+                className={classes.list}
+                innerRef={provided.innerRef}
+                {...provided.droppableProps}
+              >
+                {screens.map((screen, i) => (
+                  <ScreenListItem key={screen.id} screen={screen} index={i} />
+                ))}
+                {provided.placeholder}
+              </List>
+            </AccordionDetails>
           )}
         </Droppable>
       </DragDropContext>
-    </div>
+    </Accordion>
   );
 };
 
