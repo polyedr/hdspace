@@ -40,7 +40,9 @@ export const selectCurrentScreen = (state: AppReduxState) =>
   state.project.data.screens[selectCurrentScreenId(state)] || DEFAULT_SCREEN;
 
 export const selectScreens = ({ project }: AppReduxState) =>
-  mapToArr<Screen>(project.data.screens);
+  mapToArr<Screen>(project.data.screens).sort(
+    (a, b) => a.buoyancy - b.buoyancy,
+  );
 
 export const selectScreenById = (id: number) => ({ project }: AppReduxState) =>
   project.data.screens[id] || DEFAULT_SCREEN; // TODO: should it return default screen?

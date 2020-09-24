@@ -348,10 +348,12 @@ export function* changeScreensOrderSaga(
   yield put(setScreens(screens));
 
   yield all(
-    screens.map((screen) =>
+    screens.map(({ id, buoyancy }) =>
       call(reqWrapper, apiSaveScreen, {
-        id: screen.id,
-        data: screen,
+        id,
+        data: {
+          buoyancy,
+        },
       }),
     ),
   );

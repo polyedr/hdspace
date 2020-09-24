@@ -10,7 +10,7 @@ import {
   selectCurrentProjectId,
   selectScreens,
 } from '../../redux/project/selectors';
-import { addScreen } from '../../redux/project/actions';
+import { addScreen, changeScreensOrder } from '../../redux/project/actions';
 import ScreenListItem from './ScreenListItem';
 
 const useStyles = makeStyles({
@@ -50,6 +50,14 @@ const Screens = () => {
     dispatch(addScreen(currentProjectId, 'Screen 1', screens.length));
   };
 
+  const handleReorder = ({ destination, source }) => {
+    const newScreens = [...screens];
+    const [target] = newScreens.splice(source.index, 1);
+    newScreens.splice(destination.index, 0, target);
+    const result = newScreens.map((screen, i) => ({ ...screen, buoyancy: i }));
+    dispatch(changeScreensOrder(result));
+  };
+
   return (
     <div className={classes.root}>
       <div className={classes.header}>
@@ -65,7 +73,7 @@ const Screens = () => {
         </IconButton>
       </div>
 
-      <DragDropContext onDragEnd={() => {}}>
+      <DragDropContext onDragEnd={handleReorder}>
         <Droppable droppableId="droppable">
           {(provided) => (
             <List
