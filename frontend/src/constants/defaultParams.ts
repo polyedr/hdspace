@@ -8,7 +8,7 @@ import {
   StateElement,
 } from '../redux/project/types';
 import { CssLikeStyles } from '../utils/StyleHelper';
-import { isLatinOrNumbers } from '../shared/validators/isLatinOrNumbers';
+import isLatinOrNumbers from '../shared/validators/isLatinOrNumbers';
 import {
   composeValidators,
   isLongPassword,
@@ -229,3 +229,9 @@ export const DEFAULT_RESPONSE_ERROR: IApiResponseError = {
   errorText: '',
   data: {},
 };
+
+export const LIST_NOT_DRAGGING = ['element'];
+
+export const CONTAINER_GROUPS = ['containers', 'custom'];
+
+export const SAVEABLE_ELEMENTS = ['section'];

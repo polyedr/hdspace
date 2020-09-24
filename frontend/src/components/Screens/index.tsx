@@ -4,12 +4,8 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import { useDispatch, useSelector } from 'react-redux';
 import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
-import { darken, lighten } from '@material-ui/core';
+import { lighten } from '@material-ui/core';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
-import MuiAccordion from '@material-ui/core/Accordion';
-import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
-import MuiAccordionDetails from '@material-ui/core/AccordionDetails';
-import withStyles from '@material-ui/core/styles/withStyles';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ScreenListItem from './ScreenListItem';
 import { addScreen, changeScreensOrder } from '../../redux/project/actions';
@@ -18,6 +14,11 @@ import {
   selectScreens,
 } from '../../redux/project/selectors';
 import { Scrollbar } from '../UI';
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+} from '../LeftPanel/StyledAccordion';
 
 const useStyles = makeStyles({
   button: {
@@ -31,55 +32,6 @@ const useStyles = makeStyles({
     padding: 0,
   },
 });
-
-const Accordion = withStyles({
-  root: {
-    color: '#fff',
-    fontWeight: 'normal',
-    backgroundColor: 'transparent',
-    '&$expanded': {
-      margin: 0,
-    },
-  },
-  expanded: {},
-})(MuiAccordion);
-
-const AccordionSummary = withStyles({
-  root: {
-    paddingLeft: 0,
-    minHeight: 0,
-    '&$expanded': {
-      minHeight: 0,
-    },
-    borderBottom: '1px solid',
-    borderBottomColor: lighten('#2f4050', 0.1),
-    backgroundColor: darken('#2f4050', 0.1),
-    fontWeight: 600,
-  },
-  content: {
-    margin: 0,
-    padding: '.7em',
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    '&$expanded': {
-      margin: 0,
-    },
-  },
-  expanded: {
-    minHeight: 0,
-  },
-  expandIcon: {
-    padding: '.5em',
-    color: '#eee',
-  },
-})(MuiAccordionSummary);
-
-const AccordionDetails = withStyles({
-  root: {
-    padding: 0,
-  },
-})(MuiAccordionDetails);
 
 const Screens = () => {
   const dispatch = useDispatch();

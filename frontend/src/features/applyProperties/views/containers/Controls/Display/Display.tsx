@@ -29,7 +29,6 @@ function getDisplayStyles(
     'display' | 'flex-direction' | 'justify-content' | 'align-items'
   >,
 ): ScreenDisplay {
-  // console.log(activeItemStyles);
   switch (activeItemStyles.display) {
     case 'block':
       return {

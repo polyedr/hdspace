@@ -7,6 +7,8 @@ import AtlasTree, {
   TreeData,
 } from '@atlaskit/tree';
 import { useDispatch, useSelector } from 'react-redux';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import makeStyles from '@material-ui/core/styles/makeStyles';
 import TreeItem from './components/TreeItem';
 import {
   findPrevNodeId,
@@ -35,11 +37,31 @@ import {
 } from '../../redux/project/actions';
 import Scrollbar from '../UI/Scrollbar';
 import { canElementBeAdded } from '../../utils/normalizedStateHelpers';
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+} from '../LeftPanel/StyledAccordion';
 
-const styles = require('./Navigator.scss');
+const useStyles = makeStyles({
+  tree: {
+    fontSize: '0.75em',
+    flex: '1',
+    display: 'flex',
+    flexDirection: 'column',
+    // order: '1',
+
+    '& > :first-child': {
+      flex: '1',
+      overflow: 'auto',
+    },
+  },
+});
 
 const Navigator: React.FC = () => {
   const dispatch = useDispatch();
+  const classes = useStyles();
+
   const elements = useSelector(selectElementsForCurrentScreen);
   const rootId = useSelector(selectCurrentRootId);
   const currentScreenId = useSelector(selectCurrentScreenId);
@@ -225,25 +247,29 @@ const Navigator: React.FC = () => {
     />
   );
   return (
-    <div className={styles.componentPane}>
-      <h3 className={styles.header}>Navigator</h3>
+    <Accordion>
+      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+        Navigator
+      </AccordionSummary>
 
-      <div className={styles.tree} onKeyDown={handleKeyDown}>
-        <Scrollbar autoHeightMin="100%">
-          <AtlasTree
-            tree={tree}
-            renderItem={renderItem}
-            onExpand={expand}
-            onCollapse={collapse}
-            onDragStart={dragStart}
-            onDragEnd={dragEnd}
-            offsetPerLevel={10}
-            isDragEnabled
-            isNestingEnabled
-          />
-        </Scrollbar>
-      </div>
-    </div>
+      <AccordionDetails>
+        <div className={classes.tree} onKeyDown={handleKeyDown}>
+          <Scrollbar autoHeightMin="100%">
+            <AtlasTree
+              tree={tree}
+              renderItem={renderItem}
+              onExpand={expand}
+              onCollapse={collapse}
+              onDragStart={dragStart}
+              onDragEnd={dragEnd}
+              offsetPerLevel={10}
+              isDragEnabled
+              isNestingEnabled
+            />
+          </Scrollbar>
+        </div>
+      </AccordionDetails>
+    </Accordion>
   );
 };
 

@@ -5,7 +5,7 @@ import { Form } from 'react-final-form';
 import { FormField } from '../FormField/FormField';
 import * as Actions from '../../../redux/user/actions';
 import { DEFAULT_RESPONSE_ERROR } from '../../../constants/defaultParams';
-import { isLatinOrNumbers } from '../../../shared/validators/isLatinOrNumbers';
+import isLatinOrNumbers from '../../../shared/validators/isLatinOrNumbers';
 import { AppReduxState } from '../../../shared/types/app';
 import { Info } from '../Info';
 import Spinner from '../../UI/Spinner';

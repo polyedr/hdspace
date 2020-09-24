@@ -16,7 +16,6 @@ export type SharedRendererProps = {
   groupStyles: React.CSSProperties;
   ownStyles: React.CSSProperties;
   active: boolean;
-  sortableId: string;
   isDisabled: boolean;
   className?: string;
   elementRef: ((element: any) => void) | null;
@@ -182,7 +181,7 @@ export type VideoRendererProps = SharedRendererProps & {
 
 export type ListItemRendererProps = Omit<
   SharedRendererProps,
-  'sortableId' | 'activeItemId'
+  'sortableId' | 'activeElementId'
 > & {
   params: {
     textContent: string;

@@ -285,7 +285,7 @@ export function* softDeleteSaga(action: ReturnType<typeof Actions.deleteItem>) {
   );
 
   if (activeElementId === id) {
-    yield put(Actions.setActiveElementId(root.id));
+    yield put(Actions.setActiveElement(root.id));
   }
 
   const state = yield select(selectElementsForScreen(screenId));
@@ -460,7 +460,7 @@ export function* unwrapFromContainerSaga(
   const { elementId, wrapperId, parentId } = action.payload;
   const { screenId } = action.meta;
 
-  yield put(Actions.setActiveElementId(parentId));
+  yield put(Actions.setActiveElement(parentId));
   const parent: StateElement = yield select(selectElementById(parentId));
 
   const newParentChildrenIds = [
@@ -530,7 +530,7 @@ export function* renameElementSaga(
   const savedValue = getSavedValue(updatedElement as LibraryElementUnion);
   yield put(Actions.updateSavedElementValues(elementID, savedValue));
 
-  yield put(Actions.setActiveElementId(elementID));
+  yield put(Actions.setActiveElement(elementID));
 
   const convertedElement = convertElementToPatchRequest(updatedElement);
   yield call(reqWrapper, apiChangeElement, {

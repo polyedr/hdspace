@@ -1,65 +1,33 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Popover, IconButton } from '@material-ui/core';
 import SaveIcon from '@material-ui/icons/Save';
 import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state';
 import cn from 'classnames';
-
-import { BorderedItem } from '../Border';
-
-import { saveElementToLibrary } from '../../../../redux/project/actions';
-import { LibraryElement, SectionServerElement } from '../../../../api/types';
 import {
-  selectActiveElementId,
-  selectElementAsTree,
+  selectElementBorderedRect,
+  selectElementById,
 } from '../../../../redux/project/selectors';
+import { SAVEABLE_ELEMENTS } from '../../../../constants/defaultParams';
 
 const styles = require('./SaveElementAction.scss');
 
-type SaveElementAction = {
-  item: BorderedItem;
+type Props = {
+  elementId: string;
 };
 
-const SaveElementAction: React.FC<SaveElementAction> = ({ item }) => {
-  const activeElementId = useSelector(selectActiveElementId);
-  const activeElement = useSelector(selectElementAsTree(activeElementId));
-  const inputRef = React.createRef<HTMLInputElement>();
-  const dispatch = useDispatch();
+const SaveElementAction: React.FC<Props> = ({ elementId }) => {
+  const element = useSelector(selectElementById(elementId));
+  const elementRect = useSelector(selectElementBorderedRect(elementId));
 
-  if (!activeElement) {
+  const inputRef = React.createRef<HTMLInputElement>();
+
+  if (!element || !elementRect || !SAVEABLE_ELEMENTS.includes(element.type)) {
     return null;
   }
 
-  const convertElementToSection = (
-    element: LibraryElement<any>,
-  ): SectionServerElement => {
-    const {
-      name,
-      type,
-      buoyancy,
-      image,
-      styles,
-      parameters,
-      children,
-    } = element;
-
-    return {
-      name,
-      buoyancy,
-      image,
-      func_type: type,
-      struct_type: type,
-      styles,
-      parameters: {
-        ...parameters,
-        group: 'custom',
-      },
-      children: children.map((child) => convertElementToSection(child)),
-    } as SectionServerElement;
-  };
-
   return (
-    <PopupState variant="popover" popupId={`${item.id}-save-popup`}>
+    <PopupState variant="popover" popupId={`${element.id}-save-popup`}>
       {(popupState) => (
         <div>
           <IconButton
@@ -93,16 +61,12 @@ const SaveElementAction: React.FC<SaveElementAction> = ({ item }) => {
                   const e: KeyboardEvent = event.nativeEvent as KeyboardEvent;
                   if (e.code === 'Enter') {
                     // Enter pressed
-                    const name = inputRef
-                      .current!.value.toLowerCase()
-                      .replace(/ /g, '_');
+                    // const name = inputRef;
+                    // .current!.value.toLowerCase()
+                    // .replace(/ /g, '_');
                     inputRef.current!.value = '';
                     popupState.close();
-                    const newLibraryElement = convertElementToSection(
-                      activeElement,
-                    );
-                    newLibraryElement.name = name;
-                    dispatch(saveElementToLibrary(item.id, newLibraryElement));
+                    // TODO: implement saving on the server side
                   }
                 }}
               />

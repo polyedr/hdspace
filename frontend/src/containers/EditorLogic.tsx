@@ -1,5 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 import Editor from '../components/Editor/Editor';
 import Spinner from '../components/UI/Spinner';
 import {
@@ -52,11 +54,13 @@ const EditorLogic: React.FC<Props> = ({
 
   return (
     <div className={styles.editorLogic}>
-      <div className={styles.workArea}>
-        <Editor />
-      </div>
+      <DndProvider backend={HTML5Backend}>
+        <div className={styles.workArea}>
+          <Editor />
+        </div>
 
-      {!isPrototypeMode && <RightPanel />}
+        {!isPrototypeMode && <RightPanel />}
+      </DndProvider>
 
       <Spinner active={projectLoader || screenLoader || scenarioLoader} />
     </div>

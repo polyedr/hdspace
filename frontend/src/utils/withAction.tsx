@@ -13,6 +13,7 @@ import { activateScreen } from '../redux/project/actions';
 const mapStateToProps = (state: AppReduxState) => {
   const projectID = selectCurrentProject(state).id;
 
+  // eslint-disable-next-line react/require-default-props
   return { projectID };
 };
 
@@ -130,4 +131,4 @@ function withAction(
     : connect(mapStateToProps, mapDispatchToProps)(WrapperComponent);
 }
 
-export { withAction };
+export default withAction;

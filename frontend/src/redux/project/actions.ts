@@ -493,6 +493,11 @@ export const setActiveElementId = (id: string): T.SetActiveElementId => ({
   payload: id,
 });
 
+export const setActiveElement = (id: string): T.SetActiveElement => ({
+  type: TYPES.SET_ACTIVE_ELEMENT,
+  payload: id,
+});
+
 export const setEditableStyles = (className: string): T.SetEditableStyles => ({
   type: TYPES.SET_EDITABLE_STYLES,
   payload: { className },
@@ -637,4 +642,24 @@ export const saveLibraryElementToState = <T extends Entity>(
 ) => ({
   type: TYPES.SAVE_LIBRARY_ELEMENT_TO_STATE,
   payload: element,
+});
+
+export const addBorderedElementRect = (id: string, rect: DOMRect) => ({
+  type: TYPES.ADD_BORDERED_ELEMENT_RECT,
+  payload: { id, rect },
+});
+
+export const removeBorderedElementRect = (id: string) => ({
+  type: TYPES.REMOVE_BORDERED_ELEMENT_RECT,
+  payload: { id },
+});
+
+export const setCurrentDropTargetId = (id: string | null) => ({
+  type: TYPES.SET_CURRENT_DROP_TARGET_ID,
+  payload: { id },
+});
+
+export const setCurrentDropTarget = (id: string | null) => ({
+  type: TYPES.SET_CURRENT_DROP_TARGET_ID,
+  payload: { id },
 });
