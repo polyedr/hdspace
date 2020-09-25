@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, fireEvent } from '../../test-utils';
-import Navigator from '../../../../components/Navigator';
+import Navigator from '../../../../components/LeftPanel/Navigator';
 
 describe('Navigator', () => {
   const { container, getByText, getByRole } = render(<Navigator />);

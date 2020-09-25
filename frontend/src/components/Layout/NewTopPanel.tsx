@@ -4,8 +4,8 @@ import Toolbar from '@material-ui/core/Toolbar';
 
 const NewTopPanel = () => {
   return (
-    <AppBar position="static">
-      <Toolbar>topBar</Toolbar>
+    <AppBar position="fixed">
+      <Toolbar variant="dense">topBar</Toolbar>
     </AppBar>
   );
 };

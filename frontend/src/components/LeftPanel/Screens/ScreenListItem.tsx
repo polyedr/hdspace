@@ -6,11 +6,11 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import { lighten } from '@material-ui/core';
 import { useDispatch } from 'react-redux';
-import Dialog from '../UI/Dialog';
-import { Screen } from '../../redux/project/types';
+import Dialog from '../../UI/Dialog';
+import { Screen } from '../../../redux/project/types';
 import ScreenControls from './ScreenControls';
 import ScreenLogo from './ScreenLogo';
-import { renameScreen } from '../../redux/project/actions';
+import { renameScreen } from '../../../redux/project/actions';
 
 const useStyles = makeStyles({
   listItem: {
