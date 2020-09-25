@@ -252,9 +252,6 @@ export function selectProjectLoader(state: AppReduxState): boolean {
   return selectProjectState(state).communication.projectLoader;
 }
 
-export const selectInitialProjectLoad = (state: AppReduxState): boolean =>
-  selectProjectState(state).communication.initialProjectLoadDone;
-
 export const selectCustomLibraryElements = (
   state: AppReduxState,
 ): NamedServerElements => {

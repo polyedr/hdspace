@@ -14,7 +14,9 @@ import ResetPassword from '../components/User/ResetPassword/ResetPassword';
 import EditorWindow from './EditorWindow';
 import { PATH_NAMES } from '../constants/pathNames';
 
-const styles = require('../styles/global.scss');
+// const styles = require('../styles/global.scss');
+
+const styles = {} as any;
 
 type Props = RouteComponentProps;
 
@@ -33,12 +35,19 @@ const Routes: React.FC<Props> = (props) => {
     >
       <Switch>
         <Route path={PATH_NAMES.user.signin} component={SignIn} />
+
         <Route path={PATH_NAMES.user.signup} component={SignUp} />
+
         <Route path={PATH_NAMES.user.activate} component={Activation} />
+
         <Route path={PATH_NAMES.user.password} component={ResetPassword} />
+
         <Route path={PATH_NAMES.projects} component={EditorWindow} />
+
         <Route path="/project/:projectID/:screenID?" component={EditorWindow} />
+
         <Route path={PATH_NAMES.profile} component={EditorWindow} />
+
         <Redirect from="/*" to={PATH_NAMES.projects} />
       </Switch>
     </div>

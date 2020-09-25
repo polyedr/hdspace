@@ -49,7 +49,6 @@ const useStyles = makeStyles({
     flex: '1',
     display: 'flex',
     flexDirection: 'column',
-    // order: '1',
 
     '& > :first-child': {
       flex: '1',

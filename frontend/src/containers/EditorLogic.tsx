@@ -13,7 +13,9 @@ import { RightPanel } from '../features/applyProperties/views/containers';
 import { activateScreen, getProject } from '../redux/project/actions';
 import { selectIsPrototypeMode } from '../redux/user/selectors';
 
-const styles = require('../styles/global.scss');
+// const styles = require('../styles/global.scss');
+
+const styles = {} as any;
 
 export interface IMatch<P> {
   params: P;
