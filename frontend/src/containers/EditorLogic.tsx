@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import Editor from '../components/Editor/Editor';
 import Spinner from '../components/UI/Spinner';
 import {
   selectProjectLoader,
@@ -14,6 +13,7 @@ import { RightPanel } from '../features/applyProperties/views/containers';
 import { activateScreen, getProject } from '../redux/project/actions';
 import { selectIsPrototypeMode } from '../redux/user/selectors';
 import LeftPanel from '../components/LeftPanel/LeftPanel';
+import Workspace from '../components/Editor/Workspace/Workspace';
 
 const useStyles = makeStyles({
   root: {
@@ -67,7 +67,7 @@ const EditorLogic: React.FC<Props> = ({
       <DndProvider backend={HTML5Backend}>
         <LeftPanel />
 
-        <Editor />
+        <Workspace />
 
         {!isPrototypeMode && <RightPanel />}
       </DndProvider>
