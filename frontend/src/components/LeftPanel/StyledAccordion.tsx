@@ -1,10 +1,16 @@
-import withStyles from '@material-ui/core/styles/withStyles';
-import MuiAccordion from '@material-ui/core/Accordion';
-import { darken, lighten } from '@material-ui/core';
+import React from 'react';
+import MuiAccordion, { AccordionProps } from '@material-ui/core/Accordion';
+import {
+  AccordionDetailsProps,
+  AccordionSummaryProps,
+  darken,
+  lighten,
+} from '@material-ui/core';
 import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
 import MuiAccordionDetails from '@material-ui/core/AccordionDetails';
+import makeStyles from '@material-ui/core/styles/makeStyles';
 
-export const Accordion = withStyles({
+const useAccordionStyles = makeStyles({
   root: {
     color: '#fff',
     fontWeight: 'normal',
@@ -15,9 +21,9 @@ export const Accordion = withStyles({
     },
   },
   expanded: {},
-})(MuiAccordion);
+});
 
-export const AccordionSummary = withStyles({
+const useAccordionSummaryStyles = makeStyles({
   root: {
     paddingLeft: 0,
     minHeight: 0,
@@ -46,12 +52,45 @@ export const AccordionSummary = withStyles({
     padding: '.5em',
     color: '#eee',
   },
-})(MuiAccordionSummary);
+});
 
-export const AccordionDetails = withStyles({
+const useAccordionDetailsStyles = makeStyles({
   root: {
     padding: 0,
     boxShadow:
       '0px 2px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0,0,0,0.12)',
   },
-})(MuiAccordionDetails);
+});
+
+export const Accordion = ({ children, ...props }: AccordionProps) => {
+  const classes = useAccordionStyles();
+  return (
+    <MuiAccordion classes={classes} {...props}>
+      {children}
+    </MuiAccordion>
+  );
+};
+
+export const AccordionSummary = ({
+  children,
+  ...props
+}: AccordionSummaryProps) => {
+  const classes = useAccordionSummaryStyles();
+  return (
+    <MuiAccordionSummary classes={classes} {...props}>
+      {children}
+    </MuiAccordionSummary>
+  );
+};
+
+export const AccordionDetails = ({
+  children,
+  ...props
+}: AccordionDetailsProps) => {
+  const classes = useAccordionDetailsStyles();
+  return (
+    <MuiAccordionDetails classes={classes} {...props}>
+      {children}
+    </MuiAccordionDetails>
+  );
+};
