@@ -10,7 +10,11 @@ import {
   takeLeading,
 } from 'redux-saga/effects';
 import * as R from 'ramda';
-import { LOCATION_CHANGE, LocationChangeAction } from 'connected-react-router';
+import {
+  LOCATION_CHANGE,
+  LocationChangeAction,
+  push,
+} from 'connected-react-router';
 import * as Actions from '../actions';
 import { AppReduxState } from '../../../shared/types/app';
 import {
@@ -359,7 +363,7 @@ function* undoSaga() {
 
   if (Array.isArray(last)) {
     if (last[0].meta?.screenId) {
-      yield put(Actions.activateScreen(last[0].meta.screenId));
+      yield put(push(`${last[0].meta.screenId}`));
     }
     yield put(Actions.setGroupActionsUp(true));
 
@@ -377,7 +381,7 @@ function* undoSaga() {
     yield put(Actions.setGroupActionsUp(false));
   } else {
     if (last.meta?.screenId) {
-      yield put(Actions.activateScreen(last.meta.screenId));
+      yield put(push(`${last.meta.screenId}`));
     }
 
     yield put({
@@ -407,7 +411,7 @@ function* redoSaga() {
 
   if (Array.isArray(first)) {
     if (first[0].meta?.screenId) {
-      yield put(Actions.activateScreen(first[0].meta.screenId));
+      yield put(push(`${first[0].meta.screenId}`));
     }
 
     yield put(Actions.setGroupActionsUp(true));
@@ -426,7 +430,7 @@ function* redoSaga() {
     yield put(Actions.setGroupActionsUp(false));
   } else {
     if (first.meta?.screenId) {
-      yield put(Actions.activateScreen(first.meta.screenId));
+      yield put(push(`${first.meta.screenId}`));
     }
 
     yield put({

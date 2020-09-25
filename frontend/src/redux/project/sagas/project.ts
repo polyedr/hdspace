@@ -11,7 +11,7 @@ import * as Actions from '../actions';
 import { selectors, T } from '..';
 import { reqWrapper } from './index';
 import { ReturnPromisedType } from '../../../shared/types';
-import { activateScreenSaga, addScreenSaga, getScreenSaga } from './screen';
+import { addScreenSaga, getScreenSaga } from './screen';
 import {
   convertCreatedProjectToRequest,
   convertProjectToPatchRequest,
@@ -69,15 +69,12 @@ export function* getProjectSaga(action: ReturnType<typeof Actions.getProject>) {
 
   yield put(setScreens(screens));
 
-  const finalScreenID = screenID || project.projectscreen[0];
+  const finalScreenId = screenID || project.projectscreen[0];
 
-  if (finalScreenID) {
-    yield call(
-      activateScreenSaga,
-      Actions.activateScreen(Number(finalScreenID)),
-    );
+  if (finalScreenId) {
+    yield put(Actions.activateScreen(Number(finalScreenId)));
 
-    yield put(push(`/project/${id}/${finalScreenID}`));
+    yield put(push(`/project/${id}/${finalScreenId}`));
   } else {
     yield put(Actions.setCurrentScreenId(-1));
   }
@@ -351,10 +348,12 @@ export function* changeScreensOrderSaga(
   yield put(setScreens(screens));
 
   yield all(
-    screens.map((screen) =>
+    screens.map(({ id, buoyancy }) =>
       call(reqWrapper, apiSaveScreen, {
-        id: screen.id,
-        data: screen,
+        id,
+        data: {
+          buoyancy,
+        },
       }),
     ),
   );
