@@ -57,7 +57,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
     serializer_class = ProjectSerializer
     permission_classes = [CustomObjectPermissions] # Django-Guardian
     filter_backends = [filters.ObjectPermissionsFilter] # Django-Guardian
-
+    
     def get_queryset(self):
         return self.get_serializer_class().setup_eager_loading(self.queryset)
 
