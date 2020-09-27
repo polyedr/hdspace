@@ -75,11 +75,15 @@ class ProjectViewSet(viewsets.ModelViewSet):
     permission_classes = [CustomObjectPermissions] # Django-Guardian
     filter_backends = [filters.ObjectPermissionsFilter] # Django-Guardian
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> implemented django-guardian, created the first testcase giving a custom permission to a user in order to view a project
 
 =======
     
 >>>>>>> made external roles project dependent, added dummy permissions to ProjectTask, hadled an error at signals.py
+=======
+    
+>>>>>>> made external roles project dependent, added dummy permissions to ProjectMembers, hadled an error at signals.py
     def get_queryset(self):
         return self.get_serializer_class().setup_eager_loading(self.queryset)
 
