@@ -24,12 +24,35 @@ __all__ = (
     "Comment",
 )
 
+class Roles:
+     # external role should be project dependent
+    EXTERNAL_ROLE_PROJECT_OWNER = "PROJECT OWNER"
+    EXTERNAL_ROLE_PROJECT_MANAGER = "PROJECT MANAGER"
+    EXTERNAL_ROLE_PRODUCT_MANAGER = "PRODUCT MANAGER"
+    EXTERNAL_ROLE_BA = "BUSINESS ANALYST"
+    EXTERNAL_ROLE_BACKEND_DEVELOPER = "BACKEND DEVELOPER"
+    EXTERNAL_ROLE_FRONTEND_DEVELOPER = "FRONTEND DEVELOPER"
+    EXTERNAL_ROLE_ANNOTATOR = "ANNOTATOR"
+    EXTERNAL_ROLE_CONTENT_MANAGER = "CONTENT MANAGER"
+    USER_EXTERNAL_ROLE = (
+        (EXTERNAL_ROLE_PROJECT_OWNER, "Creates Projects"),
+        (EXTERNAL_ROLE_PROJECT_MANAGER, "Is Project Mangers Planning Assistant"),
+        (EXTERNAL_ROLE_PRODUCT_MANAGER, "Is Project Manager's Executive Assistant"),
+        (EXTERNAL_ROLE_BA, "Can edit the project"),
+        (EXTERNAL_ROLE_BACKEND_DEVELOPER, "Can apply backend constructor"),
+        (EXTERNAL_ROLE_FRONTEND_DEVELOPER, "Can apply frontend constructor"),
+        (EXTERNAL_ROLE_ANNOTATOR, "Can Annotate HTML elements and components"),
+        (EXTERNAL_ROLE_CONTENT_MANAGER, "Can Manage contents from project text blocks"),
+    )
 
 class Project(TimeStampedModel):
     STATUS_PAID = "paid"
     STATUS_PENDING = "pending"
     STATUS_CHOICES = ((STATUS_PAID, "Paid"), (STATUS_PENDING, "Pending"))
-
+    roles = Roles()
+    external_role = models.CharField(
+        choices=roles.USER_EXTERNAL_ROLE, default="any", max_length=500
+    )
     name = models.CharField(max_length=250)
     preview = models.CharField(max_length=60)
     favicon = models.ImageField(
@@ -187,7 +210,8 @@ class ProjectMember(TimeStampedModel):
     STATUS_CREATOR = "creator"
     STATUS_MEMBER = "member"
     MEMBER_STATUS = ((STATUS_CREATOR, "CREATOR"), (STATUS_MEMBER, "MEMBER"))
-    role = models.CharField(max_length=250, null=True, blank=True)
+    # external roles goes here
+    role = models.CharField(max_length=250, null=True, blank=True) 
     status = models.CharField(
         choices=MEMBER_STATUS, default=STATUS_MEMBER, max_length=32
     )
@@ -222,6 +246,14 @@ class ProjectTask(TimeStampedModel):
     def __str__(self):
         return self.title
 
+    class Meta:  # Only people with the following permissions can work on this task.
+        permissions = (
+            ("Dummy permission 1", "Can do dummy action 1"),
+            ("Dummy permission 2", "Can do dummy action 2"),
+            ("Dummy permission 3", "Can do dummy action 3"),
+            ("Dummy permission 4", "Can do dummy action 4"),
+            ("Dummy permission 5", "Can do dummy action 5"),
+        )
 
 class TaskTime(TimeStampedModel):
 
