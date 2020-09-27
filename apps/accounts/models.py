@@ -62,24 +62,6 @@ class Role:
         (INTERNAL_ROLE_STAFF, "Staff"),
         (INTERNAL_ROLE_LIBRARIAN, "Librarian"),
     )
-    EXTERNAL_ROLE_PROJECT_OWNER = "PROJECT OWNER"
-    EXTERNAL_ROLE_PROJECT_MANAGER = "PROJECT MANAGER"
-    EXTERNAL_ROLE_PRODUCT_MANAGER = "PROJECT MANAGER"
-    EXTERNAL_ROLE_BA = "BUSSINESS ANALYST"
-    EXTERNAL_ROLE_BACKEND_DEVELOPER = "BACKEND DEVELOPER"
-    EXTERNAL_ROLE_FRONTEND_DEVELOPER = "FRONTEND DEVELOPER"
-    EXTERNAL_ROLE_ANNOTATOR = "ANNOTATOR"
-    EXTERNAL_ROLE_CONTENT_MANAGER = "CONTENT MANAGER"
-    USER_EXTERNAL_ROLE = (
-        (EXTERNAL_ROLE_PROJECT_OWNER, "Creates Projects"),
-        (EXTERNAL_ROLE_PROJECT_MANAGER, "Is Project Mangers Planning Assistant"),
-        (EXTERNAL_ROLE_PRODUCT_MANAGER, "Is Project Manager's Executive Assistant"),
-        (EXTERNAL_ROLE_BA, "Can edit the project"),
-        (EXTERNAL_ROLE_BACKEND_DEVELOPER, "Can apply backend constructor"),
-        (EXTERNAL_ROLE_FRONTEND_DEVELOPER, "Can apply frontend constructor"),
-        (EXTERNAL_ROLE_ANNOTATOR, "Can Annotate HTML elements and components"),
-        (EXTERNAL_ROLE_CONTENT_MANAGER, "Can Manage contents from project text blocks"),
-    )
 
 
 class User(AbstractUser):
@@ -95,9 +77,7 @@ class Profile(TimeStampedModel):
     internal_role = models.CharField(
         choices=roles.USER_INTERNAL_ROLE, default="any", max_length=500
     )
-    external_role = models.CharField(
-        choices=roles.USER_EXTERNAL_ROLE, default="any", max_length=500
-    )
+
     email_confirmation_token = models.CharField(
         max_length=64, editable=False, null=True
     )
@@ -111,14 +91,7 @@ class Profile(TimeStampedModel):
     approved = models.BooleanField(default=False)
     hourly_rate = models.IntegerField(default=0)
 
-    class Meta:  # This is an example showing that permissions for external roles can be added here
-        permissions = (
-            ("Dummy permission 1", "Can do dummy action 1"),
-            ("Dummy permission 2", "Can do dummy action 2"),
-            ("Dummy permission 3", "Can do dummy action 3"),
-            ("Dummy permission 4", "Can do dummy action 4"),
-            ("Dummy permission 5", "Can do dummy action 5"),
-        )
+   
 
     def get_confirmation_url(self) -> str:
         return reverse(
