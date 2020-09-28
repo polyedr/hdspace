@@ -42,13 +42,6 @@ const communicationReducer = (
       };
     }
 
-    case TYPES.LOAD_PROJECTS_SUCCESS: {
-      return {
-        ...state,
-        initialProjectLoadDone: true,
-      };
-    }
-
     case TYPES.LOGOUT: {
       return {
         ...initialCommunication,

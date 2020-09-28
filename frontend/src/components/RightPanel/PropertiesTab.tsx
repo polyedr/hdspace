@@ -1,5 +1,6 @@
 import React from 'react';
 import * as R from 'ramda';
+import makeStyles from '@material-ui/core/styles/makeStyles';
 import ActiveElementBlock from '../../features/applyProperties/views/containers/Controls/ActiveElementBlock';
 import { LIBRARY_ELEMENTS } from '../../domain/libraryElements/libraryElements';
 import ControlSection from '../../features/applyProperties/views/components/ControlSection/ControlSection';
@@ -75,6 +76,12 @@ const CONTROLS: Record<Control, React.ComponentType<any>> = {
   backgroundSize: BackgroundSize,
 };
 
+const useStyles = makeStyles({
+  root: {
+    height: '100%',
+  },
+});
+
 type Props = {
   activeItem: StateElement;
   createElements: typeof createElements;
@@ -88,85 +95,93 @@ const PropertiesTab: React.FC<Props> = ({
   createElements: handleCreateElements,
   activeItem,
 }) => {
+  const classes = useStyles();
   const { type } = activeItem;
 
   return (
-    <Scrollbar autoHeightMin="100%">
-      <ActiveElementBlock
-        activeItem={activeItem}
-        libraryElements={LIBRARY_ELEMENTS}
-        createElements={handleCreateElements}
-        isAddElementsModalOpened={isAddElementsModalOpened}
-        setIsAddElementsModalOpened={setIsAddElementsModalOpened}
-      />
-      {activeItem.type !== 'none' && (
-        <div className="propsPanelBlock">
-          <div className="propsPanelHeaderBlock">
-            <p>Element properties</p>
-          </div>
-
-          {activeItem.type !== 'root' && (
-            <div className="propsPanelContentBlock">
-              <ControlSection title="Element's name">
-                <RenameElement />
-              </ControlSection>
+    <div className={classes.root}>
+      <Scrollbar
+        autoHeightMin="100%"
+        style={{
+          height: '100%',
+        }}
+      >
+        <ActiveElementBlock
+          activeItem={activeItem}
+          libraryElements={LIBRARY_ELEMENTS}
+          createElements={handleCreateElements}
+          isAddElementsModalOpened={isAddElementsModalOpened}
+          setIsAddElementsModalOpened={setIsAddElementsModalOpened}
+        />
+        {activeItem.type !== 'none' && (
+          <div className="propsPanelBlock">
+            <div className="propsPanelHeaderBlock">
+              <p>Element properties</p>
             </div>
-          )}
 
-          {activeItem.type !== 'root' && (
-            <>
+            {activeItem.type !== 'root' && (
               <div className="propsPanelContentBlock">
-                <ShareStyles />
-              </div>
-
-              <div className="propsPanelContentBlock">
-                <ControlSection title="Edit styles of">
-                  <EditableStyles />
+                <ControlSection title="Element's name">
+                  <RenameElement />
                 </ControlSection>
               </div>
-            </>
-          )}
-
-          {type &&
-            R.toPairs(AVAILABLE_CONTROLS[type as Entity]).map(
-              ([elementName, elementValue]) => {
-                return elementName === 'root' ? (
-                  <div
-                    className="propsPanelContentBlock"
-                    key={`${elementName}-propsPanelContentBlock`}
-                  >
-                    {type &&
-                      AVAILABLE_CONTROLS[type as Entity].root.map(
-                        (controlName) => {
-                          const ControlComponent = CONTROLS[controlName];
-                          return <ControlComponent key={controlName} />;
-                        },
-                      )}
-                  </div>
-                ) : (
-                  <>
-                    <div className="propsPanelHeaderBlock">
-                      <p>{elementName}</p>
-                    </div>
-
-                    <div className="propsPanelContentBlock">
-                      {elementValue.map((controlName) => {
-                        const ControlComponent = CONTROLS[controlName];
-                        return (
-                          <ControlComponent
-                            key={`${controlName}${elementName}`}
-                            childName={elementName}
-                          />
-                        );
-                      })}
-                    </div>
-                  </>
-                );
-              },
             )}
-        </div>
-      )}
-    </Scrollbar>
+
+            {activeItem.type !== 'root' && (
+              <>
+                <div className="propsPanelContentBlock">
+                  <ShareStyles />
+                </div>
+
+                <div className="propsPanelContentBlock">
+                  <ControlSection title="Edit styles of">
+                    <EditableStyles />
+                  </ControlSection>
+                </div>
+              </>
+            )}
+
+            {type &&
+              R.toPairs(AVAILABLE_CONTROLS[type as Entity]).map(
+                ([elementName, elementValue]) => {
+                  return elementName === 'root' ? (
+                    <div
+                      className="propsPanelContentBlock"
+                      key={`${elementName}-propsPanelContentBlock`}
+                    >
+                      {type &&
+                        AVAILABLE_CONTROLS[type as Entity].root.map(
+                          (controlName) => {
+                            const ControlComponent = CONTROLS[controlName];
+                            return <ControlComponent key={controlName} />;
+                          },
+                        )}
+                    </div>
+                  ) : (
+                    <>
+                      <div className="propsPanelHeaderBlock">
+                        <p>{elementName}</p>
+                      </div>
+
+                      <div className="propsPanelContentBlock">
+                        {elementValue.map((controlName) => {
+                          const ControlComponent = CONTROLS[controlName];
+                          return (
+                            <ControlComponent
+                              key={`${controlName}${elementName}`}
+                              childName={elementName}
+                            />
+                          );
+                        })}
+                      </div>
+                    </>
+                  );
+                },
+              )}
+          </div>
+        )}
+      </Scrollbar>
+    </div>
   );
 };
 

@@ -90,7 +90,6 @@ export type ProjectCommunicationState = {
   screenLoader: boolean;
   projectLoader: boolean;
   scenarioLoader: boolean;
-  initialProjectLoadDone: boolean;
 };
 
 export type ProjectControlState = {

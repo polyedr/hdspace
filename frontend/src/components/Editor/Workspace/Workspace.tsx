@@ -2,12 +2,10 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import cn from 'classnames';
 import html2canvas from 'html2canvas';
-
 import { TopBar } from '../TopBar/TopBar';
 import { HotKeys } from '../HotKeys/HotKeys';
 import Scrollbar from '../../UI/Scrollbar';
 import { getClassDevice } from '../../../utils/dom';
-import { AppReduxState } from '../../../shared/types/app';
 import { DEFAULT_SCREEN_MODE } from '../../../constants/defaultParams';
 import {
   exportProject,
@@ -33,22 +31,19 @@ export type ScreenMode = {
   isMobileMode: boolean;
 };
 
-const Workspace: React.FC<{}> = () => {
-  const { rootElementId, activeElementId, isPrototypeMode } = useSelector(
-    (state: AppReduxState) => ({
-      rootElementId: selectCurrentRootId(state),
-      isPrototypeMode: selectIsPrototypeMode(state),
-      activeElementId: selectActiveElementId(state),
-    }),
-  );
+const Workspace: React.FC = () => {
   const dispatch = useDispatch();
+
+  const rootElementId = useSelector(selectCurrentRootId);
+  const isPrototypeMode = useSelector(selectIsPrototypeMode);
+  const activeElementId = useSelector(selectActiveElementId);
+  const currentScreenId = useSelector(selectCurrentScreenId);
 
   const [currentScreenMode, setCurrentScreenMode] = useState<ScreenMode>({
     ...DEFAULT_SCREEN_MODE,
     isDefaultMode: true,
   });
   const [isScreenRotated, setIsScreenRotated] = useState<boolean>(false);
-  const currentScreenId = useSelector(selectCurrentScreenId);
 
   useEffect(
     () => () => {
@@ -102,8 +97,9 @@ const Workspace: React.FC<{}> = () => {
   };
 
   return (
-    <div className={cn(styles.editorWorkspace)}>
+    <div className={styles.editorWorkspace}>
       {!isPrototypeMode && <HotKeys />}
+
       <TopBar
         screenID={currentScreenId}
         isPrototypeMode={isPrototypeMode}
@@ -117,6 +113,7 @@ const Workspace: React.FC<{}> = () => {
         onScreenSave={handleSaveScreen}
         onExport={() => dispatch(exportProject())}
       />
+
       <div className={styles.editorViewport} onClick={handleRootClick}>
         <Scrollbar
           className={cn(

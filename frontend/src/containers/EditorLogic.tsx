@@ -1,24 +1,27 @@
-import React from 'react';
-import { connect } from 'react-redux';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-
-import * as Actions from '../redux/project/actions';
-import * as UserActions from '../redux/user/actions';
-import NavPanelScreen from '../components/NavPanelScreen/NavPanelScreen';
-import Editor from '../components/Editor/Editor';
+import makeStyles from '@material-ui/core/styles/makeStyles';
 import Spinner from '../components/UI/Spinner';
-import { AppReduxState } from '../shared/types/app';
 import {
-  selectCurrentProject,
-  selectCurrentScreen,
   selectProjectLoader,
   selectScenarioLoader,
   selectScreenLoader,
 } from '../redux/project/selectors';
 import { RightPanel } from '../features/applyProperties/views/containers';
+import { activateScreen, getProject } from '../redux/project/actions';
+import { selectIsPrototypeMode } from '../redux/user/selectors';
+import LeftPanel from '../components/LeftPanel/LeftPanel';
+import Workspace from '../components/Editor/Workspace/Workspace';
 
-const styles = require('../styles/global.scss');
+const useStyles = makeStyles({
+  root: {
+    display: 'flex',
+    minHeight: '100%',
+    height: 1, // allows children use height in %
+  },
+});
 
 export interface IMatch<P> {
   params: P;
@@ -28,74 +31,50 @@ export interface IMatch<P> {
 }
 
 interface MatchParams {
-  projectID: number;
-  screenID?: number;
+  projectId: number;
+  screenId?: number;
 }
 
-const mapStateToProps = (state: AppReduxState) => ({
-  currentProject: selectCurrentProject(state),
-  isNavPanelMinimized: state.user.isNavPanelMinimized,
-  isPrototypeMode: state.user.isPrototypeMode,
-  currentScreen: selectCurrentScreen(state),
-  scenarioLoader: selectScenarioLoader(state),
-  screenLoader: selectScreenLoader(state),
-  projectLoader: selectProjectLoader(state),
-});
-
-const mapDispatchToProps = {
-  getProject: Actions.getProject,
-  changeScreensOrder: Actions.changeScreensOrder,
-  addScreen: Actions.addScreen,
-  setScreen: Actions.setCurrentScreenId,
-  changeMinNavPanel: UserActions.changeMinNavPanel,
-  resetScreenState: Actions.resetScreenState,
+type Props = {
+  match: IMatch<MatchParams>;
 };
 
-export type EditorProps = ReturnType<typeof mapStateToProps> &
-  typeof mapDispatchToProps & {
-    match: IMatch<MatchParams>;
-  };
-
-const EditorLogic: React.FC<EditorProps> = ({
+const EditorLogic: React.FC<Props> = ({
   match: {
-    params: { projectID, screenID },
+    params: { projectId, screenId },
   },
-  currentScreen,
-  isNavPanelMinimized,
-  isPrototypeMode,
-  scenarioLoader,
-  screenLoader,
-  changeMinNavPanel,
-  getProject,
-  changeScreensOrder,
-  addScreen,
-  resetScreenState,
-  projectLoader,
-}) => (
-  <div className={styles.editorLogic}>
-    <DndProvider backend={HTML5Backend}>
-      <div className={styles.workArea}>
-        <NavPanelScreen
-          isNavPanelMinimized={isNavPanelMinimized}
-          onMinimizerNavPanel={changeMinNavPanel}
-          projectID={projectID}
-          screenID={screenID}
-          getProject={getProject}
-          changeScreensOrder={changeScreensOrder}
-          addScreen={addScreen}
-        />
+}) => {
+  const dispatch = useDispatch();
+  const classes = useStyles();
 
-        <Editor
-          screen={currentScreen}
-          isNavPanelMinimized={isNavPanelMinimized}
-          resetScreenState={resetScreenState}
-        />
-      </div>
+  const isPrototypeMode = useSelector(selectIsPrototypeMode);
+  const scenarioLoader = useSelector(selectScenarioLoader);
+  const screenLoader = useSelector(selectScreenLoader);
+  const projectLoader = useSelector(selectProjectLoader);
 
-      {!isPrototypeMode && <RightPanel />}
-    </DndProvider>
-    <Spinner active={projectLoader || screenLoader || scenarioLoader} />
-  </div>
-);
+  useEffect(() => {
+    dispatch(getProject(projectId, screenId));
+  }, [projectId]);
 
-export default connect(mapStateToProps, mapDispatchToProps)(EditorLogic);
+  useEffect(() => {
+    if (screenId) {
+      dispatch(activateScreen(screenId));
+    }
+  }, [screenId]);
+
+  return (
+    <div className={classes.root}>
+      <DndProvider backend={HTML5Backend}>
+        <LeftPanel />
+
+        <Workspace />
+
+        {!isPrototypeMode && <RightPanel />}
+      </DndProvider>
+
+      <Spinner active={projectLoader || screenLoader || scenarioLoader} />
+    </div>
+  );
+};
+
+export default EditorLogic;

@@ -21,6 +21,7 @@ import {
   flattenElements,
   mapToArr,
 } from '../../utils/normalizedStateHelpers';
+import { getDisplayStyles } from '../../features/applyProperties/views/containers/Controls/Display/Display';
 
 export const selectProjectState = makeFeatureStateSelector('project');
 
@@ -34,7 +35,7 @@ export const selectProjectById = (projectId: number) => ({
 export const selectScreenRootElement = (screenId: number) => ({
   project,
 }: AppReduxState) => {
-  const rootId = project.data.screens[screenId].element;
+  const rootId = project.data.screens[screenId]?.element;
 
   return buildElementsTree(project.data.elements, rootId) || DEFAULT_ROOT;
 };
@@ -50,7 +51,9 @@ export const selectCurrentScreen = (state: AppReduxState) => {
 };
 
 export const selectScreens = ({ project }: AppReduxState) =>
-  mapToArr<Screen>(project.data.screens);
+  mapToArr<Screen>(project.data.screens).sort(
+    (a, b) => a.buoyancy - b.buoyancy,
+  );
 
 export const selectScreenById = (id: number) => ({ project }: AppReduxState) =>
   project.data.screens[id] || DEFAULT_SCREEN; // TODO: should it return default screen?
@@ -250,9 +253,6 @@ export function selectProjectLoader(state: AppReduxState): boolean {
   return selectProjectState(state).communication.projectLoader;
 }
 
-export const selectInitialProjectLoad = (state: AppReduxState): boolean =>
-  selectProjectState(state).communication.initialProjectLoadDone;
-
 export const selectCustomLibraryElements = (
   state: AppReduxState,
 ): NormalizedLibraryElements => {
@@ -292,4 +292,15 @@ export const selectElementBorderedRect = (id: string) => (
 
 export const selectCurrentDropTargetId = (state: AppReduxState) => {
   return selectProjectState(state).ui.currentDropTargetId;
+};
+
+export const selectDisplayStyles = (state: AppReduxState) => {
+  const activeElementStyles = {
+    display: selectCurrentEditableStyles(state, 'display'),
+    'justify-content': selectCurrentEditableStyles(state, 'justify-content'),
+    'align-items': selectCurrentEditableStyles(state, 'align-items'),
+    'flex-direction': selectCurrentEditableStyles(state, 'flex-direction'),
+  };
+
+  return getDisplayStyles(activeElementStyles);
 };

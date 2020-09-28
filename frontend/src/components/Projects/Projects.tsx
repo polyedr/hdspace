@@ -1,32 +1,65 @@
 import React, { memo, useEffect } from 'react';
 import * as R from 'ramda';
-import classNames from 'classnames';
 import { useDispatch, useSelector } from 'react-redux';
-import Button from '../UI/Button';
+import Paper from '@material-ui/core/Paper';
+import makeStyles from '@material-ui/core/styles/makeStyles';
+import { createStyles } from '@material-ui/core';
+import Typography from '@material-ui/core/Typography';
+import Divider from '@material-ui/core/Divider';
+import Table from '@material-ui/core/Table';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import TableCell from '@material-ui/core/TableCell';
+import TableBody from '@material-ui/core/TableBody';
+import Button from '@material-ui/core/Button';
+import TableContainer from '@material-ui/core/TableContainer';
 import ProjectListItem from './ProjectListItem';
 import { addProject, getProjectList } from '../../redux/project/actions';
 import {
-  selectInitialProjectLoad,
+  selectProjectListLoader,
   selectProjects,
 } from '../../redux/project/selectors';
+import Spinner from '../UI/Spinner';
+import { Project } from '../../api/types';
 
-const styles = require('./Projects.scss');
+const useStyles = makeStyles((theme) =>
+  createStyles({
+    root: {
+      margin: theme.spacing(2),
+      padding: theme.spacing(1),
+    },
+    header: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      padding: theme.spacing(1),
+    },
+    headerText: {
+      fontWeight: 'bold',
+    },
+    table: {
+      padding: theme.spacing(1),
+    },
+    tableHeader: {
+      backgroundColor: '#dedede',
+    },
+  }),
+);
 
 const Projects: React.FC = () => {
   const dispatch = useDispatch();
+  const classes = useStyles();
+
   const projectList = useSelector(selectProjects);
+  const projectListLoader = useSelector(selectProjectListLoader);
 
   const sortedProjectList = R.sort(
-    R.descend((project: any) => project.created.getTime()),
+    R.descend((project: Project) => project.created.getTime()),
     projectList,
   );
 
-  const initialLoadDone = useSelector(selectInitialProjectLoad);
-
   useEffect(() => {
-    if (initialLoadDone) {
-      dispatch(getProjectList());
-    }
+    dispatch(getProjectList());
   }, [dispatch]);
 
   const handleProjectAdd = () => {
@@ -34,47 +67,51 @@ const Projects: React.FC = () => {
   };
 
   return (
-    <main className={classNames(styles.projectsContainer, 'showAnimation')}>
-      <div className={styles.projectsWrapper}>
-        <div className={styles.projectsHeaderContainer}>
-          <div className={styles.projectsHeader}>All projects</div>
-          <Button
-            onClick={handleProjectAdd}
-            className={styles.projectsHeaderBtn}
-          >
-            Create a project
-          </Button>
-        </div>
-        <div className={styles.projectsMainBlock}>
-          {projectList.length !== 0 && (
-            <table
-              className={classNames(
-                styles.projectsContentTable,
-                'showAnimation',
-              )}
-            >
-              <thead>
-                <tr>
-                  <th className={styles.tableTitle}>
-                    <input type="checkbox" />
-                  </th>
-                  <th className={styles.tableTitle}>Project Status</th>
-                  <th className={styles.tableTitle}>Project Name</th>
-                  <th className={styles.tableTitle}>Last Edit</th>
-                  <th className={styles.tableTitle}>Total Pages</th>
-                  <th className={styles.tableTitle}>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {sortedProjectList.map((item) => (
-                  <ProjectListItem project={item} key={item.id} />
-                ))}
-              </tbody>
-            </table>
-          )}
-        </div>
+    <Paper className={classes.root}>
+      <div className={classes.header}>
+        <Typography variant="h5" className={classes.headerText}>
+          All projects
+        </Typography>
+
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={handleProjectAdd}
+        >
+          Create a project
+        </Button>
       </div>
-    </main>
+
+      <Divider />
+
+      {projectList.length !== 0 && (
+        <TableContainer className={classes.table}>
+          <Table size="small">
+            <TableHead className={classes.tableHeader}>
+              <TableRow>
+                <TableCell>Project Status</TableCell>
+
+                <TableCell>Project Name</TableCell>
+
+                <TableCell>Last Edit</TableCell>
+
+                <TableCell>Total Pages</TableCell>
+
+                <TableCell>Actions</TableCell>
+              </TableRow>
+            </TableHead>
+
+            <TableBody>
+              {sortedProjectList.map((project) => (
+                <ProjectListItem project={project} key={project.id} />
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      )}
+
+      <Spinner active={projectListLoader} />
+    </Paper>
   );
 };
 

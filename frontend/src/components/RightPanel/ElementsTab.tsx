@@ -1,49 +1,48 @@
 import React, { useState } from 'react';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
-import withStyles from '@material-ui/core/styles/withStyles';
-// import { useSelector } from 'react-redux';
+import makeStyles from '@material-ui/core/styles/makeStyles';
 import ElementsBlock from './ElementsBlock';
 import Section from './Section';
 import { LIBRARY_ELEMENTS } from '../../domain/libraryElements/libraryElements';
 import { createElementsHierarchy } from '../../utils/parseScenario';
 import CustomElementsBlock from './CustomElementsLibrary/CustomElementsBlock';
 
-const styles = require('./styles.scss');
-
 const sections = ['elements', 'templates', 'library'];
 
-const StyledToggleButtonGroup = withStyles({
+const useStyles = makeStyles({
+  root: {
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'stretch',
+  },
+});
+
+const useToggleButtonGroupStyles = makeStyles({
   root: {
     width: '100%',
     display: 'flex',
   },
   grouped: {
     flex: 1,
-    '&:not(:first-child)': {},
-    '&:first-child': {},
   },
-})(ToggleButtonGroup);
+});
 
-const StyledToggleButton = withStyles({
+const useToggleButtonStyles = makeStyles({
   root: {
     textTransform: 'none',
-    '&$selected': {
-      backgroundColor: '#fff',
-      '&:hover': {
-        backgroundColor: '#fff',
-        color: '#1cc09f',
-      },
-    },
   },
   disabled: {},
-  selected: {
-    backgroundColor: '#fff',
-  },
+  selected: {},
   label: {},
-})(ToggleButton);
+});
 
 const ElementsTab = () => {
+  const classes = useStyles();
+  const toggleButtonGroupClasses = useToggleButtonGroupStyles();
+  const toggleButtonClasses = useToggleButtonStyles();
+
   const [section, setSection] = useState(sections[0]);
 
   const libraryElements = LIBRARY_ELEMENTS;
@@ -66,19 +65,26 @@ const ElementsTab = () => {
   };
 
   return (
-    <div className={styles.elementsTab}>
-      <StyledToggleButtonGroup
+    <div className={classes.root}>
+      <ToggleButtonGroup
+        classes={toggleButtonGroupClasses}
         value={section}
         onChange={handleChangeSection}
         exclusive
         size="small"
       >
-        <StyledToggleButton value="elements">Elements</StyledToggleButton>
+        <ToggleButton classes={toggleButtonClasses} value="elements">
+          Elements
+        </ToggleButton>
 
-        <StyledToggleButton value="templates">Templates</StyledToggleButton>
+        <ToggleButton classes={toggleButtonClasses} value="templates">
+          Templates
+        </ToggleButton>
 
-        <StyledToggleButton value="library">Library</StyledToggleButton>
-      </StyledToggleButtonGroup>
+        <ToggleButton classes={toggleButtonClasses} value="library">
+          Library
+        </ToggleButton>
+      </ToggleButtonGroup>
 
       <Section title="elements" activeSection={section}>
         {Object.entries(elements).map(([key, value]) => (

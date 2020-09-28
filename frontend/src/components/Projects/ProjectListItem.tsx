@@ -1,15 +1,33 @@
 import React, { useState } from 'react';
-import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import Button from '../UI/Button';
-import Icon from '../UI/Icon';
-import Modal from '../UI/Modal';
+import TableRow from '@material-ui/core/TableRow';
+import TableCell from '@material-ui/core/TableCell';
+import Typography from '@material-ui/core/Typography';
+import makeStyles from '@material-ui/core/styles/makeStyles';
+import { createStyles } from '@material-ui/core';
+import IconButton from '@material-ui/core/IconButton';
+import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from '@material-ui/icons/Delete';
 import convertDateToRelative from '../../utils/convertDateToRelative';
 import { Project } from '../../api/types';
 import { delProject, renameProject } from '../../redux/project/actions';
+import Dialog from '../UI/Dialog';
 
-const styles = require('./Projects.scss');
+const useStyles = makeStyles((theme) =>
+  createStyles({
+    link: {
+      '&, &:active, &:focus, &:link': {
+        fontWeight: 'bold',
+        color: theme.palette.link.main,
+        textDecoration: 'none',
+      },
+      '&:hover': {
+        color: theme.palette.link.light,
+      },
+    },
+  }),
+);
 
 type Props = {
   project: Project;
@@ -19,114 +37,84 @@ const ProjectListItem: React.FC<Props> = ({
   project: { status, id, name, updated, projectscreen },
 }) => {
   const dispatch = useDispatch();
+  const classes = useStyles();
 
-  const [modalRenameProjectOpen, setModalRenameProjectOpen] = useState(false);
-  const [modalDeleteProjectOpen, setModalDeleteProjectOpen] = useState(false);
-
-  const [newProjectName, setNewProjectName] = useState(name);
+  const [renameOpen, setRenameOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
 
   const closeModal = () => {
-    setModalRenameProjectOpen(false);
-    setModalDeleteProjectOpen(false);
-  };
-
-  const handleNewProjectNameChange = (ev: any) => {
-    setNewProjectName(ev.target.value);
+    setRenameOpen(false);
+    setDeleteOpen(false);
   };
 
   const handleRenameProject = () => {
-    setModalRenameProjectOpen(true);
+    setRenameOpen(true);
   };
 
   const handleDeleteProject = () => {
-    setModalDeleteProjectOpen(true);
+    setDeleteOpen(true);
   };
 
-  const onRenameProject = (ev: any) => {
-    ev.preventDefault();
-    dispatch(renameProject(id, newProjectName));
+  const onRenameProject = async (values) => {
+    dispatch(renameProject(id, values.name));
     closeModal();
   };
 
-  const onDeleteProject = (ev: any) => {
-    ev.preventDefault();
+  const onDeleteProject = () => {
     dispatch(delProject(id));
     closeModal();
   };
 
   return (
     <>
-      <tr className={styles.tableRow}>
-        <td className={styles.tableItem}>
-          <input type="checkbox" checked={false} onChange={() => {}} />
-        </td>
+      <TableRow>
+        <TableCell>
+          <Typography color="secondary">{status}</Typography>
+        </TableCell>
 
-        <td className={classNames(styles.tableItem, styles.tableItem_status)}>
-          {status}
-        </td>
+        <TableCell>
+          <Link to={`/project/${id}`} className={classes.link}>
+            {name}
+          </Link>
+        </TableCell>
 
-        <td className={styles.tableItem}>
-          <Link to={`/project/${id}`}>{name}</Link>
-        </td>
+        <TableCell>
+          <Typography variant="caption">
+            {convertDateToRelative(updated)}
+          </Typography>
+        </TableCell>
 
-        <td className={styles.tableItem}>{convertDateToRelative(updated)}</td>
+        <TableCell>{projectscreen.length}</TableCell>
 
-        <td className={styles.tableItem}>{projectscreen.length}</td>
+        <TableCell>
+          <IconButton size="small" onClick={handleRenameProject}>
+            <EditIcon fontSize="small" />
+          </IconButton>
 
-        <td className={styles.tableItem}>
-          <Button
-            className={styles.tableBtn}
-            styleType="none"
-            onClick={handleRenameProject}
-          >
-            <Icon icon="edit" size={20} />
-          </Button>
+          <IconButton size="small" onClick={handleDeleteProject}>
+            <DeleteIcon fontSize="small" />
+          </IconButton>
+        </TableCell>
+      </TableRow>
 
-          <Button
-            className={styles.tableBtn}
-            styleType="none"
-            onClick={handleDeleteProject}
-          >
-            <Icon icon="delete" size={20} />
-          </Button>
-        </td>
-      </tr>
+      <Dialog
+        open={renameOpen}
+        onSubmit={onRenameProject}
+        onClose={closeModal}
+        title="Rename Project"
+        fieldName="name"
+        initialValue={name}
+        description={`Enter new name for ${name}`}
+      />
 
-      {modalRenameProjectOpen && (
-        <Modal
-          animClassName="bubbleAnimation"
-          title="Rename project"
-          confirmText="Rename"
-          onConfirm={onRenameProject}
-          cancelText="Close"
-          onClose={closeModal}
-        >
-          <div className={styles.modalBody}>
-            <input
-              type="text"
-              className={styles.screenName}
-              value={newProjectName}
-              placeholder="New project name"
-              onChange={handleNewProjectNameChange}
-            />
-          </div>
-        </Modal>
-      )}
-
-      {modalDeleteProjectOpen && (
-        <Modal
-          animClassName="bubbleAnimation"
-          title="Delete project"
-          confirmText="Delete forever"
-          onConfirm={onDeleteProject}
-          cancelText="Close"
-          onClose={closeModal}
-        >
-          <div className={styles.modalBody}>
-            <p>{`This project named as ${name} and its styles, pages, and images will be deleted permanently`}</p>
-          </div>
-        </Modal>
-      )}
+      <Dialog
+        open={deleteOpen}
+        onSubmit={onDeleteProject}
+        onClose={closeModal}
+        title="Delete Project"
+        description={`This project named as ${name} and its styles, pages, and images will be deleted permanently!`}
+        confirm
+      />
     </>
   );
 };
