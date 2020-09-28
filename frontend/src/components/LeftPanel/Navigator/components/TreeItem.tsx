@@ -20,8 +20,8 @@ const useStyles = makeStyles({
     },
     '& svg': {
       color: 'white',
-      width: '1.25em',
-      height: '1.25em',
+      width: '1em',
+      height: '1em',
       display: 'inline-block',
       verticalAlign: 'middle',
       pointerEvents: 'none',

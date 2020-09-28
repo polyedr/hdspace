@@ -13,12 +13,20 @@ import {
   selectLoader,
 } from '../../redux/project/selectors';
 
-// const styles = require('./styles.scss');
-
-const styles = {} as any;
+const useStyles = makeStyles({
+  root: {
+    width: 300, // right panel width constant
+    display: 'flex',
+    flexDirection: 'column',
+    height: '100%',
+  },
+  tabPanel: {
+    flex: 1,
+    overflow: 'auto',
+  },
+});
 
 const useTabsStyles = makeStyles({
-  root: {},
   indicator: {
     backgroundColor: '#1cc09f',
   },
@@ -42,9 +50,12 @@ type TabPanelProps = {
   index: number;
   value: number;
 };
+
 const TabPanel: React.FC<TabPanelProps> = ({ value, index, children }) => {
+  const classes = useStyles();
+
   return (
-    <div hidden={value !== index} className={styles.tabPanel}>
+    <div hidden={value !== index} className={classes.tabPanel}>
       {children}
     </div>
   );
@@ -52,6 +63,7 @@ const TabPanel: React.FC<TabPanelProps> = ({ value, index, children }) => {
 
 const PropertiesPanel: React.FC = () => {
   const dispatch = useDispatch();
+  const classes = useStyles();
   const activeElement = useSelector(selectActiveElement);
   const isAddElementsModalOpened = useSelector(selectIsAddElementsModalOpened);
   const loader = useSelector(selectLoader);
@@ -71,7 +83,7 @@ const PropertiesPanel: React.FC = () => {
     setTab(newValue);
 
   return (
-    <div className={styles.editorRightPanel}>
+    <div className={classes.root}>
       <Tabs
         value={tab}
         onChange={handleChange}

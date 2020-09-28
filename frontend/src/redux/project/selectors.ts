@@ -21,6 +21,7 @@ import {
   flattenElements,
   mapToArr,
 } from '../../utils/normalizedStateHelpers';
+import { getDisplayStyles } from '../../features/applyProperties/views/containers/Controls/Display/Display';
 
 export const selectProjectState = makeFeatureStateSelector('project');
 
@@ -291,4 +292,15 @@ export const selectElementBorderedRect = (id: string) => (
 
 export const selectCurrentDropTargetId = (state: AppReduxState) => {
   return selectProjectState(state).ui.currentDropTargetId;
+};
+
+export const selectDisplayStyles = (state: AppReduxState) => {
+  const activeElementStyles = {
+    display: selectCurrentEditableStyles(state, 'display'),
+    'justify-content': selectCurrentEditableStyles(state, 'justify-content'),
+    'align-items': selectCurrentEditableStyles(state, 'align-items'),
+    'flex-direction': selectCurrentEditableStyles(state, 'flex-direction'),
+  };
+
+  return getDisplayStyles(activeElementStyles);
 };

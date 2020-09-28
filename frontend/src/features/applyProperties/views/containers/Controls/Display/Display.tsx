@@ -1,11 +1,10 @@
 import React, { memo, useCallback } from 'react';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import FlexProperties from '../../../components/FlexProperties/FlexProperties';
 import StylesHeader from '../../../components/StylesHeader/StylesHeader';
 import DISPLAY from './constants';
 import { DropDown } from '../../../../../../components/UI/DropDown';
 import { Entity } from '../../../../../../domain/core';
-import { AppReduxState } from '../../../../../../shared/types/app';
 import { LibraryElement } from '../../../../../../api/types';
 import { Flex, ScreenDisplay } from '../../../../../../redux/project/types';
 import {
@@ -17,13 +16,13 @@ import {
   withConfigurableProperties,
 } from '../../../../../../utils/withConfigurableProperties';
 import { assertNever } from '../../../../../../shared/helpers/ts';
-import { selectCurrentEditableStyles } from '../../../../../../redux/project/selectors';
+import { selectDisplayStyles } from '../../../../../../redux/project/selectors';
 
 type StateProps = {
   displayStyles: ScreenDisplay;
 };
 
-function getDisplayStyles(
+export function getDisplayStyles(
   activeItemStyles: Pick<
     Required<CssLikeStyles>,
     'display' | 'flex-direction' | 'justify-content' | 'align-items'
@@ -58,24 +57,11 @@ function getDisplayStyles(
   }
 }
 
-function mapState(state: AppReduxState): StateProps {
-  const activeItemStyles = {
-    display: selectCurrentEditableStyles(state, 'display'),
-    'justify-content': selectCurrentEditableStyles(state, 'justify-content'),
-    'align-items': selectCurrentEditableStyles(state, 'align-items'),
-    'flex-direction': selectCurrentEditableStyles(state, 'flex-direction'),
-  };
-
-  return { displayStyles: getDisplayStyles(activeItemStyles) };
-}
-
 type Props = StateProps & PropertiesChangeProps<LibraryElement<Entity>>;
 
-const Display: React.FC<Props> = ({
-  displayStyles,
-  updateStyles,
-  removeStyles,
-}) => {
+const Display: React.FC<Props> = ({ updateStyles, removeStyles }) => {
+  const displayStyles = useSelector(selectDisplayStyles);
+
   const handleDisplayDropdownChange = useCallback(
     (value) => {
       updateStyles({ display: value });
@@ -125,4 +111,4 @@ const Display: React.FC<Props> = ({
   );
 };
 
-export default connect(mapState)(withConfigurableProperties(memo(Display)));
+export default withConfigurableProperties(memo(Display));
