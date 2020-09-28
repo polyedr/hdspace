@@ -8,17 +8,17 @@ import { lighten } from '@material-ui/core';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ScreenListItem from './ScreenListItem';
-import { addScreen, changeScreensOrder } from '../../redux/project/actions';
+import { addScreen, changeScreensOrder } from '../../../redux/project/actions';
 import {
   selectCurrentProjectId,
   selectScreens,
-} from '../../redux/project/selectors';
-import { Scrollbar } from '../UI';
+} from '../../../redux/project/selectors';
+import { Scrollbar } from '../../UI';
 import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
-} from '../LeftPanel/StyledAccordion';
+} from '../StyledAccordion';
 
 const useStyles = makeStyles({
   button: {

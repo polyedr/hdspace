@@ -1,7 +1,13 @@
 import React from 'react';
+import makeStyles from '@material-ui/core/styles/makeStyles';
 import Scrollbar from '../UI/Scrollbar';
 
-const styles = require('./styles.scss');
+const useStyles = makeStyles({
+  root: {
+    flex: 1,
+    overflow: 'auto',
+  },
+});
 
 type Props = {
   title: string;
@@ -9,9 +15,17 @@ type Props = {
 };
 
 const Section: React.FC<Props> = ({ activeSection, title, children }) => {
+  const classes = useStyles();
   return (
-    <section hidden={activeSection !== title} className={styles.section}>
-      <Scrollbar autoHeightMin="100%">{children}</Scrollbar>
+    <section hidden={activeSection !== title} className={classes.root}>
+      <Scrollbar
+        style={{
+          height: '100%',
+        }}
+        autoHeightMin="100%"
+      >
+        {children}
+      </Scrollbar>
     </section>
   );
 };

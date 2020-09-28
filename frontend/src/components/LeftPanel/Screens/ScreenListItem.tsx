@@ -5,19 +5,12 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import { lighten } from '@material-ui/core';
-import Dialog from '@material-ui/core/Dialog';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import TextField from '@material-ui/core/TextField';
-import DialogActions from '@material-ui/core/DialogActions';
-import Button from '@material-ui/core/Button';
 import { useDispatch } from 'react-redux';
-import { Form, Field } from 'react-final-form';
-import { Screen } from '../../redux/project/types';
+import Dialog from '../../UI/Dialog';
+import { Screen } from '../../../redux/project/types';
 import ScreenControls from './ScreenControls';
 import ScreenLogo from './ScreenLogo';
-import { renameScreen } from '../../redux/project/actions';
+import { renameScreen } from '../../../redux/project/actions';
 
 const useStyles = makeStyles({
   listItem: {
@@ -104,44 +97,15 @@ const ScreenListItem: React.FC<Props> = ({ screen, index }) => {
             />
           </ListItem>
 
-          <Dialog open={edit} onClose={closeEdit}>
-            <Form
-              onSubmit={handleSubmit}
-              render={({ handleSubmit }) => (
-                <form onSubmit={handleSubmit}>
-                  <DialogTitle>Rename Screen</DialogTitle>
-
-                  <DialogContent>
-                    <DialogContentText>
-                      Enter screen&apos;s new name
-                    </DialogContentText>
-
-                    <Field name="name" initialValue={name}>
-                      {({ input }) => (
-                        <TextField
-                          autoFocus
-                          margin="dense"
-                          type="text"
-                          fullWidth
-                          {...input}
-                        />
-                      )}
-                    </Field>
-                  </DialogContent>
-
-                  <DialogActions>
-                    <Button onClick={closeEdit} color="primary">
-                      Cancel
-                    </Button>
-
-                    <Button type="submit" color="primary">
-                      Confirm
-                    </Button>
-                  </DialogActions>
-                </form>
-              )}
-            />
-          </Dialog>
+          <Dialog
+            open={edit}
+            onSubmit={handleSubmit}
+            onClose={closeEdit}
+            fieldName="name"
+            title="Rename Screen"
+            description="Enter screen's new name"
+            initialValue={name}
+          />
         </div>
       )}
     </Draggable>

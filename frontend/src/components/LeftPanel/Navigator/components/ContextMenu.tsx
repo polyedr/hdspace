@@ -7,15 +7,15 @@ import {
   selectActiveElement,
   selectCurrentScreenId,
   selectItemToCopyInfo,
-} from '../../../redux/project/selectors';
+} from '../../../../redux/project/selectors';
 import {
   copyActiveItem,
   deleteItem,
   pasteCopiedElement,
   setIsAddElementsModalOpened,
-} from '../../../redux/project/actions';
-import { canElementHaveChildren } from '../../../utils/AvailableChildrenHelper';
-import Icon from '../../UI/Icon';
+} from '../../../../redux/project/actions';
+import { canElementHaveChildren } from '../../../../utils/AvailableChildrenHelper';
+import Icon from '../../../UI/Icon';
 
 const StyledMenu = withStyles({
   paper: {

@@ -30,7 +30,6 @@ export const initialCommunication: T.ProjectCommunicationState = {
   screenLoader: false,
   projectLoader: false,
   scenarioLoader: false,
-  initialProjectLoadDone: false,
 };
 
 export const initialControl: T.ProjectControlState = {

@@ -23,8 +23,8 @@ import {
   selectCurrentScreenId,
   selectElementsForCurrentScreen,
   selectCurrentRootId,
-} from '../../redux/project/selectors';
-import { DISALLOW_ADD_ELEMENT_NOTIFICATION_TEXT } from '../../features/notification/types';
+} from '../../../redux/project/selectors';
+import { DISALLOW_ADD_ELEMENT_NOTIFICATION_TEXT } from '../../../features/notification/types';
 import {
   copyActiveItem,
   deleteItem,
@@ -34,14 +34,14 @@ import {
   setActiveElementId,
   setNotification,
   undoAction,
-} from '../../redux/project/actions';
-import Scrollbar from '../UI/Scrollbar';
-import { canElementBeAdded } from '../../utils/normalizedStateHelpers';
+} from '../../../redux/project/actions';
+import Scrollbar from '../../UI/Scrollbar';
+import { canElementBeAdded } from '../../../utils/normalizedStateHelpers';
 import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
-} from '../LeftPanel/StyledAccordion';
+} from '../StyledAccordion';
 
 const useStyles = makeStyles({
   tree: {
@@ -49,7 +49,6 @@ const useStyles = makeStyles({
     flex: '1',
     display: 'flex',
     flexDirection: 'column',
-    // order: '1',
 
     '& > :first-child': {
       flex: '1',

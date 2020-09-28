@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import Editor from '../components/Editor/Editor';
+import makeStyles from '@material-ui/core/styles/makeStyles';
 import Spinner from '../components/UI/Spinner';
 import {
   selectProjectLoader,
@@ -12,8 +12,16 @@ import {
 import { RightPanel } from '../features/applyProperties/views/containers';
 import { activateScreen, getProject } from '../redux/project/actions';
 import { selectIsPrototypeMode } from '../redux/user/selectors';
+import LeftPanel from '../components/LeftPanel/LeftPanel';
+import Workspace from '../components/Editor/Workspace/Workspace';
 
-const styles = require('../styles/global.scss');
+const useStyles = makeStyles({
+  root: {
+    display: 'flex',
+    minHeight: '100%',
+    height: 1, // allows children use height in %
+  },
+});
 
 export interface IMatch<P> {
   params: P;
@@ -37,6 +45,8 @@ const EditorLogic: React.FC<Props> = ({
   },
 }) => {
   const dispatch = useDispatch();
+  const classes = useStyles();
+
   const isPrototypeMode = useSelector(selectIsPrototypeMode);
   const scenarioLoader = useSelector(selectScenarioLoader);
   const screenLoader = useSelector(selectScreenLoader);
@@ -53,11 +63,11 @@ const EditorLogic: React.FC<Props> = ({
   }, [screenId]);
 
   return (
-    <div className={styles.editorLogic}>
+    <div className={classes.root}>
       <DndProvider backend={HTML5Backend}>
-        <div className={styles.workArea}>
-          <Editor />
-        </div>
+        <LeftPanel />
+
+        <Workspace />
 
         {!isPrototypeMode && <RightPanel />}
       </DndProvider>

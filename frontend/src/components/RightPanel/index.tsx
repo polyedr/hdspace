@@ -1,24 +1,38 @@
 import React, { ChangeEvent, useState } from 'react';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import withStyles from '@material-ui/core/styles/withStyles';
-import { actionsCreators, selectors } from '../../redux/project';
+import makeStyles from '@material-ui/core/styles/makeStyles';
+import { actionsCreators } from '../../redux/project';
 import Spinner from '../UI/Spinner';
-import { AppReduxState } from '../../shared/types/app';
 import PropertiesTab from './PropertiesTab';
 import ElementsTab from './ElementsTab';
+import {
+  selectActiveElement,
+  selectIsAddElementsModalOpened,
+  selectLoader,
+} from '../../redux/project/selectors';
 
-const styles = require('./styles.scss');
+const useStyles = makeStyles({
+  root: {
+    width: 300, // right panel width constant
+    display: 'flex',
+    flexDirection: 'column',
+    height: '100%',
+  },
+  tabPanel: {
+    flex: 1,
+    overflow: 'auto',
+  },
+});
 
-const StyledTabs = withStyles({
-  root: {},
+const useTabsStyles = makeStyles({
   indicator: {
     backgroundColor: '#1cc09f',
   },
-})(Tabs);
+});
 
-const StyledTab = withStyles({
+const useTabStyles = makeStyles({
   root: {
     minWidth: 72,
     '&:hover': {},
@@ -29,62 +43,61 @@ const StyledTab = withStyles({
     borderRadius: '2px 2px 0 0',
     backgroundColor: '#e7e7e7',
   },
-})(Tab);
+});
 
 type TabPanelProps = {
   children?: React.ReactNode;
   index: number;
   value: number;
 };
+
 const TabPanel: React.FC<TabPanelProps> = ({ value, index, children }) => {
+  const classes = useStyles();
+
   return (
-    <div hidden={value !== index} className={styles.tabPanel}>
+    <div hidden={value !== index} className={classes.tabPanel}>
       {children}
     </div>
   );
 };
 
-const mapState = (state: AppReduxState) => ({
-  activeItem: selectors.selectActiveElement(state),
-  isAddElementsModalOpened: selectors.selectIsAddElementsModalOpened(state),
-  loader: selectors.selectLoader(state),
-});
+const PropertiesPanel: React.FC = () => {
+  const dispatch = useDispatch();
+  const classes = useStyles();
+  const activeElement = useSelector(selectActiveElement);
+  const isAddElementsModalOpened = useSelector(selectIsAddElementsModalOpened);
+  const loader = useSelector(selectLoader);
 
-const mapDispatch = {
-  createElements: actionsCreators.createElements,
-  setIsAddElementsModalOpened: actionsCreators.setIsAddElementsModalOpened,
-};
+  const createElements = (createdElements, meta) =>
+    dispatch(actionsCreators.createElements(createdElements, meta));
 
-type PropertiesPanelProps = ReturnType<typeof mapState> & typeof mapDispatch;
+  const setIsAddElementsModalOpened = (open) =>
+    dispatch(actionsCreators.setIsAddElementsModalOpened(open));
 
-const PropertiesPanel: React.FC<PropertiesPanelProps> = ({
-  loader,
-  createElements,
-  isAddElementsModalOpened,
-  activeItem,
-  setIsAddElementsModalOpened,
-}) => {
+  const tabClasses = useTabStyles();
+  const tabsClasses = useTabsStyles();
+
   const [tab, setTab] = useState(0);
 
   const handleChange = (ev: ChangeEvent<{}>, newValue: number) =>
     setTab(newValue);
 
   return (
-    <div className={styles.editorRightPanel}>
-      <StyledTabs
+    <div className={classes.root}>
+      <Tabs
         value={tab}
         onChange={handleChange}
-        className={styles.tabs}
+        classes={tabsClasses}
         variant="fullWidth"
       >
-        <StyledTab className={styles.tab} label="Properties" />
+        <Tab classes={tabClasses} label="Properties" />
 
-        <StyledTab className={styles.tab} label="Elements" />
-      </StyledTabs>
+        <Tab classes={tabClasses} label="Elements" />
+      </Tabs>
 
       <TabPanel index={0} value={tab}>
         <PropertiesTab
-          activeItem={activeItem}
+          activeItem={activeElement}
           setIsAddElementsModalOpened={setIsAddElementsModalOpened}
           isAddElementsModalOpened={isAddElementsModalOpened}
           createElements={createElements}
@@ -100,4 +113,4 @@ const PropertiesPanel: React.FC<PropertiesPanelProps> = ({
   );
 };
 
-export default connect(mapState, mapDispatch)(PropertiesPanel);
+export default PropertiesPanel;

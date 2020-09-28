@@ -1,22 +1,18 @@
 import React from 'react';
-import { connect } from 'react-redux';
-
+import { useSelector } from 'react-redux';
 import Projects from '../components/Projects/Projects';
 import Spinner from '../components/UI/Spinner';
-import { AppReduxState } from '../shared/types/app';
 import { selectProjectListLoader } from '../redux/project/selectors';
 
-const mapStateToProps = (state: AppReduxState) => ({
-  projectListLoader: selectProjectListLoader(state),
-});
+const ProjectsLogic: React.FC = () => {
+  const projectListLoader = useSelector(selectProjectListLoader);
 
-type IDashboardProps = ReturnType<typeof mapStateToProps>;
+  return (
+    <>
+      <Projects />
+      <Spinner active={projectListLoader} />
+    </>
+  );
+};
 
-const ProjectsLogic: React.FC<IDashboardProps> = ({ projectListLoader }) => (
-  <>
-    <Projects />
-    <Spinner active={projectListLoader} />
-  </>
-);
-
-export default connect(mapStateToProps, null)(ProjectsLogic);
+export default ProjectsLogic;

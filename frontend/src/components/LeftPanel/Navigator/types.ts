@@ -1,4 +1,4 @@
-import { Entity } from '../../domain/core';
+import { Entity } from '../../../domain/core';
 
 export type Node = {
   id: string;

@@ -51,15 +51,13 @@ export function* getProjectSaga(action: ReturnType<typeof Actions.getProject>) {
 
   yield put(Actions.setProjectLoader(true));
 
-  const project: ReturnPromisedType<typeof apiGetProject> = yield call(
-    reqWrapper,
-    apiGetProject,
-    { id },
-  );
+  const project: Project = yield call(reqWrapper, apiGetProject, { id });
   if (!project) {
     console.error(`Error while fetching project ${id}`);
     return;
   }
+
+  yield put(Actions.setProject(project));
 
   yield put(Actions.setCurrentProjectId(project.id));
 

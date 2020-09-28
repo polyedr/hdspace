@@ -1,56 +1,90 @@
 import React from 'react';
-import cn from 'classnames';
 import { useDispatch, useSelector } from 'react-redux';
 import SubjectIcon from '@material-ui/icons/Subject';
 import WebIcon from '@material-ui/icons/Web';
-import Navigator from '../Navigator';
+import makeStyles from '@material-ui/core/styles/makeStyles';
+import { createStyles } from '@material-ui/core';
+import IconButton from '@material-ui/core/IconButton';
+import Navigator from './Navigator';
 import { changeMinLPanel } from '../../redux/user/actions';
 import { selectCurrentScreenId } from '../../redux/project/selectors';
 import { selectIsLeftPanelMinimized } from '../../redux/user/selectors';
-import Screens from '../Screens';
+import Screens from './Screens';
+import Scrollbar from '../UI/Scrollbar';
 
-const styles = require('./LeftPanel.scss');
+const useStyles = makeStyles((theme) =>
+  createStyles({
+    root: {
+      maxHeight: '100%',
+      width: (minimized) => (minimized ? 64 : 220),
+      backgroundColor: theme.palette.panel.main,
+      transition: `width 0.25s ease`,
+    },
+    iconContainer: {
+      textAlign: 'center',
+    },
+    iconButton: {
+      '&:hover': {
+        color: theme.palette.panel.main,
+        backgroundColor: theme.palette.primary.main,
+      },
+    },
+  }),
+);
 
 const LeftPanel: React.FC = () => {
   const dispatch = useDispatch();
-  const isLPanelMinimized = useSelector(selectIsLeftPanelMinimized);
+  const minimized = useSelector(selectIsLeftPanelMinimized);
+
+  const classes = useStyles(minimized);
   const currentScreenId = useSelector(selectCurrentScreenId);
 
   const handleOpenLPanel = () => {
     dispatch(changeMinLPanel());
   };
 
-  return (
-    <aside
-      className={cn(styles.leftPanel, isLPanelMinimized && styles.minPanel)}
-    >
-      {currentScreenId !== -1 &&
-        (isLPanelMinimized ? (
+  return currentScreenId !== -1 ? (
+    <aside className={classes.root}>
+      <Scrollbar
+        autoHeightMin="100%"
+        style={{
+          height: '100%',
+        }}
+      >
+        {minimized ? (
           <>
-            <div
-              className={styles.navigationLink}
-              onClick={handleOpenLPanel}
-              title="Screens"
-            >
-              <WebIcon />
+            <div className={classes.iconContainer}>
+              <IconButton
+                onClick={handleOpenLPanel}
+                className={classes.iconButton}
+                color="primary"
+                title="Screens"
+              >
+                <WebIcon />
+              </IconButton>
             </div>
 
-            <div
-              className={styles.navigationLink}
-              onClick={handleOpenLPanel}
-              title="Navigator"
-            >
-              <SubjectIcon />
+            <div className={classes.iconContainer}>
+              <IconButton
+                className={classes.iconButton}
+                onClick={handleOpenLPanel}
+                title="Navigator"
+                color="primary"
+              >
+                <SubjectIcon />
+              </IconButton>
             </div>
           </>
         ) : (
           <>
             <Screens />
+
             <Navigator />
           </>
-        ))}
+        )}
+      </Scrollbar>
     </aside>
-  );
+  ) : null;
 };
 
 export default LeftPanel;
