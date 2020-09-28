@@ -22,16 +22,27 @@ import { user } from '../../../constants/pathNames';
 import { Info } from '../Info';
 import Button from '../../UI/Button';
 
-// const styles = require('./SignUp.scss');
 const useStyles = makeStyles((theme) =>
   createStyles({
     root: {
       display: 'flex',
+      height: '100vh',
     },
-    formContainer: {},
+    formContainer: {
+      flex: 1,
+      backgroundColor: theme.palette.secondary.main,
+      color: '#000',
+      justifyContent: 'center',
+      padding: 80,
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+    },
+    form: {
+      flex: 0,
+    },
     signinTitle: {
       marginBottom: 30,
-      color: theme.palette.primary.main,
       fontSize: 24,
       lineHeight: '36px',
       fontWeight: 600,
@@ -46,7 +57,7 @@ const useStyles = makeStyles((theme) =>
     signButtonBlock: {
       position: 'relative',
     },
-    signAuthorisationErrorText: {
+    error: {
       marginBottom: 15,
       color: 'red',
     },
@@ -168,7 +179,7 @@ const UnconnectedSignUp: React.FunctionComponent<IProps> = ({
           subscription={{ submitError: true, submitting: true }}
         >
           {({ handleSubmit, submitError, submitting }) => (
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} className={classes.form}>
               {DEFAULT_SIGNUP_FIELDS.map(
                 ({ name, placeholder, label, type, validator }) => (
                   <FormField
@@ -183,19 +194,15 @@ const UnconnectedSignUp: React.FunctionComponent<IProps> = ({
 
               <div className={classes.signButtonBlock}>
                 {!!submitError && (
-                  <p className={classes.signAuthorisationErrorText}>
-                    {submitError}
-                  </p>
+                  <p className={classes.error}>{submitError}</p>
                 )}
 
                 {apiResponseError.errorStatus !== -1 && !isAccountExist && (
-                  <p className={classes.signAuthorisationErrorText}>
-                    {apiResponseError.errorText}
-                  </p>
+                  <p className={classes.error}>{apiResponseError.errorText}</p>
                 )}
 
                 {isAccountExist && (
-                  <p className={classes.signAuthorisationErrorText}>
+                  <p className={classes.error}>
                     Looks like you already have an account.
                     <NavLink
                       className={classes.link}

@@ -1,7 +1,3 @@
-form {
-  flex-grow: 1;
-}
-
 .signinTitle {
   margin-bottom: 30px;
 
@@ -76,4 +72,12 @@ form {
 
 .closeButton {
   margin-right: 10px;
+}
+
+.submitButton {
+  & > span {
+    color: #000;
+  }
+  background-color: #fff;
+  padding: 0.5em 1em;
 }
