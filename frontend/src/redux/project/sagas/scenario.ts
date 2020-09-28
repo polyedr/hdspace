@@ -2,6 +2,16 @@
 
 import { call, put, select } from 'redux-saga/effects';
 import * as R from 'ramda';
+import {
+  selectCustomLibraryElements,
+  selectActiveElementId,
+  selectAllElements,
+  selectElementAsTree,
+  selectElementById,
+  selectCurrentScreenId,
+  selectElementsForScreen,
+  selectScreenRootElement,
+} from '../selectors';
 import * as Actions from '../actions';
 import { selectors, T } from '..';
 import { updateSavedElementsValues } from './screen';
@@ -53,15 +63,6 @@ import {
   restoreMapElementChildren,
   updateMapElement,
 } from '../../../utils/normalizedStateHelpers';
-import {
-  selectActiveElementId,
-  selectAllElements,
-  selectElementAsTree,
-  selectElementById,
-  selectCurrentScreenId,
-  selectElementsForScreen,
-  selectScreenRootElement,
-} from '../selectors';
 
 export function* updateElementsTree(
   chunk: Map<StateElement>,
@@ -567,7 +568,10 @@ export function* updateElementSaga(
 
   const convertedElement = convertElementToPatchRequest(updatedElement);
   if (data.shared === true) {
-    yield put(Actions.addCustomLibraryElement(convertedElement));
+    const customLibraryElements = yield select(selectCustomLibraryElements);
+    if (!customLibraryElements[action.payload.elementID]) {
+      yield put(Actions.addCustomLibraryElement(convertedElement));
+    }
   }
   yield call(reqWrapper, apiChangeElement, {
     data: convertedElement,
