@@ -1,5 +1,5 @@
 import {
-  NamedServerElements,
+  NormalizedLibraryElements,
   Screen,
   StateElement,
   BorderedElementsRect,
@@ -255,7 +255,7 @@ export function selectProjectLoader(state: AppReduxState): boolean {
 
 export const selectCustomLibraryElements = (
   state: AppReduxState,
-): NamedServerElements => {
+): NormalizedLibraryElements => {
   return selectProjectState(state).ui.customLibraryElements;
 };
 

@@ -1,16 +1,12 @@
 import React, { useState } from 'react';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
-import { useSelector } from 'react-redux';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import ElementsBlock from './ElementsBlock';
 import Section from './Section';
 import { LIBRARY_ELEMENTS } from '../../domain/libraryElements/libraryElements';
-import { selectCustomLibraryElements } from '../../redux/project/selectors';
-import {
-  createCustomElementsHierarchy,
-  createElementsHierarchy,
-} from '../../utils/parseScenario';
+import { createElementsHierarchy } from '../../utils/parseScenario';
+import CustomElementsBlock from './CustomElementsLibrary/CustomElementsBlock';
 
 const sections = ['elements', 'templates', 'library'];
 
@@ -50,7 +46,6 @@ const ElementsTab = () => {
   const [section, setSection] = useState(sections[0]);
 
   const libraryElements = LIBRARY_ELEMENTS;
-  const customElements = useSelector(selectCustomLibraryElements);
 
   const { elements, templates, library } = createElementsHierarchy(
     libraryElements,
@@ -58,7 +53,6 @@ const ElementsTab = () => {
 
   const libraryWithCustomUI = {
     ...library,
-    ...createCustomElementsHierarchy(customElements),
   };
 
   const handleChangeSection = (
@@ -106,6 +100,7 @@ const ElementsTab = () => {
         {Object.entries(libraryWithCustomUI).map(([key, value]) => (
           <ElementsBlock key={key} title={key} elements={value} expandable />
         ))}
+        <CustomElementsBlock />
       </Section>
     </div>
   );

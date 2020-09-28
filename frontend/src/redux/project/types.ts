@@ -1,12 +1,12 @@
 /* eslint-disable camelcase */
 import { OverridableComponent } from '@material-ui/core/OverridableComponent';
 import { SvgIconTypeMap } from '@material-ui/core';
+import { ServerElement } from '../../api/types/elements';
 import {
-  ServerElement,
   HeadingType,
   InputType,
   LibraryElement,
-  LibraryElement as RootElement,
+  LibraryElementPatch,
   Project,
   VideoSettingsType,
 } from '../../api/types';
@@ -35,12 +35,8 @@ export type ProjectLibraryElements = {
   [id: number]: IScenarioElement;
 };
 
-export type NamedLibraryElements = {
-  [name: string]: LibraryElement<Entity>;
-};
-
-export type NamedServerElements = {
-  [name: string]: ServerElement<Entity, ServerElement<Entity>[]>;
+export type NormalizedLibraryElements = {
+  [id: number]: ServerElement<Entity, ServerElement<Entity>[]>;
 };
 
 export type StateElement = {
@@ -56,6 +52,7 @@ export type StateElement = {
     ownStyles: CssLikeStyles;
   };
   parameters: any;
+  isShared?: boolean;
 };
 
 export type BorderedElementsRect = {
@@ -74,7 +71,7 @@ export type ProjectUiState = {
   itemToCopyInfo: ItemToCopyInfo | null;
   savedElementsValues: SavedElementsValues;
   showContainersBorders: boolean;
-  customLibraryElements: NamedServerElements;
+  customLibraryElements: NormalizedLibraryElements;
   borderedElementsRect: BorderedElementsRect;
   currentDropTargetId: string | null;
 };
@@ -116,6 +113,7 @@ export type SavedElementsValues = {
 };
 
 export type CreatedElement = {
+  id?: string;
   type: Entity | string;
   name: string;
   custom: boolean;
@@ -124,6 +122,7 @@ export type CreatedElement = {
 export type LoadLibraryElements = IPlainAction<
   typeof TYPES.GET_LIBRARY_ELEMENTS
 >;
+
 export type LoadLibraryElementsSuccess = IAction<
   typeof TYPES.LOAD_LIBRARY_ELEMENTS_SUCCESS,
   { libraryElements: LibraryElements }
@@ -253,6 +252,13 @@ export type RenameElement = IAction<
   { elementID: string; name: string },
   ElementHistoryMeta
 >;
+export type UpdateElement = IAction<
+  typeof TYPES.UPDATE_ELEMENT,
+  {
+    elementID: string;
+    data: LibraryElementPatch<Entity>;
+  }
+>;
 export type ToggleContainersBorders = IPlainAction<
   typeof TYPES.TOGGLE_CONTAINERS_BORDERS
 >;
@@ -318,7 +324,7 @@ export type UpdateElementParameters = IAction<
   typeof TYPES.UPDATE_ELEMENT_PARAMETERS,
   {
     elementId: string;
-    parameters: RootElement<Entity>['parameters'];
+    parameters: LibraryElement<Entity>['parameters'];
   },
   ElementHistoryMeta
 >;
@@ -399,10 +405,6 @@ export type SetUndoActions = IAction<
   Action | Action[]
 >;
 export type SetRedoActions = IAction<typeof TYPES.SET_REDO_ACTIONS, Action[]>;
-export type SaveLibraryElement = IAction<
-  typeof TYPES.SAVE_LIBRARY_ELEMENT_TO_STATE,
-  ServerElement<Entity, ServerElement<Entity>[]>
->;
 export type UnwrapFromContainer = IAction<
   typeof TYPES.UNWRAP_FROM_CONTAINER,
   { elementId: string; wrapperId: string; parentId: string },
@@ -443,6 +445,16 @@ export type AddElements = IAction<
   { elements: LibraryElement<any>[]; parentId?: string }
 >;
 export type RemoveElements = IAction<typeof TYPES.REMOVE_ELEMENTS, string[]>;
+
+export type SetCustomLibraryElements = IAction<
+  typeof TYPES.SET_CUSTOM_LIBRARY_ELEMENTS,
+  { elements: LibraryElement<Entity>[] }
+>;
+
+export type AddCustomLibraryElement = IAction<
+  typeof TYPES.ADD_CUSTOM_LIBRARY_ELEMENT,
+  { element: LibraryElement<Entity> }
+>;
 
 export type Action =
   | LoadProjects
@@ -515,7 +527,6 @@ export type Action =
   | UpdateScreen
   | AddElements
   | RemoveElements
-  | SaveLibraryElement
   | RestoreElement
   | ReturnType<typeof moveStateElement>
   | ReturnType<typeof updateStateElement>
@@ -523,10 +534,12 @@ export type Action =
   | ReturnType<typeof insertStateElement>
   | ReturnType<typeof removeStateElement>
   | SetScreens
-  | SaveLibraryElement
   | AddBorderedElementRect
   | RemoveBorderedElementRect
-  | SetCurrentDropTargetId;
+  | SetCurrentDropTargetId
+  | UpdateElement
+  | SetCustomLibraryElements
+  | AddCustomLibraryElement;
 
 export type ItemToCopyInfo = {
   id: string;
@@ -633,6 +646,7 @@ export interface IScenarioElement {
   parameters: { parent_id?: number } & ElementParameters;
   styles: CssLikeStyles;
   children: IScenarioElement[];
+  is_shared?: boolean;
 }
 
 export interface IScenarioElements {
@@ -708,6 +722,8 @@ export type Map<T> = {
 };
 
 export type ElementData = {
+  key: string;
+  id?: string;
   type: Entity;
   icon: OverridableComponent<SvgIconTypeMap> | undefined;
   name: string;

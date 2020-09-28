@@ -76,9 +76,9 @@ const ElementsBlock: React.FC<Props> = ({
   const renderContent = () =>
     Object.values(elements).map((element) => {
       if (Array.isArray(element)) {
-        return <ElementDropdown options={element} key={element[0].type} />;
+        return <ElementDropdown options={element} key={element[0].key} />;
       }
-      return <ElementButton elementData={element} key={element.type} />;
+      return <ElementButton elementData={element} key={element.key} />;
     });
 
   return expandable ? (

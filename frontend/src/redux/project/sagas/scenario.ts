@@ -2,6 +2,16 @@
 
 import { call, put, select } from 'redux-saga/effects';
 import * as R from 'ramda';
+import {
+  selectCustomLibraryElements,
+  selectActiveElementId,
+  selectAllElements,
+  selectElementAsTree,
+  selectElementById,
+  selectCurrentScreenId,
+  selectElementsForScreen,
+  selectScreenRootElement,
+} from '../selectors';
 import * as Actions from '../actions';
 import { selectors, T } from '..';
 import { updateSavedElementsValues } from './screen';
@@ -53,14 +63,6 @@ import {
   restoreMapElementChildren,
   updateMapElement,
 } from '../../../utils/normalizedStateHelpers';
-import {
-  selectActiveElementId,
-  selectAllElements,
-  selectElementAsTree,
-  selectElementById,
-  selectElementsForScreen,
-  selectScreenRootElement,
-} from '../selectors';
 
 export function* updateElementsTree(
   chunk: Map<StateElement>,
@@ -205,12 +207,11 @@ export function* createElementsSaga(
   const customLibraryElements = yield select(
     selectors.selectCustomLibraryElements,
   );
-
-  const convertedCreatedElements = createdElements.map((element) => {
-    return element.custom
-      ? customLibraryElements[element.name]
-      : convertCreatedElementToRequest(element.type as Entity, null);
-  });
+  const convertedCreatedElements = createdElements.map((dEl) =>
+    dEl.custom
+      ? customLibraryElements[dEl.id || -1]
+      : convertCreatedElementToRequest(dEl.type as Entity, null),
+  );
   yield call(createElements, convertedCreatedElements, activeElementTree, {
     screenId,
   });
@@ -533,6 +534,45 @@ export function* renameElementSaga(
   yield put(Actions.setActiveElement(elementID));
 
   const convertedElement = convertElementToPatchRequest(updatedElement);
+  yield call(reqWrapper, apiChangeElement, {
+    data: convertedElement,
+    id: elementID,
+  });
+}
+
+export function* updateElementSaga(
+  action: ReturnType<typeof Actions.updateElement>,
+) {
+  const screenId = yield select(selectCurrentScreenId);
+  const { elementID, data } = action.payload;
+
+  yield put(
+    Actions.updateStateElement(
+      elementID,
+      { ...data },
+      {
+        screenId,
+        sourceAction: null,
+      },
+    ),
+  );
+
+  const updatedElement: LibraryElement<any> = yield select(
+    selectElementAsTree(elementID),
+  );
+
+  const savedValue = getSavedValue(updatedElement as LibraryElementUnion);
+  yield put(Actions.updateSavedElementValues(elementID, savedValue));
+
+  yield put(Actions.setActiveElementId(elementID));
+
+  const convertedElement = convertElementToPatchRequest(updatedElement);
+  if (data.shared === true) {
+    const customLibraryElements = yield select(selectCustomLibraryElements);
+    if (!customLibraryElements[action.payload.elementID]) {
+      yield put(Actions.addCustomLibraryElement(convertedElement));
+    }
+  }
   yield call(reqWrapper, apiChangeElement, {
     data: convertedElement,
     id: elementID,

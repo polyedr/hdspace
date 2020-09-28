@@ -79,7 +79,7 @@ export const convertElementToPatchRequest = <
 >(
   element: LibraryElement<T, LibraryElement<K>[], P>,
 ): ServerElement<T, ServerElement<K>[], P> => {
-  const { id, name, type, buoyancy, parameters, styles } = element;
+  const { id, name, type, buoyancy, parameters, styles, shared } = element;
 
   return {
     id: Number(id),
@@ -91,6 +91,7 @@ export const convertElementToPatchRequest = <
     image: null,
     parameters,
     styles,
+    shared,
   };
 };
 

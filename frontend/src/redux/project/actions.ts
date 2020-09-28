@@ -1,3 +1,4 @@
+import { ServerElement } from '../../api/types/elements';
 import {
   ElementHistoryMeta,
   HistoryMeta,
@@ -6,7 +7,7 @@ import {
   Screen,
   StateElement,
 } from './types';
-import { ServerElement, Project, LibraryElement } from '../../api/types';
+import { Project, LibraryElement, LibraryElementPatch } from '../../api/types';
 import TYPES from '../../constants/actions';
 
 import { ChildEntity, Entity } from '../../domain/core';
@@ -302,6 +303,14 @@ export const renameElement = (
   type: TYPES.RENAME_ELEMENT,
   payload: { elementID, name },
   meta,
+});
+
+export const updateElement = <T extends Entity>(
+  elementID: string,
+  data: LibraryElementPatch<T>,
+): T.UpdateElement => ({
+  type: TYPES.UPDATE_ELEMENT,
+  payload: { elementID, data },
 });
 
 export const toggleContainersBorders = (): T.ToggleContainersBorders => ({
@@ -627,23 +636,6 @@ export const removeElements = (elementIds: string[]): T.RemoveElements => ({
   payload: elementIds,
 });
 
-export const saveElementToLibrary = <T extends Entity>(
-  id: string,
-  element: ServerElement<T, ServerElement<T>[]>,
-) => {
-  return {
-    type: TYPES.SAVE_LIBRARY_ELEMENT,
-    payload: { id, element },
-  };
-};
-
-export const saveLibraryElementToState = <T extends Entity>(
-  element: ServerElement<T, ServerElement<Entity>[]>,
-) => ({
-  type: TYPES.SAVE_LIBRARY_ELEMENT_TO_STATE,
-  payload: element,
-});
-
 export const addBorderedElementRect = (id: string, rect: DOMRect) => ({
   type: TYPES.ADD_BORDERED_ELEMENT_RECT,
   payload: { id, rect },
@@ -662,4 +654,20 @@ export const setCurrentDropTargetId = (id: string | null) => ({
 export const setCurrentDropTarget = (id: string | null) => ({
   type: TYPES.SET_CURRENT_DROP_TARGET_ID,
   payload: { id },
+});
+
+export const requestCustomLibraryElements = () => ({
+  type: TYPES.REQUEST_CUSTOM_LIBRARY_ELEMENTS,
+});
+
+export const setCustomLibraryElements = (
+  elements: ServerElement<Entity>[],
+) => ({
+  type: TYPES.SET_CUSTOM_LIBRARY_ELEMENTS,
+  payload: { elements },
+});
+
+export const addCustomLibraryElement = (element: ServerElement<Entity>) => ({
+  type: TYPES.ADD_CUSTOM_LIBRARY_ELEMENT,
+  payload: { element },
 });

@@ -1,14 +1,12 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Popover, IconButton } from '@material-ui/core';
 import SaveIcon from '@material-ui/icons/Save';
 import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state';
 import cn from 'classnames';
-import {
-  selectElementBorderedRect,
-  selectElementById,
-} from '../../../../redux/project/selectors';
+import { selectElementById } from '../../../../redux/project/selectors';
 import { SAVEABLE_ELEMENTS } from '../../../../constants/defaultParams';
+import { updateElement } from '../../../../redux/project/actions';
 
 const styles = require('./SaveElementAction.scss');
 
@@ -18,11 +16,11 @@ type Props = {
 
 const SaveElementAction: React.FC<Props> = ({ elementId }) => {
   const element = useSelector(selectElementById(elementId));
-  const elementRect = useSelector(selectElementBorderedRect(elementId));
+  const dispatch = useDispatch();
 
   const inputRef = React.createRef<HTMLInputElement>();
 
-  if (!element || !elementRect || !SAVEABLE_ELEMENTS.includes(element.type)) {
+  if (!element || !SAVEABLE_ELEMENTS.includes(element.type)) {
     return null;
   }
 
@@ -61,12 +59,15 @@ const SaveElementAction: React.FC<Props> = ({ elementId }) => {
                   const e: KeyboardEvent = event.nativeEvent as KeyboardEvent;
                   if (e.code === 'Enter') {
                     // Enter pressed
-                    // const name = inputRef;
-                    // .current!.value.toLowerCase()
-                    // .replace(/ /g, '_');
+                    const name = inputRef.current!.value;
                     inputRef.current!.value = '';
                     popupState.close();
-                    // TODO: implement saving on the server side
+                    dispatch(
+                      updateElement<'section'>(elementId, {
+                        name,
+                        shared: true,
+                      }),
+                    );
                   }
                 }}
               />
