@@ -12,7 +12,6 @@ import {
   getGroupElements,
   IListCategoryEl,
   parseAddElementsTabs,
-  parseAddCustomElementsTabs,
 } from '../../../utils/parseScenario';
 import { AppReduxState } from '../../../shared/types/app';
 import {
@@ -101,7 +100,7 @@ const ModalAddElements: React.FunctionComponent<Props> = ({
   useEffect(() => {
     const newListElement = {
       ...parseAddElementsTabs(libraryElements),
-      ...parseAddCustomElementsTabs(customLibraryElements),
+      // ...parseAddCustomElementsTabs(customLibraryElements),
     };
     setListElement(newListElement);
   }, [libraryElements, customLibraryElements]);
@@ -143,7 +142,7 @@ const ModalAddElements: React.FunctionComponent<Props> = ({
       if (tabName === activeTab) return;
       const newListElement = {
         ...parseAddElementsTabs(libraryElements),
-        ...parseAddCustomElementsTabs(customLibraryElements),
+        // ...parseAddCustomElementsTabs(customLibraryElements),
       };
       setListElement(newListElement);
       setActiveTab(tabName);

@@ -1,4 +1,5 @@
 import * as R from 'ramda';
+import { NormalizedLibraryElements } from '../types';
 import { initialUi } from '../initial';
 import * as T from '../types';
 import TYPES from '../../../constants/actions';
@@ -59,15 +60,26 @@ function uiReducer(
       };
     }
 
-    case TYPES.SAVE_LIBRARY_ELEMENT_TO_STATE: {
+    case TYPES.SET_CUSTOM_LIBRARY_ELEMENTS:
+      return {
+        ...state,
+        customLibraryElements: action.payload.elements.reduce(
+          (accumulator: NormalizedLibraryElements, element) => {
+            accumulator[element.id] = element;
+            return accumulator;
+          },
+          {} as NormalizedLibraryElements,
+        ),
+      };
+
+    case TYPES.ADD_CUSTOM_LIBRARY_ELEMENT:
       return {
         ...state,
         customLibraryElements: {
           ...state.customLibraryElements,
-          [action.payload.name]: action.payload,
+          [action.payload.element.id || -1]: action.payload.element,
         },
       };
-    }
 
     case TYPES.ADD_BORDERED_ELEMENT_RECT: {
       return {

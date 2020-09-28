@@ -141,7 +141,9 @@ export function* exportProjectSaga() {
       const containersIDs = screenContainers.map(
         (screenContainer) => screenContainer.id,
       );
-      return call(reqWrapper, apiGetElements, { scenariosIDs: containersIDs });
+      return call(reqWrapper, apiGetElements, {
+        scenariosIDs: containersIDs,
+      });
     }),
   );
 

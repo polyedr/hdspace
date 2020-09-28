@@ -58,6 +58,7 @@ import {
   selectAllElements,
   selectElementAsTree,
   selectElementById,
+  selectCurrentScreenId,
   selectElementsForScreen,
   selectScreenRootElement,
 } from '../selectors';
@@ -205,12 +206,11 @@ export function* createElementsSaga(
   const customLibraryElements = yield select(
     selectors.selectCustomLibraryElements,
   );
-
-  const convertedCreatedElements = createdElements.map((element) => {
-    return element.custom
-      ? customLibraryElements[element.name]
-      : convertCreatedElementToRequest(element.type as Entity, null);
-  });
+  const convertedCreatedElements = createdElements.map((dEl) =>
+    dEl.custom
+      ? customLibraryElements[dEl.id || -1]
+      : convertCreatedElementToRequest(dEl.type as Entity, null),
+  );
   yield call(createElements, convertedCreatedElements, activeElementTree, {
     screenId,
   });
@@ -533,6 +533,42 @@ export function* renameElementSaga(
   yield put(Actions.setActiveElement(elementID));
 
   const convertedElement = convertElementToPatchRequest(updatedElement);
+  yield call(reqWrapper, apiChangeElement, {
+    data: convertedElement,
+    id: elementID,
+  });
+}
+
+export function* updateElementSaga(
+  action: ReturnType<typeof Actions.updateElement>,
+) {
+  const screenId = yield select(selectCurrentScreenId);
+  const { elementID, data } = action.payload;
+
+  yield put(
+    Actions.updateStateElement(
+      elementID,
+      { ...data },
+      {
+        screenId,
+        sourceAction: null,
+      },
+    ),
+  );
+
+  const updatedElement: LibraryElement<any> = yield select(
+    selectElementAsTree(elementID),
+  );
+
+  const savedValue = getSavedValue(updatedElement as LibraryElementUnion);
+  yield put(Actions.updateSavedElementValues(elementID, savedValue));
+
+  yield put(Actions.setActiveElementId(elementID));
+
+  const convertedElement = convertElementToPatchRequest(updatedElement);
+  if (data.shared === true) {
+    yield put(Actions.addCustomLibraryElement(convertedElement));
+  }
   yield call(reqWrapper, apiChangeElement, {
     data: convertedElement,
     id: elementID,

@@ -47,6 +47,7 @@ export type ServerElement<
     ownStyles: Styles;
   };
   children: Children;
+  shared?: boolean;
 };
 
 export type RootServerElement = ServerElement<'root', []>;
@@ -206,6 +207,15 @@ export type LibraryElement<
   };
   children: Children;
   parameters: { group?: string } & Params;
+  shared?: boolean;
+};
+
+export type LibraryElementPatch<Type extends Entity> = {
+  name?: string;
+  scenario?: number;
+  struct_type?: Type;
+  func_type?: string;
+  shared?: boolean;
 };
 
 export type RootElement = LibraryElement<'root', []>;

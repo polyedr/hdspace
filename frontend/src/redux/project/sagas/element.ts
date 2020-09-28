@@ -12,7 +12,6 @@ import {
   selectCurrentProject,
   selectElementParameters,
   selectElementStyles,
-  selectCurrentScreen,
   selectScreenRootElement,
   selectElementsForScreen,
   selectElementById,
@@ -29,6 +28,7 @@ import {
   apiChangeRecursiveElement,
   apiSaveElements,
   parseImgUsingNN,
+  apiGetCustomLibraryElements,
 } from '../../../api/element';
 
 import generateUniqueName from '../../../utils/generateUniqueName';
@@ -512,16 +512,7 @@ export function* uploadFileSaga({
   }
 }
 
-export function* saveCustomLibraryElement(
-  action: ReturnType<typeof Actions.saveElementToLibrary>,
-) {
-  const currentScreen = yield select(selectCurrentScreen);
-  yield put(Actions.saveLibraryElementToState(action.payload.element));
-  yield put(
-    Actions.renameElement(
-      action.payload.id,
-      action.payload.element.name,
-      currentScreen.id,
-    ),
-  );
+export function* requestCustomLibraryElementsSaga() {
+  const customElements = yield call(reqWrapper, apiGetCustomLibraryElements);
+  yield put(Actions.setCustomLibraryElements(customElements));
 }

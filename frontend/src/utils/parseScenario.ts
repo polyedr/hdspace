@@ -11,7 +11,6 @@ import {
   IScenarios,
   ScenarioLibraryElement,
   ServerStructType,
-  NamedServerElements,
   ElementData,
   ElementsHierarchy,
 } from '../redux/project/types';
@@ -107,6 +106,7 @@ const convertElementToData = (
   element: ServerElement<any>,
   isCustom: boolean = false,
 ): ElementData => ({
+  key: element.struct_type,
   type: element.struct_type,
   icon: ICONS[element.struct_type],
   name: element.name,
@@ -239,8 +239,8 @@ export const parseAddElementsTabs = (
     };
   }, {});
 
-export const parseAddCustomElementsTabs = (
-  customLibraryElements: NamedServerElements,
+/* export const parseAddCustomElementsTabs = (
+  customLibraryElements: NormalizedLibraryElements,
 ): IListCategoryEl => {
   return {
     Custom: R.keys(customLibraryElements).map(
@@ -248,10 +248,10 @@ export const parseAddCustomElementsTabs = (
         ({ ...customLibraryElements[libElName] } as ScenarioLibraryElement),
     ),
   };
-};
+}; */
 
-export const createCustomElementsHierarchy = (
-  customLibraryElements: NamedServerElements,
+/* export const createCustomElementsHierarchy = (
+  customLibraryElements: NormalizedLibraryElements,
 ) => ({
   customUI: R.keys(customLibraryElements).reduce(
     (acc, name) => ({
@@ -260,7 +260,7 @@ export const createCustomElementsHierarchy = (
     }),
     {},
   ),
-});
+}); */
 
 export const getGroupElements = (
   group: string,
