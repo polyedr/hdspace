@@ -28,6 +28,9 @@ export const selectProjectState = makeFeatureStateSelector('project');
 export const selectProjects = ({ project }: AppReduxState) =>
   mapToArr<Project>(project.data.projectsData.results);
 
+export const selectProjectsCount = ({ project }: AppReduxState) =>
+  project.data.projectsData.count;
+
 export const selectProjectsPageSize = ({ project }: AppReduxState) =>
   project.data.projectsData.pageSize;
 

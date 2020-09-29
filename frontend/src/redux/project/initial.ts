@@ -3,7 +3,7 @@ import * as T from './types';
 export const initialData: T.ProjectDataState = {
   projectsData: {
     results: {},
-    pageSize: 3,
+    pageSize: 10,
     loading: false,
     currentPage: 0,
     count: 0,
