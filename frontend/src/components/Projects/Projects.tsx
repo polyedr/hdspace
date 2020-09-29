@@ -16,7 +16,8 @@ import TableContainer from '@material-ui/core/TableContainer';
 import ProjectListItem from './ProjectListItem';
 import { addProject, getProjectList } from '../../redux/project/actions';
 import {
-  selectProjectListLoader,
+  selectAllProjectsLoaded,
+  selectAreProjectsLoading,
   selectProjects,
 } from '../../redux/project/selectors';
 import Spinner from '../UI/Spinner';
@@ -25,6 +26,7 @@ import { Project } from '../../api/types';
 const useStyles = makeStyles((theme) =>
   createStyles({
     root: {
+      textAlign: 'center',
       margin: theme.spacing(2),
       padding: theme.spacing(1),
     },
@@ -51,7 +53,8 @@ const Projects: React.FC = () => {
   const classes = useStyles();
 
   const projectList = useSelector(selectProjects);
-  const projectListLoader = useSelector(selectProjectListLoader);
+  const projectListLoader = useSelector(selectAreProjectsLoading);
+  const allProjectsLoaded = useSelector(selectAllProjectsLoaded);
 
   const sortedProjectList = R.sort(
     R.descend((project: Project) => project.created.getTime()),
@@ -64,6 +67,10 @@ const Projects: React.FC = () => {
 
   const handleProjectAdd = () => {
     dispatch(addProject('AProject'));
+  };
+
+  const handleGetProjects = () => {
+    dispatch(getProjectList());
   };
 
   return (
@@ -108,6 +115,17 @@ const Projects: React.FC = () => {
             </TableBody>
           </Table>
         </TableContainer>
+      )}
+
+      {!allProjectsLoaded && (
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleGetProjects}
+          disabled={projectListLoader}
+        >
+          Load more
+        </Button>
       )}
 
       <Spinner active={projectListLoader} />

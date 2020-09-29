@@ -1,4 +1,10 @@
-import { ServerElement } from '../../api/types/elements';
+import {
+  ServerElement,
+  Project,
+  LibraryElement,
+  LibraryElementPatch,
+  PaginatedResponse,
+} from '../../api/types';
 import {
   ElementHistoryMeta,
   HistoryMeta,
@@ -7,9 +13,7 @@ import {
   Screen,
   StateElement,
 } from './types';
-import { Project, LibraryElement, LibraryElementPatch } from '../../api/types';
 import TYPES from '../../constants/actions';
-
 import { ChildEntity, Entity } from '../../domain/core';
 import { ChildrenElements } from '../../domain/libraryElements/libraryElements';
 import { CssLikeStyles } from '../../utils/StyleHelper';
@@ -22,6 +26,11 @@ export const getProjectList = (): T.LoadProjects => ({
 export const setProjectList = (projects: Project[]): T.LoadProjectsSuccess => ({
   type: TYPES.LOAD_PROJECTS_SUCCESS,
   payload: { projects },
+});
+
+export const setProjectsData = (data: PaginatedResponse<Project>) => ({
+  type: TYPES.SET_PROJECTS_DATA,
+  payload: data,
 });
 
 export const addProject = (name: string): T.AddProject => ({
@@ -629,11 +638,6 @@ export const addElements = (
 ): T.AddElements => ({
   type: TYPES.ADD_ELEMENTS,
   payload: { elements, parentId },
-});
-
-export const removeElements = (elementIds: string[]): T.RemoveElements => ({
-  type: TYPES.REMOVE_ELEMENTS,
-  payload: elementIds,
 });
 
 export const addBorderedElementRect = (id: string, rect: DOMRect) => ({

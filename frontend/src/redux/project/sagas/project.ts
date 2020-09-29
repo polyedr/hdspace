@@ -30,19 +30,28 @@ import { apiGetElements } from '../../../api/element';
 import { apiSaveScreen } from '../../../api/screen';
 import { Project } from '../../../api/types';
 import { setScreens } from '../actions';
+import {
+  selectProjectsCurrentPage,
+  selectProjectsPageSize,
+} from '../selectors';
 
 export function* getProjectListSaga(): SagaIterator {
   yield put(Actions.setProjectListLoader(true));
+  const limit: number = yield select(selectProjectsPageSize);
+  const currentPage: number = yield select(selectProjectsCurrentPage);
+  const offset = currentPage * limit;
 
-  const result = yield call(reqWrapper, apiGetProjectList);
+  const result = yield call(reqWrapper, apiGetProjectList, {
+    params: { limit, offset },
+  });
 
   if (!result) {
     yield put(Actions.setProjectListLoader(false));
-
     return;
   }
 
-  yield put(Actions.setProjectList(result));
+  yield put(Actions.setProjectsData(result));
+  // yield put(Actions.setProjectList(result));
   yield put(Actions.setProjectListLoader(false));
 }
 
@@ -102,14 +111,9 @@ export function* addProjectSaga({
   yield put(Actions.setIsAddElementsModalOpened(true));
 
   // eslint-disable-next-line consistent-return
-  return project;
-}
+  yield put(Actions.setCurrentProjectId(project.id));
 
-export function* addProject(action: ReturnType<typeof Actions.addProject>) {
-  const { id: projectID } = yield call(addProjectSaga, action);
-  yield put(Actions.setCurrentProjectId(projectID));
-  yield call(addScreenSaga, Actions.addScreen(projectID, 'Screen 1', 0, true));
-  yield put(push(`/project/${projectID}`));
+  yield call(addScreenSaga, Actions.addScreen(project.id, 'Screen 1', 0, true));
 }
 
 export function* exportProjectSaga() {

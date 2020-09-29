@@ -36,7 +36,7 @@ import {
   wrapIntoContainerSaga,
 } from './scenario';
 import {
-  addProject,
+  addProjectSaga,
   changeScreensOrderSaga,
   delProjectSaga,
   exportProjectSaga,
@@ -470,7 +470,7 @@ export default function* projectSaga() {
   yield takeLatest(LOCATION_CHANGE, LocationChange);
 
   yield takeLatest(TYPES.LOAD_PROJECTS, getProjectListSaga);
-  yield takeLatest(TYPES.ADD_PROJECT, addProject);
+  yield takeLatest(TYPES.ADD_PROJECT, addProjectSaga);
   yield takeLatest(TYPES.DELETE_PROJECT, delProjectSaga);
   yield takeLatest(TYPES.UPDATE_PROJECT, updateProjectSaga);
   yield takeLatest(TYPES.GET_PROJECT, getProjectSaga);

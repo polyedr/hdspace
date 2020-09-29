@@ -86,16 +86,48 @@ function dataReducer(
     case TYPES.LOAD_PROJECTS_SUCCESS: {
       return {
         ...state,
-        projects: arrayToMap<Project>(action.payload.projects),
+        projectsData: {
+          ...state.projectsData,
+          results: arrayToMap<Project>(action.payload.projects),
+        },
+      };
+    }
+
+    case TYPES.SET_PROJECTS_DATA: {
+      const { results, count } = action.payload;
+      return {
+        ...state,
+        projectsData: {
+          ...state.projectsData,
+          results: {
+            ...state.projectsData.results,
+            ...arrayToMap(results),
+          },
+          currentPage: state.projectsData.currentPage + 1,
+          count,
+        },
+      };
+    }
+
+    case TYPES.SET_PROJECT_LIST_LOADER: {
+      return {
+        ...state,
+        projectsData: {
+          ...state.projectsData,
+          loading: action.payload.active,
+        },
       };
     }
 
     case TYPES.SET_PROJECT: {
       return {
         ...state,
-        projects: {
-          ...state.projects,
-          [action.payload.project.id]: action.payload.project,
+        projectsData: {
+          ...state.projectsData,
+          results: {
+            ...state.projectsData.results,
+            [action.payload.project.id]: action.payload.project,
+          },
         },
       };
     }
@@ -144,32 +176,6 @@ function dataReducer(
       return newState;
     }
 
-    case TYPES.REMOVE_ELEMENTS: {
-      const elementIds = action.payload;
-      const newState = {
-        ...state,
-      };
-
-      elementIds.forEach((id) => {
-        const target = newState.elements[id];
-        if (target?.parent) {
-          const parent = newState.elements[target.parent];
-
-          parent.children = parent?.children.filter(
-            (childId) => childId !== id,
-          );
-        }
-
-        target.children.forEach((childId) => {
-          delete newState.elements[childId];
-        });
-
-        delete newState.elements[id];
-      });
-
-      return newState;
-    }
-
     case TYPES.RESET_SCREEN_STATE: {
       return {
         ...state,
@@ -179,9 +185,7 @@ function dataReducer(
     }
 
     case TYPES.LOGOUT: {
-      return {
-        ...initialData,
-      };
+      return initialData;
     }
 
     default:

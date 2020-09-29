@@ -20,6 +20,7 @@ import {
   insertStateElement,
   moveStateElement,
   removeStateElement,
+  setProjectsData,
   updateStateElement,
 } from './actions';
 
@@ -59,8 +60,16 @@ export type BorderedElementsRect = {
   [id: string]: DOMRect;
 };
 
+export type PaginatedData<T> = {
+  count: number;
+  currentPage: number;
+  pageSize: number;
+  loading: boolean;
+  results: Map<T>;
+};
+
 export type ProjectDataState = {
-  projects: Map<Project>;
+  projectsData: PaginatedData<Project>;
   screens: Map<Screen>;
   elements: Map<StateElement>;
 };
@@ -444,8 +453,6 @@ export type AddElements = IAction<
   typeof TYPES.ADD_ELEMENTS,
   { elements: LibraryElement<any>[]; parentId?: string }
 >;
-export type RemoveElements = IAction<typeof TYPES.REMOVE_ELEMENTS, string[]>;
-
 export type SetCustomLibraryElements = IAction<
   typeof TYPES.SET_CUSTOM_LIBRARY_ELEMENTS,
   { elements: LibraryElement<Entity>[] }
@@ -478,7 +485,6 @@ export type Action =
   | ClearAfterPrevScreen
   | SaveScreen
   | SetCurrentScreenId
-  | SetScreens
   | CopyElementStyles
   | UpdateElementStyles
   | UpdateElementImage
@@ -526,13 +532,13 @@ export type Action =
   | SetProject
   | UpdateScreen
   | AddElements
-  | RemoveElements
   | RestoreElement
   | ReturnType<typeof moveStateElement>
   | ReturnType<typeof updateStateElement>
   | ReturnType<typeof addStateElements>
   | ReturnType<typeof insertStateElement>
   | ReturnType<typeof removeStateElement>
+  | ReturnType<typeof setProjectsData>
   | SetScreens
   | AddBorderedElementRect
   | RemoveBorderedElementRect

@@ -26,6 +26,9 @@ const useStyles = makeStyles((theme) =>
         color: theme.palette.link.light,
       },
     },
+    tableRow: {
+      height: '5em',
+    },
   }),
 );
 
@@ -67,7 +70,7 @@ const ProjectListItem: React.FC<Props> = ({
 
   return (
     <>
-      <TableRow>
+      <TableRow className={classes.tableRow}>
         <TableCell>
           <Typography color="secondary">{status}</Typography>
         </TableCell>
