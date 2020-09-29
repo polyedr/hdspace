@@ -210,7 +210,6 @@ class ProjectMember(TimeStampedModel):
     STATUS_CREATOR = "creator"
     STATUS_MEMBER = "member"
     MEMBER_STATUS = ((STATUS_CREATOR, "CREATOR"), (STATUS_MEMBER, "MEMBER"))
-    # external roles goes here
     role = models.CharField(max_length=250, null=True, blank=True) 
     status = models.CharField(
         choices=MEMBER_STATUS, default=STATUS_MEMBER, max_length=32
