@@ -14,6 +14,7 @@ import TableBody from '@material-ui/core/TableBody';
 import Button from '@material-ui/core/Button';
 import TableContainer from '@material-ui/core/TableContainer';
 import Container from '@material-ui/core/Container';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import ProjectListItem from './ProjectListItem';
 import { addProject, getProjectList } from '../../redux/project/actions';
 import {
@@ -21,7 +22,6 @@ import {
   selectAreProjectsLoading,
   selectProjects,
 } from '../../redux/project/selectors';
-import Spinner from '../UI/Spinner';
 import { Project } from '../../api/types';
 
 const useStyles = makeStyles((theme) =>
@@ -45,6 +45,10 @@ const useStyles = makeStyles((theme) =>
     },
     tableHeader: {
       backgroundColor: '#dedede',
+    },
+    loader: {
+      padding: '1em',
+      textAlign: 'center',
     },
   }),
 );
@@ -80,7 +84,7 @@ const Projects: React.FC = () => {
       {
         root: null,
         rootMargin: '0px',
-        threshold: 1,
+        threshold: 0.01,
       },
     );
 
@@ -123,37 +127,41 @@ const Projects: React.FC = () => {
 
         <Divider />
 
-        {projectList.length !== 0 && (
-          <TableContainer className={classes.table}>
-            <Table size="small">
-              <TableHead className={classes.tableHeader}>
+        <TableContainer className={classes.table}>
+          <Table size="small">
+            <TableHead className={classes.tableHeader}>
+              <TableRow>
+                <TableCell>Project Status</TableCell>
+
+                <TableCell>Project Name</TableCell>
+
+                <TableCell>Last Edit</TableCell>
+
+                <TableCell>Total Pages</TableCell>
+
+                <TableCell>Actions</TableCell>
+              </TableRow>
+            </TableHead>
+
+            <TableBody>
+              {sortedProjectList.map((project, i) => (
+                <ProjectListItem
+                  project={project}
+                  key={project.id}
+                  ref={i === projectList.length - 1 ? ref : undefined}
+                />
+              ))}
+
+              {projectListLoader && (
                 <TableRow>
-                  <TableCell>Project Status</TableCell>
-
-                  <TableCell>Project Name</TableCell>
-
-                  <TableCell>Last Edit</TableCell>
-
-                  <TableCell>Total Pages</TableCell>
-
-                  <TableCell>Actions</TableCell>
+                  <TableCell colSpan={5} className={classes.loader}>
+                    <CircularProgress color="secondary" />
+                  </TableCell>
                 </TableRow>
-              </TableHead>
-
-              <TableBody>
-                {sortedProjectList.map((project, i) => (
-                  <ProjectListItem
-                    project={project}
-                    key={project.id}
-                    ref={i === projectList.length - 1 ? ref : undefined}
-                  />
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        )}
-
-        <Spinner active={projectListLoader} />
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
       </Paper>
     </Container>
   );
