@@ -1,3 +1,4 @@
+import produce from 'immer';
 import { Indices, Map, ParentIds, StateElement } from '../redux/project/types';
 import { LibraryElement } from '../api/types';
 import { AVAILABLE_CHILDREN, Entity } from '../domain/core';
@@ -145,22 +146,21 @@ export const insertMapElement = (
 export const restoreMapElement = (
   state: Map<StateElement>,
   elementId: string,
-): Map<StateElement> => {
-  const newState = { ...state };
-  const element = newState[elementId];
-  if (!element.parent) return newState;
+): Map<StateElement> =>
+  // eslint-disable-next-line consistent-return
+  produce(state, (draft) => {
+    const element = draft[elementId];
+    if (!element.parent) return draft;
+    const parent = draft[element.parent];
+    parent.children.splice(element.buoyancy, 0, element.id);
 
-  const parent = newState[element.parent];
-  parent.children.splice(element.buoyancy, 0, element.id);
-  parent.children.forEach((id, i) => {
-    newState[id] = {
-      ...newState[id],
-      buoyancy: i,
-    };
+    parent.children.forEach((id, i) => {
+      draft[id] = {
+        ...draft[id],
+        buoyancy: i,
+      };
+    });
   });
-
-  return newState;
-};
 
 export const restoreMapElementChildren = (
   state: Map<StateElement>,
