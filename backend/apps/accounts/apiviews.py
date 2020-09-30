@@ -1,8 +1,16 @@
 """Views for the accounts api"""
 
 from rest_framework import generics
+from rest_framework.pagination import CursorPagination
+
 from .models import User, Profile, Team, TeamMember
 from .serializers import UserSerializer, ProfileSerializer
+
+
+class UserCursorSetPagination(CursorPagination):
+    page_size = 10
+    page_size_query_param = 'page_size'
+    ordering = '-date_joined'  # '-created' is default
 
 
 class UserList(generics.ListCreateAPIView):
@@ -12,6 +20,7 @@ class UserList(generics.ListCreateAPIView):
 
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    pagination_class = UserCursorSetPagination
 
 
 class UserDetail(generics.RetrieveUpdateDestroyAPIView):
