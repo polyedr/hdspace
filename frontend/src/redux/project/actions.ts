@@ -1,4 +1,9 @@
-import { ServerElement } from '../../api/types/elements';
+import {
+  ServerElement,
+  Project,
+  LibraryElement,
+  LibraryElementPatch,
+} from '../../api/types';
 import {
   ElementHistoryMeta,
   HistoryMeta,
@@ -7,7 +12,7 @@ import {
   Screen,
   StateElement,
 } from './types';
-import { Project, LibraryElement, LibraryElementPatch } from '../../api/types';
+
 import TYPES from '../../constants/actions';
 
 import { ChildEntity, Entity } from '../../domain/core';
@@ -250,6 +255,11 @@ export const insertStateElement = (
     childId,
   },
   meta,
+});
+
+export const extractStateElement = (elementId: string) => ({
+  type: TYPES.EXTRACT_STATE_ELEMENT,
+  payload: elementId,
 });
 
 export const removeStateElement = (

@@ -1,8 +1,8 @@
 /* eslint-disable camelcase */
 import { OverridableComponent } from '@material-ui/core/OverridableComponent';
 import { SvgIconTypeMap } from '@material-ui/core';
-import { ServerElement } from '../../api/types/elements';
 import {
+  ServerElement,
   HeadingType,
   InputType,
   LibraryElement,
@@ -10,6 +10,7 @@ import {
   Project,
   VideoSettingsType,
 } from '../../api/types';
+
 import { LibraryElements } from '../../domain/libraryElements/libraryElements';
 import { IAction, IPlainAction, IPlainFailAction } from '../../shared/redux';
 import { Entity } from '../../domain/core';
@@ -17,6 +18,7 @@ import TYPES from '../../constants/actions';
 import { CssLikeStyles } from '../../utils/StyleHelper';
 import {
   addStateElements,
+  extractStateElement,
   insertStateElement,
   moveStateElement,
   removeStateElement,
@@ -533,6 +535,7 @@ export type Action =
   | ReturnType<typeof addStateElements>
   | ReturnType<typeof insertStateElement>
   | ReturnType<typeof removeStateElement>
+  | ReturnType<typeof extractStateElement>
   | SetScreens
   | AddBorderedElementRect
   | RemoveBorderedElementRect

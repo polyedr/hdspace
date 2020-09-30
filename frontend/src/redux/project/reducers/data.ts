@@ -6,6 +6,7 @@ import { Screen } from '../types';
 import {
   addMapElements,
   arrayToMap,
+  extractMapElement,
   flattenElements,
   insertMapElement,
   moveMapElement,
@@ -69,6 +70,14 @@ function dataReducer(
           ...state.elements,
           ...insertMapElement(state.elements, element, parentId, childId),
         },
+      };
+    }
+
+    case TYPES.EXTRACT_STATE_ELEMENT: {
+      const elementId = action.payload;
+      return {
+        ...state,
+        elements: extractMapElement(state.elements, elementId),
       };
     }
 

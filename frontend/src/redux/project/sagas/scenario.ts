@@ -61,7 +61,6 @@ import {
   removeMapElement,
   restoreMapElement,
   restoreMapElementChildren,
-  updateMapElement,
 } from '../../../utils/normalizedStateHelpers';
 
 export function* updateElementsTree(
@@ -458,48 +457,54 @@ export function* unwrapFromContainerSaga(
     return;
   }
 
-  const { elementId, wrapperId, parentId } = action.payload;
-  const { screenId } = action.meta;
+  const { wrapperId, parentId } = action.payload;
 
-  yield put(Actions.setActiveElement(parentId));
+  yield put(Actions.extractStateElement(wrapperId));
   const parent: StateElement = yield select(selectElementById(parentId));
+  console.log(parent.children);
 
-  const newParentChildrenIds = [
-    ...parent.children.filter((id) => id !== wrapperId),
-    elementId,
-  ];
-
-  const state: Map<StateElement> = yield select(
-    selectElementsForScreen(screenId),
-  );
-
-  const stateWithUpdatedParent = updateMapElement(state, parentId, {
-    children: newParentChildrenIds,
-  });
-  const stateWithUpdatedWrapper = updateMapElement(
-    stateWithUpdatedParent,
-    wrapperId,
-    {
-      children: stateWithUpdatedParent[wrapperId].children.filter(
-        (id) => id !== elementId,
-      ),
-      parent: undefined,
-    },
-  );
-
-  yield put(
-    Actions.updateElementsTree(
-      updateMapElement(stateWithUpdatedWrapper, elementId, {
-        parent: parentId,
-      }),
-      { undo: true, screenId, sourceAction: action },
-    ),
-  );
-
-  yield call(reqWrapper, apiChangeRecursiveElement, {
-    data: { children: newParentChildrenIds },
-    id: parentId,
-  });
+  // const { elementId, wrapperId, parentId } = action.payload;
+  // const { screenId } = action.meta;
+  //
+  // yield put(Actions.setActiveElement(parentId));
+  // const parent: StateElement = yield select(selectElementById(parentId));
+  //
+  // const newParentChildrenIds = [
+  //   ...parent.children.filter((id) => id !== wrapperId),
+  //   elementId,
+  // ];
+  //
+  // const state: Map<StateElement> = yield select(
+  //   selectElementsForScreen(screenId),
+  // );
+  //
+  // const stateWithUpdatedParent = updateMapElement(state, parentId, {
+  //   children: newParentChildrenIds,
+  // });
+  // const stateWithUpdatedWrapper = updateMapElement(
+  //   stateWithUpdatedParent,
+  //   wrapperId,
+  //   {
+  //     children: stateWithUpdatedParent[wrapperId].children.filter(
+  //       (id) => id !== elementId,
+  //     ),
+  //     parent: undefined,
+  //   },
+  // );
+  //
+  // yield put(
+  //   Actions.updateElementsTree(
+  //     updateMapElement(stateWithUpdatedWrapper, elementId, {
+  //       parent: parentId,
+  //     }),
+  //     { undo: true, screenId, sourceAction: action },
+  //   ),
+  // );
+  //
+  // yield call(reqWrapper, apiChangeRecursiveElement, {
+  //   data: { children: newParentChildrenIds },
+  //   id: parentId,
+  // });
 }
 
 export function* renameElementSaga(
