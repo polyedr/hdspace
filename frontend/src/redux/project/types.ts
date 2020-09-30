@@ -61,8 +61,8 @@ export type BorderedElementsRect = {
 };
 
 export type PaginatedData<T> = {
-  count: number;
-  currentPage: number;
+  next: string | null;
+  previous: string | null;
   pageSize: number;
   loading: boolean;
   results: Map<T>;

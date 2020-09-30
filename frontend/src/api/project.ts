@@ -2,7 +2,7 @@
 
 import { AxiosResponse, AxiosError } from 'axios';
 import { convertProjectFromResponse } from './converters/fromResponse';
-import { PaginatedResponse, Project } from './types';
+import { PaginatedResponse, Project, ServerProject } from './types';
 import { myAxios, MyAxiosProps } from '../../config/settings';
 
 export const onError = ({ response: r }: AxiosError) => {
@@ -51,6 +51,13 @@ export const onError = ({ response: r }: AxiosError) => {
 export const parseResult = <T>(result: AxiosResponse<T>) =>
   result && result.data;
 
+export const parseCursor = (str: string | null) => {
+  if (!str) return null;
+  const matches = str.match(/cursor=(.*)$/);
+  if (!matches) return null;
+  return matches[1];
+};
+
 export const apiGetProjectList = (
   props: MyAxiosProps,
 ): Promise<PaginatedResponse<Project>> =>
@@ -59,8 +66,9 @@ export const apiGetProjectList = (
     method: 'GET',
     url: '/projects/projects/',
   })
-    .then((result) => ({
-      ...result.data,
+    .then((result: AxiosResponse<PaginatedResponse<ServerProject>>) => ({
+      next: parseCursor(result.data.next),
+      previous: parseCursor(result.data.previous),
       results: result.data.results.map(convertProjectFromResponse),
     }))
     .catch(onError);

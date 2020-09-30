@@ -18,9 +18,9 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import ProjectListItem from './ProjectListItem';
 import { addProject, getProjectList } from '../../redux/project/actions';
 import {
-  selectAllProjectsLoaded,
   selectAreProjectsLoading,
   selectProjects,
+  selectProjectsDataNext,
 } from '../../redux/project/selectors';
 import { Project } from '../../api/types';
 
@@ -62,14 +62,14 @@ const Projects: React.FC = () => {
 
   const projectList = useSelector(selectProjects);
   const projectListLoader = useSelector(selectAreProjectsLoading);
-  const allProjectsLoaded = useSelector(selectAllProjectsLoaded);
+  const hasNext = useSelector(selectProjectsDataNext);
 
   useEffect(() => {
     dispatch(getProjectList());
   }, [dispatch]);
 
   const handleGetProjects = () => {
-    if (!allProjectsLoaded) {
+    if (hasNext) {
       dispatch(getProjectList());
     }
   };

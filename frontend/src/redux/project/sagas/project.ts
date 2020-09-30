@@ -30,27 +30,21 @@ import { apiGetElements } from '../../../api/element';
 import { apiSaveScreen } from '../../../api/screen';
 import { PaginatedResponse, Project } from '../../../api/types';
 import { setScreens } from '../actions';
-import {
-  selectProjectsCurrentPage,
-  selectProjectsPageSize,
-} from '../selectors';
+import { selectProjectsDataNext } from '../selectors';
 
 export function* getProjectListSaga(): SagaIterator {
   yield put(Actions.setProjectListLoader(true));
-  const limit: number = yield select(selectProjectsPageSize);
-  const currentPage: number = yield select(selectProjectsCurrentPage);
-  const offset = currentPage * limit;
+
+  const next: string | null = yield select(selectProjectsDataNext);
 
   const result: PaginatedResponse<Project> = yield call(
     reqWrapper,
     apiGetProjectList,
     {
-      params: { limit, offset },
+      params: {
+        cursor: next,
+      },
     },
-  );
-
-  console.log(
-    result.results /* sort((a, b) => b.created.getTime() - a.created.getTime()) */,
   );
 
   if (!result) {
@@ -59,7 +53,6 @@ export function* getProjectListSaga(): SagaIterator {
   }
 
   yield put(Actions.setProjectsData(result));
-  // yield put(Actions.setProjectList(result));
   yield put(Actions.setProjectListLoader(false));
 }
 

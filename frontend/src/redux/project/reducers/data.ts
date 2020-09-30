@@ -73,13 +73,13 @@ const dataReducer = produce(
       }
 
       case TYPES.SET_PROJECTS_DATA: {
-        const { results, count } = action.payload;
+        const { results, next, previous } = action.payload;
         draft.projectsData.results = {
           ...draft.projectsData.results,
           ...arrayToMap(results),
         };
-        draft.projectsData.currentPage += 1;
-        draft.projectsData.count = count;
+        draft.projectsData.next = next;
+        draft.projectsData.previous = previous;
         break;
       }
 
