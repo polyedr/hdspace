@@ -276,7 +276,15 @@ export function* softDeleteSaga(action: ReturnType<typeof Actions.deleteItem>) {
   }
 
   if (!undo) {
-    yield put(setUndoActions(Actions.restoreElement(id, { screenId })));
+    yield put(
+      setUndoActions(
+        Actions.restoreElementChildren(
+          parent.id,
+          parent.children.map((child) => child.id),
+          { screenId },
+        ),
+      ),
+    );
   }
 
   const activeElementId = yield select(selectActiveElementId);
@@ -296,14 +304,20 @@ export function* softDeleteSaga(action: ReturnType<typeof Actions.deleteItem>) {
     }),
   );
 
-  const updatedParent: StateElement = yield select(
-    selectElementById(parent.id),
+  const updatedParent: LibraryElement<any> = yield select(
+    selectElementAsTree(parent.id),
   );
 
   yield call(reqWrapper, apiChangeRecursiveElement, {
-    data: { children: updatedParent.children },
+    data: { children: updatedParent.children.map((child) => child.id) },
     id: parent.id,
   });
+
+  const convertedElements = updatedParent.children.map((child) =>
+    convertElementToPatchRequest(child),
+  );
+
+  yield call(reqWrapper, apiSaveElements, { data: convertedElements });
 }
 
 export function* restoreElementChildrenSaga(
@@ -336,12 +350,22 @@ export function* restoreElementChildrenSaga(
     ),
   );
 
+  const updatedElement: LibraryElement<any> = yield select(
+    selectElementAsTree(elementId),
+  );
+
+  const convertedElements = updatedElement.children.map((child) =>
+    convertElementToPatchRequest(child),
+  );
+
   yield call(reqWrapper, apiChangeRecursiveElement, {
     data: {
       children: [...element.children, elementId],
     },
     id: elementId,
   });
+
+  yield call(reqWrapper, apiSaveElements, { data: convertedElements });
 }
 
 export function* restoreElementSaga(
@@ -438,13 +462,34 @@ export function* wrapIntoContainerSaga(
       ),
     }),
   );
-  const container: StateElement = yield select(
-    selectElementById(createdContainer.id),
+
+  const updatedParent: LibraryElement<any> = yield select(
+    selectElementAsTree(parent.id),
+  );
+  const updatedWrapper: LibraryElement<any> = yield select(
+    selectElementAsTree(createdContainer.id),
   );
 
-  yield call(addElementToElement, container.id, parent.id);
+  yield call(reqWrapper, apiChangeRecursiveElement, {
+    data: { children: updatedParent.children.map((child) => child.id) },
+    id: updatedParent.id,
+  });
 
-  yield call(addElementToElement, element.id, container.id);
+  yield call(reqWrapper, apiChangeRecursiveElement, {
+    data: { children: updatedWrapper.children.map((child) => child.id) },
+    id: updatedWrapper.id,
+  });
+
+  const convertedElements = [
+    ...updatedParent.children.map((child) =>
+      convertElementToPatchRequest(child),
+    ),
+    ...updatedWrapper.children.map((child) =>
+      convertElementToPatchRequest(child),
+    ),
+  ];
+
+  yield call(reqWrapper, apiSaveElements, { data: convertedElements });
 }
 
 export function* unwrapFromContainerSaga(
@@ -460,51 +505,20 @@ export function* unwrapFromContainerSaga(
   const { wrapperId, parentId } = action.payload;
 
   yield put(Actions.extractStateElement(wrapperId));
-  const parent: StateElement = yield select(selectElementById(parentId));
-  console.log(parent.children);
+  const parent: LibraryElement<any> = yield select(
+    selectElementAsTree(parentId),
+  );
 
-  // const { elementId, wrapperId, parentId } = action.payload;
-  // const { screenId } = action.meta;
-  //
-  // yield put(Actions.setActiveElement(parentId));
-  // const parent: StateElement = yield select(selectElementById(parentId));
-  //
-  // const newParentChildrenIds = [
-  //   ...parent.children.filter((id) => id !== wrapperId),
-  //   elementId,
-  // ];
-  //
-  // const state: Map<StateElement> = yield select(
-  //   selectElementsForScreen(screenId),
-  // );
-  //
-  // const stateWithUpdatedParent = updateMapElement(state, parentId, {
-  //   children: newParentChildrenIds,
-  // });
-  // const stateWithUpdatedWrapper = updateMapElement(
-  //   stateWithUpdatedParent,
-  //   wrapperId,
-  //   {
-  //     children: stateWithUpdatedParent[wrapperId].children.filter(
-  //       (id) => id !== elementId,
-  //     ),
-  //     parent: undefined,
-  //   },
-  // );
-  //
-  // yield put(
-  //   Actions.updateElementsTree(
-  //     updateMapElement(stateWithUpdatedWrapper, elementId, {
-  //       parent: parentId,
-  //     }),
-  //     { undo: true, screenId, sourceAction: action },
-  //   ),
-  // );
-  //
-  // yield call(reqWrapper, apiChangeRecursiveElement, {
-  //   data: { children: newParentChildrenIds },
-  //   id: parentId,
-  // });
+  yield call(reqWrapper, apiChangeRecursiveElement, {
+    data: { children: parent.children.map((child) => child.id) },
+    id: parentId,
+  });
+
+  const convertedElements = parent.children.map((child) =>
+    convertElementToPatchRequest(child),
+  );
+
+  yield call(reqWrapper, apiSaveElements, { data: convertedElements });
 }
 
 export function* renameElementSaga(
@@ -596,13 +610,6 @@ export function* redoWrapIntoContainerSaga(
   const { parentId, wrapperId, elementId } = action.payload;
   const { screenId } = action.meta;
 
-  const parent: StateElement = yield select(selectElementById(parentId));
-
-  const newParentChildren = [
-    ...parent.children.filter((id) => id !== elementId),
-    wrapperId,
-  ];
-
   const wrapper: LibraryElement<any> = yield select(
     selectElementAsTree(wrapperId),
   );
@@ -615,14 +622,33 @@ export function* redoWrapIntoContainerSaga(
     }),
   );
 
+  const updatedParent: LibraryElement<any> = yield select(
+    selectElementAsTree(parentId),
+  );
+  const updatedWrapper: LibraryElement<any> = yield select(
+    selectElementAsTree(wrapperId),
+  );
+
   yield call(reqWrapper, apiChangeRecursiveElement, {
     data: { children: [elementId] },
     id: wrapperId,
   });
+
   yield call(reqWrapper, apiChangeRecursiveElement, {
-    data: { children: newParentChildren },
+    data: { children: updatedParent.children.map((child) => child.id) },
     id: parentId,
   });
+
+  const convertedElements = [
+    ...updatedParent.children.map((child) =>
+      convertElementToPatchRequest(child),
+    ),
+    ...updatedWrapper.children.map((child) =>
+      convertElementToPatchRequest(child),
+    ),
+  ];
+
+  yield call(reqWrapper, apiSaveElements, { data: convertedElements });
 
   yield put(
     Actions.setUndoActions(

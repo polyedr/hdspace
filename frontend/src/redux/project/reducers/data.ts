@@ -33,10 +33,7 @@ function dataReducer(
       const { elementId, indices, parents } = action.payload;
       return {
         ...state,
-        elements: {
-          ...state.elements,
-          ...moveMapElement(state.elements, elementId, indices, parents),
-        },
+        elements: moveMapElement(state.elements, elementId, indices, parents),
       };
     }
 
