@@ -82,7 +82,7 @@ CORS_ORIGIN_ALLOW_ALL = True
 
 # Set default permissions to anyone can access our API
 REST_FRAMEWORK = {
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.CursorPagination',
     'PAGE_SIZE': 100,
 
     "DEFAULT_PERMISSION_CLASSES": [
