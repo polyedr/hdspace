@@ -3,6 +3,7 @@ from rest_framework import generics, viewsets, permissions
 from rest_framework.response import Response
 from rest_framework_bulk import ListBulkCreateUpdateDestroyAPIView, BulkModelViewSet
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.pagination import CursorPagination
 
 from .models import (
     Project,
@@ -48,10 +49,16 @@ class IsOwner(permissions.BasePermission):
             return obj.owner == request.user
 
 
+class ProjectCursorSetPagination(CursorPagination):
+    page_size = 10
+    page_size_query_param = 'page_size'
+
+
 class ProjectViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
+    pagination_class = ProjectCursorSetPagination
 
     def get_queryset(self):
         return self.get_serializer_class().setup_eager_loading(self.queryset)
