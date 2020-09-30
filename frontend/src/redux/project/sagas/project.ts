@@ -28,7 +28,7 @@ import { Page } from '../types';
 import { apiGetScenarios } from '../../../api/scenario';
 import { apiGetElements } from '../../../api/element';
 import { apiSaveScreen } from '../../../api/screen';
-import { Project } from '../../../api/types';
+import { PaginatedResponse, Project } from '../../../api/types';
 import { setScreens } from '../actions';
 import {
   selectProjectsCurrentPage,
@@ -41,9 +41,17 @@ export function* getProjectListSaga(): SagaIterator {
   const currentPage: number = yield select(selectProjectsCurrentPage);
   const offset = currentPage * limit;
 
-  const result = yield call(reqWrapper, apiGetProjectList, {
-    params: { limit, offset },
-  });
+  const result: PaginatedResponse<Project> = yield call(
+    reqWrapper,
+    apiGetProjectList,
+    {
+      params: { limit, offset },
+    },
+  );
+
+  console.log(
+    result.results /* sort((a, b) => b.created.getTime() - a.created.getTime()) */,
+  );
 
   if (!result) {
     yield put(Actions.setProjectListLoader(false));

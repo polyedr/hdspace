@@ -2,7 +2,7 @@
 
 import { AxiosResponse, AxiosError } from 'axios';
 import { convertProjectFromResponse } from './converters/fromResponse';
-import { Project } from './types';
+import { PaginatedResponse, Project } from './types';
 import { myAxios, MyAxiosProps } from '../../config/settings';
 
 export const onError = ({ response: r }: AxiosError) => {
@@ -51,7 +51,9 @@ export const onError = ({ response: r }: AxiosError) => {
 export const parseResult = <T>(result: AxiosResponse<T>) =>
   result && result.data;
 
-export const apiGetProjectList = (props: MyAxiosProps): Promise<Project[]> =>
+export const apiGetProjectList = (
+  props: MyAxiosProps,
+): Promise<PaginatedResponse<Project>> =>
   myAxios({
     ...props,
     method: 'GET',
