@@ -152,9 +152,9 @@ const Dropdown: React.FC<DropdownRendererProps> = React.forwardRef(
             divClasses.groupStyles,
             divClasses.ownStyles,
           )}
+          ref={ref}
         >
           <Button
-            ref={ref}
             id={id}
             data-ls-id={id}
             data-id={sortableId}

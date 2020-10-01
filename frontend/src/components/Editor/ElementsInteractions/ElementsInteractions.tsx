@@ -43,6 +43,7 @@ const ElementsInteractions: React.FC<any> = () => {
         } as BorderStyles)
       : null;
   };
+
   return (
     <>
       {borderedElementsIds.map((id) => {

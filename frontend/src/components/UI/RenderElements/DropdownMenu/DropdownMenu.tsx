@@ -92,9 +92,8 @@ const DropdownMenu: React.FC<DropdownMenuRendererProps> = React.forwardRef(
     )();
 
     return isDisabled ? (
-      <div style={{ position: 'relative' }}>
+      <div style={{ position: 'relative' }} ref={ref}>
         <Paper
-          ref={ref}
           id={id}
           data-ls-id={id}
           tabIndex={0}

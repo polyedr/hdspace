@@ -101,16 +101,18 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
   const dropTarget = useMemo(() => {
     if (
       !!parent &&
-      (!element.parameters.group ||
-        !CONTAINER_GROUPS.includes(element.parameters.group))
+      dropTargetParams &&
+      dropTargetParams.position !== DropPosition.INSIDE
     ) {
       return parent;
     }
     return element;
-  }, [element, parent, parentDomStyles]);
+  }, [element, parent, dropTargetParams]);
 
   const isContainer = useMemo(
-    () => (dropTarget && elementId === dropTarget.id) || elementId === rootID,
+    () =>
+      elementId === rootID ||
+      CONTAINER_GROUPS.includes(element.parameters.group),
     [dropTarget],
   );
 
@@ -124,7 +126,7 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
     } as SyntheticElement,
     canDrag: () => element.id !== rootID,
     end: () => {
-      // dispatch(setCurrentDropTargetParams(null));
+      dispatch(setCurrentDropTargetParams(null));
     },
   });
 
@@ -190,7 +192,7 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
         let dropPosition = DropPosition.INSIDE;
         const clientOffset = monitor.getClientOffset();
         const rect = ref.current.getBoundingClientRect();
-        if (parentDomStyles && clientOffset) {
+        if (parentDomStyles && clientOffset && elementId !== rootID) {
           if (
             parentDomStyles.display === 'flex' &&
             parentDomStyles.flexDirection === 'row'
@@ -242,7 +244,7 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
   }, [activeElementId, dropTargetParams]);
 
   useEffect(() => {
-    if (showBorders && (elementId === rootID || element.parent === rootID)) {
+    if (showBorders && element.parent === rootID) {
       dispatch(addBorderedElementRef(elementId, ref));
     }
   }, [showBorders]);

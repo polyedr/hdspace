@@ -77,7 +77,6 @@ import {
   selectActiveElementId,
   selectAllElements,
   selectCurrentProject,
-  selectCurrentRootId,
   selectCurrentScreen,
   selectElementAsTree,
   selectHistory,
@@ -447,14 +446,6 @@ function* redoSaga() {
 export function* setActiveElementSaga(
   action: ReturnType<typeof Actions.setActiveElementId>,
 ) {
-  const prevActiveElementId = yield select(selectActiveElementId);
-  const rootID = yield select(selectCurrentRootId);
-  if (
-    prevActiveElementId !== action.payload &&
-    prevActiveElementId !== rootID
-  ) {
-    yield put(Actions.removeBorderedElementRef(prevActiveElementId));
-  }
   yield put(Actions.setActiveElementId(action.payload));
 }
 
