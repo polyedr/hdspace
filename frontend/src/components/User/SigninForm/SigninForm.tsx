@@ -3,16 +3,11 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Form } from 'react-final-form';
-
 import { NavLink } from 'react-router-dom';
 import GoogleLogin from 'react-google-login';
 import * as Actions from '../../../redux/user/actions';
-
 import { FormField } from '../FormField/FormField';
-import {
-  DEFAULT_RESPONSE_ERROR,
-  DEFAULT_SIGNIN_FIELDS,
-} from '../../../constants/defaultParams';
+import { DEFAULT_SIGNIN_FIELDS } from '../../../constants/defaultParams';
 import { AppReduxState } from '../../../shared/types/app';
 import { user } from '../../../constants/pathNames';
 import Button from '../../UI/Button';
@@ -22,6 +17,7 @@ import {
   isRequired,
   isValidEmail,
 } from '../../../shared/validators';
+import { selectAuthError } from '../../../redux/user/selectors';
 
 const styles = require('./SignInForm.scss');
 
@@ -30,13 +26,13 @@ type FormData = {
   password: string;
 };
 
-const mapState = ({ user: { apiResponseError } }: AppReduxState) => ({
-  // eslint-disable-next-line react/require-default-props
-  apiResponseError,
+const mapState = (state: AppReduxState) => ({
+  // eslint-disable-next-line react/no-unused-prop-types,react/require-default-props
+  authError: selectAuthError(state),
 });
 
 const mapDispatch = {
-  setApiResponseError: Actions.setApiResponseError,
+  setApiResponseError: Actions.setAuthError,
   login: Actions.login,
   sendResetPasswordMail: Actions.sendResetPasswordMail,
 };
@@ -45,7 +41,7 @@ type IProps = typeof mapDispatch & ReturnType<typeof mapState>;
 
 const SignInForm = (props: IProps) => {
   const {
-    apiResponseError,
+    authError,
     setApiResponseError,
     sendResetPasswordMail,
     login,
@@ -60,23 +56,11 @@ const SignInForm = (props: IProps) => {
     password: '',
   };
 
-  useEffect(() => {
-    return () => {
-      if (apiResponseError.errorStatus !== -1) {
-        setApiResponseError(DEFAULT_RESPONSE_ERROR);
-      }
-    };
-  }, [apiResponseError, setApiResponseError]);
-
   const closeModal = useCallback(() => {
     setIsRestorePasswordModalOpen(!isRestorePasswordModalOpen);
   }, [isRestorePasswordModalOpen]);
 
   const handleFormSubmit = (values: FormData) => {
-    if (apiResponseError.errorStatus !== -1) {
-      setApiResponseError(DEFAULT_RESPONSE_ERROR);
-    }
-
     login({ username: values.username, password: values.password });
   };
 
@@ -101,8 +85,8 @@ const SignInForm = (props: IProps) => {
   }; */
 
   const isEmailHasBeenSend =
-    apiResponseError.errorStatus === 401 &&
-    apiResponseError.data.detail ===
+    authError.data?.errorStatus === 401 &&
+    authError.data.data.detail ===
       'No active account found with the given credentials';
 
   return (
@@ -131,6 +115,7 @@ const SignInForm = (props: IProps) => {
                   label={label}
                   type={type}
                   validator={validator}
+                  key={name}
                 />
               ),
             )}
@@ -138,11 +123,11 @@ const SignInForm = (props: IProps) => {
               {!!submitError && (
                 <p className="signAuthorisationErrorText">{submitError}</p>
               )}
-              {apiResponseError.errorStatus !== -1 && (
+              {authError.data?.errorStatus !== -1 && (
                 <p className="signAuthorisationErrorText">
                   {isEmailHasBeenSend
                     ? 'Please, confirm your email'
-                    : apiResponseError.errorText}
+                    : authError.data?.errorText}
                 </p>
               )}
               <Button
@@ -200,9 +185,9 @@ const SignInForm = (props: IProps) => {
                   {!!submitError && (
                     <p className="signAuthorisationErrorText">{submitError}</p>
                   )}
-                  {apiResponseError.errorStatus !== -1 && (
+                  {authError.data?.errorStatus !== -1 && (
                     <p className="signAuthorisationErrorText">
-                      {apiResponseError.errorText}
+                      {authError.data?.errorText}
                     </p>
                   )}
                 </div>

@@ -100,6 +100,7 @@ import {
 } from './screen';
 
 import { PATH_NAMES } from '../../../constants/pathNames';
+import { selectTokenPair } from '../../user/selectors';
 
 function* LocationChange({ payload: { location } }: LocationChangeAction) {
   const {
@@ -130,11 +131,7 @@ export function* reqWrapper(
   props: any = {},
   tries = 0,
 ): any {
-  const {
-    user: {
-      tokenPair: { access },
-    },
-  }: AppReduxState = yield select();
+  const { access } = yield select(selectTokenPair);
   const result = yield call(requestAction as any, { access, ...props });
 
   if (R.path(['response', 'data', 'code'], result) === 'token_not_valid') {

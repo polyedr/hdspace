@@ -1,6 +1,6 @@
 import { getDefaultStyles } from '../domain/libraryElements/defaultStyles';
 import { LibraryElement, Project } from '../api/types';
-import { IApiResponseError, ITokenPair } from '../redux/user/types';
+import { AuthError, ITokenPair } from '../redux/user/types';
 import {
   ILSItem,
   Screen,
@@ -224,10 +224,13 @@ export const DEFAULT_AUTHORISATION_TOKEN: ITokenPair = {
   refresh: '',
 };
 
-export const DEFAULT_RESPONSE_ERROR: IApiResponseError = {
-  errorStatus: -1,
-  errorText: '',
-  data: {},
+export const DEFAULT_RESPONSE_ERROR: AuthError = {
+  message: '',
+  data: {
+    errorStatus: -1,
+    errorText: '',
+    data: {},
+  },
 };
 
 export const LIST_NOT_DRAGGING = ['element'];

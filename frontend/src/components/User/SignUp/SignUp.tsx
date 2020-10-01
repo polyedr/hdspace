@@ -17,10 +17,14 @@ import {
   DEFAULT_SIGNUP_FIELDS,
 } from '../../../constants/defaultParams';
 import Spinner from '../../UI/Spinner';
-import { IApiResponseError } from '../../../redux/user/types';
+import { AuthError } from '../../../redux/user/types';
 import { user } from '../../../constants/pathNames';
 import { Info } from '../Info';
 import Button from '../../UI/Button';
+import {
+  selectAuthError,
+  selectIsUserLoading,
+} from '../../../redux/user/selectors';
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -106,27 +110,25 @@ const initialValues: FormData = {
   password: '',
 };
 
-const mapStateToProps = ({
-  user: { apiResponseError, isSignLoader },
-}: AppReduxState) => ({
-  apiResponseError,
-  isSignLoader,
+const mapStateToProps = (state: AppReduxState) => ({
+  authError: selectAuthError(state),
+  isSignLoader: selectIsUserLoading(state),
 });
 
 const mapDispatchToProps = {
-  setApiResponseError: Actions.setApiResponseError,
+  setApiResponseError: Actions.setAuthError,
   sendActivationMail: Actions.sendActivationMail,
   registerWithGoogle: Actions.registerWithGoogle,
 };
 
 type IProps = typeof mapDispatchToProps & {
-  apiResponseError: IApiResponseError;
+  authError: AuthError;
   isSignLoader: boolean;
 };
 
 const UnconnectedSignUp: React.FunctionComponent<IProps> = ({
   isSignLoader,
-  apiResponseError,
+  authError,
   setApiResponseError,
   sendActivationMail,
   registerWithGoogle,
@@ -134,8 +136,8 @@ const UnconnectedSignUp: React.FunctionComponent<IProps> = ({
   const classes = useStyles();
 
   const handleFormSubmit = (values: FormData) => {
-    if (apiResponseError.errorStatus !== -1) {
-      setApiResponseError(DEFAULT_RESPONSE_ERROR);
+    if (authError.data?.errorStatus !== -1) {
+      setApiResponseError('', DEFAULT_RESPONSE_ERROR);
     }
 
     sendActivationMail(
@@ -155,8 +157,8 @@ const UnconnectedSignUp: React.FunctionComponent<IProps> = ({
   }; */
 
   const isAccountExist =
-    apiResponseError.errorStatus === 400 &&
-    (apiResponseError.data.email || apiResponseError.data.username);
+    authError.data?.errorStatus === 400 &&
+    (authError.data?.data.email || authError.data?.data.username);
 
   return (
     <div className={classes.root}>
@@ -197,8 +199,8 @@ const UnconnectedSignUp: React.FunctionComponent<IProps> = ({
                   <p className={classes.error}>{submitError}</p>
                 )}
 
-                {apiResponseError.errorStatus !== -1 && !isAccountExist && (
-                  <p className={classes.error}>{apiResponseError.errorText}</p>
+                {authError.data?.errorStatus !== -1 && !isAccountExist && (
+                  <p className={classes.error}>{authError.data?.errorText}</p>
                 )}
 
                 {isAccountExist && (

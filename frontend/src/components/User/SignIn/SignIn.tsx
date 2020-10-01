@@ -1,16 +1,14 @@
-import React, { useEffect } from 'react';
-import { connect } from 'react-redux';
-
+import React from 'react';
+import { useSelector } from 'react-redux';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { createStyles } from '@material-ui/core';
-import * as Actions from '../../../redux/user/actions';
-
 import SignInForm from '../SigninForm/SigninForm';
-import { DEFAULT_RESPONSE_ERROR } from '../../../constants/defaultParams';
-import { AppReduxState } from '../../../shared/types/app';
 import Spinner from '../../UI/Spinner';
-import { IApiResponseError } from '../../../redux/user/types';
 import { Info } from '../Info';
+import {
+  selectConfirmMessage,
+  selectIsUserLoading,
+} from '../../../redux/user/selectors';
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -35,50 +33,24 @@ const useStyles = makeStyles((theme) =>
   }),
 );
 
-const mapStateToProps = ({
-  user: { apiResponseError, isSignLoader, confirmMessage },
-}: AppReduxState) => ({
-  apiResponseError,
-  isSignLoader,
-  confirmMessage,
-});
-
-const mapDispatchToProps = {
-  setApiResponseError: Actions.setApiResponseError,
-};
-
-type IProps = typeof mapDispatchToProps & {
-  apiResponseError: IApiResponseError;
-  isSignLoader: boolean;
-  confirmMessage: string;
-};
-
-export const UnmountedSignIn: React.FC<IProps> = ({
-  apiResponseError,
-  isSignLoader,
-  setApiResponseError,
-  confirmMessage,
-}) => {
+const SignIn: React.FC = () => {
   const classes = useStyles();
-
-  useEffect(() => {
-    return () => {
-      if (apiResponseError.errorStatus !== -1) {
-        setApiResponseError(DEFAULT_RESPONSE_ERROR);
-      }
-    };
-  }, [apiResponseError, setApiResponseError]);
+  const isLoading = useSelector(selectIsUserLoading);
+  const confirmMessage = useSelector(selectConfirmMessage);
 
   return (
     <div className={classes.root}>
       <Info />
+
       <div className={classes.formContainer}>
         {confirmMessage && <p className={classes.error}>{confirmMessage}</p>}
+
         <SignInForm />
       </div>
-      <Spinner active={isSignLoader} />
+
+      <Spinner active={isLoading} />
     </div>
   );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(UnmountedSignIn);
+export default SignIn;

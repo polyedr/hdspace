@@ -48,25 +48,27 @@ export type UserData = {
 
 export type TotalUserData = ProfileData & UserData;
 
-export interface IApiResponseError {
-  errorStatus: number;
-  errorText: string;
-  data: { [key: string]: string };
+export interface AuthError {
+  message: string;
+  data?: {
+    errorStatus: number;
+    errorText: string;
+    data: { [key: string]: string };
+  };
 }
 
-export type IRootState = Readonly<{
+export type UserState = {
   isLPanelMinimized: boolean;
-  isNavPanelMinimized: boolean;
   isPrototypeMode: boolean;
   tokenPair: ITokenPair;
   isLoadedToken: boolean;
-  apiResponseError: IApiResponseError;
+  authError: AuthError;
   userData: TotalUserData;
   restorePasswordEmail?: string;
   restoreUserId?: number;
-  isSignLoader: boolean;
+  isLoading: boolean;
   confirmMessage: string;
-}>;
+};
 
 export type UnsafeReturnType<T> = T extends (...args: any[]) => infer R
   ? R

@@ -9,7 +9,7 @@ import isLatinOrNumbers from '../../../shared/validators/isLatinOrNumbers';
 import { AppReduxState } from '../../../shared/types/app';
 import { Info } from '../Info';
 import Spinner from '../../UI/Spinner';
-import { IApiResponseError } from '../../../redux/user/types';
+import { AuthError } from '../../../redux/user/types';
 import {
   composeValidators,
   isLongPassword,
@@ -25,27 +25,25 @@ type FormData = {
   reNewPassword: string;
 };
 
-const mapState = ({
-  user: { isSignLoader, apiResponseError },
-}: AppReduxState) => ({
-  isSignLoader,
-  apiResponseError,
+const mapState = ({ user: { isLoading, authError } }: AppReduxState) => ({
+  isLoading,
+  authError,
 });
 
 const mapDispatch = {
-  setApiResponseError: Actions.setApiResponseError,
+  setApiResponseError: Actions.setAuthError,
   resetPasswordConfirmation: Actions.resetPasswordConfirmation,
 };
 
 type IProps = typeof mapDispatch & {
-  apiResponseError: IApiResponseError;
+  authError: AuthError;
   isSignLoader: boolean;
 };
 
 const ResetPassword: React.FC<IProps> = ({
   resetPasswordConfirmation,
   isSignLoader,
-  apiResponseError,
+  authError,
   setApiResponseError,
 }) => {
   const match = useRouteMatch<{ params: any }>(
@@ -64,15 +62,15 @@ const ResetPassword: React.FC<IProps> = ({
 
   useEffect(() => {
     return () => {
-      if (apiResponseError.errorStatus !== -1) {
-        setApiResponseError(DEFAULT_RESPONSE_ERROR);
+      if (authError.data?.errorStatus !== -1) {
+        setApiResponseError('', DEFAULT_RESPONSE_ERROR);
       }
     };
-  }, [apiResponseError, setApiResponseError]);
+  }, [authError, setApiResponseError]);
 
   const handleFormSubmit = (values: FormData) => {
-    if (apiResponseError.errorStatus !== -1) {
-      setApiResponseError(DEFAULT_RESPONSE_ERROR);
+    if (authError.data?.errorStatus !== -1) {
+      setApiResponseError('', DEFAULT_RESPONSE_ERROR);
     }
 
     resetPasswordConfirmation(
@@ -127,9 +125,9 @@ const ResetPassword: React.FC<IProps> = ({
                   {!!submitError && (
                     <p className="signAuthorisationErrorText">{submitError}</p>
                   )}
-                  {apiResponseError.errorStatus !== -1 && (
+                  {authError.data?.errorStatus !== -1 && (
                     <p className="signAuthorisationErrorText">
-                      {apiResponseError.errorText}
+                      {authError.data?.errorText}
                     </p>
                   )}
                   <Button

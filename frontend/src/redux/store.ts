@@ -19,13 +19,7 @@ import userSaga from './user/sagas';
 
 const userPersistConfig: PersistConfig = {
   key: 'user',
-  whitelist: [
-    'isLPanelMinimized',
-    'isNavPanelMinimized',
-    'isPrototypeMode',
-    'tokenPair',
-    'userData',
-  ],
+  whitelist: ['isLPanelMinimized', 'isPrototypeMode', 'tokenPair', 'userData'],
   storage,
 };
 

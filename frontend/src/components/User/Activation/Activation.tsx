@@ -8,32 +8,30 @@ import SignInForm from '../SigninForm/SigninForm';
 import { DEFAULT_RESPONSE_ERROR } from '../../../constants/defaultParams';
 import { AppReduxState } from '../../../shared/types/app';
 import Spinner from '../../UI/Spinner';
-import { IApiResponseError } from '../../../redux/user/types';
+import { AuthError } from '../../../redux/user/types';
 import { Info } from '../Info';
 
 const styles = require('./Activation.scss');
 
-const mapState = ({
-  user: { isSignLoader, apiResponseError },
-}: AppReduxState) => ({
-  isSignLoader,
-  apiResponseError,
+const mapState = ({ user: { isLoading, authError } }: AppReduxState) => ({
+  isLoading,
+  authError,
 });
 
 const mapDispatch = {
-  setApiResponseError: Actions.setApiResponseError,
+  setApiResponseError: Actions.setAuthError,
   activateUser: Actions.activateUser,
 };
 
 type IProps = typeof mapDispatch & {
-  apiResponseError: IApiResponseError;
+  authError: AuthError;
   isSignLoader: boolean;
 };
 
 const Activation: React.FC<IProps> = ({
   activateUser,
   isSignLoader,
-  apiResponseError,
+  authError,
   setApiResponseError,
 }) => {
   const match = useRouteMatch<{ params: any }>('/activate/:uid/:token');
@@ -49,11 +47,11 @@ const Activation: React.FC<IProps> = ({
 
   useEffect(() => {
     return () => {
-      if (apiResponseError.errorStatus !== -1) {
-        setApiResponseError(DEFAULT_RESPONSE_ERROR);
+      if (authError.data?.errorStatus !== -1) {
+        setApiResponseError('', DEFAULT_RESPONSE_ERROR);
       }
     };
-  }, [apiResponseError, setApiResponseError]);
+  }, [authError, setApiResponseError]);
 
   return (
     <>

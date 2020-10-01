@@ -4,8 +4,11 @@ import SignIn from '../components/User/SignIn/SignIn';
 import SignUp from '../components/User/SignUp/SignUp';
 import Activation from '../components/User/Activation/Activation';
 import ResetPassword from '../components/User/ResetPassword/ResetPassword';
-import EditorWindow from './EditorWindow';
 import { PATH_NAMES } from '../constants/pathNames';
+import Projects from '../components/Projects/Projects';
+import Layout from '../components/Layout';
+import EditorLogic from './EditorLogic';
+import Profile from '../components/User/Profile';
 
 const Routes: React.FC = () => {
   return (
@@ -18,11 +21,28 @@ const Routes: React.FC = () => {
 
       <Route path={PATH_NAMES.user.password} component={ResetPassword} />
 
-      <Route path={PATH_NAMES.projects} component={EditorWindow} />
+      <Route path={PATH_NAMES.projects}>
+        <Layout>
+          <Projects />
+        </Layout>
+      </Route>
 
-      <Route path="/project/:projectID/:screenID?" component={EditorWindow} />
+      <Route path="/project/:projectId/:screenId?">
+        {({ match: { params } }: any) => (
+          <Layout>
+            <EditorLogic
+              projectId={params.projectId}
+              screenId={params.screenId}
+            />
+          </Layout>
+        )}
+      </Route>
 
-      <Route path={PATH_NAMES.profile} component={EditorWindow} />
+      <Route path={PATH_NAMES.profile}>
+        <Layout>
+          <Profile />
+        </Layout>
+      </Route>
 
       <Redirect from="/*" to={PATH_NAMES.projects} />
     </Switch>
