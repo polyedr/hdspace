@@ -275,16 +275,22 @@ export function* softDeleteSaga(action: ReturnType<typeof Actions.deleteItem>) {
     return;
   }
 
+  if (element.shared) {
+    yield;
+  }
+
   if (!undo) {
-    yield put(
-      setUndoActions(
-        Actions.restoreElementChildren(
-          parent.id,
-          parent.children.map((child) => child.id),
-          { screenId },
-        ),
+    const undoActions: T.Action[] = [
+      Actions.restoreElementChildren(
+        parent.id,
+        parent.children.map((child) => child.id),
+        { screenId },
       ),
-    );
+    ];
+    if (element.shared === true) {
+      undoActions.push(Actions.updateElement(id, { shared: true }));
+    }
+    yield put(setUndoActions(undoActions));
   }
 
   const activeElementId = yield select(selectActiveElementId);
@@ -312,6 +318,8 @@ export function* softDeleteSaga(action: ReturnType<typeof Actions.deleteItem>) {
     data: { children: updatedParent.children.map((child) => child.id) },
     id: parent.id,
   });
+
+  yield put(Actions.updateElement(id, { shared: false }));
 
   const convertedElements = updatedParent.children.map((child) =>
     convertElementToPatchRequest(child),
@@ -586,11 +594,14 @@ export function* updateElementSaga(
   yield put(Actions.setActiveElementId(elementID));
 
   const convertedElement = convertElementToPatchRequest(updatedElement);
+
+  const customLibraryElements = yield select(selectCustomLibraryElements);
   if (data.shared === true) {
-    const customLibraryElements = yield select(selectCustomLibraryElements);
     if (!customLibraryElements[action.payload.elementID]) {
       yield put(Actions.addCustomLibraryElement(convertedElement));
     }
+  } else if (customLibraryElements[action.payload.elementID]) {
+    yield put(Actions.removeCustomLibraryElement(action.payload.elementID));
   }
   yield call(reqWrapper, apiChangeElement, {
     data: convertedElement,

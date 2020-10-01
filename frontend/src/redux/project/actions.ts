@@ -682,3 +682,8 @@ export const addCustomLibraryElement = (element: ServerElement<Entity>) => ({
   type: TYPES.ADD_CUSTOM_LIBRARY_ELEMENT,
   payload: { element },
 });
+
+export const removeCustomLibraryElement = (id: string) => ({
+  type: TYPES.REMOVE_CUSTOM_LIBRARY_ELEMENT,
+  payload: { id },
+});
