@@ -72,85 +72,88 @@ const getDivStyles = (
     },
   });
 
-const Checkbox: React.FC<CheckboxRendererProps> = ({
-  id,
-  entityStyles,
-  groupStyles,
-  ownStyles,
-  params,
-  isDisabled,
-  sortableId,
-  currentValue,
-  onElementChange,
-  isCheckboxChecked,
-  elementRef,
-  className,
-}) => {
-  const { name, showRipple } = params;
+const Checkbox: React.FC<CheckboxRendererProps> = React.forwardRef(
+  (
+    {
+      id,
+      entityStyles,
+      groupStyles,
+      ownStyles,
+      params,
+      isDisabled,
+      sortableId,
+      currentValue,
+      onElementChange,
+      isCheckboxChecked,
+      className,
+    },
+    ref,
+  ) => {
+    const { name, showRipple } = params;
 
-  const entityDivStyles = R.omit(
-    ['backgroundColor', 'width', 'height'],
-    entityStyles,
-  );
-  const groupDivStyles = R.omit(
-    ['backgroundColor', 'width', 'height'],
-    groupStyles,
-  );
-  const ownDivStyles = R.omit(
-    ['backgroundColor', 'width', 'height'],
-    ownStyles,
-  );
+    const entityDivStyles = R.omit(
+      ['backgroundColor', 'width', 'height'],
+      entityStyles,
+    );
+    const groupDivStyles = R.omit(
+      ['backgroundColor', 'width', 'height'],
+      groupStyles,
+    );
+    const ownDivStyles = R.omit(
+      ['backgroundColor', 'width', 'height'],
+      ownStyles,
+    );
 
-  const divClasses = getDivStyles(
-    entityDivStyles,
-    groupDivStyles,
-    ownDivStyles,
-  )();
+    const divClasses = getDivStyles(
+      entityDivStyles,
+      groupDivStyles,
+      ownDivStyles,
+    )();
 
-  const checkboxClasses = getCheckboxStyles(
-    entityStyles,
-    groupStyles,
-    ownStyles,
-  )();
+    const checkboxClasses = getCheckboxStyles(
+      entityStyles,
+      groupStyles,
+      ownStyles,
+    )();
 
-  const handleCheckboxChange = (event: ChangeEvent<HTMLInputElement>) => {
-    onElementChange(id, event.target.checked);
-  };
+    const handleCheckboxChange = (event: ChangeEvent<HTMLInputElement>) => {
+      onElementChange(id, event.target.checked);
+    };
 
-  return (
-    <div
-      ref={elementRef}
-      id={id}
-      data-ls-id={id}
-      data-id={sortableId}
-      key={id}
-      className={cn(
-        className,
-        isDisabled && styles.disabled,
-        divClasses.entityStyles,
-        divClasses.groupStyles,
-        divClasses.ownStyles,
-      )}
-      tabIndex={isDisabled ? 0 : -1}
-    >
-      <MaterialCheckbox
-        checkedIcon={<CheckBoxIcon className={checkboxClasses.icon} />}
-        icon={<CheckBoxOutlineBlankIcon className={checkboxClasses.icon} />}
-        color="default"
+    return (
+      <div
+        ref={ref}
+        id={id}
+        data-ls-id={id}
+        data-id={sortableId}
+        key={id}
         className={cn(
-          checkboxClasses.root,
-          checkboxClasses.entityStyles,
-          checkboxClasses.groupStyles,
-          checkboxClasses.ownStyles,
+          className,
+          isDisabled && styles.disabled,
+          divClasses.entityStyles,
+          divClasses.groupStyles,
+          divClasses.ownStyles,
         )}
-        value={currentValue}
-        name={name}
-        checked={isCheckboxChecked}
-        disableRipple={!showRipple}
-        onChange={handleCheckboxChange}
-      />
-    </div>
-  );
-};
+      >
+        <MaterialCheckbox
+          checkedIcon={<CheckBoxIcon className={checkboxClasses.icon} />}
+          icon={<CheckBoxOutlineBlankIcon className={checkboxClasses.icon} />}
+          color="default"
+          className={cn(
+            checkboxClasses.root,
+            checkboxClasses.entityStyles,
+            checkboxClasses.groupStyles,
+            checkboxClasses.ownStyles,
+          )}
+          value={currentValue}
+          name={name}
+          checked={isCheckboxChecked}
+          disableRipple={!showRipple}
+          onChange={handleCheckboxChange}
+        />
+      </div>
+    );
+  },
+);
 
 export default Checkbox;

@@ -9,54 +9,57 @@ import { ContainerRendererProps } from '../types';
 
 const styles = require('../styles.scss');
 
-const Container: React.FC<ContainerRendererProps> = ({
-  id,
-  sortableId,
-  entityStyles,
-  groupStyles,
-  ownStyles,
-  isDisabled,
-  children,
-  className,
-  elementRef,
-  isBorderVisible,
-}) => {
-  const classes = makeStyles({
-    entityStyles: {
-      ...entityStyles,
+const Container: React.FC<ContainerRendererProps> = React.forwardRef(
+  (
+    {
+      id,
+      sortableId,
+      entityStyles,
+      groupStyles,
+      ownStyles,
+      isDisabled,
+      children,
+      className,
+      isBorderVisible,
     },
+    ref,
+  ) => {
+    const classes = makeStyles({
+      entityStyles: {
+        ...entityStyles,
+      },
 
-    groupStyles: {
-      ...groupStyles,
-    },
+      groupStyles: {
+        ...groupStyles,
+      },
 
-    ownStyles: {
-      ...ownStyles,
-    },
-  })();
+      ownStyles: {
+        ...ownStyles,
+      },
+    })();
 
-  return (
-    <>
-      <section
-        ref={elementRef}
-        id={id}
-        data-ls-id={id}
-        data-id={sortableId}
-        key={id}
-        className={cn(
-          className,
-          styles.addedElem,
-          classes.entityStyles,
-          classes.groupStyles,
-          classes.ownStyles,
-        )}
-        style={{ ...(isBorderVisible && isDisabled && { outline: 'none' }) }}
-        tabIndex={isDisabled ? 0 : -1}
-      >
-        {children}
-      </section>
-    </>
-  );
-};
+    return (
+      <>
+        <section
+          ref={ref}
+          id={id}
+          data-ls-id={id}
+          data-id={sortableId}
+          key={id}
+          className={cn(
+            className,
+            styles.addedElem,
+            classes.entityStyles,
+            classes.groupStyles,
+            classes.ownStyles,
+          )}
+          style={{ ...(isBorderVisible && isDisabled && { outline: 'none' }) }}
+        >
+          {children}
+        </section>
+      </>
+    );
+  },
+);
 
 export default Container;

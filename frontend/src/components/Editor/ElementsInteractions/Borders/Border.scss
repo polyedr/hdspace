@@ -1,6 +1,7 @@
 .border {
   position: absolute;
   border: 1px solid $mainColor;
+  pointer-events: none;
 
   &_active {
     z-index: 2;

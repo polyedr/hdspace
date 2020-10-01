@@ -121,89 +121,84 @@ const getLinkStyles = (
     },
   });
 
-const ListItem: React.FC<ListItemRendererProps> = ({
-  id,
-  entityStyles,
-  groupStyles,
-  ownStyles,
-  params,
-  isDisabled,
-  className,
-  elementRef,
-}) => {
-  const { textContent, isLink, link } = params;
+const ListItem: React.FC<ListItemRendererProps> = React.forwardRef(
+  (
+    { id, entityStyles, groupStyles, ownStyles, params, isDisabled, className },
+    ref,
+  ) => {
+    const { textContent, isLink, link } = params;
 
-  const handleListItemClick = (event: React.MouseEvent<HTMLLIElement>) => {
-    (event.target as HTMLElement).focus();
-  };
+    const handleListItemClick = (event: React.MouseEvent<HTMLLIElement>) => {
+      (event.target as HTMLElement).focus();
+    };
 
-  const listItemClasses = getListItemStyles(
-    entityStyles,
-    groupStyles,
-    ownStyles,
-  )();
-  const listItemWithLinkClasses = getEditableListItemStyles(
-    entityStyles,
-    groupStyles,
-    ownStyles,
-  )();
-  const linkClasses = getLinkStyles(entityStyles, groupStyles, ownStyles)();
+    const listItemClasses = getListItemStyles(
+      entityStyles,
+      groupStyles,
+      ownStyles,
+    )();
+    const listItemWithLinkClasses = getEditableListItemStyles(
+      entityStyles,
+      groupStyles,
+      ownStyles,
+    )();
+    const linkClasses = getLinkStyles(entityStyles, groupStyles, ownStyles)();
 
-  return (
-    <>
-      {isLink ? (
-        <li
-          ref={elementRef}
-          id={id}
-          data-ls-id={id}
-          tabIndex={isDisabled ? 0 : -1}
-          className={cn(
-            className,
-            sharedClasses.lsItem,
-            sharedClasses.unsortable,
-            styles.addedElem,
-            isDisabled && styles.disabled,
-            listItemWithLinkClasses.entityStyles,
-            listItemWithLinkClasses.groupStyles,
-            listItemWithLinkClasses.ownStyles,
-          )}
-        >
-          <a
+    return (
+      <>
+        {isLink ? (
+          <li
+            ref={ref}
+            id={id}
+            data-ls-id={id}
             className={cn(
-              linkClasses.entityStyles,
-              linkClasses.groupStyles,
-              linkClasses.ownStyles,
+              className,
+              sharedClasses.lsItem,
+              sharedClasses.unsortable,
+              styles.addedElem,
+              isDisabled && styles.disabled,
+              listItemWithLinkClasses.entityStyles,
+              listItemWithLinkClasses.groupStyles,
+              listItemWithLinkClasses.ownStyles,
             )}
-            href={link}
-            target="_blank"
-            rel="noreferrer"
+          >
+            <a
+              className={cn(
+                linkClasses.entityStyles,
+                linkClasses.groupStyles,
+                linkClasses.ownStyles,
+              )}
+              href={link}
+              target="_blank"
+              rel="noreferrer"
+            >
+              {textContent}
+            </a>
+          </li>
+        ) : (
+          <li
+            ref={ref}
+            id={id}
+            data-ls-id={id}
+            tabIndex={isDisabled ? 0 : -1}
+            className={cn(
+              className,
+              sharedClasses.lsItem,
+              sharedClasses.unsortable,
+              styles.addedElem,
+              isDisabled && styles.disabled,
+              listItemClasses.entityStyles,
+              listItemClasses.groupStyles,
+              listItemClasses.ownStyles,
+            )}
+            {...(isDisabled && { onClick: handleListItemClick })}
           >
             {textContent}
-          </a>
-        </li>
-      ) : (
-        <li
-          ref={elementRef}
-          id={id}
-          data-ls-id={id}
-          tabIndex={isDisabled ? 0 : -1}
-          className={cn(
-            className,
-            sharedClasses.lsItem,
-            sharedClasses.unsortable,
-            styles.addedElem,
-            isDisabled && styles.disabled,
-            listItemClasses.entityStyles,
-            listItemClasses.groupStyles,
-            listItemClasses.ownStyles,
-          )}
-          {...(isDisabled && { onClick: handleListItemClick })}
-        >
-          {textContent}
-        </li>
-      )}
-    </>
-  );
-};
+          </li>
+        )}
+      </>
+    );
+  },
+);
 
 export default ListItem;

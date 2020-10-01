@@ -41,60 +41,56 @@ const getDropdownItemStyles = (
     },
   });
 
-const DropdownItem: React.FC<DropdownItemRendererProps> = ({
-  id,
-  entityStyles,
-  groupStyles,
-  ownStyles,
-  isDisabled,
-  params,
-  className,
-  elementRef,
-}) => {
-  const { showRipple, textContent } = params;
+const DropdownItem: React.FC<DropdownItemRendererProps> = React.forwardRef(
+  (
+    { id, entityStyles, groupStyles, ownStyles, isDisabled, params, className },
+    ref,
+  ) => {
+    const { showRipple, textContent } = params;
 
-  const classes = getDropdownItemStyles(
-    isDisabled,
-    entityStyles,
-    groupStyles,
-    ownStyles,
-  )();
+    const classes = getDropdownItemStyles(
+      isDisabled,
+      entityStyles,
+      groupStyles,
+      ownStyles,
+    )();
 
-  return isDisabled ? (
-    <MenuItem
-      ref={elementRef}
-      id={id}
-      data-ls-id={id}
-      tabIndex={0}
-      key={id}
-      className={cn(
-        classes.root,
-        className,
-        sharedClasses.unsortable,
-        styles.addedElem,
-        styles.disabled,
-        classes.entityStyles,
-        classes.groupStyles,
-        classes.ownStyles,
-      )}
-      disableRipple
-    >
-      {textContent}
-    </MenuItem>
-  ) : (
-    <MenuItem
-      key={id}
-      className={cn(
-        classes.root,
-        classes.entityStyles,
-        classes.groupStyles,
-        classes.ownStyles,
-      )}
-      disableRipple={!showRipple}
-    >
-      {textContent}
-    </MenuItem>
-  );
-};
+    return isDisabled ? (
+      <MenuItem
+        ref={ref}
+        id={id}
+        data-ls-id={id}
+        tabIndex={0}
+        key={id}
+        className={cn(
+          classes.root,
+          className,
+          sharedClasses.unsortable,
+          styles.addedElem,
+          styles.disabled,
+          classes.entityStyles,
+          classes.groupStyles,
+          classes.ownStyles,
+        )}
+        disableRipple
+      >
+        {textContent}
+      </MenuItem>
+    ) : (
+      <MenuItem
+        key={id}
+        className={cn(
+          classes.root,
+          classes.entityStyles,
+          classes.groupStyles,
+          classes.ownStyles,
+        )}
+        disableRipple={!showRipple}
+      >
+        {textContent}
+      </MenuItem>
+    );
+  },
+);
 
 export default DropdownItem;

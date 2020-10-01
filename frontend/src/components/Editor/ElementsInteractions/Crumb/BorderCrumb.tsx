@@ -1,46 +1,42 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import cn from 'classnames';
-import { AppReduxState } from 'src/shared/types/app';
 import {
   selectActiveElementId,
   selectCurrentRootId,
   selectElementById,
   selectShowingBorders,
 } from '../../../../redux/project/selectors';
-import useBorderStyles from '../hooks/useBorderStyles';
+import { BorderStyles } from '../ElementsInteractions';
 
-const styles = require('./BorderCrumb.scss');
+const css = require('./BorderCrumb.scss');
 
 type Props = {
   elementId: string;
+  styles: BorderStyles;
   children?: any;
 };
 
-const BorderCrumb: React.FC<Props> = ({ elementId, children }) => {
-  const { element, rootID, showBorders, activeElementId } = useSelector(
-    (state: AppReduxState) => ({
-      element: selectElementById(elementId)(state),
-      rootID: selectCurrentRootId(state),
-      showBorders: selectShowingBorders(state),
-      activeElementId: selectActiveElementId(state),
-    }),
-  );
-  const borderStyles = useBorderStyles(elementId);
-  const labelClasses = cn(styles.borderCrumb, styles.borderCrumb_active);
+const BorderCrumb: React.FC<Props> = ({ elementId, styles, children }) => {
+  const element = useSelector(selectElementById(elementId));
+  const rootID = useSelector(selectCurrentRootId);
+  const showBorders = useSelector(selectShowingBorders);
+  const activeElementId = useSelector(selectActiveElementId);
+
+  const labelClasses = cn(css.borderCrumb, css.borderCrumb_active);
   const showCrumb = showBorders || elementId === activeElementId;
 
-  return element && borderStyles && showCrumb ? (
+  return element && showCrumb ? (
     <div
       className={labelClasses}
       style={{
-        top: borderStyles.top,
-        left: elementId === rootID ? 'auto' : borderStyles.left,
-        right: elementId === rootID ? borderStyles.right : 'auto',
+        top: styles.top,
+        left: elementId === rootID ? 'auto' : styles.left,
+        right: elementId === rootID ? styles.right : 'auto',
       }}
     >
       <span
-        className={cn(styles.borderLabel)}
+        className={cn(css.borderLabel)}
         data-label-id={element.id}
         data-element-name={element.name}
       >

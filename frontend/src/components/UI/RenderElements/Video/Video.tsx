@@ -85,91 +85,94 @@ const getEmptyWrapperStyles = (
     },
   });
 
-const Video: React.FC<VideoRendererProps> = ({
-  id,
-  params,
-  sortableId,
-  entityStyles,
-  groupStyles,
-  ownStyles,
-  isDisabled,
-  className,
-  elementRef,
-}) => {
-  const { videoSettings } = params;
+const Video: React.FC<VideoRendererProps> = React.forwardRef(
+  (
+    {
+      id,
+      params,
+      sortableId,
+      entityStyles,
+      groupStyles,
+      ownStyles,
+      isDisabled,
+      className,
+    },
+    ref,
+  ) => {
+    const { videoSettings } = params;
 
-  const playerLink = getPlayerLink(videoSettings, !isDisabled);
+    const playerLink = getPlayerLink(videoSettings, !isDisabled);
 
-  const wrapperStyles = getWrapperStyles(
-    entityStyles,
-    groupStyles,
-    ownStyles,
-  )();
-  const iframeContainerStyles = getIframeContainerStyles(
-    entityStyles,
-    groupStyles,
-    ownStyles,
-  )();
-  const emptyWrapperStyles = getEmptyWrapperStyles(
-    entityStyles,
-    groupStyles,
-    ownStyles,
-  )();
+    const wrapperStyles = getWrapperStyles(
+      entityStyles,
+      groupStyles,
+      ownStyles,
+    )();
+    const iframeContainerStyles = getIframeContainerStyles(
+      entityStyles,
+      groupStyles,
+      ownStyles,
+    )();
+    const emptyWrapperStyles = getEmptyWrapperStyles(
+      entityStyles,
+      groupStyles,
+      ownStyles,
+    )();
 
-  return playerLink ? (
-    <div
-      id={id}
-      data-ls-id={id}
-      data-id={sortableId}
-      key={id}
-      ref={elementRef}
-      className={cn(
-        className,
-        styles.addedElem,
-        isDisabled && styles.disabled,
-        wrapperStyles.entityStyles,
-        wrapperStyles.groupStyles,
-        wrapperStyles.ownStyles,
-      )}
-      tabIndex={isDisabled ? 0 : -1}
-    >
+    return playerLink ? (
       <div
+        id={id}
+        data-ls-id={id}
+        data-id={sortableId}
+        key={id}
+        ref={ref}
         className={cn(
-          iframeContainerStyles.entityStyles,
-          iframeContainerStyles.groupStyles,
-          iframeContainerStyles.ownStyles,
+          className,
+          styles.addedElem,
+          isDisabled && styles.disabled,
+          wrapperStyles.entityStyles,
+          wrapperStyles.groupStyles,
+          wrapperStyles.ownStyles,
         )}
+        tabIndex={isDisabled ? 0 : -1}
       >
-        {/* eslint-disable-next-line jsx-a11y/iframe-has-title */}
-        <iframe
-          width="100%"
-          height="100%"
-          src={playerLink}
-          style={{
-            position: 'absolute',
-            top: '0',
-            left: '0',
-          }}
-        />
+        <div
+          className={cn(
+            iframeContainerStyles.entityStyles,
+            iframeContainerStyles.groupStyles,
+            iframeContainerStyles.ownStyles,
+          )}
+        >
+          {/* eslint-disable-next-line jsx-a11y/iframe-has-title */}
+          <iframe
+            width="100%"
+            height="100%"
+            src={playerLink}
+            style={{
+              position: 'absolute',
+              top: '0',
+              left: '0',
+            }}
+          />
+        </div>
       </div>
-    </div>
-  ) : (
-    <div
-      ref={elementRef}
-      id={id}
-      data-ls-id={id}
-      data-id={sortableId}
-      key={id}
-      className={cn(
-        className,
-        styles.addedElem,
-        emptyWrapperStyles.entityStyles,
-        emptyWrapperStyles.groupStyles,
-        emptyWrapperStyles.ownStyles,
-      )}
-      tabIndex={isDisabled ? 0 : -1}
-    />
-  );
-};
+    ) : (
+      <div
+        ref={ref}
+        id={id}
+        data-ls-id={id}
+        data-id={sortableId}
+        key={id}
+        className={cn(
+          className,
+          styles.addedElem,
+          emptyWrapperStyles.entityStyles,
+          emptyWrapperStyles.groupStyles,
+          emptyWrapperStyles.ownStyles,
+        )}
+      />
+    );
+  },
+);
 
 export default Video;

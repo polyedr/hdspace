@@ -9,49 +9,53 @@ import { SharedRendererProps } from '../types';
 
 const styles = require('../styles.scss');
 
-const Undefined: React.FC<SharedRendererProps> = ({
-  id,
-  entityStyles,
-  groupStyles,
-  ownStyles,
-  sortableId,
-  isDisabled,
-  className,
-  elementRef,
-  children,
-}) => {
-  const classes = makeStyles({
-    entityStyles: {
-      ...entityStyles,
+const Undefined: React.FC<SharedRendererProps> = React.forwardRef(
+  (
+    {
+      id,
+      entityStyles,
+      groupStyles,
+      ownStyles,
+      sortableId,
+      isDisabled,
+      className,
+      children,
     },
+    ref,
+  ) => {
+    const classes = makeStyles({
+      entityStyles: {
+        ...entityStyles,
+      },
 
-    groupStyles: {
-      ...groupStyles,
-    },
+      groupStyles: {
+        ...groupStyles,
+      },
 
-    ownStyles: {
-      ...ownStyles,
-    },
-  })();
+      ownStyles: {
+        ...ownStyles,
+      },
+    })();
 
-  return (
-    <div
-      ref={elementRef}
-      data-ls-id={id}
-      data-id={sortableId}
-      key={id}
-      className={cn(
-        className,
-        styles.addedContainer,
-        classes.entityStyles,
-        classes.groupStyles,
-        classes.ownStyles,
-      )}
-      tabIndex={isDisabled ? 0 : -1}
-    >
-      {children}
-    </div>
-  );
-};
+    return (
+      <div
+        ref={ref}
+        data-ls-id={id}
+        data-id={sortableId}
+        key={id}
+        className={cn(
+          className,
+          styles.addedContainer,
+          classes.entityStyles,
+          classes.groupStyles,
+          classes.ownStyles,
+        )}
+        tabIndex={isDisabled ? 0 : -1}
+      >
+        {children}
+      </div>
+    );
+  },
+);
 
 export default Undefined;

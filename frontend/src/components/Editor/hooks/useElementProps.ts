@@ -180,7 +180,6 @@ const useElementProps = (elementId: string): ElementProps | null => {
     entityStyles: convertedEntityStyles,
     groupStyles: convertedGroupStyles,
     active: !disableInteractions && id === activeElement.id,
-    elementRef: null,
   };
 
   if (screenLoader || !isElementStructType(type)) {

@@ -1,4 +1,3 @@
-/* eslint-disable jsx-a11y/no-noninteractive-tabindex */
 // @ts-nocheck
 
 import React from 'react';
@@ -9,51 +8,45 @@ import { ParagraphRendererProps } from '../types';
 
 const styles = require('../styles.scss');
 
-const Paragraph: React.FC<ParagraphRendererProps> = ({
-  id,
-  entityStyles,
-  groupStyles,
-  ownStyles,
-  params,
-  sortableId,
-  isDisabled,
-  className,
-  elementRef,
-}) => {
-  const classes = makeStyles({
-    entityStyles: {
-      ...entityStyles,
-    },
+const Paragraph: React.FC<ParagraphRendererProps> = React.forwardRef(
+  (
+    { id, entityStyles, groupStyles, ownStyles, params, sortableId, className },
+    ref,
+  ) => {
+    const classes = makeStyles({
+      entityStyles: {
+        ...entityStyles,
+      },
 
-    groupStyles: {
-      ...groupStyles,
-    },
+      groupStyles: {
+        ...groupStyles,
+      },
 
-    ownStyles: {
-      ...ownStyles,
-    },
-  })();
+      ownStyles: {
+        ...ownStyles,
+      },
+    })();
 
-  return (
-    <p
-      ref={elementRef}
-      id={id}
-      data-ls-id={id}
-      data-id={sortableId}
-      key={id}
-      className={cn(
-        className,
-        styles.addedElem,
-        classes.entityStyles,
-        classes.groupStyles,
-        classes.ownStyles,
-      )}
-      style={{ wordBreak: 'break-word' }}
-      tabIndex={isDisabled ? 0 : -1}
-    >
-      {params.textContent}
-    </p>
-  );
-};
+    return (
+      <p
+        ref={ref}
+        id={id}
+        data-ls-id={id}
+        data-id={sortableId}
+        key={id}
+        className={cn(
+          className,
+          styles.addedElem,
+          classes.entityStyles,
+          classes.groupStyles,
+          classes.ownStyles,
+        )}
+        style={{ wordBreak: 'break-word' }}
+      >
+        {params.textContent}
+      </p>
+    );
+  },
+);
 
 export default Paragraph;

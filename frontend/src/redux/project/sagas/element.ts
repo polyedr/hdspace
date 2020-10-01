@@ -74,7 +74,7 @@ export function* moveElementSaga(
     }),
   );
 
-  yield put(Actions.setCurrentDropTarget(null));
+  yield put(Actions.setCurrentDropTargetParams(null));
 
   const updatedNewParent = yield select(selectElementAsTree(newParentId));
 

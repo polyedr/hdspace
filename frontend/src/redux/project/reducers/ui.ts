@@ -69,29 +69,30 @@ function uiReducer(
       };
     }
 
-    case TYPES.ADD_BORDERED_ELEMENT_RECT: {
+    case TYPES.ADD_BORDERED_ELEMENT_REF: {
       return {
         ...state,
-        borderedElementsRect: {
-          ...state.borderedElementsRect,
-          [action.payload.id]: action.payload.rect,
+        borderedElementsRef: {
+          ...state.borderedElementsRef,
+          [action.payload.id]: action.payload.ref,
         },
       };
     }
 
-    case TYPES.REMOVE_BORDERED_ELEMENT_RECT: {
-      const newBorderedElementsRect = { ...state.borderedElementsRect };
-      delete newBorderedElementsRect[action.payload.id];
+    case TYPES.REMOVE_BORDERED_ELEMENT_REF: {
+      const newBorderedElementsRef = { ...state.borderedElementsRef };
+      delete newBorderedElementsRef[action.payload.id];
       return {
         ...state,
-        borderedElementsRect: newBorderedElementsRect,
+        borderedElementsRef: newBorderedElementsRef,
       };
     }
 
-    case TYPES.SET_CURRENT_DROP_TARGET_ID:
+    case TYPES.SET_CURRENT_DROP_TARGET_PARAMS:
       return {
         ...state,
-        currentDropTargetId: action.payload.id,
+        currentDropTargetParams:
+          action.payload.id === null ? null : action.payload,
       };
     case TYPES.LOGOUT: {
       return {

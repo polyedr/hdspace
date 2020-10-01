@@ -4,10 +4,7 @@ import { Popover, IconButton } from '@material-ui/core';
 import SaveIcon from '@material-ui/icons/Save';
 import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state';
 import cn from 'classnames';
-import {
-  selectElementBorderedRect,
-  selectElementById,
-} from '../../../../redux/project/selectors';
+import { selectElementById } from '../../../../redux/project/selectors';
 import { SAVEABLE_ELEMENTS } from '../../../../constants/defaultParams';
 
 const styles = require('./SaveElementAction.scss');
@@ -18,11 +15,10 @@ type Props = {
 
 const SaveElementAction: React.FC<Props> = ({ elementId }) => {
   const element = useSelector(selectElementById(elementId));
-  const elementRect = useSelector(selectElementBorderedRect(elementId));
 
   const inputRef = React.createRef<HTMLInputElement>();
 
-  if (!element || !elementRect || !SAVEABLE_ELEMENTS.includes(element.type)) {
+  if (!element || !SAVEABLE_ELEMENTS.includes(element.type)) {
     return null;
   }
 
