@@ -1,8 +1,8 @@
 /* eslint-disable camelcase */
 import { OverridableComponent } from '@material-ui/core/OverridableComponent';
 import { SvgIconTypeMap } from '@material-ui/core';
-import { ServerElement } from '../../api/types/elements';
 import {
+  ServerElement,
   HeadingType,
   InputType,
   LibraryElement,
@@ -17,6 +17,7 @@ import TYPES from '../../constants/actions';
 import { CssLikeStyles } from '../../utils/StyleHelper';
 import {
   addStateElements,
+  extractStateElement,
   insertStateElement,
   moveStateElement,
   removeStateElement,
@@ -539,6 +540,7 @@ export type Action =
   | ReturnType<typeof insertStateElement>
   | ReturnType<typeof removeStateElement>
   | ReturnType<typeof setProjectsData>
+  | ReturnType<typeof extractStateElement>
   | SetScreens
   | AddBorderedElementRect
   | RemoveBorderedElementRect

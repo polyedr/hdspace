@@ -261,6 +261,11 @@ export const insertStateElement = (
   meta,
 });
 
+export const extractStateElement = (elementId: string) => ({
+  type: TYPES.EXTRACT_STATE_ELEMENT,
+  payload: elementId,
+});
+
 export const removeStateElement = (
   elementId: string,
   meta: ElementHistoryMeta,

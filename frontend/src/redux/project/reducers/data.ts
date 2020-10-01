@@ -6,6 +6,7 @@ import { Project } from '../../../api/types';
 import {
   addMapElements,
   arrayToMap,
+  extractMapElement,
   flattenElements,
   insertMapElement,
   moveMapElement,
@@ -62,6 +63,12 @@ const dataReducer = produce(
       case TYPES.REMOVE_STATE_ELEMENT: {
         const { elementId } = action.payload;
         draft.elements = removeMapElement(draft.elements, elementId);
+        break;
+      }
+
+      case TYPES.EXTRACT_STATE_ELEMENT: {
+        const elementId = action.payload;
+        draft.elements = extractMapElement(draft.elements, elementId);
         break;
       }
 

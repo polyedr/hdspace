@@ -76,11 +76,25 @@ export function* moveElementSaga(
 
   yield put(Actions.setCurrentDropTarget(null));
 
-  const updatedNewParent = yield select(selectElementAsTree(newParentId));
-
-  const convertedElements = updatedNewParent.children.map((child) =>
-    convertElementToPatchRequest(child),
+  const updatedOldParent: LibraryElement<any> = yield select(
+    selectElementAsTree(oldParentId),
   );
+
+  const updatedNewParent: LibraryElement<any> = yield select(
+    selectElementAsTree(newParentId),
+  );
+
+  const convertedElements = [
+    ...new Set([
+      ...updatedNewParent.children.map((child) =>
+        convertElementToPatchRequest(child),
+      ),
+      ...updatedOldParent.children.map((child) =>
+        convertElementToPatchRequest(child),
+      ),
+    ]),
+  ];
+
   yield call(reqWrapper, apiSaveElements, { data: convertedElements });
 
   yield call(reqWrapper, apiChangeRecursiveElement, {
