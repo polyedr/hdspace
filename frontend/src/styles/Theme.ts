@@ -24,8 +24,8 @@ const theme = createMuiTheme({
     },
     panel: {
       main: '#2f4050',
-      light: lighten('#2f4050', 0.2),
-      dark: darken('#2f4050', 0.2),
+      light: lighten('#2f4050', 0.1),
+      dark: darken('#2f4050', 0.1),
       contrastText: '#fff',
     },
   },

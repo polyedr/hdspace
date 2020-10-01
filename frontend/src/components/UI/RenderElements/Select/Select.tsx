@@ -5,8 +5,11 @@ import React, { ChangeEvent } from 'react';
 import cn from 'classnames';
 import { makeStyles, TextField, MenuItem } from '@material-ui/core';
 import * as R from 'ramda';
+import { useSelector } from 'react-redux';
 import { SelectRendererProps } from '../types';
 import { convertPropCSS } from '../../../../utils/StyleHelper';
+import { selectElementAsTree } from '../../../../redux/project/selectors';
+import { LibraryElement } from '../../../../api/types';
 
 const styles = require('../styles.scss');
 
@@ -210,12 +213,11 @@ const Select: React.FC<SelectRendererProps> = React.forwardRef(
       ownStyles,
       isDisabled,
       active,
-      sortableId,
-      currentValue,
+      sortableId, // -
       onElementChange,
       params,
       children,
-      className,
+      className, // -
       childrenElements,
       projectClasses,
     },
@@ -238,8 +240,10 @@ const Select: React.FC<SelectRendererProps> = React.forwardRef(
       ...ownInlineStyles,
     };
 
-    const [menu] = childrenElements;
-    const menuItems = menu.children;
+    const menu = useSelector(selectElementAsTree(childrenElements[0]));
+
+    const menuItems: LibraryElement<'selectItem'> = menu.children;
+    const currentValue = menuItems[0]?.parameters?.value;
 
     const textFieldClasses = getTextFieldStyles(
       entityStyles,
@@ -261,7 +265,6 @@ const Select: React.FC<SelectRendererProps> = React.forwardRef(
           outline: '1px solid #949494',
         },
       },
-
       input: {},
     })();
 

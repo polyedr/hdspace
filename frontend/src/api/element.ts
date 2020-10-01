@@ -23,6 +23,21 @@ export const apiGetElements = ({
     .then((res) => parseResult(res).results)
     .catch(onError);
 
+export const apiGetCustomLibraryElements = (
+  props: MyAxiosProps,
+): Promise<IScenarioElement[]> => {
+  return myAxios({
+    ...props,
+    method: 'GET',
+    params: {
+      is_shared: true,
+    },
+    url: '/projects/scenario-elements',
+  })
+    .then((res) => parseResult(res).results)
+    .catch(onError);
+};
+
 export const apiAddElement = <
   T extends Entity,
   K extends Entity,

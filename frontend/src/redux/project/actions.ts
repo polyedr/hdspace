@@ -1,5 +1,12 @@
 import { DropPosition } from '../../constants/dragAndDrop';
 import {
+  ServerElement,
+  Project,
+  LibraryElement,
+  LibraryElementPatch,
+  PaginatedResponse,
+} from '../../api/types';
+import {
   ElementHistoryMeta,
   HistoryMeta,
   Indices,
@@ -7,9 +14,7 @@ import {
   Screen,
   StateElement,
 } from './types';
-import { ServerElement, Project, LibraryElement } from '../../api/types';
 import TYPES from '../../constants/actions';
-
 import { ChildEntity, Entity } from '../../domain/core';
 import { ChildrenElements } from '../../domain/libraryElements/libraryElements';
 import { CssLikeStyles } from '../../utils/StyleHelper';
@@ -22,6 +27,11 @@ export const getProjectList = (): T.LoadProjects => ({
 export const setProjectList = (projects: Project[]): T.LoadProjectsSuccess => ({
   type: TYPES.LOAD_PROJECTS_SUCCESS,
   payload: { projects },
+});
+
+export const setProjectsData = (data: PaginatedResponse<Project>) => ({
+  type: TYPES.SET_PROJECTS_DATA,
+  payload: data,
 });
 
 export const addProject = (name: string): T.AddProject => ({
@@ -252,6 +262,11 @@ export const insertStateElement = (
   meta,
 });
 
+export const extractStateElement = (elementId: string) => ({
+  type: TYPES.EXTRACT_STATE_ELEMENT,
+  payload: elementId,
+});
+
 export const removeStateElement = (
   elementId: string,
   meta: ElementHistoryMeta,
@@ -303,6 +318,14 @@ export const renameElement = (
   type: TYPES.RENAME_ELEMENT,
   payload: { elementID, name },
   meta,
+});
+
+export const updateElement = <T extends Entity>(
+  elementID: string,
+  data: LibraryElementPatch<T>,
+): T.UpdateElement => ({
+  type: TYPES.UPDATE_ELEMENT,
+  payload: { elementID, data },
 });
 
 export const toggleContainersBorders = (): T.ToggleContainersBorders => ({
@@ -623,28 +646,6 @@ export const addElements = (
   payload: { elements, parentId },
 });
 
-export const removeElements = (elementIds: string[]): T.RemoveElements => ({
-  type: TYPES.REMOVE_ELEMENTS,
-  payload: elementIds,
-});
-
-export const saveElementToLibrary = <T extends Entity>(
-  id: string,
-  element: ServerElement<T, ServerElement<T>[]>,
-) => {
-  return {
-    type: TYPES.SAVE_LIBRARY_ELEMENT,
-    payload: { id, element },
-  };
-};
-
-export const saveLibraryElementToState = <T extends Entity>(
-  element: ServerElement<T, ServerElement<Entity>[]>,
-) => ({
-  type: TYPES.SAVE_LIBRARY_ELEMENT_TO_STATE,
-  payload: element,
-});
-
 export const addBorderedElementRef = (
   id: string,
   ref: React.RefObject<HTMLElement>,
@@ -664,4 +665,20 @@ export const setCurrentDropTargetParams = (
 ) => ({
   type: TYPES.SET_CURRENT_DROP_TARGET_PARAMS,
   payload: { id, position },
+});
+
+export const requestCustomLibraryElements = () => ({
+  type: TYPES.REQUEST_CUSTOM_LIBRARY_ELEMENTS,
+});
+
+export const setCustomLibraryElements = (
+  elements: ServerElement<Entity>[],
+) => ({
+  type: TYPES.SET_CUSTOM_LIBRARY_ELEMENTS,
+  payload: { elements },
+});
+
+export const addCustomLibraryElement = (element: ServerElement<Entity>) => ({
+  type: TYPES.ADD_CUSTOM_LIBRARY_ELEMENT,
+  payload: { element },
 });

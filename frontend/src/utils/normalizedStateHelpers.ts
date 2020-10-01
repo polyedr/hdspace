@@ -1,3 +1,4 @@
+import produce from 'immer';
 import { Indices, Map, ParentIds, StateElement } from '../redux/project/types';
 import { LibraryElement } from '../api/types';
 import { AVAILABLE_CHILDREN, Entity } from '../domain/core';
@@ -132,17 +133,22 @@ export const insertMapElement = (
   childId: string,
 ): Map<StateElement> => {
   const newState = { ...state, ...flattenElements([element], parentId) };
+  const el = newState[element.id];
+  const child = newState[childId];
+  const parent = newState[parentId];
 
-  newState[parentId].children = [
-    ...newState[parentId].children.filter((id) => id !== childId),
-    element.id,
-  ];
-  newState[childId].parent = element.id;
-  newState[element.id].children = [...newState[element.id].children, childId];
+  parent.children.splice(child.buoyancy, 1, el.id);
+
+  el.children = [childId];
+  el.buoyancy = child.buoyancy;
+
+  child.parent = el.id;
+  child.buoyancy = 0;
+
   return newState;
 };
 
-export const restoreMapElement = (
+export const extractMapElement = (
   state: Map<StateElement>,
   elementId: string,
 ): Map<StateElement> => {
@@ -151,16 +157,37 @@ export const restoreMapElement = (
   if (!element.parent) return newState;
 
   const parent = newState[element.parent];
-  parent.children.splice(element.buoyancy, 0, element.id);
+  parent.children.splice(element.buoyancy, 1, ...element.children);
   parent.children.forEach((id, i) => {
-    newState[id] = {
-      ...newState[id],
-      buoyancy: i,
-    };
+    newState[id].buoyancy = i;
   });
 
+  element.children.forEach((id) => {
+    newState[id].parent = parent.id;
+  });
+
+  element.children = [];
   return newState;
 };
+
+export const restoreMapElement = (
+  state: Map<StateElement>,
+  elementId: string,
+): Map<StateElement> =>
+  // eslint-disable-next-line consistent-return
+  produce(state, (draft) => {
+    const element = draft[elementId];
+    if (!element.parent) return draft;
+    const parent = draft[element.parent];
+    parent.children.splice(element.buoyancy, 0, element.id);
+
+    parent.children.forEach((id, i) => {
+      draft[id] = {
+        ...draft[id],
+        buoyancy: i,
+      };
+    });
+  });
 
 export const restoreMapElementChildren = (
   state: Map<StateElement>,
@@ -169,14 +196,13 @@ export const restoreMapElementChildren = (
 ): Map<StateElement> => {
   const newState = { ...state };
   const element = newState[elementId];
-  const startIndex = newState[childrenIds[0]].buoyancy;
-  element.children.splice(startIndex, 0, ...childrenIds);
+
+  element.children = childrenIds;
   element.children.forEach((id, i) => {
-    newState[id] = {
-      ...newState[id],
-      buoyancy: i,
-    };
+    newState[id].buoyancy = i;
+    newState[id].parent = elementId;
   });
+
   return newState;
 };
 

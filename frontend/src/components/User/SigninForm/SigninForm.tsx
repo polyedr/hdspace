@@ -146,7 +146,7 @@ const SignInForm = (props: IProps) => {
                 </p>
               )}
               <Button
-                className="signSubmitBtn"
+                className={styles.submitButton}
                 type="submit"
                 styleType="none"
                 disabled={submitting}

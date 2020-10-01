@@ -1,6 +1,7 @@
 /* eslint-disable camelcase, no-console */
 
 import {
+  takeLeading,
   takeLatest,
   takeEvery,
   put,
@@ -31,10 +32,11 @@ import {
   restoreElementSaga,
   softDeleteSaga,
   unwrapFromContainerSaga,
+  updateElementSaga,
   wrapIntoContainerSaga,
 } from './scenario';
 import {
-  addProject,
+  addProjectSaga,
   changeScreensOrderSaga,
   delProjectSaga,
   exportProjectSaga,
@@ -55,7 +57,7 @@ import {
   updateElementImage,
   updateElementParameters,
   uploadFileSaga,
-  saveCustomLibraryElement,
+  requestCustomLibraryElementsSaga,
 } from './element';
 import { convertElementToRequest } from '../../../api/converters/toRequest';
 import { MAX_TOKEN_TRIALS } from '../../../../config/settings';
@@ -453,7 +455,7 @@ export default function* projectSaga() {
   yield takeLatest(LOCATION_CHANGE, LocationChange);
 
   yield takeLatest(TYPES.LOAD_PROJECTS, getProjectListSaga);
-  yield takeLatest(TYPES.ADD_PROJECT, addProject);
+  yield takeLatest(TYPES.ADD_PROJECT, addProjectSaga);
   yield takeLatest(TYPES.DELETE_PROJECT, delProjectSaga);
   yield takeLatest(TYPES.UPDATE_PROJECT, updateProjectSaga);
   yield takeLatest(TYPES.GET_PROJECT, getProjectSaga);
@@ -501,6 +503,10 @@ export default function* projectSaga() {
   yield takeEvery(TYPES.REDO_ACTION, redoSaga);
   yield takeEvery(TYPES.UNWRAP_FROM_CONTAINER, unwrapFromContainerSaga);
   yield takeEvery(TYPES.REDO_WRAP_INTO_CONTAINER, redoWrapIntoContainerSaga);
-  yield takeEvery(TYPES.SAVE_LIBRARY_ELEMENT, saveCustomLibraryElement);
   yield takeEvery(TYPES.SET_ACTIVE_ELEMENT, setActiveElementSaga);
+  yield takeEvery(TYPES.UPDATE_ELEMENT, updateElementSaga);
+  yield takeLeading(
+    TYPES.REQUEST_CUSTOM_LIBRARY_ELEMENTS,
+    requestCustomLibraryElementsSaga,
+  );
 }
