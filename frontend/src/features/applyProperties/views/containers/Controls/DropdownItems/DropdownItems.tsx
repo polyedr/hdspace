@@ -32,6 +32,12 @@ function mapState(state: AppReduxState): StateProps {
   const element = selectElementAsTree(activeElementId)(state);
 
   const [dropdownMenu] = element.children;
+  if (!dropdownMenu?.children) {
+    return {
+      dropdownMenuID: '-1',
+      dropdownItems: [],
+    };
+  }
   const dropdownItems = dropdownMenu.children;
 
   return {

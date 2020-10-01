@@ -137,7 +137,6 @@ const useElementProps = (elementId: string): ElementProps | null => {
 
       case 'select': {
         return {
-          currentValue: savedElements[id]?.savedValue,
           onElementChange: updateSavedElementValues,
           childrenElements: children,
           params: element.parameters,
