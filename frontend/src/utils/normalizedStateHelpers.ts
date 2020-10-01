@@ -203,15 +203,6 @@ export const restoreMapElementChildren = (
     newState[id].parent = elementId;
   });
 
-  /* const startIndex = newState[childrenIds[0]].buoyancy;
-  element.children.splice(startIndex, 0, ...childrenIds);
-
-  element.children.forEach((id, i) => {
-    newState[id] = {
-      ...newState[id],
-      buoyancy: i,
-    };
-  }); */
   return newState;
 };
 
