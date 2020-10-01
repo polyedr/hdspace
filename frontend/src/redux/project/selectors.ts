@@ -26,11 +26,17 @@ import { getDisplayStyles } from '../../features/applyProperties/views/container
 export const selectProjectState = makeFeatureStateSelector('project');
 
 export const selectProjects = ({ project }: AppReduxState) =>
-  mapToArr<Project>(project.data.projects);
+  mapToArr<Project>(project.data.projectsData.results);
+
+export const selectProjectsPageSize = ({ project }: AppReduxState) =>
+  project.data.projectsData.pageSize;
+
+export const selectProjectsDataNext = ({ project }: AppReduxState) =>
+  project.data.projectsData.next;
 
 export const selectProjectById = (projectId: number) => ({
   project,
-}: AppReduxState) => project.data.projects[projectId];
+}: AppReduxState) => project.data.projectsData.results[projectId];
 
 export const selectScreenRootElement = (screenId: number) => ({
   project,
@@ -72,7 +78,8 @@ export const selectCurrentProjectId = ({ project }: AppReduxState) =>
   project.edit.currentProjectId;
 
 export const selectCurrentProject = (state: AppReduxState) =>
-  state.project.data.projects[selectCurrentProjectId(state)] || DEFAULT_PROJECT;
+  state.project.data.projectsData.results[selectCurrentProjectId(state)] ||
+  DEFAULT_PROJECT;
 
 export const selectCurrentRootId = (state: AppReduxState) =>
   selectCurrentScreen(state).element || '-1';
@@ -114,9 +121,8 @@ export function selectScenarioLoader(state: AppReduxState) {
   return selectProjectState(state).communication.scenarioLoader;
 }
 
-export function selectProjectListLoader(state: AppReduxState) {
-  return selectProjectState(state).communication.projectListLoader;
-}
+export const selectAreProjectsLoading = ({ project }: AppReduxState) =>
+  project.data.projectsData.loading;
 
 export const selectActiveElementId = ({ project }: AppReduxState) =>
   project.edit.activeElementId;

@@ -7,13 +7,6 @@ const communicationReducer = (
   action: T.Action,
 ): T.ProjectCommunicationState => {
   switch (action.type) {
-    case TYPES.SET_PROJECT_LIST_LOADER: {
-      return {
-        ...state,
-        projectListLoader: action.payload.active,
-      };
-    }
-
     case TYPES.SET_LOADER: {
       return {
         ...state,

@@ -1,4 +1,4 @@
-import React, { memo, useEffect } from 'react';
+import React, { memo, useEffect, useRef } from 'react';
 import * as R from 'ramda';
 import { useDispatch, useSelector } from 'react-redux';
 import Paper from '@material-ui/core/Paper';
@@ -13,18 +13,21 @@ import TableCell from '@material-ui/core/TableCell';
 import TableBody from '@material-ui/core/TableBody';
 import Button from '@material-ui/core/Button';
 import TableContainer from '@material-ui/core/TableContainer';
+import Container from '@material-ui/core/Container';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import ProjectListItem from './ProjectListItem';
 import { addProject, getProjectList } from '../../redux/project/actions';
 import {
-  selectProjectListLoader,
+  selectAreProjectsLoading,
   selectProjects,
+  selectProjectsDataNext,
 } from '../../redux/project/selectors';
-import Spinner from '../UI/Spinner';
 import { Project } from '../../api/types';
 
 const useStyles = makeStyles((theme) =>
   createStyles({
     root: {
+      textAlign: 'center',
       margin: theme.spacing(2),
       padding: theme.spacing(1),
     },
@@ -43,6 +46,10 @@ const useStyles = makeStyles((theme) =>
     tableHeader: {
       backgroundColor: '#dedede',
     },
+    loader: {
+      padding: '1em',
+      textAlign: 'center',
+    },
   }),
 );
 
@@ -50,41 +57,76 @@ const Projects: React.FC = () => {
   const dispatch = useDispatch();
   const classes = useStyles();
 
+  const ref = useRef<HTMLTableRowElement>(null);
+  const el = ref && ref.current;
+
   const projectList = useSelector(selectProjects);
-  const projectListLoader = useSelector(selectProjectListLoader);
+  const projectListLoader = useSelector(selectAreProjectsLoading);
+  const hasNext = useSelector(selectProjectsDataNext);
+
+  useEffect(() => {
+    dispatch(getProjectList());
+  }, [dispatch]);
+
+  const handleGetProjects = () => {
+    if (hasNext) {
+      dispatch(getProjectList());
+    }
+  };
+
+  useEffect(() => {
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          handleGetProjects();
+        }
+      },
+      {
+        root: null,
+        rootMargin: '0px',
+        threshold: 0.01,
+      },
+    );
+
+    if (el) {
+      obs.observe(el);
+    }
+
+    return () => {
+      if (el) {
+        obs.unobserve(el);
+      }
+    };
+  }, [el]);
 
   const sortedProjectList = R.sort(
     R.descend((project: Project) => project.created.getTime()),
     projectList,
   );
 
-  useEffect(() => {
-    dispatch(getProjectList());
-  }, [dispatch]);
-
   const handleProjectAdd = () => {
     dispatch(addProject('AProject'));
   };
 
   return (
-    <Paper className={classes.root}>
-      <div className={classes.header}>
-        <Typography variant="h5" className={classes.headerText}>
-          All projects
-        </Typography>
+    <Container maxWidth="lg">
+      <Paper className={classes.root}>
+        <div className={classes.header}>
+          <Typography variant="h5" className={classes.headerText}>
+            All projects
+          </Typography>
 
-        <Button
-          variant="contained"
-          color="secondary"
-          onClick={handleProjectAdd}
-        >
-          Create a project
-        </Button>
-      </div>
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={handleProjectAdd}
+          >
+            Create a project
+          </Button>
+        </div>
 
-      <Divider />
+        <Divider />
 
-      {projectList.length !== 0 && (
         <TableContainer className={classes.table}>
           <Table size="small">
             <TableHead className={classes.tableHeader}>
@@ -102,16 +144,26 @@ const Projects: React.FC = () => {
             </TableHead>
 
             <TableBody>
-              {sortedProjectList.map((project) => (
-                <ProjectListItem project={project} key={project.id} />
+              {sortedProjectList.map((project, i) => (
+                <ProjectListItem
+                  project={project}
+                  key={project.id}
+                  ref={i === projectList.length - 1 ? ref : undefined}
+                />
               ))}
+
+              {projectListLoader && (
+                <TableRow>
+                  <TableCell colSpan={5} className={classes.loader}>
+                    <CircularProgress color="secondary" />
+                  </TableCell>
+                </TableRow>
+              )}
             </TableBody>
           </Table>
         </TableContainer>
-      )}
-
-      <Spinner active={projectListLoader} />
-    </Paper>
+      </Paper>
+    </Container>
   );
 };
 
