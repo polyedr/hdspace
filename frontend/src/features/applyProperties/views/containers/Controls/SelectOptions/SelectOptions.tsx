@@ -2,12 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { connect, useSelector } from 'react-redux';
 import * as R from 'ramda';
 import {
-  ExpansionPanel,
-  ExpansionPanelSummary,
-  ExpansionPanelDetails,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
 } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-
 import Button from '../../../../../../components/UI/Button';
 import Icon from '../../../../../../components/UI/Icon';
 import { SelectItemElement } from '../../../../../../api/types';
@@ -36,8 +35,14 @@ type StateProps = {
 };
 
 function mapState(state: AppReduxState): StateProps {
-  const selectChildren = selectActiveItemChildren(state, 'selectMenu');
-  const [selectMenu] = selectChildren;
+  const [selectMenu] = selectActiveItemChildren(state, 'selectMenu');
+  if (!selectMenu?.children) {
+    return {
+      selectMenuID: '-1',
+      selectOptions: [],
+    };
+  }
+
   const selectOptions = selectMenu.children.map((childId) =>
     selectElementById(childId)(state),
   ) as SelectItemElement[];
@@ -131,8 +136,8 @@ const SelectOptions: React.FC<Props> = ({
         </Button>
       </div>
       {selectOptions.map(({ id, parameters: { name } }) => (
-        <ExpansionPanel key={id}>
-          <ExpansionPanelSummary
+        <Accordion key={id}>
+          <AccordionSummary
             expandIcon={<ExpandMoreIcon />}
             aria-controls="panel1a-content"
             id="panel1a-header"
@@ -149,8 +154,8 @@ const SelectOptions: React.FC<Props> = ({
                 </Button>
               )}
             </div>
-          </ExpansionPanelSummary>
-          <ExpansionPanelDetails>
+          </AccordionSummary>
+          <AccordionDetails>
             <div className={styles.optionBlock}>
               <p className={sharedClasses.propsTitle}>Option name</p>
               <div className={sharedClasses.propsContainer}>
@@ -174,8 +179,8 @@ const SelectOptions: React.FC<Props> = ({
                 />
               </div>
             </div>
-          </ExpansionPanelDetails>
-        </ExpansionPanel>
+          </AccordionDetails>
+        </Accordion>
       ))}
     </div>
   );

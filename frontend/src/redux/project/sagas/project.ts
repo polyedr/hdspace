@@ -28,21 +28,31 @@ import { Page } from '../types';
 import { apiGetScenarios } from '../../../api/scenario';
 import { apiGetElements } from '../../../api/element';
 import { apiSaveScreen } from '../../../api/screen';
-import { Project } from '../../../api/types';
+import { PaginatedResponse, Project } from '../../../api/types';
 import { setScreens } from '../actions';
+import { selectProjectsDataNext } from '../selectors';
 
 export function* getProjectListSaga(): SagaIterator {
   yield put(Actions.setProjectListLoader(true));
 
-  const result = yield call(reqWrapper, apiGetProjectList);
+  const next: string | null = yield select(selectProjectsDataNext);
+
+  const result: PaginatedResponse<Project> = yield call(
+    reqWrapper,
+    apiGetProjectList,
+    {
+      params: {
+        cursor: next,
+      },
+    },
+  );
 
   if (!result) {
     yield put(Actions.setProjectListLoader(false));
-
     return;
   }
 
-  yield put(Actions.setProjectList(result));
+  yield put(Actions.setProjectsData(result));
   yield put(Actions.setProjectListLoader(false));
 }
 
@@ -102,14 +112,9 @@ export function* addProjectSaga({
   yield put(Actions.setIsAddElementsModalOpened(true));
 
   // eslint-disable-next-line consistent-return
-  return project;
-}
+  yield put(Actions.setCurrentProjectId(project.id));
 
-export function* addProject(action: ReturnType<typeof Actions.addProject>) {
-  const { id: projectID } = yield call(addProjectSaga, action);
-  yield put(Actions.setCurrentProjectId(projectID));
-  yield call(addScreenSaga, Actions.addScreen(projectID, 'Screen 1', 0, true));
-  yield put(push(`/project/${projectID}`));
+  yield call(addScreenSaga, Actions.addScreen(project.id, 'Screen 1', 0, true));
 }
 
 export function* exportProjectSaga() {

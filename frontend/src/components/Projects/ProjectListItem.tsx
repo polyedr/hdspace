@@ -26,6 +26,9 @@ const useStyles = makeStyles((theme) =>
         color: theme.palette.link.light,
       },
     },
+    tableRow: {
+      height: '5em',
+    },
   }),
 );
 
@@ -33,90 +36,92 @@ type Props = {
   project: Project;
 };
 
-const ProjectListItem: React.FC<Props> = ({
-  project: { status, id, name, updated, projectscreen },
-}) => {
-  const dispatch = useDispatch();
-  const classes = useStyles();
+type Ref = HTMLTableRowElement;
 
-  const [renameOpen, setRenameOpen] = useState(false);
-  const [deleteOpen, setDeleteOpen] = useState(false);
+const ProjectListItem = React.forwardRef<Ref, Props>(
+  ({ project: { status, id, name, updated, projectscreen } }, ref) => {
+    const dispatch = useDispatch();
+    const classes = useStyles();
 
-  const closeModal = () => {
-    setRenameOpen(false);
-    setDeleteOpen(false);
-  };
+    const [renameOpen, setRenameOpen] = useState(false);
+    const [deleteOpen, setDeleteOpen] = useState(false);
 
-  const handleRenameProject = () => {
-    setRenameOpen(true);
-  };
+    const closeModal = () => {
+      setRenameOpen(false);
+      setDeleteOpen(false);
+    };
 
-  const handleDeleteProject = () => {
-    setDeleteOpen(true);
-  };
+    const handleRenameProject = () => {
+      setRenameOpen(true);
+    };
 
-  const onRenameProject = async (values) => {
-    dispatch(renameProject(id, values.name));
-    closeModal();
-  };
+    const handleDeleteProject = () => {
+      setDeleteOpen(true);
+    };
 
-  const onDeleteProject = () => {
-    dispatch(delProject(id));
-    closeModal();
-  };
+    const onRenameProject = async (values) => {
+      dispatch(renameProject(id, values.name));
+      closeModal();
+    };
 
-  return (
-    <>
-      <TableRow>
-        <TableCell>
-          <Typography color="secondary">{status}</Typography>
-        </TableCell>
+    const onDeleteProject = () => {
+      dispatch(delProject(id));
+      closeModal();
+    };
 
-        <TableCell>
-          <Link to={`/project/${id}`} className={classes.link}>
-            {name}
-          </Link>
-        </TableCell>
+    return (
+      <>
+        <TableRow className={classes.tableRow} ref={ref}>
+          <TableCell>
+            <Typography color="secondary">{status}</Typography>
+          </TableCell>
 
-        <TableCell>
-          <Typography variant="caption">
-            {convertDateToRelative(updated)}
-          </Typography>
-        </TableCell>
+          <TableCell>
+            <Link to={`/project/${id}`} className={classes.link}>
+              {name}
+            </Link>
+          </TableCell>
 
-        <TableCell>{projectscreen.length}</TableCell>
+          <TableCell>
+            <Typography variant="caption">
+              {convertDateToRelative(updated)}
+            </Typography>
+          </TableCell>
 
-        <TableCell>
-          <IconButton size="small" onClick={handleRenameProject}>
-            <EditIcon fontSize="small" />
-          </IconButton>
+          <TableCell>{projectscreen.length}</TableCell>
 
-          <IconButton size="small" onClick={handleDeleteProject}>
-            <DeleteIcon fontSize="small" />
-          </IconButton>
-        </TableCell>
-      </TableRow>
+          <TableCell>
+            <IconButton size="small" onClick={handleRenameProject}>
+              <EditIcon fontSize="small" />
+            </IconButton>
 
-      <Dialog
-        open={renameOpen}
-        onSubmit={onRenameProject}
-        onClose={closeModal}
-        title="Rename Project"
-        fieldName="name"
-        initialValue={name}
-        description={`Enter new name for ${name}`}
-      />
+            <IconButton size="small" onClick={handleDeleteProject}>
+              <DeleteIcon fontSize="small" />
+            </IconButton>
+          </TableCell>
+        </TableRow>
 
-      <Dialog
-        open={deleteOpen}
-        onSubmit={onDeleteProject}
-        onClose={closeModal}
-        title="Delete Project"
-        description={`This project named as ${name} and its styles, pages, and images will be deleted permanently!`}
-        confirm
-      />
-    </>
-  );
-};
+        <Dialog
+          open={renameOpen}
+          onSubmit={onRenameProject}
+          onClose={closeModal}
+          title="Rename Project"
+          fieldName="name"
+          initialValue={name}
+          description={`Enter new name for ${name}`}
+        />
+
+        <Dialog
+          open={deleteOpen}
+          onSubmit={onDeleteProject}
+          onClose={closeModal}
+          title="Delete Project"
+          description={`This project named as ${name} and its styles, pages, and images will be deleted permanently!`}
+          confirm
+        />
+      </>
+    );
+  },
+);
 
 export default ProjectListItem;

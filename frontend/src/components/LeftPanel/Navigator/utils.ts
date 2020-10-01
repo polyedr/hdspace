@@ -1,15 +1,6 @@
 import { mutateTree, TreeData } from '@atlaskit/tree';
-import { LibraryElement } from '../../../api/types';
 import { StateElement, Map } from '../../../redux/project/types';
 import { Node } from './types';
-
-export const convertTree = (element: LibraryElement<any>) => ({
-  id: element.id,
-  data: { title: element.name, type: element.type },
-  hasChildren: !!element.children.length,
-  isExpanded: element.type === 'root',
-  children: element.children.map((child) => convertTree(child)),
-});
 
 export const convertElements = (elements: Map<StateElement>): Map<Node> =>
   Object.fromEntries(
@@ -18,7 +9,10 @@ export const convertElements = (elements: Map<StateElement>): Map<Node> =>
       {
         id: value.id,
         data: { title: value.name, type: value.type },
-        children: value.children,
+        children:
+          value.type === 'dropdown' || value.type === 'select'
+            ? []
+            : value.children,
         hasChildren: !!value.children.length,
         isExpanded: value.type === 'root',
         parent: value.type === 'root' ? 'root' : value.parent,

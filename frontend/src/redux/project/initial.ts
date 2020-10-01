@@ -1,7 +1,13 @@
 import * as T from './types';
 
 export const initialData: T.ProjectDataState = {
-  projects: {},
+  projectsData: {
+    next: null,
+    previous: null,
+    results: {},
+    pageSize: 10,
+    loading: false,
+  },
   screens: {},
   elements: {},
 };
