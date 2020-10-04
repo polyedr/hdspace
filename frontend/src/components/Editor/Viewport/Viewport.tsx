@@ -30,7 +30,7 @@ const useStyles = makeStyles(() =>
   }),
 );
 
-const Viewport: React.FC<{ children: any | any[] }> = ({ children }) => {
+const Viewport: React.FC = ({ children }) => {
   const activeElementId = useSelector(selectActiveElementId);
   const rootID = useSelector(selectCurrentRootId);
   const isDisabled = useSelector(selectIsPrototypeMode);

@@ -99,16 +99,6 @@ const Borders: React.FC<Props> = ({ elementId, styles }) => {
           styles={styles}
         />
       )}
-      {/* isDropTarget && (
-        <Border
-          position={
-            dropTargetBorderPosition
-          } // isDropTargetContainer ? BorderPosition.BOTTOM : BorderPosition.TOP 
-          element={element}
-          isActive
-          styles={styles}
-        />
-      ) */}
     </>
   ) : null;
 };
