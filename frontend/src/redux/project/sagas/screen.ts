@@ -22,7 +22,7 @@ import {
 } from '../../../api/screen';
 import { convertCreatedElementToRequest } from '../../../api/converters/toRequest';
 import { apiGetProject, apiSaveProject } from '../../../api/project';
-import { Screen, IScenarioItem, StateElement, Map } from '../types';
+import { Screen, IScenarioItem, StateElement, Normalized } from '../types';
 import {
   activateScreen,
   addElements,
@@ -207,7 +207,7 @@ export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
 
   yield put(setCurrentScreenId(screen.id));
 
-  const state: Map<StateElement> = yield select(selectAllElements);
+  const state: Normalized<StateElement> = yield select(selectAllElements);
   yield put(
     Actions.updateElementsTree(state, {
       screenId: screen.id,

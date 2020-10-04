@@ -1,9 +1,14 @@
 import produce from 'immer';
-import { Indices, Map, ParentIds, StateElement } from '../redux/project/types';
+import {
+  Indices,
+  Normalized,
+  ParentIds,
+  StateElement,
+} from '../redux/project/types';
 import { LibraryElement } from '../api/types';
 import { AVAILABLE_CHILDREN, Entity } from '../domain/core';
 
-export const arrayToMap = <T extends { id: any }>(arr: T[]): Map<T> => {
+export const arrayToMap = <T extends { id: any }>(arr: T[]): Normalized<T> => {
   const res = {};
   arr.forEach((item) => {
     res[item.id] = item;
@@ -11,12 +16,12 @@ export const arrayToMap = <T extends { id: any }>(arr: T[]): Map<T> => {
   return res;
 };
 
-export const mapToArr = <T>(map: Map<T>): T[] => Object.values(map);
+export const mapToArr = <T>(map: Normalized<T>): T[] => Object.values(map);
 
 export const flattenElements = (
   elements: LibraryElement<any>[],
   parent?: string,
-): Map<StateElement> =>
+): Normalized<StateElement> =>
   elements.reduce(
     (acc, element) => ({
       ...acc,
@@ -31,7 +36,7 @@ export const flattenElements = (
   );
 
 export const buildElementsTree = (
-  elements: Map<StateElement>,
+  elements: Normalized<StateElement>,
   rootElementId: string,
 ): LibraryElement<any> => {
   const rootElement = elements[rootElementId];
@@ -45,9 +50,9 @@ export const buildElementsTree = (
 };
 
 export const removeMapElement = (
-  state: Map<StateElement>,
+  state: Normalized<StateElement>,
   elementId: string,
-): Map<StateElement> => {
+): Normalized<StateElement> => {
   const newState = { ...state };
   const target = newState[elementId];
 
@@ -66,10 +71,10 @@ export const removeMapElement = (
 };
 
 export const addMapElements = (
-  state: Map<StateElement>,
+  state: Normalized<StateElement>,
   elements: LibraryElement<any>[],
   parentId: string,
-): Map<StateElement> => {
+): Normalized<StateElement> => {
   const result = {
     ...state,
     ...flattenElements(elements, parentId),
@@ -85,10 +90,10 @@ export const addMapElements = (
 };
 
 export const updateMapElement = (
-  state: Map<StateElement>,
+  state: Normalized<StateElement>,
   elementId: string,
   data: Partial<StateElement>,
-): Map<StateElement> => ({
+): Normalized<StateElement> => ({
   ...state,
   [elementId]: {
     ...state[elementId],
@@ -97,11 +102,11 @@ export const updateMapElement = (
 });
 
 export const moveMapElement = (
-  state: Map<StateElement>,
+  state: Normalized<StateElement>,
   elementId: string,
   indices: Indices,
   parents: ParentIds,
-): Map<StateElement> => {
+): Normalized<StateElement> => {
   const { newIndex, oldIndex } = indices;
   const { oldParentId, newParentId } = parents;
   const newState = { ...state };
@@ -127,11 +132,11 @@ export const moveMapElement = (
 };
 
 export const insertMapElement = (
-  state: Map<StateElement>,
+  state: Normalized<StateElement>,
   element: LibraryElement<any>,
   parentId: string,
   childId: string,
-): Map<StateElement> => {
+): Normalized<StateElement> => {
   const newState = { ...state, ...flattenElements([element], parentId) };
   const el = newState[element.id];
   const child = newState[childId];
@@ -149,9 +154,9 @@ export const insertMapElement = (
 };
 
 export const extractMapElement = (
-  state: Map<StateElement>,
+  state: Normalized<StateElement>,
   elementId: string,
-): Map<StateElement> => {
+): Normalized<StateElement> => {
   const newState = { ...state };
   const element = newState[elementId];
   if (!element.parent) return newState;
@@ -171,9 +176,9 @@ export const extractMapElement = (
 };
 
 export const restoreMapElement = (
-  state: Map<StateElement>,
+  state: Normalized<StateElement>,
   elementId: string,
-): Map<StateElement> =>
+): Normalized<StateElement> =>
   // eslint-disable-next-line consistent-return
   produce(state, (draft) => {
     const element = draft[elementId];
@@ -190,10 +195,10 @@ export const restoreMapElement = (
   });
 
 export const restoreMapElementChildren = (
-  state: Map<StateElement>,
+  state: Normalized<StateElement>,
   elementId: string,
   childrenIds: string[],
-): Map<StateElement> => {
+): Normalized<StateElement> => {
   const newState = { ...state };
   const element = newState[elementId];
 
@@ -207,7 +212,7 @@ export const restoreMapElementChildren = (
 };
 
 export const canElementBeAdded = (
-  elements: Map<StateElement>,
+  elements: Normalized<StateElement>,
   parentId: string,
   childType: Entity,
 ): boolean => {

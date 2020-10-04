@@ -72,13 +72,13 @@ export type PaginatedData<T> = {
   previous: string | null;
   pageSize: number;
   loading: boolean;
-  results: Map<T>;
+  results: Normalized<T>;
 };
 
 export type ProjectDataState = {
   projectsData: PaginatedData<Project>;
-  screens: Map<Screen>;
-  elements: Map<StateElement>;
+  screens: Normalized<Screen>;
+  elements: Normalized<StateElement>;
 };
 
 export type ProjectUiState = {
@@ -240,7 +240,7 @@ export type MoveElement = IAction<
 >;
 export type UpdateElementsTree = IAction<
   typeof TYPES.UPDATE_ELEMENTS_TREE,
-  Map<StateElement>,
+  Normalized<StateElement>,
   ElementHistoryMeta
 >;
 export type ClearAfterPrevScreen = IPlainAction<
@@ -731,7 +731,7 @@ export type ElementHistoryMeta = HistoryMeta & {
   sourceAction?: Action | null;
 };
 
-export type Map<T> = {
+export type Normalized<T> = {
   [id in number | string]: T;
 };
 

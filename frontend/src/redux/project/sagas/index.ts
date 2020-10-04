@@ -66,7 +66,7 @@ import { setLoadedToken, setTokenPair } from '../../user/actions';
 import {
   ElementHistoryMeta,
   ItemToCopyInfo,
-  Map,
+  Normalized,
   StateElement,
 } from '../types';
 
@@ -206,7 +206,7 @@ function* removeSharedStylesSaga(
     yield put(Actions.setUndoActions(Actions.updateProject(currentProject)));
   }
 
-  const state: Map<StateElement> = yield select(selectAllElements);
+  const state: Normalized<StateElement> = yield select(selectAllElements);
 
   yield put(
     Actions.updateElementsTree(state, { ...action.meta, sourceAction: action }),
@@ -238,7 +238,7 @@ function* updateSharedStylesSaga(
     yield put(Actions.setUndoActions(Actions.updateProject(currentProject)));
   }
 
-  const state: Map<StateElement> = yield select(selectAllElements);
+  const state: Normalized<StateElement> = yield select(selectAllElements);
 
   yield put(
     Actions.updateElementsTree(state, { ...action.meta, sourceAction: action }),
