@@ -245,7 +245,6 @@ const Navigator: React.FC = () => {
       selectedItemId={selectedItemId}
     />
   );
-  console.log('TREE!!!', tree);
   return (
     <Accordion>
       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
