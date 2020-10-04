@@ -15,7 +15,6 @@ import {
 } from '../../../utils/normalizedStateHelpers';
 
 const dataReducer = produce(
-  // eslint-disable-next-line consistent-return
   (draft: Draft<T.ProjectDataState> = initialData, action: T.Action) => {
     switch (action.type) {
       case TYPES.UPDATE_ELEMENTS_TREE: {

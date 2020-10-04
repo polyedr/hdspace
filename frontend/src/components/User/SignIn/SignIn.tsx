@@ -2,13 +2,10 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { createStyles } from '@material-ui/core';
-import SignInForm from '../SigninForm/SigninForm';
-import Spinner from '../../UI/Spinner';
+import Alert from '@material-ui/lab/Alert';
+import LoginForm from '../LoginForm';
 import { Info } from '../Info';
-import {
-  selectConfirmMessage,
-  selectIsUserLoading,
-} from '../../../redux/user/selectors';
+import { selectConfirmMessage } from '../../../redux/user/selectors';
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -21,21 +18,20 @@ const useStyles = makeStyles((theme) =>
       backgroundColor: theme.palette.secondary.main,
       color: '#000',
       justifyContent: 'center',
-      padding: 80,
+      padding: '4em',
       display: 'flex',
       flexDirection: 'column',
-      alignItems: 'center',
+      alignItems: 'stretch',
     },
-    error: {
-      marginBottom: 15,
-      color: 'red',
+    info: {
+      minHeight: '5em',
+      margin: '1em 0',
     },
   }),
 );
 
 const SignIn: React.FC = () => {
   const classes = useStyles();
-  const isLoading = useSelector(selectIsUserLoading);
   const confirmMessage = useSelector(selectConfirmMessage);
 
   return (
@@ -43,12 +39,16 @@ const SignIn: React.FC = () => {
       <Info />
 
       <div className={classes.formContainer}>
-        {confirmMessage && <p className={classes.error}>{confirmMessage}</p>}
+        <div className={classes.info}>
+          {confirmMessage && (
+            <Alert severity="info" variant="filled">
+              {confirmMessage}
+            </Alert>
+          )}
+        </div>
 
-        <SignInForm />
+        <LoginForm />
       </div>
-
-      <Spinner active={isLoading} />
     </div>
   );
 };

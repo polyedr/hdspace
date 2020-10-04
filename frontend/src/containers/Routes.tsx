@@ -2,7 +2,7 @@ import React from 'react';
 import { withRouter, Switch, Route, Redirect } from 'react-router-dom';
 import SignIn from '../components/User/SignIn/SignIn';
 import SignUp from '../components/User/SignUp/SignUp';
-import Activation from '../components/User/Activation/Activation';
+import Activation from '../components/User/Activation';
 import ResetPassword from '../components/User/ResetPassword/ResetPassword';
 import { PATH_NAMES } from '../constants/pathNames';
 import Projects from '../components/Projects/Projects';

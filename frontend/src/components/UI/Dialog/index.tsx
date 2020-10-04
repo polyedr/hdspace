@@ -10,24 +10,28 @@ import TextField from '@material-ui/core/TextField';
 
 type Props = {
   open: boolean;
-  onClose: () => void;
-  onSubmit: (...args: any) => void;
   title: string;
+  onSubmit: (...args: any) => void;
+  onClose: () => void;
   description?: string;
+  withoutField?: boolean;
   fieldName?: string;
   initialValue?: any;
-  confirm?: boolean;
+  type?: string;
+  validation?: any;
 };
 
 const Dialog: React.FC<Props> = ({
   open,
+  title,
   onSubmit,
   onClose,
   fieldName = '',
   initialValue,
-  title,
   description,
-  confirm = false,
+  withoutField = false,
+  type,
+  validation,
 }) => {
   return (
     <MuiDialog open={open} onClose={onClose}>
@@ -40,13 +44,18 @@ const Dialog: React.FC<Props> = ({
             <DialogContent>
               <DialogContentText>{description}</DialogContentText>
 
-              {!confirm && (
-                <Field name={fieldName} initialValue={initialValue}>
+              {!withoutField && (
+                <Field
+                  name={fieldName}
+                  initialValue={initialValue}
+                  validate={validation}
+                >
                   {({ input }) => (
                     <TextField
                       autoFocus
-                      margin="dense"
-                      type="text"
+                      required
+                      margin="normal"
+                      type={type || 'text'}
                       fullWidth
                       {...input}
                     />

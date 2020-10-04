@@ -1,10 +1,8 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { useRouteMatch } from 'react-router-dom';
-
 import * as Actions from '../../../redux/user/actions';
-
-import SignInForm from '../SigninForm/SigninForm';
+import LoginForm from '../LoginForm';
 import { DEFAULT_RESPONSE_ERROR } from '../../../constants/defaultParams';
 import { AppReduxState } from '../../../shared/types/app';
 import Spinner from '../../UI/Spinner';
@@ -59,7 +57,7 @@ const Activation: React.FC<IProps> = ({
       <div className="signContainer">
         <div className={styles.formContainer}>
           <p className={styles.title}>Thanks for registration!</p>
-          <SignInForm />
+          <LoginForm />
         </div>
       </div>
       <Spinner active={isSignLoader} />

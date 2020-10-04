@@ -174,7 +174,6 @@ export const restoreMapElement = (
   state: Map<StateElement>,
   elementId: string,
 ): Map<StateElement> =>
-  // eslint-disable-next-line consistent-return
   produce(state, (draft) => {
     const element = draft[elementId];
     if (!element.parent) return draft;
