@@ -161,15 +161,9 @@ function* sendResetPasswordMailSaga(
 
     yield call(apiRestorePassword, email);
 
-    const authError: AuthError = yield select(selectAuthError);
-
-    if (authError.data?.errorStatus === -1) {
-      yield put(
-        Actions.setConfirmMessage(
-          'Please, check your mail and set new password',
-        ),
-      );
-    }
+    yield put(
+      Actions.setConfirmMessage('Please, check your mail and set new password'),
+    );
   } catch (e) {
     yield put(Actions.setAuthError(e.message));
   } finally {

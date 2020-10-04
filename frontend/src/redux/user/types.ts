@@ -10,6 +10,14 @@ export type LoginFormData = {
   password: string;
 };
 
+export type SignupFormData = {
+  username: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+};
+
 export type ServerProfileData = {
   avatar: null | string;
   hourly_rate: number;

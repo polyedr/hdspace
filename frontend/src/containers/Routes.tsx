@@ -1,7 +1,7 @@
 import React from 'react';
 import { withRouter, Switch, Route, Redirect } from 'react-router-dom';
-import SignIn from '../components/User/SignIn/SignIn';
-import SignUp from '../components/User/SignUp/SignUp';
+import SignIn from '../components/User/Signin';
+import Signup from '../components/User/Signup';
 import Activation from '../components/User/Activation';
 import ResetPassword from '../components/User/ResetPassword/ResetPassword';
 import { PATH_NAMES } from '../constants/pathNames';
@@ -15,7 +15,7 @@ const Routes: React.FC = () => {
     <Switch>
       <Route path={PATH_NAMES.user.signin} component={SignIn} />
 
-      <Route path={PATH_NAMES.user.signup} component={SignUp} />
+      <Route path={PATH_NAMES.user.signup} component={Signup} />
 
       <Route path={PATH_NAMES.user.activate} component={Activation} />
 

@@ -60,11 +60,6 @@ const LoginForm: React.FC = () => {
     setOpen(false);
   };
 
-  const initialValues: LoginFormData = {
-    username: '',
-    password: '',
-  };
-
   const handleFormSubmit = async (values: LoginFormData) => {
     dispatch(login({ username: values.username, password: values.password }));
   };
@@ -87,7 +82,6 @@ const LoginForm: React.FC = () => {
   return (
     <Form
       onSubmit={handleFormSubmit}
-      initialValues={initialValues}
       render={({ handleSubmit }) => (
         <form onSubmit={handleSubmit} className={classes.form}>
           <Typography className={classes.header}>
@@ -151,6 +145,7 @@ const LoginForm: React.FC = () => {
           <Button
             type="submit"
             fullWidth
+            color="primary"
             variant="contained"
             disabled={loading}
           >
