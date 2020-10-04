@@ -2,7 +2,7 @@
 
 import { AxiosError } from 'axios';
 import { AuthError, LoginFormData } from '../redux/user/types';
-import { onError, parseResult } from './project';
+import { parseResult } from './project';
 import { myAxios } from '../../config/settings';
 
 export interface ISignUpData {
@@ -31,17 +31,12 @@ type ResetPasswordConfirmationData = {
   reNewPassword: string;
 };
 
-// const generateId = () => {
-//   return `5cda${getRandomInt(10, 99)}b${getRandomInt(10, 99)}a5d3${getRandomInt(10, 99)}e72${getRandomInt(10, 99)}3b11`;
-// };
-
 export const onAuthorizationError = ({ response }: AxiosError): AuthError => {
   let message = '';
 
   if (!response) {
     throw new Error('Network Error');
   }
-
   switch (response.status) {
     case 400:
       message =
@@ -78,7 +73,7 @@ export const apiRefreshToken = (refresh: string) =>
     url: '/djauth/jwt/refresh/',
   })
     .then(parseResult)
-    .catch(onError);
+    .catch(onAuthorizationError);
 
 export const apiSendActivationMail = ({
   username,
@@ -146,7 +141,7 @@ export const apiRestorePassword = (email: string) =>
     url: '/djauth/users/reset_password/',
   })
     .then(parseResult)
-    .catch(onError);
+    .catch(onAuthorizationError);
 
 export const apiGetUsers = (): Promise<
   { email: string; id: number }[] | AuthError
