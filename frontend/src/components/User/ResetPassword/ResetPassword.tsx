@@ -1,15 +1,13 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { useRouteMatch } from 'react-router-dom';
 import { Form } from 'react-final-form';
 import { FormField } from '../FormField/FormField';
 import * as Actions from '../../../redux/user/actions';
-import { DEFAULT_RESPONSE_ERROR } from '../../../constants/defaultParams';
 import isLatinOrNumbers from '../../../shared/validators/isLatinOrNumbers';
 import { AppReduxState } from '../../../shared/types/app';
 import { Info } from '../Info';
 import Spinner from '../../UI/Spinner';
-import { AuthError } from '../../../redux/user/types';
 import {
   composeValidators,
   isLongPassword,
@@ -31,12 +29,11 @@ const mapState = ({ user: { isLoading, authError } }: AppReduxState) => ({
 });
 
 const mapDispatch = {
-  setApiResponseError: Actions.setAuthError,
   resetPasswordConfirmation: Actions.resetPasswordConfirmation,
 };
 
 type IProps = typeof mapDispatch & {
-  authError: AuthError;
+  authError: Error | null;
   isSignLoader: boolean;
 };
 
@@ -44,7 +41,6 @@ const ResetPassword: React.FC<IProps> = ({
   resetPasswordConfirmation,
   isSignLoader,
   authError,
-  setApiResponseError,
 }) => {
   const match = useRouteMatch<{ params: any }>(
     '/password/reset/confirm/:uid/:token',
@@ -60,19 +56,7 @@ const ResetPassword: React.FC<IProps> = ({
     reNewPassword: '',
   };
 
-  useEffect(() => {
-    return () => {
-      if (authError.data?.errorStatus !== -1) {
-        setApiResponseError('', DEFAULT_RESPONSE_ERROR);
-      }
-    };
-  }, [authError, setApiResponseError]);
-
   const handleFormSubmit = (values: FormData) => {
-    if (authError.data?.errorStatus !== -1) {
-      setApiResponseError('', DEFAULT_RESPONSE_ERROR);
-    }
-
     resetPasswordConfirmation(
       uid,
       token,
@@ -125,9 +109,9 @@ const ResetPassword: React.FC<IProps> = ({
                   {!!submitError && (
                     <p className="signAuthorisationErrorText">{submitError}</p>
                   )}
-                  {authError.data?.errorStatus !== -1 && (
+                  {authError && (
                     <p className="signAuthorisationErrorText">
-                      {authError.data?.errorText}
+                      {authError.message}
                     </p>
                   )}
                   <Button

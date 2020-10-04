@@ -153,7 +153,7 @@ const LoginForm: React.FC = () => {
           </Button>
 
           <div className={classes.error}>
-            {authError.message && (
+            {authError && (
               <Alert severity="error" variant="filled">
                 {authError.message}
               </Alert>

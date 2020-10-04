@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 
 import { AxiosError } from 'axios';
-import { AuthError, LoginFormData } from '../redux/user/types';
+import { LoginFormData } from '../redux/user/types';
 import { parseResult } from './project';
 import { myAxios } from '../../config/settings';
 
@@ -31,7 +31,7 @@ type ResetPasswordConfirmationData = {
   reNewPassword: string;
 };
 
-export const onAuthorizationError = ({ response }: AxiosError): AuthError => {
+const onAuthorizationError = ({ response }: AxiosError): Error => {
   let message = '';
 
   if (!response) {
@@ -62,18 +62,14 @@ export const apiGetToken = (data: LoginFormData) =>
     data,
     method: 'POST',
     url: '/djauth/jwt/create/',
-  })
-    .then(parseResult)
-    .catch(onAuthorizationError);
+  }).then(parseResult);
 
 export const apiRefreshToken = (refresh: string) =>
   myAxios({
     data: { refresh },
     method: 'POST',
     url: '/djauth/jwt/refresh/',
-  })
-    .then(parseResult)
-    .catch(onAuthorizationError);
+  }).then(parseResult);
 
 export const apiSendActivationMail = ({
   username,
@@ -88,9 +84,7 @@ export const apiSendActivationMail = ({
     },
     method: 'POST',
     url: '/djauth/users/',
-  })
-    .then(parseResult)
-    .catch(onAuthorizationError);
+  }).then(parseResult);
 
 export const apiResetPasswordConfirmation = ({
   uid,
@@ -107,9 +101,7 @@ export const apiResetPasswordConfirmation = ({
     },
     method: 'POST',
     url: '/djauth/users/reset_password_confirm/',
-  })
-    .then(parseResult)
-    .catch(onAuthorizationError);
+  }).then(parseResult);
 
 export const apiRegisterWithGoogle = () =>
   myAxios({
@@ -130,73 +122,46 @@ export const apiActivateUser = ({ uid, token }: activateUserData) =>
     },
     method: 'POST',
     url: '/djauth/users/activation/',
-  })
-    .then(parseResult)
-    .catch(onAuthorizationError);
+  }).then(parseResult);
 
 export const apiRestorePassword = (email: string) =>
   myAxios({
     data: { email },
     method: 'POST',
     url: '/djauth/users/reset_password/',
-  })
-    .then(parseResult)
-    .catch(onAuthorizationError);
-
-export const apiGetUsers = (): Promise<
-  { email: string; id: number }[] | AuthError
-> =>
-  myAxios({
-    method: 'GET',
-    params: {
-      page_size: 1000,
-    },
-    url: '/accounts/users/',
-  })
-    .then((res) => parseResult(res).results)
-    .catch(onAuthorizationError);
+  }).then(parseResult);
 
 export const apiGetProfile = ({ id, ...props }) =>
   myAxios({
     ...props,
     method: 'GET',
     url: `/accounts/profiles/${id}/`,
-  })
-    .then(parseResult)
-    .catch(onAuthorizationError);
+  }).then(parseResult);
 
 export const apiGetUser = ({ id, ...props }) =>
   myAxios({
     ...props,
     method: 'GET',
     url: `/accounts/users/${id}/`,
-  })
-    .then(parseResult)
-    .catch(onAuthorizationError);
+  }).then(parseResult);
 
 export const apiChangeUserData = ({ id, ...props }) =>
   myAxios({
     ...props,
     method: 'PATCH',
     url: `/accounts/users/${id}/`,
-  })
-    .then(parseResult)
-    .catch(onAuthorizationError);
+  }).then(parseResult);
 
 export const apiChangeProfileData = ({ id, ...props }) =>
   myAxios({
     ...props,
     method: 'PATCH',
     url: `/accounts/profiles/${id}/`,
-  })
-    .then(parseResult)
-    .catch(onAuthorizationError);
+  }).then(parseResult);
 
 export const apiIdentifyUser = (props) =>
   myAxios({
     ...props,
     method: 'GET',
     url: '/djauth/users/me/',
-  })
-    .then(parseResult)
-    .catch(onAuthorizationError);
+  }).then(parseResult);

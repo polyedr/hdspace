@@ -3,10 +3,8 @@ import { connect } from 'react-redux';
 import { useRouteMatch } from 'react-router-dom';
 import * as Actions from '../../../redux/user/actions';
 import LoginForm from '../LoginForm';
-import { DEFAULT_RESPONSE_ERROR } from '../../../constants/defaultParams';
 import { AppReduxState } from '../../../shared/types/app';
 import Spinner from '../../UI/Spinner';
-import { AuthError } from '../../../redux/user/types';
 import { Info } from '../Info';
 
 const styles = require('./Activation.scss');
@@ -17,21 +15,14 @@ const mapState = ({ user: { isLoading, authError } }: AppReduxState) => ({
 });
 
 const mapDispatch = {
-  setApiResponseError: Actions.setAuthError,
   activateUser: Actions.activateUser,
 };
 
 type IProps = typeof mapDispatch & {
-  authError: AuthError;
   isSignLoader: boolean;
 };
 
-const Activation: React.FC<IProps> = ({
-  activateUser,
-  isSignLoader,
-  authError,
-  setApiResponseError,
-}) => {
+const Activation: React.FC<IProps> = ({ activateUser, isSignLoader }) => {
   const match = useRouteMatch<{ params: any }>('/activate/:uid/:token');
 
   const { uid, token } = (match?.params as unknown) as {
@@ -42,14 +33,6 @@ const Activation: React.FC<IProps> = ({
   useEffect(() => {
     activateUser(uid, token);
   }, [activateUser]);
-
-  useEffect(() => {
-    return () => {
-      if (authError.data?.errorStatus !== -1) {
-        setApiResponseError('', DEFAULT_RESPONSE_ERROR);
-      }
-    };
-  }, [authError, setApiResponseError]);
 
   return (
     <>

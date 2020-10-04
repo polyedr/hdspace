@@ -68,32 +68,6 @@ const useStyles = makeStyles((theme) =>
         color: theme.palette.primary.main,
       },
     },
-    /* link: {
-      marginLeft: 5,
-      color: theme.palette.primary.main,
-      textDecoration: 'underline',
-      '&:hover': {
-        color: theme.palette.primary.main,
-        textDecoration: 'none',
-      },
-    },
-    signSubmitBtn: {
-      marginBottom: 5,
-      padding: '8px 12px',
-      backgroundColor: '#fff',
-      '& > span': {
-        color: theme.palette.primary.main,
-      },
-      '&:hover, &:focus': {
-        backgroundColor: darken('#fff', 0.2),
-      },
-      '&:active': {
-        backgroundColor: darken('#fff', 0.1),
-      },
-    },
-    login: {
-      marginTop: 20,
-    }, */
   }),
 );
 
@@ -144,18 +118,6 @@ const Signup: React.FC = () => {
               <Typography className={classes.header}>
                 Register your account
               </Typography>
-
-              {/* {DEFAULT_SIGNUP_FIELDS.map(
-                ({ name, placeholder, label, type, validator }) => (
-                  <FormField
-                    name={name}
-                    placeholder={placeholder}
-                    label={label}
-                    type={type}
-                    validator={validator}
-                  />
-                ),
-              )} */}
 
               <Field name="username">
                 {({ input, meta }) => (
@@ -283,7 +245,7 @@ const Signup: React.FC = () => {
               </Button>
 
               <div className={classes.error}>
-                {authError.message && (
+                {authError && (
                   <Alert severity="error" variant="filled">
                     {authError.message}
                   </Alert>

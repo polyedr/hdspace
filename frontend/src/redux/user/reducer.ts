@@ -24,19 +24,13 @@ const INITIAL_STATE: UserState = {
     password: '',
     id: 0,
   },
+  isLoggedIn: false,
   tokenPair: {
     access: '',
     refresh: '',
   },
   isLoadedToken: true,
-  authError: {
-    message: '',
-    data: {
-      errorStatus: -1,
-      errorText: '',
-      data: {},
-    },
-  },
+  authError: null,
   isLoading: false,
   confirmMessage: '',
 };
@@ -58,13 +52,11 @@ const changeSignLoader: ActionHandler<typeof Actions.toggleUserLoading> = (
 
 const setAuthError: ActionHandler<typeof Actions.setAuthError> = (
   state,
-  { payload: { message, data } },
+  { payload },
 ) => ({
   ...state,
-  authError: {
-    message,
-    data,
-  },
+  authError: payload,
+  isLoggedIn: false,
 });
 
 const changePrototypeMode: ActionHandler<typeof Actions.changePrototypeMode> = (
@@ -81,6 +73,7 @@ const setTokenPair: ActionHandler<typeof Actions.setTokenPair> = (
 ) => ({
   ...state,
   tokenPair,
+  authError: null,
 });
 
 const setUserData: ActionHandler<typeof Actions.setUserData> = (
@@ -92,6 +85,8 @@ const setUserData: ActionHandler<typeof Actions.setUserData> = (
     ...state.userData,
     ...payload,
   },
+  isLoggedIn: true,
+  authError: null,
 });
 
 const setLoadedToken: ActionHandler<typeof Actions.setLoadedToken> = (

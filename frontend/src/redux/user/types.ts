@@ -56,21 +56,13 @@ export type UserData = {
 
 export type TotalUserData = ProfileData & UserData;
 
-export interface AuthError {
-  message: string;
-  data?: {
-    errorStatus: number;
-    errorText: string;
-    data: { [key: string]: string };
-  };
-}
-
 export type UserState = {
   isLPanelMinimized: boolean;
   isPrototypeMode: boolean;
   tokenPair: ITokenPair;
   isLoadedToken: boolean;
-  authError: AuthError;
+  isLoggedIn: boolean;
+  authError: Error | null;
   userData: TotalUserData;
   restorePasswordEmail?: string;
   restoreUserId?: number;

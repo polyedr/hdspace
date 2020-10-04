@@ -81,12 +81,9 @@ export const activateUser = (uid: string, token: string) => ({
   },
 });
 
-export const setAuthError = (message: string, data?: any) => ({
+export const setAuthError = (error: Error) => ({
   type: TYPES.SET_AUTH_ERROR,
-  payload: {
-    message,
-    data,
-  },
+  payload: error,
 });
 
 export const setLoadedToken = (isLoadedToken: boolean) => ({

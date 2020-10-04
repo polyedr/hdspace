@@ -16,3 +16,5 @@ export const selectIsUserLoading = ({ user }: AppReduxState) => user.isLoading;
 
 export const selectConfirmMessage = ({ user }: AppReduxState) =>
   user.confirmMessage;
+
+export const selectIsLoggedIn = ({ user }: AppReduxState) => user.isLoggedIn;

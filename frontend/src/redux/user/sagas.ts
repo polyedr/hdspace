@@ -21,14 +21,9 @@ import {
 import { openProjects, openSignScreen } from '../../utils/history';
 import TYPES from '../../constants/actions';
 import { convertUserDataToRequest } from '../../api/converters/toRequest';
-import {
-  AuthError,
-  ITokenPair,
-  ServerProfileData,
-  ServerUserData,
-} from './types';
+import { ITokenPair, ServerProfileData, ServerUserData } from './types';
 import { reqWrapper } from '../project/sagas';
-import { selectAuthError, selectTokenPair } from './selectors';
+import { selectTokenPair } from './selectors';
 
 export function* getTokenPairSaga(username: string, password: string) {
   try {
@@ -37,7 +32,7 @@ export function* getTokenPairSaga(username: string, password: string) {
     yield put(Actions.setTokenPair(tokens));
     return tokens;
   } catch (e) {
-    yield put(Actions.setAuthError(e.message, e.data));
+    yield put(Actions.setAuthError(e));
   }
 }
 
@@ -70,7 +65,7 @@ export function* loginSaga({
 
     yield call(openProjects);
   } catch (e) {
-    yield put(Actions.setAuthError(e.message));
+    yield put(Actions.setAuthError(e));
   } finally {
     yield put(Actions.toggleUserLoading(false));
   }
@@ -91,7 +86,7 @@ export function* changeUserDataSaga({
 
     yield put(Actions.setUserData(convertUserDataFromResponse(newUserData)));
   } catch (e) {
-    yield put(Actions.setAuthError(e.message));
+    yield put(Actions.setAuthError(e));
   }
 }
 
@@ -109,7 +104,7 @@ export function* changeProfileDataSaga({
       Actions.setUserData(convertProfileDataFromResponse(newProfileData)),
     );
   } catch (e) {
-    yield put(Actions.setAuthError(e.message));
+    yield put(Actions.setAuthError(e));
   }
 }
 
@@ -133,18 +128,15 @@ function* sendActivationMailSaga(
       data: convertUserDataToRequest({ firstName, lastName }),
     });
 
-    const authError: AuthError = yield select(selectAuthError);
+    openSignScreen('signin');
 
-    if (authError.data?.errorStatus === -1) {
-      openSignScreen('signin');
-      yield put(
-        Actions.setConfirmMessage(
-          'Please, check your mail and confirm registration',
-        ),
-      );
-    }
+    yield put(
+      Actions.setConfirmMessage(
+        'Please, check your mail and confirm registration',
+      ),
+    );
   } catch (e) {
-    yield put(Actions.setAuthError(e.message));
+    yield put(Actions.setAuthError(e));
   } finally {
     yield put(Actions.toggleUserLoading(false));
   }
@@ -165,7 +157,7 @@ function* sendResetPasswordMailSaga(
       Actions.setConfirmMessage('Please, check your mail and set new password'),
     );
   } catch (e) {
-    yield put(Actions.setAuthError(e.message));
+    yield put(Actions.setAuthError(e));
   } finally {
     yield put(Actions.toggleUserLoading(false));
   }
@@ -190,7 +182,7 @@ function* resetPasswordConfirmationSaga(
     yield put(Actions.setTokenPair({ access: token, refresh: '' }));
     openSignScreen('signin');
   } catch (e) {
-    yield put(Actions.setAuthError(e.message));
+    yield put(Actions.setAuthError(e));
   } finally {
     yield put(Actions.toggleUserLoading(false));
   }
@@ -207,7 +199,7 @@ function* activateUserSaga(action: ReturnType<typeof Actions.activateUser>) {
 
     yield put(Actions.setTokenPair({ access: token, refresh: '' }));
   } catch (e) {
-    yield put(Actions.setAuthError(e.message));
+    yield put(Actions.setAuthError(e));
   } finally {
     yield put(Actions.toggleUserLoading(false));
   }
@@ -225,7 +217,7 @@ export function* refreshUserTokenPair() {
 
     return accessResult;
   } catch (e) {
-    yield put(Actions.setAuthError(e.message));
+    yield put(Actions.setAuthError(e));
   }
 }
 

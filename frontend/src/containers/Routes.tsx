@@ -1,5 +1,6 @@
 import React from 'react';
 import { withRouter, Switch, Route, Redirect } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import SignIn from '../components/User/Signin';
 import Signup from '../components/User/Signup';
 import Activation from '../components/User/Activation';
@@ -9,6 +10,19 @@ import Projects from '../components/Projects/Projects';
 import Layout from '../components/Layout';
 import EditorLogic from './EditorLogic';
 import Profile from '../components/User/Profile';
+import { selectIsLoggedIn } from '../redux/user/selectors';
+
+const PrivateRoute: React.FC<any> = ({ children, ...rest }) => {
+  const isLoggedIn = useSelector(selectIsLoggedIn);
+  return (
+    <Route
+      {...rest}
+      render={() =>
+        isLoggedIn ? children : <Redirect to={PATH_NAMES.user.signin} />
+      }
+    />
+  );
+};
 
 const Routes: React.FC = () => {
   return (
@@ -21,13 +35,13 @@ const Routes: React.FC = () => {
 
       <Route path={PATH_NAMES.user.password} component={ResetPassword} />
 
-      <Route path={PATH_NAMES.projects}>
+      <PrivateRoute path={PATH_NAMES.projects}>
         <Layout>
           <Projects />
         </Layout>
-      </Route>
+      </PrivateRoute>
 
-      <Route path="/project/:projectId/:screenId?">
+      <PrivateRoute path="/project/:projectId/:screenId?">
         {({ match: { params } }: any) => (
           <Layout>
             <EditorLogic
@@ -36,15 +50,15 @@ const Routes: React.FC = () => {
             />
           </Layout>
         )}
-      </Route>
+      </PrivateRoute>
 
-      <Route path={PATH_NAMES.profile}>
+      <PrivateRoute path={PATH_NAMES.profile}>
         <Layout>
           <Profile />
         </Layout>
-      </Route>
+      </PrivateRoute>
 
-      <Redirect from="/*" to={PATH_NAMES.projects} />
+      {/* <Redirect from="/*" to={PATH_NAMES.projects} /> */}
     </Switch>
   );
 };

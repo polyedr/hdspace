@@ -23,13 +23,6 @@ const userPersistConfig: PersistConfig = {
   storage,
 };
 
-/* const projectPersistConfig: PersistConfig = {
-  key: 'project',
-  whitelist: ['currentProjectId', 'scenarios'],
-  blacklist: ['projects', 'currentScreenId'],
-  storage,
-}; */
-
 export const sagaMiddleware = createSagaMiddleware();
 export const history = createBrowserHistory();
 
