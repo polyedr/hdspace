@@ -197,7 +197,7 @@ export const clearAfterPrevScreen = (): T.ClearAfterPrevScreen => ({
 });
 
 export const updateElementsTree = (
-  chunk: T.Map<StateElement>,
+  chunk: T.Normalized<StateElement>,
   meta: T.ElementHistoryMeta,
 ): T.UpdateElementsTree => ({
   type: TYPES.UPDATE_ELEMENTS_TREE,

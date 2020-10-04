@@ -222,7 +222,7 @@ const Navigator: React.FC = () => {
     dispatch(
       moveElement(
         childId as string,
-        { newIndex: destination.index, oldIndex: source.index },
+        { newIndex: destination.index as number, oldIndex: source.index },
         {
           newParentId: destination.parentId as string,
           oldParentId: source.parentId as string,
@@ -245,6 +245,7 @@ const Navigator: React.FC = () => {
       selectedItemId={selectedItemId}
     />
   );
+  console.log('TREE!!!', tree);
   return (
     <Accordion>
       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
