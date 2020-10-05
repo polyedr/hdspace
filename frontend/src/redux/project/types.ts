@@ -273,6 +273,7 @@ export type UpdateElement = IAction<
   {
     elementID: string;
     data: LibraryElementPatch<Entity>;
+    active?: boolean;
   }
 >;
 export type ToggleContainersBorders = IPlainAction<

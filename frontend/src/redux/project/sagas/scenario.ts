@@ -315,6 +315,7 @@ export function* softDeleteSaga(action: ReturnType<typeof Actions.deleteItem>) {
     id: parent.id,
   });
 
+  yield put(Actions.removeBorderedElementRef(id));
   yield put(Actions.updateElement(id, { shared: false }));
 
   const convertedElements = updatedParent.children.map((child) =>
@@ -587,7 +588,9 @@ export function* updateElementSaga(
   const savedValue = getSavedValue(updatedElement as LibraryElementUnion);
   yield put(Actions.updateSavedElementValues(elementID, savedValue));
 
-  yield put(Actions.setActiveElementId(elementID));
+  if (action.payload.active) {
+    yield put(Actions.setActiveElementId(elementID));
+  }
 
   const convertedElement = convertElementToPatchRequest(updatedElement);
 
