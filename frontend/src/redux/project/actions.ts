@@ -1,3 +1,4 @@
+import { DropPosition } from '../../constants/dragAndDrop';
 import {
   ServerElement,
   Project,
@@ -645,24 +646,25 @@ export const addElements = (
   payload: { elements, parentId },
 });
 
-export const addBorderedElementRect = (id: string, rect: DOMRect) => ({
-  type: TYPES.ADD_BORDERED_ELEMENT_RECT,
-  payload: { id, rect },
+export const addBorderedElementRef = (
+  id: string,
+  ref: React.RefObject<HTMLElement>,
+) => ({
+  type: TYPES.ADD_BORDERED_ELEMENT_REF,
+  payload: { id, ref },
 });
 
-export const removeBorderedElementRect = (id: string) => ({
-  type: TYPES.REMOVE_BORDERED_ELEMENT_RECT,
+export const removeBorderedElementRef = (id: string) => ({
+  type: TYPES.REMOVE_BORDERED_ELEMENT_REF,
   payload: { id },
 });
 
-export const setCurrentDropTargetId = (id: string | null) => ({
-  type: TYPES.SET_CURRENT_DROP_TARGET_ID,
-  payload: { id },
-});
-
-export const setCurrentDropTarget = (id: string | null) => ({
-  type: TYPES.SET_CURRENT_DROP_TARGET_ID,
-  payload: { id },
+export const setCurrentDropTargetParams = (
+  id: string | null,
+  position?: DropPosition,
+) => ({
+  type: TYPES.SET_CURRENT_DROP_TARGET_PARAMS,
+  payload: { id, position },
 });
 
 export const requestCustomLibraryElements = () => ({

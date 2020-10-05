@@ -8,56 +8,50 @@ import { HeadingRendererProps } from '../types';
 
 const styles = require('../styles.scss');
 
-const Heading: React.FC<HeadingRendererProps> = ({
-  id,
-  entityStyles,
-  groupStyles,
-  ownStyles,
-  params,
-  sortableId,
-  isDisabled,
-  className,
-  elementRef,
-}) => {
-  const classes = makeStyles({
-    entityStyles: {
-      ...entityStyles,
-      wordBreak: 'break-word',
-    },
+const Heading: React.FC<HeadingRendererProps> = React.forwardRef(
+  (
+    { id, entityStyles, groupStyles, ownStyles, params, sortableId, className },
+    ref,
+  ) => {
+    const classes = makeStyles({
+      entityStyles: {
+        ...entityStyles,
+        wordBreak: 'break-word',
+      },
 
-    groupStyles: {
-      ...groupStyles,
-      wordBreak: 'break-word',
-    },
+      groupStyles: {
+        ...groupStyles,
+        wordBreak: 'break-word',
+      },
 
-    ownStyles: {
-      ...ownStyles,
-      wordBreak: 'break-word',
-    },
-  })();
+      ownStyles: {
+        ...ownStyles,
+        wordBreak: 'break-word',
+      },
+    })();
 
-  const { headingType, textContent } = params;
-  const HeadingTag = headingType || 'h3';
+    const { headingType, textContent } = params;
+    const HeadingTag = headingType || 'h3';
 
-  return (
-    <HeadingTag
-      ref={elementRef}
-      id={id}
-      data-ls-id={id}
-      data-id={sortableId}
-      key={id}
-      className={cn(
-        className,
-        styles.addedElem,
-        classes.entityStyles,
-        classes.groupStyles,
-        classes.ownStyles,
-      )}
-      tabIndex={isDisabled ? 0 : -1}
-    >
-      {textContent}
-    </HeadingTag>
-  );
-};
+    return (
+      <HeadingTag
+        ref={ref}
+        id={id}
+        data-ls-id={id}
+        data-id={sortableId}
+        key={id}
+        className={cn(
+          className,
+          styles.addedElem,
+          classes.entityStyles,
+          classes.groupStyles,
+          classes.ownStyles,
+        )}
+      >
+        {textContent}
+      </HeadingTag>
+    );
+  },
+);
 
 export default Heading;

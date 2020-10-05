@@ -114,95 +114,98 @@ const getInputStyles = (
     input: {},
   });
 
-const Textarea: React.FC<TextareaRendererProps> = ({
-  id,
-  params,
-  isDisabled,
-  active,
-  currentValue,
-  sortableId,
-  onElementChange,
-  className,
-  elementRef,
-  entityStyles,
-  groupStyles,
-  ownStyles,
-}) => {
-  const { placeholder } = params;
+const Textarea: React.FC<TextareaRendererProps> = React.forwardRef(
+  (
+    {
+      id,
+      params,
+      isDisabled,
+      active,
+      currentValue,
+      sortableId,
+      onElementChange,
+      className,
+      entityStyles,
+      groupStyles,
+      ownStyles,
+    },
+    ref,
+  ) => {
+    const { placeholder } = params;
 
-  const handleTextareaChange = (event: ChangeEvent<HTMLInputElement>) => {
-    onElementChange(id, event.target.value);
-  };
+    const handleTextareaChange = (event: ChangeEvent<HTMLInputElement>) => {
+      onElementChange(id, event.target.value);
+    };
 
-  const textFieldClasses = getTextFieldStyles(
-    isDisabled,
-    entityStyles,
-    groupStyles,
-    ownStyles,
-  )();
-  const inputClasses = getInputStyles(
-    active,
-    entityStyles,
-    groupStyles,
-    ownStyles,
-  )();
+    const textFieldClasses = getTextFieldStyles(
+      isDisabled,
+      entityStyles,
+      groupStyles,
+      ownStyles,
+    )();
+    const inputClasses = getInputStyles(
+      active,
+      entityStyles,
+      groupStyles,
+      ownStyles,
+    )();
 
-  const entityInlineStyles = R.pick(
-    ['marginTop', 'marginRight', 'marginBottom', 'marginLeft'],
-    entityStyles,
-  );
-  const groupInlineStyles = R.pick(
-    ['marginTop', 'marginRight', 'marginBottom', 'marginLeft'],
-    groupStyles,
-  );
-  const ownInlineStyles = R.pick(
-    ['marginTop', 'marginRight', 'marginBottom', 'marginLeft'],
-    ownStyles,
-  );
-  const inlineStyles = {
-    ...entityInlineStyles,
-    ...groupInlineStyles,
-    ...ownInlineStyles,
-    transition: 'none',
-  };
+    const entityInlineStyles = R.pick(
+      ['marginTop', 'marginRight', 'marginBottom', 'marginLeft'],
+      entityStyles,
+    );
+    const groupInlineStyles = R.pick(
+      ['marginTop', 'marginRight', 'marginBottom', 'marginLeft'],
+      groupStyles,
+    );
+    const ownInlineStyles = R.pick(
+      ['marginTop', 'marginRight', 'marginBottom', 'marginLeft'],
+      ownStyles,
+    );
+    const inlineStyles = {
+      ...entityInlineStyles,
+      ...groupInlineStyles,
+      ...ownInlineStyles,
+      transition: 'none',
+    };
 
-  const InputProps = {
-    readOnly: isDisabled,
-    className: cn(
-      isDisabled && styles.disabled,
-      inputClasses.root,
-      inputClasses.entityStyles,
-      inputClasses.groupStyles,
-      inputClasses.ownStyles,
-    ),
-  };
-
-  return (
-    <TextField
-      ref={elementRef}
-      id={id}
-      data-ls-id={id}
-      data-id={sortableId}
-      key={id}
-      multiline
-      rows={4}
-      placeholder={placeholder}
-      variant="outlined"
-      className={cn(
-        className,
+    const InputProps = {
+      readOnly: isDisabled,
+      className: cn(
         isDisabled && styles.disabled,
-        textFieldClasses.root,
-        textFieldClasses.entityStyles,
-        textFieldClasses.groupStyles,
-        textFieldClasses.ownStyles,
-      )}
-      style={inlineStyles}
-      InputProps={InputProps}
-      value={currentValue}
-      onChange={handleTextareaChange}
-      tabIndex={isDisabled ? 0 : -1}
-    />
-  );
-};
+        inputClasses.root,
+        inputClasses.entityStyles,
+        inputClasses.groupStyles,
+        inputClasses.ownStyles,
+      ),
+    };
+
+    return (
+      <TextField
+        ref={ref}
+        id={id}
+        data-ls-id={id}
+        data-id={sortableId}
+        key={id}
+        multiline
+        rows={4}
+        placeholder={placeholder}
+        variant="outlined"
+        className={cn(
+          className,
+          isDisabled && styles.disabled,
+          textFieldClasses.root,
+          textFieldClasses.entityStyles,
+          textFieldClasses.groupStyles,
+          textFieldClasses.ownStyles,
+        )}
+        style={inlineStyles}
+        InputProps={InputProps}
+        value={currentValue}
+        onChange={handleTextareaChange}
+      />
+    );
+  },
+);
 
 export default Textarea;

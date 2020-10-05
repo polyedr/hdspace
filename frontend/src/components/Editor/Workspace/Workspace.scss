@@ -6,16 +6,6 @@
   box-sizing: border-box;
 }
 
-.editorViewport {
-  position: relative;
-  display: flex;
-  flex-grow: 1;
-  justify-content: center;
-  height: 100%;
-  min-height: 0;
-  background-color: #cccccc;
-}
-
 .editorLayout {
   max-width: calc(100vw - #{$workWindowMaxWidth});
   background-color: $panelBgColor;

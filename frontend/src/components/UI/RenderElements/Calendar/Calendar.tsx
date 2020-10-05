@@ -10,50 +10,53 @@ import CalendarWidget from '../../Calendar';
 
 const styles = require('../styles.scss');
 
-const Calendar: React.FC<SharedRendererProps> = ({
-  id,
-  entityStyles,
-  groupStyles,
-  ownStyles,
-  isDisabled,
-  sortableId,
-  className,
-  elementRef,
-}) => {
-  const classes = makeStyles({
-    entityStyles: {
-      ...entityStyles,
+const Calendar: React.FC<SharedRendererProps> = React.forwardRef(
+  (
+    {
+      id,
+      entityStyles,
+      groupStyles,
+      ownStyles,
+      isDisabled,
+      sortableId,
+      className,
     },
+    ref,
+  ) => {
+    const classes = makeStyles({
+      entityStyles: {
+        ...entityStyles,
+      },
 
-    groupStyles: {
-      ...groupStyles,
-    },
+      groupStyles: {
+        ...groupStyles,
+      },
 
-    ownStyles: {
-      ...ownStyles,
-    },
-  })();
+      ownStyles: {
+        ...ownStyles,
+      },
+    })();
 
-  return (
-    <div
-      ref={elementRef}
-      id={id}
-      data-ls-id={id}
-      data-id={sortableId}
-      key={id}
-      className={cn(
-        className,
-        styles.addedCalendar,
-        isDisabled && styles.disabled,
-        classes.entityStyles,
-        classes.groupStyles,
-        classes.ownStyles,
-      )}
-      tabIndex={isDisabled ? 0 : -1}
-    >
-      <CalendarWidget />
-    </div>
-  );
-};
+    return (
+      <div
+        ref={ref}
+        id={id}
+        data-ls-id={id}
+        data-id={sortableId}
+        key={id}
+        className={cn(
+          className,
+          styles.addedCalendar,
+          isDisabled && styles.disabled,
+          classes.entityStyles,
+          classes.groupStyles,
+          classes.ownStyles,
+        )}
+      >
+        <CalendarWidget />
+      </div>
+    );
+  },
+);
 
 export default Calendar;

@@ -301,8 +301,6 @@ export function* delScreenSaga({
   if (!undo) {
     yield put(setUndoActions(restoreScreen(screenId, projectId)));
   }
-  // const rootToRemove = yield select(selectScreenRootElement(screenId));
-  // yield put(removeElements([rootToRemove.id]));
 
   const result: Project = R.assoc(
     'projectscreen',

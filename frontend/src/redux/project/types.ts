@@ -1,6 +1,7 @@
 /* eslint-disable camelcase */
 import { OverridableComponent } from '@material-ui/core/OverridableComponent';
 import { SvgIconTypeMap } from '@material-ui/core';
+import { DropPosition } from '../../constants/dragAndDrop';
 import {
   ServerElement,
   HeadingType,
@@ -57,8 +58,13 @@ export type StateElement = {
   isShared?: boolean;
 };
 
-export type BorderedElementsRect = {
-  [id: string]: DOMRect;
+export type BorderedElementsRef = {
+  [id: string]: React.RefObject<HTMLElement>;
+};
+
+export type DropTargetParams = {
+  id: string;
+  position?: DropPosition;
 };
 
 export type PaginatedData<T> = {
@@ -81,9 +87,9 @@ export type ProjectUiState = {
   itemToCopyInfo: ItemToCopyInfo | null;
   savedElementsValues: SavedElementsValues;
   showContainersBorders: boolean;
+  borderedElementsRef: BorderedElementsRef;
+  currentDropTargetParams: DropTargetParams | null;
   customLibraryElements: NormalizedLibraryElements;
-  borderedElementsRect: BorderedElementsRect;
-  currentDropTargetId: string | null;
 };
 
 export type ProjectEditState = {
@@ -386,9 +392,9 @@ export type SetActiveElementId = IAction<
   string
 >;
 export type SetActiveElement = IAction<typeof TYPES.SET_ACTIVE_ELEMENT, string>;
-export type SetCurrentDropTargetId = IAction<
-  typeof TYPES.SET_CURRENT_DROP_TARGET_ID,
-  { id: string }
+export type SetCurrentDropTargetParams = IAction<
+  typeof TYPES.SET_CURRENT_DROP_TARGET_PARAMS,
+  { id: string; position: DropPosition }
 >;
 export type SetEditableStyles = IAction<
   typeof TYPES.SET_EDITABLE_STYLES,
@@ -435,13 +441,13 @@ export type RedoWrapIntoContainer = IAction<
   { elementId: string; wrapperId: string; parentId: string },
   ElementHistoryMeta
 >;
-export type AddBorderedElementRect = IAction<
-  typeof TYPES.ADD_BORDERED_ELEMENT_RECT,
-  { id: string; rect: DOMRect }
+export type AddBorderedElementRef = IAction<
+  typeof TYPES.ADD_BORDERED_ELEMENT_REF,
+  { id: string; ref: React.RefObject<HTMLElement> }
 >;
 
-export type RemoveBorderedElementRect = IAction<
-  typeof TYPES.REMOVE_BORDERED_ELEMENT_RECT,
+export type RemoveBorderedElementRef = IAction<
+  typeof TYPES.REMOVE_BORDERED_ELEMENT_REF,
   { id: string }
 >;
 
@@ -542,9 +548,9 @@ export type Action =
   | ReturnType<typeof setProjectsData>
   | ReturnType<typeof extractStateElement>
   | SetScreens
-  | AddBorderedElementRect
-  | RemoveBorderedElementRect
-  | SetCurrentDropTargetId
+  | AddBorderedElementRef
+  | RemoveBorderedElementRef
+  | SetCurrentDropTargetParams
   | UpdateElement
   | SetCustomLibraryElements
   | AddCustomLibraryElement;

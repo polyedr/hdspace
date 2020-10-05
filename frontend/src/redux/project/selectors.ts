@@ -2,7 +2,7 @@ import {
   NormalizedLibraryElements,
   Screen,
   StateElement,
-  BorderedElementsRect,
+  BorderedElementsRef,
 } from './types';
 
 import {
@@ -279,25 +279,30 @@ export const selectElementsForCurrentScreen = (state: AppReduxState) => {
   return selectElementsForScreen(currentScreenId)(state);
 };
 
-export const selectBorderedElementsRect = (
+export const selectBorderedElementsRef = (
   state: AppReduxState,
-): BorderedElementsRect => {
-  return selectProjectState(state).ui.borderedElementsRect;
+): BorderedElementsRef => {
+  return selectProjectState(state).ui.borderedElementsRef;
 };
 
-export const selectRootBorderedRect = (state: AppReduxState): DOMRect => {
+/* export const selectRootBorderedRef = (
+  state: AppReduxState,
+): React.RefObject<HTMLElement> => {
   const rootID = selectCurrentRootId(state);
-  return selectProjectState(state).ui.borderedElementsRect[rootID];
-};
+  return selectProjectState(state).ui.borderedElementsRef[rootID];
+}; */
 
-export const selectElementBorderedRect = (id: string) => (
-  state: AppReduxState,
-) => {
-  return selectProjectState(state).ui.borderedElementsRect[id];
+export const selectBorderedRef = (id: string) => (state: AppReduxState) => {
+  return selectProjectState(state).ui.borderedElementsRef[id];
 };
 
 export const selectCurrentDropTargetId = (state: AppReduxState) => {
-  return selectProjectState(state).ui.currentDropTargetId;
+  const dropTargetParams = selectProjectState(state).ui.currentDropTargetParams;
+  return dropTargetParams ? dropTargetParams.id : null;
+};
+
+export const selectCurrentDropTargetParams = (state: AppReduxState) => {
+  return selectProjectState(state).ui.currentDropTargetParams;
 };
 
 export const selectDisplayStyles = (state: AppReduxState) => {

@@ -62,59 +62,68 @@ const getStyles = (
     },
   });
 
-const Action: ActionRenderer = ({
-  id,
-  isDisabled,
-  params,
-  onClick,
-  sortableId,
-  actionType,
-  actionLink,
-  elementRef,
-  className,
-  entityStyles,
-  groupStyles,
-  ownStyles,
-}) => {
-  const { showRipple, textContent } = params;
+const Action: ActionRenderer = React.forwardRef(
+  (
+    {
+      id,
+      isDisabled,
+      params,
+      onClick,
+      sortableId,
+      actionType,
+      actionLink,
+      className,
+      entityStyles,
+      groupStyles,
+      ownStyles,
+    },
+    ref,
+  ) => {
+    const { showRipple, textContent } = params;
 
-  const classes = getStyles(isDisabled, entityStyles, groupStyles, ownStyles)();
+    const classes = getStyles(
+      isDisabled,
+      entityStyles,
+      groupStyles,
+      ownStyles,
+    )();
 
-  const components: Record<ActionType, 'a' | 'button' | typeof Link> = {
-    'external-link': 'a',
-    'internal-link': Link,
-    button: 'button',
-  };
+    const components: Record<ActionType, 'a' | 'button' | typeof Link> = {
+      'external-link': 'a',
+      'internal-link': Link,
+      button: 'button',
+    };
 
-  return (
-    <Button
-      ref={elementRef}
-      id={id}
-      data-ls-id={id}
-      data-id={sortableId}
-      key={id}
-      variant="contained"
-      color="primary"
-      className={cn(
-        className,
-        classes.root,
-        classes.entityStyles,
-        classes.groupStyles,
-        classes.ownStyles,
-        isDisabled && styles.disabled,
-      )}
-      disableRipple={isDisabled || !showRipple}
-      component={components[actionType]}
-      {...(actionType === 'external-link' && {
-        href: actionLink,
-        target: '_blank',
-      })}
-      {...(actionType === 'internal-link' && { to: actionLink })}
-      onClick={onClick}
-    >
-      {textContent}
-    </Button>
-  );
-};
+    return (
+      <Button
+        ref={ref}
+        id={id}
+        data-ls-id={id}
+        data-id={sortableId}
+        key={id}
+        variant="contained"
+        color="primary"
+        className={cn(
+          className,
+          classes.root,
+          classes.entityStyles,
+          classes.groupStyles,
+          classes.ownStyles,
+          isDisabled && styles.disabled,
+        )}
+        disableRipple={isDisabled || !showRipple}
+        component={components[actionType]}
+        {...(actionType === 'external-link' && {
+          href: actionLink,
+          target: '_blank',
+        })}
+        {...(actionType === 'internal-link' && { to: actionLink })}
+        onClick={onClick}
+      >
+        {textContent}
+      </Button>
+    );
+  },
+);
 
 export default Action;

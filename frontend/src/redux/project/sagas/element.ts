@@ -57,6 +57,9 @@ export function* moveElementSaga(
   if (!undo) {
     yield put(
       Actions.setUndoActions([
+        Actions.removeBorderedElementRef(elementId),
+        Actions.removeBorderedElementRef(oldParentId),
+        Actions.removeBorderedElementRef(newParentId),
         Actions.moveElement(
           elementId,
           { oldIndex: newIndex, newIndex: oldIndex },
@@ -74,7 +77,7 @@ export function* moveElementSaga(
     }),
   );
 
-  yield put(Actions.setCurrentDropTarget(null));
+  yield put(Actions.setCurrentDropTargetParams(null));
 
   const updatedOldParent: LibraryElement<any> = yield select(
     selectElementAsTree(oldParentId),

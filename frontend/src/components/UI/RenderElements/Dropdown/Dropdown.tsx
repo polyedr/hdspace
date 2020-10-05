@@ -104,104 +104,108 @@ const getDivStyles = (
     },
   });
 
-const Dropdown: React.FC<DropdownRendererProps> = ({
-  id,
-  isDisabled,
-  active,
-  sortableId,
-  params,
-  children,
-  elementRef,
-  className,
-  entityStyles,
-  groupStyles,
-  ownStyles,
-}) => {
-  const { textContent, showRipple, isOpen } = params;
-
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-
-  const handleMenuButtonClick = (
-    event: React.MouseEvent<HTMLButtonElement>,
+const Dropdown: React.FC<DropdownRendererProps> = React.forwardRef(
+  (
+    {
+      id,
+      isDisabled,
+      active,
+      sortableId,
+      params,
+      children,
+      className,
+      entityStyles,
+      groupStyles,
+      ownStyles,
+    },
+    ref,
   ) => {
-    setAnchorEl(event.currentTarget);
-  };
+    const { textContent, showRipple, isOpen } = params;
 
-  const dropdownClasses = getDropdownStyles(
-    isDisabled,
-    active,
-    entityStyles,
-    groupStyles,
-    ownStyles,
-  )();
-  const divClasses = getDivStyles(entityStyles, groupStyles, ownStyles)();
+    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
-  const [Children] = React.Children.toArray(children);
+    const handleMenuButtonClick = (
+      event: React.MouseEvent<HTMLButtonElement>,
+    ) => {
+      setAnchorEl(event.currentTarget);
+    };
 
-  return isDisabled ? (
-    <>
+    const dropdownClasses = getDropdownStyles(
+      isDisabled,
+      active,
+      entityStyles,
+      groupStyles,
+      ownStyles,
+    )();
+    const divClasses = getDivStyles(entityStyles, groupStyles, ownStyles)();
+
+    const [Children] = React.Children.toArray(children);
+
+    return isDisabled ? (
+      <>
+        <div
+          key={id}
+          className={cn(
+            className,
+            dropdownClasses.container,
+            divClasses.entityStyles,
+            divClasses.groupStyles,
+            divClasses.ownStyles,
+          )}
+          ref={ref}
+        >
+          <Button
+            id={id}
+            data-ls-id={id}
+            data-id={sortableId}
+            aria-controls="simple-menu"
+            aria-haspopup="true"
+            variant="contained"
+            color="primary"
+            className={cn(
+              dropdownClasses.root,
+              styles.disabled,
+              dropdownClasses.entityStyles,
+              dropdownClasses.groupStyles,
+              dropdownClasses.ownStyles,
+            )}
+            disableRipple
+          >
+            {textContent}
+          </Button>
+          {isOpen && React.cloneElement(Children, { anchorEl, setAnchorEl })}
+        </div>
+      </>
+    ) : (
       <div
-        key={id}
         className={cn(
-          className,
-          dropdownClasses.container,
           divClasses.entityStyles,
           divClasses.groupStyles,
           divClasses.ownStyles,
         )}
       >
         <Button
-          ref={elementRef}
-          id={id}
-          data-ls-id={id}
-          data-id={sortableId}
           aria-controls="simple-menu"
           aria-haspopup="true"
+          onClick={handleMenuButtonClick}
+          id={id}
+          key={id}
           variant="contained"
           color="primary"
           className={cn(
             dropdownClasses.root,
-            styles.disabled,
             dropdownClasses.entityStyles,
             dropdownClasses.groupStyles,
             dropdownClasses.ownStyles,
           )}
-          disableRipple
+          disableRipple={!showRipple}
         >
           {textContent}
         </Button>
-        {isOpen && React.cloneElement(Children, { anchorEl, setAnchorEl })}
+        {React.cloneElement(Children, { anchorEl, setAnchorEl })}
       </div>
-    </>
-  ) : (
-    <div
-      className={cn(
-        divClasses.entityStyles,
-        divClasses.groupStyles,
-        divClasses.ownStyles,
-      )}
-    >
-      <Button
-        aria-controls="simple-menu"
-        aria-haspopup="true"
-        onClick={handleMenuButtonClick}
-        id={id}
-        key={id}
-        variant="contained"
-        color="primary"
-        className={cn(
-          dropdownClasses.root,
-          dropdownClasses.entityStyles,
-          dropdownClasses.groupStyles,
-          dropdownClasses.ownStyles,
-        )}
-        disableRipple={!showRipple}
-      >
-        {textContent}
-      </Button>
-      {React.cloneElement(Children, { anchorEl, setAnchorEl })}
-    </div>
-  );
-};
+    );
+  },
+);
 
 export default Dropdown;

@@ -35,48 +35,52 @@ const getStyles = (
     },
   });
 
-const SelectMenu: React.FC<SelectMenuRendererProps> = ({
-  id,
-  entityStyles,
-  groupStyles,
-  ownStyles,
-  isDisabled,
-  children,
-  className,
-  elementRef,
-}) => {
-  const handlePaperClick = (event: React.MouseEvent<HTMLDivElement>) => {
-    (event.target as HTMLElement).focus();
-  };
+const SelectMenu: React.FC<SelectMenuRendererProps> = React.forwardRef(
+  (
+    {
+      id,
+      entityStyles,
+      groupStyles,
+      ownStyles,
+      isDisabled,
+      children,
+      className,
+    },
+    ref,
+  ) => {
+    const handlePaperClick = (event: React.MouseEvent<HTMLDivElement>) => {
+      (event.target as HTMLElement).focus();
+    };
 
-  const classes = getStyles(entityStyles, groupStyles, ownStyles)();
+    const classes = getStyles(entityStyles, groupStyles, ownStyles)();
 
-  return isDisabled ? (
-    <div style={{ position: 'relative' }}>
-      <Paper
-        ref={elementRef}
-        id={id}
-        data-ls-id={id}
-        tabIndex={0}
-        key={id}
-        className={cn(
-          className,
-          sharedClasses.unsortable,
-          styles.addedElem,
-          classes.root,
-          classes.entityStyles,
-          classes.groupStyles,
-          classes.ownStyles,
-        )}
-        elevation={8}
-        onClick={handlePaperClick}
-      >
-        <MenuList>{children}</MenuList>
-      </Paper>
-    </div>
-  ) : (
-    <>{children}</>
-  );
-};
+    return isDisabled ? (
+      <div style={{ position: 'relative' }}>
+        <Paper
+          ref={ref}
+          id={id}
+          data-ls-id={id}
+          tabIndex={0}
+          key={id}
+          className={cn(
+            className,
+            sharedClasses.unsortable,
+            styles.addedElem,
+            classes.root,
+            classes.entityStyles,
+            classes.groupStyles,
+            classes.ownStyles,
+          )}
+          elevation={8}
+          onClick={handlePaperClick}
+        >
+          <MenuList>{children}</MenuList>
+        </Paper>
+      </div>
+    ) : (
+      <>{children}</>
+    );
+  },
+);
 
 export default SelectMenu;

@@ -9,50 +9,44 @@ import { ImageRendererProps } from '../types';
 
 const styles = require('../styles.scss');
 
-const Image: React.FC<ImageRendererProps> = ({
-  id,
-  params,
-  sortableId,
-  entityStyles,
-  groupStyles,
-  ownStyles,
-  isDisabled,
-  className,
-  elementRef,
-}) => {
-  const classes = makeStyles({
-    entityStyles: {
-      ...entityStyles,
-    },
+const Image: React.FC<ImageRendererProps> = React.forwardRef(
+  (
+    { id, params, sortableId, entityStyles, groupStyles, ownStyles, className },
+    ref,
+  ) => {
+    const classes = makeStyles({
+      entityStyles: {
+        ...entityStyles,
+      },
 
-    groupStyles: {
-      ...groupStyles,
-    },
+      groupStyles: {
+        ...groupStyles,
+      },
 
-    ownStyles: {
-      ...ownStyles,
-    },
-  })();
+      ownStyles: {
+        ...ownStyles,
+      },
+    })();
 
-  return (
-    <img
-      ref={elementRef}
-      src={params.imageURL}
-      id={id}
-      data-ls-id={id}
-      data-id={sortableId}
-      key={id}
-      className={cn(
-        className,
-        styles.addedElem,
-        classes.entityStyles,
-        classes.groupStyles,
-        classes.ownStyles,
-      )}
-      alt={id}
-      tabIndex={isDisabled ? 0 : -1}
-    />
-  );
-};
+    return (
+      <img
+        ref={ref}
+        src={params.imageURL}
+        id={id}
+        data-ls-id={id}
+        data-id={sortableId}
+        key={id}
+        className={cn(
+          className,
+          styles.addedElem,
+          classes.entityStyles,
+          classes.groupStyles,
+          classes.ownStyles,
+        )}
+        alt={id}
+      />
+    );
+  },
+);
 
 export default Image;

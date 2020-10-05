@@ -10,56 +10,50 @@ import { IMAGES } from '../../../../constants/images';
 
 const styles = require('../styles.scss');
 
-const Screenshot: React.FC<ScreenshotRendererProps> = ({
-  id,
-  params,
-  sortableId,
-  entityStyles,
-  groupStyles,
-  ownStyles,
-  isDisabled,
-  className,
-  elementRef,
-}) => {
-  const classes = makeStyles({
-    entityStyles: {
-      ...entityStyles,
-    },
+const Screenshot: React.FC<ScreenshotRendererProps> = React.forwardRef(
+  (
+    { id, params, sortableId, entityStyles, groupStyles, ownStyles, className },
+    ref,
+  ) => {
+    const classes = makeStyles({
+      entityStyles: {
+        ...entityStyles,
+      },
 
-    groupStyles: {
-      ...groupStyles,
-    },
+      groupStyles: {
+        ...groupStyles,
+      },
 
-    ownStyles: params.imageURL
-      ? {
-          ...ownStyles,
-          backgroundImage: `url(${params.imageURL})`,
-        }
-      : {
-          ...ownStyles,
-          background: `no-repeat #E0E0E0 url(${IMAGES.imageIconSmall});`,
-          backgroundPosition: 'center center',
-          backgroundSize: 'auto',
-        },
-  })();
+      ownStyles: params.imageURL
+        ? {
+            ...ownStyles,
+            backgroundImage: `url(${params.imageURL})`,
+          }
+        : {
+            ...ownStyles,
+            background: `no-repeat #E0E0E0 url(${IMAGES.imageIconSmall});`,
+            backgroundPosition: 'center center',
+            backgroundSize: 'auto',
+          },
+    })();
 
-  return (
-    <div
-      ref={elementRef}
-      id={id}
-      data-ls-id={id}
-      data-id={sortableId}
-      key={id}
-      className={cn(
-        className,
-        styles.addedElem,
-        classes.entityStyles,
-        classes.groupStyles,
-        classes.ownStyles,
-      )}
-      tabIndex={isDisabled ? 0 : -1}
-    />
-  );
-};
+    return (
+      <div
+        ref={ref}
+        id={id}
+        data-ls-id={id}
+        data-id={sortableId}
+        key={id}
+        className={cn(
+          className,
+          styles.addedElem,
+          classes.entityStyles,
+          classes.groupStyles,
+          classes.ownStyles,
+        )}
+      />
+    );
+  },
+);
 
 export default Screenshot;

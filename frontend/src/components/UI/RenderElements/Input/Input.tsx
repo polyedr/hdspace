@@ -82,105 +82,108 @@ const getStyles = (
     },
   });
 
-const Input: React.FC<InputRendererProps> = ({
-  id,
-  params,
-  isDisabled,
-  active,
-  entityStyles,
-  groupStyles,
-  ownStyles,
-  sortableId,
-  currentValue,
-  onElementChange,
-  elementRef,
-  className,
-}) => {
-  const { type, placeholder } = params;
-
-  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-    onElementChange(id, event.target.value);
-  };
-
-  const classes = getStyles(
-    isDisabled,
-    active,
-    entityStyles,
-    groupStyles,
-    ownStyles,
-  )();
-
-  const entityInlineStyles = R.pick(
-    [
-      'width',
-      'height',
-      'marginTop',
-      'marginRight',
-      'marginBottom',
-      'marginLeft',
-    ],
-    entityStyles,
-  );
-  const groupInlineStyles = R.pick(
-    [
-      'width',
-      'height',
-      'marginTop',
-      'marginRight',
-      'marginBottom',
-      'marginLeft',
-    ],
-    groupStyles,
-  );
-  const ownInlineStyles = R.pick(
-    [
-      'width',
-      'height',
-      'marginTop',
-      'marginRight',
-      'marginBottom',
-      'marginLeft',
-    ],
-    ownStyles,
-  );
-  const inlineStyles = {
-    ...entityInlineStyles,
-    ...groupInlineStyles,
-    ...ownInlineStyles,
-    transition: 'none',
-  };
-
-  const InputProps = {
-    readOnly: isDisabled,
-    classes: {
-      input: cn(
-        classes.input,
-        classes.entityStyles,
-        classes.groupStyles,
-        classes.ownStyles,
-      ),
+const Input: React.FC<InputRendererProps> = React.forwardRef(
+  (
+    {
+      id,
+      params,
+      isDisabled,
+      active,
+      entityStyles,
+      groupStyles,
+      ownStyles,
+      sortableId,
+      currentValue,
+      onElementChange,
+      className,
     },
-    className: cn(isDisabled && styles.disabled),
-  };
+    ref,
+  ) => {
+    const { type, placeholder } = params;
 
-  return (
-    <TextField
-      ref={elementRef}
-      id={id}
-      data-ls-id={id}
-      data-id={sortableId}
-      key={id}
-      variant="outlined"
-      className={cn(className, isDisabled && styles.disabled, classes.root)}
-      style={inlineStyles}
-      type={type}
-      value={currentValue}
-      onChange={handleInputChange}
-      InputProps={InputProps}
-      placeholder={placeholder}
-      tabIndex={isDisabled ? 0 : -1}
-    />
-  );
-};
+    const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+      onElementChange(id, event.target.value);
+    };
+
+    const classes = getStyles(
+      isDisabled,
+      active,
+      entityStyles,
+      groupStyles,
+      ownStyles,
+    )();
+
+    const entityInlineStyles = R.pick(
+      [
+        'width',
+        'height',
+        'marginTop',
+        'marginRight',
+        'marginBottom',
+        'marginLeft',
+      ],
+      entityStyles,
+    );
+    const groupInlineStyles = R.pick(
+      [
+        'width',
+        'height',
+        'marginTop',
+        'marginRight',
+        'marginBottom',
+        'marginLeft',
+      ],
+      groupStyles,
+    );
+    const ownInlineStyles = R.pick(
+      [
+        'width',
+        'height',
+        'marginTop',
+        'marginRight',
+        'marginBottom',
+        'marginLeft',
+      ],
+      ownStyles,
+    );
+    const inlineStyles = {
+      ...entityInlineStyles,
+      ...groupInlineStyles,
+      ...ownInlineStyles,
+      transition: 'none',
+    };
+
+    const InputProps = {
+      readOnly: isDisabled,
+      classes: {
+        input: cn(
+          classes.input,
+          classes.entityStyles,
+          classes.groupStyles,
+          classes.ownStyles,
+        ),
+      },
+      className: cn(isDisabled && styles.disabled),
+    };
+
+    return (
+      <TextField
+        ref={ref}
+        id={id}
+        data-ls-id={id}
+        data-id={sortableId}
+        key={id}
+        variant="outlined"
+        className={cn(className, isDisabled && styles.disabled, classes.root)}
+        style={inlineStyles}
+        type={type}
+        value={currentValue}
+        onChange={handleInputChange}
+        InputProps={InputProps}
+        placeholder={placeholder}
+      />
+    );
+  },
+);
 
 export default Input;

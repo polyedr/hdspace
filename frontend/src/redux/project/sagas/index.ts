@@ -1,13 +1,13 @@
 /* eslint-disable camelcase, no-console */
 
 import {
+  takeLeading,
   takeLatest,
   takeEvery,
   put,
   call,
   take,
   select,
-  takeLeading,
 } from 'redux-saga/effects';
 import * as R from 'ramda';
 import {
@@ -79,7 +79,6 @@ import {
   selectActiveElementId,
   selectAllElements,
   selectCurrentProject,
-  selectCurrentRootId,
   selectCurrentScreen,
   selectElementAsTree,
   selectHistory,
@@ -449,21 +448,7 @@ function* redoSaga() {
 export function* setActiveElementSaga(
   action: ReturnType<typeof Actions.setActiveElementId>,
 ) {
-  const prevActiveElementId = yield select(selectActiveElementId);
-  const rootID = yield select(selectCurrentRootId);
-  if (
-    prevActiveElementId !== action.payload &&
-    prevActiveElementId !== rootID
-  ) {
-    yield put(Actions.removeBorderedElementRect(prevActiveElementId));
-  }
   yield put(Actions.setActiveElementId(action.payload));
-}
-
-export function* setCurrentDropTargetSaga(
-  action: ReturnType<typeof Actions.setCurrentDropTarget>,
-) {
-  yield put(Actions.setCurrentDropTargetId(action.payload.id));
 }
 
 export default function* projectSaga() {
@@ -519,7 +504,6 @@ export default function* projectSaga() {
   yield takeEvery(TYPES.UNWRAP_FROM_CONTAINER, unwrapFromContainerSaga);
   yield takeEvery(TYPES.REDO_WRAP_INTO_CONTAINER, redoWrapIntoContainerSaga);
   yield takeEvery(TYPES.SET_ACTIVE_ELEMENT, setActiveElementSaga);
-  yield takeLeading(TYPES.SET_CURRENT_DROP_TARGET, setCurrentDropTargetSaga);
   yield takeEvery(TYPES.UPDATE_ELEMENT, updateElementSaga);
   yield takeLeading(
     TYPES.REQUEST_CUSTOM_LIBRARY_ELEMENTS,

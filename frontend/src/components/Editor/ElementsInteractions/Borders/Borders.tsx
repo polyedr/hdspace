@@ -1,95 +1,102 @@
-import React, { useCallback } from 'react';
+import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { CONTAINER_GROUPS } from '../../../../constants/defaultParams';
-import { AppReduxState } from '../../../../shared/types/app';
+import { DropPosition } from '../../../../constants/dragAndDrop';
 import {
   selectActiveElementId,
-  selectCurrentDropTargetId,
+  selectCurrentDropTargetParams,
   selectElementById,
   selectShowingBorders,
 } from '../../../../redux/project/selectors';
-import useBorderStyles from '../hooks/useBorderStyles';
-import Border, { BorderPosition, StyleProps } from './Border';
+import { BorderStyles } from '../ElementsInteractions';
+import Border, { BorderPosition } from './Border';
+
+type DisplayDropTargetBorders = {
+  [key in DropPosition]: boolean;
+};
 
 type Props = {
   elementId: string;
+  styles: BorderStyles;
 };
 
-const Borders: React.FC<Props> = ({ elementId }) => {
-  const { element, activeElementId, showBorders, dropTargetId } = useSelector(
-    (state: AppReduxState) => ({
-      element: selectElementById(elementId)(state),
-      activeElementId: selectActiveElementId(state),
-      showBorders: selectShowingBorders(state),
-      dropTargetId: selectCurrentDropTargetId(state),
-    }),
-  );
-  const isDropTarget = elementId === dropTargetId;
-  const isDropTargetContainer =
-    element.parameters.group &&
-    CONTAINER_GROUPS.includes(element.parameters.group);
+const Borders: React.FC<Props> = ({ elementId, styles }) => {
+  const element = useSelector(selectElementById(elementId));
+  const activeElementId = useSelector(selectActiveElementId);
+  const showBorders = useSelector(selectShowingBorders);
+  const dropTargetParams = useSelector(selectCurrentDropTargetParams);
 
-  const styles = useBorderStyles(elementId);
-
-  const handleDropTargetProps = useCallback((styleProps: StyleProps | null) => {
-    if (!styles || !styleProps) {
-      return {};
-    }
-    let borderTop = styleProps.top || 0;
-    if (isDropTargetContainer) {
-      borderTop -= 5;
-    } else {
-      borderTop += 5;
-    }
-    return {
-      top: borderTop,
-      left: (styleProps.left || 0) + 5,
-      right: (styleProps.right || styles.width) + 5,
-      width: styles.width - 10,
-      height: 1,
-    };
-  }, []);
+  const isDropTarget = elementId === dropTargetParams?.id;
 
   const isActive = elementId === activeElementId;
 
   const displayBorders = showBorders || isActive || isDropTarget;
 
+  const showDropTargetBorders = useMemo(() => {
+    return {
+      [BorderPosition.TOP]:
+        !isDropTarget ||
+        !dropTargetParams ||
+        !dropTargetParams.position ||
+        [DropPosition.INSIDE, DropPosition.ABOVE].includes(
+          dropTargetParams.position,
+        ),
+      [BorderPosition.BOTTOM]:
+        !isDropTarget ||
+        !dropTargetParams ||
+        !dropTargetParams.position ||
+        [DropPosition.INSIDE, DropPosition.BELOW].includes(
+          dropTargetParams.position,
+        ),
+      [BorderPosition.LEFT]:
+        !isDropTarget ||
+        !dropTargetParams ||
+        !dropTargetParams.position ||
+        [DropPosition.INSIDE, DropPosition.BEFORE].includes(
+          dropTargetParams.position,
+        ),
+      [BorderPosition.RIGHT]:
+        !isDropTarget ||
+        !dropTargetParams ||
+        !dropTargetParams.position ||
+        [DropPosition.INSIDE, DropPosition.AFTER].includes(
+          dropTargetParams.position,
+        ),
+    };
+  }, [dropTargetParams]);
+
   return element && styles && displayBorders ? (
     <>
-      <Border
-        position={BorderPosition.TOP}
-        element={element}
-        isActive={isActive || isDropTarget}
-        styles={styles}
-      />
-      <Border
-        position={BorderPosition.BOTTOM}
-        element={element}
-        isActive={isActive || isDropTarget}
-        styles={styles}
-      />
-      <Border
-        position={BorderPosition.LEFT}
-        element={element}
-        isActive={isActive || isDropTarget}
-        styles={styles}
-        isDropTarget={isDropTarget}
-      />
-      <Border
-        position={BorderPosition.RIGHT}
-        element={element}
-        isActive={isActive || isDropTarget}
-        styles={styles}
-      />
-      {isDropTarget && (
+      {showDropTargetBorders[BorderPosition.TOP] && (
         <Border
-          position={
-            isDropTargetContainer ? BorderPosition.BOTTOM : BorderPosition.TOP
-          }
+          position={BorderPosition.TOP}
           element={element}
-          isActive
+          isActive={isActive || isDropTarget}
           styles={styles}
-          onRenderProps={handleDropTargetProps}
+        />
+      )}
+      {showDropTargetBorders[BorderPosition.BOTTOM] && (
+        <Border
+          position={BorderPosition.BOTTOM}
+          element={element}
+          isActive={isActive || isDropTarget}
+          styles={styles}
+        />
+      )}
+      {showDropTargetBorders[BorderPosition.LEFT] && (
+        <Border
+          position={BorderPosition.LEFT}
+          element={element}
+          isActive={isActive || isDropTarget}
+          styles={styles}
+          isDropTarget={isDropTarget}
+        />
+      )}
+      {showDropTargetBorders[BorderPosition.RIGHT] && (
+        <Border
+          position={BorderPosition.RIGHT}
+          element={element}
+          isActive={isActive || isDropTarget}
+          styles={styles}
         />
       )}
     </>

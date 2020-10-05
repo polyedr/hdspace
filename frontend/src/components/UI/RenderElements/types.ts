@@ -18,8 +18,8 @@ export type SharedRendererProps = {
   active: boolean;
   isDisabled: boolean;
   className?: string;
-  elementRef: ((element: any) => void) | null;
   children: React.ReactElement[];
+  ref?: React.RefObject<HTMLElement> | null;
 };
 
 export type ContainerRendererProps = SharedRendererProps & {

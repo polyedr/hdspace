@@ -35,55 +35,56 @@ const getStyles = (
     },
   });
 
-const MenuItem: React.FC<MenuItemRendererProps> = ({
-  id,
-  entityStyles,
-  groupStyles,
-  ownStyles,
-  isDisabled,
-  params,
-  className,
-  elementRef,
-}) => {
-  const { showRipple, name, value } = params;
+const MenuItem: React.FC<MenuItemRendererProps> = React.forwardRef(
+  (
+    { id, entityStyles, groupStyles, ownStyles, isDisabled, params, className },
+    ref,
+  ) => {
+    const { showRipple, name, value } = params;
 
-  const classes = getStyles(isDisabled, entityStyles, groupStyles, ownStyles)();
+    const classes = getStyles(
+      isDisabled,
+      entityStyles,
+      groupStyles,
+      ownStyles,
+    )();
 
-  return isDisabled ? (
-    <MaterialMenuItem
-      ref={elementRef}
-      id={id}
-      data-ls-id={id}
-      tabIndex={0}
-      key={id}
-      className={cn(
-        className,
-        sharedClasses.unsortable,
-        styles.addedElem,
-        styles.disabled,
-        classes.entityStyles,
-        classes.groupStyles,
-        classes.ownStyles,
-      )}
-      value={value}
-      disableRipple
-    >
-      {name}
-    </MaterialMenuItem>
-  ) : (
-    <MaterialMenuItem
-      key={id}
-      className={cn(
-        classes.entityStyles,
-        classes.groupStyles,
-        classes.ownStyles,
-      )}
-      value={value}
-      disableRipple={!showRipple}
-    >
-      {name}
-    </MaterialMenuItem>
-  );
-};
+    return isDisabled ? (
+      <MaterialMenuItem
+        ref={ref}
+        id={id}
+        data-ls-id={id}
+        tabIndex={0}
+        key={id}
+        className={cn(
+          className,
+          sharedClasses.unsortable,
+          styles.addedElem,
+          styles.disabled,
+          classes.entityStyles,
+          classes.groupStyles,
+          classes.ownStyles,
+        )}
+        value={value}
+        disableRipple
+      >
+        {name}
+      </MaterialMenuItem>
+    ) : (
+      <MaterialMenuItem
+        key={id}
+        className={cn(
+          classes.entityStyles,
+          classes.groupStyles,
+          classes.ownStyles,
+        )}
+        value={value}
+        disableRipple={!showRipple}
+      >
+        {name}
+      </MaterialMenuItem>
+    );
+  },
+);
 
 export default MenuItem;

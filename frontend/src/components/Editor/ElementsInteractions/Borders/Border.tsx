@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import cn from 'classnames';
 import { StateElement } from '../../../../redux/project/types';
-import { BorderStyles } from '../hooks/useBorderStyles';
+import { BorderStyles } from '../ElementsInteractions';
 
 const borderStyles = require('./Border.scss');
 
@@ -28,7 +28,6 @@ type Props = {
   isActive: boolean;
   isDropTarget?: boolean;
   onClick?: (event: React.SyntheticEvent<EventTarget>) => void;
-  onRenderProps?: (props: StyleProps) => StyleProps;
 };
 
 const Border: React.FC<Props> = ({
@@ -38,35 +37,34 @@ const Border: React.FC<Props> = ({
   isActive,
   isDropTarget,
   onClick,
-  onRenderProps,
 }) => {
   const [styleProps, setStyleProps] = useState<StyleProps | null>(null);
   useEffect(() => {
     const { top, left, right, height } = styles;
     let props: StyleProps | null = null;
     switch (position) {
-      case 'top':
+      case BorderPosition.TOP:
         props = {
           top,
           right,
           left,
         } as StyleProps;
         break;
-      case 'right':
+      case BorderPosition.RIGHT:
         props = {
           top,
           right,
           height,
         };
         break;
-      case 'bottom':
+      case BorderPosition.BOTTOM:
         props = {
           top: top + height,
           right,
           left,
         } as StyleProps;
         break;
-      case 'left':
+      case BorderPosition.LEFT:
         props = {
           top,
           left,
@@ -92,7 +90,7 @@ const Border: React.FC<Props> = ({
         borderStyles.border,
         (isActive || isDropTarget) && borderStyles.border_active,
       )}
-      style={onRenderProps ? onRenderProps(styleProps) : styleProps}
+      style={styleProps}
       onClick={onClick}
     />
   );

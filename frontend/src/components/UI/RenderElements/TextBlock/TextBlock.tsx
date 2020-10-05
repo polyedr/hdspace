@@ -9,53 +9,57 @@ import { TextBlockRendererProps } from '../types';
 
 const styles = require('../styles.scss');
 
-const TextBlock: React.FC<TextBlockRendererProps> = ({
-  id,
-  entityStyles,
-  groupStyles,
-  ownStyles,
-  params,
-  sortableId,
-  isDisabled,
-  className,
-  elementRef,
-}) => {
-  const classes = makeStyles({
-    entityStyles: {
-      ...entityStyles,
-      wordBreak: 'break-word',
+const TextBlock: React.FC<TextBlockRendererProps> = React.forwardRef(
+  (
+    {
+      id,
+      entityStyles,
+      groupStyles,
+      ownStyles,
+      params,
+      sortableId,
+      className,
+      isDisabled,
     },
+    ref,
+  ) => {
+    const classes = makeStyles({
+      entityStyles: {
+        ...entityStyles,
+        wordBreak: 'break-word',
+      },
 
-    groupStyles: {
-      ...groupStyles,
-      wordBreak: 'break-word',
-    },
+      groupStyles: {
+        ...groupStyles,
+        wordBreak: 'break-word',
+      },
 
-    ownStyles: {
-      ...ownStyles,
-      wordBreak: 'break-word',
-    },
-  })();
+      ownStyles: {
+        ...ownStyles,
+        wordBreak: 'break-word',
+      },
+    })();
 
-  return (
-    <div
-      ref={elementRef}
-      id={id}
-      data-ls-id={id}
-      data-id={sortableId}
-      key={id}
-      className={cn(
-        className,
-        styles.addedElem,
-        classes.entityStyles,
-        classes.groupStyles,
-        classes.ownStyles,
-      )}
-      tabIndex={isDisabled ? 0 : -1}
-    >
-      {params.textContent}
-    </div>
-  );
-};
+    return (
+      <div
+        ref={ref}
+        id={id}
+        data-ls-id={id}
+        data-id={sortableId}
+        key={id}
+        tabIndex={isDisabled ? -1 : 0}
+        className={cn(
+          className,
+          styles.addedElem,
+          classes.entityStyles,
+          classes.groupStyles,
+          classes.ownStyles,
+        )}
+      >
+        {params.textContent}
+      </div>
+    );
+  },
+);
 
 export default TextBlock;

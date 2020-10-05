@@ -86,83 +86,86 @@ const getDivStyles = (
     },
   });
 
-const Radiobutton: React.FC<RadioRendererProps> = ({
-  id,
-  entityStyles,
-  groupStyles,
-  ownStyles,
-  params,
-  isDisabled,
-  sortableId,
-  isRadioChecked,
-  onElementChange,
-  className,
-  elementRef,
-}) => {
-  const { name, value, showRipple } = params;
+const Radiobutton: React.FC<RadioRendererProps> = React.forwardRef(
+  (
+    {
+      id,
+      entityStyles,
+      groupStyles,
+      ownStyles,
+      params,
+      isDisabled,
+      sortableId,
+      isRadioChecked,
+      onElementChange,
+      className,
+    },
+    ref,
+  ) => {
+    const { name, value, showRipple } = params;
 
-  const radiobuttonClasses = getRadiobuttonStyles(
-    entityStyles,
-    groupStyles,
-    ownStyles,
-  )();
-  const iconClasses = getIconStyles(entityStyles, groupStyles, ownStyles)();
-  const divClasses = getDivStyles(entityStyles, groupStyles, ownStyles)();
+    const radiobuttonClasses = getRadiobuttonStyles(
+      entityStyles,
+      groupStyles,
+      ownStyles,
+    )();
+    const iconClasses = getIconStyles(entityStyles, groupStyles, ownStyles)();
+    const divClasses = getDivStyles(entityStyles, groupStyles, ownStyles)();
 
-  const handleRadioChange = (event: ChangeEvent<HTMLInputElement>) => {
-    onElementChange(name || '', event.target.value);
-  };
+    const handleRadioChange = (event: ChangeEvent<HTMLInputElement>) => {
+      onElementChange(name || '', event.target.value);
+    };
 
-  return (
-    <div
-      ref={elementRef}
-      id={id}
-      data-ls-id={id}
-      data-id={sortableId}
-      key={id}
-      className={cn(
-        className,
-        isDisabled && styles.disabled,
-        divClasses.entityStyles,
-        divClasses.groupStyles,
-        divClasses.ownStyles,
-      )}
-      tabIndex={isDisabled ? 0 : -1}
-    >
-      <Radio
-        checkedIcon={
-          <RadioButtonCheckedIcon
-            className={cn(
-              iconClasses.entityStyles,
-              iconClasses.groupStyles,
-              iconClasses.ownStyles,
-            )}
-          />
-        }
-        icon={
-          <RadioButtonUncheckedIcon
-            className={cn(
-              iconClasses.entityStyles,
-              iconClasses.groupStyles,
-              iconClasses.ownStyles,
-            )}
-          />
-        }
-        color="default"
+    return (
+      <div
+        ref={ref}
+        id={id}
+        data-ls-id={id}
+        data-id={sortableId}
+        key={id}
         className={cn(
-          radiobuttonClasses.root,
-          radiobuttonClasses.entityStyles,
-          radiobuttonClasses.groupStyles,
-          radiobuttonClasses.ownStyles,
+          className,
+          isDisabled && styles.disabled,
+          divClasses.entityStyles,
+          divClasses.groupStyles,
+          divClasses.ownStyles,
         )}
-        value={value}
-        name={name}
-        checked={isRadioChecked}
-        onChange={handleRadioChange}
-        disableRipple={!showRipple}
-      />
-    </div>
-  );
-};
+      >
+        <Radio
+          checkedIcon={
+            <RadioButtonCheckedIcon
+              className={cn(
+                iconClasses.entityStyles,
+                iconClasses.groupStyles,
+                iconClasses.ownStyles,
+              )}
+            />
+          }
+          icon={
+            <RadioButtonUncheckedIcon
+              className={cn(
+                iconClasses.entityStyles,
+                iconClasses.groupStyles,
+                iconClasses.ownStyles,
+              )}
+            />
+          }
+          color="default"
+          className={cn(
+            radiobuttonClasses.root,
+            radiobuttonClasses.entityStyles,
+            radiobuttonClasses.groupStyles,
+            radiobuttonClasses.ownStyles,
+          )}
+          value={value}
+          name={name}
+          checked={isRadioChecked}
+          onChange={handleRadioChange}
+          disableRipple={!showRipple}
+        />
+      </div>
+    );
+  },
+);
 
 export default Radiobutton;

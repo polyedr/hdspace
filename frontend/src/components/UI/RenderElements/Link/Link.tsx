@@ -11,64 +11,68 @@ const styles = require('../styles.scss');
 
 export type LinkRenderer = React.FC<WithActionProps & ActionRendererProps>;
 
-const Link: LinkRenderer = ({
-  id,
-  entityStyles,
-  groupStyles,
-  ownStyles,
-  isDisabled,
-  params,
-  onClick,
-  sortableId,
-  actionType,
-  actionLink,
-  className,
-  elementRef,
-}) => {
-  const { textContent } = params;
-
-  const classes = makeStyles({
-    entityStyles: {
-      ...entityStyles,
+const Link: LinkRenderer = React.forwardRef(
+  (
+    {
+      id,
+      entityStyles,
+      groupStyles,
+      ownStyles,
+      isDisabled,
+      params,
+      onClick,
+      sortableId,
+      actionType,
+      actionLink,
+      className,
     },
+    ref,
+  ) => {
+    const { textContent } = params;
 
-    groupStyles: {
-      ...groupStyles,
-    },
+    const classes = makeStyles({
+      entityStyles: {
+        ...entityStyles,
+      },
 
-    ownStyles: {
-      ...ownStyles,
-    },
-  })();
+      groupStyles: {
+        ...groupStyles,
+      },
 
-  return (
-    <MaterialLink
-      ref={elementRef}
-      id={id}
-      data-ls-id={id}
-      data-id={sortableId}
-      key={id}
-      className={cn(
-        className,
-        isDisabled && styles.disabled,
-        classes.entityStyles,
-        classes.groupStyles,
-        classes.ownStyles,
-      )}
-      underline={isDisabled ? 'none' : 'hover'}
-      onClick={onClick}
-      {...(actionType === 'external-link' && {
-        href: actionLink,
-        target: '_blank',
-      })}
-      {...(actionType === 'internal-link' && {
-        component: RouterLink,
-        to: actionLink,
-      })}
-    >
-      {textContent}
-    </MaterialLink>
-  );
-};
+      ownStyles: {
+        ...ownStyles,
+      },
+    })();
+
+    return (
+      <MaterialLink
+        ref={ref}
+        id={id}
+        data-ls-id={id}
+        data-id={sortableId}
+        key={id}
+        className={cn(
+          className,
+          isDisabled && styles.disabled,
+          classes.entityStyles,
+          classes.groupStyles,
+          classes.ownStyles,
+        )}
+        underline={isDisabled ? 'none' : 'hover'}
+        onClick={onClick}
+        {...(actionType === 'external-link' && {
+          href: actionLink,
+          target: '_blank',
+        })}
+        {...(actionType === 'internal-link' && {
+          component: RouterLink,
+          to: actionLink,
+        })}
+      >
+        {textContent}
+      </MaterialLink>
+    );
+  },
+);
 
 export default Link;

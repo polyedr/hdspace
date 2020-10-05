@@ -16,6 +16,7 @@ import userReducer from './user/reducer';
 import projectReducer from './project/reducers';
 import projectSaga from './project/sagas';
 import userSaga from './user/sagas';
+import DevToolsOptions from './devtools';
 
 const userPersistConfig: PersistConfig = {
   key: 'user',
@@ -42,7 +43,7 @@ export const history = createBrowserHistory();
 const composeEnhancers =
   typeof window === 'object' &&
   (<any>window).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
-    ? (<any>window).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({})
+    ? (<any>window).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__(DevToolsOptions)
     : compose;
 
 export const rootReducer = combineReducers({
