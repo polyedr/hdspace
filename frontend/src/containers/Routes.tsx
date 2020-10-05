@@ -1,7 +1,7 @@
 import React from 'react';
 import { withRouter, Switch, Route, Redirect } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import SignIn from '../components/User/Signin';
+import Signin from '../components/User/Signin';
 import Signup from '../components/User/Signup';
 import Activation from '../components/User/Activation';
 import ResetPassword from '../components/User/ResetPassword/ResetPassword';
@@ -24,7 +24,7 @@ const PrivateRoute: React.FC<any> = ({ children, ...rest }) => {
 const Routes: React.FC = () => {
   return (
     <Switch>
-      <Route path={PATH_NAMES.user.signin} component={SignIn} />
+      <Route path={PATH_NAMES.user.signin} component={Signin} />
 
       <Route path={PATH_NAMES.user.signup} component={Signup} />
 

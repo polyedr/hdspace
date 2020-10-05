@@ -7,12 +7,12 @@ const useStyles = makeStyles({
     color: '#fff',
     backgroundColor: '#2f4050',
     display: 'flex',
-    flexDirection: 'row-reverse',
+    justifyContent: 'center',
     alignItems: 'center',
     padding: '2em',
   },
   wrapper: {
-    textAlign: 'left',
+    textAlign: 'right',
   },
   title: {
     margin: 0,

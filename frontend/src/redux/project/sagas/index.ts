@@ -10,11 +10,7 @@ import {
   takeLeading,
 } from 'redux-saga/effects';
 import * as R from 'ramda';
-import {
-  LOCATION_CHANGE,
-  LocationChangeAction,
-  push,
-} from 'connected-react-router';
+import { push } from 'connected-react-router';
 import * as Actions from '../actions';
 import { AppReduxState } from '../../../shared/types/app';
 import {
@@ -62,7 +58,7 @@ import {
 import { convertElementToRequest } from '../../../api/converters/toRequest';
 import { MAX_TOKEN_TRIALS } from '../../../../config/settings';
 import TYPES from '../../../constants/actions';
-import { setLoadedToken, setTokenPair } from '../../user/actions';
+import { logout, setLoadedToken, setTokenPair } from '../../user/actions';
 import {
   ElementHistoryMeta,
   ItemToCopyInfo,
@@ -71,7 +67,7 @@ import {
 } from '../types';
 
 import { LibraryElement } from '../../../api/types';
-import { openProjects, openSignScreen } from '../../../utils/history';
+import { openSignScreen } from '../../../utils/history';
 import { refreshUserTokenPair } from '../../user/sagas';
 import { DEFAULT_AUTHORISATION_TOKEN } from '../../../constants/defaultParams';
 import {
@@ -98,33 +94,7 @@ import {
   restoreScreenSaga,
   saveScreenImageSaga,
 } from './screen';
-
-import { PATH_NAMES } from '../../../constants/pathNames';
 import { selectTokenPair } from '../../user/selectors';
-
-function* LocationChange({ payload: { location } }: LocationChangeAction) {
-  const {
-    user: { tokenPair },
-  }: AppReduxState = yield select();
-
-  if (
-    tokenPair.access === '' &&
-    location.pathname !== PATH_NAMES.user.signup &&
-    location.pathname !== PATH_NAMES.user.signin &&
-    !location.pathname.match(PATH_NAMES.user.activate) &&
-    !location.pathname.match(PATH_NAMES.user.password)
-  ) {
-    openSignScreen('signin');
-  }
-
-  if (
-    tokenPair.access !== '' &&
-    (location.pathname === PATH_NAMES.user.signin ||
-      location.pathname === PATH_NAMES.user.signup)
-  ) {
-    openProjects();
-  }
-}
 
 export function* reqWrapper(
   requestAction: (props: any) => Promise<any>,
@@ -163,6 +133,7 @@ export function* reqWrapper(
   }
 
   if (R.path(['response', 'statusText'], result) === 'Unauthorized') {
+    yield put(logout());
     openSignScreen('signin');
 
     return null;
@@ -464,7 +435,7 @@ export function* setCurrentDropTargetSaga(
 }
 
 export default function* projectSaga() {
-  yield takeLatest(LOCATION_CHANGE, LocationChange);
+  // yield takeLatest(LOCATION_CHANGE, LocationChange);
 
   yield takeLatest(TYPES.LOAD_PROJECTS, getProjectListSaga);
   yield takeLatest(TYPES.ADD_PROJECT, addProjectSaga);

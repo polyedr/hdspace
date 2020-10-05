@@ -25,6 +25,7 @@ import { ITokenPair, ServerProfileData, ServerUserData } from './types';
 import { reqWrapper } from '../project/sagas';
 import { selectTokenPair } from './selectors';
 
+// eslint-disable-next-line consistent-return
 export function* getTokenPairSaga(username: string, password: string) {
   try {
     const tokens: ITokenPair = yield call(apiGetToken, { username, password });
@@ -205,6 +206,7 @@ function* activateUserSaga(action: ReturnType<typeof Actions.activateUser>) {
   }
 }
 
+// eslint-disable-next-line consistent-return
 export function* refreshUserTokenPair() {
   try {
     const { refresh } = yield select(selectTokenPair);

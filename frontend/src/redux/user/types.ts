@@ -51,7 +51,7 @@ export type UserData = {
   dateJoined: Date | null;
   isActive: boolean;
   id: number;
-  password?: string;
+  password: string;
 };
 
 export type TotalUserData = ProfileData & UserData;

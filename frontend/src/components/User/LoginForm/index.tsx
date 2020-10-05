@@ -10,6 +10,7 @@ import Alert from '@material-ui/lab/Alert';
 import MuiLink from '@material-ui/core/Link';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { createStyles } from '@material-ui/core';
+import Container from '@material-ui/core/Container';
 import { user } from '../../../constants/pathNames';
 import {
   selectAuthError,
@@ -83,12 +84,13 @@ const LoginForm: React.FC = () => {
     <Form
       onSubmit={handleFormSubmit}
       render={({ handleSubmit }) => (
-        <form onSubmit={handleSubmit} className={classes.form}>
-          <Typography className={classes.header}>
-            Login to your account
-          </Typography>
+        <Container maxWidth="xs">
+          <form onSubmit={handleSubmit} className={classes.form}>
+            <Typography className={classes.header}>
+              Login to your account
+            </Typography>
 
-          {/* <GoogleLogin
+            {/* <GoogleLogin
               className={styles.googleLogin}
               clientId="97708805893-kqh3efrnsd7i8nbu30p0mhlvhub029he.apps.googleusercontent.com"
               buttonText="Sign in with google"
@@ -97,94 +99,95 @@ const LoginForm: React.FC = () => {
               cookiePolicy="single_host_origin"
             /> */}
 
-          <Field name="username">
-            {({ input, meta }) => (
-              <TextField
-                {...input}
-                className={classes.field}
-                type="text"
-                label="Username"
-                placeholder="Username"
-                required
-                variant="filled"
-                autoFocus
-                size="small"
-                fullWidth
-                error={(meta.error || meta.submitError) && meta.touched}
-                helperText={
-                  (meta.error || meta.submitError) && meta.touched
-                    ? meta.error || meta.submitError
-                    : null
-                }
-              />
-            )}
-          </Field>
+            <Field name="username">
+              {({ input, meta }) => (
+                <TextField
+                  {...input}
+                  className={classes.field}
+                  type="text"
+                  label="Username"
+                  placeholder="Username"
+                  required
+                  variant="filled"
+                  autoFocus
+                  size="small"
+                  fullWidth
+                  error={(meta.error || meta.submitError) && meta.touched}
+                  helperText={
+                    (meta.error || meta.submitError) && meta.touched
+                      ? meta.error || meta.submitError
+                      : null
+                  }
+                />
+              )}
+            </Field>
 
-          <Field name="password">
-            {({ input, meta }) => (
-              <TextField
-                {...input}
-                className={classes.field}
-                type="password"
-                label="Password"
-                placeholder="Password"
-                required
-                variant="filled"
-                size="small"
-                fullWidth
-                error={(meta.error || meta.submitError) && meta.touched}
-                helperText={
-                  (meta.error || meta.submitError) && meta.touched
-                    ? meta.error || meta.submitError
-                    : null
-                }
-              />
-            )}
-          </Field>
+            <Field name="password">
+              {({ input, meta }) => (
+                <TextField
+                  {...input}
+                  className={classes.field}
+                  type="password"
+                  label="Password"
+                  placeholder="Password"
+                  required
+                  variant="filled"
+                  size="small"
+                  fullWidth
+                  error={(meta.error || meta.submitError) && meta.touched}
+                  helperText={
+                    (meta.error || meta.submitError) && meta.touched
+                      ? meta.error || meta.submitError
+                      : null
+                  }
+                />
+              )}
+            </Field>
 
-          <Button
-            type="submit"
-            fullWidth
-            color="primary"
-            variant="contained"
-            disabled={loading}
-          >
-            Login
-          </Button>
+            <Button
+              type="submit"
+              fullWidth
+              color="primary"
+              variant="contained"
+              disabled={loading}
+            >
+              Login
+            </Button>
 
-          <div className={classes.error}>
-            {authError && (
-              <Alert severity="error" variant="filled">
-                {authError.message}
-              </Alert>
-            )}
-          </div>
+            <div className={classes.error}>
+              {authError && (
+                <Alert severity="error" variant="filled">
+                  {authError.message}
+                </Alert>
+              )}
+            </div>
 
-          <MuiLink
-            component="button"
-            type="button"
-            onClick={handleRestoreClick}
-          >
-            Forgot password?
-          </MuiLink>
+            <MuiLink
+              component="button"
+              type="button"
+              onClick={handleRestoreClick}
+            >
+              Forgot password?
+            </MuiLink>
 
-          <p className={classes.signup}>
-            {'Create an account '}
-            <Link to={user.signup} className={classes.link}>
-              for free
-            </Link>
-          </p>
+            <p className={classes.signup}>
+              {'Create an account '}
+              <Link to={user.signup} className={classes.link}>
+                for free
+              </Link>
+            </p>
 
-          <Dialog
-            open={open}
-            title="Restore password"
-            onSubmit={confirmRestore}
-            onClose={closeModal}
-            description="Please, enter your email address."
-            fieldName="email"
-            type="email"
-          />
-        </form>
+            <Dialog
+              open={open}
+              title="Restore password"
+              onSubmit={confirmRestore}
+              onClose={closeModal}
+              description="Please, enter your email address."
+              fieldName="email"
+              type="email"
+            />
+          </form>
+        </Container>
       )}
     />
   );
