@@ -15,7 +15,7 @@ import {
 import * as Actions from '../actions';
 import { selectors, T } from '..';
 import { updateSavedElementsValues } from './screen';
-import { ElementHistoryMeta, StateElement, Map } from '../types';
+import { ElementHistoryMeta, StateElement, Normalized } from '../types';
 import {
   DISALLOW_ADD_ELEMENT_NOTIFICATION_TEXT,
   DISALLOW_REMOVE_ELEMENT_NOTIFICATION_TEXT,
@@ -64,7 +64,7 @@ import {
 } from '../../../utils/normalizedStateHelpers';
 
 export function* updateElementsTree(
-  chunk: Map<StateElement>,
+  chunk: Normalized<StateElement>,
   meta: ElementHistoryMeta,
 ) {
   const root: LibraryElement<'root'> = yield select(
@@ -342,7 +342,7 @@ export function* restoreElementChildrenSaga(
     );
   }
 
-  const state: Map<StateElement> = yield select(selectAllElements);
+  const state: Normalized<StateElement> = yield select(selectAllElements);
   yield put(
     Actions.updateElementsTree(
       restoreMapElementChildren(state, elementId, childrenIds),
@@ -387,7 +387,7 @@ export function* restoreElementSaga(
     );
   }
 
-  const state: Map<StateElement> = yield select(selectAllElements);
+  const state: Normalized<StateElement> = yield select(selectAllElements);
 
   yield put(
     Actions.updateElementsTree(restoreMapElement(state, elementId), {

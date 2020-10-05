@@ -36,7 +36,7 @@ import { CssLikeStyles } from '../../../utils/StyleHelper';
 import getSavedValue from '../../../utils/getSavedValue';
 import { addProjectStyles } from '../../../utils/ProjectClassesHelper';
 import { updateProject } from './project';
-import { Map, StateElement } from '../types';
+import { Normalized, StateElement } from '../types';
 
 export function* moveElementSaga(
   action: ReturnType<typeof Actions.moveElement>,
@@ -137,7 +137,7 @@ function* updateElementClassNames(
     }
   }
 
-  const state: Map<StateElement> = yield select(selectAllElements);
+  const state: Normalized<StateElement> = yield select(selectAllElements);
 
   yield put(
     Actions.updateStateElement(
@@ -183,7 +183,7 @@ function* removeElementStyles(
     return;
   }
 
-  const state: Map<StateElement> = yield select(selectAllElements);
+  const state: Normalized<StateElement> = yield select(selectAllElements);
   yield put(
     Actions.updateStateElement(
       id,
@@ -306,7 +306,7 @@ function* updateOrReplaceElementStyles(
     );
   }
 
-  const state: Map<StateElement> = yield select(selectAllElements);
+  const state: Normalized<StateElement> = yield select(selectAllElements);
   yield put(
     Actions.updateStateElement(
       id,
@@ -427,7 +427,7 @@ export function* updateElementParameters(
     );
   }
 
-  const state: Map<StateElement> = yield select(
+  const state: Normalized<StateElement> = yield select(
     selectElementsForScreen(screenId),
   );
   yield put(

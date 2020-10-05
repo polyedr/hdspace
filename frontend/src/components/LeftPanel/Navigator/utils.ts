@@ -1,8 +1,10 @@
 import { mutateTree, TreeData } from '@atlaskit/tree';
-import { StateElement, Map } from '../../../redux/project/types';
+import { StateElement, Normalized } from '../../../redux/project/types';
 import { Node } from './types';
 
-export const convertElements = (elements: Map<StateElement>): Map<Node> =>
+export const convertElements = (
+  elements: Normalized<StateElement>,
+): Normalized<Node> =>
   Object.fromEntries(
     Object.entries(elements).map(([key, value]) => [
       key,
@@ -20,7 +22,7 @@ export const convertElements = (elements: Map<StateElement>): Map<Node> =>
     ]),
   );
 
-export const makeTree = (nodes: Map<Node>, rootId: string): TreeData => ({
+export const makeTree = (nodes: Normalized<Node>, rootId: string): any => ({
   rootId: 'root',
   items: {
     root: {
