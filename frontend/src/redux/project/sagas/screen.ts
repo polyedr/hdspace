@@ -219,6 +219,7 @@ export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
   yield put(Actions.setActiveElement(createdRootElement.id));
 
   yield put(push(`/project/${projectID}/${screen.id}`));
+  // eslint-disable-next-line consistent-return
   return updatedScreen;
 }
 

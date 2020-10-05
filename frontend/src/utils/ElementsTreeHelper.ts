@@ -6,6 +6,7 @@ import { LIBRARY_ELEMENTS } from '../domain/libraryElements/libraryElements';
 export const findParentByChildID = (
   element: LibraryElement<Entity, LibraryElement<Entity>[]>,
   targetID: string,
+  // eslint-disable-next-line consistent-return
 ): LibraryElement<Entity, LibraryElement<Entity>[]> | undefined => {
   if (element.children.some((child) => child.id === targetID)) {
     return element;
@@ -52,6 +53,7 @@ export const addChildToElement = <
 export const findChildByID = (
   element: LibraryElement<Entity, LibraryElement<Entity>[]>,
   targetID: string,
+  // eslint-disable-next-line consistent-return
 ): LibraryElement<Entity, LibraryElement<Entity>[]> | undefined => {
   if (element.id === targetID) {
     return element;

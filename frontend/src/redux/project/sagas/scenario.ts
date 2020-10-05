@@ -181,6 +181,7 @@ export function* createElements(
     data: elementsWithUpdatedBuoyancy,
   });
 
+  // eslint-disable-next-line consistent-return
   return createdElements.map((el) => el.id);
 }
 

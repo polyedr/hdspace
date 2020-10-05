@@ -63,7 +63,6 @@ module.exports = {
     'jsx-a11y/mouse-events-have-key-events': 'off',
     'jsx-a11y/no-static-element-interactions': 'off',
     'no-shadow': 'off',
-    'consistent-return': 'off',
     'no-param-reassign': [
       'error',
       { ignorePropertyModificationsFor: ['draft'] },
