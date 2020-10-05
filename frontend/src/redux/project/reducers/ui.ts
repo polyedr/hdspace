@@ -81,6 +81,15 @@ function uiReducer(
         },
       };
 
+    case TYPES.REMOVE_CUSTOM_LIBRARY_ELEMENT:
+      // eslint-disable-next-line no-case-declarations
+      const newCustomLibraryElements = { ...state.customLibraryElements };
+      delete newCustomLibraryElements[action.payload.id];
+      return {
+        ...state,
+        customLibraryElements: newCustomLibraryElements,
+      };
+
     case TYPES.ADD_BORDERED_ELEMENT_REF: {
       return {
         ...state,
