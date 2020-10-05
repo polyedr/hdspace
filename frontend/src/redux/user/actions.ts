@@ -1,6 +1,5 @@
 import TYPES from '../../constants/actions';
 import {
-  IApiResponseError,
   ITokenPair,
   LoginFormData,
   ProfileData,
@@ -9,11 +8,10 @@ import {
 } from './types';
 
 export const changeMinLPanel = () => ({ type: TYPES.CHANGE_L_PANEL });
-export const changeMinNavPanel = () => ({ type: TYPES.CHANGE_NAV_PANEL });
 
-export const changeSignLoader = (isSignLoader: boolean) => ({
-  type: TYPES.CHANGE_SIGN_LOADER,
-  isSignLoader,
+export const toggleUserLoading = (isLoading: boolean) => ({
+  type: TYPES.TOGGLE_USER_LOADING,
+  isLoading,
 });
 
 export const changePrototypeMode = (isPrototypeMode: boolean) => ({
@@ -83,9 +81,9 @@ export const activateUser = (uid: string, token: string) => ({
   },
 });
 
-export const setApiResponseError = (apiResponseError: IApiResponseError) => ({
-  type: TYPES.SET_API_ERROR,
-  apiResponseError,
+export const setAuthError = (error: Error) => ({
+  type: TYPES.SET_AUTH_ERROR,
+  payload: error,
 });
 
 export const setLoadedToken = (isLoadedToken: boolean) => ({

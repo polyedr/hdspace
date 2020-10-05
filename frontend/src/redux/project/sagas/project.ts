@@ -111,7 +111,6 @@ export function* addProjectSaga({
 
   yield put(Actions.setIsAddElementsModalOpened(true));
 
-  // eslint-disable-next-line consistent-return
   yield put(Actions.setCurrentProjectId(project.id));
 
   yield call(addScreenSaga, Actions.addScreen(project.id, 'Screen 1', 0, true));

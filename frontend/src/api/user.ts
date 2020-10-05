@@ -1,13 +1,8 @@
 /* eslint-disable camelcase */
 
 import { AxiosError } from 'axios';
-import {
-  IApiResponseError,
-  LoginFormData,
-  ProfileData,
-  UserData,
-} from '../redux/user/types';
-import { onError, parseResult } from './project';
+import { LoginFormData } from '../redux/user/types';
+import { parseResult } from './project';
 import { myAxios } from '../../config/settings';
 
 export interface ISignUpData {
@@ -36,48 +31,30 @@ type ResetPasswordConfirmationData = {
   reNewPassword: string;
 };
 
-// const generateId = () => {
-//   return `5cda${getRandomInt(10, 99)}b${getRandomInt(10, 99)}a5d3${getRandomInt(10, 99)}e72${getRandomInt(10, 99)}3b11`;
-// };
+const onAuthorizationError = ({ response }: AxiosError): Error => {
+  let message = '';
 
-export const onAuthorisationError = ({
-  response: r,
-}: AxiosError): IApiResponseError => {
-  const response = r as any;
+  if (!response) {
+    throw new Error('Network Error');
+  }
   switch (response.status) {
     case 400:
-      return {
-        errorStatus: response.status,
-        errorText:
-          'Entered data is incorrect or this login allready exist. Please, check fields data.',
-        data: response.data,
-      };
+      message =
+        'Entered data is incorrect or this login already exist. Please, check fields data.';
+      break;
     case 401:
-      return {
-        errorStatus: response.status,
-        errorText:
-          'Authorisation error. Check your username/email and password.',
-        data: response.data,
-      };
+      message = 'Authorization error. Check your username/email and password.';
+      break;
     case 404:
-      return {
-        errorStatus: response.status,
-        errorText: 'User not found!',
-        data: response.data,
-      };
-    case response.status >= 500:
-      return {
-        errorStatus: response.status,
-        errorText: 'It seems something went wrong. Please, try later.',
-        data: response.data,
-      };
+      message = 'User not found!';
+      break;
+    case 500:
+      message = 'It seems something went wrong. Please, try later.';
+      break;
     default:
-      return {
-        errorStatus: response.status,
-        errorText: response.statusText,
-        data: response.data,
-      };
+      message = response.statusText;
   }
+  throw new Error(message);
 };
 
 export const apiGetToken = (data: LoginFormData) =>
@@ -85,18 +62,14 @@ export const apiGetToken = (data: LoginFormData) =>
     data,
     method: 'POST',
     url: '/djauth/jwt/create/',
-  })
-    .then(parseResult)
-    .catch(onAuthorisationError);
+  }).then(parseResult);
 
 export const apiRefreshToken = (refresh: string) =>
   myAxios({
     data: { refresh },
     method: 'POST',
     url: '/djauth/jwt/refresh/',
-  })
-    .then(parseResult)
-    .catch(onError);
+  }).then(parseResult);
 
 export const apiSendActivationMail = ({
   username,
@@ -111,9 +84,7 @@ export const apiSendActivationMail = ({
     },
     method: 'POST',
     url: '/djauth/users/',
-  })
-    .then(parseResult)
-    .catch(onAuthorisationError);
+  }).then(parseResult);
 
 export const apiResetPasswordConfirmation = ({
   uid,
@@ -130,9 +101,7 @@ export const apiResetPasswordConfirmation = ({
     },
     method: 'POST',
     url: '/djauth/users/reset_password_confirm/',
-  })
-    .then(parseResult)
-    .catch(onAuthorisationError);
+  }).then(parseResult);
 
 export const apiRegisterWithGoogle = () =>
   myAxios({
@@ -143,7 +112,7 @@ export const apiRegisterWithGoogle = () =>
     },
   })
     .then(parseResult)
-    .catch(onAuthorisationError);
+    .catch(onAuthorizationError);
 
 export const apiActivateUser = ({ uid, token }: activateUserData) =>
   myAxios({
@@ -153,51 +122,46 @@ export const apiActivateUser = ({ uid, token }: activateUserData) =>
     },
     method: 'POST',
     url: '/djauth/users/activation/',
-  })
-    .then(parseResult)
-    .catch(onAuthorisationError);
+  }).then(parseResult);
 
 export const apiRestorePassword = (email: string) =>
   myAxios({
     data: { email },
     method: 'POST',
     url: '/djauth/users/reset_password/',
-  })
-    .then(parseResult)
-    .catch(onError);
+  }).then(parseResult);
 
-export const apiGetUsers = (): Promise<
-  { email: string; id: number }[] | IApiResponseError
-> =>
+export const apiGetProfile = ({ id, ...props }) =>
   myAxios({
-    method: 'GET',
-    url: '/accounts/users/',
-  })
-    .then((res) => parseResult(res).results)
-    .catch(onAuthorisationError);
-
-export const apiGetProfile = (id: number) =>
-  myAxios({
+    ...props,
     method: 'GET',
     url: `/accounts/profiles/${id}/`,
-  })
-    .then(parseResult)
-    .catch(onError);
+  }).then(parseResult);
 
-export const apiChangeUserData = (id: number, data: Partial<UserData>) =>
+export const apiGetUser = ({ id, ...props }) =>
   myAxios({
-    data,
+    ...props,
+    method: 'GET',
+    url: `/accounts/users/${id}/`,
+  }).then(parseResult);
+
+export const apiChangeUserData = ({ id, ...props }) =>
+  myAxios({
+    ...props,
     method: 'PATCH',
     url: `/accounts/users/${id}/`,
-  })
-    .then(parseResult)
-    .catch(onError);
+  }).then(parseResult);
 
-export const apiChangeProfileData = (id: number, data: Partial<ProfileData>) =>
+export const apiChangeProfileData = ({ id, ...props }) =>
   myAxios({
-    data,
+    ...props,
     method: 'PATCH',
     url: `/accounts/profiles/${id}/`,
-  })
-    .then(parseResult)
-    .catch(onError);
+  }).then(parseResult);
+
+export const apiIdentifyUser = (props) =>
+  myAxios({
+    ...props,
+    method: 'GET',
+    url: '/djauth/users/me/',
+  }).then(parseResult);

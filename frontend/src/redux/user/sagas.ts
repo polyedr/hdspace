@@ -11,226 +11,216 @@ import {
   apiChangeUserData,
   apiGetProfile,
   apiGetToken,
-  apiGetUsers,
+  apiIdentifyUser,
   apiRefreshToken,
   apiResetPasswordConfirmation,
   apiRestorePassword,
   apiSendActivationMail,
+  apiGetUser,
 } from '../../api/user';
 import { openProjects, openSignScreen } from '../../utils/history';
-import { DEFAULT_RESPONSE_ERROR } from '../../constants/defaultParams';
 import TYPES from '../../constants/actions';
-import { AppReduxState } from '../../shared/types/app';
 import { convertUserDataToRequest } from '../../api/converters/toRequest';
-import { ServerUserData } from './types';
+import { ITokenPair, ServerProfileData, ServerUserData } from './types';
 import { reqWrapper } from '../project/sagas';
+import { selectTokenPair } from './selectors';
 
+// eslint-disable-next-line consistent-return
 export function* getTokenPairSaga(username: string, password: string) {
-  const {
-    user: { apiResponseError },
-  }: AppReduxState = yield select();
+  try {
+    const tokens: ITokenPair = yield call(apiGetToken, { username, password });
 
-  const authorisationData = yield call(apiGetToken, { username, password });
-
-  if (authorisationData && authorisationData.access) {
-    if (apiResponseError.errorStatus !== -1) {
-      yield put(Actions.setApiResponseError(DEFAULT_RESPONSE_ERROR));
-    }
-
-    yield put(Actions.setTokenPair(authorisationData));
-  } else {
-    yield put(Actions.setApiResponseError(authorisationData));
+    yield put(Actions.setTokenPair(tokens));
+    return tokens;
+  } catch (e) {
+    yield put(Actions.setAuthError(e));
   }
 }
 
 export function* loginSaga({
   payload: { username, password },
 }: ReturnType<typeof Actions.login>) {
-  yield put(Actions.changeSignLoader(true));
+  try {
+    yield put(Actions.toggleUserLoading(true));
 
-  yield call(getTokenPairSaga, username, password);
+    const tokenPair = yield call(getTokenPairSaga, username, password);
+    if (!tokenPair) return;
 
-  const {
-    user: { apiResponseError },
-  }: AppReduxState = yield select();
+    const { id } = yield call(reqWrapper, apiIdentifyUser);
 
-  if (apiResponseError.errorStatus !== -1) {
-    yield put(Actions.changeSignLoader(false));
-    return;
+    const userData: ServerUserData = yield call(reqWrapper, apiGetUser, {
+      id,
+    });
+    const profileData: ServerProfileData = yield call(
+      reqWrapper,
+      apiGetProfile,
+      { id },
+    );
+
+    yield put(
+      Actions.setUserData({
+        ...convertUserDataFromResponse(userData),
+        ...convertProfileDataFromResponse(profileData),
+      }),
+    );
+
+    yield call(openProjects);
+  } catch (e) {
+    yield put(Actions.setAuthError(e));
+  } finally {
+    yield put(Actions.toggleUserLoading(false));
   }
-
-  const users = yield call(reqWrapper, apiGetUsers);
-
-  if (!users) {
-    console.error('Login error while fetching users');
-    return;
-  }
-
-  const userData = users.find(
-    (user: ServerUserData) => username === user.username,
-  );
-
-  const profileData = yield call(apiGetProfile, userData.id);
-
-  if (!profileData) {
-    console.error('Login error while fetching users');
-    return;
-  }
-
-  yield put(
-    Actions.setUserData({
-      ...convertUserDataFromResponse(userData),
-      ...convertProfileDataFromResponse(profileData),
-    }),
-  );
-
-  yield put(Actions.changeSignLoader(false));
-
-  yield call(openProjects);
 }
 
 export function* changeUserDataSaga({
   payload: { id, data },
 }: ReturnType<typeof Actions.changeUserData>) {
-  const newUserData = yield call(
-    apiChangeUserData,
-    id,
-    convertUserDataToRequest(data),
-  );
+  try {
+    const newUserData: ServerUserData = yield call(
+      reqWrapper,
+      apiChangeUserData,
+      {
+        id,
+        data: convertUserDataToRequest(data),
+      },
+    );
 
-  if (!newUserData) {
-    console.error('Error while patching user data');
-    return;
+    yield put(Actions.setUserData(convertUserDataFromResponse(newUserData)));
+  } catch (e) {
+    yield put(Actions.setAuthError(e));
   }
-  yield put(Actions.setUserData(convertUserDataFromResponse(newUserData)));
 }
 
 export function* changeProfileDataSaga({
   payload: { id, data },
 }: ReturnType<typeof Actions.changeProfileData>) {
-  const newProfileData = yield call(apiChangeProfileData, id, data);
+  try {
+    const newProfileData: ServerProfileData = yield call(
+      reqWrapper,
+      apiChangeProfileData,
+      { id, data },
+    );
 
-  if (!newProfileData) {
-    console.error('Error while patching profile data');
-    return;
+    yield put(
+      Actions.setUserData(convertProfileDataFromResponse(newProfileData)),
+    );
+  } catch (e) {
+    yield put(Actions.setAuthError(e));
   }
-  yield put(
-    Actions.setUserData(convertProfileDataFromResponse(newProfileData)),
-  );
 }
 
 function* sendActivationMailSaga(
   action: ReturnType<typeof Actions.sendActivationMail>,
 ) {
-  const {
-    payload: { username, email, password, firstName, lastName },
-  } = action;
-  yield put(Actions.changeSignLoader(true));
+  try {
+    const {
+      payload: { username, email, password, firstName, lastName },
+    } = action;
+    yield put(Actions.toggleUserLoading(true));
 
-  const response = yield call(apiSendActivationMail, {
-    username,
-    email,
-    password,
-  });
+    const response = yield call(apiSendActivationMail, {
+      username,
+      email,
+      password,
+    });
 
-  const userData = convertUserDataToRequest({ firstName, lastName });
+    yield call(apiChangeUserData, {
+      id: response.id,
+      data: convertUserDataToRequest({ firstName, lastName }),
+    });
 
-  yield call(apiChangeUserData, response.id, userData);
-
-  if (response.errorStatus) {
-    yield put(Actions.setApiResponseError(response));
-  }
-
-  const {
-    user: { apiResponseError },
-  }: AppReduxState = yield select();
-
-  yield put(Actions.changeSignLoader(false));
-
-  if (apiResponseError.errorStatus === -1) {
     openSignScreen('signin');
+
     yield put(
       Actions.setConfirmMessage(
         'Please, check your mail and confirm registration',
       ),
     );
+  } catch (e) {
+    yield put(Actions.setAuthError(e));
+  } finally {
+    yield put(Actions.toggleUserLoading(false));
   }
 }
 
 function* sendResetPasswordMailSaga(
   action: ReturnType<typeof Actions.sendResetPasswordMail>,
 ) {
-  const {
-    payload: { email },
-  } = action;
-  yield put(Actions.changeSignLoader(true));
+  try {
+    const {
+      payload: { email },
+    } = action;
+    yield put(Actions.toggleUserLoading(true));
 
-  const response = yield call(apiRestorePassword, email);
+    yield call(apiRestorePassword, email);
 
-  if (response.errorStatus) {
-    yield put(Actions.setApiResponseError(response));
-  }
-
-  const {
-    user: { apiResponseError },
-  }: AppReduxState = yield select();
-
-  yield put(Actions.changeSignLoader(false));
-
-  if (apiResponseError.errorStatus === -1) {
     yield put(
       Actions.setConfirmMessage('Please, check your mail and set new password'),
     );
+  } catch (e) {
+    yield put(Actions.setAuthError(e));
+  } finally {
+    yield put(Actions.toggleUserLoading(false));
   }
 }
 
 function* resetPasswordConfirmationSaga(
   action: ReturnType<typeof Actions.resetPasswordConfirmation>,
 ) {
-  const {
-    payload: { uid, token, newPassword, reNewPassword },
-  } = action;
-  yield put(Actions.changeSignLoader(true));
+  try {
+    const {
+      payload: { uid, token, newPassword, reNewPassword },
+    } = action;
+    yield put(Actions.toggleUserLoading(true));
 
-  yield call(apiResetPasswordConfirmation, {
-    uid,
-    token,
-    newPassword,
-    reNewPassword,
-  });
+    yield call(apiResetPasswordConfirmation, {
+      uid,
+      token,
+      newPassword,
+      reNewPassword,
+    });
 
-  yield put(Actions.setTokenPair({ access: token, refresh: '' }));
-  openSignScreen('signin');
-  yield put(Actions.changeSignLoader(false));
+    yield put(Actions.setTokenPair({ access: token, refresh: '' }));
+    openSignScreen('signin');
+  } catch (e) {
+    yield put(Actions.setAuthError(e));
+  } finally {
+    yield put(Actions.toggleUserLoading(false));
+  }
 }
 
 function* activateUserSaga(action: ReturnType<typeof Actions.activateUser>) {
-  const {
-    payload: { uid, token },
-  } = action;
-  yield put(Actions.changeSignLoader(true));
+  try {
+    const {
+      payload: { uid, token },
+    } = action;
+    yield put(Actions.toggleUserLoading(true));
 
-  yield call(apiActivateUser, { uid, token });
+    yield call(apiActivateUser, { uid, token });
 
-  yield put(Actions.setTokenPair({ access: token, refresh: '' }));
-
-  yield put(Actions.changeSignLoader(false));
+    yield put(Actions.setTokenPair({ access: token, refresh: '' }));
+  } catch (e) {
+    yield put(Actions.setAuthError(e));
+  } finally {
+    yield put(Actions.toggleUserLoading(false));
+  }
 }
 
+// eslint-disable-next-line consistent-return
 export function* refreshUserTokenPair() {
-  const {
-    user: {
-      tokenPair: { refresh },
-    },
-  }: AppReduxState = yield select();
+  try {
+    const { refresh } = yield select(selectTokenPair);
 
-  const accessResult = refresh && (yield call(apiRefreshToken, refresh));
+    const accessResult = refresh && (yield call(apiRefreshToken, refresh));
 
-  if (accessResult && accessResult.access) {
-    return { refresh, access: accessResult.access };
+    if (accessResult && accessResult.access) {
+      return { refresh, access: accessResult.access };
+    }
+
+    return accessResult;
+  } catch (e) {
+    yield put(Actions.setAuthError(e));
   }
-
-  return accessResult;
 }
 
 export function* registerWithGoogleSaga() {

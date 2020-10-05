@@ -23,27 +23,12 @@ const useStyles = makeStyles({
   },
 });
 
-export interface IMatch<P> {
-  params: P;
-  isExact: boolean;
-  path: string;
-  url: string;
-}
-
-interface MatchParams {
+type Props = {
   projectId: number;
   screenId?: number;
-}
-
-type Props = {
-  match: IMatch<MatchParams>;
 };
 
-const EditorLogic: React.FC<Props> = ({
-  match: {
-    params: { projectId, screenId },
-  },
-}) => {
+const EditorLogic: React.FC<Props> = ({ projectId, screenId }) => {
   const dispatch = useDispatch();
   const classes = useStyles();
 

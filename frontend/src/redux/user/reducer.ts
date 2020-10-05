@@ -1,15 +1,14 @@
 import { createReducer, Handlers } from 'reduxsauce';
 import TYPES from '../../constants/actions';
-import { IRootState, UnsafeReturnType } from './types';
+import { UserState, UnsafeReturnType } from './types';
 import * as Actions from './actions';
 
 interface ActionHandler<T> {
-  (state: IRootState, payload: UnsafeReturnType<T>): IRootState;
+  (state: UserState, payload: UnsafeReturnType<T>): UserState;
 }
 
-const INITIAL_STATE: IRootState = {
+const INITIAL_STATE: UserState = {
   isLPanelMinimized: false,
-  isNavPanelMinimized: false,
   isPrototypeMode: false,
   userData: {
     isActive: false,
@@ -25,17 +24,14 @@ const INITIAL_STATE: IRootState = {
     password: '',
     id: 0,
   },
+  isLoggedIn: false,
   tokenPair: {
     access: '',
     refresh: '',
   },
   isLoadedToken: true,
-  apiResponseError: {
-    errorStatus: -1,
-    errorText: '',
-    data: {},
-  },
-  isSignLoader: false,
+  authError: null,
+  isLoading: false,
   confirmMessage: '',
 };
 
@@ -46,27 +42,21 @@ const changeMinLPanel: ActionHandler<ReturnType<
   isLPanelMinimized: !state.isLPanelMinimized,
 });
 
-const changeMinNavPanel: ActionHandler<typeof Actions.changeMinNavPanel> = (
+const changeSignLoader: ActionHandler<typeof Actions.toggleUserLoading> = (
   state,
+  { isLoading },
 ) => ({
   ...state,
-  isNavPanelMinimized: !state.isNavPanelMinimized,
+  isLoading,
 });
 
-const changeSignLoader: ActionHandler<typeof Actions.changeSignLoader> = (
+const setAuthError: ActionHandler<typeof Actions.setAuthError> = (
   state,
-  { isSignLoader },
+  { payload },
 ) => ({
   ...state,
-  isSignLoader,
-});
-
-const setApiResponseError: ActionHandler<typeof Actions.setApiResponseError> = (
-  state,
-  { apiResponseError },
-) => ({
-  ...state,
-  apiResponseError,
+  authError: payload,
+  isLoggedIn: false,
 });
 
 const changePrototypeMode: ActionHandler<typeof Actions.changePrototypeMode> = (
@@ -83,6 +73,7 @@ const setTokenPair: ActionHandler<typeof Actions.setTokenPair> = (
 ) => ({
   ...state,
   tokenPair,
+  authError: null,
 });
 
 const setUserData: ActionHandler<typeof Actions.setUserData> = (
@@ -94,6 +85,8 @@ const setUserData: ActionHandler<typeof Actions.setUserData> = (
     ...state.userData,
     ...payload,
   },
+  isLoggedIn: true,
+  authError: null,
 });
 
 const setLoadedToken: ActionHandler<typeof Actions.setLoadedToken> = (
@@ -133,15 +126,14 @@ const logout: ActionHandler<typeof Actions.logout> = () => ({
 });
 
 // TODO: type Action in Handlers
-const HANDLERS: Handlers<IRootState> = {
+const HANDLERS: Handlers<UserState> = {
   [TYPES.CHANGE_L_PANEL]: changeMinLPanel,
-  [TYPES.CHANGE_NAV_PANEL]: changeMinNavPanel,
   [TYPES.CHANGE_PROTOTYPE_MODE]: changePrototypeMode,
-  [TYPES.CHANGE_SIGN_LOADER]: changeSignLoader,
+  [TYPES.TOGGLE_USER_LOADING]: changeSignLoader,
   [TYPES.SET_TOKEN_PAIR]: setTokenPair,
   [TYPES.SET_USER_DATA]: setUserData,
   [TYPES.SET_LOADED_TOKEN]: setLoadedToken,
-  [TYPES.SET_API_ERROR]: setApiResponseError,
+  [TYPES.SET_AUTH_ERROR]: setAuthError,
   [TYPES.SET_RESTORE_PASSWORD_EMAIL]: setRestorePasswordEmail,
   [TYPES.SET_RESTORE_USER_ID]: setRestoreUserId,
   [TYPES.LOGOUT]: logout,

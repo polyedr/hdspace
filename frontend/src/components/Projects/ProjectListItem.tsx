@@ -117,7 +117,7 @@ const ProjectListItem = React.forwardRef<Ref, Props>(
           onClose={closeModal}
           title="Delete Project"
           description={`This project named as ${name} and its styles, pages, and images will be deleted permanently!`}
-          confirm
+          withoutField
         />
       </>
     );

@@ -10,6 +10,14 @@ export type LoginFormData = {
   password: string;
 };
 
+export type SignupFormData = {
+  username: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+};
+
 export type ServerProfileData = {
   avatar: null | string;
   hourly_rate: number;
@@ -43,30 +51,24 @@ export type UserData = {
   dateJoined: Date | null;
   isActive: boolean;
   id: number;
-  password?: string;
+  password: string;
 };
 
 export type TotalUserData = ProfileData & UserData;
 
-export interface IApiResponseError {
-  errorStatus: number;
-  errorText: string;
-  data: { [key: string]: string };
-}
-
-export type IRootState = Readonly<{
+export type UserState = {
   isLPanelMinimized: boolean;
-  isNavPanelMinimized: boolean;
   isPrototypeMode: boolean;
   tokenPair: ITokenPair;
   isLoadedToken: boolean;
-  apiResponseError: IApiResponseError;
+  isLoggedIn: boolean;
+  authError: Error | null;
   userData: TotalUserData;
   restorePasswordEmail?: string;
   restoreUserId?: number;
-  isSignLoader: boolean;
+  isLoading: boolean;
   confirmMessage: string;
-}>;
+};
 
 export type UnsafeReturnType<T> = T extends (...args: any[]) => infer R
   ? R
