@@ -151,7 +151,15 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
             break;
           case DropPosition.AFTER:
           case DropPosition.BELOW:
-            newIndex = element.buoyancy + 1;
+            if (
+              parent &&
+              dragSource.original.parent === element.parent &&
+              element.buoyancy === parent.children.length - 1
+            ) {
+              newIndex = element.buoyancy;
+            } else {
+              newIndex = element.buoyancy + 1;
+            }
             break;
           case DropPosition.INSIDE:
             newIndex = dropTarget.children.length;
