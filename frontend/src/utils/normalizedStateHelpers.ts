@@ -198,18 +198,16 @@ export const restoreMapElementChildren = (
   state: Normalized<StateElement>,
   elementId: string,
   childrenIds: string[],
-): Normalized<StateElement> => {
-  const newState = { ...state };
-  const element = newState[elementId];
+): Normalized<StateElement> =>
+  produce(state, (draft) => {
+    const element = draft[elementId];
 
-  element.children = childrenIds;
-  element.children.forEach((id, i) => {
-    newState[id].buoyancy = i;
-    newState[id].parent = elementId;
+    element.children = childrenIds;
+    element.children.forEach((id, i) => {
+      draft[id].buoyancy = i;
+      draft[id].parent = elementId;
+    });
   });
-
-  return newState;
-};
 
 export const canElementBeAdded = (
   elements: Normalized<StateElement>,
