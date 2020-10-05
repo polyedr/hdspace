@@ -5,9 +5,10 @@ import EditIcon from '@material-ui/icons/Edit';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { darken } from '@material-ui/core';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Screen } from '../../../redux/project/types';
 import { delScreen, duplicateScreen } from '../../../redux/project/actions';
+import { selectScreensLength } from '../../../redux/project/selectors';
 
 const useStyles = makeStyles({
   root: {
@@ -37,6 +38,8 @@ type Props = {
 
 const ScreenControls: React.FC<Props> = ({ screen, show, openEdit }) => {
   const { project, id, name } = screen;
+  const screensNumber = useSelector(selectScreensLength);
+  const isLast = screensNumber === 1;
 
   const dispatch = useDispatch();
   const classes = useStyles(show);
@@ -77,13 +80,15 @@ const ScreenControls: React.FC<Props> = ({ screen, show, openEdit }) => {
         <FileCopyIcon />
       </IconButton>
 
-      <IconButton
-        className={classes.iconButton}
-        onClick={handleDelete}
-        title="Delete"
-      >
-        <DeleteOutlineIcon />
-      </IconButton>
+      {!isLast && (
+        <IconButton
+          className={classes.iconButton}
+          onClick={handleDelete}
+          title="Delete"
+        >
+          <DeleteOutlineIcon />
+        </IconButton>
+      )}
     </div>
   );
 };
