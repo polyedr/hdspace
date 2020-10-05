@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Scrollbars } from 'react-custom-scrollbars';
 import cn from 'classnames';
 
@@ -18,16 +18,16 @@ interface IScrollbarProps {
   hideTracksWhenNotNeeded?: boolean;
 }
 
-const renderTrack = ({ style, trackStylesBg, ...props }: any) => {
-  // TODO: add correct typings!
+const renderTrack = ({ style, trackStylesBg, show, ...props }: any) => {
   const trackStyle = {
     zIndex: 10,
-    backgroundColor: trackStylesBg || '#E7EAEC',
-    borderRadius: '4px',
+    backgroundColor: trackStylesBg || 'rgb(0, 0, 0, .01)',
     top: 0,
     right: 0,
     width: '6px',
     height: '100%',
+    opacity: show ? 1 : 0,
+    transition: show ? 'none' : 'opacity 0.5s ease',
   };
   return (
     <div
@@ -38,10 +38,14 @@ const renderTrack = ({ style, trackStylesBg, ...props }: any) => {
   );
 };
 
-const renderTrackHorizontal = ({ style, trackStylesBg, ...props }: any) => {
+const renderTrackHorizontal = ({
+  style,
+  trackStylesBg,
+  show,
+  ...props
+}: any) => {
   const trackStyle = {
-    backgroundColor: trackStylesBg || '#E7EAEC',
-    borderRadius: '4px',
+    backgroundColor: trackStylesBg || 'rgb(0, 0, 0, .01)',
     bottom: 0,
     left: 0,
     width: '100%',
@@ -97,24 +101,38 @@ const Scrollbar: React.FC<IScrollbarProps> = ({
   autoHeightMin,
   maxHeight,
   hideTracksWhenNotNeeded = true,
-}) => (
-  <Scrollbars
-    style={style}
-    className={className}
-    autoHeight
-    autoHeightMin={autoHeightMin}
-    autoHeightMax={maxHeight}
-    renderTrackVertical={(args) => renderTrack({ ...args, trackStylesBg })} // TODO: find typings for all elements!
-    renderTrackHorizontal={(args) =>
-      renderTrackHorizontal({ ...args, trackStylesBg })
-    }
-    renderView={(args) => renderView({ ...args })}
-    renderThumbVertical={renderThumb}
-    renderThumbHorizontal={renderThumb}
-    hideTracksWhenNotNeeded={hideTracksWhenNotNeeded}
-  >
-    {children}
-  </Scrollbars>
-);
+}) => {
+  const [show, setShow] = useState(false);
+
+  const handleScroll = () => {
+    setShow(true);
+    setTimeout(() => {
+      setShow(false);
+    }, 500);
+  };
+
+  return (
+    <Scrollbars
+      style={style}
+      className={className}
+      autoHeight
+      autoHeightMin={autoHeightMin}
+      autoHeightMax={maxHeight}
+      renderTrackVertical={(args) =>
+        renderTrack({ ...args, trackStylesBg, show })
+      } // TODO: find typings for all elements!
+      renderTrackHorizontal={(args) =>
+        renderTrackHorizontal({ ...args, trackStylesBg, show })
+      }
+      renderView={(args) => renderView({ ...args })}
+      renderThumbVertical={renderThumb}
+      renderThumbHorizontal={renderThumb}
+      hideTracksWhenNotNeeded={hideTracksWhenNotNeeded}
+      onScroll={handleScroll}
+    >
+      {children}
+    </Scrollbars>
+  );
+};
 
 export default Scrollbar;
