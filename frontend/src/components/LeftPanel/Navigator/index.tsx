@@ -246,7 +246,7 @@ const Navigator: React.FC = () => {
     />
   );
   return (
-    <Accordion>
+    <Accordion defaultExpanded>
       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
         Navigator
       </AccordionSummary>

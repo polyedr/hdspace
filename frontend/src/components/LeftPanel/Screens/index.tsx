@@ -55,7 +55,7 @@ const Screens = () => {
   };
 
   return (
-    <Accordion>
+    <Accordion defaultExpanded>
       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
         <span>Screens</span>
 
