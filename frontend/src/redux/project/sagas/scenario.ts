@@ -275,10 +275,6 @@ export function* softDeleteSaga(action: ReturnType<typeof Actions.deleteItem>) {
     return;
   }
 
-  if (element.shared) {
-    yield;
-  }
-
   if (!undo) {
     const undoActions: T.Action[] = [
       Actions.restoreElementChildren(
