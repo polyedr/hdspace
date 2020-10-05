@@ -54,6 +54,8 @@ const Routes: React.FC = () => {
           <Profile />
         </Layout>
       </PrivateRoute>
+
+      <Redirect from="/*" to={PATH_NAMES.projects} />
     </Switch>
   );
 };
