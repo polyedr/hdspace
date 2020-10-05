@@ -1,30 +1,59 @@
 import React from 'react';
 import { withRouter, Switch, Route, Redirect } from 'react-router-dom';
-import SignIn from '../components/User/SignIn/SignIn';
-import SignUp from '../components/User/SignUp/SignUp';
-import Activation from '../components/User/Activation/Activation';
+import { useSelector } from 'react-redux';
+import Signin from '../components/User/Signin';
+import Signup from '../components/User/Signup';
+import Activation from '../components/User/Activation';
 import ResetPassword from '../components/User/ResetPassword/ResetPassword';
-import EditorWindow from './EditorWindow';
 import { PATH_NAMES } from '../constants/pathNames';
+import Projects from '../components/Projects/Projects';
+import Layout from '../components/Layout';
+import EditorLogic from './EditorLogic';
+import Profile from '../components/User/Profile';
+import { selectIsLoggedIn } from '../redux/user/selectors';
+
+const PrivateRoute: React.FC<any> = ({ children, ...rest }) => {
+  const isLoggedIn = useSelector(selectIsLoggedIn);
+  return (
+    <Route {...rest}>
+      {isLoggedIn ? children : <Redirect to={PATH_NAMES.user.signin} />}
+    </Route>
+  );
+};
 
 const Routes: React.FC = () => {
   return (
     <Switch>
-      <Route path={PATH_NAMES.user.signin} component={SignIn} />
+      <Route path={PATH_NAMES.user.signin} component={Signin} />
 
-      <Route path={PATH_NAMES.user.signup} component={SignUp} />
+      <Route path={PATH_NAMES.user.signup} component={Signup} />
 
       <Route path={PATH_NAMES.user.activate} component={Activation} />
 
       <Route path={PATH_NAMES.user.password} component={ResetPassword} />
 
-      <Route path={PATH_NAMES.projects} component={EditorWindow} />
+      <PrivateRoute path={PATH_NAMES.projects}>
+        <Layout>
+          <Projects />
+        </Layout>
+      </PrivateRoute>
 
-      <Route path="/project/:projectID/:screenID?" component={EditorWindow} />
+      <PrivateRoute path="/project/:projectId/:screenId?">
+        {({ match: { params } }: any) => (
+          <Layout>
+            <EditorLogic
+              projectId={params.projectId}
+              screenId={params.screenId}
+            />
+          </Layout>
+        )}
+      </PrivateRoute>
 
-      <Route path={PATH_NAMES.profile} component={EditorWindow} />
-
-      <Redirect from="/*" to={PATH_NAMES.projects} />
+      <PrivateRoute path={PATH_NAMES.profile}>
+        <Layout>
+          <Profile />
+        </Layout>
+      </PrivateRoute>
     </Switch>
   );
 };

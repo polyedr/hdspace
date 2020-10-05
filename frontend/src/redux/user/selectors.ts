@@ -1,5 +1,3 @@
-/* eslint-disable import/prefer-default-export */
-
 import { AppReduxState } from '../../shared/types/app';
 
 export const selectUserData = ({ user }: AppReduxState) => user.userData;
@@ -10,5 +8,13 @@ export const selectIsLeftPanelMinimized = ({ user }: AppReduxState) =>
 export const selectIsPrototypeMode = ({ user }: AppReduxState) =>
   user.isPrototypeMode;
 
-export const selectIsNavPanelMinimized = ({ user }: AppReduxState) =>
-  user.isNavPanelMinimized;
+export const selectAuthError = ({ user }: AppReduxState) => user.authError;
+
+export const selectTokenPair = ({ user }: AppReduxState) => user.tokenPair;
+
+export const selectIsUserLoading = ({ user }: AppReduxState) => user.isLoading;
+
+export const selectConfirmMessage = ({ user }: AppReduxState) =>
+  user.confirmMessage;
+
+export const selectIsLoggedIn = ({ user }: AppReduxState) => user.isLoggedIn;

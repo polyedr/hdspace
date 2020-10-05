@@ -1,6 +1,6 @@
 import { getDefaultStyles } from '../domain/libraryElements/defaultStyles';
 import { LibraryElement, Project } from '../api/types';
-import { IApiResponseError, ITokenPair } from '../redux/user/types';
+import { ITokenPair } from '../redux/user/types';
 import {
   ILSItem,
   Screen,
@@ -8,23 +8,6 @@ import {
   StateElement,
 } from '../redux/project/types';
 import { CssLikeStyles } from '../utils/StyleHelper';
-import isLatinOrNumbers from '../shared/validators/isLatinOrNumbers';
-import {
-  composeValidators,
-  isLongPassword,
-  isOnlyNumeric,
-  isRequired,
-  isValidEmail,
-} from '../shared/validators';
-
-export interface ISignFormElement {
-  label: string;
-  name: string;
-  value: string;
-  placeholder: string;
-  type: string;
-  validator: (value: string) => string | undefined;
-}
 
 export interface ITemplateElement {
   label: string;
@@ -133,101 +116,9 @@ export const MODAL_ADD_ELEMENTS_TABS = [
   'Custom',
 ];
 
-export const DEFAULT_SIGNIN_FIELDS: ISignFormElement[] = [
-  {
-    label: 'Username',
-    name: 'username',
-    value: 'username',
-    placeholder: 'UserName',
-    type: 'text',
-    validator: isRequired,
-  },
-  {
-    label: 'Password',
-    name: 'password',
-    value: 'password',
-    placeholder: 'pass',
-    type: 'password',
-    validator: isRequired,
-  },
-];
-
-export const DEFAULT_SIGNUP_FIELDS: ISignFormElement[] = [
-  {
-    label: 'Username',
-    name: 'username',
-    value: 'username',
-    placeholder: 'UserName',
-    type: 'text',
-    validator: composeValidators(isRequired, isLatinOrNumbers),
-  },
-  {
-    label: 'First name',
-    name: 'firstName',
-    value: 'firstName',
-    placeholder: 'Jhon',
-    type: 'text',
-    validator: composeValidators(isRequired, isLatinOrNumbers),
-  },
-  {
-    label: 'Last name',
-    name: 'lastName',
-    value: 'lastName',
-    placeholder: 'Doe',
-    type: 'text',
-    validator: composeValidators(isRequired, isLatinOrNumbers),
-  },
-  {
-    label: 'Email',
-    name: 'email',
-    value: 'email',
-    placeholder: 'example@gmail.com',
-    type: 'email',
-    validator: composeValidators(isRequired, isValidEmail),
-  },
-  {
-    label: 'Password',
-    name: 'password',
-    value: 'password',
-    placeholder: 'password',
-    type: 'password',
-    validator: composeValidators(
-      isRequired,
-      isLongPassword,
-      isLatinOrNumbers,
-      isOnlyNumeric,
-    ),
-  },
-];
-
-export const DEFAULT_RESTORE_PASSWORD_FIELDS: ISignFormElement[] = [
-  {
-    label: 'Password',
-    name: 'password',
-    value: 'password',
-    placeholder: 'new password',
-    type: 'password',
-    validator: composeValidators(isRequired, isLongPassword, isLatinOrNumbers),
-  },
-  {
-    label: 'Confirm password ',
-    name: 'confirmPassword',
-    value: 'confirmPassword',
-    placeholder: 'confirm password',
-    type: 'password',
-    validator: isRequired,
-  },
-];
-
 export const DEFAULT_AUTHORISATION_TOKEN: ITokenPair = {
   access: '',
   refresh: '',
-};
-
-export const DEFAULT_RESPONSE_ERROR: IApiResponseError = {
-  errorStatus: -1,
-  errorText: '',
-  data: {},
 };
 
 export const LIST_NOT_DRAGGING = ['element'];
