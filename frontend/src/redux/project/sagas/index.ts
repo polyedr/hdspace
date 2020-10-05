@@ -435,8 +435,6 @@ export function* setCurrentDropTargetSaga(
 }
 
 export default function* projectSaga() {
-  // yield takeLatest(LOCATION_CHANGE, LocationChange);
-
   yield takeLatest(TYPES.LOAD_PROJECTS, getProjectListSaga);
   yield takeLatest(TYPES.ADD_PROJECT, addProjectSaga);
   yield takeLatest(TYPES.DELETE_PROJECT, delProjectSaga);
