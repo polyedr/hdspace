@@ -15,12 +15,9 @@ import { selectIsLoggedIn } from '../redux/user/selectors';
 const PrivateRoute: React.FC<any> = ({ children, ...rest }) => {
   const isLoggedIn = useSelector(selectIsLoggedIn);
   return (
-    <Route
-      {...rest}
-      render={() =>
-        isLoggedIn ? children : <Redirect to={PATH_NAMES.user.signin} />
-      }
-    />
+    <Route {...rest}>
+      {isLoggedIn ? children : <Redirect to={PATH_NAMES.user.signin} />}
+    </Route>
   );
 };
 
@@ -57,8 +54,6 @@ const Routes: React.FC = () => {
           <Profile />
         </Layout>
       </PrivateRoute>
-
-      {/* <Redirect from="/*" to={PATH_NAMES.projects} /> */}
     </Switch>
   );
 };
