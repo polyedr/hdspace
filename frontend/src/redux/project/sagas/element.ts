@@ -482,7 +482,7 @@ export function* uploadFileSaga({
     );
 
     const formData = new FormData();
-    formData.append('image', new Blob([file]), file.name);
+    formData.append('image', file.file, file.name);
     formData.append('parent_id', root.id);
     formData.append('struct_type', 'container');
     formData.append('func_type', 'container');
@@ -491,7 +491,7 @@ export function* uploadFileSaga({
     formData.append('parameters', JSON.stringify({}));
     formData.append('styles', JSON.stringify({}));
 
-    const nnRootElement: LibraryElement<'root'> = yield call(
+    const nnContainer: LibraryElement<any> = yield call(
       reqWrapper,
       parseImgUsingNN,
       {
@@ -500,26 +500,26 @@ export function* uploadFileSaga({
       },
     );
 
-    const nnRootWithDefaultParams = getTreeWithDefaultStylesAndParams(
-      nnRootElement,
+    const nnContainerWithDefaultParams = getTreeWithDefaultStylesAndParams(
+      nnContainer,
     );
 
     const convertedElements = getElementsArray(
-      nnRootWithDefaultParams,
+      nnContainerWithDefaultParams,
     ).map((element) => convertElementToPatchRequest(element));
 
     yield call(reqWrapper, apiSaveElements, { data: convertedElements });
 
     yield put(
       Actions.setUndoActions(
-        Actions.deleteItem(nnRootWithDefaultParams.id, { screenId }),
+        Actions.deleteItem(nnContainerWithDefaultParams.id, { screenId }),
       ),
     );
 
     yield put(
-      Actions.addStateElements([nnRootWithDefaultParams], root.id, {
+      Actions.addStateElements([nnContainerWithDefaultParams], root.id, {
         ...meta,
-        sourceAction: Actions.restoreElement(nnRootWithDefaultParams.id, {
+        sourceAction: Actions.restoreElement(nnContainerWithDefaultParams.id, {
           screenId,
         }),
       }),
