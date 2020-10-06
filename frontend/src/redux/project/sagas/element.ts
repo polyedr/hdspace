@@ -533,15 +533,12 @@ export function* uploadFileSaga({
 export function* requestCustomElementsSaga() {
   const pagination = yield select(selectCustomElementsPagination);
   yield put(Actions.updateElementsLoading(true));
-  const limit = pagination.currentPage * pagination.pageSize;
-  const skip = limit - pagination.pageSize;
   const paginatedElements = yield call(
     reqWrapper,
     apiGetCustomLibraryElements,
     {
-      // page_size: pagination.pageSize,
-      skip,
-      limit,
+      cursor: pagination.next,
+      page_size: pagination.pageSize,
     },
   );
   yield put(Actions.addCustomElementsPage(paginatedElements));
