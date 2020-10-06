@@ -81,7 +81,6 @@ const Checkbox: React.FC<CheckboxRendererProps> = React.forwardRef(
       ownStyles,
       params,
       isDisabled,
-      sortableId,
       currentValue,
       onElementChange,
       isCheckboxChecked,
@@ -125,7 +124,6 @@ const Checkbox: React.FC<CheckboxRendererProps> = React.forwardRef(
         ref={ref}
         id={id}
         data-ls-id={id}
-        data-id={sortableId}
         key={id}
         className={cn(
           className,

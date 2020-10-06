@@ -87,16 +87,7 @@ const getEmptyWrapperStyles = (
 
 const Video: React.FC<VideoRendererProps> = React.forwardRef(
   (
-    {
-      id,
-      params,
-      sortableId,
-      entityStyles,
-      groupStyles,
-      ownStyles,
-      isDisabled,
-      className,
-    },
+    { id, params, entityStyles, groupStyles, ownStyles, isDisabled, className },
     ref,
   ) => {
     const { videoSettings } = params;
@@ -123,7 +114,6 @@ const Video: React.FC<VideoRendererProps> = React.forwardRef(
       <div
         id={id}
         data-ls-id={id}
-        data-id={sortableId}
         key={id}
         ref={ref}
         className={cn(
@@ -161,7 +151,6 @@ const Video: React.FC<VideoRendererProps> = React.forwardRef(
         ref={ref}
         id={id}
         data-ls-id={id}
-        data-id={sortableId}
         key={id}
         className={cn(
           className,

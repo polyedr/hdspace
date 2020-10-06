@@ -122,7 +122,6 @@ const Textarea: React.FC<TextareaRendererProps> = React.forwardRef(
       isDisabled,
       active,
       currentValue,
-      sortableId,
       onElementChange,
       className,
       entityStyles,
@@ -185,7 +184,6 @@ const Textarea: React.FC<TextareaRendererProps> = React.forwardRef(
         ref={ref}
         id={id}
         data-ls-id={id}
-        data-id={sortableId}
         key={id}
         multiline
         rows={4}

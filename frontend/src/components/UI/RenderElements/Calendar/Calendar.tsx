@@ -12,15 +12,7 @@ const styles = require('../styles.scss');
 
 const Calendar: React.FC<SharedRendererProps> = React.forwardRef(
   (
-    {
-      id,
-      entityStyles,
-      groupStyles,
-      ownStyles,
-      isDisabled,
-      sortableId,
-      className,
-    },
+    { id, entityStyles, groupStyles, ownStyles, isDisabled, className },
     ref,
   ) => {
     const classes = makeStyles({
@@ -42,7 +34,6 @@ const Calendar: React.FC<SharedRendererProps> = React.forwardRef(
         ref={ref}
         id={id}
         data-ls-id={id}
-        data-id={sortableId}
         key={id}
         className={cn(
           className,

@@ -95,7 +95,6 @@ const Radiobutton: React.FC<RadioRendererProps> = React.forwardRef(
       ownStyles,
       params,
       isDisabled,
-      sortableId,
       isRadioChecked,
       onElementChange,
       className,
@@ -121,7 +120,6 @@ const Radiobutton: React.FC<RadioRendererProps> = React.forwardRef(
         ref={ref}
         id={id}
         data-ls-id={id}
-        data-id={sortableId}
         key={id}
         className={cn(
           className,

@@ -10,10 +10,7 @@ import { ImageRendererProps } from '../types';
 const styles = require('../styles.scss');
 
 const Image: React.FC<ImageRendererProps> = React.forwardRef(
-  (
-    { id, params, sortableId, entityStyles, groupStyles, ownStyles, className },
-    ref,
-  ) => {
+  ({ id, params, entityStyles, groupStyles, ownStyles, className }, ref) => {
     const classes = makeStyles({
       entityStyles: {
         ...entityStyles,
@@ -34,7 +31,6 @@ const Image: React.FC<ImageRendererProps> = React.forwardRef(
         src={params.imageURL}
         id={id}
         data-ls-id={id}
-        data-id={sortableId}
         key={id}
         className={cn(
           className,

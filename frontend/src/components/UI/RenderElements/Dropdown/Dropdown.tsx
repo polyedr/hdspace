@@ -110,7 +110,6 @@ const Dropdown: React.FC<DropdownRendererProps> = React.forwardRef(
       id,
       isDisabled,
       active,
-      sortableId,
       params,
       children,
       className,
@@ -157,7 +156,6 @@ const Dropdown: React.FC<DropdownRendererProps> = React.forwardRef(
           <Button
             id={id}
             data-ls-id={id}
-            data-id={sortableId}
             aria-controls="simple-menu"
             aria-haspopup="true"
             variant="contained"

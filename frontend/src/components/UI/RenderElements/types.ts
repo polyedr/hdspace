@@ -181,7 +181,7 @@ export type VideoRendererProps = SharedRendererProps & {
 
 export type ListItemRendererProps = Omit<
   SharedRendererProps,
-  'sortableId' | 'activeElementId'
+  'activeElementId'
 > & {
   params: {
     textContent: string;
