@@ -8,11 +8,13 @@ import communicationReducer from './communication';
 import { composeReducers, makeResetStateReducer } from '../../../shared/redux';
 import uiReducer from './ui';
 import * as T from '../types';
+import refReducer from './ref';
 
 export default combineReducers({
   data: dataReducer,
   ui: composeReducers([
-    uiReducer, // TODO: resolve typings!
+    uiReducer,
+    refReducer, // TODO: resolve typings!
     makeResetStateReducer<T.ResetScreenState, T.ProjectUiState>(
       TYPES.RESET_SCREEN_STATE,
       initialUi,

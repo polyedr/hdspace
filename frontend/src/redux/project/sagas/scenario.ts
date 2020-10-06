@@ -15,7 +15,7 @@ import {
 import * as Actions from '../actions';
 import { selectors, T } from '..';
 import { updateSavedElementsValues } from './screen';
-import { ElementHistoryMeta, StateElement, Normalized } from '../types';
+import { ElementHistoryMeta, StateElement } from '../types';
 import {
   DISALLOW_ADD_ELEMENT_NOTIFICATION_TEXT,
   DISALLOW_REMOVE_ELEMENT_NOTIFICATION_TEXT,
@@ -24,6 +24,7 @@ import {
   LibraryElement,
   LibraryElementUnion,
   ServerElement,
+  Normalized,
 } from '../../../api/types';
 import { Entity } from '../../../domain/core';
 import {
@@ -589,7 +590,7 @@ export function* updateElementSaga(
   if (data.shared === true) {
     const customLibraryElements = yield select(selectCustomLibraryElements);
     if (!customLibraryElements[action.payload.elementID]) {
-      yield put(Actions.addCustomLibraryElement(convertedElement));
+      yield put(Actions.addCustomElement(convertedElement));
     }
   }
   yield call(reqWrapper, apiChangeElement, {

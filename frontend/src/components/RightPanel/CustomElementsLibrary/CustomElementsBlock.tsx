@@ -2,7 +2,7 @@ import React, { useMemo, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { ICONS } from '../../../domain/libraryElements/libraryElements';
 import { selectCustomLibraryElements } from '../../../redux/project/selectors';
-import { requestCustomLibraryElements } from '../../../redux/project/actions';
+import { requestCustomElements } from '../../../redux/project/actions';
 
 import ElementsBlock from '../ElementsBlock';
 
@@ -11,7 +11,7 @@ const CustomElementsBlock: React.FC<{}> = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(requestCustomLibraryElements());
+    dispatch(requestCustomElements());
   }, []);
 
   const elements = useMemo(() => {

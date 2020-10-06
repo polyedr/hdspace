@@ -53,20 +53,15 @@ import {
   updateElementImage,
   updateElementParameters,
   uploadFileSaga,
-  requestCustomLibraryElementsSaga,
+  requestCustomElementsSaga,
 } from './element';
 import { convertElementToRequest } from '../../../api/converters/toRequest';
 import { MAX_TOKEN_TRIALS } from '../../../../config/settings';
 import TYPES from '../../../constants/actions';
 import { logout, setLoadedToken, setTokenPair } from '../../user/actions';
-import {
-  ElementHistoryMeta,
-  ItemToCopyInfo,
-  Normalized,
-  StateElement,
-} from '../types';
+import { ElementHistoryMeta, ItemToCopyInfo, StateElement } from '../types';
 
-import { LibraryElement } from '../../../api/types';
+import { LibraryElement, Normalized } from '../../../api/types';
 import { openSignScreen } from '../../../utils/history';
 import { refreshUserTokenPair } from '../../user/sagas';
 import { DEFAULT_AUTHORISATION_TOKEN } from '../../../constants/defaultParams';
@@ -471,8 +466,5 @@ export default function* projectSaga() {
   yield takeEvery(TYPES.REDO_WRAP_INTO_CONTAINER, redoWrapIntoContainerSaga);
   yield takeEvery(TYPES.SET_ACTIVE_ELEMENT, setActiveElementSaga);
   yield takeEvery(TYPES.UPDATE_ELEMENT, updateElementSaga);
-  yield takeLeading(
-    TYPES.REQUEST_CUSTOM_LIBRARY_ELEMENTS,
-    requestCustomLibraryElementsSaga,
-  );
+  yield takeLeading(TYPES.REQUEST_CUSTOM_ELEMENTS, requestCustomElementsSaga);
 }

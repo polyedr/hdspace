@@ -1,5 +1,11 @@
+import { AxiosResponse } from 'axios';
 /* eslint-disable camelcase */
-import { RecursiveElement, ServerElement, LibraryElement } from './types';
+import {
+  RecursiveElement,
+  ServerElement,
+  LibraryElement,
+  Paginated,
+} from './types';
 import {
   convertElementFromResponse,
   convertRecursiveElementFromResponse,
@@ -25,16 +31,24 @@ export const apiGetElements = ({
 
 export const apiGetCustomLibraryElements = (
   props: MyAxiosProps,
-): Promise<IScenarioElement[]> => {
+): Promise<Paginated<LibraryElement<Entity>>> => {
   return myAxios({
     ...props,
     method: 'GET',
     params: {
+      ...props,
       is_shared: true,
     },
     url: '/projects/scenario-elements',
   })
-    .then((res) => parseResult(res).results)
+    .then((res: AxiosResponse<Paginated<ServerElement<Entity>>>) => {
+      const { next, previous, results } = res.data;
+      return {
+        next,
+        previous,
+        results: results.map((result) => convertElementFromResponse(result)),
+      };
+    })
     .catch(onError);
 };
 

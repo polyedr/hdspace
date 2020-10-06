@@ -12,15 +12,22 @@ export const initialData: T.ProjectDataState = {
   elements: {},
 };
 
-export const initialUi: T.ProjectUiState = {
+export const initialUi: T.ProjectUiState & T.RefsUIState = {
   editableStyles: 'ownStyles',
   isAddElementsModalOpened: false,
   itemToCopyInfo: null,
   savedElementsValues: {},
   showContainersBorders: false,
-  customLibraryElements: {},
-  borderedElementsRef: {},
   currentDropTargetParams: null,
+  borderedElementsRef: {},
+  customElementsData: {
+    previous: null,
+    next: null,
+    results: [],
+    loading: false,
+    pageSize: 4,
+    currentPage: 1,
+  },
 };
 
 export const initialEdit: T.ProjectEditState = {

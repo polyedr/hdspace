@@ -1,9 +1,4 @@
-import {
-  NormalizedLibraryElements,
-  Screen,
-  StateElement,
-  BorderedElementsRef,
-} from './types';
+import { Screen, StateElement, BorderedElementsRef } from './types';
 
 import {
   DEFAULT_ACTIVE_ELEMENT,
@@ -11,9 +6,9 @@ import {
   DEFAULT_ROOT,
   DEFAULT_SCREEN,
 } from '../../constants/defaultParams';
-import { ChildEntity } from '../../domain/core';
+import { Entity, ChildEntity } from '../../domain/core';
 import { AppReduxState } from '../../shared/types/app';
-import { Project } from '../../api/types';
+import { Project, LibraryElement, Paginated } from '../../api/types';
 import { CssLikeStyles } from '../../utils/StyleHelper';
 import { makeFeatureStateSelector } from '../../shared/redux';
 import {
@@ -262,10 +257,16 @@ export function selectProjectLoader(state: AppReduxState): boolean {
   return selectProjectState(state).communication.projectLoader;
 }
 
+export function selectCustomElementsPagination(
+  state: AppReduxState,
+): Paginated<LibraryElement<Entity>> {
+  return selectProjectState(state).ui.customElementsData;
+}
+
 export const selectCustomLibraryElements = (
   state: AppReduxState,
-): NormalizedLibraryElements => {
-  return selectProjectState(state).ui.customLibraryElements;
+): LibraryElement<Entity>[] => {
+  return selectProjectState(state).ui.customElementsData.results;
 };
 
 export const selectElementsForScreen = (screenId: number) => (

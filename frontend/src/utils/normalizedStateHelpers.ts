@@ -1,11 +1,6 @@
 import produce from 'immer';
-import {
-  Indices,
-  Normalized,
-  ParentIds,
-  StateElement,
-} from '../redux/project/types';
-import { LibraryElement } from '../api/types';
+import { Indices, ParentIds, StateElement } from '../redux/project/types';
+import { LibraryElement, Normalized } from '../api/types';
 import { AVAILABLE_CHILDREN, Entity } from '../domain/core';
 
 export const arrayToMap = <T extends { id: any }>(arr: T[]): Normalized<T> => {
@@ -16,7 +11,9 @@ export const arrayToMap = <T extends { id: any }>(arr: T[]): Normalized<T> => {
   return res;
 };
 
-export const mapToArr = <T>(map: Normalized<T>): T[] => Object.values(map);
+export const mapToArr = <T extends { id: string | number }>(
+  map: Normalized<T>,
+): T[] => Object.values(map);
 
 export const flattenElements = (
   elements: LibraryElement<any>[],
