@@ -9,10 +9,7 @@ import { HeadingRendererProps } from '../types';
 const styles = require('../styles.scss');
 
 const Heading: React.FC<HeadingRendererProps> = React.forwardRef(
-  (
-    { id, entityStyles, groupStyles, ownStyles, params, sortableId, className },
-    ref,
-  ) => {
+  ({ id, entityStyles, groupStyles, ownStyles, params, className }, ref) => {
     const classes = makeStyles({
       entityStyles: {
         ...entityStyles,
@@ -38,7 +35,6 @@ const Heading: React.FC<HeadingRendererProps> = React.forwardRef(
         ref={ref}
         id={id}
         data-ls-id={id}
-        data-id={sortableId}
         key={id}
         className={cn(
           className,

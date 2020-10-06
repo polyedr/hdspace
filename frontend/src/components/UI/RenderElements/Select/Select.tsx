@@ -213,7 +213,6 @@ const Select: React.FC<SelectRendererProps> = React.forwardRef(
       ownStyles,
       isDisabled,
       active,
-      sortableId, // -
       onElementChange,
       params,
       children,
@@ -325,7 +324,6 @@ const Select: React.FC<SelectRendererProps> = React.forwardRef(
             ref={ref}
             id={id}
             data-ls-id={id}
-            data-id={sortableId}
             style={inlineStyles}
             variant="outlined"
             className={cn(

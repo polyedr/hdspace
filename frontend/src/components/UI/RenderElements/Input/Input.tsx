@@ -92,7 +92,6 @@ const Input: React.FC<InputRendererProps> = React.forwardRef(
       entityStyles,
       groupStyles,
       ownStyles,
-      sortableId,
       currentValue,
       onElementChange,
       className,
@@ -171,7 +170,6 @@ const Input: React.FC<InputRendererProps> = React.forwardRef(
         ref={ref}
         id={id}
         data-ls-id={id}
-        data-id={sortableId}
         key={id}
         variant="outlined"
         className={cn(className, isDisabled && styles.disabled, classes.root)}

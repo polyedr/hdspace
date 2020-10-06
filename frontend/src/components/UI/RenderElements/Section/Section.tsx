@@ -13,7 +13,6 @@ const Container: React.FC<ContainerRendererProps> = React.forwardRef(
   (
     {
       id,
-      sortableId,
       entityStyles,
       groupStyles,
       ownStyles,
@@ -44,7 +43,6 @@ const Container: React.FC<ContainerRendererProps> = React.forwardRef(
           ref={ref}
           id={id}
           data-ls-id={id}
-          data-id={sortableId}
           key={id}
           className={cn(
             className,

@@ -10,16 +10,7 @@ const styles = require('../styles.scss');
 
 const List: React.FC<ListRendererProps> = React.forwardRef(
   (
-    {
-      id,
-      entityStyles,
-      groupStyles,
-      ownStyles,
-      params,
-      sortableId,
-      className,
-      children,
-    },
+    { id, entityStyles, groupStyles, ownStyles, params, className, children },
     ref,
   ) => {
     const { isOrdered } = params;
@@ -48,7 +39,6 @@ const List: React.FC<ListRendererProps> = React.forwardRef(
         ref={ref}
         id={id}
         data-ls-id={id}
-        data-id={sortableId}
         key={id}
         className={cn(
           className,

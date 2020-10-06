@@ -10,10 +10,7 @@ import ClockWidget from '../../Clock';
 const styles = require('../styles.scss');
 
 const Clock: React.FC<ClockRendererProps> = React.forwardRef(
-  (
-    { id, params, entityStyles, groupStyles, ownStyles, sortableId, className },
-    ref,
-  ) => {
+  ({ id, params, entityStyles, groupStyles, ownStyles, className }, ref) => {
     const classes = makeStyles({
       entityStyles: {
         ...entityStyles,
@@ -33,7 +30,6 @@ const Clock: React.FC<ClockRendererProps> = React.forwardRef(
         ref={ref}
         id={id}
         data-ls-id={id}
-        data-id={sortableId}
         key={id}
         className={cn(
           className,
