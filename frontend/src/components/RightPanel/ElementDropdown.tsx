@@ -8,12 +8,11 @@ import Popper from '@material-ui/core/Popper';
 import MenuItem from '@material-ui/core/MenuItem';
 import MenuList from '@material-ui/core/MenuList';
 import withStyles from '@material-ui/core/styles/withStyles';
+import makeStyles from '@material-ui/core/styles/makeStyles';
 import { ElementData } from '../../redux/project/types';
 import ElementButton from './ElementButton';
 import { splitWords } from '../../utils/StringHelper';
 import Button from '../UI/Button';
-
-const styles = require('./styles.scss');
 
 const StyledMenuList = withStyles({
   root: {
@@ -28,14 +27,32 @@ const StyledMenuItem = withStyles({
   },
 })(MenuItem);
 
+const useStyles = makeStyles({
+  elementDropdown: {
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    elementButton: {
+      flex: 1,
+    },
+  },
+  dropdownButton: {
+    padding: 0,
+  },
+  dropdownButtonIcon: {
+    height: 16,
+  },
+});
+
 type Props = {
   options: ElementData[];
-};
+} & React.ComponentProps<'div'>;
 
-const ElementDropdown: React.FC<Props> = ({ options }) => {
+const ElementDropdown: React.FC<Props> = ({ options, ...divProps }) => {
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef<HTMLDivElement>(null);
   const [selectedIndex, setSelectedIndex] = React.useState(1);
+  const styles = useStyles();
 
   const handleMenuItemClick = (
     event: React.MouseEvent<HTMLLIElement, MouseEvent>,
@@ -58,7 +75,7 @@ const ElementDropdown: React.FC<Props> = ({ options }) => {
   };
 
   return (
-    <div>
+    <div {...divProps}>
       <ButtonGroup
         ref={anchorRef}
         className={styles.elementDropdown}
@@ -67,7 +84,7 @@ const ElementDropdown: React.FC<Props> = ({ options }) => {
         <ElementButton elementData={options[selectedIndex]} />
 
         <Button onClick={handleToggle} className={styles.dropdownButton}>
-          <ArrowDropDownIcon />
+          <ArrowDropDownIcon className={styles.dropdownButtonIcon} />
         </Button>
       </ButtonGroup>
 
@@ -88,7 +105,7 @@ const ElementDropdown: React.FC<Props> = ({ options }) => {
           >
             <Paper>
               <ClickAwayListener onClickAway={handleClose}>
-                <StyledMenuList className={styles.dropdownList}>
+                <StyledMenuList>
                   {options.map((option, index) => (
                     <StyledMenuItem
                       key={option.type}

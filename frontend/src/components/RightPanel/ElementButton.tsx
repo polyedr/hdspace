@@ -1,5 +1,7 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import makeStyles from '@material-ui/core/styles/makeStyles';
+import createStyles from '@material-ui/core/styles/createStyles';
 import { splitWords } from '../../utils/StringHelper';
 import Button from '../UI/Button';
 import { ElementData } from '../../redux/project/types';
@@ -10,11 +12,44 @@ import {
   selectCurrentScreenId,
 } from '../../redux/project/selectors';
 
-const styles = require('./styles.scss');
-
 type Props = {
   elementData: ElementData;
 };
+
+export const useStyles = makeStyles(() => {
+  const activeStyles = {
+    backgroundColor: '#e7e7e7',
+    border: '2px solid black',
+  };
+  return createStyles({
+    elementButton: {
+      backgroundColor: 'transparent',
+      padding: 0,
+      borderRadius: 3,
+      transition: 'background-color .1s ease-in-out',
+      '&:hover': {
+        backgroundColor: '#e7e7e7',
+        boxShadow:
+          '0 1px 1px -1px rgba(0,0,0,0.4), 0px 1px 1px 0px rgba(0,0,0,0.28), 0px 1px 3px 0px rgba(0,0,0,0.24)',
+      },
+      '&:focus': activeStyles,
+      '&:active': activeStyles,
+      '& svg': {
+        fill: 'rgb(0, 0, 0)',
+      },
+      '& span': {
+        height: '100%',
+        textTransform: 'capitalize',
+        fontSize: '.8em',
+        color: 'rgb(0, 0, 0)',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-evenly',
+        alignItems: 'center',
+      },
+    },
+  });
+});
 
 const ElementButton: React.FC<Props> = ({
   elementData: { id, type, icon: ElementIcon, custom, name },
@@ -22,6 +57,7 @@ const ElementButton: React.FC<Props> = ({
   const dispatch = useDispatch();
   const screenId = useSelector(selectCurrentScreenId);
   const { type: activeItemType } = useSelector(selectActiveElement);
+  const styles = useStyles();
 
   const handleClick = () => {
     dispatch(createElements([{ id, type, name, custom }], { screenId }));
