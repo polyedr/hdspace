@@ -39,7 +39,7 @@ export const apiGetCustomLibraryElements = (
       ...(props.params || {}),
       is_shared: true,
     },
-    url: '/projects/scenario-elements',
+    url: '/projects/scenario-elements/',
   })
     .then((res: AxiosResponse<Paginated<ServerElement<Entity>>>) => {
       const { next, previous, results } = res.data;
