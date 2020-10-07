@@ -209,7 +209,9 @@ export function* createElementsSaga(
   );
   const convertedCreatedElements = createdElements.map((dEl) =>
     dEl.custom
-      ? customLibraryElements[dEl.id || -1]
+      ? convertElementToRequest(
+          customLibraryElements.find((element) => element.id === dEl.id),
+        )
       : convertCreatedElementToRequest(dEl.type as Entity, null),
   );
   yield call(createElements, convertedCreatedElements, activeElementTree, {
