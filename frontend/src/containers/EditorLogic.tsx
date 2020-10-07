@@ -4,11 +4,7 @@ import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import Spinner from '../components/UI/Spinner';
-import {
-  selectProjectLoader,
-  selectScenarioLoader,
-  selectScreenLoader,
-} from '../redux/project/selectors';
+import { selectProjectLoader } from '../redux/project/selectors';
 import { RightPanel } from '../features/applyProperties/views/containers';
 import { activateScreen, getProject } from '../redux/project/actions';
 import { selectIsPrototypeMode } from '../redux/user/selectors';
@@ -28,18 +24,21 @@ type Props = {
   screenId?: number;
 };
 
+const ProjectLoaderSpinner = () => {
+  const projectLoader = useSelector(selectProjectLoader);
+
+  return <Spinner active={projectLoader} />;
+};
+
 const EditorLogic: React.FC<Props> = ({ projectId, screenId }) => {
   const dispatch = useDispatch();
   const classes = useStyles();
 
   const isPrototypeMode = useSelector(selectIsPrototypeMode);
-  const scenarioLoader = useSelector(selectScenarioLoader);
-  const screenLoader = useSelector(selectScreenLoader);
-  const projectLoader = useSelector(selectProjectLoader);
 
   useEffect(() => {
     dispatch(getProject(projectId, screenId));
-  }, [projectId]);
+  }, [projectId, screenId]);
 
   useEffect(() => {
     if (screenId) {
@@ -57,7 +56,7 @@ const EditorLogic: React.FC<Props> = ({ projectId, screenId }) => {
         {!isPrototypeMode && <RightPanel />}
       </DndProvider>
 
-      <Spinner active={projectLoader || screenLoader || scenarioLoader} />
+      <ProjectLoaderSpinner />
     </div>
   );
 };

@@ -51,8 +51,8 @@ const useStyles = makeStyles((theme) =>
 
 const LeftPanel: React.FC = () => {
   const dispatch = useDispatch();
-  const minimized = useSelector(selectIsLeftPanelMinimized);
 
+  const minimized = useSelector(selectIsLeftPanelMinimized);
   const classes = useStyles(minimized);
   const currentScreenId = useSelector(selectCurrentScreenId);
 
