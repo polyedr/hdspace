@@ -12,7 +12,7 @@ export const initialData: T.ProjectDataState = {
   elements: {},
 };
 
-export const initialUi: T.ProjectUiState & T.RefsUIState = {
+export const initialUi: T.ProjectUiState = {
   editableStyles: 'ownStyles',
   isAddElementsModalOpened: false,
   itemToCopyInfo: null,

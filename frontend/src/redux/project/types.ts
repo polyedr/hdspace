@@ -29,7 +29,7 @@ import {
 
 export type ProjectState = {
   data: ProjectDataState;
-  ui: ProjectUiState & RefsUIState;
+  ui: ProjectUiState;
   edit: ProjectEditState;
   communication: ProjectCommunicationState;
   control: ProjectControlState;
@@ -84,12 +84,9 @@ export type ProjectUiState = {
   itemToCopyInfo: ItemToCopyInfo | null;
   savedElementsValues: SavedElementsValues;
   showContainersBorders: boolean;
+  borderedElementsRef: BorderedElementsRef;
   currentDropTargetParams: DropTargetParams | null;
   customElementsData: Paginated<LibraryElement<Entity>>;
-};
-
-export type RefsUIState = {
-  borderedElementsRef: BorderedElementsRef;
 };
 
 export type ProjectEditState = {
