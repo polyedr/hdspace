@@ -530,7 +530,7 @@ export function* uploadFileSaga({
   }
 }
 
-export function* requestCustomElementsSaga() {
+export function* loadCustomElementsSaga() {
   const pagination = yield select(selectCustomElementsPagination);
   yield put(Actions.updateElementsLoading(true));
   const paginatedElements = yield call(

@@ -6,7 +6,7 @@ import {
   selectCustomElementsHasNext,
   selectCustomLibraryElements,
 } from '../../../redux/project/selectors';
-import { requestCustomElements } from '../../../redux/project/actions';
+import { loadCustomElements } from '../../../redux/project/actions';
 
 import {
   useStyles as useElementBlockStyles,
@@ -26,7 +26,7 @@ const CustomElementsBlock: React.FC<{}> = () => {
   const lastDom = lastElementRef && lastElementRef.current;
 
   useEffect(() => {
-    dispatch(requestCustomElements());
+    dispatch(loadCustomElements());
   }, []);
 
   const elements = useMemo(
@@ -46,7 +46,7 @@ const CustomElementsBlock: React.FC<{}> = () => {
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting && hasNext) {
-          dispatch(requestCustomElements());
+          dispatch(loadCustomElements());
         }
       },
       {

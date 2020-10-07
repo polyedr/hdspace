@@ -601,7 +601,7 @@ export function* updateElementSaga(
       yield put(Actions.addCustomElement(convertedElement));
     }
   } else if (customLibraryElements[action.payload.elementID]) {
-    yield put(Actions.removeCustomLibraryElement(action.payload.elementID));
+    yield put(Actions.removeCustomElement(action.payload.elementID));
   }
   yield call(reqWrapper, apiChangeElement, {
     data: convertedElement,

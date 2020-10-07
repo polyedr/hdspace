@@ -12,7 +12,6 @@ import {
   Normalized,
   Paginated,
 } from '../../api/types';
-import { LibraryElements } from '../../domain/libraryElements/libraryElements';
 import { IAction, IPlainAction, IPlainFailAction } from '../../shared/redux';
 import { Entity } from '../../domain/core';
 import TYPES from '../../constants/actions';
@@ -132,14 +131,14 @@ export type CreatedElement = {
   custom: boolean;
 };
 
-export type LoadLibraryElements = IPlainAction<
+/* export type LoadLibraryElements = IPlainAction<
   typeof TYPES.GET_LIBRARY_ELEMENTS
 >;
 
 export type LoadLibraryElementsSuccess = IAction<
   typeof TYPES.LOAD_LIBRARY_ELEMENTS_SUCCESS,
   { libraryElements: LibraryElements }
->;
+>; */
 export type LoadLibraryElementsFail = IPlainFailAction<
   'PROJECTS:LOAD_LIBRARY_ELEMENTS_FAIL'
 >;
@@ -478,8 +477,8 @@ export type UpdateElementsLoading = IAction<
   { loading: boolean }
 >;
 
-export type RemoveCustomLibraryElement = IAction<
-  typeof TYPES.REMOVE_CUSTOM_LIBRARY_ELEMENT,
+export type RemoveCustomElement = IAction<
+  typeof TYPES.REMOVE_CUSTOM_ELEMENT,
   { id: string }
 >;
 
@@ -568,7 +567,7 @@ export type Action =
   | UpdateElementsLoading
   | SetCustomElements
   | AddCustomElement
-  | RemoveCustomLibraryElement;
+  | RemoveCustomElement;
 
 export type ItemToCopyInfo = {
   id: string;

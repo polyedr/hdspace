@@ -669,8 +669,8 @@ export const setCurrentDropTargetParams = (
   payload: { id, position },
 });
 
-export const requestCustomElements = () => ({
-  type: TYPES.REQUEST_CUSTOM_ELEMENTS,
+export const loadCustomElements = () => ({
+  type: TYPES.LOAD_CUSTOM_ELEMENTS,
 });
 
 export const updateElementsLoading = (loading: boolean) => ({
@@ -690,7 +690,7 @@ export const addCustomElement = (element: ServerElement<Entity>) => ({
   payload: { element },
 });
 
-export const removeCustomLibraryElement = (id: string) => ({
-  type: TYPES.REMOVE_CUSTOM_LIBRARY_ELEMENT,
+export const removeCustomElement = (id: string) => ({
+  type: TYPES.REMOVE_CUSTOM_ELEMENT,
   payload: { id },
 });

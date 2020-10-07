@@ -53,7 +53,7 @@ import {
   updateElementImage,
   updateElementParameters,
   uploadFileSaga,
-  requestCustomElementsSaga,
+  loadCustomElementsSaga,
 } from './element';
 import { convertElementToRequest } from '../../../api/converters/toRequest';
 import { MAX_TOKEN_TRIALS } from '../../../../config/settings';
@@ -470,5 +470,5 @@ export default function* projectSaga() {
   yield takeEvery(TYPES.REDO_WRAP_INTO_CONTAINER, redoWrapIntoContainerSaga);
   yield takeEvery(TYPES.SET_ACTIVE_ELEMENT, setActiveElementSaga);
   yield takeEvery(TYPES.UPDATE_ELEMENT, updateElementSaga);
-  yield takeLeading(TYPES.REQUEST_CUSTOM_ELEMENTS, requestCustomElementsSaga);
+  yield takeLeading(TYPES.LOAD_CUSTOM_ELEMENTS, loadCustomElementsSaga);
 }

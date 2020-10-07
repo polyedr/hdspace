@@ -86,7 +86,7 @@ function uiReducer(
         },
       };
 
-    case TYPES.REMOVE_CUSTOM_LIBRARY_ELEMENT:
+    case TYPES.REMOVE_CUSTOM_ELEMENT:
       return {
         ...state,
         customElementsData: {
