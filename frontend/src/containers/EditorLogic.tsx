@@ -44,7 +44,7 @@ const EditorLogic: React.FC<Props> = ({ projectId, screenId }) => {
     if (screenId) {
       dispatch(activateScreen(screenId));
     }
-  }, [screenId]);
+  }, [dispatch, screenId]);
 
   return (
     <div className={classes.root}>
