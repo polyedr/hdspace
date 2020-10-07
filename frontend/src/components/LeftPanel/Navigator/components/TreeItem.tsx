@@ -15,11 +15,11 @@ const useStyles = makeStyles({
   iconButton: {
     cursor: 'pointer',
     boxSizing: 'border-box',
-    width: 20,
+    width: '1em',
     '&:empty': {
       boxSizing: 'border-box',
       display: 'inline-block',
-      width: 20,
+      width: '1em',
     },
     '& svg': {
       color: 'white',
@@ -31,6 +31,7 @@ const useStyles = makeStyles({
     },
   },
   treeItem: {
+    width: '100%',
     display: 'flex',
     alignItems: 'center',
     position: 'relative',
@@ -39,6 +40,7 @@ const useStyles = makeStyles({
     outline: 'none',
     whiteSpace: 'nowrap',
     '& button': {
+      padding: 0,
       border: 'none',
       appearance: 'none',
       boxShadow: 'none',
@@ -47,11 +49,24 @@ const useStyles = makeStyles({
     },
 
     '&:hover': {
-      backgroundColor: lighten('#2F4050', 0.05),
+      backgroundColor: lighten('#2F4050', 0.1),
     },
 
     '&[aria-selected="true"]': {
       backgroundColor: 'hsl(204, 80%, 50%)',
+    },
+
+    '&:before': {
+      content: '""',
+      zIndex: 10,
+      position: 'absolute',
+      top: '100%',
+      left: ({ depth, offset }: Props) =>
+        `calc(${depth} * ${offset}px + 1em/2 + 1px)`,
+      width: 1,
+      height: ({ rulerHeight }: Props) => rulerHeight,
+      display: 'block',
+      backgroundColor: '#fff',
     },
   },
   isDragging: {
@@ -93,8 +108,12 @@ const getIcon = (item, expand, collapse) => {
 };
 
 type Props = RenderItemParams & {
+  expand: (itemId: string) => void;
   select: (itemId: string) => void;
+  deselect: (itemId: string) => void;
   selectedItemId: string | null;
+  offset: number;
+  rulerHeight: number;
 };
 
 type State = {
@@ -102,16 +121,18 @@ type State = {
   mouseY: number | null;
 };
 
-const TreeItem: React.FC<Props> = ({
-  item,
-  onExpand,
-  onCollapse,
-  provided,
-  select,
-  selectedItemId,
-  snapshot,
-}) => {
-  const classes = useStyles();
+const TreeItem: React.FC<Props> = (props) => {
+  const {
+    item,
+    onExpand,
+    onCollapse,
+    provided,
+    select,
+    selectedItemId,
+    snapshot,
+  } = props;
+
+  const classes = useStyles(props);
   const { type } = useSelector(selectElementById(item.id as string));
   const ElementIcon = ICONS[type];
 

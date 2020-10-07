@@ -5,6 +5,7 @@ import AtlasTree, {
   TreeSourcePosition,
   TreeDestinationPosition,
   TreeData,
+  RenderItemParams,
 } from '@atlaskit/tree';
 import { useDispatch, useSelector } from 'react-redux';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -56,6 +57,7 @@ const useStyles = makeStyles({
     },
   },
 });
+const OFFSET = 15;
 
 const Navigator: React.FC = () => {
   const dispatch = useDispatch();
@@ -76,7 +78,7 @@ const Navigator: React.FC = () => {
     const newTree = makeTree(convertElements(elements), rootId);
     setTree(updateTree(tree, newTree));
     focusTreeItem(selectedItemId);
-  }, [elements, rootId]);
+  }, [elements, rootId, selectedItemId]);
 
   const expandParents = (itemId) => {
     if (itemId === 'root') return;
@@ -236,15 +238,39 @@ const Navigator: React.FC = () => {
     );
   };
 
-  const renderItem = (props) => (
-    <TreeItem
-      {...props}
-      expand={expand}
-      select={select}
-      deselect={deselect}
-      selectedItemId={selectedItemId}
-    />
-  );
+  const renderItem = (props: RenderItemParams) => {
+    const height = 21.25;
+    const getRulerHeight = (): number => {
+      const { isExpanded, children } = props.item;
+      if (!isExpanded) return 0;
+
+      const getExpandedChildrenHeight = (children: string[]) =>
+        children.reduce((acc, curr) => {
+          if (!tree.items[curr].isExpanded) {
+            return acc + height;
+          }
+          return (
+            acc +
+            height +
+            getExpandedChildrenHeight(tree.items[curr].children as string[])
+          );
+        }, 0);
+
+      return getExpandedChildrenHeight(children as string[]);
+    };
+
+    return (
+      <TreeItem
+        {...props}
+        expand={expand}
+        select={select}
+        deselect={deselect}
+        selectedItemId={selectedItemId}
+        offset={OFFSET}
+        rulerHeight={getRulerHeight()}
+      />
+    );
+  };
 
   return (
     <Accordion defaultExpanded>
@@ -268,7 +294,7 @@ const Navigator: React.FC = () => {
               onCollapse={collapse}
               onDragStart={dragStart}
               onDragEnd={dragEnd}
-              offsetPerLevel={10}
+              offsetPerLevel={OFFSET}
               isDragEnabled
               isNestingEnabled
             />
