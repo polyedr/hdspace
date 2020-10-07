@@ -36,7 +36,7 @@ export const apiGetCustomLibraryElements = (
     ...props,
     method: 'GET',
     params: {
-      ...(props.params ? props.params : {}),
+      ...(props.params || {}),
       is_shared: true,
     },
     url: '/projects/scenario-elements',
