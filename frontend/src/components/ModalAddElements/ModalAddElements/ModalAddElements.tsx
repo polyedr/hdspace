@@ -42,7 +42,6 @@ function mapStateToProps(state: AppReduxState) {
   return {
     uploadedImageInfo: selectUploadedImageInfo(state),
     currentScreen: selectCurrentScreen(state),
-    // customLibraryElements: selectCustomLibraryElements(state),
   };
 }
 
@@ -96,10 +95,7 @@ const ModalAddElements: React.FunctionComponent<Props> = ({
   }, [imageToUpload, currentScreen.id]);
 
   useEffect(() => {
-    const newListElement = {
-      ...parseAddElementsTabs(libraryElements),
-      // ...parseAddCustomElementsTabs(customLibraryElements),
-    };
+    const newListElement = parseAddElementsTabs(libraryElements);
     setListElement(newListElement);
   }, [libraryElements]);
 
