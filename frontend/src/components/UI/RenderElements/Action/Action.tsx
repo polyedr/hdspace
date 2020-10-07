@@ -69,7 +69,6 @@ const Action: ActionRenderer = React.forwardRef(
       isDisabled,
       params,
       onClick,
-      sortableId,
       actionType,
       actionLink,
       className,
@@ -99,7 +98,6 @@ const Action: ActionRenderer = React.forwardRef(
         ref={ref}
         id={id}
         data-ls-id={id}
-        data-id={sortableId}
         key={id}
         variant="contained"
         color="primary"

@@ -11,16 +11,7 @@ const styles = require('../styles.scss');
 
 const Map: React.FC<MapRendererProps> = React.forwardRef(
   (
-    {
-      id,
-      params,
-      isDisabled,
-      entityStyles,
-      groupStyles,
-      ownStyles,
-      sortableId,
-      className,
-    },
+    { id, params, isDisabled, entityStyles, groupStyles, ownStyles, className },
     ref,
   ) => {
     const classes = makeStyles({
@@ -42,7 +33,6 @@ const Map: React.FC<MapRendererProps> = React.forwardRef(
         ref={ref}
         id={id}
         data-ls-id={id}
-        data-id={sortableId}
         key={id}
         className={cn(
           className,

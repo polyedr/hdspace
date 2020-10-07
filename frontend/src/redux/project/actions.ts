@@ -324,9 +324,10 @@ export const renameElement = (
 export const updateElement = <T extends Entity>(
   elementID: string,
   data: LibraryElementPatch<T>,
+  active?: boolean,
 ): T.UpdateElement => ({
   type: TYPES.UPDATE_ELEMENT,
-  payload: { elementID, data },
+  payload: { elementID, data, active },
 });
 
 export const toggleContainersBorders = (): T.ToggleContainersBorders => ({
@@ -687,4 +688,9 @@ export const addCustomElementsPage = (
 export const addCustomElement = (element: ServerElement<Entity>) => ({
   type: TYPES.ADD_CUSTOM_ELEMENT,
   payload: { element },
+});
+
+export const removeCustomLibraryElement = (id: string) => ({
+  type: TYPES.REMOVE_CUSTOM_LIBRARY_ELEMENT,
+  payload: { id },
 });

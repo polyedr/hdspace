@@ -11,16 +11,7 @@ const styles = require('../styles.scss');
 
 const TextBlock: React.FC<TextBlockRendererProps> = React.forwardRef(
   (
-    {
-      id,
-      entityStyles,
-      groupStyles,
-      ownStyles,
-      params,
-      sortableId,
-      className,
-      isDisabled,
-    },
+    { id, entityStyles, groupStyles, ownStyles, params, className, isDisabled },
     ref,
   ) => {
     const classes = makeStyles({
@@ -45,7 +36,6 @@ const TextBlock: React.FC<TextBlockRendererProps> = React.forwardRef(
         ref={ref}
         id={id}
         data-ls-id={id}
-        data-id={sortableId}
         key={id}
         tabIndex={isDisabled ? -1 : 0}
         className={cn(

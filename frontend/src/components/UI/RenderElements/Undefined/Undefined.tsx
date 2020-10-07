@@ -16,7 +16,6 @@ const Undefined: React.FC<SharedRendererProps> = React.forwardRef(
       entityStyles,
       groupStyles,
       ownStyles,
-      sortableId,
       isDisabled,
       className,
       children,
@@ -41,7 +40,6 @@ const Undefined: React.FC<SharedRendererProps> = React.forwardRef(
       <div
         ref={ref}
         data-ls-id={id}
-        data-id={sortableId}
         key={id}
         className={cn(
           className,

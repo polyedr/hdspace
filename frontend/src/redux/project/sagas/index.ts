@@ -411,6 +411,10 @@ function* redoSaga() {
 export function* setActiveElementSaga(
   action: ReturnType<typeof Actions.setActiveElementId>,
 ) {
+  const prevActiveElementId = yield select(selectActiveElementId);
+  if (prevActiveElementId !== action.payload) {
+    yield put(Actions.removeBorderedElementRef(prevActiveElementId));
+  }
   yield put(Actions.setActiveElementId(action.payload));
 }
 

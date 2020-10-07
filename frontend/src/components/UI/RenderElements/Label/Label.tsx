@@ -11,16 +11,7 @@ const styles = require('../styles.scss');
 
 const Label: React.FC<LabelRendererProps> = React.forwardRef(
   (
-    {
-      id,
-      entityStyles,
-      groupStyles,
-      ownStyles,
-      params,
-      sortableId,
-      isDisabled,
-      className,
-    },
+    { id, entityStyles, groupStyles, ownStyles, params, isDisabled, className },
     ref,
   ) => {
     const { labelFor, textContent } = params;
@@ -51,7 +42,6 @@ const Label: React.FC<LabelRendererProps> = React.forwardRef(
         ref={ref}
         id={id}
         data-ls-id={id}
-        data-id={sortableId}
         key={id}
         {...(labelFor !== 'no for attribute' && { htmlFor: labelFor })}
         className={cn(

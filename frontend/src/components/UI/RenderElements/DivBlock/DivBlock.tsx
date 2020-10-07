@@ -13,7 +13,6 @@ const DivBlockRenderer: React.FC<DivBlockRendererProps> = React.forwardRef(
   (
     {
       id,
-      sortableId,
       entityStyles,
       groupStyles,
       ownStyles,
@@ -43,7 +42,6 @@ const DivBlockRenderer: React.FC<DivBlockRendererProps> = React.forwardRef(
         ref={ref}
         id={id}
         data-ls-id={id}
-        data-id={sortableId}
         key={id}
         className={cn(
           className,

@@ -9,10 +9,7 @@ import { ParagraphRendererProps } from '../types';
 const styles = require('../styles.scss');
 
 const Paragraph: React.FC<ParagraphRendererProps> = React.forwardRef(
-  (
-    { id, entityStyles, groupStyles, ownStyles, params, sortableId, className },
-    ref,
-  ) => {
+  ({ id, entityStyles, groupStyles, ownStyles, params, className }, ref) => {
     const classes = makeStyles({
       entityStyles: {
         ...entityStyles,
@@ -32,7 +29,6 @@ const Paragraph: React.FC<ParagraphRendererProps> = React.forwardRef(
         ref={ref}
         id={id}
         data-ls-id={id}
-        data-id={sortableId}
         key={id}
         className={cn(
           className,

@@ -11,10 +11,7 @@ import { IMAGES } from '../../../../constants/images';
 const styles = require('../styles.scss');
 
 const Screenshot: React.FC<ScreenshotRendererProps> = React.forwardRef(
-  (
-    { id, params, sortableId, entityStyles, groupStyles, ownStyles, className },
-    ref,
-  ) => {
+  ({ id, params, entityStyles, groupStyles, ownStyles, className }, ref) => {
     const classes = makeStyles({
       entityStyles: {
         ...entityStyles,
@@ -42,7 +39,6 @@ const Screenshot: React.FC<ScreenshotRendererProps> = React.forwardRef(
         ref={ref}
         id={id}
         data-ls-id={id}
-        data-id={sortableId}
         key={id}
         className={cn(
           className,

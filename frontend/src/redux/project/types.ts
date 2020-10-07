@@ -52,7 +52,7 @@ export type StateElement = {
     ownStyles: CssLikeStyles;
   };
   parameters: any;
-  isShared?: boolean;
+  shared?: boolean;
 };
 
 export type BorderedElementsRef = {
@@ -273,6 +273,7 @@ export type UpdateElement = IAction<
   {
     elementID: string;
     data: LibraryElementPatch<Entity>;
+    active?: boolean;
   }
 >;
 export type ToggleContainersBorders = IPlainAction<
@@ -480,6 +481,11 @@ export type UpdateElementsLoading = IAction<
   { loading: boolean }
 >;
 
+export type RemoveCustomLibraryElement = IAction<
+  typeof TYPES.REMOVE_CUSTOM_LIBRARY_ELEMENT,
+  { id: string }
+>;
+
 export type Action =
   | LoadProjects
   | LoadProjectsSuccess
@@ -564,7 +570,8 @@ export type Action =
   | UpdateElement
   | UpdateElementsLoading
   | SetCustomElements
-  | AddCustomElement;
+  | AddCustomElement
+  | RemoveCustomLibraryElement;
 
 export type ItemToCopyInfo = {
   id: string;

@@ -49,23 +49,18 @@ export const buildElementsTree = (
 export const removeMapElement = (
   state: Normalized<StateElement>,
   elementId: string,
-): Normalized<StateElement> => {
-  const newState = { ...state };
-  const target = newState[elementId];
+): Normalized<StateElement> =>
+  produce(state, (draft) => {
+    const target = draft[elementId];
 
-  if (target.parent) {
-    const parent = newState[target.parent];
-    parent.children = parent.children.filter((id) => id !== elementId);
-    parent.children.forEach((id, i) => {
-      newState[id] = {
-        ...newState[id],
-        buoyancy: i,
-      };
-    });
-  }
-
-  return newState;
-};
+    if (target.parent) {
+      const parent = draft[target.parent];
+      parent.children = parent.children.filter((id) => id !== elementId);
+      parent.children.forEach((id, i) => {
+        draft[id].buoyancy = i;
+      });
+    }
+  });
 
 export const addMapElements = (
   state: Normalized<StateElement>,
@@ -90,43 +85,38 @@ export const updateMapElement = (
   state: Normalized<StateElement>,
   elementId: string,
   data: Partial<StateElement>,
-): Normalized<StateElement> => ({
-  ...state,
-  [elementId]: {
-    ...state[elementId],
-    ...data,
-  },
-});
+): Normalized<StateElement> =>
+  produce(state, (draft) => {
+    draft[elementId] = {
+      ...draft[elementId],
+      ...data,
+    };
+  });
 
 export const moveMapElement = (
   state: Normalized<StateElement>,
   elementId: string,
   indices: Indices,
   parents: ParentIds,
-): Normalized<StateElement> => {
-  const { newIndex, oldIndex } = indices;
-  const { oldParentId, newParentId } = parents;
-  const newState = { ...state };
+): Normalized<StateElement> =>
+  produce(state, (draft) => {
+    const { newIndex, oldIndex } = indices;
+    const { oldParentId, newParentId } = parents;
 
-  newState[oldParentId].children.splice(oldIndex, 1);
+    draft[oldParentId].children.splice(oldIndex, 1);
+    draft[oldParentId].children.forEach((id, i) => {
+      draft[id] = {
+        ...draft[id],
+        buoyancy: i,
+      };
+    });
 
-  newState[oldParentId].children.forEach((id, i) => {
-    newState[id] = {
-      ...newState[id],
-      buoyancy: i,
-    };
+    draft[newParentId].children.splice(newIndex, 0, elementId);
+    draft[newParentId].children.forEach((id, i) => {
+      draft[id].buoyancy = i;
+    });
+    draft[elementId].parent = newParentId;
   });
-
-  newState[newParentId].children.splice(newIndex, 0, elementId);
-  newState[newParentId].children.forEach((id, i) => {
-    newState[id] = {
-      ...newState[id],
-      buoyancy: i,
-    };
-  });
-  newState[elementId].parent = newParentId;
-  return newState;
-};
 
 export const insertMapElement = (
   state: Normalized<StateElement>,
@@ -153,24 +143,24 @@ export const insertMapElement = (
 export const extractMapElement = (
   state: Normalized<StateElement>,
   elementId: string,
-): Normalized<StateElement> => {
-  const newState = { ...state };
-  const element = newState[elementId];
-  if (!element.parent) return newState;
+): Normalized<StateElement> =>
+  // eslint-disable-next-line consistent-return
+  produce(state, (draft) => {
+    const element = draft[elementId];
+    if (!element.parent) return draft;
 
-  const parent = newState[element.parent];
-  parent.children.splice(element.buoyancy, 1, ...element.children);
-  parent.children.forEach((id, i) => {
-    newState[id].buoyancy = i;
+    const parent = draft[element.parent];
+    parent.children.splice(element.buoyancy, 1, ...element.children);
+    parent.children.forEach((id, i) => {
+      draft[id].buoyancy = i;
+    });
+
+    element.children.forEach((id) => {
+      draft[id].parent = parent.id;
+    });
+
+    element.children = [];
   });
-
-  element.children.forEach((id) => {
-    newState[id].parent = parent.id;
-  });
-
-  element.children = [];
-  return newState;
-};
 
 export const restoreMapElement = (
   state: Normalized<StateElement>,
@@ -195,18 +185,16 @@ export const restoreMapElementChildren = (
   state: Normalized<StateElement>,
   elementId: string,
   childrenIds: string[],
-): Normalized<StateElement> => {
-  const newState = { ...state };
-  const element = newState[elementId];
+): Normalized<StateElement> =>
+  produce(state, (draft) => {
+    const element = draft[elementId];
 
-  element.children = childrenIds;
-  element.children.forEach((id, i) => {
-    newState[id].buoyancy = i;
-    newState[id].parent = elementId;
+    element.children = childrenIds;
+    element.children.forEach((id, i) => {
+      draft[id].buoyancy = i;
+      draft[id].parent = elementId;
+    });
   });
-
-  return newState;
-};
 
 export const canElementBeAdded = (
   elements: Normalized<StateElement>,

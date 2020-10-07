@@ -19,7 +19,7 @@ export const apiGetAllScreen = (props: MyAxiosProps): Promise<Screen[]> =>
     method: 'GET',
     url: '/projects/project-screens/',
   })
-    .then(parseResult)
+    .then((res) => parseResult(res).results)
     .catch(onError);
 
 export const apiAddScreen = (props: MyAxiosProps): Promise<Screen> =>

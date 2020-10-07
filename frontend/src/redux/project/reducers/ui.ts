@@ -82,6 +82,11 @@ const uiReducer = produce(
       //   };
       // }
 
+      case TYPES.REMOVE_CUSTOM_LIBRARY_ELEMENT:
+        draft.customElementsData.results = draft.customElementsData.results.filter(
+          (el) => el.id !== action.payload.id,
+        );
+        break;
       case TYPES.SET_CURRENT_DROP_TARGET_PARAMS:
         draft.currentDropTargetParams =
           action.payload.id === null ? null : action.payload;

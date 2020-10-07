@@ -21,7 +21,6 @@ const Link: LinkRenderer = React.forwardRef(
       isDisabled,
       params,
       onClick,
-      sortableId,
       actionType,
       actionLink,
       className,
@@ -49,7 +48,6 @@ const Link: LinkRenderer = React.forwardRef(
         ref={ref}
         id={id}
         data-ls-id={id}
-        data-id={sortableId}
         key={id}
         className={cn(
           className,
