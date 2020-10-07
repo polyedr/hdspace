@@ -54,6 +54,11 @@ class ProjectCursorSetPagination(CursorPagination):
     page_size_query_param = 'page_size'
 
 
+class ScenarioElementCursorSetPagination(CursorPagination):
+    page_size = 10
+    page_size_query_param = 'page_size'
+
+
 class ProjectViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     queryset = Project.objects.all()
@@ -376,8 +381,8 @@ class ScreenScenarioDestroyCascadeViewSet(BulkModelViewSet):
 
 class ScenarioElementViewSet(viewsets.ModelViewSet):
     queryset = ScenarioElement.objects.all()
-    # queryset = ScenarioElement.objects.root_nodes()
     serializer_class = ScenarioElementSerializer
+    pagination_class = ScenarioElementCursorSetPagination
 
     def filter_queryset(self, queryset):
         ids = self.request.query_params.get('scenariosIds')
