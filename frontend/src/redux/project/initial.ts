@@ -25,7 +25,7 @@ export const initialUi: T.ProjectUiState = {
     next: null,
     results: [],
     loading: false,
-    pageSize: 4,
+    pageSize: 40,
     currentPage: 1,
   },
 };

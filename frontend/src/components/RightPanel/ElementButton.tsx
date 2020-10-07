@@ -51,33 +51,34 @@ export const useStyles = makeStyles(() => {
   });
 });
 
-const ElementButton: React.FC<Props> = ({
-  elementData: { id, type, icon: ElementIcon, custom, name },
-}) => {
-  const dispatch = useDispatch();
-  const screenId = useSelector(selectCurrentScreenId);
-  const { type: activeItemType } = useSelector(selectActiveElement);
-  const styles = useStyles();
+const ElementButton = React.forwardRef<HTMLButtonElement, Props>(
+  ({ elementData: { id, type, name, icon: ElementIcon, custom } }, ref) => {
+    const dispatch = useDispatch();
+    const screenId = useSelector(selectCurrentScreenId);
+    const { type: activeItemType } = useSelector(selectActiveElement);
+    const styles = useStyles();
 
-  const handleClick = () => {
-    dispatch(createElements([{ id, type, name, custom }], { screenId }));
-  };
+    const handleClick = () => {
+      dispatch(createElements([{ id, type, name, custom }], { screenId }));
+    };
 
-  const isAvailableChild = (type: Entity) =>
-    activeItemType !== 'none' &&
-    (AVAILABLE_CHILDREN[activeItemType].all ||
-      type in AVAILABLE_CHILDREN[activeItemType]);
+    const isAvailableChild = (type: Entity) =>
+      activeItemType !== 'none' &&
+      (AVAILABLE_CHILDREN[activeItemType].all ||
+        type in AVAILABLE_CHILDREN[activeItemType]);
 
-  return (
-    <Button
-      disabled={!isAvailableChild(type)}
-      className={styles.elementButton}
-      onClick={handleClick}
-    >
-      {ElementIcon && <ElementIcon />}
-      {splitWords(name)}
-    </Button>
-  );
-};
+    return (
+      <Button
+        disabled={!isAvailableChild(type)}
+        className={styles.elementButton}
+        onClick={handleClick}
+        ref={ref}
+      >
+        {ElementIcon && <ElementIcon />}
+        {splitWords(name)}
+      </Button>
+    );
+  },
+);
 
 export default ElementButton;

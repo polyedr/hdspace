@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect } from 'react';
+import React, { useMemo, useEffect, useRef, MutableRefObject } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { ICONS } from '../../../domain/libraryElements/libraryElements';
@@ -18,6 +18,9 @@ const CustomElementsBlock: React.FC<{}> = () => {
   const dispatch = useDispatch();
   const styles = useElementBlockStyles();
 
+  const lastElementRef = useRef() as MutableRefObject<HTMLButtonElement>;
+  const lastDom = lastElementRef && lastElementRef.current;
+
   useEffect(() => {
     dispatch(requestCustomElements());
   }, []);
@@ -35,6 +38,29 @@ const CustomElementsBlock: React.FC<{}> = () => {
     [libraryElements],
   );
 
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          dispatch(requestCustomElements());
+        }
+      },
+      {
+        root: null,
+        rootMargin: '0px',
+        threshold: 0.01,
+      },
+    );
+    if (lastDom) {
+      observer.observe(lastDom);
+    }
+    return () => {
+      if (lastDom) {
+        observer.unobserve(lastDom);
+      }
+    };
+  }, [lastDom]);
+
   return (
     <StyledAccordion defaultExpanded>
       <StyledAccordionSummary expandIcon={<ExpandMoreIcon />}>
@@ -42,9 +68,18 @@ const CustomElementsBlock: React.FC<{}> = () => {
       </StyledAccordionSummary>
 
       <StyledAccordionDetails className={styles.elementsBlock}>
-        {elements.map((element) => (
-          <ElementButton elementData={element} key={element.key} />
-        ))}
+        {elements.map((element, index) => {
+          if (index === elements.length - 1) {
+            return (
+              <ElementButton
+                elementData={element}
+                key={element.key}
+                ref={lastElementRef}
+              />
+            );
+          }
+          return <ElementButton elementData={element} key={element.key} />;
+        })}
       </StyledAccordionDetails>
     </StyledAccordion>
   );
