@@ -38,7 +38,7 @@ const EditorLogic: React.FC<Props> = ({ projectId, screenId }) => {
 
   useEffect(() => {
     dispatch(getProject(projectId, screenId));
-  }, [projectId, screenId]);
+  }, [dispatch, projectId]);
 
   useEffect(() => {
     if (screenId) {
