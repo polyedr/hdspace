@@ -289,13 +289,6 @@ export const selectBorderedElementsRef = (
   return selectProjectState(state).ui.borderedElementsRef;
 };
 
-/* export const selectRootBorderedRef = (
-  state: AppReduxState,
-): React.RefObject<HTMLElement> => {
-  const rootID = selectCurrentRootId(state);
-  return selectProjectState(state).ui.borderedElementsRef[rootID];
-}; */
-
 export const selectBorderedRef = (id: string) => (state: AppReduxState) => {
   return selectProjectState(state).ui.borderedElementsRef[id];
 };
@@ -307,6 +300,10 @@ export const selectCurrentDropTargetId = (state: AppReduxState) => {
 
 export const selectCurrentDropTargetParams = (state: AppReduxState) => {
   return selectProjectState(state).ui.currentDropTargetParams;
+};
+
+export const selectCustomElementsHasNext = (state: AppReduxState) => {
+  return !!selectProjectState(state).ui.customElementsData.next;
 };
 
 export const selectDisplayStyles = (state: AppReduxState) => {

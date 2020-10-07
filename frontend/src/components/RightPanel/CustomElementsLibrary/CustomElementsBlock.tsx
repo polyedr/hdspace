@@ -1,8 +1,11 @@
 import React, { useMemo, useEffect, useRef, MutableRefObject } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import { ICONS } from '../../../domain/libraryElements/libraryElements';
-import { selectCustomLibraryElements } from '../../../redux/project/selectors';
+import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
+import {
+  selectCustomElementsHasNext,
+  selectCustomLibraryElements,
+} from '../../../redux/project/selectors';
 import { requestCustomElements } from '../../../redux/project/actions';
 
 import {
@@ -17,6 +20,7 @@ const CustomElementsBlock: React.FC<{}> = () => {
   const libraryElements = useSelector(selectCustomLibraryElements);
   const dispatch = useDispatch();
   const styles = useElementBlockStyles();
+  const hasNext = useSelector(selectCustomElementsHasNext);
 
   const lastElementRef = useRef() as MutableRefObject<HTMLButtonElement>;
   const lastDom = lastElementRef && lastElementRef.current;
@@ -33,7 +37,7 @@ const CustomElementsBlock: React.FC<{}> = () => {
         type: element.type,
         name: element.name,
         custom: true,
-        icon: ICONS[element.type],
+        icon: HelpOutlineIcon,
       })),
     [libraryElements],
   );
@@ -41,7 +45,7 @@ const CustomElementsBlock: React.FC<{}> = () => {
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
+        if (entry.isIntersecting && hasNext) {
           dispatch(requestCustomElements());
         }
       },
