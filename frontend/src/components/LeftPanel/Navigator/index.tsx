@@ -245,6 +245,7 @@ const Navigator: React.FC = () => {
       selectedItemId={selectedItemId}
     />
   );
+
   return (
     <Accordion defaultExpanded>
       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
@@ -253,7 +254,13 @@ const Navigator: React.FC = () => {
 
       <AccordionDetails>
         <div className={classes.tree} onKeyDown={handleKeyDown}>
-          <Scrollbar autoHeightMin="100%">
+          <Scrollbar
+            style={{
+              height: '300px',
+              maxHeight: '300px',
+              minHeight: '300px',
+            }}
+          >
             <AtlasTree
               tree={tree}
               renderItem={renderItem}

@@ -12,7 +12,7 @@ import {
 import { RightPanel } from '../features/applyProperties/views/containers';
 import { activateScreen, getProject } from '../redux/project/actions';
 import { selectIsPrototypeMode } from '../redux/user/selectors';
-import LeftPanel from '../components/LeftPanel/LeftPanel';
+import LeftPanel from '../components/LeftPanel';
 import Workspace from '../components/Editor/Workspace/Workspace';
 
 const useStyles = makeStyles({

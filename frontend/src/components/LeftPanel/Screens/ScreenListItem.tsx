@@ -15,19 +15,20 @@ import { renameScreen } from '../../../redux/project/actions';
 const useStyles = makeStyles({
   listItem: {
     '&:hover': {
-      backgroundColor: lighten('#2f4050', 0.07),
+      backgroundColor: lighten('#2f4050', 0.2),
     },
     '&, &:hover, &:active, &:link, &:visited, &:focus': {
       color: 'inherit',
       textDecoration: 'none',
     },
+    whiteSpace: 'nowrap',
     padding: '.5em',
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
   active: {
-    backgroundColor: lighten('#2f4050', 0.1),
+    backgroundColor: lighten('#2f4050', 0.3),
   },
   screenData: {
     display: 'flex',

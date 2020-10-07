@@ -30,6 +30,7 @@ const useStyles = makeStyles({
   list: {
     width: '100%',
     padding: 0,
+    overflowX: 'hidden',
   },
 });
 

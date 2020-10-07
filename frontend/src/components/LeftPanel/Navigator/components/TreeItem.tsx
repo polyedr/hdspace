@@ -3,10 +3,13 @@ import { RenderItemParams } from '@atlaskit/tree';
 import cn from 'classnames';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { lighten } from '@material-ui/core';
+import { useSelector } from 'react-redux';
 import ChevronDown from './Icons/chevron-down';
 import ChevronRight from './Icons/chevron-right';
 import { focusTreeItem } from '../utils';
 import ContextMenu from './ContextMenu';
+import { ICONS } from '../../../../domain/libraryElements/libraryElements';
+import { selectElementById } from '../../../../redux/project/selectors';
 
 const useStyles = makeStyles({
   iconButton: {
@@ -55,6 +58,10 @@ const useStyles = makeStyles({
     boxShadow:
       '0 4px 8px -2px rgba(147, 151, 159, 0.31), 0 0 1px rgba(147, 151, 159, 0.31)',
     outline: '1px solid #5b5f67',
+  },
+  icon: {
+    fontSize: '1.2em',
+    marginRight: '0.3em',
   },
 });
 
@@ -105,6 +112,8 @@ const TreeItem: React.FC<Props> = ({
   snapshot,
 }) => {
   const classes = useStyles();
+  const { type } = useSelector(selectElementById(item.id as string));
+  const ElementIcon = ICONS[type];
 
   const initialState = {
     mouseX: null,
@@ -154,6 +163,9 @@ const TreeItem: React.FC<Props> = ({
         : { role: 'treeitem' })}
     >
       <span>{getIcon(item, onExpand, onCollapse)}</span>
+
+      {ElementIcon && <ElementIcon className={classes.icon} />}
+
       <span>{item.data ? item.data.title : ''}</span>
 
       <ContextMenu
