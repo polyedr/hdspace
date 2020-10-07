@@ -537,8 +537,10 @@ export function* loadCustomElementsSaga() {
     reqWrapper,
     apiGetCustomLibraryElements,
     {
-      cursor: pagination.next,
-      page_size: pagination.pageSize,
+      params: {
+        cursor: pagination.next,
+        page_size: pagination.pageSize,
+      },
     },
   );
   yield put(Actions.addCustomElementsPage(paginatedElements));
