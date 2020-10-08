@@ -10,7 +10,8 @@ import {
   Project,
   VideoSettingsType,
   Normalized,
-  Paginated,
+  PaginatedData,
+  PaginatedArray,
 } from '../../api/types';
 import { IAction, IPlainAction, IPlainFailAction } from '../../shared/redux';
 import { Entity } from '../../domain/core';
@@ -63,19 +64,11 @@ export type DropTargetParams = {
   position?: DropPosition;
 };
 
-export type PaginatedData<T extends { id: string | number }> = {
-  next: string | null;
-  previous: string | null;
-  pageSize: number;
-  loading: boolean;
-  results: Normalized<T>;
-};
-
 export type ProjectDataState = {
   projectsData: PaginatedData<Project>;
   screens: Normalized<Screen>;
   elements: Normalized<StateElement>;
-  customElementsData: Paginated<LibraryElement<Entity>>;
+  customElementsData: PaginatedArray<LibraryElement<Entity>>;
 };
 
 export type ProjectUiState = {
@@ -460,10 +453,8 @@ export type AddElements = IAction<
 export type SetCustomElements = IAction<
   typeof TYPES.ADD_CUSTOM_ELEMENTS_PAGE,
   {
-    results: LibraryElement<Entity>[];
-    previous: string;
-    next: string;
-    loading?: boolean;
+    paginatedResult: PaginatedArray<LibraryElement<Entity>>;
+    initial: boolean;
   }
 >;
 

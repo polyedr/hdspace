@@ -67,5 +67,6 @@ module.exports = {
       'error',
       { ignorePropertyModificationsFor: ['draft'] },
     ],
+    'react-hooks/exhaustive-deps': 0,
   },
 };
