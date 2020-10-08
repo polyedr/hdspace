@@ -12,7 +12,7 @@ import * as T from '../types';
 export default combineReducers({
   data: dataReducer,
   ui: composeReducers([
-    uiReducer, // TODO: resolve typings!
+    uiReducer,
     makeResetStateReducer<T.ResetScreenState, T.ProjectUiState>(
       TYPES.RESET_SCREEN_STATE,
       initialUi,

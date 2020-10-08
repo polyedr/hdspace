@@ -1,14 +1,6 @@
-/* eslint-disable no-console */
-
 import { put, call, select } from 'redux-saga/effects';
-
-import * as Actions from '../actions';
-
-import { reqWrapper } from './index';
-import { ReturnPromisedType } from '../../../shared/types';
-import { convertElementToPatchRequest } from '../../../api/converters/toRequest';
-import { LibraryElement } from '../../../api/types';
 import {
+  selectCustomElementsPagination,
   selectCurrentProject,
   selectElementParameters,
   selectElementStyles,
@@ -18,6 +10,15 @@ import {
   selectElementAsTree,
   selectAllElements,
 } from '../selectors';
+/* eslint-disable no-console */
+
+import * as Actions from '../actions';
+
+import { reqWrapper } from './index';
+import { ReturnPromisedType } from '../../../shared/types';
+import { convertElementToPatchRequest } from '../../../api/converters/toRequest';
+import { LibraryElement, Normalized } from '../../../api/types';
+
 import {
   getElementsArray,
   getTreeWithDefaultStylesAndParams,
@@ -36,7 +37,7 @@ import { CssLikeStyles } from '../../../utils/StyleHelper';
 import getSavedValue from '../../../utils/getSavedValue';
 import { addProjectStyles } from '../../../utils/ProjectClassesHelper';
 import { updateProject } from './project';
-import { Normalized, StateElement } from '../types';
+import { StateElement } from '../types';
 
 export function* moveElementSaga(
   action: ReturnType<typeof Actions.moveElement>,
@@ -529,7 +530,18 @@ export function* uploadFileSaga({
   }
 }
 
-export function* requestCustomLibraryElementsSaga() {
-  const customElements = yield call(reqWrapper, apiGetCustomLibraryElements);
-  yield put(Actions.setCustomLibraryElements(customElements));
+export function* loadCustomElementsSaga() {
+  const pagination = yield select(selectCustomElementsPagination);
+  yield put(Actions.updateElementsLoading(true));
+  const paginatedElements = yield call(
+    reqWrapper,
+    apiGetCustomLibraryElements,
+    {
+      params: {
+        cursor: pagination.next,
+        page_size: pagination.pageSize,
+      },
+    },
+  );
+  yield put(Actions.addCustomElementsPage(paginatedElements));
 }

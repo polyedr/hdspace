@@ -31,22 +31,18 @@ interface IButtonProps {
   className?: string;
 }
 
-const Button: React.FC<IButtonProps> = ({
-  children,
-  type,
-  styleType,
-  disabled,
-  onClick,
-  className = '',
-}) => (
-  <button
-    type={type !== 'submit' ? 'button' : 'submit'}
-    className={classNames(styles.button, getStyleType(styleType), className)}
-    disabled={disabled}
-    onClick={type !== 'submit' ? onClick : undefined}
-  >
-    <span>{children}</span>
-  </button>
+const Button = React.forwardRef<HTMLButtonElement, IButtonProps>(
+  ({ children, type, styleType, disabled, onClick, className = '' }, ref) => (
+    <button
+      type={type !== 'submit' ? 'button' : 'submit'}
+      className={classNames(styles.button, getStyleType(styleType), className)}
+      disabled={disabled}
+      onClick={type !== 'submit' ? onClick : undefined}
+      ref={ref}
+    >
+      <span>{children}</span>
+    </button>
+  ),
 );
 
 export default memo(Button);

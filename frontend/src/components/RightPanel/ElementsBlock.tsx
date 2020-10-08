@@ -1,6 +1,7 @@
 import React from 'react';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import withStyles from '@material-ui/core/styles/withStyles';
+import makeStyles from '@material-ui/core/styles/makeStyles';
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
@@ -9,9 +10,7 @@ import { ElementData } from '../../redux/project/types';
 import ElementButton from './ElementButton';
 import ElementDropdown from './ElementDropdown';
 
-const styles = require('./styles.scss');
-
-const StyledAccordion = withStyles({
+export const StyledAccordion = withStyles({
   root: {
     boxShadow: 'none',
     '&:not(:last-child)': {
@@ -27,7 +26,7 @@ const StyledAccordion = withStyles({
   expanded: {},
 })(Accordion);
 
-const StyledAccordionSummary = withStyles({
+export const StyledAccordionSummary = withStyles({
   root: {
     minHeight: 0,
     backgroundColor: 'rgb(220,220,220)',
@@ -53,7 +52,7 @@ const StyledAccordionSummary = withStyles({
   },
 })(AccordionSummary);
 
-const StyledAccordionDetails = withStyles({
+export const StyledAccordionDetails = withStyles({
   root: {
     padding: 0,
     backgroundColor: '#fff',
@@ -68,11 +67,25 @@ type Props = {
   expandable?: boolean;
 };
 
+export const useStyles = makeStyles({
+  elementsBlock: {
+    backgroundColor: '#ffffff',
+    display: 'flex',
+    flexFlow: 'row wrap',
+    '& > *': {
+      width: 'calc(100%/4 - 2px)',
+      height: 'calc(300px/4 - 2px)',
+    },
+  },
+});
+
 const ElementsBlock: React.FC<Props> = ({
   title = '',
   elements,
   expandable = false,
 }) => {
+  const styles = useStyles();
+
   const renderContent = () =>
     Object.values(elements).map((element) => {
       if (Array.isArray(element)) {
