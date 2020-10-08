@@ -1,10 +1,10 @@
 import { DropPosition } from '../../constants/dragAndDrop';
 import {
-  ServerElement,
   Project,
   LibraryElement,
   LibraryElementPatch,
-  PaginatedResponse,
+  Paginated,
+  Normalized,
 } from '../../api/types';
 import {
   ElementHistoryMeta,
@@ -29,7 +29,7 @@ export const setProjectList = (projects: Project[]): T.LoadProjectsSuccess => ({
   payload: { projects },
 });
 
-export const setProjectsData = (data: PaginatedResponse<Project>) => ({
+export const setProjectsData = (data: Paginated<Project>) => ({
   type: TYPES.SET_PROJECTS_DATA,
   payload: data,
 });
@@ -198,7 +198,7 @@ export const clearAfterPrevScreen = (): T.ClearAfterPrevScreen => ({
 });
 
 export const updateElementsTree = (
-  chunk: T.Normalized<StateElement>,
+  chunk: Normalized<StateElement>,
   meta: T.ElementHistoryMeta,
 ): T.UpdateElementsTree => ({
   type: TYPES.UPDATE_ELEMENTS_TREE,
@@ -655,23 +655,28 @@ export const setCurrentDropTargetParams = (
   payload: { id, position },
 });
 
-export const requestCustomLibraryElements = () => ({
-  type: TYPES.REQUEST_CUSTOM_LIBRARY_ELEMENTS,
+export const loadCustomElements = () => ({
+  type: TYPES.LOAD_CUSTOM_ELEMENTS,
 });
 
-export const setCustomLibraryElements = (
-  elements: ServerElement<Entity>[],
+export const updateElementsLoading = (loading: boolean) => ({
+  type: TYPES.UPDATE_CUSTOM_ELEMENTS_LOADING,
+  payload: { loading },
+});
+
+export const addCustomElementsPage = (
+  paginatedElements: Paginated<LibraryElement<Entity>>,
 ) => ({
-  type: TYPES.SET_CUSTOM_LIBRARY_ELEMENTS,
-  payload: { elements },
+  type: TYPES.ADD_CUSTOM_ELEMENTS_PAGE,
+  payload: paginatedElements,
 });
 
-export const addCustomLibraryElement = (element: ServerElement<Entity>) => ({
-  type: TYPES.ADD_CUSTOM_LIBRARY_ELEMENT,
+export const addCustomElement = (element: LibraryElement<Entity>) => ({
+  type: TYPES.ADD_CUSTOM_ELEMENT,
   payload: { element },
 });
 
-export const removeCustomLibraryElement = (id: string) => ({
-  type: TYPES.REMOVE_CUSTOM_LIBRARY_ELEMENT,
+export const removeCustomElement = (id: string) => ({
+  type: TYPES.REMOVE_CUSTOM_ELEMENT,
   payload: { id },
 });

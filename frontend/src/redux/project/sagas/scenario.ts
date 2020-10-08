@@ -15,7 +15,7 @@ import {
 import * as Actions from '../actions';
 import { selectors, T } from '..';
 import { updateSavedElementsValues } from './screen';
-import { ElementHistoryMeta, StateElement, Normalized } from '../types';
+import { ElementHistoryMeta, StateElement } from '../types';
 import {
   DISALLOW_ADD_ELEMENT_NOTIFICATION_TEXT,
   DISALLOW_REMOVE_ELEMENT_NOTIFICATION_TEXT,
@@ -24,6 +24,7 @@ import {
   LibraryElement,
   LibraryElementUnion,
   ServerElement,
+  Normalized,
 } from '../../../api/types';
 import { Entity } from '../../../domain/core';
 import {
@@ -208,7 +209,9 @@ export function* createElementsSaga(
   );
   const convertedCreatedElements = createdElements.map((dEl) =>
     dEl.custom
-      ? customLibraryElements[dEl.id || -1]
+      ? convertElementToRequest(
+          customLibraryElements.find((element) => element.id === dEl.id),
+        )
       : convertCreatedElementToRequest(dEl.type as Entity, null),
   );
   yield call(createElements, convertedCreatedElements, activeElementTree, {
@@ -592,16 +595,21 @@ export function* updateElementSaga(
     yield put(Actions.setActiveElement(elementID));
   }
 
+  const customLibraryElements = yield select(selectCustomLibraryElements);
+  const existsInLibrary = !!customLibraryElements.find(
+    (element) => element.id === action.payload.elementID,
+  );
+  if (data.shared === true) {
+    if (!existsInLibrary) {
+      console.log('ADD CUSTOM ELEMENT!!!', updatedElement);
+      yield put(Actions.addCustomElement(updatedElement));
+    }
+  } else if (existsInLibrary) {
+    yield put(Actions.removeCustomElement(action.payload.elementID));
+  }
+
   const convertedElement = convertElementToPatchRequest(updatedElement);
 
-  const customLibraryElements = yield select(selectCustomLibraryElements);
-  if (data.shared === true) {
-    if (!customLibraryElements[action.payload.elementID]) {
-      yield put(Actions.addCustomLibraryElement(convertedElement));
-    }
-  } else if (customLibraryElements[action.payload.elementID]) {
-    yield put(Actions.removeCustomLibraryElement(action.payload.elementID));
-  }
   yield call(reqWrapper, apiChangeElement, {
     data: convertedElement,
     id: elementID,

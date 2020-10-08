@@ -42,13 +42,7 @@ const getDropdownStyles = (
       cursor: isDisabled ? 'default' : 'pointer',
       outline: active ? '1px red solid' : 'none',
       ...(isDisabled && { transition: 'none' }),
-      '&:hover': {
-        ...(isDisabled && {
-          boxShadow:
-            '0px 3px 1px -2px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 1px 5px 0px rgba(0,0,0,0.12)',
-        }),
-      },
-      '&:active': {
+      '&:hover,&active': {
         ...(isDisabled && {
           boxShadow:
             '0px 3px 1px -2px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 1px 5px 0px rgba(0,0,0,0.12)',

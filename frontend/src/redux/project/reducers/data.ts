@@ -137,6 +137,32 @@ const dataReducer = produce(
         break;
       }
 
+      case TYPES.UPDATE_CUSTOM_ELEMENTS_LOADING:
+        draft.customElementsData.loading = action.payload.loading;
+
+        break;
+
+      case TYPES.ADD_CUSTOM_ELEMENTS_PAGE:
+        draft.customElementsData.next = action.payload.next;
+        draft.customElementsData.previous = action.payload.previous;
+        draft.customElementsData.results = [
+          ...draft.customElementsData.results,
+          ...action.payload.results,
+        ];
+        draft.customElementsData.loading = false;
+        break;
+      case TYPES.ADD_CUSTOM_ELEMENT:
+        draft.customElementsData.results = [
+          action.payload.element,
+          ...draft.customElementsData.results,
+        ];
+        break;
+      case TYPES.REMOVE_CUSTOM_ELEMENT:
+        draft.customElementsData.results = draft.customElementsData.results.filter(
+          (elementData) => elementData.id !== action.payload.id,
+        );
+        break;
+
       case TYPES.RESET_SCREEN_STATE: {
         draft.screens = {};
         draft.elements = {};

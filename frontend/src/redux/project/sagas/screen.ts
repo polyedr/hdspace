@@ -22,7 +22,7 @@ import {
 } from '../../../api/screen';
 import { convertCreatedElementToRequest } from '../../../api/converters/toRequest';
 import { apiGetProject, apiSaveProject } from '../../../api/project';
-import { Screen, StateElement, Normalized } from '../types';
+import { Screen, IScenarioItem, StateElement } from '../types';
 import {
   activateScreen,
   addElements,
@@ -46,6 +46,7 @@ import {
   LibraryElementUnion,
   Project,
   ServerElement,
+  Normalized,
 } from '../../../api/types';
 import generateUniqueName from '../../../utils/generateUniqueName';
 import { apiSaveScenarios } from '../../../api/scenario';

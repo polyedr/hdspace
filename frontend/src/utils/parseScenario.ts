@@ -239,29 +239,6 @@ export const parseAddElementsTabs = (
     };
   }, {});
 
-/* export const parseAddCustomElementsTabs = (
-  customLibraryElements: NormalizedLibraryElements,
-): IListCategoryEl => {
-  return {
-    Custom: R.keys(customLibraryElements).map(
-      (libElName) =>
-        ({ ...customLibraryElements[libElName] } as ScenarioLibraryElement),
-    ),
-  };
-}; */
-
-/* export const createCustomElementsHierarchy = (
-  customLibraryElements: NormalizedLibraryElements,
-) => ({
-  customUI: R.keys(customLibraryElements).reduce(
-    (acc, name) => ({
-      ...acc,
-      [name]: convertElementToData(customLibraryElements[name], true),
-    }),
-    {},
-  ),
-}); */
-
 export const getGroupElements = (
   group: string,
   listElement: IListCategoryEl,

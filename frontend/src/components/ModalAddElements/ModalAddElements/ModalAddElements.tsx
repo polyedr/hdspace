@@ -20,7 +20,6 @@ import {
 import { MODAL_ADD_ELEMENTS_TABS } from '../../../constants/defaultParams';
 import {
   selectCurrentScreen,
-  selectCustomLibraryElements,
   selectUploadedImageInfo,
 } from '../../../redux/project/selectors';
 import { uploadFile, createElements } from '../../../redux/project/actions';
@@ -37,7 +36,6 @@ function mapStateToProps(state: AppReduxState) {
   return {
     uploadedImageInfo: selectUploadedImageInfo(state),
     currentScreen: selectCurrentScreen(state),
-    customLibraryElements: selectCustomLibraryElements(state),
   };
 }
 
@@ -63,7 +61,6 @@ const ModalAddElements: React.FunctionComponent<Props> = ({
   activeItem,
   active,
   libraryElements,
-  customLibraryElements,
   onClose,
   createElements,
   uploadImg,
@@ -90,12 +87,9 @@ const ModalAddElements: React.FunctionComponent<Props> = ({
   }, [imageToUpload, currentScreen.id]);
 
   useEffect(() => {
-    const newListElement = {
-      ...parseAddElementsTabs(libraryElements),
-      // ...parseAddCustomElementsTabs(customLibraryElements),
-    };
+    const newListElement = parseAddElementsTabs(libraryElements);
     setListElement(newListElement);
-  }, [libraryElements, customLibraryElements]);
+  }, [libraryElements]);
 
   const handleConfirm = useCallback(
     (event) => {
@@ -141,7 +135,7 @@ const ModalAddElements: React.FunctionComponent<Props> = ({
       setErrorMsg('');
       setSelectedElements([]);
     },
-    [activeTab, libraryElements, customLibraryElements],
+    [activeTab, libraryElements],
   );
 
   const getContentStep = useCallback(() => {

@@ -1,7 +1,6 @@
 /* eslint-disable camelcase, no-console */
 
 import {
-  takeLeading,
   takeLatest,
   takeEvery,
   put,
@@ -52,19 +51,15 @@ import {
   updateElementImage,
   updateElementParameters,
   uploadFileSaga,
-  requestCustomLibraryElementsSaga,
+  loadCustomElementsSaga,
 } from './element';
 import { convertElementToRequest } from '../../../api/converters/toRequest';
 import { MAX_TOKEN_TRIALS } from '../../../../config/settings';
 import TYPES from '../../../constants/actions';
 import { logout, setLoadedToken, setTokenPair } from '../../user/actions';
-import {
-  ElementHistoryMeta,
-  ItemToCopyInfo,
-  Normalized,
-  StateElement,
-} from '../types';
-import { LibraryElement } from '../../../api/types';
+import { ElementHistoryMeta, ItemToCopyInfo, StateElement } from '../types';
+
+import { LibraryElement, Normalized } from '../../../api/types';
 import { openSignScreen } from '../../../utils/history';
 import { refreshUserTokenPair } from '../../user/sagas';
 import { DEFAULT_AUTHORISATION_TOKEN } from '../../../constants/defaultParams';
@@ -460,8 +455,5 @@ export default function* projectSaga() {
   yield takeEvery(TYPES.UNWRAP_FROM_CONTAINER, unwrapFromContainerSaga);
   yield takeEvery(TYPES.REDO_WRAP_INTO_CONTAINER, redoWrapIntoContainerSaga);
   yield takeEvery(TYPES.UPDATE_ELEMENT, updateElementSaga);
-  yield takeLeading(
-    TYPES.REQUEST_CUSTOM_LIBRARY_ELEMENTS,
-    requestCustomLibraryElementsSaga,
-  );
+  yield takeLatest(TYPES.LOAD_CUSTOM_ELEMENTS, loadCustomElementsSaga);
 }

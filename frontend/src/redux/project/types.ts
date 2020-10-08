@@ -3,15 +3,15 @@ import { OverridableComponent } from '@material-ui/core/OverridableComponent';
 import { SvgIconTypeMap } from '@material-ui/core';
 import { DropPosition } from '../../constants/dragAndDrop';
 import {
-  ServerElement,
   HeadingType,
   InputType,
   LibraryElement,
   LibraryElementPatch,
   Project,
   VideoSettingsType,
+  Normalized,
+  Paginated,
 } from '../../api/types';
-import { LibraryElements } from '../../domain/libraryElements/libraryElements';
 import { IAction, IPlainAction, IPlainFailAction } from '../../shared/redux';
 import { Entity } from '../../domain/core';
 import TYPES from '../../constants/actions';
@@ -36,10 +36,6 @@ export type ProjectState = {
 
 export type ProjectLibraryElements = {
   [id: number]: IScenarioElement;
-};
-
-export type NormalizedLibraryElements = {
-  [id: number]: ServerElement<Entity, ServerElement<Entity>[]>;
 };
 
 export type StateElement = {
@@ -67,7 +63,7 @@ export type DropTargetParams = {
   position?: DropPosition;
 };
 
-export type PaginatedData<T> = {
+export type PaginatedData<T extends { id: string | number }> = {
   next: string | null;
   previous: string | null;
   pageSize: number;
@@ -79,6 +75,7 @@ export type ProjectDataState = {
   projectsData: PaginatedData<Project>;
   screens: Normalized<Screen>;
   elements: Normalized<StateElement>;
+  customElementsData: Paginated<LibraryElement<Entity>>;
 };
 
 export type ProjectUiState = {
@@ -89,7 +86,6 @@ export type ProjectUiState = {
   showContainersBorders: boolean;
   borderedElementsRef: BorderedElementsRef;
   currentDropTargetParams: DropTargetParams | null;
-  customLibraryElements: NormalizedLibraryElements;
 };
 
 export type ProjectEditState = {
@@ -135,14 +131,14 @@ export type CreatedElement = {
   custom: boolean;
 };
 
-export type LoadLibraryElements = IPlainAction<
+/* export type LoadLibraryElements = IPlainAction<
   typeof TYPES.GET_LIBRARY_ELEMENTS
 >;
 
 export type LoadLibraryElementsSuccess = IAction<
   typeof TYPES.LOAD_LIBRARY_ELEMENTS_SUCCESS,
   { libraryElements: LibraryElements }
->;
+>; */
 export type LoadLibraryElementsFail = IPlainFailAction<
   'PROJECTS:LOAD_LIBRARY_ELEMENTS_FAIL'
 >;
@@ -454,18 +450,28 @@ export type AddElements = IAction<
   typeof TYPES.ADD_ELEMENTS,
   { elements: LibraryElement<any>[]; parentId?: string }
 >;
-export type SetCustomLibraryElements = IAction<
-  typeof TYPES.SET_CUSTOM_LIBRARY_ELEMENTS,
-  { elements: LibraryElement<Entity>[] }
+export type SetCustomElements = IAction<
+  typeof TYPES.ADD_CUSTOM_ELEMENTS_PAGE,
+  {
+    results: LibraryElement<Entity>[];
+    previous: string;
+    next: string;
+    loading?: boolean;
+  }
 >;
 
-export type AddCustomLibraryElement = IAction<
-  typeof TYPES.ADD_CUSTOM_LIBRARY_ELEMENT,
+export type AddCustomElement = IAction<
+  typeof TYPES.ADD_CUSTOM_ELEMENT,
   { element: LibraryElement<Entity> }
 >;
 
-export type RemoveCustomLibraryElement = IAction<
-  typeof TYPES.REMOVE_CUSTOM_LIBRARY_ELEMENT,
+export type UpdateElementsLoading = IAction<
+  typeof TYPES.UPDATE_CUSTOM_ELEMENTS_LOADING,
+  { loading: boolean }
+>;
+
+export type RemoveCustomElement = IAction<
+  typeof TYPES.REMOVE_CUSTOM_ELEMENT,
   { id: string }
 >;
 
@@ -550,9 +556,10 @@ export type Action =
   | RemoveBorderedElementRef
   | SetCurrentDropTargetParams
   | UpdateElement
-  | SetCustomLibraryElements
-  | AddCustomLibraryElement
-  | RemoveCustomLibraryElement;
+  | UpdateElementsLoading
+  | SetCustomElements
+  | AddCustomElement
+  | RemoveCustomElement;
 
 export type ItemToCopyInfo = {
   id: string;
@@ -728,10 +735,6 @@ export type HistoryMeta = {
 export type ElementHistoryMeta = HistoryMeta & {
   screenId: number;
   sourceAction?: Action | null;
-};
-
-export type Normalized<T> = {
-  [id in number | string]: T;
 };
 
 export type ElementData = {
