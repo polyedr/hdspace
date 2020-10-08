@@ -48,7 +48,7 @@ type Props = {
   options: ElementData[];
 } & React.ComponentProps<'div'>;
 
-const ElementDropdown: React.FC<Props> = ({ options, ...divProps }) => {
+const ElementDropdown: React.FC<Props> = ({ options }) => {
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef<HTMLDivElement>(null);
   const [selectedIndex, setSelectedIndex] = React.useState(1);
@@ -75,7 +75,7 @@ const ElementDropdown: React.FC<Props> = ({ options, ...divProps }) => {
   };
 
   return (
-    <div {...divProps}>
+    <div>
       <ButtonGroup
         ref={anchorRef}
         className={styles.elementDropdown}
