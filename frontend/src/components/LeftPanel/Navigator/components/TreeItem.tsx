@@ -3,20 +3,23 @@ import { RenderItemParams } from '@atlaskit/tree';
 import cn from 'classnames';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { lighten } from '@material-ui/core';
+import { useSelector } from 'react-redux';
 import ChevronDown from './Icons/chevron-down';
 import ChevronRight from './Icons/chevron-right';
 import { focusTreeItem } from '../utils';
 import ContextMenu from './ContextMenu';
+import { ICONS } from '../../../../domain/libraryElements/libraryElements';
+import { selectElementById } from '../../../../redux/project/selectors';
 
 const useStyles = makeStyles({
   iconButton: {
     cursor: 'pointer',
     boxSizing: 'border-box',
-    width: 20,
+    width: '1em',
     '&:empty': {
       boxSizing: 'border-box',
       display: 'inline-block',
-      width: 20,
+      width: '1em',
     },
     '& svg': {
       color: 'white',
@@ -28,6 +31,7 @@ const useStyles = makeStyles({
     },
   },
   treeItem: {
+    width: '100%',
     display: 'flex',
     alignItems: 'center',
     position: 'relative',
@@ -36,6 +40,7 @@ const useStyles = makeStyles({
     outline: 'none',
     whiteSpace: 'nowrap',
     '& button': {
+      padding: 0,
       border: 'none',
       appearance: 'none',
       boxShadow: 'none',
@@ -44,17 +49,34 @@ const useStyles = makeStyles({
     },
 
     '&:hover': {
-      backgroundColor: lighten('#2F4050', 0.05),
+      backgroundColor: lighten('#2F4050', 0.1),
     },
 
     '&[aria-selected="true"]': {
       backgroundColor: 'hsl(204, 80%, 50%)',
+    },
+
+    '&:before': {
+      content: '""',
+      zIndex: 10,
+      position: 'absolute',
+      top: '100%',
+      left: ({ depth, offset }: Props) =>
+        `calc(${depth} * ${offset}px + 1em/2 + 1px)`,
+      width: 1,
+      height: ({ rulerHeight }: Props) => rulerHeight,
+      display: 'block',
+      backgroundColor: '#fff',
     },
   },
   isDragging: {
     boxShadow:
       '0 4px 8px -2px rgba(147, 151, 159, 0.31), 0 0 1px rgba(147, 151, 159, 0.31)',
     outline: '1px solid #5b5f67',
+  },
+  icon: {
+    fontSize: '1.2em',
+    marginRight: '0.3em',
   },
 });
 
@@ -86,8 +108,12 @@ const getIcon = (item, expand, collapse) => {
 };
 
 type Props = RenderItemParams & {
+  expand: (itemId: string) => void;
   select: (itemId: string) => void;
+  deselect: (itemId: string) => void;
   selectedItemId: string | null;
+  offset: number;
+  rulerHeight: number;
 };
 
 type State = {
@@ -95,16 +121,20 @@ type State = {
   mouseY: number | null;
 };
 
-const TreeItem: React.FC<Props> = ({
-  item,
-  onExpand,
-  onCollapse,
-  provided,
-  select,
-  selectedItemId,
-  snapshot,
-}) => {
-  const classes = useStyles();
+const TreeItem: React.FC<Props> = (props) => {
+  const {
+    item,
+    onExpand,
+    onCollapse,
+    provided,
+    select,
+    selectedItemId,
+    snapshot,
+  } = props;
+
+  const classes = useStyles(props);
+  const { type } = useSelector(selectElementById(item.id as string));
+  const ElementIcon = ICONS[type];
 
   const initialState = {
     mouseX: null,
@@ -154,6 +184,9 @@ const TreeItem: React.FC<Props> = ({
         : { role: 'treeitem' })}
     >
       <span>{getIcon(item, onExpand, onCollapse)}</span>
+
+      {ElementIcon && <ElementIcon className={classes.icon} />}
+
       <span>{item.data ? item.data.title : ''}</span>
 
       <ContextMenu
