@@ -9,20 +9,24 @@ import {
 } from '../../constants/defaultParams';
 import { Entity, ChildEntity } from '../../domain/core';
 import { AppReduxState } from '../../shared/types/app';
-import { Project, LibraryElement, Paginated } from '../../api/types';
+import { LibraryElement, Paginated } from '../../api/types';
 import { CssLikeStyles } from '../../utils/StyleHelper';
 import { makeFeatureStateSelector } from '../../shared/redux';
 import {
   buildElementsTree,
   flattenElements,
-  mapToArr,
 } from '../../utils/normalizedStateHelpers';
 import { getDisplayStyles } from '../../features/applyProperties/views/containers/Controls/Display/Display';
 
 export const selectProjectState = makeFeatureStateSelector('project');
 
-export const selectProjects = ({ project }: AppReduxState) =>
-  mapToArr<Project>(project.data.projectsData.results);
+export const selectProjects = ({ project }: AppReduxState) => {
+  return project.data.projectsData.results;
+};
+
+export const selectProjectsAsArr = createSelector(selectProjects, (projects) =>
+  R.values(projects),
+);
 
 export const selectProjectsPageSize = ({ project }: AppReduxState) =>
   project.data.projectsData.pageSize;
@@ -76,9 +80,13 @@ export const selectSavedElementsValues = ({ project }: AppReduxState) =>
 export const selectCurrentProjectId = ({ project }: AppReduxState) =>
   project.edit.currentProjectId;
 
-export const selectCurrentProject = (state: AppReduxState) =>
-  state.project.data.projectsData.results[selectCurrentProjectId(state)] ||
-  DEFAULT_PROJECT;
+export const selectCurrentProject = createSelector(
+  selectProjects,
+  selectCurrentProjectId,
+  (projects, id) => {
+    return projects[id] || DEFAULT_PROJECT;
+  },
+);
 
 export const selectCurrentRootId = (state: AppReduxState) =>
   selectCurrentScreen(state).element || '-1';

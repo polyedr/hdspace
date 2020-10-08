@@ -81,9 +81,7 @@ export function* addProjectSaga({
     return;
   }
 
-  const projects: ReturnType<typeof selectors.selectProjects> = yield select(
-    selectors.selectProjects,
-  );
+  const projects: Project[] = yield select(selectors.selectProjectsAsArr);
   yield put(Actions.setProjectList([...projects, project]));
 
   yield put(Actions.setIsAddElementsModalOpened(true));
@@ -299,9 +297,7 @@ export function* delProjectSaga({
 }: ReturnType<typeof Actions.delProject>): SagaIterator {
   yield call(reqWrapper, apiDelProject, { id });
 
-  const projectList: ReturnType<typeof selectors.selectProjects> = yield select(
-    selectors.selectProjects,
-  );
+  const projectList: Project[] = yield select(selectors.selectProjectsAsArr);
   const newProjectList: Project[] = projectList.filter(
     (project) => project.id !== id,
   );

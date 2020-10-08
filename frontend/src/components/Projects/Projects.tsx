@@ -60,7 +60,7 @@ const Projects: React.FC = () => {
   const ref = useRef<HTMLTableRowElement>(null);
   const el = ref && ref.current;
 
-  const projectList = useSelector(selectProjects);
+  const projects = useSelector(selectProjects);
   const projectListLoader = useSelector(selectAreProjectsLoading);
   const hasNext = useSelector(selectProjectsDataNext);
 
@@ -101,7 +101,7 @@ const Projects: React.FC = () => {
 
   const sortedProjectList = R.sort(
     R.descend((project: Project) => project.created.getTime()),
-    projectList,
+    R.values(projects),
   );
 
   const handleProjectAdd = () => {
@@ -148,7 +148,7 @@ const Projects: React.FC = () => {
                 <ProjectListItem
                   project={project}
                   key={project.id}
-                  ref={i === projectList.length - 1 ? ref : undefined}
+                  ref={i === sortedProjectList.length - 1 ? ref : undefined}
                 />
               ))}
 

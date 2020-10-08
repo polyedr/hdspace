@@ -52,20 +52,29 @@ import generateUniqueName from '../../../utils/generateUniqueName';
 import { apiSaveScenarios } from '../../../api/scenario';
 import { convertElementFromResponse } from '../../../api/converters/fromResponse';
 import getSavedValue from '../../../utils/getSavedValue';
+import { AppReduxState } from '../../../shared/types/app';
 
 export function* activateScreenSaga({
   payload: { screenId },
 }: ReturnType<typeof activateScreen>) {
   const currentScreenId = yield select(selectCurrentScreenId);
-  const projectId = yield select(selectCurrentProjectId);
   if (currentScreenId === screenId) return;
+
   yield put(setScreenLoader(true));
 
   yield put(setActiveElement('none'));
 
   const screen: Screen = yield select(selectScreenById(screenId));
 
-  yield put(push(`/project/${projectId}/${screenId}`));
+  const pathname = yield select(
+    (state: AppReduxState) => state.router.location.pathname,
+  );
+
+  if (screenId.toString() !== pathname.split('/').reverse()[0]) {
+    const projectId = yield select(selectCurrentProjectId);
+    yield put(push(`/project/${projectId}/${screenId}`));
+  }
+
   yield put(setCurrentScreenId(screen.id));
 
   const screenElement = yield select(selectScreenRootElement(screenId));
