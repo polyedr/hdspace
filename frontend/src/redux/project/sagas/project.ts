@@ -78,7 +78,9 @@ export function* getProjectSaga(action: ReturnType<typeof Actions.getProject>) {
   if (finalScreenId) {
     yield put(Actions.activateScreen(Number(finalScreenId)));
 
-    yield put(push(`/project/${id}/${finalScreenId}`));
+    if (!screenID) {
+      yield put(push(`/project/${id}/${finalScreenId}`));
+    }
   } else {
     yield put(Actions.setCurrentScreenId(-1));
   }

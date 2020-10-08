@@ -1,5 +1,6 @@
-import { Screen, StateElement, BorderedElementsRef } from './types';
-
+import { createSelector } from 'reselect';
+import * as R from 'ramda';
+import { StateElement, BorderedElementsRef } from './types';
 import {
   DEFAULT_ACTIVE_ELEMENT,
   DEFAULT_PROJECT,
@@ -51,10 +52,10 @@ export const selectCurrentScreen = (state: AppReduxState) => {
   );
 };
 
-export const selectScreens = ({ project }: AppReduxState) =>
-  mapToArr<Screen>(project.data.screens).sort(
-    (a, b) => a.buoyancy - b.buoyancy,
-  );
+export const selectScreens = createSelector(
+  (state: AppReduxState) => state.project.data.screens,
+  (screens) => R.values(screens).sort((a, b) => a.buoyancy - b.buoyancy),
+);
 
 export const selectScreensLength = (state: AppReduxState) =>
   selectScreens(state).length;
@@ -269,19 +270,31 @@ export const selectCustomLibraryElements = (
   return selectProjectState(state).data.customElementsData.results;
 };
 
-export const selectElementsForScreen = (screenId: number) => (
-  state: AppReduxState,
-) => {
+export const selectElementsForScreenById = (state, screenId) => {
   const screen = selectScreenById(screenId)(state);
   const rootId = screen.element;
   const tree = buildElementsTree(state.project.data.elements, rootId);
   return flattenElements([tree]);
 };
 
-export const selectElementsForCurrentScreen = (state: AppReduxState) => {
-  const currentScreenId = selectCurrentScreenId(state);
-  return selectElementsForScreen(currentScreenId)(state);
-};
+export const selectElementsForScreen = (screenId: number) => (
+  state: AppReduxState,
+) => selectElementsForScreenById(state, screenId);
+
+export const selectElementsForCurrentScreen = createSelector(
+  selectAllElements,
+  selectCurrentScreenId,
+  selectScreens,
+  (elements, id, screens) => {
+    const screen = screens.find((screen) => screen.id === id);
+    if (!screen) return {};
+
+    const elementId = screen.element;
+
+    const tree = buildElementsTree(elements, elementId);
+    return flattenElements([tree]);
+  },
+);
 
 export const selectBorderedElementsRef = (
   state: AppReduxState,
