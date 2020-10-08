@@ -13,16 +13,7 @@ export const apiGetScreen = (
     .then(parseResult)
     .catch(onError);
 
-export const apiGetAllScreen = (props: MyAxiosProps): Promise<Screen[]> =>
-  myAxios({
-    ...props,
-    method: 'GET',
-    url: '/projects/project-screens/',
-  })
-    .then((res) => parseResult(res).results)
-    .catch(onError);
-
-export const apiAddScreen = (props: MyAxiosProps): Promise<Screen> =>
+export const apiCreateScreen = (props: MyAxiosProps): Promise<Screen> =>
   myAxios({
     ...props,
     method: 'POST',
@@ -31,7 +22,7 @@ export const apiAddScreen = (props: MyAxiosProps): Promise<Screen> =>
     .then(parseResult)
     .catch(onError);
 
-export const apiSaveScreen = (
+export const apiUpdateScreen = (
   props: MyAxiosProps & { id: string },
 ): Promise<Screen> =>
   myAxios({
@@ -41,20 +32,3 @@ export const apiSaveScreen = (
   })
     .then(parseResult)
     .catch(onError);
-
-export const apiDelScreen = (
-  props: MyAxiosProps & { id: string },
-): Promise<Screen> =>
-  myAxios({
-    ...props,
-    method: 'DELETE',
-    url: `/projects/project-screens/${props.id}/`,
-  })
-    .then(parseResult)
-    .catch(onError);
-
-// export const apiRenameScreen = ({ id }) => (
-//   client.delete(`/projects/project-screens/${id}/`)
-//     .then(parseResult)
-//     .catch(onError)
-// );

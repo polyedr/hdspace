@@ -10,19 +10,19 @@ import { selectors, T } from '..';
 import { createContainer } from './scenario';
 import {
   selectAllElements,
+  selectCurrentProjectId,
   selectCurrentScreenId,
   selectScreenById,
   selectScreenRootElement,
 } from '../selectors';
 import {
-  apiAddScreen,
-  apiGetAllScreen,
+  apiCreateScreen,
   apiGetScreen,
-  apiSaveScreen,
+  apiUpdateScreen,
 } from '../../../api/screen';
 import { convertCreatedElementToRequest } from '../../../api/converters/toRequest';
 import { apiGetProject, apiSaveProject } from '../../../api/project';
-import { Screen, IScenarioItem, StateElement, Normalized } from '../types';
+import { Screen, StateElement, Normalized } from '../types';
 import {
   activateScreen,
   addElements,
@@ -45,12 +45,10 @@ import {
   LibraryElement,
   LibraryElementUnion,
   Project,
+  ServerElement,
 } from '../../../api/types';
 import generateUniqueName from '../../../utils/generateUniqueName';
-import {
-  apiSaveScenarios,
-  apiSetScenarioNeuralNetwork,
-} from '../../../api/scenario';
+import { apiSaveScenarios } from '../../../api/scenario';
 import { convertElementFromResponse } from '../../../api/converters/fromResponse';
 import getSavedValue from '../../../utils/getSavedValue';
 
@@ -58,8 +56,8 @@ export function* activateScreenSaga({
   payload: { screenId },
 }: ReturnType<typeof activateScreen>) {
   const currentScreenId = yield select(selectCurrentScreenId);
+  const projectId = yield select(selectCurrentProjectId);
   if (currentScreenId === screenId) return;
-
   yield put(setScreenLoader(true));
 
   yield put(setActiveElement('none'));
@@ -67,16 +65,14 @@ export function* activateScreenSaga({
   const screen: Screen = yield select(selectScreenById(screenId));
   if (!screen) return;
 
+  yield put(push(`/project/${projectId}/${screenId}`));
   yield put(setCurrentScreenId(screen.id));
-
-  yield put(Actions.setScenarioLoader(true));
 
   const screenElement = yield select(selectScreenRootElement(screenId));
   if (!screenElement) return;
 
   yield put(Actions.setActiveElement(screenElement.id));
 
-  yield put(Actions.setScenarioLoader(false));
   yield put(setScreenLoader(false));
 }
 
@@ -136,7 +132,9 @@ export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
     styles_root: {},
   };
 
-  const createdScreen: Screen = yield call(reqWrapper, apiAddScreen, { data });
+  const createdScreen: Screen = yield call(reqWrapper, apiCreateScreen, {
+    data,
+  });
 
   if (!createdScreen) {
     console.error(`Error while creating new screen for project ${projectID}`);
@@ -185,7 +183,7 @@ export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
     currentProject,
   );
 
-  const savedScreen = yield call(reqWrapper, apiSaveScreen, {
+  const savedScreen = yield call(reqWrapper, apiUpdateScreen, {
     id: screen.id,
     data: R.omit(
       ['screenLoader', 'image', 'screen_data_json', 'buoyancy'],
@@ -244,7 +242,7 @@ export function* saveScreenImageSaga({
 
   formData.append('image', blobFile, `${screenId}.png`);
 
-  const resultScreen = yield call(reqWrapper, apiSaveScreen, {
+  const resultScreen = yield call(reqWrapper, apiUpdateScreen, {
     id: screenId,
     data: formData,
   });
@@ -373,8 +371,6 @@ export function* restoreScreenSaga({
 
   yield put(setProject(updatedProject));
 
-  // yield put(addElements([convertElementFromResponse(element)]));
-
   yield put(activateScreen(screenId));
 }
 
@@ -396,7 +392,10 @@ export function* renameScreenSaga({
     name: numberedName,
   };
 
-  yield call(reqWrapper, apiSaveScreen, { id: screenID, data: renamedScreen });
+  yield call(reqWrapper, apiUpdateScreen, {
+    id: screenID,
+    data: renamedScreen,
+  });
 
   const newScreens = screens.map((screen) => {
     return screen.id === screenID ? { ...screen, name: numberedName } : screen;
@@ -405,77 +404,50 @@ export function* renameScreenSaga({
   yield put(setScreens(newScreens));
 }
 
-export function* getScreenNNSaga() {
-  // TODO why we need this saga and what doing button "Add Result Neural Network"?
-  const currentProject: ReturnType<typeof selectors.selectCurrentProject> = yield select(
-    selectors.selectCurrentProject,
+export function* getScreensSaga(ids: number[]) {
+  const screens: Screen[] = yield all(
+    ids.map((id) => call(reqWrapper, apiGetScreen, { id })),
   );
 
-  const resultListScreen: Screen[] = yield call(reqWrapper, apiGetAllScreen);
-  const lastScreenId = resultListScreen[resultListScreen.length - 1].id;
-  const data = {
-    screen: lastScreenId,
-    name: 'virtualization_vk',
-    parameters: {},
-    styles: {},
-  };
-  const resultScenario: IScenarioItem = yield call(
+  const elements: ServerElement<'root'>[] = yield call(
     reqWrapper,
-    apiSetScenarioNeuralNetwork,
-    { data },
+    apiGetElements,
+    {
+      scenariosIDs: [screens.map((screen) => screen.screenscenario)],
+    },
   );
 
-  if (currentProject.projectscreen.some((sID) => sID === resultScenario.id)) {
-    console.warn('Such screen already exists!');
-    return;
-  }
-  const newScreen = {
-    id: resultScenario.screen,
-    name: 'Neural result',
-    status: 'in_progress',
-    image: null,
-    project: currentProject.id,
-    screenscenario: [resultScenario.id],
-    screen_data_json: {},
-  };
+  yield put(
+    setScreens(
+      screens.map((screen, i) => {
+        const elementId = String(elements[i].id);
 
-  const resultScreen = yield call(reqWrapper, apiSaveScreen, {
-    id: newScreen.id,
-    data: newScreen,
-  });
+        return {
+          ...screen,
+          element: elementId,
+        };
+      }),
+    ),
+  );
 
-  const updateProject = {
-    ...currentProject,
-    projectscreen: R.append(resultScreen, currentProject.projectscreen),
-  };
-
-  const screenscenario = [resultScenario.id];
-  const [rootElement] = yield call(reqWrapper, apiGetElements, {
-    scenariosIDs: screenscenario,
-  });
-  resultScreen.element = rootElement.id;
-
-  yield all([
-    put(addElements([convertElementFromResponse(rootElement)])),
-    put(setProject(updateProject)),
-    put(updateScreen(resultScreen)),
-    put(activateScreen(lastScreenId)),
-  ]);
+  yield put(addElements(elements.map((el) => convertElementFromResponse(el))));
 }
 
-export function* getScreenSaga(screenId: number) {
-  const screen = yield call(reqWrapper, apiGetScreen, { id: screenId });
-  const [element] = yield call(reqWrapper, apiGetElements, {
-    scenariosIDs: [screen.screenscenario[0]],
-  });
+export function* changeScreensOrderSaga(
+  action: ReturnType<typeof Actions.changeScreensOrder>,
+) {
+  const { screens } = action.payload;
 
-  if (!screen || !element) {
-    console.error(`Error while fetching screen ${screenId}`);
-  }
+  yield put(setScreens(screens));
 
-  yield put(addElements([convertElementFromResponse(element)]));
-
-  screen.element = element.id.toString();
-
-  return screen;
+  yield all(
+    screens.map(({ id, buoyancy }) =>
+      call(reqWrapper, apiUpdateScreen, {
+        id,
+        data: {
+          buoyancy,
+        },
+      }),
+    ),
+  );
 }

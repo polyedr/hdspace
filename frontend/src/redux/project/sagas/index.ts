@@ -33,7 +33,6 @@ import {
 } from './scenario';
 import {
   addProjectSaga,
-  changeScreensOrderSaga,
   delProjectSaga,
   exportProjectSaga,
   getProjectListSaga,
@@ -65,7 +64,6 @@ import {
   Normalized,
   StateElement,
 } from '../types';
-
 import { LibraryElement } from '../../../api/types';
 import { openSignScreen } from '../../../utils/history';
 import { refreshUserTokenPair } from '../../user/sagas';
@@ -83,12 +81,11 @@ import {
   selectScreenRootElement,
   selectUndoActions,
 } from '../selectors';
-
 import {
   activateScreenSaga,
   addScreenSaga,
+  changeScreensOrderSaga,
   delScreenSaga,
-  getScreenNNSaga,
   renameScreenSaga,
   restoreScreenSaga,
   saveScreenImageSaga,
@@ -467,7 +464,6 @@ export default function* projectSaga() {
   yield takeEvery(TYPES.PASTE_COPIED_ELEMENT, pasteCopiedElementSaga);
 
   yield takeLatest(TYPES.UPLOAD_FILE, uploadFileSaga);
-  yield takeLatest(TYPES.GET_SCREEN_NN, getScreenNNSaga);
 
   yield takeEvery(TYPES.UNDO_ACTION, undoSaga);
   yield takeEvery(TYPES.REDO_ACTION, redoSaga);

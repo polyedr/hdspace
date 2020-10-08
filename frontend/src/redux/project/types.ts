@@ -159,10 +159,7 @@ export type DeleteProject = IAction<
   typeof TYPES.DELETE_PROJECT,
   { id: number }
 >;
-export type GetProject = IAction<
-  typeof TYPES.GET_PROJECT,
-  { id: number; screenID?: number }
->;
+export type GetProject = IAction<typeof TYPES.GET_PROJECT, { id: number }>;
 export type SetCurrentProjectId = IAction<
   typeof TYPES.SET_CURRENT_PROJECT_ID,
   { projectId: number }

@@ -8,6 +8,3 @@ export const openSignScreen = (pathname: keyof typeof PATH_NAMES.user) =>
 export const openProject = (projectId: string) => {
   history.push(`/project/${projectId}`);
 };
-
-export const openScreen = (projectId: string, screenId: string) =>
-  history.push(`/project/${projectId}/screen/${screenId}`);

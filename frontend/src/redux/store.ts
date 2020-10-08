@@ -41,7 +41,7 @@ const composeEnhancers =
 
 export const rootReducer = combineReducers({
   user: persistReducer(userPersistConfig, userReducer),
-  project: projectReducer, // persistReducer(projectPersistConfig, projectReducer),
+  project: projectReducer,
   router: connectRouter(history),
 });
 

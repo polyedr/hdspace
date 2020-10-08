@@ -33,7 +33,7 @@ const useStyles = makeStyles({
   },
 });
 
-const NewTopPanel = () => {
+const TopPanel = () => {
   const dispatch = useDispatch();
   const classes = useStyles();
   const [openEdit, setOpenEdit] = useState(false);
@@ -82,4 +82,4 @@ const NewTopPanel = () => {
   );
 };
 
-export default NewTopPanel;
+export default TopPanel;

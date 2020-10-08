@@ -1,9 +1,7 @@
 import React, { useState, useCallback, memo, useEffect } from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
-
 import { LibraryElements } from 'src/domain/libraryElements/libraryElements';
-
 import Button from '../../UI/Button';
 import Icon from '../../UI/Icon';
 import UploadFile, { IUploadFile } from '../../UI/UploadFile';
@@ -25,11 +23,7 @@ import {
   selectCustomLibraryElements,
   selectUploadedImageInfo,
 } from '../../../redux/project/selectors';
-import {
-  getScreenNN,
-  uploadFile,
-  createElements,
-} from '../../../redux/project/actions';
+import { uploadFile, createElements } from '../../../redux/project/actions';
 
 const styles = require('./ModalAddElements.scss');
 
@@ -48,7 +42,6 @@ function mapStateToProps(state: AppReduxState) {
 }
 
 const mapDispatchToProps = {
-  getScreenNN,
   uploadImg: uploadFile,
   createElements,
 };
@@ -72,7 +65,6 @@ const ModalAddElements: React.FunctionComponent<Props> = ({
   libraryElements,
   customLibraryElements,
   onClose,
-  getScreenNN,
   createElements,
   uploadImg,
   uploadedImageInfo,
@@ -211,17 +203,6 @@ const ModalAddElements: React.FunctionComponent<Props> = ({
               .
             </div>
           )}
-          {/* '-------- TEST RESULT NEURAL NETWORK --------' */}
-          <Button
-            type="primary"
-            onClick={() => {
-              getScreenNN();
-              onClose();
-            }}
-          >
-            Add Result Neural Network
-          </Button>
-          {/* '------------------- END -------------------' */}
           <p className={styles.modalTextDelimiter}>or</p>
           <ActionsBlock
             activeItem={activeItem}

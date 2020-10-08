@@ -8,7 +8,7 @@ import ResetPassword from '../components/User/ResetPassword/ResetPassword';
 import { PATH_NAMES } from '../constants/pathNames';
 import Projects from '../components/Projects/Projects';
 import Layout from '../components/Layout';
-import EditorLogic from './EditorLogic';
+import Project from './Project';
 import Profile from '../components/User/Profile';
 import { selectIsLoggedIn } from '../redux/user/selectors';
 
@@ -38,13 +38,10 @@ const Routes: React.FC = () => {
         </Layout>
       </PrivateRoute>
 
-      <PrivateRoute path="/project/:projectId/:screenId?">
+      <PrivateRoute path="/project/:projectId/">
         {({ match: { params } }: any) => (
           <Layout>
-            <EditorLogic
-              projectId={params.projectId}
-              screenId={params.screenId}
-            />
+            <Project projectId={params.projectId} />
           </Layout>
         )}
       </PrivateRoute>
