@@ -1,5 +1,6 @@
 import { mutateTree, TreeData } from '@atlaskit/tree';
-import { StateElement, Normalized } from '../../../redux/project/types';
+import { StateElement } from '../../../redux/project/types';
+import { Normalized } from '../../../api/types';
 import { Node } from './types';
 
 export const convertElements = (

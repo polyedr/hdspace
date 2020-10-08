@@ -26,7 +26,7 @@ const renderTrack = ({ style, trackStylesBg, show, ...props }: any) => {
     right: 0,
     width: '6px',
     height: '100%',
-    opacity: show ? 1 : 0,
+    opacity: show ? 1 : 0.3,
     transition: show ? 'none' : 'opacity 0.5s ease',
   };
   return (

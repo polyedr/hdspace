@@ -1,5 +1,5 @@
 import React from 'react';
-import { withRouter, Switch, Route, Redirect } from 'react-router-dom';
+import { Switch, Route, Redirect } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import Signin from '../components/User/Signin';
 import Signup from '../components/User/Signup';
@@ -60,4 +60,4 @@ const Routes: React.FC = () => {
   );
 };
 
-export default withRouter(Routes);
+export default Routes;

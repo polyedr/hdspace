@@ -10,6 +10,14 @@ export const initialData: T.ProjectDataState = {
   },
   screens: {},
   elements: {},
+  customElementsData: {
+    previous: null,
+    next: null,
+    results: [],
+    loading: false,
+    pageSize: 40,
+    currentPage: 1,
+  },
 };
 
 export const initialUi: T.ProjectUiState = {
@@ -18,9 +26,8 @@ export const initialUi: T.ProjectUiState = {
   itemToCopyInfo: null,
   savedElementsValues: {},
   showContainersBorders: false,
-  customLibraryElements: {},
-  borderedElementsRef: {},
   currentDropTargetParams: null,
+  borderedElementsRef: {},
 };
 
 export const initialEdit: T.ProjectEditState = {

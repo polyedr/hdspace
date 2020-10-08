@@ -4,7 +4,7 @@ module.exports = {
     es6: true,
     jest: true,
   },
-  extends: ['airbnb', 'prettier'],
+  extends: ['airbnb', 'prettier', 'plugin:react-hooks/recommended'],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaFeatures: {
@@ -34,7 +34,7 @@ module.exports = {
       },
     },
   ],
-  plugins: ['react', '@typescript-eslint', 'prettier', 'import'],
+  plugins: ['react', '@typescript-eslint', 'prettier', 'import', 'react-hooks'],
   rules: {
     'prettier/prettier': 'error', // use prettier to enforce code style
     'import/extensions': [

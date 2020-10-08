@@ -28,7 +28,7 @@ import { Page } from '../types';
 import { apiGetScenarios } from '../../../api/scenario';
 import { apiGetElements } from '../../../api/element';
 import { apiSaveScreen } from '../../../api/screen';
-import { PaginatedResponse, Project } from '../../../api/types';
+import { Project, Paginated } from '../../../api/types';
 import { setScreens } from '../actions';
 import { selectProjectsDataNext } from '../selectors';
 
@@ -37,15 +37,11 @@ export function* getProjectListSaga(): SagaIterator {
 
   const next: string | null = yield select(selectProjectsDataNext);
 
-  const result: PaginatedResponse<Project> = yield call(
-    reqWrapper,
-    apiGetProjectList,
-    {
-      params: {
-        cursor: next,
-      },
+  const result: Paginated<Project> = yield call(reqWrapper, apiGetProjectList, {
+    params: {
+      cursor: next,
     },
-  );
+  });
 
   if (!result) {
     yield put(Actions.setProjectListLoader(false));
@@ -82,7 +78,9 @@ export function* getProjectSaga(action: ReturnType<typeof Actions.getProject>) {
   if (finalScreenId) {
     yield put(Actions.activateScreen(Number(finalScreenId)));
 
-    yield put(push(`/project/${id}/${finalScreenId}`));
+    if (!screenID) {
+      yield put(push(`/project/${id}/${finalScreenId}`));
+    }
   } else {
     yield put(Actions.setCurrentScreenId(-1));
   }
