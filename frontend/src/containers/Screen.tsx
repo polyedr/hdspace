@@ -18,19 +18,23 @@ const useStyles = makeStyles({
   },
 });
 
-const Screen: React.FC = () => {
+type Props = {
+  screenId?: number;
+};
+
+const Screen: React.FC<Props> = ({ screenId }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const isPrototypeMode = useSelector(selectIsPrototypeMode);
 
   const screens = useSelector(selectScreens);
-  const screenId = screens[0]?.id;
+  const id = screenId || screens[0]?.id;
 
   useEffect(() => {
-    if (screenId) {
-      dispatch(activateScreen(screenId));
+    if (id) {
+      dispatch(activateScreen(id));
     }
-  }, [screenId, dispatch]);
+  }, [id, dispatch]);
 
   return (
     <div className={classes.root}>

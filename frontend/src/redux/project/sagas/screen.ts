@@ -64,7 +64,6 @@ export function* activateScreenSaga({
   yield put(setActiveElement('none'));
 
   const screen: Screen = yield select(selectScreenById(screenId));
-  if (!screen) return;
 
   yield put(push(`/project/${projectId}/${screenId}`));
   yield put(setCurrentScreenId(screen.id));

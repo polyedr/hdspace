@@ -2,7 +2,10 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import Spinner from '../components/UI/Spinner';
-import { selectProjectLoader } from '../redux/project/selectors';
+import {
+  selectCurrentProjectId,
+  selectProjectLoader,
+} from '../redux/project/selectors';
 import { getProject } from '../redux/project/actions';
 import LeftPanel from '../components/LeftPanel';
 import Screen from './Screen';
@@ -17,6 +20,7 @@ const useStyles = makeStyles({
 
 type Props = {
   projectId: number;
+  screenId?: number;
 };
 
 const ProjectLoaderSpinner = () => {
@@ -24,9 +28,10 @@ const ProjectLoaderSpinner = () => {
   return <Spinner active={projectLoader} />;
 };
 
-const Project: React.FC<Props> = ({ projectId }) => {
+const Project: React.FC<Props> = ({ projectId, screenId }) => {
   const dispatch = useDispatch();
   const classes = useStyles();
+  const currentProjectId = useSelector(selectCurrentProjectId);
 
   useEffect(() => {
     dispatch(getProject(projectId));
@@ -36,7 +41,7 @@ const Project: React.FC<Props> = ({ projectId }) => {
     <div className={classes.root}>
       <LeftPanel />
 
-      <Screen />
+      {currentProjectId !== -1 && <Screen screenId={screenId} />}
 
       <ProjectLoaderSpinner />
     </div>

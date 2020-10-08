@@ -38,10 +38,10 @@ const Routes: React.FC = () => {
         </Layout>
       </PrivateRoute>
 
-      <PrivateRoute path="/project/:projectId/">
+      <PrivateRoute path="/project/:projectId/:screenId?/">
         {({ match: { params } }: any) => (
           <Layout>
-            <Project projectId={params.projectId} />
+            <Project projectId={params.projectId} screenId={params.screenId} />
           </Layout>
         )}
       </PrivateRoute>

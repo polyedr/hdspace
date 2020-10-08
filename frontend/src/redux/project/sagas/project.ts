@@ -60,10 +60,10 @@ export function* getProjectSaga(action: ReturnType<typeof Actions.getProject>) {
   }
 
   yield put(Actions.setProject(project));
-  yield put(Actions.setCurrentProjectId(project.id));
 
   yield call(getScreensSaga, project.projectscreen);
 
+  yield put(Actions.setCurrentProjectId(project.id));
   yield put(Actions.setProjectLoader(false));
 }
 
