@@ -10,6 +10,14 @@ export const initialData: T.ProjectDataState = {
   },
   screens: {},
   elements: {},
+  customElementsData: {
+    previous: null,
+    next: null,
+    results: [],
+    loading: false,
+    pageSize: 40,
+    currentPage: 1,
+  },
 };
 
 export const initialUi: T.ProjectUiState = {
@@ -20,14 +28,6 @@ export const initialUi: T.ProjectUiState = {
   showContainersBorders: false,
   currentDropTargetParams: null,
   borderedElementsRef: {},
-  customElementsData: {
-    previous: null,
-    next: null,
-    results: [],
-    loading: false,
-    pageSize: 40,
-    currentPage: 1,
-  },
 };
 
 export const initialEdit: T.ProjectEditState = {

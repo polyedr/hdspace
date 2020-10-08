@@ -260,13 +260,13 @@ export function selectProjectLoader(state: AppReduxState): boolean {
 export function selectCustomElementsPagination(
   state: AppReduxState,
 ): Paginated<LibraryElement<Entity>> {
-  return selectProjectState(state).ui.customElementsData;
+  return selectProjectState(state).data.customElementsData;
 }
 
 export const selectCustomLibraryElements = (
   state: AppReduxState,
 ): LibraryElement<Entity>[] => {
-  return selectProjectState(state).ui.customElementsData.results;
+  return selectProjectState(state).data.customElementsData.results;
 };
 
 export const selectElementsForScreen = (screenId: number) => (
@@ -303,7 +303,7 @@ export const selectCurrentDropTargetParams = (state: AppReduxState) => {
 };
 
 export const selectCustomElementsHasNext = (state: AppReduxState) => {
-  return !!selectProjectState(state).ui.customElementsData.next;
+  return !!selectProjectState(state).data.customElementsData.next;
 };
 
 export const selectDisplayStyles = (state: AppReduxState) => {

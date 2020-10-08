@@ -50,53 +50,6 @@ function uiReducer(
       };
     }
 
-    case TYPES.UPDATE_CUSTOM_ELEMENTS_LOADING:
-      return {
-        ...state,
-        customElementsData: {
-          ...state.customElementsData,
-          loading: action.payload.loading,
-        },
-      };
-
-    case TYPES.ADD_CUSTOM_ELEMENTS_PAGE:
-      return {
-        ...state,
-        customElementsData: {
-          ...state.customElementsData,
-          next: action.payload.next,
-          previous: action.payload.next,
-          results: [
-            ...state.customElementsData.results,
-            ...action.payload.results,
-          ],
-          loading: false,
-        },
-      };
-
-    case TYPES.ADD_CUSTOM_ELEMENT:
-      return {
-        ...state,
-        customElementsData: {
-          ...state.customElementsData,
-          results: [
-            ...state.customElementsData.results,
-            action.payload.element,
-          ],
-        },
-      };
-
-    case TYPES.REMOVE_CUSTOM_ELEMENT:
-      return {
-        ...state,
-        customElementsData: {
-          ...state.customElementsData,
-          results: state.customElementsData.results.filter(
-            (el) => el.id !== action.payload.id,
-          ),
-        },
-      };
-
     case TYPES.ADD_BORDERED_ELEMENT_REF: {
       return {
         ...state,

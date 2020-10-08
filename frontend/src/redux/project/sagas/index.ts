@@ -1,7 +1,6 @@
 /* eslint-disable camelcase, no-console */
 
 import {
-  takeLeading,
   takeLatest,
   takeEvery,
   put,
@@ -470,5 +469,5 @@ export default function* projectSaga() {
   yield takeEvery(TYPES.REDO_WRAP_INTO_CONTAINER, redoWrapIntoContainerSaga);
   yield takeEvery(TYPES.SET_ACTIVE_ELEMENT, setActiveElementSaga);
   yield takeEvery(TYPES.UPDATE_ELEMENT, updateElementSaga);
-  yield takeLeading(TYPES.LOAD_CUSTOM_ELEMENTS, loadCustomElementsSaga);
+  yield takeLatest(TYPES.LOAD_CUSTOM_ELEMENTS, loadCustomElementsSaga);
 }

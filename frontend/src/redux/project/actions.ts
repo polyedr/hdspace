@@ -1,6 +1,5 @@
 import { DropPosition } from '../../constants/dragAndDrop';
 import {
-  ServerElement,
   Project,
   LibraryElement,
   LibraryElementPatch,
@@ -685,7 +684,7 @@ export const addCustomElementsPage = (
   payload: paginatedElements,
 });
 
-export const addCustomElement = (element: ServerElement<Entity>) => ({
+export const addCustomElement = (element: LibraryElement<Entity>) => ({
   type: TYPES.ADD_CUSTOM_ELEMENT,
   payload: { element },
 });

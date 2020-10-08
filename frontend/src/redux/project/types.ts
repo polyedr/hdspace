@@ -75,6 +75,7 @@ export type ProjectDataState = {
   projectsData: PaginatedData<Project>;
   screens: Normalized<Screen>;
   elements: Normalized<StateElement>;
+  customElementsData: Paginated<LibraryElement<Entity>>;
 };
 
 export type ProjectUiState = {
@@ -85,7 +86,6 @@ export type ProjectUiState = {
   showContainersBorders: boolean;
   borderedElementsRef: BorderedElementsRef;
   currentDropTargetParams: DropTargetParams | null;
-  customElementsData: Paginated<LibraryElement<Entity>>;
 };
 
 export type ProjectEditState = {

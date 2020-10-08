@@ -595,16 +595,21 @@ export function* updateElementSaga(
     yield put(Actions.setActiveElementId(elementID));
   }
 
-  const convertedElement = convertElementToPatchRequest(updatedElement);
-
   const customLibraryElements = yield select(selectCustomLibraryElements);
+  const existsInLibrary = !!customLibraryElements.find(
+    (element) => element.id === action.payload.elementID,
+  );
   if (data.shared === true) {
-    if (!customLibraryElements[action.payload.elementID]) {
-      yield put(Actions.addCustomElement(convertedElement));
+    if (!existsInLibrary) {
+      console.log('ADD CUSTOM ELEMENT!!!', updatedElement);
+      yield put(Actions.addCustomElement(updatedElement));
     }
-  } else if (customLibraryElements[action.payload.elementID]) {
+  } else if (existsInLibrary) {
     yield put(Actions.removeCustomElement(action.payload.elementID));
   }
+
+  const convertedElement = convertElementToPatchRequest(updatedElement);
+
   yield call(reqWrapper, apiChangeElement, {
     data: convertedElement,
     id: elementID,
