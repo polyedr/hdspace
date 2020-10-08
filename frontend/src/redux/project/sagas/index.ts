@@ -410,16 +410,6 @@ function* redoSaga() {
   yield put(Actions.setRedoActions([...redos.slice(1)]));
 }
 
-export function* setActiveElementSaga(
-  action: ReturnType<typeof Actions.setActiveElementId>,
-) {
-  const prevActiveElementId = yield select(selectActiveElementId);
-  if (prevActiveElementId !== action.payload) {
-    yield put(Actions.removeBorderedElementRef(prevActiveElementId));
-  }
-  yield put(Actions.setActiveElementId(action.payload));
-}
-
 export default function* projectSaga() {
   yield takeLatest(TYPES.LOAD_PROJECTS, getProjectListSaga);
   yield takeLatest(TYPES.ADD_PROJECT, addProjectSaga);
@@ -469,7 +459,6 @@ export default function* projectSaga() {
   yield takeEvery(TYPES.REDO_ACTION, redoSaga);
   yield takeEvery(TYPES.UNWRAP_FROM_CONTAINER, unwrapFromContainerSaga);
   yield takeEvery(TYPES.REDO_WRAP_INTO_CONTAINER, redoWrapIntoContainerSaga);
-  yield takeEvery(TYPES.SET_ACTIVE_ELEMENT, setActiveElementSaga);
   yield takeEvery(TYPES.UPDATE_ELEMENT, updateElementSaga);
   yield takeLeading(
     TYPES.REQUEST_CUSTOM_LIBRARY_ELEMENTS,

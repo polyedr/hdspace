@@ -385,10 +385,6 @@ export type WrapIntoContainer = IAction<
   { id: string },
   ElementHistoryMeta
 >;
-export type SetActiveElementId = IAction<
-  typeof TYPES.SET_ACTIVE_ELEMENT_ID,
-  string
->;
 export type SetActiveElement = IAction<typeof TYPES.SET_ACTIVE_ELEMENT, string>;
 export type SetCurrentDropTargetParams = IAction<
   typeof TYPES.SET_CURRENT_DROP_TARGET_PARAMS,
@@ -506,7 +502,6 @@ export type Action =
   | uploadImageForNNSuccess
   | GetScreenNN
   | WrapIntoContainer
-  | SetActiveElementId
   | SetActiveElement
   | ToggleContainersBorders
   | SetIsAddElementsModalOpened

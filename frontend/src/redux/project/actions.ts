@@ -505,11 +505,6 @@ export const wrapIntoContainer = (
   meta,
 });
 
-export const setActiveElementId = (id: string): T.SetActiveElementId => ({
-  type: TYPES.SET_ACTIVE_ELEMENT_ID,
-  payload: id,
-});
-
 export const setActiveElement = (id: string): T.SetActiveElement => ({
   type: TYPES.SET_ACTIVE_ELEMENT,
   payload: id,
