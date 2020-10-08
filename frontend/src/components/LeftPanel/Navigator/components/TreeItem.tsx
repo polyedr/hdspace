@@ -94,19 +94,6 @@ const GroupIcon = ({ onClick, icon }) => {
   );
 };
 
-const getIcon = (item, expand, collapse) => {
-  const classes = useStyles();
-
-  if (item.children?.length > 0) {
-    return item.isExpanded ? (
-      <GroupIcon icon={<ChevronDown />} onClick={() => collapse(item.id)} />
-    ) : (
-      <GroupIcon icon={<ChevronRight />} onClick={() => expand(item.id)} />
-    );
-  }
-  return <span className={classes.iconButton} />;
-};
-
 type Props = RenderItemParams & {
   expand: (itemId: string) => void;
   select: (itemId: string) => void;
@@ -160,6 +147,17 @@ const TreeItem: React.FC<Props> = (props) => {
       mouseX: ev.clientX - 2,
       mouseY: ev.clientY - 4,
     });
+  };
+
+  const getIcon = (item, expand, collapse) => {
+    if (item.children?.length > 0) {
+      return item.isExpanded ? (
+        <GroupIcon icon={<ChevronDown />} onClick={() => collapse(item.id)} />
+      ) : (
+        <GroupIcon icon={<ChevronRight />} onClick={() => expand(item.id)} />
+      );
+    }
+    return <span className={classes.iconButton} />;
   };
 
   const handleClose = () => setState(initialState);
