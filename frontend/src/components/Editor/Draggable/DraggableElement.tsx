@@ -1,75 +1,21 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { DropTargetMonitor, useDrag, useDrop, XYCoord } from 'react-dnd';
-import {
-  addBorderedElementRef,
-  moveElement,
-  setCurrentDropTargetParams,
-} from '../../../redux/project/actions';
+import { DropTargetMonitor, useDrag, useDrop } from 'react-dnd';
+import { setCurrentDropTargetParams } from '../../../redux/project/actions';
 import useElementProps from '../hooks/useElementProps';
+import useDropElement from './hooks/useDropElement';
 import { RENDERERS } from '../../UI/RenderElements';
-import ElementType from './ElementTypes';
 import {
-  selectActiveElementId,
-  selectBorderedRef,
   selectCurrentDropTargetParams,
   selectCurrentRootId,
-  selectCurrentScreenId,
   selectElementByChildId,
   selectElementById,
-  selectShowingBorders,
 } from '../../../redux/project/selectors';
-import { CONTAINER_GROUPS } from '../../../constants/defaultParams';
-import { StateElement } from '../../../redux/project/types';
 import { DropPosition } from '../../../constants/dragAndDrop';
-
-const getBlockDropPosition = (
-  dragSourceOffset: XYCoord,
-  dropTargetRect: DOMRect,
-  isContainer = false,
-): DropPosition => {
-  if (
-    dragSourceOffset.y > dropTargetRect.y &&
-    dragSourceOffset.y <
-      dropTargetRect.y + (isContainer ? 10 : dropTargetRect.height / 2)
-  ) {
-    return DropPosition.ABOVE;
-  }
-  if (
-    isContainer &&
-    dragSourceOffset.y < dropTargetRect.y + dropTargetRect.height - 10
-  ) {
-    return DropPosition.INSIDE;
-  }
-  return DropPosition.BELOW;
-};
-
-const getFlexRowDropPosition = (
-  dragSourceOffset: XYCoord,
-  dropTargetRect: DOMRect,
-  isContainer = false,
-) => {
-  if (
-    dragSourceOffset.x > dropTargetRect.x &&
-    dragSourceOffset.x <
-      dropTargetRect.x + (isContainer ? 10 : dropTargetRect.width / 2)
-  ) {
-    return DropPosition.BEFORE;
-  }
-  if (
-    isContainer &&
-    dragSourceOffset.x < dropTargetRect.x + dropTargetRect.width - 10
-  ) {
-    return DropPosition.INSIDE;
-  }
-  return DropPosition.AFTER;
-};
-
-type SyntheticElement = {
-  original: StateElement;
-  parent?: StateElement;
-  type: ElementType;
-};
+import { SyntheticElement, ElementType } from './types';
+import { CONTAINER_GROUPS } from '../../../constants/defaultParams';
+import { getFlexRowDropPosition, getBlockDropPosition } from './helper';
+import useElementBorders from './hooks/useElementBorders';
 
 type DraggableElementProps = {
   elementId: string;
@@ -83,16 +29,23 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
   const element = useSelector(selectElementById(elementId));
   const parent = useSelector(selectElementByChildId(elementId));
   const rootID = useSelector(selectCurrentRootId);
-  const screenId = useSelector(selectCurrentScreenId);
-  const activeElementId = useSelector(selectActiveElementId);
-  const showBorders = useSelector(selectShowingBorders);
   const dropTargetParams = useSelector(selectCurrentDropTargetParams);
-  const rootRef = useSelector(selectBorderedRef(rootID));
+
+  const ref = useRef<HTMLElement>() as React.MutableRefObject<HTMLElement>;
+
+  const handleDrop = useDropElement(elementId);
 
   const [
     dropDomStyles,
     setDropDomStyles,
   ] = useState<CSSStyleDeclaration | null>(null);
+
+  const isContainer = useMemo(
+    () =>
+      elementId === rootID ||
+      CONTAINER_GROUPS.includes(element.parameters.group),
+    [elementId, element, rootID],
+  );
 
   const elementProps = useElementProps(elementId);
 
@@ -109,15 +62,6 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
     return element;
   }, [element, parent, dropTargetParams]);
 
-  const isContainer = useMemo(
-    () =>
-      elementId === rootID ||
-      CONTAINER_GROUPS.includes(element.parameters.group),
-    [dropTarget],
-  );
-
-  const ref = useRef<HTMLElement>() as React.MutableRefObject<HTMLElement>;
-
   const [, drag] = useDrag({
     item: {
       original: element,
@@ -133,58 +77,10 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
   const [{ isOver, isOverArea }, drop] = useDrop({
     accept: [ElementType.ELEMENT, ElementType.CONSTRUCTOR],
     drop: (dragSource: SyntheticElement, monitor: DropTargetMonitor) => {
-      if (monitor.didDrop()) {
+      if (monitor.didDrop() || dragSource.original.id === elementId) {
         return;
       }
-      const oldIndex = dragSource.original.buoyancy;
-      // drop into same parent
-      if (dragSource.original.id === element.id) {
-        return; // drop into same position
-      }
-
-      let newIndex = 0;
-      if (dropTargetParams && dropTargetParams.position) {
-        switch (dropTargetParams.position) {
-          case DropPosition.BEFORE:
-          case DropPosition.ABOVE:
-            newIndex = element.buoyancy;
-            break;
-          case DropPosition.AFTER:
-          case DropPosition.BELOW:
-            if (
-              parent &&
-              dragSource.original.parent === element.parent &&
-              element.buoyancy === parent.children.length - 1
-            ) {
-              newIndex = element.buoyancy;
-            } else {
-              newIndex = element.buoyancy + 1;
-            }
-            break;
-          case DropPosition.INSIDE:
-            newIndex = dropTarget.children.length;
-            if (dragSource.parent?.id === dropTarget.id) {
-              newIndex -= 1;
-            }
-            break;
-          default:
-            newIndex = dropTarget.buoyancy;
-        }
-      }
-      dispatch(
-        moveElement(
-          dragSource.original.id,
-          {
-            oldIndex,
-            newIndex,
-          },
-          {
-            oldParentId: dragSource.parent?.id || '',
-            newParentId: dropTarget.id,
-          },
-          { screenId },
-        ),
-      );
+      handleDrop(dragSource, dropTarget);
     },
     canDrop: (dragSource: SyntheticElement, monitor: DropTargetMonitor) => {
       return monitor.isOver({ shallow: true });
@@ -228,6 +124,8 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
     },
   });
 
+  useElementBorders(elementId, ref);
+
   useEffect(() => {
     if (!ref.current) {
       return;
@@ -235,27 +133,6 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
     drag(ref);
     drop(ref);
   }, [ref.current]);
-
-  useEffect(() => {
-    if (ref.current && elementId === rootID && !rootRef) {
-      dispatch(addBorderedElementRef(elementId, ref));
-    }
-  });
-
-  useEffect(() => {
-    if (
-      ref.current &&
-      [dropTargetParams?.id, activeElementId, rootID].includes(elementId)
-    ) {
-      dispatch(addBorderedElementRef(elementId, ref));
-    }
-  }, [activeElementId, dropTargetParams]);
-
-  useEffect(() => {
-    if (showBorders && element.parent === rootID) {
-      dispatch(addBorderedElementRef(elementId, ref));
-    }
-  }, [showBorders]);
 
   useEffect(() => {
     if (!dropDomStyles && isOverArea) {
@@ -270,12 +147,6 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
       dispatch(setCurrentDropTargetParams(null));
     }
   }, [isOverArea, rootID, dropTargetParams]);
-
-  useEffect(() => {
-    if (ref.current && elementId === rootID) {
-      dispatch(addBorderedElementRef(elementId, ref));
-    }
-  }, [ref]);
 
   if (!element) {
     return null;
