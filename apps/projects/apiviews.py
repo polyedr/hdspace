@@ -3,25 +3,11 @@ from rest_framework import generics, viewsets, permissions, status
 from rest_framework.response import Response
 from rest_framework_bulk import ListBulkCreateUpdateDestroyAPIView, BulkModelViewSet
 from rest_framework.permissions import IsAuthenticated
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
 from rest_framework.pagination import CursorPagination
-=======
-from rest_framework_guardian import filters # Django-Guardian
-from permissions import CustomObjectPermissions
->>>>>>> implemented django-guardian, created the first testcase giving a custom permission to a user in order to view a project
-=======
-=======
->>>>>>> 14973afb8cf769f8d641147e7b24b73c924ee35b
 from rest_framework.decorators import permission_classes, action
 from rest_framework_guardian import filters # Django-Guardian
 from permissions import CustomObjectPermissions
 from django.shortcuts import get_object_or_404
-<<<<<<< HEAD
->>>>>>> Added default Token authentication for testing. Testing obj level permissions on Project model
-=======
->>>>>>> 14973afb8cf769f8d641147e7b24b73c924ee35b
 
 from .models import (
     Project,
@@ -82,27 +68,9 @@ class ProjectViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
-<<<<<<< HEAD
-<<<<<<< HEAD
     pagination_class = ProjectCursorSetPagination
-=======
     permission_classes = [CustomObjectPermissions] # Django-Guardian
     filter_backends = [filters.ObjectPermissionsFilter] # Django-Guardian
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> implemented django-guardian, created the first testcase giving a custom permission to a user in order to view a project
-
-=======
-    
->>>>>>> made external roles project dependent, added dummy permissions to ProjectTask, hadled an error at signals.py
-=======
-    
->>>>>>> made external roles project dependent, added dummy permissions to ProjectMembers, hadled an error at signals.py
-=======
-    permission_classes = [CustomObjectPermissions] # Django-Guardian
-    filter_backends = [filters.ObjectPermissionsFilter] # Django-Guardian
-    
->>>>>>> 14973afb8cf769f8d641147e7b24b73c924ee35b
     def get_queryset(self):
         user = self.request.user
         self.obj = get_object_or_404(Project, name=self.kwargs['pk'])
