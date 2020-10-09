@@ -135,15 +135,14 @@ class TeamMember(TimeStampedModel):
 
     ROLE_ADMIN = "admin"
     ROLE_MEMBER = "member"
-    MEMBER_ROLE = ((ROLE_ADMIN, "ADMIN"), (ROLE_MEMBER, "MEMBER"))
+    ADMIN_OR_MEMBER = ((ROLE_ADMIN, "ADMIN"), (ROLE_MEMBER, "MEMBER"))
 
     charge = models.DecimalField(max_digits=10, decimal_places=2)
     time_log = models.DecimalField(max_digits=10, decimal_places=2)
     position = models.CharField(max_length=250)
     date_joined = models.DateField(auto_now_add=True)
     is_active = models.BooleanField(default=False)
-    role = models.CharField(choices=MEMBER_ROLE, default=ROLE_MEMBER, max_length=64)
-
+    role = models.CharField(choices=ADMIN_OR_MEMBER, default=ROLE_MEMBER, max_length=64)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
