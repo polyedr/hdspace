@@ -2,7 +2,7 @@
 
 import { AxiosResponse, AxiosError } from 'axios';
 import { convertProjectFromResponse } from './converters/fromResponse';
-import { Project, ServerProject, Paginated } from './types';
+import { Project, ServerProject, PaginatedArray } from './types';
 
 import { myAxios, MyAxiosProps } from '../../config/settings';
 
@@ -61,13 +61,13 @@ export const parseCursor = (str: string | null) => {
 
 export const apiGetProjectList = (
   props: MyAxiosProps,
-): Promise<Paginated<Project>> =>
+): Promise<PaginatedArray<Project>> =>
   myAxios({
     ...props,
     method: 'GET',
     url: '/projects/projects/',
   })
-    .then((result: AxiosResponse<Paginated<ServerProject>>) => ({
+    .then((result: AxiosResponse<PaginatedArray<ServerProject>>) => ({
       next: parseCursor(result.data.next),
       previous: parseCursor(result.data.previous),
       results: result.data.results.map(convertProjectFromResponse),

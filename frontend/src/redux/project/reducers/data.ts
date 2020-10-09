@@ -143,11 +143,14 @@ const dataReducer = produce(
         break;
 
       case TYPES.ADD_CUSTOM_ELEMENTS_PAGE:
-        draft.customElementsData.next = action.payload.next;
-        draft.customElementsData.previous = action.payload.previous;
+        draft.customElementsData.next = action.payload.paginatedResult.next;
+        draft.customElementsData.previous =
+          action.payload.paginatedResult.previous;
         draft.customElementsData.results = [
-          ...draft.customElementsData.results,
-          ...action.payload.results,
+          ...(action.payload.initial === true
+            ? []
+            : draft.customElementsData.results),
+          ...action.payload.paginatedResult.results,
         ];
         draft.customElementsData.loading = false;
         break;
