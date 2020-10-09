@@ -18,6 +18,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='profile',
             name='internal_role',
-            field=models.CharField(choices=[('SUPERADMIN', 'SuperAdmin'), ('STAFF', 'Staff'), ('LIBRARIAN', 'Librarian')], default='any', max_length=500),
+            field=models.CharField(choices=[('STAFF', 'Staff'), ('LIBRARIAN', 'Librarian')], default='any', max_length=500),
         ),
     ]
