@@ -2,7 +2,6 @@
 
 from rest_framework import generics
 from rest_framework.pagination import CursorPagination
-
 from .models import User, Profile, Team, TeamMember
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
