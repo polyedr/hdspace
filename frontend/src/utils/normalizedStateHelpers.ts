@@ -66,13 +66,23 @@ export const addMapElements = (
   state: Normalized<StateElement>,
   elements: LibraryElement<any>[],
   parentId: string,
+  insertIndex?: number,
 ): Normalized<StateElement> => {
+  const updatedChildren: Array<string> = [];
+  if (insertIndex === undefined) {
+    updatedChildren.push(...state[parentId].children);
+    updatedChildren.push(...elements.map((el) => el.id));
+  } else {
+    updatedChildren.push(...state[parentId].children.slice(0, insertIndex));
+    updatedChildren.push(...elements.map((el) => el.id));
+    updatedChildren.push(...state[parentId].children.slice(insertIndex));
+  }
   const result = {
     ...state,
     ...flattenElements(elements, parentId),
     [parentId]: {
       ...state[parentId],
-      children: [...state[parentId].children, ...elements.map((el) => el.id)],
+      children: updatedChildren,
     },
   };
   result[parentId].children.forEach((child, i) => {

@@ -1,21 +1,30 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { DropTargetMonitor, useDrag, useDrop } from 'react-dnd';
-import { setCurrentDropTargetParams } from '../../../redux/project/actions';
+import {
+  createElements,
+  moveElement,
+  setCurrentDropTargetParams,
+} from '../../../redux/project/actions';
 import useElementProps from '../hooks/useElementProps';
-import useDropElement from './hooks/useDropElement';
 import { RENDERERS } from '../../UI/RenderElements';
 import {
   selectCurrentDropTargetParams,
   selectCurrentRootId,
+  selectCurrentScreenId,
   selectElementByChildId,
   selectElementById,
 } from '../../../redux/project/selectors';
 import { DropPosition } from '../../../constants/dragAndDrop';
 import { SyntheticElement, ElementType } from './types';
 import { CONTAINER_GROUPS } from '../../../constants/defaultParams';
-import { getFlexRowDropPosition, getBlockDropPosition } from './helper';
+import {
+  getFlexRowDropPosition,
+  getBlockDropPosition,
+  getDropIndex,
+} from './helper';
 import useElementBorders from './hooks/useElementBorders';
+import { ElementData, StateElement } from '../../../redux/project/types';
 
 type DraggableElementProps = {
   elementId: string;
@@ -30,10 +39,9 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
   const parent = useSelector(selectElementByChildId(elementId));
   const rootID = useSelector(selectCurrentRootId);
   const dropTargetParams = useSelector(selectCurrentDropTargetParams);
+  const screenId = useSelector(selectCurrentScreenId);
 
   const ref = useRef<HTMLElement>() as React.MutableRefObject<HTMLElement>;
-
-  const handleDrop = useDropElement(elementId);
 
   const [
     dropDomStyles,
@@ -67,7 +75,7 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
       original: element,
       parent,
       type: ElementType.ELEMENT,
-    } as SyntheticElement,
+    } as SyntheticElement<StateElement>,
     canDrag: () => element.id !== rootID,
     end: () => {
       dispatch(setCurrentDropTargetParams(null));
@@ -76,13 +84,62 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
 
   const [{ isOver, isOverArea }, drop] = useDrop({
     accept: [ElementType.ELEMENT, ElementType.CONSTRUCTOR],
-    drop: (dragSource: SyntheticElement, monitor: DropTargetMonitor) => {
-      if (monitor.didDrop() || dragSource.original.id === elementId) {
+    drop: (
+      dragSource: SyntheticElement<StateElement | ElementData>,
+      monitor: DropTargetMonitor,
+    ) => {
+      if (
+        monitor.didDrop() ||
+        (dragSource.type === ElementType.ELEMENT &&
+          dragSource.original.id === elementId)
+      ) {
         return;
       }
-      handleDrop(dragSource, dropTarget);
+
+      const index =
+        dropTargetParams && dropTargetParams.position
+          ? getDropIndex(
+              dropTargetParams.position,
+              dragSource,
+              dropTarget,
+              element,
+              parent,
+            )
+          : 0;
+
+      if (dragSource.type === ElementType.ELEMENT) {
+        const dragSourceEl = dragSource.original as StateElement;
+        dispatch(
+          moveElement(
+            dragSourceEl.id,
+            {
+              oldIndex: dragSourceEl.buoyancy,
+              newIndex: index,
+            },
+            {
+              oldParentId: dragSource.parent?.id || '',
+              newParentId: dropTarget.id,
+            },
+            { screenId },
+          ),
+        );
+      } else {
+        const elementData = dragSource.original as ElementData;
+        const { id, type, name, custom } = elementData;
+        dispatch(
+          createElements(
+            [{ id, type, name, custom }],
+            { screenId },
+            dropTarget.id,
+            index,
+          ),
+        );
+      }
     },
-    canDrop: (dragSource: SyntheticElement, monitor: DropTargetMonitor) => {
+    canDrop: (
+      dragSource: SyntheticElement<StateElement | ElementData>,
+      monitor: DropTargetMonitor,
+    ) => {
       return monitor.isOver({ shallow: true });
     },
     collect: (monitor: DropTargetMonitor) => {
@@ -91,7 +148,10 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
         isOverArea: monitor.isOver(),
       };
     },
-    hover: (dragSource: SyntheticElement, monitor: DropTargetMonitor) => {
+    hover: (
+      dragSource: SyntheticElement<StateElement | ElementData>,
+      monitor: DropTargetMonitor,
+    ) => {
       if (isOver) {
         let dropPosition = DropPosition.INSIDE;
         const clientOffset = monitor.getClientOffset();

@@ -1,4 +1,7 @@
 import { XYCoord } from 'react-dnd';
+import { ElementData, StateElement } from '../../../redux/project/types';
+import { SyntheticElement } from './types';
+
 import { DropPosition } from '../../../constants/dragAndDrop';
 
 export const getBlockDropPosition = (
@@ -41,4 +44,35 @@ export const getFlexRowDropPosition = (
     return DropPosition.INSIDE;
   }
   return DropPosition.AFTER;
+};
+
+export const getDropIndex = (
+  dropPosition: DropPosition,
+  dragSource: SyntheticElement<StateElement | ElementData>,
+  dropTarget: StateElement,
+  element: StateElement,
+  parent: StateElement | null,
+) => {
+  switch (dropPosition) {
+    case DropPosition.BEFORE:
+    case DropPosition.ABOVE:
+      return element.buoyancy;
+    case DropPosition.AFTER:
+    case DropPosition.BELOW:
+      if (
+        parent &&
+        (dragSource.original as StateElement).parent === parent.id &&
+        element.buoyancy === parent.children.length - 1
+      ) {
+        return element.buoyancy;
+      }
+      return element.buoyancy + 1;
+    case DropPosition.INSIDE:
+      if (dragSource.parent?.id === dropTarget.id) {
+        return dropTarget.children.length - 1;
+      }
+      return dropTarget.children.length;
+    default:
+      return dropTarget.buoyancy;
+  }
 };

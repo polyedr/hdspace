@@ -5,8 +5,8 @@ export enum ElementType {
   CONSTRUCTOR = 'constructor',
 }
 
-export type SyntheticElement = {
-  original: StateElement;
+export type SyntheticElement<T> = {
+  original: T;
   parent?: StateElement;
   type: ElementType;
 };

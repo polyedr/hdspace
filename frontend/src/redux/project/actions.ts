@@ -238,11 +238,13 @@ export const addStateElements = (
   elements: LibraryElement<any>[],
   parentId: string,
   meta: ElementHistoryMeta,
+  index?: number,
 ) => ({
   type: TYPES.ADD_STATE_ELEMENTS,
   payload: {
     elements,
     parentId,
+    index,
   },
   meta,
 });
@@ -464,9 +466,11 @@ export const deleteItem = (
 export const createElements = (
   createdElements: T.CreatedElement[],
   meta: ElementHistoryMeta,
+  parentId?: string,
+  index?: number,
 ): T.CreateElements => ({
   type: TYPES.CREATE_ELEMENTS,
-  payload: { createdElements },
+  payload: { createdElements, parentId, index },
   meta,
 });
 
