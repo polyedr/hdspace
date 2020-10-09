@@ -44,8 +44,13 @@ const dataReducer = produce(
       }
 
       case TYPES.ADD_STATE_ELEMENTS: {
-        const { elements, parentId } = action.payload;
-        draft.elements = addMapElements(draft.elements, elements, parentId);
+        const { elements, parentId, index } = action.payload;
+        draft.elements = addMapElements(
+          draft.elements,
+          elements,
+          parentId,
+          index,
+        );
         break;
       }
 

@@ -12,6 +12,7 @@ import {
   Normalized,
   PaginatedData,
   PaginatedArray,
+  ServerElement,
 } from '../../api/types';
 import { IAction, IPlainAction, IPlainFailAction } from '../../shared/redux';
 import { Entity } from '../../domain/core';
@@ -349,7 +350,7 @@ export type DeleteItem = IAction<
 >;
 export type CreateElements = IAction<
   typeof TYPES.CREATE_ELEMENTS,
-  { createdElements: CreatedElement[] },
+  { createdElements: CreatedElement[]; parentId?: string; index?: number },
   ElementHistoryMeta
 >;
 
@@ -776,4 +777,9 @@ export type ElementsHierarchy = {
 export type ParentIds = {
   oldParentId: string;
   newParentId: string;
+};
+
+export type ElementsToDrop = {
+  elements: ServerElement<Entity>[];
+  index?: number;
 };

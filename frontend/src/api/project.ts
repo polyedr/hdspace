@@ -52,11 +52,11 @@ export const onError = ({ response: r }: AxiosError) => {
 export const parseResult = <T>(result: AxiosResponse<T>) =>
   result && result.data;
 
-export const parseCursor = (str: string | null) => {
-  if (!str) return null;
-  const matches = str.match(/cursor=(.*)$/);
-  if (!matches) return null;
-  return matches[1];
+export const parseCursor = (nextUrl: string | null) => {
+  if (nextUrl === null) {
+    return null;
+  }
+  return new URL(nextUrl).searchParams.get('cursor');
 };
 
 export const apiGetProjectList = (
