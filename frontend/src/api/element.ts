@@ -4,7 +4,7 @@ import {
   RecursiveElement,
   ServerElement,
   LibraryElement,
-  Paginated,
+  PaginatedArray,
 } from './types';
 import {
   convertElementFromResponse,
@@ -31,7 +31,7 @@ export const apiGetElements = ({
 
 export const apiGetCustomLibraryElements = (
   props: MyAxiosProps,
-): Promise<Paginated<LibraryElement<Entity>>> => {
+): Promise<PaginatedArray<LibraryElement<Entity>>> => {
   return myAxios({
     ...props,
     method: 'GET',
@@ -41,7 +41,7 @@ export const apiGetCustomLibraryElements = (
     },
     url: '/projects/scenario-elements/',
   })
-    .then((res: AxiosResponse<Paginated<ServerElement<Entity>>>) => {
+    .then((res: AxiosResponse<PaginatedArray<ServerElement<Entity>>>) => {
       const { next, previous, results } = res.data;
       return {
         next,

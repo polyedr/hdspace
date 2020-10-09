@@ -1,4 +1,5 @@
 import { put, call, select } from 'redux-saga/effects';
+import { loadCustomElements } from '../actions';
 import {
   selectCustomElementsPagination,
   selectCurrentProject,
@@ -530,18 +531,18 @@ export function* uploadFileSaga({
   }
 }
 
-export function* loadCustomElementsSaga() {
+export function* loadCustomElementsSaga(
+  action: ReturnType<typeof Actions.loadCustomElements>,
+) {
   const pagination = yield select(selectCustomElementsPagination);
   yield put(Actions.updateElementsLoading(true));
-  const paginatedElements = yield call(
-    reqWrapper,
-    apiGetCustomLibraryElements,
-    {
-      params: {
-        cursor: pagination.next,
-        page_size: pagination.pageSize,
-      },
+  const paginatedResult = yield call(reqWrapper, apiGetCustomLibraryElements, {
+    params: {
+      cursor: pagination.next,
+      page_size: pagination.pageSize,
     },
+  });
+  yield put(
+    Actions.addCustomElementsPage(paginatedResult, action.payload.initial),
   );
-  yield put(Actions.addCustomElementsPage(paginatedElements));
 }

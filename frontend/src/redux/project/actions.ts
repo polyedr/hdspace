@@ -3,7 +3,7 @@ import {
   Project,
   LibraryElement,
   LibraryElementPatch,
-  Paginated,
+  PaginatedArray,
   Normalized,
 } from '../../api/types';
 import {
@@ -29,7 +29,7 @@ export const setProjectList = (projects: Project[]): T.LoadProjectsSuccess => ({
   payload: { projects },
 });
 
-export const setProjectsData = (data: Paginated<Project>) => ({
+export const setProjectsData = (data: PaginatedArray<Project>) => ({
   type: TYPES.SET_PROJECTS_DATA,
   payload: data,
 });
@@ -668,8 +668,9 @@ export const setCurrentDropTargetParams = (
   payload: { id, position },
 });
 
-export const loadCustomElements = () => ({
+export const loadCustomElements = (initial: boolean) => ({
   type: TYPES.LOAD_CUSTOM_ELEMENTS,
+  payload: { initial },
 });
 
 export const updateElementsLoading = (loading: boolean) => ({
@@ -678,10 +679,11 @@ export const updateElementsLoading = (loading: boolean) => ({
 });
 
 export const addCustomElementsPage = (
-  paginatedElements: Paginated<LibraryElement<Entity>>,
+  paginatedResult: PaginatedArray<LibraryElement<Entity>>,
+  initial: boolean,
 ) => ({
   type: TYPES.ADD_CUSTOM_ELEMENTS_PAGE,
-  payload: paginatedElements,
+  payload: { paginatedResult, initial },
 });
 
 export const addCustomElement = (element: LibraryElement<Entity>) => ({

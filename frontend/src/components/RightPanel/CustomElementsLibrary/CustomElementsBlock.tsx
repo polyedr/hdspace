@@ -26,7 +26,7 @@ const CustomElementsBlock: React.FC<{}> = () => {
   const lastDom = lastElementRef && lastElementRef.current;
 
   useEffect(() => {
-    dispatch(loadCustomElements());
+    dispatch(loadCustomElements(true));
   }, []);
 
   const elements = useMemo(
@@ -46,7 +46,7 @@ const CustomElementsBlock: React.FC<{}> = () => {
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting && hasNext) {
-          dispatch(loadCustomElements());
+          dispatch(loadCustomElements(false));
         }
       },
       {

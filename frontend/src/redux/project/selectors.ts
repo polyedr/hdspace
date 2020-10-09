@@ -9,7 +9,7 @@ import {
 } from '../../constants/defaultParams';
 import { Entity, ChildEntity } from '../../domain/core';
 import { AppReduxState } from '../../shared/types/app';
-import { Project, LibraryElement, Paginated } from '../../api/types';
+import { Project, LibraryElement, PaginatedArray } from '../../api/types';
 import { CssLikeStyles } from '../../utils/StyleHelper';
 import { makeFeatureStateSelector } from '../../shared/redux';
 import {
@@ -260,7 +260,7 @@ export function selectProjectLoader(state: AppReduxState): boolean {
 
 export function selectCustomElementsPagination(
   state: AppReduxState,
-): Paginated<LibraryElement<Entity>> {
+): PaginatedArray<LibraryElement<Entity>> {
   return selectProjectState(state).data.customElementsData;
 }
 
