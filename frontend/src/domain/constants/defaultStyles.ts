@@ -21,10 +21,10 @@ export const DEFAULT_INDENTS: ScreenIndents = {
   'margin-right': '0px',
   'margin-bottom': '0px',
   'margin-left': '0px',
-  'padding-top': '5px',
-  'padding-right': '5px',
-  'padding-bottom': '5px',
-  'padding-left': '5px',
+  'padding-top': '0px',
+  'padding-right': '0px',
+  'padding-bottom': '0px',
+  'padding-left': '0px',
 };
 
 export const DEFAULT_DISPLAY: CssLikeStyles = {

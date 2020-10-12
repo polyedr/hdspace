@@ -65,7 +65,6 @@ export const defaultContainerStyles: {
   },
   size: {
     ...DEFAULT_SIZE,
-    width: '100%',
   },
   display: {
     ...DEFAULT_DISPLAY,
@@ -96,7 +95,6 @@ export const defaultSectionStyles: {
   },
   size: {
     ...DEFAULT_SIZE,
-    width: '100%',
   },
   display: {
     ...DEFAULT_DISPLAY,
@@ -127,7 +125,6 @@ export const defaultDivBlockStyles: {
   },
   size: {
     ...DEFAULT_SIZE,
-    width: '100%',
     height: '150px',
   },
   display: {
@@ -156,8 +153,6 @@ export const defaultImageStyles: { [K in ImageControls]: CssLikeStyles } & {
   },
   size: {
     ...DEFAULT_SIZE,
-    width: 'auto',
-    height: 'auto',
   },
   border: {
     ...DEFAULT_BORDER,
@@ -175,7 +170,6 @@ export const defaultScreenshotStyles: {
   },
   size: {
     ...DEFAULT_SIZE,
-    width: '100%',
     height: '100%',
   },
   border: {
@@ -293,7 +287,6 @@ export const defaultVideoStyles: { [K in VideoControls]: CssLikeStyles } & {
   },
   size: {
     ...DEFAULT_SIZE,
-    width: '100%',
     height: 'auto',
   },
   border: {
