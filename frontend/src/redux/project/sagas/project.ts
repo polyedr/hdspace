@@ -2,16 +2,14 @@
 
 import { SagaIterator } from 'redux-saga';
 import { put, call, select, all } from 'redux-saga/effects';
-import { push } from 'connected-react-router';
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 import * as R from 'ramda';
 import * as Actions from '../actions';
-
 import { selectors, T } from '..';
 import { reqWrapper } from './index';
 import { ReturnPromisedType } from '../../../shared/types';
-import { addScreenSaga, getScreenSaga } from './screen';
+import { addScreenSaga, getScreensSaga } from './screen';
 import {
   convertCreatedProjectToRequest,
   convertProjectToPatchRequest,
@@ -27,9 +25,7 @@ import generateFontFace from '../../../utils/generateFontFace';
 import { Page } from '../types';
 import { apiGetScenarios } from '../../../api/scenario';
 import { apiGetElements } from '../../../api/element';
-import { apiSaveScreen } from '../../../api/screen';
 import { Project, PaginatedArray } from '../../../api/types';
-import { setScreens } from '../actions';
 import { selectProjectsDataNext } from '../selectors';
 
 export function* getProjectListSaga(): SagaIterator {
@@ -57,7 +53,7 @@ export function* getProjectListSaga(): SagaIterator {
 }
 
 export function* getProjectSaga(action: ReturnType<typeof Actions.getProject>) {
-  const { id, screenID } = action.payload;
+  const { id } = action.payload;
 
   yield put(Actions.setProjectLoader(true));
 
@@ -69,26 +65,9 @@ export function* getProjectSaga(action: ReturnType<typeof Actions.getProject>) {
 
   yield put(Actions.setProject(project));
 
+  yield call(getScreensSaga, project.projectscreen);
+
   yield put(Actions.setCurrentProjectId(project.id));
-
-  const screens = yield all(
-    project.projectscreen.map((screenId) => getScreenSaga(screenId)),
-  );
-
-  yield put(setScreens(screens));
-
-  const finalScreenId = screenID || project.projectscreen[0];
-
-  if (finalScreenId) {
-    yield put(Actions.activateScreen(Number(finalScreenId)));
-
-    if (!screenID) {
-      yield put(push(`/project/${id}/${finalScreenId}`));
-    }
-  } else {
-    yield put(Actions.setCurrentScreenId(-1));
-  }
-
   yield put(Actions.setProjectLoader(false));
 }
 
@@ -106,9 +85,7 @@ export function* addProjectSaga({
     return;
   }
 
-  const projects: ReturnType<typeof selectors.selectProjects> = yield select(
-    selectors.selectProjects,
-  );
+  const projects: Project[] = yield select(selectors.selectProjectsAsArr);
   yield put(Actions.setProjectList([...projects, project]));
 
   yield put(Actions.setIsAddElementsModalOpened(true));
@@ -324,9 +301,7 @@ export function* delProjectSaga({
 }: ReturnType<typeof Actions.delProject>): SagaIterator {
   yield call(reqWrapper, apiDelProject, { id });
 
-  const projectList: ReturnType<typeof selectors.selectProjects> = yield select(
-    selectors.selectProjects,
-  );
+  const projectList: Project[] = yield select(selectors.selectProjectsAsArr);
   const newProjectList: Project[] = projectList.filter(
     (project) => project.id !== id,
   );
@@ -344,25 +319,6 @@ export function* renameProjectSaga({
   });
 
   yield put(Actions.setProject(updatedProject));
-}
-
-export function* changeScreensOrderSaga(
-  action: ReturnType<typeof Actions.changeScreensOrder>,
-) {
-  const { screens } = action.payload;
-
-  yield put(setScreens(screens));
-
-  yield all(
-    screens.map(({ id, buoyancy }) =>
-      call(reqWrapper, apiSaveScreen, {
-        id,
-        data: {
-          buoyancy,
-        },
-      }),
-    ),
-  );
 }
 
 export function* updateProject(newProject: Project) {

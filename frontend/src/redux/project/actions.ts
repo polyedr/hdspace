@@ -44,9 +44,9 @@ export const delProject = (id: number): T.DeleteProject => ({
   payload: { id },
 });
 
-export const getProject = (id: number, screenID?: number): T.GetProject => ({
+export const getProject = (id: number): T.GetProject => ({
   type: TYPES.GET_PROJECT,
-  payload: { id, screenID },
+  payload: { id },
 });
 
 export const setCurrentProjectId = (
@@ -496,14 +496,6 @@ export const uploadFile = (
   meta,
 });
 
-export const uploadImageForNNSuccess = (payload: {
-  imageURL: string;
-  screenID: number;
-}): T.uploadImageForNNSuccess => ({
-  type: TYPES.UPLOAD_IMAGE_FOR_NN_SUCCESS,
-  payload,
-});
-
 export const getScreenNN = (): T.GetScreenNN => ({
   type: TYPES.GET_SCREEN_NN,
 });
@@ -515,11 +507,6 @@ export const wrapIntoContainer = (
   type: TYPES.WRAP_INTO_CONTAINER,
   payload: { id },
   meta,
-});
-
-export const setActiveElementId = (id: string): T.SetActiveElementId => ({
-  type: TYPES.SET_ACTIVE_ELEMENT_ID,
-  payload: id,
 });
 
 export const setActiveElement = (id: string): T.SetActiveElement => ({

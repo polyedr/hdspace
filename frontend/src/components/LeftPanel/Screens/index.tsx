@@ -11,6 +11,7 @@ import ScreenListItem from './ScreenListItem';
 import { addScreen, changeScreensOrder } from '../../../redux/project/actions';
 import {
   selectCurrentProjectId,
+  selectCurrentScreenId,
   selectScreens,
 } from '../../../redux/project/selectors';
 import { Scrollbar } from '../../UI';
@@ -39,6 +40,7 @@ const Screens = () => {
   const classes = useStyles();
 
   const currentProjectId = useSelector(selectCurrentProjectId);
+  const currentScreenId = useSelector(selectCurrentScreenId);
   const screens = useSelector(selectScreens);
 
   const handleAddScreen = (ev) => {
@@ -81,7 +83,12 @@ const Screens = () => {
                   {...provided.droppableProps}
                 >
                   {screens.map((screen, i) => (
-                    <ScreenListItem key={screen.id} screen={screen} index={i} />
+                    <ScreenListItem
+                      key={screen.id}
+                      screen={screen}
+                      index={i}
+                      active={screen.id === currentScreenId}
+                    />
                   ))}
                   {provided.placeholder}
                 </List>

@@ -1,6 +1,6 @@
 import React from 'react';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import NewTopPanel from './NewTopPanel';
+import TopPanel from './TopPanel';
 
 const useStyles = makeStyles({
   root: {
@@ -23,7 +23,7 @@ const Layout = ({ children }) => {
 
   return (
     <div className={classes.root}>
-      <NewTopPanel />
+      <TopPanel />
       <div className={classes.placeholder} />
 
       <div className={classes.content}>{children}</div>
