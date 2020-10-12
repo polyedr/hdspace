@@ -1,5 +1,4 @@
 import React, { memo, useEffect, useRef } from 'react';
-import * as R from 'ramda';
 import { useDispatch, useSelector } from 'react-redux';
 import Paper from '@material-ui/core/Paper';
 import makeStyles from '@material-ui/core/styles/makeStyles';
@@ -22,7 +21,6 @@ import {
   selectProjects,
   selectProjectsDataNext,
 } from '../../redux/project/selectors';
-import { Project } from '../../api/types';
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -99,9 +97,8 @@ const Projects: React.FC = () => {
     };
   }, [el]);
 
-  const sortedProjectList = R.sort(
-    R.descend((project: Project) => project.created.getTime()),
-    R.values(projects),
+  const sortedProjectList = Object.values(projects).sort(
+    (a, b) => b.created.getTime() - a.created.getTime(),
   );
 
   const handleProjectAdd = () => {

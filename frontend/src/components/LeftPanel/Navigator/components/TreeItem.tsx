@@ -96,23 +96,14 @@ const ExpandIndicator: React.FC<ExpandIndicatorProps> = ({
   const { iconButton } = useStyles();
 
   if (hasChildren) {
-    return isExpanded ? (
+    return (
       <button
         tabIndex={-1}
-        onClick={onCollapse}
+        onClick={isExpanded ? onCollapse : onExpand}
         className={iconButton}
         type="button"
       >
-        <ChevronDown />
-      </button>
-    ) : (
-      <button
-        tabIndex={-1}
-        onClick={onExpand}
-        className={iconButton}
-        type="button"
-      >
-        <ChevronRight />
+        {isExpanded ? <ChevronDown /> : <ChevronRight />}
       </button>
     );
   }
