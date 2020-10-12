@@ -25,7 +25,7 @@ import generateFontFace from '../../../utils/generateFontFace';
 import { Page } from '../types';
 import { apiGetScenarios } from '../../../api/scenario';
 import { apiGetElements } from '../../../api/element';
-import { Project, Paginated } from '../../../api/types';
+import { Project, PaginatedArray } from '../../../api/types';
 import { selectProjectsDataNext } from '../selectors';
 
 export function* getProjectListSaga(): SagaIterator {
@@ -33,11 +33,15 @@ export function* getProjectListSaga(): SagaIterator {
 
   const next: string | null = yield select(selectProjectsDataNext);
 
-  const result: Paginated<Project> = yield call(reqWrapper, apiGetProjectList, {
-    params: {
-      cursor: next,
+  const result: PaginatedArray<Project> = yield call(
+    reqWrapper,
+    apiGetProjectList,
+    {
+      params: {
+        cursor: next,
+      },
     },
-  });
+  );
 
   if (!result) {
     yield put(Actions.setProjectListLoader(false));

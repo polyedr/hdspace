@@ -233,10 +233,15 @@ function* duplicateElements(
     convertElementToRequest(item!),
   );
 
-  yield call(createElements, convertedItemsToDuplicate, targetParent, {
-    screenId,
-    undo,
-  });
+  yield call(
+    createElements,
+    { elements: convertedItemsToDuplicate },
+    targetParent,
+    {
+      screenId,
+      undo,
+    },
+  );
 }
 
 function* duplicateScreenSaga(

@@ -16,7 +16,6 @@ export const initialData: T.ProjectDataState = {
     results: [],
     loading: false,
     pageSize: 40,
-    currentPage: 1,
   },
 };
 

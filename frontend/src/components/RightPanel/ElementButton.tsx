@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect, MutableRefObject } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useDrag } from 'react-dnd';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { splitWords } from '../../utils/StringHelper';
 import Button from '../UI/Button';
@@ -10,6 +11,7 @@ import {
   selectActiveElement,
   selectCurrentScreenId,
 } from '../../redux/project/selectors';
+import { ElementType } from '../Editor/Draggable/types';
 
 type Props = {
   elementData: ElementData;
@@ -47,11 +49,24 @@ const useStyles = makeStyles({
 });
 
 const ElementButton = React.forwardRef<HTMLButtonElement, Props>(
-  ({ elementData: { id, type, name, icon: ElementIcon, custom } }, ref) => {
+  ({ elementData }, outerRef) => {
+    const { id, type, name, icon: ElementIcon, custom } = elementData;
     const dispatch = useDispatch();
     const screenId = useSelector(selectCurrentScreenId);
     const { type: activeItemType } = useSelector(selectActiveElement);
     const styles = useStyles();
+    const ref = (outerRef === null
+      ? React.createRef<HTMLButtonElement>()
+      : outerRef) as MutableRefObject<HTMLButtonElement>;
+
+    const [, drag] = useDrag({
+      item: {
+        type: ElementType.CONSTRUCTOR,
+        original: elementData,
+      },
+      canDrag: () => true,
+      end: () => ref.current && ref.current.blur(),
+    });
 
     const handleClick = () => {
       dispatch(createElements([{ id, type, name, custom }], { screenId }));
@@ -62,12 +77,28 @@ const ElementButton = React.forwardRef<HTMLButtonElement, Props>(
       (AVAILABLE_CHILDREN[activeItemType].all ||
         type in AVAILABLE_CHILDREN[activeItemType]);
 
+    useEffect(() => {
+      if (!ref?.current) {
+        return;
+      }
+      drag(ref);
+    }, [drag, ref]);
+
     return (
       <Button
         disabled={!isAvailableChild(type)}
         className={styles.elementButton}
         onClick={handleClick}
-        ref={ref}
+        ref={
+          outerRef instanceof Function
+            ? (dom: HTMLButtonElement | null) => {
+                if (dom) {
+                  drag(dom);
+                }
+                outerRef(dom);
+              }
+            : ref
+        }
       >
         {ElementIcon && <ElementIcon />}
         {splitWords(name)}

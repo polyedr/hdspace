@@ -15,7 +15,7 @@ import {
 import * as Actions from '../actions';
 import { selectors, T } from '..';
 import { updateSavedElementsValues } from './screen';
-import { ElementHistoryMeta, StateElement } from '../types';
+import { ElementHistoryMeta, StateElement, ElementsToDrop } from '../types';
 import {
   DISALLOW_ADD_ELEMENT_NOTIFICATION_TEXT,
   DISALLOW_REMOVE_ELEMENT_NOTIFICATION_TEXT,
@@ -23,7 +23,6 @@ import {
 import {
   LibraryElement,
   LibraryElementUnion,
-  ServerElement,
   Normalized,
 } from '../../../api/types';
 import { Entity } from '../../../domain/core';
@@ -113,8 +112,8 @@ export function* createContainer(scenario?: Partial<T.IScenarioItem>) {
 }
 
 export function* createElements(
-  elements: ServerElement<Entity>[],
-  parent: LibraryElement<Entity>, // TODO: need to use here parent id only
+  { elements, index }: ElementsToDrop,
+  parent: LibraryElement<Entity>,
   { screenId, undo }: ElementHistoryMeta,
 ) {
   const disallowedElements = elements.filter(
@@ -126,14 +125,10 @@ export function* createElements(
     return;
   }
 
-  const allowedElements = elements.filter((element) =>
-    isElementCanBeAdded(parent, element.struct_type),
-  );
-
   const newElements: ReturnPromisedType<typeof apiAddElements> = yield call(
     reqWrapper,
     apiAddElements,
-    { data: allowedElements },
+    { data: elements },
   );
 
   if (!undo) {
@@ -144,6 +139,19 @@ export function* createElements(
     );
   }
 
+  /* const newChildren: Array<string> = [];
+  if (index === undefined) {
+    newChildren.push(...parent.children.map((child) => child.id as string));
+    newChildren.push(...newElements.map((element) => element.id as string));
+  } else {
+    newChildren.push(
+      ...parent.children.slice(0, index).map((child) => child.id as string),
+    );
+    newChildren.push(...newElements.map((element) => element.id as string));
+    newChildren.push(
+      ...parent.children.slice(index).map((child) => child.id as string),
+    );
+  } */
   const newChildren = [
     ...parent.children.map((child) => child.id),
     ...newElements.map((element) => element.id),
@@ -160,22 +168,31 @@ export function* createElements(
   });
 
   yield put(
-    Actions.addStateElements(newElements, parent.id, {
-      screenId,
-      undo,
-      sourceAction: Actions.restoreElementChildren(
-        parent.id,
-        newElements.map((element) => element.id),
-        { screenId },
-      ),
-    }),
+    Actions.addStateElements(
+      newElements,
+      parent.id,
+      {
+        screenId,
+        undo,
+        sourceAction: Actions.restoreElementChildren(
+          parent.id,
+          newElements.map((element) => element.id),
+          { screenId },
+        ),
+      },
+      index,
+    ),
   );
 
   const updatedParent: LibraryElement<Entity> = yield select(
     selectElementAsTree(parent.id),
   );
-  const elementsWithUpdatedBuoyancy = updatedParent.children.map((child) =>
-    convertElementToPatchRequest(child),
+  const elementsWithUpdatedBuoyancy = updatedParent.children.map(
+    (child, childIndex) => {
+      const createdElement = convertElementToPatchRequest(child);
+      createdElement.buoyancy = childIndex + (index || 0);
+      return createdElement;
+    },
   );
 
   const createdElements = yield call(reqWrapper, apiSaveElements, {
@@ -196,17 +213,18 @@ export function* createElementsSaga(
     return;
   }
 
-  const { createdElements } = action.payload;
+  const { createdElements, parentId, index } = action.payload;
   const { screenId } = action.meta;
 
   const activeElementId: string = yield select(selectActiveElementId);
   const activeElementTree: LibraryElement<Entity> = yield select(
-    selectElementAsTree(activeElementId),
+    selectElementAsTree(parentId || activeElementId),
   );
 
   const customLibraryElements = yield select(
     selectors.selectCustomLibraryElements,
   );
+
   const convertedCreatedElements = createdElements.map((dEl) =>
     dEl.custom
       ? convertElementToRequest(
@@ -214,9 +232,14 @@ export function* createElementsSaga(
         )
       : convertCreatedElementToRequest(dEl.type as Entity, null),
   );
-  yield call(createElements, convertedCreatedElements, activeElementTree, {
-    screenId,
-  });
+  yield call(
+    createElements,
+    { elements: convertedCreatedElements, index },
+    activeElementTree,
+    {
+      screenId,
+    },
+  );
 }
 
 export function* addChildToElementSaga(
@@ -246,10 +269,15 @@ export function* addChildToElementSaga(
     selectElementAsTree(elementId),
   );
 
-  yield call(createElements, [convertedChildWithUpdatedParameters], element, {
-    screenId,
-    undo,
-  });
+  yield call(
+    createElements,
+    { elements: [convertedChildWithUpdatedParameters] },
+    element,
+    {
+      screenId,
+      undo,
+    },
+  );
 }
 
 export function* softDeleteSaga(action: ReturnType<typeof Actions.deleteItem>) {

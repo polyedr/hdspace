@@ -1,5 +1,5 @@
 /* eslint-disable react/button-has-type */
-import React, { memo } from 'react';
+import React from 'react';
 import classNames from 'classnames';
 
 const styles = require('./styles.scss');
@@ -45,4 +45,4 @@ const Button = React.forwardRef<HTMLButtonElement, IButtonProps>(
   ),
 );
 
-export default memo(Button);
+export default Button;

@@ -4,7 +4,7 @@ import {
   RecursiveElement,
   ServerElement,
   LibraryElement,
-  Paginated,
+  PaginatedArray,
 } from './types';
 import {
   convertElementFromResponse,
@@ -12,7 +12,7 @@ import {
 } from './converters/fromResponse';
 import { IScenarioElement } from '../redux/project/types';
 import { Entity } from '../domain/core';
-import { onError, parseResult } from './project';
+import { onError, parseResult, parseCursor } from './project';
 import { myAxios, MyAxiosProps } from '../../config/settings';
 
 export const apiGetElements = ({
@@ -31,7 +31,7 @@ export const apiGetElements = ({
 
 export const apiGetCustomLibraryElements = (
   props: MyAxiosProps,
-): Promise<Paginated<LibraryElement<Entity>>> => {
+): Promise<PaginatedArray<LibraryElement<Entity>>> => {
   return myAxios({
     ...props,
     method: 'GET',
@@ -39,13 +39,13 @@ export const apiGetCustomLibraryElements = (
       ...(props.params || {}),
       is_shared: true,
     },
-    url: '/projects/scenario-elements/',
+    url: props.url || '/projects/scenario-elements/',
   })
-    .then((res: AxiosResponse<Paginated<ServerElement<Entity>>>) => {
+    .then((res: AxiosResponse<PaginatedArray<ServerElement<Entity>>>) => {
       const { next, previous, results } = res.data;
       return {
-        next,
-        previous,
+        next: parseCursor(next),
+        previous: parseCursor(previous),
         results: results.map((result) => convertElementFromResponse(result)),
       };
     })
