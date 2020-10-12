@@ -87,7 +87,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
             "styles",
             "shared",
         )
-        ref_name = "ScenarioProjects"  # Added to avoid SwaggerGeneration Conflicts
+        ref_name = "ScenarioElements"  # Added to avoid SwaggerGeneration Conflicts
 
     def create(self, validated_data):
         # Remove nested objects to handle separately
@@ -238,7 +238,7 @@ class ScreenScenarioMultipleSerializer(
 # DRF-Guardian Test
 from rest_framework_guardian.serializers import ObjectPermissionsAssignmentMixin
 from django.contrib.auth.models import Group
-from rest_framework import permissions
+# from rest_framework import permissions
 
 
 class ProjectSerializer(ObjectPermissionsAssignmentMixin, serializers.ModelSerializer):
@@ -247,6 +247,7 @@ class ProjectSerializer(ObjectPermissionsAssignmentMixin, serializers.ModelSeria
         many=True, queryset=ProjectScreen.objects.all()
     )
     print('inside serializer, user is :' + str(user))
+
     class Meta:
         model = Project
         fields = (
@@ -272,7 +273,7 @@ class ProjectSerializer(ObjectPermissionsAssignmentMixin, serializers.ModelSeria
         current_user = self.context["request"].user
         readers = Group.objects.get(name="readers")
         supervisors = Group.objects.get(name="supervisors")
-        print('inside permission map, User is :' + str(current_user)) # Triggers only when POST
+        print('inside permission map, User is :' + str(current_user))  # Triggers only when POST
         return {
             'view_project': [current_user, readers],
             'change_project': [current_user],

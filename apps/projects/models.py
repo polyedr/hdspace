@@ -7,7 +7,7 @@ from django.urls import reverse
 from jsonfield import JSONField
 from apps.utils.models import TimeStampedModel
 from apps.accounts.utils import utils
-from rest_framework import permissions  # Django-Gardian testing Custom Permission
+# from rest_framework import permissions  # Django-Gardian testing Custom Permission
 
 
 __all__ = (
@@ -26,7 +26,7 @@ __all__ = (
 
 
 class Roles:
-     # external role should be project dependent
+    # external role should be project dependent
     EXTERNAL_ROLE_PROJECT_OWNER = "PROJECT OWNER"
     EXTERNAL_ROLE_PROJECT_MANAGER = "PROJECT MANAGER"
     EXTERNAL_ROLE_PRODUCT_MANAGER = "PRODUCT MANAGER"
@@ -45,6 +45,7 @@ class Roles:
         (EXTERNAL_ROLE_ANNOTATOR, "Can Annotate HTML elements and components"),
         (EXTERNAL_ROLE_CONTENT_MANAGER, "Can Manage contents from project text blocks"),
     )
+
 
 class Project(TimeStampedModel):
     STATUS_PAID = "paid"
@@ -211,7 +212,7 @@ class ProjectMember(TimeStampedModel):
     STATUS_CREATOR = "creator"
     STATUS_MEMBER = "member"
     MEMBER_STATUS = ((STATUS_CREATOR, "CREATOR"), (STATUS_MEMBER, "MEMBER"))
-    role = models.CharField(max_length=250, null=True, blank=True) 
+    role = models.CharField(max_length=250, null=True, blank=True)
     status = models.CharField(
         choices=MEMBER_STATUS, default=STATUS_MEMBER, max_length=32
     )
@@ -254,6 +255,7 @@ class ProjectTask(TimeStampedModel):
             ("Dummy permission 4", "Can do dummy action 4"),
             ("Dummy permission 5", "Can do dummy action 5"),
         )
+
 
 class TaskTime(TimeStampedModel):
 
@@ -434,10 +436,6 @@ class ScenarioElement(MPTTModel, TimeStampedModel):
         (CHECKBOX, "checkbox"),
         (RADIOBUTTON, "radiobutton"),
     )
-
-    # struct_type = models.CharField(
-    #     choices=HTML_ELEMENT_TYPE_CHOICES, default=DIV, max_length=250
-    # )
 
     struct_type = models.CharField(max_length=250)
 
