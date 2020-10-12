@@ -39,43 +39,25 @@ class MongoModel(models.Model):
 """
 
 
-class Role:
-    ROLE_DESIGNER = "Designer"
-    ROLE_DEVELOPER = "Developer"
-    ROLE_ADMINISTRATOR = "Administrator"
-    ROLE_MARKETING = "Marketing"
-    ROLE_EXPERT = "Expert"
-    ROLE_COMMUNICATION = "Communication"
-    USER_ROLE = (
-        (ROLE_DESIGNER, "DESIGNER"),
-        (ROLE_DEVELOPER, "DEVELOPER"),
-        (ROLE_ADMINISTRATOR, "ADMINISTRATOR"),
-        (ROLE_MARKETING, "MARKETING"),
-        (ROLE_EXPERT, "EXPERT"),
-        (ROLE_COMMUNICATION, "COMMUNICATION"),
-    )
-    INTERNAL_ROLE_STAFF = "STAFF"
-    INTERNAL_ROLE_LIBRARIAN = "LIBRARIAN"
-    USER_INTERNAL_ROLE = (
-        (INTERNAL_ROLE_STAFF, "Staff"),
-        (INTERNAL_ROLE_LIBRARIAN, "Librarian"),
-    )
-
-
 class User(AbstractUser):
+    ROLE_STAFF = "STAFF"
+    ROLE_STAFF = "ADMINISTRATOR"
+    ROLE_LIBRARIAN = "LIBRARIAN"
+    ROLE_LIBRARIAN = "EXTERNAL"
+    USER_ROLE = (
+        (ROLE_STAFF, "Staff"),
+        (ROLE_STAFF, "Administrator"),
+        (ROLE_LIBRARIAN, "Librarian"),
+        (ROLE_LIBRARIAN, "External"),
+    )
+    role = models.CharField(
+        max_length=32, choices=USER_ROLE, default=ROLE_STAFF, null=True
+    )
     email = models.EmailField(verbose_name="email address", max_length=255, unique=True)
 
 
 class Profile(TimeStampedModel):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    roles = Role()
-    default_role = models.CharField(
-        choices=roles.USER_ROLE, default="any", max_length=500
-    )
-    internal_role = models.CharField(
-        choices=roles.USER_INTERNAL_ROLE, default="any", max_length=500
-    )
-
     email_confirmation_token = models.CharField(
         max_length=64, editable=False, null=True
     )
@@ -88,8 +70,6 @@ class Profile(TimeStampedModel):
     avatar = models.ImageField(upload_to=utils.get_file_path, blank=True, null=True)
     approved = models.BooleanField(default=False)
     hourly_rate = models.IntegerField(default=0)
-
-   
 
     def get_confirmation_url(self) -> str:
         return reverse(
@@ -142,7 +122,9 @@ class TeamMember(TimeStampedModel):
     position = models.CharField(max_length=250)
     date_joined = models.DateField(auto_now_add=True)
     is_active = models.BooleanField(default=False)
-    role = models.CharField(choices=ADMIN_OR_MEMBER, default=ROLE_MEMBER, max_length=64)
+    team_member_role = models.CharField(
+        choices=ADMIN_OR_MEMBER, default=ROLE_MEMBER, max_length=64
+    )
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -154,7 +136,6 @@ class Team(TimeStampedModel):
     logo = models.ImageField(upload_to=utils.get_file_path, blank=True)
     team_name = models.CharField(max_length=250)
     available = models.BooleanField(default=False)
-
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     members = models.ManyToManyField(TeamMember)
 
