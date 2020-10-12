@@ -44,7 +44,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Profile
-        fields = ("users", "avatar", "approved", "default_role", "internal_role", "hourly_rate")
+        fields = '__all__'
 
 
 class TeamSerializer(serializers.ModelSerializer):
