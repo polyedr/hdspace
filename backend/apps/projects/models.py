@@ -24,6 +24,7 @@ __all__ = (
     "Comment",
 )
 
+
 class Roles:
      # external role should be project dependent
     EXTERNAL_ROLE_PROJECT_OWNER = "PROJECT OWNER"

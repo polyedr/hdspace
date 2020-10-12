@@ -12,32 +12,6 @@ from .utils import utils
 
 __all__ = ("User", "Profile", "Team", "TeamMember")
 
-"""
-# The abstract class converts MongoDB _id to the integer with auto-incremented value
-# Not for the Postgres
-class MongoModel(models.Model):
-    id = models.IntegerField(primary_key=True)
-
-    class Meta:
-        abstract = True
-
-    def save(self, *args, **kwargs):
-        if self.id is None:
-            self.id = self.__get_id()
-        super(MongoModel, self).save(*args, **kwargs)
-
-    def __get_id(self):
-        name = self.__class__.__name__
-        if not db_main.sequences.find_one(dict(name=name)):
-            db_main.sequences.insert_one(dict(name=name, next_id=1))
-            return 0
-        else:
-            sq = db_main.sequences.find_one_and_update(
-                {"name": name}, {"$inc": {"next_id": 1}}
-            )
-            return sq["next_id"]
-"""
-
 
 class User(AbstractUser):
     ROLE_STAFF = "STAFF"
