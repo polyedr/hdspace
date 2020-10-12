@@ -496,14 +496,6 @@ export const uploadFile = (
   meta,
 });
 
-export const uploadImageForNNSuccess = (payload: {
-  imageURL: string;
-  screenID: number;
-}): T.uploadImageForNNSuccess => ({
-  type: TYPES.UPLOAD_IMAGE_FOR_NN_SUCCESS,
-  payload,
-});
-
 export const getScreenNN = (): T.GetScreenNN => ({
   type: TYPES.GET_SCREEN_NN,
 });

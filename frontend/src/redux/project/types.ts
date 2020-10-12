@@ -441,8 +441,6 @@ export type RemoveBorderedElementRef = IAction<
   typeof TYPES.REMOVE_BORDERED_ELEMENT_REF,
   { id: string }
 >;
-
-export type ClearHistory = IPlainAction<typeof TYPES.CLEAR_HISTORY>;
 export type PopUndoAction = IPlainAction<typeof TYPES.POP_UNDO_ACTION>;
 export type PopHistory = IPlainAction<typeof TYPES.POP_HISTORY>;
 export type SetGroupActionsUp = IAction<typeof TYPES.SET_GROUP_UP, boolean>;
@@ -526,7 +524,6 @@ export type Action =
   | UnwrapFromContainer
   | RestoreElementChildren
   | RedoWrapIntoContainer
-  | ClearHistory
   | PopUndoAction
   | PopHistory
   | SetGroupActionsUp
