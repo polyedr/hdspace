@@ -198,8 +198,9 @@ export const restoreMapElementChildren = (
 ): Normalized<StateElement> =>
   produce(state, (draft) => {
     const element = draft[elementId];
+    const index = draft[childrenIds[0]].buoyancy;
 
-    element.children = childrenIds;
+    element.children.splice(index, 0, ...childrenIds);
     element.children.forEach((id, i) => {
       draft[id].buoyancy = i;
       draft[id].parent = elementId;
