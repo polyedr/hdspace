@@ -70,8 +70,8 @@ export const defaultHeadingStyles: { [K in HeadingControls]: CssLikeStyles } & {
   },
   typography: {
     ...DEFAULT_TYPOGRAPHY,
-    'font-size': '44px',
-    'line-height': '1.167',
+    'font-size': '40px',
+    'line-height': '1.1',
   },
   border: {
     ...DEFAULT_BORDER,
@@ -97,7 +97,6 @@ export const defaultParagraphStyles: {
   },
   typography: {
     ...DEFAULT_TYPOGRAPHY,
-    'font-size': '20px',
   },
   border: {
     ...DEFAULT_BORDER,
