@@ -35,9 +35,9 @@ export const defaultButtonStyles: { [K in ButtonControls]: CssLikeStyles } & {
   indents: {
     ...DEFAULT_INDENTS,
     'padding-top': '6px',
-    'padding-right': '16px',
+    'padding-right': '17px',
     'padding-bottom': '6px',
-    'padding-left': '16px',
+    'padding-left': '17px',
   },
   size: {
     ...DEFAULT_SIZE,

@@ -58,6 +58,10 @@ export const defaultContainerStyles: {
 } & { other?: CssLikeStyles } = {
   indents: {
     ...DEFAULT_INDENTS,
+    'margin-top': '3px',
+    'margin-left': '3px',
+    'margin-bottom': '3px',
+    'margin-right': '3px',
   },
   size: {
     ...DEFAULT_SIZE,

@@ -58,6 +58,8 @@ export const defaultHeadingStyles: { [K in HeadingControls]: CssLikeStyles } & {
 } = {
   indents: {
     ...DEFAULT_INDENTS,
+    'margin-top': '20px',
+    'margin-bottom': '10px',
     'padding-top': '0',
     'padding-right': '0',
     'padding-bottom': '0',
@@ -68,7 +70,7 @@ export const defaultHeadingStyles: { [K in HeadingControls]: CssLikeStyles } & {
   },
   typography: {
     ...DEFAULT_TYPOGRAPHY,
-    'font-size': '43px',
+    'font-size': '44px',
     'line-height': '1.167',
   },
   border: {
@@ -84,6 +86,7 @@ export const defaultParagraphStyles: {
 } & { other?: CssLikeStyles } = {
   indents: {
     ...DEFAULT_INDENTS,
+    'margin-bottom': '12px',
     'padding-top': '0',
     'padding-right': '0',
     'padding-bottom': '0',
@@ -94,6 +97,7 @@ export const defaultParagraphStyles: {
   },
   typography: {
     ...DEFAULT_TYPOGRAPHY,
+    'font-size': '20px',
   },
   border: {
     ...DEFAULT_BORDER,
