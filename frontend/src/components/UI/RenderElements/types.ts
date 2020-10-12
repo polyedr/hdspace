@@ -42,6 +42,18 @@ export type ScreenshotRendererProps = SharedRendererProps & {
   };
 };
 
+export type SmartContainerRendererProps = SharedRendererProps & {
+  imageUrl: string;
+  isBorderVisible: boolean;
+};
+
+export type SmartContainerRenderProps = SharedRendererProps & {
+  params: {
+    imageURL: string;
+    isBorderVisible: boolean;
+  };
+};
+
 export type MapRendererProps = SharedRendererProps & {
   params: {
     map_props: IMapProps;

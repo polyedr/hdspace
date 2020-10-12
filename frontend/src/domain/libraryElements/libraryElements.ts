@@ -28,6 +28,7 @@ import {
   root,
   makeImage,
   makeScreenshot,
+  makeSmartContainer,
   video,
   dropdown,
   undefined,
@@ -103,6 +104,7 @@ import {
   UndefinedServerElement,
   VideoServerElement,
   SectionServerElement,
+  SmartContainerServerElement,
 } from '../../api/types';
 import { Entity } from '../core';
 
@@ -124,6 +126,7 @@ export type ElementsToAdd = {
   columns: ColumnsServerElement;
   image: ImageServerElement;
   screenshot: ScreenshotServerElement;
+  smartContainer: SmartContainerServerElement;
   button: ButtonServerElement;
   hyperlink: HyperlinkServerElement;
   textinput: TextinputServerElement;
@@ -165,6 +168,7 @@ export const LIBRARY_ELEMENTS: LibraryElements = {
   subscribeForm,
   image: makeImage(),
   screenshot: makeScreenshot(),
+  smartContainer: makeSmartContainer(),
   button: makeButton(),
   hyperlink,
   textinput: makeTextinput(),
@@ -222,5 +226,6 @@ export const ICONS: Partial<
   calendar: CalendarTodayIcon,
   clock: QueryBuilderIcon,
   screenshot: CropOriginalIcon,
+  smartContainer: CropOriginalIcon,
   section: Crop75Icon,
 };

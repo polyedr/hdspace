@@ -213,6 +213,13 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
   }
 
   const ElementRenderer = RENDERERS[element.type];
+  console.log(
+    'ELEMENT TYPE!!',
+    element.name,
+    element.type,
+    !!ElementRenderer,
+    elementProps,
+  );
 
   return (
     elementProps && (

@@ -7,6 +7,7 @@ import {
   imageStyleControls,
   rootStyleControls,
   screenshotStyleControls,
+  smartContainerStyleControls,
   undefinedControls,
   videoStyleControls,
 } from '../../core';
@@ -28,6 +29,7 @@ type ContainerControls = typeof containerStyleControls[number];
 type DivBlockControls = typeof divBlockStyleControls[number];
 type ImageControls = typeof imageStyleControls[number];
 type ScreenshotControls = typeof screenshotStyleControls[number];
+type SmartContainerControls = typeof smartContainerStyleControls[number];
 type DropdownControls = typeof dropdownStyleControls[number];
 type DropdownMenuControls = typeof dropdownMenuStyleControls[number];
 type DropdownItemControls = typeof dropdownItemStyleControls[number];
@@ -177,6 +179,31 @@ export const defaultScreenshotStyles: {
   },
   backgroundSize: {
     ...DEFAULT_BACKGROUND_SIZE,
+  },
+};
+
+export const defaultSmartContainerStyles: {
+  [K in SmartContainerControls]: CssLikeStyles;
+} & { other?: CssLikeStyles } = {
+  indents: {
+    ...DEFAULT_INDENTS,
+  },
+  size: {
+    ...DEFAULT_SIZE,
+    width: '100%',
+    height: '150px',
+  },
+  display: {
+    ...DEFAULT_DISPLAY,
+  },
+  typography: {
+    ...DEFAULT_TYPOGRAPHY,
+  },
+  border: {
+    ...DEFAULT_BORDER,
+  },
+  background: {
+    ...DEFAULT_BACKGROUND,
   },
 };
 

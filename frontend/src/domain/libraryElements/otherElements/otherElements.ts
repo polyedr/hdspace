@@ -13,6 +13,7 @@ import {
   ServerElement,
   UndefinedServerElement,
   VideoServerElement,
+  SmartContainerServerElement,
 } from '../../../api/types';
 import { Entity } from '../../core';
 import { IMAGES } from '../../../constants/images';
@@ -137,6 +138,21 @@ export const makeScreenshot = ({
     ownStyles: { ...ownStyles } as Required<CssLikeStyles>,
   },
   name: 'screenshot',
+  children: [],
+});
+
+export const makeSmartContainer = (): SmartContainerServerElement => ({
+  buoyancy: 0,
+  func_type: 'smartContainer',
+  struct_type: 'smartContainer',
+  parameters: {
+    group: 'containers',
+  },
+  styles: {
+    classNames: ['smartContainer'],
+    ownStyles: {} as Required<CssLikeStyles>,
+  },
+  name: 'smartContainer',
   children: [],
 });
 

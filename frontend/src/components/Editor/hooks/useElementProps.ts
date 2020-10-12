@@ -93,6 +93,7 @@ const useElementProps = (elementId: string): ElementProps | null => {
 
     switch (element.type) {
       case 'container':
+      case 'smartContainer':
       case 'divBlock': {
         return {
           isBorderVisible,
@@ -167,6 +168,16 @@ const useElementProps = (elementId: string): ElementProps | null => {
   const groupStyles =
     projectClasses?.find((cssClass: any) => cssClass.className === groupClass)
       ?.rules || {};
+
+  if (element.name === 'smartContainer') {
+    console.log(
+      '/////////////////////////////////////////////////////////////',
+    );
+    console.log('ELEMENT!!', element);
+    console.log('GROUP CLASS!!1', groupClass, groupStyles);
+    console.log('GROUP STYLES!!', groupStyles);
+    console.log('OWN STYLES', ownStyles, styles.ownStyles);
+  }
 
   const convertedEntityStyles = convertPropCSS(entityStyles);
   const convertedGroupStyles = convertPropCSS(groupStyles);
