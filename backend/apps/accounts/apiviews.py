@@ -53,6 +53,7 @@ class ProfileDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
 
+
 @method_decorator(login_required, name='dispatch')
 class TeamMemberList(generics.ListCreateAPIView):
     """
@@ -60,6 +61,7 @@ class TeamMemberList(generics.ListCreateAPIView):
     """
     queryset = TeamMember.objects.all()
     serializer_class = TeamMemberSerializer
+
 
 @method_decorator(login_required, name='dispatch')
 class TeamMemberDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -69,6 +71,7 @@ class TeamMemberDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
     serializer_class = TeamMemberSerializer
 
+
 @method_decorator(login_required, name='dispatch')
 class TeamList(generics.ListCreateAPIView):
     """
@@ -76,6 +79,7 @@ class TeamList(generics.ListCreateAPIView):
     """
     queryset = Team.objects.all()
     serializer_class = TeamSerializer
+
 
 @method_decorator(login_required, name='dispatch')
 class TeamDetail(generics.RetrieveUpdateDestroyAPIView):
