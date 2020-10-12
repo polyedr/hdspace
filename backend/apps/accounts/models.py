@@ -6,7 +6,6 @@ from django.contrib.auth.models import AbstractUser
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.core.cache import cache
 from django.conf import settings
-
 from apps.utils.models import TimeStampedModel
 from .utils import utils
 
@@ -14,23 +13,23 @@ __all__ = ("User", "Profile", "Team", "TeamMember")
 
 
 class User(AbstractUser):
-    ROLE_STAFF = "STAFF"
-    ROLE_STAFF = "ADMINISTRATOR"
-    ROLE_LIBRARIAN = "LIBRARIAN"
-    ROLE_LIBRARIAN = "EXTERNAL"
-    USER_ROLE = (
-        (ROLE_STAFF, "Staff"),
-        (ROLE_STAFF, "Administrator"),
-        (ROLE_LIBRARIAN, "Librarian"),
-        (ROLE_LIBRARIAN, "External"),
-    )
-    role = models.CharField(
-        max_length=32, choices=USER_ROLE, default=ROLE_STAFF, null=True
-    )
     email = models.EmailField(verbose_name="email address", max_length=255, unique=True)
 
 
 class Profile(TimeStampedModel):
+    ROLE_STAFF = "STAFF"
+    ROLE_ADMINISTRATOR = "ADMINISTRATOR"
+    ROLE_LIBRARIAN = "LIBRARIAN"
+    ROLE_EXTERNAL = "EXTERNAL"
+    USER_ROLE = (
+        (ROLE_STAFF, "Staff"),
+        (ROLE_ADMINISTRATOR, "Administrator"),
+        (ROLE_LIBRARIAN, "Librarian"),
+        (ROLE_EXTERNAL, "External"),
+    )
+    role = models.CharField(
+        max_length=32, choices=USER_ROLE, default=ROLE_STAFF, null=True
+    )
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     email_confirmation_token = models.CharField(
         max_length=64, editable=False, null=True
