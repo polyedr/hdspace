@@ -47,9 +47,10 @@ export const defaultRootStyles: { [K in RootControls]: CssLikeStyles } & {
     height: '100%',
     'min-height': '100%',
     'min-width': '100%',
-    // Indents need to prevent margin collapsing
-    'padding-top': '1px',
-    'padding-bottom': '1px',
+    'padding-top': '3px',
+    'padding-left': '3px',
+    'padding-bottom': '3px',
+    'padding-right': '3px',
   },
 };
 
@@ -58,10 +59,10 @@ export const defaultContainerStyles: {
 } & { other?: CssLikeStyles } = {
   indents: {
     ...DEFAULT_INDENTS,
-    'margin-top': '3px',
-    'margin-left': '3px',
-    'margin-bottom': '3px',
-    'margin-right': '3px',
+    'padding-top': '3px',
+    'padding-left': '3px',
+    'padding-bottom': '3px',
+    'padding-right': '3px',
   },
   size: {
     ...DEFAULT_SIZE,
@@ -88,10 +89,10 @@ export const defaultSectionStyles: {
 } & { other?: CssLikeStyles } = {
   indents: {
     ...DEFAULT_INDENTS,
-    'margin-top': '3px',
-    'margin-left': '3px',
-    'margin-bottom': '3px',
-    'margin-right': '3px',
+    'padding-top': '3px',
+    'padding-left': '3px',
+    'padding-bottom': '3px',
+    'padding-right': '3px',
   },
   size: {
     ...DEFAULT_SIZE,
@@ -118,14 +119,13 @@ export const defaultDivBlockStyles: {
 } & { other?: CssLikeStyles } = {
   indents: {
     ...DEFAULT_INDENTS,
-    'margin-top': '3px',
-    'margin-left': '3px',
-    'margin-bottom': '3px',
-    'margin-right': '3px',
+    'padding-top': '3px',
+    'padding-left': '3px',
+    'padding-bottom': '3px',
+    'padding-right': '3px',
   },
   size: {
     ...DEFAULT_SIZE,
-    height: '150px',
   },
   display: {
     ...DEFAULT_DISPLAY,
@@ -146,10 +146,6 @@ export const defaultImageStyles: { [K in ImageControls]: CssLikeStyles } & {
 } = {
   indents: {
     ...DEFAULT_INDENTS,
-    'padding-top': '0',
-    'padding-right': '0',
-    'padding-bottom': '0',
-    'padding-left': '0',
   },
   size: {
     ...DEFAULT_SIZE,
@@ -223,14 +219,6 @@ export const defaultDropdownMenuStyles: {
 } & { other?: CssLikeStyles } = {
   indents: {
     ...DEFAULT_INDENTS,
-    'padding-top': '0px',
-    'padding-right': '0px',
-    'padding-bottom': '0px',
-    'padding-left': '0px',
-    'margin-top': '0px',
-    'margin-right': '0px',
-    'margin-bottom': '0px',
-    'margin-left': '0px',
   },
   size: {
     ...DEFAULT_SIZE,
@@ -280,10 +268,6 @@ export const defaultVideoStyles: { [K in VideoControls]: CssLikeStyles } & {
 } = {
   indents: {
     ...DEFAULT_INDENTS,
-    'padding-top': '0',
-    'padding-right': '0',
-    'padding-bottom': '0',
-    'padding-left': '0',
   },
   size: {
     ...DEFAULT_SIZE,

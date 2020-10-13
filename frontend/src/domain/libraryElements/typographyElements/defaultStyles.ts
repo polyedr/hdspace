@@ -29,10 +29,6 @@ export const defaultHyperlinkStyles: {
 } & { other?: CssLikeStyles } = {
   indents: {
     ...DEFAULT_INDENTS,
-    'padding-top': '0',
-    'padding-right': '0',
-    'padding-bottom': '0',
-    'padding-left': '0',
   },
   size: {
     ...DEFAULT_SIZE,
@@ -58,12 +54,8 @@ export const defaultHeadingStyles: { [K in HeadingControls]: CssLikeStyles } & {
 } = {
   indents: {
     ...DEFAULT_INDENTS,
-    'margin-top': '20px',
-    'margin-bottom': '10px',
-    'padding-top': '0',
-    'padding-right': '0',
-    'padding-bottom': '0',
-    'padding-left': '0',
+    'padding-top': '20px',
+    'padding-bottom': '10px',
   },
   size: {
     ...DEFAULT_SIZE,
@@ -86,11 +78,10 @@ export const defaultParagraphStyles: {
 } & { other?: CssLikeStyles } = {
   indents: {
     ...DEFAULT_INDENTS,
-    'margin-bottom': '12px',
-    'padding-top': '0',
-    'padding-right': '0',
-    'padding-bottom': '0',
-    'padding-left': '0',
+    'padding-top': '6px',
+    'padding-left': '3px',
+    'padding-bottom': '12px',
+    'padding-right': '3px',
   },
   size: {
     ...DEFAULT_SIZE,
@@ -111,10 +102,6 @@ export const defaultTextBlockStyles: {
 } & { other?: CssLikeStyles } = {
   indents: {
     ...DEFAULT_INDENTS,
-    'padding-top': '0',
-    'padding-right': '0',
-    'padding-bottom': '0',
-    'padding-left': '0',
   },
   size: {
     ...DEFAULT_SIZE,
@@ -135,9 +122,6 @@ export const defaultListStyles: { [K in ListControls]: CssLikeStyles } & {
 } = {
   indents: {
     ...DEFAULT_INDENTS,
-    'padding-top': '0',
-    'padding-right': '0',
-    'padding-bottom': '0',
     'padding-left': '40px',
   },
   size: {
@@ -162,10 +146,6 @@ export const defaultListItemStyles: {
 } & { other?: CssLikeStyles } = {
   indents: {
     ...DEFAULT_INDENTS,
-    'padding-top': '0',
-    'padding-right': '0',
-    'padding-bottom': '0',
-    'padding-left': '0',
   },
   size: {
     ...DEFAULT_SIZE,

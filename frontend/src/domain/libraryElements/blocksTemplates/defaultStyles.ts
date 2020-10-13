@@ -51,6 +51,10 @@ export const defaultGridStyles: {
 } = {
   indents: {
     ...DEFAULT_INDENTS,
+    'padding-top': '3px',
+    'padding-left': '3px',
+    'padding-bottom': '3px',
+    'padding-right': '3px',
   },
   size: {
     ...DEFAULT_SIZE,
@@ -76,6 +80,10 @@ export const defaultColumnStyles: {
 } = {
   indents: {
     ...DEFAULT_INDENTS,
+    'padding-top': '3px',
+    'padding-left': '3px',
+    'padding-bottom': '3px',
+    'padding-right': '3px',
   },
   size: {
     ...DEFAULT_SIZE,
