@@ -193,6 +193,7 @@ export const getRightPanelCategoryTabs = (
         },
       };
     case 'screenshot':
+    case 'smartContainer':
       return {
         templates: {
           ...(obj.templates || {}),

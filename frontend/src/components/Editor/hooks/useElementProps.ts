@@ -93,6 +93,7 @@ const useElementProps = (elementId: string): ElementProps | null => {
 
     switch (element.type) {
       case 'container':
+      case 'smartContainer':
       case 'divBlock': {
         return {
           isBorderVisible,

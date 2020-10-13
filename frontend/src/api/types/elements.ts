@@ -87,6 +87,7 @@ export type ScreenshotServerElement = ServerElement<
   [],
   ScreenshotParameters
 >;
+export type SmartContainerServerElement = ServerElement<'smartContainer'>;
 export type ButtonServerElement = ServerElement<'button', [], ButtonParameters>;
 export type HyperlinkServerElement = ServerElement<
   'hyperlink',

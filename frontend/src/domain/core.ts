@@ -31,6 +31,7 @@ export const ENTITIES: {
   grid: 'grid',
   columns: 'columns',
   screenshot: 'screenshot',
+  smartContainer: 'smartContainer',
   subscribeForm: 'subscribeForm',
   cardsSection: 'cardsSection',
   featureSection: 'featureSection',
@@ -210,6 +211,14 @@ export const screenshotStyleControls = [
   'background',
   'backgroundSize',
   'backgroundPosition',
+] as const;
+export const smartContainerStyleControls = [
+  'indents',
+  'size',
+  'display',
+  'typography',
+  'border',
+  'background',
 ] as const;
 export const selectStyleControls = [
   'indents',
@@ -448,6 +457,9 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
   screenshot: {
     root: [...screenshotStyleControls, 'screenshot'],
   },
+  smartContainer: {
+    root: smartContainerStyleControls,
+  },
   undefined: {
     root: undefinedControls,
   },
@@ -570,6 +582,12 @@ export const AVAILABLE_CHILDREN: AvailableChildren = {
     },
   },
   screenshot: {},
+  smartContainer: {
+    all: {
+      min: 0,
+      max: Infinity,
+    },
+  },
   undefined: {},
   cardsSection: {
     all: {
