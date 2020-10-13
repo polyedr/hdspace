@@ -582,6 +582,12 @@ export const AVAILABLE_CHILDREN: AvailableChildren = {
     },
   },
   screenshot: {},
+  smartContainer: {
+    all: {
+      min: 0,
+      max: Infinity,
+    },
+  },
   undefined: {},
   cardsSection: {
     all: {
