@@ -1,20 +1,15 @@
 import * as R from 'ramda';
 /* eslint-disable camelcase */
 
-import { IDropDownOptions } from '../components/UI/DropDown';
 import {
   CreatedElement,
-  ILSItem,
   IScenarioElement,
   IScenarioElements,
-  IScenarioItem,
-  IScenarios,
   ScenarioLibraryElement,
   ServerStructType,
   ElementData,
   ElementsHierarchy,
 } from '../redux/project/types';
-import { ITemplateElement } from '../constants/defaultParams';
 import { ElementEntity } from '../domain/core';
 import {
   ElementsToAdd,
@@ -33,11 +28,6 @@ export type GroupElement = {
 export interface IListCategoryEl {
   [x: string]: ScenarioLibraryElement[];
 }
-
-export const getOptionsOfListScenario = (scenarios: IScenarios) =>
-  Object.keys(scenarios).reduce((acc) => {
-    return acc;
-  }, [] as IDropDownOptions<string>[]);
 
 export const convertScenarioElements = (
   scenarioElements: IScenarioElement[],
@@ -319,35 +309,3 @@ export const getChooseElements = (
     ? chooseElements.filter((x) => x.type !== element.type)
     : [...chooseElements, element];
 };
-
-export const getCheckedElements = (listElements: ITemplateElement[]) =>
-  listElements.reduce(
-    (acc: CreatedElement[], x) =>
-      x.checked
-        ? acc.concat({
-            type: x.value.structType,
-            name: x.name,
-            custom: x.custom || false,
-          })
-        : acc,
-    [],
-  );
-
-export const scenarioItemToLS = ({
-  id,
-  struct_type,
-  parameters: { children },
-}: IScenarioItem): ILSItem => ({
-  id,
-  type: struct_type,
-  children: children || [],
-});
-
-export const elementToLS = ({
-  id,
-  struct_type,
-}: IScenarioElement): ILSItem => ({
-  id,
-  type: struct_type,
-  children: [],
-});

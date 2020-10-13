@@ -1,21 +1,8 @@
 import { getDefaultStyles } from '../domain/libraryElements/defaultStyles';
 import { LibraryElement, Project } from '../api/types';
 import { ITokenPair } from '../redux/user/types';
-import {
-  ILSItem,
-  Screen,
-  ServerStructType,
-  StateElement,
-} from '../redux/project/types';
+import { Screen, StateElement } from '../redux/project/types';
 import { CssLikeStyles } from '../utils/StyleHelper';
-
-export interface ITemplateElement {
-  label: string;
-  name: string;
-  value: { structType: ServerStructType; funcType: ServerStructType };
-  checked: boolean;
-  custom: boolean;
-}
 
 export const MIN_BORDER_WIDTH = 0;
 export const MAX_BORDER_WIDTH = 10;
@@ -46,14 +33,6 @@ export const DEFAULT_PROJECT: Project = {
         rules: getDefaultStyles('root'),
       },
     ],
-  },
-};
-
-export const DEFAULT_LS: { root: ILSItem } = {
-  root: {
-    id: -1,
-    type: 'root',
-    children: [],
   },
 };
 
@@ -98,8 +77,6 @@ export const DEFAULT_ACTIVE_ELEMENT: StateElement = {
 
 export const STATUS = ['on_hold', 'in_progress', 'review', 'approved'];
 
-export const LIST_SCENARIO_TYPE = ['container', 'root'];
-
 export const DEFAULT_SCREEN_MODE = {
   isDefaultMode: false,
   isTabletMode: false,
@@ -120,8 +97,6 @@ export const DEFAULT_AUTHORISATION_TOKEN: ITokenPair = {
   access: '',
   refresh: '',
 };
-
-export const LIST_NOT_DRAGGING = ['element'];
 
 export const CONTAINER_GROUPS = ['containers', 'custom'];
 

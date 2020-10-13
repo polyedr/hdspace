@@ -35,9 +35,9 @@ export const defaultButtonStyles: { [K in ButtonControls]: CssLikeStyles } & {
   indents: {
     ...DEFAULT_INDENTS,
     'padding-top': '6px',
-    'padding-right': '16px',
+    'padding-right': '17px',
     'padding-bottom': '6px',
-    'padding-left': '16px',
+    'padding-left': '17px',
   },
   size: {
     ...DEFAULT_SIZE,
@@ -123,10 +123,6 @@ export const defaultCheckboxStyles: {
 } & { other?: CssLikeStyles } = {
   indents: {
     ...DEFAULT_INDENTS,
-    'padding-top': '0',
-    'padding-right': '0',
-    'padding-bottom': '0',
-    'padding-left': '0',
   },
   size: {
     ...DEFAULT_SIZE,
@@ -144,10 +140,6 @@ export const defaultRadiobuttonStyles: {
 } & { other?: CssLikeStyles } = {
   indents: {
     ...DEFAULT_INDENTS,
-    'padding-top': '0',
-    'padding-right': '0',
-    'padding-bottom': '0',
-    'padding-left': '0',
   },
   size: {
     ...DEFAULT_SIZE,
@@ -165,10 +157,6 @@ export const defaultLabelStyles: { [K in LabelControls]: CssLikeStyles } & {
 } = {
   indents: {
     ...DEFAULT_INDENTS,
-    'padding-top': '0',
-    'padding-right': '0',
-    'padding-bottom': '0',
-    'padding-left': '0',
   },
   size: {
     ...DEFAULT_SIZE,
@@ -221,14 +209,6 @@ export const defaultSelectMenuStyles: {
 } & { other?: CssLikeStyles } = {
   indents: {
     ...DEFAULT_INDENTS,
-    'padding-top': '0px',
-    'padding-right': '0px',
-    'padding-bottom': '0px',
-    'padding-left': '0px',
-    'margin-top': '0px',
-    'margin-right': '0px',
-    'margin-bottom': '0px',
-    'margin-left': '0px',
   },
   size: {
     ...DEFAULT_SIZE,

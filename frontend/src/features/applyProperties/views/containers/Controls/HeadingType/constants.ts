@@ -35,7 +35,7 @@ export const HEADING_SETTINGS: Record<HeadingType, { fontSize: string }> = {
     fontSize: '52px',
   },
   h3: {
-    fontSize: '42px',
+    fontSize: '40px',
   },
   h4: {
     fontSize: '30px',
