@@ -190,7 +190,6 @@ export const defaultSmartContainerStyles: {
   },
   size: {
     ...DEFAULT_SIZE,
-    width: '100%',
     height: '150px',
   },
   display: {
