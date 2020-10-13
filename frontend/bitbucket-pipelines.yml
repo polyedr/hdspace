@@ -17,4 +17,3 @@ pipelines:
             - pipe: atlassian/firebase-deploy:0.2.4
               variables:
                 FIREBASE_TOKEN: $FIREBASE_TOKEN
-                PROJECT_ID: $FIREBASE_PROJECT
