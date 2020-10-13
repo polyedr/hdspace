@@ -169,16 +169,6 @@ const useElementProps = (elementId: string): ElementProps | null => {
     projectClasses?.find((cssClass: any) => cssClass.className === groupClass)
       ?.rules || {};
 
-  if (element.name === 'smartContainer') {
-    console.log(
-      '/////////////////////////////////////////////////////////////',
-    );
-    console.log('ELEMENT!!', element);
-    console.log('GROUP CLASS!!1', groupClass, groupStyles);
-    console.log('GROUP STYLES!!', groupStyles);
-    console.log('OWN STYLES', ownStyles, styles.ownStyles);
-  }
-
   const convertedEntityStyles = convertPropCSS(entityStyles);
   const convertedGroupStyles = convertPropCSS(groupStyles);
 

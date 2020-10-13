@@ -629,7 +629,6 @@ export function* updateElementSaga(
   );
   if (data.shared === true) {
     if (!existsInLibrary) {
-      console.log('ADD CUSTOM ELEMENT!!!', updatedElement);
       yield put(Actions.addCustomElement(updatedElement));
     }
   } else if (existsInLibrary) {

@@ -62,7 +62,6 @@ const ElementsTab = () => {
     }
   };
 
-  console.log('TEMPLATES!!', templates);
   return (
     <div className={classes.root}>
       <ToggleButtonGroup
