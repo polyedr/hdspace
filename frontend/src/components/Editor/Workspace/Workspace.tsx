@@ -20,6 +20,7 @@ import {
 import DraggableItem from '../Draggable/DraggableElement';
 import ElementsInteractions from '../ElementsInteractions/ElementsInteractions';
 import { selectIsPrototypeMode } from '../../../redux/user/selectors';
+import NewTopBar from '../TopBar/index';
 // import FreeCanvas from '../FreeCanvas';
 
 const styles = require('./Workspace.scss');
@@ -69,6 +70,7 @@ const Workspace: React.FC = () => {
 
   return (
     <div className={styles.editorWorkspace}>
+      <NewTopBar />
       <TopBar
         screenID={currentScreenId}
         isPrototypeMode={isPrototypeMode}
