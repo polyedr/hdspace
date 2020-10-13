@@ -1,5 +1,4 @@
 import { createSelector } from 'reselect';
-import * as R from 'ramda';
 import { StateElement, BorderedElementsRef } from './types';
 import {
   DEFAULT_ACTIVE_ELEMENT,
@@ -25,7 +24,7 @@ export const selectProjects = ({ project }: AppReduxState) => {
 };
 
 export const selectProjectsAsArr = createSelector(selectProjects, (projects) =>
-  R.values(projects),
+  Object.values(projects),
 );
 
 export const selectProjectsPageSize = ({ project }: AppReduxState) =>
@@ -58,7 +57,7 @@ export const selectCurrentScreen = (state: AppReduxState) => {
 
 export const selectScreens = createSelector(
   (state: AppReduxState) => state.project.data.screens,
-  (screens) => R.values(screens).sort((a, b) => a.buoyancy - b.buoyancy),
+  (screens) => Object.values(screens).sort((a, b) => a.buoyancy - b.buoyancy),
 );
 
 export const selectScreensLength = (state: AppReduxState) =>

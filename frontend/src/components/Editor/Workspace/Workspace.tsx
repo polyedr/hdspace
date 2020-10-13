@@ -20,6 +20,7 @@ import {
 import DraggableItem from '../Draggable/DraggableElement';
 import ElementsInteractions from '../ElementsInteractions/ElementsInteractions';
 import { selectIsPrototypeMode } from '../../../redux/user/selectors';
+// import FreeCanvas from '../FreeCanvas';
 
 const styles = require('./Workspace.scss');
 
@@ -90,6 +91,7 @@ const Workspace: React.FC = () => {
           )}
           autoHeightMin="100%"
         >
+          {/* <FreeCanvas /> */}
           <DraggableItem elementId={rootElementId} />
           {!isPrototypeMode && <ElementsInteractions />}
         </Scrollbar>
