@@ -620,7 +620,7 @@ export function* updateElementSaga(
   yield put(Actions.updateSavedElementValues(elementID, savedValue));
 
   if (action.payload.active) {
-    yield put(Actions.setActiveElementId(elementID));
+    yield put(Actions.setActiveElement(elementID));
   }
 
   const customLibraryElements = yield select(selectCustomLibraryElements);

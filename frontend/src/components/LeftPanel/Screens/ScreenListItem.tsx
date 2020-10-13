@@ -1,16 +1,16 @@
 import { Draggable } from 'react-beautiful-dnd';
 import React, { useState } from 'react';
-import { NavLink } from 'react-router-dom';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import { lighten } from '@material-ui/core';
 import { useDispatch } from 'react-redux';
+import cn from 'classnames';
 import Dialog from '../../UI/Dialog';
 import { Screen } from '../../../redux/project/types';
 import ScreenControls from './ScreenControls';
 import ScreenLogo from './ScreenLogo';
-import { renameScreen } from '../../../redux/project/actions';
+import { activateScreen, renameScreen } from '../../../redux/project/actions';
 
 const useStyles = makeStyles({
   listItem: {
@@ -44,9 +44,10 @@ const useStyles = makeStyles({
 type Props = {
   screen: Screen;
   index: number;
+  active: boolean;
 };
 
-const ScreenListItem: React.FC<Props> = ({ screen, index }) => {
+const ScreenListItem: React.FC<Props> = ({ screen, index, active }) => {
   const dispatch = useDispatch();
   const { name, project, id, image } = screen;
   const classes = useStyles();
@@ -64,6 +65,10 @@ const ScreenListItem: React.FC<Props> = ({ screen, index }) => {
     closeEdit();
   };
 
+  const handleClick = () => {
+    dispatch(activateScreen(screen.id));
+  };
+
   return (
     <Draggable draggableId={screen.id.toString()} index={index}>
       {(provided) => (
@@ -74,12 +79,10 @@ const ScreenListItem: React.FC<Props> = ({ screen, index }) => {
         >
           <ListItem
             button
-            component={NavLink}
-            to={`/project/${project}/${id}`}
-            activeClassName={classes.active}
+            onClick={handleClick}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
-            className={classes.listItem}
+            className={cn(classes.listItem, active && classes.active)}
           >
             <div className={classes.screenData}>
               <ListItemIcon className={classes.icon}>

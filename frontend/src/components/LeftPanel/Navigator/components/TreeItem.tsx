@@ -80,18 +80,34 @@ const useStyles = makeStyles({
   },
 });
 
-const GroupIcon = ({ onClick, icon }) => {
-  const classes = useStyles();
-  return (
-    <button
-      tabIndex={-1}
-      onClick={onClick}
-      className={classes.iconButton}
-      type="button"
-    >
-      {icon}
-    </button>
-  );
+type ExpandIndicatorProps = {
+  hasChildren: boolean;
+  isExpanded: boolean;
+  onExpand: () => void;
+  onCollapse: () => void;
+};
+
+const ExpandIndicator: React.FC<ExpandIndicatorProps> = ({
+  hasChildren,
+  isExpanded,
+  onExpand,
+  onCollapse,
+}) => {
+  const { iconButton } = useStyles();
+
+  if (hasChildren) {
+    return (
+      <button
+        tabIndex={-1}
+        onClick={isExpanded ? onCollapse : onExpand}
+        className={iconButton}
+        type="button"
+      >
+        {isExpanded ? <ChevronDown /> : <ChevronRight />}
+      </button>
+    );
+  }
+  return <span className={iconButton} />;
 };
 
 type Props = RenderItemParams & {
@@ -149,17 +165,6 @@ const TreeItem: React.FC<Props> = (props) => {
     });
   };
 
-  const getIcon = (item, expand, collapse) => {
-    if (item.children?.length > 0) {
-      return item.isExpanded ? (
-        <GroupIcon icon={<ChevronDown />} onClick={() => collapse(item.id)} />
-      ) : (
-        <GroupIcon icon={<ChevronRight />} onClick={() => expand(item.id)} />
-      );
-    }
-    return <span className={classes.iconButton} />;
-  };
-
   const handleClose = () => setState(initialState);
 
   return (
@@ -181,7 +186,14 @@ const TreeItem: React.FC<Props> = (props) => {
         ? { role: 'group', 'aria-expanded': item.isExpanded }
         : { role: 'treeitem' })}
     >
-      <span>{getIcon(item, onExpand, onCollapse)}</span>
+      <span>
+        <ExpandIndicator
+          isExpanded={!!item.isExpanded}
+          hasChildren={!!item.children.length}
+          onCollapse={() => onCollapse(item.id)}
+          onExpand={() => onExpand(item.id)}
+        />
+      </span>
 
       {ElementIcon && <ElementIcon className={classes.icon} />}
 
