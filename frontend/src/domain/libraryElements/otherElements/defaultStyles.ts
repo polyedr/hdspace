@@ -195,15 +195,21 @@ export const defaultSmartContainerStyles: {
   },
   display: {
     ...DEFAULT_DISPLAY,
+    display: 'flex',
+    'flex-direction': 'row',
+    'justify-content': 'center',
+    'align-items': 'center',
   },
   typography: {
     ...DEFAULT_TYPOGRAPHY,
   },
   border: {
     ...DEFAULT_BORDER,
+    'border-color': '#e7eaec',
   },
   background: {
     ...DEFAULT_BACKGROUND,
+    'background-color': '#e0e0e0',
   },
 };
 

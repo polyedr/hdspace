@@ -168,7 +168,9 @@ export const LIBRARY_ELEMENTS: LibraryElements = {
   subscribeForm,
   image: makeImage(),
   screenshot: makeScreenshot(),
-  smartContainer: makeSmartContainer(),
+  smartContainer: makeSmartContainer({
+    textContent: 'This is a smart wireframe',
+  }),
   button: makeButton(),
   hyperlink,
   textinput: makeTextinput(),
