@@ -73,9 +73,9 @@ class ProjectViewSet(viewsets.ModelViewSet):
     filter_backends = [filters.ObjectPermissionsFilter]  # Django-Guardian
 
     def get_queryset(self):
-        user = self.request.user
-        self.obj = get_object_or_404(Project, name=self.kwargs['pk'])
-        print(self.obj)
+        # user = self.request.user
+        # self.obj = get_object_or_404(Project, name=self.kwargs['pk'])
+        # print(self.obj)
         return self.get_serializer_class().setup_eager_loading(self.queryset)
 
     def perform_create(self, serializer):
