@@ -246,7 +246,7 @@ class ProjectSerializer(ObjectPermissionsAssignmentMixin, serializers.ModelSeria
     projectscreen = serializers.PrimaryKeyRelatedField(
         many=True, queryset=ProjectScreen.objects.all()
     )
-    print('inside serializer, user is :' + str(user))
+    # print('inside serializer, user is :' + str(user))
 
     class Meta:
         model = Project
@@ -273,7 +273,7 @@ class ProjectSerializer(ObjectPermissionsAssignmentMixin, serializers.ModelSeria
         current_user = self.context["request"].user
         readers = Group.objects.get(name="readers")
         supervisors = Group.objects.get(name="supervisors")
-        print('inside permission map, User is :' + str(current_user))  # Triggers only when POST
+        # print('inside permission map, User is :' + str(current_user))  # Triggers only when POST
         return {
             'view_project': [current_user, readers],
             'change_project': [current_user],
