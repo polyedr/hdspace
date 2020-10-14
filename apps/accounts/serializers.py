@@ -2,6 +2,7 @@
 from rest_framework import serializers
 from .models import User, Profile, Team, TeamMember
 
+
 class UserSerializer(serializers.ModelSerializer):
     # Password validation to be able to authorize
     def create(self, validated_data):
@@ -12,7 +13,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         instance = super(UserSerializer, self).update(instance, validated_data)
-        # Should chenge later for better construction than try except finally
+        # Should change later for better construction than try except finally
         try:
             instance.set_password(validated_data["password"])
         except Exception:
@@ -34,7 +35,7 @@ class UserSerializer(serializers.ModelSerializer):
             "password",
             "is_active",
         )
-        ref_name = "User Django" # Added to avoid SwaggerGeneration Conflicts
+        ref_name = "User Django"  # Added to avoid SwaggerGeneration Conflicts
         extra_kwargs = {"id": {"read_only": True}}
 
 
@@ -46,22 +47,13 @@ class ProfileSerializer(serializers.ModelSerializer):
         fields = ("users", "avatar", "approved", "role", "hourly_rate")
 
 
-"""
 class TeamSerializer(serializers.ModelSerializer):
     class Meta:
         model = Team
-        fields = (
-            # "charge",
-            # "time_log",
-            # "position",
-            # "date_joined",
-            "is_active",
-            "role",
-        )
+        fields = '__all__'
 
 
 class TeamMemberSerializer(serializers.ModelSerializer):
     class Meta:
         model = TeamMember
-        fields = ("owner", "members")
-"""
+        fields = '__all__'

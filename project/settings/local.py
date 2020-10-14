@@ -9,6 +9,8 @@ https://docs.djangoproject.com/en/2.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.0/ref/settings/
 """
+
+
 import os
 import sys
 
@@ -28,6 +30,7 @@ import apps.virtualize_simple.mask_rcnn.mrcnn.model as modellib
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = ENV.str("SECRET_KEY", "Keep it secret!")
+SILENCED_SYSTEM_CHECKS = ["auth.W004"]
 
 # SECURITY WARNING: don"t run with debug turned on in production!
 DEBUG = ENV.bool("DEBUG", True)
@@ -38,6 +41,7 @@ INTERNAL_IPS = ENV.list("INTERNAL_IPS", default=("127.0.0.1",))
 
 # Application definition
 INSTALLED_APPS = [
+    "apps",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -51,6 +55,8 @@ INSTALLED_APPS = [
     "corsheaders",
     "mptt",
     "anymail",
+    "schema_graph",
+    "guardian",
 ]
 
 EXTERNAL_APPS = ["social_django"]
@@ -86,12 +92,14 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 100,
 
     "DEFAULT_PERMISSION_CLASSES": [
-        # 'rest_framework.permissions.AllowAny',
+        # 'rest_framework.permissions.IsAuthenticated',
+        'rest_framework.permissions.AllowAny',  # Swagger is now public
     ],
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework.authentication.SessionAuthentication",
         "rest_framework.authentication.BasicAuthentication",
         "rest_framework_simplejwt.authentication.JWTAuthentication",
+        "rest_framework.authentication.TokenAuthentication",  # Check for tokens in the header
     ],
 }
 
@@ -277,12 +285,13 @@ SOCIAL_AUTH_LINKEDIN_SECRET = ENV.str("SOCIAL_AUTH_LINKEDIN_SECRET", "VNgjUOt0cg
 
 
 AUTHENTICATION_BACKENDS = (
+    "guardian.backends.ObjectPermissionBackend",  # django-guardian
     "social_core.backends.facebook.FacebookOAuth2",
     "social_core.backends.google.GoogleOAuth2",
     "social_core.backends.linkedin.LinkedinOAuth",
     "social_core.backends.twitter.TwitterOAuth",
     # "django.contrib.auth.backends.ModelBackend",
-    'django.contrib.auth.backends.AllowAllUsersModelBackend',
+    "django.contrib.auth.backends.AllowAllUsersModelBackend",
 )
 
 
@@ -317,7 +326,10 @@ SIMPLE_JWT = {
     "SLIDING_TOKEN_REFRESH_LIFETIME": timedelta(days=1),
 }
 
-white_list = ['http://localhost:8080/projects', 'https://staging-26-10.firebaseapp.com/projects']
+white_list = [
+    "http://localhost:8080/projects",
+    "https://staging-26-10.firebaseapp.com/projects",
+]
 
 # Djoser settings
 DJOSER = {
@@ -327,7 +339,7 @@ DJOSER = {
     "ACTIVATION_URL": "activate/{uid}/{token}",
     "SEND_ACTIVATION_EMAIL": True,
     "SERIALIZERS": {},
-    "SOCIAL_AUTH_ALLOWED_REDIRECT_URIS": white_list  # Redirected URL we listen on google console
+    "SOCIAL_AUTH_ALLOWED_REDIRECT_URIS": white_list,  # Redirected URL we listen on google console
 }
 
 

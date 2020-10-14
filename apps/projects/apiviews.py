@@ -4,6 +4,10 @@ from rest_framework.response import Response
 from rest_framework_bulk import ListBulkCreateUpdateDestroyAPIView, BulkModelViewSet
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.pagination import CursorPagination
+# from rest_framework.decorators import permission_classes, action
+from rest_framework_guardian import filters  # Django-Guardian
+from permissions import CustomObjectPermissions
+from django.shortcuts import get_object_or_404
 
 from .models import (
     Project,
@@ -46,6 +50,7 @@ from .serializers import (
 
 class IsOwner(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
+            print('is owner ? : ' + obj.owner == request.user)
             return obj.owner == request.user
 
 
@@ -64,8 +69,13 @@ class ProjectViewSet(viewsets.ModelViewSet):
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
     pagination_class = ProjectCursorSetPagination
+    permission_classes = [CustomObjectPermissions]  # Django-Guardian
+    filter_backends = [filters.ObjectPermissionsFilter]  # Django-Guardian
 
     def get_queryset(self):
+        # user = self.request.user
+        # self.obj = get_object_or_404(Project, name=self.kwargs['pk'])
+        # print(self.obj)
         return self.get_serializer_class().setup_eager_loading(self.queryset)
 
     def perform_create(self, serializer):

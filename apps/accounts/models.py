@@ -1,78 +1,48 @@
 import uuid
 import datetime
-
 from django.urls import reverse
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.core.cache import cache
 from django.conf import settings
-
 from apps.utils.models import TimeStampedModel
 from .utils import utils
 
 __all__ = ("User", "Profile", "Team", "TeamMember")
 
-'''
-# The abstract class converts MongoDB _id to the integer with auto-incremented value
-# Not for the Postgres
-class MongoModel(models.Model):
-    id = models.IntegerField(primary_key=True)
-
-    class Meta:
-        abstract = True
-
-    def save(self, *args, **kwargs):
-        if self.id is None:
-            self.id = self.__get_id()
-        super(MongoModel, self).save(*args, **kwargs)
-
-    def __get_id(self):
-        name = self.__class__.__name__
-        if not db_main.sequences.find_one(dict(name=name)):
-            db_main.sequences.insert_one(dict(name=name, next_id=1))
-            return 0
-        else:
-            sq = db_main.sequences.find_one_and_update(
-                {"name": name}, {"$inc": {"next_id": 1}}
-            )
-            return sq["next_id"]
-'''
-
 
 class User(AbstractUser):
-    email = models.EmailField(
-        verbose_name='email address',
-        max_length=255,
-        unique=True,
-    )
+    email = models.EmailField(verbose_name="email address", max_length=255, unique=True)
 
 
 class Profile(TimeStampedModel):
-    ROLE_DESIGNER = "Designer"
-    ROLE_DEVELOPER = "Developer"
-    ROLE_ADMINISTRATOR = "Administrator"
-    ROLE_MARKETING = "Marketing"
-    ROLE_EXPERT = "Expert"
-    ROLE_COMMUNICATION = "Communication"
+    ROLE_STAFF = "STAFF"
+    ROLE_ADMINISTRATOR = "ADMINISTRATOR"
+    ROLE_LIBRARIAN = "LIBRARIAN"
+    ROLE_EXTERNAL = "EXTERNAL"
     USER_ROLE = (
-        (ROLE_DESIGNER, "DESIGNER"),
-        (ROLE_DEVELOPER, "DEVELOPER"),
-        (ROLE_ADMINISTRATOR, "ADMINISTRATOR"),
-        (ROLE_MARKETING, "MARKETING"),
-        (ROLE_EXPERT, "EXPERT"),
-        (ROLE_COMMUNICATION, "COMMUNICATION"),
+        (ROLE_STAFF, "Staff"),
+        (ROLE_ADMINISTRATOR, "Administrator"),
+        (ROLE_LIBRARIAN, "Librarian"),
+        (ROLE_EXTERNAL, "External"),
+    )
+    role = models.CharField(
+        max_length=32, choices=USER_ROLE, default=ROLE_STAFF, null=True
+    )
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    email_confirmation_token = models.CharField(
+        max_length=64, editable=False, null=True
     )
     email_confirmation_token = models.CharField(
         max_length=64, editable=False, null=True
     )
+
     reset_password_token = models.CharField(max_length=64, editable=False, null=True)
     invitation_token = models.CharField(max_length=64, editable=False, null=True)
     avatar = models.ImageField(upload_to=utils.get_file_path, blank=True, null=True)
     approved = models.BooleanField(default=False)
-    role = models.CharField(choices=USER_ROLE, default=ROLE_DESIGNER, max_length=32)
     hourly_rate = models.IntegerField(default=0)
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     def get_confirmation_url(self) -> str:
         return reverse(
@@ -118,15 +88,16 @@ class TeamMember(TimeStampedModel):
 
     ROLE_ADMIN = "admin"
     ROLE_MEMBER = "member"
-    MEMBER_ROLE = ((ROLE_ADMIN, "ADMIN"), (ROLE_MEMBER, "MEMBER"))
+    ADMIN_OR_MEMBER = ((ROLE_ADMIN, "ADMIN"), (ROLE_MEMBER, "MEMBER"))
 
     charge = models.DecimalField(max_digits=10, decimal_places=2)
     time_log = models.DecimalField(max_digits=10, decimal_places=2)
     position = models.CharField(max_length=250)
     date_joined = models.DateField(auto_now_add=True)
     is_active = models.BooleanField(default=False)
-    role = models.CharField(choices=MEMBER_ROLE, default=ROLE_MEMBER, max_length=32)
-
+    team_member_role = models.CharField(
+        choices=ADMIN_OR_MEMBER, default=ROLE_MEMBER, max_length=64
+    )
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -138,7 +109,6 @@ class Team(TimeStampedModel):
     logo = models.ImageField(upload_to=utils.get_file_path, blank=True)
     team_name = models.CharField(max_length=250)
     available = models.BooleanField(default=False)
-
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     members = models.ManyToManyField(TeamMember)
 

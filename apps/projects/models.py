@@ -1,14 +1,13 @@
 import secrets
 import uuid
-
 from django.db import models
 from mptt.models import MPTTModel, TreeForeignKey
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from jsonfield import JSONField
-
 from apps.utils.models import TimeStampedModel
 from apps.accounts.utils import utils
+# from rest_framework import permissions  # Django-Gardian testing Custom Permission
 
 
 __all__ = (
@@ -26,11 +25,36 @@ __all__ = (
 )
 
 
+class Roles:
+    # external role should be project dependent
+    EXTERNAL_ROLE_PROJECT_OWNER = "PROJECT OWNER"
+    EXTERNAL_ROLE_PROJECT_MANAGER = "PROJECT MANAGER"
+    EXTERNAL_ROLE_PRODUCT_MANAGER = "PRODUCT MANAGER"
+    EXTERNAL_ROLE_BA = "BUSINESS ANALYST"
+    EXTERNAL_ROLE_BACKEND_DEVELOPER = "BACKEND DEVELOPER"
+    EXTERNAL_ROLE_FRONTEND_DEVELOPER = "FRONTEND DEVELOPER"
+    EXTERNAL_ROLE_ANNOTATOR = "ANNOTATOR"
+    EXTERNAL_ROLE_CONTENT_MANAGER = "CONTENT MANAGER"
+    USER_EXTERNAL_ROLE = (
+        (EXTERNAL_ROLE_PROJECT_OWNER, "Creates Projects"),
+        (EXTERNAL_ROLE_PROJECT_MANAGER, "Is Project Mangers Planning Assistant"),
+        (EXTERNAL_ROLE_PRODUCT_MANAGER, "Is Project Manager's Executive Assistant"),
+        (EXTERNAL_ROLE_BA, "Can edit the project"),
+        (EXTERNAL_ROLE_BACKEND_DEVELOPER, "Can apply backend constructor"),
+        (EXTERNAL_ROLE_FRONTEND_DEVELOPER, "Can apply frontend constructor"),
+        (EXTERNAL_ROLE_ANNOTATOR, "Can Annotate HTML elements and components"),
+        (EXTERNAL_ROLE_CONTENT_MANAGER, "Can Manage contents from project text blocks"),
+    )
+
+
 class Project(TimeStampedModel):
     STATUS_PAID = "paid"
     STATUS_PENDING = "pending"
     STATUS_CHOICES = ((STATUS_PAID, "Paid"), (STATUS_PENDING, "Pending"))
-
+    roles = Roles()
+    # external_role = models.CharField(
+    #     choices=roles.USER_EXTERNAL_ROLE, default="any", max_length=500
+    # )
     name = models.CharField(max_length=250)
     preview = models.CharField(max_length=60)
     favicon = models.ImageField(
@@ -64,6 +88,13 @@ class Project(TimeStampedModel):
 
     def __str__(self):
         return self.name
+
+    # User needs to be part of a group that has the following permission:
+    # Add custom permissions here
+    class Meta:
+        permissions = [
+            ("assign_project", "Can Assign Projects"),
+        ]
 
 
 class ProjectScreen(TimeStampedModel):
@@ -216,6 +247,15 @@ class ProjectTask(TimeStampedModel):
     def __str__(self):
         return self.title
 
+    class Meta:  # Only people with the following permissions can work on this task.
+        permissions = (
+            ("Dummy permission 1", "Can do dummy action 1"),
+            ("Dummy permission 2", "Can do dummy action 2"),
+            ("Dummy permission 3", "Can do dummy action 3"),
+            ("Dummy permission 4", "Can do dummy action 4"),
+            ("Dummy permission 5", "Can do dummy action 5"),
+        )
+
 
 class TaskTime(TimeStampedModel):
 
@@ -315,7 +355,7 @@ class ScreenScenario(TimeStampedModel):
 
     # Image field
     image = models.ImageField(
-        upload_to='uploads/', blank=True, null=True, max_length=256
+        upload_to="uploads/", blank=True, null=True, max_length=256
     )
 
     # Parent id and type
@@ -397,10 +437,6 @@ class ScenarioElement(MPTTModel, TimeStampedModel):
         (RADIOBUTTON, "radiobutton"),
     )
 
-    # struct_type = models.CharField(
-    #     choices=HTML_ELEMENT_TYPE_CHOICES, default=DIV, max_length=250
-    # )
-
     struct_type = models.CharField(max_length=250)
 
     PHONE = "phone"
@@ -463,14 +499,19 @@ class ScenarioElement(MPTTModel, TimeStampedModel):
     )
 
     direction = models.CharField(
-        choices=SCENARIO_DIRECTION_TYPE_CHOICES, default=VERTICAL, max_length=50, null=True
+        choices=SCENARIO_DIRECTION_TYPE_CHOICES,
+        default=VERTICAL,
+        max_length=50,
+        null=True,
     )
 
     scenario = models.ForeignKey(
         ScreenScenario, related_name="elements", on_delete=models.CASCADE, null=True
     )
 
-    parent = TreeForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='children')
+    parent = TreeForeignKey(
+        "self", on_delete=models.CASCADE, null=True, blank=True, related_name="children"
+    )
 
     name = models.CharField(max_length=250, null=True)
 
@@ -483,7 +524,7 @@ class ScenarioElement(MPTTModel, TimeStampedModel):
 
     # Image field
     image = models.ImageField(
-        upload_to='uploads/', blank=True, null=True, max_length=256
+        upload_to="uploads/", blank=True, null=True, max_length=256
     )
 
     # Sharing the element flag
@@ -493,7 +534,7 @@ class ScenarioElement(MPTTModel, TimeStampedModel):
         return "{}".format(self.pk)
 
     class MPTTMeta:
-        level_attr = 'mptt_level'
+        level_attr = "mptt_level"
 
 
 # Non-model model to expose the scenario library
