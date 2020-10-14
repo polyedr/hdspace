@@ -2,9 +2,10 @@
 
 from rest_framework import generics
 from rest_framework.pagination import CursorPagination
-
 from .models import User, Profile, Team, TeamMember
-from .serializers import UserSerializer, ProfileSerializer
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
+from .serializers import UserSerializer, ProfileSerializer, TeamMemberSerializer, TeamSerializer
 
 
 class UserCursorSetPagination(CursorPagination):
@@ -53,7 +54,7 @@ class ProfileDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ProfileSerializer
 
 
-'''
+@method_decorator(login_required, name='dispatch')
 class TeamMemberList(generics.ListCreateAPIView):
     """
     List all team members, or create a new team member.
@@ -62,6 +63,7 @@ class TeamMemberList(generics.ListCreateAPIView):
     serializer_class = TeamMemberSerializer
 
 
+@method_decorator(login_required, name='dispatch')
 class TeamMemberDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     Retrieve, update or delete a team member
@@ -70,6 +72,7 @@ class TeamMemberDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = TeamMemberSerializer
 
 
+@method_decorator(login_required, name='dispatch')
 class TeamList(generics.ListCreateAPIView):
     """
     List all teams, or create a new team.
@@ -78,10 +81,10 @@ class TeamList(generics.ListCreateAPIView):
     serializer_class = TeamSerializer
 
 
+@method_decorator(login_required, name='dispatch')
 class TeamDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     Retrieve, update or delete a team
     """
     queryset = Team.objects.all()
     serializer_class = TeamSerializer
-'''
