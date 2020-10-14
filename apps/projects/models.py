@@ -52,9 +52,9 @@ class Project(TimeStampedModel):
     STATUS_PENDING = "pending"
     STATUS_CHOICES = ((STATUS_PAID, "Paid"), (STATUS_PENDING, "Pending"))
     roles = Roles()
-    external_role = models.CharField(
-        choices=roles.USER_EXTERNAL_ROLE, default="any", max_length=500
-    )
+    # external_role = models.CharField(
+    #     choices=roles.USER_EXTERNAL_ROLE, default="any", max_length=500
+    # )
     name = models.CharField(max_length=250)
     preview = models.CharField(max_length=60)
     favicon = models.ImageField(
