@@ -125,14 +125,6 @@ export type CreatedElement = {
   custom: boolean;
 };
 
-/* export type LoadLibraryElements = IPlainAction<
-  typeof TYPES.GET_LIBRARY_ELEMENTS
->;
-
-export type LoadLibraryElementsSuccess = IAction<
-  typeof TYPES.LOAD_LIBRARY_ELEMENTS_SUCCESS,
-  { libraryElements: LibraryElements }
->; */
 export type LoadLibraryElementsFail = IPlainFailAction<
   'PROJECTS:LOAD_LIBRARY_ELEMENTS_FAIL'
 >;

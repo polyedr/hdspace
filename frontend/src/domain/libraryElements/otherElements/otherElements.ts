@@ -1,7 +1,4 @@
-import {
-  makeParagraph,
-  makeHeading,
-} from '../typographyElements/typographyElements';
+import { makeParagraph } from '../typographyElements/typographyElements';
 import {
   ColumnsServerElement,
   ContainerServerElement,
@@ -144,9 +141,7 @@ export const makeScreenshot = ({
   children: [],
 });
 
-export const makeSmartContainer = ({
-  textContent,
-}): SmartContainerServerElement => ({
+export const makeSmartContainer = (): SmartContainerServerElement => ({
   buoyancy: 0,
   func_type: 'smartContainer',
   struct_type: 'smartContainer',
@@ -158,16 +153,7 @@ export const makeSmartContainer = ({
     ownStyles: {} as Required<CssLikeStyles>,
   },
   name: 'smartContainer',
-  children: [
-    makeHeading({
-      textContent,
-      headingType: 'h5',
-      ownStyles: {
-        display: 'inline',
-        color: '#C2C2C2',
-      } as Required<CssLikeStyles>,
-    }),
-  ],
+  children: [],
 });
 
 export const makeDropdownItem = (

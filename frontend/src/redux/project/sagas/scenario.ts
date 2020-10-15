@@ -139,19 +139,6 @@ export function* createElements(
     );
   }
 
-  /* const newChildren: Array<string> = [];
-  if (index === undefined) {
-    newChildren.push(...parent.children.map((child) => child.id as string));
-    newChildren.push(...newElements.map((element) => element.id as string));
-  } else {
-    newChildren.push(
-      ...parent.children.slice(0, index).map((child) => child.id as string),
-    );
-    newChildren.push(...newElements.map((element) => element.id as string));
-    newChildren.push(
-      ...parent.children.slice(index).map((child) => child.id as string),
-    );
-  } */
   const newChildren = [
     ...parent.children.map((child) => child.id),
     ...newElements.map((element) => element.id),
