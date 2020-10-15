@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import cn from 'classnames';
 import html2canvas from 'html2canvas';
+import makeStyles from '@material-ui/core/styles/makeStyles';
 import { TopBar } from '../TopBar/TopBar';
 import EditorViewport from '../Viewport/Viewport';
 import Scrollbar from '../../UI/Scrollbar';
-import { getClassDevice } from '../../../utils/dom';
 import { DEFAULT_SCREEN_MODE } from '../../../constants/defaultParams';
 import {
   exportProject,
@@ -20,10 +20,36 @@ import {
 import DraggableItem from '../Draggable/DraggableElement';
 import ElementsInteractions from '../ElementsInteractions/ElementsInteractions';
 import { selectIsPrototypeMode } from '../../../redux/user/selectors';
-import NewTopBar from '../TopBar/index';
+import NewTopBar from '../TopBar';
 // import FreeCanvas from '../FreeCanvas';
 
-const styles = require('./Workspace.scss');
+export const formats = ['desktop', 'tablet', 'mobile'] as const;
+
+const useStyles = makeStyles({
+  root: {
+    padding: '1em',
+    display: 'flex',
+    flex: '1 1',
+    flexDirection: 'column',
+    boxSizing: 'border-box',
+  },
+  editor: {
+    backgroundColor: '#fff',
+    border: '1px solid #e7eaec',
+    borderTop: 'none',
+    overflow: 'auto',
+  },
+  desktop: {
+    flexBasis: '100%',
+    minWidth: '100%',
+  },
+  tablet: {
+    flexBasis: (rotated) => (rotated ? 1024 : 768),
+  },
+  mobile: {
+    flexBasis: (rotated) => (rotated ? 568 : 320),
+  },
+});
 
 export type ScreenMode = {
   isDefaultMode: boolean;
@@ -38,17 +64,26 @@ const Workspace: React.FC = () => {
   const isPrototypeMode = useSelector(selectIsPrototypeMode);
   const currentScreenId = useSelector(selectCurrentScreenId);
 
+  const [format, setFormat] = useState(formats[0]);
+  const [rotated, setRotated] = useState<boolean>(false);
+
+  const classes = useStyles(rotated);
+
+  const handleFormatChange = (ev, newFormat) => {
+    if (!newFormat) return;
+    setFormat(newFormat);
+  };
+
   const [currentScreenMode, setCurrentScreenMode] = useState<ScreenMode>({
     ...DEFAULT_SCREEN_MODE,
     isDefaultMode: true,
   });
-  const [isScreenRotated, setIsScreenRotated] = useState<boolean>(false);
 
   useEffect(
     () => () => {
       dispatch(resetScreenState());
     },
-    [],
+    [dispatch],
   );
 
   const handleSaveScreen = () => {
@@ -69,28 +104,31 @@ const Workspace: React.FC = () => {
   };
 
   return (
-    <div className={styles.editorWorkspace}>
-      <NewTopBar />
+    <div className={classes.root}>
+      <NewTopBar
+        format={format}
+        handleFormatChange={handleFormatChange}
+        rotated={rotated}
+        handleRotatedToggle={() => setRotated((prevState) => !prevState)}
+      />
+
       <TopBar
         screenID={currentScreenId}
         isPrototypeMode={isPrototypeMode}
-        isScreenRotated={isScreenRotated}
+        isScreenRotated={rotated}
         screenMode={currentScreenMode}
         onPrototypeModeToggle={(mode: boolean) =>
           dispatch(changePrototypeMode(mode))
         }
         onScreenModeChange={setCurrentScreenMode}
-        onScreenRotate={setIsScreenRotated}
+        onScreenRotate={setRotated}
         onScreenSave={handleSaveScreen}
         onExport={() => dispatch(exportProject())}
       />
 
       <EditorViewport>
         <Scrollbar
-          className={cn(
-            styles.editorLayout,
-            getClassDevice(styles, currentScreenMode, isScreenRotated),
-          )}
+          className={cn(classes.editor, classes[format])}
           autoHeightMin="100%"
         >
           {/* <FreeCanvas /> */}

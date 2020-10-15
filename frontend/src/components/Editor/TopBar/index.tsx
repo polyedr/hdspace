@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import DesktopWindowsIcon from '@material-ui/icons/DesktopWindows';
@@ -8,8 +8,10 @@ import Switch from '@material-ui/core/Switch';
 import { useDispatch, useSelector } from 'react-redux';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import ScreenRotationIcon from '@material-ui/icons/ScreenRotation';
 import { selectIsPrototypeMode } from '../../../redux/user/selectors';
 import { changePrototypeMode } from '../../../redux/user/actions';
+import { formats } from '../Workspace/Workspace';
 
 const useStyles = makeStyles({
   root: {
@@ -18,23 +20,30 @@ const useStyles = makeStyles({
   },
 });
 
-const formats = ['desktop', 'tablet', 'mobile'] as const;
+type Props = {
+  format: typeof formats[number];
+  handleFormatChange: (ev: any, newFormat: any) => void;
+  rotated: boolean;
+  handleRotatedToggle: () => void;
+};
 
-const TopBar = () => {
+const TopBar: React.FC<Props> = ({
+  format,
+  handleFormatChange,
+  rotated,
+  handleRotatedToggle,
+}) => {
   const dispatch = useDispatch();
   const classes = useStyles();
 
   const isProtoMode = useSelector(selectIsPrototypeMode);
-  const [format, setFormat] = useState(formats[0]);
-
-  const handleFormat = (ev, newFormat) => setFormat(newFormat);
 
   const handleToggleProtoMode = () =>
     dispatch(changePrototypeMode(!isProtoMode));
 
   return (
     <div className={classes.root}>
-      <ToggleButtonGroup value={format} onChange={handleFormat} exclusive>
+      <ToggleButtonGroup value={format} onChange={handleFormatChange} exclusive>
         <ToggleButton value={formats[0]}>
           <DesktopWindowsIcon />
         </ToggleButton>
@@ -47,6 +56,16 @@ const TopBar = () => {
           <PhoneIphoneIcon />
         </ToggleButton>
       </ToggleButtonGroup>
+
+      {format !== formats[0] && (
+        <ToggleButton
+          selected={rotated}
+          onChange={handleRotatedToggle}
+          value="rotated"
+        >
+          <ScreenRotationIcon />
+        </ToggleButton>
+      )}
 
       <FormControlLabel
         control={
