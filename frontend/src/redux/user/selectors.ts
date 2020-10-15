@@ -8,6 +8,9 @@ export const selectIsLeftPanelMinimized = ({ user }: AppReduxState) =>
 export const selectIsPrototypeMode = ({ user }: AppReduxState) =>
   user.isPrototypeMode;
 
+export const selectFreeCanvasMode = ({ user }: AppReduxState) =>
+  user.freeCanvasMode;
+
 export const selectAuthError = ({ user }: AppReduxState) => user.authError;
 
 export const selectTokenPair = ({ user }: AppReduxState) => user.tokenPair;

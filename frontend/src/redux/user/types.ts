@@ -59,6 +59,7 @@ export type TotalUserData = ProfileData & UserData;
 export type UserState = {
   isLPanelMinimized: boolean;
   isPrototypeMode: boolean;
+  freeCanvasMode: boolean;
   tokenPair: ITokenPair;
   isLoadedToken: boolean;
   isLoggedIn: boolean;

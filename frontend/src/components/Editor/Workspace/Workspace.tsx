@@ -8,9 +8,12 @@ import { resetScreenState } from '../../../redux/project/actions';
 import { selectCurrentRootId } from '../../../redux/project/selectors';
 import DraggableItem from '../Draggable/DraggableElement';
 import ElementsInteractions from '../ElementsInteractions/ElementsInteractions';
-import { selectIsPrototypeMode } from '../../../redux/user/selectors';
+import {
+  selectFreeCanvasMode,
+  selectIsPrototypeMode,
+} from '../../../redux/user/selectors';
 import NewTopBar from '../TopBar';
-// import FreeCanvas from '../FreeCanvas';
+import FreeCanvas from '../FreeCanvas';
 
 export const formats = ['desktop', 'tablet', 'mobile'] as const;
 
@@ -45,6 +48,7 @@ const Workspace: React.FC = () => {
 
   const rootElementId = useSelector(selectCurrentRootId);
   const isPrototypeMode = useSelector(selectIsPrototypeMode);
+  const freeCanvasMode = useSelector(selectFreeCanvasMode);
 
   const [format, setFormat] = useState(formats[0]);
   const [rotated, setRotated] = useState<boolean>(false);
@@ -77,8 +81,11 @@ const Workspace: React.FC = () => {
           className={cn(classes.editor, classes[format])}
           autoHeightMin="100%"
         >
-          {/* <FreeCanvas /> */}
-          <DraggableItem elementId={rootElementId} />
+          {freeCanvasMode ? (
+            <FreeCanvas />
+          ) : (
+            <DraggableItem elementId={rootElementId} />
+          )}
 
           {!isPrototypeMode && <ElementsInteractions />}
         </Scrollbar>

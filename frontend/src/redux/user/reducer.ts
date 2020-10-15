@@ -10,6 +10,7 @@ interface ActionHandler<T> {
 const INITIAL_STATE: UserState = {
   isLPanelMinimized: false,
   isPrototypeMode: false,
+  freeCanvasMode: false,
   userData: {
     isActive: false,
     hourlyRate: 0,
@@ -121,6 +122,14 @@ const setRestoreUserId: ActionHandler<typeof Actions.setRestoreUserId> = (
   restoreUserId,
 });
 
+const changeFreeCanvasMode: ActionHandler<typeof Actions.changeFreeCanvasMode> = (
+  state,
+  { enabled },
+) => ({
+  ...state,
+  freeCanvasMode: enabled,
+});
+
 const logout: ActionHandler<typeof Actions.logout> = () => ({
   ...INITIAL_STATE,
 });
@@ -129,6 +138,7 @@ const logout: ActionHandler<typeof Actions.logout> = () => ({
 const HANDLERS: Handlers<UserState> = {
   [TYPES.CHANGE_L_PANEL]: changeMinLPanel,
   [TYPES.CHANGE_PROTOTYPE_MODE]: changePrototypeMode,
+  [TYPES.CHANGE_FREE_CANVAS_MODE]: changeFreeCanvasMode,
   [TYPES.TOGGLE_USER_LOADING]: changeSignLoader,
   [TYPES.SET_TOKEN_PAIR]: setTokenPair,
   [TYPES.SET_USER_DATA]: setUserData,

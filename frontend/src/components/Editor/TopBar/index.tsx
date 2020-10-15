@@ -1,11 +1,17 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Switch from '@material-ui/core/Switch';
 import { useDispatch, useSelector } from 'react-redux';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { formats } from '../Workspace/Workspace';
-import { changePrototypeMode } from '../../../redux/user/actions';
-import { selectIsPrototypeMode } from '../../../redux/user/selectors';
+import {
+  changeFreeCanvasMode,
+  changePrototypeMode,
+} from '../../../redux/user/actions';
+import {
+  selectFreeCanvasMode,
+  selectIsPrototypeMode,
+} from '../../../redux/user/selectors';
 import Formats from './Formats';
 import Actions from './Actions';
 
@@ -36,14 +42,14 @@ const TopBar: React.FC<Props> = ({
   const dispatch = useDispatch();
   const classes = useStyles();
 
-  const [freeMode, setFreeMode] = useState(false);
-
   const isProtoMode = useSelector(selectIsPrototypeMode);
+  const freeCanvasMode = useSelector(selectFreeCanvasMode);
 
   const handleToggleProtoMode = () =>
     dispatch(changePrototypeMode(!isProtoMode));
 
-  const handleToggleFreeMode = () => setFreeMode((prevState) => !prevState);
+  const handleToggleFreeMode = () =>
+    dispatch(changeFreeCanvasMode(!freeCanvasMode));
 
   return (
     <div className={classes.root}>
@@ -65,7 +71,7 @@ const TopBar: React.FC<Props> = ({
 
         <FormControlLabel
           control={
-            <Switch checked={freeMode} onChange={handleToggleFreeMode} />
+            <Switch checked={freeCanvasMode} onChange={handleToggleFreeMode} />
           }
           label="Free Canvas Mode"
           labelPlacement="end"
