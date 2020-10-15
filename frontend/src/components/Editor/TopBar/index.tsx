@@ -1,28 +1,28 @@
-import React from 'react';
-import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
-import ToggleButton from '@material-ui/lab/ToggleButton';
-import DesktopWindowsIcon from '@material-ui/icons/DesktopWindows';
-import TabletMacIcon from '@material-ui/icons/TabletMac';
-import PhoneIphoneIcon from '@material-ui/icons/PhoneIphone';
+import React, { useState } from 'react';
 import Switch from '@material-ui/core/Switch';
 import { useDispatch, useSelector } from 'react-redux';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import ScreenRotationIcon from '@material-ui/icons/ScreenRotation';
-import { selectIsPrototypeMode } from '../../../redux/user/selectors';
-import { changePrototypeMode } from '../../../redux/user/actions';
 import { formats } from '../Workspace/Workspace';
+import { changePrototypeMode } from '../../../redux/user/actions';
+import { selectIsPrototypeMode } from '../../../redux/user/selectors';
+import Formats from './Formats';
+import Actions from './Actions';
 
 const useStyles = makeStyles({
   root: {
     display: 'flex',
+    justifyContent: 'space-between',
     alignItems: 'center',
   },
 });
 
 type Props = {
   format: typeof formats[number];
-  handleFormatChange: (ev: any, newFormat: any) => void;
+  handleFormatChange: (
+    ev: any,
+    newFormat: typeof formats[number] | null,
+  ) => void;
   rotated: boolean;
   handleRotatedToggle: () => void;
 };
@@ -36,44 +36,43 @@ const TopBar: React.FC<Props> = ({
   const dispatch = useDispatch();
   const classes = useStyles();
 
+  const [freeMode, setFreeMode] = useState(false);
+
   const isProtoMode = useSelector(selectIsPrototypeMode);
 
   const handleToggleProtoMode = () =>
     dispatch(changePrototypeMode(!isProtoMode));
 
+  const handleToggleFreeMode = () => setFreeMode((prevState) => !prevState);
+
   return (
     <div className={classes.root}>
-      <ToggleButtonGroup value={format} onChange={handleFormatChange} exclusive>
-        <ToggleButton value={formats[0]}>
-          <DesktopWindowsIcon />
-        </ToggleButton>
-
-        <ToggleButton value={formats[1]}>
-          <TabletMacIcon />
-        </ToggleButton>
-
-        <ToggleButton value={formats[2]}>
-          <PhoneIphoneIcon />
-        </ToggleButton>
-      </ToggleButtonGroup>
-
-      {format !== formats[0] && (
-        <ToggleButton
-          selected={rotated}
-          onChange={handleRotatedToggle}
-          value="rotated"
-        >
-          <ScreenRotationIcon />
-        </ToggleButton>
-      )}
-
-      <FormControlLabel
-        control={
-          <Switch checked={isProtoMode} onChange={handleToggleProtoMode} />
-        }
-        label="Proto mode"
-        labelPlacement="end"
+      <Formats
+        format={format}
+        handleFormatChange={handleFormatChange}
+        rotated={rotated}
+        handleRotatedToggle={handleRotatedToggle}
       />
+
+      <div>
+        <FormControlLabel
+          control={
+            <Switch checked={isProtoMode} onChange={handleToggleProtoMode} />
+          }
+          label="Proto Mode"
+          labelPlacement="end"
+        />
+
+        <FormControlLabel
+          control={
+            <Switch checked={freeMode} onChange={handleToggleFreeMode} />
+          }
+          label="Free Canvas Mode"
+          labelPlacement="end"
+        />
+      </div>
+
+      <Actions />
     </div>
   );
 };

@@ -1,22 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import cn from 'classnames';
-import html2canvas from 'html2canvas';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import { TopBar } from '../TopBar/TopBar';
 import EditorViewport from '../Viewport/Viewport';
 import Scrollbar from '../../UI/Scrollbar';
-import { DEFAULT_SCREEN_MODE } from '../../../constants/defaultParams';
-import {
-  exportProject,
-  resetScreenState,
-  saveScreenImage,
-} from '../../../redux/project/actions';
-import { changePrototypeMode } from '../../../redux/user/actions';
-import {
-  selectCurrentRootId,
-  selectCurrentScreenId,
-} from '../../../redux/project/selectors';
+import { resetScreenState } from '../../../redux/project/actions';
+import { selectCurrentRootId } from '../../../redux/project/selectors';
 import DraggableItem from '../Draggable/DraggableElement';
 import ElementsInteractions from '../ElementsInteractions/ElementsInteractions';
 import { selectIsPrototypeMode } from '../../../redux/user/selectors';
@@ -51,18 +40,11 @@ const useStyles = makeStyles({
   },
 });
 
-export type ScreenMode = {
-  isDefaultMode: boolean;
-  isTabletMode: boolean;
-  isMobileMode: boolean;
-};
-
 const Workspace: React.FC = () => {
   const dispatch = useDispatch();
 
   const rootElementId = useSelector(selectCurrentRootId);
   const isPrototypeMode = useSelector(selectIsPrototypeMode);
-  const currentScreenId = useSelector(selectCurrentScreenId);
 
   const [format, setFormat] = useState(formats[0]);
   const [rotated, setRotated] = useState<boolean>(false);
@@ -74,34 +56,12 @@ const Workspace: React.FC = () => {
     setFormat(newFormat);
   };
 
-  const [currentScreenMode, setCurrentScreenMode] = useState<ScreenMode>({
-    ...DEFAULT_SCREEN_MODE,
-    isDefaultMode: true,
-  });
-
   useEffect(
     () => () => {
       dispatch(resetScreenState());
     },
     [dispatch],
   );
-
-  const handleSaveScreen = () => {
-    const screenBody = document.getElementById('root');
-    const widgets = Array.from(document.querySelectorAll('iframe'));
-
-    if (screenBody !== null) {
-      const ignore = (element: Element) =>
-        widgets.some((widget) => element === widget);
-
-      html2canvas(screenBody, {
-        useCORS: true,
-        allowTaint: true,
-        logging: true,
-        ignoreElements: ignore,
-      }).then((canvas) => dispatch(saveScreenImage(currentScreenId, canvas)));
-    }
-  };
 
   return (
     <div className={classes.root}>
@@ -112,20 +72,6 @@ const Workspace: React.FC = () => {
         handleRotatedToggle={() => setRotated((prevState) => !prevState)}
       />
 
-      <TopBar
-        screenID={currentScreenId}
-        isPrototypeMode={isPrototypeMode}
-        isScreenRotated={rotated}
-        screenMode={currentScreenMode}
-        onPrototypeModeToggle={(mode: boolean) =>
-          dispatch(changePrototypeMode(mode))
-        }
-        onScreenModeChange={setCurrentScreenMode}
-        onScreenRotate={setRotated}
-        onScreenSave={handleSaveScreen}
-        onExport={() => dispatch(exportProject())}
-      />
-
       <EditorViewport>
         <Scrollbar
           className={cn(classes.editor, classes[format])}
@@ -133,6 +79,7 @@ const Workspace: React.FC = () => {
         >
           {/* <FreeCanvas /> */}
           <DraggableItem elementId={rootElementId} />
+
           {!isPrototypeMode && <ElementsInteractions />}
         </Scrollbar>
       </EditorViewport>
