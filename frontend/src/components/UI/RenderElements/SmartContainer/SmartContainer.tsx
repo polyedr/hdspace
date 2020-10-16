@@ -67,7 +67,6 @@ const SmartContainerRenderer: React.FC<SmartContainerRendererProps> = React.forw
 
     const handleFileInputChange = useCallback(
       ({ target }: React.ChangeEvent<HTMLInputElement>) => {
-        // TODO: implement image upload
         const file = target.files && target.files[0];
 
         if (!file) {
@@ -101,42 +100,36 @@ const SmartContainerRenderer: React.FC<SmartContainerRendererProps> = React.forw
         )}
         style={{ ...(isBorderVisible && isDisabled && { outline: 'none' }) }}
       >
-        {children && children.length ? (
+        {children?.length ? (
           { children }
         ) : (
           <>
             <h4 className={classes.nameHeading}>{element.name}</h4>
-            {!element.parameters.imageURL ? (
-              <>
-                <input
-                  id={`upload-image-wireframe-${element.id}`}
-                  className={classes.uploadField}
-                  type="file"
-                  accept=".jpg, .jpeg, .png"
-                  name="upload"
-                  onChange={handleFileInputChange}
-                />
-                <label htmlFor={`upload-image-wireframe-${element.id}`}>
-                  <IconButton
-                    color={classes.nameHeading.color}
-                    aria-label="upload picture"
-                    component="span"
-                  >
-                    <CloudUploadIcon />
-                  </IconButton>
-                </label>
-              </>
-            ) : (
-              // "analyze" button
-              <label htmlFor={`upload-image-wireframe-${element.id}`}>
-                <IconButton
-                  color={classes.nameHeading.color}
-                  aria-label="analyze picture"
-                  component="span"
-                >
-                  <SyncIcon />
-                </IconButton>
-              </label>
+            <input
+              id={`upload-image-wireframe-${element.id}`}
+              className={classes.uploadField}
+              type="file"
+              accept=".jpg, .jpeg, .png"
+              name="upload"
+              onChange={handleFileInputChange}
+            />
+            <label htmlFor={`upload-image-wireframe-${element.id}`}>
+              <IconButton
+                color={classes.nameHeading.color}
+                aria-label="upload picture"
+                component="span"
+              >
+                <CloudUploadIcon />
+              </IconButton>
+            </label>
+            {element.parameters.imageURL && (
+              <IconButton
+                color={classes.nameHeading.color}
+                aria-label="analyze picture"
+                component="span"
+              >
+                <SyncIcon />
+              </IconButton>
             )}
           </>
         )}

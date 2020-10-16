@@ -54,7 +54,6 @@ const SmartContainer: React.FC<PropertiesChangeProps<ImageElement>> = () => {
 
   const handleFileInputChange = useCallback(
     ({ target }: React.ChangeEvent<HTMLInputElement>) => {
-      // TODO: implement image upload
       const file = target.files && target.files[0];
 
       if (!file) {
