@@ -83,18 +83,20 @@ const SmartContainer: React.FC<PropertiesChangeProps<ImageElement>> = () => {
             className={classes.button}
           >
             Choose image
+            <input
+              className={classes.uploadField}
+              type="file"
+              accept=".jpg, .jpeg, .png"
+              name="upload"
+              onChange={handleFileInputChange}
+              id={`upload-component-wireframe-${element.id}`}
+            />
           </label>
-          <input
-            className={classes.uploadField}
-            type="file"
-            accept=".jpg, .jpeg, .png"
-            name="upload"
-            onChange={handleFileInputChange}
-            id={`upload-component-wireframe-${element.id}`}
-          />
-          <button type="button" className={classes.button}>
-            Analyze
-          </button>
+          {element.parameters.imageURL && (
+            <button type="button" className={classes.button}>
+              Analyze
+            </button>
+          )}
         </div>
       </div>
     </div>
