@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { StateElement } from '../../../redux/project/types';
 import { setActiveElement } from '../../../redux/project/actions';
+// import ChildRenderer from './ChildRenderer';
 
 const useStyles = makeStyles({
   root: {
@@ -22,7 +23,7 @@ type Props = {
 };
 
 const FreeElementRenderer = React.forwardRef<HTMLDivElement, Props>(
-  ({ element: { id, name, parameters }, isActive }, ref) => {
+  ({ element: { id, parameters, name }, isActive }, ref) => {
     const { left = 0, top = 0 } = parameters;
     const dispatch = useDispatch();
 
@@ -39,6 +40,10 @@ const FreeElementRenderer = React.forwardRef<HTMLDivElement, Props>(
 
     return (
       <div ref={ref} onClick={handleClick} className={classes.root}>
+        {/* {children.map((childId) => (
+          <ChildRenderer id={childId} key={childId} />
+        ))} */}
+
         {name}
       </div>
     );
