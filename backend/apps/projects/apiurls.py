@@ -143,7 +143,7 @@ urlpatterns = [
     path("", include(api_scenario_element_patterns)),
     # path("", include(api_library_element_patterns)),
     path("", include(api_library_scenario_element_patterns)),
-    # path("", include(api_screen_comment_patterns)),
+    path("", include(api_screen_comment_patterns)),
     path("", include(api_scenario_element_multi_patterns)),
     path("", include(api_screen_scenario_cascade_multi_patterns)),
 ]
