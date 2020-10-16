@@ -12,6 +12,7 @@ import { LibraryElement, PaginatedArray } from '../../api/types';
 import { CssLikeStyles } from '../../utils/StyleHelper';
 import { makeFeatureStateSelector } from '../../shared/redux';
 import {
+  arrayToMap,
   buildElementsTree,
   flattenElements,
 } from '../../utils/normalizedStateHelpers';
@@ -300,6 +301,16 @@ export const selectElementsForCurrentScreen = createSelector(
 
     const tree = buildElementsTree(elements, elementId);
     return flattenElements([tree]);
+  },
+);
+
+export const selectDirectRootChildren = createSelector(
+  selectAllElements,
+  selectCurrentRootId,
+  (elements, id) => {
+    const root = elements[id];
+    if (!root) return {};
+    return arrayToMap(root.children.map((childId) => elements[childId]));
   },
 );
 

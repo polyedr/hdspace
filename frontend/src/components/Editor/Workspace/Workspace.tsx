@@ -84,10 +84,11 @@ const Workspace: React.FC = () => {
           {freeCanvasMode ? (
             <FreeCanvas />
           ) : (
-            <DraggableItem elementId={rootElementId} />
+            <>
+              <DraggableItem elementId={rootElementId} />
+              {!isPrototypeMode && <ElementsInteractions />}
+            </>
           )}
-
-          {!isPrototypeMode && <ElementsInteractions />}
         </Scrollbar>
       </EditorViewport>
     </div>

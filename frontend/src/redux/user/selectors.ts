@@ -9,7 +9,7 @@ export const selectIsPrototypeMode = ({ user }: AppReduxState) =>
   user.isPrototypeMode;
 
 export const selectFreeCanvasMode = ({ user }: AppReduxState) =>
-  user.freeCanvasMode;
+  user.freeCanvasMode.enabled;
 
 export const selectAuthError = ({ user }: AppReduxState) => user.authError;
 

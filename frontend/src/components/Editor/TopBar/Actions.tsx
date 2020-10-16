@@ -5,6 +5,7 @@ import RedoIcon from '@material-ui/icons/Redo';
 import SaveIcon from '@material-ui/icons/Save';
 import { useDispatch, useSelector } from 'react-redux';
 import html2canvas from 'html2canvas';
+import makeStyles from '@material-ui/core/styles/makeStyles';
 import {
   selectCurrentScreenId,
   selectRedoActions,
@@ -16,7 +17,14 @@ import {
   undoAction,
 } from '../../../redux/project/actions';
 
-const Actions = () => {
+const useStyles = makeStyles({
+  root: {
+    display: 'flex',
+  },
+});
+
+const Actions: React.FC = () => {
+  const classes = useStyles();
   const dispatch = useDispatch();
   const currentScreenId = useSelector(selectCurrentScreenId);
 
@@ -44,7 +52,7 @@ const Actions = () => {
   };
 
   return (
-    <div>
+    <div className={classes.root}>
       <IconButton onClick={onHistoryBack} disabled={!undoLength} title="Undo">
         <UndoIcon />
       </IconButton>

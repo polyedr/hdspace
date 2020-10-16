@@ -21,6 +21,9 @@ const useStyles = makeStyles({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
+  switch: {
+    padding: '0 1em',
+  },
 });
 
 type Props = {
@@ -67,6 +70,7 @@ const TopBar: React.FC<Props> = ({
           }
           label="Proto Mode"
           labelPlacement="end"
+          className={classes.switch}
         />
 
         <FormControlLabel
@@ -75,6 +79,7 @@ const TopBar: React.FC<Props> = ({
           }
           label="Free Canvas Mode"
           labelPlacement="end"
+          className={classes.switch}
         />
       </div>
 

@@ -10,7 +10,10 @@ interface ActionHandler<T> {
 const INITIAL_STATE: UserState = {
   isLPanelMinimized: false,
   isPrototypeMode: false,
-  freeCanvasMode: false,
+  freeCanvasMode: {
+    enabled: false,
+    elements: {},
+  },
   userData: {
     isActive: false,
     hourlyRate: 0,
@@ -127,7 +130,10 @@ const changeFreeCanvasMode: ActionHandler<typeof Actions.changeFreeCanvasMode> =
   { enabled },
 ) => ({
   ...state,
-  freeCanvasMode: enabled,
+  freeCanvasMode: {
+    ...state.freeCanvasMode,
+    enabled,
+  },
 });
 
 const logout: ActionHandler<typeof Actions.logout> = () => ({

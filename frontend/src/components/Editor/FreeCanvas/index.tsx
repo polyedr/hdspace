@@ -1,62 +1,55 @@
-import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useDrop, XYCoord } from 'react-dnd';
+import makeStyles from '@material-ui/core/styles/makeStyles';
 import {
+  selectActiveElementId,
   selectCurrentRootId,
-  selectElementsForCurrentScreen,
+  selectCurrentScreenId,
+  selectDirectRootChildren,
 } from '../../../redux/project/selectors';
 import FreeDraggable from './FreeDraggable';
-import { StateElement } from '../../../redux/project/types';
-import { Normalized } from '../../../api/types';
+import {
+  setActiveElement,
+  updateElementParameters,
+} from '../../../redux/project/actions';
 
-type FreeElement = StateElement & {
-  top: number;
-  left: number;
-};
-
-const transformElements = (
-  elements: Normalized<StateElement>,
-  rootId: string,
-): Normalized<FreeElement> =>
-  Object.values(elements).reduce((acc, curr) => {
-    if (curr.id !== rootId) {
-      acc[curr.id] = {
-        ...curr,
-        top: 0,
-        left: 0,
-      };
-    }
-    return acc;
-  }, {});
+const useStyles = makeStyles({
+  root: {
+    height: '100%',
+    position: 'relative',
+  },
+});
 
 const FreeCanvas: React.FC = () => {
+  const dispatch = useDispatch();
+  const classes = useStyles();
+  const currentScreenId = useSelector(selectCurrentScreenId);
   const currentRootId = useSelector(selectCurrentRootId);
-  const elements = useSelector(selectElementsForCurrentScreen);
+  const activeElementId = useSelector(selectActiveElementId);
+  const elements = useSelector(selectDirectRootChildren);
 
-  const [items, setItems] = useState<Normalized<FreeElement>>({});
-
-  useEffect(() => {
-    setItems(transformElements(elements, currentRootId));
-  }, [elements, currentRootId]);
-
-  const moveBox = (id: string, left: number, top: number) => {
-    setItems({
-      ...items,
-      [id]: {
-        ...items[id],
-        left,
-        top,
-      },
-    });
+  const moveFreeElement = (id: string, left: number, top: number) => {
+    dispatch(
+      updateElementParameters(
+        id,
+        {
+          left,
+          top,
+        },
+        { screenId: currentScreenId },
+      ),
+    );
   };
 
   const [, drop] = useDrop({
-    accept: ['element', 'constructor'],
+    accept: 'freeElement',
     drop(item: any, monitor) {
       const delta = monitor.getDifferenceFromInitialOffset() as XYCoord;
       const left = Math.round(item.left + delta.x);
       const top = Math.round(item.top + delta.y);
-      moveBox(item.id, left, top);
+
+      moveFreeElement(item.id, left, top);
       return undefined;
     },
   });
@@ -64,17 +57,16 @@ const FreeCanvas: React.FC = () => {
   return (
     <div
       ref={drop}
-      style={{
-        height: '100%',
-        position: 'relative',
-      }}
+      className={classes.root}
+      onClick={() => dispatch(setActiveElement(currentRootId))}
     >
-      {Object.keys(items).map((key) => {
-        const { left, top, name } = items[key];
+      {Object.values(elements).map((element) => {
         return (
-          <FreeDraggable key={key} id={key} left={left} top={top}>
-            {name}
-          </FreeDraggable>
+          <FreeDraggable
+            key={element.id}
+            element={element}
+            isActive={element.id === activeElementId}
+          />
         );
       })}
     </div>

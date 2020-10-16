@@ -1,5 +1,7 @@
 /* eslint-disable camelcase */
 
+import { Normalized } from '../../api/types';
+
 export interface ITokenPair {
   access: string;
   refresh: string;
@@ -59,7 +61,10 @@ export type TotalUserData = ProfileData & UserData;
 export type UserState = {
   isLPanelMinimized: boolean;
   isPrototypeMode: boolean;
-  freeCanvasMode: boolean;
+  freeCanvasMode: {
+    enabled: boolean;
+    elements: Normalized<FreeElement>;
+  };
   tokenPair: ITokenPair;
   isLoadedToken: boolean;
   isLoggedIn: boolean;
@@ -74,3 +79,11 @@ export type UserState = {
 export type UnsafeReturnType<T> = T extends (...args: any[]) => infer R
   ? R
   : any;
+
+export type FreeElement = {
+  id: string;
+  top: number;
+  left: number;
+  type: 'freeElement';
+  name: string;
+};

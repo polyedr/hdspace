@@ -23,6 +23,7 @@ const userPersistConfig: PersistConfig = {
   whitelist: [
     'isLPanelMinimized',
     'isPrototypeMode',
+    'freeCanvasMode',
     'tokenPair',
     'userData',
     'isLoggedIn',
