@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useDrag } from 'react-dnd';
+import { getEmptyImage } from 'react-dnd-html5-backend';
 import { useDispatch } from 'react-redux';
-import { setActiveElement } from '../../../redux/project/actions';
 import { StateElement } from '../../../redux/project/types';
+import { setActiveElement } from '../../../redux/project/actions';
 import FreeElementRenderer from './FreeElementRenderer';
 
 type Props = {
@@ -17,8 +18,8 @@ const FreeDraggable: React.FC<Props> = ({ element, isActive }) => {
     parameters: { left = 0, top = 0 },
   } = element;
 
-  const [{ isDragging }, drag] = useDrag({
-    item: { id, left, top, type: 'freeElement' },
+  const [{ isDragging }, drag, preview] = useDrag({
+    item: { type: 'freeElement', id, left, top },
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),
     }),
@@ -27,10 +28,17 @@ const FreeDraggable: React.FC<Props> = ({ element, isActive }) => {
     },
   });
 
-  return isDragging ? (
-    <div ref={drag} /> // to hide source while dragging
-  ) : (
-    <FreeElementRenderer element={element} isActive={isActive} ref={drag} />
+  useEffect(() => {
+    preview(getEmptyImage(), { captureDraggingState: true });
+  }, [preview]);
+
+  return (
+    <FreeElementRenderer
+      element={element}
+      isActive={isActive}
+      ref={drag}
+      isDragging={isDragging}
+    />
   );
 };
 

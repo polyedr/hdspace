@@ -13,7 +13,7 @@ import {
   selectIsPrototypeMode,
 } from '../../../redux/user/selectors';
 import NewTopBar from '../TopBar';
-import FreeCanvas from '../FreeCanvas';
+import Example from '../FreeCanvas';
 
 export const formats = ['desktop', 'tablet', 'mobile'] as const;
 
@@ -82,7 +82,7 @@ const Workspace: React.FC = () => {
           autoHeightMin="100%"
         >
           {freeCanvasMode ? (
-            <FreeCanvas />
+            <Example />
           ) : (
             <>
               <DraggableItem elementId={rootElementId} />
