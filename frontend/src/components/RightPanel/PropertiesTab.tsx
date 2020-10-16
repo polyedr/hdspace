@@ -20,6 +20,7 @@ import Placeholder from '../../features/applyProperties/views/containers/Control
 import TextContent from '../../features/applyProperties/views/containers/Controls/TextContent/TextContent';
 import Image from '../../features/applyProperties/views/containers/Controls/Image/Image';
 import Screenshot from '../../features/applyProperties/views/containers/Controls/Screenshot/Screenshot';
+import SmartContainer from '../../features/applyProperties/views/containers/Controls/SmartContainer/SmartContainer';
 import Type from '../../features/applyProperties/views/containers/Controls/Type/Type';
 import Value from '../../features/applyProperties/views/containers/Controls/Value/Value';
 import Name from '../../features/applyProperties/views/containers/Controls/Name/Name';
@@ -57,6 +58,7 @@ const CONTROLS: Record<Control, React.ComponentType<any>> = {
   textContent: TextContent,
   image: Image,
   screenshot: Screenshot,
+  smartContainer: SmartContainer,
   type: Type,
   value: Value,
   name: Name,

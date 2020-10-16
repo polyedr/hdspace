@@ -45,6 +45,7 @@ const CONTROLS_AFFECT_ON_PARAMS = [
   'textContent',
   'image',
   'screenshot',
+  'smartContainer',
   'value',
   'name',
   'showRipple',
@@ -458,7 +459,7 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
     root: [...screenshotStyleControls, 'screenshot'],
   },
   smartContainer: {
-    root: smartContainerStyleControls,
+    root: [...smartContainerStyleControls, 'smartContainer'],
   },
   undefined: {
     root: undefinedControls,

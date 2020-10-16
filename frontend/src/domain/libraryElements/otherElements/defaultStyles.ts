@@ -192,7 +192,7 @@ export const defaultSmartContainerStyles: {
   },
   size: {
     ...DEFAULT_SIZE,
-    height: '150px',
+    'min-height': '150px',
   },
   display: {
     ...DEFAULT_DISPLAY,
