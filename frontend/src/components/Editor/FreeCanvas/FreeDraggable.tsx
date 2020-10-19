@@ -15,11 +15,11 @@ const FreeDraggable: React.FC<Props> = ({ element, isActive }) => {
   const dispatch = useDispatch();
   const {
     id,
-    parameters: { left = 0, top = 0 },
+    parameters: { left = 0, top = 0, width = 300, height = 100 },
   } = element;
 
   const [{ isDragging }, drag, preview] = useDrag({
-    item: { type: 'freeElement', id, left, top },
+    item: { type: 'freeElement', id, left, top, width, height },
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),
     }),

@@ -65,12 +65,18 @@ const FreeElementRenderer = React.forwardRef<HTMLDivElement, Props>(
       );
     };
 
+    const handleResize = (e, direction) => {
+      console.log(direction);
+    };
+
     return (
       <Resizable
         size={{ height, width }}
         style={getStyle({ left, top, isActive })}
         onResizeStart={handleResizeStart}
         onResizeStop={handleResizeStop}
+        bounds="parent"
+        onResize={handleResize}
       >
         <div ref={ref} onClick={handleClick} className={classes.div}>
           {name}
