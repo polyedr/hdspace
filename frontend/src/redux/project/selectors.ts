@@ -74,6 +74,9 @@ export function selectNotification(state: AppReduxState) {
 export const selectIsAddElementsModalOpened = ({ project }: AppReduxState) =>
   project.ui.isAddElementsModalOpened;
 
+export const selectIsNNProcessingModalOpened = ({ project }: AppReduxState) =>
+  project.ui.isNNProcessingModalOpened;
+
 export const selectSavedElementsValues = ({ project }: AppReduxState) =>
   project.ui.savedElementsValues;
 
@@ -336,4 +339,10 @@ export const selectDisplayStyles = (state: AppReduxState) => {
   };
 
   return getDisplayStyles(activeElementStyles);
+};
+
+export const selectElementFileInput = (id: string) => (
+  state: AppReduxState,
+) => {
+  return selectProjectState(state).data.elementInputs[id];
 };

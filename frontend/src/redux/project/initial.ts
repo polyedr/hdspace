@@ -17,11 +17,13 @@ export const initialData: T.ProjectDataState = {
     loading: false,
     pageSize: 40,
   },
+  elementInputs: {},
 };
 
 export const initialUi: T.ProjectUiState = {
   editableStyles: 'ownStyles',
   isAddElementsModalOpened: false,
+  isNNProcessingModalOpened: false,
   itemToCopyInfo: null,
   savedElementsValues: {},
   showContainersBorders: false,

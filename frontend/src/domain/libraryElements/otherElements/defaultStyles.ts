@@ -196,10 +196,6 @@ export const defaultSmartContainerStyles: {
   },
   display: {
     ...DEFAULT_DISPLAY,
-    display: 'flex',
-    'flex-direction': 'row',
-    'justify-content': 'center',
-    'align-items': 'center',
   },
   typography: {
     ...DEFAULT_TYPOGRAPHY,

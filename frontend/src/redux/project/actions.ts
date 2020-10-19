@@ -487,11 +487,13 @@ export const addChildToElement = (
 
 export const uploadFile = (
   file: any,
+  parentId: string,
   meta: ElementHistoryMeta,
 ): T.UploadFile => ({
   type: TYPES.UPLOAD_FILE,
   payload: {
     file,
+    parentId,
   },
   meta,
 });
@@ -523,6 +525,13 @@ export const setIsAddElementsModalOpened = (
   isOpened: boolean,
 ): T.SetIsAddElementsModalOpened => ({
   type: TYPES.SET_IS_ADD_ELEMENTS_MODAL_OPENED,
+  payload: { isOpened },
+});
+
+export const setIsNNProcessingModalOpened = (
+  isOpened: boolean,
+): T.SetIsNNProcessingModalOpened => ({
+  type: TYPES.SET_IS_NN_PROCESSING_MODAL_OPENED,
   payload: { isOpened },
 });
 
@@ -684,5 +693,20 @@ export const addCustomElement = (element: LibraryElement<Entity>) => ({
 
 export const removeCustomElement = (id: string) => ({
   type: TYPES.REMOVE_CUSTOM_ELEMENT,
+  payload: { id },
+});
+
+export const loadImageFromURL = (url: string) => ({
+  type: TYPES.LOAD_IMAGE_FROM_URL,
+  payload: { url },
+});
+
+export const addFileInput = (id: string, file: File) => ({
+  type: TYPES.ADD_FILE_INPUT,
+  payload: { id, file },
+});
+
+export const removeFileInput = (id: string) => ({
+  type: TYPES.REMOVE_FILE_INPUT,
   payload: { id },
 });

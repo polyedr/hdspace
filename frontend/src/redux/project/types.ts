@@ -70,11 +70,13 @@ export type ProjectDataState = {
   screens: Normalized<Screen>;
   elements: Normalized<StateElement>;
   customElementsData: PaginatedArray<LibraryElement<Entity>>;
+  elementInputs: { [id: string]: File };
 };
 
 export type ProjectUiState = {
   editableStyles: string;
   isAddElementsModalOpened: boolean;
+  isNNProcessingModalOpened: boolean;
   itemToCopyInfo: ItemToCopyInfo | null;
   savedElementsValues: SavedElementsValues;
   showContainersBorders: boolean;
@@ -354,7 +356,7 @@ export type AddChildToElement = IAction<
 >;
 export type UploadFile = IAction<
   typeof TYPES.UPLOAD_FILE,
-  { file: any },
+  { file: any; parentId: string },
   ElementHistoryMeta
 >;
 export type uploadImageForNNSuccess = IAction<
@@ -378,6 +380,10 @@ export type SetEditableStyles = IAction<
 >;
 export type SetIsAddElementsModalOpened = IAction<
   typeof TYPES.SET_IS_ADD_ELEMENTS_MODAL_OPENED,
+  { isOpened: boolean }
+>;
+export type SetIsNNProcessingModalOpened = IAction<
+  typeof TYPES.SET_IS_NN_PROCESSING_MODAL_OPENED,
   { isOpened: boolean }
 >;
 export type SetItemToCopy = IAction<
@@ -457,6 +463,16 @@ export type RemoveCustomElement = IAction<
   { id: string }
 >;
 
+export type AddFileInput = IAction<
+  typeof TYPES.ADD_FILE_INPUT,
+  { id: string; file: File }
+>;
+
+export type RemoveFileInput = IAction<
+  typeof TYPES.REMOVE_FILE_INPUT,
+  { id: string }
+>;
+
 export type Action =
   | LoadProjects
   | LoadProjectsSuccess
@@ -493,6 +509,7 @@ export type Action =
   | SetActiveElement
   | ToggleContainersBorders
   | SetIsAddElementsModalOpened
+  | SetIsNNProcessingModalOpened
   | SetItemToCopy
   | CopyActiveItem
   | PasteCopiedItem
@@ -540,7 +557,9 @@ export type Action =
   | UpdateElementsLoading
   | SetCustomElements
   | AddCustomElement
-  | RemoveCustomElement;
+  | RemoveCustomElement
+  | AddFileInput
+  | RemoveFileInput;
 
 export type ItemToCopyInfo = {
   id: string;

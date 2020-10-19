@@ -171,6 +171,15 @@ const dataReducer = produce(
         );
         break;
 
+      case TYPES.ADD_FILE_INPUT: {
+        draft.elementInputs[action.payload.id] = action.payload.file;
+        break;
+      }
+      case TYPES.REMOVE_FILE_INPUT: {
+        delete draft.elementInputs[action.payload.id];
+        break;
+      }
+
       case TYPES.RESET_SCREEN_STATE: {
         draft.screens = {};
         draft.elements = {};

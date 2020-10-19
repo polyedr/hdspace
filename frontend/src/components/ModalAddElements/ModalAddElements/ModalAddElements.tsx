@@ -1,7 +1,7 @@
 import React, { useState, useCallback, memo, useEffect } from 'react';
-import { connect } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import classNames from 'classnames';
-import { LibraryElements } from 'src/domain/libraryElements/libraryElements';
+import { LIBRARY_ELEMENTS } from '../../../domain/libraryElements/libraryElements';
 import Button from '../../UI/Button';
 import Icon from '../../UI/Icon';
 import UploadFile, { IUploadFile } from '../../UI/UploadFile';
@@ -11,18 +11,20 @@ import {
   IListCategoryEl,
   parseAddElementsTabs,
 } from '../../../utils/parseScenario';
-import { AppReduxState } from '../../../shared/types/app';
-import {
-  CreatedElement,
-  ServerStructType,
-  StateElement,
-} from '../../../redux/project/types';
+import { CreatedElement, ServerStructType } from '../../../redux/project/types';
 import { MODAL_ADD_ELEMENTS_TABS } from '../../../constants/defaultParams';
 import {
+  selectActiveElement,
+  selectCurrentRootId,
   selectCurrentScreen,
+  selectIsAddElementsModalOpened,
   selectUploadedImageInfo,
 } from '../../../redux/project/selectors';
-import { uploadFile, createElements } from '../../../redux/project/actions';
+import {
+  uploadFile,
+  createElements,
+  setIsAddElementsModalOpened,
+} from '../../../redux/project/actions';
 
 const styles = require('./ModalAddElements.scss');
 
@@ -32,47 +34,27 @@ export interface IChooseElement {
   type: string;
 }
 
-function mapStateToProps(state: AppReduxState) {
-  return {
-    uploadedImageInfo: selectUploadedImageInfo(state),
-    currentScreen: selectCurrentScreen(state),
-  };
-}
-
-const mapDispatchToProps = {
-  uploadImg: uploadFile,
-  createElements,
-};
-
-type OwnProps = {
-  activeItem: StateElement;
-  active: boolean;
-  libraryElements: LibraryElements;
-  onClose(): void;
-};
-
-type Props = typeof mapDispatchToProps &
-  ReturnType<typeof mapStateToProps> &
-  OwnProps;
-
 export type ScenarioStateType = 'scenario_new' | 'scenario_existing';
 
-const ModalAddElements: React.FunctionComponent<Props> = ({
-  activeItem,
-  active,
-  libraryElements,
-  onClose,
-  createElements,
-  uploadImg,
-  uploadedImageInfo,
-  currentScreen,
-}) => {
+const ModalAddElements: React.FC = () => {
+  const rootId = useSelector(selectCurrentRootId);
+  const uploadedImageInfo = useSelector(selectUploadedImageInfo);
+  const currentScreen = useSelector(selectCurrentScreen);
+  const active = useSelector(selectIsAddElementsModalOpened);
+  const activeElement = useSelector(selectActiveElement);
+
   const [activeTab, setActiveTab] = useState<string>('Containers');
   const [errorMsg, setErrorMsg] = React.useState<string>('');
   const [listElement, setListElement] = useState<IListCategoryEl>({});
   const [selectedElements, setSelectedElements] = useState<CreatedElement[]>(
     [],
   );
+
+  const dispatch = useDispatch();
+
+  const handleClose = useCallback(() => {
+    dispatch(setIsAddElementsModalOpened(false));
+  }, [dispatch]);
   const [imageToUpload, setUploadImg] = useState<IUploadFile | null>(null);
 
   const imageURLToAccess =
@@ -82,14 +64,16 @@ const ModalAddElements: React.FunctionComponent<Props> = ({
 
   useEffect(() => {
     if (imageToUpload) {
-      uploadImg(imageToUpload, { screenId: currentScreen.id });
+      dispatch(
+        uploadFile(imageToUpload, rootId, { screenId: currentScreen.id }),
+      );
     }
-  }, [imageToUpload, currentScreen.id]);
+  }, [dispatch, rootId, imageToUpload, currentScreen.id]);
 
   useEffect(() => {
-    const newListElement = parseAddElementsTabs(libraryElements);
+    const newListElement = parseAddElementsTabs(LIBRARY_ELEMENTS);
     setListElement(newListElement);
-  }, [libraryElements]);
+  }, []);
 
   const handleConfirm = useCallback(
     (event) => {
@@ -98,17 +82,19 @@ const ModalAddElements: React.FunctionComponent<Props> = ({
         setErrorMsg('No items for the scenario.');
       } else {
         setErrorMsg('');
-        createElements(selectedElements, { screenId: currentScreen.id });
-        onClose();
+        dispatch(
+          createElements(selectedElements, { screenId: currentScreen.id }),
+        );
+        handleClose();
       }
     },
-    [selectedElements, onClose, currentScreen.id],
+    [dispatch, selectedElements, currentScreen.id, handleClose],
   );
 
   const handleCancel = useCallback(() => {
-    onClose();
+    handleClose();
     setErrorMsg('');
-  }, [onClose]);
+  }, [handleClose]);
 
   const onModalWrapperClick = useCallback(
     (event) => {
@@ -127,7 +113,7 @@ const ModalAddElements: React.FunctionComponent<Props> = ({
     (tabName) => {
       if (tabName === activeTab) return;
       const newListElement = {
-        ...parseAddElementsTabs(libraryElements),
+        ...parseAddElementsTabs(LIBRARY_ELEMENTS),
         // ...parseAddCustomElementsTabs(customLibraryElements),
       };
       setListElement(newListElement);
@@ -135,7 +121,7 @@ const ModalAddElements: React.FunctionComponent<Props> = ({
       setErrorMsg('');
       setSelectedElements([]);
     },
-    [activeTab, libraryElements],
+    [activeTab],
   );
 
   const getContentStep = useCallback(() => {
@@ -199,7 +185,7 @@ const ModalAddElements: React.FunctionComponent<Props> = ({
           )}
           <p className={styles.modalTextDelimiter}>or</p>
           <ActionsBlock
-            activeItem={activeItem}
+            activeItem={activeElement}
             tabs={MODAL_ADD_ELEMENTS_TABS}
             groupElements={getContentStep()}
             activeTab={activeTab}
@@ -217,7 +203,4 @@ const ModalAddElements: React.FunctionComponent<Props> = ({
   ) : null;
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(memo(ModalAddElements));
+export default memo(ModalAddElements);

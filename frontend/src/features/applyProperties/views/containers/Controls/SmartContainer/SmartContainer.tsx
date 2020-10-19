@@ -2,7 +2,10 @@ import React, { useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import createStyles from '@material-ui/core/styles/createStyles';
-import { updateElementImage } from '../../../../../../redux/project/actions';
+import {
+  updateElementImage,
+  uploadFile,
+} from '../../../../../../redux/project/actions';
 import {
   PropertiesChangeProps,
   withConfigurableProperties,
@@ -11,6 +14,7 @@ import { ImageElement } from '../../../../../../api/types';
 import {
   selectActiveElement,
   selectCurrentScreenId,
+  selectElementFileInput,
 } from '../../../../../../redux/project/selectors';
 
 const useStyles = makeStyles((theme) =>
@@ -72,6 +76,24 @@ const SmartContainer: React.FC<PropertiesChangeProps<ImageElement>> = () => {
     [dispatch, currentScreenId, element],
   );
 
+  const imageFile = useSelector(selectElementFileInput(element.id));
+
+  const handleStartAnalysis = useCallback(() => {
+    dispatch(
+      uploadFile(
+        {
+          name: imageFile.name,
+          file: imageFile,
+          imgPreviewUrl: element.parameters.imageUrl,
+        },
+        element.id,
+        {
+          screenId: currentScreenId,
+        },
+      ),
+    );
+  }, [dispatch, imageFile, element, currentScreenId]);
+
   return (
     <div className="propsElementsBlock">
       <p className="propsElementsBlockTitle">Screenshot</p>
@@ -92,7 +114,12 @@ const SmartContainer: React.FC<PropertiesChangeProps<ImageElement>> = () => {
             />
           </label>
           {element.parameters.imageURL && (
-            <button type="button" className={classes.button}>
+            <button
+              type="button"
+              className={classes.button}
+              disabled={!imageFile}
+              onClick={handleStartAnalysis}
+            >
               Analyze
             </button>
           )}

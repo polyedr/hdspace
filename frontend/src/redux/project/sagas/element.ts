@@ -4,7 +4,6 @@ import {
   selectCurrentProject,
   selectElementParameters,
   selectElementStyles,
-  selectScreenRootElement,
   selectElementsForScreen,
   selectElementById,
   selectElementAsTree,
@@ -468,7 +467,7 @@ export function* updateElementParameters(
 
 export function* uploadFileSaga({
   type,
-  payload: { file },
+  payload: { file, parentId },
   meta,
 }: ReturnType<typeof Actions.uploadFile>) {
   if (!meta) {
@@ -477,20 +476,15 @@ export function* uploadFileSaga({
   }
   const { screenId } = meta;
   try {
-    // TODO: show loader in addModalElements
-    const root: LibraryElement<'root'> = yield select(
-      selectScreenRootElement(screenId),
-    );
-
     const formData = new FormData();
     formData.append('image', file.file, file.name);
-    formData.append('parent_id', root.id);
+    formData.append('parent_id', parentId);
     formData.append('struct_type', 'container');
     formData.append('func_type', 'container');
     formData.append('name', 'TESTING NEURAL NETWORK');
     formData.append('screen', screenId.toString());
-    formData.append('parameters', JSON.stringify({}));
-    formData.append('styles', JSON.stringify({}));
+    formData.append('parameters', '{}');
+    formData.append('styles', '{}');
 
     const nnContainer: LibraryElement<any> = yield call(
       reqWrapper,
@@ -518,7 +512,7 @@ export function* uploadFileSaga({
     );
 
     yield put(
-      Actions.addStateElements([nnContainerWithDefaultParams], root.id, {
+      Actions.addStateElements([nnContainerWithDefaultParams], parentId, {
         ...meta,
         sourceAction: Actions.restoreElement(nnContainerWithDefaultParams.id, {
           screenId,

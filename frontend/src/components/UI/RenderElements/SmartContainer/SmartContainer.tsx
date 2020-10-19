@@ -1,10 +1,11 @@
 /* eslint-disable jsx-a11y/no-noninteractive-tabindex */
 // @ts-nocheck
 
-import React, { useCallback } from 'react';
+import React, { useCallback, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import cn from 'classnames';
 import makeStyles from '@material-ui/core/styles/makeStyles';
+import createStyles from '@material-ui/core/styles/createStyles';
 import IconButton from '@material-ui/core/IconButton';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import SyncIcon from '@material-ui/icons/Sync';
@@ -14,9 +15,43 @@ import {
   selectCurrentScreenId,
   selectElementById,
 } from '../../../../redux/project/selectors';
-import { updateElementImage } from '../../../../redux/project/actions';
+import {
+  updateElementImage,
+  uploadFile,
+} from '../../../../redux/project/actions';
+import useUrlImageToBlob from '../../../../utils/useUrlImageToFile';
 
 const styles = require('../styles.scss');
+
+const useStyles = makeStyles(() => {
+  return createStyles({
+    innerContentWrapper: {
+      position: 'relative',
+    },
+    icon: {
+      color: '#C2C2C2',
+    },
+    innerContent: {
+      backgroundColor: 'transparent',
+      position: 'absolute',
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    nameHeading: {
+      display: 'inline',
+      color: '#C2C2C2',
+      fontSize: 30,
+    },
+    uploadField: {
+      display: 'none',
+    },
+  });
+});
 
 const SmartContainerRenderer: React.FC<SmartContainerRendererProps> = React.forwardRef(
   (
@@ -33,6 +68,9 @@ const SmartContainerRenderer: React.FC<SmartContainerRendererProps> = React.forw
     ref,
   ) => {
     const element = useSelector(selectElementById(id));
+
+    const baseClasses = useStyles();
+
     const classes = makeStyles({
       entityStyles: {
         ...entityStyles,
@@ -44,26 +82,13 @@ const SmartContainerRenderer: React.FC<SmartContainerRendererProps> = React.forw
 
       ownStyles: {
         ...ownStyles,
-        ...(element && element.parameters.imageURL
-          ? {
-              backgroundColor: 'transparent',
-              background: `url(${element.parameters.imageURL}) no-repeat center center`,
-              backgroundSize: 'cover',
-            }
-          : {}),
-      },
-      nameHeading: {
-        display: 'inline',
-        color: '#C2C2C2',
-        fontSize: 30,
-      },
-      uploadField: {
-        display: 'none',
       },
     })();
 
     const currentScreenId = useSelector(selectCurrentScreenId);
     const dispatch = useDispatch();
+
+    const imgRef = useRef<HTMLImageElement>();
 
     const handleFileInputChange = useCallback(
       ({ target }: React.ChangeEvent<HTMLInputElement>) => {
@@ -85,6 +110,26 @@ const SmartContainerRenderer: React.FC<SmartContainerRendererProps> = React.forw
       [dispatch, currentScreenId, element],
     );
 
+    const { imageURL } = element.parameters;
+
+    const imageFile = useUrlImageToBlob(element.id, imgRef);
+
+    const handleStartAnalysis = useCallback(() => {
+      dispatch(
+        uploadFile(
+          {
+            name: imageFile.name,
+            file: imageFile,
+            imgPreviewUrl: element.parameters.imageUrl,
+          },
+          element.id,
+          {
+            screenId: currentScreenId,
+          },
+        ),
+      );
+    }, [dispatch, imageFile, element, currentScreenId]);
+
     return (
       <div
         ref={ref}
@@ -98,39 +143,43 @@ const SmartContainerRenderer: React.FC<SmartContainerRendererProps> = React.forw
           classes.groupStyles,
           classes.ownStyles,
         )}
-        style={{ ...(isBorderVisible && isDisabled && { outline: 'none' }) }}
+        style={{
+          ...(isBorderVisible && isDisabled && { outline: 'none' }),
+          position: 'relative',
+        }}
       >
         {children?.length ? (
-          { children }
+          children
         ) : (
           <>
-            <h4 className={classes.nameHeading}>{element.name}</h4>
-            <input
-              id={`upload-image-wireframe-${element.id}`}
-              className={classes.uploadField}
-              type="file"
-              accept=".jpg, .jpeg, .png"
-              name="upload"
-              onChange={handleFileInputChange}
-            />
-            <label htmlFor={`upload-image-wireframe-${element.id}`}>
-              <IconButton
-                color={classes.nameHeading.color}
-                aria-label="upload picture"
-                component="span"
-              >
-                <CloudUploadIcon />
-              </IconButton>
-            </label>
-            {element.parameters.imageURL && (
-              <IconButton
-                color={classes.nameHeading.color}
-                aria-label="analyze picture"
-                component="span"
-              >
-                <SyncIcon />
-              </IconButton>
-            )}
+            {imageURL && <img src={imageURL} alt="Not found" ref={imgRef} />}
+
+            <div className={baseClasses.innerContent}>
+              <h4 className={baseClasses.nameHeading}>{element.name}</h4>
+              <input
+                id={`upload-image-wireframe-${element.id}`}
+                className={baseClasses.uploadField}
+                type="file"
+                accept=".jpg, .jpeg, .png"
+                name="upload"
+                onChange={handleFileInputChange}
+              />
+              <label htmlFor={`upload-image-wireframe-${element.id}`}>
+                <IconButton aria-label="upload picture" component="span">
+                  <CloudUploadIcon className={baseClasses.icon} />
+                </IconButton>
+              </label>
+              {imageURL && (
+                <IconButton
+                  aria-label="analyze picture"
+                  component="span"
+                  disabled={!imageFile}
+                  onClick={handleStartAnalysis}
+                >
+                  <SyncIcon className={baseClasses.icon} />
+                </IconButton>
+              )}
+            </div>
           </>
         )}
       </div>
