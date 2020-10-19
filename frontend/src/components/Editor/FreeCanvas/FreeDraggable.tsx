@@ -8,12 +8,13 @@ import {
   updateElementParameters,
 } from '../../../redux/project/actions';
 import { selectCurrentScreenId } from '../../../redux/project/selectors';
+import { Paragraph } from './FreeRenderers';
 
 const useStyles = makeStyles({
   rnd: {
     cursor: 'move',
     position: 'absolute',
-    border: (props: any) => `1px solid ${props.isActive ? 'red' : 'black'}`,
+    outline: (props: any) => props.isActive && '1px solid red',
     backgroundColor: '#fff',
   },
 });
@@ -27,8 +28,7 @@ const FreeDraggable: React.FC<Props> = ({ element, isActive }) => {
   const dispatch = useDispatch();
   const {
     id,
-    name,
-    parameters: { left = 0, top = 0, width = 300, height = 100 },
+    parameters: { left, top, width, height },
   } = element;
   const classes = useStyles({ left, top, isActive });
 
@@ -88,7 +88,7 @@ const FreeDraggable: React.FC<Props> = ({ element, isActive }) => {
         height,
       }}
     >
-      {name}
+      <Paragraph element={element} />
     </Rnd>
   );
 };
