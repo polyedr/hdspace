@@ -36,7 +36,7 @@ type Props = {
 
 const FreeElementRenderer = React.forwardRef<HTMLDivElement, Props>(
   ({ element: { id, parameters, name }, isActive, isDragging }, ref) => {
-    const { left = 0, top = 0, width = 300, height = 100 } = parameters;
+    const { left = 0, top = 0, width, height } = parameters;
 
     const classes = useStyles({ left, top, isActive, isDragging });
     const dispatch = useDispatch();

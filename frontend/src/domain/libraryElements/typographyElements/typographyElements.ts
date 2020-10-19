@@ -9,12 +9,14 @@ import {
   TextBlockServerElement,
 } from '../../../api/types';
 import { CssLikeStyles } from '../../../utils/StyleHelper';
+import { defaultFreeCanvasParams } from '../../core';
 
 export const hyperlink: HyperlinkServerElement = {
   buoyancy: 0,
   func_type: 'hyperlink',
   struct_type: 'hyperlink',
   parameters: {
+    ...defaultFreeCanvasParams,
     group: 'other',
     textContent: 'hyperlink',
     action: {
@@ -45,6 +47,7 @@ export const makeHeading = ({
   func_type: 'heading',
   struct_type: 'heading',
   parameters: {
+    ...defaultFreeCanvasParams,
     group: 'typography',
     textContent,
     headingType,
@@ -70,6 +73,7 @@ export const makeParagraph = ({
   func_type: 'paragraph',
   struct_type: 'paragraph',
   parameters: {
+    ...defaultFreeCanvasParams,
     group: 'typography',
     textContent,
   },
@@ -86,6 +90,7 @@ export const ocrtext: OcrtextServerElement = {
   func_type: 'ocrtext',
   struct_type: 'ocrtext',
   parameters: {
+    ...defaultFreeCanvasParams,
     group: 'typography',
     textContent: 'This is paragraph',
   },
@@ -102,6 +107,7 @@ export const textBlock: TextBlockServerElement = {
   func_type: 'textBlock',
   struct_type: 'textBlock',
   parameters: {
+    ...defaultFreeCanvasParams,
     group: 'typography',
     textContent: 'This is text block',
   },
@@ -118,6 +124,7 @@ export const makeListItem = (textContent: string): ListItemServerElement => ({
   func_type: 'listItem',
   struct_type: 'listItem',
   parameters: {
+    ...defaultFreeCanvasParams,
     textContent,
     isLink: false,
     link: '',
@@ -135,6 +142,7 @@ export const list: ListServerElement = {
   func_type: 'list',
   struct_type: 'list',
   parameters: {
+    ...defaultFreeCanvasParams,
     group: 'typography',
     listItems: [
       // TODO research why we need items here

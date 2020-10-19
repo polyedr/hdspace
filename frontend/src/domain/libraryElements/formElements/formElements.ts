@@ -10,6 +10,7 @@ import {
   TextinputServerElement,
 } from '../../../api/types';
 import { CssLikeStyles } from '../../../utils/StyleHelper';
+import { defaultFreeCanvasParams } from '../../core';
 
 export const makeButton = ({
   buoyancy = 0,
@@ -24,6 +25,7 @@ export const makeButton = ({
   func_type: 'button',
   struct_type: 'button',
   parameters: {
+    ...defaultFreeCanvasParams,
     group: 'form',
     textContent,
     action: {
@@ -49,6 +51,7 @@ export const makeTextinput = ({
   func_type: 'textinput',
   struct_type: 'textinput',
   parameters: {
+    ...defaultFreeCanvasParams,
     group: 'form',
     textContent: '',
     type: 'text',
@@ -67,6 +70,7 @@ export const checkbox: CheckboxServerElement = {
   func_type: 'checkbox',
   struct_type: 'checkbox',
   parameters: {
+    ...defaultFreeCanvasParams,
     group: 'form',
     value: '',
     defaultChecked: true,
@@ -86,6 +90,7 @@ export const radiobutton: RadiobuttonServerElement = {
   func_type: 'radiobutton',
   struct_type: 'radiobutton',
   parameters: {
+    ...defaultFreeCanvasParams,
     group: 'form',
     value: '',
     name: '',
@@ -107,6 +112,7 @@ export const makeSelectItem = (
   func_type: 'selectItem',
   struct_type: 'selectItem',
   parameters: {
+    ...defaultFreeCanvasParams,
     name,
     value,
   },
@@ -122,7 +128,9 @@ export const selectMenu: SelectMenuServerElement = {
   buoyancy: 0,
   func_type: 'selectMenu',
   struct_type: 'selectMenu',
-  parameters: {},
+  parameters: {
+    ...defaultFreeCanvasParams,
+  },
   styles: {
     classNames: ['selectMenu'],
     ownStyles: {} as Required<CssLikeStyles>,
@@ -140,6 +148,7 @@ export const select: SelectServerElement = {
   func_type: 'select',
   struct_type: 'select',
   parameters: {
+    ...defaultFreeCanvasParams,
     group: 'form',
     value: 'first option',
     options: [
@@ -169,6 +178,7 @@ export const makeLabel = ({
   func_type: 'label',
   struct_type: 'label',
   parameters: {
+    ...defaultFreeCanvasParams,
     group: 'typography',
     textContent,
     labelFor: 'no for attribute',
@@ -186,6 +196,7 @@ export const textarea: TextareaServerElement = {
   func_type: 'textarea',
   struct_type: 'textarea',
   parameters: {
+    ...defaultFreeCanvasParams,
     group: 'form',
     textContent: '',
     placeholder: 'Enter a label for the field',

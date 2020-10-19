@@ -20,6 +20,7 @@ import {
   SectionServerElement,
 } from '../../../api/types';
 import { CssLikeStyles } from '../../../utils/StyleHelper';
+import { defaultFreeCanvasParams } from '../../core';
 
 export const makePageTemplate = (
   withoutScreenshots: boolean = false,
@@ -29,6 +30,7 @@ export const makePageTemplate = (
   struct_type: withoutScreenshots ? 'emptyPageTemplate' : 'pageTemplate',
   parameters: {
     group: 'containers',
+    ...defaultFreeCanvasParams,
   },
   styles: {
     classNames: ['pageTemplate'],
@@ -113,6 +115,7 @@ export const subscribeForm: SubscribeFormServerElement = {
   func_type: 'subscribeForm',
   struct_type: 'subscribeForm',
   parameters: {
+    ...defaultFreeCanvasParams,
     group: 'containers',
   },
   styles: {
@@ -213,6 +216,7 @@ export const cardsSection: CardsSectionServerElement = {
   func_type: 'cardsSection',
   struct_type: 'cardsSection',
   parameters: {
+    ...defaultFreeCanvasParams,
     group: 'containers',
   },
   styles: {
@@ -380,6 +384,7 @@ export const featureSection: FeatureSectionServerElement = {
   func_type: 'featureSection',
   struct_type: 'featureSection',
   parameters: {
+    ...defaultFreeCanvasParams,
     group: 'containers',
   },
   styles: {
@@ -448,6 +453,7 @@ export const section: SectionServerElement = {
   struct_type: 'section',
   parameters: {
     group: 'containers',
+    ...defaultFreeCanvasParams,
   },
   styles: {
     classNames: ['section'],

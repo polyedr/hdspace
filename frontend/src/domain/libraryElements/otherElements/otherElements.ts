@@ -15,7 +15,7 @@ import {
   VideoServerElement,
   SmartContainerServerElement,
 } from '../../../api/types';
-import { Entity } from '../../core';
+import { defaultFreeCanvasParams, Entity } from '../../core';
 import { IMAGES } from '../../../constants/images';
 import { CssLikeStyles } from '../../../utils/StyleHelper';
 
@@ -50,6 +50,7 @@ export const makeContainer = ({
   struct_type: 'container',
   parameters: {
     group: 'none',
+    ...defaultFreeCanvasParams,
   },
   styles: {
     classNames: ['container'],
@@ -64,7 +65,9 @@ export const makeGrid = (): GridServerElement => ({
   name: 'grid',
   func_type: 'grid',
   struct_type: 'grid' as const,
-  parameters: {},
+  parameters: {
+    ...defaultFreeCanvasParams,
+  },
   styles: {
     classNames: ['grid'],
     ownStyles: {},
@@ -77,7 +80,9 @@ export const makeColumns = (): ColumnsServerElement => ({
   name: 'columns',
   func_type: 'columns',
   struct_type: 'columns' as const,
-  parameters: {},
+  parameters: {
+    ...defaultFreeCanvasParams,
+  },
   styles: {
     classNames: ['columns'],
     ownStyles: {},
@@ -91,6 +96,7 @@ export const makeDivBlock = (textContent: string): DivBlockServerElement => ({
   struct_type: 'divBlock',
   parameters: {
     group: 'containers',
+    ...defaultFreeCanvasParams,
   },
   styles: {
     classNames: ['divBlock'],
@@ -111,6 +117,7 @@ export const makeImage = ({
   parameters: {
     group: 'image',
     imageURL: IMAGES.imageIcon,
+    ...defaultFreeCanvasParams,
   },
   styles: {
     classNames: ['image'],
@@ -132,6 +139,7 @@ export const makeScreenshot = ({
   parameters: {
     group: 'undefined',
     imageURL: '',
+    ...defaultFreeCanvasParams,
   },
   styles: {
     classNames: ['screenshot'],
@@ -147,6 +155,7 @@ export const makeSmartContainer = (): SmartContainerServerElement => ({
   struct_type: 'smartContainer',
   parameters: {
     group: 'undefined',
+    ...defaultFreeCanvasParams,
   },
   styles: {
     classNames: ['smartContainer'],
@@ -162,7 +171,10 @@ export const makeDropdownItem = (
   buoyancy: 0,
   func_type: 'dropdownItem',
   struct_type: 'dropdownItem',
-  parameters: { textContent },
+  parameters: {
+    textContent,
+    ...defaultFreeCanvasParams,
+  },
   styles: {
     classNames: ['dropdownItem'],
     ownStyles: {} as Required<CssLikeStyles>,
@@ -175,7 +187,9 @@ export const dropdownMenu: DropdownMenuServerElement = {
   buoyancy: 0,
   func_type: 'dropdownMenu',
   struct_type: 'dropdownMenu',
-  parameters: {},
+  parameters: {
+    ...defaultFreeCanvasParams,
+  },
   styles: {
     classNames: ['dropdownMenu'],
     ownStyles: {} as Required<CssLikeStyles>,
@@ -198,6 +212,7 @@ export const dropdown: DropdownServerElement = {
     showRipple: true,
     isOpen: false,
     dropdownItems: ['First item', 'Second item', 'Third item'], // TODO research why we need items here
+    ...defaultFreeCanvasParams,
   },
   styles: {
     classNames: ['dropdown'],
@@ -213,6 +228,7 @@ export const video: VideoServerElement = {
   struct_type: 'video',
   parameters: {
     group: 'other',
+    ...defaultFreeCanvasParams,
     videoSettings: {
       link: '',
       autoplay: false,
@@ -238,6 +254,7 @@ export const undefined: UndefinedServerElement = {
   struct_type: 'undefined',
   parameters: {
     group: 'undefined',
+    ...defaultFreeCanvasParams,
   },
   styles: {
     classNames: ['undefined'],
