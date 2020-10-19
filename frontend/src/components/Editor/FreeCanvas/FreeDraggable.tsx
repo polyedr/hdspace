@@ -1,10 +1,22 @@
-import React, { useEffect } from 'react';
-import { useDrag } from 'react-dnd';
-import { getEmptyImage } from 'react-dnd-html5-backend';
-import { useDispatch } from 'react-redux';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Rnd } from 'react-rnd';
+import makeStyles from '@material-ui/core/styles/makeStyles';
 import { StateElement } from '../../../redux/project/types';
-import { setActiveElement } from '../../../redux/project/actions';
-import FreeElementRenderer from './FreeElementRenderer';
+import {
+  setActiveElement,
+  updateElementParameters,
+} from '../../../redux/project/actions';
+import { selectCurrentScreenId } from '../../../redux/project/selectors';
+
+const useStyles = makeStyles({
+  rnd: {
+    cursor: 'move',
+    position: 'absolute',
+    border: (props: any) => `1px solid ${props.isActive ? 'red' : 'black'}`,
+    backgroundColor: '#fff',
+  },
+});
 
 type Props = {
   element: StateElement;
@@ -15,30 +27,69 @@ const FreeDraggable: React.FC<Props> = ({ element, isActive }) => {
   const dispatch = useDispatch();
   const {
     id,
+    name,
     parameters: { left = 0, top = 0, width = 300, height = 100 },
   } = element;
+  const classes = useStyles({ left, top, isActive });
 
-  const [{ isDragging }, drag, preview] = useDrag({
-    item: { type: 'freeElement', id, left, top, width, height },
-    collect: (monitor) => ({
-      isDragging: monitor.isDragging(),
-    }),
-    begin: () => {
-      dispatch(setActiveElement(id));
-    },
-  });
+  const currentScreenId = useSelector(selectCurrentScreenId);
 
-  useEffect(() => {
-    preview(getEmptyImage(), { captureDraggingState: true });
-  }, [preview]);
+  const handleClick = (ev) => {
+    ev.stopPropagation();
+    dispatch(setActiveElement(id));
+  };
+
+  const handleInteractionStart = () => {
+    dispatch(setActiveElement(id));
+  };
+
+  const handleResizeStop = (e, dir, ref, delta, position) => {
+    dispatch(
+      updateElementParameters(
+        id,
+        {
+          width: width + delta.width,
+          height: height + delta.height,
+          left: position.x,
+          top: position.y,
+        },
+        { screenId: currentScreenId },
+      ),
+    );
+  };
+
+  const handleDragStop = (e, { x, y }) => {
+    dispatch(
+      updateElementParameters(
+        id,
+        {
+          left: x,
+          top: y,
+        },
+        { screenId: currentScreenId },
+      ),
+    );
+  };
 
   return (
-    <FreeElementRenderer
-      element={element}
-      isActive={isActive}
-      ref={drag}
-      isDragging={isDragging}
-    />
+    <Rnd
+      onClick={handleClick}
+      className={classes.rnd}
+      onResizeStart={handleInteractionStart}
+      onResizeStop={handleResizeStop}
+      onDragStart={handleInteractionStart}
+      onDragStop={handleDragStop}
+      position={{
+        x: left,
+        y: top,
+      }}
+      size={{
+        width,
+        height,
+      }}
+    >
+      {name}
+    </Rnd>
   );
 };
 

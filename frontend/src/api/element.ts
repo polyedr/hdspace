@@ -21,10 +21,12 @@ export const apiGetElements = ({
 }: MyAxiosProps & { scenariosIDs: string[] }): Promise<IScenarioElement[]> =>
   myAxios({
     ...props,
+    params: {
+      scenarioIds: scenariosIDs?.join(','),
+      page_size: 70,
+    },
     method: 'GET',
-    url: `/projects/scenario-elements${
-      scenariosIDs.length ? `/?scenariosIds=${scenariosIDs.join(',')}` : '/'
-    }`,
+    url: '/projects/scenario-elements/',
   })
     .then((res) => parseResult(res).results)
     .catch(onError);
