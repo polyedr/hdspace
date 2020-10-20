@@ -1,6 +1,7 @@
 import {
   makeContainer,
-  makeScreenshot,
+  // makeScreenshot,
+  makeSmartContainer,
   makeImage,
 } from '../otherElements/otherElements';
 import {
@@ -22,11 +23,11 @@ import {
 import { CssLikeStyles } from '../../../utils/StyleHelper';
 
 export const makePageTemplate = (
-  withoutScreenshots: boolean = false,
+  withoutContainers: boolean = false,
 ): PageTemplateServerElement => ({
   buoyancy: 0,
-  func_type: withoutScreenshots ? 'emptyPageTemplate' : 'pageTemplate',
-  struct_type: withoutScreenshots ? 'emptyPageTemplate' : 'pageTemplate',
+  func_type: withoutContainers ? 'emptyPageTemplate' : 'pageTemplate',
+  struct_type: withoutContainers ? 'emptyPageTemplate' : 'pageTemplate',
   parameters: {
     group: 'containers',
   },
@@ -34,11 +35,21 @@ export const makePageTemplate = (
     classNames: ['pageTemplate'],
     ownStyles: {} as Required<CssLikeStyles>,
   },
-  name: withoutScreenshots ? 'emptyPageTemplate' : 'pageTemplate',
+  name: withoutContainers ? 'emptyPageTemplate' : 'pageTemplate',
   children: [
     makeContainer({
       name: 'Header',
-      children: withoutScreenshots ? [] : [makeScreenshot()],
+      children: withoutContainers
+        ? []
+        : [
+            makeSmartContainer({
+              name: 'Header',
+              ownStyles: {
+                height: '50%',
+                overflow: 'hidden',
+              },
+            }),
+          ],
       ownStyles: {
         'padding-right': '5px',
         'padding-left': '5px',
@@ -49,7 +60,17 @@ export const makePageTemplate = (
       children: [
         makeContainer({
           name: 'Left Panel',
-          children: withoutScreenshots ? [] : [makeScreenshot()],
+          children: withoutContainers
+            ? []
+            : [
+                makeSmartContainer({
+                  name: 'Left Panel',
+                  ownStyles: {
+                    height: '100%',
+                    overflow: 'hidden',
+                  },
+                }),
+              ],
           ownStyles: {
             'padding-top': '0px',
             'padding-right': '5px',
@@ -61,7 +82,17 @@ export const makePageTemplate = (
         }),
         makeContainer({
           name: 'Main Content',
-          children: withoutScreenshots ? [] : [makeScreenshot()],
+          children: withoutContainers
+            ? []
+            : [
+                makeSmartContainer({
+                  name: 'Main Content',
+                  ownStyles: {
+                    height: '100%',
+                    overflow: 'hidden',
+                  },
+                }),
+              ],
           buoyancy: 1,
           ownStyles: {
             'padding-top': '0px',
@@ -74,7 +105,17 @@ export const makePageTemplate = (
         }),
         makeContainer({
           name: 'Right Panel',
-          children: withoutScreenshots ? [] : [makeScreenshot()],
+          children: withoutContainers
+            ? []
+            : [
+                makeSmartContainer({
+                  name: 'Right Panel',
+                  ownStyles: {
+                    height: '100%',
+                    overflow: 'hidden',
+                  },
+                }),
+              ],
           buoyancy: 2,
           ownStyles: {
             'padding-top': '0px',
@@ -98,7 +139,17 @@ export const makePageTemplate = (
     }),
     makeContainer({
       name: 'Footer',
-      children: withoutScreenshots ? [] : [makeScreenshot()],
+      children: withoutContainers
+        ? []
+        : [
+            makeSmartContainer({
+              name: 'Footer',
+              ownStyles: {
+                height: '100%',
+                overflow: 'hidden',
+              },
+            }),
+          ],
       ownStyles: {
         'padding-right': '5px',
         'padding-left': '5px',

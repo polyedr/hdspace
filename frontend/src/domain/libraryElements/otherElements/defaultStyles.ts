@@ -6,15 +6,12 @@ import {
   dropdownStyleControls,
   imageStyleControls,
   rootStyleControls,
-  screenshotStyleControls,
   smartContainerStyleControls,
   undefinedControls,
   videoStyleControls,
 } from '../../core';
 import {
   DEFAULT_BACKGROUND,
-  DEFAULT_BACKGROUND_POSITION,
-  DEFAULT_BACKGROUND_SIZE,
   DEFAULT_BORDER,
   DEFAULT_DISPLAY,
   DEFAULT_FLEX_GROW,
@@ -28,7 +25,6 @@ type RootControls = typeof rootStyleControls[number];
 type ContainerControls = typeof containerStyleControls[number];
 type DivBlockControls = typeof divBlockStyleControls[number];
 type ImageControls = typeof imageStyleControls[number];
-type ScreenshotControls = typeof screenshotStyleControls[number];
 type SmartContainerControls = typeof smartContainerStyleControls[number];
 type DropdownControls = typeof dropdownStyleControls[number];
 type DropdownMenuControls = typeof dropdownMenuStyleControls[number];
@@ -160,30 +156,6 @@ export const defaultImageStyles: { [K in ImageControls]: CssLikeStyles } & {
   },
 };
 
-export const defaultScreenshotStyles: {
-  [K in ScreenshotControls]: CssLikeStyles;
-} = {
-  indents: {
-    ...DEFAULT_INDENTS,
-  },
-  size: {
-    ...DEFAULT_SIZE,
-    height: '100%',
-  },
-  border: {
-    ...DEFAULT_BORDER,
-  },
-  background: {
-    ...DEFAULT_BACKGROUND,
-  },
-  backgroundPosition: {
-    ...DEFAULT_BACKGROUND_POSITION,
-  },
-  backgroundSize: {
-    ...DEFAULT_BACKGROUND_SIZE,
-  },
-};
-
 export const defaultSmartContainerStyles: {
   [K in SmartContainerControls]: CssLikeStyles;
 } & { other?: CssLikeStyles } = {
@@ -192,7 +164,7 @@ export const defaultSmartContainerStyles: {
   },
   size: {
     ...DEFAULT_SIZE,
-    'min-height': '150px',
+    'min-height': '48px',
   },
   display: {
     ...DEFAULT_DISPLAY,

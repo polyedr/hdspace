@@ -9,7 +9,6 @@ import {
   GridServerElement,
   ImageServerElement,
   RootServerElement,
-  ScreenshotServerElement,
   ServerElement,
   UndefinedServerElement,
   VideoServerElement,
@@ -120,28 +119,10 @@ export const makeImage = ({
   children: [],
 });
 
-export const makeScreenshot = ({
-  ownStyles,
-}: {
-  children?: ServerElement<Entity>[];
-  ownStyles?: Required<CssLikeStyles>;
-} = {}): ScreenshotServerElement => ({
-  buoyancy: 0,
-  func_type: 'screenshot',
-  struct_type: 'screenshot',
-  parameters: {
-    group: 'undefined',
-    imageURL: '',
-  },
-  styles: {
-    classNames: ['screenshot'],
-    ownStyles: { ...ownStyles } as Required<CssLikeStyles>,
-  },
-  name: 'screenshot',
-  children: [],
-});
-
-export const makeSmartContainer = (): SmartContainerServerElement => ({
+export const makeSmartContainer = ({
+  name = 'smartContainer',
+  ownStyles = {},
+}): SmartContainerServerElement => ({
   buoyancy: 0,
   func_type: 'smartContainer',
   struct_type: 'smartContainer',
@@ -150,9 +131,9 @@ export const makeSmartContainer = (): SmartContainerServerElement => ({
   },
   styles: {
     classNames: ['smartContainer'],
-    ownStyles: {} as Required<CssLikeStyles>,
+    ownStyles: { ...ownStyles } as Required<CssLikeStyles>,
   },
-  name: 'smartContainer',
+  name,
   children: [],
 });
 

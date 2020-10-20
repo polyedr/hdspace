@@ -26,6 +26,7 @@ const useStyles = makeStyles({
     color: '#3f4b57',
   },
   innerContent: {
+    width: '100%',
     backgroundColor: 'transparent',
     position: 'absolute',
     top: '50%',
@@ -39,7 +40,7 @@ const useStyles = makeStyles({
   nameHeading: {
     display: 'inline',
     color: '#3f4b57',
-    fontSize: 30,
+    fontSize: 18,
     textShadow: '2px 2px #c2c2c2',
   },
   uploadField: {

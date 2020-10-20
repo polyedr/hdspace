@@ -26,7 +26,6 @@ import Container from './Container/Container';
 import Section from './Section/Section';
 import Clock from './Clock/Clock';
 import Undefined from './Undefined/Undefined';
-import Screenshot from './Screenshot/Screenshot';
 import SmartContainerRenderer from './SmartContainer';
 import { Entity } from '../../../domain/core';
 import withAction from '../../../utils/withAction';
@@ -53,7 +52,6 @@ export const RENDERERS: Record<Entity, React.FC<any>> = {
   label: Label,
   hyperlink: withAction(Link, 'link'),
   image: Image,
-  screenshot: Screenshot,
   smartContainer: SmartContainerRenderer,
   select: Select,
   selectMenu: SelectMenu,
