@@ -116,6 +116,11 @@ export const setScenarioLoader = (active: boolean): T.SetScenarioLoader => ({
   payload: { active },
 });
 
+export const setAnalyzerLoader = (active: boolean): T.SetAnalyzerLoader => ({
+  type: TYPES.SET_ANALYZER_LOADER,
+  payload: { active },
+});
+
 export const setNotification = (text: string): T.SetNotification => ({
   type: TYPES.SET_NOTIFICATION,
   payload: { text },
@@ -487,11 +492,13 @@ export const addChildToElement = (
 
 export const uploadFile = (
   file: any,
+  parentId: string,
   meta: ElementHistoryMeta,
 ): T.UploadFile => ({
   type: TYPES.UPLOAD_FILE,
   payload: {
     file,
+    parentId,
   },
   meta,
 });
@@ -684,5 +691,20 @@ export const addCustomElement = (element: LibraryElement<Entity>) => ({
 
 export const removeCustomElement = (id: string) => ({
   type: TYPES.REMOVE_CUSTOM_ELEMENT,
+  payload: { id },
+});
+
+export const loadImageFromURL = (url: string) => ({
+  type: TYPES.LOAD_IMAGE_FROM_URL,
+  payload: { url },
+});
+
+export const addFileInput = (id: string, file: File) => ({
+  type: TYPES.ADD_FILE_INPUT,
+  payload: { id, file },
+});
+
+export const removeFileInput = (id: string) => ({
+  type: TYPES.REMOVE_FILE_INPUT,
   payload: { id },
 });

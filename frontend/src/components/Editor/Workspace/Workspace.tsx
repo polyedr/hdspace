@@ -20,6 +20,7 @@ import {
 import DraggableItem from '../Draggable/DraggableElement';
 import ElementsInteractions from '../ElementsInteractions/ElementsInteractions';
 import { selectIsPrototypeMode } from '../../../redux/user/selectors';
+import NNProcessingModal from '../../Dialogs/NNProcessing';
 
 const styles = require('./Workspace.scss');
 
@@ -46,7 +47,7 @@ const Workspace: React.FC = () => {
     () => () => {
       dispatch(resetScreenState());
     },
-    [],
+    [dispatch],
   );
 
   const handleSaveScreen = () => {
@@ -94,6 +95,8 @@ const Workspace: React.FC = () => {
           {!isPrototypeMode && <ElementsInteractions />}
         </Scrollbar>
       </EditorViewport>
+
+      <NNProcessingModal />
     </div>
   );
 };

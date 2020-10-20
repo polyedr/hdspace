@@ -1,17 +1,12 @@
 import React, { ChangeEvent, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import { actionsCreators } from '../../redux/project';
 import Spinner from '../UI/Spinner';
 import PropertiesTab from './PropertiesTab';
 import ElementsTab from './ElementsTab';
-import {
-  selectActiveElement,
-  selectIsAddElementsModalOpened,
-  selectLoader,
-} from '../../redux/project/selectors';
+import { selectLoader } from '../../redux/project/selectors';
 
 const useStyles = makeStyles({
   root: {
@@ -62,17 +57,8 @@ const TabPanel: React.FC<TabPanelProps> = ({ value, index, children }) => {
 };
 
 const PropertiesPanel: React.FC = () => {
-  const dispatch = useDispatch();
   const classes = useStyles();
-  const activeElement = useSelector(selectActiveElement);
-  const isAddElementsModalOpened = useSelector(selectIsAddElementsModalOpened);
   const loader = useSelector(selectLoader);
-
-  const createElements = (createdElements, meta) =>
-    dispatch(actionsCreators.createElements(createdElements, meta));
-
-  const setIsAddElementsModalOpened = (open) =>
-    dispatch(actionsCreators.setIsAddElementsModalOpened(open));
 
   const tabClasses = useTabStyles();
   const tabsClasses = useTabsStyles();
@@ -96,12 +82,7 @@ const PropertiesPanel: React.FC = () => {
       </Tabs>
 
       <TabPanel index={0} value={tab}>
-        <PropertiesTab
-          activeItem={activeElement}
-          setIsAddElementsModalOpened={setIsAddElementsModalOpened}
-          isAddElementsModalOpened={isAddElementsModalOpened}
-          createElements={createElements}
-        />
+        <PropertiesTab />
       </TabPanel>
 
       <TabPanel index={1} value={tab}>

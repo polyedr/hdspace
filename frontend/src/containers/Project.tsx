@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import Spinner from '../components/UI/Spinner';
+import NNProcessingModal from '../components/Dialogs/NNProcessing';
 import {
   selectCurrentProjectId,
   selectProjectLoader,
@@ -44,6 +45,8 @@ const Project: React.FC<Props> = ({ projectId, screenId }) => {
       {currentProjectId !== -1 && <Screen screenId={screenId} />}
 
       <ProjectLoaderSpinner />
+
+      <NNProcessingModal />
     </div>
   );
 };

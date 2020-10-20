@@ -266,6 +266,10 @@ export function selectProjectLoader(state: AppReduxState): boolean {
   return selectProjectState(state).communication.projectLoader;
 }
 
+export function selectAnalyzerLoader(state: AppReduxState): boolean {
+  return selectProjectState(state).communication.analyzerLoader;
+}
+
 export function selectCustomElementsPagination(
   state: AppReduxState,
 ): PaginatedArray<LibraryElement<Entity>> {
@@ -336,4 +340,10 @@ export const selectDisplayStyles = (state: AppReduxState) => {
   };
 
   return getDisplayStyles(activeElementStyles);
+};
+
+export const selectElementFileInput = (id: string) => (
+  state: AppReduxState,
+) => {
+  return selectProjectState(state).data.elementInputs[id];
 };

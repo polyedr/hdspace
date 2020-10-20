@@ -35,6 +35,13 @@ const communicationReducer = (
       };
     }
 
+    case TYPES.SET_ANALYZER_LOADER: {
+      return {
+        ...state,
+        analyzerLoader: action.payload.active,
+      };
+    }
+
     case TYPES.LOGOUT: {
       return {
         ...initialCommunication,
