@@ -23,10 +23,6 @@ function uiReducer(
       return { ...state, isAddElementsModalOpened: action.payload.isOpened };
     }
 
-    case TYPES.SET_IS_NN_PROCESSING_MODAL_OPENED: {
-      return { ...state, isNNProcessingModalOpened: action.payload.isOpened };
-    }
-
     case TYPES.UPDATE_SAVED_ELEMENTS_VALUES: {
       const { elementsValues } = action.payload;
 

@@ -76,7 +76,6 @@ export type ProjectDataState = {
 export type ProjectUiState = {
   editableStyles: string;
   isAddElementsModalOpened: boolean;
-  isNNProcessingModalOpened: boolean;
   itemToCopyInfo: ItemToCopyInfo | null;
   savedElementsValues: SavedElementsValues;
   showContainersBorders: boolean;
@@ -98,6 +97,7 @@ export type ProjectCommunicationState = {
   screenLoader: boolean;
   projectLoader: boolean;
   scenarioLoader: boolean;
+  analyzerLoader: boolean;
 };
 
 export type ProjectControlState = {
@@ -184,6 +184,10 @@ export type SetNotification = IAction<
 export type RemoveNotification = IPlainAction<typeof TYPES.REMOVE_NOTIFICATION>;
 export type SetScenarioLoader = IAction<
   typeof TYPES.SET_SCENARIO_LOADER,
+  { active: boolean }
+>;
+export type SetAnalyzerLoader = IAction<
+  typeof TYPES.SET_ANALYZER_LOADER,
   { active: boolean }
 >;
 export type DeleteScreen = IAction<
@@ -382,10 +386,6 @@ export type SetIsAddElementsModalOpened = IAction<
   typeof TYPES.SET_IS_ADD_ELEMENTS_MODAL_OPENED,
   { isOpened: boolean }
 >;
-export type SetIsNNProcessingModalOpened = IAction<
-  typeof TYPES.SET_IS_NN_PROCESSING_MODAL_OPENED,
-  { isOpened: boolean }
->;
 export type SetItemToCopy = IAction<
   typeof TYPES.SET_ITEM_TO_COPY,
   ItemToCopyInfo
@@ -488,6 +488,7 @@ export type Action =
   | SetScreenLoader
   | SetLoader
   | SetScenarioLoader
+  | SetAnalyzerLoader
   | DeleteScreen
   | RenameScreen
   | AddScreen
@@ -509,7 +510,6 @@ export type Action =
   | SetActiveElement
   | ToggleContainersBorders
   | SetIsAddElementsModalOpened
-  | SetIsNNProcessingModalOpened
   | SetItemToCopy
   | CopyActiveItem
   | PasteCopiedItem

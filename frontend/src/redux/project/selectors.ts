@@ -74,9 +74,6 @@ export function selectNotification(state: AppReduxState) {
 export const selectIsAddElementsModalOpened = ({ project }: AppReduxState) =>
   project.ui.isAddElementsModalOpened;
 
-export const selectIsNNProcessingModalOpened = ({ project }: AppReduxState) =>
-  project.ui.isNNProcessingModalOpened;
-
 export const selectSavedElementsValues = ({ project }: AppReduxState) =>
   project.ui.savedElementsValues;
 
@@ -267,6 +264,10 @@ export function selectScreenLoader(state: AppReduxState): boolean {
 
 export function selectProjectLoader(state: AppReduxState): boolean {
   return selectProjectState(state).communication.projectLoader;
+}
+
+export function selectAnalyzerLoader(state: AppReduxState): boolean {
+  return selectProjectState(state).communication.analyzerLoader;
 }
 
 export function selectCustomElementsPagination(

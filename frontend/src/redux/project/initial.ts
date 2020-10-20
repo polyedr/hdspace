@@ -23,7 +23,6 @@ export const initialData: T.ProjectDataState = {
 export const initialUi: T.ProjectUiState = {
   editableStyles: 'ownStyles',
   isAddElementsModalOpened: false,
-  isNNProcessingModalOpened: false,
   itemToCopyInfo: null,
   savedElementsValues: {},
   showContainersBorders: false,
@@ -44,6 +43,7 @@ export const initialCommunication: T.ProjectCommunicationState = {
   screenLoader: false,
   projectLoader: false,
   scenarioLoader: false,
+  analyzerLoader: false,
 };
 
 export const initialControl: T.ProjectControlState = {

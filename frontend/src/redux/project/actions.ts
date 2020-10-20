@@ -116,6 +116,11 @@ export const setScenarioLoader = (active: boolean): T.SetScenarioLoader => ({
   payload: { active },
 });
 
+export const setAnalyzerLoader = (active: boolean): T.SetAnalyzerLoader => ({
+  type: TYPES.SET_ANALYZER_LOADER,
+  payload: { active },
+});
+
 export const setNotification = (text: string): T.SetNotification => ({
   type: TYPES.SET_NOTIFICATION,
   payload: { text },
@@ -525,13 +530,6 @@ export const setIsAddElementsModalOpened = (
   isOpened: boolean,
 ): T.SetIsAddElementsModalOpened => ({
   type: TYPES.SET_IS_ADD_ELEMENTS_MODAL_OPENED,
-  payload: { isOpened },
-});
-
-export const setIsNNProcessingModalOpened = (
-  isOpened: boolean,
-): T.SetIsNNProcessingModalOpened => ({
-  type: TYPES.SET_IS_NN_PROCESSING_MODAL_OPENED,
   payload: { isOpened },
 });
 

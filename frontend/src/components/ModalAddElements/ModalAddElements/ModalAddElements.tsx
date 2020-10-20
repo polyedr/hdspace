@@ -114,7 +114,6 @@ const ModalAddElements: React.FC = () => {
       if (tabName === activeTab) return;
       const newListElement = {
         ...parseAddElementsTabs(LIBRARY_ELEMENTS),
-        // ...parseAddCustomElementsTabs(customLibraryElements),
       };
       setListElement(newListElement);
       setActiveTab(tabName);

@@ -474,6 +474,7 @@ export function* uploadFileSaga({
     console.error(`You have to provide metainformation for action ${type}`);
     return;
   }
+  yield put(Actions.setAnalyzerLoader(true));
   const { screenId } = meta;
   try {
     const formData = new FormData();
@@ -519,6 +520,8 @@ export function* uploadFileSaga({
         }),
       }),
     );
+
+    yield put(Actions.setAnalyzerLoader(false));
   } catch (e) {
     console.error('Could not upload image for NN. Error: ', e.message);
   }
