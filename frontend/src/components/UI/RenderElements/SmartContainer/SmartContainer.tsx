@@ -90,7 +90,6 @@ const SmartContainerRenderer: React.FC<SmartContainerRendererProps> = React.forw
 
     const { imageURL } = element.parameters;
 
-    console.log('OWN STYLES!!', ownStyles);
     return (
       <div
         ref={ref}
