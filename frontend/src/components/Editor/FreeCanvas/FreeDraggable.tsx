@@ -16,7 +16,11 @@ const useStyles = makeStyles({
     border: (props: any) =>
       `1px solid ${props.isActive ? 'red' : 'transparent'}`,
     overflow: 'hidden',
+    '&:hover': {
+      border: (props: any) => `1px solid ${props.isActive ? 'red' : '#ccc'}`,
+    },
   },
+  resizeHandle: {},
 });
 
 type Props = {
@@ -44,12 +48,24 @@ const FreeDraggable: React.FC<Props> = ({ element, isActive }) => {
   };
 
   const handleResizeStop = (e, dir, ref, delta, position) => {
+    const resultWidth = width + delta.width;
+    const resultHeight = height + delta.height;
+
+    if (
+      width === resultWidth &&
+      height === resultHeight &&
+      left === position.x &&
+      top === position.y
+    ) {
+      return;
+    }
+
     dispatch(
       updateElementParameters(
         id,
         {
-          width: width + delta.width,
-          height: height + delta.height,
+          width: resultWidth,
+          height: resultHeight,
           left: position.x,
           top: position.y,
         },
@@ -59,6 +75,8 @@ const FreeDraggable: React.FC<Props> = ({ element, isActive }) => {
   };
 
   const handleDragStop = (e, { x, y }) => {
+    if (x === left && y === top) return;
+
     dispatch(
       updateElementParameters(
         id,
@@ -89,6 +107,16 @@ const FreeDraggable: React.FC<Props> = ({ element, isActive }) => {
       size={{
         width,
         height,
+      }}
+      resizeHandleClasses={{
+        top: classes.resizeHandle,
+        topRight: classes.resizeHandle,
+        right: classes.resizeHandle,
+        bottomRight: classes.resizeHandle,
+        bottom: classes.resizeHandle,
+        bottomLeft: classes.resizeHandle,
+        left: classes.resizeHandle,
+        topLeft: classes.resizeHandle,
       }}
     >
       <Renderer element={element} />

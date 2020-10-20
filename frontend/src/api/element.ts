@@ -22,7 +22,7 @@ export const apiGetElements = ({
   myAxios({
     ...props,
     params: {
-      scenarioIds: scenariosIDs?.join(','),
+      scenariosIds: scenariosIDs?.join(','),
     },
     method: 'GET',
     url: '/projects/scenario-elements/',
