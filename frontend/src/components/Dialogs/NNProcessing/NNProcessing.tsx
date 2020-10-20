@@ -59,7 +59,7 @@ const NNProcessing: React.FC = () => {
   const isAnalyzerModalOpened = useSelector(selectAnalyzerLoader);
 
   return (
-    <Modal open={!isAnalyzerModalOpened} className={classes.modalWrapper}>
+    <Modal open={isAnalyzerModalOpened} className={classes.modalWrapper}>
       <div className={classes.modal}>
         <span>Analyzing...</span>
       </div>
