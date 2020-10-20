@@ -25,7 +25,7 @@ from .apiviews import (
     ScreenScenarioDestroyCascadeViewSet,
     ScreeScenarioViewSet,
     ScenarioElementViewSet,
-    ProjectViewSet, ScenarioElementRecursiveViewSet)
+    ProjectViewSet, ScenarioElementRecursiveViewSet, ProjectWithScreensViewSet)
 
 app_name = "projects"
 
@@ -96,6 +96,7 @@ router.register(r"screen-scenarios", ScreeScenarioViewSet)
 router.register(r"scenario-elements", ScenarioElementViewSet)
 router.register(r"scenario-elements-recursive", ScenarioElementRecursiveViewSet)
 router.register(r"projects", ProjectViewSet)
+router.register(r"screens-for-project", ProjectWithScreensViewSet)
 
 router.register(r"library-elements", ElementViewSet,
                 base_name="api_library_elements")

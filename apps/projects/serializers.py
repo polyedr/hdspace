@@ -306,6 +306,70 @@ class ProjectSerializer(ObjectPermissionsAssignmentMixin, serializers.ModelSeria
         return queryset
 
 
+class ProjectWithScreensSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+    projectscreen = ProjectScreenSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Project
+        fields = (
+            "preview",
+            "name",
+            "favicon",
+            "status",
+            "projectscreen",
+            "user",
+            "id",
+            "created",
+            "updated",
+            "project_data_text",
+            "project_data_json",
+        )
+        extra_kwargs = {
+            "preview": {"read_only": True},
+            "created": {"read_only": True},
+            "updated": {"read_only": True},
+        }
+
+    @staticmethod
+    def setup_eager_loading(qs):
+        queryset = qs.select_related("user").prefetch_related("projectscreen")
+        return queryset
+
+
+'''
+class ProjectWithElementsSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+    projectscreen = ProjectScreenExtendedSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Project
+        fields = (
+            "preview",
+            "name",
+            "favicon",
+            "status",
+            "projectscreen",
+            "user",
+            "id",
+            "created",
+            "updated",
+            "project_data_text",
+            "project_data_json",
+        )
+        extra_kwargs = {
+            "preview": {"read_only": True},
+            "created": {"read_only": True},
+            "updated": {"read_only": True},
+        }
+
+    @staticmethod
+    def setup_eager_loading(qs):
+        queryset = qs.select_related("user").prefetch_related("projectscreen")
+        return queryset
+'''
+
+
 class ScreenEventSerializer(serializers.ModelSerializer):
     class Meta:
         model = ScreenEvent
