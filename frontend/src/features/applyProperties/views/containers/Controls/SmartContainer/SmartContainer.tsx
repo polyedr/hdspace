@@ -1,11 +1,7 @@
-import React, { useCallback } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React from 'react';
+import { useSelector } from 'react-redux';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import createStyles from '@material-ui/core/styles/createStyles';
-import {
-  updateElementImage,
-  uploadFile,
-} from '../../../../../../redux/project/actions';
 import {
   PropertiesChangeProps,
   withConfigurableProperties,
@@ -13,9 +9,10 @@ import {
 import { ImageElement } from '../../../../../../api/types';
 import {
   selectActiveElement,
-  selectCurrentScreenId,
   selectElementFileInput,
 } from '../../../../../../redux/project/selectors';
+import useImageUpload from '../../../../../../utils/nn/hooks/useImageUpload';
+import useNNProcessing from '../../../../../../utils/nn/hooks/useNNProcessing';
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -53,46 +50,11 @@ const SmartContainer: React.FC<PropertiesChangeProps<ImageElement>> = () => {
   const classes = useStyles();
   const element = useSelector(selectActiveElement);
 
-  const currentScreenId = useSelector(selectCurrentScreenId);
-  const dispatch = useDispatch();
-
-  const handleFileInputChange = useCallback(
-    ({ target }: React.ChangeEvent<HTMLInputElement>) => {
-      const file = target.files && target.files[0];
-
-      if (!file) {
-        return;
-      }
-
-      if (file.size > 5242880) {
-        // eslint-disable-next-line no-alert
-        alert('Choose image up to 5Mb!');
-      } else {
-        dispatch(
-          updateElementImage(element.id, file, { screenId: currentScreenId }),
-        );
-      }
-    },
-    [dispatch, currentScreenId, element],
-  );
+  const handleImageChange = useImageUpload(element.id);
 
   const imageFile = useSelector(selectElementFileInput(element.id));
 
-  const handleStartAnalysis = useCallback(() => {
-    dispatch(
-      uploadFile(
-        {
-          name: imageFile.name,
-          file: imageFile,
-          imgPreviewUrl: element.parameters.imageUrl,
-        },
-        element.id,
-        {
-          screenId: currentScreenId,
-        },
-      ),
-    );
-  }, [dispatch, imageFile, element, currentScreenId]);
+  const handleNNProcessing = useNNProcessing(element.id, imageFile);
 
   return (
     <div className="propsElementsBlock">
@@ -109,7 +71,7 @@ const SmartContainer: React.FC<PropertiesChangeProps<ImageElement>> = () => {
               type="file"
               accept=".jpg, .jpeg, .png"
               name="upload"
-              onChange={handleFileInputChange}
+              onChange={handleImageChange}
               id={`upload-component-wireframe-${element.id}`}
             />
           </label>
@@ -118,7 +80,7 @@ const SmartContainer: React.FC<PropertiesChangeProps<ImageElement>> = () => {
               type="button"
               className={classes.button}
               disabled={!imageFile}
-              onClick={handleStartAnalysis}
+              onClick={handleNNProcessing}
             >
               Analyze
             </button>

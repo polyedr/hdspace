@@ -520,10 +520,10 @@ export function* uploadFileSaga({
         }),
       }),
     );
-
-    yield put(Actions.setAnalyzerLoader(false));
   } catch (e) {
     console.error('Could not upload image for NN. Error: ', e.message);
+  } finally {
+    yield put(Actions.setAnalyzerLoader(false));
   }
 }
 

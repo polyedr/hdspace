@@ -1,25 +1,21 @@
 /* eslint-disable jsx-a11y/no-noninteractive-tabindex */
 // @ts-nocheck
 
-import React, { useCallback, useRef } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { useRef } from 'react';
+import { useSelector } from 'react-redux';
 import cn from 'classnames';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import createStyles from '@material-ui/core/styles/createStyles';
 import IconButton from '@material-ui/core/IconButton';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import SyncIcon from '@material-ui/icons/Sync';
+import Tooltip from '@material-ui/core/Tooltip';
 
 import { SmartContainerRendererProps } from '../types';
-import {
-  selectCurrentScreenId,
-  selectElementById,
-} from '../../../../redux/project/selectors';
-import {
-  updateElementImage,
-  uploadFile,
-} from '../../../../redux/project/actions';
+import { selectElementById } from '../../../../redux/project/selectors';
 import useUrlImageToBlob from '../../../../utils/useUrlImageToFile';
+import useImageUpload from '../../../../utils/nn/hooks/useImageUpload';
+import useNNProcessing from '../../../../utils/nn/hooks/useNNProcessing';
 
 const styles = require('../styles.scss');
 
@@ -29,7 +25,7 @@ const useStyles = makeStyles(() => {
       position: 'relative',
     },
     icon: {
-      color: '#C2C2C2',
+      color: '#3f4b57',
     },
     innerContent: {
       backgroundColor: 'transparent',
@@ -44,8 +40,9 @@ const useStyles = makeStyles(() => {
     },
     nameHeading: {
       display: 'inline',
-      color: '#C2C2C2',
+      color: '#3f4b57',
       fontSize: 30,
+      textShadow: '2px 2px #c2c2c2',
     },
     uploadField: {
       display: 'none',
@@ -85,50 +82,15 @@ const SmartContainerRenderer: React.FC<SmartContainerRendererProps> = React.forw
       },
     })();
 
-    const currentScreenId = useSelector(selectCurrentScreenId);
-    const dispatch = useDispatch();
-
     const imgRef = useRef<HTMLImageElement>();
-
-    const handleFileInputChange = useCallback(
-      ({ target }: React.ChangeEvent<HTMLInputElement>) => {
-        const file = target.files && target.files[0];
-
-        if (!file) {
-          return;
-        }
-
-        if (file.size > 5242880) {
-          // eslint-disable-next-line no-alert
-          alert('Choose image up to 5Mb!');
-        } else {
-          dispatch(
-            updateElementImage(element.id, file, { screenId: currentScreenId }),
-          );
-        }
-      },
-      [dispatch, currentScreenId, element],
-    );
-
-    const { imageURL } = element.parameters;
 
     const imageFile = useUrlImageToBlob(element.id, imgRef);
 
-    const handleStartAnalysis = useCallback(() => {
-      dispatch(
-        uploadFile(
-          {
-            name: imageFile.name,
-            file: imageFile,
-            imgPreviewUrl: element.parameters.imageUrl,
-          },
-          element.id,
-          {
-            screenId: currentScreenId,
-          },
-        ),
-      );
-    }, [dispatch, imageFile, element, currentScreenId]);
+    const handleImageChange = useImageUpload(element.id);
+
+    const handleNNProcessing = useNNProcessing(element.id, imageFile);
+
+    const { imageURL } = element.parameters;
 
     return (
       <div
@@ -156,28 +118,39 @@ const SmartContainerRenderer: React.FC<SmartContainerRendererProps> = React.forw
 
             <div className={baseClasses.innerContent}>
               <h4 className={baseClasses.nameHeading}>{element.name}</h4>
-              <input
-                id={`upload-image-wireframe-${element.id}`}
-                className={baseClasses.uploadField}
-                type="file"
-                accept=".jpg, .jpeg, .png"
-                name="upload"
-                onChange={handleFileInputChange}
-              />
-              <label htmlFor={`upload-image-wireframe-${element.id}`}>
-                <IconButton aria-label="upload picture" component="span">
-                  <CloudUploadIcon className={baseClasses.icon} />
-                </IconButton>
-              </label>
-              {imageURL && (
-                <IconButton
-                  aria-label="analyze picture"
-                  component="span"
-                  disabled={!imageFile}
-                  onClick={handleStartAnalysis}
-                >
-                  <SyncIcon className={baseClasses.icon} />
-                </IconButton>
+
+              {isDisabled && (
+                <>
+                  <input
+                    id={`upload-image-wireframe-${element.id}`}
+                    className={baseClasses.uploadField}
+                    type="file"
+                    accept=".jpg, .jpeg, .png"
+                    name="upload"
+                    onChange={handleImageChange}
+                  />
+
+                  <label htmlFor={`upload-image-wireframe-${element.id}`}>
+                    <Tooltip title="Upload image" placement="top">
+                      <IconButton aria-label="upload picture" component="span">
+                        <CloudUploadIcon className={baseClasses.icon} />
+                      </IconButton>
+                    </Tooltip>
+                  </label>
+                  {imageURL && (
+                    <Tooltip title="Analyze image" placement="top">
+                      <IconButton
+                        aria-label="analyze picture"
+                        label=""
+                        component="span"
+                        disabled={!imageFile}
+                        onClick={handleNNProcessing}
+                      >
+                        <SyncIcon className={baseClasses.icon} />
+                      </IconButton>
+                    </Tooltip>
+                  )}
+                </>
               )}
             </div>
           </>
