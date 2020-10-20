@@ -5,7 +5,6 @@ import React, { useRef } from 'react';
 import { useSelector } from 'react-redux';
 import cn from 'classnames';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import createStyles from '@material-ui/core/styles/createStyles';
 import IconButton from '@material-ui/core/IconButton';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import SyncIcon from '@material-ui/icons/Sync';
@@ -19,35 +18,33 @@ import useNNProcessing from '../../../../utils/nn/hooks/useNNProcessing';
 
 const styles = require('../styles.scss');
 
-const useStyles = makeStyles(() => {
-  return createStyles({
-    innerContentWrapper: {
-      position: 'relative',
-    },
-    icon: {
-      color: '#3f4b57',
-    },
-    innerContent: {
-      backgroundColor: 'transparent',
-      position: 'absolute',
-      top: '50%',
-      left: '50%',
-      transform: 'translate(-50%, -50%)',
-      display: 'flex',
-      flexDirection: 'row',
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    nameHeading: {
-      display: 'inline',
-      color: '#3f4b57',
-      fontSize: 30,
-      textShadow: '2px 2px #c2c2c2',
-    },
-    uploadField: {
-      display: 'none',
-    },
-  });
+const useStyles = makeStyles({
+  innerContentWrapper: {
+    position: 'relative',
+  },
+  icon: {
+    color: '#3f4b57',
+  },
+  innerContent: {
+    backgroundColor: 'transparent',
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  nameHeading: {
+    display: 'inline',
+    color: '#3f4b57',
+    fontSize: 30,
+    textShadow: '2px 2px #c2c2c2',
+  },
+  uploadField: {
+    display: 'none',
+  },
 });
 
 const SmartContainerRenderer: React.FC<SmartContainerRendererProps> = React.forwardRef(
