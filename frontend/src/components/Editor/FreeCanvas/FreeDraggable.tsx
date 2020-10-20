@@ -90,6 +90,7 @@ const FreeDraggable: React.FC<Props> = ({ element, isActive }) => {
   };
 
   const Renderer = FREE_CANVAS_RENDERERS[element.type];
+  if (!Renderer) return null;
 
   return (
     <Rnd

@@ -25,7 +25,7 @@ const GMap: React.FC<IMapProps> = ({ center, zoom, markerText }) => (
     zoom={zoom}
     yesIWantToUseGoogleMapApiInternals
   >
-    <Marker lat={center.lat} lng={center.lng} text={markerText || ''} />
+    <Marker lat={center?.lat} lng={center?.lng} text={markerText || ''} />
   </GoogleMapReact>
 );
 
