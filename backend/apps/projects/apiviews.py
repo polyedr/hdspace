@@ -45,7 +45,7 @@ from .serializers import (
     ScenarioElementMultipleSerializer,
     ScreenScenarioMultipleSerializer,
     ProjectScreenMultipleSerializer,
-    ScenarioElementSerializerRecursive)
+    ScenarioElementSerializerRecursive, ProjectWithScreensSerializer)
 
 
 class IsOwner(permissions.BasePermission):
@@ -76,6 +76,26 @@ class ProjectViewSet(viewsets.ModelViewSet):
         # user = self.request.user
         # self.obj = get_object_or_404(Project, name=self.kwargs['pk'])
         # print(self.obj)
+        return self.get_serializer_class().setup_eager_loading(self.queryset)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+    def filter_queryset(self, queryset):
+        queryset = queryset.filter(user=self.request.user)
+        return queryset
+
+
+class ProjectWithScreensViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
+    queryset = Project.objects.all()
+    serializer_class = ProjectWithScreensSerializer
+    pagination_class = None
+    permission_classes = [CustomObjectPermissions]  # Django-Guardian
+    filter_backends = [filters.ObjectPermissionsFilter]  # Django-Guardian
+    http_method_names = ['get', 'head']
+
+    def get_queryset(self):
         return self.get_serializer_class().setup_eager_loading(self.queryset)
 
     def perform_create(self, serializer):
