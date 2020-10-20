@@ -23,7 +23,6 @@ export const apiGetElements = ({
     ...props,
     params: {
       scenarioIds: scenariosIDs?.join(','),
-      page_size: 70,
     },
     method: 'GET',
     url: '/projects/scenario-elements/',

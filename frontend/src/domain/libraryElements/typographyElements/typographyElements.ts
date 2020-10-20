@@ -75,7 +75,7 @@ export const makeParagraph = ({
   parameters: {
     ...defaultFreeCanvasParams,
     width: 500,
-    height: 120,
+    height: 140,
     group: 'typography',
     textContent,
   },

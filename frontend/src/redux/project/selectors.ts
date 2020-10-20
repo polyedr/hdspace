@@ -347,3 +347,9 @@ export const selectDisplayStyles = (state: AppReduxState) => {
 
   return getDisplayStyles(activeElementStyles);
 };
+
+export const selectProjectClasses = createSelector(
+  selectProjects,
+  selectCurrentProjectId,
+  (projects, id) => projects[id].projectData.classes,
+);

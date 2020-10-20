@@ -8,14 +8,14 @@ import {
   updateElementParameters,
 } from '../../../redux/project/actions';
 import { selectCurrentScreenId } from '../../../redux/project/selectors';
-import { Paragraph } from './FreeRenderers';
+import FREE_CANVAS_RENDERERS from './FreeRenderers';
 
 const useStyles = makeStyles({
   rnd: {
-    cursor: 'move',
     position: 'absolute',
-    outline: (props: any) => props.isActive && '1px solid red',
-    backgroundColor: '#fff',
+    border: (props: any) =>
+      `1px solid ${props.isActive ? 'red' : 'transparent'}`,
+    overflow: 'hidden',
   },
 });
 
@@ -30,7 +30,7 @@ const FreeDraggable: React.FC<Props> = ({ element, isActive }) => {
     id,
     parameters: { left, top, width, height },
   } = element;
-  const classes = useStyles({ left, top, isActive });
+  const classes = useStyles({ isActive });
 
   const currentScreenId = useSelector(selectCurrentScreenId);
 
@@ -71,6 +71,8 @@ const FreeDraggable: React.FC<Props> = ({ element, isActive }) => {
     );
   };
 
+  const Renderer = FREE_CANVAS_RENDERERS[element.type];
+
   return (
     <Rnd
       onClick={handleClick}
@@ -79,6 +81,7 @@ const FreeDraggable: React.FC<Props> = ({ element, isActive }) => {
       onResizeStop={handleResizeStop}
       onDragStart={handleInteractionStart}
       onDragStop={handleDragStop}
+      bounds="parent"
       position={{
         x: left,
         y: top,
@@ -88,7 +91,7 @@ const FreeDraggable: React.FC<Props> = ({ element, isActive }) => {
         height,
       }}
     >
-      <Paragraph element={element} />
+      <Renderer element={element} />
     </Rnd>
   );
 };
