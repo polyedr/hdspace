@@ -11,6 +11,7 @@ export type CssLikeStyles = {
 
   width?: string;
   height?: string;
+
   'min-height'?: string;
   'min-width'?: string;
   'max-width'?: string;
@@ -49,6 +50,7 @@ export type CssLikeStyles = {
   'flex-grow'?: number;
 
   'list-style-type'?: 'none' | 'disc';
+  overflow?: string;
 };
 
 type TConvertIndents = (
@@ -161,6 +163,8 @@ const otherStyles = (styles: CssLikeStyles): React.CSSProperties =>
         return { ...acc, backgroundPosition: styles[key] };
       case 'background-size':
         return { ...acc, backgroundSize: styles[key] };
+      case 'overflow':
+        return { ...acc, overflow: styles[key] };
       default:
         return acc;
     }

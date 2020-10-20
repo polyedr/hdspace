@@ -36,7 +36,6 @@ import DropdownItems from '../../features/applyProperties/views/containers/Contr
 import IsOpen from '../../features/applyProperties/views/containers/Controls/IsOpen/IsOpen';
 import VideoSettings from '../../features/applyProperties/views/containers/Controls/VideoSettings/VideoSettings';
 import FlexGrow from '../../features/applyProperties/views/containers/Controls/FlexGrow/FlexGrow';
-import BackgroundPosition from '../../features/applyProperties/views/containers/Controls/BackgroundPosition/BackgroundPosition';
 import BackgroundSize from '../../features/applyProperties/views/containers/Controls/BackgroundSize/BackgroundSize';
 import Scrollbar from '../UI/Scrollbar';
 import { selectActiveElement } from '../../redux/project/selectors';
@@ -70,7 +69,6 @@ const CONTROLS: Record<Control, React.ComponentType<any>> = {
   isOpen: IsOpen,
   videoSettings: VideoSettings,
   flexGrow: FlexGrow,
-  backgroundPosition: BackgroundPosition,
   backgroundSize: BackgroundSize,
 };
 

@@ -8,7 +8,6 @@ import {
   defaultDropdownItemStyles,
   defaultVideoStyles,
   defaultUndefinedStyles,
-  defaultScreenshotStyles,
   defaultSmartContainerStyles,
   defaultSectionStyles,
 } from './otherElements/defaultStyles';
@@ -72,7 +71,6 @@ export const DEFAULT_ELEMENTS_STYLES: {
   list: defaultListStyles,
   listItem: defaultListItemStyles,
   image: defaultImageStyles,
-  screenshot: defaultScreenshotStyles,
   smartContainer: defaultSmartContainerStyles,
   select: defaultSelectStyles,
   selectMenu: defaultSelectMenuStyles,

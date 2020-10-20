@@ -27,7 +27,6 @@ import { SvgIconTypeMap } from '@material-ui/core';
 import {
   root,
   makeImage,
-  makeScreenshot,
   makeSmartContainer,
   video,
   dropdown,
@@ -93,7 +92,6 @@ import {
   ParagraphServerElement,
   RadiobuttonServerElement,
   RootServerElement,
-  ScreenshotServerElement,
   SelectItemServerElement,
   SelectMenuServerElement,
   SelectServerElement,
@@ -125,7 +123,7 @@ export type ElementsToAdd = {
   grid: GridServerElement;
   columns: ColumnsServerElement;
   image: ImageServerElement;
-  screenshot: ScreenshotServerElement;
+  // screenshot: ScreenshotServerElement;
   smartContainer: SmartContainerServerElement;
   button: ButtonServerElement;
   hyperlink: HyperlinkServerElement;
@@ -167,8 +165,7 @@ export const LIBRARY_ELEMENTS: LibraryElements = {
   columns: makeColumns(),
   subscribeForm,
   image: makeImage(),
-  screenshot: makeScreenshot(),
-  smartContainer: makeSmartContainer(),
+  smartContainer: makeSmartContainer({}),
   button: makeButton(),
   hyperlink,
   textinput: makeTextinput(),
@@ -225,7 +222,6 @@ export const ICONS: Partial<
   map: MapIcon,
   calendar: CalendarTodayIcon,
   clock: QueryBuilderIcon,
-  screenshot: CropOriginalIcon,
   smartContainer: CropOriginalIcon,
   section: Crop75Icon,
 };

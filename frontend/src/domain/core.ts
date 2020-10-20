@@ -30,7 +30,6 @@ export const ENTITIES: {
   emptyPageTemplate: 'emptyPageTemplate',
   grid: 'grid',
   columns: 'columns',
-  screenshot: 'screenshot',
   smartContainer: 'smartContainer',
   subscribeForm: 'subscribeForm',
   cardsSection: 'cardsSection',
@@ -70,7 +69,6 @@ const CONTROLS_AFFECT_ON_STYLES = [
   'background',
   'bullets',
   'flexGrow',
-  'backgroundPosition',
   'backgroundSize',
 ] as const;
 
@@ -204,14 +202,6 @@ export const imageStyleControls = [
   'size',
   'border',
   'background',
-] as const;
-export const screenshotStyleControls = [
-  'indents',
-  'size',
-  'border',
-  'background',
-  'backgroundSize',
-  'backgroundPosition',
 ] as const;
 export const smartContainerStyleControls = [
   'indents',
@@ -454,9 +444,6 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
   },
   subscribeForm: {
     root: [...subscribeFormStyleControls],
-  },
-  screenshot: {
-    root: [...screenshotStyleControls, 'screenshot'],
   },
   smartContainer: {
     root: [...smartContainerStyleControls, 'smartContainer'],
