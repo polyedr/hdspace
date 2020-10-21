@@ -412,7 +412,8 @@ class ScreenScenarioDestroyCascadeViewSet(BulkModelViewSet):
 class ScenarioElementViewSet(viewsets.ModelViewSet):
     queryset = ScenarioElement.objects.all()
     serializer_class = ScenarioElementSerializer
-    pagination_class = ScenarioElementCursorSetPagination
+    # pagination_class = ScenarioElementCursorSetPagination
+    pagination_class = None
 
     def filter_queryset(self, queryset):
         ids = self.request.query_params.get('scenariosIds')
