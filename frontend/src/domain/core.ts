@@ -621,4 +621,5 @@ export const defaultFreeCanvasParams = {
   top: 0,
   width: 300,
   height: 100,
+  zIndex: 0,
 };

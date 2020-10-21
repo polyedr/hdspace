@@ -3,6 +3,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Rnd } from 'react-rnd';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import cn from 'classnames';
+import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
+import IconButton from '@material-ui/core/IconButton';
 import { StateElement } from '../../../redux/project/types';
 import {
   setActiveElement,
@@ -12,6 +15,7 @@ import {
   selectCurrentScreenId,
   selectProjectClasses,
 } from '../../../redux/project/selectors';
+import { splitWords } from '../../../utils/StringHelper';
 
 const useElementClassNames = (element: StateElement) => {
   const projectClasses = useSelector(selectProjectClasses);
@@ -46,10 +50,34 @@ const useStyles = makeStyles({
       `1px solid ${props.isActive ? 'red' : 'transparent'}`,
     overflow: 'hidden',
     '&:hover': {
-      border: (props: any) => `1px solid ${props.isActive ? 'red' : '#ccc'}`,
+      border: (props: any) => `1px solid ${props.isActive ? 'red' : '#7a7a7a'}`,
     },
+    '&:hover $crumb': {
+      display: 'flex',
+    },
+    zIndex: ({ isActive, zIndex }: any) => (isActive ? 1000 : zIndex),
   },
   resizeHandle: {},
+  crumb: {
+    flexWrap: 'nowrap',
+    height: 16,
+    backgroundColor: (props: any) => (props.isActive ? 'red' : '#7a7a7a'),
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    color: 'white',
+    display: 'none',
+    fontSize: '.8em',
+    padding: '0 0.5em',
+    textTransform: 'capitalize',
+  },
+  iconButton: {
+    height: 16,
+    width: 16,
+    padding: 0,
+    fontSize: 16,
+    color: '#fff',
+  },
 });
 
 type Props = {
@@ -59,17 +87,40 @@ type Props = {
 
 const FreeDraggable: React.FC<Props> = ({ element, isActive, children }) => {
   const dispatch = useDispatch();
+
   const {
     id,
-    parameters: { left, top, width, height },
+    name,
+    parameters: { left, top, width, height, zIndex = 0 },
   } = element;
-  const classes = useStyles({ isActive });
+  const classes = useStyles({ isActive, zIndex });
 
   const { entityStyles, groupStyles, ownStyles } = useElementClassNames(
     element,
   );
 
   const currentScreenId = useSelector(selectCurrentScreenId);
+
+  const moveUp = () => {
+    dispatch(
+      updateElementParameters(
+        id,
+        { zIndex: zIndex + 1 },
+        { screenId: currentScreenId },
+      ),
+    );
+  };
+
+  const moveDown = () => {
+    const newIndex = zIndex ? zIndex - 1 : zIndex;
+    dispatch(
+      updateElementParameters(
+        id,
+        { zIndex: newIndex },
+        { screenId: currentScreenId },
+      ),
+    );
+  };
 
   const handleClick = (ev) => {
     ev.stopPropagation();
@@ -137,7 +188,8 @@ const FreeDraggable: React.FC<Props> = ({ element, isActive, children }) => {
         width,
         height,
       }}
-      onMouseDown={handleInteractionStart}
+      onResizeStart={handleInteractionStart}
+      onDragStart={handleInteractionStart}
       resizeHandleClasses={{
         top: classes.resizeHandle,
         topRight: classes.resizeHandle,
@@ -157,6 +209,27 @@ const FreeDraggable: React.FC<Props> = ({ element, isActive, children }) => {
         }}
       >
         {children}
+      </div>
+
+      <div className={classes.crumb}>
+        <span>{splitWords(name)}</span>
+
+        <IconButton
+          onClick={moveUp}
+          className={classes.iconButton}
+          title="Move element up"
+        >
+          <KeyboardArrowUpIcon fontSize="inherit" />
+        </IconButton>
+
+        <IconButton
+          onClick={moveDown}
+          className={classes.iconButton}
+          title="Move element down"
+          disabled={zIndex <= 0}
+        >
+          <KeyboardArrowDownIcon fontSize="inherit" />
+        </IconButton>
       </div>
     </Rnd>
   );

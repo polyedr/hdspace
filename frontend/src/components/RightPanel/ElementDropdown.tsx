@@ -32,7 +32,7 @@ const useStyles = makeStyles({
     height: '100%',
     display: 'flex',
     flexDirection: 'column',
-    elementButton: {
+    '& *:first-child': {
       flex: 1,
     },
   },
@@ -75,7 +75,7 @@ const ElementDropdown: React.FC<Props> = ({ options }) => {
   };
 
   return (
-    <div>
+    <>
       <ButtonGroup
         ref={anchorRef}
         className={styles.elementDropdown}
@@ -121,7 +121,7 @@ const ElementDropdown: React.FC<Props> = ({ options }) => {
           </Grow>
         )}
       </Popper>
-    </div>
+    </>
   );
 };
 
