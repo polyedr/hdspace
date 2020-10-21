@@ -2,13 +2,42 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Rnd } from 'react-rnd';
 import makeStyles from '@material-ui/core/styles/makeStyles';
+import cn from 'classnames';
 import { StateElement } from '../../../redux/project/types';
 import {
   setActiveElement,
   updateElementParameters,
 } from '../../../redux/project/actions';
-import { selectCurrentScreenId } from '../../../redux/project/selectors';
-import FREE_CANVAS_RENDERERS from './FreeRenderers';
+import {
+  selectCurrentScreenId,
+  selectProjectClasses,
+} from '../../../redux/project/selectors';
+
+const useElementClassNames = (element: StateElement) => {
+  const projectClasses = useSelector(selectProjectClasses);
+
+  const [entityClass, groupClass] = element.styles.classNames;
+  const entityStyles =
+    projectClasses?.find((cssClass: any) => cssClass.className === entityClass)
+      ?.rules || {};
+  const groupStyles =
+    projectClasses?.find((cssClass: any) => cssClass.className === groupClass)
+      ?.rules || {};
+
+  return makeStyles({
+    entityStyles: {
+      ...entityStyles,
+    },
+
+    groupStyles: {
+      ...groupStyles,
+    },
+
+    ownStyles: {
+      ...element.styles.ownStyles,
+    },
+  })();
+};
 
 const useStyles = makeStyles({
   rnd: {
@@ -28,13 +57,17 @@ type Props = {
   isActive: boolean;
 };
 
-const FreeDraggable: React.FC<Props> = ({ element, isActive }) => {
+const FreeDraggable: React.FC<Props> = ({ element, isActive, children }) => {
   const dispatch = useDispatch();
   const {
     id,
     parameters: { left, top, width, height },
   } = element;
   const classes = useStyles({ isActive });
+
+  const { entityStyles, groupStyles, ownStyles } = useElementClassNames(
+    element,
+  );
 
   const currentScreenId = useSelector(selectCurrentScreenId);
 
@@ -89,16 +122,11 @@ const FreeDraggable: React.FC<Props> = ({ element, isActive }) => {
     );
   };
 
-  const Renderer = FREE_CANVAS_RENDERERS[element.type];
-  if (!Renderer) return null;
-
   return (
     <Rnd
       onClick={handleClick}
       className={classes.rnd}
-      onResizeStart={handleInteractionStart}
       onResizeStop={handleResizeStop}
-      onDragStart={handleInteractionStart}
       onDragStop={handleDragStop}
       bounds="parent"
       position={{
@@ -109,6 +137,7 @@ const FreeDraggable: React.FC<Props> = ({ element, isActive }) => {
         width,
         height,
       }}
+      onMouseDown={handleInteractionStart}
       resizeHandleClasses={{
         top: classes.resizeHandle,
         topRight: classes.resizeHandle,
@@ -120,7 +149,15 @@ const FreeDraggable: React.FC<Props> = ({ element, isActive }) => {
         topLeft: classes.resizeHandle,
       }}
     >
-      <Renderer element={element} />
+      <div
+        className={cn(entityStyles, groupStyles, ownStyles)}
+        style={{
+          width: '100%',
+          height: '100%',
+        }}
+      >
+        {children}
+      </div>
     </Rnd>
   );
 };

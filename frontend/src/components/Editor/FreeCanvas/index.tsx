@@ -1,18 +1,19 @@
 import React from 'react';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { useDispatch, useSelector } from 'react-redux';
-import FreeDraggable from './FreeDraggable';
 import {
   selectActiveElementId,
   selectCurrentRootId,
   selectDirectRootChildren,
 } from '../../../redux/project/selectors';
 import { setActiveElement } from '../../../redux/project/actions';
+import FREE_CANVAS_RENDERERS from './FreeRenderers';
 
 const useStyles = makeStyles({
   root: {
     height: '100%',
     position: 'relative',
+    userSelect: 'none',
   },
 });
 
@@ -29,13 +30,18 @@ const FreeCanvas = () => {
       className={classes.root}
       onClick={() => dispatch(setActiveElement(currentRootId))}
     >
-      {Object.values(elements).map((element) => (
-        <FreeDraggable
-          key={element.id}
-          element={element}
-          isActive={element.id === activeElementId}
-        />
-      ))}
+      {Object.values(elements).map((element) => {
+        const Renderer = FREE_CANVAS_RENDERERS[element.type];
+        if (!Renderer) return null;
+
+        return (
+          <Renderer
+            key={element.id}
+            element={element}
+            isActive={element.id === activeElementId}
+          />
+        );
+      })}
     </div>
   );
 };

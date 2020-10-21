@@ -118,6 +118,8 @@ export const makeImage = ({
     group: 'image',
     imageURL: IMAGES.imageIcon,
     ...defaultFreeCanvasParams,
+    width: 300,
+    height: 300,
   },
   styles: {
     classNames: ['image'],

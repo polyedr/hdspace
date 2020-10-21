@@ -1,7 +1,5 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core';
 import { useSelector } from 'react-redux';
-import cn from 'classnames';
 import Radio from '@material-ui/core/Radio';
 import Checkbox from '@material-ui/core/Checkbox';
 import Calendar from 'react-calendar';
@@ -18,89 +16,31 @@ import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import { getPlayerLink } from '../../../utils/extractVideoLink';
 import { GMap } from '../../UI';
-import {
-  selectElementAsTree,
-  selectProjectClasses,
-} from '../../../redux/project/selectors';
+import { selectElementAsTree } from '../../../redux/project/selectors';
 import { Entity } from '../../../domain/core';
 import { StateElement } from '../../../redux/project/types';
-
-const useRendererStyles = makeStyles({
-  renderer: {
-    width: '100%',
-    height: '100%',
-    maxWidth: '100%',
-    maxHeight: '100%',
-    minWidth: '100%',
-    minHeight: '100%',
-    userSelect: 'none',
-  },
-});
-
-const useElementClassNames = (element: StateElement) => {
-  const projectClasses = useSelector(selectProjectClasses);
-
-  const [entityClass, groupClass] = element.styles.classNames;
-  const entityStyles =
-    projectClasses?.find((cssClass: any) => cssClass.className === entityClass)
-      ?.rules || {};
-  const groupStyles =
-    projectClasses?.find((cssClass: any) => cssClass.className === groupClass)
-      ?.rules || {};
-
-  return makeStyles({
-    entityStyles: {
-      ...entityStyles,
-    },
-
-    groupStyles: {
-      ...groupStyles,
-    },
-
-    ownStyles: {
-      ...element.styles.ownStyles,
-    },
-  })();
-};
+import FreeDraggable from './FreeDraggable';
 
 type Props = {
   element: StateElement;
+  isActive: boolean;
 };
 
-const TextElement: React.FC<Props> = ({ element }) => {
+const TextElement: React.FC<Props> = ({ element, isActive }) => {
   const { parameters } = element;
 
-  const { entityStyles, groupStyles, ownStyles } = useElementClassNames(
-    element,
-  );
-
-  const { renderer } = useRendererStyles();
-
   return (
-    <div className={cn(entityStyles, groupStyles, ownStyles, renderer)}>
+    <FreeDraggable element={element} isActive={isActive}>
       {parameters.textContent}
-    </div>
+    </FreeDraggable>
   );
 };
 
-const Button: React.FC<Props> = ({ element }) => {
+const Button: React.FC<Props> = ({ element, isActive }) => {
   const { parameters } = element;
 
-  const { entityStyles, groupStyles, ownStyles } = useElementClassNames(
-    element,
-  );
-
-  const { renderer } = useRendererStyles();
-
   return (
-    <div
-      className={cn(entityStyles, groupStyles, ownStyles, renderer)}
-      style={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}
-    >
+    <FreeDraggable element={element} isActive={isActive}>
       <span
         style={{
           textTransform: 'uppercase',
@@ -108,59 +48,35 @@ const Button: React.FC<Props> = ({ element }) => {
       >
         {parameters.textContent}
       </span>
-    </div>
+    </FreeDraggable>
   );
 };
 
-const Container: React.FC<Props> = ({ element }) => {
-  const { entityStyles, groupStyles, ownStyles } = useElementClassNames(
-    element,
-  );
-
-  const { renderer } = useRendererStyles();
-
-  return (
-    <div
-      className={cn(entityStyles, groupStyles, ownStyles, renderer)}
-      style={{
-        height: '100%',
-        minHeight: '100%',
-      }}
-    />
-  );
+const Container: React.FC<Props> = ({ element, isActive }) => {
+  return <FreeDraggable element={element} isActive={isActive} />;
 };
 
-const Map: React.FC<Props> = ({ element }) => {
+const Map: React.FC<Props> = ({ element, isActive }) => {
   const { parameters } = element;
-  const { entityStyles, groupStyles, ownStyles } = useElementClassNames(
-    element,
-  );
-
-  const { renderer } = useRendererStyles();
 
   return (
-    <div className={cn(entityStyles, groupStyles, ownStyles, renderer)}>
+    <FreeDraggable element={element} isActive={isActive}>
       <GMap
         center={parameters.map_props.center}
         zoom={parameters.map_props.zoom}
         markerText={parameters.map_props.markerText}
       />
-    </div>
+    </FreeDraggable>
   );
 };
 
-const Video: React.FC<Props> = ({ element }) => {
+const Video: React.FC<Props> = ({ element, isActive }) => {
   const { parameters } = element;
-  const { entityStyles, groupStyles, ownStyles } = useElementClassNames(
-    element,
-  );
-
-  const { renderer } = useRendererStyles();
 
   const playerLink = getPlayerLink(parameters.videoSettings, false);
 
   return (
-    <div className={cn(entityStyles, groupStyles, ownStyles, renderer)}>
+    <FreeDraggable element={element} isActive={isActive}>
       {playerLink && (
         <iframe
           title={`video-${element.id}`}
@@ -175,78 +91,57 @@ const Video: React.FC<Props> = ({ element }) => {
           }}
         />
       )}
-    </div>
+    </FreeDraggable>
   );
 };
 
 const getTextInput: (multi?: boolean) => React.FC<Props> = (multi = false) => ({
   element,
+  isActive,
 }) => {
-  const { entityStyles, groupStyles, ownStyles } = useElementClassNames(
-    element,
-  );
-
-  const { renderer } = useRendererStyles();
-
   return (
-    <TextField
-      className={cn(entityStyles, groupStyles, ownStyles, renderer)}
-      variant="outlined"
-      multiline={multi}
-    />
+    <FreeDraggable element={element} isActive={isActive}>
+      <TextField variant="outlined" multiline={multi} />
+    </FreeDraggable>
   );
 };
 
-const Image: React.FC<Props> = ({ element }) => {
+const Image: React.FC<Props> = ({ element, isActive }) => {
   const { parameters } = element;
-  const { entityStyles, groupStyles, ownStyles } = useElementClassNames(
-    element,
-  );
-
-  const { renderer } = useRendererStyles();
-
   return (
-    <img
-      className={cn(entityStyles, groupStyles, ownStyles, renderer)}
-      src={parameters.imageURL}
-      alt={element.id}
-    />
+    <FreeDraggable element={element} isActive={isActive}>
+      <img
+        src={parameters.imageURL}
+        alt={element.id}
+        style={{
+          userSelect: 'none',
+        }}
+        width="100%"
+        height="100%"
+      />
+    </FreeDraggable>
   );
 };
 
-const List: React.FC<Props> = ({ element }) => {
+const List: React.FC<Props> = ({ element, isActive }) => {
   const { children } = useSelector(selectElementAsTree(element.id));
 
-  const { entityStyles, groupStyles, ownStyles } = useElementClassNames(
-    element,
-  );
-  const { parameters } = element;
-  const ListTag = parameters.isOrdered ? 'ol' : 'ul';
-
-  const { renderer } = useRendererStyles();
-
   return (
-    <ListTag className={cn(entityStyles, groupStyles, ownStyles, renderer)}>
+    <FreeDraggable element={element} isActive={isActive}>
       {children.map((child) => (
         <li key={child.id}>{child.parameters.textContent}</li>
       ))}
-    </ListTag>
+    </FreeDraggable>
   );
 };
 
-const Select: React.FC<Props> = ({ element }) => {
+const Select: React.FC<Props> = ({ element, isActive }) => {
   const {
     children: [menu],
   } = useSelector(selectElementAsTree(element.id));
 
-  const { entityStyles, groupStyles, ownStyles } = useElementClassNames(
-    element,
-  );
-
-  const { renderer } = useRendererStyles();
-
   return (
-    <div className={cn(entityStyles, groupStyles, ownStyles, renderer)}>
+    <FreeDraggable element={element} isActive={isActive}>
       <select>
         {menu.children.map((child) => (
           <option key={child.id} value={child.parameters.value}>
@@ -254,11 +149,11 @@ const Select: React.FC<Props> = ({ element }) => {
           </option>
         ))}
       </select>
-    </div>
+    </FreeDraggable>
   );
 };
 
-const Dropdown: React.FC<Props> = ({ element }) => {
+const Dropdown: React.FC<Props> = ({ element, isActive }) => {
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef<HTMLDivElement>(null);
   const [selectedIndex, setSelectedIndex] = React.useState(0);
@@ -266,8 +161,6 @@ const Dropdown: React.FC<Props> = ({ element }) => {
   const {
     children: [menu],
   } = useSelector(selectElementAsTree(element.id));
-
-  const { renderer } = useRendererStyles();
 
   const handleMenuItemClick = (
     event: React.MouseEvent<HTMLLIElement, MouseEvent>,
@@ -293,7 +186,7 @@ const Dropdown: React.FC<Props> = ({ element }) => {
   };
 
   return (
-    <div className={renderer}>
+    <FreeDraggable element={element} isActive={isActive}>
       <ButtonGroup variant="contained" color="primary" ref={anchorRef}>
         <MuiButton>
           {menu.children[selectedIndex].parameters.textContent}
@@ -345,7 +238,7 @@ const Dropdown: React.FC<Props> = ({ element }) => {
           </Grow>
         )}
       </Popper>
-    </div>
+    </FreeDraggable>
   );
 };
 
