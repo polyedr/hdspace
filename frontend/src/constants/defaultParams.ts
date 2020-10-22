@@ -75,14 +75,6 @@ export const DEFAULT_ACTIVE_ELEMENT: StateElement = {
   },
 };
 
-export const STATUS = ['on_hold', 'in_progress', 'review', 'approved'];
-
-export const DEFAULT_SCREEN_MODE = {
-  isDefaultMode: false,
-  isTabletMode: false,
-  isMobileMode: false,
-};
-
 export const MODAL_ADD_ELEMENTS_TABS = [
   'Containers',
   'Widget',
@@ -101,3 +93,9 @@ export const DEFAULT_AUTHORISATION_TOKEN: ITokenPair = {
 export const CONTAINER_GROUPS = ['containers', 'custom'];
 
 export const SAVEABLE_ELEMENTS = ['section'];
+
+export const enum SCREEN_FORMATS {
+  Desktop = 'desktop',
+  Tablet = 'tablet',
+  Mobile = 'mobile',
+}

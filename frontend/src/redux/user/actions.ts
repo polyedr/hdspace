@@ -19,6 +19,11 @@ export const changePrototypeMode = (isPrototypeMode: boolean) => ({
   isPrototypeMode,
 });
 
+export const changeFreeCanvasMode = (enabled: boolean) => ({
+  type: TYPES.CHANGE_FREE_CANVAS_MODE,
+  enabled,
+});
+
 export const login = (data: LoginFormData) => ({
   type: TYPES.LOGIN,
   payload: data,

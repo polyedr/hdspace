@@ -7,9 +7,12 @@ interface ActionHandler<T> {
   (state: UserState, payload: UnsafeReturnType<T>): UserState;
 }
 
-const INITIAL_STATE: UserState = {
+export const initialUserState: UserState = {
   isLPanelMinimized: false,
   isPrototypeMode: false,
+  freeCanvasMode: {
+    enabled: false,
+  },
   userData: {
     isActive: false,
     hourlyRate: 0,
@@ -121,14 +124,26 @@ const setRestoreUserId: ActionHandler<typeof Actions.setRestoreUserId> = (
   restoreUserId,
 });
 
+const changeFreeCanvasMode: ActionHandler<typeof Actions.changeFreeCanvasMode> = (
+  state,
+  { enabled },
+) => ({
+  ...state,
+  freeCanvasMode: {
+    ...state.freeCanvasMode,
+    enabled,
+  },
+});
+
 const logout: ActionHandler<typeof Actions.logout> = () => ({
-  ...INITIAL_STATE,
+  ...initialUserState,
 });
 
 // TODO: type Action in Handlers
-const HANDLERS: Handlers<UserState> = {
+const handlers: Handlers<UserState> = {
   [TYPES.CHANGE_L_PANEL]: changeMinLPanel,
   [TYPES.CHANGE_PROTOTYPE_MODE]: changePrototypeMode,
+  [TYPES.CHANGE_FREE_CANVAS_MODE]: changeFreeCanvasMode,
   [TYPES.TOGGLE_USER_LOADING]: changeSignLoader,
   [TYPES.SET_TOKEN_PAIR]: setTokenPair,
   [TYPES.SET_USER_DATA]: setUserData,
@@ -140,4 +155,4 @@ const HANDLERS: Handlers<UserState> = {
   [TYPES.SET_CONFIRM_MESSAGE]: setConfirmMessage,
 } as const;
 
-export default createReducer(INITIAL_STATE, HANDLERS);
+export default createReducer(initialUserState, handlers);

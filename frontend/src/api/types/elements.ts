@@ -37,7 +37,7 @@ export type ServerElement<
   func_type: string;
   buoyancy: number;
   image?: string | null;
-  parameters: { group?: string } & Params;
+  parameters: any;
   custom?: boolean;
   // Every element has entity css class, group css class and unique own css class
   // Entity class has default entity styles, own class is empty by default, group classes is user custom classes

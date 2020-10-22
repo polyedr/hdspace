@@ -201,6 +201,7 @@ export const restoreMapElementChildren = (
     const index = draft[childrenIds[0]].buoyancy;
 
     element.children.splice(index, 0, ...childrenIds);
+    element.children = [...new Set(element.children)];
     element.children.forEach((id, i) => {
       draft[id].buoyancy = i;
       draft[id].parent = elementId;

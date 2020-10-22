@@ -56,7 +56,7 @@ type ScreenBackground = {
 };
 
 export const DEFAULT_BACKGROUND: ScreenBackground = {
-  'background-color': 'rgba(255, 255, 255, 0)',
+  'background-color': 'transparent',
   'background-image': 'none',
   'background-repeat': 'no-repeat',
   'background-size': 'cover',

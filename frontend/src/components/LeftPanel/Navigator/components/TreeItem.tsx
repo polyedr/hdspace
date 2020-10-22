@@ -10,9 +10,11 @@ import { focusTreeItem } from '../utils';
 import ContextMenu from './ContextMenu';
 import { ICONS } from '../../../../domain/libraryElements/libraryElements';
 import { selectElementById } from '../../../../redux/project/selectors';
+import { splitWords } from '../../../../utils/StringHelper';
 
 const useStyles = makeStyles({
   iconButton: {
+    padding: 0,
     cursor: 'pointer',
     boxSizing: 'border-box',
     width: '1em',
@@ -39,6 +41,7 @@ const useStyles = makeStyles({
     padding: '0.25em',
     outline: 'none',
     whiteSpace: 'nowrap',
+    textTransform: 'capitalize',
     '& button': {
       padding: 0,
       border: 'none',
@@ -197,7 +200,7 @@ const TreeItem: React.FC<Props> = (props) => {
 
       {ElementIcon && <ElementIcon className={classes.icon} />}
 
-      <span>{item.data ? item.data.title : ''}</span>
+      <span>{splitWords(item.data?.title)}</span>
 
       <ContextMenu
         open={state.mouseY !== null}

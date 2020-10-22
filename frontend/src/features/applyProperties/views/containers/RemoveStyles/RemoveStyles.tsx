@@ -1,7 +1,6 @@
 import React, { memo } from 'react';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import Button from '../../../../../components/UI/Button';
-import { AppReduxState } from '../../../../../shared/types/app';
 import {
   selectActiveElement,
   selectEditableStyles,
@@ -9,26 +8,15 @@ import {
 
 const styles = require('./RemoveStyles.scss');
 
-type OwnProps = {
+type Props = {
   cssPropertiesNames: string[];
   onClick(cssPropertiesNames: string[]): void;
 };
 
-const mapState = (state: AppReduxState) => {
-  return {
-    editableStyles: selectEditableStyles(state),
-    activeItem: selectActiveElement(state),
-  };
-};
+const RemoveStyles: React.FC<Props> = ({ onClick, cssPropertiesNames }) => {
+  const editableStyles = useSelector(selectEditableStyles);
+  const activeItem = useSelector(selectActiveElement);
 
-type Props = OwnProps & ReturnType<typeof mapState>;
-
-const RemoveStyles: React.FC<Props> = ({
-  onClick,
-  cssPropertiesNames,
-  editableStyles,
-  activeItem,
-}) => {
   const handleButtonClick = () => {
     onClick(cssPropertiesNames);
   };
@@ -47,4 +35,4 @@ const RemoveStyles: React.FC<Props> = ({
   ) : null;
 };
 
-export default connect(mapState)(memo(RemoveStyles));
+export default memo(RemoveStyles);
