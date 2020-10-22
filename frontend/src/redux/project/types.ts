@@ -70,6 +70,7 @@ export type ProjectDataState = {
   screens: Normalized<Screen>;
   elements: Normalized<StateElement>;
   customElementsData: PaginatedArray<LibraryElement<Entity>>;
+  elementInputs: { [id: string]: File };
 };
 
 export type ProjectUiState = {
@@ -96,6 +97,7 @@ export type ProjectCommunicationState = {
   screenLoader: boolean;
   projectLoader: boolean;
   scenarioLoader: boolean;
+  analyzerLoader: boolean;
 };
 
 export type ProjectControlState = {
@@ -182,6 +184,10 @@ export type SetNotification = IAction<
 export type RemoveNotification = IPlainAction<typeof TYPES.REMOVE_NOTIFICATION>;
 export type SetScenarioLoader = IAction<
   typeof TYPES.SET_SCENARIO_LOADER,
+  { active: boolean }
+>;
+export type SetAnalyzerLoader = IAction<
+  typeof TYPES.SET_ANALYZER_LOADER,
   { active: boolean }
 >;
 export type DeleteScreen = IAction<
@@ -354,7 +360,7 @@ export type AddChildToElement = IAction<
 >;
 export type UploadFile = IAction<
   typeof TYPES.UPLOAD_FILE,
-  { file: any },
+  { file: any; parentId: string },
   ElementHistoryMeta
 >;
 export type uploadImageForNNSuccess = IAction<
@@ -457,6 +463,16 @@ export type RemoveCustomElement = IAction<
   { id: string }
 >;
 
+export type AddFileInput = IAction<
+  typeof TYPES.ADD_FILE_INPUT,
+  { id: string; file: File }
+>;
+
+export type RemoveFileInput = IAction<
+  typeof TYPES.REMOVE_FILE_INPUT,
+  { id: string }
+>;
+
 export type Action =
   | LoadProjects
   | LoadProjectsSuccess
@@ -472,6 +488,7 @@ export type Action =
   | SetScreenLoader
   | SetLoader
   | SetScenarioLoader
+  | SetAnalyzerLoader
   | DeleteScreen
   | RenameScreen
   | AddScreen
@@ -540,7 +557,9 @@ export type Action =
   | UpdateElementsLoading
   | SetCustomElements
   | AddCustomElement
-  | RemoveCustomElement;
+  | RemoveCustomElement
+  | AddFileInput
+  | RemoveFileInput;
 
 export type ItemToCopyInfo = {
   id: string;

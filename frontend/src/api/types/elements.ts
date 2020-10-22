@@ -21,7 +21,6 @@ import {
   VideoParameters,
   DropdownParameters,
   DropdownItemParameters,
-  ScreenshotParameters,
 } from './elementsParameters';
 import { Entity } from '../../domain/core';
 
@@ -82,11 +81,6 @@ export type FeatureSectionServerElement = ServerElement<
   ServerElement<Entity>[]
 >;
 export type ImageServerElement = ServerElement<'image', [], ImageParameters>;
-export type ScreenshotServerElement = ServerElement<
-  'screenshot',
-  [],
-  ScreenshotParameters
->;
 export type SmartContainerServerElement = ServerElement<'smartContainer'>;
 export type ButtonServerElement = ServerElement<'button', [], ButtonParameters>;
 export type HyperlinkServerElement = ServerElement<
@@ -235,11 +229,6 @@ export type CardsSectionElement = LibraryElement<
   LibraryElement<Entity>
 >;
 export type ImageElement = LibraryElement<'image', [], ImageParameters>;
-export type ScreenshotElement = LibraryElement<
-  'screenshot',
-  [],
-  ScreenshotParameters
->;
 export type ButtonElement = LibraryElement<'button', [], ButtonParameters>;
 export type HyperlinkElement = LibraryElement<
   'hyperlink',
@@ -333,7 +322,6 @@ export type LibraryElementUnion =
   | ContainerElement
   | DivBlockElement
   | ImageElement
-  | ScreenshotElement
   | ButtonElement
   | HyperlinkElement
   | TextinputElement

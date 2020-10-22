@@ -8,6 +8,7 @@ import { resetScreenState } from '../../../redux/project/actions';
 import { selectCurrentRootId } from '../../../redux/project/selectors';
 import DraggableItem from '../Draggable/DraggableElement';
 import ElementsInteractions from '../ElementsInteractions/ElementsInteractions';
+import NNProcessingModal from '../../Dialogs/NNProcessing';
 import {
   selectFreeCanvasMode,
   selectIsPrototypeMode,
@@ -91,6 +92,8 @@ const Workspace: React.FC = () => {
           )}
         </Scrollbar>
       </EditorViewport>
+
+      <NNProcessingModal />
     </div>
   );
 };

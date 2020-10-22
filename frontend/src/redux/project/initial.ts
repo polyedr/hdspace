@@ -17,6 +17,7 @@ export const initialData: T.ProjectDataState = {
     loading: false,
     pageSize: 40,
   },
+  elementInputs: {},
 };
 
 export const initialUi: T.ProjectUiState = {
@@ -42,6 +43,7 @@ export const initialCommunication: T.ProjectCommunicationState = {
   screenLoader: false,
   projectLoader: false,
   scenarioLoader: false,
+  analyzerLoader: false,
 };
 
 export const initialControl: T.ProjectControlState = {

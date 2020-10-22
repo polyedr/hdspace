@@ -1,8 +1,8 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import * as R from 'ramda';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import ActiveElementBlock from '../../features/applyProperties/views/containers/Controls/ActiveElementBlock';
-import { LIBRARY_ELEMENTS } from '../../domain/libraryElements/libraryElements';
 import ControlSection from '../../features/applyProperties/views/components/ControlSection/ControlSection';
 import RenameElement from '../../features/applyProperties/views/containers/Controls/RenameElement/RenameElement';
 import ShareStyles from '../../features/applyProperties/views/containers/ShareStyles/ShareStyles';
@@ -36,14 +36,9 @@ import DropdownItems from '../../features/applyProperties/views/containers/Contr
 import IsOpen from '../../features/applyProperties/views/containers/Controls/IsOpen/IsOpen';
 import VideoSettings from '../../features/applyProperties/views/containers/Controls/VideoSettings/VideoSettings';
 import FlexGrow from '../../features/applyProperties/views/containers/Controls/FlexGrow/FlexGrow';
-import BackgroundPosition from '../../features/applyProperties/views/containers/Controls/BackgroundPosition/BackgroundPosition';
 import BackgroundSize from '../../features/applyProperties/views/containers/Controls/BackgroundSize/BackgroundSize';
-import { StateElement } from '../../redux/project/types';
-import {
-  createElements,
-  setIsAddElementsModalOpened,
-} from '../../redux/project/actions';
 import Scrollbar from '../UI/Scrollbar';
+import { selectActiveElement } from '../../redux/project/selectors';
 
 const CONTROLS: Record<Control, React.ComponentType<any>> = {
   display: Display,
@@ -74,7 +69,6 @@ const CONTROLS: Record<Control, React.ComponentType<any>> = {
   isOpen: IsOpen,
   videoSettings: VideoSettings,
   flexGrow: FlexGrow,
-  backgroundPosition: BackgroundPosition,
   backgroundSize: BackgroundSize,
 };
 
@@ -84,21 +78,11 @@ const useStyles = makeStyles({
   },
 });
 
-type Props = {
-  activeItem: StateElement;
-  createElements: typeof createElements;
-  setIsAddElementsModalOpened: typeof setIsAddElementsModalOpened;
-  isAddElementsModalOpened: boolean;
-};
-
-const PropertiesTab: React.FC<Props> = ({
-  setIsAddElementsModalOpened,
-  isAddElementsModalOpened,
-  createElements: handleCreateElements,
-  activeItem,
-}) => {
+const PropertiesTab: React.FC = () => {
   const classes = useStyles();
-  const { type } = activeItem;
+  const activeElement = useSelector(selectActiveElement);
+
+  const { type } = activeElement;
 
   return (
     <div className={classes.root}>
@@ -108,29 +92,22 @@ const PropertiesTab: React.FC<Props> = ({
           height: '100%',
         }}
       >
-        <ActiveElementBlock
-          activeItem={activeItem}
-          libraryElements={LIBRARY_ELEMENTS}
-          createElements={handleCreateElements}
-          isAddElementsModalOpened={isAddElementsModalOpened}
-          setIsAddElementsModalOpened={setIsAddElementsModalOpened}
-        />
-        {activeItem.type !== 'none' && (
+        <ActiveElementBlock />
+
+        {type !== 'none' && (
           <div className="propsPanelBlock">
             <div className="propsPanelHeaderBlock">
               <p>Element properties</p>
             </div>
 
-            {activeItem.type !== 'root' && (
-              <div className="propsPanelContentBlock">
-                <ControlSection title="Element's name">
-                  <RenameElement />
-                </ControlSection>
-              </div>
-            )}
-
-            {activeItem.type !== 'root' && (
+            {type !== 'root' && (
               <>
+                <div className="propsPanelContentBlock">
+                  <ControlSection title="Element's name">
+                    <RenameElement />
+                  </ControlSection>
+                </div>
+
                 <div className="propsPanelContentBlock">
                   <ShareStyles />
                 </div>
