@@ -1,4 +1,3 @@
-/* eslint-disable jsx-a11y/no-noninteractive-tabindex */
 // @ts-nocheck
 
 import React from 'react';
@@ -10,10 +9,7 @@ import { TextBlockRendererProps } from '../types';
 const styles = require('../styles.scss');
 
 const TextBlock: React.FC<TextBlockRendererProps> = React.forwardRef(
-  (
-    { id, entityStyles, groupStyles, ownStyles, params, className, isDisabled },
-    ref,
-  ) => {
+  ({ id, entityStyles, groupStyles, ownStyles, params, className }, ref) => {
     const classes = makeStyles({
       entityStyles: {
         ...entityStyles,
@@ -37,7 +33,6 @@ const TextBlock: React.FC<TextBlockRendererProps> = React.forwardRef(
         id={id}
         data-ls-id={id}
         key={id}
-        tabIndex={isDisabled ? -1 : 0}
         className={cn(
           className,
           styles.addedElem,

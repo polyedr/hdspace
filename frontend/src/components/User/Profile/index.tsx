@@ -141,8 +141,7 @@ const Profile: React.FC = () => {
                 <img src={avatar ?? IMAGES.prof} alt="profile" />
 
                 <div className={styles.profileImageActions}>
-                  {/* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex */}
-                  <label className={styles.imageActionButton} tabIndex={0}>
+                  <label className={styles.imageActionButton}>
                     Upload
                     <Field
                       name="avatar"
