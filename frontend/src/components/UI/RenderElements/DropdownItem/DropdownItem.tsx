@@ -60,7 +60,6 @@ const DropdownItem: React.FC<DropdownItemRendererProps> = React.forwardRef(
         ref={ref}
         id={id}
         data-ls-id={id}
-        tabIndex={0}
         key={id}
         className={cn(
           classes.root,

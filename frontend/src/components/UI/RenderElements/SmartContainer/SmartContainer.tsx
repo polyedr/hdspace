@@ -1,4 +1,3 @@
-/* eslint-disable jsx-a11y/no-noninteractive-tabindex */
 // @ts-nocheck
 
 import React, { useRef } from 'react';

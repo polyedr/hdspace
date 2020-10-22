@@ -54,7 +54,6 @@ const MenuItem: React.FC<MenuItemRendererProps> = React.forwardRef(
         ref={ref}
         id={id}
         data-ls-id={id}
-        tabIndex={0}
         key={id}
         className={cn(
           className,

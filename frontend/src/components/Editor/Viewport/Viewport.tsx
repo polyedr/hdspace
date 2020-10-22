@@ -1,4 +1,3 @@
-/* eslint-disable jsx-a11y/no-noninteractive-tabindex */
 // @ts-nocheck
 
 import React, { useCallback, useRef } from 'react';
@@ -11,7 +10,6 @@ import {
   selectCurrentRootId,
 } from '../../../redux/project/selectors';
 import useHotKeys from '../hooks/useHotKeys';
-import { selectIsPrototypeMode } from '../../../redux/user/selectors';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -33,7 +31,6 @@ const useStyles = makeStyles(() =>
 const Viewport: React.FC = ({ children }) => {
   const activeElementId = useSelector(selectActiveElementId);
   const rootID = useSelector(selectCurrentRootId);
-  const isDisabled = useSelector(selectIsPrototypeMode);
 
   const dispatch = useDispatch();
   const styles = useStyles();
@@ -57,14 +54,14 @@ const Viewport: React.FC = ({ children }) => {
         dispatch(setActiveElement(elementId === 'root' ? rootID : elementId));
       }
     },
-    [rootID, activeElementId],
+    [dispatch, rootID, activeElementId],
   );
   return (
     <div
       ref={ref}
       className={styles.editorViewport}
       onMouseDown={handleRootClick}
-      tabIndex={isDisabled ? 0 : -1}
+      tabIndex={-1}
     >
       {children}
     </div>

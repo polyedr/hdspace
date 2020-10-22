@@ -1,4 +1,3 @@
-/* eslint-disable jsx-a11y/no-noninteractive-tabindex */
 // @ts-nocheck
 
 import React from 'react';
@@ -180,7 +179,6 @@ const ListItem: React.FC<ListItemRendererProps> = React.forwardRef(
             ref={ref}
             id={id}
             data-ls-id={id}
-            tabIndex={isDisabled ? 0 : -1}
             className={cn(
               className,
               sharedClasses.lsItem,
