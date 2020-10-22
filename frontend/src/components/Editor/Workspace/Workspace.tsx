@@ -17,8 +17,6 @@ import NewTopBar from '../TopBar';
 import Example from '../FreeCanvas';
 import { SCREEN_FORMATS } from '../../../constants/defaultParams';
 
-// export const formats = ['desktop', 'tablet', 'mobile'] as const;
-
 const useStyles = makeStyles({
   root: {
     padding: '1em',
