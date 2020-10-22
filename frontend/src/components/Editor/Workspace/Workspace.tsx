@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import cn from 'classnames';
 import html2canvas from 'html2canvas';
@@ -21,6 +21,7 @@ import DraggableItem from '../Draggable/DraggableElement';
 import ElementsInteractions from '../ElementsInteractions/ElementsInteractions';
 import { selectIsPrototypeMode } from '../../../redux/user/selectors';
 import NNProcessingModal from '../../Dialogs/NNProcessing';
+import useGlobalDropTarget from '../../../utils/dragAndDrop/GlobalDropTarget/useGlobalDropTarget';
 
 const styles = require('./Workspace.scss');
 
@@ -42,6 +43,8 @@ const Workspace: React.FC = () => {
     isDefaultMode: true,
   });
   const [isScreenRotated, setIsScreenRotated] = useState<boolean>(false);
+
+  const ref = useRef<HTMLDivElement | null>(null);
 
   useEffect(
     () => () => {
@@ -67,8 +70,10 @@ const Workspace: React.FC = () => {
     }
   };
 
+  useGlobalDropTarget(['smartContainer'], ref);
+
   return (
-    <div className={styles.editorWorkspace}>
+    <div className={styles.editorWorkspace} ref={ref}>
       <TopBar
         screenID={currentScreenId}
         isPrototypeMode={isPrototypeMode}

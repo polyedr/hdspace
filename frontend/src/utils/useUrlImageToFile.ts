@@ -23,10 +23,10 @@ const useUrlImageToFile = (
     imgRef.current.onload = () => {
       const canvas = document.createElement('canvas');
       canvas.getContext('2d')?.drawImage(img, 0, 0);
+      const width = parseInt(img.style.width) || img.naturalWidth;
+      const height = parseInt(img.style.height) || img.naturalHeight;
       canvas.toBlob((blob) => {
-        canvas
-          .getContext('2d')
-          ?.clearRect(0, 0, img.naturalWidth, img.naturalHeight);
+        canvas.getContext('2d')?.clearRect(0, 0, width, height);
         if (blob && url) {
           dispatch(
             addFileInput(
