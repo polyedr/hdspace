@@ -1,7 +1,5 @@
 /* eslint-disable camelcase */
 
-import { Normalized } from '../../api/types';
-
 export interface ITokenPair {
   access: string;
   refresh: string;
@@ -63,7 +61,6 @@ export type UserState = {
   isPrototypeMode: boolean;
   freeCanvasMode: {
     enabled: boolean;
-    elements: Normalized<FreeElement>;
   };
   tokenPair: ITokenPair;
   isLoadedToken: boolean;
