@@ -15,8 +15,9 @@ import {
 } from '../../../redux/user/selectors';
 import NewTopBar from '../TopBar';
 import Example from '../FreeCanvas';
+import { SCREEN_FORMATS } from '../../../constants/defaultParams';
 
-export const formats = ['desktop', 'tablet', 'mobile'] as const;
+// export const formats = ['desktop', 'tablet', 'mobile'] as const;
 
 const useStyles = makeStyles({
   root: {
@@ -51,7 +52,7 @@ const Workspace: React.FC = () => {
   const isPrototypeMode = useSelector(selectIsPrototypeMode);
   const freeCanvasMode = useSelector(selectFreeCanvasMode);
 
-  const [format, setFormat] = useState(formats[0]);
+  const [format, setFormat] = useState(SCREEN_FORMATS.Desktop);
   const [rotated, setRotated] = useState<boolean>(false);
 
   const classes = useStyles(rotated);

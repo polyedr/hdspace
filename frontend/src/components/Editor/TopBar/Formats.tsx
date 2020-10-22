@@ -6,7 +6,7 @@ import TabletMacIcon from '@material-ui/icons/TabletMac';
 import PhoneIphoneIcon from '@material-ui/icons/PhoneIphone';
 import ScreenRotationIcon from '@material-ui/icons/ScreenRotation';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import { formats } from '../Workspace/Workspace';
+import { SCREEN_FORMATS } from '../../../constants/defaultParams';
 
 const useStyles = makeStyles({
   root: {
@@ -16,11 +16,8 @@ const useStyles = makeStyles({
 });
 
 type Props = {
-  format: typeof formats[number];
-  handleFormatChange: (
-    ev: any,
-    newFormat: typeof formats[number] | null,
-  ) => void;
+  format: SCREEN_FORMATS;
+  handleFormatChange: (ev: any, newFormat: SCREEN_FORMATS | null) => void;
   rotated: boolean;
   handleRotatedToggle: () => void;
 };
@@ -36,20 +33,20 @@ const Formats: React.FC<Props> = ({
   return (
     <div className={classes.root}>
       <ToggleButtonGroup value={format} onChange={handleFormatChange} exclusive>
-        <ToggleButton value={formats[0]} title="Desktop view">
+        <ToggleButton value={SCREEN_FORMATS.Desktop} title="Desktop view">
           <DesktopWindowsIcon />
         </ToggleButton>
 
-        <ToggleButton value={formats[1]} title="Tablet view">
+        <ToggleButton value={SCREEN_FORMATS.Tablet} title="Tablet view">
           <TabletMacIcon />
         </ToggleButton>
 
-        <ToggleButton value={formats[2]} title="Mobile view">
+        <ToggleButton value={SCREEN_FORMATS.Mobile} title="Mobile view">
           <PhoneIphoneIcon />
         </ToggleButton>
       </ToggleButtonGroup>
 
-      {format !== formats[0] && (
+      {format !== SCREEN_FORMATS.Desktop && (
         <ToggleButton
           selected={rotated}
           onChange={handleRotatedToggle}

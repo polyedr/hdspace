@@ -3,7 +3,6 @@ import Switch from '@material-ui/core/Switch';
 import { useDispatch, useSelector } from 'react-redux';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import { formats } from '../Workspace/Workspace';
 import {
   changeFreeCanvasMode,
   changePrototypeMode,
@@ -14,6 +13,7 @@ import {
 } from '../../../redux/user/selectors';
 import Formats from './Formats';
 import Actions from './Actions';
+import { SCREEN_FORMATS } from '../../../constants/defaultParams';
 
 const useStyles = makeStyles({
   root: {
@@ -27,11 +27,8 @@ const useStyles = makeStyles({
 });
 
 type Props = {
-  format: typeof formats[number];
-  handleFormatChange: (
-    ev: any,
-    newFormat: typeof formats[number] | null,
-  ) => void;
+  format: SCREEN_FORMATS;
+  handleFormatChange: (ev: any, newFormat: SCREEN_FORMATS | null) => void;
   rotated: boolean;
   handleRotatedToggle: () => void;
 };
