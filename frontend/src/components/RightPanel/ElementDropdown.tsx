@@ -1,38 +1,31 @@
 import React from 'react';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
-import ClickAwayListener from '@material-ui/core/ClickAwayListener';
-import Grow from '@material-ui/core/Grow';
-import Paper from '@material-ui/core/Paper';
-import Popper from '@material-ui/core/Popper';
 import MenuItem from '@material-ui/core/MenuItem';
-import MenuList from '@material-ui/core/MenuList';
-import withStyles from '@material-ui/core/styles/withStyles';
 import makeStyles from '@material-ui/core/styles/makeStyles';
+import Menu from '@material-ui/core/Menu';
+
 import { ElementData } from '../../redux/project/types';
 import ElementButton from './ElementButton';
 import { splitWords } from '../../utils/StringHelper';
 import Button from '../UI/Button';
 
-const StyledMenuList = withStyles({
-  root: {
-    padding: 0,
-  },
-})(MenuList);
-
-const StyledMenuItem = withStyles({
-  root: {
-    fontSize: '1em',
-    textTransform: 'capitalize',
-  },
-})(MenuItem);
-
 const useStyles = makeStyles({
+  menu: {
+    '& ul': {
+      fontSize: '1em',
+      textTransform: 'capitalize',
+      padding: 0,
+    },
+  },
+  menuItem: {
+    fontSize: '1em',
+  },
   elementDropdown: {
     height: '100%',
     display: 'flex',
     flexDirection: 'column',
-    elementButton: {
+    '& *:first-child': {
       flex: 1,
     },
   },
@@ -52,7 +45,7 @@ const ElementDropdown: React.FC<Props> = ({ options }) => {
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef<HTMLDivElement>(null);
   const [selectedIndex, setSelectedIndex] = React.useState(1);
-  const styles = useStyles();
+  const classes = useStyles();
 
   const handleMenuItemClick = (
     event: React.MouseEvent<HTMLLIElement, MouseEvent>,
@@ -75,53 +68,36 @@ const ElementDropdown: React.FC<Props> = ({ options }) => {
   };
 
   return (
-    <div>
+    <>
       <ButtonGroup
         ref={anchorRef}
-        className={styles.elementDropdown}
+        className={classes.elementDropdown}
         orientation="vertical"
       >
         <ElementButton elementData={options[selectedIndex]} />
 
-        <Button onClick={handleToggle} className={styles.dropdownButton}>
-          <ArrowDropDownIcon className={styles.dropdownButtonIcon} />
+        <Button onClick={handleToggle} className={classes.dropdownButton}>
+          <ArrowDropDownIcon className={classes.dropdownButtonIcon} />
         </Button>
       </ButtonGroup>
 
-      <Popper
+      <Menu
         open={open}
+        onClose={handleClose}
         anchorEl={anchorRef.current}
-        role={undefined}
-        transition
-        disablePortal
+        className={classes.menu}
       >
-        {({ TransitionProps, placement }) => (
-          <Grow
-            {...TransitionProps}
-            style={{
-              transformOrigin:
-                placement === 'bottom' ? 'center top' : 'center bottom',
-            }}
+        {options.map((option, index) => (
+          <MenuItem
+            className={classes.menuItem}
+            key={option.type}
+            onClick={(event) => handleMenuItemClick(event, index)}
           >
-            <Paper>
-              <ClickAwayListener onClickAway={handleClose}>
-                <StyledMenuList>
-                  {options.map((option, index) => (
-                    <StyledMenuItem
-                      key={option.type}
-                      selected={index === selectedIndex}
-                      onClick={(event) => handleMenuItemClick(event, index)}
-                    >
-                      {splitWords(option.type)}
-                    </StyledMenuItem>
-                  ))}
-                </StyledMenuList>
-              </ClickAwayListener>
-            </Paper>
-          </Grow>
-        )}
-      </Popper>
-    </div>
+            {splitWords(option.type)}
+          </MenuItem>
+        ))}
+      </Menu>
+    </>
   );
 };
 

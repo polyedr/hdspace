@@ -9,7 +9,6 @@ import {
   select,
 } from 'redux-saga/effects';
 import * as R from 'ramda';
-import { push } from 'connected-react-router';
 import * as Actions from '../actions';
 import { AppReduxState } from '../../../shared/types/app';
 import {
@@ -86,6 +85,7 @@ import {
   saveScreenImageSaga,
 } from './screen';
 import { selectTokenPair } from '../../user/selectors';
+import { activateScreen } from '../actions';
 
 export function* reqWrapper(
   requestAction: (props: any) => Promise<any>,
@@ -328,7 +328,7 @@ function* undoSaga() {
 
   if (Array.isArray(last)) {
     if (last[0].meta?.screenId) {
-      yield put(push(`${last[0].meta.screenId}`));
+      yield put(activateScreen(last[0].meta.screenId));
     }
     yield put(Actions.setGroupActionsUp(true));
 
@@ -346,7 +346,7 @@ function* undoSaga() {
     yield put(Actions.setGroupActionsUp(false));
   } else {
     if (last.meta?.screenId) {
-      yield put(push(`${last.meta.screenId}`));
+      yield put(activateScreen(last.meta.screenId));
     }
 
     yield put({
@@ -376,7 +376,7 @@ function* redoSaga() {
 
   if (Array.isArray(first)) {
     if (first[0].meta?.screenId) {
-      yield put(push(`${first[0].meta.screenId}`));
+      yield put(activateScreen(first[0].meta.screenId));
     }
 
     yield put(Actions.setGroupActionsUp(true));
@@ -395,7 +395,7 @@ function* redoSaga() {
     yield put(Actions.setGroupActionsUp(false));
   } else {
     if (first.meta?.screenId) {
-      yield put(push(`${first.meta.screenId}`));
+      yield put(activateScreen(first.meta.screenId));
     }
 
     yield put({

@@ -1,12 +1,11 @@
 import React, { useCallback } from 'react';
-import { connect, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   selectActiveElement,
   selectCurrentScreenId,
   selectEditableStyles,
 } from '../redux/project/selectors';
 import { Entity } from '../domain/core';
-import { AppReduxState } from '../shared/types/app';
 import {
   removeElementStyles,
   removeSharedStyles,
@@ -16,32 +15,6 @@ import {
 } from '../redux/project/actions';
 import { LibraryElement } from '../api/types';
 import { CssLikeStyles } from './StyleHelper';
-
-type StateProps = {
-  activeItemType: Entity | 'none';
-  activeItemID: string;
-  editableStyles: string;
-};
-
-function mapState(state: AppReduxState): StateProps {
-  const activeItemType = selectActiveElement(state).type;
-  const activeItemID = selectActiveElement(state).id;
-  const editableStyles = selectEditableStyles(state);
-
-  return {
-    activeItemType,
-    activeItemID,
-    editableStyles,
-  };
-}
-
-const mapDispatch = {
-  updateElementParameters,
-  removeSharedStyles,
-  updateSharedStyles,
-  removeElementStyles,
-  updateElementStyles,
-};
 
 export type PropertiesChangeProps<T extends LibraryElement<Entity>> = {
   activeItemID: string;
@@ -59,48 +32,51 @@ export function withConfigurableProperties<
 >(
   Component: React.ComponentType<T>,
 ): React.FC<Omit<T, keyof PropertiesChangeProps<K>>> {
-  function WrapperComponent({
-    activeItemType,
-    activeItemID,
-    editableStyles,
-    removeSharedStyles,
-    updateSharedStyles,
-    removeElementStyles,
-    updateElementStyles,
-    updateElementParameters,
-    ...restProps
-  }: any) {
+  function WrapperComponent({ ...restProps }: any) {
+    const dispatch = useDispatch();
     const currentScreenId = useSelector(selectCurrentScreenId);
+    const { id: activeItemID } = useSelector(selectActiveElement);
+    const editableStyles = useSelector(selectEditableStyles);
 
-    const removeStyles = (ruleName: string, itemID?: string) => {
+    const removeStyles = (ruleName: string[], itemID?: string) => {
       if (editableStyles === 'ownStyles') {
-        removeElementStyles(itemID || activeItemID, ruleName, {
-          screenId: currentScreenId,
-        });
+        dispatch(
+          removeElementStyles(itemID || activeItemID, ruleName, {
+            screenId: currentScreenId,
+          }),
+        );
       } else {
-        removeSharedStyles(editableStyles, ruleName, {
-          screenId: currentScreenId,
-        });
+        dispatch(
+          removeSharedStyles(editableStyles as Entity, ruleName, {
+            screenId: currentScreenId,
+          }),
+        );
       }
     };
 
     const updateStyles = (styles: CssLikeStyles, itemID?: string) => {
       if (editableStyles === 'ownStyles') {
-        updateElementStyles(itemID || activeItemID, styles, {
-          screenId: currentScreenId,
-        });
+        dispatch(
+          updateElementStyles(itemID || activeItemID, styles, {
+            screenId: currentScreenId,
+          }),
+        );
       } else {
-        updateSharedStyles(editableStyles, styles, {
-          screenId: currentScreenId,
-        });
+        dispatch(
+          updateSharedStyles(editableStyles as Entity, styles, {
+            screenId: currentScreenId,
+          }),
+        );
       }
     };
 
     const updateParams = useCallback(
       (params: Params<K>, itemID?: string) => {
-        updateElementParameters(itemID || activeItemID, params, {
-          screenId: currentScreenId,
-        });
+        dispatch(
+          updateElementParameters(itemID || activeItemID, params, {
+            screenId: currentScreenId,
+          }),
+        );
       },
       [activeItemID, currentScreenId],
     );
@@ -117,5 +93,5 @@ export function withConfigurableProperties<
   }
 
   // potentially need to makeMapState and makeMapDispatch for each WrapperComponent
-  return connect(mapState, mapDispatch)(WrapperComponent);
+  return WrapperComponent;
 }

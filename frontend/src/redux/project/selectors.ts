@@ -1,5 +1,4 @@
 import { createSelector } from 'reselect';
-import * as R from 'ramda';
 import { StateElement, BorderedElementsRef } from './types';
 import {
   DEFAULT_ACTIVE_ELEMENT,
@@ -13,6 +12,7 @@ import { LibraryElement, PaginatedArray } from '../../api/types';
 import { CssLikeStyles } from '../../utils/StyleHelper';
 import { makeFeatureStateSelector } from '../../shared/redux';
 import {
+  arrayToMap,
   buildElementsTree,
   flattenElements,
 } from '../../utils/normalizedStateHelpers';
@@ -25,7 +25,7 @@ export const selectProjects = ({ project }: AppReduxState) => {
 };
 
 export const selectProjectsAsArr = createSelector(selectProjects, (projects) =>
-  R.values(projects),
+  Object.values(projects),
 );
 
 export const selectProjectsPageSize = ({ project }: AppReduxState) =>
@@ -58,7 +58,7 @@ export const selectCurrentScreen = (state: AppReduxState) => {
 
 export const selectScreens = createSelector(
   (state: AppReduxState) => state.project.data.screens,
-  (screens) => R.values(screens).sort((a, b) => a.buoyancy - b.buoyancy),
+  (screens) => Object.values(screens).sort((a, b) => a.buoyancy - b.buoyancy),
 );
 
 export const selectScreensLength = (state: AppReduxState) =>
@@ -308,6 +308,16 @@ export const selectElementsForCurrentScreen = createSelector(
   },
 );
 
+export const selectDirectRootChildren = createSelector(
+  selectAllElements,
+  selectCurrentRootId,
+  (elements, id) => {
+    const root = elements[id];
+    if (!root) return {};
+    return arrayToMap(root.children.map((childId) => elements[childId]));
+  },
+);
+
 export const selectBorderedElementsRef = (
   state: AppReduxState,
 ): BorderedElementsRef => {
@@ -341,6 +351,12 @@ export const selectDisplayStyles = (state: AppReduxState) => {
 
   return getDisplayStyles(activeElementStyles);
 };
+
+export const selectProjectClasses = createSelector(
+  selectProjects,
+  selectCurrentProjectId,
+  (projects, id) => projects[id].projectData.classes,
+);
 
 export const selectElementFileInput = (id: string) => (
   state: AppReduxState,

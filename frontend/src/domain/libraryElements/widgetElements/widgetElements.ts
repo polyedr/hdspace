@@ -4,12 +4,14 @@ import {
   MapServerElement,
 } from '../../../api/types';
 import { CssLikeStyles } from '../../../utils/StyleHelper';
+import { defaultFreeCanvasParams } from '../../core';
 
 export const map: MapServerElement = {
   buoyancy: 0,
   func_type: 'map',
   struct_type: 'map',
   parameters: {
+    ...defaultFreeCanvasParams,
     group: 'widget',
     map_props: {
       center: {
@@ -33,6 +35,7 @@ export const calendar: CalendarServerElement = {
   func_type: 'calendar',
   struct_type: 'calendar',
   parameters: {
+    ...defaultFreeCanvasParams,
     group: 'widget',
   },
   styles: {
@@ -48,6 +51,7 @@ export const clock: ClockServerElement = {
   func_type: 'clock',
   struct_type: 'clock',
   parameters: {
+    ...defaultFreeCanvasParams,
     group: 'widget',
   },
   styles: {
