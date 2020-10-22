@@ -77,7 +77,6 @@ const Navigator: React.FC = () => {
   useEffect(() => {
     const newTree = makeTree(convertElements(elements), rootId);
     setTree(updateTree(tree, newTree));
-    focusTreeItem(selectedItemId);
   }, [elements, rootId, selectedItemId]);
 
   const expandParents = (itemId) => {
