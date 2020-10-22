@@ -11,14 +11,13 @@ import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import SyncIcon from '@material-ui/icons/Sync';
 import Tooltip from '@material-ui/core/Tooltip';
 import AspectRatioRoundedIcon from '@material-ui/icons/AspectRatioRounded';
-import Button from '@material-ui/core/Button';
 
 import { SmartContainerRendererProps } from '../types';
 import {
   selectCurrentScreenId,
   selectElementById,
 } from '../../../../redux/project/selectors';
-import useUrlImageToBlob from '../../../../utils/useUrlImageToFile';
+import useUrlImageToFile from '../../../../utils/useUrlImageToFile';
 import useImageUpload from '../../../../utils/nn/hooks/useImageUpload';
 import useNNProcessing from '../../../../utils/nn/hooks/useNNProcessing';
 import { SyntheticGlobalElement } from '../../../../utils/dragAndDrop/GlobalDropTarget/types';
@@ -65,6 +64,8 @@ const useStyles = makeStyles({
     left: 0,
   },
   resizeSection: {
+    display: 'flex',
+    alignItems: 'center',
     position: 'absolute',
     bottom: 0,
     right: 0,
@@ -116,9 +117,7 @@ const SmartContainerRenderer: React.FC<SmartContainerRendererProps> = React.forw
     const imgRef = useRef<HTMLImageElement>();
     const resizeRef = useRef<HTMLElement>();
 
-    const imageFile = useUrlImageToBlob(element.id, imgRef);
-
-    console.log('IMAGE FILE!!!', imageFile);
+    const imageFile = useUrlImageToFile(element.id, imgRef);
 
     const imageUpload = useImageUpload(element.id);
 
@@ -217,15 +216,9 @@ const SmartContainerRenderer: React.FC<SmartContainerRendererProps> = React.forw
                     height: size.height || imageSize?.height || 'auto',
                   }}
                 />
-                <Button
-                  className={baseClasses.resizeSection}
-                  size="small"
-                  disableRipple
-                  edge="false"
-                  ref={resizeRef}
-                >
+                <div className={baseClasses.resizeSection} ref={resizeRef}>
                   <AspectRatioRoundedIcon fontSize="inherit" />
-                </Button>
+                </div>
               </div>
             )}
             <div className={baseClasses.innerContent}>
