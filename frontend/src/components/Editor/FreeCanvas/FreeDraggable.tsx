@@ -52,12 +52,11 @@ const useStyles = makeStyles({
     '&:hover': {
       border: (props: any) => `1px solid ${props.isActive ? 'red' : '#7a7a7a'}`,
     },
-    '&:hover $crumb': {
+    '&:hover > $crumb': {
       display: 'flex',
     },
     zIndex: ({ isActive, zIndex }: any) => (isActive ? 1000 : zIndex),
   },
-  resizeHandle: {},
   crumb: {
     flexWrap: 'nowrap',
     height: 16,
@@ -191,16 +190,6 @@ const FreeDraggable: React.FC<Props> = ({ element, isActive, children }) => {
       }}
       onResizeStart={handleInteractionStart}
       onDragStart={handleInteractionStart}
-      resizeHandleClasses={{
-        top: classes.resizeHandle,
-        topRight: classes.resizeHandle,
-        right: classes.resizeHandle,
-        bottomRight: classes.resizeHandle,
-        bottom: classes.resizeHandle,
-        bottomLeft: classes.resizeHandle,
-        left: classes.resizeHandle,
-        topLeft: classes.resizeHandle,
-      }}
     >
       <div
         className={cn(entityStyles, groupStyles, ownStyles)}
