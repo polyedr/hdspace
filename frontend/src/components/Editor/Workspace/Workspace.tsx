@@ -1,48 +1,65 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import cn from 'classnames';
-import html2canvas from 'html2canvas';
-import { TopBar } from '../TopBar/TopBar';
+import makeStyles from '@material-ui/core/styles/makeStyles';
 import EditorViewport from '../Viewport/Viewport';
 import Scrollbar from '../../UI/Scrollbar';
-import { getClassDevice } from '../../../utils/dom';
-import { DEFAULT_SCREEN_MODE } from '../../../constants/defaultParams';
-import {
-  exportProject,
-  resetScreenState,
-  saveScreenImage,
-} from '../../../redux/project/actions';
-import { changePrototypeMode } from '../../../redux/user/actions';
-import {
-  selectCurrentRootId,
-  selectCurrentScreenId,
-} from '../../../redux/project/selectors';
+import { resetScreenState } from '../../../redux/project/actions';
+import { selectCurrentRootId } from '../../../redux/project/selectors';
 import DraggableItem from '../Draggable/DraggableElement';
 import ElementsInteractions from '../ElementsInteractions/ElementsInteractions';
-import { selectIsPrototypeMode } from '../../../redux/user/selectors';
 import NNProcessingModal from '../../Dialogs/NNProcessing';
 import useGlobalDropTarget from '../../../utils/dragAndDrop/GlobalDropTarget/useGlobalDropTarget';
+import {
+  selectFreeCanvasMode,
+  selectIsPrototypeMode,
+} from '../../../redux/user/selectors';
+import NewTopBar from '../TopBar';
+import Example from '../FreeCanvas';
+import { SCREEN_FORMATS } from '../../../constants/defaultParams';
 
-const styles = require('./Workspace.scss');
-
-export type ScreenMode = {
-  isDefaultMode: boolean;
-  isTabletMode: boolean;
-  isMobileMode: boolean;
-};
+const useStyles = makeStyles({
+  root: {
+    padding: '1em',
+    display: 'flex',
+    flex: '1 1',
+    flexDirection: 'column',
+    boxSizing: 'border-box',
+  },
+  editor: {
+    backgroundColor: '#fff',
+    border: '1px solid #e7eaec',
+    borderTop: 'none',
+    overflow: 'auto',
+  },
+  desktop: {
+    flexBasis: '100%',
+    minWidth: '100%',
+  },
+  tablet: {
+    flexBasis: (rotated) => (rotated ? 1024 : 768),
+  },
+  mobile: {
+    flexBasis: (rotated) => (rotated ? 568 : 320),
+  },
+});
 
 const Workspace: React.FC = () => {
   const dispatch = useDispatch();
 
   const rootElementId = useSelector(selectCurrentRootId);
   const isPrototypeMode = useSelector(selectIsPrototypeMode);
-  const currentScreenId = useSelector(selectCurrentScreenId);
+  const freeCanvasMode = useSelector(selectFreeCanvasMode);
 
-  const [currentScreenMode, setCurrentScreenMode] = useState<ScreenMode>({
-    ...DEFAULT_SCREEN_MODE,
-    isDefaultMode: true,
-  });
-  const [isScreenRotated, setIsScreenRotated] = useState<boolean>(false);
+  const [format, setFormat] = useState(SCREEN_FORMATS.Desktop);
+  const [rotated, setRotated] = useState<boolean>(false);
+
+  const classes = useStyles(rotated);
+
+  const handleFormatChange = (ev, newFormat) => {
+    if (!newFormat) return;
+    setFormat(newFormat);
+  };
 
   const ref = useRef<HTMLDivElement | null>(null);
 
@@ -53,51 +70,30 @@ const Workspace: React.FC = () => {
     [dispatch],
   );
 
-  const handleSaveScreen = () => {
-    const screenBody = document.getElementById('root');
-    const widgets = Array.from(document.querySelectorAll('iframe'));
-
-    if (screenBody !== null) {
-      const ignore = (element: Element) =>
-        widgets.some((widget) => element === widget);
-
-      html2canvas(screenBody, {
-        useCORS: true,
-        allowTaint: true,
-        logging: true,
-        ignoreElements: ignore,
-      }).then((canvas) => dispatch(saveScreenImage(currentScreenId, canvas)));
-    }
-  };
-
   useGlobalDropTarget(['smartContainer'], ref);
 
   return (
-    <div className={styles.editorWorkspace} ref={ref}>
-      <TopBar
-        screenID={currentScreenId}
-        isPrototypeMode={isPrototypeMode}
-        isScreenRotated={isScreenRotated}
-        screenMode={currentScreenMode}
-        onPrototypeModeToggle={(mode: boolean) =>
-          dispatch(changePrototypeMode(mode))
-        }
-        onScreenModeChange={setCurrentScreenMode}
-        onScreenRotate={setIsScreenRotated}
-        onScreenSave={handleSaveScreen}
-        onExport={() => dispatch(exportProject())}
+    <div className={classes.root} ref={ref}>
+      <NewTopBar
+        format={format}
+        handleFormatChange={handleFormatChange}
+        rotated={rotated}
+        handleRotatedToggle={() => setRotated((prevState) => !prevState)}
       />
 
       <EditorViewport>
         <Scrollbar
-          className={cn(
-            styles.editorLayout,
-            getClassDevice(styles, currentScreenMode, isScreenRotated),
-          )}
+          className={cn(classes.editor, classes[format])}
           autoHeightMin="100%"
         >
-          <DraggableItem elementId={rootElementId} />
-          {!isPrototypeMode && <ElementsInteractions />}
+          {freeCanvasMode ? (
+            <Example />
+          ) : (
+            <>
+              <DraggableItem elementId={rootElementId} />
+              {!isPrototypeMode && <ElementsInteractions />}
+            </>
+          )}
         </Scrollbar>
       </EditorViewport>
 

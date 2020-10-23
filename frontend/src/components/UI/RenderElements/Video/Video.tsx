@@ -1,4 +1,3 @@
-/* eslint-disable jsx-a11y/no-noninteractive-tabindex */
 // @ts-nocheck
 
 import React from 'react';
@@ -124,7 +123,6 @@ const Video: React.FC<VideoRendererProps> = React.forwardRef(
           wrapperStyles.groupStyles,
           wrapperStyles.ownStyles,
         )}
-        tabIndex={isDisabled ? 0 : -1}
       >
         <div
           className={cn(

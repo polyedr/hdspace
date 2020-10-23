@@ -1,4 +1,3 @@
-/* eslint-disable jsx-a11y/no-noninteractive-tabindex */
 // @ts-nocheck
 
 import React from 'react';
@@ -10,18 +9,7 @@ import { SharedRendererProps } from '../types';
 const styles = require('../styles.scss');
 
 const Undefined: React.FC<SharedRendererProps> = React.forwardRef(
-  (
-    {
-      id,
-      entityStyles,
-      groupStyles,
-      ownStyles,
-      isDisabled,
-      className,
-      children,
-    },
-    ref,
-  ) => {
+  ({ id, entityStyles, groupStyles, ownStyles, className, children }, ref) => {
     const classes = makeStyles({
       entityStyles: {
         ...entityStyles,
@@ -48,7 +36,6 @@ const Undefined: React.FC<SharedRendererProps> = React.forwardRef(
           classes.groupStyles,
           classes.ownStyles,
         )}
-        tabIndex={isDisabled ? 0 : -1}
       >
         {children}
       </div>

@@ -1,4 +1,3 @@
-/* eslint-disable jsx-a11y/no-noninteractive-tabindex */
 // @ts-nocheck
 
 import React, { useRef, useEffect, useState } from 'react';
@@ -151,6 +150,7 @@ const SmartContainerRenderer: React.FC<SmartContainerRendererProps> = React.forw
           );
         },
         hover: (monitor: DropTargetMonitor) => {
+          console.log('HOVER WORKS!!');
           if (!imgRef || !imgRef.current) {
             return;
           }

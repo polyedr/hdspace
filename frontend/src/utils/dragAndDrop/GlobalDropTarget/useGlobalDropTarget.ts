@@ -31,9 +31,8 @@ const useGlobalDropTarget = (
       monitor: DropTargetMonitor,
     ) => {
       if (item.hover) {
-        return item.hover(monitor, collectedParams);
+        item.hover(monitor, collectedParams);
       }
-      return true;
     },
   });
 

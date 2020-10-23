@@ -96,7 +96,6 @@ const DropdownMenu: React.FC<DropdownMenuRendererProps> = React.forwardRef(
         <Paper
           id={id}
           data-ls-id={id}
-          tabIndex={0}
           key={id}
           className={cn(
             className,

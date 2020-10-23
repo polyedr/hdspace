@@ -2,7 +2,7 @@ module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'jsdom',
   testPathIgnorePatterns: ['/node_modules/'],
-  modulePathIgnorePatterns: ['__tests__/mocks'],
+  modulePathIgnorePatterns: ['__tests__/mocks', '__tests__/test-utils.tsx'],
   testMatch: ['**/__tests__/**/*.[jt]s?(x)'],
   moduleNameMapper: {
     '\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$':

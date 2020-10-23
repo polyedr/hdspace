@@ -1,0 +1,108 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Free Canvas should render a "free canvas" container 1`] = `
+<div>
+  <div
+    class="makeStyles-root-1"
+  >
+    <div
+      class="makeStyles-rnd-2 makeStyles-rnd-6 react-draggable"
+      style="position: absolute; user-select: auto; width: auto; height: auto; display: inline-block; top: 0px; left: 0px; cursor: move; transform: translate(NaNpx,NaNpx); max-width: 9007199254740991px; max-height: 9007199254740991px; box-sizing: border-box; flex-shrink: 0;"
+    >
+      <div
+        class="makeStyles-entityStyles-8 makeStyles-groupStyles-9 makeStyles-ownStyles-10"
+        style="width: 100%; height: 100%;"
+      >
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Id labore error ipsum laboriosam necessitatibus aperiam facere aut quo quibusdam, possimus quia odit placeat nostrum, similique pariatur corporis nobis sint rerum laborum architecto natus! Aut illum a minus cumque iste, quibusdam corporis atque odit magnam impedit esse possimus perspiciatis culpa non id tempore fugiat molestiae eos dolorem, labore maiores ratione? Sequi tenetur porro enim reprehenderit amet accusamus eos itaque saepe quidem quod, sit vero ab recusandae vitae, facere nobis cumque minima libero aut quos nihil labore eius. Soluta doloremque mollitia nihil voluptatibus, nostrum commodi eaque similique ipsam ad libero at tenetur.
+      </div>
+      <div
+        class="makeStyles-crumb-4 makeStyles-crumb-7"
+      >
+        <span>
+          paragraph
+        </span>
+        <button
+          class="MuiButtonBase-root MuiIconButton-root makeStyles-iconButton-5"
+          tabindex="0"
+          title="Move element up"
+          type="button"
+        >
+          <span
+            class="MuiIconButton-label"
+          >
+            <svg
+              aria-hidden="true"
+              class="MuiSvgIcon-root MuiSvgIcon-fontSizeInherit"
+              focusable="false"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"
+              />
+            </svg>
+          </span>
+          <span
+            class="MuiTouchRipple-root"
+          />
+        </button>
+        <button
+          class="MuiButtonBase-root MuiIconButton-root makeStyles-iconButton-5 Mui-disabled Mui-disabled"
+          disabled=""
+          tabindex="-1"
+          title="Move element down"
+          type="button"
+        >
+          <span
+            class="MuiIconButton-label"
+          >
+            <svg
+              aria-hidden="true"
+              class="MuiSvgIcon-root MuiSvgIcon-fontSizeInherit"
+              focusable="false"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"
+              />
+            </svg>
+          </span>
+        </button>
+      </div>
+      <span>
+        <div
+          class="makeStyles-resizeHandle-3"
+          style="position: absolute; user-select: none; width: 100%; height: 10px; top: -5px; left: 0px; cursor: row-resize;"
+        />
+        <div
+          class="makeStyles-resizeHandle-3"
+          style="position: absolute; user-select: none; width: 10px; height: 100%; top: 0px; right: -5px; cursor: col-resize;"
+        />
+        <div
+          class="makeStyles-resizeHandle-3"
+          style="position: absolute; user-select: none; width: 100%; height: 10px; bottom: -5px; left: 0px; cursor: row-resize;"
+        />
+        <div
+          class="makeStyles-resizeHandle-3"
+          style="position: absolute; user-select: none; width: 10px; height: 100%; top: 0px; left: -5px; cursor: col-resize;"
+        />
+        <div
+          class="makeStyles-resizeHandle-3"
+          style="position: absolute; user-select: none; width: 20px; height: 20px; right: -10px; top: -10px; cursor: ne-resize;"
+        />
+        <div
+          class="makeStyles-resizeHandle-3"
+          style="position: absolute; user-select: none; width: 20px; height: 20px; right: -10px; bottom: -10px; cursor: se-resize;"
+        />
+        <div
+          class="makeStyles-resizeHandle-3"
+          style="position: absolute; user-select: none; width: 20px; height: 20px; left: -10px; bottom: -10px; cursor: sw-resize;"
+        />
+        <div
+          class="makeStyles-resizeHandle-3"
+          style="position: absolute; user-select: none; width: 20px; height: 20px; left: -10px; top: -10px; cursor: nw-resize;"
+        />
+      </span>
+    </div>
+  </div>
+</div>
+`;

@@ -1,23 +1,42 @@
 import React from 'react';
-import { render, fireEvent } from '../../test-utils';
+import { render, fireEvent } from '@testing-library/react';
+import configureStore from 'redux-mock-store';
+import { Provider } from 'react-redux';
+import { MuiThemeProvider } from '@material-ui/core';
 import Navigator from '../../../../components/LeftPanel/Navigator';
+import { mockState } from '../../test-utils';
+import theme from '../../../../styles/Theme';
 
 describe('Navigator', () => {
-  const { container, getByText, getByRole } = render(<Navigator />);
+  let store;
+  let ui;
+
+  beforeEach(() => {
+    const mockStore = configureStore([]);
+    store = mockStore(mockState);
+
+    ui = render(
+      <Provider store={store}>
+        <MuiThemeProvider theme={theme}>
+          <Navigator />
+        </MuiThemeProvider>
+      </Provider>,
+    );
+  });
 
   it('should render a Navigator component', () => {
-    expect(container).toMatchSnapshot();
+    expect(ui.container).toMatchSnapshot();
   });
 
   it('should have a header', () => {
-    expect(getByText('Navigator')).toBeInTheDocument();
+    expect(ui.getByText('Navigator')).toBeInTheDocument();
   });
 
   it('open context menu on tree item right click', async () => {
-    const rootItem = getByRole('treeitem');
-    fireEvent.contextMenu(rootItem);
+    const treeItem = ui.getByRole('treeitem');
+    fireEvent.contextMenu(treeItem);
 
-    const menu = getByRole('menu');
+    const menu = ui.getByRole('menu');
     expect(menu).toBeInTheDocument();
   });
 });
