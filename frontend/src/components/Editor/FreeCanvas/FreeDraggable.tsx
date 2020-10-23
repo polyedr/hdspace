@@ -57,7 +57,8 @@ const useStyles = makeStyles({
     '&:hover > $crumb': {
       display: 'flex',
     },
-    zIndex: ({ isActive, zIndex }: any) => (isActive ? 1000 : zIndex),
+    zIndex: ({ isActive, zIndex, includesActiveElement }: any) =>
+      isActive || includesActiveElement ? 1000 : zIndex,
   },
   crumb: {
     flexDirection: 'column',
@@ -96,9 +97,15 @@ const useStyles = makeStyles({
 type Props = {
   element: StateElement;
   isActive: boolean;
+  includesActiveElement?: boolean;
 };
 
-const FreeDraggable: React.FC<Props> = ({ element, isActive, children }) => {
+const FreeDraggable: React.FC<Props> = ({
+  element,
+  isActive,
+  includesActiveElement,
+  children,
+}) => {
   const dispatch = useDispatch();
 
   const [open, setOpen] = useState(false);
@@ -108,7 +115,7 @@ const FreeDraggable: React.FC<Props> = ({ element, isActive, children }) => {
     name,
     parameters: { left, top, width, height, zIndex = 0 },
   } = element;
-  const classes = useStyles({ isActive, zIndex });
+  const classes = useStyles({ isActive, zIndex, includesActiveElement });
 
   const { entityStyles, groupStyles, ownStyles } = useElementClassNames(
     element,
@@ -135,11 +142,6 @@ const FreeDraggable: React.FC<Props> = ({ element, isActive, children }) => {
         { screenId: currentScreenId },
       ),
     );
-  };
-
-  const handleClick = (ev) => {
-    ev.stopPropagation();
-    dispatch(setActiveElement(id));
   };
 
   const handleInteractionStart = (ev) => {
@@ -191,7 +193,7 @@ const FreeDraggable: React.FC<Props> = ({ element, isActive, children }) => {
 
   return (
     <Rnd
-      onClick={handleClick}
+      onClick={handleInteractionStart}
       className={classes.rnd}
       onResizeStop={handleResizeStop}
       onDragStop={handleDragStop}

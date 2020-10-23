@@ -20,6 +20,7 @@ import {
   selectActiveElementId,
   selectDirectChildren,
   selectElementAsTree,
+  selectIncludesActiveElement,
 } from '../../../redux/project/selectors';
 import { Entity } from '../../../domain/core';
 import { StateElement } from '../../../redux/project/types';
@@ -59,9 +60,16 @@ const Button: React.FC<Props> = ({ element, isActive }) => {
 const Container: React.FC<Props> = ({ element, isActive }) => {
   const children = useSelector(selectDirectChildren(element.id));
   const activeElementId = useSelector(selectActiveElementId);
+  const includesActiveElement = useSelector(
+    selectIncludesActiveElement(element.id),
+  );
 
   return (
-    <FreeDraggable element={element} isActive={isActive}>
+    <FreeDraggable
+      element={element}
+      isActive={isActive}
+      includesActiveElement={includesActiveElement}
+    >
       {Object.values(children).map((element) => {
         // eslint-disable-next-line no-use-before-define
         const Renderer = FREE_CANVAS_RENDERERS[element.type];

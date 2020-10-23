@@ -371,3 +371,28 @@ export const selectElementFileInput = (id: string) => (
 ) => {
   return selectProjectState(state).data.elementInputs[id];
 };
+
+export const selectIncludesActiveElement = (elementId: string) =>
+  createSelector(
+    selectAllElements,
+    selectActiveElementId,
+    (elements, activeElementId) => {
+      const check = (id: string) => {
+        if (elements[id].children.includes(activeElementId)) {
+          return true;
+        }
+
+        // eslint-disable-next-line no-restricted-syntax
+        for (const child of elements[id].children) {
+          const includes = check(child);
+
+          if (includes) {
+            return includes;
+          }
+        }
+        return false;
+      };
+
+      return check(elementId);
+    },
+  );
