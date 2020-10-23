@@ -271,13 +271,16 @@ class ProjectSerializer(ObjectPermissionsAssignmentMixin, serializers.ModelSeria
 
     def get_permissions_map(self, created):  # DRF-Guardian Mixins
         current_user = self.context["request"].user
-        readers = Group.objects.get(name="readers")
-        supervisors = Group.objects.get(name="supervisors")
+        # readers = Group.objects.get(name="readers")
+        # supervisors = Group.objects.get(name="supervisors")
         # print('inside permission map, User is :' + str(current_user))  # Triggers only when POST
         return {
-            'view_project': [current_user, readers],
+            # 'view_project': [current_user, readers],
+            # 'change_project': [current_user],
+            # 'delete_project': [current_user, supervisors]
+            'view_project': [current_user],
             'change_project': [current_user],
-            'delete_project': [current_user, supervisors]
+            'delete_project': [current_user]
         }
 
     def create(self, validated_data):
