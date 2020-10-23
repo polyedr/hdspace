@@ -6,99 +6,153 @@ exports[`Free Canvas should render a "free canvas" container 1`] = `
     class="makeStyles-root-1"
   >
     <div
-      class="makeStyles-rnd-2 makeStyles-rnd-6 react-draggable"
+      class="makeStyles-rnd-2 makeStyles-rnd-8 react-draggable"
       style="position: absolute; user-select: auto; width: auto; height: auto; display: inline-block; top: 0px; left: 0px; cursor: move; transform: translate(NaNpx,NaNpx); max-width: 9007199254740991px; max-height: 9007199254740991px; box-sizing: border-box; flex-shrink: 0;"
     >
       <div
-        class="makeStyles-entityStyles-8 makeStyles-groupStyles-9 makeStyles-ownStyles-10"
+        class="makeStyles-entityStyles-10 makeStyles-groupStyles-11 makeStyles-ownStyles-12"
         style="width: 100%; height: 100%;"
       >
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Id labore error ipsum laboriosam necessitatibus aperiam facere aut quo quibusdam, possimus quia odit placeat nostrum, similique pariatur corporis nobis sint rerum laborum architecto natus! Aut illum a minus cumque iste, quibusdam corporis atque odit magnam impedit esse possimus perspiciatis culpa non id tempore fugiat molestiae eos dolorem, labore maiores ratione? Sequi tenetur porro enim reprehenderit amet accusamus eos itaque saepe quidem quod, sit vero ab recusandae vitae, facere nobis cumque minima libero aut quos nihil labore eius. Soluta doloremque mollitia nihil voluptatibus, nostrum commodi eaque similique ipsam ad libero at tenetur.
       </div>
       <div
-        class="makeStyles-crumb-4 makeStyles-crumb-7"
+        class="makeStyles-crumb-3"
       >
-        <span>
-          paragraph
-        </span>
-        <button
-          class="MuiButtonBase-root MuiIconButton-root makeStyles-iconButton-5"
-          tabindex="0"
-          title="Move element up"
-          type="button"
+        <div
+          class="makeStyles-general-4 makeStyles-general-9"
         >
           <span
-            class="MuiIconButton-label"
+            class="makeStyles-name-5"
           >
-            <svg
-              aria-hidden="true"
-              class="MuiSvgIcon-root MuiSvgIcon-fontSizeInherit"
-              focusable="false"
-              viewBox="0 0 24 24"
-            >
-              <path
-                d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"
-              />
-            </svg>
+            paragraph
           </span>
-          <span
-            class="MuiTouchRipple-root"
+          <hr
+            class="MuiDivider-root makeStyles-divider-7 MuiDivider-vertical"
           />
-        </button>
-        <button
-          class="MuiButtonBase-root MuiIconButton-root makeStyles-iconButton-5 Mui-disabled Mui-disabled"
-          disabled=""
-          tabindex="-1"
-          title="Move element down"
-          type="button"
-        >
-          <span
-            class="MuiIconButton-label"
+          <button
+            class="MuiButtonBase-root MuiIconButton-root makeStyles-iconButton-6"
+            tabindex="0"
+            title="Settings"
+            type="button"
           >
-            <svg
-              aria-hidden="true"
-              class="MuiSvgIcon-root MuiSvgIcon-fontSizeInherit"
-              focusable="false"
-              viewBox="0 0 24 24"
+            <span
+              class="MuiIconButton-label"
             >
-              <path
-                d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"
+              <svg
+                aria-hidden="true"
+                class="MuiSvgIcon-root MuiSvgIcon-fontSizeInherit"
+                focusable="false"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M15.95 10.78c.03-.25.05-.51.05-.78s-.02-.53-.06-.78l1.69-1.32c.15-.12.19-.34.1-.51l-1.6-2.77c-.1-.18-.31-.24-.49-.18l-1.99.8c-.42-.32-.86-.58-1.35-.78L12 2.34c-.03-.2-.2-.34-.4-.34H8.4c-.2 0-.36.14-.39.34l-.3 2.12c-.49.2-.94.47-1.35.78l-1.99-.8c-.18-.07-.39 0-.49.18l-1.6 2.77c-.1.18-.06.39.1.51l1.69 1.32c-.04.25-.07.52-.07.78s.02.53.06.78L2.37 12.1c-.15.12-.19.34-.1.51l1.6 2.77c.1.18.31.24.49.18l1.99-.8c.42.32.86.58 1.35.78l.3 2.12c.04.2.2.34.4.34h3.2c.2 0 .37-.14.39-.34l.3-2.12c.49-.2.94-.47 1.35-.78l1.99.8c.18.07.39 0 .49-.18l1.6-2.77c.1-.18.06-.39-.1-.51l-1.67-1.32zM10 13c-1.65 0-3-1.35-3-3s1.35-3 3-3 3 1.35 3 3-1.35 3-3 3z"
+                  transform="scale(1.2, 1.2)"
+                />
+              </svg>
+            </span>
+            <span
+              class="MuiTouchRipple-root"
+            />
+          </button>
+        </div>
+        <div
+          data-testid="z-index-control"
+          hidden=""
+        >
+          <div
+            class="makeStyles-general-4 makeStyles-general-9"
+          >
+            <span
+              class="makeStyles-name-5"
+            >
+              Z-index:
+              <b>
+                 0
+              </b>
+            </span>
+            <hr
+              class="MuiDivider-root makeStyles-divider-7 MuiDivider-vertical"
+            />
+            <button
+              class="MuiButtonBase-root MuiIconButton-root makeStyles-iconButton-6"
+              tabindex="0"
+              title="Move element up"
+              type="button"
+            >
+              <span
+                class="MuiIconButton-label"
+              >
+                <svg
+                  aria-hidden="true"
+                  class="MuiSvgIcon-root MuiSvgIcon-fontSizeInherit"
+                  focusable="false"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"
+                  />
+                </svg>
+              </span>
+              <span
+                class="MuiTouchRipple-root"
               />
-            </svg>
-          </span>
-        </button>
+            </button>
+            <button
+              class="MuiButtonBase-root MuiIconButton-root makeStyles-iconButton-6 Mui-disabled Mui-disabled"
+              disabled=""
+              tabindex="-1"
+              title="Move element down"
+              type="button"
+            >
+              <span
+                class="MuiIconButton-label"
+              >
+                <svg
+                  aria-hidden="true"
+                  class="MuiSvgIcon-root MuiSvgIcon-fontSizeInherit"
+                  focusable="false"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"
+                  />
+                </svg>
+              </span>
+            </button>
+          </div>
+        </div>
       </div>
       <span>
         <div
-          class="makeStyles-resizeHandle-3"
+          class=""
           style="position: absolute; user-select: none; width: 100%; height: 10px; top: -5px; left: 0px; cursor: row-resize;"
         />
         <div
-          class="makeStyles-resizeHandle-3"
+          class=""
           style="position: absolute; user-select: none; width: 10px; height: 100%; top: 0px; right: -5px; cursor: col-resize;"
         />
         <div
-          class="makeStyles-resizeHandle-3"
+          class=""
           style="position: absolute; user-select: none; width: 100%; height: 10px; bottom: -5px; left: 0px; cursor: row-resize;"
         />
         <div
-          class="makeStyles-resizeHandle-3"
+          class=""
           style="position: absolute; user-select: none; width: 10px; height: 100%; top: 0px; left: -5px; cursor: col-resize;"
         />
         <div
-          class="makeStyles-resizeHandle-3"
+          class=""
           style="position: absolute; user-select: none; width: 20px; height: 20px; right: -10px; top: -10px; cursor: ne-resize;"
         />
         <div
-          class="makeStyles-resizeHandle-3"
+          class=""
           style="position: absolute; user-select: none; width: 20px; height: 20px; right: -10px; bottom: -10px; cursor: se-resize;"
         />
         <div
-          class="makeStyles-resizeHandle-3"
+          class=""
           style="position: absolute; user-select: none; width: 20px; height: 20px; left: -10px; bottom: -10px; cursor: sw-resize;"
         />
         <div
-          class="makeStyles-resizeHandle-3"
+          class=""
           style="position: absolute; user-select: none; width: 20px; height: 20px; left: -10px; top: -10px; cursor: nw-resize;"
         />
       </span>
