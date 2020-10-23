@@ -150,7 +150,6 @@ const SmartContainerRenderer: React.FC<SmartContainerRendererProps> = React.forw
           );
         },
         hover: (monitor: DropTargetMonitor) => {
-          console.log('HOVER WORKS!!');
           if (!imgRef || !imgRef.current) {
             return;
           }
