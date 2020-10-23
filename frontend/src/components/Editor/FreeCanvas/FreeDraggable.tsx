@@ -55,12 +55,13 @@ const useStyles = makeStyles({
       border: (props: any) => `1px solid ${props.isActive ? 'red' : '#7a7a7a'}`,
     },
     '&:hover > $crumb': {
-      display: 'block',
+      display: 'flex',
     },
     zIndex: ({ isActive, zIndex }: any) => (isActive ? 1000 : zIndex),
   },
   crumb: {
-    backgroundColor: (props: any) => (props.isActive ? 'red' : '#7a7a7a'),
+    flexDirection: 'column',
+    alignItems: 'flex-start',
     position: 'absolute',
     top: 0,
     left: 0,
@@ -70,6 +71,7 @@ const useStyles = makeStyles({
     textTransform: 'capitalize',
   },
   general: {
+    backgroundColor: (props: any) => (props.isActive ? 'red' : '#7a7a7a'),
     display: 'flex',
     flexWrap: 'nowrap',
     height: 16,
@@ -230,11 +232,11 @@ const FreeDraggable: React.FC<Props> = ({ element, isActive, children }) => {
           </IconButton>
         </div>
 
-        <div hidden={!open}>
+        <div hidden={!open} data-testid="z-index-control">
           <div className={classes.general}>
             <span className={classes.name}>
               Z-index:
-              {zIndex}
+              <b>{` ${zIndex}`}</b>
             </span>
 
             <Divider orientation="vertical" className={classes.divider} />
