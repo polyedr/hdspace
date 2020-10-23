@@ -12,7 +12,7 @@ import {
 } from './converters/fromResponse';
 import { IScenarioElement } from '../redux/project/types';
 import { Entity } from '../domain/core';
-import { onError, parseResult, parseCursor } from './project';
+import { onError, parseResult } from './project';
 import { myAxios, MyAxiosProps } from '../../config/settings';
 
 export const apiGetElements = ({
@@ -27,7 +27,7 @@ export const apiGetElements = ({
     method: 'GET',
     url: '/projects/scenario-elements/',
   })
-    .then((res) => parseResult(res).results)
+    .then(parseResult)
     .catch(onError);
 
 export const apiGetCustomLibraryElements = (
@@ -42,12 +42,13 @@ export const apiGetCustomLibraryElements = (
     },
     url: props.url || '/projects/scenario-elements/',
   })
-    .then((res: AxiosResponse<PaginatedArray<ServerElement<Entity>>>) => {
-      const { next, previous, results } = res.data;
+    .then((res: AxiosResponse<ServerElement<Entity>[]>) => {
+      // pagination will be needed in the future
+      // const { next, previous, results } = res.data;
       return {
-        next: parseCursor(next),
-        previous: parseCursor(previous),
-        results: results.map((result) => convertElementFromResponse(result)),
+        next: /* parseCursor(next) */ null,
+        previous: /* parseCursor(previous) */ null,
+        results: res.data.map((result) => convertElementFromResponse(result)),
       };
     })
     .catch(onError);
