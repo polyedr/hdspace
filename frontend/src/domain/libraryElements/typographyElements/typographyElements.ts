@@ -76,8 +76,8 @@ export const makeParagraph = ({
   struct_type: 'paragraph',
   parameters: {
     ...defaultFreeCanvasParams,
-    width: 500,
-    height: 140,
+    width: 400,
+    height: 170,
     group: 'typography',
     textContent,
   },

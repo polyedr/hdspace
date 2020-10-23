@@ -127,7 +127,8 @@ const FreeDraggable: React.FC<Props> = ({ element, isActive, children }) => {
     dispatch(setActiveElement(id));
   };
 
-  const handleInteractionStart = () => {
+  const handleInteractionStart = (ev) => {
+    ev.stopPropagation();
     dispatch(setActiveElement(id));
   };
 

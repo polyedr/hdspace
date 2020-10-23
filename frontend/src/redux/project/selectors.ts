@@ -318,6 +318,14 @@ export const selectDirectRootChildren = createSelector(
   },
 );
 
+export const selectDirectChildren = (id) =>
+  createSelector(selectAllElements, (elements) => {
+    const target = elements[id];
+    if (!target) return {};
+
+    return arrayToMap(target.children.map((childId) => elements[childId]));
+  });
+
 export const selectBorderedElementsRef = (
   state: AppReduxState,
 ): BorderedElementsRef => {
