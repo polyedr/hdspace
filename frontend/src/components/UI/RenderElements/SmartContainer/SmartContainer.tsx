@@ -214,6 +214,7 @@ const SmartContainerRenderer: React.FC<SmartContainerRendererProps> = React.forw
                     width: size.width || imageSize?.width || 'auto',
                     height: size.height || imageSize?.height || 'auto',
                   }}
+                  crossOrigin="anonymous"
                 />
                 <div className={baseClasses.resizeSection} ref={resizeRef}>
                   <AspectRatioRoundedIcon fontSize="inherit" />

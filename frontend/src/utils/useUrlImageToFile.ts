@@ -59,7 +59,6 @@ const useUrlImageToFile = (
     if (fileFromImage || !id || !imgDom || imgDom.crossOrigin === 'anonymous') {
       return;
     }
-    imgDom.crossOrigin = 'anonymous';
 
     imgDom.onload = handleFileInput;
   }, [dispatch, id, imgRef, url, fileFromImage, imgDom, handleFileInput]);
