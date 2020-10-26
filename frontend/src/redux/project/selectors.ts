@@ -376,23 +376,16 @@ export const selectIncludesActiveElement = (elementId: string) =>
   createSelector(
     selectAllElements,
     selectActiveElementId,
-    (elements, activeElementId) => {
-      const check = (id: string) => {
-        if (elements[id].children.includes(activeElementId)) {
-          return true;
-        }
-
-        // eslint-disable-next-line no-restricted-syntax
-        for (const child of elements[id].children) {
-          const includes = check(child);
-
-          if (includes) {
-            return includes;
-          }
-        }
-        return false;
+    selectCurrentRootId,
+    (elements, activeElementId, rootId) => {
+      const check = (id: string): boolean => {
+        const parentId = elements[id]?.parent;
+        if (!parentId) return false;
+        if (parentId === elementId) return true;
+        if (parentId === rootId) return false;
+        return check(parentId);
       };
 
-      return check(elementId);
+      return check(activeElementId);
     },
   );
