@@ -10,7 +10,7 @@ import { setActiveElement } from '../../../redux/project/actions';
 import FREE_CANVAS_RENDERERS from './FreeRenderers';
 
 const useStyles = makeStyles({
-  root: {
+  freeCanvas: {
     height: '100%',
     position: 'relative',
     userSelect: 'none',
@@ -27,7 +27,7 @@ const FreeCanvas = () => {
 
   return (
     <div
-      className={classes.root}
+      className={classes.freeCanvas}
       onClick={() => dispatch(setActiveElement(currentRootId))}
     >
       {Object.values(elements).map((element) => {

@@ -12,14 +12,16 @@ import { selectCurrentScreenId } from '../../redux/project/selectors';
 import { selectIsLeftPanelMinimized } from '../../redux/user/selectors';
 import Screens from './Screens';
 import Scrollbar from '../UI/Scrollbar';
+import { LEFT_PANEL_WIDTH, LEFT_PANEL_WIDTH_MIN } from '../../styles/Theme';
 
 const useStyles = makeStyles((theme) =>
   createStyles({
     root: {
       maxHeight: '100%',
-      width: (minimized: boolean) => (minimized ? 64 : 220),
+      width: (minimized: boolean) =>
+        minimized ? LEFT_PANEL_WIDTH_MIN : LEFT_PANEL_WIDTH,
       backgroundColor: theme.palette.panel.main,
-      transition: `width 0.25s ease`,
+      transition: 'width 0.25s ease',
     },
     iconContainer: {
       textAlign: 'center',

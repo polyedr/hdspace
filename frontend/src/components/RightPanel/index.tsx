@@ -7,13 +7,16 @@ import Spinner from '../UI/Spinner';
 import PropertiesTab from './PropertiesTab';
 import ElementsTab from './ElementsTab';
 import { selectLoader } from '../../redux/project/selectors';
+import { RIGHT_PANEL_WIDTH } from '../../styles/Theme';
+import { selectIsPrototypeMode } from '../../redux/user/selectors';
 
 const useStyles = makeStyles({
   root: {
-    width: 300, // right panel width constant
+    width: (props: any) => (props.open ? RIGHT_PANEL_WIDTH : 0),
     display: 'flex',
     flexDirection: 'column',
     height: '100%',
+    transition: 'width 0.25s ease',
   },
   tabPanel: {
     flex: 1,
@@ -57,8 +60,9 @@ const TabPanel: React.FC<TabPanelProps> = ({ value, index, children }) => {
 };
 
 const PropertiesPanel: React.FC = () => {
-  const classes = useStyles();
   const loader = useSelector(selectLoader);
+  const isPrototypeMode = useSelector(selectIsPrototypeMode);
+  const classes = useStyles({ open: !isPrototypeMode });
 
   const tabClasses = useTabStyles();
   const tabsClasses = useTabsStyles();

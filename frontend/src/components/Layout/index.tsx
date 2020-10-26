@@ -3,7 +3,7 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import TopPanel from './TopPanel';
 
 const useStyles = makeStyles({
-  root: {
+  layout: {
     minHeight: '100vh',
     height: 1, // allows children use height in %
     display: 'flex',
@@ -22,7 +22,7 @@ const Layout = ({ children }) => {
   const classes = useStyles();
 
   return (
-    <div className={classes.root}>
+    <div className={classes.layout}>
       <TopPanel />
       <div className={classes.placeholder} />
 
