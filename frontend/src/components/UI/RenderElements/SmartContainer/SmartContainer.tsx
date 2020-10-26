@@ -1,21 +1,33 @@
 // @ts-nocheck
 
-import React, { useRef } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useRef, useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import cn from 'classnames';
+import { DropTargetMonitor, useDrag } from 'react-dnd';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import IconButton from '@material-ui/core/IconButton';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import SyncIcon from '@material-ui/icons/Sync';
 import Tooltip from '@material-ui/core/Tooltip';
+import AspectRatioRoundedIcon from '@material-ui/icons/AspectRatioRounded';
 
 import { SmartContainerRendererProps } from '../types';
-import { selectElementById } from '../../../../redux/project/selectors';
-import useUrlImageToBlob from '../../../../utils/useUrlImageToFile';
+import {
+  selectCurrentScreenId,
+  selectElementById,
+} from '../../../../redux/project/selectors';
+import useUrlImageToFile from '../../../../utils/useUrlImageToFile';
 import useImageUpload from '../../../../utils/nn/hooks/useImageUpload';
 import useNNProcessing from '../../../../utils/nn/hooks/useNNProcessing';
+import { SyntheticGlobalElement } from '../../../../utils/dragAndDrop/GlobalDropTarget/types';
+import { updateElementParameters } from '../../../../redux/project/actions';
 
 const styles = require('../styles.scss');
+
+type SizeProps = {
+  width: number;
+  height: number;
+};
 
 const useStyles = makeStyles({
   innerContentWrapper: {
@@ -45,6 +57,26 @@ const useStyles = makeStyles({
   uploadField: {
     display: 'none',
   },
+  wireframe: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+  },
+  resizeSection: {
+    display: 'flex',
+    alignItems: 'center',
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    lineHeight: 'initial',
+    padding: '2px',
+    backgroundColor: 'red',
+    minWidth: 'unset',
+    borderRadius: 0,
+    '&:hover': {
+      backgroundColor: 'red',
+    },
+  },
 });
 
 const SmartContainerRenderer: React.FC<SmartContainerRendererProps> = React.forwardRef(
@@ -62,6 +94,8 @@ const SmartContainerRenderer: React.FC<SmartContainerRendererProps> = React.forw
     ref,
   ) => {
     const element = useSelector(selectElementById(id));
+    const currentScreenId = useSelector(selectCurrentScreenId);
+    const dispatch = useDispatch();
 
     const baseClasses = useStyles();
 
@@ -80,14 +114,66 @@ const SmartContainerRenderer: React.FC<SmartContainerRendererProps> = React.forw
     })();
 
     const imgRef = useRef<HTMLImageElement>();
+    const resizeRef = useRef<HTMLElement>();
 
-    const imageFile = useUrlImageToBlob(element.id, imgRef);
+    const imageFile = useUrlImageToFile(element.id, imgRef);
 
-    const handleImageChange = useImageUpload(element.id);
+    const imageUpload = useImageUpload(element.id);
 
     const handleNNProcessing = useNNProcessing(element.id, imageFile);
 
-    const { imageURL } = element.parameters;
+    const { imageURL, imageSize } = element.parameters;
+
+    const [size, setSize] = useState<SizeProps>({
+      width: imageSize?.width || imgRef.current?.naturalWidth || 0,
+      height: imageSize?.height || imgRef.current?.naturalHeight || 0,
+    });
+
+    const [, drag] = useDrag({
+      item: {
+        type: 'smartContainer',
+        drop: () => {
+          const newSize = {
+            width: parseInt(imgRef.current?.style.width) || 0,
+            height: parseInt(imgRef.current?.style.height) || 0,
+          };
+          dispatch(
+            updateElementParameters(
+              element.id,
+              {
+                imageSize: newSize,
+              },
+              {
+                screenId: currentScreenId,
+              },
+            ),
+          );
+        },
+        hover: (monitor: DropTargetMonitor) => {
+          if (!imgRef || !imgRef.current) {
+            return;
+          }
+          const offsetDiff = monitor.getDifferenceFromInitialOffset();
+          const aspectRatio =
+            imgRef.current.naturalWidth / imgRef.current.naturalHeight;
+          const newHeight =
+            (imageSize.height || imgRef.current.naturalHeight) + offsetDiff.y;
+          const newWidth = newHeight * aspectRatio;
+          setSize({
+            width: newWidth,
+            height: newHeight,
+          });
+        },
+      } as SyntheticGlobalElement,
+    });
+
+    const resizeRefDom = resizeRef.current;
+
+    useEffect(() => {
+      if (resizeRef && resizeRefDom) {
+        drag(resizeRef);
+      }
+    }, [drag, resizeRef, resizeRefDom]);
 
     return (
       <div
@@ -111,8 +197,30 @@ const SmartContainerRenderer: React.FC<SmartContainerRendererProps> = React.forw
           children
         ) : (
           <>
-            {imageURL && <img src={imageURL} alt="Not found" ref={imgRef} />}
-
+            {imageURL && (
+              <div
+                style={{
+                  position: 'relative',
+                  width: imgRef.current?.width,
+                  height: imgRef.current?.height,
+                }}
+              >
+                <img
+                  src={imageURL}
+                  alt="Not found"
+                  className={baseClasses.wireframe}
+                  ref={imgRef}
+                  style={{
+                    width: size.width || imageSize?.width || 'auto',
+                    height: size.height || imageSize?.height || 'auto',
+                  }}
+                  crossOrigin="anonymous"
+                />
+                <div className={baseClasses.resizeSection} ref={resizeRef}>
+                  <AspectRatioRoundedIcon fontSize="inherit" />
+                </div>
+              </div>
+            )}
             <div className={baseClasses.innerContent}>
               <h4 className={baseClasses.nameHeading}>{element.name}</h4>
 
@@ -124,7 +232,13 @@ const SmartContainerRenderer: React.FC<SmartContainerRendererProps> = React.forw
                     type="file"
                     accept=".jpg, .jpeg, .png"
                     name="upload"
-                    onChange={handleImageChange}
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                      setSize({
+                        width: 0,
+                        height: 0,
+                      });
+                      imageUpload(event);
+                    }}
                   />
 
                   <label htmlFor={`upload-image-wireframe-${element.id}`}>
