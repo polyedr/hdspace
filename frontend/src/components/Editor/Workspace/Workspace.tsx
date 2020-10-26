@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import cn from 'classnames';
 import makeStyles from '@material-ui/core/styles/makeStyles';
@@ -9,6 +9,7 @@ import { selectCurrentRootId } from '../../../redux/project/selectors';
 import DraggableItem from '../Draggable/DraggableElement';
 import ElementsInteractions from '../ElementsInteractions/ElementsInteractions';
 import NNProcessingModal from '../../Dialogs/NNProcessing';
+import useGlobalDropTarget from '../../../utils/dragAndDrop/GlobalDropTarget/useGlobalDropTarget';
 import {
   selectFreeCanvasMode,
   selectIsPrototypeMode,
@@ -60,6 +61,8 @@ const Workspace: React.FC = () => {
     setFormat(newFormat);
   };
 
+  const ref = useRef<HTMLDivElement | null>(null);
+
   useEffect(
     () => () => {
       dispatch(resetScreenState());
@@ -67,8 +70,10 @@ const Workspace: React.FC = () => {
     [dispatch],
   );
 
+  useGlobalDropTarget(['smartContainer'], ref);
+
   return (
-    <div className={classes.root}>
+    <div className={classes.root} ref={ref}>
       <NewTopBar
         format={format}
         handleFormatChange={handleFormatChange}

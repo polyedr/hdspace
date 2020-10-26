@@ -19,6 +19,7 @@ type Props = {
 
 const useStyles = makeStyles({
   elementButton: {
+    height: '100%',
     backgroundColor: 'transparent',
     padding: 0,
     borderRadius: 3,

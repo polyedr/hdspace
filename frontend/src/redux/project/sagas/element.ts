@@ -403,6 +403,10 @@ export function* updateElementImage(
       {
         ...changedElement.parameters,
         imageURL: changedElement.image,
+        imageSize: {
+          width: 0,
+          height: 0,
+        },
       },
       { screenId },
     ),
