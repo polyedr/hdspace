@@ -318,6 +318,14 @@ export const selectDirectRootChildren = createSelector(
   },
 );
 
+export const selectDirectChildren = (id) =>
+  createSelector(selectAllElements, (elements) => {
+    const target = elements[id];
+    if (!target) return {};
+
+    return arrayToMap(target.children.map((childId) => elements[childId]));
+  });
+
 export const selectBorderedElementsRef = (
   state: AppReduxState,
 ): BorderedElementsRef => {
@@ -363,3 +371,21 @@ export const selectElementFileInput = (id: string) => (
 ) => {
   return selectProjectState(state).data.elementInputs[id];
 };
+
+export const selectIncludesActiveElement = (elementId: string) =>
+  createSelector(
+    selectAllElements,
+    selectActiveElementId,
+    selectCurrentRootId,
+    (elements, activeElementId, rootId) => {
+      const check = (id: string): boolean => {
+        const parentId = elements[id]?.parent;
+        if (!parentId) return false;
+        if (parentId === elementId) return true;
+        if (parentId === rootId) return false;
+        return check(parentId);
+      };
+
+      return check(activeElementId);
+    },
+  );

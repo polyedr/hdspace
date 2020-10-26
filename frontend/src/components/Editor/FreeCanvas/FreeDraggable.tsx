@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Rnd } from 'react-rnd';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import cn from 'classnames';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
+import SettingsIcon from '@material-ui/icons/Settings';
 import IconButton from '@material-ui/core/IconButton';
+import Divider from '@material-ui/core/Divider';
 import { StateElement } from '../../../redux/project/types';
 import {
   setActiveElement,
@@ -52,24 +54,32 @@ const useStyles = makeStyles({
     '&:hover': {
       border: (props: any) => `1px solid ${props.isActive ? 'red' : '#7a7a7a'}`,
     },
-    '&:hover $crumb': {
+    '&:hover > $crumb': {
       display: 'flex',
     },
-    zIndex: ({ isActive, zIndex }: any) => (isActive ? 1000 : zIndex),
+    zIndex: ({ isActive, zIndex, includesActiveElement }: any) =>
+      isActive || includesActiveElement ? 1000 : zIndex,
   },
-  resizeHandle: {},
   crumb: {
-    flexWrap: 'nowrap',
-    height: 16,
-    backgroundColor: (props: any) => (props.isActive ? 'red' : '#7a7a7a'),
+    flexDirection: 'column',
+    alignItems: 'flex-start',
     position: 'absolute',
     top: 0,
     left: 0,
     color: 'white',
     display: 'none',
     fontSize: '.8em',
-    padding: '0 0.5em',
     textTransform: 'capitalize',
+  },
+  general: {
+    backgroundColor: (props: any) => (props.isActive ? 'red' : '#7a7a7a'),
+    display: 'flex',
+    flexWrap: 'nowrap',
+    height: 16,
+    borderBottom: '1px solid #bbb',
+  },
+  name: {
+    padding: '0 0.5em',
   },
   iconButton: {
     height: 16,
@@ -77,23 +87,35 @@ const useStyles = makeStyles({
     padding: 0,
     fontSize: 16,
     color: '#fff',
+    borderRadius: 0,
+  },
+  divider: {
+    backgroundColor: '#bbb',
   },
 });
 
 type Props = {
   element: StateElement;
   isActive: boolean;
+  includesActiveElement?: boolean;
 };
 
-const FreeDraggable: React.FC<Props> = ({ element, isActive, children }) => {
+const FreeDraggable: React.FC<Props> = ({
+  element,
+  isActive,
+  includesActiveElement,
+  children,
+}) => {
   const dispatch = useDispatch();
+
+  const [open, setOpen] = useState(false);
 
   const {
     id,
     name,
     parameters: { left, top, width, height, zIndex = 0 },
   } = element;
-  const classes = useStyles({ isActive, zIndex });
+  const classes = useStyles({ isActive, zIndex, includesActiveElement });
 
   const { entityStyles, groupStyles, ownStyles } = useElementClassNames(
     element,
@@ -122,12 +144,8 @@ const FreeDraggable: React.FC<Props> = ({ element, isActive, children }) => {
     );
   };
 
-  const handleClick = (ev) => {
+  const handleInteractionStart = (ev) => {
     ev.stopPropagation();
-    dispatch(setActiveElement(id));
-  };
-
-  const handleInteractionStart = () => {
     dispatch(setActiveElement(id));
   };
 
@@ -175,7 +193,7 @@ const FreeDraggable: React.FC<Props> = ({ element, isActive, children }) => {
 
   return (
     <Rnd
-      onClick={handleClick}
+      onClick={handleInteractionStart}
       className={classes.rnd}
       onResizeStop={handleResizeStop}
       onDragStop={handleDragStop}
@@ -190,16 +208,6 @@ const FreeDraggable: React.FC<Props> = ({ element, isActive, children }) => {
       }}
       onResizeStart={handleInteractionStart}
       onDragStart={handleInteractionStart}
-      resizeHandleClasses={{
-        top: classes.resizeHandle,
-        topRight: classes.resizeHandle,
-        right: classes.resizeHandle,
-        bottomRight: classes.resizeHandle,
-        bottom: classes.resizeHandle,
-        bottomLeft: classes.resizeHandle,
-        left: classes.resizeHandle,
-        topLeft: classes.resizeHandle,
-      }}
     >
       <div
         className={cn(entityStyles, groupStyles, ownStyles)}
@@ -212,24 +220,47 @@ const FreeDraggable: React.FC<Props> = ({ element, isActive, children }) => {
       </div>
 
       <div className={classes.crumb}>
-        <span>{splitWords(name)}</span>
+        <div className={classes.general}>
+          <span className={classes.name}>{splitWords(name)}</span>
 
-        <IconButton
-          onClick={moveUp}
-          className={classes.iconButton}
-          title="Move element up"
-        >
-          <KeyboardArrowUpIcon fontSize="inherit" />
-        </IconButton>
+          <Divider orientation="vertical" className={classes.divider} />
 
-        <IconButton
-          onClick={moveDown}
-          className={classes.iconButton}
-          title="Move element down"
-          disabled={zIndex <= 0}
-        >
-          <KeyboardArrowDownIcon fontSize="inherit" />
-        </IconButton>
+          <IconButton
+            onClick={() => setOpen((prevOpen) => !prevOpen)}
+            className={classes.iconButton}
+            title="Settings"
+          >
+            <SettingsIcon fontSize="inherit" />
+          </IconButton>
+        </div>
+
+        <div hidden={!open} role="menu">
+          <div className={classes.general}>
+            <span className={classes.name}>
+              Z-index:
+              <b>{` ${zIndex}`}</b>
+            </span>
+
+            <Divider orientation="vertical" className={classes.divider} />
+
+            <IconButton
+              onClick={moveUp}
+              className={classes.iconButton}
+              title="Move element up"
+            >
+              <KeyboardArrowUpIcon fontSize="inherit" />
+            </IconButton>
+
+            <IconButton
+              onClick={moveDown}
+              className={classes.iconButton}
+              title="Move element down"
+              disabled={zIndex <= 0}
+            >
+              <KeyboardArrowDownIcon fontSize="inherit" />
+            </IconButton>
+          </div>
+        </div>
       </div>
     </Rnd>
   );

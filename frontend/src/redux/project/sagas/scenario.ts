@@ -36,11 +36,6 @@ import {
   convertElementToRequest,
 } from '../../../api/converters/toRequest';
 import {
-  redoWrapIntoContainer,
-  setUndoActions,
-  unwrapFromContainer,
-} from '../actions';
-import {
   apiAddElements,
   apiChangeElement,
   apiChangeRecursiveElement,
@@ -170,6 +165,8 @@ export function* createElements(
       index,
     ),
   );
+
+  yield put(Actions.setActiveElement(newElements[0].id));
 
   const updatedParent: LibraryElement<Entity> = yield select(
     selectElementAsTree(parent.id),
@@ -304,7 +301,7 @@ export function* softDeleteSaga(action: ReturnType<typeof Actions.deleteItem>) {
     if (element.shared === true) {
       undoActions.push(Actions.updateElement(id, { shared: true }));
     }
-    yield put(setUndoActions(undoActions));
+    yield put(Actions.setUndoActions(undoActions));
   }
 
   const activeElementId = yield select(selectActiveElementId);
@@ -516,7 +513,7 @@ export function* wrapIntoContainerSaga(
 }
 
 export function* unwrapFromContainerSaga(
-  action: ReturnType<typeof unwrapFromContainer>,
+  action: ReturnType<typeof Actions.unwrapFromContainer>,
 ) {
   if (!action.meta) {
     console.error(
@@ -631,7 +628,7 @@ export function* updateElementSaga(
 }
 
 export function* redoWrapIntoContainerSaga(
-  action: ReturnType<typeof redoWrapIntoContainer>,
+  action: ReturnType<typeof Actions.redoWrapIntoContainer>,
 ) {
   if (!action.meta) {
     console.error(

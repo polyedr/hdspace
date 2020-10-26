@@ -16,7 +16,12 @@ import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import { getPlayerLink } from '../../../utils/extractVideoLink';
 import { GMap } from '../../UI';
-import { selectElementAsTree } from '../../../redux/project/selectors';
+import {
+  selectActiveElementId,
+  selectDirectChildren,
+  selectElementAsTree,
+  selectIncludesActiveElement,
+} from '../../../redux/project/selectors';
 import { Entity } from '../../../domain/core';
 import { StateElement } from '../../../redux/project/types';
 import FreeDraggable from './FreeDraggable';
@@ -53,7 +58,33 @@ const Button: React.FC<Props> = ({ element, isActive }) => {
 };
 
 const Container: React.FC<Props> = ({ element, isActive }) => {
-  return <FreeDraggable element={element} isActive={isActive} />;
+  const children = useSelector(selectDirectChildren(element.id));
+  const activeElementId = useSelector(selectActiveElementId);
+  const includesActiveElement = useSelector(
+    selectIncludesActiveElement(element.id),
+  );
+
+  return (
+    <FreeDraggable
+      element={element}
+      isActive={isActive}
+      includesActiveElement={includesActiveElement}
+    >
+      {Object.values(children).map((element) => {
+        // eslint-disable-next-line no-use-before-define
+        const Renderer = FREE_CANVAS_RENDERERS[element.type];
+        if (!Renderer) return null;
+
+        return (
+          <Renderer
+            key={element.id}
+            element={element}
+            isActive={element.id === activeElementId}
+          />
+        );
+      })}
+    </FreeDraggable>
+  );
 };
 
 const Map: React.FC<Props> = ({ element, isActive }) => {
@@ -118,6 +149,7 @@ const Image: React.FC<Props> = ({ element, isActive }) => {
         }}
         width="100%"
         height="100%"
+        draggable={false}
       />
     </FreeDraggable>
   );
@@ -249,7 +281,9 @@ const FREE_CANVAS_RENDERERS: Partial<Record<Entity, React.FC<any>>> = {
   heading: TextElement,
   hyperlink: TextElement,
   label: TextElement,
+  divBlock: Container,
   section: Container,
+  cardsSection: Container,
   columns: Container,
   container: Container,
   root: Container,

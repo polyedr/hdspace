@@ -42,6 +42,24 @@ describe('Free Draggable', () => {
     expect(crumb).toBeInTheDocument();
   });
 
+  it('crumb should be hidden by default', () => {
+    const crumb = ui.getByText(splitWords(mockStateElement.name));
+    expect(crumb).not.toBeVisible();
+  });
+
+  it('z-index-control should be hidden by default', () => {
+    const zIndexControl = ui.getByTestId('z-index-control');
+    expect(zIndexControl).toHaveAttribute('hidden');
+  });
+
+  it('should open z-index-control after "settings" button click', () => {
+    const zIndexControl = ui.getByRole('menu', { hidden: true });
+    const settingsButton = ui.getByTitle('Settings');
+
+    fireEvent.click(settingsButton);
+    expect(zIndexControl).not.toHaveAttribute('hidden');
+  });
+
   it('should change elements z-index on buttons click', () => {
     const upButton = ui.getByTitle('Move element up');
     fireEvent.click(upButton);

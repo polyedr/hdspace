@@ -50,6 +50,8 @@ export const makeContainer = ({
   parameters: {
     group: 'none',
     ...defaultFreeCanvasParams,
+    width: 500,
+    height: 300,
   },
   styles: {
     classNames: ['container'],
@@ -96,6 +98,8 @@ export const makeDivBlock = (textContent: string): DivBlockServerElement => ({
   parameters: {
     group: 'containers',
     ...defaultFreeCanvasParams,
+    width: 500,
+    height: 300,
   },
   styles: {
     classNames: ['divBlock'],
@@ -138,6 +142,8 @@ export const makeSmartContainer = ({
   parameters: {
     group: 'undefined',
     ...defaultFreeCanvasParams,
+    width: 500,
+    height: 300,
   },
   styles: {
     classNames: ['smartContainer'],
