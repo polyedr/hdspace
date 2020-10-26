@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import Workspace from '../components/Editor/Workspace/Workspace';
 import { RightPanel } from '../features/applyProperties/views/containers';
-import { selectIsPrototypeMode } from '../redux/user/selectors';
 import { activateScreen } from '../redux/project/actions';
 import { selectScreens } from '../redux/project/selectors';
 
@@ -25,7 +24,6 @@ type Props = {
 const Screen: React.FC<Props> = ({ screenId }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const isPrototypeMode = useSelector(selectIsPrototypeMode);
 
   const screens = useSelector(selectScreens);
   const id = screenId || screens[0]?.id;
@@ -41,7 +39,7 @@ const Screen: React.FC<Props> = ({ screenId }) => {
       <DndProvider backend={HTML5Backend}>
         <Workspace />
 
-        {!isPrototypeMode && <RightPanel />}
+        <RightPanel />
       </DndProvider>
     </div>
   );

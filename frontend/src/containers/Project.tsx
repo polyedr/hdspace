@@ -16,6 +16,7 @@ const useStyles = makeStyles({
     display: 'flex',
     minHeight: '100%',
     height: 1, // allows children use height in %
+    maxWidth: '100vw',
   },
 });
 

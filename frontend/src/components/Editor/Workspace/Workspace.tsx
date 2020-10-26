@@ -14,14 +14,14 @@ import {
   selectIsPrototypeMode,
 } from '../../../redux/user/selectors';
 import NewTopBar from '../TopBar';
-import Example from '../FreeCanvas';
+import FreeCanvas from '../FreeCanvas';
 import { SCREEN_FORMATS } from '../../../constants/defaultParams';
 
 const useStyles = makeStyles({
   root: {
     padding: '1em',
     display: 'flex',
-    flex: '1 1',
+    flex: '1 1 0',
     flexDirection: 'column',
     boxSizing: 'border-box',
   },
@@ -82,7 +82,7 @@ const Workspace: React.FC = () => {
           autoHeightMin="100%"
         >
           {freeCanvasMode ? (
-            <Example />
+            <FreeCanvas />
           ) : (
             <>
               <DraggableItem elementId={rootElementId} />

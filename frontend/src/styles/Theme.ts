@@ -12,6 +12,10 @@ declare module '@material-ui/core/styles/createPalette' {
   }
 }
 
+export const LEFT_PANEL_WIDTH = 220;
+export const LEFT_PANEL_WIDTH_MIN = 64;
+export const RIGHT_PANEL_WIDTH = 300;
+
 const theme = createMuiTheme({
   palette: {
     primary: { main: '#51718c' },
