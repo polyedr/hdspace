@@ -12,7 +12,7 @@ import LeftPanel from '../components/LeftPanel';
 import Screen from './Screen';
 
 const useStyles = makeStyles({
-  root: {
+  project: {
     display: 'flex',
     minHeight: '100%',
     height: 1, // allows children use height in %
@@ -40,7 +40,7 @@ const Project: React.FC<Props> = ({ projectId, screenId }) => {
   }, [dispatch, projectId]);
 
   return (
-    <div className={classes.root}>
+    <div className={classes.project}>
       <LeftPanel />
 
       {currentProjectId !== -1 && <Screen screenId={screenId} />}

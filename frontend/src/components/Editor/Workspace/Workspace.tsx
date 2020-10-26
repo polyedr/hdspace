@@ -18,12 +18,17 @@ import FreeCanvas from '../FreeCanvas';
 import { SCREEN_FORMATS } from '../../../constants/defaultParams';
 
 const useStyles = makeStyles({
-  root: {
+  workspace: {
     padding: '1em',
-    display: 'flex',
-    flex: '1 1 0',
+    flex: '1 1',
     flexDirection: 'column',
-    boxSizing: 'border-box',
+    overflow: 'auto',
+    display: 'block',
+  },
+  wrapper: {
+    display: 'flex',
+    flexDirection: 'column',
+    height: '100%',
   },
   editor: {
     backgroundColor: '#fff',
@@ -68,31 +73,33 @@ const Workspace: React.FC = () => {
   );
 
   return (
-    <div className={classes.root}>
-      <NewTopBar
-        format={format}
-        handleFormatChange={handleFormatChange}
-        rotated={rotated}
-        handleRotatedToggle={() => setRotated((prevState) => !prevState)}
-      />
+    <div className={classes.workspace}>
+      <div className={classes.wrapper}>
+        <NewTopBar
+          format={format}
+          handleFormatChange={handleFormatChange}
+          rotated={rotated}
+          handleRotatedToggle={() => setRotated((prevState) => !prevState)}
+        />
 
-      <EditorViewport>
-        <Scrollbar
-          className={cn(classes.editor, classes[format])}
-          autoHeightMin="100%"
-        >
-          {freeCanvasMode ? (
-            <FreeCanvas />
-          ) : (
-            <>
-              <DraggableItem elementId={rootElementId} />
-              {!isPrototypeMode && <ElementsInteractions />}
-            </>
-          )}
-        </Scrollbar>
-      </EditorViewport>
+        <EditorViewport>
+          <Scrollbar
+            className={cn(classes.editor, classes[format])}
+            autoHeightMin="100%"
+          >
+            {freeCanvasMode ? (
+              <FreeCanvas />
+            ) : (
+              <>
+                <DraggableItem elementId={rootElementId} />
+                {!isPrototypeMode && <ElementsInteractions />}
+              </>
+            )}
+          </Scrollbar>
+        </EditorViewport>
 
-      <NNProcessingModal />
+        <NNProcessingModal />
+      </div>
     </div>
   );
 };

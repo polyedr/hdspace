@@ -9,11 +9,12 @@ import { activateScreen } from '../redux/project/actions';
 import { selectScreens } from '../redux/project/selectors';
 
 const useStyles = makeStyles({
-  root: {
+  screen: {
     display: 'flex',
     minHeight: '100%',
     height: 1, // allows children use height in %
     flex: 1,
+    overflow: 'auto',
   },
 });
 
@@ -35,7 +36,7 @@ const Screen: React.FC<Props> = ({ screenId }) => {
   }, [id, dispatch]);
 
   return (
-    <div className={classes.root}>
+    <div className={classes.screen}>
       <DndProvider backend={HTML5Backend}>
         <Workspace />
 
