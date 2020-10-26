@@ -53,7 +53,7 @@ describe('Free Draggable', () => {
   });
 
   it('should open z-index-control after "settings" button click', () => {
-    const zIndexControl = ui.getByTestId('z-index-control');
+    const zIndexControl = ui.getByRole('menu', { hidden: true });
     const settingsButton = ui.getByTitle('Settings');
 
     fireEvent.click(settingsButton);

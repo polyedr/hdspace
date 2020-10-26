@@ -234,7 +234,7 @@ const FreeDraggable: React.FC<Props> = ({
           </IconButton>
         </div>
 
-        <div hidden={!open} data-testid="z-index-control">
+        <div hidden={!open} role="menu">
           <div className={classes.general}>
             <span className={classes.name}>
               Z-index:
