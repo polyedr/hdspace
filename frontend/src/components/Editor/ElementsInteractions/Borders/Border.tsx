@@ -1,25 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import cn from 'classnames';
 import { StateElement } from '../../../../redux/project/types';
-import { BorderStyles } from '../ElementsInteractions';
+import { BorderPosition } from '../constants';
+import { BorderStyles, StyleProps } from '../types';
 
 const borderStyles = require('./Border.scss');
-
-export enum BorderPosition {
-  TOP = 'top',
-  BOTTOM = 'bottom',
-  LEFT = 'left',
-  RIGHT = 'right',
-}
-
-export type StyleProps = {
-  top?: number;
-  left?: number;
-  bottom?: number;
-  right?: number;
-  width?: number;
-  height?: number;
-};
 
 type Props = {
   element: StateElement;

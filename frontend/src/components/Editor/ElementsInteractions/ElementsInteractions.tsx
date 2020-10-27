@@ -1,66 +1,29 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import {
-  selectBorderedElementsRef,
-  selectBorderedRef,
-  selectCurrentRootId,
-  /* selectRootBorderedRef, */
-} from '../../../redux/project/selectors';
-import SaveElementAction from './Actions/SaveElementAction';
-import Borders from './Borders/Borders';
-import BorderCrumb from './Crumb/BorderCrumb';
+import { makeStyles } from '@material-ui/core';
+import { selectBorderedElementsRef } from '../../../redux/project/selectors';
+import InteractionsHandler from './InteractionsHandler';
 
-export type BorderStyles = {
-  top: number;
-  bottom: number;
-  right: number;
-  left: number;
-  width: number;
-  height: number;
-};
+const useStyles = makeStyles({
+  container: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    maxHeight: 0,
+  },
+});
 
 const ElementsInteractions: React.FC<any> = () => {
   const borderedElements = useSelector(selectBorderedElementsRef);
   const borderedElementsIds = Object.keys(borderedElements);
-  const rootID = useSelector(selectCurrentRootId);
-  const rootRef = useSelector(selectBorderedRef(rootID));
-  const getBorderStyle = (ref: React.RefObject<HTMLElement>) => {
-    if (!rootID || !ref || !ref.current || !rootRef || !rootRef.current) {
-      return null;
-    }
-
-    const rect = ref.current.getBoundingClientRect();
-    const rootRect = rootRef.current?.getBoundingClientRect();
-
-    return rect && rootRect
-      ? ({
-          top: rect.top - rootRect.top,
-          bottom: rootRect.bottom - rect.bottom,
-          right: rootRect.right - rect.right,
-          left: rect.left - rootRect.left,
-          width: rect.width,
-          height: rect.height,
-        } as BorderStyles)
-      : null;
-  };
-
+  const classes = useStyles();
   return (
-    <>
-      {borderedElementsIds.map((id) => {
-        const style = getBorderStyle(borderedElements[id]);
-        if (!style) {
-          return null;
-        }
-        return (
-          <React.Fragment key={`element-border-${id}`}>
-            <Borders elementId={id} styles={style} />
-            <BorderCrumb elementId={id} styles={style}>
-              <SaveElementAction elementId={id} />
-            </BorderCrumb>
-          </React.Fragment>
-        );
-      })}
-    </>
+    <div className={classes.container}>
+      {borderedElementsIds.map((id) => (
+        <InteractionsHandler key={`border-handler-${id}`} elementId={id} />
+      ))}
+    </div>
   );
 };
 
