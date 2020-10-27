@@ -18,8 +18,6 @@ const useStyles = makeStyles(() =>
       display: 'flex',
       flexGrow: 1,
       justifyContent: 'center',
-      height: '100%',
-      minHeight: 0,
       backgroundColor: '#cccccc',
       '&:focus': {
         outline: 0,

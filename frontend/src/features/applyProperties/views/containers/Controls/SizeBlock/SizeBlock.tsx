@@ -12,6 +12,7 @@ import {
   withConfigurableProperties,
 } from '../../../../../../utils/withConfigurableProperties';
 import { selectCurrentEditableStyles } from '../../../../../../redux/project/selectors';
+import { selectFreeCanvasMode } from '../../../../../../redux/user/selectors';
 
 const styles = require('./SizeBlock.scss');
 
@@ -34,6 +35,7 @@ function mapState(state: AppReduxState) {
   return {
     width: selectCurrentEditableStyles(state, 'width'),
     height: selectCurrentEditableStyles(state, 'height'),
+    isFreeCanvasMode: selectFreeCanvasMode(state),
   };
 }
 
@@ -51,7 +53,14 @@ const getUnitFromValue = (value: string): UnitName => {
 };
 
 const SizeBlock: React.FC<Props> = (props) => {
-  const { updateStyles, removeStyles, activeItemID, width, height } = props;
+  const {
+    updateStyles,
+    removeStyles,
+    activeItemID,
+    width,
+    height,
+    isFreeCanvasMode,
+  } = props;
 
   const handleSelectChange = useCallback(
     ({ target: { value } }, sizeName: SizeName) => {
@@ -148,7 +157,7 @@ const SizeBlock: React.FC<Props> = (props) => {
     );
   };
 
-  return (
+  return !isFreeCanvasMode ? (
     <div className="propsElementsBlock">
       <StylesHeader
         title="Width & Height"
@@ -162,7 +171,7 @@ const SizeBlock: React.FC<Props> = (props) => {
         </div>
       </div>
     </div>
-  );
+  ) : null;
 };
 
 export default connect(mapState)(withConfigurableProperties(memo(SizeBlock)));

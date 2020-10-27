@@ -5,16 +5,16 @@ import { useDispatch, useSelector } from 'react-redux';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import Workspace from '../components/Editor/Workspace/Workspace';
 import { RightPanel } from '../features/applyProperties/views/containers';
-import { selectIsPrototypeMode } from '../redux/user/selectors';
 import { activateScreen } from '../redux/project/actions';
 import { selectScreens } from '../redux/project/selectors';
 
 const useStyles = makeStyles({
-  root: {
+  screen: {
     display: 'flex',
     minHeight: '100%',
     height: 1, // allows children use height in %
     flex: 1,
+    overflow: 'auto',
   },
 });
 
@@ -25,7 +25,6 @@ type Props = {
 const Screen: React.FC<Props> = ({ screenId }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const isPrototypeMode = useSelector(selectIsPrototypeMode);
 
   const screens = useSelector(selectScreens);
   const id = screenId || screens[0]?.id;
@@ -37,11 +36,11 @@ const Screen: React.FC<Props> = ({ screenId }) => {
   }, [id, dispatch]);
 
   return (
-    <div className={classes.root}>
+    <div className={classes.screen}>
       <DndProvider backend={HTML5Backend}>
         <Workspace />
 
-        {!isPrototypeMode && <RightPanel />}
+        <RightPanel />
       </DndProvider>
     </div>
   );
