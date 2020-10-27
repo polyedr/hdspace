@@ -1,9 +1,9 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import Radio from '@material-ui/core/Radio';
-import Checkbox from '@material-ui/core/Checkbox';
-import Calendar from 'react-calendar';
-import Clock from 'react-clock';
+import MuiRadio from '@material-ui/core/Radio';
+import MuiCheckbox from '@material-ui/core/Checkbox';
+import ReactCalendar from 'react-calendar';
+import ReactClock from 'react-clock';
 import TextField from '@material-ui/core/TextField';
 import MuiButton from '@material-ui/core/Button';
 import Grow from '@material-ui/core/Grow';
@@ -31,21 +31,21 @@ type Props = {
   isActive: boolean;
 };
 
-const TextElement: React.FC<Props> = ({ element, isActive }) => {
-  const { parameters } = element;
+const TextElement: React.FC<Props> = (props) => {
+  const {
+    element: { parameters },
+  } = props;
 
-  return (
-    <FreeDraggable element={element} isActive={isActive}>
-      {parameters.textContent}
-    </FreeDraggable>
-  );
+  return <FreeDraggable {...props}>{parameters.textContent}</FreeDraggable>;
 };
 
-const Button: React.FC<Props> = ({ element, isActive }) => {
-  const { parameters } = element;
+const Button: React.FC<Props> = (props) => {
+  const {
+    element: { parameters },
+  } = props;
 
   return (
-    <FreeDraggable element={element} isActive={isActive}>
+    <FreeDraggable {...props}>
       <span
         style={{
           textTransform: 'uppercase',
@@ -57,7 +57,9 @@ const Button: React.FC<Props> = ({ element, isActive }) => {
   );
 };
 
-const Container: React.FC<Props> = ({ element, isActive }) => {
+const Container: React.FC<Props> = (props) => {
+  const { element } = props;
+
   const children = useSelector(selectDirectChildren(element.id));
   const activeElementId = useSelector(selectActiveElementId);
   const includesActiveElement = useSelector(
@@ -65,11 +67,7 @@ const Container: React.FC<Props> = ({ element, isActive }) => {
   );
 
   return (
-    <FreeDraggable
-      element={element}
-      isActive={isActive}
-      includesActiveElement={includesActiveElement}
-    >
+    <FreeDraggable includesActiveElement={includesActiveElement} {...props}>
       {Object.values(children).map((element) => {
         // eslint-disable-next-line no-use-before-define
         const Renderer = FREE_CANVAS_RENDERERS[element.type];
@@ -87,11 +85,13 @@ const Container: React.FC<Props> = ({ element, isActive }) => {
   );
 };
 
-const Map: React.FC<Props> = ({ element, isActive }) => {
-  const { parameters } = element;
+const Map: React.FC<Props> = (props) => {
+  const {
+    element: { parameters },
+  } = props;
 
   return (
-    <FreeDraggable element={element} isActive={isActive}>
+    <FreeDraggable {...props}>
       <GMap
         center={parameters.map_props.center}
         zoom={parameters.map_props.zoom}
@@ -101,13 +101,13 @@ const Map: React.FC<Props> = ({ element, isActive }) => {
   );
 };
 
-const Video: React.FC<Props> = ({ element, isActive }) => {
-  const { parameters } = element;
+const Video: React.FC<Props> = (props) => {
+  const { element } = props;
 
-  const playerLink = getPlayerLink(parameters.videoSettings, false);
+  const playerLink = getPlayerLink(element.parameters.videoSettings, false);
 
   return (
-    <FreeDraggable element={element} isActive={isActive}>
+    <FreeDraggable {...props}>
       {playerLink && (
         <iframe
           title={`video-${element.id}`}
@@ -126,23 +126,22 @@ const Video: React.FC<Props> = ({ element, isActive }) => {
   );
 };
 
-const getTextInput: (multi?: boolean) => React.FC<Props> = (multi = false) => ({
-  element,
-  isActive,
-}) => {
+const getTextInput: (multi?: boolean) => React.FC<Props> = (multi = false) => (
+  props,
+) => {
   return (
-    <FreeDraggable element={element} isActive={isActive}>
+    <FreeDraggable {...props}>
       <TextField variant="outlined" multiline={multi} />
     </FreeDraggable>
   );
 };
 
-const Image: React.FC<Props> = ({ element, isActive }) => {
-  const { parameters } = element;
+const Image: React.FC<Props> = (props) => {
+  const { element } = props;
   return (
-    <FreeDraggable element={element} isActive={isActive}>
+    <FreeDraggable {...props}>
       <img
-        src={parameters.imageURL}
+        src={element.parameters.imageURL}
         alt={element.id}
         style={{
           userSelect: 'none',
@@ -155,11 +154,12 @@ const Image: React.FC<Props> = ({ element, isActive }) => {
   );
 };
 
-const List: React.FC<Props> = ({ element, isActive }) => {
+const List: React.FC<Props> = (props) => {
+  const { element } = props;
   const { children } = useSelector(selectElementAsTree(element.id));
 
   return (
-    <FreeDraggable element={element} isActive={isActive}>
+    <FreeDraggable {...props}>
       {children.map((child) => (
         <li key={child.id}>{child.parameters.textContent}</li>
       ))}
@@ -167,13 +167,14 @@ const List: React.FC<Props> = ({ element, isActive }) => {
   );
 };
 
-const Select: React.FC<Props> = ({ element, isActive }) => {
+const Select: React.FC<Props> = (props) => {
+  const { element } = props;
   const {
     children: [menu],
   } = useSelector(selectElementAsTree(element.id));
 
   return (
-    <FreeDraggable element={element} isActive={isActive}>
+    <FreeDraggable {...props}>
       <select>
         {menu.children.map((child) => (
           <option key={child.id} value={child.parameters.value}>
@@ -185,10 +186,12 @@ const Select: React.FC<Props> = ({ element, isActive }) => {
   );
 };
 
-const Dropdown: React.FC<Props> = ({ element, isActive }) => {
+const Dropdown: React.FC<Props> = (props) => {
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef<HTMLDivElement>(null);
   const [selectedIndex, setSelectedIndex] = React.useState(0);
+
+  const { element } = props;
 
   const {
     children: [menu],
@@ -218,7 +221,7 @@ const Dropdown: React.FC<Props> = ({ element, isActive }) => {
   };
 
   return (
-    <FreeDraggable element={element} isActive={isActive}>
+    <FreeDraggable {...props}>
       <ButtonGroup variant="contained" color="primary" ref={anchorRef}>
         <MuiButton>
           {menu.children[selectedIndex].parameters.textContent}
@@ -274,7 +277,39 @@ const Dropdown: React.FC<Props> = ({ element, isActive }) => {
   );
 };
 
-const FREE_CANVAS_RENDERERS: Partial<Record<Entity, React.FC<any>>> = {
+const Calendar: React.FC<Props> = (props) => {
+  return (
+    <FreeDraggable {...props}>
+      <ReactCalendar />
+    </FreeDraggable>
+  );
+};
+
+const Radio: React.FC<Props> = (props) => {
+  return (
+    <FreeDraggable {...props}>
+      <MuiRadio />
+    </FreeDraggable>
+  );
+};
+
+const Checkbox: React.FC<Props> = (props) => {
+  return (
+    <FreeDraggable {...props}>
+      <MuiCheckbox />
+    </FreeDraggable>
+  );
+};
+
+const Clock: React.FC<Props> = (props) => {
+  return (
+    <FreeDraggable {...props}>
+      <ReactClock />
+    </FreeDraggable>
+  );
+};
+
+const FREE_CANVAS_RENDERERS: Record<Entity | 'none', React.FC<Props> | null> = {
   paragraph: TextElement,
   ocrtext: TextElement,
   textBlock: TextElement,
@@ -289,6 +324,7 @@ const FREE_CANVAS_RENDERERS: Partial<Record<Entity, React.FC<any>>> = {
   root: Container,
   grid: Container,
   undefined: Container,
+  smartContainer: Container,
   calendar: Calendar,
   button: Button,
   radiobutton: Radio,
@@ -302,6 +338,16 @@ const FREE_CANVAS_RENDERERS: Partial<Record<Entity, React.FC<any>>> = {
   list: List,
   select: Select,
   dropdown: Dropdown,
+  dropdownItem: null,
+  dropdownMenu: null,
+  emptyPageTemplate: null,
+  featureSection: null,
+  listItem: null,
+  pageTemplate: null,
+  selectItem: null,
+  selectMenu: null,
+  subscribeForm: null,
+  none: null,
 };
 
 export default FREE_CANVAS_RENDERERS;
