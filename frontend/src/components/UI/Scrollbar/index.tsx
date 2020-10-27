@@ -50,6 +50,8 @@ const renderTrackHorizontal = ({
     left: 0,
     width: '100%',
     height: '6px',
+    opacity: show ? 1 : 0.3,
+    transition: show ? 'none' : 'opacity 0.5s ease',
   };
   return (
     <div

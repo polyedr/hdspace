@@ -389,3 +389,9 @@ export const selectIncludesActiveElement = (elementId: string) =>
       return check(activeElementId);
     },
   );
+
+export const selectCurrentRoot = createSelector(
+  selectAllElements,
+  selectCurrentRootId,
+  (elements, rootId) => elements[rootId] || DEFAULT_ROOT,
+);
