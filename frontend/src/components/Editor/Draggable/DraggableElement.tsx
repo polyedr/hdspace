@@ -29,11 +29,13 @@ import { ElementData, StateElement } from '../../../redux/project/types';
 type DraggableElementProps = {
   elementId: string;
   parentDomStyles?: CSSStyleDeclaration | null;
+  parentIds?: Array<string>;
 };
 
 const DraggableElement: React.FC<DraggableElementProps> = ({
   elementId,
   parentDomStyles,
+  parentIds = [],
 }) => {
   const element = useSelector(selectElementById(elementId));
   const parent = useSelector(selectElementByChildId(elementId));
@@ -140,7 +142,13 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
       dragSource: SyntheticElement<StateElement | ElementData>,
       monitor: DropTargetMonitor,
     ) => {
-      return monitor.isOver({ shallow: true });
+      const isOverCurrent = monitor.isOver({ shallow: true });
+      const allowDropElement =
+        dragSource.type === ElementType.ELEMENT &&
+        dragSource.original.id &&
+        !parentIds.includes(dragSource.original.id);
+      const allowDropConstructor = dragSource.type === ElementType.CONSTRUCTOR;
+      return isOverCurrent && (allowDropElement || allowDropConstructor);
     },
     collect: (monitor: DropTargetMonitor) => {
       return {
@@ -152,7 +160,11 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
       dragSource: SyntheticElement<StateElement | ElementData>,
       monitor: DropTargetMonitor,
     ) => {
-      if (isOver) {
+      if (
+        isOver &&
+        monitor.canDrop() &&
+        dragSource.original.id !== element.id
+      ) {
         let dropPosition = DropPosition.INSIDE;
         const clientOffset = monitor.getClientOffset();
         const rect = ref.current.getBoundingClientRect();
@@ -222,6 +234,7 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
             key={`element-${childId}`}
             elementId={childId}
             parentDomStyles={dropDomStyles}
+            parentIds={[...parentIds, elementId]}
           />
         ))}
       </ElementRenderer>
