@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import useResizeObserver from '@react-hook/resize-observer';
+import * as R from 'ramda';
 
 import SaveElementAction from './Actions/SaveElementAction';
 import Borders from './Borders/Borders';
 import BorderCrumb from './Crumb/BorderCrumb';
 
 import {
+  selectActiveElementId,
   selectBorderedElementsRef,
   selectCurrentRootId,
 } from '../../../redux/project/selectors';
@@ -40,20 +42,49 @@ const InteractionsHandler = ({ elementId }: Props) => {
   const rootID = useSelector(selectCurrentRootId);
   const rootRef = borderedElementsRefs[rootID];
   const elementRef = borderedElementsRefs[elementId];
+  const activeElementId = useSelector(selectActiveElementId);
 
   const [styles, setStyles] = useState<BorderStyles | null>(
     getBorderStyles(elementRef.current, rootRef),
   );
 
+  const updateBorderStyles = useCallback(
+    (entry: HTMLElement) => {
+      const updatedBorderStyles = getBorderStyles(
+        entry as HTMLElement,
+        rootRef,
+      );
+      if (!R.equals(updatedBorderStyles, styles)) {
+        setStyles(updatedBorderStyles);
+      }
+    },
+    [rootRef, styles],
+  );
+
   useResizeObserver(elementRef, (entry) => {
     if (entry) {
-      setStyles(getBorderStyles(entry.target as HTMLElement, rootRef));
+      updateBorderStyles(entry.target as HTMLElement);
     }
   });
 
+  const observer = useMemo(() => {
+    return new MutationObserver((entries) => {
+      updateBorderStyles(entries[0].target as HTMLElement);
+    });
+  }, [elementId]);
+
+  useEffect(() => {
+    if (elementRef.current) {
+      observer?.observe(elementRef?.current, { attributes: true });
+    }
+    return () => {
+      observer?.disconnect();
+    };
+  }, [elementId, activeElementId, elementRef]);
+
   useEffect(() => {
     setStyles(getBorderStyles(elementRef.current, rootRef));
-  }, [borderedElementsRefs, elementRef, rootRef]);
+  }, [elementRef, rootRef]);
 
   if (!styles) {
     return null;
