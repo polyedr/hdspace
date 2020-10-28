@@ -7,12 +7,9 @@ import {
   selectElementById,
   selectShowingBorders,
 } from '../../../../redux/project/selectors';
-import { BorderStyles } from '../ElementsInteractions';
-import Border, { BorderPosition } from './Border';
-
-type DisplayDropTargetBorders = {
-  [key in DropPosition]: boolean;
-};
+import { BorderPosition } from '../constants';
+import { BorderStyles } from '../types';
+import Border from './Border';
 
 type Props = {
   elementId: string;
@@ -62,7 +59,7 @@ const Borders: React.FC<Props> = ({ elementId, styles }) => {
           dropTargetParams.position,
         ),
     };
-  }, [dropTargetParams]);
+  }, [dropTargetParams, isDropTarget]);
 
   return element && styles && displayBorders ? (
     <>
