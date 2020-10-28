@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import cn from 'classnames';
+import makeStyles from '@material-ui/core/styles/makeStyles';
 import { StateElement } from '../../../../redux/project/types';
 import { BorderPosition } from '../constants';
 import { BorderStyles, StyleProps } from '../types';
 
-const borderStyles = require('./Border.scss');
+// const borderStyles = require('./Border.scss');
 
 type Props = {
   element: StateElement;
@@ -15,14 +15,24 @@ type Props = {
   onClick?: (event: React.SyntheticEvent<EventTarget>) => void;
 };
 
-const Border: React.FC<Props> = ({
-  element,
-  position,
-  styles,
-  isActive,
-  isDropTarget,
-  onClick,
-}) => {
+const useStyles = makeStyles((theme) => ({
+  border: ({ position, isActive, isDropTarget }: Props) => {
+    const borderPosPrefix =
+      position.charAt(0).toUpperCase() + position.substring(1);
+    return {
+      position: 'absolute',
+      pointerEvents: 'none',
+      [`border${borderPosPrefix}Width`]: '1px',
+      [`border${borderPosPrefix}Style`]: 'solid',
+      [`border${borderPosPrefix}Color`]:
+        isActive || isDropTarget ? '#5A899D' : theme.palette.secondary.main,
+    };
+  },
+}));
+
+const Border: React.FC<Props> = (props) => {
+  const { element, position, styles, isActive, onClick } = props;
+  const borderStyles = useStyles(props);
   const [styleProps, setStyleProps] = useState<StyleProps | null>(null);
   useEffect(() => {
     const { top, left, right, height } = styles;
@@ -71,10 +81,7 @@ const Border: React.FC<Props> = ({
       data-border-id={element.id}
       data-element-name={element.name}
       data-position={position}
-      className={cn(
-        borderStyles.border,
-        (isActive || isDropTarget) && borderStyles.border_active,
-      )}
+      className={borderStyles.border}
       style={styleProps}
       onClick={onClick}
     />
