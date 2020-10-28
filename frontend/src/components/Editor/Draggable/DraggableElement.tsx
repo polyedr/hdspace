@@ -199,7 +199,7 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
 
   useEffect(() => {
     preview(getEmptyImage(), { captureDraggingState: true });
-  }, []);
+  }, [preview]);
 
   useElementBorders(elementId, ref);
 
