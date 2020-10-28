@@ -395,3 +395,36 @@ export const selectCurrentRoot = createSelector(
   selectCurrentRootId,
   (elements, rootId) => elements[rootId] || DEFAULT_ROOT,
 );
+
+export const selectFreeCanvasMode = ({ project }: AppReduxState) =>
+  project.edit.freeCanvas.enabled;
+
+export const selectFreeCanvasOffset = (id: string) => (
+  state: AppReduxState,
+) => {
+  const { elements } = state.project.data;
+  const parent = state.project.edit.freeCanvas.lastElements[id];
+  if (!parent) return 0;
+
+  // const needOffset = state.project.data.elements[id].children.some(
+  //   (childId) => {
+  //     const child = state.project.data.elements[childId];
+  //     return (
+  //       child.parameters.top === parent.offset &&
+  //       child.parameters.left === parent.offset
+  //     );
+  //   },
+  // );
+
+  const needOffset =
+    elements[id].children.includes(
+      parent.elements[parent.elements.length - 1],
+    ) &&
+    elements[parent.elements[parent.elements.length - 1]].parameters.left ===
+      parent.offset &&
+    elements[parent.elements[parent.elements.length - 1]].parameters.top ===
+      parent.offset;
+
+  if (needOffset) return parent.offset + 20;
+  return 0;
+};

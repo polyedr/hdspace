@@ -11,8 +11,10 @@ import {
   PropertiesChangeProps,
   withConfigurableProperties,
 } from '../../../../../../utils/withConfigurableProperties';
-import { selectCurrentEditableStyles } from '../../../../../../redux/project/selectors';
-import { selectFreeCanvasMode } from '../../../../../../redux/user/selectors';
+import {
+  selectCurrentEditableStyles,
+  selectFreeCanvasMode,
+} from '../../../../../../redux/project/selectors';
 
 const styles = require('./SizeBlock.scss');
 

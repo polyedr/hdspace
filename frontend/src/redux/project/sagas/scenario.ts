@@ -11,6 +11,8 @@ import {
   selectCurrentScreenId,
   selectElementsForScreen,
   selectScreenRootElement,
+  selectFreeCanvasMode,
+  selectFreeCanvasOffset,
 } from '../selectors';
 import * as Actions from '../actions';
 import { selectors, T } from '..';
@@ -120,10 +122,26 @@ export function* createElements(
     return;
   }
 
+  const isFreeCanvasMode = yield select(selectFreeCanvasMode);
+  let offset;
+  if (isFreeCanvasMode) {
+    offset = yield select(selectFreeCanvasOffset(parent.id));
+  }
+
+  // free canvas offset
+  const elementsWithOffset = elements.map((el) => ({
+    ...el,
+    parameters: {
+      ...el.parameters,
+      left: offset,
+      top: offset,
+    },
+  }));
+
   const newElements: ReturnPromisedType<typeof apiAddElements> = yield call(
     reqWrapper,
     apiAddElements,
-    { data: elements },
+    { data: elementsWithOffset },
   );
 
   if (!undo) {
@@ -163,6 +181,14 @@ export function* createElements(
         ),
       },
       index,
+    ),
+  );
+
+  yield put(
+    Actions.updateLastElements(
+      parent.id,
+      newElements.map((el) => el.id),
+      offset,
     ),
   );
 

@@ -35,6 +35,10 @@ export const initialEdit: T.ProjectEditState = {
   currentScreenId: -1,
   activeElementId: '-1',
   notification: null,
+  freeCanvas: {
+    enabled: false,
+    lastElements: {},
+  },
 };
 
 export const initialCommunication: T.ProjectCommunicationState = {

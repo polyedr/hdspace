@@ -8,7 +8,7 @@ import Section from './Section';
 import { LIBRARY_ELEMENTS } from '../../domain/libraryElements/libraryElements';
 import { createElementsHierarchy } from '../../utils/parseScenario';
 import CustomElementsBlock from './CustomElementsLibrary/CustomElementsBlock';
-import { selectFreeCanvasMode } from '../../redux/user/selectors';
+import { selectFreeCanvasMode } from '../../redux/project/selectors';
 
 const sections = ['elements', 'templates', 'library'];
 
