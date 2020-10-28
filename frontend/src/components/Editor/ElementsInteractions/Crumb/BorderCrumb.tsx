@@ -7,8 +7,8 @@ import {
   selectElementById,
   selectShowingBorders,
 } from '../../../../redux/project/selectors';
-import { BorderStyles } from '../ElementsInteractions';
 import { ELEMENTS_WITHOUT_CRUMB } from '../constants';
+import { BorderStyles } from '../types';
 
 const css = require('./BorderCrumb.scss');
 

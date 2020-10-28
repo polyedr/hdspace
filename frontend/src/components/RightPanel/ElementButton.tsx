@@ -1,6 +1,7 @@
 import React, { useEffect, MutableRefObject } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useDrag } from 'react-dnd';
+import { getEmptyImage } from 'react-dnd-html5-backend';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { splitWords } from '../../utils/StringHelper';
 import Button from '../UI/Button';
@@ -60,7 +61,7 @@ const ElementButton = React.forwardRef<HTMLButtonElement, Props>(
       ? React.createRef<HTMLButtonElement>()
       : outerRef) as MutableRefObject<HTMLButtonElement>;
 
-    const [, drag] = useDrag({
+    const [, drag, preview] = useDrag({
       item: {
         type: ElementType.CONSTRUCTOR,
         original: elementData,
@@ -68,6 +69,10 @@ const ElementButton = React.forwardRef<HTMLButtonElement, Props>(
       canDrag: () => true,
       end: () => ref.current && ref.current.blur(),
     });
+
+    useEffect(() => {
+      preview(getEmptyImage(), { captureDraggingState: true });
+    }, [preview]);
 
     const handleClick = () => {
       dispatch(createElements([{ id, type, name, custom }], { screenId }));

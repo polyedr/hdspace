@@ -56,12 +56,11 @@ const useUrlImageToFile = (
   }, [dispatch, id, imgDom, url, imageSize]);
 
   useEffect(() => {
-    if (fileFromImage || !id || !imgDom || imgDom.crossOrigin === 'anonymous') {
+    if (!imgDom) {
       return;
     }
-
     imgDom.onload = handleFileInput;
-  }, [dispatch, id, imgRef, url, fileFromImage, imgDom, handleFileInput]);
+  }, [dispatch, id, imgDom, url, imageSize]);
 
   useEffect(() => {
     handleFileInput();
