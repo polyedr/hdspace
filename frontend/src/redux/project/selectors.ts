@@ -389,3 +389,32 @@ export const selectIncludesActiveElement = (elementId: string) =>
       return check(activeElementId);
     },
   );
+
+export const selectCurrentRoot = createSelector(
+  selectAllElements,
+  selectCurrentRootId,
+  (elements, rootId) => elements[rootId] || DEFAULT_ROOT,
+);
+
+export const selectFreeCanvasMode = ({ project }: AppReduxState) =>
+  project.edit.freeCanvas.enabled;
+
+export const selectFreeCanvasOffset = (id: string) => (
+  state: AppReduxState,
+) => {
+  const { elements } = state.project.data;
+  const parent = state.project.edit.freeCanvas.lastElements[id];
+  if (!parent) return 0;
+
+  const needOffset =
+    elements[id].children.includes(
+      parent.elements[parent.elements.length - 1],
+    ) &&
+    elements[parent.elements[parent.elements.length - 1]].parameters.left ===
+      parent.offset &&
+    elements[parent.elements[parent.elements.length - 1]].parameters.top ===
+      parent.offset;
+
+  if (needOffset) return parent.offset + 20;
+  return 0;
+};

@@ -23,6 +23,8 @@ export const root: RootServerElement = {
   func_type: 'root',
   struct_type: 'root',
   parameters: {
+    width: 0,
+    height: 0,
     group: 'none',
   },
   styles: {

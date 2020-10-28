@@ -5,15 +5,15 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import EditorViewport from '../Viewport/Viewport';
 import Scrollbar from '../../UI/Scrollbar';
 import { resetScreenState } from '../../../redux/project/actions';
-import { selectCurrentRootId } from '../../../redux/project/selectors';
+import {
+  selectCurrentRootId,
+  selectFreeCanvasMode,
+} from '../../../redux/project/selectors';
 import DraggableItem from '../Draggable/DraggableElement';
 import ElementsInteractions from '../ElementsInteractions/ElementsInteractions';
 import NNProcessingModal from '../../Dialogs/NNProcessing';
 import useGlobalDropTarget from '../../../utils/dragAndDrop/GlobalDropTarget/useGlobalDropTarget';
-import {
-  selectFreeCanvasMode,
-  selectIsPrototypeMode,
-} from '../../../redux/user/selectors';
+import { selectIsPrototypeMode } from '../../../redux/user/selectors';
 import NewTopBar from '../TopBar';
 import FreeCanvas from '../FreeCanvas';
 import { SCREEN_FORMATS } from '../../../constants/defaultParams';

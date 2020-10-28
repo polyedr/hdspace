@@ -20,11 +20,13 @@ import TYPES from '../../constants/actions';
 import { CssLikeStyles } from '../../utils/StyleHelper';
 import {
   addStateElements,
+  changeFreeCanvasMode,
   extractStateElement,
   insertStateElement,
   moveStateElement,
   removeStateElement,
   setProjectsData,
+  updateLastElements,
   updateStateElement,
 } from './actions';
 
@@ -89,6 +91,15 @@ export type ProjectEditState = {
   activeElementId: string;
   uploadedImageInfo?: UploadedImageInfo;
   notification: Notification | null;
+  freeCanvas: {
+    enabled: boolean;
+    lastElements: {
+      [id: string]: {
+        offset: number;
+        elements: string[];
+      };
+    };
+  };
 };
 
 export type ProjectCommunicationState = {
@@ -549,6 +560,8 @@ export type Action =
   | ReturnType<typeof removeStateElement>
   | ReturnType<typeof setProjectsData>
   | ReturnType<typeof extractStateElement>
+  | ReturnType<typeof changeFreeCanvasMode>
+  | ReturnType<typeof updateLastElements>
   | SetScreens
   | AddBorderedElementRef
   | RemoveBorderedElementRef

@@ -3,17 +3,13 @@ import Switch from '@material-ui/core/Switch';
 import { useDispatch, useSelector } from 'react-redux';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import {
-  changeFreeCanvasMode,
-  changePrototypeMode,
-} from '../../../redux/user/actions';
-import {
-  selectFreeCanvasMode,
-  selectIsPrototypeMode,
-} from '../../../redux/user/selectors';
+import { changePrototypeMode } from '../../../redux/user/actions';
+import { selectIsPrototypeMode } from '../../../redux/user/selectors';
 import Formats from './Formats';
 import Actions from './Actions';
 import { SCREEN_FORMATS } from '../../../constants/defaultParams';
+import { changeFreeCanvasMode } from '../../../redux/project/actions';
+import { selectFreeCanvasMode } from '../../../redux/project/selectors';
 
 const useStyles = makeStyles({
   root: {

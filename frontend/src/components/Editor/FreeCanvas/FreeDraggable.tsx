@@ -13,37 +13,9 @@ import {
   setActiveElement,
   updateElementParameters,
 } from '../../../redux/project/actions';
-import {
-  selectCurrentScreenId,
-  selectProjectClasses,
-} from '../../../redux/project/selectors';
+import { selectCurrentScreenId } from '../../../redux/project/selectors';
 import { splitWords } from '../../../utils/StringHelper';
-
-const useElementClassNames = (element: StateElement) => {
-  const projectClasses = useSelector(selectProjectClasses);
-
-  const [entityClass, groupClass] = element.styles.classNames;
-  const entityStyles =
-    projectClasses?.find((cssClass: any) => cssClass.className === entityClass)
-      ?.rules || {};
-  const groupStyles =
-    projectClasses?.find((cssClass: any) => cssClass.className === groupClass)
-      ?.rules || {};
-
-  return makeStyles({
-    entityStyles: {
-      ...entityStyles,
-    },
-
-    groupStyles: {
-      ...groupStyles,
-    },
-
-    ownStyles: {
-      ...element.styles.ownStyles,
-    },
-  })();
-};
+import { useElementClassNames } from './hooks';
 
 const useStyles = makeStyles({
   rnd: {

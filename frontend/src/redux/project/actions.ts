@@ -708,3 +708,21 @@ export const removeFileInput = (id: string) => ({
   type: TYPES.REMOVE_FILE_INPUT,
   payload: { id },
 });
+
+export const changeFreeCanvasMode = (enabled: boolean) => ({
+  type: TYPES.CHANGE_FREE_CANVAS_MODE,
+  payload: enabled,
+});
+
+export const updateLastElements = (
+  parentId: string,
+  ids: string[],
+  offset: number,
+) => ({
+  type: TYPES.UPDATE_LAST_ELEMENTS,
+  payload: {
+    parentId,
+    ids,
+    offset,
+  },
+});
