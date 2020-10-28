@@ -406,16 +406,6 @@ export const selectFreeCanvasOffset = (id: string) => (
   const parent = state.project.edit.freeCanvas.lastElements[id];
   if (!parent) return 0;
 
-  // const needOffset = state.project.data.elements[id].children.some(
-  //   (childId) => {
-  //     const child = state.project.data.elements[childId];
-  //     return (
-  //       child.parameters.top === parent.offset &&
-  //       child.parameters.left === parent.offset
-  //     );
-  //   },
-  // );
-
   const needOffset =
     elements[id].children.includes(
       parent.elements[parent.elements.length - 1],
