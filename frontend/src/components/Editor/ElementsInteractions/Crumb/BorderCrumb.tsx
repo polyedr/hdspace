@@ -7,6 +7,7 @@ import {
   selectElementById,
   selectShowingBorders,
 } from '../../../../redux/project/selectors';
+import { ELEMENTS_WITHOUT_CRUMB } from '../constants';
 import { BorderStyles } from '../types';
 
 const css = require('./BorderCrumb.scss');
@@ -24,7 +25,10 @@ const BorderCrumb: React.FC<Props> = ({ elementId, styles, children }) => {
   const activeElementId = useSelector(selectActiveElementId);
 
   const labelClasses = cn(css.borderCrumb, css.borderCrumb_active);
-  const showCrumb = showBorders || elementId === activeElementId;
+
+  const showCrumb =
+    !ELEMENTS_WITHOUT_CRUMB.includes(element.type) &&
+    (showBorders || elementId === activeElementId);
 
   return element && showCrumb ? (
     <div

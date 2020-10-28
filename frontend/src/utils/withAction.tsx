@@ -1,25 +1,12 @@
 import React, { useCallback, useContext } from 'react';
-import { connect } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 import {
   ActionRendererProps,
   SharedRendererProps,
 } from '../components/UI/RenderElements/types';
 import { LinkContext } from '../containers/ExportedApp';
-import { AppReduxState } from '../shared/types/app';
-import { selectCurrentProject } from '../redux/project/selectors';
 import { activateScreen } from '../redux/project/actions';
-
-const mapStateToProps = (state: AppReduxState) => {
-  const projectID = selectCurrentProject(state).id;
-
-  // eslint-disable-next-line react/require-default-props
-  return { projectID };
-};
-
-const mapDispatchToProps = {
-  activateScreen,
-};
 
 export type ActionType = 'external-link' | 'internal-link' | 'button';
 
@@ -29,11 +16,7 @@ export type WithActionProps = {
   onClick(event: React.MouseEvent<HTMLAnchorElement, MouseEvent>): void;
 };
 
-type Props = WithActionProps &
-  SharedRendererProps &
-  ActionRendererProps &
-  ReturnType<typeof mapStateToProps> &
-  typeof mapDispatchToProps;
+type Props = WithActionProps & SharedRendererProps & ActionRendererProps;
 
 function withAction(
   Component: React.ComponentType<
@@ -42,12 +25,12 @@ function withAction(
   type: 'link' | 'button',
   isExportedAction?: boolean,
 ) {
-  function WrapperComponent(props: Props) {
-    const { projectID, activateScreen, ...restProps } = props;
+  const WrapperComponent = React.forwardRef((props: Props, ref) => {
+    const dispatch = useDispatch();
     const {
       params: { action },
       isDisabled,
-    } = restProps;
+    } = props;
     const screensInfo = useContext(LinkContext);
 
     const handleInternalLinkClick = useCallback(
@@ -58,10 +41,10 @@ function withAction(
         ) {
           event.preventDefault();
         } else if (!isExportedAction && action?.type === 'internal-link') {
-          activateScreen(Number(action.screenID));
+          dispatch(activateScreen(Number(action.screenID)));
         }
       },
-      [isDisabled, action, projectID],
+      [isDisabled, action?.type, dispatch],
     );
 
     const handleExternalLinkClick = useCallback(
@@ -113,22 +96,25 @@ function withAction(
     );
 
     return isButtonElement() ? (
-      <Component {...restProps} actionType="button" />
+      <Component
+        {...props}
+        actionType="button"
+        ref={ref as React.RefObject<HTMLElement>}
+      />
     ) : (
       <Component
-        {...restProps}
+        {...props}
         actionType={isInternalLink() ? 'internal-link' : 'external-link'}
         onClick={
           isInternalLink() ? handleInternalLinkClick : handleExternalLinkClick
         }
         actionLink={getUrl()}
+        ref={ref as React.RefObject<HTMLElement>}
       />
     );
-  }
+  });
 
-  return isExportedAction
-    ? WrapperComponent
-    : connect(mapStateToProps, mapDispatchToProps)(WrapperComponent);
+  return WrapperComponent;
 }
 
 export default withAction;
