@@ -83,6 +83,9 @@ const FreeCanvas = () => {
         position: 'relative',
         userSelect: 'none',
         display: 'block',
+        border: `1px solid ${
+          activeElementId === root.id ? '#5A899D' : 'transparent'
+        }`,
       }}
       resizeHandleClasses={{
         top: classes.hidden,

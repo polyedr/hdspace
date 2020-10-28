@@ -21,10 +21,11 @@ const useStyles = makeStyles({
   rnd: {
     position: 'absolute',
     border: (props: any) =>
-      `1px solid ${props.isActive ? 'red' : 'transparent'}`,
+      `1px solid ${props.isActive ? '#5A899D' : 'transparent'}`,
     overflow: 'hidden',
     '&:hover': {
-      border: (props: any) => `1px solid ${props.isActive ? 'red' : '#7a7a7a'}`,
+      border: (props: any) =>
+        `1px solid ${props.isActive ? '#5A899D' : '#7a7a7a'}`,
     },
     '&:hover > $crumb': {
       display: 'flex',
@@ -44,7 +45,7 @@ const useStyles = makeStyles({
     textTransform: 'capitalize',
   },
   general: {
-    backgroundColor: (props: any) => (props.isActive ? 'red' : '#7a7a7a'),
+    backgroundColor: (props: any) => (props.isActive ? '#5A899D' : '#7a7a7a'),
     display: 'flex',
     flexWrap: 'nowrap',
     height: 16,
