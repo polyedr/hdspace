@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { DropTargetMonitor, useDrag, useDrop } from 'react-dnd';
+import { getEmptyImage } from 'react-dnd-html5-backend';
 import {
   createElements,
   moveElement,
@@ -72,7 +73,7 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
     return element;
   }, [element, parent, dropTargetParams]);
 
-  const [, drag] = useDrag({
+  const [, drag, preview] = useDrag({
     item: {
       original: element,
       parent,
@@ -195,6 +196,10 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
       }
     },
   });
+
+  useEffect(() => {
+    preview(getEmptyImage(), { captureDraggingState: true });
+  }, [preview]);
 
   useElementBorders(elementId, ref);
 
