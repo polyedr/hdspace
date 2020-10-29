@@ -14,7 +14,7 @@ import {
   updateElementParameters,
 } from '../../../redux/project/actions';
 import FREE_CANVAS_RENDERERS from './FreeRenderers';
-import { useElementClassNames } from './hooks';
+import { useElementClassNames } from './helpers';
 
 const useStyles = makeStyles({
   hidden: {

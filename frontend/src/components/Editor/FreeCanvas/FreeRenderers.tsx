@@ -1,7 +1,5 @@
-import React from 'react';
+import React, { CSSProperties } from 'react';
 import { useSelector } from 'react-redux';
-import MuiRadio from '@material-ui/core/Radio';
-import MuiCheckbox from '@material-ui/core/Checkbox';
 import ReactCalendar from 'react-calendar';
 import ReactClock from 'react-clock';
 import TextField from '@material-ui/core/TextField';
@@ -14,6 +12,8 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Popper from '@material-ui/core/Popper';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
+import cn from 'classnames';
+import makeStyles from '@material-ui/core/styles/makeStyles';
 import { getPlayerLink } from '../../../utils/extractVideoLink';
 import { GMap } from '../../UI';
 import {
@@ -25,6 +25,12 @@ import {
 import { Entity } from '../../../domain/core';
 import { StateElement } from '../../../redux/project/types';
 import FreeDraggable from './FreeDraggable';
+import {
+  getIframeContainerStyles,
+  getWrapperStyles,
+  useElementClassNames,
+} from './helpers';
+import { IMAGES } from '../../../constants/images';
 
 type Props = {
   element: StateElement;
@@ -32,27 +38,45 @@ type Props = {
 };
 
 const TextElement: React.FC<Props> = (props) => {
-  const {
-    element: { parameters },
-  } = props;
+  const { element } = props;
 
-  return <FreeDraggable {...props}>{parameters.textContent}</FreeDraggable>;
-};
-
-const Button: React.FC<Props> = (props) => {
-  const {
-    element: { parameters },
-  } = props;
+  const { entityStyles, groupStyles, ownStyles } = useElementClassNames(
+    element,
+  );
 
   return (
     <FreeDraggable {...props}>
-      <span
+      <div
+        className={cn(entityStyles, groupStyles, ownStyles)}
         style={{
-          textTransform: 'uppercase',
+          width: '100%',
+          height: '100%',
         }}
       >
-        {parameters.textContent}
-      </span>
+        {element.parameters.textContent}
+      </div>
+    </FreeDraggable>
+  );
+};
+
+const Button: React.FC<Props> = (props) => {
+  const { element } = props;
+
+  const { entityStyles, groupStyles, ownStyles } = useElementClassNames(
+    element,
+  );
+
+  return (
+    <FreeDraggable {...props}>
+      <MuiButton
+        className={cn(entityStyles, groupStyles, ownStyles)}
+        style={{
+          width: '100%',
+          height: '100%',
+        }}
+      >
+        {element.parameters.textContent}
+      </MuiButton>
     </FreeDraggable>
   );
 };
@@ -66,37 +90,56 @@ const Container: React.FC<Props> = (props) => {
     selectIncludesActiveElement(element.id),
   );
 
+  const { entityStyles, groupStyles, ownStyles } = useElementClassNames(
+    element,
+  );
+
   return (
     <FreeDraggable includesActiveElement={includesActiveElement} {...props}>
-      {Object.values(children).map((element) => {
-        // eslint-disable-next-line no-use-before-define
-        const Renderer = FREE_CANVAS_RENDERERS[element.type];
-        if (!Renderer) return null;
+      <div
+        className={cn(entityStyles, groupStyles, ownStyles)}
+        style={{
+          width: '100%',
+          height: '100%',
+        }}
+      >
+        {Object.values(children).map((element) => {
+          // eslint-disable-next-line no-use-before-define
+          const Renderer = FREE_CANVAS_RENDERERS[element.type];
+          if (!Renderer) return null;
 
-        return (
-          <Renderer
-            key={element.id}
-            element={element}
-            isActive={element.id === activeElementId}
-          />
-        );
-      })}
+          return (
+            <Renderer
+              key={element.id}
+              element={element}
+              isActive={element.id === activeElementId}
+            />
+          );
+        })}
+      </div>
     </FreeDraggable>
   );
 };
 
 const Map: React.FC<Props> = (props) => {
-  const {
-    element: { parameters },
-  } = props;
+  const { element } = props;
+
+  const { entityStyles, groupStyles, ownStyles } = useElementClassNames(
+    element,
+  );
 
   return (
     <FreeDraggable {...props}>
-      <GMap
-        center={parameters.map_props.center}
-        zoom={parameters.map_props.zoom}
-        markerText={parameters.map_props.markerText}
-      />
+      <div
+        className={cn(entityStyles, groupStyles, ownStyles)}
+        style={{ width: '100%', height: '100%' }}
+      >
+        <GMap
+          center={element.parameters.map_props.center}
+          zoom={element.parameters.map_props.zoom}
+          markerText={element.parameters.map_props.markerText}
+        />
+      </div>
     </FreeDraggable>
   );
 };
@@ -106,19 +149,64 @@ const Video: React.FC<Props> = (props) => {
 
   const playerLink = getPlayerLink(element.parameters.videoSettings, false);
 
+  const { entityStyles, groupStyles, ownStyles } = useElementClassNames(
+    element,
+  );
+
+  const wrapperStyles = getWrapperStyles(
+    entityStyles as CSSProperties,
+    groupStyles as CSSProperties,
+    ownStyles as CSSProperties,
+  )();
+
+  const iframeContainerStyles = getIframeContainerStyles(
+    entityStyles as CSSProperties,
+    groupStyles as CSSProperties,
+    ownStyles as CSSProperties,
+  )();
+
   return (
     <FreeDraggable {...props}>
-      {playerLink && (
-        <iframe
-          title={`video-${element.id}`}
-          src={playerLink}
-          width="100%"
-          height="100%"
+      {playerLink ? (
+        <div
+          className={cn(
+            wrapperStyles.entityStyles,
+            wrapperStyles.groupStyles,
+            wrapperStyles.ownStyles,
+          )}
+        >
+          <div
+            className={cn(
+              iframeContainerStyles.entityStyles,
+              iframeContainerStyles.groupStyles,
+              iframeContainerStyles.ownStyles,
+            )}
+          >
+            <iframe
+              title={`video-${element.id}`}
+              src={playerLink}
+              width="100%"
+              height="100%"
+              style={{
+                position: 'absolute',
+                top: '0',
+                left: '0',
+                border: 'none',
+              }}
+            />
+          </div>
+        </div>
+      ) : (
+        <div
+          className={cn(
+            wrapperStyles.entityStyles,
+            wrapperStyles.groupStyles,
+            wrapperStyles.ownStyles,
+          )}
           style={{
-            position: 'absolute',
-            top: '0',
-            left: '0',
-            border: 'none',
+            width: '100%',
+            height: '100%',
+            background: `no-repeat center #E0E0E0 url(${IMAGES.youtubeIcon})`,
           }}
         />
       )}
@@ -129,25 +217,66 @@ const Video: React.FC<Props> = (props) => {
 const getTextInput: (multi?: boolean) => React.FC<Props> = (multi = false) => (
   props,
 ) => {
+  const { element } = props;
+
+  const { entityStyles, groupStyles, ownStyles } = useElementClassNames(
+    element,
+  );
+  const classes = makeStyles({
+    root: {
+      '& input': {
+        width: '100%',
+        height: '100%',
+      },
+    },
+  })();
+
+  const inputProps = {
+    readOnly: true,
+    classes: {
+      input: cn(entityStyles, groupStyles, ownStyles),
+    },
+    style: {
+      width: '100%',
+      height: '100%',
+    },
+  };
+
   return (
     <FreeDraggable {...props}>
-      <TextField variant="outlined" multiline={multi} />
+      <TextField
+        variant="outlined"
+        multiline={multi}
+        className={classes.root}
+        value={element.parameters.textContent}
+        placeholder={element.parameters.placeholder}
+        InputProps={inputProps}
+        style={{
+          width: '100%',
+          height: '100%',
+        }}
+      />
     </FreeDraggable>
   );
 };
 
 const Image: React.FC<Props> = (props) => {
   const { element } = props;
+  const { entityStyles, groupStyles, ownStyles } = useElementClassNames(
+    element,
+  );
+
   return (
     <FreeDraggable {...props}>
       <img
         src={element.parameters.imageURL}
         alt={element.id}
+        className={cn(entityStyles, groupStyles, ownStyles)}
         style={{
           userSelect: 'none',
+          width: '100%',
+          height: '100%',
         }}
-        width="100%"
-        height="100%"
         draggable={false}
       />
     </FreeDraggable>
@@ -158,11 +287,25 @@ const List: React.FC<Props> = (props) => {
   const { element } = props;
   const { children } = useSelector(selectElementAsTree(element.id));
 
+  const ListTag = element.parameters.isOrdered ? 'ol' : 'ul';
+
+  const { entityStyles, groupStyles, ownStyles } = useElementClassNames(
+    element,
+  );
+
   return (
     <FreeDraggable {...props}>
-      {children.map((child) => (
-        <li key={child.id}>{child.parameters.textContent}</li>
-      ))}
+      <ListTag
+        className={cn(entityStyles, groupStyles, ownStyles)}
+        style={{
+          width: '100%',
+          height: '100%',
+        }}
+      >
+        {children.map((child) => (
+          <li key={child.id}>{child.parameters.textContent}</li>
+        ))}
+      </ListTag>
     </FreeDraggable>
   );
 };
@@ -173,9 +316,19 @@ const Select: React.FC<Props> = (props) => {
     children: [menu],
   } = useSelector(selectElementAsTree(element.id));
 
+  const { entityStyles, groupStyles, ownStyles } = useElementClassNames(
+    element,
+  );
+
   return (
     <FreeDraggable {...props}>
-      <select>
+      <select
+        className={cn(entityStyles, groupStyles, ownStyles)}
+        style={{
+          width: '100%',
+          height: '100%',
+        }}
+      >
         {menu.children.map((child) => (
           <option key={child.id} value={child.parameters.value}>
             {child.parameters.name}
@@ -286,25 +439,68 @@ const Calendar: React.FC<Props> = (props) => {
 };
 
 const Radio: React.FC<Props> = (props) => {
+  const { element } = props;
+  const { entityStyles, groupStyles, ownStyles } = useElementClassNames(
+    element,
+  );
+
   return (
     <FreeDraggable {...props}>
-      <MuiRadio />
+      <div
+        style={{
+          width: '100%',
+          height: '100%',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <input
+          type="radio"
+          className={cn(entityStyles, groupStyles, ownStyles)}
+        />
+      </div>
     </FreeDraggable>
   );
 };
 
 const Checkbox: React.FC<Props> = (props) => {
+  const { element } = props;
+
+  const { entityStyles, groupStyles, ownStyles } = useElementClassNames(
+    element,
+  );
+
   return (
     <FreeDraggable {...props}>
-      <MuiCheckbox />
+      <div
+        style={{
+          width: '100%',
+          height: '100%',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <input
+          type="checkbox"
+          className={cn(entityStyles, groupStyles, ownStyles)}
+        />
+      </div>
     </FreeDraggable>
   );
 };
 
 const Clock: React.FC<Props> = (props) => {
+  const { element } = props;
+
+  const { entityStyles, groupStyles, ownStyles } = useElementClassNames(
+    element,
+  );
+
   return (
     <FreeDraggable {...props}>
-      <ReactClock />
+      <ReactClock className={cn(entityStyles, groupStyles, ownStyles)} />
     </FreeDraggable>
   );
 };
