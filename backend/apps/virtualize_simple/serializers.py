@@ -6,7 +6,7 @@ from statistics import median
 from pytesseract import Output
 from rest_framework_recursive.fields import RecursiveField
 
-from project.settings import model, MEDIA_ROOT
+from project.settings import model_forms, MEDIA_ROOT
 from rest_framework import serializers
 from apps.projects.models import ScenarioElement
 from sklearn.cluster import KMeans
@@ -279,7 +279,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                 domcolour_container.append(1)
                 bcolour_container_value = ','.join(str(int(x)) for x in domcolour_container)
 
-                results = model.detect([img], verbose=1)
+                results = model_forms.detect([img], verbose=1)
                 r = results[0]
 
                 # For the overlapped text, should remove the largest regions related to the text first
@@ -443,10 +443,9 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                                 elif square > square2 * SQUARES_OVERLAP_THRESHOLD:
                                     excluded_indices.append(idx2)
                 # Calculation of the excluded indices to remove overlapped elements end
-
                 '''
                 # Plots generating start
-    
+
                 #
                 #  # Show text contours on image start
                 # window_name1 = 'image_opencv_text'
@@ -465,7 +464,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                 # # waits for user to press any key
                 # # (this is necessary to avoid Python kernel form crashing)
                 # cv2.waitKey(0)
-    
+
                 # Show text contours on image start
                 window_name1 = 'image_opencv_text'
                 for text_contour in text_contours:
@@ -473,13 +472,13 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                     x2 = w1 + x1
                     y2 = h1 + y1
                     cv2.rectangle(image_opencv_input, (x1, y1), (x2, y2), (255, 0, 0), 1)
-    
+
                 cv2.imshow(window_name1, image_opencv_input)
                 # waits for user to press any key
                 # (this is necessary to avoid Python kernel form crashing)
                 # cv2.waitKey(0)
                 # Show text contours on image end
-    
+
                 # Show non-text contours on image start
                 # Window name in which image is displayed
                 window_name2 = 'image_opencv_rect'
@@ -492,20 +491,20 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                 # waits for user to press any key
                 # (this is necessary to avoid Python kernel form crashing)
                 # cv2.waitKey(0)
-    
+
                 window_name5 = 'image_maskrcnn'
                 for rroi in r['rois']:
                     y1, x1, y2, x2 = rroi
-    
+
                     cv2.rectangle(image_opencv_input, (x1, y1), (x2, y2), (50,90,255), 2)
-    
+
                 cv2.imshow(window_name5, image_opencv_input)
                 # waits for user to press any key
                 # (this is necessary to avoid Python kernel form crashing)
                 cv2.waitKey(0)
-    
+
                 # Show non-text contours on image end
-    
+
                 # Show rois adapted contours on image start
                 # window_name3 = 'image_opencv_rois'
                 # rois_contours = []
@@ -524,7 +523,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                 # (this is necessary to avoid Python kernel form crashing)
                 # cv2.waitKey(0)
                 # Show rois adapted contours on image end
-    
+
                 # Show rois contours on image start
                 # Window name in which image is displayed
                 window_name4 = 'image_opencv_rect'
@@ -533,7 +532,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                 # waits for user to press any key
                 # (this is necessary to avoid Python kernel form crashing)
                 cv2.waitKey(0)
-    
+
                 # closing all open windows
                 cv2.destroyAllWindows()
                 # Plots generating end
@@ -668,19 +667,19 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                             x2 = w1 + x1
                             y2 = h1 + y1
                             cv2.rectangle(image_opencv_input, (x1, y1), (x2, y2), (255, 0, 0), 1)
-    
+
                         cv2.imshow(window_name1, image_opencv_input)
                         # waits for user to press any key
                         # (this is necessary to avoid Python kernel form crashing)
                         # cv2.waitKey(0)
                         # Show text contours on image end
-    
+
                         window_name5 = 'image_maskrcnn'
                         for rroi in r['rois']:
                             y1, x1, y2, x2 = rroi
-    
+
                             cv2.rectangle(image_opencv_input, (x1, y1), (x2, y2), (50, 90, 255), 2)
-    
+
                         cv2.imshow(window_name5, image_opencv_input)
                         # waits for user to press any key
                         # (this is necessary to avoid Python kernel form crashing)
@@ -723,22 +722,22 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         '''
                         try:
                             d = pytesseract.image_to_data(roi_our, output_type=Output.DICT)
-    
+
                             dlefts = unique(d['left'].copy())
                             dlefts.sort()
                             dwidths = unique(d['width'].copy())
                             dwidths.sort()
-    
+
                             dlefts_1min = dlefts[1]
                             dwidths_lmax = dwidths[-1]
-    
-    
+
+
                             print(dlefts, dwidths)
                             print("d", d, dlefts_1min, dwidths_lmax)
                             print("width_elem", width_elem)
                             input()
-    
-    
+
+
                             aligned_element = detect_aligned_element(dlefts_1min, dwidths_lmax, img_width)
                         except Exception:
                             pass
@@ -776,29 +775,6 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                                     roi_our = cv2.cvtColor(roi_our, cv2.COLOR_BGR2GRAY)
                                     # Read the string with tesseract
                                     text = pytesseract.image_to_string(roi_our, config=config_tesseract)
-
-                                    '''
-                                    # Show text contours on image start
-                                    window_name1 = 'image_opencv_text'
-                                    if True:
-                                        b, a, d, c = roi_text_contour
-                                        cv2.rectangle(image_opencv_input, (a, b), (c, d), (255, 0, 0), 1)
-    
-                                    cv2.imshow(window_name1, image_opencv_input)
-                                    cv2.waitKey(0)
-    
-                                    window_name5 = 'image_maskrcnn'
-                                    if True:
-                                        y1, x1, y2, x2 = roi
-    
-                                        cv2.rectangle(image_opencv_input, (x1, y1), (x2, y2), (50, 90, 255), 2)
-    
-                                    cv2.imshow(window_name5, image_opencv_input)
-                                    # waits for user to press any key
-                                    # (this is necessary to avoid Python kernel form crashing)
-                                    cv2.waitKey(0)
-                                    # Show non-text contours on image end
-                                    '''
 
                                     # Input: string from tesseract, output: functional class of the element
                                     tess_string = text.lower().split()
@@ -1070,7 +1046,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                 print("Horizontal groups are:")
                 for key in horizontal_groups:
                     print(key, horizontal_groups[key])
-    
+
                 print("Vertical groups are:")
                 for key in vertical_groups:
                     print(key, vertical_groups[key])
@@ -1684,7 +1660,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                 domcolour_container.append(1)
                 bcolour_container_value = ','.join(str(int(x)) for x in domcolour_container)
 
-                results = model.detect([img], verbose=1)
+                results = model_forms.detect([img], verbose=1)
                 r = results[0]
 
                 # For the overlapped text, should remove the largest regions related to the text first
