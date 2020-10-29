@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Rnd } from 'react-rnd';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import cn from 'classnames';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import SettingsIcon from '@material-ui/icons/Settings';
@@ -15,7 +14,6 @@ import {
 } from '../../../redux/project/actions';
 import { selectCurrentScreenId } from '../../../redux/project/selectors';
 import { splitWords } from '../../../utils/StringHelper';
-import { useElementClassNames } from './hooks';
 
 const useStyles = makeStyles({
   rnd: {
@@ -89,10 +87,6 @@ const FreeDraggable: React.FC<Props> = ({
     parameters: { left, top, width, height, zIndex = 0 },
   } = element;
   const classes = useStyles({ isActive, zIndex, includesActiveElement });
-
-  const { entityStyles, groupStyles, ownStyles } = useElementClassNames(
-    element,
-  );
 
   const currentScreenId = useSelector(selectCurrentScreenId);
 
@@ -182,15 +176,7 @@ const FreeDraggable: React.FC<Props> = ({
       onResizeStart={handleInteractionStart}
       onDragStart={handleInteractionStart}
     >
-      <div
-        className={cn(entityStyles, groupStyles, ownStyles)}
-        style={{
-          width: '100%',
-          height: '100%',
-        }}
-      >
-        {children}
-      </div>
+      {children}
 
       <div className={classes.crumb}>
         <div className={classes.general}>
