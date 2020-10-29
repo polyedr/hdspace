@@ -377,28 +377,100 @@ class LoginConfig(Config):
     DETECTION_MIN_CONFIDENCE = 0.75
 
 
+class HeadersConfig(Config):
+    """Configuration for training on the toy shapes dataset.
+    Derives from the base Config class and overrides values specific
+    to the toy shapes dataset.
+    """
+
+    # Give the configuration a recognizable name
+    NAME = "form_login"
+
+    # We use a GPU with 12GB memory, which can fit two images.
+    # Adjust down if you use a smaller GPU.
+    IMAGES_PER_GPU = 2
+
+    # Number of classes (including background)
+    NUM_CLASSES = 1 + 8  # Background + form_login
+
+    # Number of training steps per epoch
+    STEPS_PER_EPOCH = 200
+
+    # Skip detections with < 90% confidence
+    DETECTION_MIN_CONFIDENCE = 0.75
+
+
+class FootersConfig(Config):
+    """Configuration for training on the toy shapes dataset.
+    Derives from the base Config class and overrides values specific
+    to the toy shapes dataset.
+    """
+
+    # Give the configuration a recognizable name
+    NAME = "form_login"
+
+    # We use a GPU with 12GB memory, which can fit two images.
+    # Adjust down if you use a smaller GPU.
+    IMAGES_PER_GPU = 2
+
+    # Number of classes (including background)
+    NUM_CLASSES = 1 + 5  # Background + form_login
+
+    # Number of training steps per epoch
+    STEPS_PER_EPOCH = 200
+
+    # Skip detections with < 90% confidence
+    DETECTION_MIN_CONFIDENCE = 0.75
+
+
 config = LoginConfig()
 # config.display()
 
 
-class InferenceConfig(LoginConfig):
+class InferenceConfigForms(LoginConfig):
     GPU_COUNT = 1
     IMAGES_PER_GPU = 1
 
 
-inference_config = InferenceConfig()
+class InferenceConfigHeaders(HeadersConfig):
+    GPU_COUNT = 1
+    IMAGES_PER_GPU = 1
+
+
+class InferenceConfigFooters(FootersConfig):
+    GPU_COUNT = 1
+    IMAGES_PER_GPU = 1
+
+
+inference_config_forms = InferenceConfigForms()
+inference_config_headers = InferenceConfigHeaders()
+inference_config_footers = InferenceConfigFooters()
 
 # Recreate the model in inference mode
-model = modellib.MaskRCNN(
-    mode="inference", config=inference_config, model_dir=MODEL_DIR
+model_forms = modellib.MaskRCNN(
+    mode="inference", config=inference_config_forms, model_dir=MODEL_DIR
+)
+model_headers = modellib.MaskRCNN(
+    mode="inference", config=inference_config_headers, model_dir=MODEL_DIR
+)
+model_footers = modellib.MaskRCNN(
+    mode="inference", config=inference_config_footers, model_dir=MODEL_DIR
 )
 
 # Get path to saved weights
-model_path = os.path.join(MODEL_DIR, "mask_rcnn_form_login_0024.h5")
+model_forms_path = os.path.join(MODEL_DIR, "mask_rcnn_form_login_0024.h5")
+model_headers_path = os.path.join(MODEL_DIR, "mask_rcnn_header_0020.h5")
+model_footers_path = os.path.join(MODEL_DIR, "mask_rcnn_footers_0019.h5")
 # Model 28 is the best for the 05.05.2020
 # model_path = os.path.join(MODEL_DIR, "mask_rcnn_form_login_0028.h5")
 # model_path = os.path.join(MODEL_DIR, "mask_rcnn_form_login_0018.h5")
 
 # Load trained weights
-model.load_weights(model_path, by_name=True)
-model.keras_model._make_predict_function()
+model_forms.load_weights(model_forms_path, by_name=True)
+model_forms.keras_model._make_predict_function()
+
+model_headers.load_weights(model_headers_path, by_name=True)
+model_headers.keras_model._make_predict_function()
+
+model_footers.load_weights(model_footers_path, by_name=True)
+model_footers.keras_model._make_predict_function()
