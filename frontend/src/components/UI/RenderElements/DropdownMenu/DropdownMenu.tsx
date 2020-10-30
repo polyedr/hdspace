@@ -2,13 +2,12 @@
 
 import React from 'react';
 import cn from 'classnames';
-import { makeStyles, Menu, Paper, MenuList } from '@material-ui/core';
+import { Menu, Paper, MenuList } from '@material-ui/core';
 import { DropdownMenuRendererProps } from '../types';
 import sharedClasses from '../../../../styles/sharedClasses';
-import makeComponentStyles from '../styles';
+import { makeComponentStyles } from '../styles';
 
-const useStyles = makeComponentStyles();
-const useDefaultStyles = makeStyles({
+const useStyles = makeComponentStyles({
   root: {
     position: 'absolute',
     top: '0',
@@ -30,7 +29,6 @@ const DropdownMenu: React.FC<DropdownMenuRendererProps> = React.forwardRef(
     } = props;
 
     const styles = useStyles(props);
-    const defaultStyles = useDefaultStyles();
 
     const handlePaperClick = (event: React.MouseEvent<HTMLDivElement>) => {
       (event.target as HTMLElement).focus();
@@ -50,7 +48,7 @@ const DropdownMenu: React.FC<DropdownMenuRendererProps> = React.forwardRef(
             className,
             sharedClasses.unsortable,
             styles.addedElem,
-            defaultStyles.root,
+            styles.root,
             styles.entityStyles,
             styles.groupStyles,
             styles.ownStyles,

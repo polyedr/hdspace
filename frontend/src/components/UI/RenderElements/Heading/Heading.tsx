@@ -2,14 +2,11 @@
 
 import React from 'react';
 import cn from 'classnames';
-import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import { HeadingRendererProps } from '../types';
-import makeComponentStyles from '../styles';
+import { makeComponentStyles } from '../styles';
 
-// const styles = require('../styles.scss');
-const useStyles = makeComponentStyles();
-const useDefaultStyles = makeStyles({
+const useStyles = makeComponentStyles({
   heading: {
     wordBreak: 'break-word',
   },
@@ -18,11 +15,10 @@ const useDefaultStyles = makeStyles({
 const Heading: React.FC<HeadingRendererProps> = React.forwardRef(
   (props, ref) => {
     const { id, params, className } = props;
-    const styles = useStyles(props);
-    const defaultStyles = useDefaultStyles();
-
     const { headingType, textContent } = params;
     const HeadingTag = headingType || 'h3';
+
+    const styles = useStyles(props);
 
     return (
       <HeadingTag
@@ -32,7 +28,7 @@ const Heading: React.FC<HeadingRendererProps> = React.forwardRef(
         key={id}
         className={cn(
           className,
-          defaultStyles.heading,
+          styles.heading,
           styles.addedElem,
           styles.entityStyles,
           styles.groupStyles,

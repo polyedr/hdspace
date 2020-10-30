@@ -4,13 +4,13 @@ import React from 'react';
 import cn from 'classnames';
 
 import { ImageRendererProps } from '../types';
-import makeElementStyles from '../styles';
+import { makeComponentStyles } from '../styles';
 
-const useStyles = makeElementStyles();
+const useStyles = makeComponentStyles();
 
 const Image: React.FC<ImageRendererProps> = React.forwardRef((props, ref) => {
   const { id, params, className } = props;
-  const classes = useStyles();
+  const classes = useStyles(props);
 
   return (
     <img

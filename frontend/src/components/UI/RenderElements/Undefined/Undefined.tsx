@@ -2,27 +2,15 @@
 
 import React from 'react';
 import cn from 'classnames';
-import { makeStyles } from '@material-ui/core';
 
 import { SharedRendererProps } from '../types';
+import { makeComponentStyles } from '../styles';
 
-const styles = require('../styles.scss');
+const useStyles = makeComponentStyles();
 
 const Undefined: React.FC<SharedRendererProps> = React.forwardRef(
-  ({ id, entityStyles, groupStyles, ownStyles, className, children }, ref) => {
-    const classes = makeStyles({
-      entityStyles: {
-        ...entityStyles,
-      },
-
-      groupStyles: {
-        ...groupStyles,
-      },
-
-      ownStyles: {
-        ...ownStyles,
-      },
-    })();
+  ({ id, className, children }, ref) => {
+    const classes = useStyles();
 
     return (
       <div
@@ -31,7 +19,7 @@ const Undefined: React.FC<SharedRendererProps> = React.forwardRef(
         key={id}
         className={cn(
           className,
-          styles.addedContainer,
+          classes.addedElem,
           classes.entityStyles,
           classes.groupStyles,
           classes.ownStyles,

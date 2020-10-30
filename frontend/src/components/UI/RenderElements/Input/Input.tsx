@@ -2,14 +2,12 @@
 
 import React, { ChangeEvent } from 'react';
 import cn from 'classnames';
-import { makeStyles, TextField } from '@material-ui/core';
+import TextField from '@material-ui/core/TextField';
 
 import { InputRendererProps } from '../types';
-import makeElementStyles from '../styles';
+import { makeComponentStyles } from '../styles';
 
-const useElementStyles = makeElementStyles();
-
-const useDefaultStyles = makeStyles({
+const useStyles = makeComponentStyles({
   root: {
     '& fieldset': {
       border: 0,
@@ -43,8 +41,7 @@ const Input: React.FC<InputRendererProps> = React.forwardRef((props, ref) => {
     onElementChange(id, event.target.value);
   };
 
-  const elementStyles = useElementStyles(props);
-  const defaultStyles = useDefaultStyles(props);
+  const styles = useStyles(props);
 
   return (
     <TextField
@@ -53,11 +50,7 @@ const Input: React.FC<InputRendererProps> = React.forwardRef((props, ref) => {
       data-ls-id={id}
       key={id}
       variant="outlined"
-      className={cn(
-        className,
-        isDisabled && elementStyles.disabled,
-        defaultStyles.root,
-      )}
+      className={cn(className, isDisabled && styles.disabled, styles.root)}
       type={type}
       value={currentValue}
       onChange={handleInputChange}
@@ -65,13 +58,13 @@ const Input: React.FC<InputRendererProps> = React.forwardRef((props, ref) => {
         readOnly: isDisabled,
         classes: {
           input: cn(
-            defaultStyles.input,
-            elementStyles.entityStyles,
-            elementStyles.groupStyles,
-            elementStyles.ownStyles,
+            // styles.input,
+            styles.entityStyles,
+            styles.groupStyles,
+            styles.ownStyles,
           ),
         },
-        className: cn(isDisabled && elementStyles.disabled),
+        className: cn(isDisabled && styles.disabled),
       }}
       placeholder={placeholder}
     />

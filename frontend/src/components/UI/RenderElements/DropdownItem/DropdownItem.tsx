@@ -2,15 +2,13 @@
 
 import React from 'react';
 import cn from 'classnames';
-import { makeStyles, MenuItem } from '@material-ui/core';
+import { MenuItem } from '@material-ui/core';
 import { DropdownItemRendererProps } from '../types';
 import sharedClasses from '../../../../styles/sharedClasses';
 
-import makeComponentStyles from '../styles';
-// const styles = require('../styles.scss');
+import { makeComponentStyles } from '../styles';
 
-const useStyles = makeComponentStyles();
-const useDefaultStyles = makeStyles({
+const useStyles = makeComponentStyles({
   'item:hover': ({ isDisabled }) => {
     if (isDisabled) {
       return {
@@ -27,7 +25,6 @@ const DropdownItem: React.FC<DropdownItemRendererProps> = React.forwardRef(
     const { showRipple, textContent } = params;
 
     const styles = useStyles(props);
-    const defaultStyles = useDefaultStyles(props);
 
     return isDisabled ? (
       <MenuItem
@@ -36,7 +33,7 @@ const DropdownItem: React.FC<DropdownItemRendererProps> = React.forwardRef(
         data-ls-id={id}
         key={id}
         className={cn(
-          defaultStyles.root,
+          styles.root,
           className,
           sharedClasses.unsortable,
           styles.addedElem,
@@ -53,7 +50,7 @@ const DropdownItem: React.FC<DropdownItemRendererProps> = React.forwardRef(
       <MenuItem
         key={id}
         className={cn(
-          defaultStyles.root,
+          styles.root,
           styles.entityStyles,
           styles.groupStyles,
           styles.ownStyles,
