@@ -526,13 +526,6 @@ export const setEditableStyles = (className: string): T.SetEditableStyles => ({
   payload: { className },
 });
 
-export const setIsAddElementsModalOpened = (
-  isOpened: boolean,
-): T.SetIsAddElementsModalOpened => ({
-  type: TYPES.SET_IS_ADD_ELEMENTS_MODAL_OPENED,
-  payload: { isOpened },
-});
-
 export const copyActiveItem = (): T.CopyActiveItem => ({
   type: TYPES.COPY_ACTIVE_ITEM,
 });

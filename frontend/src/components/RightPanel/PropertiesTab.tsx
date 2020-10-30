@@ -106,16 +106,15 @@ const PropertiesTab: React.FC = () => {
               </>
             )}
 
-            {type &&
-              AVAILABLE_CONTROLS[type as Entity].map((controlName) => {
-                const Control = CONTROLS[controlName];
+            {AVAILABLE_CONTROLS[type as Entity].map((controlName) => {
+              const Control = CONTROLS[controlName];
 
-                return (
-                  <ControlSection key={controlName} title={controlName}>
-                    <Control />
-                  </ControlSection>
-                );
-              })}
+              return (
+                <ControlSection key={controlName} title={controlName}>
+                  <Control />
+                </ControlSection>
+              );
+            })}
           </>
         )}
       </Scrollbar>

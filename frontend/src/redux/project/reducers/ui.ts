@@ -19,10 +19,6 @@ function uiReducer(
       return { ...state, itemToCopyInfo: action.payload };
     }
 
-    case TYPES.SET_IS_ADD_ELEMENTS_MODAL_OPENED: {
-      return { ...state, isAddElementsModalOpened: action.payload.isOpened };
-    }
-
     case TYPES.UPDATE_SAVED_ELEMENTS_VALUES: {
       const { elementsValues } = action.payload;
 

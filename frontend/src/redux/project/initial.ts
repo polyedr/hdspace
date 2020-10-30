@@ -22,7 +22,6 @@ export const initialData: T.ProjectDataState = {
 
 export const initialUi: T.ProjectUiState = {
   editableStyles: 'ownStyles',
-  isAddElementsModalOpened: false,
   itemToCopyInfo: null,
   savedElementsValues: {},
   showContainersBorders: false,

@@ -71,9 +71,6 @@ export function selectNotification(state: AppReduxState) {
   return selectProjectState(state).edit.notification;
 }
 
-export const selectIsAddElementsModalOpened = ({ project }: AppReduxState) =>
-  project.ui.isAddElementsModalOpened;
-
 export const selectSavedElementsValues = ({ project }: AppReduxState) =>
   project.ui.savedElementsValues;
 

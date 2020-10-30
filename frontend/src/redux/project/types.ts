@@ -77,7 +77,6 @@ export type ProjectDataState = {
 
 export type ProjectUiState = {
   editableStyles: string;
-  isAddElementsModalOpened: boolean;
   itemToCopyInfo: ItemToCopyInfo | null;
   savedElementsValues: SavedElementsValues;
   showContainersBorders: boolean;
@@ -393,10 +392,6 @@ export type SetEditableStyles = IAction<
   typeof TYPES.SET_EDITABLE_STYLES,
   { className: string }
 >;
-export type SetIsAddElementsModalOpened = IAction<
-  typeof TYPES.SET_IS_ADD_ELEMENTS_MODAL_OPENED,
-  { isOpened: boolean }
->;
 export type SetItemToCopy = IAction<
   typeof TYPES.SET_ITEM_TO_COPY,
   ItemToCopyInfo
@@ -520,7 +515,6 @@ export type Action =
   | WrapIntoContainer
   | SetActiveElement
   | ToggleContainersBorders
-  | SetIsAddElementsModalOpened
   | SetItemToCopy
   | CopyActiveItem
   | PasteCopiedItem
