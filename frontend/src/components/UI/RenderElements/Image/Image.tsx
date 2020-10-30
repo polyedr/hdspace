@@ -2,46 +2,33 @@
 
 import React from 'react';
 import cn from 'classnames';
-import { makeStyles } from '@material-ui/core';
 
 import { ImageRendererProps } from '../types';
+import makeElementStyles from '../styles';
 
-const styles = require('../styles.scss');
+const useStyles = makeElementStyles();
 
-const Image: React.FC<ImageRendererProps> = React.forwardRef(
-  ({ id, params, entityStyles, groupStyles, ownStyles, className }, ref) => {
-    const classes = makeStyles({
-      entityStyles: {
-        ...entityStyles,
-      },
+const Image: React.FC<ImageRendererProps> = React.forwardRef((props, ref) => {
+  const { id, params, className } = props;
+  const classes = useStyles();
 
-      groupStyles: {
-        ...groupStyles,
-      },
-
-      ownStyles: {
-        ...ownStyles,
-      },
-    })();
-
-    return (
-      <img
-        ref={ref}
-        src={params.imageURL}
-        id={id}
-        data-ls-id={id}
-        key={id}
-        className={cn(
-          className,
-          styles.addedElem,
-          classes.entityStyles,
-          classes.groupStyles,
-          classes.ownStyles,
-        )}
-        alt={id}
-      />
-    );
-  },
-);
+  return (
+    <img
+      ref={ref}
+      src={params.imageURL}
+      id={id}
+      data-ls-id={id}
+      key={id}
+      className={cn(
+        className,
+        classes.addedElem,
+        classes.entityStyles,
+        classes.groupStyles,
+        classes.ownStyles,
+      )}
+      alt={id}
+    />
+  );
+});
 
 export default Image;

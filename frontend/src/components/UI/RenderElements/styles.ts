@@ -21,4 +21,7 @@ export default () =>
         pointerEvents: 'none',
       },
     },
+    addedElem: {
+      position: 'relative',
+    },
   });

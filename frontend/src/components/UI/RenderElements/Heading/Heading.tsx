@@ -2,30 +2,24 @@
 
 import React from 'react';
 import cn from 'classnames';
-import { makeStyles } from '@material-ui/core';
+import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import { HeadingRendererProps } from '../types';
+import makeComponentStyles from '../styles';
 
-const styles = require('../styles.scss');
+// const styles = require('../styles.scss');
+const useStyles = makeComponentStyles();
+const useDefaultStyles = makeStyles({
+  heading: {
+    wordBreak: 'break-word',
+  },
+});
 
 const Heading: React.FC<HeadingRendererProps> = React.forwardRef(
-  ({ id, entityStyles, groupStyles, ownStyles, params, className }, ref) => {
-    const classes = makeStyles({
-      entityStyles: {
-        ...entityStyles,
-        wordBreak: 'break-word',
-      },
-
-      groupStyles: {
-        ...groupStyles,
-        wordBreak: 'break-word',
-      },
-
-      ownStyles: {
-        ...ownStyles,
-        wordBreak: 'break-word',
-      },
-    })();
+  (props, ref) => {
+    const { id, params, className } = props;
+    const styles = useStyles(props);
+    const defaultStyles = useDefaultStyles();
 
     const { headingType, textContent } = params;
     const HeadingTag = headingType || 'h3';
@@ -38,10 +32,11 @@ const Heading: React.FC<HeadingRendererProps> = React.forwardRef(
         key={id}
         className={cn(
           className,
+          defaultStyles.heading,
           styles.addedElem,
-          classes.entityStyles,
-          classes.groupStyles,
-          classes.ownStyles,
+          styles.entityStyles,
+          styles.groupStyles,
+          styles.ownStyles,
         )}
       >
         {textContent}
