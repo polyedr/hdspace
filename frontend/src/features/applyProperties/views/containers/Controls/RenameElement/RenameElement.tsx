@@ -1,50 +1,32 @@
 import React, { useState, useEffect } from 'react';
-import { connect, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import TextField from '../../../components/TextField/TextField';
-import { AppReduxState } from '../../../../../../shared/types/app';
 import {
   selectActiveElement,
   selectCurrentScreenId,
 } from '../../../../../../redux/project/selectors';
 import { renameElement } from '../../../../../../redux/project/actions';
 
-type StateProps = {
-  activeItemID: string;
-  activeItemName: string;
-};
+const RenameElement: React.FC = () => {
+  const dispatch = useDispatch();
 
-const mapState = (state: AppReduxState) => {
-  const activeItem = selectActiveElement(state);
-
-  return {
-    activeItemID: activeItem.id,
-    activeItemName: activeItem.name,
-  };
-};
-
-const mapDispatch = {
-  renameElement,
-};
-
-type Props = StateProps & typeof mapDispatch;
-
-const RenameElement: React.FC<Props> = ({
-  activeItemID,
-  activeItemName,
-  renameElement,
-}) => {
-  const [currentElementName, setCurrentElementName] = useState(activeItemName);
+  const activeElement = useSelector(selectActiveElement);
   const currentScreenId = useSelector(selectCurrentScreenId);
 
+  const [currentElementName, setCurrentElementName] = useState(
+    activeElement.name,
+  );
+
   useEffect(() => {
-    setCurrentElementName(activeItemName);
-  }, [activeItemName]);
+    setCurrentElementName(activeElement.name);
+  }, [activeElement.name]);
 
   const handleTextFieldBlur = ({
     target: { value },
-  }: React.FocusEvent<HTMLInputElement>) => {
-    renameElement(activeItemID, value, { screenId: currentScreenId });
-  };
+  }: React.FocusEvent<HTMLInputElement>) =>
+    dispatch(
+      renameElement(activeElement.id, value, { screenId: currentScreenId }),
+    );
 
   return (
     <TextField
@@ -55,4 +37,4 @@ const RenameElement: React.FC<Props> = ({
   );
 };
 
-export default connect(mapState, mapDispatch)(RenameElement);
+export default RenameElement;

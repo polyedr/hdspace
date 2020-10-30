@@ -41,15 +41,18 @@ const EditableStyles: React.FC<Props> = ({
   };
 
   return (
-    <DropDown
-      options={classNames.map((className) => ({
-        label: className,
-        value: className,
-      }))}
-      defaultValue={editableStyles}
-      value={editableStyles}
-      onChange={handleDropdownChange}
-    />
+    <div>
+      Styles to edit:
+      <DropDown
+        options={classNames.map((className) => ({
+          label: className,
+          value: className,
+        }))}
+        defaultValue={editableStyles}
+        value={editableStyles}
+        onChange={handleDropdownChange}
+      />
+    </div>
   );
 };
 

@@ -10,6 +10,7 @@ import Actions from './Actions';
 import { SCREEN_FORMATS } from '../../../constants/defaultParams';
 import { changeFreeCanvasMode } from '../../../redux/project/actions';
 import { selectFreeCanvasMode } from '../../../redux/project/selectors';
+import ShowBorders from '../../../features/applyProperties/views/containers/Controls/ShowBorders/ShowBorders';
 
 const useStyles = makeStyles({
   root: {
@@ -74,6 +75,8 @@ const TopBar: React.FC<Props> = ({
           labelPlacement="end"
           className={classes.switch}
         />
+
+        <ShowBorders />
       </div>
 
       <Actions />

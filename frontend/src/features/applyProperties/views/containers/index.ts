@@ -1,5 +1,4 @@
 export { default as ActionBlock } from './Controls/ActionBlock';
-export { default as ActiveElementBlock } from './Controls/ActiveElementBlock';
 export { default as BackgroundBlock } from './Controls/BackgroundBlock';
 export { default as BorderBlock } from './Controls/BorderBlock';
 export { default as MapProps } from './Controls/MapProps/MapProps';

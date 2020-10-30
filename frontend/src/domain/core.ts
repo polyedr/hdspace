@@ -77,12 +77,8 @@ export type ChildEntity = keyof ChildrenElements;
 
 export type Entity = ElementEntity | ChildEntity;
 
-export type SubEntity = 'root';
-
 export type AvailableControls = {
-  [P in Entity]: {
-    [T in SubEntity]: readonly Control[];
-  };
+  [P in Entity]: readonly Control[];
 };
 
 export const rootStyleControls = ['background'] as const;
@@ -337,129 +333,55 @@ export type Control =
 
 // WARN: every time you add or remove some properties in prod, you must write migration to add/remove properties for existing entities in db
 export const AVAILABLE_CONTROLS: AvailableControls = {
-  root: {
-    root: rootStyleControls,
-  },
-  container: {
-    root: containerStyleControls,
-  },
-  divBlock: {
-    root: divBlockStyleControls,
-  },
-  button: {
-    root: [...buttonStyleControls, ...buttonParamsControls],
-  },
-  textinput: {
-    root: [...textinputStyleControls, 'type', 'textContent', 'placeholder'],
-  },
-  textarea: {
-    root: [...textareaStyleControls, 'textContent', 'placeholder'],
-  },
-  checkbox: {
-    root: [...checkboxStyleControls, 'value', 'name', 'showRipple'],
-  },
-  radiobutton: {
-    root: [...radiobuttonStyleControls, 'value', 'name', 'showRipple'],
-  },
-  label: {
-    root: [...labelStyleControls, 'textContent', 'labelFor'],
-  },
-  hyperlink: {
-    root: [...hyperlinkStyleControls, 'textContent', 'action'],
-  },
-  heading: {
-    root: [...headingStyleControls, 'textContent', 'headingType'],
-  },
-  paragraph: {
-    root: [...paragraphStyleControls, 'textContent'],
-  },
-  ocrtext: {
-    root: [...paragraphStyleControls, 'textContent'],
-  },
-  textBlock: {
-    root: [...textBlockStyleControls, 'textContent'],
-  },
-  list: {
-    root: [...listStyleControls, 'listItems', 'isOrdered'],
-  },
-  listItem: {
-    root: listItemStyleControls,
-  },
-  image: {
-    root: [...imageStyleControls, 'image'],
-  },
-  select: {
-    root: [
-      ...selectStyleControls,
-      'showRipple',
-      'selectValue',
-      'selectOptions',
-      'isOpen',
-    ],
-  },
-  selectMenu: {
-    root: selectMenuStyleControls,
-  },
-  selectItem: {
-    root: selectItemStyleControls,
-  },
-  map: {
-    root: [...mapStyleControls, 'mapProps'],
-  },
-  calendar: {
-    root: calendarStyleControls,
-  },
-  clock: {
-    root: clockStyleControls,
-  },
-  dropdown: {
-    root: [
-      ...dropdownStyleControls,
-      'textContent',
-      'showRipple',
-      'dropdownItems',
-      'isOpen',
-    ],
-  },
-  dropdownMenu: {
-    root: dropdownMenuStyleControls,
-  },
-  dropdownItem: {
-    root: dropdownItemStyleControls,
-  },
-  video: {
-    root: [...videoStyleControls, 'videoSettings'],
-  },
-  pageTemplate: {
-    root: [...pageTemplateStyleControls],
-  },
-  emptyPageTemplate: {
-    root: [...emptyPageTemplateStyleControls],
-  },
-  grid: {
-    root: [...gridStyleControls],
-  },
-  columns: {
-    root: [...columnsStyleControls],
-  },
-  subscribeForm: {
-    root: [...subscribeFormStyleControls],
-  },
-  smartContainer: {
-    root: [...smartContainerStyleControls, 'smartContainer'],
-  },
-  undefined: {
-    root: undefinedControls,
-  },
-  cardsSection: {
-    root: [...cardsSectionStyleControls],
-  },
-  featureSection: {
-    root: [...featureSectionStyleControls],
-  },
-  section: {
-    root: [...containerStyleControls],
-  },
+  root: rootStyleControls,
+  container: containerStyleControls,
+  divBlock: divBlockStyleControls,
+  button: [...buttonStyleControls, ...buttonParamsControls],
+  textinput: [...textinputStyleControls, 'type', 'textContent', 'placeholder'],
+  textarea: [...textareaStyleControls, 'textContent', 'placeholder'],
+  checkbox: [...checkboxStyleControls, 'value', 'name', 'showRipple'],
+  radiobutton: [...radiobuttonStyleControls, 'value', 'name', 'showRipple'],
+  label: [...labelStyleControls, 'textContent', 'labelFor'],
+  hyperlink: [...hyperlinkStyleControls, 'textContent', 'action'],
+  heading: [...headingStyleControls, 'textContent', 'headingType'],
+  paragraph: [...paragraphStyleControls, 'textContent'],
+  ocrtext: [...paragraphStyleControls, 'textContent'],
+  textBlock: [...textBlockStyleControls, 'textContent'],
+  list: [...listStyleControls, 'listItems', 'isOrdered'],
+  listItem: listItemStyleControls,
+  image: [...imageStyleControls, 'image'],
+  select: [
+    ...selectStyleControls,
+    'showRipple',
+    'selectValue',
+    'selectOptions',
+    'isOpen',
+  ],
+  selectMenu: selectMenuStyleControls,
+  selectItem: selectItemStyleControls,
+  map: [...mapStyleControls, 'mapProps'],
+  calendar: calendarStyleControls,
+  clock: clockStyleControls,
+  dropdown: [
+    ...dropdownStyleControls,
+    'textContent',
+    'showRipple',
+    'dropdownItems',
+    'isOpen',
+  ],
+  dropdownMenu: dropdownMenuStyleControls,
+  dropdownItem: dropdownItemStyleControls,
+  video: [...videoStyleControls, 'videoSettings'],
+  pageTemplate: [...pageTemplateStyleControls],
+  emptyPageTemplate: [...emptyPageTemplateStyleControls],
+  grid: [...gridStyleControls],
+  columns: [...columnsStyleControls],
+  subscribeForm: [...subscribeFormStyleControls],
+  smartContainer: [...smartContainerStyleControls, 'smartContainer'],
+  undefined: undefinedControls,
+  cardsSection: [...cardsSectionStyleControls],
+  featureSection: [...featureSectionStyleControls],
+  section: [...containerStyleControls],
 } as const;
 
 export type AvailableChildren = {

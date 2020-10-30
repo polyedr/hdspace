@@ -2,9 +2,7 @@ import React from 'react';
 import { Chip, makeStyles } from '@material-ui/core';
 import DoneIcon from '@material-ui/icons/Done';
 import CancelIcon from '@material-ui/icons/Cancel';
-
 import { connect, useSelector } from 'react-redux';
-import ControlSection from '../../components/ControlSection/ControlSection';
 import Button from '../../../../../components/UI/Button';
 import { AppReduxState } from '../../../../../shared/types/app';
 import {
@@ -17,9 +15,15 @@ import {
   copyElementStyles,
   removeElementClassName,
 } from '../../../../../redux/project/actions';
+import EditableStyles from '../EditableStyles/EditableStyles';
 
 const useStyles = makeStyles({
   root: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'stretch',
+  },
+  chip: {
     marginRight: '5px',
     marginBottom: '5px',
     color: '#1cc09f',
@@ -115,60 +119,60 @@ const ShareStyles: React.FC<Props> = ({
   const classes = useStyles();
 
   return (
-    <>
+    <div className={classes.root}>
       <Button onClick={handleCopyButtonClick} disabled={!!disableShareButton}>
         Share styles
       </Button>
-      <ControlSection title="Shared classes">
-        <>
-          {sharedClasses.length ? (
-            sharedClasses.map((sharedClass) => (
-              <Chip
-                key={sharedClass.className}
-                size="small"
-                variant="outlined"
-                className={classes.root}
-                label={sharedClass.className}
-                clickable
-                color="primary"
-                onClick={() => handlePasteButtonClick(sharedClass.className)}
-                onDelete={() => handlePasteButtonClick(sharedClass.className)}
-                deleteIcon={<DoneIcon className={classes.icon} />}
-              />
-            ))
-          ) : (
-            <p>No shared classes</p>
-          )}
-        </>
-      </ControlSection>
-      <ControlSection title="Element's classes">
-        <>
-          {elementClassNames.length ? (
-            (elementClassNames as string[]).map((className) => (
-              <Chip
-                key={className}
-                size="small"
-                className={classes.elementsStylesChip}
-                label={className}
-                clickable={!isTagClassName(className)}
-                color="primary"
-                {...(!isTagClassName(className) && {
-                  deleteIcon: <CancelIcon />,
-                })}
-                {...(!isTagClassName(className) && {
-                  onClick: () => handleDeleteButtonClick(className),
-                })}
-                {...(!isTagClassName(className) && {
-                  onDelete: () => handleDeleteButtonClick(className),
-                })}
-              />
-            ))
-          ) : (
-            <p>No elementId&apos;s classes</p>
-          )}
-        </>
-      </ControlSection>
-    </>
+
+      <div>
+        {sharedClasses.length ? (
+          sharedClasses.map((sharedClass) => (
+            <Chip
+              key={sharedClass.className}
+              size="small"
+              variant="outlined"
+              className={classes.chip}
+              label={sharedClass.className}
+              clickable
+              color="primary"
+              onClick={() => handlePasteButtonClick(sharedClass.className)}
+              onDelete={() => handlePasteButtonClick(sharedClass.className)}
+              deleteIcon={<DoneIcon className={classes.icon} />}
+            />
+          ))
+        ) : (
+          <p>No shared classes</p>
+        )}
+      </div>
+
+      <div>
+        {elementClassNames.length ? (
+          (elementClassNames as string[]).map((className) => (
+            <Chip
+              key={className}
+              size="small"
+              className={classes.elementsStylesChip}
+              label={className}
+              clickable={!isTagClassName(className)}
+              color="primary"
+              {...(!isTagClassName(className) && {
+                deleteIcon: <CancelIcon />,
+              })}
+              {...(!isTagClassName(className) && {
+                onClick: () => handleDeleteButtonClick(className),
+              })}
+              {...(!isTagClassName(className) && {
+                onDelete: () => handleDeleteButtonClick(className),
+              })}
+            />
+          ))
+        ) : (
+          <p>No elementId&apos;s classes</p>
+        )}
+      </div>
+
+      <EditableStyles />
+    </div>
   );
 };
 
