@@ -5,30 +5,17 @@
 # add extra borders if necessary
 # find all the clusters based on cluster-making elements (inputs, selects, buttons,
 # free text blocks, maybe large images)
-import copy
+
 import math
 import os
-import sys
-import json
-from statistics import median
-
-import lorem
 import cv2
 import uuid
-import numpy as np
-import matplotlib.pyplot as plt
-
+from statistics import median
 from anytree import RenderTree, NodeMixin
 from pytesseract import pytesseract
-from sklearn import metrics
-from sklearn.preprocessing import StandardScaler
-from sklearn.datasets import make_blobs
-from sklearn import cluster as clustermethod
 from scipy.spatial import distance
-import xml.etree.ElementTree as ET
 from sklearn.cluster import KMeans
 from collections import Counter
-from utils.object_detection import run_text_detection, get_rect_contours, show_rects, show_rois
 
 # The constant to remove rectangle when overlaps more than 90% with larger rectangle
 SQUARES_OVERLAP_THRESHOLD = 0.8
@@ -51,20 +38,19 @@ config_tesseract = "-l eng --oem 1 --psm 3"
 
 
 def recognize_with_tesseract(roi_our):
-    text = ''
+    text = ""
     font_size_value = 12.0
     # Convert to the grey colour
     roi_our = cv2.cvtColor(roi_our, cv2.COLOR_BGR2GRAY)
 
     # Detect the font-size with tesseract for some element
     result = pytesseract.image_to_boxes(roi_our)
-    # print(result)
 
-    lines = result.strip().split('\n')
+    lines = result.strip().split("\n")
     font_size = []
 
     for line in lines:
-        chars = line.split(' ')
+        chars = line.split(" ")
         try:
             font_size.append(float(chars[4]) - float(chars[2]))
         except Exception:
@@ -82,9 +68,12 @@ def calculateDistance(x1, y1, x2, y2):
     dist = math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
     return dist
 
+
 def contains_rectangle(r1, r2):
     # Calculation for the case of rois
     return r1[1] < r2[1] < r2[3] < r1[3] and r1[0] < r2[0] < r2[2] < r1[2]
+
+
 def get_dominant_colour(image, k=4, image_processing_size=None):
     """
     takes an image as input
@@ -102,8 +91,7 @@ def get_dominant_colour(image, k=4, image_processing_size=None):
     """
     # resize image if new dims provided
     if image_processing_size is not None:
-        image = cv2.resize(image, image_processing_size,
-                           interpolation=cv2.INTER_AREA)
+        image = cv2.resize(image, image_processing_size, interpolation=cv2.INTER_AREA)
 
     # reshape the image to be a list of pixels
     image = image.reshape((image.shape[0] * image.shape[1], 3))
@@ -132,12 +120,14 @@ class ClusterClass(NodeMixin):
     is_final = False  # check if should not be splitted further
     # processing = "splitted", "unsplitted"  # check if the ternary algorithm was applied
     processing = "unsplitted"  # check if the ternary algorithm was applied
-    is_solid = True  # if clusters contain one element only. Based on flusters making algorithm
+    is_solid = (
+        True
+    )  # if clusters contain one element only. Based on flusters making algorithm
 
     elements = []
 
     def __init__(self, x1, y1, x2, y2, parent=None, children=None, elements=None):
-        self.name = uuid.uuid4()
+        self.name = uuid.uuid4().hex
         self.x1 = x1
         self.y1 = y1
         self.x2 = x2
@@ -160,7 +150,7 @@ class ClusterClass(NodeMixin):
         }
 
     def __str__(self):
-        return self.name.hex
+        return self.name
 
 
 # Class-based solution to merge intervals
@@ -233,15 +223,15 @@ def dbcluster_split(block, clusters):
                         clusters_in.append(cluster)
 
     # Merge all overlapping intervals
-    print(x_layout_intervals)
+    # print(x_layout_intervals)
     ob1_x = Partition()
     ob1_x_merged = ob1_x.merge(x_layout_intervals)
-    print("block", "ob1_x_merged", ob1_x_merged, type(ob1_x_merged))
+    # print("block", "ob1_x_merged", ob1_x_merged, type(ob1_x_merged))
 
-    print(y_layout_intervals)
+    # print(y_layout_intervals)
     ob1_y = Partition()
     ob1_y_merged = ob1_y.merge(y_layout_intervals)
-    print("block", ob1_y_merged)
+    # print("block", ob1_y_merged)
 
     # Choose if the block horizontal vertical or final
     # vertiical
@@ -275,7 +265,9 @@ def dbcluster_split(block, clusters):
         # Assign the children based on direction
         if block.direction == 0:
             for interval in ob1_y_merged:
-                dbcluster = ClusterClass(block.x1, interval[0], block.x2, interval[1], parent=block)
+                dbcluster = ClusterClass(
+                    block.x1, interval[0], block.x2, interval[1], parent=block
+                )
                 dbcluster.types = "dbcluster"
                 dbcluster.processing = "splitted"
 
@@ -286,17 +278,12 @@ def dbcluster_split(block, clusters):
                             if dbcluster.y1 <= bcl.y1 <= dbcluster.y2:
                                 if dbcluster.y1 <= bcl.y2 <= dbcluster.y2:
                                     bcl.parent = dbcluster
-                # cv2.rectangle(
-                #     image_opencv_input,
-                #     (block.x1, interval[0]),
-                #     (block.x2, interval[1]),
-                #     (120, 140, 97),
-                #     -1,
-                # )
 
         if block.direction == 1:
             for interval in ob1_x_merged:
-                dbcluster = ClusterClass(interval[0], block.y1, interval[1], block.y2, parent=block)
+                dbcluster = ClusterClass(
+                    interval[0], block.y1, interval[1], block.y2, parent=block
+                )
                 dbcluster.types = "dbcluster"
                 dbcluster.processing = "splitted"
 
@@ -307,13 +294,6 @@ def dbcluster_split(block, clusters):
                             if dbcluster.y1 <= bcl.y1 <= dbcluster.y2:
                                 if dbcluster.y1 <= bcl.y2 <= dbcluster.y2:
                                     bcl.parent = dbcluster
-                # cv2.rectangle(
-                #     image_opencv_input,
-                #     (interval[0], block.y1),
-                #     (interval[1], block.y2),
-                #     (120, 150, 97),
-                #     -1,
-                # )
 
         # This block may contain dbclusters
         if block.direction == 2:
@@ -340,12 +320,9 @@ def dbcluster_split(block, clusters):
             #             -1,
             #         )
 
-    # print("dbcluster_direction: ", block.direction)
-    # input()
-
     # Go through all the blocks obtained from the current one
     for pre, fill, node in RenderTree(block):
-        print("children", node)
+        # print("children", node)
         if node != block and node.types in {"dbcluster"}:
             if node.direction != 2 and not block.is_final:
                 # Split each block
@@ -355,7 +332,7 @@ def dbcluster_split(block, clusters):
 def blocks_split(block, window_name1, image_opencv_input, overlay, clusters):
     # Ternary assembling algorithm builded with annotation only
     # Show the block
-    print("block", block)
+    # print("block", block)
 
     x_layout_intervals = []
     y_layout_intervals = []
@@ -374,15 +351,15 @@ def blocks_split(block, window_name1, image_opencv_input, overlay, clusters):
                         y_layout_intervals.append([cluster.y1, cluster.y2])
                         clusters_in.append(cluster)
 
-    print(x_layout_intervals)
+    # print(x_layout_intervals)
     ob1_x = Partition()
     ob1_x_merged = ob1_x.merge(x_layout_intervals)
-    print("block", "ob1_x_merged", ob1_x_merged, type(ob1_x_merged))
+    # print("block", "ob1_x_merged", ob1_x_merged, type(ob1_x_merged))
 
-    print(y_layout_intervals)
+    # print(y_layout_intervals)
     ob1_y = Partition()
     ob1_y_merged = ob1_y.merge(y_layout_intervals)
-    print("block", ob1_y_merged)
+    # print("block", ob1_y_merged)
 
     # Choose if the block horizontal vertical or final
     # vertiical
@@ -411,37 +388,42 @@ def blocks_split(block, window_name1, image_opencv_input, overlay, clusters):
     # Assign the children based on direction
     if block.direction == 0:
         for interval in ob1_y_merged:
-            ccluster = ClusterClass(block.x1, interval[0], block.x2, interval[1], parent=block)
-            ccluster.types = "ccluster"
-            cv2.rectangle(
-                image_opencv_input,
-                (block.x1, interval[0]),
-                (block.x2, interval[1]),
-                (120, 140, 97),
-                -1,
+            ccluster = ClusterClass(
+                block.x1, interval[0], block.x2, interval[1], parent=block
             )
+            ccluster.types = "ccluster"
+            # cv2.rectangle(
+            #     image_opencv_input,
+            #     (block.x1, interval[0]),
+            #     (block.x2, interval[1]),
+            #     (120, 140, 97),
+            #     -1,
+            # )
 
     if block.direction == 1:
         for interval in ob1_x_merged:
-            ccluster = ClusterClass(interval[0], block.y1, interval[1], block.y2, parent=block)
-            ccluster.types = "ccluster"
-            cv2.rectangle(
-                image_opencv_input,
-                (interval[0], block.y1),
-                (interval[1], block.y2),
-                (120, 150, 97),
-                -1,
+            ccluster = ClusterClass(
+                interval[0], block.y1, interval[1], block.y2, parent=block
             )
+            ccluster.types = "ccluster"
+            # cv2.rectangle(
+            #     image_opencv_input,
+            #     (interval[0], block.y1),
+            #     (interval[1], block.y2),
+            #     (120, 150, 97),
+            #     -1,
+            # )
 
     # This block may contain dbclusters
     if block.direction == 2:
         for cluster in clusters_in:
-            if(cluster not in block.ancestors):
-                if (cluster != block):
-                    print(cluster.name, block.name)
+            if cluster not in block.ancestors:
+                if cluster != block:
+                    # print(cluster.name, block.name)
                     cluster.parent = block
         for interval_x in ob1_x_merged:
             for interval_y in ob1_y_merged:
+                pass
                 # ClusterClass(
                 #     interval_x[0],
                 #     interval_y[0],
@@ -449,19 +431,19 @@ def blocks_split(block, window_name1, image_opencv_input, overlay, clusters):
                 #     interval_y[1],
                 #     parent=root_block,
                 # )
-                cv2.rectangle(
-                    image_opencv_input,
-                    (interval_x[0], interval_y[0]),
-                    (interval_x[1], interval_y[1]),
-                    (20, 150, 107),
-                    -1,
-                )
+                # cv2.rectangle(
+                #     image_opencv_input,
+                #     (interval_x[0], interval_y[0]),
+                #     (interval_x[1], interval_y[1]),
+                #     (20, 150, 107),
+                #     -1,
+                # )
 
-    print("direction", block.direction)
+    # print("direction", block.direction)
 
     # Go through all the blocks obtained from the current one
     for pre, fill, node in RenderTree(block):
-        print("children", node)
+        # print("children", node)
         if node != block and node.types in {"ccluster"}:
             if node.direction != 2:
                 # Split each block
@@ -483,11 +465,13 @@ def find_or_create_dir(directory, show=False):
     parent_dir = os.path.abspath(os.path.join(directory, ".."))
     this_dir = directory.split("/")[-1]
     if this_dir not in os.listdir(parent_dir):
-        print("no such dir, create one")
+        # print("no such dir, create one")
         try:
             os.mkdir(directory)
         except Exception as ex:
-            print("could not create dir, because\t{}".format(ex))
+            pass
+            # print("could not create dir, because\t{}".format(ex))
     if show:
-        print(directory)
+        pass
+        # print(directory)
     return directory
