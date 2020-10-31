@@ -77,7 +77,13 @@ const InteractionsHandler = ({ elementId }: Props) => {
 
   useEffect(() => {
     setStyles(getBorderStyles(elementRef.current, rootRef));
-  }, [elementRef, rootRef, element.styles.ownStyles, elementGroupStyles]);
+  }, [
+    borderedElementsRefs,
+    elementRef,
+    rootRef,
+    element.styles.ownStyles,
+    elementGroupStyles,
+  ]);
 
   if (!styles) {
     return null;
