@@ -1,11 +1,8 @@
 import React, { memo, useCallback } from 'react';
-import cn from 'classnames';
 import { JUSTIFY_VALUES, ALIGN_VALUES } from './constants';
 import Button from '../../../../../components/UI/Button';
 import { DropDown } from '../../../../../components/UI/DropDown';
 import { Flex } from '../../../../../redux/project/types';
-
-const styles = require('./FlexProperties.scss');
 
 type Orientation = 'vertical' | 'horizontal';
 
@@ -23,9 +20,9 @@ const FlexProperties: React.FC<Props> = ({ properties, onChange }) => {
 
   const renderLabel = useCallback(
     (reversed: boolean) => (
-      <span className={styles.axis__label}>
+      <span>
         {reversed ? 'Y-' : 'X-'}
-        {' axis'}
+        axis
       </span>
     ),
     [],
@@ -33,48 +30,33 @@ const FlexProperties: React.FC<Props> = ({ properties, onChange }) => {
 
   return (
     <>
-      <section className="propsElementsBlock">
-        <header className={styles.header}>
-          <h4>Direction</h4>
-        </header>
-        <div className={styles.content}>
+      <div>
+        <h4>Direction</h4>
+
+        <div>
           <Button
             styleType="primary"
-            className={cn(
-              'propsPanelBtn',
-              styles.orientationBtn,
-              orientation === 'horizontal' && 'propsPanelBtn_active',
-            )}
             onClick={() => onChange('flexDirection', 'row')}
           >
             Horizontal
           </Button>
+
           <Button
             styleType="primary"
-            className={cn(
-              'propsPanelBtn',
-              styles.orientationBtn,
-              styles.orientationBtn_vertical,
-              orientation === 'vertical' && 'propsPanelBtn_active',
-            )}
             onClick={() => onChange('flexDirection', 'column')}
           >
             Vertical
           </Button>
         </div>
-      </section>
-      <section className="propsElementsBlock">
-        <header className={styles.header}>
-          <h4>Align</h4>
-        </header>
-        <div
-          className={cn(
-            styles.axises,
-            orientation === 'vertical' && styles.axises_reversed,
-          )}
-        >
-          <div className={styles.axises__axis}>
+      </div>
+
+      <div>
+        <h4>Align</h4>
+
+        <div>
+          <div>
             {renderLabel(orientation === 'vertical')}
+
             <DropDown
               options={JUSTIFY_VALUES}
               defaultValue={properties.justifyContent}
@@ -84,8 +66,10 @@ const FlexProperties: React.FC<Props> = ({ properties, onChange }) => {
               }
             />
           </div>
-          <div className={styles.axises__axis}>
+
+          <div>
             {renderLabel(orientation === 'horizontal')}
+
             <DropDown
               options={ALIGN_VALUES}
               defaultValue={properties.alignItems}
@@ -96,7 +80,7 @@ const FlexProperties: React.FC<Props> = ({ properties, onChange }) => {
             />
           </div>
         </div>
-      </section>
+      </div>
     </>
   );
 };

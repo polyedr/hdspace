@@ -5,7 +5,7 @@ import RemoveStyles from '../../containers/RemoveStyles/RemoveStyles';
 const useStyles = makeStyles({
   header: {
     display: 'flex',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
     alignItems: 'center',
   },
 });
@@ -18,10 +18,9 @@ type Props = {
 
 const StylesHeader: React.FC<Props> = ({ title, ...restProps }) => {
   const classes = useStyles();
+
   return (
     <header className={classes.header}>
-      <h4>{title}</h4>
-
       <RemoveStyles {...restProps} />
     </header>
   );

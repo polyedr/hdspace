@@ -1,6 +1,6 @@
 import React from 'react';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import Scrollbar from '../UI/Scrollbar';
+import Scrollbar from '../../UI/Scrollbar';
 
 const useStyles = makeStyles({
   root: {

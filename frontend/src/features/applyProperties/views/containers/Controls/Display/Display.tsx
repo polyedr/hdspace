@@ -1,9 +1,12 @@
 import React, { memo, useCallback } from 'react';
 import { useSelector } from 'react-redux';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
 import FlexProperties from '../../../components/FlexProperties/FlexProperties';
 import StylesHeader from '../../../components/StylesHeader/StylesHeader';
 import DISPLAY from './constants';
-import { DropDown } from '../../../../../../components/UI/DropDown';
 import { Entity } from '../../../../../../domain/core';
 import { LibraryElement } from '../../../../../../api/types';
 import { Flex, ScreenDisplay } from '../../../../../../redux/project/types';
@@ -62,12 +65,9 @@ type Props = StateProps & PropertiesChangeProps<LibraryElement<Entity>>;
 const Display: React.FC<Props> = ({ updateStyles, removeStyles }) => {
   const displayStyles = useSelector(selectDisplayStyles);
 
-  const handleDisplayDropdownChange = useCallback(
-    (value) => {
-      updateStyles({ display: value });
-    },
-    [updateStyles],
-  );
+  const handleDisplayDropdownChange = (event) => {
+    updateStyles({ display: event.target.value });
+  };
 
   const handleFlexPropertiesChange = useCallback(
     (prop: keyof Flex, value: Flex[keyof Flex]) => {
@@ -79,7 +79,7 @@ const Display: React.FC<Props> = ({ updateStyles, removeStyles }) => {
 
   return (
     <>
-      <section>
+      <div>
         <StylesHeader
           title="Display"
           onClick={removeStyles}
@@ -91,13 +91,24 @@ const Display: React.FC<Props> = ({ updateStyles, removeStyles }) => {
           ]}
         />
 
-        <DropDown
-          options={DISPLAY}
-          defaultValue={displayStyles.display}
-          value={displayStyles.display}
-          onChange={handleDisplayDropdownChange}
-        />
-      </section>
+        <FormControl fullWidth>
+          <InputLabel>Display</InputLabel>
+
+          <Select
+            margin="dense"
+            label="Display"
+            value={displayStyles.display}
+            onChange={handleDisplayDropdownChange}
+            defaultValue={displayStyles.display}
+          >
+            {DISPLAY.map(({ value, label }) => (
+              <MenuItem key={value} value={value} dense>
+                {label}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </div>
 
       {displayStyles.display === 'flex' && (
         <FlexProperties

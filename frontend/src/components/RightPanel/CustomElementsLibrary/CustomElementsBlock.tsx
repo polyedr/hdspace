@@ -13,8 +13,8 @@ import {
   StyledAccordion,
   StyledAccordionSummary,
   StyledAccordionDetails,
-} from '../ElementsBlock';
-import ElementButton from '../ElementButton';
+} from '../ElementsTab/ElementsBlock';
+import ElementButton from '../ElementsTab/ElementButton';
 
 const CustomElementsBlock: React.FC<{}> = () => {
   const libraryElements = useSelector(selectCustomLibraryElements);

@@ -3,16 +3,16 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useDrag } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import { splitWords } from '../../utils/StringHelper';
-import Button from '../UI/Button';
-import { ElementData } from '../../redux/project/types';
-import { AVAILABLE_CHILDREN, Entity } from '../../domain/core';
-import { createElements } from '../../redux/project/actions';
+import { splitWords } from '../../../utils/StringHelper';
+import Button from '../../UI/Button';
+import { ElementData } from '../../../redux/project/types';
+import { AVAILABLE_CHILDREN, Entity } from '../../../domain/core';
+import { createElements } from '../../../redux/project/actions';
 import {
   selectActiveElement,
   selectCurrentScreenId,
-} from '../../redux/project/selectors';
-import { ElementType } from '../Editor/Draggable/types';
+} from '../../../redux/project/selectors';
+import { ElementType } from '../../Editor/Draggable/types';
 
 type Props = {
   elementData: ElementData;

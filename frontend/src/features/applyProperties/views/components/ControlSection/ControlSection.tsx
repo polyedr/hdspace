@@ -5,7 +5,7 @@ import {
   StyledAccordion,
   StyledAccordionDetails,
   StyledAccordionSummary,
-} from '../../../../../components/RightPanel/ElementsBlock';
+} from '../../../../../components/RightPanel/ElementsTab/ElementsBlock';
 
 const useStyles = makeStyles({
   section: {},

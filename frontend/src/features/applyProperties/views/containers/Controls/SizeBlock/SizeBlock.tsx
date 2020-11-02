@@ -1,7 +1,11 @@
-/* eslint-disable no-console */
-
 import React, { useCallback, memo } from 'react';
 import { connect } from 'react-redux';
+import TextField from '@material-ui/core/TextField';
+import Select from '@material-ui/core/Select';
+import FormControl from '@material-ui/core/FormControl';
+import MenuItem from '@material-ui/core/MenuItem';
+import makeStyles from '@material-ui/core/styles/makeStyles';
+import capitalize from '@material-ui/core/utils/capitalize';
 import StylesHeader from '../../../components/StylesHeader/StylesHeader';
 import { Entity } from '../../../../../../domain/core';
 import { AppReduxState } from '../../../../../../shared/types/app';
@@ -14,6 +18,21 @@ import {
   selectCurrentEditableStyles,
   selectFreeCanvasMode,
 } from '../../../../../../redux/project/selectors';
+
+const useStyles = makeStyles({
+  wrapper: {
+    display: 'flex',
+    justifyContent: 'space-evenly',
+  },
+  sizeControl: {
+    display: 'flex',
+    justifyContent: 'stretch',
+    alignItems: 'flex-end',
+  },
+  text: {
+    width: '70px',
+  },
+});
 
 enum Unit {
   px = 'px',
@@ -51,15 +70,15 @@ const getUnitFromValue = (value: string): UnitName => {
   return Unit.px;
 };
 
-const SizeBlock: React.FC<Props> = (props) => {
-  const {
-    updateStyles,
-    removeStyles,
-    activeItemID,
-    width,
-    height,
-    isFreeCanvasMode,
-  } = props;
+const SizeBlock: React.FC<Props> = ({
+  updateStyles,
+  removeStyles,
+  activeItemID,
+  width,
+  height,
+  isFreeCanvasMode,
+}) => {
+  const classes = useStyles();
 
   const handleSelectChange = useCallback(
     ({ target: { value } }, sizeName: SizeName) => {
@@ -130,27 +149,32 @@ const SizeBlock: React.FC<Props> = (props) => {
     const inputValue = size === 'auto' ? 'auto' : parsedSize;
 
     return (
-      <div>
-        <input
+      <div className={classes.sizeControl}>
+        <TextField
+          className={classes.text}
+          label={capitalize(sizeName)}
           type="text"
           name={sizeName}
           value={inputValue}
           onChange={handleInputChange}
           disabled={inputValue === 'auto'}
+          margin="dense"
         />
 
-        <select
-          onChange={(event) => handleSelectChange(event, sizeName)}
-          value={Unit[getUnitFromValue(size)]}
-          name={`${sizeName}_unit`}
-        >
-          {Object.keys(Unit).map((key, index) => (
-            // eslint-disable-next-line react/no-array-index-key
-            <option key={index} value={key}>
-              {Unit[key]}
-            </option>
-          ))}
-        </select>
+        <FormControl margin="dense">
+          <Select
+            label="Units"
+            onChange={(event) => handleSelectChange(event, sizeName)}
+            value={Unit[getUnitFromValue(size)]}
+            name={`${sizeName}_unit`}
+          >
+            {Object.keys(Unit).map((unit) => (
+              <MenuItem key={unit} value={unit} dense>
+                {unit}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
       </div>
     );
   };
@@ -163,7 +187,7 @@ const SizeBlock: React.FC<Props> = (props) => {
         cssPropertiesNames={['width', 'height']}
       />
 
-      <div>
+      <div className={classes.wrapper}>
         {renderSizeControl('height')}
         {renderSizeControl('width')}
       </div>
