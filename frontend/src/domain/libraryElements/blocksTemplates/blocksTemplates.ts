@@ -1,7 +1,8 @@
 import {
   makeContainer,
-  // makeScreenshot,
-  makeSmartContainer,
+  makeSmartHeader,
+  makeSmartFooter,
+  makeSmartWebpage,
   makeImage,
 } from '../otherElements/otherElements';
 import {
@@ -44,7 +45,7 @@ export const makePageTemplate = (
       children: withoutContainers
         ? []
         : [
-            makeSmartContainer({
+            makeSmartHeader({
               name: 'Header',
               ownStyles: {
                 height: '50%',
@@ -65,7 +66,7 @@ export const makePageTemplate = (
           children: withoutContainers
             ? []
             : [
-                makeSmartContainer({
+                makeSmartWebpage({
                   name: 'Left Panel',
                   ownStyles: {
                     height: '100%',
@@ -87,7 +88,7 @@ export const makePageTemplate = (
           children: withoutContainers
             ? []
             : [
-                makeSmartContainer({
+                makeSmartWebpage({
                   name: 'Main Content',
                   ownStyles: {
                     height: '100%',
@@ -110,7 +111,7 @@ export const makePageTemplate = (
           children: withoutContainers
             ? []
             : [
-                makeSmartContainer({
+                makeSmartWebpage({
                   name: 'Right Panel',
                   ownStyles: {
                     height: '100%',
@@ -144,7 +145,7 @@ export const makePageTemplate = (
       children: withoutContainers
         ? []
         : [
-            makeSmartContainer({
+            makeSmartFooter({
               name: 'Footer',
               ownStyles: {
                 height: '100%',

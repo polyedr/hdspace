@@ -26,9 +26,10 @@ import Container from './Container/Container';
 import Section from './Section/Section';
 import Clock from './Clock/Clock';
 import Undefined from './Undefined/Undefined';
-import SmartContainerRenderer from './SmartContainer';
 import { Entity } from '../../../domain/core';
 import withAction from '../../../utils/withAction';
+import withSmartContainer from './SmartContainer/withSmartContainer';
+import { NNBlockType } from '../../../constants/defaultParams';
 
 export const RENDERERS: Record<Entity, React.FC<any>> = {
   root: Container,
@@ -52,7 +53,10 @@ export const RENDERERS: Record<Entity, React.FC<any>> = {
   label: Label,
   hyperlink: withAction(Link, 'link'),
   image: Image,
-  smartContainer: SmartContainerRenderer,
+  smartHeader: withSmartContainer(NNBlockType.HEADER),
+  smartFooter: withSmartContainer(NNBlockType.FOOTER),
+  smartForm: withSmartContainer(NNBlockType.FORM),
+  smartWebpage: withSmartContainer(NNBlockType.WEBPAGE),
   select: Select,
   selectMenu: SelectMenu,
   selectItem: MenuItem,

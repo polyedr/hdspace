@@ -12,7 +12,10 @@ import {
   parseAddElementsTabs,
 } from '../../../utils/parseScenario';
 import { CreatedElement, ServerStructType } from '../../../redux/project/types';
-import { MODAL_ADD_ELEMENTS_TABS } from '../../../constants/defaultParams';
+import {
+  MODAL_ADD_ELEMENTS_TABS,
+  NNBlockType,
+} from '../../../constants/defaultParams';
 import {
   selectActiveElement,
   selectCurrentRootId,
@@ -65,7 +68,9 @@ const ModalAddElements: React.FC = () => {
   useEffect(() => {
     if (imageToUpload) {
       dispatch(
-        uploadFile(imageToUpload, rootId, { screenId: currentScreen.id }),
+        uploadFile(imageToUpload, rootId, NNBlockType.WEBPAGE, {
+          screenId: currentScreen.id,
+        }),
       );
     }
   }, [dispatch, rootId, imageToUpload, currentScreen.id]);

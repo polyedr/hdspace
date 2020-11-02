@@ -12,7 +12,10 @@ import {
   ServerElement,
   UndefinedServerElement,
   VideoServerElement,
-  SmartContainerServerElement,
+  SmartHeaderServerElement,
+  SmartFooterServerElement,
+  SmartFormServerElement,
+  SmartWebpageServerElement,
 } from '../../../api/types';
 import { defaultFreeCanvasParams, Entity } from '../../core';
 import { IMAGES } from '../../../constants/images';
@@ -134,13 +137,13 @@ export const makeImage = ({
   children: [],
 });
 
-export const makeSmartContainer = ({
-  name = 'smartContainer',
+export const makeSmartHeader = ({
+  name = 'smartHeader',
   ownStyles = {},
-}): SmartContainerServerElement => ({
+}): SmartHeaderServerElement => ({
   buoyancy: 0,
-  func_type: 'smartContainer',
-  struct_type: 'smartContainer',
+  func_type: 'smartHeader',
+  struct_type: 'smartHeader',
   parameters: {
     group: 'undefined',
     ...defaultFreeCanvasParams,
@@ -148,7 +151,70 @@ export const makeSmartContainer = ({
     height: 300,
   },
   styles: {
-    classNames: ['smartContainer'],
+    classNames: ['smartHeader'],
+    ownStyles: { ...ownStyles } as Required<CssLikeStyles>,
+  },
+  name,
+  children: [],
+});
+
+export const makeSmartFooter = ({
+  name = 'smartFooter',
+  ownStyles = {},
+}): SmartFooterServerElement => ({
+  buoyancy: 0,
+  func_type: 'smartFooter',
+  struct_type: 'smartFooter',
+  parameters: {
+    group: 'undefined',
+    ...defaultFreeCanvasParams,
+    width: 500,
+    height: 300,
+  },
+  styles: {
+    classNames: ['smartFooter'],
+    ownStyles: { ...ownStyles } as Required<CssLikeStyles>,
+  },
+  name,
+  children: [],
+});
+
+export const makeSmartForm = ({
+  name = 'smartForm',
+  ownStyles = {},
+}): SmartFormServerElement => ({
+  buoyancy: 0,
+  func_type: 'smartForm',
+  struct_type: 'smartForm',
+  parameters: {
+    group: 'undefined',
+    ...defaultFreeCanvasParams,
+    width: 500,
+    height: 300,
+  },
+  styles: {
+    classNames: ['smartForm'],
+    ownStyles: { ...ownStyles } as Required<CssLikeStyles>,
+  },
+  name,
+  children: [],
+});
+
+export const makeSmartWebpage = ({
+  name = 'smartWebpage',
+  ownStyles = {},
+}): SmartWebpageServerElement => ({
+  buoyancy: 0,
+  func_type: 'smartWebpage',
+  struct_type: 'smartWebpage',
+  parameters: {
+    group: 'undefined',
+    ...defaultFreeCanvasParams,
+    width: 500,
+    height: 300,
+  },
+  styles: {
+    classNames: ['smartWebpage'],
     ownStyles: { ...ownStyles } as Required<CssLikeStyles>,
   },
   name,

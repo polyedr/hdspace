@@ -16,8 +16,8 @@ import {
   selectElementByChildId,
   selectElementById,
 } from '../../../redux/project/selectors';
-import { DropPosition } from '../../../constants/dragAndDrop';
-import { SyntheticElement, ElementType } from './types';
+import { DropPosition, ElementType } from '../../../constants/dragAndDrop';
+import { SyntheticElement } from './types';
 import { CONTAINER_GROUPS } from '../../../constants/defaultParams';
 import {
   getFlexRowDropPosition,

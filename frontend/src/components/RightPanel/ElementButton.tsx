@@ -12,7 +12,7 @@ import {
   selectActiveElement,
   selectCurrentScreenId,
 } from '../../redux/project/selectors';
-import { ElementType } from '../Editor/Draggable/types';
+import { ElementType } from '../../constants/dragAndDrop';
 
 type Props = {
   elementData: ElementData;

@@ -19,8 +19,7 @@ import MapProps from '../../features/applyProperties/views/containers/Controls/M
 import Placeholder from '../../features/applyProperties/views/containers/Controls/Placeholder/Placeholder';
 import TextContent from '../../features/applyProperties/views/containers/Controls/TextContent/TextContent';
 import Image from '../../features/applyProperties/views/containers/Controls/Image/Image';
-import Screenshot from '../../features/applyProperties/views/containers/Controls/Screenshot/Screenshot';
-import SmartContainer from '../../features/applyProperties/views/containers/Controls/SmartContainer/SmartContainer';
+import withSmartContainer from '../../features/applyProperties/views/containers/Controls/SmartContainer/withSmartContainer';
 import Type from '../../features/applyProperties/views/containers/Controls/Type/Type';
 import Value from '../../features/applyProperties/views/containers/Controls/Value/Value';
 import Name from '../../features/applyProperties/views/containers/Controls/Name/Name';
@@ -39,6 +38,7 @@ import FlexGrow from '../../features/applyProperties/views/containers/Controls/F
 import BackgroundSize from '../../features/applyProperties/views/containers/Controls/BackgroundSize/BackgroundSize';
 import Scrollbar from '../UI/Scrollbar';
 import { selectActiveElement } from '../../redux/project/selectors';
+import { NNBlockType } from '../../constants/defaultParams';
 
 const CONTROLS: Record<Control, React.ComponentType<any>> = {
   display: Display,
@@ -52,8 +52,10 @@ const CONTROLS: Record<Control, React.ComponentType<any>> = {
   placeholder: Placeholder,
   textContent: TextContent,
   image: Image,
-  screenshot: Screenshot,
-  smartContainer: SmartContainer,
+  smartHeader: withSmartContainer(NNBlockType.HEADER),
+  smartFooter: withSmartContainer(NNBlockType.FOOTER),
+  smartForm: withSmartContainer(NNBlockType.FORM),
+  smartWebpage: withSmartContainer(NNBlockType.WEBPAGE),
   type: Type,
   value: Value,
   name: Name,
@@ -84,6 +86,7 @@ const PropertiesTab: React.FC = () => {
 
   const { type } = activeElement;
 
+  console.log('TEST!', CONTROLS);
   return (
     <div className={classes.root}>
       <Scrollbar

@@ -81,7 +81,10 @@ export type FeatureSectionServerElement = ServerElement<
   ServerElement<Entity>[]
 >;
 export type ImageServerElement = ServerElement<'image', [], ImageParameters>;
-export type SmartContainerServerElement = ServerElement<'smartContainer'>;
+export type SmartHeaderServerElement = ServerElement<'smartHeader'>;
+export type SmartFooterServerElement = ServerElement<'smartFooter'>;
+export type SmartFormServerElement = ServerElement<'smartForm'>;
+export type SmartWebpageServerElement = ServerElement<'smartWebpage'>;
 export type ButtonServerElement = ServerElement<'button', [], ButtonParameters>;
 export type HyperlinkServerElement = ServerElement<
   'hyperlink',

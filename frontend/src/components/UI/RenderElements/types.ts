@@ -9,6 +9,7 @@ import {
   ProjectClass,
   VideoSettingsType,
 } from '../../../api/types';
+import { NNBlockType } from '../../../constants/defaultParams';
 
 export type SharedRendererProps = {
   id: string;
@@ -43,6 +44,7 @@ export type ScreenshotRendererProps = SharedRendererProps & {
 };
 
 export type SmartContainerRendererProps = SharedRendererProps & {
+  blockType?: NNBlockType;
   imageUrl: string;
   isBorderVisible: boolean;
 };

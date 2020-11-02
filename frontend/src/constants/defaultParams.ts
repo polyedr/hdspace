@@ -99,3 +99,10 @@ export const enum SCREEN_FORMATS {
   Tablet = 'tablet',
   Mobile = 'mobile',
 }
+
+export const enum NNBlockType {
+  HEADER = 'headers',
+  FOOTER = 'footers',
+  FORM = 'forms',
+  WEBPAGE = 'webpages',
+}
