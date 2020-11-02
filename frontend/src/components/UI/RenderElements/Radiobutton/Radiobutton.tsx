@@ -5,54 +5,110 @@ import cn from 'classnames';
 import { makeStyles, Radio } from '@material-ui/core';
 import RadioButtonCheckedIcon from '@material-ui/icons/RadioButtonChecked';
 import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked';
-import { makeComponentStyles } from '../styles';
+import * as R from 'ramda';
 
 import { RadioRendererProps } from '../types';
 
-const useStyles = makeComponentStyles();
+const styles = require('../styles.scss');
 
-const useIconStyles = makeStyles({
-  entityStyles: ({ entityStyles: { width, height } }) => ({ width, height }),
-  groupStyles: ({ groupStyles: { width, height } }) => ({ width, height }),
-  ownStyles: ({ ownStyles: { width, height } }) => ({ width, height }),
-});
-
-const useDivStyles = makeStyles({
-  default: {
-    display: 'inline-block',
+const getRadiobuttonClassStyles = (style: React.CSSProperties) => ({
+  color: style.backgroundColor,
+  '&$checked': {
+    color: style.backgroundColor,
   },
-  entityStyles: ({
-    entityStyles: { backgroundColor, width, height, ...otherStyles },
-  }) => ({
-    ...otherStyles,
-  }),
-  groupStyles: ({
-    groupStyles: { backgroundColor, width, height, ...otherStyles },
-  }) => ({
-    ...otherStyles,
-  }),
-  ownStyles: ({
-    ownStyles: { backgroundColor, width, height, ...otherStyles },
-  }) => ({
-    ...otherStyles,
-  }),
 });
+
+const getRadiobuttonStyles = (
+  entityStyles: React.CSSProperties,
+  groupStyles: React.CSSProperties,
+  ownStyles: React.CSSProperties,
+) =>
+  makeStyles({
+    root: {},
+
+    entityStyles: {
+      ...getRadiobuttonClassStyles(entityStyles),
+    },
+
+    groupStyles: {
+      ...getRadiobuttonClassStyles(groupStyles),
+    },
+
+    ownStyles: {
+      ...getRadiobuttonClassStyles(ownStyles),
+    },
+  });
+
+const getIconClassStyles = (style: React.CSSProperties) => ({
+  width: style.width,
+  height: style.height,
+});
+
+const getIconStyles = (
+  entityStyles: React.CSSProperties,
+  groupStyles: React.CSSProperties,
+  ownStyles: React.CSSProperties,
+) =>
+  makeStyles({
+    entityStyles: {
+      ...getIconClassStyles(entityStyles),
+    },
+
+    groupStyles: {
+      ...getIconClassStyles(groupStyles),
+    },
+
+    ownStyles: {
+      ...getIconClassStyles(ownStyles),
+    },
+  });
+
+const getDivStyles = (
+  entityStyles: React.CSSProperties,
+  groupStyles: React.CSSProperties,
+  ownStyles: React.CSSProperties,
+) =>
+  makeStyles({
+    entityStyles: {
+      ...R.omit(['backgroundColor', 'width', 'height'], entityStyles),
+      display: 'inline-block',
+    },
+
+    groupStyles: {
+      ...R.omit(['backgroundColor', 'width', 'height'], groupStyles),
+      display: 'inline-block',
+    },
+
+    ownStyles: {
+      ...R.omit(['backgroundColor', 'width', 'height'], ownStyles),
+      display: 'inline-block',
+    },
+  });
 
 const Radiobutton: React.FC<RadioRendererProps> = React.forwardRef(
-  (props, ref) => {
-    const {
+  (
+    {
       id,
+      entityStyles,
+      groupStyles,
+      ownStyles,
       params,
       isDisabled,
       isRadioChecked,
       onElementChange,
       className,
-    } = props;
+    },
+    ref,
+  ) => {
     const { name, value, showRipple } = params;
 
-    const classes = useStyles(props);
-    const iconClasses = useIconStyles(props);
-    const divClasses = useDivStyles(props);
+    const radiobuttonClasses = getRadiobuttonStyles(
+      entityStyles,
+      groupStyles,
+      ownStyles,
+    )();
+    const iconClasses = getIconStyles(entityStyles, groupStyles, ownStyles)();
+    const divClasses = getDivStyles(entityStyles, groupStyles, ownStyles)();
 
     const handleRadioChange = (event: ChangeEvent<HTMLInputElement>) => {
       onElementChange(name || '', event.target.value);
@@ -66,7 +122,7 @@ const Radiobutton: React.FC<RadioRendererProps> = React.forwardRef(
         key={id}
         className={cn(
           className,
-          isDisabled && classes.disabled,
+          isDisabled && styles.disabled,
           divClasses.entityStyles,
           divClasses.groupStyles,
           divClasses.ownStyles,
@@ -93,10 +149,10 @@ const Radiobutton: React.FC<RadioRendererProps> = React.forwardRef(
           }
           color="default"
           className={cn(
-            classes.root,
-            classes.entityStyles,
-            classes.groupStyles,
-            classes.ownStyles,
+            radiobuttonClasses.root,
+            radiobuttonClasses.entityStyles,
+            radiobuttonClasses.groupStyles,
+            radiobuttonClasses.ownStyles,
           )}
           value={value}
           name={name}
