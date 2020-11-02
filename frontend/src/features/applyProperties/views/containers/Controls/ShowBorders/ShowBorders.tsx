@@ -5,8 +5,6 @@ import { AppReduxState } from '../../../../../../shared/types/app';
 import { toggleContainersBorders } from '../../../../../../redux/project/actions';
 import { selectShowingBorders } from '../../../../../../redux/project/selectors';
 
-const styles = require('./ShowBorders.scss');
-
 type StateProps = {
   showBorders: boolean;
 };
@@ -25,7 +23,7 @@ type Props = StateProps & typeof mapDispatch;
 
 const ShowBorders: React.FC<Props> = ({ showBorders, toggleBorders }) => {
   return (
-    <label className={styles.label}>
+    <label>
       <Checkbox
         name="show borders"
         checked={showBorders}

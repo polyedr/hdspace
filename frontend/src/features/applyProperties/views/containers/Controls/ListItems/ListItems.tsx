@@ -8,6 +8,7 @@ import {
 } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
+import makeStyles from '@material-ui/core/styles/makeStyles';
 import Button from '../../../../../../components/UI/Button';
 import Icon from '../../../../../../components/UI/Icon';
 import { ListItemElement } from '../../../../../../api/types';
@@ -16,7 +17,6 @@ import {
   selectCurrentScreenId,
 } from '../../../../../../redux/project/selectors';
 import { AppReduxState } from '../../../../../../shared/types/app';
-import sharedClasses from '../../../../../../styles/sharedClasses';
 import {
   PropertiesChangeProps,
   withConfigurableProperties,
@@ -26,7 +26,12 @@ import {
   deleteItem,
 } from '../../../../../../redux/project/actions';
 
-const styles = require('./ListItems.scss');
+const useStyles = makeStyles({
+  details: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
+});
 
 type StateProps = {
   listItems: ListItemElement[];
@@ -59,6 +64,7 @@ const ListItems: React.FC<Props> = ({
   addChildToElement,
   deleteChildFromElement,
 }) => {
+  const classes = useStyles();
   const currentScreenId = useSelector(selectCurrentScreenId);
 
   const handleTextContentFieldChange = (
@@ -100,72 +106,63 @@ const ListItems: React.FC<Props> = ({
   };
 
   return (
-    <div className={sharedClasses.propsSection}>
-      <div className={styles.listItemsHeader}>
-        <p className={styles.listItemsTitle}>List items</p>
-        <Button
-          className={sharedClasses.addButton}
-          styleType="none"
-          onClick={handleAddButtonClick}
-        >
+    <div>
+      <div>
+        <h5>List items</h5>
+
+        <Button styleType="none" onClick={handleAddButtonClick}>
           <Icon icon="add" />
         </Button>
       </div>
+
       {listItems.map(({ id, parameters: { textContent, isLink, link } }) => (
         <Accordion key={id}>
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="panel1a-content"
-            id="panel1a-header"
-          >
-            <div className={styles.listItemsSummary}>
-              <div className={styles.listItemHeading}>{textContent}</div>
-              {listItems.length > 1 && (
-                <Button
-                  className={sharedClasses.propsButton}
-                  styleType="none"
-                  onClick={() => handleDeleteButtonClick(id)}
-                >
-                  <Icon icon="delete" />
-                </Button>
-              )}
-            </div>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <div>{textContent}</div>
+
+            {listItems.length > 1 && (
+              <Button
+                styleType="none"
+                onClick={() => handleDeleteButtonClick(id)}
+              >
+                <Icon icon="delete" />
+              </Button>
+            )}
           </AccordionSummary>
-          <AccordionDetails>
-            <div className={styles.listItemsBlock}>
-              <p className={sharedClasses.propsTitle}>Item text</p>
-              <div className={sharedClasses.propsContainer}>
-                <textarea
-                  className={styles.listItemsField}
-                  name="text-content"
-                  value={textContent}
-                  onChange={(event) => handleTextContentFieldChange(id, event)}
-                />
-              </div>
-              <div className={sharedClasses.propsContainer}>
-                <p className={sharedClasses.propsTitle}>Make link</p>
-                <Checkbox
-                  color="default"
-                  value="make link"
-                  name="make link"
-                  checked={isLink}
-                  onChange={(event) => handleCheckboxChange(id, event)}
-                />
-              </div>
-              {isLink && (
-                <>
-                  <p className={sharedClasses.propsTitle}>Item url</p>
-                  <div className={sharedClasses.propsContainer}>
-                    <textarea
-                      className={styles.listItemsField}
-                      name="link"
-                      value={link}
-                      onChange={(event) => handleUrlFieldChange(id, event)}
-                    />
-                  </div>
-                </>
-              )}
+
+          <AccordionDetails className={classes.details}>
+            <div>
+              <h5>Item text</h5>
+
+              <textarea
+                name="text-content"
+                value={textContent}
+                onChange={(event) => handleTextContentFieldChange(id, event)}
+              />
             </div>
+
+            <div>
+              <h5>Make link</h5>
+
+              <Checkbox
+                value="make link"
+                name="make link"
+                checked={isLink}
+                onChange={(event) => handleCheckboxChange(id, event)}
+              />
+            </div>
+
+            {isLink && (
+              <div>
+                <h5>Item url</h5>
+
+                <textarea
+                  name="link"
+                  value={link}
+                  onChange={(event) => handleUrlFieldChange(id, event)}
+                />
+              </div>
+            )}
           </AccordionDetails>
         </Accordion>
       ))}

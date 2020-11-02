@@ -79,7 +79,7 @@ const Display: React.FC<Props> = ({ updateStyles, removeStyles }) => {
 
   return (
     <>
-      <section className="propsElementsBlock">
+      <section>
         <StylesHeader
           title="Display"
           onClick={removeStyles}
@@ -90,17 +90,15 @@ const Display: React.FC<Props> = ({ updateStyles, removeStyles }) => {
             'flex-direction',
           ]}
         />
-        <div className="propsElementsContentBlock">
-          <div className="propsElementsInnerBlock">
-            <DropDown
-              options={DISPLAY}
-              defaultValue={displayStyles.display}
-              value={displayStyles.display}
-              onChange={handleDisplayDropdownChange}
-            />
-          </div>
-        </div>
+
+        <DropDown
+          options={DISPLAY}
+          defaultValue={displayStyles.display}
+          value={displayStyles.display}
+          onChange={handleDisplayDropdownChange}
+        />
       </section>
+
       {displayStyles.display === 'flex' && (
         <FlexProperties
           properties={displayStyles}

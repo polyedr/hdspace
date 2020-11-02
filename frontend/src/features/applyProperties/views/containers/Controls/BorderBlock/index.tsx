@@ -1,5 +1,4 @@
 import React, { memo, useCallback } from 'react';
-import cn from 'classnames';
 import { connect } from 'react-redux';
 import StylesHeader from '../../../components/StylesHeader/StylesHeader';
 import ColorSettings from '../../../components/ColorSettings/ColorSettings';
@@ -28,8 +27,6 @@ import {
 } from '../../../../../../utils/StyleHelper';
 import { AppReduxState } from '../../../../../../shared/types/app';
 import { selectCurrentEditableStyles } from '../../../../../../redux/project/selectors';
-
-const styles = require('./styles.scss');
 
 const accessBorderRadius = (border: CssLikeStyles['border-radius']) => {
   const matchedValue = safeMatch(border);
@@ -96,57 +93,52 @@ const BorderBlock: React.FC<Props> = ({
   );
 
   return (
-    <div className="propsElementsBlock">
+    <div>
       <StylesHeader
         title="Border"
         onClick={removeStyles}
         cssPropertiesNames={['border-color', 'border-width', 'border-radius']}
       />
-      <div className="propsElementsContentBlock">
-        <div className="propsElementsInnerBlock">
-          <div className={cn(styles.borderBlock, styles.borderBlock_width)}>
-            <input
-              className={styles.borderWidthField}
-              name="width"
-              type="number"
-              value={parseFloat(borderWidth)}
-              onChange={handleBorderWidthChange}
-              min={MIN_BORDER_WIDTH}
-              max={MAX_BORDER_WIDTH}
-            />
-          </div>
-          <div className={cn(styles.borderBlock, styles.borderBlock_radius)}>
-            <input
-              className={styles.borderRadiusField}
-              name="radius"
-              type="number"
-              value={safeParseFloat(validateBorderRadius(borderRadius))}
-              onChange={handleBorderRadius}
-              min={MIN_BORDER_RADIUS}
-              max={
-                borderRadius.indexOf('px') !== -1
-                  ? MAX_BORDER_RADIUS
-                  : MAX_BORDER_RADIUS_PERCENT
-              }
-            />
-            <select
-              className="dropDown"
-              name="radius_units"
-              onChange={handleChangeBorderRadiusUnits}
-              value={accessBorderRadius(borderRadius)}
-            >
-              <option value="px">px</option>
-              <option value="%">percent</option>
-            </select>
-          </div>
-        </div>
-        <div className="propsElementsInnerBlock">
-          <ColorSettings
-            currentColor={borderColor}
-            activeItemID={activeItemID}
-            onChange={handleColorSettingsChange}
+
+      <div>
+        <input
+          name="width"
+          type="number"
+          value={parseFloat(borderWidth)}
+          onChange={handleBorderWidthChange}
+          min={MIN_BORDER_WIDTH}
+          max={MAX_BORDER_WIDTH}
+        />
+
+        <div>
+          <input
+            name="radius"
+            type="number"
+            value={safeParseFloat(validateBorderRadius(borderRadius))}
+            onChange={handleBorderRadius}
+            min={MIN_BORDER_RADIUS}
+            max={
+              borderRadius.indexOf('px') !== -1
+                ? MAX_BORDER_RADIUS
+                : MAX_BORDER_RADIUS_PERCENT
+            }
           />
+
+          <select
+            name="radius_units"
+            onChange={handleChangeBorderRadiusUnits}
+            value={accessBorderRadius(borderRadius)}
+          >
+            <option value="px">px</option>
+            <option value="%">percent</option>
+          </select>
         </div>
+
+        <ColorSettings
+          currentColor={borderColor}
+          activeItemID={activeItemID}
+          onChange={handleColorSettingsChange}
+        />
       </div>
     </div>
   );

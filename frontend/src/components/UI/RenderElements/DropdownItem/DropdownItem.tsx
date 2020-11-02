@@ -4,7 +4,6 @@ import React from 'react';
 import cn from 'classnames';
 import { makeStyles, MenuItem } from '@material-ui/core';
 import { DropdownItemRendererProps } from '../types';
-import sharedClasses from '../../../../styles/sharedClasses';
 
 const styles = require('../styles.scss');
 
@@ -64,7 +63,6 @@ const DropdownItem: React.FC<DropdownItemRendererProps> = React.forwardRef(
         className={cn(
           classes.root,
           className,
-          sharedClasses.unsortable,
           styles.addedElem,
           styles.disabled,
           classes.entityStyles,

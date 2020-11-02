@@ -1,15 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { AppReduxState } from '../../../../../../shared/types/app';
-import sharedClasses from '../../../../../../styles/sharedClasses';
 import { selectActiveElementParams } from '../../../../../../redux/project/selectors';
 import {
   PropertiesChangeProps,
   withConfigurableProperties,
 } from '../../../../../../utils/withConfigurableProperties';
 import { RadiobuttonElement } from '../../../../../../api/types';
-
-const styles = require('./Name.scss');
 
 type StateProps = {
   name: string;
@@ -33,18 +30,14 @@ const Name: React.FC<Props> = ({ name, updateParams }) => {
   };
 
   return (
-    <div className={sharedClasses.propsSection}>
-      <p className={sharedClasses.propsTitle}>Name</p>
-      <div className={sharedClasses.propsContent}>
-        <div className={sharedClasses.propsContainer}>
-          <textarea
-            className={styles.nameField}
-            name="text_content"
-            value={name}
-            onChange={handleTextFieldChange}
-          />
-        </div>
-      </div>
+    <div>
+      <h4>Name</h4>
+
+      <textarea
+        name="text_content"
+        value={name}
+        onChange={handleTextFieldChange}
+      />
     </div>
   );
 };

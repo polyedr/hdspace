@@ -1,9 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Switch, makeStyles } from '@material-ui/core';
+import { Switch } from '@material-ui/core';
 import { AppReduxState } from '../../../../../../shared/types/app';
 import { ButtonElement } from '../../../../../../api/types';
-import sharedClasses from '../../../../../../styles/sharedClasses';
 import {
   PropertiesChangeProps,
   withConfigurableProperties,
@@ -24,43 +23,16 @@ function mapState(state: AppReduxState): StateProps {
 
 type Props = StateProps & PropertiesChangeProps<ButtonElement>;
 
-const useStyles = makeStyles({
-  switchBase: {
-    '&$checked': {
-      color: '#18a689',
-    },
-    '&$checked + $track': {
-      backgroundColor: '#18a689',
-    },
-  },
-  checked: {},
-  track: {},
-});
-
 const Ripple: React.FC<Props> = ({ showRipple, updateParams }) => {
-  const classes = useStyles();
-
   const handleSwitchChange = () => {
     updateParams({ showRipple: !showRipple });
   };
 
   return (
-    <div className={sharedClasses.propsSection}>
-      <p className={sharedClasses.propsTitle}>Ripple effect</p>
-      <div className={sharedClasses.propsContent}>
-        <div className={sharedClasses.propsContainer}>
-          <Switch
-            size="small"
-            checked={showRipple}
-            onChange={handleSwitchChange}
-            classes={{
-              switchBase: classes.switchBase,
-              track: classes.track,
-              checked: classes.checked,
-            }}
-          />
-        </div>
-      </div>
+    <div>
+      <h4>Ripple effect</h4>
+
+      <Switch size="small" checked={showRipple} onChange={handleSwitchChange} />
     </div>
   );
 };

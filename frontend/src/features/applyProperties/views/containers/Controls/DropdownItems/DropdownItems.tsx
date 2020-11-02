@@ -10,7 +10,6 @@ import {
   selectElementAsTree,
 } from '../../../../../../redux/project/selectors';
 import { AppReduxState } from '../../../../../../shared/types/app';
-import sharedClasses from '../../../../../../styles/sharedClasses';
 import {
   PropertiesChangeProps,
   withConfigurableProperties,
@@ -19,8 +18,6 @@ import {
   addChildToElement,
   deleteItem,
 } from '../../../../../../redux/project/actions';
-
-const styles = require('./DropdownItems.scss');
 
 type StateProps = {
   dropdownMenuID: string;
@@ -87,38 +84,31 @@ const DropdownItems: React.FC<Props> = ({
   };
 
   return (
-    <div className={sharedClasses.propsSection}>
-      <div className={styles.itemsHeader}>
-        <p className={styles.itemsTitle}>Dropdown items</p>
-        <Button
-          className={sharedClasses.addButton}
-          styleType="none"
-          onClick={handleAddButtonClick}
-        >
+    <div>
+      <div>
+        <h4>Dropdown items</h4>
+
+        <Button styleType="none" onClick={handleAddButtonClick}>
           <Icon icon="add" />
         </Button>
       </div>
+
       {dropdownItems.map(({ id, parameters: { textContent } }) => (
         <div key={id}>
-          <div className={styles.itemsBlock}>
-            <div className={sharedClasses.propsContainer}>
-              <textarea
-                className={styles.itemsField}
-                name="item text"
-                value={textContent}
-                onChange={(event) => handleTextFieldChange(id, event)}
-              />
-              {dropdownItems.length > 1 && (
-                <Button
-                  className={sharedClasses.propsButton}
-                  styleType="none"
-                  onClick={() => handleDeleteButtonClick(id)}
-                >
-                  <Icon icon="delete" />
-                </Button>
-              )}
-            </div>
-          </div>
+          <textarea
+            name="item text"
+            value={textContent}
+            onChange={(event) => handleTextFieldChange(id, event)}
+          />
+
+          {dropdownItems.length > 1 && (
+            <Button
+              styleType="none"
+              onClick={() => handleDeleteButtonClick(id)}
+            >
+              <Icon icon="delete" />
+            </Button>
+          )}
         </div>
       ))}
     </div>

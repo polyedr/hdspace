@@ -1,16 +1,17 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import Accordion from '@material-ui/core/Accordion';
-import AccordionSummary from '@material-ui/core/AccordionSummary';
-import AccordionDetails from '@material-ui/core/AccordionDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import {
+  StyledAccordion,
+  StyledAccordionDetails,
+  StyledAccordionSummary,
+} from '../../../../../components/RightPanel/ElementsBlock';
 
 const useStyles = makeStyles({
   section: {},
-  title: {
-    // fontWeight: 'bold',
-  },
+  title: {},
   content: {
+    padding: '0.5em',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'stretch',
@@ -25,18 +26,18 @@ const ControlSection: React.FC<Props> = ({ title, children }) => {
   const classes = useStyles();
 
   return (
-    <Accordion className={classes.section}>
-      <AccordionSummary
+    <StyledAccordion className={classes.section}>
+      <StyledAccordionSummary
         className={classes.title}
         expandIcon={<ExpandMoreIcon />}
       >
         {title}
-      </AccordionSummary>
+      </StyledAccordionSummary>
 
-      <AccordionDetails className={classes.content}>
+      <StyledAccordionDetails className={classes.content}>
         {children}
-      </AccordionDetails>
-    </Accordion>
+      </StyledAccordionDetails>
+    </StyledAccordion>
   );
 };
 

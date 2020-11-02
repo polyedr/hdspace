@@ -1,5 +1,4 @@
 import React, { memo, useCallback } from 'react';
-import cn from 'classnames';
 import { connect } from 'react-redux';
 import StylesHeader from '../../../components/StylesHeader/StylesHeader';
 import { DropDown } from '../../../../../../components/UI/DropDown';
@@ -16,8 +15,6 @@ import {
 import { getPermissibleValue } from '../../../../../../utils/NumberHelper';
 import FONTS from '../../../../../../constants/fonts';
 import { selectCurrentEditableStyles } from '../../../../../../redux/project/selectors';
-
-const styles = require('./styles.scss');
 
 const MIN_FONT_SIZE = 1;
 const MAX_FONT_SIZE = 84;
@@ -40,7 +37,6 @@ const TypographyBlock: React.FC<Props> = ({
   fontStyle,
   fontWeight,
   fontSize,
-  textAlign,
   color,
   updateStyles,
   removeStyles,
@@ -87,7 +83,7 @@ const TypographyBlock: React.FC<Props> = ({
   );
 
   return (
-    <div className="propsElementsBlock">
+    <div>
       <StylesHeader
         title="Font"
         onClick={removeStyles}
@@ -100,95 +96,51 @@ const TypographyBlock: React.FC<Props> = ({
           'color',
         ]}
       />
-      <div className="propsElementsContentBlock">
-        <div className="propsElementsInnerBlock">
-          <div className={styles.fontLeftBlock}>
-            <DropDown
-              options={FONTS}
-              defaultValue={fontFamily}
-              value={fontFamily}
-              onChange={onFontFamilyChange}
-            />
-          </div>
-          <div className={styles.fontRightBlock}>
-            <input
-              className={styles.fontSizeField}
-              type="number"
-              min={MIN_FONT_SIZE}
-              max={MAX_FONT_SIZE}
-              value={parseFloat(fontSize)}
-              onChange={handleChangeFontSize}
-            />
-          </div>
+      <div>
+        <div>
+          <DropDown
+            options={FONTS}
+            defaultValue={fontFamily}
+            value={fontFamily}
+            onChange={onFontFamilyChange}
+          />
         </div>
-        <div className="propsElementsInnerBlock">
-          <div className={styles.fontLeftBlock}>
-            <div className={styles.fontLeftBlock__button}>
-              <button
-                type="button"
-                className={cn(
-                  styles.button,
-                  fontStyle === 'italic' && styles.button_active,
-                )}
-                onClick={handleChangeItalicFontStyle}
-              >
-                Italic
-              </button>
-            </div>
-            <div className={styles.fontLeftBlock__button}>
-              <button
-                type="button"
-                className={cn(
-                  styles.button,
-                  fontWeight === 700 && styles.button_active,
-                )}
-                onClick={handleChangeBoldFontStyle}
-              >
-                Bold
-              </button>
-            </div>
-          </div>
-          <div className={styles.fontRightBlock}>
-            <Button
-              styleType="none"
-              className={cn(
-                'mainImgBtn',
-                textAlign === 'left' && 'mainImgBtn_active',
-              )}
-              onClick={() => onTypographyAlign('left')}
-            >
-              <Icon icon="text-left" />
-            </Button>
-            <Button
-              styleType="none"
-              className={cn(
-                'mainImgBtn',
-                textAlign === 'center' && 'mainImgBtn_active',
-              )}
-              onClick={() => onTypographyAlign('center')}
-            >
-              <Icon icon="text-center" />
-            </Button>
-            <Button
-              styleType="none"
-              className={cn(
-                'mainImgBtn',
-                textAlign === 'right' && 'mainImgBtn_active',
-              )}
-              onClick={() => onTypographyAlign('right')}
-            >
-              <Icon icon="text-right" />
-            </Button>
-            {/* <Button
-              type="none"
-              className="mainImgBtn"
-              onClick={() => onTypographyAlign('justify')}
-            >
-              <Icon icon="align_justify" />
-            </Button> */}
-          </div>
+
+        <div>
+          <input
+            type="number"
+            min={MIN_FONT_SIZE}
+            max={MAX_FONT_SIZE}
+            value={parseFloat(fontSize)}
+            onChange={handleChangeFontSize}
+          />
         </div>
-        <div className="propsElementsInnerBlock">
+
+        <div>
+          <button type="button" onClick={handleChangeItalicFontStyle}>
+            Italic
+          </button>
+
+          <button type="button" onClick={handleChangeBoldFontStyle}>
+            Bold
+          </button>
+        </div>
+
+        <div>
+          <Button styleType="none" onClick={() => onTypographyAlign('left')}>
+            <Icon icon="text-left" />
+          </Button>
+
+          <Button styleType="none" onClick={() => onTypographyAlign('center')}>
+            <Icon icon="text-center" />
+          </Button>
+
+          <Button styleType="none" onClick={() => onTypographyAlign('right')}>
+            <Icon icon="text-right" />
+          </Button>
+        </div>
+
+        <div>
           <ColorSettings
             currentColor={color}
             activeItemID={activeItemID}

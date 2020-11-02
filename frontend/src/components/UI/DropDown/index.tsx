@@ -1,8 +1,5 @@
 /* eslint-disable react/no-array-index-key */ // TODO: refactor this component
 import React from 'react';
-import classNames from 'classnames';
-
-const styles = require('./styles.scss');
 
 export interface IDropDownOptions<T> {
   value: T;
@@ -89,10 +86,6 @@ export class DropDown<T> extends React.PureComponent<Props<T>, State<T>> {
     const { currentValue, optionsToRender } = this.state;
     return (
       <select
-        className={classNames(
-          styles.dropDown,
-          disabled && styles.dropDown_disabled,
-        )}
         disabled={options.length === 0 || disabled}
         value={currentValue as any}
         onChange={this.handleChange}

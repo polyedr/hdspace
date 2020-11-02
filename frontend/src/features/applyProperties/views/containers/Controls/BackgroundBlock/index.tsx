@@ -34,21 +34,18 @@ const BackgroundBlock: React.FC<Props> = ({
   );
 
   return (
-    <div className="propsElementsBlock">
+    <div>
       <StylesHeader
         title="Background"
         onClick={removeStyles}
         cssPropertiesNames={['background-color']}
       />
-      <div className="propsElementsContentBlock">
-        <div className="propsElementsInnerBlock">
-          <ColorSettings
-            currentColor={backgroundColor}
-            activeItemID={activeItemID}
-            onChange={handleColorSettingsChange}
-          />
-        </div>
-      </div>
+
+      <ColorSettings
+        currentColor={backgroundColor}
+        activeItemID={activeItemID}
+        onChange={handleColorSettingsChange}
+      />
     </div>
   );
 };

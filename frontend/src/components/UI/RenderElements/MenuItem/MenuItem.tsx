@@ -4,7 +4,6 @@ import React from 'react';
 import cn from 'classnames';
 import { makeStyles, MenuItem as MaterialMenuItem } from '@material-ui/core';
 import { MenuItemRendererProps } from '../types';
-import sharedClasses from '../../../../styles/sharedClasses';
 
 const styles = require('../styles.scss');
 
@@ -57,7 +56,6 @@ const MenuItem: React.FC<MenuItemRendererProps> = React.forwardRef(
         key={id}
         className={cn(
           className,
-          sharedClasses.unsortable,
           styles.addedElem,
           styles.disabled,
           classes.entityStyles,

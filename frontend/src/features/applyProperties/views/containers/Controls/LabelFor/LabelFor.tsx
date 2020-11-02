@@ -1,9 +1,7 @@
 import React, { memo } from 'react';
 import { connect } from 'react-redux';
-import ControlTitle from '../../../components/ControlTitle/ControlTitle';
 import { DropDown } from '../../../../../../components/UI/DropDown';
 import { AppReduxState } from '../../../../../../shared/types/app';
-import sharedClasses from '../../../../../../styles/sharedClasses';
 import { LabelElement } from '../../../../../../api/types';
 import {
   selectActiveElementParams,
@@ -13,8 +11,6 @@ import {
   PropertiesChangeProps,
   withConfigurableProperties,
 } from '../../../../../../utils/withConfigurableProperties';
-
-const styles = require('./LabelFor.scss');
 
 type StateProps = {
   labelFor: string;
@@ -55,21 +51,16 @@ const LabelFor: React.FC<Props> = ({ labelFor, inputsIDs, updateParams }) => {
   };
 
   return (
-    <section className={sharedClasses.propsSection}>
-      <header className={styles.header}>
-        <ControlTitle content="For attribute" />
-      </header>
-      <div className={sharedClasses.propsContent}>
-        <div className={sharedClasses.propsContainer}>
-          <DropDown
-            options={options}
-            defaultValue={labelFor}
-            value={labelFor}
-            onChange={handleDropdownChange}
-          />
-        </div>
-      </div>
-    </section>
+    <div>
+      <h4>For attribute</h4>
+
+      <DropDown
+        options={options}
+        defaultValue={labelFor}
+        value={labelFor}
+        onChange={handleDropdownChange}
+      />
+    </div>
   );
 };
 

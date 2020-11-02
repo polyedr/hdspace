@@ -8,8 +8,6 @@ import {
 } from '../../../../../../utils/withConfigurableProperties';
 import { TextinputElement } from '../../../../../../api/types';
 
-const styles = require('./Placeholder.scss');
-
 type StateProps = {
   placeholder: string;
 };
@@ -33,20 +31,16 @@ const Placeholder: React.FC<Props> = ({ placeholder, updateParams }) => {
   );
 
   return (
-    <div className="propsElementsBlock">
-      <p className="propsElementsBlockTitle">Placeholder</p>
-      <div className="propsElementsContentBlock">
-        <div className="propsElementsInnerBlock">
-          <input
-            className={styles.labelField}
-            id="placeholder_setting_input"
-            type="text"
-            placeholder={placeholder}
-            value={placeholder}
-            onChange={handlePlaceholderChange}
-          />
-        </div>
-      </div>
+    <div>
+      <h4>Placeholder</h4>
+
+      <input
+        id="placeholder_setting_input"
+        type="text"
+        placeholder={placeholder}
+        value={placeholder}
+        onChange={handlePlaceholderChange}
+      />
     </div>
   );
 };

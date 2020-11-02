@@ -8,8 +8,6 @@ import {
 } from '../../../../../../utils/withConfigurableProperties';
 import { updateElementImage } from '../../../../../../redux/project/actions';
 
-const styles = require('./Image.scss');
-
 const mapDispatch = {
   updateElementImage,
 };
@@ -36,22 +34,18 @@ const Component: React.FC<Props> = (props) => {
   );
 
   return (
-    <div className="propsElementsBlock">
-      <p className="propsElementsBlockTitle">Image</p>
-      <div className="propsElementsContentBlock">
-        <div className="propsElementsInnerBlock">
-          <label className={styles.uploadButton}>
-            Choose image
-            <input
-              className={styles.uploadField}
-              type="file"
-              accept=".jpg, .jpeg, .png"
-              name="upload"
-              onChange={handleChangeFileInput}
-            />
-          </label>
-        </div>
-      </div>
+    <div>
+      <h4>Image</h4>
+
+      <label>
+        Choose image
+        <input
+          type="file"
+          accept=".jpg, .jpeg, .png"
+          name="upload"
+          onChange={handleChangeFileInput}
+        />
+      </label>
     </div>
   );
 };

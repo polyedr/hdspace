@@ -1,7 +1,6 @@
 /* eslint-disable no-console */
 
 import React, { useCallback, memo } from 'react';
-import * as R from 'ramda';
 import { connect } from 'react-redux';
 import StylesHeader from '../../../components/StylesHeader/StylesHeader';
 import { Entity } from '../../../../../../domain/core';
@@ -15,8 +14,6 @@ import {
   selectCurrentEditableStyles,
   selectFreeCanvasMode,
 } from '../../../../../../redux/project/selectors';
-
-const styles = require('./SizeBlock.scss');
 
 enum Unit {
   px = 'px',
@@ -133,46 +130,44 @@ const SizeBlock: React.FC<Props> = (props) => {
     const inputValue = size === 'auto' ? 'auto' : parsedSize;
 
     return (
-      <>
+      <div>
         <input
-          className={styles.sizeField}
           type="text"
           name={sizeName}
           value={inputValue}
           onChange={handleInputChange}
           disabled={inputValue === 'auto'}
         />
+
         <select
-          className="dropDown"
           onChange={(event) => handleSelectChange(event, sizeName)}
           value={Unit[getUnitFromValue(size)]}
           name={`${sizeName}_unit`}
         >
-          {R.keys(Unit).map((key, index) => (
+          {Object.keys(Unit).map((key, index) => (
             // eslint-disable-next-line react/no-array-index-key
             <option key={index} value={key}>
               {Unit[key]}
             </option>
           ))}
         </select>
-      </>
+      </div>
     );
   };
 
   return !isFreeCanvasMode ? (
-    <div className="propsElementsBlock">
+    <section>
       <StylesHeader
         title="Width & Height"
         onClick={removeStyles}
         cssPropertiesNames={['width', 'height']}
       />
-      <div className="propsElementsContentBlock">
-        <div className="propsElementsInnerBlock">
-          <div className={styles.sizeBlock}>{renderSizeControl('width')}</div>
-          <div className={styles.sizeBlock}>{renderSizeControl('height')}</div>
-        </div>
+
+      <div>
+        {renderSizeControl('height')}
+        {renderSizeControl('width')}
       </div>
-    </div>
+    </section>
   ) : null;
 };
 

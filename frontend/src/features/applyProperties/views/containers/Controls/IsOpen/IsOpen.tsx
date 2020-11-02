@@ -1,8 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Switch, makeStyles } from '@material-ui/core';
+import { Switch } from '@material-ui/core';
 import { AppReduxState } from '../../../../../../shared/types/app';
-import sharedClasses from '../../../../../../styles/sharedClasses';
 import { DropdownElement } from '../../../../../../api/types';
 import {
   PropertiesChangeProps,
@@ -24,43 +23,16 @@ function mapState(state: AppReduxState): StateProps {
 
 type Props = StateProps & PropertiesChangeProps<DropdownElement>;
 
-const useStyles = makeStyles({
-  switchBase: {
-    '&$checked': {
-      color: '#18a689',
-    },
-    '&$checked + $track': {
-      backgroundColor: '#18a689',
-    },
-  },
-  checked: {},
-  track: {},
-});
-
 const IsOpen: React.FC<Props> = ({ isOpen, updateParams }) => {
-  const classes = useStyles();
-
   const handleSwitchChange = () => {
     updateParams({ isOpen: !isOpen });
   };
 
   return (
-    <div className={sharedClasses.propsSection}>
-      <p className={sharedClasses.propsTitle}>Open component</p>
-      <div className={sharedClasses.propsContent}>
-        <div className={sharedClasses.propsContainer}>
-          <Switch
-            size="small"
-            checked={isOpen}
-            onChange={handleSwitchChange}
-            classes={{
-              switchBase: classes.switchBase,
-              track: classes.track,
-              checked: classes.checked,
-            }}
-          />
-        </div>
-      </div>
+    <div>
+      <h4>Open component</h4>
+
+      <Switch size="small" checked={isOpen} onChange={handleSwitchChange} />
     </div>
   );
 };

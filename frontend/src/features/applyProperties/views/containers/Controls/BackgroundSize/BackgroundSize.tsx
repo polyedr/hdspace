@@ -1,7 +1,6 @@
 /* eslint-disable no-console */
 
 import React, { useCallback, memo } from 'react';
-import * as R from 'ramda';
 import { connect } from 'react-redux';
 import StylesHeader from '../../../components/StylesHeader/StylesHeader';
 import { AppReduxState } from '../../../../../../shared/types/app';
@@ -12,8 +11,6 @@ import {
   withConfigurableProperties,
 } from '../../../../../../utils/withConfigurableProperties';
 import { selectCurrentEditableStyles } from '../../../../../../redux/project/selectors';
-
-const styles = require('./BackgroundSize.scss');
 
 enum Unit {
   px = 'px',
@@ -140,44 +137,43 @@ const BackgroundSize: React.FC<Props> = memo((props) => {
     const inputValue = size === 'auto' ? 'auto' : parsedSize;
 
     return (
-      <>
+      <div>
         <input
-          className={styles.sizeField}
           type="text"
           name={sizeName}
           value={inputValue}
           onChange={handleInputChange}
           disabled={inputValue === 'auto'}
         />
+
         <select
           className="dropDown"
           onChange={(event) => handleSelectChange(event, sizeName)}
           value={Unit[getUnitFromValue(size)]}
           name={`${sizeName}_unit`}
         >
-          {R.keys(Unit).map((key, index) => (
+          {Object.keys(Unit).map((key, index) => (
             // eslint-disable-next-line react/no-array-index-key
             <option key={index} value={key}>
               {Unit[key]}
             </option>
           ))}
         </select>
-      </>
+      </div>
     );
   };
 
   return (
-    <div className="propsElementsBlock">
+    <div>
       <StylesHeader
         title="Background Size"
         onClick={removeStyles}
         cssPropertiesNames={['background-size']}
       />
-      <div className="propsElementsContentBlock">
-        <div className="propsElementsInnerBlock">
-          <div className={styles.sizeBlock}>{renderSizeControl('width')}</div>
-          <div className={styles.sizeBlock}>{renderSizeControl('height')}</div>
-        </div>
+
+      <div>
+        {renderSizeControl('width')}
+        {renderSizeControl('height')}
       </div>
     </div>
   );

@@ -12,8 +12,6 @@ import {
   withConfigurableProperties,
 } from '../../../../../../utils/withConfigurableProperties';
 
-const styles = require('./FlexGrow.scss');
-
 function mapState(state: AppReduxState) {
   const flexGrow = selectCurrentEditableStyles(state, 'flex-grow');
   const activeItemID = selectActiveElement(state).id;
@@ -44,21 +42,19 @@ const FlexGrow: React.FC<Props> = ({
   };
 
   return isFlexItem ? (
-    <div className={styles.container}>
+    <div>
       <StylesHeader
         title="Flex Grow"
         onClick={removeStyles}
         cssPropertiesNames={['flex-grow']}
       />
-      <div>
-        <input
-          className={styles.textField}
-          type="number"
-          value={flexGrow}
-          min={0}
-          onChange={handleTextFieldChange}
-        />
-      </div>
+
+      <input
+        type="number"
+        value={flexGrow}
+        min={0}
+        onChange={handleTextFieldChange}
+      />
     </div>
   ) : null;
 };

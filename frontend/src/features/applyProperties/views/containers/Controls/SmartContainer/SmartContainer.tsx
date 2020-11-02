@@ -57,35 +57,35 @@ const SmartContainer: React.FC<PropertiesChangeProps<ImageElement>> = () => {
   const handleNNProcessing = useNNProcessing(element.id, imageFile);
 
   return (
-    <div className="propsElementsBlock">
-      <p className="propsElementsBlockTitle">Screenshot</p>
-      <div className="propsElementsContentBlock">
-        <div className="propsElementsInnerBlock">
-          <label
-            htmlFor={`upload-component-wireframe-${element.id}`}
+    <div>
+      <h4>Screenshot</h4>
+
+      <div>
+        <label
+          htmlFor={`upload-component-wireframe-${element.id}`}
+          className={classes.button}
+        >
+          Choose image
+          <input
+            className={classes.uploadField}
+            type="file"
+            accept=".jpg, .jpeg, .png"
+            name="upload"
+            onChange={handleImageChange}
+            id={`upload-component-wireframe-${element.id}`}
+          />
+        </label>
+
+        {element.parameters.imageURL && (
+          <button
+            type="button"
             className={classes.button}
+            disabled={!imageFile}
+            onClick={handleNNProcessing}
           >
-            Choose image
-            <input
-              className={classes.uploadField}
-              type="file"
-              accept=".jpg, .jpeg, .png"
-              name="upload"
-              onChange={handleImageChange}
-              id={`upload-component-wireframe-${element.id}`}
-            />
-          </label>
-          {element.parameters.imageURL && (
-            <button
-              type="button"
-              className={classes.button}
-              disabled={!imageFile}
-              onClick={handleNNProcessing}
-            >
-              Analyze
-            </button>
-          )}
-        </div>
+            Analyze
+          </button>
+        )}
       </div>
     </div>
   );

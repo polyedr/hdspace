@@ -1,7 +1,5 @@
 import React, { memo } from 'react';
 import { connect } from 'react-redux';
-
-import ControlTitle from '../../../components/ControlTitle/ControlTitle';
 import { HEADING_TYPE, HEADING_SETTINGS } from './constants';
 import { DropDown } from '../../../../../../components/UI/DropDown';
 import {
@@ -9,14 +7,11 @@ import {
   HeadingType as HeadingTagType,
 } from '../../../../../../api/types';
 import { AppReduxState } from '../../../../../../shared/types/app';
-import sharedClasses from '../../../../../../styles/sharedClasses';
 import { selectActiveElementParams } from '../../../../../../redux/project/selectors';
 import {
   PropertiesChangeProps,
   withConfigurableProperties,
 } from '../../../../../../utils/withConfigurableProperties';
-
-const styles = require('./HeadingType.scss');
 
 type StateProps = {
   headingType: HeadingTagType;
@@ -45,23 +40,16 @@ const HeadingType: React.FC<Props> = ({
   };
 
   return (
-    <>
-      <section className={sharedClasses.propsSection}>
-        <header className={styles.header}>
-          <ControlTitle content="Heading type" />
-        </header>
-        <div className={sharedClasses.propsContent}>
-          <div className={sharedClasses.propsContainer}>
-            <DropDown
-              options={HEADING_TYPE}
-              defaultValue={headingType}
-              value={headingType}
-              onChange={handleDropdownChange}
-            />
-          </div>
-        </div>
-      </section>
-    </>
+    <div>
+      <h4>Heading type</h4>
+
+      <DropDown
+        options={HEADING_TYPE}
+        defaultValue={headingType}
+        value={headingType}
+        onChange={handleDropdownChange}
+      />
+    </div>
   );
 };
 

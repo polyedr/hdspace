@@ -16,7 +16,6 @@ import {
   selectElementById,
 } from '../../../../../../redux/project/selectors';
 import { AppReduxState } from '../../../../../../shared/types/app';
-import sharedClasses from '../../../../../../styles/sharedClasses';
 import {
   addChildToElement,
   deleteItem,
@@ -26,8 +25,6 @@ import {
   withConfigurableProperties,
 } from '../../../../../../utils/withConfigurableProperties';
 import generateUniqueName from '../../../../../../utils/generateUniqueName';
-
-const styles = require('./SelectOptions.scss');
 
 type StateProps = {
   selectMenuID: string;
@@ -124,29 +121,23 @@ const SelectOptions: React.FC<Props> = ({
   };
 
   return (
-    <div className={sharedClasses.propsSection}>
-      <div className={styles.optionsHeader}>
-        <p className={styles.optionsTitle}>Select Options</p>
-        <Button
-          className={sharedClasses.addButton}
-          styleType="none"
-          onClick={handleAddButtonClick}
-        >
+    <div>
+      <div>
+        <h4>Select Options</h4>
+
+        <Button styleType="none" onClick={handleAddButtonClick}>
           <Icon icon="add" />
         </Button>
       </div>
+
       {selectOptions.map(({ id, parameters: { name } }) => (
         <Accordion key={id}>
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="panel1a-content"
-            id="panel1a-header"
-          >
-            <div className={styles.optionSummary}>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <div>
               {name}
+
               {selectOptions.length > 1 && (
                 <Button
-                  className={sharedClasses.propsButton}
                   styleType="none"
                   onClick={() => handleDeleteButtonClick(id)}
                 >
@@ -155,29 +146,27 @@ const SelectOptions: React.FC<Props> = ({
               )}
             </div>
           </AccordionSummary>
+
           <AccordionDetails>
-            <div className={styles.optionBlock}>
-              <p className={sharedClasses.propsTitle}>Option name</p>
-              <div className={sharedClasses.propsContainer}>
-                <textarea
-                  className={styles.optionField}
-                  name="name"
-                  value={name}
-                  onChange={(event) => handleNameFieldChange(id, event)}
-                />
-              </div>
-              <p className={sharedClasses.propsTitle}>Option value</p>
-              <div className={sharedClasses.propsContainer}>
-                <textarea
-                  className={styles.optionField}
-                  name="value"
-                  value={
-                    options.find((option) => option.id === id)?.parameters.value
-                  }
-                  onBlur={(event) => handleValueFieldBlur(id, event)}
-                  onChange={(event) => handleValueFieldChange(id, event)}
-                />
-              </div>
+            <div>
+              <h5>Option name</h5>
+
+              <textarea
+                name="name"
+                value={name}
+                onChange={(event) => handleNameFieldChange(id, event)}
+              />
+
+              <h5>Option value</h5>
+
+              <textarea
+                name="value"
+                value={
+                  options.find((option) => option.id === id)?.parameters.value
+                }
+                onBlur={(event) => handleValueFieldBlur(id, event)}
+                onChange={(event) => handleValueFieldChange(id, event)}
+              />
             </div>
           </AccordionDetails>
         </Accordion>

@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import classNames from 'classnames';
 import { connect } from 'react-redux';
 import Button from '../../../../../../components/UI/Button';
 import Icon from '../../../../../../components/UI/Icon';
@@ -20,8 +19,6 @@ import {
   selectActiveElementParams,
   selectScreens,
 } from '../../../../../../redux/project/selectors';
-
-const styles = require('./styles.scss');
 
 type StateProps = {
   screens: Screen[];
@@ -95,52 +92,39 @@ const ActionBlock: React.FC<Props> = ({ action, screens, updateParams }) => {
   }, [action]);
 
   return (
-    <div className="propsElementsBlock">
-      <p className="propsElementsBlockTitle">Action</p>
-      <div className="propsElementsContentBlock">
-        <div className="propsElementsInnerBlock">
-          <Button
-            className={classNames(
-              'mainImgBtn',
-              !isExternalLink && 'mainImgBtn_active',
-            )}
-            styleType="none"
-            onClick={handlePageLinkButtonClick}
-          >
-            <Icon icon="link" />
-          </Button>
-          <Button
-            className={classNames(
-              'mainImgBtn',
-              isExternalLink && 'mainImgBtn_active',
-            )}
-            styleType="none"
-            onClick={handleExternalLinkButtonClick}
-          >
-            <Icon icon="page" />
-          </Button>
-          <div className={styles.inputsBlock}>
-            {isExternalLink ? (
-              <input
-                type="text"
-                placeholder="Enter a page URL"
-                value={getCurrentUrl('external-link')}
-                onChange={handleExternalUrlInputChange}
-              />
-            ) : (
-              <DropDown
-                defaultValue={getCurrentUrl('internal-link')}
-                value={getCurrentUrl('internal-link')}
-                options={[{ label: 'No screen', value: 'noScreen' }].concat(
-                  screens.map((screen) => ({
-                    label: `${screen.name}`,
-                    value: `${screen.id}`,
-                  })),
-                )}
-                onChange={handlePageUrlDropdownChange}
-              />
-            )}
-          </div>
+    <div>
+      <h4>Action</h4>
+
+      <div>
+        <Button styleType="none" onClick={handlePageLinkButtonClick}>
+          <Icon icon="link" />
+        </Button>
+
+        <Button styleType="none" onClick={handleExternalLinkButtonClick}>
+          <Icon icon="page" />
+        </Button>
+
+        <div>
+          {isExternalLink ? (
+            <input
+              type="text"
+              placeholder="Enter a page URL"
+              value={getCurrentUrl('external-link')}
+              onChange={handleExternalUrlInputChange}
+            />
+          ) : (
+            <DropDown
+              defaultValue={getCurrentUrl('internal-link')}
+              value={getCurrentUrl('internal-link')}
+              options={[{ label: 'No screen', value: 'noScreen' }].concat(
+                screens.map((screen) => ({
+                  label: `${screen.name}`,
+                  value: `${screen.id}`,
+                })),
+              )}
+              onChange={handlePageUrlDropdownChange}
+            />
+          )}
         </div>
       </div>
     </div>

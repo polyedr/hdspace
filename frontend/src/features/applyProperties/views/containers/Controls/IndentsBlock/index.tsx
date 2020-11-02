@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react';
-import classNames from 'classnames';
+import cn from 'classnames';
 import { connect } from 'react-redux';
+import makeStyles from '@material-ui/core/styles/makeStyles';
 import StylesHeader from '../../../components/StylesHeader/StylesHeader';
 import { Entity } from '../../../../../../domain/core';
 import { AppReduxState } from '../../../../../../shared/types/app';
@@ -11,7 +12,35 @@ import {
 } from '../../../../../../utils/withConfigurableProperties';
 import { selectCurrentEditableStyles } from '../../../../../../redux/project/selectors';
 
-const styles = require('./styles.scss');
+const useStyles = makeStyles({
+  indentsController: {
+    position: 'relative',
+    display: 'grid',
+    gridTemplateRows: 'repeat(5, 24px)',
+    gridTemplateColumns: 'repeat(5, 48px)',
+    gap: '4px',
+    marginLeft: '8px',
+    '&::before': {
+      content: '""',
+      position: 'absolute',
+      zIndex: 0,
+      top: 25,
+      left: 50,
+      display: 'block',
+      width: 154,
+      height: 84,
+      border: '1px dashed #949494',
+      textAlign: 'right',
+    },
+  },
+
+  indentsInput: {
+    position: 'relative',
+    zIndex: 1,
+    width: '100%',
+    padding: '2px 6px 2px 4px',
+  },
+});
 
 const MIN_PADDING = 0;
 
@@ -31,19 +60,19 @@ function mapState(state: AppReduxState) {
 type Props = ReturnType<typeof mapState> &
   PropertiesChangeProps<LibraryElement<Entity>>;
 
-const IndentsBlock: React.FC<Props> = (props) => {
-  const {
-    updateStyles,
-    removeStyles,
-    marginTop,
-    marginRight,
-    marginBottom,
-    marginLeft,
-    paddingTop,
-    paddingRight,
-    paddingBottom,
-    paddingLeft,
-  } = props;
+const IndentsBlock: React.FC<Props> = ({
+  updateStyles,
+  removeStyles,
+  marginTop,
+  marginRight,
+  marginBottom,
+  marginLeft,
+  paddingTop,
+  paddingRight,
+  paddingBottom,
+  paddingLeft,
+}) => {
+  const classes = useStyles();
 
   const handleIndentChange = useCallback(
     (type: string, value: string) => {
@@ -68,111 +97,108 @@ const IndentsBlock: React.FC<Props> = (props) => {
           'padding-left',
         ]}
       />
-      <div className="propsElementsContentBlock">
-        <div className="propsElementsInnerBlock">
-          <div className={styles.indentsController}>
-            <input
-              className={classNames(
-                styles.indentsInput,
-                styles.indentsInput_margin,
-                styles.indentsInput_margin_top,
-              )}
-              type="number"
-              value={parseInt(marginTop)}
-              onChange={(event) =>
-                handleIndentChange('margin-top', `${event.target.value}px`)
-              }
-            />
-            <input
-              className={classNames(
-                styles.indentsInput,
-                styles.indentsInput_margin,
-                styles.indentsInput_margin_right,
-              )}
-              type="number"
-              value={parseInt(marginRight)}
-              onChange={(event) =>
-                handleIndentChange('margin-right', `${event.target.value}px`)
-              }
-            />
-            <input
-              className={classNames(
-                styles.indentsInput,
-                styles.indentsInput_margin,
-                styles.indentsInput_margin_bottom,
-              )}
-              type="number"
-              value={parseInt(marginBottom)}
-              onChange={(event) =>
-                handleIndentChange('margin-bottom', `${event.target.value}px`)
-              }
-            />
-            <input
-              className={classNames(
-                styles.indentsInput,
-                styles.indentsInput_margin,
-                styles.indentsInput_margin_left,
-              )}
-              type="number"
-              value={parseInt(marginLeft)}
-              onChange={(event) =>
-                handleIndentChange('margin-left', `${event.target.value}px`)
-              }
-            />
-            <input
-              className={classNames(
-                styles.indentsInput,
-                styles.indentsInput_padding,
-                styles.indentsInput_padding_top,
-              )}
-              type="number"
-              value={parseInt(paddingTop)}
-              min={MIN_PADDING}
-              onChange={(event) =>
-                handleIndentChange('padding-top', `${event.target.value}px`)
-              }
-            />
-            <input
-              className={classNames(
-                styles.indentsInput,
-                styles.indentsInput_padding,
-                styles.indentsInput_padding_right,
-              )}
-              type="number"
-              value={parseInt(paddingRight)}
-              min={MIN_PADDING}
-              onChange={(event) =>
-                handleIndentChange('padding-right', `${event.target.value}px`)
-              }
-            />
-            <input
-              className={classNames(
-                styles.indentsInput,
-                styles.indentsInput_padding,
-                styles.indentsInput_padding_bottom,
-              )}
-              type="number"
-              value={parseInt(paddingBottom)}
-              min={MIN_PADDING}
-              onChange={(event) =>
-                handleIndentChange('padding-bottom', `${event.target.value}px`)
-              }
-            />
-            <input
-              className={classNames(
-                styles.indentsInput,
-                styles.indentsInput_padding,
-                styles.indentsInput_padding_left,
-              )}
-              type="number"
-              value={parseInt(paddingLeft)}
-              min={MIN_PADDING}
-              onChange={(event) =>
-                handleIndentChange('padding-left', `${event.target.value}px`)
-              }
-            />
-          </div>
-        </div>
+      <div className={classes.indentsController}>
+        <input
+          className={cn(
+            classes.indentsInput,
+            // styles.indentsInput_margin,
+            // styles.indentsInput_margin_top,
+          )}
+          type="number"
+          value={parseInt(marginTop)}
+          onChange={(event) =>
+            handleIndentChange('margin-top', `${event.target.value}px`)
+          }
+        />
+
+        <input
+          className={cn(
+            classes.indentsInput,
+            // styles.indentsInput_margin,
+            // styles.indentsInput_margin_right,
+          )}
+          type="number"
+          value={parseInt(marginRight)}
+          onChange={(event) =>
+            handleIndentChange('margin-right', `${event.target.value}px`)
+          }
+        />
+        <input
+          className={cn(
+            classes.indentsInput,
+            // styles.indentsInput_margin,
+            // styles.indentsInput_margin_bottom,
+          )}
+          type="number"
+          value={parseInt(marginBottom)}
+          onChange={(event) =>
+            handleIndentChange('margin-bottom', `${event.target.value}px`)
+          }
+        />
+        <input
+          className={cn(
+            classes.indentsInput,
+            // styles.indentsInput_margin,
+            // styles.indentsInput_margin_left,
+          )}
+          type="number"
+          value={parseInt(marginLeft)}
+          onChange={(event) =>
+            handleIndentChange('margin-left', `${event.target.value}px`)
+          }
+        />
+        <input
+          className={cn(
+            classes.indentsInput,
+            // styles.indentsInput_padding,
+            // styles.indentsInput_padding_top,
+          )}
+          type="number"
+          value={parseInt(paddingTop)}
+          min={MIN_PADDING}
+          onChange={(event) =>
+            handleIndentChange('padding-top', `${event.target.value}px`)
+          }
+        />
+        <input
+          className={cn(
+            classes.indentsInput,
+            // styles.indentsInput_padding,
+            // styles.indentsInput_padding_right,
+          )}
+          type="number"
+          value={parseInt(paddingRight)}
+          min={MIN_PADDING}
+          onChange={(event) =>
+            handleIndentChange('padding-right', `${event.target.value}px`)
+          }
+        />
+        <input
+          className={cn(
+            classes.indentsInput,
+            // styles.indentsInput_padding,
+            // styles.indentsInput_padding_bottom,
+          )}
+          type="number"
+          value={parseInt(paddingBottom)}
+          min={MIN_PADDING}
+          onChange={(event) =>
+            handleIndentChange('padding-bottom', `${event.target.value}px`)
+          }
+        />
+        <input
+          className={cn(
+            classes.indentsInput,
+            // styles.indentsInput_padding,
+            // styles.indentsInput_padding_left,
+          )}
+          type="number"
+          value={parseInt(paddingLeft)}
+          min={MIN_PADDING}
+          onChange={(event) =>
+            handleIndentChange('padding-left', `${event.target.value}px`)
+          }
+        />
       </div>
     </div>
   );

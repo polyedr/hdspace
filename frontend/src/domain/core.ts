@@ -43,7 +43,6 @@ const CONTROLS_AFFECT_ON_PARAMS = [
   'placeholder',
   'textContent',
   'image',
-  'screenshot',
   'smartContainer',
   'value',
   'name',
@@ -372,16 +371,16 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
   dropdownMenu: dropdownMenuStyleControls,
   dropdownItem: dropdownItemStyleControls,
   video: [...videoStyleControls, 'videoSettings'],
-  pageTemplate: [...pageTemplateStyleControls],
-  emptyPageTemplate: [...emptyPageTemplateStyleControls],
-  grid: [...gridStyleControls],
-  columns: [...columnsStyleControls],
-  subscribeForm: [...subscribeFormStyleControls],
+  pageTemplate: pageTemplateStyleControls,
+  emptyPageTemplate: emptyPageTemplateStyleControls,
+  grid: gridStyleControls,
+  columns: columnsStyleControls,
+  subscribeForm: subscribeFormStyleControls,
   smartContainer: [...smartContainerStyleControls, 'smartContainer'],
   undefined: undefinedControls,
-  cardsSection: [...cardsSectionStyleControls],
-  featureSection: [...featureSectionStyleControls],
-  section: [...containerStyleControls],
+  cardsSection: cardsSectionStyleControls,
+  featureSection: featureSectionStyleControls,
+  section: containerStyleControls,
 } as const;
 
 export type AvailableChildren = {
@@ -491,7 +490,6 @@ export const AVAILABLE_CHILDREN: AvailableChildren = {
       max: Infinity,
     },
   },
-  screenshot: {},
   smartContainer: {
     all: {
       min: 0,

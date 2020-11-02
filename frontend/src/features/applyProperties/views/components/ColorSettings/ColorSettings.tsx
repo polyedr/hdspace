@@ -2,11 +2,20 @@ import React, { memo, useCallback, useState, useEffect } from 'react';
 import cn from 'classnames';
 import { toState } from 'react-color/lib/helpers';
 import { ColorResult } from 'react-color';
+import makeStyles from '@material-ui/core/styles/makeStyles';
 import {
   ColorPicker,
   normalizeColor,
   useColor,
 } from '../../../../../components/UI/ColorPicker';
+
+const useStyles = makeStyles({
+  root: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+});
 
 type Props = {
   currentColor: string;
@@ -19,6 +28,7 @@ const ColorSettings: React.FC<Props> = ({
   activeItemID,
   onChange,
 }) => {
+  const classes = useStyles();
   const [currentBackgroundColor, setCurrentBackgroundColor] = useColor(
     currentColor,
     activeItemID,
@@ -62,8 +72,9 @@ const ColorSettings: React.FC<Props> = ({
   );
 
   return (
-    <>
+    <div className={classes.root}>
       <ColorPicker color={currentColor} onChangeComplete={handleColorChange} />
+
       <input
         className={cn('colorField', {
           inputWithError: !currentBackgroundColor.isValid,
@@ -73,7 +84,7 @@ const ColorSettings: React.FC<Props> = ({
         onBlur={({ target: { value } }) => handleColorInputBlur(value)}
         onChange={({ target: { value } }) => handleColorChange(value)}
       />
-    </>
+    </div>
   );
 };
 

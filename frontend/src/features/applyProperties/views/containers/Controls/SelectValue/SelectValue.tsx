@@ -1,10 +1,8 @@
 import React, { memo, useEffect } from 'react';
 import { connect } from 'react-redux';
-import ControlTitle from '../../../components/ControlTitle/ControlTitle';
 import { DropDown } from '../../../../../../components/UI/DropDown';
 import { SelectElement } from '../../../../../../api/types';
 import { AppReduxState } from '../../../../../../shared/types/app';
-import sharedClasses from '../../../../../../styles/sharedClasses';
 import {
   selectActiveItemChildren,
   selectActiveElementParams,
@@ -14,8 +12,6 @@ import {
   PropertiesChangeProps,
   withConfigurableProperties,
 } from '../../../../../../utils/withConfigurableProperties';
-
-const styles = require('./SelectValue.scss');
 
 type StateProps = {
   value: string;
@@ -61,26 +57,19 @@ const SelectValue: React.FC<Props> = (props) => {
   };
 
   return (
-    <>
-      <section className={sharedClasses.propsSection}>
-        <header className={styles.header}>
-          <ControlTitle content="Select default value" />
-        </header>
-        <div className={sharedClasses.propsContent}>
-          <div className={sharedClasses.propsContainer}>
-            <DropDown
-              options={optionsValues.map((option) => ({
-                label: option,
-                value: option,
-              }))}
-              defaultValue={value}
-              value={value}
-              onChange={handleDropdownChange}
-            />
-          </div>
-        </div>
-      </section>
-    </>
+    <div>
+      <h4>Select default value</h4>
+
+      <DropDown
+        options={optionsValues.map((option) => ({
+          label: option,
+          value: option,
+        }))}
+        defaultValue={value}
+        value={value}
+        onChange={handleDropdownChange}
+      />
+    </div>
   );
 };
 

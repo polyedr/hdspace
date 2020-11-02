@@ -1,6 +1,5 @@
 import React, { memo, useCallback } from 'react';
 import cn from 'classnames';
-import ControlTitle from '../ControlTitle/ControlTitle';
 import { JUSTIFY_VALUES, ALIGN_VALUES } from './constants';
 import Button from '../../../../../components/UI/Button';
 import { DropDown } from '../../../../../components/UI/DropDown';
@@ -36,7 +35,7 @@ const FlexProperties: React.FC<Props> = ({ properties, onChange }) => {
     <>
       <section className="propsElementsBlock">
         <header className={styles.header}>
-          <ControlTitle content="Direction" />
+          <h4>Direction</h4>
         </header>
         <div className={styles.content}>
           <Button
@@ -66,7 +65,7 @@ const FlexProperties: React.FC<Props> = ({ properties, onChange }) => {
       </section>
       <section className="propsElementsBlock">
         <header className={styles.header}>
-          <ControlTitle content="Align" />
+          <h4>Align</h4>
         </header>
         <div
           className={cn(

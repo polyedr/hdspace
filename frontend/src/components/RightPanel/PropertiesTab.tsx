@@ -16,7 +16,6 @@ import MapProps from '../../features/applyProperties/views/containers/Controls/M
 import Placeholder from '../../features/applyProperties/views/containers/Controls/Placeholder/Placeholder';
 import TextContent from '../../features/applyProperties/views/containers/Controls/TextContent/TextContent';
 import Image from '../../features/applyProperties/views/containers/Controls/Image/Image';
-import Screenshot from '../../features/applyProperties/views/containers/Controls/Screenshot/Screenshot';
 import SmartContainer from '../../features/applyProperties/views/containers/Controls/SmartContainer/SmartContainer';
 import Type from '../../features/applyProperties/views/containers/Controls/Type/Type';
 import Value from '../../features/applyProperties/views/containers/Controls/Value/Value';
@@ -49,7 +48,6 @@ const CONTROLS: Record<Control, React.ComponentType<any>> = {
   placeholder: Placeholder,
   textContent: TextContent,
   image: Image,
-  screenshot: Screenshot,
   smartContainer: SmartContainer,
   type: Type,
   value: Value,

@@ -8,8 +8,6 @@ import {
   withConfigurableProperties,
 } from '../../../../../../utils/withConfigurableProperties';
 
-const styles = require('./TextContent.scss');
-
 type StateProps = {
   content: string;
 };
@@ -33,18 +31,14 @@ const TextContent: React.FC<Props> = ({ content, updateParams }) => {
   );
 
   return (
-    <div className="propsElementsBlock">
-      <p className="propsElementsBlockTitle">Text content</p>
-      <div className="propsElementsContentBlock">
-        <div className="propsElementsInnerBlock">
-          <textarea
-            className={styles.textContentField}
-            name="text_content"
-            value={content}
-            onChange={handleTextContentChange}
-          />
-        </div>
-      </div>
+    <div>
+      <h4>Text content</h4>
+
+      <textarea
+        name="text_content"
+        value={content}
+        onChange={handleTextContentChange}
+      />
     </div>
   );
 };

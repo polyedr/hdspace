@@ -19,8 +19,6 @@ import {
 } from '../../../../../../utils/withConfigurableProperties';
 import { getPermissibleValue } from '../../../../../../utils/NumberHelper';
 
-const styles = require('./MapProps.scss');
-
 const ZOOM_STEP = 0.5;
 
 type StateProps = {
@@ -105,53 +103,49 @@ const MapProps: React.FC<Props> = ({ map_props, updateParams }) => {
   );
 
   return (
-    <div className="propsElementsBlock">
-      <p className="propsElementsBlockTitle">Map props</p>
-      <div className="propsElementsContentBlock">
-        <div className="propsElementsInnerBlock">
-          <input
-            className={styles.mapPropsField}
-            type="number"
-            id="map_center_lat"
-            name="center_lat"
-            value={map_props.center.lat}
-            min={MIN_LATITUDE}
-            max={MAX_LATITUDE}
-            step={ZOOM_STEP}
-            onChange={handleCenterMapCoordsChange}
-          />
-          <input
-            className={styles.mapPropsField}
-            type="number"
-            id="map_center_lng"
-            name="center_lng"
-            value={map_props.center.lng}
-            min={MIN_LONGITUDE}
-            max={MAX_LONGITUDE}
-            step={ZOOM_STEP}
-            onChange={handleCenterMapCoordsChange}
-          />
-          <input
-            className={styles.mapPropsField}
-            type="number"
-            id="map_zoom"
-            name="zoom"
-            value={map_props.zoom}
-            min={MIN_MAP_ZOOM}
-            max={MAX_MAP_ZOOM}
-            onChange={handleMapZoomChange}
-          />
-        </div>
-        <div className="propsElementsInnerBlock">
-          <input
-            className={styles.mapPropsTextField}
-            type="text"
-            name="markerText"
-            id="map_markerText"
-            value={map_props.markerText}
-            onChange={handleMarkerTextChange}
-          />
-        </div>
+    <div>
+      <h4>Map props</h4>
+
+      <div>
+        <input
+          type="number"
+          id="map_center_lat"
+          name="center_lat"
+          value={map_props.center.lat}
+          min={MIN_LATITUDE}
+          max={MAX_LATITUDE}
+          step={ZOOM_STEP}
+          onChange={handleCenterMapCoordsChange}
+        />
+        <input
+          type="number"
+          id="map_center_lng"
+          name="center_lng"
+          value={map_props.center.lng}
+          min={MIN_LONGITUDE}
+          max={MAX_LONGITUDE}
+          step={ZOOM_STEP}
+          onChange={handleCenterMapCoordsChange}
+        />
+        <input
+          type="number"
+          id="map_zoom"
+          name="zoom"
+          value={map_props.zoom}
+          min={MIN_MAP_ZOOM}
+          max={MAX_MAP_ZOOM}
+          onChange={handleMapZoomChange}
+        />
+      </div>
+
+      <div>
+        <input
+          type="text"
+          name="markerText"
+          id="map_markerText"
+          value={map_props.markerText}
+          onChange={handleMarkerTextChange}
+        />
       </div>
     </div>
   );
