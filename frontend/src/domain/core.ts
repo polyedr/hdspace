@@ -81,32 +81,35 @@ export type AvailableControls = {
 };
 
 export const rootStyleControls = ['background'] as const;
+
 export const containerStyleControls = [
   'indents',
   'size',
-  'display',
   'typography',
-  'border',
   'background',
+  'border',
+  'display',
   'flexGrow',
 ] as const;
+
 export const divBlockStyleControls = [
   'indents',
   'size',
-  'display',
   'typography',
-  'border',
   'background',
+  'border',
+  'display',
 ] as const;
 
 export const buttonStyleControls = [
   'indents',
   'size',
-  'display',
   'typography',
-  'border',
   'background',
+  'border',
+  'display',
 ] as const;
+
 export const buttonParamsControls = [
   'textContent',
   'action',
@@ -117,165 +120,190 @@ export const textinputStyleControls = [
   'indents',
   'size',
   'typography',
-  'border',
   'background',
+  'border',
 ] as const;
+
 export const textareaStyleControls = [
   'indents',
   'size',
   'typography',
-  'border',
   'background',
+  'border',
 ] as const;
+
 export const checkboxStyleControls = ['indents', 'size', 'background'] as const;
+
 export const radiobuttonStyleControls = [
   'indents',
   'size',
   'background',
 ] as const;
+
 export const labelStyleControls = [
   'indents',
-  'display',
   'size',
   'typography',
-  'border',
   'background',
+  'border',
+  'display',
 ] as const;
+
 export const hyperlinkStyleControls = [
   'indents',
   'size',
-  'display',
   'typography',
-  'border',
   'background',
+  'border',
+  'display',
 ] as const;
+
 export const headingStyleControls = [
   'indents',
   'size',
   'typography',
-  'border',
   'background',
+  'border',
 ] as const;
+
 export const paragraphStyleControls = [
   'indents',
   'size',
   'typography',
-  'border',
   'background',
+  'border',
 ] as const;
+
 export const ocrtextStyleControls = [
   'indents',
   'size',
   'typography',
-  'border',
   'background',
+  'border',
 ] as const;
+
 export const textBlockStyleControls = [
   'indents',
   'size',
   'typography',
-  'border',
   'background',
+  'border',
 ] as const;
+
 export const listStyleControls = [
   'indents',
   'size',
-  'display',
-  'border',
   'background',
+  'border',
+  'display',
   'bullets',
 ] as const;
+
 export const listItemStyleControls = [
   'indents',
   'size',
   'typography',
-  'border',
   'background',
+  'border',
 ] as const;
+
 export const imageStyleControls = [
   'indents',
   'size',
-  'border',
   'background',
+  'border',
 ] as const;
+
 export const smartContainerStyleControls = [
   'indents',
   'size',
-  'display',
   'typography',
-  'border',
   'background',
+  'border',
+  'display',
 ] as const;
+
 export const selectStyleControls = [
   'indents',
   'size',
   'typography',
-  'border',
   'background',
+  'border',
 ] as const;
+
 export const selectMenuStyleControls = [
   'indents',
   'size',
   'border',
   'background',
 ] as const;
+
 export const selectItemStyleControls = [
   'indents',
   'size',
   'typography',
-  'border',
   'background',
+  'border',
 ] as const;
+
 export const mapStyleControls = [
   'indents',
   'size',
   'typography',
-  'border',
   'background',
+  'border',
 ] as const;
+
 export const calendarStyleControls = [
   'indents',
   'size',
   'typography',
-  'border',
   'background',
+  'border',
 ] as const;
+
 export const clockStyleControls = [
   'indents',
   'size',
   'typography',
-  'border',
   'background',
+  'border',
 ] as const;
+
 export const dropdownStyleControls = [
   'indents',
   'size',
   'typography',
-  'border',
   'background',
+  'border',
 ] as const;
+
 export const dropdownMenuStyleControls = [
   'indents',
   'size',
   'border',
   'background',
 ] as const;
+
 export const dropdownItemStyleControls = [
   'indents',
   'size',
   'typography',
-  'border',
   'background',
+  'border',
 ] as const;
+
 export const videoStyleControls = ['indents', 'size', 'border'] as const;
+
 export const pageTemplateStyleControls = [
   'indents',
   'size',
-  'display',
   'typography',
-  'border',
   'background',
+  'border',
+  'display',
 ] as const;
+
 export const emptyPageTemplateStyleControls = [
   'indents',
   'size',
@@ -284,46 +312,52 @@ export const emptyPageTemplateStyleControls = [
   'border',
   'background',
 ] as const;
+
 export const gridStyleControls = [
   'indents',
   'size',
-  'display',
   'typography',
-  'border',
   'background',
+  'border',
+  'display',
 ] as const;
+
 export const columnsStyleControls = [
   'indents',
   'size',
-  'display',
   'typography',
-  'border',
   'background',
+  'border',
+  'display',
 ] as const;
+
 export const subscribeFormStyleControls = [
   'indents',
   'size',
-  'display',
   'typography',
-  'border',
   'background',
+  'border',
+  'display',
 ] as const;
+
 export const undefinedControls = ['size', 'background'] as const;
+
 export const cardsSectionStyleControls = [
   'indents',
   'size',
-  'display',
   'typography',
-  'border',
   'background',
+  'border',
+  'display',
 ] as const;
+
 export const featureSectionStyleControls = [
   'indents',
   'size',
-  'display',
   'typography',
-  'border',
   'background',
+  'border',
+  'display',
 ] as const;
 
 export type Control =
@@ -336,37 +370,37 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
   container: containerStyleControls,
   divBlock: divBlockStyleControls,
   button: [...buttonStyleControls, ...buttonParamsControls],
-  textinput: [...textinputStyleControls, 'type', 'textContent', 'placeholder'],
-  textarea: [...textareaStyleControls, 'textContent', 'placeholder'],
-  checkbox: [...checkboxStyleControls, 'value', 'name', 'showRipple'],
-  radiobutton: [...radiobuttonStyleControls, 'value', 'name', 'showRipple'],
-  label: [...labelStyleControls, 'textContent', 'labelFor'],
-  hyperlink: [...hyperlinkStyleControls, 'textContent', 'action'],
-  heading: [...headingStyleControls, 'textContent', 'headingType'],
-  paragraph: [...paragraphStyleControls, 'textContent'],
-  ocrtext: [...paragraphStyleControls, 'textContent'],
-  textBlock: [...textBlockStyleControls, 'textContent'],
-  list: [...listStyleControls, 'listItems', 'isOrdered'],
+  textinput: ['textContent', 'type', 'placeholder', ...textinputStyleControls],
+  textarea: ['textContent', 'placeholder', ...textareaStyleControls],
+  checkbox: ['value', 'name', ...checkboxStyleControls, 'showRipple'],
+  radiobutton: ['value', 'name', ...radiobuttonStyleControls, 'showRipple'],
+  label: ['textContent', 'labelFor', ...labelStyleControls],
+  hyperlink: ['textContent', 'action', ...hyperlinkStyleControls],
+  heading: ['textContent', 'headingType', ...headingStyleControls],
+  paragraph: ['textContent', ...paragraphStyleControls],
+  ocrtext: ['textContent', ...paragraphStyleControls],
+  textBlock: ['textContent', ...textBlockStyleControls],
+  list: ['listItems', 'isOrdered', ...listStyleControls],
   listItem: listItemStyleControls,
-  image: [...imageStyleControls, 'image'],
+  image: ['image', ...imageStyleControls],
   select: [
-    ...selectStyleControls,
-    'showRipple',
     'selectValue',
     'selectOptions',
+    ...selectStyleControls,
     'isOpen',
+    'showRipple',
   ],
   selectMenu: selectMenuStyleControls,
   selectItem: selectItemStyleControls,
-  map: [...mapStyleControls, 'mapProps'],
+  map: ['mapProps', ...mapStyleControls],
   calendar: calendarStyleControls,
   clock: clockStyleControls,
   dropdown: [
-    ...dropdownStyleControls,
     'textContent',
-    'showRipple',
     'dropdownItems',
+    ...dropdownStyleControls,
     'isOpen',
+    'showRipple',
   ],
   dropdownMenu: dropdownMenuStyleControls,
   dropdownItem: dropdownItemStyleControls,

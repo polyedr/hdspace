@@ -92,18 +92,6 @@ const PropertiesTab: React.FC = () => {
       >
         {type !== 'none' && (
           <>
-            {type !== 'root' && (
-              <>
-                <ControlSection title="Element name">
-                  <RenameElement />
-                </ControlSection>
-
-                <ControlSection title="Share styles">
-                  <ShareStyles />
-                </ControlSection>
-              </>
-            )}
-
             {AVAILABLE_CONTROLS[type as Entity].map((controlName) => {
               const Control = CONTROLS[controlName];
 
@@ -113,6 +101,18 @@ const PropertiesTab: React.FC = () => {
                 </ControlSection>
               );
             })}
+
+            {type !== 'root' && (
+              <>
+                <ControlSection title="Share styles">
+                  <ShareStyles />
+                </ControlSection>
+
+                <ControlSection title="Element name">
+                  <RenameElement />
+                </ControlSection>
+              </>
+            )}
           </>
         )}
       </Scrollbar>
