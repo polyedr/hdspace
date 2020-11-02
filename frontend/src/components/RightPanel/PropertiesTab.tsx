@@ -86,7 +86,6 @@ const PropertiesTab: React.FC = () => {
 
   const { type } = activeElement;
 
-  console.log('TEST!', CONTROLS);
   return (
     <div className={classes.root}>
       <Scrollbar

@@ -1,5 +1,13 @@
+import { StateElement } from 'src/redux/project/types';
 import { AVAILABLE_CHILDREN, Entity } from '../domain/core';
 import { LibraryElement } from '../api/types';
+
+const CHILDREN_AVAILABILITY = {
+  smartHeader: (element: LibraryElement<Entity>) => !!element.children.length,
+  smartFooter: (element: LibraryElement<Entity>) => !!element.children.length,
+  smartForm: (element: LibraryElement<Entity>) => !!element.children.length,
+  smartWebpage: (element: LibraryElement<Entity>) => !!element.children.length,
+};
 
 export const isElementCanBeRemove = (
   itemToRemoveParent: LibraryElement<Entity>,
@@ -49,4 +57,23 @@ export const canElementHaveChildren = (
 ): boolean => {
   if (elementType === 'none') return false;
   return !!Object.entries(AVAILABLE_CHILDREN[elementType]).length;
+};
+
+export const isAvailableChild = (
+  parentElement: StateElement,
+  elementType: Entity | 'none',
+) => {
+  if (
+    !parentElement ||
+    parentElement.type === 'none' ||
+    elementType === 'none'
+  ) {
+    return false;
+  }
+  return (
+    (!CHILDREN_AVAILABILITY[parentElement.type] ||
+      CHILDREN_AVAILABILITY[parentElement.type](parentElement)) &&
+    (AVAILABLE_CHILDREN[parentElement.type].all ||
+      elementType in AVAILABLE_CHILDREN[parentElement.type])
+  );
 };
