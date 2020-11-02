@@ -1,8 +1,8 @@
 import React, { memo, useCallback, useState, useEffect } from 'react';
-import cn from 'classnames';
 import { toState } from 'react-color/lib/helpers';
 import { ColorResult } from 'react-color';
 import makeStyles from '@material-ui/core/styles/makeStyles';
+import TextField from '@material-ui/core/TextField';
 import {
   ColorPicker,
   normalizeColor,
@@ -12,8 +12,12 @@ import {
 const useStyles = makeStyles({
   root: {
     display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    justifyContent: 'space-evenly',
+    alignItems: 'flex-end',
+    padding: '0.5em 0',
+  },
+  text: {
+    width: 100,
   },
 });
 
@@ -73,17 +77,16 @@ const ColorSettings: React.FC<Props> = ({
 
   return (
     <div className={classes.root}>
-      <ColorPicker color={currentColor} onChangeComplete={handleColorChange} />
-
-      <input
-        className={cn('colorField', {
-          inputWithError: !currentBackgroundColor.isValid,
-        })}
-        type="text"
+      <TextField
+        label="Color"
+        className={classes.text}
         value={currentBackgroundColor.value}
         onBlur={({ target: { value } }) => handleColorInputBlur(value)}
         onChange={({ target: { value } }) => handleColorChange(value)}
+        margin="dense"
       />
+
+      <ColorPicker color={currentColor} onChangeComplete={handleColorChange} />
     </div>
   );
 };

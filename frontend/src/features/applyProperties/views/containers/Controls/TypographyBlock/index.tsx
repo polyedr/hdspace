@@ -1,9 +1,19 @@
 import React, { memo, useCallback } from 'react';
 import { connect } from 'react-redux';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+import TextField from '@material-ui/core/TextField';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import makeStyles from '@material-ui/core/styles/makeStyles';
+import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
+import ToggleButton from '@material-ui/lab/ToggleButton';
+import FormatAlignLeftIcon from '@material-ui/icons/FormatAlignLeft';
+import FormatAlignCenterIcon from '@material-ui/icons/FormatAlignCenter';
+import FormatAlignRightIcon from '@material-ui/icons/FormatAlignRight';
+import FormatBoldIcon from '@material-ui/icons/FormatBold';
+import FormatItalicIcon from '@material-ui/icons/FormatItalic';
 import StylesHeader from '../../../components/StylesHeader/StylesHeader';
-import { DropDown } from '../../../../../../components/UI/DropDown';
-import Button from '../../../../../../components/UI/Button';
-import Icon from '../../../../../../components/UI/Icon';
 import ColorSettings from '../../../components/ColorSettings/ColorSettings';
 import { Entity } from '../../../../../../domain/core';
 import { AppReduxState } from '../../../../../../shared/types/app';
@@ -18,6 +28,17 @@ import { selectCurrentEditableStyles } from '../../../../../../redux/project/sel
 
 const MIN_FONT_SIZE = 1;
 const MAX_FONT_SIZE = 84;
+
+const useStyles = makeStyles({
+  text: {
+    width: 50,
+  },
+  wrapper: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'flex-end',
+  },
+});
 
 function mapState(state: AppReduxState) {
   return {
@@ -37,11 +58,14 @@ const TypographyBlock: React.FC<Props> = ({
   fontStyle,
   fontWeight,
   fontSize,
+  textAlign,
   color,
   updateStyles,
   removeStyles,
   activeItemID,
 }) => {
+  const classes = useStyles();
+
   const handleColorSettingsChange = useCallback(
     (newColor: string) => {
       updateStyles({ color: newColor });
@@ -49,22 +73,9 @@ const TypographyBlock: React.FC<Props> = ({
     [updateStyles],
   );
 
-  const onFontFamilyChange = useCallback(
-    (value) => {
-      updateStyles({ 'font-family': value });
-    },
-    [updateStyles],
-  );
-
-  const handleChangeItalicFontStyle = useCallback(() => {
-    updateStyles({
-      'font-style': fontStyle === 'normal' ? 'italic' : 'normal',
-    });
-  }, [updateStyles, fontStyle]);
-
-  const handleChangeBoldFontStyle = useCallback(() => {
-    updateStyles({ 'font-weight': fontWeight === 400 ? 700 : 400 });
-  }, [updateStyles, fontWeight]);
+  const handleFontFamilyChange = (ev) => {
+    updateStyles({ 'font-family': ev.target.value });
+  };
 
   const handleChangeFontSize = useCallback(
     ({ target: { value } }) => {
@@ -75,12 +86,25 @@ const TypographyBlock: React.FC<Props> = ({
     [updateStyles],
   );
 
-  const onTypographyAlign = useCallback(
-    (value) => {
-      updateStyles({ 'text-align': value });
-    },
-    [updateStyles],
-  );
+  const handleFormatChange = (
+    ev: React.MouseEvent<HTMLElement>,
+    newFormats: string[],
+  ) => {
+    updateStyles({
+      'font-style': newFormats.includes('italic') ? 'italic' : 'normal',
+      'font-weight': newFormats.includes('bold') ? 700 : 400,
+    });
+  };
+
+  const handleAlignmentChange = (
+    ev: React.MouseEvent<HTMLElement>,
+    newAlignment: string,
+  ) => {
+    if (!newAlignment) return;
+    updateStyles({
+      'text-align': newAlignment,
+    });
+  };
 
   return (
     <div>
@@ -96,48 +120,66 @@ const TypographyBlock: React.FC<Props> = ({
           'color',
         ]}
       />
+
       <div>
-        <div>
-          <DropDown
-            options={FONTS}
+        <FormControl margin="dense" fullWidth>
+          <InputLabel>Font Family</InputLabel>
+
+          <Select
             defaultValue={fontFamily}
             value={fontFamily}
-            onChange={onFontFamilyChange}
-          />
-        </div>
+            onChange={handleFontFamilyChange}
+          >
+            {FONTS.map(({ label, value }) => (
+              <MenuItem value={value} key={value} dense>
+                {label}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
 
-        <div>
-          <input
+        <div className={classes.wrapper}>
+          <TextField
+            className={classes.text}
+            label="Size"
+            margin="dense"
             type="number"
-            min={MIN_FONT_SIZE}
-            max={MAX_FONT_SIZE}
             value={parseFloat(fontSize)}
             onChange={handleChangeFontSize}
           />
-        </div>
 
-        <div>
-          <button type="button" onClick={handleChangeItalicFontStyle}>
-            Italic
-          </button>
+          <ToggleButtonGroup
+            value={[fontStyle, fontWeight]}
+            onChange={handleFormatChange}
+            size="small"
+          >
+            <ToggleButton value="italic">
+              <FormatItalicIcon fontSize="small" />
+            </ToggleButton>
 
-          <button type="button" onClick={handleChangeBoldFontStyle}>
-            Bold
-          </button>
-        </div>
+            <ToggleButton value="bold">
+              <FormatBoldIcon fontSize="small" />
+            </ToggleButton>
+          </ToggleButtonGroup>
 
-        <div>
-          <Button styleType="none" onClick={() => onTypographyAlign('left')}>
-            <Icon icon="text-left" />
-          </Button>
+          <ToggleButtonGroup
+            value={textAlign}
+            onChange={handleAlignmentChange}
+            exclusive
+            size="small"
+          >
+            <ToggleButton value="left">
+              <FormatAlignLeftIcon fontSize="small" />
+            </ToggleButton>
 
-          <Button styleType="none" onClick={() => onTypographyAlign('center')}>
-            <Icon icon="text-center" />
-          </Button>
+            <ToggleButton value="center">
+              <FormatAlignCenterIcon fontSize="small" />
+            </ToggleButton>
 
-          <Button styleType="none" onClick={() => onTypographyAlign('right')}>
-            <Icon icon="text-right" />
-          </Button>
+            <ToggleButton value="right">
+              <FormatAlignRightIcon fontSize="small" />
+            </ToggleButton>
+          </ToggleButtonGroup>
         </div>
 
         <div>

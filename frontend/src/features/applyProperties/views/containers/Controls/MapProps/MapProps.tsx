@@ -2,6 +2,8 @@
 
 import React, { useCallback } from 'react';
 import { connect } from 'react-redux';
+import TextField from '@material-ui/core/TextField';
+import makeStyles from '@material-ui/core/styles/makeStyles';
 import { AppReduxState } from '../../../../../../shared/types/app';
 import {
   MAX_LATITUDE,
@@ -19,7 +21,20 @@ import {
 } from '../../../../../../utils/withConfigurableProperties';
 import { getPermissibleValue } from '../../../../../../utils/NumberHelper';
 
-const ZOOM_STEP = 0.5;
+// const ZOOM_STEP = 0.5;
+
+const useStyles = makeStyles({
+  text: {
+    width: 100,
+  },
+  zoom: {
+    width: 50,
+  },
+  wrapper: {
+    display: 'flex',
+    justifyContent: 'space-between',
+  },
+});
 
 type StateProps = {
   map_props: MapParams['map_props'];
@@ -36,6 +51,8 @@ function mapState(state: AppReduxState): StateProps {
 type Props = StateProps & PropertiesChangeProps<MapElement>;
 
 const MapProps: React.FC<Props> = ({ map_props, updateParams }) => {
+  const classes = useStyles();
+
   const handleCenterMapCoordsChange = useCallback(
     ({ target: { name, value } }: React.ChangeEvent<HTMLInputElement>) => {
       let newCenter;
@@ -104,49 +121,42 @@ const MapProps: React.FC<Props> = ({ map_props, updateParams }) => {
 
   return (
     <div>
-      <h4>Map props</h4>
-
-      <div>
-        <input
+      <div className={classes.wrapper}>
+        <TextField
+          label="Latitude"
           type="number"
-          id="map_center_lat"
-          name="center_lat"
           value={map_props.center.lat}
-          min={MIN_LATITUDE}
-          max={MAX_LATITUDE}
-          step={ZOOM_STEP}
           onChange={handleCenterMapCoordsChange}
+          margin="dense"
+          className={classes.text}
         />
-        <input
+
+        <TextField
+          label="Longitude"
           type="number"
-          id="map_center_lng"
-          name="center_lng"
           value={map_props.center.lng}
-          min={MIN_LONGITUDE}
-          max={MAX_LONGITUDE}
-          step={ZOOM_STEP}
           onChange={handleCenterMapCoordsChange}
+          margin="dense"
+          className={classes.text}
         />
-        <input
+
+        <TextField
+          label="Zoom"
           type="number"
-          id="map_zoom"
-          name="zoom"
           value={map_props.zoom}
-          min={MIN_MAP_ZOOM}
-          max={MAX_MAP_ZOOM}
           onChange={handleMapZoomChange}
+          margin="dense"
+          className={classes.zoom}
         />
       </div>
 
-      <div>
-        <input
-          type="text"
-          name="markerText"
-          id="map_markerText"
-          value={map_props.markerText}
-          onChange={handleMarkerTextChange}
-        />
-      </div>
+      <TextField
+        label="Marker Text"
+        value={map_props.markerText}
+        onChange={handleMarkerTextChange}
+        fullWidth
+        margin="dense"
+      />
     </div>
   );
 };

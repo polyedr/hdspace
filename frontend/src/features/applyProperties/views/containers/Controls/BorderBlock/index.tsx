@@ -1,12 +1,14 @@
 import React, { memo, useCallback } from 'react';
 import { connect } from 'react-redux';
+import TextField from '@material-ui/core/TextField';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import makeStyles from '@material-ui/core/styles/makeStyles';
 import StylesHeader from '../../../components/StylesHeader/StylesHeader';
 import ColorSettings from '../../../components/ColorSettings/ColorSettings';
 import {
-  MAX_BORDER_RADIUS,
-  MAX_BORDER_RADIUS_PERCENT,
   MAX_BORDER_WIDTH,
-  MIN_BORDER_RADIUS,
   MIN_BORDER_WIDTH,
 } from '../../../../../../constants/defaultParams';
 import { Entity } from '../../../../../../domain/core';
@@ -27,6 +29,22 @@ import {
 } from '../../../../../../utils/StyleHelper';
 import { AppReduxState } from '../../../../../../shared/types/app';
 import { selectCurrentEditableStyles } from '../../../../../../redux/project/selectors';
+
+const useStyles = makeStyles({
+  wrapper: {
+    display: 'flex',
+    alignItems: 'flex-end',
+    justifyContent: 'space-evenly',
+  },
+  text: {
+    width: 50,
+  },
+  control: {
+    display: 'flex',
+    alignItems: 'flex-end',
+    justifyContent: 'flex-start',
+  },
+});
 
 const accessBorderRadius = (border: CssLikeStyles['border-radius']) => {
   const matchedValue = safeMatch(border);
@@ -52,38 +70,31 @@ const BorderBlock: React.FC<Props> = ({
   borderWidth,
   borderRadius,
 }) => {
-  const handleBorderWidthChange = useCallback(
-    ({ target: { value } }) => {
-      const newWidth = getPermissibleValue(
-        strToNumber(value),
-        MIN_BORDER_WIDTH,
-        MAX_BORDER_WIDTH,
-      );
+  const classes = useStyles();
 
-      updateStyles({ 'border-width': `${newWidth}px` });
-    },
-    [updateStyles],
-  );
+  const handleBorderWidthChange = ({ target: { value } }) => {
+    const newWidth = getPermissibleValue(
+      strToNumber(value),
+      MIN_BORDER_WIDTH,
+      MAX_BORDER_WIDTH,
+    );
 
-  const handleBorderRadius = useCallback(
-    ({ target: { value } }) => {
-      updateStyles({
-        'border-radius': `${value}${accessBorderRadius(borderRadius)}`,
-      });
-    },
-    [updateStyles],
-  );
+    updateStyles({ 'border-width': `${newWidth}px` });
+  };
 
-  const handleChangeBorderRadiusUnits = useCallback(
-    ({ target: { value } }) => {
-      updateStyles({
-        'border-radius': validateBorderRadius(
-          `${parseFloat(borderRadius)}${value}`,
-        ),
-      });
-    },
-    [updateStyles],
-  );
+  const handleBorderRadius = ({ target: { value } }) => {
+    updateStyles({
+      'border-radius': `${value}${accessBorderRadius(borderRadius)}`,
+    });
+  };
+
+  const handleChangeBorderRadiusUnits = ({ target: { value } }) => {
+    updateStyles({
+      'border-radius': validateBorderRadius(
+        `${parseFloat(borderRadius)}${value}`,
+      ),
+    });
+  };
 
   const handleColorSettingsChange = useCallback(
     (color: string) => {
@@ -100,46 +111,43 @@ const BorderBlock: React.FC<Props> = ({
         cssPropertiesNames={['border-color', 'border-width', 'border-radius']}
       />
 
-      <div>
-        <input
-          name="width"
+      <div className={classes.wrapper}>
+        <TextField
+          label="Width"
           type="number"
           value={parseFloat(borderWidth)}
           onChange={handleBorderWidthChange}
-          min={MIN_BORDER_WIDTH}
-          max={MAX_BORDER_WIDTH}
+          margin="dense"
+          className={classes.text}
         />
 
-        <div>
-          <input
-            name="radius"
+        <div className={classes.control}>
+          <TextField
+            label="Radius"
             type="number"
             value={safeParseFloat(validateBorderRadius(borderRadius))}
             onChange={handleBorderRadius}
-            min={MIN_BORDER_RADIUS}
-            max={
-              borderRadius.indexOf('px') !== -1
-                ? MAX_BORDER_RADIUS
-                : MAX_BORDER_RADIUS_PERCENT
-            }
+            margin="dense"
+            className={classes.text}
           />
 
-          <select
-            name="radius_units"
-            onChange={handleChangeBorderRadiusUnits}
-            value={accessBorderRadius(borderRadius)}
-          >
-            <option value="px">px</option>
-            <option value="%">percent</option>
-          </select>
+          <FormControl margin="dense">
+            <Select
+              onChange={handleChangeBorderRadiusUnits}
+              value={accessBorderRadius(borderRadius)}
+            >
+              <MenuItem value="px">px</MenuItem>
+              <MenuItem value="%">percent</MenuItem>
+            </Select>
+          </FormControl>
         </div>
-
-        <ColorSettings
-          currentColor={borderColor}
-          activeItemID={activeItemID}
-          onChange={handleColorSettingsChange}
-        />
       </div>
+
+      <ColorSettings
+        currentColor={borderColor}
+        activeItemID={activeItemID}
+        onChange={handleColorSettingsChange}
+      />
     </div>
   );
 };

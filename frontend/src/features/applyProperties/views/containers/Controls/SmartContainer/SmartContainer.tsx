@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import createStyles from '@material-ui/core/styles/createStyles';
+import Button from '@material-ui/core/Button';
 import {
   PropertiesChangeProps,
   withConfigurableProperties,
@@ -14,37 +14,16 @@ import {
 import useImageUpload from '../../../../../../utils/nn/hooks/useImageUpload';
 import useNNProcessing from '../../../../../../utils/nn/hooks/useNNProcessing';
 
-const useStyles = makeStyles((theme) =>
-  createStyles({
-    button: {
-      width: 'calc(50% - 2px)',
-      border: 0,
-      outline: 'none',
-      padding: '8px 12px',
-      borderRadius: 3,
-      fontSize: 14,
-      lineHeight: '18px',
-      color: theme.palette.common.white,
-      textAlign: 'center',
-      cursor: 'pointer',
-      backgroundColor: '#1ab394',
-      '&:hover, &:focus': {
-        backgroundColor: 'lighten(#1ab394, 10%)',
-      },
-      '&:active': {
-        backgroundColor: 'darken(#1ab394, 10%)',
-      },
-      '&:disabled': {
-        backgroundColor: '#949494',
-        borderColor: '#949494',
-      },
-    },
-    uploadField: {
-      width: 'calc(50% - 2px)',
-      display: 'none',
-    },
-  }),
-);
+const useStyles = makeStyles({
+  wrapper: {
+    display: 'flex',
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
+  },
+  uploadField: {
+    display: 'none',
+  },
+});
 
 const SmartContainer: React.FC<PropertiesChangeProps<ImageElement>> = () => {
   const classes = useStyles();
@@ -57,36 +36,33 @@ const SmartContainer: React.FC<PropertiesChangeProps<ImageElement>> = () => {
   const handleNNProcessing = useNNProcessing(element.id, imageFile);
 
   return (
-    <div>
-      <h4>Screenshot</h4>
+    <div className={classes.wrapper}>
+      <input
+        className={classes.uploadField}
+        type="file"
+        accept=".jpg, .jpeg, .png"
+        name="upload"
+        onChange={handleImageChange}
+        id={`upload-component-wireframe-${element.id}`}
+      />
 
-      <div>
-        <label
-          htmlFor={`upload-component-wireframe-${element.id}`}
-          className={classes.button}
-        >
+      <label htmlFor={`upload-component-wireframe-${element.id}`}>
+        <Button variant="contained" color="primary" component="span">
           Choose image
-          <input
-            className={classes.uploadField}
-            type="file"
-            accept=".jpg, .jpeg, .png"
-            name="upload"
-            onChange={handleImageChange}
-            id={`upload-component-wireframe-${element.id}`}
-          />
-        </label>
+        </Button>
+      </label>
 
-        {element.parameters.imageURL && (
-          <button
-            type="button"
-            className={classes.button}
-            disabled={!imageFile}
-            onClick={handleNNProcessing}
-          >
-            Analyze
-          </button>
-        )}
-      </div>
+      {element.parameters.imageURL && (
+        <Button
+          variant="contained"
+          color="primary"
+          component="span"
+          disabled={!imageFile}
+          onClick={handleNNProcessing}
+        >
+          Analyze
+        </Button>
+      )}
     </div>
   );
 };

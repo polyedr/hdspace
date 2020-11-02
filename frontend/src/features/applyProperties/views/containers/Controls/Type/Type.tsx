@@ -1,7 +1,10 @@
 import React, { memo } from 'react';
 import { connect } from 'react-redux';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import Select from '@material-ui/core/Select';
 import TYPE from './constants';
-import { DropDown } from '../../../../../../components/UI/DropDown';
 import { AppReduxState } from '../../../../../../shared/types/app';
 import { selectActiveElementParams } from '../../../../../../redux/project/selectors';
 import {
@@ -24,21 +27,27 @@ function mapState(state: AppReduxState): StateProps {
 type Props = StateProps & PropertiesChangeProps<TextinputElement>;
 
 const Type: React.FC<Props> = ({ type, updateParams }) => {
-  const handleDropdownChange = (value: string) => {
-    updateParams({ type: value as InputType });
+  const handleDropdownChange = (ev) => {
+    updateParams({ type: ev.target.value as InputType });
   };
 
   return (
-    <section>
-      <h4>Type</h4>
+    <FormControl>
+      <InputLabel>Type</InputLabel>
 
-      <DropDown
+      <Select defaultValue={type} value={type} onChange={handleDropdownChange}>
+        {TYPE.map(({ label, value }) => (
+          <MenuItem value={value}>{label}</MenuItem>
+        ))}
+      </Select>
+    </FormControl>
+
+    /* <DropDown
         options={TYPE}
         defaultValue={type}
         value={type}
         onChange={handleDropdownChange}
-      />
-    </section>
+      /> */
   );
 };
 

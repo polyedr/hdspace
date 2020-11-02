@@ -1,8 +1,14 @@
-import React, { useEffect } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
-import Button from '../../../../../../components/UI/Button';
-import Icon from '../../../../../../components/UI/Icon';
-import { DropDown } from '../../../../../../components/UI/DropDown';
+import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
+import ToggleButton from '@material-ui/lab/ToggleButton';
+import LinkIcon from '@material-ui/icons/Link';
+import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
+import TextField from '@material-ui/core/TextField';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
 import { AppReduxState } from '../../../../../../shared/types/app';
 import {
   ExternalLink,
@@ -37,9 +43,7 @@ function mapState(state: AppReduxState): StateProps {
 type Props = StateProps & PropertiesChangeProps<HyperlinkElement>;
 
 const ActionBlock: React.FC<Props> = ({ action, screens, updateParams }) => {
-  const [isExternalLink, setIsExternalLink] = React.useState<boolean>(
-    action && action.type === 'external-link',
-  );
+  const [linkType, setLinkType] = useState(action?.type);
 
   const getCurrentUrl = React.useCallback(
     (currentType: InternalLink['type'] | ExternalLink['type']): string => {
@@ -55,77 +59,74 @@ const ActionBlock: React.FC<Props> = ({ action, screens, updateParams }) => {
     [action],
   );
 
-  const handlePageLinkButtonClick = React.useCallback(() => {
-    setIsExternalLink(false);
-  }, []);
+  const handleUrlChange = (ev) => {
+    const { value } = ev.target;
+    updateParams({
+      action: {
+        // @ts-ignore
+        type: linkType,
+        ...(linkType === 'internal-link' && {
+          screenID: value === 'noScreen' ? value : +value,
+        }),
+        ...(linkType === 'external-link' && { url: value }),
+      },
+    });
+  };
 
-  const handleExternalLinkButtonClick = React.useCallback(() => {
-    setIsExternalLink(true);
-  }, []);
-
-  const handleExternalUrlInputChange = React.useCallback(
-    ({ target: { value } }) => {
-      updateParams({ action: { type: 'external-link', url: value } });
-    },
-    [updateParams],
-  );
-
-  const handlePageUrlDropdownChange = React.useCallback(
-    (value) => {
-      updateParams({
-        action: {
-          type: 'internal-link',
-          screenID: value === 'noScreen' ? value : Number(value),
-        },
-      });
-    },
-    [updateParams],
-  );
-
-  useEffect(() => {
-    if (action && action.type === 'external-link') {
-      setIsExternalLink(true);
-    }
-    if (action && action.type === 'internal-link') {
-      setIsExternalLink(false);
-    }
-  }, [action]);
+  const handleLinkTypeChange = (
+    ev: React.MouseEvent<HTMLElement>,
+    newLinkType: 'internal-link' | 'external-link',
+  ) => {
+    if (!newLinkType) return;
+    setLinkType(newLinkType);
+  };
 
   return (
     <div>
-      <h4>Action</h4>
+      <ToggleButtonGroup
+        value={linkType}
+        onChange={handleLinkTypeChange}
+        size="small"
+        exclusive
+      >
+        <ToggleButton value="internal-link">
+          <LinkIcon />
+        </ToggleButton>
+
+        <ToggleButton value="external-link">
+          <InsertDriveFileIcon />
+        </ToggleButton>
+      </ToggleButtonGroup>
 
       <div>
-        <Button styleType="none" onClick={handlePageLinkButtonClick}>
-          <Icon icon="link" />
-        </Button>
+        {linkType === 'external-link' ? (
+          <TextField
+            fullWidth
+            label="URL"
+            placeholder="Enter a page URL"
+            value={getCurrentUrl('external-link')}
+            onChange={handleUrlChange}
+            margin="dense"
+          />
+        ) : (
+          <FormControl margin="dense" fullWidth>
+            <InputLabel>Screen Id</InputLabel>
 
-        <Button styleType="none" onClick={handleExternalLinkButtonClick}>
-          <Icon icon="page" />
-        </Button>
-
-        <div>
-          {isExternalLink ? (
-            <input
-              type="text"
-              placeholder="Enter a page URL"
-              value={getCurrentUrl('external-link')}
-              onChange={handleExternalUrlInputChange}
-            />
-          ) : (
-            <DropDown
-              defaultValue={getCurrentUrl('internal-link')}
+            <Select
+              label="Screen Id"
               value={getCurrentUrl('internal-link')}
-              options={[{ label: 'No screen', value: 'noScreen' }].concat(
-                screens.map((screen) => ({
-                  label: `${screen.name}`,
-                  value: `${screen.id}`,
-                })),
-              )}
-              onChange={handlePageUrlDropdownChange}
-            />
-          )}
-        </div>
+              onChange={handleUrlChange}
+            >
+              <MenuItem value="noScreen">No screen</MenuItem>
+
+              {screens.map(({ name, id }) => (
+                <MenuItem key={id} value={id}>
+                  {name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        )}
       </div>
     </div>
   );

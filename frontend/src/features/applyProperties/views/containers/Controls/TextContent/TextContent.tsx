@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react';
 import { connect } from 'react-redux';
+import TextField from '@material-ui/core/TextField';
 import { AppReduxState } from '../../../../../../shared/types/app';
 import { ParagraphElement } from '../../../../../../api/types';
 import { selectActiveElementParams } from '../../../../../../redux/project/selectors';
@@ -31,15 +32,21 @@ const TextContent: React.FC<Props> = ({ content, updateParams }) => {
   );
 
   return (
-    <div>
-      <h4>Text content</h4>
+    <TextField
+      variant="outlined"
+      value={content}
+      onChange={handleTextContentChange}
+      label="Text Content"
+      margin="dense"
+      fullWidth
+      multiline
+    />
 
-      <textarea
+    /* <textarea
         name="text_content"
         value={content}
         onChange={handleTextContentChange}
-      />
-    </div>
+      /> */
   );
 };
 

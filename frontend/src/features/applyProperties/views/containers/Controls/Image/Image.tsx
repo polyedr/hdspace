@@ -1,5 +1,7 @@
 import React, { useCallback } from 'react';
 import { connect, useSelector } from 'react-redux';
+import Button from '@material-ui/core/Button';
+import makeStyles from '@material-ui/core/styles/makeStyles';
 import { selectCurrentScreenId } from '../../../../../../redux/project/selectors';
 import { ImageElement } from '../../../../../../api/types';
 import {
@@ -12,10 +14,18 @@ const mapDispatch = {
   updateElementImage,
 };
 
+const useStyles = makeStyles({
+  wrapper: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});
+
 type Props = PropertiesChangeProps<ImageElement> & typeof mapDispatch;
 
-const Component: React.FC<Props> = (props) => {
-  const { activeItemID, updateElementImage } = props;
+const Component: React.FC<Props> = ({ activeItemID, updateElementImage }) => {
+  const classes = useStyles();
 
   const currentScreenId = useSelector(selectCurrentScreenId);
 
@@ -34,17 +44,21 @@ const Component: React.FC<Props> = (props) => {
   );
 
   return (
-    <div>
-      <h4>Image</h4>
+    <div className={classes.wrapper}>
+      <input
+        onChange={handleChangeFileInput}
+        accept="image/*"
+        style={{
+          display: 'none',
+        }}
+        id="upload-image"
+        type="file"
+      />
 
-      <label>
-        Choose image
-        <input
-          type="file"
-          accept=".jpg, .jpeg, .png"
-          name="upload"
-          onChange={handleChangeFileInput}
-        />
+      <label htmlFor="upload-image">
+        <Button variant="contained" color="primary" component="span">
+          Choose image
+        </Button>
       </label>
     </div>
   );

@@ -30,7 +30,7 @@ const useStyles = makeStyles({
     alignItems: 'flex-end',
   },
   text: {
-    width: '70px',
+    width: 50,
   },
 });
 

@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react';
 import { connect } from 'react-redux';
+import TextField from '@material-ui/core/TextField';
 import { AppReduxState } from '../../../../../../shared/types/app';
 import { selectActiveElementParams } from '../../../../../../redux/project/selectors';
 import {
@@ -31,17 +32,12 @@ const Placeholder: React.FC<Props> = ({ placeholder, updateParams }) => {
   );
 
   return (
-    <div>
-      <h4>Placeholder</h4>
-
-      <input
-        id="placeholder_setting_input"
-        type="text"
-        placeholder={placeholder}
-        value={placeholder}
-        onChange={handlePlaceholderChange}
-      />
-    </div>
+    <TextField
+      value={placeholder}
+      onChange={handlePlaceholderChange}
+      margin="dense"
+      label="Placeholder"
+    />
   );
 };
 
