@@ -2,41 +2,17 @@
 
 import React from 'react';
 import cn from 'classnames';
-import { makeStyles } from '@material-ui/core';
+import { makeComponentStyles } from '../styles';
 
 import { ContainerRendererProps } from '../types';
 
-const styles = require('../styles.scss');
+const useStyles = makeComponentStyles();
 
 const Container: React.FC<ContainerRendererProps> = React.forwardRef(
-  (
-    {
-      id,
-      entityStyles,
-      groupStyles,
-      ownStyles,
-      isDisabled,
-      children,
-      className,
-      isBorderVisible,
-    },
-    ref: React.RefObject<HTMLElement>,
-  ) => {
-    const classes = makeStyles({
-      entityStyles: {
-        ...entityStyles,
-      },
+  (props, ref: React.RefObject<HTMLElement>) => {
+    const { id, isDisabled, children, className, isBorderVisible } = props;
 
-      groupStyles: {
-        ...groupStyles,
-      },
-
-      ownStyles: {
-        ...ownStyles,
-      },
-    })();
-
-    const isRoot = id === 'root';
+    const classes = useStyles(props);
 
     return (
       <>
@@ -47,8 +23,7 @@ const Container: React.FC<ContainerRendererProps> = React.forwardRef(
           key={id}
           className={cn(
             className,
-            isRoot && styles.root,
-            styles.addedElem,
+            classes.addedElem,
             classes.entityStyles,
             classes.groupStyles,
             classes.ownStyles,
