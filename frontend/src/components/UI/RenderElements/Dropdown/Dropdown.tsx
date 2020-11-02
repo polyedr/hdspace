@@ -32,7 +32,6 @@ const getDropdownClassStyles = (style: React.CSSProperties) => {
 
 const getDropdownStyles = (
   isDisabled: boolean,
-  active: boolean,
   entityStyles: React.CSSProperties,
   groupStyles: React.CSSProperties,
   ownStyles: React.CSSProperties,
