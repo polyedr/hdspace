@@ -2,27 +2,15 @@
 
 import React from 'react';
 import cn from 'classnames';
-import { makeStyles } from '@material-ui/core';
-
+import { makeComponentStyles } from '../styles';
 import { ParagraphRendererProps } from '../types';
 
-const styles = require('../styles.scss');
+const useStyles = makeComponentStyles();
 
 const Paragraph: React.FC<ParagraphRendererProps> = React.forwardRef(
-  ({ id, entityStyles, groupStyles, ownStyles, params, className }, ref) => {
-    const classes = makeStyles({
-      entityStyles: {
-        ...entityStyles,
-      },
-
-      groupStyles: {
-        ...groupStyles,
-      },
-
-      ownStyles: {
-        ...ownStyles,
-      },
-    })();
+  (props, ref) => {
+    const { id, params, className } = props;
+    const classes = useStyles(props);
 
     return (
       <p
@@ -32,7 +20,7 @@ const Paragraph: React.FC<ParagraphRendererProps> = React.forwardRef(
         key={id}
         className={cn(
           className,
-          styles.addedElem,
+          classes.addedElem,
           classes.entityStyles,
           classes.groupStyles,
           classes.ownStyles,

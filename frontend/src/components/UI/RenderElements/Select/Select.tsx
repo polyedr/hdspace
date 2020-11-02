@@ -87,7 +87,6 @@ const getInputClassStyles = (style: React.CSSProperties) => ({
 
 const getInputStyles = (
   isDisabled: boolean,
-  active: boolean,
   entityStyles: React.CSSProperties,
   groupStyles: React.CSSProperties,
   ownStyles: React.CSSProperties,
@@ -96,7 +95,6 @@ const getInputStyles = (
     root: {
       height: '100%',
       boxSizing: 'border-box',
-      outline: active ? '1px red solid' : 'none',
       outlineOffset: '-1px',
 
       '&:hover': {
@@ -211,7 +209,6 @@ const Select: React.FC<SelectRendererProps> = React.forwardRef(
       groupStyles,
       ownStyles,
       isDisabled,
-      active,
       onElementChange,
       params,
       children,
@@ -250,7 +247,6 @@ const Select: React.FC<SelectRendererProps> = React.forwardRef(
     )();
     const inputClasses = getInputStyles(
       isDisabled,
-      active,
       entityStyles,
       groupStyles,
       ownStyles,

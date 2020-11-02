@@ -70,7 +70,6 @@ const getInputClassStyles = (style: React.CSSProperties) => ({
 });
 
 const getInputStyles = (
-  active: boolean,
   entityStyles: React.CSSProperties,
   groupStyles: React.CSSProperties,
   ownStyles: React.CSSProperties,
@@ -80,7 +79,6 @@ const getInputStyles = (
       width: '100%',
       height: '100%',
 
-      outline: active ? 'red solid 1px' : 'none',
       outlineOffset: '-1px',
       alignItems: 'flex-start',
 
@@ -120,7 +118,6 @@ const Textarea: React.FC<TextareaRendererProps> = React.forwardRef(
       id,
       params,
       isDisabled,
-      active,
       currentValue,
       onElementChange,
       className,
@@ -142,12 +139,7 @@ const Textarea: React.FC<TextareaRendererProps> = React.forwardRef(
       groupStyles,
       ownStyles,
     )();
-    const inputClasses = getInputStyles(
-      active,
-      entityStyles,
-      groupStyles,
-      ownStyles,
-    )();
+    const inputClasses = getInputStyles(entityStyles, groupStyles, ownStyles)();
 
     const entityInlineStyles = R.pick(
       ['marginTop', 'marginRight', 'marginBottom', 'marginLeft'],

@@ -32,7 +32,6 @@ const getDropdownClassStyles = (style: React.CSSProperties) => {
 
 const getDropdownStyles = (
   isDisabled: boolean,
-  active: boolean,
   entityStyles: React.CSSProperties,
   groupStyles: React.CSSProperties,
   ownStyles: React.CSSProperties,
@@ -40,19 +39,12 @@ const getDropdownStyles = (
   makeStyles({
     root: {
       cursor: isDisabled ? 'default' : 'pointer',
-      outline: active ? '1px red solid' : 'none',
       ...(isDisabled && { transition: 'none' }),
       '&:hover,&active': {
         ...(isDisabled && {
           boxShadow:
             '0px 3px 1px -2px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 1px 5px 0px rgba(0,0,0,0.12)',
         }),
-      },
-    },
-
-    container: {
-      '&.hovered $root': {
-        outline: '1px solid #949494',
       },
     },
 
@@ -140,7 +132,6 @@ const Dropdown: React.FC<DropdownRendererProps> = React.forwardRef(
           key={id}
           className={cn(
             className,
-            dropdownClasses.container,
             divClasses.entityStyles,
             divClasses.groupStyles,
             divClasses.ownStyles,

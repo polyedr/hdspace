@@ -44,7 +44,7 @@ export type ScreenshotRendererProps = SharedRendererProps & {
 };
 
 export type SmartContainerRendererProps = SharedRendererProps & {
-  blockType?: NNBlockType;
+  blockType: NNBlockType;
   imageUrl: string;
   isBorderVisible: boolean;
 };
