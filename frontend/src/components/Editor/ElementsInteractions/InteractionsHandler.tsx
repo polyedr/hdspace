@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import useResizeObserver from '@react-hook/resize-observer';
 import * as R from 'ramda';
@@ -8,11 +8,13 @@ import Borders from './Borders/Borders';
 import BorderCrumb from './Crumb/BorderCrumb';
 
 import {
-  selectActiveElementId,
   selectBorderedElementsRef,
+  selectCurrentProject,
   selectCurrentRootId,
+  selectElementById,
 } from '../../../redux/project/selectors';
 import { BorderStyles } from './types';
+import { AppReduxState } from '../../../shared/types/app';
 
 type Props = {
   elementId: string;
@@ -42,7 +44,13 @@ const InteractionsHandler = ({ elementId }: Props) => {
   const rootID = useSelector(selectCurrentRootId);
   const rootRef = borderedElementsRefs[rootID];
   const elementRef = borderedElementsRefs[elementId];
-  const activeElementId = useSelector(selectActiveElementId);
+
+  const element = useSelector(selectElementById(elementId));
+  const elementGroupStyles = useSelector((state: AppReduxState) => {
+    return selectCurrentProject(state).projectData.classes.find((value) => {
+      return value.className === element.styles.classNames[1];
+    })?.rules;
+  });
 
   const [styles, setStyles] = useState<BorderStyles | null>(
     getBorderStyles(elementRef.current, rootRef),
@@ -67,24 +75,15 @@ const InteractionsHandler = ({ elementId }: Props) => {
     }
   });
 
-  const observer = useMemo(() => {
-    return new MutationObserver((entries) => {
-      updateBorderStyles(entries[0].target as HTMLElement);
-    });
-  }, [elementId]);
-
-  useEffect(() => {
-    if (elementRef.current) {
-      observer?.observe(elementRef?.current, { attributes: true });
-    }
-    return () => {
-      observer?.disconnect();
-    };
-  }, [elementId, activeElementId, elementRef]);
-
   useEffect(() => {
     setStyles(getBorderStyles(elementRef.current, rootRef));
-  }, [elementRef, rootRef]);
+  }, [
+    borderedElementsRefs,
+    elementRef,
+    rootRef,
+    element.styles.ownStyles,
+    elementGroupStyles,
+  ]);
 
   if (!styles) {
     return null;

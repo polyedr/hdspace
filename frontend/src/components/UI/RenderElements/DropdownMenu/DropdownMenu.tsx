@@ -2,74 +2,33 @@
 
 import React from 'react';
 import cn from 'classnames';
-import { makeStyles, Menu, Paper, MenuList } from '@material-ui/core';
+import { Menu, Paper, MenuList } from '@material-ui/core';
 import { DropdownMenuRendererProps } from '../types';
+import { makeComponentStyles } from '../styles';
 
-const styles = require('../styles.scss');
-
-const getDropdownMenuStyles = (
-  entityStyles: React.CSSProperties,
-  groupStyles: React.CSSProperties,
-  ownStyles: React.CSSProperties,
-) =>
-  makeStyles({
-    root: {},
-
-    entityStyles: {
-      ...entityStyles,
-    },
-
-    groupStyles: {
-      ...groupStyles,
-    },
-
-    ownStyles: {
-      ...ownStyles,
-    },
-  });
-
-const getEditableMenuStyles = (
-  entityStyles: React.CSSProperties,
-  groupStyles: React.CSSProperties,
-  ownStyles: React.CSSProperties,
-) =>
-  makeStyles({
-    root: {
-      position: 'absolute',
-      top: '0',
-      left: '0',
-      overflow: 'hidden',
-      zIndex: 1,
-    },
-
-    entityStyles: {
-      ...entityStyles,
-    },
-
-    groupStyles: {
-      ...groupStyles,
-    },
-
-    ownStyles: {
-      ...ownStyles,
-    },
-  });
+const useStyles = makeComponentStyles({
+  root: {
+    position: 'absolute',
+    top: '0',
+    left: '0',
+    overflow: 'hidden',
+    zIndex: 1,
+  },
+});
 
 const DropdownMenu: React.FC<DropdownMenuRendererProps> = React.forwardRef(
-  (
-    {
+  (props, ref) => {
+    const {
       id,
-      entityStyles,
-      groupStyles,
-      ownStyles,
       isDisabled,
       children,
       className,
       anchorEl,
       setAnchorEl,
-    },
-    ref,
-  ) => {
+    } = props;
+
+    const styles = useStyles(props);
+
     const handlePaperClick = (event: React.MouseEvent<HTMLDivElement>) => {
       (event.target as HTMLElement).focus();
     };
@@ -77,18 +36,6 @@ const DropdownMenu: React.FC<DropdownMenuRendererProps> = React.forwardRef(
     const handleMenuClose = () => {
       setAnchorEl(null);
     };
-
-    const dropdownMenuClasses = getDropdownMenuStyles(
-      entityStyles,
-      groupStyles,
-      ownStyles,
-    )();
-
-    const editableMenuClasses = getEditableMenuStyles(
-      entityStyles,
-      groupStyles,
-      ownStyles,
-    )();
 
     return isDisabled ? (
       <div style={{ position: 'relative' }} ref={ref}>
@@ -99,10 +46,10 @@ const DropdownMenu: React.FC<DropdownMenuRendererProps> = React.forwardRef(
           className={cn(
             className,
             styles.addedElem,
-            editableMenuClasses.root,
-            editableMenuClasses.entityStyles,
-            editableMenuClasses.groupStyles,
-            editableMenuClasses.ownStyles,
+            styles.root,
+            styles.entityStyles,
+            styles.groupStyles,
+            styles.ownStyles,
           )}
           elevation={8}
           onClick={handlePaperClick}
@@ -117,12 +64,7 @@ const DropdownMenu: React.FC<DropdownMenuRendererProps> = React.forwardRef(
         open={Boolean(anchorEl)}
         onClose={handleMenuClose}
         classes={{
-          paper: cn(
-            dropdownMenuClasses.root,
-            dropdownMenuClasses.entityStyles,
-            dropdownMenuClasses.groupStyles,
-            dropdownMenuClasses.ownStyles,
-          ),
+          paper: cn(styles.entityStyles, styles.groupStyles, styles.ownStyles),
         }}
       >
         {children}

@@ -4,7 +4,6 @@ import React, { useRef, useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import cn from 'classnames';
 import { DropTargetMonitor, useDrag } from 'react-dnd';
-import makeStyles from '@material-ui/core/styles/makeStyles';
 import IconButton from '@material-ui/core/IconButton';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import SyncIcon from '@material-ui/icons/Sync';
@@ -12,6 +11,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import AspectRatioRoundedIcon from '@material-ui/icons/AspectRatioRounded';
 
 import { SmartContainerRendererProps } from '../types';
+import { makeComponentStyles } from '../styles';
 import {
   selectCurrentScreenId,
   selectElementById,
@@ -29,7 +29,7 @@ type SizeProps = {
   height: number;
 };
 
-const useStyles = makeStyles({
+const useStyles = makeComponentStyles({
   innerContentWrapper: {
     position: 'relative',
   },
@@ -80,38 +80,13 @@ const useStyles = makeStyles({
 });
 
 const SmartContainerRenderer: React.FC<SmartContainerRendererProps> = React.forwardRef(
-  (
-    {
-      id,
-      entityStyles,
-      groupStyles,
-      ownStyles,
-      isDisabled,
-      className,
-      isBorderVisible,
-      children,
-    },
-    ref,
-  ) => {
+  (props, ref) => {
+    const { id, isDisabled, className, isBorderVisible, children } = props;
     const element = useSelector(selectElementById(id));
     const currentScreenId = useSelector(selectCurrentScreenId);
     const dispatch = useDispatch();
 
-    const baseClasses = useStyles();
-
-    const classes = makeStyles({
-      entityStyles: {
-        ...entityStyles,
-      },
-
-      groupStyles: {
-        ...groupStyles,
-      },
-
-      ownStyles: {
-        ...ownStyles,
-      },
-    })();
+    const classes = useStyles(props);
 
     const imgRef = useRef<HTMLImageElement>();
     const resizeRef = useRef<HTMLElement>();
@@ -208,7 +183,7 @@ const SmartContainerRenderer: React.FC<SmartContainerRendererProps> = React.forw
                 <img
                   src={imageURL}
                   alt="Not found"
-                  className={baseClasses.wireframe}
+                  className={classes.wireframe}
                   ref={imgRef}
                   style={{
                     width: size.width || imageSize?.width || 'auto',
@@ -222,19 +197,19 @@ const SmartContainerRenderer: React.FC<SmartContainerRendererProps> = React.forw
                     });
                   }}
                 />
-                <div className={baseClasses.resizeSection} ref={resizeRef}>
+                <div className={classes.resizeSection} ref={resizeRef}>
                   <AspectRatioRoundedIcon fontSize="inherit" />
                 </div>
               </div>
             )}
-            <div className={baseClasses.innerContent}>
-              <h4 className={baseClasses.nameHeading}>{element.name}</h4>
+            <div className={classes.innerContent}>
+              <h4 className={classes.nameHeading}>{element.name}</h4>
 
               {isDisabled && (
                 <>
                   <input
                     id={`upload-image-wireframe-${element.id}`}
-                    className={baseClasses.uploadField}
+                    className={classes.uploadField}
                     type="file"
                     accept=".jpg, .jpeg, .png"
                     name="upload"
@@ -250,7 +225,7 @@ const SmartContainerRenderer: React.FC<SmartContainerRendererProps> = React.forw
                   <label htmlFor={`upload-image-wireframe-${element.id}`}>
                     <Tooltip title="Upload image" placement="top">
                       <IconButton aria-label="upload picture" component="span">
-                        <CloudUploadIcon className={baseClasses.icon} />
+                        <CloudUploadIcon className={classes.icon} />
                       </IconButton>
                     </Tooltip>
                   </label>
@@ -263,7 +238,7 @@ const SmartContainerRenderer: React.FC<SmartContainerRendererProps> = React.forw
                         disabled={!imageFile}
                         onClick={handleNNProcessing}
                       >
-                        <SyncIcon className={baseClasses.icon} />
+                        <SyncIcon className={classes.icon} />
                       </IconButton>
                     </Tooltip>
                   )}

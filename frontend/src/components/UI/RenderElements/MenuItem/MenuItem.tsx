@@ -2,51 +2,22 @@
 
 import React from 'react';
 import cn from 'classnames';
-import { makeStyles, MenuItem as MaterialMenuItem } from '@material-ui/core';
+import { MenuItem as MaterialMenuItem } from '@material-ui/core';
 import { MenuItemRendererProps } from '../types';
+import { makeComponentStyles } from '../styles';
 
-const styles = require('../styles.scss');
-
-const getClassStyles = (style: React.CSSProperties, isDisabled: boolean) => ({
-  ...style,
-  '&:hover': {
-    backgroundColor: isDisabled ? style.backgroundColor : 'rgba(0, 0, 0, 0.04)',
+const useStyles = makeComponentStyles({
+  menuItem: ({ isDisabled }) => {
+    return !isDisabled ? { '&:hover': 'rgba(0, 0, 0, 0.04)' } : {};
   },
 });
 
-const getStyles = (
-  isDisabled: boolean,
-  entityStyles: React.CSSProperties,
-  groupStyles: React.CSSProperties,
-  ownStyles: React.CSSProperties,
-) =>
-  makeStyles({
-    entityStyles: {
-      ...getClassStyles(entityStyles, isDisabled),
-    },
-
-    groupStyles: {
-      ...getClassStyles(groupStyles, isDisabled),
-    },
-
-    ownStyles: {
-      ...getClassStyles(ownStyles, isDisabled),
-    },
-  });
-
 const MenuItem: React.FC<MenuItemRendererProps> = React.forwardRef(
-  (
-    { id, entityStyles, groupStyles, ownStyles, isDisabled, params, className },
-    ref,
-  ) => {
+  (props, ref) => {
+    const { id, isDisabled, params, className } = props;
     const { showRipple, name, value } = params;
 
-    const classes = getStyles(
-      isDisabled,
-      entityStyles,
-      groupStyles,
-      ownStyles,
-    )();
+    const classes = useStyles(props);
 
     return isDisabled ? (
       <MaterialMenuItem
@@ -56,8 +27,9 @@ const MenuItem: React.FC<MenuItemRendererProps> = React.forwardRef(
         key={id}
         className={cn(
           className,
-          styles.addedElem,
-          styles.disabled,
+          classes.menuItem,
+          classes.addedElem,
+          classes.disabled,
           classes.entityStyles,
           classes.groupStyles,
           classes.ownStyles,

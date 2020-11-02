@@ -2,33 +2,23 @@
 
 import React from 'react';
 import cn from 'classnames';
-import { makeStyles } from '@material-ui/core';
 
 import { HeadingRendererProps } from '../types';
+import { makeComponentStyles } from '../styles';
 
-const styles = require('../styles.scss');
+const useStyles = makeComponentStyles({
+  heading: {
+    wordBreak: 'break-word',
+  },
+});
 
 const Heading: React.FC<HeadingRendererProps> = React.forwardRef(
-  ({ id, entityStyles, groupStyles, ownStyles, params, className }, ref) => {
-    const classes = makeStyles({
-      entityStyles: {
-        ...entityStyles,
-        wordBreak: 'break-word',
-      },
-
-      groupStyles: {
-        ...groupStyles,
-        wordBreak: 'break-word',
-      },
-
-      ownStyles: {
-        ...ownStyles,
-        wordBreak: 'break-word',
-      },
-    })();
-
+  (props, ref) => {
+    const { id, params, className } = props;
     const { headingType, textContent } = params;
     const HeadingTag = headingType || 'h3';
+
+    const styles = useStyles(props);
 
     return (
       <HeadingTag
@@ -38,10 +28,11 @@ const Heading: React.FC<HeadingRendererProps> = React.forwardRef(
         key={id}
         className={cn(
           className,
+          styles.heading,
           styles.addedElem,
-          classes.entityStyles,
-          classes.groupStyles,
-          classes.ownStyles,
+          styles.entityStyles,
+          styles.groupStyles,
+          styles.ownStyles,
         )}
       >
         {textContent}

@@ -2,56 +2,41 @@
 
 import React from 'react';
 import cn from 'classnames';
-import { makeStyles } from '@material-ui/core';
+import { makeComponentStyles } from '../styles';
 
 import { ListRendererProps } from '../types';
 
-const styles = require('../styles.scss');
+const useStyles = makeComponentStyles({
+  list: ({ params: { isOrdered } }) => ({
+    ...(isOrdered && { 'list-style-type': 'decimal' }),
+  }),
+});
 
-const List: React.FC<ListRendererProps> = React.forwardRef(
-  (
-    { id, entityStyles, groupStyles, ownStyles, params, className, children },
-    ref,
-  ) => {
-    const { isOrdered } = params;
+const List: React.FC<ListRendererProps> = React.forwardRef((props, ref) => {
+  const { id, params, className, children } = props;
+  const { isOrdered } = params;
 
-    const ListTag = isOrdered ? 'ol' : 'ul';
+  const ListTag = isOrdered ? 'ol' : 'ul';
 
-    const classes = makeStyles({
-      entityStyles: {
-        ...entityStyles,
-        ...(isOrdered && { 'list-style-type': 'decimal' }),
-      },
+  const classes = useStyles(props);
 
-      groupStyles: {
-        ...groupStyles,
-        ...(isOrdered && { 'list-style-type': 'decimal' }),
-      },
-
-      ownStyles: {
-        ...ownStyles,
-        ...(isOrdered && { 'list-style-type': 'decimal' }),
-      },
-    })();
-
-    return (
-      <ListTag
-        ref={ref}
-        id={id}
-        data-ls-id={id}
-        key={id}
-        className={cn(
-          className,
-          styles.addedElem,
-          classes.entityStyles,
-          classes.groupStyles,
-          classes.ownStyles,
-        )}
-      >
-        {children}
-      </ListTag>
-    );
-  },
-);
+  return (
+    <ListTag
+      ref={ref}
+      id={id}
+      data-ls-id={id}
+      key={id}
+      className={cn(
+        className,
+        classes.addedElem,
+        classes.entityStyles,
+        classes.groupStyles,
+        classes.ownStyles,
+      )}
+    >
+      {children}
+    </ListTag>
+  );
+});
 
 export default List;

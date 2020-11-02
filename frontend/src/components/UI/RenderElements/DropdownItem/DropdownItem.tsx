@@ -2,57 +2,28 @@
 
 import React from 'react';
 import cn from 'classnames';
-import { makeStyles, MenuItem } from '@material-ui/core';
+import { MenuItem } from '@material-ui/core';
 import { DropdownItemRendererProps } from '../types';
 
-const styles = require('../styles.scss');
+import { makeComponentStyles } from '../styles';
 
-const getDropdownItemClassStyles = (
-  style: React.CSSProperties,
-  isDisabled: boolean,
-) => ({
-  ...style,
-
-  '&:hover': {
-    backgroundColor: isDisabled ? style.backgroundColor : 'rgba(0, 0, 0, 0.04)',
+const useStyles = makeComponentStyles({
+  'item:hover': ({ isDisabled }) => {
+    if (isDisabled) {
+      return {
+        backgroundColor: 'rgba(0, 0, 0, 0.04)',
+      };
+    }
+    return {};
   },
 });
 
-const getDropdownItemStyles = (
-  isDisabled: boolean,
-  entityStyles: React.CSSProperties,
-  groupStyles: React.CSSProperties,
-  ownStyles: React.CSSProperties,
-) =>
-  makeStyles({
-    root: {},
-
-    entityStyles: {
-      ...getDropdownItemClassStyles(entityStyles, isDisabled),
-    },
-
-    groupStyles: {
-      ...getDropdownItemClassStyles(groupStyles, isDisabled),
-    },
-
-    ownStyles: {
-      ...getDropdownItemClassStyles(ownStyles, isDisabled),
-    },
-  });
-
 const DropdownItem: React.FC<DropdownItemRendererProps> = React.forwardRef(
-  (
-    { id, entityStyles, groupStyles, ownStyles, isDisabled, params, className },
-    ref,
-  ) => {
+  (props, ref) => {
+    const { id, isDisabled, params, className } = props;
     const { showRipple, textContent } = params;
 
-    const classes = getDropdownItemStyles(
-      isDisabled,
-      entityStyles,
-      groupStyles,
-      ownStyles,
-    )();
+    const styles = useStyles(props);
 
     return isDisabled ? (
       <MenuItem
@@ -61,13 +32,13 @@ const DropdownItem: React.FC<DropdownItemRendererProps> = React.forwardRef(
         data-ls-id={id}
         key={id}
         className={cn(
-          classes.root,
+          styles.root,
           className,
           styles.addedElem,
           styles.disabled,
-          classes.entityStyles,
-          classes.groupStyles,
-          classes.ownStyles,
+          styles.entityStyles,
+          styles.groupStyles,
+          styles.ownStyles,
         )}
         disableRipple
       >
@@ -77,10 +48,10 @@ const DropdownItem: React.FC<DropdownItemRendererProps> = React.forwardRef(
       <MenuItem
         key={id}
         className={cn(
-          classes.root,
-          classes.entityStyles,
-          classes.groupStyles,
-          classes.ownStyles,
+          styles.root,
+          styles.entityStyles,
+          styles.groupStyles,
+          styles.ownStyles,
         )}
         disableRipple={!showRipple}
       >

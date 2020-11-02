@@ -53,8 +53,8 @@ exports[`Free Draggable should render free draggable component 1`] = `
         </button>
       </div>
       <div
-        data-testid="z-index-control"
         hidden=""
+        role="menu"
       >
         <div
           class="makeStyles-general-3 makeStyles-general-8"

@@ -47,7 +47,7 @@ export const makePageTemplate = (
             makeSmartContainer({
               name: 'Header',
               ownStyles: {
-                height: '50%',
+                height: '100%',
                 overflow: 'hidden',
               },
             }),

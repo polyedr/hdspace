@@ -2,31 +2,18 @@
 
 import React from 'react';
 import cn from 'classnames';
-import { makeStyles } from '@material-ui/core';
 
 import { SharedRendererProps } from '../types';
+import { makeComponentStyles } from '../styles';
 import CalendarWidget from '../../Calendar';
 
-const styles = require('../styles.scss');
+// const styles = require('../styles.scss');
+const useStyles = makeComponentStyles();
 
 const Calendar: React.FC<SharedRendererProps> = React.forwardRef(
-  (
-    { id, entityStyles, groupStyles, ownStyles, isDisabled, className },
-    ref,
-  ) => {
-    const classes = makeStyles({
-      entityStyles: {
-        ...entityStyles,
-      },
-
-      groupStyles: {
-        ...groupStyles,
-      },
-
-      ownStyles: {
-        ...ownStyles,
-      },
-    })();
+  (props, ref) => {
+    const { id, isDisabled, className } = props;
+    const classes = useStyles(props);
 
     return (
       <div
@@ -36,8 +23,7 @@ const Calendar: React.FC<SharedRendererProps> = React.forwardRef(
         key={id}
         className={cn(
           className,
-          styles.addedCalendar,
-          isDisabled && styles.disabled,
+          isDisabled && classes.disabled,
           classes.entityStyles,
           classes.groupStyles,
           classes.ownStyles,
