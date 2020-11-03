@@ -1277,7 +1277,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
 
         # Define the export node
         outer_div_node = ScenarioElement.objects.create(
-            parent=serializer_node, struct_type="div", styles=str_styles
+            parent=serializer_node, struct_type="divBlock", styles=str_styles
         )
 
         for pre, fill, node in RenderTree(root_block):
@@ -1332,7 +1332,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
 
                 # Create a new Scenario Element for the elements chain
                 node.scenarioelement = ScenarioElement.objects.create(
-                    parent=outer_div_node, struct_type="div", styles=str_styles
+                    parent=outer_div_node, struct_type="divBlock", styles=str_styles
                 )
             else:
                 node.div = ET.SubElement(node.parent.div, "div")
@@ -1345,7 +1345,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                 # Create a new Scenario Element for the elements chain
                 node.scenarioelement = ScenarioElement.objects.create(
                     parent=node.parent.scenarioelement,
-                    struct_type="div",
+                    struct_type="divBlock",
                     styles=str_styles,
                 )
 
@@ -1471,7 +1471,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
 
                     elif elem["region_attributes"]["HTML element"] in {"textarea"}:
                         # displaying various kinds of elements start
-                        element = ET.SubElement(node.div, "texarea")
+                        element = ET.SubElement(node.div, "textarea")
                         # displaying various kinds of elements end
 
                         element.set("placeholder", lorem.get_word(count=2))
@@ -1499,7 +1499,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         # Create a new Scenario Element for the elements chain
                         node.scenarioelement = ScenarioElement.objects.create(
                             parent=node.parent.scenarioelement,
-                            struct_type="h3",
+                            struct_type="heading",
                             styles=str_styles,
                         )
 
@@ -1514,7 +1514,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         # Create a new Scenario Element for the elements chain
                         node.scenarioelement = ScenarioElement.objects.create(
                             parent=node.parent.scenarioelement,
-                            struct_type="form",
+                            struct_type="container",
                             styles=str_styles,
                         )
 
@@ -1570,7 +1570,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         # Create a new Scenario Element for the elements chain
                         node.scenarioelement = ScenarioElement.objects.create(
                             parent=node.parent.scenarioelement,
-                            struct_type="menu",
+                            struct_type="list",
                             styles=str_styles,
                         )
 
@@ -1587,7 +1587,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         # Create a new Scenario Element for the elements chain
                         node.scenarioelement = ScenarioElement.objects.create(
                             parent=node.parent.scenarioelement,
-                            struct_type="li",
+                            struct_type="listItem",
                             styles=str_styles,
                         )
 
