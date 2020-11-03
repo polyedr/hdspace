@@ -5,6 +5,7 @@ import cn from 'classnames';
 
 import { LabelRendererProps } from '../types';
 import { makeComponentStyles } from '../styles';
+import useEventHandlers from '../useEventHandlers';
 
 const useStyles = makeComponentStyles({
   label: ({ isDisabled }) => ({
@@ -14,10 +15,11 @@ const useStyles = makeComponentStyles({
 });
 
 const Label: React.FC<LabelRendererProps> = React.forwardRef((props, ref) => {
-  const { id, params, isDisabled, className } = props;
+  const { id, params, className } = props;
   const { labelFor, textContent } = params;
 
   const styles = useStyles(props);
+  const eventHandlers = useEventHandlers(props);
 
   return (
     // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
@@ -35,7 +37,8 @@ const Label: React.FC<LabelRendererProps> = React.forwardRef((props, ref) => {
         styles.groupStyles,
         styles.ownStyles,
       )}
-      onClick={(event) => isDisabled && event.preventDefault()}
+      /* onClick={(event) => isDisabled && event.preventDefault()} */
+      {...eventHandlers}
     >
       {textContent}
     </label>

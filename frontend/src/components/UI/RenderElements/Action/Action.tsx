@@ -6,6 +6,7 @@ import Button from '@material-ui/core/Button';
 import { ActionRendererProps } from '../types';
 import { ActionType, WithActionProps } from '../../../../utils/withAction';
 import { makeComponentStyles } from '../styles';
+import useEventHandlers from '../useEventHandlers';
 
 const useStyles = makeComponentStyles({
   root: ({ isDisabled, entityStyles, groupStyles, ownStyles }) => {
@@ -30,18 +31,12 @@ const useStyles = makeComponentStyles({
 export type ActionRenderer = React.FC<WithActionProps & ActionRendererProps>;
 
 const Action: ActionRenderer = React.forwardRef((props, ref) => {
-  const {
-    id,
-    isDisabled,
-    params,
-    onClick,
-    actionType,
-    actionLink,
-    className,
-  } = props;
+  const { id, isDisabled, params, actionType, actionLink, className } = props;
   const { showRipple, textContent } = params;
 
   const classes = useStyles(props);
+
+  const eventHandlers = useEventHandlers(props);
 
   const components: Record<ActionType, 'a' | 'button' | typeof Link> = {
     'external-link': 'a',
@@ -72,7 +67,7 @@ const Action: ActionRenderer = React.forwardRef((props, ref) => {
         target: '_blank',
       })}
       {...(actionType === 'internal-link' && { to: actionLink })}
-      onClick={onClick}
+      {...eventHandlers}
     >
       {textContent}
     </Button>

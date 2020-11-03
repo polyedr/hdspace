@@ -5,6 +5,7 @@ import cn from 'classnames';
 import { makeComponentStyles } from '../styles';
 
 import { ListRendererProps } from '../types';
+import useEventHandlers from '../useEventHandlers';
 
 const useStyles = makeComponentStyles({
   list: ({ params: { isOrdered } }) => ({
@@ -19,6 +20,7 @@ const List: React.FC<ListRendererProps> = React.forwardRef((props, ref) => {
   const ListTag = isOrdered ? 'ol' : 'ul';
 
   const classes = useStyles(props);
+  const eventHandlers = useEventHandlers(props);
 
   return (
     <ListTag
@@ -33,6 +35,7 @@ const List: React.FC<ListRendererProps> = React.forwardRef((props, ref) => {
         classes.groupStyles,
         classes.ownStyles,
       )}
+      {...eventHandlers}
     >
       {children}
     </ListTag>

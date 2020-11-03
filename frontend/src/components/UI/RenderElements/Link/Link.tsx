@@ -7,22 +7,18 @@ import { Link as MaterialLink } from '@material-ui/core';
 import { ActionRendererProps } from '../types';
 import { WithActionProps } from '../../../../utils/withAction';
 import { makeComponentStyles } from '../styles';
+import useEventHandlers from '../useEventHandlers';
 
 export type LinkRenderer = React.FC<WithActionProps & ActionRendererProps>;
 
+const useStyles = makeComponentStyles();
+
 const Link: LinkRenderer = React.forwardRef((props, ref) => {
-  const {
-    id,
-    isDisabled,
-    params,
-    onClick,
-    actionType,
-    actionLink,
-    className,
-  } = props;
+  const { id, isDisabled, params, actionType, actionLink, className } = props;
   const { textContent } = params;
 
-  const classes = makeComponentStyles(props);
+  const classes = useStyles(props);
+  const eventHandlers = useEventHandlers(props);
 
   return (
     <MaterialLink
@@ -38,7 +34,6 @@ const Link: LinkRenderer = React.forwardRef((props, ref) => {
         classes.ownStyles,
       )}
       underline={isDisabled ? 'none' : 'hover'}
-      onClick={onClick}
       {...(actionType === 'external-link' && {
         href: actionLink,
         target: '_blank',
@@ -47,6 +42,7 @@ const Link: LinkRenderer = React.forwardRef((props, ref) => {
         component: RouterLink,
         to: actionLink,
       })}
+      {...eventHandlers}
     >
       {textContent}
     </MaterialLink>

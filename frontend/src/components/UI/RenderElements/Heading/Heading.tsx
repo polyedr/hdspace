@@ -5,6 +5,7 @@ import cn from 'classnames';
 
 import { HeadingRendererProps } from '../types';
 import { makeComponentStyles } from '../styles';
+import useEventHandlers from '../useEventHandlers';
 
 const useStyles = makeComponentStyles({
   heading: {
@@ -19,6 +20,7 @@ const Heading: React.FC<HeadingRendererProps> = React.forwardRef(
     const HeadingTag = headingType || 'h3';
 
     const styles = useStyles(props);
+    const eventHandlers = useEventHandlers(props);
 
     return (
       <HeadingTag
@@ -34,6 +36,7 @@ const Heading: React.FC<HeadingRendererProps> = React.forwardRef(
           styles.groupStyles,
           styles.ownStyles,
         )}
+        {...eventHandlers}
       >
         {textContent}
       </HeadingTag>

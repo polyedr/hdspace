@@ -4,6 +4,7 @@ import React from 'react';
 import cn from 'classnames';
 import { makeComponentStyles } from '../styles';
 import { ParagraphRendererProps } from '../types';
+import useEventHandlers from '../useEventHandlers';
 
 const useStyles = makeComponentStyles();
 
@@ -11,6 +12,7 @@ const Paragraph: React.FC<ParagraphRendererProps> = React.forwardRef(
   (props, ref) => {
     const { id, params, className } = props;
     const classes = useStyles(props);
+    const eventHandlers = useEventHandlers(props);
 
     return (
       <p
@@ -26,6 +28,7 @@ const Paragraph: React.FC<ParagraphRendererProps> = React.forwardRef(
           classes.ownStyles,
         )}
         style={{ wordBreak: 'break-word' }}
+        {...eventHandlers}
       >
         {params.textContent}
       </p>

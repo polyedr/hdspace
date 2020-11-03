@@ -6,6 +6,7 @@ import { MenuItem as MaterialMenuItem } from '@material-ui/core';
 import { MenuItemRendererProps } from '../types';
 import sharedClasses from '../../../../styles/sharedClasses';
 import { makeComponentStyles } from '../styles';
+import useEventHandlers from '../useEventHandlers';
 
 const useStyles = makeComponentStyles({
   menuItem: ({ isDisabled }) => {
@@ -19,6 +20,7 @@ const MenuItem: React.FC<MenuItemRendererProps> = React.forwardRef(
     const { showRipple, name, value } = params;
 
     const classes = useStyles(props);
+    const eventHandlers = useEventHandlers(props);
 
     return isDisabled ? (
       <MaterialMenuItem
@@ -38,6 +40,7 @@ const MenuItem: React.FC<MenuItemRendererProps> = React.forwardRef(
         )}
         value={value}
         disableRipple
+        {...eventHandlers}
       >
         {name}
       </MaterialMenuItem>
