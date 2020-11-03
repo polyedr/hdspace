@@ -3,12 +3,6 @@ import axios, { AxiosRequestConfig } from 'axios';
 export const env = process.env.NODE_ENV;
 
 const settings = {
-  staging: {
-    api: {
-      host: 'https://www.timberworkinfo.ru',
-      version: 1,
-    },
-  },
   development: {
     api: {
       host: 'https://www.timberworkinfo.ru',

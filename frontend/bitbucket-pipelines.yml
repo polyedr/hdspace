@@ -13,7 +13,7 @@ pipelines:
           name: Deploy to Firebase staging
           deployment: staging
           script:
-            - export NODE_ENV=staging
+            - export NODE_ENV=development
             - pipe: atlassian/firebase-deploy:0.2.4
               variables:
                 FIREBASE_TOKEN: $FIREBASE_TOKEN
