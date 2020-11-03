@@ -501,13 +501,9 @@ export function* uploadFileSaga({
       },
     );
 
-    console.log('REQUEST SUCCSEEDED!');
-
     const nnContainerWithDefaultParams = getTreeWithDefaultStylesAndParams(
       nnContainer,
     );
-
-    console.log('CONTAINER WITH DEFAULT PARAMS!!!');
 
     const convertedElements = getElementsArray(
       nnContainerWithDefaultParams,
