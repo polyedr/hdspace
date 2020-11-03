@@ -6,13 +6,13 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import { splitWords } from '../../utils/StringHelper';
 import Button from '../UI/Button';
 import { ElementData } from '../../redux/project/types';
-import { AVAILABLE_CHILDREN, Entity } from '../../domain/core';
+import { isAvailableChild } from '../../utils/AvailableChildrenHelper';
 import { createElements } from '../../redux/project/actions';
 import {
   selectActiveElement,
   selectCurrentScreenId,
 } from '../../redux/project/selectors';
-import { ElementType } from '../Editor/Draggable/types';
+import { ElementType } from '../../constants/dragAndDrop';
 
 type Props = {
   elementData: ElementData;
@@ -55,7 +55,7 @@ const ElementButton = React.forwardRef<HTMLButtonElement, Props>(
     const { id, type, name, icon: ElementIcon, custom } = elementData;
     const dispatch = useDispatch();
     const screenId = useSelector(selectCurrentScreenId);
-    const { type: activeItemType } = useSelector(selectActiveElement);
+    const activeElement = useSelector(selectActiveElement);
     const styles = useStyles();
     const ref = (outerRef === null
       ? React.createRef<HTMLButtonElement>()
@@ -78,11 +78,6 @@ const ElementButton = React.forwardRef<HTMLButtonElement, Props>(
       dispatch(createElements([{ id, type, name, custom }], { screenId }));
     };
 
-    const isAvailableChild = (type: Entity) =>
-      activeItemType !== 'none' &&
-      (AVAILABLE_CHILDREN[activeItemType].all ||
-        type in AVAILABLE_CHILDREN[activeItemType]);
-
     useEffect(() => {
       if (!ref?.current) {
         return;
@@ -92,7 +87,7 @@ const ElementButton = React.forwardRef<HTMLButtonElement, Props>(
 
     return (
       <Button
-        disabled={!isAvailableChild(type)}
+        disabled={!isAvailableChild(activeElement, type)}
         className={styles.elementButton}
         onClick={handleClick}
         ref={

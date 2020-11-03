@@ -21,6 +21,7 @@ import useImageUpload from '../../../../utils/nn/hooks/useImageUpload';
 import useNNProcessing from '../../../../utils/nn/hooks/useNNProcessing';
 import { SyntheticGlobalElement } from '../../../../utils/dragAndDrop/GlobalDropTarget/types';
 import { updateElementParameters } from '../../../../redux/project/actions';
+import { NNBlockType } from '../../../../constants/defaultParams';
 
 const styles = require('../styles.scss');
 
@@ -81,7 +82,14 @@ const useStyles = makeComponentStyles({
 
 const SmartContainerRenderer: React.FC<SmartContainerRendererProps> = React.forwardRef(
   (props, ref) => {
-    const { id, isDisabled, className, isBorderVisible, children } = props;
+    const {
+      id,
+      isDisabled,
+      className,
+      isBorderVisible,
+      blockType,
+      children,
+    } = props;
     const element = useSelector(selectElementById(id));
     const currentScreenId = useSelector(selectCurrentScreenId);
     const dispatch = useDispatch();
@@ -95,7 +103,11 @@ const SmartContainerRenderer: React.FC<SmartContainerRendererProps> = React.forw
 
     const imageUpload = useImageUpload(element.id);
 
-    const handleNNProcessing = useNNProcessing(element.id, imageFile);
+    const handleNNProcessing = useNNProcessing(
+      element.id,
+      blockType || NNBlockType.WEBPAGE,
+      imageFile,
+    );
 
     const { imageURL, imageSize } = element.parameters;
 
@@ -106,7 +118,7 @@ const SmartContainerRenderer: React.FC<SmartContainerRendererProps> = React.forw
 
     const [, drag] = useDrag({
       item: {
-        type: 'smartContainer',
+        type: element.type,
         drop: () => {
           const newSize = {
             width: parseInt(imgRef.current?.style.width) || 0,

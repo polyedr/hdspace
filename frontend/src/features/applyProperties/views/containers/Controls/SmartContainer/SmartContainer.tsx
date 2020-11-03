@@ -13,6 +13,11 @@ import {
 } from '../../../../../../redux/project/selectors';
 import useImageUpload from '../../../../../../utils/nn/hooks/useImageUpload';
 import useNNProcessing from '../../../../../../utils/nn/hooks/useNNProcessing';
+import { NNBlockType } from '../../../../../../constants/defaultParams';
+
+type Props = {
+  blockType: NNBlockType;
+};
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -46,7 +51,9 @@ const useStyles = makeStyles((theme) =>
   }),
 );
 
-const SmartContainer: React.FC<PropertiesChangeProps<ImageElement>> = () => {
+const SmartContainer: React.FC<PropertiesChangeProps<ImageElement> & Props> = ({
+  blockType,
+}) => {
   const classes = useStyles();
   const element = useSelector(selectActiveElement);
 
@@ -54,7 +61,7 @@ const SmartContainer: React.FC<PropertiesChangeProps<ImageElement>> = () => {
 
   const imageFile = useSelector(selectElementFileInput(element.id));
 
-  const handleNNProcessing = useNNProcessing(element.id, imageFile);
+  const handleNNProcessing = useNNProcessing(element.id, blockType, imageFile);
 
   return (
     <div className="propsElementsBlock">

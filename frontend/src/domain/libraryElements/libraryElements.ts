@@ -27,7 +27,10 @@ import { SvgIconTypeMap } from '@material-ui/core';
 import {
   root,
   makeImage,
-  makeSmartContainer,
+  makeSmartHeader,
+  makeSmartFooter,
+  makeSmartForm,
+  makeSmartWebpage,
   video,
   dropdown,
   undefined,
@@ -102,7 +105,10 @@ import {
   UndefinedServerElement,
   VideoServerElement,
   SectionServerElement,
-  SmartContainerServerElement,
+  SmartHeaderServerElement,
+  SmartFormServerElement,
+  SmartWebpageServerElement,
+  SmartFooterServerElement,
 } from '../../api/types';
 import { Entity } from '../core';
 
@@ -123,8 +129,10 @@ export type ElementsToAdd = {
   grid: GridServerElement;
   columns: ColumnsServerElement;
   image: ImageServerElement;
-  // screenshot: ScreenshotServerElement;
-  smartContainer: SmartContainerServerElement;
+  smartHeader: SmartHeaderServerElement;
+  smartFooter: SmartFooterServerElement;
+  smartForm: SmartFormServerElement;
+  smartWebpage: SmartWebpageServerElement;
   button: ButtonServerElement;
   hyperlink: HyperlinkServerElement;
   textinput: TextinputServerElement;
@@ -165,7 +173,10 @@ export const LIBRARY_ELEMENTS: LibraryElements = {
   columns: makeColumns(),
   subscribeForm,
   image: makeImage(),
-  smartContainer: makeSmartContainer({}),
+  smartHeader: makeSmartHeader({ name: 'Smart Header' }),
+  smartFooter: makeSmartFooter({ name: 'Smart Footer' }),
+  smartForm: makeSmartForm({ name: 'Smart Form' }),
+  smartWebpage: makeSmartWebpage({ name: 'Smart Webpage' }),
   button: makeButton(),
   hyperlink,
   textinput: makeTextinput(),
@@ -222,6 +233,9 @@ export const ICONS: Partial<
   map: MapIcon,
   calendar: CalendarTodayIcon,
   clock: QueryBuilderIcon,
-  smartContainer: CropOriginalIcon,
+  smartHeader: CropOriginalIcon,
+  smartFooter: CropOriginalIcon,
+  smartForm: CropOriginalIcon,
+  smartWebpage: CropOriginalIcon,
   section: Crop75Icon,
 };
