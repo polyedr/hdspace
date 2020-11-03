@@ -29,6 +29,7 @@ import {
   updateLastElements,
   updateStateElement,
 } from './actions';
+import { NNBlockType } from '../../constants/defaultParams';
 
 export type ProjectState = {
   data: ProjectDataState;
@@ -370,7 +371,7 @@ export type AddChildToElement = IAction<
 >;
 export type UploadFile = IAction<
   typeof TYPES.UPLOAD_FILE,
-  { file: any; parentId: string },
+  { file: any; parentId: string; blockType: NNBlockType },
   ElementHistoryMeta
 >;
 export type uploadImageForNNSuccess = IAction<

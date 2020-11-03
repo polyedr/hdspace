@@ -471,7 +471,7 @@ export function* updateElementParameters(
 
 export function* uploadFileSaga({
   type,
-  payload: { file, parentId },
+  payload: { file, parentId, blockType },
   meta,
 }: ReturnType<typeof Actions.uploadFile>) {
   if (!meta) {
@@ -490,6 +490,7 @@ export function* uploadFileSaga({
     formData.append('screen', screenId.toString());
     formData.append('parameters', '{}');
     formData.append('styles', '{}');
+    formData.append('block_type', blockType);
 
     const nnContainer: LibraryElement<any> = yield call(
       reqWrapper,
@@ -526,6 +527,9 @@ export function* uploadFileSaga({
     );
   } catch (e) {
     console.error('Could not upload image for NN. Error: ', e.message);
+    if (process.env.NODE_ENV === 'development') {
+      console.trace(e);
+    }
   } finally {
     yield put(Actions.setAnalyzerLoader(false));
   }

@@ -16,7 +16,6 @@ import MapProps from '../../../features/applyProperties/views/containers/Control
 import Placeholder from '../../../features/applyProperties/views/containers/Controls/Placeholder/Placeholder';
 import TextContent from '../../../features/applyProperties/views/containers/Controls/TextContent/TextContent';
 import Image from '../../../features/applyProperties/views/containers/Controls/Image/Image';
-import SmartContainer from '../../../features/applyProperties/views/containers/Controls/SmartContainer/SmartContainer';
 import Type from '../../../features/applyProperties/views/containers/Controls/Type/Type';
 import Value from '../../../features/applyProperties/views/containers/Controls/Value/Value';
 import Name from '../../../features/applyProperties/views/containers/Controls/Name/Name';
@@ -35,6 +34,8 @@ import FlexGrow from '../../../features/applyProperties/views/containers/Control
 import BackgroundSize from '../../../features/applyProperties/views/containers/Controls/BackgroundSize/BackgroundSize';
 import Scrollbar from '../../UI/Scrollbar';
 import { selectActiveElement } from '../../../redux/project/selectors';
+import withSmartContainer from '../../../features/applyProperties/views/containers/Controls/SmartContainer/withSmartContainer';
+import { NNBlockType } from '../../../constants/defaultParams';
 
 const CONTROLS: Record<Control, React.ComponentType<any>> = {
   display: Display,
@@ -48,7 +49,10 @@ const CONTROLS: Record<Control, React.ComponentType<any>> = {
   placeholder: Placeholder,
   textContent: TextContent,
   image: Image,
-  smartContainer: SmartContainer,
+  smartHeader: withSmartContainer(NNBlockType.HEADER),
+  smartFooter: withSmartContainer(NNBlockType.FOOTER),
+  smartForm: withSmartContainer(NNBlockType.FORM),
+  smartWebpage: withSmartContainer(NNBlockType.WEBPAGE),
   type: Type,
   value: Value,
   name: Name,

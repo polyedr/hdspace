@@ -19,6 +19,7 @@ import { ChildEntity, Entity } from '../../domain/core';
 import { ChildrenElements } from '../../domain/libraryElements/libraryElements';
 import { CssLikeStyles } from '../../utils/StyleHelper';
 import * as T from './types';
+import { NNBlockType } from '../../constants/defaultParams';
 
 export const getProjectList = (): T.LoadProjects => ({
   type: TYPES.LOAD_PROJECTS,
@@ -493,12 +494,14 @@ export const addChildToElement = (
 export const uploadFile = (
   file: any,
   parentId: string,
+  blockType: NNBlockType,
   meta: ElementHistoryMeta,
 ): T.UploadFile => ({
   type: TYPES.UPLOAD_FILE,
   payload: {
     file,
     parentId,
+    blockType,
   },
   meta,
 });

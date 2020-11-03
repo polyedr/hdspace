@@ -30,7 +30,10 @@ export const ENTITIES: {
   emptyPageTemplate: 'emptyPageTemplate',
   grid: 'grid',
   columns: 'columns',
-  smartContainer: 'smartContainer',
+  smartHeader: 'smartHeader',
+  smartFooter: 'smartFooter',
+  smartForm: 'smartForm',
+  smartWebpage: 'smartWebpage',
   subscribeForm: 'subscribeForm',
   cardsSection: 'cardsSection',
   featureSection: 'featureSection',
@@ -43,7 +46,10 @@ const CONTROLS_AFFECT_ON_PARAMS = [
   'placeholder',
   'textContent',
   'image',
-  'smartContainer',
+  'smartHeader',
+  'smartFooter',
+  'smartForm',
+  'smartWebpage',
   'value',
   'name',
   'showRipple',
@@ -410,7 +416,10 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
   grid: gridStyleControls,
   columns: columnsStyleControls,
   subscribeForm: subscribeFormStyleControls,
-  smartContainer: [...smartContainerStyleControls, 'smartContainer'],
+  smartHeader: [...smartContainerStyleControls, 'smartHeader'],
+  smartFooter: [...smartContainerStyleControls, 'smartFooter'],
+  smartForm: [...smartContainerStyleControls, 'smartForm'],
+  smartWebpage: [...smartContainerStyleControls, 'smartWebpage'],
   undefined: undefinedControls,
   cardsSection: cardsSectionStyleControls,
   featureSection: featureSectionStyleControls,
@@ -524,7 +533,25 @@ export const AVAILABLE_CHILDREN: AvailableChildren = {
       max: Infinity,
     },
   },
-  smartContainer: {
+  smartHeader: {
+    all: {
+      min: 0,
+      max: Infinity,
+    },
+  },
+  smartFooter: {
+    all: {
+      min: 0,
+      max: Infinity,
+    },
+  },
+  smartForm: {
+    all: {
+      min: 0,
+      max: Infinity,
+    },
+  },
+  smartWebpage: {
     all: {
       min: 0,
       max: Infinity,

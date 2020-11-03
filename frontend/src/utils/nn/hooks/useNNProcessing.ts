@@ -5,8 +5,13 @@ import {
   selectCurrentScreenId,
 } from '../../../redux/project/selectors';
 import { uploadFile } from '../../../redux/project/actions';
+import { NNBlockType } from '../../../constants/defaultParams';
 
-const useNNProcessing = (elementId: string, file?: File) => {
+const useNNProcessing = (
+  elementId: string,
+  blockType: NNBlockType,
+  file?: File,
+) => {
   const element = useSelector(selectElementById(elementId));
   const currentScreenId = useSelector(selectCurrentScreenId);
   const dispatch = useDispatch();
@@ -24,12 +29,20 @@ const useNNProcessing = (elementId: string, file?: File) => {
           imgPreviewUrl: element.parameters.imageUrl,
         },
         elementId,
+        blockType,
         {
           screenId: currentScreenId,
         },
       ),
     );
-  }, [dispatch, file, element.parameters.imageUrl, elementId, currentScreenId]);
+  }, [
+    dispatch,
+    file,
+    element.parameters.imageUrl,
+    elementId,
+    blockType,
+    currentScreenId,
+  ]);
 
   return handleNNProcessing;
 };

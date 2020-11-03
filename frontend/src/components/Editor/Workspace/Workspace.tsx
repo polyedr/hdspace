@@ -75,7 +75,10 @@ const Workspace: React.FC = () => {
     [dispatch],
   );
 
-  useGlobalDropTarget(['smartContainer'], ref);
+  useGlobalDropTarget(
+    ['smartHeader', 'smartFooter', 'smartForm', 'smartWebpage'],
+    ref,
+  );
 
   return (
     <div className={classes.workspace} ref={ref}>

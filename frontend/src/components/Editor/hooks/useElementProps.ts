@@ -93,7 +93,10 @@ const useElementProps = (elementId: string): ElementProps | null => {
 
     switch (element.type) {
       case 'container':
-      case 'smartContainer':
+      case 'smartHeader':
+      case 'smartFooter':
+      case 'smartForm':
+      case 'smartWebpage':
       case 'divBlock': {
         return {
           isBorderVisible,
