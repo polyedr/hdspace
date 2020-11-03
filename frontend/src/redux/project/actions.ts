@@ -318,16 +318,6 @@ export const setScreens = (screens: T.Screen[]): T.SetScreens => ({
   payload: { screens },
 });
 
-export const renameElement = (
-  elementID: string,
-  name: string,
-  meta: ElementHistoryMeta,
-): T.RenameElement => ({
-  type: TYPES.RENAME_ELEMENT,
-  payload: { elementID, name },
-  meta,
-});
-
 export const updateElement = <T extends Entity>(
   elementID: string,
   data: LibraryElementPatch<T>,

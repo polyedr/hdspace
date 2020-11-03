@@ -9,7 +9,7 @@ import Formats from './Formats';
 import Actions from './Actions';
 import { changeFreeCanvasMode } from '../../../redux/project/actions';
 import { selectFreeCanvasMode } from '../../../redux/project/selectors';
-import ShowBorders from '../../../features/applyProperties/views/containers/Controls/ShowBorders/ShowBorders';
+import ShowBorders from '../../RightPanel/PropertiesTab/Controls/ShowBorders/ShowBorders';
 
 const useStyles = makeStyles({
   root: {

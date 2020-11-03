@@ -16,7 +16,7 @@ import {
   buildElementsTree,
   flattenElements,
 } from '../../utils/normalizedStateHelpers';
-import { getDisplayStyles } from '../../features/applyProperties/views/containers/Controls/Display/Display';
+import { getDisplayStyles } from '../../components/RightPanel/PropertiesTab/Controls/Display/Display';
 
 export const selectProjectState = makeFeatureStateSelector('project');
 

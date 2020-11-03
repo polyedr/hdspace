@@ -4,9 +4,9 @@ import { DndProvider } from 'react-dnd';
 import { useDispatch, useSelector } from 'react-redux';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import Workspace from '../components/Editor/Workspace/Workspace';
-import { RightPanel } from '../features/applyProperties/views/containers';
 import { activateScreen } from '../redux/project/actions';
 import { selectScreens } from '../redux/project/selectors';
+import RightPanel from '../components/RightPanel';
 
 const useStyles = makeStyles({
   screen: {

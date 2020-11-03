@@ -21,7 +21,6 @@ import {
   createElements,
   createElementsSaga,
   redoWrapIntoContainerSaga,
-  renameElementSaga,
   restoreElementChildrenSaga,
   restoreElementSaga,
   softDeleteSaga,
@@ -441,7 +440,6 @@ export default function* projectSaga() {
   yield takeLatest(TYPES.UPDATE_ELEMENT_PARAMETERS, updateElementParameters);
 
   yield takeEvery(TYPES.CREATE_ELEMENTS, createElementsSaga);
-  yield takeEvery(TYPES.RENAME_ELEMENT, renameElementSaga);
 
   yield takeEvery(TYPES.ADD_CHILD_TO_ELEMENT, addChildToElementSaga);
   yield takeEvery(TYPES.WRAP_INTO_CONTAINER, wrapIntoContainerSaga);

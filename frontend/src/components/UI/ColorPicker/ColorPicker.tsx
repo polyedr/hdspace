@@ -36,7 +36,6 @@ const ColorPicker: React.FC<ColorPickerProps> = ({
   color,
   onChangeComplete,
 }) => {
-  console.log(color);
   const classes = useStyles({ color });
   const [startColor, setStartColor] = useState({ hex: color });
   const [isPopoverOpen, setIsPopoverOpen] = useState<boolean>(false);
