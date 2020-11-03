@@ -1268,23 +1268,25 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
 
         # Define the outer container parameters
         outer_div = ET.SubElement(html_body, "div")
-        styles = []
-        styles.append("background-color:rgba(" + bcolour_container_value + ")")
-        styles.append("height: " + str(img_height))
-        styles.append("width: " + str(img_width))
-        str_styles = "; ".join(styles)
+        styles = {}
+        parameters = {}
+        styles["background-color"] = "rgba(" + bcolour_container_value + ")"
+        styles["height"] = str(img_height) + "px"
+        styles["width"] = str(img_width) + "px"
+        str_styles = '; '.join('{}:{}'.format(key, val) for key, val in styles.items())
         outer_div.set("style", str_styles)
-
+        # print(1277, styles, str_styles)
         # Define the export node
         outer_div_node = ScenarioElement.objects.create(
-            parent=serializer_node, struct_type="container", styles=str_styles
+            parent=serializer_node, struct_type="container", styles=styles
         )
 
         for pre, fill, node in RenderTree(root_block):
             # if(node.elements):
             #     print("elements: ", len(node.elements))
             #     input()
-            styles = []
+            styles = {}
+            parameters = {}
 
             # Define the node dimensions start
             node_width = int(node.x2 - node.x1)
@@ -1294,59 +1296,57 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
             # Define the direction of the container start
             # Horizontal
             if node.direction == 1:
-                styles.append("display: flex")
-                styles.append("background: aliceblue")
+                styles["display"] = "flex"
+                styles["background"] = "aliceblue"
                 if region_dataset in ["headers", "footers"]:
-                    styles.append("justify-content: space-between")
+                    styles["justify-content"] = "space-between"
             # Vertical
             if node.direction == 0:
-                styles.append("display: block")
-                styles.append("background: lavenderblush")
+                styles["display"] = "block"
+                styles["background"] = "lavenderblush"
             if node.direction == 2:
                 if (node.types == "ccluster") or (
                     region_dataset in ["headers", "webpages"]
                 ):
-                    styles.append("display: flex")
-                    styles.append("background: lightblue")
+                    styles["display"] = "flex"
+                    styles["background"] = "lightblue"
                 else:
-                    styles.append("display: flex")
-                    styles.append("background: lightblue")
+                    styles["display"] = "flex"
+                    styles["background"] = "lightblue"
                     # Sometimes node_width and height are 0, should check this.
                     if node_width:
-                        styles.append("width:" + str(node_width) + "px")
+                        styles["width"] = str(node_width) + "px"
                     if node_height:
-                        styles.append("height:" + str(node_height) + "px")
+                        styles["height"] = str(node_height) + "px"
             # Define the direction of the container end
 
             if node == root_block:
                 margin_lr = int((img_width - node_width) / 2)
                 margin_tp = int((img_height - node_height) / 2)
                 node.div = ET.SubElement(outer_div, "div")
-                styles.append("border: 1px solid green")
-                styles.append(
-                    "margin: " + str(margin_tp) + "px " + str(margin_lr) + "px"
-                )
+                styles["border"] = "1px solid green"
+                styles["margin"] = str(margin_tp) + "px " + str(margin_lr) + "px"
 
-                str_styles = "; ".join(styles)
+                str_styles = '; '.join('{}:{}'.format(key, val) for key, val in styles.items())
                 node.div.set("style", str_styles)
 
                 # Create a new Scenario Element for the elements chain
                 node.scenarioelement = ScenarioElement.objects.create(
-                    parent=outer_div_node, struct_type="container", styles=str_styles
+                    parent=outer_div_node, struct_type="container", styles=dict(styles)
                 )
             else:
                 node.div = ET.SubElement(node.parent.div, "div")
 
-                styles.append("border: 1px solid green")
+                styles["border"] = "1px solid green"
 
-                str_styles = "; ".join(styles)
+                str_styles = '; '.join('{}:{}'.format(key, val) for key, val in styles.items())
                 node.div.set("style", str_styles)
 
                 # Create a new Scenario Element for the elements chain
                 node.scenarioelement = ScenarioElement.objects.create(
                     parent=node.parent.scenarioelement,
                     struct_type="container",
-                    styles=str_styles,
+                    styles=dict(styles),
                 )
 
             # Display elements for some fcluster
@@ -1380,26 +1380,27 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                     # input()
                     # Cropping to the border box end
 
-                    styles = []
+                    styles = {}
+                    parameters = {}
                     if elem["region_attributes"]["HTML element"] in {
                         "textinput",
                         "input",
                     }:
-                        styles.append("width:" + str(node_width) + "px")
-                        styles.append("height:" + str(node_height) + "px")
+                        styles["width"] = str(node_width) + "px"
+                        styles["height"] + str(node_height) + "px"
 
                         # displaying various kinds of elements start
                         element = ET.SubElement(node.div, "input")
                         # displaying various kinds of elements end
 
-                        str_styles = "; ".join(styles)
+                        str_styles = '; '.join('{}:{}'.format(key, val) for key, val in styles.items())
                         element.set("style", str_styles)
 
                         # Create a new Scenario Element for the elements chain
                         node.scenarioelement = ScenarioElement.objects.create(
                             parent=node.parent.scenarioelement,
                             struct_type="textinput",
-                            styles=str_styles,
+                            styles=dict(styles),
                         )
 
                     elif elem["region_attributes"]["HTML element"] in {"checkbox"}:
@@ -1408,14 +1409,14 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         # displaying various kinds of elements end
                         element.set("type", "checkbox")
 
-                        str_styles = "; ".join(styles)
+                        str_styles = '; '.join('{}:{}'.format(key, val) for key, val in styles.items())
                         element.set("style", str_styles)
 
                         # Create a new Scenario Element for the elements chain
                         node.scenarioelement = ScenarioElement.objects.create(
                             parent=node.parent.scenarioelement,
                             struct_type="checkbox",
-                            styles=str_styles,
+                            styles=dict(styles),
                         )
 
                     elif elem["region_attributes"]["HTML element"] in {"radiobutton"}:
@@ -1424,32 +1425,32 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         # displaying various kinds of elements end
                         element.set("type", "radio")
 
-                        str_styles = "; ".join(styles)
+                        str_styles = '; '.join('{}:{}'.format(key, val) for key, val in styles.items())
                         element.set("style", str_styles)
 
                         # Create a new Scenario Element for the elements chain
                         node.scenarioelement = ScenarioElement.objects.create(
                             parent=node.parent.scenarioelement,
                             struct_type="radiobutton",
-                            styles=str_styles,
+                            styles=dict(styles),
                         )
 
                     elif elem["region_attributes"]["HTML element"] == "select":
-                        styles.append("width:" + str(node_width) + "px")
-                        styles.append("height:" + str(node_height) + "px")
+                        styles["width"] + str(node_width) + "px"
+                        styles["height"] + str(node_height) + "px"
 
                         # displaying various kinds of elements start
                         element = ET.SubElement(node.div, "select")
                         # displaying various kinds of elements end
 
-                        str_styles = "; ".join(styles)
+                        str_styles = '; '.join('{}:{}'.format(key, val) for key, val in styles.items())
                         element.set("style", str_styles)
 
                         # Create a new Scenario Element for the elements chain
                         node.scenarioelement = ScenarioElement.objects.create(
                             parent=node.parent.scenarioelement,
                             struct_type="select",
-                            styles=str_styles,
+                            styles=dict(styles),
                         )
 
                     if elem["region_attributes"]["HTML element"] in {"text", "ocrtext"}:
@@ -1459,14 +1460,14 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
 
                         element.text = lorem.get_word(count=2)
 
-                        str_styles = "; ".join(styles)
+                        str_styles = '; '.join('{}:{}'.format(key, val) for key, val in styles.items())
                         element.set("style", str_styles)
 
                         # Create a new Scenario Element for the elements chain
                         node.scenarioelement = ScenarioElement.objects.create(
                             parent=node.parent.scenarioelement,
                             struct_type="ocrtext",
-                            styles=str_styles,
+                            styles=dict(styles),
                         )
 
                     elif elem["region_attributes"]["HTML element"] in {"textarea"}:
@@ -1476,14 +1477,14 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
 
                         element.set("placeholder", lorem.get_word(count=2))
 
-                        str_styles = "; ".join(styles)
+                        str_styles = '; '.join('{}:{}'.format(key, val) for key, val in styles.items())
                         element.set("style", str_styles)
 
                         # Create a new Scenario Element for the elements chain
                         node.scenarioelement = ScenarioElement.objects.create(
                             parent=node.parent.scenarioelement,
                             struct_type="textarea",
-                            styles=str_styles,
+                            styles=dict(styles),
                         )
 
                     elif elem["region_attributes"]["HTML element"] in {"form_heading"}:
@@ -1493,14 +1494,14 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
 
                         element.text = lorem.get_word(count=2)
 
-                        str_styles = "; ".join(styles)
+                        str_styles = '; '.join('{}:{}'.format(key, val) for key, val in styles.items())
                         element.set("style", str_styles)
 
                         # Create a new Scenario Element for the elements chain
                         node.scenarioelement = ScenarioElement.objects.create(
                             parent=node.parent.scenarioelement,
                             struct_type="heading",
-                            styles=str_styles,
+                            styles=dict(styles),
                         )
 
                     elif elem["region_attributes"]["HTML element"] in {"form"}:
@@ -1508,19 +1509,19 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         element = ET.SubElement(node.div, "form")
                         # displaying various kinds of elements end
 
-                        str_styles = "; ".join(styles)
+                        str_styles = '; '.join('{}:{}'.format(key, val) for key, val in styles.items())
                         element.set("style", str_styles)
 
                         # Create a new Scenario Element for the elements chain
                         node.scenarioelement = ScenarioElement.objects.create(
                             parent=node.parent.scenarioelement,
                             struct_type="container",
-                            styles=str_styles,
+                            styles=dict(styles),
                         )
 
                     elif elem["region_attributes"]["HTML element"] == "image":
-                        styles.append("max-width: 100%")
-                        styles.append("height: auto")
+                        styles["max-width"] = "100%"
+                        styles["heigh"] = "auto"
 
                         # Saving an image
                         cv2.imwrite(elem_image_name, elem_image)
@@ -1531,18 +1532,18 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
 
                         element.set("src", elem_image_name)
 
-                        str_styles = "; ".join(styles)
+                        str_styles = '; '.join('{}:{}'.format(key, val) for key, val in styles.items())
                         element.set("style", str_styles)
 
                         # Create a new Scenario Element for the elements chain
                         node.scenarioelement = ScenarioElement.objects.create(
                             parent=node.parent.scenarioelement,
                             struct_type="image",
-                            styles=str_styles,
+                            styles=dict(styles),
                         )
 
                     elif elem["region_attributes"]["HTML element"] == "button":
-                        styles.append("height:" + str(node_height) + "px")
+                        styles["height"] + str(node_height) + "px"
 
                         # displaying various kinds of elements start
                         element = ET.SubElement(node.div, "button")
@@ -1550,28 +1551,28 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
 
                         element.text = lorem.get_word(count=1)
 
-                        str_styles = "; ".join(styles)
+                        str_styles = '; '.join('{}:{}'.format(key, val) for key, val in styles.items())
                         element.set("style", str_styles)
 
                         # Create a new Scenario Element for the elements chain
                         node.scenarioelement = ScenarioElement.objects.create(
                             parent=node.parent.scenarioelement,
                             struct_type="button",
-                            styles=str_styles,
+                            styles=dict(styles),
                         )
 
                     elif elem["region_attributes"]["HTML element"] in {"menu"}:
                         # displaying various kinds of elements start
                         element = ET.SubElement(node.div, "ul")
                         # displaying various kinds of elements end
-                        str_styles = "; ".join(styles)
+                        str_styles = '; '.join('{}:{}'.format(key, val) for key, val in styles.items())
                         element.set("style", str_styles)
 
                         # Create a new Scenario Element for the elements chain
                         node.scenarioelement = ScenarioElement.objects.create(
                             parent=node.parent.scenarioelement,
                             struct_type="list",
-                            styles=str_styles,
+                            styles=dict(styles),
                         )
 
                     elif elem["region_attributes"]["HTML element"] in {"li"}:
@@ -1581,14 +1582,14 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
 
                         element.text = lorem.get_word(count=1)
 
-                        str_styles = "; ".join(styles)
+                        str_styles = '; '.join('{}:{}'.format(key, val) for key, val in styles.items())
                         element.set("style", str_styles)
 
                         # Create a new Scenario Element for the elements chain
                         node.scenarioelement = ScenarioElement.objects.create(
                             parent=node.parent.scenarioelement,
                             struct_type="listItem",
-                            styles=str_styles,
+                            styles=dict(styles),
                         )
 
         return serializer_node
