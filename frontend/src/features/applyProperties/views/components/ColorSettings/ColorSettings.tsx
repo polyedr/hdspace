@@ -16,8 +16,8 @@ const useStyles = makeStyles({
     alignItems: 'flex-end',
     padding: '0.5em 0',
   },
-  text: {
-    width: 100,
+  wrapper: {
+    padding: '0 0.5em',
   },
 });
 
@@ -79,14 +79,19 @@ const ColorSettings: React.FC<Props> = ({
     <div className={classes.root}>
       <TextField
         label="Color"
-        className={classes.text}
+        fullWidth
         value={currentBackgroundColor.value}
         onBlur={({ target: { value } }) => handleColorInputBlur(value)}
         onChange={({ target: { value } }) => handleColorChange(value)}
-        margin="dense"
+        margin="none"
       />
 
-      <ColorPicker color={currentColor} onChangeComplete={handleColorChange} />
+      <div className={classes.wrapper}>
+        <ColorPicker
+          color={currentColor}
+          onChangeComplete={handleColorChange}
+        />
+      </div>
     </div>
   );
 };

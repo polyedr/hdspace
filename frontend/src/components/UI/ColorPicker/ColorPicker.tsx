@@ -1,9 +1,22 @@
 import React, { useEffect, useCallback, useState, memo } from 'react';
 import { SketchPicker, ColorResult } from 'react-color';
 import Popover from 'react-tiny-popover';
-import cn from 'classnames';
+import makeStyles from '@material-ui/core/styles/makeStyles';
+import { createStyles } from '@material-ui/core';
 
-const styles = require('./styles.scss');
+const useStyles = makeStyles((theme) =>
+  createStyles({
+    container: {
+      position: 'relative',
+      width: 80,
+      height: 30,
+      borderRadius: theme.shape.borderRadius,
+      border: '1px solid grey',
+      backgroundColor: (props: any) => props.color,
+      cursor: 'pointer',
+    },
+  }),
+);
 
 const popoverStyle = {
   opacity: '0',
@@ -23,6 +36,8 @@ const ColorPicker: React.FC<ColorPickerProps> = ({
   color,
   onChangeComplete,
 }) => {
+  console.log(color);
+  const classes = useStyles({ color });
   const [startColor, setStartColor] = useState({ hex: color });
   const [isPopoverOpen, setIsPopoverOpen] = useState<boolean>(false);
 
@@ -76,14 +91,8 @@ const ColorPicker: React.FC<ColorPickerProps> = ({
     >
       <div
         onClick={handleColorPickerContainerClick}
-        className={cn(styles.colorPickerContainer)}
-      >
-        <div className={cn(styles.backgroundEmpty)} />
-        <div
-          className={cn(styles.colorPickerColor)}
-          style={{ backgroundColor: color }}
-        />
-      </div>
+        className={classes.container}
+      />
     </Popover>
   );
 };

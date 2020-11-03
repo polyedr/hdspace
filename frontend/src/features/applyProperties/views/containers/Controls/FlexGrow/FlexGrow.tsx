@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import TextField from '@material-ui/core/TextField';
 import StylesHeader from '../../../components/StylesHeader/StylesHeader';
 import {
   selectActiveElement,
@@ -49,12 +50,20 @@ const FlexGrow: React.FC<Props> = ({
         cssPropertiesNames={['flex-grow']}
       />
 
-      <input
+      <TextField
+        fullWidth
+        label="Flex Grow"
+        type="number"
+        value={flexGrow}
+        onChange={handleTextFieldChange}
+      />
+
+      {/*      <input
         type="number"
         value={flexGrow}
         min={0}
         onChange={handleTextFieldChange}
-      />
+      /> */}
     </div>
   ) : null;
 };

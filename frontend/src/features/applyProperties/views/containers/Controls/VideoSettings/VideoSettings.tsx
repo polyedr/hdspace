@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { Checkbox } from '@material-ui/core';
+import TextField from '@material-ui/core/TextField';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import makeStyles from '@material-ui/core/styles/makeStyles';
 import Switch from '../../../../../../components/UI/Switch/Switch';
 import { AppReduxState } from '../../../../../../shared/types/app';
 import { VideoElement, VideoSettingsType } from '../../../../../../api/types';
@@ -10,6 +13,16 @@ import {
   withConfigurableProperties,
 } from '../../../../../../utils/withConfigurableProperties';
 import { extractPlayerLinkInfo } from '../../../../../../utils/extractVideoLink';
+
+const useStyles = makeStyles({
+  wrapper: {
+    display: 'flex',
+    justifyContent: 'space-evenly',
+  },
+  text: {
+    width: 70,
+  },
+});
 
 type StateProps = {
   videoSettings: VideoSettingsType;
@@ -26,6 +39,7 @@ function mapState(state: AppReduxState): StateProps {
 type Props = StateProps & PropertiesChangeProps<VideoElement>;
 
 const VideoSettings: React.FC<Props> = ({ videoSettings, updateParams }) => {
+  const classes = useStyles();
   const { link, autoplay, start, end, loop, rel } = videoSettings;
 
   const [linkInputValue, setLinkInputValue] = useState(link);
@@ -77,12 +91,14 @@ const VideoSettings: React.FC<Props> = ({ videoSettings, updateParams }) => {
   return (
     <div>
       <div>
-        <h4>Video link</h4>
-
-        <textarea
-          name="link"
+        <TextField
+          variant="outlined"
           value={linkInputValue}
           onChange={handleLinkInputChange}
+          label="Link"
+          margin="dense"
+          fullWidth
+          multiline
         />
 
         {!isValidLink && <p>Enter the URL of another player</p>}
@@ -90,57 +106,58 @@ const VideoSettings: React.FC<Props> = ({ videoSettings, updateParams }) => {
 
       {isYoutubeVideo && (
         <>
-          <div>
-            <h4>Autoplay</h4>
+          <div className={classes.wrapper}>
+            <FormControlLabel
+              control={
+                <Switch checked={autoplay} onChange={handleSwitchChange} />
+              }
+              label="Autoplay"
+            />
 
-            <Switch checked={autoplay} onChange={handleSwitchChange} />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  value="loop"
+                  name="loop"
+                  checked={loop}
+                  onChange={handleLoopCheckboxChange}
+                />
+              }
+              label="Loop"
+            />
           </div>
 
-          <div>
-            <h4>Start at</h4>
-
-            <input
-              name="start"
-              type="number"
+          <div className={classes.wrapper}>
+            <TextField
               value={start}
               onChange={handleStartInputChange}
-              min={0}
-            />
-          </div>
-
-          <div>
-            <h4>End at</h4>
-
-            <input
-              name="end"
               type="number"
+              label="Start"
+              margin="dense"
+              className={classes.text}
+            />
+
+            <TextField
               value={end}
+              type="number"
               onChange={handleEndInputChange}
-              min={0}
+              label="End"
+              margin="dense"
+              className={classes.text}
             />
           </div>
 
-          <div>
-            <h4>Loop</h4>
-
-            <Checkbox
-              value="loop"
-              name="loop"
-              checked={loop}
-              onChange={handleLoopCheckboxChange}
-            />
-          </div>
-
-          <div>
-            <h4>Show only channel related videos</h4>
-
-            <Checkbox
-              value="show related videos"
-              name="show related videos"
-              checked={rel}
-              onChange={handleRelCheckboxChange}
-            />
-          </div>
+          <FormControlLabel
+            control={
+              <Checkbox
+                value="show related videos"
+                name="show related videos"
+                checked={rel}
+                onChange={handleRelCheckboxChange}
+              />
+            }
+            label="Show only channel related videos"
+          />
         </>
       )}
     </div>

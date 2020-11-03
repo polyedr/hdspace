@@ -2,6 +2,7 @@ import React, { useCallback } from 'react';
 import cn from 'classnames';
 import { connect } from 'react-redux';
 import makeStyles from '@material-ui/core/styles/makeStyles';
+import TextField from '@material-ui/core/TextField';
 import StylesHeader from '../../../components/StylesHeader/StylesHeader';
 import { Entity } from '../../../../../../domain/core';
 import { AppReduxState } from '../../../../../../shared/types/app';
@@ -13,36 +14,68 @@ import {
 import { selectCurrentEditableStyles } from '../../../../../../redux/project/selectors';
 
 const useStyles = makeStyles({
-  indentsController: {
-    position: 'relative',
+  marginGrid: {
     display: 'grid',
-    gridTemplateRows: 'repeat(5, 24px)',
-    gridTemplateColumns: 'repeat(5, 48px)',
-    gap: '4px',
-    marginLeft: '8px',
-    '&::before': {
-      content: '""',
-      position: 'absolute',
-      zIndex: 0,
-      top: 25,
-      left: 50,
-      display: 'block',
-      width: 154,
-      height: 84,
-      border: '1px dashed #949494',
-      textAlign: 'right',
+    gridTemplateAreas: `
+        '.  .  mt .  . '
+        '.  pg pg pg  . '
+        'ml pg pg pg mr'
+        '.  pg pg pg . '
+        '.  .  mb .  . '  
+        `,
+    border: '1px solid grey',
+    position: 'relative',
+  },
+  paddingGrid: {
+    display: 'grid',
+    gridArea: 'pg',
+    gridTemplateAreas: `
+      '.  pt . '
+      'pl .  pr'
+      '.  pb . '
+    `,
+    border: '1px solid grey',
+    position: 'relative',
+  },
+  capture: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    fontStyle: 'italic',
+    fontSize: '0.8em',
+  },
+  input: {
+    '& .MuiInputBase-input': {
+      height: 10,
+      fontSize: '0.8em',
+      padding: '0.4em',
     },
   },
-
-  indentsInput: {
-    position: 'relative',
-    zIndex: 1,
-    width: '100%',
-    padding: '2px 6px 2px 4px',
+  marginTop: {
+    gridArea: 'mt',
+  },
+  marginRight: {
+    gridArea: 'mr',
+  },
+  marginBottom: {
+    gridArea: 'mb',
+  },
+  marginLeft: {
+    gridArea: 'ml',
+  },
+  paddingTop: {
+    gridArea: 'pt',
+  },
+  paddingRight: {
+    gridArea: 'pr',
+  },
+  paddingBottom: {
+    gridArea: 'pb',
+  },
+  paddingLeft: {
+    gridArea: 'pl',
   },
 });
-
-const MIN_PADDING = 0;
 
 function mapState(state: AppReduxState) {
   return {
@@ -82,7 +115,7 @@ const IndentsBlock: React.FC<Props> = ({
   );
 
   return (
-    <div className="propsElementsBlock">
+    <div>
       <StylesHeader
         title="Margins & Paddings"
         onClick={removeStyles}
@@ -97,13 +130,104 @@ const IndentsBlock: React.FC<Props> = ({
           'padding-left',
         ]}
       />
-      <div className={classes.indentsController}>
-        <input
-          className={cn(
-            classes.indentsInput,
-            // styles.indentsInput_margin,
-            // styles.indentsInput_margin_top,
-          )}
+
+      <div className={classes.marginGrid}>
+        <div className={classes.capture}>Margin</div>
+
+        <TextField
+          type="number"
+          margin="none"
+          variant="outlined"
+          className={cn(classes.input, classes.marginTop)}
+          value={parseInt(marginTop)}
+          onChange={(event) =>
+            handleIndentChange('margin-top', `${event.target.value}px`)
+          }
+        />
+
+        <TextField
+          type="number"
+          margin="none"
+          variant="outlined"
+          className={cn(classes.input, classes.marginRight)}
+          value={parseInt(marginRight)}
+          onChange={(event) =>
+            handleIndentChange('margin-right', `${event.target.value}px`)
+          }
+        />
+
+        <TextField
+          type="number"
+          margin="none"
+          variant="outlined"
+          className={cn(classes.input, classes.marginBottom)}
+          value={parseInt(marginBottom)}
+          onChange={(event) =>
+            handleIndentChange('margin-bottom', `${event.target.value}px`)
+          }
+        />
+
+        <TextField
+          type="number"
+          margin="none"
+          variant="outlined"
+          className={cn(classes.input, classes.marginLeft)}
+          value={parseInt(marginLeft)}
+          onChange={(event) =>
+            handleIndentChange('margin-left', `${event.target.value}px`)
+          }
+        />
+
+        <div className={classes.paddingGrid}>
+          <div className={classes.capture}>Padding</div>
+
+          <TextField
+            type="number"
+            margin="none"
+            variant="outlined"
+            className={cn(classes.input, classes.paddingTop)}
+            value={parseInt(paddingTop)}
+            onChange={(event) =>
+              handleIndentChange('padding-top', `${event.target.value}px`)
+            }
+          />
+
+          <TextField
+            type="number"
+            margin="none"
+            variant="outlined"
+            className={cn(classes.input, classes.paddingRight)}
+            value={parseInt(paddingRight)}
+            onChange={(event) =>
+              handleIndentChange('padding-right', `${event.target.value}px`)
+            }
+          />
+
+          <TextField
+            type="number"
+            margin="none"
+            variant="outlined"
+            className={cn(classes.input, classes.paddingBottom)}
+            value={parseInt(paddingBottom)}
+            onChange={(event) =>
+              handleIndentChange('padding-bottom', `${event.target.value}px`)
+            }
+          />
+
+          <TextField
+            type="number"
+            margin="none"
+            variant="outlined"
+            className={cn(classes.input, classes.paddingLeft)}
+            value={parseInt(paddingLeft)}
+            onChange={(event) =>
+              handleIndentChange('padding-left', `${event.target.value}px`)
+            }
+          />
+        </div>
+
+        {/* <input
+          className={cn()}
           type="number"
           value={parseInt(marginTop)}
           onChange={(event) =>
@@ -112,11 +236,7 @@ const IndentsBlock: React.FC<Props> = ({
         />
 
         <input
-          className={cn(
-            classes.indentsInput,
-            // styles.indentsInput_margin,
-            // styles.indentsInput_margin_right,
-          )}
+          className={cn()}
           type="number"
           value={parseInt(marginRight)}
           onChange={(event) =>
@@ -124,11 +244,7 @@ const IndentsBlock: React.FC<Props> = ({
           }
         />
         <input
-          className={cn(
-            classes.indentsInput,
-            // styles.indentsInput_margin,
-            // styles.indentsInput_margin_bottom,
-          )}
+          className={cn()}
           type="number"
           value={parseInt(marginBottom)}
           onChange={(event) =>
@@ -136,11 +252,7 @@ const IndentsBlock: React.FC<Props> = ({
           }
         />
         <input
-          className={cn(
-            classes.indentsInput,
-            // styles.indentsInput_margin,
-            // styles.indentsInput_margin_left,
-          )}
+          className={cn()}
           type="number"
           value={parseInt(marginLeft)}
           onChange={(event) =>
@@ -148,11 +260,7 @@ const IndentsBlock: React.FC<Props> = ({
           }
         />
         <input
-          className={cn(
-            classes.indentsInput,
-            // styles.indentsInput_padding,
-            // styles.indentsInput_padding_top,
-          )}
+          className={cn()}
           type="number"
           value={parseInt(paddingTop)}
           min={MIN_PADDING}
@@ -161,11 +269,7 @@ const IndentsBlock: React.FC<Props> = ({
           }
         />
         <input
-          className={cn(
-            classes.indentsInput,
-            // styles.indentsInput_padding,
-            // styles.indentsInput_padding_right,
-          )}
+          className={cn()}
           type="number"
           value={parseInt(paddingRight)}
           min={MIN_PADDING}
@@ -174,11 +278,7 @@ const IndentsBlock: React.FC<Props> = ({
           }
         />
         <input
-          className={cn(
-            classes.indentsInput,
-            // styles.indentsInput_padding,
-            // styles.indentsInput_padding_bottom,
-          )}
+          className={cn()}
           type="number"
           value={parseInt(paddingBottom)}
           min={MIN_PADDING}
@@ -187,18 +287,14 @@ const IndentsBlock: React.FC<Props> = ({
           }
         />
         <input
-          className={cn(
-            classes.indentsInput,
-            // styles.indentsInput_padding,
-            // styles.indentsInput_padding_left,
-          )}
+          className={cn()}
           type="number"
           value={parseInt(paddingLeft)}
           min={MIN_PADDING}
           onChange={(event) =>
             handleIndentChange('padding-left', `${event.target.value}px`)
           }
-        />
+        /> */}
       </div>
     </div>
   );

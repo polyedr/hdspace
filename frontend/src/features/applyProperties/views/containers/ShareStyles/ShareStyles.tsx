@@ -3,7 +3,7 @@ import { Chip, makeStyles } from '@material-ui/core';
 import DoneIcon from '@material-ui/icons/Done';
 import CancelIcon from '@material-ui/icons/Cancel';
 import { connect, useSelector } from 'react-redux';
-import Button from '../../../../../components/UI/Button';
+import Button from '@material-ui/core/Button';
 import { AppReduxState } from '../../../../../shared/types/app';
 import {
   selectActiveElement,
@@ -120,7 +120,12 @@ const ShareStyles: React.FC<Props> = ({
 
   return (
     <div className={classes.root}>
-      <Button onClick={handleCopyButtonClick} disabled={!!disableShareButton}>
+      <Button
+        color="secondary"
+        onClick={handleCopyButtonClick}
+        disabled={!!disableShareButton}
+        variant="contained"
+      >
         Share styles
       </Button>
 

@@ -1,7 +1,9 @@
 import React from 'react';
-
 import { connect } from 'react-redux';
-import { DropDown } from '../../../../../components/UI/DropDown';
+import FormControl from '@material-ui/core/FormControl';
+import MenuItem from '@material-ui/core/MenuItem';
+import InputLabel from '@material-ui/core/InputLabel';
+import Select from '@material-ui/core/Select';
 import { AppReduxState } from '../../../../../shared/types/app';
 import {
   selectActiveElement,
@@ -36,23 +38,25 @@ const EditableStyles: React.FC<Props> = ({
   classNames,
   setEditableStyles,
 }) => {
-  const handleDropdownChange = (value: string) => {
-    setEditableStyles(value);
+  const handleDropdownChange = (ev) => {
+    setEditableStyles(ev.target.value);
   };
 
   return (
-    <div>
-      Styles to edit:
-      <DropDown
-        options={classNames.map((className) => ({
-          label: className,
-          value: className,
-        }))}
+    <FormControl fullWidth>
+      <InputLabel>Styles to edit</InputLabel>
+      <Select
         defaultValue={editableStyles}
         value={editableStyles}
         onChange={handleDropdownChange}
-      />
-    </div>
+      >
+        {classNames.map((className) => (
+          <MenuItem key={className} value={className}>
+            {className}
+          </MenuItem>
+        ))}
+      </Select>
+    </FormControl>
   );
 };
 

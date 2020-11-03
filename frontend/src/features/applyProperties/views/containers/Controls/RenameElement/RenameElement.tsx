@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import TextField from '../../../components/TextField/TextField';
+import TextField from '@material-ui/core/TextField';
 import {
   selectActiveElement,
   selectCurrentScreenId,
@@ -30,6 +30,7 @@ const RenameElement: React.FC = () => {
 
   return (
     <TextField
+      label="Name"
       value={currentElementName}
       onBlur={handleTextFieldBlur}
       onChange={({ target: { value } }) => setCurrentElementName(value)}
