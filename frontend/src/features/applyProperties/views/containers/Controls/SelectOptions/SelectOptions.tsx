@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, ChangeEvent } from 'react';
 import { connect, useSelector } from 'react-redux';
 import * as R from 'ramda';
 import {
@@ -7,8 +7,11 @@ import {
   AccordionDetails,
 } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import Button from '../../../../../../components/UI/Button';
-import Icon from '../../../../../../components/UI/Icon';
+import makeStyles from '@material-ui/core/styles/makeStyles';
+import IconButton from '@material-ui/core/IconButton';
+import AddIcon from '@material-ui/icons/Add';
+import DeleteIcon from '@material-ui/icons/Delete';
+import TextField from '@material-ui/core/TextField';
 import { SelectItemElement } from '../../../../../../api/types';
 import {
   selectActiveItemChildren,
@@ -25,6 +28,18 @@ import {
   withConfigurableProperties,
 } from '../../../../../../utils/withConfigurableProperties';
 import generateUniqueName from '../../../../../../utils/generateUniqueName';
+
+const useStyles = makeStyles({
+  row: {
+    display: 'flex',
+    justifyContent: 'flex-start',
+  },
+  wrapper: {
+    flex: 1,
+    display: 'flex',
+    justifyContent: 'space-between',
+  },
+});
 
 type StateProps = {
   selectMenuID: string;
@@ -66,6 +81,8 @@ const SelectOptions: React.FC<Props> = ({
   addChildToElement,
   deleteChildFromElement,
 }) => {
+  const classes = useStyles();
+
   const [options, setOptions] = useState(selectOptions);
   const currentScreenId = useSelector(selectCurrentScreenId);
 
@@ -122,55 +139,77 @@ const SelectOptions: React.FC<Props> = ({
 
   return (
     <div>
-      <div>
-        <h4>Select Options</h4>
-
-        <Button styleType="none" onClick={handleAddButtonClick}>
-          <Icon icon="add" />
-        </Button>
-      </div>
-
       {selectOptions.map(({ id, parameters: { name } }) => (
         <Accordion key={id}>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <div>
+            <div className={classes.wrapper}>
               {name}
 
               {selectOptions.length > 1 && (
-                <Button
-                  styleType="none"
+                <IconButton
+                  title="Delete option"
                   onClick={() => handleDeleteButtonClick(id)}
+                  size="small"
                 >
-                  <Icon icon="delete" />
-                </Button>
+                  <DeleteIcon fontSize="small" />
+                </IconButton>
               )}
             </div>
           </AccordionSummary>
 
           <AccordionDetails>
             <div>
-              <h5>Option name</h5>
-
-              <textarea
-                name="name"
+              <TextField
+                variant="outlined"
                 value={name}
-                onChange={(event) => handleNameFieldChange(id, event)}
+                onChange={(event) =>
+                  handleNameFieldChange(
+                    id,
+                    event as ChangeEvent<HTMLTextAreaElement>,
+                  )
+                }
+                label="Name"
+                margin="dense"
+                fullWidth
+                multiline
               />
 
-              <h5>Option value</h5>
-
-              <textarea
-                name="value"
+              <TextField
+                variant="outlined"
+                onChange={(event) =>
+                  handleValueFieldChange(
+                    id,
+                    event as ChangeEvent<HTMLTextAreaElement>,
+                  )
+                }
                 value={
                   options.find((option) => option.id === id)?.parameters.value
                 }
-                onBlur={(event) => handleValueFieldBlur(id, event)}
-                onChange={(event) => handleValueFieldChange(id, event)}
+                onBlur={(event) =>
+                  handleValueFieldBlur(
+                    id,
+                    event as ChangeEvent<HTMLTextAreaElement>,
+                  )
+                }
+                label="Value"
+                margin="dense"
+                fullWidth
+                multiline
               />
             </div>
           </AccordionDetails>
         </Accordion>
       ))}
+
+      <div className={classes.row}>
+        <IconButton
+          onClick={handleAddButtonClick}
+          color="primary"
+          title="Add new option"
+        >
+          <AddIcon />
+        </IconButton>
+      </div>
     </div>
   );
 };

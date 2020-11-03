@@ -91,7 +91,7 @@ const Display: React.FC<Props> = ({ updateStyles, removeStyles }) => {
           ]}
         />
 
-        <FormControl fullWidth>
+        <FormControl fullWidth margin="dense">
           <InputLabel>Display</InputLabel>
 
           <Select

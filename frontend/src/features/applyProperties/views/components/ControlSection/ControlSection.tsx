@@ -6,6 +6,7 @@ import {
   StyledAccordionDetails,
   StyledAccordionSummary,
 } from '../../../../../components/RightPanel/ElementsTab/ElementsBlock';
+import { splitWords } from '../../../../../utils/StringHelper';
 
 const useStyles = makeStyles({
   section: {},
@@ -31,7 +32,7 @@ const ControlSection: React.FC<Props> = ({ title, children }) => {
         className={classes.title}
         expandIcon={<ExpandMoreIcon />}
       >
-        {title}
+        {splitWords(title)}
       </StyledAccordionSummary>
 
       <StyledAccordionDetails className={classes.content}>

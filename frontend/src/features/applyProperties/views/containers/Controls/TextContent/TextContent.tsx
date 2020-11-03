@@ -41,12 +41,6 @@ const TextContent: React.FC<Props> = ({ content, updateParams }) => {
       fullWidth
       multiline
     />
-
-    /* <textarea
-        name="text_content"
-        value={content}
-        onChange={handleTextContentChange}
-      /> */
   );
 };
 

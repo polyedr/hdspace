@@ -32,22 +32,17 @@ const Type: React.FC<Props> = ({ type, updateParams }) => {
   };
 
   return (
-    <FormControl>
+    <FormControl margin="dense">
       <InputLabel>Type</InputLabel>
 
       <Select defaultValue={type} value={type} onChange={handleDropdownChange}>
         {TYPE.map(({ label, value }) => (
-          <MenuItem value={value}>{label}</MenuItem>
+          <MenuItem value={value} key={value} dense>
+            {label}
+          </MenuItem>
         ))}
       </Select>
     </FormControl>
-
-    /* <DropDown
-        options={TYPE}
-        defaultValue={type}
-        value={type}
-        onChange={handleDropdownChange}
-      /> */
   );
 };
 

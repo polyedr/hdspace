@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Switch } from '@material-ui/core';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { AppReduxState } from '../../../../../../shared/types/app';
 import { ListElement } from '../../../../../../api/types';
 import {
@@ -29,11 +30,10 @@ const Ordered: React.FC<Props> = ({ isOrdered, updateParams }) => {
   };
 
   return (
-    <div>
-      <h4>Ordered</h4>
-
-      <Switch size="small" checked={isOrdered} onChange={handleSwitchChange} />
-    </div>
+    <FormControlLabel
+      control={<Switch checked={isOrdered} onChange={handleSwitchChange} />}
+      label="Is Ordered"
+    />
   );
 };
 

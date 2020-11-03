@@ -1,6 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Switch } from '@material-ui/core';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import makeStyles from '@material-ui/core/styles/makeStyles';
 import { AppReduxState } from '../../../../../../shared/types/app';
 import { ButtonElement } from '../../../../../../api/types';
 import {
@@ -8,6 +10,14 @@ import {
   withConfigurableProperties,
 } from '../../../../../../utils/withConfigurableProperties';
 import { selectActiveElementParams } from '../../../../../../redux/project/selectors';
+
+const useStyles = makeStyles({
+  wrapper: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});
 
 type StateProps = {
   showRipple: boolean;
@@ -24,15 +34,18 @@ function mapState(state: AppReduxState): StateProps {
 type Props = StateProps & PropertiesChangeProps<ButtonElement>;
 
 const Ripple: React.FC<Props> = ({ showRipple, updateParams }) => {
+  const classes = useStyles();
+
   const handleSwitchChange = () => {
     updateParams({ showRipple: !showRipple });
   };
 
   return (
-    <div>
-      <h4>Ripple effect</h4>
-
-      <Switch size="small" checked={showRipple} onChange={handleSwitchChange} />
+    <div className={classes.wrapper}>
+      <FormControlLabel
+        control={<Switch checked={showRipple} onChange={handleSwitchChange} />}
+        label="Show Ripple"
+      />
     </div>
   );
 };

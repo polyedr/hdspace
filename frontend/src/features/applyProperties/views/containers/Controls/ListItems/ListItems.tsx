@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ChangeEvent } from 'react';
 import { connect, useSelector } from 'react-redux';
 import {
   Accordion,
@@ -7,10 +7,12 @@ import {
   Checkbox,
 } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import Button from '../../../../../../components/UI/Button';
-import Icon from '../../../../../../components/UI/Icon';
+import IconButton from '@material-ui/core/IconButton';
+import AddIcon from '@material-ui/icons/Add';
+import DeleteIcon from '@material-ui/icons/Delete';
+import TextField from '@material-ui/core/TextField';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { ListItemElement } from '../../../../../../api/types';
 import {
   selectActiveItemChildren,
@@ -30,6 +32,15 @@ const useStyles = makeStyles({
   details: {
     display: 'flex',
     flexDirection: 'column',
+  },
+  row: {
+    display: 'flex',
+    justifyContent: 'flex-start',
+  },
+  wrapper: {
+    flex: 1,
+    display: 'flex',
+    justifyContent: 'space-between',
   },
 });
 
@@ -107,65 +118,81 @@ const ListItems: React.FC<Props> = ({
 
   return (
     <div>
-      <div>
-        <h5>List items</h5>
-
-        <Button styleType="none" onClick={handleAddButtonClick}>
-          <Icon icon="add" />
-        </Button>
-      </div>
-
       {listItems.map(({ id, parameters: { textContent, isLink, link } }) => (
         <Accordion key={id}>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <div>{textContent}</div>
+            <div className={classes.wrapper}>
+              {textContent}
 
-            {listItems.length > 1 && (
-              <Button
-                styleType="none"
-                onClick={() => handleDeleteButtonClick(id)}
-              >
-                <Icon icon="delete" />
-              </Button>
-            )}
+              {listItems.length > 1 && (
+                <IconButton
+                  title="Delete item"
+                  onClick={() => handleDeleteButtonClick(id)}
+                  size="small"
+                >
+                  <DeleteIcon fontSize="small" />
+                </IconButton>
+              )}
+            </div>
           </AccordionSummary>
 
           <AccordionDetails className={classes.details}>
-            <div>
-              <h5>Item text</h5>
+            <TextField
+              variant="outlined"
+              value={textContent}
+              onChange={(event) =>
+                handleTextContentFieldChange(
+                  id,
+                  event as ChangeEvent<HTMLTextAreaElement>,
+                )
+              }
+              label="Item text"
+              margin="dense"
+              fullWidth
+              multiline
+            />
 
-              <textarea
-                name="text-content"
-                value={textContent}
-                onChange={(event) => handleTextContentFieldChange(id, event)}
-              />
-            </div>
-
-            <div>
-              <h5>Make link</h5>
-
-              <Checkbox
-                value="make link"
-                name="make link"
-                checked={isLink}
-                onChange={(event) => handleCheckboxChange(id, event)}
-              />
-            </div>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  value="make link"
+                  name="make link"
+                  checked={isLink}
+                  onChange={(event) => handleCheckboxChange(id, event)}
+                />
+              }
+              label="Make Link"
+            />
 
             {isLink && (
-              <div>
-                <h5>Item url</h5>
-
-                <textarea
-                  name="link"
-                  value={link}
-                  onChange={(event) => handleUrlFieldChange(id, event)}
-                />
-              </div>
+              <TextField
+                variant="outlined"
+                value={link}
+                onChange={(event) =>
+                  handleUrlFieldChange(
+                    id,
+                    event as ChangeEvent<HTMLTextAreaElement>,
+                  )
+                }
+                label="Item URL"
+                margin="dense"
+                fullWidth
+                multiline
+              />
             )}
           </AccordionDetails>
         </Accordion>
       ))}
+
+      <div className={classes.row}>
+        <IconButton
+          onClick={handleAddButtonClick}
+          color="primary"
+          title="Add new item"
+        >
+          <AddIcon />
+        </IconButton>
+      </div>
     </div>
   );
 };

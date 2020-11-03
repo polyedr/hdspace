@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import TextField from '@material-ui/core/TextField';
 import { AppReduxState } from '../../../../../../shared/types/app';
 import { selectActiveElementParams } from '../../../../../../redux/project/selectors';
 import {
@@ -30,15 +31,15 @@ const Name: React.FC<Props> = ({ name, updateParams }) => {
   };
 
   return (
-    <div>
-      <h4>Name</h4>
-
-      <textarea
-        name="text_content"
-        value={name}
-        onChange={handleTextFieldChange}
-      />
-    </div>
+    <TextField
+      variant="outlined"
+      value={name}
+      onChange={handleTextFieldChange}
+      label="Name"
+      margin="dense"
+      fullWidth
+      multiline
+    />
   );
 };
 

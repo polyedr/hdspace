@@ -1,6 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Switch } from '@material-ui/core';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import makeStyles from '@material-ui/core/styles/makeStyles';
 import StylesHeader from '../../../components/StylesHeader/StylesHeader';
 import { AppReduxState } from '../../../../../../shared/types/app';
 import {
@@ -9,6 +11,13 @@ import {
 } from '../../../../../../utils/withConfigurableProperties';
 import { ListElement } from '../../../../../../api/types';
 import { selectCurrentEditableStyles } from '../../../../../../redux/project/selectors';
+
+const useStyles = makeStyles({
+  wrapper: {
+    display: 'flex',
+    justifyContent: 'center',
+  },
+});
 
 function mapState(state: AppReduxState) {
   return {
@@ -23,6 +32,7 @@ const Bullets: React.FC<Props> = ({
   updateStyles,
   removeStyles,
 }) => {
+  const classes = useStyles();
   const handleSwitchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     updateStyles({ 'list-style-type': event.target.checked ? 'disc' : 'none' });
   };
@@ -35,11 +45,17 @@ const Bullets: React.FC<Props> = ({
         cssPropertiesNames={['list-style-type']}
       />
 
-      <Switch
-        size="small"
-        checked={bulletsStyles === 'disc'}
-        onChange={handleSwitchChange}
-      />
+      <div className={classes.wrapper}>
+        <FormControlLabel
+          control={
+            <Switch
+              checked={bulletsStyles === 'disc'}
+              onChange={handleSwitchChange}
+            />
+          }
+          label="Bullets"
+        />
+      </div>
     </div>
   );
 };

@@ -1,7 +1,10 @@
 import React, { memo } from 'react';
 import { connect } from 'react-redux';
+import InputLabel from '@material-ui/core/InputLabel';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
 import { HEADING_TYPE, HEADING_SETTINGS } from './constants';
-import { DropDown } from '../../../../../../components/UI/DropDown';
 import {
   HeadingElement,
   HeadingType as HeadingTagType,
@@ -32,24 +35,29 @@ const HeadingType: React.FC<Props> = ({
   updateParams,
   updateStyles,
 }) => {
-  const handleDropdownChange = (value: string) => {
-    const newHeadingType = value as HeadingTagType;
+  const handleDropdownChange = (ev) => {
+    const newHeadingType = ev.target.value as HeadingTagType;
 
     updateParams({ headingType: newHeadingType });
     updateStyles({ 'font-size': HEADING_SETTINGS[newHeadingType].fontSize });
   };
 
   return (
-    <div>
-      <h4>Heading type</h4>
+    <FormControl margin="dense">
+      <InputLabel>Heading Type</InputLabel>
 
-      <DropDown
-        options={HEADING_TYPE}
+      <Select
         defaultValue={headingType}
         value={headingType}
         onChange={handleDropdownChange}
-      />
-    </div>
+      >
+        {HEADING_TYPE.map(({ label, value }) => (
+          <MenuItem value={value} key={value} dense>
+            {label}
+          </MenuItem>
+        ))}
+      </Select>
+    </FormControl>
   );
 };
 

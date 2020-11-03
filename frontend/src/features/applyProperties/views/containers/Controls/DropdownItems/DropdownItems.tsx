@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { ChangeEvent } from 'react';
 import { connect, useSelector } from 'react-redux';
 
-import Button from '../../../../../../components/UI/Button';
-import Icon from '../../../../../../components/UI/Icon';
+import IconButton from '@material-ui/core/IconButton';
+import AddIcon from '@material-ui/icons/Add';
+import makeStyles from '@material-ui/core/styles/makeStyles';
+import TextField from '@material-ui/core/TextField';
+import DeleteIcon from '@material-ui/icons/Delete';
 import { DropdownItemElement } from '../../../../../../api/types';
 import {
   selectActiveElementId,
@@ -18,6 +21,19 @@ import {
   addChildToElement,
   deleteItem,
 } from '../../../../../../redux/project/actions';
+
+const useStyles = makeStyles({
+  row: {
+    display: 'flex',
+    justifyContent: 'flex-start',
+  },
+  wrapper: {
+    flex: 1,
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+});
 
 type StateProps = {
   dropdownMenuID: string;
@@ -59,6 +75,8 @@ const DropdownItems: React.FC<Props> = ({
   addChildToElement,
   deleteChildFromElement,
 }) => {
+  const classes = useStyles();
+
   const currentScreenId = useSelector(selectCurrentScreenId);
 
   const handleTextFieldChange = (
@@ -85,32 +103,44 @@ const DropdownItems: React.FC<Props> = ({
 
   return (
     <div>
-      <div>
-        <h4>Dropdown items</h4>
-
-        <Button styleType="none" onClick={handleAddButtonClick}>
-          <Icon icon="add" />
-        </Button>
-      </div>
-
       {dropdownItems.map(({ id, parameters: { textContent } }) => (
-        <div key={id}>
-          <textarea
-            name="item text"
+        <div key={id} className={classes.wrapper}>
+          <TextField
+            variant="outlined"
             value={textContent}
-            onChange={(event) => handleTextFieldChange(id, event)}
+            onChange={(event) =>
+              handleTextFieldChange(
+                id,
+                event as ChangeEvent<HTMLTextAreaElement>,
+              )
+            }
+            label="Item text"
+            margin="dense"
+            fullWidth
+            multiline
           />
 
           {dropdownItems.length > 1 && (
-            <Button
-              styleType="none"
+            <IconButton
+              title="Delete item"
               onClick={() => handleDeleteButtonClick(id)}
+              size="small"
             >
-              <Icon icon="delete" />
-            </Button>
+              <DeleteIcon fontSize="small" />
+            </IconButton>
           )}
         </div>
       ))}
+
+      <div className={classes.row}>
+        <IconButton
+          onClick={handleAddButtonClick}
+          color="primary"
+          title="Add new item"
+        >
+          <AddIcon />
+        </IconButton>
+      </div>
     </div>
   );
 };

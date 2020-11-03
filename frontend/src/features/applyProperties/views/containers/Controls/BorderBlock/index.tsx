@@ -136,8 +136,12 @@ const BorderBlock: React.FC<Props> = ({
               onChange={handleChangeBorderRadiusUnits}
               value={accessBorderRadius(borderRadius)}
             >
-              <MenuItem value="px">px</MenuItem>
-              <MenuItem value="%">percent</MenuItem>
+              <MenuItem value="px" dense>
+                px
+              </MenuItem>
+              <MenuItem value="%" dense>
+                percent
+              </MenuItem>
             </Select>
           </FormControl>
         </div>

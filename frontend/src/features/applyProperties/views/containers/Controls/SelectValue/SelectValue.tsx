@@ -1,6 +1,9 @@
 import React, { memo, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { DropDown } from '../../../../../../components/UI/DropDown';
+import { FormControl } from '@material-ui/core';
+import InputLabel from '@material-ui/core/InputLabel';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
 import { SelectElement } from '../../../../../../api/types';
 import { AppReduxState } from '../../../../../../shared/types/app';
 import {
@@ -52,24 +55,27 @@ const SelectValue: React.FC<Props> = (props) => {
     }
   }, [optionsValues]);
 
-  const handleDropdownChange = (newValue: string) => {
-    updateParams({ value: newValue });
+  const handleDropdownChange = (ev) => {
+    updateParams({ value: ev.target.value });
   };
 
   return (
-    <div>
-      <h4>Select default value</h4>
+    <FormControl fullWidth margin="dense">
+      <InputLabel>Default Value</InputLabel>
 
-      <DropDown
-        options={optionsValues.map((option) => ({
-          label: option,
-          value: option,
-        }))}
+      <Select
+        label="Default Value"
         defaultValue={value}
         value={value}
         onChange={handleDropdownChange}
-      />
-    </div>
+      >
+        {optionsValues.map((option) => (
+          <MenuItem key={option} value={option} dense>
+            {option}
+          </MenuItem>
+        ))}
+      </Select>
+    </FormControl>
   );
 };
 

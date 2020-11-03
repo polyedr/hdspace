@@ -117,10 +117,12 @@ const ActionBlock: React.FC<Props> = ({ action, screens, updateParams }) => {
               value={getCurrentUrl('internal-link')}
               onChange={handleUrlChange}
             >
-              <MenuItem value="noScreen">No screen</MenuItem>
+              <MenuItem value="noScreen" dense>
+                No screen
+              </MenuItem>
 
               {screens.map(({ name, id }) => (
-                <MenuItem key={id} value={id}>
+                <MenuItem key={id} value={id} dense>
                   {name}
                 </MenuItem>
               ))}

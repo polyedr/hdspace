@@ -1,6 +1,9 @@
 import React, { memo } from 'react';
 import { connect } from 'react-redux';
-import { DropDown } from '../../../../../../components/UI/DropDown';
+import FormControl from '@material-ui/core/FormControl';
+import MenuItem from '@material-ui/core/MenuItem';
+import Select from '@material-ui/core/Select';
+import InputLabel from '@material-ui/core/InputLabel';
 import { AppReduxState } from '../../../../../../shared/types/app';
 import { LabelElement } from '../../../../../../api/types';
 import {
@@ -46,21 +49,26 @@ const LabelFor: React.FC<Props> = ({ labelFor, inputsIDs, updateParams }) => {
     ...inputsIDs.map((id) => ({ label: id, value: id })),
   ];
 
-  const handleDropdownChange = (value: string) => {
-    updateParams({ labelFor: value });
+  const handleDropdownChange = (ev) => {
+    updateParams({ labelFor: ev.target.value });
   };
 
   return (
-    <div>
-      <h4>For attribute</h4>
+    <FormControl margin="dense">
+      <InputLabel>Label For</InputLabel>
 
-      <DropDown
-        options={options}
+      <Select
         defaultValue={labelFor}
         value={labelFor}
         onChange={handleDropdownChange}
-      />
-    </div>
+      >
+        {options.map(({ value, label }) => (
+          <MenuItem key={value} value={value} dense>
+            {label}
+          </MenuItem>
+        ))}
+      </Select>
+    </FormControl>
   );
 };
 
