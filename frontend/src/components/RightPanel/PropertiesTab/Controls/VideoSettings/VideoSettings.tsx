@@ -4,7 +4,7 @@ import { Checkbox } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import Switch from '../../../../UI/Switch/Switch';
+import Switch from '@material-ui/core/Switch';
 import { AppReduxState } from '../../../../../shared/types/app';
 import { VideoElement, VideoSettingsType } from '../../../../../api/types';
 import { selectActiveElementParams } from '../../../../../redux/project/selectors';
