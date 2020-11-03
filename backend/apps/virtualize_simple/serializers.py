@@ -1277,7 +1277,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
 
         # Define the export node
         outer_div_node = ScenarioElement.objects.create(
-            parent=serializer_node, struct_type="divBlock", styles=str_styles
+            parent=serializer_node, struct_type="container", styles=str_styles
         )
 
         for pre, fill, node in RenderTree(root_block):
@@ -1332,7 +1332,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
 
                 # Create a new Scenario Element for the elements chain
                 node.scenarioelement = ScenarioElement.objects.create(
-                    parent=outer_div_node, struct_type="divBlock", styles=str_styles
+                    parent=outer_div_node, struct_type="container", styles=str_styles
                 )
             else:
                 node.div = ET.SubElement(node.parent.div, "div")
@@ -1345,7 +1345,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                 # Create a new Scenario Element for the elements chain
                 node.scenarioelement = ScenarioElement.objects.create(
                     parent=node.parent.scenarioelement,
-                    struct_type="divBlock",
+                    struct_type="container",
                     styles=str_styles,
                 )
 
