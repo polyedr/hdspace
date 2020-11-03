@@ -3,17 +3,15 @@ import axios, { AxiosRequestConfig } from 'axios';
 export const env = process.env.NODE_ENV;
 
 const settings = {
-  test: {
+  staging: {
     api: {
-      host: 'http://192.168.88.210:8000',
+      host: 'https://www.timberworkinfo.ru',
       version: 1,
     },
   },
   development: {
     api: {
-      // host: 'https://staging.app.adevi.io:8000',
       host: 'https://www.timberworkinfo.ru',
-      // host: 'http://178.21.8.79',
       version: 1,
     },
   },
@@ -25,7 +23,7 @@ const settings = {
   },
 };
 
-export const { api } = settings[env] || settings.test;
+export const { api } = settings[env] || settings.development;
 
 // const getAccessTokenFromStorage = () => JSON.parse(JSON.parse(localStorage.getItem('persist:user')).authorisationToken).access;
 

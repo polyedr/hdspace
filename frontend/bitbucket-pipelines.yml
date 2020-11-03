@@ -4,6 +4,21 @@ pipelines:
   branches:
     master:
       - step:
+        name: Build
+          script:
+            - npm install && npm run build
+          artifacts:
+            - dist/**
+      - step:
+          name: Deploy to Firebase staging
+          deployment: staging
+          script:
+            - pipe: atlassian/firebase-deploy:0.2.4
+              variables:
+                FIREBASE_TOKEN: $FIREBASE_TOKEN
+                PROJECT_ID: $FIREBASE_PROJECT_STAGING
+    production:
+      - step:
           name: Build
           script:
             - npm install && npm run build
@@ -11,10 +26,10 @@ pipelines:
             - dist/**
 
       - step:
-          name: Deploy to Firebase
-          deployment: staging
+          name: Deploy to Firebase production
+          deployment: production
           script:
             - pipe: atlassian/firebase-deploy:0.2.4
               variables:
                 FIREBASE_TOKEN: $FIREBASE_TOKEN
-                PROJECT_ID: $FIREBASE_PROJECT
+                PROJECT_ID: $FIREBASE_PROJECT_PROD
