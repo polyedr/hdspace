@@ -19,7 +19,7 @@ import { ChildEntity, Entity } from '../../domain/core';
 import { ChildrenElements } from '../../domain/libraryElements/libraryElements';
 import { CssLikeStyles } from '../../utils/StyleHelper';
 import * as T from './types';
-import { NNBlockType } from '../../constants/defaultParams';
+import { NNBlockType, SCREEN_FORMATS } from '../../constants/defaultParams';
 
 export const getProjectList = (): T.LoadProjects => ({
   type: TYPES.LOAD_PROJECTS,
@@ -721,4 +721,14 @@ export const updateLastElements = (
     ids,
     offset,
   },
+});
+
+export const changeScreenFormat = (format: SCREEN_FORMATS) => ({
+  type: TYPES.CHANGE_SCREEN_FORMAT,
+  payload: format,
+});
+
+export const rotateScreenFormat = (rotated: boolean) => ({
+  type: TYPES.ROTATE_SCREEN_FORMAT,
+  payload: rotated,
 });

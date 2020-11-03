@@ -21,15 +21,17 @@ import { CssLikeStyles } from '../../utils/StyleHelper';
 import {
   addStateElements,
   changeFreeCanvasMode,
+  changeScreenFormat,
   extractStateElement,
   insertStateElement,
   moveStateElement,
   removeStateElement,
+  rotateScreenFormat,
   setProjectsData,
   updateLastElements,
   updateStateElement,
 } from './actions';
-import { NNBlockType } from '../../constants/defaultParams';
+import { NNBlockType, SCREEN_FORMATS } from '../../constants/defaultParams';
 
 export type ProjectState = {
   data: ProjectDataState;
@@ -83,6 +85,10 @@ export type ProjectUiState = {
   showContainersBorders: boolean;
   borderedElementsRef: BorderedElementsRef;
   currentDropTargetParams: DropTargetParams | null;
+  screenFormat: {
+    format: SCREEN_FORMATS;
+    rotated: boolean;
+  };
 };
 
 export type ProjectEditState = {
@@ -557,6 +563,8 @@ export type Action =
   | ReturnType<typeof extractStateElement>
   | ReturnType<typeof changeFreeCanvasMode>
   | ReturnType<typeof updateLastElements>
+  | ReturnType<typeof changeScreenFormat>
+  | ReturnType<typeof rotateScreenFormat>
   | SetScreens
   | AddBorderedElementRef
   | RemoveBorderedElementRef

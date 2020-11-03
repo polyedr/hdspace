@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { FormControlLabel } from '@material-ui/core';
 import Checkbox from '../../../components/Checkbox/Checkbox';
 import { AppReduxState } from '../../../../../../shared/types/app';
 import { toggleContainersBorders } from '../../../../../../redux/project/actions';
@@ -23,14 +24,16 @@ type Props = StateProps & typeof mapDispatch;
 
 const ShowBorders: React.FC<Props> = ({ showBorders, toggleBorders }) => {
   return (
-    <label>
-      <Checkbox
-        name="show borders"
-        checked={showBorders}
-        onChange={toggleBorders}
-      />
-      Show page blocks
-    </label>
+    <FormControlLabel
+      control={
+        <Checkbox
+          name="show borders"
+          checked={showBorders}
+          onChange={toggleBorders}
+        />
+      }
+      label="Show blocks"
+    />
   );
 };
 

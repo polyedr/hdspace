@@ -27,7 +27,7 @@ const ControlSection: React.FC<Props> = ({ title, children }) => {
   const classes = useStyles();
 
   return (
-    <StyledAccordion className={classes.section}>
+    <StyledAccordion className={classes.section} defaultExpanded>
       <StyledAccordionSummary
         className={classes.title}
         expandIcon={<ExpandMoreIcon />}

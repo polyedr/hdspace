@@ -71,6 +71,27 @@ function uiReducer(
         currentDropTargetParams:
           action.payload.id === null ? null : action.payload,
       };
+
+    case TYPES.CHANGE_SCREEN_FORMAT: {
+      return {
+        ...state,
+        screenFormat: {
+          ...state.screenFormat,
+          format: action.payload,
+        },
+      };
+    }
+
+    case TYPES.ROTATE_SCREEN_FORMAT: {
+      return {
+        ...state,
+        screenFormat: {
+          ...state.screenFormat,
+          rotated: action.payload,
+        },
+      };
+    }
+
     case TYPES.LOGOUT: {
       return {
         ...initialUi,
