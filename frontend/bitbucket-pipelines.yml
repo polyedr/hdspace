@@ -6,7 +6,7 @@ pipelines:
       - step:
           name: Build
           script:
-            - npm install && npm run build
+            - npm install && npm run build:test
           artifacts:
             - dist/**
       - step:
@@ -21,7 +21,7 @@ pipelines:
       - step:
           name: Build
           script:
-            - npm install && npm run build
+            - npm install && npm run build:prod
           artifacts:
             - dist/**
 
