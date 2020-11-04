@@ -12,8 +12,8 @@ export const map: MapServerElement = {
   struct_type: 'map',
   parameters: {
     ...defaultFreeCanvasParams,
-    // width: 430,
-    // height: 260,
+    width: '50%',
+    height: '50%',
     group: 'widget',
     map_props: {
       center: {
@@ -38,8 +38,6 @@ export const calendar: CalendarServerElement = {
   struct_type: 'calendar',
   parameters: {
     ...defaultFreeCanvasParams,
-    // width: 350,
-    // height: 265,
     group: 'widget',
   },
   styles: {
@@ -56,8 +54,6 @@ export const clock: ClockServerElement = {
   struct_type: 'clock',
   parameters: {
     ...defaultFreeCanvasParams,
-    // width: 155,
-    // height: 155,
     group: 'widget',
   },
   styles: {
