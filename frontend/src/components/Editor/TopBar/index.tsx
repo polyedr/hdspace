@@ -8,7 +8,10 @@ import { selectIsPrototypeMode } from '../../../redux/user/selectors';
 import Formats from './Formats';
 import Actions from './Actions';
 import { changeFreeCanvasMode } from '../../../redux/project/actions';
-import { selectFreeCanvasMode } from '../../../redux/project/selectors';
+import {
+  selectCurrentScreenId,
+  selectFreeCanvasMode,
+} from '../../../redux/project/selectors';
 import ShowBorders from '../../RightPanel/PropertiesTab/Controls/ShowBorders/ShowBorders';
 
 const useStyles = makeStyles({
@@ -26,6 +29,7 @@ const TopBar: React.FC = () => {
   const dispatch = useDispatch();
   const classes = useStyles();
 
+  const currentScreenId = useSelector(selectCurrentScreenId);
   const isProtoMode = useSelector(selectIsPrototypeMode);
   const freeCanvasMode = useSelector(selectFreeCanvasMode);
 
@@ -35,7 +39,7 @@ const TopBar: React.FC = () => {
   const handleToggleFreeMode = () =>
     dispatch(changeFreeCanvasMode(!freeCanvasMode));
 
-  return (
+  return currentScreenId !== -1 ? (
     <div className={classes.root}>
       <Actions />
 
@@ -63,7 +67,7 @@ const TopBar: React.FC = () => {
 
       <Formats />
     </div>
-  );
+  ) : null;
 };
 
 export default TopBar;
