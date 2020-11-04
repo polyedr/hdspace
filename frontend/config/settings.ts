@@ -2,8 +2,6 @@ import axios, { AxiosRequestConfig } from 'axios';
 
 export const env = process.env.NODE_ENV;
 
-console.log('ENV!!!', env);
-
 const settings = {
   development: {
     api: {
