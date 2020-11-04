@@ -5,7 +5,6 @@ import cn from 'classnames';
 import { makeStyles } from '@material-ui/core';
 import * as R from 'ramda';
 import { ListItemRendererProps } from '../types';
-import sharedClasses from '../../../../styles/sharedClasses';
 import { makeComponentStyles } from '../styles';
 import useEventHandlers from '../useEventHandlers';
 
@@ -74,8 +73,6 @@ const ListItem: React.FC<ListItemRendererProps> = React.forwardRef(
             data-ls-id={id}
             className={cn(
               className,
-              sharedClasses.lsItem,
-              sharedClasses.unsortable,
               listItemClasses.addedElem,
               isDisabled && listItemClasses.disabled,
               listItemWithLinkClasses.entityStyles,
@@ -105,8 +102,6 @@ const ListItem: React.FC<ListItemRendererProps> = React.forwardRef(
             data-ls-id={id}
             className={cn(
               className,
-              sharedClasses.lsItem,
-              sharedClasses.unsortable,
               listItemClasses.addedElem,
               isDisabled && listItemClasses.disabled,
               listItemClasses.entityStyles,

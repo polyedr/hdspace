@@ -10,6 +10,7 @@ import Avatar from './Avatar';
 import { selectCurrentProject } from '../../redux/project/selectors';
 import Dialog from '../UI/Dialog';
 import { renameProject } from '../../redux/project/actions';
+import TopBar from '../Editor/TopBar';
 
 const useStyles = makeStyles({
   toolbar: {
@@ -66,7 +67,7 @@ const TopPanel = () => {
           </div>
         )}
 
-        <div />
+        <TopBar />
       </Toolbar>
 
       <Dialog

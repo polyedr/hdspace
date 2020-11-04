@@ -567,44 +567,6 @@ export function* unwrapFromContainerSaga(
   yield call(reqWrapper, apiSaveElements, { data: convertedElements });
 }
 
-export function* renameElementSaga(
-  action: ReturnType<typeof Actions.renameElement>,
-) {
-  if (!action.meta) {
-    console.error(
-      `You have to provide metainformation for action ${action.type}`,
-    );
-    return;
-  }
-  const { elementID, name } = action.payload;
-
-  yield put(
-    Actions.updateStateElement(
-      elementID,
-      { name },
-      {
-        ...action.meta,
-        sourceAction: null,
-      },
-    ),
-  );
-
-  const updatedElement: LibraryElement<any> = yield select(
-    selectElementAsTree(elementID),
-  );
-
-  const savedValue = getSavedValue(updatedElement as LibraryElementUnion);
-  yield put(Actions.updateSavedElementValues(elementID, savedValue));
-
-  yield put(Actions.setActiveElement(elementID));
-
-  const convertedElement = convertElementToPatchRequest(updatedElement);
-  yield call(reqWrapper, apiChangeElement, {
-    data: convertedElement,
-    id: elementID,
-  });
-}
-
 export function* updateElementSaga(
   action: ReturnType<typeof Actions.updateElement>,
 ) {

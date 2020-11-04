@@ -16,7 +16,7 @@ import {
   buildElementsTree,
   flattenElements,
 } from '../../utils/normalizedStateHelpers';
-import { getDisplayStyles } from '../../features/applyProperties/views/containers/Controls/Display/Display';
+import { getDisplayStyles } from '../../components/RightPanel/PropertiesTab/Controls/Display/Display';
 
 export const selectProjectState = makeFeatureStateSelector('project');
 
@@ -70,9 +70,6 @@ export const selectScreenById = (id: number) => ({ project }: AppReduxState) =>
 export function selectNotification(state: AppReduxState) {
   return selectProjectState(state).edit.notification;
 }
-
-export const selectIsAddElementsModalOpened = ({ project }: AppReduxState) =>
-  project.ui.isAddElementsModalOpened;
 
 export const selectSavedElementsValues = ({ project }: AppReduxState) =>
   project.ui.savedElementsValues;
@@ -418,3 +415,9 @@ export const selectFreeCanvasOffset = (id: string) => (
   if (needOffset) return parent.offset + 20;
   return 0;
 };
+
+export const selectScreenFormat = ({ project }: AppReduxState) =>
+  project.ui.screenFormat.format;
+
+export const selectScreenRotated = ({ project }: AppReduxState) =>
+  project.ui.screenFormat.rotated;

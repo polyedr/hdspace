@@ -1,4 +1,5 @@
 import * as T from './types';
+import { SCREEN_FORMATS } from '../../constants/defaultParams';
 
 export const initialData: T.ProjectDataState = {
   projectsData: {
@@ -22,12 +23,15 @@ export const initialData: T.ProjectDataState = {
 
 export const initialUi: T.ProjectUiState = {
   editableStyles: 'ownStyles',
-  isAddElementsModalOpened: false,
   itemToCopyInfo: null,
   savedElementsValues: {},
   showContainersBorders: false,
   currentDropTargetParams: null,
   borderedElementsRef: {},
+  screenFormat: {
+    format: SCREEN_FORMATS.Desktop,
+    rotated: false,
+  },
 };
 
 export const initialEdit: T.ProjectEditState = {

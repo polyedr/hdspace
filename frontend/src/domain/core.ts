@@ -82,41 +82,40 @@ export type ChildEntity = keyof ChildrenElements;
 
 export type Entity = ElementEntity | ChildEntity;
 
-export type SubEntity = 'root';
-
 export type AvailableControls = {
-  [P in Entity]: {
-    [T in SubEntity]: readonly Control[];
-  };
+  [P in Entity]: readonly Control[];
 };
 
 export const rootStyleControls = ['background'] as const;
+
 export const containerStyleControls = [
   'indents',
   'size',
-  'display',
   'typography',
-  'border',
   'background',
+  'border',
+  'display',
   'flexGrow',
 ] as const;
+
 export const divBlockStyleControls = [
   'indents',
   'size',
-  'display',
   'typography',
-  'border',
   'background',
+  'border',
+  'display',
 ] as const;
 
 export const buttonStyleControls = [
   'indents',
   'size',
-  'display',
   'typography',
-  'border',
   'background',
+  'border',
+  'display',
 ] as const;
+
 export const buttonParamsControls = [
   'textContent',
   'action',
@@ -127,165 +126,190 @@ export const textinputStyleControls = [
   'indents',
   'size',
   'typography',
-  'border',
   'background',
+  'border',
 ] as const;
+
 export const textareaStyleControls = [
   'indents',
   'size',
   'typography',
-  'border',
   'background',
+  'border',
 ] as const;
+
 export const checkboxStyleControls = ['indents', 'size', 'background'] as const;
+
 export const radiobuttonStyleControls = [
   'indents',
   'size',
   'background',
 ] as const;
+
 export const labelStyleControls = [
   'indents',
-  'display',
   'size',
   'typography',
-  'border',
   'background',
+  'border',
+  'display',
 ] as const;
+
 export const hyperlinkStyleControls = [
   'indents',
   'size',
-  'display',
   'typography',
-  'border',
   'background',
+  'border',
+  'display',
 ] as const;
+
 export const headingStyleControls = [
   'indents',
   'size',
   'typography',
-  'border',
   'background',
+  'border',
 ] as const;
+
 export const paragraphStyleControls = [
   'indents',
   'size',
   'typography',
-  'border',
   'background',
+  'border',
 ] as const;
+
 export const ocrtextStyleControls = [
   'indents',
   'size',
   'typography',
-  'border',
   'background',
+  'border',
 ] as const;
+
 export const textBlockStyleControls = [
   'indents',
   'size',
   'typography',
-  'border',
   'background',
+  'border',
 ] as const;
+
 export const listStyleControls = [
   'indents',
   'size',
-  'display',
-  'border',
   'background',
+  'border',
+  'display',
   'bullets',
 ] as const;
+
 export const listItemStyleControls = [
   'indents',
   'size',
   'typography',
-  'border',
   'background',
+  'border',
 ] as const;
+
 export const imageStyleControls = [
   'indents',
   'size',
-  'border',
   'background',
+  'border',
 ] as const;
+
 export const smartContainerStyleControls = [
   'indents',
   'size',
-  'display',
   'typography',
-  'border',
   'background',
+  'border',
+  'display',
 ] as const;
+
 export const selectStyleControls = [
   'indents',
   'size',
   'typography',
-  'border',
   'background',
+  'border',
 ] as const;
+
 export const selectMenuStyleControls = [
   'indents',
   'size',
   'border',
   'background',
 ] as const;
+
 export const selectItemStyleControls = [
   'indents',
   'size',
   'typography',
-  'border',
   'background',
+  'border',
 ] as const;
+
 export const mapStyleControls = [
   'indents',
   'size',
   'typography',
-  'border',
   'background',
+  'border',
 ] as const;
+
 export const calendarStyleControls = [
   'indents',
   'size',
   'typography',
-  'border',
   'background',
+  'border',
 ] as const;
+
 export const clockStyleControls = [
   'indents',
   'size',
   'typography',
-  'border',
   'background',
+  'border',
 ] as const;
+
 export const dropdownStyleControls = [
   'indents',
   'size',
   'typography',
-  'border',
   'background',
+  'border',
 ] as const;
+
 export const dropdownMenuStyleControls = [
   'indents',
   'size',
   'border',
   'background',
 ] as const;
+
 export const dropdownItemStyleControls = [
   'indents',
   'size',
   'typography',
-  'border',
   'background',
+  'border',
 ] as const;
+
 export const videoStyleControls = ['indents', 'size', 'border'] as const;
+
 export const pageTemplateStyleControls = [
   'indents',
   'size',
-  'display',
   'typography',
-  'border',
   'background',
+  'border',
+  'display',
 ] as const;
+
 export const emptyPageTemplateStyleControls = [
   'indents',
   'size',
@@ -294,46 +318,52 @@ export const emptyPageTemplateStyleControls = [
   'border',
   'background',
 ] as const;
+
 export const gridStyleControls = [
   'indents',
   'size',
-  'display',
   'typography',
-  'border',
   'background',
+  'border',
+  'display',
 ] as const;
+
 export const columnsStyleControls = [
   'indents',
   'size',
-  'display',
   'typography',
-  'border',
   'background',
+  'border',
+  'display',
 ] as const;
+
 export const subscribeFormStyleControls = [
   'indents',
   'size',
-  'display',
   'typography',
-  'border',
   'background',
+  'border',
+  'display',
 ] as const;
+
 export const undefinedControls = ['size', 'background'] as const;
+
 export const cardsSectionStyleControls = [
   'indents',
   'size',
-  'display',
   'typography',
-  'border',
   'background',
+  'border',
+  'display',
 ] as const;
+
 export const featureSectionStyleControls = [
   'indents',
   'size',
-  'display',
   'typography',
-  'border',
   'background',
+  'border',
+  'display',
 ] as const;
 
 export type Control =
@@ -342,138 +372,58 @@ export type Control =
 
 // WARN: every time you add or remove some properties in prod, you must write migration to add/remove properties for existing entities in db
 export const AVAILABLE_CONTROLS: AvailableControls = {
-  root: {
-    root: rootStyleControls,
-  },
-  container: {
-    root: containerStyleControls,
-  },
-  divBlock: {
-    root: divBlockStyleControls,
-  },
-  button: {
-    root: [...buttonStyleControls, ...buttonParamsControls],
-  },
-  textinput: {
-    root: [...textinputStyleControls, 'type', 'textContent', 'placeholder'],
-  },
-  textarea: {
-    root: [...textareaStyleControls, 'textContent', 'placeholder'],
-  },
-  checkbox: {
-    root: [...checkboxStyleControls, 'value', 'name', 'showRipple'],
-  },
-  radiobutton: {
-    root: [...radiobuttonStyleControls, 'value', 'name', 'showRipple'],
-  },
-  label: {
-    root: [...labelStyleControls, 'textContent', 'labelFor'],
-  },
-  hyperlink: {
-    root: [...hyperlinkStyleControls, 'textContent', 'action'],
-  },
-  heading: {
-    root: [...headingStyleControls, 'textContent', 'headingType'],
-  },
-  paragraph: {
-    root: [...paragraphStyleControls, 'textContent'],
-  },
-  ocrtext: {
-    root: [...paragraphStyleControls, 'textContent'],
-  },
-  textBlock: {
-    root: [...textBlockStyleControls, 'textContent'],
-  },
-  list: {
-    root: [...listStyleControls, 'listItems', 'isOrdered'],
-  },
-  listItem: {
-    root: listItemStyleControls,
-  },
-  image: {
-    root: [...imageStyleControls, 'image'],
-  },
-  select: {
-    root: [
-      ...selectStyleControls,
-      'showRipple',
-      'selectValue',
-      'selectOptions',
-      'isOpen',
-    ],
-  },
-  selectMenu: {
-    root: selectMenuStyleControls,
-  },
-  selectItem: {
-    root: selectItemStyleControls,
-  },
-  map: {
-    root: [...mapStyleControls, 'mapProps'],
-  },
-  calendar: {
-    root: calendarStyleControls,
-  },
-  clock: {
-    root: clockStyleControls,
-  },
-  dropdown: {
-    root: [
-      ...dropdownStyleControls,
-      'textContent',
-      'showRipple',
-      'dropdownItems',
-      'isOpen',
-    ],
-  },
-  dropdownMenu: {
-    root: dropdownMenuStyleControls,
-  },
-  dropdownItem: {
-    root: dropdownItemStyleControls,
-  },
-  video: {
-    root: [...videoStyleControls, 'videoSettings'],
-  },
-  pageTemplate: {
-    root: [...pageTemplateStyleControls],
-  },
-  emptyPageTemplate: {
-    root: [...emptyPageTemplateStyleControls],
-  },
-  grid: {
-    root: [...gridStyleControls],
-  },
-  columns: {
-    root: [...columnsStyleControls],
-  },
-  subscribeForm: {
-    root: [...subscribeFormStyleControls],
-  },
-  smartHeader: {
-    root: [...smartContainerStyleControls, 'smartHeader'],
-  },
-  smartFooter: {
-    root: [...smartContainerStyleControls, 'smartFooter'],
-  },
-  smartForm: {
-    root: [...smartContainerStyleControls, 'smartForm'],
-  },
-  smartWebpage: {
-    root: [...smartContainerStyleControls, 'smartWebpage'],
-  },
-  undefined: {
-    root: undefinedControls,
-  },
-  cardsSection: {
-    root: [...cardsSectionStyleControls],
-  },
-  featureSection: {
-    root: [...featureSectionStyleControls],
-  },
-  section: {
-    root: [...containerStyleControls],
-  },
+  root: rootStyleControls,
+  container: containerStyleControls,
+  divBlock: divBlockStyleControls,
+  button: [...buttonStyleControls, ...buttonParamsControls],
+  textinput: ['textContent', 'type', 'placeholder', ...textinputStyleControls],
+  textarea: ['textContent', 'placeholder', ...textareaStyleControls],
+  checkbox: ['value', 'name', ...checkboxStyleControls, 'showRipple'],
+  radiobutton: ['value', 'name', ...radiobuttonStyleControls, 'showRipple'],
+  label: ['textContent', 'labelFor', ...labelStyleControls],
+  hyperlink: ['textContent', 'action', ...hyperlinkStyleControls],
+  heading: ['textContent', 'headingType', ...headingStyleControls],
+  paragraph: ['textContent', ...paragraphStyleControls],
+  ocrtext: ['textContent', ...paragraphStyleControls],
+  textBlock: ['textContent', ...textBlockStyleControls],
+  list: ['listItems', 'isOrdered', ...listStyleControls],
+  listItem: listItemStyleControls,
+  image: ['image', ...imageStyleControls],
+  select: [
+    'selectValue',
+    'selectOptions',
+    ...selectStyleControls,
+    'isOpen',
+    'showRipple',
+  ],
+  selectMenu: selectMenuStyleControls,
+  selectItem: selectItemStyleControls,
+  map: ['mapProps', ...mapStyleControls],
+  calendar: calendarStyleControls,
+  clock: clockStyleControls,
+  dropdown: [
+    'textContent',
+    'dropdownItems',
+    ...dropdownStyleControls,
+    'isOpen',
+    'showRipple',
+  ],
+  dropdownMenu: dropdownMenuStyleControls,
+  dropdownItem: dropdownItemStyleControls,
+  video: [...videoStyleControls, 'videoSettings'],
+  pageTemplate: pageTemplateStyleControls,
+  emptyPageTemplate: emptyPageTemplateStyleControls,
+  grid: gridStyleControls,
+  columns: columnsStyleControls,
+  subscribeForm: subscribeFormStyleControls,
+  smartHeader: [...smartContainerStyleControls, 'smartHeader'],
+  smartFooter: [...smartContainerStyleControls, 'smartFooter'],
+  smartForm: [...smartContainerStyleControls, 'smartForm'],
+  smartWebpage: [...smartContainerStyleControls, 'smartWebpage'],
+  undefined: undefinedControls,
+  cardsSection: cardsSectionStyleControls,
+  featureSection: featureSectionStyleControls,
+  section: containerStyleControls,
 } as const;
 
 export type AvailableChildren = {

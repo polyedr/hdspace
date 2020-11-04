@@ -19,10 +19,6 @@ function uiReducer(
       return { ...state, itemToCopyInfo: action.payload };
     }
 
-    case TYPES.SET_IS_ADD_ELEMENTS_MODAL_OPENED: {
-      return { ...state, isAddElementsModalOpened: action.payload.isOpened };
-    }
-
     case TYPES.UPDATE_SAVED_ELEMENTS_VALUES: {
       const { elementsValues } = action.payload;
 
@@ -75,6 +71,27 @@ function uiReducer(
         currentDropTargetParams:
           action.payload.id === null ? null : action.payload,
       };
+
+    case TYPES.CHANGE_SCREEN_FORMAT: {
+      return {
+        ...state,
+        screenFormat: {
+          ...state.screenFormat,
+          format: action.payload,
+        },
+      };
+    }
+
+    case TYPES.ROTATE_SCREEN_FORMAT: {
+      return {
+        ...state,
+        screenFormat: {
+          ...state.screenFormat,
+          rotated: action.payload,
+        },
+      };
+    }
+
     case TYPES.LOGOUT: {
       return {
         ...initialUi,

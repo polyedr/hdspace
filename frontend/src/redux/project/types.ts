@@ -21,15 +21,17 @@ import { CssLikeStyles } from '../../utils/StyleHelper';
 import {
   addStateElements,
   changeFreeCanvasMode,
+  changeScreenFormat,
   extractStateElement,
   insertStateElement,
   moveStateElement,
   removeStateElement,
+  rotateScreenFormat,
   setProjectsData,
   updateLastElements,
   updateStateElement,
 } from './actions';
-import { NNBlockType } from '../../constants/defaultParams';
+import { NNBlockType, SCREEN_FORMATS } from '../../constants/defaultParams';
 
 export type ProjectState = {
   data: ProjectDataState;
@@ -78,12 +80,15 @@ export type ProjectDataState = {
 
 export type ProjectUiState = {
   editableStyles: string;
-  isAddElementsModalOpened: boolean;
   itemToCopyInfo: ItemToCopyInfo | null;
   savedElementsValues: SavedElementsValues;
   showContainersBorders: boolean;
   borderedElementsRef: BorderedElementsRef;
   currentDropTargetParams: DropTargetParams | null;
+  screenFormat: {
+    format: SCREEN_FORMATS;
+    rotated: boolean;
+  };
 };
 
 export type ProjectEditState = {
@@ -394,10 +399,6 @@ export type SetEditableStyles = IAction<
   typeof TYPES.SET_EDITABLE_STYLES,
   { className: string }
 >;
-export type SetIsAddElementsModalOpened = IAction<
-  typeof TYPES.SET_IS_ADD_ELEMENTS_MODAL_OPENED,
-  { isOpened: boolean }
->;
 export type SetItemToCopy = IAction<
   typeof TYPES.SET_ITEM_TO_COPY,
   ItemToCopyInfo
@@ -521,7 +522,6 @@ export type Action =
   | WrapIntoContainer
   | SetActiveElement
   | ToggleContainersBorders
-  | SetIsAddElementsModalOpened
   | SetItemToCopy
   | CopyActiveItem
   | PasteCopiedItem
@@ -563,6 +563,8 @@ export type Action =
   | ReturnType<typeof extractStateElement>
   | ReturnType<typeof changeFreeCanvasMode>
   | ReturnType<typeof updateLastElements>
+  | ReturnType<typeof changeScreenFormat>
+  | ReturnType<typeof rotateScreenFormat>
   | SetScreens
   | AddBorderedElementRef
   | RemoveBorderedElementRef

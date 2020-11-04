@@ -4,7 +4,6 @@ import React from 'react';
 import cn from 'classnames';
 import { Menu, Paper, MenuList } from '@material-ui/core';
 import { DropdownMenuRendererProps } from '../types';
-import sharedClasses from '../../../../styles/sharedClasses';
 import { makeComponentStyles } from '../styles';
 import useEventHandlers from '../useEventHandlers';
 
@@ -52,7 +51,6 @@ const DropdownMenu: React.FC<DropdownMenuRendererProps> = React.forwardRef(
           key={id}
           className={cn(
             className,
-            sharedClasses.unsortable,
             styles.addedElem,
             styles.root,
             styles.entityStyles,

@@ -3,14 +3,11 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "NODE_ENV=development webpack-dev-server --mode development --hot --inline --progress",
-    "start_win": "set NODE_ENV=development && webpack-dev-server --mode development --hot --inline --progress",
-    "build": "NODE_ENV=production webpack --env production --config=webpack.export.config.js --config=webpack.config.js",
-    "build:export": "NODE_ENV=production webpack --env production --config=webpack.export.config.js",
-    "heroku-postbuild": "npm run build",
-    "start:prod": "node server.js",
+    "dev": "NODE_ENV=development webpack-dev-server --mode development --hot --inline --progress",
+    "build": "webpack --env production --config=webpack.export.config.js --config=webpack.config.js",
+    "start": "node server.js",    
     "lint": "eslint src/**/*.{ts,tsx} --fix",
-    "status": "webpack  --env production --json > stats.json",
+    "status": "webpack --env production --json > stats.json",
     "test": "jest"
   },
   "author": "",
