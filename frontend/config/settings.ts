@@ -2,6 +2,8 @@ import axios, { AxiosRequestConfig } from 'axios';
 
 export const env = process.env.NODE_ENV;
 
+console.log('ENV!!!', env);
+
 const settings = {
   development: {
     api: {
@@ -11,7 +13,7 @@ const settings = {
   },
   production: {
     api: {
-      host: 'https://www.adevi.info',
+      host: 'https://www.timberworkinfo.ru',
       version: 1,
     },
   },
