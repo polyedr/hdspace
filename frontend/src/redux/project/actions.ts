@@ -514,6 +514,11 @@ export const setActiveElement = (id: string): T.SetActiveElement => ({
   payload: id,
 });
 
+export const setHoveredElement = (id: string | null): T.SetHoveredElement => ({
+  type: TYPES.SET_HOVERED_ELEMENT,
+  payload: id,
+});
+
 export const setEditableStyles = (className: string): T.SetEditableStyles => ({
   type: TYPES.SET_EDITABLE_STYLES,
   payload: { className },

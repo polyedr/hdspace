@@ -131,6 +131,9 @@ export const selectAreProjectsLoading = ({ project }: AppReduxState) =>
 export const selectActiveElementId = ({ project }: AppReduxState) =>
   project.edit.activeElementId;
 
+export const selectHoveredElementId = ({ project }: AppReduxState) =>
+  project.edit.hoveredElementId;
+
 export const selectAllElements = ({ project }: AppReduxState) =>
   project.data.elements;
 
