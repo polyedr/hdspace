@@ -1278,7 +1278,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
         # print(1277, styles, str_styles)
         # Define the export node
         outer_div_node = ScenarioElement.objects.create(
-            parent=serializer_node, struct_type="container", parameters=parameters, styles=styles
+            parent=serializer_node, struct_type="container", parameters=parameters, styles=styles, buoyancy=0
         )
 
         for pre, fill, node in RenderTree(root_block):
@@ -1332,7 +1332,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
 
                 # Create a new Scenario Element for the elements chain
                 node.scenarioelement = ScenarioElement.objects.create(
-                    parent=outer_div_node, struct_type="container", parameters=parameters, styles=styles
+                    parent=outer_div_node, struct_type="container", parameters=parameters, styles=styles, buoyancy=0
                 )
             else:
                 node.div = ET.SubElement(node.parent.div, "div")
@@ -1346,7 +1346,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                 node.scenarioelement = ScenarioElement.objects.create(
                     parent=node.parent.scenarioelement,
                     struct_type="container",
-                    parameters=parameters, styles=styles
+                    parameters=parameters, styles=styles, buoyancy=0
                 )
 
             # Display elements for some fcluster
@@ -1400,7 +1400,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         node.scenarioelement = ScenarioElement.objects.create(
                             parent=node.parent.scenarioelement,
                             struct_type="textinput",
-                            parameters=parameters, styles=styles
+                            parameters=parameters, styles=styles, buoyancy=0
                         )
 
                     elif elem["region_attributes"]["HTML element"] in {"checkbox"}:
@@ -1416,7 +1416,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         node.scenarioelement = ScenarioElement.objects.create(
                             parent=node.parent.scenarioelement,
                             struct_type="checkbox",
-                            parameters=parameters, styles=styles
+                            parameters=parameters, styles=styles, buoyancy=0
                         )
 
                     elif elem["region_attributes"]["HTML element"] in {"radiobutton"}:
@@ -1432,7 +1432,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         node.scenarioelement = ScenarioElement.objects.create(
                             parent=node.parent.scenarioelement,
                             struct_type="radiobutton",
-                            parameters=parameters, styles=styles
+                            parameters=parameters, styles=styles, buoyancy=0
                         )
 
                     elif elem["region_attributes"]["HTML element"] == "select":
@@ -1450,7 +1450,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         node.scenarioelement = ScenarioElement.objects.create(
                             parent=node.parent.scenarioelement,
                             struct_type="select",
-                            parameters=parameters, styles=styles
+                            parameters=parameters, styles=styles, buoyancy=0
                         )
 
                     if elem["region_attributes"]["HTML element"] in {"text", "ocrtext"}:
@@ -1469,7 +1469,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         node.scenarioelement = ScenarioElement.objects.create(
                             parent=node.parent.scenarioelement,
                             struct_type="ocrtext",
-                            parameters=parameters, styles=styles
+                            parameters=parameters, styles=styles, buoyancy=0
                         )
 
                     elif elem["region_attributes"]["HTML element"] in {"textarea"}:
@@ -1486,7 +1486,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         node.scenarioelement = ScenarioElement.objects.create(
                             parent=node.parent.scenarioelement,
                             struct_type="textarea",
-                            parameters=parameters, styles=styles
+                            parameters=parameters, styles=styles, buoyancy=0
                         )
 
                     elif elem["region_attributes"]["HTML element"] in {"form_heading"}:
@@ -1505,7 +1505,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         node.scenarioelement = ScenarioElement.objects.create(
                             parent=node.parent.scenarioelement,
                             struct_type="heading",
-                            parameters=parameters, styles=styles
+                            parameters=parameters, styles=styles, buoyancy=0
                         )
 
                     elif elem["region_attributes"]["HTML element"] in {"form"}:
@@ -1520,7 +1520,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         node.scenarioelement = ScenarioElement.objects.create(
                             parent=node.parent.scenarioelement,
                             struct_type="container",
-                            parameters=parameters, styles=styles
+                            parameters=parameters, styles=styles, buoyancy=0
                         )
 
                     elif elem["region_attributes"]["HTML element"] == "image":
@@ -1543,7 +1543,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         node.scenarioelement = ScenarioElement.objects.create(
                             parent=node.parent.scenarioelement,
                             struct_type="image",
-                            parameters=parameters, styles=styles
+                            parameters=parameters, styles=styles, buoyancy=0
                         )
 
                     elif elem["region_attributes"]["HTML element"] == "button":
@@ -1564,7 +1564,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         node.scenarioelement = ScenarioElement.objects.create(
                             parent=node.parent.scenarioelement,
                             struct_type="button",
-                            parameters=parameters, styles=styles
+                            parameters=parameters, styles=styles, buoyancy=0
                         )
 
                     elif elem["region_attributes"]["HTML element"] in {"menu"}:
@@ -1578,7 +1578,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         node.scenarioelement = ScenarioElement.objects.create(
                             parent=node.parent.scenarioelement,
                             struct_type="list",
-                            parameters=parameters, styles=styles
+                            parameters=parameters, styles=styles, buoyancy=0
                         )
 
                     elif elem["region_attributes"]["HTML element"] in {"li"}:
@@ -1597,7 +1597,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         node.scenarioelement = ScenarioElement.objects.create(
                             parent=node.parent.scenarioelement,
                             struct_type="listItem",
-                            parameters=parameters, styles=styles
+                            parameters=parameters, styles=styles, buoyancy=0
                         )
 
         return serializer_node
