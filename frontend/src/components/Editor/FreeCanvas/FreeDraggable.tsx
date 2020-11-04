@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Rnd } from 'react-rnd';
+import { Rnd, RndDragCallback, RndResizeCallback } from 'react-rnd';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
@@ -69,12 +69,14 @@ type Props = {
   element: StateElement;
   isActive: boolean;
   includesActiveElement?: boolean;
+  lockAspectRatio?: boolean;
 };
 
 const FreeDraggable: React.FC<Props> = ({
   element,
   isActive,
   includesActiveElement,
+  lockAspectRatio,
   children,
 }) => {
   const dispatch = useDispatch();
@@ -116,13 +118,16 @@ const FreeDraggable: React.FC<Props> = ({
     dispatch(setActiveElement(id));
   };
 
-  const handleResizeStop = (e, dir, ref, delta, position) => {
-    const resultWidth = width + delta.width;
-    const resultHeight = height + delta.height;
-
+  const handleResizeStop: RndResizeCallback = (
+    e,
+    dir,
+    ref,
+    delta,
+    position,
+  ) => {
     if (
-      width === resultWidth &&
-      height === resultHeight &&
+      width === ref.style.width &&
+      height === ref.style.height &&
       left === position.x &&
       top === position.y
     ) {
@@ -133,8 +138,8 @@ const FreeDraggable: React.FC<Props> = ({
       updateElementParameters(
         id,
         {
-          width: resultWidth,
-          height: resultHeight,
+          width: ref.style.width,
+          height: ref.style.height,
           left: position.x,
           top: position.y,
         },
@@ -143,7 +148,7 @@ const FreeDraggable: React.FC<Props> = ({
     );
   };
 
-  const handleDragStop = (e, { x, y }) => {
+  const handleDragStop: RndDragCallback = (e, { x, y }) => {
     if (x === left && y === top) return;
 
     dispatch(
@@ -168,12 +173,16 @@ const FreeDraggable: React.FC<Props> = ({
         x: left,
         y: top,
       }}
-      size={{
-        width,
-        height,
-      }}
+      size={
+        width &&
+        height && {
+          width,
+          height,
+        }
+      }
       onResizeStart={handleInteractionStart}
       onDragStart={handleInteractionStart}
+      lockAspectRatio={lockAspectRatio}
     >
       {children}
 

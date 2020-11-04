@@ -26,8 +26,8 @@ export const makeButton = ({
   struct_type: 'button',
   parameters: {
     ...defaultFreeCanvasParams,
-    width: 90,
-    height: 40,
+    // width: 90,
+    // height: 40,
     group: 'form',
     textContent,
     action: {
