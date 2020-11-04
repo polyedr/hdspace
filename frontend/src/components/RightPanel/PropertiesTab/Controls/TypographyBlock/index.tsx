@@ -149,7 +149,7 @@ const TypographyBlock: React.FC<Props> = ({
           />
 
           <ToggleButtonGroup
-            value={[fontStyle, fontWeight]}
+            value={[fontStyle, fontWeight === 700 ? 'bold' : 'normal']}
             onChange={handleFormatChange}
             size="small"
           >
