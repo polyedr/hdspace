@@ -68,15 +68,16 @@ const Button: React.FC<Props> = (props) => {
 
   return (
     <FreeDraggable {...props}>
-      <MuiButton
+      <div
         className={cn(entityStyles, groupStyles, ownStyles)}
         style={{
           width: '100%',
           height: '100%',
+          textTransform: 'uppercase',
         }}
       >
         {element.parameters.textContent}
-      </MuiButton>
+      </div>
     </FreeDraggable>
   );
 };
