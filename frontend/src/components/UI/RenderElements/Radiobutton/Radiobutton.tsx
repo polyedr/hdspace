@@ -8,6 +8,7 @@ import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked';
 import * as R from 'ramda';
 
 import { RadioRendererProps } from '../types';
+import useEventHandlers from '../useEventHandlers';
 
 const styles = require('../styles.scss');
 
@@ -107,7 +108,9 @@ const Radiobutton: React.FC<RadioRendererProps> = React.forwardRef(
     const iconClasses = getIconStyles(entityStyles, groupStyles, ownStyles)();
     const divClasses = getDivStyles(entityStyles, groupStyles, ownStyles)();
 
-    // const eventHandlers = useEventHandlers(props);
+    const eventHandlers = useEventHandlers(props);
+
+    const { onChange, ...divHandlers } = eventHandlers;
 
     return (
       <div
@@ -122,6 +125,7 @@ const Radiobutton: React.FC<RadioRendererProps> = React.forwardRef(
           divClasses.groupStyles,
           divClasses.ownStyles,
         )}
+        {...divHandlers}
       >
         <Radio
           checkedIcon={
@@ -152,7 +156,7 @@ const Radiobutton: React.FC<RadioRendererProps> = React.forwardRef(
           value={value}
           name={name}
           checked={isRadioChecked}
-          // onChange={eventHandler}
+          onChange={onChange}
           disableRipple={!showRipple}
         />
       </div>

@@ -5,6 +5,7 @@ import cn from 'classnames';
 
 import { ContainerRendererProps } from '../types';
 import { makeComponentStyles } from '../styles';
+import useEventHandlers from '../useEventHandlers';
 
 const useStyles = makeComponentStyles();
 
@@ -12,6 +13,7 @@ const Container: React.FC<ContainerRendererProps> = React.forwardRef(
   (props, ref) => {
     const { id, isDisabled, children, className, isBorderVisible } = props;
     const classes = useStyles(props);
+    const eventHandlers = useEventHandlers(props);
 
     return (
       <>
@@ -28,6 +30,7 @@ const Container: React.FC<ContainerRendererProps> = React.forwardRef(
             classes.ownStyles,
           )}
           style={{ ...(isBorderVisible && isDisabled && { outline: 'none' }) }}
+          {...eventHandlers}
         >
           {children}
         </section>

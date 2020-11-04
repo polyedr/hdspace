@@ -3,18 +3,23 @@ import { useDispatch, useSelector } from 'react-redux';
 import { DropTargetMonitor, useDrag, useDrop } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
 import {
+  addBorderedElementRef,
   createElements,
   moveElement,
+  removeBorderedElementRef,
   setCurrentDropTargetParams,
 } from '../../../redux/project/actions';
 import useElementProps from '../hooks/useElementProps';
 import { RENDERERS } from '../../UI/RenderElements';
 import {
+  selectActiveElementId,
+  selectBorderedRef,
   selectCurrentDropTargetParams,
   selectCurrentRootId,
   selectCurrentScreenId,
   selectElementByChildId,
   selectElementById,
+  selectShowingBorders,
 } from '../../../redux/project/selectors';
 import { DropPosition, ElementType } from '../../../constants/dragAndDrop';
 import { SyntheticElement } from './types';
@@ -40,9 +45,12 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
 }) => {
   const element = useSelector(selectElementById(elementId));
   const parent = useSelector(selectElementByChildId(elementId));
+  const activeElementId = useSelector(selectActiveElementId);
   const rootID = useSelector(selectCurrentRootId);
   const dropTargetParams = useSelector(selectCurrentDropTargetParams);
   const screenId = useSelector(selectCurrentScreenId);
+  const showBorders = useSelector(selectShowingBorders);
+  const borderedRef = useSelector(selectBorderedRef(elementId));
 
   const ref = useRef<HTMLElement>() as React.MutableRefObject<HTMLElement>;
 
@@ -233,7 +241,20 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
 
   return (
     elementProps && (
-      <ElementRenderer {...elementProps} ref={ref}>
+      <ElementRenderer
+        {...elementProps}
+        ref={ref}
+        onMouseEnter={() => {
+          if (borderedRef.current !== ref.current && ref.current) {
+            dispatch(addBorderedElementRef(elementId, ref));
+          }
+        }}
+        onMouseLeave={() => {
+          if (!showBorders && [rootID, activeElementId]) {
+            dispatch(removeBorderedElementRef(elementId));
+          }
+        }}
+      >
         {element.children.map((childId: string) => (
           <DraggableElement
             key={`element-${childId}`}

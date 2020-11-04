@@ -7,6 +7,7 @@ import MenuList from '@material-ui/core/MenuList';
 import { SelectMenuRendererProps } from '../types';
 import { makeComponentStyles } from '../styles';
 import sharedClasses from '../../../../styles/sharedClasses';
+import useEventHandlers from '../useEventHandlers';
 
 // const styles = require('../styles.scss');
 
@@ -28,6 +29,7 @@ const SelectMenu: React.FC<SelectMenuRendererProps> = React.forwardRef(
     };
 
     const classes = useStyles(props);
+    const eventHandlers = useEventHandlers(props);
 
     return isDisabled ? (
       <div style={{ position: 'relative' }}>
@@ -47,6 +49,7 @@ const SelectMenu: React.FC<SelectMenuRendererProps> = React.forwardRef(
           )}
           elevation={8}
           onClick={handlePaperClick}
+          {...eventHandlers}
         >
           <MenuList>{children}</MenuList>
         </Paper>

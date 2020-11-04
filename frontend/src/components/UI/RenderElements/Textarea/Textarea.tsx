@@ -1,11 +1,12 @@
 // @ts-nocheck
 
-import React, { ChangeEvent } from 'react';
+import React from 'react';
 import cn from 'classnames';
 import { makeStyles, TextField } from '@material-ui/core';
 import * as R from 'ramda';
 
 import { TextareaRendererProps } from '../types';
+import useEventHandlers from '../useEventHandlers';
 
 const styles = require('../styles.scss');
 
@@ -113,25 +114,20 @@ const getInputStyles = (
   });
 
 const Textarea: React.FC<TextareaRendererProps> = React.forwardRef(
-  (
-    {
+  (props, ref) => {
+    const {
       id,
       params,
       isDisabled,
       currentValue,
-      onElementChange,
       className,
       entityStyles,
       groupStyles,
       ownStyles,
-    },
-    ref,
-  ) => {
+    } = props;
     const { placeholder } = params;
 
-    const handleTextareaChange = (event: ChangeEvent<HTMLInputElement>) => {
-      onElementChange(id, event.target.value);
-    };
+    const eventHandlers = useEventHandlers();
 
     const textFieldClasses = getTextFieldStyles(
       isDisabled,
@@ -192,7 +188,7 @@ const Textarea: React.FC<TextareaRendererProps> = React.forwardRef(
         style={inlineStyles}
         InputProps={InputProps}
         value={currentValue}
-        onChange={handleTextareaChange}
+        {...eventHandlers}
       />
     );
   },
