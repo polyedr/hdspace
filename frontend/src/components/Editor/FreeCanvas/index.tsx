@@ -1,5 +1,4 @@
 import React, { useMemo, useRef } from 'react';
-import makeStyles from '@material-ui/core/styles/makeStyles';
 import { useDispatch, useSelector } from 'react-redux';
 import { Rnd, RndResizeCallback } from 'react-rnd';
 import cn from 'classnames';
@@ -16,15 +15,7 @@ import {
 import FREE_CANVAS_RENDERERS from './FreeRenderers';
 import { useElementClassNames } from './helpers';
 
-const useStyles = makeStyles({
-  hidden: {
-    display: 'none',
-  },
-  bottomHandle: {},
-});
-
 const FreeCanvas = () => {
-  const classes = useStyles();
   const dispatch = useDispatch();
 
   const ref = useRef<Rnd | null>(null);
@@ -87,22 +78,8 @@ const FreeCanvas = () => {
           activeElementId === root.id ? '#5A899D' : 'transparent'
         }`,
       }}
-      resizeHandleClasses={{
-        top: classes.hidden,
-        topRight: classes.hidden,
-        right: classes.hidden,
-        bottomRight: classes.hidden,
-        bottom: classes.bottomHandle,
-        bottomLeft: classes.hidden,
-        left: classes.hidden,
-        topLeft: classes.hidden,
-      }}
-      resizeHandleStyles={{
-        bottom: {
-          bottom: 0,
-        },
-      }}
       onClick={() => dispatch(setActiveElement(root.id))}
+      enableResizing={false}
       disableDragging
       minWidth="100%"
       minHeight="100%"

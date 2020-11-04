@@ -41,8 +41,8 @@ export const defaultRootStyles: { [K in RootControls]: CssLikeStyles } & {
   },
   other: {
     ...DEFAULT_SIZE,
-    width: '100%',
-    height: '100%',
+    width: 'auto',
+    height: 'auto',
     'min-height': '100%',
     'min-width': '100%',
     'padding-top': '3px',

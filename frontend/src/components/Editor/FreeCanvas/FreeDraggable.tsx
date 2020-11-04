@@ -164,7 +164,6 @@ const FreeDraggable: React.FC<Props> = ({
       className={classes.rnd}
       onResizeStop={handleResizeStop}
       onDragStop={handleDragStop}
-      bounds="parent"
       position={{
         x: left,
         y: top,
