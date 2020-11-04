@@ -123,20 +123,25 @@ export function* createElements(
   }
 
   const isFreeCanvasMode = yield select(selectFreeCanvasMode);
-  let offset;
+  let offset = 0;
   if (isFreeCanvasMode) {
     offset = yield select(selectFreeCanvasOffset(parent.id));
   }
 
   // free canvas offset
-  const elementsWithOffset = elements.map((el) => ({
-    ...el,
-    parameters: {
-      ...el.parameters,
-      left: offset,
-      top: offset,
-    },
-  }));
+  const elementsWithOffset = elements.map((el, i) => {
+    if (i === 0)
+      return {
+        ...el,
+        parameters: {
+          ...el.parameters,
+          left: offset,
+          top: offset,
+        },
+      };
+
+    return el;
+  });
 
   const newElements: ReturnPromisedType<typeof apiAddElements> = yield call(
     reqWrapper,
@@ -242,6 +247,7 @@ export function* createElementsSaga(
         )
       : convertCreatedElementToRequest(dEl.type as Entity, null),
   );
+
   yield call(
     createElements,
     { elements: convertedCreatedElements, index },

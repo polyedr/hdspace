@@ -75,7 +75,13 @@ const ElementButton = React.forwardRef<HTMLButtonElement, Props>(
     }, [preview]);
 
     const handleClick = () => {
-      dispatch(createElements([{ id, type, name, custom }], { screenId }));
+      dispatch(
+        createElements(
+          [{ id, type, name, custom }],
+          { screenId },
+          activeElement.id,
+        ),
+      );
     };
 
     useEffect(() => {
