@@ -26,8 +26,6 @@ export const root: RootServerElement = {
   func_type: 'root',
   struct_type: 'root',
   parameters: {
-    width: 0,
-    height: 0,
     group: 'none',
   },
   styles: {
@@ -55,8 +53,8 @@ export const makeContainer = ({
   parameters: {
     group: 'none',
     ...defaultFreeCanvasParams,
-    width: 500,
-    height: 300,
+    width: '50%',
+    height: '50%',
   },
   styles: {
     classNames: ['container'],
@@ -73,6 +71,8 @@ export const makeGrid = (): GridServerElement => ({
   struct_type: 'grid' as const,
   parameters: {
     ...defaultFreeCanvasParams,
+    width: '50%',
+    height: '50%',
   },
   styles: {
     classNames: ['grid'],
@@ -88,6 +88,8 @@ export const makeColumns = (): ColumnsServerElement => ({
   struct_type: 'columns' as const,
   parameters: {
     ...defaultFreeCanvasParams,
+    width: '50%',
+    height: '50%',
   },
   styles: {
     classNames: ['columns'],
@@ -104,8 +106,8 @@ export const makeDivBlock = (textContent: string): DivBlockServerElement => {
     parameters: {
       group: 'containers',
       ...defaultFreeCanvasParams,
-      width: 500,
-      height: 300,
+      width: '50%',
+      height: '50%',
     },
     styles: {
       classNames: ['divBlock'],
@@ -128,8 +130,6 @@ export const makeImage = ({
     group: 'image',
     imageURL: IMAGES.imageIcon,
     ...defaultFreeCanvasParams,
-    width: 300,
-    height: 300,
   },
   styles: {
     classNames: ['image'],
@@ -149,8 +149,8 @@ export const makeSmartHeader = ({
   parameters: {
     group: 'undefined',
     ...defaultFreeCanvasParams,
-    width: 500,
-    height: 300,
+    width: '50%',
+    height: '50%',
   },
   styles: {
     classNames: ['smartHeader'],
@@ -170,8 +170,8 @@ export const makeSmartFooter = ({
   parameters: {
     group: 'undefined',
     ...defaultFreeCanvasParams,
-    width: 500,
-    height: 300,
+    width: '50%',
+    height: '50%',
   },
   styles: {
     classNames: ['smartFooter'],
@@ -191,8 +191,8 @@ export const makeSmartForm = ({
   parameters: {
     group: 'undefined',
     ...defaultFreeCanvasParams,
-    width: 500,
-    height: 300,
+    width: '50%',
+    height: '50%',
   },
   styles: {
     classNames: ['smartForm'],
@@ -212,8 +212,8 @@ export const makeSmartWebpage = ({
   parameters: {
     group: 'undefined',
     ...defaultFreeCanvasParams,
-    width: 500,
-    height: 300,
+    width: '50%',
+    height: '50%',
   },
   styles: {
     classNames: ['smartWebpage'],
@@ -313,6 +313,8 @@ export const undefined: UndefinedServerElement = {
   parameters: {
     group: 'undefined',
     ...defaultFreeCanvasParams,
+    width: '50%',
+    height: '50%',
   },
   styles: {
     classNames: ['undefined'],

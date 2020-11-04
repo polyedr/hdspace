@@ -267,7 +267,7 @@ const Image: React.FC<Props> = (props) => {
   );
 
   return (
-    <FreeDraggable {...props}>
+    <FreeDraggable {...props} lockAspectRatio>
       <img
         src={element.parameters.imageURL}
         alt={element.id}

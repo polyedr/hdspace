@@ -17,8 +17,6 @@ export const hyperlink: HyperlinkServerElement = {
   struct_type: 'hyperlink',
   parameters: {
     ...defaultFreeCanvasParams,
-    width: 65,
-    height: 25,
     group: 'other',
     textContent: 'hyperlink',
     action: {
@@ -76,8 +74,6 @@ export const makeParagraph = ({
   struct_type: 'paragraph',
   parameters: {
     ...defaultFreeCanvasParams,
-    width: 400,
-    height: 170,
     group: 'typography',
     textContent,
   },
