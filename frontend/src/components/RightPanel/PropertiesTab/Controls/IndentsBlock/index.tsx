@@ -135,6 +135,8 @@ const IndentsBlock: React.FC<Props> = ({
         <div className={classes.capture}>Margin</div>
 
         <TextField
+          title="Margin top"
+          name="Margin top"
           type="number"
           margin="none"
           variant="outlined"
@@ -146,6 +148,8 @@ const IndentsBlock: React.FC<Props> = ({
         />
 
         <TextField
+          title="Margin right"
+          name="Margin right"
           type="number"
           margin="none"
           variant="outlined"
@@ -157,6 +161,8 @@ const IndentsBlock: React.FC<Props> = ({
         />
 
         <TextField
+          title="Margin bottom"
+          name="Margin bottom"
           type="number"
           margin="none"
           variant="outlined"
@@ -168,6 +174,8 @@ const IndentsBlock: React.FC<Props> = ({
         />
 
         <TextField
+          title="Margin left"
+          name="Margin left"
           type="number"
           margin="none"
           variant="outlined"
@@ -182,6 +190,8 @@ const IndentsBlock: React.FC<Props> = ({
           <div className={classes.capture}>Padding</div>
 
           <TextField
+            title="Padding top"
+            name="Padding top"
             type="number"
             margin="none"
             variant="outlined"
@@ -193,6 +203,8 @@ const IndentsBlock: React.FC<Props> = ({
           />
 
           <TextField
+            title="Padding right"
+            name="Padding right"
             type="number"
             margin="none"
             variant="outlined"
@@ -204,6 +216,8 @@ const IndentsBlock: React.FC<Props> = ({
           />
 
           <TextField
+            title="Padding bottom"
+            name="Padding bottom"
             type="number"
             margin="none"
             variant="outlined"
@@ -215,6 +229,8 @@ const IndentsBlock: React.FC<Props> = ({
           />
 
           <TextField
+            title="Padding left"
+            name="Padding left"
             type="number"
             margin="none"
             variant="outlined"

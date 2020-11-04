@@ -32,7 +32,10 @@ import VideoSettings from './Controls/VideoSettings/VideoSettings';
 import FlexGrow from './Controls/FlexGrow';
 import BackgroundSize from './Controls/BackgroundSize';
 import Scrollbar from '../../UI/Scrollbar';
-import { selectActiveElement } from '../../../redux/project/selectors';
+import {
+  selectActiveElement,
+  selectFreeCanvasMode,
+} from '../../../redux/project/selectors';
 import withSmartContainer from './Controls/SmartContainer/withSmartContainer';
 import { NNBlockType } from '../../../constants/defaultParams';
 import ControlSection from './helperComponents/ControlSection';
@@ -83,6 +86,7 @@ const useStyles = makeStyles({
 const PropertiesTab: React.FC = () => {
   const classes = useStyles();
   const activeElement = useSelector(selectActiveElement);
+  const isFreeCanvasMode = useSelector(selectFreeCanvasMode);
 
   const { type } = activeElement;
 
@@ -97,6 +101,9 @@ const PropertiesTab: React.FC = () => {
         {type !== 'none' && (
           <>
             {AVAILABLE_CONTROLS[type as Entity].map((controlName) => {
+              if (isFreeCanvasMode && controlName === 'size') {
+                return null;
+              }
               const Control = CONTROLS[controlName];
 
               return (

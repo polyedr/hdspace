@@ -69,3 +69,8 @@ declare module 'react-color/lib/helpers' {
     source: any;
   };
 }
+
+declare module "*.png" {
+  const value: any;
+  export default value;
+}

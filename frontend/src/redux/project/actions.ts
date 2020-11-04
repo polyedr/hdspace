@@ -462,7 +462,7 @@ export const deleteItem = (
 export const createElements = (
   createdElements: T.CreatedElement[],
   meta: ElementHistoryMeta,
-  parentId?: string,
+  parentId: string,
   index?: number,
 ): T.CreateElements => ({
   type: TYPES.CREATE_ELEMENTS,
