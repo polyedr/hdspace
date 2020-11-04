@@ -3,6 +3,7 @@ import { SketchPicker, ColorResult } from 'react-color';
 import Popover from 'react-tiny-popover';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { createStyles } from '@material-ui/core';
+import transparentBg from '../../../assets/sprites/background_empty.png';
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -14,6 +15,9 @@ const useStyles = makeStyles((theme) =>
       border: '1px solid grey',
       backgroundColor: (props: any) => props.color,
       cursor: 'pointer',
+    },
+    transparent: {
+      background: `url(${transparentBg})`,
     },
   }),
 );
@@ -85,13 +89,16 @@ const ColorPicker: React.FC<ColorPickerProps> = ({
           color={color}
           onChangeComplete={onChangeComplete}
           width="210px"
+          presetColors={['transparent']}
         />
       }
     >
-      <div
-        onClick={handleColorPickerContainerClick}
-        className={classes.container}
-      />
+      <div className={classes.transparent}>
+        <div
+          onClick={handleColorPickerContainerClick}
+          className={classes.container}
+        />
+      </div>
     </Popover>
   );
 };

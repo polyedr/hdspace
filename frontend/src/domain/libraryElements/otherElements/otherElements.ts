@@ -96,23 +96,25 @@ export const makeColumns = (): ColumnsServerElement => ({
   children: [],
 });
 
-export const makeDivBlock = (textContent: string): DivBlockServerElement => ({
-  buoyancy: 0,
-  func_type: 'divBlock',
-  struct_type: 'divBlock',
-  parameters: {
-    group: 'containers',
-    ...defaultFreeCanvasParams,
-    width: 500,
-    height: 300,
-  },
-  styles: {
-    classNames: ['divBlock'],
-    ownStyles: {} as Required<CssLikeStyles>,
-  },
-  name: 'divBlock',
-  children: [makeParagraph({ textContent })],
-});
+export const makeDivBlock = (textContent: string): DivBlockServerElement => {
+  return {
+    buoyancy: 0,
+    func_type: 'divBlock',
+    struct_type: 'divBlock',
+    parameters: {
+      group: 'containers',
+      ...defaultFreeCanvasParams,
+      width: 500,
+      height: 300,
+    },
+    styles: {
+      classNames: ['divBlock'],
+      ownStyles: {} as Required<CssLikeStyles>,
+    },
+    name: 'divBlock',
+    children: [makeParagraph({ textContent })],
+  };
+};
 
 export const makeImage = ({
   ownStyles = {} as Required<CssLikeStyles>,

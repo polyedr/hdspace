@@ -13,10 +13,7 @@ import {
   PropertiesChangeProps,
   withConfigurableProperties,
 } from '../../../../../utils/withConfigurableProperties';
-import {
-  selectCurrentEditableStyles,
-  selectFreeCanvasMode,
-} from '../../../../../redux/project/selectors';
+import { selectCurrentEditableStyles } from '../../../../../redux/project/selectors';
 import StylesHeader from '../../helperComponents/StylesHeader';
 
 const useStyles = makeStyles({
@@ -53,7 +50,6 @@ function mapState(state: AppReduxState) {
   return {
     width: selectCurrentEditableStyles(state, 'width'),
     height: selectCurrentEditableStyles(state, 'height'),
-    isFreeCanvasMode: selectFreeCanvasMode(state),
   };
 }
 
@@ -76,7 +72,6 @@ const SizeBlock: React.FC<Props> = ({
   activeItemID,
   width,
   height,
-  isFreeCanvasMode,
 }) => {
   const classes = useStyles();
 
@@ -179,7 +174,7 @@ const SizeBlock: React.FC<Props> = ({
     );
   };
 
-  return !isFreeCanvasMode ? (
+  return (
     <section>
       <StylesHeader
         title="Width & Height"
@@ -192,7 +187,7 @@ const SizeBlock: React.FC<Props> = ({
         {renderSizeControl('width')}
       </div>
     </section>
-  ) : null;
+  );
 };
 
 export default connect(mapState)(withConfigurableProperties(memo(SizeBlock)));
