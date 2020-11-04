@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import cn from 'classnames';
 import makeStyles from '@material-ui/core/styles/makeStyles';
@@ -8,15 +8,15 @@ import { resetScreenState } from '../../../redux/project/actions';
 import {
   selectCurrentRootId,
   selectFreeCanvasMode,
+  selectScreenFormat,
+  selectScreenRotated,
 } from '../../../redux/project/selectors';
 import DraggableItem from '../Draggable/DraggableElement';
 import ElementsInteractions from '../ElementsInteractions/ElementsInteractions';
 import NNProcessingModal from '../../Dialogs/NNProcessing';
 import useGlobalDropTarget from '../../../utils/dragAndDrop/GlobalDropTarget/useGlobalDropTarget';
 import { selectIsPrototypeMode } from '../../../redux/user/selectors';
-import NewTopBar from '../TopBar';
 import FreeCanvas from '../FreeCanvas';
-import { SCREEN_FORMATS } from '../../../constants/defaultParams';
 
 const useStyles = makeStyles({
   workspace: {
@@ -55,16 +55,10 @@ const Workspace: React.FC = () => {
   const rootElementId = useSelector(selectCurrentRootId);
   const isPrototypeMode = useSelector(selectIsPrototypeMode);
   const freeCanvasMode = useSelector(selectFreeCanvasMode);
-
-  const [format, setFormat] = useState(SCREEN_FORMATS.Desktop);
-  const [rotated, setRotated] = useState<boolean>(false);
+  const format = useSelector(selectScreenFormat);
+  const rotated = useSelector(selectScreenRotated);
 
   const classes = useStyles(rotated);
-
-  const handleFormatChange = (ev, newFormat) => {
-    if (!newFormat) return;
-    setFormat(newFormat);
-  };
 
   const ref = useRef<HTMLDivElement | null>(null);
 
@@ -83,13 +77,6 @@ const Workspace: React.FC = () => {
   return (
     <div className={classes.workspace} ref={ref}>
       <div className={classes.wrapper}>
-        <NewTopBar
-          format={format}
-          handleFormatChange={handleFormatChange}
-          rotated={rotated}
-          handleRotatedToggle={() => setRotated((prevState) => !prevState)}
-        />
-
         <EditorViewport>
           <Scrollbar
             className={cn(classes.editor, classes[format])}

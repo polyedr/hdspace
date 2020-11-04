@@ -88,8 +88,6 @@ export function* addProjectSaga({
   const projects: Project[] = yield select(selectors.selectProjectsAsArr);
   yield put(Actions.setProjectList([...projects, project]));
 
-  yield put(Actions.setIsAddElementsModalOpened(true));
-
   yield put(Actions.setCurrentProjectId(project.id));
 
   yield call(addScreenSaga, Actions.addScreen(project.id, 'Screen 1', 0, true));

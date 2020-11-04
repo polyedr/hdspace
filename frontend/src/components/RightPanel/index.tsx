@@ -59,7 +59,7 @@ const TabPanel: React.FC<TabPanelProps> = ({ value, index, children }) => {
   );
 };
 
-const PropertiesPanel: React.FC = () => {
+const RightPanel: React.FC = () => {
   const loader = useSelector(selectLoader);
   const isPrototypeMode = useSelector(selectIsPrototypeMode);
   const classes = useStyles({ open: !isPrototypeMode });
@@ -98,4 +98,4 @@ const PropertiesPanel: React.FC = () => {
   );
 };
 
-export default PropertiesPanel;
+export default RightPanel;

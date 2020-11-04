@@ -7,9 +7,9 @@ import { changePrototypeMode } from '../../../redux/user/actions';
 import { selectIsPrototypeMode } from '../../../redux/user/selectors';
 import Formats from './Formats';
 import Actions from './Actions';
-import { SCREEN_FORMATS } from '../../../constants/defaultParams';
 import { changeFreeCanvasMode } from '../../../redux/project/actions';
 import { selectFreeCanvasMode } from '../../../redux/project/selectors';
+import ShowBorders from '../../RightPanel/PropertiesTab/Controls/ShowBorders/ShowBorders';
 
 const useStyles = makeStyles({
   root: {
@@ -22,19 +22,7 @@ const useStyles = makeStyles({
   },
 });
 
-type Props = {
-  format: SCREEN_FORMATS;
-  handleFormatChange: (ev: any, newFormat: SCREEN_FORMATS | null) => void;
-  rotated: boolean;
-  handleRotatedToggle: () => void;
-};
-
-const TopBar: React.FC<Props> = ({
-  format,
-  handleFormatChange,
-  rotated,
-  handleRotatedToggle,
-}) => {
+const TopBar: React.FC = () => {
   const dispatch = useDispatch();
   const classes = useStyles();
 
@@ -49,12 +37,7 @@ const TopBar: React.FC<Props> = ({
 
   return (
     <div className={classes.root}>
-      <Formats
-        format={format}
-        handleFormatChange={handleFormatChange}
-        rotated={rotated}
-        handleRotatedToggle={handleRotatedToggle}
-      />
+      <Actions />
 
       <div>
         <FormControlLabel
@@ -74,9 +57,11 @@ const TopBar: React.FC<Props> = ({
           labelPlacement="end"
           className={classes.switch}
         />
+
+        <ShowBorders />
       </div>
 
-      <Actions />
+      <Formats />
     </div>
   );
 };

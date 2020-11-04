@@ -7,7 +7,6 @@ import { SharedRendererProps } from '../types';
 import { makeComponentStyles } from '../styles';
 import CalendarWidget from '../../Calendar';
 
-// const styles = require('../styles.scss');
 const useStyles = makeComponentStyles();
 
 const Calendar: React.FC<SharedRendererProps> = React.forwardRef(

@@ -12,7 +12,6 @@ import {
   copyActiveItem,
   deleteItem,
   pasteCopiedElement,
-  setIsAddElementsModalOpened,
 } from '../../../../redux/project/actions';
 import { canElementHaveChildren } from '../../../../utils/AvailableChildrenHelper';
 import Icon from '../../../UI/Icon';
@@ -59,11 +58,6 @@ const ContextMenu: React.FC<Props> = ({ open, onClose, anchorPosition }) => {
     onClose();
   };
 
-  const handleAddNew = () => {
-    dispatch(setIsAddElementsModalOpened(true));
-    onClose();
-  };
-
   const handleCopy = () => {
     dispatch(copyActiveItem());
     onClose();
@@ -81,11 +75,6 @@ const ContextMenu: React.FC<Props> = ({ open, onClose, anchorPosition }) => {
       anchorReference="anchorPosition"
       anchorPosition={anchorPosition}
     >
-      <MenuItem disabled={!canHaveChildren} onClick={handleAddNew}>
-        <Icon icon="add" size={16} color="white" />
-        Add new...
-      </MenuItem>
-
       <MenuItem disabled={activeElementType === 'root'} onClick={handleCopy}>
         <Icon icon="copy" size={16} color="white" />
         Copy
