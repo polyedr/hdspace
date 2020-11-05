@@ -513,12 +513,12 @@ export const wrapIntoContainer = (
   meta,
 });
 
-export const setActiveElement = (id: string): T.SetActiveElement => ({
+export const setActiveElement = (id: string) => ({
   type: TYPES.SET_ACTIVE_ELEMENT_SAGA,
   payload: id,
 });
 
-export const setActiveElementId = (id: string): T.SetActiveElementId => ({
+export const setActiveElementId = (id: string) => ({
   type: TYPES.SET_ACTIVE_ELEMENT_ID,
   payload: id,
 });

@@ -30,6 +30,7 @@ import {
   setProjectsData,
   updateLastElements,
   updateStateElement,
+  setActiveElementId,
 } from './actions';
 import {
   NNBlockType,
@@ -398,14 +399,6 @@ export type WrapIntoContainer = IAction<
   { id: string },
   ElementHistoryMeta
 >;
-export type SetActiveElement = IAction<
-  typeof TYPES.SET_ACTIVE_ELEMENT_SAGA,
-  string
->;
-export type SetActiveElementId = IAction<
-  typeof TYPES.SET_ACTIVE_ELEMENT_ID,
-  string
->;
 export type SetHoveredElement = IAction<
   typeof TYPES.SET_HOVERED_ELEMENT,
   string | null
@@ -543,7 +536,7 @@ export type Action =
   | uploadImageForNNSuccess
   | GetScreenNN
   | WrapIntoContainer
-  | SetActiveElementId
+  | ReturnType<typeof setActiveElementId>
   | SetHoveredElement
   | ToggleContainersBorders
   | SetItemToCopy
