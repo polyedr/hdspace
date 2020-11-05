@@ -146,6 +146,7 @@ class ProjectScreenSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ProjectScreen
+        ref_name = "RecognizeProject"
 
         fields = (
             "status",
