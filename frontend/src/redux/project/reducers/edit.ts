@@ -46,7 +46,7 @@ const editReducer = produce(
         return { ...draft, uploadedImageInfo: action.payload };
       }
 
-      case TYPES.SET_ACTIVE_ELEMENT: {
+      case TYPES.SET_ACTIVE_ELEMENT_ID: {
         return { ...draft, activeElementId: action.payload };
       }
 

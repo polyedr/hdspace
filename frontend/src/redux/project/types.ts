@@ -31,7 +31,11 @@ import {
   updateLastElements,
   updateStateElement,
 } from './actions';
-import { NNBlockType, SCREEN_FORMATS } from '../../constants/defaultParams';
+import {
+  NNBlockType,
+  RightPanelTab,
+  SCREEN_FORMATS,
+} from '../../constants/defaultParams';
 
 export type ProjectState = {
   data: ProjectDataState;
@@ -81,6 +85,9 @@ export type ProjectDataState = {
 export type ProjectUiState = {
   editableStyles: string;
   itemToCopyInfo: ItemToCopyInfo | null;
+  rightPanel: {
+    activeTab: RightPanelTab;
+  };
   savedElementsValues: SavedElementsValues;
   showContainersBorders: boolean;
   borderedElementsRef: BorderedElementsRef;
@@ -391,7 +398,14 @@ export type WrapIntoContainer = IAction<
   { id: string },
   ElementHistoryMeta
 >;
-export type SetActiveElement = IAction<typeof TYPES.SET_ACTIVE_ELEMENT, string>;
+export type SetActiveElement = IAction<
+  typeof TYPES.SET_ACTIVE_ELEMENT_SAGA,
+  string
+>;
+export type SetActiveElementId = IAction<
+  typeof TYPES.SET_ACTIVE_ELEMENT_ID,
+  string
+>;
 export type SetHoveredElement = IAction<
   typeof TYPES.SET_HOVERED_ELEMENT,
   string | null
@@ -407,6 +421,10 @@ export type SetEditableStyles = IAction<
 export type SetItemToCopy = IAction<
   typeof TYPES.SET_ITEM_TO_COPY,
   ItemToCopyInfo
+>;
+export type SetRightPanelActiveTab = IAction<
+  typeof TYPES.SET_RIGHT_PANEL_ACTIVE_TAB,
+  RightPanelTab
 >;
 export type CopyActiveItem = IPlainAction<typeof TYPES.COPY_ACTIVE_ITEM>;
 export type PasteCopiedItem = IPlainAction<
@@ -525,10 +543,11 @@ export type Action =
   | uploadImageForNNSuccess
   | GetScreenNN
   | WrapIntoContainer
-  | SetActiveElement
+  | SetActiveElementId
   | SetHoveredElement
   | ToggleContainersBorders
   | SetItemToCopy
+  | SetRightPanelActiveTab
   | CopyActiveItem
   | PasteCopiedItem
   | ResetScreenState

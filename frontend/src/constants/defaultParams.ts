@@ -94,6 +94,14 @@ export const CONTAINER_GROUPS = ['containers', 'custom'];
 
 export const SAVEABLE_ELEMENTS = ['section'];
 
+export const KEEP_RP_TAB_ELEMENTS = [
+  'section',
+  'container',
+  'divBlock',
+  'grid',
+  'columns',
+];
+
 export const enum SCREEN_FORMATS {
   Desktop = 'desktop',
   Tablet = 'tablet',
@@ -105,4 +113,9 @@ export const enum NNBlockType {
   FOOTER = 'footers',
   FORM = 'forms',
   WEBPAGE = 'webpages',
+}
+
+export const enum RightPanelTab {
+  PROPERTIES = 0,
+  ELEMENTS = 1,
 }

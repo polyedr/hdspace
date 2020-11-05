@@ -18,3 +18,6 @@ export const selectConfirmMessage = ({ user }: AppReduxState) =>
   user.confirmMessage;
 
 export const selectIsLoggedIn = ({ user }: AppReduxState) => user.isLoggedIn;
+
+export const selectRightPanelActiveTab = ({ project }: AppReduxState) =>
+  project.ui.rightPanel.activeTab;

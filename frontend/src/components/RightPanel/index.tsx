@@ -1,5 +1,5 @@
-import React, { ChangeEvent, useState } from 'react';
-import { useSelector } from 'react-redux';
+import React, { ChangeEvent } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import makeStyles from '@material-ui/core/styles/makeStyles';
@@ -8,7 +8,12 @@ import PropertiesTab from './PropertiesTab';
 import ElementsTab from './ElementsTab';
 import { selectLoader } from '../../redux/project/selectors';
 import { RIGHT_PANEL_WIDTH } from '../../styles/Theme';
-import { selectIsPrototypeMode } from '../../redux/user/selectors';
+import {
+  selectIsPrototypeMode,
+  selectRightPanelActiveTab,
+} from '../../redux/user/selectors';
+import { setRightPanelActiveTab } from '../../redux/project/actions';
+import { RightPanelTab } from '../../constants/defaultParams';
 
 const useStyles = makeStyles({
   root: {
@@ -66,16 +71,18 @@ const RightPanel: React.FC = () => {
 
   const tabClasses = useTabStyles();
   const tabsClasses = useTabsStyles();
+  const dispatch = useDispatch();
 
-  const [tab, setTab] = useState(0);
+  const activeTab = useSelector(selectRightPanelActiveTab);
 
-  const handleChange = (ev: ChangeEvent<{}>, newValue: number) =>
-    setTab(newValue);
+  const handleChange = (ev: ChangeEvent<{}>, tab: number) => {
+    dispatch(setRightPanelActiveTab(tab));
+  };
 
   return (
     <div className={classes.root}>
       <Tabs
-        value={tab}
+        value={activeTab}
         onChange={handleChange}
         classes={tabsClasses}
         variant="fullWidth"
@@ -85,11 +92,11 @@ const RightPanel: React.FC = () => {
         <Tab classes={tabClasses} label="Elements" />
       </Tabs>
 
-      <TabPanel index={0} value={tab}>
+      <TabPanel index={RightPanelTab.PROPERTIES} value={activeTab}>
         <PropertiesTab />
       </TabPanel>
 
-      <TabPanel index={1} value={tab}>
+      <TabPanel index={RightPanelTab.ELEMENTS} value={activeTab}>
         <ElementsTab />
       </TabPanel>
 

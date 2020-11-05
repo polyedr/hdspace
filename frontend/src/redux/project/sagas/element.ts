@@ -8,6 +8,7 @@ import {
   selectElementById,
   selectElementAsTree,
   selectAllElements,
+  selectCurrentRootId,
 } from '../selectors';
 /* eslint-disable no-console */
 
@@ -37,6 +38,10 @@ import getSavedValue from '../../../utils/getSavedValue';
 import { addProjectStyles } from '../../../utils/ProjectClassesHelper';
 import { updateProject } from './project';
 import { StateElement } from '../types';
+import {
+  KEEP_RP_TAB_ELEMENTS,
+  RightPanelTab,
+} from '../../../constants/defaultParams';
 
 export function* moveElementSaga(
   action: ReturnType<typeof Actions.moveElement>,
@@ -548,4 +553,20 @@ export function* loadCustomElementsSaga(
   yield put(
     Actions.addCustomElementsPage(paginatedResult, action.payload.initial),
   );
+}
+
+export function* setActiveElementSaga(
+  action: ReturnType<typeof Actions.setActiveElement>,
+) {
+  const element = yield select(selectElementById(action.payload));
+  const rootID = yield select(selectCurrentRootId);
+  if (
+    element &&
+    element.id !== action.payload &&
+    !KEEP_RP_TAB_ELEMENTS.includes(element.type) &&
+    element.id !== rootID
+  ) {
+    yield put(Actions.setRightPanelActiveTab(RightPanelTab.PROPERTIES));
+  }
+  yield put(Actions.setActiveElementId(action.payload));
 }
