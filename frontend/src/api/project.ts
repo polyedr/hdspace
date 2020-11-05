@@ -2,7 +2,12 @@
 
 import { AxiosResponse, AxiosError } from 'axios';
 import { convertProjectFromResponse } from './converters/fromResponse';
-import { Project, ServerProject, PaginatedArray } from './types';
+import {
+  Project,
+  ServerProject,
+  PaginatedArray,
+  ProjectWithScreens,
+} from './types';
 
 import { myAxios, MyAxiosProps } from '../../config/settings';
 
@@ -84,6 +89,17 @@ export const apiGetProject = (
     url: `/projects/projects/${props.id}/`,
   })
     .then((result) => convertProjectFromResponse(result.data))
+    .catch(onError);
+
+export const apiGetProjectWithScreens = (
+  props: MyAxiosProps & { id: string },
+): Promise<ProjectWithScreens> =>
+  myAxios({
+    ...props,
+    method: 'GET',
+    url: `projects/screens-for-project/${props.id}`,
+  })
+    .then((res) => convertProjectFromResponse(res.data))
     .catch(onError);
 
 export const apiAddProject = (props: MyAxiosProps): Promise<Project> =>

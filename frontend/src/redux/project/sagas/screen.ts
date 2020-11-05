@@ -413,11 +413,7 @@ export function* renameScreenSaga({
   yield put(setScreens(newScreens));
 }
 
-export function* getScreensSaga(ids: number[]) {
-  const screens: Screen[] = yield all(
-    ids.map((id) => call(reqWrapper, apiGetScreen, { id })),
-  );
-
+export function* getScreensSaga(screens: Screen[]) {
   const elements: ServerElement<'root'>[] = yield call(
     reqWrapper,
     apiGetElements,
@@ -428,8 +424,10 @@ export function* getScreensSaga(ids: number[]) {
 
   yield put(
     setScreens(
-      screens.map((screen, i) => {
-        const elementId = String(elements[i].id);
+      screens.map((screen) => {
+        const elementId = String(
+          elements.find((el) => el.scenario === screen.screenscenario[0])?.id,
+        );
 
         return {
           ...screen,
