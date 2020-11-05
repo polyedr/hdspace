@@ -142,6 +142,7 @@ def unique(list1):
 
 class ProjectScreenSerializer(serializers.ModelSerializer):
     screen_data_json = serializers.JSONField()
+    # parameters = serializers.JSONField()
 
     class Meta:
         model = ProjectScreen
@@ -156,27 +157,22 @@ class ProjectScreenSerializer(serializers.ModelSerializer):
             "screen_data_text",
             "screen_data_json",
             "screenscenario",
+            # "parameters",
         )
-        extra_kwargs = {"screenscenario": {"read_only": True}}
+        extra_kwargs = {"screenscenario": {"read_only": True},}
 
     def create(self, validated_data):
-        # Pre-Root element assignment
-        element_root_pre = ScenarioElement.objects.get(id=validated_data["parent_id"])
-
         # Extract an appropriate flag value to recognize block as header, footer, form or layout
         # Region dataset has some starting value
         region_dataset = "webpages"
-        if validated_data.get("parameters"):
-            region_dataset = validated_data["parameters"]["block_type"]
-        # print(region_dataset)
+        if validated_data.get("screen_data_json"):
+            region_dataset = validated_data["screen_data_json"]["block_type"]
+        print(region_dataset)
 
         fdict = {}  # Output dictionary to write annotation
 
         fname = ""
         imgpath = ""
-        node = ProjectScreen.objects.create(
-            **validated_data
-        )
 
         # Create the opencv recognition start
         image_dict = {}
@@ -184,6 +180,9 @@ class ProjectScreenSerializer(serializers.ModelSerializer):
 
         text = False
         watch = True
+
+        fname = str(validated_data["image"])
+        imgpath = MEDIA_ROOT + "/uploads/" + fname
 
         # Read an image with OpenCV start
         image_opencv_input = cv2.imread(imgpath)
@@ -532,7 +531,11 @@ class ProjectScreenSerializer(serializers.ModelSerializer):
                     fdict[fnamesize]["regions"].append(attributes_dict)
                     # Printing rect contours preparations end
 
-        node.screen_data_json = json.dumps(fdict, indent=4)
+        sdj = json.dumps(fdict, indent=4)
+        validated_data["screen_data_json"] = sdj
+        node = ProjectScreen.objects.create(
+            **validated_data
+        )
 
         return node
 
