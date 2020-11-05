@@ -488,9 +488,8 @@ export function* uploadFileSaga({
     formData.append('func_type', 'container');
     formData.append('name', 'TESTING NEURAL NETWORK');
     formData.append('screen', screenId.toString());
-    formData.append('parameters', '{}');
+    formData.append('parameters', JSON.stringify({ block_type: blockType }));
     formData.append('styles', '{}');
-    formData.append('block_type', blockType);
 
     const nnContainer: LibraryElement<any> = yield call(
       reqWrapper,
