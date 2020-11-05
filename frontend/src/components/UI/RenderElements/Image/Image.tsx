@@ -5,12 +5,14 @@ import cn from 'classnames';
 
 import { ImageRendererProps } from '../types';
 import { makeComponentStyles } from '../styles';
+import useEventHandlers from '../useEventHandlers';
 
 const useStyles = makeComponentStyles();
 
 const Image: React.FC<ImageRendererProps> = React.forwardRef((props, ref) => {
   const { id, params, className } = props;
   const classes = useStyles(props);
+  const eventHandlers = useEventHandlers(props);
 
   return (
     <img
@@ -27,6 +29,7 @@ const Image: React.FC<ImageRendererProps> = React.forwardRef((props, ref) => {
         classes.ownStyles,
       )}
       alt={id}
+      {...eventHandlers}
     />
   );
 });

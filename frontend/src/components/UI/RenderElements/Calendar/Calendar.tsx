@@ -6,6 +6,7 @@ import cn from 'classnames';
 import { SharedRendererProps } from '../types';
 import { makeComponentStyles } from '../styles';
 import CalendarWidget from '../../Calendar';
+import useEventHandlers from '../useEventHandlers';
 
 const useStyles = makeComponentStyles();
 
@@ -13,6 +14,7 @@ const Calendar: React.FC<SharedRendererProps> = React.forwardRef(
   (props, ref) => {
     const { id, isDisabled, className } = props;
     const classes = useStyles(props);
+    const eventHandlers = useEventHandlers(props);
 
     return (
       <div
@@ -27,6 +29,7 @@ const Calendar: React.FC<SharedRendererProps> = React.forwardRef(
           classes.groupStyles,
           classes.ownStyles,
         )}
+        {...eventHandlers}
       >
         <CalendarWidget />
       </div>

@@ -6,6 +6,7 @@ import { makeStyles, Button } from '@material-ui/core';
 import * as R from 'ramda';
 
 import { DropdownRendererProps } from '../types';
+import useEventHandlers from '../useEventHandlers';
 
 const styles = require('../styles.scss');
 
@@ -91,8 +92,8 @@ const getDivStyles = (
   });
 
 const Dropdown: React.FC<DropdownRendererProps> = React.forwardRef(
-  (
-    {
+  (props, ref) => {
+    const {
       id,
       isDisabled,
       active,
@@ -102,12 +103,11 @@ const Dropdown: React.FC<DropdownRendererProps> = React.forwardRef(
       entityStyles,
       groupStyles,
       ownStyles,
-    },
-    ref,
-  ) => {
+    } = props;
     const { textContent, showRipple, isOpen } = params;
 
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+    const eventHandlers = useEventHandlers(props);
 
     const handleMenuButtonClick = (
       event: React.MouseEvent<HTMLButtonElement>,
@@ -137,6 +137,7 @@ const Dropdown: React.FC<DropdownRendererProps> = React.forwardRef(
             divClasses.ownStyles,
           )}
           ref={ref}
+          {...eventHandlers}
         >
           <Button
             id={id}

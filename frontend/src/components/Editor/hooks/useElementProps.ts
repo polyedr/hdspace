@@ -22,7 +22,6 @@ import {
   LIBRARY_ELEMENTS,
 } from '../../../domain/libraryElements/libraryElements';
 import { ElementEntity } from '../../../domain/core';
-import { AppReduxState } from '../../../shared/types/app';
 
 const isElementStructType = (type: string): type is ElementEntity => {
   return type in LIBRARY_ELEMENTS;
@@ -40,34 +39,22 @@ export type ElementProps = {
 } & Omit<SharedRendererProps, 'children'>;
 
 const useElementProps = (elementId: string): ElementProps | null => {
-  const {
-    element,
-    root,
-    rootID,
-    savedElements,
-    disableInteractions,
-    activeElement,
-    showBorders,
-    screenLoader,
-    currentProject,
-  } = useSelector((state: AppReduxState) => ({
-    element: selectElementById(elementId)(state),
-    root: selectCurrentRootElement(state),
-    rootID: selectCurrentRootId(state),
-    savedElements: selectSavedElementsValues(state),
-    disableInteractions: selectIsPrototypeMode(state),
-    activeElement: selectActiveElement(state),
-    showBorders: selectShowingBorders(state),
-    screenLoader: selectScreenLoader(state),
-    currentProject: selectCurrentProject(state),
-  }));
+  const element = useSelector(selectElementById(elementId));
+  const root = useSelector(selectCurrentRootElement);
+  const rootID = useSelector(selectCurrentRootId);
+  const savedElements = useSelector(selectSavedElementsValues);
+  const disableInteractions = useSelector(selectIsPrototypeMode);
+  const activeElement = useSelector(selectActiveElement);
+  const showBorders = useSelector(selectShowingBorders);
+  const screenLoader = useSelector(selectScreenLoader);
+  const currentProject = useSelector(selectCurrentProject);
 
   const projectClasses = currentProject.projectData.classes;
 
   const dispatch = useDispatch();
 
-  const onElementChange = (item, value) =>
-    dispatch(updateSavedElementValues(item, value));
+  const onChange = (event: React.ChangeEvent<HTMLInputElement>) =>
+    dispatch(updateSavedElementValues(elementId, event.target.value));
 
   const isRadioChecked = (
     value: string,
@@ -105,7 +92,7 @@ const useElementProps = (elementId: string): ElementProps | null => {
       case 'textinput': {
         return {
           currentValue: String(savedElements[id]?.savedValue),
-          onElementChange,
+          onChange,
           params: element.parameters,
         };
       }
@@ -113,7 +100,7 @@ const useElementProps = (elementId: string): ElementProps | null => {
       case 'textarea': {
         return {
           currentValue: savedElements[id]?.savedValue,
-          onElementChange,
+          onChange,
           params: element.parameters,
         };
       }
@@ -122,7 +109,7 @@ const useElementProps = (elementId: string): ElementProps | null => {
         return {
           currentValue: savedElements[id]?.savedValue,
           isCheckboxChecked: isCheckboxChecked(id),
-          onElementChange,
+          onChange,
           params: element.parameters,
         };
       }
@@ -134,14 +121,14 @@ const useElementProps = (elementId: string): ElementProps | null => {
             element.parameters.value,
             savedElements[element.parameters.name],
           ),
-          onElementChange: updateSavedElementValues,
+          onChange,
           params: element.parameters,
         };
       }
 
       case 'select': {
         return {
-          onElementChange: updateSavedElementValues,
+          onChange,
           childrenElements: children,
           params: element.parameters,
           projectClasses,
@@ -153,7 +140,18 @@ const useElementProps = (elementId: string): ElementProps | null => {
           params: element.parameters,
         };
     }
-  }, [element]);
+  }, [
+    activeElement.id,
+    disableInteractions,
+    element,
+    isCheckboxChecked,
+    onChange,
+    projectClasses,
+    root,
+    rootID,
+    savedElements,
+    showBorders,
+  ]);
 
   if (!element) {
     return null;

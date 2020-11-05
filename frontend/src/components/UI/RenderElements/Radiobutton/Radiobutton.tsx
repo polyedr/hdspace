@@ -1,6 +1,6 @@
 // @ts-nocheck
 
-import React, { ChangeEvent } from 'react';
+import React from 'react';
 import cn from 'classnames';
 import { makeStyles, Radio } from '@material-ui/core';
 import RadioButtonCheckedIcon from '@material-ui/icons/RadioButtonChecked';
@@ -8,6 +8,7 @@ import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked';
 import * as R from 'ramda';
 
 import { RadioRendererProps } from '../types';
+import useEventHandlers from '../useEventHandlers';
 
 const styles = require('../styles.scss');
 
@@ -86,8 +87,8 @@ const getDivStyles = (
   });
 
 const Radiobutton: React.FC<RadioRendererProps> = React.forwardRef(
-  (
-    {
+  (props, ref) => {
+    const {
       id,
       entityStyles,
       groupStyles,
@@ -95,11 +96,8 @@ const Radiobutton: React.FC<RadioRendererProps> = React.forwardRef(
       params,
       isDisabled,
       isRadioChecked,
-      onElementChange,
       className,
-    },
-    ref,
-  ) => {
+    } = props;
     const { name, value, showRipple } = params;
 
     const radiobuttonClasses = getRadiobuttonStyles(
@@ -110,9 +108,9 @@ const Radiobutton: React.FC<RadioRendererProps> = React.forwardRef(
     const iconClasses = getIconStyles(entityStyles, groupStyles, ownStyles)();
     const divClasses = getDivStyles(entityStyles, groupStyles, ownStyles)();
 
-    const handleRadioChange = (event: ChangeEvent<HTMLInputElement>) => {
-      onElementChange(name || '', event.target.value);
-    };
+    const eventHandlers = useEventHandlers(props);
+
+    const { onChange, ...divHandlers } = eventHandlers;
 
     return (
       <div
@@ -127,6 +125,7 @@ const Radiobutton: React.FC<RadioRendererProps> = React.forwardRef(
           divClasses.groupStyles,
           divClasses.ownStyles,
         )}
+        {...divHandlers}
       >
         <Radio
           checkedIcon={
@@ -157,7 +156,7 @@ const Radiobutton: React.FC<RadioRendererProps> = React.forwardRef(
           value={value}
           name={name}
           checked={isRadioChecked}
-          onChange={handleRadioChange}
+          onChange={onChange}
           disableRipple={!showRipple}
         />
       </div>

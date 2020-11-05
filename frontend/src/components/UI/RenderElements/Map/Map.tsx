@@ -5,12 +5,14 @@ import cn from 'classnames';
 import { MapRendererProps } from '../types';
 import GMap from '../../GMap';
 import { makeComponentStyles } from '../styles';
+import useEventHandlers from '../useEventHandlers';
 
 const useStyles = makeComponentStyles();
 
 const Map: React.FC<MapRendererProps> = React.forwardRef((props, ref) => {
   const { id, params, isDisabled, className } = props;
   const classes = useStyles(props);
+  const eventHandlers = useEventHandlers(props);
 
   return (
     <div
@@ -25,7 +27,7 @@ const Map: React.FC<MapRendererProps> = React.forwardRef((props, ref) => {
         classes.groupStyles,
         classes.ownStyles,
       )}
-      onClick={(event) => isDisabled && event.preventDefault()}
+      {...eventHandlers}
     >
       <GMap
         center={params.map_props.center}

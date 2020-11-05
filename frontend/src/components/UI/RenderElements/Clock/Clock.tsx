@@ -6,6 +6,7 @@ import { makeComponentStyles } from '../styles';
 
 import { ClockRendererProps } from '../types';
 import ClockWidget from '../../Clock';
+import useEventHandlers from '../useEventHandlers';
 
 const useStyles = makeComponentStyles();
 
@@ -13,6 +14,7 @@ const Clock: React.FC<ClockRendererProps> = React.forwardRef((props, ref) => {
   const { id, params, className } = props;
 
   const classes = useStyles(props);
+  const eventHandlers = useEventHandlers(props);
 
   return (
     <div
@@ -26,6 +28,7 @@ const Clock: React.FC<ClockRendererProps> = React.forwardRef((props, ref) => {
         classes.groupStyles,
         classes.ownStyles,
       )}
+      {...eventHandlers}
     >
       <ClockWidget
         size={typeof params.width === 'number' ? params.width : undefined}

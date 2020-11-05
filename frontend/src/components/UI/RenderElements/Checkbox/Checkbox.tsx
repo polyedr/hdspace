@@ -1,6 +1,6 @@
 // @ts-nocheck
 
-import React, { ChangeEvent } from 'react';
+import React from 'react';
 import cn from 'classnames';
 import { makeStyles, Checkbox as MaterialCheckbox } from '@material-ui/core';
 import CheckBoxIcon from '@material-ui/icons/CheckBox';
@@ -8,6 +8,7 @@ import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 import * as R from 'ramda';
 
 import { CheckboxRendererProps } from '../types';
+import useEventHandlers from '../useEventHandlers';
 
 const styles = require('../styles.scss');
 
@@ -72,8 +73,8 @@ const getDivStyles = (
   });
 
 const Checkbox: React.FC<CheckboxRendererProps> = React.forwardRef(
-  (
-    {
+  (props, ref) => {
+    const {
       id,
       entityStyles,
       groupStyles,
@@ -81,13 +82,12 @@ const Checkbox: React.FC<CheckboxRendererProps> = React.forwardRef(
       params,
       isDisabled,
       currentValue,
-      onElementChange,
       isCheckboxChecked,
       className,
-    },
-    ref,
-  ) => {
+    } = props;
     const { name, showRipple } = params;
+
+    const eventHandlers = useEventHandlers(props);
 
     const entityDivStyles = R.omit(
       ['backgroundColor', 'width', 'height'],
@@ -114,10 +114,6 @@ const Checkbox: React.FC<CheckboxRendererProps> = React.forwardRef(
       ownStyles,
     )();
 
-    const handleCheckboxChange = (event: ChangeEvent<HTMLInputElement>) => {
-      onElementChange(id, event.target.checked);
-    };
-
     return (
       <div
         ref={ref}
@@ -131,6 +127,7 @@ const Checkbox: React.FC<CheckboxRendererProps> = React.forwardRef(
           divClasses.groupStyles,
           divClasses.ownStyles,
         )}
+        {...eventHandlers}
       >
         <MaterialCheckbox
           checkedIcon={<CheckBoxIcon className={checkboxClasses.icon} />}
@@ -146,7 +143,6 @@ const Checkbox: React.FC<CheckboxRendererProps> = React.forwardRef(
           name={name}
           checked={isCheckboxChecked}
           disableRipple={!showRipple}
-          onChange={handleCheckboxChange}
         />
       </div>
     );

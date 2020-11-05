@@ -6,6 +6,7 @@ import { makeStyles } from '@material-ui/core';
 import * as R from 'ramda';
 import { ListItemRendererProps } from '../types';
 import { makeComponentStyles } from '../styles';
+import useEventHandlers from '../useEventHandlers';
 
 const omitEditableStyles = [
   'paddingTop',
@@ -48,13 +49,20 @@ const ListItem: React.FC<ListItemRendererProps> = React.forwardRef(
     const { id, params, isDisabled, className } = props;
     const { textContent, isLink, link } = params;
 
-    const handleListItemClick = (event: React.MouseEvent<HTMLLIElement>) => {
-      (event.target as HTMLElement).focus();
-    };
-
     const listItemClasses = useItemStyles(props);
     const listItemWithLinkClasses = useEditableItemStyles(props);
     const linkClasses = useLinkStyles(props);
+    const eventHandlers = useEventHandlers(props);
+
+    const clickHandler = eventHandlers.onClick;
+    eventHandlers.onClick = (event: React.MouseEvent<HTMLLIElement>) => {
+      if (isDisabled) {
+        (event.target as HTMLElement).focus();
+      }
+      if (clickHandler) {
+        clickHandler(event);
+      }
+    };
 
     return (
       <>
@@ -71,6 +79,7 @@ const ListItem: React.FC<ListItemRendererProps> = React.forwardRef(
               listItemWithLinkClasses.groupStyles,
               listItemWithLinkClasses.ownStyles,
             )}
+            {...eventHandlers}
           >
             <a
               className={cn(
@@ -99,7 +108,7 @@ const ListItem: React.FC<ListItemRendererProps> = React.forwardRef(
               listItemClasses.groupStyles,
               listItemClasses.ownStyles,
             )}
-            {...(isDisabled && { onClick: handleListItemClick })}
+            {...eventHandlers}
           >
             {textContent}
           </li>

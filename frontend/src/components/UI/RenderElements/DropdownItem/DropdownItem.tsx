@@ -6,6 +6,7 @@ import { MenuItem } from '@material-ui/core';
 import { DropdownItemRendererProps } from '../types';
 
 import { makeComponentStyles } from '../styles';
+import useEventHandlers from '../useEventHandlers';
 
 const useStyles = makeComponentStyles({
   'item:hover': ({ isDisabled }) => {
@@ -24,6 +25,7 @@ const DropdownItem: React.FC<DropdownItemRendererProps> = React.forwardRef(
     const { showRipple, textContent } = params;
 
     const styles = useStyles(props);
+    const eventHandlers = useEventHandlers(props);
 
     return isDisabled ? (
       <MenuItem
@@ -41,6 +43,7 @@ const DropdownItem: React.FC<DropdownItemRendererProps> = React.forwardRef(
           styles.ownStyles,
         )}
         disableRipple
+        {...eventHandlers}
       >
         {textContent}
       </MenuItem>

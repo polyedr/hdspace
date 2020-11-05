@@ -95,6 +95,7 @@ export type ProjectEditState = {
   currentProjectId: number;
   currentScreenId: number;
   activeElementId: string;
+  hoveredElementId: string;
   uploadedImageInfo?: UploadedImageInfo;
   notification: Notification | null;
   freeCanvas: {
@@ -391,6 +392,10 @@ export type WrapIntoContainer = IAction<
   ElementHistoryMeta
 >;
 export type SetActiveElement = IAction<typeof TYPES.SET_ACTIVE_ELEMENT, string>;
+export type SetHoveredElement = IAction<
+  typeof TYPES.SET_HOVERED_ELEMENT,
+  string | null
+>;
 export type SetCurrentDropTargetParams = IAction<
   typeof TYPES.SET_CURRENT_DROP_TARGET_PARAMS,
   { id: string; position: DropPosition }
@@ -521,6 +526,7 @@ export type Action =
   | GetScreenNN
   | WrapIntoContainer
   | SetActiveElement
+  | SetHoveredElement
   | ToggleContainersBorders
   | SetItemToCopy
   | CopyActiveItem

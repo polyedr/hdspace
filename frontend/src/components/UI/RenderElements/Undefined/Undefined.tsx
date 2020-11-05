@@ -5,12 +5,15 @@ import cn from 'classnames';
 
 import { SharedRendererProps } from '../types';
 import { makeComponentStyles } from '../styles';
+import useEventHandlers from '../useEventHandlers';
 
 const useStyles = makeComponentStyles();
 
 const Undefined: React.FC<SharedRendererProps> = React.forwardRef(
-  ({ id, className, children }, ref) => {
+  (props, ref) => {
+    const { id, className, children } = props;
     const classes = useStyles();
+    const eventHandlers = useEventHandlers(props);
 
     return (
       <div
@@ -24,6 +27,7 @@ const Undefined: React.FC<SharedRendererProps> = React.forwardRef(
           classes.groupStyles,
           classes.ownStyles,
         )}
+        {...eventHandlers}
       >
         {children}
       </div>
