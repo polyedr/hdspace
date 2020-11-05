@@ -1387,7 +1387,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         "input",
                     }:
                         styles["width"] = str(node_width) + "px"
-                        styles["height"] + str(node_height) + "px"
+                        styles["height"] = str(node_height) + "px"
 
                         # displaying various kinds of elements start
                         element = ET.SubElement(node.div, "input")
@@ -1436,8 +1436,8 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         )
 
                     elif elem["region_attributes"]["HTML element"] == "select":
-                        styles["width"] + str(node_width) + "px"
-                        styles["height"] + str(node_height) + "px"
+                        styles["width"] = str(node_width) + "px"
+                        styles["height"] = str(node_height) + "px"
 
                         # displaying various kinds of elements start
                         element = ET.SubElement(node.div, "select")
@@ -1547,7 +1547,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         )
 
                     elif elem["region_attributes"]["HTML element"] == "button":
-                        styles["height"] + str(node_height) + "px"
+                        styles["height"] = str(node_height) + "px"
 
                         # displaying various kinds of elements start
                         element = ET.SubElement(node.div, "button")
