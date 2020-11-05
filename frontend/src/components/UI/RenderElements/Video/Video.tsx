@@ -7,6 +7,7 @@ import { VIMEO_HEIGHT_RATIO } from '../../../../constants/players';
 import { IMAGES } from '../../../../constants/images';
 import { getPlayerLink } from '../../../../utils/extractVideoLink';
 import { makeComponentStyles } from '../styles';
+import useEventHandlers from '../useEventHandlers';
 
 const useStyles = makeComponentStyles({
   vimeoPadding: ({ entityStyles, groupStyles, ownStyles }) => {
@@ -32,6 +33,7 @@ const Video: React.FC<VideoRendererProps> = React.forwardRef((props, ref) => {
   const playerLink = getPlayerLink(videoSettings, !isDisabled);
 
   const styles = useStyles(props);
+  const eventHandlers = useEventHandlers(props);
 
   return playerLink ? (
     <div
@@ -47,6 +49,7 @@ const Video: React.FC<VideoRendererProps> = React.forwardRef((props, ref) => {
         styles.groupStyles,
         styles.ownStyles,
       )}
+      {...eventHandlers}
     >
       <div
         className={cn(

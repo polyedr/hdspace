@@ -1,11 +1,12 @@
 // @ts-nocheck
 
-import React, { ChangeEvent } from 'react';
+import React from 'react';
 import cn from 'classnames';
 import TextField from '@material-ui/core/TextField';
 
 import { InputRendererProps } from '../types';
 import { makeComponentStyles } from '../styles';
+import useEventHandlers from '../useEventHandlers';
 
 const useStyles = makeComponentStyles({
   root: {
@@ -27,21 +28,11 @@ const useStyles = makeComponentStyles({
 });
 
 const Input: React.FC<InputRendererProps> = React.forwardRef((props, ref) => {
-  const {
-    id,
-    params,
-    isDisabled,
-    currentValue,
-    onElementChange,
-    className,
-  } = props;
+  const { id, params, isDisabled, currentValue, className } = props;
   const { type, placeholder } = params;
 
-  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-    onElementChange(id, event.target.value);
-  };
-
   const styles = useStyles(props);
+  const eventHandlers = useEventHandlers(props);
 
   return (
     <TextField
@@ -53,7 +44,6 @@ const Input: React.FC<InputRendererProps> = React.forwardRef((props, ref) => {
       className={cn(className, isDisabled && styles.disabled, styles.root)}
       type={type}
       value={currentValue}
-      onChange={handleInputChange}
       InputProps={{
         readOnly: isDisabled,
         classes: {
@@ -67,6 +57,7 @@ const Input: React.FC<InputRendererProps> = React.forwardRef((props, ref) => {
         className: cn(isDisabled && styles.disabled),
       }}
       placeholder={placeholder}
+      {...eventHandlers}
     />
   );
 });

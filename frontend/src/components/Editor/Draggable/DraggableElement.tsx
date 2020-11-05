@@ -6,6 +6,7 @@ import {
   createElements,
   moveElement,
   setCurrentDropTargetParams,
+  setHoveredElement,
 } from '../../../redux/project/actions';
 import useElementProps from '../hooks/useElementProps';
 import { RENDERERS } from '../../UI/RenderElements';
@@ -233,7 +234,16 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
 
   return (
     elementProps && (
-      <ElementRenderer {...elementProps} ref={ref}>
+      <ElementRenderer
+        {...elementProps}
+        ref={ref}
+        onMouseEnter={() => {
+          dispatch(setHoveredElement(elementId));
+        }}
+        onMouseLeave={() => {
+          dispatch(setHoveredElement(element.parent || null));
+        }}
+      >
         {element.children.map((childId: string) => (
           <DraggableElement
             key={`element-${childId}`}

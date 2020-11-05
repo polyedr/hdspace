@@ -5,11 +5,20 @@ import cn from 'classnames';
 import { makeStyles } from '@material-ui/core';
 
 import { TextBlockRendererProps } from '../types';
+import useEventHandlers from '../useEventHandlers';
 
 const styles = require('../styles.scss');
 
 const TextBlock: React.FC<TextBlockRendererProps> = React.forwardRef(
-  ({ id, entityStyles, groupStyles, ownStyles, params, className }, ref) => {
+  (props, ref) => {
+    const {
+      id,
+      entityStyles,
+      groupStyles,
+      ownStyles,
+      params,
+      className,
+    } = props;
     const classes = makeStyles({
       entityStyles: {
         ...entityStyles,
@@ -27,6 +36,8 @@ const TextBlock: React.FC<TextBlockRendererProps> = React.forwardRef(
       },
     })();
 
+    const eventHandlers = useEventHandlers(props);
+
     return (
       <div
         ref={ref}
@@ -40,6 +51,7 @@ const TextBlock: React.FC<TextBlockRendererProps> = React.forwardRef(
           classes.groupStyles,
           classes.ownStyles,
         )}
+        {...eventHandlers}
       >
         {params.textContent}
       </div>

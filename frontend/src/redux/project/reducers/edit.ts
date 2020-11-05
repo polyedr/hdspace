@@ -50,6 +50,10 @@ const editReducer = produce(
         return { ...draft, activeElementId: action.payload };
       }
 
+      case TYPES.SET_HOVERED_ELEMENT: {
+        return { ...draft, hoveredElementId: action.payload };
+      }
+
       case TYPES.CHANGE_FREE_CANVAS_MODE: {
         return {
           ...draft,

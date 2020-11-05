@@ -22,6 +22,7 @@ import useNNProcessing from '../../../../utils/nn/hooks/useNNProcessing';
 import { SyntheticGlobalElement } from '../../../../utils/dragAndDrop/GlobalDropTarget/types';
 import { updateElementParameters } from '../../../../redux/project/actions';
 import { NNBlockType } from '../../../../constants/defaultParams';
+import useEventHandlers from '../useEventHandlers';
 
 const styles = require('../styles.scss');
 
@@ -95,6 +96,7 @@ const SmartContainerRenderer: React.FC<SmartContainerRendererProps> = React.forw
     const dispatch = useDispatch();
 
     const classes = useStyles(props);
+    const eventHandlers = useEventHandlers(props);
 
     const imgRef = useRef<HTMLImageElement>();
     const resizeRef = useRef<HTMLElement>();
@@ -179,6 +181,7 @@ const SmartContainerRenderer: React.FC<SmartContainerRendererProps> = React.forw
           ...(isBorderVisible && isDisabled && { outline: 'none' }),
           position: 'relative',
         }}
+        {...eventHandlers}
       >
         {children?.length ? (
           children

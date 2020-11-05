@@ -8,6 +8,7 @@ import {
   selectBorderedRef,
   selectCurrentRootId,
   selectElementById,
+  selectHoveredElementId,
 } from '../../../../redux/project/selectors';
 
 const useElementBorders = (
@@ -17,6 +18,7 @@ const useElementBorders = (
   const element = useSelector(selectElementById(elementId));
   const rootID = useSelector(selectCurrentRootId);
   const activeElementId = useSelector(selectActiveElementId);
+  const hoveredElementId = useSelector(selectHoveredElementId);
   const showBorders = useSelector(selectShowingBorders);
   const dropTargetParams = useSelector(selectCurrentDropTargetParams);
   const rootRef = useSelector(selectBorderedRef(rootID));
@@ -32,11 +34,16 @@ const useElementBorders = (
   useEffect(() => {
     if (
       ref.current &&
-      [dropTargetParams?.id, activeElementId, rootID].includes(elementId)
+      [
+        dropTargetParams?.id,
+        activeElementId,
+        hoveredElementId,
+        rootID,
+      ].includes(elementId)
     ) {
       dispatch(addBorderedElementRef(elementId, ref));
     }
-  }, [activeElementId, dropTargetParams]);
+  }, [rootID, activeElementId, hoveredElementId, dropTargetParams]);
 
   useEffect(() => {
     if (showBorders && element.parent === rootID) {

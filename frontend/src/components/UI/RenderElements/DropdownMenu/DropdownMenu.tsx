@@ -5,6 +5,7 @@ import cn from 'classnames';
 import { Menu, Paper, MenuList } from '@material-ui/core';
 import { DropdownMenuRendererProps } from '../types';
 import { makeComponentStyles } from '../styles';
+import useEventHandlers from '../useEventHandlers';
 
 const useStyles = makeComponentStyles({
   root: {
@@ -28,9 +29,14 @@ const DropdownMenu: React.FC<DropdownMenuRendererProps> = React.forwardRef(
     } = props;
 
     const styles = useStyles(props);
+    const eventHandlers = useEventHandlers(props);
 
-    const handlePaperClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    const clickHandler = eventHandlers.onClick;
+    eventHandlers.onClick = (event: React.MouseEvent<HTMLDivElement>) => {
       (event.target as HTMLElement).focus();
+      if (clickHandler) {
+        clickHandler();
+      }
     };
 
     const handleMenuClose = () => {
@@ -52,7 +58,7 @@ const DropdownMenu: React.FC<DropdownMenuRendererProps> = React.forwardRef(
             styles.ownStyles,
           )}
           elevation={8}
-          onClick={handlePaperClick}
+          {...eventHandlers}
         >
           <MenuList>{children}</MenuList>
         </Paper>

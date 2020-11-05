@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import React from 'react';
+import React, { DOMAttributes } from 'react';
 import { IMapProps } from '../../../redux/project/types';
 import {
   HeadingType,
@@ -21,7 +21,7 @@ export type SharedRendererProps = {
   className?: string;
   children: React.ReactElement[];
   ref?: React.RefObject<HTMLElement> | null;
-};
+} & DOMAttributes<HTMLElement>;
 
 export type ContainerRendererProps = SharedRendererProps & {
   isBorderVisible: boolean;
@@ -122,7 +122,6 @@ export type ActionRendererProps = SharedRendererProps & {
     textContent: string;
     showRipple: boolean;
   };
-  onClick?(event: any): void;
 };
 
 export type CheckboxRendererProps = SharedRendererProps & {
@@ -132,7 +131,6 @@ export type CheckboxRendererProps = SharedRendererProps & {
     showRipple: boolean;
   };
   isCheckboxChecked: boolean;
-  onElementChange(itemID: string, savedValue: boolean): void;
 };
 
 export type InputRendererProps = SharedRendererProps & {
@@ -141,7 +139,6 @@ export type InputRendererProps = SharedRendererProps & {
     placeholder: string;
   };
   currentValue: string;
-  onElementChange(itemID: string, savedValue: string): void;
 };
 
 export type TextareaRendererProps = SharedRendererProps & {
@@ -149,7 +146,6 @@ export type TextareaRendererProps = SharedRendererProps & {
     placeholder: string;
   };
   currentValue: string;
-  onElementChange(itemID: string, savedValue: string): void;
 };
 
 export type RadioRendererProps = SharedRendererProps & {
@@ -160,7 +156,6 @@ export type RadioRendererProps = SharedRendererProps & {
   };
   currentValue: string;
   isRadioChecked: boolean;
-  onElementChange(itemID: string, savedValue: string): void;
 };
 
 export type SelectRendererProps = SharedRendererProps & {
@@ -170,7 +165,6 @@ export type SelectRendererProps = SharedRendererProps & {
   currentValue: string;
   childrenElements: LibraryElement<'selectMenu'>[];
   projectClasses: ProjectClass[];
-  onElementChange(itemID: string, savedValue: string): void;
 };
 
 export type SelectMenuRendererProps = SharedRendererProps;
