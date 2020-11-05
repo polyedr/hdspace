@@ -1,3 +1,4 @@
+import json
 import os, sys
 import copy
 
@@ -13,7 +14,7 @@ from rest_framework_recursive.fields import RecursiveField
 
 from project.settings import model_forms, MEDIA_ROOT, model_headers, model_footers
 from rest_framework import serializers
-from apps.projects.models import ScenarioElement
+from apps.projects.models import ScenarioElement, ProjectScreen
 from sklearn.preprocessing import StandardScaler
 from sklearn.datasets import make_blobs
 from sklearn import cluster as clustermethod
@@ -137,6 +138,403 @@ def unique(list1):
     # convert the set to the list
     unique_list = list(list_set)
     return unique_list
+
+
+class ProjectScreenSerializer(serializers.ModelSerializer):
+    screen_data_json = serializers.JSONField()
+
+    class Meta:
+        model = ProjectScreen
+
+        fields = (
+            "status",
+            "project",
+            "name",
+            "buoyancy",
+            "id",
+            "image",
+            "screen_data_text",
+            "screen_data_json",
+            "screenscenario",
+        )
+        extra_kwargs = {"screenscenario": {"read_only": True}}
+
+    def create(self, validated_data):
+        # Pre-Root element assignment
+        element_root_pre = ScenarioElement.objects.get(id=validated_data["parent_id"])
+
+        # Extract an appropriate flag value to recognize block as header, footer, form or layout
+        # Region dataset has some starting value
+        region_dataset = "webpages"
+        if validated_data.get("parameters"):
+            region_dataset = validated_data["parameters"]["block_type"]
+        # print(region_dataset)
+
+        fdict = {}  # Output dictionary to write annotation
+
+        fname = ""
+        imgpath = ""
+        node = ProjectScreen.objects.create(
+            **validated_data
+        )
+
+        # Create the opencv recognition start
+        image_dict = {}
+        result_regions = {}
+
+        text = False
+        watch = True
+
+        # Read an image with OpenCV start
+        image_opencv_input = cv2.imread(imgpath)
+        image_original = copy.deepcopy(image_opencv_input)
+        # detect height and width of the image
+        img_height, img_width, img_channels = image_opencv_input.shape
+        # print("width:  ", img_width)
+        # print("height: ", img_height)
+        # print("channel:", img_channels)
+        # Read an image with OpenCV end
+
+        # Detect the font-size with tesseract for the whole image start
+        whole_img = cv2.cvtColor(image_opencv_input, cv2.COLOR_BGR2GRAY)
+        result = pytesseract.image_to_boxes(whole_img)
+        lines = result.strip().split("\n")
+        font_size = []
+
+        for line in lines:
+            chars = line.split(" ")
+            try:
+                font_size.append(float(chars[4]) - float(chars[2]))
+            except Exception:
+                font_size.append(12.0)  # Default font-size value is 12px
+        font_size_img = int(median(font_size) * 1.7)  # Font-size value of the image
+        # Detect the font-size with tesseract for the whole image end
+
+        # Get(take the whole image) the dominant colour for the parent container
+        bcolour_container_value = "255,255,255,0"
+        domcolour_container = get_dominant_colour(image_opencv_input)
+        domcolour_container.append(1)
+        bcolour_container_value = ",".join(str(int(x)) for x in domcolour_container)
+
+        # Detect text contours and rectangles on image start
+        text_contours = []
+        rect_contours = []
+        # Detect text regions
+        text_contours = run_text_detection(image_opencv_input, text=False)
+
+        # text_contours1 = run_text_detection(image_opencv_input, text=True)
+        #
+        # print(text_contours1)
+        # print("length", len(text_contours), len(text_contours1))
+        #
+        # input()
+        # Detect rect regions
+        rect_contours = get_rect_contours(image_opencv_input)
+
+        for text_contour in text_contours:
+            # Remove untypically wide text blocks
+            width2 = text_contour[3]
+            if width2 > (font_size_img * 3):
+                text_contours.remove(text_contour)
+
+        for rect_contour in rect_contours:
+            # Remove untypically large rect blocks
+            width2 = rect_contour[2]
+            height2 = rect_contour[3]
+            if (width2 * height2) > (img_height * img_width) * 0.75:
+                rect_contours.remove(rect_contour)
+
+        # Save all detected regions into dictionary
+        result = {"text": text_contours, "rect": rect_contours}
+        # Detect text contours and rectangles on image end
+
+        # Create the opencv recognition end
+
+        # Create the recognized_elements array start
+        if imgpath:
+            if region_dataset in {"forms", "headers", "footers"}:
+                # Detect elements with Mask R CNN model start
+                # imgpath = fname
+                img = load_img(imgpath)
+                img = img_to_array(img)
+
+                if region_dataset == "forms":
+                    results = model_forms.detect([img], verbose=1)
+
+                if region_dataset == "headers":
+                    results = model_headers.detect([img], verbose=1)
+
+                if region_dataset == "footers":
+                    results = model_footers.detect([img], verbose=1)
+
+                r = results[0]
+                # Detect elements with Mask R CNN model end
+
+            img = load_img(imgpath)
+            img = img_to_array(img)
+
+            fsize = str(os.path.getsize(imgpath))
+            fnamesize = fname + fsize
+
+            fdict[fnamesize] = {
+                "filename": fname,
+                "size": fsize,
+                "regions": [],
+                "file_attributes": {},
+            }
+
+            if region_dataset in {"forms", "headers", "footers"}:
+                # Printing text contours preparations start
+                for text_contour in text_contours:
+                    x, y, w, h = text_contour
+                    # location = i.location  # y, x
+                    # size = i.size  # width, height
+                    element = "ocrtext"
+
+                    # Fill the attributes dictionary
+                    attributes_dict = {
+                        "shape_attributes": {
+                            "name": "rect",
+                            "x": int(x),
+                            "y": int(y),
+                            "width": int(w),
+                            "height": int(h),
+                        },
+                        "region_attributes": {"HTML element": element},
+                    }
+                    # Filter out small text contours with height > width
+                    if w > h:
+                        fdict[fnamesize]["regions"].append(attributes_dict)
+                    # cv2.rectangle(image_opencv_input, (x, y), (x + w, y + h), (255, 0, 0), 1)
+
+                # Printing text contours preparations end
+
+                # Printing rect contours with concatenation preparations start
+                for rect_contour in rect_contours:
+                    x1, y1, w, h = rect_contour
+                    x2 = w + x1
+                    y2 = h + y1
+                    #
+                    # cv2.rectangle(image_opencv_input, (x1, y1), (x1 + w, y1 + h), (255, 0, 255), 1)
+                    # cv2.imshow(window_name1, image_opencv_input)
+                    # cv2.waitKey(0)
+
+                    centers_distance_min = 10000
+
+                    class_id_recognized = 7  # Image
+                    for idx1, (rect1, class_id1) in enumerate(
+                        zip(r["rois"], r["class_ids"])
+                    ):
+                        #  1,2,4,5,7 means elements except the text class and the radiobutton while merging forms
+                        if (
+                            (
+                                (region_dataset == "forms")
+                                and (class_id1 in {1, 2, 4, 5, 7})
+                            )
+                            or (
+                                (region_dataset == "footers")
+                                and (class_id1 in {2, 3, 4, 5})
+                            )
+                            or (
+                                (region_dataset == "headers")
+                                and (class_id1 in {2, 3, 4, 5, 6, 7, 8})
+                            )
+                        ):
+                            x3 = rect1[1]
+                            y3 = rect1[0]
+                            x4 = rect1[3]
+                            y4 = rect1[2]
+
+                            # cv2.rectangle(image_opencv_input, (x3, y3), (x4, y4), (255, 100, 255), 1)
+
+                            # Borders of the rectangles overlapped area
+                            left = max(x1, x3)
+                            bottom = max(y1, y3)
+                            right = min(x2, x4)
+                            top = min(y2, y4)
+                            # Sizes of the rectangles overlapped area
+                            width = right - left
+                            height = top - bottom
+
+                            # The first rectangle square
+                            width1, height1 = x2 - x1, y2 - y1
+
+                            # The second rectangle square
+                            width2, height2 = x4 - x3, y4 - y3
+
+                            # Calculate distance between rect_contour and idx1 with two dimensions
+                            # Find the pair with smallest distance
+                            # Save this pair for further processing
+                            center_x12 = (x1 + x2) / 2
+                            center_y12 = (y1 + y2) / 2
+                            center_x34 = (x3 + x4) / 2
+                            center_y34 = (y3 + y4) / 2
+                            # print(calculateDistance(center_x12, center_y12, center_x34, center_y34))
+                            centers_distance = calculateDistance(
+                                center_x12, center_y12, center_x34, center_y34
+                            )
+
+                            # Check if width, height of the overlapped area less or equal 0
+                            if not (width <= 0 or height <= 0):
+                                # If the square > 0, calculate the squares of the 3 rectangles
+                                square = width * height
+                                square1 = width1 * height1
+                                square2 = width2 * height2
+
+                                if (
+                                    square > square1 * SQUARES_OVERLAP_THRESHOLD_TEXT
+                                ) or (
+                                    square > square2 * SQUARES_OVERLAP_THRESHOLD_TEXT
+                                ):
+                                    if centers_distance < centers_distance_min:
+                                        centers_distance_min = centers_distance
+                                        # idx1_selected = idx1
+                                        # Assign the class id value to the rect_contour
+                                        class_id_recognized = class_id1
+                                        # print("idx1_select", idx1)
+
+                    # cv2.destroyAllWindows()
+
+                    # forms:
+                    # write the class value based on class id start
+                    if region_dataset == "forms":
+                        # Input
+                        if class_id_recognized == 1:
+                            element = "input"
+                        # Button
+                        if class_id_recognized == 2:
+                            element = "button"
+                        # Text
+                        if class_id_recognized == 3:
+                            element = "text"
+                        # Select
+                        if class_id_recognized == 4:
+                            element = "select"
+                        # Checkbox
+                        if class_id_recognized == 5:
+                            element = "checkbox"
+                        # Radiobutton
+                        if class_id_recognized == 6:
+                            element = "radiobutton"
+                        # Image
+                        if class_id_recognized == 7:
+                            element = "image"
+
+                    # write the class value based on class id end
+
+                    # headers:
+                    # write the class value based on class id start
+                    if region_dataset == "headers":
+                        # Text
+                        if class_id_recognized == 1:
+                            element = "text"
+                        # Image
+                        if class_id_recognized == 2:
+                            element = "image"
+                        # Button
+                        if class_id_recognized == 3:
+                            element = "button"
+                        # Menu
+                        if class_id_recognized == 4:
+                            element = "menu"
+                        # Li
+                        if class_id_recognized == 5:
+                            element = "li"
+                        # Input
+                        if class_id_recognized == 6:
+                            element = "input"
+                        # Select
+                        if class_id_recognized == 7:
+                            element = "select"
+                        # Form
+                        if class_id_recognized == 8:
+                            element = "form"
+
+                    # write the class value based on class id end
+
+                    # footers:
+                    # write the class value based on class id start
+                    if region_dataset == "footers":
+                        # Text
+                        if class_id_recognized == 1:
+                            element = "text"
+                        # Image
+                        if class_id_recognized == 2:
+                            element = "image"
+                        # Button
+                        if class_id_recognized == 3:
+                            element = "button"
+                        # Select
+                        if class_id_recognized == 4:
+                            element = "select"
+                        # Input
+                        if class_id_recognized == 5:
+                            element = "input"
+                    # write the class value based on class id end
+
+                    # Fill the attributes dictionary
+                    attributes_dict = {
+                        "shape_attributes": {
+                            "name": "rect",
+                            "x": int(x1),
+                            "y": int(y1),
+                            "width": int(w),
+                            "height": int(h),
+                        },
+                        "region_attributes": {"HTML element": element},
+                    }
+                    fdict[fnamesize]["regions"].append(attributes_dict)
+                # Printing rect contours with concatenation preparations end
+
+            if region_dataset in {"webpages"}:
+                # Print all the contours to the file
+                # Format the file Via-like
+                # result = {"text": text_contours, "rect": rect_contours}
+                # Printing text contours preparations start
+                for text_contour in text_contours:
+                    x, y, w, h = text_contour
+                    # location = i.location  # y, x
+                    # size = i.size  # width, height
+                    element = "ocrtext"
+
+                    # Fill the attributes dictionary
+                    attributes_dict = {
+                        "shape_attributes": {
+                            "name": "rect",
+                            "x": int(x),
+                            "y": int(y),
+                            "width": int(w),
+                            "height": int(h),
+                        },
+                        "region_attributes": {"HTML element": element},
+                    }
+                    fdict[fnamesize]["regions"].append(attributes_dict)
+                # Printing text contours preparations end
+
+                # Printing rect contours preparations start
+                for rect_contour in rect_contours:
+                    x, y, w, h = rect_contour
+                    # location = i.location  # y, x
+                    # size = i.size  # width, height
+                    element = "image"
+
+                    # Fill the attributes dictionary
+                    attributes_dict = {
+                        "shape_attributes": {
+                            "name": "rect",
+                            "x": int(x),
+                            "y": int(y),
+                            "width": int(w),
+                            "height": int(h),
+                        },
+                        "region_attributes": {"HTML element": element},
+                    }
+                    fdict[fnamesize]["regions"].append(attributes_dict)
+                    # Printing rect contours preparations end
+
+        node.screen_data_json = json.dumps(fdict, indent=4)
+
+        return node
 
 
 class ScenarioElementSerializer(serializers.ModelSerializer):
