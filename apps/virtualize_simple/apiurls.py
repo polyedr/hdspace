@@ -1,6 +1,6 @@
 from django.urls import path, include
-from apps.virtualize_simple.apiviews import ScenarioElementList
-from projects.apiviews import ProjectScreenList
+from apps.virtualize_simple.apiviews import ScenarioElementList, ProjectScreenList
+
 
 app_name = "virtualize_simple"
 
