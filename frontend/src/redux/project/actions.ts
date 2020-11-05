@@ -19,7 +19,11 @@ import { ChildEntity, Entity } from '../../domain/core';
 import { ChildrenElements } from '../../domain/libraryElements/libraryElements';
 import { CssLikeStyles } from '../../utils/StyleHelper';
 import * as T from './types';
-import { NNBlockType, SCREEN_FORMATS } from '../../constants/defaultParams';
+import {
+  NNBlockType,
+  RightPanelTab,
+  SCREEN_FORMATS,
+} from '../../constants/defaultParams';
 
 export const getProjectList = (): T.LoadProjects => ({
   type: TYPES.LOAD_PROJECTS,
@@ -509,8 +513,13 @@ export const wrapIntoContainer = (
   meta,
 });
 
-export const setActiveElement = (id: string): T.SetActiveElement => ({
-  type: TYPES.SET_ACTIVE_ELEMENT,
+export const setActiveElement = (id: string) => ({
+  type: TYPES.SET_ACTIVE_ELEMENT_SAGA,
+  payload: id,
+});
+
+export const setActiveElementId = (id: string) => ({
+  type: TYPES.SET_ACTIVE_ELEMENT_ID,
   payload: id,
 });
 
@@ -726,4 +735,9 @@ export const changeScreenFormat = (format: SCREEN_FORMATS) => ({
 export const rotateScreenFormat = (rotated: boolean) => ({
   type: TYPES.ROTATE_SCREEN_FORMAT,
   payload: rotated,
+});
+
+export const setRightPanelActiveTab = (tabIndex: RightPanelTab) => ({
+  type: TYPES.SET_RIGHT_PANEL_ACTIVE_TAB,
+  payload: tabIndex,
 });
