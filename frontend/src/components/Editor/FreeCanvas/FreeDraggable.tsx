@@ -138,8 +138,8 @@ const FreeDraggable: React.FC<Props> = ({
       updateElementParameters(
         id,
         {
-          width: ref.style.width,
-          height: ref.style.height,
+          width: parseInt(ref.style.width),
+          height: parseInt(ref.style.height),
           left: position.x,
           top: position.y,
         },
@@ -148,13 +148,16 @@ const FreeDraggable: React.FC<Props> = ({
     );
   };
 
-  const handleDragStop: RndDragCallback = (e, { x, y }) => {
+  const handleDragStop: RndDragCallback = (e, { x, y, node }) => {
     if (x === left && y === top) return;
+    const { width, height } = node.getBoundingClientRect();
 
     dispatch(
       updateElementParameters(
         id,
         {
+          width,
+          height,
           left: x,
           top: y,
         },
