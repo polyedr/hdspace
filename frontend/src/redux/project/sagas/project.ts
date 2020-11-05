@@ -18,14 +18,18 @@ import {
   apiAddProject,
   apiDelProject,
   apiGetProjectList,
-  apiGetProject,
   apiSaveProject,
+  apiGetProjectWithScreens,
 } from '../../../api/project';
 import generateFontFace from '../../../utils/generateFontFace';
 import { Page } from '../types';
 import { apiGetScenarios } from '../../../api/scenario';
 import { apiGetElements } from '../../../api/element';
-import { Project, PaginatedArray } from '../../../api/types';
+import {
+  Project,
+  PaginatedArray,
+  ProjectWithScreens,
+} from '../../../api/types';
 import { selectProjectsDataNext } from '../selectors';
 
 export function* getProjectListSaga(): SagaIterator {
@@ -57,13 +61,25 @@ export function* getProjectSaga(action: ReturnType<typeof Actions.getProject>) {
 
   yield put(Actions.setProjectLoader(true));
 
-  const project: Project = yield call(reqWrapper, apiGetProject, { id });
+  const project: ProjectWithScreens = yield call(
+    reqWrapper,
+    apiGetProjectWithScreens,
+    {
+      id,
+    },
+  );
+
   if (!project) {
     console.error(`Error while fetching project ${id}`);
     return;
   }
 
-  yield put(Actions.setProject(project));
+  yield put(
+    Actions.setProject({
+      ...project,
+      projectscreen: project.projectscreen.map((screen) => screen.id),
+    }),
+  );
 
   yield call(getScreensSaga, project.projectscreen);
 
