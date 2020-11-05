@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useState } from 'react';
+import React, { memo, useCallback } from 'react';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import { FormControlLabel } from '@material-ui/core';
@@ -21,8 +21,6 @@ const useStyles = makeStyles({
   },
 });
 
-type Orientation = 'vertical' | 'horizontal';
-
 type Props = {
   properties: Flex;
   onChange<T extends keyof Flex>(prop: T, value: Flex[T]): void;
@@ -30,13 +28,10 @@ type Props = {
 
 const FlexProperties: React.FC<Props> = ({ properties, onChange }) => {
   const classes = useStyles();
-  const [orientation, setOrientation] = useState<Orientation>(
-    properties.flexDirection.includes('row') ? 'horizontal' : 'vertical',
-  );
 
   const handleChangeOrientation = (ev, newOrientation) => {
     if (!newOrientation) return;
-    setOrientation(newOrientation);
+    onChange('flexDirection', newOrientation);
   };
 
   const renderLabel = useCallback(
@@ -58,15 +53,15 @@ const FlexProperties: React.FC<Props> = ({ properties, onChange }) => {
           control={
             <ToggleButtonGroup
               size="small"
-              value={orientation}
+              value={properties.flexDirection}
               onChange={handleChangeOrientation}
               exclusive
             >
-              <ToggleButton value="horizontal">
+              <ToggleButton value="row">
                 <HeightIcon className={classes.arrowRotated} />
               </ToggleButton>
 
-              <ToggleButton value="vertical">
+              <ToggleButton value="column">
                 <HeightIcon />
               </ToggleButton>
             </ToggleButtonGroup>
@@ -76,7 +71,9 @@ const FlexProperties: React.FC<Props> = ({ properties, onChange }) => {
 
       <div className={classes.wrapper}>
         <FormControl>
-          <InputLabel>{renderLabel(orientation === 'vertical')}</InputLabel>
+          <InputLabel>
+            {renderLabel(properties.flexDirection === 'column')}
+          </InputLabel>
 
           <Select
             defaultValue={properties.justifyContent}
@@ -97,7 +94,9 @@ const FlexProperties: React.FC<Props> = ({ properties, onChange }) => {
         </FormControl>
 
         <FormControl>
-          <InputLabel>{renderLabel(orientation === 'horizontal')}</InputLabel>
+          <InputLabel>
+            {renderLabel(properties.flexDirection === 'row')}
+          </InputLabel>
 
           <Select
             defaultValue={properties.alignItems}
