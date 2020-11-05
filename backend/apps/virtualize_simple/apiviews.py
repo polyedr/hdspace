@@ -15,7 +15,7 @@ class ScenarioElementList(generics.CreateAPIView):
         serializer.save()
 
 
-class ProjectScreenList(generics.ListCreateAPIView):
+class ProjectScreenList(generics.CreateAPIView):
     """
     Create a new project screen with an image annotation
     """
