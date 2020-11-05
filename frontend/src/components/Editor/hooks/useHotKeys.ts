@@ -57,7 +57,7 @@ const useHotKeys = (ref: React.RefObject<HTMLElement>) => {
         event.code === 'KeyC' && (event.metaKey || event.ctrlKey);
 
       if (isItemCopyEvent) {
-        copyActiveItem();
+        dispatch(copyActiveItem());
         navigator.clipboard.writeText('');
         element?.focus();
       }
