@@ -1,11 +1,11 @@
-from apps.virtualize_simple.serializers import ScenarioElementSerializer
-from apps.projects.models import ScenarioElement
+from apps.virtualize_simple.serializers import ProjectScreenSerializer, ScenarioElementSerializer
+from apps.projects.models import ScenarioElement, ProjectScreen
 from rest_framework import generics
 
 
-class ScenarioElementList(generics.ListCreateAPIView):
+class ScenarioElementList(generics.CreateAPIView):
     """
-    Get list of the segmentations or create a new scenario of the neural network
+    Create a new DOM of the neural network
     """
 
     queryset = ScenarioElement.objects.all()
@@ -15,10 +15,10 @@ class ScenarioElementList(generics.ListCreateAPIView):
         serializer.save()
 
 
-class ScenarioElementDetail(generics.RetrieveUpdateDestroyAPIView):
+class ProjectScreenList(generics.ListCreateAPIView):
     """
-    Retrieve, update or delete a segmentation of the neural network
+    Create a new project screen with an image annotation
     """
 
-    queryset = ScenarioElement.objects.all()
-    serializer_class = ScenarioElementSerializer
+    queryset = ProjectScreen.objects.all()
+    serializer_class = ProjectScreenSerializer
