@@ -7,12 +7,10 @@ import MenuItem from '@material-ui/core/MenuItem';
 import DISPLAY from './constants';
 import { convertFlexToCssLikeStyles } from '../../../../../utils/StyleHelper';
 import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
-import assertNever from '../../../../../utils/asserNever';
 import { selectDisplayStyles } from '../../../../../redux/project/selectors';
 import StylesHeader from '../../helperComponents/StylesHeader';
 import FlexProperties from '../../helperComponents/FlexProperties';
 import {
-  CssLikeStyles,
   Entity,
   Flex,
   LibraryElement,
@@ -23,41 +21,6 @@ import {
 type StateProps = {
   displayStyles: ScreenDisplay;
 };
-
-export function getDisplayStyles(
-  activeItemStyles: Pick<
-    Required<CssLikeStyles>,
-    'display' | 'flex-direction' | 'justify-content' | 'align-items'
-  >,
-): ScreenDisplay {
-  switch (activeItemStyles.display) {
-    case 'block':
-      return {
-        display: activeItemStyles.display,
-      };
-
-    case 'inline':
-      return {
-        display: activeItemStyles.display,
-      };
-
-    case 'inline-block':
-      return {
-        display: activeItemStyles.display,
-      };
-
-    case 'flex':
-      return {
-        display: activeItemStyles.display,
-        justifyContent: activeItemStyles['justify-content'],
-        alignItems: activeItemStyles['align-items'],
-        flexDirection: activeItemStyles['flex-direction'],
-      };
-
-    default:
-      return assertNever(activeItemStyles.display);
-  }
-}
 
 type Props = StateProps & PropertiesChangeProps<LibraryElement<Entity>>;
 

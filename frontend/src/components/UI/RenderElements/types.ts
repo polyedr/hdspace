@@ -1,12 +1,12 @@
 /* eslint-disable camelcase */
 import React, { DOMAttributes } from 'react';
-import { NNBlockType } from '../../../constants/defaultParams';
 import {
   HeadingType,
   IMapProps,
   InputType,
   LibraryElement,
   LinkParams,
+  NNBlockType,
   ProjectClass,
   VideoSettingsType,
 } from '../../../types';

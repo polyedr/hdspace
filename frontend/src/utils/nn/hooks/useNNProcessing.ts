@@ -5,7 +5,7 @@ import {
   selectCurrentScreenId,
 } from '../../../redux/project/selectors';
 import { uploadFile } from '../../../redux/project/actions';
-import { NNBlockType } from '../../../constants/defaultParams';
+import { NNBlockType } from '../../../types';
 
 const useNNProcessing = (
   elementId: string,

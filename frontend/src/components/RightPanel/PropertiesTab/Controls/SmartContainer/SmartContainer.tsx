@@ -9,8 +9,11 @@ import {
 } from '../../../../../redux/project/selectors';
 import useImageUpload from '../../../../../utils/nn/hooks/useImageUpload';
 import useNNProcessing from '../../../../../utils/nn/hooks/useNNProcessing';
-import { NNBlockType } from '../../../../../constants/defaultParams';
-import { ImageElement, PropertiesChangeProps } from '../../../../../types';
+import {
+  ImageElement,
+  NNBlockType,
+  PropertiesChangeProps,
+} from '../../../../../types';
 
 type Props = {
   blockType: NNBlockType;

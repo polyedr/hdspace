@@ -16,7 +16,6 @@ import {
 } from '../selectors';
 import * as Actions from '../actions';
 import { selectors } from '..';
-import { updateSavedElementsValues } from './screen';
 import {
   DISALLOW_ADD_ELEMENT_NOTIFICATION_TEXT,
   DISALLOW_REMOVE_ELEMENT_NOTIFICATION_TEXT,
@@ -40,11 +39,9 @@ import {
   isElementCanBeAdded,
   isElementCanBeRemove,
 } from '../../../utils/AvailableChildrenHelper';
-import { DEFAULT_INDENTS } from '../../../domain/constants/defaultStyles';
 import { apiAddScenarios } from '../../../api/scenario';
 import { convertElementFromResponse } from '../../../api/converters/fromResponse';
 import getSavedValue from '../../../utils/getSavedValue';
-import { reqWrapper } from './index';
 import {
   removeMapElement,
   restoreMapElement,
@@ -62,6 +59,8 @@ import {
   ReturnPromisedType,
   StateElement,
 } from '../../../types';
+import { DEFAULT_INDENTS } from '../../../domain/libraryElements/defaultStyles';
+import { reqWrapper, updateSavedElementsValues } from './shared';
 
 export function* updateElementsTree(
   chunk: Normalized<StateElement>,

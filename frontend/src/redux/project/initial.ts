@@ -1,10 +1,11 @@
-import { RightPanelTab, SCREEN_FORMATS } from '../../constants/defaultParams';
 import {
   ProjectCommunicationState,
   ProjectControlState,
   ProjectDataState,
   ProjectEditState,
   ProjectUiState,
+  RightPanelTab,
+  SCREEN_FORMATS,
 } from '../../types';
 
 export const initialData: ProjectDataState = {

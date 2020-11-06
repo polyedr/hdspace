@@ -10,8 +10,8 @@ import {
   logout,
 } from '../../../redux/user/actions';
 import { IMAGES } from '../../../constants/images';
-import { openSignScreen } from '../../../utils/history';
 import { ProfileData, UserData } from '../../../types';
+import { openSignScreen } from '../../../redux/history';
 
 const styles = require('./Profile.scss');
 

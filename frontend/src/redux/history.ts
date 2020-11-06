@@ -1,5 +1,7 @@
-import { history } from '../redux/store';
+import { createBrowserHistory } from 'history';
 import { PATH_NAMES } from '../constants/pathNames';
+
+const history = createBrowserHistory();
 
 export const openProjects = () => history.push(PATH_NAMES.projects);
 export const openSignScreen = (pathname: keyof typeof PATH_NAMES.user) =>
@@ -8,3 +10,5 @@ export const openSignScreen = (pathname: keyof typeof PATH_NAMES.user) =>
 export const openProject = (projectId: string) => {
   history.push(`/project/${projectId}`);
 };
+
+export default history;

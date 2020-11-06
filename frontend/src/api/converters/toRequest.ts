@@ -1,8 +1,5 @@
 import * as R from 'ramda';
-import {
-  DEFAULT_ELEMENTS_STYLES,
-  getDefaultStyles,
-} from '../../domain/libraryElements/defaultStyles';
+import { DEFAULT_ELEMENTS_STYLES } from '../../domain/libraryElements/defaultStyles';
 import { LIBRARY_ELEMENTS } from '../../domain/libraryElements/libraryElements';
 import {
   CreatedServerProject,
@@ -17,6 +14,7 @@ import {
   ServerUserData,
   UserData,
 } from '../../types';
+import getDefaultStyles from '../../utils/getDefaultStyles';
 
 export const convertCreatedElementToRequest = <
   T extends Entity,

@@ -37,43 +37,6 @@ export const ENTITIES: {
   section: 'section',
 };
 
-export const CONTROLS_AFFECT_ON_PARAMS = [
-  'action',
-  'mapProps',
-  'placeholder',
-  'textContent',
-  'image',
-  'smartHeader',
-  'smartFooter',
-  'smartForm',
-  'smartWebpage',
-  'value',
-  'name',
-  'showRipple',
-  'type',
-  'selectOptions',
-  'selectValue',
-  'headingType',
-  'listItems',
-  'isOrdered',
-  'labelFor',
-  'dropdownItems',
-  'isOpen',
-  'videoSettings',
-] as const;
-
-export const CONTROLS_AFFECT_ON_STYLES = [
-  'display',
-  'indents',
-  'size',
-  'typography',
-  'border',
-  'background',
-  'bullets',
-  'flexGrow',
-  'backgroundSize',
-] as const;
-
 export const rootStyleControls = ['background'] as const;
 
 export const containerStyleControls = [

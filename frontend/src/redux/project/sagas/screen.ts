@@ -5,7 +5,6 @@ import { call, select, put, all, fork } from 'redux-saga/effects';
 import * as R from 'ramda';
 import { push } from 'connected-react-router';
 import * as Actions from '../actions';
-import { reqWrapper } from '.';
 import { selectors } from '..';
 import { createContainer } from './scenario';
 import {
@@ -43,11 +42,9 @@ import { apiAddElements, apiGetElements } from '../../../api/element';
 import generateUniqueName from '../../../utils/generateUniqueName';
 import { apiSaveScenarios } from '../../../api/scenario';
 import { convertElementFromResponse } from '../../../api/converters/fromResponse';
-import getSavedValue from '../../../utils/getSavedValue';
 import {
   AppReduxState,
   LibraryElement,
-  LibraryElementUnion,
   Normalized,
   Project,
   ServerElement,
@@ -55,6 +52,7 @@ import {
   Screen,
   IScenarioItem,
 } from '../../../types';
+import { reqWrapper } from './shared';
 
 export function* activateScreenSaga({
   payload: { screenId },
@@ -85,41 +83,6 @@ export function* activateScreenSaga({
   yield put(Actions.setActiveElement(screenElement.id));
 
   yield put(setScreenLoader(false));
-}
-
-export function* updateSavedElementsValues(elements: LibraryElementUnion[]) {
-  const oldSavedElementsValues: ReturnType<typeof selectors.selectSavedElementsValues> = yield select(
-    selectors.selectSavedElementsValues,
-  );
-
-  const newSavedElementsValues = elements
-    .filter((element) =>
-      Object.keys(oldSavedElementsValues).every(
-        (elementID) => elementID !== element.id,
-      ),
-    )
-    .reduce((acc, element) => {
-      const savedValue = getSavedValue(element);
-
-      if (element.type === 'radiobutton') {
-        return {
-          ...acc,
-          [element.parameters.name || '']: { savedValue: '' },
-        };
-      }
-
-      return {
-        ...acc,
-        [element.id]: { id: element.id, savedValue },
-      };
-    }, {});
-
-  yield put(
-    Actions.updateSavedElementsValues({
-      ...oldSavedElementsValues,
-      ...newSavedElementsValues,
-    }),
-  );
 }
 
 export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {

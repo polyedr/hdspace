@@ -2,11 +2,6 @@ import React from 'react';
 import { DropPosition } from '../../constants/dragAndDrop';
 import TYPES from '../../constants/actions';
 import {
-  NNBlockType,
-  RightPanelTab,
-  SCREEN_FORMATS,
-} from '../../constants/defaultParams';
-import {
   Action,
   ActivateScreen,
   AddChildToElement,
@@ -29,7 +24,6 @@ import {
   DuplicateScreen,
   ElementHistoryMeta,
   Entity,
-  ExportProject,
   GetProject,
   GetScreenNN,
   HistoryMeta,
@@ -95,6 +89,9 @@ import {
   WrapIntoContainer,
   Screen,
   UploadFile,
+  NNBlockType,
+  SCREEN_FORMATS,
+  RightPanelTab,
 } from '../../types';
 
 export const getProjectList = (): LoadProjects => ({
@@ -145,10 +142,6 @@ export const updateProject = (
   type: TYPES.UPDATE_PROJECT,
   payload: { project },
   meta,
-});
-
-export const exportProject = (): ExportProject => ({
-  type: TYPES.EXPORT_PROJECT,
 });
 
 export const changeScreensOrder = (screens: Screen[]): ChangeScreensOrder => ({

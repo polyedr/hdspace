@@ -6,30 +6,7 @@ import { RouterState } from 'connected-react-router';
 import { DropTargetMonitor } from 'react-dnd';
 import { AxiosRequestConfig } from 'axios';
 import { DropPosition, ElementType } from './constants/dragAndDrop';
-import {
-  NNBlockType,
-  RightPanelTab,
-  SCREEN_FORMATS,
-} from './constants/defaultParams';
-import {
-  addStateElements,
-  changeFreeCanvasMode,
-  changeScreenFormat,
-  extractStateElement,
-  insertStateElement,
-  moveStateElement,
-  removeStateElement,
-  rotateScreenFormat,
-  setActiveElementId,
-  setProjectsData,
-  updateLastElements,
-  updateStateElement,
-} from './redux/project/actions';
 import TYPES from './constants/actions';
-import {
-  CONTROLS_AFFECT_ON_PARAMS,
-  CONTROLS_AFFECT_ON_STYLES,
-} from './domain/core';
 
 export type Normalized<T extends { id: string | number }> = {
   [id in string | number]: T;
@@ -801,7 +778,6 @@ export type UpdateScreen = IAction<
   typeof TYPES.UPDATE_SCREEN,
   { screen: Screen }
 >;
-export type ExportProject = IPlainAction<typeof TYPES.EXPORT_PROJECT>;
 export type SetCurrentScreenId = IAction<
   typeof TYPES.SET_CURRENT_SCREEN_ID,
   { screenId: number }
@@ -1038,6 +1014,71 @@ export type RemoveFileInput = IAction<
   { id: string }
 >;
 
+export type AddStateElements = IAction<
+  typeof TYPES.ADD_STATE_ELEMENTS,
+  { elements: LibraryElement<any>[]; parentId: string; index?: number },
+  ElementHistoryMeta
+>;
+
+export type ChangeFreeCanvasMode = IAction<
+  typeof TYPES.CHANGE_FREE_CANVAS_MODE,
+  boolean
+>;
+
+export type ChangeScreenFormat = IAction<
+  typeof TYPES.CHANGE_SCREEN_FORMAT,
+  SCREEN_FORMATS
+>;
+
+export type ExtractStateElement = IAction<
+  typeof TYPES.EXTRACT_STATE_ELEMENT,
+  string
+>;
+
+export type InsertStateElement = IAction<
+  typeof TYPES.INSERT_STATE_ELEMENT,
+  { parentId: string; childId: string; element: LibraryElement<any> },
+  ElementHistoryMeta
+>;
+
+export type MoveStateElement = IAction<
+  typeof TYPES.MOVE_STATE_ELEMENT,
+  { elementId: string; indices: Indices; parents: ParentIds },
+  ElementHistoryMeta
+>;
+
+export type RemoveStateElement = IAction<
+  typeof TYPES.REMOVE_STATE_ELEMENT,
+  { elementId: string },
+  ElementHistoryMeta
+>;
+
+export type RotateScreenFormat = IAction<
+  typeof TYPES.ROTATE_SCREEN_FORMAT,
+  boolean
+>;
+
+export type SetActiveElementId = IAction<
+  typeof TYPES.SET_ACTIVE_ELEMENT_ID,
+  string
+>;
+
+export type SetProjectsData = IAction<
+  typeof TYPES.SET_PROJECTS_DATA,
+  PaginatedArray<Project>
+>;
+
+export type UpdateLastElements = IAction<
+  typeof TYPES.UPDATE_LAST_ELEMENTS,
+  { parentId: string; ids: string[]; offset: number }
+>;
+
+export type UpdateStateElement = IAction<
+  typeof TYPES.UPDATE_STATE_ELEMENT,
+  { elementId: string; data: Partial<StateElement> },
+  ElementHistoryMeta
+>;
+
 export type Action =
   | LoadProjects
   | LoadProjectsSuccess
@@ -1072,7 +1113,6 @@ export type Action =
   | uploadImageForNNSuccess
   | GetScreenNN
   | WrapIntoContainer
-  | ReturnType<typeof setActiveElementId>
   | SetHoveredElement
   | ToggleContainersBorders
   | SetItemToCopy
@@ -1108,17 +1148,18 @@ export type Action =
   | UpdateScreen
   | AddElements
   | RestoreElement
-  | ReturnType<typeof moveStateElement>
-  | ReturnType<typeof updateStateElement>
-  | ReturnType<typeof addStateElements>
-  | ReturnType<typeof insertStateElement>
-  | ReturnType<typeof removeStateElement>
-  | ReturnType<typeof setProjectsData>
-  | ReturnType<typeof extractStateElement>
-  | ReturnType<typeof changeFreeCanvasMode>
-  | ReturnType<typeof updateLastElements>
-  | ReturnType<typeof changeScreenFormat>
-  | ReturnType<typeof rotateScreenFormat>
+  | SetActiveElementId
+  | MoveStateElement
+  | UpdateStateElement
+  | AddStateElements
+  | InsertStateElement
+  | RemoveStateElement
+  | SetProjectsData
+  | ExtractStateElement
+  | ChangeFreeCanvasMode
+  | UpdateLastElements
+  | ChangeScreenFormat
+  | RotateScreenFormat
   | SetScreens
   | AddBorderedElementRef
   | RemoveBorderedElementRef
@@ -1520,10 +1561,6 @@ export type AvailableControls = {
   [P in Entity]: readonly Control[];
 };
 
-export type Control =
-  | typeof CONTROLS_AFFECT_ON_PARAMS[number]
-  | typeof CONTROLS_AFFECT_ON_STYLES[number];
-
 export type AvailableChildren = {
   [P in Entity | string]: {
     [key: string]: {
@@ -1702,3 +1739,62 @@ export interface ISignUpData {
   first_name: string;
   last_name: string;
 }
+
+export const enum NNBlockType {
+  HEADER = 'headers',
+  FOOTER = 'footers',
+  FORM = 'forms',
+  WEBPAGE = 'webpages',
+}
+
+export const enum RightPanelTab {
+  PROPERTIES = 0,
+  ELEMENTS = 1,
+}
+
+export const enum SCREEN_FORMATS {
+  Desktop = 'desktop',
+  Tablet = 'tablet',
+  Mobile = 'mobile',
+}
+
+export const CONTROLS_AFFECT_ON_PARAMS = [
+  'action',
+  'mapProps',
+  'placeholder',
+  'textContent',
+  'image',
+  'smartHeader',
+  'smartFooter',
+  'smartForm',
+  'smartWebpage',
+  'value',
+  'name',
+  'showRipple',
+  'type',
+  'selectOptions',
+  'selectValue',
+  'headingType',
+  'listItems',
+  'isOrdered',
+  'labelFor',
+  'dropdownItems',
+  'isOpen',
+  'videoSettings',
+] as const;
+
+export const CONTROLS_AFFECT_ON_STYLES = [
+  'display',
+  'indents',
+  'size',
+  'typography',
+  'border',
+  'background',
+  'bullets',
+  'flexGrow',
+  'backgroundSize',
+] as const;
+
+export type Control =
+  | typeof CONTROLS_AFFECT_ON_PARAMS[number]
+  | typeof CONTROLS_AFFECT_ON_STYLES[number];

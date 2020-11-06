@@ -1,4 +1,3 @@
-import { getDefaultStyles } from '../domain/libraryElements/defaultStyles';
 import {
   CssLikeStyles,
   ITokenPair,
@@ -7,6 +6,7 @@ import {
   StateElement,
   Screen,
 } from '../types';
+import getDefaultStyles from '../utils/getDefaultStyles';
 
 export const MIN_BORDER_WIDTH = 0;
 export const MAX_BORDER_WIDTH = 10;
@@ -105,21 +105,3 @@ export const KEEP_RP_TAB_ELEMENTS = [
   'grid',
   'columns',
 ];
-
-export const enum SCREEN_FORMATS {
-  Desktop = 'desktop',
-  Tablet = 'tablet',
-  Mobile = 'mobile',
-}
-
-export const enum NNBlockType {
-  HEADER = 'headers',
-  FOOTER = 'footers',
-  FORM = 'forms',
-  WEBPAGE = 'webpages',
-}
-
-export const enum RightPanelTab {
-  PROPERTIES = 0,
-  ELEMENTS = 1,
-}

@@ -1,14 +1,5 @@
 /* eslint-disable camelcase, no-console */
-
-import {
-  takeLatest,
-  takeEvery,
-  put,
-  call,
-  take,
-  select,
-} from 'redux-saga/effects';
-import * as R from 'ramda';
+import { takeLatest, takeEvery, put, call, select } from 'redux-saga/effects';
 import * as Actions from '../actions';
 import {
   removeProjectStyles,
@@ -29,11 +20,9 @@ import {
 import {
   addProjectSaga,
   delProjectSaga,
-  exportProjectSaga,
   getProjectListSaga,
   getProjectSaga,
   renameProjectSaga,
-  updateProject,
   updateProjectSaga,
 } from './project';
 import {
@@ -51,12 +40,7 @@ import {
   setActiveElementSaga,
 } from './element';
 import { convertElementToRequest } from '../../../api/converters/toRequest';
-import { MAX_TOKEN_TRIALS } from '../../../../config/settings';
 import TYPES from '../../../constants/actions';
-import { logout, setLoadedToken, setTokenPair } from '../../user/actions';
-import { openSignScreen } from '../../../utils/history';
-import { refreshUserTokenPair } from '../../user/sagas';
-import { DEFAULT_AUTHORISATION_TOKEN } from '../../../constants/defaultParams';
 import {
   selectActiveElement,
   selectActiveElementId,
@@ -79,10 +63,8 @@ import {
   restoreScreenSaga,
   saveScreenImageSaga,
 } from './screen';
-import { selectTokenPair } from '../../user/selectors';
 import { activateScreen } from '../actions';
 import {
-  AppReduxState,
   ElementHistoryMeta,
   Entity,
   ItemToCopyInfo,
@@ -90,56 +72,7 @@ import {
   Normalized,
   StateElement,
 } from '../../../types';
-
-export function* reqWrapper(
-  requestAction: (props: any) => Promise<any>,
-  props: any = {},
-  tries = 0,
-): any {
-  const { access } = yield select(selectTokenPair);
-  const result = yield call(requestAction as any, { access, ...props });
-
-  if (R.path(['response', 'data', 'code'], result) === 'token_not_valid') {
-    const {
-      user: { isLoadedToken },
-    }: AppReduxState = yield select();
-
-    if (isLoadedToken) {
-      yield put(setLoadedToken(false));
-    } else {
-      yield take('SET_LOADED_TOKEN');
-
-      return yield call(reqWrapper, requestAction, props, tries + 1);
-    }
-
-    const token_result = yield call(refreshUserTokenPair);
-
-    if (!token_result || token_result.msg || tries >= MAX_TOKEN_TRIALS - 1) {
-      yield put(setTokenPair(DEFAULT_AUTHORISATION_TOKEN));
-      yield call(openSignScreen, 'signin');
-
-      return null;
-    }
-
-    yield put(setTokenPair(token_result));
-    yield put(setLoadedToken(true));
-
-    return yield call(reqWrapper, requestAction, props, tries + 1);
-  }
-
-  if (R.path(['response', 'statusText'], result) === 'Unauthorized') {
-    yield put(logout());
-    openSignScreen('signin');
-
-    return null;
-  }
-
-  if (R.path(['response', 'status'], result)) {
-    return null;
-  }
-
-  return result;
-}
+import { updateProject } from './shared';
 
 function* removeSharedStylesSaga(
   action: ReturnType<typeof Actions.removeSharedStyles>,
@@ -420,7 +353,6 @@ export default function* projectSaga() {
   yield takeLatest(TYPES.DELETE_PROJECT, delProjectSaga);
   yield takeLatest(TYPES.UPDATE_PROJECT, updateProjectSaga);
   yield takeLatest(TYPES.GET_PROJECT, getProjectSaga);
-  yield takeLatest(TYPES.EXPORT_PROJECT, exportProjectSaga);
   yield takeLatest(TYPES.CHANGE_SCREENS_ORDER, changeScreensOrderSaga);
   yield takeLatest(TYPES.RENAME_PROJECT, renameProjectSaga);
 

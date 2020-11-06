@@ -18,9 +18,8 @@ import {
 import useUrlImageToFile from '../../../../utils/useUrlImageToFile';
 import useImageUpload from '../../../../utils/nn/hooks/useImageUpload';
 import useNNProcessing from '../../../../utils/nn/hooks/useNNProcessing';
-import { SyntheticGlobalElement } from '../../../../types';
+import { NNBlockType, SyntheticGlobalElement } from '../../../../types';
 import { updateElementParameters } from '../../../../redux/project/actions';
-import { NNBlockType } from '../../../../constants/defaultParams';
 import useEventHandlers from '../useEventHandlers';
 
 const styles = require('../styles.scss');

@@ -14,7 +14,14 @@ type Props = {
 };
 
 const FormField = (props: Props) => {
-  const { name, placeholder, label, type, validator, className } = props;
+  const {
+    name,
+    placeholder,
+    label = '',
+    type,
+    validator,
+    className = '',
+  } = props;
 
   return (
     <div className={styles.container}>

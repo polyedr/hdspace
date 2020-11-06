@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "build": "webpack --env production --config=webpack.export.config.js --config=webpack.config.js",
-    "start": "NODE_ENV=development webpack-dev-server --mode development --hot --inline --progress",    
+    "build": "webpack --env production --config=webpack.config.js",
+    "start": "NODE_ENV=development webpack-dev-server --mode development --hot --inline --progress",
     "start:server": "node server.js",
     "lint": "eslint src/**/*.{ts,tsx} --fix",
-    "status": "webpack --env production --json > stats.json",
+    "status": "webpack --env development --json > stats.json",
     "test": "jest"
   },
   "author": "",

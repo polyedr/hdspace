@@ -13,7 +13,6 @@ import {
   selectActiveElementId,
 } from '../selectors';
 import * as Actions from '../actions';
-import { reqWrapper } from './index';
 import { convertElementToPatchRequest } from '../../../api/converters/toRequest';
 import {
   getElementsArray,
@@ -29,18 +28,16 @@ import {
 import generateUniqueName from '../../../utils/generateUniqueName';
 import getSavedValue from '../../../utils/getSavedValue';
 import { addProjectStyles } from '../../../utils/ProjectClassesHelper';
-import { updateProject } from './project';
-import {
-  KEEP_RP_TAB_ELEMENTS,
-  RightPanelTab,
-} from '../../../constants/defaultParams';
+import { KEEP_RP_TAB_ELEMENTS } from '../../../constants/defaultParams';
 import {
   CssLikeStyles,
   LibraryElement,
   Normalized,
   ReturnPromisedType,
+  RightPanelTab,
   StateElement,
 } from '../../../types';
+import { reqWrapper, updateProject } from './shared';
 
 export function* moveElementSaga(
   action: ReturnType<typeof Actions.moveElement>,

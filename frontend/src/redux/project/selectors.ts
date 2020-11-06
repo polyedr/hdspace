@@ -11,7 +11,6 @@ import {
   buildElementsTree,
   flattenElements,
 } from '../../utils/normalizedStateHelpers';
-import { getDisplayStyles } from '../../components/RightPanel/PropertiesTab/Controls/Display/Display';
 import {
   AppReduxState,
   BorderedElementsRef,
@@ -22,6 +21,7 @@ import {
   PaginatedArray,
   StateElement,
 } from '../../types';
+import getDisplayStyles from '../../utils/getDisplayStyles';
 
 export const selectProjectState = makeFeatureStateSelector('project');
 

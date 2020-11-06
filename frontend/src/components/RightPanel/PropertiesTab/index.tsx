@@ -37,9 +37,8 @@ import {
   selectFreeCanvasMode,
 } from '../../../redux/project/selectors';
 import withSmartContainer from './Controls/SmartContainer/withSmartContainer';
-import { NNBlockType } from '../../../constants/defaultParams';
 import ControlSection from './helperComponents/ControlSection';
-import { Control, Entity } from '../../../types';
+import { Control, Entity, NNBlockType } from '../../../types';
 
 const CONTROLS: Record<Control, React.ComponentType<any>> = {
   display: Display,
