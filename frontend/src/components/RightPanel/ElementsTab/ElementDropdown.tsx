@@ -4,7 +4,6 @@ import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import MenuItem from '@material-ui/core/MenuItem';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import Menu from '@material-ui/core/Menu';
-
 import { ElementData } from '../../../redux/project/types';
 import ElementButton from './ElementButton';
 import { splitWords } from '../../../utils/StringHelper';
@@ -22,11 +21,13 @@ const useStyles = makeStyles({
     fontSize: '1em',
   },
   elementDropdown: {
-    height: '100%',
-    display: 'flex',
-    flexDirection: 'column',
     '& *:first-child': {
-      flex: 1,
+      flex: '1 1',
+      borderBottomLeftRadius: 0,
+      borderBottomRightRadius: 0,
+      '& span': {
+        lineHeight: '13px',
+      },
     },
   },
   dropdownButton: {
