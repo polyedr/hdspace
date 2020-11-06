@@ -3,12 +3,9 @@ import { connect, useSelector } from 'react-redux';
 import Button from '@material-ui/core/Button';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { selectCurrentScreenId } from '../../../../../redux/project/selectors';
-import { ImageElement } from '../../../../../api/types';
-import {
-  PropertiesChangeProps,
-  withConfigurableProperties,
-} from '../../../../../utils/withConfigurableProperties';
+import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
 import { updateElementImage } from '../../../../../redux/project/actions';
+import { ImageElement, PropertiesChangeProps } from '../../../../../types';
 
 const mapDispatch = {
   updateElementImage,

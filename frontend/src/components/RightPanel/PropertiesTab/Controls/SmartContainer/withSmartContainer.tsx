@@ -1,6 +1,5 @@
-import { NNBlockType } from 'src/constants/defaultParams';
-
 import React from 'react';
+import { NNBlockType } from 'src/constants/defaultParams';
 import SmartContainer from './SmartContainer';
 
 const withSmartContainer = (blockType: NNBlockType) => {

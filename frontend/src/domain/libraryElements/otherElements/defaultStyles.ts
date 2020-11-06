@@ -19,7 +19,7 @@ import {
   DEFAULT_SIZE,
   DEFAULT_TYPOGRAPHY,
 } from '../../constants/defaultStyles';
-import { CssLikeStyles } from '../../../utils/StyleHelper';
+import { CssLikeStyles } from '../../../types';
 
 type RootControls = typeof rootStyleControls[number];
 type ContainerControls = typeof containerStyleControls[number];

@@ -3,7 +3,6 @@
 import React from 'react';
 import cn from 'classnames';
 import { makeComponentStyles } from '../styles';
-
 import { ListRendererProps } from '../types';
 import useEventHandlers from '../useEventHandlers';
 

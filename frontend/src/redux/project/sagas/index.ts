@@ -10,12 +10,10 @@ import {
 } from 'redux-saga/effects';
 import * as R from 'ramda';
 import * as Actions from '../actions';
-import { AppReduxState } from '../../../shared/types/app';
 import {
   removeProjectStyles,
   updateProjectClasses,
 } from '../../../utils/ProjectClassesHelper';
-import { Entity } from '../../../domain/core';
 import {
   addChildToElementSaga,
   createElements,
@@ -56,9 +54,6 @@ import { convertElementToRequest } from '../../../api/converters/toRequest';
 import { MAX_TOKEN_TRIALS } from '../../../../config/settings';
 import TYPES from '../../../constants/actions';
 import { logout, setLoadedToken, setTokenPair } from '../../user/actions';
-import { ElementHistoryMeta, ItemToCopyInfo, StateElement } from '../types';
-
-import { LibraryElement, Normalized } from '../../../api/types';
 import { openSignScreen } from '../../../utils/history';
 import { refreshUserTokenPair } from '../../user/sagas';
 import { DEFAULT_AUTHORISATION_TOKEN } from '../../../constants/defaultParams';
@@ -86,6 +81,15 @@ import {
 } from './screen';
 import { selectTokenPair } from '../../user/selectors';
 import { activateScreen } from '../actions';
+import {
+  AppReduxState,
+  ElementHistoryMeta,
+  Entity,
+  ItemToCopyInfo,
+  LibraryElement,
+  Normalized,
+  StateElement,
+} from '../../../types';
 
 export function* reqWrapper(
   requestAction: (props: any) => Promise<any>,

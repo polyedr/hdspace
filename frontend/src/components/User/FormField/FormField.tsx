@@ -49,4 +49,4 @@ const FormField = (props: Props) => {
   );
 };
 
-export { FormField };
+export default FormField;

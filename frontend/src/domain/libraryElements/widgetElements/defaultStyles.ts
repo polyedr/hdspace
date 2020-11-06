@@ -10,7 +10,7 @@ import {
   clockStyleControls,
   mapStyleControls,
 } from '../../core';
-import { CssLikeStyles } from '../../../utils/StyleHelper';
+import { CssLikeStyles } from '../../../types';
 
 type MapControls = typeof mapStyleControls[number];
 type CalendarControls = typeof calendarStyleControls[number];

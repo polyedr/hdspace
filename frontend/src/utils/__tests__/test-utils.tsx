@@ -6,9 +6,7 @@ import {
   initialEdit,
   initialUi,
 } from '../../redux/project/initial';
-import { AppReduxState } from '../../shared/types/app';
-import { StateElement, Screen } from '../../redux/project/types';
-import { Project } from '../../api/types';
+import { AppReduxState, Project, StateElement, Screen } from '../../types';
 
 export const mockProject: Project = {
   id: 1,

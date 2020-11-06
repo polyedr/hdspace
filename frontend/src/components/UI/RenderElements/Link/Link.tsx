@@ -5,7 +5,7 @@ import cn from 'classnames';
 import { Link as RouterLink } from 'react-router-dom';
 import { Link as MaterialLink } from '@material-ui/core';
 import { ActionRendererProps } from '../types';
-import { WithActionProps } from '../../../../utils/withAction';
+import { WithActionProps } from '../../../../types';
 import { makeComponentStyles } from '../styles';
 import useEventHandlers from '../useEventHandlers';
 

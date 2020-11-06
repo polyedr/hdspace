@@ -11,7 +11,6 @@ import createSagaMiddleware from 'redux-saga';
 import { connectRouter, routerMiddleware } from 'connected-react-router';
 import { createBrowserHistory } from 'history';
 import { PersistConfig, Persistor } from 'redux-persist/es/types';
-
 import userReducer from './user/reducer';
 import projectReducer from './project/reducers';
 import projectSaga from './project/sagas';

@@ -5,21 +5,20 @@ import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import DISPLAY from './constants';
-import { Entity } from '../../../../../domain/core';
-import { LibraryElement } from '../../../../../api/types';
-import { Flex, ScreenDisplay } from '../../../../../redux/project/types';
-import {
-  convertFlexToCssLikeStyles,
-  CssLikeStyles,
-} from '../../../../../utils/StyleHelper';
-import {
-  PropertiesChangeProps,
-  withConfigurableProperties,
-} from '../../../../../utils/withConfigurableProperties';
-import { assertNever } from '../../../../../shared/helpers/ts';
+import { convertFlexToCssLikeStyles } from '../../../../../utils/StyleHelper';
+import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
+import assertNever from '../../../../../utils/asserNever';
 import { selectDisplayStyles } from '../../../../../redux/project/selectors';
 import StylesHeader from '../../helperComponents/StylesHeader';
 import FlexProperties from '../../helperComponents/FlexProperties';
+import {
+  CssLikeStyles,
+  Entity,
+  Flex,
+  LibraryElement,
+  PropertiesChangeProps,
+  ScreenDisplay,
+} from '../../../../../types';
 
 type StateProps = {
   displayStyles: ScreenDisplay;

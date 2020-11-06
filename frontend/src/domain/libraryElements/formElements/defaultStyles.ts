@@ -17,7 +17,7 @@ import {
   textareaStyleControls,
   textinputStyleControls,
 } from '../../core';
-import { CssLikeStyles } from '../../../utils/StyleHelper';
+import { CssLikeStyles } from '../../../types';
 
 type ButtonControls = typeof buttonStyleControls[number];
 type TextinputControls = typeof textinputStyleControls[number];

@@ -2,7 +2,7 @@ import React from 'react';
 import { ConnectedRouter } from 'connected-react-router';
 import { MuiThemeProvider, CssBaseline } from '@material-ui/core';
 import { history } from '../redux/store';
-import Notification from '../features/notification/view/Notification';
+import Notification from '../features/notification';
 import Routes from './Routes';
 import theme from '../styles/Theme';
 

@@ -5,7 +5,6 @@ import {
   selectCurrentScreenId,
   selectEditableStyles,
 } from '../redux/project/selectors';
-import { Entity } from '../domain/core';
 import {
   removeElementStyles,
   removeSharedStyles,
@@ -13,20 +12,16 @@ import {
   updateElementStyles,
   updateSharedStyles,
 } from '../redux/project/actions';
-import { LibraryElement } from '../api/types';
-import { CssLikeStyles } from './StyleHelper';
-
-export type PropertiesChangeProps<T extends LibraryElement<Entity>> = {
-  activeItemID: string;
-  removeStyles(cssPropertiesNames: string[]): void;
-  updateStyles(payload: CssLikeStyles): void;
-  updateParams(payload: Params<T>, updatedItemID?: string): void;
-};
-
-type Params<T extends LibraryElement<Entity>> = Partial<T['parameters']>;
+import {
+  CssLikeStyles,
+  Entity,
+  LibraryElement,
+  Params,
+  PropertiesChangeProps,
+} from '../types';
 
 // potentially pass config with needed styles/params first
-export function withConfigurableProperties<
+function withConfigurableProperties<
   K extends LibraryElement<Entity>,
   T extends PropertiesChangeProps<K>
 >(
@@ -95,3 +90,4 @@ export function withConfigurableProperties<
   // potentially need to makeMapState and makeMapDispatch for each WrapperComponent
   return WrapperComponent;
 }
+export default withConfigurableProperties;

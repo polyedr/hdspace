@@ -5,13 +5,14 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import TYPE from './constants';
-import { AppReduxState } from '../../../../../shared/types/app';
 import { selectActiveElementParams } from '../../../../../redux/project/selectors';
+import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
 import {
+  AppReduxState,
+  InputType,
   PropertiesChangeProps,
-  withConfigurableProperties,
-} from '../../../../../utils/withConfigurableProperties';
-import { InputType, TextinputElement } from '../../../../../api/types';
+  TextinputElement,
+} from '../../../../../types';
 
 type StateProps = {
   type: InputType;

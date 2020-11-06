@@ -2,12 +2,12 @@ import React from 'react';
 import { connect } from 'react-redux';
 import TextField from '@material-ui/core/TextField';
 import { selectActiveElementParams } from '../../../../../redux/project/selectors';
-import { SelectElement } from '../../../../../api/types';
-import { AppReduxState } from '../../../../../shared/types/app';
+import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
 import {
+  AppReduxState,
   PropertiesChangeProps,
-  withConfigurableProperties,
-} from '../../../../../utils/withConfigurableProperties';
+  SelectElement,
+} from '../../../../../types';
 
 type StateProps = {
   value: string;

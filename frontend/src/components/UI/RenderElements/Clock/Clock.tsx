@@ -3,7 +3,6 @@
 import React from 'react';
 import cn from 'classnames';
 import { makeComponentStyles } from '../styles';
-
 import { ClockRendererProps } from '../types';
 import ClockWidget from '../../Clock';
 import useEventHandlers from '../useEventHandlers';

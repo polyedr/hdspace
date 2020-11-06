@@ -18,7 +18,6 @@ import {
   selectElementById,
 } from '../../../redux/project/selectors';
 import { DropPosition, ElementType } from '../../../constants/dragAndDrop';
-import { SyntheticElement } from './types';
 import { CONTAINER_GROUPS } from '../../../constants/defaultParams';
 import {
   getFlexRowDropPosition,
@@ -26,7 +25,7 @@ import {
   getDropIndex,
 } from './helper';
 import useElementBorders from './hooks/useElementBorders';
-import { ElementData, StateElement } from '../../../redux/project/types';
+import { ElementData, StateElement, SyntheticElement } from '../../../types';
 
 type DraggableElementProps = {
   elementId: string;

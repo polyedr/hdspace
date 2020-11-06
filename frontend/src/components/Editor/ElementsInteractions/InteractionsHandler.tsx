@@ -13,8 +13,7 @@ import {
   selectCurrentRootId,
   selectElementById,
 } from '../../../redux/project/selectors';
-import { BorderStyles } from './types';
-import { AppReduxState } from '../../../shared/types/app';
+import { AppReduxState, BorderStyles } from '../../../types';
 
 type Props = {
   elementId: string;

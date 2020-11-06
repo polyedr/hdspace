@@ -12,7 +12,7 @@ import {
   DEFAULT_SIZE,
   DEFAULT_TYPOGRAPHY,
 } from '../../constants/defaultStyles';
-import { CssLikeStyles } from '../../../utils/StyleHelper';
+import { CssLikeStyles } from '../../../types';
 
 type pageTemplateControls = typeof pageTemplateStyleControls[number];
 type subscribeFormControls = typeof subscribeFormStyleControls[number];

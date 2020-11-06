@@ -3,20 +3,23 @@
 import React, { useCallback } from 'react';
 import { connect } from 'react-redux';
 import { EXPORT_RENDERERS } from '../UI/RenderElements';
-import { SavedElementsValues } from '../../redux/project/types';
 import { convertPropCSS } from '../../utils/StyleHelper';
 import { ReduxState } from '../../redux/export';
-import { T } from '../../redux/project';
 import {
   updateSavedElementsValues,
   updateSavedElementValues,
 } from '../../redux/export/actions';
 import { selectSavedElementsValues } from '../../redux/export/selectors';
+import {
+  IScenarioElement,
+  IScenarioItem,
+  SavedElementsValues,
+} from '../../types';
 
 type OwnProps = {
-  elementList: T.IScenarioElement[];
-  scenarioList: T.IScenarioItem[];
-  item?: T.IScenarioItem;
+  elementList: IScenarioElement[];
+  scenarioList: IScenarioItem[];
+  item?: IScenarioItem;
   savedElements: SavedElementsValues;
 };
 
@@ -70,7 +73,7 @@ const RenderTreeComponent: React.FC<Props> = ({
                 <RenderTree
                   elementList={elementList}
                   scenarioList={scenarioList}
-                  item={currentItem as T.IScenarioItem}
+                  item={currentItem as IScenarioItem}
                 />
               </div>
             );

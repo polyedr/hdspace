@@ -44,8 +44,7 @@ import {
   defaultColumnStyles,
   defaultGridStyles,
 } from './blocksTemplates/defaultStyles';
-import { Entity } from '../core';
-import { CssLikeStyles } from '../../utils/StyleHelper';
+import { CssLikeStyles, Entity } from '../../types';
 
 export const DEFAULT_ELEMENTS_STYLES: {
   [K in Entity]: { [key: string]: CssLikeStyles | undefined };

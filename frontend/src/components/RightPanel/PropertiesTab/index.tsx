@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import RenameElement from './Controls/RenameElement/RenameElement';
 import ShareStyles from './helperComponents/ShareStyles/ShareStyles';
-import { AVAILABLE_CONTROLS, Control, Entity } from '../../../domain/core';
+import { AVAILABLE_CONTROLS } from '../../../domain/core';
 import Display from './Controls/Display/Display';
 import IndentsBlock from './Controls/IndentsBlock';
 import SizeBlock from './Controls/SizeBlock/SizeBlock';
@@ -39,6 +39,7 @@ import {
 import withSmartContainer from './Controls/SmartContainer/withSmartContainer';
 import { NNBlockType } from '../../../constants/defaultParams';
 import ControlSection from './helperComponents/ControlSection';
+import { Control, Entity } from '../../../types';
 
 const CONTROLS: Record<Control, React.ComponentType<any>> = {
   display: Display,

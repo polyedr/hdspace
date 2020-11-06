@@ -1,8 +1,7 @@
 import { XYCoord } from 'react-dnd';
-import { ElementData, StateElement } from '../../../redux/project/types';
-import { SyntheticElement } from './types';
 
 import { DropPosition } from '../../../constants/dragAndDrop';
+import { ElementData, StateElement, SyntheticElement } from '../../../types';
 
 export const getBlockDropPosition = (
   dragSourceOffset: XYCoord,

@@ -3,22 +3,20 @@ import {
   DEFAULT_ELEMENTS_STYLES,
   getDefaultStyles,
 } from '../../domain/libraryElements/defaultStyles';
-import { Entity } from '../../domain/core';
+import { LIBRARY_ELEMENTS } from '../../domain/libraryElements/libraryElements';
 import {
   CreatedServerProject,
+  Entity,
   LibraryElement,
+  ProfileData,
   Project,
   ProjectClass,
   ServerElement,
-  ServerProject,
-} from '../types';
-import {
-  ProfileData,
   ServerProfileData,
+  ServerProject,
   ServerUserData,
   UserData,
-} from '../../redux/user/types';
-import { LIBRARY_ELEMENTS } from '../../domain/libraryElements/libraryElements';
+} from '../../types';
 
 export const convertCreatedElementToRequest = <
   T extends Entity,

@@ -1,19 +1,21 @@
 import { AxiosResponse } from 'axios';
 /* eslint-disable camelcase */
-import {
-  RecursiveElement,
-  ServerElement,
-  LibraryElement,
-  PaginatedArray,
-} from './types';
+
 import {
   convertElementFromResponse,
   convertRecursiveElementFromResponse,
 } from './converters/fromResponse';
-import { IScenarioElement } from '../redux/project/types';
-import { Entity } from '../domain/core';
 import { onError, parseResult } from './project';
-import { myAxios, MyAxiosProps } from '../../config/settings';
+import { myAxios } from '../../config/settings';
+import {
+  Entity,
+  IScenarioElement,
+  LibraryElement,
+  MyAxiosProps,
+  PaginatedArray,
+  RecursiveElement,
+  ServerElement,
+} from '../types';
 
 export const apiGetElements = ({
   scenariosIDs,

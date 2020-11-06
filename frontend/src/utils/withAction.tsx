@@ -1,20 +1,12 @@
 import React, { useCallback, useContext } from 'react';
 import { useDispatch } from 'react-redux';
-
 import {
   ActionRendererProps,
   SharedRendererProps,
 } from '../components/UI/RenderElements/types';
 import { LinkContext } from '../containers/ExportedApp';
 import { activateScreen } from '../redux/project/actions';
-
-export type ActionType = 'external-link' | 'internal-link' | 'button';
-
-export type WithActionProps = {
-  actionLink: string;
-  actionType: ActionType;
-  onClick(event: React.MouseEvent<HTMLAnchorElement, MouseEvent>): void;
-};
+import { WithActionProps } from '../types';
 
 type Props = WithActionProps & SharedRendererProps & ActionRendererProps;
 

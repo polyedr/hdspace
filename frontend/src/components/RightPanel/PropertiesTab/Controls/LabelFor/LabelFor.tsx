@@ -4,16 +4,16 @@ import FormControl from '@material-ui/core/FormControl';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
-import { AppReduxState } from '../../../../../shared/types/app';
-import { LabelElement } from '../../../../../api/types';
 import {
   selectActiveElementParams,
   selectElementsForCurrentScreen,
 } from '../../../../../redux/project/selectors';
+import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
 import {
+  AppReduxState,
+  LabelElement,
   PropertiesChangeProps,
-  withConfigurableProperties,
-} from '../../../../../utils/withConfigurableProperties';
+} from '../../../../../types';
 
 type StateProps = {
   labelFor: string;

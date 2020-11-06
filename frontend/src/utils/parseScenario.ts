@@ -1,33 +1,18 @@
-import * as R from 'ramda';
 /* eslint-disable camelcase */
-
+import * as R from 'ramda';
+import { ICONS } from '../domain/libraryElements/libraryElements';
 import {
   CreatedElement,
+  ElementData,
+  ElementEntity,
+  ElementsHierarchy,
+  ElementsToAdd,
+  GroupElement,
+  IListCategoryEl,
   IScenarioElement,
   IScenarioElements,
-  ScenarioLibraryElement,
-  ServerStructType,
-  ElementData,
-  ElementsHierarchy,
-} from '../redux/project/types';
-import { ElementEntity } from '../domain/core';
-import {
-  ElementsToAdd,
-  ICONS,
-} from '../domain/libraryElements/libraryElements';
-import { ServerElement } from '../api/types';
-
-export type GroupElement = {
-  key: string;
-  name: string;
-  label: string;
-  custom?: boolean;
-  value: { structType: ServerStructType; funcType: ServerStructType };
-};
-
-export interface IListCategoryEl {
-  [x: string]: ScenarioLibraryElement[];
-}
+  ServerElement,
+} from '../types';
 
 export const convertScenarioElements = (
   scenarioElements: IScenarioElement[],

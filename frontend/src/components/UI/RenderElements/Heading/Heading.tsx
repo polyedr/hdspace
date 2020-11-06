@@ -2,7 +2,6 @@
 
 import React from 'react';
 import cn from 'classnames';
-
 import { HeadingRendererProps } from '../types';
 import { makeComponentStyles } from '../styles';
 import useEventHandlers from '../useEventHandlers';

@@ -3,15 +3,15 @@ import cn from 'classnames';
 import { connect } from 'react-redux';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import TextField from '@material-ui/core/TextField';
-import { Entity } from '../../../../../domain/core';
-import { AppReduxState } from '../../../../../shared/types/app';
-import { LibraryElement } from '../../../../../api/types';
-import {
-  PropertiesChangeProps,
-  withConfigurableProperties,
-} from '../../../../../utils/withConfigurableProperties';
+import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
 import { selectCurrentEditableStyles } from '../../../../../redux/project/selectors';
 import StylesHeader from '../../helperComponents/StylesHeader';
+import {
+  AppReduxState,
+  Entity,
+  LibraryElement,
+  PropertiesChangeProps,
+} from '../../../../../types';
 
 const useStyles = makeStyles({
   marginGrid: {

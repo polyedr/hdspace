@@ -1,7 +1,13 @@
 import produce from 'immer';
-import { Indices, ParentIds, StateElement } from '../redux/project/types';
-import { LibraryElement, Normalized } from '../api/types';
-import { AVAILABLE_CHILDREN, Entity } from '../domain/core';
+import { AVAILABLE_CHILDREN } from '../domain/core';
+import {
+  Entity,
+  Indices,
+  LibraryElement,
+  Normalized,
+  ParentIds,
+  StateElement,
+} from '../types';
 
 export const arrayToMap = <T extends { id: any }>(arr: T[]): Normalized<T> => {
   const res = {};

@@ -7,7 +7,7 @@ import { lighten } from '@material-ui/core';
 import { useDispatch } from 'react-redux';
 import cn from 'classnames';
 import Dialog from '../../UI/Dialog';
-import { Screen } from '../../../redux/project/types';
+import { Screen } from '../../../types';
 import ScreenControls from './ScreenControls';
 import ScreenLogo from './ScreenLogo';
 import { activateScreen, renameScreen } from '../../../redux/project/actions';

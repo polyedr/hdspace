@@ -6,7 +6,6 @@ import { makeStyles, Checkbox as MaterialCheckbox } from '@material-ui/core';
 import CheckBoxIcon from '@material-ui/icons/CheckBox';
 import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 import * as R from 'ramda';
-
 import { CheckboxRendererProps } from '../types';
 import useEventHandlers from '../useEventHandlers';
 

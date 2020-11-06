@@ -15,7 +15,7 @@ import {
   paragraphStyleControls,
   textBlockStyleControls,
 } from '../../core';
-import { CssLikeStyles } from '../../../utils/StyleHelper';
+import { CssLikeStyles } from '../../../types';
 
 type HyperlinkControls = typeof hyperlinkStyleControls[number];
 type HeadingControls = typeof headingStyleControls[number];

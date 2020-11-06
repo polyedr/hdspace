@@ -3,14 +3,14 @@ import { connect } from 'react-redux';
 import { Switch } from '@material-ui/core';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import { AppReduxState } from '../../../../../shared/types/app';
-import {
-  PropertiesChangeProps,
-  withConfigurableProperties,
-} from '../../../../../utils/withConfigurableProperties';
-import { ListElement } from '../../../../../api/types';
+import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
 import { selectCurrentEditableStyles } from '../../../../../redux/project/selectors';
 import StylesHeader from '../../helperComponents/StylesHeader';
+import {
+  AppReduxState,
+  ListElement,
+  PropertiesChangeProps,
+} from '../../../../../types';
 
 const useStyles = makeStyles({
   wrapper: {

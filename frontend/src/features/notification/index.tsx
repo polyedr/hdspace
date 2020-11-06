@@ -2,12 +2,10 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Snackbar, SnackbarCloseReason, IconButton } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
-
-import { Notification as NotificationType } from '../../../redux/project/types';
-import { NOTIFICATION_AUTO_HIDE_DURATION } from '../types';
-import { AppReduxState } from '../../../shared/types/app';
-import { removeNotification } from '../../../redux/project/actions';
-import { selectNotification } from '../../../redux/project/selectors';
+import { NOTIFICATION_AUTO_HIDE_DURATION } from './constants';
+import { removeNotification } from '../../redux/project/actions';
+import { selectNotification } from '../../redux/project/selectors';
+import { AppReduxState, Notification as NotificationType } from '../../types';
 
 type StateProps = {
   notification: NotificationType | null;

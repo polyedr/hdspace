@@ -1,7 +1,4 @@
-import {
-  ElementsToAdd,
-  ChildrenElements,
-} from './libraryElements/libraryElements';
+import { AvailableChildren, AvailableControls, ElementEntity } from '../types';
 
 export const ENTITIES: {
   [K in Exclude<ElementEntity, 'ocrtext' | 'root' | 'container'>]: K;
@@ -40,7 +37,7 @@ export const ENTITIES: {
   section: 'section',
 };
 
-const CONTROLS_AFFECT_ON_PARAMS = [
+export const CONTROLS_AFFECT_ON_PARAMS = [
   'action',
   'mapProps',
   'placeholder',
@@ -65,7 +62,7 @@ const CONTROLS_AFFECT_ON_PARAMS = [
   'videoSettings',
 ] as const;
 
-const CONTROLS_AFFECT_ON_STYLES = [
+export const CONTROLS_AFFECT_ON_STYLES = [
   'display',
   'indents',
   'size',
@@ -76,15 +73,6 @@ const CONTROLS_AFFECT_ON_STYLES = [
   'flexGrow',
   'backgroundSize',
 ] as const;
-
-export type ElementEntity = keyof ElementsToAdd;
-export type ChildEntity = keyof ChildrenElements;
-
-export type Entity = ElementEntity | ChildEntity;
-
-export type AvailableControls = {
-  [P in Entity]: readonly Control[];
-};
 
 export const rootStyleControls = ['background'] as const;
 
@@ -366,10 +354,6 @@ export const featureSectionStyleControls = [
   'display',
 ] as const;
 
-export type Control =
-  | typeof CONTROLS_AFFECT_ON_PARAMS[number]
-  | typeof CONTROLS_AFFECT_ON_STYLES[number];
-
 // WARN: every time you add or remove some properties in prod, you must write migration to add/remove properties for existing entities in db
 export const AVAILABLE_CONTROLS: AvailableControls = {
   root: rootStyleControls,
@@ -425,15 +409,6 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
   featureSection: featureSectionStyleControls,
   section: containerStyleControls,
 } as const;
-
-export type AvailableChildren = {
-  [P in Entity | string]: {
-    [key: string]: {
-      min: number;
-      max: number;
-    };
-  };
-};
 
 export const AVAILABLE_CHILDREN: AvailableChildren = {
   root: {

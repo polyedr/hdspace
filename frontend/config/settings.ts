@@ -1,4 +1,5 @@
 import axios, { AxiosRequestConfig } from 'axios';
+import { MyAxiosProps } from '../src/types';
 
 export const env = process.env.NODE_ENV;
 
@@ -26,10 +27,6 @@ export const { api } = settings[env] || settings.development;
 //   && getAccessTokenFromStorage() !== ''
 //   && `Bearer ${getAccessTokenFromStorage()}`
 // ) || '';
-
-export type MyAxiosProps = { access?: string; contentType?: string } & Partial<
-  AxiosRequestConfig
->;
 
 export const myAxios = (props: MyAxiosProps) => {
   const authorization = props.access

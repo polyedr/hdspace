@@ -1,4 +1,4 @@
-import { AppReduxState } from '../types/app';
+import { AppReduxState } from '../../types';
 
 function makeFeatureStateSelector<
   T extends AppReduxState,

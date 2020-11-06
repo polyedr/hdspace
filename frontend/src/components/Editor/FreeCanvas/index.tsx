@@ -14,6 +14,7 @@ import {
 } from '../../../redux/project/actions';
 import FREE_CANVAS_RENDERERS from './FreeRenderers';
 import { useElementClassNames } from './helpers';
+import { Normalized, StateElement } from '../../../types';
 
 const FreeCanvas = () => {
   const dispatch = useDispatch();
@@ -21,7 +22,9 @@ const FreeCanvas = () => {
   const ref = useRef<Rnd | null>(null);
 
   const root = useSelector(selectCurrentRoot);
-  const directChildren = useSelector(selectDirectRootChildren);
+  const directChildren: Normalized<StateElement> = useSelector(
+    selectDirectRootChildren,
+  );
   const activeElementId = useSelector(selectActiveElementId);
   const currentScreenId = useSelector(selectCurrentScreenId);
 

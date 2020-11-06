@@ -6,15 +6,15 @@ import FormControl from '@material-ui/core/FormControl';
 import MenuItem from '@material-ui/core/MenuItem';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import capitalize from '@material-ui/core/utils/capitalize';
-import { Entity } from '../../../../../domain/core';
-import { AppReduxState } from '../../../../../shared/types/app';
-import { LibraryElement } from '../../../../../api/types';
-import {
-  PropertiesChangeProps,
-  withConfigurableProperties,
-} from '../../../../../utils/withConfigurableProperties';
+import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
 import { selectCurrentEditableStyles } from '../../../../../redux/project/selectors';
 import StylesHeader from '../../helperComponents/StylesHeader';
+import {
+  AppReduxState,
+  Entity,
+  LibraryElement,
+  PropertiesChangeProps,
+} from '../../../../../types';
 
 const useStyles = makeStyles({
   wrapper: {

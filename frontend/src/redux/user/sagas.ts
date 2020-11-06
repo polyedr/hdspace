@@ -21,9 +21,9 @@ import {
 import { openProjects, openSignScreen } from '../../utils/history';
 import TYPES from '../../constants/actions';
 import { convertUserDataToRequest } from '../../api/converters/toRequest';
-import { ITokenPair, ServerProfileData, ServerUserData } from './types';
 import { reqWrapper } from '../project/sagas';
 import { selectTokenPair } from './selectors';
+import { ITokenPair, ServerProfileData, ServerUserData } from '../../types';
 
 // eslint-disable-next-line consistent-return
 export function* getTokenPairSaga(username: string, password: string) {

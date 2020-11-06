@@ -1,8 +1,6 @@
 /* eslint-disable global-require */
-export interface IImages {
-  [key: string]: string;
-}
 
+// eslint-disable-next-line import/prefer-default-export
 export const IMAGES = {
   default: null,
   prof: require('../assets/sprites/profile_empty.png'),

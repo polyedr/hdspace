@@ -6,9 +6,8 @@ import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 import * as R from 'ramda';
 import * as Actions from '../actions';
-import { selectors, T } from '..';
+import { selectors } from '..';
 import { reqWrapper } from './index';
-import { ReturnPromisedType } from '../../../shared/types';
 import { addScreenSaga, getScreensSaga } from './screen';
 import {
   convertCreatedProjectToRequest,
@@ -22,15 +21,17 @@ import {
   apiGetProjectWithScreens,
 } from '../../../api/project';
 import generateFontFace from '../../../utils/generateFontFace';
-import { Page } from '../types';
 import { apiGetScenarios } from '../../../api/scenario';
 import { apiGetElements } from '../../../api/element';
-import {
-  Project,
-  PaginatedArray,
-  ProjectWithScreens,
-} from '../../../api/types';
 import { selectProjectsDataNext } from '../selectors';
+import {
+  IScenarioElement,
+  Page,
+  PaginatedArray,
+  Project,
+  ProjectWithScreens,
+  ReturnPromisedType,
+} from '../../../types';
 
 export function* getProjectListSaga(): SagaIterator {
   yield put(Actions.setProjectListLoader(true));
@@ -141,7 +142,7 @@ export function* exportProjectSaga() {
 
   const elementsWithImages = ((R.flatten(
     elements,
-  ) as unknown) as T.IScenarioElement[]).filter(
+  ) as unknown) as IScenarioElement[]).filter(
     (element) => element.parameters.imageURL,
   );
 
@@ -197,7 +198,7 @@ export function* exportProjectSaga() {
   );
 
   const fontsInfo = R.uniq(
-    ((R.flatten(elements) as unknown) as T.IScenarioElement[])
+    ((R.flatten(elements) as unknown) as IScenarioElement[])
       .filter((element) => element.styles['font-family'])
       .map((element) => {
         const fontFamilyName = element.styles['font-family']

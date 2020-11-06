@@ -7,13 +7,13 @@ import {
 } from 'react-router-dom';
 import { connect } from 'react-redux';
 import RenderTree from '../components/RenderTree/RenderTree';
-import { Page } from '../redux/project/types';
 import { ReduxState } from '../redux/export';
 import { selectSavedElementsValues } from '../redux/export/selectors';
 import {
   updateSavedElementsValues,
   updateSavedElementValues,
 } from '../redux/export/actions';
+import { Page } from '../types';
 
 const renderTreeInfo = window.renderTreeInfo as Page[];
 const screensInfo =

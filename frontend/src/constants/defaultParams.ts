@@ -1,8 +1,12 @@
 import { getDefaultStyles } from '../domain/libraryElements/defaultStyles';
-import { LibraryElement, Project } from '../api/types';
-import { ITokenPair } from '../redux/user/types';
-import { Screen, StateElement } from '../redux/project/types';
-import { CssLikeStyles } from '../utils/StyleHelper';
+import {
+  CssLikeStyles,
+  ITokenPair,
+  LibraryElement,
+  Project,
+  StateElement,
+  Screen,
+} from '../types';
 
 export const MIN_BORDER_WIDTH = 0;
 export const MAX_BORDER_WIDTH = 10;

@@ -9,7 +9,6 @@ import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import SyncIcon from '@material-ui/icons/Sync';
 import Tooltip from '@material-ui/core/Tooltip';
 import AspectRatioRoundedIcon from '@material-ui/icons/AspectRatioRounded';
-
 import { SmartContainerRendererProps } from '../types';
 import { makeComponentStyles } from '../styles';
 import {
@@ -19,7 +18,7 @@ import {
 import useUrlImageToFile from '../../../../utils/useUrlImageToFile';
 import useImageUpload from '../../../../utils/nn/hooks/useImageUpload';
 import useNNProcessing from '../../../../utils/nn/hooks/useNNProcessing';
-import { SyntheticGlobalElement } from '../../../../utils/dragAndDrop/GlobalDropTarget/types';
+import { SyntheticGlobalElement } from '../../../../types';
 import { updateElementParameters } from '../../../../redux/project/actions';
 import { NNBlockType } from '../../../../constants/defaultParams';
 import useEventHandlers from '../useEventHandlers';

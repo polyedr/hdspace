@@ -3,7 +3,7 @@ import {
   IPlainAction,
   IPlainFailAction,
   IProtectAction,
-} from './types';
+} from '../../types';
 
 function makeCommunicationReducer<
   E extends IPlainAction<string> = IProtectAction,

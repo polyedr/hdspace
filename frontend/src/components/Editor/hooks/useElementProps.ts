@@ -1,10 +1,9 @@
-import { useMemo } from 'react';
+import React, { useMemo } from 'react';
+
 import { useSelector, useDispatch } from 'react-redux';
-import { ProjectClass } from '../../../api/types';
 import { SharedRendererProps } from '../../UI/RenderElements/types';
 import { convertPropCSS } from '../../../utils/StyleHelper';
 import { findParentByChildID } from '../../../utils/ElementsTreeHelper';
-import { SavedElementsValues } from '../../../redux/project/types';
 import {
   selectActiveElement,
   selectCurrentProject,
@@ -17,17 +16,19 @@ import {
 } from '../../../redux/project/selectors';
 import { updateSavedElementValues } from '../../../redux/project/actions';
 import { selectIsPrototypeMode } from '../../../redux/user/selectors';
+import { LIBRARY_ELEMENTS } from '../../../domain/libraryElements/libraryElements';
 import {
   ChildrenElements,
-  LIBRARY_ELEMENTS,
-} from '../../../domain/libraryElements/libraryElements';
-import { ElementEntity } from '../../../domain/core';
+  ElementEntity,
+  ProjectClass,
+  SavedElementsValues,
+} from '../../../types';
 
 const isElementStructType = (type: string): type is ElementEntity => {
   return type in LIBRARY_ELEMENTS;
 };
 
-export type ElementProps = {
+type ElementProps = {
   currentValue?: any;
   isBorderVisible?: boolean;
   params?: any;

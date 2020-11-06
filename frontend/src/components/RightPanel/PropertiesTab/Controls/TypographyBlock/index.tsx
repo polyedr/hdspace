@@ -13,18 +13,18 @@ import FormatAlignCenterIcon from '@material-ui/icons/FormatAlignCenter';
 import FormatAlignRightIcon from '@material-ui/icons/FormatAlignRight';
 import FormatBoldIcon from '@material-ui/icons/FormatBold';
 import FormatItalicIcon from '@material-ui/icons/FormatItalic';
-import { Entity } from '../../../../../domain/core';
-import { AppReduxState } from '../../../../../shared/types/app';
-import { LibraryElement } from '../../../../../api/types';
-import {
-  PropertiesChangeProps,
-  withConfigurableProperties,
-} from '../../../../../utils/withConfigurableProperties';
+import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
 import { getPermissibleValue } from '../../../../../utils/NumberHelper';
 import FONTS from '../../../../../constants/fonts';
 import { selectCurrentEditableStyles } from '../../../../../redux/project/selectors';
 import StylesHeader from '../../helperComponents/StylesHeader';
 import ColorSettings from '../../helperComponents/ColorSettings';
+import {
+  AppReduxState,
+  Entity,
+  LibraryElement,
+  PropertiesChangeProps,
+} from '../../../../../types';
 
 const MIN_FONT_SIZE = 1;
 const MAX_FONT_SIZE = 84;

@@ -1,17 +1,9 @@
 /* eslint-disable camelcase */
 
 import { AxiosError } from 'axios';
-import { LoginFormData } from '../redux/user/types';
 import { parseResult } from './project';
 import { myAxios } from '../../config/settings';
-
-export interface ISignUpData {
-  username: string;
-  password: string;
-  email: string;
-  first_name: string;
-  last_name: string;
-}
+import { LoginFormData } from '../types';
 
 type SendActivationMailData = {
   username: string;

@@ -2,10 +2,9 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { useRouteMatch } from 'react-router-dom';
 import { Form } from 'react-final-form';
-import { FormField } from '../FormField/FormField';
+import FormField from '../FormField/FormField';
 import * as Actions from '../../../redux/user/actions';
-import isLatinOrNumbers from '../../../shared/validators/isLatinOrNumbers';
-import { AppReduxState } from '../../../shared/types/app';
+import isLatinOrNumbers from '../../../utils/validators/isLatinOrNumbers';
 import { Info } from '../Info';
 import Spinner from '../../UI/Spinner';
 import {
@@ -13,8 +12,9 @@ import {
   isLongPassword,
   isOnlyNumeric,
   isRequired,
-} from '../../../shared/validators';
+} from '../../../utils/validators';
 import Button from '../../UI/Button';
+import { AppReduxState } from '../../../types';
 
 const styles = require('./ResetPassword.scss');
 
@@ -68,7 +68,8 @@ const ResetPassword: React.FC<IProps> = ({
   return (
     <>
       <Info />
-      <div className="signContainer">
+
+      <div>
         <div className={styles.formContainer}>
           <p className={styles.title}>Reset your password</p>
           <Form
@@ -106,20 +107,9 @@ const ResetPassword: React.FC<IProps> = ({
                   validator={isRequired}
                 />
                 <div className="signButtonBlock">
-                  {!!submitError && (
-                    <p className="signAuthorisationErrorText">{submitError}</p>
-                  )}
-                  {authError && (
-                    <p className="signAuthorisationErrorText">
-                      {authError.message}
-                    </p>
-                  )}
-                  <Button
-                    className="signSubmitBtn"
-                    type="submit"
-                    styleType="none"
-                    disabled={submitting}
-                  >
+                  {!!submitError && <p>{submitError}</p>}
+                  {authError && <p>{authError.message}</p>}
+                  <Button type="submit" styleType="none" disabled={submitting}>
                     Change password
                   </Button>
                 </div>

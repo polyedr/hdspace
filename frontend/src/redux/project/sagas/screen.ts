@@ -6,7 +6,7 @@ import * as R from 'ramda';
 import { push } from 'connected-react-router';
 import * as Actions from '../actions';
 import { reqWrapper } from '.';
-import { selectors, T } from '..';
+import { selectors } from '..';
 import { createContainer } from './scenario';
 import {
   selectAllElements,
@@ -22,7 +22,6 @@ import {
 } from '../../../api/screen';
 import { convertCreatedElementToRequest } from '../../../api/converters/toRequest';
 import { apiGetProject, apiSaveProject } from '../../../api/project';
-import { Screen, IScenarioItem, StateElement } from '../types';
 import {
   activateScreen,
   addElements,
@@ -41,18 +40,21 @@ import {
   setUndoActions,
 } from '../actions';
 import { apiAddElements, apiGetElements } from '../../../api/element';
-import {
-  LibraryElement,
-  LibraryElementUnion,
-  Project,
-  ServerElement,
-  Normalized,
-} from '../../../api/types';
 import generateUniqueName from '../../../utils/generateUniqueName';
 import { apiSaveScenarios } from '../../../api/scenario';
 import { convertElementFromResponse } from '../../../api/converters/fromResponse';
 import getSavedValue from '../../../utils/getSavedValue';
-import { AppReduxState } from '../../../shared/types/app';
+import {
+  AppReduxState,
+  LibraryElement,
+  LibraryElementUnion,
+  Normalized,
+  Project,
+  ServerElement,
+  StateElement,
+  Screen,
+  IScenarioItem,
+} from '../../../types';
 
 export function* activateScreenSaga({
   payload: { screenId },
@@ -154,7 +156,7 @@ export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
     yield put(setUndoActions(delScreen(projectID, createdScreen.id)));
   }
 
-  const rootScenario: T.IScenarioItem = yield call(createContainer, {
+  const rootScenario: IScenarioItem = yield call(createContainer, {
     screen: createdScreen.id,
   });
 

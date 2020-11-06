@@ -4,54 +4,7 @@ import {
   MAX_BORDER_RADIUS_PERCENT,
   MIN_BORDER_RADIUS,
 } from '../constants/defaultParams';
-import { Flex, ScreenDisplay } from '../redux/project/types';
-
-export type CssLikeStyles = {
-  display?: ScreenDisplay['display'];
-
-  width?: string;
-  height?: string;
-
-  'min-height'?: string;
-  'min-width'?: string;
-  'max-width'?: string;
-
-  'margin-top'?: string;
-  'margin-right'?: string;
-  'margin-bottom'?: string;
-  'margin-left'?: string;
-  'padding-top'?: string;
-  'padding-right'?: string;
-  'padding-bottom'?: string;
-  'padding-left'?: string;
-
-  'border-style'?: string;
-  'border-width'?: string;
-  'border-color'?: string;
-  'border-radius'?: string;
-
-  'background-color'?: string;
-  'background-image'?: string;
-  'background-repeat'?: string;
-  'background-size'?: string;
-  'background-position'?: string;
-
-  'font-family'?: string;
-  color?: string;
-  'font-size'?: string;
-  'line-height'?: string;
-  'font-style'?: string;
-  'font-weight'?: number;
-  'text-align'?: string;
-
-  'flex-direction'?: Flex['flexDirection'];
-  'align-items'?: Flex['alignItems'];
-  'justify-content'?: Flex['justifyContent'];
-  'flex-grow'?: number;
-
-  'list-style-type'?: 'none' | 'disc';
-  overflow?: string;
-};
+import { CssLikeStyles, Flex } from '../types';
 
 type TConvertIndents = (
   styles: CssLikeStyles,

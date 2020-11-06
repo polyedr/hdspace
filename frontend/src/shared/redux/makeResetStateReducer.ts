@@ -1,4 +1,4 @@
-import { IPlainAction } from './types';
+import { IPlainAction } from '../../types';
 
 function makeResetStateReducer<A extends IPlainAction<string>, S>(
   type: A['type'],

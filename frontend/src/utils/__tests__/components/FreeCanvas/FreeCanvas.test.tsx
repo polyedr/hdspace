@@ -30,7 +30,7 @@ describe('Free Canvas', () => {
     fireEvent.click(root);
 
     const actions = store.getActions();
-    expect(actions[0].type).toBe(TYPES.SET_ACTIVE_ELEMENT);
+    expect(actions[0].type).toBe(TYPES.SET_ACTIVE_ELEMENT_ID);
     expect(actions[0].payload).toBe(mockRootElement.id);
   });
 });

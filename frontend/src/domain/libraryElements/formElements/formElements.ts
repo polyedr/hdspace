@@ -1,6 +1,8 @@
+import { defaultFreeCanvasParams } from '../../core';
 import {
   ButtonServerElement,
   CheckboxServerElement,
+  CssLikeStyles,
   LabelServerElement,
   RadiobuttonServerElement,
   SelectItemServerElement,
@@ -8,9 +10,7 @@ import {
   SelectServerElement,
   TextareaServerElement,
   TextinputServerElement,
-} from '../../../api/types';
-import { CssLikeStyles } from '../../../utils/StyleHelper';
-import { defaultFreeCanvasParams } from '../../core';
+} from '../../../types';
 
 export const makeButton = ({
   buoyancy = 0,

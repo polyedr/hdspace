@@ -2,14 +2,14 @@
 
 import { AxiosResponse, AxiosError } from 'axios';
 import { convertProjectFromResponse } from './converters/fromResponse';
+import { myAxios } from '../../config/settings';
 import {
-  Project,
-  ServerProject,
+  MyAxiosProps,
   PaginatedArray,
+  Project,
   ProjectWithScreens,
-} from './types';
-
-import { myAxios, MyAxiosProps } from '../../config/settings';
+  ServerProject,
+} from '../types';
 
 export const onError = ({ response: r }: AxiosError) => {
   const response = r as any;

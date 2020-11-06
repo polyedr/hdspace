@@ -12,22 +12,22 @@ import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
 import DeleteIcon from '@material-ui/icons/Delete';
 import TextField from '@material-ui/core/TextField';
-import { SelectItemElement } from '../../../../../api/types';
 import {
   selectActiveItemChildren,
   selectCurrentScreenId,
   selectElementById,
 } from '../../../../../redux/project/selectors';
-import { AppReduxState } from '../../../../../shared/types/app';
 import {
   addChildToElement,
   deleteItem,
 } from '../../../../../redux/project/actions';
-import {
-  PropertiesChangeProps,
-  withConfigurableProperties,
-} from '../../../../../utils/withConfigurableProperties';
+import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
 import generateUniqueName from '../../../../../utils/generateUniqueName';
+import {
+  AppReduxState,
+  PropertiesChangeProps,
+  SelectItemElement,
+} from '../../../../../types';
 
 const useStyles = makeStyles({
   row: {

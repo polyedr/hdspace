@@ -3,7 +3,7 @@ import {
   SavedElementsValues,
   UpdateSavedElementsValues,
   UpdateSavedElementValues,
-} from '../project/types';
+} from '../../types';
 
 export const updateSavedElementsValues = (
   elementsValues: SavedElementsValues,

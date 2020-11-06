@@ -1,7 +1,5 @@
 import * as R from 'ramda';
-import { CssLikeStyles } from './StyleHelper';
-import { Project } from '../api/types';
-import { Entity } from '../domain/core';
+import { CssLikeStyles, Entity, Project } from '../types';
 
 export const updateProjectClasses = (
   project: Project,

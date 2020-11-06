@@ -1,7 +1,13 @@
-import * as T from './types';
 import { RightPanelTab, SCREEN_FORMATS } from '../../constants/defaultParams';
+import {
+  ProjectCommunicationState,
+  ProjectControlState,
+  ProjectDataState,
+  ProjectEditState,
+  ProjectUiState,
+} from '../../types';
 
-export const initialData: T.ProjectDataState = {
+export const initialData: ProjectDataState = {
   projectsData: {
     next: null,
     previous: null,
@@ -21,7 +27,7 @@ export const initialData: T.ProjectDataState = {
   elementInputs: {},
 };
 
-export const initialUi: T.ProjectUiState = {
+export const initialUi: ProjectUiState = {
   editableStyles: 'ownStyles',
   rightPanel: {
     activeTab: RightPanelTab.ELEMENTS,
@@ -37,7 +43,7 @@ export const initialUi: T.ProjectUiState = {
   },
 };
 
-export const initialEdit: T.ProjectEditState = {
+export const initialEdit: ProjectEditState = {
   currentProjectId: -1,
   currentScreenId: -1,
   activeElementId: '-1',
@@ -49,7 +55,7 @@ export const initialEdit: T.ProjectEditState = {
   },
 };
 
-export const initialCommunication: T.ProjectCommunicationState = {
+export const initialCommunication: ProjectCommunicationState = {
   loader: false,
   projectListLoader: false,
   screenLoader: false,
@@ -58,7 +64,7 @@ export const initialCommunication: T.ProjectCommunicationState = {
   analyzerLoader: false,
 };
 
-export const initialControl: T.ProjectControlState = {
+export const initialControl: ProjectControlState = {
   undoActions: [],
   redoActions: [],
   history: [],
