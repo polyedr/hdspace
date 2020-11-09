@@ -31,7 +31,7 @@ import {
 import {
   addProjectSaga,
   delProjectSaga,
-  exportProjectSaga,
+  // exportProjectSaga,
   getProjectListSaga,
   getProjectSaga,
   renameProjectSaga,
@@ -52,7 +52,7 @@ import {
   loadCustomElementsSaga,
 } from './element';
 import { convertElementToRequest } from '../../../api/converters/toRequest';
-import { MAX_TOKEN_TRIALS } from '../../../../config/settings';
+import { MAX_TOKEN_TRIALS } from '../../../config/settings';
 import TYPES from '../../../constants/actions';
 import { logout, setLoadedToken, setTokenPair } from '../../user/actions';
 import { ElementHistoryMeta, ItemToCopyInfo, StateElement } from '../types';
@@ -415,7 +415,7 @@ export default function* projectSaga() {
   yield takeLatest(TYPES.DELETE_PROJECT, delProjectSaga);
   yield takeLatest(TYPES.UPDATE_PROJECT, updateProjectSaga);
   yield takeLatest(TYPES.GET_PROJECT, getProjectSaga);
-  yield takeLatest(TYPES.EXPORT_PROJECT, exportProjectSaga);
+  // yield takeLatest(TYPES.EXPORT_PROJECT, exportProjectSaga);
   yield takeLatest(TYPES.CHANGE_SCREENS_ORDER, changeScreensOrderSaga);
   yield takeLatest(TYPES.RENAME_PROJECT, renameProjectSaga);
 

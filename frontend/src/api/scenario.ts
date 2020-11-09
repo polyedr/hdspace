@@ -1,6 +1,6 @@
 import { onError, parseResult } from './project';
 import { IScenarioItem } from '../redux/project/types';
-import { myAxios, MyAxiosProps } from '../../config/settings';
+import { myAxios, MyAxiosProps } from '../config/settings';
 
 export const apiGetScenarios = ({
   screenID,

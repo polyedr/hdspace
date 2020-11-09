@@ -1,14 +1,13 @@
 /* eslint-disable no-console */
 
 import { SagaIterator } from 'redux-saga';
-import { put, call, select, all } from 'redux-saga/effects';
-import JSZip from 'jszip';
-import { saveAs } from 'file-saver';
-import * as R from 'ramda';
+import { put, call, select } from 'redux-saga/effects';
+/* import JSZip from 'jszip';
+import { saveAs } from 'file-saver'; 
+import * as R from 'ramda'; */
 import * as Actions from '../actions';
-import { selectors, T } from '..';
+import { selectors } from '..';
 import { reqWrapper } from './index';
-import { ReturnPromisedType } from '../../../shared/types';
 import { addScreenSaga, getScreensSaga } from './screen';
 import {
   convertCreatedProjectToRequest,
@@ -21,10 +20,6 @@ import {
   apiGetProject,
   apiSaveProject,
 } from '../../../api/project';
-import generateFontFace from '../../../utils/generateFontFace';
-import { Page } from '../types';
-import { apiGetScenarios } from '../../../api/scenario';
-import { apiGetElements } from '../../../api/element';
 import { Project, PaginatedArray } from '../../../api/types';
 import { selectProjectsDataNext } from '../selectors';
 
@@ -93,7 +88,7 @@ export function* addProjectSaga({
   yield call(addScreenSaga, Actions.addScreen(project.id, 'Screen 1', 0, true));
 }
 
-export function* exportProjectSaga() {
+/* export function* exportProjectSaga() {
   const currentProject: ReturnType<typeof selectors.selectCurrentProject> = yield select(
     selectors.selectCurrentProject,
   );
@@ -292,7 +287,7 @@ export function* exportProjectSaga() {
   zip
     .generateAsync({ type: 'blob' })
     .then((blob) => saveAs(blob, `${currentProject.name}.zip`));
-}
+} */
 
 export function* delProjectSaga({
   payload: { id },

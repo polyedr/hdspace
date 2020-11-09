@@ -71,9 +71,9 @@ export const updateProject = (
   meta,
 });
 
-export const exportProject = (): T.ExportProject => ({
+/* export const exportProject = (): T.ExportProject => ({
   type: TYPES.EXPORT_PROJECT,
-});
+}); */
 
 export const changeScreensOrder = (
   screens: T.Screen[],
