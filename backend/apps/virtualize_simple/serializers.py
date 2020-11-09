@@ -1063,84 +1063,84 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
         # cv2.imshow(window_name1, image_opencv_input)
         # cv2.waitKey(0)
 
-        # Calculation of the excluded indices to remove overlapped elements start
-        # Second, calculate the non-text blocks overlap
-        excluded_elements = []
-        # for rect1 in fdict[filenamesize]["regions"]:
-        for rect1 in fdict[fnamesize]["regions"]:
-            # for rect2 in fdict[filenamesize]["regions"]:
-            for rect2 in fdict[fnamesize]["regions"]:
-                is_menu = (rect1["region_attributes"]["HTML element"] == "menu") or (
-                    rect2["region_attributes"]["HTML element"] == "menu"
-                )
-                if (rect1 != rect2) and not is_menu:
-                    x1 = rect1["shape_attributes"]["x"]
-                    y1 = rect1["shape_attributes"]["y"]
-                    x2 = (
-                        rect1["shape_attributes"]["x"]
-                        + rect1["shape_attributes"]["width"]
+        if region_dataset in {"webpages"}:
+            # Calculation of the excluded indices to remove overlapped elements start
+            # Second, calculate the non-text blocks overlap
+            excluded_elements = []
+            # for rect1 in fdict[filenamesize]["regions"]:
+            for rect1 in fdict[fnamesize]["regions"]:
+                # for rect2 in fdict[filenamesize]["regions"]:
+                for rect2 in fdict[fnamesize]["regions"]:
+                    is_menu = (rect1["region_attributes"]["HTML element"] == "menu") or (
+                        rect2["region_attributes"]["HTML element"] == "menu"
                     )
-                    y2 = (
-                        rect1["shape_attributes"]["y"]
-                        + rect1["shape_attributes"]["height"]
-                    )
-                    x3 = rect2["shape_attributes"]["x"]
-                    y3 = rect2["shape_attributes"]["y"]
-                    x4 = (
-                        rect2["shape_attributes"]["x"]
-                        + rect2["shape_attributes"]["width"]
-                    )
-                    y4 = (
-                        rect2["shape_attributes"]["y"]
-                        + rect2["shape_attributes"]["height"]
-                    )
+                    if (rect1 != rect2) and not is_menu:
+                        x1 = rect1["shape_attributes"]["x"]
+                        y1 = rect1["shape_attributes"]["y"]
+                        x2 = (
+                            rect1["shape_attributes"]["x"]
+                            + rect1["shape_attributes"]["width"]
+                        )
+                        y2 = (
+                            rect1["shape_attributes"]["y"]
+                            + rect1["shape_attributes"]["height"]
+                        )
+                        x3 = rect2["shape_attributes"]["x"]
+                        y3 = rect2["shape_attributes"]["y"]
+                        x4 = (
+                            rect2["shape_attributes"]["x"]
+                            + rect2["shape_attributes"]["width"]
+                        )
+                        y4 = (
+                            rect2["shape_attributes"]["y"]
+                            + rect2["shape_attributes"]["height"]
+                        )
 
-                    # Borders of the rectangles overlapped area
-                    left = max(x1, x3)
-                    bottom = max(y1, y3)
-                    right = min(x2, x4)
-                    top = min(y2, y4)
-                    # Sizes of the rectangles overlapped area
-                    width = right - left
-                    height = top - bottom
+                        # Borders of the rectangles overlapped area
+                        left = max(x1, x3)
+                        bottom = max(y1, y3)
+                        right = min(x2, x4)
+                        top = min(y2, y4)
+                        # Sizes of the rectangles overlapped area
+                        width = right - left
+                        height = top - bottom
 
-                    # The first rectangle square
-                    width1, height1 = x2 - x1, y2 - y1
+                        # The first rectangle square
+                        width1, height1 = x2 - x1, y2 - y1
 
-                    # The second rectangle square
-                    width2, height2 = x4 - x3, y4 - y3
+                        # The second rectangle square
+                        width2, height2 = x4 - x3, y4 - y3
 
-                    # Check if width, height of the overlapped area less or equal 0
-                    if not (width <= 0 or height <= 0):
-                        # If the square > 0, calculate the squares of the 3 rectangles
-                        square = width * height
-                        square1 = width1 * height1
-                        square2 = width2 * height2
-                        #
-                        # print(square, square1, square2)
-                        # input()
+                        # Check if width, height of the overlapped area less or equal 0
+                        if not (width <= 0 or height <= 0):
+                            # If the square > 0, calculate the squares of the 3 rectangles
+                            square = width * height
+                            square1 = width1 * height1
+                            square2 = width2 * height2
+                            #
+                            # print(square, square1, square2)
+                            # input()
 
-                        if (square > square1 * SQUARES_OVERLAP_THRESHOLD) or (
-                            square > square2 * SQUARES_OVERLAP_THRESHOLD
-                        ):
-                            if square1 < square2:
-                                excluded_elements.append(rect1)
-                            else:
+                            if (square > square1 * SQUARES_OVERLAP_THRESHOLD) or (
+                                square > square2 * SQUARES_OVERLAP_THRESHOLD
+                            ):
+                                if square1 < square2:
+                                    excluded_elements.append(rect1)
+                                else:
+                                    excluded_elements.append(rect2)
+                            elif square > square1 * SQUARES_OVERLAP_THRESHOLD:
                                 excluded_elements.append(rect2)
-                        elif square > square1 * SQUARES_OVERLAP_THRESHOLD:
-                            excluded_elements.append(rect2)
-                        elif square > square2 * SQUARES_OVERLAP_THRESHOLD:
-                            excluded_elements.append(rect1)
+                            elif square > square2 * SQUARES_OVERLAP_THRESHOLD:
+                                excluded_elements.append(rect1)
 
-        # Remove some items using list comprehension
-        # fdict[filenamesize]["regions"] = [
-        fdict[fnamesize]["regions"] = [
-            ele
-            # for ele in fdict[filenamesize]["regions"]
-            for ele in fdict[fnamesize]["regions"]
-            if ele not in excluded_elements
-        ]
-        # Calculation of the excluded indices to remove overlapped elements end
+            # Remove some items using list comprehension
+            fdict[fnamesize]["regions"] = [
+                ele
+                # for ele in fdict[filenamesize]["regions"]
+                for ele in fdict[fnamesize]["regions"]
+                if ele not in excluded_elements
+            ]
+            # Calculation of the excluded indices to remove overlapped elements end
 
         # find all the clusters based on cluster-making elements
         # (inputs, selects, buttons, free text blocks, maybe large images)
