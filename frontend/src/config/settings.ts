@@ -9,9 +9,15 @@ const settings = {
       version: 1,
     },
   },
-  production: {
+  staging: {
     api: {
       host: 'https://www.timberworkinfo.ru',
+      version: 1,
+    },
+  },
+  production: {
+    api: {
+      host: 'https://www.adevi.info',
       version: 1,
     },
   },
