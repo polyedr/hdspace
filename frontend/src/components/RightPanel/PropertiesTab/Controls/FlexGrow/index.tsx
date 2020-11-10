@@ -5,13 +5,10 @@ import {
   selectActiveElement,
   selectCurrentEditableStyles,
 } from '../../../../../redux/project/selectors';
-import { AppReduxState } from '../../../../../shared/types/app';
-import { ContainerElement } from '../../../../../api/types';
-import {
-  PropertiesChangeProps,
-  withConfigurableProperties,
-} from '../../../../../utils/withConfigurableProperties';
+import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
 import StylesHeader from '../../helperComponents/StylesHeader';
+import { ContainerElement, PropertiesChangeProps } from '../../../../../types';
+import { AppReduxState } from '../../../../../redux/types';
 
 function mapState(state: AppReduxState) {
   const flexGrow = selectCurrentEditableStyles(state, 'flex-grow');

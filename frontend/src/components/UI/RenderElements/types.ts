@@ -1,15 +1,15 @@
 /* eslint-disable camelcase */
 import React, { DOMAttributes } from 'react';
-import { IMapProps } from '../../../redux/project/types';
 import {
   HeadingType,
+  IMapProps,
   InputType,
   LibraryElement,
   LinkParams,
+  NNBlockType,
   ProjectClass,
   VideoSettingsType,
-} from '../../../api/types';
-import { NNBlockType } from '../../../constants/defaultParams';
+} from '../../../types';
 
 export type SharedRendererProps = {
   id: string;

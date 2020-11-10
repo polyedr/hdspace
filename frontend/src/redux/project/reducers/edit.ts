@@ -1,13 +1,13 @@
 import * as R from 'ramda';
 import produce, { Draft } from 'immer';
 import { initialEdit } from '../initial';
-import * as T from '../types';
-import TYPES from '../../../constants/actions';
+import TYPES from '../../actionTypes';
+import { Action, ProjectEditState } from '../../types';
 
 const editReducer = produce(
   (
-    draft: Draft<T.ProjectEditState> = initialEdit,
-    action: T.Action,
+    draft: Draft<ProjectEditState> = initialEdit,
+    action: Action,
     // eslint-disable-next-line consistent-return
   ) => {
     switch (action.type) {

@@ -10,7 +10,7 @@ import { focusTreeItem } from '../utils';
 import ContextMenu from './ContextMenu';
 import { ICONS } from '../../../../domain/libraryElements/libraryElements';
 import { selectElementById } from '../../../../redux/project/selectors';
-import { splitWords } from '../../../../utils/StringHelper';
+import { splitWords } from '../../../../utils/stringHelper';
 
 const useStyles = makeStyles({
   iconButton: {

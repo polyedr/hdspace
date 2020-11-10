@@ -1,6 +1,5 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-// import cn from 'classnames';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import {
   selectActiveElementId,
@@ -9,7 +8,7 @@ import {
   selectShowingBorders,
 } from '../../../../redux/project/selectors';
 import { ELEMENTS_WITHOUT_CRUMB } from '../constants';
-import { BorderStyles } from '../types';
+import { BorderStyles } from '../../../../types';
 
 type Props = {
   elementId: string;

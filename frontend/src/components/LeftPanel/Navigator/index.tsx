@@ -25,7 +25,7 @@ import {
   selectElementsForCurrentScreen,
   selectCurrentRootId,
 } from '../../../redux/project/selectors';
-import { DISALLOW_ADD_ELEMENT_NOTIFICATION_TEXT } from '../../../features/notification/types';
+import { DISALLOW_ADD_ELEMENT_NOTIFICATION_TEXT } from '../../../features/notification/constants';
 import {
   copyActiveItem,
   deleteItem,

@@ -5,9 +5,9 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import { createStyles } from '@material-ui/core';
 import * as Actions from '../../../redux/user/actions';
 import LoginForm from '../LoginForm';
-import { AppReduxState } from '../../../shared/types/app';
 import Spinner from '../../UI/Spinner';
 import { Info } from '../Info';
+import { AppReduxState } from '../../../redux/types';
 
 const useStyles = makeStyles((theme) =>
   createStyles({

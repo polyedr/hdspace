@@ -9,14 +9,13 @@ import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import createSagaMiddleware from 'redux-saga';
 import { connectRouter, routerMiddleware } from 'connected-react-router';
-import { createBrowserHistory } from 'history';
 import { PersistConfig, Persistor } from 'redux-persist/es/types';
-// import { composeWithDevTools } from 'redux-devtools-extension';
 
 import userReducer from './user/reducer';
 import projectReducer from './project/reducers';
 import projectSaga from './project/sagas';
 import userSaga from './user/sagas';
+import history from './history';
 import DevToolsOptions from './devtools';
 
 const userPersistConfig: PersistConfig = {
@@ -32,7 +31,6 @@ const userPersistConfig: PersistConfig = {
 };
 
 export const sagaMiddleware = createSagaMiddleware();
-export const history = createBrowserHistory();
 
 const composeEnhancers =
   typeof window === 'object' &&

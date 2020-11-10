@@ -1,10 +1,10 @@
+import { defaultFreeCanvasParams } from '../../core';
 import {
   CalendarServerElement,
   ClockServerElement,
+  CssLikeStyles,
   MapServerElement,
-} from '../../../api/types';
-import { CssLikeStyles } from '../../../utils/StyleHelper';
-import { defaultFreeCanvasParams } from '../../core';
+} from '../../../types';
 
 export const map: MapServerElement = {
   buoyancy: 0,

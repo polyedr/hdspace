@@ -5,60 +5,22 @@ import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import DISPLAY from './constants';
-import { Entity } from '../../../../../domain/core';
-import { LibraryElement } from '../../../../../api/types';
-import { Flex, ScreenDisplay } from '../../../../../redux/project/types';
-import {
-  convertFlexToCssLikeStyles,
-  CssLikeStyles,
-} from '../../../../../utils/StyleHelper';
-import {
-  PropertiesChangeProps,
-  withConfigurableProperties,
-} from '../../../../../utils/withConfigurableProperties';
-import { assertNever } from '../../../../../shared/helpers/ts';
+import { convertFlexToCssLikeStyles } from '../../../../../utils/StyleHelper';
+import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
 import { selectDisplayStyles } from '../../../../../redux/project/selectors';
 import StylesHeader from '../../helperComponents/StylesHeader';
 import FlexProperties from '../../helperComponents/FlexProperties';
+import {
+  Entity,
+  Flex,
+  LibraryElement,
+  PropertiesChangeProps,
+  ScreenDisplay,
+} from '../../../../../types';
 
 type StateProps = {
   displayStyles: ScreenDisplay;
 };
-
-export function getDisplayStyles(
-  activeItemStyles: Pick<
-    Required<CssLikeStyles>,
-    'display' | 'flex-direction' | 'justify-content' | 'align-items'
-  >,
-): ScreenDisplay {
-  switch (activeItemStyles.display) {
-    case 'block':
-      return {
-        display: activeItemStyles.display,
-      };
-
-    case 'inline':
-      return {
-        display: activeItemStyles.display,
-      };
-
-    case 'inline-block':
-      return {
-        display: activeItemStyles.display,
-      };
-
-    case 'flex':
-      return {
-        display: activeItemStyles.display,
-        justifyContent: activeItemStyles['justify-content'],
-        alignItems: activeItemStyles['align-items'],
-        flexDirection: activeItemStyles['flex-direction'],
-      };
-
-    default:
-      return assertNever(activeItemStyles.display);
-  }
-}
 
 type Props = StateProps & PropertiesChangeProps<LibraryElement<Entity>>;
 

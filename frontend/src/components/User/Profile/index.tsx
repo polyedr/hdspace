@@ -9,9 +9,9 @@ import {
   changeUserData,
   logout,
 } from '../../../redux/user/actions';
-import { ProfileData, UserData } from '../../../redux/user/types';
-import { IMAGES } from '../../../constants/images';
-import { openSignScreen } from '../../../utils/history';
+import IMAGES from '../../../constants/images';
+import { ProfileData, UserData } from '../../../types';
+import { openSignScreen } from '../../../redux/history';
 
 const styles = require('./Profile.scss');
 

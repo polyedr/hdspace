@@ -1,6 +1,6 @@
 import { onError, parseResult } from './project';
-import { myAxios, MyAxiosProps } from '../config/settings';
-import { Screen } from '../redux/project/types';
+import { myAxios } from '../config/settings';
+import { MyAxiosProps, Screen } from '../types';
 
 export const apiGetScreen = (
   props: MyAxiosProps & { id: string },

@@ -1,11 +1,11 @@
-import * as T from '../types';
-import TYPES from '../../../constants/actions';
+import TYPES from '../../actionTypes';
 import { initialCommunication } from '../initial';
+import { Action, ProjectCommunicationState } from '../../types';
 
 const communicationReducer = (
-  state: T.ProjectCommunicationState = initialCommunication,
-  action: T.Action,
-): T.ProjectCommunicationState => {
+  state: ProjectCommunicationState = initialCommunication,
+  action: Action,
+): ProjectCommunicationState => {
   switch (action.type) {
     case TYPES.SET_LOADER: {
       return {

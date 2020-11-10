@@ -1,20 +1,11 @@
-import React, { useCallback, useContext } from 'react';
+import React, { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
-
 import {
   ActionRendererProps,
   SharedRendererProps,
 } from '../components/UI/RenderElements/types';
-import { LinkContext } from '../containers/ExportedApp';
 import { activateScreen } from '../redux/project/actions';
-
-export type ActionType = 'external-link' | 'internal-link' | 'button';
-
-export type WithActionProps = {
-  actionLink: string;
-  actionType: ActionType;
-  onClick(event: React.MouseEvent<HTMLAnchorElement, MouseEvent>): void;
-};
+import { WithActionProps } from '../types';
 
 type Props = WithActionProps & SharedRendererProps & ActionRendererProps;
 
@@ -31,7 +22,6 @@ function withAction(
       params: { action },
       isDisabled,
     } = props;
-    const screensInfo = useContext(LinkContext);
 
     const handleInternalLinkClick = useCallback(
       (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
@@ -58,27 +48,6 @@ function withAction(
       },
       [isDisabled],
     );
-
-    const getUrl = useCallback(() => {
-      if (!action) {
-        return '';
-      }
-
-      if (action.type === 'internal-link' && isExportedAction) {
-        return (
-          (screensInfo &&
-            screensInfo.find((screen) => screen.id === action.screenID)
-              ?.name) ||
-          ''
-        );
-      }
-
-      if (action.type === 'internal-link') {
-        return action.screenID === 'noScreen' ? '' : String(action.screenID);
-      }
-
-      return action.url;
-    }, [action]);
 
     const isInternalLink = useCallback(() => action?.type === 'internal-link', [
       action,
@@ -108,7 +77,7 @@ function withAction(
         onClick={
           isInternalLink() ? handleInternalLinkClick : handleExternalLinkClick
         }
-        actionLink={getUrl()}
+        actionLink="mock"
         ref={ref as React.RefObject<HTMLElement>}
       />
     );

@@ -4,7 +4,7 @@ import { render, fireEvent } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import FreeCanvas from '../../../../components/Editor/FreeCanvas';
 import { mockRootElement, mockState } from '../../test-utils';
-import TYPES from '../../../../constants/actions';
+import TYPES from '../../../../redux/actionTypes';
 
 describe('Free Canvas', () => {
   let store;
@@ -30,7 +30,7 @@ describe('Free Canvas', () => {
     fireEvent.click(root);
 
     const actions = store.getActions();
-    expect(actions[0].type).toBe(TYPES.SET_ACTIVE_ELEMENT);
+    expect(actions[0].type).toBe(TYPES.SET_ACTIVE_ELEMENT_ID);
     expect(actions[0].payload).toBe(mockRootElement.id);
   });
 });

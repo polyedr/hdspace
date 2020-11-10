@@ -4,7 +4,6 @@ import React, { useCallback } from 'react';
 import { connect } from 'react-redux';
 import TextField from '@material-ui/core/TextField';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import { AppReduxState } from '../../../../../shared/types/app';
 import {
   MAX_LATITUDE,
   MAX_LONGITUDE,
@@ -13,15 +12,15 @@ import {
   MIN_LONGITUDE,
   MIN_MAP_ZOOM,
 } from '../../../../../constants/defaultParams';
-import { MapElement, MapProps as MapParams } from '../../../../../api/types';
 import { selectActiveElementParams } from '../../../../../redux/project/selectors';
-import {
-  PropertiesChangeProps,
-  withConfigurableProperties,
-} from '../../../../../utils/withConfigurableProperties';
+import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
 import { getPermissibleValue } from '../../../../../utils/NumberHelper';
-
-// const ZOOM_STEP = 0.5;
+import {
+  MapElement,
+  PropertiesChangeProps,
+  MapProps as MapParams,
+} from '../../../../../types';
+import { AppReduxState } from '../../../../../redux/types';
 
 const useStyles = makeStyles({
   text: {

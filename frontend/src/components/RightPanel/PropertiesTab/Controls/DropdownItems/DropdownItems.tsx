@@ -1,26 +1,25 @@
 import React, { ChangeEvent } from 'react';
 import { connect, useSelector } from 'react-redux';
-
 import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import TextField from '@material-ui/core/TextField';
 import DeleteIcon from '@material-ui/icons/Delete';
-import { DropdownItemElement } from '../../../../../api/types';
 import {
   selectActiveElementId,
   selectCurrentScreenId,
   selectElementAsTree,
 } from '../../../../../redux/project/selectors';
-import { AppReduxState } from '../../../../../shared/types/app';
-import {
-  PropertiesChangeProps,
-  withConfigurableProperties,
-} from '../../../../../utils/withConfigurableProperties';
+import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
 import {
   addChildToElement,
   deleteItem,
 } from '../../../../../redux/project/actions';
+import {
+  DropdownItemElement,
+  PropertiesChangeProps,
+} from '../../../../../types';
+import { AppReduxState } from '../../../../../redux/types';
 
 const useStyles = makeStyles({
   row: {

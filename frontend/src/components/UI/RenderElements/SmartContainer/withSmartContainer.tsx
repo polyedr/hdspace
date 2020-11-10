@@ -1,7 +1,7 @@
 import React from 'react';
 import SmartContainer from './SmartContainer';
 import { SmartContainerRendererProps } from '../types';
-import { NNBlockType } from '../../../../constants/defaultParams';
+import { NNBlockType } from '../../../../types';
 
 const withSmartContainer = (blockType: NNBlockType) =>
   React.forwardRef(

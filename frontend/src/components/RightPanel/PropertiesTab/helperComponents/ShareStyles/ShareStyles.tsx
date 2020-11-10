@@ -4,7 +4,6 @@ import DoneIcon from '@material-ui/icons/Done';
 import CancelIcon from '@material-ui/icons/Cancel';
 import { connect, useSelector } from 'react-redux';
 import Button from '@material-ui/core/Button';
-import { AppReduxState } from '../../../../../shared/types/app';
 import {
   selectActiveElement,
   selectCurrentProject,
@@ -16,6 +15,7 @@ import {
   removeElementClassName,
 } from '../../../../../redux/project/actions';
 import EditableStyles from '../EditableStyles/EditableStyles';
+import { AppReduxState } from '../../../../../redux/types';
 
 const useStyles = makeStyles({
   root: {

@@ -1,6 +1,6 @@
-import * as T from '../types';
-import TYPES from '../../../constants/actions';
+import TYPES from '../../actionTypes';
 import { initialControl } from '../initial';
+import { Action, ProjectControlState } from '../../types';
 
 // To create undoable feature for the editor you have to implement action with "meta" field extends type HistoryMeta,
 // that will call correspondent saga, which should:
@@ -12,9 +12,9 @@ import { initialControl } from '../initial';
 // so you will be able to undo your changes.
 
 const controlReducer = (
-  state: T.ProjectControlState = initialControl,
-  action: T.Action,
-): T.ProjectControlState => {
+  state: ProjectControlState = initialControl,
+  action: Action,
+): ProjectControlState => {
   switch (action.type) {
     case TYPES.REMOVE_STATE_ELEMENT:
     case TYPES.INSERT_STATE_ELEMENT:

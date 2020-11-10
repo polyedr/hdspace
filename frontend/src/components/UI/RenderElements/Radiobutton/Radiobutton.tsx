@@ -6,7 +6,6 @@ import { makeStyles, Radio } from '@material-ui/core';
 import RadioButtonCheckedIcon from '@material-ui/icons/RadioButtonChecked';
 import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked';
 import * as R from 'ramda';
-
 import { RadioRendererProps } from '../types';
 import useEventHandlers from '../useEventHandlers';
 

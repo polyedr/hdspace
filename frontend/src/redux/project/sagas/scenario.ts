@@ -15,19 +15,11 @@ import {
   selectFreeCanvasOffset,
 } from '../selectors';
 import * as Actions from '../actions';
-import { selectors, T } from '..';
-import { updateSavedElementsValues } from './screen';
-import { ElementHistoryMeta, StateElement, ElementsToDrop } from '../types';
+import { selectors } from '..';
 import {
   DISALLOW_ADD_ELEMENT_NOTIFICATION_TEXT,
   DISALLOW_REMOVE_ELEMENT_NOTIFICATION_TEXT,
-} from '../../../features/notification/types';
-import {
-  LibraryElement,
-  LibraryElementUnion,
-  Normalized,
-} from '../../../api/types';
-import { Entity } from '../../../domain/core';
+} from '../../../features/notification/constants';
 import {
   getElementsArray,
   updateElementParameters,
@@ -47,18 +39,27 @@ import {
   isElementCanBeAdded,
   isElementCanBeRemove,
 } from '../../../utils/AvailableChildrenHelper';
-import { DEFAULT_INDENTS } from '../../../domain/constants/defaultStyles';
 import { apiAddScenarios } from '../../../api/scenario';
-
-import { ReturnPromisedType } from '../../../shared/types';
 import { convertElementFromResponse } from '../../../api/converters/fromResponse';
 import getSavedValue from '../../../utils/getSavedValue';
-import { reqWrapper } from './index';
 import {
   removeMapElement,
   restoreMapElement,
   restoreMapElementChildren,
 } from '../../../utils/normalizedStateHelpers';
+import {
+  ElementsToDrop,
+  Entity,
+  IScenarioItem,
+  LibraryElement,
+  LibraryElementUnion,
+  Normalized,
+  ReturnPromisedType,
+  StateElement,
+} from '../../../types';
+import { DEFAULT_INDENTS } from '../../../domain/libraryElements/defaultStyles';
+import { reqWrapper, updateSavedElementsValues } from './shared';
+import { Action, ElementHistoryMeta } from '../../types';
 
 export function* updateElementsTree(
   chunk: Normalized<StateElement>,
@@ -75,12 +76,12 @@ export function* updateElementsTree(
   yield put(Actions.updateElementsTree(chunk, meta));
 }
 
-export function* createContainer(scenario?: Partial<T.IScenarioItem>) {
+export function* createContainer(scenario?: Partial<IScenarioItem>) {
   const currentScreen: ReturnType<typeof selectors.selectCurrentScreen> = yield select(
     selectors.selectCurrentScreen,
   );
 
-  const containerToCreate: T.IScenarioItem = {
+  const containerToCreate: IScenarioItem = {
     parent_id: -1, // if parent_id = -1, is container that contains all other elements
     id: -100, // will be omitted and set by server
     name: 'Root',
@@ -323,7 +324,7 @@ export function* softDeleteSaga(action: ReturnType<typeof Actions.deleteItem>) {
   }
 
   if (!undo) {
-    const undoActions: T.Action[] = [
+    const undoActions: Action[] = [
       Actions.restoreElementChildren(
         parent.id,
         parent.children.map((child) => child.id),

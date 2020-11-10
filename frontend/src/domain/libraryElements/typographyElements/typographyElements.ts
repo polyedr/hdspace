@@ -1,4 +1,6 @@
+import { defaultFreeCanvasParams } from '../../core';
 import {
+  CssLikeStyles,
   HeadingServerElement,
   HeadingType,
   HyperlinkServerElement,
@@ -7,9 +9,7 @@ import {
   OcrtextServerElement,
   ParagraphServerElement,
   TextBlockServerElement,
-} from '../../../api/types';
-import { CssLikeStyles } from '../../../utils/StyleHelper';
-import { defaultFreeCanvasParams } from '../../core';
+} from '../../../types';
 
 export const hyperlink: HyperlinkServerElement = {
   buoyancy: 0,

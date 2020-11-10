@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { put, call, select } from 'redux-saga/effects';
 import {
   selectCustomElementsPagination,
@@ -11,20 +12,12 @@ import {
   selectCurrentRootId,
   selectActiveElementId,
 } from '../selectors';
-/* eslint-disable no-console */
-
 import * as Actions from '../actions';
-
-import { reqWrapper } from './index';
-import { ReturnPromisedType } from '../../../shared/types';
 import { convertElementToPatchRequest } from '../../../api/converters/toRequest';
-import { LibraryElement, Normalized } from '../../../api/types';
-
 import {
   getElementsArray,
   getTreeWithDefaultStylesAndParams,
 } from '../../../utils/ElementsTreeHelper';
-
 import {
   apiChangeElement,
   apiChangeRecursiveElement,
@@ -32,17 +25,19 @@ import {
   parseImgUsingNN,
   apiGetCustomLibraryElements,
 } from '../../../api/element';
-
 import generateUniqueName from '../../../utils/generateUniqueName';
-import { CssLikeStyles } from '../../../utils/StyleHelper';
 import getSavedValue from '../../../utils/getSavedValue';
 import { addProjectStyles } from '../../../utils/ProjectClassesHelper';
-import { updateProject } from './project';
-import { StateElement } from '../types';
+import { KEEP_RP_TAB_ELEMENTS } from '../../../constants/defaultParams';
 import {
-  KEEP_RP_TAB_ELEMENTS,
+  CssLikeStyles,
+  LibraryElement,
+  Normalized,
+  ReturnPromisedType,
   RightPanelTab,
-} from '../../../constants/defaultParams';
+  StateElement,
+} from '../../../types';
+import { reqWrapper, updateProject } from './shared';
 
 export function* moveElementSaga(
   action: ReturnType<typeof Actions.moveElement>,

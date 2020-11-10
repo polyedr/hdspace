@@ -1,4 +1,4 @@
-import { AppReduxState } from '../../shared/types/app';
+import { AppReduxState } from '../types';
 
 export const selectUserData = ({ user }: AppReduxState) => user.userData;
 

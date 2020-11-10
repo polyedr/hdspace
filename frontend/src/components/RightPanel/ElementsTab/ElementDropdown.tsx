@@ -4,10 +4,10 @@ import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import MenuItem from '@material-ui/core/MenuItem';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import Menu from '@material-ui/core/Menu';
-import { ElementData } from '../../../redux/project/types';
 import ElementButton from './ElementButton';
-import { splitWords } from '../../../utils/StringHelper';
+import { splitWords } from '../../../utils/stringHelper';
 import Button from '../../UI/Button';
+import { ElementData } from '../../../types';
 
 const useStyles = makeStyles({
   menu: {

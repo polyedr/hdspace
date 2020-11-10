@@ -3,13 +3,10 @@ import { connect } from 'react-redux';
 import { Switch } from '@material-ui/core';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import { AppReduxState } from '../../../../../shared/types/app';
-import { ButtonElement } from '../../../../../api/types';
-import {
-  PropertiesChangeProps,
-  withConfigurableProperties,
-} from '../../../../../utils/withConfigurableProperties';
+import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
 import { selectActiveElementParams } from '../../../../../redux/project/selectors';
+import { ButtonElement, PropertiesChangeProps } from '../../../../../types';
+import { AppReduxState } from '../../../../../redux/types';
 
 const useStyles = makeStyles({
   wrapper: {

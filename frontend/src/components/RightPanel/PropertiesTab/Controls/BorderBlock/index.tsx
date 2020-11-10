@@ -9,26 +9,24 @@ import {
   MAX_BORDER_WIDTH,
   MIN_BORDER_WIDTH,
 } from '../../../../../constants/defaultParams';
-import { Entity } from '../../../../../domain/core';
-import { LibraryElement } from '../../../../../api/types';
 import {
   getPermissibleValue,
   safeMatch,
   safeParseFloat,
   strToNumber,
 } from '../../../../../utils/NumberHelper';
-import {
-  PropertiesChangeProps,
-  withConfigurableProperties,
-} from '../../../../../utils/withConfigurableProperties';
-import {
-  CssLikeStyles,
-  validateBorderRadius,
-} from '../../../../../utils/StyleHelper';
-import { AppReduxState } from '../../../../../shared/types/app';
+import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
+import { validateBorderRadius } from '../../../../../utils/StyleHelper';
 import { selectCurrentEditableStyles } from '../../../../../redux/project/selectors';
 import StylesHeader from '../../helperComponents/StylesHeader';
 import ColorSettings from '../../helperComponents/ColorSettings';
+import {
+  CssLikeStyles,
+  Entity,
+  LibraryElement,
+  PropertiesChangeProps,
+} from '../../../../../types';
+import { AppReduxState } from '../../../../../redux/types';
 
 const useStyles = makeStyles({
   wrapper: {

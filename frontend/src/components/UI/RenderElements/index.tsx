@@ -26,10 +26,9 @@ import Container from './Container/Container';
 import Section from './Section/Section';
 import Clock from './Clock/Clock';
 import Undefined from './Undefined/Undefined';
-import { Entity } from '../../../domain/core';
+import { Entity, NNBlockType } from '../../../types';
 import withAction from '../../../utils/withAction';
 import withSmartContainer from './SmartContainer/withSmartContainer';
-import { NNBlockType } from '../../../constants/defaultParams';
 
 export const RENDERERS: Record<Entity, React.FC<any>> = {
   root: Container,

@@ -1,7 +1,6 @@
 import * as R from 'ramda';
-import { Entity } from '../domain/core';
-import { LibraryElement } from '../api/types';
 import { LIBRARY_ELEMENTS } from '../domain/libraryElements/libraryElements';
+import { Entity, LibraryElement } from '../types';
 
 export const findParentByChildID = (
   element: LibraryElement<Entity, LibraryElement<Entity>[]>,
@@ -18,53 +17,6 @@ export const findParentByChildID = (
 
     if (targetParent) {
       return targetParent;
-    }
-  }
-};
-
-export const addChildToElement = <
-  T extends Entity,
-  K extends Entity,
-  P extends Entity,
-  R extends Entity
->(
-  elementID: string,
-  newChild: LibraryElement<T, LibraryElement<K>[]>,
-  root: LibraryElement<P, LibraryElement<T | R>[]>,
-  childBuoyancy: number,
-): LibraryElement<P, LibraryElement<T | R>[]> => {
-  const sortedChildren: LibraryElement<P, LibraryElement<T | R>[]>['children'] =
-    root.id === elementID
-      ? R.insert(
-          childBuoyancy,
-          newChild,
-          root.children,
-        ).map((child, index) => ({ ...child, buoyancy: index }))
-      : root.children.map((child) =>
-          addChildToElement(elementID, newChild, child, childBuoyancy),
-        );
-
-  return {
-    ...root,
-    children: sortedChildren,
-  };
-};
-
-export const findChildByID = (
-  element: LibraryElement<Entity, LibraryElement<Entity>[]>,
-  targetID: string,
-  // eslint-disable-next-line consistent-return
-): LibraryElement<Entity, LibraryElement<Entity>[]> | undefined => {
-  if (element.id === targetID) {
-    return element;
-  }
-
-  // eslint-disable-next-line no-restricted-syntax
-  for (const child of element.children) {
-    const targetChild = findChildByID(child, targetID);
-
-    if (targetChild) {
-      return targetChild;
     }
   }
 };

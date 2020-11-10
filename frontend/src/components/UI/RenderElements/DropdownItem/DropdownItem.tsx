@@ -4,7 +4,6 @@ import React from 'react';
 import cn from 'classnames';
 import { MenuItem } from '@material-ui/core';
 import { DropdownItemRendererProps } from '../types';
-
 import { makeComponentStyles } from '../styles';
 import useEventHandlers from '../useEventHandlers';
 

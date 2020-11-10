@@ -1,79 +1,34 @@
-/* eslint-disable camelcase */
-import { OverridableComponent } from '@material-ui/core/OverridableComponent';
-import { SvgIconTypeMap } from '@material-ui/core';
-import { DropPosition } from '../../constants/dragAndDrop';
+import { RouterState } from 'connected-react-router';
+import React from 'react';
 import {
-  HeadingType,
-  InputType,
+  BorderedElementsRef,
+  CreatedElement,
+  CssLikeStyles,
+  DropTargetParams,
+  Entity,
+  Indices,
+  ItemToCopyInfo,
+  ITokenPair,
   LibraryElement,
   LibraryElementPatch,
-  Project,
-  VideoSettingsType,
-  Normalized,
-  PaginatedData,
-  PaginatedArray,
-  ServerElement,
-} from '../../api/types';
-import { IAction, IPlainAction, IPlainFailAction } from '../../shared/redux';
-import { Entity } from '../../domain/core';
-import TYPES from '../../constants/actions';
-import { CssLikeStyles } from '../../utils/StyleHelper';
-import {
-  addStateElements,
-  changeFreeCanvasMode,
-  changeScreenFormat,
-  extractStateElement,
-  insertStateElement,
-  moveStateElement,
-  removeStateElement,
-  rotateScreenFormat,
-  setProjectsData,
-  updateLastElements,
-  updateStateElement,
-  setActiveElementId,
-} from './actions';
-import {
   NNBlockType,
+  Normalized,
+  Notification,
+  PaginatedArray,
+  PaginatedData,
+  ParentIds,
+  Project,
   RightPanelTab,
+  SavedElementsValues,
+  Screen,
   SCREEN_FORMATS,
-} from '../../constants/defaultParams';
-
-export type ProjectState = {
-  data: ProjectDataState;
-  ui: ProjectUiState;
-  edit: ProjectEditState;
-  communication: ProjectCommunicationState;
-  control: ProjectControlState;
-};
-
-export type ProjectLibraryElements = {
-  [id: number]: IScenarioElement;
-};
-
-export type StateElement = {
-  id: string;
-  name: string;
-  type: Entity | 'none';
-  buoyancy: number;
-  parent?: string;
-  children: string[];
-  image: string | null | undefined;
-  styles: {
-    classNames: string[];
-    ownStyles: CssLikeStyles;
-  };
-  parameters: any;
-  shared?: boolean;
-};
-
-export type BorderedElementsRef = {
-  [id: string]: React.RefObject<HTMLElement>;
-};
-
-export type DropTargetParams = {
-  id: string;
-  position?: DropPosition;
-};
+  ServerStructType,
+  StateElement,
+  TotalUserData,
+  UploadedImageInfo,
+} from '../types';
+import TYPES from './actionTypes';
+import { DropPosition } from '../constants/dragAndDrop';
 
 export type ProjectDataState = {
   projectsData: PaginatedData<Project>;
@@ -133,29 +88,36 @@ export type ProjectControlState = {
   groupActionsUp: boolean;
 };
 
-export type Indices = {
-  newIndex: number;
-  oldIndex: number;
+export type ProjectState = {
+  data: ProjectDataState;
+  ui: ProjectUiState;
+  edit: ProjectEditState;
+  communication: ProjectCommunicationState;
+  control: ProjectControlState;
 };
 
-export type Notification = {
-  text: string;
+export type UserState = {
+  isLPanelMinimized: boolean;
+  isPrototypeMode: boolean;
+  freeCanvasMode: {
+    enabled: boolean;
+  };
+  tokenPair: ITokenPair;
+  isLoadedToken: boolean;
+  isLoggedIn: boolean;
+  authError: Error | null;
+  userData: TotalUserData;
+  restorePasswordEmail?: string;
+  restoreUserId?: number;
+  isLoading: boolean;
+  confirmMessage: string;
 };
 
-export type SavedElementsValues = {
-  [elementID: string]: { id: number; savedValue: string | boolean };
+export type AppReduxState = {
+  user: UserState;
+  project: ProjectState;
+  router: RouterState;
 };
-
-export type CreatedElement = {
-  id?: string;
-  type: Entity | string;
-  name: string;
-  custom: boolean;
-};
-
-export type LoadLibraryElementsFail = IPlainFailAction<
-  'PROJECTS:LOAD_LIBRARY_ELEMENTS_FAIL'
->;
 
 export type LoadProjects = IPlainAction<typeof TYPES.LOAD_PROJECTS>;
 export type LoadProjectsSuccess = IAction<
@@ -265,7 +227,6 @@ export type UpdateScreen = IAction<
   typeof TYPES.UPDATE_SCREEN,
   { screen: Screen }
 >;
-// export type ExportProject = IPlainAction<typeof TYPES.EXPORT_PROJECT>;
 export type SetCurrentScreenId = IAction<
   typeof TYPES.SET_CURRENT_SCREEN_ID,
   { screenId: number }
@@ -502,6 +463,71 @@ export type RemoveFileInput = IAction<
   { id: string }
 >;
 
+export type AddStateElements = IAction<
+  typeof TYPES.ADD_STATE_ELEMENTS,
+  { elements: LibraryElement<any>[]; parentId: string; index?: number },
+  ElementHistoryMeta
+>;
+
+export type ChangeFreeCanvasMode = IAction<
+  typeof TYPES.CHANGE_FREE_CANVAS_MODE,
+  boolean
+>;
+
+export type ChangeScreenFormat = IAction<
+  typeof TYPES.CHANGE_SCREEN_FORMAT,
+  SCREEN_FORMATS
+>;
+
+export type ExtractStateElement = IAction<
+  typeof TYPES.EXTRACT_STATE_ELEMENT,
+  string
+>;
+
+export type InsertStateElement = IAction<
+  typeof TYPES.INSERT_STATE_ELEMENT,
+  { parentId: string; childId: string; element: LibraryElement<any> },
+  ElementHistoryMeta
+>;
+
+export type MoveStateElement = IAction<
+  typeof TYPES.MOVE_STATE_ELEMENT,
+  { elementId: string; indices: Indices; parents: ParentIds },
+  ElementHistoryMeta
+>;
+
+export type RemoveStateElement = IAction<
+  typeof TYPES.REMOVE_STATE_ELEMENT,
+  { elementId: string },
+  ElementHistoryMeta
+>;
+
+export type RotateScreenFormat = IAction<
+  typeof TYPES.ROTATE_SCREEN_FORMAT,
+  boolean
+>;
+
+export type SetActiveElementId = IAction<
+  typeof TYPES.SET_ACTIVE_ELEMENT_ID,
+  string
+>;
+
+export type SetProjectsData = IAction<
+  typeof TYPES.SET_PROJECTS_DATA,
+  PaginatedArray<Project>
+>;
+
+export type UpdateLastElements = IAction<
+  typeof TYPES.UPDATE_LAST_ELEMENTS,
+  { parentId: string; ids: string[]; offset: number }
+>;
+
+export type UpdateStateElement = IAction<
+  typeof TYPES.UPDATE_STATE_ELEMENT,
+  { elementId: string; data: Partial<StateElement> },
+  ElementHistoryMeta
+>;
+
 export type Action =
   | LoadProjects
   | LoadProjectsSuccess
@@ -536,7 +562,6 @@ export type Action =
   | uploadImageForNNSuccess
   | GetScreenNN
   | WrapIntoContainer
-  | ReturnType<typeof setActiveElementId>
   | SetHoveredElement
   | ToggleContainersBorders
   | SetItemToCopy
@@ -572,17 +597,18 @@ export type Action =
   | UpdateScreen
   | AddElements
   | RestoreElement
-  | ReturnType<typeof moveStateElement>
-  | ReturnType<typeof updateStateElement>
-  | ReturnType<typeof addStateElements>
-  | ReturnType<typeof insertStateElement>
-  | ReturnType<typeof removeStateElement>
-  | ReturnType<typeof setProjectsData>
-  | ReturnType<typeof extractStateElement>
-  | ReturnType<typeof changeFreeCanvasMode>
-  | ReturnType<typeof updateLastElements>
-  | ReturnType<typeof changeScreenFormat>
-  | ReturnType<typeof rotateScreenFormat>
+  | SetActiveElementId
+  | MoveStateElement
+  | UpdateStateElement
+  | AddStateElements
+  | InsertStateElement
+  | RemoveStateElement
+  | SetProjectsData
+  | ExtractStateElement
+  | ChangeFreeCanvasMode
+  | UpdateLastElements
+  | ChangeScreenFormat
+  | RotateScreenFormat
   | SetScreens
   | AddBorderedElementRef
   | RemoveBorderedElementRef
@@ -595,173 +621,6 @@ export type Action =
   | AddFileInput
   | RemoveFileInput;
 
-export type ItemToCopyInfo = {
-  id: string;
-  screenID: number;
-};
-
-type Block = {
-  display: 'block';
-};
-
-type InlineBlock = {
-  display: 'inline-block';
-};
-
-type Inline = {
-  display: 'inline';
-};
-
-export type Flex = {
-  display: 'flex';
-  justifyContent:
-    | 'flex-start'
-    | 'flex-end'
-    | 'center'
-    | 'space-between'
-    | 'space-around';
-  alignItems: 'flex-start' | 'flex-end' | 'center' | 'baseline' | 'stretch';
-  flexDirection: 'row' | 'row-reverse' | 'column' | 'column-reverse';
-};
-
-export type ScreenDisplay = Block | Inline | InlineBlock | Flex;
-
-export interface ICenterProp {
-  lat: number;
-  lng: number;
-}
-
-export interface IMapProps {
-  center: ICenterProp;
-  zoom: number;
-  markerText?: string;
-}
-
-export type Option = { name: string; value: any };
-
-export type ListItem = {
-  textContent: string;
-  isLink: boolean;
-  link: string;
-};
-
-export type ScenarioLibraryElement = {
-  struct_type: ServerStructType;
-  func_type: ServerStructType;
-  func_type_human?: string;
-  buoyancy: number;
-  parameters: {
-    tags?: string;
-    group: string;
-    placeholder?: string;
-    map_props?: IMapProps;
-  };
-  styles: CssLikeStyles;
-  name: ServerStructType;
-};
-
-export type ServerStructType = Entity;
-
-export type ElementParameters = {
-  group?: string;
-  placeholder?: string;
-  url?: string;
-  imageURL?: string;
-  textContent?: string;
-  value?: string;
-  name?: string;
-  defaultChecked?: boolean;
-  map_props?: IMapProps;
-  showRipple?: boolean;
-  options?: Option[];
-  type?: InputType;
-  dropdownItems?: string[];
-  headingType?: HeadingType;
-  labelFor?: string;
-  listItems?: ListItem[];
-  isOrdered?: boolean;
-  isLink?: boolean;
-  link?: string;
-  isOpen?: boolean;
-  videoSettings?: VideoSettingsType;
-};
-
-export interface IScenarioElement {
-  // compare with entity on backend
-  id: number;
-  scenario: number;
-  name: string;
-  struct_type: ServerStructType;
-  func_type: ServerStructType;
-  func_type_human?: string; // possibly has fallback value as 'undefined'
-  buoyancy: number;
-  dynamic_buoyancy: number;
-  image: string | null;
-  parameters: { parent_id?: number } & ElementParameters;
-  styles: CssLikeStyles;
-  children: IScenarioElement[];
-  is_shared?: boolean;
-}
-
-export interface IScenarioElements {
-  [elementID: string]: IScenarioElement;
-}
-
-export interface IScenarioItem {
-  // compare with entity on backend
-  id: number;
-  name: string;
-  type?: string;
-  struct_type: ServerStructType; // 'scenario' | 'block' | 'group' | 'container' | 'undefined'. it seems that it also contains keyof of RENDERERS
-  screen: number;
-  parent_id: number; // id in database table
-  buoyancy: number;
-  direction: string; // 'vertical' | 'horizontal'
-  elements: number[]; // elements ids as foreign keys
-  parameters: {
-    children: string[]; // listSortable-specific ids
-  } & ElementParameters;
-  styles: CssLikeStyles;
-}
-
-export interface IScenarios {
-  [scenarioID: string]: IScenarioItem;
-}
-
-export interface ILSItem {
-  id: number;
-  type: ServerStructType;
-  children: string[];
-}
-
-export interface Screen {
-  id: number;
-  name: string;
-  status: string; // compare with entity on backend!
-  project: number;
-  image: string | null;
-  screenscenario: number[];
-  buoyancy: number;
-  element: string;
-  // removed screen_data_json, ask if it will be needed on backend
-}
-
-export type UploadedImageInfo = {
-  imageURL: string;
-  screenID: number;
-};
-
-export type Page = {
-  screenInfo: {
-    name: string;
-    id: number;
-  };
-  renderTree: {
-    containers: IScenarioItem[];
-    elements: IScenarioElement[];
-  };
-};
-
 export type HistoryMeta = {
   undo?: boolean;
   redo?: boolean;
@@ -771,49 +630,15 @@ export type ElementHistoryMeta = HistoryMeta & {
   sourceAction?: Action | null;
 };
 
-export type ElementData = {
-  key: string;
-  id?: string;
-  type: Entity;
-  icon: OverridableComponent<SvgIconTypeMap> | undefined;
-  name: string;
-  custom: boolean;
-};
+export interface IPlainAction<T, M = HistoryMeta> {
+  type: T;
+  meta?: M;
+}
 
-export type ElementsHierarchy = {
-  elements: {
-    layout: {
-      [elementName in Entity]: ElementData;
-    };
-    basic: {
-      [elementName in Entity]: ElementData;
-    };
-    form: {
-      [elementName in Entity]: ElementData;
-    };
-    widget: {
-      [elementName in Entity]: ElementData;
-    };
-  };
-  templates: {
-    [elementName in Entity]: ElementData;
-  };
-  library: {
-    adeviLibrary: {
-      [elementName in Entity]: ElementData;
-    };
-    customUI: {
-      [elementName in Entity]: ElementData;
-    };
-  };
-};
+export interface IAction<T, P, M = HistoryMeta> extends IPlainAction<T, M> {
+  payload: P;
+}
 
-export type ParentIds = {
-  oldParentId: string;
-  newParentId: string;
-};
-
-export type ElementsToDrop = {
-  elements: ServerElement<Entity>[];
-  index?: number;
-};
+export interface IPlainFailAction<T, E = string> extends IPlainAction<T> {
+  error: E;
+}

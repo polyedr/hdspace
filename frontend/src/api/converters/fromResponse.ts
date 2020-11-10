@@ -1,20 +1,18 @@
 /* eslint-disable camelcase */
 
-import { Entity } from '../../domain/core';
 import {
+  Entity,
   LibraryElement,
+  ProfileData,
   Project,
   RecursiveElement,
   ServerElement,
+  ServerProfileData,
   ServerProject,
   ServerRecursiveElement,
-} from '../types';
-import {
-  ProfileData,
-  ServerProfileData,
   ServerUserData,
   UserData,
-} from '../../redux/user/types';
+} from '../../types';
 
 export const convertElementFromResponse = <
   T extends Entity,
