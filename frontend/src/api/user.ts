@@ -2,7 +2,7 @@
 
 import { AxiosError } from 'axios';
 import { parseResult } from './project';
-import { myAxios } from '../../config/settings';
+import { myAxios } from '../config/settings';
 import { LoginFormData } from '../types';
 
 type SendActivationMailData = {

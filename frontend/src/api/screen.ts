@@ -1,6 +1,6 @@
 import { onError, parseResult } from './project';
-import { myAxios } from '../../config/settings';
-import { MyAxiosProps } from '../types';
+import { myAxios } from '../config/settings';
+import { MyAxiosProps, Screen } from '../types';
 
 export const apiGetScreen = (
   props: MyAxiosProps & { id: string },

@@ -1,85 +1,93 @@
 const webpack = require('webpack');
-const HtmlWebPackPlugin = require('html-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const path = require('path');
+const safePostCssParser = require('postcss-safe-parser');
 
+// plugins
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+// const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer'); // uncomment to pretty view modules size
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 
-const htmlPlugin = new HtmlWebPackPlugin({
-  template: './src/index.html',
-  filename: './index.html',
-  title: 'Editor',
-  hash: false,
-  favicon: './src/assets/sprites/favicon.png',
-});
-
-const miniCssExractPlugin = new MiniCssExtractPlugin({
-  filename: '[name].css',
-  chunkFilename: '[id].css',
-});
-
-const isDevelopment = process.env.NODE_ENV !== 'production';
-const devtool = isDevelopment ? 'eval-cheap-module-source-map' : undefined;
-
-const resolve = {
-  alias: {
-    'react-dom': '@hot-loader/react-dom',
-  },
-  extensions: ['*', '.ts', '.tsx', '.js', '.jsx', '.json'],
-};
-
-/* Configuration */
-
-module.exports = () => {
-  /* Export */
-  const plugins = [
-    htmlPlugin,
-    miniCssExractPlugin,
-    new webpack.HashedModuleIdsPlugin(),
-  ];
-
+module.exports = ({ MODE }) => {
+  const isProduction = MODE === 'production';
   return {
+    context: __dirname,
+    mode: MODE || 'development',
+    bail: isProduction,
+    devtool: isProduction ? 'cheap-module-source-map' : false,
+    entry: {
+      app: path.resolve(__dirname, 'src', 'index.tsx'),
+    },
+    output: {
+      path: path.join(__dirname, './dist'),
+      filename: 'bundle.js',
+      chunkFilename: '[chunkhash].js',
+      publicPath: '/',
+    },
+    target: 'web',
+    resolve: {
+      extensions: ['.js', '.ts', '.tsx'],
+      // Fix webpack's default behavior to not load packages with jsnext:main module
+      // (jsnext:main directs not usually distributable es6 format, but es6 sources)
+      mainFields: ['module', 'browser', 'main'],
+    },
     module: {
       rules: [
         {
-          test: /\.css$/,
-          use: [{ loader: 'style-loader' }, { loader: 'css-loader' }],
-        },
-        {
-          test: /\.less$/,
+          test: /\.tsx?$/,
           use: [
-            {
-              loader: isDevelopment
-                ? 'style-loader'
-                : MiniCssExtractPlugin.loader,
+            isProduction && {
+              loader: 'babel-loader',
             },
-            // { loader: 'css-loader' },
             {
-              loader: 'css-loader',
+              loader: 'ts-loader',
               options: {
-                modules: true,
-                sourceMap: isDevelopment,
-                importLoaders: 2,
-                localIdentName: '[name]__[local]__[hash:base64:5]',
+                transpileOnly: true,
               },
             },
-            { loader: 'less-loader' },
+          ].filter(Boolean),
+        },
+        // css
+        {
+          test: /\.css$/,
+          use: [
+            isProduction ? MiniCssExtractPlugin.loader : 'style-loader',
+            'css-loader',
+            {
+              loader: 'postcss-loader',
+              options: {
+                postcssOptions: {
+                  ident: 'postcss',
+                  plugins: [
+                    'postcss-import',
+                    'postcss-url',
+                    'postcss-cssnext',
+                    'postcss-reporter',
+                    { 'postcss-browser-reporter': { disabled: isProduction } },
+                  ],
+                },
+              },
+            },
           ],
         },
+        // static assets
+        /* { test: /\.html$/, use: 'html-loader' }, */
+        { test: /\.(png|svg|jpg|gif)$/, use: 'file-loader' },
         {
           test: /\.scss$/,
           use: [
             {
-              loader: isDevelopment
-                ? 'style-loader'
-                : MiniCssExtractPlugin.loader,
+              loader: isProduction
+                ? MiniCssExtractPlugin.loader
+                : 'style-loader',
             },
-            // { loader: 'css-loader' },
             {
               loader: 'css-loader',
               options: {
                 modules: true,
-                sourceMap: isDevelopment,
+                sourceMap: !isProduction,
                 importLoaders: 2,
                 localIdentName: '[name]__[local]__[hash:base64:5]',
               },
@@ -88,22 +96,12 @@ module.exports = () => {
             {
               loader: 'sass-resources-loader',
               options: {
-                resources: ['src/styles/variables.scss'],
+                resources: [
+                  path.resolve(__dirname, 'src', 'styles', 'variables.scss'),
+                ],
               },
             },
           ],
-        },
-        {
-          test: /\.(ts|tsx|js|jsx)$/,
-          exclude: /node_modules/,
-          use: {
-            loader: 'babel-loader',
-          },
-        },
-        {
-          test: /\.(ts|tsx)?$/,
-          loader: 'awesome-typescript-loader',
-          options: { transpileOnly: !isDevelopment },
         },
         {
           test: /\.(eot|ttf|woff|woff2|otf|svg)$/,
@@ -116,65 +114,116 @@ module.exports = () => {
             },
           },
         },
-        {
-          test: /\.(png|svg)$/,
-          exclude: [/fonts/],
-          use: {
-            loader: 'file-loader',
-            options: {
-              name: '[name].[ext]',
-            },
-          },
-        },
       ],
     },
-    devtool,
-    resolve,
-    plugins,
-    entry: {
-      app: './src/index.tsx',
-    },
-    output: {
-      publicPath: '/',
-      filename: isDevelopment ? '[name].[hash].js' : '[name].[contenthash].js',
-    },
     optimization: {
-      splitChunks: {
-        cacheGroups: {
-          vendor: {
-            name: 'vendor',
-            chunks: 'all',
-            test: /node_modules/,
-            priority: 20,
-            reuseExistingChunk: true,
+      minimize: isProduction,
+      minimizer: [
+        // This is only used in production mode
+        new TerserPlugin({
+          terserOptions: {
+            parse: {
+              ecma: 8,
+            },
+            compress: {
+              ecma: 5,
+              warnings: false,
+              comparisons: false,
+              inline: 2,
+            },
+            mangle: {
+              safari10: true,
+            },
+            // Added for profiling in devtools
+            keep_classnames: false,
+            keep_fnames: false,
+            output: {
+              ecma: 5,
+              comments: false,
+              // Turned on because emoji and regex is not minified properly using default
+              // https://github.com/facebook/create-react-app/issues/2488
+              ascii_only: true,
+            },
           },
-          commons: {
-            name: 'commons',
-            chunks: 'initial',
+        }),
+        // This is only used in production mode
+        new OptimizeCSSAssetsPlugin({
+          cssProcessorOptions: {
+            parser: safePostCssParser,
+            map: false,
+          },
+          cssProcessorPluginOptions: {
+            preset: ['default', { minifyFontValues: { removeQuotes: false } }],
+          },
+        }),
+      ],
+      splitChunks: {
+        chunks: 'async',
+        minSize: 20000,
+        minRemainingSize: 0,
+        minChunks: 2,
+        maxAsyncRequests: 30,
+        maxInitialRequests: 30,
+        automaticNameDelimiter: '~',
+        enforceSizeThreshold: 50000,
+        cacheGroups: {
+          defaultVendors: {
+            test: /[\\/]node_modules[\\/]/,
+            priority: -10,
+          },
+          default: {
             minChunks: 2,
-            minSize: 0,
+            priority: -20,
             reuseExistingChunk: true,
           },
         },
       },
-      minimizer: [
-        new UglifyJsPlugin({
-          cache: true,
-          parallel: isDevelopment,
-          sourceMap: isDevelopment, // set to true if you want JS source maps
-        }),
-        new OptimizeCSSAssetsPlugin({}),
-      ],
-      // To keep filename consistent between different modes (for example building only)
-      occurrenceOrder: true,
     },
+    plugins: [
+      new webpack.EnvironmentPlugin({
+        NODE_ENV: MODE || 'development', // use 'development' unless process.env.NODE_ENV is defined
+        DEBUG: false,
+      }),
+      new MiniCssExtractPlugin({
+        filename: '[contenthash].css',
+        disable: !isProduction,
+      }),
+      new HtmlWebpackPlugin({
+        filename: 'index.html',
+        template: './src/index.html',
+        hash: false,
+        favicon: './src/assets/sprites/favicon.png',
+        ...(isProduction
+          ? {
+              minify: {
+                removeComments: true,
+                collapseWhitespace: true,
+                removeRedundantAttributes: true,
+                useShortDoctype: true,
+                removeEmptyAttributes: true,
+                removeStyleLinkTypeAttributes: true,
+                keepClosingSlash: true,
+                minifyJS: true,
+                minifyCSS: true,
+                minifyURLs: true,
+              },
+            }
+          : {}),
+      }),
+      new ForkTsCheckerWebpackPlugin(),
+      // new BundleAnalyzerPlugin(),
+    ],
+
     devServer: {
       port: 8080,
-      // host: '192.168.0.108',
       hot: true,
+      inline: true,
       contentBase: 'dist',
       publicPath: '/',
-      historyApiFallback: true,
+      historyApiFallback: {
+        disableDotRule: true,
+      },
+      stats: 'minimal',
     },
   };
 };

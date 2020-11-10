@@ -1,5 +1,4 @@
 import axios, { AxiosRequestConfig } from 'axios';
-import { MyAxiosProps } from '../src/types';
 
 export const env = process.env.NODE_ENV;
 
@@ -20,13 +19,9 @@ const settings = {
 
 export const { api } = settings[env] || settings.development;
 
-// const getAccessTokenFromStorage = () => JSON.parse(JSON.parse(localStorage.getItem('persist:user')).authorisationToken).access;
-
-// const setDefaultTokenOnRequestHeaders = () => (
-//   localStorage.getItem('persist:user')
-//   && getAccessTokenFromStorage() !== ''
-//   && `Bearer ${getAccessTokenFromStorage()}`
-// ) || '';
+export type MyAxiosProps = { access?: string; contentType?: string } & Partial<
+  AxiosRequestConfig
+>;
 
 export const myAxios = (props: MyAxiosProps) => {
   const authorization = props.access

@@ -2,7 +2,7 @@
 
 import { AxiosResponse, AxiosError } from 'axios';
 import { convertProjectFromResponse } from './converters/fromResponse';
-import { myAxios } from '../../config/settings';
+import { myAxios } from '../config/settings';
 import {
   MyAxiosProps,
   PaginatedArray,

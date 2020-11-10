@@ -8,7 +8,7 @@ import {
   setLoadedToken,
   setTokenPair,
 } from '../../user/actions';
-import { MAX_TOKEN_TRIALS } from '../../../../config/settings';
+import { MAX_TOKEN_TRIALS } from '../../../config/settings';
 import { DEFAULT_AUTHORIZATION_TOKEN } from '../../../constants/defaultParams';
 import * as Actions from '../actions';
 import { convertProjectToPatchRequest } from '../../../api/converters/toRequest';

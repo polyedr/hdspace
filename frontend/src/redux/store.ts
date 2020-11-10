@@ -10,6 +10,7 @@ import storage from 'redux-persist/lib/storage';
 import createSagaMiddleware from 'redux-saga';
 import { connectRouter, routerMiddleware } from 'connected-react-router';
 import { PersistConfig, Persistor } from 'redux-persist/es/types';
+
 import userReducer from './user/reducer';
 import projectReducer from './project/reducers';
 import projectSaga from './project/sagas';
@@ -33,6 +34,7 @@ export const sagaMiddleware = createSagaMiddleware();
 
 const composeEnhancers =
   typeof window === 'object' &&
+  process.env.NODE_ENV !== 'production' &&
   (<any>window).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
     ? (<any>window).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__(DevToolsOptions)
     : compose;

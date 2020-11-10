@@ -6,7 +6,7 @@ import {
   convertRecursiveElementFromResponse,
 } from './converters/fromResponse';
 import { onError, parseResult } from './project';
-import { myAxios } from '../../config/settings';
+import { myAxios } from '../config/settings';
 import {
   Entity,
   LibraryElement,

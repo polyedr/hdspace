@@ -1,5 +1,5 @@
 import { onError, parseResult } from './project';
-import { myAxios } from '../../config/settings';
+import { myAxios } from '../config/settings';
 import { IScenarioItem, MyAxiosProps } from '../types';
 
 export const apiGetScenarios = ({
