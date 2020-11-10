@@ -1797,6 +1797,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                     }:
                         styles["width"] = str(node_width) + "px"
                         styles["height"] = str(node_height) + "px"
+                        styles["padding"] = "3px 0"
 
                         # displaying various kinds of elements start
                         element = ET.SubElement(node.div, "input")
