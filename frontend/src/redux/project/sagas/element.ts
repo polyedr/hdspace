@@ -397,7 +397,6 @@ export function* updateElementImage(
     apiChangeElement,
     { data: formData, id: parsedID },
   );
-
   yield put(
     Actions.updateElementParameters(
       itemID,
@@ -408,6 +407,8 @@ export function* updateElementImage(
           width: 0,
           height: 0,
         },
+        width: 'auto',
+        height: 'auto',
       },
       { screenId },
     ),
