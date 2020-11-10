@@ -6,11 +6,8 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
 import { selectCurrentEditableStyles } from '../../../../../redux/project/selectors';
 import StylesHeader from '../../helperComponents/StylesHeader';
-import {
-  AppReduxState,
-  ListElement,
-  PropertiesChangeProps,
-} from '../../../../../types';
+import { ListElement, PropertiesChangeProps } from '../../../../../types';
+import { AppReduxState } from '../../../../../redux/types';
 
 const useStyles = makeStyles({
   wrapper: {

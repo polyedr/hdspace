@@ -1,4 +1,4 @@
-import TYPES from '../../constants/actions';
+import TYPES from '../actionTypes';
 import {
   ITokenPair,
   LoginFormData,

@@ -9,7 +9,6 @@ import { onError, parseResult } from './project';
 import { myAxios } from '../../config/settings';
 import {
   Entity,
-  IScenarioElement,
   LibraryElement,
   MyAxiosProps,
   PaginatedArray,
@@ -20,7 +19,7 @@ import {
 export const apiGetElements = ({
   scenariosIDs,
   ...props
-}: MyAxiosProps & { scenariosIDs: string[] }): Promise<IScenarioElement[]> =>
+}: MyAxiosProps & { scenariosIDs: string[] }): Promise<ServerElement<any>[]> =>
   myAxios({
     ...props,
     params: {
@@ -111,7 +110,7 @@ export const apiDelElements = (props: MyAxiosProps & { list: string[] }) =>
 
 export const apiSaveElements = (
   props: MyAxiosProps,
-): Promise<IScenarioElement[]> =>
+): Promise<ServerElement<any>[]> =>
   myAxios({
     ...props,
     method: 'PATCH',

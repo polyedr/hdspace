@@ -4,11 +4,8 @@ import { Switch } from '@material-ui/core';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
 import { selectActiveElementParams } from '../../../../../redux/project/selectors';
-import {
-  AppReduxState,
-  ListElement,
-  PropertiesChangeProps,
-} from '../../../../../types';
+import { ListElement, PropertiesChangeProps } from '../../../../../types';
+import { AppReduxState } from '../../../../../redux/types';
 
 type StateProps = {
   isOrdered: boolean;

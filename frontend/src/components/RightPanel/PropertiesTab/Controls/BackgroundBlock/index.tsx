@@ -5,11 +5,11 @@ import { selectCurrentEditableStyles } from '../../../../../redux/project/select
 import StylesHeader from '../../helperComponents/StylesHeader';
 import ColorSettings from '../../helperComponents/ColorSettings';
 import {
-  AppReduxState,
   Entity,
   LibraryElement,
   PropertiesChangeProps,
 } from '../../../../../types';
+import { AppReduxState } from '../../../../../redux/types';
 
 function mapState(state: AppReduxState) {
   return {

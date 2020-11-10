@@ -21,12 +21,12 @@ import { selectCurrentEditableStyles } from '../../../../../redux/project/select
 import StylesHeader from '../../helperComponents/StylesHeader';
 import ColorSettings from '../../helperComponents/ColorSettings';
 import {
-  AppReduxState,
   CssLikeStyles,
   Entity,
   LibraryElement,
   PropertiesChangeProps,
 } from '../../../../../types';
+import { AppReduxState } from '../../../../../redux/types';
 
 const useStyles = makeStyles({
   wrapper: {

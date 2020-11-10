@@ -4,7 +4,7 @@ import { useDrag } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import Button from '@material-ui/core/Button';
-import { splitWords } from '../../../utils/StringHelper';
+import { splitWords } from '../../../utils/stringHelper';
 import { isAvailableChild } from '../../../utils/AvailableChildrenHelper';
 import { createElements } from '../../../redux/project/actions';
 import {

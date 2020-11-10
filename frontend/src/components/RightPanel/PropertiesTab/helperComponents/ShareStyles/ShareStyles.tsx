@@ -15,7 +15,7 @@ import {
   removeElementClassName,
 } from '../../../../../redux/project/actions';
 import EditableStyles from '../EditableStyles/EditableStyles';
-import { AppReduxState } from '../../../../../types';
+import { AppReduxState } from '../../../../../redux/types';
 
 const useStyles = makeStyles({
   root: {

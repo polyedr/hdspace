@@ -28,7 +28,7 @@ import {
   getWrapperStyles,
   useElementClassNames,
 } from './helpers';
-import { IMAGES } from '../../../constants/images';
+import IMAGES from '../../../constants/images';
 import { setActiveElement } from '../../../redux/project/actions';
 import { Entity, Normalized, StateElement } from '../../../types';
 

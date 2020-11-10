@@ -43,7 +43,6 @@ import generateUniqueName from '../../../utils/generateUniqueName';
 import { apiSaveScenarios } from '../../../api/scenario';
 import { convertElementFromResponse } from '../../../api/converters/fromResponse';
 import {
-  AppReduxState,
   LibraryElement,
   Normalized,
   Project,
@@ -53,6 +52,7 @@ import {
   IScenarioItem,
 } from '../../../types';
 import { reqWrapper } from './shared';
+import { AppReduxState } from '../../types';
 
 export function* activateScreenSaga({
   payload: { screenId },

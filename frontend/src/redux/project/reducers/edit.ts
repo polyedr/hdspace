@@ -1,8 +1,8 @@
 import * as R from 'ramda';
 import produce, { Draft } from 'immer';
 import { initialEdit } from '../initial';
-import TYPES from '../../../constants/actions';
-import { ProjectEditState, Action } from '../../../types';
+import TYPES from '../../actionTypes';
+import { Action, ProjectEditState } from '../../types';
 
 const editReducer = produce(
   (

@@ -39,18 +39,7 @@ export const DEFAULT_SIZE = {
   height: 'auto',
 };
 
-type ScreenIndents = {
-  'margin-top'?: string;
-  'margin-right'?: string;
-  'margin-bottom'?: string;
-  'margin-left'?: string;
-  'padding-top': string;
-  'padding-right': string;
-  'padding-bottom': string;
-  'padding-left': string;
-};
-
-export const DEFAULT_INDENTS: ScreenIndents = {
+export const DEFAULT_INDENTS = {
   'margin-top': '0px',
   'margin-right': '0px',
   'margin-bottom': '0px',
@@ -68,28 +57,14 @@ export const DEFAULT_DISPLAY: CssLikeStyles = {
   'align-items': 'stretch',
 };
 
-type ScreenBorders = {
-  'border-width': string;
-  'border-color': string;
-  'border-style': string;
-  'border-radius': string;
-};
-
-export const DEFAULT_BORDER: ScreenBorders = {
+export const DEFAULT_BORDER = {
   'border-width': '0px',
   'border-color': '#323232',
   'border-style': 'solid',
   'border-radius': '0px',
 };
 
-type ScreenBackground = {
-  'background-color': string;
-  'background-image': string;
-  'background-repeat': string;
-  'background-size': string;
-};
-
-export const DEFAULT_BACKGROUND: ScreenBackground = {
+export const DEFAULT_BACKGROUND = {
   'background-color': 'transparent',
   'background-image': 'none',
   'background-repeat': 'no-repeat',

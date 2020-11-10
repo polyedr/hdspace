@@ -9,11 +9,8 @@ import {
   selectElementsForCurrentScreen,
 } from '../../../../../redux/project/selectors';
 import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
-import {
-  AppReduxState,
-  LabelElement,
-  PropertiesChangeProps,
-} from '../../../../../types';
+import { LabelElement, PropertiesChangeProps } from '../../../../../types';
+import { AppReduxState } from '../../../../../redux/types';
 
 type StateProps = {
   labelFor: string;

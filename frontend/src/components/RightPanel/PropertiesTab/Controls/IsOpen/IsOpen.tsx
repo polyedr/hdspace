@@ -5,11 +5,8 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
 import { selectActiveElementParams } from '../../../../../redux/project/selectors';
-import {
-  AppReduxState,
-  DropdownElement,
-  PropertiesChangeProps,
-} from '../../../../../types';
+import { DropdownElement, PropertiesChangeProps } from '../../../../../types';
+import { AppReduxState } from '../../../../../redux/types';
 
 const useStyles = makeStyles({
   wrapper: {

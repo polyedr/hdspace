@@ -1,7 +1,7 @@
 import { call, put, select, take } from 'redux-saga/effects';
 import * as R from 'ramda';
 import { selectTokenPair } from '../../user/selectors';
-import { AppReduxState, LibraryElementUnion, Project } from '../../../types';
+import { LibraryElementUnion, Project } from '../../../types';
 import {
   logout,
   setAuthError,
@@ -9,7 +9,7 @@ import {
   setTokenPair,
 } from '../../user/actions';
 import { MAX_TOKEN_TRIALS } from '../../../../config/settings';
-import { DEFAULT_AUTHORISATION_TOKEN } from '../../../constants/defaultParams';
+import { DEFAULT_AUTHORIZATION_TOKEN } from '../../../constants/defaultParams';
 import * as Actions from '../actions';
 import { convertProjectToPatchRequest } from '../../../api/converters/toRequest';
 import { apiSaveProject } from '../../../api/project';
@@ -17,6 +17,7 @@ import { selectors } from '../index';
 import getSavedValue from '../../../utils/getSavedValue';
 import { openSignScreen } from '../../history';
 import { apiRefreshToken } from '../../../api/user';
+import { AppReduxState } from '../../types';
 
 // eslint-disable-next-line consistent-return
 export function* refreshUserTokenPair() {
@@ -59,7 +60,7 @@ export function* reqWrapper(
     const tokenResult = yield call(refreshUserTokenPair);
 
     if (!tokenResult || tokenResult.msg || tries >= MAX_TOKEN_TRIALS - 1) {
-      yield put(setTokenPair(DEFAULT_AUTHORISATION_TOKEN));
+      yield put(setTokenPair(DEFAULT_AUTHORIZATION_TOKEN));
       yield call(openSignScreen, 'signin');
 
       return null;

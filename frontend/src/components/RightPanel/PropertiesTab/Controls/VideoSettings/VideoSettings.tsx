@@ -9,11 +9,11 @@ import { selectActiveElementParams } from '../../../../../redux/project/selector
 import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
 import { extractPlayerLinkInfo } from '../../../../../utils/extractVideoLink';
 import {
-  AppReduxState,
   PropertiesChangeProps,
   VideoElement,
   VideoSettingsType,
 } from '../../../../../types';
+import { AppReduxState } from '../../../../../redux/types';
 
 const useStyles = makeStyles({
   wrapper: {

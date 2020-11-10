@@ -12,7 +12,7 @@ import {
   updateElementParameters,
 } from '../../../redux/project/actions';
 import { selectCurrentScreenId } from '../../../redux/project/selectors';
-import { splitWords } from '../../../utils/StringHelper';
+import { splitWords } from '../../../utils/stringHelper';
 import { StateElement } from '../../../types';
 
 const useStyles = makeStyles({

@@ -1,12 +1,11 @@
+import { RightPanelTab, SCREEN_FORMATS } from '../../types';
 import {
   ProjectCommunicationState,
   ProjectControlState,
   ProjectDataState,
   ProjectEditState,
   ProjectUiState,
-  RightPanelTab,
-  SCREEN_FORMATS,
-} from '../../types';
+} from '../types';
 
 export const initialData: ProjectDataState = {
   projectsData: {

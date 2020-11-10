@@ -4,8 +4,8 @@ import { Provider } from 'react-redux';
 import { render, fireEvent } from '@testing-library/react';
 import { mockStateElement, mockState } from '../../test-utils';
 import FreeDraggable from '../../../../components/Editor/FreeCanvas/FreeDraggable';
-import TYPES from '../../../../constants/actions';
-import { splitWords } from '../../../StringHelper';
+import TYPES from '../../../../redux/actionTypes';
+import { splitWords } from '../../../stringHelper';
 
 describe('Free Draggable', () => {
   let store;

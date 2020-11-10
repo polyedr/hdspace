@@ -1,4 +1,4 @@
-import { AppReduxState } from '../../types';
+import { AppReduxState } from '../types';
 
 export const selectUserData = ({ user }: AppReduxState) => user.userData;
 

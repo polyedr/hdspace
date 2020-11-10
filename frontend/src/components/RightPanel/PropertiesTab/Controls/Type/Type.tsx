@@ -8,11 +8,11 @@ import TYPE from './constants';
 import { selectActiveElementParams } from '../../../../../redux/project/selectors';
 import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
 import {
-  AppReduxState,
   InputType,
   PropertiesChangeProps,
   TextinputElement,
 } from '../../../../../types';
+import { AppReduxState } from '../../../../../redux/types';
 
 type StateProps = {
   type: InputType;

@@ -16,11 +16,11 @@ import { selectActiveElementParams } from '../../../../../redux/project/selector
 import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
 import { getPermissibleValue } from '../../../../../utils/NumberHelper';
 import {
-  AppReduxState,
   MapElement,
   PropertiesChangeProps,
   MapProps as MapParams,
 } from '../../../../../types';
+import { AppReduxState } from '../../../../../redux/types';
 
 const useStyles = makeStyles({
   text: {

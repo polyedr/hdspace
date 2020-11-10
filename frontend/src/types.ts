@@ -2,11 +2,9 @@
 import React from 'react';
 import { OverridableComponent } from '@material-ui/core/OverridableComponent';
 import { SvgIconTypeMap } from '@material-ui/core';
-import { RouterState } from 'connected-react-router';
 import { DropTargetMonitor } from 'react-dnd';
 import { AxiosRequestConfig } from 'axios';
 import { DropPosition, ElementType } from './constants/dragAndDrop';
-import TYPES from './constants/actions';
 
 export type Normalized<T extends { id: string | number }> = {
   [id in string | number]: T;
@@ -358,8 +356,6 @@ export type LibraryElementUnion =
   | SubscribeFormElement
   | FeatureSectionElement;
 
-/* eslint-disable camelcase */
-
 export type ImageParameters = {
   imageURL: string;
 };
@@ -551,18 +547,6 @@ export type ProjectWithScreens = {
   projectscreen: Screen[];
 };
 
-export type ProjectState = {
-  data: ProjectDataState;
-  ui: ProjectUiState;
-  edit: ProjectEditState;
-  communication: ProjectCommunicationState;
-  control: ProjectControlState;
-};
-
-export type ProjectLibraryElements = {
-  [id: number]: IScenarioElement;
-};
-
 export type StateElement = {
   id: string;
   name: string;
@@ -588,64 +572,6 @@ export type DropTargetParams = {
   position?: DropPosition;
 };
 
-export type ProjectDataState = {
-  projectsData: PaginatedData<Project>;
-  screens: Normalized<Screen>;
-  elements: Normalized<StateElement>;
-  customElementsData: PaginatedArray<LibraryElement<Entity>>;
-  elementInputs: { [id: string]: File };
-};
-
-export type ProjectUiState = {
-  editableStyles: string;
-  itemToCopyInfo: ItemToCopyInfo | null;
-  rightPanel: {
-    activeTab: RightPanelTab;
-  };
-  savedElementsValues: SavedElementsValues;
-  showContainersBorders: boolean;
-  borderedElementsRef: BorderedElementsRef;
-  currentDropTargetParams: DropTargetParams | null;
-  screenFormat: {
-    format: SCREEN_FORMATS;
-    rotated: boolean;
-  };
-};
-
-export type ProjectEditState = {
-  currentProjectId: number;
-  currentScreenId: number;
-  activeElementId: string;
-  hoveredElementId: string;
-  uploadedImageInfo?: UploadedImageInfo;
-  notification: Notification | null;
-  freeCanvas: {
-    enabled: boolean;
-    lastElements: {
-      [id: string]: {
-        offset: number;
-        elements: string[];
-      };
-    };
-  };
-};
-
-export type ProjectCommunicationState = {
-  projectListLoader: boolean;
-  loader: boolean; // TODO: pick more suitable name
-  screenLoader: boolean;
-  projectLoader: boolean;
-  scenarioLoader: boolean;
-  analyzerLoader: boolean;
-};
-
-export type ProjectControlState = {
-  undoActions: Action[] | Action[][];
-  redoActions: Action[];
-  history: Action[];
-  groupActionsUp: boolean;
-};
-
 export type Indices = {
   newIndex: number;
   oldIndex: number;
@@ -665,512 +591,6 @@ export type CreatedElement = {
   name: string;
   custom: boolean;
 };
-
-export type LoadLibraryElementsFail = IPlainFailAction<
-  'PROJECTS:LOAD_LIBRARY_ELEMENTS_FAIL'
->;
-
-export type LoadProjects = IPlainAction<typeof TYPES.LOAD_PROJECTS>;
-export type LoadProjectsSuccess = IAction<
-  typeof TYPES.LOAD_PROJECTS_SUCCESS,
-  { projects: Project[] }
->;
-export type LoadProjectsFail = IPlainFailAction<'PROJECTS:LOAD_PROJECTS_FAIL'>;
-
-export type AddProject = IAction<typeof TYPES.ADD_PROJECT, { name: string }>;
-export type DeleteProject = IAction<
-  typeof TYPES.DELETE_PROJECT,
-  { id: number }
->;
-export type GetProject = IAction<typeof TYPES.GET_PROJECT, { id: number }>;
-export type SetCurrentProjectId = IAction<
-  typeof TYPES.SET_CURRENT_PROJECT_ID,
-  { projectId: number }
->;
-export type SetProject = IAction<
-  typeof TYPES.SET_PROJECT,
-  { project: Project }
->;
-export type UpdateProject = IAction<
-  typeof TYPES.UPDATE_PROJECT,
-  { project: Project }
->;
-export type ChangeScreensOrder = IAction<
-  typeof TYPES.CHANGE_SCREENS_ORDER,
-  { screens: Screen[] }
->;
-export type RenameProject = IAction<
-  typeof TYPES.RENAME_PROJECT,
-  { projectID: number; name: string }
->;
-export type SetProjectListLoader = IAction<
-  typeof TYPES.SET_PROJECT_LIST_LOADER,
-  { active: boolean }
->;
-export type SetProjectLoader = IAction<
-  typeof TYPES.SET_PROJECT_LOADER,
-  { active: boolean }
->;
-export type SetScreenLoader = IAction<
-  typeof TYPES.SET_SCREEN_LOADER,
-  { active: boolean }
->;
-export type SetLoader = IAction<typeof TYPES.SET_LOADER, { active: boolean }>;
-export type SetNotification = IAction<
-  typeof TYPES.SET_NOTIFICATION,
-  Notification
->;
-export type RemoveNotification = IPlainAction<typeof TYPES.REMOVE_NOTIFICATION>;
-export type SetScenarioLoader = IAction<
-  typeof TYPES.SET_SCENARIO_LOADER,
-  { active: boolean }
->;
-export type SetAnalyzerLoader = IAction<
-  typeof TYPES.SET_ANALYZER_LOADER,
-  { active: boolean }
->;
-export type DeleteScreen = IAction<
-  typeof TYPES.DELETE_SCREEN,
-  { projectId: number; screenId: number }
->;
-export type RestoreScreen = IAction<
-  typeof TYPES.RESTORE_SCREEN,
-  { projectId: number; screenId: number }
->;
-export type RenameScreen = IAction<
-  typeof TYPES.RENAME_SCREEN,
-  { projectID: number; screenID: number; name: string }
->;
-export type AddScreen = IAction<
-  typeof TYPES.ADD_SCREEN,
-  { projectID: number; name: string; buoyancy: number; skip: boolean }
->;
-export type DuplicateScreen = IAction<
-  typeof TYPES.DUPLICATE_SCREEN,
-  { name: string; screenID: number }
->;
-export type ActivateScreen = IAction<
-  typeof TYPES.ACTIVATE_SCREEN,
-  { screenId: number }
->;
-export type MoveElement = IAction<
-  typeof TYPES.MOVE_ELEMENT,
-  {
-    indices: Indices;
-    elementId: string;
-    parents: ParentIds;
-  },
-  ElementHistoryMeta
->;
-export type UpdateElementsTree = IAction<
-  typeof TYPES.UPDATE_ELEMENTS_TREE,
-  Normalized<StateElement>,
-  ElementHistoryMeta
->;
-export type ClearAfterPrevScreen = IPlainAction<
-  typeof TYPES.CLEAN_AFTER_PREV_SCREEN
->;
-export type SaveScreen = IAction<
-  typeof TYPES.SAVE_SCREEN,
-  { screenId: number; canvas: HTMLCanvasElement }
->;
-export type UpdateScreen = IAction<
-  typeof TYPES.UPDATE_SCREEN,
-  { screen: Screen }
->;
-export type SetCurrentScreenId = IAction<
-  typeof TYPES.SET_CURRENT_SCREEN_ID,
-  { screenId: number }
->;
-export type SetScreens = IAction<
-  typeof TYPES.SET_SCREENS,
-  { screens: Screen[] }
->;
-export type RenameElement = IAction<
-  typeof TYPES.RENAME_ELEMENT,
-  { elementID: string; name: string },
-  ElementHistoryMeta
->;
-export type UpdateElement = IAction<
-  typeof TYPES.UPDATE_ELEMENT,
-  {
-    elementID: string;
-    data: LibraryElementPatch<Entity>;
-    active?: boolean;
-  }
->;
-export type ToggleContainersBorders = IPlainAction<
-  typeof TYPES.TOGGLE_CONTAINERS_BORDERS
->;
-export type CopyElementStyles = IAction<
-  typeof TYPES.COPY_ELEMENT_STYLES,
-  {
-    elementType: Entity;
-    elementID: string;
-    styles: CssLikeStyles;
-  },
-  ElementHistoryMeta
->;
-export type AddSharedStyles = IAction<
-  'PROJECTS:ADD_SHARED_STYLES',
-  {
-    elementID: string;
-    className: string;
-    elementType: Entity;
-    styles: CssLikeStyles;
-  }
->;
-export type AddElementClassName = IAction<
-  typeof TYPES.ADD_ELEMENT_CLASSNAME,
-  { elementID: string; className: string },
-  ElementHistoryMeta
->;
-export type RemoveElementClassName = IAction<
-  typeof TYPES.REMOVE_ELEMENT_CLASSNAME,
-  { elementID: string; className: string },
-  ElementHistoryMeta
->;
-export type UpdateSharedStyles = IAction<
-  typeof TYPES.UPDATE_SHARED_STYLES,
-  { className: Entity; styles: CssLikeStyles },
-  ElementHistoryMeta
->;
-export type RemoveSharedStyles = IAction<
-  typeof TYPES.REMOVE_SHARED_STYLES,
-  { className: Entity; cssPropertiesNames: string[] },
-  ElementHistoryMeta
->;
-export type RemoveElementStyles = IAction<
-  typeof TYPES.REMOVE_ELEMENT_STYLES,
-  { id: string; cssPropertiesNames: string[] },
-  ElementHistoryMeta
->;
-export type ReplaceElementStyles = IAction<
-  typeof TYPES.REPLACE_ELEMENT_STYLES,
-  { id: string; styles: CssLikeStyles },
-  ElementHistoryMeta
->;
-export type UpdateElementStyles = IAction<
-  typeof TYPES.UPDATE_ELEMENT_STYLES,
-  { id: string; styles: CssLikeStyles },
-  ElementHistoryMeta
->;
-export type UpdateElementImage = IAction<
-  typeof TYPES.UPDATE_ELEMENT_IMAGE,
-  { itemID: string; image: File },
-  ElementHistoryMeta
->;
-export type UpdateElementParameters = IAction<
-  typeof TYPES.UPDATE_ELEMENT_PARAMETERS,
-  {
-    elementId: string;
-    parameters: LibraryElement<Entity>['parameters'];
-  },
-  ElementHistoryMeta
->;
-export type UpdateSavedElementsValues = IAction<
-  typeof TYPES.UPDATE_SAVED_ELEMENTS_VALUES,
-  { elementsValues: SavedElementsValues }
->;
-export type UpdateSavedElementValues = IAction<
-  typeof TYPES.UPDATE_SAVED_ELEMENT_VALUES,
-  { itemID: string; savedValue: string | boolean }
->;
-export type DeleteItem = IAction<
-  typeof TYPES.DELETE_ITEM,
-  { id: string },
-  ElementHistoryMeta
->;
-export type CreateElements = IAction<
-  typeof TYPES.CREATE_ELEMENTS,
-  { createdElements: CreatedElement[]; parentId?: string; index?: number },
-  ElementHistoryMeta
->;
-
-export type AddChildToElement = IAction<
-  typeof TYPES.ADD_CHILD_TO_ELEMENT,
-  {
-    childType: ServerStructType;
-    elementId: string;
-    parameters: {};
-  },
-  ElementHistoryMeta
->;
-export type UploadFile = IAction<
-  typeof TYPES.UPLOAD_FILE,
-  { file: any; parentId: string; blockType: NNBlockType },
-  ElementHistoryMeta
->;
-export type uploadImageForNNSuccess = IAction<
-  typeof TYPES.UPLOAD_IMAGE_FOR_NN_SUCCESS,
-  { imageURL: string; screenID: number }
->;
-export type GetScreenNN = IPlainAction<typeof TYPES.GET_SCREEN_NN>;
-export type WrapIntoContainer = IAction<
-  typeof TYPES.WRAP_INTO_CONTAINER,
-  { id: string },
-  ElementHistoryMeta
->;
-export type SetHoveredElement = IAction<
-  typeof TYPES.SET_HOVERED_ELEMENT,
-  string | null
->;
-export type SetCurrentDropTargetParams = IAction<
-  typeof TYPES.SET_CURRENT_DROP_TARGET_PARAMS,
-  { id: string; position: DropPosition }
->;
-export type SetEditableStyles = IAction<
-  typeof TYPES.SET_EDITABLE_STYLES,
-  { className: string }
->;
-export type SetItemToCopy = IAction<
-  typeof TYPES.SET_ITEM_TO_COPY,
-  ItemToCopyInfo
->;
-export type SetRightPanelActiveTab = IAction<
-  typeof TYPES.SET_RIGHT_PANEL_ACTIVE_TAB,
-  RightPanelTab
->;
-export type CopyActiveItem = IPlainAction<typeof TYPES.COPY_ACTIVE_ITEM>;
-export type PasteCopiedItem = IPlainAction<
-  typeof TYPES.PASTE_COPIED_ELEMENT,
-  ElementHistoryMeta
->;
-export type ResetScreenState = IPlainAction<typeof TYPES.RESET_SCREEN_STATE>;
-export type UndoAction = IPlainAction<typeof TYPES.UNDO_ACTION>;
-export type RedoAction = IPlainAction<typeof TYPES.REDO_ACTION>;
-export type SetUndoActions = IAction<
-  typeof TYPES.SET_UNDO_ACTIONS,
-  Action | Action[]
->;
-export type SetRedoActions = IAction<typeof TYPES.SET_REDO_ACTIONS, Action[]>;
-export type UnwrapFromContainer = IAction<
-  typeof TYPES.UNWRAP_FROM_CONTAINER,
-  { elementId: string; wrapperId: string; parentId: string },
-  ElementHistoryMeta
->;
-export type RestoreElementChildren = IAction<
-  typeof TYPES.RESTORE_ELEMENT_CHILDREN,
-  { elementId: string; childrenIds: string[] },
-  ElementHistoryMeta
->;
-export type RestoreElement = IAction<
-  typeof TYPES.RESTORE_ELEMENT,
-  string,
-  ElementHistoryMeta
->;
-export type RedoWrapIntoContainer = IAction<
-  typeof TYPES.REDO_WRAP_INTO_CONTAINER,
-  { elementId: string; wrapperId: string; parentId: string },
-  ElementHistoryMeta
->;
-export type AddBorderedElementRef = IAction<
-  typeof TYPES.ADD_BORDERED_ELEMENT_REF,
-  { id: string; ref: React.RefObject<HTMLElement> }
->;
-
-export type RemoveBorderedElementRef = IAction<
-  typeof TYPES.REMOVE_BORDERED_ELEMENT_REF,
-  { id: string }
->;
-export type PopUndoAction = IPlainAction<typeof TYPES.POP_UNDO_ACTION>;
-export type PopHistory = IPlainAction<typeof TYPES.POP_HISTORY>;
-export type SetGroupActionsUp = IAction<typeof TYPES.SET_GROUP_UP, boolean>;
-export type Logout = IPlainAction<typeof TYPES.LOGOUT>;
-export type AddElements = IAction<
-  typeof TYPES.ADD_ELEMENTS,
-  { elements: LibraryElement<any>[]; parentId?: string }
->;
-export type SetCustomElements = IAction<
-  typeof TYPES.ADD_CUSTOM_ELEMENTS_PAGE,
-  {
-    paginatedResult: PaginatedArray<LibraryElement<Entity>>;
-    initial: boolean;
-  }
->;
-
-export type AddCustomElement = IAction<
-  typeof TYPES.ADD_CUSTOM_ELEMENT,
-  { element: LibraryElement<Entity> }
->;
-
-export type UpdateElementsLoading = IAction<
-  typeof TYPES.UPDATE_CUSTOM_ELEMENTS_LOADING,
-  { loading: boolean }
->;
-
-export type RemoveCustomElement = IAction<
-  typeof TYPES.REMOVE_CUSTOM_ELEMENT,
-  { id: string }
->;
-
-export type AddFileInput = IAction<
-  typeof TYPES.ADD_FILE_INPUT,
-  { id: string; file: File }
->;
-
-export type RemoveFileInput = IAction<
-  typeof TYPES.REMOVE_FILE_INPUT,
-  { id: string }
->;
-
-export type AddStateElements = IAction<
-  typeof TYPES.ADD_STATE_ELEMENTS,
-  { elements: LibraryElement<any>[]; parentId: string; index?: number },
-  ElementHistoryMeta
->;
-
-export type ChangeFreeCanvasMode = IAction<
-  typeof TYPES.CHANGE_FREE_CANVAS_MODE,
-  boolean
->;
-
-export type ChangeScreenFormat = IAction<
-  typeof TYPES.CHANGE_SCREEN_FORMAT,
-  SCREEN_FORMATS
->;
-
-export type ExtractStateElement = IAction<
-  typeof TYPES.EXTRACT_STATE_ELEMENT,
-  string
->;
-
-export type InsertStateElement = IAction<
-  typeof TYPES.INSERT_STATE_ELEMENT,
-  { parentId: string; childId: string; element: LibraryElement<any> },
-  ElementHistoryMeta
->;
-
-export type MoveStateElement = IAction<
-  typeof TYPES.MOVE_STATE_ELEMENT,
-  { elementId: string; indices: Indices; parents: ParentIds },
-  ElementHistoryMeta
->;
-
-export type RemoveStateElement = IAction<
-  typeof TYPES.REMOVE_STATE_ELEMENT,
-  { elementId: string },
-  ElementHistoryMeta
->;
-
-export type RotateScreenFormat = IAction<
-  typeof TYPES.ROTATE_SCREEN_FORMAT,
-  boolean
->;
-
-export type SetActiveElementId = IAction<
-  typeof TYPES.SET_ACTIVE_ELEMENT_ID,
-  string
->;
-
-export type SetProjectsData = IAction<
-  typeof TYPES.SET_PROJECTS_DATA,
-  PaginatedArray<Project>
->;
-
-export type UpdateLastElements = IAction<
-  typeof TYPES.UPDATE_LAST_ELEMENTS,
-  { parentId: string; ids: string[]; offset: number }
->;
-
-export type UpdateStateElement = IAction<
-  typeof TYPES.UPDATE_STATE_ELEMENT,
-  { elementId: string; data: Partial<StateElement> },
-  ElementHistoryMeta
->;
-
-export type Action =
-  | LoadProjects
-  | LoadProjectsSuccess
-  | LoadProjectsFail
-  | AddProject
-  | DeleteProject
-  | GetProject
-  | SetCurrentProjectId
-  | ChangeScreensOrder
-  | RenameProject
-  | SetProjectListLoader
-  | SetProjectLoader
-  | SetScreenLoader
-  | SetLoader
-  | SetScenarioLoader
-  | SetAnalyzerLoader
-  | DeleteScreen
-  | RenameScreen
-  | AddScreen
-  | ActivateScreen
-  | ClearAfterPrevScreen
-  | SaveScreen
-  | SetCurrentScreenId
-  | CopyElementStyles
-  | UpdateElementStyles
-  | UpdateElementImage
-  | UpdateElementParameters
-  | CreateElements
-  | DeleteItem
-  | AddChildToElement
-  | UploadFile
-  | uploadImageForNNSuccess
-  | GetScreenNN
-  | WrapIntoContainer
-  | SetHoveredElement
-  | ToggleContainersBorders
-  | SetItemToCopy
-  | SetRightPanelActiveTab
-  | CopyActiveItem
-  | PasteCopiedItem
-  | ResetScreenState
-  | UpdateSavedElementsValues
-  | UpdateSavedElementValues
-  | UpdateElementsTree
-  | SetNotification
-  | RemoveNotification
-  | SetEditableStyles
-  | SetUndoActions
-  | SetRedoActions
-  | UnwrapFromContainer
-  | RestoreElementChildren
-  | RedoWrapIntoContainer
-  | PopUndoAction
-  | PopHistory
-  | SetGroupActionsUp
-  | MoveElement
-  | RemoveElementStyles
-  | ReplaceElementStyles
-  | RemoveElementClassName
-  | UpdateProject
-  | RemoveSharedStyles
-  | UpdateSharedStyles
-  | AddElementClassName
-  | Logout
-  | RestoreScreen
-  | SetProject
-  | UpdateScreen
-  | AddElements
-  | RestoreElement
-  | SetActiveElementId
-  | MoveStateElement
-  | UpdateStateElement
-  | AddStateElements
-  | InsertStateElement
-  | RemoveStateElement
-  | SetProjectsData
-  | ExtractStateElement
-  | ChangeFreeCanvasMode
-  | UpdateLastElements
-  | ChangeScreenFormat
-  | RotateScreenFormat
-  | SetScreens
-  | AddBorderedElementRef
-  | RemoveBorderedElementRef
-  | SetCurrentDropTargetParams
-  | UpdateElement
-  | UpdateElementsLoading
-  | SetCustomElements
-  | AddCustomElement
-  | RemoveCustomElement
-  | AddFileInput
-  | RemoveFileInput;
 
 export type ItemToCopyInfo = {
   id: string;
@@ -1263,27 +683,6 @@ export type ElementParameters = {
   videoSettings?: VideoSettingsType;
 };
 
-export interface IScenarioElement {
-  // compare with entity on backend
-  id: number;
-  scenario: number;
-  name: string;
-  struct_type: ServerStructType;
-  func_type: ServerStructType;
-  func_type_human?: string; // possibly has fallback value as 'undefined'
-  buoyancy: number;
-  dynamic_buoyancy: number;
-  image: string | null;
-  parameters: { parent_id?: number } & ElementParameters;
-  styles: CssLikeStyles;
-  children: IScenarioElement[];
-  is_shared?: boolean;
-}
-
-export interface IScenarioElements {
-  [elementID: string]: IScenarioElement;
-}
-
 export interface IScenarioItem {
   // compare with entity on backend
   id: number;
@@ -1305,12 +704,6 @@ export interface IScenarios {
   [scenarioID: string]: IScenarioItem;
 }
 
-export interface ILSItem {
-  id: number;
-  type: ServerStructType;
-  children: string[];
-}
-
 export interface Screen {
   id: number;
   name: string;
@@ -1326,26 +719,6 @@ export interface Screen {
 export type UploadedImageInfo = {
   imageURL: string;
   screenID: number;
-};
-
-export type Page = {
-  screenInfo: {
-    name: string;
-    id: number;
-  };
-  renderTree: {
-    containers: IScenarioItem[];
-    elements: IScenarioElement[];
-  };
-};
-
-export type HistoryMeta = {
-  undo?: boolean;
-  redo?: boolean;
-};
-export type ElementHistoryMeta = HistoryMeta & {
-  screenId: number;
-  sourceAction?: Action | null;
 };
 
 export type ElementData = {
@@ -1453,23 +826,6 @@ export type UserData = {
 
 export type TotalUserData = ProfileData & UserData;
 
-export type UserState = {
-  isLPanelMinimized: boolean;
-  isPrototypeMode: boolean;
-  freeCanvasMode: {
-    enabled: boolean;
-  };
-  tokenPair: ITokenPair;
-  isLoadedToken: boolean;
-  isLoggedIn: boolean;
-  authError: Error | null;
-  userData: TotalUserData;
-  restorePasswordEmail?: string;
-  restoreUserId?: number;
-  isLoading: boolean;
-  confirmMessage: string;
-};
-
 export type UnsafeReturnType<T> = T extends (...args: any[]) => infer R
   ? R
   : any;
@@ -1480,61 +836,6 @@ export type FreeElement = {
   left: number;
   type: 'freeElement';
   name: string;
-};
-
-export interface IPlainAction<T, M = HistoryMeta> {
-  type: T;
-  meta?: M;
-}
-
-export interface IAction<T, P, M = HistoryMeta> extends IPlainAction<T, M> {
-  payload: P;
-}
-
-export interface IPlainFailAction<T, E = string> extends IPlainAction<T> {
-  error: E;
-}
-
-export interface ICommunication<E = string> {
-  isRequesting: boolean;
-  error: E;
-}
-
-export interface IFailAction<T, P, E = string> extends IPlainFailAction<T, E> {
-  payload: P;
-}
-
-export interface IProtectAction {
-  type: '';
-  error: any;
-}
-
-export interface ICommunicationActionCreators<E, C, F> {
-  execute: E;
-  success: C;
-  fail: F;
-}
-
-export type IGenericPlainAction = IPlainAction<string>;
-export type IGenericAction = IAction<string, any>;
-export type IGenericPlainFailAction = IPlainFailAction<string>;
-export type IGenericFailAction = IFailAction<string, any>;
-
-export type NullaryAC<A extends IGenericPlainAction> = () => A;
-export type UnaryAC<A extends IGenericAction> = (payload: A['payload']) => A;
-
-export type NullaryFailedAC<A extends IGenericPlainFailAction> = (
-  error: A['error'],
-) => A;
-export type UnaryFailedAC<A extends IGenericFailAction> = (
-  error: A['error'],
-  payload: A['payload'],
-) => A;
-
-export type AppReduxState = {
-  user: UserState;
-  project: ProjectState;
-  router: RouterState;
 };
 
 export type ReturnPromisedType<T extends (...args: any[]) => any> = T extends (
@@ -1671,8 +972,6 @@ export type ElementsToAdd = {
 
 export type LibraryElements = ChildrenElements & ElementsToAdd;
 
-export type LibraryEntities = LibraryElements;
-
 export type GroupElement = {
   key: string;
   name: string;
@@ -1680,10 +979,6 @@ export type GroupElement = {
   custom?: boolean;
   value: { structType: ServerStructType; funcType: ServerStructType };
 };
-
-export interface IListCategoryEl {
-  [x: string]: ScenarioLibraryElement[];
-}
 
 export type CssLikeStyles = {
   display?: ScreenDisplay['display'];

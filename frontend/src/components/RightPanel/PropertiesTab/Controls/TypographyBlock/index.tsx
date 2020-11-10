@@ -20,11 +20,11 @@ import { selectCurrentEditableStyles } from '../../../../../redux/project/select
 import StylesHeader from '../../helperComponents/StylesHeader';
 import ColorSettings from '../../helperComponents/ColorSettings';
 import {
-  AppReduxState,
   Entity,
   LibraryElement,
   PropertiesChangeProps,
 } from '../../../../../types';
+import { AppReduxState } from '../../../../../redux/types';
 
 const MIN_FONT_SIZE = 1;
 const MAX_FONT_SIZE = 84;

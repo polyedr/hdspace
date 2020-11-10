@@ -1,6 +1,6 @@
 import produce, { Draft } from 'immer';
 import { initialData } from '../initial';
-import TYPES from '../../../constants/actions';
+import TYPES from '../../actionTypes';
 import {
   addMapElements,
   arrayToMap,
@@ -11,7 +11,8 @@ import {
   removeMapElement,
   updateMapElement,
 } from '../../../utils/normalizedStateHelpers';
-import { Project, ProjectDataState, Screen, Action } from '../../../types';
+import { Project, Screen } from '../../../types';
+import { Action, ProjectDataState } from '../../types';
 
 const dataReducer = produce(
   // eslint-disable-next-line consistent-return

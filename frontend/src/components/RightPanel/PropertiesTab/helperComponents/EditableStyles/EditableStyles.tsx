@@ -9,7 +9,7 @@ import {
   selectEditableStyles,
 } from '../../../../../redux/project/selectors';
 import { setEditableStyles } from '../../../../../redux/project/actions';
-import { AppReduxState } from '../../../../../types';
+import { AppReduxState } from '../../../../../redux/types';
 
 type StateProps = {
   editableStyles: string;

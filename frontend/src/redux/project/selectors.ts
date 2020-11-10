@@ -12,7 +12,6 @@ import {
   flattenElements,
 } from '../../utils/normalizedStateHelpers';
 import {
-  AppReduxState,
   BorderedElementsRef,
   ChildEntity,
   CssLikeStyles,
@@ -22,6 +21,7 @@ import {
   StateElement,
 } from '../../types';
 import getDisplayStyles from '../../utils/getDisplayStyles';
+import { AppReduxState } from '../types';
 
 export const selectProjectState = makeFeatureStateSelector('project');
 

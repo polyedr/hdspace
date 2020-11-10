@@ -9,7 +9,7 @@ import {
   changeUserData,
   logout,
 } from '../../../redux/user/actions';
-import { IMAGES } from '../../../constants/images';
+import IMAGES from '../../../constants/images';
 import { ProfileData, UserData } from '../../../types';
 import { openSignScreen } from '../../../redux/history';
 

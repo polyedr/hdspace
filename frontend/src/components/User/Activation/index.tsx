@@ -7,7 +7,7 @@ import * as Actions from '../../../redux/user/actions';
 import LoginForm from '../LoginForm';
 import Spinner from '../../UI/Spinner';
 import { Info } from '../Info';
-import { AppReduxState } from '../../../types';
+import { AppReduxState } from '../../../redux/types';
 
 const useStyles = makeStyles((theme) =>
   createStyles({

@@ -4,10 +4,10 @@ import TextField from '@material-ui/core/TextField';
 import { selectActiveElementParams } from '../../../../../redux/project/selectors';
 import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
 import {
-  AppReduxState,
   PropertiesChangeProps,
   RadiobuttonElement,
 } from '../../../../../types';
+import { AppReduxState } from '../../../../../redux/types';
 
 type StateProps = {
   name: string;

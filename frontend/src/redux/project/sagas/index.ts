@@ -40,7 +40,7 @@ import {
   setActiveElementSaga,
 } from './element';
 import { convertElementToRequest } from '../../../api/converters/toRequest';
-import TYPES from '../../../constants/actions';
+import TYPES from '../../actionTypes';
 import {
   selectActiveElement,
   selectActiveElementId,
@@ -65,7 +65,6 @@ import {
 } from './screen';
 import { activateScreen } from '../actions';
 import {
-  ElementHistoryMeta,
   Entity,
   ItemToCopyInfo,
   LibraryElement,
@@ -73,6 +72,7 @@ import {
   StateElement,
 } from '../../../types';
 import { updateProject } from './shared';
+import { ElementHistoryMeta } from '../../types';
 
 function* removeSharedStylesSaga(
   action: ReturnType<typeof Actions.removeSharedStyles>,

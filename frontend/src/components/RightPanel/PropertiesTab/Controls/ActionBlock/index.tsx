@@ -15,7 +15,6 @@ import {
   selectScreens,
 } from '../../../../../redux/project/selectors';
 import {
-  AppReduxState,
   ExternalLink,
   HyperlinkElement,
   InternalLink,
@@ -23,6 +22,7 @@ import {
   PropertiesChangeProps,
   Screen,
 } from '../../../../../types';
+import { AppReduxState } from '../../../../../redux/types';
 
 type StateProps = {
   screens: Screen[];

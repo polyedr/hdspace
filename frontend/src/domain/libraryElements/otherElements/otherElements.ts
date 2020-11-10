@@ -1,6 +1,6 @@
 import { makeParagraph } from '../typographyElements/typographyElements';
 import { defaultFreeCanvasParams } from '../../core';
-import { IMAGES } from '../../../constants/images';
+import IMAGES from '../../../constants/images';
 import {
   ColumnsServerElement,
   ContainerServerElement,

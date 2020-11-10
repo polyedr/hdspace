@@ -14,7 +14,7 @@ import {
   isRequired,
 } from '../../../utils/validators';
 import Button from '../../UI/Button';
-import { AppReduxState } from '../../../types';
+import { AppReduxState } from '../../../redux/types';
 
 const styles = require('./ResetPassword.scss');
 

@@ -3,11 +3,8 @@ import { connect } from 'react-redux';
 import TextField from '@material-ui/core/TextField';
 import { selectActiveElementParams } from '../../../../../redux/project/selectors';
 import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
-import {
-  AppReduxState,
-  PropertiesChangeProps,
-  TextinputElement,
-} from '../../../../../types';
+import { PropertiesChangeProps, TextinputElement } from '../../../../../types';
+import { AppReduxState } from '../../../../../redux/types';
 
 type StateProps = {
   placeholder: string;

@@ -97,7 +97,7 @@ export const apiGetProjectWithScreens = (
   myAxios({
     ...props,
     method: 'GET',
-    url: `projects/screens-for-project/${props.id}`,
+    url: `projects/screens-for-project/${props.id}/`,
   })
     .then((res) => convertProjectFromResponse(res.data))
     .catch(onError);

@@ -22,11 +22,8 @@ import {
   addChildToElement,
   deleteItem,
 } from '../../../../../redux/project/actions';
-import {
-  AppReduxState,
-  ListItemElement,
-  PropertiesChangeProps,
-} from '../../../../../types';
+import { ListItemElement, PropertiesChangeProps } from '../../../../../types';
+import { AppReduxState } from '../../../../../redux/types';
 
 const useStyles = makeStyles({
   details: {

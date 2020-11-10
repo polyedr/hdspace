@@ -1,6 +1,6 @@
-import TYPES from '../../../constants/actions';
+import TYPES from '../../actionTypes';
 import { initialControl } from '../initial';
-import { ProjectControlState, Action } from '../../../types';
+import { Action, ProjectControlState } from '../../types';
 
 // To create undoable feature for the editor you have to implement action with "meta" field extends type HistoryMeta,
 // that will call correspondent saga, which should:

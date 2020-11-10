@@ -23,11 +23,8 @@ import {
 } from '../../../../../redux/project/actions';
 import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
 import generateUniqueName from '../../../../../utils/generateUniqueName';
-import {
-  AppReduxState,
-  PropertiesChangeProps,
-  SelectItemElement,
-} from '../../../../../types';
+import { PropertiesChangeProps, SelectItemElement } from '../../../../../types';
+import { AppReduxState } from '../../../../../redux/types';
 
 const useStyles = makeStyles({
   row: {

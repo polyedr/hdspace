@@ -10,11 +10,11 @@ import withConfigurableProperties from '../../../../../utils/withConfigurablePro
 import { selectCurrentEditableStyles } from '../../../../../redux/project/selectors';
 import StylesHeader from '../../helperComponents/StylesHeader';
 import {
-  AppReduxState,
   Entity,
   LibraryElement,
   PropertiesChangeProps,
 } from '../../../../../types';
+import { AppReduxState } from '../../../../../redux/types';
 
 const useStyles = makeStyles({
   wrapper: {

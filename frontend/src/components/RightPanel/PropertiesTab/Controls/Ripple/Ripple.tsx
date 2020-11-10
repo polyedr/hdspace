@@ -5,11 +5,8 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
 import { selectActiveElementParams } from '../../../../../redux/project/selectors';
-import {
-  AppReduxState,
-  ButtonElement,
-  PropertiesChangeProps,
-} from '../../../../../types';
+import { ButtonElement, PropertiesChangeProps } from '../../../../../types';
+import { AppReduxState } from '../../../../../redux/types';
 
 const useStyles = makeStyles({
   wrapper: {

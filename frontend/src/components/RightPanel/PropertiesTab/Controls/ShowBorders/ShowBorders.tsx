@@ -4,7 +4,7 @@ import { FormControlLabel } from '@material-ui/core';
 import Checkbox from '@material-ui/core/Checkbox';
 import { toggleContainersBorders } from '../../../../../redux/project/actions';
 import { selectShowingBorders } from '../../../../../redux/project/selectors';
-import { AppReduxState } from '../../../../../types';
+import { AppReduxState } from '../../../../../redux/types';
 
 type StateProps = {
   showBorders: boolean;

@@ -17,7 +17,7 @@ import {
   apiSendActivationMail,
   apiGetUser,
 } from '../../api/user';
-import TYPES from '../../constants/actions';
+import TYPES from '../actionTypes';
 import { convertUserDataToRequest } from '../../api/converters/toRequest';
 import { ITokenPair, ServerProfileData, ServerUserData } from '../../types';
 import { reqWrapper } from '../project/sagas/shared';

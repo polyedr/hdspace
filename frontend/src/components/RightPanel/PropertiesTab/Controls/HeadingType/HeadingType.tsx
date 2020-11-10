@@ -8,11 +8,11 @@ import { HEADING_TYPE, HEADING_SETTINGS } from './constants';
 import { selectActiveElementParams } from '../../../../../redux/project/selectors';
 import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
 import {
-  AppReduxState,
   HeadingElement,
   PropertiesChangeProps,
   HeadingType as HeadingTagType,
 } from '../../../../../types';
+import { AppReduxState } from '../../../../../redux/types';
 
 type StateProps = {
   headingType: HeadingTagType;

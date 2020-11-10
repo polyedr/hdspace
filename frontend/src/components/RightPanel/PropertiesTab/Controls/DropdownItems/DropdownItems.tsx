@@ -16,10 +16,10 @@ import {
   deleteItem,
 } from '../../../../../redux/project/actions';
 import {
-  AppReduxState,
   DropdownItemElement,
   PropertiesChangeProps,
 } from '../../../../../types';
+import { AppReduxState } from '../../../../../redux/types';
 
 const useStyles = makeStyles({
   row: {

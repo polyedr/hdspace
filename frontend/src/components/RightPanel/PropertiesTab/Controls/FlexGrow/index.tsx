@@ -7,11 +7,8 @@ import {
 } from '../../../../../redux/project/selectors';
 import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
 import StylesHeader from '../../helperComponents/StylesHeader';
-import {
-  AppReduxState,
-  ContainerElement,
-  PropertiesChangeProps,
-} from '../../../../../types';
+import { ContainerElement, PropertiesChangeProps } from '../../../../../types';
+import { AppReduxState } from '../../../../../redux/types';
 
 function mapState(state: AppReduxState) {
   const flexGrow = selectCurrentEditableStyles(state, 'flex-grow');

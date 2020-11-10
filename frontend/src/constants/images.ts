@@ -1,7 +1,6 @@
 /* eslint-disable global-require */
 
-// eslint-disable-next-line import/prefer-default-export
-export const IMAGES = {
+const IMAGES = {
   default: null,
   prof: require('../assets/sprites/profile_empty.png'),
   logo: require('../assets/sprites/logo.png'),
@@ -9,3 +8,5 @@ export const IMAGES = {
   imageIconSmall: require('../assets/images/image-icon-small.svg'),
   youtubeIcon: require('../assets/images/youtube.svg'),
 };
+
+export default IMAGES;

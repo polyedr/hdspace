@@ -1,6 +1,6 @@
 import { initialUi } from '../initial';
-import TYPES from '../../../constants/actions';
-import { ProjectUiState, Action } from '../../../types';
+import TYPES from '../../actionTypes';
+import { Action, ProjectUiState } from '../../types';
 
 function uiReducer(
   state: ProjectUiState = initialUi,

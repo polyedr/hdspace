@@ -48,8 +48,6 @@ import {
   restoreMapElementChildren,
 } from '../../../utils/normalizedStateHelpers';
 import {
-  Action,
-  ElementHistoryMeta,
   ElementsToDrop,
   Entity,
   IScenarioItem,
@@ -61,6 +59,7 @@ import {
 } from '../../../types';
 import { DEFAULT_INDENTS } from '../../../domain/libraryElements/defaultStyles';
 import { reqWrapper, updateSavedElementsValues } from './shared';
+import { Action, ElementHistoryMeta } from '../../types';
 
 export function* updateElementsTree(
   chunk: Normalized<StateElement>,

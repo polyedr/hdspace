@@ -5,7 +5,8 @@ import CloseIcon from '@material-ui/icons/Close';
 import { NOTIFICATION_AUTO_HIDE_DURATION } from './constants';
 import { removeNotification } from '../../redux/project/actions';
 import { selectNotification } from '../../redux/project/selectors';
-import { AppReduxState, Notification as NotificationType } from '../../types';
+import { Notification as NotificationType } from '../../types';
+import { AppReduxState } from '../../redux/types';
 
 type StateProps = {
   notification: NotificationType | null;

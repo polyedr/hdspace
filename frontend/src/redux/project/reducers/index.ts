@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
 import dataReducer from './data';
-import TYPES from '../../../constants/actions';
+import TYPES from '../../actionTypes';
 import { initialEdit, initialUi } from '../initial';
 import controlReducer from './control';
 import editReducer from './edit';
@@ -11,7 +11,7 @@ import {
   ProjectEditState,
   ProjectUiState,
   ResetScreenState,
-} from '../../../types';
+} from '../../types';
 
 export default combineReducers({
   data: dataReducer,

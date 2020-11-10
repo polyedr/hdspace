@@ -79,17 +79,7 @@ export const DEFAULT_ACTIVE_ELEMENT: StateElement = {
   },
 };
 
-export const MODAL_ADD_ELEMENTS_TABS = [
-  'Containers',
-  'Widget',
-  'Typography',
-  'Form',
-  'Image',
-  'Other',
-  'Custom',
-];
-
-export const DEFAULT_AUTHORISATION_TOKEN: ITokenPair = {
+export const DEFAULT_AUTHORIZATION_TOKEN: ITokenPair = {
   access: '',
   refresh: '',
 };
