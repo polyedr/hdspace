@@ -1,5 +1,5 @@
 import React, { CSSProperties } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import ReactCalendar from 'react-calendar';
 import ReactClock from 'react-clock';
 import TextField from '@material-ui/core/TextField';
@@ -31,6 +31,7 @@ import {
   useElementClassNames,
 } from './helpers';
 import { IMAGES } from '../../../constants/images';
+import { setActiveElement } from '../../../redux/project/actions';
 
 type Props = {
   element: StateElement;
@@ -68,15 +69,16 @@ const Button: React.FC<Props> = (props) => {
 
   return (
     <FreeDraggable {...props}>
-      <MuiButton
+      <div
         className={cn(entityStyles, groupStyles, ownStyles)}
         style={{
           width: '100%',
           height: '100%',
+          textTransform: 'uppercase',
         }}
       >
         {element.parameters.textContent}
-      </MuiButton>
+      </div>
     </FreeDraggable>
   );
 };
@@ -283,9 +285,36 @@ const Image: React.FC<Props> = (props) => {
   );
 };
 
+const ListItem: React.FC<Props> = ({ isActive, element }) => {
+  const dispatch = useDispatch();
+
+  const { entityStyles, groupStyles, ownStyles } = useElementClassNames(
+    element,
+  );
+
+  const handleClick = (ev) => {
+    ev.stopPropagation();
+    dispatch(setActiveElement(element.id));
+  };
+
+  return (
+    // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
+    <li
+      className={cn(entityStyles, groupStyles, ownStyles)}
+      style={{
+        border: `1px solid ${isActive ? '#5A899D' : 'transparent'}`,
+      }}
+      onClick={handleClick}
+    >
+      {element.parameters.textContent}
+    </li>
+  );
+};
+
 const List: React.FC<Props> = (props) => {
   const { element } = props;
   const { children } = useSelector(selectElementAsTree(element.id));
+  const activeElementId = useSelector(selectActiveElementId);
 
   const ListTag = element.parameters.isOrdered ? 'ol' : 'ul';
 
@@ -303,7 +332,11 @@ const List: React.FC<Props> = (props) => {
         }}
       >
         {children.map((child) => (
-          <li key={child.id}>{child.parameters.textContent}</li>
+          <ListItem
+            key={child.id}
+            element={child}
+            isActive={activeElementId === child.id}
+          />
         ))}
       </ListTag>
     </FreeDraggable>

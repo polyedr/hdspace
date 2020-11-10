@@ -92,6 +92,16 @@ function uiReducer(
       };
     }
 
+    case TYPES.SET_RIGHT_PANEL_ACTIVE_TAB: {
+      return {
+        ...state,
+        rightPanel: {
+          ...state.rightPanel,
+          activeTab: action.payload,
+        },
+      };
+    }
+
     case TYPES.LOGOUT: {
       return {
         ...initialUi,

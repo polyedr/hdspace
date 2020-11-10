@@ -1,4 +1,4 @@
-import React, { useMemo, useRef } from 'react';
+import React, { useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Rnd, RndResizeCallback } from 'react-rnd';
 import cn from 'classnames';
@@ -27,11 +27,11 @@ const FreeCanvas = () => {
 
   const { entityStyles, groupStyles, ownStyles } = useElementClassNames(root);
 
-  const rootSize = useMemo(() => {
-    return Object.values(directChildren).reduce(
+  const rootSize = () =>
+    Object.values(directChildren).reduce(
       (acc, curr) => {
-        const width = curr.parameters.left + curr.parameters.width;
-        const height = curr.parameters.top + curr.parameters.height;
+        const width = curr.parameters.left + curr.parameters.width || 0;
+        const height = curr.parameters.top + curr.parameters.height || 0;
         return {
           width: Math.max(width, acc.width, root.parameters.width),
           height: Math.max(height, acc.height, root.parameters.height),
@@ -39,7 +39,6 @@ const FreeCanvas = () => {
       },
       { width: root.parameters.width, height: root.parameters.height },
     );
-  }, [root, directChildren]);
 
   const handleResize: RndResizeCallback = (e, dir, rnd, delta) => {
     if (dir !== 'bottom') return;
@@ -85,7 +84,7 @@ const FreeCanvas = () => {
       minHeight="100%"
       onResize={handleResize}
       onResizeStop={handleResizeStop}
-      size={rootSize}
+      size={rootSize()}
     >
       {Object.values(directChildren).map((element) => {
         const Renderer = FREE_CANVAS_RENDERERS[element.type];

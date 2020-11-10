@@ -2,6 +2,7 @@
 
 import { Entity } from '../../domain/core';
 import { CssLikeStyles } from '../../utils/StyleHelper';
+import { Screen } from '../../redux/project/types';
 
 export type CreatedServerProject = {
   name: string;
@@ -38,4 +39,17 @@ export type Project = {
   projectData: {
     classes: ProjectClass[];
   };
+};
+
+export type ProjectWithScreens = {
+  id: number;
+  name: string;
+  status: string;
+  projectLoader: boolean;
+  created: Date;
+  updated: Date;
+  projectData: {
+    classes: ProjectClass[];
+  };
+  projectscreen: Screen[];
 };

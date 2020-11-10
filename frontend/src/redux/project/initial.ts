@@ -1,5 +1,5 @@
 import * as T from './types';
-import { SCREEN_FORMATS } from '../../constants/defaultParams';
+import { RightPanelTab, SCREEN_FORMATS } from '../../constants/defaultParams';
 
 export const initialData: T.ProjectDataState = {
   projectsData: {
@@ -23,6 +23,9 @@ export const initialData: T.ProjectDataState = {
 
 export const initialUi: T.ProjectUiState = {
   editableStyles: 'ownStyles',
+  rightPanel: {
+    activeTab: RightPanelTab.ELEMENTS,
+  },
   itemToCopyInfo: null,
   savedElementsValues: {},
   showContainersBorders: false,

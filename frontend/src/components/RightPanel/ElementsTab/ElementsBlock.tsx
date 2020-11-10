@@ -55,7 +55,6 @@ export const StyledAccordionSummary = withStyles({
 export const StyledAccordionDetails = withStyles({
   root: {
     padding: 0,
-    backgroundColor: '#fff',
   },
 })(AccordionDetails);
 
@@ -69,12 +68,12 @@ type Props = {
 
 export const useStyles = makeStyles({
   elementsBlock: {
-    backgroundColor: '#ffffff',
+    backgroundColor: '#f5f5f5',
     display: 'flex',
     flexFlow: 'row wrap',
     '& > *': {
-      width: 'calc(100%/4 - 2px)',
-      height: 'calc(300px/4 - 2px)',
+      width: 'calc(100%/4)',
+      height: 'calc(300px/4)',
     },
   },
 });
