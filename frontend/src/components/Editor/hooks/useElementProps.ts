@@ -159,8 +159,6 @@ const useElementProps = (elementId: string): ElementProps | null => {
 
   const { id, type, styles } = element;
 
-  const ownStyles = convertPropCSS(styles.ownStyles);
-
   const [entityClass, groupClass] = element.styles.classNames;
 
   const entityStyles =
@@ -171,15 +169,14 @@ const useElementProps = (elementId: string): ElementProps | null => {
       ?.rules || {};
 
   const convertedEntityStyles = convertPropCSS(entityStyles);
-  const convertedGroupStyles = convertPropCSS(groupStyles);
 
   const commonRendererProps: Omit<SharedRendererProps, 'children'> = {
     ...(disableInteractions && { className: '' }),
     id: id === rootID ? 'root' : id,
     isDisabled: !disableInteractions,
-    ownStyles,
+    ownStyles: styles.ownStyles,
     entityStyles: convertedEntityStyles,
-    groupStyles: convertedGroupStyles,
+    groupStyles,
     active: !disableInteractions && id === activeElement.id,
   };
 
