@@ -397,12 +397,12 @@ export function* updateElementImage(
   const formData = new FormData();
   formData.append('image', new Blob([image]), image.name);
 
+  console.log('patch');
   const changedElement: ReturnPromisedType<typeof apiChangeElement> = yield call(
     reqWrapper,
     apiChangeElement,
     { data: formData, id: parsedID },
   );
-
   yield put(
     Actions.updateElementParameters(
       itemID,
@@ -413,6 +413,8 @@ export function* updateElementImage(
           width: 0,
           height: 0,
         },
+        width: undefined,
+        height: undefined,
       },
       { screenId },
     ),
