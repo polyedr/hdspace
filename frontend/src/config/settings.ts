@@ -50,15 +50,3 @@ export const myAxios = (props: MyAxiosProps) => {
 };
 
 export const MAX_TOKEN_TRIALS = 4;
-
-// export const setTokenOnRequestHeaders = (token) => {
-//   if (token) {
-//     client.defaults.headers.common.Authorization = `Bearer ${token}`;
-//   } else {
-//     client.defaults.headers.common.Authorization = '';
-//   }
-// };
-
-// export const refreshTokenPairOnRequestHeaders = (newToken: string) => {
-//   client.defaults.headers.common.Authorization = `Bearer ${newToken}`;
-// };
