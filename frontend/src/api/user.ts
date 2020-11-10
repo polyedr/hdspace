@@ -3,7 +3,7 @@
 import { AxiosError } from 'axios';
 import { LoginFormData } from '../redux/user/types';
 import { parseResult } from './project';
-import { myAxios } from '../../config/settings';
+import { myAxios } from '../config/settings';
 
 export interface ISignUpData {
   username: string;

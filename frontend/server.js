@@ -1,14 +1,14 @@
-const express = require('express');
+const fs = require('fs');
+const http = require('http');
 const path = require('path');
-const port = process.env.PORT || 8080;
-const app = express();
 
-// the __dirname is the current directory from where the script is running
-app.use(express.static(__dirname + '/dist'));
+const indexFile = fs.readFileSync(path.join(__dirname, 'dist', 'index.html'));
 
-// send the user to index html page inspite of the url
-app.get('*', (req, res) => {
-  res.sendFile(path.resolve(__dirname, 'index.html'));
-});
-
-app.listen(port);
+http
+  .createServer((req, res) => {
+    fs.readFile(path.join(__dirname, 'dist', req.url), (err, data) => {
+      res.writeHead(200);
+      res.end(err ? indexFile : data);
+    });
+  })
+  .listen(8080);

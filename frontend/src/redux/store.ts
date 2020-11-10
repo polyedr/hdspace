@@ -11,6 +11,7 @@ import createSagaMiddleware from 'redux-saga';
 import { connectRouter, routerMiddleware } from 'connected-react-router';
 import { createBrowserHistory } from 'history';
 import { PersistConfig, Persistor } from 'redux-persist/es/types';
+// import { composeWithDevTools } from 'redux-devtools-extension';
 
 import userReducer from './user/reducer';
 import projectReducer from './project/reducers';
@@ -35,6 +36,7 @@ export const history = createBrowserHistory();
 
 const composeEnhancers =
   typeof window === 'object' &&
+  process.env.NODE_ENV !== 'production' &&
   (<any>window).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
     ? (<any>window).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__(DevToolsOptions)
     : compose;

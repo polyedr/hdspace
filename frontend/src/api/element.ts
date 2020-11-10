@@ -13,7 +13,7 @@ import {
 import { IScenarioElement } from '../redux/project/types';
 import { Entity } from '../domain/core';
 import { onError, parseResult } from './project';
-import { myAxios, MyAxiosProps } from '../../config/settings';
+import { myAxios, MyAxiosProps } from '../config/settings';
 
 export const apiGetElements = ({
   scenariosIDs,

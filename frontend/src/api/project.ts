@@ -9,7 +9,7 @@ import {
   ProjectWithScreens,
 } from './types';
 
-import { myAxios, MyAxiosProps } from '../../config/settings';
+import { myAxios, MyAxiosProps } from '../config/settings';
 
 export const onError = ({ response: r }: AxiosError) => {
   const response = r as any;

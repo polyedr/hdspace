@@ -265,7 +265,7 @@ export type UpdateScreen = IAction<
   typeof TYPES.UPDATE_SCREEN,
   { screen: Screen }
 >;
-export type ExportProject = IPlainAction<typeof TYPES.EXPORT_PROJECT>;
+// export type ExportProject = IPlainAction<typeof TYPES.EXPORT_PROJECT>;
 export type SetCurrentScreenId = IAction<
   typeof TYPES.SET_CURRENT_SCREEN_ID,
   { screenId: number }
