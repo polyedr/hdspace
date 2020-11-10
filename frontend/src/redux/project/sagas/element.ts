@@ -397,7 +397,6 @@ export function* updateElementImage(
   const formData = new FormData();
   formData.append('image', new Blob([image]), image.name);
 
-  console.log('patch');
   const changedElement: ReturnPromisedType<typeof apiChangeElement> = yield call(
     reqWrapper,
     apiChangeElement,
