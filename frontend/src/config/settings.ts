@@ -17,7 +17,7 @@ const settings = {
   },
   production: {
     api: {
-      host: 'https://www.adevi.info',
+      host: 'https://www.timberworkinfo.ru',
       version: 1,
     },
   },

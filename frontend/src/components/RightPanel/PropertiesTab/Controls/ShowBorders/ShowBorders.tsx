@@ -2,9 +2,9 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { FormControlLabel } from '@material-ui/core';
 import Checkbox from '@material-ui/core/Checkbox';
-import { AppReduxState } from '../../../../../shared/types/app';
 import { toggleContainersBorders } from '../../../../../redux/project/actions';
 import { selectShowingBorders } from '../../../../../redux/project/selectors';
+import { AppReduxState } from '../../../../../redux/types';
 
 type StateProps = {
   showBorders: boolean;

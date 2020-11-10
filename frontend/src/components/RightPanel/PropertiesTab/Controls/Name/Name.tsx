@@ -1,13 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import TextField from '@material-ui/core/TextField';
-import { AppReduxState } from '../../../../../shared/types/app';
 import { selectActiveElementParams } from '../../../../../redux/project/selectors';
+import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
 import {
   PropertiesChangeProps,
-  withConfigurableProperties,
-} from '../../../../../utils/withConfigurableProperties';
-import { RadiobuttonElement } from '../../../../../api/types';
+  RadiobuttonElement,
+} from '../../../../../types';
+import { AppReduxState } from '../../../../../redux/types';
 
 type StateProps = {
   name: string;

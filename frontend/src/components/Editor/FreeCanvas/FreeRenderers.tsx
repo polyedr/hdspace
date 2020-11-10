@@ -22,16 +22,15 @@ import {
   selectElementAsTree,
   selectIncludesActiveElement,
 } from '../../../redux/project/selectors';
-import { Entity } from '../../../domain/core';
-import { StateElement } from '../../../redux/project/types';
 import FreeDraggable from './FreeDraggable';
 import {
   getIframeContainerStyles,
   getWrapperStyles,
   useElementClassNames,
 } from './helpers';
-import { IMAGES } from '../../../constants/images';
+import IMAGES from '../../../constants/images';
 import { setActiveElement } from '../../../redux/project/actions';
+import { Entity, Normalized, StateElement } from '../../../types';
 
 type Props = {
   element: StateElement;
@@ -86,7 +85,9 @@ const Button: React.FC<Props> = (props) => {
 const Container: React.FC<Props> = (props) => {
   const { element } = props;
 
-  const children = useSelector(selectDirectChildren(element.id));
+  const children: Normalized<StateElement> = useSelector(
+    selectDirectChildren(element.id),
+  );
   const activeElementId = useSelector(selectActiveElementId);
   const includesActiveElement = useSelector(
     selectIncludesActiveElement(element.id),

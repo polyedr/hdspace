@@ -1,15 +1,11 @@
 /* eslint-disable no-console */
-
 import { SagaIterator } from 'redux-saga';
 import { put, call, select } from 'redux-saga/effects';
+import { updateProject, reqWrapper } from './shared';
 import * as Actions from '../actions';
 import { selectors } from '..';
-import { reqWrapper } from './index';
 import { addScreenSaga, getScreensSaga } from './screen';
-import {
-  convertCreatedProjectToRequest,
-  convertProjectToPatchRequest,
-} from '../../../api/converters/toRequest';
+import { convertCreatedProjectToRequest } from '../../../api/converters/toRequest';
 import {
   apiAddProject,
   apiDelProject,
@@ -17,12 +13,8 @@ import {
   apiSaveProject,
   apiGetProjectWithScreens,
 } from '../../../api/project';
-import {
-  Project,
-  PaginatedArray,
-  ProjectWithScreens,
-} from '../../../api/types';
 import { selectProjectsDataNext } from '../selectors';
+import { PaginatedArray, Project, ProjectWithScreens } from '../../../types';
 
 export function* getProjectListSaga(): SagaIterator {
   yield put(Actions.setProjectListLoader(true));
@@ -124,12 +116,6 @@ export function* renameProjectSaga({
   });
 
   yield put(Actions.setProject(updatedProject));
-}
-
-export function* updateProject(newProject: Project) {
-  yield put(Actions.setProject(newProject));
-  const convertedProject = convertProjectToPatchRequest(newProject);
-  yield call(reqWrapper, apiSaveProject, { data: convertedProject });
 }
 
 export function* updateProjectSaga(

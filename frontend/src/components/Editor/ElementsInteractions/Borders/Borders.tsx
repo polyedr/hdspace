@@ -9,8 +9,8 @@ import {
   selectShowingBorders,
 } from '../../../../redux/project/selectors';
 import { BorderPosition } from '../constants';
-import { BorderStyles } from '../types';
 import Border from './Border';
+import { BorderStyles } from '../../../../types';
 
 type Props = {
   elementId: string;

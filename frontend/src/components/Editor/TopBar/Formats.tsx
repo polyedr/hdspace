@@ -7,7 +7,6 @@ import PhoneIphoneIcon from '@material-ui/icons/PhoneIphone';
 import ScreenRotationIcon from '@material-ui/icons/ScreenRotation';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { useDispatch, useSelector } from 'react-redux';
-import { SCREEN_FORMATS } from '../../../constants/defaultParams';
 import {
   selectScreenFormat,
   selectScreenRotated,
@@ -16,6 +15,7 @@ import {
   changeScreenFormat,
   rotateScreenFormat,
 } from '../../../redux/project/actions';
+import { SCREEN_FORMATS } from '../../../types';
 
 const useStyles = makeStyles({
   root: {

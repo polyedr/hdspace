@@ -8,7 +8,7 @@ import { useSelector } from 'react-redux';
 import { SelectRendererProps } from '../types';
 import { convertPropCSS } from '../../../../utils/StyleHelper';
 import { selectElementAsTree } from '../../../../redux/project/selectors';
-import { LibraryElement } from '../../../../api/types';
+import { LibraryElement } from '../../../../types';
 
 const styles = require('../styles.scss');
 

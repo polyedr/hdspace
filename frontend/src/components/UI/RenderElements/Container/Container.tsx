@@ -3,7 +3,6 @@
 import React from 'react';
 import cn from 'classnames';
 import { makeComponentStyles } from '../styles';
-
 import { ContainerRendererProps } from '../types';
 import useEventHandlers from '../useEventHandlers';
 

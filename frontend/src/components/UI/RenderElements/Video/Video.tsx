@@ -4,7 +4,7 @@ import React from 'react';
 import cn from 'classnames';
 import { VideoRendererProps } from '../types';
 import { VIMEO_HEIGHT_RATIO } from '../../../../constants/players';
-import { IMAGES } from '../../../../constants/images';
+import IMAGES from '../../../../constants/images';
 import { getPlayerLink } from '../../../../utils/extractVideoLink';
 import { makeComponentStyles } from '../styles';
 import useEventHandlers from '../useEventHandlers';

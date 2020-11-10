@@ -38,18 +38,6 @@ declare module 'react-clock' {
   }
 }
 
-declare module 'react-sortablejs' {
-  import React from 'react';
-  import { default as SortableJsSortable } from 'sortablejs';
-
-  export type Props = {
-    className?: string;
-    onChange?(items: string[], sortable: SortableJsSortable): void;
-  };
-  export type SortableInstance = SortableJsSortable;
-  export default class Sortable extends React.Component<Props> {}
-}
-
 declare namespace NodeJS {
   export interface ProcessEnv {
     NODE_ENV: 'development' | 'production';

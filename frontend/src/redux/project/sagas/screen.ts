@@ -5,8 +5,7 @@ import { call, select, put, all, fork } from 'redux-saga/effects';
 import * as R from 'ramda';
 import { push } from 'connected-react-router';
 import * as Actions from '../actions';
-import { reqWrapper } from '.';
-import { selectors, T } from '..';
+import { selectors } from '..';
 import { createContainer } from './scenario';
 import {
   selectAllElements,
@@ -22,7 +21,6 @@ import {
 } from '../../../api/screen';
 import { convertCreatedElementToRequest } from '../../../api/converters/toRequest';
 import { apiGetProject, apiSaveProject } from '../../../api/project';
-import { Screen, IScenarioItem, StateElement } from '../types';
 import {
   activateScreen,
   addElements,
@@ -41,18 +39,20 @@ import {
   setUndoActions,
 } from '../actions';
 import { apiAddElements, apiGetElements } from '../../../api/element';
-import {
-  LibraryElement,
-  LibraryElementUnion,
-  Project,
-  ServerElement,
-  Normalized,
-} from '../../../api/types';
 import generateUniqueName from '../../../utils/generateUniqueName';
 import { apiSaveScenarios } from '../../../api/scenario';
 import { convertElementFromResponse } from '../../../api/converters/fromResponse';
-import getSavedValue from '../../../utils/getSavedValue';
-import { AppReduxState } from '../../../shared/types/app';
+import {
+  LibraryElement,
+  Normalized,
+  Project,
+  ServerElement,
+  StateElement,
+  Screen,
+  IScenarioItem,
+} from '../../../types';
+import { reqWrapper } from './shared';
+import { AppReduxState } from '../../types';
 
 export function* activateScreenSaga({
   payload: { screenId },
@@ -83,41 +83,6 @@ export function* activateScreenSaga({
   yield put(Actions.setActiveElement(screenElement.id));
 
   yield put(setScreenLoader(false));
-}
-
-export function* updateSavedElementsValues(elements: LibraryElementUnion[]) {
-  const oldSavedElementsValues: ReturnType<typeof selectors.selectSavedElementsValues> = yield select(
-    selectors.selectSavedElementsValues,
-  );
-
-  const newSavedElementsValues = elements
-    .filter((element) =>
-      Object.keys(oldSavedElementsValues).every(
-        (elementID) => elementID !== element.id,
-      ),
-    )
-    .reduce((acc, element) => {
-      const savedValue = getSavedValue(element);
-
-      if (element.type === 'radiobutton') {
-        return {
-          ...acc,
-          [element.parameters.name || '']: { savedValue: '' },
-        };
-      }
-
-      return {
-        ...acc,
-        [element.id]: { id: element.id, savedValue },
-      };
-    }, {});
-
-  yield put(
-    Actions.updateSavedElementsValues({
-      ...oldSavedElementsValues,
-      ...newSavedElementsValues,
-    }),
-  );
 }
 
 export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
@@ -154,7 +119,7 @@ export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
     yield put(setUndoActions(delScreen(projectID, createdScreen.id)));
   }
 
-  const rootScenario: T.IScenarioItem = yield call(createContainer, {
+  const rootScenario: IScenarioItem = yield call(createContainer, {
     screen: createdScreen.id,
   });
 

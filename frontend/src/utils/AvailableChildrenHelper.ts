@@ -1,6 +1,5 @@
-import { StateElement } from 'src/redux/project/types';
-import { AVAILABLE_CHILDREN, Entity } from '../domain/core';
-import { LibraryElement } from '../api/types';
+import { AVAILABLE_CHILDREN } from '../domain/core';
+import { Entity, LibraryElement, StateElement } from '../types';
 
 const CHILDREN_AVAILABILITY = {
   smartHeader: (element: LibraryElement<Entity>) => !!element.children.length,

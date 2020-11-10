@@ -4,7 +4,6 @@ import React from 'react';
 import cn from 'classnames';
 import { makeStyles, Button } from '@material-ui/core';
 import * as R from 'ramda';
-
 import { DropdownRendererProps } from '../types';
 import useEventHandlers from '../useEventHandlers';
 

@@ -1,22 +1,27 @@
 import { createSelector } from 'reselect';
-import { StateElement, BorderedElementsRef } from './types';
 import {
   DEFAULT_ACTIVE_ELEMENT,
   DEFAULT_PROJECT,
   DEFAULT_ROOT,
   DEFAULT_SCREEN,
 } from '../../constants/defaultParams';
-import { Entity, ChildEntity } from '../../domain/core';
-import { AppReduxState } from '../../shared/types/app';
-import { LibraryElement, PaginatedArray } from '../../api/types';
-import { CssLikeStyles } from '../../utils/StyleHelper';
 import { makeFeatureStateSelector } from '../../shared/redux';
 import {
   arrayToMap,
   buildElementsTree,
   flattenElements,
 } from '../../utils/normalizedStateHelpers';
-import { getDisplayStyles } from '../../components/RightPanel/PropertiesTab/Controls/Display/Display';
+import {
+  BorderedElementsRef,
+  ChildEntity,
+  CssLikeStyles,
+  Entity,
+  LibraryElement,
+  PaginatedArray,
+  StateElement,
+} from '../../types';
+import getDisplayStyles from '../../utils/getDisplayStyles';
+import { AppReduxState } from '../types';
 
 export const selectProjectState = makeFeatureStateSelector('project');
 

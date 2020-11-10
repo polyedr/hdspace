@@ -1,8 +1,6 @@
 import produce, { Draft } from 'immer';
 import { initialData } from '../initial';
-import * as T from '../types';
-import TYPES from '../../../constants/actions';
-import { Project } from '../../../api/types';
+import TYPES from '../../actionTypes';
 import {
   addMapElements,
   arrayToMap,
@@ -13,10 +11,12 @@ import {
   removeMapElement,
   updateMapElement,
 } from '../../../utils/normalizedStateHelpers';
+import { Project, Screen } from '../../../types';
+import { Action, ProjectDataState } from '../../types';
 
 const dataReducer = produce(
   // eslint-disable-next-line consistent-return
-  (draft: Draft<T.ProjectDataState> = initialData, action: T.Action) => {
+  (draft: Draft<ProjectDataState> = initialData, action: Action) => {
     switch (action.type) {
       case TYPES.UPDATE_ELEMENTS_TREE: {
         draft.elements = {
@@ -109,7 +109,7 @@ const dataReducer = produce(
       }
 
       case TYPES.SET_SCREENS: {
-        draft.screens = arrayToMap<T.Screen>(action.payload.screens);
+        draft.screens = arrayToMap<Screen>(action.payload.screens);
         break;
       }
 
@@ -152,9 +152,7 @@ const dataReducer = produce(
         draft.customElementsData.previous =
           action.payload.paginatedResult.previous;
         draft.customElementsData.results = [
-          ...(action.payload.initial === true
-            ? []
-            : draft.customElementsData.results),
+          ...(action.payload.initial ? [] : draft.customElementsData.results),
           ...action.payload.paginatedResult.results,
         ];
         draft.customElementsData.loading = false;

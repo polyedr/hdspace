@@ -17,8 +17,8 @@ import {
   selectIsUserLoading,
 } from '../../../redux/user/selectors';
 import { login, sendResetPasswordMail } from '../../../redux/user/actions';
-import { LoginFormData } from '../../../redux/user/types';
 import Dialog from '../../UI/Dialog';
+import { LoginFormData } from '../../../types';
 
 const useStyles = makeStyles((theme) =>
   createStyles({

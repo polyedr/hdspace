@@ -1,4 +1,4 @@
-import { InputType } from '../../../../../api/types';
+import { InputType } from '../../../../../types';
 
 const TYPE: Array<{ label: string; value: InputType }> = [
   { label: 'Text', value: 'text' },

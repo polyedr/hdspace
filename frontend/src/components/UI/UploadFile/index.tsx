@@ -3,7 +3,7 @@ import Icon from '../Icon';
 
 const styles = require('./styles.scss');
 
-export interface IUploadFile {
+interface IUploadFile {
   file: any;
   imgPreviewUrl?: string | ArrayBuffer;
 }

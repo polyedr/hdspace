@@ -9,7 +9,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import { JUSTIFY_VALUES, ALIGN_VALUES } from './constants';
-import { Flex } from '../../../../../redux/project/types';
+import { Flex } from '../../../../../types';
 
 const useStyles = makeStyles({
   arrowRotated: {

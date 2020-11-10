@@ -7,13 +7,13 @@ import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import SettingsIcon from '@material-ui/icons/Settings';
 import IconButton from '@material-ui/core/IconButton';
 import Divider from '@material-ui/core/Divider';
-import { StateElement } from '../../../redux/project/types';
 import {
   setActiveElement,
   updateElementParameters,
 } from '../../../redux/project/actions';
 import { selectCurrentScreenId } from '../../../redux/project/selectors';
-import { splitWords } from '../../../utils/StringHelper';
+import { splitWords } from '../../../utils/stringHelper';
+import { StateElement } from '../../../types';
 
 const useStyles = makeStyles({
   rnd: {

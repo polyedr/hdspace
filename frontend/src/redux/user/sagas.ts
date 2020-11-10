@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { takeLatest, call, put, select, takeEvery } from 'redux-saga/effects';
+import { takeLatest, call, put, takeEvery } from 'redux-saga/effects';
 import * as Actions from './actions';
 import {
   convertProfileDataFromResponse,
@@ -12,18 +12,16 @@ import {
   apiGetProfile,
   apiGetToken,
   apiIdentifyUser,
-  apiRefreshToken,
   apiResetPasswordConfirmation,
   apiRestorePassword,
   apiSendActivationMail,
   apiGetUser,
 } from '../../api/user';
-import { openProjects, openSignScreen } from '../../utils/history';
-import TYPES from '../../constants/actions';
+import TYPES from '../actionTypes';
 import { convertUserDataToRequest } from '../../api/converters/toRequest';
-import { ITokenPair, ServerProfileData, ServerUserData } from './types';
-import { reqWrapper } from '../project/sagas';
-import { selectTokenPair } from './selectors';
+import { ITokenPair, ServerProfileData, ServerUserData } from '../../types';
+import { reqWrapper } from '../project/sagas/shared';
+import { openProjects, openSignScreen } from '../history';
 
 // eslint-disable-next-line consistent-return
 export function* getTokenPairSaga(username: string, password: string) {
@@ -207,21 +205,6 @@ function* activateUserSaga(action: ReturnType<typeof Actions.activateUser>) {
 }
 
 // eslint-disable-next-line consistent-return
-export function* refreshUserTokenPair() {
-  try {
-    const { refresh } = yield select(selectTokenPair);
-
-    const accessResult = refresh && (yield call(apiRefreshToken, refresh));
-
-    if (accessResult && accessResult.access) {
-      return { refresh, access: accessResult.access };
-    }
-
-    return accessResult;
-  } catch (e) {
-    yield put(Actions.setAuthError(e));
-  }
-}
 
 export function* registerWithGoogleSaga() {
   // TODO Write when the backend will register new users using google token

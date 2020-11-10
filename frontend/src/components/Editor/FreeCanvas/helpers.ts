@@ -1,9 +1,9 @@
 import { useSelector } from 'react-redux';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import React, { CSSProperties } from 'react';
-import { StateElement } from '../../../redux/project/types';
+import React from 'react';
 import { selectProjectClasses } from '../../../redux/project/selectors';
 import { VIMEO_HEIGHT_RATIO } from '../../../constants/players';
+import { StateElement } from '../../../types';
 
 export const useElementClassNames = (element: StateElement) => {
   const projectClasses = useSelector(selectProjectClasses);

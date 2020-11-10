@@ -6,7 +6,7 @@ import {
   StyledAccordionDetails,
   StyledAccordionSummary,
 } from '../../ElementsTab/ElementsBlock';
-import { splitWords } from '../../../../utils/StringHelper';
+import { splitWords } from '../../../../utils/stringHelper';
 
 const useStyles = makeStyles({
   section: {},

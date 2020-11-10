@@ -4,8 +4,7 @@ import { useDrag } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import Button from '@material-ui/core/Button';
-import { splitWords } from '../../../utils/StringHelper';
-import { ElementData } from '../../../redux/project/types';
+import { splitWords } from '../../../utils/stringHelper';
 import { isAvailableChild } from '../../../utils/AvailableChildrenHelper';
 import { createElements } from '../../../redux/project/actions';
 import {
@@ -13,6 +12,7 @@ import {
   selectCurrentScreenId,
 } from '../../../redux/project/selectors';
 import { ElementType } from '../../../constants/dragAndDrop';
+import { ElementData } from '../../../types';
 
 const useStyles = makeStyles({
   root: {

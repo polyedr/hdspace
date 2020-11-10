@@ -13,7 +13,7 @@ import {
   selectRightPanelActiveTab,
 } from '../../redux/user/selectors';
 import { setRightPanelActiveTab } from '../../redux/project/actions';
-import { RightPanelTab } from '../../constants/defaultParams';
+import { RightPanelTab } from '../../types';
 
 const useStyles = makeStyles({
   root: {

@@ -1,8 +1,12 @@
-import { getDefaultStyles } from '../domain/libraryElements/defaultStyles';
-import { LibraryElement, Project } from '../api/types';
-import { ITokenPair } from '../redux/user/types';
-import { Screen, StateElement } from '../redux/project/types';
-import { CssLikeStyles } from '../utils/StyleHelper';
+import {
+  CssLikeStyles,
+  ITokenPair,
+  LibraryElement,
+  Project,
+  StateElement,
+  Screen,
+} from '../types';
+import getDefaultStyles from '../utils/getDefaultStyles';
 
 export const MIN_BORDER_WIDTH = 0;
 export const MAX_BORDER_WIDTH = 10;
@@ -75,17 +79,7 @@ export const DEFAULT_ACTIVE_ELEMENT: StateElement = {
   },
 };
 
-export const MODAL_ADD_ELEMENTS_TABS = [
-  'Containers',
-  'Widget',
-  'Typography',
-  'Form',
-  'Image',
-  'Other',
-  'Custom',
-];
-
-export const DEFAULT_AUTHORISATION_TOKEN: ITokenPair = {
+export const DEFAULT_AUTHORIZATION_TOKEN: ITokenPair = {
   access: '',
   refresh: '',
 };
@@ -101,21 +95,3 @@ export const KEEP_RP_TAB_ELEMENTS = [
   'grid',
   'columns',
 ];
-
-export const enum SCREEN_FORMATS {
-  Desktop = 'desktop',
-  Tablet = 'tablet',
-  Mobile = 'mobile',
-}
-
-export const enum NNBlockType {
-  HEADER = 'headers',
-  FOOTER = 'footers',
-  FORM = 'forms',
-  WEBPAGE = 'webpages',
-}
-
-export const enum RightPanelTab {
-  PROPERTIES = 0,
-  ELEMENTS = 1,
-}

@@ -13,20 +13,17 @@ import AddIcon from '@material-ui/icons/Add';
 import DeleteIcon from '@material-ui/icons/Delete';
 import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import { ListItemElement } from '../../../../../api/types';
 import {
   selectActiveItemChildren,
   selectCurrentScreenId,
 } from '../../../../../redux/project/selectors';
-import { AppReduxState } from '../../../../../shared/types/app';
-import {
-  PropertiesChangeProps,
-  withConfigurableProperties,
-} from '../../../../../utils/withConfigurableProperties';
+import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
 import {
   addChildToElement,
   deleteItem,
 } from '../../../../../redux/project/actions';
+import { ListItemElement, PropertiesChangeProps } from '../../../../../types';
+import { AppReduxState } from '../../../../../redux/types';
 
 const useStyles = makeStyles({
   details: {

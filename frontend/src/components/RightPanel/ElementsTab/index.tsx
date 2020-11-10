@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 import ElementsBlock from './ElementsBlock';
 import Section from './Section';
 import { LIBRARY_ELEMENTS } from '../../../domain/libraryElements/libraryElements';
-import { createElementsHierarchy } from '../../../utils/parseScenario';
+import { createElementsHierarchy } from '../../../utils/elementsHierarchy';
 import CustomElementsBlock from '../CustomElementsLibrary/CustomElementsBlock';
 import { selectFreeCanvasMode } from '../../../redux/project/selectors';
 

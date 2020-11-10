@@ -1,11 +1,11 @@
-import TYPES from '../../constants/actions';
+import TYPES from '../actionTypes';
 import {
   ITokenPair,
   LoginFormData,
   ProfileData,
   TotalUserData,
   UserData,
-} from './types';
+} from '../../types';
 
 export const changeMinLPanel = () => ({ type: TYPES.CHANGE_L_PANEL });
 

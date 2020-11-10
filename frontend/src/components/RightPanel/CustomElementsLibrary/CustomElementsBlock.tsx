@@ -16,7 +16,7 @@ import {
 } from '../ElementsTab/ElementsBlock';
 import ElementButton from '../ElementsTab/ElementButton';
 
-const CustomElementsBlock: React.FC<{}> = () => {
+const CustomElementsBlock: React.FC = () => {
   const libraryElements = useSelector(selectCustomLibraryElements);
   const dispatch = useDispatch();
   const styles = useElementBlockStyles();

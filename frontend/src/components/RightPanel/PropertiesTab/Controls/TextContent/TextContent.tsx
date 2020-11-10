@@ -1,13 +1,10 @@
 import React, { useCallback } from 'react';
 import { connect } from 'react-redux';
 import TextField from '@material-ui/core/TextField';
-import { AppReduxState } from '../../../../../shared/types/app';
-import { ParagraphElement } from '../../../../../api/types';
 import { selectActiveElementParams } from '../../../../../redux/project/selectors';
-import {
-  PropertiesChangeProps,
-  withConfigurableProperties,
-} from '../../../../../utils/withConfigurableProperties';
+import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
+import { ParagraphElement, PropertiesChangeProps } from '../../../../../types';
+import { AppReduxState } from '../../../../../redux/types';
 
 type StateProps = {
   content: string;

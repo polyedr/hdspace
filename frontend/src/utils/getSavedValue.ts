@@ -1,5 +1,4 @@
-import { LibraryElementUnion } from '../api/types';
-import { StateElement } from '../redux/project/types';
+import { LibraryElementUnion, StateElement } from '../types';
 
 const getSavedValue = (element: LibraryElementUnion | StateElement) => {
   switch (element.type) {

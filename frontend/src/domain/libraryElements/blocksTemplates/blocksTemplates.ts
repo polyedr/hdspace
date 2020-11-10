@@ -14,15 +14,16 @@ import {
   makeTextinput,
   makeButton,
 } from '../formElements/formElements';
+
+import { defaultFreeCanvasParams } from '../../core';
 import {
   CardsSectionServerElement,
+  CssLikeStyles,
   FeatureSectionServerElement,
   PageTemplateServerElement,
-  SubscribeFormServerElement,
   SectionServerElement,
-} from '../../../api/types';
-import { CssLikeStyles } from '../../../utils/StyleHelper';
-import { defaultFreeCanvasParams } from '../../core';
+  SubscribeFormServerElement,
+} from '../../../types';
 
 export const makePageTemplate = (
   withoutContainers: boolean = false,

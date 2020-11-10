@@ -20,7 +20,7 @@ import {
   // registerWithGoogle,
   sendActivationMail,
 } from '../../../redux/user/actions';
-import { SignupFormData } from '../../../redux/user/types';
+import { SignupFormData } from '../../../types';
 
 const useStyles = makeStyles((theme) =>
   createStyles({

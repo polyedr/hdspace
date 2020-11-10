@@ -1,25 +1,26 @@
 import { makeParagraph } from '../typographyElements/typographyElements';
+import { defaultFreeCanvasParams } from '../../core';
+import IMAGES from '../../../constants/images';
 import {
   ColumnsServerElement,
   ContainerServerElement,
+  CssLikeStyles,
   DivBlockServerElement,
   DropdownItemServerElement,
   DropdownMenuServerElement,
   DropdownServerElement,
+  Entity,
   GridServerElement,
   ImageServerElement,
   RootServerElement,
   ServerElement,
-  UndefinedServerElement,
-  VideoServerElement,
-  SmartHeaderServerElement,
   SmartFooterServerElement,
   SmartFormServerElement,
+  SmartHeaderServerElement,
   SmartWebpageServerElement,
-} from '../../../api/types';
-import { defaultFreeCanvasParams, Entity } from '../../core';
-import { IMAGES } from '../../../constants/images';
-import { CssLikeStyles } from '../../../utils/StyleHelper';
+  UndefinedServerElement,
+  VideoServerElement,
+} from '../../../types';
 
 export const root: RootServerElement = {
   buoyancy: 0,

@@ -2,13 +2,10 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Switch } from '@material-ui/core';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import { AppReduxState } from '../../../../../shared/types/app';
-import { ListElement } from '../../../../../api/types';
-import {
-  PropertiesChangeProps,
-  withConfigurableProperties,
-} from '../../../../../utils/withConfigurableProperties';
+import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
 import { selectActiveElementParams } from '../../../../../redux/project/selectors';
+import { ListElement, PropertiesChangeProps } from '../../../../../types';
+import { AppReduxState } from '../../../../../redux/types';
 
 type StateProps = {
   isOrdered: boolean;

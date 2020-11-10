@@ -1,11 +1,11 @@
 import { initialUi } from '../initial';
-import * as T from '../types';
-import TYPES from '../../../constants/actions';
+import TYPES from '../../actionTypes';
+import { Action, ProjectUiState } from '../../types';
 
 function uiReducer(
-  state: T.ProjectUiState = initialUi,
-  action: T.Action,
-): T.ProjectUiState {
+  state: ProjectUiState = initialUi,
+  action: Action,
+): ProjectUiState {
   switch (action.type) {
     case TYPES.SET_EDITABLE_STYLES: {
       return { ...state, editableStyles: action.payload.className };

@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import { StateElement } from '../../../../redux/project/types';
 import { BorderPosition } from '../constants';
-import { BorderStyles, StyleProps } from '../types';
-
-// const borderStyles = require('./Border.scss');
+import { BorderStyles, StateElement, StyleProps } from '../../../../types';
 
 type Props = {
   element: StateElement;
@@ -36,7 +33,7 @@ const Border: React.FC<Props> = (props) => {
   const [styleProps, setStyleProps] = useState<StyleProps | null>(null);
   useEffect(() => {
     const { top, left, right, height } = styles;
-    let props: StyleProps | null = null;
+    let props: StyleProps | null;
     switch (position) {
       case BorderPosition.TOP:
         props = {

@@ -1,15 +1,15 @@
 import React, { memo, useCallback } from 'react';
 import { connect } from 'react-redux';
-import { Entity } from '../../../../../domain/core';
-import { AppReduxState } from '../../../../../shared/types/app';
-import { LibraryElement } from '../../../../../api/types';
-import {
-  PropertiesChangeProps,
-  withConfigurableProperties,
-} from '../../../../../utils/withConfigurableProperties';
+import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
 import { selectCurrentEditableStyles } from '../../../../../redux/project/selectors';
 import StylesHeader from '../../helperComponents/StylesHeader';
 import ColorSettings from '../../helperComponents/ColorSettings';
+import {
+  Entity,
+  LibraryElement,
+  PropertiesChangeProps,
+} from '../../../../../types';
+import { AppReduxState } from '../../../../../redux/types';
 
 function mapState(state: AppReduxState) {
   return {

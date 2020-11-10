@@ -5,16 +5,14 @@ import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import { HEADING_TYPE, HEADING_SETTINGS } from './constants';
+import { selectActiveElementParams } from '../../../../../redux/project/selectors';
+import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
 import {
   HeadingElement,
-  HeadingType as HeadingTagType,
-} from '../../../../../api/types';
-import { AppReduxState } from '../../../../../shared/types/app';
-import { selectActiveElementParams } from '../../../../../redux/project/selectors';
-import {
   PropertiesChangeProps,
-  withConfigurableProperties,
-} from '../../../../../utils/withConfigurableProperties';
+  HeadingType as HeadingTagType,
+} from '../../../../../types';
+import { AppReduxState } from '../../../../../redux/types';
 
 type StateProps = {
   headingType: HeadingTagType;

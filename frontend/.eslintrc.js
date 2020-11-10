@@ -53,9 +53,9 @@ module.exports = {
     ], // allow use jsx in ts files
     'react/jsx-curly-newline': 'off', // should be disabled with prettier
     'react/prop-types': 'off', // should be disabled with typescript
+    'react/require-default-props': 'off', // should be disabled with typescript
     radix: [2, 'as-needed'], // allow to omit second parameter when possible
     'react/jsx-wrap-multilines': 'off', // to avoid conflicts with prettier
-    'import/no-cycle': 'off', // TODO: get rid of cyclic dependencies
     'react/jsx-props-no-spreading': 'off',
     'jsx-a11y/label-has-associated-control': 'off',
     'no-nested-ternary': 'warn',

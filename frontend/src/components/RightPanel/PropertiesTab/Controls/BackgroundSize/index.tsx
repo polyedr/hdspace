@@ -1,14 +1,14 @@
 import React, { useCallback, memo } from 'react';
 import { connect } from 'react-redux';
-import { AppReduxState } from '../../../../../shared/types/app';
-import { Entity } from '../../../../../domain/core';
-import { LibraryElement } from '../../../../../api/types';
-import {
-  PropertiesChangeProps,
-  withConfigurableProperties,
-} from '../../../../../utils/withConfigurableProperties';
+import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
 import { selectCurrentEditableStyles } from '../../../../../redux/project/selectors';
 import StylesHeader from '../../helperComponents/StylesHeader';
+import {
+  Entity,
+  LibraryElement,
+  PropertiesChangeProps,
+} from '../../../../../types';
+import { AppReduxState } from '../../../../../redux/types';
 
 enum Unit {
   px = 'px',
