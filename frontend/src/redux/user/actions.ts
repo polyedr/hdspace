@@ -135,7 +135,9 @@ export const changeUserData = (data: Partial<UserData>) => ({
   payload: data,
 });
 
-export const changeUserDataComplete = (errors?: any) => ({
+export const changeUserDataComplete = (
+  errors?: { [key in keyof UserData]: string } | { [FORM_ERROR]: string },
+) => ({
   type: TYPES.CHANGE_USER_DATA_COMPLETE,
   payload: errors,
 });
@@ -145,10 +147,19 @@ export const changeUserDataFailure = (error: any) => ({
   payload: error,
 });
 
-export const changeProfileData = (id: number, data: Partial<ProfileData>) => ({
+export const changeProfileData = (data: Partial<ProfileData>) => ({
   type: TYPES.CHANGE_PROFILE_DATA,
-  payload: {
-    id,
-    data,
-  },
+  payload: data,
+});
+
+export const changeProfileDataComplete = (
+  errors?: { [key in keyof ProfileData]: string } | { [FORM_ERROR]: string },
+) => ({
+  type: TYPES.CHANGE_PROFILE_DATA_COMPLETE,
+  payload: errors,
+});
+
+export const changeProfileDataFailure = (error: any) => ({
+  type: TYPES.CHANGE_PROFILE_DATA_FAILURE,
+  payload: error,
 });

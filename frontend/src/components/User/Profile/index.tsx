@@ -13,6 +13,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import Alert from '@material-ui/lab/Alert';
+import FormHelperText from '@material-ui/core/FormHelperText';
 import Button from '../../UI/Button';
 import { selectUserData } from '../../../redux/user/selectors';
 import { changeProfileData, logout } from '../../../redux/user/actions';
@@ -23,7 +24,7 @@ import { promiseListener } from '../../../redux/store';
 import TYPES from '../../../redux/actionTypes';
 import SubmitError from '../SubmitError';
 
-const ROLES = ['STAFF', 'ADMINISTRATOR', 'LIBRARIAN', 'EXTERNAL'];
+const ROLES = ['STAFF', 'ADMINISTRATOR', 'LIBRARIAN', 'EXTERNAL', 'fajlwe'];
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -107,7 +108,7 @@ const Profile: React.FC = () => {
   const dispatch = useDispatch();
 
   const userData = useSelector(selectUserData);
-  const { firstName, lastName, email, role, id, avatar } = userData;
+  const { firstName, lastName, email, role, avatar } = userData;
 
   const handleLogout = () => {
     dispatch(logout());
@@ -120,7 +121,7 @@ const Profile: React.FC = () => {
         ([key, value]) => value !== userData[key as keyof ProfileData],
       )
     ) {
-      dispatch(changeProfileData(id, values));
+      dispatch(changeProfileData(values));
     }
   };
 
@@ -130,7 +131,7 @@ const Profile: React.FC = () => {
     const formData = new FormData();
     formData.append('avatar', file, file.name);
 
-    dispatch(changeProfileData(id, (formData as any) as ProfileData));
+    dispatch(changeProfileData((formData as any) as ProfileData));
   };
 
   const removeProfileImage = () => handleChangeProfileData({ avatar: null });
@@ -161,15 +162,15 @@ const Profile: React.FC = () => {
                   onSubmit={onSubmit}
                   render={({ handleSubmit, submitError }) => (
                     <>
-                      {submitError && (
-                        <div className={classes.error}>
-                          <SubmitError name="detail" />
+                      <div className={classes.error}>
+                        <SubmitError name="detail" />
 
+                        {submitError && (
                           <Alert severity="error" variant="filled">
                             {submitError}
                           </Alert>
-                        </div>
-                      )}
+                        )}
+                      </div>
                       <form
                         onSubmit={handleSubmit}
                         className={classes.profileForm}
@@ -183,7 +184,6 @@ const Profile: React.FC = () => {
                               fullWidth
                               label="First Name"
                               placeholder="First Name"
-                              required
                               variant="outlined"
                               size="small"
                               error={
@@ -207,7 +207,6 @@ const Profile: React.FC = () => {
                               type="text"
                               fullWidth
                               label="Last Name"
-                              required
                               variant="outlined"
                               size="small"
                               error={
@@ -228,49 +227,78 @@ const Profile: React.FC = () => {
               )}
             </MakeAsyncFunction>
 
-            <Form
-              onSubmit={handleChangeProfileData}
-              render={({ handleSubmit }) => (
-                <form onSubmit={handleSubmit} className={classes.profileForm}>
-                  <TextField
-                    type="text"
-                    fullWidth
-                    label="Company Name"
-                    placeholder="Company Name"
-                    required
-                    variant="outlined"
-                    size="small"
-                  />
+            <MakeAsyncFunction
+              listener={promiseListener}
+              start={TYPES.CHANGE_PROFILE_DATA}
+              resolve={TYPES.CHANGE_PROFILE_DATA_COMPLETE}
+              reject={TYPES.CHANGE_PROFILE_DATA_FAILURE}
+            >
+              {(onSubmit) => (
+                <Form
+                  onSubmit={onSubmit}
+                  render={({ handleSubmit, submitError }) => (
+                    <>
+                      <div className={classes.error}>
+                        <SubmitError name="detail" />
 
-                  <Field name="role" defaultValue={role}>
-                    {({ input, meta }) => (
-                      <FormControl
-                        fullWidth
-                        error={(meta.error || meta.submitError) && meta.touched}
-                        variant="outlined"
+                        {submitError && (
+                          <Alert severity="error" variant="filled">
+                            {submitError}
+                          </Alert>
+                        )}
+                      </div>
+                      <form
+                        onSubmit={handleSubmit}
+                        className={classes.profileForm}
                       >
-                        <InputLabel>Role</InputLabel>
+                        <TextField
+                          type="text"
+                          fullWidth
+                          label="Company Name"
+                          placeholder="Company Name"
+                          variant="outlined"
+                          size="small"
+                        />
 
-                        <Select
-                          {...input}
-                          margin="dense"
-                          label="Role"
-                          onChange={(ev) =>
-                            handleChangeProfileData({ role: ev.target.value })
-                          }
-                        >
-                          {ROLES.map((role) => (
-                            <MenuItem key={role} value={role} dense>
-                              {role}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
-                    )}
-                  </Field>
-                </form>
+                        <Field name="role" defaultValue={role}>
+                          {({ input, meta }) => (
+                            <FormControl
+                              fullWidth
+                              error={
+                                (meta.error || meta.submitError) && meta.touched
+                              }
+                              variant="outlined"
+                            >
+                              <InputLabel>Role</InputLabel>
+
+                              <Select
+                                {...input}
+                                margin="dense"
+                                label="Role"
+                                onBlur={handleSubmit}
+                              >
+                                {ROLES.map((role) => (
+                                  <MenuItem key={role} value={role} dense>
+                                    {role}
+                                  </MenuItem>
+                                ))}
+                              </Select>
+
+                              <FormHelperText>
+                                {(meta.error || meta.submitError) &&
+                                meta.touched
+                                  ? meta.error || meta.submitError
+                                  : null}
+                              </FormHelperText>
+                            </FormControl>
+                          )}
+                        </Field>
+                      </form>
+                    </>
+                  )}
+                />
               )}
-            />
+            </MakeAsyncFunction>
           </div>
 
           <Form

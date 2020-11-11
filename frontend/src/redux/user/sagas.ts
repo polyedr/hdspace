@@ -82,8 +82,6 @@ export function* changeUserDataSaga({
   payload,
 }: ReturnType<typeof Actions.changeUserData>) {
   try {
-    yield put(Actions.setUserError(null));
-
     const { id } = yield select(selectUserData);
 
     const newUserData: ServerUserData = yield call(
@@ -107,22 +105,27 @@ export function* changeUserDataSaga({
 }
 
 export function* changeProfileDataSaga({
-  payload: { id, data },
+  payload,
 }: ReturnType<typeof Actions.changeProfileData>) {
   try {
-    yield put(Actions.setUserError(null));
+    const { id } = yield select(selectUserData);
 
     const newProfileData: ServerProfileData = yield call(
       reqWrapper,
       apiChangeProfileData,
-      { id, data },
+      { id, data: payload },
     );
 
     yield put(
       Actions.setUserData(convertProfileDataFromResponse(newProfileData)),
     );
+    yield put(Actions.changeProfileDataComplete());
   } catch (e) {
-    yield put(Actions.setUserError(e));
+    if (typeof e.response?.data === 'object') {
+      yield put(Actions.changeProfileDataComplete(e.response.data));
+    } else {
+      yield put(Actions.changeProfileDataComplete({ [FORM_ERROR]: e.message }));
+    }
   }
 }
 
