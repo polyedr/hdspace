@@ -105,7 +105,7 @@ export type UserState = {
   tokenPair: TokenPair;
   isLoadedToken: boolean;
   isLoggedIn: boolean;
-  authError: Error | null;
+  error: Error | null;
   userData: TotalUserData;
   restorePasswordEmail?: string;
   restoreUserId?: number;

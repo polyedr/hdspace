@@ -4,7 +4,7 @@ import { selectTokenPair } from '../../user/selectors';
 import { LibraryElementUnion, Project } from '../../../types';
 import {
   logout,
-  setAuthError,
+  setUserError,
   setLoadedToken,
   setTokenPair,
 } from '../../user/actions';
@@ -32,7 +32,7 @@ export function* refreshUserTokenPair() {
 
     return accessResult;
   } catch (e) {
-    yield put(setAuthError(e));
+    yield put(setUserError(e));
   }
 }
 

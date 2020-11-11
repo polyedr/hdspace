@@ -45,8 +45,6 @@ export function* loginSaga({
   payload: { username, password },
 }: ReturnType<typeof Actions.login>) {
   try {
-    yield console.log(username, password);
-
     const tokenPair = yield call(getTokenPairSaga, username, password);
     if (!tokenPair) return;
 
@@ -83,6 +81,8 @@ export function* changeUserDataSaga({
   payload: { id, data },
 }: ReturnType<typeof Actions.changeUserData>) {
   try {
+    yield put(Actions.setUserError(null));
+
     const newUserData: ServerUserData = yield call(
       reqWrapper,
       apiChangeUserData,
@@ -94,7 +94,7 @@ export function* changeUserDataSaga({
 
     yield put(Actions.setUserData(convertUserDataFromResponse(newUserData)));
   } catch (e) {
-    yield put(Actions.setAuthError(e));
+    yield put(Actions.setUserError(e));
   }
 }
 
@@ -102,6 +102,8 @@ export function* changeProfileDataSaga({
   payload: { id, data },
 }: ReturnType<typeof Actions.changeProfileData>) {
   try {
+    yield put(Actions.setUserError(null));
+
     const newProfileData: ServerProfileData = yield call(
       reqWrapper,
       apiChangeProfileData,
@@ -112,7 +114,7 @@ export function* changeProfileDataSaga({
       Actions.setUserData(convertProfileDataFromResponse(newProfileData)),
     );
   } catch (e) {
-    yield put(Actions.setAuthError(e));
+    yield put(Actions.setUserError(e));
   }
 }
 
@@ -164,7 +166,7 @@ function* sendResetPasswordMailSaga(
       Actions.setConfirmMessage('Please, check your mail and set new password'),
     );
   } catch (e) {
-    yield put(Actions.setAuthError(e));
+    yield put(Actions.setUserError(e));
   } finally {
     yield put(Actions.toggleUserLoading(false));
   }
@@ -189,7 +191,7 @@ function* resetPasswordConfirmationSaga(
     yield put(Actions.setTokenPair({ access: token, refresh: '' }));
     openSignScreen('signin');
   } catch (e) {
-    yield put(Actions.setAuthError(e));
+    yield put(Actions.setUserError(e));
   } finally {
     yield put(Actions.toggleUserLoading(false));
   }
@@ -206,7 +208,7 @@ function* activateUserSaga(action: ReturnType<typeof Actions.activateUser>) {
 
     yield put(Actions.setTokenPair({ access: token, refresh: '' }));
   } catch (e) {
-    yield put(Actions.setAuthError(e));
+    yield put(Actions.setUserError(e));
   } finally {
     yield put(Actions.toggleUserLoading(false));
   }

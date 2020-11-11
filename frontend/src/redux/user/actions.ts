@@ -100,8 +100,8 @@ export const activateUser = (uid: string, token: string) => ({
   },
 });
 
-export const setAuthError = (error: Error) => ({
-  type: TYPES.SET_AUTH_ERROR,
+export const setUserError = (error: Error | null) => ({
+  type: TYPES.SET_USER_ERROR,
   payload: error,
 });
 

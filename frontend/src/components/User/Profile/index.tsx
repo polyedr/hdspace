@@ -2,6 +2,15 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Form, Field } from 'react-final-form';
 import cn from 'classnames';
+import makeStyles from '@material-ui/core/styles/makeStyles';
+import { createStyles } from '@material-ui/core';
+import Typography from '@material-ui/core/Typography';
+import Box from '@material-ui/core/Box';
+import TextField from '@material-ui/core/TextField';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
 import Button from '../../UI/Button';
 import { selectUserData } from '../../../redux/user/selectors';
 import {
@@ -13,9 +22,44 @@ import IMAGES from '../../../constants/images';
 import { ProfileData, UserData } from '../../../types';
 import { openSignScreen } from '../../../redux/history';
 
+const ROLES = ['STAFF', 'ADMINISTRATOR', 'LIBRARIAN', 'EXTERNAL'];
+
+const useStyles = makeStyles((theme) =>
+  createStyles({
+    headerContainer: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      padding: theme.spacing(2),
+      borderBottom: '1px solid #E7EAEC',
+    },
+    header: {
+      fontWeight: 'bold',
+    },
+    formsContainer: {
+      display: 'flex',
+      maxWidth: 1000,
+      height: 122,
+    },
+    textFieldsContainer: {
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'space-between',
+      flex: 1,
+    },
+    profileForm: {
+      display: 'flex',
+      '& > *': {
+        margin: theme.spacing(1),
+      },
+    },
+  }),
+);
+
 const styles = require('./Profile.scss');
 
 const Profile: React.FC = () => {
+  const classes = useStyles();
   const dispatch = useDispatch();
 
   const userData = useSelector(selectUserData);
@@ -58,43 +102,67 @@ const Profile: React.FC = () => {
   const removeProfileImage = () => handleChangeProfileData({ avatar: null });
 
   return (
-    <main className={styles.profileContainer}>
-      <div className={styles.profileHeaderContainer}>
-        <div className={styles.profileHeader}>Profile settings</div>
+    <main>
+      <div className={classes.headerContainer}>
+        <Typography variant="h4" className={classes.header}>
+          Profile settings
+        </Typography>
 
         <Button styleType="link" onClick={handleLogout}>
           Log out
         </Button>
       </div>
 
-      <div className={styles.profileMainBlock}>
-        <div className={styles.profileFormsContainer}>
-          <div className={styles.textFieldsContainer}>
+      <Box padding={2}>
+        <div className={classes.formsContainer}>
+          <div className={classes.textFieldsContainer}>
             <Form
               onSubmit={handleChangeUserData}
               render={({ handleSubmit }) => (
-                <form onSubmit={handleSubmit} className={styles.profileForm}>
-                  <div className={styles.profileFieldWrapper}>
-                    <label>First Name</label>
-                    <Field
-                      name="firstName"
-                      onBlur={handleSubmit}
-                      defaultValue={firstName}
-                      component="input"
-                      type="text"
-                    />
-                  </div>
+                <form onSubmit={handleSubmit} className={classes.profileForm}>
+                  <Field name="first_name" defaultValue={firstName}>
+                    {({ input, meta }) => (
+                      <TextField
+                        {...input}
+                        onBlur={handleSubmit}
+                        type="text"
+                        fullWidth
+                        label="First Name"
+                        placeholder="First Name"
+                        required
+                        variant="outlined"
+                        size="small"
+                        error={(meta.error || meta.submitError) && meta.touched}
+                        helperText={
+                          (meta.error || meta.submitError) && meta.touched
+                            ? meta.error || meta.submitError
+                            : null
+                        }
+                      />
+                    )}
+                  </Field>
 
-                  <div className={styles.profileFieldWrapper}>
-                    <label>Last Name</label>
-                    <Field
-                      name="lastName"
-                      onBlur={handleSubmit}
-                      defaultValue={lastName}
-                      component="input"
-                      type="text"
-                    />
-                  </div>
+                  <Field name="last_name" defaultValue={lastName}>
+                    {({ input, meta }) => (
+                      <TextField
+                        {...input}
+                        onBlur={handleSubmit}
+                        placeholder="Last Name"
+                        type="text"
+                        fullWidth
+                        label="Last Name"
+                        required
+                        variant="outlined"
+                        size="small"
+                        error={(meta.error || meta.submitError) && meta.touched}
+                        helperText={
+                          (meta.error || meta.submitError) && meta.touched
+                            ? meta.error || meta.submitError
+                            : null
+                        }
+                      />
+                    )}
+                  </Field>
                 </form>
               )}
             />
@@ -102,28 +170,43 @@ const Profile: React.FC = () => {
             <Form
               onSubmit={handleChangeProfileData}
               render={({ handleSubmit }) => (
-                <form onSubmit={handleSubmit} className={styles.profileForm}>
-                  <div className={styles.profileFieldWrapper}>
-                    <label>Company Name</label>
-                    <input type="text" />
-                  </div>
+                <form onSubmit={handleSubmit} className={classes.profileForm}>
+                  <TextField
+                    type="text"
+                    fullWidth
+                    label="Company Name"
+                    placeholder="Company Name"
+                    required
+                    variant="outlined"
+                    size="small"
+                  />
 
-                  <div className={styles.profileFieldWrapper}>
-                    <label>Role</label>
-                    <Field
-                      name="role"
-                      component="select"
-                      defaultValue={role}
-                      onBlur={handleSubmit}
-                    >
-                      <option value="Designer">Designer</option>
-                      <option value="Developer">Developer</option>
-                      <option value="Administrator">Administrator</option>
-                      <option value="Marketing">Marketing</option>
-                      <option value="Expert">Expert</option>
-                      <option value="Communication">Communication</option>
-                    </Field>
-                  </div>
+                  <Field name="role" defaultValue={role}>
+                    {({ input, meta }) => (
+                      <FormControl
+                        fullWidth
+                        error={(meta.error || meta.submitError) && meta.touched}
+                        variant="outlined"
+                      >
+                        <InputLabel>Role</InputLabel>
+
+                        <Select
+                          {...input}
+                          margin="dense"
+                          label="Role"
+                          onChange={(ev) =>
+                            handleChangeProfileData({ role: ev.target.value })
+                          }
+                        >
+                          {ROLES.map((role) => (
+                            <MenuItem key={role} value={role} dense>
+                              {role}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    )}
+                  </Field>
                 </form>
               )}
             />
@@ -189,7 +272,7 @@ const Profile: React.FC = () => {
             Change
           </Button>
         </div>
-      </div>
+      </Box>
     </main>
   );
 };

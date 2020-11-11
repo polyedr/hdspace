@@ -34,7 +34,7 @@ export const initialUserState: UserState = {
     refresh: '',
   },
   isLoadedToken: true,
-  authError: null,
+  error: null,
   isLoading: false,
   confirmMessage: '',
 };
@@ -54,13 +54,12 @@ const changeSignLoader: ActionHandler<typeof Actions.toggleUserLoading> = (
   isLoading,
 });
 
-const setAuthError: ActionHandler<typeof Actions.setAuthError> = (
+const setAuthError: ActionHandler<typeof Actions.setUserError> = (
   state,
   { payload },
 ) => ({
   ...state,
   authError: payload,
-  isLoggedIn: false,
 });
 
 const changePrototypeMode: ActionHandler<typeof Actions.changePrototypeMode> = (
@@ -137,7 +136,7 @@ const handlers: Handlers<UserState> = {
   [TYPES.SET_TOKEN_PAIR]: setTokenPair,
   [TYPES.SET_USER_DATA]: setUserData,
   [TYPES.SET_LOADED_TOKEN]: setLoadedToken,
-  [TYPES.SET_AUTH_ERROR]: setAuthError,
+  [TYPES.SET_USER_ERROR]: setAuthError,
   [TYPES.SET_RESTORE_PASSWORD_EMAIL]: setRestorePasswordEmail,
   [TYPES.SET_RESTORE_USER_ID]: setRestoreUserId,
   [TYPES.LOGOUT]: logout,
