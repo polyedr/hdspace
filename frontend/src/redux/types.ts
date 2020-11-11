@@ -8,7 +8,7 @@ import {
   Entity,
   Indices,
   ItemToCopyInfo,
-  ITokenPair,
+  TokenPair,
   LibraryElement,
   LibraryElementPatch,
   NNBlockType,
@@ -102,7 +102,7 @@ export type UserState = {
   freeCanvasMode: {
     enabled: boolean;
   };
-  tokenPair: ITokenPair;
+  tokenPair: TokenPair;
   isLoadedToken: boolean;
   isLoggedIn: boolean;
   authError: Error | null;

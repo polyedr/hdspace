@@ -768,12 +768,10 @@ export type ElementsToDrop = {
   index?: number;
 };
 
-/* eslint-disable camelcase */
-
-export interface ITokenPair {
+export type TokenPair = {
   access: string;
   refresh: string;
-}
+};
 
 export type LoginFormData = {
   username: string;

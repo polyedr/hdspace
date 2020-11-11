@@ -1,6 +1,6 @@
 import TYPES from '../actionTypes';
 import {
-  ITokenPair,
+  TokenPair,
   LoginFormData,
   ProfileData,
   TotalUserData,
@@ -24,11 +24,21 @@ export const login = (data: LoginFormData) => ({
   payload: data,
 });
 
+export const loginSuccess = (errors?: any) => ({
+  type: TYPES.LOGIN_SUCCESS,
+  payload: errors,
+});
+
+export const loginError = (errors: any) => ({
+  type: TYPES.LOGIN_ERROR,
+  payload: errors,
+});
+
 export const logout = () => ({
   type: TYPES.LOGOUT,
 });
 
-export const setTokenPair = (tokenPair: ITokenPair) => ({
+export const setTokenPair = (tokenPair: TokenPair) => ({
   type: TYPES.SET_TOKEN_PAIR,
   tokenPair,
 });

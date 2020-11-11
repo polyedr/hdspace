@@ -1,6 +1,6 @@
 import {
   CssLikeStyles,
-  ITokenPair,
+  TokenPair,
   LibraryElement,
   Project,
   StateElement,
@@ -79,7 +79,7 @@ export const DEFAULT_ACTIVE_ELEMENT: StateElement = {
   },
 };
 
-export const DEFAULT_AUTHORIZATION_TOKEN: ITokenPair = {
+export const DEFAULT_AUTHORIZATION_TOKEN: TokenPair = {
   access: '',
   refresh: '',
 };

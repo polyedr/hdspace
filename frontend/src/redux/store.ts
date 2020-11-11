@@ -10,13 +10,14 @@ import storage from 'redux-persist/lib/storage';
 import createSagaMiddleware from 'redux-saga';
 import { connectRouter, routerMiddleware } from 'connected-react-router';
 import { PersistConfig, Persistor } from 'redux-persist/es/types';
-
+import createReduxPromiseListener from 'redux-promise-listener';
 import userReducer from './user/reducer';
 import projectReducer from './project/reducers';
 import projectSaga from './project/sagas';
 import userSaga from './user/sagas';
 import history from './history';
 import DevToolsOptions from './devtools';
+import loginMiddleware from './user/loginMiddleware';
 
 const userPersistConfig: PersistConfig = {
   key: 'user',
@@ -30,7 +31,9 @@ const userPersistConfig: PersistConfig = {
   storage,
 };
 
-export const sagaMiddleware = createSagaMiddleware();
+const sagaMiddleware = createSagaMiddleware();
+
+const reduxPromiseListener = createReduxPromiseListener();
 
 const composeEnhancers =
   typeof window === 'object' &&
@@ -47,8 +50,17 @@ export const rootReducer = combineReducers({
 
 export const store = createStore(
   rootReducer,
-  composeEnhancers(applyMiddleware(routerMiddleware(history), sagaMiddleware)),
+  composeEnhancers(
+    applyMiddleware(
+      routerMiddleware(history),
+      sagaMiddleware,
+      reduxPromiseListener.middleware,
+      loginMiddleware,
+    ),
+  ),
 );
+
+export const promiseListener = reduxPromiseListener;
 
 export function configureStore(): { store: Store<any>; persistor: Persistor } {
   sagaMiddleware.run(userSaga);

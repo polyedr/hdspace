@@ -10,7 +10,6 @@ import {
   apiChangeProfileData,
   apiChangeUserData,
   apiGetProfile,
-  apiGetToken,
   apiIdentifyUser,
   apiResetPasswordConfirmation,
   apiRestorePassword,
@@ -19,30 +18,19 @@ import {
 } from '../../api/user';
 import TYPES from '../actionTypes';
 import { convertUserDataToRequest } from '../../api/converters/toRequest';
-import { ITokenPair, ServerProfileData, ServerUserData } from '../../types';
+import { ServerProfileData, ServerUserData } from '../../types';
 import { reqWrapper } from '../project/sagas/shared';
 import { openProjects, openSignScreen } from '../history';
 
-// eslint-disable-next-line consistent-return
-export function* getTokenPairSaga(username: string, password: string) {
-  try {
-    const tokens: ITokenPair = yield call(apiGetToken, { username, password });
-
-    yield put(Actions.setTokenPair(tokens));
-    return tokens;
-  } catch (e) {
-    yield put(Actions.setAuthError(e));
-  }
-}
-
 export function* loginSaga({
-  payload: { username, password },
-}: ReturnType<typeof Actions.login>) {
+  payload,
+}: ReturnType<typeof Actions.loginSuccess>) {
   try {
-    yield put(Actions.toggleUserLoading(true));
+    if (!payload?.refresh || !payload?.access) return;
 
-    const tokenPair = yield call(getTokenPairSaga, username, password);
-    if (!tokenPair) return;
+    yield put(Actions.setTokenPair(payload));
+
+    yield put(Actions.toggleUserLoading(true));
 
     const { id } = yield call(reqWrapper, apiIdentifyUser);
 
@@ -211,7 +199,7 @@ export function* registerWithGoogleSaga() {
 }
 
 export default function* userSaga() {
-  yield takeLatest(TYPES.LOGIN, loginSaga);
+  yield takeLatest(TYPES.LOGIN_SUCCESS, loginSaga);
   yield takeLatest(TYPES.SEND_ACTIVATION_MAIL, sendActivationMailSaga);
   yield takeLatest(TYPES.SEND_RESET_PASSWORD_MAIL, sendResetPasswordMailSaga);
   yield takeLatest(
