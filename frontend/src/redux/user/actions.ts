@@ -69,11 +69,6 @@ export const registerFailure = (error: any) => ({
   payload: error,
 });
 
-export const registerSuccess = (data) => ({
-  type: TYPES.REGISTER_COMPLETE,
-  payload: data,
-});
-
 export const sendResetPasswordMail = (email: string) => ({
   type: TYPES.SEND_RESET_PASSWORD_MAIL,
   payload: {
@@ -135,12 +130,19 @@ export const setRestoreUserId = (restoreUserId: number) => ({
   restoreUserId,
 });
 
-export const changeUserData = (id: number, data: Partial<UserData>) => ({
+export const changeUserData = (data: Partial<UserData>) => ({
   type: TYPES.CHANGE_USER_DATA,
-  payload: {
-    id,
-    data,
-  },
+  payload: data,
+});
+
+export const changeUserDataComplete = (errors?: any) => ({
+  type: TYPES.CHANGE_USER_DATA_COMPLETE,
+  payload: errors,
+});
+
+export const changeUserDataFailure = (error: any) => ({
+  type: TYPES.CHANGE_USER_DATA_FAILURE,
+  payload: error,
 });
 
 export const changeProfileData = (id: number, data: Partial<ProfileData>) => ({

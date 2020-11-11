@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { takeLatest, call, put, takeEvery } from 'redux-saga/effects';
+import { takeLatest, call, put, takeEvery, select } from 'redux-saga/effects';
 import { FORM_ERROR } from 'final-form';
 import * as Actions from './actions';
 import {
@@ -24,6 +24,7 @@ import { ServerProfileData, ServerUserData, TokenPair } from '../../types';
 import { reqWrapper } from '../project/sagas/shared';
 import { openProjects, openSignScreen } from '../history';
 import { loginComplete } from './actions';
+import { selectUserData } from './selectors';
 
 // eslint-disable-next-line consistent-return
 export function* getTokenPairSaga(username: string, password: string) {
@@ -78,23 +79,30 @@ export function* loginSaga({
 }
 
 export function* changeUserDataSaga({
-  payload: { id, data },
+  payload,
 }: ReturnType<typeof Actions.changeUserData>) {
   try {
     yield put(Actions.setUserError(null));
+
+    const { id } = yield select(selectUserData);
 
     const newUserData: ServerUserData = yield call(
       reqWrapper,
       apiChangeUserData,
       {
         id,
-        data: convertUserDataToRequest(data),
+        data: payload,
       },
     );
 
     yield put(Actions.setUserData(convertUserDataFromResponse(newUserData)));
+    yield put(Actions.changeUserDataComplete());
   } catch (e) {
-    yield put(Actions.setUserError(e));
+    if (typeof e.response?.data === 'object') {
+      yield put(Actions.changeUserDataComplete(e.response.data));
+    } else {
+      yield put(Actions.changeUserDataComplete({ [FORM_ERROR]: e.message }));
+    }
   }
 }
 
