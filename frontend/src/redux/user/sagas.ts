@@ -14,7 +14,7 @@ import {
   apiIdentifyUser,
   apiResetPasswordConfirmation,
   apiRestorePassword,
-  apiSendActivationMail,
+  registerUser,
   apiGetUser,
   apiGetToken,
 } from '../../api/user';
@@ -23,7 +23,7 @@ import { convertUserDataToRequest } from '../../api/converters/toRequest';
 import { ServerProfileData, ServerUserData, TokenPair } from '../../types';
 import { reqWrapper } from '../project/sagas/shared';
 import { openProjects, openSignScreen } from '../history';
-import { loginSuccess } from './actions';
+import { loginComplete } from './actions';
 
 // eslint-disable-next-line consistent-return
 export function* getTokenPairSaga(username: string, password: string) {
@@ -34,9 +34,9 @@ export function* getTokenPairSaga(username: string, password: string) {
     return tokens;
   } catch (e) {
     if (e.response?.data) {
-      yield put(Actions.loginSuccess(e.response.data));
+      yield put(Actions.loginComplete(e.response.data));
     } else {
-      yield put(Actions.loginSuccess({ [FORM_ERROR]: e.message }));
+      yield put(Actions.loginComplete({ [FORM_ERROR]: e.message }));
     }
   }
 }
@@ -68,10 +68,14 @@ export function* loginSaga({
       }),
     );
 
-    yield put(loginSuccess());
+    yield put(loginComplete());
     yield call(openProjects);
   } catch (e) {
-    yield put(Actions.loginSuccess({ [FORM_ERROR]: e.message }));
+    if (typeof e.response?.data === 'object') {
+      yield put(Actions.loginComplete(e.response.data));
+    } else {
+      yield put(Actions.loginComplete({ [FORM_ERROR]: e.message }));
+    }
   }
 }
 
@@ -112,14 +116,11 @@ export function* changeProfileDataSaga({
   }
 }
 
-function* sendActivationMailSaga(action: ReturnType<typeof Actions.register>) {
+function* registerSaga({
+  payload: { username, email, password, firstName, lastName },
+}: ReturnType<typeof Actions.register>) {
   try {
-    const {
-      payload: { username, email, password, firstName, lastName },
-    } = action;
-    yield put(Actions.toggleUserLoading(true));
-
-    const response = yield call(apiSendActivationMail, {
+    const response = yield call(registerUser, {
       username,
       email,
       password,
@@ -130,17 +131,21 @@ function* sendActivationMailSaga(action: ReturnType<typeof Actions.register>) {
       data: convertUserDataToRequest({ firstName, lastName }),
     });
 
-    openSignScreen('signin');
-
     yield put(
       Actions.setConfirmMessage(
         'Please, check your mail and confirm registration',
       ),
     );
+
+    yield put(Actions.registerComplete());
+
+    openSignScreen('signin');
   } catch (e) {
-    yield put(Actions.setAuthError(e));
-  } finally {
-    yield put(Actions.toggleUserLoading(false));
+    if (typeof e.response?.data === 'object') {
+      yield put(Actions.registerComplete(e.response.data));
+    } else {
+      yield put(Actions.registerComplete({ [FORM_ERROR]: e.message }));
+    }
   }
 }
 
@@ -215,7 +220,7 @@ export function* registerWithGoogleSaga() {
 
 export default function* userSaga() {
   yield takeLatest(TYPES.LOGIN, loginSaga);
-  yield takeLatest(TYPES.REGISTER, sendActivationMailSaga);
+  yield takeLatest(TYPES.REGISTER, registerSaga);
   yield takeLatest(TYPES.SEND_RESET_PASSWORD_MAIL, sendResetPasswordMailSaga);
   yield takeLatest(
     TYPES.RESET_PASSWORD_CONFIRMATION,

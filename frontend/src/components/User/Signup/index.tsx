@@ -1,5 +1,4 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import MakeAsyncFunction from 'react-redux-promise-listener';
 import { Field, Form } from 'react-final-form';
 import { Link } from 'react-router-dom';
@@ -13,12 +12,7 @@ import Button from '@material-ui/core/Button';
 import Container from '@material-ui/core/Container';
 import { user } from '../../../constants/pathNames';
 import { Info } from '../Info';
-import {
-  selectAuthError,
-  selectIsUserLoading,
-} from '../../../redux/user/selectors';
-import // registerWithGoogle,
-'../../../redux/user/actions';
+// import registerWithGoogle from '../../../redux/user/actions';
 import { promiseListener } from '../../../redux/store';
 import TYPES from '../../../redux/actionTypes';
 
@@ -75,9 +69,6 @@ const useStyles = makeStyles((theme) =>
 const Signup: React.FC = () => {
   const classes = useStyles();
 
-  const authError = useSelector(selectAuthError);
-  const isLoading = useSelector(selectIsUserLoading);
-
   // TODO add google button and this method, when the backend will register new users using google token
   /* const responseGoogle = (response: any) => {
   dispatch(registerWithGoogle());
@@ -102,13 +93,13 @@ const Signup: React.FC = () => {
         <MakeAsyncFunction
           listener={promiseListener}
           start={TYPES.REGISTER}
-          resolve={TYPES.REGISTER_SUCCESS}
-          reject={TYPES.REGISTER_ERROR}
+          resolve={TYPES.REGISTER_COMPLETE}
+          reject={TYPES.REGISTER_FAILURE}
         >
           {(onSubmit) => (
             <Form
               onSubmit={onSubmit}
-              render={({ handleSubmit }) => (
+              render={({ handleSubmit, submitError, submitting }) => (
                 <Container maxWidth="xs">
                   <form onSubmit={handleSubmit} className={classes.form}>
                     <Typography className={classes.header}>
@@ -227,6 +218,7 @@ const Signup: React.FC = () => {
                           variant="filled"
                           autoFocus
                           size="small"
+                          autoComplete="new-password"
                           fullWidth
                           error={
                             (meta.error || meta.submitError) && meta.touched
@@ -242,7 +234,7 @@ const Signup: React.FC = () => {
 
                     <Button
                       type="submit"
-                      disabled={isLoading}
+                      disabled={submitting}
                       variant="contained"
                       color="primary"
                       fullWidth
@@ -251,9 +243,9 @@ const Signup: React.FC = () => {
                     </Button>
 
                     <div className={classes.error}>
-                      {authError && (
+                      {submitError && (
                         <Alert severity="error" variant="filled">
-                          {authError.message}
+                          {submitError}
                         </Alert>
                       )}
                     </div>

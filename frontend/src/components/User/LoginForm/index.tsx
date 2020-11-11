@@ -78,7 +78,7 @@ const LoginForm: React.FC = () => {
       listener={promiseListener}
       start={TYPES.LOGIN}
       resolve={TYPES.LOGIN_COMPLETE}
-      reject={TYPES.LOGIN_ERROR}
+      reject={TYPES.LOGIN_FAILURE}
     >
       {(onSubmit) => (
         <Form

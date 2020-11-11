@@ -1,3 +1,4 @@
+import { FORM_ERROR } from 'final-form';
 import TYPES from '../actionTypes';
 import {
   TokenPair,
@@ -25,13 +26,15 @@ export const login = (data: LoginFormData) => ({
   payload: data,
 });
 
-export const loginSuccess = (errors?: any) => ({
+export const loginComplete = (
+  errors?: { detail: string } | { [FORM_ERROR]: string },
+) => ({
   type: TYPES.LOGIN_COMPLETE,
   payload: errors,
 });
 
-export const loginError = (errors: any) => ({
-  type: TYPES.LOGIN_ERROR,
+export const loginFailure = (errors: any) => ({
+  type: TYPES.LOGIN_FAILURE,
   payload: errors,
 });
 
@@ -54,8 +57,20 @@ export const register = (data: SignupFormData) => ({
   payload: data,
 });
 
+export const registerComplete = (
+  errors?: { [key in keyof SignupFormData]: string } | { [FORM_ERROR]: string },
+) => ({
+  type: TYPES.REGISTER_COMPLETE,
+  payload: errors,
+});
+
+export const registerFailure = (error: any) => ({
+  type: TYPES.REGISTER_FAILURE,
+  payload: error,
+});
+
 export const registerSuccess = (data) => ({
-  type: TYPES.REGISTER_SUCCESS,
+  type: TYPES.REGISTER_COMPLETE,
   payload: data,
 });
 
