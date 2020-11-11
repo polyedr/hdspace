@@ -1,6 +1,6 @@
 import { AnyAction } from 'redux';
 import TYPES from '../actionTypes';
-import { loginError, loginSuccess } from './actions';
+import { loginSuccess } from './actions';
 import { TokenPair, LoginFormData } from '../../types';
 import { apiGetToken } from '../../api/user';
 
@@ -17,7 +17,7 @@ const loginMiddleware = (store) => (next: any) => (action: AnyAction) => {
   if (action?.type === TYPES.LOGIN) {
     submit(action.payload).then(
       (res) => store.dispatch(loginSuccess(res)),
-      (errors: any) => store.dispatch(loginError(errors)),
+      (errors: any) => store.dispatch(loginSuccess(errors)),
     );
   }
   return next(action);
