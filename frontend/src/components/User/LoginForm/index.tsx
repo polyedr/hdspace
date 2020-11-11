@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Field, Form } from 'react-final-form';
 import { Link } from 'react-router-dom';
 // import GoogleLogin from 'react-google-login';
@@ -13,10 +13,6 @@ import { createStyles } from '@material-ui/core';
 import Container from '@material-ui/core/Container';
 import MakeAsyncFunction from 'react-redux-promise-listener';
 import { user } from '../../../constants/pathNames';
-import {
-  selectAuthError,
-  selectIsUserLoading,
-} from '../../../redux/user/selectors';
 import { sendResetPasswordMail } from '../../../redux/user/actions';
 import Dialog from '../../UI/Dialog';
 import { promiseListener } from '../../../redux/store';
@@ -55,8 +51,6 @@ const useStyles = makeStyles((theme) =>
 const LoginForm: React.FC = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const authError = useSelector(selectAuthError);
-  const loading = useSelector(selectIsUserLoading);
 
   const [open, setOpen] = useState<boolean>(false);
 
@@ -83,13 +77,13 @@ const LoginForm: React.FC = () => {
     <MakeAsyncFunction
       listener={promiseListener}
       start={TYPES.LOGIN}
-      resolve={TYPES.LOGIN_SUCCESS}
+      resolve={TYPES.LOGIN_COMPLETE}
       reject={TYPES.LOGIN_ERROR}
     >
       {(onSubmit) => (
         <Form
           onSubmit={onSubmit}
-          render={({ handleSubmit, submitting }) => (
+          render={({ handleSubmit, submitting, submitError }) => (
             <Container maxWidth="xs">
               <form onSubmit={handleSubmit} className={classes.form}>
                 <Typography className={classes.header}>
@@ -155,7 +149,7 @@ const LoginForm: React.FC = () => {
                   fullWidth
                   color="primary"
                   variant="contained"
-                  disabled={submitting || loading}
+                  disabled={submitting}
                 >
                   Login
                 </Button>
@@ -163,9 +157,9 @@ const LoginForm: React.FC = () => {
                 <div className={classes.error}>
                   <SubmitError name="detail" />
 
-                  {authError && (
+                  {submitError && (
                     <Alert severity="error" variant="filled">
-                      {authError.message}
+                      {submitError}
                     </Alert>
                   )}
                 </div>

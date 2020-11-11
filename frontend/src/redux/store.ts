@@ -17,7 +17,6 @@ import projectSaga from './project/sagas';
 import userSaga from './user/sagas';
 import history from './history';
 import DevToolsOptions from './devtools';
-import userMiddleware from './user/userMiddleware';
 
 const userPersistConfig: PersistConfig = {
   key: 'user',
@@ -55,7 +54,6 @@ export const store = createStore(
       routerMiddleware(history),
       sagaMiddleware,
       reduxPromiseListener.middleware,
-      userMiddleware,
     ),
   ),
 );

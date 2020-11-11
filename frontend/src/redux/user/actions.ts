@@ -5,6 +5,7 @@ import {
   ProfileData,
   TotalUserData,
   UserData,
+  SignupFormData,
 } from '../../types';
 
 export const changeMinLPanel = () => ({ type: TYPES.CHANGE_L_PANEL });
@@ -25,7 +26,7 @@ export const login = (data: LoginFormData) => ({
 });
 
 export const loginSuccess = (errors?: any) => ({
-  type: TYPES.LOGIN_SUCCESS,
+  type: TYPES.LOGIN_COMPLETE,
   payload: errors,
 });
 
@@ -48,21 +49,14 @@ export const setUserData = (data: Partial<TotalUserData>) => ({
   payload: data,
 });
 
-export const sendActivationMail = (
-  username: string,
-  email: string,
-  password: string,
-  firstName: string,
-  lastName: string,
-) => ({
+export const register = (data: SignupFormData) => ({
   type: TYPES.REGISTER,
-  payload: {
-    username,
-    email,
-    password,
-    firstName,
-    lastName,
-  },
+  payload: data,
+});
+
+export const registerSuccess = (data) => ({
+  type: TYPES.REGISTER_SUCCESS,
+  payload: data,
 });
 
 export const sendResetPasswordMail = (email: string) => ({
