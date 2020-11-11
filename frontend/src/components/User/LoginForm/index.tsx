@@ -21,6 +21,7 @@ import { sendResetPasswordMail } from '../../../redux/user/actions';
 import Dialog from '../../UI/Dialog';
 import { promiseListener } from '../../../redux/store';
 import TYPES from '../../../redux/actionTypes';
+import SubmitError from '../SubmitError';
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -49,21 +50,6 @@ const useStyles = makeStyles((theme) =>
       },
     },
   }),
-);
-
-const SubmitError = ({ name }) => (
-  <Field
-    name={name}
-    subscription={{ submitError: true, dirtySinceLastSubmit: true }}
-  >
-    {({ meta: { submitError, dirtySinceLastSubmit } }) =>
-      submitError && !dirtySinceLastSubmit ? (
-        <Alert variant="filled" severity="error">
-          {submitError}
-        </Alert>
-      ) : null
-    }
-  </Field>
 );
 
 const LoginForm: React.FC = () => {

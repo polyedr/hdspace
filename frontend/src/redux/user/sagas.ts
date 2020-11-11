@@ -200,7 +200,7 @@ export function* registerWithGoogleSaga() {
 
 export default function* userSaga() {
   yield takeLatest(TYPES.LOGIN_SUCCESS, loginSaga);
-  yield takeLatest(TYPES.SEND_ACTIVATION_MAIL, sendActivationMailSaga);
+  yield takeLatest(TYPES.REGISTER, sendActivationMailSaga);
   yield takeLatest(TYPES.SEND_RESET_PASSWORD_MAIL, sendResetPasswordMailSaga);
   yield takeLatest(
     TYPES.RESET_PASSWORD_CONFIRMATION,

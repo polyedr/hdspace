@@ -55,7 +55,7 @@ export const sendActivationMail = (
   firstName: string,
   lastName: string,
 ) => ({
-  type: TYPES.SEND_ACTIVATION_MAIL,
+  type: TYPES.REGISTER,
   payload: {
     username,
     email,
