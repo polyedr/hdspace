@@ -806,6 +806,7 @@ export type ServerUserData = {
   last_name: string;
   id: number;
   is_active: boolean;
+  profile: ServerProfileData;
 };
 
 export type ProfileData = {
