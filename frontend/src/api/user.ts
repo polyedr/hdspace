@@ -123,13 +123,6 @@ export const apiRestorePassword = (email: string) =>
     url: '/djauth/users/reset_password/',
   }).then(parseResult);
 
-export const apiGetProfile = ({ id, ...props }) =>
-  myAxios({
-    ...props,
-    method: 'GET',
-    url: `/accounts/profiles/${id}/`,
-  }).then(parseResult);
-
 export const apiGetUser = ({ id, ...props }) =>
   myAxios({
     ...props,
