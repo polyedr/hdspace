@@ -17,17 +17,9 @@ export const useElementClassNames = (element: StateElement) => {
       ?.rules || {};
 
   return makeStyles({
-    entityStyles: {
-      ...entityStyles,
-    },
-
-    groupStyles: {
-      ...groupStyles,
-    },
-
-    ownStyles: {
-      ...element.styles.ownStyles,
-    },
+    entityStyles: { ...(entityStyles as Object) },
+    groupStyles: { ...(groupStyles as Object) },
+    ownStyles: { ...(element.styles.ownStyles as Object) },
   })();
 };
 
@@ -38,17 +30,9 @@ export const getWrapperStyles = (
 ) =>
   // @ts-ignore
   makeStyles({
-    entityStyles: {
-      ...entityStyles,
-    },
-
-    groupStyles: {
-      ...groupStyles,
-    },
-
-    ownStyles: {
-      ...ownStyles,
-    },
+    entityStyles: { ...(entityStyles as Object) },
+    groupStyles: { ...(groupStyles as Object) },
+    ownStyles: { ...(ownStyles as Object) },
   });
 
 export const getIframeContainerClassStyles = (style: React.CSSProperties) => ({
@@ -66,15 +50,7 @@ export const getIframeContainerStyles = (
   ownStyles: React.CSSProperties,
 ) =>
   makeStyles({
-    entityStyles: {
-      ...getIframeContainerClassStyles(entityStyles),
-    },
-
-    groupStyles: {
-      ...getIframeContainerClassStyles(groupStyles),
-    },
-
-    ownStyles: {
-      ...getIframeContainerClassStyles(ownStyles),
-    },
+    entityStyles: { ...getIframeContainerClassStyles(entityStyles) },
+    groupStyles: { ...getIframeContainerClassStyles(groupStyles) },
+    ownStyles: { ...getIframeContainerClassStyles(ownStyles) },
   });

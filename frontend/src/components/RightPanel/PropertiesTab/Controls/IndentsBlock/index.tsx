@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import cn from 'classnames';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import TextField from '@material-ui/core/TextField';
 import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
@@ -11,7 +11,6 @@ import {
   LibraryElement,
   PropertiesChangeProps,
 } from '../../../../../types';
-import { AppReduxState } from '../../../../../redux/types';
 
 const useStyles = makeStyles({
   marginGrid: {
@@ -77,34 +76,35 @@ const useStyles = makeStyles({
   },
 });
 
-function mapState(state: AppReduxState) {
-  return {
-    marginTop: selectCurrentEditableStyles(state, 'margin-top'),
-    marginRight: selectCurrentEditableStyles(state, 'margin-right'),
-    marginBottom: selectCurrentEditableStyles(state, 'margin-bottom'),
-    marginLeft: selectCurrentEditableStyles(state, 'margin-left'),
-    paddingTop: selectCurrentEditableStyles(state, 'padding-top'),
-    paddingRight: selectCurrentEditableStyles(state, 'padding-right'),
-    paddingBottom: selectCurrentEditableStyles(state, 'padding-bottom'),
-    paddingLeft: selectCurrentEditableStyles(state, 'padding-left'),
-  };
-}
-
-type Props = ReturnType<typeof mapState> &
-  PropertiesChangeProps<LibraryElement<Entity>>;
-
-const IndentsBlock: React.FC<Props> = ({
+const IndentsBlock: React.FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
   updateStyles,
   removeStyles,
-  marginTop,
-  marginRight,
-  marginBottom,
-  marginLeft,
-  paddingTop,
-  paddingRight,
-  paddingBottom,
-  paddingLeft,
 }) => {
+  const marginTop = useSelector(
+    selectCurrentEditableStyles('marginTop'),
+  ) as string;
+  const marginBottom = useSelector(
+    selectCurrentEditableStyles('marginBottom'),
+  ) as string;
+  const marginLeft = useSelector(
+    selectCurrentEditableStyles('marginLeft'),
+  ) as string;
+  const marginRight = useSelector(
+    selectCurrentEditableStyles('marginRight'),
+  ) as string;
+  const paddingTop = useSelector(
+    selectCurrentEditableStyles('paddingTop'),
+  ) as string;
+  const paddingBottom = useSelector(
+    selectCurrentEditableStyles('paddingBottom'),
+  ) as string;
+  const paddingLeft = useSelector(
+    selectCurrentEditableStyles('paddingLeft'),
+  ) as string;
+  const paddingRight = useSelector(
+    selectCurrentEditableStyles('paddingRight'),
+  ) as string;
+
   const classes = useStyles();
 
   const handleIndentChange = useCallback(
@@ -246,4 +246,4 @@ const IndentsBlock: React.FC<Props> = ({
   );
 };
 
-export default connect(mapState)(withConfigurableProperties(IndentsBlock));
+export default withConfigurableProperties(IndentsBlock);

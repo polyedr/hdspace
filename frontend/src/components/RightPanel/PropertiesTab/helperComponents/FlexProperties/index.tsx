@@ -1,4 +1,5 @@
-import React, { memo, useCallback } from 'react';
+import React, { useCallback } from 'react';
+import { useSelector } from 'react-redux';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import { FormControlLabel } from '@material-ui/core';
@@ -8,8 +9,15 @@ import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
+import * as CSS from 'csstype';
 import { JUSTIFY_VALUES, ALIGN_VALUES } from './constants';
-import { Flex } from '../../../../../types';
+import { selectCurrentEditableStyles } from '../../../../../redux/project/selectors';
+import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
+import {
+  Entity,
+  LibraryElement,
+  PropertiesChangeProps,
+} from '../../../../../types';
 
 const useStyles = makeStyles({
   arrowRotated: {
@@ -21,17 +29,20 @@ const useStyles = makeStyles({
   },
 });
 
-type Props = {
-  properties: Flex;
-  onChange<T extends keyof Flex>(prop: T, value: Flex[T]): void;
-};
-
-const FlexProperties: React.FC<Props> = ({ properties, onChange }) => {
+const FlexProperties: React.FC<PropertiesChangeProps<
+  LibraryElement<Entity>
+>> = ({ updateStyles }) => {
+  const flexDirection = useSelector(
+    selectCurrentEditableStyles('flexDirection'),
+  );
+  const justifyContent = useSelector(
+    selectCurrentEditableStyles('justifyContent'),
+  );
+  const alignItems = useSelector(selectCurrentEditableStyles('alignItems'));
   const classes = useStyles();
-
   const handleChangeOrientation = (ev, newOrientation) => {
     if (!newOrientation) return;
-    onChange('flexDirection', newOrientation);
+    updateStyles({ flexDirection: newOrientation });
   };
 
   const renderLabel = useCallback(
@@ -53,7 +64,7 @@ const FlexProperties: React.FC<Props> = ({ properties, onChange }) => {
           control={
             <ToggleButtonGroup
               size="small"
-              value={properties.flexDirection}
+              value={flexDirection}
               onChange={handleChangeOrientation}
               exclusive
             >
@@ -71,19 +82,16 @@ const FlexProperties: React.FC<Props> = ({ properties, onChange }) => {
 
       <div className={classes.wrapper}>
         <FormControl>
-          <InputLabel>
-            {renderLabel(properties.flexDirection === 'column')}
-          </InputLabel>
+          <InputLabel>{renderLabel(flexDirection === 'column')}</InputLabel>
 
           <Select
-            defaultValue={properties.justifyContent}
-            value={properties.justifyContent}
-            onChange={(ev) =>
-              onChange(
-                'justifyContent',
-                ev.target.value as Flex['justifyContent'],
-              )
-            }
+            defaultValue={justifyContent}
+            value={justifyContent}
+            onChange={(ev: React.ChangeEvent<{ value: unknown }>) => {
+              updateStyles({
+                justifyContent: ev.target.value as CSS.Property.JustifyContent,
+              });
+            }}
           >
             {JUSTIFY_VALUES.map(({ label, value }) => (
               <MenuItem key={value} value={value} dense>
@@ -94,16 +102,16 @@ const FlexProperties: React.FC<Props> = ({ properties, onChange }) => {
         </FormControl>
 
         <FormControl>
-          <InputLabel>
-            {renderLabel(properties.flexDirection === 'row')}
-          </InputLabel>
+          <InputLabel>{renderLabel(flexDirection === 'row')}</InputLabel>
 
           <Select
-            defaultValue={properties.alignItems}
-            value={properties.alignItems}
-            onChange={(ev) =>
-              onChange('alignItems', ev.target.value as Flex['alignItems'])
-            }
+            defaultValue={alignItems}
+            value={alignItems}
+            onChange={(ev: React.ChangeEvent<{ value: unknown }>) => {
+              updateStyles({
+                alignItems: ev.target.value as CSS.Property.AlignItems,
+              });
+            }}
           >
             {ALIGN_VALUES.map(({ label, value }) => (
               <MenuItem key={value} value={value} dense>
@@ -117,4 +125,4 @@ const FlexProperties: React.FC<Props> = ({ properties, onChange }) => {
   );
 };
 
-export default memo(FlexProperties);
+export default withConfigurableProperties(FlexProperties);

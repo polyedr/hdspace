@@ -3,7 +3,6 @@ import React from 'react';
 import {
   BorderedElementsRef,
   CreatedElement,
-  CssLikeStyles,
   DropTargetParams,
   Entity,
   Indices,
@@ -18,6 +17,7 @@ import {
   PaginatedData,
   ParentIds,
   Project,
+  PropertyName,
   RightPanelTab,
   SavedElementsValues,
   Screen,
@@ -256,7 +256,7 @@ export type CopyElementStyles = IAction<
   {
     elementType: Entity;
     elementID: string;
-    styles: CssLikeStyles;
+    styles: React.CSSProperties;
   },
   ElementHistoryMeta
 >;
@@ -266,7 +266,7 @@ export type AddSharedStyles = IAction<
     elementID: string;
     className: string;
     elementType: Entity;
-    styles: CssLikeStyles;
+    styles: React.CSSProperties;
   }
 >;
 export type AddElementClassName = IAction<
@@ -281,12 +281,12 @@ export type RemoveElementClassName = IAction<
 >;
 export type UpdateSharedStyles = IAction<
   typeof TYPES.UPDATE_SHARED_STYLES,
-  { className: Entity; styles: CssLikeStyles },
+  { className: Entity; styles: React.CSSProperties },
   ElementHistoryMeta
 >;
 export type RemoveSharedStyles = IAction<
   typeof TYPES.REMOVE_SHARED_STYLES,
-  { className: Entity; cssPropertiesNames: string[] },
+  { className: Entity; cssPropertiesNames: PropertyName[] },
   ElementHistoryMeta
 >;
 export type RemoveElementStyles = IAction<
@@ -296,12 +296,12 @@ export type RemoveElementStyles = IAction<
 >;
 export type ReplaceElementStyles = IAction<
   typeof TYPES.REPLACE_ELEMENT_STYLES,
-  { id: string; styles: CssLikeStyles },
+  { id: string; styles: React.CSSProperties },
   ElementHistoryMeta
 >;
 export type UpdateElementStyles = IAction<
   typeof TYPES.UPDATE_ELEMENT_STYLES,
-  { id: string; styles: CssLikeStyles },
+  { id: string; styles: React.CSSProperties },
   ElementHistoryMeta
 >;
 export type UpdateElementImage = IAction<

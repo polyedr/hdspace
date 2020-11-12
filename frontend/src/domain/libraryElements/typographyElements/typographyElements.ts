@@ -1,6 +1,6 @@
 import { defaultFreeCanvasParams } from '../../core';
 import {
-  CssLikeStyles,
+  ElementGroup,
   HeadingServerElement,
   HeadingType,
   HyperlinkServerElement,
@@ -17,7 +17,7 @@ export const hyperlink: HyperlinkServerElement = {
   struct_type: 'hyperlink',
   parameters: {
     ...defaultFreeCanvasParams,
-    group: 'other',
+    group: ElementGroup.OTHER,
     textContent: 'hyperlink',
     action: {
       type: 'internal-link',
@@ -26,7 +26,7 @@ export const hyperlink: HyperlinkServerElement = {
   },
   styles: {
     classNames: ['hyperlink'],
-    ownStyles: {} as Required<CssLikeStyles>,
+    ownStyles: {},
   },
   name: 'hyperlink',
   children: [],
@@ -36,19 +36,19 @@ export const makeHeading = ({
   buoyancy = 0,
   textContent = 'Heading',
   headingType = 'h3',
-  ownStyles = {} as Required<CssLikeStyles>,
+  ownStyles = {} as React.CSSProperties,
 }: {
   textContent?: string;
   headingType?: HeadingType;
   buoyancy?: number;
-  ownStyles?: Required<CssLikeStyles>;
+  ownStyles?: React.CSSProperties;
 } = {}): HeadingServerElement => ({
   buoyancy,
   func_type: 'heading',
   struct_type: 'heading',
   parameters: {
     ...defaultFreeCanvasParams,
-    group: 'typography',
+    group: ElementGroup.TYPOGRAPHY,
     textContent,
     headingType,
   },
@@ -63,18 +63,18 @@ export const makeHeading = ({
 export const makeParagraph = ({
   buoyancy = 0,
   textContent = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-  ownStyles = {} as Required<CssLikeStyles>,
+  ownStyles = {} as React.CSSProperties,
 }: {
   buoyancy?: number;
   textContent?: string;
-  ownStyles?: Required<CssLikeStyles>;
+  ownStyles?: React.CSSProperties;
 } = {}): ParagraphServerElement => ({
   buoyancy,
   func_type: 'paragraph',
   struct_type: 'paragraph',
   parameters: {
     ...defaultFreeCanvasParams,
-    group: 'typography',
+    group: ElementGroup.TYPOGRAPHY,
     textContent,
   },
   styles: {
@@ -91,12 +91,12 @@ export const ocrtext: OcrtextServerElement = {
   struct_type: 'ocrtext',
   parameters: {
     ...defaultFreeCanvasParams,
-    group: 'typography',
+    group: ElementGroup.TYPOGRAPHY,
     textContent: 'This is paragraph',
   },
   styles: {
     classNames: ['ocrtext'],
-    ownStyles: {} as Required<CssLikeStyles>,
+    ownStyles: {},
   },
   name: 'ocrtext',
   children: [],
@@ -108,12 +108,12 @@ export const textBlock: TextBlockServerElement = {
   struct_type: 'textBlock',
   parameters: {
     ...defaultFreeCanvasParams,
-    group: 'typography',
+    group: ElementGroup.TYPOGRAPHY,
     textContent: 'This is text block',
   },
   styles: {
     classNames: ['textBlock'],
-    ownStyles: {} as Required<CssLikeStyles>,
+    ownStyles: {},
   },
   name: 'textBlock',
   children: [],
@@ -131,7 +131,7 @@ export const makeListItem = (textContent: string): ListItemServerElement => ({
   },
   styles: {
     classNames: ['listItem'],
-    ownStyles: {} as Required<CssLikeStyles>,
+    ownStyles: {},
   },
   name: 'listItem',
   children: [],
@@ -143,7 +143,7 @@ export const list: ListServerElement = {
   struct_type: 'list',
   parameters: {
     ...defaultFreeCanvasParams,
-    group: 'typography',
+    group: ElementGroup.TYPOGRAPHY,
     listItems: [
       // TODO research why we need items here
       { textContent: 'First item', isLink: false, link: '' },
@@ -154,7 +154,7 @@ export const list: ListServerElement = {
   },
   styles: {
     classNames: ['list'],
-    ownStyles: {} as Required<CssLikeStyles>,
+    ownStyles: {},
   },
   name: 'list',
   children: [

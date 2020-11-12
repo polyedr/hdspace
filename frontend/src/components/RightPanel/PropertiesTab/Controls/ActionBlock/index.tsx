@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import LinkIcon from '@material-ui/icons/Link';
@@ -29,18 +29,14 @@ type StateProps = {
   action: LinkParams;
 };
 
-function mapState(state: AppReduxState): StateProps {
-  const activeItemParams = selectActiveElementParams(state);
+const ActionBlock: React.FC<PropertiesChangeProps<HyperlinkElement>> = ({
+  updateParams,
+}) => {
+  const action = useSelector(
+    (state: AppReduxState) => selectActiveElementParams(state).action,
+  );
+  const screens = useSelector(selectScreens);
 
-  return {
-    screens: selectScreens(state),
-    action: activeItemParams.action,
-  };
-}
-
-type Props = StateProps & PropertiesChangeProps<HyperlinkElement>;
-
-const ActionBlock: React.FC<Props> = ({ action, screens, updateParams }) => {
   const [linkType, setLinkType] = useState(action?.type);
 
   const getCurrentUrl = React.useCallback(
@@ -132,4 +128,4 @@ const ActionBlock: React.FC<Props> = ({ action, screens, updateParams }) => {
   );
 };
 
-export default connect(mapState)(withConfigurableProperties(ActionBlock));
+export default withConfigurableProperties(ActionBlock);

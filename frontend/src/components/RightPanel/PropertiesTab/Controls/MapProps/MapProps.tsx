@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 
 import React, { useCallback } from 'react';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import TextField from '@material-ui/core/TextField';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import {
@@ -15,11 +15,7 @@ import {
 import { selectActiveElementParams } from '../../../../../redux/project/selectors';
 import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
 import { getPermissibleValue } from '../../../../../utils/NumberHelper';
-import {
-  MapElement,
-  PropertiesChangeProps,
-  MapProps as MapParams,
-} from '../../../../../types';
+import { MapElement, PropertiesChangeProps } from '../../../../../types';
 import { AppReduxState } from '../../../../../redux/types';
 
 const useStyles = makeStyles({
@@ -35,22 +31,13 @@ const useStyles = makeStyles({
   },
 });
 
-type StateProps = {
-  map_props: MapParams['map_props'];
-};
-
-function mapState(state: AppReduxState): StateProps {
-  const activeItemParams = selectActiveElementParams(state);
-
-  return {
-    map_props: activeItemParams.map_props,
-  };
-}
-
-type Props = StateProps & PropertiesChangeProps<MapElement>;
-
-const MapProps: React.FC<Props> = ({ map_props, updateParams }) => {
+const MapProps: React.FC<PropertiesChangeProps<MapElement>> = ({
+  updateParams,
+}) => {
   const classes = useStyles();
+  const mapProps = useSelector(
+    (state: AppReduxState) => selectActiveElementParams(state).map_props,
+  );
 
   const handleCenterMapCoordsChange = useCallback(
     ({ target: { name, value } }: React.ChangeEvent<HTMLInputElement>) => {
@@ -65,11 +52,11 @@ const MapProps: React.FC<Props> = ({ map_props, updateParams }) => {
               MAX_LATITUDE,
             ).toFixed(5),
           ),
-          lng: map_props.center.lng,
+          lng: mapProps.center.lng,
         };
       } else {
         newCenter = {
-          lat: map_props.center.lat,
+          lat: mapProps.center.lat,
           lng: Number(
             getPermissibleValue(
               Number(value),
@@ -81,13 +68,13 @@ const MapProps: React.FC<Props> = ({ map_props, updateParams }) => {
       }
 
       const newMapProps = {
-        ...map_props,
+        ...mapProps,
         center: newCenter,
       };
 
       updateParams({ map_props: newMapProps });
     },
-    [map_props, updateParams],
+    [mapProps, updateParams],
   );
 
   const handleMarkerTextChange = useCallback(
@@ -97,25 +84,25 @@ const MapProps: React.FC<Props> = ({ map_props, updateParams }) => {
       }
 
       const newMapProps = {
-        ...map_props,
+        ...mapProps,
         markerText: value,
       };
 
       updateParams({ map_props: newMapProps });
     },
-    [map_props, updateParams],
+    [mapProps, updateParams],
   );
 
   const handleMapZoomChange = useCallback(
     ({ target: { value } }) => {
       const newMapProps = {
-        ...map_props,
+        ...mapProps,
         zoom: getPermissibleValue(Number(value), MIN_MAP_ZOOM, MAX_MAP_ZOOM),
       };
 
       updateParams({ map_props: newMapProps });
     },
-    [map_props, updateParams],
+    [mapProps, updateParams],
   );
 
   return (
@@ -124,7 +111,7 @@ const MapProps: React.FC<Props> = ({ map_props, updateParams }) => {
         <TextField
           label="Latitude"
           type="number"
-          value={map_props.center.lat}
+          value={mapProps.center.lat}
           onChange={handleCenterMapCoordsChange}
           margin="dense"
           className={classes.text}
@@ -133,7 +120,7 @@ const MapProps: React.FC<Props> = ({ map_props, updateParams }) => {
         <TextField
           label="Longitude"
           type="number"
-          value={map_props.center.lng}
+          value={mapProps.center.lng}
           onChange={handleCenterMapCoordsChange}
           margin="dense"
           className={classes.text}
@@ -142,7 +129,7 @@ const MapProps: React.FC<Props> = ({ map_props, updateParams }) => {
         <TextField
           label="Zoom"
           type="number"
-          value={map_props.zoom}
+          value={mapProps.zoom}
           onChange={handleMapZoomChange}
           margin="dense"
           className={classes.zoom}
@@ -151,7 +138,7 @@ const MapProps: React.FC<Props> = ({ map_props, updateParams }) => {
 
       <TextField
         label="Marker Text"
-        value={map_props.markerText}
+        value={mapProps.markerText}
         onChange={handleMarkerTextChange}
         fullWidth
         margin="dense"
@@ -160,4 +147,4 @@ const MapProps: React.FC<Props> = ({ map_props, updateParams }) => {
   );
 };
 
-export default connect(mapState)(withConfigurableProperties(MapProps));
+export default withConfigurableProperties(MapProps);

@@ -1,5 +1,5 @@
 import React, { ChangeEvent } from 'react';
-import { connect, useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import {
   Accordion,
   AccordionSummary,
@@ -14,6 +14,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import {
+  selectActiveElementId,
   selectActiveItemChildren,
   selectCurrentScreenId,
 } from '../../../../../redux/project/selectors';
@@ -23,7 +24,6 @@ import {
   deleteItem,
 } from '../../../../../redux/project/actions';
 import { ListItemElement, PropertiesChangeProps } from '../../../../../types';
-import { AppReduxState } from '../../../../../redux/types';
 
 const useStyles = makeStyles({
   details: {
@@ -45,35 +45,14 @@ type StateProps = {
   listItems: ListItemElement[];
 };
 
-function mapState(state: AppReduxState): StateProps {
-  const listItems = selectActiveItemChildren(
-    state,
-    'listItem',
-  ) as ListItemElement[];
-
-  return {
-    listItems,
-  };
-}
-
-const mapDispatch = {
-  addChildToElement,
-  deleteChildFromElement: deleteItem,
-};
-
-type Props = StateProps &
-  PropertiesChangeProps<ListItemElement> &
-  typeof mapDispatch;
-
-const ListItems: React.FC<Props> = ({
-  activeItemID,
-  listItems,
+const ListItems: React.FC<PropertiesChangeProps<ListItemElement>> = ({
   updateParams,
-  addChildToElement,
-  deleteChildFromElement,
 }) => {
   const classes = useStyles();
+  const activeElementId = useSelector(selectActiveElementId);
+  const listItems = useSelector(selectActiveItemChildren('listItem'));
   const currentScreenId = useSelector(selectCurrentScreenId);
+  const dispatch = useDispatch();
 
   const handleTextContentFieldChange = (
     listItemID: string,
@@ -90,20 +69,22 @@ const ListItems: React.FC<Props> = ({
   };
 
   const handleAddButtonClick = () => {
-    addChildToElement(
-      'listItem',
-      activeItemID,
-      {
-        textContent: 'New item',
-        isLink: false,
-        link: '',
-      },
-      { screenId: currentScreenId },
+    dispatch(
+      addChildToElement(
+        'listItem',
+        activeElementId,
+        {
+          textContent: 'New item',
+          isLink: false,
+          link: '',
+        },
+        { screenId: currentScreenId },
+      ),
     );
   };
 
   const handleDeleteButtonClick = (listItemID: string) => {
-    deleteChildFromElement(listItemID, { screenId: currentScreenId });
+    dispatch(deleteItem(listItemID, { screenId: currentScreenId }));
   };
 
   const handleCheckboxChange = (
@@ -194,7 +175,4 @@ const ListItems: React.FC<Props> = ({
   );
 };
 
-export default connect(
-  mapState,
-  mapDispatch,
-)(withConfigurableProperties(ListItems));
+export default withConfigurableProperties(ListItems);

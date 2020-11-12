@@ -2,7 +2,7 @@ import { defaultFreeCanvasParams } from '../../core';
 import {
   CalendarServerElement,
   ClockServerElement,
-  CssLikeStyles,
+  ElementGroup,
   MapServerElement,
 } from '../../../types';
 
@@ -14,7 +14,7 @@ export const map: MapServerElement = {
     ...defaultFreeCanvasParams,
     width: '50%',
     height: '50%',
-    group: 'widget',
+    group: ElementGroup.WIDGET,
     map_props: {
       center: {
         lat: 50.00008,
@@ -26,7 +26,7 @@ export const map: MapServerElement = {
   },
   styles: {
     classNames: ['map'],
-    ownStyles: {} as Required<CssLikeStyles>,
+    ownStyles: {},
   },
   name: 'map',
   children: [],
@@ -38,11 +38,11 @@ export const calendar: CalendarServerElement = {
   struct_type: 'calendar',
   parameters: {
     ...defaultFreeCanvasParams,
-    group: 'widget',
+    group: ElementGroup.WIDGET,
   },
   styles: {
     classNames: ['calendar'],
-    ownStyles: {} as Required<CssLikeStyles>,
+    ownStyles: {},
   },
   name: 'calendar',
   children: [],
@@ -54,11 +54,11 @@ export const clock: ClockServerElement = {
   struct_type: 'clock',
   parameters: {
     ...defaultFreeCanvasParams,
-    group: 'widget',
+    group: ElementGroup.WIDGET,
   },
   styles: {
     classNames: ['clock'],
-    ownStyles: {} as Required<CssLikeStyles>,
+    ownStyles: {},
   },
   name: 'clock',
   children: [],

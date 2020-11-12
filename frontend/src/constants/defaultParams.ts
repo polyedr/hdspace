@@ -1,10 +1,10 @@
 import {
-  CssLikeStyles,
   ITokenPair,
   LibraryElement,
   Project,
   StateElement,
   Screen,
+  ElementGroup,
 } from '../types';
 import getDefaultStyles from '../utils/getDefaultStyles';
 
@@ -50,7 +50,7 @@ export const DEFAULT_ROOT: LibraryElement<'root'> = {
   parameters: {},
   styles: {
     classNames: ['root'],
-    ownStyles: {} as Required<CssLikeStyles>,
+    ownStyles: {} as Required<React.CSSProperties>,
   },
 };
 
@@ -84,8 +84,6 @@ export const DEFAULT_AUTHORIZATION_TOKEN: ITokenPair = {
   refresh: '',
 };
 
-export const CONTAINER_GROUPS = ['containers', 'custom'];
-
 export const SAVEABLE_ELEMENTS = ['section'];
 
 export const KEEP_RP_TAB_ELEMENTS = [
@@ -95,3 +93,13 @@ export const KEEP_RP_TAB_ELEMENTS = [
   'grid',
   'columns',
 ];
+
+export const LABELED_INPUT_TYPES = [
+  'textinput',
+  'textarea',
+  'select',
+  'radiobutton',
+  'checkbox',
+];
+
+export const CONTAINER_GROUPS = [ElementGroup.CONTAINERS, ElementGroup.CUSTOM];

@@ -1,10 +1,13 @@
 /* eslint-disable camelcase */
 
+import { CSSProperties } from '@material-ui/core/styles/withStyles';
 import {
   Entity,
   LibraryElement,
   ProfileData,
   Project,
+  ProjectClass,
+  ProjectData,
   RecursiveElement,
   ServerElement,
   ServerProfileData,
@@ -13,6 +16,25 @@ import {
   ServerUserData,
   UserData,
 } from '../../types';
+
+const convertToCSSProps = (styles: any): React.CSSProperties => {
+  const convertedStyles: CSSProperties = {};
+  Object.keys(styles).forEach((propName) => {
+    const jsNameParts = propName.split('-');
+    const convertedPropertyKey =
+      jsNameParts.length === 1
+        ? jsNameParts[0]
+        : jsNameParts
+            .map((namePart, index) =>
+              index === 0
+                ? namePart
+                : namePart.charAt(0).toUpperCase() + namePart.slice(1),
+            )
+            .join('');
+    convertedStyles[convertedPropertyKey] = styles[propName];
+  });
+  return convertedStyles;
+};
 
 export const convertElementFromResponse = <
   T extends Entity,
@@ -44,7 +66,10 @@ export const convertElementFromResponse = <
     buoyancy,
     image,
     parameters,
-    styles,
+    styles: {
+      ...styles,
+      ownStyles: convertToCSSProps(styles.ownStyles),
+    },
   };
 };
 
@@ -71,6 +96,8 @@ export const convertProjectFromResponse = (project: ServerProject): Project => {
     project_data_json,
   } = project;
 
+  const projectDataJSON = JSON.parse(project_data_json) as ProjectData;
+
   return {
     id,
     name,
@@ -79,7 +106,16 @@ export const convertProjectFromResponse = (project: ServerProject): Project => {
     projectLoader: false,
     created: new Date(created),
     updated: new Date(updated),
-    projectData: JSON.parse(project_data_json),
+    projectData: {
+      ...projectDataJSON,
+      classes: projectDataJSON.classes.map(
+        (cls: ProjectClass) =>
+          ({
+            ...cls,
+            rules: convertToCSSProps(cls.rules) as React.CSSProperties,
+          } as ProjectClass),
+      ),
+    },
   };
 };
 

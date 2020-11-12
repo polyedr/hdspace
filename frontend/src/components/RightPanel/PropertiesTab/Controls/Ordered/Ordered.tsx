@@ -1,5 +1,5 @@
-import React from 'react';
-import { connect } from 'react-redux';
+import React, { useCallback } from 'react';
+import { useSelector } from 'react-redux';
 import { Switch } from '@material-ui/core';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
@@ -7,24 +7,15 @@ import { selectActiveElementParams } from '../../../../../redux/project/selector
 import { ListElement, PropertiesChangeProps } from '../../../../../types';
 import { AppReduxState } from '../../../../../redux/types';
 
-type StateProps = {
-  isOrdered: boolean;
-};
-
-function mapState(state: AppReduxState): StateProps {
-  const activeItemParams = selectActiveElementParams(state);
-
-  return {
-    isOrdered: activeItemParams.isOrdered,
-  };
-}
-
-type Props = StateProps & PropertiesChangeProps<ListElement>;
-
-const Ordered: React.FC<Props> = ({ isOrdered, updateParams }) => {
-  const handleSwitchChange = () => {
+const Ordered: React.FC<PropertiesChangeProps<ListElement>> = ({
+  updateParams,
+}) => {
+  const isOrdered = useSelector(
+    (state: AppReduxState) => selectActiveElementParams(state).isOrdered,
+  );
+  const handleSwitchChange = useCallback(() => {
     updateParams({ isOrdered: !isOrdered });
-  };
+  }, [updateParams, isOrdered]);
 
   return (
     <FormControlLabel
@@ -34,4 +25,4 @@ const Ordered: React.FC<Props> = ({ isOrdered, updateParams }) => {
   );
 };
 
-export default connect(mapState)(withConfigurableProperties(Ordered));
+export default withConfigurableProperties(Ordered);

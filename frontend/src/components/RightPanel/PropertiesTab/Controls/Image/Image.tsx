@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { connect, useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import Button from '@material-ui/core/Button';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { selectCurrentScreenId } from '../../../../../redux/project/selectors';
@@ -25,6 +25,7 @@ const Component: React.FC<Props> = ({ activeItemID, updateElementImage }) => {
   const classes = useStyles();
 
   const currentScreenId = useSelector(selectCurrentScreenId);
+  const dispatch = useDispatch();
 
   const handleChangeFileInput = useCallback(
     ({ target }) => {
@@ -34,10 +35,12 @@ const Component: React.FC<Props> = ({ activeItemID, updateElementImage }) => {
         // eslint-disable-next-line no-alert
         alert('Choose image up to 5Mb!');
       } else {
-        updateElementImage(activeItemID, file, { screenId: currentScreenId });
+        dispatch(
+          updateElementImage(activeItemID, file, { screenId: currentScreenId }),
+        );
       }
     },
-    [activeItemID, updateElementImage, currentScreenId],
+    [dispatch, activeItemID, updateElementImage, currentScreenId],
   );
 
   return (
@@ -61,7 +64,4 @@ const Component: React.FC<Props> = ({ activeItemID, updateElementImage }) => {
   );
 };
 
-export default connect(
-  null,
-  mapDispatch,
-)(withConfigurableProperties(Component));
+export default withConfigurableProperties(Component);

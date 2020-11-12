@@ -13,11 +13,11 @@ import {
   updateSharedStyles,
 } from '../redux/project/actions';
 import {
-  CssLikeStyles,
   Entity,
   LibraryElement,
   Params,
   PropertiesChangeProps,
+  PropertyName,
 } from '../types';
 
 // potentially pass config with needed styles/params first
@@ -33,37 +33,43 @@ function withConfigurableProperties<
     const { id: activeItemID } = useSelector(selectActiveElement);
     const editableStyles = useSelector(selectEditableStyles);
 
-    const removeStyles = (ruleName: string[], itemID?: string) => {
-      if (editableStyles === 'ownStyles') {
-        dispatch(
-          removeElementStyles(itemID || activeItemID, ruleName, {
-            screenId: currentScreenId,
-          }),
-        );
-      } else {
-        dispatch(
-          removeSharedStyles(editableStyles as Entity, ruleName, {
-            screenId: currentScreenId,
-          }),
-        );
-      }
-    };
+    const removeStyles = useCallback(
+      (ruleNames: PropertyName[], itemID?: string) => {
+        if (editableStyles === 'ownStyles') {
+          dispatch(
+            removeElementStyles(itemID || activeItemID, ruleNames, {
+              screenId: currentScreenId,
+            }),
+          );
+        } else {
+          dispatch(
+            removeSharedStyles(editableStyles as Entity, ruleNames, {
+              screenId: currentScreenId,
+            }),
+          );
+        }
+      },
+      [dispatch, editableStyles, activeItemID, currentScreenId],
+    );
 
-    const updateStyles = (styles: CssLikeStyles, itemID?: string) => {
-      if (editableStyles === 'ownStyles') {
-        dispatch(
-          updateElementStyles(itemID || activeItemID, styles, {
-            screenId: currentScreenId,
-          }),
-        );
-      } else {
-        dispatch(
-          updateSharedStyles(editableStyles as Entity, styles, {
-            screenId: currentScreenId,
-          }),
-        );
-      }
-    };
+    const updateStyles = useCallback(
+      (styles: React.CSSProperties, itemID?: string) => {
+        if (editableStyles === 'ownStyles') {
+          dispatch(
+            updateElementStyles(itemID || activeItemID, styles, {
+              screenId: currentScreenId,
+            }),
+          );
+        } else {
+          dispatch(
+            updateSharedStyles(editableStyles as Entity, styles, {
+              screenId: currentScreenId,
+            }),
+          );
+        }
+      },
+      [dispatch, activeItemID, editableStyles, currentScreenId],
+    );
 
     const updateParams = useCallback(
       (params: Params<K>, itemID?: string) => {
@@ -73,7 +79,7 @@ function withConfigurableProperties<
           }),
         );
       },
-      [activeItemID, currentScreenId],
+      [dispatch, activeItemID, currentScreenId],
     );
 
     return (

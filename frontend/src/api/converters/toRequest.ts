@@ -16,6 +16,18 @@ import {
 } from '../../types';
 import getDefaultStyles from '../../utils/getDefaultStyles';
 
+const convertPropsToCSS = (styles: React.CSSProperties) => {
+  return Object.keys(styles).reduce((acc, cssName) => {
+    return {
+      ...acc,
+      [cssName
+        .split(/(?=[A-Z])/)
+        .join('-')
+        .toLowerCase()]: styles[cssName],
+    };
+  }, {});
+};
+
 export const convertCreatedElementToRequest = <
   T extends Entity,
   K extends ServerElement<T>['parameters']
@@ -64,7 +76,10 @@ export const convertElementToRequest = <
     buoyancy,
     image,
     parameters,
-    styles,
+    styles: {
+      ...styles,
+      ownStyles: convertPropsToCSS(styles.ownStyles),
+    },
   };
 };
 
@@ -86,7 +101,10 @@ export const convertElementToPatchRequest = <
     buoyancy,
     image: null,
     parameters,
-    styles,
+    styles: {
+      ...styles,
+      ownStyles: convertPropsToCSS(styles.ownStyles),
+    },
     shared,
   };
 };
@@ -106,7 +124,12 @@ export const convertCreatedProjectToRequest = (
     name,
     status: 'pending',
     projectscreen: [],
-    project_data_json: JSON.stringify({ classes: projectClasses }),
+    project_data_json: JSON.stringify({
+      classes: projectClasses.map((cls: ProjectClass) => ({
+        ...cls,
+        rules: convertPropsToCSS(cls.rules),
+      })),
+    }),
   };
 };
 
@@ -120,7 +143,13 @@ export const convertProjectToPatchRequest = (
     name,
     status,
     projectscreen,
-    project_data_json: JSON.stringify(projectData),
+    project_data_json: JSON.stringify({
+      ...projectData,
+      classes: projectData.classes.map((cls: ProjectClass) => ({
+        ...cls,
+        rules: convertPropsToCSS(cls.rules),
+      })),
+    }),
   };
 };
 

@@ -4,7 +4,10 @@ import { OverridableComponent } from '@material-ui/core/OverridableComponent';
 import { SvgIconTypeMap } from '@material-ui/core';
 import { DropTargetMonitor } from 'react-dnd';
 import { AxiosRequestConfig } from 'axios';
+import * as CSS from 'csstype';
 import { DropPosition, ElementType } from './constants/dragAndDrop';
+
+export type PropertyName = keyof React.CSSProperties;
 
 export type Normalized<T extends { id: string | number }> = {
   [id in string | number]: T;
@@ -27,11 +30,34 @@ export type PaginatedData<T extends { id: string | number }> = PaginatedBase<
   results: Normalized<T>;
 };
 
+export enum ElementGroup {
+  CONTAINERS = 'containers',
+  FORM = 'form',
+  TYPOGRAPHY = 'typography',
+  IMAGE = 'image',
+  WIDGET = 'widget',
+  OTHER = 'other',
+  CUSTOM = 'custom',
+  UNDEFINED = 'undefined',
+  NONE = 'none',
+}
+
+export type FreeCanvasElementParams = {
+  left?: CSS.Property.Left;
+  top?: CSS.Property.Top;
+  zIndex?: CSS.Property.ZIndex;
+  width?: CSS.Property.Width;
+  height?: CSS.Property.Height;
+};
+
+export type BaseElementParams = FreeCanvasElementParams & {
+  group?: ElementGroup;
+};
+
 export type ServerElement<
   Type extends Entity,
   Children = any[],
-  Params = {},
-  Styles = {}
+  Params = BaseElementParams
 > = {
   id?: number;
   name: string;
@@ -40,13 +66,13 @@ export type ServerElement<
   func_type: string;
   buoyancy: number;
   image?: string | null;
-  parameters: any;
+  parameters: Params;
   custom?: boolean;
   // Every element has entity css class, group css class and unique own css class
   // Entity class has default entity styles, own class is empty by default, group classes is user custom classes
   styles: {
     classNames: string[];
-    ownStyles: Styles;
+    ownStyles: React.CSSProperties;
   };
   children: Children;
   shared?: boolean;
@@ -356,102 +382,102 @@ export type LibraryElementUnion =
   | SubscribeFormElement
   | FeatureSectionElement;
 
-export type ImageParameters = {
+export type ImageParameters = BaseElementParams & {
   imageURL: string;
 };
 
 export type InternalLink = {
   type: 'internal-link';
-  screenID: number | 'noScreen';
+  screenID?: number | 'noScreen';
 };
-export type ExternalLink = { type: 'external-link'; url: string };
+export type ExternalLink = { type: 'external-link'; url?: string };
 
-export type LinkParams = InternalLink | ExternalLink;
+export type LinkParams = BaseElementParams & (InternalLink | ExternalLink);
 
-export type ButtonParameters = {
+export type ButtonParameters = BaseElementParams & {
   textContent: string;
   action: LinkParams;
   showRipple: boolean;
 };
 
-export type HyperLinkParameters = {
+export type HyperLinkParameters = BaseElementParams & {
   textContent: string;
   action: LinkParams;
 };
 
 export type InputType = 'text' | 'email' | 'number' | 'phone' | 'password';
 
-export type TextinputParameters = {
+export type TextinputParameters = BaseElementParams & {
   type: InputType;
   textContent: string;
   placeholder: string;
 };
 
-export type CheckboxParameters = {
+export type CheckboxParameters = BaseElementParams & {
   value: string;
   name: string;
   showRipple: boolean;
   defaultChecked: boolean;
 };
 
-export type RadiobuttonParameters = {
+export type RadiobuttonParameters = BaseElementParams & {
   value: string;
   name: string;
   showRipple: boolean;
 };
 
-export type SelectParameters = {
+export type SelectParameters = BaseElementParams & {
   value: string;
   options: Option[];
   isOpen: boolean;
 };
 
-export type SelectItemParameters = {
+export type SelectItemParameters = BaseElementParams & {
   name: string;
   value: string;
 };
 
-export type TextareaParameters = {
+export type TextareaParameters = BaseElementParams & {
   textContent: string;
   placeholder: string;
 };
 
 export type HeadingType = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
 
-export type HeadingParameters = {
+export type HeadingParameters = BaseElementParams & {
   textContent: string;
   headingType: HeadingType;
 };
 
-export type ParagraphParameters = {
+export type ParagraphParameters = BaseElementParams & {
   textContent: string;
 };
 
-export type OcrtextParameters = {
+export type OcrtextParameters = BaseElementParams & {
   textContent: string;
 };
 
-export type LabelParameters = {
+export type LabelParameters = BaseElementParams & {
   textContent: string;
   labelFor: string;
 };
 
-export type TextBlockParameters = {
+export type TextBlockParameters = BaseElementParams & {
   textContent: string;
 };
 
-export type ListParameters = {
+export type ListParameters = BaseElementParams & {
   listItems: ListItem[];
   isOrdered: boolean;
 };
 
-export type ListItemParameters = {
+export type ListItemParameters = BaseElementParams & {
   textContent: string;
   isLink: boolean;
   link: string;
 };
 
-export type MapProps = {
+export type MapProps = BaseElementParams & {
   map_props: {
     center: {
       lat: number;
@@ -462,7 +488,7 @@ export type MapProps = {
   };
 };
 
-export type MapParameters = {
+export type MapParameters = BaseElementParams & {
   map_props: {
     center: {
       lat: number;
@@ -473,7 +499,7 @@ export type MapParameters = {
   };
 };
 
-export type VideoSettingsType = {
+export type VideoSettingsType = BaseElementParams & {
   link: string;
   autoplay: boolean;
   start: number;
@@ -482,18 +508,18 @@ export type VideoSettingsType = {
   rel: boolean;
 };
 
-export type VideoParameters = {
+export type VideoParameters = BaseElementParams & {
   videoSettings: VideoSettingsType;
 };
 
-export type DropdownParameters = {
+export type DropdownParameters = BaseElementParams & {
   textContent: string;
   showRipple: boolean;
   isOpen: boolean;
   dropdownItems: string[];
 };
 
-export type DropdownItemParameters = {
+export type DropdownItemParameters = BaseElementParams & {
   textContent: string;
 };
 
@@ -518,7 +544,11 @@ export type ServerProject = {
 export type ProjectClass = {
   className: string;
   supportedElement: Entity;
-  rules: Required<CssLikeStyles>;
+  rules: React.CSSProperties;
+};
+
+export type ProjectData = {
+  classes: ProjectClass[];
 };
 
 export type Project = {
@@ -529,9 +559,7 @@ export type Project = {
   projectLoader: boolean;
   created: Date;
   updated: Date;
-  projectData: {
-    classes: ProjectClass[];
-  };
+  projectData: ProjectData;
 };
 
 export type ProjectWithScreens = {
@@ -557,7 +585,7 @@ export type StateElement = {
   image: string | null | undefined;
   styles: {
     classNames: string[];
-    ownStyles: CssLikeStyles;
+    ownStyles: React.CSSProperties;
   };
   parameters: any;
   shared?: boolean;
@@ -597,32 +625,6 @@ export type ItemToCopyInfo = {
   screenID: number;
 };
 
-export type Block = {
-  display: 'block';
-};
-
-export type InlineBlock = {
-  display: 'inline-block';
-};
-
-export type Inline = {
-  display: 'inline';
-};
-
-export type Flex = {
-  display: 'flex';
-  justifyContent:
-    | 'flex-start'
-    | 'flex-end'
-    | 'center'
-    | 'space-between'
-    | 'space-around';
-  alignItems: 'flex-start' | 'flex-end' | 'center' | 'baseline' | 'stretch';
-  flexDirection: 'row' | 'row-reverse' | 'column' | 'column-reverse';
-};
-
-export type ScreenDisplay = Block | Inline | InlineBlock | Flex;
-
 export interface ICenterProp {
   lat: number;
   lng: number;
@@ -653,7 +655,7 @@ export type ScenarioLibraryElement = {
     placeholder?: string;
     map_props?: IMapProps;
   };
-  styles: CssLikeStyles;
+  styles: React.CSSProperties;
   name: ServerStructType;
 };
 
@@ -697,7 +699,7 @@ export interface IScenarioItem {
   parameters: {
     children: string[]; // listSortable-specific ids
   } & ElementParameters;
-  styles: CssLikeStyles;
+  styles: React.CSSProperties;
 }
 
 export interface IScenarios {
@@ -882,7 +884,7 @@ export type Params<T extends LibraryElement<Entity>> = Partial<T['parameters']>;
 export type PropertiesChangeProps<T extends LibraryElement<Entity>> = {
   activeItemID: string;
   removeStyles(cssPropertiesNames: string[]): void;
-  updateStyles(payload: CssLikeStyles): void;
+  updateStyles(payload: React.CSSProperties): void;
   updateParams(payload: Params<T>, updatedItemID?: string): void;
 };
 
@@ -978,53 +980,6 @@ export type GroupElement = {
   label: string;
   custom?: boolean;
   value: { structType: ServerStructType; funcType: ServerStructType };
-};
-
-export type CssLikeStyles = {
-  display?: ScreenDisplay['display'];
-
-  width?: string;
-  height?: string;
-
-  'min-height'?: string;
-  'min-width'?: string;
-  'max-width'?: string;
-
-  'margin-top'?: string;
-  'margin-right'?: string;
-  'margin-bottom'?: string;
-  'margin-left'?: string;
-  'padding-top'?: string;
-  'padding-right'?: string;
-  'padding-bottom'?: string;
-  'padding-left'?: string;
-
-  'border-style'?: string;
-  'border-width'?: string;
-  'border-color'?: string;
-  'border-radius'?: string;
-
-  'background-color'?: string;
-  'background-image'?: string;
-  'background-repeat'?: string;
-  'background-size'?: string;
-  'background-position'?: string;
-
-  'font-family'?: string;
-  color?: string;
-  'font-size'?: string;
-  'line-height'?: string;
-  'font-style'?: string;
-  'font-weight'?: number;
-  'text-align'?: string;
-
-  'flex-direction'?: Flex['flexDirection'];
-  'align-items'?: Flex['alignItems'];
-  'justify-content'?: Flex['justifyContent'];
-  'flex-grow'?: number;
-
-  'list-style-type'?: 'none' | 'disc';
-  overflow?: string;
 };
 
 export interface ISignUpData {

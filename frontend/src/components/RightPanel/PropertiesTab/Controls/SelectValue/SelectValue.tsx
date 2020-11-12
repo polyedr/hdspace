@@ -1,5 +1,5 @@
 import React, { memo, useEffect } from 'react';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { FormControl } from '@material-ui/core';
 import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
@@ -7,40 +7,32 @@ import MenuItem from '@material-ui/core/MenuItem';
 import {
   selectActiveItemChildren,
   selectActiveElementParams,
-  selectElementById,
+  selectElementsByIds,
 } from '../../../../../redux/project/selectors';
 import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
-import { PropertiesChangeProps, SelectElement } from '../../../../../types';
+import {
+  PropertiesChangeProps,
+  SelectElement,
+  StateElement,
+} from '../../../../../types';
 import { AppReduxState } from '../../../../../redux/types';
 
-type StateProps = {
-  value: string;
-  optionsValues: string[];
-};
-
-function mapState(state: AppReduxState): StateProps {
-  const activeItemParams = selectActiveElementParams(state);
-  const { value } = activeItemParams;
-  const [selectMenu] = selectActiveItemChildren(state, 'selectMenu');
-  if (!selectMenu?.children) {
-    return {
-      value,
-      optionsValues: [],
-    };
-  }
-  const optionsValues = selectMenu.children.map(
-    (childId) => selectElementById(childId)(state).parameters.value || '',
+const SelectValue: React.FC<PropertiesChangeProps<SelectElement>> = ({
+  updateParams,
+}) => {
+  const value = useSelector(
+    (state: AppReduxState) => selectActiveElementParams(state).value,
   );
 
-  return {
-    value,
-    optionsValues,
-  };
-}
-type Props = StateProps & PropertiesChangeProps<SelectElement>;
-
-const SelectValue: React.FC<Props> = (props) => {
-  const { value, optionsValues = [], updateParams } = props;
+  const optionsValues = useSelector((state: AppReduxState) => {
+    const [selectMenu] = selectActiveItemChildren('selectMenu')(state);
+    if (!selectMenu?.children) {
+      return [];
+    }
+    return selectElementsByIds(selectMenu?.children)(state).map(
+      (child: StateElement) => child.parameters.value,
+    );
+  });
 
   useEffect(() => {
     const isValueInOptions = optionsValues.some(
@@ -76,4 +68,4 @@ const SelectValue: React.FC<Props> = (props) => {
   );
 };
 
-export default connect(mapState)(withConfigurableProperties(memo(SelectValue)));
+export default withConfigurableProperties(memo(SelectValue));

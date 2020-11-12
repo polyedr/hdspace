@@ -1,5 +1,5 @@
-import React from 'react';
-import { connect } from 'react-redux';
+import React, { useCallback } from 'react';
+import { useSelector } from 'react-redux';
 import TextField from '@material-ui/core/TextField';
 import { selectActiveElementParams } from '../../../../../redux/project/selectors';
 import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
@@ -9,26 +9,18 @@ import {
 } from '../../../../../types';
 import { AppReduxState } from '../../../../../redux/types';
 
-type StateProps = {
-  name: string;
-};
-
-function mapState(state: AppReduxState): StateProps {
-  const activeItemParams = selectActiveElementParams(state);
-
-  return {
-    name: activeItemParams.name,
-  };
-}
-
-type Props = StateProps & PropertiesChangeProps<RadiobuttonElement>;
-
-const Name: React.FC<Props> = ({ name, updateParams }) => {
-  const handleTextFieldChange = ({
-    target: { value },
-  }: React.ChangeEvent<HTMLTextAreaElement>) => {
-    updateParams({ name: value });
-  };
+const Name: React.FC<PropertiesChangeProps<RadiobuttonElement>> = ({
+  updateParams,
+}) => {
+  const name = useSelector(
+    (state: AppReduxState) => selectActiveElementParams(state).name,
+  );
+  const handleTextFieldChange = useCallback(
+    ({ target: { value } }: React.ChangeEvent<HTMLTextAreaElement>) => {
+      updateParams({ name: value });
+    },
+    [updateParams],
+  );
 
   return (
     <TextField
@@ -43,4 +35,4 @@ const Name: React.FC<Props> = ({ name, updateParams }) => {
   );
 };
 
-export default connect(mapState)(withConfigurableProperties(Name));
+export default withConfigurableProperties(Name);

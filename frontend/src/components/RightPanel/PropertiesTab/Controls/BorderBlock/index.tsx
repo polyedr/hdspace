@@ -1,14 +1,10 @@
-import React, { memo, useCallback } from 'react';
-import { connect } from 'react-redux';
+import React, { useCallback } from 'react';
+import { useSelector } from 'react-redux';
 import TextField from '@material-ui/core/TextField';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import {
-  MAX_BORDER_WIDTH,
-  MIN_BORDER_WIDTH,
-} from '../../../../../constants/defaultParams';
 import {
   getPermissibleValue,
   safeMatch,
@@ -16,17 +12,22 @@ import {
   strToNumber,
 } from '../../../../../utils/NumberHelper';
 import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
-import { validateBorderRadius } from '../../../../../utils/StyleHelper';
 import { selectCurrentEditableStyles } from '../../../../../redux/project/selectors';
 import StylesHeader from '../../helperComponents/StylesHeader';
 import ColorSettings from '../../helperComponents/ColorSettings';
 import {
-  CssLikeStyles,
   Entity,
   LibraryElement,
   PropertiesChangeProps,
 } from '../../../../../types';
-import { AppReduxState } from '../../../../../redux/types';
+
+import {
+  MAX_BORDER_WIDTH,
+  MIN_BORDER_WIDTH,
+  MAX_BORDER_RADIUS,
+  MAX_BORDER_RADIUS_PERCENT,
+  MIN_BORDER_RADIUS,
+} from '../../../../../constants/defaultParams';
 
 const useStyles = makeStyles({
   wrapper: {
@@ -44,31 +45,42 @@ const useStyles = makeStyles({
   },
 });
 
-const accessBorderRadius = (border: CssLikeStyles['border-radius']) => {
+const accessBorderRadius = (border: string) => {
   const matchedValue = safeMatch(border);
   return matchedValue !== null ? matchedValue[0] : 'px';
 };
 
-function mapState(state: AppReduxState) {
-  return {
-    borderColor: selectCurrentEditableStyles(state, 'border-color'),
-    borderWidth: selectCurrentEditableStyles(state, 'border-width'),
-    borderRadius: selectCurrentEditableStyles(state, 'border-radius'),
-  };
-}
-
-type Props = ReturnType<typeof mapState> &
-  PropertiesChangeProps<LibraryElement<Entity>>;
-
-const BorderBlock: React.FC<Props> = ({
+const BorderBlock: React.FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
   activeItemID,
   updateStyles,
   removeStyles,
-  borderColor,
-  borderWidth,
-  borderRadius,
 }) => {
   const classes = useStyles();
+  const borderColor =
+    useSelector(selectCurrentEditableStyles('borderColor')) || 'transparent';
+  const borderWidth = useSelector(selectCurrentEditableStyles('borderWidth'));
+  const borderRadius =
+    useSelector(selectCurrentEditableStyles('borderRadius')) || 'px';
+
+  const validateBorderRadius = useCallback((radius: string | null) => {
+    if (!radius) {
+      return undefined;
+    }
+
+    const value = parseInt(radius) || MIN_BORDER_RADIUS;
+
+    if (value && value < MIN_BORDER_RADIUS) {
+      return `${MIN_BORDER_RADIUS}px`;
+    }
+
+    if (!radius || radius.indexOf('%') === -1) {
+      return `${value > MAX_BORDER_RADIUS ? MAX_BORDER_RADIUS : value}px`;
+    }
+
+    return `${
+      value > MAX_BORDER_RADIUS_PERCENT ? MAX_BORDER_RADIUS_PERCENT : value
+    }%`;
+  }, []);
 
   const handleBorderWidthChange = ({ target: { value } }) => {
     const newWidth = getPermissibleValue(
@@ -77,26 +89,24 @@ const BorderBlock: React.FC<Props> = ({
       MAX_BORDER_WIDTH,
     );
 
-    updateStyles({ 'border-width': `${newWidth}px` });
+    updateStyles({ borderWidth: `${newWidth}px` });
   };
 
   const handleBorderRadius = ({ target: { value } }) => {
     updateStyles({
-      'border-radius': `${value}${accessBorderRadius(borderRadius)}`,
+      borderRadius: `${value}${accessBorderRadius(String(borderRadius))}`,
     });
   };
 
   const handleChangeBorderRadiusUnits = ({ target: { value } }) => {
     updateStyles({
-      'border-radius': validateBorderRadius(
-        `${parseFloat(borderRadius)}${value}`,
-      ),
+      borderRadius: validateBorderRadius(`${borderRadius}${value}`),
     });
   };
 
   const handleColorSettingsChange = useCallback(
     (color: string) => {
-      updateStyles({ 'border-color': color });
+      updateStyles({ borderColor: color });
     },
     [updateStyles],
   );
@@ -106,14 +116,14 @@ const BorderBlock: React.FC<Props> = ({
       <StylesHeader
         title="Border"
         onClick={removeStyles}
-        cssPropertiesNames={['border-color', 'border-width', 'border-radius']}
+        cssPropertiesNames={['borderColor', 'borderWidth', 'borderRadius']}
       />
 
       <div className={classes.wrapper}>
         <TextField
           label="Width"
           type="number"
-          value={parseFloat(borderWidth)}
+          value={borderWidth ? parseFloat(borderWidth as string) : ''}
           onChange={handleBorderWidthChange}
           margin="dense"
           className={classes.text}
@@ -123,7 +133,7 @@ const BorderBlock: React.FC<Props> = ({
           <TextField
             label="Radius"
             type="number"
-            value={safeParseFloat(validateBorderRadius(borderRadius))}
+            value={safeParseFloat(validateBorderRadius(String(borderRadius)))}
             onChange={handleBorderRadius}
             margin="dense"
             className={classes.text}
@@ -132,7 +142,7 @@ const BorderBlock: React.FC<Props> = ({
           <FormControl margin="dense">
             <Select
               onChange={handleChangeBorderRadiusUnits}
-              value={accessBorderRadius(borderRadius)}
+              value={accessBorderRadius(String(borderRadius))}
             >
               <MenuItem value="px" dense>
                 px
@@ -154,4 +164,4 @@ const BorderBlock: React.FC<Props> = ({
   );
 };
 
-export default connect(mapState)(withConfigurableProperties(memo(BorderBlock)));
+export default withConfigurableProperties(BorderBlock);
