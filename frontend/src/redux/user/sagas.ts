@@ -10,13 +10,12 @@ import {
   apiActivateUser,
   apiChangeProfileData,
   apiChangeUserData,
-  apiGetProfile,
+  apiGetToken,
   apiIdentifyUser,
   apiResetPasswordConfirmation,
   apiRestorePassword,
   registerUser,
   apiGetUser,
-  apiGetToken,
 } from '../../api/user';
 import TYPES from '../actionTypes';
 import { convertUserDataToRequest } from '../../api/converters/toRequest';
@@ -54,16 +53,11 @@ export function* loginSaga({
     const userData: ServerUserData = yield call(reqWrapper, apiGetUser, {
       id,
     });
-    const profileData: ServerProfileData = yield call(
-      reqWrapper,
-      apiGetProfile,
-      { id },
-    );
 
     yield put(
       Actions.setUserData({
         ...convertUserDataFromResponse(userData),
-        ...convertProfileDataFromResponse(profileData),
+        ...convertProfileDataFromResponse(userData.profile),
       }),
     );
 
