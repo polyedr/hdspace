@@ -3,7 +3,16 @@ from rest_framework import serializers
 from .models import User, Profile, Team, TeamMember
 
 
+class ProfileSerializer(serializers.ModelSerializer):
+    # users = UserSerializer(read_only=True)
+    class Meta:
+        model = Profile
+        fields = ("avatar", "approved", "role", "hourly_rate")
+
+
 class UserSerializer(serializers.ModelSerializer):
+    profile = ProfileSerializer()
+
     # Password validation to be able to authorize
     def create(self, validated_data):
         user = super().create(validated_data)
@@ -34,17 +43,10 @@ class UserSerializer(serializers.ModelSerializer):
             "date_joined",
             "password",
             "is_active",
+            "profile",
         )
         ref_name = "User Django"  # Added to avoid SwaggerGeneration Conflicts
-        extra_kwargs = {"id": {"read_only": True}}
-
-
-class ProfileSerializer(serializers.ModelSerializer):
-    users = UserSerializer(read_only=True)
-
-    class Meta:
-        model = Profile
-        fields = ("users", "avatar", "approved", "role", "hourly_rate")
+        extra_kwargs = {"id": {"read_only": True}, "profile": {"read_only": True}}
 
 
 class TeamSerializer(serializers.ModelSerializer):
