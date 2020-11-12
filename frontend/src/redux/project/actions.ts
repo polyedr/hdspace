@@ -20,6 +20,7 @@ import {
   NNBlockType,
   SCREEN_FORMATS,
   RightPanelTab,
+  NotificationSeverity,
 } from '../../types';
 import {
   Action,
@@ -31,7 +32,7 @@ import {
   AddScreen,
   ChangeScreensOrder,
   ClearAfterPrevScreen,
-  CopyActiveItem,
+  CopyActiveElement,
   CopyElementStyles,
   CreateElements,
   DeleteItem,
@@ -45,7 +46,7 @@ import {
   LoadProjects,
   LoadProjectsSuccess,
   MoveElement,
-  PasteCopiedItem,
+  PasteCopiedElement,
   PopHistory,
   PopUndoAction,
   RedoAction,
@@ -68,7 +69,7 @@ import {
   SetEditableStyles,
   SetGroupActionsUp,
   SetHoveredElement,
-  SetItemToCopy,
+  SetElementToCopy,
   SetLoader,
   SetNotification,
   SetProject,
@@ -191,9 +192,12 @@ export const setAnalyzerLoader = (active: boolean): SetAnalyzerLoader => ({
   payload: { active },
 });
 
-export const setNotification = (text: string): SetNotification => ({
+export const setNotification = (
+  text: string,
+  severity?: NotificationSeverity,
+): SetNotification => ({
   type: TYPES.SET_NOTIFICATION,
-  payload: { text },
+  payload: { text, severity },
 });
 
 export const removeNotification = (): RemoveNotification => ({
@@ -598,19 +602,22 @@ export const setEditableStyles = (className: string): SetEditableStyles => ({
   payload: { className },
 });
 
-export const copyActiveItem = (): CopyActiveItem => ({
-  type: TYPES.COPY_ACTIVE_ITEM,
+export const copyActiveElement = (): CopyActiveElement => ({
+  type: TYPES.COPY_ACTIVE_ELEMENT,
 });
 
 export const pasteCopiedElement = (
   meta: ElementHistoryMeta,
-): PasteCopiedItem => ({
+): PasteCopiedElement => ({
   type: TYPES.PASTE_COPIED_ELEMENT,
   meta,
 });
 
-export const setItemToCopy = (id: string, screenID: number): SetItemToCopy => ({
-  type: TYPES.SET_ITEM_TO_COPY,
+export const setElementToCopy = (
+  id: string,
+  screenID: number,
+): SetElementToCopy => ({
+  type: TYPES.SET_ELEMENT_TO_COPY,
   payload: { id, screenID },
 });
 

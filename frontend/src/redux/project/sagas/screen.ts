@@ -86,113 +86,114 @@ export function* activateScreenSaga({
 }
 
 export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
-  yield put(Actions.clearAfterPrevScreen());
-  const { projectID, name, buoyancy, skip } = payload;
+  try {
+    yield put(Actions.clearAfterPrevScreen());
+    const { projectID, name, buoyancy, skip } = payload;
 
-  const screens: Screen[] = yield select(selectors.selectScreens);
-  const numberedName = generateUniqueName(
-    name,
-    screens.map((screen) => screen.name),
-  );
+    const screens: Screen[] = yield select(selectors.selectScreens);
+    const numberedName = generateUniqueName(
+      name,
+      screens.map((screen) => screen.name),
+    );
 
-  const data = {
-    // TODO: research why DEFAULt_SCREEN isn't spreaded first
-    project: projectID,
-    name: numberedName,
-    status: 'in_progress',
-    buoyancy,
-    image: null,
-    screen_data_json: {},
-    styles_root: {},
-  };
+    const createdScreen = yield call(reqWrapper, apiCreateScreen, {
+      data: {
+        project: projectID,
+        name: numberedName,
+        status: 'in_progress',
+        buoyancy,
+        image: null,
+        screen_data_json: {},
+        styles_root: {},
+      },
+    });
 
-  const createdScreen: Screen = yield call(reqWrapper, apiCreateScreen, {
-    data,
-  });
+    if (!createdScreen) {
+      yield put(Actions.setNotification('Failed to create screen'));
+      return;
+    }
 
-  if (!createdScreen) {
-    console.error(`Error while creating new screen for project ${projectID}`);
-    return;
+    if (!skip) {
+      yield put(setUndoActions(delScreen(projectID, createdScreen.id)));
+    }
+
+    const rootScenario: IScenarioItem = yield call(createContainer, {
+      screen: createdScreen.id,
+    });
+
+    const screen = R.omit(['screen_data_text'], createdScreen);
+
+    const rootElement = convertCreatedElementToRequest(
+      'root',
+      String(rootScenario.id),
+      'Root',
+    );
+
+    const [createdRootElement]: [
+      LibraryElement<'root'>,
+    ] = yield call(reqWrapper, apiAddElements, { data: [rootElement] });
+
+    yield put(addElements([createdRootElement]));
+
+    const rootScenarioWithRootElement = {
+      ...rootScenario,
+      elements: [createdRootElement.id],
+    };
+
+    yield fork(reqWrapper, apiSaveScenarios, {
+      data: [rootScenarioWithRootElement],
+    });
+
+    const currentProject: ReturnType<typeof selectors.selectCurrentProject> = yield select(
+      selectors.selectCurrentProject,
+    );
+    const updateProject: Project = R.assoc(
+      'projectscreen',
+      R.prepend(screen.id, currentProject.projectscreen),
+      currentProject,
+    );
+
+    const savedScreen = yield call(reqWrapper, apiUpdateScreen, {
+      id: screen.id,
+      data: R.omit(
+        ['screenLoader', 'image', 'screen_data_json', 'buoyancy'],
+        screen,
+      ),
+    });
+
+    const currentScreen: ReturnType<typeof selectors.selectCurrentScreen> = yield select(
+      selectors.selectCurrentScreen,
+    );
+
+    const updatedScreen = { ...currentScreen, ...savedScreen };
+
+    updatedScreen.element = createdRootElement.id;
+
+    yield put(setProject(updateProject));
+
+    yield put(setScreens([...screens, updatedScreen]));
+
+    yield put(setCurrentScreenId(screen.id));
+
+    const state: Normalized<StateElement> = yield select(selectAllElements);
+    yield put(
+      Actions.updateElementsTree(state, {
+        screenId: screen.id,
+        undo: skip,
+        sourceAction: restoreScreen(screen.id, projectID),
+      }),
+    );
+
+    yield put(Actions.setActiveElement(createdRootElement.id));
+
+    yield put(push(`/project/${projectID}/${screen.id}`));
+    yield put(Actions.setNotification('Screen created', 'success'));
+
+    // eslint-disable-next-line consistent-return
+    return updatedScreen;
+  } catch (e) {
+    yield put(Actions.setNotification("Can't create screen", 'error'));
   }
-
-  if (!skip) {
-    yield put(setUndoActions(delScreen(projectID, createdScreen.id)));
-  }
-
-  const rootScenario: IScenarioItem = yield call(createContainer, {
-    screen: createdScreen.id,
-  });
-
-  const screen = R.omit(['screen_data_text'], createdScreen);
-
-  const rootElement = convertCreatedElementToRequest(
-    'root',
-    String(rootScenario.id),
-    'Root',
-  );
-
-  const [createdRootElement]: [LibraryElement<'root'>] = yield call(
-    reqWrapper,
-    apiAddElements,
-    { data: [rootElement] },
-  );
-
-  yield put(addElements([createdRootElement]));
-
-  const rootScenarioWithRootElement = {
-    ...rootScenario,
-    elements: [createdRootElement.id],
-  };
-
-  yield fork(reqWrapper, apiSaveScenarios, {
-    data: [rootScenarioWithRootElement],
-  });
-
-  const currentProject: ReturnType<typeof selectors.selectCurrentProject> = yield select(
-    selectors.selectCurrentProject,
-  );
-  const updateProject: Project = R.assoc(
-    'projectscreen',
-    R.prepend(screen.id, currentProject.projectscreen),
-    currentProject,
-  );
-
-  const savedScreen = yield call(reqWrapper, apiUpdateScreen, {
-    id: screen.id,
-    data: R.omit(
-      ['screenLoader', 'image', 'screen_data_json', 'buoyancy'],
-      screen,
-    ),
-  });
-
-  const currentScreen: ReturnType<typeof selectors.selectCurrentScreen> = yield select(
-    selectors.selectCurrentScreen,
-  );
-
-  const updatedScreen = { ...currentScreen, ...savedScreen };
-
-  updatedScreen.element = createdRootElement.id;
-
-  yield put(setProject(updateProject));
-
-  yield put(setScreens([...screens, updatedScreen]));
-
-  yield put(setCurrentScreenId(screen.id));
-
-  const state: Normalized<StateElement> = yield select(selectAllElements);
-  yield put(
-    Actions.updateElementsTree(state, {
-      screenId: screen.id,
-      undo: skip,
-      sourceAction: restoreScreen(screen.id, projectID),
-    }),
-  );
-
-  yield put(Actions.setActiveElement(createdRootElement.id));
-
-  yield put(push(`/project/${projectID}/${screen.id}`));
-  // eslint-disable-next-line consistent-return
-  return updatedScreen;
 }
 
 async function canvasToBlob(canvas: HTMLCanvasElement): Promise<Blob> {

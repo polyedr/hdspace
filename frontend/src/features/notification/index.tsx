@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Snackbar, SnackbarCloseReason, IconButton } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
+import Alert from '@material-ui/lab/Alert';
 import { NOTIFICATION_AUTO_HIDE_DURATION } from './constants';
 import { removeNotification } from '../../redux/project/actions';
 import { selectNotification } from '../../redux/project/selectors';
@@ -48,7 +49,6 @@ const Notification: React.FC<Props> = ({
       open={Boolean(notification)}
       autoHideDuration={NOTIFICATION_AUTO_HIDE_DURATION}
       onClose={handleSnackbarClose}
-      message={notification?.text}
       action={
         <IconButton
           size="small"
@@ -59,7 +59,11 @@ const Notification: React.FC<Props> = ({
           <CloseIcon fontSize="small" />
         </IconButton>
       }
-    />
+    >
+      <Alert severity={notification?.severity || 'info'} variant="filled">
+        {notification?.text}
+      </Alert>
+    </Snackbar>
   );
 };
 

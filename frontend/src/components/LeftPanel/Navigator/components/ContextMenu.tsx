@@ -9,7 +9,7 @@ import {
   selectItemToCopyInfo,
 } from '../../../../redux/project/selectors';
 import {
-  copyActiveItem,
+  copyActiveElement,
   deleteItem,
   pasteCopiedElement,
 } from '../../../../redux/project/actions';
@@ -59,7 +59,7 @@ const ContextMenu: React.FC<Props> = ({ open, onClose, anchorPosition }) => {
   };
 
   const handleCopy = () => {
-    dispatch(copyActiveItem());
+    dispatch(copyActiveElement());
     onClose();
   };
 

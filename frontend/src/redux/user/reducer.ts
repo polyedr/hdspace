@@ -33,7 +33,7 @@ export const initialUserState: UserState = {
     access: '',
     refresh: '',
   },
-  isLoadedToken: true,
+  isTokenLoaded: true,
   error: null,
   isLoading: false,
   confirmMessage: '',

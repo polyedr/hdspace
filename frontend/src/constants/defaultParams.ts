@@ -1,6 +1,5 @@
 import {
   CssLikeStyles,
-  TokenPair,
   LibraryElement,
   Project,
   StateElement,
@@ -77,11 +76,6 @@ export const DEFAULT_ACTIVE_ELEMENT: StateElement = {
     classNames: ['root'],
     ownStyles: {},
   },
-};
-
-export const DEFAULT_AUTHORIZATION_TOKEN: TokenPair = {
-  access: '',
-  refresh: '',
 };
 
 export const CONTAINER_GROUPS = ['containers', 'custom'];

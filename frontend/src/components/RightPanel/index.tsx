@@ -6,12 +6,12 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import Spinner from '../UI/Spinner';
 import PropertiesTab from './PropertiesTab';
 import ElementsTab from './ElementsTab';
-import { selectLoader } from '../../redux/project/selectors';
-import { RIGHT_PANEL_WIDTH } from '../../styles/Theme';
 import {
-  selectIsPrototypeMode,
+  selectLoader,
   selectRightPanelActiveTab,
-} from '../../redux/user/selectors';
+} from '../../redux/project/selectors';
+import { RIGHT_PANEL_WIDTH } from '../../styles/Theme';
+import { selectIsPrototypeMode } from '../../redux/user/selectors';
 import { setRightPanelActiveTab } from '../../redux/project/actions';
 import { RightPanelTab } from '../../types';
 

@@ -142,15 +142,20 @@ function* updateSharedStylesSaga(
   );
 }
 
-function* copyActiveItemSaga() {
-  const {
-    id: activeItemID,
-  }: ReturnType<typeof selectActiveElement> = yield select(selectActiveElement);
-  const currentScreen: ReturnType<typeof selectCurrentScreen> = yield select(
-    selectCurrentScreen,
-  );
-  if (activeItemID !== 'none') {
-    yield put(Actions.setItemToCopy(activeItemID, currentScreen.id));
+function* copyActiveElementSaga() {
+  try {
+    const { id: activeItemID, name }: StateElement = yield select(
+      selectActiveElement,
+    );
+    const currentScreen: ReturnType<typeof selectCurrentScreen> = yield select(
+      selectCurrentScreen,
+    );
+    if (activeItemID !== 'none') {
+      yield put(Actions.setElementToCopy(activeItemID, currentScreen.id));
+    }
+    yield put(Actions.setNotification(`Copied element "${name}"`, 'success'));
+  } catch (e) {
+    yield put(Actions.setNotification(e.message, 'error'));
   }
 }
 
@@ -184,167 +189,190 @@ function* duplicateElements(
 function* duplicateScreenSaga(
   action: ReturnType<typeof Actions.duplicateScreen>,
 ) {
-  const { name, screenID } = action.payload;
+  try {
+    const { name, screenID } = action.payload;
 
-  const sourceRoot: LibraryElement<'root'> = yield select(
-    selectScreenRootElement(screenID),
-  );
+    const sourceRoot: LibraryElement<'root'> = yield select(
+      selectScreenRootElement(screenID),
+    );
 
-  const sourceCurrentScreen: ReturnType<typeof selectCurrentScreen> = yield select(
-    selectCurrentScreen,
-  );
+    const sourceCurrentScreen: ReturnType<typeof selectCurrentScreen> = yield select(
+      selectCurrentScreen,
+    );
 
-  const duplicatedItems = sourceRoot.children.map((child) => ({
-    id: child.id,
-    screenID: sourceCurrentScreen.id,
-  }));
+    const duplicatedItems = sourceRoot.children.map((child) => ({
+      id: child.id,
+      screenID: sourceCurrentScreen.id,
+    }));
 
-  const currentProject: ReturnType<typeof selectCurrentProject> = yield select(
-    selectCurrentProject,
-  );
-  const projectID = currentProject.id;
-  const screensNumber = currentProject.projectscreen.length;
+    const currentProject: ReturnType<typeof selectCurrentProject> = yield select(
+      selectCurrentProject,
+    );
+    const projectID = currentProject.id;
+    const screensNumber = currentProject.projectscreen.length;
 
-  const { id: newScreenId } = yield call(
-    addScreenSaga,
-    Actions.addScreen(projectID, name, screensNumber),
-  );
-  yield put(Actions.setScreenLoader(true));
+    const { id: newScreenId } = yield call(
+      addScreenSaga,
+      Actions.addScreen(projectID, name, screensNumber),
+    );
+    yield put(Actions.setScreenLoader(true));
 
-  const targetRoot: LibraryElement<'root'> = yield select(
-    selectScreenRootElement(newScreenId),
-  );
-  const targetRootID = targetRoot.id;
+    const targetRoot: LibraryElement<'root'> = yield select(
+      selectScreenRootElement(newScreenId),
+    );
+    const targetRootID = targetRoot.id;
 
-  yield put(Actions.setActiveElement(targetRootID));
+    yield put(Actions.setActiveElement(targetRootID));
 
-  yield call(duplicateElements, duplicatedItems, targetRoot, {
-    screenId: newScreenId,
-    undo: true,
-  });
-  yield put(Actions.setScreenLoader(false));
+    yield call(duplicateElements, duplicatedItems, targetRoot, {
+      screenId: newScreenId,
+      undo: true,
+    });
+    yield put(Actions.setScreenLoader(false));
+  } catch (e) {
+    yield put(Actions.setNotification(e.message, 'error'));
+  }
 }
 
 function* pasteCopiedElementSaga({
   type,
   meta,
 }: ReturnType<typeof Actions.pasteCopiedElement>) {
-  if (!meta) {
-    console.error(`You have to provide metainformation for action ${type}`);
-    return;
-  }
-  const { screenId } = meta;
-  const activeElementId: string = yield select(selectActiveElementId);
-  const activeElement: LibraryElement<any> = yield select(
-    selectElementAsTree(activeElementId),
-  );
+  try {
+    if (!meta) {
+      console.error(`You have to provide metainformation for action ${type}`);
+      return;
+    }
+    const { screenId } = meta;
 
-  const itemToCopyInfo: ReturnType<typeof selectItemToCopyInfo> = yield select(
-    selectItemToCopyInfo,
-  );
-  if (!itemToCopyInfo) return;
+    const activeElementId: string = yield select(selectActiveElementId);
 
-  if (activeElement.type !== 'none') {
-    yield call(duplicateElements, [itemToCopyInfo], activeElement, {
-      screenId,
-    });
+    const activeElement: LibraryElement<any> = yield select(
+      selectElementAsTree(activeElementId),
+    );
+
+    const itemToCopyInfo: ItemToCopyInfo | null = yield select(
+      selectItemToCopyInfo,
+    );
+
+    if (!itemToCopyInfo) {
+      yield put(Actions.setNotification('Nothing to paste'));
+      return;
+    }
+
+    if (activeElement.type !== 'none') {
+      yield call(duplicateElements, [itemToCopyInfo], activeElement, {
+        screenId,
+      });
+      yield put(Actions.setNotification('Element pasted', 'success'));
+    }
+  } catch (e) {
+    yield put(Actions.setNotification(e.message, 'error'));
   }
 }
 
 function* undoSaga() {
-  const history = yield select(selectHistory);
-  const redos = yield select(selectRedoActions);
-  const undos = yield select(selectUndoActions);
+  try {
+    const history = yield select(selectHistory);
+    const redos = yield select(selectRedoActions);
+    const undos = yield select(selectUndoActions);
 
-  if (!undos.length) {
-    yield put(Actions.setNotification('Nothing to undo.'));
-    return;
-  }
-
-  const last = undos[undos.length - 1];
-
-  if (Array.isArray(last)) {
-    if (last[0].meta?.screenId) {
-      yield put(activateScreen(last[0].meta.screenId));
+    if (!undos.length) {
+      yield put(Actions.setNotification('Nothing to undo.'));
+      return;
     }
-    yield put(Actions.setGroupActionsUp(true));
 
-    // eslint-disable-next-line no-restricted-syntax
-    for (const undo of last.reverse()) {
+    const last = undos[undos.length - 1];
+
+    if (Array.isArray(last)) {
+      if (last[0].meta?.screenId) {
+        yield put(activateScreen(last[0].meta.screenId));
+      }
+      yield put(Actions.setGroupActionsUp(true));
+
+      // eslint-disable-next-line no-restricted-syntax
+      for (const undo of last.reverse()) {
+        yield put({
+          ...undo,
+          meta: {
+            ...undo.meta,
+            undo: true,
+          },
+        });
+      }
+
+      yield put(Actions.setGroupActionsUp(false));
+    } else {
+      if (last.meta?.screenId) {
+        yield put(activateScreen(last.meta.screenId));
+      }
+
       yield put({
-        ...undo,
+        ...last,
         meta: {
-          ...undo.meta,
+          ...last.meta,
           undo: true,
         },
       });
     }
 
-    yield put(Actions.setGroupActionsUp(false));
-  } else {
-    if (last.meta?.screenId) {
-      yield put(activateScreen(last.meta.screenId));
-    }
+    yield put(Actions.popUndoAction());
+    yield put(Actions.popHistory());
 
-    yield put({
-      ...last,
-      meta: {
-        ...last.meta,
-        undo: true,
-      },
-    });
+    yield put(Actions.setRedoActions([history[history.length - 1], ...redos]));
+  } catch (e) {
+    yield put(Actions.setNotification(e.message, 'error'));
   }
-
-  yield put(Actions.popUndoAction());
-  yield put(Actions.popHistory());
-
-  yield put(Actions.setRedoActions([history[history.length - 1], ...redos]));
 }
 
 function* redoSaga() {
-  const redos = yield select(selectRedoActions);
+  try {
+    const redos = yield select(selectRedoActions);
 
-  if (!redos.length) {
-    yield put(Actions.setNotification('Nothing to redo.'));
-    return;
-  }
-
-  const first = redos[0];
-
-  if (Array.isArray(first)) {
-    if (first[0].meta?.screenId) {
-      yield put(activateScreen(first[0].meta.screenId));
+    if (!redos.length) {
+      yield put(Actions.setNotification('Nothing to redo.'));
+      return;
     }
 
-    yield put(Actions.setGroupActionsUp(true));
+    const first = redos[0];
 
-    // eslint-disable-next-line no-restricted-syntax
-    for (const redo of first) {
+    if (Array.isArray(first)) {
+      if (first[0].meta?.screenId) {
+        yield put(activateScreen(first[0].meta.screenId));
+      }
+
+      yield put(Actions.setGroupActionsUp(true));
+
+      // eslint-disable-next-line no-restricted-syntax
+      for (const redo of first) {
+        yield put({
+          ...redo,
+          meta: {
+            ...redo.meta,
+            redo: true,
+          },
+        });
+      }
+
+      yield put(Actions.setGroupActionsUp(false));
+    } else {
+      if (first.meta?.screenId) {
+        yield put(activateScreen(first.meta.screenId));
+      }
+
       yield put({
-        ...redo,
+        ...first,
         meta: {
-          ...redo.meta,
+          ...first.meta,
           redo: true,
         },
       });
     }
 
-    yield put(Actions.setGroupActionsUp(false));
-  } else {
-    if (first.meta?.screenId) {
-      yield put(activateScreen(first.meta.screenId));
-    }
-
-    yield put({
-      ...first,
-      meta: {
-        ...first.meta,
-        redo: true,
-      },
-    });
+    yield put(Actions.setRedoActions([...redos.slice(1)]));
+  } catch (e) {
+    yield put(Actions.setNotification(e.message, 'error'));
   }
-
-  yield put(Actions.setRedoActions([...redos.slice(1)]));
 }
 
 export default function* projectSaga() {
@@ -385,7 +413,7 @@ export default function* projectSaga() {
   yield takeEvery(TYPES.RESTORE_ELEMENT_CHILDREN, restoreElementChildrenSaga);
   yield takeEvery(TYPES.RESTORE_ELEMENT, restoreElementSaga);
 
-  yield takeLatest(TYPES.COPY_ACTIVE_ITEM, copyActiveItemSaga);
+  yield takeLatest(TYPES.COPY_ACTIVE_ELEMENT, copyActiveElementSaga);
   yield takeEvery(TYPES.PASTE_COPIED_ELEMENT, pasteCopiedElementSaga);
 
   yield takeLatest(TYPES.UPLOAD_FILE, uploadFileSaga);

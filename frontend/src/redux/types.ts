@@ -103,7 +103,7 @@ export type UserState = {
     enabled: boolean;
   };
   tokenPair: TokenPair;
-  isLoadedToken: boolean;
+  isTokenLoaded: boolean;
   isLoggedIn: boolean;
   error: Error | null;
   userData: TotalUserData;
@@ -372,16 +372,16 @@ export type SetEditableStyles = IAction<
   typeof TYPES.SET_EDITABLE_STYLES,
   { className: string }
 >;
-export type SetItemToCopy = IAction<
-  typeof TYPES.SET_ITEM_TO_COPY,
+export type SetElementToCopy = IAction<
+  typeof TYPES.SET_ELEMENT_TO_COPY,
   ItemToCopyInfo
 >;
 export type SetRightPanelActiveTab = IAction<
   typeof TYPES.SET_RIGHT_PANEL_ACTIVE_TAB,
   RightPanelTab
 >;
-export type CopyActiveItem = IPlainAction<typeof TYPES.COPY_ACTIVE_ITEM>;
-export type PasteCopiedItem = IPlainAction<
+export type CopyActiveElement = IPlainAction<typeof TYPES.COPY_ACTIVE_ELEMENT>;
+export type PasteCopiedElement = IPlainAction<
   typeof TYPES.PASTE_COPIED_ELEMENT,
   ElementHistoryMeta
 >;
@@ -564,10 +564,10 @@ export type Action =
   | WrapIntoContainer
   | SetHoveredElement
   | ToggleContainersBorders
-  | SetItemToCopy
+  | SetElementToCopy
   | SetRightPanelActiveTab
-  | CopyActiveItem
-  | PasteCopiedItem
+  | CopyActiveElement
+  | PasteCopiedElement
   | ResetScreenState
   | UpdateSavedElementsValues
   | UpdateSavedElementValues

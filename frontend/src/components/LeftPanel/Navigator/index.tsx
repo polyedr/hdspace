@@ -27,7 +27,7 @@ import {
 } from '../../../redux/project/selectors';
 import { DISALLOW_ADD_ELEMENT_NOTIFICATION_TEXT } from '../../../features/notification/constants';
 import {
-  copyActiveItem,
+  copyActiveElement,
   deleteItem,
   moveElement,
   pasteCopiedElement,
@@ -149,7 +149,7 @@ const Navigator: React.FC = () => {
 
       if (e.keyCode === 67 && (e.ctrlKey || e.metaKey)) {
         // Ctrl/Cmd + C
-        dispatch(copyActiveItem());
+        dispatch(copyActiveElement());
       }
 
       if (e.keyCode === 86 && (e.ctrlKey || e.metaKey)) {

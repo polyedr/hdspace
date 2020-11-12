@@ -19,5 +19,5 @@ export const selectConfirmMessage = ({ user }: AppReduxState) =>
 
 export const selectIsLoggedIn = ({ user }: AppReduxState) => user.isLoggedIn;
 
-export const selectRightPanelActiveTab = ({ project }: AppReduxState) =>
-  project.ui.rightPanel.activeTab;
+export const selectIsTokenLoaded = ({ user }: AppReduxState) =>
+  user.isTokenLoaded;
