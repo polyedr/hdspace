@@ -1,5 +1,4 @@
 /* eslint-disable no-console */
-
 import { SagaIterator } from 'redux-saga';
 import { call, select, put, all, fork } from 'redux-saga/effects';
 import * as R from 'ramda';
@@ -53,6 +52,7 @@ import {
 } from '../../../types';
 import { reqWrapper } from './shared';
 import { AppReduxState } from '../../types';
+import { enqueueSnackbar } from '../../notification/actions';
 
 export function* activateScreenSaga({
   payload: { screenId },
@@ -109,7 +109,12 @@ export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
     });
 
     if (!createdScreen) {
-      yield put(Actions.setNotification('Failed to create screen'));
+      yield put(
+        enqueueSnackbar({
+          message: 'Failed to create screen',
+          options: { variant: 'error' },
+        }),
+      );
       return;
     }
 
@@ -187,12 +192,22 @@ export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
     yield put(Actions.setActiveElement(createdRootElement.id));
 
     yield put(push(`/project/${projectID}/${screen.id}`));
-    yield put(Actions.setNotification('Screen created', 'success'));
+    yield put(
+      enqueueSnackbar({
+        message: 'Screen created',
+        options: { variant: 'success' },
+      }),
+    );
 
     // eslint-disable-next-line consistent-return
     return updatedScreen;
   } catch (e) {
-    yield put(Actions.setNotification("Can't create screen", 'error'));
+    yield put(
+      enqueueSnackbar({
+        message: "Can't create screen",
+        options: { variant: 'error' },
+      }),
+    );
   }
 }
 

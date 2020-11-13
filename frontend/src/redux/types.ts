@@ -1,5 +1,6 @@
 import { RouterState } from 'connected-react-router';
 import React from 'react';
+import { OptionsObject, SnackbarKey } from 'notistack';
 import {
   BorderedElementsRef,
   CreatedElement,
@@ -13,7 +14,6 @@ import {
   LibraryElementPatch,
   NNBlockType,
   Normalized,
-  Notification,
   PaginatedArray,
   PaginatedData,
   ParentIds,
@@ -60,7 +60,6 @@ export type ProjectEditState = {
   activeElementId: string;
   hoveredElementId: string;
   uploadedImageInfo?: UploadedImageInfo;
-  notification: Notification | null;
   freeCanvas: {
     enabled: boolean;
     lastElements: {
@@ -113,10 +112,22 @@ export type UserState = {
   confirmMessage: string;
 };
 
+export type Notification = {
+  key: SnackbarKey;
+  message: string;
+  dismissed?: boolean;
+  options?: OptionsObject;
+};
+
+export type NotificationState = {
+  notifications: Notification[];
+};
+
 export type AppReduxState = {
   user: UserState;
   project: ProjectState;
   router: RouterState;
+  notification: NotificationState;
 };
 
 export type LoadProjects = IPlainAction<typeof TYPES.LOAD_PROJECTS>;
@@ -165,11 +176,6 @@ export type SetScreenLoader = IAction<
   { active: boolean }
 >;
 export type SetLoader = IAction<typeof TYPES.SET_LOADER, { active: boolean }>;
-export type SetNotification = IAction<
-  typeof TYPES.SET_NOTIFICATION,
-  Notification
->;
-export type RemoveNotification = IPlainAction<typeof TYPES.REMOVE_NOTIFICATION>;
 export type SetScenarioLoader = IAction<
   typeof TYPES.SET_SCENARIO_LOADER,
   { active: boolean }
@@ -572,8 +578,6 @@ export type Action =
   | UpdateSavedElementsValues
   | UpdateSavedElementValues
   | UpdateElementsTree
-  | SetNotification
-  | RemoveNotification
   | SetEditableStyles
   | SetUndoActions
   | SetRedoActions

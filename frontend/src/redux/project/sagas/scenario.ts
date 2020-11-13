@@ -17,10 +17,6 @@ import {
 import * as Actions from '../actions';
 import { selectors } from '..';
 import {
-  DISALLOW_ADD_ELEMENT_NOTIFICATION_TEXT,
-  DISALLOW_REMOVE_ELEMENT_NOTIFICATION_TEXT,
-} from '../../../features/notification/constants';
-import {
   getElementsArray,
   updateElementParameters,
 } from '../../../utils/ElementsTreeHelper';
@@ -60,6 +56,7 @@ import {
 import { DEFAULT_INDENTS } from '../../../domain/libraryElements/defaultStyles';
 import { reqWrapper, updateSavedElementsValues } from './shared';
 import { Action, ElementHistoryMeta } from '../../types';
+import { enqueueSnackbar } from '../../notification/actions';
 
 export function* updateElementsTree(
   chunk: Normalized<StateElement>,
@@ -119,7 +116,12 @@ export function* createElements(
   );
 
   if (disallowedElements.length) {
-    yield put(Actions.setNotification(DISALLOW_ADD_ELEMENT_NOTIFICATION_TEXT));
+    yield put(
+      enqueueSnackbar({
+        message: 'Can not add this element!',
+        options: { variant: 'warning' },
+      }),
+    );
     return;
   }
 
@@ -318,7 +320,10 @@ export function* softDeleteSaga(action: ReturnType<typeof Actions.deleteItem>) {
 
   if (!isElementCanBeRemove(parent, element.type as Entity)) {
     yield put(
-      Actions.setNotification(DISALLOW_REMOVE_ELEMENT_NOTIFICATION_TEXT),
+      enqueueSnackbar({
+        message: 'Can not remove this element!',
+        options: { variant: 'warning' },
+      }),
     );
     return;
   }

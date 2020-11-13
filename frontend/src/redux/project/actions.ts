@@ -20,7 +20,6 @@ import {
   NNBlockType,
   SCREEN_FORMATS,
   RightPanelTab,
-  NotificationSeverity,
 } from '../../types';
 import {
   Action,
@@ -53,7 +52,6 @@ import {
   RedoWrapIntoContainer,
   RemoveElementClassName,
   RemoveElementStyles,
-  RemoveNotification,
   RemoveSharedStyles,
   RenameProject,
   RenameScreen,
@@ -71,7 +69,6 @@ import {
   SetHoveredElement,
   SetElementToCopy,
   SetLoader,
-  SetNotification,
   SetProject,
   SetProjectListLoader,
   SetProjectLoader,
@@ -190,18 +187,6 @@ export const setScenarioLoader = (active: boolean): SetScenarioLoader => ({
 export const setAnalyzerLoader = (active: boolean): SetAnalyzerLoader => ({
   type: TYPES.SET_ANALYZER_LOADER,
   payload: { active },
-});
-
-export const setNotification = (
-  text: string,
-  severity?: NotificationSeverity,
-): SetNotification => ({
-  type: TYPES.SET_NOTIFICATION,
-  payload: { text, severity },
-});
-
-export const removeNotification = (): RemoveNotification => ({
-  type: TYPES.REMOVE_NOTIFICATION,
 });
 
 export const delScreen = (

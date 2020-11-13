@@ -51,8 +51,9 @@ const TYPES = {
   UPDATE_LAST_ELEMENTS: 'freeCanvas/UPDATE_LAST_ELEMENTS',
 
   // Notification Actions
-  SET_NOTIFICATION: 'notification/SET_NOTIFICATION',
-  REMOVE_NOTIFICATION: 'notification/REMOVE_NOTIFICATION',
+  ENQUEUE_SNACKBAR: 'notification/ENQUEUE_SNACKBAR',
+  REMOVE_SNACKBAR: 'notification/REMOVE_SNACKBAR',
+  CLOSE_SNACKBAR: 'notification/CLOSE_SNACKBAR',
 
   // Screen Actions
   SET_SCREEN_LOADER: 'screens/SET_SCREEN_LOADER',

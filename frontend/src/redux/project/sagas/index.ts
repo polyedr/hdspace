@@ -73,6 +73,7 @@ import {
 } from '../../../types';
 import { updateProject } from './shared';
 import { ElementHistoryMeta } from '../../types';
+import { enqueueSnackbar } from '../../notification/actions';
 
 function* removeSharedStylesSaga(
   action: ReturnType<typeof Actions.removeSharedStyles>,
@@ -153,9 +154,16 @@ function* copyActiveElementSaga() {
     if (activeItemID !== 'none') {
       yield put(Actions.setElementToCopy(activeItemID, currentScreen.id));
     }
-    yield put(Actions.setNotification(`Copied element "${name}"`, 'success'));
+    yield put(
+      enqueueSnackbar({
+        message: `Copied element "${name}"`,
+        options: { variant: 'success' },
+      }),
+    );
   } catch (e) {
-    yield put(Actions.setNotification(e.message, 'error'));
+    yield put(
+      enqueueSnackbar({ message: e.message, options: { variant: 'error' } }),
+    );
   }
 }
 
@@ -230,7 +238,9 @@ function* duplicateScreenSaga(
     });
     yield put(Actions.setScreenLoader(false));
   } catch (e) {
-    yield put(Actions.setNotification(e.message, 'error'));
+    yield put(
+      enqueueSnackbar({ message: e.message, options: { variant: 'error' } }),
+    );
   }
 }
 
@@ -256,7 +266,12 @@ function* pasteCopiedElementSaga({
     );
 
     if (!itemToCopyInfo) {
-      yield put(Actions.setNotification('Nothing to paste'));
+      yield put(
+        enqueueSnackbar({
+          message: 'Nothing to paste',
+          options: { variant: 'warning' },
+        }),
+      );
       return;
     }
 
@@ -264,10 +279,17 @@ function* pasteCopiedElementSaga({
       yield call(duplicateElements, [itemToCopyInfo], activeElement, {
         screenId,
       });
-      yield put(Actions.setNotification('Element pasted', 'success'));
+      yield put(
+        enqueueSnackbar({
+          message: 'Element pasted',
+          options: { variant: 'success' },
+        }),
+      );
     }
   } catch (e) {
-    yield put(Actions.setNotification(e.message, 'error'));
+    yield put(
+      enqueueSnackbar({ message: e.message, options: { variant: 'error' } }),
+    );
   }
 }
 
@@ -278,7 +300,12 @@ function* undoSaga() {
     const undos = yield select(selectUndoActions);
 
     if (!undos.length) {
-      yield put(Actions.setNotification('Nothing to undo.'));
+      yield put(
+        enqueueSnackbar({
+          message: 'Nothing to undo.',
+          options: { variant: 'info' },
+        }),
+      );
       return;
     }
 
@@ -321,7 +348,9 @@ function* undoSaga() {
 
     yield put(Actions.setRedoActions([history[history.length - 1], ...redos]));
   } catch (e) {
-    yield put(Actions.setNotification(e.message, 'error'));
+    yield put(
+      enqueueSnackbar({ message: e.message, options: { variant: 'error' } }),
+    );
   }
 }
 
@@ -330,7 +359,12 @@ function* redoSaga() {
     const redos = yield select(selectRedoActions);
 
     if (!redos.length) {
-      yield put(Actions.setNotification('Nothing to redo.'));
+      yield put(
+        enqueueSnackbar({
+          message: 'Nothing to redo.',
+          options: { variant: 'info' },
+        }),
+      );
       return;
     }
 
@@ -371,7 +405,9 @@ function* redoSaga() {
 
     yield put(Actions.setRedoActions([...redos.slice(1)]));
   } catch (e) {
-    yield put(Actions.setNotification(e.message, 'error'));
+    yield put(
+      enqueueSnackbar({ message: e.message, options: { variant: 'error' } }),
+    );
   }
 }
 

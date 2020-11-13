@@ -577,13 +577,6 @@ export type Indices = {
   oldIndex: number;
 };
 
-export type NotificationSeverity = 'info' | 'warning' | 'error' | 'success';
-
-export type Notification = {
-  text: string;
-  severity?: NotificationSeverity;
-};
-
 export type SavedElementsValues = {
   [elementID: string]: { id: number; savedValue: string | boolean };
 };

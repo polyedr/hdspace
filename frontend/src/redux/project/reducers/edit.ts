@@ -30,14 +30,6 @@ const editReducer = produce(
         return { ...draft, currentProjectId: action.payload.projectId };
       }
 
-      case TYPES.SET_NOTIFICATION: {
-        return { ...draft, notification: action.payload };
-      }
-
-      case TYPES.REMOVE_NOTIFICATION: {
-        return { ...draft, notification: null };
-      }
-
       case TYPES.SET_CURRENT_SCREEN_ID: {
         return { ...draft, currentScreenId: action.payload.screenId };
       }

@@ -13,6 +13,7 @@ import { PersistConfig, Persistor } from 'redux-persist/es/types';
 import createReduxPromiseListener from 'redux-promise-listener';
 import userReducer from './user/reducer';
 import projectReducer from './project/reducers';
+import notificationReducer from './notification/reducer';
 import projectSaga from './project/sagas';
 import userSaga from './user/sagas';
 import history from './history';
@@ -45,6 +46,7 @@ export const rootReducer = combineReducers({
   user: persistReducer(userPersistConfig, userReducer),
   project: projectReducer,
   router: connectRouter(history),
+  notification: notificationReducer,
 });
 
 export const store = createStore(
