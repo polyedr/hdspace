@@ -5,7 +5,7 @@ import * as R from 'ramda';
 import { push } from 'connected-react-router';
 import * as Actions from '../actions';
 import { selectors } from '..';
-import { createContainer } from './scenario';
+import { createScenarios } from './scenario';
 import {
   selectAllElements,
   selectCurrentProjectId,
@@ -23,7 +23,7 @@ import { apiGetProject, apiUpdateProject } from '../../../api/project';
 import {
   activateScreen,
   addElements,
-  addScreen,
+  createScreen,
   delScreen,
   renameScreen,
   restoreScreen,
@@ -37,9 +37,9 @@ import {
   setScreens,
   setUndoActions,
 } from '../actions';
-import { apiAddElements, apiGetElements } from '../../../api/element';
+import { apiCreateElements, apiGetElements } from '../../../api/element';
 import generateUniqueName from '../../../utils/generateUniqueName';
-import { apiSaveScenarios } from '../../../api/scenario';
+import { apiUpdateScenarios } from '../../../api/scenario';
 import { convertElementFromResponse } from '../../../api/converters/fromResponse';
 import {
   LibraryElement,
@@ -48,7 +48,8 @@ import {
   ServerElement,
   StateElement,
   Screen,
-  IScenarioItem,
+  ScenarioItem,
+  Result,
 } from '../../../types';
 import { reqWrapper } from './shared';
 import { AppReduxState } from '../../types';
@@ -57,35 +58,48 @@ import { enqueueSnackbar } from '../../notification/actions';
 export function* activateScreenSaga({
   payload: { screenId },
 }: ReturnType<typeof activateScreen>) {
-  const currentScreenId = yield select(selectCurrentScreenId);
-  if (currentScreenId === screenId) return;
+  try {
+    const currentScreenId = yield select(selectCurrentScreenId);
+    if (currentScreenId === screenId) return;
 
-  yield put(setScreenLoader(true));
+    yield put(setScreenLoader(true));
+    yield put(setActiveElement('none'));
 
-  yield put(setActiveElement('none'));
+    const screen: Screen = yield select(selectScreenById(screenId));
 
-  const screen: Screen = yield select(selectScreenById(screenId));
+    const pathname: string = yield select(
+      (state: AppReduxState) => state.router.location.pathname,
+    );
 
-  const pathname = yield select(
-    (state: AppReduxState) => state.router.location.pathname,
-  );
+    if (screenId.toString() !== pathname.split('/').reverse()[0]) {
+      const projectId = yield select(selectCurrentProjectId);
+      yield put(push(`/project/${projectId}/${screenId}`));
+    }
 
-  if (screenId.toString() !== pathname.split('/').reverse()[0]) {
-    const projectId = yield select(selectCurrentProjectId);
-    yield put(push(`/project/${projectId}/${screenId}`));
+    yield put(setCurrentScreenId(screen.id));
+
+    const screenElement = yield select(selectScreenRootElement(screenId));
+    if (!screenElement) return;
+
+    yield put(Actions.setActiveElement(screenElement.id));
+  } catch (e) {
+    yield put(
+      enqueueSnackbar({
+        message: e.message,
+        options: {
+          variant: 'error',
+        },
+      }),
+    );
+  } finally {
+    yield put(setScreenLoader(false));
   }
-
-  yield put(setCurrentScreenId(screen.id));
-
-  const screenElement = yield select(selectScreenRootElement(screenId));
-  if (!screenElement) return;
-
-  yield put(Actions.setActiveElement(screenElement.id));
-
-  yield put(setScreenLoader(false));
 }
 
-export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
+// eslint-disable-next-line consistent-return
+export function* createScreenSaga({
+  payload,
+}: ReturnType<typeof createScreen>) {
   try {
     yield put(Actions.clearAfterPrevScreen());
     const { projectID, name, buoyancy, skip } = payload;
@@ -96,7 +110,10 @@ export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
       screens.map((screen) => screen.name),
     );
 
-    const createdScreen = yield call(reqWrapper, apiCreateScreen, {
+    const {
+      result: createdScreen,
+      error: createScreenError,
+    }: Result<Screen> = yield call(reqWrapper, apiCreateScreen, {
       data: {
         project: projectID,
         name: numberedName,
@@ -108,103 +125,129 @@ export function* addScreenSaga({ payload }: ReturnType<typeof addScreen>) {
       },
     });
 
-    if (!createdScreen) {
-      yield put(
-        enqueueSnackbar({
-          message: 'Failed to create screen',
-          options: { variant: 'error' },
-        }),
+    if (createdScreen) {
+      if (!skip) {
+        yield put(setUndoActions(delScreen(projectID, createdScreen.id)));
+      }
+
+      const rootScenario: ScenarioItem = yield call(createScenarios, {
+        screen: createdScreen.id,
+      });
+
+      if (!rootScenario) {
+        throw new Error('Failed to create scenario');
+      }
+
+      const newScreen = R.omit(['screen_data_text'], createdScreen);
+
+      const rootElement = convertCreatedElementToRequest(
+        'root',
+        String(rootScenario.id),
+        'Root',
       );
-      return;
+
+      const {
+        result: elements,
+        error: elementsError,
+      }: Result<LibraryElement<'root'>[]> = yield call(
+        reqWrapper,
+        apiCreateElements,
+        { data: [rootElement] },
+      );
+
+      if (elements) {
+        yield put(addElements(elements));
+
+        const rootScenarioWithRootElement = {
+          ...rootScenario,
+          elements: [elements[0].id],
+        };
+
+        yield fork(reqWrapper, apiUpdateScenarios, {
+          data: [rootScenarioWithRootElement],
+        });
+
+        const currentProject: ReturnType<typeof selectors.selectCurrentProject> = yield select(
+          selectors.selectCurrentProject,
+        );
+
+        const updateProject: Project = R.assoc(
+          'projectscreen',
+          R.prepend(newScreen.id, currentProject.projectscreen),
+          currentProject,
+        );
+
+        const {
+          result: savedScreen,
+          error: savedScreenError,
+        }: Result<Screen> = yield call(reqWrapper, apiUpdateScreen, {
+          id: newScreen.id,
+          data: R.omit(
+            ['screenLoader', 'image', 'screen_data_json', 'buoyancy'],
+            newScreen,
+          ),
+        });
+
+        if (savedScreen) {
+          // Can not get why do we need to mix created screen with the current one. Let's keep these comments some time
+          // const currentScreen: ReturnType<typeof selectors.selectCurrentScreen> = yield select(
+          //   selectors.selectCurrentScreen,
+          // );
+
+          const updatedScreen = {
+            // ...currentScreen,
+            ...savedScreen,
+            element: elements[0].id,
+          };
+
+          yield put(setProject(updateProject));
+
+          yield put(setScreens([...screens, updatedScreen]));
+
+          yield put(setCurrentScreenId(newScreen.id));
+
+          const state: Normalized<StateElement> = yield select(
+            selectAllElements,
+          );
+
+          yield put(
+            Actions.updateElementsTree(state, {
+              screenId: newScreen.id,
+              undo: skip,
+              sourceAction: restoreScreen(newScreen.id, projectID),
+            }),
+          );
+
+          yield put(Actions.setActiveElement(elements[0].id));
+
+          yield put(push(`/project/${projectID}/${newScreen.id}`));
+
+          yield put(
+            enqueueSnackbar({
+              message: 'Screen created',
+              options: { variant: 'success' },
+            }),
+          );
+
+          return updatedScreen;
+        }
+        if (savedScreenError) {
+          throw new Error(elementsError);
+        }
+      }
+
+      if (elementsError) {
+        throw new Error(elementsError);
+      }
     }
 
-    if (!skip) {
-      yield put(setUndoActions(delScreen(projectID, createdScreen.id)));
+    if (createScreenError) {
+      throw new Error(createScreenError);
     }
-
-    const rootScenario: IScenarioItem = yield call(createContainer, {
-      screen: createdScreen.id,
-    });
-
-    const screen = R.omit(['screen_data_text'], createdScreen);
-
-    const rootElement = convertCreatedElementToRequest(
-      'root',
-      String(rootScenario.id),
-      'Root',
-    );
-
-    const [createdRootElement]: [
-      LibraryElement<'root'>,
-    ] = yield call(reqWrapper, apiAddElements, { data: [rootElement] });
-
-    yield put(addElements([createdRootElement]));
-
-    const rootScenarioWithRootElement = {
-      ...rootScenario,
-      elements: [createdRootElement.id],
-    };
-
-    yield fork(reqWrapper, apiSaveScenarios, {
-      data: [rootScenarioWithRootElement],
-    });
-
-    const currentProject: ReturnType<typeof selectors.selectCurrentProject> = yield select(
-      selectors.selectCurrentProject,
-    );
-    const updateProject: Project = R.assoc(
-      'projectscreen',
-      R.prepend(screen.id, currentProject.projectscreen),
-      currentProject,
-    );
-
-    const savedScreen = yield call(reqWrapper, apiUpdateScreen, {
-      id: screen.id,
-      data: R.omit(
-        ['screenLoader', 'image', 'screen_data_json', 'buoyancy'],
-        screen,
-      ),
-    });
-
-    const currentScreen: ReturnType<typeof selectors.selectCurrentScreen> = yield select(
-      selectors.selectCurrentScreen,
-    );
-
-    const updatedScreen = { ...currentScreen, ...savedScreen };
-
-    updatedScreen.element = createdRootElement.id;
-
-    yield put(setProject(updateProject));
-
-    yield put(setScreens([...screens, updatedScreen]));
-
-    yield put(setCurrentScreenId(screen.id));
-
-    const state: Normalized<StateElement> = yield select(selectAllElements);
-    yield put(
-      Actions.updateElementsTree(state, {
-        screenId: screen.id,
-        undo: skip,
-        sourceAction: restoreScreen(screen.id, projectID),
-      }),
-    );
-
-    yield put(Actions.setActiveElement(createdRootElement.id));
-
-    yield put(push(`/project/${projectID}/${screen.id}`));
-    yield put(
-      enqueueSnackbar({
-        message: 'Screen created',
-        options: { variant: 'success' },
-      }),
-    );
-
-    // eslint-disable-next-line consistent-return
-    return updatedScreen;
   } catch (e) {
     yield put(
       enqueueSnackbar({
-        message: "Can't create screen",
+        message: e.message || 'Failed to create screen',
         options: { variant: 'error' },
       }),
     );

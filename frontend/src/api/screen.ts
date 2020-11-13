@@ -1,6 +1,7 @@
-import { onError, parseResult } from './project';
+import { AxiosResponse } from 'axios';
+import { handleError, onError, parseResult } from './project';
 import { myAxios } from '../config/settings';
-import { MyAxiosProps, Screen } from '../types';
+import { MyAxiosProps, Result, Screen } from '../types';
 
 export const apiGetScreen = (
   props: MyAxiosProps & { id: string },
@@ -13,22 +14,22 @@ export const apiGetScreen = (
     .then(parseResult)
     .catch(onError);
 
-export const apiCreateScreen = (props: MyAxiosProps): Promise<Screen> =>
+export const apiCreateScreen = (props: MyAxiosProps): Promise<Result<Screen>> =>
   myAxios({
     ...props,
     method: 'POST',
     url: '/projects/project-screens/',
   })
-    .then(parseResult)
-    .catch(onError);
+    .then((res: AxiosResponse<Screen>) => ({ result: parseResult(res) }))
+    .catch(handleError);
 
 export const apiUpdateScreen = (
   props: MyAxiosProps & { id: string },
-): Promise<Screen> =>
+): Promise<Result<Screen>> =>
   myAxios({
     ...props,
     method: 'PATCH',
     url: `/projects/project-screens/${props.id}/`,
   })
-    .then(parseResult)
-    .catch(onError);
+    .then((res) => ({ result: parseResult(res) }))
+    .catch(handleError);

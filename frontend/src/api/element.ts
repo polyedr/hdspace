@@ -5,7 +5,7 @@ import {
   convertElementFromResponse,
   convertRecursiveElementFromResponse,
 } from './converters/fromResponse';
-import { onError, parseResult } from './project';
+import { handleError, onError, parseResult } from './project';
 import { myAxios } from '../config/settings';
 import {
   Entity,
@@ -13,6 +13,7 @@ import {
   MyAxiosProps,
   PaginatedArray,
   RecursiveElement,
+  Result,
   ServerElement,
 } from '../types';
 
@@ -143,24 +144,24 @@ export const apiChangeElement = <
     .then((result) => convertElementFromResponse(result.data))
     .catch(onError);
 
-export const apiAddElements = <
+export const apiCreateElements = <
   T extends Entity,
   K extends Entity,
   P extends ServerElement<T>['parameters']
 >(
   props: MyAxiosProps,
-): Promise<LibraryElement<T, LibraryElement<K>[], P>[]> =>
+): Promise<Result<LibraryElement<T, LibraryElement<K>[], P>[]>> =>
   myAxios({
     ...props,
     method: 'POST',
     url: '/projects/scenario-elements-multiple/',
   })
-    .then((result) =>
-      result.data.map((item: ServerElement<T>) =>
+    .then((res) => ({
+      result: res.data.map((item: ServerElement<T>) =>
         convertElementFromResponse(item),
       ),
-    )
-    .catch(onError);
+    }))
+    .catch(handleError);
 
 export const uploadImageForNN = ({
   screenID,

@@ -56,7 +56,7 @@ import {
 } from '../selectors';
 import {
   activateScreenSaga,
-  addScreenSaga,
+  createScreenSaga,
   changeScreensOrderSaga,
   delScreenSaga,
   renameScreenSaga,
@@ -219,23 +219,31 @@ function* duplicateScreenSaga(
     const projectID = currentProject.id;
     const screensNumber = currentProject.projectscreen.length;
 
-    const { id: newScreenId } = yield call(
-      addScreenSaga,
-      Actions.addScreen(projectID, name, screensNumber),
+    const screen = yield call(
+      createScreenSaga,
+      Actions.createScreen(projectID, name, screensNumber),
     );
+
+    if (!screen) {
+      throw new Error('Failed to create screen');
+    }
+
     yield put(Actions.setScreenLoader(true));
 
     const targetRoot: LibraryElement<'root'> = yield select(
-      selectScreenRootElement(newScreenId),
+      selectScreenRootElement(screen.id),
     );
     const targetRootID = targetRoot.id;
 
     yield put(Actions.setActiveElement(targetRootID));
 
-    yield call(duplicateElements, duplicatedItems, targetRoot, {
-      screenId: newScreenId,
-      undo: true,
-    });
+    if (duplicatedItems.length) {
+      yield call(duplicateElements, duplicatedItems, targetRoot, {
+        screenId: screen.id,
+        undo: true,
+      });
+    }
+
     yield put(Actions.setScreenLoader(false));
   } catch (e) {
     yield put(
@@ -421,7 +429,7 @@ export default function* projectSaga() {
   yield takeLatest(TYPES.RENAME_PROJECT, renameProjectSaga);
 
   yield takeLatest(TYPES.ACTIVATE_SCREEN, activateScreenSaga);
-  yield takeLatest(TYPES.ADD_SCREEN, addScreenSaga);
+  yield takeLatest(TYPES.CREATE_SCREEN, createScreenSaga);
   yield takeEvery(TYPES.DUPLICATE_SCREEN, duplicateScreenSaga);
   yield takeLatest(TYPES.SAVE_SCREEN, saveScreenImageSaga);
   yield takeLatest(TYPES.DELETE_SCREEN, delScreenSaga);

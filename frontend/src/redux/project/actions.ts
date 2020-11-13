@@ -29,7 +29,7 @@ import {
   AddElementClassName,
   AddElements,
   CreateProject,
-  AddScreen,
+  CreateScreen,
   ChangeScreensOrder,
   ClearAfterPrevScreen,
   CopyActiveElement,
@@ -220,13 +220,13 @@ export const renameScreen = (
   payload: { projectID, screenID, name },
 });
 
-export const addScreen = (
+export const createScreen = (
   projectID: number,
   name: string,
   buoyancy: number,
   skip: boolean = false,
-): AddScreen => ({
-  type: TYPES.ADD_SCREEN,
+): CreateScreen => ({
+  type: TYPES.CREATE_SCREEN,
   payload: { projectID, name, buoyancy, skip },
 });
 

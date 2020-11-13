@@ -199,8 +199,8 @@ export type RenameScreen = IAction<
   typeof TYPES.RENAME_SCREEN,
   { projectID: number; screenID: number; name: string }
 >;
-export type AddScreen = IAction<
-  typeof TYPES.ADD_SCREEN,
+export type CreateScreen = IAction<
+  typeof TYPES.CREATE_SCREEN,
   { projectID: number; name: string; buoyancy: number; skip: boolean }
 >;
 export type DuplicateScreen = IAction<
@@ -555,7 +555,7 @@ export type Action =
   | SetAnalyzerLoader
   | DeleteScreen
   | RenameScreen
-  | AddScreen
+  | CreateScreen
   | ActivateScreen
   | ClearAfterPrevScreen
   | SaveScreen

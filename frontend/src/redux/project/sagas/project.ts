@@ -3,7 +3,7 @@ import { put, call, select } from 'redux-saga/effects';
 import { updateProjectHelperSaga, reqWrapper } from './shared';
 import * as Actions from '../actions';
 import { selectors } from '..';
-import { addScreenSaga, getScreensSaga } from './screen';
+import { createScreenSaga, getScreensSaga } from './screen';
 import { convertCreatedProjectToRequest } from '../../../api/converters/toRequest';
 import {
   apiCreateProject,
@@ -42,7 +42,7 @@ export function* getProjectListSaga() {
     }
 
     if (error) {
-      throw new Error(error.message);
+      throw new Error(error);
     }
   } catch (e) {
     yield put(
@@ -88,7 +88,7 @@ export function* getProjectSaga(action: ReturnType<typeof Actions.getProject>) {
     }
 
     if (error) {
-      throw new Error(error.message);
+      throw new Error(error);
     }
   } catch (e) {
     yield put(
@@ -122,14 +122,17 @@ export function* createProjectSaga({
 
       yield put(Actions.setCurrentProjectId(result.id));
 
-      yield call(
-        addScreenSaga,
-        Actions.addScreen(result.id, 'Screen 1', 0, true),
+      const res = yield call(
+        createScreenSaga,
+        Actions.createScreen(result.id, 'Screen 1', 0, true),
       );
+      if (!res) {
+        throw new Error('Failed to create screen');
+      }
     }
 
     if (error) {
-      throw new Error(error.message);
+      throw new Error(error);
     }
   } catch (e) {
     yield put(
@@ -164,7 +167,7 @@ export function* deleteProjectSaga({
       yield put(Actions.setProjectList(newProjectList));
     }
     if (error) {
-      throw new Error(error.message);
+      throw new Error(error);
     }
   } catch (e) {
     yield put(
@@ -198,7 +201,7 @@ export function* renameProjectSaga({
       yield put(Actions.setProject(result));
     }
     if (error) {
-      throw new Error(error.message);
+      throw new Error(error);
     }
   } catch (e) {
     yield put(

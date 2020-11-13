@@ -111,7 +111,7 @@ export function* updateProjectHelperSaga(newProject: Project) {
     }
 
     if (error) {
-      throw new Error(error.message);
+      throw new Error(error);
     }
   } catch (e) {
     yield put(

@@ -26,7 +26,7 @@ import {
   convertElementToRequest,
 } from '../../../api/converters/toRequest';
 import {
-  apiAddElements,
+  apiCreateElements,
   apiChangeElement,
   apiChangeRecursiveElement,
   apiSaveElements,
@@ -35,7 +35,7 @@ import {
   isElementCanBeAdded,
   isElementCanBeRemove,
 } from '../../../utils/AvailableChildrenHelper';
-import { apiAddScenarios } from '../../../api/scenario';
+import { apiCreateScenarios } from '../../../api/scenario';
 import { convertElementFromResponse } from '../../../api/converters/fromResponse';
 import getSavedValue from '../../../utils/getSavedValue';
 import {
@@ -46,10 +46,11 @@ import {
 import {
   ElementsToDrop,
   Entity,
-  IScenarioItem,
+  ScenarioItem,
   LibraryElement,
   LibraryElementUnion,
   Normalized,
+  Result,
   ReturnPromisedType,
   StateElement,
 } from '../../../types';
@@ -73,37 +74,53 @@ export function* updateElementsTree(
   yield put(Actions.updateElementsTree(chunk, meta));
 }
 
-export function* createContainer(scenario?: Partial<IScenarioItem>) {
-  const currentScreen: ReturnType<typeof selectors.selectCurrentScreen> = yield select(
-    selectors.selectCurrentScreen,
-  );
+// eslint-disable-next-line consistent-return
+export function* createScenarios(scenario?: Partial<ScenarioItem>) {
+  try {
+    const currentScreen: ReturnType<typeof selectors.selectCurrentScreen> = yield select(
+      selectors.selectCurrentScreen,
+    );
 
-  const containerToCreate: IScenarioItem = {
-    parent_id: -1, // if parent_id = -1, is container that contains all other elements
-    id: -100, // will be omitted and set by server
-    name: 'Root',
-    struct_type: 'container',
-    screen: currentScreen.id,
-    buoyancy: 0, // buoyancy can be omitted, cause it is can be expressed using list
-    direction: 'vertical',
-    elements: [],
-    parameters: {
-      // parent_id, do we need it? or it already expressed using parent_id placed on the upper level
-      children: [], // level up into children field
-    },
-    styles: {
-      ...DEFAULT_INDENTS,
-    },
-    ...scenario,
-  };
+    const containerToCreate: ScenarioItem = {
+      parent_id: -1, // if parent_id = -1, is container that contains all other elements
+      id: -100, // will be omitted and set by server
+      name: 'Root',
+      struct_type: 'container',
+      screen: currentScreen.id,
+      buoyancy: 0, // buoyancy can be omitted, cause it is can be expressed using list
+      direction: 'vertical',
+      elements: [],
+      parameters: {
+        // parent_id, do we need it? or it already expressed using parent_id placed on the upper level
+        children: [], // level up into children field
+      },
+      styles: {
+        ...DEFAULT_INDENTS,
+      },
+      ...scenario,
+    };
 
-  const createdContainers: ReturnPromisedType<typeof apiAddScenarios> = yield call(
-    reqWrapper,
-    apiAddScenarios,
-    { data: [R.omit(['id'], containerToCreate)] },
-  );
+    const { result, error }: Result<ScenarioItem[]> = yield call(
+      reqWrapper,
+      apiCreateScenarios,
+      { data: [R.omit(['id'], containerToCreate)] },
+    );
 
-  return createdContainers[0];
+    if (result) {
+      return result[0];
+    }
+
+    if (error) {
+      throw new Error(error);
+    }
+  } catch (e) {
+    yield put(
+      enqueueSnackbar({
+        message: e.message || 'Failed to create scenarios',
+        options: { variant: 'error' },
+      }),
+    );
+  }
 }
 
 export function* createElements(
@@ -146,79 +163,83 @@ export function* createElements(
     return el;
   });
 
-  const newElements: ReturnPromisedType<typeof apiAddElements> = yield call(
+  const {
+    result: newElements,
+  }: ReturnPromisedType<typeof apiCreateElements> = yield call(
     reqWrapper,
-    apiAddElements,
+    apiCreateElements,
     { data: elementsWithOffset },
   );
 
-  if (!undo) {
+  if (newElements) {
+    if (!undo) {
+      yield put(
+        Actions.setUndoActions(
+          newElements.map((el: any) => Actions.deleteItem(el.id, { screenId })),
+        ),
+      );
+    }
+
+    const newChildren = [
+      ...parent.children.map((child) => child.id),
+      ...newElements.map((element) => element.id),
+    ];
+
+    const elementData = {
+      name: parent.name,
+      children: newChildren,
+    };
+
+    yield call(reqWrapper, apiChangeRecursiveElement, {
+      data: elementData,
+      id: parent.id,
+    });
+
     yield put(
-      Actions.setUndoActions(
-        newElements.map((el: any) => Actions.deleteItem(el.id, { screenId })),
+      Actions.addStateElements(
+        newElements,
+        parent.id,
+        {
+          screenId,
+          undo,
+          sourceAction: Actions.restoreElementChildren(
+            parent.id,
+            newElements.map((element) => element.id),
+            { screenId },
+          ),
+        },
+        index,
       ),
     );
-  }
 
-  const newChildren = [
-    ...parent.children.map((child) => child.id),
-    ...newElements.map((element) => element.id),
-  ];
+    yield put(
+      Actions.updateLastElements(
+        parent.id,
+        newElements.map((el) => el.id),
+        offset,
+      ),
+    );
 
-  const elementData = {
-    name: parent.name,
-    children: newChildren,
-  };
+    yield put(Actions.setActiveElement(newElements[0].id));
 
-  yield call(reqWrapper, apiChangeRecursiveElement, {
-    data: elementData,
-    id: parent.id,
-  });
-
-  yield put(
-    Actions.addStateElements(
-      newElements,
-      parent.id,
-      {
-        screenId,
-        undo,
-        sourceAction: Actions.restoreElementChildren(
-          parent.id,
-          newElements.map((element) => element.id),
-          { screenId },
-        ),
+    const updatedParent: LibraryElement<Entity> = yield select(
+      selectElementAsTree(parent.id),
+    );
+    const elementsWithUpdatedBuoyancy = updatedParent.children.map(
+      (child, childIndex) => {
+        const createdElement = convertElementToPatchRequest(child);
+        createdElement.buoyancy = childIndex + (index || 0);
+        return createdElement;
       },
-      index,
-    ),
-  );
+    );
 
-  yield put(
-    Actions.updateLastElements(
-      parent.id,
-      newElements.map((el) => el.id),
-      offset,
-    ),
-  );
+    const createdElements = yield call(reqWrapper, apiSaveElements, {
+      data: elementsWithUpdatedBuoyancy,
+    });
 
-  yield put(Actions.setActiveElement(newElements[0].id));
-
-  const updatedParent: LibraryElement<Entity> = yield select(
-    selectElementAsTree(parent.id),
-  );
-  const elementsWithUpdatedBuoyancy = updatedParent.children.map(
-    (child, childIndex) => {
-      const createdElement = convertElementToPatchRequest(child);
-      createdElement.buoyancy = childIndex + (index || 0);
-      return createdElement;
-    },
-  );
-
-  const createdElements = yield call(reqWrapper, apiSaveElements, {
-    data: elementsWithUpdatedBuoyancy,
-  });
-
-  // eslint-disable-next-line consistent-return
-  return createdElements.map((el) => el.id);
+    // eslint-disable-next-line consistent-return
+    return createdElements.map((el) => el.id);
+  }
 }
 
 export function* createElementsSaga(
@@ -493,61 +514,63 @@ export function* wrapIntoContainerSaga(
 
   const serverContainer = convertCreatedElementToRequest('container', null);
 
-  const [
-    createdContainer,
-  ]: ReturnPromisedType<typeof apiAddElements> = yield call(
+  const {
+    result: createdContainers,
+  }: ReturnPromisedType<typeof apiCreateElements> = yield call(
     reqWrapper,
-    apiAddElements,
+    apiCreateElements,
     { data: [serverContainer] },
   );
 
-  yield put(
-    Actions.setUndoActions(
-      Actions.unwrapFromContainer(id, createdContainer.id, parent.id, {
-        screenId,
-      }),
-    ),
-  );
-
-  yield put(
-    Actions.insertStateElement(createdContainer, parent.id, element.id, {
-      ...action.meta,
-      sourceAction: Actions.redoWrapIntoContainer(
-        id,
-        createdContainer.id,
-        parent.id,
-        action.meta,
+  if (createdContainers) {
+    yield put(
+      Actions.setUndoActions(
+        Actions.unwrapFromContainer(id, createdContainers[0].id, parent.id, {
+          screenId,
+        }),
       ),
-    }),
-  );
+    );
 
-  const updatedParent: LibraryElement<any> = yield select(
-    selectElementAsTree(parent.id),
-  );
-  const updatedWrapper: LibraryElement<any> = yield select(
-    selectElementAsTree(createdContainer.id),
-  );
+    yield put(
+      Actions.insertStateElement(createdContainers[0], parent.id, element.id, {
+        ...action.meta,
+        sourceAction: Actions.redoWrapIntoContainer(
+          id,
+          createdContainers[0].id,
+          parent.id,
+          action.meta,
+        ),
+      }),
+    );
 
-  yield call(reqWrapper, apiChangeRecursiveElement, {
-    data: { children: updatedParent.children.map((child) => child.id) },
-    id: updatedParent.id,
-  });
+    const updatedParent: LibraryElement<any> = yield select(
+      selectElementAsTree(parent.id),
+    );
+    const updatedWrapper: LibraryElement<any> = yield select(
+      selectElementAsTree(createdContainers[0].id),
+    );
 
-  yield call(reqWrapper, apiChangeRecursiveElement, {
-    data: { children: updatedWrapper.children.map((child) => child.id) },
-    id: updatedWrapper.id,
-  });
+    yield call(reqWrapper, apiChangeRecursiveElement, {
+      data: { children: updatedParent.children.map((child) => child.id) },
+      id: updatedParent.id,
+    });
 
-  const convertedElements = [
-    ...updatedParent.children.map((child) =>
-      convertElementToPatchRequest(child),
-    ),
-    ...updatedWrapper.children.map((child) =>
-      convertElementToPatchRequest(child),
-    ),
-  ];
+    yield call(reqWrapper, apiChangeRecursiveElement, {
+      data: { children: updatedWrapper.children.map((child) => child.id) },
+      id: updatedWrapper.id,
+    });
 
-  yield call(reqWrapper, apiSaveElements, { data: convertedElements });
+    const convertedElements = [
+      ...updatedParent.children.map((child) =>
+        convertElementToPatchRequest(child),
+      ),
+      ...updatedWrapper.children.map((child) =>
+        convertElementToPatchRequest(child),
+      ),
+    ];
+
+    yield call(reqWrapper, apiSaveElements, { data: convertedElements });
+  }
 }
 
 export function* unwrapFromContainerSaga(

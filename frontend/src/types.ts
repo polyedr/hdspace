@@ -10,9 +10,9 @@ export type Normalized<T extends { id: string | number }> = {
   [id in string | number]: T;
 };
 
-export type Result<T> = {
+export type Result<T = any> = {
   result?: T;
-  error?: Error;
+  error?: string;
 };
 
 export type PaginatedResponse<T> = {
@@ -701,7 +701,7 @@ export type ElementParameters = {
   videoSettings?: VideoSettingsType;
 };
 
-export interface IScenarioItem {
+export interface ScenarioItem {
   // compare with entity on backend
   id: number;
   name: string;
@@ -716,10 +716,6 @@ export interface IScenarioItem {
     children: string[]; // listSortable-specific ids
   } & ElementParameters;
   styles: CssLikeStyles;
-}
-
-export interface IScenarios {
-  [scenarioID: string]: IScenarioItem;
 }
 
 export interface Screen {

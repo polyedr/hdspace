@@ -59,6 +59,10 @@ export const onError = ({ response: r }: AxiosError) => {
   }
 };
 
+export const handleError = (error) => ({
+  error: error.response?.data?.detail || error.message,
+});
+
 export const parseResult = <T>(result: AxiosResponse<T>) => result?.data;
 
 export const parseCursor = (nextUrl: string | null) => {
@@ -83,7 +87,7 @@ export const apiGetProjectList = (
         results: result.data.results.map(convertProjectFromResponse),
       },
     }))
-    .catch((error) => ({ error }));
+    .catch(handleError);
 
 // TODO: research here IProject or IProjectList in return type:
 export const apiGetProject = (
@@ -108,7 +112,7 @@ export const apiGetProjectWithScreens = (
     .then((res: AxiosResponse<ServerProjectWithScreens>) => ({
       result: convertProjectWithScreensFromResponse(res.data),
     }))
-    .catch((error) => ({ error }));
+    .catch(handleError);
 
 export const apiCreateProject = (
   props: MyAxiosProps,
@@ -122,7 +126,7 @@ export const apiCreateProject = (
     .then((result: AxiosResponse<ServerProject>) => ({
       result: convertProjectFromResponse(result.data),
     }))
-    .catch((error) => ({ error }));
+    .catch(handleError);
 
 export const apiDeleteProject = (props: MyAxiosProps & { id: string }) =>
   myAxios({
@@ -133,7 +137,7 @@ export const apiDeleteProject = (props: MyAxiosProps & { id: string }) =>
     .then((res) => ({
       result: res.status === 204,
     }))
-    .catch((error) => ({ error }));
+    .catch(handleError);
 
 export const apiUpdateProject = (
   props: MyAxiosProps,
@@ -146,13 +150,4 @@ export const apiUpdateProject = (
     .then((result: AxiosResponse<ServerProject>) => ({
       result: convertProjectFromResponse(result.data),
     }))
-    .catch((error) => ({ error }));
-
-export const apiSaveScreens = (props: MyAxiosProps): Promise<Project> =>
-  myAxios({
-    ...props,
-    method: 'PATCH',
-    url: '/projects/project-screens-multiple/',
-  })
-    .then((result) => convertProjectFromResponse(result.data))
-    .catch(onError);
+    .catch(handleError);
