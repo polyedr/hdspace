@@ -30,7 +30,7 @@ const FlexGrow: React.FC<PropertiesChangeProps<ContainerElement>> = ({
       <StylesHeader
         title="Flex Grow"
         onClick={removeStyles}
-        cssPropertiesNames={['flex-grow']}
+        cssPropertiesNames={['flexGrow']}
       />
 
       <TextField

@@ -1,6 +1,4 @@
 /* eslint-disable camelcase */
-
-import { CSSProperties } from '@material-ui/core/styles/withStyles';
 import {
   Entity,
   LibraryElement,
@@ -16,25 +14,7 @@ import {
   ServerUserData,
   UserData,
 } from '../../types';
-
-const convertToCSSProps = (styles: any): React.CSSProperties => {
-  const convertedStyles: CSSProperties = {};
-  Object.keys(styles).forEach((propName) => {
-    const jsNameParts = propName.split('-');
-    const convertedPropertyKey =
-      jsNameParts.length === 1
-        ? jsNameParts[0]
-        : jsNameParts
-            .map((namePart, index) =>
-              index === 0
-                ? namePart
-                : namePart.charAt(0).toUpperCase() + namePart.slice(1),
-            )
-            .join('');
-    convertedStyles[convertedPropertyKey] = styles[propName];
-  });
-  return convertedStyles;
-};
+import { cssCamelize } from '../../utils/CSSConverter';
 
 export const convertElementFromResponse = <
   T extends Entity,
@@ -68,7 +48,7 @@ export const convertElementFromResponse = <
     parameters,
     styles: {
       ...styles,
-      ownStyles: convertToCSSProps(styles.ownStyles),
+      ownStyles: cssCamelize(styles.ownStyles),
     },
   };
 };
@@ -112,7 +92,7 @@ export const convertProjectFromResponse = (project: ServerProject): Project => {
         (cls: ProjectClass) =>
           ({
             ...cls,
-            rules: convertToCSSProps(cls.rules) as React.CSSProperties,
+            rules: cssCamelize(cls.rules) as React.CSSProperties,
           } as ProjectClass),
       ),
     },

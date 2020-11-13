@@ -1,4 +1,4 @@
-import * as R from 'ramda';
+// import * as R from 'ramda';
 import { DEFAULT_ELEMENTS_STYLES } from '../../domain/libraryElements/defaultStyles';
 import { LIBRARY_ELEMENTS } from '../../domain/libraryElements/libraryElements';
 import {
@@ -15,18 +15,7 @@ import {
   UserData,
 } from '../../types';
 import getDefaultStyles from '../../utils/getDefaultStyles';
-
-const convertPropsToCSS = (styles: React.CSSProperties) => {
-  return Object.keys(styles).reduce((acc, cssName) => {
-    return {
-      ...acc,
-      [cssName
-        .split(/(?=[A-Z])/)
-        .join('-')
-        .toLowerCase()]: styles[cssName],
-    };
-  }, {});
-};
+import { cssCamelize, cssDecamelize } from '../../utils/CSSConverter';
 
 export const convertCreatedElementToRequest = <
   T extends Entity,
@@ -78,7 +67,7 @@ export const convertElementToRequest = <
     parameters,
     styles: {
       ...styles,
-      ownStyles: convertPropsToCSS(styles.ownStyles),
+      ownStyles: cssCamelize(styles.ownStyles),
     },
   };
 };
@@ -103,7 +92,7 @@ export const convertElementToPatchRequest = <
     parameters,
     styles: {
       ...styles,
-      ownStyles: convertPropsToCSS(styles.ownStyles),
+      ownStyles: cssCamelize(styles.ownStyles),
     },
     shared,
   };
@@ -112,13 +101,13 @@ export const convertElementToPatchRequest = <
 export const convertCreatedProjectToRequest = (
   name: string,
 ): CreatedServerProject => {
-  const projectClasses: ProjectClass[] = R.keys(DEFAULT_ELEMENTS_STYLES).map(
-    (elementName) => ({
-      className: elementName,
-      supportedElement: elementName,
-      rules: getDefaultStyles(elementName),
-    }),
-  );
+  const projectClasses: ProjectClass[] = Object.keys(
+    DEFAULT_ELEMENTS_STYLES,
+  ).map((elementName) => ({
+    className: elementName,
+    supportedElement: elementName as Entity,
+    rules: getDefaultStyles(elementName as Entity),
+  }));
 
   return {
     name,
@@ -127,7 +116,7 @@ export const convertCreatedProjectToRequest = (
     project_data_json: JSON.stringify({
       classes: projectClasses.map((cls: ProjectClass) => ({
         ...cls,
-        rules: convertPropsToCSS(cls.rules),
+        rules: cssDecamelize(cls.rules),
       })),
     }),
   };
@@ -147,7 +136,7 @@ export const convertProjectToPatchRequest = (
       ...projectData,
       classes: projectData.classes.map((cls: ProjectClass) => ({
         ...cls,
-        rules: convertPropsToCSS(cls.rules),
+        rules: cssDecamelize(cls.rules),
       })),
     }),
   };

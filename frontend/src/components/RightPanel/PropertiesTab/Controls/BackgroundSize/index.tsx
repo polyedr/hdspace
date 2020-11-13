@@ -162,7 +162,7 @@ const BackgroundSize: React.FC<PropertiesChangeProps<
       <StylesHeader
         title="Background Size"
         onClick={removeStyles}
-        cssPropertiesNames={['background-size']}
+        cssPropertiesNames={['backgroundSize']}
       />
 
       <div>

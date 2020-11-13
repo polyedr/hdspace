@@ -35,9 +35,9 @@ const Display: React.FC<Props> = ({ updateStyles, removeStyles }) => {
           onClick={removeStyles}
           cssPropertiesNames={[
             'display',
-            'justify-content',
-            'align-items',
-            'flex-direction',
+            'justifyContent',
+            'alignItems',
+            'flexDirection',
           ]}
         />
 
