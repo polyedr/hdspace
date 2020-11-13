@@ -137,7 +137,10 @@ export type LoadProjectsSuccess = IAction<
 >;
 export type LoadProjectsFail = IPlainFailAction<'PROJECTS:LOAD_PROJECTS_FAIL'>;
 
-export type AddProject = IAction<typeof TYPES.ADD_PROJECT, { name: string }>;
+export type CreateProject = IAction<
+  typeof TYPES.CREATE_PROJECT,
+  { name: string }
+>;
 export type DeleteProject = IAction<
   typeof TYPES.DELETE_PROJECT,
   { id: number }
@@ -538,7 +541,7 @@ export type Action =
   | LoadProjects
   | LoadProjectsSuccess
   | LoadProjectsFail
-  | AddProject
+  | CreateProject
   | DeleteProject
   | GetProject
   | SetCurrentProjectId

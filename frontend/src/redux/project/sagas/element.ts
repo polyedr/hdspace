@@ -37,7 +37,7 @@ import {
   RightPanelTab,
   StateElement,
 } from '../../../types';
-import { reqWrapper, updateProject } from './shared';
+import { reqWrapper, updateProjectHelperSaga } from './shared';
 
 export function* moveElementSaga(
   action: ReturnType<typeof Actions.moveElement>,
@@ -251,7 +251,7 @@ export function* copyElementStylesSaga(
     elementType,
     styles as Required<CssLikeStyles>,
   );
-  yield call(updateProject, newProject);
+  yield call(updateProjectHelperSaga, newProject);
 
   yield call(removeElementStyles, elementID, Object.keys(styles), action);
 

@@ -19,7 +19,7 @@ import {
   apiUpdateScreen,
 } from '../../../api/screen';
 import { convertCreatedElementToRequest } from '../../../api/converters/toRequest';
-import { apiGetProject, apiSaveProject } from '../../../api/project';
+import { apiGetProject, apiUpdateProject } from '../../../api/project';
 import {
   activateScreen,
   addElements,
@@ -279,7 +279,7 @@ export function* delScreenSaga({
     (id) => id !== screenId,
   );
 
-  yield call(reqWrapper, apiSaveProject, {
+  yield call(reqWrapper, apiUpdateProject, {
     data: {
       projectscreen: newScreenIdList,
       id: projectId,
@@ -336,7 +336,7 @@ export function* restoreScreenSaga({
 
   const { projectscreen } = project;
 
-  const updatedProject = yield call(reqWrapper, apiSaveProject, {
+  const updatedProject = yield call(reqWrapper, apiUpdateProject, {
     data: {
       id: projectId,
       projectscreen: [...projectscreen, screenId],

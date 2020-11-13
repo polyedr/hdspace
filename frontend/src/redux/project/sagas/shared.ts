@@ -4,6 +4,7 @@ import { selectIsTokenLoaded, selectTokenPair } from '../../user/selectors';
 import {
   LibraryElementUnion,
   Project,
+  Result,
   SavedElementsValues,
 } from '../../../types';
 import {
@@ -15,12 +16,13 @@ import {
 import { MAX_TOKEN_TRIALS } from '../../../config/settings';
 import * as Actions from '../actions';
 import { convertProjectToPatchRequest } from '../../../api/converters/toRequest';
-import { apiSaveProject } from '../../../api/project';
+import { apiUpdateProject } from '../../../api/project';
 import getSavedValue from '../../../utils/getSavedValue';
 import { openSignScreen } from '../../history';
 import { apiRefreshToken } from '../../../api/user';
 import TYPES from '../../actionTypes';
 import { selectSavedElementsValues } from '../selectors';
+import { enqueueSnackbar } from '../../notification/actions';
 
 // eslint-disable-next-line consistent-return
 export function* refreshUserTokenPairSaga() {
@@ -92,10 +94,35 @@ export function* reqWrapper(
   }
 }
 
-export function* updateProject(newProject: Project) {
-  yield put(Actions.setProject(newProject));
-  const convertedProject = convertProjectToPatchRequest(newProject);
-  yield call(reqWrapper, apiSaveProject, { data: convertedProject });
+// eslint-disable-next-line consistent-return
+export function* updateProjectHelperSaga(newProject: Project) {
+  try {
+    yield put(Actions.setProject(newProject));
+    const { result, error }: Result<Project> = yield call(
+      reqWrapper,
+      apiUpdateProject,
+      {
+        data: convertProjectToPatchRequest(newProject),
+      },
+    );
+
+    if (result) {
+      return true;
+    }
+
+    if (error) {
+      throw new Error(error.message);
+    }
+  } catch (e) {
+    yield put(
+      enqueueSnackbar({
+        message: e.message,
+        options: {
+          variant: 'error',
+        },
+      }),
+    );
+  }
 }
 
 export function* updateSavedElementsValues(elements: LibraryElementUnion[]) {

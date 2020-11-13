@@ -20,6 +20,7 @@ import {
   NNBlockType,
   SCREEN_FORMATS,
   RightPanelTab,
+  PaginatedResponse,
 } from '../../types';
 import {
   Action,
@@ -27,7 +28,7 @@ import {
   AddChildToElement,
   AddElementClassName,
   AddElements,
-  AddProject,
+  CreateProject,
   AddScreen,
   ChangeScreensOrder,
   ClearAfterPrevScreen,
@@ -103,17 +104,17 @@ export const setProjectList = (projects: Project[]): LoadProjectsSuccess => ({
   payload: { projects },
 });
 
-export const setProjectsData = (data: PaginatedArray<Project>) => ({
+export const setProjectsData = (data: PaginatedResponse<Project>) => ({
   type: TYPES.SET_PROJECTS_DATA,
   payload: data,
 });
 
-export const addProject = (name: string): AddProject => ({
-  type: TYPES.ADD_PROJECT,
+export const createProject = (name: string): CreateProject => ({
+  type: TYPES.CREATE_PROJECT,
   payload: { name },
 });
 
-export const delProject = (id: number): DeleteProject => ({
+export const deleteProject = (id: number): DeleteProject => ({
   type: TYPES.DELETE_PROJECT,
   payload: { id },
 });

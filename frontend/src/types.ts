@@ -10,6 +10,17 @@ export type Normalized<T extends { id: string | number }> = {
   [id in string | number]: T;
 };
 
+export type Result<T> = {
+  result?: T;
+  error?: Error;
+};
+
+export type PaginatedResponse<T> = {
+  next: string | null;
+  previous: string | null;
+  results: T[];
+};
+
 export type PaginatedBase<T> = {
   next: string | null;
   previous: string | null;
@@ -502,6 +513,17 @@ export type CreatedServerProject = {
   status: string;
   projectscreen: number[];
   project_data_json: string;
+};
+
+export type ServerProjectWithScreens = {
+  id: number;
+  name: string;
+  status: string;
+  projectscreen: Screen[];
+  created: string;
+  updated: string;
+  project_data_json: string;
+  project_data_text: string;
 };
 
 export type ServerProject = {

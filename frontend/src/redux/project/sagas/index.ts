@@ -18,8 +18,8 @@ import {
   wrapIntoContainerSaga,
 } from './scenario';
 import {
-  addProjectSaga,
-  delProjectSaga,
+  createProjectSaga,
+  deleteProjectSaga,
   getProjectListSaga,
   getProjectSaga,
   renameProjectSaga,
@@ -71,7 +71,7 @@ import {
   Normalized,
   StateElement,
 } from '../../../types';
-import { updateProject } from './shared';
+import { updateProjectHelperSaga } from './shared';
 import { ElementHistoryMeta } from '../../types';
 import { enqueueSnackbar } from '../../notification/actions';
 
@@ -96,7 +96,7 @@ function* removeSharedStylesSaga(
     cssPropertiesNames,
   );
 
-  yield call(updateProject, newProject);
+  yield call(updateProjectHelperSaga, newProject);
 
   const { undo } = action.meta;
 
@@ -128,7 +128,7 @@ function* updateSharedStylesSaga(
   );
   const newProject = updateProjectClasses(currentProject, className, styles);
 
-  yield call(updateProject, newProject);
+  yield call(updateProjectHelperSaga, newProject);
 
   const { undo } = action.meta;
 
@@ -413,8 +413,8 @@ function* redoSaga() {
 
 export default function* projectSaga() {
   yield takeLatest(TYPES.LOAD_PROJECTS, getProjectListSaga);
-  yield takeLatest(TYPES.ADD_PROJECT, addProjectSaga);
-  yield takeLatest(TYPES.DELETE_PROJECT, delProjectSaga);
+  yield takeLatest(TYPES.CREATE_PROJECT, createProjectSaga);
+  yield takeLatest(TYPES.DELETE_PROJECT, deleteProjectSaga);
   yield takeLatest(TYPES.UPDATE_PROJECT, updateProjectSaga);
   yield takeLatest(TYPES.GET_PROJECT, getProjectSaga);
   yield takeLatest(TYPES.CHANGE_SCREENS_ORDER, changeScreensOrderSaga);
