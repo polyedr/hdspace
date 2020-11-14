@@ -50,7 +50,10 @@ export function* reqWrapper(
     const { access } = yield select(selectTokenPair);
     const result = yield call(requestAction as any, { access, ...props });
 
-    if (R.path(['response', 'data', 'code'], result) === 'token_not_valid') {
+    if (
+      R.path(['response', 'data', 'code'], result) === 'token_not_valid' ||
+      result.error === 'Given token not valid for any token type'
+    ) {
       const isTokenLoaded: boolean = yield select(selectIsTokenLoaded);
 
       if (isTokenLoaded) {

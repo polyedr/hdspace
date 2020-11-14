@@ -20,7 +20,9 @@ import {
 export const apiGetElements = ({
   scenariosIDs,
   ...props
-}: MyAxiosProps & { scenariosIDs: string[] }): Promise<ServerElement<any>[]> =>
+}: MyAxiosProps & { scenariosIDs: string[] }): Promise<
+  Result<ServerElement<any>[]>
+> =>
   myAxios({
     ...props,
     params: {
@@ -29,8 +31,10 @@ export const apiGetElements = ({
     method: 'GET',
     url: '/projects/scenario-elements/',
   })
-    .then(parseResult)
-    .catch(onError);
+    .then((res) => ({
+      result: parseResult(res),
+    }))
+    .catch(handleError);
 
 export const apiGetCustomLibraryElements = (
   props: MyAxiosProps,

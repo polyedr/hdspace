@@ -190,7 +190,7 @@ export const setAnalyzerLoader = (active: boolean): SetAnalyzerLoader => ({
   payload: { active },
 });
 
-export const delScreen = (
+export const deleteScreen = (
   projectId: number,
   screenId: number,
   meta: HistoryMeta = {},

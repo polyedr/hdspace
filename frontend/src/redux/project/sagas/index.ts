@@ -58,7 +58,7 @@ import {
   activateScreenSaga,
   createScreenSaga,
   changeScreensOrderSaga,
-  delScreenSaga,
+  deleteScreenSaga,
   renameScreenSaga,
   restoreScreenSaga,
   saveScreenImageSaga,
@@ -432,7 +432,7 @@ export default function* projectSaga() {
   yield takeLatest(TYPES.CREATE_SCREEN, createScreenSaga);
   yield takeEvery(TYPES.DUPLICATE_SCREEN, duplicateScreenSaga);
   yield takeLatest(TYPES.SAVE_SCREEN, saveScreenImageSaga);
-  yield takeLatest(TYPES.DELETE_SCREEN, delScreenSaga);
+  yield takeLatest(TYPES.DELETE_SCREEN, deleteScreenSaga);
   yield takeEvery(TYPES.RESTORE_SCREEN, restoreScreenSaga);
   yield takeLatest(TYPES.RENAME_SCREEN, renameScreenSaga);
   yield takeEvery(TYPES.MOVE_ELEMENT, moveElementSaga);

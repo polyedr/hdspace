@@ -1,5 +1,4 @@
 /* eslint-disable no-console */
-import { SagaIterator } from 'redux-saga';
 import { call, select, put, all, fork } from 'redux-saga/effects';
 import * as R from 'ramda';
 import { push } from 'connected-react-router';
@@ -8,6 +7,7 @@ import { selectors } from '..';
 import { createScenarios } from './scenario';
 import {
   selectAllElements,
+  selectCurrentProject,
   selectCurrentProjectId,
   selectCurrentScreenId,
   selectScreenById,
@@ -19,12 +19,12 @@ import {
   apiUpdateScreen,
 } from '../../../api/screen';
 import { convertCreatedElementToRequest } from '../../../api/converters/toRequest';
-import { apiGetProject, apiUpdateProject } from '../../../api/project';
+import { apiUpdateProject } from '../../../api/project';
 import {
   activateScreen,
   addElements,
   createScreen,
-  delScreen,
+  deleteScreen,
   renameScreen,
   restoreScreen,
   saveScreenImage,
@@ -127,7 +127,7 @@ export function* createScreenSaga({
 
     if (createdScreen) {
       if (!skip) {
-        yield put(setUndoActions(delScreen(projectID, createdScreen.id)));
+        yield put(setUndoActions(deleteScreen(projectID, createdScreen.id)));
       }
 
       const rootScenario: ScenarioItem = yield call(createScenarios, {
@@ -267,98 +267,118 @@ async function canvasToBlob(canvas: HTMLCanvasElement): Promise<Blob> {
 
 export function* saveScreenImageSaga({
   payload: { screenId, canvas },
-}: ReturnType<typeof saveScreenImage>): SagaIterator {
-  yield put(setLoader(true));
+}: ReturnType<typeof saveScreenImage>) {
+  try {
+    yield put(setLoader(true));
 
-  const blobFile = yield call(canvasToBlob, canvas);
-  const formData = new FormData();
+    const blobFile = yield call(canvasToBlob, canvas);
+    const formData = new FormData();
 
-  formData.append('image', blobFile, `${screenId}.png`);
+    formData.append('image', blobFile, `${screenId}.png`);
 
-  const resultScreen = yield call(reqWrapper, apiUpdateScreen, {
-    id: screenId,
-    data: formData,
-  });
+    const { result, error }: Result<Screen> = yield call(
+      reqWrapper,
+      apiUpdateScreen,
+      {
+        id: screenId,
+        data: formData,
+      },
+    );
 
-  if (!resultScreen) {
-    console.error(`Error while patching screen ${screenId}`);
-    return;
+    if (result) {
+      yield put(updateScreen(result));
+    }
+
+    if (error) throw new Error(error);
+  } catch (e) {
+    yield put(
+      enqueueSnackbar({
+        message: e.message,
+        options: { variant: 'error' },
+      }),
+    );
+  } finally {
+    yield put(setLoader(false));
   }
-
-  yield put(updateScreen(resultScreen));
-
-  yield put(setLoader(false));
 }
 
-export function* delScreenSaga({
+export function* deleteScreenSaga({
   payload: { projectId, screenId },
   meta,
   type,
-}: ReturnType<typeof delScreen>) {
-  if (!meta) {
-    console.error(`You have to provide metainformation for action ${type}`);
-    return;
-  }
-  const { undo } = meta;
+}: ReturnType<typeof deleteScreen>) {
+  try {
+    if (!meta) {
+      console.error(`You have to provide metainformation for action ${type}`);
+      return;
+    }
+    const { undo } = meta;
 
-  const currentScreenId = yield select(selectors.selectCurrentScreenId);
+    const currentScreenId = yield select(selectors.selectCurrentScreenId);
 
-  if (currentScreenId === screenId) {
-    yield put(setActiveElement('none'));
-    yield put(setCurrentScreenId(-1));
-  }
+    if (currentScreenId === screenId) {
+      yield put(setActiveElement('none'));
+      yield put(setCurrentScreenId(-1));
+    }
 
-  const currentProject: ReturnType<typeof selectors.selectCurrentProject> = yield select(
-    selectors.selectCurrentProject,
-  );
-  const screenList = currentProject.projectscreen;
+    const currentProject: ReturnType<typeof selectors.selectCurrentProject> = yield select(
+      selectors.selectCurrentProject,
+    );
+    const screenList = currentProject.projectscreen;
 
-  if (screenList.length <= 1) {
-    console.log('Project must have at least 1 screen');
-    return;
-  }
+    if (screenList.length <= 1) {
+      throw new Error('Project must have at least 1 screen');
+    }
 
-  const newScreenIdList = currentProject.projectscreen.filter(
-    (id) => id !== screenId,
-  );
+    const newScreenIdList = currentProject.projectscreen.filter(
+      (id) => id !== screenId,
+    );
 
-  yield call(reqWrapper, apiUpdateProject, {
-    data: {
-      projectscreen: newScreenIdList,
-      id: projectId,
-    },
-  });
+    const { result, error }: Result<Project> = yield call(
+      reqWrapper,
+      apiUpdateProject,
+      {
+        data: {
+          projectscreen: newScreenIdList,
+          id: projectId,
+        },
+      },
+    );
+    if (result) {
+      if (!undo) {
+        yield put(setUndoActions(restoreScreen(screenId, projectId)));
+      }
 
-  if (!undo) {
-    yield put(setUndoActions(restoreScreen(screenId, projectId)));
-  }
+      yield put(setProject(result));
 
-  const result: Project = R.assoc(
-    'projectscreen',
-    currentProject.projectscreen.filter((id) => id !== screenId),
-    currentProject,
-  );
+      const lastScreenID = R.head(result.projectscreen);
 
-  yield put(setProject(result));
+      if (!lastScreenID) {
+        yield put(setCurrentScreenId(-1));
+        yield put(push(`/project/${projectId}`));
+        return;
+      }
 
-  const lastScreenID = R.head(result.projectscreen);
+      const screens: ReturnType<typeof selectors.selectScreens> = yield select(
+        selectors.selectScreens,
+      );
 
-  if (!lastScreenID) {
-    yield put(setCurrentScreenId(-1));
-    yield put(push(`/project/${projectId}`));
-    return;
-  }
+      const newScreens = screens.filter((screen) => screen.id !== screenId);
+      yield put(setScreens(newScreens));
 
-  const screens: ReturnType<typeof selectors.selectScreens> = yield select(
-    selectors.selectScreens,
-  );
-
-  const newScreens = screens.filter((screen) => screen.id !== screenId);
-  yield put(setScreens(newScreens));
-
-  if (lastScreenID !== currentScreenId) {
-    yield put(activateScreen(lastScreenID));
-    yield put(push(`/project/${projectId}/${lastScreenID}`));
+      if (lastScreenID !== currentScreenId) {
+        yield put(activateScreen(lastScreenID));
+        yield put(push(`/project/${projectId}/${lastScreenID}`));
+      }
+    }
+    if (error) throw new Error(error);
+  } catch (e) {
+    yield put(
+      enqueueSnackbar({
+        message: e.message || 'Failed to delete screen',
+        options: { variant: 'error' },
+      }),
+    );
   }
 }
 
@@ -367,118 +387,188 @@ export function* restoreScreenSaga({
   payload: { projectId, screenId },
   meta,
 }: ReturnType<typeof restoreScreen>) {
-  if (!meta) {
-    console.error(`You have to provide metainformation for action ${type}`);
-    return;
+  try {
+    if (!meta) {
+      console.error(`You have to provide metainformation for action ${type}`);
+      return;
+    }
+
+    yield put(Actions.clearAfterPrevScreen());
+
+    // const project = yield call(reqWrapper, apiGetProject, { id: projectId });
+    // if (!project) console.error(`Error while fetching project ${projectId}`);
+
+    const { projectscreen }: Project = yield select(selectCurrentProject);
+
+    const { result, error } = yield call(reqWrapper, apiUpdateProject, {
+      data: {
+        id: projectId,
+        projectscreen: [...projectscreen, screenId],
+      },
+    });
+
+    if (result) {
+      if (!meta.undo) {
+        yield put(setUndoActions(deleteScreen(projectId, screenId)));
+      }
+
+      const screens = yield select(selectors.selectScreens);
+      const screen = yield call(reqWrapper, apiGetScreen, {
+        id: screenId,
+      });
+      const [element] = yield call(reqWrapper, apiGetElements, {
+        scenariosIDs: [screen.screenscenario[0]],
+      });
+
+      screen.element = element.id;
+
+      yield put(setScreens([screen, ...screens]));
+
+      yield put(setProject(result));
+
+      yield put(activateScreen(screenId));
+    }
+
+    if (error) throw new Error(error);
+  } catch (e) {
+    yield put(
+      enqueueSnackbar({
+        message: e.message || 'Failed to restore screen',
+        options: { variant: 'error' },
+      }),
+    );
   }
-
-  yield put(Actions.clearAfterPrevScreen());
-
-  const project = yield call(reqWrapper, apiGetProject, { id: projectId });
-  if (!project) console.error(`Error while fetching project ${projectId}`);
-
-  const { projectscreen } = project;
-
-  const updatedProject = yield call(reqWrapper, apiUpdateProject, {
-    data: {
-      id: projectId,
-      projectscreen: [...projectscreen, screenId],
-    },
-  });
-
-  if (!meta.undo) {
-    yield put(setUndoActions(delScreen(projectId, screenId)));
-  }
-
-  const screens = yield select(selectors.selectScreens);
-  const screen = yield call(reqWrapper, apiGetScreen, {
-    id: screenId,
-  });
-  const [element] = yield call(reqWrapper, apiGetElements, {
-    scenariosIDs: [screen.screenscenario[0]],
-  });
-
-  screen.element = element.id;
-
-  yield put(setScreens([screen, ...screens]));
-
-  yield put(setProject(updatedProject));
-
-  yield put(activateScreen(screenId));
 }
 
 export function* renameScreenSaga({
   payload,
 }: ReturnType<typeof renameScreen>) {
-  const { screenID, name } = payload;
+  try {
+    const { screenID, name } = payload;
 
-  const screens: ReturnType<typeof selectors.selectScreens> = yield select(
-    selectors.selectScreens,
-  );
+    const screens: ReturnType<typeof selectors.selectScreens> = yield select(
+      selectors.selectScreens,
+    );
 
-  const numberedName = generateUniqueName(
-    name,
-    screens.map((screen) => screen.name),
-  );
+    const numberedName = generateUniqueName(
+      name,
+      screens.map((screen) => screen.name),
+    );
 
-  const renamedScreen: Partial<Screen> = {
-    name: numberedName,
-  };
+    const renamedScreen: Partial<Screen> = {
+      name: numberedName,
+    };
 
-  yield call(reqWrapper, apiUpdateScreen, {
-    id: screenID,
-    data: renamedScreen,
-  });
+    const { result, error }: Result<Screen> = yield call(
+      reqWrapper,
+      apiUpdateScreen,
+      {
+        id: screenID,
+        data: renamedScreen,
+      },
+    );
 
-  const newScreens = screens.map((screen) => {
-    return screen.id === screenID ? { ...screen, name: numberedName } : screen;
-  });
+    if (result) {
+      const newScreens = screens.map((screen) => {
+        return screen.id === screenID
+          ? { ...screen, name: numberedName }
+          : screen;
+      });
 
-  yield put(setScreens(newScreens));
+      yield put(setScreens(newScreens));
+    }
+    if (error) throw new Error(error);
+  } catch (e) {
+    yield put(
+      enqueueSnackbar({
+        message: e.message || 'Failed to rename screen',
+        options: { variant: 'error' },
+      }),
+    );
+  }
 }
 
 export function* getScreensSaga(screens: Screen[]) {
-  const elements: ServerElement<'root'>[] = yield call(
-    reqWrapper,
-    apiGetElements,
-    {
-      scenariosIDs: [screens.map((screen) => screen.screenscenario)],
-    },
-  );
+  try {
+    const {
+      result: elements,
+      error,
+    }: Result<ServerElement<'root'>[]> = yield call(
+      reqWrapper,
+      apiGetElements,
+      {
+        scenariosIDs: [screens.map((screen) => screen.screenscenario)],
+      },
+    );
 
-  yield put(
-    setScreens(
-      screens.map((screen) => {
-        const elementId = String(
-          elements.find((el) => el.scenario === screen.screenscenario[0])?.id,
-        );
+    if (elements) {
+      yield put(
+        setScreens(
+          screens.map((screen) => {
+            const elementId = String(
+              elements.find((el) => el.scenario === screen.screenscenario[0])
+                ?.id,
+            );
 
-        return {
-          ...screen,
-          element: elementId,
-        };
+            return {
+              ...screen,
+              element: elementId,
+            };
+          }),
+        ),
+      );
+
+      yield put(
+        addElements(elements.map((el) => convertElementFromResponse(el))),
+      );
+    }
+    if (error) throw new Error(error);
+  } catch (e) {
+    yield put(
+      enqueueSnackbar({
+        message: e.message,
+        options: { variant: 'error' },
       }),
-    ),
-  );
-
-  yield put(addElements(elements.map((el) => convertElementFromResponse(el))));
+    );
+  }
 }
 
 export function* changeScreensOrderSaga(
   action: ReturnType<typeof Actions.changeScreensOrder>,
 ) {
-  const { screens } = action.payload;
+  try {
+    const { screens } = action.payload;
 
-  yield put(setScreens(screens));
+    yield put(setScreens(screens));
 
-  yield all(
-    screens.map(({ id, buoyancy }) =>
-      call(reqWrapper, apiUpdateScreen, {
-        id,
-        data: {
-          buoyancy,
-        },
+    const results: Result<Screen>[] = yield all(
+      screens.map(({ id, buoyancy }) =>
+        call(reqWrapper, apiUpdateScreen, {
+          id,
+          data: {
+            buoyancy,
+          },
+        }),
+      ),
+    );
+
+    // eslint-disable-next-line no-restricted-syntax
+    for (const res of results) {
+      if (res.error) {
+        yield put(
+          enqueueSnackbar({
+            message: res.error,
+            options: { variant: 'error' },
+          }),
+        );
+      }
+    }
+  } catch (e) {
+    yield put(
+      enqueueSnackbar({
+        message: e.message || 'Failed to reorder screens',
+        options: { variant: 'error' },
       }),
-    ),
-  );
+    );
+  }
 }
