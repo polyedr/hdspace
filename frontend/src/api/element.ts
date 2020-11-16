@@ -77,14 +77,16 @@ export const apiAddElement = <
 
 export const apiChangeRecursiveElement = (
   props: MyAxiosProps & { id: number },
-): Promise<RecursiveElement> =>
+): Promise<Result<RecursiveElement>> =>
   myAxios({
     ...props,
     method: 'PATCH',
     url: `/projects/scenario-elements-recursive/${props.id}/`,
   })
-    .then((result) => convertRecursiveElementFromResponse(result.data))
-    .catch(onError);
+    .then((res) => ({
+      result: convertRecursiveElementFromResponse(res.data),
+    }))
+    .catch(handleError);
 
 export const apiGetElement = <
   T extends Entity,
@@ -113,16 +115,18 @@ export const apiDelElements = (props: MyAxiosProps & { list: string[] }) =>
     .then(parseResult)
     .catch(onError);
 
-export const apiSaveElements = (
+export const apiUpdateElements = (
   props: MyAxiosProps,
-): Promise<ServerElement<any>[]> =>
+): Promise<Result<ServerElement<any>[]>> =>
   myAxios({
     ...props,
     method: 'PATCH',
     url: 'projects/scenario-elements-multi/',
   })
-    .then(parseResult)
-    .catch(onError);
+    .then((res) => ({
+      result: parseResult(res),
+    }))
+    .catch(handleError);
 
 export const apiDelElement = (props: MyAxiosProps & { id: string }) =>
   myAxios({
@@ -133,20 +137,22 @@ export const apiDelElement = (props: MyAxiosProps & { id: string }) =>
     .then(parseResult)
     .catch(onError);
 
-export const apiChangeElement = <
+export const apiUpdateElement = <
   T extends Entity,
   K extends Entity,
   P extends ServerElement<T>['parameters']
 >(
   props: MyAxiosProps & { id: string },
-): Promise<LibraryElement<T, LibraryElement<K>[], P>> =>
+): Promise<Result<LibraryElement<any>>> =>
   myAxios({
     ...props,
     method: 'PATCH',
     url: `/projects/scenario-elements/${props.id}/`,
   })
-    .then((result) => convertElementFromResponse(result.data))
-    .catch(onError);
+    .then((res) => ({
+      result: convertElementFromResponse(res.data),
+    }))
+    .catch(handleError);
 
 export const apiCreateElements = <
   T extends Entity,

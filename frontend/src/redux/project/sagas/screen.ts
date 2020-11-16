@@ -371,7 +371,9 @@ export function* deleteScreenSaga({
         yield put(push(`/project/${projectId}/${lastScreenID}`));
       }
     }
-    if (error) throw new Error(error);
+    if (error) {
+      throw new Error(error);
+    }
   } catch (e) {
     yield put(
       enqueueSnackbar({
@@ -416,17 +418,21 @@ export function* restoreScreenSaga({
       const screen = yield call(reqWrapper, apiGetScreen, {
         id: screenId,
       });
-      const [element] = yield call(reqWrapper, apiGetElements, {
-        scenariosIDs: [screen.screenscenario[0]],
-      });
+      const { result: elements, error: elementsError } = yield call(
+        reqWrapper,
+        apiGetElements,
+        {
+          scenariosIDs: [screen.screenscenario[0]],
+        },
+      );
 
-      screen.element = element.id;
+      if (elements) {
+        screen.element = elements[0].id;
+        yield put(setScreens([screen, ...screens]));
 
-      yield put(setScreens([screen, ...screens]));
-
-      yield put(setProject(result));
-
-      yield put(activateScreen(screenId));
+        yield put(setProject(result));
+      }
+      if (elementsError) throw new Error(elementsError);
     }
 
     if (error) throw new Error(error);

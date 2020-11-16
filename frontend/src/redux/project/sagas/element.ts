@@ -19,9 +19,9 @@ import {
   getTreeWithDefaultStylesAndParams,
 } from '../../../utils/ElementsTreeHelper';
 import {
-  apiChangeElement,
+  apiUpdateElement,
   apiChangeRecursiveElement,
-  apiSaveElements,
+  apiUpdateElements,
   parseImgUsingNN,
   apiGetCustomLibraryElements,
 } from '../../../api/element';
@@ -98,7 +98,7 @@ export function* moveElementSaga(
     ]),
   ];
 
-  yield call(reqWrapper, apiSaveElements, { data: convertedElements });
+  yield call(reqWrapper, apiUpdateElements, { data: convertedElements });
 
   yield call(reqWrapper, apiChangeRecursiveElement, {
     data: { children: updatedNewParent.children.map((el) => el.id) },
@@ -166,7 +166,7 @@ function* updateElementClassNames(
 
   const convertedElement = convertElementToPatchRequest(updatedElement);
 
-  yield call(reqWrapper, apiChangeElement, {
+  yield call(reqWrapper, apiUpdateElement, {
     data: convertedElement,
     id: elementId,
   });
@@ -209,7 +209,7 @@ function* removeElementStyles(
   );
 
   const convertedElement = convertElementToPatchRequest(updatedElement);
-  yield call(reqWrapper, apiChangeElement, { data: convertedElement, id });
+  yield call(reqWrapper, apiUpdateElement, { data: convertedElement, id });
 }
 
 export function* copyElementStylesSaga(
@@ -334,7 +334,7 @@ function* updateOrReplaceElementStyles(
   );
 
   const convertedElement = convertElementToPatchRequest(updatedElement);
-  yield call(reqWrapper, apiChangeElement, { data: convertedElement, id });
+  yield call(reqWrapper, apiUpdateElement, { data: convertedElement, id });
 }
 
 export function* updateElementStyles(
@@ -391,27 +391,31 @@ export function* updateElementImage(
   const formData = new FormData();
   formData.append('image', new Blob([image]), image.name);
 
-  const changedElement: ReturnPromisedType<typeof apiChangeElement> = yield call(
+  const {
+    result: changedElement,
+  }: ReturnPromisedType<typeof apiUpdateElement> = yield call(
     reqWrapper,
-    apiChangeElement,
+    apiUpdateElement,
     { data: formData, id: parsedID },
   );
-  yield put(
-    Actions.updateElementParameters(
-      itemID,
-      {
-        ...changedElement.parameters,
-        imageURL: changedElement.image,
-        imageSize: {
-          width: 0,
-          height: 0,
+  if (changedElement) {
+    yield put(
+      Actions.updateElementParameters(
+        itemID,
+        {
+          ...changedElement.parameters,
+          imageURL: changedElement.image,
+          imageSize: {
+            width: 0,
+            height: 0,
+          },
+          width: 'auto',
+          height: 'auto',
         },
-        width: 'auto',
-        height: 'auto',
-      },
-      { screenId },
-    ),
-  );
+        { screenId },
+      ),
+    );
+  }
 }
 
 export function* updateElementParameters(
@@ -464,7 +468,7 @@ export function* updateElementParameters(
   );
 
   const convertedElement = convertElementToPatchRequest(updatedElementTree);
-  yield call(reqWrapper, apiChangeElement, {
+  yield call(reqWrapper, apiUpdateElement, {
     data: convertedElement,
     id: elementId,
   });
@@ -509,7 +513,7 @@ export function* uploadFileSaga({
       nnContainerWithDefaultParams,
     ).map((element) => convertElementToPatchRequest(element));
 
-    yield call(reqWrapper, apiSaveElements, { data: convertedElements });
+    yield call(reqWrapper, apiUpdateElements, { data: convertedElements });
 
     yield put(
       Actions.setUndoActions(
