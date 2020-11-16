@@ -1,4 +1,4 @@
-import { CssLikeStyles, Entity } from '../../types';
+import { Entity } from '../../types';
 import {
   buttonStyleControls,
   calendarStyleControls,
@@ -39,80 +39,62 @@ export const DEFAULT_SIZE = {
   height: 'auto',
 };
 
-export const DEFAULT_INDENTS = {
-  'margin-top': '0px',
-  'margin-right': '0px',
-  'margin-bottom': '0px',
-  'margin-left': '0px',
-  'padding-top': '0px',
-  'padding-right': '0px',
-  'padding-bottom': '0px',
-  'padding-left': '0px',
+export const DEFAULT_INDENTS: React.CSSProperties = {
+  margin: '0px',
+  padding: '0px',
 };
 
-export const DEFAULT_DISPLAY: CssLikeStyles = {
+export const DEFAULT_DISPLAY: React.CSSProperties = {
   display: 'block',
-  'flex-direction': 'row',
-  'justify-content': 'flex-start',
-  'align-items': 'stretch',
+  flexDirection: 'row',
+  justifyContent: 'flex-start',
+  alignItems: 'stretch',
 };
 
-export const DEFAULT_BORDER = {
-  'border-width': '0px',
-  'border-color': '#323232',
-  'border-style': 'solid',
-  'border-radius': '0px',
+export const DEFAULT_BORDER: React.CSSProperties = {
+  border: '0px solid #323232',
+  borderRadius: '0px',
 };
 
-export const DEFAULT_BACKGROUND = {
-  'background-color': 'transparent',
-  'background-image': 'none',
-  'background-repeat': 'no-repeat',
-  'background-size': 'cover',
+export const DEFAULT_BACKGROUND: React.CSSProperties = {
+  backgroundColor: 'transparent',
+  backgroundImage: 'none',
+  backgroundRepeat: 'no-repeat',
+  backgroundSize: 'cover',
 };
 
-export const DEFAULT_BACKGROUND_POSITION: CssLikeStyles = {
-  'background-position': '0% 0%',
+export const DEFAULT_BACKGROUND_POSITION: React.CSSProperties = {
+  backgroundPosition: '0% 0%',
 };
 
-export const DEFAULT_BACKGROUND_SIZE: CssLikeStyles = {
-  'background-size': '100% auto',
+export const DEFAULT_BACKGROUND_SIZE: React.CSSProperties = {
+  backgroundSize: '100% auto',
 };
 
-export const DEFAULT_BULLETS: CssLikeStyles = {
-  'list-style-type': 'disc',
+export const DEFAULT_BULLETS: React.CSSProperties = {
+  listStyleType: 'disc',
 };
 
-export const DEFAULT_FLEX_GROW: CssLikeStyles = {
-  'flex-grow': 0,
+export const DEFAULT_FLEX_GROW: React.CSSProperties = {
+  flexGrow: 0,
 };
 
-type ScreenTypography = {
-  'font-family': string;
-  color: string;
-  'font-size': string;
-  'line-height': string;
-  'font-style': string;
-  'font-weight': number;
-  'text-align': string;
-};
-
-export const DEFAULT_TYPOGRAPHY: ScreenTypography = {
+export const DEFAULT_TYPOGRAPHY: React.CSSProperties = {
   color: '#323232',
-  'font-family': '"Roboto", sans-serif',
-  'font-size': '14px',
-  'font-style': 'none',
-  'font-weight': 400,
-  'line-height': '1.5',
-  'text-align': 'left',
+  fontFamily: '"Roboto", sans-serif',
+  fontSize: '14px',
+  fontStyle: 'none',
+  fontWeight: 400,
+  lineHeight: '1.5',
+  textAlign: 'left',
 };
 
 type MapControls = typeof mapStyleControls[number];
 type CalendarControls = typeof calendarStyleControls[number];
 type ClockControls = typeof clockStyleControls[number];
 
-export const defaultMapStyles: { [K in MapControls]: CssLikeStyles } & {
-  other?: CssLikeStyles;
+export const defaultMapStyles: { [K in MapControls]: React.CSSProperties } & {
+  other?: React.CSSProperties;
 } = {
   indents: {
     ...DEFAULT_INDENTS,
@@ -134,8 +116,8 @@ export const defaultMapStyles: { [K in MapControls]: CssLikeStyles } & {
 };
 
 export const defaultCalendarStyles: {
-  [K in CalendarControls]: CssLikeStyles;
-} & { other?: CssLikeStyles } = {
+  [K in CalendarControls]: React.CSSProperties;
+} & { other?: React.CSSProperties } = {
   indents: {
     ...DEFAULT_INDENTS,
   },
@@ -153,8 +135,10 @@ export const defaultCalendarStyles: {
   },
 };
 
-export const defaultClockStyles: { [K in ClockControls]: CssLikeStyles } & {
-  other?: CssLikeStyles;
+export const defaultClockStyles: {
+  [K in ClockControls]: React.CSSProperties;
+} & {
+  other?: React.CSSProperties;
 } = {
   indents: {
     ...DEFAULT_INDENTS,
@@ -181,8 +165,8 @@ type ListControls = typeof listStyleControls[number];
 type ListItemControls = typeof listItemStyleControls[number];
 
 export const defaultHyperlinkStyles: {
-  [K in HyperlinkControls]: CssLikeStyles;
-} & { other?: CssLikeStyles } = {
+  [K in HyperlinkControls]: React.CSSProperties;
+} & { other?: React.CSSProperties } = {
   indents: {
     ...DEFAULT_INDENTS,
   },
@@ -205,21 +189,23 @@ export const defaultHyperlinkStyles: {
   },
 };
 
-export const defaultHeadingStyles: { [K in HeadingControls]: CssLikeStyles } & {
-  other?: CssLikeStyles;
+export const defaultHeadingStyles: {
+  [K in HeadingControls]: React.CSSProperties;
+} & {
+  other?: React.CSSProperties;
 } = {
   indents: {
     ...DEFAULT_INDENTS,
-    'padding-top': '20px',
-    'padding-bottom': '10px',
+    paddingTop: '20px',
+    paddingBottom: '10px',
   },
   size: {
     ...DEFAULT_SIZE,
   },
   typography: {
     ...DEFAULT_TYPOGRAPHY,
-    'font-size': '40px',
-    'line-height': '1.1',
+    fontSize: '40px',
+    lineHeight: '1.1',
   },
   border: {
     ...DEFAULT_BORDER,
@@ -230,14 +216,14 @@ export const defaultHeadingStyles: { [K in HeadingControls]: CssLikeStyles } & {
 };
 
 export const defaultParagraphStyles: {
-  [K in ParagraphControls]: CssLikeStyles;
-} & { other?: CssLikeStyles } = {
+  [K in ParagraphControls]: React.CSSProperties;
+} & { other?: React.CSSProperties } = {
   indents: {
     ...DEFAULT_INDENTS,
-    'padding-top': '6px',
-    'padding-left': '3px',
-    'padding-bottom': '12px',
-    'padding-right': '3px',
+    paddingTop: '6px',
+    paddingLeft: '3px',
+    paddingBottom: '12px',
+    paddingRight: '3px',
   },
   size: {
     ...DEFAULT_SIZE,
@@ -254,8 +240,8 @@ export const defaultParagraphStyles: {
 };
 
 export const defaultTextBlockStyles: {
-  [K in TextBlockControls]: CssLikeStyles;
-} & { other?: CssLikeStyles } = {
+  [K in TextBlockControls]: React.CSSProperties;
+} & { other?: React.CSSProperties } = {
   indents: {
     ...DEFAULT_INDENTS,
   },
@@ -273,12 +259,12 @@ export const defaultTextBlockStyles: {
   },
 };
 
-export const defaultListStyles: { [K in ListControls]: CssLikeStyles } & {
-  other?: CssLikeStyles;
+export const defaultListStyles: { [K in ListControls]: React.CSSProperties } & {
+  other?: React.CSSProperties;
 } = {
   indents: {
     ...DEFAULT_INDENTS,
-    'padding-left': '40px',
+    paddingLeft: '40px',
   },
   size: {
     ...DEFAULT_SIZE,
@@ -298,8 +284,8 @@ export const defaultListStyles: { [K in ListControls]: CssLikeStyles } & {
 };
 
 export const defaultListItemStyles: {
-  [K in ListItemControls]: CssLikeStyles;
-} & { other?: CssLikeStyles } = {
+  [K in ListItemControls]: React.CSSProperties;
+} & { other?: React.CSSProperties } = {
   indents: {
     ...DEFAULT_INDENTS,
   },
@@ -328,35 +314,29 @@ type DropdownItemControls = typeof dropdownItemStyleControls[number];
 type VideoControls = typeof videoStyleControls[number];
 type UndefinedControls = typeof undefinedControls[number];
 
-export const defaultRootStyles: { [K in RootControls]: CssLikeStyles } & {
-  other?: CssLikeStyles;
+export const defaultRootStyles: { [K in RootControls]: React.CSSProperties } & {
+  other?: React.CSSProperties;
 } = {
   background: {
     ...DEFAULT_BACKGROUND,
-    'background-color': '#ffffff',
+    backgroundColor: '#ffffff',
   },
   other: {
     ...DEFAULT_SIZE,
     width: 'auto',
     height: 'auto',
-    'min-height': '100%',
-    'min-width': '100%',
-    'padding-top': '3px',
-    'padding-left': '3px',
-    'padding-bottom': '3px',
-    'padding-right': '3px',
+    minHeight: '100%',
+    minWidth: '100%',
+    padding: '3px',
   },
 };
 
 export const defaultContainerStyles: {
-  [K in ContainerControls]: CssLikeStyles;
-} & { other?: CssLikeStyles } = {
+  [K in ContainerControls]: React.CSSProperties;
+} & { other?: React.CSSProperties } = {
   indents: {
     ...DEFAULT_INDENTS,
-    'padding-top': '3px',
-    'padding-left': '3px',
-    'padding-bottom': '3px',
-    'padding-right': '3px',
+    padding: '3px',
   },
   size: {
     ...DEFAULT_SIZE,
@@ -379,14 +359,11 @@ export const defaultContainerStyles: {
 };
 
 export const defaultSectionStyles: {
-  [K in ContainerControls]: CssLikeStyles;
-} & { other?: CssLikeStyles } = {
+  [K in ContainerControls]: React.CSSProperties;
+} & { other?: React.CSSProperties } = {
   indents: {
     ...DEFAULT_INDENTS,
-    'padding-top': '3px',
-    'padding-left': '3px',
-    'padding-bottom': '3px',
-    'padding-right': '3px',
+    padding: '3px',
   },
   size: {
     ...DEFAULT_SIZE,
@@ -409,14 +386,11 @@ export const defaultSectionStyles: {
 };
 
 export const defaultDivBlockStyles: {
-  [K in DivBlockControls]: CssLikeStyles;
-} & { other?: CssLikeStyles } = {
+  [K in DivBlockControls]: React.CSSProperties;
+} & { other?: React.CSSProperties } = {
   indents: {
     ...DEFAULT_INDENTS,
-    'padding-top': '3px',
-    'padding-left': '3px',
-    'padding-bottom': '3px',
-    'padding-right': '3px',
+    padding: '3px',
   },
   size: {
     ...DEFAULT_SIZE,
@@ -435,8 +409,10 @@ export const defaultDivBlockStyles: {
   },
 };
 
-export const defaultImageStyles: { [K in ImageControls]: CssLikeStyles } & {
-  other?: CssLikeStyles;
+export const defaultImageStyles: {
+  [K in ImageControls]: React.CSSProperties;
+} & {
+  other?: React.CSSProperties;
 } = {
   indents: {
     ...DEFAULT_INDENTS,
@@ -453,14 +429,14 @@ export const defaultImageStyles: { [K in ImageControls]: CssLikeStyles } & {
 };
 
 export const defaultSmartContainerStyles: {
-  [K in SmartContainerControls]: CssLikeStyles;
-} & { other?: CssLikeStyles } = {
+  [K in SmartContainerControls]: React.CSSProperties;
+} & { other?: React.CSSProperties } = {
   indents: {
     ...DEFAULT_INDENTS,
   },
   size: {
     ...DEFAULT_SIZE,
-    'min-height': '48px',
+    minHeight: '48px',
   },
   display: {
     ...DEFAULT_DISPLAY,
@@ -470,23 +446,20 @@ export const defaultSmartContainerStyles: {
   },
   border: {
     ...DEFAULT_BORDER,
-    'border-color': '#e7eaec',
+    borderColor: '#e7eaec',
   },
   background: {
     ...DEFAULT_BACKGROUND,
-    'background-color': '#e0e0e0',
+    backgroundColor: '#e0e0e0',
   },
 };
 
 export const defaultDropdownStyles: {
-  [K in DropdownControls]: CssLikeStyles;
-} & { other?: CssLikeStyles } = {
+  [K in DropdownControls]: React.CSSProperties;
+} & { other?: React.CSSProperties } = {
   indents: {
     ...DEFAULT_INDENTS,
-    'padding-top': '6px',
-    'padding-right': '16px',
-    'padding-bottom': '6px',
-    'padding-left': '16px',
+    padding: '6px 16px',
   },
   size: {
     ...DEFAULT_SIZE,
@@ -494,16 +467,16 @@ export const defaultDropdownStyles: {
   typography: {
     ...DEFAULT_TYPOGRAPHY,
     color: '#ffffff',
-    'line-height': '1.75',
+    lineHeight: '1.75',
   },
   border: {
     ...DEFAULT_BORDER,
-    'border-color': '#1890ff',
-    'border-radius': '4px',
+    borderColor: '#1890ff',
+    borderRadius: '4px',
   },
   background: {
     ...DEFAULT_BACKGROUND,
-    'background-color': '#1890ff',
+    backgroundColor: '#1890ff',
   },
   other: {
     display: 'inline-block',
@@ -511,8 +484,8 @@ export const defaultDropdownStyles: {
 };
 
 export const defaultDropdownMenuStyles: {
-  [K in DropdownMenuControls]: CssLikeStyles;
-} & { other?: CssLikeStyles } = {
+  [K in DropdownMenuControls]: React.CSSProperties;
+} & { other?: React.CSSProperties } = {
   indents: {
     ...DEFAULT_INDENTS,
   },
@@ -521,46 +494,43 @@ export const defaultDropdownMenuStyles: {
   },
   border: {
     ...DEFAULT_BORDER,
-    'border-color': '#d9d9d9',
-    'border-width': '1px',
-    'border-style': 'solid',
-    'border-radius': '4px',
+    border: '1px solid #d9d9d9',
+    borderRadius: '4px',
   },
   background: {
     ...DEFAULT_BACKGROUND,
-    'background-color': '#ffffff',
+    backgroundColor: '#ffffff',
   },
 };
 
 export const defaultDropdownItemStyles: {
-  [K in DropdownItemControls]: CssLikeStyles;
-} & { other?: CssLikeStyles } = {
+  [K in DropdownItemControls]: React.CSSProperties;
+} & { other?: React.CSSProperties } = {
   indents: {
     ...DEFAULT_INDENTS,
-    'padding-top': '6px',
-    'padding-right': '16px',
-    'padding-bottom': '6px',
-    'padding-left': '16px',
+    padding: '6px 16px',
   },
   size: {
     ...DEFAULT_SIZE,
   },
   typography: {
     ...DEFAULT_TYPOGRAPHY,
-    'line-height': '1.5',
+    lineHeight: '1.5',
   },
   border: {
     ...DEFAULT_BORDER,
-    'border-width': '0px',
+    borderWidth: '0px',
   },
   background: {
     ...DEFAULT_BACKGROUND,
-    'background-color': '#ffffff',
+    backgroundColor: '#ffffff',
   },
 };
 
-export const defaultVideoStyles: { [K in VideoControls]: CssLikeStyles } & {
-  other?: CssLikeStyles;
+export const defaultVideoStyles: {
+  [K in VideoControls]: React.CSSProperties;
+} & {
+  other?: React.CSSProperties;
 } = {
   indents: {
     ...DEFAULT_INDENTS,
@@ -575,8 +545,8 @@ export const defaultVideoStyles: { [K in VideoControls]: CssLikeStyles } & {
 };
 
 export const defaultUndefinedStyles: {
-  [K in UndefinedControls]: CssLikeStyles;
-} & { other?: CssLikeStyles } = {
+  [K in UndefinedControls]: React.CSSProperties;
+} & { other?: React.CSSProperties } = {
   size: {
     ...DEFAULT_SIZE,
     width: '100px',
@@ -584,7 +554,7 @@ export const defaultUndefinedStyles: {
   },
   background: {
     ...DEFAULT_BACKGROUND,
-    'background-color': '#fff333',
+    backgroundColor: '#fff333',
   },
 };
 
@@ -598,15 +568,14 @@ type SelectControls = typeof selectStyleControls[number];
 type SelectMenuControls = typeof selectMenuStyleControls[number];
 type SelectItemControls = typeof selectItemStyleControls[number];
 
-export const defaultButtonStyles: { [K in ButtonControls]: CssLikeStyles } & {
-  other?: CssLikeStyles;
+export const defaultButtonStyles: {
+  [K in ButtonControls]: React.CSSProperties;
+} & {
+  other?: React.CSSProperties;
 } = {
   indents: {
     ...DEFAULT_INDENTS,
-    'padding-top': '6px',
-    'padding-right': '17px',
-    'padding-bottom': '6px',
-    'padding-left': '17px',
+    padding: '6px 17px',
   },
   size: {
     ...DEFAULT_SIZE,
@@ -618,28 +587,25 @@ export const defaultButtonStyles: { [K in ButtonControls]: CssLikeStyles } & {
   typography: {
     ...DEFAULT_TYPOGRAPHY,
     color: '#ffffff',
-    'line-height': '1.75',
+    lineHeight: '1.75',
   },
   border: {
     ...DEFAULT_BORDER,
-    'border-color': '#1890ff',
-    'border-radius': '4px',
+    borderColor: '#1890ff',
+    borderRadius: '4px',
   },
   background: {
     ...DEFAULT_BACKGROUND,
-    'background-color': '#1890ff',
+    backgroundColor: '#1890ff',
   },
 };
 
 export const defaultTextinputStyles: {
-  [K in TextinputControls]: CssLikeStyles;
-} & { other?: CssLikeStyles } = {
+  [K in TextinputControls]: React.CSSProperties;
+} & { other?: React.CSSProperties } = {
   indents: {
     ...DEFAULT_INDENTS,
-    'padding-top': '18.5px',
-    'padding-right': '14px',
-    'padding-bottom': '18.5px',
-    'padding-left': '14px',
+    padding: '18.5px 14px',
   },
   size: {
     ...DEFAULT_SIZE,
@@ -649,10 +615,8 @@ export const defaultTextinputStyles: {
   },
   border: {
     ...DEFAULT_BORDER,
-    'border-color': '#d9d9d9',
-    'border-width': '1px',
-    'border-style': 'solid',
-    'border-radius': '4px',
+    border: '1px solid #d9d9d9',
+    borderRadius: '4px',
   },
   background: {
     ...DEFAULT_BACKGROUND,
@@ -660,14 +624,11 @@ export const defaultTextinputStyles: {
 };
 
 export const defaultTextareaStyles: {
-  [K in TextareaControls]: CssLikeStyles;
-} & { other?: CssLikeStyles } = {
+  [K in TextareaControls]: React.CSSProperties;
+} & { other?: React.CSSProperties } = {
   indents: {
     ...DEFAULT_INDENTS,
-    'padding-top': '18.5px',
-    'padding-right': '14px',
-    'padding-bottom': '18.5px',
-    'padding-left': '14px',
+    padding: '18.5px 14px',
   },
   size: {
     ...DEFAULT_SIZE,
@@ -677,10 +638,8 @@ export const defaultTextareaStyles: {
   },
   border: {
     ...DEFAULT_BORDER,
-    'border-color': '#d9d9d9',
-    'border-width': '1px',
-    'border-style': 'solid',
-    'border-radius': '4px',
+    border: '1px solid #d9d9d9',
+    borderRadius: '4px',
   },
   background: {
     ...DEFAULT_BACKGROUND,
@@ -688,8 +647,8 @@ export const defaultTextareaStyles: {
 };
 
 export const defaultCheckboxStyles: {
-  [K in CheckboxControls]: CssLikeStyles;
-} & { other?: CssLikeStyles } = {
+  [K in CheckboxControls]: React.CSSProperties;
+} & { other?: React.CSSProperties } = {
   indents: {
     ...DEFAULT_INDENTS,
   },
@@ -700,13 +659,13 @@ export const defaultCheckboxStyles: {
   },
   background: {
     ...DEFAULT_BACKGROUND,
-    'background-color': '#1890ff',
+    backgroundColor: '#1890ff',
   },
 };
 
 export const defaultRadiobuttonStyles: {
-  [K in RadiobuttonControls]: CssLikeStyles;
-} & { other?: CssLikeStyles } = {
+  [K in RadiobuttonControls]: React.CSSProperties;
+} & { other?: React.CSSProperties } = {
   indents: {
     ...DEFAULT_INDENTS,
   },
@@ -717,12 +676,14 @@ export const defaultRadiobuttonStyles: {
   },
   background: {
     ...DEFAULT_BACKGROUND,
-    'background-color': '#1890ff',
+    backgroundColor: '#1890ff',
   },
 };
 
-export const defaultLabelStyles: { [K in LabelControls]: CssLikeStyles } & {
-  other?: CssLikeStyles;
+export const defaultLabelStyles: {
+  [K in LabelControls]: React.CSSProperties;
+} & {
+  other?: React.CSSProperties;
 } = {
   indents: {
     ...DEFAULT_INDENTS,
@@ -745,15 +706,14 @@ export const defaultLabelStyles: { [K in LabelControls]: CssLikeStyles } & {
   },
 };
 
-export const defaultSelectStyles: { [K in SelectControls]: CssLikeStyles } & {
-  other?: CssLikeStyles;
+export const defaultSelectStyles: {
+  [K in SelectControls]: React.CSSProperties;
+} & {
+  other?: React.CSSProperties;
 } = {
   indents: {
     ...DEFAULT_INDENTS,
-    'padding-top': '18.5px',
-    'padding-right': '14px',
-    'padding-bottom': '18.5px',
-    'padding-left': '14px',
+    padding: '18.5px 14px',
   },
   size: {
     ...DEFAULT_SIZE,
@@ -763,10 +723,8 @@ export const defaultSelectStyles: { [K in SelectControls]: CssLikeStyles } & {
   },
   border: {
     ...DEFAULT_BORDER,
-    'border-color': '#d9d9d9',
-    'border-width': '1px',
-    'border-style': 'solid',
-    'border-radius': '4px',
+    border: '1px solid #d9d9d9',
+    borderRadius: '4px',
   },
   background: {
     ...DEFAULT_BACKGROUND,
@@ -774,8 +732,8 @@ export const defaultSelectStyles: { [K in SelectControls]: CssLikeStyles } & {
 };
 
 export const defaultSelectMenuStyles: {
-  [K in SelectMenuControls]: CssLikeStyles;
-} & { other?: CssLikeStyles } = {
+  [K in SelectMenuControls]: React.CSSProperties;
+} & { other?: React.CSSProperties } = {
   indents: {
     ...DEFAULT_INDENTS,
   },
@@ -784,41 +742,36 @@ export const defaultSelectMenuStyles: {
   },
   border: {
     ...DEFAULT_BORDER,
-    'border-color': '#d9d9d9',
-    'border-width': '1px',
-    'border-style': 'solid',
-    'border-radius': '4px',
+    border: '1px solid #d9d9d9',
+    borderRadius: '4px',
   },
   background: {
     ...DEFAULT_BACKGROUND,
-    'background-color': '#ffffff',
+    backgroundColor: '#ffffff',
   },
 };
 
 export const defaultSelectItemStyles: {
-  [K in SelectItemControls]: CssLikeStyles;
-} & { other?: CssLikeStyles } = {
+  [K in SelectItemControls]: React.CSSProperties;
+} & { other?: React.CSSProperties } = {
   indents: {
     ...DEFAULT_INDENTS,
-    'padding-top': '6px',
-    'padding-right': '16px',
-    'padding-bottom': '6px',
-    'padding-left': '16px',
+    padding: '6px 16px',
   },
   size: {
     ...DEFAULT_SIZE,
   },
   typography: {
     ...DEFAULT_TYPOGRAPHY,
-    'line-height': '1.5',
+    lineHeight: '1.5',
   },
   border: {
     ...DEFAULT_BORDER,
-    'border-width': '0px',
+    borderWidth: '0px',
   },
   background: {
     ...DEFAULT_BACKGROUND,
-    'background-color': '#ffffff',
+    backgroundColor: '#ffffff',
   },
 };
 
@@ -828,7 +781,7 @@ type cardsSectionControls = typeof cardsSectionStyleControls[number];
 type featureSectionControls = typeof featureSectionStyleControls[number];
 
 export const defaultPageTemplateStyles: {
-  [K in pageTemplateControls]: CssLikeStyles;
+  [K in pageTemplateControls]: React.CSSProperties;
 } = {
   indents: {
     ...DEFAULT_INDENTS,
@@ -841,7 +794,7 @@ export const defaultPageTemplateStyles: {
   display: {
     ...DEFAULT_DISPLAY,
     display: 'flex',
-    'flex-direction': 'column',
+    flexDirection: 'column',
   },
   typography: {
     ...DEFAULT_TYPOGRAPHY,
@@ -855,14 +808,11 @@ export const defaultPageTemplateStyles: {
 };
 
 export const defaultGridStyles: {
-  [K in pageTemplateControls]: CssLikeStyles;
+  [K in pageTemplateControls]: React.CSSProperties;
 } = {
   indents: {
     ...DEFAULT_INDENTS,
-    'padding-top': '3px',
-    'padding-left': '3px',
-    'padding-bottom': '3px',
-    'padding-right': '3px',
+    padding: '3px',
   },
   size: {
     ...DEFAULT_SIZE,
@@ -884,14 +834,11 @@ export const defaultGridStyles: {
 };
 
 export const defaultColumnStyles: {
-  [K in pageTemplateControls]: CssLikeStyles;
+  [K in pageTemplateControls]: React.CSSProperties;
 } = {
   indents: {
     ...DEFAULT_INDENTS,
-    'padding-top': '3px',
-    'padding-left': '3px',
-    'padding-bottom': '3px',
-    'padding-right': '3px',
+    padding: '3px',
   },
   size: {
     ...DEFAULT_SIZE,
@@ -913,7 +860,7 @@ export const defaultColumnStyles: {
 };
 
 export const defaultEmptyPageTemplateStyles: {
-  [K in pageTemplateControls]: CssLikeStyles;
+  [K in pageTemplateControls]: React.CSSProperties;
 } = {
   indents: {
     ...DEFAULT_INDENTS,
@@ -926,7 +873,7 @@ export const defaultEmptyPageTemplateStyles: {
   display: {
     ...DEFAULT_DISPLAY,
     display: 'flex',
-    'flex-direction': 'column',
+    flexDirection: 'column',
   },
   typography: {
     ...DEFAULT_TYPOGRAPHY,
@@ -940,12 +887,11 @@ export const defaultEmptyPageTemplateStyles: {
 };
 
 export const defaultSubscribeFormStyles: {
-  [K in subscribeFormControls]: CssLikeStyles;
+  [K in subscribeFormControls]: React.CSSProperties;
 } = {
   indents: {
     ...DEFAULT_INDENTS,
-    'padding-top': '100px',
-    'padding-bottom': '100px',
+    padding: '100px 0',
   },
   size: {
     ...DEFAULT_SIZE,
@@ -954,9 +900,9 @@ export const defaultSubscribeFormStyles: {
   display: {
     ...DEFAULT_DISPLAY,
     display: 'flex',
-    'flex-direction': 'column',
-    'align-items': 'center',
-    'justify-content': 'center',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   typography: {
     ...DEFAULT_TYPOGRAPHY,
@@ -970,12 +916,11 @@ export const defaultSubscribeFormStyles: {
 };
 
 export const defaultCardsSectionStyles: {
-  [K in cardsSectionControls]: CssLikeStyles;
+  [K in cardsSectionControls]: React.CSSProperties;
 } = {
   indents: {
     ...DEFAULT_INDENTS,
-    'padding-top': '100px',
-    'padding-bottom': '100px',
+    padding: '100px 0',
   },
   size: {
     ...DEFAULT_SIZE,
@@ -984,8 +929,8 @@ export const defaultCardsSectionStyles: {
   display: {
     ...DEFAULT_DISPLAY,
     display: 'flex',
-    'flex-direction': 'column',
-    'align-items': 'center',
+    flexDirection: 'column',
+    alignItems: 'center',
   },
   typography: {
     ...DEFAULT_TYPOGRAPHY,
@@ -999,12 +944,11 @@ export const defaultCardsSectionStyles: {
 };
 
 export const defaultFeatureSectionStyles: {
-  [K in featureSectionControls]: CssLikeStyles;
+  [K in featureSectionControls]: React.CSSProperties;
 } = {
   indents: {
     ...DEFAULT_INDENTS,
-    'padding-top': '100px',
-    'padding-bottom': '100px',
+    padding: '100px 0',
   },
   size: {
     ...DEFAULT_SIZE,
@@ -1013,7 +957,7 @@ export const defaultFeatureSectionStyles: {
   display: {
     ...DEFAULT_DISPLAY,
     display: 'flex',
-    'justify-content': 'center',
+    justifyContent: 'center',
   },
   typography: {
     ...DEFAULT_TYPOGRAPHY,
@@ -1027,7 +971,7 @@ export const defaultFeatureSectionStyles: {
 };
 
 export const DEFAULT_ELEMENTS_STYLES: {
-  [K in Entity]: { [key: string]: CssLikeStyles | undefined };
+  [K in Entity]: { [key: string]: React.CSSProperties | undefined };
 } = {
   root: defaultRootStyles,
   container: defaultContainerStyles,

@@ -1,33 +1,22 @@
 import React, { memo } from 'react';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import TYPE from './constants';
-import { selectActiveElementParams } from '../../../../../redux/project/selectors';
+import { selectActiveElementParamByName } from '../../../../../redux/project/selectors';
 import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
 import {
   InputType,
   PropertiesChangeProps,
   TextinputElement,
 } from '../../../../../types';
-import { AppReduxState } from '../../../../../redux/types';
 
-type StateProps = {
-  type: InputType;
-};
-
-function mapState(state: AppReduxState): StateProps {
-  const activeItemParams = selectActiveElementParams(state);
-
-  return {
-    type: activeItemParams.type,
-  };
-}
-type Props = StateProps & PropertiesChangeProps<TextinputElement>;
-
-const Type: React.FC<Props> = ({ type, updateParams }) => {
+const Type: React.FC<PropertiesChangeProps<TextinputElement>> = ({
+  updateParams,
+}) => {
+  const type = useSelector(selectActiveElementParamByName('type'));
   const handleDropdownChange = (ev) => {
     updateParams({ type: ev.target.value as InputType });
   };
@@ -47,4 +36,4 @@ const Type: React.FC<Props> = ({ type, updateParams }) => {
   );
 };
 
-export default connect(mapState)(withConfigurableProperties(memo(Type)));
+export default withConfigurableProperties(memo(Type));

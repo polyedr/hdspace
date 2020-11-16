@@ -1,5 +1,5 @@
 import React, { useState, useEffect, ChangeEvent } from 'react';
-import { connect, useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import * as R from 'ramda';
 import {
   Accordion,
@@ -15,7 +15,7 @@ import TextField from '@material-ui/core/TextField';
 import {
   selectActiveItemChildren,
   selectCurrentScreenId,
-  selectElementById,
+  selectElementsByIds,
 } from '../../../../../redux/project/selectors';
 import {
   addChildToElement,
@@ -24,7 +24,6 @@ import {
 import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
 import generateUniqueName from '../../../../../utils/generateUniqueName';
 import { PropertiesChangeProps, SelectItemElement } from '../../../../../types';
-import { AppReduxState } from '../../../../../redux/types';
 
 const useStyles = makeStyles({
   row: {
@@ -38,46 +37,12 @@ const useStyles = makeStyles({
   },
 });
 
-type StateProps = {
-  selectMenuID: string;
-  selectOptions: SelectItemElement[];
-};
-
-function mapState(state: AppReduxState): StateProps {
-  const [selectMenu] = selectActiveItemChildren(state, 'selectMenu');
-  if (!selectMenu?.children) {
-    return {
-      selectMenuID: '-1',
-      selectOptions: [],
-    };
-  }
-
-  const selectOptions = selectMenu.children.map((childId) =>
-    selectElementById(childId)(state),
-  ) as SelectItemElement[];
-
-  return {
-    selectMenuID: selectMenu.id,
-    selectOptions,
-  };
-}
-
-const mapDispatch = {
-  addChildToElement,
-  deleteChildFromElement: deleteItem,
-};
-
-type Props = StateProps &
-  PropertiesChangeProps<SelectItemElement> &
-  typeof mapDispatch;
-
-const SelectOptions: React.FC<Props> = ({
-  selectMenuID,
-  selectOptions,
+const SelectOptions: React.FC<PropertiesChangeProps<SelectItemElement>> = ({
   updateParams,
-  addChildToElement,
-  deleteChildFromElement,
 }) => {
+  const [selectMenu] = useSelector(selectActiveItemChildren('selectMenu'));
+  const selectOptions = useSelector(selectElementsByIds(selectMenu.children));
+  const dispatch = useDispatch();
   const classes = useStyles();
 
   const [options, setOptions] = useState(selectOptions);
@@ -119,19 +84,21 @@ const SelectOptions: React.FC<Props> = ({
       'New option',
       selectOptions.map((option) => option.parameters.name || '') || [],
     );
-    addChildToElement(
-      'selectItem',
-      selectMenuID,
-      {
-        name: newOptionName,
-        value: newOptionName,
-      },
-      { screenId: currentScreenId },
+    dispatch(
+      addChildToElement(
+        'selectItem',
+        selectMenu.id,
+        {
+          name: newOptionName,
+          value: newOptionName,
+        },
+        { screenId: currentScreenId },
+      ),
     );
   };
 
   const handleDeleteButtonClick = (selectOptionID: string) => {
-    deleteChildFromElement(selectOptionID, { screenId: currentScreenId });
+    dispatch(deleteItem(selectOptionID, { screenId: currentScreenId }));
   };
 
   return (
@@ -211,7 +178,4 @@ const SelectOptions: React.FC<Props> = ({
   );
 };
 
-export default connect(
-  mapState,
-  mapDispatch,
-)(withConfigurableProperties(SelectOptions));
+export default withConfigurableProperties(SelectOptions);

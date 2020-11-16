@@ -1,8 +1,6 @@
 import React, { useMemo } from 'react';
-
 import { useSelector, useDispatch } from 'react-redux';
 import { SharedRendererProps } from '../../UI/RenderElements/types';
-import { convertPropCSS } from '../../../utils/StyleHelper';
 import { findParentByChildID } from '../../../utils/ElementsTreeHelper';
 import {
   selectActiveElement,
@@ -169,14 +167,12 @@ const useElementProps = (elementId: string): ElementProps | null => {
     projectClasses?.find((cssClass: any) => cssClass.className === groupClass)
       ?.rules || {};
 
-  const convertedEntityStyles = convertPropCSS(entityStyles);
-
   const commonRendererProps: Omit<SharedRendererProps, 'children'> = {
     ...(disableInteractions && { className: '' }),
     id: id === rootID ? 'root' : id,
     isDisabled: !disableInteractions,
     ownStyles: styles.ownStyles,
-    entityStyles: convertedEntityStyles,
+    entityStyles,
     groupStyles,
     active: !disableInteractions && id === activeElement.id,
   };

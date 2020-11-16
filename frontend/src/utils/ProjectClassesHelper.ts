@@ -1,10 +1,9 @@
-import * as R from 'ramda';
-import { CssLikeStyles, Entity, Project } from '../types';
+import { Entity, Project, PropertyName } from '../types';
 
 export const updateProjectClasses = (
   project: Project,
   className: string,
-  styles: CssLikeStyles,
+  styles: React.CSSProperties,
 ): Project => {
   return {
     ...project,
@@ -22,8 +21,14 @@ export const updateProjectClasses = (
 export const removeProjectStyles = (
   project: Project,
   className: string,
-  cssPropertiesNames: string[],
+  cssPropertiesNames: PropertyName[],
 ): Project => {
+  const projectClass = project.projectData.classes.find(
+    (cls) => cls.className === className,
+  );
+  if (!projectClass || !cssPropertiesNames.length) {
+    return project;
+  }
   return {
     ...project,
     projectData: {
@@ -32,14 +37,20 @@ export const removeProjectStyles = (
         return cssClass.className === className
           ? {
               ...cssClass,
-              rules: R.toPairs(cssClass.rules)
-                .filter(([ruleName]) =>
-                  cssPropertiesNames.every((name) => name !== ruleName),
-                )
-                .reduce(
-                  (acc, [ruleName, rule]) => ({ ...acc, [ruleName]: rule }),
-                  {} as Required<CssLikeStyles>,
-                ),
+              rules:
+                cssClass.className !== className
+                  ? cssClass.rules
+                  : Object.keys(cssClass.rules).reduce(
+                      (acc, ruleName: string) => {
+                        if (
+                          cssPropertiesNames.includes(ruleName as PropertyName)
+                        ) {
+                          return acc;
+                        }
+                        return { [ruleName]: cssClass.rules[ruleName] };
+                      },
+                      {},
+                    ),
             }
           : cssClass;
       }),
@@ -51,7 +62,7 @@ export const addProjectStyles = (
   project: Project,
   className: string,
   elementType: Entity,
-  styles: Required<CssLikeStyles>,
+  styles: Required<React.CSSProperties>,
 ): Project => {
   return {
     ...project,

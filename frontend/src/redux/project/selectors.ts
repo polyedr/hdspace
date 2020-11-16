@@ -4,6 +4,7 @@ import {
   DEFAULT_PROJECT,
   DEFAULT_ROOT,
   DEFAULT_SCREEN,
+  LABELED_INPUT_TYPES,
 } from '../../constants/defaultParams';
 import { makeFeatureStateSelector } from '../../shared/redux';
 import {
@@ -14,13 +15,11 @@ import {
 import {
   BorderedElementsRef,
   ChildEntity,
-  CssLikeStyles,
   Entity,
   LibraryElement,
   PaginatedArray,
   StateElement,
 } from '../../types';
-import getDisplayStyles from '../../utils/getDisplayStyles';
 import { AppReduxState } from '../types';
 
 export const selectProjectState = makeFeatureStateSelector('project');
@@ -91,6 +90,15 @@ export const selectCurrentRootId = (state: AppReduxState) =>
 
 export const selectElementById = (id: string) => (state: AppReduxState) =>
   selectProjectState(state).data.elements[id];
+
+export const selectElementsByIds = (ids: string[]) => (
+  state: AppReduxState,
+) => {
+  if (!ids || !ids.length) {
+    return [];
+  }
+  return ids.map((id: string) => selectElementById(id)(state));
+};
 
 export const selectElementAsTree = (id: string) => ({
   project,
@@ -173,9 +181,11 @@ export const selectActiveElementStyles = makeActiveElementInfoSelector(
   'styles',
 );
 
-export function selectCurrentEditableStyles<
-  T extends keyof Required<CssLikeStyles>
->(state: AppReduxState, ruleName: T) {
+export const selectCurrentEditableStyles = <
+  T extends keyof React.CSSProperties
+>(
+  ruleName: T,
+) => (state: AppReduxState) => {
   const activeElementType = selectActiveElement(state).type;
 
   const activeElementStyles = selectActiveElementStyles<StateElement>(state)
@@ -188,17 +198,15 @@ export function selectCurrentEditableStyles<
   const activeEntityStyles =
     (activeElementType !== 'none' &&
       selectSharedStyles(state, activeElementType)) ||
-    ({} as Required<CssLikeStyles>);
+    ({} as Required<React.CSSProperties>);
 
   const activeSharedStyles =
     selectSharedStyles(state, activeElementClassNames[1]) ||
-    ({} as Required<CssLikeStyles>);
+    ({} as Required<React.CSSProperties>);
 
-  const getActiveItemStyles = (
-    activeStyles: string,
-  ): Required<CssLikeStyles> => {
+  const getActiveItemStyles = (activeStyles: string): React.CSSProperties => {
     if (activeStyles === 'ownStyles' || activeStyles === '') {
-      return activeElementStyles as Required<CssLikeStyles>;
+      return activeElementStyles as Required<React.CSSProperties>;
     }
     if (activeStyles === activeElementType) {
       return activeEntityStyles;
@@ -213,21 +221,20 @@ export function selectCurrentEditableStyles<
     activeSharedStyles[ruleName] ||
     activeEntityStyles[ruleName]
   );
-}
+};
 
 export function selectShowingBorders(state: AppReduxState) {
   return selectProjectState(state).ui.showContainersBorders;
 }
 
-export function selectActiveItemChildren(
+export const selectActiveItemChildren = (childType: ChildEntity) => (
   state: AppReduxState,
-  childType: ChildEntity,
-) {
+) => {
   const activeElement = selectActiveElement(state);
   return activeElement.children
     .map((childId) => selectElementById(childId)(state))
     .filter((child) => child.type === childType);
-}
+};
 
 export const selectElementStyles = (elementId: string) => ({
   project,
@@ -254,6 +261,10 @@ export const selectActiveElementParams = (state: AppReduxState) => {
   const activeElement = selectActiveElement(state);
   return activeElement.parameters;
 };
+
+export const selectActiveElementParamByName = (name: string) => (
+  state: AppReduxState,
+) => selectActiveElementParams(state)[name];
 
 export function selectItemToCopyInfo(state: AppReduxState) {
   return selectProjectState(state).ui.itemToCopyInfo;
@@ -309,6 +320,20 @@ export const selectElementsForCurrentScreen = createSelector(
   },
 );
 
+export const selectActiveLabelInputs = (state: AppReduxState) => {
+  const activeItemParams = selectActiveElementParams(state);
+  const elements = selectElementsForCurrentScreen(state);
+
+  const inputsIDs = Object.values(elements)
+    .filter((element) => LABELED_INPUT_TYPES.includes(element.type))
+    .map((element) => element.id);
+
+  return {
+    inputsIDs,
+    labelFor: activeItemParams.labelFor,
+  };
+};
+
 export const selectDirectRootChildren = createSelector(
   selectAllElements,
   selectCurrentRootId,
@@ -348,17 +373,6 @@ export const selectCurrentDropTargetParams = (state: AppReduxState) => {
 
 export const selectCustomElementsHasNext = (state: AppReduxState) => {
   return !!selectProjectState(state).data.customElementsData.next;
-};
-
-export const selectDisplayStyles = (state: AppReduxState) => {
-  const activeElementStyles = {
-    display: selectCurrentEditableStyles(state, 'display'),
-    'justify-content': selectCurrentEditableStyles(state, 'justify-content'),
-    'align-items': selectCurrentEditableStyles(state, 'align-items'),
-    'flex-direction': selectCurrentEditableStyles(state, 'flex-direction'),
-  };
-
-  return getDisplayStyles(activeElementStyles);
 };
 
 export const selectProjectClasses = createSelector(

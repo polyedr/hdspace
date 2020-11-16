@@ -1,4 +1,9 @@
-import { AvailableChildren, AvailableControls, ElementEntity } from '../types';
+import {
+  AvailableChildren,
+  AvailableControls,
+  ElementEntity,
+  FreeCanvasElementParams,
+} from '../types';
 
 export const ENTITIES: {
   [K in Exclude<ElementEntity, 'ocrtext' | 'root' | 'container'>]: K;
@@ -522,7 +527,7 @@ export const AVAILABLE_CHILDREN: AvailableChildren = {
   },
 };
 
-export const defaultFreeCanvasParams = {
+export const defaultFreeCanvasParams: Partial<FreeCanvasElementParams> = {
   left: 0,
   top: 0,
   zIndex: 0,

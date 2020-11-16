@@ -4,11 +4,11 @@ import IMAGES from '../../../constants/images';
 import {
   ColumnsServerElement,
   ContainerServerElement,
-  CssLikeStyles,
   DivBlockServerElement,
   DropdownItemServerElement,
   DropdownMenuServerElement,
   DropdownServerElement,
+  ElementGroup,
   Entity,
   GridServerElement,
   ImageServerElement,
@@ -29,11 +29,11 @@ export const root: RootServerElement = {
   parameters: {
     width: 0,
     height: 0,
-    group: 'none',
+    group: ElementGroup.NONE,
   },
   styles: {
     classNames: ['root'],
-    ownStyles: {} as Required<CssLikeStyles>,
+    ownStyles: {},
   },
   name: 'root',
   children: [],
@@ -41,12 +41,12 @@ export const root: RootServerElement = {
 
 export const makeContainer = ({
   children = [],
-  ownStyles = {} as Required<CssLikeStyles>,
+  ownStyles = {},
   name = 'container',
   buoyancy = 0,
 }: {
   children?: ServerElement<Entity>[];
-  ownStyles?: Required<CssLikeStyles>;
+  ownStyles?: React.CSSProperties;
   name?: string;
   buoyancy?: number;
 } = {}): ContainerServerElement => ({
@@ -54,7 +54,7 @@ export const makeContainer = ({
   func_type: 'container',
   struct_type: 'container',
   parameters: {
-    group: 'none',
+    group: ElementGroup.NONE,
     ...defaultFreeCanvasParams,
     width: '50%',
     height: '50%',
@@ -107,14 +107,14 @@ export const makeDivBlock = (textContent: string): DivBlockServerElement => {
     func_type: 'divBlock',
     struct_type: 'divBlock',
     parameters: {
-      group: 'containers',
+      group: ElementGroup.CONTAINERS,
       ...defaultFreeCanvasParams,
       width: '50%',
       height: '50%',
     },
     styles: {
       classNames: ['divBlock'],
-      ownStyles: {} as Required<CssLikeStyles>,
+      ownStyles: {},
     },
     name: 'divBlock',
     children: [makeParagraph({ textContent })],
@@ -122,15 +122,15 @@ export const makeDivBlock = (textContent: string): DivBlockServerElement => {
 };
 
 export const makeImage = ({
-  ownStyles = {} as Required<CssLikeStyles>,
+  ownStyles = {},
 }: {
-  ownStyles?: Required<CssLikeStyles>;
+  ownStyles?: React.CSSProperties;
 } = {}): ImageServerElement => ({
   buoyancy: 0,
   func_type: 'image',
   struct_type: 'image',
   parameters: {
-    group: 'image',
+    group: ElementGroup.IMAGE,
     imageURL: IMAGES.imageIcon,
     ...defaultFreeCanvasParams,
   },
@@ -150,14 +150,14 @@ export const makeSmartHeader = ({
   func_type: 'smartHeader',
   struct_type: 'smartHeader',
   parameters: {
-    group: 'undefined',
+    group: ElementGroup.UNDEFINED,
     ...defaultFreeCanvasParams,
     width: '50%',
     height: '50%',
   },
   styles: {
     classNames: ['smartHeader'],
-    ownStyles: { ...ownStyles } as Required<CssLikeStyles>,
+    ownStyles: { ...ownStyles },
   },
   name,
   children: [],
@@ -171,14 +171,14 @@ export const makeSmartFooter = ({
   func_type: 'smartFooter',
   struct_type: 'smartFooter',
   parameters: {
-    group: 'undefined',
+    group: ElementGroup.UNDEFINED,
     ...defaultFreeCanvasParams,
     width: '50%',
     height: '50%',
   },
   styles: {
     classNames: ['smartFooter'],
-    ownStyles: { ...ownStyles } as Required<CssLikeStyles>,
+    ownStyles: { ...ownStyles },
   },
   name,
   children: [],
@@ -192,14 +192,14 @@ export const makeSmartForm = ({
   func_type: 'smartForm',
   struct_type: 'smartForm',
   parameters: {
-    group: 'undefined',
+    group: ElementGroup.UNDEFINED,
     ...defaultFreeCanvasParams,
     width: '50%',
     height: '50%',
   },
   styles: {
     classNames: ['smartForm'],
-    ownStyles: { ...ownStyles } as Required<CssLikeStyles>,
+    ownStyles: { ...ownStyles },
   },
   name,
   children: [],
@@ -213,14 +213,14 @@ export const makeSmartWebpage = ({
   func_type: 'smartWebpage',
   struct_type: 'smartWebpage',
   parameters: {
-    group: 'undefined',
+    group: ElementGroup.UNDEFINED,
     ...defaultFreeCanvasParams,
     width: '50%',
     height: '50%',
   },
   styles: {
     classNames: ['smartWebpage'],
-    ownStyles: { ...ownStyles } as Required<CssLikeStyles>,
+    ownStyles: { ...ownStyles },
   },
   name,
   children: [],
@@ -238,7 +238,7 @@ export const makeDropdownItem = (
   },
   styles: {
     classNames: ['dropdownItem'],
-    ownStyles: {} as Required<CssLikeStyles>,
+    ownStyles: {},
   },
   name: 'dropdownItem',
   children: [],
@@ -253,7 +253,7 @@ export const dropdownMenu: DropdownMenuServerElement = {
   },
   styles: {
     classNames: ['dropdownMenu'],
-    ownStyles: {} as Required<CssLikeStyles>,
+    ownStyles: {},
   },
   name: 'dropdownMenu',
   children: [
@@ -268,7 +268,7 @@ export const dropdown: DropdownServerElement = {
   func_type: 'dropdown',
   struct_type: 'dropdown',
   parameters: {
-    group: 'other',
+    group: ElementGroup.OTHER,
     textContent: 'dropdown',
     showRipple: true,
     isOpen: false,
@@ -277,7 +277,7 @@ export const dropdown: DropdownServerElement = {
   },
   styles: {
     classNames: ['dropdown'],
-    ownStyles: {} as Required<CssLikeStyles>,
+    ownStyles: {},
   },
   name: 'dropdown',
   children: [dropdownMenu],
@@ -288,7 +288,7 @@ export const video: VideoServerElement = {
   func_type: 'video',
   struct_type: 'video',
   parameters: {
-    group: 'other',
+    group: ElementGroup.OTHER,
     ...defaultFreeCanvasParams,
     videoSettings: {
       link: '',
@@ -301,7 +301,7 @@ export const video: VideoServerElement = {
   },
   styles: {
     classNames: ['video'],
-    ownStyles: {} as Required<CssLikeStyles>,
+    ownStyles: {},
   },
   name: 'video',
   children: [],
@@ -314,14 +314,14 @@ export const undefined: UndefinedServerElement = {
   func_type: 'undefined',
   struct_type: 'undefined',
   parameters: {
-    group: 'undefined',
+    group: ElementGroup.UNDEFINED,
     ...defaultFreeCanvasParams,
     width: '50%',
     height: '50%',
   },
   styles: {
     classNames: ['undefined'],
-    ownStyles: {} as Required<CssLikeStyles>,
+    ownStyles: {},
   },
   name: 'undefined',
   children: [],

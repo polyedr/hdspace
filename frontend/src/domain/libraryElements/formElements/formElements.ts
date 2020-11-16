@@ -2,7 +2,7 @@ import { defaultFreeCanvasParams } from '../../core';
 import {
   ButtonServerElement,
   CheckboxServerElement,
-  CssLikeStyles,
+  ElementGroup,
   LabelServerElement,
   RadiobuttonServerElement,
   SelectItemServerElement,
@@ -15,18 +15,18 @@ import {
 export const makeButton = ({
   buoyancy = 0,
   textContent = 'button',
-  ownStyles = {} as Required<CssLikeStyles>,
+  ownStyles = {},
 }: {
   buoyancy?: number;
   textContent?: string;
-  ownStyles?: Required<CssLikeStyles>;
+  ownStyles?: React.CSSProperties;
 } = {}): ButtonServerElement => ({
   buoyancy,
   func_type: 'button',
   struct_type: 'button',
   parameters: {
     ...defaultFreeCanvasParams,
-    group: 'form',
+    group: ElementGroup.FORM,
     textContent,
     action: {
       type: 'internal-link',
@@ -43,16 +43,16 @@ export const makeButton = ({
 });
 
 export const makeTextinput = ({
-  ownStyles = {} as Required<CssLikeStyles>,
+  ownStyles = {},
 }: {
-  ownStyles?: Required<CssLikeStyles>;
+  ownStyles?: React.CSSProperties;
 } = {}): TextinputServerElement => ({
   buoyancy: 0,
   func_type: 'textinput',
   struct_type: 'textinput',
   parameters: {
     ...defaultFreeCanvasParams,
-    group: 'form',
+    group: ElementGroup.FORM,
     textContent: '',
     type: 'text',
     placeholder: 'Enter a label for the field',
@@ -71,7 +71,7 @@ export const checkbox: CheckboxServerElement = {
   struct_type: 'checkbox',
   parameters: {
     ...defaultFreeCanvasParams,
-    group: 'form',
+    group: ElementGroup.FORM,
     value: '',
     defaultChecked: true,
     name: '',
@@ -79,7 +79,7 @@ export const checkbox: CheckboxServerElement = {
   },
   styles: {
     classNames: ['checkbox'],
-    ownStyles: {} as Required<CssLikeStyles>,
+    ownStyles: {},
   },
   name: 'checkbox',
   children: [],
@@ -91,14 +91,14 @@ export const radiobutton: RadiobuttonServerElement = {
   struct_type: 'radiobutton',
   parameters: {
     ...defaultFreeCanvasParams,
-    group: 'form',
+    group: ElementGroup.FORM,
     value: '',
     name: '',
     showRipple: true,
   },
   styles: {
     classNames: ['radiobutton'],
-    ownStyles: {} as Required<CssLikeStyles>,
+    ownStyles: {},
   },
   name: 'radiobutton',
   children: [],
@@ -118,7 +118,7 @@ export const makeSelectItem = (
   },
   styles: {
     classNames: ['selectItem'],
-    ownStyles: {} as Required<CssLikeStyles>,
+    ownStyles: {},
   },
   name: 'selectItem',
   children: [],
@@ -133,7 +133,7 @@ export const selectMenu: SelectMenuServerElement = {
   },
   styles: {
     classNames: ['selectMenu'],
-    ownStyles: {} as Required<CssLikeStyles>,
+    ownStyles: {},
   },
   name: 'selectMenu',
   children: [
@@ -149,7 +149,7 @@ export const select: SelectServerElement = {
   struct_type: 'select',
   parameters: {
     ...defaultFreeCanvasParams,
-    group: 'form',
+    group: ElementGroup.FORM,
     value: 'first option',
     options: [
       // TODO research why we need options here
@@ -161,7 +161,7 @@ export const select: SelectServerElement = {
   },
   styles: {
     classNames: ['select'],
-    ownStyles: {} as Required<CssLikeStyles>,
+    ownStyles: {},
   },
   name: 'select',
   children: [selectMenu],
@@ -169,17 +169,17 @@ export const select: SelectServerElement = {
 
 export const makeLabel = ({
   textContent = 'This is label',
-  ownStyles = {} as Required<CssLikeStyles>,
+  ownStyles = {},
 }: {
   textContent?: string;
-  ownStyles?: Required<CssLikeStyles>;
+  ownStyles?: React.CSSProperties;
 } = {}): LabelServerElement => ({
   buoyancy: 0,
   func_type: 'label',
   struct_type: 'label',
   parameters: {
     ...defaultFreeCanvasParams,
-    group: 'typography',
+    group: ElementGroup.TYPOGRAPHY,
     textContent,
     labelFor: 'no for attribute',
   },
@@ -197,13 +197,13 @@ export const textarea: TextareaServerElement = {
   struct_type: 'textarea',
   parameters: {
     ...defaultFreeCanvasParams,
-    group: 'form',
+    group: ElementGroup.FORM,
     textContent: '',
     placeholder: 'Enter a label for the field',
   },
   styles: {
     classNames: ['textarea'],
-    ownStyles: {} as Required<CssLikeStyles>,
+    ownStyles: {},
   },
   name: 'textarea',
   children: [],

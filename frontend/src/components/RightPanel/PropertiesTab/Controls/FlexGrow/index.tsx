@@ -1,42 +1,28 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import TextField from '@material-ui/core/TextField';
 import {
-  selectActiveElement,
+  selectActiveElementId,
   selectCurrentEditableStyles,
 } from '../../../../../redux/project/selectors';
 import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
 import StylesHeader from '../../helperComponents/StylesHeader';
 import { ContainerElement, PropertiesChangeProps } from '../../../../../types';
-import { AppReduxState } from '../../../../../redux/types';
 
-function mapState(state: AppReduxState) {
-  const flexGrow = selectCurrentEditableStyles(state, 'flex-grow');
-  const activeItemID = selectActiveElement(state).id;
-
-  return {
-    flexGrow,
-    activeItemID,
-  };
-}
-
-type Props = ReturnType<typeof mapState> &
-  PropertiesChangeProps<ContainerElement>;
-
-const FlexGrow: React.FC<Props> = ({
-  flexGrow,
-  activeItemID,
+const FlexGrow: React.FC<PropertiesChangeProps<ContainerElement>> = ({
   updateStyles,
   removeStyles,
 }) => {
-  const el = document.getElementById(activeItemID);
+  const activeElementId = useSelector(selectActiveElementId);
+  const flexGrow = useSelector(selectCurrentEditableStyles('flexGrow'));
+  const el = document.getElementById(activeElementId);
   const parentStyles = el?.parentElement && getComputedStyle(el.parentElement);
   const isFlexItem = parentStyles?.display === 'flex';
 
   const handleTextFieldChange = ({
     target: { value },
   }: React.ChangeEvent<HTMLInputElement>) => {
-    updateStyles({ 'flex-grow': Number(value) });
+    updateStyles({ flexGrow: Number(value) });
   };
 
   return isFlexItem ? (
@@ -44,7 +30,7 @@ const FlexGrow: React.FC<Props> = ({
       <StylesHeader
         title="Flex Grow"
         onClick={removeStyles}
-        cssPropertiesNames={['flex-grow']}
+        cssPropertiesNames={['flexGrow']}
       />
 
       <TextField
@@ -54,15 +40,8 @@ const FlexGrow: React.FC<Props> = ({
         value={flexGrow}
         onChange={handleTextFieldChange}
       />
-
-      {/*      <input
-        type="number"
-        value={flexGrow}
-        min={0}
-        onChange={handleTextFieldChange}
-      /> */}
     </div>
   ) : null;
 };
 
-export default connect(mapState)(withConfigurableProperties(FlexGrow));
+export default withConfigurableProperties(FlexGrow);
