@@ -144,6 +144,13 @@ export const selectAreProjectsLoading = ({ project }: AppReduxState) =>
 export const selectActiveElementId = ({ project }: AppReduxState) =>
   project.edit.activeElementId;
 
+export const selectElementBeingEdited = (elementId: string) => (
+  state: AppReduxState,
+) => {
+  const activeElementId = selectActiveElementId(state);
+  const { elementBeingEdited } = selectProjectState(state).ui;
+  return elementId === activeElementId && elementBeingEdited;
+};
 export const selectHoveredElementId = ({ project }: AppReduxState) =>
   project.edit.hoveredElementId;
 

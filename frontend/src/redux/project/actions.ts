@@ -588,6 +588,11 @@ export const setActiveElementId = (id: string) => ({
   payload: id,
 });
 
+export const setElementBeingEdited = (edited: boolean) => ({
+  type: TYPES.SET_ELEMENT_BEING_EDITED,
+  payload: edited,
+});
+
 export const setHoveredElement = (id: string | null): SetHoveredElement => ({
   type: TYPES.SET_HOVERED_ELEMENT,
   payload: id,

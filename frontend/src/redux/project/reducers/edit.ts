@@ -50,6 +50,10 @@ const editReducer = produce(
         return { ...draft, activeElementId: action.payload };
       }
 
+      case TYPES.SET_ELEMENT_BEING_EDITED: {
+        return { ...draft, elementBeingEdited: action.payload };
+      }
+
       case TYPES.SET_HOVERED_ELEMENT: {
         return { ...draft, hoveredElementId: action.payload };
       }

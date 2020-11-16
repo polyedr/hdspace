@@ -103,3 +103,21 @@ export const LABELED_INPUT_TYPES = [
 ];
 
 export const CONTAINER_GROUPS = [ElementGroup.CONTAINERS, ElementGroup.CUSTOM];
+
+export const enum RightPanelTab {
+  PROPERTIES = 0,
+  ELEMENTS = 1,
+}
+
+export const EditableComponentsList = [
+  'textBlock',
+  'paragraph',
+  'hyperlink',
+  'heading',
+  'listItem',
+  'label',
+  'textArea',
+  'button',
+  'textInput',
+  'textArea',
+];

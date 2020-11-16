@@ -567,5 +567,7 @@ export function* setActiveElementSaga(
   ) {
     yield put(Actions.setRightPanelActiveTab(RightPanelTab.PROPERTIES));
   }
+  yield put(Actions.setElementBeingEdited(false));
+
   yield put(Actions.setActiveElementId(action.payload));
 }
