@@ -1,6 +1,7 @@
 import * as camelcase from 'camelcase-css';
 import decamelize from 'decamelize';
 import * as expanders from 'css-shorthand-expanders';
+import { isColor } from 'is-color-stop';
 
 type ExpandStyles = {
   [styleName: string]: (
@@ -24,7 +25,7 @@ const getBackgroundStyles = (
   if (propName !== 'background') {
     throw new Error('Prop name should be "background"');
   }
-  if (value.indexOf(' ') < 0 && value.indexOf('#') >= 0) {
+  if (value.indexOf(' ') < 0 && isColor(value)) {
     return {
       backgroundColor: value,
     };
