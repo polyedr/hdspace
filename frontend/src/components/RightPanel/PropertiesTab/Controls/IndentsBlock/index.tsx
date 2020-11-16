@@ -141,7 +141,7 @@ const IndentsBlock: React.FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
           margin="none"
           variant="outlined"
           className={cn(classes.input, classes.marginTop)}
-          value={parseInt(marginTop)}
+          value={parseInt(marginTop) || 0}
           onChange={(event) =>
             handleIndentChange('marginTop', `${event.target.value}px`)
           }
@@ -154,7 +154,7 @@ const IndentsBlock: React.FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
           margin="none"
           variant="outlined"
           className={cn(classes.input, classes.marginRight)}
-          value={parseInt(marginRight)}
+          value={parseInt(marginRight) || 0}
           onChange={(event) =>
             handleIndentChange('marginRight', `${event.target.value}px`)
           }
@@ -167,7 +167,7 @@ const IndentsBlock: React.FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
           margin="none"
           variant="outlined"
           className={cn(classes.input, classes.marginBottom)}
-          value={parseInt(marginBottom)}
+          value={parseInt(marginBottom) || 0}
           onChange={(event) =>
             handleIndentChange('marginBottom', `${event.target.value}px`)
           }
@@ -180,7 +180,7 @@ const IndentsBlock: React.FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
           margin="none"
           variant="outlined"
           className={cn(classes.input, classes.marginLeft)}
-          value={parseInt(marginLeft)}
+          value={parseInt(marginLeft) || 0}
           onChange={(event) =>
             handleIndentChange('marginLeft', `${event.target.value}px`)
           }
@@ -196,7 +196,7 @@ const IndentsBlock: React.FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
             margin="none"
             variant="outlined"
             className={cn(classes.input, classes.paddingTop)}
-            value={parseInt(paddingTop)}
+            value={parseInt(paddingTop) || 0}
             onChange={(event) =>
               handleIndentChange('paddingTop', `${event.target.value}px`)
             }
@@ -209,7 +209,7 @@ const IndentsBlock: React.FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
             margin="none"
             variant="outlined"
             className={cn(classes.input, classes.paddingRight)}
-            value={parseInt(paddingRight)}
+            value={parseInt(paddingRight) || 0}
             onChange={(event) =>
               handleIndentChange('paddingRight', `${event.target.value}px`)
             }
@@ -222,7 +222,7 @@ const IndentsBlock: React.FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
             margin="none"
             variant="outlined"
             className={cn(classes.input, classes.paddingBottom)}
-            value={parseInt(paddingBottom)}
+            value={parseInt(paddingBottom) || 0}
             onChange={(event) =>
               handleIndentChange('paddingBottom', `${event.target.value}px`)
             }
@@ -235,7 +235,7 @@ const IndentsBlock: React.FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
             margin="none"
             variant="outlined"
             className={cn(classes.input, classes.paddingLeft)}
-            value={parseInt(paddingLeft)}
+            value={parseInt(paddingLeft) || 0}
             onChange={(event) =>
               handleIndentChange('paddingLeft', `${event.target.value}px`)
             }

@@ -15,7 +15,7 @@ import {
   UserData,
 } from '../../types';
 import getDefaultStyles from '../../utils/getDefaultStyles';
-import { cssCamelize, cssDecamelize } from '../../utils/CSSConverter';
+import { cssDecamelize } from '../../utils/CSSConverter';
 
 export const convertCreatedElementToRequest = <
   T extends Entity,
@@ -67,7 +67,7 @@ export const convertElementToRequest = <
     parameters,
     styles: {
       ...styles,
-      ownStyles: cssCamelize(styles.ownStyles),
+      ownStyles: cssDecamelize(styles.ownStyles),
     },
   };
 };
@@ -92,7 +92,7 @@ export const convertElementToPatchRequest = <
     parameters,
     styles: {
       ...styles,
-      ownStyles: cssCamelize(styles.ownStyles),
+      ownStyles: cssDecamelize(styles.ownStyles),
     },
     shared,
   };
@@ -116,7 +116,7 @@ export const convertCreatedProjectToRequest = (
     project_data_json: JSON.stringify({
       classes: projectClasses.map((cls: ProjectClass) => ({
         ...cls,
-        rules: cssDecamelize(cls.rules),
+        // rules: cssDecamelize(cls.rules),
       })),
     }),
   };
@@ -136,7 +136,6 @@ export const convertProjectToPatchRequest = (
       ...projectData,
       classes: projectData.classes.map((cls: ProjectClass) => ({
         ...cls,
-        rules: cssDecamelize(cls.rules),
       })),
     }),
   };

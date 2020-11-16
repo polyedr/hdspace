@@ -1,4 +1,5 @@
 /* eslint-disable camelcase */
+import { cssCamelize } from '../../utils/CSSConverter';
 import {
   Entity,
   LibraryElement,
@@ -14,7 +15,6 @@ import {
   ServerUserData,
   UserData,
 } from '../../types';
-import { cssCamelize } from '../../utils/CSSConverter';
 
 export const convertElementFromResponse = <
   T extends Entity,
@@ -34,7 +34,7 @@ export const convertElementFromResponse = <
     styles,
   } = element;
 
-  return {
+  const convertedElement = {
     id: String(id),
     name,
     children: children
@@ -48,9 +48,12 @@ export const convertElementFromResponse = <
     parameters,
     styles: {
       ...styles,
-      ownStyles: cssCamelize(styles.ownStyles),
+      ownStyles: {
+        ...(styles.ownStyles ? cssCamelize(styles.ownStyles) : {}),
+      },
     },
   };
+  return convertedElement;
 };
 
 export const convertRecursiveElementFromResponse = (
@@ -88,13 +91,12 @@ export const convertProjectFromResponse = (project: ServerProject): Project => {
     updated: new Date(updated),
     projectData: {
       ...projectDataJSON,
-      classes: projectDataJSON.classes.map(
-        (cls: ProjectClass) =>
-          ({
-            ...cls,
-            rules: cssCamelize(cls.rules) as React.CSSProperties,
-          } as ProjectClass),
-      ),
+      classes: projectDataJSON.classes.map((cls: ProjectClass) => {
+        return {
+          ...cls,
+          rules: cssCamelize(cls.rules) as React.CSSProperties,
+        } as ProjectClass;
+      }),
     },
   };
 };

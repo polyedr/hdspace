@@ -77,6 +77,11 @@ const useElementProps = (elementId: string): ElementProps | null => {
     const isBorderVisible =
       (isBorderedElement && showBorders) || (isBorderedElement && getIsActive);
 
+    /* switch (element.id) {
+      case '5437':
+        console.log('USE ELEMENT PROPS!!', element);
+    } */
+
     switch (element.type) {
       case 'container':
       case 'smartHeader':

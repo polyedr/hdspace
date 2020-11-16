@@ -117,7 +117,7 @@ const TypographyBlock: React.FC<PropertiesChangeProps<
           <InputLabel>Font Family</InputLabel>
 
           <Select
-            defaultValue={fontFamily}
+            defaultValue={FONTS[0].value}
             value={fontFamily}
             onChange={handleFontFamilyChange}
           >
@@ -135,7 +135,7 @@ const TypographyBlock: React.FC<PropertiesChangeProps<
             label="Size"
             margin="dense"
             type="number"
-            value={fontSize}
+            value={fontSize || 14}
             onChange={handleChangeFontSize}
           />
 

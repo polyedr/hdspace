@@ -64,7 +64,7 @@ const FlexProperties: React.FC<PropertiesChangeProps<
           control={
             <ToggleButtonGroup
               size="small"
-              value={flexDirection}
+              value={flexDirection || 'initial'}
               onChange={handleChangeOrientation}
               exclusive
             >
@@ -85,7 +85,7 @@ const FlexProperties: React.FC<PropertiesChangeProps<
           <InputLabel>{renderLabel(flexDirection === 'column')}</InputLabel>
 
           <Select
-            defaultValue={justifyContent}
+            defaultValue="initial"
             value={justifyContent}
             onChange={(ev: React.ChangeEvent<{ value: unknown }>) => {
               updateStyles({
@@ -105,7 +105,7 @@ const FlexProperties: React.FC<PropertiesChangeProps<
           <InputLabel>{renderLabel(flexDirection === 'row')}</InputLabel>
 
           <Select
-            defaultValue={alignItems}
+            defaultValue="initial"
             value={alignItems}
             onChange={(ev: React.ChangeEvent<{ value: unknown }>) => {
               updateStyles({

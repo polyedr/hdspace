@@ -19,6 +19,10 @@ export const ALIGN_VALUES = [
     label: 'Baseline',
     value: 'baseline',
   },
+  {
+    label: 'Initial',
+    value: 'initial',
+  },
 ];
 
 export const JUSTIFY_VALUES = [
@@ -41,5 +45,9 @@ export const JUSTIFY_VALUES = [
   {
     label: 'Space around',
     value: 'space-around',
+  },
+  {
+    label: 'Initial',
+    value: 'initial',
   },
 ];

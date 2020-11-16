@@ -77,7 +77,10 @@ export const apiGetProjectList = (
       previous: parseCursor(result.data.previous),
       results: result.data.results.map(convertProjectFromResponse),
     }))
-    .catch(onError);
+    .catch((err) => {
+      console.error('GOT ERROR!!', err);
+      return onError(err);
+    });
 
 // TODO: research here IProject or IProjectList in return type:
 export const apiGetProject = (

@@ -1,43 +1,59 @@
-import camelcase from 'camelcase';
+import * as camelcase from 'camelcase-css';
 import decamelize from 'decamelize';
-import expanders from 'css-shorthand-expanders';
+import * as expanders from 'css-shorthand-expanders';
+
+type ExpandStyles = {
+  [styleName: string]: (
+    propName: keyof React.CSSProperties,
+    value: string,
+  ) => React.CSSProperties;
+};
+
+const getExpandedStyles = (
+  propName: keyof React.CSSProperties,
+  value: string,
+) => {
+  const expandedProps = expanders[propName](...value.split(' '));
+  return expandedProps;
+};
+
+const getBackgroundStyles = (
+  propName: keyof React.CSSProperties,
+  value: string,
+) => {
+  if (propName !== 'background') {
+    throw new Error('Prop name should be "background"');
+  }
+  if (value.indexOf(' ') < 0 && value.indexOf('#') >= 0) {
+    return {
+      backgroundColor: value,
+    };
+  }
+  return {
+    [propName]: value,
+  };
+};
+
+const EXPAND_STYLES: ExpandStyles = {
+  margin: getExpandedStyles,
+  padding: getExpandedStyles,
+  background: getBackgroundStyles,
+};
 
 export const cssCamelize = (styles = {}): React.CSSProperties => {
   return Object.keys(styles).reduce((acc, propName) => {
-    const ccPropName = camelcase(propName);
-    if (expanders[ccPropName]) {
-      const expandedStyles = expanders[ccPropName](
-        ...styles[propName].split(' '),
-      );
-      return {
-        ...acc,
-        ...expandedStyles,
-      };
-    }
+    const ccPropName = camelcase.default(propName);
     return {
       ...acc,
-      [ccPropName]: styles[propName],
+      ...(EXPAND_STYLES[ccPropName]
+        ? EXPAND_STYLES[ccPropName](ccPropName, styles[propName])
+        : { [ccPropName]: styles[propName] }),
     };
   }, {});
 };
 
 export const cssDecamelize = (styles = {}): any => {
   return Object.keys(styles).reduce((acc, propName) => {
-    if (expanders[propName]) {
-      const expandedStyles = expanders[propName](
-        ...styles[propName].split(' '),
-      );
-      return {
-        ...acc,
-        ...Object.keys(expandedStyles).reduce(
-          (exAcc, exPropName) => ({
-            ...exAcc,
-            [decamelize(exPropName, '-')]: expandedStyles[exPropName],
-          }),
-          {},
-        ),
-      };
-    }
     return {
       ...acc,
       [decamelize(propName, '-')]: styles[propName],

@@ -110,7 +110,7 @@
     "@types/react-redux": "^7.1.9",
     "@types/redux-mock-store": "^1.0.2",
     "axios": "^0.18.1",
-    "camelcase": "^6.2.0",
+    "camelcase-css": "^2.0.1",
     "classnames": "^2.2.6",
     "connected-react-router": "^6.8.0",
     "css-property-parser": "^1.0.6",

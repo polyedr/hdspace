@@ -47,7 +47,7 @@ const Display: React.FC<Props> = ({ updateStyles, removeStyles }) => {
           <Select
             margin="dense"
             label="Display"
-            value={display}
+            value={display || 'initial'}
             onChange={handleDisplayDropdownChange}
             defaultValue={display}
           >
