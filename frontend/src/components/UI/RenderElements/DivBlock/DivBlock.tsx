@@ -14,7 +14,6 @@ const DivBlockRenderer: React.FC<DivBlockRendererProps> = React.forwardRef(
     const classes = useStyles(props);
     const eventHandlers = useEventHandlers(props);
 
-    console.log('RENDER DIV BLOCK!!');
     return (
       <div
         ref={ref}

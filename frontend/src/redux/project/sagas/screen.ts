@@ -339,7 +339,6 @@ export function* restoreScreenSaga({
     scenariosIDs: [screen.screenscenario[0]],
   });
 
-  console.log('RESTORE SCREEN!!');
   screen.element = element.id;
 
   yield put(setScreens([screen, ...screens]));
