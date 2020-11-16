@@ -59,9 +59,12 @@ export const onError = ({ response: r }: AxiosError) => {
   }
 };
 
-export const handleError = (error) => ({
-  error: error.response?.data?.detail || error.message,
-});
+export const handleError = (error) => {
+  console.error(error);
+  return {
+    error: error.response?.data?.detail || error.message,
+  };
+};
 
 export const parseResult = <T>(result: AxiosResponse<T>) => result?.data;
 

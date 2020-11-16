@@ -11,7 +11,7 @@ import {
   Entity,
   LibraryElement,
   MyAxiosProps,
-  PaginatedArray,
+  PaginatedResponse,
   RecursiveElement,
   Result,
   ServerElement,
@@ -38,7 +38,7 @@ export const apiGetElements = ({
 
 export const apiGetCustomLibraryElements = (
   props: MyAxiosProps,
-): Promise<PaginatedArray<LibraryElement<Entity>>> => {
+): Promise<Result<PaginatedResponse<LibraryElement<Entity>>>> => {
   return myAxios({
     ...props,
     method: 'GET',
@@ -52,12 +52,14 @@ export const apiGetCustomLibraryElements = (
       // pagination will be needed in the future
       // const { next, previous, results } = res.data;
       return {
-        next: /* parseCursor(next) */ null,
-        previous: /* parseCursor(previous) */ null,
-        results: res.data.map((result) => convertElementFromResponse(result)),
+        result: {
+          next: /* parseCursor(next) */ null,
+          previous: /* parseCursor(previous) */ null,
+          results: res.data.map((result) => convertElementFromResponse(result)),
+        },
       };
     })
-    .catch(onError);
+    .catch(handleError);
 };
 
 export const apiAddElement = <
@@ -194,5 +196,5 @@ export const parseImgUsingNN = ({
     method: 'POST',
     url: `/virtualize_simple/virtualize-simple/`,
   })
-    .then((result) => convertElementFromResponse(result.data))
-    .catch(onError);
+    .then((res) => ({ result: convertElementFromResponse(res.data) }))
+    .catch(handleError);

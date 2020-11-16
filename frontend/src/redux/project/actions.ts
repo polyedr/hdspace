@@ -10,7 +10,6 @@ import {
   LibraryElement,
   LibraryElementPatch,
   Normalized,
-  PaginatedArray,
   ParentIds,
   Project,
   SavedElementsValues,
@@ -730,7 +729,7 @@ export const updateElementsLoading = (loading: boolean) => ({
 });
 
 export const addCustomElementsPage = (
-  paginatedResult: PaginatedArray<LibraryElement<Entity>>,
+  paginatedResult: PaginatedResponse<LibraryElement<Entity>>,
   initial: boolean,
 ) => ({
   type: TYPES.ADD_CUSTOM_ELEMENTS_PAGE,

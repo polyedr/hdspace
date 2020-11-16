@@ -33,7 +33,7 @@ import {
   copyElementStylesSaga,
   addElementClassNameSaga,
   removeElementClassNameSaga,
-  updateElementImage,
+  updateElementImageSaga,
   updateElementParameters,
   uploadFileSaga,
   loadCustomElementsSaga,
@@ -445,7 +445,7 @@ export default function* projectSaga() {
   yield takeLatest(TYPES.COPY_ELEMENT_STYLES, copyElementStylesSaga);
   yield takeLatest(TYPES.ADD_ELEMENT_CLASSNAME, addElementClassNameSaga);
   yield takeLatest(TYPES.REMOVE_ELEMENT_CLASSNAME, removeElementClassNameSaga);
-  yield takeLatest(TYPES.UPDATE_ELEMENT_IMAGE, updateElementImage);
+  yield takeLatest(TYPES.UPDATE_ELEMENT_IMAGE, updateElementImageSaga);
   yield takeLatest(TYPES.UPDATE_ELEMENT_PARAMETERS, updateElementParameters);
 
   yield takeEvery(TYPES.CREATE_ELEMENTS, createElementsSaga);
