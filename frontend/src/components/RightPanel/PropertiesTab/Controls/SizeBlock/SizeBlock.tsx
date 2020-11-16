@@ -1,5 +1,5 @@
 import React, { useCallback, memo } from 'react';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import TextField from '@material-ui/core/TextField';
 import Select from '@material-ui/core/Select';
 import FormControl from '@material-ui/core/FormControl';
@@ -7,14 +7,16 @@ import MenuItem from '@material-ui/core/MenuItem';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import capitalize from '@material-ui/core/utils/capitalize';
 import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
-import { selectCurrentEditableStyles } from '../../../../../redux/project/selectors';
+import {
+  selectActiveElementId,
+  selectCurrentEditableStyles,
+} from '../../../../../redux/project/selectors';
 import StylesHeader from '../../helperComponents/StylesHeader';
 import {
   Entity,
   LibraryElement,
   PropertiesChangeProps,
 } from '../../../../../types';
-import { AppReduxState } from '../../../../../redux/types';
 
 const useStyles = makeStyles({
   wrapper: {
@@ -46,7 +48,7 @@ type SelectedUnit = {
 
 type SizeName = keyof SelectedUnit;
 
-function mapState(state: AppReduxState) {
+/* function mapState(state: AppReduxState) {
   return {
     width: selectCurrentEditableStyles(state, 'width'),
     height: selectCurrentEditableStyles(state, 'height'),
@@ -54,7 +56,7 @@ function mapState(state: AppReduxState) {
 }
 
 type Props = ReturnType<typeof mapState> &
-  PropertiesChangeProps<LibraryElement<Entity>>;
+  PropertiesChangeProps<LibraryElement<Entity>>; */
 
 const getUnitFromValue = (value: string): UnitName => {
   const unit = value.replace(/[0-9, \d+.\d+]/g, '');
@@ -66,18 +68,18 @@ const getUnitFromValue = (value: string): UnitName => {
   return Unit.px;
 };
 
-const SizeBlock: React.FC<Props> = ({
+const SizeBlock: React.FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
   updateStyles,
   removeStyles,
-  activeItemID,
-  width,
-  height,
 }) => {
+  const activeElementId = useSelector(selectActiveElementId);
+  const width = useSelector(selectCurrentEditableStyles('width')) || 'auto';
+  const height = useSelector(selectCurrentEditableStyles('height')) || 'auto';
   const classes = useStyles();
 
   const handleSelectChange = useCallback(
     ({ target: { value } }, sizeName: SizeName) => {
-      const el = document.getElementById(activeItemID);
+      const el = document.getElementById(activeElementId);
 
       switch (value as UnitName) {
         case 'px': {
@@ -118,26 +120,26 @@ const SizeBlock: React.FC<Props> = ({
           break;
       }
     },
-    [activeItemID, updateStyles, width, height],
+    [activeElementId, updateStyles, width, height],
   );
 
   const handleInputChange = useCallback(
     ({ target: { name, value } }) => {
-      const size = name === 'width' ? width : height;
-      const unitValue = Unit[getUnitFromValue(size)];
+      const size = String(name === 'width' ? width : height) || 'auto';
+      const unitValue = Unit[getUnitFromValue(size?.toString() || Unit.px)];
 
       const newSize = {
         [name]: unitValue === 'auto' ? 'auto' : `${value}${Unit[unitValue]}`,
       };
 
       updateStyles(newSize);
-      updateStyles({ 'flex-grow': 0 });
+      updateStyles({ flexGrow: 0 });
     },
     [updateStyles, width, height],
   );
 
   const renderSizeControl = (sizeName: SizeName) => {
-    const size = sizeName === 'width' ? width : height;
+    const size = String(sizeName === 'width' ? width : height) || 'auto';
     const parsedSize = Number.isNaN(parseFloat(size))
       ? ''
       : String(parseFloat(size));
@@ -190,4 +192,4 @@ const SizeBlock: React.FC<Props> = ({
   );
 };
 
-export default connect(mapState)(withConfigurableProperties(memo(SizeBlock)));
+export default withConfigurableProperties(memo(SizeBlock));

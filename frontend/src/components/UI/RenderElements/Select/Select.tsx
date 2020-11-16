@@ -6,7 +6,6 @@ import { makeStyles, TextField, MenuItem } from '@material-ui/core';
 import * as R from 'ramda';
 import { useSelector } from 'react-redux';
 import { SelectRendererProps } from '../types';
-import { convertPropCSS } from '../../../../utils/StyleHelper';
 import { selectElementAsTree } from '../../../../redux/project/selectors';
 import { LibraryElement } from '../../../../types';
 
@@ -268,14 +267,14 @@ const Select: React.FC<SelectRendererProps> = React.forwardRef((props, ref) => {
     projectClasses?.find((cssClass) => cssClass.className === menuGroupClass)
       ?.rules || {};
 
-  const convertedMenuEntityStyles = convertPropCSS(menuEntityStyles);
+  /* const convertedMenuEntityStyles = convertPropCSS(menuEntityStyles);
   const convertedGroupStyles = convertPropCSS(menuGroupStyles);
-  const menuOwnStyles = convertPropCSS(menu.styles.ownStyles);
+  const menuOwnStyles = convertPropCSS(menu.styles.ownStyles); */
 
   const menuClasses = getMenuStyles(
-    convertedMenuEntityStyles,
-    convertedGroupStyles,
-    menuOwnStyles,
+    menuEntityStyles,
+    menuGroupStyles,
+    menu.styles.ownStyles,
   )();
 
   const PrototypeMenuProps = {
@@ -380,16 +379,10 @@ const Select: React.FC<SelectRendererProps> = React.forwardRef((props, ref) => {
               (cssClass) => cssClass.className === groupClass,
             )?.rules || {};
 
-          const convertedEntityStyles = convertPropCSS(menuItemEntityStyles);
-          const menuItemConvertedGroupStyles = convertPropCSS(
-            menuItemGroupStyles,
-          );
-          const menuItemOwnStyles = convertPropCSS(styles.ownStyles);
-
           const menuItemClasses = getMenuItemClasses(
-            convertedEntityStyles,
-            menuItemConvertedGroupStyles,
-            menuItemOwnStyles,
+            menuItemEntityStyles,
+            menuItemGroupStyles,
+            styles.ownStyles,
           )();
 
           return (

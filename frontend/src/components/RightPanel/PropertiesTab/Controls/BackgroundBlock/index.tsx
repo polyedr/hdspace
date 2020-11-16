@@ -1,5 +1,5 @@
 import React, { memo, useCallback } from 'react';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
 import { selectCurrentEditableStyles } from '../../../../../redux/project/selectors';
 import StylesHeader from '../../helperComponents/StylesHeader';
@@ -9,26 +9,16 @@ import {
   LibraryElement,
   PropertiesChangeProps,
 } from '../../../../../types';
-import { AppReduxState } from '../../../../../redux/types';
 
-function mapState(state: AppReduxState) {
-  return {
-    backgroundColor: selectCurrentEditableStyles(state, 'background-color'),
-  };
-}
-
-type Props = ReturnType<typeof mapState> &
-  PropertiesChangeProps<LibraryElement<Entity>>;
-
-const BackgroundBlock: React.FC<Props> = ({
-  removeStyles,
-  updateStyles,
-  activeItemID,
-  backgroundColor,
-}) => {
+const BackgroundBlock: React.FC<PropertiesChangeProps<
+  LibraryElement<Entity>
+>> = ({ removeStyles, updateStyles, activeItemID }) => {
+  const backgroundColor = useSelector(
+    selectCurrentEditableStyles('backgroundColor'),
+  );
   const handleColorSettingsChange = useCallback(
     (color: string) => {
-      updateStyles({ 'background-color': color });
+      updateStyles({ backgroundColor: color });
     },
     [updateStyles],
   );
@@ -38,11 +28,11 @@ const BackgroundBlock: React.FC<Props> = ({
       <StylesHeader
         title="Background"
         onClick={removeStyles}
-        cssPropertiesNames={['background-color']}
+        cssPropertiesNames={['backgroundColor']}
       />
 
       <ColorSettings
-        currentColor={backgroundColor}
+        currentColor={backgroundColor || 'transparent'}
         activeItemID={activeItemID}
         onChange={handleColorSettingsChange}
       />
@@ -50,6 +40,4 @@ const BackgroundBlock: React.FC<Props> = ({
   );
 };
 
-export default connect(mapState)(
-  withConfigurableProperties(memo(BackgroundBlock)),
-);
+export default withConfigurableProperties(memo(BackgroundBlock));

@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Switch } from '@material-ui/core';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import makeStyles from '@material-ui/core/styles/makeStyles';
@@ -16,22 +16,13 @@ const useStyles = makeStyles({
   },
 });
 
-type StateProps = {
-  showRipple: boolean;
-};
-
-function mapState(state: AppReduxState): StateProps {
-  const activeItemParams = selectActiveElementParams(state);
-
-  return {
-    showRipple: activeItemParams.showRipple,
-  };
-}
-
-type Props = StateProps & PropertiesChangeProps<ButtonElement>;
-
-const Ripple: React.FC<Props> = ({ showRipple, updateParams }) => {
+const Ripple: React.FC<PropertiesChangeProps<ButtonElement>> = ({
+  updateParams,
+}) => {
   const classes = useStyles();
+  const showRipple = useSelector(
+    (state: AppReduxState) => selectActiveElementParams(state).showRipple,
+  );
 
   const handleSwitchChange = () => {
     updateParams({ showRipple: !showRipple });
@@ -47,4 +38,4 @@ const Ripple: React.FC<Props> = ({ showRipple, updateParams }) => {
   );
 };
 
-export default connect(mapState)(withConfigurableProperties(Ripple));
+export default withConfigurableProperties(Ripple);

@@ -5,7 +5,6 @@ import {
   ChildEntity,
   ChildrenElements,
   CreatedElement,
-  CssLikeStyles,
   Entity,
   Indices,
   LibraryElement,
@@ -20,6 +19,7 @@ import {
   NNBlockType,
   SCREEN_FORMATS,
   RightPanelTab,
+  PropertyName,
 } from '../../types';
 import {
   Action,
@@ -402,7 +402,7 @@ export const toggleContainersBorders = (): ToggleContainersBorders => ({
 
 export const updateSharedStyles = (
   className: Entity,
-  styles: CssLikeStyles,
+  styles: React.CSSProperties,
   meta: ElementHistoryMeta,
 ): UpdateSharedStyles => ({
   type: TYPES.UPDATE_SHARED_STYLES,
@@ -413,7 +413,7 @@ export const updateSharedStyles = (
 export const copyElementStyles = (
   elementType: Entity,
   elementID: string,
-  styles: CssLikeStyles,
+  styles: React.CSSProperties,
   meta: ElementHistoryMeta,
 ): CopyElementStyles => ({
   type: TYPES.COPY_ELEMENT_STYLES,
@@ -443,7 +443,7 @@ export const removeElementClassName = (
 
 export const removeSharedStyles = (
   className: Entity,
-  cssPropertiesNames: string[],
+  cssPropertiesNames: PropertyName[],
   meta: ElementHistoryMeta,
 ): RemoveSharedStyles => ({
   type: TYPES.REMOVE_SHARED_STYLES,
@@ -453,7 +453,7 @@ export const removeSharedStyles = (
 
 export const replaceElementStyles = (
   id: string,
-  styles: CssLikeStyles,
+  styles: React.CSSProperties,
   meta: ElementHistoryMeta,
 ): ReplaceElementStyles => ({
   type: TYPES.REPLACE_ELEMENT_STYLES,
@@ -463,7 +463,7 @@ export const replaceElementStyles = (
 
 export const updateElementStyles = (
   id: string,
-  styles: CssLikeStyles,
+  styles: React.CSSProperties,
   meta: ElementHistoryMeta,
 ): UpdateElementStyles => ({
   type: TYPES.UPDATE_ELEMENT_STYLES,
@@ -473,7 +473,7 @@ export const updateElementStyles = (
 
 export const removeElementStyles = (
   id: string,
-  cssPropertiesNames: string[],
+  cssPropertiesNames: PropertyName[],
   meta: ElementHistoryMeta,
 ): RemoveElementStyles => ({
   type: TYPES.REMOVE_ELEMENT_STYLES,

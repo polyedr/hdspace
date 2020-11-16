@@ -18,7 +18,7 @@ import {
 import { defaultFreeCanvasParams } from '../../core';
 import {
   CardsSectionServerElement,
-  CssLikeStyles,
+  ElementGroup,
   FeatureSectionServerElement,
   PageTemplateServerElement,
   SectionServerElement,
@@ -32,12 +32,12 @@ export const makePageTemplate = (
   func_type: withoutContainers ? 'emptyPageTemplate' : 'pageTemplate',
   struct_type: withoutContainers ? 'emptyPageTemplate' : 'pageTemplate',
   parameters: {
-    group: 'containers',
+    group: ElementGroup.CONTAINERS,
     ...defaultFreeCanvasParams,
   },
   styles: {
     classNames: ['pageTemplate'],
-    ownStyles: {} as Required<CssLikeStyles>,
+    ownStyles: {},
   },
   name: withoutContainers ? 'emptyPageTemplate' : 'pageTemplate',
   children: [
@@ -55,10 +55,9 @@ export const makePageTemplate = (
             }),
           ],
       ownStyles: {
-        'padding-right': '5px',
-        'padding-left': '5px',
+        padding: '0 5px',
         height: '80px',
-      } as Required<CssLikeStyles>,
+      },
     }),
     makeContainer({
       children: [
@@ -76,13 +75,10 @@ export const makePageTemplate = (
                 }),
               ],
           ownStyles: {
-            'padding-top': '0px',
-            'padding-right': '5px',
-            'padding-bottom': '0px',
-            'padding-left': '5px',
+            padding: '0px 5px',
             width: '25%',
-            'flex-grow': 1,
-          } as Required<CssLikeStyles>,
+            flexGrow: 1,
+          },
         }),
         makeContainer({
           name: 'Main Content',
@@ -99,13 +95,10 @@ export const makePageTemplate = (
               ],
           buoyancy: 1,
           ownStyles: {
-            'padding-top': '0px',
-            'padding-right': '5px',
-            'padding-bottom': '0px',
-            'padding-left': '5px',
+            padding: '0 5px',
             width: '50%',
-            'flex-grow': 3000,
-          } as Required<CssLikeStyles>,
+            flexGrow: 3000,
+          },
         }),
         makeContainer({
           name: 'Right Panel',
@@ -122,24 +115,18 @@ export const makePageTemplate = (
               ],
           buoyancy: 2,
           ownStyles: {
-            'padding-top': '0px',
-            'padding-right': '5px',
-            'padding-bottom': '0px',
-            'padding-left': '5px',
+            padding: '0px 5px',
             width: '25%',
-            'flex-grow': 1,
-          } as Required<CssLikeStyles>,
+            flexGrow: 1,
+          },
         }),
       ],
       ownStyles: {
         height: '150px',
         display: 'flex',
-        'padding-top': '5px',
-        'padding-right': '0px',
-        'padding-bottom': '5px',
-        'padding-left': '0px',
-        'flex-grow': 1,
-      } as Required<CssLikeStyles>,
+        padding: '5px 0',
+        flexGrow: 1,
+      },
     }),
     makeContainer({
       name: 'Footer',
@@ -155,10 +142,9 @@ export const makePageTemplate = (
             }),
           ],
       ownStyles: {
-        'padding-right': '5px',
-        'padding-left': '5px',
+        padding: '0 5px',
         height: '80px',
-      } as Required<CssLikeStyles>,
+      },
     }),
   ],
 });
@@ -169,40 +155,40 @@ export const subscribeForm: SubscribeFormServerElement = {
   struct_type: 'subscribeForm',
   parameters: {
     ...defaultFreeCanvasParams,
-    group: 'containers',
+    group: ElementGroup.CONTAINERS,
   },
   styles: {
     classNames: ['subscribeForm'],
-    ownStyles: {} as Required<CssLikeStyles>,
+    ownStyles: {},
   },
   name: 'subscribeForm',
   children: [
     makeContainer({
       ownStyles: {
         display: 'flex',
-        'flex-direction': 'column',
-        'align-items': 'center',
-        'max-width': '940px',
-        'text-align': 'center',
-      } as Required<CssLikeStyles>,
+        flexDirection: 'column',
+        alignItems: 'center',
+        maxWidth: '940px',
+        textAlign: 'center',
+      },
       children: [
         makeHeading({
           headingType: 'h2',
           textContent: 'Subscribe form',
           ownStyles: {
-            'font-size': '32px',
-            'line-height': '36px',
-            'margin-top': '20px',
-            'margin-bottom': '10px',
-          } as Required<CssLikeStyles>,
+            fontSize: '32px',
+            lineHeight: '36px',
+            marginTop: '20px',
+            marginBottom: '10px',
+          },
         }),
         makeParagraph({
           ownStyles: {
-            'font-size': '14px',
-            'line-height': '20px',
-            'text-align': 'center',
-            'margin-bottom': '10px',
-          } as Required<CssLikeStyles>,
+            fontSize: '14px',
+            lineHeight: '20px',
+            textAlign: 'center',
+            marginBottom: '10px',
+          },
           buoyancy: 1,
           textContent:
             'Lorem ipsum dolor sit amet consectetur adipisicing elit. Id labore error ipsum laboriosam necessitatibus aperiam facere aut quo quibusdam, possimus quia odit placeat nostrum, similique pariatur corporis nobis sint rerum laborum architecto natus!',
@@ -211,15 +197,15 @@ export const subscribeForm: SubscribeFormServerElement = {
           buoyancy: 2,
           ownStyles: {
             width: 'auto',
-            'margin-bottom': '15px',
-          } as Required<CssLikeStyles>,
+            marginBottom: '15px',
+          },
           children: [
             makeLabel({
-              ownStyles: ({
-                'font-size': '14px',
-                'font-weight': '700',
-                'margin-bottom': '5px',
-              } as unknown) as Required<CssLikeStyles>,
+              ownStyles: {
+                fontSize: '14px',
+                fontWeight: 700,
+                marginBottom: '5px',
+              },
               textContent: 'Email',
             }),
             makeContainer({
@@ -227,33 +213,24 @@ export const subscribeForm: SubscribeFormServerElement = {
               ownStyles: {
                 display: 'flex',
                 width: 'auto',
-                'padding-top': '0px',
-                'padding-right': '0px',
-                'padding-bottom': '0px',
-                'padding-left': '0px',
-              } as Required<CssLikeStyles>,
+                padding: '0',
+              },
               children: [
                 makeTextinput({
                   ownStyles: {
                     width: '200px',
-                    'padding-top': '12px',
-                    'padding-right': '16px',
-                    'padding-bottom': '12px',
-                    'padding-left': '16px',
-                    'font-size': '14px',
-                    'line-height': '1.4',
-                  } as Required<CssLikeStyles>,
+                    padding: '12px 16px',
+                    fontSize: '14px',
+                    lineHeight: '1.4',
+                  },
                 }),
                 makeButton({
                   buoyancy: 1,
                   textContent: 'subscribe',
                   ownStyles: {
-                    'padding-top': '9px',
-                    'padding-right': '15px',
-                    'padding-bottom': '9px',
-                    'padding-left': '15px',
-                    'font-size': '14px',
-                  } as Required<CssLikeStyles>,
+                    padding: '9px 15px',
+                    fontSize: '14px',
+                  },
                 }),
               ],
             }),
@@ -270,37 +247,37 @@ export const cardsSection: CardsSectionServerElement = {
   struct_type: 'cardsSection',
   parameters: {
     ...defaultFreeCanvasParams,
-    group: 'containers',
+    group: ElementGroup.CONTAINERS,
   },
   styles: {
     classNames: ['cardsSection'],
-    ownStyles: {} as Required<CssLikeStyles>,
+    ownStyles: {},
   },
   name: 'cardsSection',
   children: [
     makeContainer({
       ownStyles: {
-        'max-width': '940px',
-      } as Required<CssLikeStyles>,
+        maxWidth: '940px',
+      },
       children: [
         makeHeading({
           headingType: 'h2',
           textContent: 'Cards Section',
           ownStyles: {
-            'text-align': 'center',
-            'font-size': '32px',
-            'line-height': '36px',
-            'margin-top': '20px',
-            'margin-bottom': '10px',
-          } as Required<CssLikeStyles>,
+            textAlign: 'center',
+            fontSize: '32px',
+            lineHeight: '36px',
+            marginTop: '20px',
+            marginBottom: '10px',
+          },
         }),
         makeParagraph({
           ownStyles: {
-            'font-size': '14px',
-            'line-height': '20px',
-            'text-align': 'center',
-            'margin-bottom': '10px',
-          } as Required<CssLikeStyles>,
+            fontSize: '14px',
+            lineHeight: '20px',
+            textAlign: 'center',
+            marginBottom: '10px',
+          },
           buoyancy: 1,
           textContent:
             'Lorem ipsum dolor sit amet consectetur adipisicing elit. Id labore error ipsum laboriosam necessitatibus aperiam facere aut quo quibusdam, possimus quia odit placeat nostrum, similique pariatur corporis nobis sint rerum laborum architecto natus! Aut illum a minus cumque iste, quibusdam corporis atque odit magnam impedit esse possimus perspiciatis culpa non id tempore fugiat molestiae eos dolorem, labore maiores ratione? Sequi tenetur porro enim reprehenderit amet accusamus eos itaque saepe quidem quod, sit vero ab recusandae vitae, facere nobis cumque minima libero aut quos nihil labore eius. Soluta doloremque mollitia nihil voluptatibus, nostrum commodi eaque similique ipsam ad libero at tenetur.',
@@ -309,121 +286,112 @@ export const cardsSection: CardsSectionServerElement = {
           buoyancy: 2,
           ownStyles: {
             display: 'flex',
-            'justify-content': 'space-between',
-          } as Required<CssLikeStyles>,
+            justifyContent: 'space-between',
+          },
           children: [
             makeContainer({
               children: [
                 makeImage({
                   ownStyles: {
                     width: '100%',
-                  } as Required<CssLikeStyles>,
+                  },
                 }),
                 makeHeading({
                   buoyancy: 1,
                   textContent: 'Card one',
                   ownStyles: {
-                    'font-size': '24px',
-                    'line-height': '30px',
-                    'margin-top': '20px',
-                    'margin-bottom': '10px',
-                  } as Required<CssLikeStyles>,
+                    fontSize: '24px',
+                    lineHeight: '30px',
+                    marginTop: '20px',
+                    marginBottom: '10px',
+                  },
                 }),
                 makeParagraph({
                   buoyancy: 2,
                   ownStyles: {
-                    'font-size': '14px',
-                    'line-height': '20px',
-                    'margin-bottom': '10px',
-                  } as Required<CssLikeStyles>,
+                    fontSize: '14px',
+                    lineHeight: '20px',
+                    marginBottom: '10px',
+                  },
                   textContent:
                     'Lorem ipsum dolor sit amet consectetur adipisicing elit. Id labore error ipsum laboriosam necessitatibus aperiam facere aut quo quibusdam, possimus quia odit placeat nostrum, similique pariatur corporis nobis sint rerum laborum architecto natus!',
                 }),
               ],
               ownStyles: {
-                'padding-top': '0px',
-                'padding-right': '20px',
-                'padding-bottom': '0px',
-                'padding-left': '20px',
+                padding: '0 20px',
                 width: '33%',
-                'flex-grow': 1,
-              } as Required<CssLikeStyles>,
+                flexGrow: 1,
+              },
             }),
             makeContainer({
               children: [
                 makeImage({
                   ownStyles: {
                     width: '100%',
-                  } as Required<CssLikeStyles>,
+                  },
                 }),
                 makeHeading({
                   buoyancy: 1,
                   textContent: 'Card two',
                   ownStyles: {
-                    'font-size': '24px',
-                    'line-height': '30px',
-                    'margin-top': '20px',
-                    'margin-bottom': '10px',
-                  } as Required<CssLikeStyles>,
+                    fontSize: '24px',
+                    lineHeight: '30px',
+                    marginTop: '20px',
+                    marginBottom: '10px',
+                  },
                 }),
                 makeParagraph({
                   buoyancy: 2,
                   ownStyles: {
-                    'font-size': '14px',
-                    'line-height': '20px',
-                    'margin-bottom': '10px',
-                  } as Required<CssLikeStyles>,
+                    fontSize: '14px',
+                    lineHeight: '20px',
+                    marginBottom: '10px',
+                  },
                   textContent:
                     'Lorem ipsum dolor sit amet consectetur adipisicing elit. Id labore error ipsum laboriosam necessitatibus aperiam facere aut quo quibusdam, possimus quia odit placeat nostrum, similique pariatur corporis nobis sint rerum laborum architecto natus!',
                 }),
               ],
               buoyancy: 1,
               ownStyles: {
-                'padding-top': '0px',
-                'padding-right': '20px',
-                'padding-bottom': '0px',
-                'padding-left': '20px',
+                padding: '0 20px',
                 width: '33%',
-                'flex-grow': 1,
-              } as Required<CssLikeStyles>,
+                flexGrow: 1,
+              },
             }),
             makeContainer({
               children: [
                 makeImage({
                   ownStyles: {
                     width: '100%',
-                  } as Required<CssLikeStyles>,
+                  },
                 }),
                 makeHeading({
                   buoyancy: 1,
                   textContent: 'Card three',
                   ownStyles: {
-                    'font-size': '24px',
-                    'line-height': '30px',
-                    'margin-top': '20px',
-                    'margin-bottom': '10px',
-                  } as Required<CssLikeStyles>,
+                    fontSize: '24px',
+                    lineHeight: '30px',
+                    marginTop: '20px',
+                    marginBottom: '10px',
+                  },
                 }),
                 makeParagraph({
                   buoyancy: 2,
                   ownStyles: {
-                    'font-size': '14px',
-                    'line-height': '20px',
-                    'margin-bottom': '10px',
-                  } as Required<CssLikeStyles>,
+                    fontSize: '14px',
+                    lineHeight: '20px',
+                    marginBottom: '10px',
+                  },
                   textContent:
                     'Lorem ipsum dolor sit amet consectetur adipisicing elit. Id labore error ipsum laboriosam necessitatibus aperiam facere aut quo quibusdam, possimus quia odit placeat nostrum, similique pariatur corporis nobis sint rerum laborum architecto natus!',
                 }),
               ],
               buoyancy: 2,
               ownStyles: {
-                'padding-top': '0px',
-                'padding-right': '20px',
-                'padding-bottom': '0px',
-                'padding-left': '20px',
+                padding: '0 20px',
                 width: '33%',
-                'flex-grow': 1,
-              } as Required<CssLikeStyles>,
+                flexGrow: 1,
+              },
             }),
           ],
         }),
@@ -438,58 +406,58 @@ export const featureSection: FeatureSectionServerElement = {
   struct_type: 'featureSection',
   parameters: {
     ...defaultFreeCanvasParams,
-    group: 'containers',
+    group: ElementGroup.CONTAINERS,
   },
   styles: {
     classNames: ['featureSection'],
-    ownStyles: {} as Required<CssLikeStyles>,
+    ownStyles: {},
   },
   name: 'featureSection',
   children: [
     makeContainer({
       ownStyles: {
         display: 'flex',
-        'align-items': 'center',
-        'max-width': '940px',
-      } as Required<CssLikeStyles>,
+        alignItems: 'center',
+        maxWidth: '940px',
+      },
       children: [
         makeImage({
           ownStyles: {
             width: '100%',
             height: 'auto',
-            'margin-right': '40px',
-          } as Required<CssLikeStyles>,
+            marginRight: '40px',
+          },
         }),
         makeContainer({
           buoyancy: 1,
-          ownStyles: {} as Required<CssLikeStyles>,
+          ownStyles: {},
           children: [
             makeHeading({
               textContent: 'Feature section',
               ownStyles: {
-                'font-size': '32px',
-                'line-height': '36px',
-                'margin-top': '20px',
-                'margin-bottom': '10px',
-              } as Required<CssLikeStyles>,
+                fontSize: '32px',
+                lineHeight: '36px',
+                marginTop: '20px',
+                marginBottom: '10px',
+              },
             }),
             makeParagraph({
               buoyancy: 1,
               ownStyles: {
-                'font-size': '14px',
-                'line-height': '20px',
-                'margin-bottom': '16px',
-              } as Required<CssLikeStyles>,
+                fontSize: '14px',
+                lineHeight: '20px',
+                marginBottom: '16px',
+              },
               textContent:
                 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Id labore error ipsum laboriosam necessitatibus aperiam facere aut quo quibusdam, possimus quia odit placeat nostrum, similique pariatur corporis nobis sint rerum laborum architecto natus!',
             }),
             makeParagraph({
               buoyancy: 2,
               ownStyles: {
-                'font-size': '14px',
-                'line-height': '20px',
-                'margin-bottom': '16px',
-              } as Required<CssLikeStyles>,
+                fontSize: '14px',
+                lineHeight: '20px',
+                marginBottom: '16px',
+              },
               textContent:
                 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Id labore error ipsum laboriosam necessitatibus aperiam facere aut quo quibusdam, possimus quia odit placeat nostrum, similique pariatur corporis nobis sint rerum laborum architecto natus!',
             }),
@@ -505,14 +473,14 @@ export const section: SectionServerElement = {
   func_type: 'section',
   struct_type: 'section',
   parameters: {
-    group: 'containers',
+    group: ElementGroup.CONTAINERS,
     ...defaultFreeCanvasParams,
   },
   styles: {
     classNames: ['section'],
     ownStyles: {
-      'min-height': '50px',
-    } as Required<CssLikeStyles>,
+      minHeight: '50px',
+    },
   },
   name: 'section',
   children: [],

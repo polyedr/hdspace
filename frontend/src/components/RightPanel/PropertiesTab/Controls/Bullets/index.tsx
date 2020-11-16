@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Switch } from '@material-ui/core';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import makeStyles from '@material-ui/core/styles/makeStyles';
@@ -7,7 +7,6 @@ import withConfigurableProperties from '../../../../../utils/withConfigurablePro
 import { selectCurrentEditableStyles } from '../../../../../redux/project/selectors';
 import StylesHeader from '../../helperComponents/StylesHeader';
 import { ListElement, PropertiesChangeProps } from '../../../../../types';
-import { AppReduxState } from '../../../../../redux/types';
 
 const useStyles = makeStyles({
   wrapper: {
@@ -16,22 +15,23 @@ const useStyles = makeStyles({
   },
 });
 
-function mapState(state: AppReduxState) {
+/* function mapState(state: AppReduxState) {
   return {
     bulletsStyles: selectCurrentEditableStyles(state, 'list-style-type'),
   };
-}
+} */
 
-type Props = ReturnType<typeof mapState> & PropertiesChangeProps<ListElement>;
-
-const Bullets: React.FC<Props> = ({
-  bulletsStyles,
+const Bullets: React.FC<PropertiesChangeProps<ListElement>> = ({
   updateStyles,
   removeStyles,
 }) => {
   const classes = useStyles();
+  const bulletsStyles = useSelector(
+    selectCurrentEditableStyles('listStyleType'),
+  );
+
   const handleSwitchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    updateStyles({ 'list-style-type': event.target.checked ? 'disc' : 'none' });
+    updateStyles({ listStyleType: event.target.checked ? 'disc' : 'none' });
   };
 
   return (
@@ -39,7 +39,7 @@ const Bullets: React.FC<Props> = ({
       <StylesHeader
         title="Bullets"
         onClick={removeStyles}
-        cssPropertiesNames={['list-style-type']}
+        cssPropertiesNames={['listStyleType']}
       />
 
       <div className={classes.wrapper}>
@@ -57,4 +57,4 @@ const Bullets: React.FC<Props> = ({
   );
 };
 
-export default connect(mapState)(withConfigurableProperties(Bullets));
+export default withConfigurableProperties(Bullets);

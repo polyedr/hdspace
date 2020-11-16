@@ -3,6 +3,7 @@ const DISPLAY = [
   { label: 'Inline', value: 'inline' },
   { label: 'Inline-block', value: 'inline-block' },
   { label: 'Flex', value: 'flex' },
+  { label: 'Initial', value: 'initial' },
 ];
 
 export default DISPLAY;

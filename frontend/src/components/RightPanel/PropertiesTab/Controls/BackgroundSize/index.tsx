@@ -1,14 +1,16 @@
 import React, { useCallback, memo } from 'react';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
-import { selectCurrentEditableStyles } from '../../../../../redux/project/selectors';
+import {
+  selectActiveElementId,
+  selectCurrentEditableStyles,
+} from '../../../../../redux/project/selectors';
 import StylesHeader from '../../helperComponents/StylesHeader';
 import {
   Entity,
   LibraryElement,
   PropertiesChangeProps,
 } from '../../../../../types';
-import { AppReduxState } from '../../../../../redux/types';
 
 enum Unit {
   px = 'px',
@@ -25,15 +27,6 @@ type SelectedUnit = {
 
 type SizeName = keyof SelectedUnit;
 
-function mapState(state: AppReduxState) {
-  return {
-    backgroundSize: selectCurrentEditableStyles(state, 'background-size'),
-  };
-}
-
-type Props = ReturnType<typeof mapState> &
-  PropertiesChangeProps<LibraryElement<Entity>>;
-
 const getUnitFromValue = (value: string): UnitName => {
   const unit = value.replace(/[0-9, \d+.\d+]/g, '');
 
@@ -44,18 +37,21 @@ const getUnitFromValue = (value: string): UnitName => {
   return Unit.px;
 };
 
-const BackgroundSize: React.FC<Props> = memo((props) => {
-  const { updateStyles, removeStyles, activeItemID, backgroundSize } = props;
-
-  const [width, height] = backgroundSize.split(' ');
+const BackgroundSize: React.FC<PropertiesChangeProps<
+  LibraryElement<Entity>
+>> = memo(({ updateStyles, removeStyles }) => {
+  const activeElementId = useSelector(selectActiveElementId);
+  const backgroundSize = useSelector(
+    selectCurrentEditableStyles('backgroundSize'),
+  ) as string;
+  const [width, height] = backgroundSize?.split(' ');
 
   const handleSelectChange = useCallback(
     ({ target: { value } }, sizeName: SizeName) => {
-      const el = document.getElementById(activeItemID);
+      const el = document.getElementById(activeElementId);
 
       switch (value as UnitName) {
         case 'px': {
-          console.log(el);
           if (el !== null) {
             const size =
               sizeName === 'width' ? el.offsetWidth : el.offsetHeight;
@@ -65,7 +61,7 @@ const BackgroundSize: React.FC<Props> = memo((props) => {
                 ? `${size}px ${height}`
                 : `${width} ${size}px`;
 
-            updateStyles({ 'background-size': newBackgroundSize });
+            updateStyles({ backgroundSize: newBackgroundSize });
           }
           break;
         }
@@ -74,7 +70,7 @@ const BackgroundSize: React.FC<Props> = memo((props) => {
           const newBackgroundSize =
             sizeName === 'width' ? `auto ${height}` : `${width} auto`;
 
-          updateStyles({ 'background-size': newBackgroundSize });
+          updateStyles({ backgroundSize: newBackgroundSize });
           break;
         }
 
@@ -100,7 +96,7 @@ const BackgroundSize: React.FC<Props> = memo((props) => {
                 ? `${sizeInPercents}% ${height}`
                 : `${width} ${sizeInPercents}%`;
 
-            updateStyles({ 'background-size': newBackgroundSize });
+            updateStyles({ backgroundSize: newBackgroundSize });
           }
           break;
 
@@ -108,7 +104,7 @@ const BackgroundSize: React.FC<Props> = memo((props) => {
           break;
       }
     },
-    [activeItemID, updateStyles, width, height],
+    [activeElementId, updateStyles, width, height],
   );
 
   const handleInputChange = useCallback(
@@ -122,7 +118,7 @@ const BackgroundSize: React.FC<Props> = memo((props) => {
       const newBackgroundSize =
         name === 'width' ? `${newSize} ${height}` : `${width} ${newSize}`;
 
-      updateStyles({ 'background-size': newBackgroundSize });
+      updateStyles({ backgroundSize: newBackgroundSize });
     },
     [updateStyles, width, height],
   );
@@ -166,7 +162,7 @@ const BackgroundSize: React.FC<Props> = memo((props) => {
       <StylesHeader
         title="Background Size"
         onClick={removeStyles}
-        cssPropertiesNames={['background-size']}
+        cssPropertiesNames={['backgroundSize']}
       />
 
       <div>
@@ -177,4 +173,4 @@ const BackgroundSize: React.FC<Props> = memo((props) => {
   );
 });
 
-export default connect(mapState)(withConfigurableProperties(BackgroundSize));
+export default withConfigurableProperties(BackgroundSize);

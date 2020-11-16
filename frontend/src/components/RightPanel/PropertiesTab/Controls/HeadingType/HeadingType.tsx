@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -18,26 +18,18 @@ type StateProps = {
   headingType: HeadingTagType;
 };
 
-function mapState(state: AppReduxState): StateProps {
-  const activeItemParams = selectActiveElementParams(state);
-
-  return {
-    headingType: activeItemParams.headingType,
-  };
-}
-
 type Props = StateProps & PropertiesChangeProps<HeadingElement>;
 
-const HeadingType: React.FC<Props> = ({
-  headingType,
-  updateParams,
-  updateStyles,
-}) => {
+const HeadingType: React.FC<Props> = ({ updateParams, updateStyles }) => {
+  const headingType = useSelector(
+    (state: AppReduxState) => selectActiveElementParams(state).headingType,
+  );
+
   const handleDropdownChange = (ev) => {
     const newHeadingType = ev.target.value as HeadingTagType;
 
     updateParams({ headingType: newHeadingType });
-    updateStyles({ 'font-size': HEADING_SETTINGS[newHeadingType].fontSize });
+    updateStyles({ fontSize: HEADING_SETTINGS[newHeadingType].fontSize });
   };
 
   return (
@@ -59,4 +51,4 @@ const HeadingType: React.FC<Props> = ({
   );
 };
 
-export default connect(mapState)(withConfigurableProperties(memo(HeadingType)));
+export default withConfigurableProperties(memo(HeadingType));

@@ -1,19 +1,14 @@
 import React, { useState } from 'react';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Checkbox } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import Switch from '@material-ui/core/Switch';
-import { selectActiveElementParams } from '../../../../../redux/project/selectors';
+import { selectActiveElementParamByName } from '../../../../../redux/project/selectors';
 import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
 import { extractPlayerLinkInfo } from '../../../../../utils/extractVideoLink';
-import {
-  PropertiesChangeProps,
-  VideoElement,
-  VideoSettingsType,
-} from '../../../../../types';
-import { AppReduxState } from '../../../../../redux/types';
+import { PropertiesChangeProps, VideoElement } from '../../../../../types';
 
 const useStyles = makeStyles({
   wrapper: {
@@ -25,22 +20,13 @@ const useStyles = makeStyles({
   },
 });
 
-type StateProps = {
-  videoSettings: VideoSettingsType;
-};
-
-function mapState(state: AppReduxState): StateProps {
-  const activeItemParams = selectActiveElementParams(state);
-
-  return {
-    videoSettings: activeItemParams.videoSettings as VideoSettingsType,
-  };
-}
-
-type Props = StateProps & PropertiesChangeProps<VideoElement>;
-
-const VideoSettings: React.FC<Props> = ({ videoSettings, updateParams }) => {
+const VideoSettings: React.FC<PropertiesChangeProps<VideoElement>> = ({
+  updateParams,
+}) => {
   const classes = useStyles();
+  const videoSettings = useSelector(
+    selectActiveElementParamByName('videoSettings'),
+  );
   const { link, autoplay, start, end, loop, rel } = videoSettings;
 
   const [linkInputValue, setLinkInputValue] = useState(link);
@@ -165,4 +151,4 @@ const VideoSettings: React.FC<Props> = ({ videoSettings, updateParams }) => {
   );
 };
 
-export default connect(mapState)(withConfigurableProperties(VideoSettings));
+export default withConfigurableProperties(VideoSettings);

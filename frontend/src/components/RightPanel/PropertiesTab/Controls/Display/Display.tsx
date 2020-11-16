@@ -1,40 +1,28 @@
-import React, { memo, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import DISPLAY from './constants';
-import { convertFlexToCssLikeStyles } from '../../../../../utils/StyleHelper';
 import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
-import { selectDisplayStyles } from '../../../../../redux/project/selectors';
+import { selectCurrentEditableStyles } from '../../../../../redux/project/selectors';
 import StylesHeader from '../../helperComponents/StylesHeader';
 import FlexProperties from '../../helperComponents/FlexProperties';
 import {
   Entity,
-  Flex,
   LibraryElement,
   PropertiesChangeProps,
-  ScreenDisplay,
 } from '../../../../../types';
 
-type StateProps = {
-  displayStyles: ScreenDisplay;
-};
-
-type Props = StateProps & PropertiesChangeProps<LibraryElement<Entity>>;
+type Props = PropertiesChangeProps<LibraryElement<Entity>>;
 
 const Display: React.FC<Props> = ({ updateStyles, removeStyles }) => {
-  const displayStyles = useSelector(selectDisplayStyles);
+  const display = useSelector(selectCurrentEditableStyles('display'));
 
-  const handleDisplayDropdownChange = (event) => {
-    updateStyles({ display: event.target.value });
-  };
-
-  const handleFlexPropertiesChange = useCallback(
-    (prop: keyof Flex, value: Flex[keyof Flex]) => {
-      const styles = convertFlexToCssLikeStyles({ [prop]: value });
-      updateStyles(styles);
+  const handleDisplayDropdownChange = useCallback(
+    (event) => {
+      updateStyles({ display: event.target.value });
     },
     [updateStyles],
   );
@@ -47,9 +35,9 @@ const Display: React.FC<Props> = ({ updateStyles, removeStyles }) => {
           onClick={removeStyles}
           cssPropertiesNames={[
             'display',
-            'justify-content',
-            'align-items',
-            'flex-direction',
+            'justifyContent',
+            'alignItems',
+            'flexDirection',
           ]}
         />
 
@@ -59,9 +47,9 @@ const Display: React.FC<Props> = ({ updateStyles, removeStyles }) => {
           <Select
             margin="dense"
             label="Display"
-            value={displayStyles.display}
+            value={display || 'initial'}
             onChange={handleDisplayDropdownChange}
-            defaultValue={displayStyles.display}
+            defaultValue={display}
           >
             {DISPLAY.map(({ value, label }) => (
               <MenuItem key={value} value={value} dense>
@@ -72,14 +60,9 @@ const Display: React.FC<Props> = ({ updateStyles, removeStyles }) => {
         </FormControl>
       </div>
 
-      {displayStyles.display === 'flex' && (
-        <FlexProperties
-          properties={displayStyles}
-          onChange={handleFlexPropertiesChange}
-        />
-      )}
+      {display === 'flex' && <FlexProperties />}
     </>
   );
 };
 
-export default withConfigurableProperties(memo(Display));
+export default withConfigurableProperties(Display);

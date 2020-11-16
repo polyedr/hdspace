@@ -1,46 +1,18 @@
-import React, { memo } from 'react';
-import { connect } from 'react-redux';
+import React from 'react';
+import { useSelector } from 'react-redux';
 import FormControl from '@material-ui/core/FormControl';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
-import {
-  selectActiveElementParams,
-  selectElementsForCurrentScreen,
-} from '../../../../../redux/project/selectors';
+import { selectActiveLabelInputs } from '../../../../../redux/project/selectors';
 import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
 import { LabelElement, PropertiesChangeProps } from '../../../../../types';
-import { AppReduxState } from '../../../../../redux/types';
 
-type StateProps = {
-  labelFor: string;
-  inputsIDs: string[];
-};
+const LabelFor: React.FC<PropertiesChangeProps<LabelElement>> = ({
+  updateParams,
+}) => {
+  const { inputsIDs, labelFor } = useSelector(selectActiveLabelInputs);
 
-function mapState(state: AppReduxState): StateProps {
-  const activeItemParams = selectActiveElementParams(state);
-  const elements = selectElementsForCurrentScreen(state);
-
-  const inputsIDs = Object.values(elements)
-    .filter(
-      (element) =>
-        element.type === 'textinput' ||
-        element.type === 'textarea' ||
-        element.type === 'select' ||
-        element.type === 'radiobutton' ||
-        element.type === 'checkbox',
-    )
-    .map((element) => element.id);
-
-  return {
-    inputsIDs,
-    labelFor: activeItemParams.labelFor,
-  };
-}
-
-type Props = StateProps & PropertiesChangeProps<LabelElement>;
-
-const LabelFor: React.FC<Props> = ({ labelFor, inputsIDs, updateParams }) => {
   const options = [
     { label: 'No for attribute', value: 'no for attribute' },
     ...inputsIDs.map((id) => ({ label: id, value: id })),
@@ -69,4 +41,4 @@ const LabelFor: React.FC<Props> = ({ labelFor, inputsIDs, updateParams }) => {
   );
 };
 
-export default connect(mapState)(withConfigurableProperties(memo(LabelFor)));
+export default withConfigurableProperties(LabelFor);

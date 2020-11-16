@@ -1,26 +1,14 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import TextField from '@material-ui/core/TextField';
-import { selectActiveElementParams } from '../../../../../redux/project/selectors';
+import { selectActiveElementParamByName } from '../../../../../redux/project/selectors';
 import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
 import { PropertiesChangeProps, SelectElement } from '../../../../../types';
-import { AppReduxState } from '../../../../../redux/types';
 
-type StateProps = {
-  value: string;
-};
-
-function mapState(state: AppReduxState): StateProps {
-  const activeItemParams = selectActiveElementParams(state);
-
-  return {
-    value: activeItemParams.value,
-  };
-}
-
-type Props = StateProps & PropertiesChangeProps<SelectElement>;
-
-const Value: React.FC<Props> = ({ value, updateParams }) => {
+const Value: React.FC<PropertiesChangeProps<SelectElement>> = ({
+  updateParams,
+}) => {
+  const value = useSelector(selectActiveElementParamByName('value'));
   const handleTextFieldChange = ({
     target: { value: newValue },
   }: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -40,4 +28,4 @@ const Value: React.FC<Props> = ({ value, updateParams }) => {
   );
 };
 
-export default connect(mapState)(withConfigurableProperties(Value));
+export default withConfigurableProperties(Value);

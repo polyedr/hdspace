@@ -30,7 +30,6 @@ import getSavedValue from '../../../utils/getSavedValue';
 import { addProjectStyles } from '../../../utils/ProjectClassesHelper';
 import { KEEP_RP_TAB_ELEMENTS } from '../../../constants/defaultParams';
 import {
-  CssLikeStyles,
   LibraryElement,
   Normalized,
   ReturnPromisedType,
@@ -249,7 +248,7 @@ export function* copyElementStylesSaga(
     currentProject,
     uniqueClassName,
     elementType,
-    styles as Required<CssLikeStyles>,
+    styles as Required<React.CSSProperties>,
   );
   yield call(updateProject, newProject);
 

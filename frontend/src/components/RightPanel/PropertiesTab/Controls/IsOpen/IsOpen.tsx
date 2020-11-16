@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Switch } from '@material-ui/core';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import makeStyles from '@material-ui/core/styles/makeStyles';
@@ -15,21 +15,12 @@ const useStyles = makeStyles({
   },
 });
 
-type StateProps = {
-  isOpen: boolean;
-};
-
-function mapState(state: AppReduxState): StateProps {
-  const activeItemParams = selectActiveElementParams(state);
-
-  return {
-    isOpen: activeItemParams.isOpen,
-  };
-}
-
-type Props = StateProps & PropertiesChangeProps<DropdownElement>;
-
-const IsOpen: React.FC<Props> = ({ isOpen, updateParams }) => {
+const IsOpen: React.FC<PropertiesChangeProps<DropdownElement>> = ({
+  updateParams,
+}) => {
+  const isOpen = useSelector(
+    (state: AppReduxState) => selectActiveElementParams(state).isOpen,
+  );
   const classes = useStyles();
   const handleSwitchChange = () => {
     updateParams({ isOpen: !isOpen });
@@ -45,4 +36,4 @@ const IsOpen: React.FC<Props> = ({ isOpen, updateParams }) => {
   );
 };
 
-export default connect(mapState)(withConfigurableProperties(IsOpen));
+export default withConfigurableProperties(IsOpen);
