@@ -16,6 +16,7 @@ const BackgroundBlock: React.FC<PropertiesChangeProps<
   const backgroundColor = useSelector(
     selectCurrentEditableStyles('backgroundColor'),
   );
+
   const handleColorSettingsChange = useCallback(
     (color: string) => {
       updateStyles({ backgroundColor: color });

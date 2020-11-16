@@ -20,41 +20,38 @@ export const convertElementFromResponse = <
   T extends Entity,
   K extends Entity,
   P extends ServerElement<T>['parameters']
->(
-  element: ServerElement<T, ServerElement<K>[], P>,
-): LibraryElement<T, LibraryElement<K>[], P> => {
-  const {
-    id,
-    name,
-    children,
-    struct_type,
-    buoyancy,
-    image,
-    parameters,
-    styles,
-  } = element;
-
-  const convertedElement = {
-    id: String(id),
-    name,
-    children: children
-      .map((child) => convertElementFromResponse(child))
-      .sort(
-        (firstChild, secondChild) => firstChild.buoyancy - secondChild.buoyancy,
-      ),
-    type: struct_type,
-    buoyancy,
-    image,
-    parameters,
-    styles: {
-      ...styles,
-      ownStyles: {
-        ...(styles.ownStyles ? cssCamelize(styles.ownStyles) : {}),
-      },
+>({
+  id,
+  name,
+  children,
+  struct_type,
+  buoyancy,
+  image,
+  parameters,
+  styles,
+}: ServerElement<T, ServerElement<K>[], P>): LibraryElement<
+  T,
+  LibraryElement<K>[],
+  P
+> => ({
+  id: String(id),
+  name,
+  children: children
+    .map((child) => convertElementFromResponse(child))
+    .sort(
+      (firstChild, secondChild) => firstChild.buoyancy - secondChild.buoyancy,
+    ),
+  type: struct_type,
+  buoyancy,
+  image,
+  parameters,
+  styles: {
+    ...styles,
+    ownStyles: {
+      ...(styles.ownStyles ? cssCamelize(styles.ownStyles) : {}),
     },
-  };
-  return convertedElement;
-};
+  },
+});
 
 export const convertRecursiveElementFromResponse = (
   element: ServerRecursiveElement,
