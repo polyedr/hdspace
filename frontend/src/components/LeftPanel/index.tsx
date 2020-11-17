@@ -8,7 +8,6 @@ import IconButton from '@material-ui/core/IconButton';
 import VerticalAlignTopIcon from '@material-ui/icons/VerticalAlignTop';
 import Navigator from './Navigator';
 import { changeMinLPanel } from '../../redux/user/actions';
-import { selectCurrentScreenId } from '../../redux/project/selectors';
 import { selectIsLeftPanelMinimized } from '../../redux/user/selectors';
 import Screens from './Screens';
 import Scrollbar from '../UI/Scrollbar';
@@ -56,13 +55,12 @@ const LeftPanel: React.FC = () => {
 
   const minimized = useSelector(selectIsLeftPanelMinimized);
   const classes = useStyles(minimized);
-  const currentScreenId = useSelector(selectCurrentScreenId);
 
   const toggleLeftPanel = () => {
     dispatch(changeMinLPanel());
   };
 
-  return currentScreenId !== -1 ? (
+  return (
     <aside className={classes.root}>
       <Scrollbar
         style={{
@@ -114,7 +112,7 @@ const LeftPanel: React.FC = () => {
         </div>
       </Scrollbar>
     </aside>
-  ) : null;
+  );
 };
 
 export default LeftPanel;

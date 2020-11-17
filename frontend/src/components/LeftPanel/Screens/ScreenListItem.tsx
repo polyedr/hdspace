@@ -4,13 +4,15 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import { lighten } from '@material-ui/core';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import cn from 'classnames';
+import { useHistory } from 'react-router';
 import Dialog from '../../Dialogs/Dialog';
 import { Screen } from '../../../types';
 import ScreenControls from './ScreenControls';
 import ScreenLogo from './ScreenLogo';
-import { activateScreen, renameScreen } from '../../../redux/project/actions';
+import { renameScreen } from '../../../redux/project/actions';
+import { selectCurrentProjectId } from '../../../redux/project/selectors';
 
 const useStyles = makeStyles({
   listItem: {
@@ -51,6 +53,9 @@ const ScreenListItem: React.FC<Props> = ({ screen, index, active }) => {
   const dispatch = useDispatch();
   const { name, project, id, image } = screen;
   const classes = useStyles();
+  const history = useHistory();
+  const currentProjectId = useSelector(selectCurrentProjectId);
+
   const [show, setShow] = useState(false);
   const [edit, setEdit] = useState(false);
 
@@ -66,7 +71,7 @@ const ScreenListItem: React.FC<Props> = ({ screen, index, active }) => {
   };
 
   const handleClick = () => {
-    dispatch(activateScreen(screen.id));
+    history.push(`/project/${currentProjectId}/${screen.id}`);
   };
 
   return (

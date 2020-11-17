@@ -26,7 +26,7 @@ export const makeTree = (nodes: Normalized<Node>, rootId: string): any => ({
   items: {
     root: {
       id: 'root',
-      children: [rootId],
+      children: rootId === '-1' ? [] : [rootId],
       hasChildren: true,
       isExpanded: true,
       data: {

@@ -1,5 +1,6 @@
 /* eslint-disable camelcase, no-console */
 import { takeLatest, takeEvery, put, call, select } from 'redux-saga/effects';
+import { push } from 'connected-react-router';
 import * as Actions from '../actions';
 import {
   removeProjectStyles,
@@ -63,7 +64,6 @@ import {
   restoreScreenSaga,
   saveScreenImageSaga,
 } from './screen';
-import { activateScreen } from '../actions';
 import {
   Entity,
   ItemToCopyInfo,
@@ -340,7 +340,7 @@ function* undoSaga() {
 
     if (Array.isArray(last)) {
       if (last[0].meta?.screenId) {
-        yield put(activateScreen(last[0].meta.screenId));
+        yield put(push(`${last[0].meta.screenId}`));
       }
       yield put(Actions.setGroupActionsUp(true));
 
@@ -358,7 +358,7 @@ function* undoSaga() {
       yield put(Actions.setGroupActionsUp(false));
     } else {
       if (last.meta?.screenId) {
-        yield put(activateScreen(last.meta.screenId));
+        yield put(push(`${last.meta.screenId}`));
       }
 
       yield put({
@@ -399,7 +399,7 @@ function* redoSaga() {
 
     if (Array.isArray(first)) {
       if (first[0].meta?.screenId) {
-        yield put(activateScreen(first[0].meta.screenId));
+        yield put(push(`${first[0].meta.screenId}`));
       }
 
       yield put(Actions.setGroupActionsUp(true));
@@ -418,7 +418,7 @@ function* redoSaga() {
       yield put(Actions.setGroupActionsUp(false));
     } else {
       if (first.meta?.screenId) {
-        yield put(activateScreen(first.meta.screenId));
+        yield put(push(`${first.meta.screenId}`));
       }
 
       yield put({
