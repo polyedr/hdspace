@@ -9,7 +9,7 @@ import {
   selectProjectById,
   selectProjectLoader,
 } from '../redux/project/selectors';
-import { getProject } from '../redux/project/actions';
+import { getProject, setCurrentProjectId } from '../redux/project/actions';
 import LeftPanel from '../components/LeftPanel';
 import Screen from './Screen';
 
@@ -45,6 +45,13 @@ const Project: React.FC<Props> = ({ projectId, screenId }) => {
       dispatch(getProject(projectId));
     }
   }, [dispatch, projectId, currentProjectId]);
+
+  useEffect(
+    () => () => {
+      dispatch(setCurrentProjectId(-1));
+    },
+    [dispatch],
+  );
 
   useEffect(() => {
     if (!screenId && currentProjectId !== -1) {
