@@ -23,9 +23,9 @@ type FormData = {
   reNewPassword: string;
 };
 
-const mapState = ({ user: { isLoading, authError } }: AppReduxState) => ({
+const mapState = ({ user: { isLoading, error } }: AppReduxState) => ({
   isLoading,
-  authError,
+  error,
 });
 
 const mapDispatch = {

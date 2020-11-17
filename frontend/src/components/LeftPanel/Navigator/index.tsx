@@ -25,15 +25,13 @@ import {
   selectElementsForCurrentScreen,
   selectCurrentRootId,
 } from '../../../redux/project/selectors';
-import { DISALLOW_ADD_ELEMENT_NOTIFICATION_TEXT } from '../../../features/notification/constants';
 import {
-  copyActiveItem,
+  copyActiveElement,
   deleteItem,
   moveElement,
   pasteCopiedElement,
   redoAction,
   setActiveElement,
-  setNotification,
   undoAction,
 } from '../../../redux/project/actions';
 import Scrollbar from '../../UI/Scrollbar';
@@ -43,6 +41,7 @@ import {
   AccordionDetails,
   AccordionSummary,
 } from '../StyledAccordion';
+import { enqueueSnackbar } from '../../../redux/notification/actions';
 
 const useStyles = makeStyles({
   tree: {
@@ -149,7 +148,7 @@ const Navigator: React.FC = () => {
 
       if (e.keyCode === 67 && (e.ctrlKey || e.metaKey)) {
         // Ctrl/Cmd + C
-        dispatch(copyActiveItem());
+        dispatch(copyActiveElement());
       }
 
       if (e.keyCode === 86 && (e.ctrlKey || e.metaKey)) {
@@ -210,7 +209,12 @@ const Navigator: React.FC = () => {
       return;
     }
     if (!canElementBeAdded(elements, newParent.id as string, child.data.type)) {
-      dispatch(setNotification(DISALLOW_ADD_ELEMENT_NOTIFICATION_TEXT));
+      dispatch(
+        enqueueSnackbar({
+          message: 'Can not add this element!',
+          options: { variant: 'warning' },
+        }),
+      );
       setIsDragging(false);
       return;
     }

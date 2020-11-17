@@ -7,10 +7,6 @@ import withConfigurableProperties from '../../../../../utils/withConfigurablePro
 import { updateElementImage } from '../../../../../redux/project/actions';
 import { ImageElement, PropertiesChangeProps } from '../../../../../types';
 
-const mapDispatch = {
-  updateElementImage,
-};
-
 const useStyles = makeStyles({
   wrapper: {
     display: 'flex',
@@ -19,9 +15,9 @@ const useStyles = makeStyles({
   },
 });
 
-type Props = PropertiesChangeProps<ImageElement> & typeof mapDispatch;
+type Props = PropertiesChangeProps<ImageElement>;
 
-const Component: React.FC<Props> = ({ activeItemID, updateElementImage }) => {
+const Component: React.FC<Props> = ({ activeItemID }) => {
   const classes = useStyles();
 
   const currentScreenId = useSelector(selectCurrentScreenId);

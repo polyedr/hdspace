@@ -2,9 +2,9 @@ import React from 'react';
 import { ConnectedRouter } from 'connected-react-router';
 import { MuiThemeProvider, CssBaseline } from '@material-ui/core';
 import history from '../redux/history';
-import Notification from '../features/notification';
 import Routes from './Routes';
 import theme from '../styles/Theme';
+import Notifier from '../components/Notifier';
 
 const App: React.FC = () => {
   return (
@@ -14,7 +14,7 @@ const App: React.FC = () => {
 
         <Routes />
 
-        <Notification />
+        <Notifier />
       </MuiThemeProvider>
     </ConnectedRouter>
   );

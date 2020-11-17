@@ -8,7 +8,10 @@ import { lighten } from '@material-ui/core';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ScreenListItem from './ScreenListItem';
-import { addScreen, changeScreensOrder } from '../../../redux/project/actions';
+import {
+  createScreen,
+  changeScreensOrder,
+} from '../../../redux/project/actions';
 import {
   selectCurrentProjectId,
   selectCurrentScreenId,
@@ -46,7 +49,7 @@ const Screens = () => {
   const handleAddScreen = (ev) => {
     ev.preventDefault();
     ev.stopPropagation();
-    dispatch(addScreen(currentProjectId, 'Screen 1', screens.length));
+    dispatch(createScreen(currentProjectId, 'Screen 1', screens.length));
   };
 
   const handleReorder = ({ destination, source }) => {

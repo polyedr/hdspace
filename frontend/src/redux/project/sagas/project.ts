@@ -1,144 +1,273 @@
 /* eslint-disable no-console */
-import { SagaIterator } from 'redux-saga';
 import { put, call, select } from 'redux-saga/effects';
-import { updateProject, reqWrapper } from './shared';
+import { projectUpdateHelperSaga, reqWrapper } from './shared';
 import * as Actions from '../actions';
 import { selectors } from '..';
-import { addScreenSaga, getScreensSaga } from './screen';
+import { createScreenSaga, getScreensSaga } from './screen';
 import { convertCreatedProjectToRequest } from '../../../api/converters/toRequest';
 import {
-  apiAddProject,
-  apiDelProject,
+  apiCreateProject,
+  apiDeleteProject,
   apiGetProjectList,
-  apiSaveProject,
+  apiUpdateProject,
   apiGetProjectWithScreens,
 } from '../../../api/project';
 import { selectProjectsDataNext } from '../selectors';
-import { PaginatedArray, Project, ProjectWithScreens } from '../../../types';
+import {
+  PaginatedResponse,
+  Project,
+  ProjectWithScreens,
+  Result,
+} from '../../../types';
+import { enqueueSnackbar } from '../../notification/actions';
 
-export function* getProjectListSaga(): SagaIterator {
-  yield put(Actions.setProjectListLoader(true));
+export function* getProjectListSaga() {
+  try {
+    yield put(Actions.setProjectListLoader(true));
 
-  const next: string | null = yield select(selectProjectsDataNext);
+    const next: string | null = yield select(selectProjectsDataNext);
 
-  const result: PaginatedArray<Project> = yield call(
-    reqWrapper,
-    apiGetProjectList,
-    {
-      params: {
-        cursor: next,
+    const { result, error }: Result<PaginatedResponse<Project>> = yield call(
+      reqWrapper,
+      apiGetProjectList,
+      {
+        params: {
+          cursor: next,
+        },
       },
-    },
-  );
+    );
 
-  if (!result) {
+    if (result) {
+      yield put(Actions.setProjectsData(result));
+    }
+
+    if (error) {
+      throw new Error(error);
+    }
+  } catch (e) {
+    yield put(
+      enqueueSnackbar({
+        message: e.message,
+        options: {
+          variant: 'error',
+        },
+      }),
+    );
+  } finally {
     yield put(Actions.setProjectListLoader(false));
-    return;
   }
-
-  yield put(Actions.setProjectsData(result));
-  yield put(Actions.setProjectListLoader(false));
 }
 
 export function* getProjectSaga(action: ReturnType<typeof Actions.getProject>) {
-  const { id } = action.payload;
+  try {
+    const { id } = action.payload;
 
-  yield put(Actions.setProjectLoader(true));
+    yield put(Actions.setProjectLoader(true));
 
-  const project: ProjectWithScreens = yield call(
-    reqWrapper,
-    apiGetProjectWithScreens,
-    {
-      id,
-    },
-  );
+    const { result, error }: Result<ProjectWithScreens> = yield call(
+      reqWrapper,
+      apiGetProjectWithScreens,
+      {
+        id,
+      },
+    );
 
-  if (!project) {
-    console.error(`Error while fetching project ${id}`);
-    return;
+    if (result) {
+      yield put(
+        Actions.setProject({
+          ...result,
+          projectscreen: result.projectscreen.map((screen) => screen.id),
+        }),
+      );
+
+      yield call(getScreensSaga, result.projectscreen);
+
+      yield put(Actions.setCurrentProjectId(result.id));
+    }
+
+    if (error) {
+      throw new Error(error);
+    }
+  } catch (e) {
+    yield put(
+      enqueueSnackbar({
+        message: e.message,
+        options: {
+          variant: 'error',
+        },
+      }),
+    );
+  } finally {
+    yield put(Actions.setProjectLoader(false));
   }
-
-  yield put(
-    Actions.setProject({
-      ...project,
-      projectscreen: project.projectscreen.map((screen) => screen.id),
-    }),
-  );
-
-  yield call(getScreensSaga, project.projectscreen);
-
-  yield put(Actions.setCurrentProjectId(project.id));
-  yield put(Actions.setProjectLoader(false));
 }
 
-export function* addProjectSaga({
+export function* createProjectSaga({
   payload: { name },
-}: ReturnType<typeof Actions.addProject>) {
-  const projectData = convertCreatedProjectToRequest(name);
-  const project: Project = yield call(reqWrapper, apiAddProject, {
-    data: projectData,
-  });
+}: ReturnType<typeof Actions.createProject>) {
+  try {
+    const { result, error }: Result<Project> = yield call(
+      reqWrapper,
+      apiCreateProject,
+      {
+        data: convertCreatedProjectToRequest(name),
+      },
+    );
 
-  if (!project) {
-    // TODO: write communication for such case
-    console.error('cannot create project', project);
-    return;
+    if (result) {
+      const projects: Project[] = yield select(selectors.selectProjectsAsArr);
+      yield put(Actions.setProjectList([...projects, result]));
+
+      yield put(Actions.setCurrentProjectId(result.id));
+
+      const res = yield call(
+        createScreenSaga,
+        Actions.createScreen(result.id, 'Screen 1', 0, true),
+      );
+      if (res) {
+        yield put(
+          enqueueSnackbar({
+            message: `Project ${result.name} created`,
+            options: {
+              variant: 'success',
+            },
+          }),
+        );
+      } else {
+        throw new Error('Failed to create screen');
+      }
+    }
+
+    if (error) {
+      throw new Error(error);
+    }
+  } catch (e) {
+    yield put(
+      enqueueSnackbar({
+        message: e.message,
+        options: {
+          variant: 'error',
+        },
+      }),
+    );
   }
-
-  const projects: Project[] = yield select(selectors.selectProjectsAsArr);
-  yield put(Actions.setProjectList([...projects, project]));
-
-  yield put(Actions.setCurrentProjectId(project.id));
-
-  yield call(addScreenSaga, Actions.addScreen(project.id, 'Screen 1', 0, true));
 }
 
-export function* delProjectSaga({
+export function* deleteProjectSaga({
   payload: { id },
-}: ReturnType<typeof Actions.delProject>): SagaIterator {
-  yield call(reqWrapper, apiDelProject, { id });
+}: ReturnType<typeof Actions.deleteProject>) {
+  try {
+    const { result, error }: Result<boolean> = yield call(
+      reqWrapper,
+      apiDeleteProject,
+      { id },
+    );
 
-  const projectList: Project[] = yield select(selectors.selectProjectsAsArr);
-  const newProjectList: Project[] = projectList.filter(
-    (project) => project.id !== id,
-  );
+    if (result) {
+      const projectList: Project[] = yield select(
+        selectors.selectProjectsAsArr,
+      );
+      const newProjectList: Project[] = projectList.filter(
+        (project) => project.id !== id,
+      );
 
-  yield put(Actions.setProjectList(newProjectList));
+      yield put(Actions.setProjectList(newProjectList));
+      yield put(
+        enqueueSnackbar({
+          message: `Project deleted`,
+          options: {
+            variant: 'success',
+          },
+        }),
+      );
+    }
+    if (error) {
+      throw new Error(error);
+    }
+  } catch (e) {
+    yield put(
+      enqueueSnackbar({
+        message: e.message,
+        options: {
+          variant: 'error',
+        },
+      }),
+    );
+  }
 }
 
 export function* renameProjectSaga({
   payload: { projectID, name },
 }: ReturnType<typeof Actions.renameProject>) {
-  const project: Project = yield select(selectors.selectProjectById(projectID));
+  try {
+    const project: Project = yield select(
+      selectors.selectProjectById(projectID),
+    );
 
-  const updatedProject = yield call(reqWrapper, apiSaveProject, {
-    data: { id: projectID, name, projectscreen: project.projectscreen },
-  });
+    const { result, error }: Result<Project> = yield call(
+      reqWrapper,
+      apiUpdateProject,
+      {
+        data: { id: projectID, name, projectscreen: project.projectscreen },
+      },
+    );
 
-  yield put(Actions.setProject(updatedProject));
+    if (result) {
+      yield put(Actions.setProject(result));
+    }
+    if (error) {
+      throw new Error(error);
+    }
+  } catch (e) {
+    yield put(
+      enqueueSnackbar({
+        message: e.message,
+        options: {
+          variant: 'error',
+        },
+      }),
+    );
+  }
 }
 
 export function* updateProjectSaga(
   action: ReturnType<typeof Actions.updateProject>,
 ) {
-  const { project } = action.payload;
+  try {
+    const { project } = action.payload;
 
-  if (!action.meta) {
-    console.error(
-      `You have to provide metainformation for action ${action.type}`,
+    if (!action.meta) {
+      console.error(
+        `You have to provide metainformation for action ${action.type}`,
+      );
+      return;
+    }
+
+    const currentProject: ReturnType<typeof selectors.selectCurrentProject> = yield select(
+      selectors.selectCurrentProject,
     );
-    return;
-  }
 
-  const currentProject: ReturnType<typeof selectors.selectCurrentProject> = yield select(
-    selectors.selectCurrentProject,
-  );
+    const success: boolean = yield call(projectUpdateHelperSaga, project);
 
-  yield call(updateProject, project);
+    if (success) {
+      const { undo } = action.meta;
 
-  const { undo } = action.meta;
-
-  if (!undo) {
-    yield put(Actions.setUndoActions(Actions.updateProject(currentProject)));
+      if (!undo) {
+        yield put(
+          Actions.setUndoActions(Actions.updateProject(currentProject)),
+        );
+      }
+    } else {
+      throw new Error(`Failed to update project ${project.name}`);
+    }
+  } catch (e) {
+    yield put(
+      enqueueSnackbar({
+        message: e.message,
+        options: {
+          variant: 'error',
+        },
+      }),
+    );
   }
 }

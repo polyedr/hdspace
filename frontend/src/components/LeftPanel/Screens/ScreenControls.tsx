@@ -6,7 +6,7 @@ import FileCopyIcon from '@material-ui/icons/FileCopy';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { darken } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
-import { delScreen, duplicateScreen } from '../../../redux/project/actions';
+import { deleteScreen, duplicateScreen } from '../../../redux/project/actions';
 import { selectScreensLength } from '../../../redux/project/selectors';
 import { Screen } from '../../../types';
 
@@ -47,7 +47,7 @@ const ScreenControls: React.FC<Props> = ({ screen, show, openEdit }) => {
   const handleDelete = (ev) => {
     ev.preventDefault();
     ev.stopPropagation();
-    dispatch(delScreen(project, id));
+    dispatch(deleteScreen(project, id));
   };
 
   const handleCopy = (ev) => {

@@ -1,5 +1,6 @@
 import { RouterState } from 'connected-react-router';
 import React from 'react';
+import { OptionsObject, SnackbarKey } from 'notistack';
 import {
   BorderedElementsRef,
   CreatedElement,
@@ -7,12 +8,11 @@ import {
   Entity,
   Indices,
   ItemToCopyInfo,
-  ITokenPair,
+  TokenPair,
   LibraryElement,
   LibraryElementPatch,
   NNBlockType,
   Normalized,
-  Notification,
   PaginatedArray,
   PaginatedData,
   ParentIds,
@@ -60,7 +60,6 @@ export type ProjectEditState = {
   activeElementId: string;
   hoveredElementId: string;
   uploadedImageInfo?: UploadedImageInfo;
-  notification: Notification | null;
   freeCanvas: {
     enabled: boolean;
     lastElements: {
@@ -102,10 +101,10 @@ export type UserState = {
   freeCanvasMode: {
     enabled: boolean;
   };
-  tokenPair: ITokenPair;
-  isLoadedToken: boolean;
+  tokenPair: TokenPair;
+  isTokenLoaded: boolean;
   isLoggedIn: boolean;
-  authError: Error | null;
+  error: Error | null;
   userData: TotalUserData;
   restorePasswordEmail?: string;
   restoreUserId?: number;
@@ -113,10 +112,22 @@ export type UserState = {
   confirmMessage: string;
 };
 
+export type Notification = {
+  key: SnackbarKey;
+  message: string;
+  dismissed?: boolean;
+  options?: OptionsObject;
+};
+
+export type NotificationState = {
+  notifications: Notification[];
+};
+
 export type AppReduxState = {
   user: UserState;
   project: ProjectState;
   router: RouterState;
+  notification: NotificationState;
 };
 
 export type LoadProjects = IPlainAction<typeof TYPES.LOAD_PROJECTS>;
@@ -126,7 +137,10 @@ export type LoadProjectsSuccess = IAction<
 >;
 export type LoadProjectsFail = IPlainFailAction<'PROJECTS:LOAD_PROJECTS_FAIL'>;
 
-export type AddProject = IAction<typeof TYPES.ADD_PROJECT, { name: string }>;
+export type CreateProject = IAction<
+  typeof TYPES.CREATE_PROJECT,
+  { name: string }
+>;
 export type DeleteProject = IAction<
   typeof TYPES.DELETE_PROJECT,
   { id: number }
@@ -165,11 +179,6 @@ export type SetScreenLoader = IAction<
   { active: boolean }
 >;
 export type SetLoader = IAction<typeof TYPES.SET_LOADER, { active: boolean }>;
-export type SetNotification = IAction<
-  typeof TYPES.SET_NOTIFICATION,
-  Notification
->;
-export type RemoveNotification = IPlainAction<typeof TYPES.REMOVE_NOTIFICATION>;
 export type SetScenarioLoader = IAction<
   typeof TYPES.SET_SCENARIO_LOADER,
   { active: boolean }
@@ -190,8 +199,8 @@ export type RenameScreen = IAction<
   typeof TYPES.RENAME_SCREEN,
   { projectID: number; screenID: number; name: string }
 >;
-export type AddScreen = IAction<
-  typeof TYPES.ADD_SCREEN,
+export type CreateScreen = IAction<
+  typeof TYPES.CREATE_SCREEN,
   { projectID: number; name: string; buoyancy: number; skip: boolean }
 >;
 export type DuplicateScreen = IAction<
@@ -372,16 +381,16 @@ export type SetEditableStyles = IAction<
   typeof TYPES.SET_EDITABLE_STYLES,
   { className: string }
 >;
-export type SetItemToCopy = IAction<
-  typeof TYPES.SET_ITEM_TO_COPY,
+export type SetElementToCopy = IAction<
+  typeof TYPES.SET_ELEMENT_TO_COPY,
   ItemToCopyInfo
 >;
 export type SetRightPanelActiveTab = IAction<
   typeof TYPES.SET_RIGHT_PANEL_ACTIVE_TAB,
   RightPanelTab
 >;
-export type CopyActiveItem = IPlainAction<typeof TYPES.COPY_ACTIVE_ITEM>;
-export type PasteCopiedItem = IPlainAction<
+export type CopyActiveElement = IPlainAction<typeof TYPES.COPY_ACTIVE_ELEMENT>;
+export type PasteCopiedElement = IPlainAction<
   typeof TYPES.PASTE_COPIED_ELEMENT,
   ElementHistoryMeta
 >;
@@ -532,7 +541,7 @@ export type Action =
   | LoadProjects
   | LoadProjectsSuccess
   | LoadProjectsFail
-  | AddProject
+  | CreateProject
   | DeleteProject
   | GetProject
   | SetCurrentProjectId
@@ -546,7 +555,7 @@ export type Action =
   | SetAnalyzerLoader
   | DeleteScreen
   | RenameScreen
-  | AddScreen
+  | CreateScreen
   | ActivateScreen
   | ClearAfterPrevScreen
   | SaveScreen
@@ -564,16 +573,14 @@ export type Action =
   | WrapIntoContainer
   | SetHoveredElement
   | ToggleContainersBorders
-  | SetItemToCopy
+  | SetElementToCopy
   | SetRightPanelActiveTab
-  | CopyActiveItem
-  | PasteCopiedItem
+  | CopyActiveElement
+  | PasteCopiedElement
   | ResetScreenState
   | UpdateSavedElementsValues
   | UpdateSavedElementValues
   | UpdateElementsTree
-  | SetNotification
-  | RemoveNotification
   | SetEditableStyles
   | SetUndoActions
   | SetRedoActions

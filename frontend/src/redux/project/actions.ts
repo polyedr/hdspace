@@ -10,7 +10,6 @@ import {
   LibraryElement,
   LibraryElementPatch,
   Normalized,
-  PaginatedArray,
   ParentIds,
   Project,
   SavedElementsValues,
@@ -19,6 +18,7 @@ import {
   NNBlockType,
   SCREEN_FORMATS,
   RightPanelTab,
+  PaginatedResponse,
   PropertyName,
 } from '../../types';
 import {
@@ -27,11 +27,11 @@ import {
   AddChildToElement,
   AddElementClassName,
   AddElements,
-  AddProject,
-  AddScreen,
+  CreateProject,
+  CreateScreen,
   ChangeScreensOrder,
   ClearAfterPrevScreen,
-  CopyActiveItem,
+  CopyActiveElement,
   CopyElementStyles,
   CreateElements,
   DeleteItem,
@@ -45,14 +45,13 @@ import {
   LoadProjects,
   LoadProjectsSuccess,
   MoveElement,
-  PasteCopiedItem,
+  PasteCopiedElement,
   PopHistory,
   PopUndoAction,
   RedoAction,
   RedoWrapIntoContainer,
   RemoveElementClassName,
   RemoveElementStyles,
-  RemoveNotification,
   RemoveSharedStyles,
   RenameProject,
   RenameScreen,
@@ -68,9 +67,8 @@ import {
   SetEditableStyles,
   SetGroupActionsUp,
   SetHoveredElement,
-  SetItemToCopy,
+  SetElementToCopy,
   SetLoader,
-  SetNotification,
   SetProject,
   SetProjectListLoader,
   SetProjectLoader,
@@ -105,17 +103,17 @@ export const setProjectList = (projects: Project[]): LoadProjectsSuccess => ({
   payload: { projects },
 });
 
-export const setProjectsData = (data: PaginatedArray<Project>) => ({
+export const setProjectsData = (data: PaginatedResponse<Project>) => ({
   type: TYPES.SET_PROJECTS_DATA,
   payload: data,
 });
 
-export const addProject = (name: string): AddProject => ({
-  type: TYPES.ADD_PROJECT,
+export const createProject = (name: string): CreateProject => ({
+  type: TYPES.CREATE_PROJECT,
   payload: { name },
 });
 
-export const delProject = (id: number): DeleteProject => ({
+export const deleteProject = (id: number): DeleteProject => ({
   type: TYPES.DELETE_PROJECT,
   payload: { id },
 });
@@ -191,16 +189,7 @@ export const setAnalyzerLoader = (active: boolean): SetAnalyzerLoader => ({
   payload: { active },
 });
 
-export const setNotification = (text: string): SetNotification => ({
-  type: TYPES.SET_NOTIFICATION,
-  payload: { text },
-});
-
-export const removeNotification = (): RemoveNotification => ({
-  type: TYPES.REMOVE_NOTIFICATION,
-});
-
-export const delScreen = (
+export const deleteScreen = (
   projectId: number,
   screenId: number,
   meta: HistoryMeta = {},
@@ -230,13 +219,13 @@ export const renameScreen = (
   payload: { projectID, screenID, name },
 });
 
-export const addScreen = (
+export const createScreen = (
   projectID: number,
   name: string,
   buoyancy: number,
   skip: boolean = false,
-): AddScreen => ({
-  type: TYPES.ADD_SCREEN,
+): CreateScreen => ({
+  type: TYPES.CREATE_SCREEN,
   payload: { projectID, name, buoyancy, skip },
 });
 
@@ -598,19 +587,22 @@ export const setEditableStyles = (className: string): SetEditableStyles => ({
   payload: { className },
 });
 
-export const copyActiveItem = (): CopyActiveItem => ({
-  type: TYPES.COPY_ACTIVE_ITEM,
+export const copyActiveElement = (): CopyActiveElement => ({
+  type: TYPES.COPY_ACTIVE_ELEMENT,
 });
 
 export const pasteCopiedElement = (
   meta: ElementHistoryMeta,
-): PasteCopiedItem => ({
+): PasteCopiedElement => ({
   type: TYPES.PASTE_COPIED_ELEMENT,
   meta,
 });
 
-export const setItemToCopy = (id: string, screenID: number): SetItemToCopy => ({
-  type: TYPES.SET_ITEM_TO_COPY,
+export const setElementToCopy = (
+  id: string,
+  screenID: number,
+): SetElementToCopy => ({
+  type: TYPES.SET_ELEMENT_TO_COPY,
   payload: { id, screenID },
 });
 
@@ -737,7 +729,7 @@ export const updateElementsLoading = (loading: boolean) => ({
 });
 
 export const addCustomElementsPage = (
-  paginatedResult: PaginatedArray<LibraryElement<Entity>>,
+  paginatedResult: PaginatedResponse<LibraryElement<Entity>>,
   initial: boolean,
 ) => ({
   type: TYPES.ADD_CUSTOM_ELEMENTS_PAGE,

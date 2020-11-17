@@ -63,17 +63,9 @@ export const apiRefreshToken = (refresh: string) =>
     url: '/djauth/jwt/refresh/',
   }).then(parseResult);
 
-export const apiSendActivationMail = ({
-  username,
-  password,
-  email,
-}: SendActivationMailData) =>
+export const registerUser = (data: SendActivationMailData) =>
   myAxios({
-    data: {
-      username,
-      email,
-      password,
-    },
+    data,
     method: 'POST',
     url: '/djauth/users/',
   }).then(parseResult);

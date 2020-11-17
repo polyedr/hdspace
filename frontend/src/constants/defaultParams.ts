@@ -1,5 +1,4 @@
 import {
-  ITokenPair,
   LibraryElement,
   Project,
   StateElement,
@@ -79,11 +78,6 @@ export const DEFAULT_ACTIVE_ELEMENT: StateElement = {
   },
 };
 
-export const DEFAULT_AUTHORIZATION_TOKEN: ITokenPair = {
-  access: '',
-  refresh: '',
-};
-
 export const SAVEABLE_ELEMENTS = ['section'];
 
 export const KEEP_RP_TAB_ELEMENTS = [
@@ -103,3 +97,4 @@ export const LABELED_INPUT_TYPES = [
 ];
 
 export const CONTAINER_GROUPS = [ElementGroup.CONTAINERS, ElementGroup.CUSTOM];
+export const ROLES = ['STAFF', 'ADMINISTRATOR', 'LIBRARIAN', 'EXTERNAL'];

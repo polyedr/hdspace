@@ -23,7 +23,7 @@ const settings = {
   },
 };
 
-export const { api } = settings[env] || settings.development;
+const { api } = settings[env] || settings.development;
 
 export type MyAxiosProps = { access?: string; contentType?: string } & Partial<
   AxiosRequestConfig

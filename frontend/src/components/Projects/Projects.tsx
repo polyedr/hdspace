@@ -15,7 +15,7 @@ import TableContainer from '@material-ui/core/TableContainer';
 import Container from '@material-ui/core/Container';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import ProjectListItem from './ProjectListItem';
-import { addProject, getProjectList } from '../../redux/project/actions';
+import { createProject, getProjectList } from '../../redux/project/actions';
 import {
   selectAreProjectsLoading,
   selectProjects,
@@ -102,7 +102,7 @@ const Projects: React.FC = () => {
   );
 
   const handleProjectAdd = () => {
-    dispatch(addProject('AProject'));
+    dispatch(createProject('AProject'));
   };
 
   return (

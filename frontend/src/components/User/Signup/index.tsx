@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import MakeAsyncFunction from 'react-redux-promise-listener';
 import { Field, Form } from 'react-final-form';
 import { Link } from 'react-router-dom';
 // import { GoogleLogin } from 'react-google-login';
@@ -12,15 +12,9 @@ import Button from '@material-ui/core/Button';
 import Container from '@material-ui/core/Container';
 import { user } from '../../../constants/pathNames';
 import { Info } from '../Info';
-import {
-  selectAuthError,
-  selectIsUserLoading,
-} from '../../../redux/user/selectors';
-import {
-  // registerWithGoogle,
-  sendActivationMail,
-} from '../../../redux/user/actions';
-import { SignupFormData } from '../../../types';
+// import registerWithGoogle from '../../../redux/user/actions';
+import { promiseListener } from '../../../redux/store';
+import TYPES from '../../../redux/actionTypes';
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -73,23 +67,7 @@ const useStyles = makeStyles((theme) =>
 );
 
 const Signup: React.FC = () => {
-  const dispatch = useDispatch();
   const classes = useStyles();
-
-  const authError = useSelector(selectAuthError);
-  const isLoading = useSelector(selectIsUserLoading);
-
-  const handleFormSubmit = (values: SignupFormData) => {
-    dispatch(
-      sendActivationMail(
-        values.username,
-        values.email,
-        values.password,
-        values.firstName,
-        values.lastName,
-      ),
-    );
-  };
 
   // TODO add google button and this method, when the backend will register new users using google token
   /* const responseGoogle = (response: any) => {
@@ -112,159 +90,179 @@ const Signup: React.FC = () => {
             cookiePolicy="single_host_origin"
             redirectUri="https://staging-26-10.firebaseapp.com/projects"
           /> */}
-        <Form
-          onSubmit={handleFormSubmit}
-          render={({ handleSubmit }) => (
-            <Container maxWidth="xs">
-              <form onSubmit={handleSubmit} className={classes.form}>
-                <Typography className={classes.header}>
-                  Register your account
-                </Typography>
+        <MakeAsyncFunction
+          listener={promiseListener}
+          start={TYPES.REGISTER}
+          resolve={TYPES.REGISTER_COMPLETE}
+          reject={TYPES.REGISTER_FAILURE}
+        >
+          {(onSubmit) => (
+            <Form
+              onSubmit={onSubmit}
+              render={({ handleSubmit, submitError, submitting }) => (
+                <Container maxWidth="xs">
+                  <form onSubmit={handleSubmit} className={classes.form}>
+                    <Typography className={classes.header}>
+                      Register your account
+                    </Typography>
 
-                <Field name="username">
-                  {({ input, meta }) => (
-                    <TextField
-                      {...input}
-                      className={classes.field}
-                      type="text"
-                      label="Username"
-                      placeholder="Username"
-                      required
-                      variant="filled"
-                      autoFocus
-                      size="small"
+                    <Field name="username">
+                      {({ input, meta }) => (
+                        <TextField
+                          {...input}
+                          className={classes.field}
+                          type="text"
+                          label="Username"
+                          placeholder="Username"
+                          required
+                          variant="filled"
+                          autoFocus
+                          size="small"
+                          fullWidth
+                          error={
+                            (meta.error || meta.submitError) && meta.touched
+                          }
+                          helperText={
+                            (meta.error || meta.submitError) && meta.touched
+                              ? meta.error || meta.submitError
+                              : null
+                          }
+                        />
+                      )}
+                    </Field>
+
+                    <Field name="firstName">
+                      {({ input, meta }) => (
+                        <TextField
+                          {...input}
+                          className={classes.field}
+                          type="text"
+                          label="First Name"
+                          placeholder="First Name"
+                          required
+                          variant="filled"
+                          autoFocus
+                          size="small"
+                          fullWidth
+                          error={
+                            (meta.error || meta.submitError) && meta.touched
+                          }
+                          helperText={
+                            (meta.error || meta.submitError) && meta.touched
+                              ? meta.error || meta.submitError
+                              : null
+                          }
+                        />
+                      )}
+                    </Field>
+
+                    <Field name="lastName">
+                      {({ input, meta }) => (
+                        <TextField
+                          {...input}
+                          className={classes.field}
+                          type="text"
+                          label="Last Name"
+                          placeholder="Last Name"
+                          required
+                          variant="filled"
+                          autoFocus
+                          size="small"
+                          fullWidth
+                          error={
+                            (meta.error || meta.submitError) && meta.touched
+                          }
+                          helperText={
+                            (meta.error || meta.submitError) && meta.touched
+                              ? meta.error || meta.submitError
+                              : null
+                          }
+                        />
+                      )}
+                    </Field>
+
+                    <Field name="email">
+                      {({ input, meta }) => (
+                        <TextField
+                          {...input}
+                          className={classes.field}
+                          type="email"
+                          label="Email"
+                          placeholder="Email"
+                          required
+                          variant="filled"
+                          autoFocus
+                          size="small"
+                          fullWidth
+                          error={
+                            (meta.error || meta.submitError) && meta.touched
+                          }
+                          helperText={
+                            (meta.error || meta.submitError) && meta.touched
+                              ? meta.error || meta.submitError
+                              : null
+                          }
+                        />
+                      )}
+                    </Field>
+
+                    <Field name="password">
+                      {({ input, meta }) => (
+                        <TextField
+                          {...input}
+                          className={classes.field}
+                          type="password"
+                          label="Password"
+                          placeholder="Password"
+                          required
+                          variant="filled"
+                          autoFocus
+                          size="small"
+                          autoComplete="new-password"
+                          fullWidth
+                          error={
+                            (meta.error || meta.submitError) && meta.touched
+                          }
+                          helperText={
+                            (meta.error || meta.submitError) && meta.touched
+                              ? meta.error || meta.submitError
+                              : null
+                          }
+                        />
+                      )}
+                    </Field>
+
+                    <Button
+                      type="submit"
+                      disabled={submitting}
+                      variant="contained"
+                      color="primary"
                       fullWidth
-                      error={(meta.error || meta.submitError) && meta.touched}
-                      helperText={
-                        (meta.error || meta.submitError) && meta.touched
-                          ? meta.error || meta.submitError
-                          : null
-                      }
-                    />
-                  )}
-                </Field>
+                    >
+                      Sign Up
+                    </Button>
 
-                <Field name="firstName">
-                  {({ input, meta }) => (
-                    <TextField
-                      {...input}
-                      className={classes.field}
-                      type="text"
-                      label="First Name"
-                      placeholder="First Name"
-                      required
-                      variant="filled"
-                      autoFocus
-                      size="small"
-                      fullWidth
-                      error={(meta.error || meta.submitError) && meta.touched}
-                      helperText={
-                        (meta.error || meta.submitError) && meta.touched
-                          ? meta.error || meta.submitError
-                          : null
-                      }
-                    />
-                  )}
-                </Field>
+                    <div className={classes.error}>
+                      {submitError && (
+                        <Alert severity="error" variant="filled">
+                          {submitError}
+                        </Alert>
+                      )}
+                    </div>
 
-                <Field name="lastName">
-                  {({ input, meta }) => (
-                    <TextField
-                      {...input}
-                      className={classes.field}
-                      type="text"
-                      label="Last Name"
-                      placeholder="Last Name"
-                      required
-                      variant="filled"
-                      autoFocus
-                      size="small"
-                      fullWidth
-                      error={(meta.error || meta.submitError) && meta.touched}
-                      helperText={
-                        (meta.error || meta.submitError) && meta.touched
-                          ? meta.error || meta.submitError
-                          : null
-                      }
-                    />
-                  )}
-                </Field>
+                    <p className={classes.login}>
+                      {'Already have an account? '}
 
-                <Field name="email">
-                  {({ input, meta }) => (
-                    <TextField
-                      {...input}
-                      className={classes.field}
-                      type="email"
-                      label="Email"
-                      placeholder="Email"
-                      required
-                      variant="filled"
-                      autoFocus
-                      size="small"
-                      fullWidth
-                      error={(meta.error || meta.submitError) && meta.touched}
-                      helperText={
-                        (meta.error || meta.submitError) && meta.touched
-                          ? meta.error || meta.submitError
-                          : null
-                      }
-                    />
-                  )}
-                </Field>
-
-                <Field name="password">
-                  {({ input, meta }) => (
-                    <TextField
-                      {...input}
-                      className={classes.field}
-                      type="password"
-                      label="Password"
-                      placeholder="Password"
-                      required
-                      variant="filled"
-                      autoFocus
-                      size="small"
-                      fullWidth
-                      error={(meta.error || meta.submitError) && meta.touched}
-                      helperText={
-                        (meta.error || meta.submitError) && meta.touched
-                          ? meta.error || meta.submitError
-                          : null
-                      }
-                    />
-                  )}
-                </Field>
-
-                <Button
-                  type="submit"
-                  disabled={isLoading}
-                  variant="contained"
-                  color="primary"
-                  fullWidth
-                >
-                  Sign Up
-                </Button>
-
-                <div className={classes.error}>
-                  {authError && (
-                    <Alert severity="error" variant="filled">
-                      {authError.message}
-                    </Alert>
-                  )}
-                </div>
-
-                <p className={classes.login}>
-                  {'Already have an account? '}
-
-                  <Link className={classes.link} to={user.signin}>
-                    Log in.
-                  </Link>
-                </p>
-              </form>
-            </Container>
+                      <Link className={classes.link} to={user.signin}>
+                        Log in.
+                      </Link>
+                    </p>
+                  </form>
+                </Container>
+              )}
+            />
           )}
-        />
+        </MakeAsyncFunction>
       </div>
     </div>
   );

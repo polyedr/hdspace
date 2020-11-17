@@ -7,10 +7,12 @@ import {
   Project,
   ProjectClass,
   ProjectData,
+  ProjectWithScreens,
   RecursiveElement,
   ServerElement,
   ServerProfileData,
   ServerProject,
+  ServerProjectWithScreens,
   ServerRecursiveElement,
   ServerUserData,
   UserData,
@@ -65,17 +67,19 @@ export const convertRecursiveElementFromResponse = (
   };
 };
 
-export const convertProjectFromResponse = (project: ServerProject): Project => {
-  const {
-    id,
-    name,
-    status,
-    projectscreen,
-    created,
-    updated,
-    project_data_json,
-  } = project;
-
+export function convertProjectFromResponse(
+  project: ServerProjectWithScreens,
+): ProjectWithScreens;
+export function convertProjectFromResponse(project: ServerProject): Project;
+export function convertProjectFromResponse({
+  id,
+  name,
+  status,
+  projectscreen,
+  created,
+  updated,
+  project_data_json,
+}) {
   const projectDataJSON = JSON.parse(project_data_json) as ProjectData;
 
   return {
@@ -96,7 +100,7 @@ export const convertProjectFromResponse = (project: ServerProject): Project => {
       }),
     },
   };
-};
+}
 
 export const convertProfileDataFromResponse = ({
   hourly_rate,

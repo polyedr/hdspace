@@ -5,10 +5,12 @@ import { convertProjectFromResponse } from './converters/fromResponse';
 import { myAxios } from '../config/settings';
 import {
   MyAxiosProps,
-  PaginatedArray,
+  PaginatedResponse,
   Project,
   ProjectWithScreens,
+  Result,
   ServerProject,
+  ServerProjectWithScreens,
 } from '../types';
 
 export const onError = ({ response: r }: AxiosError) => {
@@ -54,8 +56,14 @@ export const onError = ({ response: r }: AxiosError) => {
   }
 };
 
-export const parseResult = <T>(result: AxiosResponse<T>) =>
-  result && result.data;
+export const handleError = (error) => {
+  console.error(error);
+  return {
+    error: error.response?.data?.detail || error.message,
+  };
+};
+
+export const parseResult = <T>(result: AxiosResponse<T>) => result?.data;
 
 export const parseCursor = (nextUrl: string | null) => {
   if (nextUrl === null) {
@@ -66,18 +74,20 @@ export const parseCursor = (nextUrl: string | null) => {
 
 export const apiGetProjectList = (
   props: MyAxiosProps,
-): Promise<PaginatedArray<Project>> =>
+): Promise<Result<PaginatedResponse<Project>>> =>
   myAxios({
     ...props,
     method: 'GET',
     url: '/projects/projects/',
   })
-    .then((result: AxiosResponse<PaginatedArray<ServerProject>>) => ({
-      next: parseCursor(result.data.next),
-      previous: parseCursor(result.data.previous),
-      results: result.data.results.map(convertProjectFromResponse),
+    .then((result: AxiosResponse<PaginatedResponse<ServerProject>>) => ({
+      result: {
+        next: parseCursor(result.data.next),
+        previous: parseCursor(result.data.previous),
+        results: result.data.results.map(convertProjectFromResponse),
+      },
     }))
-    .catch(onError);
+    .catch(handleError);
 
 // TODO: research here IProject or IProjectList in return type:
 export const apiGetProject = (
@@ -93,48 +103,51 @@ export const apiGetProject = (
 
 export const apiGetProjectWithScreens = (
   props: MyAxiosProps & { id: string },
-): Promise<ProjectWithScreens> =>
+): Promise<Result<ProjectWithScreens>> =>
   myAxios({
     ...props,
     method: 'GET',
     url: `projects/screens-for-project/${props.id}/`,
   })
-    .then((res) => convertProjectFromResponse(res.data))
-    .catch(onError);
+    .then((res: AxiosResponse<ServerProjectWithScreens>) => ({
+      result: convertProjectFromResponse(res.data),
+    }))
+    .catch(handleError);
 
-export const apiAddProject = (props: MyAxiosProps): Promise<Project> =>
+export const apiCreateProject = (
+  props: MyAxiosProps,
+): Promise<Result<Project>> =>
   myAxios({
     ...props,
     method: 'POST',
     url: '/projects/projects/',
     data: props.data,
   })
-    .then((result) => convertProjectFromResponse(result.data))
-    .catch(onError);
+    .then((result: AxiosResponse<ServerProject>) => ({
+      result: convertProjectFromResponse(result.data),
+    }))
+    .catch(handleError);
 
-export const apiDelProject = (props: MyAxiosProps & { id: string }) =>
+export const apiDeleteProject = (props: MyAxiosProps & { id: string }) =>
   myAxios({
     ...props,
     method: 'DELETE',
     url: `/projects/projects/${props.id}/`,
   })
-    .then(parseResult)
-    .catch(onError);
+    .then((res) => ({
+      result: res.status === 204,
+    }))
+    .catch(handleError);
 
-export const apiSaveProject = (props: MyAxiosProps): Promise<Project> =>
+export const apiUpdateProject = (
+  props: MyAxiosProps,
+): Promise<Result<Project>> =>
   myAxios({
     ...props,
     method: 'PATCH',
     url: `/projects/projects/${props.data.id}/`,
   })
-    .then((result) => convertProjectFromResponse(result.data))
-    .catch(onError);
-
-export const apiSaveScreens = (props: MyAxiosProps): Promise<Project> =>
-  myAxios({
-    ...props,
-    method: 'PATCH',
-    url: '/projects/project-screens-multiple/',
-  })
-    .then((result) => convertProjectFromResponse(result.data))
-    .catch(onError);
+    .then((result: AxiosResponse<ServerProject>) => ({
+      result: convertProjectFromResponse(result.data),
+    }))
+    .catch(handleError);

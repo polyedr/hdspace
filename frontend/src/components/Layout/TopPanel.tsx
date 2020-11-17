@@ -8,7 +8,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import IconButton from '@material-ui/core/IconButton';
 import Avatar from './Avatar';
 import { selectCurrentProject } from '../../redux/project/selectors';
-import Dialog from '../UI/Dialog';
+import Dialog from '../Dialogs/Dialog';
 import { renameProject } from '../../redux/project/actions';
 import TopBar from '../Editor/TopBar';
 

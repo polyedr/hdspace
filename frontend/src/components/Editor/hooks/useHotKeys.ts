@@ -5,7 +5,7 @@ import {
   selectCurrentScreenId,
 } from '../../../redux/project/selectors';
 import {
-  copyActiveItem,
+  copyActiveElement,
   deleteItem,
   pasteCopiedElement,
   redoAction,
@@ -57,7 +57,7 @@ const useHotKeys = (ref: React.RefObject<HTMLElement>) => {
         event.code === 'KeyC' && (event.metaKey || event.ctrlKey);
 
       if (isItemCopyEvent) {
-        dispatch(copyActiveItem());
+        dispatch(copyActiveElement());
         navigator.clipboard.writeText('');
         element?.focus();
       }
