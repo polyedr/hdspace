@@ -237,6 +237,7 @@ export function* createElements(
           // eslint-disable-next-line consistent-return
           return createdElements.map((el) => el.id);
         }
+
         if (error) throw new Error(error);
       }
       if (error) throw new Error(error);

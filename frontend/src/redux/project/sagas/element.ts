@@ -41,7 +41,7 @@ import {
   ServerElement,
   StateElement,
 } from '../../../types';
-import { reqWrapper, updateProjectHelperSaga } from './shared';
+import { reqWrapper, projectUpdateHelperSaga } from './shared';
 import { enqueueSnackbar } from '../../notification/actions';
 
 export function* moveElementSaga(
@@ -309,7 +309,7 @@ export function* copyElementStylesSaga(
       elementType,
       styles as Required<React.CSSProperties>,
     );
-    yield call(updateProjectHelperSaga, newProject);
+    yield call(projectUpdateHelperSaga, newProject);
 
     yield call(removeElementStyles, elementID, Object.keys(styles), action);
 

@@ -98,7 +98,7 @@ export function* reqWrapper(
 }
 
 // eslint-disable-next-line consistent-return
-export function* updateProjectHelperSaga(newProject: Project) {
+export function* projectUpdateHelperSaga(newProject: Project) {
   try {
     yield put(Actions.setProject(newProject));
     const { result, error }: Result<Project> = yield call(

@@ -14,7 +14,7 @@ import Container from '@material-ui/core/Container';
 import MakeAsyncFunction from 'react-redux-promise-listener';
 import { user } from '../../../constants/pathNames';
 import { sendResetPasswordMail } from '../../../redux/user/actions';
-import Dialog from '../../UI/Dialog';
+import Dialog from '../../Dialogs/Dialog';
 import { promiseListener } from '../../../redux/store';
 import TYPES from '../../../redux/actionTypes';
 import SubmitError from '../SubmitError';

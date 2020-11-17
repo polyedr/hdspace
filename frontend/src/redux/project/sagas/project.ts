@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import { put, call, select } from 'redux-saga/effects';
-import { updateProjectHelperSaga, reqWrapper } from './shared';
+import { projectUpdateHelperSaga, reqWrapper } from './shared';
 import * as Actions from '../actions';
 import { selectors } from '..';
 import { createScreenSaga, getScreensSaga } from './screen';
@@ -64,15 +64,13 @@ export function* getProjectSaga(action: ReturnType<typeof Actions.getProject>) {
 
     yield put(Actions.setProjectLoader(true));
 
-    const res: Result<ProjectWithScreens> = yield call(
+    const { result, error }: Result<ProjectWithScreens> = yield call(
       reqWrapper,
       apiGetProjectWithScreens,
       {
         id,
       },
     );
-
-    const { result, error } = res;
 
     if (result) {
       yield put(
@@ -126,7 +124,16 @@ export function* createProjectSaga({
         createScreenSaga,
         Actions.createScreen(result.id, 'Screen 1', 0, true),
       );
-      if (!res) {
+      if (res) {
+        yield put(
+          enqueueSnackbar({
+            message: `Project ${result.name} created`,
+            options: {
+              variant: 'success',
+            },
+          }),
+        );
+      } else {
         throw new Error('Failed to create screen');
       }
     }
@@ -165,6 +172,14 @@ export function* deleteProjectSaga({
       );
 
       yield put(Actions.setProjectList(newProjectList));
+      yield put(
+        enqueueSnackbar({
+          message: `Project deleted`,
+          options: {
+            variant: 'success',
+          },
+        }),
+      );
     }
     if (error) {
       throw new Error(error);
@@ -232,7 +247,7 @@ export function* updateProjectSaga(
       selectors.selectCurrentProject,
     );
 
-    const success: boolean = yield call(updateProjectHelperSaga, project);
+    const success: boolean = yield call(projectUpdateHelperSaga, project);
 
     if (success) {
       const { undo } = action.meta;

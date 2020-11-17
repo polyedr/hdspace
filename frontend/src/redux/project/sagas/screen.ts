@@ -189,7 +189,7 @@ export function* createScreenSaga({
         });
 
         if (savedScreen) {
-          // Can not get why do we need to mix created screen with the current one. Let's keep these comments some time
+          // Can not get why do we need to mix created screen with the current one. Let's keep these comments for some time
           // const currentScreen: ReturnType<typeof selectors.selectCurrentScreen> = yield select(
           //   selectors.selectCurrentScreen,
           // );
@@ -222,12 +222,14 @@ export function* createScreenSaga({
 
           yield put(push(`/project/${projectID}/${newScreen.id}`));
 
-          yield put(
-            enqueueSnackbar({
-              message: 'Screen created',
-              options: { variant: 'success' },
-            }),
-          );
+          if (!skip) {
+            yield put(
+              enqueueSnackbar({
+                message: `Screen ${updatedScreen.name} created`,
+                options: { variant: 'success' },
+              }),
+            );
+          }
 
           return updatedScreen;
         }
@@ -287,6 +289,14 @@ export function* saveScreenImageSaga({
 
     if (result) {
       yield put(updateScreen(result));
+      yield put(
+        enqueueSnackbar({
+          message: 'Screen image updated',
+          options: {
+            variant: 'success',
+          },
+        }),
+      );
     }
 
     if (error) throw new Error(error);
@@ -370,6 +380,12 @@ export function* deleteScreenSaga({
         yield put(activateScreen(lastScreenID));
         yield put(push(`/project/${projectId}/${lastScreenID}`));
       }
+      yield put(
+        enqueueSnackbar({
+          message: 'Screen deleted',
+          options: { variant: 'success' },
+        }),
+      );
     }
     if (error) {
       throw new Error(error);
@@ -415,7 +431,7 @@ export function* restoreScreenSaga({
       }
 
       const screens = yield select(selectors.selectScreens);
-      const screen = yield call(reqWrapper, apiGetScreen, {
+      const screen: Screen = yield call(reqWrapper, apiGetScreen, {
         id: screenId,
       });
       const { result: elements, error: elementsError } = yield call(
@@ -431,6 +447,13 @@ export function* restoreScreenSaga({
         yield put(setScreens([screen, ...screens]));
 
         yield put(setProject(result));
+
+        yield put(
+          enqueueSnackbar({
+            message: `Screen ${screen.name} restored`,
+            options: { variant: 'success' },
+          }),
+        );
       }
       if (elementsError) throw new Error(elementsError);
     }

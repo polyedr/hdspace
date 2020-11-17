@@ -71,7 +71,7 @@ import {
   Normalized,
   StateElement,
 } from '../../../types';
-import { updateProjectHelperSaga } from './shared';
+import { projectUpdateHelperSaga } from './shared';
 import { ElementHistoryMeta } from '../../types';
 import { enqueueSnackbar } from '../../notification/actions';
 
@@ -96,7 +96,7 @@ function* removeSharedStylesSaga(
     cssPropertiesNames,
   );
 
-  yield call(updateProjectHelperSaga, newProject);
+  yield call(projectUpdateHelperSaga, newProject);
 
   const { undo } = action.meta;
 
@@ -128,7 +128,7 @@ function* updateSharedStylesSaga(
   );
   const newProject = updateProjectClasses(currentProject, className, styles);
 
-  yield call(updateProjectHelperSaga, newProject);
+  yield call(projectUpdateHelperSaga, newProject);
 
   const { undo } = action.meta;
 
@@ -167,31 +167,43 @@ function* copyActiveElementSaga() {
   }
 }
 
+// eslint-disable-next-line consistent-return
 function* duplicateElements(
   itemsToCopyInfo: ItemToCopyInfo[],
   targetParent: LibraryElement<Entity>,
   { screenId, undo }: ElementHistoryMeta,
 ) {
-  const elements: LibraryElement<any>[] = [];
-  // eslint-disable-next-line no-restricted-syntax
-  for (const el of itemsToCopyInfo) {
-    const element = yield select(selectElementAsTree(el.id));
-    elements.push(element);
+  try {
+    const elements: LibraryElement<any>[] = [];
+    // eslint-disable-next-line no-restricted-syntax
+    for (const el of itemsToCopyInfo) {
+      const element = yield select(selectElementAsTree(el.id));
+      elements.push(element);
+    }
+
+    const convertedItemsToDuplicate = elements.map((item) =>
+      convertElementToRequest(item!),
+    );
+
+    return yield call(
+      createElements,
+      { elements: convertedItemsToDuplicate },
+      targetParent,
+      {
+        screenId,
+        undo,
+      },
+    );
+  } catch (e) {
+    yield put(
+      enqueueSnackbar({
+        message: e.message,
+        options: {
+          variant: 'error',
+        },
+      }),
+    );
   }
-
-  const convertedItemsToDuplicate = elements.map((item) =>
-    convertElementToRequest(item!),
-  );
-
-  yield call(
-    createElements,
-    { elements: convertedItemsToDuplicate },
-    targetParent,
-    {
-      screenId,
-      undo,
-    },
-  );
 }
 
 function* duplicateScreenSaga(
@@ -284,15 +296,22 @@ function* pasteCopiedElementSaga({
     }
 
     if (activeElement.type !== 'none') {
-      yield call(duplicateElements, [itemToCopyInfo], activeElement, {
-        screenId,
-      });
-      yield put(
-        enqueueSnackbar({
-          message: 'Element pasted',
-          options: { variant: 'success' },
-        }),
+      const result = yield call(
+        duplicateElements,
+        [itemToCopyInfo],
+        activeElement,
+        {
+          screenId,
+        },
       );
+      if (result) {
+        yield put(
+          enqueueSnackbar({
+            message: 'Element pasted',
+            options: { variant: 'success' },
+          }),
+        );
+      }
     }
   } catch (e) {
     yield put(

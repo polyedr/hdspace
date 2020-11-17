@@ -6,7 +6,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import { lighten } from '@material-ui/core';
 import { useDispatch } from 'react-redux';
 import cn from 'classnames';
-import Dialog from '../../UI/Dialog';
+import Dialog from '../../Dialogs/Dialog';
 import { Screen } from '../../../types';
 import ScreenControls from './ScreenControls';
 import ScreenLogo from './ScreenLogo';
