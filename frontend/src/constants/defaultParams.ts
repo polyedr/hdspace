@@ -97,3 +97,4 @@ export const LABELED_INPUT_TYPES = [
 ];
 
 export const CONTAINER_GROUPS = [ElementGroup.CONTAINERS, ElementGroup.CUSTOM];
+export const ROLES = ['STAFF', 'ADMINISTRATOR', 'LIBRARIAN', 'EXTERNAL'];

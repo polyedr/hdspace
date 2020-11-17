@@ -23,8 +23,7 @@ import { openSignScreen } from '../../../redux/history';
 import { promiseListener } from '../../../redux/store';
 import TYPES from '../../../redux/actionTypes';
 import SubmitError from '../SubmitError';
-
-const ROLES = ['STAFF', 'ADMINISTRATOR', 'LIBRARIAN', 'EXTERNAL', 'fajlwe'];
+import { ROLES } from '../../../constants/defaultParams';
 
 const useStyles = makeStyles((theme) =>
   createStyles({
