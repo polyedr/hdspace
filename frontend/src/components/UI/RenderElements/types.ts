@@ -18,6 +18,7 @@ export type SharedRendererProps = {
   ownStyles: React.CSSProperties;
   active: boolean;
   isDisabled: boolean;
+  contentEditable: boolean;
   className?: string;
   children: React.ReactElement[];
   ref?: React.RefObject<HTMLElement> | null;

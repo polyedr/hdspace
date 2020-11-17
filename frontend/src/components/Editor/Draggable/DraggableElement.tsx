@@ -1,4 +1,10 @@
-import React, { useState, useMemo, useRef, useEffect } from 'react';
+import React, {
+  useState,
+  useMemo,
+  useRef,
+  useEffect,
+  useCallback,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { DropTargetMonitor, useDrag, useDrop } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
@@ -7,6 +13,7 @@ import {
   moveElement,
   setCurrentDropTargetParams,
   setHoveredElement,
+  // updateElementParameters,
 } from '../../../redux/project/actions';
 import useElementProps from '../hooks/useElementProps';
 import { RENDERERS } from '../../UI/RenderElements';
@@ -225,6 +232,13 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
     }
   }, [isOverArea, rootID, dropTargetParams]);
 
+  const handleHoverElement = useCallback(
+    (elId: string | null) => () => {
+      dispatch(setHoveredElement(elId));
+    },
+    [dispatch],
+  );
+
   if (!element) {
     return null;
   }
@@ -236,11 +250,29 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
       <ElementRenderer
         {...elementProps}
         ref={ref}
-        onMouseEnter={() => {
-          dispatch(setHoveredElement(elementId));
-        }}
-        onMouseLeave={() => {
-          dispatch(setHoveredElement(element.parent || null));
+        onMouseEnter={handleHoverElement(elementId)}
+        onMouseLeave={handleHoverElement(element.parent || null)}
+        onInput={
+          (/* event: React.SyntheticEvent<HTMLElement, InputEvent> */) => {
+            /* if (!elementProps.contentEditable) {
+              return;
+            }
+            dispatch(
+            updateElementParameters(
+              elementId,
+              {
+                textContent: event?.nativeEvent?.target?.value as string,
+              },
+              { screenId },
+            ),
+          ); */
+          }
+        }
+        onBlur={(event: React.SyntheticEvent<HTMLElement, FocusEvent>) => {
+          if (!elementProps.contentEditable) {
+            return;
+          }
+          console.log('EVENT!!', event);
         }}
       >
         {element.children.map((childId: string) => (

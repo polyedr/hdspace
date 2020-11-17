@@ -2,41 +2,25 @@
 
 import React from 'react';
 import cn from 'classnames';
-import { makeStyles } from '@material-ui/core';
 
 import { TextBlockRendererProps } from '../types';
 import useEventHandlers from '../useEventHandlers';
+import { makeComponentStyles } from '../styles';
 
-const styles = require('../styles.scss');
+// const styles = require('../styles.scss');
+
+const useStyles = makeComponentStyles({}, [], {
+  wordBreak: 'break-word',
+});
 
 const TextBlock: React.FC<TextBlockRendererProps> = React.forwardRef(
   (props, ref) => {
-    const {
-      id,
-      entityStyles,
-      groupStyles,
-      ownStyles,
-      params,
-      className,
-    } = props;
-    const classes = makeStyles({
-      entityStyles: {
-        ...entityStyles,
-        wordBreak: 'break-word',
-      },
+    const { id, params, className, contentEditable } = props;
 
-      groupStyles: {
-        ...groupStyles,
-        wordBreak: 'break-word',
-      },
-
-      ownStyles: {
-        ...ownStyles,
-        wordBreak: 'break-word',
-      },
-    })();
-
+    const classes = useStyles(props);
     const eventHandlers = useEventHandlers(props);
+
+    console.log('CONTENT EDITABLE!!', contentEditable);
 
     return (
       <div
@@ -44,9 +28,10 @@ const TextBlock: React.FC<TextBlockRendererProps> = React.forwardRef(
         id={id}
         data-ls-id={id}
         key={id}
+        contentEditable={contentEditable}
         className={cn(
           className,
-          styles.addedElem,
+          classes.addedElem,
           classes.entityStyles,
           classes.groupStyles,
           classes.ownStyles,

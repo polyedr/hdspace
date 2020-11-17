@@ -103,13 +103,9 @@ export const LABELED_INPUT_TYPES = [
 ];
 
 export const CONTAINER_GROUPS = [ElementGroup.CONTAINERS, ElementGroup.CUSTOM];
+export const ROLES = ['STAFF', 'ADMINISTRATOR', 'LIBRARIAN', 'EXTERNAL'];
 
-export const enum RightPanelTab {
-  PROPERTIES = 0,
-  ELEMENTS = 1,
-}
-
-export const EditableComponentsList = [
+export const EDITABLE_COMPONENTS_LIST = [
   'textBlock',
   'paragraph',
   'hyperlink',

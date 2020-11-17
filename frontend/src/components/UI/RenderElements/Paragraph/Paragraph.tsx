@@ -6,11 +6,13 @@ import { makeComponentStyles } from '../styles';
 import { ParagraphRendererProps } from '../types';
 import useEventHandlers from '../useEventHandlers';
 
-const useStyles = makeComponentStyles();
+const useStyles = makeComponentStyles({}, [], {
+  wordBreak: 'break-word',
+});
 
 const Paragraph: React.FC<ParagraphRendererProps> = React.forwardRef(
   (props, ref) => {
-    const { id, params, className } = props;
+    const { id, params, className, contentEditable } = props;
     const classes = useStyles(props);
     const eventHandlers = useEventHandlers(props);
 
@@ -27,11 +29,10 @@ const Paragraph: React.FC<ParagraphRendererProps> = React.forwardRef(
           classes.groupStyles,
           classes.ownStyles,
         )}
-        style={{ wordBreak: 'break-word' }}
+        contentEditable={contentEditable}
         {...eventHandlers}
-      >
-        {params.textContent}
-      </p>
+        dangerouslySetInnerHTML={{ __html: params.textContent }}
+      />
     );
   },
 );
