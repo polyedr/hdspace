@@ -80,7 +80,9 @@ export function* getProjectSaga(action: ReturnType<typeof Actions.getProject>) {
         }),
       );
 
-      yield call(getScreensSaga, result.projectscreen);
+      if (result.projectscreen.length) {
+        yield call(getScreensSaga, result.projectscreen);
+      }
 
       yield put(Actions.setCurrentProjectId(result.id));
     }

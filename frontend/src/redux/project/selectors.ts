@@ -69,7 +69,7 @@ export const selectScreensLength = (state: AppReduxState) =>
   selectScreens(state).length;
 
 export const selectScreenById = (id: number) => ({ project }: AppReduxState) =>
-  project.data.screens[id] || DEFAULT_SCREEN; // TODO: should it return default screen?
+  project.data.screens[id];
 
 export const selectSavedElementsValues = ({ project }: AppReduxState) =>
   project.ui.savedElementsValues;

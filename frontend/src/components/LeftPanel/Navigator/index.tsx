@@ -275,7 +275,7 @@ const Navigator: React.FC = () => {
     );
   };
 
-  return (
+  return currentScreenId !== -1 ? (
     <Accordion defaultExpanded>
       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
         Navigator
@@ -305,7 +305,7 @@ const Navigator: React.FC = () => {
         </div>
       </AccordionDetails>
     </Accordion>
-  );
+  ) : null;
 };
 
 export default Navigator;

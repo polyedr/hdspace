@@ -8,7 +8,6 @@ import { createScenarios } from './scenario';
 import {
   selectAllElements,
   selectCurrentProject,
-  selectCurrentProjectId,
   selectCurrentScreenId,
   selectScreenById,
   selectScreenRootElement,
@@ -52,7 +51,6 @@ import {
   Result,
 } from '../../../types';
 import { reqWrapper } from './shared';
-import { AppReduxState } from '../../types';
 import { enqueueSnackbar } from '../../notification/actions';
 
 export function* activateScreenSaga({
@@ -66,15 +64,6 @@ export function* activateScreenSaga({
     yield put(setActiveElement('none'));
 
     const screen: Screen = yield select(selectScreenById(screenId));
-
-    const pathname: string = yield select(
-      (state: AppReduxState) => state.router.location.pathname,
-    );
-
-    if (screenId.toString() !== pathname.split('/').reverse()[0]) {
-      const projectId = yield select(selectCurrentProjectId);
-      yield put(push(`/project/${projectId}/${screenId}`));
-    }
 
     yield put(setCurrentScreenId(screen.id));
 

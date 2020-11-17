@@ -3,10 +3,14 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import { DndProvider } from 'react-dnd';
 import { useDispatch, useSelector } from 'react-redux';
 import makeStyles from '@material-ui/core/styles/makeStyles';
+import { useHistory } from 'react-router';
 import Workspace from '../components/Editor/Workspace/Workspace';
 import { activateScreen } from '../redux/project/actions';
-import { selectScreens } from '../redux/project/selectors';
 import RightPanel from '../components/RightPanel';
+import {
+  selectCurrentProjectId,
+  selectScreenById,
+} from '../redux/project/selectors';
 
 const useStyles = makeStyles({
   screen: {
@@ -19,21 +23,24 @@ const useStyles = makeStyles({
 });
 
 type Props = {
-  screenId?: number;
+  screenId: number;
 };
 
 const Screen: React.FC<Props> = ({ screenId }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
+  const history = useHistory();
 
-  const screens = useSelector(selectScreens);
-  const id = screenId || screens[0]?.id;
+  const screen = useSelector(selectScreenById(screenId));
+  const currentProjectId = useSelector(selectCurrentProjectId);
 
   useEffect(() => {
-    if (id) {
-      dispatch(activateScreen(id));
+    if (screen) {
+      dispatch(activateScreen(screen.id));
+    } else {
+      history.push(`/project/${currentProjectId}`);
     }
-  }, [id, dispatch]);
+  }, [history, dispatch, screen, currentProjectId]);
 
   return (
     <div className={classes.screen}>

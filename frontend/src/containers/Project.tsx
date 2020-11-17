@@ -1,10 +1,12 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import makeStyles from '@material-ui/core/styles/makeStyles';
+import { useHistory } from 'react-router';
 import Spinner from '../components/UI/Spinner';
 import NNProcessingModal from '../components/Dialogs/NNProcessing';
 import {
   selectCurrentProjectId,
+  selectProjectById,
   selectProjectLoader,
 } from '../redux/project/selectors';
 import { getProject } from '../redux/project/actions';
@@ -33,17 +35,31 @@ const ProjectLoaderSpinner = () => {
 const Project: React.FC<Props> = ({ projectId, screenId }) => {
   const dispatch = useDispatch();
   const classes = useStyles();
+  const history = useHistory();
+
   const currentProjectId = useSelector(selectCurrentProjectId);
+  const project = useSelector(selectProjectById(currentProjectId));
 
   useEffect(() => {
-    dispatch(getProject(projectId));
-  }, [dispatch, projectId]);
+    if (currentProjectId !== projectId) {
+      dispatch(getProject(projectId));
+    }
+  }, [dispatch, projectId, currentProjectId]);
+
+  useEffect(() => {
+    if (!screenId && currentProjectId !== -1) {
+      const firstScreenId = project.projectscreen[0];
+      if (firstScreenId) {
+        history.push(`/project/${currentProjectId}/${firstScreenId}`);
+      }
+    }
+  }, [screenId, currentProjectId, project, history]);
 
   return (
     <div className={classes.project}>
       <LeftPanel />
 
-      {currentProjectId !== -1 && <Screen screenId={screenId} />}
+      {currentProjectId !== -1 && !!screenId && <Screen screenId={screenId} />}
 
       <ProjectLoaderSpinner />
 
