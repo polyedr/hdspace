@@ -14,7 +14,7 @@ const useStyles = makeComponentStyles({
 });
 
 const Label: React.FC<LabelRendererProps> = React.forwardRef((props, ref) => {
-  const { id, params, className } = props;
+  const { id, params, className, contentEditable } = props;
   const { labelFor, textContent } = params;
 
   const styles = useStyles(props);
@@ -36,11 +36,10 @@ const Label: React.FC<LabelRendererProps> = React.forwardRef((props, ref) => {
         styles.groupStyles,
         styles.ownStyles,
       )}
-      /* onClick={(event) => isDisabled && event.preventDefault()} */
+      contentEditable={contentEditable}
+      dangerouslySetInnerHTML={{ __html: textContent }}
       {...eventHandlers}
-    >
-      {textContent}
-    </label>
+    />
   );
 });
 

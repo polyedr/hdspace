@@ -112,8 +112,5 @@ export const EDITABLE_COMPONENTS_LIST = [
   'heading',
   'listItem',
   'label',
-  'textArea',
   'button',
-  'textInput',
-  'textArea',
 ];

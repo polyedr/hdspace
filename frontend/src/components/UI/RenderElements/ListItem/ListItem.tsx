@@ -46,7 +46,7 @@ const useLinkStyles = makeStyles({
 
 const ListItem: React.FC<ListItemRendererProps> = React.forwardRef(
   (props, ref) => {
-    const { id, params, isDisabled, className } = props;
+    const { id, params, isDisabled, className, contentEditable } = props;
     const { textContent, isLink, link } = params;
 
     const listItemClasses = useItemStyles(props);
@@ -88,12 +88,13 @@ const ListItem: React.FC<ListItemRendererProps> = React.forwardRef(
                 linkClasses.groupStyles,
                 linkClasses.ownStyles,
               )}
+              aria-label={`Link-${id}`}
               href={link}
               target="_blank"
               rel="noreferrer"
-            >
-              {textContent}
-            </a>
+              contentEditable={contentEditable}
+              dangerouslySetInnerHTML={{ __html: textContent }}
+            />
           </li>
         ) : (
           <li
@@ -108,10 +109,11 @@ const ListItem: React.FC<ListItemRendererProps> = React.forwardRef(
               listItemClasses.groupStyles,
               listItemClasses.ownStyles,
             )}
+            aria-label={`Button-${id}`}
             {...eventHandlers}
-          >
-            {textContent}
-          </li>
+            contentEditable={contentEditable}
+            dangerouslySetInnerHTML={{ __html: textContent }}
+          />
         )}
       </>
     );

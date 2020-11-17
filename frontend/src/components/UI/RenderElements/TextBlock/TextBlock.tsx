@@ -37,9 +37,8 @@ const TextBlock: React.FC<TextBlockRendererProps> = React.forwardRef(
           classes.ownStyles,
         )}
         {...eventHandlers}
-      >
-        {params.textContent}
-      </div>
+        dangerouslySetInnerHTML={{ __html: params.textContent }}
+      />
     );
   },
 );

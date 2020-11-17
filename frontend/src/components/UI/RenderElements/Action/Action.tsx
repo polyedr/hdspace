@@ -31,7 +31,15 @@ const useStyles = makeComponentStyles({
 export type ActionRenderer = React.FC<WithActionProps & ActionRendererProps>;
 
 const Action: ActionRenderer = React.forwardRef((props, ref) => {
-  const { id, isDisabled, params, actionType, actionLink, className } = props;
+  const {
+    id,
+    isDisabled,
+    params,
+    actionType,
+    actionLink,
+    className,
+    contentEditable,
+  } = props;
   const { showRipple, textContent } = params;
 
   const classes = useStyles(props);
@@ -67,10 +75,10 @@ const Action: ActionRenderer = React.forwardRef((props, ref) => {
         target: '_blank',
       })}
       {...(actionType === 'internal-link' && { to: actionLink })}
+      contentEditable={contentEditable}
       {...eventHandlers}
-    >
-      {textContent}
-    </Button>
+      dangerouslySetInnerHTML={{ __html: textContent }}
+    />
   );
 });
 
