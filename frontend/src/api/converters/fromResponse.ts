@@ -67,41 +67,19 @@ export const convertRecursiveElementFromResponse = (
   };
 };
 
-export const convertProjectWithScreensFromResponse = (
+export function convertProjectFromResponse(
   project: ServerProjectWithScreens,
-): ProjectWithScreens => {
-  const {
-    id,
-    name,
-    status,
-    projectscreen,
-    created,
-    updated,
-    project_data_json,
-  } = project;
-  return {
-    id,
-    name,
-    status,
-    projectscreen,
-    projectLoader: false,
-    created: new Date(created),
-    updated: new Date(updated),
-    projectData: JSON.parse(project_data_json),
-  };
-};
-
-export const convertProjectFromResponse = (project: ServerProject): Project => {
-  const {
-    id,
-    name,
-    status,
-    projectscreen,
-    created,
-    updated,
-    project_data_json,
-  } = project;
-
+): ProjectWithScreens;
+export function convertProjectFromResponse(project: ServerProject): Project;
+export function convertProjectFromResponse({
+  id,
+  name,
+  status,
+  projectscreen,
+  created,
+  updated,
+  project_data_json,
+}) {
   const projectDataJSON = JSON.parse(project_data_json) as ProjectData;
 
   return {
@@ -122,7 +100,7 @@ export const convertProjectFromResponse = (project: ServerProject): Project => {
       }),
     },
   };
-};
+}
 
 export const convertProfileDataFromResponse = ({
   hourly_rate,

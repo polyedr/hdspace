@@ -1,10 +1,7 @@
 /* eslint-disable no-console */
 
 import { AxiosResponse, AxiosError } from 'axios';
-import {
-  convertProjectFromResponse,
-  convertProjectWithScreensFromResponse,
-} from './converters/fromResponse';
+import { convertProjectFromResponse } from './converters/fromResponse';
 import { myAxios } from '../config/settings';
 import {
   MyAxiosProps,
@@ -113,7 +110,7 @@ export const apiGetProjectWithScreens = (
     url: `projects/screens-for-project/${props.id}/`,
   })
     .then((res: AxiosResponse<ServerProjectWithScreens>) => ({
-      result: convertProjectWithScreensFromResponse(res.data),
+      result: convertProjectFromResponse(res.data),
     }))
     .catch(handleError);
 
