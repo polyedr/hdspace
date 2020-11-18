@@ -213,8 +213,6 @@ export function* createElements(
           ),
         );
 
-        yield put(Actions.setActiveElement(newElements[0].id));
-
         const updatedParent: LibraryElement<Entity> = yield select(
           selectElementAsTree(parent.id),
         );

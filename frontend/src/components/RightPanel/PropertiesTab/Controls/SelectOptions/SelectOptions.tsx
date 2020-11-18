@@ -1,4 +1,4 @@
-import React, { useState, useEffect, ChangeEvent } from 'react';
+import React, { useState, ChangeEvent } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import * as R from 'ramda';
 import {
@@ -47,10 +47,6 @@ const SelectOptions: React.FC<PropertiesChangeProps<SelectItemElement>> = ({
 
   const [options, setOptions] = useState(selectOptions);
   const currentScreenId = useSelector(selectCurrentScreenId);
-
-  useEffect(() => {
-    setOptions(selectOptions);
-  }, [selectOptions]);
 
   const handleNameFieldChange = (
     selectOptionID: string,
