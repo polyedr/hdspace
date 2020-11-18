@@ -442,3 +442,6 @@ export const selectScreenRotated = ({ project }: AppReduxState) =>
 
 export const selectRightPanelActiveTab = ({ project }: AppReduxState) =>
   project.ui.rightPanel.activeTab;
+
+export const selectScreenCreateLoader = ({ project }: AppReduxState) =>
+  project.communication.screenCreateLoader;

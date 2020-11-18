@@ -42,6 +42,13 @@ const communicationReducer = (
       };
     }
 
+    case TYPES.SET_SCREEN_CREATE_LOADER: {
+      return {
+        ...state,
+        screenCreateLoader: action.payload,
+      };
+    }
+
     case TYPES.LOGOUT: {
       return {
         ...initialCommunication,

@@ -72,6 +72,7 @@ export type ProjectEditState = {
 };
 
 export type ProjectCommunicationState = {
+  screenCreateLoader: boolean;
   updateImageLoader: boolean;
   screenLoader: boolean;
   projectLoader: boolean;
@@ -539,6 +540,11 @@ export type UpdateStateElement = IAction<
   ElementHistoryMeta
 >;
 
+export type SetScreenCreateLoader = IAction<
+  typeof TYPES.SET_SCREEN_CREATE_LOADER,
+  boolean
+>;
+
 export type Action =
   | LoadProjects
   | LoadProjectsSuccess
@@ -628,7 +634,8 @@ export type Action =
   | AddCustomElement
   | RemoveCustomElement
   | AddFileInput
-  | RemoveFileInput;
+  | RemoveFileInput
+  | SetScreenCreateLoader;
 
 export type HistoryMeta = {
   undo?: boolean;

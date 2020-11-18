@@ -92,6 +92,7 @@ import {
   UpdateSharedStyles,
   UploadFile,
   WrapIntoContainer,
+  SetScreenCreateLoader,
 } from '../types';
 
 export const getProjectList = (): LoadProjects => ({
@@ -780,4 +781,11 @@ export const rotateScreenFormat = (rotated: boolean) => ({
 export const setRightPanelActiveTab = (tabIndex: RightPanelTab) => ({
   type: TYPES.SET_RIGHT_PANEL_ACTIVE_TAB,
   payload: tabIndex,
+});
+
+export const setScreenCreateLoader = (
+  active: boolean,
+): SetScreenCreateLoader => ({
+  type: TYPES.SET_SCREEN_CREATE_LOADER,
+  payload: active,
 });

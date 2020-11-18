@@ -91,6 +91,8 @@ export function* createScreenSaga({
   payload,
 }: ReturnType<typeof createScreen>) {
   try {
+    yield put(Actions.setScreenCreateLoader(true));
+
     yield put(Actions.clearAfterPrevScreen());
     const { projectID, name, buoyancy, skip } = payload;
 
@@ -243,6 +245,8 @@ export function* createScreenSaga({
         options: { variant: 'error' },
       }),
     );
+  } finally {
+    yield put(Actions.setScreenCreateLoader(false));
   }
 }
 
@@ -416,6 +420,7 @@ export function* restoreScreenSaga({
       console.error(`You have to provide metainformation for action ${type}`);
       return;
     }
+    yield put(Actions.setScreenCreateLoader(true));
 
     yield put(Actions.clearAfterPrevScreen());
 
@@ -472,6 +477,8 @@ export function* restoreScreenSaga({
         options: { variant: 'error' },
       }),
     );
+  } finally {
+    yield put(Actions.setScreenCreateLoader(false));
   }
 }
 
