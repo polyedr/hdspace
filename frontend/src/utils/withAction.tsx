@@ -1,10 +1,10 @@
 import React, { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
+import { push } from 'connected-react-router';
 import {
   ActionRendererProps,
   SharedRendererProps,
 } from '../components/UI/RenderElements/types';
-import { activateScreen } from '../redux/project/actions';
 import { WithActionProps } from '../types';
 
 type Props = WithActionProps & SharedRendererProps & ActionRendererProps;
@@ -31,7 +31,7 @@ function withAction(
         ) {
           event.preventDefault();
         } else if (!isExportedAction && action?.type === 'internal-link') {
-          dispatch(activateScreen(Number(action.screenID)));
+          dispatch(push(`${action.screenID}`));
         }
       },
       [isDisabled, action?.type, dispatch],

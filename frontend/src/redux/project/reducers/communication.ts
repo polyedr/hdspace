@@ -7,10 +7,10 @@ const communicationReducer = (
   action: Action,
 ): ProjectCommunicationState => {
   switch (action.type) {
-    case TYPES.SET_LOADER: {
+    case TYPES.SET_UPDATE_IMAGE_LOADER: {
       return {
         ...state,
-        loader: action.payload.active,
+        updateImageLoader: action.payload.active,
       };
     }
 
@@ -28,10 +28,10 @@ const communicationReducer = (
       };
     }
 
-    case TYPES.SET_SCENARIO_LOADER: {
+    case TYPES.SET_PROJECT_CREATE_LOADER: {
       return {
         ...state,
-        scenarioLoader: action.payload.active,
+        projectCreateLoader: action.payload.active,
       };
     }
 
@@ -39,6 +39,13 @@ const communicationReducer = (
       return {
         ...state,
         analyzerLoader: action.payload.active,
+      };
+    }
+
+    case TYPES.SET_SCREEN_CREATE_LOADER: {
+      return {
+        ...state,
+        screenCreateLoader: action.payload,
       };
     }
 

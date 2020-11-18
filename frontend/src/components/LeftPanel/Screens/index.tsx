@@ -7,11 +7,16 @@ import AddIcon from '@material-ui/icons/Add';
 import { lighten } from '@material-ui/core';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import ScreenListItem from './ScreenListItem';
-import { addScreen, changeScreensOrder } from '../../../redux/project/actions';
+import {
+  createScreen,
+  changeScreensOrder,
+} from '../../../redux/project/actions';
 import {
   selectCurrentProjectId,
   selectCurrentScreenId,
+  selectScreenCreateLoader,
   selectScreens,
 } from '../../../redux/project/selectors';
 import { Scrollbar } from '../../UI';
@@ -42,11 +47,12 @@ const Screens = () => {
   const currentProjectId = useSelector(selectCurrentProjectId);
   const currentScreenId = useSelector(selectCurrentScreenId);
   const screens = useSelector(selectScreens);
+  const screenCreateLoader = useSelector(selectScreenCreateLoader);
 
   const handleAddScreen = (ev) => {
     ev.preventDefault();
     ev.stopPropagation();
-    dispatch(addScreen(currentProjectId, 'Screen 1', screens.length));
+    dispatch(createScreen(currentProjectId, 'Screen 1', screens.length));
   };
 
   const handleReorder = ({ destination, source }) => {
@@ -63,12 +69,17 @@ const Screens = () => {
         <span>Screens</span>
 
         <IconButton
-          title="Add Screen"
+          title="Create Screen"
           size="small"
           onClick={handleAddScreen}
           className={classes.button}
+          disabled={screenCreateLoader}
         >
-          <AddIcon />
+          {!screenCreateLoader ? (
+            <AddIcon />
+          ) : (
+            <CircularProgress size={24} color="secondary" />
+          )}
         </IconButton>
       </AccordionSummary>
 

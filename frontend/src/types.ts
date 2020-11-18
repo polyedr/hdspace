@@ -13,6 +13,17 @@ export type Normalized<T extends { id: string | number }> = {
   [id in string | number]: T;
 };
 
+export type Result<T = any> = {
+  result?: T;
+  error?: string;
+};
+
+export type PaginatedResponse<T> = {
+  next: string | null;
+  previous: string | null;
+  results: T[];
+};
+
 export type PaginatedBase<T> = {
   next: string | null;
   previous: string | null;
@@ -530,6 +541,17 @@ export type CreatedServerProject = {
   project_data_json: string;
 };
 
+export type ServerProjectWithScreens = {
+  id: number;
+  name: string;
+  status: string;
+  projectscreen: Screen[];
+  created: string;
+  updated: string;
+  project_data_json: string;
+  project_data_text: string;
+};
+
 export type ServerProject = {
   id: number;
   name: string;
@@ -603,10 +625,6 @@ export type DropTargetParams = {
 export type Indices = {
   newIndex: number;
   oldIndex: number;
-};
-
-export type Notification = {
-  text: string;
 };
 
 export type SavedElementsValues = {
@@ -685,7 +703,7 @@ export type ElementParameters = {
   videoSettings?: VideoSettingsType;
 };
 
-export interface IScenarioItem {
+export interface ScenarioItem {
   // compare with entity on backend
   id: number;
   name: string;
@@ -700,10 +718,6 @@ export interface IScenarioItem {
     children: string[]; // listSortable-specific ids
   } & ElementParameters;
   styles: React.CSSProperties;
-}
-
-export interface IScenarios {
-  [scenarioID: string]: IScenarioItem;
 }
 
 export interface Screen {
@@ -770,12 +784,10 @@ export type ElementsToDrop = {
   index?: number;
 };
 
-/* eslint-disable camelcase */
-
-export interface ITokenPair {
+export type TokenPair = {
   access: string;
   refresh: string;
-}
+};
 
 export type LoginFormData = {
   username: string;

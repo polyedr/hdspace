@@ -1,5 +1,4 @@
 import {
-  ITokenPair,
   LibraryElement,
   Project,
   StateElement,
@@ -77,11 +76,6 @@ export const DEFAULT_ACTIVE_ELEMENT: StateElement = {
     classNames: ['root'],
     ownStyles: {},
   },
-};
-
-export const DEFAULT_AUTHORIZATION_TOKEN: ITokenPair = {
-  access: '',
-  refresh: '',
 };
 
 export const SAVEABLE_ELEMENTS = ['section'];

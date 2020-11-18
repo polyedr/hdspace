@@ -8,7 +8,7 @@ export const selectIsLeftPanelMinimized = ({ user }: AppReduxState) =>
 export const selectIsPrototypeMode = ({ user }: AppReduxState) =>
   user.isPrototypeMode;
 
-export const selectAuthError = ({ user }: AppReduxState) => user.authError;
+export const selectAuthError = ({ user }: AppReduxState) => user.error;
 
 export const selectTokenPair = ({ user }: AppReduxState) => user.tokenPair;
 
@@ -19,5 +19,5 @@ export const selectConfirmMessage = ({ user }: AppReduxState) =>
 
 export const selectIsLoggedIn = ({ user }: AppReduxState) => user.isLoggedIn;
 
-export const selectRightPanelActiveTab = ({ project }: AppReduxState) =>
-  project.ui.rightPanel.activeTab;
+export const selectIsTokenLoaded = ({ user }: AppReduxState) =>
+  user.isTokenLoaded;

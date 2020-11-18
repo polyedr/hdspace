@@ -1,39 +1,117 @@
 import React from 'react';
+import MakeAsyncFunction from 'react-redux-promise-listener';
 import { useDispatch, useSelector } from 'react-redux';
 import { Form, Field } from 'react-final-form';
 import cn from 'classnames';
+import makeStyles from '@material-ui/core/styles/makeStyles';
+import { createStyles, darken } from '@material-ui/core';
+import Typography from '@material-ui/core/Typography';
+import Box from '@material-ui/core/Box';
+import TextField from '@material-ui/core/TextField';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+import Alert from '@material-ui/lab/Alert';
+import FormHelperText from '@material-ui/core/FormHelperText';
 import Button from '../../UI/Button';
 import { selectUserData } from '../../../redux/user/selectors';
-import {
-  changeProfileData,
-  changeUserData,
-  logout,
-} from '../../../redux/user/actions';
+import { changeProfileData, logout } from '../../../redux/user/actions';
 import IMAGES from '../../../constants/images';
-import { ProfileData, UserData } from '../../../types';
+import { ProfileData } from '../../../types';
 import { openSignScreen } from '../../../redux/history';
+import { promiseListener } from '../../../redux/store';
+import TYPES from '../../../redux/actionTypes';
+import SubmitError from '../SubmitError';
+import { ROLES } from '../../../constants/defaultParams';
 
-const styles = require('./Profile.scss');
+const useStyles = makeStyles((theme) =>
+  createStyles({
+    headerContainer: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      padding: theme.spacing(2),
+      borderBottom: '1px solid #E7EAEC',
+    },
+    header: {
+      fontWeight: 'bold',
+    },
+    formsContainer: {
+      display: 'flex',
+      maxWidth: 1000,
+    },
+    textFieldsContainer: {
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'space-evenly',
+      flex: 1,
+    },
+    profileForm: {
+      display: 'flex',
+      '& > *': {
+        margin: theme.spacing(1),
+      },
+    },
+    profileImageWrapper: {
+      flex: '0 1',
+      display: 'flex',
+      flexDirection: 'column',
+      padding: `0 ${theme.spacing(1)}px`,
+      '& img': {
+        height: 102,
+        width: 102,
+        objectFit: 'contain',
+      },
+    },
+    imageInputLabel: {
+      fontSize: '11px',
+    },
+    profileImageActions: {
+      display: 'flex',
+      justifyContent: 'space-between',
+    },
+    imageActionButton: {
+      fontSize: '11px',
+      padding: theme.spacing(0.5),
+      border: 'none',
+      borderRadius: '3px',
+      marginTop: theme.spacing(1),
+      cursor: 'pointer',
+      backgroundColor: '#efefef',
+      '&:hover, &:focus': {
+        backgroundColor: darken('#efefef', 0.1),
+      },
+    },
+    hidden: {
+      display: 'none',
+    },
+    profileCredentials: {
+      marginTop: 50,
+      padding: theme.spacing(1),
+    },
+    subheader: {
+      marginBottom: 10,
+    },
+    strong: {
+      fontWeight: 'bold',
+    },
+    error: {
+      margin: theme.spacing(1),
+    },
+  }),
+);
 
 const Profile: React.FC = () => {
+  const classes = useStyles();
   const dispatch = useDispatch();
 
   const userData = useSelector(selectUserData);
-  const { firstName, lastName, email, role, id, avatar } = userData;
+  const { firstName, lastName, email, role, avatar } = userData;
 
   const handleLogout = () => {
     dispatch(logout());
     openSignScreen('signin');
-  };
-
-  const handleChangeUserData = async (values: any) => {
-    if (
-      Object.entries(values).some(
-        ([key, value]) => value !== userData[key as keyof UserData],
-      )
-    ) {
-      dispatch(changeUserData(id, values));
-    }
   };
 
   const handleChangeProfileData = async (values: any) => {
@@ -42,7 +120,7 @@ const Profile: React.FC = () => {
         ([key, value]) => value !== userData[key as keyof ProfileData],
       )
     ) {
-      dispatch(changeProfileData(id, values));
+      dispatch(changeProfileData(values));
     }
   };
 
@@ -52,81 +130,174 @@ const Profile: React.FC = () => {
     const formData = new FormData();
     formData.append('avatar', file, file.name);
 
-    dispatch(changeProfileData(id, (formData as any) as ProfileData));
+    dispatch(changeProfileData((formData as any) as ProfileData));
   };
 
   const removeProfileImage = () => handleChangeProfileData({ avatar: null });
 
   return (
-    <main className={styles.profileContainer}>
-      <div className={styles.profileHeaderContainer}>
-        <div className={styles.profileHeader}>Profile settings</div>
+    <main>
+      <div className={classes.headerContainer}>
+        <Typography variant="h4" className={classes.header}>
+          Profile settings
+        </Typography>
 
         <Button styleType="link" onClick={handleLogout}>
           Log out
         </Button>
       </div>
 
-      <div className={styles.profileMainBlock}>
-        <div className={styles.profileFormsContainer}>
-          <div className={styles.textFieldsContainer}>
-            <Form
-              onSubmit={handleChangeUserData}
-              render={({ handleSubmit }) => (
-                <form onSubmit={handleSubmit} className={styles.profileForm}>
-                  <div className={styles.profileFieldWrapper}>
-                    <label>First Name</label>
-                    <Field
-                      name="firstName"
-                      onBlur={handleSubmit}
-                      defaultValue={firstName}
-                      component="input"
-                      type="text"
-                    />
-                  </div>
+      <Box padding={2}>
+        <div className={classes.formsContainer}>
+          <div className={classes.textFieldsContainer}>
+            <MakeAsyncFunction
+              listener={promiseListener}
+              start={TYPES.CHANGE_USER_DATA}
+              resolve={TYPES.CHANGE_USER_DATA_COMPLETE}
+              reject={TYPES.CHANGE_USER_DATA_FAILURE}
+            >
+              {(onSubmit) => (
+                <Form
+                  onSubmit={onSubmit}
+                  render={({ handleSubmit, submitError }) => (
+                    <>
+                      <div className={classes.error}>
+                        <SubmitError name="detail" />
 
-                  <div className={styles.profileFieldWrapper}>
-                    <label>Last Name</label>
-                    <Field
-                      name="lastName"
-                      onBlur={handleSubmit}
-                      defaultValue={lastName}
-                      component="input"
-                      type="text"
-                    />
-                  </div>
-                </form>
+                        {submitError && (
+                          <Alert severity="error" variant="filled">
+                            {submitError}
+                          </Alert>
+                        )}
+                      </div>
+                      <form
+                        onSubmit={handleSubmit}
+                        className={classes.profileForm}
+                      >
+                        <Field name="first_name" defaultValue={firstName}>
+                          {({ input, meta }) => (
+                            <TextField
+                              {...input}
+                              onBlur={handleSubmit}
+                              type="text"
+                              fullWidth
+                              label="First Name"
+                              placeholder="First Name"
+                              variant="outlined"
+                              size="small"
+                              error={
+                                (meta.error || meta.submitError) && meta.touched
+                              }
+                              helperText={
+                                (meta.error || meta.submitError) && meta.touched
+                                  ? meta.error || meta.submitError
+                                  : null
+                              }
+                            />
+                          )}
+                        </Field>
+
+                        <Field name="last_name" defaultValue={lastName}>
+                          {({ input, meta }) => (
+                            <TextField
+                              {...input}
+                              onBlur={handleSubmit}
+                              placeholder="Last Name"
+                              type="text"
+                              fullWidth
+                              label="Last Name"
+                              variant="outlined"
+                              size="small"
+                              error={
+                                (meta.error || meta.submitError) && meta.touched
+                              }
+                              helperText={
+                                (meta.error || meta.submitError) && meta.touched
+                                  ? meta.error || meta.submitError
+                                  : null
+                              }
+                            />
+                          )}
+                        </Field>
+                      </form>
+                    </>
+                  )}
+                />
               )}
-            />
+            </MakeAsyncFunction>
 
-            <Form
-              onSubmit={handleChangeProfileData}
-              render={({ handleSubmit }) => (
-                <form onSubmit={handleSubmit} className={styles.profileForm}>
-                  <div className={styles.profileFieldWrapper}>
-                    <label>Company Name</label>
-                    <input type="text" />
-                  </div>
+            <MakeAsyncFunction
+              listener={promiseListener}
+              start={TYPES.CHANGE_PROFILE_DATA}
+              resolve={TYPES.CHANGE_PROFILE_DATA_COMPLETE}
+              reject={TYPES.CHANGE_PROFILE_DATA_FAILURE}
+            >
+              {(onSubmit) => (
+                <Form
+                  onSubmit={onSubmit}
+                  render={({ handleSubmit, submitError }) => (
+                    <>
+                      <div className={classes.error}>
+                        <SubmitError name="detail" />
 
-                  <div className={styles.profileFieldWrapper}>
-                    <label>Role</label>
-                    <Field
-                      name="role"
-                      component="select"
-                      defaultValue={role}
-                      onBlur={handleSubmit}
-                    >
-                      <option value="Designer">Designer</option>
-                      <option value="Developer">Developer</option>
-                      <option value="Administrator">Administrator</option>
-                      <option value="Marketing">Marketing</option>
-                      <option value="Expert">Expert</option>
-                      <option value="Communication">Communication</option>
-                    </Field>
-                  </div>
-                </form>
+                        {submitError && (
+                          <Alert severity="error" variant="filled">
+                            {submitError}
+                          </Alert>
+                        )}
+                      </div>
+                      <form
+                        onSubmit={handleSubmit}
+                        className={classes.profileForm}
+                      >
+                        <TextField
+                          type="text"
+                          fullWidth
+                          label="Company Name"
+                          placeholder="Company Name"
+                          variant="outlined"
+                          size="small"
+                        />
+
+                        <Field name="role" defaultValue={role}>
+                          {({ input, meta }) => (
+                            <FormControl
+                              fullWidth
+                              error={
+                                (meta.error || meta.submitError) && meta.touched
+                              }
+                              variant="outlined"
+                            >
+                              <InputLabel>Role</InputLabel>
+
+                              <Select
+                                {...input}
+                                margin="dense"
+                                label="Role"
+                                onBlur={handleSubmit}
+                              >
+                                {ROLES.map((role) => (
+                                  <MenuItem key={role} value={role} dense>
+                                    {role}
+                                  </MenuItem>
+                                ))}
+                              </Select>
+
+                              <FormHelperText>
+                                {(meta.error || meta.submitError) &&
+                                meta.touched
+                                  ? meta.error || meta.submitError
+                                  : null}
+                              </FormHelperText>
+                            </FormControl>
+                          )}
+                        </Field>
+                      </form>
+                    </>
+                  )}
+                />
               )}
-            />
+            </MakeAsyncFunction>
           </div>
 
           <Form
@@ -134,14 +305,14 @@ const Profile: React.FC = () => {
             render={({ handleSubmit }) => (
               <form
                 onSubmit={handleSubmit}
-                className={styles.profileImageWrapper}
+                className={classes.profileImageWrapper}
               >
-                <div className={styles.imageInputLabel}>Your photo</div>
+                <div className={classes.imageInputLabel}>Your photo</div>
 
                 <img src={avatar ?? IMAGES.prof} alt="profile" />
 
-                <div className={styles.profileImageActions}>
-                  <label className={styles.imageActionButton}>
+                <div className={classes.profileImageActions}>
+                  <label className={classes.imageActionButton}>
                     Upload
                     <Field
                       name="avatar"
@@ -151,14 +322,14 @@ const Profile: React.FC = () => {
                             {...input}
                             type="file"
                             onChange={handleImageUpload}
-                            className={styles.hidden}
+                            className={classes.hidden}
                           />
                         );
                       }}
                     />
                   </label>
                   <button
-                    className={styles.imageActionButton}
+                    className={classes.imageActionButton}
                     type="button"
                     onClick={removeProfileImage}
                   >
@@ -170,26 +341,22 @@ const Profile: React.FC = () => {
           />
         </div>
 
-        <div className={styles.profileCredentials}>
-          <div className={cn(styles.subheader, styles.strong)}>
+        <div className={classes.profileCredentials}>
+          <div className={cn(classes.subheader, classes.strong)}>
             Email address
           </div>
-          <div className={styles.subheader}>
+          <div className={classes.subheader}>
             {'Your email address is '}
-            <span className={styles.strong}>{email}</span>
+            <span className={classes.strong}>{email}</span>
           </div>
-          <Button className={styles.linkButton} styleType="link">
-            Change
-          </Button>
+          <Button styleType="link">Change</Button>
         </div>
 
-        <div className={styles.profileCredentials}>
-          <div className={styles.subheader}>Password</div>
-          <Button className={styles.linkButton} styleType="link">
-            Change
-          </Button>
+        <div className={classes.profileCredentials}>
+          <div className={classes.subheader}>Password</div>
+          <Button styleType="link">Change</Button>
         </div>
-      </div>
+      </Box>
     </main>
   );
 };

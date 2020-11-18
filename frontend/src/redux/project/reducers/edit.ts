@@ -30,14 +30,6 @@ const editReducer = produce(
         return { ...draft, currentProjectId: action.payload.projectId };
       }
 
-      case TYPES.SET_NOTIFICATION: {
-        return { ...draft, notification: action.payload };
-      }
-
-      case TYPES.REMOVE_NOTIFICATION: {
-        return { ...draft, notification: null };
-      }
-
       case TYPES.SET_CURRENT_SCREEN_ID: {
         return { ...draft, currentScreenId: action.payload.screenId };
       }
@@ -68,6 +60,10 @@ const editReducer = produce(
         const { parentId, ids, offset } = action.payload;
         draft.freeCanvas.lastElements[parentId] = { elements: ids, offset };
         break;
+      }
+
+      case TYPES.RESET_SCREEN_STATE: {
+        return initialEdit;
       }
 
       case TYPES.LOGOUT: {

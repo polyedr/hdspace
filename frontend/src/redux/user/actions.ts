@@ -1,10 +1,12 @@
+import { FORM_ERROR } from 'final-form';
 import TYPES from '../actionTypes';
 import {
-  ITokenPair,
+  TokenPair,
   LoginFormData,
   ProfileData,
   TotalUserData,
   UserData,
+  SignupFormData,
 } from '../../types';
 
 export const changeMinLPanel = () => ({ type: TYPES.CHANGE_L_PANEL });
@@ -24,11 +26,23 @@ export const login = (data: LoginFormData) => ({
   payload: data,
 });
 
+export const loginComplete = (
+  errors?: { detail: string } | { [FORM_ERROR]: string },
+) => ({
+  type: TYPES.LOGIN_COMPLETE,
+  payload: errors,
+});
+
+export const loginFailure = (errors: any) => ({
+  type: TYPES.LOGIN_FAILURE,
+  payload: errors,
+});
+
 export const logout = () => ({
   type: TYPES.LOGOUT,
 });
 
-export const setTokenPair = (tokenPair: ITokenPair) => ({
+export const setTokenPair = (tokenPair: TokenPair) => ({
   type: TYPES.SET_TOKEN_PAIR,
   tokenPair,
 });
@@ -38,21 +52,21 @@ export const setUserData = (data: Partial<TotalUserData>) => ({
   payload: data,
 });
 
-export const sendActivationMail = (
-  username: string,
-  email: string,
-  password: string,
-  firstName: string,
-  lastName: string,
+export const register = (data: SignupFormData) => ({
+  type: TYPES.REGISTER,
+  payload: data,
+});
+
+export const registerComplete = (
+  errors?: { [key in keyof SignupFormData]: string } | { [FORM_ERROR]: string },
 ) => ({
-  type: TYPES.SEND_ACTIVATION_MAIL,
-  payload: {
-    username,
-    email,
-    password,
-    firstName,
-    lastName,
-  },
+  type: TYPES.REGISTER_COMPLETE,
+  payload: errors,
+});
+
+export const registerFailure = (error: any) => ({
+  type: TYPES.REGISTER_FAILURE,
+  payload: error,
 });
 
 export const sendResetPasswordMail = (email: string) => ({
@@ -81,8 +95,8 @@ export const activateUser = (uid: string, token: string) => ({
   },
 });
 
-export const setAuthError = (error: Error) => ({
-  type: TYPES.SET_AUTH_ERROR,
+export const setUserError = (error: Error | null) => ({
+  type: TYPES.SET_USER_ERROR,
   payload: error,
 });
 
@@ -116,18 +130,36 @@ export const setRestoreUserId = (restoreUserId: number) => ({
   restoreUserId,
 });
 
-export const changeUserData = (id: number, data: Partial<UserData>) => ({
+export const changeUserData = (data: Partial<UserData>) => ({
   type: TYPES.CHANGE_USER_DATA,
-  payload: {
-    id,
-    data,
-  },
+  payload: data,
 });
 
-export const changeProfileData = (id: number, data: Partial<ProfileData>) => ({
+export const changeUserDataComplete = (
+  errors?: { [key in keyof UserData]: string } | { [FORM_ERROR]: string },
+) => ({
+  type: TYPES.CHANGE_USER_DATA_COMPLETE,
+  payload: errors,
+});
+
+export const changeUserDataFailure = (error: any) => ({
+  type: TYPES.CHANGE_USER_DATA_FAILURE,
+  payload: error,
+});
+
+export const changeProfileData = (data: Partial<ProfileData>) => ({
   type: TYPES.CHANGE_PROFILE_DATA,
-  payload: {
-    id,
-    data,
-  },
+  payload: data,
+});
+
+export const changeProfileDataComplete = (
+  errors?: { [key in keyof ProfileData]: string } | { [FORM_ERROR]: string },
+) => ({
+  type: TYPES.CHANGE_PROFILE_DATA_COMPLETE,
+  payload: errors,
+});
+
+export const changeProfileDataFailure = (error: any) => ({
+  type: TYPES.CHANGE_PROFILE_DATA_FAILURE,
+  payload: error,
 });

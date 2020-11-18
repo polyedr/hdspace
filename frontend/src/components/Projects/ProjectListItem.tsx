@@ -10,8 +10,8 @@ import IconButton from '@material-ui/core/IconButton';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import convertDateToRelative from '../../utils/convertDateToRelative';
-import { delProject, renameProject } from '../../redux/project/actions';
-import Dialog from '../UI/Dialog';
+import { deleteProject, renameProject } from '../../redux/project/actions';
+import Dialog from '../Dialogs/Dialog';
 import { Project } from '../../types';
 
 const useStyles = makeStyles((theme) =>
@@ -65,7 +65,7 @@ const ProjectListItem = React.forwardRef<Ref, Props>(
     };
 
     const onDeleteProject = () => {
-      dispatch(delProject(id));
+      dispatch(deleteProject(id));
       closeModal();
     };
 

@@ -10,7 +10,6 @@ import {
   LibraryElement,
   LibraryElementPatch,
   Normalized,
-  PaginatedArray,
   ParentIds,
   Project,
   SavedElementsValues,
@@ -19,6 +18,7 @@ import {
   NNBlockType,
   SCREEN_FORMATS,
   RightPanelTab,
+  PaginatedResponse,
   PropertyName,
 } from '../../types';
 import {
@@ -27,11 +27,11 @@ import {
   AddChildToElement,
   AddElementClassName,
   AddElements,
-  AddProject,
-  AddScreen,
+  CreateProject,
+  CreateScreen,
   ChangeScreensOrder,
   ClearAfterPrevScreen,
-  CopyActiveItem,
+  CopyActiveElement,
   CopyElementStyles,
   CreateElements,
   DeleteItem,
@@ -45,37 +45,35 @@ import {
   LoadProjects,
   LoadProjectsSuccess,
   MoveElement,
-  PasteCopiedItem,
+  PasteCopiedElement,
   PopHistory,
   PopUndoAction,
   RedoAction,
   RedoWrapIntoContainer,
   RemoveElementClassName,
   RemoveElementStyles,
-  RemoveNotification,
   RemoveSharedStyles,
   RenameProject,
   RenameScreen,
   ReplaceElementStyles,
-  ResetScreenState,
+  ResetProjectState,
   RestoreElement,
   RestoreElementChildren,
   RestoreScreen,
-  SaveScreen,
+  UpdateScreenImage,
   SetAnalyzerLoader,
   SetCurrentProjectId,
   SetCurrentScreenId,
   SetEditableStyles,
   SetGroupActionsUp,
   SetHoveredElement,
-  SetItemToCopy,
-  SetLoader,
-  SetNotification,
+  SetElementToCopy,
+  SetUpdateImageLoader,
   SetProject,
   SetProjectListLoader,
   SetProjectLoader,
   SetRedoActions,
-  SetScenarioLoader,
+  SetProjectCreateLoader,
   SetScreenLoader,
   SetScreens,
   SetUndoActions,
@@ -94,6 +92,7 @@ import {
   UpdateSharedStyles,
   UploadFile,
   WrapIntoContainer,
+  SetScreenCreateLoader,
 } from '../types';
 
 export const getProjectList = (): LoadProjects => ({
@@ -105,17 +104,17 @@ export const setProjectList = (projects: Project[]): LoadProjectsSuccess => ({
   payload: { projects },
 });
 
-export const setProjectsData = (data: PaginatedArray<Project>) => ({
+export const setProjectsData = (data: PaginatedResponse<Project>) => ({
   type: TYPES.SET_PROJECTS_DATA,
   payload: data,
 });
 
-export const addProject = (name: string): AddProject => ({
-  type: TYPES.ADD_PROJECT,
+export const createProject = (name: string): CreateProject => ({
+  type: TYPES.CREATE_PROJECT,
   payload: { name },
 });
 
-export const delProject = (id: number): DeleteProject => ({
+export const deleteProject = (id: number): DeleteProject => ({
   type: TYPES.DELETE_PROJECT,
   payload: { id },
 });
@@ -176,13 +175,17 @@ export const setScreenLoader = (active: boolean): SetScreenLoader => ({
   payload: { active },
 });
 
-export const setLoader = (active: boolean): SetLoader => ({
-  type: TYPES.SET_LOADER,
+export const setUpdateImageLoader = (
+  active: boolean,
+): SetUpdateImageLoader => ({
+  type: TYPES.SET_UPDATE_IMAGE_LOADER,
   payload: { active },
 });
 
-export const setScenarioLoader = (active: boolean): SetScenarioLoader => ({
-  type: TYPES.SET_SCENARIO_LOADER,
+export const setProjectCreateLoader = (
+  active: boolean,
+): SetProjectCreateLoader => ({
+  type: TYPES.SET_PROJECT_CREATE_LOADER,
   payload: { active },
 });
 
@@ -191,16 +194,7 @@ export const setAnalyzerLoader = (active: boolean): SetAnalyzerLoader => ({
   payload: { active },
 });
 
-export const setNotification = (text: string): SetNotification => ({
-  type: TYPES.SET_NOTIFICATION,
-  payload: { text },
-});
-
-export const removeNotification = (): RemoveNotification => ({
-  type: TYPES.REMOVE_NOTIFICATION,
-});
-
-export const delScreen = (
+export const deleteScreen = (
   projectId: number,
   screenId: number,
   meta: HistoryMeta = {},
@@ -230,13 +224,13 @@ export const renameScreen = (
   payload: { projectID, screenID, name },
 });
 
-export const addScreen = (
+export const createScreen = (
   projectID: number,
   name: string,
   buoyancy: number,
   skip: boolean = false,
-): AddScreen => ({
-  type: TYPES.ADD_SCREEN,
+): CreateScreen => ({
+  type: TYPES.CREATE_SCREEN,
   payload: { projectID, name, buoyancy, skip },
 });
 
@@ -355,18 +349,14 @@ export const removeStateElement = (
   meta,
 });
 
-export const resetScreenState = (): ResetScreenState => ({
+export const resetProjectState = (): ResetProjectState => ({
   type: TYPES.RESET_SCREEN_STATE,
 });
 
-export const saveScreenImage = (
-  screenId: number,
-  canvas: HTMLCanvasElement,
-): SaveScreen => ({
-  type: TYPES.SAVE_SCREEN,
+export const updateScreenImage = (screenId: number): UpdateScreenImage => ({
+  type: TYPES.UPDATE_SCREEN_IMAGE,
   payload: {
     screenId,
-    canvas,
   },
 });
 
@@ -612,19 +602,22 @@ export const setEditableStyles = (className: string): SetEditableStyles => ({
   payload: { className },
 });
 
-export const copyActiveItem = (): CopyActiveItem => ({
-  type: TYPES.COPY_ACTIVE_ITEM,
+export const copyActiveElement = (): CopyActiveElement => ({
+  type: TYPES.COPY_ACTIVE_ELEMENT,
 });
 
 export const pasteCopiedElement = (
   meta: ElementHistoryMeta,
-): PasteCopiedItem => ({
+): PasteCopiedElement => ({
   type: TYPES.PASTE_COPIED_ELEMENT,
   meta,
 });
 
-export const setItemToCopy = (id: string, screenID: number): SetItemToCopy => ({
-  type: TYPES.SET_ITEM_TO_COPY,
+export const setElementToCopy = (
+  id: string,
+  screenID: number,
+): SetElementToCopy => ({
+  type: TYPES.SET_ELEMENT_TO_COPY,
   payload: { id, screenID },
 });
 
@@ -751,7 +744,7 @@ export const updateElementsLoading = (loading: boolean) => ({
 });
 
 export const addCustomElementsPage = (
-  paginatedResult: PaginatedArray<LibraryElement<Entity>>,
+  paginatedResult: PaginatedResponse<LibraryElement<Entity>>,
   initial: boolean,
 ) => ({
   type: TYPES.ADD_CUSTOM_ELEMENTS_PAGE,
@@ -804,4 +797,11 @@ export const rotateScreenFormat = (rotated: boolean) => ({
 export const setRightPanelActiveTab = (tabIndex: RightPanelTab) => ({
   type: TYPES.SET_RIGHT_PANEL_ACTIVE_TAB,
   payload: tabIndex,
+});
+
+export const setScreenCreateLoader = (
+  active: boolean,
+): SetScreenCreateLoader => ({
+  type: TYPES.SET_SCREEN_CREATE_LOADER,
+  payload: active,
 });

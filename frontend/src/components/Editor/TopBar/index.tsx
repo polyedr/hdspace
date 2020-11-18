@@ -67,7 +67,9 @@ const TopBar: React.FC = () => {
 
       <Formats />
     </div>
-  ) : null;
+  ) : (
+    <div />
+  );
 };
 
 export default TopBar;

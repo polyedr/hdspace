@@ -50,7 +50,6 @@ export const initialEdit: ProjectEditState = {
   currentScreenId: -1,
   activeElementId: '-1',
   hoveredElementId: '-1',
-  notification: null,
   freeCanvas: {
     enabled: false,
     lastElements: {},
@@ -58,11 +57,11 @@ export const initialEdit: ProjectEditState = {
 };
 
 export const initialCommunication: ProjectCommunicationState = {
-  loader: false,
-  projectListLoader: false,
+  screenCreateLoader: false,
+  updateImageLoader: false,
   screenLoader: false,
   projectLoader: false,
-  scenarioLoader: false,
+  projectCreateLoader: false,
   analyzerLoader: false,
 };
 

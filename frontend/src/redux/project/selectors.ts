@@ -69,11 +69,7 @@ export const selectScreensLength = (state: AppReduxState) =>
   selectScreens(state).length;
 
 export const selectScreenById = (id: number) => ({ project }: AppReduxState) =>
-  project.data.screens[id] || DEFAULT_SCREEN; // TODO: should it return default screen?
-
-export function selectNotification(state: AppReduxState) {
-  return selectProjectState(state).edit.notification;
-}
+  project.data.screens[id];
 
 export const selectSavedElementsValues = ({ project }: AppReduxState) =>
   project.ui.savedElementsValues;
@@ -121,8 +117,8 @@ export function selectUploadedImageInfo(state: AppReduxState) {
   return selectProjectState(state).edit.uploadedImageInfo;
 }
 
-export function selectLoader(state: AppReduxState) {
-  return selectProjectState(state).communication.loader;
+export function selectUpdateScreenImageLoader(state: AppReduxState) {
+  return selectProjectState(state).communication.updateImageLoader;
 }
 
 export const selectElementByChildId = (id: string) => (
@@ -134,8 +130,8 @@ export const selectElementByChildId = (id: string) => (
     : null;
 };
 
-export function selectScenarioLoader(state: AppReduxState) {
-  return selectProjectState(state).communication.scenarioLoader;
+export function selectProjectCreateLoader(state: AppReduxState) {
+  return selectProjectState(state).communication.projectCreateLoader;
 }
 
 export const selectAreProjectsLoading = ({ project }: AppReduxState) =>
@@ -462,3 +458,9 @@ export const selectScreenFormat = ({ project }: AppReduxState) =>
 
 export const selectScreenRotated = ({ project }: AppReduxState) =>
   project.ui.screenFormat.rotated;
+
+export const selectRightPanelActiveTab = ({ project }: AppReduxState) =>
+  project.ui.rightPanel.activeTab;
+
+export const selectScreenCreateLoader = ({ project }: AppReduxState) =>
+  project.communication.screenCreateLoader;
