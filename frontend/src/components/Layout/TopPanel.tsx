@@ -10,7 +10,7 @@ import Avatar from './Avatar';
 import { selectCurrentProject } from '../../redux/project/selectors';
 import Dialog from '../Dialogs/Dialog';
 import { renameProject } from '../../redux/project/actions';
-import TopBar from '../Editor/TopBar';
+import TopBar from './TopBar';
 
 const useStyles = makeStyles({
   toolbar: {

@@ -3,6 +3,7 @@ import Switch from '@material-ui/core/Switch';
 import { useDispatch, useSelector } from 'react-redux';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import html2canvas from 'html2canvas';
 import { changePrototypeMode } from '../../../redux/user/actions';
 import { selectIsPrototypeMode } from '../../../redux/user/selectors';
 import Formats from './Formats';
@@ -33,6 +34,18 @@ const TopBar: React.FC = () => {
   const isProtoMode = useSelector(selectIsPrototypeMode);
   const freeCanvasMode = useSelector(selectFreeCanvasMode);
 
+  const makeMagic = async () => {
+    const root = document.getElementById('free-canvas-root');
+    if (!root) return;
+
+    const canvas = await html2canvas(root, {
+      useCORS: true,
+      allowTaint: true,
+      logging: true,
+    });
+    console.log(canvas);
+  };
+
   const handleToggleProtoMode = () =>
     dispatch(changePrototypeMode(!isProtoMode));
 
@@ -62,7 +75,13 @@ const TopBar: React.FC = () => {
           className={classes.switch}
         />
 
-        <ShowBorders />
+        {freeCanvasMode ? (
+          <button type="button" onClick={makeMagic}>
+            magic
+          </button>
+        ) : (
+          <ShowBorders />
+        )}
       </div>
 
       <Formats />
