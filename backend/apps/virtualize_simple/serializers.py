@@ -591,8 +591,14 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
         # Extract an appropriate flag value to recognize block as header, footer, form or layout
         # Region dataset has some starting value
         region_dataset = "webpages"
-        if validated_data.get("parameters"):
-            region_dataset = validated_data["parameters"]["block_type"]
+        styles_on = 0
+
+        try:
+            if validated_data.get("parameters"):
+                region_dataset = validated_data["parameters"]["block_type"]
+                styles_on = validated_data["parameters"]["styles_on"]
+        except Exception:
+            pass
         # print(region_dataset)
 
         fdict = {}  # Output dictionary to write annotation
@@ -1791,6 +1797,24 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
 
                     styles = {}
                     parameters = {}
+
+
+                    if styles_on:
+                        # Get the dominant colour for the element start
+                        bcolour_elem_value = "255,255,255,0"
+                        domcolour_elem = get_dominant_colour(elem_image)
+                        domcolour_elem.append(1)
+                        bcolour_elem_value = ",".join(str(int(x)) for x in domcolour_elem)
+                        # Get the dominant colour for the element end
+
+                        # display elem_image start
+                        '''
+                        cv2.imshow(window_name2, elem_image)
+                        print(bcolour_elem_value)
+                        cv2.waitKey(0)
+                        '''
+                        # display elem_image end
+
                     if elem["region_attributes"]["HTML element"] in {
                         "textinput",
                         "input",
@@ -1966,6 +1990,10 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         element.text = lorem.get_word(count=1)
 
                         parameters["textContent"] = element.text
+
+                        if styles_on:
+                            # Set the background colour for styles
+                            styles["background-color"] = "rgba(" + bcolour_elem_value + ")"
 
                         str_styles = '; '.join('{}:{}'.format(key, val) for key, val in styles.items())
                         element.set("style", str_styles)

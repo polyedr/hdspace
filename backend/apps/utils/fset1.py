@@ -106,7 +106,10 @@ def get_dominant_colour(image, k=4, image_processing_size=None):
     # subset out most popular centroid
     dominant_colour = clt.cluster_centers_[label_counts.most_common(1)[0][0]]
 
-    return list(dominant_colour)
+    dcolour = list(dominant_colour)
+    dcolour.reverse()
+
+    return dcolour
 
 
 # Clustering for large containers and small clusters
