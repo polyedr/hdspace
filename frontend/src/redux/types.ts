@@ -73,7 +73,7 @@ export type ProjectEditState = {
 
 export type ProjectCommunicationState = {
   projectListLoader: boolean;
-  loader: boolean; // TODO: pick more suitable name
+  updateImageLoader: boolean;
   screenLoader: boolean;
   projectLoader: boolean;
   scenarioLoader: boolean;
@@ -178,7 +178,10 @@ export type SetScreenLoader = IAction<
   typeof TYPES.SET_SCREEN_LOADER,
   { active: boolean }
 >;
-export type SetLoader = IAction<typeof TYPES.SET_LOADER, { active: boolean }>;
+export type SetUpdateImageLoader = IAction<
+  typeof TYPES.SET_UPDATE_IMAGE_LOADER,
+  { active: boolean }
+>;
 export type SetScenarioLoader = IAction<
   typeof TYPES.SET_SCENARIO_LOADER,
   { active: boolean }
@@ -228,9 +231,9 @@ export type UpdateElementsTree = IAction<
 export type ClearAfterPrevScreen = IPlainAction<
   typeof TYPES.CLEAN_AFTER_PREV_SCREEN
 >;
-export type SaveScreen = IAction<
-  typeof TYPES.SAVE_SCREEN,
-  { screenId: number; canvas: HTMLCanvasElement }
+export type UpdateScreenImage = IAction<
+  typeof TYPES.UPDATE_SCREEN_IMAGE,
+  { screenId: number }
 >;
 export type UpdateScreen = IAction<
   typeof TYPES.UPDATE_SCREEN,
@@ -550,7 +553,7 @@ export type Action =
   | SetProjectListLoader
   | SetProjectLoader
   | SetScreenLoader
-  | SetLoader
+  | SetUpdateImageLoader
   | SetScenarioLoader
   | SetAnalyzerLoader
   | DeleteScreen
@@ -558,7 +561,7 @@ export type Action =
   | CreateScreen
   | ActivateScreen
   | ClearAfterPrevScreen
-  | SaveScreen
+  | UpdateScreenImage
   | SetCurrentScreenId
   | CopyElementStyles
   | UpdateElementStyles

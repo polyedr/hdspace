@@ -7,10 +7,10 @@ const communicationReducer = (
   action: Action,
 ): ProjectCommunicationState => {
   switch (action.type) {
-    case TYPES.SET_LOADER: {
+    case TYPES.SET_UPDATE_IMAGE_LOADER: {
       return {
         ...state,
-        loader: action.payload.active,
+        updateImageLoader: action.payload.active,
       };
     }
 

@@ -2,6 +2,7 @@
 import { call, select, put, all, fork } from 'redux-saga/effects';
 import * as R from 'ramda';
 import { push } from 'connected-react-router';
+import html2canvas from 'html2canvas';
 import * as Actions from '../actions';
 import { selectors } from '..';
 import { createScenarios } from './scenario';
@@ -26,10 +27,10 @@ import {
   deleteScreen,
   renameScreen,
   restoreScreen,
-  saveScreenImage,
+  updateScreenImage,
   setActiveElement,
   setCurrentScreenId,
-  setLoader,
+  setUpdateImageLoader,
   setProject,
   updateScreen,
   setScreenLoader,
@@ -256,11 +257,27 @@ async function canvasToBlob(canvas: HTMLCanvasElement): Promise<Blob> {
   return dataBlob;
 }
 
-export function* saveScreenImageSaga({
-  payload: { screenId, canvas },
-}: ReturnType<typeof saveScreenImage>) {
+export function* updateScreenImageSaga({
+  payload: { screenId },
+}: ReturnType<typeof updateScreenImage>) {
   try {
-    yield put(setLoader(true));
+    yield put(setUpdateImageLoader(true));
+
+    const screenBody = document.getElementById('root');
+    const widgets = Array.from(document.querySelectorAll('iframe'));
+
+    if (screenBody === null) {
+      throw new Error('Failed updating screen image');
+    }
+    const ignore = (element: Element) =>
+      widgets.some((widget) => element === widget);
+
+    const canvas: HTMLCanvasElement = yield html2canvas(screenBody, {
+      useCORS: true,
+      allowTaint: true,
+      logging: true,
+      ignoreElements: ignore,
+    });
 
     const blobFile = yield call(canvasToBlob, canvas);
     const formData = new FormData();
@@ -297,7 +314,7 @@ export function* saveScreenImageSaga({
       }),
     );
   } finally {
-    yield put(setLoader(false));
+    yield put(setUpdateImageLoader(false));
   }
 }
 

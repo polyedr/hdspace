@@ -117,8 +117,8 @@ export function selectUploadedImageInfo(state: AppReduxState) {
   return selectProjectState(state).edit.uploadedImageInfo;
 }
 
-export function selectLoader(state: AppReduxState) {
-  return selectProjectState(state).communication.loader;
+export function selectUpdateScreenImageLoader(state: AppReduxState) {
+  return selectProjectState(state).communication.updateImageLoader;
 }
 
 export const selectElementByChildId = (id: string) => (

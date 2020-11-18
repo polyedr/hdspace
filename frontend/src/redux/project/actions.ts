@@ -60,7 +60,7 @@ import {
   RestoreElement,
   RestoreElementChildren,
   RestoreScreen,
-  SaveScreen,
+  UpdateScreenImage,
   SetAnalyzerLoader,
   SetCurrentProjectId,
   SetCurrentScreenId,
@@ -68,7 +68,7 @@ import {
   SetGroupActionsUp,
   SetHoveredElement,
   SetElementToCopy,
-  SetLoader,
+  SetUpdateImageLoader,
   SetProject,
   SetProjectListLoader,
   SetProjectLoader,
@@ -174,8 +174,10 @@ export const setScreenLoader = (active: boolean): SetScreenLoader => ({
   payload: { active },
 });
 
-export const setLoader = (active: boolean): SetLoader => ({
-  type: TYPES.SET_LOADER,
+export const setUpdateImageLoader = (
+  active: boolean,
+): SetUpdateImageLoader => ({
+  type: TYPES.SET_UPDATE_IMAGE_LOADER,
   payload: { active },
 });
 
@@ -348,14 +350,10 @@ export const resetScreenState = (): ResetScreenState => ({
   type: TYPES.RESET_SCREEN_STATE,
 });
 
-export const saveScreenImage = (
-  screenId: number,
-  canvas: HTMLCanvasElement,
-): SaveScreen => ({
-  type: TYPES.SAVE_SCREEN,
+export const updateScreenImage = (screenId: number): UpdateScreenImage => ({
+  type: TYPES.UPDATE_SCREEN_IMAGE,
   payload: {
     screenId,
-    canvas,
   },
 });
 
