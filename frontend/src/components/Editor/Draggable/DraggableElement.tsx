@@ -253,7 +253,7 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
 
   const runResetEditState = useDebouncedCallback(() => {
     dispatch(setElementCanBeEdited(false));
-  }, 200);
+  }, 300);
 
   const clickHandler = useCallback(
     (event: React.SyntheticEvent) => {
@@ -272,16 +272,19 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
           runResetEditState.callback();
         }
       }
+      if (elementCanBeEdited) {
+        dispatch(setElementBeingEdited(true));
+        ref.current.focus();
+      }
     },
-    [dispatch, element, elementBeingEdited, runResetEditState],
+    [
+      dispatch,
+      element,
+      elementBeingEdited,
+      elementCanBeEdited,
+      runResetEditState,
+    ],
   );
-
-  const focusHandler = useCallback(() => {
-    runResetEditState.cancel();
-    if (elementProps?.contentEditable) {
-      dispatch(setElementBeingEdited(true));
-    }
-  }, [dispatch, elementProps?.contentEditable, runResetEditState]);
 
   const blurHandler = useCallback(
     (event: React.FormEvent<HTMLElement>) => {
@@ -328,7 +331,6 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
         onMouseLeave={handleHoverElement(element.parent || null)}
         onClick={clickHandler}
         onKeyDown={keyDownHandler}
-        onFocus={focusHandler}
         onBlur={blurHandler}
       >
         {element.children.map((childId: string) => (

@@ -10,6 +10,9 @@ const useStyles = makeComponentStyles(
   {
     paragraph: {
       outline: 0,
+      '&:hover': {
+        cursor: 'initial',
+      },
     },
   },
   [],

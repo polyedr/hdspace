@@ -9,12 +9,13 @@ import useEventHandlers from '../useEventHandlers';
 const useStyles = makeComponentStyles({
   heading: {
     wordBreak: 'break-word',
+    outline: 0,
   },
 });
 
 const Heading: React.FC<HeadingRendererProps> = React.forwardRef(
   (props, ref) => {
-    const { id, params, className } = props;
+    const { id, params, className, contentEditable } = props;
     const { headingType, textContent } = params;
     const HeadingTag = headingType || 'h3';
 
@@ -36,9 +37,9 @@ const Heading: React.FC<HeadingRendererProps> = React.forwardRef(
           styles.ownStyles,
         )}
         {...eventHandlers}
-      >
-        {textContent}
-      </HeadingTag>
+        contentEditable={contentEditable}
+        dangerouslySetInnerHTML={{ __html: textContent }}
+      />
     );
   },
 );

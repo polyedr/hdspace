@@ -25,7 +25,11 @@ const omitLinkStyles = [
   'backgroundColor',
 ];
 
-const useItemStyles = makeComponentStyles();
+const useItemStyles = makeComponentStyles({
+  listItem: {
+    outline: 0,
+  },
+});
 
 const useEditableItemStyles = makeStyles({
   entityStyles: ({ entityStyles }) => R.omit(omitEditableStyles, entityStyles),
@@ -41,6 +45,7 @@ const useLinkStyles = makeStyles({
     width: '100%',
     height: '100%',
     display: 'inline-block',
+    outline: 0,
   },
 });
 
@@ -73,6 +78,7 @@ const ListItem: React.FC<ListItemRendererProps> = React.forwardRef(
             data-ls-id={id}
             className={cn(
               className,
+              listItemClasses.listItem,
               listItemClasses.addedElem,
               isDisabled && listItemClasses.disabled,
               listItemWithLinkClasses.entityStyles,
@@ -103,6 +109,7 @@ const ListItem: React.FC<ListItemRendererProps> = React.forwardRef(
             data-ls-id={id}
             className={cn(
               className,
+              listItemClasses.listItem,
               listItemClasses.addedElem,
               isDisabled && listItemClasses.disabled,
               listItemClasses.entityStyles,

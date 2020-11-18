@@ -108,9 +108,7 @@ export const ROLES = ['STAFF', 'ADMINISTRATOR', 'LIBRARIAN', 'EXTERNAL'];
 export const EDITABLE_COMPONENTS_LIST = [
   'textBlock',
   'paragraph',
-  'hyperlink',
   'heading',
   'listItem',
   'label',
-  'button',
 ];

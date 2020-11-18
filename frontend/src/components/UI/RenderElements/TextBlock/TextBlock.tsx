@@ -28,8 +28,6 @@ const TextBlock: React.FC<TextBlockRendererProps> = React.forwardRef(
     const classes = useStyles(props);
     const eventHandlers = useEventHandlers(props);
 
-    console.log('CONTENT EDITABLE!!', contentEditable);
-
     return (
       <div
         ref={ref}

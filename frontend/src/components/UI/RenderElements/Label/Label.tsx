@@ -10,6 +10,7 @@ const useStyles = makeComponentStyles({
   label: ({ isDisabled }) => ({
     wordBreak: 'break-word',
     cursor: isDisabled ? 'default' : 'pointer',
+    outline: 0,
   }),
 });
 
