@@ -4,22 +4,25 @@ import UndoIcon from '@material-ui/icons/Undo';
 import RedoIcon from '@material-ui/icons/Redo';
 import SaveIcon from '@material-ui/icons/Save';
 import { useDispatch, useSelector } from 'react-redux';
-import html2canvas from 'html2canvas';
 import makeStyles from '@material-ui/core/styles/makeStyles';
+import { CircularProgress } from '@material-ui/core';
 import {
   selectCurrentScreenId,
   selectRedoActions,
   selectUndoActions,
+  selectUpdateScreenImageLoader,
 } from '../../../redux/project/selectors';
 import {
   redoAction,
-  saveScreenImage,
+  updateScreenImage,
   undoAction,
 } from '../../../redux/project/actions';
 
 const useStyles = makeStyles({
   root: {
     display: 'flex',
+    flexWrap: 'nowrap',
+    alignItems: 'center',
   },
 });
 
@@ -27,6 +30,7 @@ const Actions: React.FC = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const currentScreenId = useSelector(selectCurrentScreenId);
+  const imageLoader = useSelector(selectUpdateScreenImageLoader);
 
   const undoLength = useSelector(selectUndoActions).length;
   const redoLength = useSelector(selectRedoActions).length;
@@ -34,22 +38,7 @@ const Actions: React.FC = () => {
 
   const onHistoryForward = () => dispatch(redoAction());
 
-  const handleSaveScreen = () => {
-    const screenBody = document.getElementById('root');
-    const widgets = Array.from(document.querySelectorAll('iframe'));
-
-    if (screenBody !== null) {
-      const ignore = (element: Element) =>
-        widgets.some((widget) => element === widget);
-
-      html2canvas(screenBody, {
-        useCORS: true,
-        allowTaint: true,
-        logging: true,
-        ignoreElements: ignore,
-      }).then((canvas) => dispatch(saveScreenImage(currentScreenId, canvas)));
-    }
-  };
+  const handleSaveScreen = () => dispatch(updateScreenImage(currentScreenId));
 
   return (
     <div className={classes.root}>
@@ -65,8 +54,12 @@ const Actions: React.FC = () => {
         <RedoIcon />
       </IconButton>
 
-      <IconButton onClick={handleSaveScreen} title="Save screen">
-        <SaveIcon />
+      <IconButton
+        onClick={handleSaveScreen}
+        title="Save screen"
+        disabled={imageLoader}
+      >
+        {!imageLoader ? <SaveIcon /> : <CircularProgress size={24} />}
       </IconButton>
     </div>
   );

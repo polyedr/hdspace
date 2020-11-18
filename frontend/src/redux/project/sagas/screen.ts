@@ -2,6 +2,7 @@
 import { call, select, put, all, fork } from 'redux-saga/effects';
 import * as R from 'ramda';
 import { push } from 'connected-react-router';
+import html2canvas from 'html2canvas';
 import * as Actions from '../actions';
 import { selectors } from '..';
 import { createScenarios } from './scenario';
@@ -26,10 +27,10 @@ import {
   deleteScreen,
   renameScreen,
   restoreScreen,
-  saveScreenImage,
+  updateScreenImage,
   setActiveElement,
   setCurrentScreenId,
-  setLoader,
+  setUpdateImageLoader,
   setProject,
   updateScreen,
   setScreenLoader,
@@ -90,6 +91,8 @@ export function* createScreenSaga({
   payload,
 }: ReturnType<typeof createScreen>) {
   try {
+    yield put(Actions.setScreenCreateLoader(true));
+
     yield put(Actions.clearAfterPrevScreen());
     const { projectID, name, buoyancy, skip } = payload;
 
@@ -242,6 +245,8 @@ export function* createScreenSaga({
         options: { variant: 'error' },
       }),
     );
+  } finally {
+    yield put(Actions.setScreenCreateLoader(false));
   }
 }
 
@@ -256,11 +261,27 @@ async function canvasToBlob(canvas: HTMLCanvasElement): Promise<Blob> {
   return dataBlob;
 }
 
-export function* saveScreenImageSaga({
-  payload: { screenId, canvas },
-}: ReturnType<typeof saveScreenImage>) {
+export function* updateScreenImageSaga({
+  payload: { screenId },
+}: ReturnType<typeof updateScreenImage>) {
   try {
-    yield put(setLoader(true));
+    yield put(setUpdateImageLoader(true));
+
+    const screenBody = document.getElementById('root');
+    const widgets = Array.from(document.querySelectorAll('iframe'));
+
+    if (screenBody === null) {
+      throw new Error('Failed updating screen image');
+    }
+    const ignore = (element: Element) =>
+      widgets.some((widget) => element === widget);
+
+    const canvas: HTMLCanvasElement = yield html2canvas(screenBody, {
+      useCORS: true,
+      allowTaint: true,
+      logging: true,
+      ignoreElements: ignore,
+    });
 
     const blobFile = yield call(canvasToBlob, canvas);
     const formData = new FormData();
@@ -297,7 +318,7 @@ export function* saveScreenImageSaga({
       }),
     );
   } finally {
-    yield put(setLoader(false));
+    yield put(setUpdateImageLoader(false));
   }
 }
 
@@ -363,12 +384,12 @@ export function* deleteScreenSaga({
       );
 
       const newScreens = screens.filter((screen) => screen.id !== screenId);
-      yield put(setScreens(newScreens));
-
       if (lastScreenID !== currentScreenId) {
-        yield put(activateScreen(lastScreenID));
         yield put(push(`/project/${projectId}/${lastScreenID}`));
       }
+
+      yield put(setScreens(newScreens));
+
       yield put(
         enqueueSnackbar({
           message: 'Screen deleted',
@@ -399,11 +420,9 @@ export function* restoreScreenSaga({
       console.error(`You have to provide metainformation for action ${type}`);
       return;
     }
+    yield put(Actions.setScreenCreateLoader(true));
 
     yield put(Actions.clearAfterPrevScreen());
-
-    // const project = yield call(reqWrapper, apiGetProject, { id: projectId });
-    // if (!project) console.error(`Error while fetching project ${projectId}`);
 
     const { projectscreen }: Project = yield select(selectCurrentProject);
 
@@ -455,6 +474,8 @@ export function* restoreScreenSaga({
         options: { variant: 'error' },
       }),
     );
+  } finally {
+    yield put(Actions.setScreenCreateLoader(false));
   }
 }
 

@@ -3,13 +3,9 @@ import { useSelector, useDispatch } from 'react-redux';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import Spinner from '../UI/Spinner';
 import PropertiesTab from './PropertiesTab';
 import ElementsTab from './ElementsTab';
-import {
-  selectLoader,
-  selectRightPanelActiveTab,
-} from '../../redux/project/selectors';
+import { selectRightPanelActiveTab } from '../../redux/project/selectors';
 import { RIGHT_PANEL_WIDTH } from '../../styles/Theme';
 import { selectIsPrototypeMode } from '../../redux/user/selectors';
 import { setRightPanelActiveTab } from '../../redux/project/actions';
@@ -65,7 +61,6 @@ const TabPanel: React.FC<TabPanelProps> = ({ value, index, children }) => {
 };
 
 const RightPanel: React.FC = () => {
-  const loader = useSelector(selectLoader);
   const isPrototypeMode = useSelector(selectIsPrototypeMode);
   const classes = useStyles({ open: !isPrototypeMode });
 
@@ -99,8 +94,6 @@ const RightPanel: React.FC = () => {
       <TabPanel index={RightPanelTab.ELEMENTS} value={activeTab}>
         <ElementsTab />
       </TabPanel>
-
-      <Spinner active={loader} />
     </div>
   );
 };

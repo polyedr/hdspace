@@ -55,11 +55,11 @@ export const initialEdit: ProjectEditState = {
 };
 
 export const initialCommunication: ProjectCommunicationState = {
-  loader: false,
-  projectListLoader: false,
+  screenCreateLoader: false,
+  updateImageLoader: false,
   screenLoader: false,
   projectLoader: false,
-  scenarioLoader: false,
+  projectCreateLoader: false,
   analyzerLoader: false,
 };
 

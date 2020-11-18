@@ -62,6 +62,10 @@ const editReducer = produce(
         break;
       }
 
+      case TYPES.RESET_SCREEN_STATE: {
+        return initialEdit;
+      }
+
       case TYPES.LOGOUT: {
         return {
           ...initialEdit,

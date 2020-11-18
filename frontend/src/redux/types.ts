@@ -72,11 +72,11 @@ export type ProjectEditState = {
 };
 
 export type ProjectCommunicationState = {
-  projectListLoader: boolean;
-  loader: boolean; // TODO: pick more suitable name
-  screenLoader: boolean;
+  screenCreateLoader: boolean;
+  updateImageLoader: boolean;
+  screenLoader: boolean; // TODO: make sure this loader is useless
   projectLoader: boolean;
-  scenarioLoader: boolean;
+  projectCreateLoader: boolean;
   analyzerLoader: boolean;
 };
 
@@ -178,9 +178,12 @@ export type SetScreenLoader = IAction<
   typeof TYPES.SET_SCREEN_LOADER,
   { active: boolean }
 >;
-export type SetLoader = IAction<typeof TYPES.SET_LOADER, { active: boolean }>;
-export type SetScenarioLoader = IAction<
-  typeof TYPES.SET_SCENARIO_LOADER,
+export type SetUpdateImageLoader = IAction<
+  typeof TYPES.SET_UPDATE_IMAGE_LOADER,
+  { active: boolean }
+>;
+export type SetProjectCreateLoader = IAction<
+  typeof TYPES.SET_PROJECT_CREATE_LOADER,
   { active: boolean }
 >;
 export type SetAnalyzerLoader = IAction<
@@ -228,9 +231,9 @@ export type UpdateElementsTree = IAction<
 export type ClearAfterPrevScreen = IPlainAction<
   typeof TYPES.CLEAN_AFTER_PREV_SCREEN
 >;
-export type SaveScreen = IAction<
-  typeof TYPES.SAVE_SCREEN,
-  { screenId: number; canvas: HTMLCanvasElement }
+export type UpdateScreenImage = IAction<
+  typeof TYPES.UPDATE_SCREEN_IMAGE,
+  { screenId: number }
 >;
 export type UpdateScreen = IAction<
   typeof TYPES.UPDATE_SCREEN,
@@ -394,7 +397,7 @@ export type PasteCopiedElement = IPlainAction<
   typeof TYPES.PASTE_COPIED_ELEMENT,
   ElementHistoryMeta
 >;
-export type ResetScreenState = IPlainAction<typeof TYPES.RESET_SCREEN_STATE>;
+export type ResetProjectState = IPlainAction<typeof TYPES.RESET_SCREEN_STATE>;
 export type UndoAction = IPlainAction<typeof TYPES.UNDO_ACTION>;
 export type RedoAction = IPlainAction<typeof TYPES.REDO_ACTION>;
 export type SetUndoActions = IAction<
@@ -537,6 +540,11 @@ export type UpdateStateElement = IAction<
   ElementHistoryMeta
 >;
 
+export type SetScreenCreateLoader = IAction<
+  typeof TYPES.SET_SCREEN_CREATE_LOADER,
+  boolean
+>;
+
 export type Action =
   | LoadProjects
   | LoadProjectsSuccess
@@ -550,15 +558,15 @@ export type Action =
   | SetProjectListLoader
   | SetProjectLoader
   | SetScreenLoader
-  | SetLoader
-  | SetScenarioLoader
+  | SetUpdateImageLoader
+  | SetProjectCreateLoader
   | SetAnalyzerLoader
   | DeleteScreen
   | RenameScreen
   | CreateScreen
   | ActivateScreen
   | ClearAfterPrevScreen
-  | SaveScreen
+  | UpdateScreenImage
   | SetCurrentScreenId
   | CopyElementStyles
   | UpdateElementStyles
@@ -577,7 +585,7 @@ export type Action =
   | SetRightPanelActiveTab
   | CopyActiveElement
   | PasteCopiedElement
-  | ResetScreenState
+  | ResetProjectState
   | UpdateSavedElementsValues
   | UpdateSavedElementValues
   | UpdateElementsTree
@@ -626,7 +634,8 @@ export type Action =
   | AddCustomElement
   | RemoveCustomElement
   | AddFileInput
-  | RemoveFileInput;
+  | RemoveFileInput
+  | SetScreenCreateLoader;
 
 export type HistoryMeta = {
   undo?: boolean;

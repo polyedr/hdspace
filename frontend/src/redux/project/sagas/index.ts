@@ -62,7 +62,7 @@ import {
   deleteScreenSaga,
   renameScreenSaga,
   restoreScreenSaga,
-  saveScreenImageSaga,
+  updateScreenImageSaga,
 } from './screen';
 import {
   Entity,
@@ -450,7 +450,7 @@ export default function* projectSaga() {
   yield takeLatest(TYPES.ACTIVATE_SCREEN, activateScreenSaga);
   yield takeLatest(TYPES.CREATE_SCREEN, createScreenSaga);
   yield takeEvery(TYPES.DUPLICATE_SCREEN, duplicateScreenSaga);
-  yield takeLatest(TYPES.SAVE_SCREEN, saveScreenImageSaga);
+  yield takeLatest(TYPES.UPDATE_SCREEN_IMAGE, updateScreenImageSaga);
   yield takeLatest(TYPES.DELETE_SCREEN, deleteScreenSaga);
   yield takeEvery(TYPES.RESTORE_SCREEN, restoreScreenSaga);
   yield takeLatest(TYPES.RENAME_SCREEN, renameScreenSaga);

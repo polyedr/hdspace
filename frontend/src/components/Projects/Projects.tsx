@@ -18,6 +18,7 @@ import ProjectListItem from './ProjectListItem';
 import { createProject, getProjectList } from '../../redux/project/actions';
 import {
   selectAreProjectsLoading,
+  selectProjectCreateLoader,
   selectProjects,
   selectProjectsDataNext,
 } from '../../redux/project/selectors';
@@ -48,6 +49,9 @@ const useStyles = makeStyles((theme) =>
       padding: '1em',
       textAlign: 'center',
     },
+    createButton: {
+      minWidth: 160,
+    },
   }),
 );
 
@@ -60,6 +64,7 @@ const Projects: React.FC = () => {
 
   const projects = useSelector(selectProjects);
   const projectListLoader = useSelector(selectAreProjectsLoading);
+  const projectCreateLoader = useSelector(selectProjectCreateLoader);
   const hasNext = useSelector(selectProjectsDataNext);
 
   useEffect(() => {
@@ -117,8 +122,14 @@ const Projects: React.FC = () => {
             variant="contained"
             color="secondary"
             onClick={handleProjectAdd}
+            disabled={projectCreateLoader}
+            className={classes.createButton}
           >
-            Create a project
+            {!projectCreateLoader ? (
+              'Create a project'
+            ) : (
+              <CircularProgress size={24} />
+            )}
           </Button>
         </div>
 
