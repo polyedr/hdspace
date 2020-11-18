@@ -92,6 +92,18 @@ function uiReducer(
       };
     }
 
+    case TYPES.SET_ELEMENT_CAN_BE_EDITED: {
+      return { ...state, elementCanBeEdited: action.payload };
+    }
+
+    case TYPES.SET_ELEMENT_BEING_EDITED: {
+      return { ...state, elementBeingEdited: action.payload };
+    }
+
+    case TYPES.RESET_ELEMENT_EDIT_STATE: {
+      return { ...state, elementBeingEdited: false, elementCanBeEdited: false };
+    }
+
     case TYPES.SET_RIGHT_PANEL_ACTIVE_TAB: {
       return {
         ...state,

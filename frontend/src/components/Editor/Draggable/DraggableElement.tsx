@@ -8,12 +8,17 @@ import React, {
 import { useDispatch, useSelector } from 'react-redux';
 import { DropTargetMonitor, useDrag, useDrop } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
+// import useClick from '@react-hook/click';
+import { useDebouncedCallback } from 'use-debounce';
 import {
   createElements,
   moveElement,
+  resetElementEditState,
   setCurrentDropTargetParams,
+  setElementBeingEdited,
+  setElementCanBeEdited,
   setHoveredElement,
-  // updateElementParameters,
+  updateElementParameters,
 } from '../../../redux/project/actions';
 import useElementProps from '../hooks/useElementProps';
 import { RENDERERS } from '../../UI/RenderElements';
@@ -21,11 +26,16 @@ import {
   selectCurrentDropTargetParams,
   selectCurrentRootId,
   selectCurrentScreenId,
+  selectElementBeingEdited,
   selectElementByChildId,
   selectElementById,
+  selectElementCanBeEdited,
 } from '../../../redux/project/selectors';
 import { DropPosition, ElementType } from '../../../constants/dragAndDrop';
-import { CONTAINER_GROUPS } from '../../../constants/defaultParams';
+import {
+  CONTAINER_GROUPS,
+  EDITABLE_COMPONENTS_LIST,
+} from '../../../constants/defaultParams';
 import {
   getFlexRowDropPosition,
   getBlockDropPosition,
@@ -50,6 +60,8 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
   const rootID = useSelector(selectCurrentRootId);
   const dropTargetParams = useSelector(selectCurrentDropTargetParams);
   const screenId = useSelector(selectCurrentScreenId);
+  const elementBeingEdited = useSelector(selectElementBeingEdited(elementId));
+  const elementCanBeEdited = useSelector(selectElementCanBeEdited(elementId));
 
   const ref = useRef<HTMLElement>() as React.MutableRefObject<HTMLElement>;
 
@@ -239,6 +251,68 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
     [dispatch],
   );
 
+  const runResetEditState = useDebouncedCallback(() => {
+    dispatch(setElementCanBeEdited(false));
+  }, 200);
+
+  const clickHandler = useCallback(
+    (event: React.SyntheticEvent) => {
+      event.stopPropagation();
+      if (
+        element &&
+        EDITABLE_COMPONENTS_LIST.includes(element.type) &&
+        !elementBeingEdited
+      ) {
+        if (runResetEditState.pending()) {
+          runResetEditState.cancel();
+        }
+        if (!elementCanBeEdited) {
+          dispatch(setElementCanBeEdited(true));
+        } else if (!elementBeingEdited) {
+          runResetEditState.callback();
+        }
+      }
+    },
+    [dispatch, element, elementBeingEdited, runResetEditState],
+  );
+
+  const focusHandler = useCallback(() => {
+    runResetEditState.cancel();
+    if (elementProps?.contentEditable) {
+      dispatch(setElementBeingEdited(true));
+    }
+  }, [dispatch, elementProps?.contentEditable, runResetEditState]);
+
+  const blurHandler = useCallback(
+    (event: React.FormEvent<HTMLElement>) => {
+      if (elementProps?.contentEditable) {
+        dispatch(resetElementEditState());
+        dispatch(
+          updateElementParameters(
+            elementId,
+            {
+              textContent: (event?.target as HTMLElement).innerText,
+            },
+            { screenId },
+          ),
+        );
+      }
+    },
+    [dispatch, elementId, elementProps?.contentEditable, screenId],
+  );
+
+  const keyDownHandler = useCallback(
+    (e: React.FormEvent<HTMLElement>) => {
+      e.stopPropagation();
+      const event = e.nativeEvent as KeyboardEvent;
+      if (event.code === 'Enter' && elementBeingEdited) {
+        (event.target as HTMLElement).blur();
+        e.preventDefault();
+      }
+    },
+    [elementBeingEdited],
+  );
+
   if (!element) {
     return null;
   }
@@ -252,28 +326,10 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
         ref={ref}
         onMouseEnter={handleHoverElement(elementId)}
         onMouseLeave={handleHoverElement(element.parent || null)}
-        onInput={
-          (/* event: React.SyntheticEvent<HTMLElement, InputEvent> */) => {
-            /* if (!elementProps.contentEditable) {
-              return;
-            }
-            dispatch(
-            updateElementParameters(
-              elementId,
-              {
-                textContent: event?.nativeEvent?.target?.value as string,
-              },
-              { screenId },
-            ),
-          ); */
-          }
-        }
-        onBlur={(event: React.SyntheticEvent<HTMLElement, FocusEvent>) => {
-          if (!elementProps.contentEditable) {
-            return;
-          }
-          console.log('EVENT!!', event);
-        }}
+        onClick={clickHandler}
+        onKeyDown={keyDownHandler}
+        onFocus={focusHandler}
+        onBlur={blurHandler}
       >
         {element.children.map((childId: string) => (
           <DraggableElement

@@ -14,7 +14,6 @@ import {
 } from '../../../redux/project/selectors';
 import { BorderStyles } from '../../../types';
 import { AppReduxState } from '../../../redux/types';
-import EditField from './EditSection/EditField';
 
 type Props = {
   elementId: string;
@@ -92,11 +91,10 @@ const InteractionsHandler = ({ elementId }: Props) => {
   return (
     <React.Fragment key={`element-border-${elementId}`}>
       <Borders elementId={elementId} styles={styles} />
-      <BorderCrumb elementId={elementId} styles={styles}>
-        <SaveElementAction elementId={elementId} />
-      </BorderCrumb>
-      {elementBeingEdited && (
-        <EditField elementId={elementId} styles={styles} />
+      {!elementBeingEdited && (
+        <BorderCrumb elementId={elementId} styles={styles}>
+          <SaveElementAction elementId={elementId} />
+        </BorderCrumb>
       )}
     </React.Fragment>
   );

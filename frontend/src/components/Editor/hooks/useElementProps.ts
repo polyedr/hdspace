@@ -9,6 +9,7 @@ import {
   selectCurrentRootId,
   selectElementBeingEdited,
   selectElementById,
+  selectElementCanBeEdited,
   selectSavedElementsValues,
   selectScreenLoader,
   selectShowingBorders,
@@ -48,7 +49,8 @@ const useElementProps = (elementId: string): ElementProps | null => {
   const showBorders = useSelector(selectShowingBorders);
   const screenLoader = useSelector(selectScreenLoader);
   const currentProject = useSelector(selectCurrentProject);
-  const beingEdited = useSelector(selectElementBeingEdited(elementId));
+  const canBeEdited = useSelector(selectElementCanBeEdited(elementId));
+  const isBeingEdited = useSelector(selectElementBeingEdited(elementId));
 
   const projectClasses = currentProject.projectData.classes;
 
@@ -173,7 +175,7 @@ const useElementProps = (elementId: string): ElementProps | null => {
     ...(disableInteractions && { className: '' }),
     id: id === rootID ? 'root' : id,
     isDisabled: !disableInteractions,
-    contentEditable: beingEdited,
+    contentEditable: canBeEdited || isBeingEdited,
     ownStyles: styles.ownStyles,
     entityStyles,
     groupStyles,

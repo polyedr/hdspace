@@ -9,9 +9,17 @@ import { makeComponentStyles } from '../styles';
 
 // const styles = require('../styles.scss');
 
-const useStyles = makeComponentStyles({}, [], {
-  wordBreak: 'break-word',
-});
+const useStyles = makeComponentStyles(
+  {
+    textBlock: {
+      outline: 0,
+    },
+  },
+  [],
+  {
+    wordBreak: 'break-word',
+  },
+);
 
 const TextBlock: React.FC<TextBlockRendererProps> = React.forwardRef(
   (props, ref) => {
@@ -31,6 +39,7 @@ const TextBlock: React.FC<TextBlockRendererProps> = React.forwardRef(
         contentEditable={contentEditable}
         className={cn(
           className,
+          classes.textBlock,
           classes.addedElem,
           classes.entityStyles,
           classes.groupStyles,

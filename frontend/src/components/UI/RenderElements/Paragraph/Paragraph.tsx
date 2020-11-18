@@ -6,9 +6,17 @@ import { makeComponentStyles } from '../styles';
 import { ParagraphRendererProps } from '../types';
 import useEventHandlers from '../useEventHandlers';
 
-const useStyles = makeComponentStyles({}, [], {
-  wordBreak: 'break-word',
-});
+const useStyles = makeComponentStyles(
+  {
+    paragraph: {
+      outline: 0,
+    },
+  },
+  [],
+  {
+    wordBreak: 'break-word',
+  },
+);
 
 const Paragraph: React.FC<ParagraphRendererProps> = React.forwardRef(
   (props, ref) => {
@@ -24,6 +32,7 @@ const Paragraph: React.FC<ParagraphRendererProps> = React.forwardRef(
         key={id}
         className={cn(
           className,
+          classes.paragraph,
           classes.addedElem,
           classes.entityStyles,
           classes.groupStyles,
