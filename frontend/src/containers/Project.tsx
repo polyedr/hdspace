@@ -9,7 +9,11 @@ import {
   selectProjectById,
   selectProjectLoader,
 } from '../redux/project/selectors';
-import { getProject, setCurrentProjectId } from '../redux/project/actions';
+import {
+  getProject,
+  resetScreenState,
+  setCurrentProjectId,
+} from '../redux/project/actions';
 import LeftPanel from '../components/LeftPanel';
 import Screen from './Screen';
 
@@ -45,6 +49,13 @@ const Project: React.FC<Props> = ({ projectId, screenId }) => {
       dispatch(getProject(projectId));
     }
   }, [dispatch, projectId, currentProjectId]);
+
+  useEffect(
+    () => () => {
+      dispatch(resetScreenState());
+    },
+    [dispatch],
+  );
 
   useEffect(
     () => () => {

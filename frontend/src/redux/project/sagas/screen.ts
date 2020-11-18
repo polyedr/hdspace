@@ -380,12 +380,12 @@ export function* deleteScreenSaga({
       );
 
       const newScreens = screens.filter((screen) => screen.id !== screenId);
-      yield put(setScreens(newScreens));
-
       if (lastScreenID !== currentScreenId) {
-        yield put(activateScreen(lastScreenID));
         yield put(push(`/project/${projectId}/${lastScreenID}`));
       }
+
+      yield put(setScreens(newScreens));
+
       yield put(
         enqueueSnackbar({
           message: 'Screen deleted',

@@ -72,7 +72,6 @@ export type ProjectEditState = {
 };
 
 export type ProjectCommunicationState = {
-  projectListLoader: boolean;
   updateImageLoader: boolean;
   screenLoader: boolean;
   projectLoader: boolean;

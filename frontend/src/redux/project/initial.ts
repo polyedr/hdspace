@@ -56,7 +56,6 @@ export const initialEdit: ProjectEditState = {
 
 export const initialCommunication: ProjectCommunicationState = {
   updateImageLoader: false,
-  projectListLoader: false,
   screenLoader: false,
   projectLoader: false,
   scenarioLoader: false,
