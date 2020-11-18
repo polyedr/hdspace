@@ -16,7 +16,7 @@ module.exports = ({ MODE }) => {
     context: __dirname,
     mode: MODE || 'development',
     bail: isProduction,
-    devtool: isProduction ? 'cheap-module-source-map' : false,
+    devtool: !isProduction ? 'cheap-module-source-map' : false,
     entry: {
       app: path.resolve(__dirname, 'src', 'index.tsx'),
     },
@@ -45,6 +45,7 @@ module.exports = ({ MODE }) => {
               loader: 'ts-loader',
               options: {
                 transpileOnly: true,
+                configFile: 'tsconfig.json',
               },
             },
           ].filter(Boolean),
