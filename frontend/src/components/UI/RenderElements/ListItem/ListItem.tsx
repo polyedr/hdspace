@@ -120,6 +120,7 @@ const ListItem: React.FC<ListItemRendererProps> = React.forwardRef(
             {...eventHandlers}
             contentEditable={contentEditable}
             dangerouslySetInnerHTML={{ __html: textContent }}
+            data-gramm_editor={false}
           />
         )}
       </>

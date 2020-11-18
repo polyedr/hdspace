@@ -39,6 +39,7 @@ const Heading: React.FC<HeadingRendererProps> = React.forwardRef(
         {...eventHandlers}
         contentEditable={contentEditable}
         dangerouslySetInnerHTML={{ __html: textContent }}
+        data-gramm_editor={false}
       />
     );
   },

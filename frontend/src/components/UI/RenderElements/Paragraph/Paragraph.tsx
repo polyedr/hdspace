@@ -44,6 +44,7 @@ const Paragraph: React.FC<ParagraphRendererProps> = React.forwardRef(
         contentEditable={contentEditable}
         {...eventHandlers}
         dangerouslySetInnerHTML={{ __html: params.textContent }}
+        data-gramm_editor={false}
       />
     );
   },

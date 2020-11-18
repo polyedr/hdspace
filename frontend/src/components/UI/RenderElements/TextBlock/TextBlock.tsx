@@ -45,6 +45,7 @@ const TextBlock: React.FC<TextBlockRendererProps> = React.forwardRef(
         )}
         {...eventHandlers}
         dangerouslySetInnerHTML={{ __html: params.textContent }}
+        data-gramm_editor={false}
       />
     );
   },

@@ -39,6 +39,7 @@ const Label: React.FC<LabelRendererProps> = React.forwardRef((props, ref) => {
       )}
       contentEditable={contentEditable}
       dangerouslySetInnerHTML={{ __html: textContent }}
+      data-gramm_editor={false}
       {...eventHandlers}
     />
   );
