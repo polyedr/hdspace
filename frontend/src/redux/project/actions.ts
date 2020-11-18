@@ -56,7 +56,7 @@ import {
   RenameProject,
   RenameScreen,
   ReplaceElementStyles,
-  ResetScreenState,
+  ResetProjectState,
   RestoreElement,
   RestoreElementChildren,
   RestoreScreen,
@@ -73,7 +73,7 @@ import {
   SetProjectListLoader,
   SetProjectLoader,
   SetRedoActions,
-  SetScenarioLoader,
+  SetProjectCreateLoader,
   SetScreenLoader,
   SetScreens,
   SetUndoActions,
@@ -182,8 +182,10 @@ export const setUpdateImageLoader = (
   payload: { active },
 });
 
-export const setScenarioLoader = (active: boolean): SetScenarioLoader => ({
-  type: TYPES.SET_SCENARIO_LOADER,
+export const setProjectCreateLoader = (
+  active: boolean,
+): SetProjectCreateLoader => ({
+  type: TYPES.SET_PROJECT_CREATE_LOADER,
   payload: { active },
 });
 
@@ -347,7 +349,7 @@ export const removeStateElement = (
   meta,
 });
 
-export const resetScreenState = (): ResetScreenState => ({
+export const resetProjectState = (): ResetProjectState => ({
   type: TYPES.RESET_SCREEN_STATE,
 });
 

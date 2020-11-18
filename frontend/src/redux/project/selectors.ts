@@ -130,8 +130,8 @@ export const selectElementByChildId = (id: string) => (
     : null;
 };
 
-export function selectScenarioLoader(state: AppReduxState) {
-  return selectProjectState(state).communication.scenarioLoader;
+export function selectProjectCreateLoader(state: AppReduxState) {
+  return selectProjectState(state).communication.projectCreateLoader;
 }
 
 export const selectAreProjectsLoading = ({ project }: AppReduxState) =>

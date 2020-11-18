@@ -108,6 +108,8 @@ export function* createProjectSaga({
   payload: { name },
 }: ReturnType<typeof Actions.createProject>) {
   try {
+    yield put(Actions.setProjectCreateLoader(true));
+
     const { result, error }: Result<Project> = yield call(
       reqWrapper,
       apiCreateProject,
@@ -152,6 +154,8 @@ export function* createProjectSaga({
         },
       }),
     );
+  } finally {
+    yield put(Actions.setProjectCreateLoader(false));
   }
 }
 

@@ -424,9 +424,6 @@ export function* restoreScreenSaga({
 
     yield put(Actions.clearAfterPrevScreen());
 
-    // const project = yield call(reqWrapper, apiGetProject, { id: projectId });
-    // if (!project) console.error(`Error while fetching project ${projectId}`);
-
     const { projectscreen }: Project = yield select(selectCurrentProject);
 
     const { result, error } = yield call(reqWrapper, apiUpdateProject, {

@@ -59,7 +59,7 @@ export const initialCommunication: ProjectCommunicationState = {
   updateImageLoader: false,
   screenLoader: false,
   projectLoader: false,
-  scenarioLoader: false,
+  projectCreateLoader: false,
   analyzerLoader: false,
 };
 

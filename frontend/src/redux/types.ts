@@ -74,9 +74,9 @@ export type ProjectEditState = {
 export type ProjectCommunicationState = {
   screenCreateLoader: boolean;
   updateImageLoader: boolean;
-  screenLoader: boolean;
+  screenLoader: boolean; // TODO: make sure this loader is useless
   projectLoader: boolean;
-  scenarioLoader: boolean;
+  projectCreateLoader: boolean;
   analyzerLoader: boolean;
 };
 
@@ -182,8 +182,8 @@ export type SetUpdateImageLoader = IAction<
   typeof TYPES.SET_UPDATE_IMAGE_LOADER,
   { active: boolean }
 >;
-export type SetScenarioLoader = IAction<
-  typeof TYPES.SET_SCENARIO_LOADER,
+export type SetProjectCreateLoader = IAction<
+  typeof TYPES.SET_PROJECT_CREATE_LOADER,
   { active: boolean }
 >;
 export type SetAnalyzerLoader = IAction<
@@ -397,7 +397,7 @@ export type PasteCopiedElement = IPlainAction<
   typeof TYPES.PASTE_COPIED_ELEMENT,
   ElementHistoryMeta
 >;
-export type ResetScreenState = IPlainAction<typeof TYPES.RESET_SCREEN_STATE>;
+export type ResetProjectState = IPlainAction<typeof TYPES.RESET_SCREEN_STATE>;
 export type UndoAction = IPlainAction<typeof TYPES.UNDO_ACTION>;
 export type RedoAction = IPlainAction<typeof TYPES.REDO_ACTION>;
 export type SetUndoActions = IAction<
@@ -559,7 +559,7 @@ export type Action =
   | SetProjectLoader
   | SetScreenLoader
   | SetUpdateImageLoader
-  | SetScenarioLoader
+  | SetProjectCreateLoader
   | SetAnalyzerLoader
   | DeleteScreen
   | RenameScreen
@@ -585,7 +585,7 @@ export type Action =
   | SetRightPanelActiveTab
   | CopyActiveElement
   | PasteCopiedElement
-  | ResetScreenState
+  | ResetProjectState
   | UpdateSavedElementsValues
   | UpdateSavedElementValues
   | UpdateElementsTree

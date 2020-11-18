@@ -28,10 +28,10 @@ const communicationReducer = (
       };
     }
 
-    case TYPES.SET_SCENARIO_LOADER: {
+    case TYPES.SET_PROJECT_CREATE_LOADER: {
       return {
         ...state,
-        scenarioLoader: action.payload.active,
+        projectCreateLoader: action.payload.active,
       };
     }
 
