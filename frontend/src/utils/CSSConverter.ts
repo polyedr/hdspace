@@ -1,7 +1,7 @@
-import * as camelcase from 'camelcase-css';
 import decamelize from 'decamelize';
 import * as expanders from 'css-shorthand-expanders';
 import { isColor } from 'is-color-stop';
+import { kebabToCamel } from './stringHelper';
 
 type ExpandStyles = {
   [styleName: string]: (
@@ -43,7 +43,7 @@ const EXPAND_STYLES: ExpandStyles = {
 
 export const cssCamelize = (styles = {}): React.CSSProperties => {
   return Object.keys(styles).reduce((acc, propName) => {
-    const ccPropName = camelcase.default(propName);
+    const ccPropName = kebabToCamel(propName) as keyof React.CSSProperties;
     return {
       ...acc,
       ...(EXPAND_STYLES[ccPropName]

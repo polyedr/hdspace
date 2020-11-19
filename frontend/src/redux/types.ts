@@ -132,7 +132,7 @@ export type AppReduxState = {
 
 export type LoadProjects = IPlainAction<typeof TYPES.LOAD_PROJECTS>;
 export type LoadProjectsSuccess = IAction<
-  typeof TYPES.LOAD_PROJECTS_SUCCESS,
+  typeof TYPES.SET_PROJECT_LIST,
   { projects: Project[] }
 >;
 export type LoadProjectsFail = IPlainFailAction<'PROJECTS:LOAD_PROJECTS_FAIL'>;

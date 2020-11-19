@@ -100,7 +100,7 @@ export const getProjectList = (): LoadProjects => ({
 });
 
 export const setProjectList = (projects: Project[]): LoadProjectsSuccess => ({
-  type: TYPES.LOAD_PROJECTS_SUCCESS,
+  type: TYPES.SET_PROJECT_LIST,
   payload: { projects },
 });
 

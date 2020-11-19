@@ -77,7 +77,7 @@ const dataReducer = produce(
         break;
       }
 
-      case TYPES.LOAD_PROJECTS_SUCCESS: {
+      case TYPES.SET_PROJECT_LIST: {
         draft.projectsData.results = arrayToMap<Project>(
           action.payload.projects,
         );
