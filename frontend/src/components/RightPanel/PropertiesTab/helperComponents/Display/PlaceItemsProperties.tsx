@@ -20,7 +20,6 @@ type Props = PropertiesChangeProps<LibraryElement<Entity>> & {
 };
 
 const PlaceItemsProperties: React.FC<Props> = ({ updateStyles, reversed }) => {
-  console.log('REVERSED!!', reversed);
   const classes = useWrapperStyles();
   const justifyContent = useSelector(
     selectCurrentEditableStyles('justifyContent'),
