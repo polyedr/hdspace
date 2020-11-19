@@ -578,6 +578,20 @@ export const setActiveElementId = (id: string) => ({
   payload: id,
 });
 
+export const setElementCanBeEdited = (edited: boolean) => ({
+  type: TYPES.SET_ELEMENT_CAN_BE_EDITED,
+  payload: edited,
+});
+
+export const setElementBeingEdited = (edited: boolean) => ({
+  type: TYPES.SET_ELEMENT_BEING_EDITED,
+  payload: edited,
+});
+
+export const resetElementEditState = () => ({
+  type: TYPES.RESET_ELEMENT_EDIT_STATE,
+});
+
 export const setHoveredElement = (id: string | null): SetHoveredElement => ({
   type: TYPES.SET_HOVERED_ELEMENT,
   payload: id,

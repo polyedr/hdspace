@@ -9,6 +9,7 @@ import {
   selectBorderedElementsRef,
   selectCurrentProject,
   selectCurrentRootId,
+  selectElementBeingEdited,
   selectElementById,
 } from '../../../redux/project/selectors';
 import { BorderStyles } from '../../../types';
@@ -42,13 +43,13 @@ const InteractionsHandler = ({ elementId }: Props) => {
   const rootID = useSelector(selectCurrentRootId);
   const rootRef = borderedElementsRefs[rootID];
   const elementRef = borderedElementsRefs[elementId];
-
   const element = useSelector(selectElementById(elementId));
   const elementGroupStyles = useSelector((state: AppReduxState) => {
     return selectCurrentProject(state).projectData.classes.find((value) => {
       return value.className === element.styles.classNames[1];
     })?.rules;
   });
+  const elementBeingEdited = useSelector(selectElementBeingEdited(elementId));
 
   const [styles, setStyles] = useState<BorderStyles | null>(
     getBorderStyles(elementRef.current, rootRef),
@@ -90,9 +91,11 @@ const InteractionsHandler = ({ elementId }: Props) => {
   return (
     <React.Fragment key={`element-border-${elementId}`}>
       <Borders elementId={elementId} styles={styles} />
-      <BorderCrumb elementId={elementId} styles={styles}>
-        <SaveElementAction elementId={elementId} />
-      </BorderCrumb>
+      {!elementBeingEdited && (
+        <BorderCrumb elementId={elementId} styles={styles}>
+          <SaveElementAction elementId={elementId} />
+        </BorderCrumb>
+      )}
     </React.Fragment>
   );
 };

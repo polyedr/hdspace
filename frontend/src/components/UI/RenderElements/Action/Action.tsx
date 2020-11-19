@@ -44,6 +44,8 @@ const Action: ActionRenderer = React.forwardRef((props, ref) => {
     button: 'button',
   };
 
+  const component = components[actionType];
+
   return (
     <Button
       ref={ref}
@@ -61,7 +63,7 @@ const Action: ActionRenderer = React.forwardRef((props, ref) => {
         isDisabled && classes.disabled,
       )}
       disableRipple={isDisabled || !showRipple}
-      component={components[actionType]}
+      component={component}
       {...(actionType === 'external-link' && {
         href: actionLink,
         target: '_blank',

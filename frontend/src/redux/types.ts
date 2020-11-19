@@ -48,6 +48,8 @@ export type ProjectUiState = {
   showContainersBorders: boolean;
   borderedElementsRef: BorderedElementsRef;
   currentDropTargetParams: DropTargetParams | null;
+  elementCanBeEdited: boolean;
+  elementBeingEdited: boolean;
   screenFormat: {
     format: SCREEN_FORMATS;
     rotated: boolean;
@@ -524,6 +526,21 @@ export type SetActiveElementId = IAction<
   string
 >;
 
+export type SetElementCanBeEdited = IAction<
+  typeof TYPES.SET_ELEMENT_CAN_BE_EDITED,
+  boolean
+>;
+
+export type SetElementBeingEdited = IAction<
+  typeof TYPES.SET_ELEMENT_BEING_EDITED,
+  boolean
+>;
+
+export type ResetElementEditState = IAction<
+  typeof TYPES.RESET_ELEMENT_EDIT_STATE,
+  unknown
+>;
+
 export type SetProjectsData = IAction<
   typeof TYPES.SET_PROJECTS_DATA,
   PaginatedArray<Project>
@@ -613,6 +630,9 @@ export type Action =
   | AddElements
   | RestoreElement
   | SetActiveElementId
+  | SetElementCanBeEdited
+  | SetElementBeingEdited
+  | ResetElementEditState
   | MoveStateElement
   | UpdateStateElement
   | AddStateElements

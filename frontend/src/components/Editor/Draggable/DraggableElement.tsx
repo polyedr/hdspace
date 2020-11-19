@@ -1,12 +1,23 @@
-import React, { useState, useMemo, useRef, useEffect } from 'react';
+import React, {
+  useState,
+  useMemo,
+  useRef,
+  useEffect,
+  useCallback,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { DropTargetMonitor, useDrag, useDrop } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
+import { useDebouncedCallback } from 'use-debounce';
 import {
   createElements,
   moveElement,
+  resetElementEditState,
   setCurrentDropTargetParams,
+  setElementBeingEdited,
+  setElementCanBeEdited,
   setHoveredElement,
+  updateElementParameters,
 } from '../../../redux/project/actions';
 import useElementProps from '../hooks/useElementProps';
 import { RENDERERS } from '../../UI/RenderElements';
@@ -14,11 +25,16 @@ import {
   selectCurrentDropTargetParams,
   selectCurrentRootId,
   selectCurrentScreenId,
+  selectElementBeingEdited,
   selectElementByChildId,
   selectElementById,
+  selectElementCanBeEdited,
 } from '../../../redux/project/selectors';
 import { DropPosition, ElementType } from '../../../constants/dragAndDrop';
-import { CONTAINER_GROUPS } from '../../../constants/defaultParams';
+import {
+  CONTAINER_GROUPS,
+  EDITABLE_COMPONENTS_LIST,
+} from '../../../constants/defaultParams';
 import {
   getFlexRowDropPosition,
   getBlockDropPosition,
@@ -43,6 +59,8 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
   const rootID = useSelector(selectCurrentRootId);
   const dropTargetParams = useSelector(selectCurrentDropTargetParams);
   const screenId = useSelector(selectCurrentScreenId);
+  const elementBeingEdited = useSelector(selectElementBeingEdited(elementId));
+  const elementCanBeEdited = useSelector(selectElementCanBeEdited(elementId));
 
   const ref = useRef<HTMLElement>() as React.MutableRefObject<HTMLElement>;
 
@@ -225,6 +243,78 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
     }
   }, [isOverArea, rootID, dropTargetParams]);
 
+  const handleHoverElement = useCallback(
+    (elId: string | null) => () => {
+      dispatch(setHoveredElement(elId));
+    },
+    [dispatch],
+  );
+
+  const runResetEditState = useDebouncedCallback(() => {
+    dispatch(setElementCanBeEdited(false));
+  }, 300);
+
+  const clickHandler = useCallback(
+    (event: React.SyntheticEvent) => {
+      event.stopPropagation();
+      if (
+        element &&
+        EDITABLE_COMPONENTS_LIST.includes(element.type) &&
+        !elementBeingEdited
+      ) {
+        if (runResetEditState.pending()) {
+          runResetEditState.cancel();
+        }
+        if (!elementCanBeEdited) {
+          dispatch(setElementCanBeEdited(true));
+        } else if (!elementBeingEdited) {
+          runResetEditState.callback();
+        }
+      }
+      if (elementCanBeEdited) {
+        dispatch(setElementBeingEdited(true));
+        ref.current.focus();
+      }
+    },
+    [
+      dispatch,
+      element,
+      elementBeingEdited,
+      elementCanBeEdited,
+      runResetEditState,
+    ],
+  );
+
+  const blurHandler = useCallback(
+    (event: React.FormEvent<HTMLElement>) => {
+      if (elementProps?.contentEditable) {
+        dispatch(resetElementEditState());
+        dispatch(
+          updateElementParameters(
+            elementId,
+            {
+              textContent: (event?.target as HTMLElement).innerText,
+            },
+            { screenId },
+          ),
+        );
+      }
+    },
+    [dispatch, elementId, elementProps?.contentEditable, screenId],
+  );
+
+  const keyDownHandler = useCallback(
+    (e: React.FormEvent<HTMLElement>) => {
+      e.stopPropagation();
+      const event = e.nativeEvent as KeyboardEvent;
+      if (event.code === 'Enter' && elementBeingEdited) {
+        (event.target as HTMLElement).blur();
+        e.preventDefault();
+      }
+    },
+    [elementBeingEdited],
+  );
+
   if (!element) {
     return null;
   }
@@ -236,12 +326,11 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
       <ElementRenderer
         {...elementProps}
         ref={ref}
-        onMouseEnter={() => {
-          dispatch(setHoveredElement(elementId));
-        }}
-        onMouseLeave={() => {
-          dispatch(setHoveredElement(element.parent || null));
-        }}
+        onMouseEnter={handleHoverElement(elementId)}
+        onMouseLeave={handleHoverElement(element.parent || null)}
+        onClick={clickHandler}
+        onKeyDown={keyDownHandler}
+        onBlur={blurHandler}
       >
         {element.children.map((childId: string) => (
           <DraggableElement
