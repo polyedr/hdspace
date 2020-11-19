@@ -8,7 +8,6 @@ import React, {
 import { useDispatch, useSelector } from 'react-redux';
 import { DropTargetMonitor, useDrag, useDrop } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
-// import useClick from '@react-hook/click';
 import { useDebouncedCallback } from 'use-debounce';
 import {
   createElements,
