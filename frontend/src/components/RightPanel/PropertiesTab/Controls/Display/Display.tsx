@@ -4,16 +4,17 @@ import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
-import DISPLAY from './constants';
+import { DISPLAY } from './constants';
 import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
 import { selectCurrentEditableStyles } from '../../../../../redux/project/selectors';
 import StylesHeader from '../../helperComponents/StylesHeader';
-import FlexProperties from '../../helperComponents/FlexProperties';
+import FlexProperties from '../../helperComponents/Display/FlexProperties';
 import {
   Entity,
   LibraryElement,
   PropertiesChangeProps,
 } from '../../../../../types';
+import PlaceItemsProperties from '../../helperComponents/Display/PlaceItemsProperties';
 
 type Props = PropertiesChangeProps<LibraryElement<Entity>>;
 
@@ -61,6 +62,9 @@ const Display: React.FC<Props> = ({ updateStyles, removeStyles }) => {
       </div>
 
       {display === 'flex' && <FlexProperties />}
+      {!!display && ['grid', 'inline-grid'].includes(display) && (
+        <PlaceItemsProperties reversed={false} />
+      )}
     </>
   );
 };
