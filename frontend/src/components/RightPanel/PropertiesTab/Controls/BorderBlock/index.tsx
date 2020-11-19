@@ -1,10 +1,11 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import TextField from '@material-ui/core/TextField';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import makeStyles from '@material-ui/core/styles/makeStyles';
+import { useDebounce } from 'use-debounce';
 import {
   getPermissibleValue,
   safeMatch,
@@ -82,25 +83,36 @@ const BorderBlock: React.FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
     }%`;
   }, []);
 
-  const handleBorderWidthChange = ({ target: { value } }) => {
+  const [width, setWidth] = useState(
+    borderWidth ? parseFloat(borderWidth as string) : '',
+  );
+  const [debouncedWidth] = useDebounce(width, 250);
+  useEffect(() => {
     const newWidth = getPermissibleValue(
-      strToNumber(value),
+      strToNumber(debouncedWidth.toString()),
       MIN_BORDER_WIDTH,
       MAX_BORDER_WIDTH,
     );
 
     updateStyles({ borderWidth: `${newWidth}px` });
-  };
+  }, [debouncedWidth, updateStyles]);
 
-  const handleBorderRadius = ({ target: { value } }) => {
+  const [radius, setRadius] = useState(
+    safeParseFloat(validateBorderRadius(String(borderRadius))),
+  );
+  const [debouncedRadius] = useDebounce(radius, 250);
+
+  useEffect(() => {
     updateStyles({
-      borderRadius: `${value}${accessBorderRadius(String(borderRadius))}`,
+      borderRadius: `${debouncedRadius}${accessBorderRadius(
+        String(borderRadius),
+      )}`,
     });
-  };
+  }, [debouncedRadius, updateStyles]);
 
   const handleChangeBorderRadiusUnits = ({ target: { value } }) => {
     updateStyles({
-      borderRadius: validateBorderRadius(`${borderRadius}${value}`),
+      borderRadius: `${parseInt(borderRadius.toString())}${value}`,
     });
   };
 
@@ -123,8 +135,8 @@ const BorderBlock: React.FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
         <TextField
           label="Width"
           type="number"
-          value={borderWidth ? parseFloat(borderWidth as string) : ''}
-          onChange={handleBorderWidthChange}
+          value={width}
+          onChange={(ev) => setWidth(ev.target.value)}
           margin="dense"
           className={classes.text}
         />
@@ -133,8 +145,8 @@ const BorderBlock: React.FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
           <TextField
             label="Radius"
             type="number"
-            value={safeParseFloat(validateBorderRadius(String(borderRadius)))}
-            onChange={handleBorderRadius}
+            value={safeParseFloat(validateBorderRadius(String(radius)))}
+            onChange={(ev) => setRadius(parseInt(ev.target.value))}
             margin="dense"
             className={classes.text}
           />

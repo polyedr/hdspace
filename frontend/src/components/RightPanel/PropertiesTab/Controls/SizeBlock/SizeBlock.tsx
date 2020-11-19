@@ -48,16 +48,6 @@ type SelectedUnit = {
 
 type SizeName = keyof SelectedUnit;
 
-/* function mapState(state: AppReduxState) {
-  return {
-    width: selectCurrentEditableStyles(state, 'width'),
-    height: selectCurrentEditableStyles(state, 'height'),
-  };
-}
-
-type Props = ReturnType<typeof mapState> &
-  PropertiesChangeProps<LibraryElement<Entity>>; */
-
 const getUnitFromValue = (value: string): UnitName => {
   const unit = value.replace(/[0-9, \d+.\d+]/g, '');
 
