@@ -324,8 +324,8 @@ export const defaultRootStyles: { [K in RootControls]: React.CSSProperties } & {
   other: {
     ...DEFAULT_SIZE,
     maxWidth: '100%',
-    maxHeight: 'calc(100% - 2px)',
-    minHeight: 'calc(100% - 2px)',
+    maxHeight: '100%',
+    minHeight: '100%',
     padding: '3px',
   },
 };
