@@ -3,7 +3,7 @@ import cn from 'classnames';
 import { useSelector } from 'react-redux';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import TextField from '@material-ui/core/TextField';
-import { useDebounce } from 'use-debounce';
+import { useDebouncedCallback } from 'use-debounce';
 import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
 import { selectCurrentEditableStyles } from '../../../../../redux/project/selectors';
 import StylesHeader from '../../helperComponents/StylesHeader';
@@ -109,25 +109,44 @@ const IndentsBlock: React.FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
 
   const [state, setState] = useState({
     marginTop,
-    marginRight,
-    marginBottom,
     marginLeft,
+    marginBottom,
+    marginRight,
     paddingTop,
-    paddingRight,
-    paddingBottom,
     paddingLeft,
+    paddingBottom,
+    paddingRight,
   });
-  const [debouncedState] = useDebounce(state, 250);
-
   useEffect(() => {
-    updateStyles(debouncedState);
-  }, [debouncedState, updateStyles]);
+    setState({
+      marginTop,
+      marginLeft,
+      marginBottom,
+      marginRight,
+      paddingTop,
+      paddingLeft,
+      paddingBottom,
+      paddingRight,
+    });
+  }, [
+    marginTop,
+    marginLeft,
+    marginBottom,
+    marginRight,
+    paddingTop,
+    paddingLeft,
+    paddingBottom,
+    paddingRight,
+  ]);
 
-  const handleChange = (type, value) =>
-    setState((prevState) => ({
-      ...prevState,
-      [type]: value,
-    }));
+  const debounced = useDebouncedCallback((name, value) => {
+    updateStyles({ [name]: value });
+  }, 500);
+
+  const handleChange = ({ target: { value, name } }) => {
+    setState({ ...state, [name]: value });
+    debounced.callback(name, `${value}px`);
+  };
 
   return (
     <div>
@@ -151,48 +170,46 @@ const IndentsBlock: React.FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
 
         <TextField
           title="Margin top"
-          name="Margin top"
+          name="marginTop"
           type="number"
           margin="none"
           variant="outlined"
           className={cn(classes.input, classes.marginTop)}
           value={parseInt(state.marginTop) || 0}
-          onChange={(ev) => handleChange('marginTop', `${ev.target.value}px`)}
+          onChange={handleChange}
         />
 
         <TextField
           title="Margin right"
-          name="Margin right"
+          name="marginRight"
           type="number"
           margin="none"
           variant="outlined"
           className={cn(classes.input, classes.marginRight)}
           value={parseInt(state.marginRight) || 0}
-          onChange={(ev) => handleChange('marginRight', `${ev.target.value}px`)}
+          onChange={handleChange}
         />
 
         <TextField
           title="Margin bottom"
-          name="Margin bottom"
+          name="marginBottom"
           type="number"
           margin="none"
           variant="outlined"
           className={cn(classes.input, classes.marginBottom)}
           value={parseInt(state.marginBottom) || 0}
-          onChange={(ev) =>
-            handleChange('marginBottom', `${ev.target.value}px`)
-          }
+          onChange={handleChange}
         />
 
         <TextField
           title="Margin left"
-          name="Margin left"
+          name="marginLeft"
           type="number"
           margin="none"
           variant="outlined"
           className={cn(classes.input, classes.marginLeft)}
           value={parseInt(state.marginLeft) || 0}
-          onChange={(ev) => handleChange('marginLeft', `${ev.target.value}px`)}
+          onChange={handleChange}
         />
 
         <div className={classes.paddingGrid}>
@@ -200,54 +217,46 @@ const IndentsBlock: React.FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
 
           <TextField
             title="Padding top"
-            name="Padding top"
+            name="paddingTop"
             type="number"
             margin="none"
             variant="outlined"
             className={cn(classes.input, classes.paddingTop)}
             value={parseInt(state.paddingTop) || 0}
-            onChange={(ev) =>
-              handleChange('paddingTop', `${ev.target.value}px`)
-            }
+            onChange={handleChange}
           />
 
           <TextField
             title="Padding right"
-            name="Padding right"
+            name="paddingRight"
             type="number"
             margin="none"
             variant="outlined"
             className={cn(classes.input, classes.paddingRight)}
             value={parseInt(state.paddingRight) || 0}
-            onChange={(ev) =>
-              handleChange('paddingRight', `${ev.target.value}px`)
-            }
+            onChange={handleChange}
           />
 
           <TextField
             title="Padding bottom"
-            name="Padding bottom"
+            name="paddingBottom"
             type="number"
             margin="none"
             variant="outlined"
             className={cn(classes.input, classes.paddingBottom)}
             value={parseInt(state.paddingBottom) || 0}
-            onChange={(ev) =>
-              handleChange('paddingBottom', `${ev.target.value}px`)
-            }
+            onChange={handleChange}
           />
 
           <TextField
             title="Padding left"
-            name="Padding left"
+            name="paddingLeft"
             type="number"
             margin="none"
             variant="outlined"
             className={cn(classes.input, classes.paddingLeft)}
             value={parseInt(state.paddingLeft) || 0}
-            onChange={(ev) =>
-              handleChange('paddingLeft', `${ev.target.value}px`)
-            }
+            onChange={handleChange}
           />
         </div>
       </div>

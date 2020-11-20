@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import {
   Accordion,
   AccordionDetails,
@@ -12,7 +12,7 @@ import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { useDispatch, useSelector } from 'react-redux';
-import { useDebounce } from 'use-debounce';
+import { useDebouncedCallback } from 'use-debounce';
 import { deleteItem } from '../../../../../redux/project/actions';
 import { selectCurrentScreenId } from '../../../../../redux/project/selectors';
 
@@ -44,20 +44,17 @@ const ListItem: React.FC<Props> = ({
   const classes = useStyles();
   const dispatch = useDispatch();
   const currentScreenId = useSelector(selectCurrentScreenId);
-  const [text, setText] = useState(textContent);
-  const [debouncedText] = useDebounce(text, 500);
-  useEffect(() => {
-    updateParams({ textContent: debouncedText }, id);
-  }, [debouncedText, updateParams, id]);
 
-  const [linkText, setLinkText] = useState(link);
-  const [debouncedLinkText] = useDebounce(linkText, 500);
-  useEffect(() => {
-    updateParams({ link: debouncedLinkText }, id);
-  }, [debouncedLinkText, updateParams, id]);
+  const debouncedText = useDebouncedCallback((value) => {
+    updateParams({ textContent: value }, id);
+  }, 500);
 
-  const handleDeleteButtonClick = (listItemID: string) => {
-    dispatch(deleteItem(listItemID, { screenId: currentScreenId }));
+  const debouncedLink = useDebouncedCallback((value) => {
+    updateParams({ link: value }, id);
+  }, 500);
+
+  const handleDeleteButtonClick = () => {
+    dispatch(deleteItem(id, { screenId: currentScreenId }));
   };
 
   const handleCheckboxChange = (
@@ -66,6 +63,7 @@ const ListItem: React.FC<Props> = ({
   ) => {
     updateParams({ isLink: checked }, listItemID);
   };
+
   return (
     <Accordion key={id}>
       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
@@ -75,7 +73,7 @@ const ListItem: React.FC<Props> = ({
           {!isLast && (
             <IconButton
               title="Delete item"
-              onClick={() => handleDeleteButtonClick(id)}
+              onClick={handleDeleteButtonClick}
               size="small"
             >
               <DeleteIcon fontSize="small" />
@@ -87,8 +85,8 @@ const ListItem: React.FC<Props> = ({
       <AccordionDetails className={classes.details}>
         <TextField
           variant="outlined"
-          value={text}
-          onChange={(ev) => setText(ev.target.value)}
+          defaultValue={textContent}
+          onChange={(ev) => debouncedText.callback(ev.target.value)}
           label="Item text"
           margin="dense"
           fullWidth
@@ -110,8 +108,8 @@ const ListItem: React.FC<Props> = ({
         {isLink && (
           <TextField
             variant="outlined"
-            value={linkText}
-            onChange={(ev) => setLinkText(ev.target.value)}
+            defaultValue={link}
+            onChange={(ev) => debouncedLink.callback(ev.target.value)}
             label="Item URL"
             margin="dense"
             fullWidth

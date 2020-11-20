@@ -4,7 +4,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import TextField from '@material-ui/core/TextField';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import { useDebounce } from 'use-debounce';
+import { useDebouncedCallback } from 'use-debounce';
 import {
   MAX_LATITUDE,
   MAX_LONGITUDE,
@@ -41,11 +41,14 @@ const MapProps: React.FC<PropertiesChangeProps<MapElement>> = ({
   );
 
   const [state, setState] = useState(mapProps);
-  const [debouncedState] = useDebounce(state, 500);
-
   useEffect(() => {
-    updateParams({ map_props: debouncedState });
-  }, [debouncedState, updateParams]);
+    setState(mapProps);
+  }, [mapProps]);
+  const debounced = useDebouncedCallback((value) => {
+    updateParams({
+      map_props: value,
+    });
+  }, 500);
 
   const handleCenterMapCoordsChange = useCallback(
     ({ target: { name, value } }: React.ChangeEvent<HTMLInputElement>) => {
@@ -60,11 +63,11 @@ const MapProps: React.FC<PropertiesChangeProps<MapElement>> = ({
               MAX_LATITUDE,
             ).toFixed(5),
           ),
-          lng: state.center.lng,
+          lng: mapProps.center.lng,
         };
       } else {
         newCenter = {
-          lat: state.center.lat,
+          lat: mapProps.center.lat,
           lng: Number(
             getPermissibleValue(
               Number(value),
@@ -76,13 +79,14 @@ const MapProps: React.FC<PropertiesChangeProps<MapElement>> = ({
       }
 
       const newMapProps = {
-        ...state,
+        ...mapProps,
         center: newCenter,
       };
 
       setState(newMapProps);
+      debounced.callback(newMapProps);
     },
-    [state],
+    [mapProps, debounced],
   );
 
   const handleMarkerTextChange = useCallback(
@@ -92,25 +96,27 @@ const MapProps: React.FC<PropertiesChangeProps<MapElement>> = ({
       }
 
       const newMapProps = {
-        ...state,
+        ...mapProps,
         markerText: value,
       };
 
       setState(newMapProps);
+      debounced.callback(newMapProps);
     },
-    [state],
+    [mapProps, debounced],
   );
 
   const handleMapZoomChange = useCallback(
     ({ target: { value } }) => {
       const newMapProps = {
-        ...state,
+        ...mapProps,
         zoom: getPermissibleValue(Number(value), MIN_MAP_ZOOM, MAX_MAP_ZOOM),
       };
 
       setState(newMapProps);
+      debounced.callback(newMapProps);
     },
-    [state],
+    [mapProps, debounced],
   );
 
   return (

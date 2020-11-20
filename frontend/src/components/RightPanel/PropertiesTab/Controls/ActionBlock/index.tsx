@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import ToggleButton from '@material-ui/lab/ToggleButton';
@@ -46,6 +46,11 @@ const ActionBlock: React.FC<PropertiesChangeProps<HyperlinkElement>> = ({
     },
     [action],
   );
+
+  const [state, setState] = useState(getCurrentUrl('external-link'));
+  useEffect(() => {
+    setState(getCurrentUrl('external-link'));
+  }, [getCurrentUrl]);
 
   const debounced = useDebouncedCallback((value) => {
     updateParams({
@@ -97,8 +102,11 @@ const ActionBlock: React.FC<PropertiesChangeProps<HyperlinkElement>> = ({
             fullWidth
             label="URL"
             placeholder="Enter a page URL"
-            defaultValue={getCurrentUrl('external-link')}
-            onChange={(e) => debounced.callback(e.target.value)}
+            value={state}
+            onChange={({ target: { value } }) => {
+              setState(value);
+              debounced.callback(value);
+            }}
             margin="dense"
           />
         ) : (

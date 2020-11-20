@@ -19,7 +19,7 @@ import Type from './Controls/Type/Type';
 import Value from './Controls/Value/Value';
 import Name from './Controls/Name/Name';
 import Ripple from './Controls/Ripple/Ripple';
-import SelectOptions from './Controls/SelectOptions/SelectOptions';
+import SelectOptions from './Controls/SelectOptions';
 import SelectValue from './Controls/SelectValue/SelectValue';
 import HeadingType from './Controls/HeadingType/HeadingType';
 import ListItems from './Controls/ListItems';

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import TextField from '@material-ui/core/TextField';
 import { useDebouncedCallback } from 'use-debounce';
@@ -11,15 +11,25 @@ const TextContent: React.FC<PropertiesChangeProps<ParagraphElement>> = ({
 }) => {
   const content = useSelector(selectActiveElementParamByName('textContent'));
 
+  const [state, setState] = useState(content);
+  useEffect(() => {
+    setState(content);
+  }, [content]);
+
   const debounced = useDebouncedCallback((value) => {
     updateParams({ textContent: value });
   }, 500);
 
+  const handleChange = ({ target: { value } }) => {
+    setState(value);
+    debounced.callback(value);
+  };
+
   return (
     <TextField
-      defaultValue={content}
+      value={state}
       variant="outlined"
-      onChange={(ev) => debounced.callback(ev.target.value)}
+      onChange={handleChange}
       label="Text Content"
       margin="dense"
       fullWidth
