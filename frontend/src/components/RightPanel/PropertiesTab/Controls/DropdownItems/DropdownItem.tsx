@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import TextField from '@material-ui/core/TextField';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { useSelector } from 'react-redux';
-import { useDebounce } from 'use-debounce';
+import { useDebouncedCallback } from 'use-debounce';
 import { selectCurrentScreenId } from '../../../../../redux/project/selectors';
 
 const useStyles = makeStyles({
@@ -34,12 +34,9 @@ const DropdownItem: React.FC<Props> = ({
   const classes = useStyles();
   const currentScreenId = useSelector(selectCurrentScreenId);
 
-  const [text, setText] = useState(textContent);
-  const [debouncedText] = useDebounce(text, 500);
-
-  useEffect(() => {
-    updateParams({ textContent: debouncedText }, id);
-  }, [debouncedText, updateParams, id]);
+  const debounced = useDebouncedCallback((value) => {
+    updateParams({ textContent: value }, id);
+  }, 500);
 
   const handleDeleteButtonClick = (dropdownItemID: string) => {
     deleteChildFromElement(dropdownItemID, { screenId: currentScreenId });
@@ -49,8 +46,8 @@ const DropdownItem: React.FC<Props> = ({
     <div className={classes.wrapper}>
       <TextField
         variant="outlined"
-        value={text}
-        onChange={(ev) => setText(ev.target.value)}
+        defaultValue={textContent}
+        onChange={(ev) => debounced.callback(ev.target.value)}
         label="Item text"
         margin="dense"
         fullWidth

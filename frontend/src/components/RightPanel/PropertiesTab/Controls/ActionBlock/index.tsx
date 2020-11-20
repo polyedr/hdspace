@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import ToggleButton from '@material-ui/lab/ToggleButton';
@@ -9,7 +9,7 @@ import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
-import { useDebounce } from 'use-debounce';
+import { useDebouncedCallback } from 'use-debounce';
 import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
 import {
   selectActiveElementParams,
@@ -46,17 +46,15 @@ const ActionBlock: React.FC<PropertiesChangeProps<HyperlinkElement>> = ({
     },
     [action],
   );
-  const [text, setText] = useState(getCurrentUrl('external-link'));
-  const [debouncedText] = useDebounce(text, 500);
 
-  useEffect(() => {
+  const debounced = useDebouncedCallback((value) => {
     updateParams({
       action: {
         type: 'external-link',
-        url: debouncedText,
+        url: value,
       },
     });
-  }, [debouncedText, updateParams]);
+  }, 500);
 
   const handleUrlChange = (ev) => {
     const { value } = ev.target;
@@ -99,8 +97,8 @@ const ActionBlock: React.FC<PropertiesChangeProps<HyperlinkElement>> = ({
             fullWidth
             label="URL"
             placeholder="Enter a page URL"
-            value={text}
-            onChange={(e) => setText(e.target.value)}
+            defaultValue={getCurrentUrl('external-link')}
+            onChange={(e) => debounced.callback(e.target.value)}
             margin="dense"
           />
         ) : (
