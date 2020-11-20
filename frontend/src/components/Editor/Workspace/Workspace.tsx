@@ -34,7 +34,7 @@ const useStyles = makeStyles({
     backgroundColor: '#fff',
     border: '1px solid #e7eaec',
     borderTop: 'none',
-    overflow: 'auto',
+    overflow: 'hidden',
   },
   desktop: {
     flexBasis: '100%',
