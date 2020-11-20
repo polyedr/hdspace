@@ -22,7 +22,7 @@ import Ripple from './Controls/Ripple/Ripple';
 import SelectOptions from './Controls/SelectOptions/SelectOptions';
 import SelectValue from './Controls/SelectValue/SelectValue';
 import HeadingType from './Controls/HeadingType/HeadingType';
-import ListItems from './Controls/ListItems/ListItems';
+import ListItems from './Controls/ListItems';
 import Bullets from './Controls/Bullets';
 import Ordered from './Controls/Ordered/Ordered';
 import LabelFor from './Controls/LabelFor/LabelFor';
