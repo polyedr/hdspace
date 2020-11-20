@@ -1,33 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import TextField from '@material-ui/core/TextField';
+import { useDebounce } from 'use-debounce';
 import { selectActiveElement } from '../../../../../redux/project/selectors';
 import { updateElement } from '../../../../../redux/project/actions';
 
 const RenameElement: React.FC = () => {
   const dispatch = useDispatch();
 
-  const activeElement = useSelector(selectActiveElement);
+  const { name, id } = useSelector(selectActiveElement);
 
-  const [currentElementName, setCurrentElementName] = useState(
-    activeElement.name,
-  );
+  const [state, setState] = useState(name);
+  const [debouncedState] = useDebounce(state, 500);
 
   useEffect(() => {
-    setCurrentElementName(activeElement.name);
-  }, [activeElement.name]);
-
-  const handleTextFieldBlur = ({
-    target: { value },
-  }: React.FocusEvent<HTMLInputElement>) =>
-    dispatch(updateElement(activeElement.id, { name: value }, true));
+    dispatch(updateElement(id, { name: debouncedState }, true));
+  }, [debouncedState, dispatch, id]);
 
   return (
     <TextField
       label="Name"
-      value={currentElementName}
-      onBlur={handleTextFieldBlur}
-      onChange={({ target: { value } }) => setCurrentElementName(value)}
+      value={state}
+      onChange={({ target: { value } }) => setState(value)}
     />
   );
 };

@@ -1,6 +1,7 @@
-import React, { useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import TextField from '@material-ui/core/TextField';
+import { useDebounce } from 'use-debounce';
 import { selectActiveElementParams } from '../../../../../redux/project/selectors';
 import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
 import {
@@ -15,18 +16,17 @@ const Name: React.FC<PropertiesChangeProps<RadiobuttonElement>> = ({
   const name = useSelector(
     (state: AppReduxState) => selectActiveElementParams(state).name,
   );
-  const handleTextFieldChange = useCallback(
-    ({ target: { value } }: React.ChangeEvent<HTMLTextAreaElement>) => {
-      updateParams({ name: value });
-    },
-    [updateParams],
-  );
+  const [state, setState] = useState(name);
+  const [debouncedState] = useDebounce(state, 500);
+  useEffect(() => {
+    updateParams({ name: debouncedState });
+  }, [debouncedState, updateParams]);
 
   return (
     <TextField
       variant="outlined"
-      value={name}
-      onChange={handleTextFieldChange}
+      value={state}
+      onChange={(ev) => setState(ev.target.value)}
       label="Name"
       margin="dense"
       fullWidth
