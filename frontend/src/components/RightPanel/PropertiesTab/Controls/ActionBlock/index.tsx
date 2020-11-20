@@ -47,7 +47,7 @@ const ActionBlock: React.FC<PropertiesChangeProps<HyperlinkElement>> = ({
     [action],
   );
   const [text, setText] = useState(getCurrentUrl('external-link'));
-  const [debouncedText] = useDebounce(text, 1000);
+  const [debouncedText] = useDebounce(text, 500);
 
   useEffect(() => {
     updateParams({

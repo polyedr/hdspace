@@ -12,7 +12,7 @@ const TextContent: React.FC<PropertiesChangeProps<ParagraphElement>> = ({
   const content = useSelector(selectActiveElementParamByName('textContent'));
   const [text, setText] = useState(content);
 
-  const [debouncedText] = useDebounce(text, 1000);
+  const [debouncedText] = useDebounce(text, 500);
 
   useEffect(() => {
     updateParams({ textContent: debouncedText });

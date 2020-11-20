@@ -26,7 +26,7 @@ import ListItems from './Controls/ListItems/ListItems';
 import Bullets from './Controls/Bullets';
 import Ordered from './Controls/Ordered/Ordered';
 import LabelFor from './Controls/LabelFor/LabelFor';
-import DropdownItems from './Controls/DropdownItems/DropdownItems';
+import DropdownItems from './Controls/DropdownItems';
 import IsOpen from './Controls/IsOpen/IsOpen';
 import VideoSettings from './Controls/VideoSettings/VideoSettings';
 import FlexGrow from './Controls/FlexGrow';
