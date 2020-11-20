@@ -87,7 +87,7 @@ const Screens = () => {
         <Droppable droppableId="droppable">
           {(provided) => (
             <AccordionDetails>
-              <Scrollbar maxHeight={200}>
+              <Scrollbar autoHeightMax={200}>
                 <List
                   className={classes.list}
                   innerRef={provided.innerRef}

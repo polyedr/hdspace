@@ -71,6 +71,11 @@ const Workspace: React.FC = () => {
           <Scrollbar
             className={cn(classes.editor, classes[format])}
             autoHeightMin="100%"
+            autoHeightMax={
+              ref.current
+                ? `calc(${ref.current.getBoundingClientRect().height}px - 2em)`
+                : '100%'
+            }
           >
             {freeCanvasMode ? (
               <FreeCanvas />
