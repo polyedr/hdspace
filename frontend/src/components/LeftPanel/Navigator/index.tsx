@@ -45,7 +45,6 @@ import { enqueueSnackbar } from '../../../redux/notification/actions';
 
 const useStyles = makeStyles({
   tree: {
-    fontSize: '0.75em',
     flex: '1',
     display: 'flex',
     flexDirection: 'column',

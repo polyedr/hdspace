@@ -26,7 +26,10 @@ import {
   AccordionSummary,
 } from '../StyledAccordion';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
+  name: {
+    fontSize: theme.typography.fontSize,
+  },
   button: {
     color: '#eee',
     '&:hover': {
@@ -38,7 +41,7 @@ const useStyles = makeStyles({
     padding: 0,
     overflowX: 'hidden',
   },
-});
+}));
 
 const Screens = () => {
   const dispatch = useDispatch();
@@ -66,7 +69,7 @@ const Screens = () => {
   return (
     <Accordion defaultExpanded>
       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-        <span>Screens</span>
+        <span className={classes.name}>Screens</span>
 
         <IconButton
           title="Create Screen"

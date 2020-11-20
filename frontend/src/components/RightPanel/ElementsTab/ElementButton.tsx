@@ -14,7 +14,11 @@ import {
 import { ElementType } from '../../../constants/dragAndDrop';
 import { ElementData } from '../../../types';
 
-const useStyles = makeStyles({
+type Props = {
+  elementData: ElementData;
+};
+
+const useButtonStyles = makeStyles({
   root: {
     '&:hover': {
       backgroundColor: '#fff',
@@ -22,10 +26,13 @@ const useStyles = makeStyles({
         '0px 2px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0,0,0,0.12)',
     },
   },
+  text: {
+    padding: '2px 8px',
+  },
   label: {
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'space-evenly',
+    justifyContent: 'space-between',
     alignItems: 'center',
     textTransform: 'capitalize',
     fontSize: '0.8em',
@@ -33,17 +40,32 @@ const useStyles = makeStyles({
   },
 });
 
-type Props = {
-  elementData: ElementData;
-};
+const useStyles = makeStyles((theme) => ({
+  nameSection: (props: Props) => ({
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    lineHeight: 1.5,
+    width: '100%',
+    height: props.elementData.icon ? '55%' : '100%',
+    textAlign: 'center',
+  }),
+  name: {
+    fontSize: theme.typography.fontSize,
+    fontFamily: theme.typography.fontFamily,
+    lineHeight: 1.2,
+  },
+}));
 
 const ElementButton = React.forwardRef<HTMLButtonElement, Props>(
-  ({ elementData }, outerRef) => {
+  (props: Props, outerRef) => {
+    const { elementData } = props;
     const { id, type, name, icon: ElementIcon, custom } = elementData;
     const dispatch = useDispatch();
     const screenId = useSelector(selectCurrentScreenId);
     const activeElement = useSelector(selectActiveElement);
-    const classes = useStyles();
+    const buttonClasses = useButtonStyles();
+    const classes = useStyles(props);
     const ref = (outerRef === null
       ? React.createRef<HTMLButtonElement>()
       : outerRef) as MutableRefObject<HTMLButtonElement>;
@@ -81,7 +103,7 @@ const ElementButton = React.forwardRef<HTMLButtonElement, Props>(
     return (
       <Button
         disabled={!isAvailableChild(activeElement, type)}
-        classes={classes}
+        classes={buttonClasses}
         onClick={handleClick}
         ref={
           outerRef instanceof Function
@@ -95,7 +117,9 @@ const ElementButton = React.forwardRef<HTMLButtonElement, Props>(
         }
       >
         {ElementIcon && <ElementIcon />}
-        {splitWords(name)}
+        <div className={classes.nameSection}>
+          <span className={classes.name}>{splitWords(name)}</span>
+        </div>
       </Button>
     );
   },

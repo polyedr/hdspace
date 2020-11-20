@@ -12,14 +12,18 @@ import { selectFreeCanvasMode } from '../../../redux/project/selectors';
 
 const sections = ['elements', 'templates', 'library'];
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   root: {
     height: '100%',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'stretch',
   },
-});
+  title: {
+    fontSize: theme.typography.fontSize,
+    fontFamily: theme.typography.fontFamily,
+  },
+}));
 
 const useToggleButtonGroupStyles = makeStyles({
   root: {
@@ -83,15 +87,15 @@ const ElementsTab = () => {
             size="small"
           >
             <ToggleButton classes={toggleButtonClasses} value="elements">
-              Elements
+              <span className={classes.title}>Elements</span>
             </ToggleButton>
 
             <ToggleButton classes={toggleButtonClasses} value="templates">
-              Templates
+              <span className={classes.title}>Templates</span>
             </ToggleButton>
 
             <ToggleButton classes={toggleButtonClasses} value="library">
-              Library
+              <span className={classes.title}>Library</span>
             </ToggleButton>
           </ToggleButtonGroup>
 
