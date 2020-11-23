@@ -63,6 +63,7 @@ import {
   renameScreenSaga,
   restoreScreenSaga,
   updateScreenImageSaga,
+  convertFreeCanvasSaga,
 } from './screen';
 import {
   Entity,
@@ -480,6 +481,7 @@ export default function* projectSaga() {
   yield takeEvery(TYPES.PASTE_COPIED_ELEMENT, pasteCopiedElementSaga);
 
   yield takeLatest(TYPES.UPLOAD_FILE, uploadFileSaga);
+  yield takeEvery(TYPES.CONVERT_FREE_CANVAS, convertFreeCanvasSaga);
 
   yield takeEvery(TYPES.UNDO_ACTION, undoSaga);
   yield takeEvery(TYPES.REDO_ACTION, redoSaga);

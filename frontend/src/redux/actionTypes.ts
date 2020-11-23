@@ -49,6 +49,7 @@ const TYPES = {
   // Free canvas Actions
   CHANGE_FREE_CANVAS_MODE: 'freeCanvas/CHANGE_FREE_CANVAS_MODE',
   UPDATE_LAST_ELEMENTS: 'freeCanvas/UPDATE_LAST_ELEMENTS',
+  CONVERT_FREE_CANVAS: 'freeCanvas/CONVERT_FREE_CANVAS',
 
   // Notification Actions
   ENQUEUE_SNACKBAR: 'notification/ENQUEUE_SNACKBAR',

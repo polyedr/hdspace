@@ -627,6 +627,7 @@ export function* uploadFileSaga({
     const { screenId } = meta;
 
     const formData = new FormData();
+
     formData.append('image', file.file, file.name);
     formData.append('parent_id', parentId);
     formData.append('struct_type', 'container');

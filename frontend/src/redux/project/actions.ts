@@ -805,3 +805,7 @@ export const setScreenCreateLoader = (
   type: TYPES.SET_SCREEN_CREATE_LOADER,
   payload: active,
 });
+
+export const convertFreeCanvas = () => ({
+  type: TYPES.CONVERT_FREE_CANVAS,
+});
