@@ -1,4 +1,4 @@
-import React, { useCallback, memo } from 'react';
+import React, { useCallback, memo, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import TextField from '@material-ui/core/TextField';
 import Select from '@material-ui/core/Select';
@@ -6,6 +6,7 @@ import FormControl from '@material-ui/core/FormControl';
 import MenuItem from '@material-ui/core/MenuItem';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import capitalize from '@material-ui/core/utils/capitalize';
+import { useDebouncedCallback } from 'use-debounce';
 import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
 import {
   selectActiveElementId,
@@ -47,6 +48,10 @@ type SelectedUnit = {
 };
 
 type SizeName = keyof SelectedUnit;
+
+type ControlProps = {
+  sizeName: SizeName;
+};
 
 const getUnitFromValue = (value: string): UnitName => {
   const unit = value.replace(/[0-9, \d+.\d+]/g, '');
@@ -114,7 +119,7 @@ const SizeBlock: React.FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
   );
 
   const handleInputChange = useCallback(
-    ({ target: { name, value } }) => {
+    (name, value) => {
       const size = String(name === 'width' ? width : height) || 'auto';
       const unitValue = Unit[getUnitFromValue(size?.toString() || Unit.px)];
 
@@ -128,12 +133,19 @@ const SizeBlock: React.FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
     [updateStyles, width, height],
   );
 
-  const renderSizeControl = (sizeName: SizeName) => {
+  const SizeControl: React.FC<ControlProps> = ({ sizeName }) => {
     const size = String(sizeName === 'width' ? width : height) || 'auto';
     const parsedSize = Number.isNaN(parseFloat(size))
       ? ''
       : String(parseFloat(size));
     const inputValue = size === 'auto' ? 'auto' : parsedSize;
+    const [state, setState] = useState(inputValue);
+    useEffect(() => {
+      setState(inputValue);
+    }, [inputValue]);
+    const debounced = useDebouncedCallback((name, value) => {
+      handleInputChange(name, value);
+    }, 500);
 
     return (
       <div className={classes.sizeControl}>
@@ -142,8 +154,11 @@ const SizeBlock: React.FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
           label={capitalize(sizeName)}
           type="text"
           name={sizeName}
-          value={inputValue}
-          onChange={handleInputChange}
+          value={state}
+          onChange={({ target: { name, value } }) => {
+            setState(value);
+            debounced.callback(name, value);
+          }}
           disabled={inputValue === 'auto'}
           margin="dense"
         />
@@ -175,8 +190,8 @@ const SizeBlock: React.FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
       />
 
       <div className={classes.wrapper}>
-        {renderSizeControl('height')}
-        {renderSizeControl('width')}
+        <SizeControl sizeName="height" />
+        <SizeControl sizeName="width" />
       </div>
     </section>
   );
