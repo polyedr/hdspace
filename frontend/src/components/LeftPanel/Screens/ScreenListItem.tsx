@@ -14,7 +14,7 @@ import ScreenLogo from './ScreenLogo';
 import { renameScreen } from '../../../redux/project/actions';
 import { selectCurrentProjectId } from '../../../redux/project/selectors';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   listItem: {
     '&:hover': {
       backgroundColor: lighten('#2f4050', 0.2),
@@ -41,7 +41,11 @@ const useStyles = makeStyles({
     minWidth: 0,
     paddingRight: '.5em',
   },
-});
+  name: {
+    fontFamily: theme.typography.fontFamily,
+    fontSize: theme.typography.fontSize,
+  },
+}));
 
 type Props = {
   screen: Screen;
@@ -94,7 +98,7 @@ const ScreenListItem: React.FC<Props> = ({ screen, index, active }) => {
                 <ScreenLogo image={image} />
               </ListItemIcon>
 
-              <span>{name}</span>
+              <span className={classes.name}>{name}</span>
             </div>
 
             {/* it's a bad practice to place interactive elements into anchor, but the app design is going to change soon */}

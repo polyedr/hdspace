@@ -42,7 +42,10 @@ const theme = createMuiTheme({
   },
   breakpoints: {},
   shape: {},
-  typography: {},
+  typography: {
+    fontFamily: 'Roboto, Helvetica, Arial, sans-serif',
+    fontSize: 14,
+  },
   transitions: {},
 });
 
