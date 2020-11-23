@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import ToggleButton from '@material-ui/lab/ToggleButton';
@@ -9,6 +9,7 @@ import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
+import { useDebouncedCallback } from 'use-debounce';
 import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
 import {
   selectActiveElementParams,
@@ -20,20 +21,13 @@ import {
   InternalLink,
   LinkParams,
   PropertiesChangeProps,
-  Screen,
 } from '../../../../../types';
-import { AppReduxState } from '../../../../../redux/types';
-
-type StateProps = {
-  screens: Screen[];
-  action: LinkParams;
-};
 
 const ActionBlock: React.FC<PropertiesChangeProps<HyperlinkElement>> = ({
   updateParams,
 }) => {
-  const action = useSelector(
-    (state: AppReduxState) => selectActiveElementParams(state).action,
+  const { action }: { action: LinkParams } = useSelector(
+    selectActiveElementParams,
   );
   const screens = useSelector(selectScreens);
 
@@ -53,16 +47,26 @@ const ActionBlock: React.FC<PropertiesChangeProps<HyperlinkElement>> = ({
     [action],
   );
 
+  const [state, setState] = useState(getCurrentUrl('external-link'));
+  useEffect(() => {
+    setState(getCurrentUrl('external-link'));
+  }, [getCurrentUrl]);
+
+  const debounced = useDebouncedCallback((value) => {
+    updateParams({
+      action: {
+        type: 'external-link',
+        url: value,
+      },
+    });
+  }, 500);
+
   const handleUrlChange = (ev) => {
     const { value } = ev.target;
     updateParams({
       action: {
-        // @ts-ignore
-        type: linkType,
-        ...(linkType === 'internal-link' && {
-          screenID: value === 'noScreen' ? value : +value,
-        }),
-        ...(linkType === 'external-link' && { url: value }),
+        type: 'internal-link',
+        screenID: value === 'noScreen' ? value : +value,
       },
     });
   };
@@ -83,11 +87,11 @@ const ActionBlock: React.FC<PropertiesChangeProps<HyperlinkElement>> = ({
         size="small"
         exclusive
       >
-        <ToggleButton value="internal-link">
+        <ToggleButton value="internal-link" title="Internal link">
           <LinkIcon />
         </ToggleButton>
 
-        <ToggleButton value="external-link">
+        <ToggleButton value="external-link" title="External link">
           <InsertDriveFileIcon />
         </ToggleButton>
       </ToggleButtonGroup>
@@ -98,8 +102,11 @@ const ActionBlock: React.FC<PropertiesChangeProps<HyperlinkElement>> = ({
             fullWidth
             label="URL"
             placeholder="Enter a page URL"
-            value={getCurrentUrl('external-link')}
-            onChange={handleUrlChange}
+            value={state}
+            onChange={({ target: { value } }) => {
+              setState(value);
+              debounced.callback(value);
+            }}
             margin="dense"
           />
         ) : (

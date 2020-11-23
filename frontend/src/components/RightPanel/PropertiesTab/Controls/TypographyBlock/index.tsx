@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
@@ -14,6 +14,7 @@ import FormatAlignRightIcon from '@material-ui/icons/FormatAlignRight';
 import FormatBoldIcon from '@material-ui/icons/FormatBold';
 import FormatItalicIcon from '@material-ui/icons/FormatItalic';
 import * as CSS from 'csstype';
+import { useDebouncedCallback } from 'use-debounce';
 import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
 import { getPermissibleValue } from '../../../../../utils/NumberHelper';
 import FONTS from '../../../../../constants/fonts';
@@ -46,14 +47,15 @@ const useStyles = makeStyles({
 const TypographyBlock: React.FC<PropertiesChangeProps<
   LibraryElement<Entity>
 >> = ({ updateStyles, removeStyles }) => {
+  const classes = useStyles();
   const fontFamily = useSelector(selectCurrentEditableStyles('fontFamily'));
   const fontStyle = useSelector(selectCurrentEditableStyles('fontStyle'));
   const fontWeight = useSelector(selectCurrentEditableStyles('fontWeight'));
-  const fontSize = useSelector(selectCurrentEditableStyles('fontSize'));
+  const fontSize =
+    useSelector(selectCurrentEditableStyles('fontSize')) || '14px';
   const textAlign = useSelector(selectCurrentEditableStyles('textAlign'));
   const color =
     useSelector(selectCurrentEditableStyles('color')) || 'transparent';
-  const classes = useStyles();
 
   const activeElementId = useSelector(selectActiveElementId);
 
@@ -69,13 +71,21 @@ const TypographyBlock: React.FC<PropertiesChangeProps<
   };
 
   const handleChangeFontSize = useCallback(
-    ({ target: { value } }) => {
+    (value) => {
       const newSize = getPermissibleValue(value, MIN_FONT_SIZE, MAX_FONT_SIZE);
 
       updateStyles({ fontSize: `${newSize}px` });
     },
     [updateStyles],
   );
+
+  const [state, setState] = useState(fontSize);
+  useEffect(() => {
+    setState(fontSize);
+  }, [fontSize]);
+  const debounced = useDebouncedCallback((value) => {
+    handleChangeFontSize(value);
+  }, 500);
 
   const handleFormatChange = (
     ev: React.MouseEvent<HTMLElement>,
@@ -135,8 +145,11 @@ const TypographyBlock: React.FC<PropertiesChangeProps<
             label="Size"
             margin="dense"
             type="number"
-            value={fontSize || 14}
-            onChange={handleChangeFontSize}
+            value={parseInt(state.toString())}
+            onChange={(ev) => {
+              setState(ev.target.value);
+              debounced.callback(ev.target.value);
+            }}
           />
 
           <ToggleButtonGroup
