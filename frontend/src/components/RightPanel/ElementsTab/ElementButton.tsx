@@ -1,4 +1,4 @@
-import React, { useEffect, MutableRefObject } from 'react';
+import React, { useEffect, useRef, MutableRefObject } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useDrag } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
@@ -69,6 +69,7 @@ const ElementButton = React.forwardRef<HTMLButtonElement, Props>(
     const ref = (outerRef === null
       ? React.createRef<HTMLButtonElement>()
       : outerRef) as MutableRefObject<HTMLButtonElement>;
+    const imgRef = useRef<SVGSVGElement | null>(null);
 
     const [, drag, preview] = useDrag({
       item: {
@@ -80,8 +81,10 @@ const ElementButton = React.forwardRef<HTMLButtonElement, Props>(
     });
 
     useEffect(() => {
-      preview(getEmptyImage(), { captureDraggingState: true });
-    }, [preview]);
+      preview(imgRef.current ? imgRef : getEmptyImage(), {
+        captureDraggingState: true,
+      });
+    }, [preview, imgRef]);
 
     const handleClick = () => {
       dispatch(
@@ -116,7 +119,7 @@ const ElementButton = React.forwardRef<HTMLButtonElement, Props>(
             : ref
         }
       >
-        {ElementIcon && <ElementIcon />}
+        {ElementIcon && <ElementIcon ref={imgRef} />}
         <div className={classes.nameSection}>
           <span className={classes.name}>{splitWords(name)}</span>
         </div>
