@@ -12,7 +12,7 @@ import Dialog from '../Dialogs/Dialog';
 import { renameProject } from '../../redux/project/actions';
 import TopBar from '../Editor/TopBar';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   toolbar: {
     backgroundColor: '#fff',
     display: 'flex',
@@ -32,7 +32,12 @@ const useStyles = makeStyles({
     opacity: 0,
     transition: 'opacity 0.1s ease',
   },
-});
+  projectName: {
+    fontSize: '1rem',
+    fontFamily: theme.typography.fontFamily,
+    fontWeight: 'bold',
+  },
+}));
 
 const TopPanel = () => {
   const dispatch = useDispatch();
@@ -55,7 +60,9 @@ const TopPanel = () => {
 
         {projectName && (
           <div className={classes.title}>
-            <Typography variant="h6">{projectName}</Typography>
+            <Typography variant="h6" className={classes.projectName}>
+              {projectName}
+            </Typography>
 
             <IconButton
               onClick={handleEditClick}
