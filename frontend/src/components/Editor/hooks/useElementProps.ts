@@ -7,7 +7,9 @@ import {
   selectCurrentProject,
   selectCurrentRootElement,
   selectCurrentRootId,
+  selectElementBeingEdited,
   selectElementById,
+  selectElementCanBeEdited,
   selectSavedElementsValues,
   selectScreenLoader,
   selectShowingBorders,
@@ -47,26 +49,28 @@ const useElementProps = (elementId: string): ElementProps | null => {
   const showBorders = useSelector(selectShowingBorders);
   const screenLoader = useSelector(selectScreenLoader);
   const currentProject = useSelector(selectCurrentProject);
+  const canBeEdited = useSelector(selectElementCanBeEdited(elementId));
+  const isBeingEdited = useSelector(selectElementBeingEdited(elementId));
 
   const projectClasses = currentProject.projectData.classes;
 
   const dispatch = useDispatch();
 
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>) =>
-    dispatch(updateSavedElementValues(elementId, event.target.value));
-
-  const isRadioChecked = (
-    value: string,
-    checkedRadio: SavedElementsValues[string],
-  ) => value === checkedRadio?.savedValue;
-
-  const isCheckboxChecked = (itemId: string) =>
-    Boolean(savedElements[itemId]?.savedValue);
-
   const additionalProps = useMemo(() => {
     if (!element) {
       return null;
     }
+
+    const isRadioChecked = (
+      value: string,
+      checkedRadio: SavedElementsValues[string],
+    ) => value === checkedRadio?.savedValue;
+
+    const isCheckboxChecked = (itemId: string) =>
+      Boolean(savedElements[itemId]?.savedValue);
+
+    const onChange = (event: React.ChangeEvent<HTMLInputElement>) =>
+      dispatch(updateSavedElementValues(elementId, event.target.value));
 
     const { id, children } = element;
 
@@ -140,16 +144,16 @@ const useElementProps = (elementId: string): ElementProps | null => {
         };
     }
   }, [
-    activeElement.id,
-    disableInteractions,
     element,
-    isCheckboxChecked,
-    onChange,
-    projectClasses,
+    disableInteractions,
+    activeElement.id,
     root,
     rootID,
-    savedElements,
     showBorders,
+    savedElements,
+    dispatch,
+    elementId,
+    projectClasses,
   ]);
 
   if (!element) {
@@ -171,6 +175,7 @@ const useElementProps = (elementId: string): ElementProps | null => {
     ...(disableInteractions && { className: '' }),
     id: id === rootID ? 'root' : id,
     isDisabled: !disableInteractions,
+    contentEditable: canBeEdited || isBeingEdited,
     ownStyles: styles.ownStyles,
     entityStyles,
     groupStyles,

@@ -1,10 +1,9 @@
-import React, { useEffect, useRef } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { useRef } from 'react';
+import { useSelector } from 'react-redux';
 import cn from 'classnames';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import EditorViewport from '../Viewport/Viewport';
 import Scrollbar from '../../UI/Scrollbar';
-import { resetScreenState } from '../../../redux/project/actions';
 import {
   selectCurrentRootId,
   selectFreeCanvasMode,
@@ -35,7 +34,7 @@ const useStyles = makeStyles({
     backgroundColor: '#fff',
     border: '1px solid #e7eaec',
     borderTop: 'none',
-    overflow: 'auto',
+    overflow: 'hidden',
   },
   desktop: {
     flexBasis: '100%',
@@ -50,8 +49,6 @@ const useStyles = makeStyles({
 });
 
 const Workspace: React.FC = () => {
-  const dispatch = useDispatch();
-
   const rootElementId = useSelector(selectCurrentRootId);
   const isPrototypeMode = useSelector(selectIsPrototypeMode);
   const freeCanvasMode = useSelector(selectFreeCanvasMode);
@@ -61,13 +58,6 @@ const Workspace: React.FC = () => {
   const classes = useStyles(rotated);
 
   const ref = useRef<HTMLDivElement | null>(null);
-
-  useEffect(
-    () => () => {
-      dispatch(resetScreenState());
-    },
-    [dispatch],
-  );
 
   useGlobalDropTarget(
     ['smartHeader', 'smartFooter', 'smartForm', 'smartWebpage'],
@@ -81,6 +71,11 @@ const Workspace: React.FC = () => {
           <Scrollbar
             className={cn(classes.editor, classes[format])}
             autoHeightMin="100%"
+            autoHeightMax={
+              ref.current
+                ? `calc(${ref.current.getBoundingClientRect().height}px - 2em)`
+                : '100%'
+            }
           >
             {freeCanvasMode ? (
               <FreeCanvas />

@@ -126,7 +126,7 @@ const Textarea: React.FC<TextareaRendererProps> = React.forwardRef(
     } = props;
     const { placeholder } = params;
 
-    const eventHandlers = useEventHandlers();
+    const eventHandlers = useEventHandlers(props);
 
     const textFieldClasses = getTextFieldStyles(
       isDisabled,

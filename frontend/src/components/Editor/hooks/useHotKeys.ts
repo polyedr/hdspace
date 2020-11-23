@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   selectActiveElementId,
   selectCurrentScreenId,
+  selectElementBeingEditedState,
 } from '../../../redux/project/selectors';
 import {
   copyActiveElement,
@@ -16,6 +17,7 @@ import {
 const useHotKeys = (ref: React.RefObject<HTMLElement>) => {
   const currentScreenId = useSelector(selectCurrentScreenId);
   const id = useSelector(selectActiveElementId);
+  const beingEdited = useSelector(selectElementBeingEditedState);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -23,23 +25,23 @@ const useHotKeys = (ref: React.RefObject<HTMLElement>) => {
 
     const listener = (event: KeyboardEvent) => {
       if (
-        event.key === 'Delete' ||
-        (event.key === 'Backspace' && event.metaKey)
+        !beingEdited &&
+        (event.key === 'Delete' || (event.key === 'Backspace' && event.metaKey))
       ) {
         dispatch(deleteItem(id, { screenId: currentScreenId }));
         element?.focus();
       }
     };
 
-    element?.addEventListener('keydown', listener);
-    return () => element?.removeEventListener('keydown', listener);
-  }, [ref, id, currentScreenId, dispatch]);
+    element?.addEventListener('keydown', listener, false);
+    return () => element?.removeEventListener('keydown', listener, false);
+  }, [ref, id, currentScreenId, dispatch, beingEdited]);
 
   useEffect(() => {
     const element = ref.current;
 
     const listener = (event: KeyboardEvent) => {
-      if (event.code === 'KeyC' && event.altKey) {
+      if (!beingEdited && event.code === 'KeyC' && event.altKey) {
         dispatch(wrapIntoContainer(id, { screenId: currentScreenId }));
         element?.focus();
       }
@@ -47,14 +49,16 @@ const useHotKeys = (ref: React.RefObject<HTMLElement>) => {
 
     element?.addEventListener('keydown', listener);
     return () => element?.removeEventListener('keydown', listener);
-  }, [ref, id, currentScreenId, dispatch]);
+  }, [ref, id, currentScreenId, dispatch, beingEdited]);
 
   useEffect(() => {
     const element = ref.current;
 
     const listener = (event: KeyboardEvent) => {
       const isItemCopyEvent =
-        event.code === 'KeyC' && (event.metaKey || event.ctrlKey);
+        !beingEdited &&
+        event.code === 'KeyC' &&
+        (event.metaKey || event.ctrlKey);
 
       if (isItemCopyEvent) {
         dispatch(copyActiveElement());
@@ -65,14 +69,16 @@ const useHotKeys = (ref: React.RefObject<HTMLElement>) => {
 
     element?.addEventListener('keydown', listener);
     return () => element?.removeEventListener('keydown', listener);
-  }, [ref]);
+  }, [beingEdited, dispatch, ref]);
 
   useEffect(() => {
     const element = ref.current;
 
     const listener = (event: KeyboardEvent) => {
       const isItemPasteEvent =
-        event.code === 'KeyV' && (event.metaKey || event.ctrlKey);
+        !beingEdited &&
+        event.code === 'KeyV' &&
+        (event.metaKey || event.ctrlKey);
 
       if (isItemPasteEvent) {
         dispatch(pasteCopiedElement({ screenId: currentScreenId }));
@@ -82,26 +88,21 @@ const useHotKeys = (ref: React.RefObject<HTMLElement>) => {
 
     element?.addEventListener('keydown', listener);
     return () => element?.removeEventListener('keydown', listener);
-  }, [ref, currentScreenId, dispatch]);
+  }, [ref, currentScreenId, dispatch, beingEdited]);
 
   useEffect(() => {
     const element = ref.current;
 
     const listener = (ev: KeyboardEvent) => {
-      if (ev.code === 'KeyZ' && (ev.metaKey || ev.ctrlKey)) {
+      if (!beingEdited && ev.code === 'KeyZ' && (ev.metaKey || ev.ctrlKey)) {
         dispatch(ev.shiftKey ? redoAction() : undoAction());
         element?.focus();
       }
-
-      /* if (ev.code === 'KeyZ' && (ev.metaKey || ev.ctrlKey) && ev.shiftKey) {
-        dispatch(redoAction());
-        element?.focus();
-      } */
     };
 
     element?.addEventListener('keydown', listener);
     return () => element?.removeEventListener('keydown', listener);
-  }, [ref, dispatch]);
+  }, [ref, dispatch, beingEdited]);
 };
 
 export default useHotKeys;

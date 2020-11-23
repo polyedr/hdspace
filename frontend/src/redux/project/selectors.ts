@@ -117,8 +117,8 @@ export function selectUploadedImageInfo(state: AppReduxState) {
   return selectProjectState(state).edit.uploadedImageInfo;
 }
 
-export function selectLoader(state: AppReduxState) {
-  return selectProjectState(state).communication.loader;
+export function selectUpdateScreenImageLoader(state: AppReduxState) {
+  return selectProjectState(state).communication.updateImageLoader;
 }
 
 export const selectElementByChildId = (id: string) => (
@@ -130,8 +130,8 @@ export const selectElementByChildId = (id: string) => (
     : null;
 };
 
-export function selectScenarioLoader(state: AppReduxState) {
-  return selectProjectState(state).communication.scenarioLoader;
+export function selectProjectCreateLoader(state: AppReduxState) {
+  return selectProjectState(state).communication.projectCreateLoader;
 }
 
 export const selectAreProjectsLoading = ({ project }: AppReduxState) =>
@@ -139,6 +139,25 @@ export const selectAreProjectsLoading = ({ project }: AppReduxState) =>
 
 export const selectActiveElementId = ({ project }: AppReduxState) =>
   project.edit.activeElementId;
+
+export const selectElementBeingEdited = (elementId: string) => (
+  state: AppReduxState,
+) => {
+  const activeElementId = selectActiveElementId(state);
+  const { elementBeingEdited } = selectProjectState(state).ui;
+  return elementId === activeElementId && elementBeingEdited;
+};
+
+export const selectElementBeingEditedState = ({ project }: AppReduxState) =>
+  project.ui.elementBeingEdited;
+
+export const selectElementCanBeEdited = (elementId: string) => (
+  state: AppReduxState,
+) => {
+  const activeElementId = selectActiveElementId(state);
+  const { elementCanBeEdited } = selectProjectState(state).ui;
+  return elementId === activeElementId && elementCanBeEdited;
+};
 
 export const selectHoveredElementId = ({ project }: AppReduxState) =>
   project.edit.hoveredElementId;
@@ -442,3 +461,6 @@ export const selectScreenRotated = ({ project }: AppReduxState) =>
 
 export const selectRightPanelActiveTab = ({ project }: AppReduxState) =>
   project.ui.rightPanel.activeTab;
+
+export const selectScreenCreateLoader = ({ project }: AppReduxState) =>
+  project.communication.screenCreateLoader;

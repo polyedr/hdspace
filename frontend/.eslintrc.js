@@ -54,6 +54,7 @@ module.exports = {
     'react/jsx-curly-newline': 'off', // should be disabled with prettier
     'react/prop-types': 'off', // should be disabled with typescript
     'react/require-default-props': 'off', // should be disabled with typescript
+    'react/no-danger': 'off',
     radix: [2, 'as-needed'], // allow to omit second parameter when possible
     'react/jsx-wrap-multilines': 'off', // to avoid conflicts with prettier
     'react/jsx-props-no-spreading': 'off',

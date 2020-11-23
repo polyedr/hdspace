@@ -25,7 +25,11 @@ const omitLinkStyles = [
   'backgroundColor',
 ];
 
-const useItemStyles = makeComponentStyles();
+const useItemStyles = makeComponentStyles({
+  listItem: {
+    outline: 0,
+  },
+});
 
 const useEditableItemStyles = makeStyles({
   entityStyles: ({ entityStyles }) => R.omit(omitEditableStyles, entityStyles),
@@ -41,12 +45,13 @@ const useLinkStyles = makeStyles({
     width: '100%',
     height: '100%',
     display: 'inline-block',
+    outline: 0,
   },
 });
 
 const ListItem: React.FC<ListItemRendererProps> = React.forwardRef(
   (props, ref) => {
-    const { id, params, isDisabled, className } = props;
+    const { id, params, isDisabled, className, contentEditable } = props;
     const { textContent, isLink, link } = params;
 
     const listItemClasses = useItemStyles(props);
@@ -73,6 +78,7 @@ const ListItem: React.FC<ListItemRendererProps> = React.forwardRef(
             data-ls-id={id}
             className={cn(
               className,
+              listItemClasses.listItem,
               listItemClasses.addedElem,
               isDisabled && listItemClasses.disabled,
               listItemWithLinkClasses.entityStyles,
@@ -88,12 +94,13 @@ const ListItem: React.FC<ListItemRendererProps> = React.forwardRef(
                 linkClasses.groupStyles,
                 linkClasses.ownStyles,
               )}
+              aria-label={`Link-${id}`}
               href={link}
               target="_blank"
               rel="noreferrer"
-            >
-              {textContent}
-            </a>
+              contentEditable={contentEditable}
+              dangerouslySetInnerHTML={{ __html: textContent }}
+            />
           </li>
         ) : (
           <li
@@ -102,16 +109,19 @@ const ListItem: React.FC<ListItemRendererProps> = React.forwardRef(
             data-ls-id={id}
             className={cn(
               className,
+              listItemClasses.listItem,
               listItemClasses.addedElem,
               isDisabled && listItemClasses.disabled,
               listItemClasses.entityStyles,
               listItemClasses.groupStyles,
               listItemClasses.ownStyles,
             )}
+            aria-label={`Button-${id}`}
             {...eventHandlers}
-          >
-            {textContent}
-          </li>
+            contentEditable={contentEditable}
+            dangerouslySetInnerHTML={{ __html: textContent }}
+            data-gramm_editor={false}
+          />
         )}
       </>
     );

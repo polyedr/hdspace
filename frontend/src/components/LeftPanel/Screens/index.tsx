@@ -7,6 +7,7 @@ import AddIcon from '@material-ui/icons/Add';
 import { lighten } from '@material-ui/core';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import ScreenListItem from './ScreenListItem';
 import {
   createScreen,
@@ -15,6 +16,7 @@ import {
 import {
   selectCurrentProjectId,
   selectCurrentScreenId,
+  selectScreenCreateLoader,
   selectScreens,
 } from '../../../redux/project/selectors';
 import { Scrollbar } from '../../UI';
@@ -45,6 +47,7 @@ const Screens = () => {
   const currentProjectId = useSelector(selectCurrentProjectId);
   const currentScreenId = useSelector(selectCurrentScreenId);
   const screens = useSelector(selectScreens);
+  const screenCreateLoader = useSelector(selectScreenCreateLoader);
 
   const handleAddScreen = (ev) => {
     ev.preventDefault();
@@ -66,12 +69,17 @@ const Screens = () => {
         <span>Screens</span>
 
         <IconButton
-          title="Add Screen"
+          title="Create Screen"
           size="small"
           onClick={handleAddScreen}
           className={classes.button}
+          disabled={screenCreateLoader}
         >
-          <AddIcon />
+          {!screenCreateLoader ? (
+            <AddIcon />
+          ) : (
+            <CircularProgress size={24} color="secondary" />
+          )}
         </IconButton>
       </AccordionSummary>
 
@@ -79,7 +87,7 @@ const Screens = () => {
         <Droppable droppableId="droppable">
           {(provided) => (
             <AccordionDetails>
-              <Scrollbar maxHeight={200}>
+              <Scrollbar autoHeightMax={200}>
                 <List
                   className={classes.list}
                   innerRef={provided.innerRef}

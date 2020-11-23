@@ -56,11 +56,11 @@ import {
   RenameProject,
   RenameScreen,
   ReplaceElementStyles,
-  ResetScreenState,
+  ResetProjectState,
   RestoreElement,
   RestoreElementChildren,
   RestoreScreen,
-  SaveScreen,
+  UpdateScreenImage,
   SetAnalyzerLoader,
   SetCurrentProjectId,
   SetCurrentScreenId,
@@ -68,12 +68,12 @@ import {
   SetGroupActionsUp,
   SetHoveredElement,
   SetElementToCopy,
-  SetLoader,
+  SetUpdateImageLoader,
   SetProject,
   SetProjectListLoader,
   SetProjectLoader,
   SetRedoActions,
-  SetScenarioLoader,
+  SetProjectCreateLoader,
   SetScreenLoader,
   SetScreens,
   SetUndoActions,
@@ -92,6 +92,7 @@ import {
   UpdateSharedStyles,
   UploadFile,
   WrapIntoContainer,
+  SetScreenCreateLoader,
 } from '../types';
 
 export const getProjectList = (): LoadProjects => ({
@@ -99,7 +100,7 @@ export const getProjectList = (): LoadProjects => ({
 });
 
 export const setProjectList = (projects: Project[]): LoadProjectsSuccess => ({
-  type: TYPES.LOAD_PROJECTS_SUCCESS,
+  type: TYPES.SET_PROJECT_LIST,
   payload: { projects },
 });
 
@@ -174,13 +175,17 @@ export const setScreenLoader = (active: boolean): SetScreenLoader => ({
   payload: { active },
 });
 
-export const setLoader = (active: boolean): SetLoader => ({
-  type: TYPES.SET_LOADER,
+export const setUpdateImageLoader = (
+  active: boolean,
+): SetUpdateImageLoader => ({
+  type: TYPES.SET_UPDATE_IMAGE_LOADER,
   payload: { active },
 });
 
-export const setScenarioLoader = (active: boolean): SetScenarioLoader => ({
-  type: TYPES.SET_SCENARIO_LOADER,
+export const setProjectCreateLoader = (
+  active: boolean,
+): SetProjectCreateLoader => ({
+  type: TYPES.SET_PROJECT_CREATE_LOADER,
   payload: { active },
 });
 
@@ -344,18 +349,14 @@ export const removeStateElement = (
   meta,
 });
 
-export const resetScreenState = (): ResetScreenState => ({
+export const resetProjectState = (): ResetProjectState => ({
   type: TYPES.RESET_SCREEN_STATE,
 });
 
-export const saveScreenImage = (
-  screenId: number,
-  canvas: HTMLCanvasElement,
-): SaveScreen => ({
-  type: TYPES.SAVE_SCREEN,
+export const updateScreenImage = (screenId: number): UpdateScreenImage => ({
+  type: TYPES.UPDATE_SCREEN_IMAGE,
   payload: {
     screenId,
-    canvas,
   },
 });
 
@@ -577,6 +578,20 @@ export const setActiveElementId = (id: string) => ({
   payload: id,
 });
 
+export const setElementCanBeEdited = (edited: boolean) => ({
+  type: TYPES.SET_ELEMENT_CAN_BE_EDITED,
+  payload: edited,
+});
+
+export const setElementBeingEdited = (edited: boolean) => ({
+  type: TYPES.SET_ELEMENT_BEING_EDITED,
+  payload: edited,
+});
+
+export const resetElementEditState = () => ({
+  type: TYPES.RESET_ELEMENT_EDIT_STATE,
+});
+
 export const setHoveredElement = (id: string | null): SetHoveredElement => ({
   type: TYPES.SET_HOVERED_ELEMENT,
   payload: id,
@@ -782,4 +797,11 @@ export const rotateScreenFormat = (rotated: boolean) => ({
 export const setRightPanelActiveTab = (tabIndex: RightPanelTab) => ({
   type: TYPES.SET_RIGHT_PANEL_ACTIVE_TAB,
   payload: tabIndex,
+});
+
+export const setScreenCreateLoader = (
+  active: boolean,
+): SetScreenCreateLoader => ({
+  type: TYPES.SET_SCREEN_CREATE_LOADER,
+  payload: active,
 });

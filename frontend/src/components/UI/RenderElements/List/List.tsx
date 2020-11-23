@@ -8,6 +8,7 @@ import useEventHandlers from '../useEventHandlers';
 
 const useStyles = makeComponentStyles({
   list: ({ params: { isOrdered } }) => ({
+    listStylePosition: 'inside',
     ...(isOrdered && { 'list-style-type': 'decimal' }),
   }),
 });
@@ -29,6 +30,7 @@ const List: React.FC<ListRendererProps> = React.forwardRef((props, ref) => {
       key={id}
       className={cn(
         className,
+        classes.list,
         classes.addedElem,
         classes.entityStyles,
         classes.groupStyles,

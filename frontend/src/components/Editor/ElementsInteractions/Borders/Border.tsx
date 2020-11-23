@@ -51,7 +51,7 @@ const Border: React.FC<Props> = (props) => {
         break;
       case BorderPosition.BOTTOM:
         props = {
-          top: top + height,
+          top: top + height - 1, // remove bottom border height
           right,
           left,
         } as StyleProps;

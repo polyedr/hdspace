@@ -13,7 +13,7 @@ interface IScrollbarProps {
   style?: IStyle;
   className?: string;
   trackStylesBg?: string;
-  maxHeight?: number | string;
+  autoHeightMax?: number | string;
   autoHeightMin?: string;
   hideTracksWhenNotNeeded?: boolean;
 }
@@ -101,7 +101,7 @@ const Scrollbar: React.FC<IScrollbarProps> = ({
   className,
   trackStylesBg,
   autoHeightMin,
-  maxHeight,
+  autoHeightMax,
   hideTracksWhenNotNeeded = true,
 }) => {
   const [show, setShow] = useState(false);
@@ -119,7 +119,7 @@ const Scrollbar: React.FC<IScrollbarProps> = ({
       className={className}
       autoHeight
       autoHeightMin={autoHeightMin}
-      autoHeightMax={maxHeight}
+      autoHeightMax={autoHeightMax}
       renderTrackVertical={(args) =>
         renderTrack({ ...args, trackStylesBg, show })
       } // TODO: find typings for all elements!

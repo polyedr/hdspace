@@ -8,7 +8,6 @@
     "build:staging": "webpack --mode=production --progress --color --env MODE=staging",
     "start:server": "node server.js",
     "lint": "npx eslint src/**/*.{ts,tsx} --fix",
-    "status": "webpack -p --config webpack.config.js --env.analyzeBundle true",
     "test": "jest"
   },
   "author": "",
@@ -111,7 +110,6 @@
     "@types/react-redux": "^7.1.9",
     "@types/redux-mock-store": "^1.0.2",
     "axios": "^0.18.1",
-    "camelcase-css": "^2.0.1",
     "classnames": "^2.2.6",
     "connected-react-router": "^6.8.0",
     "css-property-parser": "^1.0.6",
@@ -153,7 +151,7 @@
     "redux-saga": "^1.1.3",
     "reduxsauce": "^1.2.0",
     "reselect": "^4.0.0",
-    "throttle-debounce": "^2.3.0",
-    "typescript": "^4.0.5"
+    "typescript": "^4.0.5",
+    "use-debounce": "^5.1.0"
   }
 }
