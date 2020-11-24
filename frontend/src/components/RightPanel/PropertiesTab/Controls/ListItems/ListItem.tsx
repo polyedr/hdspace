@@ -1,6 +1,5 @@
 import React from 'react';
 import { Checkbox, lighten } from '@material-ui/core';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -17,6 +16,11 @@ import {
 } from '../../../../styledComponents';
 
 const useStyles = makeStyles(({ palette, spacing }) => ({
+  title: {
+    '& .MuiAccordionSummary-content': {
+      padding: '0.5em 1em',
+    },
+  },
   details: {
     padding: spacing(0.5),
     display: 'flex',
@@ -74,7 +78,7 @@ const ListItem: React.FC<Props> = ({
 
   return (
     <StyledAccordion>
-      <StyledAccordionSummary expandIcon={<ExpandMoreIcon />}>
+      <StyledAccordionSummary className={classes.title}>
         <div className={classes.wrapper}>
           {textContent}
 

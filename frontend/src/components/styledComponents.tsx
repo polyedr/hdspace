@@ -35,8 +35,8 @@ const useAccordionSummaryStyles = makeStyles(({ palette }) => ({
     '&$expanded': {
       minHeight: 0,
     },
-    borderBottom: '1px solid',
-    borderBottomColor: lighten(palette.panel.main, 0.1),
+    borderBottom: `1px solid ${darken(palette.panel.dark, 0.1)}`,
+    borderTop: `1px solid ${darken(palette.panel.dark, 0.1)}`,
     backgroundColor: darken(palette.panel.main, 0.1),
     fontWeight: 600,
   },

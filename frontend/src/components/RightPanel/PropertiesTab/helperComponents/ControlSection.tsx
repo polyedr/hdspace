@@ -1,6 +1,5 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { splitWords } from '../../../../utils/stringHelper';
 import {
   StyledAccordion,
@@ -12,6 +11,9 @@ const useStyles = makeStyles({
   section: {},
   title: {
     textTransform: 'capitalize',
+    '& .MuiAccordionSummary-content': {
+      padding: '0 1em',
+    },
   },
   content: {
     padding: '0.5em',
@@ -30,10 +32,7 @@ const ControlSection: React.FC<Props> = ({ title, children }) => {
 
   return (
     <StyledAccordion className={classes.section} defaultExpanded>
-      <StyledAccordionSummary
-        className={classes.title}
-        expandIcon={<ExpandMoreIcon />}
-      >
+      <StyledAccordionSummary className={classes.title}>
         {splitWords(title)}
       </StyledAccordionSummary>
 

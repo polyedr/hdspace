@@ -1,5 +1,4 @@
 import React from 'react';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { splitWords } from '../../../utils/stringHelper';
 import ElementButton from './ElementButton';
@@ -22,6 +21,9 @@ type Props = {
 export const useStyles = makeStyles({
   title: {
     textTransform: 'capitalize',
+    '& .MuiAccordionSummary-content': {
+      padding: '0 1em',
+    },
   },
   elementsBlock: {
     display: 'flex',
@@ -51,10 +53,7 @@ const ElementsBlock: React.FC<Props> = ({
 
   return expandable ? (
     <StyledAccordion defaultExpanded>
-      <StyledAccordionSummary
-        className={classes.title}
-        expandIcon={<ExpandMoreIcon />}
-      >
+      <StyledAccordionSummary className={classes.title}>
         {splitWords(title)}
       </StyledAccordionSummary>
 

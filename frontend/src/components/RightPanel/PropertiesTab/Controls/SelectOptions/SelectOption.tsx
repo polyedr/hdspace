@@ -1,5 +1,4 @@
 import React from 'react';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { useDispatch, useSelector } from 'react-redux';
@@ -16,6 +15,11 @@ import {
 } from '../../../../styledComponents';
 
 const useStyles = makeStyles(({ spacing, palette }) => ({
+  title: {
+    '& .MuiAccordionSummary-content': {
+      padding: '0.5em 1em',
+    },
+  },
   wrapper: {
     flex: 1,
     display: 'flex',
@@ -65,7 +69,7 @@ const SelectOption: React.FC<Props> = ({
 
   return (
     <StyledAccordion>
-      <StyledAccordionSummary expandIcon={<ExpandMoreIcon />}>
+      <StyledAccordionSummary className={classes.title}>
         <div className={classes.wrapper}>
           {name}
 
