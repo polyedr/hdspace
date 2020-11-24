@@ -51,7 +51,7 @@ export const initialEdit: ProjectEditState = {
   activeElementId: '-1',
   hoveredElementId: '-1',
   freeCanvas: {
-    enabled: true,
+    enabled: false,
     lastElements: {},
   },
 };
