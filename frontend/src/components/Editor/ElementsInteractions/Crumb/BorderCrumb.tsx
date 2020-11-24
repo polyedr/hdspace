@@ -46,13 +46,15 @@ const BorderCrumb: React.FC<Props> = ({ elementId, styles, children }) => {
     !ELEMENTS_WITHOUT_CRUMB.includes(element.type) &&
     (showBorders || elementId === activeElementId);
 
+  console.log('CRUMB STYLES!!', styles);
   return element && showCrumb ? (
     <div
       className={classes.crumb}
       style={{
-        top: styles.top,
+        top: elementId === rootID ? styles.top : styles.top + styles.height - 1,
         left: elementId === rootID ? 'auto' : styles.left,
         right: elementId === rootID ? styles.right : 'auto',
+        zIndex: 9999999,
       }}
     >
       <span
