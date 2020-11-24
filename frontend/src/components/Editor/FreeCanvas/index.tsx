@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Rnd, RndResizeCallback } from 'react-rnd';
-import { useDrop } from 'react-dnd';
+import { DropTargetMonitor, useDrop } from 'react-dnd';
 import cn from 'classnames';
 import {
   selectActiveElementId,
@@ -77,32 +77,35 @@ const FreeCanvas = () => {
 
   const [, drop] = useDrop({
     accept: [ElementType.CONSTRUCTOR],
-    hover: () =>
-      /* dragSource: SyntheticElement<StateElement | ElementData>,
-      monitor: DropTargetMonitor, */
-      {
-        /* if (!dropTargetElement.current) {
-        const dropPositionBottomBorder = document.createElement('div');
-        const offset = monitor.getClientOffset();
-        if (!offset) {
-          return;
-        }
-        dropPositionBottomBorder.setAttribute(
-          'style',
-          getDropBorderStyles(offset),
-        );
-        dropTargetElement.current = dropPositionBottomBorder;
-      } */
-        console.log('HOVER!!!');
-      },
+    hover: () => {
+      // console.log('HOVER!!!');
+    },
     drop: (
       dragSource: SyntheticElement<StateElement | ElementData>,
-      // monitor: DropTargetMonitor,
+      monitor: DropTargetMonitor,
     ) => {
-      const { id, type, name } = dragSource.original as ElementData;
+      const offset = monitor.getClientOffset();
+      if (!ref.current || !ref.current.resizableElement || !offset) {
+        return;
+      }
+      const { resizableElement } = ref.current;
+      const { id, type, name, custom } = dragSource.original as ElementData;
+
+      const rect = (resizableElement.current as HTMLElement).getBoundingClientRect();
       dispatch(
         createElements(
-          [{ id, type, name, custom: false }],
+          [
+            {
+              id,
+              type,
+              name,
+              custom,
+              parameters: {
+                top: offset.y - rect.y,
+                left: offset.x - rect.x,
+              },
+            },
+          ],
           { screenId: currentScreenId },
           root.id,
         ),
@@ -115,7 +118,6 @@ const FreeCanvas = () => {
       return;
     }
     const { resizableElement } = ref.current;
-    console.log('REF!!!', resizableElement);
     drop(resizableElement);
   }, [ref.current]);
 

@@ -23,7 +23,8 @@ export const convertCreatedElementToRequest = <
 >(
   elementType: T,
   parentID: string | null,
-  elementName?: string,
+  elementName?: string | null,
+  parameters?: any,
 ): ServerElement<T, ServerElement<Entity>[], K> => {
   const libraryElement = (LIBRARY_ELEMENTS[
     elementType
@@ -35,6 +36,10 @@ export const convertCreatedElementToRequest = <
     id: -1,
     name: elementName || name,
     ...(parentID && { scenario: parseInt(parentID) }),
+    parameters: {
+      ...libraryElement.parameters,
+      ...(parameters || {}),
+    },
   };
 };
 

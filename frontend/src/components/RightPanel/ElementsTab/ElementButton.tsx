@@ -41,6 +41,14 @@ const useButtonStyles = makeStyles({
 });
 
 const useStyles = makeStyles((theme) => ({
+  iconSection: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'flex-end',
+    height: '45%',
+    width: '100%',
+  },
   nameSection: (props: Props) => ({
     display: 'flex',
     justifyContent: 'center',
@@ -119,7 +127,9 @@ const ElementButton = React.forwardRef<HTMLButtonElement, Props>(
             : ref
         }
       >
-        {ElementIcon && <ElementIcon ref={imgRef} />}
+        <div className={classes.iconSection}>
+          {ElementIcon && <ElementIcon ref={imgRef} />}
+        </div>
         <div className={classes.nameSection}>
           <span className={classes.name}>{splitWords(name)}</span>
         </div>
